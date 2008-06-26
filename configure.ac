@@ -50,6 +50,7 @@ m4_define([librsvg_required_version], [2.14.0])
 m4_define([openexr_required_version], [0.0.0])
 m4_define([sdl_required_version], [0.0.0])
 m4_define([graphviz_required_version], [0.0.0])
+m4_define([fftw3_required_version], [3.0.0])
 
 AC_INIT(gegl, gegl_major_version.gegl_minor_version.gegl_micro_version)
 AC_CONFIG_SRCDIR([gegl/gegl.h.in])
@@ -788,6 +789,18 @@ AM_CONDITIONAL(HAVE_V4L, test "x$have_v4l" = "xyes")
 #AC_SUBST(LCMS_LIBS)
 
 
+################
+# Check for FFTW
+################
+
+PKG_CHECK_MODULES(FFTW, fftw3,
+  have_fftw3="yes",
+  have_fftw3="no  (usable fftw3 not found)")
+AM_CONDITIONAL(HAVE_FFTW, test "x$have_fftw3" = "xyes")
+
+AC_SUBST(FFTW_CFLAGS) 
+AC_SUBST(FFTW_LIBS)
+
 
 
 #######################
@@ -825,6 +838,8 @@ operations/core/Makefile
 operations/common/Makefile
 operations/common/perlin/Makefile
 operations/external/Makefile
+operations/frequency/Makefile
+operations/frequency/tools/Makefile
 operations/generated/Makefile
 operations/workshop/Makefile
 operations/workshop/external/Makefile
@@ -869,5 +884,6 @@ Optional dependencies:
   graphviz:       $have_graphviz
   avcodec:        $have_libavcodec
   avformat:       $have_libavformat
+  FFTW:           $have_fftw3
   V4L:            $have_v4l
 ]);

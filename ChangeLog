@@ -1,3 +1,15 @@
+2008-06-27  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	Restart from trunck. Added dft.c first.
+
+	* AUTHORS:
+	* configure.ac:
+	* operations/frequency/Makefile.am:
+	* operations/frequency/dft.c:
+	* operations/frequency/tools/Makefile.am:
+	* operations/frequency/tools/component.c:
+	* operations/frequency/tools/fourier.c:
+
 2008-06-23  Øyvind Kolås  <pippin@gimp.org>
 
 	Documentation improvements (mostly orthographic) from Peter
