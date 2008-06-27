@@ -1,5 +1,10 @@
 2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	* operations/frequency/preview-frequency.c: fixed a bug that forget to
+	free memory.
+	
+2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/preview-frequency.c: moved to the new format.
 	* operations/frequency/tools/display.c: added.
 

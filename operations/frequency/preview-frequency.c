@@ -105,6 +105,8 @@ process(GeglOperation *operation,
                   GEGL_AUTO_ROWSTRIDE);   
   g_free(src_buf);
   g_free(dst_buf);
+  g_free(tmp_src_buf);
+  g_free(tmp_dst_buf);
   return TRUE;
 }
 
