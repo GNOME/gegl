@@ -1,3 +1,11 @@
+2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	Moved to the new format successfully.
+
+	* operations/Makefile.am: added the path: frequency.
+	* operations/frequency/dft.c: the first step to move to the new format.
+	* operations/frequency/idft.c: the first step to move to the new format.
+
 2008-06-27  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	Restart from trunck. Added dft.c first.

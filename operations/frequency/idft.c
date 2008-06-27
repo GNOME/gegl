@@ -23,7 +23,7 @@
 #else
 
 #define GEGL_CHANT_TYPE_FILTER
-#define GEGL_CHANT_C_FILE       "dft.c"
+#define GEGL_CHANT_C_FILE       "idft.c"
 
 #include "gegl-chant.h"
 #include "tools/fourier.c"
@@ -33,12 +33,18 @@
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
 {
-  GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation,
-                                                                   "input");
+  GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation, "input");
   GeglRectangle  result  = *in_rect;
 
-  result.width = FFT_HALF(result.width);
+  result.width = 2*(result.width-1);
   return result;
+}
+
+static GeglRectangle
+get_cached_region(GeglOperation *operation,
+                  const GeglRectangle *roi)
+{
+  return get_bounding_box(operation);
 }
 
 static GeglRectangle
@@ -51,28 +57,21 @@ get_required_for_output(GeglOperation *operation,
   return result;
 }
 
-static GeglRectangle
-get_cached_region(GeglOperation *operation,
-                  const GeglRectangle *roi)
-{
-  return get_bounding_box(operation);
-}
-
 static void
 prepare(GeglOperation *operation)
 {
-  gegl_operation_set_format(operation, "input", babl_format ("RGBA double"));
-  gegl_operation_set_format(operation, "output",
-                            babl_format ("frequency double"));
+  gegl_operation_set_format(operation, "input",
+                            babl_format("frequency double"));
+  gegl_operation_set_format(operation, "output", babl_format("RGBA double"));
 }
 
-static gboolean
+static gboolean 
 process(GeglOperation *operation,
-        GeglBuffer *input,
-        GeglBuffer *output,
-        const GeglRectangle *result)
+                        GeglBuffer *input,
+                        GeglBuffer *output,
+                        const GeglRectangle *result)
 {
-  gint width = gegl_buffer_get_width(input);
+  gint width = 2*(gegl_buffer_get_width(input)-1); /* width always refers to the image's (not buffer's) width. */
   gint height = gegl_buffer_get_height(input);
   gdouble *src_buf;
   gdouble *dst_buf;
@@ -80,24 +79,22 @@ process(GeglOperation *operation,
   gdouble *tmp_dst_buf;
   gint i;
 
-  src_buf = g_new0(gdouble, 4*width*height);
-  tmp_src_buf = g_new0(gdouble, width*height);
-  dst_buf = g_new0(gdouble, 4*2*height*FFT_HALF(width));
-  tmp_dst_buf = g_new0(gdouble, 2*height*FFT_HALF(width));
+  src_buf = g_new0(gdouble, 8*height*FFT_HALF(width));
+  dst_buf = g_new0(gdouble, 4*width*height);
+  tmp_src_buf = g_new0(gdouble, 2*height*FFT_HALF(width));
+  tmp_dst_buf = g_new0(gdouble, width*height);
 
-  gegl_buffer_get(input, 1.0, NULL, babl_format ("RGBA double"), src_buf,
-                  GEGL_AUTO_ROWSTRIDE);
-
+  gegl_buffer_get(input, 1.0, NULL, babl_format("frequency double"), (gdouble *)src_buf, GEGL_AUTO_ROWSTRIDE);
   for (i=0; i<4; i++)
     {
-      get_rgba_component(src_buf, tmp_src_buf, i, width*height);
-      dft(tmp_src_buf, (fftw_complex *)tmp_dst_buf, width, height);
-      set_rgba_component(tmp_dst_buf, dst_buf, i, 2*FFT_HALF(width)*height);
+      get_rgba_component(src_buf, tmp_src_buf, i, 2*height*FFT_HALF(width));
+      idft((fftw_complex *)tmp_src_buf, tmp_dst_buf, width, height);
+      set_rgba_component(tmp_dst_buf, dst_buf, i, width*height);
     }
-  
-  gegl_buffer_set(output, NULL, babl_format ("frequency double"), dst_buf,
-                  GEGL_AUTO_ROWSTRIDE);
 
+  gegl_buffer_set(output, NULL, babl_format("RGBA double"), dst_buf,
+                  GEGL_AUTO_ROWSTRIDE);
+  
   g_free(src_buf);
   g_free(dst_buf);
   g_free(tmp_src_buf);
@@ -120,10 +117,10 @@ gegl_chant_class_init(GeglChantClass *klass)
   operation_class->get_required_for_output= get_required_for_output;
   operation_class->get_cached_region = get_cached_region;
 
-  operation_class->name = "dft";
+  operation_class->name = "idft";
   operation_class->categories = "frequency";
   operation_class->description
-    = "Perform 2-D Discrete Fourier Transform for a RGBA image.";
+    = "Perform 2-D inverse Discrete Fourier Transform for the image.\n";
 }
 
 #endif

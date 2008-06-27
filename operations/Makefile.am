@@ -3,6 +3,7 @@ SUBDIRS = \
 	core		\
 	common		\
 	external	\
+	frequency	\
 	generated
 
 if ENABLE_WORKSHOP
