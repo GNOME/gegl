@@ -27,6 +27,8 @@
 
 gboolean dft(gdouble *src_buf, fftw_complex *dst_buf_pointer, gint width, gint height);
 gboolean idft(fftw_complex *src_buf, gdouble *dst_buf, gint width, gint height);
+gboolean encode(gdouble *, gint);
+gint decode(gdouble *);
 
 gboolean
 dft(gdouble *src_buf, fftw_complex *dst_buf, gint width, gint height)
@@ -65,3 +67,40 @@ idft(fftw_complex *src_buf, gdouble *dst_buf, gint width, gint height)
   fftw_destroy_plan(fftplan);
   return TRUE;
 }
+
+gboolean encode(gdouble *pixelhandle, gint is_even)
+{
+  gint int_pixel = (int)(*pixelhandle);
+
+  if (is_even != 1 && is_even != 0)
+    return FALSE;
+
+  *pixelhandle -= int_pixel;
+  int_pixel = 10 * int_pixel + is_even;
+  *pixelhandle += int_pixel;
+
+  return TRUE;
+}
+
+  
+gint decode(gdouble *pixelhandle)
+{
+  gint int_pixel = (int)(*pixelhandle);
+  *pixelhandle -= int_pixel;
+  if (int_pixel == 1)
+    {
+      *pixelhandle += int_pixel/10;
+      return 1;
+    }
+  elseif (int_pixel == 9)
+    {
+      *pixelhandle += int_pixel/10 - 1;
+      return 1;
+    }
+  else
+    {
+      *pixelhandle += int_pixel/10;
+      return 0;
+    }
+}
+  

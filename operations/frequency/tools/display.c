@@ -103,10 +103,7 @@ zoomshow(gdouble *buf, glong samples)
 
   for (i=0; i<samples; i++)
     {
-      if (*(buf+i)<1)
-        *(buf+i) = 0;
-      else
-        *(buf+i) = log(*(buf+i));
+      *(buf+i) = log(*(buf+i)+1);
     }
   get_min_max(buf, &min, &max, samples);
   for (i=0; i<samples; i++)

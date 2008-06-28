@@ -1,8 +1,15 @@
 2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	Added encode/decode functions in order to support odd-size image.
+
+	* operations/frequency/tools/display.c: a small modify.
+	* operations/frequency/tools/fourier.c: added encode/decode functions.
+
+2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/preview-frequency.c: fixed a bug that forget to
 	free memory.
-	
+
 2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* operations/frequency/preview-frequency.c: moved to the new format.
