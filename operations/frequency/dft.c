@@ -33,12 +33,7 @@
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
 {
-  GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation,
-                                                                   "input");
-  GeglRectangle  result  = *in_rect;
-
-  result.width = FFT_HALF(result.width);
-  return result;
+  return *gegl_operation_source_get_bounding_box (operation, "input");
 }
 
 static GeglRectangle
@@ -46,9 +41,7 @@ get_required_for_output(GeglOperation *operation,
                         const gchar *input_pad,
                         const GeglRectangle *roi)
 {
-  GeglRectangle result = *gegl_operation_source_get_bounding_box(operation,
-                                                                 "input");
-  return result;
+  return *gegl_operation_source_get_bounding_box(operation, "input");
 }
 
 static GeglRectangle
@@ -82,7 +75,7 @@ process(GeglOperation *operation,
 
   src_buf = g_new0(gdouble, 4*width*height);
   tmp_src_buf = g_new0(gdouble, width*height);
-  dst_buf = g_new0(gdouble, 4*2*height*FFT_HALF(width));
+  dst_buf = g_new0(gdouble, 8*height*width);
   tmp_dst_buf = g_new0(gdouble, 2*height*FFT_HALF(width));
 
   gegl_buffer_get(input, 1.0, NULL, babl_format ("RGBA double"), src_buf,
@@ -94,7 +87,7 @@ process(GeglOperation *operation,
       dft(tmp_src_buf, (fftw_complex *)tmp_dst_buf, width, height);
       set_rgba_component(tmp_dst_buf, dst_buf, i, 2*FFT_HALF(width)*height);
     }
-  encode(dst_buf, (width+1)%2);
+  
   gegl_buffer_set(output, NULL, babl_format ("frequency double"), dst_buf,
                   GEGL_AUTO_ROWSTRIDE);
 

@@ -27,19 +27,13 @@
 
 #include "gegl-chant.h"
 #include "tools/display.c"
-#include "tools/fourier.c"
 #include "tools/component.c"
 #include <fftw3.h>
 
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
 {
-  GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation,
-                                                                   "input");
-  GeglRectangle  result  = *in_rect;
-
-  result.width = 2*(result.width-1);
-  return result;
+  return *gegl_operation_source_get_bounding_box (operation, "input");
 }
 
 static GeglRectangle
@@ -54,9 +48,7 @@ get_required_for_output(GeglOperation *operation,
                         const gchar *input_pad,
                         const GeglRectangle *roi)
 {
-  GeglRectangle result = *gegl_operation_source_get_bounding_box(operation,
-                                                                 "input");
-  return result;
+  return *gegl_operation_source_get_bounding_box(operation, "input");
 }
 
 static void
@@ -73,9 +65,7 @@ process(GeglOperation *operation,
         GeglBuffer *output,
         const GeglRectangle *result)
 {
-  gint width = 2*(gegl_buffer_get_width(input)-1); /* width always refers to the
-                                                      image's (not buffer's)
-                                                      width. */
+  gint width = gegl_buffer_get_width(input);
   gint height = gegl_buffer_get_height(input);
   gdouble *src_buf;
   gdouble *dst_buf;
@@ -83,14 +73,13 @@ process(GeglOperation *operation,
   gdouble *tmp_dst_buf;
   glong i;
   
-  src_buf = g_new0(gdouble, 4*2*height*FFT_HALF(width));
+  src_buf = g_new0(gdouble, 8*height*width);
   dst_buf = g_new0(gdouble, 4*width*height);
   tmp_src_buf = g_new0(gdouble, 2*height*FFT_HALF(width));
   tmp_dst_buf = g_new0(gdouble, width*height);
 
   gegl_buffer_get(input, 1.0, NULL, babl_format("frequency double"),
                   (gdouble *)src_buf, GEGL_AUTO_ROWSTRIDE);
-  decode((gdouble *)src_buf);
   for (i=0; i<3; i++)
     {
       get_rgba_component(src_buf, tmp_src_buf, i, 2*height*FFT_HALF(width));
@@ -107,8 +96,6 @@ process(GeglOperation *operation,
                   GEGL_AUTO_ROWSTRIDE);   
   g_free(src_buf);
   g_free(dst_buf);
-  g_free(tmp_src_buf);
-  g_free(tmp_dst_buf);
   return TRUE;
 }
 

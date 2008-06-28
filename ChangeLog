@@ -1,5 +1,13 @@
 2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	The work of moving Transforming-opeartions into new format completed.
+
+	* operations/frequency/dft.c: used the same size input/out buffer.
+	* operations/frequency/idft.c: same as above.
+	* operations/frequency/preview-frequency.c: same as above.
+
+2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	Now encode/decode works correctly.
 
 	* operations/frequency/dft.c: testing encode.
