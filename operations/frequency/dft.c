@@ -94,7 +94,7 @@ process(GeglOperation *operation,
       dft(tmp_src_buf, (fftw_complex *)tmp_dst_buf, width, height);
       set_rgba_component(tmp_dst_buf, dst_buf, i, 2*FFT_HALF(width)*height);
     }
-  
+  encode(dst_buf, (width+1)%2);
   gegl_buffer_set(output, NULL, babl_format ("frequency double"), dst_buf,
                   GEGL_AUTO_ROWSTRIDE);
 

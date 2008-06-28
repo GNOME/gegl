@@ -27,6 +27,7 @@
 
 #include "gegl-chant.h"
 #include "tools/display.c"
+#include "tools/fourier.c"
 #include "tools/component.c"
 #include <fftw3.h>
 
@@ -89,6 +90,7 @@ process(GeglOperation *operation,
 
   gegl_buffer_get(input, 1.0, NULL, babl_format("frequency double"),
                   (gdouble *)src_buf, GEGL_AUTO_ROWSTRIDE);
+  decode((gdouble *)src_buf);
   for (i=0; i<3; i++)
     {
       get_rgba_component(src_buf, tmp_src_buf, i, 2*height*FFT_HALF(width));

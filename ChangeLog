@@ -1,5 +1,14 @@
 2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	Now encode/decode works correctly.
+
+	* operations/frequency/dft.c: testing encode.
+	* operations/frequency/idft.c: testing decode.
+	* operations/frequency/preview-frequency.c: testing decode.
+	* operations/frequency/tools/fourier.c: now it was correct.
+
+2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	Added encode/decode functions in order to support odd-size image.
 
 	* operations/frequency/tools/display.c: a small modify.

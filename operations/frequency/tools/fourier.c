@@ -70,12 +70,13 @@ idft(fftw_complex *src_buf, gdouble *dst_buf, gint width, gint height)
 
 gboolean encode(gdouble *pixelhandle, gint is_even)
 {
-  gint int_pixel = (int)(*pixelhandle);
+  glong int_pixel = (glong)(*pixelhandle);
 
   if (is_even != 1 && is_even != 0)
     return FALSE;
-
-  *pixelhandle -= int_pixel;
+  if (*pixelhandle<0 && *pixelhandle>-1)
+    is_even = 5;
+  *pixelhandle -= int_pixel;  
   int_pixel = 10 * int_pixel + is_even;
   *pixelhandle += int_pixel;
 
@@ -85,14 +86,18 @@ gboolean encode(gdouble *pixelhandle, gint is_even)
   
 gint decode(gdouble *pixelhandle)
 {
-  gint int_pixel = (int)(*pixelhandle);
+  glong int_pixel = (glong)(*pixelhandle);
   *pixelhandle -= int_pixel;
-  if (int_pixel == 1)
+  if (int_pixel == 5)
+    {
+      return 1;
+    }
+  else if (int_pixel%10 == 1)
     {
       *pixelhandle += int_pixel/10;
       return 1;
     }
-  elseif (int_pixel == 9)
+  else if (int_pixel%10 == -9)
     {
       *pixelhandle += int_pixel/10 - 1;
       return 1;
@@ -103,4 +108,4 @@ gint decode(gdouble *pixelhandle)
       return 0;
     }
 }
-  
+

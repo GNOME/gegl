@@ -85,6 +85,7 @@ process(GeglOperation *operation,
   tmp_dst_buf = g_new0(gdouble, width*height);
 
   gegl_buffer_get(input, 1.0, NULL, babl_format("frequency double"), (gdouble *)src_buf, GEGL_AUTO_ROWSTRIDE);
+  decode((gdouble *)src_buf);
   for (i=0; i<4; i++)
     {
       get_rgba_component(src_buf, tmp_src_buf, i, 2*height*FFT_HALF(width));
