@@ -80,7 +80,7 @@ get_min_max(gdouble *buf, gdouble *min, gdouble *max, glong samples)
   gfloat tmin = 9000000.0;
   gfloat tmax =-9000000.0;
 
-  gint i;
+  glong i;
   for (i=0; i<samples; i++)
     {
       gfloat val = buf[i];
