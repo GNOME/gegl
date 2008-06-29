@@ -28,7 +28,6 @@
 #include "gegl-chant.h"
 #include "tools/fourier.c"
 #include "tools/component.c"
-#include <fftw3.h>
 
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)

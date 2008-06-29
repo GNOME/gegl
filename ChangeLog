@@ -1,5 +1,13 @@
 2008-06-30  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	* operations/frequency/dft.c:
+	* operations/frequency/freq-general-filter.c: new op.
+	* operations/frequency/idft.c:
+	* operations/frequency/tools/Makefile.am: add filters.c
+	* operations/frequency/tools/filters.c: new.
+
+2008-06-30  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/tools/display.c: a small bug fixed.
 
 2008-06-28  Zhang Junbo  <zhangjb@svn.gnome.org>

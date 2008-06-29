@@ -23,23 +23,15 @@
 #else
 
 #define GEGL_CHANT_TYPE_FILTER
-#define GEGL_CHANT_C_FILE       "idft.c"
+#define GEGL_CHANT_C_FILE       "freq-general-filter.c"
 
 #include "gegl-chant.h"
-#include "tools/fourier.c"
 #include "tools/component.c"
 
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
 {
   return *gegl_operation_source_get_bounding_box (operation, "input");
-}
-
-static GeglRectangle
-get_cached_region(GeglOperation *operation,
-                  const GeglRectangle *roi)
-{
-  return get_bounding_box(operation);
 }
 
 static GeglRectangle
@@ -50,15 +42,22 @@ get_required_for_output(GeglOperation *operation,
   return *gegl_operation_source_get_bounding_box(operation, "input");
 }
 
+static GeglRectangle
+get_cached_region(GeglOperation *operation,
+                  const GeglRectangle *roi)
+{
+  return get_bounding_box(operation);
+}
+
 static void
 prepare(GeglOperation *operation)
 {
-  gegl_operation_set_format(operation, "input",
-                            babl_format("frequency double"));
-  gegl_operation_set_format(operation, "output", babl_format("RGBA double"));
+  Babl *format = babl_format ("frequency double")
+    gegl_operation_set_format(operation, "input", format);
+  gegl_operation_set_format(operation, "output", format);
 }
 
-static gboolean 
+static gboolean
 process(GeglOperation *operation,
         GeglBuffer *input,
         GeglBuffer *output,
@@ -66,33 +65,12 @@ process(GeglOperation *operation,
 {
   gint width = gegl_buffer_get_width(input);
   gint height = gegl_buffer_get_height(input);
-  gdouble *src_buf;
-  gdouble *dst_buf;
-  gdouble *tmp_src_buf;
-  gdouble *tmp_dst_buf;
-  gint i;
 
-  src_buf = g_new0(gdouble, 8*height*width);
-  dst_buf = g_new0(gdouble, 4*width*height);
-  tmp_src_buf = g_new0(gdouble, 2*height*FFT_HALF(width));
-  tmp_dst_buf = g_new0(gdouble, width*height);
-
-  gegl_buffer_get(input, 1.0, NULL, babl_format("frequency double"),
-                  (gdouble *)src_buf, GEGL_AUTO_ROWSTRIDE);
-  for (i=0; i<4; i++)
-    {
-      get_rgba_component(src_buf, tmp_src_buf, i, 2*height*FFT_HALF(width));
-      idft((fftw_complex *)tmp_src_buf, tmp_dst_buf, width, height);
-      set_rgba_component(tmp_dst_buf, dst_buf, i, width*height);
-    }
-
-  gegl_buffer_set(output, NULL, babl_format("RGBA double"), dst_buf,
+  src_buf = g_new0(gdouble, 4*width*height);
+  gegl_buffer_get(input, 1.0, NULL, babl_format ("RGBA double"), src_buf,
                   GEGL_AUTO_ROWSTRIDE);
-  
+
   g_free(src_buf);
-  g_free(dst_buf);
-  g_free(tmp_src_buf);
-  g_free(tmp_dst_buf);
   return TRUE;
 }
 
@@ -111,10 +89,11 @@ gegl_chant_class_init(GeglChantClass *klass)
   operation_class->get_required_for_output= get_required_for_output;
   operation_class->get_cached_region = get_cached_region;
 
-  operation_class->name = "idft";
+  operation_class->name = "freq-general-filter";
   operation_class->categories = "frequency";
   operation_class->description
-    = "Perform 2-D inverse Discrete Fourier Transform for the image.\n";
+    = "The most general filer in frequency domain. What it does is just"
+    "multiplying a matrix on the freqeuncy image.";
 }
 
 #endif
