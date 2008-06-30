@@ -18,7 +18,7 @@
 
 #ifdef GEGL_CHANT_PROPERTIES
 
-/* no properties */
+gegl_chant_pointer(Hbuf, "Matrix", "The transfer function matrix.")
 
 #else
 
@@ -52,8 +52,8 @@ get_cached_region(GeglOperation *operation,
 static void
 prepare(GeglOperation *operation)
 {
-  Babl *format = babl_format ("frequency double")
-    gegl_operation_set_format(operation, "input", format);
+  Babl *format = babl_format ("frequency double");
+  gegl_operation_set_format(operation, "input", format);
   gegl_operation_set_format(operation, "output", format);
 }
 
@@ -65,12 +65,30 @@ process(GeglOperation *operation,
 {
   gint width = gegl_buffer_get_width(input);
   gint height = gegl_buffer_get_height(input);
+  GeglChantO *o = GEGL_CHANT_PROPERTIES (operation);
+  gdouble *src_buf;
+  gdouble *dst_buf;
+  gdouble *H_buf = o->Hbuf;
 
-  src_buf = g_new0(gdouble, 4*width*height);
-  gegl_buffer_get(input, 1.0, NULL, babl_format ("RGBA double"), src_buf,
+  src_buf = g_new0(gdouble, 8*width*height);
+  dst_buf = g_new0(gdouble, 8*width*height);
+  gegl_buffer_get(input, 1.0, NULL, babl_format ("frequency double"), src_buf,
+                  GEGL_AUTO_ROWSTRIDE);
+  
+#if 1
+  gint i;
+  for (i=0; i<(width/2+1)*height; i++)
+    {
+      printf("%lf ", H_buf[i]);
+    }
+  printf("\n");
+#endif
+  
+  gegl_buffer_set(output, NULL, babl_format ("frequency double"), dst_buf,
                   GEGL_AUTO_ROWSTRIDE);
 
   g_free(src_buf);
+  g_free(dst_buf);
   return TRUE;
 }
 
