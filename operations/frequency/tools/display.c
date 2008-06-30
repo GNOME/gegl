@@ -130,19 +130,24 @@ fre2img(fftw_complex *src_buf, gdouble *dst_buf, gint width, gint height)
         {
           if (x<FFT_HALF(width))
             {
-              dst_real_buf[ELEM_ID_MATRIX(x, y, width)] = src_buf[ELEM_ID_HALF_MATRIX(x, y, width)][0];
-              dst_imag_buf[ELEM_ID_MATRIX(x, y, width)] = src_buf[ELEM_ID_HALF_MATRIX(x, y, width)][1];
+              dst_real_buf[ELEM_ID_MATRIX(x, y, width)] =
+                src_buf[ELEM_ID_HALF_MATRIX(x, y, width)][0];
+              dst_imag_buf[ELEM_ID_MATRIX(x, y, width)] =
+                src_buf[ELEM_ID_HALF_MATRIX(x, y, width)][1];
             }
           else
             {
-              dst_real_buf[ELEM_ID_MATRIX(x, y, width)] = src_buf[fft_complex_get_half_id(x, y, width, height)][0];
-              dst_imag_buf[ELEM_ID_MATRIX(x, y, width)] = 0-src_buf[fft_complex_get_half_id(x, y, width, height)][1];
+              dst_real_buf[ELEM_ID_MATRIX(x, y, width)] =
+                src_buf[fft_complex_get_half_id(x, y, width, height)][0];
+              dst_imag_buf[ELEM_ID_MATRIX(x, y, width)] =
+                0-src_buf[fft_complex_get_half_id(x, y, width, height)][1];
             }
         }
     }
   for (x=0; x<width*height; x++)
     {
-      dst_buf[x] = sqrt(dst_real_buf[x]*dst_real_buf[x]+dst_imag_buf[x]*dst_imag_buf[x]);
+      dst_buf[x] =
+        sqrt(dst_real_buf[x]*dst_real_buf[x]+dst_imag_buf[x]*dst_imag_buf[x]);
     }
   
   zoomshow(dst_buf, samples);

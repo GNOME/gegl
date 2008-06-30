@@ -27,6 +27,7 @@ gegl_chant_pointer(Hbuf, "Matrix", "The transfer function matrix.")
 
 #include "gegl-chant.h"
 #include "tools/component.c"
+#include "tools/filters.c"
 
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
@@ -68,6 +69,8 @@ process(GeglOperation *operation,
   GeglChantO *o = GEGL_CHANT_PROPERTIES (operation);
   gdouble *src_buf;
   gdouble *dst_buf;
+  gdouble *comp_real;
+  gdouble *comp_imag;
   gdouble *H_buf = o->Hbuf;
 
   src_buf = g_new0(gdouble, 8*width*height);
@@ -75,14 +78,16 @@ process(GeglOperation *operation,
   gegl_buffer_get(input, 1.0, NULL, babl_format ("frequency double"), src_buf,
                   GEGL_AUTO_ROWSTRIDE);
   
-#if 1
-  gint i;
-  for (i=0; i<(width/2+1)*height; i++)
-    {
-      printf("%lf ", H_buf[i]);
-    }
-  printf("\n");
-#endif
+  comp_real = g_new0(gdouble, FFT_HALF(width)*height);
+  comp_imag = g_new0(gdouble, FFT_HALF(width)*height);
+  
+  get_freq_component(src_buf, comp_real, 0, FFT_HALF(width)*height);
+  get_freq_component(src_buf, comp_imag, 4, FFT_HALF(width)*height);
+  
+  freq_multiply(comp_real, comp_imag, H_buf, width, height);
+  
+  set_freq_component(comp_real, dst_buf, 0, FFT_HALF(width)*height);
+  set_freq_component(comp_imag, dst_buf, 4, FFT_HALF(width)*height);
   
   gegl_buffer_set(output, NULL, babl_format ("frequency double"), dst_buf,
                   GEGL_AUTO_ROWSTRIDE);

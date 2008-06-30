@@ -1,5 +1,12 @@
 2008-06-30  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	* operations/frequency/freq-general-filter.c: get/set_freq() tested.
+	* operations/frequency/tools/component.c: modified get/set_freq().
+	* operations/frequency/tools/display.c:
+	* operations/frequency/tools/filters.c: remodified the parameter table.
+
+2008-06-30  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/freq-general-filter.c: the property tested.
 	* operations/frequency/tools/filters.c: modified the parameter table.
 
