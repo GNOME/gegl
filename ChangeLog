@@ -1,3 +1,7 @@
+2008-07-01  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	* operations/frequency/tools/filters.c: implemented freq_multiply().
+
 2008-06-30  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	Added the imag-matrix.

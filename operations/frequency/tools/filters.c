@@ -25,9 +25,63 @@
 gboolean freq_multiply(gdouble *, gdouble *, gdouble *, gdouble *, gint, gint);
 
 gboolean
-freq_multiply(gdouble *Xr_buf, gdouble *Xi_buf, gdouble *Hr_buf,
-              gdouble *Hi_buf, gint width, gint height)
+freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
+              gdouble *Hi, gint width, gint height)
 {
-  
+  gint x, y;
+  gint yc = 0;
+  gdouble *Yr;
+  gdouble *Yi;
+
+  Yr = g_new0(gdouble, FFT_HALF(width)*height);
+  Yi = g_new0(gdouble, FFT_HALF(width)*height);
+
+  for (y=height/2; y<height; y++)
+    {
+      for (x=0; x<width; x++)
+        {
+          Yr[ELEM_ID_HALF_MATRIX(x, yc, width)] =
+            Xr[ELEM_ID_HALF_MATRIX(x, yc, width)] *
+            Hr[ELEM_ID_HALF_MATRIX(x, y, width)] -
+            Xi[ELEM_ID_HALF_MATRIX(x, yc, width)] *
+            Hi[ELEM_ID_HALF_MATRIX(x, y, width)];
+          Yi[ELEM_ID_HALF_MATRIX(x, yc, width)] =
+            Xi[ELEM_ID_HALF_MATRIX(x, yc, width)] *
+            Hr[ELEM_ID_HALF_MATRIX(x, y, width)] +
+            Xr[ELEM_ID_HALF_MATRIX(x, yc, width)] *
+            Hi[ELEM_ID_HALF_MATRIX(x, y, width)];
+        }
+      yc++;
+    }
+  for (y=0; y<height/2; y++)
+    {
+      for (x=0; x<width; x++)
+        {
+          Yr[ELEM_ID_HALF_MATRIX(x, yc, width)] =
+            Xr[ELEM_ID_HALF_MATRIX(x, yc, width)] *
+            Hr[ELEM_ID_HALF_MATRIX(x, y, width)] -
+            Xi[ELEM_ID_HALF_MATRIX(x, yc, width)] *
+            Hi[ELEM_ID_HALF_MATRIX(x, y, width)];
+          Yi[ELEM_ID_HALF_MATRIX(x, yc, width)] =
+            Xi[ELEM_ID_HALF_MATRIX(x, yc, width)] *
+            Hr[ELEM_ID_HALF_MATRIX(x, y, width)] +
+            Xr[ELEM_ID_HALF_MATRIX(x, yc, width)] *
+            Hi[ELEM_ID_HALF_MATRIX(x, y, width)];
+        }
+      yc++;
+    }
+  for (y=0; y<height; y++)
+    {
+      for (x=0; x<width; x++)
+        {
+          Xr[ELEM_ID_HALF_MATRIX(x, y, width)] =
+            Yr[ELEM_ID_HALF_MATRIX(x, y, width)];
+          Xr[ELEM_ID_HALF_MATRIX(x, y, width)] =
+            Yr[ELEM_ID_HALF_MATRIX(x, y, width)];
+        }
+    }
+
+  g_free(Yr);
+  g_free(Yi);
   return TRUE;
 }
