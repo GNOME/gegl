@@ -22,11 +22,12 @@
 #define ELEM_ID_HALF_MATRIX(x, y, c) ((y)*(FFT_HALF(c))+(x))
 #endif
 
-gboolean freq_multiply(gdouble *, gdouble *, gdouble *, gint, gint);
+gboolean freq_multiply(gdouble *, gdouble *, gdouble *, gdouble *, gint, gint);
 
 gboolean
-freq_multiply(gdouble *Xr_buf, gdouble *Xi_buf, gdouble *H_buf,
-              gint width, gint height)
+freq_multiply(gdouble *Xr_buf, gdouble *Xi_buf, gdouble *Hr_buf,
+              gdouble *Hi_buf, gint width, gint height)
 {
+  
   return TRUE;
 }

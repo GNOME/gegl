@@ -1,5 +1,12 @@
 2008-06-30  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	Added the imag-matrix.
+
+	* operations/frequency/freq-general-filter.c:
+	* operations/frequency/tools/filters.c:
+
+2008-06-30  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/freq-general-filter.c: added the property flag to
 	decide which componet need to process.
 

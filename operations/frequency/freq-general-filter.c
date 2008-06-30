@@ -18,7 +18,8 @@
 
 #ifdef GEGL_CHANT_PROPERTIES
 
-gegl_chant_pointer(Hbuf, "Matrix", "The transfer function matrix.")
+gegl_chant_pointer(realH, "Matrix", "The transfer function matrix(real part).")
+gegl_chant_pointer(imagH, "Matrix", "The transfer function matrix(imag part).")
 gegl_chant_int(flag, "Flag", 0, 15, 14,
                "Decide which componet need to process. Example: if flag=14, "
                "14==0b1110, so we filter on componets RGB, do not filter on A.")
@@ -74,7 +75,8 @@ process(GeglOperation *operation,
   gdouble *dst_buf;
   gdouble *comp_real;
   gdouble *comp_imag;
-  gdouble *H_buf = o->Hbuf;
+  gdouble *Hr_buf = o->realH;
+  gdouble *Hi_buf = o->imagH;
   gint flag = o->flag;
   gint i;
 
@@ -91,7 +93,7 @@ process(GeglOperation *operation,
 
       if ((8>>i)&flag)
         {
-          freq_multiply(comp_real, comp_imag, H_buf, width, height);
+          freq_multiply(comp_real, comp_imag, Hr_buf, Hi_buf, width, height);
         }
 
       set_freq_component(comp_real, dst_buf, i, FFT_HALF(width)*height);
@@ -123,7 +125,7 @@ gegl_chant_class_init(GeglChantClass *klass)
   operation_class->name = "freq-general-filter";
   operation_class->categories = "frequency";
   operation_class->description
-    = "The most general filer in frequency domain. What it does is just"
+    = "The most general filer in frequency domain. What it does is just "
     "multiplying a matrix on the freqeuncy image.";
 }
 
