@@ -1,5 +1,10 @@
 2008-06-30  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	* operations/frequency/freq-general-filter.c: added the property flag to
+	decide which componet need to process.
+
+2008-06-30  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/freq-general-filter.c: get/set_freq() tested.
 	* operations/frequency/tools/component.c: modified get/set_freq().
 	* operations/frequency/tools/display.c:

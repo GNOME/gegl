@@ -19,6 +19,9 @@
 #ifdef GEGL_CHANT_PROPERTIES
 
 gegl_chant_pointer(Hbuf, "Matrix", "The transfer function matrix.")
+gegl_chant_int(flag, "Flag", 0, 15, 14,
+               "Decide which componet need to process. Example: if flag=14, "
+               "14==0b1110, so we filter on componets RGB, do not filter on A.")
 
 #else
 
@@ -72,23 +75,28 @@ process(GeglOperation *operation,
   gdouble *comp_real;
   gdouble *comp_imag;
   gdouble *H_buf = o->Hbuf;
+  gint flag = o->flag;
+  gint i;
 
   src_buf = g_new0(gdouble, 8*width*height);
-  dst_buf = g_new0(gdouble, 8*width*height);
-  gegl_buffer_get(input, 1.0, NULL, babl_format ("frequency double"), src_buf,
-                  GEGL_AUTO_ROWSTRIDE);
-  
+  dst_buf = g_new0(gdouble, 8*width*height);    
   comp_real = g_new0(gdouble, FFT_HALF(width)*height);
-  comp_imag = g_new0(gdouble, FFT_HALF(width)*height);
-  
-  get_freq_component(src_buf, comp_real, 0, FFT_HALF(width)*height);
-  get_freq_component(src_buf, comp_imag, 4, FFT_HALF(width)*height);
-  
-  freq_multiply(comp_real, comp_imag, H_buf, width, height);
-  
-  set_freq_component(comp_real, dst_buf, 0, FFT_HALF(width)*height);
-  set_freq_component(comp_imag, dst_buf, 4, FFT_HALF(width)*height);
-  
+  comp_imag = g_new0(gdouble, FFT_HALF(width)*height);  
+  gegl_buffer_get(input, 1.0, NULL, babl_format ("frequency double"), src_buf,
+                  GEGL_AUTO_ROWSTRIDE);  
+  for (i=0; i<4; i++)
+    {
+      get_freq_component(src_buf, comp_real, i, FFT_HALF(width)*height);
+      get_freq_component(src_buf, comp_imag, 4+i, FFT_HALF(width)*height);
+
+      if ((8>>i)&flag)
+        {
+          freq_multiply(comp_real, comp_imag, H_buf, width, height);
+        }
+
+      set_freq_component(comp_real, dst_buf, i, FFT_HALF(width)*height);
+      set_freq_component(comp_imag, dst_buf, 4+i, FFT_HALF(width)*height);
+    }    
   gegl_buffer_set(output, NULL, babl_format ("frequency double"), dst_buf,
                   GEGL_AUTO_ROWSTRIDE);
 
