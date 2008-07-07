@@ -1,5 +1,9 @@
 2008-07-07  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	* operations/frequency/tools/fourier.c: (homo_dft), (homo_idft)
+
+2008-07-07  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/homo-dft.c: new.
 	* operations/frequency/homo-idft.c: new.
 	* operations/frequency/tools/fourier.c: added homo_dft(), homo_idft().

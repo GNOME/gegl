@@ -117,7 +117,7 @@ homo_dft(gdouble *src_buf, fftw_complex *dst_buf, gint width, gint height)
 {
   glong i;
   
-  for (i=0; i<FFT_HALF(width)*height; i++)
+  for (i=0; i<width*height; i++)
     {
       src_buf[i] = log(src_buf[i]);
     }
@@ -130,11 +130,10 @@ homo_idft(fftw_complex *src_buf, gdouble *dst_buf, gint width, gint height)
 {
   glong i;
   
-  for (i=0; i<FFT_HALF(width)*height; i++)
-      {
-        src_buf[i][0] = exp(src_buf[i][0]);
-        src_buf[i][1] = exp(src_buf[i][1]);
-      }
   idft(src_buf, dst_buf, width, height);
+  for (i=0; i<width*height; i++)
+    {
+      dst_buf[i] = exp(dst_buf[i]);
+    }
   return TRUE;
 }
