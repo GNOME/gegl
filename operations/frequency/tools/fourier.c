@@ -23,10 +23,13 @@
 #endif
 
 #include "gegl.h"
+#include <math.h>
 #include <fftw3.h>
 
 gboolean dft(gdouble *src_buf, fftw_complex *dst_buf_pointer, gint width, gint height);
 gboolean idft(fftw_complex *src_buf, gdouble *dst_buf, gint width, gint height);
+gboolean homo_dft(gdouble *src_buf, fftw_complex *dst_buf_pointer, gint width, gint height);
+gboolean homo_idft(fftw_complex *src_buf, gdouble *dst_buf, gint width, gint height);
 gboolean encode(gdouble *, gint);
 gint decode(gdouble *);
 
@@ -109,3 +112,29 @@ gint decode(gdouble *pixelhandle)
     }
 }
 
+gboolean
+homo_dft(gdouble *src_buf, fftw_complex *dst_buf, gint width, gint height)
+{
+  glong i;
+  
+  for (i=0; i<FFT_HALF(width)*height; i++)
+    {
+      src_buf[i] = log(src_buf[i]);
+    }
+  dft(src_buf, dst_buf, width, height);
+  return TRUE;
+}
+
+gboolean 
+homo_idft(fftw_complex *src_buf, gdouble *dst_buf, gint width, gint height)
+{
+  glong i;
+  
+  for (i=0; i<FFT_HALF(width)*height; i++)
+      {
+        src_buf[i][0] = exp(src_buf[i][0]);
+        src_buf[i][1] = exp(src_buf[i][1]);
+      }
+  idft(src_buf, dst_buf, width, height);
+  return TRUE;
+}
