@@ -1,3 +1,7 @@
+2008-07-09  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	* operations/frequency/freq-general-filter.c: use default get_bounding_		box, get_required_for_output, and get_cached_region.
+
 2008-07-07  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* operations/frequency/tools/fourier.c: (homo_dft), (homo_idft)

@@ -33,27 +33,6 @@ gegl_chant_int(flag, "Flag", 0, 15, 14,
 #include "tools/component.c"
 #include "tools/filters.c"
 
-static GeglRectangle
-get_bounding_box (GeglOperation *operation)
-{
-  return *gegl_operation_source_get_bounding_box (operation, "input");
-}
-
-static GeglRectangle
-get_required_for_output(GeglOperation *operation,
-                        const gchar *input_pad,
-                        const GeglRectangle *roi)
-{
-  return *gegl_operation_source_get_bounding_box(operation, "input");
-}
-
-static GeglRectangle
-get_cached_region(GeglOperation *operation,
-                  const GeglRectangle *roi)
-{
-  return get_bounding_box(operation);
-}
-
 static void
 prepare(GeglOperation *operation)
 {
@@ -118,9 +97,6 @@ gegl_chant_class_init(GeglChantClass *klass)
 
   filter_class->process = process;
   operation_class->prepare = prepare;
-  operation_class->get_bounding_box = get_bounding_box;
-  operation_class->get_required_for_output= get_required_for_output;
-  operation_class->get_cached_region = get_cached_region;
 
   operation_class->name = "freq-general-filter";
   operation_class->categories = "frequency";
