@@ -62,7 +62,7 @@ process(GeglOperation *operation,
   
   Hr_buf = (gdouble, FFT_HALF(width)*height);
   Hi_buf = (gdouble, FFT_HALF(width)*height);
-  getH_lowpass_gaussian(Hr, Hi, cutoff);  
+  getH_lowpass_gaussian(Hr, Hi, width, height, cutoff);  
   
   src_buf = g_new0(gdouble, 8*width*height);
   dst_buf = g_new0(gdouble, 8*width*height);    
