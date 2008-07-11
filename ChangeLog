@@ -1,5 +1,10 @@
 2008-07-12  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	* operations/frequency/lowpass-gaussian.c: new.
+	* operations/frequency/tools/filters.c: added getH_lowpass_gaussian.
+
+2008-07-12  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/tools/fourier.c: do not use encode/decode.
 
 2008-07-09  Zhang Junbo  <zhangjb@svn.gnome.org>

@@ -23,6 +23,7 @@
 #endif
 
 gboolean freq_multiply(gdouble *, gdouble *, gdouble *, gdouble *, gint, gint);
+gboolean getH_lowpass_gaussian(gdouble *, gdouble *, gint);
 
 gboolean
 freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
