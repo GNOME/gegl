@@ -93,13 +93,15 @@ getH_lowpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
                       gint cutoff)
 {
   gint x, y;
+  gint x0, y0, xd:
+  
   for (x=0; x<FFT_HALF(width); x++)
     {
       for (y=0; y<height; y++)
         {
           Hi[ELEM_ID_HALF_MATRIX(x, y, width)] = 0;
           Hr[ELEM_ID_HALF_MATRIX(x, y, width)]
-            = exp(0 - (x*x+y*y)/2/(cutoff*cutoff));
+            = exp(0 - ((x)*(x)+(y-height/2)*(y-height/2)/2/(cutoff*cutoff));
         }
     }
   retrun TRUE;

@@ -1,5 +1,9 @@
 2008-07-12  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	* operations/frequency/tools/filters.c: modified getH_lowpass_gaussian.
+
+2008-07-12  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/lowpass-gaussian.c:
 	* operations/frequency/tools/filters.c: modified getH_lowpass_gaussian.
 
