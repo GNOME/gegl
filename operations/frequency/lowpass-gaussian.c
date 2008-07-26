@@ -106,7 +106,7 @@ gegl_chant_class_init(GeglChantClass *klass)
 
   operation_class->name = "lowpass-gaussian";
   operation_class->categories = "frequency";
-  operation_class->description = "Lowpass Gaussian filter.";
+  operation_class->description = "Lowpass Gaussian Filter.";
 }
 
 #endif
