@@ -1,3 +1,7 @@
+2008-07-29  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	* operations/frequency/freq-general-filter.c (process): fixed a bug of freq_multiy()
+
 2008-07-27  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* operations/frequency/freq-general-filter.c (process): fixed a memory mistake
