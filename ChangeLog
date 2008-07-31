@@ -1,3 +1,13 @@
+2008-07-31  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	* operations/frequency/dft.c (process): fixed a bug of data format 
+	* operations/frequency/freq-general-filter.c (process):fixed a bug of memory allocation
+	* operations/frequency/idft.c (process): fixed a bug of data format
+	* operations/frequency/tools/component.c (set_complex_component),
+	(get_complex_component): add two functions to set/get frequency double component
+	* operations/frequency/tools/filters.c (freq_multiply),
+	(getH_lowpass_gaussian):small modification
+
 2008-07-29  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* operations/frequency/freq-general-filter.c (process): fixed a bug of freq_multiy()
