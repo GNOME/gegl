@@ -1,3 +1,14 @@
+2008-08-01  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	* operations/frequency/dft.c (process):
+	* operations/frequency/freq-general-filter.c (process):
+	* operations/frequency/idft.c (process):
+	* operations/frequency/tools/component.c (set_complex_component),
+	(get_complex_component):
+	* operations/frequency/tools/filters.c (freq_multiply),
+	(getH_lowpass_gaussian):removed some unused code
+	* operations/frequency/tools/fourier.c (dft):
+
 2008-07-31  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* operations/frequency/dft.c (process): fixed a bug of data format 
