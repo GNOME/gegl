@@ -62,7 +62,7 @@ process(GeglOperation *operation,
   src_buf = g_new0(gdouble, 8*width*height);
   dst_buf = g_new0(gdouble, 8*width*height);    
   comp_real = g_new0(gdouble, FFT_HALF(width)*height);
-  comp_imag = g_new0(gdouble, FFT_HALF(width)*height);  
+  comp_imag = g_new0(gdouble,FFT_HALF(width)*height);  
   gegl_buffer_get(input, 1.0, NULL, babl_format ("frequency double"), src_buf,
                   GEGL_AUTO_ROWSTRIDE);  
   for (i=0; i<4; i++)

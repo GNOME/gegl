@@ -1524,7 +1524,9 @@ gegl_node_process (GeglNode *self)
 
   processor = gegl_node_new_processor (self, NULL);
 
-  while (gegl_processor_work (processor, NULL)) ;
+  while (gegl_processor_work (processor, NULL))
+    
+;
   gegl_processor_destroy (processor);
 }
 

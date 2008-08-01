@@ -81,7 +81,7 @@ process(GeglOperation *operation,
                   (gdouble *)src_buf, GEGL_AUTO_ROWSTRIDE);
   for (i=0; i<4; i++)
     {
-      get_rgba_component(src_buf, tmp_src_buf, i, 2*height*FFT_HALF(width));
+      get_complex_component(src_buf, tmp_src_buf, i, height*FFT_HALF(width));
       idft((fftw_complex *)tmp_src_buf, tmp_dst_buf, width, height);
       set_rgba_component(tmp_dst_buf, dst_buf, i, width*height);
     }

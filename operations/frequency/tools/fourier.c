@@ -33,9 +33,11 @@ gboolean homo_idft(fftw_complex *src_buf, gdouble *dst_buf, gint width, gint hei
 gboolean encode(gdouble *, gint);
 gint decode(gdouble *);
 
+
 gboolean
 dft(gdouble *src_buf, fftw_complex *dst_buf, gint width, gint height)
 {
+
   fftw_plan fftplan;
 
   fftplan = fftw_plan_dft_r2c_2d(height,

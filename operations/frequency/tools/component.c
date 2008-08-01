@@ -16,6 +16,9 @@
  * Copyright 2008 Zhang Junbo  <zhangjb@svn.gnome.org>
  */
 
+#ifndef COMPONENT_H
+#define COMPONENT_H
+
 #ifndef FFT_HALF
 #define FFT_HALF(n) (gint)((n)/2+1)
 #define ELEM_ID_MATRIX(x, y, c) ((y)*(c)+(x)) 
@@ -26,6 +29,9 @@ gboolean get_rgba_component(gdouble *, gdouble *, gint, glong);
 gboolean set_rgba_component(gdouble *, gdouble *, gint, glong);
 gboolean get_freq_component(gdouble *, gdouble *, gint, glong);
 gboolean set_freq_component(gdouble *, gdouble *, gint, glong);
+gboolean get_complex_component(gdouble *, gdouble *, gint, glong);
+gboolean set_complex_component(gdouble *, gdouble *, gint, glong);
+
 
 gboolean
 get_rgba_component(gdouble* src_buf, gdouble *comp_buf, gint place,
@@ -39,7 +45,7 @@ get_rgba_component(gdouble* src_buf, gdouble *comp_buf, gint place,
     }
   return TRUE;
 }
-  
+
 gboolean
 set_rgba_component(gdouble* comp_buf, gdouble* dst_buf, gint place, glong samples)
 {
@@ -64,7 +70,7 @@ get_freq_component(gdouble* src_buf, gdouble *comp_buf, gint place,
     }
   return TRUE;
 }
-  
+
 gboolean
 set_freq_component(gdouble* comp_buf, gdouble* dst_buf, gint place,
                    glong samples)
@@ -77,3 +83,37 @@ set_freq_component(gdouble* comp_buf, gdouble* dst_buf, gint place,
     }
   return TRUE;
 }
+
+gboolean
+set_complex_component(gdouble* comp_buf, gdouble* dst_buf, gint place,
+                      glong samples)
+{
+  dst_buf+=place;
+  while(samples--)
+    {
+      dst_buf[0]=comp_buf[0];
+      dst_buf[4]=comp_buf[1];
+      comp_buf+=2;
+      dst_buf+=8;
+    }
+
+  return TRUE;
+}
+
+gboolean
+get_complex_component(gdouble* src_buf, gdouble* comp_buf, gint place,
+                      glong samples)
+{
+  src_buf+=place;
+  while(samples--)
+    {
+      comp_buf[0]=src_buf[0];
+      comp_buf[1]=src_buf[4];
+      comp_buf+=2;
+      src_buf+=8;
+    }
+
+  return TRUE;
+}
+
+#endif

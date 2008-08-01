@@ -15,7 +15,7 @@
  *
  * Copyright 2008 Zhang Junbo  <zhangjb@svn.gnome.org>
  */
-
+/*
 #ifdef GEGL_CHANT_PROPERTIES
 
 gegl_chant_int(cutoff, "Cutoff", 0, G_MAXINT, 0, "The cut off frequncy.")
@@ -51,8 +51,8 @@ process(GeglOperation *operation,
   GeglChantO *o = GEGL_CHANT_PROPERTIES (operation);
   gdouble *src_buf;
   gdouble *dst_buf;
-  gdouble *comp_real;The most general filer in frequency domain. What it does is just "
-  "multiplying a matrix on the freqeuncy image.";
+  gdouble *comp_real;//The most general filer in frequency domain. What it does is just "
+  //"multiplying a matrix on the freqeuncy image.";
   gdouble *comp_imag;
   gdouble *Hr_buf;
   gdouble *Hi_buf;
@@ -110,3 +110,4 @@ gegl_chant_class_init(GeglChantClass *klass)
 }
 
 #endif
+*/
