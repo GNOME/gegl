@@ -1,5 +1,9 @@
 2008-08-01  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	* operations/frequency/lowpass-gaussian.c: unfinished. commented all the code.
+
+2008-08-01  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/dft.c (process):
 	* operations/frequency/freq-general-filter.c (process):
 	* operations/frequency/idft.c (process):
