@@ -31,24 +31,17 @@ freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
               gdouble *Hi, gint width, gint height)
 {
   gint x, y;
-  gint yc = 0;
   gdouble Yr,Yi;
+  gint index;
   
   for(y=0;y<height;y++)
     for(x=0;x<(width/2+1);x++)
       {
-        Yr=
-          Xr[ELEM_ID_HALF_MATRIX(x, y, width)] *
-          Hr[ELEM_ID_HALF_MATRIX(x, y, width)] -
-          Xi[ELEM_ID_HALF_MATRIX(x, y, width)] *
-          Hi[ELEM_ID_HALF_MATRIX(x, y, width)];
-        Yi=
-          Xi[ELEM_ID_HALF_MATRIX(x, y, width)] *
-          Hr[ELEM_ID_HALF_MATRIX(x, y, width)] +
-          Xr[ELEM_ID_HALF_MATRIX(x, y, width)] *
-          Hi[ELEM_ID_HALF_MATRIX(x, y, width)];
-        Xr[ELEM_ID_HALF_MATRIX(x, y, width)] = Yr;
-        Xi[ELEM_ID_HALF_MATRIX(x, y, width)] = Yi;
+        index = ELEM_ID_HALF_MATRIX(x, y, width);
+        Yr= Xr[index]*Hr[index] - Xi[index]*Hi[index];
+        Yi= Xi[index]*Hr[index] + Xr[index]*Hi[index];
+        Xr[index] = Yr;
+        Xi[index] = Yi;
       }
   return TRUE;
 }
@@ -58,16 +51,29 @@ getH_lowpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
                       gint cutoff)
 {
   gint x, y;
-  gint x0, y0, xd;
-  
-  for (x=0; x<FFT_HALF(width); x++)
-    {
-      for (y=0; y<height; y++)
+  gint max_x = FFT_HALF(width);
+  gint index;
+
+      for (y=0; y<height/2; y++){
+        for (x=0; x<max_x; x++)
+          {
+            index = ELEM_ID_HALF_MATRIX(x, y, width);
+            Hi[index] = 0;
+            Hr[index] = exp( -((double)(x+1)*(x+1)+(y+1)*(y+1))/(2*cutoff*cutoff) );
+          }
+      }
+
+      for(y=height/2; y<height; y++)
         {
-          Hi[ELEM_ID_HALF_MATRIX(x, y, width)] = 0;
-          Hr[ELEM_ID_HALF_MATRIX(x, y, width)]
-            = exp(0 - ((x)*(x)+(y-height/2)*(y-height/2)/2*(cutoff*cutoff)));
+          for (x=0; x<max_x; x++)
+            {
+              index = ELEM_ID_HALF_MATRIX(x, y, width);
+              Hi[index] = 0;
+              Hr[index] = 
+                exp(-((double)(x+1)*(x+1)+(y-height+1)*(y-height+1))/(2*cutoff*cutoff) );
+            }
         }
-    }
+
   return TRUE;
 }
+

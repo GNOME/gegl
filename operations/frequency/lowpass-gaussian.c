@@ -15,7 +15,7 @@
  *
  * Copyright 2008 Zhang Junbo  <zhangjb@svn.gnome.org>
  */
-/*
+
 #ifdef GEGL_CHANT_PROPERTIES
 
 gegl_chant_int(cutoff, "Cutoff", 0, G_MAXINT, 0, "The cut off frequncy.")
@@ -51,26 +51,24 @@ process(GeglOperation *operation,
   GeglChantO *o = GEGL_CHANT_PROPERTIES (operation);
   gdouble *src_buf;
   gdouble *dst_buf;
-  gdouble *comp_real;//The most general filer in frequency domain. What it does is just "
-  //"multiplying a matrix on the freqeuncy image.";
+  gdouble *comp_real;
   gdouble *comp_imag;
-  gdouble *Hr_buf;
-  gdouble *Hi_buf;
+  gdouble *Hr;
+  gdouble *Hi;
   gint flag = o->flag;
   gint cutoff = o->cutoff;
   gint i;
   
-  Hr_buf = (gdouble, FFT_HALF(width)*height);
-  Hi_buf = (gdouble, FFT_HALF(width)*height);
+  Hr = g_new0(gdouble, FFT_HALF(width)*height);
+  Hi = g_new0(gdouble, FFT_HALF(width)*height);
   getH_lowpass_gaussian(Hr, Hi, width, height, cutoff);  
   
   src_buf = g_new0(gdouble, 8*width*height);
   dst_buf = g_new0(gdouble, 8*width*height);    
   comp_real = g_new0(gdouble, FFT_HALF(width)*height);
-  comp_imag = g_new0(gdouble, FFT_HALF(width)*height);  
+  comp_imag = g_new0(gdouble,FFT_HALF(width)*height);  
   gegl_buffer_get(input, 1.0, NULL, babl_format ("frequency double"), src_buf,
-                  GEGL_AUTO_ROWSTRIDE); 
-     
+                  GEGL_AUTO_ROWSTRIDE);  
   for (i=0; i<4; i++)
     {
       get_freq_component(src_buf, comp_real, i, FFT_HALF(width)*height);
@@ -78,7 +76,7 @@ process(GeglOperation *operation,
 
       if ((8>>i)&flag)
         {
-          freq_multiply(comp_real, comp_imag, Hr_buf, Hi_buf, width, height);
+          freq_multiply(comp_real, comp_imag, Hr, Hi, width, height);
         }
 
       set_freq_component(comp_real, dst_buf, i, FFT_HALF(width)*height);
@@ -110,4 +108,3 @@ gegl_chant_class_init(GeglChantClass *klass)
 }
 
 #endif
-*/
