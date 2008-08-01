@@ -1,4 +1,9 @@
 2008-08-01  Zhang Junbo  <zhangjb@svn.gnome.org>
+	  Complete the gaussian lowpass filter
+	* operations/frequency/lowpass-gaussian.c: finished this operation
+	* operations/frequency/tools/filters.c: effience optimized
+
+2008-08-01  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* operations/frequency/lowpass-gaussian.c: unfinished. commented all the code.
 
