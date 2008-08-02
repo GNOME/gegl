@@ -1,6 +1,17 @@
+2008-08-02  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	add an example of GLPF 
+
+	* examples/glpf_save.c: an example of GLPF save file
+	* examples/glpf_show.c: an example of GLPF preview
+	* operations/frequency/homo-dft.c:  fixed a bug of set output buffer
+	* operations/frequency/homo-idft.c: fixed a bug of get input buffer
+	* operations/frequency/tools/filters.c: a small optimization
+
 2008-08-01  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	  Complete the gaussian lowpass filter
+
 	* operations/frequency/lowpass-gaussian.c: finished this operation
 	* operations/frequency/tools/filters.c: effience optimized
 
@@ -14,13 +25,13 @@
 	* operations/frequency/freq-general-filter.c:
 	* operations/frequency/idft.c:
 	* operations/frequency/tools/component.c:
-	* operations/frequency/tools/filters.c:removed some unused code
+	* operations/frequency/tools/filters.c: removed some unused code
 	* operations/frequency/tools/fourier.c:
 
 2008-07-31  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* operations/frequency/dft.c: fixed a bug of data format 
-	* operations/frequency/freq-general-filter.c:fixed a bug of memory allocation
+	* operations/frequency/freq-general-filter.c: fixed a bug of memory allocation
 	* operations/frequency/idft.c: fixed a bug of data format
 	* operations/frequency/tools/component.c: add two functions to set/get frequency double component
 	* operations/frequency/tools/filters.c: small modification
