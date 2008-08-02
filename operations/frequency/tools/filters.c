@@ -33,8 +33,8 @@ freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
   gint x, y;
   gdouble Yr,Yi;
   gint index;
-  gint max_x = FFT_HALF(x);
-  
+  gint max_x = FFT_HALF(width);
+
   for(y=0;y<height;y++)
     for(x=0;x<max_x;x++)
       {
@@ -44,7 +44,7 @@ freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
         Xr[index] = Yr;
         Xi[index] = Yi;
       }
-  return TRUE;
+    return TRUE;
 }
 
 gboolean
