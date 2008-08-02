@@ -60,7 +60,7 @@ getH_lowpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
           {
             index = ELEM_ID_HALF_MATRIX(x, y, width);
             Hi[index] = 0;
-            Hr[index] = exp( -((double)(x+1)*(x+1)+(y+1)*(y+1))/(2*cutoff*cutoff) );
+            Hr[index] = exp( -((gdouble)(x+1)*(x+1)+(y+1)*(y+1))/(2*cutoff*cutoff) );
           }
       }
 
@@ -71,7 +71,7 @@ getH_lowpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
               index = ELEM_ID_HALF_MATRIX(x, y, width);
               Hi[index] = 0;
               Hr[index] = 
-                exp(-((double)(x+1)*(x+1)+(y-height+1)*(y-height+1))/(2*cutoff*cutoff) );
+                exp(-((gdouble)(x+1)*(x+1)+(y-height+1)*(y-height+1))/(2*cutoff*cutoff) );
             }
         }
 
