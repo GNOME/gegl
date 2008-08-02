@@ -1,4 +1,5 @@
 2008-08-01  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	  Complete the gaussian lowpass filter
 	* operations/frequency/lowpass-gaussian.c: finished this operation
 	* operations/frequency/tools/filters.c: effience optimized
@@ -9,33 +10,28 @@
 
 2008-08-01  Zhang Junbo  <zhangjb@svn.gnome.org>
 
-	* operations/frequency/dft.c (process):
-	* operations/frequency/freq-general-filter.c (process):
-	* operations/frequency/idft.c (process):
-	* operations/frequency/tools/component.c (set_complex_component),
-	(get_complex_component):
-	* operations/frequency/tools/filters.c (freq_multiply),
-	(getH_lowpass_gaussian):removed some unused code
-	* operations/frequency/tools/fourier.c (dft):
+	* operations/frequency/dft.c:
+	* operations/frequency/freq-general-filter.c:
+	* operations/frequency/idft.c:
+	* operations/frequency/tools/component.c:
+	* operations/frequency/tools/filters.c:removed some unused code
+	* operations/frequency/tools/fourier.c:
 
 2008-07-31  Zhang Junbo  <zhangjb@svn.gnome.org>
 
-	* operations/frequency/dft.c (process): fixed a bug of data format 
-	* operations/frequency/freq-general-filter.c (process):fixed a bug of memory allocation
-	* operations/frequency/idft.c (process): fixed a bug of data format
-	* operations/frequency/tools/component.c (set_complex_component),
-	(get_complex_component): add two functions to set/get frequency double component
-	* operations/frequency/tools/filters.c (freq_multiply),
-	(getH_lowpass_gaussian):small modification
+	* operations/frequency/dft.c: fixed a bug of data format 
+	* operations/frequency/freq-general-filter.c:fixed a bug of memory allocation
+	* operations/frequency/idft.c: fixed a bug of data format
+	* operations/frequency/tools/component.c: add two functions to set/get frequency double component
+	* operations/frequency/tools/filters.c: small modification
 
 2008-07-29  Zhang Junbo  <zhangjb@svn.gnome.org>
 
-	* operations/frequency/freq-general-filter.c (process): fixed a bug of freq_multiy()
+	* operations/frequency/freq-general-filter.c: fixed a bug of freq_multiy()
 
 2008-07-27  Zhang Junbo  <zhangjb@svn.gnome.org>
 
-	* operations/frequency/freq-general-filter.c (process): fixed a memory mistake
-
+	* operations/frequency/freq-general-filter.c: fixed a memory mistake
 
 2008-07-26  Zhang Junbo  <zhangjb@svn.gnome.org>
 
