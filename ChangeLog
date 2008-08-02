@@ -1,5 +1,9 @@
 2008-08-02  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	* operations/frequency/tools/filters.c: fixed a bug of freq_multiply
+
+2008-08-02  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	add an example of GLPF 
 
 	* examples/glpf_save.c: an example of GLPF save file
