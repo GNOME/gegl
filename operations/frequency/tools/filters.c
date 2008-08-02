@@ -33,9 +33,10 @@ freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
   gint x, y;
   gdouble Yr,Yi;
   gint index;
+  gint max_x = FFT_HALF(x);
   
   for(y=0;y<height;y++)
-    for(x=0;x<(width/2+1);x++)
+    for(x=0;x<max_x;x++)
       {
         index = ELEM_ID_HALF_MATRIX(x, y, width);
         Yr= Xr[index]*Hr[index] - Xi[index]*Hi[index];
