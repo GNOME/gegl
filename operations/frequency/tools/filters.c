@@ -32,17 +32,34 @@ freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
 {
   gint x, y;
   gdouble Yr,Yi;
-  gint index;
+  gint index,h_index;
   gint max_x = FFT_HALF(width);
 
-  for(y=0;y<height;y++)
+#include <stdio.h>
+
     for(x=0;x<max_x;x++)
       {
-        index = ELEM_ID_HALF_MATRIX(x, y, width);
-        Yr= Xr[index]*Hr[index] - Xi[index]*Hi[index];
-        Yi= Xi[index]*Hr[index] + Xr[index]*Hi[index];
-        Xr[index] = Yr;
-        Xi[index] = Yi;
+        for(y=0;y<height/2;y++)
+          {
+            index = y*max_x+x;
+            h_index = (height/2-y-1)*max_x+width/2-x-1;
+
+            Yr= Xr[index]*Hr[h_index] - Xi[index]*Hi[h_index];
+            Yi= Xi[index]*Hr[h_index] + Xr[index]*Hi[h_index];
+            Xr[index] = Yr;
+            Xi[index] = Yi;
+          }
+
+        for(y=height/2;y<height;y++)
+          {
+            index = (y*max_x)+x;
+            h_index = (3*height/2-y-1)*max_x+width/2-x-1;
+
+            Yr= Xr[index]*Hr[h_index] - Xi[index]*Hi[h_index];
+            Yi= Xi[index]*Hr[h_index] + Xr[index]*Hi[h_index];
+            Xr[index] = Yr;
+            Xi[index] = Yi;
+          }
       }
     return TRUE;
 }
@@ -55,25 +72,15 @@ getH_lowpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
   gint max_x = FFT_HALF(width);
   gint index;
 
-      for (y=0; y<height/2; y++){
-        for (x=0; x<max_x; x++)
-          {
-            index = ELEM_ID_HALF_MATRIX(x, y, width);
-            Hi[index] = 0;
-            Hr[index] = exp( -((gdouble)(x+1)*(x+1)+(y+1)*(y+1))/(2*cutoff*cutoff) );
-          }
+  for (y=0; y<height; y++){
+    for (x=0; x<max_x; x++)
+      {
+        index = ELEM_ID_HALF_MATRIX(x, y, width);
+        Hi[index] = 0;
+        Hr[index] = exp( -((gdouble)(x+1-width/2)*(x+1-width/2)
+                           +(y+1-height/2)*(y+1-height/2))/(2*cutoff*cutoff) );
       }
-
-      for(y=height/2; y<height; y++)
-        {
-          for (x=0; x<max_x; x++)
-            {
-              index = ELEM_ID_HALF_MATRIX(x, y, width);
-              Hi[index] = 0;
-              Hr[index] = 
-                exp(-((gdouble)(x+1)*(x+1)+(y-height+1)*(y-height+1))/(2*cutoff*cutoff) );
-            }
-        }
+  }
 
   return TRUE;
 }

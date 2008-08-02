@@ -1,5 +1,9 @@
 2008-08-02  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	* operations/frequency/tools/filters.c (freq_multiply): modified the freq_multiply algorithm
+
+2008-08-02  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	* operations/frequency/tools/filters.c: fixed a bug of freq_multiply
 
 2008-08-02  Zhang Junbo  <zhangjb@svn.gnome.org>
