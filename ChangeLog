@@ -1,5 +1,11 @@
 2008-08-03  Zhang Junbo  <zhangjb@svn.gnome.org>
 
+	add the document "frequency-domain-process-manual"
+
+	* docs/frequency-domain-process-manual.txt: add a document.
+
+2008-08-03  Zhang Junbo  <zhangjb@svn.gnome.org>
+
 	implemented gaussian band pass filter
 
 	* operations/frequency/bandpass-gaussian.c: implemented gaussian band pass filter
