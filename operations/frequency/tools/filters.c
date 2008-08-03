@@ -35,33 +35,31 @@ freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
   gint index,h_index;
   gint max_x = FFT_HALF(width);
 
-#include <stdio.h>
+  for(x=0;x<max_x;x++)
+    {
+      for(y=0;y<height/2;y++)
+        {
+          index = y*max_x+x;
+          h_index = (height/2-y-1)*max_x+width/2-x-1;
 
-    for(x=0;x<max_x;x++)
-      {
-        for(y=0;y<height/2;y++)
-          {
-            index = y*max_x+x;
-            h_index = (height/2-y-1)*max_x+width/2-x-1;
-
-            Yr= Xr[index]*Hr[h_index] - Xi[index]*Hi[h_index];
-            Yi= Xi[index]*Hr[h_index] + Xr[index]*Hi[h_index];
-            Xr[index] = Yr;
-            Xi[index] = Yi;
-          }
-
-        for(y=height/2;y<height;y++)
-          {
-            index = (y*max_x)+x;
-            h_index = (3*height/2-y-1)*max_x+width/2-x-1;
-
-            Yr= Xr[index]*Hr[h_index] - Xi[index]*Hi[h_index];
-            Yi= Xi[index]*Hr[h_index] + Xr[index]*Hi[h_index];
-            Xr[index] = Yr;
-            Xi[index] = Yi;
-          }
-      }
-    return TRUE;
+          Yr= Xr[index]*Hr[h_index] - Xi[index]*Hi[h_index];
+          Yi= Xi[index]*Hr[h_index] + Xr[index]*Hi[h_index];
+          Xr[index] = Yr;
+          Xi[index] = Yi;
+        }
+      
+      for(y=height/2;y<height;y++)
+        {
+          index = (y*max_x)+x;
+          h_index = (3*height/2-y-1)*max_x+width/2-x-1;
+          
+          Yr= Xr[index]*Hr[h_index] - Xi[index]*Hi[h_index];
+          Yi= Xi[index]*Hr[h_index] + Xr[index]*Hi[h_index];
+          Xr[index] = Yr;
+          Xi[index] = Yi;
+        }
+    }
+  return TRUE;
 }
 
 gboolean
@@ -77,8 +75,8 @@ getH_lowpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
       {
         index = ELEM_ID_HALF_MATRIX(x, y, width);
         Hi[index] = 0;
-        Hr[index] = exp( -((gdouble)(x+1-width/2)*(x+1-width/2)
-                           +(y+1-height/2)*(y+1-height/2))/(2*cutoff*cutoff) );
+        Hr[index] =  exp( -((gdouble)(x+1-width/2)*(x+1-width/2)
+                                   +(y+1-height/2)*(y+1-height/2))/(2*cutoff*cutoff) );
       }
   }
 
