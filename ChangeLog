@@ -1,3 +1,10 @@
+2008-08-03  yuziyu  <yuziyu@ubuntu-yzy>
+
+	implemented gaussian high pass filter.
+
+	* operations/frequency/highpass-gaussian.c: implemented gaussain high pass filter
+	* operations/frequency/tools/filters.c: add gaussain high pass filter function
+
 2008-08-02  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* operations/frequency/tools/filters.c (freq_multiply): modified the freq_multiply algorithm
