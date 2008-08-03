@@ -26,6 +26,7 @@
 gboolean freq_multiply(gdouble *, gdouble *, gdouble *, gdouble *, gint, gint);
 gboolean getH_lowpass_gaussian(gdouble *, gdouble *, gint, gint, gint);
 gboolean getH_highpass_gaussian(gdouble *, gdouble *, gint, gint, gint);
+gboolean getH_bandpass_gaussian(gdouble *, gdouble *, gint, gint, gint, gdouble);
 
 gboolean
 freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
@@ -105,3 +106,24 @@ getH_highpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
   return TRUE;
 }
 
+gboolean
+getH_bandpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
+                       gint cutoff, gdouble bandwidth )
+{
+  gint x, y;
+  gint max_x = FFT_HALF(width);
+  gint index;
+  gdouble dist;
+
+  for (y=0; y<height; y++){
+    for (x=0; x<max_x; x++)
+      {
+        index = ELEM_ID_HALF_MATRIX(x, y, width);
+        dist = sqrt((x+1-width/2)*(x+1-width/2)+(y+1-height/2)*(y+1-height/2));
+        Hi[index] = 0;
+        Hr[index] = exp(-pow((dist*dist-cutoff*cutoff)/dist/bandwidth,2)/2);
+      }
+  }
+
+  return TRUE;
+}

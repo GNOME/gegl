@@ -1,4 +1,11 @@
-2008-08-03  yuziyu  <yuziyu@ubuntu-yzy>
+2008-08-03  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	implemented gaussian band pass filter
+
+	* operations/frequency/bandpass-gaussian.c: implemented gaussian band pass filter
+	* operations/frequency/tools/filters.c: add gaussian band pass filter function
+
+2008-08-03  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	implemented gaussian high pass filter.
 
