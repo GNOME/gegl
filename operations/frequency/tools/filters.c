@@ -25,6 +25,7 @@
 
 gboolean freq_multiply(gdouble *, gdouble *, gdouble *, gdouble *, gint, gint);
 gboolean getH_lowpass_gaussian(gdouble *, gdouble *, gint, gint, gint);
+gboolean getH_highpass_gaussian(gdouble *, gdouble *, gint, gint, gint);
 
 gboolean
 freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
@@ -47,12 +48,12 @@ freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
           Xr[index] = Yr;
           Xi[index] = Yi;
         }
-      
+
       for(y=height/2;y<height;y++)
         {
           index = (y*max_x)+x;
           h_index = (3*height/2-y-1)*max_x+width/2-x-1;
-          
+
           Yr= Xr[index]*Hr[h_index] - Xi[index]*Hi[h_index];
           Yi= Xi[index]*Hr[h_index] + Xr[index]*Hi[h_index];
           Xr[index] = Yr;
@@ -76,6 +77,27 @@ getH_lowpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
         index = ELEM_ID_HALF_MATRIX(x, y, width);
         Hi[index] = 0;
         Hr[index] =  exp( -((gdouble)(x+1-width/2)*(x+1-width/2)
+                                   +(y+1-height/2)*(y+1-height/2))/(2*cutoff*cutoff) );
+      }
+  }
+
+  return TRUE;
+}
+
+gboolean
+getH_highpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
+                      gint cutoff)
+{
+  gint x, y;
+  gint max_x = FFT_HALF(width);
+  gint index;
+
+  for (y=0; y<height; y++){
+    for (x=0; x<max_x; x++)
+      {
+        index = ELEM_ID_HALF_MATRIX(x, y, width);
+        Hi[index] = 0;
+        Hr[index] = 1 - exp( -((gdouble)(x+1-width/2)*(x+1-width/2)
                                    +(y+1-height/2)*(y+1-height/2))/(2*cutoff*cutoff) );
       }
   }
