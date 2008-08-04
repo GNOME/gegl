@@ -1,3 +1,7 @@
+2008-08-04  Zhang Junbo  <zhangjb@svn.gnome.org>
+	
+	* operations/frequency/tools/filters.c: a small optimizatoin
+
 2008-08-03  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	add the document "frequency-domain-process-manual"

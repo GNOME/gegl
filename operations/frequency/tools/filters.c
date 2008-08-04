@@ -71,6 +71,7 @@ getH_lowpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
   gint x, y;
   gint max_x = FFT_HALF(width);
   gint index;
+  gint cutoff_cutoff_double = cutoff*cutoff*2;
 
   for (y=0; y<height; y++){
     for (x=0; x<max_x; x++)
@@ -78,7 +79,7 @@ getH_lowpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
         index = ELEM_ID_HALF_MATRIX(x, y, width);
         Hi[index] = 0;
         Hr[index] =  exp( -((gdouble)(x+1-width/2)*(x+1-width/2)
-                                   +(y+1-height/2)*(y+1-height/2))/(2*cutoff*cutoff) );
+                                   +(y+1-height/2)*(y+1-height/2))/(cutoff_cutoff_double) );
       }
   }
 
@@ -92,6 +93,7 @@ getH_highpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
   gint x, y;
   gint max_x = FFT_HALF(width);
   gint index;
+  gint cutoff_cutoff_double = cutoff*cutoff*2;
 
   for (y=0; y<height; y++){
     for (x=0; x<max_x; x++)
@@ -99,7 +101,7 @@ getH_highpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
         index = ELEM_ID_HALF_MATRIX(x, y, width);
         Hi[index] = 0;
         Hr[index] = 1 - exp( -((gdouble)(x+1-width/2)*(x+1-width/2)
-                                   +(y+1-height/2)*(y+1-height/2))/(2*cutoff*cutoff) );
+                                   +(y+1-height/2)*(y+1-height/2))/cutoff_cutoff_double);
       }
   }
 
@@ -114,6 +116,7 @@ getH_bandpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
   gint max_x = FFT_HALF(width);
   gint index;
   gdouble dist;
+  gint cutoff_cutoff = cutoff*cutoff;
 
   for (y=0; y<height; y++){
     for (x=0; x<max_x; x++)
@@ -121,7 +124,7 @@ getH_bandpass_gaussian(gdouble *Hr, gdouble *Hi, gint width, gint height,
         index = ELEM_ID_HALF_MATRIX(x, y, width);
         dist = sqrt((x+1-width/2)*(x+1-width/2)+(y+1-height/2)*(y+1-height/2));
         Hi[index] = 0;
-        Hr[index] = exp(-pow((dist*dist-cutoff*cutoff)/dist/bandwidth,2)/2);
+        Hr[index] = exp(-pow((dist*dist-cutoff_cutoff)/dist/bandwidth,2)/2);
       }
   }
 
