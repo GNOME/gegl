@@ -1,4 +1,8 @@
 2008-08-04  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	* operations/frequency/tools/filters.c: fixed a out of bound memory bug
+
+2008-08-04  Zhang Junbo  <zhangjb@svn.gnome.org>
 	
 	* operations/frequency/tools/filters.c: a small optimizatoin
 

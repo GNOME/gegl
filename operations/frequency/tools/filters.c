@@ -42,7 +42,7 @@ freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
       for(y=0;y<height/2;y++)
         {
           index = y*max_x+x;
-          h_index = (height/2-y-1)*max_x+width/2-x-1;
+          h_index = (height/2-y-1)*max_x+width/2-x;
 
           Yr= Xr[index]*Hr[h_index] - Xi[index]*Hi[h_index];
           Yi= Xi[index]*Hr[h_index] + Xr[index]*Hi[h_index];
@@ -53,7 +53,7 @@ freq_multiply(gdouble *Xr, gdouble *Xi, gdouble *Hr,
       for(y=height/2;y<height;y++)
         {
           index = (y*max_x)+x;
-          h_index = (3*height/2-y-1)*max_x+width/2-x-1;
+          h_index = (3*height/2-y-1)*max_x+width/2-x;
 
           Yr= Xr[index]*Hr[h_index] - Xi[index]*Hi[h_index];
           Yi= Xi[index]*Hr[h_index] + Xr[index]*Hi[h_index];
