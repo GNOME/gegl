@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gegl>
+<idft/>
+<highpass-gaussian cutoff='40' flag='14'/>
+<dft/>
+<load path='data/lena.png'/>
+</gegl>

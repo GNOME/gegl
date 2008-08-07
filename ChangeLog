@@ -1,3 +1,10 @@
+2008-08-07  Zhang Junbo  <zhangjb@svn.gnome.org>
+	
+	* docs/gallery/lowpass-gaussian.xml: added
+	* docs/gallery/highpass-gaussian.xml: added
+	* docs/gallery/bandpass-gaussian.xml: added 
+	* docs/gallery/data/lena.png: added
+
 2008-08-04  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* operations/frequency/tools/filters.c: fixed a out of bound memory bug

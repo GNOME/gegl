@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gegl>
+<idft/>
+<bandpass-gaussian cutoff='40' bandwidth='300.0' flag='14'/>
+<dft/>
+<load path='data/lena.png'/>
+</gegl>
