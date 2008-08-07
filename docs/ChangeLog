@@ -1,6 +1,4 @@
-2008-08-07  yuziyu  <yuziyu@ubuntu-yzy>
-
-	reviewed by: <delete if not using a buddy>
+2008-08-07  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* gallery/bandpass_gaussian.xml:
 	* gallery/highpass_gaussian.xml:
