@@ -22,13 +22,11 @@ gegl_chant_int(cutoff, "Cutoff", 0, G_MAXINT, 0, "The cut off frequncy.")
 gegl_chant_int(flag, "Flag", 0, 15, 14,
                "Decide which componet need to process. Example: if flag=14, "
                "14==0b1110, so we filter on componets RGB, do not filter on A.")
-gegl_chant_double(bandwidth, "Bandwidth", 0, G_MAXDOUBLE, 1.0,
-                  "The width of band")
 
 #else
 
 #define GEGL_CHANT_TYPE_FILTER
-#define GEGL_CHANT_C_FILE       "bandpass-gaussian.c"
+#define GEGL_CHANT_C_FILE       "gaussian-highpass-filter.c"
 
 #include "gegl-chant.h"
 #include "tools/component.c"
@@ -59,12 +57,11 @@ process(GeglOperation *operation,
   gdouble *Hi;
   gint flag = o->flag;
   gint cutoff = o->cutoff;
-  gdouble bandwidth = o->bandwidth;
   gint i;
   
   Hr = g_new0(gdouble, FFT_HALF(width)*height);
   Hi = g_new0(gdouble, FFT_HALF(width)*height);
-  getH_bandpass_gaussian(Hr, Hi, width, height, cutoff, bandwidth);
+  getH_highpass_gaussian(Hr, Hi, width, height, cutoff);
   
   src_buf = g_new0(gdouble, 8*width*height);
   dst_buf = g_new0(gdouble, 8*width*height);
@@ -105,9 +102,9 @@ gegl_chant_class_init(GeglChantClass *klass)
   filter_class->process = process;
   operation_class->prepare = prepare;
 
-  operation_class->name = "bandpass-gaussian";
+  operation_class->name = "gaussian-highpass-filter";
   operation_class->categories = "frequency";
-  operation_class->description = "Bandpass Gaussian Filter.";
+  operation_class->description = "Highpass Gaussian Filter.";
 }
 
 #endif

@@ -23,7 +23,7 @@
 #else
 
 #define GEGL_CHANT_TYPE_FILTER
-#define GEGL_CHANT_C_FILE       "idft.c"
+#define GEGL_CHANT_C_FILE       "dft-backward.c"
 
 #include "gegl-chant.h"
 #include "tools/fourier.c"
@@ -111,7 +111,7 @@ gegl_chant_class_init(GeglChantClass *klass)
   operation_class->get_required_for_output= get_required_for_output;
   operation_class->get_cached_region = get_cached_region;
 
-  operation_class->name = "idft";
+  operation_class->name = "dft-backward";
   operation_class->categories = "frequency";
   operation_class->description
     = "Perform 2-D inverse Discrete Fourier Transform for the image.\n";

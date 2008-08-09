@@ -26,7 +26,7 @@ gegl_chant_int(flag, "Flag", 0, 15, 14,
 #else
 
 #define GEGL_CHANT_TYPE_FILTER
-#define GEGL_CHANT_C_FILE       "highpass-gaussian.c"
+#define GEGL_CHANT_C_FILE       "gaussian-lowpass-filter.c"
 
 #include "gegl-chant.h"
 #include "tools/component.c"
@@ -61,10 +61,10 @@ process(GeglOperation *operation,
   
   Hr = g_new0(gdouble, FFT_HALF(width)*height);
   Hi = g_new0(gdouble, FFT_HALF(width)*height);
-  getH_highpass_gaussian(Hr, Hi, width, height, cutoff);
+  getH_lowpass_gaussian(Hr, Hi, width, height, cutoff);  
   
   src_buf = g_new0(gdouble, 8*width*height);
-  dst_buf = g_new0(gdouble, 8*width*height);
+  dst_buf = g_new0(gdouble, 8*width*height);    
   comp_real = g_new0(gdouble, FFT_HALF(width)*height);
   comp_imag = g_new0(gdouble,FFT_HALF(width)*height);  
   gegl_buffer_get(input, 1.0, NULL, babl_format ("frequency double"), src_buf,
@@ -102,9 +102,9 @@ gegl_chant_class_init(GeglChantClass *klass)
   filter_class->process = process;
   operation_class->prepare = prepare;
 
-  operation_class->name = "highpass-gaussian";
+  operation_class->name = "gaussian-lowpass-filter";
   operation_class->categories = "frequency";
-  operation_class->description = "Highpass Gaussian Filter.";
+  operation_class->description = "Lowpass Gaussian Filter.";
 }
 
 #endif
