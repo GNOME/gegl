@@ -37,10 +37,11 @@ This is the graph we're going to construct:
                                          "path",
                                          "data/surfer.png",
                                          NULL);
-   GeglNode *dft = gegl_node_new_child(gegl, "operation", "dft", NULL);
-   GeglNode *glpf_filter = gegl_node_new_child(gegl,"operation",
-                                               "lowpass-gaussian","cutoff",18,"flag",15,NULL);
-   GeglNode *idft = gegl_node_new_child(gegl,"operation","idft", NULL);
+   GeglNode *dft = gegl_node_new_child(gegl, "operation", "dft-forward", NULL);
+   GeglNode *glpf_filter = gegl_node_new_child(gegl, "operation",
+                                               "gaussian-lowpass-filter", "cutoff", 18,
+					       "flag", 15, NULL);
+   GeglNode *idft = gegl_node_new_child(gegl, "operation", "dft-backward", NULL);
    
    GeglNode *save = gegl_node_new_child(gegl,
                                         "operation",

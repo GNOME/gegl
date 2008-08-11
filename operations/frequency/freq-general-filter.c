@@ -18,8 +18,8 @@
 
 #ifdef GEGL_CHANT_PROPERTIES
 
-gegl_chant_pointer(realH, "Matrix", "The transfer function matrix(real part).")
-gegl_chant_pointer(imagH, "Matrix", "The transfer function matrix(imag part).")
+gegl_chant_pointer(filter_real, "Matrix", "The transfer function matrix(real part).")
+gegl_chant_pointer(filter_imag, "Matrix", "The transfer function matrix(imag part).")
 gegl_chant_int(flag, "Flag", 0, 15, 14,
                "Decide which componet need to process. Example: if flag=14, "
                "14==0b1110, so we filter on componets RGB, do not filter on A.")
@@ -54,8 +54,8 @@ process(GeglOperation *operation,
   gdouble *dst_buf;
   gdouble *comp_real;
   gdouble *comp_imag;
-  gdouble *Hr_buf = o->realH;
-  gdouble *Hi_buf = o->imagH;
+  gdouble *Hr_buf = o->filter_real;
+  gdouble *Hi_buf = o->filter_imag;
   gint flag = o->flag;
   gint i;
 

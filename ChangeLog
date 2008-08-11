@@ -1,3 +1,9 @@
+2008-08-11  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	* examples/glpf_save.c: modified some operation name accordingly
+	* examples/glpf_show.c: remove this file because it is not needed any more.
+	* operations/frequency/freq-general-filter.c: modified some operation name accordingly
+
 2008-08-09  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* operations/frequency/bandpass-gaussian.c:

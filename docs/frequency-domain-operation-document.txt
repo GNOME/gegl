@@ -1,12 +1,13 @@
 1. Write your first program using frequency-domain operations
 
-The "dft" operation transforms the time-domain image  into frenquency-domain, 
-and the "idft" do the reverse process. One image which is processed by "dft" 
-operation and then processed by "idft" operation will back to  the same one 
-as original without any lost. In the following example, first two GeglNode 
-objects are generated, which are "dft" opeation and "idft" operation 
-respectively. Then, link them and process. After this process, the original 
-image goes through "dft" to "idft" and then back to the original one.
+The "dft-forward" operation transforms the time-domain image into frenquency-domain, 
+and the "dft-backward" do the reverse process. The "dft" here is short for discrete fourier
+transfrom. One image which is processed by "dft-forward" operation and then processed by 
+"dft-backward" operation will back to the same one as original without any lost. 
+In the following example, first two GeglNode objects are generated, which are "dft-forward" 
+opeation and "dft-backward" operation respectively. Then, link them and process. After this 
+process, the original image goes through "dft-forward" to "dft-backward" and then back to 
+the original one.
 
 /****************code example begin****************/
 {
@@ -18,8 +19,8 @@ image goes through "dft" to "idft" and then back to the original one.
                                         "path",
                                         file_name,
                                         NULL);
-  GeglNode *dft = gegl_node_new_child(gegl, "operation", "dft", NULL);
-  GeglNode *idft = gegl_node_new_child(gegl, "operation", "idft", NULL);
+  GeglNode *dft = gegl_node_new_child(gegl, "operation", "dft-forward", NULL);
+  GeglNode *idft = gegl_node_new_child(gegl, "operation", "dft-backward", NULL);
   GeglNode *pre = gegl_node_new_child(gegl, "operation",
                                       "preview-frequency", NULL);
   GeglNode *save = gegl_node_new_child(gegl,
@@ -34,7 +35,7 @@ image goes through "dft" to "idft" and then back to the original one.
 /****************code example end ****************/
 
 You can preview the frequency domain image by just replace the "idft" with "pre"
- in the statement "gegl_node_link_many(image,dft,idft,save,NULL)". 
+in the statement "gegl_node_link_many(image,dft,idft,save,NULL)". 
 
 2. Use Gaussian-Lowpass filter to blur an image.
 
@@ -48,11 +49,12 @@ Take gaussian-lowpass filter as an example:
 
 There are two parameters of this operation. "cutoff" refers to the cut off 
 frequency. The higher cutoff frequency, the deutlicher the processed image. 
-The "flag" parameter is used to indicate which component of "RGBA" to be 
-processed. If only R component is selected to be processed, flag should be set 
-to 1000b, and G should be 100b, B should be 10b, A should be 1b, etc. You can 
-combine them by an OR operation. For example flag=14=1110b=1000b|100b|10b means
- RGB components but A componet are not selected to be processed.
+The "flag" parameter is a mask which are used to indicate which component of 
+"RGBA" to be processed. If only R component is selected to be processed, 
+flag should be set to 1000b, and G should be 100b, B should be 10b, A should 
+be 1b, etc. You can combine them by an OR operation. 
+For example flag=14=1110b=1000b|100b|10b means RGB components but A componet are 
+not selected to be processed.
 
 /****************code example begin****************/
 {
@@ -64,8 +66,8 @@ combine them by an OR operation. For example flag=14=1110b=1000b|100b|10b means
                                         "path",
                                         file_name,
                                         NULL);
-  GeglNode *dft = gegl_node_new_child(gegl, "operation", "dft", NULL);
-  GeglNode *idft = gegl_node_new_child(gegl,"operation","idft", NULL);
+  GeglNode *dft = gegl_node_new_child(gegl, "operation", "dft-forward", NULL);
+  GeglNode *idft = gegl_node_new_child(gegl,"operation","dft-backward", NULL);
   GeglNode *glpf_filter = gegl_node_new_child(gegl,"operation",
                                               "lowpass-gaussian",
                                               "cutoff",30,"flag",15,NULL);
@@ -80,7 +82,30 @@ combine them by an OR operation. For example flag=14=1110b=1000b|100b|10b means
 }
 /****************code example end****************/
 
-3. Introduction to frenquency-domain image processing.
+3. How does the freq-general-filter.c work.
+The input of this process have two main parts. One is the frequency-domain image,
+the other is the filter. The frequency-domain image should be the output of
+"dft-forward" operation and the filter should be provided by the user. In fact, 
+any filter is a complex-number gdouble matrix, and any processing in frequncy domain is 
+multiplying the matrix on the frequency domain image. The two parameters of the
+"freq-general-filter" operation which are named "filter_real" and "filter_imag"
+indicates the real and image component of the filter matrix as their name says. 
+Because the frequency domain image is center-symmetric, there is no need to store
+the whole matrix but only to store the left half. So, the size of the filter matrix 
+is (width/2+1) by height, where the "width" is the width of the original image to be 
+processed and the "height" refers to the height of the image. What's more, we use one 
+dimension to store the (width/2+1) by height matrix. We assume "Filter_log" is the real 
+component of the filter in logical and "Filter_phy" is the real component of the filter in 
+physical. Obviously, there should be an equation 
+Filter_phy[(y)*(width/2+1)+x] == Filter_log[y][x] to convert the 2-dimension matrix in 
+logical to the 1-dimension array in physical.
+Then, the filter matrix multiply on the frequency-domain image. Because it is useful for 
+visualizing a Fourier transform with the zero-frequency component in the middle of the 
+spectrum, so the frequency-domain image has been processed in "dft-forward" operation
+by moving the zero-frequency to the center of the matrix as the "fftshift" function of
+the famous software "matlab" do. So, multiply has to be a little trick. But as for user,
+this is no need to care about because all this has been done in the freq_multiply() function.
+Then according to the parameter "flag", corresponding component are multiplied by the fitler.
 
 
 4. Design your own filter.
@@ -92,11 +117,11 @@ yourself following below.
 In fact, any filter is a complex-number matrix, and any processing in frequncy
  domain is multiplying the matrix on the frequency domain image.
 The multiply here does not mean matrices multiplying. Take a m*n image for
- example, our "multiply" is means:
+example, our "multiply" is means:
 
 for x=1..m
  for y=1..n
-   // Note the "*" here refers to complex-number multiply here.
+   /* Note the "*" here refers to complex-number multiply here.*/
    new_image[m][n] = origin_image[m][n]*filter[m][n];  
  end
 end
@@ -105,7 +130,7 @@ But one important point is that the filter must be symmetric to ensure the the
 reslut after idft is a real-number matrix(it's no sence if a image's pixel is a 
 complex-number). 
 Because the filter is symmetric, you need not to give the whole matrix. You just
- need to give the left half of the filter.
+need to give the left half of the filter.
 Here is an example of "ideal lowpass filter".
 The function of ideal lowpass filter is :
 H(u,v)=1 D(u,v)<=cutoff
@@ -125,7 +150,7 @@ Here is the code of a ideal-lowpass processing:
 /*********************************code exampel begin**************************/
 {
  gdouble *Hr = gnew0(gdouble,(m/2+1)*n); // Hr is the real componet of the filter
- gdouble *Hi = gnew0(gdouble,(m/2+1)*n); // Hi is the image componet
+ gdouble *Hi = gnew0(gdouble,(m/2+1)*n); // Hi is the image componet of the filter
  
  for(y=0;y<height;y++)
    for(x=0;x<(m/2+1);x++)
@@ -135,11 +160,11 @@ Here is the code of a ideal-lowpass processing:
 	     
     } 
 
- GeglNode *filter = gegl_node_new_child(gegl, "operation",
+  GeglNode *filter = gegl_node_new_child(gegl, "operation",
                                         "freq-general-filter","realH",
                                         Hr, "imagH", Hi,"flag",14, NULL);
-  GeglNode *dft = gegl_node_new_child(gegl, "operation", "dft", NULL);
-  GeglNode *idft = gegl_node_new_child(gegl,"operation","idft", NULL);
+  GeglNode *dft = gegl_node_new_child(gegl, "operation", "dft-forward", NULL);
+  GeglNode *idft = gegl_node_new_child(gegl,"operation","dft-backward", NULL);
   GeglNode *save = gegl_node_new_child(gegl,
                                        "operation",
                                        "png-save",
