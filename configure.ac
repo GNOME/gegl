@@ -814,18 +814,19 @@ AM_CONDITIONAL(HAVE_W3M, test "x$W3M" != "xno")
 
 dnl disable build of workshop operations.
 AC_ARG_ENABLE([workshop],
-              [  --enable-workshop       allow use of GPL code, the frequency domain operations are build \
-	        and gegl will be under GPL (default=no)],,
+              [  --enable-workshop       enable build of workshop operations (default=no)],,
               enable_workshop="no")
 
-AM_CONDITIONAL(ENABLE_GPL, test "x$enable_gpl" == "xyes")
+AM_CONDITIONAL(ENABLE_WORKSHOP, test "x$enable_workshop" == "xyes")
 
 dnl disable gpl codes.
 AC_ARG_ENABLE([gpl],
-              [  --enable-gpl       enable build of gpl licence codes (frequency domain operations) (default=no)],,
+              [  --enable-gpl       allow use of GPL code, the frequency domain operations are build \
+	                            and gegl will be under GPL (default=no)],,
               enable_gpl="no")
 
-AM_CONDITIONAL(ENABLE_WORKSHOP, test "x$enable_workshop" == "xyes")
+AM_CONDITIONAL(ENABLE_GPL, test "x$enable_gpl" == "xyes")
+
 
 
 dnl bin/node-editors/Makefile
