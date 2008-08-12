@@ -1,3 +1,8 @@
+2008-08-12  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	* configure.ac: add a --enable-gpl option to solve the license problem about fftw3.
+	* operations/Makefile.am: 
+
 2008-08-11  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* examples/glpf_save.c: modified some operation name accordingly

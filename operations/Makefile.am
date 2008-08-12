@@ -3,11 +3,14 @@ SUBDIRS = \
 	core		\
 	common		\
 	external	\
-	frequency	\
 	generated
 
 if ENABLE_WORKSHOP
 SUBDIRS+= workshop
+endif
+
+if ENABLE_GPL
+SUBDIRS+= frequency
 endif
 
 EXTRA_DIST= \

@@ -1,3 +1,7 @@
+2008-08-12  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	* frequency-domain-operation-document.txt: add a statement about the --enable-gpl option
+
 2008-08-11  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* frequency-domain-operation-document.txt: add  paragraph 3

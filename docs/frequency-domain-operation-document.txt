@@ -1,3 +1,7 @@
+0. Enable frequency-domain operation.
+Since frequency domain operation used GLP code, so to use these operations, you should type ./configure --enable-gpl
+to build the lib, and the gegl will be under GPL then.
+
 1. Write your first program using frequency-domain operations
 
 The "dft-forward" operation transforms the time-domain image into frenquency-domain, 
@@ -106,7 +110,6 @@ by moving the zero-frequency to the center of the matrix as the "fftshift" funct
 the famous software "matlab" do. So, multiply has to be a little trick. But as for user,
 this is no need to care about because all this has been done in the freq_multiply() function.
 Then according to the parameter "flag", corresponding component are multiplied by the fitler.
-
 
 4. Design your own filter.
 Although we have provided many filters, but we can not provide all. The 
