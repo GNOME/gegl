@@ -819,13 +819,13 @@ AC_ARG_ENABLE([workshop],
 
 AM_CONDITIONAL(ENABLE_WORKSHOP, test "x$enable_workshop" == "xyes")
 
-dnl disable gpl codes.
-AC_ARG_ENABLE([gpl],
-              [  --enable-gpl       allow use of GPL code, the frequency domain operations are build \
-	                            and gegl will be under GPL (default=no)],,
-              enable_gpl="no")
+dnl disable frequency operation codes.
+AC_ARG_ENABLE([frequency],
+              [  --enable-frequency       allow use of frequency operationcode, the frequency domain operations \
+                                          are build and gegl will be under GPL (default=no)],,
+              enable_frequency="no")
 
-AM_CONDITIONAL(ENABLE_GPL, test "x$enable_gpl" == "xyes")
+AM_CONDITIONAL(ENABLE_FREQUENCY, test "x$enable_frequency" == "xyes")
 
 
 
@@ -873,7 +873,7 @@ Optional features:
   Build workshop: $enable_workshop
   Build website:  $have_asciidoc
   SIMD:           sse:$enable_sse mmx:$enable_mmx
-  GPL:		  $enable_gpl
+  FREQUENCY:	  $enable_frequency
 
 Optional dependencies:
   GTK+:           $have_gtk
@@ -897,3 +897,11 @@ Optional dependencies:
   FFTW:           $have_fftw3
   V4L:            $have_v4l
 ]);
+
+if  test "$enable_frequency" == "yes" 
+then 
+AC_MSG_RESULT([
+Note: The option --enable-frequency is selected, the frequency operation code which is under GPL licence is avaiable \
+  and the gegl is under GPL now.	
+]);
+fi

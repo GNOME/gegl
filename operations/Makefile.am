@@ -9,7 +9,7 @@ if ENABLE_WORKSHOP
 SUBDIRS+= workshop
 endif
 
-if ENABLE_GPL
+if ENABLE_FREQUENCY
 SUBDIRS+= frequency
 endif
 

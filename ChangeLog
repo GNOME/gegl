@@ -1,3 +1,9 @@
+2008-09-11  Zhang Junbo  <zhangjb@svn.gnome.org>
+
+	* configure.ac: rename the --enable-gpl to --enable-frequency and add a note if the 
+           --enable-frequency option is selected.	
+	* operations/Makefile.am:
+
 2008-08-12  Zhang Junbo  <zhangjb@svn.gnome.org>
 
 	* configure.ac: add a --enable-gpl option to solve the license problem about fftw3.
