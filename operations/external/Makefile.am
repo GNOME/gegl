@@ -12,10 +12,7 @@ text_la_CFLAGS = $(AM_CFLAGS) $(PANGOCAIRO_CFLAGS)
 endif
 
 if HAVE_CAIRO
-ops += path.la vector-fill.la vector-stroke.la
-path_la_SOURCES = path.c
-path_la_LIBADD = $(op_libs) $(CAIRO_LIBS)
-path_la_CFLAGS = $(AM_CFLAGS) $(CAIRO_CFLAGS)
+ops += vector-fill.la vector-stroke.la
 vector_fill_la_SOURCES = vector-fill.c
 vector_fill_la_LIBADD = $(op_libs) $(CAIRO_LIBS)
 vector_fill_la_CFLAGS = $(AM_CFLAGS) $(CAIRO_CFLAGS)

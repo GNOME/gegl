@@ -23,21 +23,23 @@
 #include "util/gegl-view.c"
 #include "property-types/gegl-path.h"
 
-#define HARDNESS     0.2
-#define LINEWIDTH   60.0
-#define COLOR       "rgba(0.0,0.0,0.0,0.4)"
+#define SCALE    3.0
+#define SPACING  0.5
+#define HARDNESS 0.2
+#define OPACITY  0.5
+#define COLOR    "rgb(0.5,0.3,0.0)"
 
 GtkWidget         *window;
 GtkWidget         *view;
 static GeglBuffer *buffer   = NULL;
+
 static GeglNode   *gegl     = NULL;
 static GeglNode   *out      = NULL;
 static GeglNode   *top      = NULL;
+static GeglNode   *stroke   = NULL;
+
 static gboolean    pen_down = FALSE;
 static GeglPath   *vector   = NULL;
-
-static GeglNode   *over     = NULL;
-static GeglNode   *stroke   = NULL;
 
 
 static gboolean paint_press (GtkWidget      *widget,
@@ -47,16 +49,16 @@ static gboolean paint_press (GtkWidget      *widget,
     {
       vector     = gegl_path_new ();
 
-      over       = gegl_node_new_child (gegl, "operation", "gegl:over", NULL);
-      stroke     = gegl_node_new_child (gegl, "operation", "gegl:path",
+      stroke     = gegl_node_new_child (gegl, "operation", "gegl:brush-stroke",
                                         "d", vector,
-                                        "fill-opacity", 0.0,
-                                        "stroke", gegl_color_new (COLOR),
-                                        "stroke-width", LINEWIDTH,
-                                        "stroke-hardness", HARDNESS,
+                                        "color", gegl_color_new (COLOR),
+                                        "scale", SCALE,
+                                        "hardness", HARDNESS,
+                                        "spacing", SPACING,
+                                        "opacity", OPACITY,
                                         NULL);
-      gegl_node_link_many (top, over, out, NULL);
-      gegl_node_connect_to (stroke, "output", over, "aux");
+      gegl_node_link_many (top, stroke, out, NULL);
+
       gegl_path_append (vector, 'M', event->x, event->y);
 
       pen_down = TRUE;
@@ -89,35 +91,26 @@ static gboolean paint_release (GtkWidget      *widget,
 {
   if (event->button == 1)
     {
-      gdouble        x0, x1, y0, y1;
       GeglProcessor *processor;
       GeglNode      *writebuf;
-      GeglRectangle  roi;
-
-      gegl_path_get_bounds (vector, &x0, &x1, &y0, &y1);
-
-      roi.x = x0 - LINEWIDTH;
-      roi.y = y0 - LINEWIDTH;
-      roi.width = x1 - x0 + LINEWIDTH * 2;
-      roi.height = y1 - y0 + LINEWIDTH * 2;
+      GeglRectangle  roi = gegl_node_get_bounding_box(stroke);
 
       writebuf = gegl_node_new_child (gegl,
                                       "operation", "gegl:write-buffer",
                                       "buffer",    buffer,
                                       NULL);
-      gegl_node_link_many (over, writebuf, NULL);
+      gegl_node_link_many (stroke, writebuf, NULL);
 
       processor = gegl_node_new_processor (writebuf, &roi);
       while (gegl_processor_work (processor, NULL)) ;
 
       gegl_processor_destroy (processor);
-      g_object_unref (writebuf);
 
       gegl_node_link_many (top, out, NULL);
-      g_object_unref (over);
-      g_object_unref (stroke);
 
-      over     = NULL;
+      g_object_unref (stroke);
+      g_object_unref (writebuf);
+
       stroke   = NULL;
       pen_down = FALSE;
 
