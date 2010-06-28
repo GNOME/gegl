@@ -55,7 +55,7 @@ static void
 prepare(GeglOperation *operation)
 {
   gegl_operation_set_format(operation, "input",
-                            babl_format("frequency double"));
+                            babl_format_n ("double", 8));
   gegl_operation_set_format(operation, "output", babl_format("RGBA double"));
 }
 
@@ -78,7 +78,7 @@ process(GeglOperation *operation,
   tmp_src_buf = g_new0(gdouble, 2*height*FFT_HALF(width));
   tmp_dst_buf = g_new0(gdouble, width*height);
 
-  gegl_buffer_get(input, 1.0, NULL, babl_format("frequency double"),
+  gegl_buffer_get(input, 1.0, NULL, babl_format_n ("double", 8),
                   (gdouble *)src_buf, GEGL_AUTO_ROWSTRIDE);
   for (i=0; i<3; i++)
     {

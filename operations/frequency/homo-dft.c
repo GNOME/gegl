@@ -55,7 +55,7 @@ prepare(GeglOperation *operation)
 {
   gegl_operation_set_format(operation, "input", babl_format ("RGBA double"));
   gegl_operation_set_format(operation, "output",
-                            babl_format ("frequency double"));
+                            babl_format_n ("double", 8));
 }
 
 static gboolean
@@ -87,7 +87,7 @@ process(GeglOperation *operation,
       set_complex_component(tmp_dst_buf, dst_buf, i, FFT_HALF(width)*height);
     }
   
-  gegl_buffer_set(output, NULL, babl_format ("frequency double"), dst_buf,
+  gegl_buffer_set(output, NULL, babl_format_n ("double", 8), dst_buf,
                   GEGL_AUTO_ROWSTRIDE);
 
   g_free(src_buf);

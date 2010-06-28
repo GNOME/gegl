@@ -37,7 +37,7 @@ gegl_chant_double(bandwidth, "Bandwidth", 0, G_MAXDOUBLE, 1.0,
 static void
 prepare(GeglOperation *operation)
 {
-  Babl *format = babl_format ("frequency double");
+  Babl *format = babl_format_n ("double", 8);
   gegl_operation_set_format(operation, "input", format);
   gegl_operation_set_format(operation, "output", format);
 }
@@ -70,7 +70,7 @@ process(GeglOperation *operation,
   dst_buf = g_new0(gdouble, 8*width*height);
   comp_real = g_new0(gdouble, FFT_HALF(width)*height);
   comp_imag = g_new0(gdouble,FFT_HALF(width)*height);  
-  gegl_buffer_get(input, 1.0, NULL, babl_format ("frequency double"), src_buf,
+  gegl_buffer_get(input, 1.0, NULL, babl_format_n ("double", 8), src_buf,
                   GEGL_AUTO_ROWSTRIDE);  
   for (i=0; i<4; i++)
     {
@@ -85,7 +85,7 @@ process(GeglOperation *operation,
       set_freq_component(comp_real, dst_buf, i, FFT_HALF(width)*height);
       set_freq_component(comp_imag, dst_buf, 4+i, FFT_HALF(width)*height);
     }    
-  gegl_buffer_set(output, NULL, babl_format ("frequency double"), dst_buf,
+  gegl_buffer_set(output, NULL, babl_format_n ("double", 8), dst_buf,
                   GEGL_AUTO_ROWSTRIDE);
 
   g_free(src_buf);
