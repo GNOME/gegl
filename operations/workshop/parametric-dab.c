@@ -28,33 +28,34 @@
 /* Brush shape parameters */
 gegl_chant_double (scale,    _("Scale Factor"),  0.0, 10.0, 2.0,
                              _("Brush Scale Factor"))
-gegl_chant_curve  (scale_curve, _("Scale Curve"),
-                                _("A Gegl Curve pondering the scale factor along the path"))
+gegl_chant_curve  (scale_curve, _("Scale Curve"), _("Brush Scale curve"))
+
 gegl_chant_double (hardness, _("Hardness"),   0.0, 1.0, 0.6,
                              _("Brush Hardness, 0.0 for soft 1.0 for hard."))
+gegl_chant_curve  (hardness_curve, _("Hardness Curve"), _("Brush hardness curve"))
+
 gegl_chant_double (angle,    _("Angle"),   0.0, 360.0, 0.0,
                              _("Brush Angle."))
+gegl_chant_curve  (angle_curve, _("Angle Curve"), _("Brush Angle curve"))
+
 gegl_chant_double (aspect,   _("Aspect Ratio"),   0.1, 10.0, 1.0,
                              _("Brush Aspect, 0.1 for pancake 10.0 for spike."))
+gegl_chant_curve  (aspect_curve, _("Aspect Curve"), _("Brush Aspect Curve"))
+
 gegl_chant_double (force,    _("Force"),   0.0, 1.0, 0.6,
                              _("Brush Force."))
-
-gegl_chant_color  (color,    _("Color"),      "rgba(0.0,0.0,0.0,0.0)",
-                             _("Color of paint to use for stroking."))
-gegl_chant_double (opacity,  _("Opacity"),  -2.0, 2.0, 1.0,
-                             _("Stroke Opacity."))
+gegl_chant_curve  (force_curve, _("Force Curve"), _("Brush Force Curve"))
+gegl_chant_double (flow,    _("Flow"),   0.0, 1.0, 1.0,
+                             _("Brush opacity."))
+gegl_chant_curve  (flow_curve, _("Flow Curve"), _("Brush Flow Curve"))
 
 /* dab position parameters */
-gegl_chant_double (x, _("X"), -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
-                   _("Horizontal offset."))
-gegl_chant_double (y, _("Y"), -G_MAXDOUBLE, G_MAXDOUBLE, 0.0,
-                   _("Vertical offset."))
 gegl_chant_double (pos, _("Position"), 0.0, G_MAXDOUBLE, 0.0,
-                   _("Position."))
+                   _("Position along the curves"))
 
 #else
 
-#define GEGL_CHANT_TYPE_FILTER
+#define GEGL_CHANT_TYPE_SOURCE
 #define GEGL_CHANT_C_FILE "parametric-dab.c"
 #define BASE_RADIUS 50.0
 
@@ -64,6 +65,7 @@ gegl_chant_double (pos, _("Position"), 0.0, G_MAXDOUBLE, 0.0,
 #include "gegl-chant.h"
 #include <stdio.h>
 
+/*------- STAMPS --------*/
 
 typedef struct StampStatic {
   gboolean  valid;
@@ -72,101 +74,116 @@ typedef struct StampStatic {
   gdouble   radius;
 }StampStatic;
 
-static void stamp (GeglBuffer *buffer,
-                             const GeglRectangle *clip_rect,
-                             gdouble     x,
-                             gdouble     y,
-                             gdouble     radius,
-                             gdouble     hardness,
-                             GeglColor  *color,
-                             gdouble     opacity)
+/* Paint round dab mask centered on 0
+ * TODO : use clip rect
+ */
+static void stamp_round (GeglBuffer *buffer,
+                         const GeglRectangle *result,
+                         gdouble     scale,
+                         gdouble     angle,
+                         gdouble     aspect,
+                         gdouble     hardness,
+                         gdouble     flow)
 {
-  gfloat col[4];
-  static StampStatic s = {FALSE,}; /* XXX: 
-                                      we will ultimately leak the last valid
-                                      cached brush. */
+    gdouble radius= BASE_RADIUS * scale;
+    static StampStatic s = {FALSE,}; /* XXX: 
+                                        we will ultimately leak the last valid
+                                        cached brush. */
 
-  GeglRectangle temp;
-  GeglRectangle roi;
+    GeglRectangle temp;
+    GeglRectangle roi;
 
-  roi.x = floor(x-radius);
-  roi.y = floor(y-radius);
-  roi.width = ceil (x+radius) - floor (x-radius);
-  roi.height = ceil (y+radius) - floor (y-radius);
+    roi.x = floor(-radius);
+    roi.y = floor(-radius);
+    roi.width = ceil (radius) - roi.x;
+    roi.height = ceil (radius) - roi.y;
 
-  gegl_color_get_rgba4f (color, col);
-
-  /* bail out if we wouldn't leave a mark on the buffer */
-  if (!gegl_rectangle_intersect (&temp, &roi, clip_rect))
-    {
+    /* bail out if we wouldn't leave a mark on the buffer */
+    if (flow == 0.0) 
       return;
-    }
+    if (radius < 0.1) 
+      return;
+    if (hardness == 0.0) 
+      return;
+    if (!gegl_rectangle_intersect (&temp, &roi, result))
+      return;
 
-  if (s.format == NULL)
-    s.format = babl_format ("RaGaBaA float");
+    /* Set up the stamp */
+    if (s.format == NULL)
+      s.format = babl_format ("Y float");
 
-  if (s.buf == NULL ||
-      s.radius != radius)
+    if (s.buf == NULL ||
+        s.radius != radius)
+      {
+        if (s.buf != NULL)
+          g_free (s.buf);
+        /* allocate a little bit more, just in case due to rounding errors and
+         * such */
+        s.buf = g_malloc (4* (roi.width + 2 ) * (roi.height + 2));
+        s.radius = radius;
+        s.valid = TRUE;  
+      }
+    g_assert (s.buf);
+
+
+
+    gegl_buffer_get_unlocked (buffer, 1.0, &roi, s.format, s.buf, 0);
+    /* Dab painting, shamelessly borrowed from mypaint */
     {
-      if (s.buf != NULL)
-        g_free (s.buf);
-      /* allocate a little bit more, just in case due to rounding errors and
-       * such */
-      s.buf = g_malloc (4*4* (roi.width + 2 ) * (roi.height + 2));
-      s.radius = radius;
-      s.valid = TRUE;  
+      gint x, y;
+      gint i=0;
+
+      gfloat radius2 = radius * radius;
+      gfloat inv_radius2 = 1.0/radius2;
+
+      gfloat angle_rad=angle/360.0*2.0*M_PI;
+      gfloat cs=cos(angle_rad);
+      gfloat sn=sin(angle_rad);
+
+      for (y= roi.y; y < roi.y + roi.height ; y++)
+      {
+        for (x= roi.x; x < roi.x + roi.width; x++)
+          {
+            /* Computes the position of the point from the center
+             * 0 is at center, 1 is at border, >1 is out
+             */
+            gfloat yy = (y*cs-x*sn);
+            gfloat xx = (y*sn+x*cs);
+            if (aspect>1.0)
+              yy*=aspect;
+            else
+              xx/=aspect;
+            gfloat rr = sqrt((yy*yy+xx*xx)*inv_radius2);
+
+            /*
+            fprintf(stderr,"rr = %f, xx=%f, yy=%f\n\
+                     ar= %f \n",rr,xx,yy, aspect_ratio );
+            */
+            if (rr<=1.0)
+              {
+                gfloat opa = flow;
+                if (hardness < 1.0)
+                  if (rr<hardness)
+                    opa *= rr+1.0-(rr/hardness);
+                  else
+                    opa *= hardness/(1.0-hardness)*(1.0-rr);
+
+                s.buf[i] = opa;
+              }
+           i++;
+          }
+      }
     }
-  g_assert (s.buf);
-
-  gegl_buffer_get_unlocked (buffer, 1.0, &roi, s.format, s.buf, 0);
-
-  {
-    gint u, v;
-    gint i=0;
-
-    gfloat radius_squared = radius * radius;
-    gfloat inner_radius_squared = (radius * hardness)*(radius * hardness);
-    gfloat soft_range = radius_squared - inner_radius_squared;
-
-    for (v= roi.y; v < roi.y + roi.height ; v++)
-    {
-      gfloat vy2 = (v-y)*(v-y);
-      for (u= roi.x; u < roi.x + roi.width; u++)
-        {
-          gfloat o = (u-x) * (u-x) + vy2;
-
-          if (o < inner_radius_squared)
-             o = col[3];
-          else if (o < radius_squared)
-            {
-              o = (1.0 - (o-inner_radius_squared) / (soft_range)) * col[3];
-            }
-          else
-            {
-              o=0.0;
-            }
-         if (o!=0.0)
-           {
-             gint c;
-             o = o*opacity;
-             for (c=0;c<4;c++)
-               s.buf[i*4+c] = (s.buf[i*4+c] * (1.0-o) + col[c] * o);
-           }
-         i++;
-        }
-    }
-  }
-  gegl_buffer_set_unlocked (buffer, &roi, s.format, s.buf, 0);
+    gegl_buffer_set_unlocked (buffer, &roi, s.format, s.buf, 0);
+  return;
 }
+
+/*------- OPERATION METHODS -------*/
 
 static void
 prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
-  /*
-  gegl_operation_set_format (operation, "input", babl_format ("RaGaBaA float"));
-  gegl_operation_set_format (operation, "aux", babl_format ("Y float"));
-  */
+  gegl_operation_set_format (operation, "output", babl_format ("Y float"));
 }
 
 static GeglRectangle
@@ -179,8 +196,8 @@ get_bounding_box (GeglOperation *operation)
 
   //if (in_rect)
     {
-      result.x = o->x - r;
-      result.y = o->y - r;
+      result.x = - r;
+      result.y = - r;
       result.width  = r*2;
       result.height = r*2;
     }
@@ -188,56 +205,54 @@ get_bounding_box (GeglOperation *operation)
   return result;
 }
 
-#if 0
-static GeglRectangle
-get_cached_region (GeglOperation *operation)
-{
-  return get_bounding_box (operation);
-}
-#endif
-
 static gboolean
 process (GeglOperation       *operation,
-         GeglBuffer          *input,
          GeglBuffer          *output,
          const GeglRectangle *result)
 {
   GeglChantO *o  = GEGL_CHANT_PROPERTIES (operation);
-  gdouble scale = BASE_RADIUS * o->scale;
+  
+  /* Computing properties */
 
-  if (input)
-    {
-      gegl_buffer_copy (input, result, output, result);
-    }
-  else
-    {
-      gegl_buffer_clear (output, result);
-    }
+  gdouble scale    = o->scale;
+  gdouble hardness = o->hardness;
+  gdouble flow     = o->flow;
+  gdouble angle    = o->angle;
+  gdouble aspect   = o->aspect;
+
   if (o->scale_curve)
-    {
-      scale = scale * gegl_curve_calc_value(o->scale_curve, o->pos);
-      fprintf(stderr,"scale curve found, scale=%f\n",scale);
-    }
+    scale = scale * gegl_curve_calc_value(o->scale_curve, o->pos);
 
+  if (o->flow_curve)
+    flow = flow * gegl_curve_calc_value(o->flow_curve, o->pos);
 
-    /* Paint dab */
-    if (gegl_buffer_is_shared (output))
-      while (!gegl_buffer_try_lock (output));
+  if (o->hardness_curve)
+    hardness = hardness * gegl_curve_calc_value(o->hardness_curve, o->pos);
 
-    stamp (output, result, o->x, o->y, 
-        scale, o->hardness, o->color, o->opacity);
+  if (o->angle_curve)
+    angle = angle * gegl_curve_calc_value(o->angle_curve, o->pos);
 
-    if (gegl_buffer_is_shared (output))
-      gegl_buffer_unlock (output);
+  if (o->aspect_curve)
+    aspect = aspect * gegl_curve_calc_value(o->aspect_curve, o->pos);
+
+  gegl_buffer_clear (output, result);
+
+  if (gegl_buffer_is_shared (output))
+    while (!gegl_buffer_try_lock (output));
+    
+  stamp_round (output,result,scale,angle,aspect,hardness,flow);
+
+  if (gegl_buffer_is_shared (output))
+    gegl_buffer_unlock (output);
 
   return  TRUE;
 }
 
+#if 0
 static GeglNode *detect (GeglOperation *operation,
                          gint           x,
                          gint           y)
 {
-#if 0
   GeglChantO *o = GEGL_CHANT_PROPERTIES (operation);
   cairo_t *cr;
   cairo_surface_t *surface;
@@ -261,23 +276,23 @@ static GeglNode *detect (GeglOperation *operation,
   if (result)
     return operation->node;
 
-#endif
   return NULL;
 }
+#endif
 
 static void
 gegl_chant_class_init (GeglChantClass *klass)
 {
   GeglOperationClass       *operation_class;
-  GeglOperationFilterClass *filter_class;
+  GeglOperationSourceClass *source_class;
 
   operation_class = GEGL_OPERATION_CLASS (klass);
-  filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
+  source_class    = GEGL_OPERATION_SOURCE_CLASS (klass);
 
-  filter_class->process = process;
+  source_class->process = process;
   operation_class->get_bounding_box = get_bounding_box;
   operation_class->prepare = prepare;
-  operation_class->detect = detect;
+  /*operation_class->detect = detect;*/
   /*operation_class->no_cache = TRUE;*/
 
   operation_class->name        = "gegl:parametric-dab";
@@ -287,6 +302,5 @@ gegl_chant_class_init (GeglChantClass *klass)
   operation_class->get_cached_region = (void*)get_cached_region;
 #endif
 }
-
-
 #endif
+
