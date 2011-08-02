@@ -1094,6 +1094,12 @@ operations/Makefile
 operations/core/Makefile
 operations/common/Makefile
 operations/common/perlin/Makefile
+operations/common/seamless-clone/Makefile
+operations/common/seamless-clone/poly2tri-c/Makefile
+operations/common/seamless-clone/poly2tri-c/common/Makefile
+operations/common/seamless-clone/poly2tri-c/refine/Makefile
+operations/common/seamless-clone/poly2tri-c/render/Makefile
+operations/common/seamless-clone/poly2tri-c/sweep/Makefile
 operations/external/Makefile
 operations/generated/Makefile
 operations/transform/Makefile
