@@ -1,0 +1,1 @@
+gcc gegl-editor.c -o editor `pkg-config --cflags --libs gtk+-3.0`
