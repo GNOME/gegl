@@ -18,23 +18,24 @@ typedef struct _GeglNodeWidget		GeglNodeWidget;
 typedef struct _GeglNodeWidgetClass	GeglNodeWidgetClass;
 
 typedef struct _EditorNode	EditorNode;
-typedef struct _NodePad NodePad;
+typedef struct _NodePad		NodePad;
 
 struct _NodePad
 {
-  gchar* name;
-  NodePad *connected; //the pad that this is connected to. NULL if none
-  NodePad *next; //the next pad in the linked list
-  EditorNode* node;
+  gchar*	 name;
+  NodePad	*connected;	//the pad that this is connected to. NULL if none
+  NodePad	*next;		//the next pad in the linked list
+  EditorNode*	 node;
 };
 
 struct _EditorNode
 {
   gint		 x, y, width, height;
   gchar*	 title;
+  gint		 title_height;
   EditorNode	*next;
-  NodePad* inputs;
-  NodePad* outputs;
+  NodePad*	 inputs;
+  NodePad*	 outputs;
 };
 
 EditorNode*	new_editor_node(EditorNode* prev);
@@ -51,6 +52,7 @@ struct _GeglNodeWidget
   EditorNode*	first_node;
   EditorNode*	dragged_node;
   EditorNode*	resized_node;
+  NodePad*	dragged_pad;
 };
 
 struct _GeglNodeWidgetClass
