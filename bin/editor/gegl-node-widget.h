@@ -22,8 +22,8 @@ typedef struct _EditorNode EditorNode;
 struct _EditorNode
 {
   gint x, y, width, height;
-  gboolean dragging;
-  EditorNode* next;
+  gchar* title;
+  EditorNode *next;
 };
 
 EditorNode* new_editor_node(EditorNode* prev);
@@ -39,6 +39,7 @@ struct _GeglNodeWidget
   gboolean left_mouse_down; //if left mouse button is pressed
   EditorNode* first_node;
   EditorNode* dragged_node;
+  EditorNode* resized_node;
 };
 
 struct _GeglNodeWidgetClass
