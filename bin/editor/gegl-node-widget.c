@@ -45,10 +45,14 @@ EditorNode* new_editor_node(EditorNode* prev) {
   EditorNode* node = malloc(sizeof(EditorNode));
   node->next = NULL;
   node->x = node->y = 0;
-  node->width = node->height = 75;
+  node->width = node->height = 100;
   if(prev != NULL)
     prev->next = node;
-  node->title = "Empty Node";
+  node->title = "New Node";
+
+  node->inputs = NULL;
+  node->outputs = NULL;
+
   return node;
 }
 
@@ -57,6 +61,50 @@ EditorNode* top_node(EditorNode* first)
   EditorNode* node = first;
   while(node->next != NULL) node = node->next;
   return node;
+}
+
+void
+connect_pads(NodePad* a, NodePad* b)
+{
+  a->connected = b;
+  b->connected = a;
+}
+
+void
+get_pad_position_input(NodePad* pad, gint* x, gint* y, cairo_t* cr, GeglNodeWidget* editor)
+{
+  cairo_select_font_face(cr, "Georgia",
+			 CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+  cairo_set_font_size(cr, 12);
+
+  cairo_text_extents_t te;
+  cairo_text_extents(cr, pad->node->title, &te);
+  gint title_height = te.height+5;
+
+  int i = 0;
+  NodePad* _pad = pad->node->inputs;
+  for(;_pad!=NULL;_pad = _pad->next, i++)
+    {
+      if(_pad == pad)
+	{
+	  gint node_x, node_y;
+
+	  if(pad->node == editor->dragged_node)
+	    {
+	      node_x = pad->node->x+editor->px-editor->dx;
+	      node_y = pad->node->y+editor->py-editor->dy;
+	    }
+	  else
+	    {
+	      node_x = pad->node->x;
+	      node_y = pad->node->y;
+	    }
+
+	  *x = node_x+5;
+	  *y = node_y+(title_height)+15+20*i;
+	  break;
+	}
+    }
 }
 
 static void
@@ -76,6 +124,11 @@ draw_node(EditorNode* node, cairo_t *cr, GeglNodeWidget* editor)
       y = node->y;
     }
 
+  if(node->width < 100)
+    node->width = 100;
+  if(node->height < 50)
+    node->height = 50;
+
   if(node == editor->resized_node)
     {
       width = node->width+editor->px-editor->dx;
@@ -87,8 +140,8 @@ draw_node(EditorNode* node, cairo_t *cr, GeglNodeWidget* editor)
       height = node->height;
     }
 
-  if(width < 50)
-    width = 50;
+  if(width < 100)
+    width = 100;
   if(height < 50)
     height = 50;
 
@@ -111,6 +164,7 @@ draw_node(EditorNode* node, cairo_t *cr, GeglNodeWidget* editor)
 
   cairo_text_extents_t te;
   cairo_text_extents(cr, node->title, &te);
+  gint title_height = te.height+5;
 
   //draw the line separating the title
   cairo_move_to(cr, x, y+te.height+5);
@@ -132,6 +186,65 @@ draw_node(EditorNode* node, cairo_t *cr, GeglNodeWidget* editor)
   cairo_move_to(cr, x+width-15, y+height);
   cairo_line_to(cr, x+width, y+height-15);
   cairo_stroke(cr);
+
+
+  int i = 0;
+  NodePad* pad = node->inputs;
+  for(;pad!=NULL;pad = pad->next, i++)
+    {
+      cairo_text_extents(cr, pad->name, &te);
+
+      cairo_set_source_rgb(cr, 0, 0, 0);
+      cairo_rectangle(cr, x, y+(title_height)+10+20*i, 10, 10);
+      cairo_fill(cr);
+
+      cairo_set_source_rgb(cr, 0, 0, 0);
+      cairo_move_to(cr, x+12.5, y+(title_height)+10+20*i+te.height/2+5);
+      cairo_show_text(cr, pad->name);
+    }
+
+  i = 0;
+  pad = node->outputs;
+  for(;pad!=NULL;pad = pad->next, i++)
+    {
+      cairo_rectangle(cr, x, y, width, height);
+      cairo_clip(cr);
+
+      cairo_text_extents(cr, pad->name, &te);
+
+      cairo_set_source_rgb(cr, 0, 0, 0);
+      cairo_rectangle(cr, x+width-10, y+(title_height)+10+20*i, 10, 10);
+      cairo_fill(cr);
+
+      cairo_set_source_rgb(cr, 0, 0, 0);
+      cairo_move_to(cr, x+width-15-te.width, y+(title_height)+10+20*i+te.height/2+5);
+      cairo_show_text(cr, pad->name);
+
+      cairo_reset_clip(cr);
+      
+      if(pad->connected)
+	{
+	  gint fx, fy;
+	  fx = x+width-5;
+	  fy = y+(title_height)+15+20*i;
+
+	  gint tx, ty;
+	  get_pad_position_input(pad->connected, &tx, &ty, cr, editor);
+
+
+	  cairo_move_to(cr, fx, fy);
+	  if(tx - fx > 200)
+	    cairo_curve_to(cr, (fx+tx)/2, fy,
+			   (fx+tx)/2, ty,
+			   tx, ty);
+	  else
+	    cairo_curve_to(cr, fx+100, fy,
+			   tx-100, ty,
+			   tx, ty);
+	  cairo_stroke(cr);
+
+	}
+    }
 }
 
 static gboolean
@@ -288,12 +401,68 @@ gegl_node_widget_init(GeglNodeWidget* self)
   self->dragged_node = NULL;
   self->resized_node = NULL;
 
-  self->first_node = new_editor_node(NULL);
-  EditorNode* node = new_editor_node(self->first_node);
+  EditorNode* node = new_editor_node(NULL);
+
+  NodePad* input = malloc(sizeof(NodePad));
+  input->next = NULL;
+  input->connected = NULL;
+  input->name = "In";
+  input->node = node;
+
+  NodePad* input2 = malloc(sizeof(NodePad));
+  input2->next = NULL;
+  input2->connected = NULL;
+  input2->name = "Mask";
+  input2->node = node;
+
+  input->next = input2;
+  node->inputs = input;
+
+  NodePad* output = malloc(sizeof(NodePad));
+  output->next = NULL;
+  output->connected = NULL;
+  output->name = "Out";
+  output->node = node;
+
+  node->outputs = output;
+
+  self->first_node = node;
+
+  node = new_editor_node(NULL);
+
+  input = malloc(sizeof(NodePad));
+  input->next = NULL;
+  input->connected = NULL;
+  input->name = "In";
+  input->node = node;
+
+  input2 = malloc(sizeof(NodePad));
+  input2->next = NULL;
+  input2->connected = NULL;
+  input2->name = "Mask";
+  input2->node = node;
+
+  input->next = input2;
+  node->inputs = input;
+
+  output = malloc(sizeof(NodePad));
+  output->next = NULL;
+  output->connected = NULL;
+  output->name = "Out";
+  output->node = node;
+
+  node->outputs = output;
+
+  self->first_node->next = node;
+  node->x = 200;
+
+  connect_pads(self->first_node->inputs, node->outputs);
+
+  /*   = new_editor_node(self->first_node);
   node->x = 50;
   node = new_editor_node(node);
   node->x = 100;
-  node->y = 14;
+  node->y = 14;*/
 }
 
 GtkWidget* 

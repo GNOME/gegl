@@ -17,16 +17,27 @@
 typedef struct _GeglNodeWidget		GeglNodeWidget;
 typedef struct _GeglNodeWidgetClass	GeglNodeWidgetClass;
 
-typedef struct _EditorNode EditorNode;
+typedef struct _EditorNode	EditorNode;
+typedef struct _NodePad NodePad;
+
+struct _NodePad
+{
+  gchar* name;
+  NodePad *connected; //the pad that this is connected to. NULL if none
+  NodePad *next; //the next pad in the linked list
+  EditorNode* node;
+};
 
 struct _EditorNode
 {
-  gint x, y, width, height;
-  gchar* title;
-  EditorNode *next;
+  gint		 x, y, width, height;
+  gchar*	 title;
+  EditorNode	*next;
+  NodePad* inputs;
+  NodePad* outputs;
 };
 
-EditorNode* new_editor_node(EditorNode* prev);
+EditorNode*	new_editor_node(EditorNode* prev);
 
 
 struct _GeglNodeWidget
@@ -34,12 +45,12 @@ struct _GeglNodeWidget
   GtkDrawingArea	parent;
 
   /* private */
-  gint	px, py; //current mouse coordinates
-  gint dx, dy;  //last mouse coordinates when mouse button pressed
-  gboolean left_mouse_down; //if left mouse button is pressed
-  EditorNode* first_node;
-  EditorNode* dragged_node;
-  EditorNode* resized_node;
+  gint		px, py;		//current mouse coordinates
+  gint		dx, dy;		//last mouse coordinates when mouse button pressed
+  gboolean	left_mouse_down;	//if left mouse button is pressed
+  EditorNode*	first_node;
+  EditorNode*	dragged_node;
+  EditorNode*	resized_node;
 };
 
 struct _GeglNodeWidgetClass

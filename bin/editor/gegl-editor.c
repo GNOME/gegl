@@ -1,6 +1,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <cairo.h>
+#include <gegl.h>
+
 #include "gegl-node-widget.h"
 
 
