@@ -308,7 +308,7 @@ draw_node(EditorNode* node, cairo_t *cr, GeglNodeWidget* editor)
 			   (fx+tx)/2, ty,
 			   tx, ty);
 	  else
-	    cairo_curve_to(cr, fx+100, fy,
+	      cairo_curve_to(cr, fx+100, fy,
 			   tx-100, ty,
 			   tx, ty);
 	  cairo_stroke(cr);
@@ -323,14 +323,14 @@ draw_node(EditorNode* node, cairo_t *cr, GeglNodeWidget* editor)
 	  gint tx = editor->px, ty = editor->py;
 
 	  cairo_move_to(cr, fx, fy);
-	  if(tx - fx > 200)
+	  //if(tx - fx > 200)
 	    cairo_curve_to(cr, (fx+tx)/2, fy,
 			   (fx+tx)/2, ty,
 			   tx, ty);
-	  else
+	  /* else
 	    cairo_curve_to(cr, fx+100, fy,
 			   tx-100, ty,
-			   tx, ty);
+			   tx, ty);*/
 	  cairo_stroke(cr);
 
 	}
@@ -484,6 +484,8 @@ gegl_node_widget_button_release(GtkWidget* widget, GdkEventButton* event)
       }
       editor->dragged_pad = NULL;
     }
+
+  gtk_widget_queue_draw(widget);
 
   return FALSE;
 }
