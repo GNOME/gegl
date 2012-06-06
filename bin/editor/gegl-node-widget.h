@@ -4,27 +4,32 @@
 #define __NODEWIDGET_H__
 
 #include	<gtk/gtk.h>
+#include <glib-object.h>
 
-#define NODEWIDGET(obj)		GTK_CHECK_CAST (obj, nodewidget_get_type(), NodeWidget)
-#define NODEWIDGET_CLASS(klass) GTK_CHECK_CLASS_CAST (klass, nodewidget_get_type(), NodeWidgetClass)
-#define IS_NODEWIDGET(obj)	GTK_CHECK_TYPE(obj, nodewidget_get_type())
+#define GEGL_TYPE_NODE_WIDGET			(gegl_node_widget_get_type())
+#define GEGL_NODE_WIDGET(obj)			(G_TYPE_CHECK_INSTANCE_CAST(obj, GEGL_TYPE_NODE_WIDGET, GeglNodeWidget))
+#define GEGL_NODE_WIDGET_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST (klass, GEGL_TYPE_NODE_WIDGET, GeglNodeWidgetClass))
+#define GEGL_IS_NODE_WIDGET(obj)		(G_TYPE_CHECK_INSTANCE_TYPE(obj, GEGL_TYPE_NODE_WIDGET))
+#define GEGL_IS_NODE_WIDGET_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE((klass), GEGL_TYPE_NODE_WIDGET))
+#define GEGL_NODE_WIDGET_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS((obj), GEGL_TYPE_NODE_WIDGET, NodeWidgetClass))
 
-typedef struct _NodeWidget NodeWidget;
-typedef struct _NodeWidgetClass NodeWidgetClass;
+typedef struct _GeglNodeWidget		GeglNodeWidget;
+typedef struct _GeglNodeWidgetClass	GeglNodeWidgetClass;
 
-struct _NodeWidget
+struct _GeglNodeWidget
 {
-  GtkWidget widget;
+  GtkDrawingArea	parent;
 
-  
+  /* private */
+  gint	p_x, p_y;
 };
 
-struct _NodeWidgetClass
+struct _GeglNodeWidgetClass
 {
-  GtkWidgetClass parent_class;
+  GtkDrawingAreaClass	parent_class;
 };
 
-GtkType nodewidget_get_type(void);
-NodeWidget* nodewdiget_new();
+GType		gegl_node_widget_get_type(void);
+GtkWidget*	gegl_node_widget_new(void);
 
 #endif
