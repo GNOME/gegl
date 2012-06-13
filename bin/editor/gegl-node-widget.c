@@ -519,68 +519,11 @@ gegl_node_widget_init(GeglNodeWidget* self)
   self->dragged_pad = NULL;
   self->resized_node = NULL;
 
-  EditorNode* node = new_editor_node(NULL);
+  gchar *inputs[2];
+  inputs[0] = "Input1";
+  inputs[1] = "Input2";
 
-  NodePad* input = malloc(sizeof(NodePad));
-  input->next = NULL;
-  input->connected = NULL;
-  input->name = "In";
-  input->node = node;
-
-  NodePad* input2 = malloc(sizeof(NodePad));
-  input2->next = NULL;
-  input2->connected = NULL;
-  input2->name = "Mask";
-  input2->node = node;
-
-  input->next = input2;
-  node->inputs = input;
-
-  NodePad* output = malloc(sizeof(NodePad));
-  output->next = NULL;
-  output->connected = NULL;
-  output->name = "Out";
-  output->node = node;
-
-  node->outputs = output;
-
-  self->first_node = node;
-
-  node = new_editor_node(NULL);
-
-  input = malloc(sizeof(NodePad));
-  input->next = NULL;
-  input->connected = NULL;
-  input->name = "In";
-  input->node = node;
-
-  input2 = malloc(sizeof(NodePad));
-  input2->next = NULL;
-  input2->connected = NULL;
-  input2->name = "Mask";
-  input2->node = node;
-
-  input->next = input2;
-  node->inputs = input;
-
-  output = malloc(sizeof(NodePad));
-  output->next = NULL;
-  output->connected = NULL;
-  output->name = "Out";
-  output->node = node;
-
-  node->outputs = output;
-
-  self->first_node->next = node;
-  node->x = 200;
-
-  connect_pads(self->first_node->inputs, node->outputs);
-
-  /*   = new_editor_node(self->first_node);
-       node->x = 50;
-       node = new_editor_node(node);
-       node->x = 100;
-       node->y = 14;*/
+  gegl_node_widget_add_node(self, "New Node", 2, inputs, 2, inputs);
 }
 
 GtkWidget* 
@@ -589,3 +532,61 @@ gegl_node_widget_new ( void )
   return g_object_new (GEGL_TYPE_NODE_WIDGET, NULL);
 }
 
+gint	
+gegl_node_widget_add_node(GeglNodeWidget* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs)
+{
+  EditorNode* node = new_editor_node(gegl_node_widget_last_node(self));
+
+  if(self->first_node == NULL)
+    self->first_node = node;
+  /*  else
+      gegl_node_widget_last_node(self)->next = node;*/
+
+  int i;
+  NodePad* pad;
+  NodePad* last_pad;
+  for(i = 0, last_pad = NULL; i < ninputs; i++)
+    {
+      pad = malloc(sizeof(NodePad));
+      if(node->inputs == NULL)
+	node->inputs = pad;
+
+      pad->next = NULL;
+      pad->connected = NULL;
+      pad->name = inputs[i];
+      pad->node = node;
+
+      if(last_pad != NULL)
+	last_pad->next = pad;
+      
+      last_pad = pad;
+    }
+
+  for(i = 0, last_pad = NULL; i < noutputs; i++)
+    {
+      pad = malloc(sizeof(NodePad));
+      if(node->outputs == NULL)
+	node->outputs = pad;
+
+      pad->next = NULL;
+      pad->connected = NULL;
+      pad->name = outputs[i];
+      pad->node = node;
+
+      if(last_pad != NULL)
+	last_pad->next = pad;
+      
+      last_pad = pad;
+    }
+  //repeat for outputs
+}
+
+EditorNode* gegl_node_widget_last_node(GeglNodeWidget* self)
+{
+  if(self->first_node == NULL)
+    return NULL;
+
+  EditorNode* node;
+  for(node = self->first_node; node->next != NULL; node = node->next);
+  return node;
+}

@@ -19,6 +19,7 @@ typedef struct _GeglNodeWidgetClass	GeglNodeWidgetClass;
 
 typedef struct _EditorNode	EditorNode;
 typedef struct _NodePad		NodePad;
+typedef struct _PadConnection   PadConnection;
 
 struct _NodePad
 {
@@ -27,6 +28,12 @@ struct _NodePad
   NodePad	*next;		//the next pad in the linked list
   EditorNode*	 node;
 };
+
+struct _PadConnection
+{
+  
+};
+
 
 struct _EditorNode
 {
@@ -62,5 +69,9 @@ struct _GeglNodeWidgetClass
 
 GType		gegl_node_widget_get_type(void);
 GtkWidget*	gegl_node_widget_new(void);
+
+//public methods
+gint	gegl_node_widget_add_node(GeglNodeWidget* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs);
+EditorNode* gegl_node_widget_last_node(GeglNodeWidget* self);
 
 #endif
