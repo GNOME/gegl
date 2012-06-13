@@ -4,7 +4,7 @@
 #include <gegl.h>
 
 #include "gegl-node-widget.h"
-
+#include "gegl-editor-layer.h"
 
 gint
 main (gint	  argc,
@@ -26,12 +26,16 @@ main (gint	  argc,
   gtk_widget_show(window);
 
   GeglEditor* node_editor = GEGL_EDITOR(editor);
-  gchar *inputs[2];
+  /*gchar *inputs[2];
   inputs[0] = "Input1";
   inputs[1] = "Input2";
 
+  gegl_editor_add_node(node_editor, "New Node", 2, inputs, 2, inputs);
   gint my_node = gegl_editor_add_node(node_editor, "New Node", 2, inputs, 2, inputs);
-  gegl_editor_set_node_position(node_editor, my_node, 100, 0);
+  gegl_editor_set_node_position(node_editor, my_node, 100, 0);*/
+  gegl_init(&argc, &argv);
+  GeglNode *gegl = gegl_node_new();
+  GeglEditorLayer* layer = layer_create(node_editor, gegl);
 
   gtk_main();
   

@@ -10,7 +10,7 @@ enum {
 static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
 
 static void
-gegl_editor_set_property (GObject	*object,
+gegl_editor_set_property (GObject		*object,
 			       guint		 property_id,
 			       const GValue	*value,
 			       GParamSpec	*pspec)
@@ -26,7 +26,7 @@ gegl_editor_set_property (GObject	*object,
 }
 
 static void
-gegl_editor_get_property (GObject	*object,
+gegl_editor_get_property (GObject		*object,
 			       guint		 property_id,
 			       GValue		*value,
 			       GParamSpec	*pspec)
@@ -42,13 +42,13 @@ gegl_editor_get_property (GObject	*object,
 }
 
 EditorNode* new_editor_node(EditorNode* prev) {
-  EditorNode* node = malloc(sizeof(EditorNode));
-  node->next = NULL;
-  node->x = node->y = 0;
-  node->width = node->height = 100;
+  EditorNode*	node = malloc(sizeof(EditorNode));
+  node->next	     = NULL;
+  node->x	     = node->y = 0;
+  node->width	     = node->height = 100;
   if(prev != NULL)
-    prev->next = node;
-  node->title = "New Node";
+    prev->next	     = node;
+  node->title	     = "New Node";
 
   node->inputs = NULL;
   node->outputs = NULL;
@@ -56,8 +56,8 @@ EditorNode* new_editor_node(EditorNode* prev) {
   return node;
 }
 
-EditorNode* gegl_editor_last_node(GeglEditor* self);
-EditorNode* gegl_editor_get_node(GeglEditor* self, gint id);
+EditorNode*	gegl_editor_last_node(GeglEditor* self);
+EditorNode*	gegl_editor_get_node(GeglEditor* self, gint id);
 
 void
 connect_pads(NodePad* a, NodePad* b)
@@ -69,13 +69,13 @@ connect_pads(NodePad* a, NodePad* b)
 NodePad*
 get_pad_at(gint px, gint py, GeglEditor* editor)
 {
-  NodePad* result = NULL;
+  NodePad*	result = NULL;
 
-  EditorNode* node = editor->first_node;
+  EditorNode*	node = editor->first_node;
   for(;node != NULL; node = node->next)
     {
-      gint x, y;
-      gint width, height;
+      gint	x, y;
+      gint	width, height;
 
       if(node == editor->dragged_node)
 	{
@@ -88,44 +88,45 @@ get_pad_at(gint px, gint py, GeglEditor* editor)
 	  y = node->y;
 	}
 
-      //TODO: be more intelligent about minimum size (should be based on number of inputs/outputs so that they all fit properly)
+      /*TODO: be more intelligent about minimum size (should be based on number of 
+	inputs/outputs and pad label sizes so that they all fit properly)*/
       if(node->width < 100)
-	node->width = 100;
+	node->width  = 100;
       if(node->height < 50)
 	node->height = 50;
 
       if(node == editor->resized_node)
 	{
-	  width = node->width+editor->px-editor->dx;
+	  width	 = node->width+editor->px-editor->dx;
 	  height = node->height+editor->py-editor->dy;
 	}
       else
 	{
-	  width = node->width;
+	  width	 = node->width;
 	  height = node->height;
 	}
 
       if(width < 100)
-	width = 100;
+	width  = 100;
       if(height < 50)
 	height = 50;
 
-      gint title_height = node->title_height;
+      gint	title_height = node->title_height;
 
-      int i = 0;
-      NodePad* pad = node->inputs;
+      int	i   = 0;
+      NodePad*	pad = node->inputs;
       for(;pad!=NULL;pad = pad->next, i++)
 	{
 	  if(px > x && py > y+(title_height)+10+20*i && px < x+10 && py < y+(title_height)+20+20*i)
 	    result = pad;
 	}
 
-      i = 0;
+      i	  = 0;
       pad = node->outputs;
       for(;pad!=NULL;pad = pad->next, i++)
 	{
-	  if(px > x+width-10 && px < x+width &&
-	     py > y+(title_height)+10+20*i &&
+	  if(px > x+width-10 && px < x+width	&&
+	     py > y+(title_height)+10+20*i	&&
 	     py < y+(title_height)+20+20*i)
 	    result = pad;
 	}
@@ -140,17 +141,17 @@ get_pad_position_input(NodePad* pad, gint* x, gint* y, cairo_t* cr, GeglEditor* 
 			 CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
   cairo_set_font_size(cr, 12);
 
-  cairo_text_extents_t te;
+  cairo_text_extents_t	te;
   cairo_text_extents(cr, pad->node->title, &te);
-  gint title_height = te.height+5;
+  gint			title_height = te.height+5;
 
-  int i = 0;
-  NodePad* _pad = pad->node->inputs;
+  int		i    = 0;
+  NodePad*	_pad = pad->node->inputs;
   for(;_pad!=NULL;_pad = _pad->next, i++)
     {
       if(_pad == pad)
 	{
-	  gint node_x, node_y;
+	  gint	node_x, node_y;
 
 	  if(pad->node == editor->dragged_node)
 	    {
@@ -173,8 +174,8 @@ get_pad_position_input(NodePad* pad, gint* x, gint* y, cairo_t* cr, GeglEditor* 
 static void
 draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
 {
-  gint x, y;
-  gint width, height;
+  gint	x, y;
+  gint	width, height;
 
   if(node == editor->dragged_node)
     {
@@ -189,23 +190,23 @@ draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
 
   //TODO: be more intelligent about minimum size (should be based on number of inputs/outputs so that they all fit properly)
   if(node->width < 100)
-    node->width = 100;
+    node->width	 = 100;
   if(node->height < 50)
     node->height = 50;
 
   if(node == editor->resized_node)
     {
-      width = node->width+editor->px-editor->dx;
+      width  = node->width+editor->px-editor->dx;
       height = node->height+editor->py-editor->dy;
     }
   else
     {
-      width = node->width;
+      width  = node->width;
       height = node->height;
     }
 
   if(width < 100)
-    width = 100;
+    width  = 100;
   if(height < 50)
     height = 50;
 
@@ -223,13 +224,13 @@ draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
 			 CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
   cairo_set_font_size(cr, 12);
 
-  cairo_font_extents_t fe;
+  cairo_font_extents_t	fe;
   cairo_font_extents(cr, &fe);
 
-  cairo_text_extents_t te;
+  cairo_text_extents_t	te;
   cairo_text_extents(cr, node->title, &te);
-  gint title_height = te.height+5;
-  node->title_height = title_height;
+  gint			title_height = te.height+5;
+  node->title_height		     = title_height;
 
   //draw the line separating the title
   cairo_move_to(cr, x, y+te.height+5);
@@ -253,8 +254,8 @@ draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
   cairo_stroke(cr);
 
 
-  int i = 0;
-  NodePad* pad = node->inputs;
+  int		i   = 0;
+  NodePad*	pad = node->inputs;
   for(;pad!=NULL;pad = pad->next, i++)
     {
       cairo_text_extents(cr, pad->name, &te);
@@ -268,7 +269,7 @@ draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
       cairo_show_text(cr, pad->name);
     }
 
-  i = 0;
+  i   = 0;
   pad = node->outputs;
   for(;pad!=NULL;pad = pad->next, i++)
     {
@@ -290,11 +291,11 @@ draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
       //TODO: render all connections underneath all nodes
       if(pad->connected)
 	{
-	  gint fx, fy;
+	  gint	fx, fy;
 	  fx = x+width-5;
 	  fy = y+(title_height)+15+20*i;
 
-	  gint tx, ty;
+	  gint	tx, ty;
 	  get_pad_position_input(pad->connected, &tx, &ty, cr, editor);
 
 
@@ -312,11 +313,11 @@ draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
 	}
       else if(pad == editor->dragged_pad)
 	{
-	  gint fx, fy;
+	  gint	fx, fy;
 	  fx = x+width-5;
 	  fy = y+(title_height)+15+20*i;
 
-	  gint tx = editor->px, ty = editor->py;
+	  gint	tx = editor->px, ty = editor->py;
 
 	  cairo_move_to(cr, fx, fy);
 	  //if(tx - fx > 200)
@@ -341,7 +342,7 @@ gegl_editor_draw(GtkWidget *widget, cairo_t *cr)
   cairo_set_source_rgb(cr, 1, 1, 1);
   cairo_paint(cr);
 
-  EditorNode* node = editor->first_node;
+  EditorNode*	node = editor->first_node;
   for(;node != NULL; node = node->next)
     {
       draw_node(node, cr, editor);
@@ -368,8 +369,8 @@ static gboolean
 gegl_editor_motion(GtkWidget* widget, GdkEventMotion* event)
 {
   GeglEditor*	editor = GEGL_EDITOR(widget);
-  editor->px		       = (gint)event->x;
-  editor->py		       = (gint)event->y;
+  editor->px	       = (gint)event->x;
+  editor->py	       = (gint)event->y;
 
   /* redraw */
   gtk_widget_queue_draw(widget);
@@ -381,33 +382,33 @@ gegl_editor_motion(GtkWidget* widget, GdkEventMotion* event)
 static gboolean
 gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 {
-  GeglEditor*	editor = GEGL_EDITOR(widget);
+  GeglEditor*	editor	  = GEGL_EDITOR(widget);
   //TODO: check which mouse button was pressed
   editor->left_mouse_down = TRUE;
-  editor->dx = editor->px;
-  editor->dy = editor->py;
+  editor->dx		  = editor->px;
+  editor->dy		  = editor->py;
 
   editor->dragged_pad = NULL;
 
-  NodePad* pad = get_pad_at(editor->px, editor->py, editor);
+  NodePad*	pad = get_pad_at(editor->px, editor->py, editor);
   if(pad)
     {
-      editor->dragged_pad = pad;
+      editor->dragged_pad	  = pad;
       if(pad->connected) {
 	pad->connected->connected = NULL;
-	pad->connected = NULL;
+	pad->connected		  = NULL;
       }
     }
   else
     {
-      EditorNode* node = editor->first_node;
-      EditorNode* focus = NULL;
+      EditorNode*	node  = editor->first_node;
+      EditorNode*	focus = NULL;
       for(;node != NULL; node = node->next)
 	{
-	  if(editor->px > node->x && editor->px < node->x+node->width &&
+	  if(editor->px > node->x && editor->px < node->x+node->width	&&
 	     editor->py > node->y && editor->py < node->y+node->height) 
 	    {
-	      if(editor->px >= node->x+node->width-15 &&
+	      if(editor->px >= node->x+node->width-15	&&
 		 editor->py >= node->y+node->height-15+(node->x+node->width-editor->px))
 		{
 		  editor->dragged_node = NULL;
@@ -430,7 +431,7 @@ gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 	      editor->first_node = focus->next;
 	    }
 
-	  EditorNode* node = editor->first_node;
+	  EditorNode*	node = editor->first_node;
 
 	  for(;node->next != NULL; node = node->next)
 	    {
@@ -441,7 +442,7 @@ gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 	    }
 
 	  focus->next = NULL;
-	  node->next = focus;
+	  node->next  = focus;
 	}
     }
 
@@ -462,19 +463,19 @@ gegl_editor_button_release(GtkWidget* widget, GdkEventButton* event)
     {
       editor->dragged_node->x += editor->px-editor->dx;
       editor->dragged_node->y += editor->py-editor->dy;
-      editor->dragged_node = NULL;
+      editor->dragged_node     = NULL;
     }
 
   if(editor->resized_node)
     {
-      editor->resized_node->width += editor->px-editor->dx;
+      editor->resized_node->width  += editor->px-editor->dx;
       editor->resized_node->height += editor->py-editor->dy;
-      editor->resized_node = NULL;
+      editor->resized_node	    = NULL;
     }
 
   if(editor->dragged_pad)
     {
-      NodePad* pad = get_pad_at(editor->px, editor->py, editor);
+      NodePad*	pad = get_pad_at(editor->px, editor->py, editor);
       if(pad && pad != editor->dragged_pad) {
 	connect_pads(pad, editor->dragged_pad);
       }
@@ -497,7 +498,7 @@ gegl_editor_class_init(GeglEditorClass *klass)
 #endif
   widget_class->motion_notify_event   = gegl_editor_motion;
   widget_class->button_press_event    = gegl_editor_button_press;
-  widget_class->button_release_event    = gegl_editor_button_release;
+  widget_class->button_release_event  = gegl_editor_button_release;
 }
 
 
@@ -510,11 +511,14 @@ gegl_editor_init(GeglEditor* self)
 			 GDK_BUTTON_PRESS_MASK   |
 			 GDK_BUTTON_RELEASE_MASK );
 
-  self->first_node = NULL;
-  self->dragged_node = NULL;
-  self->dragged_pad = NULL;
-  self->resized_node = NULL;
-  self->next_id = 1; //0 reserved for non-existent node
+  self->first_node	 = NULL;
+  self->dragged_node	 = NULL;
+  self->dragged_pad	 = NULL;
+  self->resized_node	 = NULL;
+  self->connectedPads	 = NULL;
+  self->disconnectedPads = NULL;
+
+  self->next_id = 1;		//0 reserved for non-existent node
 }
 
 GtkWidget* 
@@ -526,28 +530,28 @@ gegl_editor_new ( void )
 gint	
 gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs)
 {
-  EditorNode* node = new_editor_node(gegl_editor_last_node(self));
+  EditorNode*	node = new_editor_node(gegl_editor_last_node(self));
 
   if(self->first_node == NULL)
     self->first_node = node;
 
   node->id = self->next_id++;
 
-  int i;
-  NodePad* pad;
-  NodePad* last_pad;
+  int		i;
+  NodePad*	pad;
+  NodePad*	last_pad;
 
   //add inputs to node
   for(i = 0, last_pad = NULL; i < ninputs; i++)
     {
-      pad = malloc(sizeof(NodePad));
+      pad	     = malloc(sizeof(NodePad));
       if(node->inputs == NULL)
 	node->inputs = pad;
 
-      pad->next = NULL;
+      pad->next	     = NULL;
       pad->connected = NULL;
-      pad->name = inputs[i];
-      pad->node = node;
+      pad->name	     = inputs[i];
+      pad->node	     = node;
 
       if(last_pad != NULL)
 	last_pad->next = pad;
@@ -558,14 +562,14 @@ gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** input
   //add outputs to node
   for(i = 0, last_pad = NULL; i < noutputs; i++)
     {
-      pad = malloc(sizeof(NodePad));
+      pad	      = malloc(sizeof(NodePad));
       if(node->outputs == NULL)
 	node->outputs = pad;
 
-      pad->next = NULL;
+      pad->next	     = NULL;
       pad->connected = NULL;
-      pad->name = outputs[i];
-      pad->node = node;
+      pad->name	     = outputs[i];
+      pad->node	     = node;
 
       if(last_pad != NULL)
 	last_pad->next = pad;
@@ -578,9 +582,9 @@ gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** input
 
 void gegl_editor_set_node_position(GeglEditor* self, gint id, gint x, gint y)
 {
-  EditorNode* node = gegl_editor_get_node(self, id);
+  EditorNode*	node = gegl_editor_get_node(self, id);
   if(node == NULL)
-    return; //generate an error
+    return;			//generate an error
 
   node->x = x;
   node->y = y;
@@ -591,14 +595,14 @@ EditorNode* gegl_editor_last_node(GeglEditor* self)
   if(self->first_node == NULL)
     return NULL;
 
-  EditorNode* node;
+  EditorNode*	node;
   for(node = self->first_node; node->next != NULL; node = node->next);
   return node;
 }
 
 EditorNode* gegl_editor_get_node(GeglEditor* self, gint id)
 {
-  EditorNode* node;
+  EditorNode*	node;
   for(node = self->first_node; node != NULL; node = node->next)
     if(node->id == id)
       return node;
