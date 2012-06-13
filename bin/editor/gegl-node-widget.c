@@ -395,6 +395,10 @@ gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
     {
       editor->dragged_pad	  = pad;
       if(pad->connected) {
+	if(editor->disconnectedPads != NULL)
+	  editor->disconnectedPads(editor->host, editor, 
+				pad->connected->node->id, pad->connected->name,
+				pad->node->id, pad->name);
 	pad->connected->connected = NULL;
 	pad->connected		  = NULL;
       }
@@ -478,6 +482,10 @@ gegl_editor_button_release(GtkWidget* widget, GdkEventButton* event)
       NodePad*	pad = get_pad_at(editor->px, editor->py, editor);
       if(pad && pad != editor->dragged_pad) {
 	connect_pads(pad, editor->dragged_pad);
+	if(editor->connectedPads != NULL)
+	  editor->connectedPads(editor->host, editor, 
+				editor->dragged_pad->node->id, editor->dragged_pad->name,
+				pad->node->id, pad->name);
       }
       editor->dragged_pad = NULL;
     }

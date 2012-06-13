@@ -3,6 +3,7 @@
 
 #include "gegl-node-widget.h"
 #include <gegl.h>
+#include <glib.h>
 
 /*	
 Creates and removes connections between pads in the Gegl graph 
@@ -12,10 +13,17 @@ The user should not link, unlink, add, or remove any operations outside of the l
 */
 typedef struct _GeglEditorLayer GeglEditorLayer;
 
+typedef struct _node_id_pair
+{
+  GeglNode*	node;
+  gint		id;
+} node_id_pair;
+
 struct _GeglEditorLayer
 {
   GeglEditor	*editor;
   GeglNode	*gegl;
+  GSList	*pairs;
 };
 
 /* 

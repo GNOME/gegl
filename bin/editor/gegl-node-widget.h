@@ -53,8 +53,8 @@ struct _GeglEditor
   GtkDrawingArea	parent;
 
   /* public */
-  gint (*connectedPads) (GeglEditor* self, gint from, gchar* output, gint to, gchar* input);
-  gint (*disconnectedPads) (GeglEditor* self, gint from, gchar* output, gint to, gchar* input);
+  gint (*connectedPads) (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input);
+  gint (*disconnectedPads) (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input);
 
   /* private */
   gint		px, py;		//current mouse coordinates
@@ -65,6 +65,7 @@ struct _GeglEditor
   EditorNode*	dragged_node;
   EditorNode*	resized_node;
   NodePad*	dragged_pad;
+  gpointer host; //sent back through callbacks. Can really be whatever
 };
 
 struct _GeglEditorClass
