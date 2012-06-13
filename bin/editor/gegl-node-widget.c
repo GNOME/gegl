@@ -56,12 +56,8 @@ EditorNode* new_editor_node(EditorNode* prev) {
   return node;
 }
 
-EditorNode* top_node(EditorNode* first)
-{
-  EditorNode* node = first;
-  while(node->next != NULL) node = node->next;
-  return node;
-}
+EditorNode* gegl_editor_last_node(GeglEditor* self);
+EditorNode* gegl_editor_get_node(GeglEditor* self, gint id);
 
 void
 connect_pads(NodePad* a, NodePad* b)
@@ -518,8 +514,7 @@ gegl_editor_init(GeglEditor* self)
   self->dragged_node = NULL;
   self->dragged_pad = NULL;
   self->resized_node = NULL;
-
-
+  self->next_id = 1; //0 reserved for non-existent node
 }
 
 GtkWidget* 
@@ -536,9 +531,13 @@ gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** input
   if(self->first_node == NULL)
     self->first_node = node;
 
+  node->id = self->next_id++;
+
   int i;
   NodePad* pad;
   NodePad* last_pad;
+
+  //add inputs to node
   for(i = 0, last_pad = NULL; i < ninputs; i++)
     {
       pad = malloc(sizeof(NodePad));
@@ -556,6 +555,7 @@ gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** input
       last_pad = pad;
     }
 
+  //add outputs to node
   for(i = 0, last_pad = NULL; i < noutputs; i++)
     {
       pad = malloc(sizeof(NodePad));
@@ -572,7 +572,18 @@ gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** input
       
       last_pad = pad;
     }
-  //repeat for outputs
+  
+  return node->id;
+}
+
+void gegl_editor_set_node_position(GeglEditor* self, gint id, gint x, gint y)
+{
+  EditorNode* node = gegl_editor_get_node(self, id);
+  if(node == NULL)
+    return; //generate an error
+
+  node->x = x;
+  node->y = y;
 }
 
 EditorNode* gegl_editor_last_node(GeglEditor* self)
@@ -583,4 +594,13 @@ EditorNode* gegl_editor_last_node(GeglEditor* self)
   EditorNode* node;
   for(node = self->first_node; node->next != NULL; node = node->next);
   return node;
+}
+
+EditorNode* gegl_editor_get_node(GeglEditor* self, gint id)
+{
+  EditorNode* node;
+  for(node = self->first_node; node != NULL; node = node->next)
+    if(node->id == id)
+      return node;
+  return NULL;
 }

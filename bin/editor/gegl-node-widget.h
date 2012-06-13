@@ -37,7 +37,7 @@ struct _PadConnection
 
 struct _EditorNode
 {
-  gint		 x, y, width, height;
+  gint		 id, x, y, width, height;
   gchar*	 title;
   gint		 title_height;
   EditorNode	*next;
@@ -55,6 +55,7 @@ struct _GeglEditor
   /* private */
   gint		px, py;		//current mouse coordinates
   gint		dx, dy;		//last mouse coordinates when mouse button pressed
+  gint next_id;
   gboolean	left_mouse_down;	//if left mouse button is pressed
   EditorNode*	first_node;
   EditorNode*	dragged_node;
@@ -72,7 +73,6 @@ GtkWidget*	gegl_editor_new(void);
 
 //public methods
 gint	gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs);
-EditorNode* gegl_editor_last_node(GeglEditor* self);
-//void gegl_editor_set_node_position(GeglEditor* self, gint node, gint x, gint y);
+void gegl_editor_set_node_position(GeglEditor* self, gint node, gint x, gint y);
 
 #endif
