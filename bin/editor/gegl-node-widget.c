@@ -536,6 +536,7 @@ gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** input
     self->first_node = node;
 
   node->id = self->next_id++;
+  node->title = title;
 
   int		i;
   NodePad*	pad;

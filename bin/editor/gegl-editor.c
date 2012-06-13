@@ -37,6 +37,9 @@ main (gint	  argc,
   GeglNode *gegl = gegl_node_new();
   GeglEditorLayer* layer = layer_create(node_editor, gegl);
 
+  GeglNode *display    = gegl_node_create_child (gegl, "gegl:display");
+  layer_add_gegl_node(layer, display);
+
   gtk_main();
   
   return 0;

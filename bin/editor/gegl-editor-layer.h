@@ -3,8 +3,6 @@
 
 #include "gegl-node-widget.h"
 #include <gegl.h>
-typedef struct _GeglOperation GeglOperation;
-#include <operation/gegl-operation.h>
 
 /*	
 Creates and removes connections between pads in the Gegl graph 
@@ -23,8 +21,8 @@ struct _GeglEditorLayer
 /* 
 Editor and gegl graph should both be empty, but properly initialized 
 */
-GeglEditorLayer*	layer_create(GeglEditor* editor, GeglEditor* gegl);
-void			layer_add_gegl_op(GeglEditorLayer* layer, GeglOperation* op);
+GeglEditorLayer*	layer_create(GeglEditor* editor, GeglNode* gegl);
+void			layer_add_gegl_node(GeglEditorLayer* layer, GeglNode* node);
 //void layer_remove_gegl_node(GeglNode* node);
 //link, unlink
 
