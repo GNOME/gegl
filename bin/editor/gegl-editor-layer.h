@@ -1,7 +1,7 @@
 #ifndef __EDITORLAYER_H__
 #define __EDITORLAYER_H__
 
-#include "gegl-node-widget.h"
+#include	"gegl-node-widget.h"
 #include <gegl.h>
 #include <glib.h>
 

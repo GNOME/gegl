@@ -50,7 +50,7 @@ EditorNode* new_editor_node(EditorNode* prev) {
     prev->next	     = node;
   node->title	     = "New Node";
 
-  node->inputs = NULL;
+  node->inputs	= NULL;
   node->outputs = NULL;
 
   return node;
@@ -382,8 +382,9 @@ gegl_editor_motion(GtkWidget* widget, GdkEventMotion* event)
 static gboolean
 gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 {
-  GeglEditor*	editor	  = GEGL_EDITOR(widget);
-  //TODO: check which mouse button was pressed
+  GeglEditor*	editor = GEGL_EDITOR(widget);
+
+  //TODO: check which mouse button was pressed rather than assume it was the left button
   editor->left_mouse_down = TRUE;
   editor->dx		  = editor->px;
   editor->dy		  = editor->py;
@@ -458,6 +459,7 @@ gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 static gboolean
 gegl_editor_button_release(GtkWidget* widget, GdkEventButton* event)
 {
+  //TODO: only allow outputs to be connected to inputs (not inputs to inputs or outputs to outputs)
   GeglEditor*	editor = GEGL_EDITOR(widget);
 
   /* TODO: check which mouse button was released instead of assuming it's the left one */
@@ -543,7 +545,7 @@ gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** input
   if(self->first_node == NULL)
     self->first_node = node;
 
-  node->id = self->next_id++;
+  node->id    = self->next_id++;
   node->title = title;
 
   int		i;

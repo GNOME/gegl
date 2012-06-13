@@ -1,1 +1,1 @@
-gcc -g gegl-editor.c gegl-editor-layer.c gegl-node-widget.c -o editor `pkg-config --cflags --libs gtk+-2.0` -I/usr/local/include/gegl-0.2/ -I/usr/local/include/babl-0.1/ -lgegl-0.2
+gcc -g gegl-editor.c gegl-editor-layer.c gegl-node-widget.c -o editor `pkg-config --cflags --libs gtk+-2.0 gthread-2.0` -I/usr/local/include/gegl-0.2/ -I/usr/local/include/babl-0.1/ -lgegl-0.2
