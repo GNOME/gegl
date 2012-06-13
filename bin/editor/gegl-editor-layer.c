@@ -22,5 +22,15 @@ layer_add_gegl_node(GeglEditorLayer* layer, GeglNode* node)
     {
       inputs[i] = gegl_pad_get_name(pads->data);
     }
-  gegl_editor_add_node(layer->editor, gegl_node_get_operation(node), num_inputs, inputs, 0, NULL);
+
+  if(gegl_node_get_pad(node, "output") == NULL)
+    {
+      gegl_editor_add_node(layer->editor, gegl_node_get_operation(node), num_inputs, inputs, 0, NULL);
+    }
+  else
+    {
+      gchar* output = "output";
+      gchar** outputs[1] = {output};
+      gegl_editor_add_node(layer->editor, gegl_node_get_operation(node), num_inputs, inputs, 1, outputs);
+    }
 }

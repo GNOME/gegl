@@ -40,6 +40,11 @@ main (gint	  argc,
   GeglNode *display    = gegl_node_create_child (gegl, "gegl:display");
   layer_add_gegl_node(layer, display);
 
+  GeglNode *over       = gegl_node_new_child (gegl,
+                                 "operation", "gegl:over",
+                                 NULL);
+  layer_add_gegl_node(layer, over);
+
   gtk_main();
   
   return 0;
