@@ -7,15 +7,15 @@
 #include <glib-object.h>
 #include <stdlib.h>
 
-#define GEGL_TYPE_NODE_WIDGET			(gegl_node_widget_get_type())
-#define GEGL_NODE_WIDGET(obj)			(G_TYPE_CHECK_INSTANCE_CAST(obj, GEGL_TYPE_NODE_WIDGET, GeglNodeWidget))
-#define GEGL_NODE_WIDGET_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST (klass, GEGL_TYPE_NODE_WIDGET, GeglNodeWidgetClass))
-#define GEGL_IS_NODE_WIDGET(obj)		(G_TYPE_CHECK_INSTANCE_TYPE(obj, GEGL_TYPE_NODE_WIDGET))
-#define GEGL_IS_NODE_WIDGET_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE((klass), GEGL_TYPE_NODE_WIDGET))
-#define GEGL_NODE_WIDGET_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS((obj), GEGL_TYPE_NODE_WIDGET, NodeWidgetClass))
+#define GEGL_TYPE_EDITOR			(gegl_editor_get_type())
+#define GEGL_EDITOR(obj)			(G_TYPE_CHECK_INSTANCE_CAST(obj, GEGL_TYPE_EDITOR, GeglEditor))
+#define GEGL_EDITOR_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST (klass, GEGL_TYPE_EDITOR, GeglEditorClass))
+#define GEGL_IS_EDITOR(obj)		(G_TYPE_CHECK_INSTANCE_TYPE(obj, GEGL_TYPE_EDITOR))
+#define GEGL_IS_EDITOR_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE((klass), GEGL_TYPE_EDITOR))
+#define GEGL_EDITOR_GET_CLASS(obj)		(G_TYPE_INSTANCE_GET_CLASS((obj), GEGL_TYPE_EDITOR, NodeWidgetClass))
 
-typedef struct _GeglNodeWidget		GeglNodeWidget;
-typedef struct _GeglNodeWidgetClass	GeglNodeWidgetClass;
+typedef struct _GeglEditor		GeglEditor;
+typedef struct _GeglEditorClass	GeglEditorClass;
 
 typedef struct _EditorNode	EditorNode;
 typedef struct _NodePad		NodePad;
@@ -48,7 +48,7 @@ struct _EditorNode
 EditorNode*	new_editor_node(EditorNode* prev);
 
 
-struct _GeglNodeWidget
+struct _GeglEditor
 {
   GtkDrawingArea	parent;
 
@@ -62,16 +62,17 @@ struct _GeglNodeWidget
   NodePad*	dragged_pad;
 };
 
-struct _GeglNodeWidgetClass
+struct _GeglEditorClass
 {
   GtkDrawingAreaClass	parent_class;
 };
 
-GType		gegl_node_widget_get_type(void);
-GtkWidget*	gegl_node_widget_new(void);
+GType		gegl_editor_get_type(void);
+GtkWidget*	gegl_editor_new(void);
 
 //public methods
-gint	gegl_node_widget_add_node(GeglNodeWidget* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs);
-EditorNode* gegl_node_widget_last_node(GeglNodeWidget* self);
+gint	gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs);
+EditorNode* gegl_editor_last_node(GeglEditor* self);
+//void gegl_editor_set_node_position(GeglEditor* self, gint node, gint x, gint y);
 
 #endif

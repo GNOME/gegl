@@ -1,6 +1,6 @@
 #include "gegl-node-widget.h"
 
-G_DEFINE_TYPE (GeglNodeWidget, gegl_node_widget, GTK_TYPE_DRAWING_AREA);
+G_DEFINE_TYPE (GeglEditor, gegl_editor, GTK_TYPE_DRAWING_AREA);
 
 enum {
   PROP_0,
@@ -10,12 +10,12 @@ enum {
 static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
 
 static void
-gegl_node_widget_set_property (GObject	*object,
+gegl_editor_set_property (GObject	*object,
 			       guint		 property_id,
 			       const GValue	*value,
 			       GParamSpec	*pspec)
 {
-  GeglNodeWidget	*self = GEGL_NODE_WIDGET(object);
+  GeglEditor	*self = GEGL_EDITOR(object);
 
   switch (property_id)
     {
@@ -26,12 +26,12 @@ gegl_node_widget_set_property (GObject	*object,
 }
 
 static void
-gegl_node_widget_get_property (GObject	*object,
+gegl_editor_get_property (GObject	*object,
 			       guint		 property_id,
 			       GValue		*value,
 			       GParamSpec	*pspec)
 {
-  GeglNodeWidget*	self = GEGL_NODE_WIDGET(object);
+  GeglEditor*	self = GEGL_EDITOR(object);
   
   switch(property_id)
     {
@@ -71,7 +71,7 @@ connect_pads(NodePad* a, NodePad* b)
 }
 
 NodePad*
-get_pad_at(gint px, gint py, GeglNodeWidget* editor)
+get_pad_at(gint px, gint py, GeglEditor* editor)
 {
   NodePad* result = NULL;
 
@@ -138,7 +138,7 @@ get_pad_at(gint px, gint py, GeglNodeWidget* editor)
 }
 
 void
-get_pad_position_input(NodePad* pad, gint* x, gint* y, cairo_t* cr, GeglNodeWidget* editor)
+get_pad_position_input(NodePad* pad, gint* x, gint* y, cairo_t* cr, GeglEditor* editor)
 {
   cairo_select_font_face(cr, "Georgia",
 			 CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
@@ -175,7 +175,7 @@ get_pad_position_input(NodePad* pad, gint* x, gint* y, cairo_t* cr, GeglNodeWidg
 }
 
 static void
-draw_node(EditorNode* node, cairo_t *cr, GeglNodeWidget* editor)
+draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
 {
   gint x, y;
   gint width, height;
@@ -338,9 +338,9 @@ draw_node(EditorNode* node, cairo_t *cr, GeglNodeWidget* editor)
 }
 
 static gboolean
-gegl_node_widget_draw(GtkWidget *widget, cairo_t *cr)
+gegl_editor_draw(GtkWidget *widget, cairo_t *cr)
 {
-  GeglNodeWidget*	editor = GEGL_NODE_WIDGET(widget);
+  GeglEditor*	editor = GEGL_EDITOR(widget);
 
   cairo_set_source_rgb(cr, 1, 1, 1);
   cairo_paint(cr);
@@ -357,11 +357,11 @@ gegl_node_widget_draw(GtkWidget *widget, cairo_t *cr)
 
 #if GTK_MAJOR_VERSION == (2)
 static gboolean
-gegl_node_widget_expose (GtkWidget *widget, GdkEventExpose *event)
+gegl_editor_expose (GtkWidget *widget, GdkEventExpose *event)
 {
   cairo_t	*cr = gdk_cairo_create(widget->window);
 
-  gegl_node_widget_draw(widget, cr);
+  gegl_editor_draw(widget, cr);
   cairo_destroy(cr);
 
   return FALSE;
@@ -369,9 +369,9 @@ gegl_node_widget_expose (GtkWidget *widget, GdkEventExpose *event)
 #endif
 
 static gboolean
-gegl_node_widget_motion(GtkWidget* widget, GdkEventMotion* event)
+gegl_editor_motion(GtkWidget* widget, GdkEventMotion* event)
 {
-  GeglNodeWidget*	editor = GEGL_NODE_WIDGET(widget);
+  GeglEditor*	editor = GEGL_EDITOR(widget);
   editor->px		       = (gint)event->x;
   editor->py		       = (gint)event->y;
 
@@ -383,9 +383,9 @@ gegl_node_widget_motion(GtkWidget* widget, GdkEventMotion* event)
 }
 
 static gboolean
-gegl_node_widget_button_press(GtkWidget* widget, GdkEventButton* event)
+gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 {
-  GeglNodeWidget*	editor = GEGL_NODE_WIDGET(widget);
+  GeglEditor*	editor = GEGL_EDITOR(widget);
   //TODO: check which mouse button was pressed
   editor->left_mouse_down = TRUE;
   editor->dx = editor->px;
@@ -455,9 +455,9 @@ gegl_node_widget_button_press(GtkWidget* widget, GdkEventButton* event)
 }
 
 static gboolean
-gegl_node_widget_button_release(GtkWidget* widget, GdkEventButton* event)
+gegl_editor_button_release(GtkWidget* widget, GdkEventButton* event)
 {
-  GeglNodeWidget*	editor = GEGL_NODE_WIDGET(widget);
+  GeglEditor*	editor = GEGL_EDITOR(widget);
 
   /* TODO: check which mouse button was released instead of assuming it's the left one */
   editor->left_mouse_down = FALSE;
@@ -491,23 +491,23 @@ gegl_node_widget_button_release(GtkWidget* widget, GdkEventButton* event)
 }
 
 static void
-gegl_node_widget_class_init(GeglNodeWidgetClass *klass)
+gegl_editor_class_init(GeglEditorClass *klass)
 {
   GtkWidgetClass	*widget_class = GTK_WIDGET_CLASS(klass);
 #if GTK_MAJOR_VERSION == (3)
-  widget_class->draw		      = gegl_node_widget_draw;
+  widget_class->draw		      = gegl_editor_draw;
 #else
-  widget_class->expose_event	      = gegl_node_widget_expose;
+  widget_class->expose_event	      = gegl_editor_expose;
 #endif
-  widget_class->motion_notify_event   = gegl_node_widget_motion;
-  widget_class->button_press_event    = gegl_node_widget_button_press;
-  widget_class->button_release_event    = gegl_node_widget_button_release;
+  widget_class->motion_notify_event   = gegl_editor_motion;
+  widget_class->button_press_event    = gegl_editor_button_press;
+  widget_class->button_release_event    = gegl_editor_button_release;
 }
 
 
 
 static void
-gegl_node_widget_init(GeglNodeWidget* self)
+gegl_editor_init(GeglEditor* self)
 {
   gtk_widget_add_events (GTK_WIDGET(self),
 			 GDK_POINTER_MOTION_MASK |
@@ -519,28 +519,22 @@ gegl_node_widget_init(GeglNodeWidget* self)
   self->dragged_pad = NULL;
   self->resized_node = NULL;
 
-  gchar *inputs[2];
-  inputs[0] = "Input1";
-  inputs[1] = "Input2";
 
-  gegl_node_widget_add_node(self, "New Node", 2, inputs, 2, inputs);
 }
 
 GtkWidget* 
-gegl_node_widget_new ( void )
+gegl_editor_new ( void )
 {
-  return g_object_new (GEGL_TYPE_NODE_WIDGET, NULL);
+  return g_object_new (GEGL_TYPE_EDITOR, NULL);
 }
 
 gint	
-gegl_node_widget_add_node(GeglNodeWidget* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs)
+gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs)
 {
-  EditorNode* node = new_editor_node(gegl_node_widget_last_node(self));
+  EditorNode* node = new_editor_node(gegl_editor_last_node(self));
 
   if(self->first_node == NULL)
     self->first_node = node;
-  /*  else
-      gegl_node_widget_last_node(self)->next = node;*/
 
   int i;
   NodePad* pad;
@@ -581,7 +575,7 @@ gegl_node_widget_add_node(GeglNodeWidget* self, gchar* title, gint ninputs, gcha
   //repeat for outputs
 }
 
-EditorNode* gegl_node_widget_last_node(GeglNodeWidget* self)
+EditorNode* gegl_editor_last_node(GeglEditor* self)
 {
   if(self->first_node == NULL)
     return NULL;
