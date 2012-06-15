@@ -62,9 +62,23 @@ main (gint	  argc,
   layer_add_gegl_node(layer, display);
 
   GeglNode *over       = gegl_node_new_child (gegl,
-                                 "operation", "gegl:over",
-                                 NULL);
+					      "operation", "gegl:over",
+					      NULL);
   layer_add_gegl_node(layer, over);
+
+  GeglNode *load = gegl_node_new_child(gegl,
+				       "operation", "gegl:load",
+				       "path", "./surfer.png",
+				       NULL);
+  layer_add_gegl_node(layer, load);
+
+  GeglNode *text = gegl_node_new_child(gegl,
+				       "operation", "gegl:text",
+				       "size", 10.0,
+				       "color", gegl_color_new("rgb(1.0,1.0,1.0)"),
+				       "text", "Hello world!",
+				       NULL);
+  layer_add_gegl_node(layer, text);
 
 
   gtk_main();

@@ -37,12 +37,14 @@ struct _PadConnection
 
 struct _EditorNode
 {
-  gint		 id, x, y, width, height;
-  gchar*	 title;
-  gint		 title_height;
-  EditorNode	*next;
-  NodePad*	 inputs;
-  NodePad*	 outputs;
+  gint			 id, x, y, width, height;
+  gchar*		 title;
+  gint			 title_height;
+  EditorNode		*next;
+  NodePad*		 inputs;
+  NodePad*		 outputs;
+  gboolean		 show_image;
+  cairo_surface_t	*image;
 };
 
 EditorNode*	new_editor_node(EditorNode* prev);
@@ -65,7 +67,7 @@ struct _GeglEditor
   EditorNode*	dragged_node;
   EditorNode*	resized_node;
   NodePad*	dragged_pad;
-  gpointer host; //sent back through callbacks. Can really be whatever
+  gpointer	host;		//sent back through callbacks. Can really be whatever
 };
 
 struct _GeglEditorClass
@@ -79,5 +81,8 @@ GtkWidget*	gegl_editor_new(void);
 //public methods
 gint	gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs);
 void	gegl_editor_set_node_position(GeglEditor* self, gint node, gint x, gint y);
+void gegl_editor_show_node_image(GeglEditor* self, gint node);
+void gegl_editor_hide_node_image(GeglEditor* self, gint node);
+void gegl_editor_set_node_image(GeglEditor* self, gint node, cairo_surface_t* image);
 
 #endif

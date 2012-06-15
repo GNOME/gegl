@@ -53,6 +53,9 @@ EditorNode* new_editor_node(EditorNode* prev) {
   node->inputs	= NULL;
   node->outputs = NULL;
 
+  node->image	   = NULL;
+  node->show_image = FALSE;
+
   return node;
 }
 
@@ -253,7 +256,6 @@ draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
   cairo_line_to(cr, x+width, y+height-15);
   cairo_stroke(cr);
 
-
   int		i   = 0;
   NodePad*	pad = node->inputs;
   for(;pad!=NULL;pad = pad->next, i++)
@@ -267,7 +269,7 @@ draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
       cairo_set_source_rgb(cr, 0, 0, 0);
       cairo_move_to(cr, x+12.5, y+(title_height)+10+20*i+te.height/2+5);
       cairo_show_text(cr, pad->name);
-    }
+    }				//end of inputs
 
   i   = 0;
   pad = node->outputs;
@@ -320,19 +322,40 @@ draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
 	  gint	tx = editor->px, ty = editor->py;
 
 	  cairo_move_to(cr, fx, fy);
-	  //if(tx - fx > 200)
-	    cairo_curve_to(cr, (fx+tx)/2, fy,
-			   (fx+tx)/2, ty,
-			   tx, ty);
-	  /* else
-	    cairo_curve_to(cr, fx+100, fy,
-			   tx-100, ty,
-			   tx, ty);*/
+	  cairo_curve_to(cr, (fx+tx)/2, fy,
+			 (fx+tx)/2, ty,
+			 tx, ty);
+
 	  cairo_stroke(cr);
 
 	}
+    }				//end of outputs
+
+  if(node->show_image)
+    {
+      g_assert(node->image != NULL);
+      {
+	//	node->image = cairo_image_surface_create_from_png("surfer.png");
+	cairo_reset_clip(cr);
+	gdouble w, h, mw, mh;
+	w = (gdouble)cairo_image_surface_get_width(node->image);
+	h = (gdouble)cairo_image_surface_get_height(node->image);
+
+	mw = width;
+	mh = height - 50;
+	gdouble scale;
+	if(mw/w < mh/h)
+	  scale = mw/w;
+	else
+	  scale = mh/h;
+	cairo_scale(cr, scale, scale);
+	cairo_set_source_surface(cr, node->image, (x/scale)+(mw-w*scale)/2.0/scale, (y+height-h*scale)/scale);
+	cairo_paint(cr);
+	//	cairo_surface_destroy(node->image);
+	cairo_scale(cr, 1.0/scale, 1.0/scale);
+      }
     }
-}
+}				//end of draw_node
 
 static gboolean
 gegl_editor_draw(GtkWidget *widget, cairo_t *cr)
@@ -618,4 +641,19 @@ EditorNode* gegl_editor_get_node(GeglEditor* self, gint id)
     if(node->id == id)
       return node;
   return NULL;
+}
+
+void gegl_editor_show_node_image(GeglEditor* self, gint node)
+{
+  gegl_editor_get_node(self, node)->show_image = TRUE;
+}
+
+void gegl_editor_hide_node_image(GeglEditor* self, gint node)
+{
+  gegl_editor_get_node(self, node)->show_image = FALSE;
+}
+
+void gegl_editor_set_node_image(GeglEditor* self, gint node, cairo_surface_t* image)
+{
+  gegl_editor_get_node(self, node)->image = image;
 }
