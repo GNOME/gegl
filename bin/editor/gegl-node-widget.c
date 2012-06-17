@@ -218,7 +218,7 @@ draw_node(EditorNode* node, cairo_t *cr, GeglEditor* editor)
   cairo_set_source_rgb(cr, 1, 1, 1);
   cairo_fill_preserve(cr);
 
-  cairo_set_line_width(cr, 1);
+  cairo_set_line_width(cr, (editor->selected_node == node) ? 3 : 1);
   cairo_set_source_rgb(cr, 0, 0, 0);
   cairo_stroke(cr);
 
@@ -426,7 +426,7 @@ gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 	pad->connected->connected = NULL;
 	pad->connected		  = NULL;
       }
-    }
+    } //end if(pad)
   else
     {
       EditorNode*	node  = editor->first_node;
@@ -472,7 +472,16 @@ gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 	  focus->next = NULL;
 	  node->next  = focus;
 	}
-    }
+
+      if(editor->selected_node && editor->selected_node != focus && editor->nodeDeselected)
+	editor->nodeDeselected(editor->host, editor, editor->selected_node->id);
+
+      if(focus && editor->selected_node != focus && editor->nodeSelected)
+	editor->nodeSelected(editor->host, editor, focus->id);
+
+      editor->selected_node = focus;
+
+    }//end if(pad) else
 
   gtk_widget_queue_draw(widget);
 

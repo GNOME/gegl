@@ -16,13 +16,13 @@ void refresh_images(GeglEditorLayer* self)
       if(roi.width == 0 || roi.height == 0)
 	{
 	  g_print("Empty rectangle: %s\n", gegl_node_get_operation(GEGL_NODE(data->node)));
-	  continue; //skip
+	  continue;		//skip
 	}
 
       gegl_editor_show_node_image(self->editor, data->id);
 
-      gint stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, roi.width);
-      guchar* buf = malloc(stride*roi.height);
+      gint	stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, roi.width);
+      guchar*	buf    = malloc(stride*roi.height);
 
       //make buffer in memory
       gegl_node_blit(GEGL_NODE(data->node),
@@ -71,8 +71,40 @@ gint layer_disconnected_pads (gpointer host, GeglEditor* editor, gint from, gcha
 {
   GeglEditorLayer*	layer = (GeglEditorLayer*)host;
   g_print("disconnected: %s to %s\n", output, input);
+  //TODO: disconnect in GEGL as well
 }
-//gint (*disconnectedPads) (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input)
+
+gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
+{
+  GeglEditorLayer*	self = (GeglEditorLayer*)host;
+  GeglNode*		node = NULL;
+  GSList*		pair = self->pairs;
+  for(;pair != NULL; pair = pair->next)
+    {
+      node_id_pair*	data = pair->data;
+      if(data->id == node_id)
+	{
+	  node = data->node;
+	  break;
+	}
+    }
+
+  g_assert(node != NULL);
+
+  g_print("selected: %s\n", gegl_node_get_operation(node));
+
+  guint n_props;
+  GParamSpec** properties = gegl_operation_list_properties(gegl_node_get_operation(node), &n_props);
+  int i;
+  for(i = 0; i < n_props; i++)
+    {
+      GParamSpec* prop = properties[i];
+      g_print("%s (%s)\n", prop->name, g_type_name(prop->value_type));
+    }
+}
+
+/*  gint (*nodeSelected) (gpointer host, GeglEditor* editor, gint node);
+    gint (*nodeDeselected) (gpointer host, GeglEditor* editor, gint node);*/
 
 GeglEditorLayer*	
 layer_create(GeglEditor* editor, GeglNode* gegl)
@@ -81,6 +113,7 @@ layer_create(GeglEditor* editor, GeglNode* gegl)
   editor->host		      = (gpointer)layer;
   editor->connectedPads	      = layer_connected_pads;
   editor->disconnectedPads    = layer_disconnected_pads;
+  editor->nodeSelected	      = layer_node_selected;
   layer->editor		      = editor;
   layer->gegl		      = gegl;
   layer->pairs		      = NULL;

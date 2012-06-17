@@ -57,6 +57,8 @@ struct _GeglEditor
   /* public */
   gint (*connectedPads) (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input);
   gint (*disconnectedPads) (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input);
+  gint (*nodeSelected) (gpointer host, GeglEditor* editor, gint node);
+  gint (*nodeDeselected) (gpointer host, GeglEditor* editor, gint node);
 
   /* private */
   gint		px, py;		//current mouse coordinates
@@ -68,6 +70,7 @@ struct _GeglEditor
   EditorNode*	resized_node;
   NodePad*	dragged_pad;
   gpointer	host;		//sent back through callbacks. Can really be whatever
+  EditorNode*	selected_node;	//TODO: allow multiple nodes to be selected at once
 };
 
 struct _GeglEditorClass
@@ -81,8 +84,8 @@ GtkWidget*	gegl_editor_new(void);
 //public methods
 gint	gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs);
 void	gegl_editor_set_node_position(GeglEditor* self, gint node, gint x, gint y);
-void gegl_editor_show_node_image(GeglEditor* self, gint node);
-void gegl_editor_hide_node_image(GeglEditor* self, gint node);
-void gegl_editor_set_node_image(GeglEditor* self, gint node, cairo_surface_t* image);
+void	gegl_editor_show_node_image(GeglEditor* self, gint node);
+void	gegl_editor_hide_node_image(GeglEditor* self, gint node);
+void	gegl_editor_set_node_image(GeglEditor* self, gint node, cairo_surface_t* image);
 
 #endif
