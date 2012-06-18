@@ -23,13 +23,14 @@ struct _GeglEditorLayer
 {
   GeglEditor	*editor;
   GeglNode	*gegl;
+  GtkWidget	*prop_box;	//container for the property editor
   GSList	*pairs;
 };
 
 /* 
 Editor and gegl graph should both be empty, but properly initialized 
 */
-GeglEditorLayer*	layer_create(GeglEditor* editor, GeglNode* gegl);
+GeglEditorLayer*	layer_create(GeglEditor* editor, GeglNode* gegl, GtkWidget* property_editor_container);
 void			layer_add_gegl_node(GeglEditorLayer* layer, GeglNode* node);
 //void layer_remove_gegl_node(GeglNode* node);
 //link, unlink

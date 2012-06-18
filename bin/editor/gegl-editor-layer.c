@@ -95,28 +95,65 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 
   guint n_props;
   GParamSpec** properties = gegl_operation_list_properties(gegl_node_get_operation(node), &n_props);
+
+  //prop_box *should* only have one child which was added by the editor layer, but clear it anyway
+  /*GList *children, *iter;
+
+  children = gtk_container_get_children(GTK_CONTAINER(self->prop_box));
+  for(iter = children; iter != NULL; iter = g_list_next(iter))
+    gtk_widget_destroy(GTK_WIDGET(iter->data));
+    g_list_free(children);*/
+
+  //TODO: only create enough columns for the properties which will actually be included (i.e. ignoring GeglBuffer props)
+  GtkTable *prop_table = gtk_table_new(2, n_props, FALSE);
+
   int i;
   for(i = 0; i < n_props; i++)
     {
       GParamSpec* prop = properties[i];
-      g_print("%s (%s)\n", prop->name, g_type_name(prop->value_type));
+      GType type = prop->value_type;
+      guchar* name = prop->name;
+
+      GtkWidget* name_label = gtk_label_new(name);
+      gtk_misc_set_alignment(GTK_MISC(name_label), 0, 0.5);
+      gtk_table_attach(prop_table, name_label, 0, 1, i, i+1, GTK_FILL, GTK_FILL, 1, 1);
+
+      GtkWidget* value_entry = gtk_entry_new();
+      gtk_entry_set_width_chars(GTK_ENTRY(value_entry), 5);
+      gtk_table_attach(prop_table, value_entry, 1, 2, i, i+1, GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_FILL, 1, 1);
     }
+
+  gtk_box_pack_start(GTK_BOX(self->prop_box), prop_table, TRUE, TRUE, 0);
+  gtk_widget_show_all(self->prop_box);
+}
+
+gint layer_node_deselected(gpointer host, GeglEditor* editor, gint node)
+{
+  GeglEditorLayer*	self = (GeglEditorLayer*)host;
+  GList *children, *iter;
+
+  children = gtk_container_get_children(GTK_CONTAINER(self->prop_box));
+  for(iter = children; iter != NULL; iter = g_list_next(iter))
+    gtk_widget_destroy(GTK_WIDGET(iter->data));
+  g_list_free(children);
 }
 
 /*  gint (*nodeSelected) (gpointer host, GeglEditor* editor, gint node);
     gint (*nodeDeselected) (gpointer host, GeglEditor* editor, gint node);*/
 
 GeglEditorLayer*	
-layer_create(GeglEditor* editor, GeglNode* gegl)
+layer_create(GeglEditor* editor, GeglNode* gegl, GtkWidget* prop_box)
 {
   GeglEditorLayer*	layer = malloc(sizeof(GeglEditorLayer));
   editor->host		      = (gpointer)layer;
   editor->connectedPads	      = layer_connected_pads;
   editor->disconnectedPads    = layer_disconnected_pads;
   editor->nodeSelected	      = layer_node_selected;
+  editor->nodeDeselected	      = layer_node_deselected;
   layer->editor		      = editor;
   layer->gegl		      = gegl;
   layer->pairs		      = NULL;
+  layer->prop_box = prop_box;
   return layer;
 }
 

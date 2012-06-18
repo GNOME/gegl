@@ -56,10 +56,16 @@ main (gint	  argc,
   GeglEditor*	 node_editor = GEGL_EDITOR(editor);
 
   gegl_init(&argc, &argv);
+
+////////////////////////////////////////////CREATE OPERATION DIALOG///////////////////////////////////////////
+
+  GtkWidget* property_box = gtk_vbox_new(TRUE, 0);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   //add some samples nodes
   GeglNode		*gegl  = gegl_node_new();
-  GeglEditorLayer*	 layer = layer_create(node_editor, gegl);
+  GeglEditorLayer*	 layer = layer_create(node_editor, gegl, property_box);
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
@@ -69,9 +75,6 @@ main (gint	  argc,
   gtk_widget_show(vbox);
   gtk_container_add(GTK_CONTAINER(window), vbox);
 
-////////////////////////////////////////////ADD OPERATION DIALOG//////////////////////////////////////////////
-
-  
 
 /////////////////////////////////////////////////BUILD MENUBAR////////////////////////////////////////////////
  
@@ -104,10 +107,20 @@ main (gint	  argc,
   gtk_menu_shell_append(GTK_MENU_SHELL(graph_menu), add_operation);
   gtk_menu_shell_append(GTK_MENU_SHELL(menubar), graph);
 
+
+////////////////////////////////////////////HORIZONTAL PANE///////////////////////////////////////////////////
+
+  GtkWidget* pane = gtk_hpaned_new();
+  gtk_paned_set_position(GTK_PANED(pane), 200);
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
-  gtk_box_pack_start(GTK_BOX(vbox), editor, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(vbox), pane, TRUE, TRUE, 0);
+
+  gtk_paned_pack1(GTK_PANED(pane), property_box, TRUE, FALSE);
+  gtk_paned_pack2(GTK_PANED(pane), editor, TRUE, TRUE);
+
   gtk_widget_show_all(window);
 
 ////////////////////////////////////////////GEGL OPERATIONS///////////////////////////////////////////////////
