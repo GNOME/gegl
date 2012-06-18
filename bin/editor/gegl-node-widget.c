@@ -664,5 +664,6 @@ void gegl_editor_hide_node_image(GeglEditor* self, gint node)
 
 void gegl_editor_set_node_image(GeglEditor* self, gint node, cairo_surface_t* image)
 {
+  //TODO: release the old image from memory if it has already been set
   gegl_editor_get_node(self, node)->image = image;
 }
