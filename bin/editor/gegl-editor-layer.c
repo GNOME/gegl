@@ -1,5 +1,6 @@
 #include "gegl-editor-layer.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 void refresh_images(GeglEditorLayer* self)
 {
@@ -86,42 +87,40 @@ struct text_prop_data
 void text_property_changed(GtkEntry* entry, gpointer data)
 {
   struct text_prop_data *dat = (struct text_prop_data*)data;
-  const gchar *text = gtk_entry_get_text(entry);
+  gchar *text = gtk_entry_get_text(entry);
+
   GeglNode* node = dat->node;
   gchar* property = dat->property;
   GType prop_type = dat->prop_type;
   GeglEditorLayer *layer = dat->layer;
 
+  g_print("%s -> %s\n", property, text);
+
   gint i_value;
   gdouble d_value;
   gchar *str_value;
   GValue value = { 0, }; //different than = 0?
+  g_value_init(&value, prop_type);
+  g_print("%s\n", G_VALUE_TYPE_NAME(&value));
 
   switch(prop_type)
     {
     case G_TYPE_INT:
       i_value = (gint)strtod(text, NULL);
-      g_value_init(&value, prop_type);
-      //      value = i_value;
-      g_value_set_int(&value, i_value);
-      g_print("Int: %d\n", i_value);
-      gegl_node_set_property(node, property, &value);
+      gegl_node_set(node, property, i_value, NULL);
       break;
     case G_TYPE_DOUBLE:
       d_value = strtod(text, NULL);
-      g_value_init(&value, prop_type);
-      g_value_set_double(&value, d_value);
-      g_print("Double: %d\n", d_value);
-      gegl_node_set_property(node, property, &value);
+      gegl_node_set(node, property, d_value, NULL);
       break;
     case G_TYPE_STRING:
-      str_value = text;
-      g_print("String: %s\n", str_value);
+      gegl_node_set(node, property, text, NULL);
+      break;
     default:
       g_print("Unknown property type: %s (%s)\n", property, g_type_name(prop_type));
     }
 
-  //refresh_images(layer);
+  refresh_images(layer);
 }
 
 gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
@@ -162,13 +161,40 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
     {
       GParamSpec*	prop = properties[i];
       GType		type = prop->value_type;
-      guchar*		name = prop->name;
+      gchar*		name = prop->name;
 
       GtkWidget*	name_label = gtk_label_new(name);
       gtk_misc_set_alignment(GTK_MISC(name_label), 0, 0.5);
       gtk_table_attach(prop_table, name_label, 0, 1, i, i+1, GTK_FILL, GTK_FILL, 1, 1);
 
       GtkWidget*	value_entry = gtk_entry_new(); //TODO: populate this with the existing property value
+
+      gchar buf[256] = "*"; //can probably be smaller; In fact, can probably do this without sprintf and a buffer. TODO: look at g_string
+
+      gint i_value;
+      gdouble d_value;
+      gchar* str_value;
+
+      switch(type)
+	{
+	case G_TYPE_INT:
+	  gegl_node_get(node, name, &i_value, NULL);
+	  sprintf(buf, "%d", i_value);
+	  break;
+	case G_TYPE_DOUBLE:
+	  gegl_node_get(node, name, &d_value, NULL);
+	  sprintf(buf, "%f", d_value);
+	  break;
+	case G_TYPE_STRING:
+	  gegl_node_get(node, name, &str_value, NULL);
+	  sprintf(buf, "%s", str_value);
+	  break;
+	  //	default:
+	  //	  g_print("Unknown property type: %s (%s)\n", property, g_type_name(prop_type));
+	}
+
+      gtk_entry_set_text(value_entry, buf);
+
       gtk_entry_set_width_chars(GTK_ENTRY(value_entry), 2);
       struct text_prop_data *data = malloc(sizeof(struct text_prop_data)); //TODO store this in a list and free it when the node is deselected
       data->node = node;
