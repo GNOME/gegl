@@ -39,6 +39,7 @@ void refresh_images(GeglEditorLayer* self)
 	cairo_image_surface_create_for_data(buf, CAIRO_FORMAT_ARGB32, 
 				      roi.width, roi.height, 
 				      stride);
+      //            free(buf);
       gegl_editor_set_node_image(self->editor, data->id, image);
     }
 }
