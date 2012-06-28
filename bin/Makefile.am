@@ -2,9 +2,6 @@ if OS_WIN32
 no_undefined = -no-undefined
 endif
 
-SUBDIRS=\
-	editor
-
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_builddir)/gegl \

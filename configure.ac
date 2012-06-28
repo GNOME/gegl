@@ -41,7 +41,6 @@ m4_define([babl_required_version], [0.1.10])
 m4_define([cairo_required_version], [0.0.0])
 m4_define([gdk_pixbuf_required_version], [2.18.0])
 m4_define([glib_required_version], [2.28.0])
-m4_define([gtk_required_version], [2.6.0])
 m4_define([graphviz_required_version], [0.0.0])
 m4_define([jasper_required_version], [1.900.1])
 m4_define([lensfun_required_version], [0.2.5])
@@ -123,9 +122,6 @@ AC_SUBST(gegltargetlib)
 
 GLIB_REQUIRED_VERSION=glib_required_version
 AC_SUBST(GLIB_REQUIRED_VERSION)
-
-GTK_REQUIRED_VERSION=gtk_required_version
-AC_SUBST(GTK_REQUIRED_VERSION)
 
 LUA_REQUIRED_VERSION=lua_required_version
 AC_SUBST(LUA_REQUIRED_VERSION)
@@ -435,7 +431,6 @@ AC_CHECK_FUNCS(fsync)
 ###############################
 
 PKG_CHECK_MODULES(BABL, babl >= babl_required_version)
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= gtk_required_version)
 
 GLIB_PACKAGES="gobject-2.0 gmodule-2.0 gio-2.0"
 AC_SUBST(GLIB_PACKAGES)
@@ -1081,7 +1076,6 @@ dnl bin/node-editors/Makefile
 AC_CONFIG_FILES([
 Makefile
 bin/Makefile
-bin/editor/Makefile
 gegl/Makefile
 gegl/gegl-version.h
 gegl/buffer/Makefile
