@@ -25,23 +25,64 @@ void menuitem_activated(GtkMenuItem* item, gpointer data)
   GtkWidget *add_op_dialog = gtk_dialog_new_with_buttons("AddOperation", GTK_WINDOW(window), 
 							 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
 							 GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL,GTK_RESPONSE_REJECT, NULL);
+
+  /////list/////////
+  GtkListStore *store = gtk_list_store_new(1, G_TYPE_STRING);
+
+  guint n_ops;
+  gchar** ops = gegl_list_operations(&n_ops);
+
+  GtkTreeIter itr;
+
+  int i;
+  for(i = 0; i < n_ops; i++) {
+    gtk_list_store_append(store, &itr);
+    gtk_list_store_set(store, &itr, 0, ops[i], -1);
+  }
+
+  /////////////////
+
   GtkWidget *text_entry = gtk_entry_new();
   
-  gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(add_op_dialog))), text_entry);
-  gtk_widget_show(text_entry);
+  //  gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(add_op_dialog))), text_entry);
+  //  gtk_widget_show(text_entry);
+  
+  GtkWidget* list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+
+  GtkCellRenderer *renderer;
+  GtkTreeViewColumn *column;
+
+  renderer = gtk_cell_renderer_text_new ();
+  column = gtk_tree_view_column_new_with_attributes ("Operation",
+						     renderer,
+						     "text", 0,
+						     NULL);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (list), column);
+
+  GtkScrolledWindow* scrolls = gtk_scrolled_window_new(NULL, NULL);
+  gtk_widget_set_size_request(GTK_WIDGET(scrolls), 100, 150);
+  gtk_widget_show(scrolls);
+  gtk_container_add(GTK_CONTAINER(scrolls), list);
+
+  gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(add_op_dialog))), scrolls);
+  gtk_widget_show(list);
 
   //g_signal_connect(add_op_dialog, "response", add_operation_dialog, data);
 
   gint result = gtk_dialog_run(GTK_DIALOG(add_op_dialog));
   GeglNode *node;
-  switch(result)
+  if(result == GTK_RESPONSE_ACCEPT)
     {
-    case GTK_RESPONSE_ACCEPT:
-      node = gegl_node_create_child (layer->gegl, gtk_entry_get_text(GTK_ENTRY(text_entry)));
-      layer_add_gegl_node(layer, node);
-      break;
-    default:
-      break;
+      GtkTreeSelection *selection = gtk_tree_view_get_selection(list);
+      GtkTreeModel *model;
+      if(gtk_tree_selection_get_selected(selection, &model, &itr))
+	{
+	  gchar* operation;
+	  gtk_tree_model_get(model, &itr, 0, &operation, -1);
+	  //	  node = gegl_node_create_child (layer->gegl, gtk_entry_get_text(GTK_ENTRY(text_entry)));
+	  node = gegl_node_create_child(layer->gegl, operation);
+	  layer_add_gegl_node(layer, node);
+	}
     }
   gtk_widget_destroy(add_op_dialog);
 }
@@ -60,6 +101,7 @@ main (gint	  argc,
 ////////////////////////////////////////////CREATE OPERATION DIALOG///////////////////////////////////////////
 
   GtkWidget* property_box = gtk_vbox_new(TRUE, 0);
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
