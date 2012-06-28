@@ -2,9 +2,6 @@ if OS_WIN32
 no_undefined = -no-undefined
 endif
 
-SUBDIRS=\
-	editor
-
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_builddir)/gegl \
@@ -21,23 +18,17 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/gegl/opencl
 
 AM_CFLAGS = \
-	$(DEP_CFLAGS) $(BABL_CFLAGS) $(PNG_CFLAGS)
+	$(DEP_CFLAGS) $(BABL_CFLAGS) $(GTK_CFLAGS)
 
 
 AM_LDFLAGS =  \
-	$(no_undefined) ../gegl/libgegl-$(GEGL_API_VERSION).la \
-	$(DEP_LIBS) $(BABL_LIBS) $(PNG_LIBS) $(LIBSPIRO)
+	$(no_undefined) ../../gegl/libgegl-$(GEGL_API_VERSION).la \
+	$(DEP_LIBS) $(BABL_LIBS) $(GTK_LIBS) $(LIBSPIRO)
 
-bin_PROGRAMS = gegl
+bin_PROGRAMS = editor
 
-gegl_SOURCES =			\
-	gegl.c			\
-	gegl-options.c		\
-	gegl-options.h		\
-	gegl-path-smooth.c	\
-	gegl-path-smooth.h
-
-if HAVE_SPIRO
-gegl_SOURCES += gegl-path-spiro.h gegl-path-spiro.c
-endif
+editor_SOURCES = 		            \
+			gegl-editor.c       \
+			gegl-editor-layer.c \
+			gegl-node-widget.c
 
