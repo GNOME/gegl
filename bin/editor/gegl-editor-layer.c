@@ -81,28 +81,28 @@ gint layer_disconnected_pads (gpointer host, GeglEditor* editor, gint from, gcha
 
 struct text_prop_data
 {
-  GeglNode* node;
-  gchar* property;
-  GType prop_type;
-  GeglEditorLayer* layer;
+  GeglNode*		node;
+  gchar*		property;
+  GType			prop_type;
+  GeglEditorLayer*	layer;
 };
 
 void text_property_changed(GtkEntry* entry, gpointer data)
 {
-  struct text_prop_data *dat = (struct text_prop_data*)data;
-  gchar *text = gtk_entry_get_text(entry);
+  struct text_prop_data *dat  = (struct text_prop_data*)data;
+  gchar			*text = gtk_entry_get_text(entry);
 
-  GeglNode* node = dat->node;
-  gchar* property = dat->property;
-  GType prop_type = dat->prop_type;
-  GeglEditorLayer *layer = dat->layer;
+  GeglNode*		 node	   = dat->node;
+  gchar*		 property  = dat->property;
+  GType			 prop_type = dat->prop_type;
+  GeglEditorLayer	*layer	   = dat->layer;
 
   g_print("%s -> %s\n", property, text);
 
-  gint i_value;
-  gdouble d_value;
-  gchar *str_value;
-  GValue value = { 0, }; //different than = 0?
+  gint	i_value;
+  gdouble	 d_value;
+  gchar		*str_value;
+  GValue	 value = { 0, };	//different than = 0?
   g_value_init(&value, prop_type);
   g_print("%s\n", G_VALUE_TYPE_NAME(&value));
 
@@ -124,6 +124,44 @@ void text_property_changed(GtkEntry* entry, gpointer data)
     }
 
   refresh_images(layer);
+}
+
+typedef struct {
+  GeglNode* node;
+  gchar* property;
+  GeglEditorLayer* layer;
+} select_color_info;
+
+void select_color (GtkButton *widget, gpointer user_data)
+{
+  GtkColorSelectionDialog* dialog = gtk_color_selection_dialog_new("Select Color"); //todo put the old color selection in
+
+  gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+
+  //
+
+  if(result == GTK_RESPONSE_OK)
+    {
+
+      select_color_info* info = (select_color_info*)user_data;
+      GtkColorSelection* colsel = GTK_COLOR_SELECTION(dialog->colorsel);
+
+      GdkColor* sel_color = malloc(sizeof(GdkColor));
+      gtk_color_selection_get_current_color(colsel, sel_color);
+
+      GeglColor* color = gegl_color_new(NULL);
+      gegl_color_set_rgba(color, (double)sel_color->red/65535.0, 
+			  (double)sel_color->green/65535.0, 
+			  (double)sel_color->blue/65535.0,
+			  (double)gtk_color_selection_get_current_alpha(colsel)/65535.0);
+
+      free(sel_color);
+
+      gegl_node_set(info->node, info->property, color, NULL);
+
+      refresh_images(info->layer);
+    }
+  gtk_widget_destroy(dialog);
 }
 
 gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
@@ -148,14 +186,6 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
   guint		n_props;
   GParamSpec**	properties = gegl_operation_list_properties(gegl_node_get_operation(node), &n_props);
 
-  //prop_box *should* only have one child which was added by the editor layer, but clear it anyway
-  /*GList *children, *iter;
-
-  children = gtk_container_get_children(GTK_CONTAINER(self->prop_box));
-  for(iter = children; iter != NULL; iter = g_list_next(iter))
-    gtk_widget_destroy(GTK_WIDGET(iter->data));
-    g_list_free(children);*/
-
   //TODO: only create enough columns for the properties which will actually be included (i.e. ignoring GeglBuffer props)
   GtkTable	*prop_table = gtk_table_new(2, n_props, FALSE);
 
@@ -168,15 +198,16 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 
       GtkWidget*	name_label = gtk_label_new(name);
       gtk_misc_set_alignment(GTK_MISC(name_label), 0, 0.5);
-      gtk_table_attach(prop_table, name_label, 0, 1, i, i+1, GTK_FILL, GTK_FILL, 1, 1);
+      
 
-      GtkWidget*	value_entry = gtk_entry_new(); //TODO: populate this with the existing property value
+      GtkWidget*	value_entry = gtk_entry_new();
 
-      gchar buf[256] = "*"; //can probably be smaller; In fact, can probably do this without sprintf and a buffer. TODO: look at g_string
+      gchar buf[256] = "*";	//can probably be smaller; In fact, can probably do this without sprintf and a buffer. TODO: look at g_string
 
-      gint i_value;
-      gdouble d_value;
-      gchar* str_value;
+      gint	i_value;
+      gdouble	d_value;
+      gchar*	str_value;
+      gboolean skip = FALSE;
 
       switch(type)
 	{
@@ -186,27 +217,46 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 	  break;
 	case G_TYPE_DOUBLE:
 	  gegl_node_get(node, name, &d_value, NULL);
-	  sprintf(buf, "%f", d_value);
+	  sprintf(buf, "%.3f", d_value);
 	  break;
 	case G_TYPE_STRING:
 	  gegl_node_get(node, name, &str_value, NULL);
 	  sprintf(buf, "%s", str_value);
 	  break;
-	  //	default:
-	  //	  g_print("Unknown property type: %s (%s)\n", property, g_type_name(prop_type));
 	}
 
-      gtk_entry_set_text(value_entry, buf);
+      if(type == GEGL_TYPE_BUFFER) {
+	skip = TRUE;
+      } else if( type == GEGL_TYPE_COLOR) {
+	skip = TRUE;
+	GtkWidget *color_button = gtk_button_new_with_label("Select");
 
-      gtk_entry_set_width_chars(GTK_ENTRY(value_entry), 2);
-      struct text_prop_data *data = malloc(sizeof(struct text_prop_data)); //TODO store this in a list and free it when the node is deselected
-      data->node = node;
-      data->property = name;
-      data->prop_type = type;
-      data->layer = self;
-      g_signal_connect(value_entry, "activate", text_property_changed, data);
+	select_color_info* info = malloc(sizeof(select_color_info));
+	info->node = node;
+	info->property = name;
+	info->layer = self;
 
-      gtk_table_attach(prop_table, value_entry, 1, 2, i, i+1, GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_FILL, 1, 1);
+	g_signal_connect(color_button, "clicked", (GCallback)select_color, info);
+
+	gtk_table_attach(prop_table, name_label, 0, 1, i, i+1, GTK_FILL, GTK_FILL, 1, 1);
+	gtk_table_attach(prop_table, color_button, 1, 2, i, i+1, GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_FILL, 1, 1);
+      }
+
+      if(!skip)
+	{
+	  gtk_entry_set_text(value_entry, buf);
+
+	  gtk_entry_set_width_chars(GTK_ENTRY(value_entry), 2);
+	  struct text_prop_data	*data = malloc(sizeof(struct text_prop_data));	//TODO store this in a list and free it when the node is deselected
+	  data->node		      = node;
+	  data->property		      = name;
+	  data->prop_type		      = type;
+	  data->layer		      = self;
+	  g_signal_connect(value_entry, "activate", text_property_changed, data);
+
+	  gtk_table_attach(prop_table, name_label, 0, 1, i, i+1, GTK_FILL, GTK_FILL, 1, 1);
+	  gtk_table_attach(prop_table, value_entry, 1, 2, i, i+1, GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_FILL, 1, 1);
+	}
     }
 
   gtk_box_pack_start(GTK_BOX(self->prop_box), prop_table, TRUE, TRUE, 0);
@@ -224,7 +274,7 @@ gint layer_node_deselected(gpointer host, GeglEditor* editor, gint node)
   g_list_free(children);
 }
 
-/*  gint (*nodeSelected) (gpointer host, GeglEditor* editor, gint node);
+/*	gint (*nodeSelected) (gpointer host, GeglEditor* editor, gint node);
     gint (*nodeDeselected) (gpointer host, GeglEditor* editor, gint node);*/
 
 GeglEditorLayer*	
