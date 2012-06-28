@@ -672,6 +672,6 @@ void gegl_editor_set_node_image(GeglEditor* self, gint node_id, cairo_surface_t*
       cairo_surface_finish(node->image);
       guchar* buf = cairo_image_surface_get_data(node->image);
       free(buf);
-    }
+   } 
   node->image = image;
 }

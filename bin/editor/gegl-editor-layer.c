@@ -15,6 +15,8 @@ void refresh_images(GeglEditorLayer* self)
       const Babl	*cairo_argb32 = babl_format("cairo-ARGB32");
 
       const GeglRectangle	roi = gegl_node_get_bounding_box(GEGL_NODE(data->node));
+      g_print("Rect: %dx%d\n", roi.x, roi.y);
+
       if(roi.width == 0 || roi.height == 0)
 	{
 	  g_print("Empty rectangle: %s\n", gegl_node_get_operation(GEGL_NODE(data->node)));
