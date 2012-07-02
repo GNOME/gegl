@@ -1,1 +1,2 @@
-gcc -g gegl-editor.c gegl-editor-layer.c gegl-node-widget.c -o editor `pkg-config --cflags --libs gtk+-2.0 gthread-2.0` -I/usr/local/include/gegl-0.2/ -I/usr/local/include/babl-0.1/ -lgegl-0.2 -lbabl-0.1
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig/
+gcc -g gegl-editor.c gegl-editor-layer.c gegl-node-widget.c -o editor `pkg-config --cflags --libs glib-2.0 gtk+-2.0 gthread-2.0 gegl-0.2 babl gegl-gtk2-0.1`

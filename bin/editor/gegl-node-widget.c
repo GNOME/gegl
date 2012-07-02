@@ -407,83 +407,90 @@ gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 {
   GeglEditor*	editor = GEGL_EDITOR(widget);
 
-  //TODO: check which mouse button was pressed rather than assume it was the left button
-  editor->left_mouse_down = TRUE;
-  editor->dx		  = editor->px;
-  editor->dy		  = editor->py;
-
-  editor->dragged_pad = NULL;
-
-  NodePad*	pad = get_pad_at(editor->px, editor->py, editor);
-  if(pad)
+  if(event->type == GDK_BUTTON_PRESS)
     {
-      editor->dragged_pad	  = pad;
-      if(pad->connected) {
-	if(editor->disconnectedPads != NULL)
-	  editor->disconnectedPads(editor->host, editor, 
-				pad->connected->node->id, pad->connected->name,
-				pad->node->id, pad->name);
-	pad->connected->connected = NULL;
-	pad->connected		  = NULL;
-      }
-    } //end if(pad)
-  else
+      //TODO: check which mouse button was pressed rather than assume it was the left button
+      editor->left_mouse_down = TRUE;
+      editor->dx		  = editor->px;
+      editor->dy		  = editor->py;
+
+      editor->dragged_pad = NULL;
+
+      NodePad*	pad = get_pad_at(editor->px, editor->py, editor);
+      if(pad)
+	{
+	  editor->dragged_pad	  = pad;
+	  if(pad->connected) {
+	    if(editor->disconnectedPads != NULL)
+	      editor->disconnectedPads(editor->host, editor, 
+				       pad->connected->node->id, pad->connected->name,
+				       pad->node->id, pad->name);
+	    pad->connected->connected = NULL;
+	    pad->connected		  = NULL;
+	  }
+	} //end if(pad)
+      else
+	{
+	  EditorNode*	node  = editor->first_node;
+	  EditorNode*	focus = NULL;
+	  for(;node != NULL; node = node->next)
+	    {
+	      if(editor->px > node->x && editor->px < node->x+node->width	&&
+		 editor->py > node->y && editor->py < node->y+node->height) 
+		{
+		  if(editor->px >= node->x+node->width-15	&&
+		     editor->py >= node->y+node->height-15+(node->x+node->width-editor->px))
+		    {
+		      editor->dragged_node = NULL;
+		      editor->resized_node = node;
+		    }
+		  else
+		    {
+		      editor->resized_node = NULL;
+		      editor->dragged_node = node;
+		    }
+
+		  focus = node;
+		}
+	    }
+
+	  if(focus && focus->next != NULL)
+	    {
+	      if(focus == editor->first_node)
+		{
+		  editor->first_node = focus->next;
+		}
+
+	      EditorNode*	node = editor->first_node;
+
+	      for(;node->next != NULL; node = node->next)
+		{
+		  if(node->next == focus)
+		    {
+		      node->next = focus->next;
+		    }
+		}
+
+	      focus->next = NULL;
+	      node->next  = focus;
+	    }
+
+	  if(editor->selected_node && editor->selected_node != focus && editor->nodeDeselected)
+	    editor->nodeDeselected(editor->host, editor, editor->selected_node->id);
+
+	  if(focus && editor->selected_node != focus && editor->nodeSelected)
+	    editor->nodeSelected(editor->host, editor, focus->id);
+
+	  editor->selected_node = focus;
+
+	}//end if(pad) else
+
+      gtk_widget_queue_draw(widget);
+    }
+  else if(event->type == GDK_2BUTTON_PRESS)
     {
-      EditorNode*	node  = editor->first_node;
-      EditorNode*	focus = NULL;
-      for(;node != NULL; node = node->next)
-	{
-	  if(editor->px > node->x && editor->px < node->x+node->width	&&
-	     editor->py > node->y && editor->py < node->y+node->height) 
-	    {
-	      if(editor->px >= node->x+node->width-15	&&
-		 editor->py >= node->y+node->height-15+(node->x+node->width-editor->px))
-		{
-		  editor->dragged_node = NULL;
-		  editor->resized_node = node;
-		}
-	      else
-		{
-		  editor->resized_node = NULL;
-		  editor->dragged_node = node;
-		}
-
-	      focus = node;
-	    }
-	}
-
-      if(focus && focus->next != NULL)
-	{
-	  if(focus == editor->first_node)
-	    {
-	      editor->first_node = focus->next;
-	    }
-
-	  EditorNode*	node = editor->first_node;
-
-	  for(;node->next != NULL; node = node->next)
-	    {
-	      if(node->next == focus)
-		{
-		  node->next = focus->next;
-		}
-	    }
-
-	  focus->next = NULL;
-	  node->next  = focus;
-	}
-
-      if(editor->selected_node && editor->selected_node != focus && editor->nodeDeselected)
-	editor->nodeDeselected(editor->host, editor, editor->selected_node->id);
-
-      if(focus && editor->selected_node != focus && editor->nodeSelected)
-	editor->nodeSelected(editor->host, editor, focus->id);
-
-      editor->selected_node = focus;
-
-    }//end if(pad) else
-
-  gtk_widget_queue_draw(widget);
+      g_print("Double click!\n");
+    }
 
   return FALSE;
 }

@@ -4,6 +4,7 @@
 #include	"gegl-node-widget.h"
 #include <gegl.h>
 #include <glib.h>
+#include <gegl-gtk.h>
 
 /*	
 Creates and removes connections between pads in the Gegl graph 

@@ -4,6 +4,7 @@
 
 void refresh_images(GeglEditorLayer* self)
 {
+  return;
   GSList*	pair = self->pairs;
   for(;pair != NULL; pair = pair->next)
     {
@@ -181,7 +182,7 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 
   g_assert(node != NULL);
 
-  g_print("selected: %s\n", gegl_node_get_operation(node));
+  //  g_print("selected: %s\n", gegl_node_get_operation(node));
 
   guint		n_props;
   GParamSpec**	properties = gegl_operation_list_properties(gegl_node_get_operation(node), &n_props);
@@ -189,8 +190,9 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
   //TODO: only create enough columns for the properties which will actually be included (i.e. ignoring GeglBuffer props)
   GtkTable	*prop_table = gtk_table_new(2, n_props, FALSE);
 
-  int	i;
-  for(i = 0; i < n_props; i++)
+  int i;
+  int d;
+  for(d = 0, i = 0; i < n_props; i++, d++)
     {
       GParamSpec*	prop = properties[i];
       GType		type = prop->value_type;
@@ -227,6 +229,7 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 
       if(type == GEGL_TYPE_BUFFER) {
 	skip = TRUE;
+	d--;
       } else if( type == GEGL_TYPE_COLOR) {
 	skip = TRUE;
 	GtkWidget *color_button = gtk_button_new_with_label("Select");
@@ -238,8 +241,8 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 
 	g_signal_connect(color_button, "clicked", (GCallback)select_color, info);
 
-	gtk_table_attach(prop_table, name_label, 0, 1, i, i+1, GTK_FILL, GTK_FILL, 1, 1);
-	gtk_table_attach(prop_table, color_button, 1, 2, i, i+1, GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_FILL, 1, 1);
+	gtk_table_attach(prop_table, name_label, 0, 1, d, d+1, GTK_FILL, GTK_FILL, 1, 1);
+	gtk_table_attach(prop_table, color_button, 1, 2, d, d+1, GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_FILL, 1, 1);
       }
 
       if(!skip)
@@ -259,7 +262,13 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 	}
     }
 
-  gtk_box_pack_start(GTK_BOX(self->prop_box), prop_table, TRUE, TRUE, 0);
+  //  gegl_node_process(node);
+  GtkWidget *gtk_view = gegl_gtk_view_new_for_node(node);
+  gtk_widget_show(gtk_view);
+
+  gtk_box_pack_start(GTK_BOX(self->prop_box), prop_table, FALSE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(self->prop_box), gtk_view, TRUE, TRUE, 10);
+
   gtk_widget_show_all(self->prop_box);
 }
 
