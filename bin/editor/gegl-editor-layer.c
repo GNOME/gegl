@@ -257,17 +257,22 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 	  data->layer		      = self;
 	  g_signal_connect(value_entry, "activate", text_property_changed, data);
 
-	  gtk_table_attach(prop_table, name_label, 0, 1, i, i+1, GTK_FILL, GTK_FILL, 1, 1);
-	  gtk_table_attach(prop_table, value_entry, 1, 2, i, i+1, GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_FILL, 1, 1);
+	  gtk_table_attach(prop_table, name_label, 0, 1, d, d+1, GTK_FILL, GTK_FILL, 1, 1);
+	  gtk_table_attach(prop_table, value_entry, 1, 2, d, d+1, GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_FILL, 1, 1);
 	}
     }
 
   //  gegl_node_process(node);
   GtkWidget *gtk_view = gegl_gtk_view_new_for_node(node);
   gtk_widget_show(gtk_view);
+  //TODO: draw checkerboard under preview to indicate transparency
 
   gtk_box_pack_start(GTK_BOX(self->prop_box), prop_table, FALSE, TRUE, 0);
   gtk_box_pack_start(GTK_BOX(self->prop_box), gtk_view, TRUE, TRUE, 10);
+
+  GtkWidget* label = gtk_label_new("Click the image\nto open in a\nnew window");
+  gtk_label_set_justify(label, GTK_JUSTIFY_CENTER);
+  gtk_box_pack_start(GTK_BOX(self->prop_box), label, FALSE, TRUE, 10);
 
   gtk_widget_show_all(self->prop_box);
 }
