@@ -47,6 +47,11 @@ void refresh_images(GeglEditorLayer* self)
     }
 }
 
+gint layer_node_removed (gpointer host, GeglEditor* editor, gint node)
+{
+  g_print("remove node from gegl graph now\n");
+}
+
 gint layer_connected_pads (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input)
 {
   GeglEditorLayer*	self = (GeglEditorLayer*)host;
@@ -300,6 +305,7 @@ layer_create(GeglEditor* editor, GeglNode* gegl, GtkWidget* prop_box)
   editor->disconnectedPads    = layer_disconnected_pads;
   editor->nodeSelected	      = layer_node_selected;
   editor->nodeDeselected      = layer_node_deselected;
+  editor->nodeRemoved      = layer_node_removed;
   layer->editor		      = editor;
   layer->gegl		      = gegl;
   layer->pairs		      = NULL;

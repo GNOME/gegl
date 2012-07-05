@@ -59,6 +59,7 @@ struct _GeglEditor
   gint (*disconnectedPads) (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input);
   gint (*nodeSelected) (gpointer host, GeglEditor* editor, gint node);
   gint (*nodeDeselected) (gpointer host, GeglEditor* editor, gint node);
+  gint (*nodeRemoved) (gpointer host, GeglEditor* editor, gint node);
 
   /* private */
   gint		px, py;		//current mouse coordinates

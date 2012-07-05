@@ -1,4 +1,5 @@
 #include "gegl-node-widget.h"
+#include <gdk/gdkkeysyms.h>
 
 G_DEFINE_TYPE (GeglEditor, gegl_editor, GTK_TYPE_DRAWING_AREA);
 
@@ -402,6 +403,53 @@ gegl_editor_motion(GtkWidget* widget, GdkEventMotion* event)
   return FALSE;
 }
 
+void
+print_node_list(GeglEditor* editor)
+{
+  if(editor->first_node == NULL)
+    {
+      g_print("empty list\n");
+      return;
+    }
+
+  EditorNode* node = editor->first_node;
+  for(;node->next != NULL; node = node->next)
+    {
+      g_print("%s->", node->title);
+    }
+  g_print("%s\n", node->title);
+}
+
+static gboolean
+gegl_editor_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+{
+  GeglEditor*	editor = GEGL_EDITOR(widget);
+  //print_node_list(editor);
+  if(event->keyval == GDK_KEY_Delete && editor->selected_node != NULL)
+    {
+      //todo: put in its own function
+      if(editor->first_node == editor->selected_node)
+	{
+	  //	  free(editor->selected_node);
+	  editor->first_node = editor->first_node->next;
+	  if(editor->nodeRemoved != NULL)
+	    editor->nodeRemoved(editor->host, editor, editor->selected_node->id);
+	}
+      else
+	{
+	  EditorNode* node;
+	  for(node = editor->first_node; node->next != editor->selected_node && node->next != NULL; node = node->next);
+	  g_assert(node->next != NULL); //means that selected node isn't in linked list for some reason == bad
+	  node->next = node->next->next; //remove from the linked list
+	  if(editor->nodeRemoved != NULL)
+	    editor->nodeRemoved(editor->host, editor, editor->selected_node->id);
+	}
+      editor->selected_node = NULL;
+    }
+  //print_node_list(editor);
+  gtk_widget_queue_draw(widget);
+}
+
 static gboolean
 gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 {
@@ -548,6 +596,8 @@ gegl_editor_class_init(GeglEditorClass *klass)
   widget_class->motion_notify_event   = gegl_editor_motion;
   widget_class->button_press_event    = gegl_editor_button_press;
   widget_class->button_release_event  = gegl_editor_button_release;
+  widget_class->key_press_event = gegl_editor_key_press;
+
 }
 
 
@@ -558,7 +608,11 @@ gegl_editor_init(GeglEditor* self)
   gtk_widget_add_events (GTK_WIDGET(self),
 			 GDK_POINTER_MOTION_MASK |
 			 GDK_BUTTON_PRESS_MASK   |
-			 GDK_BUTTON_RELEASE_MASK );
+			 GDK_BUTTON_RELEASE_MASK |
+			 GDK_KEY_PRESS_MASK |
+			 GDK_KEY_RELEASE_MASK);
+
+  gtk_widget_set_can_focus(GTK_WIDGET(self), TRUE);
 
   self->first_node	 = NULL;
   self->dragged_node	 = NULL;
