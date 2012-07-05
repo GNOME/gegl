@@ -286,8 +286,20 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
     }
 
   //  gegl_node_process(node);
-  GtkWidget *gtk_view = gegl_gtk_view_new_for_node(node);
+  GtkWidget *gtk_view = gegl_gtk_view_new_for_node(node);;
+
+  GeglRectangle rect = gegl_node_get_bounding_box(node);
+
+  if(gegl_rectangle_is_infinite_plane(&rect))
+    {
+      gegl_gtk_view_set_autoscale_policy(gtk_view, GEGL_GTK_VIEW_AUTOSCALE_DISABLED);
+      gegl_gtk_view_set_scale(gtk_view, 1.f);
+      g_print("Disable autoscale: scale=%f, x=%f, y=%f\n", gegl_gtk_view_get_scale(gtk_view), 
+      gegl_gtk_view_get_x(gtk_view), gegl_gtk_view_get_y(gtk_view));
+    }
+
   gtk_widget_show(gtk_view);
+
   //TODO: draw checkerboard under preview to indicate transparency
 
   gtk_box_pack_start(GTK_BOX(self->prop_box), prop_table, FALSE, TRUE, 0);
