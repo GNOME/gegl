@@ -36,4 +36,7 @@ void			layer_add_gegl_node(GeglEditorLayer* layer, GeglNode* node);
 //void layer_remove_gegl_node(GeglNode* node);
 //link, unlink
 
+void
+gegl_node_disconnect_all_pads(GeglNode* node);
+
 #endif

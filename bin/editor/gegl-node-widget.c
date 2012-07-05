@@ -424,7 +424,7 @@ static gboolean
 gegl_editor_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 {
   GeglEditor*	editor = GEGL_EDITOR(widget);
-  //print_node_list(editor);
+  print_node_list(editor);
   if(event->keyval == GDK_KEY_Delete && editor->selected_node != NULL)
     {
       //todo: put in its own function
@@ -446,7 +446,7 @@ gegl_editor_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data
 	}
       editor->selected_node = NULL;
     }
-  //print_node_list(editor);
+  print_node_list(editor);
   gtk_widget_queue_draw(widget);
 }
 
@@ -457,6 +457,7 @@ gegl_editor_button_press(GtkWidget* widget, GdkEventButton* event)
 
   if(event->type == GDK_BUTTON_PRESS)
     {
+      gtk_widget_grab_focus(widget);
       //TODO: check which mouse button was pressed rather than assume it was the left button
       editor->left_mouse_down = TRUE;
       editor->dx		  = editor->px;

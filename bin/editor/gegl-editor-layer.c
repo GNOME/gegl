@@ -49,6 +49,7 @@ void refresh_images(GeglEditorLayer* self)
 
 gint layer_node_removed (gpointer host, GeglEditor* editor, gint node_id)
 {
+  g_print("remove\n");
   GeglEditorLayer* self = (GeglEditorLayer*)host;
   //TODO: put this in its own function
   GeglNode*		node = NULL;
@@ -65,6 +66,7 @@ gint layer_node_removed (gpointer host, GeglEditor* editor, gint node_id)
 
   g_assert(node != NULL);
 
+  gegl_node_disconnect_all_pads(node);
   gegl_node_disconnect(self->gegl, node);
 }
 
@@ -359,4 +361,28 @@ layer_add_gegl_node(GeglEditorLayer* layer, GeglNode* node)
   new_pair->node	 = node;
   new_pair->id		 = id;
   layer->pairs		 = g_slist_append(layer->pairs, new_pair);
+}
+
+void
+gegl_node_disconnect_all_pads(GeglNode* node)
+{
+  GSList* list;
+  for(list = gegl_node_get_pads(node); list != NULL; list = list->next)
+    {
+      if(gegl_pad_is_input(list->data)) //disconnect inputs
+	{
+	  gegl_node_disconnect(node, gegl_pad_get_name(list->data));
+	}
+      else if(gegl_pad_is_output(list->data)) //disconnect outputs
+	{
+	  GeglNode** nodes;
+	  gchar** pads;
+	  gint num_consumers = gegl_node_get_consumers(node, gegl_pad_get_name(list->data), &nodes, &pads);
+	  gint i;
+	  for(i = 0; i < num_consumers; i++)
+	    {
+	      gegl_node_disconnect(nodes[i], pads[i]);
+	    }
+	}
+    }
 }
