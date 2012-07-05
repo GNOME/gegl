@@ -421,7 +421,7 @@ print_node_list(GeglEditor* editor)
 }
 
 static gboolean
-gegl_editor_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+gegl_editor_key_press (GtkWidget *widget, GdkEventKey *event)
 {
   GeglEditor*	editor = GEGL_EDITOR(widget);
   print_node_list(editor);
@@ -592,13 +592,12 @@ gegl_editor_class_init(GeglEditorClass *klass)
 #if GTK_MAJOR_VERSION == (3)
   widget_class->draw		      = gegl_editor_draw;
 #else
-  widget_class->expose_event	      = gegl_editor_expose;
+  widget_class->expose_event	     = gegl_editor_expose;
 #endif
-  widget_class->motion_notify_event   = gegl_editor_motion;
-  widget_class->button_press_event    = gegl_editor_button_press;
-  widget_class->button_release_event  = gegl_editor_button_release;
-  widget_class->key_press_event = gegl_editor_key_press;
-
+  widget_class->motion_notify_event  = gegl_editor_motion;
+  widget_class->button_press_event   = gegl_editor_button_press;
+  widget_class->button_release_event = gegl_editor_button_release;
+  widget_class->key_press_event	     = gegl_editor_key_press;
 }
 
 
@@ -632,7 +631,7 @@ gegl_editor_new ( void )
 }
 
 gint	
-gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs)
+gegl_editor_add_node(GeglEditor* self, const gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs)
 {
   EditorNode*	node = new_editor_node(gegl_editor_last_node(self));
 

@@ -58,12 +58,12 @@ void menuitem_activated(GtkMenuItem* item, gpointer data)
 						     NULL);
   gtk_tree_view_append_column (GTK_TREE_VIEW (list), column);
 
-  GtkScrolledWindow* scrolls = gtk_scrolled_window_new(NULL, NULL);
+  GtkScrolledWindow* scrolls = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new(NULL, NULL));
   gtk_widget_set_size_request(GTK_WIDGET(scrolls), 100, 150);
-  gtk_widget_show(scrolls);
+  gtk_widget_show(GTK_WIDGET(scrolls));
   gtk_container_add(GTK_CONTAINER(scrolls), list);
 
-  gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(add_op_dialog))), scrolls);
+  gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(add_op_dialog))), GTK_WIDGET(scrolls));
   gtk_widget_show(list);
 
   //g_signal_connect(add_op_dialog, "response", add_operation_dialog, data);
@@ -72,7 +72,7 @@ void menuitem_activated(GtkMenuItem* item, gpointer data)
   GeglNode *node;
   if(result == GTK_RESPONSE_ACCEPT)
     {
-      GtkTreeSelection *selection = gtk_tree_view_get_selection(list);
+      GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(list));
       GtkTreeModel *model;
       if(gtk_tree_selection_get_selected(selection, &model, &itr))
 	{

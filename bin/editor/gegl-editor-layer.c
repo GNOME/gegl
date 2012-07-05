@@ -67,7 +67,7 @@ gint layer_node_removed (gpointer host, GeglEditor* editor, gint node_id)
   g_assert(node != NULL);
 
   gegl_node_disconnect_all_pads(node);
-  gegl_node_disconnect(self->gegl, node);
+  gegl_node_remove_child(self->gegl, node);
 }
 
 gint layer_connected_pads (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input)
@@ -106,7 +106,7 @@ gint layer_disconnected_pads (gpointer host, GeglEditor* editor, gint from, gcha
 struct text_prop_data
 {
   GeglNode*		node;
-  gchar*		property;
+  const gchar*		property;
   GType			prop_type;
   GeglEditorLayer*	layer;
 };
@@ -114,10 +114,10 @@ struct text_prop_data
 void text_property_changed(GtkEntry* entry, gpointer data)
 {
   struct text_prop_data *dat  = (struct text_prop_data*)data;
-  gchar			*text = gtk_entry_get_text(entry);
+  const gchar			*text = gtk_entry_get_text(entry);
 
   GeglNode*		 node	   = dat->node;
-  gchar*		 property  = dat->property;
+  const gchar*		 property  = dat->property;
   GType			 prop_type = dat->prop_type;
   GeglEditorLayer	*layer	   = dat->layer;
 
@@ -152,13 +152,13 @@ void text_property_changed(GtkEntry* entry, gpointer data)
 
 typedef struct {
   GeglNode* node;
-  gchar* property;
+  const gchar* property;
   GeglEditorLayer* layer;
 } select_color_info;
 
 void select_color (GtkButton *widget, gpointer user_data)
 {
-  GtkColorSelectionDialog* dialog = gtk_color_selection_dialog_new("Select Color"); //todo put the old color selection in
+  GtkColorSelectionDialog* dialog = GTK_COLOR_SELECTION_DIALOG(gtk_color_selection_dialog_new("Select Color")); //todo put the old color selection in
 
   gint result = gtk_dialog_run(GTK_DIALOG(dialog));
 
@@ -185,7 +185,7 @@ void select_color (GtkButton *widget, gpointer user_data)
 
       refresh_images(info->layer);
     }
-  gtk_widget_destroy(dialog);
+  gtk_widget_destroy(GTK_WIDGET(dialog));
 }
 
 gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
@@ -211,7 +211,7 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
   GParamSpec**	properties = gegl_operation_list_properties(gegl_node_get_operation(node), &n_props);
 
   //TODO: only create enough columns for the properties which will actually be included (i.e. ignoring GeglBuffer props)
-  GtkTable	*prop_table = gtk_table_new(2, n_props, FALSE);
+  GtkTable	*prop_table = GTK_TABLE(gtk_table_new(2, n_props, FALSE));
 
   int i;
   int d;
@@ -219,7 +219,7 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
     {
       GParamSpec*	prop = properties[i];
       GType		type = prop->value_type;
-      gchar*		name = prop->name;
+      const gchar*		name = prop->name;
 
       GtkWidget*	name_label = gtk_label_new(name);
       gtk_misc_set_alignment(GTK_MISC(name_label), 0, 0.5);
@@ -270,7 +270,7 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 
       if(!skip)
 	{
-	  gtk_entry_set_text(value_entry, buf);
+	  gtk_entry_set_text(GTK_ENTRY(value_entry), buf);
 
 	  gtk_entry_set_width_chars(GTK_ENTRY(value_entry), 2);
 	  struct text_prop_data	*data = malloc(sizeof(struct text_prop_data));	//TODO store this in a list and free it when the node is deselected
@@ -278,7 +278,7 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 	  data->property		      = name;
 	  data->prop_type		      = type;
 	  data->layer		      = self;
-	  g_signal_connect(value_entry, "activate", text_property_changed, data);
+	  g_signal_connect(value_entry, "activate", G_CALLBACK(text_property_changed), data);
 
 	  gtk_table_attach(prop_table, name_label, 0, 1, d, d+1, GTK_FILL, GTK_FILL, 1, 1);
 	  gtk_table_attach(prop_table, value_entry, 1, 2, d, d+1, GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_FILL, 1, 1);
@@ -286,27 +286,27 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
     }
 
   //  gegl_node_process(node);
-  GtkWidget *gtk_view = gegl_gtk_view_new_for_node(node);;
+  GeglGtkView *gtk_view = gegl_gtk_view_new_for_node(node);
 
   GeglRectangle rect = gegl_node_get_bounding_box(node);
 
   if(gegl_rectangle_is_infinite_plane(&rect))
     {
       gegl_gtk_view_set_autoscale_policy(gtk_view, GEGL_GTK_VIEW_AUTOSCALE_DISABLED);
-      gegl_gtk_view_set_scale(gtk_view, 1.f);
+      gegl_gtk_view_set_scale(gtk_view, 1.0);
       g_print("Disable autoscale: scale=%f, x=%f, y=%f\n", gegl_gtk_view_get_scale(gtk_view), 
       gegl_gtk_view_get_x(gtk_view), gegl_gtk_view_get_y(gtk_view));
     }
 
-  gtk_widget_show(gtk_view);
+  gtk_widget_show(GTK_WIDGET(gtk_view));
 
   //TODO: draw checkerboard under preview to indicate transparency
 
-  gtk_box_pack_start(GTK_BOX(self->prop_box), prop_table, FALSE, TRUE, 0);
-  gtk_box_pack_start(GTK_BOX(self->prop_box), gtk_view, TRUE, TRUE, 10);
+  gtk_box_pack_start(GTK_BOX(self->prop_box), GTK_WIDGET(prop_table), FALSE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(self->prop_box), GTK_WIDGET(gtk_view), TRUE, TRUE, 10);
 
   GtkWidget* label = gtk_label_new("Click the image\nto open in a\nnew window");
-  gtk_label_set_justify(label, GTK_JUSTIFY_CENTER);
+  gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
   gtk_box_pack_start(GTK_BOX(self->prop_box), label, FALSE, TRUE, 10);
 
   gtk_widget_show_all(self->prop_box);
@@ -343,6 +343,11 @@ layer_create(GeglEditor* editor, GeglNode* gegl, GtkWidget* prop_box)
   return layer;
 }
 
+gpointer gegl_node_get_pad(GeglNode* self, const gchar* name);
+const gchar*	gegl_pad_get_name(gpointer pad);
+GSList*	gegl_node_get_pads(GeglNode *self);
+GSList*	gegl_node_get_input_pads(GeglNode *self);
+
 void
 layer_add_gegl_node(GeglEditorLayer* layer, GeglNode* node)
 {
@@ -354,7 +359,7 @@ layer_add_gegl_node(GeglEditorLayer* layer, GeglNode* node)
   int		 i;
   for(i = 0; pads != NULL; pads = pads->next, i++)
     {
-      inputs[i] = gegl_pad_get_name(pads->data);
+      inputs[i] = (gchar*)gegl_pad_get_name(pads->data);
     }
 
   gint	id;
@@ -375,6 +380,7 @@ layer_add_gegl_node(GeglEditorLayer* layer, GeglNode* node)
   layer->pairs		 = g_slist_append(layer->pairs, new_pair);
 }
 
+
 void
 gegl_node_disconnect_all_pads(GeglNode* node)
 {
@@ -383,12 +389,12 @@ gegl_node_disconnect_all_pads(GeglNode* node)
     {
       if(gegl_pad_is_input(list->data)) //disconnect inputs
 	{
-	  gegl_node_disconnect(node, gegl_pad_get_name(list->data));
+	  gegl_node_disconnect(node, (gchar*)gegl_pad_get_name(list->data));
 	}
       else if(gegl_pad_is_output(list->data)) //disconnect outputs
 	{
 	  GeglNode** nodes;
-	  gchar** pads;
+	  const gchar** pads;
 	  gint num_consumers = gegl_node_get_consumers(node, gegl_pad_get_name(list->data), &nodes, &pads);
 	  gint i;
 	  for(i = 0; i < num_consumers; i++)

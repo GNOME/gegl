@@ -38,7 +38,7 @@ struct _PadConnection
 struct _EditorNode
 {
   gint			 id, x, y, width, height;
-  gchar*		 title;
+  const gchar*		 title;
   gint			 title_height;
   EditorNode		*next;
   NodePad*		 inputs;
@@ -83,7 +83,7 @@ GType		gegl_editor_get_type(void);
 GtkWidget*	gegl_editor_new(void);
 
 //public methods
-gint	gegl_editor_add_node(GeglEditor* self, gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs);
+gint	gegl_editor_add_node(GeglEditor* self, const gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs);
 void	gegl_editor_set_node_position(GeglEditor* self, gint node, gint x, gint y);
 void	gegl_editor_show_node_image(GeglEditor* self, gint node);
 void	gegl_editor_hide_node_image(GeglEditor* self, gint node);
