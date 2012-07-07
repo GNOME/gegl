@@ -8,32 +8,94 @@
 
 GtkWidget	*window;
 
-/*void add_operation_dialog (GtkDialog* dialog, gint response_id, gpointer user_data)
+GeglNode* getFinalNode(GeglNode* node)
 {
-  if(response_id == GTK_RESPONSE_ACCEPT) {
-    g_print("add\n");
-  }
-  }*/
+  GeglNode**	nodes;
+  const gchar** pads;
+  gint		num_consumers = gegl_node_get_consumers(node, "output", &nodes, &pads);
+  if(0 == num_consumers)
+    return node;
+  else
+    return getFinalNode(nodes[0]);
+}
 
-void menuitem_activated(GtkMenuItem* item, gpointer data)
+void SaveAs(GeglEditorLayer* layer)
+{
+  GtkFileChooserDialog	*file_select = GTK_FILE_CHOOSER_DIALOG(gtk_file_chooser_dialog_new("Save As", GTK_WINDOW(window), 
+											   GTK_FILE_CHOOSER_ACTION_SAVE, 
+											   GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+											   GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+											   NULL));
+  gint			 result	     = gtk_dialog_run(GTK_DIALOG(file_select));
+  if(result == GTK_RESPONSE_ACCEPT)
+    {
+      const gchar	*filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_select));
+
+      //Try to guess at an output
+      GeglNode* first = gegl_node_get_nth_child(layer->gegl, 0);
+
+      const gchar	*xml = gegl_node_to_xml(getFinalNode(first), "");
+
+      g_print("%s\n", filename);
+
+      g_file_set_contents(filename, xml, -1, NULL);	//TODO: check for error
+
+      //g_free(filename);
+    }
+
+  gtk_widget_destroy(GTK_WIDGET(file_select));
+}
+
+void file_menu_item_activated(GtkMenuItem* item, gpointer data)
+{
+  const gchar*	label = gtk_menu_item_get_label(item);
+  if(0 == g_strcmp0(label, "Save As"))
+    {
+      SaveAs((GeglEditorLayer*)data);
+    }
+  else if(0 == g_strcmp0( label, "Save"))
+    {
+      //Check to see if open graph is associated with a file. If it is save to that	file, otherwise, save as
+    }
+  else if(0 == g_strcmp0(label, "Open"))
+    {
+    }
+  else if(0 == g_strcmp0(label, "New Graph"))
+    {
+      
+    }
+  else if(0 == g_strcmp0(label, "Quit"))
+    {
+    }
+}
+
+void process_activated(GtkMenuItem* item, gpointer data)
+{
+}
+
+void process_all_activated(GtkMenuItem* item, gpointer data)
+{
+}
+
+void add_operation_activated(GtkMenuItem* item, gpointer data)
 {
   GeglEditorLayer	*layer = (GeglEditorLayer*)data;
   if(0 == strcmp("Add Operation", gtk_menu_item_get_label(item)))
     {
       g_print("Add an operation\n");
     }
-  GtkWidget *add_op_dialog = gtk_dialog_new_with_buttons("AddOperation", GTK_WINDOW(window), 
-							 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-							 GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL,GTK_RESPONSE_REJECT, NULL);
+  GtkWidget	*add_op_dialog = gtk_dialog_new_with_buttons("AddOperation", GTK_WINDOW(window), 
+							     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+							     GTK_STOCK_OK, GTK_RESPONSE_ACCEPT, GTK_STOCK_CANCEL,GTK_RESPONSE_REJECT, NULL);
   /////list/////////
-  GtkListStore *store = gtk_list_store_new(1, G_TYPE_STRING);
+  GtkListStore	*store	       = gtk_list_store_new(1, G_TYPE_STRING);
 
-  guint n_ops;
-  gchar** ops = gegl_list_operations(&n_ops);
+  guint		n_ops;
+  gchar**	ops = gegl_list_operations(&n_ops);
 
-  GtkTreeIter itr;
+  GtkTreeIter	itr;
 
-  int i;
+  int	i;
   for(i = 0; i < n_ops; i++) {
     gtk_list_store_append(store, &itr);
     gtk_list_store_set(store, &itr, 0, ops[i], -1);
@@ -41,24 +103,24 @@ void menuitem_activated(GtkMenuItem* item, gpointer data)
 
   /////////////////
 
-  GtkWidget *text_entry = gtk_entry_new();
+  GtkWidget	*text_entry = gtk_entry_new();
   
   //  gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG(add_op_dialog))), text_entry);
   //  gtk_widget_show(text_entry);
   
-  GtkWidget* list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+  GtkWidget*	list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 
-  GtkCellRenderer *renderer;
-  GtkTreeViewColumn *column;
+  GtkCellRenderer	*renderer;
+  GtkTreeViewColumn	*column;
 
   renderer = gtk_cell_renderer_text_new ();
-  column = gtk_tree_view_column_new_with_attributes ("Operation",
-						     renderer,
-						     "text", 0,
-						     NULL);
+  column   = gtk_tree_view_column_new_with_attributes ("Operation",
+						       renderer,
+						       "text", 0,
+						       NULL);
   gtk_tree_view_append_column (GTK_TREE_VIEW (list), column);
 
-  GtkScrolledWindow* scrolls = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new(NULL, NULL));
+  GtkScrolledWindow*	scrolls = GTK_SCROLLED_WINDOW(gtk_scrolled_window_new(NULL, NULL));
   gtk_widget_set_size_request(GTK_WIDGET(scrolls), 100, 150);
   gtk_widget_show(GTK_WIDGET(scrolls));
   gtk_container_add(GTK_CONTAINER(scrolls), list);
@@ -68,18 +130,18 @@ void menuitem_activated(GtkMenuItem* item, gpointer data)
 
   //g_signal_connect(add_op_dialog, "response", add_operation_dialog, data);
 
-  gint result = gtk_dialog_run(GTK_DIALOG(add_op_dialog));
-  GeglNode *node;
+  gint		 result = gtk_dialog_run(GTK_DIALOG(add_op_dialog));
+  GeglNode	*node;
   if(result == GTK_RESPONSE_ACCEPT)
     {
-      GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(list));
-      GtkTreeModel *model;
+      GtkTreeSelection	*selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(list));
+      GtkTreeModel	*model;
       if(gtk_tree_selection_get_selected(selection, &model, &itr))
 	{
-	  gchar* operation;
+	  gchar*	operation;
 	  gtk_tree_model_get(model, &itr, 0, &operation, -1);
 	  //	  node = gegl_node_create_child (layer->gegl, gtk_entry_get_text(GTK_ENTRY(text_entry)));
-	  node = gegl_node_create_child(layer->gegl, operation);
+	  node	       = gegl_node_create_child(layer->gegl, operation);
 	  layer_add_gegl_node(layer, node);
 	}
     }
@@ -97,11 +159,11 @@ main (gint	  argc,
 
   gegl_init(&argc, &argv);
 
-////////////////////////////////////////////CREATE OPERATION DIALOG///////////////////////////////////////////
+  ////////////////////////////////////////////CREATE OPERATION DIALOG///////////////////////////////////////////
 
-  GtkWidget* property_box = gtk_vbox_new(FALSE, 0);
+  GtkWidget*	property_box = gtk_vbox_new(FALSE, 0);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   //add some samples nodes
   GeglNode		*gegl  = gegl_node_new();
@@ -116,44 +178,75 @@ main (gint	  argc,
   gtk_container_add(GTK_CONTAINER(window), vbox);
 
 
-/////////////////////////////////////////////////BUILD MENUBAR////////////////////////////////////////////////
+  /////////////////////////////////////////////////BUILD MENUBAR////////////////////////////////////////////////
  
- GtkWidget	*menubar;
-  
-  GtkWidget	*process_menu;
-  GtkWidget	*process;
-  GtkWidget	*process_all;
+  GtkWidget	*menubar;
 
+  GtkWidget	*file_menu;
+  GtkWidget	*file;
+  GtkWidget	*new;
+  GtkWidget	*open;
+  GtkWidget	*save;
+  GtkWidget	*save_as;
+  GtkWidget	*exit;
+  
   GtkWidget	*graph_menu;
   GtkWidget	*graph;
   GtkWidget	*add_operation;
+  GtkWidget	*process;
+  GtkWidget	*process_all;
 
-  menubar      = gtk_menu_bar_new();
-  process_menu = gtk_menu_new();
-  graph_menu   = gtk_menu_new();
+  menubar = gtk_menu_bar_new();
 
-  process     = gtk_menu_item_new_with_label("Process");
-  process_all = gtk_menu_item_new_with_label("All");
+  //File Menu
+  file_menu = gtk_menu_new();
+  file	    = gtk_menu_item_new_with_label("File");
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM(file), file_menu);
 
-  gtk_menu_item_set_submenu(GTK_MENU_ITEM(process), process_menu);
-  gtk_menu_shell_append(GTK_MENU_SHELL(process_menu), process_all);
-  gtk_menu_shell_append(GTK_MENU_SHELL(menubar), process);
+  new = gtk_menu_item_new_with_label("New Graph");
+  g_signal_connect(new, "activate", (GCallback)file_menu_item_activated, layer);
+  gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), new);
 
-  graph		= gtk_menu_item_new_with_label("Graph");
-  add_operation = gtk_menu_item_new_with_label("Add Operation");
-  g_signal_connect(add_operation, "activate", (GCallback)menuitem_activated, layer);
+  open = gtk_menu_item_new_with_label("Open");
+  g_signal_connect(open, "activate", (GCallback)file_menu_item_activated, layer);
+  gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), open);
 
+  save = gtk_menu_item_new_with_label("Save");
+  g_signal_connect(save, "activate", (GCallback)file_menu_item_activated, layer);
+  gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), save);
+
+  save_as = gtk_menu_item_new_with_label("Save As");
+  g_signal_connect(save_as, "activate", (GCallback)file_menu_item_activated, layer);
+  gtk_menu_shell_append(GTK_MENU_SHELL(file_menu), save_as);
+
+  //Graph Menu
+  graph_menu = gtk_menu_new();
+  graph	     = gtk_menu_item_new_with_label("Graph");
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(graph), graph_menu);
+
+  add_operation = gtk_menu_item_new_with_label("Add Operation");
+  g_signal_connect(add_operation, "activate", (GCallback)add_operation_activated, layer);
   gtk_menu_shell_append(GTK_MENU_SHELL(graph_menu), add_operation);
+
+  process = gtk_menu_item_new_with_label("Process");
+  g_signal_connect(process, "activate", (GCallback)process_activated, layer);
+  gtk_menu_shell_append(GTK_MENU_SHELL(graph_menu), process);
+
+  process_all = gtk_menu_item_new_with_label("Process All");
+  g_signal_connect(process_all, "activate", (GCallback)process_all_activated, layer);
+  gtk_menu_shell_append(GTK_MENU_SHELL(graph_menu), process_all);
+
+  //Add menues to menu bar
+
+  gtk_menu_shell_append(GTK_MENU_SHELL(menubar), file);
   gtk_menu_shell_append(GTK_MENU_SHELL(menubar), graph);
 
+  ////////////////////////////////////////////HORIZONTAL PANE///////////////////////////////////////////////////
 
-////////////////////////////////////////////HORIZONTAL PANE///////////////////////////////////////////////////
-
-  GtkWidget* pane = gtk_hpaned_new();
+  GtkWidget*	pane = gtk_hpaned_new();
   gtk_paned_set_position(GTK_PANED(pane), 150);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
   gtk_box_pack_start(GTK_BOX(vbox), pane, TRUE, TRUE, 0);
@@ -163,12 +256,12 @@ main (gint	  argc,
 
   gtk_widget_show_all(window);
 
-////////////////////////////////////////////GEGL OPERATIONS///////////////////////////////////////////////////
+  ////////////////////////////////////////////GEGL OPERATIONS///////////////////////////////////////////////////
   //GeglNode	*display = gegl_node_create_child (gegl, "gegl:display");
-  GeglNode	*over = gegl_node_new_child (gegl, "operation", "gegl:over", NULL);
-  GeglNode	*load = gegl_node_new_child(gegl, "operation", "gegl:load", "path", "./surfer.png", NULL);
-  GeglNode	*text = gegl_node_new_child(gegl, "operation", "gegl:text", "size", 10.0, "color", 
-					    gegl_color_new("rgb(1.0,1.0,1.0)"), "text", "Hello world!", NULL);
+  GeglNode	*over	 = gegl_node_new_child (gegl, "operation", "gegl:over", NULL);
+  GeglNode	*load	 = gegl_node_new_child(gegl, "operation", "gegl:load", "path", "./surfer.png", NULL);
+  GeglNode	*text	 = gegl_node_new_child(gegl, "operation", "gegl:text", "size", 10.0, "color", 
+					       gegl_color_new("rgb(1.0,1.0,1.0)"), "text", "Hello world!", NULL);
 
   //layer_add_gegl_node(layer, display);
   layer_add_gegl_node(layer, over);
@@ -176,7 +269,7 @@ main (gint	  argc,
   layer_add_gegl_node(layer, text);
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   gtk_main();
   

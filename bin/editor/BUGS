@@ -1,1 +1,9 @@
-Nodes containing operations with infinite bounding boxes cannot be rendered
+KNOWN BUGS
+==========
+
+*Nodes containing operations with infinite bounding boxes cannot be rendered
+*Lots and lots of memory leaks
+*Because the current XML serialization only supports a single tree (i.e. no islands in the graph or branching outputs),
+	 saving the current graph will attempt to find an output to serialize. If multiple outputs exist in the graph,
+	 only one will be saved and the output which is selected is undefined. This behavior will disappear when new 
+	 serialization is available (ville is working on this)
