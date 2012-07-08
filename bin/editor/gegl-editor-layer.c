@@ -47,6 +47,21 @@ void refresh_images(GeglEditorLayer* self)
     }
 }
 
+gint get_editor_node_id(GeglEditorLayer* self, GeglNode* node)
+{
+  GSList*		pair = self->pairs;
+  for(;pair != NULL; pair = pair->next)
+    {
+      node_id_pair*	data = pair->data;
+      if(data->node == node)
+	{
+	  return data->id;
+	}
+    }
+
+  return 0;
+}
+
 gint layer_node_removed (gpointer host, GeglEditor* editor, gint node_id)
 {
   g_print("remove\n");
@@ -70,7 +85,7 @@ gint layer_node_removed (gpointer host, GeglEditor* editor, gint node_id)
   gegl_node_remove_child(self->gegl, node);
 }
 
-gint layer_connected_pads (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input)
+gint layer_connected_pads (gpointer host, GeglEditor* editor, gint from, const gchar* output, gint to, const gchar* input)
 {
   GeglEditorLayer*	self = (GeglEditorLayer*)host;
 
@@ -91,12 +106,12 @@ gint layer_connected_pads (gpointer host, GeglEditor* editor, gint from, gchar* 
   g_assert(from_node != NULL && to_node != NULL);
   g_assert(from_node != to_node);
   gboolean	success = gegl_node_connect_to(from_node, output, to_node, input);
-  g_print("connected: %s(%s) to %s(%s), %i\n", gegl_node_get_operation(from_node), output,
+  g_print("connected (%d): %s(%s) to %s(%s), %i\n", success, gegl_node_get_operation(from_node), output,
 	  gegl_node_get_operation(to_node), input, success);  
   refresh_images(self);
 }
 
-gint layer_disconnected_pads (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input)
+gint layer_disconnected_pads (gpointer host, GeglEditor* editor, gint from, const gchar* output, gint to, const gchar* input)
 {
   GeglEditorLayer*	layer = (GeglEditorLayer*)host;
   g_print("disconnected: %s to %s\n", output, input);
@@ -205,6 +220,18 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
 
   g_assert(node != NULL);
 
+  GeglNode** nodes;
+  const gchar** pads;
+  gint num = gegl_node_get_consumers(node, "output", &nodes, &pads);
+
+  int i;
+  g_print("%s: %d consumer(s)\n", gegl_node_get_operation(node), num);
+  for(i = 0; i < num; i++)
+    {
+      g_print("Connection: (%s to %s)\n", gegl_node_get_operation(node), gegl_node_get_operation(nodes[0]), pads[0]);
+    }
+  g_print("Input from: %s\n", gegl_node_get_operation(gegl_node_get_producer(node, "input", NULL)));
+
   //  g_print("selected: %s\n", gegl_node_get_operation(node));
 
   guint		n_props;
@@ -213,7 +240,6 @@ gint layer_node_selected (gpointer host, GeglEditor* editor, gint node_id)
   //TODO: only create enough columns for the properties which will actually be included (i.e. ignoring GeglBuffer props)
   GtkTable	*prop_table = GTK_TABLE(gtk_table_new(2, n_props, FALSE));
 
-  int i;
   int d;
   for(d = 0, i = 0; i < n_props; i++, d++)
     {
@@ -347,6 +373,69 @@ gpointer gegl_node_get_pad(GeglNode* self, const gchar* name);
 const gchar*	gegl_pad_get_name(gpointer pad);
 GSList*	gegl_node_get_pads(GeglNode *self);
 GSList*	gegl_node_get_input_pads(GeglNode *self);
+
+gpointer gegl_node_get_pad (GeglNode      *self, const gchar   *name);
+
+static void print_info(GeglNode* gegl)
+{
+  GSList *list = gegl_node_get_children(gegl);
+  for(;list != NULL; list = list->next)
+    {
+      GeglNode* node = GEGL_NODE(list->data);
+      g_print("Node %s\n", gegl_node_get_operation(node));
+
+      if(gegl_node_get_pad(node, "output") == NULL) {
+	g_print("Output pad is NULL\n");
+      }
+
+      /*      GeglNode** nodes;
+      const gchar** pads;
+      gint num = gegl_node_get_consumers(node, "output", &nodes, &pads);
+      g_print("%s: %d consumer(s)\n", gegl_node_get_operation(node), num);
+
+      int i;
+      for(i = 0; i < num; i++)
+	{
+	  g_print("Connection: (%s to %s)\n", gegl_node_get_operation(node), gegl_node_get_operation(nodes[0]), pads[0]);
+	}
+	g_print("\n");*/
+    }
+}
+
+void layer_set_graph(GeglEditorLayer* self, GeglNode* gegl)
+{
+  //properly dispose of old gegl graph
+  self->gegl = gegl;
+  gegl_editor_remove_all_nodes(self->editor);
+  GSList *list = gegl_node_get_children(gegl);
+  for(;list != NULL; list = list->next)
+    {
+      GeglNode* node = GEGL_NODE(list->data);
+      g_print("Loading %s\n", gegl_node_get_operation(node));
+      layer_add_gegl_node(self, node);
+    }
+
+  for(list = gegl_node_get_children(gegl); list != NULL; list = list->next)
+    {
+      GeglNode* node = GEGL_NODE(list->data);
+      gint from = get_editor_node_id(self, node);
+
+      GeglNode** nodes;
+      const gchar** pads;
+     
+      if(!gegl_node_find_property(node, "output")) break;
+      gint num = gegl_node_get_consumers(node, "output", &nodes, &pads);
+
+      int i;
+      g_print("%s: %d consumer(s)\n", gegl_node_get_operation(node), num);
+      for(i = 0; i < num; i++)
+	{
+	  gint to = get_editor_node_id(self, nodes[i]);
+	  g_print("Connecting to consumer (%s to %s): output->%s\n", gegl_node_get_operation(node), gegl_node_get_operation(nodes[0]), pads[0]);
+	  gegl_editor_add_connection(self->editor, from, to, "output", pads[0]);
+	}
+    }
+}
 
 void
 layer_add_gegl_node(GeglEditorLayer* layer, GeglNode* node)

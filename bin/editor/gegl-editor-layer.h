@@ -33,6 +33,7 @@ Editor and gegl graph should both be empty, but properly initialized
 */
 GeglEditorLayer*	layer_create(GeglEditor* editor, GeglNode* gegl, GtkWidget* property_editor_container);
 void			layer_add_gegl_node(GeglEditorLayer* layer, GeglNode* node);
+void layer_set_graph(GeglEditorLayer* layer, GeglNode* gegl); //will clear the current graph and load in the new one
 //void layer_remove_gegl_node(GeglNode* node);
 //link, unlink
 

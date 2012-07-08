@@ -8,19 +8,57 @@
 
 GtkWidget	*window;
 
+static void print_info(GeglNode* gegl)
+{
+  GSList *list = gegl_node_get_children(gegl);
+  for(;list != NULL; list = list->next)
+    {
+      GeglNode* node = GEGL_NODE(list->data);
+      g_print("Node %s\n", gegl_node_get_operation(node));
+
+      GeglNode** nodes;
+      const gchar** pads;
+      gint num = gegl_node_get_consumers(node, "output", &nodes, &pads);
+
+      int i;
+      g_print("%s: %d consumer(s)\n", gegl_node_get_operation(node), num);
+      for(i = 0; i < num; i++)
+	{
+	  g_print("Connection: (%s to %s)\n", gegl_node_get_operation(node), gegl_node_get_operation(nodes[0]), pads[0]);
+	}
+    }
+}
+
 GeglNode* getFinalNode(GeglNode* node)
 {
+  if(gegl_node_find_property(node, "output") == NULL)
+    return node;
+
   GeglNode**	nodes;
   const gchar** pads;
   gint		num_consumers = gegl_node_get_consumers(node, "output", &nodes, &pads);
-  if(0 == num_consumers)
+  
+  if(num_consumers == 0)
     return node;
   else
     return getFinalNode(nodes[0]);
 }
 
+
+GeglNode* getFirstNode(GeglNode* node)
+{
+  GeglNode* prev_node = gegl_node_get_producer(node, "input", NULL);
+  if(prev_node == NULL)
+    return node;
+  else
+    return getFirstNode(prev_node);
+}
+
+GeglNode* gegl_node_get_nth_child(GeglNode*, gint);
+
 void SaveAs(GeglEditorLayer* layer)
 {
+  print_info(layer->gegl);
   GtkFileChooserDialog	*file_select = GTK_FILE_CHOOSER_DIALOG(gtk_file_chooser_dialog_new("Save As", GTK_WINDOW(window), 
 											   GTK_FILE_CHOOSER_ACTION_SAVE, 
 											   GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -33,14 +71,33 @@ void SaveAs(GeglEditorLayer* layer)
 
       //Try to guess at an output
       GeglNode* first = gegl_node_get_nth_child(layer->gegl, 0);
+      GeglNode* last = getFinalNode(first);
 
-      const gchar	*xml = gegl_node_to_xml(getFinalNode(first), "");
+      g_print("Final node: %s\n", gegl_node_get_operation(last));
+      const gchar	*xml = gegl_node_to_xml(last, "/");
 
       g_print("%s\n", filename);
 
       g_file_set_contents(filename, xml, -1, NULL);	//TODO: check for error
+    }
 
-      //g_free(filename);
+  gtk_widget_destroy(GTK_WIDGET(file_select));
+}
+
+void Open(GeglEditorLayer* layer)
+{
+  GtkFileChooserDialog	*file_select = GTK_FILE_CHOOSER_DIALOG(gtk_file_chooser_dialog_new("Save As", GTK_WINDOW(window), 
+											   GTK_FILE_CHOOSER_ACTION_OPEN, 
+											   GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+											   GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+											   NULL));
+  gint			 result	     = gtk_dialog_run(GTK_DIALOG(file_select));
+  if(result == GTK_RESPONSE_ACCEPT)
+    {
+      const gchar	*filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(file_select));
+      GeglNode* gegl = gegl_node_new_from_file(filename);
+      layer_set_graph(layer, gegl);
+      //clear the current project, load in a new gegl object
     }
 
   gtk_widget_destroy(GTK_WIDGET(file_select));
@@ -56,9 +113,11 @@ void file_menu_item_activated(GtkMenuItem* item, gpointer data)
   else if(0 == g_strcmp0( label, "Save"))
     {
       //Check to see if open graph is associated with a file. If it is save to that	file, otherwise, save as
+      SaveAs((GeglEditorLayer*)data);
     }
   else if(0 == g_strcmp0(label, "Open"))
     {
+      Open((GeglEditorLayer*)data);
     }
   else if(0 == g_strcmp0(label, "New Graph"))
     {
@@ -167,7 +226,7 @@ main (gint	  argc,
   
   //add some samples nodes
   GeglNode		*gegl  = gegl_node_new();
-  GeglEditorLayer*	 layer = layer_create(node_editor, gegl, property_box);
+  GeglEditorLayer*	 layer = layer_create(node_editor, NULL, property_box);
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
@@ -263,10 +322,14 @@ main (gint	  argc,
   GeglNode	*text	 = gegl_node_new_child(gegl, "operation", "gegl:text", "size", 10.0, "color", 
 					       gegl_color_new("rgb(1.0,1.0,1.0)"), "text", "Hello world!", NULL);
 
+  gegl_node_link(load, over);
+
   //layer_add_gegl_node(layer, display);
-  layer_add_gegl_node(layer, over);
+  /*  layer_add_gegl_node(layer, over);
   layer_add_gegl_node(layer, load);
-  layer_add_gegl_node(layer, text);
+  layer_add_gegl_node(layer, text);*/
+
+  layer_set_graph(layer, gegl);
 
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

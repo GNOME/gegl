@@ -1,2 +1,5 @@
 editor
 *.png
+*.xml
+*.o
+*.jpg

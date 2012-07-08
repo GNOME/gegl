@@ -10,6 +10,27 @@ enum {
 
 static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
 
+NodePad* editorNodeGetPad(EditorNode* node, const gchar* pad_name)
+{
+  int i;
+  NodePad*	pad = node->inputs;
+  for(i = 0;pad!=NULL;pad = pad->next, i++)
+    {
+      if(0 == g_strcmp0(pad->name, pad_name))
+	return pad;
+    }
+
+  i = 0;
+  pad = node->outputs;
+  for(i = 0;pad!=NULL;pad = pad->next, i++)
+    {
+      if(0 == g_strcmp0(pad->name, pad_name))
+	return pad;
+    }
+}
+
+EditorNode* gegl_editor_get_node(GeglEditor* self, gint id);
+
 static void
 gegl_editor_set_property (GObject		*object,
 			       guint		 property_id,
@@ -684,6 +705,16 @@ gegl_editor_add_node(GeglEditor* self, const gchar* title, gint ninputs, gchar**
   return node->id;
 }
 
+void gegl_editor_add_connection(GeglEditor* self, gint from, gint to, const gchar* output, const gchar* input)
+{
+  if(from == 0 || to == 0)
+    return;
+
+  NodePad* f = editorNodeGetPad(gegl_editor_get_node(self, from), output);
+  NodePad* t = editorNodeGetPad(gegl_editor_get_node(self, to), input);
+  connect_pads(f, t);
+}
+
 void gegl_editor_set_node_position(GeglEditor* self, gint id, gint x, gint y)
 {
   EditorNode*	node = gegl_editor_get_node(self, id);
@@ -711,6 +742,13 @@ EditorNode* gegl_editor_get_node(GeglEditor* self, gint id)
     if(node->id == id)
       return node;
   return NULL;
+}
+
+void gegl_editor_remove_all_nodes(GeglEditor* self)
+{
+  //TODO: super obvious and stupid memory leak
+  self->first_node = NULL;
+  self->selected_node = NULL;
 }
 
 void gegl_editor_show_node_image(GeglEditor* self, gint node)

@@ -23,7 +23,7 @@ typedef struct _PadConnection   PadConnection;
 
 struct _NodePad
 {
-  gchar*	 name;
+  const gchar*	 name;
   NodePad	*connected;	//the pad that this is connected to. NULL if none
   NodePad	*next;		//the next pad in the linked list
   EditorNode*	 node;
@@ -55,8 +55,8 @@ struct _GeglEditor
   GtkDrawingArea	parent;
 
   /* public */
-  gint (*connectedPads) (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input);
-  gint (*disconnectedPads) (gpointer host, GeglEditor* editor, gint from, gchar* output, gint to, gchar* input);
+  gint (*connectedPads) (gpointer host, GeglEditor* editor, gint from, const gchar* output, gint to, const gchar* input);
+  gint (*disconnectedPads) (gpointer host, GeglEditor* editor, gint from, const gchar* output, gint to, const gchar* input);
   gint (*nodeSelected) (gpointer host, GeglEditor* editor, gint node);
   gint (*nodeDeselected) (gpointer host, GeglEditor* editor, gint node);
   gint (*nodeRemoved) (gpointer host, GeglEditor* editor, gint node);
@@ -84,9 +84,11 @@ GtkWidget*	gegl_editor_new(void);
 
 //public methods
 gint	gegl_editor_add_node(GeglEditor* self, const gchar* title, gint ninputs, gchar** inputs, gint noutputs, gchar** outputs);
+void	gegl_editor_add_connection(GeglEditor*	self, gint from, gint to, const gchar* output, const gchar* input);
 void	gegl_editor_set_node_position(GeglEditor* self, gint node, gint x, gint y);
 void	gegl_editor_show_node_image(GeglEditor* self, gint node);
 void	gegl_editor_hide_node_image(GeglEditor* self, gint node);
 void	gegl_editor_set_node_image(GeglEditor* self, gint node, cairo_surface_t* image);
+void gegl_editor_remove_all_nodes(GeglEditor* self);
 
 #endif
