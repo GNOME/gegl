@@ -316,21 +316,8 @@ main (gint	  argc,
   gtk_widget_show_all(window);
 
   ////////////////////////////////////////////GEGL OPERATIONS///////////////////////////////////////////////////
-  //GeglNode	*display = gegl_node_create_child (gegl, "gegl:display");
-  GeglNode	*over	 = gegl_node_new_child (gegl, "operation", "gegl:over", NULL);
-  GeglNode	*load	 = gegl_node_new_child(gegl, "operation", "gegl:load", "path", "./surfer.png", NULL);
-  GeglNode	*text	 = gegl_node_new_child(gegl, "operation", "gegl:text", "size", 10.0, "color", 
-					       gegl_color_new("rgb(1.0,1.0,1.0)"), "text", "Hello world!", NULL);
-
-  gegl_node_link(load, over);
-
-  //layer_add_gegl_node(layer, display);
-  /*  layer_add_gegl_node(layer, over);
-  layer_add_gegl_node(layer, load);
-  layer_add_gegl_node(layer, text);*/
 
   layer_set_graph(layer, gegl);
-
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
