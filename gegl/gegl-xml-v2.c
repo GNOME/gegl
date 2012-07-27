@@ -298,7 +298,7 @@ static void text (GMarkupParseContext *context,
     }
   else if (paramspec->value_type == GEGL_TYPE_CURVE)
     {
-      g_warning ("Curve parameter should be defined with 'curve' and curve-point' XML element.");
+      /* Nothing to do*/
     }
   else if (paramspec->value_type == GEGL_TYPE_PATH)
     {
