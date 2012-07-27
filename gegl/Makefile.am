@@ -76,6 +76,7 @@ GEGL_introspectable_sources = \
 	gegl-utils.c			\
 	gegl-lookup.c			\
 	gegl-xml.c			\
+	gegl-xml-v2.c			\
 	gegl-random.c \
 	gegl-matrix.c \
 	\
@@ -90,6 +91,7 @@ GEGL_introspectable_sources = \
 	gegl-plugin.h			\
 	gegl-types-internal.h		\
 	gegl-xml.h \
+	gegl-xml-v2.h \
 	gegl-matrix.h
 
 GEGL_sources = \
