@@ -131,6 +131,9 @@ static void start_element (GMarkupParseContext *context,
         return;
       }
 
+      /* set the name of the node with the ID */
+      gegl_node_set (pd->current_node, "name", id, NULL);
+
       g_hash_table_insert (pd->ids, g_strdup (id), pd->current_node);
       pd->last_node = pd->current_node;
     }
