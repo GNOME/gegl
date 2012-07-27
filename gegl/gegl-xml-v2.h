@@ -20,6 +20,8 @@
 #ifndef GEGL_XML_V2_H
 #define GEGL_XML_V2_H
 
+gchar    * gegl_node_to_xml_v2        (GeglNode    *gegl,
+                                       const gchar *path_root);
 GeglNode * gegl_node_new_from_xml_v2  (const gchar *xmldata,
                                        const gchar *path_root);
 GeglNode * gegl_node_new_from_file_v2 (const gchar *path);

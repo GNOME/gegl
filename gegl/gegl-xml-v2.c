@@ -459,3 +459,336 @@ cleanup:
   return node;
 }
 
+/****/
+
+
+#define ind    do { gint i; for (i = 0; i < indent; i++) g_string_append (ss->buf, " "); } while (0)
+
+typedef struct
+{
+  GString     *buf;
+  const gchar *path_root;
+  GHashTable  *nodes;   /** node id's string to node */
+  gint         counter;
+} SerializeState;
+
+/** Output an XML attribute, inside of an XML tag */
+static void
+xml_attr (GString     *buf,
+          const gchar *key,
+          const gchar *value)
+{
+  g_assert (key);
+
+  if (value)
+    {
+      gchar *text = g_markup_escape_text (value, -1);
+      gchar *p;
+
+      g_string_append_c (buf, ' ');
+      g_string_append (buf, key);
+      g_string_append_c (buf, '=');
+      g_string_append_c (buf, '\'');
+      for (p = text; *p; p++)
+        {
+          if (*p == '\n')
+            g_string_append (buf, "&#10;");
+          else
+            g_string_append_c (buf, *p);
+        }
+      g_string_append_c (buf, '\'');
+
+      g_free (text);
+    }
+}
+
+static void
+xml_param_start (SerializeState *ss,
+                 gint            indent,
+                 const gchar    *key)
+{
+  g_assert (key);
+  ind; g_string_append (ss->buf, "<param name='");
+  g_string_append (ss->buf, key);
+  g_string_append (ss->buf, "'>");
+}
+
+static void
+xml_param_end (SerializeState *ss)
+{
+  g_string_append (ss->buf, "</param>\n");
+}
+
+static void
+xml_param (SerializeState *ss,
+           gint            indent,
+           const gchar    *key,
+           const gchar    *value)
+{
+  g_assert (key);
+  g_assert (value);
+
+  if (value)
+  {
+    xml_param_start (ss, indent, key);
+    g_string_append (ss->buf, value);
+    xml_param_end (ss);
+  }
+}
+
+static void
+xml_curve_point (SerializeState *ss,
+                 gint            indent,
+                 gfloat          x,
+                 gfloat          y)
+{
+  gchar str[64];
+  ind; g_string_append (ss->buf, "<curve-point x='");
+  g_ascii_dtostr (str, sizeof(str), x);
+  g_string_append (ss->buf, str);
+  g_string_append (ss->buf, "' y='");
+  g_ascii_dtostr (str, sizeof(str), y);
+  g_string_append (ss->buf, str);
+  g_string_append (ss->buf, "'/>\n");
+}
+
+static void
+xml_curve (SerializeState *ss,
+           gint            indent,
+           GeglCurve      *curve)
+{
+  gchar str[G_ASCII_DTOSTR_BUF_SIZE];
+  gdouble min_y, max_y;
+  guint num_points = gegl_curve_num_points (curve);
+  guint i;
+
+  gegl_curve_get_y_bounds (curve, &min_y, &max_y);
+
+  ind; g_string_append (ss->buf, "<curve ymin='");
+  g_ascii_dtostr (str, sizeof(str), min_y);
+  g_string_append (ss->buf, str);
+  g_string_append (ss->buf, "' ymax='");
+  g_ascii_dtostr (str, sizeof(str), max_y);
+  g_string_append (ss->buf, str);
+  g_string_append (ss->buf, "'>\n");
+  for (i = 0; i < num_points; ++i)
+    {
+      gdouble x, y;
+      gegl_curve_get_point (curve, i, &x, &y);
+      xml_curve_point (ss, indent + 2, x, y);
+    }
+  ind; g_string_append (ss->buf, "</curve>\n");
+}
+
+static void
+serialize_properties (SerializeState *ss,
+                      gint            indent,
+                      GeglNode       *node)
+{
+  GParamSpec **properties;
+  guint        n_properties;
+  gint         i;
+
+  properties = gegl_operation_list_properties (gegl_node_get_operation (node),
+                                               &n_properties);
+
+  for (i = 0; i < n_properties; i++)
+    {
+      if (strcmp (properties[i]->name, "input") &&
+          strcmp (properties[i]->name, "output") &&
+          strcmp (properties[i]->name, "aux") &&
+          strcmp (properties[i]->name, "aux2"))
+        {
+          if (g_type_is_a (G_PARAM_SPEC_TYPE (properties[i]),
+                           GEGL_TYPE_PARAM_FILE_PATH))
+            {
+              gchar *value;
+              gegl_node_get (node, properties[i]->name, &value, NULL);
+
+              if (value)
+                {
+                  if (ss->path_root &&
+                      !strncmp (ss->path_root, value, strlen (ss->path_root)))
+                    {
+                      xml_param (ss, indent, properties[i]->name, &value[strlen (ss->path_root) + 1]);
+                    }
+                  else
+                    {
+                      xml_param (ss, indent, properties[i]->name, value);
+                    }
+                }
+
+              g_free (value);
+            }
+          else if (properties[i]->value_type == G_TYPE_FLOAT)
+            {
+              gfloat value;
+              gchar  str[G_ASCII_DTOSTR_BUF_SIZE];
+              gegl_node_get (node, properties[i]->name, &value, NULL);
+              g_ascii_dtostr (str, sizeof(str), value);
+              xml_param (ss, indent, properties[i]->name, str);
+            }
+          else if (properties[i]->value_type == G_TYPE_DOUBLE)
+            {
+              gdouble value;
+              gchar   str[G_ASCII_DTOSTR_BUF_SIZE];
+              gegl_node_get (node, properties[i]->name, &value, NULL);
+              g_ascii_dtostr (str, sizeof(str), value);
+              xml_param (ss, indent, properties[i]->name, str);
+            }
+          else if (properties[i]->value_type == G_TYPE_INT)
+            {
+              gint  value;
+              gchar str[64];
+              gegl_node_get (node, properties[i]->name, &value, NULL);
+              g_snprintf (str, sizeof (str), "%i", value);
+              xml_param (ss, indent, properties[i]->name, str);
+            }
+          else if (properties[i]->value_type == G_TYPE_BOOLEAN)
+            {
+              gboolean value;
+              gegl_node_get (node, properties[i]->name, &value, NULL);
+              if (value)
+                {
+                  xml_param (ss, indent, properties[i]->name, "true");
+                }
+              else
+                {
+                  xml_param (ss, indent, properties[i]->name, "false");
+                }
+            }
+          else if (properties[i]->value_type == G_TYPE_STRING)
+            {
+              gchar *value;
+              gegl_node_get (node, properties[i]->name, &value, NULL);
+              xml_param (ss, indent, properties[i]->name, value);
+              g_free (value);
+            }
+          else if (g_type_is_a (properties[i]->value_type, G_TYPE_ENUM))
+            {
+              GEnumClass *eclass = g_type_class_peek (properties[i]->value_type);
+              GEnumValue *evalue;
+              gint value;
+
+              gegl_node_get (node, properties[i]->name, &value, NULL);
+              evalue = g_enum_get_value (eclass, value);
+
+              xml_param (ss, indent, properties[i]->name, evalue->value_nick);
+            }
+          else if (properties[i]->value_type == GEGL_TYPE_COLOR)
+            {
+              GeglColor *color;
+              gchar     *value;
+              gegl_node_get (node, properties[i]->name, &color, NULL);
+              g_object_get (color, "string", &value, NULL);
+              g_object_unref (color);
+              xml_param (ss, indent, properties[i]->name, value);
+              g_free (value);
+            }
+          else if (properties[i]->value_type == GEGL_TYPE_CURVE)
+            {
+              GeglCurve *curve;
+              gegl_node_get (node, properties[i]->name, &curve, NULL);
+              xml_param_start (ss, indent, properties[i]->name);
+              g_string_append (ss->buf, "\n");
+              xml_curve (ss, indent + 2, curve);
+              ind; xml_param_end (ss);
+              g_object_unref (curve);
+            }
+          else if (properties[i]->value_type == GEGL_TYPE_PATH)
+            {
+              gchar *svg_path;
+              GeglPath *path;
+              gegl_node_get (node, properties[i]->name, &path, NULL);
+              xml_param_start (ss, indent, properties[i]->name);
+              svg_path = gegl_path_to_string (path);
+              g_string_append (ss->buf, svg_path);
+              xml_param_end (ss);
+
+              g_object_unref (path);
+            }
+          else
+            {
+              g_warning ("%s: serialization of %s properties not implemented",
+                         properties[i]->name, g_type_name (properties[i]->value_type));
+            }
+        }
+    }
+
+  g_free (properties);
+}
+
+static void
+serialize_node (SerializeState *ss,
+                gint            indent,
+                GeglNode       *node)
+{
+  char*     input_name[3] = {"input", "aux", "aux2"};
+  GeglNode *producer[3];
+  char*     producer_pad[3];
+  gint      i;
+
+  char     *id = g_strdup_printf ("node%i", ss->counter);
+
+  ss->counter++;
+
+  /* Make sure every producer is already serialized. */
+  for (i = 0; i < 3; i++)
+  {
+    producer[i] = gegl_node_get_producer (node, input_name[i], &producer_pad[i]);
+    if (producer[i] && ! g_hash_table_lookup (ss->nodes, producer[i]))
+      serialize_node (ss, indent, producer[i]);
+  }
+
+  ind; g_string_append (ss->buf, "<node");
+  xml_attr (ss->buf, "id", id);
+  xml_attr (ss->buf, "op", gegl_node_get_operation (node));
+  g_string_append (ss->buf, ">\n");
+
+  /* edges */
+  indent += 2;
+  for (i = 0; i < 3; i++)
+  {
+    if (producer[i])
+      {
+        char *id = g_hash_table_lookup (ss->nodes, producer[i]);
+        ind; g_string_append (ss->buf, "<edge");
+        xml_attr (ss->buf, "from", producer_pad[i]);
+        xml_attr (ss->buf, "of", id);
+        xml_attr (ss->buf, "to", input_name[i]);
+        g_string_append (ss->buf, " />\n");
+      }
+  }
+
+  serialize_properties (ss, indent, node);
+
+  indent -= 2;
+
+  ind; g_string_append (ss->buf, "</node>\n\n");
+
+  g_hash_table_insert (ss->nodes, node, id);
+}
+
+gchar *
+gegl_node_to_xml_v2 (GeglNode    *gegl,
+                     const gchar *path_root)
+{
+  SerializeState  ss;
+
+  ss.buf         = g_string_new ("");
+  ss.path_root   = path_root;
+  ss.nodes       = g_hash_table_new (NULL, NULL);
+  ss.counter     = 0;
+
+  gegl = gegl_node_get_output_proxy (gegl, "output");
+
+  g_string_append (ss.buf, "<?xml version='1.0' encoding='UTF-8'?>\n");
+  g_string_append (ss.buf, "<gegl>\n");
+
+  serialize_node (&ss, 2, gegl);
+
+  g_string_append (ss.buf, "</gegl>\n");
+  g_hash_table_destroy (ss.nodes);
+
+  return g_string_free (ss.buf, FALSE);
+}
