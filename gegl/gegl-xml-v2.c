@@ -780,7 +780,9 @@ gegl_node_to_xml_v2 (GeglNode    *gegl,
   ss.nodes       = g_hash_table_new (NULL, NULL);
   ss.counter     = 0;
 
+  /* Make sure we don't serialize a proxy. */
   gegl = gegl_node_get_output_proxy (gegl, "output");
+  gegl = gegl_node_get_producer (gegl, "input", NULL);
 
   g_string_append (ss.buf, "<?xml version='1.0' encoding='UTF-8'?>\n");
   g_string_append (ss.buf, "<gegl>\n");
