@@ -24,11 +24,11 @@ AM_LDFLAGS = \
 	$(top_builddir)/gegl/libgegl-$(GEGL_API_VERSION).la \
 	$(DEP_LIBS) $(BABL_LIBS)
 
-noinst_PROGRAMS = introspect operation_reference img_cmp
+noinst_PROGRAMS = introspect operation_reference img_cmp xml1to2
 
 if HAVE_EXIV2
-noinst_PROGRAMS     += exp_combine 
+noinst_PROGRAMS     += exp_combine
 exp_combine_SOURCES  = exp_combine.cpp
-exp_combine_LDADD    = $(EXIV2_LIBS) 
+exp_combine_LDADD    = $(EXIV2_LIBS)
 exp_combine_CXXFLAGS = $(AM_CFLAGS) $(EXIV2_CFLAGS)
 endif
