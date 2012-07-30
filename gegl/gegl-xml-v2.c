@@ -723,13 +723,33 @@ serialize_node (SerializeState *ss,
                 gint            indent,
                 GeglNode       *node)
 {
-  char*     input_name[3] = {"input", "aux", "aux2"};
-  GeglNode *producer[3];
-  char*     producer_pad[3];
-  gint      i;
+  char*       input_name[3] = {"input", "aux", "aux2"};
+  GeglNode*   producer[3];
+  char*       producer_pad[3];
+  gint        i;
+  char       *id;
+  const char *op;
 
-  char     *id = g_strdup_printf ("node%i", ss->counter);
+  if (!node)
+    return;
 
+  op = gegl_node_get_operation (node);
+
+  while (node && op && !strcmp (op, "gegl:nop")) {
+    node = gegl_node_get_producer (node, "input", NULL);
+    op = gegl_node_get_operation (node);
+  }
+
+  if (!node || !op) /* non-connected node or empty node */
+    return;
+
+  if (!strcmp (op, "GraphNode"))
+  {
+    g_warning ("Subgraph support non implemented yet.");
+    return;
+  }
+
+  id = g_strdup_printf ("node%i", ss->counter);
   ss->counter++;
 
   /* Make sure every producer is already serialized. */
@@ -742,7 +762,7 @@ serialize_node (SerializeState *ss,
 
   ind; g_string_append (ss->buf, "<node");
   xml_attr (ss->buf, "id", id);
-  xml_attr (ss->buf, "op", gegl_node_get_operation (node));
+  xml_attr (ss->buf, "op", op);
   g_string_append (ss->buf, ">\n");
 
   /* edges */
@@ -779,10 +799,6 @@ gegl_node_to_xml_v2 (GeglNode    *gegl,
   ss.path_root   = path_root;
   ss.nodes       = g_hash_table_new (NULL, NULL);
   ss.counter     = 0;
-
-  /* Make sure we don't serialize a proxy. */
-  gegl = gegl_node_get_output_proxy (gegl, "output");
-  gegl = gegl_node_get_producer (gegl, "input", NULL);
 
   g_string_append (ss.buf, "<?xml version='1.0' encoding='UTF-8'?>\n");
   g_string_append (ss.buf, "<gegl>\n");
