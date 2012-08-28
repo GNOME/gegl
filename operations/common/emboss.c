@@ -23,12 +23,12 @@
 #ifdef GEGL_CHANT_PROPERTIES
 
 gegl_chant_register_enum (gegl_emboss_type)
-  enum_value (GEGl_EMBOSS, "Emboss")
-  enum_value (GEGl_BUMPMAP, "Bumpmap")
-gegl_chant_register_enum_end (GeglEmboss)
+  enum_value (GEGl_EMBOSS_TYPE_EMBOSS, "Emboss")
+  enum_value (GEGl_EMBOSS_TYPE_BUMPMAP, "Bumpmap")
+gegl_chant_register_enum_end (GeglEmbossType)
 
-gegl_chant_enum (emboss_type, _("Function"), GeglEmboss, gegl_emboss_type,
-                 GEGl_EMBOSS, _("Emboss or Bumpmap"))
+gegl_chant_enum (emboss_type, _("Function"), GeglEmbossType, gegl_emboss_type,
+                 GEGl_EMBOSS_TYPE_EMBOSS, _("Emboss or Bumpmap"))
 
 gegl_chant_double (azimuth, _("Azimuth"), 0.0, 360.0, 10.0,
                    _("Azimuth"))
@@ -57,14 +57,13 @@ typedef struct {
   gint         Nz;
   gint         Nz2;
   gint         NzLz;
-
 } LightVector;
 
 static void
-emboss_init (gdouble azimuth,
-             gdouble elevation,
-             gint depth,
-            LightVector *vec)
+emboss_init (gdouble      azimuth,
+             gdouble      elevation,
+             gint         depth,
+             LightVector *vec)
 {
   /*
    * compute the light vector from the input parameters.
@@ -88,12 +87,12 @@ emboss_init (gdouble azimuth,
 }
 
 static void
-emboss_pixel (gint x,
-            gint y,
-            LightVector vec,
-            GeglSampler *sampler,
-            gfloat* dst_pix,
-            gint bytes) //may need emboss/bumpmap
+emboss_pixel (gint         x,
+              gint         y,
+              LightVector  vec,
+              GeglSampler *sampler,
+              gfloat*      dst_pix,
+              gint         bytes) /* may need emboss/bumpmap */
 {
   gfloat  M[3][3];
 
@@ -110,18 +109,19 @@ emboss_pixel (gint x,
   for (i = 0; i < 3; i++)
     for (j = 0; j < 3; j++)
       {
-    gegl_sampler_get (sampler,
-              x + i,
-              y + j,
-              NULL,
-              pix,
-              GEGL_ABYSS_NONE);
-    M[i][j] += pix[1] * pix[0];
-    if (i == 1 && j == 1)
-      {
-        for (b = 0; b < bytes; b++)
-          center_p[b] = pix[b];
-      }
+        gegl_sampler_get (sampler,
+                  x + i,
+                  y + j,
+                  NULL,
+                  pix,
+                  GEGL_ABYSS_NONE);
+        M[i][j] += pix[1] * pix[0];
+
+        if (i == 1 && j == 1)
+          {
+            for (b = 0; b < bytes; b++)
+              center_p[b] = pix[b];
+          }
       }
 
   Nx = M[0][0] + M[1][0] + M[2][0] - M[0][2] - M[1][2] - M[2][2];
@@ -139,7 +139,7 @@ emboss_pixel (gint x,
   if (bytes == 4) /* rgba, bumpmapping */
     {
       for (b = 0; b < 3; b++)
-    *dst_pix++ = center_p[b] * shade;
+        *dst_pix++ = center_p[b] * shade;
 
       *dst_pix = center_p[3];
     }
@@ -150,12 +150,13 @@ emboss_pixel (gint x,
     }
 }
 
-static void prepare (GeglOperation *operation)
+static void
+prepare (GeglOperation *operation)
 {
-  GeglChantO *o                    = GEGL_CHANT_PROPERTIES (operation);
+  GeglChantO *o = GEGL_CHANT_PROPERTIES (operation);
 
   const Babl *format;
-  if (o->emboss_type == GEGl_EMBOSS)
+  if (o->emboss_type == GEGl_EMBOSS_TYPE_EMBOSS)
     format = babl_format ("YA float");
   else
     format = babl_format ("RGBA float");
@@ -171,7 +172,7 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglChantO *o                    = GEGL_CHANT_PROPERTIES (operation);
+  GeglChantO *o = GEGL_CHANT_PROPERTIES (operation);
 
   gfloat *dst_buf;
   GeglSampler *sampler;
@@ -182,7 +183,7 @@ process (GeglOperation       *operation,
   const Babl *format;
   gint bytes;
 
-  if (o->emboss_type == GEGl_EMBOSS)
+  if (o->emboss_type == GEGl_EMBOSS_TYPE_EMBOSS)
     {
       format = babl_format ("YA float");
       bytes  = 2;
@@ -209,10 +210,10 @@ process (GeglOperation       *operation,
       dst_pix += bytes;
       x++;
       if (x == result->x + result->width)
-    {
-      x = result->x;
-      y++;
-    }
+        {
+          x = result->x;
+          y++;
+        }
     }
 
   g_object_unref (sampler);
@@ -225,7 +226,7 @@ process (GeglOperation       *operation,
 static void
 gegl_chant_class_init (GeglChantClass *klass)
 {
-  GeglOperationClass            *operation_class;
+  GeglOperationClass        *operation_class;
   GeglOperationFilterClass  *filter_class;
 
   operation_class = GEGL_OPERATION_CLASS (klass);
