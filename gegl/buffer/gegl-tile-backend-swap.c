@@ -867,17 +867,23 @@ gegl_tile_backend_swap_class_init (GeglTileBackendSwapClass *klass)
 void
 gegl_tile_backend_swap_cleanup (void)
 {
-  exit_thread = TRUE;
-  g_cond_signal (queue_cond);
-  g_thread_join (writer_thread);
+  if (in_fd != -1 && out_fd != -1)
+    {
+      exit_thread = TRUE;
+      g_cond_signal (queue_cond);
+      g_thread_join (writer_thread);
 
-  if (g_queue_get_length (queue) != 0)
-    g_warning ("tile-backend-swap writer queue wasn't empty before freeing\n");
+      if (g_queue_get_length (queue) != 0)
+        g_warning ("tile-backend-swap writer queue wasn't empty before freeing\n");
 
-  g_queue_free (queue);
-  g_cond_free (queue_cond);
-  g_cond_free (max_cond);
-  g_mutex_free (mutex);
+      g_queue_free (queue);
+      g_cond_free (queue_cond);
+      g_cond_free (max_cond);
+      g_mutex_free (mutex);
+
+      close (in_fd);
+      close (out_fd);
+    }
 }
 
 static void
