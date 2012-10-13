@@ -355,6 +355,7 @@ static void swap_clean (void)
 }
 
 void gegl_tile_storage_cache_cleanup (void);
+void gegl_tile_backend_swap_cleanup (void);
 
 void
 gegl_exit (void)
@@ -369,6 +370,7 @@ gegl_exit (void)
 
   timing = gegl_ticks ();
 
+  gegl_tile_backend_swap_cleanup ();
   gegl_tile_storage_cache_cleanup ();
   gegl_tile_cache_destroy ();
   gegl_operation_gtype_cleanup ();

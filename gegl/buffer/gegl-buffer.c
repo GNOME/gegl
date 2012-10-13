@@ -47,6 +47,7 @@
 #include "gegl-tile-storage.h"
 #include "gegl-tile-backend.h"
 #include "gegl-tile-backend-file.h"
+#include "gegl-tile-backend-swap.h"
 #include "gegl-tile-backend-tiledir.h"
 #include "gegl-tile-backend-ram.h"
 #include "gegl-tile.h"
@@ -426,7 +427,8 @@ gegl_buffer_dispose (GObject *object)
       /* only flush non-internal backends,. */
       if (!(GEGL_IS_TILE_BACKEND_FILE (backend) ||
             GEGL_IS_TILE_BACKEND_RAM (backend) ||
-            GEGL_IS_TILE_BACKEND_TILE_DIR (backend)))
+            GEGL_IS_TILE_BACKEND_TILE_DIR (backend) ||
+            GEGL_IS_TILE_BACKEND_SWAP (backend)))
         gegl_buffer_flush (buffer);
 
       gegl_tile_source_reinit (GEGL_TILE_SOURCE (handler->source));
@@ -1270,34 +1272,16 @@ gegl_tile_storage_new_cached (gint tile_width, gint tile_height,
         }
       else
         {
-          static gint no = 1;
           GeglTileBackend *backend;
-
-          gchar *filename;
-          gchar *path;
           item->ram = FALSE;
 
-#if 0
-          filename = g_strdup_printf ("GEGL-%i-%s-%i.swap",
-                                      getpid (),
-                                      babl_name ((Babl *) babl_fmt),
-                                      no++);
-#endif
-
-          filename = g_strdup_printf ("%i-%i", getpid(), no);
-          g_atomic_int_inc (&no);
-          path = g_build_filename (gegl_config()->swap, filename, NULL);
-          g_free (filename);
-
-          backend = g_object_new (GEGL_TYPE_TILE_BACKEND_FILE,
+          backend = g_object_new (GEGL_TYPE_TILE_BACKEND_SWAP,
                                   "tile-width", tile_width,
                                   "tile-height", tile_height,
                                   "format", babl_fmt,
-                                  "path", path,
                                   NULL);
           storage = gegl_tile_storage_new (backend);
           g_object_unref (backend);
-          g_free (path);
         }
       item->storage = storage;
       g_object_set_data_full (G_OBJECT (storage), "storage-cache-item", item, g_free);
