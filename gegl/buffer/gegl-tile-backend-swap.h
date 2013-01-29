@@ -21,6 +21,8 @@
 
 #include <glib.h>
 #include "gegl-tile-backend.h"
+#include "gegl-buffer-index.h"
+#include "gegl-aio-file.h"
 
 G_BEGIN_DECLS
 
@@ -42,11 +44,21 @@ struct _GeglTileBackendSwapClass
 
 struct _GeglTileBackendSwap
 {
-  GeglTileBackend  parent_instance;
-  GHashTable      *index;
+  GeglTileBackend   parent_instance;
+  gchar            *path;
+  GeglAIOFile      *file;
+  GHashTable       *index;
+  GList            **gap_list;
+  GeglBufferHeader  header;
+  GFile            *gfile;
+  GFileMonitor     *monitor;
 };
 
 GType gegl_tile_backend_swap_get_type (void) G_GNUC_CONST;
+
+gboolean gegl_tile_backend_swap_try_lock (GeglTileBackendSwap *self);
+
+gboolean gegl_tile_backend_swap_unlock (GeglTileBackendSwap *self);
 
 G_END_DECLS
 

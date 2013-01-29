@@ -46,7 +46,7 @@ enum
   PROP_TILE_HEIGHT,
   PROP_THREADS,
   PROP_USE_OPENCL,
-  PROP_QUEUE_LIMIT
+  PROP_QUEUE_SIZE
 };
 
 static void
@@ -99,8 +99,8 @@ gegl_config_get_property (GObject    *gobject,
         g_value_set_boolean (value, config->use_opencl);
         break;
 
-      case PROP_QUEUE_LIMIT:
-        g_value_set_int (value, config->queue_limit);
+      case PROP_QUEUE_SIZE:
+        g_value_set_int (value, config->queue_size);
         break;
 
       default:
@@ -181,8 +181,8 @@ gegl_config_set_property (GObject      *gobject,
           gegl_cl_init (NULL);
 
         break;
-      case PROP_QUEUE_LIMIT:
-        config->queue_limit = g_value_get_int (value);
+      case PROP_QUEUE_SIZE:
+        config->queue_size = g_value_get_uint64 (value);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, property_id, pspec);
@@ -293,13 +293,13 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                          G_PARAM_READWRITE |
                                                          G_PARAM_CONSTRUCT));
 
-  g_object_class_install_property (gobject_class, PROP_QUEUE_LIMIT,
-                                   g_param_spec_int ("queue-limit",
-                                                     "Queue limit",
-                                                     "Maximum number of entries in the file tile backend's writer queue",
-                                                     2, G_MAXINT, 1000,
-                                                     G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+  g_object_class_install_property (gobject_class, PROP_QUEUE_SIZE,
+                                   g_param_spec_uint64 ("queue-size",
+                                                        "Queue size",
+                                                        "Maximum size of the file backend's thread queue in megabytes",
+                                                        2, G_MAXUINT64, 100 * 1024 * 1024,
+                                                        G_PARAM_READWRITE |
+                                                        G_PARAM_CONSTRUCT));
 }
 
 static void

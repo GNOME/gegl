@@ -14,72 +14,74 @@ AM_CFLAGS = $(DEP_CFLAGS) $(BABL_CFLAGS)
 noinst_LTLIBRARIES = libbuffer.la
 
 libbuffer_la_SOURCES = \
-    gegl-tile-backend-tiledir.c	\
-    gegl-buffer.c		\
+	gegl-aio-file.c \
+	gegl-buffer-load.c	\
+	gegl-tile-backend-swap.c \
     gegl-buffer-access.c	\
-    gegl-buffer-share.c		\
+    gegl-buffer-cl-cache.c	\
+    gegl-buffer-cl-iterator.c	\
     gegl-buffer-index.h		\
     gegl-buffer-iterator.c	\
-    gegl-buffer-cl-iterator.c	\
-    gegl-buffer-cl-cache.c	\
     gegl-buffer-linear.c	\
-	gegl-buffer-load.c	\
     gegl-buffer-save.c		\
+    gegl-buffer-share.c		\
+    gegl-buffer.c		\
     gegl-cache.c		\
-    gegl-sampler.c		\
+    gegl-id-pool.c		\
+    gegl-region-generic.c	\
     gegl-sampler-cubic.c	\
     gegl-sampler-linear.c	\
-    gegl-sampler-nearest.c	\
-    gegl-sampler-nohalo.c       \
     gegl-sampler-lohalo.c       \
-    gegl-region-generic.c	\
-    gegl-tile.c			\
-    gegl-tile-source.c		\
-    gegl-tile-storage.c		\
-    gegl-tile-backend.c		\
+    gegl-sampler-nearest.c	\
+	gegl-sampler-nohalo.c \
+    gegl-sampler.c		\
     gegl-tile-backend-ram.c	\
-	gegl-tile-backend-swap.c \
-    gegl-tile-handler.c		\
-    gegl-tile-handler-private.h	\
+    gegl-tile-backend-tiledir.c	\
+    gegl-tile-backend.c		\
     gegl-tile-handler-cache.c	\
     gegl-tile-handler-chain.c	\
     gegl-tile-handler-empty.c	\
     gegl-tile-handler-log.c	\
+    gegl-tile-handler-private.h	\
     gegl-tile-handler-zoom.c	\
-    gegl-id-pool.c		\
+    gegl-tile-handler.c		\
+    gegl-tile-source.c		\
+    gegl-tile-storage.c		\
+    gegl-tile.c			\
     \
-    gegl-buffer.h		\
-    gegl-buffer-private.h	\
-    gegl-buffer-iterator.h	\
-    gegl-buffer-cl-iterator.h	\
+	gegl-aio-file.h \
+	gegl-tile-backend-swap.h \
     gegl-buffer-cl-cache.h	\
+    gegl-buffer-cl-iterator.h	\
+    gegl-buffer-iterator.h	\
     gegl-buffer-load.h		\
+    gegl-buffer-private.h	\
     gegl-buffer-save.h		\
     gegl-buffer-types.h		\
+    gegl-buffer.h		\
     gegl-cache.h		\
-    gegl-sampler.h		\
+    gegl-id-pool.h \
+    gegl-region-generic.h	\
+    gegl-region.h		\
     gegl-sampler-cubic.h	\
     gegl-sampler-linear.h	\
-    gegl-sampler-nearest.h	\
-    gegl-sampler-nohalo.h       \
     gegl-sampler-lohalo.h       \
-    gegl-region.h		\
-    gegl-region-generic.h	\
-    gegl-tile.h			\
-    gegl-tile-source.h		\
-    gegl-tile-storage.h		\
-    gegl-tile-backend.h		\
+    gegl-sampler-nearest.h	\
+	gegl-sampler-nohalo.h \
+    gegl-sampler.h		\
     gegl-tile-backend-file.h	\
-	gegl-tile-backend-swap.h \
-    gegl-tile-backend-tiledir.h	\
     gegl-tile-backend-ram.h	\
-    gegl-tile-handler.h		\
-    gegl-tile-handler-chain.h	\
+    gegl-tile-backend-tiledir.h	\
+    gegl-tile-backend.h		\
     gegl-tile-handler-cache.h	\
+    gegl-tile-handler-chain.h	\
     gegl-tile-handler-empty.h	\
     gegl-tile-handler-log.h	\
     gegl-tile-handler-zoom.h	\
-    gegl-id-pool.h
+    gegl-tile-handler.h		\
+    gegl-tile-source.h		\
+    gegl-tile-storage.h		\
+    gegl-tile.h
 
 libbuffer_la_SOURCES += gegl-tile-backend-file-async.c
 #if HAVE_64_BIT 
