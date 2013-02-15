@@ -16,7 +16,7 @@ noinst_LTLIBRARIES = libbuffer.la
 libbuffer_la_SOURCES = \
 	gegl-aio-file.c \
 	gegl-buffer-load.c	\
-	gegl-tile-backend-swap.c \
+	gegl-tile-backend-file.c \
     gegl-buffer-access.c	\
     gegl-buffer-cl-cache.c	\
     gegl-buffer-cl-iterator.c	\
@@ -50,7 +50,6 @@ libbuffer_la_SOURCES = \
     gegl-tile.c			\
     \
 	gegl-aio-file.h \
-	gegl-tile-backend-swap.h \
     gegl-buffer-cl-cache.h	\
     gegl-buffer-cl-iterator.h	\
     gegl-buffer-iterator.h	\
@@ -83,7 +82,6 @@ libbuffer_la_SOURCES = \
     gegl-tile-storage.h		\
     gegl-tile.h
 
-libbuffer_la_SOURCES += gegl-tile-backend-file-async.c
 #if HAVE_64_BIT 
 #libbuffer_la_SOURCES += gegl-tile-backend-file-mapped.c
 #else

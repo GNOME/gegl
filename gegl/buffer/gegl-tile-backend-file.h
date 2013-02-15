@@ -13,18 +13,17 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2012 Ville Sokk <ville.sokk@gmail.com>
  */
 
 #ifndef __GEGL_TILE_BACKEND_FILE_H__
 #define __GEGL_TILE_BACKEND_FILE_H__
 
+#include <glib.h>
+#include <gio/gio.h>
 #include "gegl-tile-backend.h"
 #include "gegl-buffer-index.h"
-
-/***
- * GeglTileBackendFile is a GeglTileBackend that store tiles in a unique file.
- */
+#include "gegl-aio-file.h"
 
 G_BEGIN_DECLS
 
@@ -39,45 +38,28 @@ G_BEGIN_DECLS
 typedef struct _GeglTileBackendFile      GeglTileBackendFile;
 typedef struct _GeglTileBackendFileClass GeglTileBackendFileClass;
 
-typedef enum
-{
-  OP_WRITE,
-  OP_WRITE_BLOCK,
-  OP_TRUNCATE,
-  OP_SYNC
-} GeglFileBackendThreadOp;
-
-typedef struct
-{
-  GeglBufferTile *tile;
-  /* reference to the writer queue links of this entry when writing
-     tile data or a GeglBufferBlock*/
-  GList          *tile_link;
-  GList          *block_link;
-} GeglFileBackendEntry;
-
-typedef struct
-{
-  gint                     length;    /* length of data if writing tile or
-                                         length of file if truncating */
-  guchar                  *source;
-  goffset                  offset;
-  GeglTileBackendFile     *file;      /* the file we are operating on */
-  GeglFileBackendThreadOp  operation; /* type of file operation, see above */
-  GeglFileBackendEntry    *entry;
-} GeglFileBackendThreadParams;
-
 struct _GeglTileBackendFileClass
 {
   GeglTileBackendClass parent_class;
 };
 
+struct _GeglTileBackendFile
+{
+  GeglTileBackend    parent_instance;
+  gchar             *path;
+  GeglAIOFile       *file;
+  GHashTable        *index;
+  GList            **gap_list;
+  GeglBufferHeader   header;
+  GFile             *gfile;
+  GFileMonitor      *monitor;
+};
+
 GType gegl_tile_backend_file_get_type (void) G_GNUC_CONST;
 
-void  gegl_tile_backend_file_stats    (void);
+gboolean gegl_tile_backend_file_try_lock (GeglTileBackendFile *self);
 
-gboolean gegl_tile_backend_file_try_lock (GeglTileBackendFile *file);
-gboolean gegl_tile_backend_file_unlock   (GeglTileBackendFile *file);
+gboolean gegl_tile_backend_file_unlock (GeglTileBackendFile *self);
 
 G_END_DECLS
 
