@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gegl id='graph'>
+
+  <node id='gegl.png' op='gegl:png-load'>
+    <param name='path'>tests/compositions/data/gegl.png</param>
+  </node>
+
+  <node id='gb1' op='gegl:gaussian-blur'>
+    <edge from='output' of='gegl.png' to='input' />
+    <param name='std-dev-x'>5.0</param>
+    <param name='std-dev-y'>5.0</param>
+  </node>
+
+  <node id='add1' op='gegl:add'>
+    <edge from='output' of='gb1' to='input' />
+    <param name='value'>0.5</param>
+  </node>
+
+  <node id='tr1' op='gegl:translate'>
+    <edge from='output' of='add1' to='input' />
+    <param name='x'>5.0</param>
+    <param name='y'>-2.0</param>
+  </node>
+
+  <node id='dst-over1' op='gegl:dst-over'>
+    <edge from='output' of='tr1' to='input' />
+    <edge from='input' of='graph' to='aux' />
+  </node>
+
+  <node id='tr2' op='gegl:translate'>
+    <edge from='output' of='dst-over1' to='input' />
+    <param name='x'>5.0</param>
+    <param name='y'>-2.0</param>
+  </node>
+
+  <node id='gb2' op='gegl:gaussian-blur'>
+    <edge from='output' of='tr2' to='input' />
+    <param name='std-dev-x'>5.0</param>
+    <param name='std-dev-y'>5.0</param>
+  </node>
+
+  <edge from='output' of='gb2' to='output' />
+</gegl>
