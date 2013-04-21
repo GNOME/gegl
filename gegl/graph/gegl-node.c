@@ -424,6 +424,20 @@ gegl_node_get_input_pads (GeglNode *self)
   return self->input_pads;
 }
 
+/**
+ * gegl_node_get_output_pads:
+ * @self: a #GeglNode.
+ *
+ * Returns: A list of #GeglPad.
+ **/
+GSList *
+gegl_node_get_output_pads (GeglNode *self)
+{
+  g_return_val_if_fail (GEGL_IS_NODE (self), NULL);
+
+  return self->output_pads;
+}
+
 void
 gegl_node_add_pad (GeglNode *self,
                    GeglPad  *pad)

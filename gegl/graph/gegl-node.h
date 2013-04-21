@@ -149,6 +149,7 @@ GeglPad     * gegl_node_get_pad             (GeglNode      *self,
                                              const gchar   *name);
 GSList      * gegl_node_get_pads            (GeglNode      *self);
 GSList      * gegl_node_get_input_pads      (GeglNode      *self);
+GSList      * gegl_node_get_output_pads     (GeglNode      *self);
 GSList      * gegl_node_get_sinks           (GeglNode      *self);
 gint          gegl_node_get_num_sinks       (GeglNode      *self);
 GeglNode    * gegl_node_get_producer        (GeglNode      *self,
