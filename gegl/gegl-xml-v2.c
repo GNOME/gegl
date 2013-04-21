@@ -27,6 +27,9 @@
 #include "gegl.h"
 #include "gegl-instrument.h"
 #include "property-types/gegl-paramspecs.h"
+#include "gegl-types-internal.h"
+#include "gegl/graph/gegl-node.h"
+#include "gegl/graph/gegl-pad.h"
 #include "gegl-xml-v2.h"
 
 #ifdef G_OS_WIN32
@@ -40,8 +43,6 @@ typedef struct
   GeglNode    *current_node;
   gchar       *param; /** the param we are setting (NULL when not in <param></param>) */
   GeglCurve   *curve; /** the curve whose points we are parsing */
-
-  GeglNode    *last_node; /** the last node created, to use as the default output node. */
 
   GHashTable  *ids;   /** node id's string to node */
 } ParseData;
@@ -89,6 +90,8 @@ static const gchar *name2val (const gchar **attribute_names,
     }                                                                   \
 }
 
+static GMarkupParser parser;
+
 static void start_element (GMarkupParseContext *context,
                            const gchar         *element_name,
                            const gchar        **attribute_names,
@@ -100,15 +103,19 @@ static void start_element (GMarkupParseContext *context,
   const gchar **v  = attribute_values;
   ParseData    *pd = user_data;
 
-  if (!strcmp (element_name, "gegl"))
+  if (!strcmp (element_name, "gegl")) /* Subgraph, we launch recursively a new parser. */
     {
-      if (pd->gegl != NULL)
-        {
-          g_warning ("Got more than one gegl element, it shouldn't happen.");
-          return;
-        }
+      const gchar *id;
+      ParseData   *pd_recurs = g_slice_new0 (ParseData);
 
-      pd->gegl = gegl_node_new ();
+      pd_recurs->gegl      = gegl_node_new ();
+      pd_recurs->ids       = pd->ids; /* we reuse the same hash table to be able to make input connection of the subgraph. */
+      pd_recurs->path_root = pd->path_root;
+
+      collect_attribute (id, "gegl");
+      g_hash_table_insert (pd->ids, g_strdup (id), pd_recurs->gegl);
+
+      g_markup_parse_context_push (context, &parser, pd_recurs);
     }
   else if (!strcmp (element_name, "node"))
     {
@@ -135,7 +142,6 @@ static void start_element (GMarkupParseContext *context,
       gegl_node_set (pd->current_node, "name", id, NULL);
 
       g_hash_table_insert (pd->ids, g_strdup (id), pd->current_node);
-      pd->last_node = pd->current_node;
     }
   else if (!strcmp (element_name, "param"))
     {
@@ -153,25 +159,27 @@ static void start_element (GMarkupParseContext *context,
       const gchar *of;
       const gchar *to;
       GeglNode *source_node;
+      GeglNode *sink_node;
       gboolean success;
 
-      collect_attribute (from, "param");
-      collect_attribute (of, "param");
-      collect_attribute (to, "param");
+      collect_attribute (from, "edge");
+      collect_attribute (of, "edge");
+      collect_attribute (to, "edge");
 
       source_node = g_hash_table_lookup (pd->ids, of);
 
-      if (! source_node)
+      if (!source_node)
         {
-          g_warning ("Unknow target node id %s at this point of parsing.", of);
+          g_warning ("Unknow source node id %s at this point of parsing.", of);
           return;
         }
 
+      sink_node = pd->current_node ? pd->current_node : pd->gegl;
+
       success = gegl_node_connect_to (source_node, from,
-                                      pd->current_node, to);
+                                      sink_node, to);
       if (!success)
         g_warning ("Connection from %s of %s to %s failed.", from, of, to);
-
     }
   else if (!strcmp (element_name, "curve"))
     {
@@ -323,7 +331,19 @@ static void end_element (GMarkupParseContext *context,
 {
   ParseData *pd = user_data;
 
-  if (!strcmp (element_name, "node"))
+  if (!strcmp (element_name, "gegl"))
+    {
+      ParseData *pd_recurs = g_markup_parse_context_pop (context);
+
+      if (pd->gegl) /* end of a subgraph */
+          gegl_node_add_child (pd->gegl, pd_recurs->gegl);
+      else /* end of top-level graph */
+          pd->gegl = pd_recurs->gegl;
+
+      g_slice_free (ParseData, pd_recurs);
+
+    }
+  else if (!strcmp (element_name, "node"))
     {
       pd->current_node = NULL;
 
@@ -415,14 +435,11 @@ GeglNode *gegl_node_new_from_xml_v2 (const gchar *xmldata,
   g_markup_parse_context_free (context);
   g_hash_table_destroy (pd.ids);
 
-  /* Use the last node created as the default output */
-  gegl_node_connect_to (pd.last_node, "output",
-                        gegl_node_get_output_proxy (pd.gegl, "output"), "input" );
 
   time = gegl_ticks () - time;
   gegl_instrument ("gegl", "gegl_parse_xml", time);
 
-  return success ? GEGL_NODE (pd.gegl) : NULL;
+  return success ? pd.gegl : NULL;
 }
 
 GeglNode *
