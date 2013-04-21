@@ -28,14 +28,14 @@
 static void
 assert_equivalent_xml(const gchar *actual, const gchar *expected)
 {
-	gboolean equal;
+    gboolean equal;
 
-	g_assert(actual);
-	g_assert(expected);
+    g_assert(actual);
+    g_assert(expected);
 
     equal = (g_strcmp0(actual, expected) == 0);
     if (!equal) {
-       g_print("\n\"%s\"\n!= (not equal)\n\"%s\"\n", actual, expected);
+       g_print("\n\"%s\"\nis different than expected\n\"%s\"\n", actual, expected);
     }
     g_assert(equal);
 }
