@@ -46,12 +46,12 @@ gegl_chant_double(elevation,_("Elevation"),
 gegl_chant_double(depth,_("Depth"),
                   0.0005,100,0.005,
                   _("depth"))
-gegl_chant_double(xofs,_("xofs"),
-                  -1000.0,1000.0,0.0,
-                  _("xofs"))
-gegl_chant_double(yofs,_("yofs"),
-                  -1000.0,1000.0,0.0,
-                  _("yofs"))
+gegl_chant_int(xofs,_("xofs"),
+               -1000,1000,0,
+               _("xofs"))
+gegl_chant_int(yofs,_("yofs"),
+               -1000,1000,0,
+               _("yofs"))
 gegl_chant_double(waterlevel,_("waterlevel"),
                   0.0,1.0,0.0,
                   _("waterlevel"))
@@ -83,6 +83,11 @@ gegl_chant_boolean(tiled,_("Tiled"),FALSE, _("tiled"))
 
 #include "gegl-chant.h"
 #include <math.h>
+
+/***** Macros *****/
+
+#define MOD(x, y) \
+  ((x) < 0 ? ((y) - 1 - ((y) - 1 - (x)) % (y)) : (x) % (y))
 
 typedef struct
 {
@@ -157,7 +162,9 @@ bumpmap_row (const gfloat     *src,
              const gfloat     *bm_row1,
              const gfloat     *bm_row2,
              const gfloat     *bm_row3,
+             gint              bm_width,
              gint              bm_xofs,
+             gboolean          row_in_bumpmap,
              GeglChantO       *o,
              bumpmap_params_t *params)
 {
@@ -165,20 +172,39 @@ bumpmap_row (const gfloat     *src,
   gint x, k;
   gdouble result;
 
-  xofs2 = bm_xofs;
+  xofs2 = MOD (bm_xofs,bm_width);
 
   for (x = 0; x < width; x++)
     {
       double shade;
       double nx, ny;
 
-      xofs1 = CLAMP (xofs2 - 1, 0, width - 1);
-      xofs3 = CLAMP (xofs2 + 1, 0, width - 1);
+      /* Calculate surface normal from bump map */
 
-      nx = (bm_row1[xofs1] + bm_row2[xofs1] + bm_row3[xofs1] -
-            bm_row1[xofs3] - bm_row2[xofs3] - bm_row3[xofs3]);
-      ny = (bm_row3[xofs1] + bm_row3[xofs2] + bm_row3[xofs3] -
-            bm_row1[xofs1] - bm_row1[xofs2] - bm_row1[xofs3]);
+      if (o->tiled || (row_in_bumpmap &&
+                       x >= - bm_xofs && x < - bm_xofs + bm_width))
+        {
+          if (o->tiled)
+            {
+              xofs1 = MOD (xofs2 - 1, bm_width);
+              xofs3 = MOD (xofs2 + 1, bm_width);
+            }
+          else
+            {
+              xofs1 = CLAMP (xofs2 - 1, 0, bm_width - 1);
+              xofs3 = CLAMP (xofs2 + 1, 0, bm_width - 1);
+            }
+
+          nx = (bm_row1[xofs1] + bm_row2[xofs1] + bm_row3[xofs1] -
+                bm_row1[xofs3] - bm_row2[xofs3] - bm_row3[xofs3]);
+          ny = (bm_row3[xofs1] + bm_row3[xofs2] + bm_row3[xofs3] -
+                bm_row1[xofs1] - bm_row1[xofs2] - bm_row1[xofs3]);
+        }
+      else
+        {
+          nx = ny = 0;
+        }
+
       if ((nx == 0) && (ny == 0))
         {
           shade = params->background;
@@ -215,12 +241,12 @@ bumpmap_row (const gfloat     *src,
             *dest++ = *src++ * shade;
         }
 
-      // Skip alpha
       if (has_alpha)
         *dest++ = *src++;
 
       /* Next pixel */
-      xofs2++;
+      if (++xofs2 == bm_width)
+        xofs2 = 0; 
     }
 }
 
@@ -258,70 +284,92 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglChantO          *o = GEGL_CHANT_PROPERTIES (operation);
-  gfloat  *src_buf, *aux_buf, *dst_buf, *bm_row1, *bm_row2, *bm_row3, *src_row, *dest_row, *bm_tmprow;
+  gfloat  *src_buf, *dst_buf, *bm_row1, *bm_row2, *bm_row3, *src_row, *dest_row, *bm_tmprow;
   const Babl *format = gegl_operation_get_format(operation,"output");
   gint channels = babl_format_get_n_components(format);
   bumpmap_params_t params;
   gint yofs1, yofs2, yofs3;
   gint row_stride;
   gint row, y;
-  gint      slice_thickness = 32;
+  gint bm_width, bm_height;
+  gint slice_thickness = 32;
   gboolean first_time = TRUE;
 
   // This should be made more sophisticated
   int has_alpha = (channels == 4) || (channels == 2);
 
+  bm_width = gegl_buffer_get_width(aux);
+  bm_height = gegl_buffer_get_height(aux);
+
   src_buf    = g_new0 (gfloat, rect->width * slice_thickness * channels);
-  aux_buf    = g_new0 (gfloat, rect->width * (slice_thickness+2));
   dst_buf    = g_new0 (gfloat, rect->width * slice_thickness * channels);
 
   bumpmap_setup_calc (o, &params);
 
   /* Initialize offsets */
-  yofs2 = CLAMP ((int)(o->yofs), 0, rect->height - 1);
-  yofs1 = yofs2;
-  yofs3 = CLAMP (yofs2 + 1, 0, rect->height - 1);
+  if (o->tiled)
+    {
+      yofs2 = MOD (o->yofs, bm_height);
+      yofs1 = MOD (yofs2 - 1, bm_height);
+      yofs3 = MOD (yofs2 + 1, bm_height);
+    }
+  else
+    {
+      yofs2 = o->yofs;
+      yofs1 = yofs2-1;
+      yofs3 = yofs2+1;
+    }
 
   /* Initialize three line fifo buffers */
-  bm_row1 = g_new (gfloat, rect->width);
-  bm_row2 = g_new (gfloat, rect->width);
-  bm_row3 = g_new (gfloat, rect->width);
+  bm_row1 = g_new (gfloat, bm_width);
+  bm_row2 = g_new (gfloat, bm_width);
+  bm_row3 = g_new (gfloat, bm_width);
 
   // The source and destination row stride in floats
   row_stride = rect->width*channels;
 
+  // Process the input buffer one slice at a time, but the bumpmap one row at a time.
   for (row=rect->y; row < rect->y+rect->height; row+= slice_thickness)
     {
-      GeglRectangle rect_slice, bm_rect_slice;
+      GeglRectangle rect_slice, bm_rect;
       rect_slice.x = rect->x;
       rect_slice.width = rect->width;
       rect_slice.y = rect->y+row;
       rect_slice.height = MIN(slice_thickness, rect->height-row);
-      bm_rect_slice = rect_slice;
-      bm_rect_slice.height += 2;
-      
       gegl_buffer_get (input, &rect_slice, 1.0, babl_format ("RGBA float"), src_buf,
                        GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-      gegl_buffer_get (aux, &bm_rect_slice, 1.0, babl_format ("Y float"), aux_buf,
-                       GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
-
-      // Fill three row FIFO the first time
-      if (first_time)
-        {
-          first_time = FALSE;
-
-          memcpy(bm_row1, aux_buf + yofs1 * rect->width, rect->width * sizeof(gfloat));
-          memcpy(bm_row2, aux_buf + yofs2 * rect->width, rect->width * sizeof(gfloat));
-          memcpy(bm_row3, aux_buf + yofs3 * rect->width, rect->width * sizeof(gfloat));
-          
-          bumpmap_convert_row (bm_row1, rect->width, params.lut, o->waterlevel);
-          bumpmap_convert_row (bm_row2, rect->width, params.lut, o->waterlevel);
-          bumpmap_convert_row (bm_row3, rect->width, params.lut, o->waterlevel);
-        }
-
+      // Get the bumpmap one row at a time. The following values are constant
+      // in the bumpmap buffer access.
+      bm_rect.x = 0;
+      bm_rect.width = bm_width;
+      bm_rect.height = 1;
+      
       for (y = 0; y < rect_slice.height; y++)
         {
+          gboolean row_in_bumpmap = (yofs2 > 0 && yofs2 < bm_height);
+
+          // Fill in the three rows FIFO the first time we are inside the bumpmap.
+          if (row_in_bumpmap && first_time)
+            {
+              first_time = FALSE;
+              
+              bm_rect.y = yofs1;
+              gegl_buffer_get (aux, &bm_rect, 1.0, babl_format ("Y float"), bm_row1,
+                               GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+              bm_rect.y = yofs2;
+              gegl_buffer_get (aux, &bm_rect, 1.0, babl_format ("Y float"), bm_row2,
+                               GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+              bm_rect.y = yofs3;
+              gegl_buffer_get (aux, &bm_rect, 1.0, babl_format ("Y float"), bm_row3,
+                               GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+              
+              bumpmap_convert_row (bm_row1, bm_width, params.lut, o->waterlevel);
+              bumpmap_convert_row (bm_row2, bm_width, params.lut, o->waterlevel);
+              bumpmap_convert_row (bm_row3, bm_width, params.lut, o->waterlevel);
+            }
+
+
           src_row = src_buf + y * row_stride;
           dest_row = dst_buf + y * row_stride;
 
@@ -330,30 +378,36 @@ process (GeglOperation       *operation,
                        channels,
                        has_alpha,
                        bm_row1, bm_row2, bm_row3,
+                       bm_width,
                        o->xofs,
+                       row_in_bumpmap,
                        o,
                        &params);
 
-          /* Next line */
-          bm_tmprow = bm_row1;
-          bm_row1   = bm_row2;
-          bm_row2   = bm_row3;
-          bm_row3   = bm_tmprow;
-
-          if (++yofs2 == rect->height)
-            yofs2 = 0;
-
-          yofs3 = CLAMP (yofs2 + 1, 0, rect->height);
-          memcpy(bm_row3, aux_buf + (yofs3-rect_slice.y) * rect->width, rect->width * sizeof(gfloat));
-          if (yofs2 > 98 && yofs2 < 102)
+          if (!first_time)
             {
-              int i;
-              double sum = 0;
-              for (i=0;i<rect->width; i++)
-                sum+= bm_row3[i];
+              /* Next line */
+              bm_tmprow = bm_row1;
+              bm_row1   = bm_row2;
+              bm_row2   = bm_row3;
+              bm_row3   = bm_tmprow;
             }
 
-          bumpmap_convert_row (bm_row3, rect->width, params.lut, o->waterlevel);
+          if (++yofs2 == bm_height && o->tiled)
+            yofs2 = 0;
+
+          if (o->tiled)
+            yofs3 = MOD (yofs2 + 1, bm_height);
+          else
+            yofs3 = CLAMP (yofs2 + 1, 0, bm_height);
+
+          if (!first_time)
+            {
+              bm_rect.y = yofs3;
+              gegl_buffer_get (aux, &bm_rect, 1.0, babl_format ("Y float"), bm_row3,
+                               GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+              bumpmap_convert_row (bm_row3, bm_width, params.lut, o->waterlevel);
+            }
         }
       gegl_buffer_set (output, &rect_slice, 0, babl_format ("RGBA float"),
                        dst_buf, GEGL_AUTO_ROWSTRIDE);
@@ -365,7 +419,6 @@ process (GeglOperation       *operation,
 
   g_free (dst_buf);
   g_free (src_buf);
-  g_free (aux_buf);
 
   return TRUE;
 }
