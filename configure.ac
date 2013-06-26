@@ -1074,6 +1074,14 @@ if test "x$have_p2tc" != "xyes"; then
   AC_SUBST(P2TC_LIBS, "-L\$(top_builddir)/libs/poly2tri-c/poly2tri-c -lpoly2tri-c")
 fi
 
+##################
+# Check for libnpd
+##################
+have_libnpd="yes (internal)"
+
+AC_SUBST(NPD_CFLAGS, "-I\$(top_srcdir)/libs")
+AC_SUBST(NPD_LIBS, "-L\$(top_builddir)/libs/npd -lgegl-npd-\$(GEGL_API_VERSION)")
+
 #######################
 # Check for other items
 #######################
@@ -1139,6 +1147,7 @@ gegl/property-types/Makefile
 gegl/opencl/Makefile
 libs/Makefile
 libs/rgbe/Makefile
+libs/npd/Makefile
 libs/poly2tri-c/Makefile
 libs/poly2tri-c/poly2tri-c/Makefile
 libs/poly2tri-c/poly2tri-c/render/Makefile
