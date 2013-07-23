@@ -42,9 +42,9 @@ static void
 prepare (GeglOperation *operation)
 {
   gegl_operation_set_format (operation, "input",
-                             babl_format ("R'G'B'A double"));
+                             babl_format ("R'G'B'A float"));
   gegl_operation_set_format (operation, "output",
-                             babl_format ("R'G'B'A double"));
+                             babl_format ("R'G'B'A float"));
 }
 
 /*
@@ -81,12 +81,12 @@ prepare (GeglOperation *operation)
 */
 
 static void
-color_to_alpha (const gdouble *color,
-                const gdouble *src,
-                gdouble       *dst)
+color_to_alpha (const gfloat *color,
+                const gfloat *src,
+                gfloat       *dst)
 {
   gint i;
-  gdouble alpha[4];
+  gfloat alpha[4];
 
   for (i=0; i<4; i++)
     dst[i] = src[i];
@@ -130,6 +130,58 @@ color_to_alpha (const gdouble *color,
   dst[3] *= alpha[3];
 }
 
+#include "opencl/gegl-cl.h"
+#include "opencl/color-to-alpha.cl.h"
+
+static GeglClRunData * cl_data = NULL;
+
+static gboolean
+cl_process (GeglOperation       *operation,
+            cl_mem              in,
+            cl_mem              out,
+            size_t              global_worksize,
+            const GeglRectangle *roi,
+            gint                level)
+{
+  GeglChantO *o = GEGL_CHANT_PROPERTIES (operation);
+  gfloat      color[4];
+  gegl_color_get_pixel (o->color, babl_format ("R'G'B'A float"), color);
+
+  if (!cl_data)
+    {
+      const char *kernel_name[] = {"cl_color_to_alpha",NULL};
+      cl_data = gegl_cl_compile_and_build (color_to_alpha_cl_source, kernel_name);
+    }
+  if (!cl_data) return TRUE;
+
+  {
+  cl_int cl_err = 0;
+  cl_float4 f_color;
+  f_color.s[0] = color[0];
+  f_color.s[1] = color[1];
+  f_color.s[2] = color[2];
+  f_color.s[3] = color[3];
+
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 0,  sizeof(cl_mem),   (void*)&in);
+  CL_CHECK;
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 1,  sizeof(cl_mem),   (void*)&out);
+  CL_CHECK;
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 2,  sizeof(cl_float4),(void*)&f_color);
+  CL_CHECK;
+
+  cl_err = gegl_clEnqueueNDRangeKernel(gegl_cl_get_command_queue (),
+                                       cl_data->kernel[0], 1,
+                                       NULL, &global_worksize, NULL,
+                                       0, NULL, NULL);
+  CL_CHECK;
+  }
+
+  return  FALSE;
+
+error:
+  return TRUE;
+
+}
 
 
 static gboolean
@@ -141,12 +193,12 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglChantO *o      = GEGL_CHANT_PROPERTIES (operation);
-  const Babl *format = babl_format ("R'G'B'A double");
-  gdouble      color[4];
+  const Babl *format = babl_format ("R'G'B'A float");
+  gfloat      color[4];
   gint        x;
 
-  gdouble *in_buff = in_buf;
-  gdouble *out_buff = out_buf;
+  gfloat *in_buff = in_buf;
+  gfloat *out_buff = out_buf;
 
   gegl_color_get_pixel (o->color, format, color);
 
@@ -192,7 +244,10 @@ gegl_chant_class_init (GeglChantClass *klass)
   filter_class    = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
 
   filter_class->process    = process;
+  filter_class->cl_process = cl_process;
+
   operation_class->prepare = prepare;
+  operation_class->opencl_support = TRUE;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:color-to-alpha",
