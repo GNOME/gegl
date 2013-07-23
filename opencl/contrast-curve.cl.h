@@ -1,0 +1,22 @@
+static const char* cl_contrast_curve_source =
+"__kernel void cl_contrast_curve(__global const float2 *in,                    \n"
+"                                __global       float2 *out,                   \n"
+"                                __constant     float  *curve,                 \n"
+"                                constant int           num_sampling_points)   \n"
+"{                                                                             \n"
+"  int gid = get_global_id(0);                                                 \n"
+"  float2 in_v = in[gid];                                                      \n"
+"  int x = in_v.x * num_sampling_points;                                       \n"
+"  float y;                                                                    \n"
+"                                                                              \n"
+"  if(x < 0)                                                                   \n"
+"    y = curve[0];                                                             \n"
+"  else if (x < num_sampling_points)                                           \n"
+"    y = curve[x];                                                             \n"
+"  else                                                                        \n"
+"    y = curve[num_sampling_points - 1];                                       \n"
+"                                                                              \n"
+"  out[gid] = float2(y,in_v.y);                                                \n"
+"}                                                                             \n"
+;
+
