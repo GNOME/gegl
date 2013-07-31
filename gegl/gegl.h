@@ -149,7 +149,7 @@ gchar        **gegl_list_operations         (guint *n_operations_p);
  * @n_properties_p: (out caller-allocates): return location for number of properties.
  *
  * Return value: (transfer container) (array length=n_properties_p): An allocated array of #GParamSpecs describing the properties
- * of the operation available when a node has operation_type set. The list should be freed with g_free after use.
+ * of the operation available when a node has operation_type set.
  */
 GParamSpec** gegl_operation_list_properties (const gchar   *operation_type,
                                              guint         *n_properties_p);
@@ -1042,6 +1042,19 @@ guint32 gegl_random_int         (int seed, int x, int y, int z, int n);
  * Return a random floating point number in range 0.0 .. 1.0.
  */
 float  gegl_random_float        (int seed, int x, int y, int z, int n);
+
+/**
+ * gegl_get_random_data_ptr:
+ * Return an integer pointer to and initialized random data vector.
+ */
+gint * gegl_get_random_data_ptr       (void);
+
+/**
+ * gegl_get_random_data_size:
+ * Return the size of the random data vector.
+ */
+gint gegl_get_random_data_size       (void);
+
 
 #define GEGL_ALIGNED __restrict__ __attribute__((__aligned__ (16)))
 
