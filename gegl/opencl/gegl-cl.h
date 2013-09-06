@@ -22,6 +22,7 @@
 #include "gegl-cl-types.h"
 #include "gegl-cl-init.h"
 #include "gegl-cl-color.h"
+#include "gegl-cl-random.h"
 
 #ifdef __GEGL_DEBUG_H__
 
