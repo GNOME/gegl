@@ -160,6 +160,7 @@ static void prepare (GeglOperation *operation)
   area->top   =
   area->bottom = GEGL_CHANT_PROPERTIES (operation)->radius;
   gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+  gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
 }
 
 #include "opencl/gegl-cl.h"
