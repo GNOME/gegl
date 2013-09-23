@@ -86,6 +86,318 @@ get_cached_region (GeglOperation       *operation,
   return result;
 }
 
+#include "opencl/gegl-cl.h"
+#include "buffer/gegl-buffer-cl-iterator.h"
+#include "opencl/stretch-contrast.cl.h"
+
+GEGL_CL_STATIC
+
+static gboolean
+cl_build_kernels( void )
+{
+  GEGL_CL_BUILD( stretch_contrast,
+                 "two_stages_local_min_max_reduce",
+                 "init_to_float_max",
+                 "init_to_float_min",
+                 "global_min_max_reduce",
+                 "cl_stretch_contrast")
+  return FALSE;
+}
+
+static gboolean
+cl_buffer_get_min_max (cl_mem               in_tex,
+                       size_t               global_worksize,
+                       const GeglRectangle *roi,
+                       gfloat              *min,
+                       gfloat              *max)
+{
+  cl_int   cl_err      = 0;
+  size_t   local_ws    = 256;
+  size_t   work_groups = (global_worksize + local_ws - 1) / local_ws;
+  size_t   global_ws   = work_groups * local_ws;
+  cl_mem   cl_aux_min  = NULL;
+  cl_mem   cl_aux_min0 = NULL;
+  cl_mem   cl_aux_max  = NULL;
+  cl_mem   cl_aux_max0 = NULL;
+
+  cl_aux_min = gegl_clCreateBuffer(gegl_cl_get_context(),
+                                   CL_MEM_READ_WRITE,
+                                   work_groups * sizeof(cl_float),
+                                   NULL, &cl_err);
+  CL_CHECK;
+  cl_aux_min0 = gegl_clCreateBuffer(gegl_cl_get_context(),
+                                    CL_MEM_READ_WRITE,
+                                    work_groups * sizeof(cl_float),
+                                    NULL, &cl_err);
+  CL_CHECK;
+  cl_aux_max = gegl_clCreateBuffer(gegl_cl_get_context(),
+                                   CL_MEM_READ_WRITE,
+                                   work_groups * sizeof(cl_float),
+                                   NULL, &cl_err);
+  CL_CHECK;
+  cl_aux_max0 = gegl_clCreateBuffer(gegl_cl_get_context(),
+                                    CL_MEM_READ_WRITE,
+                                    work_groups * sizeof(cl_float),
+                                    NULL, &cl_err);
+  CL_CHECK;
+
+  {
+  cl_int   n_pixels    = (cl_int)global_worksize;
+  cl_float cl_min, cl_max;
+  int      it, wg;
+
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 0, sizeof(cl_mem),
+                               (void*)&in_tex);
+  CL_CHECK;
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 1, sizeof(cl_mem),
+                               (void*)&cl_aux_min);
+  CL_CHECK;
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 2, sizeof(cl_mem),
+                               (void*)&cl_aux_max);
+  CL_CHECK;
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 3,
+                               sizeof(cl_float) * local_ws, NULL);
+  CL_CHECK;
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 4,
+                               sizeof(cl_float) * local_ws, NULL);
+  CL_CHECK;
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 5, sizeof(cl_int),
+                               (void*)&n_pixels);
+  CL_CHECK;
+
+  cl_err = gegl_clEnqueueNDRangeKernel(gegl_cl_get_command_queue (),
+                                         cl_data->kernel[0], 1,
+                                         NULL, &global_ws, &local_ws,
+                                         0, NULL, NULL);
+  CL_CHECK;
+
+  if(work_groups > 1)
+    {
+      cl_err = gegl_clSetKernelArg(cl_data->kernel[1], 0, sizeof(cl_mem),
+                                 (void*)&cl_aux_min0);
+      CL_CHECK;
+
+      cl_err = gegl_clEnqueueNDRangeKernel(gegl_cl_get_command_queue (),
+                                           cl_data->kernel[1], 1,
+                                           NULL, &work_groups, NULL,
+                                           0, NULL, NULL);
+      CL_CHECK;
+      cl_err = gegl_clSetKernelArg(cl_data->kernel[2], 0, sizeof(cl_mem),
+                                 (void*)&cl_aux_max0);
+      CL_CHECK;
+
+      cl_err = gegl_clEnqueueNDRangeKernel(gegl_cl_get_command_queue (),
+                                           cl_data->kernel[2], 1,
+                                           NULL, &work_groups, NULL,
+                                           0, NULL, NULL);
+      CL_CHECK;
+    }
+
+  it = 0;
+  wg = work_groups;
+  while(wg > 1)
+    {
+      wg        = (wg + local_ws - 1) / local_ws;
+      global_ws = wg * local_ws;
+      if(it % 2 == 0)
+        {
+          cl_err = gegl_clSetKernelArg(cl_data->kernel[3], 0, sizeof(cl_mem),
+                                       (void*)&cl_aux_min);
+          CL_CHECK;
+          cl_err = gegl_clSetKernelArg(cl_data->kernel[3], 1, sizeof(cl_mem),
+                                       (void*)&cl_aux_max);
+          CL_CHECK;
+          cl_err = gegl_clSetKernelArg(cl_data->kernel[3], 2, sizeof(cl_mem),
+                                       (void*)&cl_aux_min0);
+          CL_CHECK;
+          cl_err = gegl_clSetKernelArg(cl_data->kernel[3], 3, sizeof(cl_mem),
+                                       (void*)&cl_aux_max0);
+          CL_CHECK;
+        }
+      else
+        {
+          cl_err = gegl_clSetKernelArg(cl_data->kernel[3], 0, sizeof(cl_mem),
+                                       (void*)&cl_aux_min0);
+          CL_CHECK;
+          cl_err = gegl_clSetKernelArg(cl_data->kernel[3], 1, sizeof(cl_mem),
+                                       (void*)&cl_aux_max0);
+          CL_CHECK;
+          cl_err = gegl_clSetKernelArg(cl_data->kernel[3], 2, sizeof(cl_mem),
+                                       (void*)&cl_aux_min);
+          CL_CHECK;
+          cl_err = gegl_clSetKernelArg(cl_data->kernel[3], 3, sizeof(cl_mem),
+                                       (void*)&cl_aux_max);
+          CL_CHECK;
+        }
+      cl_err = gegl_clEnqueueNDRangeKernel(gegl_cl_get_command_queue (),
+                                           cl_data->kernel[3], 1,
+                                           NULL, &global_ws, &local_ws,
+                                           0, NULL, NULL);
+      CL_CHECK;
+
+      ++it;
+    }
+
+  // Read the memory buffer
+  if(it % 2 == 0)
+    {
+      cl_err = gegl_clEnqueueReadBuffer(gegl_cl_get_command_queue(), cl_aux_min,
+                                        CL_TRUE, 0, sizeof(cl_float),
+                                        &cl_min, 0, NULL, NULL);
+      CL_CHECK;
+      cl_err = gegl_clEnqueueReadBuffer(gegl_cl_get_command_queue(), cl_aux_max,
+                                        CL_TRUE, 0, sizeof(cl_float),
+                                        &cl_max, 0, NULL, NULL);
+    }
+  else
+    {
+      cl_err = gegl_clEnqueueReadBuffer(gegl_cl_get_command_queue(),
+                                        cl_aux_min0, CL_TRUE, 0,
+                                        sizeof(cl_float), &cl_min, 0,
+                                        NULL, NULL);
+      CL_CHECK;
+      cl_err = gegl_clEnqueueReadBuffer(gegl_cl_get_command_queue(),
+                                        cl_aux_max0, CL_TRUE, 0,
+                                        sizeof(cl_float), &cl_max, 0,
+                                        NULL, NULL);
+      CL_CHECK;
+    }
+
+  *min = cl_min;
+  *max = cl_max;
+
+  GEGL_CL_RELEASE(cl_aux_min)
+  GEGL_CL_RELEASE(cl_aux_min0)
+  GEGL_CL_RELEASE(cl_aux_max)
+  GEGL_CL_RELEASE(cl_aux_max0)
+  }
+  return FALSE;
+
+error:
+  if(cl_aux_min)
+    GEGL_CL_RELEASE(cl_aux_min)
+  if(cl_aux_min0)
+    GEGL_CL_RELEASE(cl_aux_min0)
+  if(cl_aux_max)
+    GEGL_CL_RELEASE(cl_aux_max)
+  if(cl_aux_max0)
+    GEGL_CL_RELEASE(cl_aux_max0)
+  return TRUE;
+}
+
+static gboolean
+cl_stretch_contrast (cl_mem               in_tex,
+                     cl_mem               out_tex,
+                     size_t               global_worksize,
+                     const GeglRectangle *roi,
+                     gfloat               min,
+                     gfloat               diff)
+{
+  cl_int   cl_err  = 0;
+  cl_float cl_min  = min;
+  cl_float cl_diff = diff;
+
+  {
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[4], 0, sizeof(cl_mem),
+                               (void*)&in_tex);
+  CL_CHECK;
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[4], 1, sizeof(cl_mem),
+                               (void*)&out_tex);
+  CL_CHECK;
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[4], 2, sizeof(cl_float),
+                               (void*)&cl_min);
+  CL_CHECK;
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[4], 3, sizeof(cl_float),
+                               (void*)&cl_diff);
+  CL_CHECK;
+
+  cl_err = gegl_clEnqueueNDRangeKernel(gegl_cl_get_command_queue (),
+                                         cl_data->kernel[4], 1,
+                                         NULL, &global_worksize, NULL,
+                                         0, NULL, NULL);
+  CL_CHECK;
+
+  }
+  return FALSE;
+
+error:
+  return TRUE;
+}
+
+static gboolean
+cl_process (GeglOperation       *operation,
+            GeglBuffer          *input,
+            GeglBuffer          *output,
+            const GeglRectangle *result)
+{
+  const Babl *in_format  = gegl_operation_get_format (operation, "input");
+  const Babl *out_format = gegl_operation_get_format (operation, "output");
+
+  gfloat min = 1.0f;
+  gfloat max = 0.0f;
+  gfloat i_min, i_max, diff;
+  gint   err, read;
+  GeglBufferClIterator *i;
+
+  if(cl_build_kernels())
+    return FALSE;
+
+  i = gegl_buffer_cl_iterator_new (input,
+                                   result,
+                                   in_format,
+                                   GEGL_CL_BUFFER_READ);
+
+  while (gegl_buffer_cl_iterator_next (i, &err))
+    {
+      if (err) return FALSE;
+
+      err = cl_buffer_get_min_max(i->tex[0],
+                                  i->size[0],
+                                  &i->roi[0],
+                                  &i_min,
+                                  &i_max);
+      if (err) return FALSE;
+
+      if(i_min < min)
+        min = i_min;
+      if(i_max > max)
+        max = i_max;
+    }
+
+  diff = max-min;
+
+  i = gegl_buffer_cl_iterator_new (output,
+                                   result,
+                                   out_format,
+                                   GEGL_CL_BUFFER_WRITE);
+
+  read = gegl_buffer_cl_iterator_add_2 (i,
+                                        input,
+                                        result,
+                                        in_format,
+                                        GEGL_CL_BUFFER_READ,
+                                        0,
+                                        0,
+                                        0,
+                                        0,
+                                        GEGL_ABYSS_NONE);
+
+  while (gegl_buffer_cl_iterator_next (i, &err))
+    {
+      if (err) return FALSE;
+
+      err = cl_stretch_contrast(i->tex[read],
+                                i->tex[0],
+                                i->size[0],
+                                &i->roi[0],
+                                min,
+                                diff);
+      if (err) return FALSE;
+    }
+
+  return TRUE;
+}
+
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
@@ -95,6 +407,14 @@ process (GeglOperation       *operation,
 {
   gdouble  min, max, diff;
   GeglBufferIterator *gi;
+
+  if (gegl_cl_is_accelerated ())
+    {
+      if (cl_process (operation, input, output, result))
+        return TRUE;
+      else
+        gegl_cl_disable();
+    }
 
   buffer_get_min_max (input, &min, &max);
   diff = max - min;
@@ -150,6 +470,7 @@ gegl_chant_class_init (GeglChantClass *klass)
   operation_class->prepare = prepare;
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->get_cached_region = get_cached_region;
+  operation_class->opencl_support = TRUE;
 
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:stretch-contrast",
