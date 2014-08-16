@@ -53,7 +53,8 @@ _("usage: %s [options] <file | -- [op [op] ..]>\n"
 "\n"
 "     --exists        return 0 if the operation(s) exist\n"
 "\n"
-"     --properties    output the properties (name, type, description) of the operation\n"
+"     --info          output information about the operation:\n"
+"                     name, description, properties details.\n"
 "\n"
 "     -i, --file      read xml from named file\n"
 "\n"
@@ -160,6 +161,48 @@ _("Parsed commandline:\n"
     }
 }
 
+/**
+ * print_key_value:
+ * @key:
+ * @value:
+ * @padding:
+ *
+ * Print on standard output @key left-adjusted according to @padding,
+ * followed by its @value. The value will be pretty-printed by keeping
+ * the left-padding after every line feed.
+ */
+static void
+print_key_value (const gchar *key,
+                 const gchar *value,
+                 gint         padding)
+{
+  const gint  max_value_length = 80;
+  gchar      *val              = g_strdup (value);
+  gint        current_val_len;
+  gchar      *token;
+
+  token = strtok (val, " \t\n\r");
+  current_val_len = strlen (token);
+  fprintf (stdout, "%-*s %s", padding, key, token);
+
+  while ((token = strtok (NULL, " \t\n\r")))
+    {
+      if (current_val_len + strlen (token) > max_value_length)
+        {
+          fprintf (stdout, "\n%-*s %s", padding, " ", token);
+          current_val_len = strlen (token);
+        }
+      else
+        {
+          fprintf (stdout, " %s", token);
+          current_val_len += strlen (token) + 1;
+        }
+    }
+
+  fprintf (stdout, "\n");
+  g_free (val);
+}
+
 GeglOptions *
 gegl_options_parse (gint    argc,
                     gchar **argv)
@@ -260,7 +303,8 @@ parse_args (int    argc,
             exit (0);
         }
 
-        else if (match ("--properties")) {
+        /* --properties is the former option name, kept as alias. */
+        else if (match ("--info") || match ("--properties")) {
             gchar  *op_name;
             get_string (op_name);
 
@@ -273,20 +317,64 @@ parse_args (int    argc,
                 gint         i;
                 guint        n_properties;
                 GParamSpec **properties;
+                gchar      **keys;
+                guint        n_keys;
+
+                keys = gegl_operation_list_keys (op_name, &n_keys);
+                for (i = 0; i < n_keys; i++)
+                  {
+                    print_key_value (keys[i],
+                                     gegl_operation_get_key (op_name, keys[i]),
+                                     20);
+                  }
+                g_free (keys);
+
+                fprintf (stdout, "\n%s\n", _("Properties:"));
 
                 properties = gegl_operation_list_properties (op_name, &n_properties);
                 for (i = 0; i < n_properties; i++)
                   {
-                    const gchar *property_name;
-                    const gchar *property_blurb;
+                    const gchar  *property_name;
+                    const GValue *property_default;
+                    gchar        *property_blurb;
+                    gchar        *default_string = NULL;
 
                     property_name = g_param_spec_get_name (properties[i]);
-                    property_blurb = g_param_spec_get_blurb (properties[i]);
+                    property_default = g_param_spec_get_default_value (properties[i]);
+                    switch (G_VALUE_TYPE (property_default))
+                      {
+                      case G_TYPE_DOUBLE:
+                        default_string = g_strdup_printf (" (default: %f)",
+                                                          g_value_get_double (property_default));
+                        break;
+                      case G_TYPE_STRING:
+                        default_string = g_strdup_printf (" (default: \"%s\")",
+                                                          g_value_get_string (property_default));
+                        break;
+                      case G_TYPE_INT:
+                        default_string = g_strdup_printf (" (default: %d)",
+                                                          g_value_get_int (property_default));
+                        break;
+                      case G_TYPE_BOOLEAN:
+                        default_string = g_strdup_printf (" (default: %s)",
+                                                          g_value_get_boolean (property_default)?
+                                                          "TRUE" : "FALSE");
+                        break;
+                      default:
+                        default_string = NULL;
+                        break;
+                      }
+                    property_blurb = g_strconcat ("[",
+                                                  g_type_name (properties[i]->value_type),
+                                                  "] ",
+                                                  g_param_spec_get_blurb (properties[i]),
+                                                  default_string,
+                                                  NULL);
 
-                    fprintf (stdout, "%-30s [%s] %s\n",
-                             property_name,
-                             g_type_name (properties[i]->value_type),
-                             property_blurb);
+                    print_key_value (property_name, property_blurb, 20);
+
+                    g_free (property_blurb);
+                    g_free (default_string);
                   }
 
                 g_free (properties);
