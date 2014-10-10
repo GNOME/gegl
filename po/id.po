@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2014-09-27 12:24+0000\n"
-"PO-Revision-Date: 2014-09-27 20:08+0700\n"
+"PO-Revision-Date: 2014-10-03 14:01+0700\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
@@ -27,15 +27,15 @@ msgstr "Tak bisa membaca berkas: %s"
 #: ../bin/gegl.c:190
 #, c-format
 msgid "Invalid graph, abort.\n"
-msgstr ""
+msgstr "Grafik tak valid, menggugurkan.\n"
 
 #: ../bin/gegl.c:256 ../bin/gegl-options.c:124
 #, c-format
 msgid "Unknown GeglOption mode: %d"
-msgstr ""
+msgstr "Mode GeglOption yang tak dikenal: %d"
 
 #: ../bin/gegl-options.c:45
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "usage: %s [options] <file | -- [op [op] ..]>\n"
 "\n"
@@ -63,11 +63,36 @@ msgid ""
 "easy testing of filters. Be aware that the default value will be used\n"
 "for all properties.\n"
 msgstr ""
+"usage: %s [options] <file | — [op [op] ..]>\n"
+"\n"
+"  Options:\n"
+"     -h, —help      this help information\n"
+"\n"
+"     -i, —file      read xml from named file\n"
+"\n"
+"     -x, —xml       use xml provided in next argument\n"
+"\n"
+"     —dot           output a graphviz graph description\n"
+"\n"
+"     -o, —output    output generated image to named file, type based\n"
+"                     on extension.\n"
+"\n"
+"     -p              increment frame counters of various elements when\n"
+"                     processing is done.\n"
+"\n"
+"     -X              output the XML that was read in\n"
+"\n"
+"     -v, —verbose   print diagnostics while running\n"
+"\n"
+"All parameters following — are considered ops to be chained together\n"
+"into a small composition instead of using an xml file, this allows for\n"
+"easy testing of filters. Be aware that the default value will be used\n"
+"for all properties.\n"
 
 #: ../bin/gegl-options.c:77
 #, c-format
 msgid "ERROR: '%s' option expected argument\n"
-msgstr "GALAT: opsi TICK%sTICK mengharapkan argumen\n"
+msgstr "GALAT: opsi '%s' mengharapkan argumen\n"
 
 #: ../bin/gegl-options.c:116
 msgid "Display on screen"
@@ -100,6 +125,13 @@ msgid ""
 "\trest:   %s\n"
 "\t\n"
 msgstr ""
+"Baris perintah terurai:\n"
+"\tmode:     %s\n"
+"\tberkas:   %s\n"
+"\txml:      %s\n"
+"\tkeluaran: %s\n"
+"\tsisa:     %s\n"
+"\t\n"
 
 #: ../bin/gegl-options.c:257
 #, c-format
@@ -110,34 +142,39 @@ msgid ""
 "\n"
 "\n"
 msgstr ""
+"\n"
+"\n"
+"parameter tak dikenal '%s' memberi Anda bantuan sebagai gantinya\n"
+"\n"
+"\n"
 
 #: ../gegl/gegl-init.c:245
 msgid "babls error tolerance, a value between 0.2 and 0.000000001"
-msgstr ""
+msgstr "toleransi galat babls, suatu nilai antara 0,2 dan 0,000000001"
 
 #: ../gegl/gegl-init.c:250
 msgid "Where GEGL stores its swap"
-msgstr ""
+msgstr "Di mana GEGL menyimpan swapnya"
 
 #: ../gegl/gegl-init.c:255
 msgid "How much memory to (approximately) use for caching imagery"
-msgstr ""
+msgstr "Berapa banyak memori (kira-kira) untuk menyinggah gambar"
 
 #: ../gegl/gegl-init.c:260
 msgid "Default size of tiles in GeglBuffers"
-msgstr ""
+msgstr "Ukuran baku ubin dalam GeglBuffers"
 
 #: ../gegl/gegl-init.c:265
 msgid "The count of pixels to compute simultaneously"
-msgstr ""
+msgstr "Cacah piksel yang dihitung secara simultan"
 
 #: ../gegl/gegl-init.c:270
 msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
-msgstr ""
+msgstr "Kualitas perenderan, suatu nilai antara 0,0(cepat) dan 1,0(acuan)"
 
 #: ../gegl/gegl-init.c:275
 msgid "The number of concurrent processing threads to use"
-msgstr ""
+msgstr "Cacah thread pemrosesan konkuren yang akan dipakai"
 
 #: ../gegl/gegl-init.c:280
 msgid "Use OpenCL"
@@ -145,14 +182,14 @@ msgstr "Gunakan OpenCL"
 
 #: ../gegl/gegl-init.c:285
 msgid "Maximum number of entries in the file tile backend's writer queue"
-msgstr ""
+msgstr "Cacah maksimum entri dalam antrian penulis backend ubin berkas"
 
 #: ../gegl/module/geglmodule.c:147 ../gegl/module/geglmodule.c:165
 #: ../gegl/module/geglmodule.c:274 ../gegl/module/geglmodule.c:301
 #: ../gegl/module/geglmodule.c:393
 #, c-format
 msgid "Module '%s' load error: %s"
-msgstr "Galat pemuatan modul TICK%sTICK: %s"
+msgstr "Galat pemuatan modul '%s': %s"
 
 #: ../gegl/module/geglmodule.c:369
 msgid "Module error"
@@ -180,6 +217,8 @@ msgstr "Radius kabur"
 #: ../operations/common/bilateral-filter-fast.c:39
 msgid "Radius of square pixel region, (width and height will be radius*2+1)."
 msgstr ""
+"Jejari dari wilayah piksel bujur sangkar, (lebar dan tinggi akan menjadi "
+"jejari*2+1)."
 
 #: ../operations/common/bilateral-filter.c:29
 msgid "Edge preservation"
@@ -187,7 +226,7 @@ msgstr "Pelestarian tepi"
 
 #: ../operations/common/bilateral-filter.c:30
 msgid "Amount of edge preservation"
-msgstr ""
+msgstr "Banyaknya pelestarian tepi"
 
 #: ../operations/common/bilateral-filter.c:274
 msgid ""
@@ -195,6 +234,9 @@ msgid ""
 "gaussian blur where the contribution of neighbourhood pixels are weighted by "
 "the color difference from the center pixel."
 msgstr ""
+"Penyaring kabur yang melestarikan tepi yang dapat dipakai untuk mengurangi "
+"derau. Ini adalah kabur gauss dimana kontribusi dari piksel-piksel tetangga "
+"dibobot oleh perbedaan warna dari piksel pusat."
 
 #: ../operations/common/bilateral-filter-fast.c:33
 msgid "Smoothness"
@@ -206,7 +248,7 @@ msgstr "Tingkat kehalusan"
 
 #: ../operations/common/bilateral-filter-fast.c:474
 msgid "A fast approximate implementation of the bilateral filter"
-msgstr ""
+msgstr "Sebuah implementasi aproksimasi cepat dari penyaring bilateral"
 
 #: ../operations/common/box-blur.c:25 ../operations/common/c2g.c:27
 #: ../operations/common/difference-of-gaussians.c:26
@@ -226,10 +268,12 @@ msgstr "Radius"
 #: ../operations/common/box-blur.c:26 ../operations/common/snn-mean.c:27
 msgid "Radius of square pixel region, (width and height will be radius*2+1)"
 msgstr ""
+"Jejari dari wilayah piksel bujur sangkar, (lebar dan tinggi akan menjadi "
+"jejari*2+1)"
 
 #: ../operations/common/box-blur.c:343
 msgid "Performs an averaging of a square box of pixels"
-msgstr ""
+msgstr "Lakukan perata-rataan dari sebuah kotak bujur sangkar piksel-piksel"
 
 #. ... are the properties of the filter, these are all scalar values
 #. * (doubles), the the parameters are:
@@ -252,11 +296,11 @@ msgstr "Kecerahan"
 
 #: ../operations/common/brightness-contrast.c:32
 msgid "Amount to increase brightness"
-msgstr ""
+msgstr "Banyaknya menaikkan kecerahan"
 
 #: ../operations/common/brightness-contrast.c:147
 msgid "Changes the light level and contrast."
-msgstr ""
+msgstr "Mengubah tingkat cahaya dan kontras."
 
 #: ../operations/common/buffer-sink.c:25
 #: ../operations/common/write-buffer.c:25
@@ -265,7 +309,7 @@ msgstr "Lokasi penyangga"
 
 #: ../operations/common/buffer-sink.c:26
 msgid "The location where to store the output GeglBuffer"
-msgstr ""
+msgstr "Lokasi tempat menyimpan GeglBuffer keluaran"
 
 #: ../operations/common/buffer-sink.c:27
 msgid "babl format"
@@ -275,23 +319,29 @@ msgstr "format babl"
 msgid ""
 "The babl format of the output GeglBuffer, NULL to use input buffer format"
 msgstr ""
+"Format babl dari GeglBuffer keluaran, NULL untuk memakai format penyangga "
+"masukan"
 
 #: ../operations/common/buffer-sink.c:83
 #: ../operations/common/write-buffer.c:132
 msgid "A GEGL buffer destination surface."
-msgstr ""
+msgstr "Suatu permukaan tujuan penyangga GEGL."
 
 #: ../operations/common/buffer-source.c:25
 msgid "Input buffer"
 msgstr "Penyangga masukan"
 
 #: ../operations/common/buffer-source.c:26
+#, fuzzy
 msgid "The GeglBuffer to load into the pipeline"
-msgstr ""
+msgstr "GeglBuffer yang akan dimuat ke dalam pipeline"
 
 #: ../operations/common/buffer-source.c:190
+#, fuzzy
 msgid "A source that uses an in-memory GeglBuffer, for use internally by GEGL."
 msgstr ""
+"Sebuah sumber yang memakai suatu GeglBuffer in-memory, untuk dipakai secara "
+"internal oleh GEGL."
 
 #: ../operations/common/c2g.c:29
 msgid ""
@@ -306,6 +356,7 @@ msgstr "Cuplikan"
 #: ../operations/common/c2g.c:35 ../operations/common/stress.c:30
 msgid "Number of samples to do per iteration looking for the range of colors"
 msgstr ""
+"Banyaknya cuplikan yang dilakukan per iterasi saat mencari jangkauan warna"
 
 #: ../operations/common/c2g.c:38 ../operations/common/fractal-explorer.c:56
 #: ../operations/common/matting-global.c:25 ../operations/common/stress.c:31
@@ -318,6 +369,8 @@ msgid ""
 "Number of iterations, a higher number of iterations provides less noisy "
 "results at a computational cost"
 msgstr ""
+"Banyaknya iterasi, iterasi yang lebih banyak memberikan hasil yang kurang "
+"berderau pada suatu biaya komputasi"
 
 #: ../operations/common/c2g.c:340
 msgid ""
@@ -325,6 +378,9 @@ msgid ""
 "differences to perform color-feature preserving grayscale spatial contrast "
 "enhancement"
 msgstr ""
+"Konversi warna ke skala kelabu, menggunakan amplop yang dibentuk dari "
+"perbedaan warna spasial untuk melakukan peningkatan kontras spasial skala "
+"kelabu yang melestarikan fitur warna"
 
 #: ../operations/common/cartoon.c:25 ../operations/common/cartoon.c:27
 msgid "Mask radius"
@@ -336,7 +392,7 @@ msgstr "Persen hitam"
 
 #: ../operations/common/cartoon.c:379
 msgid "Simulate a cartoon by enhancing edges"
-msgstr ""
+msgstr "Mensimulasikan suatu kartun dengan meningkatkan tepi"
 
 #: ../operations/common/checkerboard.c:25
 #: ../operations/common/fractal-explorer.c:30
@@ -350,7 +406,7 @@ msgstr "Lebar"
 
 #: ../operations/common/checkerboard.c:27 ../operations/common/grid.c:25
 msgid "Horizontal width of cells pixels"
-msgstr ""
+msgstr "Lebar horisontal dari piksel-piksel sel"
 
 #: ../operations/common/checkerboard.c:29
 #: ../operations/common/fractal-explorer.c:32
@@ -363,9 +419,8 @@ msgid "Height"
 msgstr "Tinggi"
 
 #: ../operations/common/checkerboard.c:31 ../operations/common/grid.c:27
-#, fuzzy
 msgid "Vertical width of cells in pixels"
-msgstr "Lebar blok dalam piksel"
+msgstr "Lebar vertikal sel dalam piksel"
 
 #: ../operations/common/checkerboard.c:33 ../operations/common/grid.c:28
 #: ../operations/common/mirrors.c:36
@@ -376,7 +431,7 @@ msgstr "Ofset X"
 
 #: ../operations/common/checkerboard.c:35 ../operations/common/grid.c:29
 msgid "Horizontal offset (from origin) for start of grid"
-msgstr ""
+msgstr "Ofset horisontal (dari titik awal) bagi awal kisi"
 
 #: ../operations/common/checkerboard.c:37 ../operations/common/grid.c:30
 #: ../operations/common/mirrors.c:38
@@ -387,7 +442,7 @@ msgstr "Ofset Y"
 
 #: ../operations/common/checkerboard.c:39 ../operations/common/grid.c:31
 msgid "Vertical offset (from origin) for start of grid"
-msgstr ""
+msgstr "Ofset vertikal (dari titik awal) bagi awal kisi"
 
 #: ../operations/common/checkerboard.c:41 ../operations/common/color.c:24
 #: ../operations/common/color-to-alpha.c:28
@@ -402,7 +457,7 @@ msgstr "Warna"
 
 #: ../operations/common/checkerboard.c:43
 msgid "One of the cell colors (defaults to 'black')"
-msgstr ""
+msgstr "Satu dari warna sel (nilai baku 'black')"
 
 #: ../operations/common/checkerboard.c:45
 #: ../operations/workshop/linear-gradient.c:30
@@ -412,22 +467,23 @@ msgstr "Warna lain"
 
 #: ../operations/common/checkerboard.c:47
 msgid "The other cell color (defaults to 'white')"
-msgstr ""
+msgstr "Warna sel lain (nilai baku 'white')"
 
 #: ../operations/common/checkerboard.c:157
-#, fuzzy
 msgid "Create a checkerboard pattern"
-msgstr "Perender Sel"
+msgstr "Membuat suatu pola kotak-kotak"
 
 #: ../operations/common/color.c:25
 msgid "The color to render (defaults to 'black')"
-msgstr ""
+msgstr "Warna yang akan dirender (nilai baku 'black') "
 
 #: ../operations/common/color.c:88
 msgid ""
 "Generates a buffer entirely filled with the specified color, crop it to get "
 "smaller dimensions."
 msgstr ""
+"Membuat sebuah penyangga yang sepenuhnya diisi dengan warna yang dinyatakan, "
+"dipangkas untuk mendapat dimensi yang lebih kecil."
 
 #: ../operations/common/color-reduction.c:35
 msgid "Red bits"
@@ -435,7 +491,7 @@ msgstr "Bit merah"
 
 #: ../operations/common/color-reduction.c:37
 msgid "Number of bits for red channel"
-msgstr ""
+msgstr "Cacah bit bagi kanal merah"
 
 #: ../operations/common/color-reduction.c:39
 msgid "Green bits"
@@ -443,7 +499,7 @@ msgstr "Bit hijau"
 
 #: ../operations/common/color-reduction.c:41
 msgid "Number of bits for green channel"
-msgstr ""
+msgstr "Cacah bit bagi kanal hijau"
 
 #: ../operations/common/color-reduction.c:43
 msgid "Blue bits"
@@ -451,7 +507,7 @@ msgstr "Bit biru"
 
 #: ../operations/common/color-reduction.c:45
 msgid "Number of bits for blue channel"
-msgstr ""
+msgstr "Cacah bit bagi kanal biru"
 
 #: ../operations/common/color-reduction.c:47
 msgid "Alpha bits"
@@ -459,17 +515,15 @@ msgstr "Bit alfa"
 
 #: ../operations/common/color-reduction.c:49
 msgid "Number of bits for alpha channel"
-msgstr ""
+msgstr "Cacah bit kanal alfa"
 
 #: ../operations/common/color-reduction.c:51
-#, fuzzy
 msgid "Dithering Strategy"
-msgstr "Permainan strategi"
+msgstr "Strategi penditheran"
 
 #: ../operations/common/color-reduction.c:53
-#, fuzzy
 msgid "The dithering strategy to use"
-msgstr "Strategi pencarian yang digunakan"
+msgstr "Strategi dither yang digunakan"
 
 #: ../operations/common/color-reduction.c:591
 msgid ""
@@ -478,9 +532,8 @@ msgid ""
 msgstr ""
 
 #: ../operations/common/color-temperature.c:27
-#, fuzzy
 msgid "Original temperature"
-msgstr "Satuan _Temperatur:"
+msgstr "Suhu asli"
 
 #: ../operations/common/color-temperature.c:29
 msgid ""
@@ -488,18 +541,16 @@ msgid ""
 msgstr ""
 
 #: ../operations/common/color-temperature.c:32
-#, fuzzy
 msgid "Intended temperature"
-msgstr "Satuan _Temperatur:"
+msgstr "Suhu yang ingin dicapai"
 
 #: ../operations/common/color-temperature.c:34
 msgid "Corrected estimation of the temperature of the light source in Kelvin."
 msgstr ""
 
 #: ../operations/common/color-temperature.c:279
-#, fuzzy
 msgid "Change the color temperature of the image"
-msgstr "Memutar gambar pada panel yang vertikal"
+msgstr "Ubah suhu warna citra"
 
 #: ../operations/common/color-to-alpha.c:30
 msgid "The color to render (defaults to 'white')"
@@ -522,27 +573,24 @@ msgid "Curve"
 msgstr "Kurva"
 
 #: ../operations/common/contrast-curve.c:27
-#, fuzzy
 msgid "The contrast curve."
-msgstr "Kurva Gamma"
+msgstr "Kurva kontras"
 
 #: ../operations/common/contrast-curve.c:125
 msgid "Adjusts the contrast of the image according to a curve."
 msgstr ""
 
 #: ../operations/common/cubism.c:30
-#, fuzzy
 msgid "Tile size"
-msgstr "Ukuran Berkas"
+msgstr "Ukuran ubin"
 
 #: ../operations/common/cubism.c:32
 msgid "Average diameter of each tile (in pixels)"
 msgstr ""
 
 #: ../operations/common/cubism.c:34
-#, fuzzy
 msgid "Tile saturation"
-msgstr "Saturasi gambar"
+msgstr "Saturasi ubin"
 
 #: ../operations/common/cubism.c:36
 msgid "Expand tiles by this amount"
@@ -561,7 +609,6 @@ msgstr ""
 #: ../operations/common/noise-rgb.c:52 ../operations/common/noise-slur.c:34
 #: ../operations/common/noise-spread.c:37 ../operations/common/shift.c:35
 #: ../operations/common/wind.c:33 ../operations/workshop/plasma.c:33
-#, fuzzy
 msgid "Seed"
 msgstr "Benih"
 
@@ -569,9 +616,8 @@ msgstr "Benih"
 #: ../operations/common/noise-pick.c:32 ../operations/common/noise-rgb.c:53
 #: ../operations/common/noise-slur.c:35 ../operations/common/noise-spread.c:38
 #: ../operations/common/shift.c:36 ../operations/common/wind.c:33
-#, fuzzy
 msgid "Random seed"
-msgstr "Gamba_r Acak"
+msgstr "Bibit acak"
 
 #: ../operations/common/cubism.c:614
 msgid ""
@@ -660,7 +706,7 @@ msgstr "X"
 
 #: ../operations/common/dropshadow.c:27
 msgid "Horizontal shadow offset"
-msgstr ""
+msgstr "Ofset bayangan horisontal"
 
 #: ../operations/common/dropshadow.c:29 ../operations/common/layer.c:36
 #: ../operations/common/motion-blur-circular.c:35
@@ -673,11 +719,11 @@ msgstr "Y"
 
 #: ../operations/common/dropshadow.c:31
 msgid "Vertical shadow offset"
-msgstr ""
+msgstr "Ofset bayangan vertikal"
 
 #: ../operations/common/dropshadow.c:39
 msgid "The shadow's color (defaults to 'black')"
-msgstr ""
+msgstr "Warna bayangan (baku ‘black’)"
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
@@ -695,7 +741,7 @@ msgstr ""
 
 #: ../operations/common/edge-laplace.c:519
 msgid "High-resolution edge detection"
-msgstr ""
+msgstr "Deteksi tepi resolusi tinggi"
 
 #: ../operations/common/edge-sobel.c:27 ../operations/common/edge-sobel.c:29
 #: ../operations/common/noise-spread.c:29
@@ -802,7 +848,7 @@ msgstr "Gamma"
 
 #: ../operations/common/exposure.c:35
 msgid "Gamma correction"
-msgstr ""
+msgstr "Koreksi gamma"
 
 #: ../operations/common/exposure.c:187
 msgid ""
@@ -864,7 +910,7 @@ msgstr "Tipe dari suatu fraktal"
 
 #: ../operations/common/fractal-explorer.c:51
 msgid "Left"
-msgstr ""
+msgstr "Kiri"
 
 #: ../operations/common/fractal-explorer.c:52
 msgid "Right"
@@ -884,7 +930,7 @@ msgstr "CX"
 
 #: ../operations/common/fractal-explorer.c:58
 msgid "CX (only Julia)"
-msgstr ""
+msgstr "CX (hanya Julia)"
 
 #: ../operations/common/fractal-explorer.c:59
 msgid "CY"
@@ -892,7 +938,7 @@ msgstr "CY"
 
 #: ../operations/common/fractal-explorer.c:59
 msgid "CY (only Julia)"
-msgstr ""
+msgstr "CY (hanya Julia)"
 
 #: ../operations/common/fractal-explorer.c:61
 msgid "Red stretch"
@@ -924,7 +970,7 @@ msgstr "Mode merah"
 
 #: ../operations/common/fractal-explorer.c:76
 msgid "Red application mode"
-msgstr ""
+msgstr "Mode aplikasi merah"
 
 #: ../operations/common/fractal-explorer.c:77
 msgid "Green mode"
@@ -985,7 +1031,7 @@ msgstr "X1"
 
 #: ../operations/common/fractal-trace.c:36
 msgid "X1 value, position"
-msgstr ""
+msgstr "Nilai X1, posisi"
 
 #: ../operations/common/fractal-trace.c:37
 #: ../operations/workshop/linear-gradient.c:26
@@ -995,7 +1041,7 @@ msgstr "X2"
 #: ../operations/common/fractal-trace.c:39
 #: ../operations/common/fractal-trace.c:43
 msgid "X2 value, position"
-msgstr ""
+msgstr "Nilai X2, posisi"
 
 #: ../operations/common/fractal-trace.c:41
 #: ../operations/workshop/external/line-profile.c:28
@@ -1010,7 +1056,7 @@ msgstr "Y2"
 
 #: ../operations/common/fractal-trace.c:46
 msgid "Y2 value, position"
-msgstr ""
+msgstr "Nilai Y2, posisi"
 
 #: ../operations/common/fractal-trace.c:48
 msgid "JX"
@@ -1197,7 +1243,7 @@ msgstr ""
 
 #: ../operations/common/introspect.c:160
 msgid "GEGL graph visualizer."
-msgstr ""
+msgstr "Pemvisualisasi grafik GEGL."
 
 #: ../operations/common/invert.c:76
 msgid ""
@@ -1245,64 +1291,53 @@ msgid "A layer in the traditional sense"
 msgstr ""
 
 #: ../operations/common/lens-distortion.c:32
-#, fuzzy
 msgid "Main"
 msgstr "Utama"
 
 #: ../operations/common/lens-distortion.c:34
 #: ../operations/common/lens-distortion.c:38
-#, fuzzy
 msgid "Main value of distortion"
-msgstr "Cacah maksimum iterasi"
+msgstr "Nilai utama distorsi"
 
 #: ../operations/common/lens-distortion.c:36 ../operations/common/mirrors.c:48
 msgid "Zoom"
 msgstr "Zum"
 
 #: ../operations/common/lens-distortion.c:39
-#, fuzzy
 msgid "Edge"
-msgstr "Tepi:"
+msgstr "Tepi"
 
 #: ../operations/common/lens-distortion.c:41
-#, fuzzy
 msgid "Edge value of distortion"
-msgstr "Nilai sekarang"
+msgstr "Nilai tepi distorsi"
 
 #: ../operations/common/lens-distortion.c:43
-#, fuzzy
 msgid "Brighten"
-msgstr "Kecerahan"
+msgstr "Cerahkan"
 
 #: ../operations/common/lens-distortion.c:45
-#, fuzzy
 msgid "Brighten the image"
-msgstr "Render citra"
+msgstr "Cerahkan citra"
 
 #: ../operations/common/lens-distortion.c:47
-#, fuzzy
 msgid "X shift"
-msgstr "Shift"
+msgstr "Geser X"
 
 #: ../operations/common/lens-distortion.c:49
-#, fuzzy
 msgid "Shift horizontal"
-msgstr "Split horisontal"
+msgstr "Geser horisontal"
 
 #: ../operations/common/lens-distortion.c:51
-#, fuzzy
 msgid "Y shift"
-msgstr "Shift"
+msgstr "Geser Y"
 
 #: ../operations/common/lens-distortion.c:53
-#, fuzzy
 msgid "Shift vertical"
-msgstr "Split vertikal"
+msgstr "Geser vertikal"
 
 #: ../operations/common/lens-distortion.c:348
-#, fuzzy
 msgid "Corrects lens distortion"
-msgstr "Saturasi gambar"
+msgstr "Koreksi distorsi lensa"
 
 #: ../operations/common/levels.c:26
 #, fuzzy
@@ -1348,9 +1383,8 @@ msgstr ""
 #: ../operations/common/raw-load.c:27 ../operations/external/png-load.c:27
 #: ../operations/external/ppm-load.c:25 ../operations/external/rgbe-load.c:26
 #: ../operations/workshop/rawbayer-load.c:25
-#, fuzzy
 msgid "Path of file to load."
-msgstr "Gagal memuat berkas \"%s\": %s"
+msgstr "Path berkas yang akan dimuat."
 
 #: ../operations/common/load.c:190
 msgid ""
@@ -1390,9 +1424,8 @@ msgstr ""
 #: ../operations/common/map-absolute.c:23
 #: ../operations/common/map-relative.c:27 ../operations/common/ripple.c:50
 #: ../operations/common/waves.c:53 ../operations/workshop/ditto.c:28
-#, fuzzy
 msgid "Sampler used internally"
-msgstr "Objek koneksi yang dipakai secara internal"
+msgstr "Pencuplik yang dipakai secara internal"
 
 #: ../operations/common/map-absolute.c:148
 msgid ""
@@ -1401,9 +1434,8 @@ msgid ""
 msgstr ""
 
 #: ../operations/common/map-relative.c:23
-#, fuzzy
 msgid "Scaling"
-msgstr "Scala"
+msgstr "Penskalaan"
 
 #: ../operations/common/map-relative.c:24
 msgid ""
@@ -1418,9 +1450,8 @@ msgid ""
 msgstr ""
 
 #: ../operations/common/matting-global.c:26
-#, fuzzy
 msgid "Number of iterations"
-msgstr "Jumlah Perulangan"
+msgstr "Cacah iterasi"
 
 #: ../operations/common/matting-global.c:481
 msgid ""
@@ -1442,39 +1473,36 @@ msgid "Accumulating motion blur"
 msgstr ""
 
 #: ../operations/common/mirrors.c:30
-#, fuzzy
 msgid "Mirror rotation"
-msgstr "Sudut Rotasi X"
+msgstr "Rotasi cermin"
 
 #: ../operations/common/mirrors.c:30
 msgid "Rotation applied to the mirrors"
-msgstr ""
+msgstr "Rotasi yang diterapkan ke cermin"
 
 #: ../operations/common/mirrors.c:32
-#, fuzzy
 msgid "Result rotation"
-msgstr "Sudut Rotasi X"
+msgstr "Rotasi hasil"
 
 #: ../operations/common/mirrors.c:32
 msgid "Rotation applied to the result"
-msgstr ""
+msgstr "Rotasi yang diterapkan ke hasil"
 
 #: ../operations/common/mirrors.c:34
-#, fuzzy
 msgid "Mirrors"
-msgstr "Memberi efek cermin pada video"
+msgstr "Cermin"
 
 #: ../operations/common/mirrors.c:34
 msgid "Number of mirrors to use"
-msgstr ""
+msgstr "Banyaknya cermin yang akan dipakai"
 
 #: ../operations/common/mirrors.c:36
 msgid "X offset of the result of mirroring"
-msgstr ""
+msgstr "Ofset X dari hasil pencerminan"
 
 #: ../operations/common/mirrors.c:38
 msgid "Y offset of the result of mirroring"
-msgstr ""
+msgstr "Ofset Y dari hasil pencerminan"
 
 #: ../operations/common/mirrors.c:40
 msgid "Center X"
@@ -1482,7 +1510,7 @@ msgstr "Pusat X"
 
 #: ../operations/common/mirrors.c:40
 msgid "X axis ratio for the center of mirroring"
-msgstr ""
+msgstr "Rasio sumbu X bagi pusat pencerminan"
 
 #: ../operations/common/mirrors.c:42
 msgid "Center Y"
@@ -1490,7 +1518,7 @@ msgstr "Pusat Y"
 
 #: ../operations/common/mirrors.c:42
 msgid "Y axis ratio for the center of mirroring"
-msgstr ""
+msgstr "Rasio sumbu Y bagi pusat pencerminan"
 
 #: ../operations/common/mirrors.c:44
 #, fuzzy
@@ -1512,10 +1540,9 @@ msgstr ""
 
 #: ../operations/common/mirrors.c:48 ../operations/common/mirrors.c:50
 msgid "Scale factor to make rendering size bigger"
-msgstr ""
+msgstr "Faktor skala untuk membuat ukuran perenderan lebih besar"
 
 #: ../operations/common/mirrors.c:50
-#, fuzzy
 msgid "Expand"
 msgstr "Kembangkan"
 
@@ -1535,11 +1562,11 @@ msgstr "Masukan standar:"
 
 #: ../operations/common/mirrors.c:54
 msgid "Fill full output area"
-msgstr ""
+msgstr "Isi penuh area keluaran"
 
 #: ../operations/common/mirrors.c:401
 msgid "Applies mirroring effect on the image."
-msgstr ""
+msgstr "Menerapkan efek pencerminan pada citra."
 
 #: ../operations/common/mono-mixer.c:26 ../operations/common/noise-rgb.c:36
 #: ../operations/common/noise-rgb.c:38
@@ -1548,9 +1575,8 @@ msgid "Red"
 msgstr "Merah"
 
 #: ../operations/common/mono-mixer.c:28
-#, fuzzy
 msgid "Amount of red"
-msgstr "joker merah"
+msgstr "Banyaknya merah"
 
 #: ../operations/common/mono-mixer.c:30 ../operations/common/noise-rgb.c:40
 #: ../operations/common/noise-rgb.c:42
@@ -1559,9 +1585,8 @@ msgid "Green"
 msgstr "Hijau"
 
 #: ../operations/common/mono-mixer.c:32
-#, fuzzy
 msgid "Amount of green"
-msgstr "Hijau Gelap"
+msgstr "Banyaknya hijau"
 
 #: ../operations/common/mono-mixer.c:34 ../operations/common/noise-rgb.c:44
 #: ../operations/common/noise-rgb.c:46
@@ -1570,25 +1595,22 @@ msgid "Blue"
 msgstr "Biru"
 
 #: ../operations/common/mono-mixer.c:36
-#, fuzzy
 msgid "Amount of blue"
-msgstr "biru keabuan"
+msgstr "Banyaknya biru"
 
 #: ../operations/common/mono-mixer.c:98
 msgid "Monochrome channel mixer"
-msgstr ""
+msgstr "Pencampur kanal monokrom"
 
 #: ../operations/common/motion-blur-circular.c:33
 #: ../operations/common/motion-blur-zoom.c:33
-#, fuzzy
 msgid "Horizontal center position"
-msgstr "Posisi horisontal"
+msgstr "Posisi tengah horisontal"
 
 #: ../operations/common/motion-blur-circular.c:38
 #: ../operations/common/motion-blur-zoom.c:38
-#, fuzzy
 msgid "Vertical center position"
-msgstr "Posisi vertikal"
+msgstr "Posisi tengah vertikal"
 
 #: ../operations/common/motion-blur-circular.c:40
 #: ../operations/common/motion-blur-linear.c:30
@@ -1616,7 +1638,7 @@ msgstr "Panjang pembidik silang dalam piksel"
 
 #: ../operations/common/motion-blur-linear.c:32
 msgid "Angle of blur in degrees"
-msgstr ""
+msgstr "Sudut kekaburan dalam derajat"
 
 #: ../operations/common/motion-blur-linear.c:293
 msgid "Linear motion blur"
@@ -1628,7 +1650,7 @@ msgstr "Faktor"
 
 #: ../operations/common/motion-blur-zoom.c:43
 msgid "Bluring factor"
-msgstr ""
+msgstr "Faktor pengaburan"
 
 #: ../operations/common/motion-blur-zoom.c:216
 msgid "Zoom motion blur"
@@ -1687,7 +1709,7 @@ msgstr ""
 #: ../operations/common/noise-hurl.c:34 ../operations/common/noise-pick.c:34
 #: ../operations/common/noise-slur.c:37
 msgid "Randomization (%)"
-msgstr ""
+msgstr "Randomisasi (%)"
 
 #: ../operations/common/noise-hurl.c:36 ../operations/common/noise-pick.c:36
 #: ../operations/common/noise-slur.c:39
@@ -1707,27 +1729,24 @@ msgstr ""
 
 #: ../operations/common/noise-pick.c:210
 msgid "Randomly interchange some pixels with neighbors"
-msgstr ""
+msgstr "Secara acak mempertukarkan beberapa piksel dengan tetangga"
 
 #: ../operations/common/noise-reduction.c:26 ../operations/common/warp.c:35
 #: ../operations/common/wind.c:30
-#, fuzzy
 msgid "Strength"
 msgstr "Kekuatan"
 
 #: ../operations/common/noise-reduction.c:26
 msgid "How many iteratarions to run the algorithm with"
-msgstr ""
+msgstr "Berapa banyak iterasi menjalankan algoritma"
 
 #: ../operations/common/noise-rgb.c:28 ../operations/common/noise-rgb.c:30
-#, fuzzy
 msgid "Correlated noise"
-msgstr "tapis derau"
+msgstr "Derau terkorelasi"
 
 #: ../operations/common/noise-rgb.c:32 ../operations/common/noise-rgb.c:34
-#, fuzzy
 msgid "Independent RGB"
-msgstr "Ruang warna RGB:"
+msgstr "RGB independen"
 
 #: ../operations/common/noise-rgb.c:186
 msgid "Distort colors by random amounts."
@@ -1751,9 +1770,8 @@ msgstr ""
 
 #: ../operations/common/oilify.c:27 ../operations/common/photocopy.c:25
 #: ../operations/common/photocopy.c:27
-#, fuzzy
 msgid "Mask Radius"
-msgstr "Radius sudut"
+msgstr "Radius Masker"
 
 #: ../operations/common/oilify.c:28
 msgid "Radius of circle around pixel"
@@ -1764,19 +1782,16 @@ msgid "Exponent"
 msgstr "Eksponen"
 
 #: ../operations/common/oilify.c:33
-#, fuzzy
 msgid "Number of intensities"
-msgstr "Jumlah Perulangan"
+msgstr "Cacah intensitas"
 
 #: ../operations/common/oilify.c:34
-#, fuzzy
 msgid "Histogram size"
-msgstr "Ukuran Berkas"
+msgstr "Ukuran histogram"
 
 #: ../operations/common/oilify.c:36
-#, fuzzy
 msgid "Intensity Mode"
-msgstr "_Moda impor:"
+msgstr "Mode Intensitas"
 
 #: ../operations/common/oilify.c:37
 msgid "Use pixel luminance values"
@@ -1812,7 +1827,6 @@ msgstr ""
 
 #: ../operations/common/photocopy.c:29 ../operations/common/photocopy.c:31
 #: ../operations/common/softglow.c:34 ../operations/common/softglow.c:36
-#, fuzzy
 msgid "Sharpness"
 msgstr "Ketajaman"
 
@@ -1833,7 +1847,6 @@ msgid "Width of blocks in pixels"
 msgstr "Lebar blok dalam piksel"
 
 #: ../operations/common/pixelize.c:29
-#, fuzzy
 msgid "Block Height"
 msgstr "Tinggi Blok"
 
@@ -1851,28 +1864,24 @@ msgid "Circle depth in percent"
 msgstr ""
 
 #: ../operations/common/polar-coordinates.c:38
-#, fuzzy
 msgid "Offset angle"
-msgstr "Sudut Rotasi X"
+msgstr "Sudut ofset"
 
 #: ../operations/common/polar-coordinates.c:40
-#, fuzzy
 msgid "Offset angle."
-msgstr "Sudut Rotasi X"
+msgstr "Sudut ofset."
 
 #: ../operations/common/polar-coordinates.c:42
-#, fuzzy
 msgid "Map backwards"
-msgstr "Cari _mundur"
+msgstr "Petakan mundur"
 
 #: ../operations/common/polar-coordinates.c:44
 msgid "Start from the right instead of the left"
 msgstr ""
 
 #: ../operations/common/polar-coordinates.c:46
-#, fuzzy
 msgid "Map from top"
-msgstr "Turun dari atas"
+msgstr "Petakan dari atas"
 
 #: ../operations/common/polar-coordinates.c:48
 msgid "Put the top row in the middle and the bottom row on the outside"
@@ -1893,9 +1902,8 @@ msgid "Origin point for the polar coordinates"
 msgstr ""
 
 #: ../operations/common/polar-coordinates.c:63
-#, fuzzy
 msgid "Choose middle"
-msgstr "Klik tengah"
+msgstr "Pilih tengah"
 
 #: ../operations/common/polar-coordinates.c:65
 msgid "Let origin point to be the middle one"
@@ -1907,7 +1915,6 @@ msgstr ""
 
 #: ../operations/common/posterize.c:25
 #: ../operations/external/matting-levin.c:36
-#, fuzzy
 msgid "Levels"
 msgstr "Tingkat"
 
@@ -2041,9 +2048,8 @@ msgid "Displace pixels in a ripple pattern"
 msgstr ""
 
 #: ../operations/common/save.c:25
-#, fuzzy
 msgid "Path of file to save."
-msgstr "Tidak dapat menyimpan ke berkas \"{0}\"."
+msgstr "Path berkas yang akan disimpan."
 
 #: ../operations/common/save.c:195
 msgid "Multipurpose file saver, that uses other native handlers."
@@ -2059,7 +2065,6 @@ msgid "Maximum amount to shift"
 msgstr ""
 
 #: ../operations/common/shift.c:38
-#, fuzzy
 msgid "Direction"
 msgstr "Arah"
 
@@ -2217,7 +2222,6 @@ msgid "Falloff linearity"
 msgstr ""
 
 #: ../operations/common/vignette.c:53
-#, fuzzy
 msgid "Proportion"
 msgstr "Proporsi"
 
@@ -2262,18 +2266,16 @@ msgid ""
 msgstr ""
 
 #: ../operations/common/warp.c:37 ../operations/common/warp.c:48
-#, fuzzy
 msgid "Effect Strength"
-msgstr "Kuat Sinyal"
+msgstr "Kuat Efek"
 
 #: ../operations/common/warp.c:39 ../operations/external/text.c:29
 msgid "Size"
 msgstr "Ukuran"
 
 #: ../operations/common/warp.c:41
-#, fuzzy
 msgid "Effect Size"
-msgstr "Ukuran Berkas"
+msgstr "Ukuran Efek"
 
 #: ../operations/common/warp.c:43 ../operations/external/path.c:38
 #, fuzzy
@@ -2413,14 +2415,12 @@ msgid "Clone a buffer"
 msgstr "Buffer baru"
 
 #: ../operations/core/convert-format.c:28
-#, fuzzy
 msgid "Output format"
 msgstr "Format keluaran"
 
 #: ../operations/core/convert-format.c:29
-#, fuzzy
 msgid "Babl output format string"
-msgstr "Format keluaran"
+msgstr "String format keluaran Babl"
 
 #: ../operations/core/convert-format.c:81
 msgid "Convert the data to the specified format"
@@ -2437,9 +2437,8 @@ msgstr ""
 
 #: ../operations/external/ff-load.c:25 ../operations/external/jp2-load.c:25
 #: ../operations/external/jpg-load.c:25
-#, fuzzy
 msgid "Path of file to load"
-msgstr "Gagal memuat berkas \"%s\": %s"
+msgstr "Path berkas yang akan dimuat"
 
 #: ../operations/external/ff-load.c:26 ../operations/external/v4l.c:29
 #, fuzzy
@@ -2506,14 +2505,12 @@ msgid "Error reading row %d component %d from '%s'"
 msgstr ""
 
 #: ../operations/external/jp2-load.c:397
-#, fuzzy
 msgid "JPEG 2000 image loader"
-msgstr "Format citra JPEG 2000"
+msgstr "Pemuat citra JPEG 2000"
 
 #: ../operations/external/jpg-load.c:223
-#, fuzzy
 msgid "JPG image loader"
-msgstr "Format gambar PNG"
+msgstr "Pemuat citra JPG"
 
 #: ../operations/external/jpg-save.c:26
 msgid "Target path and filename, use '-' for stdout"
@@ -2618,9 +2615,8 @@ msgid "NPY image saver (Numerical python file saver.)"
 msgstr ""
 
 #: ../operations/external/path.c:27
-#, fuzzy
 msgid "Fill Color"
-msgstr "Warna isi:"
+msgstr "Warna Isi"
 
 #: ../operations/external/path.c:28
 msgid "Color of paint to use for filling, use 0 opacity to disable filling"
@@ -2706,18 +2702,16 @@ msgid "Pixbuf"
 msgstr "Pixbuf"
 
 #: ../operations/external/pixbuf.c:25
-#, fuzzy
 msgid "GdkPixbuf to use"
-msgstr "Cover yang dipakai"
+msgstr "GdkPixbuf yang dipakai"
 
 #: ../operations/external/pixbuf.c:103
 msgid "Uses the GdkPixbuf located at the memory location in <em>pixbuf</em>."
 msgstr ""
 
 #: ../operations/external/png-load.c:446
-#, fuzzy
 msgid "PNG image loader."
-msgstr "Format gambar PNG"
+msgstr "Pemuat citra PNG."
 
 #: ../operations/external/png-save.c:28
 msgid "Compression"
@@ -2814,9 +2808,8 @@ msgid "Font family"
 msgstr "Keluarga fonta"
 
 #: ../operations/external/text.c:28
-#, fuzzy
 msgid "Font family (utf8)"
-msgstr "Set keluarga fonta"
+msgstr "Keluarga fonta (utf8)"
 
 #: ../operations/external/text.c:30
 #, fuzzy
@@ -3133,14 +3126,12 @@ msgid "Rotate the buffer around the specified origin."
 msgstr ""
 
 #: ../operations/transform/scale.c:29 ../operations/transform/scale-ratio.c:26
-#, fuzzy
 msgid "Horizontal scale factor"
-msgstr "Faktor Skala Awal"
+msgstr "Faktor skala horisontal"
 
 #: ../operations/transform/scale.c:31 ../operations/transform/scale-ratio.c:28
-#, fuzzy
 msgid "Vertical scale factor"
-msgstr "Faktor Skala Awal"
+msgstr "Faktor skala vertikal"
 
 #: ../operations/transform/scale.c:36
 #, fuzzy
@@ -3152,14 +3143,12 @@ msgid "Scales the buffer according to a ratio."
 msgstr ""
 
 #: ../operations/transform/scale-size.c:26
-#, fuzzy
 msgid "Horizontal size"
-msgstr "Ukuran Berkas"
+msgstr "Ukuran horisontal"
 
 #: ../operations/transform/scale-size.c:28
-#, fuzzy
 msgid "Vertical size"
-msgstr "Ukuran Berkas"
+msgstr "Ukuran vertikal"
 
 #: ../operations/transform/scale-size.c:33
 msgid "Scales the buffer according to a size."
@@ -3214,9 +3203,8 @@ msgid "Hard edges"
 msgstr "Tekanan:"
 
 #: ../operations/transform/transform-core.c:212
-#, fuzzy
 msgid "Lanczos width"
-msgstr "Lebar Garis"
+msgstr "Lebar Lanczos"
 
 #: ../operations/transform/transform-core.c:213
 #, fuzzy
@@ -3224,14 +3212,12 @@ msgid "Width of the Lanczos function"
 msgstr "Offset tombol"
 
 #: ../operations/transform/translate.c:26
-#, fuzzy
 msgid "Horizontal translation"
-msgstr "Ranah Penerjemahan"
+msgstr "Translasi horisontal"
 
 #: ../operations/transform/translate.c:28
-#, fuzzy
 msgid "Vertical translation"
-msgstr "Ranah Penerjemahan"
+msgstr "Translasi vertikal"
 
 #: ../operations/transform/translate.c:33
 msgid ""
@@ -3276,9 +3262,8 @@ msgid ""
 msgstr ""
 
 #: ../operations/workshop/buffer-cache.c:25
-#, fuzzy
 msgid "Cache buffer"
-msgstr "Buffer baru"
+msgstr "Penyangga singgahan"
 
 #: ../operations/workshop/buffer-cache.c:26
 msgid "The GeglBuffer where the caching is done"
@@ -3291,9 +3276,8 @@ msgstr ""
 
 #: ../operations/workshop/color-rotate.c:33
 #: ../operations/workshop/color-rotate.c:39
-#, fuzzy
 msgid "Clockwise"
-msgstr "Searah Jarum Jam"
+msgstr "Searah jarum jam"
 
 #: ../operations/workshop/color-rotate.c:34
 #: ../operations/workshop/color-rotate.c:40
@@ -3563,9 +3547,8 @@ msgid "The value of the divisor"
 msgstr "Nilai sekarang"
 
 #: ../operations/workshop/convolution-matrix.c:78
-#, fuzzy
 msgid "Offset: "
-msgstr "Ofset X"
+msgstr "Ofset:"
 
 #: ../operations/workshop/convolution-matrix.c:79
 #, fuzzy
@@ -3667,9 +3650,8 @@ msgid "target bitrate"
 msgstr "Laju Bit Konstan"
 
 #: ../operations/workshop/external/ff-save.c:32
-#, fuzzy
 msgid "frames per second"
-msgstr "0 frame per detik"
+msgstr "bingkai per detik"
 
 #: ../operations/workshop/external/ff-save.c:889
 msgid "FFmpeg video output sink"
@@ -3703,9 +3685,8 @@ msgid ""
 msgstr ""
 
 #: ../operations/workshop/external/lens-correct.c:28
-#, fuzzy
 msgid "Maker:"
-msgstr "Catatan Pembuat"
+msgstr "Pembuat:"
 
 #: ../operations/workshop/external/lens-correct.c:29
 msgid "Write lens maker correctly"
@@ -3758,9 +3739,8 @@ msgid "Lens center y"
 msgstr "Pusat y lensa"
 
 #: ../operations/workshop/external/lens-correct.c:44
-#, fuzzy
 msgid "Scale of the image"
-msgstr "Skalakan gambar"
+msgstr "Skala citra"
 
 #: ../operations/workshop/external/lens-correct.c:45
 #, fuzzy
@@ -3772,9 +3752,8 @@ msgid "Autocorrect D values for lens correction models."
 msgstr ""
 
 #: ../operations/workshop/external/lens-correct.c:48
-#, fuzzy
 msgid "Model red a:"
-msgstr "joker merah"
+msgstr "Model merah a:"
 
 #: ../operations/workshop/external/lens-correct.c:49
 #: ../operations/workshop/external/lens-correct.c:51
@@ -3792,64 +3771,52 @@ msgid "Correction parameters for each color channel"
 msgstr ""
 
 #: ../operations/workshop/external/lens-correct.c:50
-#, fuzzy
 msgid "Model red b:"
-msgstr "joker merah"
+msgstr "Model merah b:"
 
 #: ../operations/workshop/external/lens-correct.c:52
-#, fuzzy
 msgid "Model red c:"
-msgstr "joker merah"
+msgstr "Model merah c:"
 
 #: ../operations/workshop/external/lens-correct.c:54
-#, fuzzy
 msgid "Model red d:"
-msgstr "joker merah"
+msgstr "Model merah d:"
 
 #: ../operations/workshop/external/lens-correct.c:57
-#, fuzzy
 msgid "Model green a:"
-msgstr "Hijau Gelap"
+msgstr "Model hijau a:"
 
 #: ../operations/workshop/external/lens-correct.c:59
-#, fuzzy
 msgid "Model green b:"
-msgstr "Hijau Gelap"
+msgstr "Model hijau b:"
 
 #: ../operations/workshop/external/lens-correct.c:61
-#, fuzzy
 msgid "Model green c:"
-msgstr "Hijau Gelap"
+msgstr "Model hijau c:"
 
 #: ../operations/workshop/external/lens-correct.c:63
-#, fuzzy
 msgid "Model green d:"
-msgstr "Hijau Gelap"
+msgstr "Model hijau d:"
 
 #: ../operations/workshop/external/lens-correct.c:66
-#, fuzzy
 msgid "Model blue a:"
-msgstr "biru keabuan"
+msgstr "Model biru a:"
 
 #: ../operations/workshop/external/lens-correct.c:68
-#, fuzzy
 msgid "Model blue b:"
-msgstr "biru keabuan"
+msgstr "Model biru b:"
 
 #: ../operations/workshop/external/lens-correct.c:70
-#, fuzzy
 msgid "Model blue c:"
-msgstr "biru keabuan"
+msgstr "Model biru c:"
 
 #: ../operations/workshop/external/lens-correct.c:72
-#, fuzzy
 msgid "Model blue d:"
-msgstr "biru keabuan"
+msgstr "Model biru d:"
 
 #: ../operations/workshop/external/lens-correct.c:75
-#, fuzzy
 msgid "Model alpha a:"
-msgstr "Alfa Minimum"
+msgstr "Model alfa a:"
 
 #: ../operations/workshop/external/lens-correct.c:76
 #: ../operations/workshop/external/lens-correct.c:78
@@ -3859,19 +3826,16 @@ msgid "Correction parameters for alpha channel"
 msgstr ""
 
 #: ../operations/workshop/external/lens-correct.c:77
-#, fuzzy
 msgid "Model alpha b:"
-msgstr "Alfa Minimum"
+msgstr "Model alfa b:"
 
 #: ../operations/workshop/external/lens-correct.c:79
-#, fuzzy
 msgid "Model alpha c:"
-msgstr "Alfa Minimum"
+msgstr "Model alfa c:"
 
 #: ../operations/workshop/external/lens-correct.c:81
-#, fuzzy
 msgid "Model alpha d:"
-msgstr "Alfa Minimum"
+msgstr "Model alfa d:"
 
 #: ../operations/workshop/external/lens-correct.c:476
 msgid "Copies image performing lens distortion correction."
@@ -3902,32 +3866,28 @@ msgid "End y coordinate"
 msgstr "Koordinat y akhir"
 
 #: ../operations/workshop/external/line-profile.c:29
-#, fuzzy
 msgid "Width of plot"
-msgstr "Buat Plot"
+msgstr "Lebar plot"
 
 #: ../operations/workshop/external/line-profile.c:30
-#, fuzzy
 msgid "Height of plot"
-msgstr "Buat Plot"
+msgstr "Tinggi plot"
 
 #: ../operations/workshop/external/line-profile.c:31
 msgid "Min"
 msgstr "Min"
 
 #: ../operations/workshop/external/line-profile.c:31
-#, fuzzy
 msgid "Value at bottom"
-msgstr "Di kiri bawah"
+msgstr "Nilai di bagian dasar"
 
 #: ../operations/workshop/external/line-profile.c:32
 msgid "Max"
 msgstr "Maks"
 
 #: ../operations/workshop/external/line-profile.c:32
-#, fuzzy
 msgid "Value at top"
-msgstr "E_ntri terbaru di puncak"
+msgstr "Nilai di bagian puncak"
 
 #: ../operations/workshop/external/line-profile.c:178
 msgid ""
@@ -4033,9 +3993,8 @@ msgid "Turbulence"
 msgstr "Turbulensi"
 
 #: ../operations/workshop/plasma.c:36
-#, fuzzy
 msgid "The value of the turbulence"
-msgstr "Nilai sekarang"
+msgstr "Nilai turbulensi"
 
 #: ../operations/workshop/plasma.c:389
 msgid "Performs plasma effect on the image"
