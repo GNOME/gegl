@@ -62,6 +62,7 @@ class TestGeglFormat(unittest.TestCase):
       print Gegl.format_get_name(rgb_float)
       print type(rgb_float)
       print rgb_float.__class__
+      print rgb_float
       print("Format out")
       pp.pprint (dir(buf_float.get_property("format")))
       print (type(buf_float.get_property("format")))
