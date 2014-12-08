@@ -20,6 +20,7 @@
 import unittest
 import sys
 import pprint
+import gi
 
 from gi.repository import Gegl
 
@@ -51,6 +52,7 @@ class TestGeglFormat(unittest.TestCase):
       print ("Debugging environment...")
       pp = pprint.PrettyPrinter(indent=4)
       pp.pprint (sys.version)
+      print gi.__version__
       print ("Gegl object")
       pp.pprint (Gegl.__dict__)
       pp.pprint (dir(Gegl))
