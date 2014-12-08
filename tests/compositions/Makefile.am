@@ -28,7 +28,6 @@ TESTS = \
   edge-laplace.xml                \
   edge-sobel.xml                  \
   fattal02.xml                    \
-	gegl.xml                        \
   gamma.xml                       \
   hdr-color.xml                   \
   illusion.xml                    \
