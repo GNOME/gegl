@@ -56,6 +56,7 @@ class TestGeglFormat(unittest.TestCase):
       pp.pprint (dir(Gegl))
       print ("Buffer object")
       pp.pprint (dir(buf_float))
+      pp.pprint ((buf_float.get_property("format")))
 
       self.assertEqual("RGB float", Gegl.format_get_name(buf_float.get_property("format")))
       self.assertEqual("RGBA u8", Gegl.format_get_name(buf_u8.get_property("format")))
