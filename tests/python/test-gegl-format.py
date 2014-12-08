@@ -18,6 +18,8 @@
 """
 
 import unittest
+import sys
+import pprint
 
 from gi.repository import Gegl
 
@@ -39,6 +41,21 @@ class TestGeglFormat(unittest.TestCase):
 
       buf_float = Gegl.Buffer(format=rgb_float)
       buf_u8 = Gegl.Buffer(format=rgba_u8)
+
+      self.assertNotEqual(rgb_float, None)
+      self.assertNotEqual(rgba_u8, None)
+
+      self.assertNotEqual(buf_float, None)
+      self.assertNotEqual(buf_u8, None)
+      
+      print ("Debugging environment...")
+      pp = pprint.PrettyPrinter(indent=4)
+      pp.pprint (sys.version)
+      print ("Gegl object")
+      pp.pprint (Gegl.__dict__)
+      pp.pprint (dir(Gegl))
+      print ("Buffer object")
+      pp.pprint (dir(buf_float))
 
       self.assertEqual("RGB float", Gegl.format_get_name(buf_float.get_property("format")))
       self.assertEqual("RGBA u8", Gegl.format_get_name(buf_u8.get_property("format")))
