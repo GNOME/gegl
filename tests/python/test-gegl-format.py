@@ -57,6 +57,9 @@ class TestGeglFormat(unittest.TestCase):
       print ("Buffer object")
       pp.pprint (dir(buf_float))
       print("Format")
+      pp.pprint (dir(rgb_float))
+      print Gegl.format_get_name(rgb_float)
+      print("Format out")
       pp.pprint (dir(buf_float.get_property("format")))
       print Gegl.format_get_name(buf_float.get_property("format"))
 
