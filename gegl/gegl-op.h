@@ -22,6 +22,16 @@
  * 2006-2008 © Øyvind Kolås.
  */
 
+
+#ifdef GEGL_OP_C_SOURCE
+#define __GEGL_HEADER(x) #x
+#define _GEGL_HEADER(x) __GEGL_HEADER(x)
+#define GEGL_HEADER(x) _GEGL_HEADER(x)
+
+#define GEGL_OP_C_FILE GEGL_HEADER(GEGL_OP_C_SOURCE)
+#define GEGL_OP_C_FILE_SOURCE GEGL_HEADER(GEGL_OP_C_SOURCE.h)
+#endif
+
 #ifndef GEGL_OP_C_FILE
 #ifdef GEGL_CHANT_C_FILE
 #error   GEGL_OP_C_FILE not defined, %s/GEGL_CHANT_C_FILE/GEGL_OP_C_FILE/
@@ -981,6 +991,10 @@ gegl_op_class_intern_init (gpointer klass)
 #undef property_format
 
 }
+
+#undef __GEGL_HEADER
+#undef _GEGL_HEADER
+#undef GEGL_HEADER
 
 static void
 gegl_op_init_properties (GeglOp *self)
