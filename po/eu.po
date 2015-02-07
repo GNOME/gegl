@@ -1,18 +1,18 @@
 # Basque translation for gegl.
 # Copyright (C) 2013 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gegl package.
-#
+# 
 # osoitz <oelkoro@gmail.com>, 2013.
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013.
+# Edurne Labaka <elabaka@uzei.com>, 2015.
 #
-#: ../operations/common/display.c:23 ../operations/external/sdl-display.c:25
-#: ../operations/external/sdl-display.c:27
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl gegl-0-2\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-05 10:32+0200\n"
-"PO-Revision-Date: 2013-08-05 11:23+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gegl&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-02-07 12:55+0100\n"
+"PO-Revision-Date: 2014-11-10 17:11+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <kde-i18n-doc@kde.org>\n"
 "Language: eu\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Poedit 1.6.10\n"
 
 #: ../bin/gegl.c:146
 #, c-format
@@ -351,8 +351,8 @@ msgid ""
 "Neighborhood taken into account, this is the radius in pixels taken into "
 "account when deciding which colors map to which gray values"
 msgstr ""
-"Ingurukoak kontutan hartuta, kolore bakoitzari zein gris balio dagokion "
-"erabakitzean kontutan hartuko den erradioa (pixeletan)."
+"Ingurukoak kontuan hartuta, kolore bakoitzari zein gris balio dagokion "
+"erabakitzean kontuan hartuko den erradioa (pixeletan)."
 
 #: ../operations/common/c2g.c:33 ../operations/common/stress.c:29
 msgid "Samples"
@@ -772,7 +772,7 @@ msgstr "Mantendu seinalea"
 
 #: ../operations/common/edge-sobel.c:377
 msgid "Specialized direction-dependent edge detection"
-msgstr "Norabidearen mendeko ertz-detekzio berezia"
+msgstr "Noranzkoaren mendeko ertz-detekzio berezia"
 
 #: ../operations/common/emboss.c:30
 msgid "Emboss Type"
@@ -1027,7 +1027,7 @@ msgstr "Koloreak"
 
 #: ../operations/common/fractal-explorer.c:92
 msgid "Number of colors"
-msgstr "Kolore-kopurua"
+msgstr "Kolore kopurua"
 
 #: ../operations/common/fractal-explorer.c:94
 msgid "Loglog smoothing"
@@ -1490,11 +1490,9 @@ msgid ""
 "Everything else will be treated as unknown and filled in."
 msgstr ""
 "Erabiltzaileak hornitutako hiru tonuko mapa eta sarrerako iruditik abiatuta, "
-"sortu "
-"aurreko planoko alfa geruza. Ezarri zuria aurreko planoaren kolore gisa, eta "
-"beltza atzeko planoaren kolore gisa hiru tonuko mapan. Beste guztia ezezagun "
-"gisa "
-"tratatu eta bete egingo da."
+"sortu aurreko planoko alfa geruza. Ezarri zuria aurreko planoaren kolore "
+"gisa, eta beltza atzeko planoaren kolore gisa hiru tonuko mapan. Beste "
+"guztia ezezagun gisa tratatu eta bete egingo da."
 
 #: ../operations/common/mblur.c:25
 msgid "Dampness"
@@ -1724,7 +1722,7 @@ msgstr "Ñabardura"
 #: ../operations/common/noise-cielch.c:170
 msgid "Randomize lightness, chroma and hue independently"
 msgstr ""
-"Ausaz nahastu argitasuna, krominantzia eta ñabardura bakoitza bere aldetik"
+"Ausaz nahasi argitasuna, krominantzia eta ñabardura bakoitza bere aldetik"
 
 #: ../operations/common/noise-hsv.c:39 ../operations/common/noise-hsv.c:41
 #: ../operations/common/weighted-blend.c:25 ../operations/generated/add.c:29
@@ -1735,7 +1733,7 @@ msgstr "Balioa"
 
 #: ../operations/common/noise-hsv.c:172
 msgid "Randomize hue, saturation and value independently"
-msgstr "Ausaz nahastu ñabardura, saturazioa eta balioa bakoitza bere aldetik"
+msgstr "Ausaz nahasi ñabardura, saturazioa eta balioa bakoitza bere aldetik"
 
 #: ../operations/common/noise-hurl.c:34 ../operations/common/noise-pick.c:34
 #: ../operations/common/noise-slur.c:37
@@ -1755,7 +1753,7 @@ msgstr "Errepikatu"
 
 #: ../operations/common/noise-hurl.c:142
 msgid "Completely randomize a fraction of pixels"
-msgstr "Erabat ausaz nahastu pixel frakzio bat"
+msgstr "Erabat ausaz nahasi pixel frakzio bat"
 
 #: ../operations/common/noise-pick.c:210
 msgid "Randomly interchange some pixels with neighbors"
@@ -2083,7 +2081,7 @@ msgstr "Gordeko den fitxategiaren bide-izena."
 msgid "Multipurpose file saver, that uses other native handlers."
 msgstr ""
 "Xede anitzeko fitxategien gordetzailea, beste jatorrizko kudeatzaileak "
-"darabilki."
+"darabil."
 
 #: ../operations/common/shift.c:31
 msgid "Shift"
@@ -2095,11 +2093,11 @@ msgstr "Desplazamenduaren gehienezko kopurua"
 
 #: ../operations/common/shift.c:38
 msgid "Direction"
-msgstr "Norabidea"
+msgstr "Noranzkoa"
 
 #: ../operations/common/shift.c:41
 msgid "Shift direction"
-msgstr "Desplazamenduaren norabidea"
+msgstr "Desplazamenduaren noranzkoa"
 
 #: ../operations/common/shift.c:230
 msgid "Shift each row or column of pixels by a random amount"
@@ -2113,9 +2111,9 @@ msgstr "Pareak"
 #: ../operations/common/snn-mean.c:29
 msgid "Number of pairs; higher number preserves more acute features"
 msgstr ""
-"Pare-kopurua; zenbaki altuago batek eginbide zehatzagoak mantentzen ditu "
+"Pare kopurua; zenbaki altuago batek eginbide zehatzagoak mantentzen ditu "
 
-#: ../operations/common/snn-mean.c:326
+#: ../operations/common/snn-mean.c:315
 msgid ""
 "Noise reducing edge enhancing blur filter based  on Symmetric Nearest "
 "Neighbours"
@@ -2388,7 +2386,7 @@ msgstr "erabiliko den balio orokorra lagungarriak daturik ez badu"
 
 #: ../operations/common/weighted-blend.c:124
 msgid "blend two images using alpha values as weights"
-msgstr "nahastu bi irudiak alfa balioak ponderazio gisa erabiliz"
+msgstr "nahasi bi irudiak alfa balioak ponderazio gisa erabiliz"
 
 #: ../operations/common/whirl-pinch.c:36
 msgid "Whirl"
@@ -2645,8 +2643,7 @@ msgid ""
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
 msgstr ""
 "Erabiltzaileak hornitutako hiru tonuko mapa eta sarrerako iruditik abiatuta, "
-"sortu "
-"aurreko planoko alfa geruza. Ezarri zuria hautatuta bezala, eta beltza "
+"sortu aurreko planoko alfa geruza. Ezarri zuria hautatuta bezala, eta beltza "
 "hautatu gabea bezala hiru tonuko mapan."
 
 #: ../operations/external/npy-save.c:32 ../operations/external/png-save.c:27
@@ -3190,11 +3187,11 @@ msgstr "Aurreko planoaren zati opakoak ez daude atzeko planoaren gainean!"
 
 #: ../operations/transform/reflect.c:30
 msgid "Direction vector's X component"
-msgstr "Norabidearen bektorearen X osagaia"
+msgstr "Noranzkoaren bektorearen X osagaia"
 
 #: ../operations/transform/reflect.c:32
 msgid "Direction vector's Y component"
-msgstr "Norabidearen bektorearen Y osagaia"
+msgstr "Noranzkoaren bektorearen Y osagaia"
 
 #: ../operations/transform/rotate.c:26
 msgid "Angle to rotate (clockwise)"
@@ -3999,8 +3996,8 @@ msgid ""
 "Image blending operation 'blend-reflect' (<tt>c = cB>=1.0?1.0:cA*cA / (1.0-"
 "cB)</tt>)"
 msgstr ""
-"Irudi nahasketaren eragiketa: 'nahastu islapena' (<tt>c = cB>=1.0?1.0:"
-"cA*cA / (1.0-cB)</tt>)"
+"Irudi nahasketaren eragiketa: 'nahasi islapena' (<tt>c = cB>=1.0?1.0:cA*cA / "
+"(1.0-cB)</tt>)"
 
 #: ../operations/workshop/generated/negation.c:109
 msgid ""
@@ -4132,16 +4129,16 @@ msgid ""
 "the normal dcraw loader, if the fileformat is .rawbayerS it will swap the "
 "returned 16bit numbers (the pnm loader is apparently buggy)"
 msgstr ""
-"Irudi gordinen kargatzailea, dcraw hodiekin doitzen du, raw bayer "
-"sareta gris-eskalan hornitzen du, fitxategi formatua .rawbayer bada "
-"kargatzaile hau erabiliko du dcraw kargatzaile normalaren ordez, "
-"fitxategiaren formatua .rawbayerS bada bueltatutako 16bit zenbakiak "
-"trukatuko ditu (pnm kargatzaileak antza akastuna da)"
+"Irudi gordinen kargatzailea, dcraw hodiekin doitzen du, raw bayer sareta "
+"gris-eskalan hornitzen du, fitxategi formatua .rawbayer bada kargatzaile hau "
+"erabiliko du dcraw kargatzaile normalaren ordez, fitxategiaren formatua ."
+"rawbayerS bada bueltatutako 16bit zenbakiak trukatuko ditu (pnm "
+"kargatzaileak antza akastuna da)"
 
 #: ../operations/workshop/snn-percentile.c:30
 msgid "Number of pairs, higher number preserves more acute features"
 msgstr ""
-"Pare-kopurua, zenbaki altuago batek eginbide zehatzagoak mantentzen ditu "
+"Pare kopurua, zenbaki altuago batek eginbide zehatzagoak mantentzen ditu "
 
 #: ../operations/workshop/snn-percentile.c:32
 msgid "The percentile to return, the default value 50 is equal to the median"
@@ -4149,11 +4146,10 @@ msgstr ""
 "Bueltatuko den pertzentila, lehenetsitako balioa 50 da, medianaren berdina "
 "da."
 
-#: ../operations/workshop/snn-percentile.c:272
+#: ../operations/workshop/snn-percentile.c:273
 msgid ""
 "Noise reducing edge enhancing percentile filter based on Symmetric Nearest "
 "Neighbours"
 msgstr ""
 "Zarata murriztu eta  ertzak hobetzeko pertzentilaren iragazkia, auzokide "
 "simetriko hurbilenean oinarrituta"
-
