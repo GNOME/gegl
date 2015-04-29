@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gegl&"
 "keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2015-03-25 06:22+0000\n"
-"PO-Revision-Date: 2015-04-20 09:26+0000\n"
+"PO-Revision-Date: 2015-04-29 12:20+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
 "Language: is\n"
@@ -603,11 +603,11 @@ msgstr ""
 
 #: ../operations/common/difference-of-gaussians.c:24
 msgid "Radius 1"
-msgstr ""
+msgstr "Radíus 1"
 
 #: ../operations/common/difference-of-gaussians.c:28
 msgid "Radius 2"
-msgstr ""
+msgstr "Radíus 2"
 
 #: ../operations/common/difference-of-gaussians.c:103
 msgid ""
@@ -747,7 +747,7 @@ msgstr ""
 
 #: ../operations/common/exp-combine.c:25
 msgid "Exposure Values"
-msgstr ""
+msgstr "Lýsingargildi"
 
 #: ../operations/common/exp-combine.c:26
 msgid "Relative brightness of each exposure in EV"
@@ -848,7 +848,7 @@ msgstr ""
 #: ../operations/common/fractal-explorer.c:47
 #: ../operations/common/fractal-trace.c:30
 msgid "Fractal type"
-msgstr ""
+msgstr "Tegund brotamyndar"
 
 #: ../operations/common/fractal-explorer.c:49
 #: ../operations/common/fractal-trace.c:32
@@ -1208,11 +1208,11 @@ msgstr ""
 
 #: ../operations/common/layer.c:35 ../operations/common/rectangle.c:30
 msgid "Horizontal position"
-msgstr ""
+msgstr "Lárétt staðsetning"
 
 #: ../operations/common/layer.c:37 ../operations/common/rectangle.c:32
 msgid "Vertical position"
-msgstr ""
+msgstr "Lóðrétt staðsetning"
 
 #: ../operations/common/layer.c:38 ../operations/common/noise.c:27
 #: ../operations/common/unsharp-mask.c:28
@@ -1230,11 +1230,11 @@ msgstr "Uppruni"
 
 #: ../operations/common/layer.c:41
 msgid "Source datafile (png, jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
+msgstr "Upprunaleg gagnaskrá (png, jpg, raw, svg, bmp, tif, ...)"
 
 #: ../operations/common/layer.c:267
 msgid "A layer in the traditional sense"
-msgstr ""
+msgstr "Hefðbundið lag"
 
 #: ../operations/common/lens-distortion.c:32
 msgid "Main"
@@ -1259,31 +1259,31 @@ msgstr ""
 
 #: ../operations/common/lens-distortion.c:43
 msgid "Brighten"
-msgstr ""
+msgstr "Lýsa"
 
 #: ../operations/common/lens-distortion.c:45
 msgid "Brighten the image"
-msgstr ""
+msgstr "Lýsa myndina"
 
 #: ../operations/common/lens-distortion.c:47
 msgid "X shift"
-msgstr ""
+msgstr "X hliðrun"
 
 #: ../operations/common/lens-distortion.c:49
 msgid "Shift horizontal"
-msgstr ""
+msgstr "Lárétt hliðrun"
 
 #: ../operations/common/lens-distortion.c:51
 msgid "Y shift"
-msgstr ""
+msgstr "Y hliðrun"
 
 #: ../operations/common/lens-distortion.c:53
 msgid "Shift vertical"
-msgstr ""
+msgstr "Lóðrétt hliðrun"
 
 #: ../operations/common/lens-distortion.c:348
 msgid "Corrects lens distortion"
-msgstr ""
+msgstr "Leiðréttir linsubjögun"
 
 #: ../operations/common/levels.c:26
 msgid "Low input"
@@ -2356,22 +2356,22 @@ msgstr ""
 #: ../operations/external/jp2-load.c:70
 #, c-format
 msgid "Unknown JPEG 2000 image format in '%s'"
-msgstr ""
+msgstr "Óþekkt JPEG 2000 myndskráarsnið í '%s'"
 
 #: ../operations/external/jp2-load.c:77
 #, c-format
 msgid "Unable to open JPEG 2000 image in '%s'"
-msgstr ""
+msgstr "Get ekki opnað JPEG 2000 mynd í '%s'"
 
 #: ../operations/external/jp2-load.c:84
 #, c-format
 msgid "Unable to create output color profile for '%s'"
-msgstr ""
+msgstr "Get ekki búið til litasnið fyrir '%s'"
 
 #: ../operations/external/jp2-load.c:92
 #, c-format
 msgid "Unable to convert image to sRGB color space when processing '%s'"
-msgstr ""
+msgstr "Get ekki umbreytt mynd í sRGB litarýmd við vinnslu '%s'"
 
 #: ../operations/external/jp2-load.c:100
 #, c-format
@@ -2381,7 +2381,7 @@ msgstr ""
 #: ../operations/external/jp2-load.c:111
 #, c-format
 msgid "Unsupported JPEG 2000 file with depth %d in '%s'"
-msgstr ""
+msgstr "Óstudd JPEG 2000 skrá með litadýpt %d í '%s'"
 
 #: ../operations/external/jp2-load.c:124
 #, c-format
@@ -2405,11 +2405,11 @@ msgstr ""
 
 #: ../operations/external/jp2-load.c:397
 msgid "JPEG 2000 image loader"
-msgstr ""
+msgstr "JPEG 2000 myndhleðsla"
 
 #: ../operations/external/jpg-load.c:223
 msgid "JPG image loader"
-msgstr ""
+msgstr "JPG myndhleðsla"
 
 #: ../operations/external/jpg-save.c:26
 msgid "Target path and filename, use '-' for stdout"
