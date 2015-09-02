@@ -1546,6 +1546,43 @@ gegl_buffer_sample_cleanup (GeglBuffer *buffer)
     }
 }
 
+typedef struct 
+ {
+   int thread_id;
+   GeglBufferIterator *i;
+   GeglBuffer *src;
+   GeglBuffer *dst;
+   gint offset_x;
+   gint offset_y;
+ } gthread_data_b;
+
+const gchar *thread_name_bfc = "do large buffer copy";
+
+static gpointer do_gegl_work2(gpointer);
+
+static gpointer 
+do_gegl_work2(gpointer rawdata) 
+{
+    gthread_data_b *thread_data = rawdata;
+
+    GeglBufferIterator *i = thread_data->i;
+    GeglBuffer *src = thread_data->src;
+    GeglBuffer *dst = thread_data->dst;
+    gint offset_x = thread_data->offset_x;
+    gint offset_y = thread_data->offset_y;
+
+    while (gegl_buffer_iterator_next (i))
+          {
+            GeglRectangle src_rect = i->roi[0];
+            src_rect.x += offset_x;
+            src_rect.y += offset_y;
+            gegl_buffer_iterate_read_dispatch (src, &src_rect, i->data[0], 0,
+                                               dst->soft_format, 0, GEGL_ABYSS_NONE);
+          }
+
+    return (gpointer) thread_data;      
+}
+
 static void
 gegl_buffer_copy2 (GeglBuffer          *src,
                    const GeglRectangle *src_rect,
@@ -1570,24 +1607,98 @@ gegl_buffer_copy2 (GeglBuffer          *src,
     return;
 
     {
-      GeglRectangle dest_rect_r = *dst_rect;
-      GeglBufferIterator *i;
-      gint offset_x = src_rect->x - dst_rect->x;
-      gint offset_y = src_rect->y - dst_rect->y;
+      double dsize = (src_rect->width * src_rect->height);
+      if (dsize > 1000000) {
+        // execute copy action parallel in multiple threads, saves more than 50% time on 4 core with no OpenCL available
+        int t;
+        gint thread_count = gegl_config_threads ();
+      
+        GeglBufferIterator *i[thread_count];
 
-      dest_rect_r.width = src_rect->width;
-      dest_rect_r.height = src_rect->height;
+        GeglRectangle dest_rect_r[thread_count];
+        GeglRectangle src_rect_r[thread_count];
+        gint offset_x[thread_count];
+        gint offset_y[thread_count];
 
-      i = gegl_buffer_iterator_new (dst, &dest_rect_r, 0, dst->soft_format,
-                                    GEGL_ACCESS_WRITE, repeat_mode);
-      while (gegl_buffer_iterator_next (i))
+        int prevHeight = 0;
+        int stepHeight = (src_rect->height / thread_count) | 0;
+        int remainingStepHeight = src_rect->height - (stepHeight * thread_count);
+
+        g_warning("dsize:%lf may take long time.. using multiple threads:%d",dsize, thread_count);
+
+        for (t=0; t<thread_count; t++) 
         {
-          GeglRectangle src_rect = i->roi[0];
-          src_rect.x += offset_x;
-          src_rect.y += offset_y;
-          gegl_buffer_iterate_read_dispatch (src, &src_rect, i->data[0], 0,
-                                             dst->soft_format, 0, repeat_mode);
+          // last one?
+          if (t == thread_count - 1) 
+          {
+            stepHeight += remainingStepHeight; // in case some pixel row got cut off due to rounding
+          }
+
+          dest_rect_r[t] = *dst_rect;
+
+          dest_rect_r[t].width = src_rect->width;
+          dest_rect_r[t].height = stepHeight;
+          dest_rect_r[t].y += prevHeight;
+
+          src_rect_r[t] = *src_rect;
+          src_rect_r[t].height = stepHeight;
+          src_rect_r[t].y += prevHeight;
+
+          offset_x[t] = src_rect_r[t].x - dest_rect_r[t].x;
+          offset_y[t] = src_rect_r[t].y - dest_rect_r[t].y;
+
+          i[t] = gegl_buffer_iterator_new (dst, &dest_rect_r[t], 0, dst->soft_format,
+                                      GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+
+          prevHeight += dest_rect_r[t].height; 
         }
+
+        {
+          GThread *threads[thread_count];
+          gthread_data_b td_arr[thread_count];
+
+          for (t=0; t<thread_count; t++) {
+            td_arr[t].thread_id = t;
+            td_arr[t].i = i[t];
+            td_arr[t].src = src;
+            td_arr[t].dst = dst;
+            td_arr[t].offset_x = offset_x[t];
+            td_arr[t].offset_y = offset_y[t]; 
+          }
+          
+          for(t=0; t<thread_count; t++) 
+          {  
+            threads[t] = g_thread_new(thread_name_bfc, &do_gegl_work2, (gpointer) &td_arr[t]); 
+          }
+
+        
+          for(t=0; t<thread_count; t++) 
+          {
+            (void) g_thread_join(threads[t]);
+          }
+        }
+      }
+      else 
+      {
+        GeglRectangle dest_rect_r = *dst_rect;
+        GeglBufferIterator *i;
+        gint offset_x = src_rect->x - dst_rect->x;
+        gint offset_y = src_rect->y - dst_rect->y;
+
+        dest_rect_r.width = src_rect->width;
+        dest_rect_r.height = src_rect->height;
+
+        i = gegl_buffer_iterator_new (dst, &dest_rect_r, 0, dst->soft_format,
+                                      GEGL_ACCESS_WRITE, repeat_mode);
+        while (gegl_buffer_iterator_next (i))
+          {
+            GeglRectangle src_rect = i->roi[0];
+            src_rect.x += offset_x;
+            src_rect.y += offset_y;
+            gegl_buffer_iterate_read_dispatch (src, &src_rect, i->data[0], 0,
+                                               dst->soft_format, 0, repeat_mode);
+          }
+      }
     }
 }
 
@@ -1598,6 +1709,11 @@ gegl_buffer_copy (GeglBuffer          *src,
                   GeglBuffer          *dst,
                   const GeglRectangle *dst_rect)
 {
+#ifdef GEGL_ENABLE_DEBUG
+  struct timeval time_stop, time_start;
+  gettimeofday(&time_start, NULL);
+#endif  
+ 
   g_return_if_fail (GEGL_IS_BUFFER (src));
   g_return_if_fail (GEGL_IS_BUFFER (dst));
 
@@ -1753,6 +1869,27 @@ gegl_buffer_copy (GeglBuffer          *src,
     {
       gegl_buffer_copy2 (src, src_rect, repeat_mode, dst, dst_rect);
     }
+
+#ifdef GEGL_ENABLE_DEBUG
+    gettimeofday(&time_stop, NULL);
+  
+    {   
+      uint64_t start_m = (time_start.tv_sec * (uint64_t)1000) + (time_start.tv_usec / 1000);
+      uint64_t stop_m = (time_stop.tv_sec * (uint64_t)1000) + (time_stop.tv_usec / 1000);
+
+      unsigned int time_diff = (unsigned int) (stop_m - start_m); //in milliseconds
+      if (time_diff > 80) {
+        g_warning("time taken:%d msec",time_diff);
+        
+        if (gegl_cl_is_accelerated()) {
+          g_warning(" gegl is accelerated\n");
+        }
+        else {
+          g_warning(" gegl is NOT accelerated\n");
+        }
+      }
+    }   
+#endif    
 }
 
 static void
