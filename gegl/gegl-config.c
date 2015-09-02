@@ -230,13 +230,19 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                         G_PARAM_READWRITE |
                                                         G_PARAM_CONSTRUCT));
 
-  g_object_class_install_property (gobject_class, PROP_THREADS,
-                                   g_param_spec_int ("threads",
-                                                     "Number of threads",
-                                                     "Number of concurrent evaluation threads",
-                                                     0, 16, 1,
-                                                     G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+  {
+    int nr_of_cores = g_get_num_processors();
+    if (!nr_of_cores || nr_of_cores < 1) nr_of_cores = 1;
+    else if (nr_of_cores > 16) nr_of_cores = 16;
+    
+    g_object_class_install_property (gobject_class, PROP_THREADS,
+                                     g_param_spec_int ("threads",
+                                                       "Number of threads",
+                                                       "Number of concurrent evaluation threads",
+                                                       0, 16, nr_of_cores,
+                                                       G_PARAM_READWRITE |
+                                                       G_PARAM_CONSTRUCT));
+  }
 
   g_object_class_install_property (gobject_class, PROP_USE_OPENCL,
                                    g_param_spec_boolean ("use-opencl",
