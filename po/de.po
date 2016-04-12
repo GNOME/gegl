@@ -11,16 +11,16 @@ msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-12-18 18:56+0000\n"
-"PO-Revision-Date: 2014-01-26 18:47+0100\n"
-"Last-Translator: Benjamin Steinwender <b@stbe.at>\n"
+"POT-Creation-Date: 2016-03-28 06:16+0000\n"
+"PO-Revision-Date: 2016-03-28 17:28+0200\n"
+"Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.3\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "X-Project-Style: gnome\n"
 
 #: ../bin/gegl.c:146
@@ -248,14 +248,10 @@ msgstr ""
 "gewichtet wird."
 
 #: ../operations/common/bilateral-filter-fast.c:33
-#, fuzzy
-#| msgid "Softness"
 msgid "Smoothness"
 msgstr "Glattheit"
 
 #: ../operations/common/bilateral-filter-fast.c:35
-#, fuzzy
-#| msgid "Loglog smoothing"
 msgid "Level of smoothness"
 msgstr "Grad der Glättung"
 
@@ -313,8 +309,7 @@ msgstr "Menge, um welche die Helligkeit erhöht werden soll"
 msgid "Changes the light level and contrast."
 msgstr "Lichtstärke und Kontrast ändern."
 
-#: ../operations/common/buffer-sink.c:25
-#: ../operations/common/write-buffer.c:25
+#: ../operations/common/buffer-sink.c:25 ../operations/common/write-buffer.c:25
 msgid "Buffer location"
 msgstr "Pufferort"
 
@@ -603,7 +598,7 @@ msgstr "Kachelsättigung"
 
 #: ../operations/common/cubism.c:36
 msgid "Expand tiles by this amount"
-msgstr ""
+msgstr "Kacheln um diesen Wert vergrößern"
 
 #: ../operations/common/cubism.c:38
 msgid "Background Color"
@@ -633,6 +628,8 @@ msgid ""
 "Convert the image into randomly rotated square blobs, somehow resembling a "
 "cubist painting style"
 msgstr ""
+"Wandelt das Bild in quadratische Kleckse zufälliger Drehung um, um ein "
+"Gemälde des Kubismus zu simulieren"
 
 #: ../operations/common/deinterlace.c:40
 msgid "Keep"
@@ -656,7 +653,7 @@ msgstr "Blockgröße"
 
 #: ../operations/common/deinterlace.c:52
 msgid "Block size of deinterlacing rows/columns"
-msgstr ""
+msgstr "Blockgröße für Zeilen/Spalten beim Deinterlacing"
 
 #: ../operations/common/deinterlace.c:337
 msgid "Fix images where every other row or column is missing"
@@ -733,9 +730,8 @@ msgid "Vertical shadow offset"
 msgstr "Vertikaler Schatten-Versatz"
 
 #: ../operations/common/dropshadow.c:39
-#, fuzzy
 msgid "The shadow's color (defaults to 'black')"
-msgstr "Die darzustellender Farbe (Vorannahme ist »schwarz«)"
+msgstr "Die Schattenfarbe (Voreinstellung ist »schwarz«)"
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
@@ -788,17 +784,15 @@ msgstr "Azimut"
 
 #: ../operations/common/emboss.c:36
 msgid "The light angle (degrees)"
-msgstr "Der Lichtlwinkel (Grad)"
+msgstr "Der Lichtwinkel (Grad)"
 
 #: ../operations/common/emboss.c:38
 msgid "Elevation"
 msgstr "Erhebung"
 
 #: ../operations/common/emboss.c:40
-#, fuzzy
-#| msgid "Whirl angle (degrees)"
 msgid "The elevation angle (degrees)"
-msgstr "Wirbelwinkel (Grad)"
+msgstr "Höhenwinkel (Grad)"
 
 #: ../operations/common/emboss.c:42 ../operations/common/fractal-trace.c:55
 msgid "Depth"
@@ -809,9 +803,8 @@ msgid "The filter width"
 msgstr "Die Filterbreite"
 
 #: ../operations/common/emboss.c:257
-#, fuzzy
 msgid "Simulates an image created by embossing"
-msgstr "Ein Reliefbild simulieren"
+msgstr "Simuliert ein Reliefbild"
 
 #: ../operations/common/exp-combine.c:25
 msgid "Exposure Values"
@@ -957,27 +950,22 @@ msgid "CY (only Julia)"
 msgstr "CY (nur Julia)"
 
 #: ../operations/common/fractal-explorer.c:61
-#, fuzzy
 msgid "Red stretch"
 msgstr "Rot-Dehnung"
 
 #: ../operations/common/fractal-explorer.c:62
-#, fuzzy
 msgid "Red stretching factor"
 msgstr "Faktor der Rot-Dehnung"
 
 #: ../operations/common/fractal-explorer.c:63
-#, fuzzy
 msgid "Green stretch"
 msgstr "Grün-Dehnung"
 
 #: ../operations/common/fractal-explorer.c:64
-#, fuzzy
 msgid "Green stretching factor"
 msgstr "Faktor der Grün-Dehnung"
 
 #: ../operations/common/fractal-explorer.c:65
-#, fuzzy
 msgid "Blue stretch"
 msgstr "Blau-Dehnung"
 
@@ -990,8 +978,6 @@ msgid "Red mode"
 msgstr "Roter Modus"
 
 #: ../operations/common/fractal-explorer.c:76
-#, fuzzy
-#| msgid "Red application mode (0:SIN; 1:COS; 2:NONE)"
 msgid "Red application mode"
 msgstr "Roter Anwendungsmodus"
 
@@ -1000,8 +986,6 @@ msgid "Green mode"
 msgstr "Grüner Modus"
 
 #: ../operations/common/fractal-explorer.c:79
-#, fuzzy
-#| msgid "Green application mode (0:SIN; 1:COS; 2:NONE)"
 msgid "Green application mode"
 msgstr "Grüner Anwendungsmodus"
 
@@ -1010,8 +994,6 @@ msgid "Blue mode"
 msgstr "Blauer Modus"
 
 #: ../operations/common/fractal-explorer.c:82
-#, fuzzy
-#| msgid "Blue application mode (0:SIN; 1:COS; 2:NONE)"
 msgid "Blue application mode"
 msgstr "Blauer Anwendungsmodus"
 
@@ -1108,19 +1090,16 @@ msgid "Depth value"
 msgstr "Tiefenwert"
 
 #: ../operations/common/fractal-trace.c:59
-#, fuzzy
 msgid "Bailout"
 msgstr "Aussteigen"
 
 #: ../operations/common/fractal-trace.c:61
-#, fuzzy
 msgid "Bailout length"
-msgstr "Maximallänge"
+msgstr "Ausstiegswert"
 
 #: ../operations/common/fractal-trace.c:63
-#, fuzzy
 msgid "Abyss policy"
-msgstr "Aktualisierungsmethode"
+msgstr "Abyss-Regeln"
 
 #: ../operations/common/fractal-trace.c:65
 msgid "How to deal with pixels outside of the input buffer"
@@ -1161,10 +1140,6 @@ msgid "Filter"
 msgstr "Filter"
 
 #: ../operations/common/gaussian-blur.c:48
-#, fuzzy
-#| msgid ""
-#| "Optional parameter to override automatic selection of emboss filter. "
-#| "Choices are emboss, blur-map"
 msgid "Optional parameter to override the automatic selection of blur filter"
 msgstr ""
 "Optionaler Parameter, der die automatische Auswahl des Weichzeichners "
@@ -1177,16 +1152,15 @@ msgid ""
 msgstr ""
 
 #: ../operations/common/gegl-buffer-load-op.c:24
-#: ../operations/common/gegl-buffer-save-op.c:24
-#: ../operations/common/load.c:25 ../operations/common/magick-load.c:26
-#: ../operations/common/open-buffer.c:25 ../operations/common/raw-load.c:27
-#: ../operations/common/save.c:25 ../operations/external/ff-load.c:25
-#: ../operations/external/jp2-load.c:25 ../operations/external/jpg-load.c:25
-#: ../operations/external/jpg-save.c:25 ../operations/external/npy-save.c:31
-#: ../operations/external/png-load.c:27 ../operations/external/png-save.c:26
-#: ../operations/external/ppm-load.c:25 ../operations/external/ppm-save.c:25
-#: ../operations/external/rgbe-load.c:26 ../operations/external/rgbe-save.c:26
-#: ../operations/external/svg-load.c:25
+#: ../operations/common/gegl-buffer-save-op.c:24 ../operations/common/load.c:25
+#: ../operations/common/magick-load.c:26 ../operations/common/open-buffer.c:25
+#: ../operations/common/raw-load.c:27 ../operations/common/save.c:25
+#: ../operations/external/ff-load.c:25 ../operations/external/jp2-load.c:25
+#: ../operations/external/jpg-load.c:25 ../operations/external/jpg-save.c:25
+#: ../operations/external/npy-save.c:31 ../operations/external/png-load.c:27
+#: ../operations/external/png-save.c:26 ../operations/external/ppm-load.c:25
+#: ../operations/external/ppm-save.c:25 ../operations/external/rgbe-load.c:26
+#: ../operations/external/rgbe-save.c:26 ../operations/external/svg-load.c:25
 #: ../operations/workshop/external/ff-save.c:30
 #: ../operations/workshop/external/gluas.c:43
 #: ../operations/workshop/rawbayer-load.c:25
@@ -1302,9 +1276,8 @@ msgid "Operation"
 msgstr "Operation"
 
 #: ../operations/common/layer.c:31
-#, fuzzy
 msgid "Composite operation to use"
-msgstr "Die zu verwendende Dithering-Strategie"
+msgstr "Die zu verwendende Composite-Strategie"
 
 #: ../operations/common/layer.c:35 ../operations/common/rectangle.c:30
 msgid "Horizontal position"
@@ -1439,7 +1412,6 @@ msgstr ""
 "eine Umwandlung mit »convert« von Image Magick ausführt"
 
 #: ../operations/common/magick-load.c:136
-#, fuzzy
 msgid "Image Magick wrapper using the png op."
 msgstr "Ein Wrapper für Image Magick mit der png-Op."
 
@@ -1465,9 +1437,8 @@ msgstr ""
 #: ../operations/common/map-absolute.c:22
 #: ../operations/common/map-relative.c:26 ../operations/common/ripple.c:48
 #: ../operations/common/waves.c:50 ../operations/workshop/ditto.c:27
-#, fuzzy
 msgid "Sampler"
-msgstr "Intern verwendeter Sampler"
+msgstr "Sampler"
 
 #: ../operations/common/map-absolute.c:23
 #: ../operations/common/map-relative.c:27 ../operations/common/ripple.c:50
@@ -1580,7 +1551,7 @@ msgstr "Y trimmen"
 
 #: ../operations/common/mirrors.c:44
 msgid "X axis ratio for trimming mirror expanse"
-msgstr ""
+msgstr "X-Achsenverhältnis zum Trimmen der Spiegelfläche"
 
 #: ../operations/common/mirrors.c:46
 msgid "Trim Y"
@@ -1588,7 +1559,7 @@ msgstr "Y trimmen"
 
 #: ../operations/common/mirrors.c:46
 msgid "Y axis ratio for trimming mirror expanse"
-msgstr ""
+msgstr "Y-Achsenverhältnis zum Trimmen der Spiegelfläche"
 
 #: ../operations/common/mirrors.c:48 ../operations/common/mirrors.c:50
 msgid "Scale factor to make rendering size bigger"
@@ -1675,10 +1646,8 @@ msgid "Rotation blur angle"
 msgstr "Winkel der Bewegungsunschärfe"
 
 #: ../operations/common/motion-blur-circular.c:266
-#, fuzzy
-#| msgid "Linear motion blur"
 msgid "Circular motion blur"
-msgstr "Lineare Bewegungsunschärfe"
+msgstr "Zirkulare Bewegungsunschärfe"
 
 #: ../operations/common/motion-blur-linear.c:26
 msgid "Length"
@@ -1742,8 +1711,7 @@ msgstr "Farbsättigung"
 
 #: ../operations/common/noise-cielch.c:37
 #: ../operations/common/noise-cielch.c:39 ../operations/common/noise-hsv.c:31
-#: ../operations/common/noise-hsv.c:33
-#: ../operations/workshop/color-rotate.c:48
+#: ../operations/common/noise-hsv.c:33 ../operations/workshop/color-rotate.c:48
 msgid "Hue"
 msgstr "Farbton"
 
@@ -1801,7 +1769,6 @@ msgid "Correlated noise"
 msgstr "Korreliertes Rauschen"
 
 #: ../operations/common/noise-rgb.c:32 ../operations/common/noise-rgb.c:34
-#, fuzzy
 msgid "Independent RGB"
 msgstr "Unabhängige RGB-Kanäle"
 
@@ -1815,12 +1782,10 @@ msgstr ""
 "Einige Pixel zufällig nach unten verschieben (vergleichbar mit Schmelzen)"
 
 #: ../operations/common/noise-spread.c:31
-#, fuzzy
 msgid "Horizontal spread amount"
 msgstr "Horizontale Streumenge"
 
 #: ../operations/common/noise-spread.c:35
-#, fuzzy
 msgid "Vertical spread amount"
 msgstr "Vertikale Streumenge"
 
@@ -1919,10 +1884,8 @@ msgid "Height of blocks in pixels"
 msgstr "Die Höhe der Blöcke in Pixel"
 
 #: ../operations/common/pixelize.c:318
-#, fuzzy
-#| msgid "Simplify image into an array of solid-colored squares"
 msgid "Simplify image into an array of solid-colored rectangles"
-msgstr "Das Bild in eine Matrix einfarbiger Quadrate vereinfachen"
+msgstr "Das Bild in eine Matrix einfarbiger Rechtecke vereinfachen"
 
 #: ../operations/common/polar-coordinates.c:34
 #: ../operations/common/polar-coordinates.c:36
@@ -2021,10 +1984,8 @@ msgid "Threshold"
 msgstr "Schwellwert"
 
 #: ../operations/common/red-eye-removal.c:33
-#, fuzzy
-#| msgid "The value of the threshold"
 msgid "Red eye threshold"
-msgstr "Rote Augen entfernen …"
+msgstr "Rote-Augen-Schwellwert"
 
 #: ../operations/common/red-eye-removal.c:119
 msgid "Remove the red eye effect caused by camera flashes"
@@ -2104,7 +2065,6 @@ msgid "Retain tilebility"
 msgstr "Kachelbarkeit beibehalten"
 
 #: ../operations/common/ripple.c:184
-#, fuzzy
 msgid "Displace pixels in a ripple pattern"
 msgstr "Pixel in ein gekräuseltes Muster umordnen"
 
@@ -2133,10 +2093,8 @@ msgid "Shift direction"
 msgstr "Verschiebungsrichtung"
 
 #: ../operations/common/shift.c:230
-#, fuzzy
-#| msgid "Distort colors by random amounts."
 msgid "Shift each row or column of pixels by a random amount"
-msgstr "Farben um zufällige Werte verändern."
+msgstr "Jede Spalte oder Zeile um zufällige Werte verschieben."
 
 #: ../operations/common/snn-mean.c:28
 #: ../operations/workshop/snn-percentile.c:29
@@ -2147,7 +2105,7 @@ msgstr "Paare"
 msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Anzahl der Paare. Einen höhere Zahl bewahrt mehr Details"
 
-#: ../operations/common/snn-mean.c:326
+#: ../operations/common/snn-mean.c:315
 msgid ""
 "Noise reducing edge enhancing blur filter based  on Symmetric Nearest "
 "Neighbours"
@@ -2198,9 +2156,8 @@ msgstr "Werte"
 #: ../operations/common/svg-huerotate.c:27
 #: ../operations/common/svg-luminancetoalpha.c:27
 #: ../operations/common/svg-matrix.c:27 ../operations/common/svg-saturate.c:26
-#, fuzzy
 msgid "list of <number>s"
-msgstr "Liste von <number>en"
+msgstr "Liste von <Zahlen>"
 
 #: ../operations/common/svg-huerotate.c:116
 msgid "SVG color matrix operation svg_huerotate"
@@ -2388,9 +2345,8 @@ msgid "Y coordinate of the center of the waves"
 msgstr "X-Koordinate des Mittelpunkts der Wellen"
 
 #: ../operations/common/waves.c:40
-#, fuzzy
 msgid "Period (wavelength) of the ripple"
-msgstr "per:Periodenzahl"
+msgstr "Periode (Wellenlänge) des Kräuselmusters"
 
 #: ../operations/common/waves.c:46 ../operations/common/waves.c:48
 msgid "Aspect ratio"
@@ -2414,7 +2370,7 @@ msgstr "Bild mit Wellen verzerren"
 #: ../operations/generated/divide.c:29 ../operations/generated/gamma.c:29
 #: ../operations/generated/multiply.c:29 ../operations/generated/subtract.c:29
 msgid "global value used if aux doesn't contain data"
-msgstr ""
+msgstr "Es wird der globale Wert benutzt, wenn aux keine Daten enthält."
 
 #: ../operations/common/weighted-blend.c:124
 msgid "blend two images using alpha values as weights"
@@ -2433,9 +2389,8 @@ msgid "Pinch"
 msgstr "Drücken"
 
 #: ../operations/common/whirl-pinch.c:42
-#, fuzzy
 msgid "Pinch amount"
-msgstr "Druck"
+msgstr "Druckstärke"
 
 #: ../operations/common/whirl-pinch.c:46
 msgid ""
@@ -2508,7 +2463,7 @@ msgstr "Einen Puffer beschneiden"
 
 #: ../operations/core/nop.c:80
 msgid "No operation (can be used as a routing point)"
-msgstr ""
+msgstr "Keine Operation (kann als Streckenpunkt verwendet werden)"
 
 #: ../operations/external/ff-load.c:25 ../operations/external/jp2-load.c:25
 #: ../operations/external/jpg-load.c:25
@@ -2659,23 +2614,20 @@ msgid "Lambda"
 msgstr "Lambda"
 
 #: ../operations/external/matting-levin.c:35
-#, fuzzy
 msgid "Trimap influence factor"
-msgstr "Faktoren-Zahlenmampfer"
+msgstr "Trimap-Einflussfaktor"
 
 #: ../operations/external/matting-levin.c:38
-#, fuzzy
 msgid "Number of downsampled levels to use"
-msgstr "Die Anzahl der verwendeten Richtungen (z.B. Pinsel)"
+msgstr "Die Anzahl der zu verwendeten heruntergerechneten Ebenen"
 
 #: ../operations/external/matting-levin.c:39
 msgid "Active Levels"
 msgstr "Aktive Ebenen"
 
 #: ../operations/external/matting-levin.c:41
-#, fuzzy
 msgid "Number of levels to perform solving"
-msgstr "Zu den Zahlenmampfer-Tafeln"
+msgstr "Zahl der Stufen für die Lösung"
 
 #: ../operations/external/matting-levin.c:1439
 msgid ""
@@ -2690,10 +2642,8 @@ msgid "Target path and filename, use '-' for stdout."
 msgstr "Zielpfad und Dateiname, für die Standardausgabe verwenden Sie »-«."
 
 #: ../operations/external/npy-save.c:144
-#, fuzzy
-#| msgid "PPM image saver (Portable pixmap saver.)"
 msgid "NPY image saver (Numerical python file saver.)"
-msgstr "PPM-Bildspeicher (Portabler Pixmap-Speicherer.)"
+msgstr "NPY-Bildspeicherer (Numerischer Python-Dateispeicherer.)"
 
 #: ../operations/external/path.c:27
 msgid "Fill Color"
@@ -2701,7 +2651,7 @@ msgstr "Füllfarbe"
 
 #: ../operations/external/path.c:28
 msgid "Color of paint to use for filling, use 0 opacity to disable filling"
-msgstr ""
+msgstr "Für die Füllung zu verwendende Farbe, 0 deaktiviert die Füllung"
 
 #: ../operations/external/path.c:29
 msgid "Stroke Color"
@@ -2904,6 +2854,8 @@ msgid ""
 "Sets the width in pixels at which long lines will wrap. Use -1 for no "
 "wrapping."
 msgstr ""
+"Legt die Breite in Pixel fest, bei der lange Zeilen umgebrochen werden, -1 "
+"bedeutet kein Umbruch."
 
 #: ../operations/external/text.c:36
 msgid "Justification"
@@ -2939,8 +2891,7 @@ msgstr ""
 "Aktuelle Einzelbildnummer, kann geändert werden, um das Bild neu laden zu "
 "lassen."
 
-#: ../operations/external/v4l.c:31
-#: ../operations/workshop/external/ff-save.c:32
+#: ../operations/external/v4l.c:31 ../operations/workshop/external/ff-save.c:32
 msgid "FPS"
 msgstr "Bilder pro Sekunde"
 
@@ -2990,6 +2941,8 @@ msgid ""
 "Opacity of stroke, note, does not behave like SVG since at the moment "
 "stroking is done using an airbrush tool."
 msgstr ""
+"Deckkraft des Strichs. Verhält sich nicht wie SVG, da derzeit dafür ein "
+"Airbrush-Werkzeug eingesetzt wird."
 
 #: ../operations/external/vector-stroke.c:280
 msgid "Renders a vector stroke"
@@ -3196,7 +3149,7 @@ msgstr "Eine Fehlermeldung im Falle eines Scheiterns"
 
 #: ../operations/seamless-clone/seamless-clone.c:161
 msgid "The foreground does not contain opaque parts"
-msgstr ""
+msgstr "Der Vordergrund enthält keine undurchsichtigen Teile"
 
 #: ../operations/seamless-clone/seamless-clone.c:164
 msgid "The foreground is too small to use"
@@ -3426,7 +3379,7 @@ msgstr "Wert der Sättigung"
 #: ../operations/workshop/color-rotate.c:52
 #: ../operations/workshop/color-rotate.c:53
 msgid "Change/Treat to this"
-msgstr ""
+msgstr "Wie diese behandeln"
 
 #: ../operations/workshop/color-rotate.c:55
 msgid "The value of gray threshold"
@@ -3692,6 +3645,8 @@ msgstr "Rand"
 msgid ""
 "Type of border to choose. Choices are extend, wrap, crop. Default is extend"
 msgstr ""
+"Typ des zu verwendenden Randes. Zur Auswahl stehen »extend«, »wrap« und "
+"»crop«, Voreinstellung ist »extend«."
 
 #: ../operations/workshop/convolution-matrix.c:433
 msgid "Creates image by manually set convolution matrix"
@@ -3818,9 +3773,8 @@ msgid "Focal of the camera"
 msgstr "Brennweite der Kamera"
 
 #: ../operations/workshop/external/lens-correct.c:35
-#, fuzzy
 msgid "Calculate b value from focal"
-msgstr "CRC-Wert der Datei kann nicht berechnet werden (%s)"
+msgstr "b-Wert aus der Brennweite berechnen"
 
 #: ../operations/workshop/external/lens-correct.c:37
 msgid "Center"
@@ -4155,7 +4109,7 @@ msgstr ""
 "Der zurückzugebende Prozentsatz. Voreinstellung ist 50, was einem "
 "Medianfilter entspricht"
 
-#: ../operations/workshop/snn-percentile.c:272
+#: ../operations/workshop/snn-percentile.c:273
 msgid ""
 "Noise reducing edge enhancing percentile filter based on Symmetric Nearest "
 "Neighbours"
