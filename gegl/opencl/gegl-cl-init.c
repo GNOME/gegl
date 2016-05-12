@@ -304,7 +304,7 @@ if ((gegl_##func = (t_##func) GetProcAddress(module, #func)) == NULL)           
 #define CL_LIBRARY_NAME "/System/Library/Frameworks/OpenCL.framework/Versions/Current/OpenCL"
 #else
 #define GL_LIBRARY_NAME "libGL.so.1"
-#define CL_LIBRARY_NAME "libOpenCL.so"
+#define CL_LIBRARY_NAME "libOpenCL.so.1"
 #endif
 
 #define CL_LOAD_FUNCTION(func)                                                    \
