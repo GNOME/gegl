@@ -57,6 +57,7 @@ gegl_chant_int    (active_levels, _("Active Levels"),
  */
 #if defined(HAVE_UMFPACK_H)
 #include <umfpack.h>
+#define SuiteSparse_long UF_long
 #elif defined (HAVE_SUITESPARSE_UMFPACK_H)
 #include <suitesparse/umfpack.h>
 #endif
@@ -850,8 +851,8 @@ matting_sparse_new (guint cols, guint rows, guint elems)
   sparse_t *s = g_new (sparse_t, 1);
   s->columns  = cols;
   s->rows     = rows;
-  s->col_idx  = g_new  (UF_long, cols + 1);
-  s->row_idx  = g_new  (UF_long, elems);
+  s->col_idx  = g_new  (SuiteSparse_long, cols + 1);
+  s->row_idx  = g_new  (SuiteSparse_long, elems);
   s->values   = g_new0 (gdouble, elems);
 
   return s;
@@ -945,18 +946,18 @@ matting_get_laplacian (const gdouble       *restrict image,
                        const gdouble        epsilon,
                        const gdouble        lambda)
 {
-  gint      diameter     = radius * 2 + 1,
-            window_elems = diameter * diameter,
-            image_elems  = roi->width * roi->height,
-            i, j, k, x, y,
-            status;
-  UF_long  *trip_col,
-           *trip_row;
-  glong     trip_nz = 0,
-            trip_cursor = 0,
-            trip_masked = 0;
-  gdouble  *trip_val;
-  sparse_t *laplacian;
+  gint              diameter     = radius * 2 + 1,
+                    window_elems = diameter * diameter,
+                    image_elems  = roi->width * roi->height,
+                    i, j, k, x, y,
+                    status;
+  SuiteSparse_long *trip_col,
+                   *trip_row;
+  glong             trip_nz = 0,
+                    trip_cursor = 0,
+                    trip_masked = 0;
+  gdouble          *trip_val;
+  sparse_t         *laplacian;
 
   gdouble       mean[COMPONENTS_INPUT],
          mean_matrix[COMPONENTS_INPUT][COMPONENTS_INPUT],
@@ -981,8 +982,8 @@ matting_get_laplacian (const gdouble       *restrict image,
   trip_nz   = trip_masked * window_elems * window_elems;
   trip_nz  += image_elems; // Sparse diagonal and row summing at conclusion
 
-  trip_col  = g_new  (UF_long, trip_nz);
-  trip_row  = g_new  (UF_long, trip_nz);
+  trip_col  = g_new  (SuiteSparse_long, trip_nz);
+  trip_row  = g_new  (SuiteSparse_long, trip_nz);
   trip_val  = g_new0 (gdouble, trip_nz);
 
   /* Compute the contribution of each pixel in the image to the laplacian */
@@ -1068,10 +1069,10 @@ matting_get_laplacian (const gdouble       *restrict image,
           for (y = 0; y < window_elems; ++y)
             for (x = 0; x < window_elems; ++x)
               {
-                UF_long yx = y % diameter,
-                        yy = y / diameter,
-                        xx = x % diameter,
-                        xy = x / diameter;
+                SuiteSparse_long yx = y % diameter,
+                                 yy = y / diameter,
+                                 xx = x % diameter,
+                                 xy = x / diameter;
 
                 g_return_val_if_fail (trip_cursor < trip_nz, FALSE);
                 trip_col[trip_cursor] = (i - radius + yx) + (j - radius + yy) * roi->width,
