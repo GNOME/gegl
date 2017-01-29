@@ -1,18 +1,16 @@
 # German translation for gegl.
 # Copyright (C) 2012 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gegl package.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2012.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2012, 2017.
 # Christian Kirbach <Christian.Kirbach@gmail.com>, 2012, 2013.
 # Daniel Winzen <d@winzen4.de>, 2012.
-#: ../operations/common/display.c:23 ../operations/external/sdl-display.c:25
-#: ../operations/external/sdl-display.c:27
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-28 06:16+0000\n"
-"PO-Revision-Date: 2016-03-28 17:28+0200\n"
+"POT-Creation-Date: 2016-11-28 23:24+0000\n"
+"PO-Revision-Date: 2017-01-21 23:05+0100\n"
 "Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -20,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Project-Style: gnome\n"
 
 #: ../bin/gegl.c:146
@@ -533,6 +531,8 @@ msgid ""
 "Reduce the number of colors in the image, by reducing the bits per channel "
 "(colors and alpha), with optional dithering"
 msgstr ""
+"Die Farbzahl des Bildes reduzieren, indem die Bits pro Kanal (Farbe und "
+"Alpha) reduziert werden. Mit optionalem Dithering."
 
 #: ../operations/common/color-temperature.c:27
 msgid "Original temperature"
@@ -1072,18 +1072,16 @@ msgid "JX"
 msgstr "JX"
 
 #: ../operations/common/fractal-trace.c:50
-#, fuzzy
 msgid "Julia seed X value, position"
-msgstr "Der Wert des Elements an Position (1,1)"
+msgstr "X-Wert der Julia-Menge, Position"
 
 #: ../operations/common/fractal-trace.c:51
 msgid "JY"
 msgstr "JY"
 
 #: ../operations/common/fractal-trace.c:53
-#, fuzzy
 msgid "Julia seed Y value, position"
-msgstr "Der Wert des Elements an Position (1,1)"
+msgstr "Y-Wert der Julia-Menge, Position"
 
 #: ../operations/common/fractal-trace.c:57
 msgid "Depth value"
@@ -1150,6 +1148,8 @@ msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
 msgstr ""
+"Führt eine Mittelung der Nachbarpixel mit der Normalverteilung als "
+"Gewichtung aus"
 
 #: ../operations/common/gegl-buffer-load-op.c:24
 #: ../operations/common/gegl-buffer-save-op.c:24 ../operations/common/load.c:25
@@ -1310,10 +1310,8 @@ msgid "A layer in the traditional sense"
 msgstr "Eine Ebene im traditionellen Sinn"
 
 #: ../operations/common/lens-distortion.c:32
-#, fuzzy
-#| msgid "Main:"
 msgid "Main"
-msgstr "Hauptteil"
+msgstr ""
 
 #: ../operations/common/lens-distortion.c:34
 #: ../operations/common/lens-distortion.c:38
@@ -1463,6 +1461,8 @@ msgid ""
 "scaling factor of displacement, indicates how large spatial displacement a "
 "relative mapping value of 1.0 corresponds to."
 msgstr ""
+"Skalierungsfaktor der Verschiebung, der den Bezug der Größe der räumlichen "
+"Verschiebung zu einem relativen Abbildungswert von 1.0 darstellt."
 
 #: ../operations/common/map-relative.c:173
 msgid ""
@@ -1493,9 +1493,8 @@ msgstr ""
 "Dieser Wert stellt den Beitrag des vergangenen zum neuen Einzelbild ar."
 
 #: ../operations/common/mblur.c:144
-#, fuzzy
 msgid "Accumulating motion blur"
-msgstr "Akkumulierende Bewegungs-Weichzeichnung"
+msgstr "Akkumulierende Bewegungsunschärfe"
 
 #: ../operations/common/mirrors.c:30
 msgid "Mirror rotation"
@@ -1640,10 +1639,8 @@ msgid "Angle"
 msgstr "Winkel"
 
 #: ../operations/common/motion-blur-circular.c:43
-#, fuzzy
-#| msgid "Rotation angle"
 msgid "Rotation blur angle"
-msgstr "Winkel der Bewegungsunschärfe"
+msgstr "Winkel der Drehunschärfe"
 
 #: ../operations/common/motion-blur-circular.c:266
 msgid "Circular motion blur"
@@ -1674,10 +1671,8 @@ msgid "Bluring factor"
 msgstr "Unschärfefaktor"
 
 #: ../operations/common/motion-blur-zoom.c:216
-#, fuzzy
-#| msgid "Linear motion blur"
 msgid "Zoom motion blur"
-msgstr "Lineare Bewegungsunschärfe"
+msgstr "Bewegungsunschärfe bei Vergrößerung"
 
 #: ../operations/common/noise.c:29
 msgid "Z offset"
@@ -1694,10 +1689,8 @@ msgstr "Perlin-Rauschgenerator"
 #: ../operations/common/noise-cielch.c:25
 #: ../operations/common/noise-cielch.c:27 ../operations/common/noise-hsv.c:27
 #: ../operations/common/noise-hsv.c:29
-#, fuzzy
-#| msgid "Hardness"
 msgid "Holdness"
-msgstr "_Festhalten:"
+msgstr ""
 
 #: ../operations/common/noise-cielch.c:29
 #: ../operations/common/noise-cielch.c:31
@@ -1807,10 +1800,8 @@ msgid "Exponent"
 msgstr "Exponent"
 
 #: ../operations/common/oilify.c:33
-#, fuzzy
-#| msgid "Number of iterations"
 msgid "Number of intensities"
-msgstr "Anzahl Aktivitäten: %d"
+msgstr "Anzahl Intensitätsstufen"
 
 #: ../operations/common/oilify.c:34
 msgid "Histogram size"
@@ -1958,7 +1949,7 @@ msgstr "Reduziert die Anzahl der Stufen jeder Farbkomponente des Bilds."
 
 #: ../operations/common/raw-load.c:183
 msgid "Raw image loader, wrapping dcraw with pipes."
-msgstr ""
+msgstr "Lader für RAW-Bilder. dccraw wird per Weiterleitungen eingebunden."
 
 #: ../operations/common/rectangle.c:34
 msgid "Horizontal extent"
@@ -2127,6 +2118,9 @@ msgid ""
 "Neighborhood taken into account, for enhancement ideal values are close to "
 "the longest side of the image, increasing this increases the runtime"
 msgstr ""
+"Die Nachbarschaft wird berücksichtigt. Für eine Verbesserung sind die "
+"idealen Farben nahe der längsten Seite des Bildes. Eine Erhöhung verlängert "
+"die Laufzeit."
 
 #: ../operations/common/stress.c:32
 msgid ""
@@ -2146,6 +2140,9 @@ msgid ""
 "improves images that make poor use of the available contrast (little "
 "contrast, very dark, or very bright images)."
 msgstr ""
+"Skaliert die Pufferkomponenten in den Bereich 0,0 - 1,0. Somit werden Bilder "
+"verbessert, die den möglichen Kontrast nur schlecht ausnutzen (wenig "
+"Kontrast, sehr dunkle oder sehr helle Bilder)."
 
 #: ../operations/common/svg-huerotate.c:27
 #: ../operations/common/svg-luminancetoalpha.c:27
@@ -2678,6 +2675,8 @@ msgid ""
 "Opacity of stroke, note, does not behave like SVG since at the moment "
 "stroking is done using an airbrush tool"
 msgstr ""
+"Deckkraft des Strichs. Verhält sich nicht wie SVG, da derzeit dafür ein "
+"Airbrush-Werkzeug eingesetzt wird."
 
 #: ../operations/external/path.c:39
 msgid "Hardness of the brush, 0.0 for a soft brush, 1.0 for a hard brush"
@@ -2690,7 +2689,7 @@ msgstr "Füllregel"
 
 #: ../operations/external/path.c:42
 msgid "How to determine what to fill (nonzero|evenodd)"
-msgstr ""
+msgstr "So wird bestimmt, was gefüllt werden soll (nonzero|evenodd)"
 
 #: ../operations/external/path.c:44 ../operations/external/vector-fill.c:36
 #: ../operations/external/vector-stroke.c:36
@@ -2917,7 +2916,7 @@ msgstr "Füllregel."
 
 #: ../operations/external/vector-fill.c:34
 msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr ""
+msgstr "So wird bestimmt, was gefüllt werden soll (nonzero|evenodd)"
 
 #: ../operations/external/vector-fill.c:37
 #: ../operations/external/vector-stroke.c:37
@@ -2957,13 +2956,12 @@ msgid "Porter Duff operation clear (d = 0.0f)"
 msgstr "Porter-Duff-Operation clear (d = 0.0f)"
 
 #: ../operations/generated/color-burn.c:165
-#, fuzzy
 msgid ""
 "SVG blend operation color-burn (<code>if cA * aB + cB * aA <= aA * aB: d = "
 "cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == 0 ? 1 : (aA * (cA * aB + "
 "cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
 msgstr ""
-"SVG Mischoperation Farbe nachbelichten (<code>if cA * aB + cB * aA <= aA * "
+"SVG-Mischoperation Farbe nachbelichten (<code>if cA * aB + cB * aA <= aA * "
 "aB: d = cA * (1 - aB) + cB * (1 - aA) andernfalls: d = (cA == 0 ? 1 : (aA * "
 "(cA * aB + cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
 
@@ -3031,15 +3029,14 @@ msgid "Math operation gamma (c = powf (c, value))"
 msgstr "Mathematische Operation Gamma (c = powf (c, Wert))"
 
 #: ../operations/generated/hard-light.c:165
-#, fuzzy
 msgid ""
 "SVG blend operation hard-light (<code>if 2 * cA < aA: d = 2 * cA * cB + cA * "
 "(1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) "
 "+ cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG Mischoperation Farbe abwedeln (<code>if cA * aB + cB * aA >= aA * aB: d "
-"= aA * aB + cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == aA ? 1 : cB "
-"* aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
+"SVG Mischoperation Farbe abwedeln (<code>if 2 * cA < aA: d = 2 * cA * cB + "
+"cA * (1 - aB) + cB * (1 - aA) andernfalls: d = aA * aB - 2 * (aB - cB) * (aA "
+"- cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: ../operations/generated/lighten.c:163
 msgid ""
@@ -3073,6 +3070,7 @@ msgstr ""
 "SVG Mischoperation Bildschirm screen (<code>d = cA + cB - cA * cB</code>)"
 
 #: ../operations/generated/soft-light.c:167
+#, fuzzy
 msgid ""
 "SVG blend operation soft-light (<code>if 2 * cA < aA: d = cB * (aA - (aB == "
 "0 ? 1 : 1 - cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - aA); if 8 "
@@ -3081,6 +3079,12 @@ msgid ""
 "(aA * cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - aA)) + cA * "
 "(1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"SVG-Mischoperation ?? (<code>if 2 * cA < aA: d = cB * (aA - (aB == 0 ? 1 : 1 "
+"- cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - aA); if 8 * cB <= "
+"aB: d = cB * (aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA - aA) * (aB == 0 ? "
+"3 : 3 - 8 * cB / aB)) + cA * (1 - aB) + cB * (1 - aA); otherwise: d = (aA * "
+"cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - aA)) + cA * (1 - "
+"aB) + cB * (1 - aA)</code>)"
 
 #: ../operations/generated/src-atop.c:116
 msgid "Porter Duff operation src-atop (d = cA * aB + cB * (1.0f - aA))"
