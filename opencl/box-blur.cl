@@ -57,8 +57,8 @@ void kernel_box_blur_fast (__global const float4 *in,
   const int twice_radius = 2 * radius;
   const int in_width = twice_radius + width;
   const int in_height = twice_radius + height;
-  const int start = fmax( -radius, -local_id0 );
-  const int stop = fmin( radius, get_local_size(0) - local_id0 );
+  const int start = max( -radius, -local_id0 );
+  const int stop = min( radius, (int)get_local_size(0) - local_id0 );
   const float4 area = (float4) ( ((stop - start) + 1) * (twice_radius + 1) );
   int column_index_start,column_index_end;
   int y = get_global_id(1) * size;
