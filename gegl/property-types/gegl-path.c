@@ -53,6 +53,7 @@ struct _GeglPathPrivate
 
   GeglRectangle dirtied;
   GeglRectangle cached_extent;
+  gboolean      cached_extent_empty;
   GeglMatrix3   matrix;
   gint frozen;
 };
@@ -188,6 +189,10 @@ gegl_path_init (GeglPath *self)
 {
   GeglPathPrivate *priv;
   priv = GEGL_PATH_GET_PRIVATE (self);
+  priv->flat_path_clean = FALSE;
+  priv->length_clean = FALSE;
+  priv->calc_clean = FALSE;
+  priv->cached_extent_empty = TRUE;
   gegl_matrix3_identity (&priv->matrix);
 }
 
@@ -260,15 +265,8 @@ get_property (GObject    *gobject,
 GeglPath *
 gegl_path_new (void)
 {
-  GeglPath        *self = GEGL_PATH (g_object_new (GEGL_TYPE_PATH, NULL));
-  GeglPathPrivate *priv = GEGL_PATH_GET_PRIVATE (self);
-
-  gegl_path_init (self);
-  priv->flat_path_clean = FALSE;
-  priv->length_clean = FALSE;
-  priv->calc_clean = FALSE;
-
-  return self;
+  return g_object_new (GEGL_TYPE_PATH,
+                       NULL);
 }
 
 GeglPath *
@@ -283,7 +281,7 @@ gboolean
 gegl_path_is_empty (GeglPath *path)
 {
   GeglPathPrivate *priv = GEGL_PATH_GET_PRIVATE (path);
-  return priv->path != NULL;
+  return priv->path == NULL;
 }
 
 gint
@@ -580,12 +578,13 @@ gegl_path_get_bounds (GeglPath *self,
                       gdouble  *max_y)
 {
   GeglPathPrivate *priv;
-  GeglPathList *iter;
+  GeglPathList    *iter;
+  gboolean         first_point = TRUE;
 
-  *min_x = 256.0;
-  *min_y = 256.0;
-  *max_x = -256.0;
-  *max_y = -256.0;
+  *min_x = 0.0;
+  *min_y = 0.0;
+  *max_x = 0.0;
+  *max_y = 0.0;
 
   if (!self)
     return;
@@ -611,15 +610,16 @@ gegl_path_get_bounds (GeglPath *self,
 
       for (i=0;i<max;i++)
         {
-          if (iter->d.point[i].x < *min_x)
+          if (iter->d.point[i].x < *min_x || first_point)
             *min_x = iter->d.point[i].x;
-          if (iter->d.point[i].x > *max_x)
+          if (iter->d.point[i].x > *max_x || first_point)
             *max_x = iter->d.point[i].x;
-          if (iter->d.point[i].y < *min_y)
+          if (iter->d.point[i].y < *min_y || first_point)
             *min_y = iter->d.point[i].y;
-          if (iter->d.point[i].y > *max_y)
+          if (iter->d.point[i].y > *max_y || first_point)
             *max_y = iter->d.point[i].y;
 
+          first_point = FALSE;
         }
       iter=iter->next;
     }
@@ -1040,23 +1040,55 @@ gegl_path_emit_changed (GeglPath            *self,
   if (priv->frozen)
     return;
 
-  gegl_path_get_bounds (self, &min_x, &max_x, &min_y, &max_y);
-
-  rect.x = floor (min_x);
-  rect.y = floor (min_y);
-  rect.width = ceil (max_x) - floor (min_x);
-  rect.height = ceil (max_y) - floor (min_y);
-
-  temp = priv->cached_extent;
-  priv->cached_extent = rect;
-
-  if (!bounds)
+  if (! gegl_path_is_empty (self))
     {
-       gegl_rectangle_bounding_box (&temp, &temp, &rect);
-       bounds = &temp;
+      gegl_path_get_bounds (self, &min_x, &max_x, &min_y, &max_y);
+
+      rect.x = floor (min_x);
+      rect.y = floor (min_y);
+      rect.width = ceil (max_x) - floor (min_x);
+      rect.height = ceil (max_y) - floor (min_y);
+
+      if (!bounds)
+        {
+          if (! priv->cached_extent_empty)
+            {
+              temp.x      = MIN (rect.x, priv->cached_extent.x);
+              temp.y      = MIN (rect.y, priv->cached_extent.y);
+              temp.width  = MAX (rect.x                +
+                                 rect.width,
+                                 priv->cached_extent.x +
+                                 priv->cached_extent.width)  - temp.x;
+              temp.height = MAX (rect.y                +
+                                 rect.height,
+                                 priv->cached_extent.y +
+                                 priv->cached_extent.height) - temp.y;
+              bounds = &temp;
+            }
+          else
+            {
+              bounds = &rect;
+            }
+        }
+
+      priv->cached_extent = rect;
     }
-  g_signal_emit (self, gegl_path_signals[GEGL_PATH_CHANGED], 0,
-                 bounds, NULL);
+  else if (! priv->cached_extent_empty)
+    {
+      if (!bounds)
+        {
+          temp = priv->cached_extent;
+          bounds = &temp;
+        }
+    }
+
+  priv->cached_extent_empty = gegl_path_is_empty (self);
+
+  if (bounds)
+    {
+      g_signal_emit (self, gegl_path_signals[GEGL_PATH_CHANGED], 0,
+                     bounds, NULL);
+    }
 }
 
 
