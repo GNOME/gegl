@@ -469,6 +469,24 @@ stamp (GeglProperties *o,
   priv->last_y = y;
 }
 
+static GeglRectangle
+get_required_for_output (GeglOperation       *operation,
+                         const gchar         *input_pad,
+                         const GeglRectangle *output_roi)
+{
+  GeglProperties *o    = GEGL_PROPERTIES (operation);
+  WarpPrivate    *priv = (WarpPrivate*) o->user_data;
+  GeglRectangle   rect = {0, 0, 0, 0};
+
+  /* we only need the input if the processed stroke is invalid, i.e., if
+   * there's work to do; otherwise, we just output the cached buffer directly.
+   */
+  if (! priv->processed_stroke_valid)
+    rect = *gegl_operation_source_get_bounding_box (operation, input_pad);
+
+  return rect;
+}
+
 static gboolean
 process (GeglOperation        *operation,
          GeglOperationContext *context,
@@ -629,10 +647,11 @@ gegl_op_class_init (GeglOpClass *klass)
   GObjectClass       *object_class    = G_OBJECT_CLASS (klass);
   GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
 
-  object_class->finalize   = finalize;
-  operation_class->attach  = attach;
-  operation_class->prepare = prepare;
-  operation_class->process = process;
+  object_class->finalize                   = finalize;
+  operation_class->attach                  = attach;
+  operation_class->prepare                 = prepare;
+  operation_class->get_required_for_output = get_required_for_output;
+  operation_class->process                 = process;
   operation_class->no_cache = TRUE; /* we're effectively doing the caching
                                      * ourselves.
                                      */
