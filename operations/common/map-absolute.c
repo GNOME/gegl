@@ -49,9 +49,10 @@ get_required_for_output (GeglOperation       *operation,
                          const gchar         *input_pad,
                          const GeglRectangle *region)
 {
-  GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
-
-  return result;
+  if (! strcmp (input_pad, "input"))
+    return *gegl_operation_source_get_bounding_box (operation, "input");
+  else
+    return *region;
 }
 
 static gboolean
