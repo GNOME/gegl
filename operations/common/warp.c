@@ -364,6 +364,7 @@ stamp (GeglProperties      *o,
        gfloat              *srcbuf,
        gint                 srcbuf_stride,
        const GeglRectangle *srcbuf_extent,
+       const GeglRectangle *srcbuf_clip,
        gfloat               x,
        gfloat               y)
 {
@@ -404,14 +405,8 @@ stamp (GeglProperties      *o,
   area.width  -= area.x;
   area.height -= area.y;
 
-  if (! gegl_rectangle_intersect (&area,
-                                  &area,
-                                  GEGL_RECTANGLE (0, 0,
-                                                  srcbuf_extent->width,
-                                                  srcbuf_extent->height)))
-    {
-      return;
-    }
+  if (! gegl_rectangle_intersect (&area, &area, srcbuf_clip))
+    return;
 
   /* Align the source buffer with the stamped area */
   srcbuf += srcbuf_stride * area.y + 2 * area.x;
@@ -478,7 +473,8 @@ stamp (GeglProperties      *o,
            x_iter++, xi++, vals += 2, srcvals += 2)
         {
           gfloat nvx, nvy;
-          gint dx, dy;
+          gfloat fx, fy;
+          gint   dx, dy;
           gfloat weight_x, weight_y;
           gfloat a0, b0;
           gfloat a1, b1;
@@ -515,40 +511,45 @@ stamp (GeglProperties      *o,
               case GEGL_WARP_BEHAVIOR_ERASE:
               case GEGL_WARP_BEHAVIOR_SMOOTH:
               default:
+                /* shut up, gcc */
                 nvx = 0.0f;
                 nvy = 0.0f;
                 break;
             }
 
-          dx = floorf (nvx);
-          dy = floorf (nvy);
-
-          if (area.x + x_iter + dx     <  0                    ||
-              area.x + x_iter + dx + 1 >= srcbuf_extent->width ||
-              area.y + y_iter + dy     <  0                    ||
-              area.y + y_iter + dy + 1 >= srcbuf_extent->height)
-            {
-              vals[0] = vals[1] = 0.0f;
-
-              continue;
-            }
-
-          srcptr = srcvals + srcbuf_stride * dy + 2 * dx;
-
           if (o->behavior == GEGL_WARP_BEHAVIOR_ERASE)
             {
-              vals[0] = srcptr[0] * (1.0f - MIN (influence, 1.0f));
-              vals[1] = srcptr[1] * (1.0f - MIN (influence, 1.0f));
+              vals[0] = srcvals[0] * (1.0f - MIN (influence, 1.0f));
+              vals[1] = srcvals[1] * (1.0f - MIN (influence, 1.0f));
             }
           else if (o->behavior == GEGL_WARP_BEHAVIOR_SMOOTH)
             {
-              vals[0] = srcptr[0] + influence * (x_mean - srcptr[0]);
-              vals[1] = srcptr[1] + influence * (y_mean - srcptr[1]);
+              vals[0] = srcvals[0] + influence * (x_mean - srcvals[0]);
+              vals[1] = srcvals[1] + influence * (y_mean - srcvals[1]);
             }
           else
             {
-              weight_x = nvx - dx;
-              weight_y = nvy - dy;
+              fx = floorf (nvx);
+              fy = floorf (nvy);
+
+              weight_x = nvx - fx;
+              weight_y = nvy - fy;
+
+              dx = fx;
+              dy = fy;
+
+              dx += x_iter;
+              dy += y_iter;
+
+              /* yep, that's a "- 2", since we need to access two neighboring
+               * rows/columns.  note that the source buffer is padded with a
+               * 2-pixel-wide border of (0, 0) vectors, so that out-of-bounds
+               * pixels behave as if they had a (0, 0) vector stored.
+               */
+              dx = CLAMP (dx, 0, srcbuf_extent->width  - 2);
+              dy = CLAMP (dy, 0, srcbuf_extent->height - 2);
+
+              srcptr = srcbuf + srcbuf_stride * dy + 2 * dx;
 
               /* bilinear interpolation of the vectors */
 
@@ -611,6 +612,9 @@ process (GeglOperation        *operation,
   gfloat         *srcbuf;
   gint            srcbuf_stride;
   GeglRectangle   srcbuf_extent;
+  GeglRectangle   srcbuf_clip;
+
+  gfloat         *srcbuf_ptr;
 
   GeglPathPoint   prev, next, lerp;
   GeglPathList   *event;
@@ -636,6 +640,9 @@ process (GeglOperation        *operation,
 
       return TRUE;
     }
+  /* otherwise, we process the remaining stroke on top of the previously-
+   * processed buffer.
+   */
 
   /* intialize the cached buffer if we don't already have one. */
   if (! priv->buffer)
@@ -684,63 +691,136 @@ process (GeglOperation        *operation,
   srcbuf_extent.width  = ceil (max_x + o->size / 2.0) + 1 - srcbuf_extent.x;
   srcbuf_extent.height = ceil (max_y + o->size / 2.0) + 1 - srcbuf_extent.y;
 
-  gegl_rectangle_intersect (&srcbuf_extent,
-                            &srcbuf_extent,
-                            gegl_buffer_get_extent (priv->buffer));
-
-  /* open the buffer for linear access.  we're going to both read input data
-   * from, and write the result to, this buffer.
-   */
-  srcbuf = gegl_buffer_linear_open (priv->buffer,
-                                    &srcbuf_extent, &srcbuf_stride, NULL);
-
-  g_assert (srcbuf_stride % sizeof (gfloat) == 0);
-  srcbuf_stride /= sizeof (gfloat);
-
-  for (event = priv->remaining_stroke; event; event = event->next)
+  if (gegl_rectangle_intersect (&srcbuf_extent,
+                                &srcbuf_extent,
+                                gegl_buffer_get_extent (priv->buffer)))
     {
-      next = *(event->d.point);
-      dist = gegl_path_point_dist (&next, &prev);
-      stamps = floor (dist / spacing) + 1;
-
-      /* stroke the current segment, such that there's always a stamp at
-       * its final endpoint, and at positive integer multiples of
-       * `spacing` away from it.
+      /* we pad the source buffer with a 2-pixel-wide border of (0, 0) vectors,
+       * to simplify abyss sampling in stamp().
        */
+      srcbuf_clip.x      = 2;
+      srcbuf_clip.y      = 2;
+      srcbuf_clip.width  = srcbuf_extent.width;
+      srcbuf_clip.height = srcbuf_extent.height;
 
-      if (stamps == 1)
+      srcbuf_extent.x      -= srcbuf_clip.x;
+      srcbuf_extent.y      -= srcbuf_clip.y;
+      srcbuf_extent.width  += 2 * srcbuf_clip.x;
+      srcbuf_extent.height += 2 * srcbuf_clip.y;
+
+      srcbuf_stride = 2 * srcbuf_extent.width;
+
+      /* that's our source buffer.  we both read input data from it, and write
+       * the result to it.
+       */
+      srcbuf = g_new (gfloat, srcbuf_stride * srcbuf_extent.height);
+
+      /* fill the border with (0, 0) vectors. */
+      srcbuf_ptr = srcbuf;
+
+      memset (srcbuf_ptr, 0, sizeof (gfloat) * srcbuf_stride * srcbuf_clip.y);
+      srcbuf_ptr += srcbuf_stride * srcbuf_clip.y;
+
+      for (i = 0; i < srcbuf_clip.height; i++)
         {
-          stamp (o,
-                 srcbuf, srcbuf_stride, &srcbuf_extent,
-                 next.x, next.y);
+          memset (srcbuf_ptr, 0, sizeof (gfloat) * 2 * srcbuf_clip.x);
+          srcbuf_ptr += 2 * srcbuf_clip.x;
+
+          srcbuf_ptr += 2 * srcbuf_clip.width;
+
+          memset (srcbuf_ptr, 0, sizeof (gfloat) * 2 * srcbuf_clip.x);
+          srcbuf_ptr += 2 * srcbuf_clip.x;
         }
-      else
+
+      memset (srcbuf_ptr, 0, sizeof (gfloat) * srcbuf_stride * srcbuf_clip.y);
+
+      /* read the input data from the cached buffer */
+      gegl_buffer_get (priv->buffer,
+                       GEGL_RECTANGLE (srcbuf_extent.x + srcbuf_clip.x,
+                                       srcbuf_extent.y + srcbuf_clip.y,
+                                       srcbuf_clip.width,
+                                       srcbuf_clip.height),
+                       1.0, NULL,
+                       srcbuf + srcbuf_stride * srcbuf_clip.y +
+                                            2 * srcbuf_clip.x,
+                       sizeof (gfloat) * srcbuf_stride,
+                       GEGL_ABYSS_NONE);
+
+      /* process the remaining stroke */
+      for (event = priv->remaining_stroke; event; event = event->next)
         {
-          for (i = 0; i < stamps; i++)
+          next = *(event->d.point);
+          dist = gegl_path_point_dist (&next, &prev);
+          stamps = floor (dist / spacing) + 1;
+
+          /* stroke the current segment, such that there's always a stamp at
+           * its final endpoint, and at positive integer multiples of
+           * `spacing` away from it.
+           */
+
+          if (stamps == 1)
             {
-              t = 1.0 - ((stamps - i - 1) * spacing) / dist;
-
-              gegl_path_point_lerp (&lerp, &prev, &next, t);
               stamp (o,
-                     srcbuf, srcbuf_stride, &srcbuf_extent,
-                     lerp.x, lerp.y);
+                     srcbuf, srcbuf_stride, &srcbuf_extent, &srcbuf_clip,
+                     next.x, next.y);
             }
+          else
+            {
+              for (i = 0; i < stamps; i++)
+                {
+                  t = 1.0 - ((stamps - i - 1) * spacing) / dist;
+
+                  gegl_path_point_lerp (&lerp, &prev, &next, t);
+                  stamp (o,
+                         srcbuf, srcbuf_stride, &srcbuf_extent, &srcbuf_clip,
+                         lerp.x, lerp.y);
+                }
+            }
+
+          prev = next;
+
+          /* append the current event to the processed stroke. */
+          processed_event        = g_slice_new (WarpPointList);
+          processed_event->point = next;
+
+          *priv->processed_stroke_tail = processed_event;
+          priv->processed_stroke_tail  = &processed_event->next;
         }
 
-      prev = next;
+      /* write the result back to the cached buffer */
+      gegl_buffer_set (priv->buffer,
+                       GEGL_RECTANGLE (srcbuf_extent.x + srcbuf_clip.x,
+                                       srcbuf_extent.y + srcbuf_clip.y,
+                                       srcbuf_clip.width,
+                                       srcbuf_clip.height),
+                       0, NULL,
+                       srcbuf + srcbuf_stride * srcbuf_clip.y +
+                                            2 * srcbuf_clip.x,
+                       sizeof (gfloat) * srcbuf_stride);
+    }
+  else
+    {
+      /* if the remaining stroke is completely out of bounds, just append it to
+       * the processed stroke.
+       */
+      for (event = priv->remaining_stroke; event; event = event->next)
+        {
+          next = *(event->d.point);
 
-      /* append the current event to the processed path. */
-      processed_event        = g_slice_new (WarpPointList);
-      processed_event->point = next;
+          priv->last_x = next.x;
+          priv->last_y = next.y;
 
-      *priv->processed_stroke_tail = processed_event;
-      priv->processed_stroke_tail  = &processed_event->next;
+          /* append the current event to the processed stroke. */
+          processed_event        = g_slice_new (WarpPointList);
+          processed_event->point = next;
+
+          *priv->processed_stroke_tail = processed_event;
+          priv->processed_stroke_tail  = &processed_event->next;
+        }
     }
 
   *priv->processed_stroke_tail = NULL;
   priv->remaining_stroke       = NULL;
-
-  gegl_buffer_linear_close (priv->buffer, srcbuf);
 
   /* pass the processed buffer as output */
   gegl_operation_context_set_object (context,
