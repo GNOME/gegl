@@ -70,6 +70,8 @@ static void path_changed     (GeglPath            *path,
 
 #include "gegl-op.h"
 
+#define HARDNESS_EPSILON 0.0000004
+
 typedef struct WarpPointList
 {
   GeglPathPoint         point;
@@ -306,22 +308,32 @@ static void
 calc_lut (GeglProperties  *o)
 {
   WarpPrivate  *priv = (WarpPrivate*) o->user_data;
+  gdouble       radius;
   gint          length;
   gint          x;
   gdouble       exponent;
 
-  length = (gint)(0.5 * o->size + 1.0) + 2;
+  radius = o->size / 2.0;
 
-  priv->lookup = g_malloc (length * sizeof (gfloat));
+  length = floor (radius) + 2;
 
-  if ((1.0 - o->hardness) < 0.0000004)
-    exponent = 1000000.0;
-  else
-    exponent = 0.4 / (1.0 - o->hardness);
+  priv->lookup = g_new (gfloat, length);
 
-  for (x = 0; x < length; x++)
+  if (1.0 - o->hardness > HARDNESS_EPSILON)
     {
-      priv->lookup[x] = gauss (pow (2.0 * x / o->size, exponent));
+      exponent = 0.4 / (1.0 - o->hardness);
+
+      for (x = 0; x < length; x++)
+        {
+          priv->lookup[x] = gauss (pow (x / radius, exponent));
+        }
+    }
+  else
+    {
+      for (x = 0; x < length; x++)
+        {
+          priv->lookup[x] = 1.0f;
+        }
     }
 }
 
@@ -340,15 +352,18 @@ get_stamp_force (GeglProperties *o,
 
   radius = sqrtf (x * x + y * y);
 
-  if (radius < 0.5f * o->size + 1.0f)
+  if (radius < 0.5f * o->size)
     {
       /* linear interpolation */
-      gint a;
+      gint   a;
+      gfloat f;
       gfloat ratio;
       gfloat before, after;
 
-      a = (gint)(radius);
-      ratio = (radius - a);
+      f = floorf (radius);
+      ratio = (radius - f);
+
+      a = f;
 
       before = priv->lookup[a];
       after = priv->lookup[a + 1];
