@@ -23,6 +23,10 @@ property_enum (sampler_type, _("Resampling method"),
     GeglSamplerType, gegl_sampler_type,
     GEGL_SAMPLER_CUBIC)
 
+property_enum (abyss_policy, _("Abyss policy"),
+               GeglAbyssPolicy, gegl_abyss_policy,
+               GEGL_ABYSS_NONE)
+
 #else
 
 #define GEGL_OP_COMPOSER
@@ -84,7 +88,7 @@ process (GeglOperation       *operation,
       index_coords = gegl_buffer_iterator_add (it, aux, result, level, format_coords,
                                                GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
       index_in = gegl_buffer_iterator_add (it, input, result, level, format_io,
-                                           GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                           GEGL_ACCESS_READ, o->abyss_policy);
 
       while (gegl_buffer_iterator_next (it))
         {
@@ -108,7 +112,7 @@ process (GeglOperation       *operation,
                 }
               else
                 {
-                  gegl_sampler_get (sampler, coords[0], coords[1], NULL, out, GEGL_ABYSS_NONE);
+                  gegl_sampler_get (sampler, coords[0], coords[1], NULL, out, o->abyss_policy);
                 }
 
               coords += 2;
