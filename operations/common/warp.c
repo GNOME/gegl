@@ -812,6 +812,8 @@ process (GeglOperation        *operation,
                        srcbuf + srcbuf_stride * srcbuf_clip.y +
                                             2 * srcbuf_clip.x,
                        sizeof (gfloat) * srcbuf_stride);
+
+      g_free (srcbuf);
     }
   else
     {
