@@ -390,6 +390,8 @@ stamp (GeglProperties      *o,
   gint           x_iter, y_iter;
   gfloat         xi, yi;
   GeglRectangle  area;
+  gint           sample_min_x, sample_max_x;
+  gint           sample_min_y, sample_max_y;
   gfloat        *stampbuf;
   gfloat        *vals;
   gfloat        *srcvals;
@@ -423,8 +425,25 @@ stamp (GeglProperties      *o,
   if (! gegl_rectangle_intersect (&area, &area, srcbuf_clip))
     return;
 
+  /* Shift the coordiantes so that we work relative to the top-left corner of
+   * the stamped area.
+   */
+  x -= area.x;
+  y -= area.y;
+
   /* Align the source buffer with the stamped area */
   srcbuf += srcbuf_stride * area.y + 2 * area.x;
+
+  /* Calculate the sample bounds.  We clamp the coordinates of pixels sampled
+   * from the source buffer to these limits.  Note that the source buffer is
+   * padded with a 2-pixel-wide border of (0, 0) vectors, so that out-of-bounds
+   * pixels, and the pixels adjacent to them, if they're also out-of-bounds,
+   * are sampled as (0, 0).
+   */
+  sample_min_x = -area.x;
+  sample_max_x = -area.x + srcbuf_clip->x + srcbuf_clip->width;
+  sample_min_y = -area.y;
+  sample_max_y = -area.y + srcbuf_clip->y + srcbuf_clip->height;
 
   /* If needed, compute the mean deformation */
   if (o->behavior == GEGL_WARP_BEHAVIOR_SMOOTH)
@@ -475,13 +494,13 @@ stamp (GeglProperties      *o,
 
   vals = stampbuf;
 
-  yi = area.y - y + 0.5f;
+  yi = -y + 0.5f;
 
   for (y_iter = 0; y_iter < area.height; y_iter++, yi++)
     {
       srcvals = srcbuf + srcbuf_stride * y_iter;
 
-      xi = area.x - x + 0.5f;
+      xi = -x + 0.5f;
 
       for (x_iter = 0;
            x_iter < area.width;
@@ -556,13 +575,11 @@ stamp (GeglProperties      *o,
               dx += x_iter;
               dy += y_iter;
 
-              /* yep, that's a "- 2", since we need to access two neighboring
-               * rows/columns.  note that the source buffer is padded with a
-               * 2-pixel-wide border of (0, 0) vectors, so that out-of-bounds
-               * pixels behave as if they had a (0, 0) vector stored.
+              /* clamp the sample coordinates to the sample bounds.  this takes
+               * care of sampling out-of-bounds pixels.
                */
-              dx = CLAMP (dx, 0, srcbuf_extent->width  - 2);
-              dy = CLAMP (dy, 0, srcbuf_extent->height - 2);
+              dx = CLAMP (dx, sample_min_x, sample_max_x);
+              dy = CLAMP (dy, sample_min_y, sample_max_y);
 
               srcptr = srcbuf + srcbuf_stride * dy + 2 * dx;
 
