@@ -92,41 +92,43 @@ process (GeglOperation       *operation,
 
       while (gegl_buffer_iterator_next (it))
         {
-          gint        i;
-          gint        n_pixels = it->length;
-          gint        x = it->roi->x; /* initial x                   */
-          gint        y = it->roi->y; /*           and y coordinates */
+          gint        w;
+          gint        h;
+          gfloat      x;
+          gfloat      y;
           gfloat     *in = it->data[index_in];
           gfloat     *out = it->data[index_out];
           gfloat     *coords = it->data[index_coords];
 
-          for (i=0; i<n_pixels; i++)
+          y = it->roi->y + 0.5; /* initial y coordinate */
+
+          for (h = it->roi->height; h; h--, y++)
             {
-              /* if the coordinate asked is an exact pixel, we fetch it directly, to avoid the blur of sampling */
-              if (coords[0] == x && coords[1] == y)
-                {
-                  out[0] = in[0];
-                  out[1] = in[1];
-                  out[2] = in[2];
-                  out[3] = in[3];
-                }
-              else
-                {
-                  gegl_sampler_get (sampler, coords[0], coords[1], NULL, out, o->abyss_policy);
-                }
+              x = it->roi->x + 0.5; /* initial x coordinate */
 
-              coords += 2;
-              in += 4;
-              out += 4;
-
-              /* update x and y coordinates */
-              x++;
-              if (x >= (it->roi->x + it->roi->width))
+              for (w = it->roi->width; w; w--, x++)
                 {
-                  x = it->roi->x;
-                  y++;
-                }
+                  /* if the coordinate asked is an exact pixel, we fetch it
+                   * directly, to avoid the blur of sampling */
+                  if (coords[0] == x && coords[1] == y)
+                    {
+                      out[0] = in[0];
+                      out[1] = in[1];
+                      out[2] = in[2];
+                      out[3] = in[3];
+                    }
+                  else
+                    {
+                      gegl_sampler_get (sampler, coords[0],
+                                                 coords[1],
+                                                 NULL, out,
+                                                 o->abyss_policy);
+                    }
 
+                  coords += 2;
+                  in += 4;
+                  out += 4;
+                }
             }
         }
     }
