@@ -141,7 +141,7 @@ process (GeglOperation       *operation,
     }
   else
     {
-      gegl_buffer_copy (input, result, GEGL_ABYSS_NONE,
+      gegl_buffer_copy (input, result, o->abyss_policy,
                         output, result);
     }
 
