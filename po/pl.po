@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-14 16:09+0200\n"
-"PO-Revision-Date: 2017-05-14 16:10+0200\n"
+"POT-Creation-Date: 2017-05-21 17:22+0200\n"
+"PO-Revision-Date: 2017-05-21 17:23+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -632,11 +632,11 @@ msgstr "Bufor wejściowy"
 msgid "The GeglBuffer to load into the pipeline"
 msgstr "GeglBuffer do wczytania do potoku"
 
-#: ../operations/common/buffer-source.c:207
+#: ../operations/common/buffer-source.c:220
 msgid "Buffer Source"
 msgstr "Źródło buforu"
 
-#: ../operations/common/buffer-source.c:209
+#: ../operations/common/buffer-source.c:222
 msgid "Use an existing in-memory GeglBuffer as image source."
 msgstr "Użyj istniejącego GeglBuffer w pamięci jako źródło obrazu."
 
@@ -1849,6 +1849,8 @@ msgstr "Typ GeglSampler używanego do pobierania pikseli wejściowych"
 
 #: ../operations/common/displace.c:42 ../operations/common/fractal-trace.c:66
 #: ../operations/common/gaussian-blur.c:58 ../operations/common/gblur-1d.c:60
+#: ../operations/common/map-absolute.c:26
+#: ../operations/common/map-relative.c:31
 msgid "Abyss policy"
 msgstr "Polityka otchłani"
 
@@ -1865,19 +1867,83 @@ msgstr "Przesunięcie na osi X"
 msgid "Displace multiplier for X or radial direction"
 msgstr "Mnożnik przesunięcia dla osi X lub kierunku radialnego"
 
-#: ../operations/common/displace.c:54
+#: ../operations/common/displace.c:55
+msgid "Horizontal displacement"
+msgstr "Przesunięcie poziome"
+
+#: ../operations/common/displace.c:56 ../operations/common/whirl-pinch.c:41
+msgid "Pinch"
+msgstr "Ściśnięcie"
+
+#: ../operations/common/displace.c:59
+msgid "Displacement multiplier for the horizontal direction"
+msgstr "Mnożnik przesunięcia dla kierunku poziomego"
+
+#: ../operations/common/displace.c:60
+msgid "Displacement multiplier for the radial direction"
+msgstr "Mnożnik przesunięcia dla kierunku radialnego"
+
+#: ../operations/common/displace.c:62
 msgid "Y displacement"
 msgstr "Przesunięcie na osi Y"
 
-#: ../operations/common/displace.c:55
+#: ../operations/common/displace.c:63
 msgid "Displace multiplier for Y or tangent (degrees) direction"
 msgstr "Mnożnik przesunięcia dla osi Y lub kierunku stycznej (w stopniach)"
 
-#: ../operations/common/displace.c:375
+#: ../operations/common/displace.c:70
+msgid "Vertical displacement"
+msgstr "Przesunięcie pionowe"
+
+#: ../operations/common/displace.c:71 ../operations/common/whirl-pinch.c:36
+msgid "Whirl"
+msgstr "Skręcanie"
+
+#: ../operations/common/displace.c:74
+msgid "Displacement multiplier for the vertical direction"
+msgstr "Mnożnik przesunięcia dla kierunku pionowego"
+
+#: ../operations/common/displace.c:75
+msgid "Displacement multiplier for the angular offset"
+msgstr "Mnożnik przesunięcia dla przesunięcia kątowego"
+
+#: ../operations/common/displace.c:77
+msgid "Center displacement"
+msgstr "Przesunięcie na środku"
+
+#: ../operations/common/displace.c:78
+msgid "Center the displacement around a specified point"
+msgstr "Wyśrodkowanie przesunięcia wokół podanego punktu"
+
+#: ../operations/common/displace.c:80 ../operations/common/mirrors.c:56
+#: ../operations/common/motion-blur-circular.c:41
+#: ../operations/common/motion-blur-zoom.c:40
+#: ../operations/common/supernova.c:33 ../operations/common/vignette.c:61
+#: ../operations/common/waves.c:26
+msgid "Center X"
+msgstr "Środek na osi X"
+
+#: ../operations/common/displace.c:81
+msgid "X coordinate of the displacement center"
+msgstr "Współrzędna środka przesunięcia na osi X"
+
+#: ../operations/common/displace.c:87 ../operations/common/mirrors.c:61
+#: ../operations/common/motion-blur-circular.c:46
+#: ../operations/common/motion-blur-zoom.c:45
+#: ../operations/common/supernova.c:39 ../operations/common/vignette.c:66
+#: ../operations/common/waves.c:31
+msgid "Center Y"
+msgstr "Środek na osi Y"
+
+#: ../operations/common/displace.c:88
+msgid "Y coordinate of the displacement center"
+msgstr "Współrzędna środka przesunięcia na osi Y"
+
+#: ../operations/common/displace.c:481
 msgid "Displace"
 msgstr "Przesuń"
 
-#: ../operations/common/displace.c:378
+#: ../operations/common/displace.c:484
 msgid "Displace pixels as indicated by displacement maps"
 msgstr "Przesuń piksele według wskazań map przesuwania"
 
@@ -3131,11 +3197,11 @@ msgstr ""
 msgid "Resampling method"
 msgstr "Metoda resamplingu"
 
-#: ../operations/common/map-absolute.c:154
+#: ../operations/common/map-absolute.c:159
 msgid "Map Absolute"
 msgstr "Mapowanie bezwzględne"
 
-#: ../operations/common/map-absolute.c:157
+#: ../operations/common/map-absolute.c:162
 msgid ""
 "sample input with an auxiliary buffer that contain absolute source "
 "coordinates"
@@ -3155,11 +3221,11 @@ msgstr ""
 "współczynnik skalowania przemieszczenia, wskazuje wielkość przemieszczenia "
 "przestrzennego, do którego odnosi się względna wartość mapowania 1,0."
 
-#: ../operations/common/map-relative.c:178
+#: ../operations/common/map-relative.c:183
 msgid "Map Relative"
 msgstr "Mapowanie względne"
 
-#: ../operations/common/map-relative.c:181
+#: ../operations/common/map-relative.c:186
 msgid ""
 "sample input with an auxiliary buffer that contain relative source "
 "coordinates"
@@ -3275,25 +3341,9 @@ msgstr "Liczba używanych luster"
 msgid "position of symmetry center in output"
 msgstr "położenie środka symetrii w wyjściu"
 
-#: ../operations/common/mirrors.c:56
-#: ../operations/common/motion-blur-circular.c:41
-#: ../operations/common/motion-blur-zoom.c:40
-#: ../operations/common/supernova.c:33 ../operations/common/vignette.c:61
-#: ../operations/common/waves.c:26
-msgid "Center X"
-msgstr "Środek na osi X"
-
 #: ../operations/common/mirrors.c:57
 msgid "X axis ratio for the center of mirroring"
 msgstr "Współrzędna osi X środka lustra"
-
-#: ../operations/common/mirrors.c:61
-#: ../operations/common/motion-blur-circular.c:46
-#: ../operations/common/motion-blur-zoom.c:45
-#: ../operations/common/supernova.c:39 ../operations/common/vignette.c:66
-#: ../operations/common/waves.c:31
-msgid "Center Y"
-msgstr "Środek na osi Y"
 
 #: ../operations/common/mirrors.c:62
 msgid "Y axis ratio for the center of mirroring"
@@ -5221,22 +5271,26 @@ msgid "Hardness"
 msgstr "Twardość"
 
 #: ../operations/common/warp.c:44
+msgid "Spacing"
+msgstr "Odstępy"
+
+#: ../operations/common/warp.c:47
 msgid "Stroke"
 msgstr "Pociągnięcia"
 
-#: ../operations/common/warp.c:46
+#: ../operations/common/warp.c:49
 msgid "Behavior"
 msgstr "Zachowanie"
 
-#: ../operations/common/warp.c:49
+#: ../operations/common/warp.c:52
 msgid "Behavior of the op"
 msgstr "Zachowanie działania"
 
-#: ../operations/common/warp.c:485
+#: ../operations/common/warp.c:885
 msgid "Warp"
 msgstr "Deformuj"
 
-#: ../operations/common/warp.c:487
+#: ../operations/common/warp.c:887
 msgid "Compute a relative displacement mapping from a stroke"
 msgstr "Oblicz względne rozmieszczenie odwzorowania z pociągnięcia"
 
@@ -5342,17 +5396,9 @@ msgstr "Łączenie ważone"
 msgid "blend two images using alpha values as weights"
 msgstr "połącz dwa obrazy za pomocą wartości alfa jako wagi"
 
-#: ../operations/common/whirl-pinch.c:36
-msgid "Whirl"
-msgstr "Skręcanie"
-
 #: ../operations/common/whirl-pinch.c:37
 msgid "Whirl angle (degrees)"
 msgstr "Kąt skręcania (stopnie)"
-
-#: ../operations/common/whirl-pinch.c:41
-msgid "Pinch"
-msgstr "Ściśnięcie"
 
 #: ../operations/common/whirl-pinch.c:42
 msgid "Pinch amount"
