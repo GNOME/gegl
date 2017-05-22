@@ -471,19 +471,47 @@ stamp (GeglProperties      *o,
   /* If needed, compute the mean deformation */
   if (o->behavior == GEGL_WARP_BEHAVIOR_SMOOTH)
     {
-      for (y_iter = 0; y_iter < area.height; y_iter++)
-        {
-          srcvals = srcbuf + srcbuf_stride * y_iter;
+      gfloat total_weight = 0.0f;
 
-          for (x_iter = 0; x_iter < area.width; x_iter++, srcvals += 2)
+      yi = -y + 0.5f;
+
+      for (y_iter = 0; y_iter < area.height; y_iter++, yi++)
+        {
+          lim = stamp_radius_sq - yi * yi;
+
+          if (lim < 0.0f)
+            continue;
+
+          lim = sqrtf (lim);
+
+          pixel_range (x - lim, x + lim,
+                       &min_x,  &max_x);
+
+          if (max_x < 0 || min_x >= area.width)
+            continue;
+
+          min_x = CLAMP (min_x, 0, area.width - 1);
+          max_x = CLAMP (max_x, 0, area.width - 1);
+
+          srcvals = srcbuf + srcbuf_stride * y_iter + 2 * min_x;
+
+          xi = -x + min_x + 0.5f;
+
+          for (x_iter  = min_x;
+               x_iter <= max_x;
+               x_iter++, xi++, srcvals += 2)
             {
-              x_mean += srcvals[0];
-              y_mean += srcvals[1];
+              stamp_force = get_stamp_force (xi, yi, lookup);
+
+              x_mean += stamp_force * srcvals[0];
+              y_mean += stamp_force * srcvals[1];
+
+              total_weight += stamp_force;
             }
         }
 
-      x_mean /= area.width * area.height;
-      y_mean /= area.width * area.height;
+      x_mean /= total_weight;
+      y_mean /= total_weight;
     }
   else if (o->behavior == GEGL_WARP_BEHAVIOR_GROW ||
            o->behavior == GEGL_WARP_BEHAVIOR_SHRINK)
@@ -724,7 +752,8 @@ process (GeglOperation        *operation,
    * away, or, if we don't have a cacehd buffer, pass the input buffer
    * directly.
    *
-   * if the stroke's strength is 0, the stroke has no effect; do the same.
+   * altenatively, if the stroke's strength is 0, the stroke has no effect.  do
+   * the same.
    */
   if (! event || o->strength == 0.0)
     {
