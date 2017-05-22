@@ -379,7 +379,6 @@ stamp (GeglProperties      *o,
        gfloat              *srcbuf,
        gint                 srcbuf_stride,
        const GeglRectangle *srcbuf_extent,
-       const GeglRectangle *srcbuf_clip,
        gfloat               x,
        gfloat               y)
 {
@@ -409,12 +408,6 @@ stamp (GeglProperties      *o,
   if (strength == 0.0f)
     return; /* nop */
 
-  /* Shift the coordiantes so that we work relative to the top-left corner of
-   * the source buffer.
-   */
-  x -= srcbuf_extent->x;
-  y -= srcbuf_extent->y;
-
   area.x = floor (x - o->size / 2.0);
   area.y = floor (y - o->size / 2.0);
   area.width   = ceil (x + o->size / 2.0);
@@ -422,28 +415,31 @@ stamp (GeglProperties      *o,
   area.width  -= area.x;
   area.height -= area.y;
 
-  if (! gegl_rectangle_intersect (&area, &area, srcbuf_clip))
+  if (! gegl_rectangle_intersect (&area, &area, srcbuf_extent))
     return;
 
-  /* Shift the coordiantes so that we work relative to the top-left corner of
+  /* Shift the coordiantes so that they're relative to the top-left corner of
    * the stamped area.
    */
   x -= area.x;
   y -= area.y;
 
+  /* Shift the stamped area so that it's relative to the top-left corner of the
+   * source buffer.
+   */
+  area.x -= srcbuf_extent->x;
+  area.y -= srcbuf_extent->y;
+
   /* Align the source buffer with the stamped area */
   srcbuf += srcbuf_stride * area.y + 2 * area.x;
 
   /* Calculate the sample bounds.  We clamp the coordinates of pixels sampled
-   * from the source buffer to these limits.  Note that the source buffer is
-   * padded with a 2-pixel-wide border of (0, 0) vectors, so that out-of-bounds
-   * pixels, and the pixels adjacent to them, if they're also out-of-bounds,
-   * are sampled as (0, 0).
+   * from the source buffer to these limits.
    */
   sample_min_x = -area.x;
-  sample_max_x = -area.x + srcbuf_clip->x + srcbuf_clip->width;
+  sample_max_x = -area.x + srcbuf_extent->width - 1;
   sample_min_y = -area.y;
-  sample_max_y = -area.y + srcbuf_clip->y + srcbuf_clip->height;
+  sample_max_y = -area.y + srcbuf_extent->height - 1;
 
   /* If needed, compute the mean deformation */
   if (o->behavior == GEGL_WARP_BEHAVIOR_SMOOTH)
@@ -575,11 +571,32 @@ stamp (GeglProperties      *o,
               dx += x_iter;
               dy += y_iter;
 
-              /* clamp the sample coordinates to the sample bounds.  this takes
-               * care of sampling out-of-bounds pixels.
-               */
-              dx = CLAMP (dx, sample_min_x, sample_max_x);
-              dy = CLAMP (dy, sample_min_y, sample_max_y);
+              /* clamp the sampled coordinates to the sample bounds */
+              if (dx < sample_min_x || dx >= sample_max_x ||
+                  dy < sample_min_y || dy >= sample_max_y)
+                {
+                  if (dx < sample_min_x)
+                    {
+                      dx = sample_min_x;
+                      weight_x = 0.0f;
+                    }
+                  else if (dx >= sample_max_x)
+                    {
+                      dx = sample_max_x;
+                      weight_x = 0.0f;
+                    }
+
+                  if (dy < sample_min_y)
+                    {
+                      dy = sample_min_y;
+                      weight_y = 0.0f;
+                    }
+                  else if (dy >= sample_max_y)
+                    {
+                      dy = sample_max_y;
+                      weight_y = 0.0f;
+                    }
+                }
 
               srcptr = srcbuf + srcbuf_stride * dy + 2 * dx;
 
@@ -643,10 +660,8 @@ process (GeglOperation        *operation,
 
   gfloat         *srcbuf;
   gint            srcbuf_stride;
+  gint            srcbuf_padding;
   GeglRectangle   srcbuf_extent;
-  GeglRectangle   srcbuf_clip;
-
-  gfloat         *srcbuf_ptr;
 
   GeglPathPoint   prev, next, lerp;
   GeglPathList   *event;
@@ -727,55 +742,31 @@ process (GeglOperation        *operation,
                                 &srcbuf_extent,
                                 gegl_buffer_get_extent (priv->buffer)))
     {
-      /* we pad the source buffer with a 2-pixel-wide border of (0, 0) vectors,
-       * to simplify abyss sampling in stamp().
+      /* we allocate a buffer, referred to as the source buffer, into which we
+       * read the necessary portion of the input buffer, and consecutively
+       * write the stroke results.
        */
-      srcbuf_clip.x      = 2;
-      srcbuf_clip.y      = 2;
-      srcbuf_clip.width  = srcbuf_extent.width;
-      srcbuf_clip.height = srcbuf_extent.height;
-
-      srcbuf_extent.x      -= srcbuf_clip.x;
-      srcbuf_extent.y      -= srcbuf_clip.y;
-      srcbuf_extent.width  += 2 * srcbuf_clip.x;
-      srcbuf_extent.height += 2 * srcbuf_clip.y;
 
       srcbuf_stride = 2 * srcbuf_extent.width;
 
-      /* that's our source buffer.  we both read input data from it, and write
-       * the result to it.
+      /* the source buffer is padded at the back by enough elements to make
+       * pointers to out-of-bounds pixels, adjacent to the right and bottom
+       * edges of the buffer, valid; such pointers may be formed as part of
+       * sampling.  the value of these elements is irrelevant, as long as
+       * they're finite.
        */
-      srcbuf = g_new (gfloat, srcbuf_stride * srcbuf_extent.height);
+      srcbuf_padding = srcbuf_stride + 2;
 
-      /* fill the border with (0, 0) vectors. */
-      srcbuf_ptr = srcbuf;
+      srcbuf = g_new (gfloat, srcbuf_stride * srcbuf_extent.height +
+                              srcbuf_padding);
 
-      memset (srcbuf_ptr, 0, sizeof (gfloat) * srcbuf_stride * srcbuf_clip.y);
-      srcbuf_ptr += srcbuf_stride * srcbuf_clip.y;
-
-      for (i = 0; i < srcbuf_clip.height; i++)
-        {
-          memset (srcbuf_ptr, 0, sizeof (gfloat) * 2 * srcbuf_clip.x);
-          srcbuf_ptr += 2 * srcbuf_clip.x;
-
-          srcbuf_ptr += 2 * srcbuf_clip.width;
-
-          memset (srcbuf_ptr, 0, sizeof (gfloat) * 2 * srcbuf_clip.x);
-          srcbuf_ptr += 2 * srcbuf_clip.x;
-        }
-
-      memset (srcbuf_ptr, 0, sizeof (gfloat) * srcbuf_stride * srcbuf_clip.y);
+      /* fill the padding with (0, 0) vectors */
+      memset (srcbuf + srcbuf_stride * srcbuf_extent.height,
+              0, sizeof (gfloat) * srcbuf_padding);
 
       /* read the input data from the cached buffer */
-      gegl_buffer_get (priv->buffer,
-                       GEGL_RECTANGLE (srcbuf_extent.x + srcbuf_clip.x,
-                                       srcbuf_extent.y + srcbuf_clip.y,
-                                       srcbuf_clip.width,
-                                       srcbuf_clip.height),
-                       1.0, NULL,
-                       srcbuf + srcbuf_stride * srcbuf_clip.y +
-                                            2 * srcbuf_clip.x,
-                       sizeof (gfloat) * srcbuf_stride,
+      gegl_buffer_get (priv->buffer, &srcbuf_extent, 1.0, NULL,
+                       srcbuf, sizeof (gfloat) * srcbuf_stride,
                        GEGL_ABYSS_NONE);
 
       /* process the remaining stroke */
@@ -793,7 +784,7 @@ process (GeglOperation        *operation,
           if (stamps == 1)
             {
               stamp (o,
-                     srcbuf, srcbuf_stride, &srcbuf_extent, &srcbuf_clip,
+                     srcbuf, srcbuf_stride, &srcbuf_extent,
                      next.x, next.y);
             }
           else
@@ -804,7 +795,7 @@ process (GeglOperation        *operation,
 
                   gegl_path_point_lerp (&lerp, &prev, &next, t);
                   stamp (o,
-                         srcbuf, srcbuf_stride, &srcbuf_extent, &srcbuf_clip,
+                         srcbuf, srcbuf_stride, &srcbuf_extent,
                          lerp.x, lerp.y);
                 }
             }
@@ -820,15 +811,8 @@ process (GeglOperation        *operation,
         }
 
       /* write the result back to the cached buffer */
-      gegl_buffer_set (priv->buffer,
-                       GEGL_RECTANGLE (srcbuf_extent.x + srcbuf_clip.x,
-                                       srcbuf_extent.y + srcbuf_clip.y,
-                                       srcbuf_clip.width,
-                                       srcbuf_clip.height),
-                       0, NULL,
-                       srcbuf + srcbuf_stride * srcbuf_clip.y +
-                                            2 * srcbuf_clip.x,
-                       sizeof (gfloat) * srcbuf_stride);
+      gegl_buffer_set (priv->buffer, &srcbuf_extent, 0, NULL,
+                       srcbuf, sizeof (gfloat) * srcbuf_stride);
 
       g_free (srcbuf);
     }
