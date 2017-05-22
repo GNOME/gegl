@@ -183,6 +183,41 @@ node_invalidated (GeglNode            *node,
   clear_cache (GEGL_PROPERTIES (operation));
 }
 
+/* return the smallest range of pixels [min_pixel, max_pixel], whose centers
+ * are inside the range [min_coord, max_coord].
+ */
+static inline void
+pixel_range (gfloat  min_coord,
+             gfloat  max_coord,
+             gint   *min_pixel,
+             gint   *max_pixel)
+{
+  *min_pixel = ceilf  (min_coord - 0.5f);
+  *max_pixel = floorf (max_coord - 0.5f);
+}
+
+/* return the smallest rectangle of pixels, whose centers are inside the
+ * horizontal range [min_x, max_x] and the vertical range [min_y, max_y].
+ */
+static inline GeglRectangle
+pixel_extent (gfloat min_x,
+              gfloat max_x,
+              gfloat min_y,
+              gfloat max_y)
+{
+  GeglRectangle result;
+
+  pixel_range (min_x,     max_x,
+               &result.x, &result.width);
+  result.width -= result.x - 1;
+
+  pixel_range (min_y,     max_y,
+               &result.y, &result.height);
+  result.height -= result.y - 1;
+
+  return result;
+}
+
 static void
 path_changed (GeglPath            *path,
               const GeglRectangle *roi,
@@ -200,10 +235,10 @@ path_changed (GeglPath            *path,
 
   /* invalidate the incoming rectangle */
 
-  rect.x      = floor (roi->x - o->size/2);
-  rect.y      = floor (roi->y - o->size/2);
-  rect.width  = ceil (roi->x + roi->width  + o->size/2) - rect.x;
-  rect.height = ceil (roi->y + roi->height + o->size/2) - rect.y;
+  rect = pixel_extent (roi->x               - o->size / 2.0,
+                       roi->x + roi->width  + o->size / 2.0,
+                       roi->y               - o->size / 2.0,
+                       roi->y + roi->height + o->size / 2.0);
 
   /* avoid clearing the cache.  it will be cleared, if necessary, when
    * validating the stroke.
@@ -215,66 +250,6 @@ path_changed (GeglPath            *path,
 
   g_signal_handlers_unblock_by_func (operation->node,
                                      node_invalidated, operation);
-}
-
-static void
-attach (GeglOperation *operation)
-{
-  GEGL_OPERATION_CLASS (gegl_op_parent_class)->attach (operation);
-
-  g_signal_connect_object (operation->node, "invalidated",
-                           G_CALLBACK (node_invalidated), operation, 0);
-}
-
-static void
-prepare (GeglOperation *operation)
-{
-  GeglProperties *o = GEGL_PROPERTIES (operation);
-
-  const Babl *format = babl_format_n (babl_type ("float"), 2);
-  gegl_operation_set_format (operation, "input", format);
-  gegl_operation_set_format (operation, "output", format);
-
-  if (!o->user_data)
-    {
-      o->user_data = g_slice_new0 (WarpPrivate);
-
-      clear_cache (o);
-    }
-
-  validate_processed_stroke (o);
-}
-
-static GeglRectangle
-get_required_for_output (GeglOperation       *operation,
-                         const gchar         *input_pad,
-                         const GeglRectangle *output_roi)
-{
-  GeglProperties *o    = GEGL_PROPERTIES (operation);
-  WarpPrivate    *priv = (WarpPrivate*) o->user_data;
-  GeglRectangle   rect = {0, 0, 0, 0};
-
-  /* we only need the input if we don't have a cached buffer already. */
-  if (! priv->buffer)
-    rect = *gegl_operation_source_get_bounding_box (operation, input_pad);
-
-  return rect;
-}
-
-static void
-finalize (GObject *object)
-{
-  GeglProperties *o = GEGL_PROPERTIES (object);
-
-  if (o->user_data)
-    {
-      clear_cache (o);
-
-      g_slice_free (WarpPrivate, o->user_data);
-      o->user_data = NULL;
-    }
-
-  G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);
 }
 
 static gdouble
@@ -313,9 +288,12 @@ calc_lut (GeglProperties  *o)
   gint          x;
   gdouble       exponent;
 
+  if (priv->lookup)
+    return;
+
   radius = o->size / 2.0;
 
-  length = floor (radius) + 2;
+  length = floor (radius) + 3;
 
   priv->lookup = g_new (gfloat, length);
 
@@ -337,41 +315,87 @@ calc_lut (GeglProperties  *o)
     }
 }
 
-static gfloat
-get_stamp_force (GeglProperties *o,
-                 gfloat          x,
-                 gfloat          y)
+static void
+attach (GeglOperation *operation)
 {
-  WarpPrivate  *priv = (WarpPrivate*) o->user_data;
-  gfloat        radius;
+  GEGL_OPERATION_CLASS (gegl_op_parent_class)->attach (operation);
 
-  if (!priv->lookup)
+  g_signal_connect_object (operation->node, "invalidated",
+                           G_CALLBACK (node_invalidated), operation, 0);
+}
+
+static void
+prepare (GeglOperation *operation)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
+  const Babl *format = babl_format_n (babl_type ("float"), 2);
+  gegl_operation_set_format (operation, "input", format);
+  gegl_operation_set_format (operation, "output", format);
+
+  if (!o->user_data)
     {
-      calc_lut (o);
+      o->user_data = g_slice_new0 (WarpPrivate);
+
+      clear_cache (o);
     }
+
+  validate_processed_stroke (o);
+  calc_lut (o);
+}
+
+static GeglRectangle
+get_required_for_output (GeglOperation       *operation,
+                         const gchar         *input_pad,
+                         const GeglRectangle *output_roi)
+{
+  GeglProperties *o    = GEGL_PROPERTIES (operation);
+  WarpPrivate    *priv = (WarpPrivate*) o->user_data;
+  GeglRectangle   rect = {0, 0, 0, 0};
+
+  /* we only need the input if we don't have a cached buffer already. */
+  if (! priv->buffer)
+    rect = *gegl_operation_source_get_bounding_box (operation, input_pad);
+
+  return rect;
+}
+
+static void
+finalize (GObject *object)
+{
+  GeglProperties *o = GEGL_PROPERTIES (object);
+
+  if (o->user_data)
+    {
+      clear_cache (o);
+
+      g_slice_free (WarpPrivate, o->user_data);
+      o->user_data = NULL;
+    }
+
+  G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);
+}
+
+static inline gfloat
+get_stamp_force (gfloat        x,
+                 gfloat        y,
+                 const gfloat *lookup)
+{
+  gfloat radius;
+  gint   a;
+  gfloat ratio;
+  gfloat before, after;
 
   radius = sqrtf (x * x + y * y);
 
-  if (radius < 0.5f * o->size)
-    {
-      /* linear interpolation */
-      gint   a;
-      gfloat f;
-      gfloat ratio;
-      gfloat before, after;
+  /* linear interpolation */
+  a = (gint) radius;
+  ratio = (radius - a);
 
-      f = floorf (radius);
-      ratio = (radius - f);
+  before = lookup[a];
+  after = lookup[a + 1];
 
-      a = f;
-
-      before = priv->lookup[a];
-      after = priv->lookup[a + 1];
-
-      return before + ratio * (after - before);
-    }
-
-  return 0.0f;
+  return before + ratio * (after - before);
 }
 
 static void
@@ -394,9 +418,13 @@ stamp (GeglProperties      *o,
   gfloat        *stampbuf;
   gfloat        *vals;
   gfloat        *srcvals;
+  gfloat         stamp_radius_sq = 0.25 * o->size * o->size;
   gfloat         strength = 0.01 * o->strength;
+  const gfloat  *lookup = priv->lookup;
   gfloat         s = 0, c = 0;
   gfloat         motion_x, motion_y;
+  gfloat         lim;
+  gint           min_x, max_x;
 
   motion_x = priv->last_x - x;
   motion_y = priv->last_y - y;
@@ -405,15 +433,14 @@ stamp (GeglProperties      *o,
   priv->last_x = x;
   priv->last_y = y;
 
-  if (strength == 0.0f)
-    return; /* nop */
+  if (o->behavior == GEGL_WARP_BEHAVIOR_MOVE &&
+      motion_x == 0.0f && motion_y == 0.0f)
+    {
+      return;
+    }
 
-  area.x = floor (x - o->size / 2.0);
-  area.y = floor (y - o->size / 2.0);
-  area.width   = ceil (x + o->size / 2.0);
-  area.height  = ceil (y + o->size / 2.0);
-  area.width  -= area.x;
-  area.height -= area.y;
+  area = pixel_extent (x - o->size / 2.0, x + o->size / 2.0,
+                       y - o->size / 2.0, y + o->size / 2.0);
 
   if (! gegl_rectangle_intersect (&area, &area, srcbuf_extent))
     return;
@@ -488,18 +515,33 @@ stamp (GeglProperties      *o,
    */
   stampbuf = g_new (gfloat, 2 * area.height * area.width);
 
-  vals = stampbuf;
-
   yi = -y + 0.5f;
 
   for (y_iter = 0; y_iter < area.height; y_iter++, yi++)
     {
-      srcvals = srcbuf + srcbuf_stride * y_iter;
+      lim = stamp_radius_sq - yi * yi;
 
-      xi = -x + 0.5f;
+      if (lim < 0.0f)
+        continue;
 
-      for (x_iter = 0;
-           x_iter < area.width;
+      lim = sqrtf (lim);
+
+      pixel_range (x - lim, x + lim,
+                   &min_x,  &max_x);
+
+      if (max_x < 0 || min_x >= area.width)
+        continue;
+
+      min_x = CLAMP (min_x, 0, area.width - 1);
+      max_x = CLAMP (max_x, 0, area.width - 1);
+
+      vals    = stampbuf + 2 * area.width * y_iter + 2 * min_x;
+      srcvals = srcbuf   + srcbuf_stride  * y_iter + 2 * min_x;
+
+      xi = -x + min_x + 0.5f;
+
+      for (x_iter  = min_x;
+           x_iter <= max_x;
            x_iter++, xi++, vals += 2, srcvals += 2)
         {
           gfloat nvx, nvy;
@@ -510,17 +552,8 @@ stamp (GeglProperties      *o,
           gfloat a1, b1;
           gfloat *srcptr;
 
-          stamp_force = get_stamp_force (o, xi, yi);
-
-          if (stamp_force == 0.0f)
-            {
-              vals[0] = srcvals[0];
-              vals[1] = srcvals[1];
-
-              continue;
-            }
-
-          influence = strength * stamp_force;
+          stamp_force = get_stamp_force (xi, yi, lookup);
+          influence   = strength * stamp_force;
 
           switch (o->behavior)
             {
@@ -549,8 +582,8 @@ stamp (GeglProperties      *o,
 
           if (o->behavior == GEGL_WARP_BEHAVIOR_ERASE)
             {
-              vals[0] = srcvals[0] * (1.0f - MIN (influence, 1.0f));
-              vals[1] = srcvals[1] * (1.0f - MIN (influence, 1.0f));
+              vals[0] = srcvals[0] * (1.0f - influence);
+              vals[1] = srcvals[1] * (1.0f - influence);
             }
           else if (o->behavior == GEGL_WARP_BEHAVIOR_SMOOTH)
             {
@@ -622,15 +655,30 @@ stamp (GeglProperties      *o,
     }
 
   /* Paste the stamp into the source buffer. */
-  vals    = stampbuf;
-  srcvals = srcbuf;
+  yi = -y + 0.5f;
 
-  for (y_iter = 0; y_iter < area.height; y_iter++)
+  for (y_iter = 0; y_iter < area.height; y_iter++, yi++)
     {
-      memcpy (srcvals, vals, 2 * sizeof (gfloat) * area.width);
+      lim = stamp_radius_sq - yi * yi;
 
-      vals    += 2 * area.width;
-      srcvals += srcbuf_stride;
+      if (lim < 0.0f)
+        continue;
+
+      lim = sqrtf (lim);
+
+      pixel_range (x - lim, x + lim,
+                   &min_x,  &max_x);
+
+      if (max_x < 0 || min_x >= area.width)
+        continue;
+
+      min_x = CLAMP (min_x, 0, area.width - 1);
+      max_x = CLAMP (max_x, 0, area.width - 1);
+
+      vals    = stampbuf + 2 * area.width * y_iter + 2 * min_x;
+      srcvals = srcbuf   + srcbuf_stride  * y_iter + 2 * min_x;
+
+      memcpy (srcvals, vals, 2 * sizeof (gfloat) * (max_x - min_x + 1));
     }
 
   g_free (stampbuf);
@@ -675,8 +723,10 @@ process (GeglOperation        *operation,
   /* if there is no stroke data left to process, pass the cached buffer right
    * away, or, if we don't have a cacehd buffer, pass the input buffer
    * directly.
+   *
+   * if the stroke's strength is 0, the stroke has no effect; do the same.
    */
-  if (! event)
+  if (! event || o->strength == 0.0)
     {
       if (priv->buffer)
         output = G_OBJECT (priv->buffer);
