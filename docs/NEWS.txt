@@ -21,8 +21,7 @@ add validation of roi in gegl_operation_get_bounding_box
 Contributors
 ~~~~~~~~~~~~
 
-Ell, Anton Gorenko, Øyvind Kolås
-
+Ell, Anton Gorenko, Øyvind Kolås, Piotr Drąg, Mario Blättermann 
 
 GEGL-0.3.16
 -----------
