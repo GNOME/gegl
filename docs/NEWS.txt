@@ -1,3 +1,29 @@
+GEGL-0.3.18
+-----------
+
+Operations
+~~~~~~~~~~
+
+warp: performance improvements
+displace, map-absolute, map-relative: abyss handling and more 
+buffer-source: improved invalidation signalling
+text,path: use endian agnostic cairo pixel formats
+opencl implementations of: noise-hsv, diffraction-patterns,
+gaussian-blur-selective and motion-blur-linear.
+
+Core
+~~~~
+
+rerrange connection handling for nodes when changing operation.
+gegl-path: improvements for corner cases found in warp
+add validation of roi in gegl_operation_get_bounding_box
+
+Contributors
+~~~~~~~~~~~~
+
+Ell, Anton Gorenko, Øyvind Kolås
+
+
 GEGL-0.3.16
 -----------
 
