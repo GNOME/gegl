@@ -1505,7 +1505,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                                    rowstride);
           g_free (sample_buf);
         }
-      else
+      else if (buf_height && buf_width)
         {
           sample_buf = g_malloc (buf_height * buf_width * bpp);
           
