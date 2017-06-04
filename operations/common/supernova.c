@@ -44,18 +44,19 @@ property_double (center_y, _("Center Y"), 0.5)
 
 property_int (radius, _("Radius"), 20)
   description (_("Radius of supernova"))
-  ui_range (1.0, 100.0)
-  value_range (1, 3000)
+  value_range (1, 20000)
+  ui_range (1, 1000)
+  ui_meta  ("unit", "pixel-distance")
 
 property_int (spokes_count, _("Number of spokes"), 100)
   description (_("Number of spokes"))
-  ui_range (1, 1024)
   value_range (1, 1024)
+  ui_range (1, 1024)
 
 property_int (random_hue, _("Random hue"), 0)
   description (_("Random hue"))
-  ui_range (0, 360)
   value_range (0, 360)
+  ui_range (0, 360)
 
 property_color (color, _("Color"), "blue")
   description(_("The color of supernova."))
