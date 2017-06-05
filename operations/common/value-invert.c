@@ -149,8 +149,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories" , "color",
     "reference-hash", "489d46de415cb7308b59014449ff76af",
     "description",
-        _("Inverts just the value component, the result is the corresponding "
-          "'inverted' image."),
+        _("Invert the value component, the result has the brightness "
+          "inverted, keeping the color."),
     "cl-source"  , value_invert_cl_source,
     NULL);
 }

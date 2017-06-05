@@ -81,8 +81,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories" , "color",
     "reference-hash", "db07b9d85f2786db29560bd50ae0e7a1",
     "description",
-       _("Inverts the components (except alpha), the result is the "
-         "corresponding \"negative\" image."),
+       _("Invert the components (except alpha) perceptually, "
+         "the result is the corresponding \"negative\" image."),
     NULL);
 }
 
