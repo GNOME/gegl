@@ -32,7 +32,7 @@ AM_CPPFLAGS = \
 	-I$(top_builddir)/gegl/property-types \
 	-I$(top_srcdir)/gegl/property-types \
 	-DLIBDIR=\""$(libdir)"\" \
-        -DG_LOG_DOMAIN=\"GEGL\" \
+	-DG_LOG_DOMAIN=\"GEGL\" \
 	-DGEGL_LOCALEDIR=\""$(GEGL_LOCALEDIR)"\"
 
 AM_CFLAGS = $(DEP_CFLAGS) $(BABL_CFLAGS)

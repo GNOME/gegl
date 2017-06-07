@@ -13,7 +13,8 @@ AM_CPPFLAGS = \
 	-I$(top_builddir)/gegl/process \
 	-I$(top_srcdir)/gegl/process \
 	-I$(top_builddir)/gegl/property-types \
-	-I$(top_srcdir)/gegl/property-types
+	-I$(top_srcdir)/gegl/property-types	\
+	-DG_LOG_DOMAIN=\"GEGL\"
 
 
 AM_CFLAGS = $(DEP_CFLAGS) $(BABL_CFLAGS)
