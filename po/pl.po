@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-21 17:22+0200\n"
-"PO-Revision-Date: 2017-05-21 17:23+0200\n"
+"POT-Creation-Date: 2017-06-11 15:24+0200\n"
+"PO-Revision-Date: 2017-06-11 15:25+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -977,7 +977,7 @@ msgstr "Renderuj wzór szachownicy"
 #: ../operations/common/color.c:24 ../operations/common/color.c:92
 #: ../operations/common/color-to-alpha.c:28
 #: ../operations/common/dropshadow.c:43 ../operations/common/grid.c:64
-#: ../operations/common/rectangle.c:48 ../operations/common/supernova.c:60
+#: ../operations/common/rectangle.c:48 ../operations/common/supernova.c:61
 #: ../operations/common/tile-paper.c:32
 #: ../operations/common/value-propagate.c:55 ../operations/common/vignette.c:34
 #: ../operations/external/text.c:36 ../operations/external/vector-fill.c:26
@@ -1646,7 +1646,7 @@ msgstr "Rozszerz kafle o tę ilość"
 #: ../operations/common/noise-simplex.c:39 ../operations/common/noise-slur.c:40
 #: ../operations/common/noise-solid.c:62 ../operations/common/noise-spread.c:41
 #: ../operations/common/plasma.c:70 ../operations/common/shift.c:35
-#: ../operations/common/sinus.c:51 ../operations/common/supernova.c:63
+#: ../operations/common/sinus.c:51 ../operations/common/supernova.c:64
 #: ../operations/common/tile-paper.c:82 ../operations/common/wind.c:68
 #: ../operations/workshop/segment-kmeans.c:37
 msgid "Random seed"
@@ -1813,11 +1813,11 @@ msgstr "Szerokość tworzonego bufora"
 msgid "Height of the generated buffer"
 msgstr "Wysokość tworzonego bufora"
 
-#: ../operations/common/diffraction-patterns.c:252
+#: ../operations/common/diffraction-patterns.c:384
 msgid "Diffraction Patterns"
 msgstr "Desenie dyfrakcyjne"
 
-#: ../operations/common/diffraction-patterns.c:257
+#: ../operations/common/diffraction-patterns.c:389
 msgid "Generate diffraction patterns"
 msgstr "Utwórz desenie dyfrakcyjne"
 
@@ -1852,7 +1852,7 @@ msgstr "Typ GeglSampler używanego do pobierania pikseli wejściowych"
 #: ../operations/common/map-absolute.c:26
 #: ../operations/common/map-relative.c:31
 msgid "Abyss policy"
-msgstr "Polityka otchłani"
+msgstr "Polityka głębi"
 
 #: ../operations/common/displace.c:45 ../operations/common/gaussian-blur.c:60
 #: ../operations/common/gblur-1d.c:62
@@ -2675,11 +2675,11 @@ msgstr "Maksymalna delta"
 msgid "Maximum delta"
 msgstr "Maksymalna delta"
 
-#: ../operations/common/gaussian-blur-selective.c:260
+#: ../operations/common/gaussian-blur-selective.c:376
 msgid "Selective Gaussian Blur"
 msgstr "Wybiórcze rozmycie Gaussa"
 
-#: ../operations/common/gaussian-blur-selective.c:264
+#: ../operations/common/gaussian-blur-selective.c:380
 msgid "Blur neighboring pixels, but only in low-contrast areas"
 msgstr "Rozmyj sąsiedni piksele, ale tylko w obszarach o niskim kontraście"
 
@@ -2963,12 +2963,20 @@ msgid "Invert in Perceptual space"
 msgstr "Odwróć w przestrzeni percepcyjnej"
 
 #: ../operations/common/invert-gamma.c:84
+msgid ""
+"Invert the components (except alpha) perceptually, the result is the "
+"corresponding \"negative\" image."
+msgstr ""
+"Odwróć składowe (bez alfy) percepcyjnie, wynikiem jest odpowiedni „negatyw” "
+"obrazu."
+
 #: ../operations/common/invert-linear.c:79
 msgid ""
-"Inverts the components (except alpha), the result is the corresponding "
-"\"negative\" image."
+"Invert the components (except alpha) in linear light, the result is the "
+"corresponding \"negative\" image."
 msgstr ""
-"Odwraca składowe (bez alfy), wynikiem jest odpowiedni „negatyw” obrazu."
+"Odwróć składowe (bez alfy) w świetle liniowym, wynikiem jest odpowiedni "
+"„negatyw” obrazu."
 
 #: ../operations/common/layer.c:30
 msgid "Operation"
@@ -3197,11 +3205,11 @@ msgstr ""
 msgid "Resampling method"
 msgstr "Metoda resamplingu"
 
-#: ../operations/common/map-absolute.c:159
+#: ../operations/common/map-absolute.c:161
 msgid "Map Absolute"
 msgstr "Mapowanie bezwzględne"
 
-#: ../operations/common/map-absolute.c:162
+#: ../operations/common/map-absolute.c:164
 msgid ""
 "sample input with an auxiliary buffer that contain absolute source "
 "coordinates"
@@ -3221,11 +3229,11 @@ msgstr ""
 "współczynnik skalowania przemieszczenia, wskazuje wielkość przemieszczenia "
 "przestrzennego, do którego odnosi się względna wartość mapowania 1,0."
 
-#: ../operations/common/map-relative.c:183
+#: ../operations/common/map-relative.c:181
 msgid "Map Relative"
 msgstr "Mapowanie względne"
 
-#: ../operations/common/map-relative.c:186
+#: ../operations/common/map-relative.c:184
 msgid ""
 "sample input with an auxiliary buffer that contain relative source "
 "coordinates"
@@ -3535,11 +3543,11 @@ msgstr "Kąt"
 msgid "Rotation blur angle. A large angle may take some time to render"
 msgstr "Kąt rozmycia obrotu. Duży kąt może zająć więcej czasu do wyświetlania"
 
-#: ../operations/common/motion-blur-circular.c:297
+#: ../operations/common/motion-blur-circular.c:423
 msgid "Circular Motion Blur"
 msgstr "Odśrodkowe rozmycie ruchu"
 
-#: ../operations/common/motion-blur-circular.c:302
+#: ../operations/common/motion-blur-circular.c:428
 msgid "Circular motion blur"
 msgstr "Odśrodkowe rozmycie ruchu"
 
@@ -3792,11 +3800,11 @@ msgstr "Niezależne losowanie jasności, nasycenia i barwy"
 msgid "Value"
 msgstr "Wartość"
 
-#: ../operations/common/noise-hsv.c:195
+#: ../operations/common/noise-hsv.c:275
 msgid "Add HSV Noise"
 msgstr "Dodaj szum HSV"
 
-#: ../operations/common/noise-hsv.c:198
+#: ../operations/common/noise-hsv.c:278
 msgid "Randomize hue, saturation and value independently"
 msgstr "Niezależne losowanie barwy, nasycenia i wartości"
 
@@ -4721,27 +4729,27 @@ msgstr "Współrzędna środka supernowej na osi Y"
 msgid "Radius of supernova"
 msgstr "Przekątna supernowej"
 
-#: ../operations/common/supernova.c:50 ../operations/common/supernova.c:51
+#: ../operations/common/supernova.c:51 ../operations/common/supernova.c:52
 msgid "Number of spokes"
 msgstr "Liczba promyków"
 
-#: ../operations/common/supernova.c:55 ../operations/common/supernova.c:56
+#: ../operations/common/supernova.c:56 ../operations/common/supernova.c:57
 msgid "Random hue"
 msgstr "Losowa barwa"
 
-#: ../operations/common/supernova.c:61
+#: ../operations/common/supernova.c:62
 msgid "The color of supernova."
 msgstr "Kolor supernowej."
 
-#: ../operations/common/supernova.c:64
+#: ../operations/common/supernova.c:65
 msgid "The random seed for spokes and random hue"
 msgstr "Ziarno losowości dla promieni i losowej barwy"
 
-#: ../operations/common/supernova.c:341
+#: ../operations/common/supernova.c:342
 msgid "Supernova"
 msgstr "Supernowa"
 
-#: ../operations/common/supernova.c:345
+#: ../operations/common/supernova.c:346
 msgid ""
 "This plug-in produces an effect like a supernova burst. The amount of the "
 "light effect is approximately in proportion to 1/r, where r is the distance "
@@ -4999,10 +5007,10 @@ msgstr "Odwrócenie wartości"
 
 #: ../operations/common/value-invert.c:152
 msgid ""
-"Inverts just the value component, the result is the corresponding 'inverted' "
-"image."
+"Invert the value component, the result has the brightness inverted, keeping "
+"the color."
 msgstr ""
-"Odwraca tylko składową wartości, wynikiem jest odpowiedni „odwrócony” obraz."
+"Odwróć składową wartości, wynik ma odwróconą jasność, ale ten sam kolor."
 
 #: ../operations/common/value-propagate.c:29
 msgid "More white (larger value)"
@@ -5286,11 +5294,11 @@ msgstr "Zachowanie"
 msgid "Behavior of the op"
 msgstr "Zachowanie działania"
 
-#: ../operations/common/warp.c:885
+#: ../operations/common/warp.c:948
 msgid "Warp"
 msgstr "Deformuj"
 
-#: ../operations/common/warp.c:887
+#: ../operations/common/warp.c:950
 msgid "Compute a relative displacement mapping from a stroke"
 msgstr "Oblicz względne rozmieszczenie odwzorowania z pociągnięcia"
 
