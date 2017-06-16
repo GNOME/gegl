@@ -1118,7 +1118,7 @@ gegl_buffer_try_lock (GeglBuffer *buffer)
     GeglTileBackend *backend = gegl_buffer_backend (buffer);
 
     gboolean threaded = gegl_config_threads ()>1;
-    
+
     if (threaded)
       g_mutex_lock (&buffer->tile_storage->mutex);
     if (buffer->lock_count > 0)
@@ -1197,7 +1197,7 @@ glong gegl_buffer_signal_connect (GeglBuffer *buffer,
 {
   buffer->changed_signal_connections++;
   return g_signal_connect(buffer, detailed_signal, c_handler, data);
-} 
+}
 
 GeglTile *
 gegl_buffer_get_tile (GeglBuffer *buffer,

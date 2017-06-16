@@ -316,7 +316,7 @@ void            gegl_buffer_set_pattern       (GeglBuffer          *buffer,
  *
  * Get the babl format of the buffer, this might not be the format the buffer
  * was originally created with, you need to use gegl_buffer_set_format (buf,
- * NULL); to retireve the original format (potentially having save away the
+ * NULL); to retrieve the original format (potentially having saved away the
  * original format of the buffer to re-set it.)
  *
  * Returns: the babl format used for storing pixels in the buffer.
@@ -335,7 +335,7 @@ const Babl *    gegl_buffer_get_format        (GeglBuffer           *buffer);
  * original format. If NULL is passed in the format of the buffer is reset to
  * the original format.
  *
- * Returns: the new babl format or NULL if it the passed in buffer was
+ * Returns: the new babl format or NULL if the passed-in buffer was
  * incompatible (then the original format is still used).
  */
 const Babl *    gegl_buffer_set_format        (GeglBuffer          *buffer,
@@ -347,7 +347,7 @@ const Babl *    gegl_buffer_set_format        (GeglBuffer          *buffer,
  * @roi: a rectangular region
  *
  * Clears the provided rectangular region by setting all the associated memory
- * to 0
+ * to 0.
  */
 void            gegl_buffer_clear             (GeglBuffer          *buffer,
                                                const GeglRectangle *roi);
@@ -362,7 +362,7 @@ void            gegl_buffer_clear             (GeglBuffer          *buffer,
  * @dst_rect: position of upper left destination pixel, or NULL for top
  * left coordinates of the buffer extents.
  *
- * copies a region from source buffer to destination buffer.
+ * Copy a region from source buffer to destination buffer.
  *
  * If the babl_formats of the buffers are the same, and the tile boundaries
  * align, this will create copy-on-write tiles in the destination buffer.
