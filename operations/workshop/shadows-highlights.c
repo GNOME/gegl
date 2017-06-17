@@ -19,22 +19,22 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_double (s_amount, _("shadows amount"), 0.2)
+property_double (s_amount, _("Shadows amount"), 0.2)
     value_range (0.0, 1.0)
 
-property_double (s_tonalwidth, _("shadows tonal width"), 0.1)
+property_double (s_tonalwidth, _("Shadows tonal width"), 0.1)
     value_range (0.001, 1.0)
 
-property_double (s_radius, _("shadows radius"), 5.0)
+property_double (s_radius, _("Shadows radius"), 5.0)
     value_range (0.0, 100.0)
 
-property_double (h_amount, _("highlights amount"), 0.2)
+property_double (h_amount, _("Highlights amount"), 0.2)
     value_range (0.0, 1.0)
 
-property_double (h_tonalwidth, _("highlights tonal width"), 0.1)
+property_double (h_tonalwidth, _("Highlights tonal width"), 0.1)
     value_range (0.001, 1.0)
 
-property_double (h_radius, _("highlights radius"), 5.0)
+property_double (h_radius, _("Highlights radius"), 5.0)
     value_range (0.0, 100.0)
 
 #else
@@ -103,9 +103,9 @@ gegl_op_class_init (GeglOpClass *klass)
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:shadows-highlights",
-    "title",       _("Shadows Highlights"),
+    "title",       _("Shadows-Highlights"),
     "categories",  "light",
-    "description", _("Performs shadows and highlights correction"),
+    "description", _("Perform shadows and highlights correction"),
     NULL);
 }
 

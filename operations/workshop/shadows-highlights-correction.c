@@ -20,16 +20,16 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_double (s_amount, _("shadows amount"), 0.2)
+property_double (s_amount, _("Shadows amount"), 0.2)
     value_range (0.0, 1.0)
 
-property_double (s_tonalwidth, _("shadows tonal width"), 0.1)
+property_double (s_tonalwidth, _("Shadows tonal width"), 0.1)
     value_range (0.001, 1.0)
 
-property_double (h_amount, _("highlights amount"), 0.2)
+property_double (h_amount, _("Highlights amount"), 0.2)
     value_range (0.0, 1.0)
 
-property_double (h_tonalwidth, _("highlights tonal width"), 0.1)
+property_double (h_tonalwidth, _("Highlights tonal width"), 0.1)
     value_range (0.001, 1.0)
 
 #else
