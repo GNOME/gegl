@@ -46,6 +46,8 @@ remove_in_betweens (GeglNode *nop_raw,
       int count = gegl_node_get_consumers (iter, "output", &nodes, NULL);
       if (count)
         iter = nodes[0];
+      else
+        iter = NULL;
       g_free (nodes);
       if (iter && iter != nop_transformed)
         collect = g_list_append (collect, iter);
