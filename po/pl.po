@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-11 15:24+0200\n"
-"PO-Revision-Date: 2017-06-11 15:25+0200\n"
+"POT-Creation-Date: 2017-06-18 21:04+0200\n"
+"PO-Revision-Date: 2017-06-18 21:05+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -7665,39 +7665,39 @@ msgstr "Segmentuj kolory za pomocą klastrów k-średnich"
 
 #: ../operations/workshop/shadows-highlights.c:22
 #: ../operations/workshop/shadows-highlights-correction.c:23
-msgid "shadows amount"
-msgstr "ilość cienia"
+msgid "Shadows amount"
+msgstr "Ilość cienia"
 
 #: ../operations/workshop/shadows-highlights.c:25
 #: ../operations/workshop/shadows-highlights-correction.c:26
-msgid "shadows tonal width"
-msgstr "szerokość tonalna cienia"
+msgid "Shadows tonal width"
+msgstr "Szerokość tonalna cienia"
 
 #: ../operations/workshop/shadows-highlights.c:28
-msgid "shadows radius"
-msgstr "promień cienia"
+msgid "Shadows radius"
+msgstr "Promień cienia"
 
 #: ../operations/workshop/shadows-highlights.c:31
 #: ../operations/workshop/shadows-highlights-correction.c:29
-msgid "highlights amount"
-msgstr "ilość podświetlenia"
+msgid "Highlights amount"
+msgstr "Ilość podświetlenia"
 
 #: ../operations/workshop/shadows-highlights.c:34
 #: ../operations/workshop/shadows-highlights-correction.c:32
-msgid "highlights tonal width"
-msgstr "szerokość tonalna podświetlenia"
+msgid "Highlights tonal width"
+msgstr "Szerokość tonalna podświetlenia"
 
 #: ../operations/workshop/shadows-highlights.c:37
-msgid "highlights radius"
-msgstr "promień podświetlenia"
+msgid "Highlights radius"
+msgstr "Promień podświetlenia"
 
 #: ../operations/workshop/shadows-highlights.c:106
-msgid "Shadows Highlights"
+msgid "Shadows-Highlights"
 msgstr "Cień i podświetlenie"
 
 #: ../operations/workshop/shadows-highlights.c:108
-msgid "Performs shadows and highlights correction"
-msgstr "Wykonuje korekcję cieni i podświetleń"
+msgid "Perform shadows and highlights correction"
+msgstr "Wykonaj korekcję cieni i podświetleń"
 
 #: ../operations/workshop/shadows-highlights-correction.c:246
 msgid "Lighten shadows and darken highlights"
