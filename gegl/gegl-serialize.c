@@ -540,7 +540,7 @@ gegl_create_chain_argv (char      **ops,
                                                proxy), "operation",
                                              level_op[level], NULL);
 
-                  if (iter[level])
+                  if (iter[level] && gegl_node_has_pad (new, "input"))
                     gegl_node_link_many (iter[level], new, proxy, NULL);
                   else
                     gegl_node_link_many (new, proxy, NULL);
