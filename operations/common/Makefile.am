@@ -90,6 +90,7 @@ gegl_common_la_SOURCES =\
 	maze.c \
 	mblur.c \
 	mirrors.c \
+	mix.c \
 	mono-mixer.c \
 	mosaic.c \
 	motion-blur-circular.c \
