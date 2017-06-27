@@ -55,6 +55,12 @@ TestCase tests[] = {
     {"over aux=[text string='foo bar' ]",
      "svg:src-over aux=[  gegl:text string='foo bar' width=33 height=7 ]\n",
      ""},
+    {"over aux=[text string='foo bar']",
+     "svg:src-over aux=[  gegl:text string='foo bar' width=33 height=7 ]\n",
+     ""},
+    {"over aux=[ text string={ 0='foo bar' } ]",
+     "svg:src-over aux=[  gegl:text string='foo bar' width=33 height=7 ]\n",
+     ""},
      */
 
     {"over aux= [ ",
@@ -79,10 +85,6 @@ TestCase tests[] = {
      "gegl:exposure",
      "gegl:exposure has no foo property, properties: 'black-level', 'exposure', "},
 
-    {"over aux=[text string='foo bar']",
-     "svg:src-over aux=[  gegl:text string='foo bar' width=33 height=7 ]\n",
-     ""},
-
     {"over aux=[ load path=/ ]",
      "svg:src-over aux=[  gegl:load path='/' ]\n",
      ""},
@@ -103,9 +105,6 @@ TestCase tests[] = {
      "id=foo\n svg:src-over aux=[  ref=foo\n gegl:invert-linear ]\n",
      ""},
 
-    {"over aux=[ text string={ 0='foo bar' } ]",
-     "svg:src-over aux=[  gegl:text string='foo bar' width=33 height=7 ]\n",
-     ""},
 
     {NULL, NULL, NULL}
 };
