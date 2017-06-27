@@ -54,7 +54,7 @@ struct _GeglConfigClass
 extern gint _gegl_threads;
 #define gegl_config_threads()  (_gegl_threads)
 
-#define GEGL_MAX_THREADS 16
+#define GEGL_MAX_THREADS 64
 
 G_END_DECLS
 
