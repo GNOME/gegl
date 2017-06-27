@@ -132,7 +132,7 @@
     </node>
     <node operation='gegl:dither'>
       <params>
-	<param name='dither-method'>resilient</param>
+	<param name='dither-method'>add</param>
 	<param name='red-levels'>8</param>
 	<param name='green-levels'>8</param>
 	<param name='blue-levels'>8</param>
