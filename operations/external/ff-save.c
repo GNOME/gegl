@@ -120,15 +120,15 @@ typedef struct
   int       bufsize;
   int       buffer_read_pos;
   int       buffer_write_pos;
-  uint8_t  *buffer; 
-                   
+  uint8_t  *buffer;
+
   int       audio_outbuf_size;
   int16_t  *samples;
 
   GList    *audio_track;
   long      audio_pos;
   long      audio_read_pos;
-  
+
   int       next_apts;
 
   int       file_inited;
@@ -155,6 +155,9 @@ samples_per_frame (int    frame,
   double samples = 0;
   int f = 0;
 
+  /* if audio sample rate is (almost) perfectly divisible by
+   * video frame rate, return that value
+   */
   if (fabs(fmod (sample_rate, frame_rate)) < 0.0001)
   {
     if (start)
@@ -162,7 +165,7 @@ samples_per_frame (int    frame,
     return sample_rate / frame_rate;
   }
 
-  for (f = 0; f < frame; f++) 
+  for (f = 0; f < frame; f++)
   {
     samples += sample_rate / frame_rate;
   }
@@ -200,7 +203,7 @@ static void get_sample_data (Priv *p, long sample_no, float *left, float *right)
         else
           *right = af->data[1][i];
 
-	if (to_remove)  /* consuming audiotrack */
+        if (to_remove)  /* consuming audiotrack */
         {
           again:
           for (l = p->audio_track; l; l = l->next)
@@ -433,7 +436,7 @@ write_audio_frame (GeglProperties *o, AVFormatContext * oc, AVStream * st)
     sample_count = c->frame_size;
 
   /* then we encode as much as we can in a loop using the codec frame size */
-  
+
   while (p->audio_pos - p->audio_read_pos > sample_count)
   {
     long i;
@@ -566,7 +569,6 @@ add_video_stream (GeglProperties *o, AVFormatContext * oc, int codec_id)
   c->time_base = st->time_base;
 
   c->pix_fmt = AV_PIX_FMT_YUV420P;
-  
 
   if (c->codec_id == AV_CODEC_ID_MPEG2VIDEO)
     {
@@ -818,7 +820,7 @@ write_video_frame (GeglProperties *o,
       pkt2.size = p->video_outbuf_size;
 
       out_size = avcodec_encode_video2(c, &pkt2, picture_ptr, &got_packet);
-    
+
       if (!out_size && got_packet && c->coded_frame)
         {
           c->coded_frame->pts       = pkt2.pts;
@@ -898,7 +900,7 @@ tfile (GeglProperties *o)
 
   p->video_st = NULL;
   p->audio_st = NULL;
-  
+
   if (strcmp (o->video_codec, "auto"))
   {
     AVCodec *codec = avcodec_find_encoder_by_name (o->video_codec);
@@ -1035,7 +1037,7 @@ static void flush_video (GeglProperties *o)
     ret = avcodec_encode_video2 (p->video_st->codec, &pkt, NULL, &got_packet);
     if (ret < 0)
       return;
-      
+
      if (got_packet)
      {
        pkt.stream_index = p->video_st->index;

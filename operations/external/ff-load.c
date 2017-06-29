@@ -295,7 +295,6 @@ decode_audio (GeglOperation *operation,
                 samples_left -= sample_count;
                 si += sample_count;
               }
-	  
             p->prevapts = pkt.pts * av_q2d (p->audio_stream->time_base);
           }
         }
@@ -311,7 +310,7 @@ decode_frame (GeglOperation *operation,
   GeglProperties *o = GEGL_PROPERTIES (operation);
   Priv       *p = (Priv*)o->user_data;
   glong       prevframe = p->prevframe;
-  glong       decodeframe = prevframe; 
+  glong       decodeframe = prevframe;
 
   if (frame < 0)
     {
@@ -329,7 +328,6 @@ decode_frame (GeglOperation *operation,
   decodeframe = frame;
   if (frame < 2 || frame > prevframe + 64 || frame < prevframe )
   {
- 
     int64_t seek_target = av_rescale_q (((frame) * AV_TIME_BASE * 1.0) / o->frame_rate
 , AV_TIME_BASE_Q, p->video_stream->time_base) / p->video_stream->codec->ticks_per_frame;
 
@@ -374,11 +372,11 @@ decode_frame (GeglOperation *operation,
           {
              if ((pkt.dts == pkt.pts) || (p->lavc_frame->key_frame!=0))
              {
-               p->lavc_frame->pts = 
-(p->video_stream->cur_dts - p->video_stream->first_dts);
-               p->prevpts =
-     av_rescale_q ( p->lavc_frame->pts, p->video_stream->time_base,
-AV_TIME_BASE_Q) * 1.0 / AV_TIME_BASE ;
+               p->lavc_frame->pts = (p->video_stream->cur_dts -
+                                     p->video_stream->first_dts);
+               p->prevpts =  av_rescale_q (p->lavc_frame->pts,
+                                           p->video_stream->time_base,
+                                           AV_TIME_BASE_Q) * 1.0 / AV_TIME_BASE;
                decodeframe = roundf( p->prevpts * o->frame_rate);
              }
              else
@@ -415,7 +413,7 @@ prepare (GeglOperation *operation)
 
   gegl_operation_set_format (operation, "output", babl_format ("R'G'B' u8"));
 
-  if (o->path && 
+  if (o->path &&
       (!p->loadedfilename ||
       strcmp (p->loadedfilename, o->path) ||
        p->prevframe > o->frame  /* a bit heavy handed, but improves consistency */
@@ -472,19 +470,18 @@ prepare (GeglOperation *operation)
 
       if (p->audio_stream)
         {
-	  p->audio_codec = avcodec_find_decoder (p->audio_stream->codec->codec_id);
-	  if (p->audio_codec == NULL)
+          p->audio_codec = avcodec_find_decoder (p->audio_stream->codec->codec_id);
+          if (p->audio_codec == NULL)
             g_warning ("audio codec not found");
-          else 
-	    if (avcodec_open2 (p->audio_stream->codec, p->audio_codec, NULL) < 0)
-              {
-                 g_warning ("error opening codec %s", p->audio_stream->codec->codec->name);
-              }
-            else
-              {
-                 o->audio_sample_rate = p->audio_stream->codec->sample_rate;
-                 o->audio_channels = MIN(p->audio_stream->codec->channels, GEGL_MAX_AUDIO_CHANNELS);
-              }
+          else if (avcodec_open2 (p->audio_stream->codec, p->audio_codec, NULL) < 0)
+            {
+              g_warning ("error opening codec %s", p->audio_stream->codec->codec->name);
+            }
+          else
+            {
+              o->audio_sample_rate = p->audio_stream->codec->sample_rate;
+              o->audio_channels = MIN(p->audio_stream->codec->channels, GEGL_MAX_AUDIO_CHANNELS);
+            }
         }
 
       p->video_stream->codec->err_recognition = AV_EF_IGNORE_ERR |
@@ -530,9 +527,9 @@ prepare (GeglOperation *operation)
       if (!o->frames)
       {
         /* this is a guesstimate of frame-count */
-	o->frames = p->video_fcontext->duration * o->frame_rate / AV_TIME_BASE;
+        o->frames = p->video_fcontext->duration * o->frame_rate / AV_TIME_BASE;
         /* make second guess for things like luxo */
-	if (o->frames < 1)
+        if (o->frames < 1)
           o->frames = 23;
       }
 #if 0
@@ -548,7 +545,7 @@ prepare (GeglOperation *operation)
 #endif
 
     p->codec_delay = p->video_stream->codec->delay;
-  
+
     if (!strcmp (o->video_codec, "mpeg1video"))
       p->codec_delay = 1;
     else if (!strcmp (o->video_codec, "h264"))
@@ -577,10 +574,10 @@ get_bounding_box (GeglOperation *operation)
 }
 
 static int
-samples_per_frame (int    frame,
-                   double frame_rate,
-                   int    sample_rate,
-                   long  *start)
+samples_per_frame (int    frame,           /* frame no    */
+                   double frame_rate,      /* frame rate  */
+                   int    sample_rate,     /* sample rate */
+                   long  *start)           /* */
 {
   double osamples;
   double samples = 0;
@@ -629,7 +626,7 @@ static void get_sample_data (Priv *p, long sample_no, float *left, float *right)
         else
           *right = af->data[1][i];
 
-	if (to_remove)  /* consuming audiotrack */
+        if (to_remove)  /* consuming audiotrack */
         {
           again:
           for (l = p->audio_track; l; l = l->next)
@@ -687,7 +684,7 @@ process (GeglOperation       *operation,
       {
         long sample_start = 0;
 
-	if (p->audio_stream) 
+        if (p->audio_stream)
         {
           int sample_count;
           gegl_audio_fragment_set_sample_rate (o->audio, p->audio_stream->codec->sample_rate);
@@ -699,7 +696,7 @@ process (GeglOperation       *operation,
                &sample_start);
           gegl_audio_fragment_set_sample_count (o->audio, sample_count);
 
-	  decode_audio (operation, p->prevpts, p->prevpts + 5.0);
+          decode_audio (operation, p->prevpts, p->prevpts + 5.0);
           {
             int i;
             for (i = 0; i < sample_count; i++)
@@ -709,7 +706,7 @@ process (GeglOperation       *operation,
             }
           }
         }
-	
+
         if (p->video_stream->codec->pix_fmt == AV_PIX_FMT_RGB24)
         {
           GeglRectangle extent = {0,0,p->width,p->height};
