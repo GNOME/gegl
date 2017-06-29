@@ -577,25 +577,30 @@ static int
 samples_per_frame (int    frame,           /* frame no    */
                    double frame_rate,      /* frame rate  */
                    int    sample_rate,     /* sample rate */
+                   int   *ceiled,          /* rounded up */
                    long  *start)           /* */
 {
   double osamples;
   double samples = 0;
-  int f = 0;
+  double samples_per_frame = sample_rate / frame_rate;
 
-  if (fabs(fmod (sample_rate, frame_rate)) < 0.0001)
+  if (fabs(fmod (sample_rate, frame_rate)) < 0.0001f)
   {
-    *start = (sample_rate / frame_rate) * frame;
-    return sample_rate / frame_rate;
+    if (start)
+      *start = (samples_per_frame) * frame;
+    if (ceiled)
+      *ceiled = samples_per_frame;
+    return samples_per_frame;
   }
 
-  for (f = 0; f < frame; f++) 
-  {
-    samples += sample_rate / frame_rate;
-  }
+  samples = samples_per_frame * frame;
+
   osamples = samples;
-  samples += sample_rate / frame_rate;
-  (*start) = ceil(osamples);
+  samples += samples_per_frame;
+  if (start)
+    (*start) = ceil(osamples);
+  if (ceiled)
+    *ceiled = ceil(samples_per_frame);
   return ceil(samples)-ceil(osamples);
 }
 
@@ -691,9 +696,11 @@ process (GeglOperation       *operation,
           gegl_audio_fragment_set_channels    (o->audio, 2);
           gegl_audio_fragment_set_channel_layout    (o->audio, GEGL_CH_LAYOUT_STEREO);
 
-          sample_count = samples_per_frame (o->frame,
+          samples_per_frame (o->frame,
                o->frame_rate, p->audio_stream->codec->sample_rate,
+               &sample_count,
                &sample_start);
+
           gegl_audio_fragment_set_sample_count (o->audio, sample_count);
 
           decode_audio (operation, p->prevpts, p->prevpts + 5.0);
