@@ -274,7 +274,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:fill-path",
     "title",       _("Fill Path"),
-    "categories" , "render",
+    "categories",  "render:vector",
     "reference-hash", "d0909281920b72afbf399d942e464823",
     "description", _("Renders a filled region"),
     "reference-composition", composition,
