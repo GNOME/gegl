@@ -519,6 +519,8 @@ gegl_sampler_gtype_from_enum (GeglSamplerType sampler_type)
     }
 }
 
+static GMutex gegl_buffer_sampler_mutex = {0,};
+
 void
 gegl_buffer_sample_at_level (GeglBuffer       *buffer,
                              gdouble           x,
@@ -539,7 +541,6 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
     return;
   }*/
 
-  static GMutex mutex = {0,};
   gboolean threaded =  gegl_config_threads ()>1;
 
 
@@ -553,7 +554,7 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
   }
 
   if (threaded)
-    g_mutex_lock (&mutex);
+    g_mutex_lock (&gegl_buffer_sampler_mutex);
 
   /* unset the cached sampler if it dosn't match the needs */
   if (buffer->sampler != NULL &&
@@ -582,7 +583,7 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
 
   buffer->sampler->get(buffer->sampler, x, y, scale, dest, repeat_mode);
   if (threaded)
-    g_mutex_unlock (&mutex);
+    g_mutex_unlock (&gegl_buffer_sampler_mutex);
 }
 
 
@@ -597,6 +598,31 @@ gegl_buffer_sample (GeglBuffer       *buffer,
                     GeglAbyssPolicy   repeat_mode)
 {
   gegl_buffer_sample_at_level (buffer, x, y, scale, dest, format, 0, sampler_type, repeat_mode);
+}
+
+void
+gegl_buffer_sample_cleanup (GeglBuffer *buffer)
+{
+  gboolean threaded;
+
+  g_return_if_fail (GEGL_IS_BUFFER (buffer));
+
+  if (! buffer->sampler)
+    return;
+
+  threaded = gegl_config_threads ()>1;
+
+  if (threaded)
+    g_mutex_lock (&gegl_buffer_sampler_mutex);
+
+  if (buffer->sampler)
+    {
+      g_object_unref (buffer->sampler);
+      buffer->sampler = NULL;
+    }
+
+  if (threaded)
+    g_mutex_unlock (&gegl_buffer_sampler_mutex);
 }
 
 GeglSampler *

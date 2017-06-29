@@ -1559,18 +1559,6 @@ gegl_buffer_get (GeglBuffer          *buffer,
   gegl_buffer_unlock (buffer);
 }
 
-void
-gegl_buffer_sample_cleanup (GeglBuffer *buffer)
-{
-  g_return_if_fail (GEGL_IS_BUFFER (buffer));
-
-  if (buffer->sampler)
-    {
-      g_object_unref (buffer->sampler);
-      buffer->sampler = NULL;
-    }
-}
-
 static void
 gegl_buffer_copy2 (GeglBuffer          *src,
                    const GeglRectangle *src_rect,
