@@ -510,13 +510,13 @@ write_audio_frame (GeglProperties *o, AVFormatContext * oc, AVStream * st)
     av_frame_make_writable (frame);
     ret = avcodec_encode_audio2 (c, &pkt, frame, &got_packet);
 
-    av_packet_rescale_ts (&pkt, st->codec->time_base, st->time_base);
     if (ret < 0) {
       fprintf (stderr, "Error encoding audio frame: %s\n", av_err2str (ret));
     }
 
     if (got_packet)
     {
+      av_packet_rescale_ts (&pkt, st->codec->time_base, st->time_base);
       pkt.stream_index = st->index;
       av_interleaved_write_frame (oc, &pkt);
       av_packet_unref (&pkt);
