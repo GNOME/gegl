@@ -83,6 +83,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   operation_class->no_cache      = FALSE;
   operation_class->want_in_place = FALSE;
+  operation_class->threaded      = FALSE;
   operation_class->prepare       = prepare;
   point_filter_class->process    = process;
 
