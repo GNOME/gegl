@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-18 21:04+0200\n"
-"PO-Revision-Date: 2017-06-18 21:05+0200\n"
+"POT-Creation-Date: 2017-07-02 18:50+0200\n"
+"PO-Revision-Date: 2017-07-02 18:52+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -538,6 +538,7 @@ msgstr ""
 #: ../operations/common/whirl-pinch.c:45
 #: ../operations/external/matting-levin.c:29
 #: ../operations/workshop/kuwahara.c:25 ../operations/workshop/median-blur.c:38
+#: ../operations/workshop/shadows-highlights.c:37
 #: ../operations/workshop/spiral.c:47
 msgid "Radius"
 msgstr "Promień"
@@ -3401,6 +3402,24 @@ msgstr "Odzwierciedlanie kalejdoskopowe"
 msgid "Create a kaleidoscope like effect."
 msgstr "Utwórz efekt podobny do kalejdoskopu."
 
+#: ../operations/common/mix.c:25
+msgid "Ratio"
+msgstr "Proporcje"
+
+#: ../operations/common/mix.c:26
+msgid "mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
+msgstr ""
+"proporcje mieszania, odczytywane jako ilość dodatkowego, 0=wejście 0,5=pół "
+"1,0=dodatkowe"
+
+#: ../operations/common/mix.c:91
+msgid "Mix"
+msgstr "Mieszanie"
+
+#: ../operations/common/mix.c:93
+msgid "do a lerp, linear interpolation (lerp) between input and aux"
+msgstr "wykonaj interpolację liniową „lerp” między wejściem a dodatkowym"
+
 #: ../operations/common/mono-mixer.c:28
 msgid "Red Channel Multiplier"
 msgstr "Mnożnik kanału czerwieni"
@@ -5679,11 +5698,11 @@ msgstr "kodek-dźwięku"
 msgid "audio"
 msgstr "dźwięk"
 
-#: ../operations/external/ff-load.c:781
+#: ../operations/external/ff-load.c:785
 msgid "FFmpeg Frame Loader"
 msgstr "Wczytywanie klatek biblioteki FFmpeg"
 
-#: ../operations/external/ff-load.c:783
+#: ../operations/external/ff-load.c:787
 msgid "FFmpeg video frame importer."
 msgstr "Importer klatek wideo biblioteki FFmpeg."
 
@@ -5828,11 +5847,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: ../operations/external/ff-save.c:1095
+#: ../operations/external/ff-save.c:1112
 msgid "FFmpeg Frame Saver"
 msgstr "Zapisywanie klatek biblioteki FFmpeg"
 
-#: ../operations/external/ff-save.c:1097
+#: ../operations/external/ff-save.c:1114
 msgid "FFmpeg video output sink"
 msgstr "Odpływ wyjścia wideo biblioteki FFmpeg"
 
@@ -7663,43 +7682,45 @@ msgstr "Segmentacja k-średnich"
 msgid "Segment colors using K-means clustering"
 msgstr "Segmentuj kolory za pomocą klastrów k-średnich"
 
-#: ../operations/workshop/shadows-highlights.c:22
-#: ../operations/workshop/shadows-highlights-correction.c:23
-msgid "Shadows amount"
-msgstr "Ilość cienia"
-
-#: ../operations/workshop/shadows-highlights.c:25
-#: ../operations/workshop/shadows-highlights-correction.c:26
-msgid "Shadows tonal width"
-msgstr "Szerokość tonalna cienia"
-
 #: ../operations/workshop/shadows-highlights.c:28
-msgid "Shadows radius"
-msgstr "Promień cienia"
+#: ../operations/workshop/shadows-highlights-correction.c:29
+msgid "Shadows"
+msgstr "Cień"
 
 #: ../operations/workshop/shadows-highlights.c:31
-#: ../operations/workshop/shadows-highlights-correction.c:29
-msgid "Highlights amount"
-msgstr "Ilość podświetlenia"
+#: ../operations/workshop/shadows-highlights-correction.c:32
+msgid "Highlights"
+msgstr "Podświetlenie"
 
 #: ../operations/workshop/shadows-highlights.c:34
-#: ../operations/workshop/shadows-highlights-correction.c:32
-msgid "Highlights tonal width"
-msgstr "Szerokość tonalna podświetlenia"
+#: ../operations/workshop/shadows-highlights-correction.c:35
+msgid "White point adjustment"
+msgstr "Dostosowanie punktu bieli"
 
-#: ../operations/workshop/shadows-highlights.c:37
-msgid "Highlights radius"
-msgstr "Promień podświetlenia"
+#: ../operations/workshop/shadows-highlights.c:41
+#: ../operations/workshop/shadows-highlights-correction.c:38
+msgid "Compress"
+msgstr "Kompresuj"
 
-#: ../operations/workshop/shadows-highlights.c:106
+#: ../operations/workshop/shadows-highlights.c:44
+#: ../operations/workshop/shadows-highlights-correction.c:41
+msgid "Shadows color adjustment"
+msgstr "Dostosowanie koloru cienia"
+
+#: ../operations/workshop/shadows-highlights.c:47
+#: ../operations/workshop/shadows-highlights-correction.c:44
+msgid "Highlights color adjustment"
+msgstr "Dostosowanie koloru podświetlenia"
+
+#: ../operations/workshop/shadows-highlights.c:109
 msgid "Shadows-Highlights"
 msgstr "Cień i podświetlenie"
 
-#: ../operations/workshop/shadows-highlights.c:108
+#: ../operations/workshop/shadows-highlights.c:112
 msgid "Perform shadows and highlights correction"
 msgstr "Wykonaj korekcję cieni i podświetleń"
 
-#: ../operations/workshop/shadows-highlights-correction.c:246
+#: ../operations/workshop/shadows-highlights-correction.c:314
 msgid "Lighten shadows and darken highlights"
 msgstr "Rozjaśnij cienie i przyciemnij podświetlenia"
 
