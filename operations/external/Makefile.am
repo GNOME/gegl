@@ -182,8 +182,5 @@ npd_la_CFLAGS = $(AM_CFLAGS) $(NPD_CFLAGS) $(CAIRO_CFLAGS)
 npd_la_LIBADD = $(op_libs) $(NPD_LIBS) $(CAIRO_LIBS)
 endif
 
-BUILT_SOURCES = $(subst .c,.c.h,$(wildcard $(srcdir)/*.c))
-EXTRA_DIST += $(BUILT_SOURCES)
-
 opdir = $(libdir)/gegl-@GEGL_API_VERSION@
 op_LTLIBRARIES = $(ops)

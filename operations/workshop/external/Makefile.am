@@ -33,7 +33,6 @@ v4l2_la_CFLAGS = $(AM_CFLAGS) $(V4L2_CFLAGS)
 endif
 
 EXTRA_DIST = $(wildcard $(srcdir)/*.h)
-BUILT_SOURCES = $(subst .c,.c.h,$(wildcard $(srcdir)/*.c))
 
 opdir = $(libdir)/gegl-@GEGL_API_VERSION@
 op_LTLIBRARIES = $(ops)

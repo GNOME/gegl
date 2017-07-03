@@ -3,7 +3,6 @@
 EXTRA_DIST = \
 	xml_insert.sh \
     gen-loader.sh \
-    csourcetostring.py \
 	gobj2dot.rb
 
 AM_CPPFLAGS = \
