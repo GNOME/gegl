@@ -121,11 +121,15 @@ gegl_create_chain_argv (char      **ops,
           if (strchr (*arg, '}'))
             {
               gdouble y = 0;
+              char tmpbuf[1024];
+              GQuark anim_quark;
+              sprintf (tmpbuf, "%s-anim", prop);
+              anim_quark = g_quark_from_string (tmpbuf);
+
               if (time == 0.0) /* avoiding ugly start interpolation artifact */
                 time = 0.4;
               gegl_path_calc_y_for_x (g_object_get_qdata (G_OBJECT (new),
-                                                          g_quark_from_string(
-                                                            prop)), time, &y);
+                                      anim_quark), time, &y);
               gegl_node_set (new, prop, y, NULL);
 
               in_keyframes = 0;
@@ -249,6 +253,10 @@ gegl_create_chain_argv (char      **ops,
                           }
                         else
                           {
+                            char tmpbuf[1024];
+                            GQuark anim_quark;
+                            sprintf (tmpbuf, "%s-anim", key);
+                            anim_quark = g_quark_from_string (tmpbuf);
                             path = gegl_path_new ();
                             in_keyframes = 1;
                             if (prop)
@@ -256,8 +264,7 @@ gegl_create_chain_argv (char      **ops,
                             prop = g_strdup (key);
 
                             g_object_set_qdata_full (G_OBJECT (
-                                                       new), g_quark_from_string(
-                                                       key), path,
+                                                       new), anim_quark, path,
                                                      g_object_unref);
                           }
 
@@ -368,10 +375,15 @@ gegl_create_chain_argv (char      **ops,
                       {
                         if (strstr (value, "rel"))
                           {
+                            char tmpbuf[1024];
+                            GQuark rel_quark;
+                            sprintf (tmpbuf, "%s-rel", key);
+                            rel_quark = g_quark_from_string (tmpbuf);
+
                             g_object_set_qdata_full (G_OBJECT (
                                                        new),
-                                                     g_quark_from_string(
-                                                       key), g_strdup (
+                                                     rel_quark,
+                                                       g_strdup (
                                                        value), g_free);
 
                             if (g_type_is_a (target_type, G_TYPE_INT))
@@ -631,6 +643,7 @@ gegl_create_chain (const char *str, GeglNode *op_start, GeglNode *op_end,
     }
 }
 
+/* TODO: serialize keyframed properties */
 static gchar *
 gegl_serialize2 (GeglNode *start, GeglNode *end, const char *basepath,
                  GHashTable *ht, GeglSerializeFlag flags)
