@@ -59,6 +59,14 @@ remove_in_betweens (GeglNode *nop_raw,
     }
 }
 
+static void each_knot (const GeglPathItem *path_node,
+                       gpointer user_data)
+{
+  GString *str = user_data;
+
+  g_string_append_printf (str, " %f=%f ", path_node->point[0].x, path_node->point[0].y);
+}
+
 void
 gegl_create_chain_argv (char      **ops,
                         GeglNode   *start,
@@ -736,17 +744,29 @@ gegl_serialize2 (GeglNode *start, GeglNode *end, const char *basepath,
                 GType property_type = G_PARAM_SPEC_VALUE_TYPE (properties[i]);
                 const GValue*default_value = g_param_spec_get_default_value (
                   properties[i]);
+                char tmpbuf[1024];
+                GeglPath *path = NULL;
                 gboolean printed = FALSE;
-
+                GQuark anim_quark;
+                sprintf (tmpbuf, "%s-anim", properties[i]->name);
+                anim_quark = g_quark_from_string (tmpbuf);
+                path = g_object_get_qdata (G_OBJECT (iter), anim_quark);
 
                 if (property_type == G_TYPE_FLOAT)
                   {
                     gfloat defval = g_value_get_float (default_value);
                     gfloat value;
-                    gchar str[G_ASCII_DTOSTR_BUF_SIZE];
                     gegl_node_get (iter, properties[i]->name, &value, NULL);
-                    if (value != defval || (!trim_defaults))
+
+                    if (path)
+                    {
+                      g_string_append_printf (s2, " %s={ ", property_name);
+                      gegl_path_foreach (path, each_knot, s2);
+                      g_string_append_printf (s2, " } ");
+                    }
+                    else if (value != defval || (!trim_defaults))
                       {
+                        gchar str[G_ASCII_DTOSTR_BUF_SIZE];
                         g_ascii_dtostr (str, sizeof(str), value);
                         if (flags & GEGL_SERIALIZE_INDENT)
                           g_string_append_printf (s2, "  ");
@@ -759,10 +779,17 @@ gegl_serialize2 (GeglNode *start, GeglNode *end, const char *basepath,
                   {
                     gdouble defval = g_value_get_double (default_value);
                     gdouble value;
-                    gchar str[G_ASCII_DTOSTR_BUF_SIZE];
                     gegl_node_get (iter, property_name, &value, NULL);
-                    if (value != defval || (!trim_defaults))
+
+                    if (path)
+                    {
+                      g_string_append_printf (s2, " %s={ ", property_name);
+                      gegl_path_foreach (path, each_knot, s2);
+                      g_string_append_printf (s2, " } ");
+                    }
+                    else if (value != defval || (!trim_defaults))
                       {
+                        gchar str[G_ASCII_DTOSTR_BUF_SIZE];
                         if (flags & GEGL_SERIALIZE_INDENT)
                           g_string_append_printf (s2, "  ");
                         g_ascii_dtostr (str, sizeof(str), value);
@@ -777,7 +804,14 @@ gegl_serialize2 (GeglNode *start, GeglNode *end, const char *basepath,
                     gint value;
                     gchar str[64];
                     gegl_node_get (iter, properties[i]->name, &value, NULL);
-                    if (value != defval || (!trim_defaults))
+
+                    if (path)
+                    {
+                      g_string_append_printf (s2, " %s={ ", property_name);
+                      gegl_path_foreach (path, each_knot, s2);
+                      g_string_append_printf (s2, " } ");
+                    }
+                    else if (value != defval || (!trim_defaults))
                       {
                         if (flags & GEGL_SERIALIZE_INDENT)
                           g_string_append_printf (s2, "  ");
