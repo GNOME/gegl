@@ -972,7 +972,8 @@ gegl_serialize2 (GeglNode *start, GeglNode *end, const char *basepath,
                     {
                       char *str = gegl_serialize2 (NULL, aux, basepath, ht,
                                                    flags);
-                      g_string_append_printf (s2, " aux=[ %s ]\n", str);
+                      g_string_append_printf (s2, " aux=[ %s ]%s", str,
+                            (flags& GEGL_SERIALIZE_INDENT)?"\n":" ");
                       g_free (str);
                     }
                 }
