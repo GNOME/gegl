@@ -109,8 +109,17 @@ gegl_create_chain_argv (char      **ops,
               value[-1] = '\0';
               if (strstr (value, "rel"))
                 {
+                  char tmpbuf[1024];
+                  GQuark rel_quark;
                   gegl_path_append (path, 'L', g_strtod (key, NULL),
                                     make_rel (value));
+
+                  sprintf (tmpbuf, "%s-rel", prop);
+                  rel_quark = g_quark_from_string (tmpbuf);
+                  g_object_set_qdata_full (G_OBJECT (
+                                           new),
+                                           rel_quark,
+                                           g_strdup (value), g_free);
                 }
               else
                 {
