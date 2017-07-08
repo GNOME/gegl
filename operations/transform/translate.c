@@ -25,10 +25,14 @@
 property_double (x, _("X"), 0.0)
     description (_("Horizontal translation"))
     ui_range (-1000.0, 1000.0)
+    ui_meta ("unit", "pixel-distance")
+    ui_meta ("axis", "x")
 
 property_double (y, _("Y"), 0.0)
     description (_("Vertical translation"))
     ui_range (-1000.0, 1000.0)
+    ui_meta ("unit", "pixel-distance")
+    ui_meta ("axis", "y")
 
 #else
 
