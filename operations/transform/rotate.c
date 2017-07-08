@@ -26,6 +26,7 @@ property_double (degrees, _("Degrees"), 0.0)
     description(_("Angle to rotate (counter-clockwise)"))
     value_range (-720.0, 720.0)
     ui_range (-180.0, 180.0)
+    ui_meta ("unit", "degree")
 
 #else
 
