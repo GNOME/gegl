@@ -32,6 +32,7 @@ property_string (font, _("Font family"), "Sans")
 property_double (size, _("Size"), 10.0)
     description (_("Font size in pixels."))
     value_range (0.0, 2048.0)
+    ui_meta ("unit", "pixel-distance")
 
 property_color  (color, _("Color"), "black")
     /* TRANSLATORS: the string 'black' should not be translated */
@@ -40,11 +41,13 @@ property_color  (color, _("Color"), "black")
 property_int  (wrap, _("Wrap width"), -1)
     description (_("Sets the width in pixels at which long lines will wrap. "
                      "Use -1 for no wrapping."))
+    ui_meta ("unit", "pixel-distance")
     value_range (-1, 1000000)
 property_int  (vertical_wrap, _("Wrap height"), 0)
     description (_("Sets the height in pixels according to which the text is "
                    "vertically justified. "
                    "Use -1 for no vertical justification."))
+    ui_meta ("unit", "pixel-distance")
     value_range (-1, 1000000)
 
 property_int    (alignment, _("Justification"), 0)
