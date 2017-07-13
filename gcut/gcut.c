@@ -15,7 +15,7 @@
    if topology of graphs match..
  */
 
-#include "gedl.h"
+#include "gcut.h"
 
 #define DEFAULT_output_path      "output.mp4"
 #define DEFAULT_video_codec      "auto"
@@ -37,7 +37,7 @@
 #define DEFAULT_range_end         0
 #define DEFAULT_framedrop         0
 
-char *gedl_binary_path = NULL;
+char *gcut_binary_path = NULL;
 
 const char *default_edl =
 #include "default.edl.inc"
@@ -70,20 +70,20 @@ static char *escaped_base_path (GeglEDL *edl, const char *clip_path)
   return ret;
 }
 
-char *gedl_make_thumb_path (GeglEDL *edl, const char *clip_path)
+char *gcut_make_thumb_path (GeglEDL *edl, const char *clip_path)
 {
   gchar *ret;
   gchar *path = escaped_base_path (edl, clip_path);
-  ret = g_strdup_printf ("%s.gedl/thumb/%s.png", edl->parent_path, path); // XXX: should escape relative/absolute path instead of basename - or add bit of its hash
+  ret = g_strdup_printf ("%s.gcut/thumb/%s.png", edl->parent_path, path); // XXX: should escape relative/absolute path instead of basename - or add bit of its hash
   g_free (path);
   return ret;
 }
 
-char *gedl_make_proxy_path (GeglEDL *edl, const char *clip_path)
+char *gcut_make_proxy_path (GeglEDL *edl, const char *clip_path)
 {
   gchar *ret;
   gchar *path = escaped_base_path (edl, clip_path);
-  ret = g_strdup_printf ("%s.gedl/proxy/%s-%ix%i.mp4", edl->parent_path, path, edl->proxy_width, edl->proxy_height);
+  ret = g_strdup_printf ("%s.gcut/proxy/%s-%ix%i.mp4", edl->parent_path, path, edl->proxy_width, edl->proxy_height);
   g_free (path);
   return ret;
 }
@@ -91,7 +91,7 @@ char *gedl_make_proxy_path (GeglEDL *edl, const char *clip_path)
 
 #include <stdlib.h>
 
-GeglEDL *gedl_new           (void)
+GeglEDL *gcut_new           (void)
 {
   GeglRectangle roi = {0,0,1024, 1024};
   GeglEDL *edl = g_malloc0(sizeof (GeglEDL));
@@ -134,14 +134,14 @@ GeglEDL *gedl_new           (void)
   return edl;
 }
 
-void gedl_set_size (GeglEDL *edl, int width, int height);
-void gedl_set_size (GeglEDL *edl, int width, int height)
+void gcut_set_size (GeglEDL *edl, int width, int height);
+void gcut_set_size (GeglEDL *edl, int width, int height)
 {
   edl->width = width;
   edl->height = height;
 }
 
-void     gedl_free          (GeglEDL *edl)
+void     gcut_free          (GeglEDL *edl)
 {
   while (edl->clips)
   {
@@ -165,7 +165,7 @@ void     gedl_free          (GeglEDL *edl)
 }
 
 
-Clip *gedl_get_clip (GeglEDL *edl, int frame, int *clip_frame_no)
+Clip *gcut_get_clip (GeglEDL *edl, int frame, int *clip_frame_no)
 {
   GList *l;
   int clip_start = 0;
@@ -192,21 +192,21 @@ Clip *gedl_get_clip (GeglEDL *edl, int frame, int *clip_frame_no)
 int cache_hits = 0;
 int cache_misses = 0;
 
-void gedl_set_use_proxies (GeglEDL *edl, int use_proxies)
+void gcut_set_use_proxies (GeglEDL *edl, int use_proxies)
 {
   int frame;
   edl->use_proxies = use_proxies;
 
   if (edl->use_proxies)
-    gedl_set_size (edl, edl->proxy_width, edl->proxy_height);
+    gcut_set_size (edl, edl->proxy_width, edl->proxy_height);
   else
-    gedl_set_size (edl, edl->video_width, edl->video_height);
+    gcut_set_size (edl, edl->video_width, edl->video_height);
 
   frame = edl->frame;
   if (frame > 0)
   {
     edl->frame--;
-    gedl_set_frame (edl, frame);
+    gcut_set_frame (edl, frame);
   }
 
 }
@@ -214,7 +214,7 @@ void gedl_set_use_proxies (GeglEDL *edl, int use_proxies)
 /* computes the hash of a given rendered frame - without altering
  * any state
  */
-gchar *gedl_get_frame_hash_full (GeglEDL *edl, int frame,
+gchar *gcut_get_frame_hash_full (GeglEDL *edl, int frame,
                                  Clip **clip0, int *clip0_frame,
                                  Clip **clip1, int *clip1_frame,
                                  double *mix)
@@ -342,12 +342,12 @@ gchar *gedl_get_frame_hash_full (GeglEDL *edl, int frame,
   return NULL;
 }
 
-gchar *gedl_get_frame_hash (GeglEDL *edl, int frame)
+gchar *gcut_get_frame_hash (GeglEDL *edl, int frame)
 {
-  return gedl_get_frame_hash_full (edl, frame, NULL, NULL, NULL, NULL, NULL);
+  return gcut_get_frame_hash_full (edl, frame, NULL, NULL, NULL, NULL, NULL);
 }
 
-void gedl_update_buffer (GeglEDL *edl)
+void gcut_update_buffer (GeglEDL *edl)
 {
   g_mutex_lock (&edl->buffer_copy_mutex);
   {
@@ -358,9 +358,9 @@ void gedl_update_buffer (GeglEDL *edl)
   }
   g_mutex_unlock (&edl->buffer_copy_mutex);
 }
-/*  calling this causes gedl to rig up its graphs for providing/rendering this frame
+/*  calling this causes gcut to rig up its graphs for providing/rendering this frame
  */
-void gedl_set_frame (GeglEDL *edl, int frame)
+void gcut_set_frame (GeglEDL *edl, int frame)
 {
   if ((edl->frame) == frame && (frame != 0))
   {
@@ -373,8 +373,8 @@ void gedl_set_frame (GeglEDL *edl, int frame)
   Clip *clip1; int clip1_frame;
   double mix;
 
-  char *frame_hash = gedl_get_frame_hash_full (edl, frame, &clip0, &clip0_frame, &clip1, &clip1_frame, &mix);
-  char *cache_path = g_strdup_printf ("%s.gedl/cache/%s", edl->parent_path, frame_hash);
+  char *frame_hash = gcut_get_frame_hash_full (edl, frame, &clip0, &clip0_frame, &clip1, &clip1_frame, &mix);
+  char *cache_path = g_strdup_printf ("%s.gcut/cache/%s", edl->parent_path, frame_hash);
   g_free (frame_hash);
   if (g_file_test (cache_path, G_FILE_TEST_IS_REGULAR) &&
       (edl->cache_flags & CACHE_TRY_ALL))
@@ -397,7 +397,7 @@ void gedl_set_frame (GeglEDL *edl, int frame)
     gegl_buffer_set_extent (edl->buffer, &ext);
     gegl_node_process (edl->store_final_buf);
 
-    gedl_update_buffer (edl);
+    gcut_update_buffer (edl);
     g_free (cache_path);
     return;
   }
@@ -422,11 +422,11 @@ void gedl_set_frame (GeglEDL *edl, int frame)
     gegl_node_connect_to (clip1->nop_crop, "output", edl->mix, "aux");
   }
   gegl_node_process (edl->store_final_buf);
-  gedl_update_buffer (edl);
+  gcut_update_buffer (edl);
 
   /* write cached render of this frame */
   if (cache_path &&
-      !strstr (clip0->path, ".gedl/cache") && (!edl->use_proxies))
+      !strstr (clip0->path, ".gcut/cache") && (!edl->use_proxies))
     {
       const gchar *cache_path_final = cache_path;
       gchar *cache_path       = g_strdup_printf ("%s~", cache_path_final);
@@ -458,39 +458,39 @@ void gedl_set_frame (GeglEDL *edl, int frame)
   g_free (cache_path);
 }
 
-void gedl_set_time (GeglEDL *edl, double seconds)
+void gcut_set_time (GeglEDL *edl, double seconds)
 {
-  gedl_set_frame (edl, seconds * edl->fps);
+  gcut_set_frame (edl, seconds * edl->fps);
 }
 
-void gedl_set_fps (GeglEDL *edl, double fps)
+void gcut_set_fps (GeglEDL *edl, double fps)
 {
   edl->fps = fps;
 }
-double gedl_get_fps (GeglEDL *edl)
+double gcut_get_fps (GeglEDL *edl)
 {
   return edl->fps;
 }
-int    gedl_get_frame (GeglEDL *edl)
+int    gcut_get_frame (GeglEDL *edl)
 {
   return edl->frame;
 }
-double gedl_get_time (GeglEDL *edl)
+double gcut_get_time (GeglEDL *edl)
 {
   return edl->frame / edl->fps;
 }
-GeglAudioFragment *gedl_get_audio (GeglEDL *edl)
+GeglAudioFragment *gcut_get_audio (GeglEDL *edl)
 {
   Clip * clip = edl_get_clip_for_frame (edl, edl->frame);
   return clip?clip->audio:NULL;
 }
-const char *gedl_get_clip_path (GeglEDL *edl)
+const char *gcut_get_clip_path (GeglEDL *edl)
 {
   Clip * clip = edl_get_clip_for_frame (edl, edl->frame);
   return clip?clip->clip_path:"";
 }
 
-void gedl_get_video_info (const char *path, int *duration, double *fps)
+void gcut_get_video_info (const char *path, int *duration, double *fps)
 {
   GeglNode *gegl = gegl_node_new ();
   GeglNode *probe = gegl_node_new_child (gegl, "operation",
@@ -504,7 +504,7 @@ void gedl_get_video_info (const char *path, int *duration, double *fps)
   g_object_unref (gegl);
 }
 
-int gedl_get_duration (GeglEDL *edl)
+int gcut_get_duration (GeglEDL *edl)
 {
   int count = 0;
   GList *l;
@@ -517,7 +517,7 @@ int gedl_get_duration (GeglEDL *edl)
 }
 #include <string.h>
 
-void gedl_parse_clip (GeglEDL *edl, const char *line)
+void gcut_parse_clip (GeglEDL *edl, const char *line)
 {
   int start = 0; int end = 0; int duration = 0;
   const char *rest = NULL;
@@ -548,7 +548,7 @@ void gedl_parse_clip (GeglEDL *edl, const char *line)
    */
 }
 
-void gedl_parse_line (GeglEDL *edl, const char *line)
+void gcut_parse_line (GeglEDL *edl, const char *line)
 {
   int start = 0; int end = 0;
   const char *rest = NULL;
@@ -567,7 +567,7 @@ void gedl_parse_line (GeglEDL *edl, const char *line)
      while (value[strlen(value)-1]==' ' ||
             value[strlen(value)-1]=='\n')
             value[strlen(value)-1]='\0';
-     if (!strcmp (key, "fps"))               gedl_set_fps (edl, g_strtod (value, NULL));
+     if (!strcmp (key, "fps"))               gcut_set_fps (edl, g_strtod (value, NULL));
      if (!strcmp (key, "framedrop"))         edl->framedrop     = g_strtod (value, NULL);
      if (!strcmp (key, "output-path"))       edl->output_path = g_strdup (value);
      if (!strcmp (key, "video-codec"))       edl->video_codec = g_strdup (value);
@@ -652,11 +652,11 @@ void gedl_parse_line (GeglEDL *edl, const char *line)
 
      if (ff_probe && !clip_is_static_source (clip))
        {
-         gedl_get_video_info (clip->path, &clip->duration, &clip->fps);
+         gcut_get_video_info (clip->path, &clip->duration, &clip->fps);
 
          if (edl->fps == 0.0)
          {
-           gedl_set_fps (edl, clip->fps);
+           gcut_set_fps (edl, clip->fps);
          }
        }
 
@@ -683,12 +683,12 @@ void gedl_parse_line (GeglEDL *edl, const char *line)
 
 #include <string.h>
 
-void gedl_update_video_size (GeglEDL *edl);
-GeglEDL *gedl_new_from_string (const char *string, const char *parent_path);
-GeglEDL *gedl_new_from_string (const char *string, const char *parent_path)
+void gcut_update_video_size (GeglEDL *edl);
+GeglEDL *gcut_new_from_string (const char *string, const char *parent_path);
+GeglEDL *gcut_new_from_string (const char *string, const char *parent_path)
 {
   GString *line = g_string_new ("");
-  GeglEDL *edl = gedl_new ();
+  GeglEDL *edl = gcut_new ();
   int clips_done = 0;
   int newlines = 0;
   edl->parent_path = g_strdup (parent_path);
@@ -702,7 +702,7 @@ GeglEDL *gedl_new_from_string (const char *string, const char *parent_path)
        if (clips_done)
        {
          if (line->len > 2)
-           gedl_parse_clip (edl, line->str);
+           gcut_parse_clip (edl, line->str);
          g_string_assign (line, "");
        }
        else
@@ -733,7 +733,7 @@ GeglEDL *gedl_new_from_string (const char *string, const char *parent_path)
 
            if (newlines >= 2)
            {
-             gedl_parse_line (edl, line->str);
+             gcut_parse_line (edl, line->str);
              g_string_assign (line, "");
            }
            else
@@ -747,16 +747,16 @@ GeglEDL *gedl_new_from_string (const char *string, const char *parent_path)
   }
   g_string_free (line, TRUE);
 
-  gedl_update_video_size (edl);
-  gedl_set_use_proxies (edl, edl->use_proxies);
+  gcut_update_video_size (edl);
+  gcut_set_use_proxies (edl, edl->use_proxies);
 
   return edl;
 }
 
-void gedl_save_path (GeglEDL *edl, const char *path)
+void gcut_save_path (GeglEDL *edl, const char *path)
 {
   char *serialized;
-  serialized = gedl_serialize (edl);
+  serialized = gcut_serialize (edl);
 
   if (g_file_test (path, G_FILE_TEST_IS_REGULAR))
   {
@@ -779,7 +779,7 @@ void gedl_save_path (GeglEDL *edl, const char *path)
        g_free (old_contents);
      }
 
-     sprintf (backup_path, "%s.gedl/history/%s-", edl->parent_path, basename(edl->path));
+     sprintf (backup_path, "%s.gcut/history/%s-", edl->parent_path, basename(edl->path));
 
      time_t now = time(NULL);
      tim = gmtime(&now);
@@ -803,7 +803,7 @@ void gedl_save_path (GeglEDL *edl, const char *path)
   fclose (file);
 }
 
-void gedl_update_video_size (GeglEDL *edl)
+void gcut_update_video_size (GeglEDL *edl)
 {
   if ((edl->video_width == 0 || edl->video_height == 0) && edl->clips)
     {
@@ -829,9 +829,9 @@ void gedl_update_video_size (GeglEDL *edl)
   }
 }
 
-static void generate_gedl_dir (GeglEDL *edl)
+static void generate_gcut_dir (GeglEDL *edl)
 {
-  char *tmp = g_strdup_printf ("cd %s; mkdir .gedl 2>/dev/null ; mkdir .gedl/cache 2>/dev/null mkdir .gedl/proxy 2>/dev/null mkdir .gedl/thumb 2>/dev/null ; mkdir .gedl/video 2>/dev/null; mkdir .gedl/history 2>/dev/null", edl->parent_path);
+  char *tmp = g_strdup_printf ("cd %s; mkdir .gcut 2>/dev/null ; mkdir .gcut/cache 2>/dev/null mkdir .gcut/proxy 2>/dev/null mkdir .gcut/thumb 2>/dev/null ; mkdir .gcut/video 2>/dev/null; mkdir .gcut/history 2>/dev/null", edl->parent_path);
   system (tmp);
   g_free (tmp);
 }
@@ -840,9 +840,9 @@ static GTimer *  timer            = NULL;
 static guint     timeout_id       = 0;
 static gdouble   throttle         = 4.0;
 
-void gedl_reread (GeglEDL *edl)
+void gcut_reread (GeglEDL *edl)
 {
-  GeglEDL *new_edl = gedl_new_from_path (edl->path);
+  GeglEDL *new_edl = gcut_new_from_path (edl->path);
   GList *l;
 
   /* swap clips */
@@ -863,13 +863,13 @@ void gedl_reread (GeglEDL *edl)
     clip->edl = new_edl;
   }
 
-  gedl_free (new_edl);
+  gcut_free (new_edl);
 }
 
 static gboolean timeout (gpointer user_data)
 {
   GeglEDL *edl = user_data;
-  gedl_reread (edl);
+  gcut_reread (edl);
   // system (user_data);
   g_timer_start (timer);
   timeout_id = 0;
@@ -899,12 +899,12 @@ static void file_changed (GFileMonitor     *monitor,
 }
 
 void
-gedl_monitor_start (GeglEDL *edl)
+gcut_monitor_start (GeglEDL *edl)
 {
   if (!edl->path)
     return;
   /* save to make sure file exists */
-  gedl_save_path (edl, edl->path);
+  gcut_save_path (edl, edl->path);
   /* start monitor */
   timer = g_timer_new ();
   edl->monitor = g_file_monitor_file (g_file_new_for_path (edl->path),
@@ -913,7 +913,7 @@ gedl_monitor_start (GeglEDL *edl)
   if(0)g_signal_connect (edl->monitor, "changed", G_CALLBACK (file_changed), edl);
 }
 
-GeglEDL *gedl_new_from_path (const char *path)
+GeglEDL *gcut_new_from_path (const char *path)
 {
   GeglEDL *edl = NULL;
   gchar *string = NULL;
@@ -925,7 +925,7 @@ GeglEDL *gedl_new_from_path (const char *path)
     char *parent = g_strdup (rpath);
     strrchr(parent, '/')[1]='\0';
 
-      edl = gedl_new_from_string (string, parent);
+      edl = gcut_new_from_string (string, parent);
 
     g_free (parent);
     g_free (string);
@@ -945,7 +945,7 @@ GeglEDL *gedl_new_from_path (const char *path)
       parent = g_malloc0 (PATH_MAX);
       getcwd (parent, PATH_MAX);
     }
-    edl = gedl_new_from_string ("", parent);
+    edl = gcut_new_from_string ("", parent);
     if (!edl->path)
     {
       if (path[0] == '/')
@@ -959,7 +959,7 @@ GeglEDL *gedl_new_from_path (const char *path)
     }
     g_free (parent);
   }
-  generate_gedl_dir (edl);
+  generate_gcut_dir (edl);
 
   return edl;
 }
@@ -970,7 +970,7 @@ static void setup (GeglEDL *edl)
   edl->mix = gegl_node_new_child (edl->gegl, "operation", "gegl:mix", NULL);
   edl->encode = gegl_node_new_child (edl->gegl, "operation", "gegl:ff-save",
                                      "path",           edl->output_path,
-                                     "frame-rate",     gedl_get_fps (edl),
+                                     "frame-rate",     gcut_get_fps (edl),
                                      "video-bit-rate", edl->video_bitrate,
                                      "video-bufsize",  edl->video_bufsize,
                                      "audio-bit-rate", edl->audio_bitrate,
@@ -998,13 +998,13 @@ static void encode_frames (GeglEDL *edl)
   for (frame_no = edl->range_start; frame_no <= edl->range_end; frame_no++)
   {
     edl->frame_no = frame_no;
-    gedl_set_frame (edl, edl->frame_no);
+    gcut_set_frame (edl, edl->frame_no);
 
     fprintf (stdout, "\r%1.2f%% %04d / %04d   ",
      100.0 * (frame_no-edl->range_start) * 1.0 / (edl->range_end - edl->range_start),
      frame_no, edl->range_end);
 
-    gegl_node_set (edl->encode, "audio", gedl_get_audio (edl), NULL);
+    gegl_node_set (edl->encode, "audio", gcut_get_audio (edl), NULL);
     gegl_node_process (edl->encode);
     fflush (0);
   }
@@ -1037,7 +1037,7 @@ static void process_frames_cache (GeglEDL *edl)
   int frame_start = edl->frame_no;
   int duration;
   signal(SIGUSR2, handler1);
-  duration = gedl_get_duration (edl);
+  duration = gcut_get_duration (edl);
 
   GList *l;
   int clip_start = 0;
@@ -1046,7 +1046,7 @@ static void process_frames_cache (GeglEDL *edl)
 
   edl->frame_no = frame_start;
   if (this_cacher (edl->frame_no))
-    gedl_set_frame (edl, edl->frame_no);
+    gcut_set_frame (edl, edl->frame_no);
    if (stop_cacher)
     return;
 
@@ -1057,7 +1057,7 @@ static void process_frames_cache (GeglEDL *edl)
     edl->frame_no = clip_start;
     if (this_cacher (edl->frame_no))
     {
-      gedl_set_frame (edl, edl->frame_no);
+      gcut_set_frame (edl, edl->frame_no);
     }
 
     clip_start += clip_frames;
@@ -1069,7 +1069,7 @@ static void process_frames_cache (GeglEDL *edl)
   {
     edl->frame_no = frame_no;
     if (this_cacher (edl->frame_no))
-      gedl_set_frame (edl, edl->frame_no);
+      gcut_set_frame (edl, edl->frame_no);
     if (stop_cacher)
       return;
   }
@@ -1077,7 +1077,7 @@ static void process_frames_cache (GeglEDL *edl)
   {
     edl->frame_no = frame_no;
     if (this_cacher (edl->frame_no))
-      gedl_set_frame (edl, edl->frame_no);
+      gcut_set_frame (edl, edl->frame_no);
     if (stop_cacher)
       return;
   }
@@ -1088,9 +1088,9 @@ static inline void set_bit (guchar *bitmap, int no)
   bitmap[no/8] |= (1 << (no % 8));
 }
 
-guchar *gedl_get_cache_bitmap (GeglEDL *edl, int *length_ret)
+guchar *gcut_get_cache_bitmap (GeglEDL *edl, int *length_ret)
 {
-  int duration = gedl_get_duration (edl);
+  int duration = gcut_get_duration (edl);
   int frame_no;
   int length = (duration / 8) + 1;
   guchar *ret = g_malloc0 (length);
@@ -1100,8 +1100,8 @@ guchar *gedl_get_cache_bitmap (GeglEDL *edl, int *length_ret)
 
   for (frame_no = 0; frame_no < duration; frame_no++)
   {
-    const gchar *hash = gedl_get_frame_hash (edl, frame_no);
-    gchar *path = g_strdup_printf ("%s.gedl/cache/%s", edl->parent_path, hash);
+    const gchar *hash = gcut_get_frame_hash (edl, frame_no);
+    gchar *path = g_strdup_printf ("%s.gcut/cache/%s", edl->parent_path, hash);
     if (g_file_test (path, G_FILE_TEST_IS_REGULAR))
       set_bit (ret, frame_no);
     g_free (path);
@@ -1115,7 +1115,7 @@ static void process_frames_cache_stat (GeglEDL *edl)
   int frame_no = edl->frame_no;
   int duration;
   signal(SIGUSR2, handler1);
-  duration = gedl_get_duration (edl);
+  duration = gcut_get_duration (edl);
 
   /* XXX: should probably do first frame of each clip - since
           these are used for quick keyboard navigation of the
@@ -1124,8 +1124,8 @@ static void process_frames_cache_stat (GeglEDL *edl)
 
   for (frame_no = 0; frame_no < duration; frame_no++)
   {
-    const gchar *hash = gedl_get_frame_hash (edl, frame_no);
-    gchar *path = g_strdup_printf ("%s.gedl/cache/%s", edl->parent_path, hash);
+    const gchar *hash = gcut_get_frame_hash (edl, frame_no);
+    gchar *path = g_strdup_printf ("%s.gcut/cache/%s", edl->parent_path, hash);
     if (g_file_test (path, G_FILE_TEST_IS_REGULAR))
       fprintf (stdout, "%i ", frame_no);
     //  fprintf (stdout, ". %i %s\n", frame_no, hash);
@@ -1142,7 +1142,7 @@ int gegl_make_thumb_image (GeglEDL *edl, const char *path, const char *icon_path
   g_string_assign (str, "");
   g_string_append_printf (str, "%s iconographer -p -h -f 'mid-col 96 audio' %s -a %s",
   //g_string_append_printf (str, "iconographer -p -h -f 'thumb 96' %s -a %s",
-                          gedl_binary_path, path, icon_path);
+                          gcut_binary_path, path, icon_path);
   system (str->str);
 
   g_string_free (str, TRUE);
@@ -1163,23 +1163,23 @@ int gegl_make_thumb_video (GeglEDL *edl, const char *path, const char *thumb_pat
 #if 0  // much slower and worse for fps/audio than ffmpeg method for creating thumbs
   int tot_frames; //
   g_string_append_printf (str, "video-bitrate=100\n\noutput-path=%s\nvideo-width=256\nvideo-height=144\n\n%s\n", thumb_path, path);
-  edl = gedl_new_from_string (str->str);
+  edl = gcut_new_from_string (str->str);
   setup (edl);
-  tot_frames = gedl_get_duration (edl);
+  tot_frames = gcut_get_duration (edl);
 
   if (edl->range_end == 0)
     edl->range_end = tot_frames-1;
   process_frames (edl);
-  gedl_free (edl);
+  gcut_free (edl);
   g_string_free (str, TRUE);
   return 0;
 #endif
 }
 
-int gedl_ui_main (GeglEDL *edl);
+int gcut_ui_main (GeglEDL *edl);
 
 int gegl_make_thumb_video (GeglEDL *edl, const char *path, const char *thumb_path);
-void gedl_make_proxies (GeglEDL *edl)
+void gcut_make_proxies (GeglEDL *edl)
 {
   GList *l;
   for (l = edl->clips; l; l = l->next)
@@ -1187,8 +1187,8 @@ void gedl_make_proxies (GeglEDL *edl)
     Clip *clip = l->data;
     if (clip->is_chain == 0 && clip->static_source == 0 && clip->is_meta == 0)
     {
-      char *proxy_path = gedl_make_proxy_path (edl, clip->path);
-      char *thumb_path = gedl_make_thumb_path (edl, clip->path);
+      char *proxy_path = gcut_make_proxy_path (edl, clip->path);
+      char *thumb_path = gcut_make_thumb_path (edl, clip->path);
       if (!g_file_test (proxy_path, G_FILE_TEST_IS_REGULAR))
         gegl_make_thumb_video (edl, clip->path, proxy_path);
       if (!g_file_test (thumb_path, G_FILE_TEST_IS_REGULAR))
@@ -1199,22 +1199,22 @@ void gedl_make_proxies (GeglEDL *edl)
   }
 }
 
-void gedl_start_sanity (void)
+void gcut_start_sanity (void)
 {
   int fails = 0;
   if (system("which ffmpeg > /dev/null") != 0)
   {
-    fprintf (stderr, "gedl missing runtime dependency: ffmpeg command in PATH\n");
+    fprintf (stderr, "gcut missing runtime dependency: ffmpeg command in PATH\n");
     fails ++;
   }
   if (!gegl_has_operation ("gegl:ff-load"))
   {
-    fprintf (stderr, "gedl missing runtime dependenct: gegl:ff-load operation\n");
+    fprintf (stderr, "gcut missing runtime dependenct: gegl:ff-load operation\n");
     fails ++;
   }
   if (!gegl_has_operation ("gegl:ff-save"))
   {
-    fprintf (stderr, "gedl missing runtime dependenct: gegl:ff-save operation\n");
+    fprintf (stderr, "gcut missing runtime dependenct: gegl:ff-save operation\n");
     fails ++;
   }
   if (fails)
@@ -1229,9 +1229,9 @@ int main (int argc, char **argv)
   const char *edl_path = "input.edl";
   int tot_frames;
 
-  gedl_binary_path = realpath (argv[0], NULL);
-  if (!gedl_binary_path)
-    gedl_binary_path = "gedl";
+  gcut_binary_path = realpath (argv[0], NULL);
+  if (!gcut_binary_path)
+    gcut_binary_path = "gcut";
 
   if (argv[1] && !strcmp (argv[1], "iconographer"))
   {
@@ -1243,11 +1243,11 @@ int main (int argc, char **argv)
   setenv ("GEGL_MIPMAP_RENDERING", "1", 1);
 
   init (argc, argv);
-  gedl_start_sanity ();
+  gcut_start_sanity ();
 
   if (!argv[1])
   {
-    static char *new_argv[3]={NULL, "gedl.edl", NULL};
+    static char *new_argv[3]={NULL, "gcut.edl", NULL};
     new_argv[0] = argv[0];
     argv = new_argv;
     argc++;
@@ -1284,16 +1284,16 @@ int main (int argc, char **argv)
       char * rpath = g_strdup_printf ("%s.edl", path);
       char * parent = g_strdup (rpath);
       strrchr(parent, '/')[1]='\0';
-      edl = gedl_new_from_string (str, parent);
+      edl = gcut_new_from_string (str, parent);
       g_free (parent);
       edl->path = rpath;
       free (path);
     }
-    generate_gedl_dir (edl);
+    generate_gcut_dir (edl);
   }
   else
   {
-    edl = gedl_new_from_path (edl_path);
+    edl = gcut_new_from_path (edl_path);
   }
 
   chdir (edl->parent_path); /* we try as good as we can to deal with absolute
@@ -1328,40 +1328,40 @@ int main (int argc, char **argv)
     switch (runmode)
     {
       case RUNMODE_RESERIALIZE:
-        printf ("%s", gedl_serialize (edl));
+        printf ("%s", gcut_serialize (edl));
         exit (0);
         break;
       case RUNMODE_UI:
 
         signal(SIGUSR2, nop_handler);
 
-        gedl_monitor_start (edl);
+        gcut_monitor_start (edl);
 
-        return gedl_ui_main (edl);
+        return gcut_ui_main (edl);
       case RUNMODE_RENDER:
-        tot_frames  = gedl_get_duration (edl);
+        tot_frames  = gcut_get_duration (edl);
         if (edl->range_end == 0)
           edl->range_end = tot_frames-1;
         encode_frames (edl);
-        gedl_free (edl);
+        gcut_free (edl);
         return 0;
       case RUNMODE_CACHE:
-        tot_frames  = gedl_get_duration (edl);
+        tot_frames  = gcut_get_duration (edl);
         if (edl->range_end == 0)
           edl->range_end = tot_frames-1;
         process_frames_cache (edl);
-        gedl_free (edl);
+        gcut_free (edl);
         return 0;
       case RUNMODE_CACHE_STAT:
         process_frames_cache_stat (edl);
-        gedl_free (edl);
+        gcut_free (edl);
         return 0;
      }
   }
   return -1;
 }
 
-char *gedl_serialize (GeglEDL *edl)
+char *gcut_serialize (GeglEDL *edl)
 {
   GList *l;
   char *ret;
@@ -1395,7 +1395,7 @@ char *gedl_serialize (GeglEDL *edl)
   if (edl->audio_samplerate != DEFAULT_audio_samplerate)
     g_string_append_printf (ser, "audio-samplerate=%i\n",  edl->audio_samplerate);
 
-  g_string_append_printf (ser, "fps=%f\n", gedl_get_fps (edl));
+  g_string_append_printf (ser, "fps=%f\n", gcut_get_fps (edl));
 
   if (edl->range_start != DEFAULT_range_start)
     g_string_append_printf (ser, "range-start=%i\n",  edl->range_start);
@@ -1559,13 +1559,13 @@ gegl_meta_get_audio (const char        *path,
   g_object_unref (e2m);
 }
 
-void gedl_set_selection (GeglEDL *edl, int start_frame, int end_frame)
+void gcut_set_selection (GeglEDL *edl, int start_frame, int end_frame)
 {
   edl->selection_start = start_frame;
   edl->selection_end   = end_frame;
 }
 
-void gedl_get_selection (GeglEDL *edl,
+void gcut_get_selection (GeglEDL *edl,
                          int     *start_frame,
                          int     *end_frame)
 {
@@ -1575,13 +1575,13 @@ void gedl_get_selection (GeglEDL *edl,
     *end_frame = edl->selection_end;
 }
 
-void gedl_set_range (GeglEDL *edl, int start_frame, int end_frame)
+void gcut_set_range (GeglEDL *edl, int start_frame, int end_frame)
 {
   edl->range_start = start_frame;
   edl->range_end   = end_frame;
 }
 
-void gedl_get_range (GeglEDL *edl,
+void gcut_get_range (GeglEDL *edl,
                      int     *start_frame,
                      int     *end_frame)
 {

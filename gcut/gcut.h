@@ -6,7 +6,7 @@
     ogv render files are more compatible than generated mp4 files, firefox among few that renders the mp4 in audio sync
 
   roadmap/missing features
-    move gedl to gegl git repo
+    move gcut to gegl git repo
 
     engine
       rescaling playback speed of clips
@@ -25,7 +25,7 @@
         subtitles
 
     ui
-      port gedl-ui.c to lua
+      port gcut-ui.c to lua
       detect locked or crashed ui, kill and respawn
       trimming by mouse / dragging clips around by mouse
       show a modal ui-block when generating proxies/thumbtrack on media import, instead of blocking/being blank
@@ -47,9 +47,9 @@
 typedef struct _GeglEDL GeglEDL;
 typedef struct _Clip    Clip;
 
-void gedl_set_use_proxies (GeglEDL *edl, int use_proxies);
+void gcut_set_use_proxies (GeglEDL *edl, int use_proxies);
 int         gegl_make_thumb_video (GeglEDL *edl, const char *path, const char *thumb_path);
-char *gedl_make_proxy_path (GeglEDL *edl, const char *clip_path);
+char *gcut_make_proxy_path (GeglEDL *edl, const char *clip_path);
 const char *compute_cache_path    (const char *path);
 
 #define CACHE_TRY_SIMPLE    (1<<0)
@@ -70,36 +70,36 @@ enum {
 
 #define GEDL_LAST_UI_MODE 1
 
-GeglEDL    *gedl_new                (void);
-void        gedl_free               (GeglEDL    *edl);
-void        gedl_set_fps            (GeglEDL    *edl,
+GeglEDL    *gcut_new                (void);
+void        gcut_free               (GeglEDL    *edl);
+void        gcut_set_fps            (GeglEDL    *edl,
                                      double      fps);
-double      gedl_get_fps            (GeglEDL    *edl);
-int         gedl_get_duration       (GeglEDL    *edl);
-double      gedl_get_time           (GeglEDL    *edl);
-void        gedl_parse_line         (GeglEDL    *edl, const char *line);
-GeglEDL    *gedl_new_from_path      (const char *path);
-void        gedl_load_path          (GeglEDL    *edl, const char *path);
-void        gedl_save_path          (GeglEDL    *edl, const char *path);
-GeglAudioFragment  *gedl_get_audio  (GeglEDL    *edl);
-Clip       *gedl_get_clip           (GeglEDL *edl, int frame, int *clip_frame_no);
+double      gcut_get_fps            (GeglEDL    *edl);
+int         gcut_get_duration       (GeglEDL    *edl);
+double      gcut_get_time           (GeglEDL    *edl);
+void        gcut_parse_line         (GeglEDL    *edl, const char *line);
+GeglEDL    *gcut_new_from_path      (const char *path);
+void        gcut_load_path          (GeglEDL    *edl, const char *path);
+void        gcut_save_path          (GeglEDL    *edl, const char *path);
+GeglAudioFragment  *gcut_get_audio  (GeglEDL    *edl);
+Clip       *gcut_get_clip           (GeglEDL *edl, int frame, int *clip_frame_no);
 
-void        gedl_set_frame          (GeglEDL    *edl, int frame);
-void        gedl_set_time           (GeglEDL    *edl, double seconds);
-int         gedl_get_frame          (GeglEDL    *edl);
-char       *gedl_serialize          (GeglEDL    *edl);
+void        gcut_set_frame          (GeglEDL    *edl, int frame);
+void        gcut_set_time           (GeglEDL    *edl, double seconds);
+int         gcut_get_frame          (GeglEDL    *edl);
+char       *gcut_serialize          (GeglEDL    *edl);
 
-void        gedl_set_range          (GeglEDL    *edl, int start_frame, int end_frame);
-void        gedl_get_range          (GeglEDL    *edl,
+void        gcut_set_range          (GeglEDL    *edl, int start_frame, int end_frame);
+void        gcut_get_range          (GeglEDL    *edl,
                                      int        *start_frame,
                                      int        *end_frame);
 
-void        gedl_set_selection      (GeglEDL    *edl, int start_frame, int end_frame);
-void        gedl_get_selection      (GeglEDL    *edl,
+void        gcut_set_selection      (GeglEDL    *edl, int start_frame, int end_frame);
+void        gcut_get_selection      (GeglEDL    *edl,
                                      int        *start_frame,
                                      int        *end_frame);
-char       *gedl_make_thumb_path    (GeglEDL    *edl, const char *clip_path);
-guchar     *gedl_get_cache_bitmap   (GeglEDL *edl, int *length_ret);
+char       *gcut_make_thumb_path    (GeglEDL    *edl, const char *clip_path);
+guchar     *gcut_get_cache_bitmap   (GeglEDL *edl, int *length_ret);
 
 
 Clip       *clip_new               (GeglEDL *edl);
@@ -124,8 +124,8 @@ Clip  *     clip_new_full          (GeglEDL *edl, const char *path, int start, i
 void        clip_render_frame       (Clip *clip, int clip_frame_no);
 
 Clip *      edl_get_clip_for_frame (GeglEDL           *edl, int frame);
-void        gedl_make_proxies      (GeglEDL           *edl);
-void        gedl_get_video_info    (const char        *path, int *duration, double *fps);
+void        gcut_make_proxies      (GeglEDL           *edl);
+void        gcut_get_video_info    (const char        *path, int *duration, double *fps);
 void        gegl_meta_set_audio    (const char        *path,
                                     GeglAudioFragment *audio);
 void        gegl_meta_get_audio    (const char        *path,
@@ -133,7 +133,7 @@ void        gegl_meta_get_audio    (const char        *path,
 
 #define SPLIT_VER  0.8
 
-extern char *gedl_binary_path;
+extern char *gcut_binary_path;
 
 /*********/
 
@@ -245,12 +245,12 @@ struct _GeglEDL
 void update_size (GeglEDL *edl, Clip *clip);
 void remove_in_betweens (GeglNode *nop_scaled, GeglNode *nop_filtered);
 int  is_connected (GeglNode *a, GeglNode *b);
-void gedl_update_buffer (GeglEDL *edl);
+void gcut_update_buffer (GeglEDL *edl);
 
 #ifdef MICRO_RAPTOR_GUI
  /* renderer.h */
 void renderer_toggle_playing (MrgEvent *event, void *data1, void *data2);
-void gedl_cache_invalid (GeglEDL *edl);
+void gcut_cache_invalid (GeglEDL *edl);
 int renderer_done (GeglEDL *edl);
 void renderer_start (GeglEDL *edl);
 

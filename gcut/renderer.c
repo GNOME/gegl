@@ -5,7 +5,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <gegl.h>
-#include "gedl.h"
+#include "gcut.h"
 #include <mrg.h>
 #include <SDL.h>
 #include <gegl-audio-fragment.h>
@@ -24,7 +24,7 @@ static int audio_post   = 0;
 
 int16_t audio_data[AUDIO_BUF_LEN];
 
-void gedl_cache_invalid (GeglEDL *edl)
+void gcut_cache_invalid (GeglEDL *edl)
 {
   edl->frame = -1;
   done_frame=-1;
@@ -120,7 +120,7 @@ static gpointer renderer_thread (gpointer data)
           //GeglRectangle ext = gegl_node_get_bounding_box (edl->result);
           gegl_buffer_set_extent (edl->buffer, &ext);
         }
-        gedl_set_frame (edl, edl->frame_no); /* this does the frame-set, which causes render  */
+        gcut_set_frame (edl, edl->frame_no); /* this does the frame-set, which causes render  */
 #if 0
         {
           GeglRectangle ext = gegl_node_get_bounding_box (edl->result);
@@ -129,7 +129,7 @@ static gpointer renderer_thread (gpointer data)
 #endif
 
         {
-          GeglAudioFragment *audio = gedl_get_audio (edl);
+          GeglAudioFragment *audio = gcut_get_audio (edl);
           if (audio)
           {
             int sample_count = gegl_audio_fragment_get_sample_count (audio);
@@ -193,7 +193,7 @@ static int max_frame (GeglEDL *edl)
   int t = 0;
   int start, end;
 
-  gedl_get_range (edl, &start, &end);
+  gcut_get_range (edl, &start, &end);
   if (end)
     return end;
 
@@ -217,7 +217,7 @@ void playing_iteration (Mrg *mrg, GeglEDL *edl)
   if (edl->playing)
     {
 #if 0
-      if (prev_ticks - ticks < 1000000.0 / gedl_get_fps (edl))
+      if (prev_ticks - ticks < 1000000.0 / gcut_get_fps (edl))
         return;
 #endif
       delta = (((ticks - prev_ticks) / 1000000.0) * ( edl->fps ));
@@ -267,7 +267,7 @@ void playing_iteration (Mrg *mrg, GeglEDL *edl)
       {
         edl->frame_no += delta;
         int start, end;
-        gedl_get_range (edl, &start, &end);
+        gcut_get_range (edl, &start, &end);
         if (edl->frame_no > max_frame (edl))
         {
            edl->frame_no = 0;

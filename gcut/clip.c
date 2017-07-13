@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <gegl.h>
 #include <gegl-audio-fragment.h>
-#include "gedl.h"
+#include "gcut.h"
 
 Clip *clip_new (GeglEDL *edl)
 {
@@ -244,7 +244,7 @@ static void clip_set_proxied (Clip *clip)
 
   if (clip->edl->use_proxies)
     {
-      char *path = gedl_make_proxy_path (clip->edl, clip->path);
+      char *path = gcut_make_proxy_path (clip->edl, clip->path);
       gchar *old = NULL;
       gegl_node_get (clip->proxy_loader, "path", &old, NULL);
 
@@ -421,7 +421,7 @@ gchar *clip_get_frame_hash (Clip *clip, int clip_frame_no)
   int is_static_source = clip_is_static_source (clip);
 
   frame_recipe = g_strdup_printf ("%s: %s %i %s %ix%i",
-      "gedl-pre-4",
+      "gcut-pre-4",
       clip_get_path (clip),
       clip->filter_graph || (!is_static_source) ? clip_frame_no : 0,
       clip->filter_graph,

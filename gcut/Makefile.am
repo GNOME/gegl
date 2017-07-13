@@ -2,6 +2,8 @@ if OS_WIN32
 no_undefined = -no-undefined
 endif
 
+EXTRA_DIST = default.edl default.edl.inc
+
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_builddir)/gegl \
@@ -19,7 +21,8 @@ AM_CPPFLAGS = \
 	-I$(top_builddir)/gegl/process \
 	-I$(top_srcdir)/gegl/process \
 	-I$(top_builddir)/gegl/property-types \
-	-I$(top_srcdir)/gegl/property-types
+	-I$(top_srcdir)/gegl/property-types \
+	-Wno-missing-prototypes
 
 AM_CFLAGS = \
 	$(DEP_CFLAGS) $(BABL_CFLAGS) $(PNG_CFLAGS) \
@@ -41,8 +44,8 @@ default.edl.inc: default.edl
 	sed 's/$$/\\n"/' > $@
 
 gcut_SOURCES =			\
-	gedl.c			\
-	gedl.h			\
+	gcut.c			\
+	gcut.h			\
 	renderer.c		\
 	iconographer.c		\
 	clip.c
@@ -51,7 +54,7 @@ gcut_SOURCES =			\
 if HAVE_MRG
 if HAVE_GEXIV2
 if HAVE_SDL
-gcut_SOURCES += gedl-ui.c
+gcut_SOURCES += gcut-ui.c
 AM_CFLAGS += $(SDL_CFLAGS)
 AM_LDFLAGS += $(SDL_LIBS)
 endif
