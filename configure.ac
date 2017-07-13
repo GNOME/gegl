@@ -1283,6 +1283,7 @@ dnl bin/node-editors/Makefile
 AC_CONFIG_FILES([
 Makefile
 bin/Makefile
+gcut/Makefile
 gegl/Makefile
 gegl/gegl-version.h
 gegl/buffer/Makefile
