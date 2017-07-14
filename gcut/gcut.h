@@ -246,6 +246,16 @@ void update_size (GeglEDL *edl, Clip *clip);
 void remove_in_betweens (GeglNode *nop_scaled, GeglNode *nop_filtered);
 int  is_connected (GeglNode *a, GeglNode *b);
 void gcut_update_buffer (GeglEDL *edl);
+void gcut_cache_invalid (GeglEDL *edl);
+
+
+gchar *gcut_get_frame_hash (GeglEDL *edl, int frame);
+
+gchar *gcut_get_frame_hash_full (GeglEDL *edl, int frame,
+                                 Clip **clip0, int *clip0_frame,
+                                 Clip **clip1, int *clip1_frame,
+                                 double *mix);
+int gegl_make_thumb_image (GeglEDL *edl, const char *path, const char *icon_path);
 
 #ifdef MICRO_RAPTOR_GUI
  /* renderer.h */
@@ -253,6 +263,7 @@ void renderer_toggle_playing (MrgEvent *event, void *data1, void *data2);
 void gcut_cache_invalid (GeglEDL *edl);
 int renderer_done (GeglEDL *edl);
 void renderer_start (GeglEDL *edl);
+gboolean cache_renderer_iteration (Mrg *mrg, gpointer data);
 
 #endif
 

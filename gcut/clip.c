@@ -48,10 +48,10 @@ Clip *clip_get_prev (Clip *self)
 {
   GList *l;
   GeglEDL *edl;
+  Clip *prev = NULL;
   if (!self)
     return NULL;
   edl = self->edl;
-  Clip *prev = NULL;
 
   for (l = edl->clips; l; l = l->next)
   {
@@ -226,12 +226,6 @@ Clip *clip_new_full (GeglEDL *edl, const char *path, int start, int end)
   return clip;
 }
 
-void clip_fade_set (Clip *clip, int do_fade_out)
-{
-  /*  should cancel any computations due to fade when cancelling it, and add them when fade is set
-   */
-}
-
 const char *clip_get_path (Clip *clip)
 {
   return clip->path;
@@ -263,6 +257,7 @@ static void clip_set_proxied (Clip *clip)
     }
 }
 
+void clip_set_frame_no (Clip *clip, int clip_frame_no);
 void clip_set_frame_no (Clip *clip, int clip_frame_no)
 {
   if (clip_frame_no < 0)
@@ -353,7 +348,7 @@ void remove_in_betweens (GeglNode *nop_scaled, GeglNode *nop_filtered)
  gegl_node_link_many (nop_scaled, nop_filtered, NULL);
 }
 
-void clip_rig_chain (Clip *clip, int clip_frame_no)
+static void clip_rig_chain (Clip *clip, int clip_frame_no)
 {
   GeglEDL *edl = clip->edl;
   int use_proxies = edl->use_proxies;
@@ -417,6 +412,7 @@ gchar *clip_get_frame_hash (Clip *clip, int clip_frame_no)
 {
   GeglEDL *edl = clip->edl;
   gchar *frame_recipe;
+  char *ret;
   GChecksum *hash;
   int is_static_source = clip_is_static_source (clip);
 
@@ -430,7 +426,7 @@ gchar *clip_get_frame_hash (Clip *clip, int clip_frame_no)
 
   hash = g_checksum_new (G_CHECKSUM_MD5);
   g_checksum_update (hash, (void*)frame_recipe, -1);
-  char *ret = g_strdup (g_checksum_get_string(hash));
+  ret = g_strdup (g_checksum_get_string(hash));
 
   g_checksum_free (hash);
   g_free (frame_recipe);

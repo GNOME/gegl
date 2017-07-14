@@ -1937,7 +1937,7 @@ static void select_node (MrgEvent *e, void *data1, void *data2)
   mrg_queue_draw (e->mrg, NULL);
 }
 
-static void rounded_rectangle (cairo_t *cr, double x, double y, double width, double height, double aspect,
+static inline void rounded_rectangle (cairo_t *cr, double x, double y, double width, double height, double aspect,
                         double corner_radius)
 {
   double radius;
@@ -2242,6 +2242,7 @@ static char **gcut_get_completions (const char *filter_query)
 
 static void complete_filter_query_edit (MrgEvent *e, void *data1, void *data2)
 {
+  GeglNode *new = NULL;
   GeglEDL *edl = data1;
   gchar **completions = gcut_get_completions (filter_query);
   if (!selected_node)
@@ -2250,7 +2251,6 @@ static void complete_filter_query_edit (MrgEvent *e, void *data1, void *data2)
   if (!completions)
     return;
 
-  GeglNode *new = NULL;
   new = gegl_node_new_child (edl->gegl, "operation", completions[0], NULL);
   if (filter_query)
     g_free (filter_query);
@@ -2287,28 +2287,28 @@ static void update_filter_query (const char *new_string, void *user_data)
 }
 
 
-void gcut_draw (Mrg     *mrg,
-                GeglEDL *edl,
-                double   x0,
-                double    y,
-                double  fpx,
-                double   t0)
+static void gcut_draw (Mrg     *mrg,
+                       GeglEDL *edl,
+                       double   x0,
+                       double    y,
+                       double  fpx,
+                       double   t0)
 {
 
   GList *l;
   cairo_t *cr = mrg_cr (mrg);
   double t;
+  int clip_frame_no;
+  int scroll_height = mrg_height (mrg) * (1.0 - SPLIT_VER) * 0.2;
   int duration = gcut_get_duration (edl); // causes update of abs_start
+  float y2 = y - mrg_em (mrg) * 1.5;
 
   VID_HEIGHT = mrg_height (mrg) * (1.0 - SPLIT_VER) * 0.8;
-  int scroll_height = mrg_height (mrg) * (1.0 - SPLIT_VER) * 0.2;
   t = 0;
-  int clip_frame_no;
 
   if (duration == 0)
     return;
 
-  float y2 = y - mrg_em (mrg) * 1.5;
 
   edl->active_clip = gcut_get_clip (edl, edl->frame_no, &clip_frame_no);
 
@@ -2406,6 +2406,7 @@ void gcut_draw (Mrg     *mrg,
     t += frames;
   }
 
+  {
   int start = 0, end = 0;
   gcut_get_range (edl, &start, &end);
   cairo_rectangle (cr, start, y, end - start, scroll_height);
@@ -2443,6 +2444,7 @@ void gcut_draw (Mrg     *mrg,
   cairo_rectangle (cr, t0, y, mrg_width(mrg)*fpx, VID_HEIGHT);
   mrg_listen (mrg, MRG_DROP, drag_dropped, edl, edl);
   cairo_new_path (cr);
+  }
 
   for (l = edl->clips; l; l = l->next)
   {
@@ -2531,6 +2533,7 @@ void gcut_draw (Mrg     *mrg,
      cairo_fill (cr);
   }
 
+  {
   double frame = edl->frame_no;
   if (fpx < 1.0)
     cairo_rectangle (cr, frame, y-PAD_DIM, 1.0, VID_HEIGHT + PAD_DIM * 2);
@@ -2543,6 +2546,7 @@ void gcut_draw (Mrg     *mrg,
   cairo_rectangle (cr, 0, y - PAD_DIM, mrg_width (mrg), VID_HEIGHT + PAD_DIM * 4);
   mrg_listen (mrg, MRG_SCROLL, zoom_timeline, edl, NULL);
   cairo_new_path (cr);
+  }
 }
 
 static const char *css =
@@ -2584,7 +2588,7 @@ static void toggle_ui_mode  (MrgEvent *event, void *data1, void *data2)
   changed++;
 }
 
-void help_ui (Mrg *mrg, GeglEDL *edl)
+static void help_ui (Mrg *mrg, GeglEDL *edl)
 {
   if (help)
   {

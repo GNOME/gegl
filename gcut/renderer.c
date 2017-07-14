@@ -5,8 +5,8 @@
 #include <signal.h>
 #include <stdio.h>
 #include <gegl.h>
-#include "gcut.h"
 #include <mrg.h>
+#include "gcut.h"
 #include <SDL.h>
 #include <gegl-audio-fragment.h>
 
@@ -83,7 +83,7 @@ static void open_audio (int frequency)
    }
 }
 
-void end_audio (void)
+static void end_audio (void)
 {
 }
 
@@ -93,7 +93,7 @@ static inline void skipped_frames (int count)
   //fprintf (stderr, "[%i]", count);
 }
 
-static inline void wait_for_frame ()
+static inline void wait_for_frame (void)
 {
   //fprintf (stderr, ".");
 }
@@ -228,7 +228,6 @@ void playing_iteration (Mrg *mrg, GeglEDL *edl)
         mrg_queue_draw (mrg, NULL);
         return;
       }
-        //delta = 0;
       {
 #if 0
         static int frameskip = -1;
@@ -265,8 +264,8 @@ void playing_iteration (Mrg *mrg, GeglEDL *edl)
 
       if (edl->active_clip)
       {
-        edl->frame_no += delta;
         int start, end;
+        edl->frame_no += delta;
         gcut_get_range (edl, &start, &end);
         if (edl->frame_no > max_frame (edl))
         {
