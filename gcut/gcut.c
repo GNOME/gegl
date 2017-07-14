@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <gegl.h>
 #include <gexiv2/gexiv2.h>
+#include <libgen.h>
 #include <gegl-audio-fragment.h>
 
 /* GEGL edit decision list - a digital video cutter and splicer */
@@ -961,7 +962,7 @@ GeglEDL *gcut_new_from_path (const char *path)
       }
       else
       {
-        edl->path = g_strdup_printf ("%s/%s", parent, basename (path));
+        edl->path = g_strdup_printf ("%s/%s", parent, basename ((void*)path));
       }
     }
     g_free (parent);
@@ -1183,7 +1184,15 @@ int gegl_make_thumb_video (GeglEDL *edl, const char *path, const char *thumb_pat
 #endif
 }
 
+#if HAVE_MRG
 int gcut_ui_main (GeglEDL *edl);
+#else
+int gcut_ui_main (GeglEDL *edl);
+int gcut_ui_main (GeglEDL *edl)
+{
+  return -1;
+}
+#endif
 
 int gegl_make_thumb_video (GeglEDL *edl, const char *path, const char *thumb_path);
 void gcut_make_proxies (GeglEDL *edl)

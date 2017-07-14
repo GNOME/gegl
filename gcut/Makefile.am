@@ -46,7 +46,6 @@ default.edl.inc: default.edl
 gcut_SOURCES =			\
 	gcut.c			\
 	gcut.h			\
-	renderer.c		\
 	iconographer.c		\
 	clip.c
 
@@ -54,7 +53,7 @@ gcut_SOURCES =			\
 if HAVE_MRG
 if HAVE_GEXIV2
 if HAVE_SDL
-gcut_SOURCES += gcut-ui.c
+gcut_SOURCES += gcut-ui.c renderer.c
 AM_CFLAGS += $(SDL_CFLAGS)
 AM_LDFLAGS += $(SDL_LIBS)
 endif
