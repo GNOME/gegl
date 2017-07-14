@@ -55,7 +55,7 @@ int   time_out = 0;
 
 long  babl_ticks (void);
 
-void  usage()
+static void  usage(void)
 {
       printf ("usage: iconographer [options] <video> [thumb]\n"
 " -p, --progress   - show /progress in terminal\n"
@@ -78,7 +78,7 @@ void  usage()
   exit (0);
 }
 
-void parse_args (int argc, char **argv)
+static void parse_args (int argc, char **argv)
 {
   int i;
   int stage = 0;
@@ -212,12 +212,15 @@ static inline void init_rgb_hist (void)
     }
 }
 
+int rgb_hist_shuffle (int in);
 int rgb_hist_shuffle (int in)
 {
   init_rgb_hist();
   return rgb_hist_unshuffler[in];
 }
 
+
+int rgb_hist_unshuffle (int in);
 int rgb_hist_unshuffle (int in)
 {
   init_rgb_hist();
@@ -243,7 +246,7 @@ static void decode_frame_no (int frame)
   gegl_node_process (store);
 }
 
-int count_color_bins (FrameInfo *info, int threshold)
+static int count_color_bins (FrameInfo *info, int threshold)
 {
   int count = 0;
   int i;
@@ -254,7 +257,7 @@ int count_color_bins (FrameInfo *info, int threshold)
   return count;
 }
 
-float score_frame (FrameInfo *info, int frame_no)
+static float score_frame (FrameInfo *info, int frame_no)
 {
   float sum_score             = 0.0;
   float rgb_histogram_count   = count_color_bins (info, 1) * 1.0 / NEGL_RGB_HIST_SLOTS;
@@ -284,14 +287,15 @@ static void find_best_thumb (void)
   for (frame = 0; frame < frame_end; frame++)
   {
     FrameInfo info;
+    float score;
     GeglRectangle terrain_row;
     if (horizontal)
       terrain_row = (GeglRectangle){frame-frame_start, 0, 1, sizeof (FrameInfo)};
-    else 
+    else
       terrain_row = (GeglRectangle){0, frame-frame_start, sizeof (FrameInfo), 1};
     gegl_buffer_get (terrain, &terrain_row, 1.0, babl_format("RGB u8"),
                      &info, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
-    float score = score_frame (&info, frame);
+    score = score_frame (&info, frame);
     if (score > best_score)
       {
         best_score = score;
@@ -359,7 +363,7 @@ static int extract_thumb (GeglBuffer *buffer, void *rgb_thumb, int samples, int 
 }
 
 
-int extract_audio_energy (GeglAudioFragment *audio, uint8_t *audio_energy, int dups)
+static int extract_audio_energy (GeglAudioFragment *audio, uint8_t *audio_energy, int dups)
 {
   int i;
   float left_max = 0;
@@ -397,7 +401,7 @@ int extract_audio_energy (GeglAudioFragment *audio, uint8_t *audio_energy, int d
   return 3 * dups;
 }
 
-int extract_mid_row (GeglBuffer *buffer, void *rgb_mid_row, int samples)
+static int extract_mid_row (GeglBuffer *buffer, void *rgb_mid_row, int samples)
 {
   GeglRectangle mid_row;
   mid_row.width = 1;
@@ -423,6 +427,10 @@ static void record_pix_stats (GeglBuffer *buffer, GeglBuffer *previous_buffer,
   int sum = 0;
   int second_max_hist = 0;
   int max_hist = 0;
+  int slot;
+  long r_square_diff = 0;
+  long g_square_diff = 0;
+  long b_square_diff = 0;
   GeglBufferIterator *it = gegl_buffer_iterator_new (buffer, NULL, 0,
           babl_format ("R'G'B' u8"),
           GEGL_BUFFER_READ,
@@ -433,12 +441,8 @@ static void record_pix_stats (GeglBuffer *buffer, GeglBuffer *previous_buffer,
           GEGL_BUFFER_READ,
           GEGL_ABYSS_NONE);
 
-  int slot;
   for (slot = 0; slot < NEGL_RGB_HIST_SLOTS; slot ++)
     rgb_hist[slot] = 0;
-  long r_square_diff = 0;
-  long g_square_diff = 0;
-  long b_square_diff = 0;
 
   while (gegl_buffer_iterator_next (it))
   {
@@ -501,10 +505,13 @@ static void record_pix_stats (GeglBuffer *buffer, GeglBuffer *previous_buffer,
   }
 }
 
+gint iconographer_main (gint    argc, gchar **argv);
+
 gint
 main (gint    argc,
       gchar **argv)
 {
+  GeglRectangle terrain_rect;
   if (argc < 2)
     usage();
 
@@ -531,7 +538,6 @@ main (gint    argc,
     if (frame_end == 0)
       frame_end = total_frames;
   }
-  GeglRectangle terrain_rect;
 
   if (horizontal)
    terrain_rect = (GeglRectangle){0, 0,
@@ -567,6 +573,9 @@ main (gint    argc,
           FrameInfo info = {0};
           uint8_t buffer[4096] = {0,};
           int buffer_pos = 0;
+          GeglRectangle terrain_row;
+          char *p = format;
+          GString *word = g_string_new ("");
 
           if (show_progress)
           {
@@ -580,7 +589,6 @@ main (gint    argc,
             fflush (stdout);
           }
 
-          GeglRectangle terrain_row;
           if (horizontal)
             terrain_row = (GeglRectangle){frame-frame_start, 0, 1, 1024};
           else
@@ -590,9 +598,6 @@ main (gint    argc,
 
           //for (int i=0;i<(signed)sizeof(buffer);i++)buffer[i]=0;
 
-          char *p = format;
-
-          GString *word = g_string_new ("");
           while (*p == ' ') p++;
           for (p= format;p==format || p[-1]!='\0';p++)
           {
@@ -723,12 +728,14 @@ main (gint    argc,
     if (frame_thumb != 0)
       decode_frame_no (frame_thumb-1);
     decode_frame_no (frame_thumb);
+    {
     GeglNode *readbuf = gegl_node_new_child (save_graph, "operation", "gegl:buffer-source", "buffer", video_frame, NULL);
     GeglNode *save = gegl_node_new_child (save_graph, "operation", "gegl:png-save",
       "path", thumb_path, NULL);
       gegl_node_link_many (readbuf, save, NULL);
     gegl_node_process (save);
     g_object_unref (save_graph);
+    }
   }
 
   if (video_frame)
