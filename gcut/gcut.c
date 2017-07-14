@@ -1190,6 +1190,7 @@ int gcut_ui_main (GeglEDL *edl);
 int gcut_ui_main (GeglEDL *edl);
 int gcut_ui_main (GeglEDL *edl)
 {
+  fprintf (stderr, "gcut built without mrg UI\n");
   return -1;
 }
 #endif
