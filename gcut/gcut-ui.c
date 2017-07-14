@@ -1990,20 +1990,23 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
         y -= mrg_em (mrg) * 1.5;
       }
 
-      GeglNode **nodes = NULL;
-      const gchar **pads = NULL;
-
-      int count = gegl_node_get_consumers (node, "output", &nodes, &pads);
-      if (count)
       {
-        node = nodes[0];
-        if (strcmp (pads[0], "input"))
+        GeglNode **nodes = NULL;
+        const gchar **pads = NULL;
+
+        int count = gegl_node_get_consumers (node, "output", &nodes, &pads);
+        if (count)
+        {
+          node = nodes[0];
+          if (strcmp (pads[0], "input"))
+            node = NULL;
+        }
+        else
           node = NULL;
+        g_free (nodes);
+        g_free (pads);
       }
-      else
-        node = NULL;
-      g_free (nodes);
-      g_free (pads);
+
       //if (node && node == clip->nop_crop)
        // node = NULL;
       if (node)
@@ -2024,7 +2027,7 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
     return y;
 }
 
-void update_ui_clip (Clip *clip, int clip_frame_no)
+static void update_ui_clip (Clip *clip, int clip_frame_no)
 {
   GError *error = NULL;
   if (ui_clip == NULL ||
@@ -2080,7 +2083,8 @@ void update_ui_clip (Clip *clip, int clip_frame_no)
 
   if (selected_node)
   {
-    unsigned int n_props;
+    GParamSpec ** props;
+    unsigned int  n_props;
 
     if (ui_tweaks)
     {
@@ -2123,13 +2127,15 @@ void update_ui_clip (Clip *clip, int clip_frame_no)
       gcut_cache_invalid (clip->edl);
     }
 
-    GParamSpec ** props = gegl_operation_list_properties (gegl_node_get_operation (selected_node), &n_props);
+    props = gegl_operation_list_properties (gegl_node_get_operation (selected_node), &n_props);
 
     for (int i = 0; i <n_props; i ++)
     {
+      GQuark anim_quark;
       char tmpbuf[1024];
+
       sprintf (tmpbuf, "%s-anim", props[i]->name);
-      GQuark anim_quark = g_quark_from_string (tmpbuf);
+      anim_quark = g_quark_from_string (tmpbuf);
       // this only deals with double for now
       if (g_object_get_qdata (G_OBJECT (selected_node), anim_quark))
       {
@@ -2143,17 +2149,31 @@ void update_ui_clip (Clip *clip, int clip_frame_no)
   }
 }
 
+static int array_contains_string (gchar **array, const char *str)
+{
+  int i;
+  for ( i = 0; array[i]; i++)
+  {
+    if (!strcmp (array[i], str))
+      return 1;
+  }
+  return 0;
+}
+
 /* XXX: add some constarint?  like having input, or output pad or both - or
  * being a specific subclass - as well as sort, so that best (prefix_) match
  * comes first
  */
-char **gcut_get_completions (const char *filter_query)
+static char **gcut_get_completions (const char *filter_query)
 {
   gchar **completions = NULL;
   gchar **operations = gegl_list_operations (NULL);
   gchar *alloc = NULL;
   int matches = 0;
-  int memlen = sizeof (gpointer);
+  int memlen = sizeof (gpointer); // for terminating NULL
+  int match = 0;
+
+  if (!filter_query || filter_query[0]=='\0') return NULL;
 
   // score matches, sort them - and default to best
 
@@ -2167,9 +2187,10 @@ char **gcut_get_completions (const char *filter_query)
   }
 
   completions = g_malloc0 (memlen);
-  alloc = ((void*)completions) + (matches + 1) * sizeof (gpointer);
+  alloc = ((gchar*)completions) + (matches + 1) * sizeof (gpointer);
 
-  int match = 0;
+  if (0)
+  {
   for (int i = 0; operations[i]; i++)
   {
     if (strstr (operations[i], filter_query))
@@ -2180,12 +2201,41 @@ char **gcut_get_completions (const char *filter_query)
       match++;
     }
   }
+  }
+
+  if(1){
+    char *with_gegl = g_strdup_printf ("gegl:%s", filter_query);
+    for (int i = 0; operations[i]; i++)
+    {
+      if (g_str_has_prefix (operations[i], filter_query) ||
+          g_str_has_prefix (operations[i], with_gegl))
+      {
+        completions[match] = alloc;
+        strcpy (alloc, operations[i]);
+        alloc += strlen (alloc) + 1;
+        match++;
+      }
+    }
+
+    for (int i = 0; operations[i]; i++)
+    {
+      if (strstr (operations[i], filter_query) &&
+          !array_contains_string (completions, operations[i]))
+      {
+        completions[match] = alloc;
+        strcpy (alloc, operations[i]);
+        alloc += strlen (alloc) + 1;
+        match++;
+      }
+    }
+    g_free (with_gegl);
+  }
   g_free (operations);
 
   if (match == 0)
   {
-    return NULL;
     g_free (completions);
+    return NULL;
   }
   return completions;
 }
@@ -2299,18 +2349,21 @@ void gcut_draw (Mrg     *mrg,
 
       // XXX: print completions that are clickable?
       {
-        gchar **operations = gcut_get_completions (filter_query);
-        mrg_start (mrg, NULL, NULL);
-        mrg_set_xy (mrg, mrg_em(mrg) * 1, mrg_height (mrg) * SPLIT_VER + mrg_em (mrg));
-        gint matches=0;
-        for (int i = 0; operations[i] && matches < 40; i++)
+          gchar **operations = gcut_get_completions (filter_query);
+          mrg_start (mrg, NULL, NULL);
+          mrg_set_xy (mrg, mrg_em(mrg) * 1, mrg_height (mrg) * SPLIT_VER + mrg_em (mrg));
+          if (operations)
           {
-            mrg_printf (mrg, "%s", operations[i]);
-            mrg_printf (mrg, " ");
-            matches ++;
-          }
-        mrg_end(mrg);
-        g_free (operations);
+          gint matches=0;
+          for (int i = 0; operations[i] && matches < 40; i++)
+            {
+              mrg_printf (mrg, "%s", operations[i]);
+              mrg_printf (mrg, " ");
+              matches ++;
+            }
+          mrg_end(mrg);
+          g_free (operations);
+        }
       }
     }
   }
