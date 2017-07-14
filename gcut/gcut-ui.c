@@ -35,6 +35,7 @@ static void mrg_gegl_blit (Mrg *mrg,
                           GeglEDL *edl)
 {
   GeglRectangle bounds;
+  float scale = 1.0;
 
   cairo_t *cr = mrg_cr (mrg);
   cairo_surface_t *surface = NULL;
@@ -63,7 +64,6 @@ static void mrg_gegl_blit (Mrg *mrg,
     copy_buf_len = bounds.width * bounds.height * 4;
     copy_buf = malloc (copy_buf_len);
   }
-      float scale = 1.0;
   {
     static int foo = 0;
     unsigned char *buf = copy_buf;
@@ -168,6 +168,7 @@ static void insert_clip (GeglEDL *edl, const char *path,
   GList *iter;
   Clip *clip, *cur_clip;
   int end_frame = edl->frame_no;
+  int clip_frame_no;
   if (in < 0)
     in = 0;
   if (out < 0)
@@ -188,7 +189,6 @@ static void insert_clip (GeglEDL *edl, const char *path,
   }
   clip = clip_new_full (edl, path, in, out);
   clip->title = g_strdup (basename (path));
-  int clip_frame_no;
   cur_clip = gcut_get_clip (edl, edl->frame_no, &clip_frame_no);
 
   if (empty_selection (edl))
@@ -205,6 +205,9 @@ static void insert_clip (GeglEDL *edl, const char *path,
   {
     Clip *last_clip;
     int sin, sout;
+    int cur_clip_frame_no;
+    int last_clip_frame_no;
+
     sin = edl->selection_start;
     sout = edl->selection_end + 1;
     if (sin > sout)
@@ -212,11 +215,9 @@ static void insert_clip (GeglEDL *edl, const char *path,
       sout = edl->selection_start + 1;
       sin = edl->selection_end;
     }
-    int cur_clip_frame_no;
     cur_clip = gcut_get_clip (edl, sin, &cur_clip_frame_no);
     clip_split (cur_clip, cur_clip_frame_no);
     gcut_get_duration (edl);
-    int last_clip_frame_no;
     cur_clip = gcut_get_clip (edl, sin, &cur_clip_frame_no);
     last_clip = gcut_get_clip (edl, sout, &last_clip_frame_no);
     if (cur_clip == last_clip)
@@ -608,16 +609,16 @@ static void make_rel_props (GeglNode *node)
     if (unit && !strcmp (unit, "pixel-distance"))
     {
       char tmpbuf[1024];
+      GQuark rel_quark;
       sprintf (tmpbuf, "%s-rel", props[i]->name);
-      GQuark rel_quark = g_quark_from_string (tmpbuf);
+      rel_quark = g_quark_from_string (tmpbuf);
       g_object_set_qdata_full (G_OBJECT(node), rel_quark,  g_strdup("foo"), g_free);
     }
 
   }
 }
 
-
-  void insert_node (GeglNode *selected_node, GeglNode *new)
+static void insert_node (GeglNode *selected_node, GeglNode *new)
   {
     GeglNode **nodes = NULL;
     const gchar **pads = NULL;
@@ -1134,16 +1135,19 @@ static void zoom_timeline (MrgEvent *event, void *data1, void *data2)
 #define PAD_DIM     8
 int VID_HEIGHT=96; // XXX: ugly global
 
-void render_clip (Mrg *mrg, GeglEDL *edl, const char *clip_path, int clip_start, int clip_frames, double x, double y, int fade, int fade2)
+static void render_clip (Mrg *mrg, GeglEDL *edl, const char *clip_path, int clip_start, int clip_frames, double x, double y, int fade, int fade2)
 {
   char *thumb_path;
+  int width, height;
+  cairo_t *cr = mrg_cr (mrg);
+  MrgImage *img;
+
   if (!clip_path)
   {
     return; // XXX: draw string!
   }
   thumb_path = gcut_make_thumb_path (edl, clip_path);
 
-  cairo_t *cr = mrg_cr (mrg);
   if (fade || fade2)
   {
     cairo_move_to (cr, x, y + VID_HEIGHT/2);
@@ -1158,8 +1162,7 @@ void render_clip (Mrg *mrg, GeglEDL *edl, const char *clip_path, int clip_start,
     cairo_rectangle (cr, x, y, clip_frames, VID_HEIGHT);
   }
 
-  int width, height;
-  MrgImage *img = mrg_query_image (mrg, thumb_path, &width, &height);
+  img = mrg_query_image (mrg, thumb_path, &width, &height);
   g_free (thumb_path);
   if (!edl->playing && img && width > 0)
   {
@@ -1200,11 +1203,12 @@ static void scroll_to_fit (GeglEDL *edl, Mrg *mrg)
 static void shuffle_forward (MrgEvent *event, void *data1, void *data2)
 {
   GeglEDL *edl = data1;
-  gcut_cache_invalid (edl);
 
   GList *prev = NULL,
         *next = NULL,
         *self = g_list_find (edl->clips, edl->active_clip);
+
+  gcut_cache_invalid (edl);
 
   if (self)
   {
@@ -1234,12 +1238,13 @@ static void shuffle_forward (MrgEvent *event, void *data1, void *data2)
 static void shuffle_back (MrgEvent *event, void *data1, void *data2)
 {
   GeglEDL *edl = data1;
-  gcut_cache_invalid (edl);
 
   GList *prev = NULL,
         *prevprev = NULL,
         *next = NULL,
         *self = g_list_find (edl->clips, edl->active_clip);
+
+  gcut_cache_invalid (edl);
 
   if (self)
   {
@@ -1271,12 +1276,14 @@ static void shuffle_back (MrgEvent *event, void *data1, void *data2)
 static void slide_forward (MrgEvent *event, void *data1, void *data2)
 {
   GeglEDL *edl = data1;
-  gcut_cache_invalid (edl);
-    edl->active_clip = edl_get_clip_for_frame (edl, edl->frame_no);
 
   GList *prev = NULL,
-        *next = NULL,
-        *self = g_list_find (edl->clips, edl->active_clip);
+        *next = NULL, *self;
+  
+  edl->active_clip = edl_get_clip_for_frame (edl, edl->frame_no);
+  self = g_list_find (edl->clips, edl->active_clip);
+
+  gcut_cache_invalid (edl);
   /*
         situations to deal with:
           inside mergable clips
@@ -1350,12 +1357,15 @@ static void slide_forward (MrgEvent *event, void *data1, void *data2)
 static void slide_back (MrgEvent *event, void *data1, void *data2)
 {
   GeglEDL *edl = data1;
-  gcut_cache_invalid (edl);
-    edl->active_clip = edl_get_clip_for_frame (edl, edl->frame_no);
 
   GList *prev = NULL,
         *next = NULL,
-        *self = g_list_find (edl->clips, edl->active_clip);
+        *self;
+
+  edl->active_clip = edl_get_clip_for_frame (edl, edl->frame_no);
+  self = g_list_find (edl->clips, edl->active_clip);
+
+  gcut_cache_invalid (edl);
   /*
         situations to deal with:
           inside mergable clips
@@ -1507,24 +1517,26 @@ static void end_edit (MrgEvent *e, void *data1, void *data2)
 static void drag_double_slider (MrgEvent *e, void *data1, void *data2)
 {
   gpointer *data = data1;
+  float new_val;
   GeglParamSpecDouble *gspec = (void*)data2;
   GParamSpec          *spec  = (void*)data2;
   GeglNode            *node  = data[1];
   GeglEDL             *edl   = data[0];
   char tmpbuf[1024];
-  sprintf (tmpbuf, "%s-rel", spec->name);
-  GQuark rel_quark = g_quark_from_string (tmpbuf);
-  sprintf (tmpbuf, "%s-anim", spec->name);
-  GQuark anim_quark = g_quark_from_string (tmpbuf);
   double ui_min = gspec->ui_minimum;
   double ui_max = gspec->ui_maximum;
+  GQuark rel_quark, anim_quark;
+  sprintf (tmpbuf, "%s-rel", spec->name);
+  rel_quark = g_quark_from_string (tmpbuf);
+  sprintf (tmpbuf, "%s-anim", spec->name);
+  anim_quark = g_quark_from_string (tmpbuf);
   if (g_object_get_qdata (G_OBJECT (node), rel_quark) && 1)
     {
       ui_min /= 1000.0;
       ui_max /= 1000.0;
     }
 
-  float new_val = e->x * (ui_max - ui_min) + ui_min;
+  new_val = e->x * (ui_max - ui_min) + ui_min;
 
   if (g_object_get_qdata (G_OBJECT (node), anim_quark))
   {
@@ -1581,8 +1593,9 @@ static void remove_key (MrgEvent *e, void *data1, void *data2)
   const char          *pname = data[2];
   int  clip_frame_no  = GPOINTER_TO_INT(data[3]);
   char tmpbuf[1024];
+  GQuark anim_quark;
   sprintf (tmpbuf, "%s-anim", pname);
-  GQuark anim_quark = g_quark_from_string (tmpbuf);
+  anim_quark = g_quark_from_string (tmpbuf);
 
   fprintf (stderr, "remove key %p %s %i\n", node, pname, clip_frame_no);
 
@@ -1618,17 +1631,19 @@ static void drag_int_slider (MrgEvent *e, void *data1, void *data2)
   GParamSpec       *spec  = (void*)data2;
   GeglNode         *node  = (void*)data1;
   char tmpbuf[1024];
-  sprintf (tmpbuf, "%s-rel", spec->name);
-  GQuark rel_quark = g_quark_from_string (tmpbuf);
+  GQuark rel_quark;
   double ui_min = gspec->ui_minimum;
   double ui_max = gspec->ui_maximum;
+  gint new_val;
+  sprintf (tmpbuf, "%s-rel", spec->name);
+  rel_quark = g_quark_from_string (tmpbuf);
   if (g_object_get_qdata (G_OBJECT (node), rel_quark) && 1)
     {
       ui_min /= 1000.0;
       ui_max /= 1000.0;
     }
 
-  gint new_val = e->x * (ui_max - ui_min) + ui_min;
+  new_val = e->x * (ui_max - ui_min) + ui_min;
   gegl_node_set (node, spec->name, new_val, NULL);
 
   mrg_queue_draw (e->mrg, NULL);
@@ -1644,7 +1659,7 @@ static void update_string (const char *new_string, void *user_data)
   ui_tweaks++;
 }
 
-float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
+static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
 {
   unsigned int n_props;
   GParamSpec ** props = gegl_operation_list_properties (gegl_node_get_operation (node),
@@ -1653,26 +1668,27 @@ float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
   for (int i = 0; i <n_props; i ++)
   {
     char *str = NULL;
-    mrg_set_xy (mrg, x, y);
     GType type = props[i]->value_type;
-
     char tmpbuf[1024];
+    GQuark rel_quark, anim_quark;
+
+    mrg_set_xy (mrg, x, y);
 
     sprintf (tmpbuf, "%s-rel", props[i]->name);
-    GQuark rel_quark = g_quark_from_string (tmpbuf);
+    rel_quark = g_quark_from_string (tmpbuf);
     sprintf (tmpbuf, "%s-anim", props[i]->name);
-    GQuark anim_quark = g_quark_from_string (tmpbuf);
+    anim_quark = g_quark_from_string (tmpbuf);
     mrg_set_xy (mrg, x, y);
 
     if (g_type_is_a (type, G_TYPE_DOUBLE))
     {
       GeglParamSpecDouble *gspec = (void*)props[i];
       double val;
-      gegl_node_get (node, props[i]->name, &val, NULL);
       double width = mrg_width (mrg) - x - mrg_em(mrg) * 15;
       double ui_min = gspec->ui_minimum;
       double ui_max = gspec->ui_maximum;
 
+      gegl_node_get (node, props[i]->name, &val, NULL);
       if (g_object_get_qdata (G_OBJECT (node), rel_quark) && 1)
       {
         ui_min /= 1000.0;
@@ -1720,11 +1736,11 @@ float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
     {
       GeglParamSpecDouble *gspec = (void*)props[i];
       gint val;
-      gegl_node_get (node, props[i]->name, &val, NULL);
       double width = mrg_width (mrg) - x - mrg_em(mrg) * 15;
       double ui_min = gspec->ui_minimum;
       double ui_max = gspec->ui_maximum;
 
+      gegl_node_get (node, props[i]->name, &val, NULL);
       if (g_object_get_qdata (G_OBJECT (node), rel_quark) && 1)
       {
         ui_min /= 1000.0;
@@ -1792,6 +1808,8 @@ float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
       mrg_printf (mrg, "%s", str);
     }
 
+
+
     if (str)
     {
       g_free (str);
@@ -1802,6 +1820,7 @@ float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
        mrg_printf (mrg, "rel");
     if (g_object_get_qdata (G_OBJECT (node), anim_quark))
     {
+       cairo_t *cr = mrg_cr (mrg);
        GeglPath *path = g_object_get_qdata (G_OBJECT (node), anim_quark);
        int clip_frame_no;
        gcut_get_clip (edl, edl->frame_no, &clip_frame_no);
@@ -1829,7 +1848,6 @@ float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
          // here
        }
 
-       cairo_t *cr = mrg_cr (mrg);
 
        cairo_save (cr);
 
@@ -1875,6 +1893,7 @@ float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
                         mrg_height (mrg) * SPLIT_VER);
 
        cairo_set_source_rgba (cr, 1.0, 0.5, 0.5, 255);
+        {
            int nodes = gegl_path_get_n_nodes (path);
            GeglPathItem path_item;
 
@@ -1887,11 +1906,13 @@ float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
             mrg_listen (mrg, MRG_PRESS, jump_to_pos, edl, GINT_TO_POINTER( (int)(path_item.point[0].x + edl->active_clip->abs_start)));
             cairo_fill (cr);
           }
+        }
        cairo_restore (cr);
        }
     }
     if (g_object_get_qdata (G_OBJECT (node), g_quark_from_string (props[i]->name)))
        mrg_printf (mrg, "{???}");
+
   }
 
   return y;
@@ -1916,7 +1937,34 @@ static void select_node (MrgEvent *e, void *data1, void *data2)
   mrg_queue_draw (e->mrg, NULL);
 }
 
-float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
+static void rounded_rectangle (cairo_t *cr, double x, double y, double width, double height, double aspect,
+                        double corner_radius)
+{
+  double radius;
+  double degrees = M_PI / 180.0;
+
+  if (corner_radius < 0.0)
+    corner_radius = height / 10.0;   /* and corner curvature radius */
+
+  radius= corner_radius / aspect;
+
+cairo_new_sub_path (cr);
+cairo_arc (cr, x + width - radius, y + radius, radius, -90 * degrees, 0 * degrees);
+cairo_arc (cr, x + width - radius, y + height - radius, radius, 0 * degrees, 90 * degrees);
+cairo_arc (cr, x + radius, y + height - radius, radius, 90 * degrees, 180 * degrees);
+cairo_arc (cr, x + radius, y + radius, radius, 180 * degrees, 270 * degrees);
+cairo_close_path (cr);
+
+#if 0
+cairo_set_source_rgb (cr, 0.5, 0.5, 1);
+cairo_fill_preserve (cr);
+cairo_set_source_rgba (cr, 0.5, 0, 0, 0.5);
+cairo_set_line_width (cr, 10.0);
+cairo_stroke (cr);
+#endif
+}
+
+static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
 {
     while (node)
     {
@@ -1928,11 +1976,17 @@ float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
       {
         if (node == selected_node)
           y = print_props (mrg, edl, node, x + mrg_em(mrg) * 0.5, y);
+#if 0
+        rounded_rectangle (mrg_cr (mrg), x-0.5*mrg_em(mrg), y - mrg_em (mrg) * 1.0, mrg_em(mrg) * 10.0, mrg_em (mrg) * 1.2, 0.4, -1);
+
+        cairo_rectangle (mrg_cr (mrg), x + 1.0 * mrg_em (mrg), y - mrg_em (mrg) * 1.4, mrg_em(mrg) * 0.1, mrg_em (mrg) * 0.4);
+#endif
 
         mrg_set_xy (mrg, x, y);
         mrg_text_listen (mrg, MRG_CLICK, select_node, node, NULL);
         mrg_printf (mrg, "%s", gegl_node_get_operation (node));
         mrg_text_listen_done (mrg);
+
         y -= mrg_em (mrg) * 1.5;
       }
 
