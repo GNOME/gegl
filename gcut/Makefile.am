@@ -45,10 +45,10 @@ default.edl.inc: default.edl
 
 gcut_SOURCES =			\
 	gcut.c			\
+default.edl.inc			\
 	gcut.h			\
 	iconographer.c		\
 	clip.c
-
 
 if HAVE_MRG
 if HAVE_GEXIV2
