@@ -1,12 +1,16 @@
+#include "config.h"
 #include <string.h>
 #include <signal.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <gegl.h>
-#include <gexiv2/gexiv2.h>
 #include <libgen.h>
 #include <gegl-audio-fragment.h>
+
+#if HAVE_GEXIV2
+#include <gexiv2/gexiv2.h>
+#endif
 
 /* GEGL edit decision list - a digital video cutter and splicer */
 
@@ -1476,6 +1480,7 @@ void
 gegl_meta_set_audio (const char        *path,
                      GeglAudioFragment *audio)
 {
+#if HAVE_GEXIV2
   GError *error = NULL;
   GExiv2Metadata *e2m = gexiv2_metadata_new ();
   gexiv2_metadata_open_path (e2m, path, &error);
@@ -1509,12 +1514,14 @@ gegl_meta_set_audio (const char        *path,
     g_string_free (str, TRUE);
   }
   g_object_unref (e2m);
+#endif
 }
 
 void
 gegl_meta_get_audio (const char        *path,
                      GeglAudioFragment *audio)
 {
+#if HAVE_GEXIV2
   GError *error = NULL;
   GExiv2Metadata *e2m = gexiv2_metadata_new ();
   gexiv2_metadata_open_path (e2m, path, &error);
@@ -1574,6 +1581,7 @@ gegl_meta_get_audio (const char        *path,
   else
     g_warning ("%s", error->message);
   g_object_unref (e2m);
+#endif
 }
 
 void gcut_set_selection (GeglEDL *edl, int start_frame, int end_frame)
