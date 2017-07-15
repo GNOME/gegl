@@ -2377,37 +2377,78 @@ static void gcut_draw (Mrg     *mrg,
 
     if (filter_query)
     {
+      gchar **completions = gcut_get_completions (filter_query);
+      int n_completions = strarray_count (completions);
+      if (tab_index >= n_completions)
+        tab_index = 0;
+
       mrg_set_xy (mrg, mrg_em(mrg) * 1, y2);
-      mrg_edit_start (mrg, update_filter_query, edl);
-      mrg_printf (mrg, "%s", filter_query);
-      mrg_edit_end (mrg);
+
+      if (completions)
+      {
+        char *full = completions[tab_index];
+        char *prep = strstr (completions[tab_index], filter_query);
+        int pre = 0;
+        int post = 0;
+
+        if (prep) pre = prep-full;
+
+        if (pre)
+        {
+          char tmpbuf[64]="";
+          int i;
+          for (i = 0; i < 64; i ++) tmpbuf[i]=0;
+          for (i = 0; i < pre; i ++)
+            tmpbuf[i] = completions[tab_index][i];
+          mrg_printf (mrg, "%s", tmpbuf);
+        }
+
+        mrg_edit_start (mrg, update_filter_query, edl);
+        mrg_printf (mrg, "%s", filter_query);
+        mrg_edit_end (mrg);
+        post = strlen (completions[tab_index]) - strlen (filter_query) - pre;
+
+        if (post)
+        {
+          char tmpbuf[64]="";
+          int i;
+          for (i = 0; i < post; i ++)
+            tmpbuf[i] = completions[tab_index][
+               strlen(completions[tab_index]) - post + i];
+          mrg_printf (mrg, "%s", tmpbuf);
+        }
+      }
+      else
+      {
+        mrg_edit_start (mrg, update_filter_query, edl);
+        mrg_printf (mrg, "%s", filter_query);
+        mrg_edit_end (mrg);
+      }
     
       mrg_add_binding (mrg, "escape", NULL, "end edit", end_filter_query_edit, edl);
       mrg_add_binding (mrg, "shift-tab", NULL, "end edit", filter_query_tab_reverse, edl);
       mrg_add_binding (mrg, "tab", NULL, "end edit", filter_query_tab, edl);
       mrg_add_binding (mrg, "return", NULL, "end edit", complete_filter_query_edit, edl);
 
-      // XXX: print completions that are clickable?
+      if (completions && 0)
       {
-          gchar **operations = gcut_get_completions (filter_query);
-          mrg_start (mrg, NULL, NULL);
-          mrg_set_xy (mrg, mrg_em(mrg) * 1, mrg_height (mrg) * SPLIT_VER + mrg_em (mrg));
-          if (operations)
+        gint matches=0;
+        mrg_start (mrg, NULL, NULL);
+        mrg_set_xy (mrg, mrg_em(mrg) * 1, mrg_height (mrg) * SPLIT_VER + mrg_em (mrg));
+        for (int i = 0; completions[i] && matches < 40; i++)
           {
-          gint matches=0;
-          for (int i = 0; operations[i] && matches < 40; i++)
-            {
-              if (i == tab_index)
-              mrg_printf (mrg, "[%s]", operations[i]);
-              else
-              mrg_printf (mrg, "%s", operations[i]);
-              mrg_printf (mrg, " ");
-              matches ++;
-            }
-          mrg_end(mrg);
-          g_free (operations);
-        }
+            if (i == tab_index)
+            mrg_printf (mrg, "[%s]", completions[i]);
+            else
+            mrg_printf (mrg, "%s", completions[i]);
+            mrg_printf (mrg, " ");
+            matches ++;
+          }
+        mrg_end(mrg);
       }
+
+      if (completions)
+        g_free (completions);
     }
   }
 
