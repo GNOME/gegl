@@ -25,6 +25,7 @@
         subtitles
 
     ui
+      start using css
       port gcut-ui.c to lua
       detect locked or crashed ui, kill and respawn
       trimming by mouse / dragging clips around by mouse

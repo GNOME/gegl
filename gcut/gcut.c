@@ -1244,6 +1244,21 @@ static void gcut_start_sanity (void)
 
 gint iconographer_main (gint    argc, gchar **argv);
 
+gint str_has_video_suffix (const gchar *edl_path);
+gint str_has_video_suffix (const gchar *edl_path)
+{
+  if (g_str_has_suffix (edl_path, ".mp4") ||
+      g_str_has_suffix (edl_path, ".ogv") ||
+      g_str_has_suffix (edl_path, ".mkv") ||
+      g_str_has_suffix (edl_path, ".MKV") ||
+      g_str_has_suffix (edl_path, ".avi") ||
+      g_str_has_suffix (edl_path, ".MP4") ||
+      g_str_has_suffix (edl_path, ".OGV") ||
+      g_str_has_suffix (edl_path, ".AVI"))
+    return 1;
+  return 0;
+}
+
 int main (int argc, char **argv)
 {
   GeglEDL *edl = NULL;
@@ -1277,14 +1292,15 @@ int main (int argc, char **argv)
 
   edl_path = argv[1]; //realpath (argv[1], NULL);
 
-  if (g_str_has_suffix (edl_path, ".mp4") ||
-      g_str_has_suffix (edl_path, ".ogv") ||
-      g_str_has_suffix (edl_path, ".mkv") ||
-      g_str_has_suffix (edl_path, ".MKV") ||
-      g_str_has_suffix (edl_path, ".avi") ||
-      g_str_has_suffix (edl_path, ".MP4") ||
-      g_str_has_suffix (edl_path, ".OGV") ||
-      g_str_has_suffix (edl_path, ".AVI"))
+  if (str_has_video_suffix (edl_path))
+  {
+    char * path = realpath (edl_path, NULL);
+    char * rpath = g_strdup_printf ("%s.edl", path);
+    if (g_file_test (rpath, G_FILE_TEST_IS_REGULAR))
+      edl_path = rpath;
+  }
+
+  if (str_has_video_suffix (edl_path))
   {
     char str[1024];
     int duration;
