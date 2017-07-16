@@ -1,4 +1,4 @@
-#if TODO // this is the projects todo-list
+#if TODO
 
   bugs
     huge video files cause (cairo) thumtrack overflow, vertical also has this problem - how to split?
@@ -16,7 +16,14 @@
       fidelity as GEGL processing allows - rather than sharing tuning for
       preview rendering.
 
-      support for other timecodes, mm:ss:ff and s
+      support for other timecodes, mm:ss:ff and s, maybe mandate that? or permit frame count for native,
+      and timecodes for all others - needing a pass through to update if changing the target fps?
+
+
+     currently changing target fps changes duration of project - this is probably wrong, the focus should
+     be on making video/animation - that can be sampled, thus for motion graphics rendering different fps
+     should 
+
       using edl files as clip sources - hopefully without even needing caches.
 
       global filters
@@ -105,7 +112,7 @@ guchar     *gcut_get_cache_bitmap   (GeglEDL *edl, int *length_ret);
 
 Clip       *clip_new               (GeglEDL *edl);
 void        clip_free              (Clip *clip);
-const char *clip_get_path     (Clip *clip);
+const char *clip_get_path          (Clip *clip);
 void        clip_set_path          (Clip *clip, const char *path);
 int         clip_get_start         (Clip *clip);
 int         clip_get_end           (Clip *clip);
@@ -138,27 +145,16 @@ extern char *gcut_binary_path;
 
 /*********/
 
-typedef struct SourceClip
-{
-  char  *path;
-  int    start;
-  int    end;
-  char  *title;
-  int    duration;
-  int    editing;
-  char  *filter_graph; /* chain of gegl filters */
-} SourceClip;
-
 struct _Clip
 {
   char  *path;  /*path to media file */
+  char  *title;
   int    start; /*frame number starting with 0 */
   int    end;   /*last frame, inclusive fro single frame, make equal to start */
-  char  *title;
   int    duration;
   int    editing;
   char  *filter_graph; /* chain of gegl filters */
-  /* to here Clip must match start of SourceClip */
+  
   GeglEDL *edl;
 
   double fps;
