@@ -1543,6 +1543,7 @@ static void end_edit (MrgEvent *e, void *data1, void *data2)
   mrg_queue_draw (e->mrg, NULL);
 }
 
+#if 0
 static void drag_double_slider (MrgEvent *e, void *data1, void *data2)
 {
   gpointer *data = data1;
@@ -1612,6 +1613,7 @@ done:
   changed++;
   tweaked_state (e->mrg);
 }
+#endif
 
 
 static void remove_key (MrgEvent *e, void *data1, void *data2)
@@ -1654,6 +1656,7 @@ static void remove_key (MrgEvent *e, void *data1, void *data2)
   tweaked_state (e->mrg);
 }
 
+#if 0
 static void drag_int_slider (MrgEvent *e, void *data1, void *data2)
 {
   GeglParamSpecInt *gspec = (void*)data2;
@@ -1680,6 +1683,7 @@ static void drag_int_slider (MrgEvent *e, void *data1, void *data2)
   changed++;
   tweaked_state (e->mrg);
 }
+#endif
 
 static void update_int_string (const char *new_string, void *user_data)
 {
@@ -1719,13 +1723,16 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
 
     if (g_type_is_a (type, G_TYPE_DOUBLE))
     {
-      GeglParamSpecDouble *gspec = (void*)props[i];
       double val;
+#if 0
+      GeglParamSpecDouble *gspec = (void*)props[i];
       double width = mrg_width (mrg) - x - mrg_em(mrg) * 15;
       double ui_min = gspec->ui_minimum;
       double ui_max = gspec->ui_maximum;
+#endif
 
       gegl_node_get (node, props[i]->name, &val, NULL);
+#if 0
       if (g_object_get_qdata (G_OBJECT (node), rel_quark) && 1)
       {
         ui_min /= 1000.0;
@@ -1759,6 +1766,7 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
       cairo_fill (mrg_cr (mrg));
 
       cairo_restore (mrg_cr (mrg));
+#endif
 
       str = g_strdup_printf ("%s:%f", props[i]->name, val);
       while (str[strlen(str)-1]=='0')
@@ -1771,13 +1779,16 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
     }
     else if (g_type_is_a (type, G_TYPE_INT))
     {
-      GeglParamSpecDouble *gspec = (void*)props[i];
       gint val;
+#if 0
+      GeglParamSpecDouble *gspec = (void*)props[i];
       double width = mrg_width (mrg) - x - mrg_em(mrg) * 15;
       double ui_min = gspec->ui_minimum;
       double ui_max = gspec->ui_maximum;
+#endif
 
       gegl_node_get (node, props[i]->name, &val, NULL);
+#if 0
       if (g_object_get_qdata (G_OBJECT (node), rel_quark) && 1)
       {
         ui_min /= 1000.0;
@@ -1805,6 +1816,7 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
       cairo_fill (mrg_cr (mrg));
 
       cairo_restore (mrg_cr (mrg));
+#endif
 
       mrg_printf (mrg, "%s: ", props[i]->name);
       str = g_strdup_printf ("%d", val);
