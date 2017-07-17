@@ -1495,6 +1495,7 @@ static void edit_string (MrgEvent *e, void *data1, void *data2)
   tweaked_state (e->mrg);
 }
 
+
 static void edit_int_string (MrgEvent *e, void *data1, void *data2)
 {
   GeglNode *node = data1;
@@ -1507,9 +1508,33 @@ static void edit_int_string (MrgEvent *e, void *data1, void *data2)
   snode = node;
   sprop = prop;
   {
-    int val;
-    g_object_get (node, prop, &val, NULL);
+    gint val;
+    gegl_node_get (node, prop, &val, NULL);
     sprintf (tmpstr, "%d", val);
+  }
+  changed++;
+  mrg_event_stop_propagate (e);
+  mrg_set_cursor_pos (e->mrg, 0); // XXX: could fech strlen and use that
+  mrg_queue_draw (e->mrg, NULL);
+  tweaked_state (e->mrg);
+}
+
+
+static void edit_double_string (MrgEvent *e, void *data1, void *data2)
+{
+  GeglNode *node = data1;
+  const char *prop = data2;
+  if (tmpstr)
+    g_warning ("tmp str set\n");
+  if (!tmpstr)
+    tmpstr = g_malloc0 (20);
+
+  snode = node;
+  sprop = prop;
+  {
+    gdouble val;
+    gegl_node_get (node, prop, &val, NULL);
+    sprintf (tmpstr, "%f", val);
   }
   changed++;
   mrg_event_stop_propagate (e);
@@ -1685,9 +1710,32 @@ static void drag_int_slider (MrgEvent *e, void *data1, void *data2)
 }
 #endif
 
+
+static void update_double_string (const char *new_string, void *user_data)
+{
+  gdouble val = g_strtod (new_string, NULL);
+  GParamSpec *pspec = gegl_operation_find_property (gegl_node_get_operation(snode), sprop);
+  GParamSpecDouble *ips = (void*)pspec;
+
+  if (val < ips->minimum) val = ips->minimum;
+  if (val > ips->maximum) val = ips->maximum;
+  sprintf (tmpstr, "%.3f", val);
+
+  if (snode && sprop)
+    gegl_node_set (snode, sprop, val, NULL);
+  ui_tweaks++;
+}
+
 static void update_int_string (const char *new_string, void *user_data)
 {
   int val = atoi (new_string);
+  GParamSpec *pspec = gegl_operation_find_property (gegl_node_get_operation(snode), sprop);
+  GParamSpecInt *ips = (void*)pspec;
+
+  if (val < ips->minimum) val = ips->minimum;
+  if (val > ips->maximum) val = ips->maximum;
+  sprintf (tmpstr, "%d", val);
+
   if (snode && sprop)
     gegl_node_set (snode, sprop, val, NULL);
   ui_tweaks++;
@@ -1768,14 +1816,26 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
       cairo_restore (mrg_cr (mrg));
 #endif
 
-      str = g_strdup_printf ("%s:%f", props[i]->name, val);
-      while (str[strlen(str)-1]=='0')
+      mrg_printf (mrg, "%s: ", props[i]->name);
+      str = g_strdup_printf ("%.3f", val);
+
+      if (snode && !strcmp (props[i]->name, sprop))
       {
-        if (str[strlen(str)-2]=='.')
-          break;
-        str[strlen(str)-1]='\0';
+        mrg_edit_start (mrg, update_double_string, edl);
+        mrg_printf (mrg, "%s", tmpstr);
       }
-      mrg_printf (mrg, "%s", str);
+      else
+      {
+        mrg_text_listen (mrg, MRG_CLICK, edit_double_string, node, (void*)g_intern_string(props[i]->name));
+        mrg_printf (mrg, "%s", str);
+      }
+
+      if (snode && !strcmp (props[i]->name, sprop))
+        mrg_edit_end (mrg);
+      else
+        mrg_text_listen_done (mrg);
+      str = g_strdup ("");
+
     }
     else if (g_type_is_a (type, G_TYPE_INT))
     {
@@ -1821,14 +1881,17 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
       mrg_printf (mrg, "%s: ", props[i]->name);
       str = g_strdup_printf ("%d", val);
 
+
       if (snode && !strcmp (props[i]->name, sprop))
       {
         mrg_edit_start (mrg, update_int_string, edl);
+        mrg_printf (mrg, "%s", tmpstr);
       }
       else
+      {
         mrg_text_listen (mrg, MRG_CLICK, edit_int_string, node, (void*)g_intern_string(props[i]->name));
-      
-      mrg_printf (mrg, "%s", tmpstr);
+        mrg_printf (mrg, "%s", str);
+      }
 
       if (snode && !strcmp (props[i]->name, sprop))
         mrg_edit_end (mrg);
