@@ -2109,6 +2109,7 @@ cairo_set_line_width (cr, 10.0);
 cairo_stroke (cr);
 #endif
 }
+static void remove_clip (MrgEvent *event, void *data1, void *data2);
 
 static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
 {
@@ -2120,10 +2121,14 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
           (node != filter_start) &&
           (node != filter_end))
       {
+        float start_y = y;
+
         if (node == selected_node)
           y = print_props (mrg, edl, node, x + mrg_em(mrg) * 0.5, y);
 #if 1
-        rounded_rectangle (mrg_cr (mrg), x-0.5*mrg_em(mrg), y - mrg_em (mrg) * 1.0, mrg_em(mrg) * 10.0, mrg_em (mrg) * 1.2, 0.4, -1);
+        rounded_rectangle (mrg_cr (mrg), x-0.5 * mrg_em(mrg), y - mrg_em (mrg) * 1.0, mrg_em(mrg) * 10.0, mrg_em (mrg) * 1.2, 0.4, -1);
+#endif
+#if 0
 
         cairo_rectangle (mrg_cr (mrg), x + 1.0 * mrg_em (mrg), y - mrg_em (mrg) * 1.4, mrg_em(mrg) * 0.1, mrg_em (mrg) * 0.4);
 #endif
@@ -2134,6 +2139,20 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
         mrg_text_listen_done (mrg);
 
         y -= mrg_em (mrg) * 1.5;
+
+        if (selected_node == node)
+        {
+          cairo_rectangle (mrg_cr (mrg), x + 0.0 * mrg_em (mrg), y + mrg_em(mrg)*0.25, mrg_em (mrg) * 12.0, (start_y-y));
+          cairo_set_source_rgba (mrg_cr (mrg), 1.0, 0.0, 0.0, 1.0);
+          cairo_stroke (mrg_cr (mrg));
+
+          mrg_set_xy (mrg, x + 10.4 * mrg_em (mrg), y + mrg_em (mrg) * 1.5);
+          mrg_text_listen (mrg, MRG_CLICK, remove_clip, edl, edl);
+          mrg_printf (mrg, " X ");
+          mrg_text_listen_done (mrg);
+
+        }
+
       }
 
       {
