@@ -1480,6 +1480,7 @@ static void toggle_bool (MrgEvent *e, void *data1, void *data2)
 
 GeglNode *snode = NULL;
 const char *sprop = NULL;
+char *tmpstr = NULL;
 
 static void edit_string (MrgEvent *e, void *data1, void *data2)
 {
@@ -1487,6 +1488,29 @@ static void edit_string (MrgEvent *e, void *data1, void *data2)
   const char *prop = data2;
   snode = node;
   sprop = prop;
+  changed++;
+  mrg_event_stop_propagate (e);
+  mrg_set_cursor_pos (e->mrg, 0); // XXX: could fech strlen and use that
+  mrg_queue_draw (e->mrg, NULL);
+  tweaked_state (e->mrg);
+}
+
+static void edit_int_string (MrgEvent *e, void *data1, void *data2)
+{
+  GeglNode *node = data1;
+  const char *prop = data2;
+  if (tmpstr)
+    g_warning ("tmp str set\n");
+  if (!tmpstr)
+    tmpstr = g_malloc0 (20);
+
+  snode = node;
+  sprop = prop;
+  {
+    int val;
+    g_object_get (node, prop, &val, NULL);
+    sprintf (tmpstr, "%d", val);
+  }
   changed++;
   mrg_event_stop_propagate (e);
   mrg_set_cursor_pos (e->mrg, 0); // XXX: could fech strlen and use that
@@ -1509,6 +1533,11 @@ static void end_edit (MrgEvent *e, void *data1, void *data2)
 {
   snode = NULL;
   sprop = NULL;
+  if (tmpstr)
+  {
+    g_free (tmpstr);
+    tmpstr = NULL;
+  }
   mrg_event_stop_propagate (e);
   mrg_set_cursor_pos (e->mrg, 0); // XXX: could fech strlen and use that
   mrg_queue_draw (e->mrg, NULL);
@@ -1652,6 +1681,14 @@ static void drag_int_slider (MrgEvent *e, void *data1, void *data2)
   tweaked_state (e->mrg);
 }
 
+static void update_int_string (const char *new_string, void *user_data)
+{
+  int val = atoi (new_string);
+  if (snode && sprop)
+    gegl_node_set (snode, sprop, val, NULL);
+  ui_tweaks++;
+}
+
 static void update_string (const char *new_string, void *user_data)
 {
   if (snode && sprop)
@@ -1769,8 +1806,23 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
 
       cairo_restore (mrg_cr (mrg));
 
-      str = g_strdup_printf ("%s:%d", props[i]->name, val);
-      mrg_printf (mrg, "%s", str);
+      mrg_printf (mrg, "%s: ", props[i]->name);
+      str = g_strdup_printf ("%d", val);
+
+      if (snode && !strcmp (props[i]->name, sprop))
+      {
+        mrg_edit_start (mrg, update_int_string, edl);
+      }
+      else
+        mrg_text_listen (mrg, MRG_CLICK, edit_int_string, node, (void*)g_intern_string(props[i]->name));
+      
+      mrg_printf (mrg, "%s", tmpstr);
+
+      if (snode && !strcmp (props[i]->name, sprop))
+        mrg_edit_end (mrg);
+      else
+        mrg_text_listen_done (mrg);
+      str = g_strdup ("");
     }
     else if (g_type_is_a (type, G_TYPE_BOOLEAN))
     {

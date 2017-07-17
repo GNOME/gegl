@@ -81,10 +81,12 @@ sample_min_max (GeglBuffer  *buffer,
       gint u, v;
       gint angle;
       gfloat rmag;
+      gint max_retries = samples;
+
 retry:                      /* if we've sampled outside the valid image
                                area, we grab another sample instead, this
                                should potentially work better than mirroring
-                               or extending the image
+                               or extending with an abyss policy
                              */
       angle = angle_no++;
       rmag = radiuses[radius_no++] * radius;
@@ -101,7 +103,9 @@ retry:                      /* if we've sampled outside the valid image
           u<0 ||
           v>=height ||
           v<0)
+      {
         goto retry;
+      }
 
       {
         gfloat pixel[4];
@@ -120,7 +124,9 @@ retry:                      /* if we've sampled outside the valid image
           }
         else
           {
-            goto retry;
+            max_retries--;
+            if (max_retries>0)
+              goto retry;
           }
       }
     }
