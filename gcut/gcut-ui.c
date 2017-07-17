@@ -1714,12 +1714,11 @@ static void drag_int_slider (MrgEvent *e, void *data1, void *data2)
 static void update_double_string (const char *new_string, void *user_data)
 {
   gdouble val = g_strtod (new_string, NULL);
-  GParamSpec *pspec = gegl_operation_find_property (gegl_node_get_operation(snode), sprop);
-  GParamSpecDouble *ips = (void*)pspec;
+  GParamSpecDouble *spec = (void*)gegl_operation_find_property (gegl_node_get_operation(snode), sprop);
 
-  if (val < ips->minimum) val = ips->minimum;
-  if (val > ips->maximum) val = ips->maximum;
-  sprintf (tmpstr, "%.3f", val);
+  if (val < spec->minimum) val = spec->minimum;
+  if (val > spec->maximum) val = spec->maximum;
+  sprintf (tmpstr, "%.5f", val);
 
   if (snode && sprop)
     gegl_node_set (snode, sprop, val, NULL);
@@ -1729,11 +1728,10 @@ static void update_double_string (const char *new_string, void *user_data)
 static void update_int_string (const char *new_string, void *user_data)
 {
   int val = atoi (new_string);
-  GParamSpec *pspec = gegl_operation_find_property (gegl_node_get_operation(snode), sprop);
-  GParamSpecInt *ips = (void*)pspec;
+  GParamSpecInt *spec = (void*)gegl_operation_find_property (gegl_node_get_operation(snode), sprop);
 
-  if (val < ips->minimum) val = ips->minimum;
-  if (val > ips->maximum) val = ips->maximum;
+  if (val < spec->minimum) val = spec->minimum;
+  if (val > spec->maximum) val = spec->maximum;
   sprintf (tmpstr, "%d", val);
 
   if (snode && sprop)
@@ -1817,7 +1815,7 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
 #endif
 
       mrg_printf (mrg, "%s: ", props[i]->name);
-      str = g_strdup_printf ("%.3f", val);
+      str = g_strdup_printf ("%.5f", val);
 
       if (snode && !strcmp (props[i]->name, sprop))
       {
