@@ -378,14 +378,32 @@ gegl_tile_handler_cache_has_tile (GeglTileHandlerCache *cache,
 }
 
 static void
-drop_hot_tile (GeglTile *tile)
+drop_hot_tile (GeglTile *tile,
+               gboolean  mutex_locked)
 {
   GeglTileStorage *storage = tile->tile_storage;
 
   if (storage)
     {
       if (gegl_config_threads()>1)
-        g_rec_mutex_lock (&storage->mutex);
+        {
+          if (mutex_locked)
+            {
+              /* XXX:  unlock the global cache mutex in order not to deadlock,
+               * in case the tile storage's mutex is held by another thread,
+               * that waits on the global cache mutex.  this is really ugly,
+               * but we need to lock the global mutex before we can figure out
+               * the tile to drop, so ordering the locks correctly is tricky.
+               *
+               * note that we need to make sure that unlocking the global mutex
+               * here doesn't break our callers.
+               */
+              g_object_ref (storage);
+              g_mutex_unlock (&mutex);
+            }
+
+          g_rec_mutex_lock (&storage->mutex);
+        }
 
       if (storage->hot_tile == tile)
         {
@@ -394,7 +412,15 @@ drop_hot_tile (GeglTile *tile)
         }
 
       if (gegl_config_threads()>1)
-        g_rec_mutex_unlock (&storage->mutex);
+        {
+          g_rec_mutex_unlock (&storage->mutex);
+
+          if (mutex_locked)
+            {
+              g_mutex_lock (&mutex);
+              g_object_unref (storage);
+            }
+        }
     }
 }
 
@@ -412,7 +438,7 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 
       g_hash_table_remove (last_writable->handler->items, last_writable);
       cache_total -= tile->size;
-      drop_hot_tile (tile);
+      drop_hot_tile (tile, TRUE);
       gegl_tile_unref (tile);
       g_slice_free (CacheItem, last_writable);
       return TRUE;
@@ -434,17 +460,21 @@ gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cache,
   if (item)
     {
       cache_total -= item->tile->size;
-      drop_hot_tile (item->tile);
-      item->tile->tile_storage = NULL;
-      gegl_tile_mark_as_stored (item->tile); /* to cheat it out of being stored */
-      gegl_tile_unref (item->tile);
 
       g_queue_unlink (cache_queue, &item->link);
       g_hash_table_remove (cache->items, item);
 
+      g_mutex_unlock (&mutex);
+
+      drop_hot_tile (item->tile, FALSE);
+      item->tile->tile_storage = NULL;
+      gegl_tile_mark_as_stored (item->tile); /* to cheat it out of being stored */
+      gegl_tile_unref (item->tile);
+
       g_slice_free (CacheItem, item);
     }
-  g_mutex_unlock (&mutex);
+  else
+    g_mutex_unlock (&mutex);
 }
 
 
@@ -469,7 +499,7 @@ gegl_tile_handler_cache_void (GeglTileHandlerCache *cache,
 
   if (item)
     {
-      drop_hot_tile (item->tile);
+      drop_hot_tile (item->tile, FALSE);
       gegl_tile_void (item->tile);
       gegl_tile_unref (item->tile);
     }
