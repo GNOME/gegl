@@ -12,6 +12,11 @@
 #include <gexiv2/gexiv2.h>
 #endif
 
+#ifdef G_OS_WIN32
+#define realpath(a,b) _fullpath(b,a,_MAX_PATH)
+#define SIGUSR2 (-1) /* quick and dirty, FIXME */
+#endif
+
 /* GEGL edit decision list - a digital video cutter and splicer */
 
 /* take a string and expand {t=v i t=v t=v }  to numeric or string
@@ -1247,8 +1252,8 @@ int main (int argc, char **argv)
     return iconographer_main (argc-1, argv + 1);
   }
 
-  setenv ("GEGL_USE_OPENCL", "no", 1);
-  setenv ("GEGL_MIPMAP_RENDERING", "1", 1);
+  g_setenv ("GEGL_USE_OPENCL", "no", 1);
+  g_setenv ("GEGL_MIPMAP_RENDERING", "1", 1);
 
   init (argc, argv);
   gcut_start_sanity ();
