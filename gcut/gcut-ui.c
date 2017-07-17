@@ -1927,9 +1927,30 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
       g_free (val);
       str= g_strdup ("");
     }
+    else if (g_type_is_a (type, G_TYPE_STRING))
+    {
+      char *val = NULL;
+      gegl_node_get (node, props[i]->name, &val, NULL);
+      mrg_printf (mrg, "%s: \"", props[i]->name);
+      if (snode && !strcmp (props[i]->name, sprop))
+      {
+        mrg_edit_start (mrg, update_string, edl);
+      }
+      else
+        mrg_text_listen (mrg, MRG_CLICK, edit_string, node, (void*)g_intern_string(props[i]->name));
+      mrg_printf (mrg, "%s", val);
+
+      if (snode && !strcmp (props[i]->name, sprop))
+        mrg_edit_end (mrg);
+      else
+        mrg_text_listen_done (mrg);
+      mrg_printf (mrg, "\"");
+      g_free (val);
+      str= g_strdup ("");
+    }
     else
     {
-      str = g_strdup_printf ("%s: [todo: handle this property type]", props[i]->name);
+      str = g_strdup_printf ("%s: [unhandled]", props[i]->name);
       mrg_printf (mrg, "%s", str);
     }
 
@@ -2101,7 +2122,7 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
       {
         if (node == selected_node)
           y = print_props (mrg, edl, node, x + mrg_em(mrg) * 0.5, y);
-#if 0
+#if 1
         rounded_rectangle (mrg_cr (mrg), x-0.5*mrg_em(mrg), y - mrg_em (mrg) * 1.0, mrg_em(mrg) * 10.0, mrg_em (mrg) * 1.2, 0.4, -1);
 
         cairo_rectangle (mrg_cr (mrg), x + 1.0 * mrg_em (mrg), y - mrg_em (mrg) * 1.4, mrg_em(mrg) * 0.1, mrg_em (mrg) * 0.4);
@@ -2878,8 +2899,8 @@ void gcut_ui (Mrg *mrg, void *data)
                       ,edl);
         break;
      case GEDL_UI_MODE_PART:
-        mrg_gegl_blit (mrg, (int)(mrg_width (mrg) * 0.2), 0,
-                      (int)(mrg_width (mrg) * 0.8),
+        mrg_gegl_blit (mrg, (int)(mrg_em(mrg) * 22), 0,
+                      (int)-1,
                       mrg_height (mrg) * SPLIT_VER,
                       o->edl->cached_result,
                       0, 0,
@@ -2888,18 +2909,13 @@ void gcut_ui (Mrg *mrg, void *data)
         break;
   }
 
-
   switch (edl->ui_mode)
   {
      case GEDL_UI_MODE_FULL:
      case GEDL_UI_MODE_TIMELINE:
      case GEDL_UI_MODE_PART:
-     gcut_draw (mrg, edl, 0, mrg_height (mrg) * SPLIT_VER, edl->scale, edl->t0);
-
-
-
-
-  break;
+       gcut_draw (mrg, edl, 0, mrg_height (mrg) * SPLIT_VER, edl->scale, edl->t0);
+       break;
      case GEDL_UI_MODE_NONE:
         break;
      break;

@@ -139,7 +139,7 @@ void        gegl_meta_set_audio    (const char        *path,
 void        gegl_meta_get_audio    (const char        *path,
                                     GeglAudioFragment *audio);
 
-#define SPLIT_VER  0.8
+#define SPLIT_VER  0.666
 
 extern char *gcut_binary_path;
 
