@@ -234,7 +234,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                                    g_param_spec_int ("threads",
                                                      "Number of threads",
                                                      "Number of concurrent evaluation threads",
-                                                     0, 16, 1,
+                                                     0, GEGL_MAX_THREADS, 1,
                                                      G_PARAM_READWRITE |
                                                      G_PARAM_CONSTRUCT));
 
