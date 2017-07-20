@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gegl&k"
 "eywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-06-05 18:39+0000\n"
-"PO-Revision-Date: 2017-06-11 10:57+0300\n"
+"POT-Creation-Date: 2017-06-30 20:37+0000\n"
+"PO-Revision-Date: 2017-07-19 18:00+0300\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@lists.gnome.gr\n"
 "Language: el\n"
@@ -344,7 +344,6 @@ msgid "Red frequency"
 msgstr "Συχνότητα κόκκινου"
 
 #: ../operations/common/alien-map.c:44
-#| msgid "Blue frequency"
 msgid "Hue frequency"
 msgstr "Συχνότητα απόχρωσης"
 
@@ -358,7 +357,6 @@ msgid "Green frequency"
 msgstr "Συχνότητα πράσινου"
 
 #: ../operations/common/alien-map.c:52
-#| msgid "Green frequency"
 msgid "Saturation frequency"
 msgstr "Συχνότητα κορεσμού"
 
@@ -372,7 +370,6 @@ msgid "Blue frequency"
 msgstr "Συχνότητα γαλάζιου"
 
 #: ../operations/common/alien-map.c:60
-#| msgid "Light frequency (red)"
 msgid "Lightness frequency"
 msgstr "Συχνότητα φωτεινότητας"
 
@@ -381,12 +378,10 @@ msgid "Component 1 phase shift"
 msgstr "Μετατόπιση φάσης στοιχείου 1"
 
 #: ../operations/common/alien-map.c:68
-#| msgid "Phase shift"
 msgid "Red phase shift"
 msgstr "Μετατόπιση φάσης κόκκινου"
 
 #: ../operations/common/alien-map.c:69
-#| msgid "Phase shift"
 msgid "Hue phase shift"
 msgstr "Μετατόπιση φάσης απόχρωσης"
 
@@ -395,12 +390,10 @@ msgid "Component 2 phase shift"
 msgstr "Μετατόπιση φάσης στοιχείου 2"
 
 #: ../operations/common/alien-map.c:77
-#| msgid "Phase shift"
 msgid "Green phase shift"
 msgstr "Μετατόπιση φάσης πράσινου"
 
 #: ../operations/common/alien-map.c:78
-#| msgid "Saturation"
 msgid "Saturation phase shift"
 msgstr "Μετατόπιση φάσης κορεσμού"
 
@@ -409,12 +402,10 @@ msgid "Component 3 phase shift"
 msgstr "Μετατόπιση φάσης στοιχείου 3"
 
 #: ../operations/common/alien-map.c:86
-#| msgid "Phase shift"
 msgid "Blue phase shift"
 msgstr "Μετατόπιση φάσης γαλάζιου"
 
 #: ../operations/common/alien-map.c:87
-#| msgid "Component 1 phase shift"
 msgid "Lightness phase shift"
 msgstr "Μετατόπιση φάσης φωτεινότητας"
 
@@ -423,12 +414,10 @@ msgid "Keep component 1"
 msgstr "Διατήρηση συστατικού 1"
 
 #: ../operations/common/alien-map.c:92
-#| msgid "Keep component 1"
 msgid "Keep red component"
 msgstr "Διατήρηση κόκκινου συστατικού"
 
 #: ../operations/common/alien-map.c:93
-#| msgid "Keep component 1"
 msgid "Keep hue component"
 msgstr "Διατήρηση συστατικού απόχρωσης"
 
@@ -437,12 +426,10 @@ msgid "Keep component 2"
 msgstr "Διατήρηση συστατικού 2"
 
 #: ../operations/common/alien-map.c:98
-#| msgid "Keep component 1"
 msgid "Keep green component"
 msgstr "Διατήρηση πράσινου συστατικού"
 
 #: ../operations/common/alien-map.c:99
-#| msgid "Keep component 1"
 msgid "Keep saturation component"
 msgstr "Διατήρηση συστατικού κορεσμού"
 
@@ -451,12 +438,10 @@ msgid "Keep component 3"
 msgstr "Διατήρηση συστατικού 3"
 
 #: ../operations/common/alien-map.c:104
-#| msgid "Keep component 1"
 msgid "Keep blue component"
 msgstr "Διατήρηση γαλάζιου συστατικού"
 
 #: ../operations/common/alien-map.c:105
-#| msgid "Keep component 1"
 msgid "Keep lightness component"
 msgstr "Διατήρηση συστατικού φωτεινότητας"
 
@@ -554,6 +539,7 @@ msgstr ""
 #: ../operations/common/whirl-pinch.c:45
 #: ../operations/external/matting-levin.c:29
 #: ../operations/workshop/kuwahara.c:25 ../operations/workshop/median-blur.c:38
+#: ../operations/workshop/shadows-highlights.c:37
 #: ../operations/workshop/spiral.c:47
 msgid "Radius"
 msgstr "Ακτίνα"
@@ -989,7 +975,6 @@ msgid "Checkerboard"
 msgstr "Σκακιέρα"
 
 #: ../operations/common/checkerboard.c:349
-#| msgid "Create a checkerboard pattern"
 msgid "Render a checkerboard pattern"
 msgstr "Απόδοση μοτίβου σκακιέρας"
 
@@ -1166,7 +1151,6 @@ msgid "Saturation value for above gray settings"
 msgstr "Η τιμή κορεσμού για τις παραπάνω ρυθμίσεις γκρίζου"
 
 #: ../operations/common/color-rotate.c:408
-#| msgid "Color model"
 msgid "Color Rotate"
 msgstr "Περιστροφή χρώματος"
 
@@ -1891,7 +1875,6 @@ msgid "Displace multiplier for X or radial direction"
 msgstr "Μετατόπιση πολλαπλασιαστή για το Χ ή σε ακτινική κατεύθυνση"
 
 #: ../operations/common/displace.c:55
-#| msgid "Horizontal extent"
 msgid "Horizontal displacement"
 msgstr "Οριζόντια μετατόπιση"
 
@@ -1900,12 +1883,10 @@ msgid "Pinch"
 msgstr "Πίεση"
 
 #: ../operations/common/displace.c:59
-#| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the horizontal direction"
 msgstr "Μετατόπιση πολλαπλασιαστή για την οριζόντια κατεύθυνση"
 
 #: ../operations/common/displace.c:60
-#| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the radial direction"
 msgstr "Μετατόπιση πολλαπλασιαστή για την ακτινική κατεύθυνση"
 
@@ -1919,7 +1900,6 @@ msgstr ""
 "Μετατόπιση πολλαπλασιαστή για το Υ ή σε εφαπτομενική κατεύθυνση (μοίρες)"
 
 #: ../operations/common/displace.c:70
-#| msgid "X displacement"
 msgid "Vertical displacement"
 msgstr "Κάθετη μετατόπιση"
 
@@ -1928,22 +1908,18 @@ msgid "Whirl"
 msgstr "Στροβιλισμός"
 
 #: ../operations/common/displace.c:74
-#| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the vertical direction"
 msgstr "Μετατόπιση πολλαπλασιαστή για την κάθετη κατεύθυνση"
 
 #: ../operations/common/displace.c:75
-#| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the angular offset"
 msgstr "Μετατόπιση πολλαπλασιαστή για τη γωνιακή μετατόπιση"
 
 #: ../operations/common/displace.c:77
-#| msgid "X displacement"
 msgid "Center displacement"
 msgstr "Μετατόπιση κέντρου"
 
 #: ../operations/common/displace.c:78
-#| msgid "Rotate the buffer around the specified origin."
 msgid "Center the displacement around a specified point"
 msgstr "Κεντράρισμα μετατόπισης γύρω από συγκεκριμένο σημείο"
 
@@ -1956,7 +1932,6 @@ msgid "Center X"
 msgstr "Κέντρο X"
 
 #: ../operations/common/displace.c:81
-#| msgid "X coordinates of the flare center"
 msgid "X coordinate of the displacement center"
 msgstr "Συντεταγμένη Χ του κέντρου μετατόπισης"
 
@@ -1969,7 +1944,6 @@ msgid "Center Y"
 msgstr "Κέντρο Y"
 
 #: ../operations/common/displace.c:88
-#| msgid "Y coordinates of the flare center"
 msgid "Y coordinate of the displacement center"
 msgstr "Συντεταγμένη Υ του κέντρου μετατόπισης"
 
@@ -1992,7 +1966,6 @@ msgid "Title to be given to output window"
 msgstr "Αποδιδόμενος τίτλος στο παράθυρο εξόδου"
 
 #: ../operations/common/display.c:141
-#| msgid "Displace"
 msgid "Display"
 msgstr "Εμφάνιση"
 
@@ -2733,7 +2706,6 @@ msgid "The orientation of the blur - hor/ver"
 msgstr "Ο προσανατολισμός της θόλωσης - ορ/καθ"
 
 #: ../operations/common/gblur-1d.c:911
-#| msgid "Gaussian Blur"
 msgid "1D Gaussian-blur"
 msgstr "Θόλωση Γκάους 1Δ"
 
@@ -2859,7 +2831,6 @@ msgid "Enhances fine details."
 msgstr "Βελτιώνει μικρές λεπτομέρειες."
 
 #: ../operations/common/hue-chroma.c:26
-#| msgid "Gamma adjustment"
 msgid "Hue adjustment"
 msgstr "Ρύθμιση απόχρωσης"
 
@@ -2868,7 +2839,6 @@ msgid "Chroma"
 msgstr "Χρωματικότητα (Chroma)"
 
 #: ../operations/common/hue-chroma.c:30
-#| msgid "Gamma adjustment"
 msgid "Chroma adjustment"
 msgstr "Ρύθμιση χρωματικότητας (Chroma)"
 
@@ -2877,12 +2847,10 @@ msgid "Lightness"
 msgstr "Φωτεινότητα"
 
 #: ../operations/common/hue-chroma.c:34
-#| msgid "Lightness"
 msgid "Lightness adjustment"
 msgstr "Ρύθμιση φωτεινότητας"
 
 #: ../operations/common/hue-chroma.c:108
-#| msgid "Chroma"
 msgid "Hue-Chroma"
 msgstr "Απόχρωση-Χρωματικότητα (Chroma)"
 
@@ -2955,9 +2923,6 @@ msgid "Average difference between all pixels."
 msgstr "Μέσος όρος διαφοράς μεταξύ όλων των εικονοστοιχείων."
 
 #: ../operations/common/image-compare.c:207
-#| msgid ""
-#| "Compares if input and aux buffers are different. Results are saved in the "
-#| "properties."
 msgid ""
 "Compares if input and aux buffers are different. Global statistics are saved "
 "in the properties and a visual difference image is produced as a visual "
@@ -3011,9 +2976,6 @@ msgid "Invert in Perceptual space"
 msgstr "Αντιστροφή σε αντιληπτικό χώρο"
 
 #: ../operations/common/invert-gamma.c:84
-#| msgid ""
-#| "Inverts the components (except alpha), the result is the corresponding "
-#| "\"negative\" image."
 msgid ""
 "Invert the components (except alpha) perceptually, the result is the "
 "corresponding \"negative\" image."
@@ -3022,9 +2984,6 @@ msgstr ""
 "αντίστοιχη \"αρνητική\" εικόνα."
 
 #: ../operations/common/invert-linear.c:79
-#| msgid ""
-#| "Inverts the components (except alpha), the result is the corresponding "
-#| "\"negative\" image."
 msgid ""
 "Invert the components (except alpha) in linear light, the result is the "
 "corresponding \"negative\" image."
@@ -3069,7 +3028,6 @@ msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
 msgstr "Διαδρομή αρχείου πηγαίας εικόνας (png, jpg, raw, svg, bmp, tif, ...)"
 
 #: ../operations/common/layer.c:271
-#| msgid "Bayer"
 msgid "Layer"
 msgstr "Στρώση"
 
@@ -3457,6 +3415,28 @@ msgstr "Καλειδοσκοπικός κατοπτρισμός"
 msgid "Create a kaleidoscope like effect."
 msgstr "Δημιουργία ενός παρόμοιου καλειδοσκοπικού εφέ."
 
+#: ../operations/common/mix.c:25
+#| msgid "Rotation"
+msgid "Ratio"
+msgstr "Αναλογία"
+
+#: ../operations/common/mix.c:26
+msgid "mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
+msgstr ""
+"λόγος ανάμειξης, διαβάζεται ως ποσοστό του βοηθητικού (aux), 0=είσοδος 0.5="
+"μισό 1.0=βοηθητικό (aux)"
+
+#: ../operations/common/mix.c:91
+#| msgid "Min"
+msgid "Mix"
+msgstr "Ανάμειξη"
+
+#: ../operations/common/mix.c:93
+msgid "do a lerp, linear interpolation (lerp) between input and aux"
+msgstr ""
+"εκτέλεση lerp, γραμμικής παρεμβολής (lerp) μεταξύ εισόδου και βοηθητικού "
+"(aux)"
+
 #: ../operations/common/mono-mixer.c:28
 msgid "Red Channel Multiplier"
 msgstr "Πολλαπλασιαστής κόκκινου καναλιού"
@@ -3755,12 +3735,10 @@ msgid "angle offset for patterns"
 msgstr "μετατόπιση γωνίας για μοτίβα"
 
 #: ../operations/common/newsprint.c:72
-#| msgid "Green channel"
 msgid "Green angle"
 msgstr "Πράσινη γωνία"
 
 #: ../operations/common/newsprint.c:73
-#| msgid "Black level"
 msgid "Black angle"
 msgstr "Μαύρη γωνία"
 
@@ -3769,12 +3747,10 @@ msgid "Red and cyan angle"
 msgstr "Κόκκινη και κυανή γωνία"
 
 #: ../operations/common/newsprint.c:81
-#| msgid "Rectangle"
 msgid "Red angle"
 msgstr "Κόκκινη γωνία"
 
 #: ../operations/common/newsprint.c:82
-#| msgid "Red and cyan angle"
 msgid "Cyan angle"
 msgstr "Κυανή γωνία"
 
@@ -3783,12 +3759,10 @@ msgid "Blue and magenta angle"
 msgstr "Γαλάζια και ματζέντα γωνία"
 
 #: ../operations/common/newsprint.c:90
-#| msgid "Blue Gain"
 msgid "Blue angle"
 msgstr "Γαλάζια γωνία"
 
 #: ../operations/common/newsprint.c:91
-#| msgid "Blue and magenta angle"
 msgid "Magenta angle"
 msgstr "Γωνία ματζέντα"
 
@@ -4851,7 +4825,6 @@ msgid "list of <number>s"
 msgstr "λίστα των <number> (αριθμών)"
 
 #: ../operations/common/svg-huerotate.c:118
-#| msgid "SVG File Loader"
 msgid "SVG Hue Rotate"
 msgstr "Περιστροφή απόχρωσης SVG"
 
@@ -4868,7 +4841,6 @@ msgid "SVG color matrix operation svg_luminancetoalpha"
 msgstr "Λειτουργία πίνακα χρωμάτων SVG svg_φωτεινότητασεάλφα"
 
 #: ../operations/common/svg-matrix.c:134
-#| msgid "Bayer Matrix"
 msgid "SVG Matrix"
 msgstr "Πίνακας SVG"
 
@@ -4877,7 +4849,6 @@ msgid "SVG color matrix operation svg_matrix"
 msgstr "Λειτουργία πίνακα χρωμάτων SVG svg_πίνακας"
 
 #: ../operations/common/svg-saturate.c:128
-#| msgid "HSV Saturation"
 msgid "SVG Saturate"
 msgstr "Κορεσμός SVG"
 
@@ -5092,9 +5063,6 @@ msgid "Value Invert"
 msgstr "Αντιστροφή τιμής"
 
 #: ../operations/common/value-invert.c:152
-#| msgid ""
-#| "Inverts just the value component, the result is the corresponding "
-#| "'inverted' image."
 msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
@@ -5372,7 +5340,6 @@ msgid "Hardness"
 msgstr "Σκληρότητα"
 
 #: ../operations/common/warp.c:44
-#| msgid "Tile spacing"
 msgid "Spacing"
 msgstr "Διάστημα"
 
@@ -5777,11 +5744,11 @@ msgstr "κωδικοποιητής-ήχου"
 msgid "audio"
 msgstr "ήχος"
 
-#: ../operations/external/ff-load.c:781
+#: ../operations/external/ff-load.c:778
 msgid "FFmpeg Frame Loader"
 msgstr "Φόρτωση πλαισίου FFmpeg"
 
-#: ../operations/external/ff-load.c:783
+#: ../operations/external/ff-load.c:780
 msgid "FFmpeg video frame importer."
 msgstr "Εισαγωγή πλαισίου βίντεο FFmpeg."
 
@@ -5926,12 +5893,11 @@ msgstr "Μετατόπιση κβαντισμού i (i-quant-offset)"
 msgid "me-subpel-quality"
 msgstr "Ποιότητα εικονοστοιχείων εκτίμησης κίνησης (me-subpel-quality)"
 
-#: ../operations/external/ff-save.c:1095
-#| msgid "FFmpeg Frame Loader"
+#: ../operations/external/ff-save.c:1097
 msgid "FFmpeg Frame Saver"
 msgstr "Αποθηκευτής πλαισίου FFmpeg"
 
-#: ../operations/external/ff-save.c:1097
+#: ../operations/external/ff-save.c:1099
 msgid "FFmpeg video output sink"
 msgstr "Δέκτης εξόδου βίντεο FFmpeg"
 
@@ -7498,7 +7464,6 @@ msgid "Value at top"
 msgstr "Τιμή στην κορυφή"
 
 #: ../operations/workshop/external/line-profile.c:196
-#| msgid "Source Profile"
 msgid "Line Profile"
 msgstr "Κατατομή γραμμής"
 
@@ -7779,43 +7744,52 @@ msgstr "Τμηματοποίηση Κ-μέσων"
 msgid "Segment colors using K-means clustering"
 msgstr "Χρώματα συμπλέγματος χρησιμοποιώντας την ομαδοποίηση Κ-μέσων"
 
-#: ../operations/workshop/shadows-highlights.c:22
-#: ../operations/workshop/shadows-highlights-correction.c:23
-msgid "shadows amount"
-msgstr "ποσότητα σκιών"
-
-#: ../operations/workshop/shadows-highlights.c:25
-#: ../operations/workshop/shadows-highlights-correction.c:26
-msgid "shadows tonal width"
-msgstr "πλάτος τονικών σκιών"
-
 #: ../operations/workshop/shadows-highlights.c:28
-msgid "shadows radius"
-msgstr "ακτίνα σκιών"
+#: ../operations/workshop/shadows-highlights-correction.c:29
+msgid "Shadows"
+msgstr "Σκιές"
 
 #: ../operations/workshop/shadows-highlights.c:31
-#: ../operations/workshop/shadows-highlights-correction.c:29
-msgid "highlights amount"
-msgstr "ποσότητα τονισμών"
+#: ../operations/workshop/shadows-highlights-correction.c:32
+#| msgid "Shadows Highlights"
+msgid "Highlights"
+msgstr "Τονισμοί"
 
 #: ../operations/workshop/shadows-highlights.c:34
-#: ../operations/workshop/shadows-highlights-correction.c:32
-msgid "highlights tonal width"
-msgstr "πλάτος τονικών τόνων"
+#: ../operations/workshop/shadows-highlights-correction.c:35
+#| msgid "Hue adjustment"
+msgid "White point adjustment"
+msgstr "Ρύθμιση λευκού σημείου"
 
-#: ../operations/workshop/shadows-highlights.c:37
-msgid "highlights radius"
-msgstr "ακτίνα τονισμών"
+#: ../operations/workshop/shadows-highlights.c:41
+#: ../operations/workshop/shadows-highlights-correction.c:38
+#| msgid "Compression"
+msgid "Compress"
+msgstr "Συμπίεση"
 
-#: ../operations/workshop/shadows-highlights.c:106
-msgid "Shadows Highlights"
+#: ../operations/workshop/shadows-highlights.c:44
+#: ../operations/workshop/shadows-highlights-correction.c:41
+#| msgid "Chroma adjustment"
+msgid "Shadows color adjustment"
+msgstr "Ρύθμιση χρώματος σκιών"
+
+#: ../operations/workshop/shadows-highlights.c:47
+#: ../operations/workshop/shadows-highlights-correction.c:44
+#| msgid "highlights radius"
+msgid "Highlights color adjustment"
+msgstr "Ρύθμιση χρώματος τονισμών"
+
+#: ../operations/workshop/shadows-highlights.c:109
+#| msgid "Shadows Highlights"
+msgid "Shadows-Highlights"
 msgstr "Τονισμοί σκιών"
 
-#: ../operations/workshop/shadows-highlights.c:108
-msgid "Performs shadows and highlights correction"
+#: ../operations/workshop/shadows-highlights.c:112
+#| msgid "Performs shadows and highlights correction"
+msgid "Perform shadows and highlights correction"
 msgstr "Εκτελεί διόρθωση σκιών και τονισμών"
 
-#: ../operations/workshop/shadows-highlights-correction.c:246
+#: ../operations/workshop/shadows-highlights-correction.c:314
 msgid "Lighten shadows and darken highlights"
 msgstr "Ανοίγει τις σκιές και σκουραίνει τους τονισμούς"
 
@@ -7874,6 +7848,21 @@ msgstr "Σπείρα"
 #: ../operations/workshop/spiral.c:446
 msgid "Spiral renderer"
 msgstr "Απόδοση σπείρας"
+
+#~ msgid "shadows amount"
+#~ msgstr "ποσότητα σκιών"
+
+#~ msgid "shadows tonal width"
+#~ msgstr "πλάτος τονικών σκιών"
+
+#~ msgid "shadows radius"
+#~ msgstr "ακτίνα σκιών"
+
+#~ msgid "highlights amount"
+#~ msgstr "ποσότητα τονισμών"
+
+#~ msgid "highlights tonal width"
+#~ msgstr "πλάτος τονικών τόνων"
 
 #~ msgid "Explicit cache of results at this point of graph."
 #~ msgstr "Ρητή απόκρυψη των αποτελεσμάτων σε αυτό το σημείο του γραφήματος."
