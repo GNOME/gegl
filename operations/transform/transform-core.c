@@ -834,140 +834,37 @@ transform_affine (GeglOperation       *operation,
                                                       GEGL_ABYSS_NONE);
 
     /*
-     * This code uses a (novel?) trick by Nicolas Robidoux that
-     * minimizes tile buffer reallocation when affine transformations
-     * "flip" things.
-     *
-     * Explanation:
-     *
-     * Pulling a scanline (within such a square tile) back to input
-     * space (with the inverse transformation) with an arbitrary
-     * affine transformation may make the scanline go from right to
-     * left in input space even though it goes form left to right in
-     * input space. Similarly, a scanline which is below the first one
-     * in output space may be above in input space. Unfortunately,
-     * input buffer tiles are allocated with a bias: less elbow room
-     * around the context_rect (square of data needed by the sampler)
-     * is put at the left and top than at the right and bottom. (Such
-     * asymetrical elbow room is beneficial when resizing, for
-     * example, since input space is then traversed from left to right
-     * and top to bottom, which means that the left and top elbow room
-     * is not used in this situation.) When the affine transformation
-     * "flips" things, however, the elbow room is "on the wrong side",
-     * and for this reason such transformations run much much slower
-     * because many more input buffer tiles get created. One way to
-     * make things better is to traverse the output buffer tile in an
-     * appropriate chosen "reverse order" so that the "short" elbow
-     * room is "behind" instead of "ahead".
-     *
-     * Things are actually a bit more complicated than that. Here is a
-     * terse description of what's actually done, without a full
-     * explanation of why.
-     *
-     * Let's consider a scanline of the output tile which we want to
-     * fill. Pull this scanline back to input space. Assume that we
-     * are using a freshly created input tile. What direction would
-     * maximize the number of pulled back input pixels that we can fit
-     * in the input tile? Because the input tile is square and most of
-     * the extra elbow room is at the bottom and right, the "best"
-     * direction is going down the diagonal of the square,
-     * approximately from top left to bottom right of the tile.
-     *
-     * Of course, we do not have control over the actual line traced
-     * by the output scanline in input space. But what the above tells
-     * us is that if the inner product of the pulled back "scanline
-     * vector" with the vector (1,1) (which corresponds to going
-     * diagonally from top-left to bottom-right in a square tile) is
-     * negative, we are going opposite to "best". This can be
-     * rectified by filling the output scanline in reverse order: from
-     * right to left in output space.
-     *
-     * Similarly, when one computes the next scanline, one can ask
-     * whether it's the one above or below in output space which is
-     * most likely to "stick out". Repeating the same argument used
-     * for a single scanline, we see that the sign of the inner
-     * product of the inverse image of the vector that points straight
-     * down in output space with the input space vector (1,1) tells us
-     * whether we should fill the output tile from the top down or
-     * from the bottom up.
-     *
-     * Making the "best" happen requires stepping in the "right
-     * direction" both w.r.t. to data pointers and geometrical steps.
-     * In the following code, adjusting the "geometrical steps" so they
-     * go in the right direction is done by modifying the inverse
-     * Jacobian matrix to minimize the number of "geometrical
-     * quantities" floating around. It could be done leaving the
-     * Jacobian matrix alone.
-     */
-
-    /*
-     * Set the inverse_jacobian matrix (a.k.a. scale) for samplers
-     * that support it. The inverse jacobian will be "flipped" if the
-     * direction in which the ROI is filled is flipped. Flipping the
-     * inverse jacobian is not necessary for the samplers' sake, but
-     * it makes the following code shorter. Anyway, "sane" use of the
-     * inverse jacobian by a sampler only cares for its effect on
-     * sets: only the image of a centered square with sides aligned
-     * with the coordinate axes, or a centered disc, matters,
-     * irrespective of orientation ("left-hand" VS "right-hand")
-     * issues.
-     */
-
-#if 0
-    const gint flip_x = 
-      inverse.coeff [0][0] + inverse.coeff [1][0] < (gdouble) 0.
-      ?
-      (gint) 1
-      :
-      (gint) 0;
-    const gint flip_y = 
-      inverse.coeff [0][1] + inverse.coeff [1][1] < (gdouble) 0.
-      ?
-      (gint) 1
-      :
-      (gint) 0;
-#else
-    /* XXX: not doing the flipping tricks is faster with the adaptive
-     *      sampler cache that has been added */
-    const gint flip_x = 0;
-    const gint flip_y = 0;
-#endif
-
-    /*
      * Hoist most of what can out of the while loop:
      */
-    const gdouble base_u = inverse.coeff [0][0] * ((gdouble) 0.5 - flip_x) +
-                           inverse.coeff [0][1] * ((gdouble) 0.5 - flip_y) +
+    const gdouble base_u = inverse.coeff [0][0] * ((gdouble) 0.5) +
+                           inverse.coeff [0][1] * ((gdouble) 0.5) +
                            inverse.coeff [0][2];
-    const gdouble base_v = inverse.coeff [1][0] * ((gdouble) 0.5 - flip_x) +
-                           inverse.coeff [1][1] * ((gdouble) 0.5 - flip_y) +
+    const gdouble base_v = inverse.coeff [1][0] * ((gdouble) 0.5) +
+                           inverse.coeff [1][1] * ((gdouble) 0.5) +
                            inverse.coeff [1][2];
 
     inverse_jacobian.coeff [0][0] =
-      flip_x ? -inverse.coeff [0][0] : inverse.coeff [0][0];
+      inverse.coeff [0][0];
     inverse_jacobian.coeff [1][0] =
-      flip_x ? -inverse.coeff [1][0] : inverse.coeff [1][0];
+      inverse.coeff [1][0];
     inverse_jacobian.coeff [0][1] =
-      flip_y ? -inverse.coeff [0][1] : inverse.coeff [0][1];
+      inverse.coeff [0][1];
     inverse_jacobian.coeff [1][1] =
-      flip_y ? -inverse.coeff [1][1] : inverse.coeff [1][1];
+      inverse.coeff [1][1];
 
     while (gegl_buffer_iterator_next (i))
       {
         GeglRectangle *roi = &i->roi[0];
-        gfloat * restrict dest_ptr =
-          (gfloat *)i->data[0] +
-          (gint) 4 * ( flip_x * (roi->width  - (gint) 1) +
-                       flip_y * (roi->height - (gint) 1) * roi->width );
+        gfloat * restrict dest_ptr = (gfloat *)i->data[0];
 
         gdouble u_start =
           base_u +
-          inverse.coeff [0][0] * ( roi->x + flip_x * roi->width  ) +
-          inverse.coeff [0][1] * ( roi->y + flip_y * roi->height );
+          inverse.coeff [0][0] * ( roi->x ) +
+          inverse.coeff [0][1] * ( roi->y );
         gdouble v_start =
           base_v +
-          inverse.coeff [1][0] * ( roi->x + flip_x * roi->width  ) +
-          inverse.coeff [1][1] * ( roi->y + flip_y * roi->height );
+          inverse.coeff [1][0] * ( roi->x ) +
+          inverse.coeff [1][1] * ( roi->y );
 
         gint y = roi->height;
         do {
@@ -981,13 +878,11 @@ transform_affine (GeglOperation       *operation,
                              &inverse_jacobian,
                              dest_ptr,
                              GEGL_ABYSS_NONE);
-            dest_ptr += (gint) 4 - (gint) 8 * flip_x;
+            dest_ptr += (gint) 4;
 
             u_float += inverse_jacobian.coeff [0][0];
             v_float += inverse_jacobian.coeff [1][0];
           } while (--x);
-
-          dest_ptr += (gint) 8 * (flip_x - flip_y) * roi->width;
 
           u_start += inverse_jacobian.coeff [0][1];
           v_start += inverse_jacobian.coeff [1][1];
