@@ -438,6 +438,7 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 
       g_hash_table_remove (last_writable->handler->items, last_writable);
       cache_total -= tile->size;
+      last_writable->handler->count--;
       drop_hot_tile (tile, TRUE);
       gegl_tile_unref (tile);
       g_slice_free (CacheItem, last_writable);
@@ -460,6 +461,7 @@ gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cache,
   if (item)
     {
       cache_total -= item->tile->size;
+      cache->count--;
 
       g_queue_unlink (cache_queue, &item->link);
       g_hash_table_remove (cache->items, item);
