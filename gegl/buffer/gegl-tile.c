@@ -199,7 +199,7 @@ gegl_tile_unclone (GeglTile *tile)
               /* someone else uncloned the tile in the meantime, and we're now
                * the last copy; bail.
                */
-              g_free (buf);
+              gegl_free (buf);
               *tile->n_clones = 1;
               return;
             }
