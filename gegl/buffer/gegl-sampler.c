@@ -532,7 +532,6 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
                              GeglSamplerType   sampler_type,
                              GeglAbyssPolicy   repeat_mode)
 {
-  GType desired_type;
   /*
   if (sampler_type == GEGL_SAMPLER_NEAREST && format == buffer->soft_format)
   {
@@ -540,9 +539,6 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
     gegl_buffer_get (buffer, &rect, 1, NULL, dest, GEGL_AUTO_ROWSTRIDE, repeat_mode);
     return;
   }*/
-
-  gboolean threaded =  gegl_config_threads ()>1;
-
 
   if (!format)
     format = buffer->soft_format;
@@ -553,24 +549,24 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
     gegl_buffer_cl_cache_flush (buffer, &rect);
   }
 
-  if (threaded)
-    g_mutex_lock (&gegl_buffer_sampler_mutex);
-
   /* unset the cached sampler if it dosn't match the needs */
-  if (buffer->sampler != NULL &&
-     (buffer->sampler_type != sampler_type ||
-       buffer->sampler_format != format
-      ))
+  if (buffer->sampler == NULL ||
+      (buffer->sampler != NULL &&
+          (buffer->sampler_type != sampler_type || buffer->sampler_format != format)))
     {
-      g_object_unref (buffer->sampler);
-      buffer->sampler = NULL;
-      buffer->sampler_type = 0;
-    }
+      gboolean  threaded = gegl_config_threads () > 1;
+      GType desired_type = gegl_sampler_gtype_from_enum (sampler_type);
 
-  /* look up appropriate sampler,. */
-  if (buffer->sampler == NULL)
-    {
-      desired_type = gegl_sampler_gtype_from_enum (sampler_type);
+      if (threaded)
+        g_mutex_lock (&gegl_buffer_sampler_mutex);
+
+      if (buffer->sampler)
+      {
+        g_object_unref (buffer->sampler);
+        buffer->sampler = NULL;
+        buffer->sampler_type = 0;
+      }
+
       buffer->sampler_type = sampler_type;
       buffer->sampler = g_object_new (desired_type,
                                       "buffer", buffer,
@@ -579,11 +575,12 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
                                       NULL);
       buffer->sampler_format = format;
       gegl_sampler_prepare (buffer->sampler);
+
+      if (threaded)
+        g_mutex_unlock (&gegl_buffer_sampler_mutex);
     }
 
   buffer->sampler->get(buffer->sampler, x, y, scale, dest, repeat_mode);
-  if (threaded)
-    g_mutex_unlock (&gegl_buffer_sampler_mutex);
 }
 
 
