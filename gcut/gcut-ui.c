@@ -79,6 +79,8 @@ foo++;
         scale = height / bounds.height;
 
       // XXX: the 1.001 instead of 1.00 is to work around a gegl bug
+      // XXX: should have written which bug, when adding this XXX comment
+      //      so that testing if it was gone was easier.
       gegl_buffer_get (edl->buffer_copy_temp, &roi, 1.001, fmt, buf, bounds.width * 4, GEGL_ABYSS_BLACK);
     }
 
@@ -2111,6 +2113,184 @@ cairo_stroke (cr);
 }
 static void remove_clip (MrgEvent *event, void *data1, void *data2);
 
+
+static int array_contains_string (gchar **array, const char *str)
+{
+  int i;
+  for ( i = 0; array[i]; i++)
+  {
+    if (!strcmp (array[i], str))
+      return 1;
+  }
+  return 0;
+}
+
+/* XXX: add some constarint?  like having input, or output pad or both - or
+ * being a specific subclass - as well as sort, so that best (prefix_) match
+ * comes first
+ */
+static char **gcut_get_completions (const char *filter_query)
+{
+  gchar **completions = NULL;
+  gchar **operations = gegl_list_operations (NULL);
+  gchar *alloc = NULL;
+  int matches = 0;
+  int memlen = sizeof (gpointer); // for terminating NULL
+  int match = 0;
+
+  if (!filter_query || filter_query[0]=='\0') return NULL;
+
+  // score matches, sort them - and default to best
+
+  for (int i = 0; operations[i]; i++)
+  {
+    if (strstr (operations[i], filter_query))
+    {
+      matches ++;
+      memlen += strlen (operations[i]) + 1 + sizeof (gpointer);
+    }
+  }
+
+  completions = g_malloc0 (memlen);
+  alloc = ((gchar*)completions) + (matches + 1) * sizeof (gpointer);
+
+  if (0)
+  {
+  for (int i = 0; operations[i]; i++)
+  {
+    if (strstr (operations[i], filter_query))
+    {
+      completions[match] = alloc;
+      strcpy (alloc, operations[i]);
+      alloc += strlen (alloc) + 1;
+      match++;
+    }
+  }
+  }
+
+  if(1){
+    char *with_gegl = g_strdup_printf ("gegl:%s", filter_query);
+    for (int i = 0; operations[i]; i++)
+    {
+      if (g_str_has_prefix (operations[i], filter_query) ||
+          g_str_has_prefix (operations[i], with_gegl))
+      {
+        completions[match] = alloc;
+        strcpy (alloc, operations[i]);
+        alloc += strlen (alloc) + 1;
+        match++;
+      }
+    }
+
+    for (int i = 0; operations[i]; i++)
+    {
+      if (strstr (operations[i], filter_query) &&
+          !array_contains_string (completions, operations[i]))
+      {
+        completions[match] = alloc;
+        strcpy (alloc, operations[i]);
+        alloc += strlen (alloc) + 1;
+        match++;
+      }
+    }
+    g_free (with_gegl);
+  }
+  g_free (operations);
+
+  if (match == 0)
+  {
+    g_free (completions);
+    return NULL;
+  }
+  return completions;
+}
+
+static int strarray_count (gchar **strs)
+{
+  int i ;
+  for (i= 0; strs && strs[i]; i++);
+  return i;
+}
+
+int tab_index = 0;
+
+
+static void filter_query_tab (MrgEvent *e, void *data1, void *data2)
+{
+  GeglEDL *edl = data1;
+  tab_index++;
+  mrg_event_stop_propagate (e);
+  
+  ui_tweaks++;
+  gcut_cache_invalid (edl);
+  mrg_queue_draw (e->mrg, NULL);
+}
+
+
+static void filter_query_tab_reverse (MrgEvent *e, void *data1, void *data2)
+{
+  GeglEDL *edl = data1;
+  tab_index--;
+  if (tab_index <0)
+    tab_index = 0;
+  mrg_event_stop_propagate (e);
+  
+  ui_tweaks++;
+  gcut_cache_invalid (edl);
+  mrg_queue_draw (e->mrg, NULL);
+}
+
+static void end_filter_query_edit (MrgEvent *e, void *data1, void *data2)
+{
+  GeglEDL *edl = data1;
+  if (filter_query)
+    g_free (filter_query);
+  filter_query = NULL;
+  mrg_event_stop_propagate (e);
+  
+  ui_tweaks++;
+  gcut_cache_invalid (edl);
+  mrg_queue_draw (e->mrg, NULL);
+}
+
+static void update_filter_query (const char *new_string, void *user_data)
+{
+  tab_index = 0;
+  if (filter_query)
+    g_free (filter_query);
+  filter_query = g_strdup (new_string);
+}
+
+static void complete_filter_query_edit (MrgEvent *e, void *data1, void *data2)
+{
+  GeglNode *new = NULL;
+  GeglEDL *edl = data1;
+  gchar **completions = gcut_get_completions (filter_query);
+  int n_completions = strarray_count (completions);
+  if (!selected_node)
+    selected_node = filter_start;
+  if (tab_index > n_completions-1)
+       tab_index = 0;
+
+  if (!completions)
+    return;
+
+  new = gegl_node_new_child (edl->gegl, "operation", completions[tab_index], NULL);
+  if (filter_query)
+    g_free (filter_query);
+  filter_query = NULL;
+  insert_node (selected_node, new);
+  selected_node = new;
+
+
+  g_free (completions);
+  ui_tweaks++;
+  gcut_cache_invalid (edl);
+  mrg_queue_draw (e->mrg, NULL);
+  mrg_event_stop_propagate (e);
+}
+
+
 static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
 {
     while (node)
@@ -2132,11 +2312,11 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
 
         cairo_rectangle (mrg_cr (mrg), x + 1.0 * mrg_em (mrg), y - mrg_em (mrg) * 1.4, mrg_em(mrg) * 0.1, mrg_em (mrg) * 0.4);
 #endif
+        mrg_listen (mrg, MRG_CLICK, select_node, node, NULL);
 
         mrg_set_xy (mrg, x, y);
-        mrg_text_listen (mrg, MRG_CLICK, select_node, node, NULL);
         mrg_printf (mrg, "%s", gegl_node_get_operation (node));
-        mrg_text_listen_done (mrg);
+        //mrg_text_listen_done (mrg);
 
         y -= mrg_em (mrg) * 1.5;
 
@@ -2151,6 +2331,88 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
           mrg_printf (mrg, " X ");
           mrg_text_listen_done (mrg);
 
+          // YYY
+          mrg_set_xy (mrg, x, y);
+
+    if (filter_query)
+    {
+      gchar **completions = gcut_get_completions (filter_query);
+      int n_completions = strarray_count (completions);
+      if (tab_index >= n_completions)
+        tab_index = 0;
+
+
+      if (completions)
+      {
+        char *full = completions[tab_index];
+        char *prep = strstr (completions[tab_index], filter_query);
+        int pre = 0;
+        int post = 0;
+
+        if (prep) pre = prep-full;
+
+        if (pre)
+        {
+          char tmpbuf[64]="";
+          int i;
+          for (i = 0; i < 64; i ++) tmpbuf[i]=0;
+          for (i = 0; i < pre; i ++)
+            tmpbuf[i] = completions[tab_index][i];
+          mrg_printf (mrg, "%s", tmpbuf);
+        }
+
+        mrg_edit_start (mrg, update_filter_query, edl);
+        mrg_printf (mrg, "%s", filter_query);
+        mrg_edit_end (mrg);
+        post = strlen (completions[tab_index]) - strlen (filter_query) - pre;
+
+        if (post)
+        {
+          char tmpbuf[64]="";
+          int i;
+          for (i = 0; i < post; i ++)
+            tmpbuf[i] = completions[tab_index][
+               strlen(completions[tab_index]) - post + i];
+          mrg_printf (mrg, "%s", tmpbuf);
+        }
+      }
+      else
+      {
+        mrg_edit_start (mrg, update_filter_query, edl);
+        mrg_printf (mrg, "%s", filter_query);
+        mrg_edit_end (mrg);
+      }
+    
+      mrg_add_binding (mrg, "escape", NULL, "end edit", end_filter_query_edit, edl);
+      mrg_add_binding (mrg, "shift-tab", NULL, "end edit", filter_query_tab_reverse, edl);
+      mrg_add_binding (mrg, "tab", NULL, "end edit", filter_query_tab, edl);
+      mrg_add_binding (mrg, "return", NULL, "end edit", complete_filter_query_edit, edl);
+
+      if (completions && 0)
+      {
+        gint matches=0;
+        mrg_start (mrg, NULL, NULL);
+        mrg_set_xy (mrg, mrg_em(mrg) * 1, mrg_height (mrg) * SPLIT_VER + mrg_em (mrg));
+        for (int i = 0; completions[i] && matches < 40; i++)
+          {
+            if (i == tab_index)
+            mrg_printf (mrg, "[%s]", completions[i]);
+            else
+            mrg_printf (mrg, "%s", completions[i]);
+            mrg_printf (mrg, " ");
+            matches ++;
+          }
+        mrg_end(mrg);
+      }
+
+      if (completions)
+        g_free (completions);
+    }
+    else
+    {
+      mrg_printf (mrg, " + ");
+    }
+          y -= mrg_em (mrg) * 1.0;
         }
 
       }
@@ -2313,182 +2575,6 @@ static void update_ui_clip (Clip *clip, int clip_frame_no)
   }
 }
 
-static int array_contains_string (gchar **array, const char *str)
-{
-  int i;
-  for ( i = 0; array[i]; i++)
-  {
-    if (!strcmp (array[i], str))
-      return 1;
-  }
-  return 0;
-}
-
-/* XXX: add some constarint?  like having input, or output pad or both - or
- * being a specific subclass - as well as sort, so that best (prefix_) match
- * comes first
- */
-static char **gcut_get_completions (const char *filter_query)
-{
-  gchar **completions = NULL;
-  gchar **operations = gegl_list_operations (NULL);
-  gchar *alloc = NULL;
-  int matches = 0;
-  int memlen = sizeof (gpointer); // for terminating NULL
-  int match = 0;
-
-  if (!filter_query || filter_query[0]=='\0') return NULL;
-
-  // score matches, sort them - and default to best
-
-  for (int i = 0; operations[i]; i++)
-  {
-    if (strstr (operations[i], filter_query))
-    {
-      matches ++;
-      memlen += strlen (operations[i]) + 1 + sizeof (gpointer);
-    }
-  }
-
-  completions = g_malloc0 (memlen);
-  alloc = ((gchar*)completions) + (matches + 1) * sizeof (gpointer);
-
-  if (0)
-  {
-  for (int i = 0; operations[i]; i++)
-  {
-    if (strstr (operations[i], filter_query))
-    {
-      completions[match] = alloc;
-      strcpy (alloc, operations[i]);
-      alloc += strlen (alloc) + 1;
-      match++;
-    }
-  }
-  }
-
-  if(1){
-    char *with_gegl = g_strdup_printf ("gegl:%s", filter_query);
-    for (int i = 0; operations[i]; i++)
-    {
-      if (g_str_has_prefix (operations[i], filter_query) ||
-          g_str_has_prefix (operations[i], with_gegl))
-      {
-        completions[match] = alloc;
-        strcpy (alloc, operations[i]);
-        alloc += strlen (alloc) + 1;
-        match++;
-      }
-    }
-
-    for (int i = 0; operations[i]; i++)
-    {
-      if (strstr (operations[i], filter_query) &&
-          !array_contains_string (completions, operations[i]))
-      {
-        completions[match] = alloc;
-        strcpy (alloc, operations[i]);
-        alloc += strlen (alloc) + 1;
-        match++;
-      }
-    }
-    g_free (with_gegl);
-  }
-  g_free (operations);
-
-  if (match == 0)
-  {
-    g_free (completions);
-    return NULL;
-  }
-  return completions;
-}
-
-static int strarray_count (gchar **strs)
-{
-  int i ;
-  for (i= 0; strs && strs[i]; i++);
-  return i;
-}
-
-int tab_index = 0;
-
-static void complete_filter_query_edit (MrgEvent *e, void *data1, void *data2)
-{
-  GeglNode *new = NULL;
-  GeglEDL *edl = data1;
-  gchar **completions = gcut_get_completions (filter_query);
-  int n_completions = strarray_count (completions);
-  if (!selected_node)
-    selected_node = filter_start;
-  if (tab_index > n_completions-1)
-       tab_index = 0;
-
-  if (!completions)
-    return;
-
-  new = gegl_node_new_child (edl->gegl, "operation", completions[tab_index], NULL);
-  if (filter_query)
-    g_free (filter_query);
-  filter_query = NULL;
-  insert_node (selected_node, new);
-  selected_node = new;
-
-
-  g_free (completions);
-  ui_tweaks++;
-  gcut_cache_invalid (edl);
-  mrg_queue_draw (e->mrg, NULL);
-  mrg_event_stop_propagate (e);
-}
-
-
-static void filter_query_tab (MrgEvent *e, void *data1, void *data2)
-{
-  GeglEDL *edl = data1;
-  tab_index++;
-  mrg_event_stop_propagate (e);
-  
-  ui_tweaks++;
-  gcut_cache_invalid (edl);
-  mrg_queue_draw (e->mrg, NULL);
-}
-
-
-static void filter_query_tab_reverse (MrgEvent *e, void *data1, void *data2)
-{
-  GeglEDL *edl = data1;
-  tab_index--;
-  if (tab_index <0)
-    tab_index = 0;
-  mrg_event_stop_propagate (e);
-  
-  ui_tweaks++;
-  gcut_cache_invalid (edl);
-  mrg_queue_draw (e->mrg, NULL);
-}
-
-static void end_filter_query_edit (MrgEvent *e, void *data1, void *data2)
-{
-  GeglEDL *edl = data1;
-  if (filter_query)
-    g_free (filter_query);
-  filter_query = NULL;
-  mrg_event_stop_propagate (e);
-  
-  ui_tweaks++;
-  gcut_cache_invalid (edl);
-  mrg_queue_draw (e->mrg, NULL);
-}
-
-static void update_filter_query (const char *new_string, void *user_data)
-{
-  tab_index = 0;
-  if (filter_query)
-    g_free (filter_query);
-  filter_query = g_strdup (new_string);
-}
-
 
 static void gcut_draw (Mrg     *mrg,
                        GeglEDL *edl,
@@ -2540,81 +2626,6 @@ static void gcut_draw (Mrg     *mrg,
     }
     y2 = print_nodes (mrg, edl, filter_start, mrg_em (mrg), y2);
 
-    if (filter_query)
-    {
-      gchar **completions = gcut_get_completions (filter_query);
-      int n_completions = strarray_count (completions);
-      if (tab_index >= n_completions)
-        tab_index = 0;
-
-      mrg_set_xy (mrg, mrg_em(mrg) * 1, y2);
-
-      if (completions)
-      {
-        char *full = completions[tab_index];
-        char *prep = strstr (completions[tab_index], filter_query);
-        int pre = 0;
-        int post = 0;
-
-        if (prep) pre = prep-full;
-
-        if (pre)
-        {
-          char tmpbuf[64]="";
-          int i;
-          for (i = 0; i < 64; i ++) tmpbuf[i]=0;
-          for (i = 0; i < pre; i ++)
-            tmpbuf[i] = completions[tab_index][i];
-          mrg_printf (mrg, "%s", tmpbuf);
-        }
-
-        mrg_edit_start (mrg, update_filter_query, edl);
-        mrg_printf (mrg, "%s", filter_query);
-        mrg_edit_end (mrg);
-        post = strlen (completions[tab_index]) - strlen (filter_query) - pre;
-
-        if (post)
-        {
-          char tmpbuf[64]="";
-          int i;
-          for (i = 0; i < post; i ++)
-            tmpbuf[i] = completions[tab_index][
-               strlen(completions[tab_index]) - post + i];
-          mrg_printf (mrg, "%s", tmpbuf);
-        }
-      }
-      else
-      {
-        mrg_edit_start (mrg, update_filter_query, edl);
-        mrg_printf (mrg, "%s", filter_query);
-        mrg_edit_end (mrg);
-      }
-    
-      mrg_add_binding (mrg, "escape", NULL, "end edit", end_filter_query_edit, edl);
-      mrg_add_binding (mrg, "shift-tab", NULL, "end edit", filter_query_tab_reverse, edl);
-      mrg_add_binding (mrg, "tab", NULL, "end edit", filter_query_tab, edl);
-      mrg_add_binding (mrg, "return", NULL, "end edit", complete_filter_query_edit, edl);
-
-      if (completions && 0)
-      {
-        gint matches=0;
-        mrg_start (mrg, NULL, NULL);
-        mrg_set_xy (mrg, mrg_em(mrg) * 1, mrg_height (mrg) * SPLIT_VER + mrg_em (mrg));
-        for (int i = 0; completions[i] && matches < 40; i++)
-          {
-            if (i == tab_index)
-            mrg_printf (mrg, "[%s]", completions[i]);
-            else
-            mrg_printf (mrg, "%s", completions[i]);
-            mrg_printf (mrg, " ");
-            matches ++;
-          }
-        mrg_end(mrg);
-      }
-
-      if (completions)
-        g_free (completions);
-    }
   }
 
   cairo_set_source_rgba (cr, 1, 1,1, 1);
