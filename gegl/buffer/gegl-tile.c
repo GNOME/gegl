@@ -35,9 +35,12 @@
 #include "gegl-tile-source.h"
 #include "gegl-tile-storage.h"
 
-static GMutex cowmutex = { 0, }; /* copy on write is maintained in a doubly linked
-                                  * list, which must be protected by a mutex
-                                  */
+/* the offset at which the tile data begins, when it shares the same buffer as
+ * n_clones.  use 16 bytes, which is the alignment we use for gegl_malloc(), so
+ * that the tile data is similarly aligned.
+ */
+#define INLINE_N_ELEMENTS_DATA_OFFSET 16
+G_STATIC_ASSERT (INLINE_N_ELEMENTS_DATA_OFFSET >= sizeof (gint));
 
 GeglTile *gegl_tile_ref (GeglTile *tile)
 {
@@ -45,6 +48,7 @@ GeglTile *gegl_tile_ref (GeglTile *tile)
   return tile;
 }
 
+static int free_n_clones_directly;
 static int free_data_directly;
 
 void gegl_tile_unref (GeglTile *tile)
@@ -58,37 +62,41 @@ void gegl_tile_unref (GeglTile *tile)
    */
   gegl_tile_store (tile);
 
-  g_mutex_lock (&cowmutex);
   if (tile->data)
     {
-      if (tile->next_shared == tile)
+      if (g_atomic_int_dec_and_test (tile->n_clones))
         { /* no clones */
-          g_mutex_unlock (&cowmutex);
           if (tile->destroy_notify)
             {
-              if (tile->destroy_notify == (void*)&free_data_directly)
-                gegl_free (tile->data);
+              if (tile->destroy_notify == (void*)&free_n_clones_directly)
+                {
+                  /* tile->n_clones and tile->data share the same buffer,
+                   * with tile->n_clones at the front, so free the buffer
+                   * through it.
+                   */
+                  gegl_free (tile->n_clones);
+                }
               else
-                tile->destroy_notify (tile->destroy_notify_data);
+                {
+                  /* tile->n_clones and tile->data are unrelated, so free them
+                   * separately.
+                   */
+                  if (tile->destroy_notify == (void*)&free_data_directly)
+                    gegl_free (tile->data);
+                  else
+                    tile->destroy_notify (tile->destroy_notify_data);
+
+                  g_slice_free (gint, tile->n_clones);
+                }
             }
-          tile->data = NULL;
-        }
-      else
-        {
-          tile->prev_shared->next_shared = tile->next_shared;
-          tile->next_shared->prev_shared = tile->prev_shared;
-          g_mutex_unlock (&cowmutex);
         }
     }
-  else
-    g_mutex_unlock (&cowmutex);
 
   g_slice_free (GeglTile, tile);
 }
 
-
-GeglTile *
-gegl_tile_new_bare (void)
+static GeglTile *
+gegl_tile_new_bare_internal (void)
 {
   GeglTile *tile     = g_slice_new0 (GeglTile);
   tile->ref_count    = 1;
@@ -98,8 +106,16 @@ gegl_tile_new_bare (void)
   tile->lock         = 0;
   tile->data         = NULL;
 
-  tile->next_shared = tile;
-  tile->prev_shared = tile;
+  return tile;
+}
+
+GeglTile *
+gegl_tile_new_bare (void)
+{
+  GeglTile *tile = gegl_tile_new_bare_internal ();
+
+  tile->n_clones  = g_slice_new (gint);
+  *tile->n_clones = 1;
 
   tile->destroy_notify = (void*)&free_data_directly;
   tile->destroy_notify_data = NULL;
@@ -112,22 +128,16 @@ gegl_tile_dup (GeglTile *src)
 {
   GeglTile *tile = gegl_tile_new_bare ();
 
-  g_mutex_lock (&cowmutex);
-
   tile->tile_storage = src->tile_storage;
   tile->data         = src->data;
   tile->size         = src->size;
   tile->is_zero_tile = src->is_zero_tile;
+  tile->n_clones     = src->n_clones;
 
   tile->destroy_notify      = src->destroy_notify;
   tile->destroy_notify_data = src->destroy_notify_data;
 
-  tile->next_shared              = src->next_shared;
-  src->next_shared               = tile;
-  tile->prev_shared              = src;
-  tile->next_shared->prev_shared = tile;
-
-  g_mutex_unlock (&cowmutex);
+  g_atomic_int_inc (tile->n_clones);
 
   return tile;
 }
@@ -135,53 +145,70 @@ gegl_tile_dup (GeglTile *src)
 GeglTile *
 gegl_tile_new (gint size)
 {
-  GeglTile *tile = gegl_tile_new_bare ();
+  GeglTile *tile = gegl_tile_new_bare_internal ();
 
-  tile->data = gegl_malloc (size);
-  tile->size = size;
+  /* allocate a single buffer for both tile->n_clones and tile->data */
+  tile->n_clones  = gegl_malloc (INLINE_N_ELEMENTS_DATA_OFFSET + size);
+  *tile->n_clones = 1;
+
+  tile->data      = (guchar *) tile->n_clones + INLINE_N_ELEMENTS_DATA_OFFSET;
+  tile->size      = size;
+
+  tile->destroy_notify = (void*)&free_n_clones_directly;
+  tile->destroy_notify_data = NULL;
 
   return tile;
-}
-
-static gpointer
-gegl_memdup (gpointer src, gsize size)
-{
-  gpointer ret;
-  ret = gegl_malloc (size);
-  memcpy (ret, src, size);
-  return ret;
 }
 
 static void
 gegl_tile_unclone (GeglTile *tile)
 {
-  g_mutex_lock (&cowmutex);
-  if (tile->next_shared != tile)
+  if (*tile->n_clones > 1)
     {
-      tile->prev_shared->next_shared = tile->next_shared;
-      tile->next_shared->prev_shared = tile->prev_shared;
-      tile->prev_shared              = tile;
-      tile->next_shared              = tile;
-      g_mutex_unlock (&cowmutex);
-
       /* the tile data is shared with other tiles,
        * create a local copy
        */
       if (tile->is_zero_tile)
         {
-          tile->data = gegl_calloc (tile->size, 1);
+          if (g_atomic_int_dec_and_test (tile->n_clones))
+            {
+              /* someone else uncloned the tile in the meantime, and we're now
+               * the last copy; bail.
+               */
+              *tile->n_clones = 1;
+              return;
+            }
+
+          tile->n_clones     = gegl_calloc (INLINE_N_ELEMENTS_DATA_OFFSET +
+                                            tile->size, 1);
           tile->is_zero_tile = 0;
         }
       else
         {
-          tile->data = gegl_memdup (tile->data, tile->size);
+          guchar *buf;
+
+          buf = gegl_malloc (INLINE_N_ELEMENTS_DATA_OFFSET + tile->size);
+          memcpy (buf + INLINE_N_ELEMENTS_DATA_OFFSET, tile->data, tile->size);
+
+          if (g_atomic_int_dec_and_test (tile->n_clones))
+            {
+              /* someone else uncloned the tile in the meantime, and we're now
+               * the last copy; bail.
+               */
+              g_free (buf);
+              *tile->n_clones = 1;
+              return;
+            }
+
+          tile->n_clones = (gint *) buf;
         }
-      tile->destroy_notify           = (void*)&free_data_directly;
-      tile->destroy_notify_data      = NULL;
-    }
-  else
-    {
-      g_mutex_unlock (&cowmutex);
+
+      *tile->n_clones = 1;
+      tile->data      = (guchar *) tile->n_clones +
+                        INLINE_N_ELEMENTS_DATA_OFFSET;
+
+      tile->destroy_notify      = (void*)&free_n_clones_directly;
+      tile->destroy_notify_data = NULL;
     }
 }
 

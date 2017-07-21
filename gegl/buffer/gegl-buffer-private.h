@@ -169,9 +169,9 @@ struct _GeglTile
                                  */
   gint             is_zero_tile:1;
 
-  /* the shared list is a doubly linked circular list */
-  GeglTile        *next_shared;
-  GeglTile        *prev_shared;
+  gint            *n_clones;    /* shared atomic counter among all tiles
+                                 * sharing the same data
+                                 */
 
   /* called when the tile is about to be destroyed */
   GDestroyNotify   destroy_notify;

@@ -104,8 +104,6 @@ gegl_buffer_linear_new_from_data (const gpointer       data,
   tile->x = 0;
   tile->y = 0;
   tile->z = 0;
-  tile->next_shared = tile;
-  tile->prev_shared = tile;
   tile->rev = tile->stored_rev + 1;
   gegl_tile_set_data_full (tile,
                            (gpointer) data,
