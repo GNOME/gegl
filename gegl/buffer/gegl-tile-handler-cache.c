@@ -219,24 +219,26 @@ gegl_tile_handler_cache_command (GeglTileSource  *tile_store,
     {
       case GEGL_TILE_FLUSH:
         {
-          GList     *link;
-
           if (gegl_cl_is_accelerated ())
             gegl_buffer_cl_cache_flush2 (cache, NULL);
 
           if (cache->count)
             {
-              for (link = g_queue_peek_head_link (cache_queue); link; link = link->next)
-                {
-                  CacheItem *item = LINK_GET_ITEM (link);
-                  GeglTile  *tile = item->tile;
+              CacheItem      *item;
+              GHashTableIter  iter;
+              gpointer        key, value;
 
-                  if (tile != NULL &&
-                      item->handler == cache)
-                    {
-                      gegl_tile_store (tile);
-                    }
+              g_mutex_lock (&mutex);
+
+              g_hash_table_iter_init (&iter, cache->items);
+              while (g_hash_table_iter_next (&iter, &key, &value))
+                {
+                  item = (CacheItem *) value;
+                  if (item->tile)
+                    gegl_tile_store (item->tile);
                 }
+
+              g_mutex_unlock (&mutex);
             }
         }
         break;
@@ -293,20 +295,34 @@ gegl_tile_handler_cache_wash (GeglTileHandlerCache *cache)
   gint       wash_tiles = cache_wash_percentage * length / 100;
   GList     *link;
 
-  for (link = g_queue_peek_head_link (cache_queue); link; link = link->next)
+  g_mutex_lock (&mutex);
+
+  for (link = g_queue_peek_tail_link (cache_queue);
+       link && count < wash_tiles;
+       link = link->prev, count++)
     {
       CacheItem *item = LINK_GET_ITEM (link);
       GeglTile  *tile = item->tile;
 
-      count++;
       if (!gegl_tile_is_stored (tile))
-        if (count > length - wash_tiles)
+        {
           last_dirty = tile;
+          if (last_dirty->tile_storage)
+            g_object_ref (last_dirty->tile_storage);
+          gegl_tile_ref (last_dirty);
+
+          break;
+        }
     }
+
+  g_mutex_unlock (&mutex);
 
   if (last_dirty != NULL)
     {
       gegl_tile_store (last_dirty);
+      gegl_tile_unref (last_dirty);
+      if (last_dirty->tile_storage)
+        g_object_unref (last_dirty->tile_storage);
       return TRUE;
     }
   return FALSE;
