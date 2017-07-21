@@ -89,6 +89,10 @@ void gegl_tile_unref (GeglTile *tile)
                   g_slice_free (gint, tile->n_clones);
                 }
             }
+          else
+            {
+              g_slice_free (gint, tile->n_clones);
+            }
         }
     }
 
