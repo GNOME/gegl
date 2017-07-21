@@ -62,37 +62,30 @@ void gegl_tile_unref (GeglTile *tile)
    */
   gegl_tile_store (tile);
 
-  if (tile->data)
-    {
-      if (g_atomic_int_dec_and_test (tile->n_clones))
-        { /* no clones */
-          if (tile->destroy_notify)
+  if (g_atomic_int_dec_and_test (tile->n_clones))
+    { /* no clones */
+      if (tile->destroy_notify == (void*)&free_n_clones_directly)
+        {
+          /* tile->n_clones and tile->data share the same buffer,
+           * with tile->n_clones at the front, so free the buffer
+           * through it.
+           */
+          gegl_free (tile->n_clones);
+        }
+      else
+        {
+          /* tile->n_clones and tile->data are unrelated, so free them
+           * separately.
+           */
+          if (tile->data)
             {
-              if (tile->destroy_notify == (void*)&free_n_clones_directly)
-                {
-                  /* tile->n_clones and tile->data share the same buffer,
-                   * with tile->n_clones at the front, so free the buffer
-                   * through it.
-                   */
-                  gegl_free (tile->n_clones);
-                }
-              else
-                {
-                  /* tile->n_clones and tile->data are unrelated, so free them
-                   * separately.
-                   */
-                  if (tile->destroy_notify == (void*)&free_data_directly)
-                    gegl_free (tile->data);
-                  else
-                    tile->destroy_notify (tile->destroy_notify_data);
+              if (tile->destroy_notify == (void*)&free_data_directly)
+                gegl_free (tile->data);
+              else if (tile->destroy_notify)
+                tile->destroy_notify (tile->destroy_notify_data);
+            }
 
-                  g_slice_free (gint, tile->n_clones);
-                }
-            }
-          else
-            {
-              g_slice_free (gint, tile->n_clones);
-            }
+          g_slice_free (gint, tile->n_clones);
         }
     }
 
