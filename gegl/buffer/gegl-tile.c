@@ -123,7 +123,7 @@ gegl_tile_new_bare (void)
 GeglTile *
 gegl_tile_dup (GeglTile *src)
 {
-  GeglTile *tile = gegl_tile_new_bare ();
+  GeglTile *tile = gegl_tile_new_bare_internal ();
 
   tile->tile_storage = src->tile_storage;
   tile->data         = src->data;
