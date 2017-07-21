@@ -61,16 +61,16 @@ static GObjectClass * parent_class = NULL;
 typedef enum
 {
   OP_WRITE,
-  OP_TRUNCATE,
+  OP_DESTROY,
 } ThreadOp;
 
 typedef struct
 {
-  guint64  offset;
-  GList   *link;
-  gint     x;
-  gint     y;
-  gint     z;
+  gint64  offset;
+  GList  *link;
+  gint    x;
+  gint    y;
+  gint    z;
 } SwapEntry;
 
 typedef struct
@@ -83,29 +83,30 @@ typedef struct
 
 typedef struct
 {
-  guint64 start;
-  guint64 end;
+  gint64 start;
+  gint64 end;
 } SwapGap;
 
 
-static void        gegl_tile_backend_swap_push_queue    (ThreadParams *params);
-static void        gegl_tile_backend_swap_write         (ThreadParams *params);
+static void        gegl_tile_backend_swap_push_queue    (ThreadParams          *params,
+                                                         gboolean               head);
+static void        gegl_tile_backend_swap_resize        (gint64                 size);
+static SwapGap *   gegl_tile_backend_swap_gap_new       (gint64                 start,
+                                                         gint64                 end);
+static gint64      gegl_tile_backend_swap_find_offset   (gint                   tile_size);
+static void        gegl_tile_backend_swap_write         (ThreadParams          *params);
+static void        gegl_tile_backend_swap_destroy       (ThreadParams          *params);
 static gpointer    gegl_tile_backend_swap_writer_thread (gpointer ignored);
-static void        gegl_tile_backend_swap_entry_read    (GeglTileBackendSwap   *self,
-                                                         SwapEntry             *entry,
-                                                         guchar                *dest);
+static GeglTile   *gegl_tile_backend_swap_entry_read    (GeglTileBackendSwap   *self,
+                                                         SwapEntry             *entry);
 static void        gegl_tile_backend_swap_entry_write   (GeglTileBackendSwap   *self,
                                                          SwapEntry             *entry,
                                                          GeglTile              *tile);
 static SwapEntry * gegl_tile_backend_swap_entry_create  (gint                   x,
                                                          gint                   y,
                                                          gint                   z);
-static guint64     gegl_tile_backend_swap_find_offset   (gint                   tile_size);
-static SwapGap *   gegl_tile_backend_swap_gap_new       (guint64                start,
-                                                         guint64                end);
 static void        gegl_tile_backend_swap_entry_destroy (GeglTileBackendSwap   *self,
                                                          SwapEntry             *entry);
-static void        gegl_tile_backend_swap_resize        (guint64 size);
 static SwapEntry * gegl_tile_backend_swap_lookup_entry  (GeglTileBackendSwap   *self,
                                                          gint                   x,
                                                          gint                   y,
@@ -146,254 +147,70 @@ static void        gegl_tile_backend_swap_init          (GeglTileBackendSwap *se
 void               gegl_tile_backend_swap_cleanup       (void);
 
 
-static gchar   *path       = NULL;
-static gint     in_fd      = -1;
-static gint     out_fd     = -1;
-static guint64  in_offset  = 0;
-static guint64  out_offset = 0;
-static GList   *gap_list   = NULL;
-static guint64  total      = 0;
+static gchar  *path       = NULL;
+static gint    in_fd      = -1;
+static gint    out_fd     = -1;
+static gint64  in_offset  = 0;
+static gint64  out_offset = 0;
+static GList  *gap_list   = NULL;
+static gint64  total      = 0;
 
 static GThread      *writer_thread = NULL;
 static GQueue       *queue         = NULL;
 static ThreadParams *in_progress   = NULL;
 static gboolean      exit_thread   = FALSE;
-static GMutex        mutex;
+static GMutex        read_mutex;
+static GMutex        queue_mutex;
 static GCond         queue_cond;
 
 
 static void
-gegl_tile_backend_swap_push_queue (ThreadParams *params)
+gegl_tile_backend_swap_push_queue (ThreadParams *params,
+                                   gboolean      head)
 {
-  g_mutex_lock (&mutex);
+  if (head)
+    g_queue_push_head (queue, params);
+  else
+    g_queue_push_tail (queue, params);
 
-  g_queue_push_tail (queue, params);
-
-  if (params->operation == OP_WRITE)
+  if (params->entry)
     params->entry->link = g_queue_peek_tail_link (queue);
 
   /* wake up the writer thread */
   g_cond_signal (&queue_cond);
-
-  g_mutex_unlock (&mutex);
 }
 
 static void
-gegl_tile_backend_swap_write (ThreadParams *params)
+gegl_tile_backend_swap_resize (gint64 size)
 {
-  gint    to_be_written = params->length;
-  guint64 offset        = params->entry->offset;
+  total = size;
 
-  if (out_offset != offset)
+  if (ftruncate (out_fd, total) != 0)
     {
-      if (lseek (out_fd, offset, SEEK_SET) < 0)
-        {
-          g_warning ("unable to seek to tile in buffer: %s", g_strerror (errno));
-          return;
-        }
-      out_offset = offset;
+      g_warning ("failed to resize swap file: %s", g_strerror (errno));
+      return;
     }
 
-  while (to_be_written > 0)
-    {
-      gint wrote;
-      wrote = write (out_fd,
-                     gegl_tile_get_data (params->tile) + params->length
-                     - to_be_written,
-                     to_be_written);
-      if (wrote <= 0)
-        {
-          g_message ("unable to write tile data to self: "
-                     "%s (%d/%d bytes written)",
-                     g_strerror (errno), wrote, to_be_written);
-          break;
-        }
-
-      to_be_written -= wrote;
-      out_offset    += wrote;
-    }
-
-  GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "writer thread wrote at %i", (gint)offset);
+  GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "resized swap to %i", (gint)total);
 }
 
-static gpointer
-gegl_tile_backend_swap_writer_thread (gpointer ignored)
+static SwapGap *
+gegl_tile_backend_swap_gap_new (gint64 start,
+                                gint64 end)
 {
-  while (TRUE)
-    {
-      ThreadParams *params;
+  SwapGap *gap = g_slice_new (SwapGap);
 
-      g_mutex_lock (&mutex);
+  gap->start = start;
+  gap->end = end;
 
-      while (g_queue_is_empty (queue) && !exit_thread)
-        g_cond_wait (&queue_cond, &mutex);
-
-      if (exit_thread)
-        {
-          g_mutex_unlock (&mutex);
-          GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "exiting writer thread");
-          return NULL;
-        }
-
-      params = (ThreadParams *)g_queue_pop_head (queue);
-      if (params->operation == OP_WRITE)
-        {
-          in_progress = params;
-          params->entry->link = NULL;
-        }
-
-      g_mutex_unlock (&mutex);
-
-      switch (params->operation)
-        {
-        case OP_WRITE:
-          gegl_tile_backend_swap_write (params);
-          break;
-        case OP_TRUNCATE:
-          if (ftruncate (out_fd, total) != 0)
-            g_warning ("failed to resize swap file: %s", g_strerror (errno));
-          break;
-        }
-
-      g_mutex_lock (&mutex);
-
-      in_progress = NULL;
-
-      if (params->operation == OP_WRITE)
-        gegl_tile_unref (params->tile);
-
-      g_slice_free (ThreadParams, params);
-
-      g_mutex_unlock (&mutex);
-    }
-
-  return NULL;
+  return gap;
 }
 
-static void
-gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
-                                   SwapEntry           *entry,
-                                   guchar              *dest)
-{
-  gint    tile_size  = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self));
-  gint    to_be_read = tile_size;
-  guint64 offset     = entry->offset;
-
-  gegl_tile_backend_swap_ensure_exist ();
-
-  if (entry->link || in_progress)
-    {
-      ThreadParams *queued_op = NULL;
-      g_mutex_lock (&mutex);
-
-      if (entry->link)
-        queued_op = entry->link->data;
-      else if (in_progress && in_progress->entry == entry)
-        queued_op = in_progress;
-
-      if (queued_op)
-        {
-          memcpy (dest, gegl_tile_get_data (queued_op->tile), to_be_read);
-          g_mutex_unlock (&mutex);
-
-          GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "read entry %i, %i, %i from queue", entry->x, entry->y, entry->z);
-
-          return;
-        }
-
-      g_mutex_unlock (&mutex);
-    }
-
-  if (in_offset != offset)
-    {
-      if (lseek (in_fd, offset, SEEK_SET) < 0)
-        {
-          g_warning ("unable to seek to tile in buffer: %s", g_strerror (errno));
-          return;
-        }
-      in_offset = offset;
-    }
-
-  while (to_be_read > 0)
-    {
-      GError *error = NULL;
-      gint    byte_read;
-
-      byte_read = read (in_fd, dest + tile_size - to_be_read, to_be_read);
-      if (byte_read <= 0)
-        {
-          g_message ("unable to read tile data from swap: "
-                     "%s (%d/%d bytes read) %s",
-                     g_strerror (errno), byte_read, to_be_read, error?error->message:"--");
-          return;
-        }
-      to_be_read -= byte_read;
-      in_offset  += byte_read;
-    }
-
-  GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "read entry %i, %i, %i from %i", entry->x, entry->y, entry->z, (gint)offset);
-}
-
-static void
-gegl_tile_backend_swap_entry_write (GeglTileBackendSwap *self,
-                                    SwapEntry           *entry,
-                                    GeglTile            *tile)
-{
-  ThreadParams *params;
-  gint          length = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self));
-
-  gegl_tile_backend_swap_ensure_exist ();
-
-  if (entry->link)
-    {
-      g_mutex_lock (&mutex);
-
-      if (entry->link)
-        {
-          params = entry->link->data;
-          gegl_tile_unref (params->tile);
-          params->tile = gegl_tile_dup (tile);
-          g_mutex_unlock (&mutex);
-
-          GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "tile %i, %i, %i at %i is already enqueued, changed data", entry->x, entry->y, entry->z, (gint)entry->offset);
-
-          return;
-        }
-
-      g_mutex_unlock (&mutex);
-    }
-
-  params            = g_slice_new0 (ThreadParams);
-  params->operation = OP_WRITE;
-  params->length    = length;
-  params->tile      = gegl_tile_dup (tile);
-  params->entry     = entry;
-
-  gegl_tile_backend_swap_push_queue (params);
-
-  GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "pushed write of entry %i, %i, %i at %i", entry->x, entry->y, entry->z, (gint)entry->offset);
-}
-
-static SwapEntry *
-gegl_tile_backend_swap_entry_create (gint x,
-                                     gint y,
-                                     gint z)
-{
-  SwapEntry *entry = g_slice_new0 (SwapEntry);
-
-  entry->x    = x;
-  entry->y    = y;
-  entry->z    = z;
-  entry->link = NULL;
-
-  return entry;
-}
-
-static guint64
+static gint64
 gegl_tile_backend_swap_find_offset (gint tile_size)
 {
   SwapGap *gap;
-  guint64  offset;
+  gint64   offset;
 
   if (gap_list)
     {
@@ -401,7 +218,7 @@ gegl_tile_backend_swap_find_offset (gint tile_size)
 
       while (link)
         {
-          guint64 length;
+          gint64 length;
 
           gap    = link->data;
           length = gap->end - gap->start;
@@ -436,45 +253,66 @@ gegl_tile_backend_swap_find_offset (gint tile_size)
   return offset;
 }
 
-static SwapGap *
-gegl_tile_backend_swap_gap_new (guint64 start,
-                                guint64 end)
+static void
+gegl_tile_backend_swap_write (ThreadParams *params)
 {
-  SwapGap *gap = g_slice_new (SwapGap);
+  gint   to_be_written = params->length;
+  gint64 offset        = params->entry->offset;
 
-  gap->start = start;
-  gap->end = end;
+  gegl_tile_backend_swap_ensure_exist ();
 
-  return gap;
+  if (offset < 0)
+    {
+      /* storage for entry not allocated yet.  allocate now. */
+      offset = gegl_tile_backend_swap_find_offset (to_be_written);
+
+      params->entry->offset = offset;
+    }
+
+  if (out_offset != offset)
+    {
+      if (lseek (out_fd, offset, SEEK_SET) < 0)
+        {
+          g_warning ("unable to seek to tile in buffer: %s", g_strerror (errno));
+          return;
+        }
+      out_offset = offset;
+    }
+
+  while (to_be_written > 0)
+    {
+      gint wrote;
+      wrote = write (out_fd,
+                     gegl_tile_get_data (params->tile) + params->length
+                     - to_be_written,
+                     to_be_written);
+      if (wrote <= 0)
+        {
+          g_message ("unable to write tile data to self: "
+                     "%s (%d/%d bytes written)",
+                     g_strerror (errno), wrote, to_be_written);
+          break;
+        }
+
+      to_be_written -= wrote;
+      out_offset    += wrote;
+    }
+
+  GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "writer thread wrote at %i", (gint)offset);
 }
 
 static void
-gegl_tile_backend_swap_entry_destroy (GeglTileBackendSwap *self,
-                                      SwapEntry           *entry)
+gegl_tile_backend_swap_destroy (ThreadParams *params)
 {
-  guint64  start, end;
-  gint     tile_size = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self));
-  GList   *hlink;
+  gint64  start, end;
+  GList  *hlink;
 
-  if (entry->link)
-    {
-      GList *link;
+  start = params->entry->offset;
+  end = start + params->length;
 
-      g_mutex_lock (&mutex);
+  g_assert (start >= 0);
 
-      if ((link = entry->link))
-        {
-          ThreadParams *queued_op = link->data;
-          g_queue_delete_link (queue, link);
-          gegl_tile_unref (queued_op->tile);
-          g_slice_free (ThreadParams, queued_op);
-        }
-
-      g_mutex_unlock (&mutex);
-    }
-
-  start = entry->offset;
-  end = start + tile_size;
+  g_slice_free (SwapEntry, params->entry);
 
   if ((hlink = gap_list))
     while (hlink)
@@ -549,23 +387,245 @@ gegl_tile_backend_swap_entry_destroy (GeglTileBackendSwap *self,
   else
     gap_list = g_list_prepend (NULL,
                                gegl_tile_backend_swap_gap_new (start, end));
+}
 
-  g_hash_table_remove (self->index, entry);
-  g_slice_free (SwapEntry, entry);
+static gpointer
+gegl_tile_backend_swap_writer_thread (gpointer ignored)
+{
+  g_mutex_lock (&queue_mutex);
+
+  while (TRUE)
+    {
+      ThreadParams *params;
+
+      while (g_queue_is_empty (queue) && !exit_thread)
+        g_cond_wait (&queue_cond, &queue_mutex);
+
+      if (exit_thread)
+        break;
+
+      params = (ThreadParams *)g_queue_pop_head (queue);
+      if (params->entry)
+        {
+          in_progress = params;
+          params->entry->link = NULL;
+        }
+
+      g_mutex_unlock (&queue_mutex);
+
+      switch (params->operation)
+        {
+        case OP_WRITE:
+          gegl_tile_backend_swap_write (params);
+          break;
+        case OP_DESTROY:
+          gegl_tile_backend_swap_destroy (params);
+          break;
+        }
+
+      g_mutex_lock (&queue_mutex);
+
+      in_progress = NULL;
+
+      if (params->tile)
+        gegl_tile_unref (params->tile);
+
+      g_slice_free (ThreadParams, params);
+    }
+
+  g_mutex_unlock (&queue_mutex);
+  GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "exiting writer thread");
+  return NULL;
+}
+
+static GeglTile *
+gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
+                                   SwapEntry           *entry)
+{
+  gint      tile_size  = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self));
+  gint      to_be_read = tile_size;
+  gint64    offset;
+  GeglTile *tile;
+  guchar   *dest;
+
+  g_mutex_lock (&queue_mutex);
+
+  if (entry->link || in_progress)
+    {
+      ThreadParams *queued_op = NULL;
+
+      if (entry->link)
+        queued_op = entry->link->data;
+      else if (in_progress->entry == entry)
+        queued_op = in_progress;
+
+      if (queued_op)
+        {
+          tile = gegl_tile_dup (queued_op->tile);
+          g_mutex_unlock (&queue_mutex);
+
+          GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "read entry %i, %i, %i from queue", entry->x, entry->y, entry->z);
+
+          return tile;
+        }
+    }
+
+  offset = entry->offset;
+
+  g_mutex_unlock (&queue_mutex);
+
+  if (offset < 0 || in_fd < 0)
+    {
+      g_warning ("no swap storage allocated for tile");
+      return NULL;
+    }
+
+  tile = gegl_tile_new (tile_size);
+  dest = gegl_tile_get_data (tile);
+  gegl_tile_mark_as_stored (tile);
+
+  g_mutex_lock (&read_mutex);
+
+  if (in_offset != offset)
+    {
+      if (lseek (in_fd, offset, SEEK_SET) < 0)
+        {
+          g_mutex_unlock (&read_mutex);
+
+          g_warning ("unable to seek to tile in buffer: %s", g_strerror (errno));
+          return tile;
+        }
+      in_offset = offset;
+    }
+
+  while (to_be_read > 0)
+    {
+      GError *error = NULL;
+      gint    byte_read;
+
+      byte_read = read (in_fd, dest + tile_size - to_be_read, to_be_read);
+      if (byte_read <= 0)
+        {
+          g_mutex_unlock (&read_mutex);
+
+          g_message ("unable to read tile data from swap: "
+                     "%s (%d/%d bytes read) %s",
+                     g_strerror (errno), byte_read, to_be_read, error?error->message:"--");
+          return tile;
+        }
+      to_be_read -= byte_read;
+      in_offset  += byte_read;
+    }
+
+  g_mutex_unlock (&read_mutex);
+
+  GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "read entry %i, %i, %i from %i", entry->x, entry->y, entry->z, (gint)offset);
+
+  return tile;
 }
 
 static void
-gegl_tile_backend_swap_resize (guint64 size)
+gegl_tile_backend_swap_entry_write (GeglTileBackendSwap *self,
+                                    SwapEntry           *entry,
+                                    GeglTile            *tile)
+{
+  ThreadParams *params;
+  gint          length = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self));
+
+  g_mutex_lock (&queue_mutex);
+
+  if (entry->link)
+    {
+      params = entry->link->data;
+      g_assert (params->operation == OP_WRITE);
+      gegl_tile_unref (params->tile);
+      params->tile = gegl_tile_dup (tile);
+      g_mutex_unlock (&queue_mutex);
+
+      GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "tile %i, %i, %i at %i is already enqueued, changed data", entry->x, entry->y, entry->z, (gint)entry->offset);
+
+      return;
+    }
+
+  params            = g_slice_new0 (ThreadParams);
+  params->operation = OP_WRITE;
+  params->length    = length;
+  params->tile      = gegl_tile_dup (tile);
+  params->entry     = entry;
+
+  gegl_tile_backend_swap_push_queue (params, /* head = */ FALSE);
+
+  g_mutex_unlock (&queue_mutex);
+
+  GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "pushed write of entry %i, %i, %i at %i", entry->x, entry->y, entry->z, (gint)entry->offset);
+}
+
+static SwapEntry *
+gegl_tile_backend_swap_entry_create (gint x,
+                                     gint y,
+                                     gint z)
+{
+  SwapEntry *entry = g_slice_new0 (SwapEntry);
+
+  entry->x      = x;
+  entry->y      = y;
+  entry->z      = z;
+  entry->link   = NULL;
+  entry->offset = -1;
+
+  return entry;
+}
+
+static void
+gegl_tile_backend_swap_entry_destroy (GeglTileBackendSwap *self,
+                                      SwapEntry           *entry)
 {
   ThreadParams *params;
 
-  total = size;
-  params = g_slice_new0 (ThreadParams);
-  params->operation = OP_TRUNCATE;
+  if (entry->link)
+    {
+      GList        *link      = entry->link;
+      ThreadParams *queued_op = link->data;
 
-  gegl_tile_backend_swap_push_queue (params);
+      if (queued_op->tile)
+        {
+          gegl_tile_unref (queued_op->tile);
+          queued_op->tile = NULL;
+        }
 
-  GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "pushed resize to %i", (gint)total);
+      if (entry->offset >= 0)
+        {
+          /* the queued op's entry already has storage allocated to it, which
+           * needs to be reclaimed.  change it to an OP_DESTROY, and move it to
+           * the top.
+           */
+          queued_op->operation = OP_DESTROY;
+
+          g_queue_unlink (queue, link);
+          g_queue_push_head_link (queue, link);
+        }
+      else
+        {
+          /* the queued op's entry doesn't have storage allocated to it, so we
+           * can simply free it here.
+           */
+          g_queue_delete_link (queue, link);
+          g_slice_free (ThreadParams, queued_op);
+          g_slice_free (SwapEntry, entry);
+        }
+
+      return;
+    }
+
+  params            = g_slice_new0 (ThreadParams);
+  params->operation = OP_DESTROY;
+  params->length    = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self));
+  params->entry     = entry;
+
+  /* push the destroy op at the top of the queue, so that it gets served before
+   * any write ops, which are then free to reuse the reclaimed space.
+   */
+  gegl_tile_backend_swap_push_queue (params, /* head = */ TRUE);
 }
 
 static SwapEntry *
@@ -587,8 +647,6 @@ gegl_tile_backend_swap_get_tile (GeglTileSource *self,
 {
   GeglTileBackendSwap *tile_backend_swap;
   SwapEntry           *entry;
-  GeglTile            *tile = NULL;
-  gint                 tile_size;
 
   tile_backend_swap = GEGL_TILE_BACKEND_SWAP (self);
   entry             = gegl_tile_backend_swap_lookup_entry (tile_backend_swap, x, y, z);
@@ -596,13 +654,7 @@ gegl_tile_backend_swap_get_tile (GeglTileSource *self,
   if (!entry)
     return NULL;
 
-  tile_size = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self));
-  tile      = gegl_tile_new (tile_size);
-  gegl_tile_mark_as_stored (tile);
-
-  gegl_tile_backend_swap_entry_read (tile_backend_swap, entry, gegl_tile_get_data (tile));
-
-  return tile;
+  return gegl_tile_backend_swap_entry_read (tile_backend_swap, entry);
 }
 
 static gpointer
@@ -620,12 +672,9 @@ gegl_tile_backend_swap_set_tile (GeglTileSource *self,
   tile_backend_swap = GEGL_TILE_BACKEND_SWAP (backend);
   entry             = gegl_tile_backend_swap_lookup_entry (tile_backend_swap, x, y, z);
 
-  gegl_tile_backend_swap_ensure_exist ();
-
   if (entry == NULL)
     {
-      entry          = gegl_tile_backend_swap_entry_create (x, y, z);
-      entry->offset  = gegl_tile_backend_swap_find_offset (gegl_tile_backend_get_tile_size (backend));
+      entry = gegl_tile_backend_swap_entry_create (x, y, z);
       g_hash_table_insert (tile_backend_swap->index, entry, entry);
     }
 
@@ -655,7 +704,13 @@ gegl_tile_backend_swap_void_tile (GeglTileSource *self,
     {
       GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "void tile %i, %i, %i", x, y, z);
 
+      g_hash_table_remove (tile_backend_swap->index, entry);
+
+      g_mutex_lock (&queue_mutex);
+
       gegl_tile_backend_swap_entry_destroy (tile_backend_swap, entry);
+
+      g_mutex_unlock (&queue_mutex);
     }
 
   return NULL;
@@ -769,17 +824,21 @@ gegl_tile_backend_swap_finalize (GObject *object)
 
   if (self->index)
     {
-      GList *tiles = g_hash_table_get_keys (self->index);
-
-      if (tiles != NULL)
+      if (g_hash_table_size (self->index) > 0)
         {
-          GList *iter;
+          GHashTableIter iter;
+          gpointer       key;
+          gpointer       value;
 
-          for (iter = tiles; iter; iter = iter->next)
-            gegl_tile_backend_swap_entry_destroy (self, iter->data);
+          g_hash_table_iter_init (&iter, self->index);
+
+          g_mutex_lock (&queue_mutex);
+
+          while (g_hash_table_iter_next (&iter, &key, &value))
+            gegl_tile_backend_swap_entry_destroy (self, value);
+
+          g_mutex_unlock (&queue_mutex);
         }
-
-      g_list_free (tiles);
 
       g_hash_table_unref (self->index);
 
