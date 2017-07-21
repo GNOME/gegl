@@ -60,7 +60,8 @@ _new_empty_tile (const gint tile_size)
     }
   else
     {
-      if (!common_tile && g_once_init_enter (&common_tile))
+      if (!g_atomic_pointer_get (&common_tile) &&
+          g_once_init_enter (&common_tile))
         {
           GeglTile *allocated_tile = gegl_tile_new_bare ();
           guchar *allocated_buffer = gegl_malloc (common_empty_size);
