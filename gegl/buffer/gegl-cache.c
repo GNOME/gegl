@@ -262,7 +262,6 @@ gegl_cache_invalidate (GeglCache           *self,
                        const GeglRectangle *roi)
 {
   gint i;
-  g_mutex_lock (&self->mutex);
 
   if (roi)
     {
@@ -270,8 +269,11 @@ gegl_cache_invalidate (GeglCache           *self,
 
       GeglRegion *temp_region;
       temp_region = gegl_region_rectangle (&expanded);
+
+      g_mutex_lock (&self->mutex);
       for (i = 0; i < GEGL_CACHE_VALID_MIPMAPS; i++)
         gegl_region_subtract (self->valid_region[i], temp_region);
+      g_mutex_unlock (&self->mutex);
       gegl_region_destroy (temp_region);
       g_signal_emit (self, gegl_cache_signals[INVALIDATED], 0,
                      roi, NULL);
@@ -279,16 +281,17 @@ gegl_cache_invalidate (GeglCache           *self,
   else
     {
       GeglRectangle rect = { 0, 0, 0, 0 }; /* should probably be the extent of the cache */
+      g_mutex_lock (&self->mutex);
       for (i = 0; i < GEGL_CACHE_VALID_MIPMAPS; i++)
       {
         if (self->valid_region[i])
           gegl_region_destroy (self->valid_region[i]);
         self->valid_region[i] = gegl_region_new ();
       }
+      g_mutex_unlock (&self->mutex);
       g_signal_emit (self, gegl_cache_signals[INVALIDATED], 0,
                      &rect, NULL);
     }
-  g_mutex_unlock (&self->mutex);
 }
 
 void
@@ -304,8 +307,9 @@ gegl_cache_computed (GeglCache           *self,
   if (level < GEGL_CACHE_VALID_MIPMAPS)
     gegl_region_union_with_rect (self->valid_region[level], rect);
 
-  g_signal_emit (self, gegl_cache_signals[COMPUTED], 0, rect, NULL);
   g_mutex_unlock (&self->mutex);
+
+  g_signal_emit (self, gegl_cache_signals[COMPUTED], 0, rect, NULL);
 }
 
 gboolean
