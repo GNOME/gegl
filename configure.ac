@@ -1120,7 +1120,7 @@ AC_SUBST(LIBSPIRO)
 
 AC_ARG_WITH(exiv2, [  --without-exiv2         build without libexiv2 support])
 
-have_libexiv2="no"
+have_exiv2="no"
 if test "x$with_exiv2" != "xno"; then
   PKG_CHECK_MODULES(EXIV2, exiv2,
     have_exiv2="yes",
