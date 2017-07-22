@@ -1120,7 +1120,7 @@ gegl_buffer_try_lock (GeglBuffer *buffer)
     gboolean threaded = gegl_config_threads ()>1;
 
     if (threaded)
-      g_mutex_lock (&buffer->tile_storage->mutex);
+      g_rec_mutex_lock (&buffer->tile_storage->mutex);
     if (buffer->lock_count > 0)
       buffer->lock_count++;
     else if (gegl_tile_backend_file_try_lock (GEGL_TILE_BACKEND_FILE (backend)))
@@ -1128,7 +1128,7 @@ gegl_buffer_try_lock (GeglBuffer *buffer)
     else
       ret = FALSE;
     if (threaded)
-      g_mutex_unlock (&buffer->tile_storage->mutex);
+      g_rec_mutex_unlock (&buffer->tile_storage->mutex);
   }
 
   return ret;
@@ -1157,7 +1157,7 @@ gegl_buffer_unlock (GeglBuffer *buffer)
     GeglTileBackend *backend = gegl_buffer_backend (buffer);
 
     if (threaded)
-      g_mutex_lock (&buffer->tile_storage->mutex);
+      g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
     buffer->lock_count--;
     g_assert (buffer->lock_count >= 0);
@@ -1166,7 +1166,7 @@ gegl_buffer_unlock (GeglBuffer *buffer)
       ret = gegl_tile_backend_file_unlock (GEGL_TILE_BACKEND_FILE (backend));
 
     if (threaded)
-      g_mutex_unlock (&buffer->tile_storage->mutex);
+      g_rec_mutex_unlock (&buffer->tile_storage->mutex);
   }
 
   return ret;
