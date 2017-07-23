@@ -818,7 +818,7 @@ void gcut_update_video_size (GeglEDL *edl)
 
 static void generate_gcut_dir (GeglEDL *edl)
 {
-  char *tmp = g_strdup_printf ("cd %s; mkdir .gcut 2>/dev/null ; mkdir .gcut/cache 2>/dev/null mkdir .gcut/proxy 2>/dev/null mkdir .gcut/thumb 2>/dev/null ; mkdir .gcut/video 2>/dev/null; mkdir .gcut/history 2>/dev/null", edl->parent_path);
+  char *tmp = g_strdup_printf ("cd %s; mkdir .gcut 2>/dev/null ; mkdir .gcut/cache 2>/dev/null ; mkdir .gcut/proxy 2>/dev/null ; mkdir .gcut/thumb 2>/dev/null ; mkdir .gcut/video 2>/dev/null; mkdir .gcut/history 2>/dev/null", edl->parent_path);
   system (tmp);
   g_free (tmp);
 }
