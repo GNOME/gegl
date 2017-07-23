@@ -139,6 +139,7 @@ GeglEDL *gcut_new           (void)
 
   edl->clip_query = strdup ("");
   edl->use_proxies = 0;
+  edl->ui_mode = GEDL_UI_MODE_PART;
 
   g_mutex_init (&edl->buffer_copy_mutex);
   return edl;
