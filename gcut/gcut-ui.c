@@ -2316,7 +2316,6 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
 
         mrg_set_xy (mrg, x, y);
         mrg_printf (mrg, "%s", gegl_node_get_operation (node));
-        //mrg_text_listen_done (mrg);
 
         y -= mrg_em (mrg) * 1.5;
 
@@ -2331,7 +2330,6 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
           mrg_printf (mrg, " X ");
           mrg_text_listen_done (mrg);
 
-          // YYY
           mrg_set_xy (mrg, x, y);
 
     if (filter_query)
@@ -2410,7 +2408,9 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
     }
     else
     {
-      mrg_printf (mrg, " + ");
+      mrg_text_listen (mrg, MRG_CLICK, insert_filter, edl, edl);
+      mrg_printf (mrg, "[ add filter ]");
+      mrg_text_listen_done (mrg);
     }
           y -= mrg_em (mrg) * 1.0;
         }
