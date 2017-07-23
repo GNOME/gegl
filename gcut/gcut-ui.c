@@ -1722,6 +1722,7 @@ static void drag_int_slider (MrgEvent *e, void *data1, void *data2)
 
 static void update_double_string (const char *new_string, void *user_data)
 {
+  GeglEDL *edl = user_data;
   gdouble val = g_strtod (new_string, NULL);
   GParamSpecDouble *spec = (void*)gegl_operation_find_property (gegl_node_get_operation(snode), sprop);
 
@@ -1730,7 +1731,54 @@ static void update_double_string (const char *new_string, void *user_data)
   sprintf (tmpstr, "%.5f", val);
 
   if (snode && sprop)
+  {
+    GQuark anim_quark;
+    gchar tmpbuf[1024] = "";
     gegl_node_set (snode, sprop, val, NULL);
+
+    sprintf (tmpbuf, "%s-anim", sprop);
+    anim_quark = g_quark_from_string (tmpbuf);
+
+  if (g_object_get_qdata (G_OBJECT (snode), anim_quark))
+  {
+    GeglPath *path = g_object_get_qdata (G_OBJECT (snode), anim_quark);
+    int nodes = gegl_path_get_n_nodes (path);
+    int i;
+    int clip_frame_no=0;
+    GeglPathItem path_item;
+    gcut_get_clip (edl, edl->frame_no, &clip_frame_no);
+
+    for (i = 0; i < nodes; i ++)
+    {
+      gegl_path_get_node (path, i, &path_item);
+      if (fabs (path_item.point[0].x - clip_frame_no) < 0.5)
+      {
+        path_item.point[0].x = clip_frame_no;
+        path_item.point[0].y = val;
+        gegl_path_replace_node (path, i, &path_item);
+        goto done;
+      }
+      else if (path_item.point[0].x > clip_frame_no)
+      {
+        path_item.point[0].x = clip_frame_no;
+        path_item.point[0].y = val;
+        gegl_path_insert_node (path, i - 1, &path_item);
+        goto done;
+      }
+    }
+    path_item.type = 'L';
+    path_item.point[0].x = clip_frame_no;
+    path_item.point[0].y = val;
+    gegl_path_insert_node (path, -1, &path_item);
+done:
+    if(0);
+
+  }
+  else
+  {
+    gegl_node_set (snode, sprop, val, NULL);
+  }
+  }
   ui_tweaks++;
 }
 
