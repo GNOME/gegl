@@ -549,6 +549,13 @@ static void clip_remove (Clip *clip)
 }
 
 static GeglNode *selected_node = NULL;
+static int       selected_expanded = 0;
+
+static void select_no_node (void)
+{
+  selected_node = 0;
+  selected_expanded = 0;
+}
 
 static void remove_clip (MrgEvent *event, void *data1, void *data2)
 {
@@ -583,7 +590,7 @@ static void remove_clip (MrgEvent *event, void *data1, void *data2)
       g_free (prodpad);
 
     g_object_unref (selected_node);
-    selected_node = NULL;
+    select_no_node ();
     ui_tweaks++;
   }
   else
@@ -2071,13 +2078,24 @@ static GeglNode *source_start;
 static GeglNode *source_end;
 static GeglNode *filter_end;
 
-
 static void select_node (MrgEvent *e, void *data1, void *data2)
 {
   if (selected_node == data1)
-    selected_node = NULL;
+  {
+    if (selected_expanded)
+    {
+      selected_expanded = 0;
+    }
+    else
+    {
+      selected_expanded = 1;
+    }
+  }
   else
+  {
     selected_node = data1;
+    selected_expanded = 0;
+  }
   snode = NULL;
   sprop = NULL;
 
@@ -2293,17 +2311,21 @@ static void complete_filter_query_edit (MrgEvent *e, void *data1, void *data2)
 
 static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float y)
 {
+  float prev_out_x = 0.0;
+  float prev_out_y = 0.0;
+
     while (node)
     {
-
+#if 0
       if ((node != source_start) &&
           (node != source_end) &&
           (node != filter_start) &&
           (node != filter_end))
+#endif
       {
         float start_y = y;
 
-        if (node == selected_node)
+        if ((node == selected_node) && selected_expanded)
           y = print_props (mrg, edl, node, x + mrg_em(mrg) * 0.5, y);
 #if 1
         rounded_rectangle (mrg_cr (mrg), x-0.5 * mrg_em(mrg), y - mrg_em (mrg) * 1.0, mrg_em(mrg) * 10.0, mrg_em (mrg) * 1.2, 0.4, -1);
@@ -2315,22 +2337,61 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
         mrg_listen (mrg, MRG_CLICK, select_node, node, NULL);
 
         mrg_set_xy (mrg, x, y);
-        mrg_printf (mrg, "%s", gegl_node_get_operation (node));
 
+
+        if (node == source_start)
+          mrg_printf (mrg, "source-start");
+        else if (node == source_end)
+          mrg_printf (mrg, "clip-sink");
+        else if (node == filter_start)
+          mrg_printf (mrg, "unfiltered-clip");
+        else if (node == filter_end)
+          mrg_printf (mrg, "filtered-clip");
+        else
+          mrg_printf (mrg, "%s", gegl_node_get_operation (node));
+
+
+        /* draw connections between nodes */
+        if (prev_out_y > 0.01)
+        {
+          cairo_set_line_width (mrg_cr (mrg), 2.0);
+          cairo_move_to (mrg_cr (mrg), prev_out_x + mrg_em (mrg) * 0.4, prev_out_y);
+
+          cairo_line_to (mrg_cr (mrg), x + mrg_em (mrg) * 0.4, y + mrg_em (mrg) * 0.1);
+          cairo_set_source_rgba (mrg_cr (mrg), 0, 0, 0, 0.5);
+          cairo_stroke (mrg_cr (mrg));
+
+          {
+            GeglNode *iter = gegl_node_get_producer (node, "aux", NULL);
+            if (iter)
+            {
+              cairo_set_line_width (mrg_cr (mrg), 2.0);
+              cairo_move_to (mrg_cr (mrg), prev_out_x, prev_out_y);
+              cairo_move_to (mrg_cr (mrg), x + mrg_em (mrg) * 2.4, y + mrg_em (mrg) * 0.55);
+
+              cairo_line_to (mrg_cr (mrg), x + mrg_em (mrg) * 2.2, y + mrg_em (mrg) * 0.1);
+              cairo_set_source_rgba (mrg_cr (mrg), 0, 0, 0, 0.5);
+              cairo_stroke (mrg_cr (mrg));
+            }
+          }
+        }
+
+        prev_out_x = x;
+        prev_out_y = y - mrg_em (mrg) * 1.0;
         y -= mrg_em (mrg) * 1.5;
 
-        if (selected_node == node)
+        if (selected_node == node && (node != source_end) && (node != filter_end))
         {
           cairo_rectangle (mrg_cr (mrg), x + 0.0 * mrg_em (mrg), y + mrg_em(mrg)*0.25, mrg_em (mrg) * 12.0, (start_y-y));
           cairo_set_source_rgba (mrg_cr (mrg), 1.0, 0.0, 0.0, 1.0);
           cairo_stroke (mrg_cr (mrg));
 
-          mrg_set_xy (mrg, x + 10.4 * mrg_em (mrg), y + mrg_em (mrg) * 1.5);
+          mrg_set_xy (mrg, x + 7.4 * mrg_em (mrg), y + mrg_em (mrg) * 1.5);
           mrg_text_listen (mrg, MRG_CLICK, remove_clip, edl, edl);
           mrg_printf (mrg, " X ");
           mrg_text_listen_done (mrg);
 
-          mrg_set_xy (mrg, x, y);
+          mrg_set_xy (mrg, x + mrg_em (mrg) * 1.0, y + mrg_em (mrg) * 0.25);
 
     if (filter_query)
     {
@@ -2409,13 +2470,17 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
     else
     {
       mrg_text_listen (mrg, MRG_CLICK, insert_filter, edl, edl);
-      mrg_printf (mrg, "[ add filter ]");
+      mrg_printf (mrg, " + ");
       mrg_text_listen_done (mrg);
     }
           y -= mrg_em (mrg) * 1.0;
         }
 
       }
+
+      /* look if next thing up to print is not that node, but one of it's
+         aux inputs
+       */
 
       {
         GeglNode **nodes = NULL;
@@ -2434,8 +2499,6 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
         g_free (pads);
       }
 
-      //if (node && node == clip->nop_crop)
-       // node = NULL;
       if (node)
       {
         GeglNode *iter = gegl_node_get_producer (node, "aux", NULL);
