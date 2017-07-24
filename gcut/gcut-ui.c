@@ -582,7 +582,6 @@ static void remove_clip (MrgEvent *event, void *data1, void *data2)
 
     if (producer && consumer)
     {
-      fprintf (stderr, "%p %s %p %s\n", producer, prodpad, consumer, pads[0]);
       gegl_node_connect_to (producer, prodpad, consumer, pads[0]);
     }
 
@@ -622,6 +621,14 @@ static void make_rel_props (GeglNode *node)
       sprintf (tmpbuf, "%s-rel", props[i]->name);
       rel_quark = g_quark_from_string (tmpbuf);
       g_object_set_qdata_full (G_OBJECT(node), rel_quark,  g_strdup("foo"), g_free);
+
+      if (g_type_is_a (props[i]->value_type, G_TYPE_DOUBLE))
+      {
+        gdouble val = 0.0;
+        gegl_node_get (node, props[i]->name, &val, NULL);
+        val /= 1000.0;
+        gegl_node_set (node, props[i]->name, val, NULL);
+      }
     }
 
   }
@@ -643,6 +650,30 @@ static void insert_node (GeglNode *selected_node, GeglNode *new)
   }
 
 char *filter_query = NULL;
+
+static void insert_aux_filter (MrgEvent *event, void *data1, void *data2)
+{
+  GeglEDL *edl = data1;
+
+  if (!edl->active_clip)
+    return;
+
+  filter_query = g_strdup ("");
+  mrg_set_cursor_pos (event->mrg, 0);
+
+  if (!selected_node)
+    selected_node = filter_start;
+
+#if 0
+  GeglNode *new = NULL;
+  new = gegl_node_new_child (edl->gegl, "operation", "gegl:unsharp-mask", NULL);
+  insert_node (selected_node, new);
+  selected_node = new;
+#endif
+  mrg_event_stop_propagate (event);
+  mrg_queue_draw (event->mrg, NULL);
+
+}
 
 static void insert_filter (MrgEvent *event, void *data1, void *data2)
 {
@@ -2085,7 +2116,6 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
            cairo_line_to (cr, j, y);
          }
 
-
        cairo_restore (cr);
        cairo_set_line_width (cr, 2.0);
        cairo_set_source_rgba (cr, 1.0, 0.5, 0.5, 255);
@@ -2371,21 +2401,49 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
           (node != filter_end))
 #endif
       {
-        float start_y = y;
+//        float start_y = y;
+
+        if (node != filter_start &&
+            node == selected_node &&
+            gegl_node_has_pad (node, "input") &&
+            gegl_node_get_producer (node, "input", NULL) == NULL)
+        {
+          mrg_set_xy (mrg, x + mrg_em (mrg) * 1.0, y);
+          mrg_printf (mrg, " + ");
+          y -= mrg_em (mrg) * 1.15;
+        }
+
+        if (node == selected_node &&
+            gegl_node_has_pad (node, "aux") &&
+            gegl_node_get_producer (node, "aux", NULL) == NULL)
+        {
+          mrg_set_xy (mrg, x + mrg_em (mrg) * 1.0, y);
+          mrg_text_listen (mrg, MRG_CLICK, insert_aux_filter, edl, edl);
+          mrg_printf (mrg, " !+! ");
+          mrg_text_listen_done (mrg);
+          y -= mrg_em (mrg) * 1.15;
+        }
 
         if ((node == selected_node) && selected_expanded)
-          y = print_props (mrg, edl, node, x + mrg_em(mrg) * 0.5, y);
-#if 1
-        rounded_rectangle (mrg_cr (mrg), x-0.5 * mrg_em(mrg), y - mrg_em (mrg) * 1.0, mrg_em(mrg) * 10.0, mrg_em (mrg) * 1.2, 0.4, -1);
-#endif
-#if 0
+        {
+          y = print_props (mrg, edl, node, x + mrg_em(mrg) * 1.0, y);
+          y -= mrg_em (mrg) * 0.15;
+        }
+        y -= mrg_em (mrg) * 0.1;
 
-        cairo_rectangle (mrg_cr (mrg), x + 1.0 * mrg_em (mrg), y - mrg_em (mrg) * 1.4, mrg_em(mrg) * 0.1, mrg_em (mrg) * 0.4);
-#endif
+        cairo_new_path (mrg_cr (mrg));
+        rounded_rectangle (mrg_cr (mrg), x-0.5 * mrg_em(mrg), y - mrg_em (mrg) * 1.15, mrg_em(mrg) * 10.0, mrg_em (mrg) * 1.2, 0.4, -1);
         mrg_listen (mrg, MRG_CLICK, select_node, node, NULL);
 
-        mrg_set_xy (mrg, x, y);
+        cairo_set_source_rgb (mrg_cr (mrg), 1,1,1);
+        if ((node == selected_node))
+          cairo_set_line_width (mrg_cr (mrg), 3.0);
+        else
+          cairo_set_line_width (mrg_cr (mrg), 1.0);
 
+        cairo_stroke (mrg_cr (mrg));
+
+        mrg_set_xy (mrg, x, y);
 
         if (node == source_start)
           mrg_printf (mrg, "source-start");
@@ -2396,8 +2454,8 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
         else if (node == filter_end)
           mrg_printf (mrg, "filtered-clip");
         else
+          //mrg_printf (mrg, "%s", strstr(gegl_node_get_operation (node), ":") + 1);
           mrg_printf (mrg, "%s", gegl_node_get_operation (node));
-
 
         /* draw connections between nodes */
         if (prev_out_y > 0.01)
@@ -2406,7 +2464,7 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
           cairo_move_to (mrg_cr (mrg), prev_out_x + mrg_em (mrg) * 0.4, prev_out_y);
 
           cairo_line_to (mrg_cr (mrg), x + mrg_em (mrg) * 0.4, y + mrg_em (mrg) * 0.1);
-          cairo_set_source_rgba (mrg_cr (mrg), 0, 0, 0, 0.5);
+          cairo_set_source_rgba (mrg_cr (mrg), 1, 1, 1, 0.5);
           cairo_stroke (mrg_cr (mrg));
 
           {
@@ -2418,7 +2476,7 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
               cairo_move_to (mrg_cr (mrg), x + mrg_em (mrg) * 2.4, y + mrg_em (mrg) * 0.55);
 
               cairo_line_to (mrg_cr (mrg), x + mrg_em (mrg) * 2.2, y + mrg_em (mrg) * 0.1);
-              cairo_set_source_rgba (mrg_cr (mrg), 0, 0, 0, 0.5);
+              cairo_set_source_rgba (mrg_cr (mrg), 1, 1, 1, 0.5);
               cairo_stroke (mrg_cr (mrg));
             }
           }
@@ -2430,10 +2488,6 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
 
         if (selected_node == node && (node != source_end) && (node != filter_end))
         {
-          cairo_rectangle (mrg_cr (mrg), x + 0.0 * mrg_em (mrg), y + mrg_em(mrg)*0.25, mrg_em (mrg) * 12.0, (start_y-y));
-          cairo_set_source_rgba (mrg_cr (mrg), 1.0, 0.0, 0.0, 1.0);
-          cairo_stroke (mrg_cr (mrg));
-
           mrg_set_xy (mrg, x + 7.4 * mrg_em (mrg), y + mrg_em (mrg) * 1.5);
           mrg_text_listen (mrg, MRG_CLICK, remove_clip, edl, edl);
           mrg_printf (mrg, " X ");
@@ -2447,7 +2501,6 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
       int n_completions = strarray_count (completions);
       if (tab_index >= n_completions)
         tab_index = 0;
-
 
       if (completions)
       {
@@ -2718,7 +2771,7 @@ static void gcut_draw (Mrg     *mrg,
 
     update_ui_clip (clip, clip_frame_no);
 
-    mrg_set_style (mrg, "font-size: 3%; background-color: #0008; color: #fff");
+    mrg_set_style (mrg, "font-size: 2.5%; background-color: #0000; color: #ffff");
 
     if (clip->is_chain)
     {
@@ -2736,10 +2789,9 @@ static void gcut_draw (Mrg     *mrg,
       y2 -= mrg_em (mrg) * 1.5;
     }
     y2 = print_nodes (mrg, edl, filter_start, mrg_em (mrg), y2);
-
   }
 
-  cairo_set_source_rgba (cr, 1, 1,1, 1);
+  cairo_set_source_rgba (cr, 0, 0, 0, 1);
 
   if (edl->playing)
   {
@@ -3004,7 +3056,7 @@ void gcut_ui (Mrg *mrg, void *data)
 
   mrg_stylesheet_add (mrg, css, NULL, 0, NULL);
   mrg_set_style (mrg, "font-size: 11px");
-#if 0
+#if 1
   cairo_set_source_rgb (mrg_cr (mrg), 0,0,0);
   cairo_paint (mrg_cr (mrg));
 #endif

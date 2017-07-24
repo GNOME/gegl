@@ -70,13 +70,13 @@ const char *compute_cache_path    (const char *path);
 #define CACHE_MAKE_ALL      (CACHE_MAKE_SIMPLE|CACHE_MAKE_MIX|CACHE_MAKE_FILTERED)
 
 enum {
-  GEDL_UI_MODE_FULL = 0,
-  GEDL_UI_MODE_NONE = 1,
-  GEDL_UI_MODE_PART = 2,
+  GEDL_UI_MODE_NONE = 0,
+  GEDL_UI_MODE_PART = 1,
+  GEDL_UI_MODE_FULL = 2,
   GEDL_UI_MODE_TIMELINE = 3,
 };
 
-#define GEDL_LAST_UI_MODE 2
+#define GEDL_LAST_UI_MODE  GEDL_UI_MODE_FULL
 
 GeglEDL    *gcut_new                (void);
 void        gcut_free               (GeglEDL    *edl);
