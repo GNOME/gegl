@@ -179,47 +179,47 @@ void clip_set_path (Clip *clip, const char *in_path)
   }
 }
 
-int clip_get_start (Clip *clip)
+double clip_get_start (Clip *clip)
 {
   return clip->start;
 }
 
-int clip_get_end (Clip *clip)
+double clip_get_end (Clip *clip)
 {
   return clip->end;
 }
 
-int clip_get_frames (Clip *clip)
+double clip_get_duration (Clip *clip)
 {
-  int frames = clip_get_end (clip) - clip_get_start (clip) + 1;
-  if (frames < 0) frames = 0;
+  double duration = clip_get_end (clip) - clip_get_start (clip) + 1;
+  if (duration < 0) duration = 0;
   if (clip->is_meta)
     return 0;
-  return frames;
+  return duration;
 }
 
-void clip_set_start (Clip *clip, int start)
+void clip_set_start (Clip *clip, double start)
 {
   clip->start = start;
 }
-void clip_set_end (Clip *clip, int end)
+void clip_set_end (Clip *clip, double end)
 {
   clip->end = end;
 }
 
-void clip_set_range (Clip *clip, int start, int end)
+void clip_set_range (Clip *clip, double start, double end)
 {
   clip_set_start (clip, start);
   clip_set_end (clip, end);
 }
 
-void clip_set_full (Clip *clip, const char *path, int start, int end)
+void clip_set_full (Clip *clip, const char *path, double start, double end)
 {
   clip_set_path (clip, path);
   clip_set_range (clip, start, end);
 }
 
-Clip *clip_new_full (GeglEDL *edl, const char *path, int start, int end)
+Clip *clip_new_full (GeglEDL *edl, const char *path, double start, double end)
 {
   Clip *clip = clip_new (edl);
   clip_set_full (clip, path, start, end);
@@ -397,18 +397,18 @@ static void clip_rig_chain (Clip *clip, int clip_frame_no)
   g_mutex_unlock (&clip->mutex);
 }
 
-void clip_render_frame (Clip *clip, int clip_frame_no)
+void clip_render_pos (Clip *clip, double clip_frame_pos)
 {
-      clip_rig_chain (clip, clip_frame_no);
-      g_mutex_lock (&clip->mutex);
-      gegl_node_process (clip->loader); // for the audio fetch
-      clip_fetch_audio (clip);
+  clip_rig_chain (clip, clip_frame_pos);
+  g_mutex_lock (&clip->mutex);
+  gegl_node_process (clip->loader); // for the audio fetch
+  clip_fetch_audio (clip);
 
-      g_mutex_unlock (&clip->mutex);
+  g_mutex_unlock (&clip->mutex);
 }
 
 
-gchar *clip_get_frame_hash (Clip *clip, int clip_frame_no)
+gchar *clip_get_pos_hash (Clip *clip, double clip_frame_pos)
 {
   GeglEDL *edl = clip->edl;
   gchar *frame_recipe;
@@ -416,10 +416,10 @@ gchar *clip_get_frame_hash (Clip *clip, int clip_frame_no)
   GChecksum *hash;
   int is_static_source = clip_is_static_source (clip);
 
-  frame_recipe = g_strdup_printf ("%s: %s %i %s %ix%i",
+  frame_recipe = g_strdup_printf ("%s: %s %.3f %s %ix%i",
       "gcut-pre-4",
       clip_get_path (clip),
-      clip->filter_graph || (!is_static_source) ? clip_frame_no : 0,
+      clip->filter_graph || (!is_static_source) ? clip_frame_pos : 0.0,
       clip->filter_graph,
       edl->video_width,
       edl->video_height);

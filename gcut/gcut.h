@@ -83,27 +83,27 @@ void        gcut_free               (GeglEDL    *edl);
 void        gcut_set_fps            (GeglEDL    *edl,
                                      double      fps);
 double      gcut_get_fps            (GeglEDL    *edl);
-int         gcut_get_duration       (GeglEDL    *edl);
+double      gcut_get_duration       (GeglEDL    *edl);
 void        gcut_parse_line         (GeglEDL    *edl, const char *line);
 GeglEDL    *gcut_new_from_path      (const char *path);
 void        gcut_load_path          (GeglEDL    *edl, const char *path);
 void        gcut_save_path          (GeglEDL    *edl, const char *path);
 GeglAudioFragment  *gcut_get_audio  (GeglEDL    *edl);
-Clip       *gcut_get_clip           (GeglEDL *edl, int frame, int *clip_frame_no);
+Clip       *gcut_get_clip           (GeglEDL *edl, double pos, double *clip_frame_pos);
 
-void        gcut_set_frame          (GeglEDL    *edl, int frame);
-int         gcut_get_frame          (GeglEDL    *edl);
+void        gcut_set_pos            (GeglEDL    *edl, double pos);
+double      gcut_get_pos            (GeglEDL    *edl);
 char       *gcut_serialize          (GeglEDL    *edl);
 
-void        gcut_set_range          (GeglEDL    *edl, int start_frame, int end_frame);
+void        gcut_set_range          (GeglEDL    *edl, double start, double end);
 void        gcut_get_range          (GeglEDL    *edl,
-                                     int        *start_frame,
-                                     int        *end_frame);
+                                     double     *start,
+                                     double     *end);
 
-void        gcut_set_selection      (GeglEDL    *edl, int start_frame, int end_frame);
+void        gcut_set_selection      (GeglEDL    *edl, double start, double end);
 void        gcut_get_selection      (GeglEDL    *edl,
-                                     int        *start_frame,
-                                     int        *end_frame);
+                                     double     *start,
+                                     double     *end);
 char       *gcut_make_thumb_path    (GeglEDL    *edl, const char *clip_path);
 guchar     *gcut_get_cache_bitmap   (GeglEDL *edl, int *length_ret);
 
@@ -112,26 +112,26 @@ Clip       *clip_new               (GeglEDL *edl);
 void        clip_free              (Clip *clip);
 const char *clip_get_path          (Clip *clip);
 void        clip_set_path          (Clip *clip, const char *path);
-int         clip_get_start         (Clip *clip);
-int         clip_get_end           (Clip *clip);
-int         clip_get_frames        (Clip *clip);
-void        clip_set_start         (Clip *clip, int start);
-void        clip_set_end           (Clip *clip, int end);
-void        clip_set_range         (Clip *clip, int start, int end);
+double      clip_get_start         (Clip *clip);
+double      clip_get_end           (Clip *clip);
+double      clip_get_duration      (Clip *clip);
+void        clip_set_start         (Clip *clip, double start);
+void        clip_set_end           (Clip *clip, double end);
+void        clip_set_range         (Clip *clip, double start, double end);
 int         clip_is_static_source  (Clip *clip);
-gchar *     clip_get_frame_hash    (Clip *clip, int clip_frame_no);
+gchar *     clip_get_pos_hash      (Clip *clip, double clip_frame_pos);
 Clip  *     clip_get_next          (Clip *self);
 Clip  *     clip_get_prev          (Clip *self);
 void        clip_fetch_audio       (Clip *clip);
-void        clip_set_full          (Clip *clip, const char *path, int start, int end);
-Clip  *     clip_new_full          (GeglEDL *edl, const char *path, int start, int end);
+void        clip_set_full          (Clip *clip, const char *path, double start, double end);
+Clip  *     clip_new_full          (GeglEDL *edl, const char *path, double start, double end);
 
 //void   clip_set_frame_no      (Clip *clip, int frame_no);
-void        clip_render_frame       (Clip *clip, int clip_frame_no);
+void        clip_render_pos     (Clip *clip, double clip_frame_pos);
 
-Clip *      edl_get_clip_for_frame (GeglEDL           *edl, int frame);
+Clip *      edl_get_clip_for_pos   (GeglEDL           *edl, double pos);
 void        gcut_make_proxies      (GeglEDL           *edl);
-void        gcut_get_video_info    (const char        *path, int *duration, double *fps);
+void        gcut_get_video_info    (const char        *path, int *frames, double *duration, double *fps);
 void        gegl_meta_set_audio    (const char        *path,
                                     GeglAudioFragment *audio);
 void        gegl_meta_get_audio    (const char        *path,
@@ -147,21 +147,21 @@ struct _Clip
 {
   char  *path;  /*path to media file */
   char  *title;
-  int    start; /*frame number starting with 0 */
-  int    end;   /*last frame, inclusive fro single frame, make equal to start */
-  int    duration;
+  double start; /*frame number starting with 0 */
+  double end;   /*last frame, inclusive fro single frame, make equal to start */
+  double duration;
   int    editing;
   char  *filter_graph; /* chain of gegl filters */
   
   GeglEDL *edl;
 
   double fps;
-  int    fade; /* the main control for fading in.. */
+  double fade; /* the main control for fading in.. */
   int    static_source;
   int    is_chain;
   int    is_meta;
 
-  int    abs_start;
+  double    abs_start;
 
   const char        *clip_path;
   GeglNode          *gegl;
@@ -185,7 +185,8 @@ struct _GeglEDL
   char         *parent_path;
   GList        *clip_db;
   GList        *clips;
-  int           frame; /* render thread, frame_no is ui side */
+  int           frame; /* render thread, frame_no_ui is ui side */
+  double        pos;   /* render thread, frame_pos_ui is ui side */
   double        fps;
   GeglBuffer   *buffer;
   GeglBuffer   *buffer_copy_temp;
@@ -215,8 +216,8 @@ struct _GeglEDL
   int           video_tolerance;
   int           audio_bitrate;
   int           audio_samplerate;
-  int           frame_no;
-  int           source_frame_no;
+  double        frame_pos_ui;
+  int           source_frame_pos;
   int           use_proxies;
   int           framedrop;
   int           ui_mode;
@@ -244,12 +245,12 @@ void gcut_update_buffer (GeglEDL *edl);
 void gcut_cache_invalid (GeglEDL *edl);
 
 
-gchar *gcut_get_frame_hash (GeglEDL *edl, int frame);
+gchar *gcut_get_pos_hash (GeglEDL *edl, double pos);
 
-gchar *gcut_get_frame_hash_full (GeglEDL *edl, int frame,
-                                 Clip **clip0, int *clip0_frame,
-                                 Clip **clip1, int *clip1_frame,
-                                 double *mix);
+gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
+                               Clip **clip0, double *clip0_pos,
+                               Clip **clip1, double *clip1_pos,
+                               double *mix);
 int gegl_make_thumb_image (GeglEDL *edl, const char *path, const char *icon_path);
 
 #ifdef MICRO_RAPTOR_GUI

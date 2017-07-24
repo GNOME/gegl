@@ -111,16 +111,16 @@ static gpointer renderer_thread (gpointer data)
   {
     playing_iteration (edl->mrg, edl);
     {
-      if (edl->frame_no != done_frame)
+      if ((int)(edl->frame_pos_ui * edl->fps) != done_frame)
       {
-        rendering_frame = edl->frame_no;
+        rendering_frame = edl->frame_pos_ui * edl->fps;
 
         {
           GeglRectangle ext = {0,0,edl->width, edl->height};
           //GeglRectangle ext = gegl_node_get_bounding_box (edl->result);
           gegl_buffer_set_extent (edl->buffer, &ext);
         }
-        gcut_set_frame (edl, edl->frame_no); /* this does the frame-set, which causes render  */
+        gcut_set_pos (edl, edl->frame_pos_ui); /* this does the frame-set, which causes render  */
 #if 0
         {
           GeglRectangle ext = gegl_node_get_bounding_box (edl->result);
@@ -187,11 +187,11 @@ void renderer_toggle_playing (MrgEvent *event, void *data1, void *data2)
   prev_ticks = babl_ticks ();
 }
 
-static int max_frame (GeglEDL *edl)
+static double max_pos (GeglEDL *edl)
 {
   GList *l;
   int t = 0;
-  int start, end;
+  double start, end;
 
   gcut_get_range (edl, &start, &end);
   if (end)
@@ -200,7 +200,7 @@ static int max_frame (GeglEDL *edl)
   for (l = edl->clips; l; l = l->next)
   {
     Clip *clip = l->data;
-    t += clip_get_frames (clip);
+    t += clip_get_duration (clip);
   }
 
   return t;
@@ -211,6 +211,7 @@ void playing_iteration (Mrg *mrg, GeglEDL *edl)
 {
   long ticks = 0;
   double delta = 1;
+  double fragment = 1.0 / edl->fps;
   ticks = babl_ticks ();
   if (prev_ticks == 0) prev_ticks = ticks;
 
@@ -264,16 +265,16 @@ void playing_iteration (Mrg *mrg, GeglEDL *edl)
 
       if (edl->active_clip)
       {
-        int start, end;
-        edl->frame_no += delta;
+        double start, end;
+        edl->frame_pos_ui += delta * fragment;
         gcut_get_range (edl, &start, &end);
-        if (edl->frame_no > max_frame (edl))
+        if (edl->frame_pos_ui > max_pos (edl))
         {
-           edl->frame_no = 0;
+           edl->frame_pos_ui = 0;
            if (end)
-             edl->frame_no = start;
+             edl->frame_pos_ui = start;
         }
-        edl->active_clip = edl_get_clip_for_frame (edl, edl->frame_no);
+        edl->active_clip = edl_get_clip_for_pos (edl, edl->frame_pos_ui);
         prev_ticks = ticks;
       }
       }
@@ -282,5 +283,5 @@ void playing_iteration (Mrg *mrg, GeglEDL *edl)
 
 int renderer_done (GeglEDL *edl)
 {
-  return done_frame == edl->frame_no; //rendering_frame;
+  return done_frame == (gint)(edl->frame_pos_ui * edl->fps); //rendering_frame;
 }
