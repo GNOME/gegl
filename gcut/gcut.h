@@ -84,7 +84,6 @@ void        gcut_set_fps            (GeglEDL    *edl,
                                      double      fps);
 double      gcut_get_fps            (GeglEDL    *edl);
 int         gcut_get_duration       (GeglEDL    *edl);
-double      gcut_get_time           (GeglEDL    *edl);
 void        gcut_parse_line         (GeglEDL    *edl, const char *line);
 GeglEDL    *gcut_new_from_path      (const char *path);
 void        gcut_load_path          (GeglEDL    *edl, const char *path);
@@ -93,7 +92,6 @@ GeglAudioFragment  *gcut_get_audio  (GeglEDL    *edl);
 Clip       *gcut_get_clip           (GeglEDL *edl, int frame, int *clip_frame_no);
 
 void        gcut_set_frame          (GeglEDL    *edl, int frame);
-void        gcut_set_time           (GeglEDL    *edl, double seconds);
 int         gcut_get_frame          (GeglEDL    *edl);
 char       *gcut_serialize          (GeglEDL    *edl);
 

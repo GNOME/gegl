@@ -477,11 +477,6 @@ void gcut_set_frame (GeglEDL *edl, int frame)
   }
 }
 
-void gcut_set_time (GeglEDL *edl, double seconds)
-{
-  gcut_set_frame (edl, seconds * edl->fps);
-}
-
 void gcut_set_fps (GeglEDL *edl, double fps)
 {
   edl->fps = fps;
@@ -494,10 +489,7 @@ int    gcut_get_frame (GeglEDL *edl)
 {
   return edl->frame;
 }
-double gcut_get_time (GeglEDL *edl)
-{
-  return edl->frame / edl->fps;
-}
+
 GeglAudioFragment *gcut_get_audio (GeglEDL *edl)
 {
   Clip * clip = edl_get_clip_for_frame (edl, edl->frame);
