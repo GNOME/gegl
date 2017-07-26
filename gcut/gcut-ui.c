@@ -3403,8 +3403,11 @@ int gcut_ui_main (GeglEDL *edl)
 
   mrg_add_timeout (mrg, 10100, save_idle, edl);
 
-  cache_renderer_iteration (mrg, edl);
-  mrg_add_timeout (mrg, 90 /* seconds */  * 1000, cache_renderer_iteration, edl);
+  if (0)
+  {
+    cache_renderer_iteration (mrg, edl);
+    mrg_add_timeout (mrg, 90 /* seconds */  * 1000, cache_renderer_iteration, edl);
+  }
 
   gcut_get_duration (edl);
   //mrg_set_target_fps (mrg, -1);

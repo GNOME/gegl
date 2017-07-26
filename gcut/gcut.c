@@ -592,7 +592,7 @@ void gcut_parse_line (GeglEDL *edl, const char *line)
       if (p>line) p --;
       while (p>line && *p == ' ') p --;
 
-      while (p>line && (isdigit (*p) || (*p=='s'))){
+      while (p>line && (isdigit (*p) || (*p=='s') || (*p=='.') || (*p==':' ))){
         if (*p == 's') is_seconds = 1;
         p --;
       }
@@ -603,7 +603,7 @@ void gcut_parse_line (GeglEDL *edl, const char *line)
       if (p>line) p --;
       while (p>line && *p == ' ') p --;
       is_seconds = 0;
-      while (p>line && (isdigit (*p) || (*p=='s'))){
+      while (p>line && (isdigit (*p) || (*p=='s') || (*p=='.') || (*p==':'))){
         if (*p == 's') is_seconds = 1;
         p --;
       }
