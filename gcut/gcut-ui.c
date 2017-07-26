@@ -803,7 +803,7 @@ static void toggle_fade (MrgEvent *event, void *data1, void *data2)
   }
   else
   {
-    edl->active_clip->fade = (edl->frame - edl->active_clip->abs_start)*2;
+    edl->active_clip->fade = (edl->frame_pos_ui - edl->active_clip->abs_start)*2;
   }
   gcut_cache_invalid (edl);
   mrg_event_stop_propagate (event);
@@ -1203,7 +1203,7 @@ static void zoom_timeline (MrgEvent *event, void *data1, void *data2)
 #define PAD_DIM     8
 int VID_HEIGHT=96; // XXX: ugly global
 
-static void render_clip (Mrg *mrg, GeglEDL *edl, const char *clip_path, int clip_start, int clip_frames, double x, double y, int fade, int fade2)
+static void render_clip (Mrg *mrg, GeglEDL *edl, const char *clip_path, double clip_start, double clip_frames, double x, double y, double fade, double fade2)
 {
   char *thumb_path;
   int width, height;
@@ -2857,7 +2857,10 @@ static void gcut_draw (Mrg     *mrg,
     Clip *clip = l->data;
     double duration = clip_get_duration (clip);
     cairo_rectangle (cr, t, y, duration, scroll_height);
+      cairo_save (cr);
+      cairo_identity_matrix (cr);
     cairo_stroke (cr);
+    cairo_restore (cr);
     t += duration;
   }
 
@@ -2919,7 +2922,7 @@ static void gcut_draw (Mrg     *mrg,
     else
     {
       Clip *next = clip_get_next (clip);
-      render_clip (mrg, edl, clip->path, clip->start, duration, t, y, clip->fade, next?next->fade:0);
+      render_clip (mrg, edl, clip->path, clip->start, duration, t, y, clip->fade, next?next->fade:0.0);
       /* .. check if we are having anim things going on.. if so - print it here  */
     }
 
@@ -2931,7 +2934,12 @@ static void gcut_draw (Mrg     *mrg,
     mrg_listen (mrg, MRG_PRESS, clicked_clip, clip, edl);
     mrg_listen (mrg, MRG_DRAG, drag_clip, clip, edl);
     mrg_listen (mrg, MRG_RELEASE, released_clip, clip, edl);
+
+    cairo_save (cr);
+    cairo_identity_matrix (cr);
+    cairo_set_line_width (cr, 1);
     cairo_stroke (cr);
+    cairo_restore (cr);
 
     t += duration;
   }
@@ -3403,7 +3411,7 @@ int gcut_ui_main (GeglEDL *edl)
 
   mrg_add_timeout (mrg, 10100, save_idle, edl);
 
-  if (0)
+  if (1)
   {
     cache_renderer_iteration (mrg, edl);
     mrg_add_timeout (mrg, 90 /* seconds */  * 1000, cache_renderer_iteration, edl);
