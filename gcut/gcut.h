@@ -9,20 +9,13 @@
     move gcut to gegl git repo
 
     engine
-      rescaling playback speed of clips
-      support importing clips of different fps
+      use seconds instead of frames [done]
+        ::rescaling playback speed of clips
+        ::support importing clips of different fps
 
       support for configuring the final background render to be as high
       fidelity as GEGL processing allows - rather than sharing tuning for
       preview rendering.
-
-      support for other timecodes, mm:ss:ff and s, maybe mandate that? or permit frame count for native,
-      and timecodes for all others - needing a pass through to update if changing the target fps?
-
-
-     currently changing target fps changes duration of project - this is probably wrong, the focus should
-     be on making video/animation - that can be sampled, thus for motion graphics rendering different fps
-     should 
 
       using edl files as clip sources - hopefully without even needing caches.
 
@@ -32,6 +25,7 @@
         subtitles
 
     ui
+      selection is offset/inprecise after port to seconds
       start using css
       port gcut-ui.c to lua
       detect locked or crashed ui, kill and respawn
