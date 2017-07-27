@@ -1047,14 +1047,13 @@ static void process_frames_cache (GeglEDL *edl)
 {
   int frame_no = edl->frame_pos_ui * edl->fps;
   int frame_start = frame_no;
-  int duration;
-  double fragment = 1.0 / edl->fps;
+  int frames;
 
   GList *l;
   double clip_start = 0;
 
   signal(SIGUSR2, handler1);
-  duration = gcut_get_duration (edl) * edl->fps;
+  frames = gcut_get_duration (edl) * edl->fps;
   // TODO: use bitmap from ui to speed up check
 
   edl->frame_pos_ui = frame_start / edl->fps;
@@ -1078,9 +1077,9 @@ static void process_frames_cache (GeglEDL *edl)
       return;
   }
 
-  for (frame_no = frame_start - 3; frame_no < duration; frame_no++)
+  for (frame_no = frame_start - 3; frame_no < frames; frame_no++)
   {
-    int frame_pos_ui = floor (frame_no / edl->fps);
+    double frame_pos_ui = frame_no / edl->fps;
 
     if (this_cacher (frame_no))
       gcut_set_pos (edl, frame_pos_ui);
@@ -1089,7 +1088,7 @@ static void process_frames_cache (GeglEDL *edl)
   }
   for (frame_no = 0; frame_no < frame_start; frame_no++)
   {
-    int frame_pos_ui = floor (frame_no / edl->fps);
+    double frame_pos_ui = frame_no / edl->fps;
     if (this_cacher (frame_no))
       gcut_set_pos (edl, frame_pos_ui);
     if (stop_cacher)
