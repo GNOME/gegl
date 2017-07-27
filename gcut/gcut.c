@@ -656,9 +656,16 @@ void gcut_parse_line (GeglEDL *edl, const char *line)
          while (*rest && *rest != ']'){ rest++;}
          if (*rest == ']') rest++;
        }
+     if (rest && strstr (rest, "[rate="))
+       {
+         ff_probe = 1;
+         rest = strstr (rest, "[rate=") + strlen ("[rate=");
+         clip->rate = g_strtod (rest, NULL);
+         while (*rest && *rest != ']'){ rest++;}
+         if (*rest == ']') rest++;
+       }
 
      if (rest) while (*rest == ' ')rest++;
-
 
      if (clip == edl->clips->data || clip->fps < 0.001)
      {
@@ -1490,6 +1497,8 @@ char *gcut_serialize (GeglEDL *edl)
       g_string_append_printf (ser, "[fade=%.3fs] ", clip->fade);
     if (clip->fps>0.001)
       g_string_append_printf (ser, "[fps=%.3f] ", clip->fps);
+    if (fabs(clip->rate - 1.0 )>0.001)
+      g_string_append_printf (ser, "[rate=%.5f] ", clip->rate);
     if (clip->filter_graph)
       g_string_append_printf (ser, "%s", clip->filter_graph);
     g_string_append_printf (ser, "\n");

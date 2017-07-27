@@ -11,6 +11,7 @@ Clip *clip_new (GeglEDL *edl)
   Clip *clip = g_malloc0 (sizeof (Clip));
   clip->edl  = edl;
   clip->gegl = gegl_node_new ();
+  clip->rate = 1.0;
 
   clip->chain_loader = gegl_node_new_child (clip->gegl, "operation", "gegl:nop", NULL);
 
@@ -409,7 +410,10 @@ static void clip_rig_chain (Clip *clip, double clip_pos)
 
 void clip_render_pos (Clip *clip, double clip_frame_pos)
 {
-  clip_rig_chain (clip, clip_frame_pos);
+  double pos = 
+    clip->start + (clip_frame_pos - clip->start) * clip->rate;
+
+  clip_rig_chain (clip, pos);
   g_mutex_lock (&clip->mutex);
   gegl_node_process (clip->loader); // for the audio fetch
   clip_fetch_audio (clip);
@@ -427,8 +431,8 @@ gchar *clip_get_pos_hash (Clip *clip, double clip_frame_pos)
   // quantize to clip/project fps 
   //clip_frame_pos = ((int)(clip_frame_pos * clip_fps (clip) + 0.5))/ clip_fps (clip);
 
-  frame_recipe = g_strdup_printf ("%s: %s %.3f %s %ix%i",
-      "gcut-pre-4",
+  frame_recipe = g_strdup_printf ("%s: %.3f %s %.3f %s %ix%i",
+      "gcut-pre-4", clip->rate,
       clip_get_path (clip),
       clip->filter_graph || (!is_static_source) ? clip_frame_pos : 0.0,
       clip->filter_graph,

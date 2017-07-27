@@ -9,10 +9,6 @@
     move gcut to gegl git repo
 
     engine
-      use seconds instead of frames [done]
-        ::rescaling playback speed of clips
-        ::support importing clips of different fps
-
       support for configuring the final background render to be as high
       fidelity as GEGL processing allows - rather than sharing tuning for
       preview rendering.
@@ -150,7 +146,11 @@ struct _Clip
   GeglEDL *edl;
 
   double fps;
-  double fade; /* the main control for fading in.. */
+  double fade; /* the control is for the fade in of the clip - potential
+                  fade out is controlled by next clip */
+
+  double rate; /* playback rate, 1.0 = realtime */
+
   int    static_source;
   int    is_chain;
   int    is_meta;
