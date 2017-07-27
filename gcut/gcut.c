@@ -635,11 +635,11 @@ void gcut_parse_line (GeglEDL *edl, const char *line)
          (start == 0 && end == 0))
        ff_probe = 1;
      edl->clips = g_list_append (edl->clips, clip);
-     if (strstr (line, "[fade="))
+     if (rest && strstr (rest, "[fade="))
        {
          int was_seconds = 0;
          ff_probe = 1;
-         rest = strstr (line, "[fade=") + strlen ("[fade=");
+         rest = strstr (rest, "[fade=") + strlen ("[fade=");
          clip->fade = g_strtod (rest, NULL);
          while (*rest && *rest != ']'){ if (*rest == 's') was_seconds =1; rest++;}
          if (!was_seconds)
@@ -648,11 +648,19 @@ void gcut_parse_line (GeglEDL *edl, const char *line)
          }
          if (*rest == ']') rest++;
        }
+     if (rest && strstr (rest, "[fps="))
+       {
+         ff_probe = 1;
+         rest = strstr (rest, "[fps=") + strlen ("[fps=");
+         clip->fps = g_strtod (rest, NULL);
+         while (*rest && *rest != ']'){ rest++;}
+         if (*rest == ']') rest++;
+       }
 
      if (rest) while (*rest == ' ')rest++;
 
 
-     if (clip == edl->clips->data)
+     if (clip == edl->clips->data || clip->fps < 0.001)
      {
        ff_probe = 1;
      }
@@ -1480,6 +1488,8 @@ char *gcut_serialize (GeglEDL *edl)
       g_string_append_printf (ser, "-- ");
     if (clip->fade)
       g_string_append_printf (ser, "[fade=%.3fs] ", clip->fade);
+    if (clip->fps>0.001)
+      g_string_append_printf (ser, "[fps=%.3f] ", clip->fps);
     if (clip->filter_graph)
       g_string_append_printf (ser, "%s", clip->filter_graph);
     g_string_append_printf (ser, "\n");
