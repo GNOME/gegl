@@ -274,6 +274,7 @@ void playing_iteration (Mrg *mrg, GeglEDL *edl)
            if (end)
              edl->frame_pos_ui = start;
         }
+        gcut_snap_ui_pos (edl);
         edl->active_clip = edl_get_clip_for_pos (edl, edl->frame_pos_ui);
         prev_ticks = ticks;
       }

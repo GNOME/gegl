@@ -272,12 +272,14 @@ static void drag_dropped (MrgEvent *ev, void *data1, void *data2)
 }
 static void scroll_to_fit (GeglEDL *edl, Mrg *mrg);
 
+
 static void clicked_clip (MrgEvent *e, void *data1, void *data2)
 {
   Clip *clip = data1;
   GeglEDL *edl = data2;
 
   edl->frame_pos_ui = e->x;
+  gcut_snap_ui_pos (edl);
   edl->selection_start = edl->frame_pos_ui;
   edl->selection_end = edl->frame_pos_ui;
   edl->active_clip = clip;
@@ -293,6 +295,7 @@ static void drag_clip (MrgEvent *e, void *data1, void *data2)
 {
   GeglEDL *edl = data2;
   edl->frame_pos_ui = e->x;
+  gcut_snap_ui_pos (edl);
   if (e->x >= edl->selection_start)
   {
     edl->selection_end = e->x;
@@ -331,6 +334,7 @@ static void released_clip (MrgEvent *e, void *data1, void *data2)
   Clip *clip = data1;
   GeglEDL *edl = data2;
   edl->frame_pos_ui = e->x;
+  gcut_snap_ui_pos (edl);
   edl->active_clip = clip;
   if (edl->selection_end < edl->selection_start)
   {
@@ -1511,7 +1515,7 @@ static void zoom_1 (MrgEvent *event, void *data1, void *data2)
 {
   GeglEDL *edl = data1;
   gcut_cache_invalid (edl);
-  edl->scale = 1.0;
+  edl->scale = 1.0/edl->fps;
   scroll_to_fit (edl, event->mrg);
   mrg_event_stop_propagate (event);
   mrg_queue_draw (event->mrg, NULL);
@@ -2952,6 +2956,9 @@ static void gcut_draw (Mrg     *mrg,
      int state = -1;
      int length = 0;
 
+     cairo_save (cr);
+     cairo_scale (cr, 1.0/edl->fps, 1.0);
+
      if (bitlen && ( babl_ticks() - bitticks > 1000 * 1000 * 2))
      {
        /* update cache bitmap if it is more than 2s old */
@@ -2995,6 +3002,8 @@ static void gcut_draw (Mrg     *mrg,
         }
      }
      cairo_fill (cr);
+
+     cairo_restore (cr);
   }
 
   {
@@ -3017,29 +3026,6 @@ static void gcut_draw (Mrg     *mrg,
 static const char *css =
 " document { background: black; }"
 "";
-
-#if 0
-static void edit_filter_graph (MrgEvent *event, void *data1, void *data2)
-{ //XXX
-  GeglEDL *edl = data1;
-
-  //edl->active_source = NULL;
-  edl->filter_edited = !edl->filter_edited;
-  mrg_queue_draw (event->mrg, NULL);
-}
-#endif
-
-#if 0
-static void update_filter (const char *new_string, void *user_data)
-{
-  GeglEDL *edl = user_data;
-  if (edl->active_clip->filter_graph)
-    g_free (edl->active_clip->filter_graph);
-  edl->active_clip->filter_graph = g_strdup (new_string);
-  gcut_cache_invalid (edl);
-  mrg_queue_draw (edl->mrg, NULL);
-}
-#endif
 
 static void toggle_ui_mode  (MrgEvent *event, void *data1, void *data2)
 {

@@ -236,6 +236,8 @@ gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
   GList *l;
   double clip_start = 0;
   double prev_clip_start = 0;
+  
+  pos = gcut_snap_pos (edl->fps, pos);
 
   for (l = edl->clips; l; l = l->next)
   {
@@ -377,9 +379,12 @@ void gcut_update_buffer (GeglEDL *edl)
  */
 void gcut_set_pos (GeglEDL *edl, double pos)
 {
-  int frame = pos * edl->fps;
+  int frame;
   Clip *clip0; double clip0_pos;
   Clip *clip1; double clip1_pos;
+
+  pos = gcut_snap_pos (edl->fps, pos);
+  frame  = pos * edl->fps;
 
   if ((edl->frame) == frame && (frame != 0))
   {
@@ -1043,15 +1048,16 @@ static void process_frames_cache (GeglEDL *edl)
   int frame_no = edl->frame_pos_ui * edl->fps;
   int frame_start = frame_no;
   int duration;
+  double fragment = 1.0 / edl->fps;
 
   GList *l;
   double clip_start = 0;
 
   signal(SIGUSR2, handler1);
-  duration = gcut_get_duration (edl);
+  duration = gcut_get_duration (edl) * edl->fps;
   // TODO: use bitmap from ui to speed up check
 
-  edl->frame_pos_ui = frame_start;
+  edl->frame_pos_ui = frame_start / edl->fps;
   if (this_cacher (floor (edl->frame_pos_ui * edl->fps)))
     gcut_set_pos (edl, edl->frame_pos_ui);
    if (stop_cacher)
@@ -1062,7 +1068,7 @@ static void process_frames_cache (GeglEDL *edl)
     Clip *clip = l->data;
     double clip_duration = clip_get_duration (clip);
     int frame_pos_ui = floor (clip_start * edl->fps);
-    if (this_cacher (frame_pos_ui))
+    if (this_cacher (floor (frame_pos_ui * edl->fps)))
     {
       gcut_set_pos (edl, frame_pos_ui / edl->fps);
     }
@@ -1098,15 +1104,16 @@ static inline void set_bit (guchar *bitmap, int no)
 
 guchar *gcut_get_cache_bitmap (GeglEDL *edl, int *length_ret)
 {
-  int duration = gcut_get_duration (edl);
+  double duration = gcut_get_duration (edl);
+  int frames = duration * edl->fps;
   int frame_no;
-  int length = (duration / 8) + 1;
+  int length = (frames / 8) + 1;
   guchar *ret = g_malloc0 (length);
 
   if (length_ret)
     *length_ret = length;
 
-  for (frame_no = 0; frame_no < duration; frame_no++)
+  for (frame_no = 0; frame_no < frames; frame_no++)
   {
     const gchar *hash = gcut_get_pos_hash (edl, frame_no / edl->fps);
     gchar *path = g_strdup_printf ("%s.gcut/cache/%s", edl->parent_path, hash);
@@ -1301,7 +1308,8 @@ int main (int argc, char **argv)
   if (str_has_video_suffix (edl_path))
   {
     char str[1024];
-    int duration;
+    int frames;
+    double duration;
     double fps;
     GeglNode *gegl = gegl_node_new ();
     GeglNode *probe = gegl_node_new_child (gegl, "operation",
@@ -1309,11 +1317,12 @@ int main (int argc, char **argv)
                                            NULL);
     gegl_node_process (probe);
 
-    gegl_node_get (probe, "frames", &duration, NULL);
+    gegl_node_get (probe, "frames", &frames, NULL);
     gegl_node_get (probe, "frame-rate", &fps, NULL);
+    duration = frames / fps;
     g_object_unref (gegl);
 
-    sprintf (str, "%s 0 %i\n", edl_path, duration);
+    sprintf (str, "%s 0.0s %.3fs\n", edl_path, duration);
     {
       char * path = realpath (edl_path, NULL); 
       char * rpath = g_strdup_printf ("%s.edl", path);
@@ -1381,9 +1390,9 @@ int main (int argc, char **argv)
         gcut_free (edl);
         return 0;
       case RUNMODE_CACHE:
-        tot_frames  = gcut_get_duration (edl);
+        tot_frames = gcut_get_duration (edl) * edl->fps;
         if (edl->range_end == 0)
-          edl->range_end = tot_frames-1;
+          edl->range_end = gcut_get_duration (edl);
         process_frames_cache (edl);
         gcut_free (edl);
         return 0;

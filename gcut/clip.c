@@ -189,9 +189,15 @@ double clip_get_end (Clip *clip)
   return clip->end;
 }
 
+static inline double clip_fps (Clip *clip)
+{
+  if (!clip) return 0.0;
+  return clip->fps>0.01?clip->fps:clip->edl->fps;
+}
+
 double clip_get_duration (Clip *clip)
 {
-  double duration = clip_get_end (clip) - clip_get_start (clip) + 1;
+  double duration = clip_get_end (clip) - clip_get_start (clip) + 1.0/clip_fps(clip);
   if (duration < 0) duration = 0;
   if (clip->is_meta)
     return 0;
@@ -257,8 +263,8 @@ static void clip_set_proxied (Clip *clip)
     }
 }
 
-void clip_set_frame_no (Clip *clip, int clip_frame_no);
-void clip_set_frame_no (Clip *clip, int clip_frame_no)
+void clip_set_frame_no (Clip *clip, double clip_frame_no);
+void clip_set_frame_no (Clip *clip, double clip_frame_no)
 {
   if (clip_frame_no < 0)
     clip_frame_no = 0;
@@ -275,10 +281,15 @@ void clip_set_frame_no (Clip *clip, int clip_frame_no)
 
   if (!clip_is_static_source (clip))
     {
+      double fps = clip_fps (clip);
+
       if (clip->edl->use_proxies)
-        gegl_node_set (clip->proxy_loader, "frame", clip_frame_no, NULL);
+      {
+        gegl_node_set (clip->proxy_loader, "frame", (gint)(clip_frame_no * fps), NULL);
+      }
       else
-        gegl_node_set (clip->full_loader, "frame", clip_frame_no, NULL);
+        gegl_node_set (clip->full_loader, "frame", (gint)(clip_frame_no * fps), NULL);
+
     }
 }
 
@@ -348,7 +359,7 @@ void remove_in_betweens (GeglNode *nop_scaled, GeglNode *nop_filtered)
  gegl_node_link_many (nop_scaled, nop_filtered, NULL);
 }
 
-static void clip_rig_chain (Clip *clip, int clip_frame_no)
+static void clip_rig_chain (Clip *clip, double clip_pos)
 {
   GeglEDL *edl = clip->edl;
   int use_proxies = edl->use_proxies;
@@ -373,27 +384,26 @@ static void clip_rig_chain (Clip *clip, int clip_frame_no)
     else
       gegl_node_link_many (clip->chain_loader, clip->loader, NULL);
 
-    gegl_create_chain (clip->path, clip->chain_loader, clip->loader, clip_frame_no - clip->start,
+    gegl_create_chain (clip->path, clip->chain_loader, clip->loader, clip_pos - clip->start,
                        edl->height,
                        NULL, NULL);//&error);
   }
 
-      if (clip->filter_graph)
-        {
-           GError *error = NULL;
-           gegl_create_chain (clip->filter_graph, clip->nop_scaled, clip->nop_crop, clip_frame_no - clip->start, edl->height, NULL, &error);
-           if (error)
-             {
-               /* should set error string */
-               fprintf (stderr, "%s\n", error->message);
-               g_error_free (error);
-             }
+  if (clip->filter_graph)
+    {
+       GError *error = NULL;
+       gegl_create_chain (clip->filter_graph, clip->nop_scaled, clip->nop_crop, clip_pos - clip->start, edl->height, NULL, &error);
+       if (error)
+         {
+           /* should set error string */
+           fprintf (stderr, "%s\n", error->message);
+           g_error_free (error);
          }
-      /**********************************************************************/
+     }
+  /**********************************************************************/
 
-
-      // flags,..    FULL   PREVIEW   FULL_CACHE|PREVIEW  STORE_FULL_CACHE
-      clip_set_frame_no (clip, clip_frame_no);
+  // flags,..    FULL   PREVIEW   FULL_CACHE|PREVIEW  STORE_FULL_CACHE
+  clip_set_frame_no (clip, clip_pos);
   g_mutex_unlock (&clip->mutex);
 }
 
@@ -403,10 +413,8 @@ void clip_render_pos (Clip *clip, double clip_frame_pos)
   g_mutex_lock (&clip->mutex);
   gegl_node_process (clip->loader); // for the audio fetch
   clip_fetch_audio (clip);
-
   g_mutex_unlock (&clip->mutex);
 }
-
 
 gchar *clip_get_pos_hash (Clip *clip, double clip_frame_pos)
 {
@@ -415,6 +423,9 @@ gchar *clip_get_pos_hash (Clip *clip, double clip_frame_pos)
   char *ret;
   GChecksum *hash;
   int is_static_source = clip_is_static_source (clip);
+
+  // quantize to clip/project fps 
+  //clip_frame_pos = ((int)(clip_frame_pos * clip_fps (clip) + 0.5))/ clip_fps (clip);
 
   frame_recipe = g_strdup_printf ("%s: %s %.3f %s %ix%i",
       "gcut-pre-4",

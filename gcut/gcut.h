@@ -253,6 +253,16 @@ gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
                                double *mix);
 int gegl_make_thumb_image (GeglEDL *edl, const char *path, const char *icon_path);
 
+static inline double gcut_snap_pos (double fps, double inpos)
+{
+  return ((int)(inpos * fps + 0.5)) / fps;
+}
+
+static inline void gcut_snap_ui_pos (GeglEDL *edl)
+{
+  edl->frame_pos_ui = gcut_snap_pos (edl->fps, edl->frame_pos_ui);
+}
+
 #ifdef MICRO_RAPTOR_GUI
  /* renderer.h */
 void renderer_toggle_playing (MrgEvent *event, void *data1, void *data2);
