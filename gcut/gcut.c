@@ -1012,9 +1012,9 @@ static void encode_frames (GeglEDL *edl)
     int frame_no_ui = frame_no;
     gcut_set_pos (edl, frame_no_ui / edl->fps);
 
-    fprintf (stdout, "\r%1.2f%% %04d / %f   ",
-     100.0 * (frame_no-edl->range_start) * 1.0 / (edl->range_end - edl->range_start),
-     frame_no, edl->range_end);
+    fprintf (stdout, "\r%1.2f%% %04d / %04d   ",
+     100.0 * (frame_no/edl->fps-edl->range_start) * 1.0 / (edl->range_end - edl->range_start),
+     frame_no, (int)(edl->range_end * edl->fps));
 
     gegl_node_set (edl->encode, "audio", gcut_get_audio (edl), NULL);
     gegl_node_process (edl->encode);
