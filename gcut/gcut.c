@@ -1441,14 +1441,14 @@ char *gcut_serialize (GeglEDL *edl)
   g_string_append_printf (ser, "fps=%f\n", gcut_get_fps (edl));
 
   if (edl->range_start != DEFAULT_range_start)
-    g_string_append_printf (ser, "range-start=%i\n",  edl->range_start);
+    g_string_append_printf (ser, "range-start=%.3f\n",  edl->range_start);
   if (edl->range_end != DEFAULT_range_end)
-    g_string_append_printf (ser, "range-end=%i\n", edl->range_end);
+    g_string_append_printf (ser, "range-end=%.3f\n", edl->range_end);
 
   if (edl->selection_start != DEFAULT_selection_start)
-    g_string_append_printf (ser, "selection-start=%i\n",  edl->selection_start);
+    g_string_append_printf (ser, "selection-start=%.3f\n",  edl->selection_start);
   if (edl->selection_end != DEFAULT_selection_end)
-    g_string_append_printf (ser, "selection-end=%i\n",  edl->selection_end);
+    g_string_append_printf (ser, "selection-end=%.3f\n",  edl->selection_end);
   if (edl->scale != 1.0)
     g_string_append_printf (ser, "frame-scale=%f\n", edl->scale);
   if (edl->t0 != 1.0)

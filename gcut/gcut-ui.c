@@ -1245,7 +1245,7 @@ static void render_clip (Mrg *mrg, GeglEDL *edl, const char *clip_path, double c
     //cairo_matrix_init_rotate (&matrix, M_PI / 2); /* compensate for .. */
     //cairo_matrix_translate (&matrix, 0, -width);  /* vertical format   */
 
-    cairo_matrix_init_scale (&matrix, 1.0, height* 1.0/ VID_HEIGHT);
+    cairo_matrix_init_scale (&matrix, 1.0 * edl->fps, height* 1.0/ VID_HEIGHT);
     cairo_matrix_translate  (&matrix, -(x - clip_start), -y);
     cairo_pattern_set_matrix (pattern, &matrix);
     cairo_pattern_set_filter (pattern, CAIRO_FILTER_NEAREST);

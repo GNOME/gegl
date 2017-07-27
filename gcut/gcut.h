@@ -199,10 +199,10 @@ struct _GeglEDL
   int           height;
   GeglNode     *cache_loader;
   int           cache_flags;
-  int           selection_start;
-  int           selection_end;
-  int           range_start;
-  int           range_end;
+  double        selection_start;
+  double        selection_end;
+  double        range_start;
+  double        range_end;
   const char   *output_path;
   const char   *video_codec;
   const char   *audio_codec;
