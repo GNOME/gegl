@@ -67,7 +67,7 @@ GeglNode     * gegl_node_new             (void);
  * gegl_node_new_child:
  * @parent: a #GeglNode
  * @first_property_name: the first property name
- * @...: first property value, optionally followed by more key/value pairs, ended
+ * @...: first property value, optionally followed by more key/value pairs,
  * terminated with NULL.
  *
  * Creates a new processing node that performs the specified operation with
@@ -499,7 +499,7 @@ const gchar * gegl_node_get_operation    (const GeglNode *node);
  * @node: a #GeglNode
  *
  * Return value: (transfer none) (allow-none): The operation object
- * assoicated with this node or NULL if there is no op associated.
+ * associated with this node or NULL if there is no op associated.
  */
 GeglOperation *gegl_node_get_gegl_operation   (GeglNode *node);
 
