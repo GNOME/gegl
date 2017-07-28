@@ -123,6 +123,7 @@ operations/common/sinus.c
 operations/common/slic.c
 operations/common/snn-mean.c
 operations/common/softglow.c
+operations/common/spiral.c
 operations/common/stress.c
 operations/common/stretch-contrast.c
 operations/common/stretch-contrast-hsv.c
@@ -253,4 +254,3 @@ operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/shadows-highlights.c
 operations/workshop/shadows-highlights-correction.c
-operations/workshop/spiral.c

@@ -132,6 +132,7 @@ gegl_common_la_SOURCES =\
 	slic.c \
 	snn-mean.c \
 	softglow.c \
+	spiral.c \
 	stress.c \
 	stretch-contrast-hsv.c \
 	stretch-contrast.c \
