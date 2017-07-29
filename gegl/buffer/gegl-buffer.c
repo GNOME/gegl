@@ -1208,16 +1208,9 @@ gegl_buffer_get_tile (GeglBuffer *buffer,
   GeglTileSource  *source  = (GeglTileSource*)buffer;
   GeglTile *tile;
 
-  static int threaded = -1;
-
-  if (threaded == -1)
-  {
-    threaded = gegl_config_threads () > 1;
-  }
-
   g_assert (source);
 
-  if (threaded)
+  if (gegl_config_threads () > 1)
   {
     GeglTileStorage *tile_storage = buffer->tile_storage;
     g_assert (tile_storage);
