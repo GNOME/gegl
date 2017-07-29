@@ -28,25 +28,25 @@
 
 #include "gcut.h"
 
-#define DEFAULT_output_path      "output.mp4"
-#define DEFAULT_video_codec      "auto"
-#define DEFAULT_audio_codec      "auto"
-#define DEFAULT_video_width       0
-#define DEFAULT_video_height      0
-#define DEFAULT_proxy_width       0
-#define DEFAULT_proxy_height      0
-#define DEFAULT_video_bufsize     0
-#define DEFAULT_video_bitrate     256
-#define DEFAULT_video_tolerance   -1
-#define DEFAULT_audio_bitrate     64
-#define DEFAULT_audio_samplerate  64
-#define DEFAULT_frame_start       0
-#define DEFAULT_frame_end         0
-#define DEFAULT_selection_start   0
-#define DEFAULT_selection_end     0
-#define DEFAULT_range_start       0
-#define DEFAULT_range_end         0
-#define DEFAULT_framedrop         0
+#define DEFAULT_output_path     "output.mp4"
+#define DEFAULT_video_codec     "auto"
+#define DEFAULT_audio_codec     "auto"
+#define DEFAULT_video_width      0
+#define DEFAULT_video_height     0
+#define DEFAULT_proxy_width      0
+#define DEFAULT_proxy_height     0
+#define DEFAULT_video_bufsize    0
+#define DEFAULT_video_bitrate    256
+#define DEFAULT_video_tolerance  -1
+#define DEFAULT_audio_bitrate    64
+#define DEFAULT_audio_samplerate 64
+#define DEFAULT_frame_start      0
+#define DEFAULT_frame_end        0
+#define DEFAULT_selection_start  0
+#define DEFAULT_selection_end    0
+#define DEFAULT_range_start      0
+#define DEFAULT_range_end        0
+#define DEFAULT_framedrop        0
 
 char *gcut_binary_path = NULL;
 
@@ -116,23 +116,23 @@ GeglEDL *gcut_new           (void)
 
   edl->cache_loader     = gegl_node_new_child (edl->gegl, "operation", "gegl:" CACHE_FORMAT  "-load", NULL);
 
-  edl->output_path      = DEFAULT_output_path;
-  edl->video_codec      = DEFAULT_video_codec;
-  edl->audio_codec      = DEFAULT_audio_codec;
-  edl->video_width      = DEFAULT_video_width;
-  edl->video_height     = DEFAULT_video_height;
-  edl->proxy_width      = DEFAULT_proxy_width;
-  edl->proxy_height     = DEFAULT_proxy_height;
+  edl->output_path        = DEFAULT_output_path;
+  edl->video_codec        = DEFAULT_video_codec;
+  edl->audio_codec        = DEFAULT_audio_codec;
+  edl->video_width        = DEFAULT_video_width;
+  edl->video_height       = DEFAULT_video_height;
+  edl->proxy_width        = DEFAULT_proxy_width;
+  edl->proxy_height       = DEFAULT_proxy_height;
   edl->video_size_default = 1;
-  edl->video_bufsize    = DEFAULT_video_bufsize;
-  edl->video_bitrate    = DEFAULT_video_bitrate;
-  edl->video_tolerance  = DEFAULT_video_tolerance;;
-  edl->audio_bitrate    = DEFAULT_audio_bitrate;
-  edl->audio_samplerate = DEFAULT_audio_samplerate;
-  edl->framedrop        = DEFAULT_framedrop;
-  edl->frame_pos_ui     = 0.0;  /* frame-no in ui shell */
-  edl->frame = -1;              /* frame-no in renderer thread */
-  edl->pos  = -1.0;             /* frame-no in renderer thread */
+  edl->video_bufsize      = DEFAULT_video_bufsize;
+  edl->video_bitrate      = DEFAULT_video_bitrate;
+  edl->video_tolerance    = DEFAULT_video_tolerance;;
+  edl->audio_bitrate      = DEFAULT_audio_bitrate;
+  edl->audio_samplerate   = DEFAULT_audio_samplerate;
+  edl->framedrop          = DEFAULT_framedrop;
+  edl->frame_pos_ui       = 0.0; /* frame-no in ui shell */
+  edl->frame = -1;             /* frame-no in renderer thread */
+  edl->pos  = -1.0;            /* frame-no in renderer thread */
   edl->scale = 1.0;
 
   edl->buffer = gegl_buffer_new (&roi, babl_format ("R'G'B'A u8"));
@@ -236,7 +236,7 @@ gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
   GList *l;
   double clip_start = 0;
   double prev_clip_start = 0;
-  
+
   pos = gcut_snap_pos (edl->fps, pos);
 
   for (l = edl->clips; l; l = l->next)
@@ -313,7 +313,6 @@ gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
         if (clip1) *clip1 = clip;
         if (clip1_pos) *clip1_pos = clip_frame_pos;
         if (mix) *mix = ratio;
-
         return ret;
       }
 
@@ -575,8 +574,6 @@ void gcut_parse_line (GeglEDL *edl, const char *line)
      if (!strcmp (key, "frame-end"))         edl->range_end = g_strtod (value, NULL);
      if (!strcmp (key, "selection-start"))   edl->selection_start = g_strtod (value, NULL);
      if (!strcmp (key, "selection-end"))     edl->selection_end = g_strtod (value, NULL);
-     //if (!strcmp (key, "range-start"))       edl->range_start = g_strtod (value, NULL);
-     //if (!strcmp (key, "range-end"))         edl->range_end = g_strtod (value, NULL);
      if (!strcmp (key, "frame-pos"))         edl->frame_pos_ui = g_strtod (value, NULL);
      if (!strcmp (key, "frame-scale"))       edl->scale = g_strtod (value, NULL);
      if (!strcmp (key, "t0"))                edl->t0 = g_strtod (value, NULL);
@@ -1490,18 +1487,18 @@ char *gcut_serialize (GeglEDL *edl)
     }
     else
     {
-    g_string_append_printf (ser, "%s %.3fs %.3fs ", path, clip->start, clip->end);
-    if (clip->filter_graph||clip->fade)
-      g_string_append_printf (ser, "-- ");
-    if (clip->fade)
-      g_string_append_printf (ser, "[fade=%.3fs] ", clip->fade);
-    if (clip->fps>0.001)
-      g_string_append_printf (ser, "[fps=%.3f] ", clip->fps);
-    if (fabs(clip->rate - 1.0 )>0.001)
-      g_string_append_printf (ser, "[rate=%.5f] ", clip->rate);
-    if (clip->filter_graph)
-      g_string_append_printf (ser, "%s", clip->filter_graph);
-    g_string_append_printf (ser, "\n");
+      g_string_append_printf (ser, "%s %.3fs %.3fs ", path, clip->start, clip->end);
+      if (clip->filter_graph||clip->fade)
+        g_string_append_printf (ser, "-- ");
+      if (clip->fade)
+        g_string_append_printf (ser, "[fade=%.3fs] ", clip->fade);
+      if (clip->fps>0.001)
+        g_string_append_printf (ser, "[fps=%.3f] ", clip->fps);
+      if (fabs(clip->rate - 1.0 )>0.001)
+        g_string_append_printf (ser, "[rate=%.5f] ", clip->rate);
+      if (clip->filter_graph)
+        g_string_append_printf (ser, "%s", clip->filter_graph);
+      g_string_append_printf (ser, "\n");
     }
   }
   g_string_append_printf (ser, "-----\n");
@@ -1532,10 +1529,10 @@ gegl_meta_set_audio (const char        *path,
       gexiv2_metadata_clear_tag (e2m, "Xmp.xmp.GEGL");
 
     g_string_append_printf (str, "%i %i %i %i",
-                              gegl_audio_fragment_get_sample_rate (audio),
-                              gegl_audio_fragment_get_channels (audio),
-                              gegl_audio_fragment_get_channel_layout (audio),
-                              gegl_audio_fragment_get_sample_count (audio));
+                            gegl_audio_fragment_get_sample_rate (audio),
+                            gegl_audio_fragment_get_channels (audio),
+                            gegl_audio_fragment_get_channel_layout (audio),
+                            gegl_audio_fragment_get_sample_count (audio));
 
     for (i = 0; i < sample_count; i++)
       for (c = 0; c < channels; c++)
@@ -1593,11 +1590,11 @@ gegl_meta_get_audio (const char        *path,
                break;
              default:
                {
-                  int sample_no = element_no - 4;
-                  int channel_no = sample_no % channels;
-                  sample_no/=2;
-                  if (sample_no < max_samples)
-                  audio->data[channel_no][sample_no] = g_strtod (word->str, NULL);
+                 int sample_no = element_no - 4;
+                 int channel_no = sample_no % channels;
+                 sample_no/=2;
+                 if (sample_no < max_samples)
+                 audio->data[channel_no][sample_no] = g_strtod (word->str, NULL);
                }
                break;
            }

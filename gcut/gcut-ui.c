@@ -650,7 +650,6 @@ static void make_rel_props (GeglNode *node)
         gegl_node_set (node, props[i]->name, val, NULL);
       }
     }
-
   }
 }
 
@@ -823,7 +822,8 @@ static void duplicate_clip (MrgEvent *event, void *data1, void *data2)
     return;
   {
     GList *iter = g_list_find (edl->clips, edl->active_clip);
-    Clip *clip = clip_new_full (edl, edl->active_clip->path, edl->active_clip->start, edl->active_clip->end);
+    Clip *clip = clip_new_full (edl, edl->active_clip->path,
+                               edl->active_clip->start, edl->active_clip->end);
     edl->clips = g_list_insert_before (edl->clips, iter, clip);
     if (edl->active_clip->filter_graph)
       clip->filter_graph = g_strdup (edl->active_clip->filter_graph);
@@ -852,13 +852,11 @@ static void save_edl (GeglEDL *edl)
   }
 }
 
-#if 1
 static void save (MrgEvent *event, void *data1, void *data2)
 {
   GeglEDL *edl = data1;
   save_edl (edl);
 }
-#endif
 
 static gboolean save_idle (Mrg *mrg, gpointer edl)
 {
