@@ -86,10 +86,10 @@ endif
 check-TESTS: $(TESTS)
 	$(PYTHON) $(srcdir)/run-compositions.py \
 	  --build-dir=$(top_builddir) --src-dir=$(top_srcdir) --xml-dir=$(srcdir) \
-	  $(NO_OPENCL_TESTS)
+	  $(TESTS)
 	$(PYTHON) $(srcdir)/run-compositions.py --without-opencl \
 	  --build-dir=$(top_builddir) --src-dir=$(top_srcdir) --xml-dir=$(srcdir) \
-	  $(TESTS)
+	  $(NO_OPENCL_TESTS)
 
 clean-local:
 	rm -f output/*
