@@ -3406,6 +3406,12 @@ int gcut_ui_main (GeglEDL *edl)
 //  gcut_set_use_proxies (edl, 1);
   toggle_use_proxies (NULL, edl, NULL);
   renderer_start (edl);
+
+  /* XXX: should not be needed */
+  { MrgEvent ev;
+    ev.mrg = mrg;
+    zoom_fit (&ev, edl, NULL);
+  }
   mrg_main (mrg);
   gcut_free (edl);
   gegl_exit ();
