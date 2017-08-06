@@ -66,7 +66,7 @@ get_required_for_output (GeglOperation       *operation,
 {
   GeglRectangle *temp = NULL;
   GeglRectangle  result;
-  
+
   if (g_strcmp0 (input_pad, "input") || g_strcmp0 (input_pad, "aux"))
     temp = gegl_operation_source_get_bounding_box (operation, input_pad);
   else
@@ -78,7 +78,7 @@ get_required_for_output (GeglOperation       *operation,
     {
       result.width = result.height = 0;
     }
-  
+
   return result;
 }
 
@@ -89,9 +89,9 @@ get_required_for_output (GeglOperation       *operation,
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format (GEGL_SC_COLOR_BABL_NAME);
+  const Babl     *format = babl_format (GEGL_SC_COLOR_BABL_NAME);
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  SCProps *props;
+  SCProps        *props;
 
   if ((props = (SCProps*) o->user_data) == NULL)
     {
@@ -111,8 +111,9 @@ prepare (GeglOperation *operation)
 
 static void finalize (GObject *object)
 {
-  GeglOperation *op = (void*) object;
+  GeglOperation  *op = (void*) object;
   GeglProperties *o = GEGL_PROPERTIES (op);
+
   if (o->user_data)
     {
       SCProps *props = (SCProps*) o->user_data;
@@ -133,11 +134,11 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
-  gboolean  return_val;
-  GeglProperties *o = GEGL_PROPERTIES (operation);
-  SCProps *props;
-  GeglScCreationError error;
-  GeglScRenderInfo info;
+  GeglProperties      *o = GEGL_PROPERTIES (operation);
+  SCProps             *props;
+  GeglScCreationError  error;
+  GeglScRenderInfo     info;
+  gboolean             return_val;
 
   g_assert (o->user_data != NULL);
 

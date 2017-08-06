@@ -125,8 +125,9 @@ gegl_sc_context_create_outline (GeglBuffer          *input,
                                 GeglScCreationError *error)
 {
   gboolean       ignored_islands = FALSE;
-  GeglScOutline *outline
-      = gegl_sc_outline_find (roi, input, threshold, &ignored_islands);
+  GeglScOutline *outline = gegl_sc_outline_find (roi, input,
+                                                 threshold,
+                                                 &ignored_islands);
   guint          length  = gegl_sc_outline_length (outline);
 
   *error = GEGL_SC_CREATION_ERROR_NONE;
@@ -226,7 +227,8 @@ gegl_sc_make_fine_mesh (GeglScOutline *outline,
 {
   GPtrArray *realOutline = (GPtrArray*) outline;
   gint i, N = realOutline->len;
-  gint min_x = G_MAXINT, max_x = -G_MAXINT, min_y = G_MAXINT, max_y = -G_MAXINT;
+  gint min_x = G_MAXINT, max_x = -G_MAXINT;
+  gint min_y = G_MAXINT, max_y = -G_MAXINT;
 
   /* An array of P2tPoint*, holding the outline points */
   GPtrArray *mesh_points = g_ptr_array_new ();
@@ -573,7 +575,7 @@ gegl_sc_compute_uvt_cache (P2trMesh            *mesh,
 
 void
 gegl_sc_context_set_uvt_cache (GeglScContext *context,
-                               gboolean  enabled)
+                               gboolean       enabled)
 {
   context->cache_uvt = enabled;
   if (! enabled && context->uvt != NULL)
@@ -623,7 +625,7 @@ gegl_sc_context_render (GeglScContext       *context,
                                  &context->mesh_bounds))
     {
       g_warning ("The mesh from the preprocessing is not inside the "
-          "foreground. Stop");
+                 "foreground. Stop");
       return FALSE;
     }
 
@@ -633,10 +635,10 @@ gegl_sc_context_render (GeglScContext       *context,
   /* The real rectangle of the foreground that we should render is
    * defined by the bounds of the mesh plus the given offset */
   gegl_rectangle_set (&fg_rect,
-      context->mesh_bounds.x + xoff,
-      context->mesh_bounds.y + yoff,
-      context->mesh_bounds.width,
-      context->mesh_bounds.height);
+                      context->mesh_bounds.x + xoff,
+                      context->mesh_bounds.y + yoff,
+                      context->mesh_bounds.width,
+                      context->mesh_bounds.height);
 
   /* We only need to render the intersection of the mesh bounds and the
    * desired output */
@@ -660,8 +662,8 @@ gegl_sc_context_render (GeglScContext       *context,
   out_index = 0;
 
   gegl_rectangle_set (&to_render_fg,
-      to_render.x - xoff, to_render.y - yoff,
-      to_render.width,    to_render.height);
+                      to_render.x - xoff, to_render.y - yoff,
+                      to_render.width,    to_render.height);
 
   if (context->uvt)
     {
@@ -789,6 +791,4 @@ gegl_sc_context_free (GeglScContext *context)
   gegl_sc_outline_free (context->outline);
 
   g_slice_free (GeglScContext, context);
- 
 }
-

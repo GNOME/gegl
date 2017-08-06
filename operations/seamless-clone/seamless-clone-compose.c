@@ -75,7 +75,7 @@ attach (GeglOperation *operation)
    * which was more than half but not fulll. */
   overlay = gegl_node_new_child (gegl, "operation", "svg:src-atop", NULL);
   output = gegl_node_get_output_proxy (gegl, "output");
- 
+
   gegl_node_connect_to (input, "output", seamless, "input");
   gegl_node_connect_to (aux, "output", seamless, "aux");
   gegl_node_connect_to (input, "output", overlay, "input");
