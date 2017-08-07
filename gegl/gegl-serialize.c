@@ -152,9 +152,19 @@ gegl_create_chain_argv (char      **ops,
               anim_quark = g_quark_from_string (tmpbuf);
 
               if (time == 0.0) /* avoiding ugly start interpolation artifact */
-                time = 0.4;
+                time = 0.001;
               gegl_path_calc_y_for_x (g_object_get_qdata (G_OBJECT (new),
                                       anim_quark), time, &y);
+              /* TODO: switch on int/double, thus permitting animating ints */
+              {
+                GParamSpecDouble *spec = (void*)gegl_operation_find_property (
+                                gegl_node_get_operation (new),
+                                prop);
+                if (y < spec->minimum)
+                  y = spec->minimum;
+                if (y > spec->maximum)
+                  y = spec->maximum;
+              }
               gegl_node_set (new, prop, y, NULL);
 
               in_keyframes = 0;

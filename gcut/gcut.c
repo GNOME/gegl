@@ -1249,7 +1249,7 @@ static void gcut_start_sanity (void)
   }
   if (!gegl_has_operation ("gegl:ff-save"))
   {
-    fprintf (stderr, "gcut missing runtime dependenct: gegl:ff-save operation\n");
+    fprintf (stderr, "gcut missing runtime dependency: gegl:ff-save operation\n");
     fails ++;
   }
   if (fails)
