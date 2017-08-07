@@ -385,7 +385,7 @@ static void clip_rig_chain (Clip *clip, double clip_pos)
     else
       gegl_node_link_many (clip->chain_loader, clip->loader, NULL);
 
-    gegl_create_chain (clip->path, clip->chain_loader, clip->loader, clip_pos - clip->start,
+    gegl_create_chain (clip->path, clip->chain_loader, clip->loader, clip_pos,
                        edl->height,
                        NULL, NULL);//&error);
   }
@@ -393,7 +393,7 @@ static void clip_rig_chain (Clip *clip, double clip_pos)
   if (clip->filter_graph)
     {
        GError *error = NULL;
-       gegl_create_chain (clip->filter_graph, clip->nop_scaled, clip->nop_crop, clip_pos - clip->start, edl->height, NULL, &error);
+       gegl_create_chain (clip->filter_graph, clip->nop_scaled, clip->nop_crop, clip_pos, edl->height, NULL, &error);
        if (error)
          {
            /* should set error string */
