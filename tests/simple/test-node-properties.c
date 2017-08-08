@@ -95,6 +95,19 @@ int main(int argc, char *argv[])
       printf ("x, y: %f, %f\n", x, y);
       goto abort;
     }
+
+  gegl_node_set (node,
+                 "operation", "gegl:doesnt-exist",
+                 NULL);
+
+  gegl_node_get (node, "operation", &name, NULL);
+  
+  if (!(!strcmp (name, "gegl:nop")))
+    {
+      result = FAILURE;
+      printf ("operation: %s\n", name); 
+      goto abort;
+    }
   
   gegl_node_set (node,
                  "operation", "gegl:nop",
@@ -108,6 +121,8 @@ int main(int argc, char *argv[])
       printf ("operation: %s\n", name); 
       goto abort;
     }
+
+
 
   gegl_node_set (node,
                  "operation", "gegl:translate",
@@ -143,16 +158,16 @@ int main(int argc, char *argv[])
         cache == FALSE))
     {
       result = FAILURE;
-      printf ("name:  %s\n", name); 
+      printf ("name:  %s\n", name);
       printf ("cache: %d\n", cache); 
       goto abort;
     }
-  
+
   gegl_node_set (node,
                  "dont-cache", TRUE,
                  "name", "Steve",
                  NULL);
-  
+
   gegl_node_get (node,
                  "name", &name,
                  "dont-cache", &cache,
@@ -162,8 +177,8 @@ int main(int argc, char *argv[])
         cache == TRUE))
     {
       result = FAILURE;
-      printf ("name: %s\n", name); 
-      printf ("cache: %d\n", cache); 
+      printf ("name: %s\n", name);
+      printf ("cache: %d\n", cache);
       goto abort;
     }
 
