@@ -2875,7 +2875,7 @@ static void gcut_draw (Mrg     *mrg,
   cairo_set_source_rgba (cr, 1, 1, 1, 0.5);
   cairo_stroke (cr);
 
-  {
+  if(1){
     double pos = edl->frame_pos_ui;
     double fragment = 1.0 / edl->fps;
     if (fpx < 1.0)
@@ -2898,7 +2898,7 @@ static void gcut_draw (Mrg     *mrg,
   cairo_translate (cr, -t0, 0);
 
   gcut_get_selection (edl, &start, &end);
-  cairo_rectangle (cr, start + 0.5, y - PAD_DIM, end - start, VID_HEIGHT + PAD_DIM * 2);
+  cairo_rectangle (cr, start, y - PAD_DIM, end - start, VID_HEIGHT + PAD_DIM * 2);
   cairo_set_source_rgba (cr, 1, 0, 0, 0.75);
   cairo_fill (cr);
 
