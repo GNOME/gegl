@@ -2143,11 +2143,11 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
          gegl_path_calc_y_for_x (path, 0, &y);
          y = VID_HEIGHT * 0.9 - ((y - miny) / (maxy - miny)) * VID_HEIGHT * 0.8;
          cairo_move_to (cr, 0, y);
-         for (j = -1.0; j < clip_get_duration (edl->active_clip) + 1.0; j += fragment)
+         for (j = edl->active_clip->start; j < edl->active_clip->start + clip_get_duration (edl->active_clip); j += fragment)
          {
            gegl_path_calc_y_for_x (path, j, &y);
            y = VID_HEIGHT * 0.9 - ((y - miny) / (maxy - miny)) * VID_HEIGHT * 0.8;
-           cairo_line_to (cr, j, y);
+           cairo_line_to (cr, j - edl->active_clip->start, y);
          }
 
        cairo_restore (cr);
