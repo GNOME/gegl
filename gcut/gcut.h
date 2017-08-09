@@ -179,6 +179,7 @@ struct _GeglEDL
   char         *parent_path;
   GList        *clip_db;
   GList        *clips;
+
   int           frame; /* render thread, frame_no_ui is ui side */
   double        pos;   /* render thread, frame_pos_ui is ui side */
   double        fps;
@@ -216,9 +217,10 @@ struct _GeglEDL
   int           framedrop;
   int           ui_mode;
 
-  GeglNode     *result;
-  GeglNode     *store_final_buf;
   GeglNode     *mix;
+  GeglNode     *video_result;
+  GeglNode     *final_result;
+  GeglNode     *store_final_buf;
 
   GeglNode     *encode;
   double        scale;

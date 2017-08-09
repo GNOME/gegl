@@ -233,6 +233,7 @@ gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
                                Clip **clip1, double *clip1_pos,
                                double *mix)
 {
+  GString *str = g_string_new ("");
   GList *l;
   double clip_start = 0;
   double prev_clip_start = 0;
@@ -298,22 +299,16 @@ gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
         char *clip0_hash = clip_get_pos_hash (clip, clip_frame_pos);
         char *clip1_hash = clip_get_pos_hash (prev, pos - prev_clip_start + clip_get_start (prev));
         double ratio = 0.5 + ((pos -clip_start) * 1.0 / prev_fade_len)/2;
-        char *str = g_strdup_printf ("%s %s %f", clip1_hash, clip0_hash, ratio);
-        GChecksum *hash = g_checksum_new (G_CHECKSUM_MD5);
-        char *ret;
+        g_string_append_printf (str, "%s %s %f", clip1_hash, clip0_hash, ratio);
 
         g_free (clip0_hash);
         g_free (clip1_hash);
-        g_checksum_update (hash, (void*)str, -1);
-        g_free (str);
-        ret = g_strdup (g_checksum_get_string(hash));
-        g_checksum_free (hash);
         if (clip0) *clip0 = prev;
         if (clip0_pos) *clip0_pos = pos - prev_clip_start + clip_get_start (prev);
         if (clip1) *clip1 = clip;
         if (clip1_pos) *clip1_pos = clip_frame_pos;
         if (mix) *mix = ratio;
-        return ret;
+        goto done;
       }
 
       if (next && pos - clip_start > clip_duration - next_fade_len)/* out*/
@@ -321,29 +316,27 @@ gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
         char *clip0_hash = clip_get_pos_hash (clip, clip_frame_pos);
         char *clip1_hash = clip_get_pos_hash (next, pos - (clip_start + clip_duration) + clip_get_start (next));
         double ratio = (1.0-(clip_duration -(pos -clip_start)) * 1.0 / next_fade_len)/2;
-        GChecksum *hash = g_checksum_new (G_CHECKSUM_MD5);
-        char *str = g_strdup_printf ("%s %s %f", clip0_hash, clip1_hash, ratio);
-        char *ret;
+        g_string_append_printf (str, "%s %s %f", clip0_hash, clip1_hash, ratio);
         g_free (clip0_hash);
         g_free (clip1_hash);
-        g_checksum_update (hash, (void*)str, -1);
-        g_free (str);
-        ret = g_strdup (g_checksum_get_string(hash));
-        g_checksum_free (hash);
         if (clip0) *clip0 = clip;
         if (clip0_pos) *clip0_pos = clip_frame_pos;
         if (clip1_pos) *clip1_pos = pos - (clip_start +clip_duration) + clip_get_start (next);
         if (clip1) *clip1 = next;
         if (mix)   *mix = ratio;
-        return ret;
+        goto done;
       }
       else
       {
+        char *clip0_hash = clip_get_pos_hash (clip, clip_frame_pos);
+        g_string_append_printf (str, "%s ", clip0_hash);
+        g_free (clip0_hash);
+
         if (clip0) *clip0 = clip;
         if (clip0_pos) *clip0_pos = clip_frame_pos;
         if (clip1) *clip1 = NULL;
         if (mix)   *mix = 0.0;
-        return clip_get_pos_hash (clip, clip_frame_pos);
+        goto done;
       }
     }
     prev_clip_start = clip_start;
@@ -356,6 +349,29 @@ gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
   if (clip1)     *clip1 = NULL;
   if (mix)       *mix = 0.0;
   return NULL;
+done:
+
+  {
+    GList *l;
+    for (l = edl->clips; l; l = l->next)
+    {
+      Clip *c = l->data;
+      if (c->is_meta)
+      {
+        if (pos >= c->start && pos < c->end)
+          g_string_append_printf (str, "[%s]\n", c->filter_graph);
+      }
+    }
+  }
+
+  {
+    GChecksum *hash = g_checksum_new (G_CHECKSUM_MD5);
+    char *ret;
+    g_checksum_update (hash, (void*)str->str, -1);
+    ret = g_strdup (g_checksum_get_string(hash));
+    g_checksum_free (hash);
+    return ret;
+  }
 }
 
 gchar *gcut_get_pos_hash (GeglEDL *edl, double pos)
@@ -404,7 +420,7 @@ void gcut_set_pos (GeglEDL *edl, double pos)
   {
     Clip *clip = NULL;
     gegl_node_set (edl->cache_loader, "path", cache_path, NULL);
-    gegl_node_link_many (edl->cache_loader, edl->result, NULL);
+    gegl_node_link_many (edl->cache_loader, edl->final_result, NULL);
     clip = edl_get_clip_for_pos (edl, pos);
     if (clip)
     {
@@ -417,7 +433,7 @@ void gcut_set_pos (GeglEDL *edl, double pos)
     gegl_meta_get_audio (cache_path, clip->audio);
     }
     {
-    GeglRectangle ext = gegl_node_get_bounding_box (edl->result);
+    GeglRectangle ext = gegl_node_get_bounding_box (edl->final_result);
     gegl_buffer_set_extent (edl->buffer, &ext);
     }
     gegl_node_process (edl->store_final_buf);
@@ -436,16 +452,36 @@ void gcut_set_pos (GeglEDL *edl, double pos)
   if (clip1 == NULL)
   {
     clip_render_pos (clip0, clip0_pos);
-    gegl_node_link_many (clip0->nop_crop, edl->result, NULL);
+    gegl_node_link_many (clip0->nop_crop, edl->video_result, NULL);
   }
   else
   {
     gegl_node_set (edl->mix, "ratio", mix, NULL);
     clip_render_pos (clip0, clip0_pos);
     clip_render_pos (clip1, clip1_pos);
-    gegl_node_link_many (clip0->nop_crop, edl->mix, edl->result, NULL);
+    gegl_node_link_many (clip0->nop_crop, edl->mix, edl->video_result, NULL);
     gegl_node_connect_to (clip1->nop_crop, "output", edl->mix, "aux");
   }
+  gegl_node_link_many (edl->video_result, edl->final_result, NULL);
+
+  {
+    GList *l;
+    for (l = edl->clips; l; l = l->next)
+    {
+      Clip *c = l->data;
+      if (c->is_meta)
+      {
+        if (pos >= c->start && pos < c->end)
+        {
+          GeglNode *prev = gegl_node_get_producer (edl->final_result, "input", NULL);
+          gegl_create_chain (c->filter_graph, prev, edl->final_result,
+                             pos - c->start,
+                             edl->height, NULL, NULL);
+        }
+      }
+    }
+  }
+
   gegl_node_process (edl->store_final_buf);
   gcut_update_buffer (edl);
 
@@ -468,7 +504,7 @@ void gcut_set_pos (GeglEDL *edl, double pos)
           {
             gegl_node_set (save, "bitdepth", 8, NULL);
           }
-          gegl_node_link_many (edl->result, save, NULL);
+          gegl_node_link_many (edl->final_result, save, NULL);
           gegl_node_process (save);
           if (clip1 && clip1->audio && mix > 0.5)
             gegl_meta_set_audio (cache_path, clip1->audio);
@@ -696,7 +732,31 @@ void gcut_parse_line (GeglEDL *edl, const char *line)
   else if (start == 0 && end == 0 && rest)
   {
     Clip *clip = clip_new_full (edl, NULL, 0, 0);
+    const char *first = NULL;
+    const char *second = NULL;
+    const char *p = rest;
+    while (*p == ' ') p++;
+    if (isdigit(*p))
+    {
+      first = p;
+      while (isdigit(*p) || (*p == '.') || (*p == 's')) p++;
+      while (*p == ' ') p++;
+      if (isdigit(*p))
+      {
+        second = p;
+        while (isdigit(*p) || (*p == '.') || (*p == 's')) p++;
+      }
+      while (*p == ' ') p++;
+      rest = p;
+    }
     clip->filter_graph = g_strdup (rest);
+    if (first)
+      clip->start = g_strtod (first, NULL);
+    if (second)
+      clip->end = g_strtod (second, NULL);
+    else
+      clip->end = clip->start;
+
     edl->clips = g_list_append (edl->clips, clip);
   }
 }
@@ -990,7 +1050,8 @@ GeglEDL *gcut_new_from_path (const char *path)
 
 static void setup (GeglEDL *edl)
 {
-  edl->result = gegl_node_new_child (edl->gegl, "operation", "gegl:nop", NULL);
+  edl->video_result = gegl_node_new_child (edl->gegl, "operation", "gegl:nop", NULL);
+  edl->final_result = gegl_node_new_child (edl->gegl, "operation", "gegl:nop", NULL);
   edl->mix = gegl_node_new_child (edl->gegl, "operation", "gegl:mix", NULL);
   edl->encode = gegl_node_new_child (edl->gegl, "operation", "gegl:ff-save",
                                      "path",           edl->output_path,
@@ -1004,7 +1065,8 @@ static void setup (GeglEDL *edl)
   edl->cached_result = gegl_node_new_child (edl->gegl, "operation", "gegl:buffer-source", "buffer", edl->buffer, NULL);
   edl->store_final_buf = gegl_node_new_child (edl->gegl, "operation", "gegl:write-buffer", "buffer", edl->buffer, NULL);
 
-  gegl_node_link_many (edl->result, edl->store_final_buf, NULL);
+  gegl_node_link_many (edl->video_result, edl->final_result, NULL);
+  gegl_node_link_many (edl->final_result, edl->store_final_buf, NULL);
   gegl_node_link_many (edl->cached_result, edl->encode, NULL);
 }
 
@@ -1478,10 +1540,18 @@ char *gcut_serialize (GeglEDL *edl)
     if (!strncmp (path, edl->parent_path, strlen(edl->parent_path)))
       path += strlen (edl->parent_path);
 
-    if (strlen(path)== 0 &&
-        clip->start == 0 &&
-        clip->end == 0 &&
-        clip->filter_graph)
+    if (clip->is_meta)
+    {
+      if (clip->start == 0 && clip->end == 0)
+        g_string_append_printf (ser, "-- ");
+      else
+        g_string_append_printf (ser, "-- %.3fs %.3fs ", clip->start, clip->end);
+      g_string_append_printf (ser, "%s\n", clip->filter_graph);
+    }
+    else if (strlen(path)== 0 &&
+         clip->start == 0 &&
+         clip->end == 0 &&
+         clip->filter_graph)
     {
       g_string_append_printf (ser, "--%s\n", clip->filter_graph);
     }
