@@ -2198,7 +2198,8 @@ static gboolean delayed_emission (void *data)
 
 /* this causes dispatch of the signal on the main thread - if we
  * are in the main thread the callback will be directly executed now
- * instead of queued
+ * instead of queued (XXX: and if we're on a different thread, this function is
+ * a nop -- see comment below.)
  */
 void gegl_node_progress (GeglNode *node,
                          gdouble   progress,
@@ -2208,10 +2209,20 @@ void gegl_node_progress (GeglNode *node,
     g_signal_emit (node, gegl_node_signals[PROGRESS], 0, progress, message, NULL);
   else
   {
+    /* XXX:  only emit the progress signal from the main thread; otherwise, the
+     * delayed signal may be emitted after the operation is finished, or,
+     * indeed, after the node is destroyed.  for auto-threaded operations, each
+     * thread tracks its progress independently, so reporting the progress of
+     * the main thread should be a reasonable estimate of the overall progress.
+     */
+#if 0
     Closure *closure = g_new0 (Closure, 1);
     closure->node = node;
     closure->progress = progress;
     g_idle_add (delayed_emission, closure);
+#else
+    (void) delayed_emission;
+#endif
   }
 }
 
