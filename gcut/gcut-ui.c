@@ -1220,16 +1220,16 @@ static void render_clip (Mrg *mrg, GeglEDL *edl, const char *clip_path, double c
 
   if (fade || fade2)
   {
-    cairo_move_to (cr, x, y + VID_HEIGHT/2);
+    cairo_move_to (cr, x, y + (VID_HEIGHT*0.6)/2);
     cairo_line_to (cr, x + fade/2, y);
     cairo_line_to (cr, x + clip_frames + fade2/2, y);
-    cairo_line_to (cr, x + clip_frames - fade2/2, y + VID_HEIGHT);
-    cairo_line_to (cr, x - fade/2, y + VID_HEIGHT);
-    cairo_line_to (cr, x, y + VID_HEIGHT/2);
+    cairo_line_to (cr, x + clip_frames - fade2/2, y + (VID_HEIGHT*0.6));
+    cairo_line_to (cr, x - fade/2, y + (VID_HEIGHT*0.6));
+    cairo_line_to (cr, x, y + (VID_HEIGHT*0.6)/2);
   }
   else
   {
-    cairo_rectangle (cr, x, y, clip_frames, VID_HEIGHT);
+    cairo_rectangle (cr, x, y, clip_frames, (VID_HEIGHT*0.6));
   }
 
   img = mrg_query_image (mrg, thumb_path, &width, &height);
@@ -1243,7 +1243,7 @@ static void render_clip (Mrg *mrg, GeglEDL *edl, const char *clip_path, double c
     //cairo_matrix_init_rotate (&matrix, M_PI / 2); /* compensate for .. */
     //cairo_matrix_translate (&matrix, 0, -width);  /* vertical format   */
 
-    cairo_matrix_init_scale (&matrix, 1.0 * edl->fps, height* 1.0/ VID_HEIGHT);
+    cairo_matrix_init_scale (&matrix, 1.0 * edl->fps, height* 1.0/ (VID_HEIGHT*0.6));
     cairo_matrix_translate  (&matrix, -(x - clip_start), -y);
     cairo_pattern_set_matrix (pattern, &matrix);
     cairo_pattern_set_filter (pattern, CAIRO_FILTER_NEAREST);
@@ -2852,20 +2852,6 @@ static void gcut_draw (Mrg     *mrg,
   mrg_listen (mrg, MRG_DRAG, drag_fpx, edl, edl);
   cairo_fill (cr);
 
-  /* we could cull drawing already here, we let cairo do it for now, */
-
-  for (l = edl->clips; l; l = l->next)
-  {
-    Clip *clip = l->data;
-    double duration = clip_get_duration (clip);
-    cairo_rectangle (cr, t, y, duration, scroll_height);
-      cairo_save (cr);
-      cairo_identity_matrix (cr);
-    cairo_stroke (cr);
-    cairo_restore (cr);
-    t += duration;
-  }
-
   {
   double start = 0, end = 0;
   gcut_get_range (edl, &start, &end);
@@ -2913,18 +2899,24 @@ static void gcut_draw (Mrg     *mrg,
     double duration = clip_get_duration (clip);
     if (clip->is_meta)
     {
+#if 0
       double tx = t, ty = y;
-      cairo_save (cr);
-      cairo_user_to_device (cr, &tx, &ty);
-      cairo_identity_matrix (cr);
       mrg_set_xy (mrg, tx, y + VID_HEIGHT);
       mrg_printf (mrg, "%s", clip->filter_graph); // only used for annotations for now - could script vars
+      cairo_restore (cr);
+#endif
+      cairo_rectangle (cr, clip->start, y + VID_HEIGHT * 0.25, clip->end - clip->start, VID_HEIGHT * 0.1);
+
+      cairo_save (cr);
+      cairo_set_source_rgba (cr, 1, 1, 1, 0.5);
+      cairo_identity_matrix (cr);
+      cairo_stroke (cr);
       cairo_restore (cr);
     }
     else
     {
       Clip *next = clip_get_next (clip);
-      render_clip (mrg, edl, clip->path, clip->start, duration, t, y, clip->fade, next?next->fade:0.0);
+      render_clip (mrg, edl, clip->path, clip->start, duration, t, y + VID_HEIGHT * 0.4, clip->fade, next?next->fade:0.0);
       /* .. check if we are having anim things going on.. if so - print it here  */
     }
 
@@ -2993,7 +2985,7 @@ static void gcut_draw (Mrg     *mrg,
           }
           else
           {
-            cairo_rectangle (cr, i-length, y, length + 1, VID_HEIGHT * 0.05);
+            cairo_rectangle (cr, i-length, y + VID_HEIGHT, length + 1, VID_HEIGHT * 0.05);
             length = 0;
             state = 0;
           }
@@ -3166,7 +3158,7 @@ void gcut_ui (Mrg *mrg, void *data)
     mrg_printf (mrg, "frame %i (%i shown)",edl->frame_no, done_frame);
   else
 #endif
-  mrg_printf (mrg, " %f  ", edl->frame_pos_ui);
+  // mrg_printf (mrg, " %f  ", edl->frame_pos_ui);
 
 #if 0
   if (edl->active_source)

@@ -9,7 +9,7 @@ image::images/GEGL.png[GEGL]
 
 *GEGL* (Generic Graphics Library) is a data flow based image processing
 framework, providing floating point processing and non-destructive image
-processing capabilities to link:http://www.gimp.org/[GNU Image Manipulation Program] and other projects (link:http://www.imgflo.org/[imgflo], link:https://wiki.gnome.org/Apps/Photos[GNOME Photos],
+processing capabilities to link:http://www.gimp.org/[GNU Image Manipulation Program] and other projects (link:http://www.imgflo.org/[imgflo], link:https://wiki.gnome.org/Apps/Photos[GNOME Photos], link:gcut.html[gcut],
 link:https://github.com/the-grid/iconographer[iconographer], ...)
 
 With GEGL you chain together processing link:operations/index.html[operations]
