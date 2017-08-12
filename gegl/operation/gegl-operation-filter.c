@@ -168,11 +168,26 @@ gegl_operation_filter_process (GeglOperation        *operation,
   if (gegl_operation_use_threading (operation, result))
   {
     gint threads = gegl_config_threads ();
+    GeglSplitStrategy split_strategy = GEGL_SPLIT_STRATEGY_AUTO;
     GThreadPool *pool = thread_pool ();
     ThreadData thread_data[GEGL_MAX_THREADS];
     gint pending = threads;
 
-    if (result->width > result->height)
+    if (klass->get_split_strategy)
+    {
+      split_strategy = klass->get_split_strategy (operation, context,
+                                                  output_prop, result, level);
+    }
+
+    if (split_strategy == GEGL_SPLIT_STRATEGY_AUTO)
+    {
+      if (result->width > result->height)
+        split_strategy = GEGL_SPLIT_STRATEGY_VERTICAL;
+      else
+        split_strategy = GEGL_SPLIT_STRATEGY_HORIZONTAL;
+    }
+
+    if (split_strategy == GEGL_SPLIT_STRATEGY_VERTICAL)
     {
       gint bit = result->width / threads;
       for (gint j = 0; j < threads; j++)
@@ -184,7 +199,7 @@ gegl_operation_filter_process (GeglOperation        *operation,
       }
       thread_data[threads-1].roi.width = result->width - (bit * (threads-1));
     }
-    else
+    else if (split_strategy == GEGL_SPLIT_STRATEGY_HORIZONTAL)
     {
       gint bit = result->height / threads;
       for (gint j = 0; j < threads; j++)
@@ -195,6 +210,10 @@ gegl_operation_filter_process (GeglOperation        *operation,
         thread_data[j].roi.height = bit;
       }
       thread_data[threads-1].roi.height = result->height - (bit * (threads-1));
+    }
+    else
+    {
+      g_return_val_if_reached (FALSE);
     }
     for (gint i = 0; i < threads; i++)
     {

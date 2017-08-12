@@ -41,6 +41,13 @@ typedef enum
   GEGL_BLIT_DIRTY    = 1 << 1
 } GeglBlitFlags;
 
+typedef enum
+{
+  GEGL_SPLIT_STRATEGY_AUTO,
+  GEGL_SPLIT_STRATEGY_HORIZONTAL,
+  GEGL_SPLIT_STRATEGY_VERTICAL
+} GeglSplitStrategy;
+
 
 typedef struct _GeglConfig GeglConfig;
 GType gegl_config_get_type (void) G_GNUC_CONST;

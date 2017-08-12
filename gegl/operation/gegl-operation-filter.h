@@ -45,12 +45,22 @@ struct _GeglOperationFilterClass
 {
   GeglOperationClass parent_class;
 
-  gboolean (* process) (GeglOperation       *self,
-                        GeglBuffer          *input,
-                        GeglBuffer          *output,
-                        const GeglRectangle *roi,
-                        gint                 level);
-  gpointer              pad[4];
+  gboolean          (* process)            (GeglOperation        *self,
+                                            GeglBuffer           *input,
+                                            GeglBuffer           *output,
+                                            const GeglRectangle  *roi,
+                                            gint                  level);
+
+  /* How to split the area for multithreaded processing.  Should be irrelevant
+   * for most ops.
+   */
+  GeglSplitStrategy (* get_split_strategy) (GeglOperation        *self,
+                                            GeglOperationContext *context,
+                                            const gchar          *output_prop,
+                                            const GeglRectangle  *roi,
+                                            gint                  level);
+
+  gpointer                                  pad[3];
 };
 
 GType gegl_operation_filter_get_type (void) G_GNUC_CONST;
