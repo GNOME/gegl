@@ -765,6 +765,21 @@ gegl_gblur_1d_get_cached_region (GeglOperation       *operation,
   return cached_region;
 }
 
+static GeglSplitStrategy
+gegl_gblur_1d_get_split_strategy (GeglOperation        *operation,
+                                  GeglOperationContext *context,
+                                  const gchar          *output_prop,
+                                  const GeglRectangle  *result,
+                                  gint                  level)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
+  if (o->orientation == GEGL_ORIENTATION_HORIZONTAL)
+    return GEGL_SPLIT_STRATEGY_HORIZONTAL;
+  else
+    return GEGL_SPLIT_STRATEGY_VERTICAL;
+}
+
 static GeglAbyssPolicy
 to_gegl_policy (GeglGblur1dPolicy policy)
 {
@@ -899,6 +914,7 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   filter_class->process                    = gegl_gblur_1d_process;
+  filter_class->get_split_strategy         = gegl_gblur_1d_get_split_strategy;
   operation_class->prepare                 = gegl_gblur_1d_prepare;
   operation_class->process                 = operation_process;
   operation_class->get_bounding_box        = gegl_gblur_1d_get_bounding_box;
