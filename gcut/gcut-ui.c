@@ -3058,11 +3058,6 @@ static void help_ui (Mrg *mrg, GeglEDL *edl)
   }
 }
 
-gchar *message = NULL;
-
-extern int cache_hits;
-extern int cache_misses;
-
 long babl_ticks (void);
 
 void gcut_ui (Mrg *mrg, void *data)
@@ -3080,13 +3075,6 @@ void gcut_ui (Mrg *mrg, void *data)
   {
     cairo_set_source_rgb (mrg_cr (mrg), 0,0,0);
     cairo_paint (mrg_cr (mrg));
-  }
-
-  if (message)
-  {
-    mrg_set_style (mrg, "font-size: 0.1yh");
-    mrg_printf (mrg, "%s", message);
-    return;
   }
 
   g_mutex_lock (&edl->buffer_copy_mutex);

@@ -22,6 +22,8 @@ ff-load/ff-save: make audio frame handling more generic.
 
 c2g, avoid possible infinite loop on transparent areas.
 
+Fixes to gaussian-blur and ops core for multi-threaded blurring.
+
 Applications
 ~~~~~~~~~~~~
 

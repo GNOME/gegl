@@ -202,9 +202,6 @@ Clip *gcut_get_clip (GeglEDL *edl, double frame_pos, double *clip_frame_pos)
   return NULL;
 }
 
-int cache_hits = 0;
-int cache_misses = 0;
-
 void gcut_set_use_proxies (GeglEDL *edl, int use_proxies)
 {
   double frame_pos;

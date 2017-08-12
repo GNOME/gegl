@@ -27,6 +27,6 @@
 "gegl:noise-solid opi=0:0 gegl:crop opi=0:0 width=400 height=400 0.000s 1.000s -- [fade=1.440s] svg:src-over opi=0:0 aux=[  gegl:text opi=0:0 string='crash recovery by default' size=0.081632360816001892rel color='rgb(1.0000, 1.0000, 0.0000)' width=1 height=1 gegl:translate opi=0:0 x=0.10000000000000001rel y=0.42925620079040527rel ]\n"
 "gegl:noise-solid opi=0:0 gegl:crop opi=0:0 width=400 height=400 0.000s 1.000s -- [fade=1.360s] svg:src-over opi=0:0 aux=[  gegl:text opi=0:0 string='overlays:audio filter' size=0.10000000000000001rel color='rgb(1.0000, 1.0000, 0.0000)' width=1 height=1 gegl:translate opi=0:0 x=0.10000000000000001rel y=0.48208630084991455rel ]\n"
 "gegl:noise-solid gegl:crop width=400 height=400 0.000s 1.000s -- [fade=1.360s] over aux=[ text size=0.1rel string='network rendering' color=yellow translate x=0.1rel y=0.8rel ]\n"
-"--   #end titles\n"
+"--           #end titles\n"
 "gegl:color opi=0:0 gegl:crop opi=0:0 width=400 height=400 0.000s 18.960s -- svg:src-over opi=0:0 aux=[  gegl:text opi=0:0 string='end titles\\n\\nfull of newlines\\n\\nand some images and more\\n\\nmost of the time\\n\\n\\nthough\\n\\nusing an image that one pans\\nwill provide better typographic control\\nperhaps based on a pdf/svg\\n\\nthis is is also where I should stick misc info' size=0.040000000000000001rel color='rgb(1.0000, 1.0000, 1.0000)' width=1 height=8 gegl:translate opi=0:0 x=0.10000000000000001rel y={  0.000000=1.000000rel  32.000000=-2.000000rel  }  ]\n"
 "-----\n"
