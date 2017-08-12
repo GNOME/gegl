@@ -20,7 +20,7 @@ static int copy_buf_len = 0;
 
 static int changed = 0;
 
-static int empty_selection (GeglEDL *edl)
+static int selection_is_empty (GeglEDL *edl)
 {
   return edl->selection_start == edl->selection_end;
 }
@@ -177,7 +177,7 @@ static void insert_clip (GeglEDL *edl, const char *path,
   if (out < 0)
   {
     double duration = 0;
-    if (!empty_selection (edl))
+    if (!selection_is_empty (edl))
     {
       out = edl->selection_end - edl->selection_start;
       if (out < 0) out = -out;
@@ -194,7 +194,7 @@ static void insert_clip (GeglEDL *edl, const char *path,
   clip->title = g_strdup (basename (path));
   cur_clip = gcut_get_clip (edl, edl->frame_pos_ui, &clip_frame_pos);
 
-  if (empty_selection (edl))
+  if (selection_is_empty (edl))
   {
     gcut_get_duration (edl);
     if (fabs (edl->frame_pos_ui - cur_clip->abs_start) < 0.001)
@@ -3075,10 +3075,12 @@ void gcut_ui (Mrg *mrg, void *data)
 
   mrg_stylesheet_add (mrg, css, NULL, 0, NULL);
   mrg_set_style (mrg, "font-size: 11px");
-#if 1
-  cairo_set_source_rgb (mrg_cr (mrg), 0,0,0);
-  cairo_paint (mrg_cr (mrg));
-#endif
+
+  if (edl->ui_mode == GEDL_UI_MODE_PART)
+  {
+    cairo_set_source_rgb (mrg_cr (mrg), 0,0,0);
+    cairo_paint (mrg_cr (mrg));
+  }
 
   if (message)
   {
@@ -3086,8 +3088,6 @@ void gcut_ui (Mrg *mrg, void *data)
     mrg_printf (mrg, "%s", message);
     return;
   }
-
-  /* XXX: sync ui changes here, rather than deferred  */
 
   g_mutex_lock (&edl->buffer_copy_mutex);
   if (edl->buffer_copy_temp)
@@ -3133,46 +3133,15 @@ void gcut_ui (Mrg *mrg, void *data)
      break;
   }
 
-  if(0)fprintf (stderr, "%f\n", 1.0 / ((babl_ticks () - start_time)/1000.0/ 1000.0));
   if (edl->ui_mode != GEDL_UI_MODE_NONE)
   {
 
-  mrg_set_xy (mrg, mrg_em (mrg), mrg_height(mrg) * SPLIT_VER);
-  mrg_set_style (mrg, "color: white;background: transparent; text-stroke: 1.5px #000");
-  mrg_set_edge_right (mrg, mrg_width (mrg));// * 0.25 - 8);
-#if 0
-  {
-    GeglRectangle rect;
-    rect = gegl_node_get_bounding_box (o->edl->cached_result);
+    mrg_set_xy (mrg, mrg_em (mrg), mrg_height(mrg) * SPLIT_VER);
+    mrg_set_style (mrg, "color: white;background: transparent; text-stroke: 1.5px #000");
+    mrg_set_edge_right (mrg, mrg_width (mrg));// * 0.25 - 8);
 
-    mrg_printf (mrg, "%ix%i\n", rect.width, rect.height);
-  }
-#endif
-
-#if 0
-  mrg_printf (mrg, "cache hit: %2.2f%% of %i\n", 100.0 * cache_hits / (cache_hits + cache_misses), cache_hits + cache_misses);
-#endif
-
-#if 0
-  if (done_frame != edl->frame_no)
-    mrg_printf (mrg, "frame %i (%i shown)",edl->frame_no, done_frame);
-  else
-#endif
-  // mrg_printf (mrg, " %f  ", edl->frame_pos_ui);
-
-#if 0
-  if (edl->active_source)
-  {
-    char *basename = g_path_get_basename (edl->active_source->path);
-    mrg_printf (mrg, "%i\n", edl->source_frame_no);
-    mrg_printf (mrg, "%s\n", basename);
-  }
-#endif
-
-  //mrg_printf (mrg, "%i %i %i %i %i\n", edl->frame, edl->frame_no, edl->source_frame_no, rendering_frame, done_frame);
-
-  if (!renderer_done (edl))
-    mrg_printf (mrg, "... ");
+    if (!renderer_done (edl))
+      mrg_printf (mrg, "... ");
 
   }
 
@@ -3232,7 +3201,7 @@ void gcut_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "K", NULL, NULL,    extend_selection_to_previous_cut, edl);
       mrg_add_binding (mrg, "J", NULL, NULL,  extend_selection_to_next_cut, edl);
 
-      if (empty_selection (edl))
+      if (selection_is_empty (edl))
       {
         mrg_add_binding (mrg, "x", NULL, "remove clip", remove_clip, edl);
         mrg_add_binding (mrg, "d", NULL, "duplicate clip", duplicate_clip, edl);
@@ -3272,7 +3241,7 @@ void gcut_ui (Mrg *mrg, void *data)
         if (float_eq (edl->frame_pos_ui, edl->active_clip->abs_start))
         {
 
-          if (empty_selection (edl))
+          if (selection_is_empty (edl))
           {
             mrg_add_binding (mrg, "control-left/right", NULL, "adjust in", clip_start_inc, edl);
             mrg_add_binding (mrg, "control-right", NULL, NULL, clip_start_inc, edl);
@@ -3288,7 +3257,7 @@ void gcut_ui (Mrg *mrg, void *data)
         }
         else
         {
-          if (empty_selection (edl))
+          if (selection_is_empty (edl))
           {
             if (float_eq (edl->frame_pos_ui, edl->active_clip->abs_start + clip_get_duration (edl->active_clip)-fragment))
             {
