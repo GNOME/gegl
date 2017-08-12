@@ -45,6 +45,7 @@ default.edl.inc: default.edl
 
 gcut_SOURCES =			\
 	gcut.c			\
+	gcut-util.c		\
         default.edl.inc		\
 	gcut.h			\
 	iconographer.c		\
