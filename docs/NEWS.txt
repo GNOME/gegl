@@ -1,3 +1,43 @@
+GEGL-0.3.20
+
+Core
+~~~~
+
+Implement serialization of animated values, increased max thread limit to 64
+(impacts datastructures).
+
+Buffer
+~~~~~~
+
+Improved handling of 0x0 sized buffers, improved locking to avoid observed
+deadlocks, glitches and crashes in GIMP. COW-tiles are now lock free.
+
+Operations
+~~~~~~~~~~
+
+Improved properties/property meta data for: super-nova, invert,
+shadows-highlights, path, vector-fill, vector-stroke.
+
+ff-load/ff-save: make audio frame handling more generic.
+
+c2g, avoid possible infinite loop on transparent areas.
+
+Applications
+~~~~~~~~~~~~
+
+gcut, a video editing engine for GEGL has also been added to the repo. It
+permits reusing image filters written as GEGL operations for video, and basic
+motion graphics. The engines data model is currently fully functional for
+text-file based input and offline rendering, an experimental user interface
+for this video editing system is also currently being worked on.
+
+Contributors
+~~~~~~~~~~~~
+
+Øyvind Kolås, Michael Natterer, Jehan, Dimitris Spingos, Piotr Drąg, Alexandre
+Prokoudine, Eugene Hopkinson, Ell, Thomas Manni, Jordi Mas, Edward E, Jan
+Vesely, Arfrever Frehtes Taifersar Arahesis.
+
 GEGL-0.3.18
 -----------
 
