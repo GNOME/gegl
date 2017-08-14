@@ -2198,9 +2198,13 @@ static float print_props (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
 }
 
 static Clip *ui_clip = NULL;
+static Clip *ui_overlay = NULL;
 static GeglNode *source_start;
 static GeglNode *source_end;
 static GeglNode *filter_end;
+
+static GeglNode *overlay_start;
+static GeglNode *overlay_end;
 
 static void select_node (MrgEvent *e, void *data1, void *data2)
 {
@@ -2654,9 +2658,41 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
     return y;
 }
 
-static void update_ui_clip (Clip *clip, int clip_frame_no)
+
+static void update_ui_overlay (GeglEDL *edl, Clip *overlay, double clip_frame_no)
 {
   GError *error = NULL;
+
+  if (ui_overlay == NULL ||
+      ui_overlay != overlay)
+  {
+    if (overlay_start)
+     {
+       remove_in_betweens (overlay_start, overlay_end);
+       g_object_unref (overlay_start);
+       overlay_start = NULL;
+       g_object_unref (overlay_end);
+       overlay_end = NULL;
+     }
+
+    overlay_start = gegl_node_new ();
+    overlay_end   = gegl_node_new ();
+
+    gegl_node_set (overlay_start, "operation", "gegl:nop", NULL);
+    gegl_node_set (overlay_end, "operation", "gegl:nop", NULL);
+    gegl_node_link_many (overlay_start, overlay_end, NULL);
+
+    gegl_create_chain (overlay->filter_graph, overlay_start, overlay_end,
+                       overlay->edl->frame_pos_ui - overlay->start,
+                       1.0, NULL, &error);
+    ui_overlay = overlay;
+  }
+}
+
+static void update_ui_clip (Clip *clip, double clip_frame_no)
+{
+  GError *error = NULL;
+
   if (ui_clip == NULL ||
       ui_clip != clip)
   {
@@ -2767,7 +2803,7 @@ static void update_ui_clip (Clip *clip, int clip_frame_no)
       {
         GeglPath *path = g_object_get_qdata (G_OBJECT (selected_node), anim_quark);
         gdouble val = 0.0;
-        gegl_path_calc_y_for_x (path, clip_frame_no * 1.0, &val);
+        gegl_path_calc_y_for_x (path, clip_frame_no, &val);
 
         gegl_node_set (selected_node, props[i]->name, val, NULL);
       }
@@ -2801,7 +2837,20 @@ static void gcut_draw (Mrg     *mrg,
 
   edl->active_clip = gcut_get_clip (edl, edl->frame_pos_ui, &clip_frame_pos);
 
-  if (edl->active_clip) // && edl->active_clip->filter_graph)
+  if (edl->active_overlay)
+  {
+    GeglNode *iter;
+   
+    update_ui_overlay (edl, edl->active_overlay,  edl->frame_pos_ui - edl->active_overlay->start);
+
+    iter  = overlay_end;
+    while (gegl_node_get_producer (iter, "input", NULL))
+    {
+      iter = gegl_node_get_producer (iter, "input", NULL);
+    }
+    y2 = print_nodes (mrg, edl, iter, mrg_em (mrg), y2);
+  }
+  else if (edl->active_clip) // && edl->active_clip->filter_graph)
   {
     Clip *clip = edl->active_clip;
 
