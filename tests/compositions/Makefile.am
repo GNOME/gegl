@@ -80,7 +80,7 @@ if HAVE_JASPER
 NO_OPENCL_TESTS += jp2-load.xml
 endif
 if HAVE_UMFPACK
-TESTS += matting-levin.xml
+ # TESTS += matting-levin.xml
 endif
 
 check-TESTS: $(TESTS)
