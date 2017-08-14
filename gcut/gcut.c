@@ -295,7 +295,9 @@ gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
         char *clip0_hash = clip_get_pos_hash (clip, clip_frame_pos);
         char *clip1_hash = clip_get_pos_hash (prev, pos - prev_clip_start + clip_get_start (prev));
         double ratio = 0.5 + ((pos -clip_start) * 1.0 / prev_fade_len)/2;
-        g_string_append_printf (str, "%s %s %f", clip1_hash, clip0_hash, ratio);
+        gchar fstr[G_ASCII_DTOSTR_BUF_SIZE];
+        g_ascii_dtostr (fstr, sizeof(fstr), ratio);
+        g_string_append_printf (str, "%s %s %s", clip1_hash, clip0_hash, fstr);
 
         g_free (clip0_hash);
         g_free (clip1_hash);
@@ -312,7 +314,9 @@ gchar *gcut_get_pos_hash_full (GeglEDL *edl, double pos,
         char *clip0_hash = clip_get_pos_hash (clip, clip_frame_pos);
         char *clip1_hash = clip_get_pos_hash (next, pos - (clip_start + clip_duration) + clip_get_start (next));
         double ratio = (1.0-(clip_duration -(pos -clip_start)) * 1.0 / next_fade_len)/2;
-        g_string_append_printf (str, "%s %s %f", clip0_hash, clip1_hash, ratio);
+        gchar fstr[G_ASCII_DTOSTR_BUF_SIZE];
+        g_ascii_dtostr (fstr, sizeof(fstr), ratio);
+        g_string_append_printf (str, "%s %s %s", clip0_hash, clip1_hash, fstr);
         g_free (clip0_hash);
         g_free (clip1_hash);
         if (clip0) *clip0 = clip;
@@ -1360,6 +1364,8 @@ int main (int argc, char **argv)
     int frames;
     double duration;
     double fps;
+    gchar fstr[G_ASCII_DTOSTR_BUF_SIZE];
+
     GeglNode *gegl = gegl_node_new ();
     GeglNode *probe = gegl_node_new_child (gegl, "operation",
                                            "gegl:ff-load", "path", edl_path,
@@ -1371,7 +1377,8 @@ int main (int argc, char **argv)
     duration = frames / fps;
     g_object_unref (gegl);
 
-    sprintf (str, "%s 0.0s %.3fs\n", edl_path, duration);
+    g_ascii_dtostr (fstr, sizeof(fstr), duration);
+    sprintf (str, "%s 0.0s %ss\n", edl_path, fstr);
     {
       char * path = realpath (edl_path, NULL); 
       char * rpath = g_strdup_printf ("%s.edl", path);
@@ -1459,6 +1466,7 @@ char *gcut_serialize (GeglEDL *edl)
   GList *l;
   char *ret;
   GString *ser = g_string_new ("");
+  gchar fstr[G_ASCII_DTOSTR_BUF_SIZE];
 
   if (edl->proxy_width != DEFAULT_proxy_width)
     g_string_append_printf (ser, "proxy-width=%i\n",  edl->proxy_width);
@@ -1488,23 +1496,45 @@ char *gcut_serialize (GeglEDL *edl)
   if (edl->audio_samplerate != DEFAULT_audio_samplerate)
     g_string_append_printf (ser, "audio-samplerate=%i\n",  edl->audio_samplerate);
 
-  g_string_append_printf (ser, "fps=%f\n", gcut_get_fps (edl));
+  g_ascii_dtostr (fstr, sizeof(fstr), gcut_get_fps (edl));
+  g_string_append_printf (ser, "fps=%s\n", fstr);
 
   if (edl->range_start != DEFAULT_range_start)
-    g_string_append_printf (ser, "range-start=%.3f\n",  edl->range_start);
+  {
+    g_ascii_dtostr (fstr, sizeof(fstr), edl->range_start);
+    g_string_append_printf (ser, "range-start=%s\n",  fstr);
+  }
   if (edl->range_end != DEFAULT_range_end)
-    g_string_append_printf (ser, "range-end=%.3f\n", edl->range_end);
+  {
+    g_ascii_dtostr (fstr, sizeof(fstr), edl->range_end);
+    g_string_append_printf (ser, "range-end=%s\n", fstr);
+  }
 
   if (edl->selection_start != DEFAULT_selection_start)
-    g_string_append_printf (ser, "selection-start=%.3f\n",  edl->selection_start);
-  if (edl->selection_end != DEFAULT_selection_end)
-    g_string_append_printf (ser, "selection-end=%.3f\n",  edl->selection_end);
-  if (edl->scale != 1.0)
-    g_string_append_printf (ser, "frame-scale=%f\n", edl->scale);
-  if (edl->t0 != 1.0)
-    g_string_append_printf (ser, "t0=%f\n", edl->t0);
+  {
+    g_ascii_dtostr (fstr, sizeof(fstr), edl->selection_start);
+    g_string_append_printf (ser, "selection-start=%s\n", fstr);
+  }
 
-  g_string_append_printf (ser, "frame-pos=%.3f\n", edl->frame_pos_ui);
+  if (edl->selection_end != DEFAULT_selection_end)
+  {
+    g_ascii_dtostr (fstr, sizeof(fstr), edl->selection_end);
+    g_string_append_printf (ser, "selection-end=%s\n", fstr);
+  }
+
+  if (edl->scale != 1.0)
+  {
+    g_ascii_dtostr (fstr, sizeof(fstr), edl->scale);
+    g_string_append_printf (ser, "frame-scale=%s\n", fstr);
+  }
+  if (edl->t0 != 1.0)
+  {
+    g_ascii_dtostr (fstr, sizeof(fstr), edl->t0);
+    g_string_append_printf (ser, "t0=%s\n", fstr);
+  }
+
+  g_ascii_dtostr (fstr, sizeof(fstr), edl->frame_pos_ui);
+  g_string_append_printf (ser, "frame-pos=%s\n", fstr);
   g_string_append_printf (ser, "\n");
 
   for (l = edl->clips; l; l = l->next)
@@ -1521,7 +1551,12 @@ char *gcut_serialize (GeglEDL *edl)
       if (clip->start == 0 && clip->end == 0)
         g_string_append_printf (ser, "-- ");
       else
-        g_string_append_printf (ser, "-- %.3fs %.3fs ", clip->start, clip->end);
+      {
+        g_ascii_dtostr (fstr, sizeof(fstr), clip->start);
+        g_string_append_printf (ser, "-- %ss", fstr);
+        g_ascii_dtostr (fstr, sizeof(fstr), clip->end);
+        g_string_append_printf (ser, " %ss ", fstr);
+      }
       g_string_append_printf (ser, "%s\n", clip->filter_graph);
     }
     else if (strlen(path)== 0 &&
@@ -1533,15 +1568,27 @@ char *gcut_serialize (GeglEDL *edl)
     }
     else
     {
-      g_string_append_printf (ser, "%s %.3fs %.3fs ", path, clip->start, clip->end);
+      g_ascii_dtostr (fstr, sizeof(fstr), clip->start);
+      g_string_append_printf (ser, "%s %ss ", path, fstr);
+      g_ascii_dtostr (fstr, sizeof(fstr), clip->end);
+      g_string_append_printf (ser, "%ss ", fstr);
       if (clip->filter_graph||clip->fade)
         g_string_append_printf (ser, "-- ");
       if (clip->fade)
-        g_string_append_printf (ser, "[fade=%.3fs] ", clip->fade);
+      {
+        g_ascii_dtostr (fstr, sizeof(fstr), clip->fade);
+        g_string_append_printf (ser, "[fade=%ss] ", fstr);
+      }
       if (clip->fps>0.001)
-        g_string_append_printf (ser, "[fps=%.3f] ", clip->fps);
+      {
+        g_ascii_dtostr (fstr, sizeof(fstr), clip->fps);
+        g_string_append_printf (ser, "[fps=%s] ", fstr);
+      }
       if (fabs(clip->rate - 1.0 )>0.001)
-        g_string_append_printf (ser, "[rate=%.5f] ", clip->rate);
+      {
+        g_ascii_dtostr (fstr, sizeof(fstr), clip->rate);
+        g_string_append_printf (ser, "[rate=%s] ", fstr);
+      }
       if (clip->filter_graph)
         g_string_append_printf (ser, "%s", clip->filter_graph);
       g_string_append_printf (ser, "\n");
