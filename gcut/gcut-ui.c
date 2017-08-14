@@ -2687,6 +2687,56 @@ static void update_ui_overlay (GeglEDL *edl, Clip *overlay, double clip_frame_no
                        1.0, NULL, &error);
     ui_overlay = overlay;
   }
+
+  if (selected_node)
+  {
+    GParamSpec ** props;
+    unsigned int  n_props;
+
+    if (ui_tweaks)
+    {
+      char *serialized_overlay = NULL;
+      serialized_overlay = gegl_serialize (overlay_start, overlay_end,
+                                   NULL,GEGL_SERIALIZE_TRIM_DEFAULTS|GEGL_SERIALIZE_VERSION);
+      {
+        gchar *old = overlay->filter_graph;
+
+        if (g_str_has_suffix (serialized_overlay, "gegl:nop opi=0:0"))
+        { /* XXX: ugly hack - we remove the common bit we do not want */
+          serialized_overlay[strlen(serialized_overlay)-strlen("gegl:nop opi=0:0")]='\0';
+        }
+        overlay->filter_graph = serialized_overlay;
+        if (old)
+          g_free (old);
+      }
+
+      ui_tweaks = 0;
+      changed ++;
+
+      gcut_cache_invalid (overlay->edl);
+    }
+
+    props = gegl_operation_list_properties (gegl_node_get_operation (selected_node), &n_props);
+
+    for (int i = 0; i <n_props; i ++)
+    {
+      GQuark anim_quark;
+      char tmpbuf[1024];
+
+      sprintf (tmpbuf, "%s-anim", props[i]->name);
+      anim_quark = g_quark_from_string (tmpbuf);
+
+      // this only deals/works with double for now
+      if (g_object_get_qdata (G_OBJECT (selected_node), anim_quark))
+      {
+        GeglPath *path = g_object_get_qdata (G_OBJECT (selected_node), anim_quark);
+        gdouble val = 0.0;
+        gegl_path_calc_y_for_x (path, clip_frame_no, &val);
+
+        gegl_node_set (selected_node, props[i]->name, val, NULL);
+      }
+    }
+  }
 }
 
 static void update_ui_clip (Clip *clip, double clip_frame_no)
@@ -2758,7 +2808,6 @@ static void update_ui_clip (Clip *clip, double clip_frame_no)
       serialized_source = gegl_serialize (source_start, source_end,
                                    NULL,GEGL_SERIALIZE_TRIM_DEFAULTS|GEGL_SERIALIZE_VERSION);
 
-      if (clip->filter_graph)
       {
         gchar *old = clip->filter_graph;
 
@@ -2767,10 +2816,9 @@ static void update_ui_clip (Clip *clip, double clip_frame_no)
           serialized_filter[strlen(serialized_filter)-strlen("gegl:nop opi=0:0")]='\0';
         }
         clip->filter_graph = serialized_filter;
-        g_free (old);
+        if (old)
+          g_free (old);
       }
-      else
-        g_free (serialized_filter);
 
       if (clip->is_chain)
       {
@@ -2798,7 +2846,8 @@ static void update_ui_clip (Clip *clip, double clip_frame_no)
 
       sprintf (tmpbuf, "%s-anim", props[i]->name);
       anim_quark = g_quark_from_string (tmpbuf);
-      // this only deals with double for now
+
+      // this only deals/works with double for now
       if (g_object_get_qdata (G_OBJECT (selected_node), anim_quark))
       {
         GeglPath *path = g_object_get_qdata (G_OBJECT (selected_node), anim_quark);
