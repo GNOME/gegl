@@ -377,8 +377,8 @@ process (GeglOperation       *operation,
           for (b = 0; b < 3; b++)
             pixel[b] = input[idx + b];
 
-          hyp = hypot (x + roi->x - params->center_x,
-                       y + roi->y - params->center_y);
+          hyp = hypotf (x + roi->x - params->center_x,
+                        y + roi->y - params->center_y);
 
           /* center color */
           procent = params->color_size - hyp;
@@ -425,8 +425,8 @@ process (GeglOperation       *operation,
           for (i = 0; i < NUMREF; i++)
             {
               Reflect r = params->ref[i];
-              gdouble hyp = hypot (x + roi->x - r.xp,
-                                   y + roi->y - r.yp);
+              gfloat  hyp = hypotf (x + roi->x - r.xp,
+                                    y + roi->y - r.yp);
               switch (r.type)
                 {
                   case 1:
