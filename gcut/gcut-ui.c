@@ -3352,7 +3352,7 @@ int gcut_ui_main (GeglEDL *edl)
 
   mrg_add_timeout (mrg, 10100, save_idle, edl);
 
-  if (0)
+  if (1)
   {
     cache_renderer_iteration (mrg, edl);
     mrg_add_timeout (mrg, 90 /* seconds */  * 1000, cache_renderer_iteration, edl);
