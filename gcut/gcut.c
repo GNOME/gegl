@@ -909,6 +909,7 @@ static void gcut_reread (GeglEDL *edl)
   edl->clips = new_edl->clips;
   new_edl->clips = l;
   edl->active_clip = NULL; // XXX: better to resolve?
+  edl->active_overlay = NULL;
 
   for (l = edl->clips; l; l = l->next)
   {

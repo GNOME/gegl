@@ -227,6 +227,8 @@ struct _GeglEDL
   double        t0;
   Clip         *active_clip;
 
+  Clip         *active_overlay;
+
   void         *mrg;
 
   char         *clip_query;
