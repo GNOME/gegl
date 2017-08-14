@@ -39,9 +39,9 @@ TestCase tests[] = {
 
 
     {"threshold value={ 0=0.1 2=0.33 }",
-     "gegl:threshold value={  0.000000=0.100000  2.000000=0.330000  } ",
+     "gegl:threshold value={  0=0.10000000149011612  2=0.33000001311302185  } ",
      ""},
-  
+
     {"invert a=b",
      "gegl:invert-linear",
      "gegl:invert has no a property."},

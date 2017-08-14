@@ -63,16 +63,22 @@ static void each_knot (const GeglPathItem *path_node,
                        gpointer user_data)
 {
   GString *str = user_data;
-
-  g_string_append_printf (str, " %f=%f ", path_node->point[0].x, path_node->point[0].y);
+  gchar fstr[G_ASCII_DTOSTR_BUF_SIZE];
+  g_ascii_dtostr (fstr, sizeof(fstr), path_node->point[0].x);
+  g_string_append_printf (str, " %s=", fstr);
+  g_ascii_dtostr (fstr, sizeof(fstr), path_node->point[0].y);
+  g_string_append_printf (str, "%s ", fstr);
 }
 
 static void each_knot_rel (const GeglPathItem *path_node,
                            gpointer user_data)
 {
   GString *str = user_data;
-
-  g_string_append_printf (str, " %f=%frel ", path_node->point[0].x, path_node->point[0].y);
+  gchar fstr[G_ASCII_DTOSTR_BUF_SIZE];
+  g_ascii_dtostr (fstr, sizeof(fstr), path_node->point[0].x);
+  g_string_append_printf (str, " %s=", fstr);
+  g_ascii_dtostr (fstr, sizeof(fstr), path_node->point[0].y);
+  g_string_append_printf (str, "%srel ", fstr);
 }
 
 void
