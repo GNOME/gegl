@@ -666,21 +666,38 @@ static void make_rel_props (GeglNode *node)
 }
 
 static void insert_node (GeglNode *selected_node, GeglNode *new)
+{
+  GeglNode **nodes = NULL;
+  const gchar **pads = NULL;
+
+  int count = gegl_node_get_consumers (selected_node, "output", &nodes, &pads);
+  make_rel_props (new);
+
+  gegl_node_link_many (selected_node, new, NULL);
+  if (count)
   {
-    GeglNode **nodes = NULL;
-    const gchar **pads = NULL;
-
-    int count = gegl_node_get_consumers (selected_node, "output", &nodes, &pads);
-    make_rel_props (new);
-
-    gegl_node_link_many (selected_node, new, NULL);
-    if (count)
-    {
-      gegl_node_connect_to (new, "output", nodes[0], pads[0]);
-    }
+    gegl_node_connect_to (new, "output", nodes[0], pads[0]);
   }
+}
+
+static void insert_node_aux (GeglNode *selected_node, GeglNode *new)
+{
+  GeglNode *node = NULL;
+  gchar *pad = NULL;
+
+  node = gegl_node_get_producer (selected_node, "aux", &pad);
+  make_rel_props (new);
+
+  gegl_node_link_many (selected_node, new, NULL);
+  gegl_node_connect_to (new, "output", selected_node, "aux");
+  if (node)
+  {
+    gegl_node_connect_to (node, pad, new, "input");
+  }
+}
 
 char *filter_query = NULL;
+int   doing_aux = 0;
 
 static void insert_aux_filter (MrgEvent *event, void *data1, void *data2)
 {
@@ -690,20 +707,14 @@ static void insert_aux_filter (MrgEvent *event, void *data1, void *data2)
     return;
 
   filter_query = g_strdup ("");
+  doing_aux = 1;
   mrg_set_cursor_pos (event->mrg, 0);
 
   if (!selected_node)
     selected_node = filter_start;
 
-#if 0
-  GeglNode *new = NULL;
-  new = gegl_node_new_child (edl->gegl, "operation", "gegl:unsharp-mask", NULL);
-  insert_node (selected_node, new);
-  selected_node = new;
-#endif
   mrg_event_stop_propagate (event);
   mrg_queue_draw (event->mrg, NULL);
-
 }
 
 static void insert_filter (MrgEvent *event, void *data1, void *data2)
@@ -714,6 +725,7 @@ static void insert_filter (MrgEvent *event, void *data1, void *data2)
     return;
 
   filter_query = g_strdup ("");
+  doing_aux = 0;
   mrg_set_cursor_pos (event->mrg, 0);
 
   if (!selected_node)
@@ -2416,9 +2428,11 @@ static void complete_filter_query_edit (MrgEvent *e, void *data1, void *data2)
   if (filter_query)
     g_free (filter_query);
   filter_query = NULL;
-  insert_node (selected_node, new);
+  if (doing_aux)
+    insert_node_aux (selected_node, new);
+  else
+    insert_node (selected_node, new);
   selected_node = new;
-
 
   g_free (completions);
   ui_tweaks++;
@@ -2450,7 +2464,7 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
             gegl_node_get_producer (node, "input", NULL) == NULL)
         {
           mrg_set_xy (mrg, x + mrg_em (mrg) * 1.0, y);
-          mrg_printf (mrg, " + ");
+          mrg_printf (mrg, ".+ ");
           y -= mrg_em (mrg) * 1.15;
         }
 
@@ -2582,12 +2596,12 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
         mrg_printf (mrg, "%s", filter_query);
         mrg_edit_end (mrg);
       }
-    
+
       mrg_add_binding (mrg, "escape", NULL, "end edit", end_filter_query_edit, edl);
       mrg_add_binding (mrg, "shift-tab", NULL, "end edit", filter_query_tab_reverse, edl);
       mrg_add_binding (mrg, "tab", NULL, "end edit", filter_query_tab, edl);
       mrg_add_binding (mrg, "return", NULL, "end edit", complete_filter_query_edit, edl);
-
+#if 0
       if (completions && 0)
       {
         gint matches=0;
@@ -2604,6 +2618,7 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
           }
         mrg_end(mrg);
       }
+#endif
 
       if (completions)
         g_free (completions);
