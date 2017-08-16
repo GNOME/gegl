@@ -1,4 +1,5 @@
-GEGL-0.3.20
+GEGL-0.3.20 2017-08-15
+----------------------
 
 Core
 ~~~~
@@ -35,8 +36,8 @@ Contributors
 Prokoudine, Eugene Hopkinson, Ell, Thomas Manni, Jordi Mas, Edward E, Jan
 Vesely, Arfrever Frehtes Taifersar Arahesis.
 
-GEGL-0.3.18
------------
+GEGL-0.3.18 2017-05-31
+----------------------
 
 Operations
 ~~~~~~~~~~
@@ -60,8 +61,8 @@ Contributors
 
 Ell, Anton Gorenko, Øyvind Kolås, Piotr Drąg, Mario Blättermann 
 
-GEGL-0.3.16
------------
+GEGL-0.3.16 2017-05-15
+----------------------
 
 Core
 ~~~~
