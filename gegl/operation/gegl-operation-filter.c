@@ -173,6 +173,8 @@ gegl_operation_filter_process (GeglOperation        *operation,
     ThreadData thread_data[GEGL_MAX_THREADS];
     gint pending = threads;
 
+    g_warning ("threading: %s\n", gegl_operation_get_name (operation));
+
     if (klass->get_split_strategy)
     {
       split_strategy = klass->get_split_strategy (operation, context,

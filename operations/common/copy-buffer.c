@@ -145,6 +145,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   operation_class->prepare  = prepare;
   operation_class->no_cache = TRUE;
+  operation_class->threaded = FALSE;
   filter_class->process     = process;
 
   gegl_operation_class_set_keys (operation_class,
