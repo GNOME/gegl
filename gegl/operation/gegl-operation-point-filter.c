@@ -266,8 +266,6 @@ gegl_operation_point_filter_init (GeglOperationPointFilter *self)
 
 }
 
-#include <stdlib.h>
-
 static gboolean
 gegl_operation_point_filter_process (GeglOperation       *operation,
                                        GeglBuffer          *input,
