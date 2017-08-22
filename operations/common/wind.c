@@ -78,42 +78,6 @@ property_seed (seed, _("Random seed"), rand)
 
 #define COMPARE_WIDTH    3
 
-typedef struct ThreadData
-{
-  GeglOperationFilterClass *klass;
-  GeglOperation            *operation;
-  GeglBuffer               *input;
-  GeglBuffer               *output;
-  gint                     *pending;
-  gint                      level;
-  gboolean                  success;
-  GeglRectangle             roi;
-} ThreadData;
-
-static void
-thread_process (gpointer thread_data, gpointer unused)
-{
-  ThreadData *data = thread_data;
-  if (!data->klass->process (data->operation,
-                       data->input, data->output, &data->roi, data->level))
-    data->success = FALSE;
-  g_atomic_int_add (data->pending, -1);
-}
-
-int gegl_config_threads (void);
-
-static GThreadPool *
-thread_pool (void)
-{
-  static GThreadPool *pool = NULL;
-  if (!pool)
-    {
-      pool =  g_thread_pool_new (thread_process, NULL, gegl_config_threads (),
-                                 FALSE, NULL);
-    }
-  return pool;
-}
-
 static void
 get_derivative (gfloat       *pixel1,
                 gfloat       *pixel2,
@@ -452,93 +416,20 @@ get_required_for_output (GeglOperation       *operation,
   return result;
 }
 
-
-static gboolean
-operation_process (GeglOperation        *operation,
-                   GeglOperationContext *context,
-                   const gchar          *output_prop,
-                   const GeglRectangle  *result,
-                   gint                  level)
+static GeglSplitStrategy
+get_split_strategy (GeglOperation        *operation,
+                    GeglOperationContext *context,
+                    const gchar          *output_prop,
+                    const GeglRectangle  *result,
+                    gint                  level)
 {
-  GeglProperties           *o = GEGL_PROPERTIES (operation);
-  GeglOperationFilterClass *klass;
-  GeglBuffer               *input;
-  GeglBuffer               *output;
-  gboolean                  success = FALSE;
-
-  klass = GEGL_OPERATION_FILTER_GET_CLASS (operation);
-
-  g_assert (klass->process);
-
-  if (strcmp (output_prop, "output"))
-    {
-      g_warning ("requested processing of %s pad on a filter", output_prop);
-      return FALSE;
-    }
-
-  input  = gegl_operation_context_get_source (context, "input");
-  output = gegl_operation_context_get_target (context, "output");
-
-  if (gegl_operation_use_threading (operation, result))
-  {
-    gint threads = gegl_config_threads ();
-    GThreadPool *pool = thread_pool ();
-    ThreadData thread_data[32];
-    gint pending = threads;
+  GeglProperties *o = GEGL_PROPERTIES (operation);
 
     if (o->direction == GEGL_WIND_DIRECTION_LEFT ||
         o->direction == GEGL_WIND_DIRECTION_RIGHT)
-    {
-      gint bit = result->height / threads;
-      for (gint j = 0; j < threads; j++)
-      {
-        thread_data[j].roi.x = result->x;
-        thread_data[j].roi.width = result->width;
-        thread_data[j].roi.y = result->y + bit * j;
-        thread_data[j].roi.height = bit;
-      }
-      thread_data[threads-1].roi.height = result->height - (bit * (threads-1));
-    }
-    else
-    {
-      gint bit = result->width / threads;
-      for (gint j = 0; j < threads; j++)
-      {
-        thread_data[j].roi.y = result->y;
-        thread_data[j].roi.height = result->height;
-        thread_data[j].roi.x = result->x + bit * j;
-        thread_data[j].roi.width = bit;
-      }
-      thread_data[threads-1].roi.width = result->width - (bit * (threads-1));
-    }
-    for (gint i = 0; i < threads; i++)
-    {
-      thread_data[i].klass = klass;
-      thread_data[i].operation = operation;
-      thread_data[i].input = input;
-      thread_data[i].output = output;
-      thread_data[i].pending = &pending;
-      thread_data[i].level = level;
-      thread_data[i].success = TRUE;
-    }
-
-    for (gint i = 1; i < threads; i++)
-      g_thread_pool_push (pool, &thread_data[i], NULL);
-    thread_process (&thread_data[0], NULL);
-
-    while (g_atomic_int_get (&pending)) {};
-
-    success = thread_data[0].success;
-  }
+    return GEGL_SPLIT_STRATEGY_HORIZONTAL;
   else
-  {
-    success = klass->process (operation, input, output, result, level);
-  }
-
-  if (input != NULL)
-    g_object_unref (input);
-
-  return success;
+    return GEGL_SPLIT_STRATEGY_VERTICAL;
 }
 
 static gboolean
@@ -659,7 +550,7 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   filter_class->process                    = process;
-  operation_class->process                 = operation_process;
+  filter_class->get_split_strategy         = get_split_strategy;
   operation_class->prepare                 = prepare;
   operation_class->get_cached_region       = get_cached_region;
   operation_class->get_required_for_output = get_required_for_output;
