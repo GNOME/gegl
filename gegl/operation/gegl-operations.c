@@ -36,7 +36,65 @@ static GHashTable *visible_operation_names = NULL;
 static GSList     *operations_list         = NULL;
 static guint       gtype_hash_serial       = 0;
 
-static GMutex operations_cache_mutex = { 0, };
+static GRWLock  operations_cache_rw_lock        = { 0, };
+static GThread *operations_cache_rw_lock_thread = NULL;
+static int      operations_cache_rw_lock_count  = 0;
+
+/* we use the [un]lock_operations_cache() functions to handle the lock, instead
+ * of using g_rw_lock_foo() directly, to allow recursive locking, given the
+ * "outermost" lock is a writer lock.
+ */
+static void
+lock_operations_cache (gboolean write_access)
+{
+  GThread *self = g_thread_self ();
+
+  if (self == operations_cache_rw_lock_thread)
+    {
+      operations_cache_rw_lock_count++;
+    }
+  else
+    {
+      if (write_access)
+        {
+          g_rw_lock_writer_lock (&operations_cache_rw_lock);
+
+          g_assert (operations_cache_rw_lock_thread == NULL);
+          g_assert (operations_cache_rw_lock_count  == 0);
+
+          operations_cache_rw_lock_thread = self;
+          operations_cache_rw_lock_count  = 1;
+        }
+      else
+        {
+          g_rw_lock_reader_lock (&operations_cache_rw_lock);
+        }
+    }
+}
+
+static void
+unlock_operations_cache (gboolean write_access)
+{
+  GThread *self = g_thread_self ();
+
+  if (self == operations_cache_rw_lock_thread)
+    {
+      if (--operations_cache_rw_lock_count == 0)
+        {
+          g_assert (write_access);
+
+          operations_cache_rw_lock_thread = NULL;
+
+          g_rw_lock_writer_unlock (&operations_cache_rw_lock);
+        }
+    }
+  else
+    {
+      g_assert (! write_access);
+
+      g_rw_lock_reader_unlock (&operations_cache_rw_lock);
+    }
+}
 
 void
 gegl_operation_class_register_name (GeglOperationClass *klass,
@@ -46,7 +104,7 @@ gegl_operation_class_register_name (GeglOperationClass *klass,
   GType this_type, check_type;
   this_type = G_TYPE_FROM_CLASS (klass);
 
-  g_mutex_lock (&operations_cache_mutex);
+  lock_operations_cache (TRUE);
 
   check_type = (GType) g_hash_table_lookup (known_operation_names, name);
   if (check_type && check_type != this_type)
@@ -59,7 +117,7 @@ gegl_operation_class_register_name (GeglOperationClass *klass,
 
   g_hash_table_insert (known_operation_names, g_strdup (name), (gpointer) this_type);
 
-  g_mutex_unlock (&operations_cache_mutex);
+  unlock_operations_cache (TRUE);
 }
 
 static void
@@ -145,8 +203,6 @@ gegl_operations_update_visible (void)
   const gchar   *iter_key;
   GType          iter_value;
 
-  g_mutex_lock (&operations_cache_mutex);
-
   g_hash_table_remove_all (visible_operation_names);
   g_slist_free (operations_list);
 
@@ -188,41 +244,60 @@ gegl_operations_update_visible (void)
 
       g_type_class_unref (object_class);
     }
-
-  g_mutex_unlock (&operations_cache_mutex);
 }
 
 void
 gegl_operations_set_licenses_from_string (const gchar *license_str)
 {
-  g_mutex_lock (&operations_cache_mutex);
+  lock_operations_cache (TRUE);
 
   if (accepted_licenses)
     g_strfreev (accepted_licenses);
 
   accepted_licenses = g_strsplit (license_str, ",", 0);
 
-  g_mutex_unlock (&operations_cache_mutex);
-
   gegl_operations_update_visible ();
+
+  unlock_operations_cache (TRUE);
 }
 
 GType
 gegl_operation_gtype_from_name (const gchar *name)
 {
-  /* If any new modules have been loaded, scan for GeglOperations */
   guint latest_serial;
+  GType type;
+
+  lock_operations_cache (FALSE);
+
+  /* If any new modules have been loaded, scan for GeglOperations */
   latest_serial = g_type_get_type_registration_serial ();
   if (gtype_hash_serial != latest_serial)
     {
-      add_operations (GEGL_TYPE_OPERATION);
+      unlock_operations_cache (FALSE);
+      lock_operations_cache (TRUE);
 
-      gtype_hash_serial = latest_serial;
+      latest_serial = g_type_get_type_registration_serial ();
+      if (gtype_hash_serial != latest_serial)
+        {
+          add_operations (GEGL_TYPE_OPERATION);
 
-      gegl_operations_update_visible ();
+          gtype_hash_serial = latest_serial;
+
+          gegl_operations_update_visible ();
+        }
+
+      type = (GType) g_hash_table_lookup (visible_operation_names, name);
+
+      unlock_operations_cache (TRUE);
+    }
+  else
+    {
+      type = (GType) g_hash_table_lookup (visible_operation_names, name);
+
+      unlock_operations_cache (FALSE);
     }
 
-  return (GType) g_hash_table_lookup (visible_operation_names, name);
+  return type;
 }
 
 gboolean
@@ -253,7 +328,7 @@ gchar **gegl_list_operations (guint *n_operations_p)
         }
     }
 
-  g_mutex_lock (&operations_cache_mutex);
+  lock_operations_cache (TRUE);
 
   n_operations = g_slist_length (operations_list);
   pasp_size   += (n_operations + 1) * sizeof (gchar *);
@@ -275,7 +350,7 @@ gchar **gegl_list_operations (guint *n_operations_p)
   if (n_operations_p)
     *n_operations_p = n_operations;
 
-  g_mutex_unlock (&operations_cache_mutex);
+  unlock_operations_cache (TRUE);
 
   return pasp;
 }
@@ -283,7 +358,7 @@ gchar **gegl_list_operations (guint *n_operations_p)
 void
 gegl_operation_gtype_init (void)
 {
-  g_mutex_lock (&operations_cache_mutex);
+  lock_operations_cache (TRUE);
 
   if (!known_operation_names)
     known_operation_names = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -291,13 +366,13 @@ gegl_operation_gtype_init (void)
   if (!visible_operation_names)
     visible_operation_names = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
-  g_mutex_unlock (&operations_cache_mutex);
+  unlock_operations_cache (TRUE);
 }
 
 void
 gegl_operation_gtype_cleanup (void)
 {
-  g_mutex_lock (&operations_cache_mutex);
+  lock_operations_cache (TRUE);
   if (known_operation_names)
     {
       g_hash_table_destroy (known_operation_names);
@@ -309,7 +384,7 @@ gegl_operation_gtype_cleanup (void)
       g_slist_free (operations_list);
       operations_list = NULL;
     }
-  g_mutex_unlock (&operations_cache_mutex);
+  unlock_operations_cache (TRUE);
 }
 
 gboolean
