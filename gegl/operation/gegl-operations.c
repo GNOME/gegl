@@ -328,7 +328,7 @@ gchar **gegl_list_operations (guint *n_operations_p)
         }
     }
 
-  lock_operations_cache (TRUE);
+  lock_operations_cache (FALSE);
 
   n_operations = g_slist_length (operations_list);
   pasp_size   += (n_operations + 1) * sizeof (gchar *);
@@ -350,7 +350,7 @@ gchar **gegl_list_operations (guint *n_operations_p)
   if (n_operations_p)
     *n_operations_p = n_operations;
 
-  unlock_operations_cache (TRUE);
+  unlock_operations_cache (FALSE);
 
   return pasp;
 }
