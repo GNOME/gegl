@@ -1006,8 +1006,8 @@ GeglEDL *gcut_new_from_path (const char *path)
     }
     else
     {
-      parent = g_malloc0 (PATH_MAX);
-      getcwd (parent, PATH_MAX);
+      parent = g_malloc0 (strlen(path));
+      getcwd (parent, strlen(path));
     }
     edl = gcut_new_from_string ("", parent);
     if (!edl->path)
