@@ -79,22 +79,51 @@ gegl_downscale_2x2_generic (const Babl *format,
 {
   gint y;
   const Babl *tmp_format = gegl_babl_rgbA_linear_float ();
+  const Babl *from_fish  = babl_fish (format, tmp_format);
   const Babl *to_fish    = babl_fish (tmp_format, format);
-  void *in_tmp           = gegl_malloc (src_height * src_rowstride * 4 * 4);
-  void *out_tmp          = gegl_malloc (src_height * src_rowstride * 4 * 4);
-  guchar *src = out_tmp;
-  guchar *dst = dst_data;
+  const gint bpp         = babl_format_get_bytes_per_pixel (format);
+  const gint tmp_bpp     = 4 * 4;
+  gint dst_width         = src_width / 2;
+  gint dst_height        = src_height / 2;
+  gint in_tmp_rowstride  = src_width * tmp_bpp;
+  gint out_tmp_rowstride = dst_width * tmp_bpp;
+  void *in_tmp           = gegl_malloc (src_height * in_tmp_rowstride);
+  void *out_tmp          = gegl_malloc (dst_height * out_tmp_rowstride);
 
-  babl_process (babl_fish (format, tmp_format),
-                src_data, in_tmp, src_width * src_height);
-  gegl_downscale_2x2_float (4 * 4, src_width, src_height,
-                            in_tmp, src_width * 4 * 4,
-                            out_tmp, src_width * 4 * 4);
-  for (y = 0; y < src_height / 2; y++)
+  if (src_rowstride == src_width * bpp)
     {
-      babl_process (to_fish, src, dst, src_width / 2);
-      dst += dst_rowstride;
-      src += (src_width * 4 * 4);
+      babl_process (from_fish, src_data, in_tmp, src_width * src_height);
+    }
+  else
+    {
+      guchar *src = src_data;
+      guchar *dst = in_tmp;
+
+      for (y = 0; y < src_height; y++)
+        {
+          babl_process (from_fish, src, dst, src_width);
+          src += src_rowstride;
+          dst += in_tmp_rowstride;
+        }
+    }
+  gegl_downscale_2x2_float (tmp_bpp, src_width, src_height,
+                            in_tmp, in_tmp_rowstride,
+                            out_tmp, out_tmp_rowstride);
+  if (dst_rowstride == dst_width * bpp)
+    {
+      babl_process (to_fish, out_tmp, dst_data, dst_width * dst_height);
+    }
+  else
+    {
+      guchar *src = out_tmp;
+      guchar *dst = dst_data;
+
+      for (y = 0; y < dst_height; y++)
+        {
+          babl_process (to_fish, src, dst, dst_width);
+          src += out_tmp_rowstride;
+          dst += dst_rowstride;
+        }
     }
   gegl_free (in_tmp);
   gegl_free (out_tmp);
