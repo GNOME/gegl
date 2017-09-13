@@ -167,7 +167,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"es desconeix el paràmetre «%s», s’us mostra l'ajuda\n"
+"es desconeix el paràmetre «%s», se us mostra l'ajuda\n"
 "\n"
 "\n"
 
@@ -283,7 +283,7 @@ msgstr ""
 
 #: ../gegl/gegl-init.c:283
 msgid "Default size of tiles in GeglBuffers"
-msgstr "La mida, per defecte, de les tessel·la en els GeglBuffers"
+msgstr "La mida, per defecte, de les tessel·les en els GeglBuffers"
 
 #: ../gegl/gegl-init.c:288
 msgid "The count of pixels to compute simultaneously"
@@ -786,7 +786,7 @@ msgid ""
 msgstr ""
 "Conversió del color a escala de grisos. Utilitza embolcalls formats amb "
 "STRESS per realitzar diferències de color local, preservant la generació "
-"d’escala de grisos."
+"d'escala de grisos."
 
 #: ../operations/common/cartoon.c:25
 msgid "Mask radius"
@@ -2058,7 +2058,7 @@ msgstr "Nombre de nivells del canal alfa"
 
 #: ../operations/common/dither.c:47
 msgid "Dithering method"
-msgstr "Mètode de disseminat"
+msgstr "Mètode de tramat"
 
 #: ../operations/common/dither.c:49
 msgid "The dithering method to use"
@@ -2075,7 +2075,7 @@ msgid ""
 "counteract quantization induced banding."
 msgstr ""
 "Redueix el nombre de colors de la imatge, amb la reducció del nombre de "
-"nivells per canal (colors i alfa). Diferents mètodes dedisseminat es poden "
+"nivells per canal (colors i alfa). Diferents mètodes de tramats es poden "
 "especificar per contrarestar la quantificació de bandes induïdes."
 
 #: ../operations/common/dropshadow.c:25 ../operations/common/layer.c:36
@@ -2341,7 +2341,7 @@ msgid ""
 "Changes Exposure of an image, allows stepping HDR and photographs up/down in "
 "stops. "
 msgstr ""
-"Canvia l’exposició d’una imatge, permet fer pas a pas HDR i fotografies de "
+"Canvia l'exposició d'una imatge, permet fer pas a pas HDR i fotografies de "
 "dalt/a baix a les pauses."
 
 #: ../operations/common/fattal02.c:34
@@ -2885,7 +2885,7 @@ msgstr "Tipus d'Il·lusió"
 
 #: ../operations/common/illusion.c:40
 msgid "Type of illusion"
-msgstr "Tipus d’il·lusió"
+msgstr "Tipus d'il·lusió"
 
 #: ../operations/common/illusion.c:268
 msgid "Illusion"
@@ -3285,7 +3285,7 @@ msgstr "Algorisme de Prim"
 
 #: ../operations/common/maze.c:58
 msgid "Algorithm type"
-msgstr "Tipus d’algoritme"
+msgstr "Tipus d'algoritme"
 
 #: ../operations/common/maze.c:61
 msgid "Maze algorithm type"
@@ -3916,7 +3916,7 @@ msgstr "RGB independent"
 
 #: ../operations/common/noise-rgb.c:31
 msgid "Control amount of noise for each RGB channel separately"
-msgstr "Controla el nivell de soroll per cada canal RGB de forma indepedent"
+msgstr "Controla el nivell de soroll per cada canal RGB de forma independent"
 
 #: ../operations/common/noise-rgb.c:33
 msgid "Linear RGB"
@@ -4074,7 +4074,7 @@ msgid ""
 "input buffer."
 msgstr ""
 "Valor d'opacitat global que s'utilitza sempre al capdamunt de la memòria "
-"intermèdia, auxiliar i opcional, d'entrada ."
+"intermèdia, auxiliar i opcional, d'entrada."
 
 #: ../operations/common/opacity.c:310
 msgid ""
@@ -4519,7 +4519,7 @@ msgstr "Tipus d'ona"
 
 #: ../operations/common/ripple.c:54
 msgid "Retain tilebility"
-msgstr "Retén l’enrajolat"
+msgstr "Retén l'enrajolat"
 
 #: ../operations/common/ripple.c:171
 msgid "Ripple"
@@ -4612,7 +4612,7 @@ msgstr "Factor de complexitat"
 
 #: ../operations/common/sinus.c:53
 msgid "Force tiling"
-msgstr "força l’enrajolat"
+msgstr "força l'enrajolat"
 
 #: ../operations/common/sinus.c:54
 msgid "If set, the pattern generated will tile"
@@ -5021,8 +5021,8 @@ msgid ""
 "Make the input buffer seamlessly tileable. The algorithm is not content-"
 "aware, so the result may need post-processing."
 msgstr ""
-"Fa que la memòria intermèdia d’entrada faci un enrajolat perfecte. "
-"L’algorisme no és conscient del contingut, i potser al resultat li caldrà un "
+"Fa que la memòria intermèdia d'entrada faci un enrajolat perfecte. "
+"L'algorisme no és conscient del contingut, i potser al resultat li caldrà un "
 "post processament."
 
 #: ../operations/common/unsharp-mask.c:24
@@ -5118,7 +5118,7 @@ msgstr "Velocitat de propagació"
 
 #: ../operations/common/value-propagate.c:56
 msgid "Color to use for the \"Only color\" and \"Color to peaks\" modes"
-msgstr "El color que s’utilitza als modes «Només color» i «Color per pics»"
+msgstr "El color que s'utilitza als modes «Només color» i «Color per pics»"
 
 #: ../operations/common/value-propagate.c:61
 msgid "To top"
@@ -5130,7 +5130,7 @@ msgstr "Propaga a dalt"
 
 #: ../operations/common/value-propagate.c:64
 msgid "To left"
-msgstr "A l’esquerra"
+msgstr "A l'esquerra"
 
 #: ../operations/common/value-propagate.c:65
 msgid "Propagate to left"
@@ -5406,11 +5406,11 @@ msgstr "Etiquetes de propagació per a la transformació decisiva"
 
 #: ../operations/common/wavelet-blur.c:29
 msgid "Radius of the wavelet blur"
-msgstr "Radi del difuminat de l’oneta"
+msgstr "Radi del difuminat de l'oneta"
 
 #: ../operations/common/wavelet-blur.c:281
 msgid "Wavelet Blur"
-msgstr "Difuminat de l’oneta"
+msgstr "Difuminat de l'oneta"
 
 #: ../operations/common/wavelet-blur.c:285
 msgid ""
@@ -5525,7 +5525,7 @@ msgstr "Estil de l'efecte"
 
 #: ../operations/common/wind.c:53
 msgid "Direction of the effect"
-msgstr "Direcció de l’efecte"
+msgstr "Direcció de l'efecte"
 
 #: ../operations/common/wind.c:55
 msgid "Edge Affected"
@@ -5572,7 +5572,7 @@ msgid ""
 "that is valid."
 msgstr ""
 "Nul o una memòria intermèdia Gegl que conté els resultats de renderització "
-"de la memòria cau, es tracta d’una memòria intermèdia especial on "
+"de la memòria cau, es tracta d'una memòria intermèdia especial on "
 "gegl_memòria_intermèdia_llista_vàlida_rectangles retorna la part de la "
 "memòria cau vàlida."
 
@@ -5712,7 +5712,7 @@ msgstr "audio_mostra_velocitat"
 
 #: ../operations/external/ff-load.c:42
 msgid "audio_channels"
-msgstr "Canals d’àudio"
+msgstr "Canals d'àudio"
 
 #: ../operations/external/ff-load.c:44
 msgid "frame-rate"
@@ -5728,7 +5728,7 @@ msgstr "Còdec de vídeo"
 
 #: ../operations/external/ff-load.c:50
 msgid "audio-codec"
-msgstr "Còdec d’àudio"
+msgstr "Còdec d'àudio"
 
 #: ../operations/external/ff-load.c:52 ../operations/external/ff-save.c:32
 msgid "audio"
@@ -5750,7 +5750,7 @@ msgstr ""
 
 #: ../operations/external/ff-save.c:33
 msgid "Audio codec"
-msgstr "Còdec d’àudio"
+msgstr "Còdec d'àudio"
 
 #: ../operations/external/ff-save.c:34
 msgid ""
@@ -5769,7 +5769,7 @@ msgstr "-1 significa la detecció automàtica del primer fragment d'àudio"
 
 #: ../operations/external/ff-save.c:38
 msgid "audio bitrate in kb/s"
-msgstr "Taxa de bits de l’àudio en kb/s"
+msgstr "Taxa de bits de l'àudio en kb/s"
 
 #: ../operations/external/ff-save.c:39 ../operations/external/ff-save.c:47
 msgid "Target encoded video bitrate in kb/s"
@@ -6125,7 +6125,7 @@ msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
 msgstr ""
-"Donat un tri-mapa dispers i una imatge d’entrada, crea un primer pla alfa "
+"Donat un tri-mapa dispers i una imatge d'entrada, crea un primer pla alfa "
 "mat. Estableix el blanc com a seleccionat i el negre com a no seleccionat "
 "pel tri-mapa."
 
@@ -6185,7 +6185,7 @@ msgstr "Preserva el Model"
 
 #: ../operations/external/npd.c:45
 msgid "When TRUE the model will not be freed"
-msgstr "Quan és TRUE no s’alliberarà el model"
+msgstr "Quan és TRUE no s'alliberarà el model"
 
 #: ../operations/external/npd.c:50 ../operations/transform/transform-core.c:195
 #: ../operations/workshop/ditto.c:29
@@ -6314,7 +6314,7 @@ msgstr ""
 
 #: ../operations/external/png-load.c:30
 msgid "URI for file to load."
-msgstr "URI pel fitxer que s'ha de carregar"
+msgstr "URI pel fitxer que s'ha de carregar."
 
 #: ../operations/external/png-load.c:498
 msgid "PNG File Loader"
@@ -6462,7 +6462,7 @@ msgstr "Família de tipus de lletra (UTF-8)"
 
 #: ../operations/external/text.c:33
 msgid "Font size in pixels."
-msgstr "Mida del tipus de lletra en píxels"
+msgstr "Mida del tipus de lletra en píxels."
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: ../operations/external/text.c:39
@@ -6531,7 +6531,7 @@ msgstr "Directori"
 
 #: ../operations/external/tiff-load.c:31
 msgid "Image file directory (subfile)"
-msgstr "Directori d’arxius d’imatge (subfitxer)"
+msgstr "Directori d'arxius d'imatge (subfitxer)"
 
 #: ../operations/external/tiff-load.c:876
 msgid "TIFF File Loader"
@@ -6573,7 +6573,7 @@ msgstr "FPS"
 
 #: ../operations/external/v4l.c:38 ../operations/workshop/external/v4l2.c:33
 msgid "autotrigger reload this many times a second."
-msgstr "Torna a carregar automàticament aquestes vegades per segon"
+msgstr "Torna a carregar automàticament aquestes vegades per segon."
 
 #: ../operations/external/v4l.c:331
 msgid "Video4Linux Frame Source"
@@ -6871,8 +6871,8 @@ msgstr "Escala de refinament"
 msgid ""
 "Maximal scale of refinement points to be used for the interpolation mesh"
 msgstr ""
-"Quantitat màxima de punts de refinament que s’utilitzarà per a la malla "
-"d’interpolació"
+"Quantitat màxima de punts de refinament que s'utilitzarà per a la malla "
+"d'interpolació"
 
 #: ../operations/seamless-clone/seamless-clone.c:27
 #: ../operations/seamless-clone/seamless-clone.c:33
@@ -6984,7 +6984,7 @@ msgstr "Gira al centre"
 msgid "Rotate the buffer around its center, taking care of possible offsets."
 msgstr ""
 "Gira la memòria intermèdia al voltant del seu centre, tenint en compte "
-"possibles desplaçaments"
+"possibles desplaçaments."
 
 #: ../operations/transform/scale-ratio.c:26
 msgid "Horizontal scale factor"
@@ -7476,7 +7476,7 @@ msgid ""
 msgstr ""
 "Renderitza els perfils de lluminositat dels components vermell, verd i blau "
 "al llarg de la línia especificada en la memòria intermèdia d'entrada, "
-"traçats en una memòria intermèdia de la mida especificada"
+"traçats en una memòria intermèdia de la mida especificada."
 
 #: ../operations/workshop/external/v4l2.c:25
 msgid "video device path"
