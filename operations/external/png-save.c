@@ -146,6 +146,7 @@ export_png (GeglOperation       *operation,
       white.red = 0xff;
       white.blue = 0xff;
       white.green = 0xff;
+      png_set_sRGB_gAMA_and_cHRM (png, info, PNG_sRGB_INTENT_RELATIVE);
     }
   else
     white.gray = 0xff;
