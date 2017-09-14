@@ -34,7 +34,7 @@ property_double (pct_random, _("Randomization (%)"), 50.0)
 property_int   (repeat, _("Repeat"), 1)
    value_range (1, 100)
 
-property_seed (seed, _("Random seed"), rand) 
+property_seed (seed, _("Random seed"), rand)
 
 #else
 
@@ -47,8 +47,25 @@ property_seed (seed, _("Random seed"), rand)
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *input_format = gegl_operation_get_source_format (operation, "input");
+  GeglProperties *o        = GEGL_PROPERTIES (operation);
+
   gegl_operation_set_format (operation, "input" , babl_format ("R'G'B'A float"));
   gegl_operation_set_format (operation, "output", babl_format ("R'G'B'A float"));
+
+  if (input_format)
+    {
+      if (babl_format_get_model (input_format) == babl_model ("Y'") ||
+          babl_format_get_model (input_format) == babl_model ("Y'A") ||
+          babl_format_get_model (input_format) == babl_model ("Y") ||
+          babl_format_get_model (input_format) == babl_model ("YA"))
+        o->user_data = (void*)0x1;
+
+      /* a bit hacky, signaling of data being grayscale data and only
+         temporarily in RGBA - performance could be improved by having
+         dedicated code paths for gray formats.
+       */
+    }
 }
 
 static gboolean
@@ -87,9 +104,18 @@ process (GeglOperation       *operation,
             if (gegl_random_float_range (o->rand, x, y, 0, n, 0.0, 100.0) <=
                 o->pct_random)
               {
-                red   = gegl_random_float (o->rand, x, y, 0, n+1);
-                green = gegl_random_float (o->rand, x, y, 0, n+2);
-                blue  = gegl_random_float (o->rand, x, y, 0, n+3);
+                if (o->user_data) /* input format was greyscale */
+                {
+                  red   =
+                  green =
+                  blue  = gegl_random_float (o->rand, x, y, 0, n+3);
+                }
+                else
+                {
+                  red   = gegl_random_float (o->rand, x, y, 0, n+1);
+                  green = gegl_random_float (o->rand, x, y, 0, n+2);
+                  blue  = gegl_random_float (o->rand, x, y, 0, n+3);
+                }
                 break;
               }
           }
@@ -125,6 +151,7 @@ cl_process (GeglOperation       *operation,
   cl_int      cl_err           = 0;
   cl_mem      cl_random_data   = NULL;
   cl_float    pct_random       = o->pct_random;
+  cl_int      gray             = o->user_data ? 1 : 0;
   cl_int      x_offset         = roi->x;
   cl_int      y_offset         = roi->y;
   cl_int      roi_width        = roi->width;
@@ -164,6 +191,7 @@ cl_process (GeglOperation       *operation,
                            sizeof(cl_int),   &wr_width,
                            sizeof(cl_ushort4), &rand,
                            sizeof(cl_float), &pct_random,
+                           sizeof(cl_int),   &gray,
                            NULL);
   CL_CHECK;
 

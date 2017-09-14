@@ -24,6 +24,7 @@ __kernel void cl_noise_hurl(__global       float4    *src,
                                            int        whole_region_width,
                                            GeglRandom rand,
                                            float      pct_random,
+                                           int        gray,
                                            int        offset)
 {
   int gid  = get_global_id(0);
@@ -38,18 +39,27 @@ __kernel void cl_noise_hurl(__global       float4    *src,
 
   float pc          = gegl_cl_random_float_range (random_data,
                                                   rand, x, y, 0, n, 0, 100);
-  float red_noise   = gegl_cl_random_float (random_data,
-                                            rand, x, y, 0, n+1);
-  float green_noise = gegl_cl_random_float (random_data,
-                                            rand, x, y, 0, n+2);
-  float blue_noise  = gegl_cl_random_float (random_data,
-                                            rand, x, y, 0, n+3);
 
   if(pc <= pct_random)
     {
+      float red_noise   = gegl_cl_random_float (random_data,
+                                                rand, x, y, 0, n+1);
+
       src_v.x = red_noise;
-      src_v.y = green_noise;
-      src_v.z = blue_noise;
+      if (gray == 0)
+      {
+        float green_noise = gegl_cl_random_float (random_data,
+                                                  rand, x, y, 0, n+2);
+        float blue_noise  = gegl_cl_random_float (random_data,
+                                                  rand, x, y, 0, n+3);
+        src_v.y = green_noise;
+        src_v.z = blue_noise;
+      }
+      else
+      {
+        src_v.y = red_noise;
+        src_v.z = red_noise;
+      }
     }
   src[gid] = src_v;
 }
