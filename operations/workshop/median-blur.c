@@ -111,7 +111,7 @@ histogram_get_median (Histogram *hist,
   comp->last_median     = i;
   comp->last_median_sum = sum;
 
-  return ((gfloat) i + .5f) / (gfloat) N_BINS;
+  return (gfloat) i / (gfloat) (N_BINS - 1);
 }
 
 static inline void
@@ -398,8 +398,8 @@ convert_values_to_bins (gint32   *src,
           gfloat value = ((gfloat *) src)[c];
           gint   bin;
 
-          bin = (gint) (CLAMP (value, 0.0f, 1.0f) * N_BINS);
-          bin = MIN (bin, N_BINS - 1);
+          bin = (gint) (value * (N_BINS - 1) + 0.5f);
+          bin = CLAMP (bin, 0, N_BINS - 1);
 
           src[c] = bin;
         }
@@ -414,7 +414,7 @@ prepare (GeglOperation *operation)
   GeglOperationAreaFilter *area      = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o         = GEGL_PROPERTIES (operation);
   const Babl              *in_format = gegl_operation_get_source_format (operation, "input");
-  const Babl              *format    = babl_format ("RGB float");
+  const Babl              *format    = babl_format ("R'G'B' float");
 
   area->left   =
   area->right  =
@@ -427,7 +427,7 @@ prepare (GeglOperation *operation)
   if (in_format)
     {
       if (babl_format_has_alpha (in_format))
-        format = babl_format ("RGBA float");
+        format = babl_format ("R'G'B'A float");
     }
 
   gegl_operation_set_format (operation, "input", format);
