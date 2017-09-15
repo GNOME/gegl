@@ -199,7 +199,7 @@ cl_process (GeglOperation       *operation,
 
   for(it = 0; it < o->repeat; ++it)
     {
-      cl_err = gegl_clSetKernelArg (cl_data->kernel[0], 8, sizeof(cl_int),
+      cl_err = gegl_clSetKernelArg (cl_data->kernel[0], 9, sizeof(cl_int),
                                     (void*)&offset);
       CL_CHECK;
       cl_err = gegl_clEnqueueNDRangeKernel (gegl_cl_get_command_queue (),
