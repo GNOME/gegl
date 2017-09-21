@@ -106,11 +106,12 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class->process = process;
 
   gegl_operation_class_set_keys (operation_class,
-      "name",       "gegl:hue-chroma",
-      "title",      _("Hue-Chroma"),
-      "categories", "color",
-      "cl-source",   hue_chroma_cl_source,
-      "description", _("Adjust LCH Hue, Chroma, and Lightness"),
+      "name",           "gegl:hue-chroma",
+      "title",          _("Hue-Chroma"),
+      "categories",     "color",
+      "reference-hash", "9bbe341d798da4f7b181c903e6f442fd",
+      "cl-source",      hue_chroma_cl_source,
+      "description",    _("Adjust LCH Hue, Chroma, and Lightness"),
       NULL);
 }
 
