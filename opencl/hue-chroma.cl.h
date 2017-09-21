@@ -1,0 +1,17 @@
+static const char* hue_chroma_cl_source =
+"__kernel void gegl_hue_chroma (__global const float4 *in,                     \n"
+"                               __global       float4 *out,                    \n"
+"                                              float   hue,                    \n"
+"                                              float   chroma,                 \n"
+"                                              float   lightness)              \n"
+"{                                                                             \n"
+"  int gid = get_global_id(0);                                                 \n"
+"  float4 in_v  = in [gid];                                                    \n"
+"  float4 out_v;                                                               \n"
+"  out_v.x = in_v.x + lightness;                                               \n"
+"  out_v.y = clamp(in_v.y + chroma, 0.f, 200.f);                               \n"
+"  out_v.z = in_v.z + hue;                                                     \n"
+"  out_v.w = in_v.w;                                                           \n"
+"  out[gid]  =  out_v;                                                         \n"
+"}                                                                             \n"
+;

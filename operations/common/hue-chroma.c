@@ -91,6 +91,8 @@ process (GeglOperation       *op,
   return TRUE;
 }
 
+#include "opencl/hue-chroma.cl.h"
+
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
@@ -107,6 +109,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",       "gegl:hue-chroma",
       "title",      _("Hue-Chroma"),
       "categories", "color",
+      "cl-source",   hue_chroma_cl_source,
       "description", _("Adjust LCH Hue, Chroma, and Lightness"),
       NULL);
 }
