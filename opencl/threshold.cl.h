@@ -8,7 +8,7 @@ static const char* threshold_cl_source =
 "  float2 in_v  = in [gid];                                                    \n"
 "  float  aux_v = (aux)? aux[gid] : value;                                     \n"
 "  float2 out_v;                                                               \n"
-"  out_v.x = (in_v.x > aux_v)? 1.0f : 0.0f;                                    \n"
+"  out_v.x = (in_v.x >= aux_v)? 1.0f : 0.0f;                                   \n"
 "  out_v.y = in_v.y;                                                           \n"
 "  out[gid]  =  out_v;                                                         \n"
 "}                                                                             \n"
