@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-09-24 17:53+0200\n"
-"PO-Revision-Date: 2017-09-25 01:19+0200\n"
+"PO-Revision-Date: 2017-09-25 10:11+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -601,11 +601,7 @@ msgid ""
 "Changes the light level and contrast. This operation operates in linear "
 "light, 'contrast' is a scale factor around 50%% gray, and 'brightness' a "
 "constant offset to apply after contrast scaling."
-msgstr ""
-"Cambia i livelli di luce e di contrasto. Questa operazione funziona in luce "
-"lineare, il \"contrasto\" è un fattore di scala attorno al 50%% di grigio, "
-"mentre la \"luminosità\" è uno spostamento costante da applicare dopo aver "
-"effettuato la scala di contrasto."
+msgstr "Cambia i livelli di luce e di contrasto. Questa operazione funziona in luce lineare, il \"contrasto\" è un fattore di scala attorno al 50%% di grigio, mentre la \"luminosità\" è uno scostamento costante da applicare dopo aver effettuato la scala di contrasto."
 
 #: ../operations/common/buffer-sink.c:25 ../operations/common/write-buffer.c:25
 msgid "Buffer location"
@@ -709,14 +705,14 @@ msgstr "Profondità"
 #: ../operations/seamless-clone/seamless-clone.c:26
 #: ../operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
-msgstr "Spostamento X"
+msgstr "Scostamento X"
 
 #: ../operations/common/bump-map.c:67 ../operations/common/checkerboard.c:47
 #: ../operations/common/grid.c:44 ../operations/common/mirrors.c:50
 #: ../operations/seamless-clone/seamless-clone.c:32
 #: ../operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
-msgstr "Spostamento Y"
+msgstr "Scostamento Y"
 
 #: ../operations/common/bump-map.c:73
 msgid "Waterlevel"
@@ -1577,7 +1573,7 @@ msgstr "Divisore"
 #: ../operations/workshop/bayer-matrix.c:64
 #: ../operations/workshop/linear-sinusoid.c:71
 msgid "Offset"
-msgstr "Spostamento"
+msgstr "Scostamento"
 
 #: ../operations/common/convolution-matrix.c:59
 msgid "Red channel"
@@ -1918,7 +1914,7 @@ msgstr "Moltiplicatore di spostamento per la direzione verticale"
 
 #: ../operations/common/displace.c:75
 msgid "Displacement multiplier for the angular offset"
-msgstr "Moltiplicatore di spostamento per la compensazione angolare"
+msgstr "Moltiplicatore di scostamento per la compensazione angolare"
 
 #: ../operations/common/displace.c:77
 msgid "Center displacement"
@@ -2975,22 +2971,16 @@ msgid "Invert in Perceptual space"
 msgstr "Inverti nello spazio percettivo"
 
 #: ../operations/common/invert-gamma.c:84
-#, fuzzy
 msgid ""
 "Invert the components (except alpha) perceptually, the result is the "
 "corresponding \"negative\" image."
-msgstr ""
-"Inverte le componenti (eccetto alfa), il risultato è l'immagine "
-"corrispondente \"negativa\"."
+msgstr "Inverte le componenti (eccetto alfa) percettivamente, il risultato è l'immagine corrispondente \"negativa\"."
 
 #: ../operations/common/invert-linear.c:79
-#, fuzzy
 msgid ""
 "Invert the components (except alpha) in linear light, the result is the "
 "corresponding \"negative\" image."
-msgstr ""
-"Inverte le componenti (eccetto alfa), il risultato è l'immagine "
-"corrispondente \"negativa\"."
+msgstr "Inverte le componenti (eccetto alfa) in luce lineare, il risultato è l'immagine corrispondente \"negativa\"."
 
 #: ../operations/common/layer.c:30
 msgid "Operation"
@@ -3255,9 +3245,8 @@ msgstr ""
 "relative della sorgente"
 
 #: ../operations/common/matting-global.c:490
-#, fuzzy
 msgid "Matting Global"
-msgstr "Matting Global"
+msgstr "Satinatura globale"
 
 #: ../operations/common/matting-global.c:492
 msgid ""
@@ -3706,21 +3695,19 @@ msgid "Angleboost"
 msgstr "Impulsoangolare"
 
 #: ../operations/common/newsprint.c:61
-#, fuzzy
 msgid ""
 "multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
 "stronger where there is color."
-msgstr "multiplication factor for desired rotation of the local space for texture, the way this is computed makes it weak for desaturated colors and possibly stronger where there is color."
+msgstr "fattore moltiplicativo per la rotazione desiderata dello spazio locale per il motivo, il modo in cui questo viene calcolato lo rende debole per colori desaturati e forse più forte dove c'è colore."
 
 #: ../operations/common/newsprint.c:63
 msgid "Black and green angle"
 msgstr "Angolo del nero e del verde"
 
 #: ../operations/common/newsprint.c:66
-#, fuzzy
 msgid "angle offset for patterns"
-msgstr "angle offset for patterns"
+msgstr "Scostamento angolo per i motivi"
 
 #: ../operations/common/newsprint.c:72
 msgid "Green angle"
@@ -4291,7 +4278,7 @@ msgstr "Profondità cerchio in percentuale"
 
 #: ../operations/common/polar-coordinates.c:38
 msgid "Offset angle"
-msgstr "Angolo di spostamento"
+msgstr "Angolo di scostamento"
 
 #: ../operations/common/polar-coordinates.c:42
 msgid "Map backwards"
@@ -4699,19 +4686,16 @@ msgid "Spiral type"
 msgstr "Tipo di spirale"
 
 #: ../operations/common/spiral.c:36
-#, fuzzy
 msgid "Spiral origin X coordinate"
-msgstr "Coordinata x di inizio"
+msgstr "Coordinata X di origine spirale"
 
 #: ../operations/common/spiral.c:42
-#, fuzzy
 msgid "Spiral origin Y coordinate"
-msgstr "Coordinata x di inizio"
+msgstr "Coordinata Y di origine spirale"
 
 #: ../operations/common/spiral.c:48
-#, fuzzy
 msgid "Spiral radius"
-msgstr "Raggio di sfocamento"
+msgstr "Raggio spirale"
 
 #: ../operations/common/spiral.c:53
 msgid "Base"
@@ -4744,18 +4728,16 @@ msgid "Counter-clockwise"
 msgstr "Anti-orario"
 
 #: ../operations/common/spiral.c:77
-#, fuzzy
 msgid "Spiral swirl direction"
-msgstr "Direzione spostamento"
+msgstr "Direzione vortice spirale"
 
 #: ../operations/common/spiral.c:442
 msgid "Spiral"
 msgstr "Spirale"
 
 #: ../operations/common/spiral.c:446
-#, fuzzy
 msgid "Spiral renderer"
-msgstr "Disegnatore di griglie"
+msgstr "Disegnatore di spirali"
 
 #: ../operations/common/stress.c:28
 msgid ""
@@ -4870,9 +4852,8 @@ msgid "list of <number>s"
 msgstr "elenco di <numeri>"
 
 #: ../operations/common/svg-huerotate.c:118
-#, fuzzy
 msgid "SVG Hue Rotate"
-msgstr "Caricatore immagini SVG"
+msgstr "Ruota tonalità SVG"
 
 #: ../operations/common/svg-huerotate.c:119
 msgid "SVG color matrix operation svg_huerotate"
@@ -5107,13 +5088,10 @@ msgid "Value Invert"
 msgstr "Inverti valore"
 
 #: ../operations/common/value-invert.c:152
-#, fuzzy
 msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
-msgstr ""
-"Inverte solo il componente valore, il risultato è l'immagine corrispondente "
-"\"invertita\"."
+msgstr "Inverte il componente valore, il risultato ha la luminosità invertita, mantenendo il colore."
 
 #: ../operations/common/value-propagate.c:29
 msgid "More white (larger value)"
@@ -5378,9 +5356,8 @@ msgid "Hardness"
 msgstr "Durezza"
 
 #: ../operations/common/warp.c:44
-#, fuzzy
 msgid "Spacing"
-msgstr "Spaziatura piastrella"
+msgstr "Spaziatura"
 
 #: ../operations/common/warp.c:47
 msgid "Stroke"
@@ -5621,11 +5598,10 @@ msgstr ""
 "restituisce la parte valida della cache."
 
 #: ../operations/core/cache.c:94
-#, fuzzy
 msgid ""
 "An explicit caching node, caches results and should provide faster "
 "recomputation if what is cached by it is expensive but isn't changing."
-msgstr "An explicit caching node, caches results and should provide faster recomputation if what is cached by it is expensive but isn't changing."
+msgstr "Un nodo cache esplicito; la cache dovrebbe essere in grado di generare un aumento di velocità nel ricalcolo se ciò che viene memorizzato in essa è costoso in termini computazionali ma non varia."
 
 #: ../operations/core/cast-format.c:25
 msgid "Input format"
@@ -5664,11 +5640,10 @@ msgid "Clone"
 msgstr "Clone"
 
 #: ../operations/core/clone.c:111
-#, fuzzy
 msgid ""
 "Clone a buffer, this is the same as gegl:nop but can get special treatment "
 "to get more human readable references in serializations/UI."
-msgstr "Clone a buffer, this is the same as gegl:nop but can get special treatment to get more human readable references in serializations/UI."
+msgstr "Clona un buffer, è lo stesso di gegl:nop ma può ottenere un trattamento speciale per ottenere riferimenti più umanamente leggibili nella serializzazione/UI."
 
 #: ../operations/core/convert-format.c:88
 msgid "Convert Format"
@@ -5923,9 +5898,8 @@ msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
 #: ../operations/external/ff-save.c:1112
-#, fuzzy
 msgid "FFmpeg Frame Saver"
-msgstr "Caricatore quadro FFmpeg"
+msgstr "Salvatore quadro FFmpeg"
 
 #: ../operations/external/ff-save.c:1114
 msgid "FFmpeg video output sink"
@@ -6234,14 +6208,12 @@ msgid "Performs n-point image deformation"
 msgstr "Esegue una deformazione dell'immagine a n-punti"
 
 #: ../operations/external/npy-save.c:219
-#, fuzzy
 msgid "NumPy File Saver"
-msgstr "Salvatore file NPY"
+msgstr "Salvatore file NumPy"
 
 #: ../operations/external/npy-save.c:221
-#, fuzzy
 msgid "NumPy (Numerical Python) image saver"
-msgstr "Salvatore immagini NPY (Numerical PYthon)"
+msgstr "Salvatore immagini NumPy (Numerical Python)"
 
 #: ../operations/external/path.c:26
 msgid "Fill Color"
@@ -7004,9 +6976,7 @@ msgstr "Ruota sul centro"
 
 #: ../operations/transform/rotate-on-center.c:152
 msgid "Rotate the buffer around its center, taking care of possible offsets."
-msgstr ""
-"Ruota il buffer attorno al suo centro, tenendo conto di possibili "
-"spostamenti."
+msgstr "Ruota il buffer attorno al suo centro, tenendo conto di possibili scostamenti."
 
 #: ../operations/transform/scale-ratio.c:26
 msgid "Horizontal scale factor"
@@ -7297,16 +7267,14 @@ msgid "(appears in the global variable 'user_value' in lua."
 msgstr "(appare nella variabile globale \"user_value\" in lua."
 
 #: ../operations/workshop/external/gluas.c:994
-#, fuzzy
 msgid "gluas"
 msgstr "gluas"
 
 #: ../operations/workshop/external/gluas.c:996
-#, fuzzy
 msgid ""
 "Pixel level filter/composer scripting prototyping with lua. See http://"
 "pippin.gimp.org/image-processing/ for further details."
-msgstr "Pixel level filter/composer scripting prototyping with lua. See http://pippin.gimp.org/image-processing/ for further details."
+msgstr "Prototipaggio di scripting con lua per filtri/compositori a livello di pixel. Consultare http://pippin.gimp.org/image-processing/ per i dettagli."
 
 #: ../operations/workshop/external/lens-correct.c:28
 msgid "Maker"
@@ -7483,9 +7451,8 @@ msgid "Value at top"
 msgstr "Valore in cima"
 
 #: ../operations/workshop/external/line-profile.c:196
-#, fuzzy
 msgid "Line Profile"
-msgstr "Profilo sorgente"
+msgstr "Profilo linea"
 
 #: ../operations/workshop/external/line-profile.c:198
 msgid ""
