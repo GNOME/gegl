@@ -39,6 +39,7 @@ m4_define([gimp_full_name], [Generic Graphical Library])
 # required versions of external libraries
 m4_define([babl_required_version], [0.1.30])
 m4_define([cairo_required_version], [0.0.0])
+m4_define([exiv2_required_version], [0.25])
 m4_define([gdk_pixbuf_required_version], [2.32.0])
 m4_define([introspection_required_version], [1.32.0])
 m4_define([glib_required_version], [2.44.0])
@@ -1122,7 +1123,7 @@ AC_ARG_WITH(exiv2, [  --without-exiv2         build without libexiv2 support])
 
 have_exiv2="no"
 if test "x$with_exiv2" != "xno"; then
-  PKG_CHECK_MODULES(EXIV2, exiv2,
+  PKG_CHECK_MODULES(EXIV2, exiv2 >= exiv2_required_version,
     have_exiv2="yes",
     have_exiv2="no  (exiv2 library not found)")
 fi
