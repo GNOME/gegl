@@ -11,7 +11,7 @@ LIBS = $(op_libs)
 
 opdir = $(ext_dir)
 op_LTLIBRARIES = \
-	gegl-common.la 
+	gegl-common.la
 
 gegl_common_la_SOURCES =\
     alien-map.c \
@@ -157,6 +157,7 @@ gegl_common_la_SOURCES =\
 	waterpixels.c \
 	watershed-transform.c \
 	waves.c \
+	wavelet-blur-1d.c \
 	wavelet-blur.c \
 	weighted-blend.c \
 	whirl-pinch.c \
