@@ -1,10 +1,11 @@
 SUBDIRS = \
 	core		\
 	common		\
+	common-gpl3+	\
 	generated	\
 	seamless-clone \
 	transform \
-    json \
+ 	json \
 	external
 
 if ENABLE_WORKSHOP

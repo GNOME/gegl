@@ -1310,6 +1310,7 @@ operations/core/Makefile
 operations/json/Makefile
 operations/common/Makefile
 operations/common/perlin/Makefile
+operations/common-gpl3+/Makefile
 operations/seamless-clone/Makefile
 operations/external/Makefile
 operations/generated/Makefile
