@@ -22,6 +22,7 @@
 #include "geglmodule.h"
 #include "geglmoduledb.h"
 #include "gegldatafiles.h"
+#include "gegl-config.h"
 
 enum
 {
@@ -309,6 +310,17 @@ static gboolean
 valid_module_name (const gchar *filename)
 {
   gchar *basename = g_path_get_basename (filename);
+
+  if (gegl_config()->application_license == NULL             ||
+      (strcmp (gegl_config ()->application_license, "GPL3") &&
+       strcmp (gegl_config ()->application_license, "GPL3+")))
+    {
+      if (strstr (basename, "-gpl3"))
+        {
+          g_free (basename);
+          return FALSE;
+        }
+    }
 
   if (! gegl_datafiles_check_extension (basename, "." G_MODULE_SUFFIX))
     {

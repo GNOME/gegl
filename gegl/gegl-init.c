@@ -170,14 +170,21 @@ gegl_swap_dir (void)
   return swap_dir;
 }
 
+static void load_module_path(gchar *path, GeglModuleDB *db);
+
 static void
 gegl_config_application_license_notify (GObject    *gobject,
                                         GParamSpec *pspec,
                                         gpointer    user_data)
 {
   GeglConfig *cfg = GEGL_CONFIG (gobject);
+  GSList *paths = gegl_get_default_module_paths ();
 
   gegl_operations_set_licenses_from_string (cfg->application_license);
+
+  /* causes load of .so's that might have been skipped due to filename */
+  g_slist_foreach(paths, (GFunc)load_module_path, module_db);
+  g_slist_free_full (paths, g_free);
 }
 
 
