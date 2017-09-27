@@ -255,6 +255,8 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
         gint aux2_buf_bpp = aux2?babl_format_get_bytes_per_pixel (aux2_buf_format):0;
         gint out_buf_bpp = babl_format_get_bytes_per_pixel (output_buf_format);
 
+        gint temp_id = 0;
+
         if (input)
         {
           if (! babl_format_has_alpha (in_buf_format))
@@ -269,6 +271,7 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
             if (in_buf_format != in_format)
             {
               thread_data[j].input_fish = babl_fish (in_buf_format, in_format);
+              thread_data[j].in_tmp = gegl_temp_buffer (temp_id++, in_bpp * result->width * result->height);
             }
             else
             {
@@ -294,6 +297,7 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
             if (aux_buf_format != aux_format)
             {
               thread_data[j].aux_fish = babl_fish (aux_buf_format, aux_format);
+              thread_data[j].aux_tmp = gegl_temp_buffer (temp_id++, aux_bpp * result->width * result->height);
             }
             else
             {
@@ -321,6 +325,7 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
             if (aux2_buf_format != aux2_format)
             {
               thread_data[j].aux2_fish = babl_fish (aux2_buf_format, aux2_format);
+              thread_data[j].aux2_tmp = gegl_temp_buffer (temp_id++, aux2_bpp * result->width * result->height);
             }
             else
             {
@@ -339,6 +344,7 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
           if (output_buf_format != gegl_buffer_get_format (output))
           {
             thread_data[j].output_fish = babl_fish (out_format, output_buf_format);
+            thread_data[j].output_tmp = gegl_temp_buffer (temp_id++, out_bpp * result->width * result->height);
           }
           else
           {
@@ -351,7 +357,6 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
             gint threads = gegl_config_threads ();
             gint pending;
             gint bit;
-	    gint temp_id = 0;
 
             if (i->roi[0].height < threads)
             {
@@ -382,15 +387,6 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
               thread_data[j].level = level;
               thread_data[j].success = TRUE;
             }
-
-	    for (gint j = 0; j < threads; j++)
-	    {
-               thread_data[j].in_tmp = input?gegl_temp_buffer (temp_id++, in_bpp * i->roi[j].width * i->roi[j].height):NULL;
-               thread_data[j].aux_tmp = aux?gegl_temp_buffer (temp_id++, aux_bpp * i->roi[j].width * i->roi[j].height):NULL;
-               thread_data[j].aux2_tmp = aux2?gegl_temp_buffer (temp_id++, aux2_bpp * i->roi[j].width * i->roi[j].height):NULL;
-               thread_data[j].output_tmp = gegl_temp_buffer (temp_id++, out_bpp * i->roi[j].width * i->roi[j].height);
-	    }
-
             pending = threads;
 
             for (gint j = 1; j < threads; j++)
