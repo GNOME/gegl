@@ -27,6 +27,8 @@
 #include "gegl-operation-context.h"
 #include "gegl-config.h"
 #include "gegl-types-internal.h"
+#include "gegl-buffer-private.h"
+#include "gegl-tile-storage.h"
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
@@ -312,7 +314,7 @@ gegl_operation_point_filter_process (GeglOperation       *operation,
             if (in_buf_format != in_format)
             {
               thread_data[j].input_fish = babl_fish (in_buf_format, in_format);
-              thread_data[j].in_tmp = gegl_temp_buffer (temp_id++, in_bpp * result->width * result->height);
+              thread_data[j].in_tmp = gegl_temp_buffer (temp_id++, in_bpp * output->tile_storage->tile_width * output->tile_storage->tile_height);
             }
             else
             {
@@ -329,7 +331,7 @@ gegl_operation_point_filter_process (GeglOperation       *operation,
           if (output_buf_format != gegl_buffer_get_format (output))
           {
             thread_data[j].output_fish = babl_fish (out_format, output_buf_format);
-            thread_data[j].output_tmp = gegl_temp_buffer (temp_id++, out_bpp * result->width * result->height);
+            thread_data[j].output_tmp = gegl_temp_buffer (temp_id++, out_bpp * output->tile_storage->tile_width * output->tile_storage->tile_height);
           }
           else
           {
