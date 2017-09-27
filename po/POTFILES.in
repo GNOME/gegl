@@ -32,7 +32,6 @@ operations/common/edge-sobel.c
 operations/common/exp-combine.c
 operations/common/exposure.c
 operations/common/fattal02.c
-operations/common/gaussian-blur-selective.c
 operations/common/gaussian-blur.c
 operations/common/gblur-1d.c
 operations/common/gegl-buffer-load-op.c
@@ -75,7 +74,6 @@ operations/common/opacity.c
 operations/common/open-buffer.c
 operations/common/over.c
 operations/common/panorama-projection.c
-operations/common/photocopy.c
 operations/common/pixelize.c
 operations/common/posterize.c
 operations/common/radial-gradient.c
@@ -98,8 +96,8 @@ operations/common/svg-saturate.c
 operations/common/threshold.c
 operations/common/tile.c
 operations/common/tile-seamless.c
-operations/common/unsharp-mask.c
 operations/common/unpremultiply.c
+operations/common/unsharp-mask.c
 operations/common/value-invert.c
 operations/common/vignette.c
 operations/common/warp.c
@@ -109,6 +107,10 @@ operations/common/wavelet-blur-1d.c
 operations/common/wavelet-blur.c
 operations/common/weighted-blend.c
 operations/common/write-buffer.c
+operations/common-gpl3+/antialias.c
+operations/common-gpl3+/apply-lens.c
+operations/common-gpl3+/bump-map.c
+operations/common-gpl3+/cartoon.c
 operations/common-gpl3+/channel-mixer.c
 operations/common-gpl3+/color-exchange.c
 operations/common-gpl3+/color-to-alpha.c
@@ -123,11 +125,8 @@ operations/common-gpl3+/emboss.c
 operations/common-gpl3+/engrave.c
 operations/common-gpl3+/fractal-explorer.c
 operations/common-gpl3+/fractal-trace.c
+operations/common-gpl3+/gaussian-blur-selective.c
 operations/common-gpl3+/illusion.c
-operations/common-gpl3+/antialias.c
-operations/common-gpl3+/apply-lens.c
-operations/common-gpl3+/bump-map.c
-operations/common-gpl3+/cartoon.c
 operations/common-gpl3+/lens-distortion.c
 operations/common-gpl3+/lens-flare.c
 operations/common-gpl3+/maze.c
@@ -137,9 +136,10 @@ operations/common-gpl3+/motion-blur-zoom.c
 operations/common-gpl3+/noise-slur.c
 operations/common-gpl3+/noise-solid.c
 operations/common-gpl3+/oilify.c
+operations/common-gpl3+/photocopy.c
 operations/common-gpl3+/plasma.c
-operations/common-gpl3+/red-eye-removal.c
 operations/common-gpl3+/polar-coordinates.c
+operations/common-gpl3+/red-eye-removal.c
 operations/common-gpl3+/ripple.c
 operations/common-gpl3+/shift.c
 operations/common-gpl3+/sinus.c
