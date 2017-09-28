@@ -29,6 +29,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/gegl/property-types
 
 AM_CFLAGS = $(DEP_CFLAGS) $(BABL_CFLAGS)
+AM_LDFLAGS = -no-install
 
 buffer_test_SOURCES_noinc = buffer-test.c
 buffer_test_SOURCES = $(buffer_test_SOURCES_noinc) buffer-tests.inc

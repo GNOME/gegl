@@ -52,6 +52,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/gegl/property-types
 
 AM_CFLAGS = $(DEP_CFLAGS) $(BABL_CFLAGS)
+AM_LDFLAGS = -no-install
 
 # Common libs
 LIBS = $(top_builddir)/gegl/libgegl-$(GEGL_API_VERSION).la	\
