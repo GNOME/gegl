@@ -105,7 +105,7 @@ read_from_stream (GInputStream *stream,
   return read;
 }
 
-static gsize
+static glong
 decode_from_stream (GInputStream *stream,
                     WebPIDecoder *decoder)
 {
