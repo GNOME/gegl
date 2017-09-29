@@ -347,7 +347,7 @@ query_tiff(GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES(operation);
   Priv *p = (Priv*) o->user_data;
-  gshort color_space, compression;
+  gushort color_space, compression;
   gushort bits_per_sample, samples_per_pixel;
   gushort sample_format;
   gboolean has_alpha = FALSE;
