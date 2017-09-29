@@ -1859,7 +1859,7 @@ static void update_double_string (const char *new_string, void *user_data)
     path_item.point[0].y = val;
     gegl_path_insert_node (path, -1, &path_item);
 done:
-    if(0);
+    if(0) {};
 
   }
   else
@@ -2479,7 +2479,7 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
           y -= mrg_em (mrg) * 1.15;
         }
 
-        if ((node == selected_node))
+        if (node == selected_node)
         {
           print_props (mrg, edl, node, mrg_em(mrg) * 1.0, mrg_em(mrg) * 1.8);
         }
@@ -2490,7 +2490,7 @@ static float print_nodes (Mrg *mrg, GeglEDL *edl, GeglNode *node, float x, float
         mrg_listen (mrg, MRG_CLICK, select_node, node, NULL);
 
         cairo_set_source_rgb (mrg_cr (mrg), 1,1,1);
-        if ((node == selected_node))
+        if (node == selected_node)
           cairo_set_line_width (mrg_cr (mrg), 3.0);
         else
           cairo_set_line_width (mrg_cr (mrg), 1.0);

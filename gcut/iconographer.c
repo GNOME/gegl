@@ -570,7 +570,7 @@ main (gint    argc,
       gint max_buf_pos = 0;
       for (frame = frame_start; frame <= frame_end; frame++)
         {
-          FrameInfo info = {0};
+          FrameInfo info = {{0}};
           uint8_t buffer[4096] = {0,};
           int buffer_pos = 0;
           GeglRectangle terrain_row;
