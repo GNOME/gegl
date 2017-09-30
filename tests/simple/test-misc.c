@@ -34,7 +34,7 @@ test_misc_case_sensitive_mime_handler (void)
   gegl_operation_handlers_register_loader (mime, handler);
 
   received_handler = gegl_operation_handlers_get_loader (mime);
-  if (! strcmp (received_handler, handler) == 0)
+  if ( strcmp (received_handler, handler) != 0)
     result = FAILURE;
 
   return result;
@@ -53,7 +53,7 @@ test_misc_case_insensitive_extension_handler (void)
 
   /* Make sure comparisions are case insensitive */
   received_handler = gegl_operation_handlers_get_loader (uppercase);
-  if (! strcmp (received_handler, handler) == 0)
+  if (strcmp (received_handler, handler) != 0)
     result = FAILURE;
 
   return result;
@@ -70,7 +70,7 @@ test_misc_save_handler (void)
   gegl_operation_handlers_register_saver (ext, handler);
 
   received_handler = gegl_operation_handlers_get_saver (ext);
-  if (! strcmp (received_handler, handler) == 0)
+  if (strcmp (received_handler, handler) != 0)
     result = FAILURE;
 
   return result;
