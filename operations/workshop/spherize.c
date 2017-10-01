@@ -224,11 +224,11 @@ process (GeglOperation       *operation,
       const gfloat *in_pixel  = iter->data[1];
       gfloat        x,  y;
 
-      y = dy * (iter->roi->y - cy);
+      y = dy * (iter->roi->y + 0.5 - cy);
 
       for (j = iter->roi->y; j < iter->roi->y + iter->roi->height; j++, y += dy)
         {
-          x = dx * (iter->roi->x - cx);
+          x = dx * (iter->roi->x + 0.5 - cx);
 
           for (i = iter->roi->x; i < iter->roi->x + iter->roi->width; i++, x += dx)
             {
@@ -248,8 +248,8 @@ process (GeglOperation       *operation,
                   else
                     src_d = f * d / (f_h - sqrt (r2 - d2));
 
-                  src_x = i;
-                  src_y = j;
+                  src_x = i + 0.5;
+                  src_y = j + 0.5;
 
                   if (d)
                     {
