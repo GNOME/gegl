@@ -131,8 +131,6 @@ parent_process (GeglOperation        *operation,
                 const GeglRectangle  *result,
                 gint                  level)
 {
-  GeglProperties *o = GEGL_PROPERTIES (operation);
-
   if (is_nop (operation))
     {
       GObject *input;
@@ -170,8 +168,9 @@ process (GeglOperation       *operation,
   gdouble              focal_length;
   gdouble              cap_radius;
   gdouble              cap_height;
-  gdouble              f, f2, r2, f_h, f_h2, f_hf, sgn;
+  gdouble              f, f2, r, r2, h, f_h, f_h2, f_hf;
   gboolean             is_id;
+  gboolean             inverse;
   gint                 i, j;
 
   sampler = gegl_buffer_sampler_new_at_level (input, format,
@@ -208,15 +207,16 @@ process (GeglOperation       *operation,
   cap_height        = cap_radius * cos (cap_angle);
 
   f    = focal_length;
-  f2   = focal_length * focal_length;
-  r2   = cap_radius * cap_radius;
-  f_h  = o->amount >= 0.0 ? focal_length + cap_height :
-                            focal_length - cap_height;
+  f2   = f * f;
+  r    = cap_radius;
+  r2   = r * r;
+  h    = cap_height;
+  f_h  = f + h;
   f_h2 = f_h * f_h;
   f_hf = f_h * f;
-  sgn  = o->amount >= 0.0 ? -1.0 : +1.0;
 
-  is_id = is_identity (operation);
+  is_id   = is_identity (operation);
+  inverse = o->amount < 0.0;
 
   while (gegl_buffer_iterator_next (iter))
     {
@@ -243,7 +243,10 @@ process (GeglOperation       *operation,
                   gdouble src_d;
                   gdouble src_x, src_y;
 
-                  src_d = (f_hf + sgn * sqrt (d2_f2 * r2 - f_h2 * d2)) * d / d2_f2;
+                  if (! inverse)
+                    src_d = (f_hf - sqrt (d2_f2 * r2 - f_h2 * d2)) * d / d2_f2;
+                  else
+                    src_d = f * d / (f_h - sqrt (r2 - d2));
 
                   src_x = i;
                   src_y = j;
