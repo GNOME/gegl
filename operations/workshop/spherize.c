@@ -288,9 +288,10 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
-  operation_class->prepare                 = prepare;
-  operation_class->get_required_for_output = get_required_for_output;
-  operation_class->process                 = parent_process;
+  operation_class->prepare                   = prepare;
+  operation_class->get_invalidated_by_change = get_required_for_output;
+  operation_class->get_required_for_output   = get_required_for_output;
+  operation_class->process                   = parent_process;
 
   filter_class->process                    = process;
 
