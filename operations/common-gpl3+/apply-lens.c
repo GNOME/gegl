@@ -43,6 +43,7 @@ property_boolean (keep_surroundings, _("Keep original surroundings"), FALSE)
 
 property_color (background_color, _("Background color"), "none")
   ui_meta ("role", "color-secondary")
+  ui_meta ("sensitive", "! keep_surroundings")
 
 #else
 
