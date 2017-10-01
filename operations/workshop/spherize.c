@@ -47,7 +47,7 @@ property_enum (sampler_type, _("Resampling method"),
   description(_("Mathematical method for reconstructing pixel values"))
 
 property_boolean (keep_surroundings, _("Keep original surroundings"), TRUE)
-  description(_("Keep image unchanged outside the sphewre"))
+  description(_("Keep image unchanged outside the sphere"))
   ui_meta ("visible", "mode {radial}")
 
 property_color (background_color, _("Background color"), "none")
