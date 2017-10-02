@@ -33,13 +33,13 @@ property_enum (mode, _("Mode"),
                GEGL_SPHERIZE_MODE_RADIAL)
   description (_("Displacement mode"))
 
-property_double (angle_of_view, _("Angle of view"), 90.0)
+property_double (angle_of_view, _("Angle of view"), 0.0)
   description (_("Camera angle of view"))
   value_range (0.0, 180.0)
   ui_meta ("unit", "degree")
 
 property_double (amount, _("Amount"), 1.0)
-  description (_("Spherical cap angle, as a fraction of the co-angle of view"))
+  description (_("Spherical cap apex angle, as a fraction of the co-angle of view"))
   value_range (-1.0, 1.0)
 
 property_enum (sampler_type, _("Resampling method"),
@@ -64,12 +64,14 @@ property_color (background_color, _("Background color"), "none")
 #include "gegl-op.h"
 #include <math.h>
 
+#define EPSILON 1e-10
+
 static gboolean
 is_identity (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
 
-  return o->angle_of_view < 1e-10 || fabs (o->amount) < 1e-10;
+  return fabs (o->amount) < EPSILON;
 }
 
 static gboolean
@@ -164,12 +166,13 @@ process (GeglOperation       *operation,
   gdouble              cx, cy;
   gdouble              dx = 0.0, dy = 0.0;
   gdouble              coangle_of_view_2;
-  gdouble              cap_angle;
   gdouble              focal_length;
+  gdouble              cap_angle_2;
   gdouble              cap_radius;
-  gdouble              cap_height;
-  gdouble              f, f2, r, r2, h, f_h, f_h2, f_hf;
+  gdouble              cap_depth;
+  gdouble              f, f2, r, r_inv, r2, p, f_p, f_p2, f_pf, a, a_inv;
   gboolean             is_id;
+  gboolean             perspective;
   gboolean             inverse;
   gint                 i, j;
 
@@ -201,22 +204,26 @@ process (GeglOperation       *operation,
     }
 
   coangle_of_view_2 = MAX (180.0 - o->angle_of_view, 0.01) * G_PI / 360.0;
-  cap_angle         = fabs (o->amount) * coangle_of_view_2;
   focal_length      = tan (coangle_of_view_2);
-  cap_radius        = 1.0 / sin (cap_angle);
-  cap_height        = cap_radius * cos (cap_angle);
+  cap_angle_2       = o->amount * coangle_of_view_2;
+  cap_radius        = 1.0 / sin (cap_angle_2);
+  cap_depth         = cap_radius * cos (cap_angle_2);
 
-  f    = focal_length;
-  f2   = f * f;
-  r    = cap_radius;
-  r2   = r * r;
-  h    = cap_height;
-  f_h  = f + h;
-  f_h2 = f_h * f_h;
-  f_hf = f_h * f;
+  f     = focal_length;
+  f2    = f * f;
+  r     = cap_radius;
+  r_inv = 1 / r;
+  r2    = r * r;
+  p     = cap_depth;
+  f_p   = f + p;
+  f_p2  = f_p * f_p;
+  f_pf  = f_p * f;
+  a     = cap_angle_2;
+  a_inv = 1 / a;
 
-  is_id   = is_identity (operation);
-  inverse = o->amount < 0.0;
+  is_id       = is_identity (operation);
+  perspective = o->angle_of_view > EPSILON;
+  inverse     = o->amount < 0.0;
 
   while (gegl_buffer_iterator_next (iter))
     {
@@ -236,33 +243,40 @@ process (GeglOperation       *operation,
 
               d2 = x * x + y * y;
 
-              if (! is_id && d2 <= 1.0)
+              if (! is_id && d2 > 0.0 && d2 < 1.0)
                 {
                   gdouble d     = sqrt (d2);
-                  gdouble d2_f2 = d2 + f2;
-                  gdouble src_d;
+                  gdouble src_d = d;
                   gdouble src_x, src_y;
 
                   if (! inverse)
-                    src_d = (f_hf - sqrt (d2_f2 * r2 - f_h2 * d2)) * d / d2_f2;
-                  else
-                    src_d = f * d / (f_h - sqrt (r2 - d2));
-
-                  src_x = i + 0.5;
-                  src_y = j + 0.5;
-
-                  if (d)
                     {
-                      if (dx) src_x = cx + src_d * x / (dx * d);
-                      if (dy) src_y = cy + src_d * y / (dy * d);
+                      gdouble d2_f2 = d2 + f2;
+
+                      if (perspective)
+                        src_d = (f_pf - sqrt (d2_f2 * r2 - f_p2 * d2)) * d / d2_f2;
+
+                      src_d = (G_PI_2 - acos (src_d * r_inv)) * a_inv;
                     }
+                  else
+                    {
+                      src_d = r * cos (G_PI_2 - src_d * a);
+
+                      if (perspective)
+                        src_d = f * src_d / (f_p - sqrt (r2 - src_d * src_d));
+                    }
+
+                  src_x = dx ? cx + src_d * x / (dx * d) :
+                               i + 0.5;
+                  src_y = dy ? cy + src_d * y / (dx * d) :
+                               j + 0.5;
 
                   gegl_sampler_get (sampler, src_x, src_y,
                                     NULL, out_pixel, GEGL_ABYSS_NONE);
                 }
               else
                 {
-                  if (d2 <= 1.0 || o->keep_surroundings)
+                  if (d2 < 1.0 || o->keep_surroundings)
                     memcpy (out_pixel, in_pixel, sizeof (gfloat) * 4);
                   else
                     memcpy (out_pixel, bg_color, sizeof (gfloat) * 4);
@@ -293,7 +307,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->get_required_for_output   = get_required_for_output;
   operation_class->process                   = parent_process;
 
-  filter_class->process                    = process;
+  filter_class->process                      = process;
 
   gegl_operation_class_set_keys (operation_class,
     "name",               "gegl:spherize",
@@ -301,7 +315,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "distort:map",
     "position-dependent", "true",
     "license",            "GPL3+",
-    "description",        _("Project image atop a spherical cap"),
+    "description",        _("Wrap image around a spherical cap"),
     NULL);
 }
 
