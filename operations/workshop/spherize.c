@@ -205,7 +205,7 @@ process (GeglOperation       *operation,
 
   coangle_of_view_2 = MAX (180.0 - o->angle_of_view, 0.01) * G_PI / 360.0;
   focal_length      = tan (coangle_of_view_2);
-  cap_angle_2       = o->amount * coangle_of_view_2;
+  cap_angle_2       = fabs (o->amount) * coangle_of_view_2;
   cap_radius        = 1.0 / sin (cap_angle_2);
   cap_depth         = cap_radius * cos (cap_angle_2);
 
@@ -268,7 +268,7 @@ process (GeglOperation       *operation,
 
                   src_x = dx ? cx + src_d * x / (dx * d) :
                                i + 0.5;
-                  src_y = dy ? cy + src_d * y / (dx * d) :
+                  src_y = dy ? cy + src_d * y / (dy * d) :
                                j + 0.5;
 
                   gegl_sampler_get (sampler, src_x, src_y,
