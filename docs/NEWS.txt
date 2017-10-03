@@ -1,3 +1,24 @@
+GEGL-0.3.22 2017-10-
+--------------------
+
+Core
+~~~~
+
+Reduced temporary buffer allocation overhead in mipmap downscaling and
+autothreading code. Completely avoid loading plug-ins .so with -gpl3 in
+filename unless the application using GEGL explicitly has enabled GPL3
+operations.
+
+Operations
+~~~~~~~~~~
+
+Improved threading awareness/capabilities of gegl:copy-buffer, gegl:wind,
+gegl:color-enhance, gegl:photocopy, gegl:matting-levin.
+Fixed grayscale behavior of gegl:noise-hurl.
+OpenCL vs CPU consistency fix for gegl:threshold, and optimization of
+gegl:wavelet-blur by decomposing to two 1d passes.
+
+
 GEGL-0.3.20 2017-08-15
 ----------------------
 
