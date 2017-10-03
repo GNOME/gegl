@@ -38,8 +38,12 @@ property_double (angle_of_view, _("Angle of view"), 0.0)
   value_range (0.0, 180.0)
   ui_meta ("unit", "degree")
 
-property_double (amount, _("Amount"), 1.0)
+property_double (curvature, _("Curvature"), 1.0)
   description (_("Spherical cap apex angle, as a fraction of the co-angle of view"))
+  value_range (-1.0, 1.0)
+
+property_double (amount, _("Amount"), 1.0)
+  description (_("Displacement scaling factor (negative values refer to the inverse displacement)"))
   value_range (-1.0, 1.0)
 
 property_enum (sampler_type, _("Resampling method"),
@@ -71,7 +75,7 @@ is_identity (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
 
-  return fabs (o->amount) < EPSILON;
+  return fabs (o->curvature) < EPSILON || fabs (o->amount) < EPSILON;
 }
 
 static gboolean
@@ -167,10 +171,12 @@ process (GeglOperation       *operation,
   gdouble              dx = 0.0, dy = 0.0;
   gdouble              coangle_of_view_2;
   gdouble              focal_length;
+  gdouble              curvature_sign;
   gdouble              cap_angle_2;
   gdouble              cap_radius;
   gdouble              cap_depth;
-  gdouble              f, f2, r, r_inv, r2, p, f_p, f_p2, f_pf, a, a_inv;
+  gdouble              factor;
+  gdouble              f, f2, r, r_inv, r2, p, f_p, f_p2, f_pf, a, a_inv, sgn;
   gboolean             is_id;
   gboolean             perspective;
   gboolean             inverse;
@@ -205,9 +211,11 @@ process (GeglOperation       *operation,
 
   coangle_of_view_2 = MAX (180.0 - o->angle_of_view, 0.01) * G_PI / 360.0;
   focal_length      = tan (coangle_of_view_2);
-  cap_angle_2       = fabs (o->amount) * coangle_of_view_2;
+  curvature_sign    = o->curvature > 0.0 ? +1.0 : -1.0;
+  cap_angle_2       = fabs (o->curvature) * coangle_of_view_2;
   cap_radius        = 1.0 / sin (cap_angle_2);
-  cap_depth         = cap_radius * cos (cap_angle_2);
+  cap_depth         = curvature_sign * cap_radius * cos (cap_angle_2);
+  factor            = fabs (o->amount);
 
   f     = focal_length;
   f2    = f * f;
@@ -220,6 +228,7 @@ process (GeglOperation       *operation,
   f_pf  = f_p * f;
   a     = cap_angle_2;
   a_inv = 1 / a;
+  sgn   = curvature_sign;
 
   is_id       = is_identity (operation);
   perspective = o->angle_of_view > EPSILON;
@@ -254,7 +263,7 @@ process (GeglOperation       *operation,
                       gdouble d2_f2 = d2 + f2;
 
                       if (perspective)
-                        src_d = (f_pf - sqrt (d2_f2 * r2 - f_p2 * d2)) * d / d2_f2;
+                        src_d = (f_pf - sgn * sqrt (d2_f2 * r2 - f_p2 * d2)) * d / d2_f2;
 
                       src_d = (G_PI_2 - acos (src_d * r_inv)) * a_inv;
                     }
@@ -263,8 +272,11 @@ process (GeglOperation       *operation,
                       src_d = r * cos (G_PI_2 - src_d * a);
 
                       if (perspective)
-                        src_d = f * src_d / (f_p - sqrt (r2 - src_d * src_d));
+                        src_d = f * src_d / (f_p - sgn * sqrt (r2 - src_d * src_d));
                     }
+
+                  if (factor < 1.0)
+                    src_d = d + (src_d - d) * factor;
 
                   src_x = dx ? cx + src_d * x / (dx * d) :
                                i + 0.5;
