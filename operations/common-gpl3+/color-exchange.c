@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *
  * Exchange one color with the other (settable threshold to convert from
  * one color-shade to another...might do wonders on certain images, or be
  * totally useless on others).
