@@ -18,6 +18,7 @@ operations/common/color.c
 operations/common/color-enhance.c
 operations/common/color-rotate.c
 operations/common/color-temperature.c
+operations/common/color-warp.c
 operations/common/component-extract.c
 operations/common/contrast-curve.c
 operations/common/convolution-matrix.c
@@ -114,7 +115,6 @@ operations/common-gpl3+/cartoon.c
 operations/common-gpl3+/channel-mixer.c
 operations/common-gpl3+/color-exchange.c
 operations/common-gpl3+/color-to-alpha.c
-operations/common-gpl3+/color-warp.c
 operations/common-gpl3+/cubism.c
 operations/common-gpl3+/deinterlace.c
 operations/common-gpl3+/diffraction-patterns.c

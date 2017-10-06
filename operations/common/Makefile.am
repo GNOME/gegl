@@ -27,6 +27,7 @@ gegl_common_la_SOURCES =\
 	color-enhance.c \
 	color-rotate.c \
 	color-temperature.c \
+	color-warp.c \
 	color.c \
 	component-extract.c \
 	contrast-curve.c \

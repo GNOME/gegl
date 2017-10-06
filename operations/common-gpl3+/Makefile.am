@@ -19,7 +19,6 @@ gegl_common_gpl3_la_SOURCES =\
 	channel-mixer.c \
 	color-exchange.c \
 	color-to-alpha.c \
-        color-warp.c \
 	cubism.c \
 	deinterlace.c \
 	diffraction-patterns.c \
