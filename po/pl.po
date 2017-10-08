@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-01 13:55+0200\n"
-"PO-Revision-Date: 2017-10-01 13:57+0200\n"
+"POT-Creation-Date: 2017-10-08 19:14+0200\n"
+"PO-Revision-Date: 2017-10-08 19:15+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -171,7 +171,7 @@ msgstr ""
 
 #: ../gegl/gegl-enums.c:33 ../gegl/gegl-enums.c:87
 #: ../operations/common/gaussian-blur.c:31 ../operations/common/gblur-1d.c:32
-#: ../operations/common-gpl3+/fractal-explorer.c:97
+#: ../operations/common-gpl3+/fractal-explorer.c:96
 msgid "None"
 msgstr "Brak"
 
@@ -239,12 +239,12 @@ msgid "Arithmetic xor covariant"
 msgstr "Arytmetyczne „xor” współzmiennej"
 
 #: ../gegl/gegl-enums.c:120 ../operations/common/edge-sobel.c:27
-#: ../operations/common/noise-spread.c:29
+#: ../operations/common/noise-spread.c:29 ../operations/workshop/spherize.c:27
 msgid "Horizontal"
 msgstr "Poziomy"
 
 #: ../gegl/gegl-enums.c:121 ../operations/common/edge-sobel.c:29
-#: ../operations/common/noise-spread.c:35
+#: ../operations/common/noise-spread.c:35 ../operations/workshop/spherize.c:28
 msgid "Vertical"
 msgstr "Pionowy"
 
@@ -253,7 +253,7 @@ msgid "Nearest"
 msgstr "Najbliższy"
 
 #: ../gegl/gegl-enums.c:146 ../operations/common-gpl3+/bump-map.c:33
-#: ../operations/common-gpl3+/sinus.c:64 ../operations/common-gpl3+/spiral.c:26
+#: ../operations/common-gpl3+/sinus.c:63 ../operations/common-gpl3+/spiral.c:26
 msgid "Linear"
 msgstr "Liniowy"
 
@@ -628,7 +628,7 @@ msgstr ""
 #: ../operations/common/noise-cell.c:48 ../operations/common/noise-perlin.c:33
 #: ../operations/common/noise-simplex.c:35 ../operations/common/slic.c:38
 #: ../operations/common/stress.c:39
-#: ../operations/common-gpl3+/fractal-explorer.c:56
+#: ../operations/common-gpl3+/fractal-explorer.c:55
 msgid "Iterations"
 msgstr "Iteracje"
 
@@ -653,9 +653,9 @@ msgstr ""
 #: ../operations/common/panorama-projection.c:42
 #: ../operations/common/rectangle.c:36
 #: ../operations/common-gpl3+/diffraction-patterns.c:78
-#: ../operations/common-gpl3+/maze.c:42
+#: ../operations/common-gpl3+/maze.c:40
 #: ../operations/common-gpl3+/noise-solid.c:64
-#: ../operations/common-gpl3+/plasma.c:54 ../operations/common-gpl3+/sinus.c:77
+#: ../operations/common-gpl3+/plasma.c:54 ../operations/common-gpl3+/sinus.c:76
 #: ../operations/common-gpl3+/spiral.c:85 ../operations/core/crop.c:35
 #: ../operations/external/svg-load.c:30 ../operations/external/text.c:61
 #: ../operations/external/v4l.c:28 ../operations/external/vector-stroke.c:30
@@ -665,7 +665,7 @@ msgid "Width"
 msgstr "Szerokość"
 
 #: ../operations/common/checkerboard.c:26 ../operations/common/grid.c:25
-#: ../operations/common-gpl3+/maze.c:43
+#: ../operations/common-gpl3+/maze.c:41
 msgid "Horizontal width of cells pixels"
 msgstr "Pozioma szerokość pikseli komórek"
 
@@ -673,9 +673,9 @@ msgstr "Pozioma szerokość pikseli komórek"
 #: ../operations/common/panorama-projection.c:48
 #: ../operations/common/rectangle.c:42
 #: ../operations/common-gpl3+/diffraction-patterns.c:86
-#: ../operations/common-gpl3+/engrave.c:31 ../operations/common-gpl3+/maze.c:50
+#: ../operations/common-gpl3+/engrave.c:31 ../operations/common-gpl3+/maze.c:48
 #: ../operations/common-gpl3+/noise-solid.c:72
-#: ../operations/common-gpl3+/plasma.c:62 ../operations/common-gpl3+/sinus.c:85
+#: ../operations/common-gpl3+/plasma.c:62 ../operations/common-gpl3+/sinus.c:84
 #: ../operations/common-gpl3+/spiral.c:93 ../operations/core/crop.c:40
 #: ../operations/external/svg-load.c:32 ../operations/external/text.c:63
 #: ../operations/external/v4l.c:31
@@ -685,7 +685,7 @@ msgid "Height"
 msgstr "Wysokość"
 
 #: ../operations/common/checkerboard.c:34 ../operations/common/grid.c:32
-#: ../operations/common-gpl3+/maze.c:51
+#: ../operations/common-gpl3+/maze.c:49
 msgid "Vertical width of cells pixels"
 msgstr "Pionowa szerokość pikseli komórek"
 
@@ -713,7 +713,7 @@ msgid "Vertical offset (from origin) for start of grid"
 msgstr ""
 "Pionowe przesunięcie (od początku układu współrzędnych) dla początku siatki"
 
-#: ../operations/common/checkerboard.c:53 ../operations/common-gpl3+/sinus.c:59
+#: ../operations/common/checkerboard.c:53 ../operations/common-gpl3+/sinus.c:58
 #: ../operations/common-gpl3+/spiral.c:79
 #: ../operations/workshop/gradient-map.c:26
 msgid "Color 1"
@@ -723,7 +723,7 @@ msgstr "1. kolor"
 msgid "The first cell color"
 msgstr "Kolor pierwszej komórki"
 
-#: ../operations/common/checkerboard.c:57 ../operations/common-gpl3+/sinus.c:61
+#: ../operations/common/checkerboard.c:57 ../operations/common-gpl3+/sinus.c:60
 #: ../operations/common-gpl3+/spiral.c:82
 #: ../operations/workshop/gradient-map.c:28
 msgid "Color 2"
@@ -755,7 +755,7 @@ msgstr "Renderuj wzór szachownicy"
 #: ../operations/common/rectangle.c:48 ../operations/common/vignette.c:34
 #: ../operations/common-gpl3+/color-to-alpha.c:28
 #: ../operations/common-gpl3+/supernova.c:61
-#: ../operations/common-gpl3+/tile-paper.c:32
+#: ../operations/common-gpl3+/tile-paper.c:30
 #: ../operations/common-gpl3+/value-propagate.c:55
 #: ../operations/external/text.c:37 ../operations/external/vector-fill.c:26
 #: ../operations/external/vector-stroke.c:27
@@ -909,6 +909,124 @@ msgid ""
 msgstr ""
 "Zmień temperaturę kolorów obrazu, z przyjętej pierwotnej temperatury kolorów "
 "na docelową."
+
+#: ../operations/common/color-warp.c:36
+msgid "From 0"
+msgstr "Od 0"
+
+#: ../operations/common/color-warp.c:37
+msgid "To 0"
+msgstr "Do 0"
+
+#: ../operations/common/color-warp.c:38
+msgid "weight 0"
+msgstr "waga 0"
+
+#: ../operations/common/color-warp.c:40
+msgid "From 1"
+msgstr "Od 1"
+
+#: ../operations/common/color-warp.c:41
+msgid "To 1"
+msgstr "Do 1"
+
+#: ../operations/common/color-warp.c:42
+msgid "weight 1"
+msgstr "waga 1"
+
+#: ../operations/common/color-warp.c:44
+msgid "From 2"
+msgstr "Od 2"
+
+#: ../operations/common/color-warp.c:45
+msgid "To 2"
+msgstr "Do 2"
+
+#: ../operations/common/color-warp.c:46
+msgid "weight 2"
+msgstr "waga 2"
+
+#: ../operations/common/color-warp.c:48
+msgid "From 3"
+msgstr "Od 3"
+
+#: ../operations/common/color-warp.c:49
+msgid "To 3"
+msgstr "Do 3"
+
+#: ../operations/common/color-warp.c:50
+msgid "weight 3"
+msgstr "waga 3"
+
+#: ../operations/common/color-warp.c:52
+msgid "From 4"
+msgstr "Od 4"
+
+#: ../operations/common/color-warp.c:53
+msgid "To 4"
+msgstr "Do 4"
+
+#: ../operations/common/color-warp.c:54
+msgid "weight 4"
+msgstr "waga 4"
+
+#: ../operations/common/color-warp.c:56
+msgid "From 5"
+msgstr "Od 5"
+
+#: ../operations/common/color-warp.c:57
+msgid "To 5"
+msgstr "Do 5"
+
+#: ../operations/common/color-warp.c:58
+msgid "weight 5"
+msgstr "waga 5"
+
+#: ../operations/common/color-warp.c:60
+msgid "From 6"
+msgstr "Od 6"
+
+#: ../operations/common/color-warp.c:61
+msgid "To 6"
+msgstr "Do 6"
+
+#: ../operations/common/color-warp.c:62
+msgid "weight 6"
+msgstr "waga 6"
+
+#: ../operations/common/color-warp.c:64
+msgid "From 7"
+msgstr "Od 7"
+
+#: ../operations/common/color-warp.c:65
+msgid "To 7"
+msgstr "Do 7"
+
+#: ../operations/common/color-warp.c:66
+msgid "weight 7"
+msgstr "waga 7"
+
+#: ../operations/common/color-warp.c:68
+msgid "global weight scale"
+msgstr "globalna skala wagi"
+
+#: ../operations/common/color-warp.c:70
+msgid "amount"
+msgstr "ilość"
+
+#: ../operations/common/color-warp.c:311
+msgid "Color warp"
+msgstr "Deformacja kolorów"
+
+#: ../operations/common/color-warp.c:313
+msgid ""
+"Warps the colors of an image between colors with weighted distortion "
+"factors, color pairs which are black to black get ignored when constructing "
+"the mapping."
+msgstr ""
+"Deformuje kolory obrazu między kolorami za pomocą ważonych współczynników "
+"zniekształcania. Pary kolorów czarny do czarnego są ignorowane podczas "
+"konstruowania mapowania."
 
 #: ../operations/common/component-extract.c:25
 msgid "RGB Red"
@@ -1347,14 +1465,14 @@ msgstr "Używana metoda mieszania"
 #: ../operations/common/noise-hurl.c:37 ../operations/common/noise-pick.c:38
 #: ../operations/common/noise-rgb.c:51 ../operations/common/noise-simplex.c:39
 #: ../operations/common/noise-spread.c:41
-#: ../operations/common-gpl3+/cubism.c:42 ../operations/common-gpl3+/maze.c:65
+#: ../operations/common-gpl3+/cubism.c:42 ../operations/common-gpl3+/maze.c:63
 #: ../operations/common-gpl3+/mosaic.c:88
 #: ../operations/common-gpl3+/noise-slur.c:40
 #: ../operations/common-gpl3+/noise-solid.c:62
 #: ../operations/common-gpl3+/plasma.c:70 ../operations/common-gpl3+/shift.c:35
-#: ../operations/common-gpl3+/sinus.c:51
+#: ../operations/common-gpl3+/sinus.c:50
 #: ../operations/common-gpl3+/supernova.c:64
-#: ../operations/common-gpl3+/tile-paper.c:82
+#: ../operations/common-gpl3+/tile-paper.c:80
 #: ../operations/common-gpl3+/wind.c:68
 #: ../operations/workshop/segment-kmeans.c:37
 msgid "Random seed"
@@ -2097,6 +2215,7 @@ msgstr ""
 #: ../operations/common/map-relative.c:28
 #: ../operations/common/panorama-projection.c:57
 #: ../operations/common-gpl3+/ripple.c:47 ../operations/common-gpl3+/waves.c:50
+#: ../operations/workshop/spherize.c:49
 msgid "Resampling method"
 msgstr "Metoda resamplingu"
 
@@ -2243,7 +2362,7 @@ msgstr "Współrzędna osi Y do przycinania obszaru lustra"
 
 #: ../operations/common/mirrors.c:74
 #: ../operations/common/panorama-projection.c:38
-#: ../operations/common-gpl3+/fractal-explorer.c:59
+#: ../operations/common-gpl3+/fractal-explorer.c:58
 #: ../operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
 msgstr "Powiększenie"
@@ -2888,7 +3007,8 @@ msgstr "Pionowe proporcje rozmiaru piksela wewnątrz każdego bloku"
 #: ../operations/common-gpl3+/apply-lens.c:44
 #: ../operations/common-gpl3+/cubism.c:39
 #: ../operations/common-gpl3+/lens-distortion.c:57
-#: ../operations/common-gpl3+/tile-paper.c:77
+#: ../operations/common-gpl3+/tile-paper.c:75
+#: ../operations/workshop/spherize.c:57
 msgid "Background color"
 msgstr "Kolor tła"
 
@@ -3525,6 +3645,7 @@ msgid "Lens refraction index"
 msgstr "Współczynnik załamania soczewki"
 
 #: ../operations/common-gpl3+/apply-lens.c:41
+#: ../operations/workshop/spherize.c:53
 msgid "Keep original surroundings"
 msgstr "Pozostawienie pierwotnego otoczenia"
 
@@ -3546,10 +3667,10 @@ msgstr ""
 
 #: ../operations/common-gpl3+/bump-map.c:34
 msgid "Spherical"
-msgstr "Sferyczny"
+msgstr "Kulisty"
 
 #: ../operations/common-gpl3+/bump-map.c:35
-#: ../operations/common-gpl3+/sinus.c:66
+#: ../operations/common-gpl3+/sinus.c:65
 msgid "Sinusoidal"
 msgstr "Sinusoidalny"
 
@@ -3627,19 +3748,19 @@ msgstr ""
 "0-12-336155-9). Zastosowuje on bufor jako mapę wypukłości na inny bufor, co "
 "tworzy efekt wytłoczenia."
 
-#: ../operations/common-gpl3+/cartoon.c:25
+#: ../operations/common-gpl3+/cartoon.c:28
 msgid "Mask radius"
 msgstr "Promień maski"
 
-#: ../operations/common-gpl3+/cartoon.c:28
+#: ../operations/common-gpl3+/cartoon.c:31
 msgid "Percent black"
 msgstr "Procent czerni"
 
-#: ../operations/common-gpl3+/cartoon.c:313
+#: ../operations/common-gpl3+/cartoon.c:316
 msgid "Cartoon"
 msgstr "Film rysunkowy"
 
-#: ../operations/common-gpl3+/cartoon.c:316
+#: ../operations/common-gpl3+/cartoon.c:319
 msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing "
 "subsequently shaded with color. This is achieved by enhancing edges and "
@@ -3735,51 +3856,51 @@ msgstr ""
 "Miksowanie kolorów przez określanie względnych wkładów ze składowych "
 "źródłowych."
 
-#: ../operations/common-gpl3+/color-exchange.c:32
+#: ../operations/common-gpl3+/color-exchange.c:31
 msgid "From Color"
 msgstr "Kolor źródłowy"
 
-#: ../operations/common-gpl3+/color-exchange.c:33
+#: ../operations/common-gpl3+/color-exchange.c:32
 msgid "The color to change."
 msgstr "Zmieniany kolor."
 
-#: ../operations/common-gpl3+/color-exchange.c:35
+#: ../operations/common-gpl3+/color-exchange.c:34
 msgid "To Color"
 msgstr "Kolor docelowy"
 
-#: ../operations/common-gpl3+/color-exchange.c:36
+#: ../operations/common-gpl3+/color-exchange.c:35
 msgid "Replacement color."
 msgstr "Kolor, na który zmienić."
 
-#: ../operations/common-gpl3+/color-exchange.c:38
+#: ../operations/common-gpl3+/color-exchange.c:37
 msgid "Red Threshold"
 msgstr "Próg czerwieni"
 
-#: ../operations/common-gpl3+/color-exchange.c:39
+#: ../operations/common-gpl3+/color-exchange.c:38
 msgid "Red threshold of the input color"
 msgstr "Próg czerwieni koloru wejściowego"
 
-#: ../operations/common-gpl3+/color-exchange.c:42
+#: ../operations/common-gpl3+/color-exchange.c:41
 msgid "Green Threshold"
 msgstr "Próg zieleni"
 
-#: ../operations/common-gpl3+/color-exchange.c:43
+#: ../operations/common-gpl3+/color-exchange.c:42
 msgid "Green threshold of the input color"
 msgstr "Próg zieleni koloru wejściowego"
 
-#: ../operations/common-gpl3+/color-exchange.c:46
+#: ../operations/common-gpl3+/color-exchange.c:45
 msgid "Blue Threshold"
 msgstr "Próg niebieskiego"
 
-#: ../operations/common-gpl3+/color-exchange.c:47
+#: ../operations/common-gpl3+/color-exchange.c:46
 msgid "Blue threshold of the input color"
 msgstr "Próg niebieskiego koloru wejściowego"
 
-#: ../operations/common-gpl3+/color-exchange.c:244
+#: ../operations/common-gpl3+/color-exchange.c:243
 msgid "Exchange color"
 msgstr "Wymień kolor"
 
-#: ../operations/common-gpl3+/color-exchange.c:247
+#: ../operations/common-gpl3+/color-exchange.c:246
 msgid ""
 "Exchange one color with another, optionally setting a threshold to convert "
 "from one shade to another."
@@ -3798,124 +3919,6 @@ msgstr "Kolor na alfę"
 #: ../operations/common-gpl3+/color-to-alpha.c:258
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "Konwertuj podany kolor do przezroczystości. Najlepiej działa z bielą."
-
-#: ../operations/common-gpl3+/color-warp.c:24
-msgid "From 0"
-msgstr "Od 0"
-
-#: ../operations/common-gpl3+/color-warp.c:25
-msgid "To 0"
-msgstr "Do 0"
-
-#: ../operations/common-gpl3+/color-warp.c:26
-msgid "weight 0"
-msgstr "waga 0"
-
-#: ../operations/common-gpl3+/color-warp.c:28
-msgid "From 1"
-msgstr "Od 1"
-
-#: ../operations/common-gpl3+/color-warp.c:29
-msgid "To 1"
-msgstr "Do 1"
-
-#: ../operations/common-gpl3+/color-warp.c:30
-msgid "weight 1"
-msgstr "waga 1"
-
-#: ../operations/common-gpl3+/color-warp.c:32
-msgid "From 2"
-msgstr "Od 2"
-
-#: ../operations/common-gpl3+/color-warp.c:33
-msgid "To 2"
-msgstr "Do 2"
-
-#: ../operations/common-gpl3+/color-warp.c:34
-msgid "weight 2"
-msgstr "waga 2"
-
-#: ../operations/common-gpl3+/color-warp.c:36
-msgid "From 3"
-msgstr "Od 3"
-
-#: ../operations/common-gpl3+/color-warp.c:37
-msgid "To 3"
-msgstr "Do 3"
-
-#: ../operations/common-gpl3+/color-warp.c:38
-msgid "weight 3"
-msgstr "waga 3"
-
-#: ../operations/common-gpl3+/color-warp.c:40
-msgid "From 4"
-msgstr "Od 4"
-
-#: ../operations/common-gpl3+/color-warp.c:41
-msgid "To 4"
-msgstr "Do 4"
-
-#: ../operations/common-gpl3+/color-warp.c:42
-msgid "weight 4"
-msgstr "waga 4"
-
-#: ../operations/common-gpl3+/color-warp.c:44
-msgid "From 5"
-msgstr "Od 5"
-
-#: ../operations/common-gpl3+/color-warp.c:45
-msgid "To 5"
-msgstr "Do 5"
-
-#: ../operations/common-gpl3+/color-warp.c:46
-msgid "weight 5"
-msgstr "waga 5"
-
-#: ../operations/common-gpl3+/color-warp.c:48
-msgid "From 6"
-msgstr "Od 6"
-
-#: ../operations/common-gpl3+/color-warp.c:49
-msgid "To 6"
-msgstr "Do 6"
-
-#: ../operations/common-gpl3+/color-warp.c:50
-msgid "weight 6"
-msgstr "waga 6"
-
-#: ../operations/common-gpl3+/color-warp.c:52
-msgid "From 7"
-msgstr "Od 7"
-
-#: ../operations/common-gpl3+/color-warp.c:53
-msgid "To 7"
-msgstr "Do 7"
-
-#: ../operations/common-gpl3+/color-warp.c:54
-msgid "weight 7"
-msgstr "waga 7"
-
-#: ../operations/common-gpl3+/color-warp.c:56
-msgid "global weight scale"
-msgstr "globalna skala wagi"
-
-#: ../operations/common-gpl3+/color-warp.c:58
-msgid "amount"
-msgstr "ilość"
-
-#: ../operations/common-gpl3+/color-warp.c:299
-msgid "Color warp"
-msgstr "Deformacja kolorów"
-
-#: ../operations/common-gpl3+/color-warp.c:301
-msgid ""
-"Warps the colors of an image between colors with weighted distortion "
-"factors, color pairs which are black to black get ignored when constructing "
-"the mapping."
-msgstr ""
-"Deformuje kolory obrazu między kolorami za pomocą ważonych współczynników "
-"zniekształcania. Pary kolorów czarny do czarnego są ignorowane podczas "
-"konstruowania mapowania."
 
 #: ../operations/common-gpl3+/cubism.c:30
 #: ../operations/common-gpl3+/mosaic.c:42
@@ -4062,14 +4065,14 @@ msgstr "Polaryzacja"
 
 #: ../operations/common-gpl3+/diffraction-patterns.c:79
 #: ../operations/common-gpl3+/noise-solid.c:65
-#: ../operations/common-gpl3+/plasma.c:55 ../operations/common-gpl3+/sinus.c:78
+#: ../operations/common-gpl3+/plasma.c:55 ../operations/common-gpl3+/sinus.c:77
 #: ../operations/common-gpl3+/spiral.c:86
 msgid "Width of the generated buffer"
 msgstr "Szerokość tworzonego bufora"
 
 #: ../operations/common-gpl3+/diffraction-patterns.c:87
 #: ../operations/common-gpl3+/noise-solid.c:73
-#: ../operations/common-gpl3+/plasma.c:63 ../operations/common-gpl3+/sinus.c:86
+#: ../operations/common-gpl3+/plasma.c:63 ../operations/common-gpl3+/sinus.c:85
 #: ../operations/common-gpl3+/spiral.c:94
 msgid "Height of the generated buffer"
 msgstr "Wysokość tworzonego bufora"
@@ -4091,6 +4094,7 @@ msgid "Polar"
 msgstr "Biegunowy"
 
 #: ../operations/common-gpl3+/displace.c:32
+#: ../operations/workshop/spherize.c:34
 msgid "Displacement mode"
 msgstr "Tryb przesunięcia"
 
@@ -4114,7 +4118,7 @@ msgstr "Przesunięcie na osi X"
 
 #: ../operations/common-gpl3+/displace.c:48
 msgid "Displace multiplier for X or radial direction"
-msgstr "Mnożnik przesunięcia dla osi X lub kierunku radialnego"
+msgstr "Mnożnik przesunięcia dla osi X lub kierunku promieniowego"
 
 #: ../operations/common-gpl3+/displace.c:55
 msgid "Horizontal displacement"
@@ -4131,7 +4135,7 @@ msgstr "Mnożnik przesunięcia dla kierunku poziomego"
 
 #: ../operations/common-gpl3+/displace.c:60
 msgid "Displacement multiplier for the radial direction"
-msgstr "Mnożnik przesunięcia dla kierunku radialnego"
+msgstr "Mnożnik przesunięcia dla kierunku promieniowego"
 
 #: ../operations/common-gpl3+/displace.c:62
 msgid "Y displacement"
@@ -4214,7 +4218,7 @@ msgstr "Algorytm"
 msgid "Edge detection algorithm"
 msgstr "Algorytm wykrywania krawędzi"
 
-#: ../operations/common-gpl3+/edge.c:42
+#: ../operations/common-gpl3+/edge.c:42 ../operations/workshop/spherize.c:45
 msgid "Amount"
 msgstr "Ilość"
 
@@ -4296,155 +4300,155 @@ msgstr "Graweruj"
 msgid "Simulate an antique engraving"
 msgstr "Symuluje antyczne grawerowanie"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:32
+#: ../operations/common-gpl3+/fractal-explorer.c:31
 #: ../operations/common-gpl3+/fractal-trace.c:26
 msgid "Mandelbrot"
 msgstr "Zbiór Mandelbrota"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:34
+#: ../operations/common-gpl3+/fractal-explorer.c:33
 #: ../operations/common-gpl3+/fractal-trace.c:27
 msgid "Julia"
 msgstr "Julia"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:36
+#: ../operations/common-gpl3+/fractal-explorer.c:35
 msgid "Barnsley 1"
 msgstr "Barnsley 1"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:38
+#: ../operations/common-gpl3+/fractal-explorer.c:37
 msgid "Barnsley 2"
 msgstr "Barnsley 2"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:40
+#: ../operations/common-gpl3+/fractal-explorer.c:39
 msgid "Barnsley 3"
 msgstr "Barnsley 3"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:42
+#: ../operations/common-gpl3+/fractal-explorer.c:41
 msgid "Spider"
 msgstr "Spider"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:44
+#: ../operations/common-gpl3+/fractal-explorer.c:43
 msgid "Man O War"
 msgstr "Man O’ War"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:46
+#: ../operations/common-gpl3+/fractal-explorer.c:45
 #: ../operations/external/matting-levin.c:37
 msgid "Lambda"
 msgstr "Lambda"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:48
+#: ../operations/common-gpl3+/fractal-explorer.c:47
 msgid "Sierpinski"
 msgstr "Sierpiński"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:51
+#: ../operations/common-gpl3+/fractal-explorer.c:50
 #: ../operations/common-gpl3+/fractal-trace.c:30
 msgid "Fractal type"
 msgstr "Typ fraktala"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:54
+#: ../operations/common-gpl3+/fractal-explorer.c:53
 msgid "Type of a fractal"
 msgstr "Typ fraktala"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:60
+#: ../operations/common-gpl3+/fractal-explorer.c:59
 msgid "Zoom in the fractal space"
 msgstr "Powiększenie w przestrzeni fraktala"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:65
+#: ../operations/common-gpl3+/fractal-explorer.c:64
 #: ../operations/common-gpl3+/lens-distortion.c:45
 msgid "Shift X"
 msgstr "Przesunięcie na osi X"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:66
+#: ../operations/common-gpl3+/fractal-explorer.c:65
 msgid "X shift in the fractal space"
 msgstr "Przesunięcie na osi X w przestrzeni fraktala"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:69
+#: ../operations/common-gpl3+/fractal-explorer.c:68
 #: ../operations/common-gpl3+/lens-distortion.c:49
 msgid "Shift Y"
 msgstr "Przesunięcie na osi Y"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:70
+#: ../operations/common-gpl3+/fractal-explorer.c:69
 msgid "Y shift in the fractal space"
 msgstr "Przesunięcie na osi Y w przestrzeni fraktala"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:73
+#: ../operations/common-gpl3+/fractal-explorer.c:72
 msgid "CX"
 msgstr "CX"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:74
+#: ../operations/common-gpl3+/fractal-explorer.c:73
 msgid "CX (No effect in Mandelbrot and Sierpinski)"
 msgstr "CX (brak efektu we fraktalach Mandelbrota i Sierpińskiego)"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:79
+#: ../operations/common-gpl3+/fractal-explorer.c:78
 msgid "CY"
 msgstr "CY"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:80
+#: ../operations/common-gpl3+/fractal-explorer.c:79
 msgid "CY (No effect in Mandelbrot and Sierpinski)"
 msgstr "CY (brak efektu we fraktalach Mandelbrota i Sierpińskiego)"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:85
+#: ../operations/common-gpl3+/fractal-explorer.c:84
 msgid "Red stretching factor"
 msgstr "Współczynnik rozciągnięcia czerwieni"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:88
+#: ../operations/common-gpl3+/fractal-explorer.c:87
 msgid "Green stretching factor"
 msgstr "Współczynnik rozciągnięcia zieleni"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:91
+#: ../operations/common-gpl3+/fractal-explorer.c:90
 msgid "Blue stretching factor"
 msgstr "Współczynnik rozciągnięcia błękitu"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:95
+#: ../operations/common-gpl3+/fractal-explorer.c:94
 #: ../operations/common-gpl3+/ripple.c:28
 msgid "Sine"
 msgstr "Sinus"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:96
+#: ../operations/common-gpl3+/fractal-explorer.c:95
 msgid "Cosine"
 msgstr "Kosinus"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:100
+#: ../operations/common-gpl3+/fractal-explorer.c:99
 msgid "Red application mode"
 msgstr "Tryb aplikacji czerwieni"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:104
+#: ../operations/common-gpl3+/fractal-explorer.c:103
 msgid "Green application mode"
 msgstr "Tryb aplikacji zieleni"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:108
+#: ../operations/common-gpl3+/fractal-explorer.c:107
 msgid "Blue application mode"
 msgstr "Tryb aplikacji błękitu"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:112
+#: ../operations/common-gpl3+/fractal-explorer.c:111
 msgid "Red inversion"
 msgstr "Inwersja czerwieni"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:113
+#: ../operations/common-gpl3+/fractal-explorer.c:112
 msgid "Green inversion"
 msgstr "Inwersja zieleni"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:114
+#: ../operations/common-gpl3+/fractal-explorer.c:113
 msgid "Blue inversion"
 msgstr "Inwersja błękitu"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:116
+#: ../operations/common-gpl3+/fractal-explorer.c:115
 msgid "Number of colors"
 msgstr "Liczba kolorów"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:119
+#: ../operations/common-gpl3+/fractal-explorer.c:118
 msgid "Loglog smoothing"
 msgstr "Wygładzanie loglog"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:376
+#: ../operations/common-gpl3+/fractal-explorer.c:375
 #, c-format
 msgid "Unsupported fractal type: %d"
 msgstr "Nieobsługiwany typ fraktala: %d"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:433
+#: ../operations/common-gpl3+/fractal-explorer.c:432
 msgid "Fractal Explorer"
 msgstr "Przeglądarka fraktali"
 
-#: ../operations/common-gpl3+/fractal-explorer.c:438
+#: ../operations/common-gpl3+/fractal-explorer.c:437
 msgid ""
 "Rendering of multiple different fractal systems, with configurable coloring "
 "options."
@@ -4619,49 +4623,49 @@ msgstr "Błysk soczewki"
 msgid "Adds a lens flare effect."
 msgstr "Dodaje efekt błysku soczewki."
 
-#: ../operations/common-gpl3+/maze.c:38
+#: ../operations/common-gpl3+/maze.c:36
 msgid "Depth first"
 msgstr "Najpierw głębia"
 
-#: ../operations/common-gpl3+/maze.c:39
+#: ../operations/common-gpl3+/maze.c:37
 msgid "Prim's algorithm"
 msgstr "Algorytm Prima"
 
-#: ../operations/common-gpl3+/maze.c:58
+#: ../operations/common-gpl3+/maze.c:56
 msgid "Algorithm type"
 msgstr "Typ algorytmu"
 
-#: ../operations/common-gpl3+/maze.c:61
+#: ../operations/common-gpl3+/maze.c:59
 msgid "Maze algorithm type"
 msgstr "Typ algorytmu labiryntu"
 
-#: ../operations/common-gpl3+/maze.c:63
+#: ../operations/common-gpl3+/maze.c:61
 #: ../operations/common-gpl3+/noise-solid.c:56
 #: ../operations/common-gpl3+/ripple.c:53
 msgid "Tileable"
 msgstr "Kafelkowalność"
 
-#: ../operations/common-gpl3+/maze.c:67
+#: ../operations/common-gpl3+/maze.c:65
 msgid "Foreground Color"
 msgstr "Kolor pierwszego planu"
 
-#: ../operations/common-gpl3+/maze.c:68
+#: ../operations/common-gpl3+/maze.c:66
 msgid "The foreground color"
 msgstr "Kolor pierwszego planu"
 
-#: ../operations/common-gpl3+/maze.c:71
+#: ../operations/common-gpl3+/maze.c:69
 msgid "Background Color"
 msgstr "Kolor tła"
 
-#: ../operations/common-gpl3+/maze.c:72
+#: ../operations/common-gpl3+/maze.c:70
 msgid "The background color"
 msgstr "Kolor tła"
 
-#: ../operations/common-gpl3+/maze.c:733
+#: ../operations/common-gpl3+/maze.c:731
 msgid "Maze"
 msgstr "Labirynt"
 
-#: ../operations/common-gpl3+/maze.c:738
+#: ../operations/common-gpl3+/maze.c:736
 msgid "Draw a labyrinth"
 msgstr "Narysuj labirynt"
 
@@ -4856,7 +4860,7 @@ msgstr "Promień maski"
 msgid "Radius of circle around pixel"
 msgstr "Promień okręgu wokół piksela"
 
-#: ../operations/common-gpl3+/oilify.c:33 ../operations/common-gpl3+/sinus.c:73
+#: ../operations/common-gpl3+/oilify.c:33 ../operations/common-gpl3+/sinus.c:72
 #: ../operations/workshop/bayer-matrix.c:69
 #: ../operations/workshop/linear-sinusoid.c:76
 msgid "Exponent"
@@ -5037,65 +5041,65 @@ msgstr "Kierunek przesunięcia"
 msgid "Shift each row or column of pixels by a random amount"
 msgstr "Przesuń każdy rząd lub kolumnę pikseli o losową ilość"
 
-#: ../operations/common-gpl3+/sinus.c:33
+#: ../operations/common-gpl3+/sinus.c:32
 #: ../operations/workshop/bayer-matrix.c:30
 msgid "X Scale"
 msgstr "Skala na osi X"
 
-#: ../operations/common-gpl3+/sinus.c:34
+#: ../operations/common-gpl3+/sinus.c:33
 msgid "Scale value for x axis"
 msgstr "Wartość skalowania dla osi X"
 
-#: ../operations/common-gpl3+/sinus.c:40
+#: ../operations/common-gpl3+/sinus.c:39
 #: ../operations/workshop/bayer-matrix.c:37
 msgid "Y Scale"
 msgstr "Skala na osi Y"
 
-#: ../operations/common-gpl3+/sinus.c:41
+#: ../operations/common-gpl3+/sinus.c:40
 msgid "Scale value for y axis"
 msgstr "Wartość skalowania dla osi Y"
 
-#: ../operations/common-gpl3+/sinus.c:47
+#: ../operations/common-gpl3+/sinus.c:46
 msgid "Complexity"
 msgstr "Złożoność"
 
-#: ../operations/common-gpl3+/sinus.c:48
+#: ../operations/common-gpl3+/sinus.c:47
 msgid "Complexity factor"
 msgstr "Współczynnik złożoności"
 
-#: ../operations/common-gpl3+/sinus.c:53
+#: ../operations/common-gpl3+/sinus.c:52
 msgid "Force tiling"
 msgstr "Wymuszenie kafelkowania"
 
-#: ../operations/common-gpl3+/sinus.c:54
+#: ../operations/common-gpl3+/sinus.c:53
 msgid "If set, the pattern generated will tile"
 msgstr "Jeśli jest ustawione, to utworzony deseń będzie kafelkowany"
 
-#: ../operations/common-gpl3+/sinus.c:56
+#: ../operations/common-gpl3+/sinus.c:55
 msgid "Distorted"
 msgstr "Zniekształcony"
 
-#: ../operations/common-gpl3+/sinus.c:57
+#: ../operations/common-gpl3+/sinus.c:56
 msgid "If set, the pattern will be a little more distorted"
 msgstr "Jeśli jest ustawione, to deseń będzie nieco bardziej zniekształcony"
 
-#: ../operations/common-gpl3+/sinus.c:65
+#: ../operations/common-gpl3+/sinus.c:64
 msgid "Bilinear"
 msgstr "Dwuliniowy"
 
-#: ../operations/common-gpl3+/sinus.c:69
+#: ../operations/common-gpl3+/sinus.c:68
 msgid "Blend Mode"
 msgstr "Tryb łączenia"
 
-#: ../operations/common-gpl3+/sinus.c:74
+#: ../operations/common-gpl3+/sinus.c:73
 msgid "Power used to stretch the blend"
 msgstr "Siła używana do rozciągnięcia łączenia"
 
-#: ../operations/common-gpl3+/sinus.c:318
+#: ../operations/common-gpl3+/sinus.c:317
 msgid "Sinus"
 msgstr "Sinus"
 
-#: ../operations/common-gpl3+/sinus.c:323
+#: ../operations/common-gpl3+/sinus.c:322
 msgid "Generate complex sinusoidal textures"
 msgstr "Utwórz złożone tekstury sinusoidalne"
 
@@ -5252,12 +5256,12 @@ msgid "Textures the image as if it were an artist's canvas."
 msgstr "Nakłada teksturę na obraz, jakby to było płótno artysty."
 
 #: ../operations/common-gpl3+/tile-glass.c:28
-#: ../operations/common-gpl3+/tile-paper.c:41
+#: ../operations/common-gpl3+/tile-paper.c:39
 msgid "Tile Width"
 msgstr "Szerokość kafla"
 
 #: ../operations/common-gpl3+/tile-glass.c:34
-#: ../operations/common-gpl3+/tile-paper.c:48
+#: ../operations/common-gpl3+/tile-paper.c:46
 msgid "Tile Height"
 msgstr "Wysokość kafla"
 
@@ -5269,77 +5273,77 @@ msgstr "Szkło kafla"
 msgid "Simulate distortion caused by rectangular glass tiles"
 msgstr "Symuluj zniekształcenie powodowane przez prostokątne, szklane kafle"
 
-#: ../operations/common-gpl3+/tile-paper.c:29
+#: ../operations/common-gpl3+/tile-paper.c:27
 msgid "Transparent"
 msgstr "Przezroczyste"
 
-#: ../operations/common-gpl3+/tile-paper.c:30
+#: ../operations/common-gpl3+/tile-paper.c:28
 msgid "Inverted image"
 msgstr "Odwrócony obraz"
 
-#: ../operations/common-gpl3+/tile-paper.c:31
+#: ../operations/common-gpl3+/tile-paper.c:29
 msgid "Image"
 msgstr "Obraz"
 
-#: ../operations/common-gpl3+/tile-paper.c:36
+#: ../operations/common-gpl3+/tile-paper.c:34
 msgid "Background"
 msgstr "Tło"
 
-#: ../operations/common-gpl3+/tile-paper.c:37
+#: ../operations/common-gpl3+/tile-paper.c:35
 msgid "Ignore"
 msgstr "Ignorowanie"
 
-#: ../operations/common-gpl3+/tile-paper.c:38
+#: ../operations/common-gpl3+/tile-paper.c:36
 msgid "Force"
 msgstr "Siła"
 
-#: ../operations/common-gpl3+/tile-paper.c:42
+#: ../operations/common-gpl3+/tile-paper.c:40
 msgid "Width of the tile"
 msgstr "Szerokość kafla"
 
-#: ../operations/common-gpl3+/tile-paper.c:49
+#: ../operations/common-gpl3+/tile-paper.c:47
 msgid "Height of the tile"
 msgstr "Wysokość kafla"
 
-#: ../operations/common-gpl3+/tile-paper.c:55
-#: ../operations/common-gpl3+/tile-paper.c:56
+#: ../operations/common-gpl3+/tile-paper.c:53
+#: ../operations/common-gpl3+/tile-paper.c:54
 msgid "Move rate"
 msgstr "Częstotliwość przenoszenia"
 
-#: ../operations/common-gpl3+/tile-paper.c:61
+#: ../operations/common-gpl3+/tile-paper.c:59
 msgid "Wrap around"
 msgstr "Zawinięcie wokół"
 
-#: ../operations/common-gpl3+/tile-paper.c:62
+#: ../operations/common-gpl3+/tile-paper.c:60
 msgid "Wrap the fractional tiles"
 msgstr "Odwzorowanie ułamkowych kafli"
 
-#: ../operations/common-gpl3+/tile-paper.c:64
+#: ../operations/common-gpl3+/tile-paper.c:62
 msgid "Fractional type"
 msgstr "Typ ułamkowy"
 
-#: ../operations/common-gpl3+/tile-paper.c:67
+#: ../operations/common-gpl3+/tile-paper.c:65
 msgid "Fractional Type"
 msgstr "Typ ułamkowy"
 
-#: ../operations/common-gpl3+/tile-paper.c:69
+#: ../operations/common-gpl3+/tile-paper.c:67
 msgid "Centering"
 msgstr "Wyśrodkowanie"
 
-#: ../operations/common-gpl3+/tile-paper.c:70
+#: ../operations/common-gpl3+/tile-paper.c:68
 msgid "Centering of the tiles"
 msgstr "Wyśrodkowanie kafli"
 
-#: ../operations/common-gpl3+/tile-paper.c:72
-#: ../operations/common-gpl3+/tile-paper.c:75
+#: ../operations/common-gpl3+/tile-paper.c:70
+#: ../operations/common-gpl3+/tile-paper.c:73
 msgid "Background type"
 msgstr "Typ tła"
 
-#: ../operations/common-gpl3+/tile-paper.c:453
+#: ../operations/common-gpl3+/tile-paper.c:451
 msgid "Paper Tile"
 msgstr "Kawałki papieru"
 
-#: ../operations/common-gpl3+/tile-paper.c:458
+#: ../operations/common-gpl3+/tile-paper.c:456
 msgid "Cut image into paper tiles, and slide them"
 msgstr "Wycina obraz na kawałki papieru i przesuwa je"
 
@@ -5372,6 +5376,7 @@ msgid "More transparent"
 msgstr "Bardziej przezroczyste"
 
 #: ../operations/common-gpl3+/value-propagate.c:38
+#: ../operations/workshop/spherize.c:31
 msgid "Mode"
 msgstr "Tryb"
 
@@ -5528,7 +5533,7 @@ msgstr "Okres (długość fali) zmarszczki"
 msgid "Aspect ratio"
 msgstr "Proporcje obrazu"
 
-#: ../operations/common-gpl3+/waves.c:52
+#: ../operations/common-gpl3+/waves.c:52 ../operations/workshop/spherize.c:51
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Matematyczna metoda rekonstrukcji wartości pikseli"
 
@@ -7833,3 +7838,43 @@ msgstr "Wykonaj korekcję cieni i podświetleń"
 #: ../operations/workshop/shadows-highlights-correction.c:314
 msgid "Lighten shadows and darken highlights"
 msgstr "Rozjaśnij cienie i przyciemnij podświetlenia"
+
+#: ../operations/workshop/spherize.c:26
+msgid "Radial"
+msgstr "Promieniowy"
+
+#: ../operations/workshop/spherize.c:36
+msgid "Angle of view"
+msgstr "Kąt widoku"
+
+#: ../operations/workshop/spherize.c:37
+msgid "Camera angle of view"
+msgstr "Kąt kamery widoku"
+
+#: ../operations/workshop/spherize.c:41
+msgid "Curvature"
+msgstr "Krzywizna"
+
+#: ../operations/workshop/spherize.c:42
+msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
+msgstr "Kąt wierzchołka kuli jako ułamek przyległej widoku"
+
+#: ../operations/workshop/spherize.c:46
+msgid ""
+"Displacement scaling factor (negative values refer to the inverse "
+"displacement)"
+msgstr ""
+"Współczynnik skalowania przemieszczenia (ujemne wartości odnoszą się do "
+"odwrotnego przemieszczenia)"
+
+#: ../operations/workshop/spherize.c:54
+msgid "Keep image unchanged outside the sphere"
+msgstr "Bez zmienienia obrazu poza kulą"
+
+#: ../operations/workshop/spherize.c:326
+msgid "Spherize"
+msgstr "Utwórz kulę"
+
+#: ../operations/workshop/spherize.c:330
+msgid "Wrap image around a spherical cap"
+msgstr "Zawiń obraz wokół kuli"
