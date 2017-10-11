@@ -40,7 +40,15 @@ property_double (angle_of_view, _("Angle of view"), 0.0)
 
 property_double (curvature, _("Curvature"), 1.0)
   description (_("Spherical cap apex angle, as a fraction of the co-angle of view"))
-  value_range (-1.0, 1.0)
+  value_range (0.0, 1.0) /* note that the code can handle negative curvatures
+                          * (in the [-1, 0) range), in which case the image is
+                          * wrapped around the back face, rather than the front
+                          * face, of the spherical cap.  we disable negative
+                          * curvatures atm, in particular, since they produce
+                          * the same result when the angle of view is 0, and
+                          * since their upper-bound, wrt the angle of view, is
+                          * arbitrary.
+                          */
 
 property_double (amount, _("Amount"), 1.0)
   description (_("Displacement scaling factor (negative values refer to the inverse displacement)"))
