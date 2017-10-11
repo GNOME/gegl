@@ -104,6 +104,7 @@ process (GeglOperation       *operation,
   GeglBufferIterator *gi;
   gint                amount_x;
   gint                amount_y;
+  GeglSampler        *sampler;
 
   o = GEGL_PROPERTIES (operation);
 
@@ -115,6 +116,8 @@ process (GeglOperation       *operation,
 
   gi = gegl_buffer_iterator_new (output, result, 0, format,
                                  GEGL_ACCESS_WRITE, GEGL_ABYSS_CLAMP);
+
+  sampler = gegl_buffer_sampler_new_at_level (input, format, GEGL_SAMPLER_NEAREST, level);
 
   while (gegl_buffer_iterator_next (gi))
     {
@@ -129,11 +132,12 @@ process (GeglOperation       *operation,
 
             calc_sample_coords (i, j, amount_x, amount_y, o->rand, &x, &y);
 
-            gegl_buffer_sample_at_level (input, x, y, NULL, data, format, level,
-                                GEGL_SAMPLER_NEAREST, GEGL_ABYSS_CLAMP);
+            gegl_sampler_get (sampler, x, y, NULL, data, GEGL_ABYSS_CLAMP);
             data += bpp;
           }
     }
+
+  g_object_unref (sampler);
 
   return TRUE;
 }
