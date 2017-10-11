@@ -472,6 +472,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   filter_class->process    = process;
   operation_class->prepare = prepare;
+  operation_class->threaded = FALSE;
 
   gegl_operation_class_set_keys (operation_class,
                                  "categories" , "artistic",

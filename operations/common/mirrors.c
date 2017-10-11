@@ -161,6 +161,7 @@ apply_mirror (double               mirror_angle,
               gint                 level)
 {
   gfloat *dst_buf;
+  GeglSampler *sampler;
   gint    row, col;
   gdouble cx, cy;
 
@@ -173,6 +174,8 @@ apply_mirror (double               mirror_angle,
   #ifdef DO_NOT_USE_BUFFER_SAMPLE
     src_buf = g_new0 (gfloat, boundary->width * boundary->height * 4);
     gegl_buffer_get (src, 1.0, boundary, format, src_buf, GEGL_AUTO_ROWSTRIDE);
+  #else
+    sampler = gegl_buffer_sampler_new_at_level (src, format, GEGL_SAMPLER_LINEAR, level);
   #endif
   /* Get buffer in which to place dst pixels. */
   dst_buf = g_new0 (gfloat, roi->width * roi->height * 4);
@@ -264,10 +267,8 @@ apply_mirror (double               mirror_angle,
         spx_pos = (iy * boundary->width + ix) * 4;
 #endif
 
-
-
 #ifndef DO_NOT_USE_BUFFER_SAMPLE
-        gegl_buffer_sample_at_level (src, cx, cy, NULL, &dst_buf[(row * roi->width + col) * 4], format, level, GEGL_SAMPLER_LINEAR, GEGL_ABYSS_NONE);
+        gegl_sampler_get (sampler, cx, cy, NULL, &dst_buf[(row * roi->width + col) * 4], GEGL_ABYSS_NONE);
 #endif
 
 #ifdef DO_NOT_USE_BUFFER_SAMPLE
@@ -280,7 +281,6 @@ apply_mirror (double               mirror_angle,
     } /* for */
   } /* for */
 
-    gegl_buffer_sample_cleanup(src);
 
   /* Store dst pixels. */
   gegl_buffer_set (dst, roi, 0, format, dst_buf, GEGL_AUTO_ROWSTRIDE);
@@ -288,6 +288,8 @@ apply_mirror (double               mirror_angle,
   /* Free acquired storage. */
 #ifdef DO_NOT_USE_BUFFER_SAMPLE
   g_free (src_buf);
+#else
+  g_object_unref (sampler);
 #endif
   g_free (dst_buf);
 
