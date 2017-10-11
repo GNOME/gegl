@@ -50,15 +50,6 @@ property_enum (sampler_type, _("Resampling method"),
   GeglSamplerType, gegl_sampler_type, GEGL_SAMPLER_LINEAR)
   description(_("Mathematical method for reconstructing pixel values"))
 
-property_boolean (keep_surroundings, _("Keep original surroundings"), TRUE)
-  description(_("Keep image unchanged outside the sphere"))
-  ui_meta ("visible", "mode {radial}")
-
-property_color (background_color, _("Background color"), "none")
-  ui_meta ("role", "color-secondary")
-  ui_meta ("visible", "$keep_surroundings.visible")
-  ui_meta ("sensitive", "! keep_surroundings")
-
 #else
 
 #define GEGL_OP_FILTER
@@ -71,20 +62,11 @@ property_color (background_color, _("Background color"), "none")
 #define EPSILON 1e-10
 
 static gboolean
-is_identity (GeglOperation *operation)
-{
-  GeglProperties *o = GEGL_PROPERTIES (operation);
-
-  return fabs (o->curvature) < EPSILON || fabs (o->amount) < EPSILON;
-}
-
-static gboolean
 is_nop (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
 
-  return is_identity (operation) && ! (o->mode == GEGL_SPHERIZE_MODE_RADIAL &&
-                                       ! o->keep_surroundings);
+  return fabs (o->curvature) < EPSILON || fabs (o->amount) < EPSILON;
 }
 
 static void
@@ -101,7 +83,7 @@ get_required_for_output (GeglOperation       *operation,
 {
   GeglRectangle result = *roi;
 
-  if (! is_identity (operation))
+  if (! is_nop (operation))
     {
       GeglProperties *o       = GEGL_PROPERTIES (operation);
       GeglRectangle  *in_rect = gegl_operation_source_get_bounding_box (operation, "input");
@@ -165,7 +147,6 @@ process (GeglOperation       *operation,
   const Babl          *format = babl_format ("RGBA float");
   GeglSampler         *sampler;
   GeglBufferIterator  *iter;
-  gfloat               bg_color[4];
   const GeglRectangle *in_extent;
   gdouble              cx, cy;
   gdouble              dx = 0.0, dy = 0.0;
@@ -177,7 +158,6 @@ process (GeglOperation       *operation,
   gdouble              cap_depth;
   gdouble              factor;
   gdouble              f, f2, r, r_inv, r2, p, f_p, f_p2, f_pf, a, a_inv, sgn;
-  gboolean             is_id;
   gboolean             perspective;
   gboolean             inverse;
   gint                 i, j;
@@ -190,8 +170,6 @@ process (GeglOperation       *operation,
 
   gegl_buffer_iterator_add (iter, input, roi, level, format,
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
-
-  gegl_color_get_pixel (o->background_color, format, bg_color);
 
   in_extent = gegl_operation_source_get_bounding_box (operation, "input");
 
@@ -230,7 +208,6 @@ process (GeglOperation       *operation,
   a_inv = 1 / a;
   sgn   = curvature_sign;
 
-  is_id       = is_identity (operation);
   perspective = o->angle_of_view > EPSILON;
   inverse     = o->amount < 0.0;
 
@@ -252,7 +229,7 @@ process (GeglOperation       *operation,
 
               d2 = x * x + y * y;
 
-              if (! is_id && d2 > 0.0 && d2 < 1.0)
+              if (d2 > EPSILON && d2 < 1.0 - EPSILON)
                 {
                   gdouble d     = sqrt (d2);
                   gdouble src_d = d;
@@ -288,10 +265,7 @@ process (GeglOperation       *operation,
                 }
               else
                 {
-                  if (d2 < 1.0 || o->keep_surroundings)
-                    memcpy (out_pixel, in_pixel, sizeof (gfloat) * 4);
-                  else
-                    memcpy (out_pixel, bg_color, sizeof (gfloat) * 4);
+                  memcpy (out_pixel, in_pixel, sizeof (gfloat) * 4);
                 }
 
               out_pixel += 4;
