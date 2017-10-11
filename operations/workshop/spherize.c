@@ -73,8 +73,26 @@ static gboolean
 is_nop (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
+  GeglRectangle  *in_rect;
 
-  return fabs (o->curvature) < EPSILON || fabs (o->amount) < EPSILON;
+  if (fabs (o->curvature) < EPSILON || fabs (o->amount) < EPSILON)
+    return TRUE;
+
+  in_rect = gegl_operation_source_get_bounding_box (operation, "input");
+
+  switch (o->mode)
+    {
+    case GEGL_SPHERIZE_MODE_RADIAL:
+      return in_rect->width < 1 || in_rect->height < 1;
+
+    case GEGL_SPHERIZE_MODE_HORIZONTAL:
+      return in_rect->width < 1;
+
+    case GEGL_SPHERIZE_MODE_VERTICAL:
+      return in_rect->height < 1;
+    }
+
+  g_return_val_if_reached (TRUE);
 }
 
 static void
@@ -187,12 +205,12 @@ process (GeglOperation       *operation,
   if (o->mode == GEGL_SPHERIZE_MODE_RADIAL ||
       o->mode == GEGL_SPHERIZE_MODE_HORIZONTAL)
     {
-      dx = 2.0 / in_extent->width;
+      dx = 2.0 / (in_extent->width - 1);
     }
   if (o->mode == GEGL_SPHERIZE_MODE_RADIAL ||
       o->mode == GEGL_SPHERIZE_MODE_VERTICAL)
     {
-      dy = 2.0 / in_extent->height;
+      dy = 2.0 / (in_extent->height - 1);
     }
 
   coangle_of_view_2 = MAX (180.0 - o->angle_of_view, 0.01) * G_PI / 360.0;
