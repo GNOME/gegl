@@ -251,6 +251,7 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class->cl_process = cl_process;
   operation_class->prepare = prepare;
   operation_class->opencl_support = TRUE;
+  operation_class->threaded = FALSE; // XXX: recalculate of gegl_curve_calc_value is not thread safe
 
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:contrast-curve",
