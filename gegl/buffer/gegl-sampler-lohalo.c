@@ -175,10 +175,6 @@ gegl_sampler_lohalo_class_init (GeglSamplerLohaloClass *klass)
 #define LOHALO_OFFSET_0 (13)
 #define LOHALO_SIZE_0 (1+2*LOHALO_OFFSET_0)
 
-/*
- * Lohalo always uses some mipmap level 0 values, but not always
- * higher mipmap values.
- */
 static void
 gegl_sampler_lohalo_init (GeglSamplerLohalo *self)
 {
@@ -423,12 +419,7 @@ gegl_sampler_lohalo_get (      GeglSampler*    restrict  self,
    * efficient choice for a tensor bicubic for which anchoring an
    * asymetrical 4 point stencil at the second pixel location in both
    * directions is best. For one thing, it requires having at least a
-   * 5x5 stencil when dealing with possible reflexions. The reason for
-   * this less efficient choice for the upsampling component of lohalo
-   * is that we use multiple mipmap levels when downsampling, and
-   * keeping things as centered as possible minimizes the impact of
-   * the slight geometrical shifts introduced by the use of pyramid
-   * levels.
+   * 5x5 stencil when dealing with possible reflexions.
    */
 
   /*
@@ -963,8 +954,7 @@ gegl_sampler_lohalo_get (      GeglSampler*    restrict  self,
 
         /*
          * Grab the pixel values located within the level 0
-         * context_rect.  Farther ones will be accessed through
-         * higher mipmap levels.
+         * context_rect.
          */
         const gint out_left_0 =
           LOHALO_MAX
