@@ -985,6 +985,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   composer_class->process = process;
   operation_class->prepare = prepare;
+  operation_class->threaded = FALSE;
   operation_class->get_bounding_box = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
 
