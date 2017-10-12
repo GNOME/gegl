@@ -432,7 +432,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",               "gegl:mirrors",
     "title",              _("Kaleidoscopic Mirroring"),
     "position-dependent", "true",
-    "reference-hash",     "34196267740ed972fd1e4d49f9560959",
+    "reference-hash",     "bd269957c3e9cc88f1520366ebfac78c",
     "categories",         "blur",
     "description",        _("Create a kaleidoscope like effect."),
     NULL);
