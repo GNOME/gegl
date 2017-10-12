@@ -561,7 +561,7 @@ gegl_op_class_init (GeglOpClass *klass)
      "title",          _("Wind"),
      "categories",     "distort",
      "license",        "GPL3+",
-     "reference-hash", "c6085eb4de89cc8e25e2e9cfcd37730f",
+     "reference-hash", "2981991c065161468fea4197aaf19a96",
      "description",    _("Wind-like bleed effect"),
      NULL);
 }
