@@ -36,10 +36,10 @@ copyright = '
 a = [
  #     ['multiply',      'cA * cB +  cA * (1 - aB) + cB * (1 - aA)', '5910165f5e64ac11b4f57520e82c99e8'],
       ['screen',        'cA + cB - cA * cB', '9642c59dd077663c4c27e4ebe556a382'],
-      ['darken',        'MIN (cA * aB, cB * aA) + cA * (1 - aB) + cB * (1 - aA)', '85aa17ac4e0fc35470625880d42e17ff'],
+      ['darken',        'MIN (cA * aB, cB * aA) + cA * (1 - aB) + cB * (1 - aA)', '4a0c76cb0c19818779abfdae020c04d4'],
       ['lighten',       'MAX (cA * aB, cB * aA) + cA * (1 - aB) + cB * (1 - aA)', '16ecf46ab388720e4976f0691c05f62f'],
-      ['difference',    'cA + cB - 2 * (MIN (cA * aB, cB * aA))', '3737dde4e8302b7cd8c25efcde917676'],
-      ['exclusion',     '(cA * aB + cB * aA - 2 * cA * cB) + cA * (1 - aB) + cB * (1 - aA)', 'f93816fd8955e9d7deb2807b66fbbc55']
+      ['difference',    'cA + cB - 2 * (MIN (cA * aB, cB * aA))', 'a6fc455c2374f5989229b8950bc00d79'],
+      ['exclusion',     '(cA * aB + cB * aA - 2 * cA * cB) + cA * (1 - aB) + cB * (1 - aA)', 'd4428801756f0799b656d276556ed47c']
     ]
 
 b = [
@@ -50,7 +50,7 @@ b = [
       ['color_dodge',   'cA * aB + cB * aA >= aA * aB',
                         'aA * aB + cA * (1 - aB) + cB * (1 - aA)',
                         '(cA == aA ? 1 : cB * aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)',
-                        'ea40c71bc14de7f431480addf43e8b13'],
+                        '9e42179d64227eb71cb6f78b7308c927'],
 
       ['color_burn',    'cA * aB + cB * aA <= aA * aB',
                         'cA * (1 - aB) + cB * (1 - aA)',

@@ -122,7 +122,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name"       , "svg:dst-atop",
     "compat-name", "gegl:dst-atop",
     "title"      , "Dst-atop",
-    "reference-hash" , "daeb2e2e1ae75898af7db31934e240fb",
+    "reference-hash" , "67f3a1f0999875280dfb86faab13c948",
     "categories" , "compositors:porter-duff",
     "description",
         _("Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"),

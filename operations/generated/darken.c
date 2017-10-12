@@ -166,7 +166,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
   "name"        , "svg:darken",
   "compat-name" , "gegl:darken",
-  "reference-hash" , "85aa17ac4e0fc35470625880d42e17ff",
+  "reference-hash" , "4a0c76cb0c19818779abfdae020c04d4",
   "description" ,
         _("SVG blend operation darken (<code>d = MIN (cA * aB, cB * aA) + cA * (1 - aB) + cB * (1 - aA)</code>)"),
         NULL);
