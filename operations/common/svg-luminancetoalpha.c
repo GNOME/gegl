@@ -91,7 +91,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name"       , "gegl:svg-luminancetoalpha",
     "categories" , "compositors:svgfilter",
     "title"      , _("SVG Luminance to Alpha"),
-    "reference-hash", "6763517c5421d736b855ffa2ebd845c9",
+    "reference-hash", "6f941960c9e8ea9210fad5483f55cdfc",
     "description",
        _("SVG color matrix operation svg_luminancetoalpha"),
         NULL);
