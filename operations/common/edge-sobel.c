@@ -391,6 +391,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   operation_class->prepare        = prepare;
   operation_class->opencl_support = TRUE;
+  operation_class->threaded       = FALSE; // XXX: the need for this is a bug
 
   filter_class->process           = process;
 
@@ -398,7 +399,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:edge-sobel",
     "title",       _("Sobel Edge Detection"),
     "categories",  "edge-detect",
-    "reference-hash", "50c7c77a4a130343facd199362a0d4fb",
+    "reference-hash", "56b83c838376302d42f4384cbc05b78a",
     "description", _("Specialized direction-dependent edge detection"),
           NULL);
 }
