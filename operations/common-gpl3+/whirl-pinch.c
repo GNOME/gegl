@@ -276,7 +276,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "distort:map",
     "license",            "GPL3+",
     "position-dependent", "true",
-    "reference-hash",     "2a17621265635228f16c1cd28801c4c8",
+    "reference-hash",     "f56bc33dafbe5a106cde720a30b14374",
     "description", _("Distort an image by whirling and pinching"),
     NULL);
 }
