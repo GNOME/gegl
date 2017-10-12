@@ -81,6 +81,7 @@ process (GeglOperation       *operation,
   const Babl         *format;
   gint                bpp;
   GeglBufferIterator *gi;
+  GeglSampler        *sampler;
 
   o = GEGL_PROPERTIES (operation);
 
@@ -89,6 +90,8 @@ process (GeglOperation       *operation,
 
   gi = gegl_buffer_iterator_new (output, result, 0, format,
                                  GEGL_ACCESS_WRITE, GEGL_ABYSS_CLAMP);
+
+  sampler = gegl_buffer_sampler_new_at_level (input, format, GEGL_SAMPLER_NEAREST, level);
 
   while (gegl_buffer_iterator_next (gi))
     {
@@ -127,12 +130,12 @@ process (GeglOperation       *operation,
                   }
               }
 
-            gegl_buffer_sample_at_level (input, pos_x, pos_y, NULL, data, format,
-                                level,
-                                GEGL_SAMPLER_NEAREST, GEGL_ABYSS_CLAMP);
+            gegl_sampler_get (sampler, pos_x, pos_y, NULL, data, GEGL_ABYSS_CLAMP);
             data += bpp;
           }
     }
+
+  g_object_unref (sampler);
 
   return TRUE;
 }
