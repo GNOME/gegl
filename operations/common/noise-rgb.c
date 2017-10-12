@@ -203,7 +203,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",           "gegl:noise-rgb",
     "title",          _("Add RGB Noise"),
     "categories",     "noise",
-    "reference-hash", "2783edddbc10bb2e9cbf8372a2d913ef",
+    "reference-hash", "f5eaaf50c2794262c6969d527d619a5f",
     "description", _("Distort colors by random amounts"),
     NULL);
 }
