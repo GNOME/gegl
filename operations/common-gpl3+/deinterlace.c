@@ -312,7 +312,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "enhance",
     "license",            "GPL3+",
     "position-dependent", "true",
-    "reference-hash",     "663e775f191a41aaf1039b883615d786",
+    "reference-hash",     "654785fbca08ccae36ae8f3146cd42c5",
     "description", _("Fix images where every other row or column is missing"),
     NULL);
 }
