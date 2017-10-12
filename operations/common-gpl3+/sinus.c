@@ -317,7 +317,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Sinus"),
     "categories",         "render",
     "position-dependent", "true",
-    "reference-hash",     "29cba0927c46bb245b42b2941708541d",
+    "reference-hash",     "2b8f1c94ec19ad23f5ff3253647e759e",
     "license",            "GPL3+",
     "description",        _("Generate complex sinusoidal textures"),
     NULL);
