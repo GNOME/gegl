@@ -83,7 +83,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:scale-size",
     "title", _("Scale size"),
     "categories", "transform",
-    "reference-hash", "09ea913733df315f53af830089a49d88",
+    "reference-hash", "755cf2e6abe190dc03e7be2fa0349237",
     "description", _("Scales the buffer according to a size."),
     NULL);
 }

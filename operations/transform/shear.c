@@ -71,7 +71,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:shear",
     "title", _("Shear"),
     "categories", "transform",
-    "reference-hash", "2768783380e8fc27fe8706de1aa2f15e",
+    "reference-hash", "4843c893c48bc0453ae3d70f81df30dd",
     "reference-chain", "load path=images/standard-input.png shear x=1.12 clip-to-input=true origin-x=100 origin-y=100",
     "description", _("Shears the buffer. "),
     NULL);
