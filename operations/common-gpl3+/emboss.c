@@ -261,11 +261,12 @@ gegl_op_class_init (GeglOpClass *klass)
 
   filter_class->process    = process;
   operation_class->prepare = prepare;
+  operation_class->threaded = FALSE; // XXX: docs operation test yields horizontal stripe on division
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:emboss",
     "title",       _("Emboss"),
-    "reference-hash", "9dcee11a194ac61c64a7d1cafaa1f34f",
+    "reference-hash", "6866ddbaf3d44665ae2a2aa8b43a6451",
     "categories",  "light",
     "license",     "GPL3+",
     "description", _("Simulates an image created by embossing"),
