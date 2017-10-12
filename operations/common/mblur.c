@@ -144,7 +144,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:mblur",
     "title",       _("Temporal blur"),
     "categories" , "blur:video",
-    "reference-hash", "e5c89dc5f44e6bbf5af4eeed3ea3c3d9", // XXX: doesn't really make sense...
+    "reference-hash", "d17adf528848f86cd23134cf4dbe2f65", // XXX: doesn't really make sense...
     "description", _("Accumulating motion blur using a kalman filter, for use with video sequences of frames."),
     NULL);
 }
