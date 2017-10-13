@@ -89,25 +89,29 @@ get_required_for_output (GeglOperation       *operation,
                          const gchar         *input_pad,
                          const GeglRectangle *roi)
 {
-  GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
+  GeglRectangle *result = gegl_operation_source_get_bounding_box (operation,
+                                                                  "input");
 
   /* Don't request an infinite plane */
-  if (gegl_rectangle_is_infinite_plane (&result))
+  if (! result || gegl_rectangle_is_infinite_plane (result))
     return *roi;
 
-  return result;
+  return *result;
 }
 
 static GeglRectangle
-get_cached_region (GeglOperation       *operation,
-                   const GeglRectangle *roi)
+get_invalidated_by_change (GeglOperation       *operation,
+                           const gchar         *input_pad,
+                           const GeglRectangle *input_region)
 {
-  GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
+  GeglRectangle *result = gegl_operation_source_get_bounding_box (operation,
+                                                                  "input");
 
-  if (gegl_rectangle_is_infinite_plane (&result))
-    return *roi;
+  /* Don't request an infinite plane */
+  if (! result || gegl_rectangle_is_infinite_plane (result))
+    return *input_region;
 
-  return result;
+  return *result;
 }
 
 static gboolean
@@ -117,7 +121,8 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglProperties     *o = GEGL_PROPERTIES (operation);
+  GeglProperties      *o  = GEGL_PROPERTIES (operation);
+  const GeglRectangle *bb = gegl_operation_source_get_bounding_box (operation, "input");
   GeglBufferIterator *iter;
   GeglSampler        *sampler;
 
@@ -129,7 +134,6 @@ process (GeglOperation       *operation,
   gdouble      scale;
   gboolean     has_alpha;
   gfloat       alpha, alpha1, alpha2;
-  gfloat      *in_pixel1;
   gfloat      *in_pixel2;
   const gdouble *dx = o->user_data;
   const gdouble *dy = &dx[4 * o->division + 1];
@@ -142,17 +146,19 @@ process (GeglOperation       *operation,
   else
     components = 3;
 
-  in_pixel1 = g_new (float, components);
   in_pixel2 = g_new (float, components);
 
   iter = gegl_buffer_iterator_new (output, result, level, format,
                                    GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
+  gegl_buffer_iterator_add (iter, input, result, level, format,
+                            GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+
   sampler = gegl_buffer_sampler_new_at_level (input, format,
                                               GEGL_SAMPLER_NEAREST, level);
 
-  width = result->width;
-  height = result->height;
+  width = bb->width;
+  height = bb->height;
 
   center_x = width / 2.0;
   center_y = height / 2.0;
@@ -161,6 +167,7 @@ process (GeglOperation       *operation,
   while (gegl_buffer_iterator_next (iter))
     {
        gfloat  *out_pixel = iter->data[0];
+       gfloat  *in_pixel1 = iter->data[1];
 
        for (y = iter->roi[0].y; y < iter->roi[0].y + iter->roi[0].height; ++y)
          for (x = iter->roi[0].x; x < iter->roi[0].x + iter->roi[0].width; ++x)
@@ -182,9 +189,6 @@ process (GeglOperation       *operation,
                    xx = x - dy [2 * o->division + angle];
                    yy = y - dx [2 * o->division + angle];
                 }
-
-                gegl_sampler_get (sampler, x, y, NULL,
-                                  in_pixel1, GEGL_ABYSS_CLAMP);
 
                 gegl_sampler_get (sampler, xx, yy, NULL,
                                   in_pixel2, GEGL_ABYSS_CLAMP);
@@ -209,10 +213,10 @@ process (GeglOperation       *operation,
                  }
 
                  out_pixel += components;
+                 in_pixel1 += components;
            }
     }
 
-  g_free (in_pixel1);
   g_free (in_pixel2);
 
   g_object_unref (sampler);
@@ -255,13 +259,13 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
-  filter_class->process                    = process;
-  operation_class->prepare                 = prepare;
-  operation_class->process                 = operation_process;
-  operation_class->get_required_for_output = get_required_for_output;
-  operation_class->get_cached_region       = get_cached_region;
-  operation_class->opencl_support          = FALSE;
-  operation_class->threaded                = FALSE;
+  filter_class->process                      = process;
+  operation_class->prepare                   = prepare;
+  operation_class->process                   = operation_process;
+  operation_class->get_invalidated_by_change = get_invalidated_by_change;
+  operation_class->get_required_for_output   = get_required_for_output;
+  operation_class->opencl_support            = FALSE;
+  operation_class->threaded                  = FALSE;
 
   gegl_operation_class_set_keys (operation_class,
       "name",          "gegl:illusion",
