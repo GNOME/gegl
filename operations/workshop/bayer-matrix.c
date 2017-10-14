@@ -329,6 +329,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "render",
     "position-dependent", "true",
     "license",            "GPL3+",
+    "reference-hash",     "c021386f88549e30a94d71bd4b02973d",
     "description",        _("Generate a Bayer matrix pattern"),
     NULL);
 }
