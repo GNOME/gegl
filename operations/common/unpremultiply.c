@@ -76,6 +76,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name"        , "gegl:unpremultiply",
     "categories"  , "color",
     "title"       , _("Unpremultiply alpha"),
+    "reference-hash", "1e2a03d51d8cc5868c1921fdee58b2c9",
     "description" , _("Unpremultiplies a buffer that contains pre-multiplied colors (but according to the babl format is not.)"),
     NULL);
 }
