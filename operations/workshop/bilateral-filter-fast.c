@@ -502,6 +502,7 @@ gegl_op_class_init (GeglOpClass *klass)
   "title"      , _("Bilateral Box Filter"),
   "categories" , "enhance:noise-reduction",
   "description", _("A fast approximation of bilateral filter, using a box-filter instead of a gaussian blur."),
+  "reference-hash", "b8de1836c4208596363743656c4e3d63",
   "reference", "A Fast Approximation of the Bilateral Filter using a Signal Processing Approach Sylvain Paris and Frédo Durand European Conference on Computer Vision (ECCV'06)",
         NULL);
 }
