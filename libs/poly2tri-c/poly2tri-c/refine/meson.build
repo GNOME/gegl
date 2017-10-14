@@ -1,0 +1,28 @@
+libp2tc_refine_sources = [
+  'bounded-line.c',
+  'cdt-flipfix.c',
+  'cdt.c',
+  'circle.c',
+  'cluster.c',
+  'delaunay-terminator.c',
+  'edge.c',
+  'line.c',
+  'mesh-action.c',
+  'mesh.c',
+  'point.c',
+  'pslg.c',
+  'refiner.c',
+  'rmath.c',
+  'triangle.c',
+  'utils.c',
+  'vector2.c',
+  'vedge.c',
+  'visibility.c',
+  'vtriangle.c',
+]
+
+libp2tc_refine = static_library('p2tc-refine',
+  libp2tc_refine_sources,
+  dependencies: libpoly2tri_c_common_dependencies,
+  include_directories: libpoly2tri_c_common_includes,
+)
