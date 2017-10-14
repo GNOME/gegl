@@ -297,6 +297,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Linear Sinusoid"),
     "categories",         "render",
     "position-dependent", "true",
+    "reference-hash",     "7b66b312f7f3c8000df1f782e23913b3",
     "license",            "GPL3+",
     "description",        _("Generate a linear sinusoid pattern"),
     NULL);
