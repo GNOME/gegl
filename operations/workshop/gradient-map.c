@@ -244,6 +244,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",       "gegl:gradient-map",
       "title"      , _("Gradient Map"),
       "categories", "color",
+      "reference-hash", "669ccb10db850cbb7cc1647d94f03224",
       "description", _("Applies a color gradient."),
       "reference-composition", composition,
       NULL);
