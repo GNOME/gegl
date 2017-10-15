@@ -546,6 +546,9 @@ DEP_LIBS=`$PKG_CONFIG --libs $GLIB_PACKAGES gthread-2.0`
 # gettext i18n support
 ######################
 
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.19.8])
+
 GETTEXT_PACKAGE=gegl-$GEGL_API_VERSION
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
@@ -568,10 +571,6 @@ AC_CHECK_FUNCS(bind_textdomain_codeset,,
 *** Check for bind_textdomain_codeset() failed!  This is required.
 ]))
 LIBS=$gegl_save_LIBS
-
-IT_PROG_INTLTOOL(0.40.1)
-
-AM_GLIB_GNU_GETTEXT
 
 
 ######################################

@@ -5,6 +5,7 @@
 /.cdtproject
 /.project
 /.tm_project.cache
+/ABOUT-NLS
 /ChangeLog
 /INSTALL
 /Makefile
@@ -19,6 +20,7 @@
 /config.h
 /config.h.in
 /config.log
+/config.rpath
 /config.status
 /config.sub
 /configure
@@ -47,4 +49,3 @@
 cscope.files
 cscope.out
 /*.project
-m4/intltool.m4
