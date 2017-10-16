@@ -8,5 +8,6 @@
 /gegl-imgcmp
 /introspect
 /operation_reference
+/operations_html
 /detect_opencl
 /gegl-tester

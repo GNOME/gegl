@@ -15,5 +15,7 @@
 /missing
 /po2tbl.sed.in
 /quot.sed
+/remove-potcdate.sed
 /remove-potcdate.sin
 /stamp-it
+/stamp-po

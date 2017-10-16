@@ -1,2 +1,6 @@
-Makefile
-Makefile.in
+/Makefile
+/Makefile.in
+/*.avi
+/*.mp4
+/*.ogv
+/*.png
