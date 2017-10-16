@@ -33,8 +33,8 @@
 #ifdef GEGL_PROPERTIES
 
 enum_start (gegl_maze_algorithm)
-  enum_value (GEGL_MAZE_ALGORITHM_DEPTH_FIRST, "Depth First", N_("Depth first"))
-  enum_value (GEGL_MAZE_ALGORITHM_PRIM,        "Prim",        N_("Prim's algorithm"))
+  enum_value (GEGL_MAZE_ALGORITHM_DEPTH_FIRST, "depth-first", N_("Depth first"))
+  enum_value (GEGL_MAZE_ALGORITHM_PRIM,        "prim",        N_("Prim's algorithm"))
 enum_end (GeglMazeAlgorithm)
 
 property_int    (x, _("Width"), 16)
