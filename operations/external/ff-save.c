@@ -22,7 +22,7 @@
 
 #include <glib/gi18n-lib.h>
 
-//#define USE_FINE_GRAINDED_FFMPEG 1
+/* #define USE_FINE_GRAINED_FFMPEG 1 */
 
 #ifdef GEGL_PROPERTIES
 
