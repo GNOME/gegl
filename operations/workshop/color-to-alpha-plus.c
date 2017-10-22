@@ -37,6 +37,9 @@ property_double (opacity_threshold, _("Opacity threshold"), 1.0)
     description(_("The limit above which colors remain opaque."))
     value_range (0.0, 1.0)
 
+property_boolean (compress_threshold_range, _("Compress threshold range"), FALSE)
+    description(_("Compress the threshold range to the minimal extent that would produce different results."))
+
 #else
 
 #define GEGL_OP_POINT_FILTER
@@ -95,8 +98,8 @@ static void
 color_to_alpha (const gfloat *color,
                 const gfloat *src,
                 gfloat       *dst,
-                gfloat        transparency_radius,
-                gfloat        opacity_radius)
+                gfloat        transparency_threshold,
+                gfloat        opacity_threshold)
 {
   gint   i;
   gfloat dist  = 0.0f;
@@ -112,14 +115,14 @@ color_to_alpha (const gfloat *color,
 
       d = fabsf (dst[i] - color[i]);
 
-      if (d < transparency_radius + EPSILON)
+      if (d < transparency_threshold + EPSILON)
         a = 0.0f;
-      else if (d > opacity_radius - EPSILON)
+      else if (d > opacity_threshold - EPSILON)
         a = 1.0f;
       else if (dst[i] < color[i])
-        a = (d - transparency_radius) / (MIN (opacity_radius,        color[i]) - transparency_radius);
+        a = (d - transparency_threshold) / (MIN (opacity_threshold,        color[i]) - transparency_threshold);
       else
-        a = (d - transparency_radius) / (MIN (opacity_radius, 1.0f - color[i]) - transparency_radius);
+        a = (d - transparency_threshold) / (MIN (opacity_threshold, 1.0f - color[i]) - transparency_threshold);
 
       if (a > alpha)
         {
@@ -130,7 +133,7 @@ color_to_alpha (const gfloat *color,
 
   if (alpha > EPSILON)
     {
-      gfloat ratio     = transparency_radius / dist;
+      gfloat ratio     = transparency_threshold / dist;
       gfloat alpha_inv = 1.0f / alpha;
 
       for (i = 0; i < 3; i++)
@@ -154,30 +157,34 @@ process (GeglOperation       *operation,
          const GeglRectangle *roi,
          gint                 level)
 {
-  GeglProperties *o      = GEGL_PROPERTIES (operation);
-  const Babl *format = babl_format ("R'G'B'A float");
-  gfloat      color[4];
-  gfloat      radius = 0.0;
-  gfloat      transparency_radius;
-  gfloat      opacity_radius;
-  gint        i;
-  gint        x;
+  GeglProperties *o                      = GEGL_PROPERTIES (operation);
+  const Babl     *format                 = babl_format ("R'G'B'A float");
+  gfloat          color[4];
+  gfloat          max_extent = 0.0;
+  gfloat          transparency_threshold = o->transparency_threshold;
+  gfloat          opacity_threshold      = o->opacity_threshold;
+  gint            x;
 
   gfloat *in_buff = in_buf;
   gfloat *out_buff = out_buf;
 
   gegl_color_get_pixel (o->color, format, color);
 
-  for (i = 0; i < 3; i++)
-    radius = MAX (radius, MAX (color[i], 1.0 - color[i]));
+  if (o->compress_threshold_range)
+    {
+      gint i;
 
-  transparency_radius = radius * o->transparency_threshold;
-  opacity_radius      = radius * o->opacity_threshold;
+      for (i = 0; i < 3; i++)
+        max_extent = MAX (max_extent, MAX (color[i], 1.0 - color[i]));
+
+      transparency_threshold *= max_extent;
+      opacity_threshold      *= max_extent;
+    }
 
   for (x = 0; x < n_pixels; x++)
     {
       color_to_alpha (color, in_buff, out_buff,
-                      transparency_radius, opacity_radius);
+                      transparency_threshold, opacity_threshold);
       in_buff  += 4;
       out_buff += 4;
     }
