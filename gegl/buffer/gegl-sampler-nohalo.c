@@ -280,40 +280,6 @@ gegl_sampler_nohalo_class_init (GeglSamplerNohaloClass *klass)
 #define NOHALO_SIZE_0 (1+2*NOHALO_OFFSET_0)
 
 /*
- * The higher mipmap context_rects must be set so that there is at
- * least one higher mipmap pixel location within the higher
- * context_rect but outside the lower context_rect, irregardless of
- * the alignment at the sampling location. I (Nicolas) have not taken
- * the time to find the exact inequality that must be respected so
- * that the do whiles word properly. Almost certainly, the higher
- * mipmap level's offset should almost never be smaller than half the
- * previous level's offset.
- */
-#define NOHALO_OFFSET_MIPMAP (13)
-#define NOHALO_SIZE_MIPMAP (1+2*NOHALO_OFFSET_MIPMAP)
-
-#define NOHALO_OFFSET_1 NOHALO_OFFSET_MIPMAP
-#define NOHALO_SIZE_1   NOHALO_SIZE_MIPMAP
-
-#define NOHALO_OFFSET_2 NOHALO_OFFSET_MIPMAP
-#define NOHALO_SIZE_2   NOHALO_SIZE_MIPMAP
-
-#define NOHALO_OFFSET_3 NOHALO_OFFSET_MIPMAP
-#define NOHALO_SIZE_3   NOHALO_SIZE_MIPMAP
-
-#define NOHALO_OFFSET_4 NOHALO_OFFSET_MIPMAP
-#define NOHALO_SIZE_4   NOHALO_SIZE_MIPMAP
-
-#define NOHALO_OFFSET_5 NOHALO_OFFSET_MIPMAP
-#define NOHALO_SIZE_5   NOHALO_SIZE_MIPMAP
-
-#define NOHALO_OFFSET_6 NOHALO_OFFSET_MIPMAP
-#define NOHALO_SIZE_6   NOHALO_SIZE_MIPMAP
-
-#define NOHALO_OFFSET_7 (GEGL_SAMPLER_MAXIMUM_HEIGHT/2-1)
-#define NOHALO_SIZE_7   (GEGL_SAMPLER_MAXIMUM_HEIGHT)
-
-/*
  * Nohalo always uses some mipmap level 0 values, but not always
  * higher mipmap values.
  */
@@ -328,48 +294,6 @@ gegl_sampler_nohalo_init (GeglSamplerNohalo *self)
   level->context_rect.y   = -NOHALO_OFFSET_0;
   level->context_rect.width  = NOHALO_SIZE_0;
   level->context_rect.height = NOHALO_SIZE_0;
-
-  level = &sampler->level[1];
-  level->context_rect.x   = -NOHALO_OFFSET_1;
-  level->context_rect.y   = -NOHALO_OFFSET_1;
-  level->context_rect.width  = NOHALO_SIZE_1;
-  level->context_rect.height = NOHALO_SIZE_1;
-
-  level = &sampler->level[2];
-  level->context_rect.x   = -NOHALO_OFFSET_2;
-  level->context_rect.y   = -NOHALO_OFFSET_2;
-  level->context_rect.width  = NOHALO_SIZE_2;
-  level->context_rect.height = NOHALO_SIZE_2;
-
-  level = &sampler->level[3];
-  level->context_rect.x   = -NOHALO_OFFSET_3;
-  level->context_rect.y   = -NOHALO_OFFSET_3;
-  level->context_rect.width  = NOHALO_SIZE_3;
-  level->context_rect.height = NOHALO_SIZE_3;
-
-  level = &sampler->level[4];
-  level->context_rect.x   = -NOHALO_OFFSET_4;
-  level->context_rect.y   = -NOHALO_OFFSET_4;
-  level->context_rect.width  = NOHALO_SIZE_4;
-  level->context_rect.height = NOHALO_SIZE_4;
-
-  level = &sampler->level[5];
-  level->context_rect.x   = -NOHALO_OFFSET_5;
-  level->context_rect.y   = -NOHALO_OFFSET_5;
-  level->context_rect.width  = NOHALO_SIZE_5;
-  level->context_rect.height = NOHALO_SIZE_5;
-
-  level = &sampler->level[6];
-  level->context_rect.x   = -NOHALO_OFFSET_6;
-  level->context_rect.y   = -NOHALO_OFFSET_6;
-  level->context_rect.width  = NOHALO_SIZE_6;
-  level->context_rect.height = NOHALO_SIZE_6;
-
-  level = &sampler->level[7];
-  level->context_rect.x   = -NOHALO_OFFSET_7;
-  level->context_rect.y   = -NOHALO_OFFSET_7;
-  level->context_rect.width  = NOHALO_SIZE_7;
-  level->context_rect.height = NOHALO_SIZE_7;
 
   GEGL_SAMPLER (self)->interpolate_format = gegl_babl_rgbA_linear_float ();
 }
@@ -1283,45 +1207,6 @@ ewa_update (const gint              j,
                                 c_minor_y,
                                 x_0 - (gfloat) j,
                                 y_0 - (gfloat) i);
-
-  *total_weight += weight;
-  ewa_newval[0] += weight * input_ptr[ skip     ];
-  ewa_newval[1] += weight * input_ptr[ skip + 1 ];
-  ewa_newval[2] += weight * input_ptr[ skip + 2 ];
-  ewa_newval[3] += weight * input_ptr[ skip + 3 ];
-}
-
-static inline void
-mipmap_ewa_update (const gint              level,
-                   const gint              j,
-                   const gint              i,
-                   const gfloat            c_major_x,
-                   const gfloat            c_major_y,
-                   const gfloat            c_minor_x,
-                   const gfloat            c_minor_y,
-                   const gfloat            x,
-                   const gfloat            y,
-                   const gint              channels,
-                   const gint              row_skip,
-                   const gfloat*  restrict input_ptr,
-                         gdouble* restrict total_weight,
-                         gfloat*  restrict ewa_newval)
-{
-  const gint skip = j * channels + i * row_skip;
-
-  /*
-   * The factor of "2^(level+1)" = "2 << level" is because level
-   * mipmap values are averages of that many level 0 pixel values, and
-   * the "1 << level" factor in the index is because the absolute
-   * positions are correspondingly "stretched".
-   */
-  const gfloat weight = (gfloat) ( 2 << level ) *
-                        teepee (c_major_x,
-                                c_major_y,
-                                c_minor_x,
-                                c_minor_y,
-                                x - (gfloat) ( (gint) ( 1 << level ) * j),
-                                y - (gfloat) ( (gint) ( 1 << level ) * i));
 
   *total_weight += weight;
   ewa_newval[0] += weight * input_ptr[ skip     ];
