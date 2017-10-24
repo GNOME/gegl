@@ -35,7 +35,7 @@ property_double (whitepoint, _("White point adjustment"), 0.0)
     value_range (-10.0, 10.0)
 
 property_double (radius, _("Radius"), 100.0)
-    value_range (0.1, G_MAXDOUBLE)
+    value_range (0.1, 1500.0)
     ui_range    (0.1, 200.0)
 
 property_double (compress, _("Compress"), 50.0)
