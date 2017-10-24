@@ -137,7 +137,7 @@ process (GeglOperation       *operation,
 
           gfloat la = ta[0];
           gfloat lb = (tb[0] - halfmax) * SIGN(-highlights) * SIGN(lmax - la) + halfmax;
-          lb = CLAMP(lb, lmin, lmax);
+
           lref = copysignf(fabs(la) > low_approximation ? 1.0f / fabs(la) : 1.0f / low_approximation, la);
           href = copysignf(
               fabs(1.0f - la) > low_approximation ? 1.0f / fabs(1.0f - la) : 1.0f / low_approximation, 1.0f - la);
