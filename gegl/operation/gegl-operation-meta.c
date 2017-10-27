@@ -24,13 +24,9 @@
 #include "gegl.h"
 #include "gegl-operation-meta.h"
 
-static void       finalize     (GObject       *self_object);
-
 static GeglNode * detect       (GeglOperation *operation,
                                 gint           x,
                                 gint           y);
-
-static void       constructed  (GObject       *object);
 
 G_DEFINE_TYPE (GeglOperationMeta, gegl_operation_meta, GEGL_TYPE_OPERATION)
 
@@ -38,25 +34,12 @@ G_DEFINE_TYPE (GeglOperationMeta, gegl_operation_meta, GEGL_TYPE_OPERATION)
 static void
 gegl_operation_meta_class_init (GeglOperationMetaClass *klass)
 {
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-  object_class->finalize               = finalize;
-  object_class->constructed            = constructed;
   GEGL_OPERATION_CLASS (klass)->detect = detect;
 }
 
 static void
 gegl_operation_meta_init (GeglOperationMeta *self)
 {
-  self->redirects = NULL;
-}
-
-static void
-constructed (GObject *object)
-{
-  G_OBJECT_CLASS (gegl_operation_meta_parent_class)->constructed (object);
-
-  g_signal_connect (object, "notify", G_CALLBACK (gegl_operation_meta_property_changed), NULL);
 }
 
 static GeglNode *
@@ -67,97 +50,16 @@ detect (GeglOperation *operation,
   return NULL; /* hands it over request to the internal nodes */
 }
 
-typedef struct Redirect
-{
-  gchar    *name;
-  GeglNode *internal;
-  gchar    *internal_name;
-} Redirect;
-
-static gchar *
-canonicalize_identifier (const gchar *identifier)
-{
-  gchar *canonicalized = NULL;
-
-  if (identifier)
-    {
-      gchar *p;
-
-      canonicalized = g_strdup (identifier);
-
-      for (p = canonicalized; *p != 0; p++)
-        {
-          gchar c = *p;
-
-          if (c != '-' &&
-              (c < '0' || c > '9') &&
-              (c < 'A' || c > 'Z') &&
-              (c < 'a' || c > 'z'))
-            *p = '-';
-        }
-    }
-
-  return canonicalized;
-}
-
-static Redirect *
-redirect_new (const gchar *name,
-              GeglNode    *internal,
-              const gchar *internal_name)
-{
-  Redirect *self = g_slice_new (Redirect);
-
-  self->name          = canonicalize_identifier (name);
-  self->internal      = internal;
-  self->internal_name = canonicalize_identifier (internal_name);
-
-  return self;
-}
-
-static void
-redirect_destroy (Redirect *self)
-{
-  if (!self)
-    return;
-
-  g_free (self->name);
-  g_free (self->internal_name);
-  g_slice_free (Redirect, self);
-}
-
-static void
-gegl_node_copy_property_property (GeglOperation *source,
-                                  const gchar   *source_property,
-                                  GeglOperation *destination,
-                                  const gchar   *destination_property)
-{
-  GValue      value = { 0 };
-  GParamSpec *spec  = g_object_class_find_property (G_OBJECT_GET_CLASS (source),
-                                                    source_property);
-
-  g_assert (spec);
-  g_value_init (&value, G_PARAM_SPEC_VALUE_TYPE (spec));
-  gegl_node_get_property (source->node, source_property, &value);
-  gegl_node_set_property (destination->node, destination_property, &value);
-  g_value_unset (&value);
-}
-
 void
 gegl_operation_meta_redirect (GeglOperation *operation,
                               const gchar   *name,
                               GeglNode      *internal,
                               const gchar   *internal_name)
 {
-  GeglOperationMeta *self     = GEGL_OPERATION_META (operation);
-  Redirect          *redirect = redirect_new (name, internal, internal_name);
+  GeglOperation *internal_operation;
 
-  self->redirects = g_slist_prepend (self->redirects, redirect);
-
-  /* set default value */
-  gegl_node_copy_property_property (operation,
-                                    redirect->name,
-                                    gegl_node_get_gegl_operation (internal),
-                                    redirect->internal_name);
+  internal_operation = gegl_node_get_gegl_operation (internal);
+  g_object_bind_property (operation, name, internal_operation, internal_name, G_BINDING_SYNC_CREATE);
 }
 
 typedef struct
@@ -216,34 +118,13 @@ gegl_operation_meta_property_changed (GeglOperationMeta *self,
                                       GParamSpec        *pspec,
                                       gpointer           user_data)
 {
-  GSList *iter;
+  gchar *detailed_signal = NULL;
 
   g_return_if_fail (GEGL_IS_OPERATION_META (self));
   g_return_if_fail (pspec);
 
-  for (iter = self->redirects; iter; iter = iter->next)
-    {
-      Redirect *redirect = iter->data;
+  detailed_signal = g_strconcat ("notify::", pspec->name, NULL);
+  g_signal_emit_by_name (self, detailed_signal, pspec);
 
-      if (!strcmp (redirect->name, pspec->name))
-        {
-          gegl_node_copy_property_property (GEGL_OPERATION (self), pspec->name,
-                                            gegl_node_get_gegl_operation (redirect->internal),
-                                            redirect->internal_name);
-        }
-    }
-}
-
-static void
-finalize (GObject *gobject)
-{
-  GeglOperationMeta *self = GEGL_OPERATION_META (gobject);
-  GSList            *iter;
-
-  for (iter = self->redirects; iter; iter = iter->next)
-    redirect_destroy (iter->data);
-
-  g_slist_free (self->redirects);
-
-  G_OBJECT_CLASS (gegl_operation_meta_parent_class)->finalize (gobject);
+  g_free (detailed_signal);
 }

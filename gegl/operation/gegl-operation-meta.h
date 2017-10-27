@@ -40,8 +40,6 @@ typedef struct _GeglOperationMeta  GeglOperationMeta;
 struct _GeglOperationMeta
 {
   GeglOperation parent_instance;
-
-  GSList       *redirects;
 };
 
 typedef struct _GeglOperationMetaClass GeglOperationMetaClass;
