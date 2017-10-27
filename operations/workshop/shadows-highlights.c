@@ -49,58 +49,143 @@ property_double (highlights_ccorrect, _("Highlights color adjustment"), 50.0)
 
 #else
 
-#define GEGL_OP_META
 #define GEGL_OP_NAME     shadows_highlights
 #define GEGL_OP_C_SOURCE shadows-highlights.c
 
+#include <gegl-plugin.h>
+
+struct _GeglOp
+{
+  GeglOperationMeta parent_instance;
+  gpointer          properties;
+
+  GeglNode *input;
+  GeglNode *output;
+};
+
+typedef struct
+{
+  GeglOperationMetaClass parent_class;
+} GeglOpClass;
+
 #include "gegl-op.h"
+GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_META)
+
+static gboolean
+is_operation_a_nop (GeglOperation *operation)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
+  return GEGL_FLOAT_EQUAL (o->shadows, 0.0) &&
+         GEGL_FLOAT_EQUAL (o->highlights, 0.0) &&
+         GEGL_FLOAT_EQUAL (o->whitepoint, 0.0);
+}
+
+static void
+do_setup (GeglOperation *operation)
+{
+  GeglOp *self = GEGL_OP (operation);
+  GSList *children = NULL;
+  GSList *l;
+
+  g_return_if_fail (GEGL_IS_NODE (operation->node));
+  g_return_if_fail (GEGL_IS_NODE (self->input));
+  g_return_if_fail (GEGL_IS_NODE (self->output));
+
+  children = gegl_node_get_children (operation->node);
+  for (l = children; l != NULL; l = l->next)
+    {
+      GeglNode *node = GEGL_NODE (l->data);
+
+      if (node == self->input || node == self->output)
+        continue;
+
+      g_object_unref (node);
+    }
+
+  if (is_operation_a_nop (operation))
+    {
+      gegl_node_link (self->input, self->output);
+    }
+  else
+    {
+      GeglNode *blur;
+      GeglNode *shprocess;
+
+      blur = gegl_node_new_child (operation->node,
+                                  "operation",    "gegl:gaussian-blur",
+                                  "abyss-policy", 1,
+                                  NULL);
+
+      shprocess = gegl_node_new_child (operation->node,
+                                       "operation", "gegl:shadows-highlights-correction",
+                                       NULL);
+
+      gegl_node_link (self->input, blur);
+      gegl_node_link_many (self->input, shprocess, self->output, NULL);
+
+      gegl_node_connect_to (blur, "output", shprocess, "aux");
+
+      gegl_operation_meta_redirect (operation, "radius", blur, "std-dev-x");
+      gegl_operation_meta_redirect (operation, "radius", blur, "std-dev-y");
+      gegl_operation_meta_redirect (operation, "shadows", shprocess, "shadows");
+      gegl_operation_meta_redirect (operation, "highlights", shprocess, "highlights");
+      gegl_operation_meta_redirect (operation, "whitepoint", shprocess, "whitepoint");
+      gegl_operation_meta_redirect (operation, "compress", shprocess, "compress");
+      gegl_operation_meta_redirect (operation, "shadows-ccorrect", shprocess, "shadows-ccorrect");
+      gegl_operation_meta_redirect (operation, "highlights-ccorrect", shprocess, "highlights-ccorrect");
+
+      gegl_operation_meta_watch_nodes (operation, blur, shprocess, NULL);
+    }
+
+  g_slist_free (children);
+}
 
 static void
 attach (GeglOperation *operation)
 {
+  GeglOp *self = GEGL_OP (operation);
   GeglNode *gegl;
-  GeglNode *input;
-  GeglNode *output;
-  GeglNode *blur;
-  GeglNode *shprocess;
 
   gegl   = operation->node;
-  input  = gegl_node_get_input_proxy (gegl, "input");
-  output = gegl_node_get_output_proxy (gegl, "output");
+  self->input  = gegl_node_get_input_proxy (gegl, "input");
+  self->output = gegl_node_get_output_proxy (gegl, "output");
 
-  blur = gegl_node_new_child (gegl,
-                              "operation",    "gegl:gaussian-blur",
-                              "abyss-policy", 1,
-                               NULL);
+  do_setup (operation);
+}
 
+static void
+my_set_property (GObject      *gobject,
+                 guint         property_id,
+                 const GValue *value,
+                 GParamSpec   *pspec)
+{
+  GeglOperation *operation = GEGL_OPERATION (gobject);
+  gboolean       is_nop;
+  gboolean       was_nop;
 
-  shprocess = gegl_node_new_child (gegl,
-                                   "operation", "gegl:shadows-highlights-correction",
-                                   NULL);
+  was_nop = is_operation_a_nop (operation);
 
-  gegl_node_link (input, blur);
-  gegl_node_link_many (input, shprocess, output, NULL);
+  /* The set_property provided by the chant system does the
+   * storing and reffing/unreffing of the input properties
+   */
+  set_property (gobject, property_id, value, pspec);
 
-  gegl_node_connect_to (blur, "output", shprocess, "aux");
-
-  gegl_operation_meta_redirect (operation, "radius", blur, "std-dev-x");
-  gegl_operation_meta_redirect (operation, "radius", blur, "std-dev-y");
-  gegl_operation_meta_redirect (operation, "shadows", shprocess, "shadows");
-  gegl_operation_meta_redirect (operation, "highlights", shprocess, "highlights");
-  gegl_operation_meta_redirect (operation, "whitepoint", shprocess, "whitepoint");
-  gegl_operation_meta_redirect (operation, "compress", shprocess, "compress");
-  gegl_operation_meta_redirect (operation, "shadows-ccorrect", shprocess, "shadows-ccorrect");
-  gegl_operation_meta_redirect (operation, "highlights-ccorrect", shprocess, "highlights-ccorrect");
-
-  gegl_operation_meta_watch_nodes (operation, blur, shprocess, NULL);
+  is_nop = is_operation_a_nop (operation);
+  if (operation->node != NULL && is_nop != was_nop)
+    do_setup (operation);
 }
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
+  GObjectClass *object_class;
   GeglOperationClass *operation_class;
 
+  object_class = G_OBJECT_CLASS (klass);
   operation_class = GEGL_OPERATION_CLASS (klass);
+
+  object_class->set_property = my_set_property;
 
   operation_class->attach = attach;
 
