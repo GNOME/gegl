@@ -264,9 +264,7 @@ close_stream(thandle_t handle)
 
   p->position = 0;
 
-  if (p->buffer != NULL)
-    g_free(p->buffer);
-  p->buffer = NULL;
+  g_clear_pointer(&p->buffer, g_free);
 
   p->allocated = 0;
 
@@ -594,13 +592,8 @@ process(GeglOperation *operation,
 
 cleanup:
   cleanup(operation);
-  if (o->user_data != NULL)
-    g_free(o->user_data);
-  o->user_data = NULL;
-
-  if (error != NULL)
-    g_error_free(error);
-
+  g_clear_pointer(&o->user_data, g_free);
+  g_clear_error(&error);
   return status;
 }
 

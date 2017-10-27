@@ -450,14 +450,9 @@ operation_process (GeglOperation        *operation,
       success = process (operation, input, aux, aux2, output, result, level);
     }
 
-  if (input != NULL)
-    g_object_unref (input);
-
-  if (aux != NULL)
-    g_object_unref (aux);
-
-  if (aux2 != NULL)
-    g_object_unref (aux2);
+  g_clear_object (&input);
+  g_clear_object (&aux);
+  g_clear_object (&aux2);
 
   return success;
 }

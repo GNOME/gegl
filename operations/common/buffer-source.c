@@ -189,8 +189,7 @@ dispose (GObject *object)
       g_signal_handler_disconnect (o->buffer, p->buffer_changed_handler);
       /* XXX: should decrement signal connected count */
 
-      g_object_unref (o->buffer);
-      o->buffer = NULL;
+      g_clear_object (&o->buffer);
     }
 
   if (p)

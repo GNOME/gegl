@@ -92,11 +92,7 @@ gegl_introspect_dispose (GObject *object)
 {
   GeglProperties *o = GEGL_PROPERTIES (object);
 
-  if (o->user_data != NULL)
-    {
-      g_object_unref (o->user_data);
-      o->user_data = NULL;
-    }
+  g_clear_object (&o->user_data);
 
   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
 }

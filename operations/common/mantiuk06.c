@@ -431,7 +431,6 @@ mantiuk06_matrix_alloc (guint size)
 static inline void
 mantiuk06_matrix_free (gfloat *m)
 {
-  g_return_if_fail (m);
   g_free (m);
 }
 
@@ -650,17 +649,8 @@ mantiuk06_pyramid_free (pyramid_t *pyramid)
     {
       pyramid_t *const next = pyramid->next;
 
-      if (pyramid->Gx != NULL)
-        {
-          g_free (pyramid->Gx);
-          pyramid->Gx = NULL;
-        }
-
-      if (pyramid->Gy != NULL)
-        {
-          g_free (pyramid->Gy);
-          pyramid->Gy = NULL;
-        }
+      g_clear_pointer (&pyramid->Gx, g_free);
+      g_clear_pointer (&pyramid->Gy, g_free);
 
       pyramid->prev = NULL;
       pyramid->next = NULL;

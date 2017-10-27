@@ -207,8 +207,7 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
   if (setjmp (png_jmpbuf (load_png_ptr)))
     {
       png_destroy_read_struct (&load_png_ptr, &load_info_ptr, NULL);
-     if (row_p)
-        g_free (row_p);
+      g_free (row_p);
       return -1;
     }
 
@@ -370,8 +369,7 @@ static gint query_png (GInputStream *stream,
   if (setjmp (png_jmpbuf (load_png_ptr)))
     {
      png_destroy_read_struct (&load_png_ptr, &load_info_ptr, NULL);
-     if (row_p)
-        g_free (row_p);
+     g_free (row_p);
       return -1;
     }
 
@@ -436,7 +434,7 @@ get_bounding_box (GeglOperation *operation)
   result.width  = width;
   result.height  = height;
 
-  if (infile) g_object_unref(infile);
+  g_clear_object(&infile);
   g_object_unref(stream);
   return result;
 }
@@ -468,7 +466,7 @@ process (GeglOperation       *operation,
                  G_OBJECT_TYPE_NAME (operation), o->path);
       return FALSE;
     }
-  if (infile) g_object_unref(infile);
+  g_clear_object(&infile);
   g_object_unref(stream);
   return TRUE;
 }

@@ -104,8 +104,7 @@ do_setup (GeglOperation *operation)
       if (self->cached_path != NULL)
         {
           gegl_node_link (self->input, self->output);
-          g_free (self->cached_path);
-          self->cached_path = NULL;
+          g_clear_pointer (&self->cached_path, g_free);
         }
 
       return;
@@ -119,8 +118,7 @@ do_setup (GeglOperation *operation)
       gegl_node_set (self->composite_op,
                      "operation", o->composite_op,
                      NULL);
-      if (self->p_composite_op)
-        g_free (self->p_composite_op);
+      g_free (self->p_composite_op);
       self->p_composite_op = g_strdup (o->composite_op);
     }
 
@@ -142,8 +140,7 @@ do_setup (GeglOperation *operation)
       if (!self->cached_path)
         gegl_node_link_many (self->input, self->composite_op, self->output, NULL);
 
-      if (self->cached_path)
-        g_free (self->cached_path);
+      g_free (self->cached_path);
       self->cached_path = g_strdup (o->src);
     }
 
@@ -243,10 +240,8 @@ finalize (GObject *object)
 {
   GeglOp *self = GEGL_OP (object);
 
-  if (self->cached_path)
-    g_free (self->cached_path);
-  if (self->p_composite_op)
-    g_free (self->p_composite_op);
+  g_free (self->cached_path);
+  g_free (self->p_composite_op);
 
   G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);
 }

@@ -222,8 +222,7 @@ finalize (GObject *object)
   if (o->user_data)
     {
       raw_close (o);
-      g_free (o->user_data);
-      o->user_data = NULL;
+      g_clear_pointer (&o->user_data, g_free);
     }
 
   G_OBJECT_CLASS (gegl_op_parent_class)->finalize(object);

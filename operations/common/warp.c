@@ -98,19 +98,8 @@ clear_cache (GeglProperties *o)
   if (! priv)
     return;
 
-  if (priv->lookup)
-    {
-      g_free (priv->lookup);
-
-      priv->lookup = NULL;
-    }
-
-  if (priv->buffer)
-    {
-      g_object_unref (priv->buffer);
-
-      priv->buffer = NULL;
-    }
+  g_clear_pointer (&priv->lookup, g_free);
+  g_clear_object (&priv->buffer);
 
   while (priv->processed_stroke)
     {

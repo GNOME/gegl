@@ -116,9 +116,7 @@ finalize (GObject *object)
       Priv *p = (Priv*)o->user_data;
 
       g_object_unref (p->acc);
-
-      g_free (o->user_data);
-      o->user_data = NULL;
+      g_clear_pointer (&o->user_data, g_free);
     }
 
   G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);

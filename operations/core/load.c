@@ -269,8 +269,7 @@ cleanup:
       g_object_unref (stream);
     }
 
-  if (file != NULL)
-    g_object_unref (file);
+  g_clear_object (&file);
 
   g_free (buffer);
 

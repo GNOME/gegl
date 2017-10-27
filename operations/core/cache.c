@@ -59,11 +59,7 @@ process (GeglOperation       *operation,
 
   if (o->cache != (void *) operation->node->cache)
     {
-      if (o->cache)
-        {
-          g_object_unref (o->cache);
-          o->cache = NULL;
-        }
+      g_clear_object (&o->cache);
 
       if (operation->node->cache)
         o->cache = g_object_ref (operation->node->cache);

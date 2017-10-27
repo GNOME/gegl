@@ -461,11 +461,8 @@ process (GeglOperation       *operation,
     if (matrices[i])
       jas_matrix_destroy (matrices[i]);
 
-  if (data_b)
-    g_free (data_b);
-
-  if (data_s)
-    g_free (data_s);
+  g_free (data_b);
+  g_free (data_s);
 
   return ret;
 }
@@ -501,9 +498,7 @@ finalize(GObject *object)
   if (o->user_data != NULL)
     {
       cleanup(GEGL_OPERATION(object));
-      if (o->user_data != NULL)
-        g_free(o->user_data);
-      o->user_data = NULL;
+      g_clear_pointer (&o->user_data, g_free);
     }
 
   G_OBJECT_CLASS(gegl_op_parent_class)->finalize(object);

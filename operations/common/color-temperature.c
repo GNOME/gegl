@@ -93,11 +93,7 @@ finalize (GObject *object)
 {
   GeglProperties *o = GEGL_PROPERTIES (object);
 
-  if (o->user_data)
-    {
-      g_free (o->user_data);
-      o->user_data = NULL;
-    }
+  g_clear_pointer (&o->user_data, g_free);
 
   G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);
 }
@@ -114,11 +110,7 @@ notify (GObject    *object,
       /* one of the properties has changed,
        * invalidate the preprocessed coefficients
        */
-      if (o->user_data)
-        {
-          g_free (o->user_data);
-          o->user_data = NULL;
-        }
+      g_clear_pointer (&o->user_data, g_free);
     }
 
   if (G_OBJECT_CLASS (gegl_op_parent_class)->notify)

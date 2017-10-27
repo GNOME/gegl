@@ -263,11 +263,9 @@ get_bounding_box (GeglOperation *operation)
       cairo_destroy (cr);
       cairo_surface_destroy (surface);
 
-      if (extent->string)
-        g_free (extent->string);
+      g_free (extent->string);
       extent->string = g_strdup (o->string);
-      if (extent->font)
-        g_free (extent->font);
+      g_free (extent->font);
       extent->font = g_strdup (o->font);
       extent->size = o->size;
       extent->wrap = o->wrap;
@@ -297,10 +295,8 @@ finalize (GObject *object)
 {
   GeglOp *self = GEGL_OP (object);
 
-  if (self->cex.string)
-    g_free (self->cex.string);
-  if (self->cex.font)
-    g_free (self->cex.font);
+  g_free (self->cex.string);
+  g_free (self->cex.font);
 
   G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);
 }

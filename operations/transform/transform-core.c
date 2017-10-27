@@ -1180,8 +1180,7 @@ gegl_transform_process (GeglOperation        *operation,
 
       gegl_operation_context_take_object (context, "output", G_OBJECT (output));
 
-      if (input != NULL)
-        g_object_unref (input);
+      g_clear_object (&input);
     }
   else
     {
@@ -1256,8 +1255,7 @@ gegl_transform_process (GeglOperation        *operation,
         func (operation, output, input, &matrix, result, level);
       }
 
-      if (input != NULL)
-        g_object_unref (input);
+      g_clear_object (&input);
     }
 
   return TRUE;

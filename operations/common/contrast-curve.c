@@ -158,8 +158,7 @@ cl_process (GeglOperation       *self,
       g_free (ysf);
       return FALSE;
 error:
-      if (ysf)
-        g_free (ysf);
+      g_free (ysf);
       if (cl_curve)
         gegl_clReleaseMemObject (cl_curve);
 

@@ -139,8 +139,7 @@ ff_cleanup (GeglProperties *o)
   if (p)
     {
       clear_audio_track (o);
-      if (p->loadedfilename)
-        g_free (p->loadedfilename);
+      g_free (p->loadedfilename);
       if (p->video_stream && p->video_stream->codec)
         avcodec_close (p->video_stream->codec);
       if (p->audio_stream && p->audio_stream->codec)
@@ -502,22 +501,19 @@ prepare (GeglOperation *operation)
       p->height = p->video_stream->codec->height;
       p->lavc_frame = av_frame_alloc ();
 
-      if (o->video_codec)
-        g_free (o->video_codec);
+      g_free (o->video_codec);
       if (p->video_codec->name)
         o->video_codec = g_strdup (p->video_codec->name);
       else
         o->video_codec = g_strdup ("");
 
-      if (o->audio_codec)
-        g_free (o->audio_codec);
+      g_free (o->audio_codec);
       if (p->audio_codec && p->audio_codec->name)
         o->audio_codec = g_strdup (p->audio_codec->name);
       else
         o->audio_codec = g_strdup ("");
 
-      if (p->loadedfilename)
-        g_free (p->loadedfilename);
+      g_free (p->loadedfilename);
       p->loadedfilename = g_strdup (o->path);
       p->prevframe = -1;
       p->a_prevframe = -1;
@@ -750,8 +746,7 @@ finalize (GObject *object)
       ff_cleanup (o);
       g_free (p->loadedfilename);
 
-      g_free (o->user_data);
-      o->user_data = NULL;
+      g_clear_pointer (&o->user_data, g_free);
     }
 
   G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);

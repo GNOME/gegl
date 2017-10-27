@@ -122,11 +122,7 @@ dispose (GObject *object)
 {
   GeglProperties *o = GEGL_PROPERTIES (object);
 
-  if (o->buffer)
-    {
-      g_object_unref (o->buffer);
-      o->buffer = NULL;
-    }
+  g_clear_object (&o->buffer);
 
   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
 }

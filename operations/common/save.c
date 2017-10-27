@@ -174,8 +174,7 @@ gegl_save_dispose (GObject *object)
 {
   GeglOp *self = GEGL_OP (object);
 
-  g_free (self->cached_path);
-  self->cached_path = NULL;
+  g_clear_pointer (&self->cached_path, g_free);
 
   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
 }

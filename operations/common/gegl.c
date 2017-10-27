@@ -67,8 +67,7 @@ prepare (GeglOperation *operation)
 
   if (!o->user_data || !g_str_equal (o->user_data, o->string))
   {
-    if (o->user_data)
-      g_free (o->user_data);
+    g_free (o->user_data);
     o->user_data = g_strdup (o->string);
 
   input  = gegl_node_get_input_proxy (gegl,  "input");
@@ -86,8 +85,7 @@ prepare (GeglOperation *operation)
   if (error)
   {
     gegl_node_set (gegl, "error", error->message, NULL);
-    g_error_free (error);
-    error = NULL;
+    g_clear_error (&error);
   }
   else
     g_object_set (operation, "error", "", NULL);

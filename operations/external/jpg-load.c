@@ -306,7 +306,7 @@ gegl_jpg_load_get_bounding_box (GeglOperation *operation)
     gegl_operation_set_format (operation, "output", format);
 
   g_object_unref(stream);
-  if (file) g_object_unref(file);
+  g_clear_object(&file);
   if (err || status)
     return (GeglRectangle) {0, 0, 0, 0};
   else

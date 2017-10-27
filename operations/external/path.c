@@ -243,8 +243,7 @@ gegl_path_stamp (GeglBuffer *buffer,
   if (s.buf == NULL ||
       s.radius != radius)
     {
-      if (s.buf != NULL)
-        g_free (s.buf);
+      g_free (s.buf);
       /* allocate a little bit more, just in case due to rounding errors and
        * such */
       s.buf = g_malloc (4*4* (roi.width + 2 ) * (roi.height + 2));

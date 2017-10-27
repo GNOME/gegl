@@ -296,9 +296,7 @@ close_stream(thandle_t handle)
   p->loaded = 0;
   p->position = 0;
 
-  if (p->buffer != NULL)
-    g_free(p->buffer);
-  p->buffer = NULL;
+  g_clear_pointer(&p->buffer, g_free);
 
   p->allocated = 0;
 
@@ -847,9 +845,7 @@ finalize(GObject *object)
   if (o->user_data != NULL)
     {
       cleanup(GEGL_OPERATION(object));
-      if (o->user_data != NULL)
-        g_free(o->user_data);
-      o->user_data = NULL;
+      g_clear_pointer(&o->user_data, g_free);
     }
 
   G_OBJECT_CLASS(gegl_op_parent_class)->finalize(object);
