@@ -153,10 +153,8 @@ gegl_operation_composer_process (GeglOperation        *operation,
     {
       success = klass->process (operation, input, aux, output, result, level);
 
-      if (input)
-        g_object_unref (input);
-      if (aux)
-        g_object_unref (aux);
+      g_clear_object (&input);
+      g_clear_object (&aux);
     }
   else
     {

@@ -151,8 +151,7 @@ gegl_path_parse (const gchar  *path,
 static void
 gegl_path_free (GList *path)
 {
-  g_list_foreach (path, (GFunc) g_free, NULL);
-  g_list_free (path);
+  g_list_free_full (path, g_free);
 }
 
 void

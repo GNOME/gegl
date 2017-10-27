@@ -80,17 +80,8 @@ finalize (GObject *gobject)
 
   g_assert (self->connections == NULL);
 
-  if (self->param_spec)
-    {
-      g_param_spec_unref (self->param_spec);
-      self->param_spec = NULL;
-    }
-
-  if (self->name)
-    {
-      g_free (self->name);
-      self->name = NULL;
-    }
+  g_clear_pointer (&self->param_spec, (GDestroyNotify) g_param_spec_unref);
+  g_free (self->name);
 
   G_OBJECT_CLASS (gegl_pad_parent_class)->finalize (gobject);
 }
@@ -215,8 +206,7 @@ gegl_pad_get_name (GeglPad *self)
 void gegl_pad_set_name (GeglPad     *self,
                         const gchar *name)
 {
-  if (self->name)
-    g_free (self->name);
+  g_free (self->name);
   self->name = g_strdup (name);
 }
 

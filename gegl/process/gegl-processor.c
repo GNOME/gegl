@@ -160,35 +160,14 @@ gegl_processor_finalize (GObject *self_object)
 {
   GeglProcessor *processor = GEGL_PROCESSOR (self_object);
 
-  if (processor->context)
-    {
-      gegl_operation_context_destroy (processor->context);
-    }
+  g_clear_pointer (&processor->context, (GDestroyNotify) gegl_operation_context_destroy);
 
-  if (processor->node)
-    {
-      g_object_unref (processor->node);
-    }
+  g_clear_object (&processor->node);
+  g_clear_object (&processor->real_node);
+  g_clear_object (&processor->input);
 
-  if (processor->real_node)
-    {
-      g_object_unref (processor->real_node);
-    }
-
-  if (processor->input)
-    {
-      g_object_unref (processor->input);
-    }
-
-  if (processor->queued_region)
-    {
-      gegl_region_destroy (processor->queued_region);
-    }
-
-  if (processor->valid_region)
-    {
-      gegl_region_destroy (processor->valid_region);
-    }
+  g_clear_pointer (&processor->queued_region, (GDestroyNotify) gegl_region_destroy);
+  g_clear_pointer (&processor->valid_region, (GDestroyNotify) gegl_region_destroy);
 
   G_OBJECT_CLASS (gegl_processor_parent_class)->finalize (self_object);
 }
@@ -259,12 +238,8 @@ gegl_processor_set_node (GeglProcessor *processor,
   g_return_if_fail (GEGL_IS_NODE (node));
   g_return_if_fail (node->is_graph || GEGL_IS_OPERATION (node->operation));
 
-  if (processor->node)
-    g_object_unref (processor->node);
-  if (processor->real_node)
-    g_object_unref (processor->real_node);
-
-  processor->node = g_object_ref (node);
+  g_set_object (&processor->node, node);
+  g_clear_object (&processor->real_node);
 
   /* nodes with meta operations are also graphs and can be sinks, so
    * we don't use their output proxy */

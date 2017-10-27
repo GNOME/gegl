@@ -311,8 +311,7 @@ set_property (GObject      *object,
         break;
 
       case PROP_TYPE:
-        if (self->type)
-          g_free (self->type);
+        g_free (self->type);
         self->type = g_value_dup_string (value);
         break;
 

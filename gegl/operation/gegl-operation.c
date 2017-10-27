@@ -634,10 +634,8 @@ gegl_operation_cl_set_kernel_args (GeglOperation *operation,
         }
     }
 
-  if (self)
-    g_free (self);
-  if (parent)
-    g_free (parent);
+  g_free (self);
+  g_free (parent);
 
   return TRUE;
 }

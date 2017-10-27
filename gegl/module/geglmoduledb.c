@@ -118,17 +118,8 @@ gegl_module_db_finalize (GObject *object)
 {
   GeglModuleDB *db = GEGL_MODULE_DB (object);
 
-  if (db->modules)
-    {
-      g_list_free (db->modules);
-      db->modules = NULL;
-    }
-
-  if (db->load_inhibit)
-    {
-      g_free (db->load_inhibit);
-      db->load_inhibit = NULL;
-    }
+  g_list_free (db->modules);
+  g_free (db->load_inhibit);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -207,9 +198,7 @@ gegl_module_db_set_load_inhibit (GeglModuleDB *db,
 
   g_return_if_fail (GEGL_IS_MODULE_DB (db));
 
-  if (db->load_inhibit)
-    g_free (db->load_inhibit);
-
+  g_free (db->load_inhibit);
   db->load_inhibit = g_strdup (load_inhibit);
 
   for (list = db->modules; list; list = g_list_next (list))

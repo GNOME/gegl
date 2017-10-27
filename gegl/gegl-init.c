@@ -146,8 +146,7 @@ gegl_init_swap_dir (void)
       ! g_file_test (swapdir, G_FILE_TEST_IS_DIR) &&
       g_mkdir_with_parents (swapdir, S_IRUSR | S_IWUSR | S_IXUSR) != 0)
     {
-      g_free (swapdir);
-      swapdir = NULL;
+      g_clear_pointer (&swapdir, g_free);
     }
 
   g_object_set (config, "swap", swapdir, NULL);
@@ -475,11 +474,7 @@ gegl_exit (void)
 
   gegl_temp_buffer_free ();
 
-  if (module_db != NULL)
-    {
-      g_object_unref (module_db);
-      module_db = NULL;
-    }
+  g_clear_object (&module_db);
 
   babl_exit ();
 
@@ -543,8 +538,7 @@ gegl_exit (void)
 
       g_pattern_spec_free (pattern);
     }
-  g_object_unref (config);
-  config = NULL;
+  g_clear_object (&config);
   global_time = 0;
 }
 

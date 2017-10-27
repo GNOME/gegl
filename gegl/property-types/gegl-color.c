@@ -504,11 +504,7 @@ gegl_param_color_finalize (GParamSpec *self)
   GeglParamColor  *param_color  = GEGL_PARAM_COLOR (self);
   GParamSpecClass *parent_class = g_type_class_peek (g_type_parent (GEGL_TYPE_PARAM_COLOR));
 
-  if (param_color->default_color)
-    {
-      g_object_unref (param_color->default_color);
-      param_color->default_color = NULL;
-    }
+  g_clear_object (&param_color->default_color);
 
   parent_class->finalize (self);
 }

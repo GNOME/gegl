@@ -562,8 +562,7 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
 
       if (buffer->sampler)
       {
-        g_object_unref (buffer->sampler);
-        buffer->sampler = NULL;
+        g_clear_object (&buffer->sampler);
         buffer->sampler_type = 0;
       }
 
@@ -612,11 +611,7 @@ gegl_buffer_sample_cleanup (GeglBuffer *buffer)
   if (threaded)
     g_mutex_lock (&gegl_buffer_sampler_mutex);
 
-  if (buffer->sampler)
-    {
-      g_object_unref (buffer->sampler);
-      buffer->sampler = NULL;
-    }
+  g_clear_object (&buffer->sampler);
 
   if (threaded)
     g_mutex_unlock (&gegl_buffer_sampler_mutex);

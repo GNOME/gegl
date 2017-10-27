@@ -119,10 +119,9 @@ redirect_destroy (Redirect *self)
 {
   if (!self)
     return;
-  if (self->name)
-    g_free (self->name);
-  if (self->internal_name)
-    g_free (self->internal_name);
+
+  g_free (self->name);
+  g_free (self->internal_name);
   g_slice_free (Redirect, self);
 }
 

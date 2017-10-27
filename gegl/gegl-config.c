@@ -132,8 +132,7 @@ gegl_config_set_property (GObject      *gobject,
         config->quality = g_value_get_double (value);
         return;
       case PROP_SWAP:
-        if (config->swap)
-          g_free (config->swap);
+        g_free (config->swap);
         config->swap = g_value_dup_string (value);
         break;
       case PROP_THREADS:
@@ -146,8 +145,7 @@ gegl_config_set_property (GObject      *gobject,
         config->queue_size = g_value_get_int (value);
         break;
       case PROP_APPLICATION_LICENSE:
-        if (config->application_license)
-          g_free (config->application_license);
+        g_free (config->application_license);
         config->application_license = g_value_dup_string (value);
         break;
       default:
@@ -161,11 +159,8 @@ gegl_config_finalize (GObject *gobject)
 {
   GeglConfig *config = GEGL_CONFIG (gobject);
 
-  if (config->swap)
-    g_free (config->swap);
-
-  if (config->application_license)
-    g_free (config->application_license);
+  g_free (config->swap);
+  g_free (config->application_license);
 
   G_OBJECT_CLASS (gegl_config_parent_class)->finalize (gobject);
 }

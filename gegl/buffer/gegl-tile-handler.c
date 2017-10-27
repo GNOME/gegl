@@ -49,11 +49,7 @@ gegl_tile_handler_dispose (GObject *object)
 {
   GeglTileHandler *handler = GEGL_TILE_HANDLER (object);
 
-  if (handler->source)
-    {
-      g_object_unref (handler->source);
-      handler->source = NULL;
-    }
+  g_clear_object (&handler->source);
 
   G_OBJECT_CLASS (gegl_tile_handler_parent_class)->dispose (object);
 }
@@ -145,16 +141,7 @@ void
 gegl_tile_handler_set_source (GeglTileHandler *handler,
                               GeglTileSource  *source)
 {
-  if (source != handler->source)
-    {
-      if (handler->source)
-        g_object_unref (handler->source);
-
-      handler->source = source;
-
-      if (handler->source)
-        g_object_ref (handler->source);
-    }
+  g_set_object (&handler->source, source);
 }
 
 void

@@ -231,9 +231,7 @@ set_clone_prop_as_well:
           if (pd->curve)
             {
               gegl_node_set (new, param_name, pd->curve, NULL);
-
-              g_object_unref (pd->curve);
-              pd->curve = NULL;
+              g_clear_object (&pd->curve);
             }
         }
       else if (paramspec->value_type == GEGL_TYPE_PATH)
@@ -492,8 +490,7 @@ static void end_element (GMarkupParseContext *context,
     }
   else if (!strcmp (element_name, "param"))
     {
-      g_free (pd->param);
-      pd->param = NULL;
+      g_clear_pointer (&pd->param, g_free);
     }
   else if (!strcmp (element_name, "curve"))
     {
@@ -587,11 +584,7 @@ GeglNode *gegl_node_new_from_xml (const gchar *xmldata,
     }
   else
     {
-      if (pd.gegl)
-        {
-          g_object_unref (pd.gegl);
-          pd.gegl = NULL;
-        }
+      g_clear_object (&pd.gegl);
     }
 
   g_list_free (pd.refs);

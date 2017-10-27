@@ -100,13 +100,7 @@ finalize (GObject *gobject)
   GeglCurvePrivate *priv = GEGL_CURVE_GET_PRIVATE (self);
 
   g_array_free (priv->points, TRUE);
-  priv->points = NULL;
-
-  if (priv->indir != NULL)
-    {
-      g_free (priv->indir);
-      priv->indir = NULL;
-    }
+  g_free (priv->indir);
 
   G_OBJECT_CLASS (gegl_curve_parent_class)->finalize (gobject);
 }
@@ -297,10 +291,7 @@ recalculate (GeglCurvePrivate *priv)
   if (len < 2)
     return;
 
-  if (priv->indir != NULL)
-    {
-      g_free (priv->indir);
-    }
+  g_free (priv->indir);
   priv->indir = (GeglCurvePoint**) g_malloc (sizeof (GeglCurvePoint*) * len);
 
   for (i = 0; i < len; ++i)
@@ -472,11 +463,7 @@ gegl_param_curve_finalize (GParamSpec *self)
   GParamSpecClass *parent_class = g_type_class_peek (g_type_parent (
                                                        GEGL_TYPE_PARAM_CURVE));
 
-  if (param_curve->default_curve)
-    {
-      g_object_unref (param_curve->default_curve);
-      param_curve->default_curve = NULL;
-    }
+  g_clear_object (&param_curve->default_curve);
 
   parent_class->finalize (self);
 }

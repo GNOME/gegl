@@ -252,17 +252,8 @@ gegl_node_dispose (GObject *gobject)
     }
 
   gegl_node_remove_children (self);
-  if (self->cache)
-    {
-      g_object_unref (self->cache);
-      self->cache = NULL;
-    }
-
-  if (self->priv->eval_manager)
-    {
-      g_object_unref (self->priv->eval_manager);
-      self->priv->eval_manager = NULL;
-    }
+  g_clear_object (&self->cache);
+  g_clear_object (&self->priv->eval_manager);
 
   G_OBJECT_CLASS (gegl_node_parent_class)->dispose (gobject);
 }
@@ -275,31 +266,13 @@ gegl_node_finalize (GObject *gobject)
   gegl_node_disconnect_sources (self);
   gegl_node_disconnect_sinks (self);
 
-  if (self->pads)
-    {
-      g_slist_foreach (self->pads, (GFunc) g_object_unref, NULL);
-      g_slist_free (self->pads);
-      self->pads = NULL;
-    }
-
+  g_slist_free_full (self->pads, g_object_unref);
   g_slist_free (self->input_pads);
   g_slist_free (self->output_pads);
 
-  if (self->operation)
-    {
-      g_object_unref (self->operation);
-      self->operation = NULL;
-    }
-
-  if (self->priv->name)
-    {
-      g_free (self->priv->name);
-    }
-
-  if (self->priv->debug_name)
-    {
-      g_free (self->priv->debug_name);
-    }
+  g_clear_object (&self->operation);
+  g_free (self->priv->name);
+  g_free (self->priv->debug_name);
 
   g_mutex_clear (&self->mutex);
 
@@ -1035,8 +1008,7 @@ gegl_node_blit (GeglNode            *self,
       if (buffer && destination_buf)
         gegl_buffer_get (buffer, roi, scale, format, destination_buf, rowstride, GEGL_ABYSS_NONE);
 
-      if (buffer)
-        g_object_unref (buffer);
+      g_clear_object (&buffer);
     }
   else if (flags & GEGL_BLIT_CACHE)
     {
@@ -1257,10 +1229,7 @@ gegl_node_set_operation_object (GeglNode      *self,
   gegl_node_disconnect_sources (self);
   gegl_node_disconnect_sinks (self);
 
-  if (self->operation)
-    g_object_unref (self->operation);
-
-  self->operation = g_object_ref (operation);
+  g_set_object (&self->operation, operation);
 
   /* Delete all the pads from the previous operation */
   while (self->pads)
@@ -1600,8 +1569,7 @@ gegl_node_update_debug_name (GeglNode *node)
 
   g_return_if_fail (GEGL_IS_NODE (node));
 
-  if (node->priv->debug_name)
-    g_free (node->priv->debug_name);
+  g_free (node->priv->debug_name);
 
   if (name && *name)
     new_name = g_strdup_printf ("%s '%s' %p", operation ? operation : "(none)", name, node);
@@ -1872,10 +1840,7 @@ gegl_node_get_cache (GeglNode *node)
     }
 
   if (node->cache && gegl_buffer_get_format ((GeglBuffer *)(node->cache)) != format)
-    {
-      g_object_unref (node->cache);
-      node->cache = NULL;
-    }
+    g_clear_object (&node->cache);
 
   if (node->cache)
     return node->cache;
@@ -1919,9 +1884,7 @@ gegl_node_set_name (GeglNode    *self,
 {
   g_return_if_fail (GEGL_IS_NODE (self));
 
-  if (self->priv->name)
-    g_free (self->priv->name);
-
+  g_free (self->priv->name);
   self->priv->name = g_strdup (name);
 
   gegl_node_update_debug_name (self);

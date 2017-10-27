@@ -300,8 +300,7 @@ gegl_create_chain_argv (char      **ops,
                           {
                             string = g_string_new ("");
                             in_strkeyframes = 1;
-                            if (prop)
-                              g_free (prop);
+                            g_free (prop);
                             prop = g_strdup (key);
                           }
                         else
@@ -312,8 +311,7 @@ gegl_create_chain_argv (char      **ops,
                             anim_quark = g_quark_from_string (tmpbuf);
                             path = gegl_path_new ();
                             in_keyframes = 1;
-                            if (prop)
-                              g_free (prop);
+                            g_free (prop);
                             prop = g_strdup (key);
 
                             g_object_set_qdata_full (G_OBJECT (
@@ -671,10 +669,7 @@ gegl_create_chain_argv (char      **ops,
                             level_pad[level]);
     }
 
-  if (prop)
-    {
-      g_free (prop);
-    }
+  g_free (prop);
   g_hash_table_unref (ht);
   gegl_node_link_many (iter[level], proxy, NULL);
 }

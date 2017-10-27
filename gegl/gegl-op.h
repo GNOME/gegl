@@ -489,8 +489,7 @@ set_property (GObject      *gobject,
       break;
 #define property_string(name, label, def_val)                         \
     case PROP_##name:                                                 \
-      if (properties->name)                                           \
-        g_free (properties->name);                                    \
+      g_free (properties->name);                                      \
       properties->name = g_value_dup_string (value);                  \
       break;
 #define property_boolean(name, label, def_val)                        \
@@ -499,38 +498,32 @@ set_property (GObject      *gobject,
       break;
 #define property_file_path(name, label, def_val)                      \
     case PROP_##name:                                                 \
-      if (properties->name)                                           \
-        g_free (properties->name);                                    \
+      g_free (properties->name);                                      \
       properties->name = g_value_dup_string (value);                  \
       break;
 #define property_uri(name, label, def_val)                            \
     case PROP_##name:                                                 \
-      if (properties->name)                                           \
-        g_free (properties->name);                                    \
+      g_free (properties->name);                                      \
       properties->name = g_value_dup_string (value);                  \
       break;
 #define property_object(name, label, def_val)                         \
     case PROP_##name:                                                 \
-      if (properties->name != NULL)                                   \
-         g_object_unref (properties->name);                           \
+      g_clear_object (&properties->name);                             \
       properties->name = g_value_dup_object (value);                  \
       break;
 #define property_curve(name, label, def_val)                          \
     case PROP_##name:                                                 \
-      if (properties->name != NULL)                                   \
-         g_object_unref (properties->name);                           \
+      g_clear_object (&properties->name);                             \
       properties->name = g_value_dup_object (value);                  \
       break;
 #define property_color(name, label, def_val)                          \
     case PROP_##name:                                                 \
-      if (properties->name != NULL)                                   \
-         g_object_unref (properties->name);                           \
+      g_clear_object (&properties->name);                             \
       properties->name = g_value_dup_object (value);                  \
       break;
 #define property_audio_fragment(name, label, def_val)                 \
     case PROP_##name:                                                 \
-      if (properties->name != NULL)                                   \
-         g_object_unref (properties->name);                           \
+      g_clear_object (&properties->name);                             \
       properties->name = g_value_dup_object (value);                  \
       break;
 #define property_path(name, label, def_val)                           \
@@ -605,54 +598,22 @@ static void gegl_op_destroy_notify (gpointer data)
 #define property_double(name, label, def_val)
 #define property_int(name, label, def_val) 
 #define property_string(name, label, ...)      \
-  if (properties->name)                             \
-    {                                               \
-      g_free (properties->name);                    \
-      properties->name = NULL;                      \
-    }
+  g_clear_pointer (&properties->name, g_free);
 #define property_boolean(name, label, def_val)
 #define property_file_path(name, label, def_val)    \
-  if (properties->name)                             \
-    {                                               \
-      g_free (properties->name);                    \
-      properties->name = NULL;                      \
-    }
+  g_clear_pointer (&properties->name, g_free);
 #define property_uri(name, label, def_val)          \
-  if (properties->name)                             \
-    {                                               \
-      g_free (properties->name);                    \
-      properties->name = NULL;                      \
-    }
+  g_clear_pointer (&properties->name, g_free);
 #define property_object(name, label, def_val)       \
-  if (properties->name)                             \
-    {                                               \
-      g_object_unref (properties->name);            \
-      properties->name = NULL;                      \
-    }
+  g_clear_object (&properties->name);
 #define property_curve(name, label, def_val)       \
-  if (properties->name)                             \
-    {                                               \
-      g_object_unref (properties->name);            \
-      properties->name = NULL;                      \
-    }
+  g_clear_object (&properties->name);
 #define property_color(name, label, def_val)       \
-  if (properties->name)                             \
-    {                                               \
-      g_object_unref (properties->name);            \
-      properties->name = NULL;                      \
-    }
+  g_clear_object (&properties->name);
 #define property_audio_fragment(name, label, def_val) \
-  if (properties->name)                             \
-    {                                               \
-      g_object_unref (properties->name);            \
-      properties->name = NULL;                      \
-    }
+  g_clear_object (&properties->name);
 #define property_path(name, label, def_val)         \
-  if (properties->name)                             \
-    {                                               \
-      g_object_unref (properties->name);            \
-      properties->name = NULL;                      \
-    }
+  g_clear_object (&properties->name);
 #define property_pointer(name, label, ...)
 #define property_format(name, label, ...)
 #define property_enum(name, label, ...)

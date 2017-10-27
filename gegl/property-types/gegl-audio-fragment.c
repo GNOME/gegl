@@ -55,11 +55,7 @@ static void deallocate_data (GeglAudioFragment *audio)
   int i;
   for (i = 0; i < GEGL_MAX_AUDIO_CHANNELS; i++)
   {
-    if (audio->data[i])
-    {
-      g_free (audio->data[i]);
-      audio->data[i] = NULL;
-    }
+    g_clear_pointer (&audio->data[i], g_free);
   }
 }
 

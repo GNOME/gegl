@@ -106,8 +106,7 @@ save_info_destroy (SaveInfo *info)
 {
   if (!info)
     return;
-  if (info->path)
-    g_free (info->path);
+  g_free (info->path);
   if (info->o != -1)
     close (info->o);
   if (info->tiles != NULL)

@@ -98,23 +98,10 @@ gegl_module_finalize (GObject *object)
 {
   GeglModule *module = GEGL_MODULE (object);
 
-  if (module->info)
-    {
-      gegl_module_info_free (module->info);
-      module->info = NULL;
-    }
+  g_clear_pointer (&module->info, (GDestroyNotify) gegl_module_info_free);
 
-  if (module->last_module_error)
-    {
-      g_free (module->last_module_error);
-      module->last_module_error = NULL;
-    }
-
-  if (module->filename)
-    {
-      g_free (module->filename);
-      module->filename = NULL;
-    }
+  g_free (module->last_module_error);
+  g_free (module->filename);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -396,9 +383,7 @@ static void
 gegl_module_error_message (GeglModule  *module,
                            const gchar *error_str)
 {
-  if (module->last_module_error)
-    g_free (module->last_module_error);
-
+  g_free (module->last_module_error);
   module->last_module_error = g_strdup (error_str);
 
   g_message (_("Module '%s' load error: %s"),

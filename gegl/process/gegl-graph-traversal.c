@@ -126,9 +126,7 @@ gegl_graph_free (GeglGraphTraversal *path)
   g_list_free (path->dfs_path);
   g_list_free (path->bfs_path);
   g_hash_table_unref (path->contexts);
-  if (path->shared_empty)
-    g_object_unref (path->shared_empty);
-
+  g_clear_object (&path->shared_empty);
   g_free (path);
 }
 
