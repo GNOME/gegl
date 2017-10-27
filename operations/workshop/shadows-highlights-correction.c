@@ -95,7 +95,6 @@ process (GeglOperation       *operation,
 
   gfloat max[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
   gfloat min[4] = { 0.0f, -1.0f, -1.0f, 0.0f };
-  gfloat lmin = 0.0f;
   gfloat lmax = max[0] + fabs(min[0]);
   gfloat halfmax = lmax / 2.0;
   gfloat doublemax = lmax * 2.0;
