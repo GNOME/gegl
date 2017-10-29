@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-10-16 16:38+0000\n"
-"PO-Revision-Date: 2017-10-22 17:52+0200\n"
+"POT-Creation-Date: 2017-10-22 18:27+0000\n"
+"PO-Revision-Date: 2017-10-29 17:35+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -1659,7 +1659,7 @@ msgid ""
 msgstr ""
 "Zaadaptuj obraz, który może mieć wysoki zakres dynamiczny, do przedstawiania "
 "za pomocą niskiego zakresu dynamicznego. Ten operator rozrzedza wielkości "
-"lokalnych gradientów obrazy, produkując luminancję w zakresie 0,0-1,0. To "
+"lokalnych gradientów obrazu, tworząc luminancję w zakresie 0,0-1,0. To "
 "podejście do mapowania odcieni został najpierw przedstawiony przez Raanana "
 "Fattala w artykule z konferencji SIGGRAPH 2002 pt. „Gradient Domain High "
 "Dynamic Range Compression”."
@@ -2178,7 +2178,7 @@ msgid ""
 msgstr ""
 "Zaadaptuj obraz, który może mieć wysoki zakres dynamiczny, do przedstawiania "
 "za pomocą niskiego zakresu dynamicznego. Ten operator ogranicza kontrasty "
-"między wieloma częstotliwościami przestrzennymi, produkując luminancję "
+"między wieloma częstotliwościami przestrzennymi, tworząc luminancję "
 "w zakresie 0,0-1,0"
 
 #. XXX: needs better ui type
@@ -3066,7 +3066,7 @@ msgid ""
 msgstr ""
 "Adaptuj obraz, który może mieć wysoki zakres dynamiczny, do przedstawiania "
 "za pomocą niskiego zakresu dynamicznego. Jest to wydajny globalny operator "
-"wyciągnięty z prostych obserwacji psychologicznych, produkujący luminancję "
+"wyciągnięty z prostych obserwacji psychologicznych, tworzący luminancję "
 "w zakresie 0,0-1,0"
 
 #: operations/common/remap.c:100
@@ -3870,7 +3870,7 @@ msgid "Color to Alpha"
 msgstr "Kolor na alfę"
 
 #: operations/common-gpl3+/color-to-alpha.c:258
-#: operations/workshop/color-to-alpha-plus.c:229
+#: operations/workshop/color-to-alpha-plus.c:236
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "Konwertuj podany kolor do przezroczystości. Najlepiej działa z bielą."
 
@@ -7216,7 +7216,18 @@ msgstr "Próg nieprzezroczystości"
 msgid "The limit above which colors remain opaque."
 msgstr "Ograniczenie, powyżej którego kolory stają się nieprzezroczyste."
 
-#: operations/workshop/color-to-alpha-plus.c:225
+#: operations/workshop/color-to-alpha-plus.c:40
+msgid "Compress threshold range"
+msgstr "Kompresuj zakres progu"
+
+#: operations/workshop/color-to-alpha-plus.c:41
+msgid ""
+"Compress the threshold range to the minimal extent that would produce "
+"different results."
+msgstr ""
+"Kompresuj zakres progu do minimalnego rozmiaru, który utworzyłby inne wyniki."
+
+#: operations/workshop/color-to-alpha-plus.c:232
 msgid "Color to Alpha +"
 msgstr "Kolor na alfę +"
 
