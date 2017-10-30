@@ -19,7 +19,6 @@ op_LTLIBRARIES =    \
 	gradient-map.la \
 	hstack.la \
 	integral-image.la \
-	kuwahara.la \
 	linear-sinusoid.la \
 	median-blur.la \
 	rawbayer-load.la \

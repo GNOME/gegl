@@ -248,7 +248,6 @@ operations/workshop/generated/subtractive.c
 operations/workshop/gradient-map.c
 operations/workshop/hstack.c
 operations/workshop/integral-image.c
-operations/workshop/kuwahara.c
 operations/workshop/linear-sinusoid.c
 operations/workshop/median-blur.c
 operations/workshop/rawbayer-load.c
