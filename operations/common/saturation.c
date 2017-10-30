@@ -149,7 +149,11 @@ static void prepare (GeglOperation *operation)
 
   input_format = gegl_operation_get_source_format (operation, "input");
   if (input_format == NULL)
-    return;
+    {
+      format = babl_format ("CIE Lab alpha float");
+      o->user_data = process_lab_alpha;
+      goto out;
+    }
 
   input_model = babl_format_get_model (input_format);
 
@@ -182,6 +186,7 @@ static void prepare (GeglOperation *operation)
         }
     }
 
+ out:
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
 }
