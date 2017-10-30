@@ -630,6 +630,7 @@ gegl_gblur_1d_prepare (GeglOperation *operation)
         format = "YaA float";
     }
 
+  gegl_operation_set_format (operation, "input", babl_format (format));
   gegl_operation_set_format (operation, "output", babl_format (format));
 }
 
