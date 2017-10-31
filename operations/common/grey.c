@@ -35,13 +35,25 @@
 
 static void prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format ("YA float");
+  const Babl *format;
+  const Babl *input_format;
 
+  input_format = gegl_operation_get_source_format (operation, "input");
+  if (input_format == NULL)
+    {
+      format = babl_format ("YA float");
+      goto out;
+    }
+
+  if (babl_format_has_alpha (input_format))
+    format = babl_format ("YA float");
+  else
+    format = babl_format ("Y float");
+
+ out:
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
 }
-
-/* XXX: could be sped up by special casing op-filter behavior */
 
 static gboolean
 process (GeglOperation       *op,
@@ -51,7 +63,15 @@ process (GeglOperation       *op,
          const GeglRectangle *roi,
          gint                 level)
 {
-  memmove (out_buf, in_buf, sizeof (gfloat) * 2 * samples);
+  const Babl *output_format;
+  gint n_components;
+
+  output_format = gegl_operation_get_format (op, "output");
+  g_return_val_if_fail (output_format != NULL, FALSE);
+
+  n_components = babl_format_get_n_components (output_format);
+  memmove (out_buf, in_buf, sizeof (gfloat) * n_components * samples);
+
   return TRUE;
 }
 
@@ -65,11 +85,33 @@ cl_process (GeglOperation       *op,
             const GeglRectangle *roi,
             gint                 level)
 {
+  const Babl *output_format;
   cl_int cl_err = 0;
+  gint n_components;
+  gsize bytes_per_pixel;
+
+  output_format = gegl_operation_get_format (op, "output");
+  g_return_val_if_fail (output_format != NULL, TRUE);
+
+  n_components = babl_format_get_n_components (output_format);
+  switch (n_components)
+    {
+    case 1:
+      bytes_per_pixel = sizeof (cl_float);
+      break;
+
+    case 2:
+      bytes_per_pixel = sizeof (cl_float2);
+      break;
+
+    default:
+      g_return_val_if_reached (TRUE);
+      break;
+    }
 
   cl_err = gegl_clEnqueueCopyBuffer(gegl_cl_get_command_queue(),
                                     in_tex , out_tex , 0 , 0 ,
-                                    global_worksize * sizeof (cl_float2),
+                                    global_worksize * bytes_per_pixel,
                                     0, NULL, NULL);
   CL_CHECK;
 
