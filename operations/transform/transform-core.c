@@ -33,6 +33,8 @@
 #include <gegl.h>
 #include <gegl-plugin.h>
 
+#include "buffer/gegl-buffer-cl-cache.h"
+
 #include "gegl-config.h"
 
 #include "transform-core.h"
@@ -1199,6 +1201,11 @@ gegl_transform_process (GeglOperation        *operation,
        */
       input  = gegl_operation_context_get_source (context, "input");
       output = gegl_operation_context_get_target (context, "output");
+
+      /* flush opencl caches, to avoid racy flushing
+       */
+      if (gegl_cl_is_accelerated ())
+        gegl_buffer_cl_cache_flush (input, NULL);
 
       if (gegl_operation_use_threading (operation, result))
       {
