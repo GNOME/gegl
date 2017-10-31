@@ -202,8 +202,6 @@ process (GeglOperation       *operation,
   return TRUE;
 }
 
-/*
-
 #include "opencl/gegl-cl.h"
 
 #include "opencl/shadows-highlights-correction.cl.h"
@@ -272,8 +270,6 @@ error:
   return TRUE;
 }
 
-*/
-
 static GeglRectangle
 get_bounding_box (GeglOperation *self)
 {
@@ -297,14 +293,10 @@ gegl_op_class_init (GeglOpClass *klass)
 
   operation_class->prepare          = prepare;
   operation_class->get_bounding_box = get_bounding_box;
-  
+  operation_class->opencl_support   = TRUE;
 
   point_composer_class->process     = process;
-
-  /*
   point_composer_class->cl_process  = cl_process;
-  operation_class->opencl_support   = TRUE;
-   */
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:shadows-highlights-correction",
