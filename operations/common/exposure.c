@@ -38,29 +38,102 @@ property_double (exposure, _("Exposure"), 0.0)
 #define GEGL_OP_C_SOURCE exposure.c
 
 #include "gegl-op.h"
+#include "opencl/gegl-cl.h"
 
 #include <math.h>
 #ifdef _MSC_VER
 #define exp2f (b) ((gfloat) pow (2.0, b))
 #endif
 
-static void
-prepare (GeglOperation *operation)
+typedef void (*ProcessFunc) (GeglOperation       *operation,
+                             void                *in_buf,
+                             void                *out_buf,
+                             glong                n_pixels,
+                             const GeglRectangle *roi,
+                             gint                 level);
+
+typedef struct
 {
-  gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+  GeglClRunData **cl_data_ptr;
+  ProcessFunc process;
+  const char *kernel_name;
+  const char *kernel_source;
+} EParamsType;
+
+static GeglClRunData *cl_data_rgb = NULL;
+static GeglClRunData *cl_data_rgba = NULL;
+
+static const char* kernel_source_rgb =
+"__kernel void kernel_exposure_rgb(__global const float3 *in,          \n"
+"                                  __global       float3 *out,         \n"
+"                                  float                  black_level, \n"
+"                                  float                  gain)        \n"
+"{                                                                     \n"
+"  int gid = get_global_id(0);                                         \n"
+"  float3 in_v  = in[gid];                                             \n"
+"  float3 out_v;                                                       \n"
+"  out_v.xyz =  ((in_v.xyz - black_level) * gain);                     \n"
+"  out[gid]  =  out_v;                                                 \n"
+"}                                                                     \n";
+
+static const char* kernel_source_rgba =
+"__kernel void kernel_exposure_rgba(__global const float4 *in,          \n"
+"                                   __global       float4 *out,         \n"
+"                                   float                  black_level, \n"
+"                                   float                  gain)        \n"
+"{                                                                      \n"
+"  int gid = get_global_id(0);                                          \n"
+"  float4 in_v  = in[gid];                                              \n"
+"  float4 out_v;                                                        \n"
+"  out_v.xyz =  ((in_v.xyz - black_level) * gain);                      \n"
+"  out_v.w   =  in_v.w;                                                 \n"
+"  out[gid]  =  out_v;                                                  \n"
+"}                                                                      \n";
+
+static void
+process_rgb (GeglOperation       *op,
+             void                *in_buf,
+             void                *out_buf,
+             glong                n_pixels,
+             const GeglRectangle *roi,
+             gint                 level)
+{
+  GeglProperties *o = GEGL_PROPERTIES (op);
+  gfloat     *in_pixel;
+  gfloat     *out_pixel;
+  gfloat      black_level = (gfloat) o->black_level;
+  gfloat      diff;
+  gfloat      exposure_negated = (gfloat) -o->exposure;
+  gfloat      gain;
+  gfloat      white;
+
+  glong       i;
+
+  in_pixel = in_buf;
+  out_pixel = out_buf;
+
+  white = exp2f (exposure_negated);
+  diff = MAX (white - black_level, 0.01);
+  gain = 1.0f / diff;
+
+  for (i=0; i<n_pixels; i++)
+    {
+      out_pixel[0] = (in_pixel[0] - black_level) * gain;
+      out_pixel[1] = (in_pixel[1] - black_level) * gain;
+      out_pixel[2] = (in_pixel[2] - black_level) * gain;
+
+      out_pixel += 3;
+      in_pixel  += 3;
+    }
 }
 
-/* GeglOperationPointFilter gives us a linear buffer to operate on
- * in our requested pixel format
- */
-static gboolean
-process (GeglOperation       *op,
-         void                *in_buf,
-         void                *out_buf,
-         glong                n_pixels,
-         const GeglRectangle *roi,
-         gint                 level)
+static void
+process_rgba (GeglOperation       *op,
+              void                *in_buf,
+              void                *out_buf,
+              glong                n_pixels,
+              const GeglRectangle *roi,
+              gint                 level)
 {
   GeglProperties *o = GEGL_PROPERTIES (op);
   gfloat     *in_pixel;
@@ -90,27 +163,77 @@ process (GeglOperation       *op,
       out_pixel += 4;
       in_pixel  += 4;
     }
-    
-  return TRUE;
 }
 
-#include "opencl/gegl-cl.h"
+static void
+prepare (GeglOperation *operation)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  EParamsType *params;
+  const Babl *format;
+  const Babl *input_format;
 
-static const char* kernel_source =
-"__kernel void kernel_exposure(__global const float4 *in,          \n"
-"                              __global       float4 *out,         \n"
-"                              float                  black_level, \n"
-"                              float                  gain)        \n"
-"{                                                                 \n"
-"  int gid = get_global_id(0);                                     \n"
-"  float4 in_v  = in[gid];                                         \n"
-"  float4 out_v;                                                   \n"
-"  out_v.xyz =  ((in_v.xyz - black_level) * gain);                 \n"
-"  out_v.w   =  in_v.w;                                            \n"
-"  out[gid]  =  out_v;                                             \n"
-"}                                                                 \n";
+  if (o->user_data == NULL)
+    o->user_data = g_slice_new0 (EParamsType);
 
-static GeglClRunData *cl_data = NULL;
+  params = (EParamsType *) o->user_data;
+
+  input_format = gegl_operation_get_source_format (operation, "input");
+  if (input_format == NULL)
+    {
+      format = babl_format ("RGBA float");
+
+      params->process = process_rgba;
+
+      params->cl_data_ptr = &cl_data_rgba;
+      params->kernel_name = "kernel_exposure_rgba";
+      params->kernel_source = kernel_source_rgba;
+      goto out;
+    }
+
+  if (babl_format_has_alpha (input_format))
+    {
+      format = babl_format ("RGBA float");
+
+      params->process = process_rgba;
+
+      params->cl_data_ptr = &cl_data_rgba;
+      params->kernel_name = "kernel_exposure_rgba";
+      params->kernel_source = kernel_source_rgba;
+    }
+  else
+    {
+      format = babl_format ("RGB float");
+
+      params->process = process_rgb;
+
+      params->cl_data_ptr = &cl_data_rgb;
+      params->kernel_name = "kernel_exposure_rgb";
+      params->kernel_source = kernel_source_rgb;
+    }
+
+ out:
+  gegl_operation_set_format (operation, "input", format);
+  gegl_operation_set_format (operation, "output", format);
+}
+
+/* GeglOperationPointFilter gives us a linear buffer to operate on
+ * in our requested pixel format
+ */
+static gboolean
+process (GeglOperation       *operation,
+         void                *in_buf,
+         void                *out_buf,
+         glong                n_pixels,
+         const GeglRectangle *roi,
+         gint                 level)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  EParamsType *params = (EParamsType *) o->user_data;
+
+  params->process (operation, in_buf, out_buf, n_pixels, roi, level);
+  return TRUE;
+}
 
 /* OpenCL processing function */
 static cl_int
@@ -126,6 +249,7 @@ cl_process (GeglOperation       *op,
    */
 
   GeglProperties *o = GEGL_PROPERTIES (op);
+  EParamsType *params = (EParamsType *) o->user_data;
 
   gfloat      black_level = (gfloat) o->black_level;
   gfloat      diff;
@@ -133,27 +257,32 @@ cl_process (GeglOperation       *op,
   gfloat      gain;
   gfloat      white;
   
+  GeglClRunData *cl_data_local;
   cl_int cl_err = 0;
 
-  if (!cl_data)
+  if (*params->cl_data_ptr == NULL)
     {
-      const char *kernel_name[] = {"kernel_exposure", NULL};
-      cl_data = gegl_cl_compile_and_build (kernel_source, kernel_name);
+      const char *kernel_name[] = {NULL, NULL};
+
+      kernel_name[0] = params->kernel_name;
+      *params->cl_data_ptr = gegl_cl_compile_and_build (params->kernel_source, kernel_name);
     }
-  if (!cl_data) return 1;
+  if (*params->cl_data_ptr == NULL) return 1;
+
+  cl_data_local = *params->cl_data_ptr;
 
   white = exp2f (exposure_negated);
   diff = MAX (white - black_level, 0.01);
   gain = 1.0f / diff;
 
-  cl_err |= gegl_clSetKernelArg(cl_data->kernel[0], 0, sizeof(cl_mem),   (void*)&in_tex);
-  cl_err |= gegl_clSetKernelArg(cl_data->kernel[0], 1, sizeof(cl_mem),   (void*)&out_tex);
-  cl_err |= gegl_clSetKernelArg(cl_data->kernel[0], 2, sizeof(cl_float), (void*)&black_level);
-  cl_err |= gegl_clSetKernelArg(cl_data->kernel[0], 3, sizeof(cl_float), (void*)&gain);
+  cl_err |= gegl_clSetKernelArg(cl_data_local->kernel[0], 0, sizeof(cl_mem),   (void*)&in_tex);
+  cl_err |= gegl_clSetKernelArg(cl_data_local->kernel[0], 1, sizeof(cl_mem),   (void*)&out_tex);
+  cl_err |= gegl_clSetKernelArg(cl_data_local->kernel[0], 2, sizeof(cl_float), (void*)&black_level);
+  cl_err |= gegl_clSetKernelArg(cl_data_local->kernel[0], 3, sizeof(cl_float), (void*)&gain);
   if (cl_err != CL_SUCCESS) return cl_err;
 
   cl_err = gegl_clEnqueueNDRangeKernel(gegl_cl_get_command_queue (),
-                                        cl_data->kernel[0], 1,
+                                        cl_data_local->kernel[0], 1,
                                         NULL, &global_worksize, NULL,
                                         0, NULL, NULL);
   if (cl_err != CL_SUCCESS) return cl_err;
@@ -162,13 +291,29 @@ cl_process (GeglOperation       *op,
 }
 
 static void
+finalize (GObject *object)
+{
+  GeglOperation *op = GEGL_OPERATION (object);
+  GeglProperties *o = GEGL_PROPERTIES (op);
+
+  if (o->user_data)
+    g_slice_free (EParamsType, o->user_data);
+
+  G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);
+}
+
+static void
 gegl_op_class_init (GeglOpClass *klass)
 {
+  GObjectClass                  *object_class;
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *point_filter_class;
 
+  object_class       = G_OBJECT_CLASS (klass);
   operation_class    = GEGL_OPERATION_CLASS (klass);
   point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
+
+  object_class->finalize = finalize;
 
   operation_class->opencl_support = TRUE;
   operation_class->prepare        = prepare;
