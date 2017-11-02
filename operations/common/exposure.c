@@ -62,6 +62,8 @@ typedef struct
 
 static GeglClRunData *cl_data_rgb = NULL;
 static GeglClRunData *cl_data_rgba = NULL;
+static GeglClRunData *cl_data_y = NULL;
+static GeglClRunData *cl_data_ya = NULL;
 
 static const char* kernel_source_rgb =
 "__kernel void kernel_exposure_rgb(__global const float3 *in,          \n"
@@ -89,6 +91,33 @@ static const char* kernel_source_rgba =
 "  out_v.w   =  in_v.w;                                                 \n"
 "  out[gid]  =  out_v;                                                  \n"
 "}                                                                      \n";
+
+static const char* kernel_source_y =
+"__kernel void kernel_exposure_y(__global const float *in,             \n"
+"                                __global       float *out,            \n"
+"                                float                 black_level,    \n"
+"                                float                 gain)           \n"
+"{                                                                     \n"
+"  int gid = get_global_id(0);                                         \n"
+"  float in_v  = in[gid];                                              \n"
+"  float out_v;                                                        \n"
+"  out_v     =  ((in_v - black_level) * gain);                         \n"
+"  out[gid]  =  out_v;                                                 \n"
+"}                                                                     \n";
+
+static const char* kernel_source_ya =
+"__kernel void kernel_exposure_ya(__global const float2 *in,             \n"
+"                                 __global       float2 *out,            \n"
+"                                 float                  black_level,    \n"
+"                                 float                  gain)           \n"
+"{                                                                       \n"
+"  int gid = get_global_id(0);                                           \n"
+"  float2 in_v  = in[gid];                                               \n"
+"  float2 out_v;                                                         \n"
+"  out_v.x   =  ((in_v.x - black_level) * gain);                         \n"
+"  out_v.y   =  in_v.y;                                                  \n"
+"  out[gid]  =  out_v;                                                   \n"
+"}                                                                       \n";
 
 static void
 process_rgb (GeglOperation       *op,
@@ -166,12 +195,85 @@ process_rgba (GeglOperation       *op,
 }
 
 static void
+process_y (GeglOperation       *op,
+           void                *in_buf,
+           void                *out_buf,
+           glong                n_pixels,
+           const GeglRectangle *roi,
+           gint                 level)
+{
+  GeglProperties *o = GEGL_PROPERTIES (op);
+  gfloat     *in_pixel;
+  gfloat     *out_pixel;
+  gfloat      black_level = (gfloat) o->black_level;
+  gfloat      diff;
+  gfloat      exposure_negated = (gfloat) -o->exposure;
+  gfloat      gain;
+  gfloat      white;
+
+  glong       i;
+
+  in_pixel = in_buf;
+  out_pixel = out_buf;
+
+  white = exp2f (exposure_negated);
+  diff = MAX (white - black_level, 0.01);
+  gain = 1.0f / diff;
+
+  for (i=0; i<n_pixels; i++)
+    {
+      out_pixel[0] = (in_pixel[0] - black_level) * gain;
+
+      out_pixel++;
+      in_pixel++;
+    }
+}
+
+static void
+process_ya (GeglOperation       *op,
+            void                *in_buf,
+            void                *out_buf,
+            glong                n_pixels,
+            const GeglRectangle *roi,
+            gint                 level)
+{
+  GeglProperties *o = GEGL_PROPERTIES (op);
+  gfloat     *in_pixel;
+  gfloat     *out_pixel;
+  gfloat      black_level = (gfloat) o->black_level;
+  gfloat      diff;
+  gfloat      exposure_negated = (gfloat) -o->exposure;
+  gfloat      gain;
+  gfloat      white;
+
+  glong       i;
+
+  in_pixel = in_buf;
+  out_pixel = out_buf;
+
+  white = exp2f (exposure_negated);
+  diff = MAX (white - black_level, 0.01);
+  gain = 1.0f / diff;
+
+  for (i=0; i<n_pixels; i++)
+    {
+      out_pixel[0] = (in_pixel[0] - black_level) * gain;
+      out_pixel[1] = in_pixel[1];
+
+      out_pixel += 2;
+      in_pixel  += 2;
+    }
+}
+
+static void
 prepare (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   EParamsType *params;
   const Babl *format;
   const Babl *input_format;
+  const Babl *input_model;
+  const Babl *y_model;
 
   if (o->user_data == NULL)
     o->user_data = g_slice_new0 (EParamsType);
@@ -191,25 +293,55 @@ prepare (GeglOperation *operation)
       goto out;
     }
 
+  input_model = babl_format_get_model (input_format);
+
   if (babl_format_has_alpha (input_format))
     {
-      format = babl_format ("RGBA float");
+      y_model = babl_model ("YA");
+      if (input_model == y_model)
+        {
+          format = babl_format ("YA float");
 
-      params->process = process_rgba;
+          params->process = process_ya;
 
-      params->cl_data_ptr = &cl_data_rgba;
-      params->kernel_name = "kernel_exposure_rgba";
-      params->kernel_source = kernel_source_rgba;
+          params->cl_data_ptr = &cl_data_ya;
+          params->kernel_name = "kernel_exposure_ya";
+          params->kernel_source = kernel_source_ya;
+        }
+      else
+        {
+          format = babl_format ("RGBA float");
+
+          params->process = process_rgba;
+
+          params->cl_data_ptr = &cl_data_rgba;
+          params->kernel_name = "kernel_exposure_rgba";
+          params->kernel_source = kernel_source_rgba;
+        }
     }
   else
     {
-      format = babl_format ("RGB float");
+      y_model = babl_model ("Y");
+      if (input_model == y_model)
+        {
+          format = babl_format ("Y float");
 
-      params->process = process_rgb;
+          params->process = process_y;
 
-      params->cl_data_ptr = &cl_data_rgb;
-      params->kernel_name = "kernel_exposure_rgb";
-      params->kernel_source = kernel_source_rgb;
+          params->cl_data_ptr = &cl_data_y;
+          params->kernel_name = "kernel_exposure_y";
+          params->kernel_source = kernel_source_y;
+        }
+      else
+        {
+          format = babl_format ("RGB float");
+
+          params->process = process_rgb;
+
+          params->cl_data_ptr = &cl_data_rgb;
+          params->kernel_name = "kernel_exposure_rgb";
+          params->kernel_source = kernel_source_rgb;
+        }
     }
 
  out:
