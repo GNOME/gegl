@@ -32,6 +32,9 @@
 
 static void       gegl_visitor_class_init        (GeglVisitorClass *klass);
 static void       gegl_visitor_init              (GeglVisitor      *self);
+static gboolean   gegl_visitor_traverse_step     (GeglVisitor      *self,
+                                                  GeglVisitable    *visitable,
+                                                  GHashTable       *visited_set);
 static gboolean   gegl_visitor_dfs_traverse_step (GeglVisitor      *self,
                                                   GeglVisitable    *visitable,
                                                   GHashTable       *visited_set);
@@ -89,6 +92,71 @@ gegl_visitor_visit_node (GeglVisitor *self,
     return klass->visit_node (self, node);
   else
     return FALSE;
+}
+
+/**
+ * gegl_visitor_traverse:
+ * @self: #GeglVisitor
+ * @visitable: the start #GeglVisitable
+ *
+ * Traverse starting at @visitable in arbitrary order.
+ * Use this function when you don't need a DFS/BFS
+ * specifically, since it can be more efficient.
+ *
+ * Returns: %TRUE if traversal was terminated early.
+ **/
+gboolean
+gegl_visitor_traverse (GeglVisitor   *self,
+                       GeglVisitable *visitable)
+{
+  GHashTable *visited_set;
+  gboolean    result;
+
+  g_return_val_if_fail (GEGL_IS_VISITOR (self), FALSE);
+  g_return_val_if_fail (GEGL_IS_VISITABLE (visitable), FALSE);
+
+  visited_set = g_hash_table_new (NULL, NULL);
+
+  result = gegl_visitor_traverse_step (self, visitable, visited_set);
+
+  g_hash_table_unref (visited_set);
+
+  return result;
+}
+
+static gboolean
+gegl_visitor_traverse_step (GeglVisitor   *self,
+                            GeglVisitable *visitable,
+                            GHashTable    *visited_set)
+{
+  GSList *dependencies;
+  GSList *iter;
+
+  if (gegl_visitable_accept (visitable, self))
+    return TRUE;
+
+  dependencies = gegl_visitable_depends_on (visitable);
+
+  for (iter = dependencies; iter; iter = g_slist_next (iter))
+    {
+      GeglVisitable *dependency = iter->data;
+
+      if (! g_hash_table_contains (visited_set, dependency))
+        {
+          if (gegl_visitor_traverse_step (self, dependency, visited_set))
+            {
+              g_slist_free (dependencies);
+
+              return TRUE;
+            }
+        }
+    }
+
+  g_slist_free (dependencies);
+
+  g_hash_table_add (visited_set, visitable);
+
+  return FALSE;
 }
 
 /**

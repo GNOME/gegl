@@ -57,6 +57,8 @@ gboolean   gegl_visitor_visit_pad    (GeglVisitor   *self,
 gboolean   gegl_visitor_visit_node   (GeglVisitor   *self,
                                       GeglNode      *node);
 
+gboolean   gegl_visitor_traverse     (GeglVisitor   *self,
+                                      GeglVisitable *visitable);
 gboolean   gegl_visitor_dfs_traverse (GeglVisitor   *self,
                                       GeglVisitable *visitable);
 gboolean   gegl_visitor_bfs_traverse (GeglVisitor   *self,
