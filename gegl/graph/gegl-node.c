@@ -36,6 +36,7 @@
 #include "gegl-config.h"
 
 #include "graph/gegl-visitor.h"
+#include "graph/gegl-callback-visitor.h"
 
 #include "operation/gegl-operation.h"
 #include "operation/gegl-operations.h"
@@ -635,30 +636,26 @@ gegl_node_source_invalidated (GeglNode            *source,
   gegl_node_invalidated (destination, &dirty_rect, FALSE);
 }
 
-static GSList *
-gegl_node_get_depends_on (GeglNode *self);
+static gboolean
+gegl_node_has_source_callback (GeglNode *node,
+                               gpointer  potential_source)
+{
+  return node == potential_source;
+}
 
 static gboolean
 gegl_node_has_source (GeglNode *self,
                       GeglNode *potential_source)
 {
-  GSList *producers, *p;
-  gboolean found = FALSE;
+  GeglVisitor *visitor;
+  gboolean     found;
 
-  if (self == potential_source)
-    return TRUE;
+  visitor = gegl_callback_visitor_new (gegl_node_has_source_callback,
+                                       potential_source);
 
-  producers = gegl_node_get_depends_on (self);
-  for (p = producers; p; p = p->next)
-    {
-      if (p->data == potential_source)
-        found = TRUE;
-      else
-        found = gegl_node_has_source (p->data, potential_source);
-      if (found)
-        break;
-    }
-  g_slist_free (producers);
+  found = gegl_visitor_traverse (visitor, GEGL_VISITABLE (self));
+
+  g_object_unref (visitor);
 
   return found;
 }
