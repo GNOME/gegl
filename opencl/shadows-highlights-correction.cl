@@ -40,7 +40,7 @@ float3 overlay(const float3 in_a,
 
 
 __kernel void shadows_highlights(__global const float4  *in,
-                                 __global const float3  *aux,
+                                 __global const float   *aux,
                                  __global       float4  *out,
                                           const float    shadows,
                                           const float    highlights,
@@ -63,7 +63,7 @@ __kernel void shadows_highlights(__global const float4  *in,
     }
 
   /* blurred, inverted and desaturaed mask in m */
-  m.x = 100.0f - aux[gid].x;
+  m.x = 100.0f - aux[3 * gid].x;
 
   /* white point adjustment */
   io.x = io.x > 0.0f ? io.x/whitepoint : io.x;
