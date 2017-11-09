@@ -35,8 +35,11 @@
 #include "gegl-visitable.h"
 #include "gegl-config.h"
 
+#include "buffer/gegl-region.h"
+
 #include "graph/gegl-visitor.h"
 #include "graph/gegl-callback-visitor.h"
+#include "graph/gegl-node-output-visitable.h"
 
 #include "operation/gegl-operation.h"
 #include "operation/gegl-operations.h"
@@ -583,36 +586,206 @@ gegl_node_connect_to (GeglNode    *source,
   return gegl_node_connect_from (sink, sink_pad_name, source, source_pad_name);
 }
 
+/* the implementation of gegl_node_invalidated() can use either GeglRegions
+ * or GeglRectangles (bounding boxes) for calculating the invadilated areas
+ * of the nodes in the graph.  The GeglRegion version is more granular,
+ * invalidating exact areas, but has higher overhead, while the GeglRectangle
+ * version in more coarse, potentially over-invalidating (but never under-
+ * invalidating), but has lower overhead.
+ *
+ * TODO: decide if the higher overhead of the GeglRegion version is worth it.
+ */
+/* #define GEGL_NODE_INVALIDATED_USE_REGIONS */
+
+#ifdef GEGL_NODE_INVALIDATED_USE_REGIONS
+
+static gboolean
+gegl_node_invalidated_callback (GeglNode *source,
+                                gpointer  data)
+{
+  GHashTable    *regions       = data;
+  GeglRegion    *source_region = g_hash_table_lookup (regions, source);
+  GeglRectangle *source_rects;
+  gint           n_source_rects;
+  GSList        *iter;
+  gint           i;
+
+  gegl_region_get_rectangles (source_region,
+                              &source_rects, &n_source_rects);
+
+  for (i = 0; i < n_source_rects; i++)
+    {
+      if (source->cache)
+        gegl_cache_invalidate (source->cache, &source_rects[i]);
+
+      source->valid_have_rect = FALSE;
+
+      g_signal_emit (source, gegl_node_signals[INVALIDATED], 0,
+                     &source_rects[i], NULL);
+    }
+
+  for (iter = source->priv->sink_connections; iter; iter = g_slist_next (iter))
+    {
+      GeglConnection *connection  = iter->data;
+      GeglNode       *sink        = gegl_connection_get_sink_node (connection);
+      GeglPad        *sink_pad    = gegl_connection_get_sink_pad (connection);
+      GeglRegion     *sink_region = g_hash_table_lookup (regions, sink);
+
+      if (! sink_region)
+        {
+          sink_region = gegl_region_new ();
+
+          g_hash_table_insert (regions, sink, sink_region);
+        }
+
+      if (sink->operation)
+        {
+          for (i = 0; i < n_source_rects; i++)
+            {
+              GeglRectangle invalidated_rect;
+
+              invalidated_rect = gegl_operation_get_invalidated_by_change (
+                sink->operation,
+                gegl_pad_get_name (sink_pad), &source_rects[i]);
+
+              gegl_region_union_with_rect (sink_region, &invalidated_rect);
+            }
+        }
+      else
+        {
+          gegl_region_union (sink_region, source_region);
+        }
+    }
+
+  g_free (source_rects);
+
+  return FALSE;
+}
+
 void
 gegl_node_invalidated (GeglNode            *node,
                        const GeglRectangle *rect,
                        gboolean             clear_cache)
 {
+  GHashTable    *regions;
+  GeglVisitor   *visitor;
+  GeglVisitable *visitable;
+
   g_return_if_fail (GEGL_IS_NODE (node));
 
   if (!rect)
     rect = &node->have_rect;
 
-  if (node->cache)
-    {
-      if (rect && clear_cache)
-        gegl_buffer_clear (GEGL_BUFFER (node->cache), rect);
+  if (node->cache && clear_cache)
+    gegl_buffer_clear (GEGL_BUFFER (node->cache), rect);
 
-      gegl_cache_invalidate (node->cache, rect);
-    }
-  node->valid_have_rect = FALSE;
+  regions = g_hash_table_new_full (NULL, NULL, NULL,
+                                   (GDestroyNotify) gegl_region_destroy);
 
-  g_signal_emit (node, gegl_node_signals[INVALIDATED], 0,
-                 rect, NULL);
+  g_hash_table_insert (regions, node, gegl_region_rectangle (rect));
+
+  visitor   = gegl_callback_visitor_new (gegl_node_invalidated_callback,
+                                         regions);
+  visitable = gegl_node_output_visitable_new (node);
+
+  gegl_visitor_bfs_traverse (visitor, visitable);
+
+  g_object_unref (visitable);
+  g_object_unref (visitor);
+  g_hash_table_unref (regions);
 }
+
+#else /* ! GEGL_NODE_INVALIDATED_USE_REGIONS */
+
+static gboolean
+gegl_node_invalidated_callback (GeglNode *source,
+                                gpointer  data)
+{
+  GHashTable          *rects       = data;
+  const GeglRectangle *source_rect = g_hash_table_lookup (rects, source);
+  GSList              *iter;
+
+  if (source->cache)
+    gegl_cache_invalidate (source->cache, source_rect);
+
+  source->valid_have_rect = FALSE;
+
+  g_signal_emit (source, gegl_node_signals[INVALIDATED], 0,
+                 source_rect, NULL);
+
+  for (iter = source->priv->sink_connections; iter; iter = g_slist_next (iter))
+    {
+      GeglConnection *connection = iter->data;
+      GeglNode       *sink       = gegl_connection_get_sink_node (connection);
+      GeglPad        *sink_pad   = gegl_connection_get_sink_pad (connection);
+      GeglRectangle  *sink_rect  = g_hash_table_lookup (rects, sink);
+
+      if (! sink_rect)
+        {
+          sink_rect = gegl_rectangle_new (0, 0, 0, 0);
+
+          g_hash_table_insert (rects, sink, sink_rect);
+        }
+
+      if (sink->operation)
+        {
+          GeglRectangle invalidated_rect;
+
+          invalidated_rect = gegl_operation_get_invalidated_by_change (
+            sink->operation,
+            gegl_pad_get_name (sink_pad), source_rect);
+
+          gegl_rectangle_bounding_box (sink_rect, sink_rect, &invalidated_rect);
+        }
+      else
+        {
+          gegl_rectangle_bounding_box (sink_rect, sink_rect, source_rect);
+        }
+    }
+
+  return FALSE;
+}
+
+void
+gegl_node_invalidated (GeglNode            *node,
+                       const GeglRectangle *rect,
+                       gboolean             clear_cache)
+{
+  GHashTable    *rects;
+  GeglVisitor   *visitor;
+  GeglVisitable *visitable;
+
+  g_return_if_fail (GEGL_IS_NODE (node));
+
+  if (!rect)
+    rect = &node->have_rect;
+
+  if (node->cache && clear_cache)
+    gegl_buffer_clear (GEGL_BUFFER (node->cache), rect);
+
+  rects = g_hash_table_new_full (NULL, NULL, NULL, g_free);
+
+  g_hash_table_insert (rects, node, g_memdup (rect, sizeof (GeglRectangle)));
+
+  visitor   = gegl_callback_visitor_new (gegl_node_invalidated_callback,
+                                         rects);
+  visitable = gegl_node_output_visitable_new (node);
+
+  gegl_visitor_bfs_traverse (visitor, visitable);
+
+  g_object_unref (visitable);
+  g_object_unref (visitor);
+  g_hash_table_unref (rects);
+}
+
+#endif /* ! GEGL_NODE_INVALIDATED_USE_REGIONS */
 
 static void
 gegl_node_source_invalidated (GeglNode            *source,
-                              const GeglRectangle *rect,
-                              gpointer             data)
+                              GeglPad             *destination_pad,
+                              const GeglRectangle *rect)
 {
-  GeglPad       *destination_pad = GEGL_PAD (data);
-  GeglNode      *destination     = gegl_pad_get_node (destination_pad);
+  GeglNode      *destination = gegl_pad_get_node (destination_pad);
   GeglRectangle  dirty_rect;
 
   GEGL_NOTE (GEGL_DEBUG_INVALIDATION, "%s.%s is dirtied from %s (%i,%i %i×%i)",
@@ -722,10 +895,7 @@ gegl_node_connect_from (GeglNode    *sink,
       real_sink->priv->source_connections = g_slist_prepend (real_sink->priv->source_connections, connection);
       real_source->priv->sink_connections = g_slist_prepend (real_source->priv->sink_connections, connection);
 
-      g_signal_connect (G_OBJECT (real_source), "invalidated",
-                        G_CALLBACK (gegl_node_source_invalidated), sink_pad);
-
-      gegl_node_source_invalidated (real_source, &real_source->have_rect, sink_pad);
+      gegl_node_source_invalidated (real_source, sink_pad, &real_source->have_rect);
 
       return TRUE;
     }
@@ -767,20 +937,7 @@ gegl_node_disconnect (GeglNode    *sink,
       source_pad = gegl_connection_get_source_pad (connection);
       source     = gegl_connection_get_source_node (connection);
 
-      gegl_node_source_invalidated (source, &source->have_rect, sink_pad);
-
-      {
-        /* disconnecting dirt propagation */
-        gulong handler;
-
-        handler = g_signal_handler_find (source, G_SIGNAL_MATCH_DATA,
-                                         gegl_node_signals[INVALIDATED],
-                                         0, NULL, NULL, sink_pad);
-        if (handler)
-          {
-            g_signal_handler_disconnect (source, handler);
-          }
-      }
+      gegl_node_source_invalidated (source, sink_pad, &source->have_rect);
 
       gegl_pad_disconnect (sink_pad, source_pad, connection);
 
@@ -1706,8 +1863,6 @@ gegl_node_insert_before (GeglNode *self,
   other     = gegl_node_get_producer (self, "input", NULL); /*XXX: handle pad name */
   rectangle = gegl_node_get_bounding_box (to_be_inserted);
 
-  g_signal_handlers_block_matched (other, G_SIGNAL_MATCH_FUNC, 0, 0, 0, gegl_node_source_invalidated, NULL);
-  /* the blocked handler disappears during the relinking */
   gegl_node_link_many (other, to_be_inserted, self, NULL);
 
   /* emit the change ourselves */
