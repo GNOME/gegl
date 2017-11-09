@@ -14,6 +14,7 @@
  * License along with GEGL; if not, see <http://www.gnu.org/licenses/>.
  *
  * Copyright 2003 Calvin Williamson
+ *           2017 Ell
  */
 
 #include "config.h"
@@ -29,53 +30,14 @@
 #include "gegl-visitable.h"
 
 
-typedef struct _GeglVisitInfo GeglVisitInfo;
-
-struct _GeglVisitInfo
-{
-  gboolean visited;
-  gboolean discovered;
-  gint     shared_count;
-};
-
-enum
-{
-  PROP_0
-};
-
-static void           gegl_visitor_class_init  (GeglVisitorClass *klass);
-static void           gegl_visitor_init        (GeglVisitor      *self);
-static void           finalize                 (GObject          *gobject);
-static void           init_dfs_traversal       (GeglVisitor      *self,
-                                                GeglVisitable    *visitable);
-static void           dfs_traverse             (GeglVisitor      *self,
-                                                GeglVisitable    *visitable);
-static void           init_bfs_traversal       (GeglVisitor      *self,
-                                                GeglVisitable    *visitable);
-static void           visit_info_destroy       (GeglVisitInfo    *visit_info);
-static void           insert                   (GeglVisitor      *self,
-                                                GeglVisitable    *visitable);
-static GeglVisitInfo* lookup                   (GeglVisitor      *self,
-                                                GeglVisitable    *visitable);
-static gboolean       get_visited              (GeglVisitor      *self,
-                                                GeglVisitable    *visitable);
-static void           set_visited              (GeglVisitor      *self,
-                                                GeglVisitable    *visitable,
-                                                gboolean          visited);
-static gboolean       get_discovered           (GeglVisitor      *self,
-                                                GeglVisitable    *visitable);
-static void           set_discovered           (GeglVisitor      *self,
-                                                GeglVisitable    *visitable,
-                                                gboolean          discovered);
-static gint           get_shared_count         (GeglVisitor      *self,
-                                                GeglVisitable    *visitable);
-static void           set_shared_count         (GeglVisitor      *self,
-                                                GeglVisitable    *visitable,
-                                                gint              shared_count);
-static void           visit_pad                (GeglVisitor      *self,
-                                                GeglPad          *pad);
-static void           visit_node               (GeglVisitor      *self,
-                                                GeglNode         *node);
+static void   gegl_visitor_class_init        (GeglVisitorClass *klass);
+static void   gegl_visitor_init              (GeglVisitor      *self);
+static void   gegl_visitor_dfs_traverse_step (GeglVisitor      *self,
+                                              GeglVisitable    *visitable,
+                                              GHashTable       *visited_set);
+static void   gegl_visitor_bfs_init_step     (GeglVisitor      *self,
+                                              GeglVisitable    *visitable,
+                                              GHashTable       *edge_counts);
 
 
 G_DEFINE_TYPE (GeglVisitor, gegl_visitor, G_TYPE_OBJECT)
@@ -84,136 +46,45 @@ G_DEFINE_TYPE (GeglVisitor, gegl_visitor, G_TYPE_OBJECT)
 static void
 gegl_visitor_class_init (GeglVisitorClass *klass)
 {
-  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  gobject_class->finalize = finalize;
-
-  klass->visit_pad  = visit_pad;
-  klass->visit_node = visit_node;
+  klass->visit_pad  = NULL;
+  klass->visit_node = NULL;
 }
 
 static void
 gegl_visitor_init (GeglVisitor *self)
 {
-  self->hash = g_hash_table_new_full (g_direct_hash, g_direct_equal,
-                                      NULL,
-                                      (GDestroyNotify) visit_info_destroy);
 }
 
-static void
-finalize (GObject *gobject)
+/* should be called by visitables, to visit a pad */
+void
+gegl_visitor_visit_pad (GeglVisitor *self,
+                        GeglPad     *pad)
 {
-  GeglVisitor *self = GEGL_VISITOR (gobject);
+  GeglVisitorClass *klass;
 
-  g_hash_table_destroy (self->hash);
+  g_return_if_fail (GEGL_IS_VISITOR (self));
+  g_return_if_fail (GEGL_IS_PAD (pad));
 
-  G_OBJECT_CLASS (gegl_visitor_parent_class)->finalize (gobject);
+  klass = GEGL_VISITOR_GET_CLASS (self);
+
+  if (klass->visit_pad)
+    klass->visit_pad (self, pad);
 }
 
-static GeglVisitInfo *
-lookup (GeglVisitor   *self,
-        GeglVisitable *visitable)
+/* should be called by visitables, to visit a node */
+void
+gegl_visitor_visit_node (GeglVisitor *self,
+                         GeglNode    *node)
 {
-  return g_hash_table_lookup (self->hash, visitable);
-}
+  GeglVisitorClass *klass;
 
-/* resets the object's data (list of visits and visitable statuses) */
-void gegl_visitor_reset (GeglVisitor   *self)
-{
-  g_hash_table_remove_all (self->hash);
-}
+  g_return_if_fail (GEGL_IS_VISITOR (self));
+  g_return_if_fail (GEGL_IS_NODE (node));
 
-/* Inserts the visitable into the object's hash table of visitables with the
- * object as a key and a new GeglVisitInfo (zero initialised) as object
- */
-static void
-insert (GeglVisitor   *self,
-        GeglVisitable *visitable)
-{
-  if (lookup (self, visitable))
-    {
-      g_warning ("visitable already in visitor's hash table");
-    }
-  else
-    {
-      g_hash_table_insert (self->hash, visitable, g_slice_new0 (GeglVisitInfo));
-    }
-}
+  klass = GEGL_VISITOR_GET_CLASS (self);
 
-/* Returns TRUE if a GeglVisitable has already been visited */
-static gboolean
-get_visited (GeglVisitor   *self,
-             GeglVisitable *visitable)
-{
-  GeglVisitInfo *visit_info = lookup (self, visitable);
-
-  g_assert (visit_info);
-
-  return visit_info->visited;
-}
-
-static void
-set_visited (GeglVisitor   *self,
-             GeglVisitable *visitable,
-             gboolean       visited)
-{
-  GeglVisitInfo *visit_info = lookup (self, visitable);
-
-  g_assert (visit_info);
-
-  visit_info->visited = visited;
-}
-
-static gboolean
-get_discovered (GeglVisitor   *self,
-                GeglVisitable *visitable)
-{
-  GeglVisitInfo *visit_info = lookup (self, visitable);
-
-  g_assert (visit_info);
-
-  return visit_info->discovered;
-}
-
-static void
-set_discovered (GeglVisitor   *self,
-                GeglVisitable *visitable,
-                gboolean       discovered)
-{
-  GeglVisitInfo *visit_info = lookup (self, visitable);
-
-  g_assert (visit_info);
-
-  visit_info->discovered = discovered;
-}
-
-static gint
-get_shared_count (GeglVisitor   *self,
-                  GeglVisitable *visitable)
-{
-  GeglVisitInfo *visit_info = lookup (self, visitable);
-
-  g_assert (visit_info);
-
-  return visit_info->shared_count;
-}
-
-static void
-set_shared_count (GeglVisitor   *self,
-                  GeglVisitable *visitable,
-                  gint           shared_count)
-{
-  GeglVisitInfo *visit_info = lookup (self, visitable);
-
-  g_assert (visit_info);
-
-  visit_info->shared_count = shared_count;
-}
-
-static void
-visit_info_destroy (GeglVisitInfo *visit_info)
-{
-  g_slice_free (GeglVisitInfo, visit_info);
+  if (klass->visit_node)
+    klass->visit_node (self, node);
 }
 
 /**
@@ -227,105 +98,40 @@ void
 gegl_visitor_dfs_traverse (GeglVisitor   *self,
                            GeglVisitable *visitable)
 {
-  /* sets up the structures that keeps track of the */
-  init_dfs_traversal (self, visitable);
-  dfs_traverse (self, visitable);
+  GHashTable *visited_set;
+
+  g_return_if_fail (GEGL_IS_VISITOR (self));
+  g_return_if_fail (GEGL_IS_VISITABLE (visitable));
+
+  visited_set = g_hash_table_new (NULL, NULL);
+
+  gegl_visitor_dfs_traverse_step (self, visitable, visited_set);
+
+  g_hash_table_unref (visited_set);
 }
 
-/* Recursively (depth first) sets up the structure (hash) that keeps track of
- * if a visitable's status
- */
 static void
-init_dfs_traversal (GeglVisitor   *self,
-                    GeglVisitable *visitable)
+gegl_visitor_dfs_traverse_step (GeglVisitor   *self,
+                                GeglVisitable *visitable,
+                                GHashTable    *visited_set)
 {
-  GSList *depends_on_list;
-  GSList *llink;
+  GSList *dependencies;
+  GSList *iter;
 
-  /* add the visitable to the list */
-  insert (self, visitable);
-  depends_on_list = gegl_visitable_depends_on (visitable);
-  llink           = depends_on_list;
+  dependencies = gegl_visitable_depends_on (visitable);
 
-  while (llink)
+  for (iter = dependencies; iter; iter = g_slist_next (iter))
     {
-      GeglVisitable *visitable  = llink->data;
-      GeglVisitInfo *visit_info = lookup (self, visitable);
+      GeglVisitable *dependency = iter->data;
 
-      /* if the visitable doesn't have a visit_info,
-       * then it needs to be initialised
-       */
-      if (!visit_info)
-        init_dfs_traversal (self, visitable);
-
-      llink = g_slist_next (llink);
+      if (! g_hash_table_contains (visited_set, dependency))
+        gegl_visitor_dfs_traverse_step (self, dependency, visited_set);
     }
 
-  g_slist_free (depends_on_list);
-}
+  g_slist_free (dependencies);
 
-/* Recursively (depth first) traverses the visitables and call's their
- * accept methods
- */
-static void
-dfs_traverse (GeglVisitor   *self,
-              GeglVisitable *visitable)
-{
-  GSList *depends_on_list;
-  GSList *llink;
-
-  depends_on_list = gegl_visitable_depends_on (visitable);
-  llink           = depends_on_list;
-
-  while (llink)
-    {
-      GeglVisitable *visitable = llink->data;
-
-      /* if the visitable has not yet been visitied then visit it */
-      if (!get_visited (self, visitable))
-        dfs_traverse (self, visitable);
-
-      llink = g_slist_next (llink);
-    }
-
-  g_slist_free (depends_on_list);
-
-  /* trigger the actual visit (call the visitable's accept method that will
-   * call the visitable's visit method (c.f. the visitor pattern)
-   */
   gegl_visitable_accept (visitable, self);
-  /* mark the visitable as already visited*/
-  set_visited (self, visitable, TRUE);
-}
-
-static void
-init_bfs_traversal (GeglVisitor   *self,
-                    GeglVisitable *visitable)
-{
-  GSList *depends_on_list;
-  GSList *llink;
-
-  insert (self, visitable);
-
-  depends_on_list = gegl_visitable_depends_on (visitable);
-  llink           = depends_on_list;
-
-  while (llink)
-    {
-      gint           shared_count;
-      GeglVisitable *depends_on_visitable = llink->data;
-      GeglVisitInfo *visit_info           = lookup (self, depends_on_visitable);
-
-      if (!visit_info)
-        init_bfs_traversal (self, depends_on_visitable);
-
-      shared_count = get_shared_count (self, depends_on_visitable);
-      shared_count++;
-      set_shared_count (self, depends_on_visitable, shared_count);
-      llink = g_slist_next (llink);
-    }
-
-  g_slist_free (depends_on_list);
+  g_hash_table_add (visited_set, visitable);
 }
 
 /**
@@ -339,102 +145,73 @@ void
 gegl_visitor_bfs_traverse (GeglVisitor   *self,
                            GeglVisitable *visitable)
 {
-  GQueue  queue = G_QUEUE_INIT;
+  GHashTable *edge_counts;
+  GQueue      queue = G_QUEUE_INIT;
 
-  /* Init all visitables */
-  init_bfs_traversal (self, visitable);
+  g_return_if_fail (GEGL_IS_VISITOR (self));
+  g_return_if_fail (GEGL_IS_VISITABLE (visitable));
 
-  /* Initialize the queue with this visitable */
-  g_queue_push_head (&queue, visitable);
+  edge_counts = g_hash_table_new (NULL, NULL);
 
-  /* Mark visitable as "discovered" */
-  set_discovered (self, visitable, TRUE);
+  gegl_visitor_bfs_init_step (self, visitable, edge_counts);
 
-  /* Pop the top of the queue*/
+  g_queue_push_tail (&queue, visitable);
+
   while ((visitable = g_queue_pop_head (&queue)))
     {
-      gint shared_count = get_shared_count (self, visitable);
+      GSList *dependencies;
+      GSList *iter;
 
-      /* Put this one at the end of the queue if its active
-       * immediate parents haven't all been visited yet.
-       */
-      if (shared_count > 0)
+      gegl_visitable_accept (visitable, self);
+
+      dependencies = gegl_visitable_depends_on (visitable);
+
+      for (iter = dependencies; iter; iter = g_slist_next (iter))
         {
-          g_queue_push_tail (&queue, visitable);
-          continue;
+          GeglVisitable *dependency = iter->data;
+          gint           edges;
+
+          edges = GPOINTER_TO_INT (g_hash_table_lookup (edge_counts, dependency));
+
+          if (edges == 1)
+            {
+              g_queue_push_tail (&queue, dependency);
+            }
+          else
+            {
+              g_hash_table_insert (edge_counts,
+                                   dependency, GINT_TO_POINTER (edges - 1));
+            }
         }
 
-      /* Loop through visitable's sources and examine them */
-      {
-        GSList *depends_on_list = gegl_visitable_depends_on (visitable);
-        GSList *llink;
-
-        for (llink = depends_on_list; llink; llink = g_slist_next (llink))
-          {
-            GeglVisitable *depends_on_visitable = llink->data;
-
-            shared_count = get_shared_count (self, depends_on_visitable);
-            shared_count--;
-            set_shared_count (self, depends_on_visitable, shared_count);
-
-            /* Add any undiscovered visitable to the queue at end */
-            if (!get_discovered (self, depends_on_visitable))
-              {
-                g_queue_push_tail (&queue, depends_on_visitable);
-
-                /* Mark it as discovered */
-                set_discovered (self, depends_on_visitable, TRUE);
-              }
-          }
-
-        g_slist_free (depends_on_list);
-      }
-
-      /* Visit the visitable */
-      gegl_visitable_accept (visitable, self);
-      set_visited (self, visitable, TRUE);
+      g_slist_free (dependencies);
     }
-}
 
-/* should be called by extending classes when their visit_pad function
- * is called
- */
-void
-gegl_visitor_visit_pad (GeglVisitor *self,
-                        GeglPad     *pad)
-{
-  GeglVisitorClass *klass;
-
-  klass = GEGL_VISITOR_GET_CLASS (self);
-
-  if (klass->visit_pad)
-    klass->visit_pad (self, pad);
+  g_hash_table_unref (edge_counts);
 }
 
 static void
-visit_pad (GeglVisitor *self,
-           GeglPad     *pad)
+gegl_visitor_bfs_init_step (GeglVisitor   *self,
+                            GeglVisitable *visitable,
+                            GHashTable    *edge_counts)
 {
-}
+  GSList *dependencies;
+  GSList *iter;
 
-/* should be called by extending classes when their visit_node function
- * is called
- */
-void
-gegl_visitor_visit_node (GeglVisitor *self,
-                         GeglNode    *node)
-{
-  GeglVisitorClass *klass;
+  dependencies = gegl_visitable_depends_on (visitable);
 
-  klass = GEGL_VISITOR_GET_CLASS (self);
+  for (iter = dependencies; iter; iter = g_slist_next (iter))
+    {
+      GeglVisitable *dependency = iter->data;
+      gint           edges;
 
-  if (klass->visit_node)
-    klass->visit_node (self, node);
-}
+      edges = GPOINTER_TO_INT (g_hash_table_lookup (edge_counts, dependency));
+      g_hash_table_insert (edge_counts,
+                           dependency, GINT_TO_POINTER (edges + 1));
 
-/* adds the visiting node to the list of visits */
-static void
-visit_node (GeglVisitor *self,
-            GeglNode    *node)
-{
+      if (edges == 0)
+        gegl_visitor_bfs_init_step (self, dependency, edge_counts);
+    }
+
+  g_slist_free (dependencies);
 }

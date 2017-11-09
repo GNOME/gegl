@@ -74,7 +74,6 @@ gegl_list_visitor_finalize (GObject *object)
 void
 gegl_list_visitor_reset (GeglListVisitor *self)
 {
-  gegl_visitor_reset (GEGL_VISITOR (self));
   if (self->visit_path)
     {
       g_list_free (self->visit_path);
