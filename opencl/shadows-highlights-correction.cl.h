@@ -64,7 +64,7 @@ static const char* shadows_highlights_correction_cl_source =
 "    }                                                                         \n"
 "                                                                              \n"
 "  /* blurred, inverted and desaturaed mask in m */                            \n"
-"  m.x = 100.0f - aux[3 * gid].x;                                              \n"
+"  m.x = 100.0f - aux[3 * gid];                                                \n"
 "                                                                              \n"
 "  /* white point adjustment */                                                \n"
 "  io.x = io.x > 0.0f ? io.x/whitepoint : io.x;                                \n"
