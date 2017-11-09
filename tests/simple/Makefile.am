@@ -19,6 +19,7 @@ noinst_PROGRAMS =			\
 	test-license-check		\
 	test-misc			\
 	test-node-connections		\
+	test-node-exponential		\
 	test-node-passthrough		\
 	test-node-properties		\
 	test-object-forked		\
