@@ -36,7 +36,7 @@ static void       gegl_pad_init            (GeglPad       *self);
 static void       finalize                 (GObject       *gobject);
 static void       visitable_init           (gpointer       ginterface,
                                             gpointer       interface_data);
-static void       visitable_accept         (GeglVisitable *visitable,
+static gboolean   visitable_accept         (GeglVisitable *visitable,
                                             GeglVisitor   *visitor);
 static GSList   * visitable_depends_on     (GeglVisitable *visitable);
 
@@ -249,11 +249,11 @@ gegl_pad_is_input (GeglPad *self)
   return GEGL_PARAM_PAD_INPUT & self->param_spec->flags;
 }
 
-static void
+static gboolean
 visitable_accept (GeglVisitable *visitable,
                   GeglVisitor   *visitor)
 {
-  gegl_visitor_visit_pad (visitor, (GeglPad*) (visitable));
+  return gegl_visitor_visit_pad (visitor, (GeglPad*) (visitable));
 }
 
 static GSList *

@@ -40,26 +40,27 @@ struct _GeglVisitor
 
 struct _GeglVisitorClass
 {
-  GObjectClass        parent_class;
+  GObjectClass  parent_class;
 
-  void (* visit_pad)  (GeglVisitor  *self,
-                       GeglPad      *pad);
-  void (* visit_node) (GeglVisitor  *self,
-                       GeglNode     *node);
+  /* these functions return TRUE to stop traversal, FALSE to continue */
+  gboolean (* visit_pad)  (GeglVisitor  *self,
+                           GeglPad      *pad);
+  gboolean (* visit_node) (GeglVisitor  *self,
+                           GeglNode     *node);
 };
 
 
-GType    gegl_visitor_get_type     (void) G_GNUC_CONST;
+GType      gegl_visitor_get_type     (void) G_GNUC_CONST;
 
-void     gegl_visitor_visit_pad    (GeglVisitor   *self,
-                                    GeglPad       *pad);
-void     gegl_visitor_visit_node   (GeglVisitor   *self,
-                                    GeglNode      *node);
+gboolean   gegl_visitor_visit_pad    (GeglVisitor   *self,
+                                      GeglPad       *pad);
+gboolean   gegl_visitor_visit_node   (GeglVisitor   *self,
+                                      GeglNode      *node);
 
-void     gegl_visitor_dfs_traverse (GeglVisitor   *self,
-                                    GeglVisitable *visitable);
-void     gegl_visitor_bfs_traverse (GeglVisitor   *self,
-                                    GeglVisitable *visitable);
+gboolean   gegl_visitor_dfs_traverse (GeglVisitor   *self,
+                                      GeglVisitable *visitable);
+gboolean   gegl_visitor_bfs_traverse (GeglVisitor   *self,
+                                      GeglVisitable *visitable);
 
 
 G_END_DECLS

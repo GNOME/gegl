@@ -31,10 +31,10 @@
 #include "gegl-instrument.h"
 #include "operation/gegl-operation.h"
 
-static void gegl_list_visitor_class_init (GeglListVisitorClass *klass);
-static void gegl_list_visitor_visit_node (GeglVisitor          *self,
-                                          GeglNode             *node);
-static void gegl_list_visitor_finalize   (GObject              *visitor);
+static void       gegl_list_visitor_class_init (GeglListVisitorClass *klass);
+static gboolean   gegl_list_visitor_visit_node (GeglVisitor          *self,
+                                                GeglNode             *node);
+static void       gegl_list_visitor_finalize   (GObject              *visitor);
 
 G_DEFINE_TYPE (GeglListVisitor, gegl_list_visitor, GEGL_TYPE_VISITOR)
 
@@ -109,11 +109,13 @@ gegl_list_visitor_get_bfs_path (GeglListVisitor *self,
   return g_list_reverse (result);
 }
 
-static void
+static gboolean
 gegl_list_visitor_visit_node (GeglVisitor *visitor,
                               GeglNode    *node)
 {
   GeglListVisitor *list_visitor = GEGL_LIST_VISITOR(visitor);
 
   list_visitor->visit_path = g_list_prepend (list_visitor->visit_path, node);
+
+  return FALSE;
 }

@@ -35,11 +35,11 @@ struct _GeglDotVisitorPriv
 };
 
 
-static void gegl_dot_visitor_class_init (GeglDotVisitorClass *klass);
-static void gegl_dot_visitor_visit_node (GeglVisitor         *self,
-                                         GeglNode            *node);
-static void gegl_dot_visitor_visit_pad  (GeglVisitor         *self,
-                                         GeglPad             *pad);
+static void       gegl_dot_visitor_class_init (GeglDotVisitorClass *klass);
+static gboolean   gegl_dot_visitor_visit_node (GeglVisitor         *self,
+                                               GeglNode            *node);
+static gboolean   gegl_dot_visitor_visit_pad  (GeglVisitor         *self,
+                                               GeglPad             *pad);
 
 
 G_DEFINE_TYPE (GeglDotVisitor, gegl_dot_visitor, GEGL_TYPE_VISITOR)
@@ -71,20 +71,22 @@ gegl_dot_visitor_set_string_to_append (GeglDotVisitor *self,
   self->priv->string_to_append = string_to_append;
 }
 
-static void
+static gboolean
 gegl_dot_visitor_visit_node (GeglVisitor *visitor,
                              GeglNode    *node)
 {
   GeglDotVisitor *self = GEGL_DOT_VISITOR (visitor);
 
-  g_return_if_fail (self->priv->string_to_append != NULL);
+  g_return_val_if_fail (self->priv->string_to_append != NULL, FALSE);
 
   GEGL_VISITOR_CLASS (gegl_dot_visitor_parent_class)->visit_node (visitor, node);
 
   gegl_dot_util_add_node (self->priv->string_to_append, node);
+
+  return FALSE;
 }
 
-static void
+static gboolean
 gegl_dot_visitor_visit_pad (GeglVisitor *visitor,
                             GeglPad     *pad)
 {
@@ -93,7 +95,7 @@ gegl_dot_visitor_visit_pad (GeglVisitor *visitor,
   GSList         *iter;
   GSList         *pad_iter;
 
-  g_return_if_fail (self->priv->string_to_append != NULL);
+  g_return_val_if_fail (self->priv->string_to_append != NULL, FALSE);
 
   GEGL_VISITOR_CLASS (gegl_dot_visitor_parent_class)->visit_pad (visitor, pad);
 
@@ -115,4 +117,6 @@ gegl_dot_visitor_visit_pad (GeglVisitor *visitor,
     }
 
   g_slist_free (pads);
+
+  return FALSE;
 }

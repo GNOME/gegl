@@ -30,14 +30,14 @@
 #include "gegl-visitable.h"
 
 
-static void   gegl_visitor_class_init        (GeglVisitorClass *klass);
-static void   gegl_visitor_init              (GeglVisitor      *self);
-static void   gegl_visitor_dfs_traverse_step (GeglVisitor      *self,
-                                              GeglVisitable    *visitable,
-                                              GHashTable       *visited_set);
-static void   gegl_visitor_bfs_init_step     (GeglVisitor      *self,
-                                              GeglVisitable    *visitable,
-                                              GHashTable       *edge_counts);
+static void       gegl_visitor_class_init        (GeglVisitorClass *klass);
+static void       gegl_visitor_init              (GeglVisitor      *self);
+static gboolean   gegl_visitor_dfs_traverse_step (GeglVisitor      *self,
+                                                  GeglVisitable    *visitable,
+                                                  GHashTable       *visited_set);
+static void       gegl_visitor_bfs_init_step     (GeglVisitor      *self,
+                                                  GeglVisitable    *visitable,
+                                                  GHashTable       *edge_counts);
 
 
 G_DEFINE_TYPE (GeglVisitor, gegl_visitor, G_TYPE_OBJECT)
@@ -56,35 +56,39 @@ gegl_visitor_init (GeglVisitor *self)
 }
 
 /* should be called by visitables, to visit a pad */
-void
+gboolean
 gegl_visitor_visit_pad (GeglVisitor *self,
                         GeglPad     *pad)
 {
   GeglVisitorClass *klass;
 
-  g_return_if_fail (GEGL_IS_VISITOR (self));
-  g_return_if_fail (GEGL_IS_PAD (pad));
+  g_return_val_if_fail (GEGL_IS_VISITOR (self), FALSE);
+  g_return_val_if_fail (GEGL_IS_PAD (pad), FALSE);
 
   klass = GEGL_VISITOR_GET_CLASS (self);
 
   if (klass->visit_pad)
-    klass->visit_pad (self, pad);
+    return klass->visit_pad (self, pad);
+  else
+    return FALSE;
 }
 
 /* should be called by visitables, to visit a node */
-void
+gboolean
 gegl_visitor_visit_node (GeglVisitor *self,
                          GeglNode    *node)
 {
   GeglVisitorClass *klass;
 
-  g_return_if_fail (GEGL_IS_VISITOR (self));
-  g_return_if_fail (GEGL_IS_NODE (node));
+  g_return_val_if_fail (GEGL_IS_VISITOR (self), FALSE);
+  g_return_val_if_fail (GEGL_IS_NODE (node), FALSE);
 
   klass = GEGL_VISITOR_GET_CLASS (self);
 
   if (klass->visit_node)
-    klass->visit_node (self, node);
+    return klass->visit_node (self, node);
+  else
+    return FALSE;
 }
 
 /**
@@ -93,24 +97,29 @@ gegl_visitor_visit_node (GeglVisitor *self,
  * @visitable: the start #GeglVisitable
  *
  * Traverse depth first starting at @visitable.
+ *
+ * Returns: %TRUE if traversal was terminated early.
  **/
-void
+gboolean
 gegl_visitor_dfs_traverse (GeglVisitor   *self,
                            GeglVisitable *visitable)
 {
   GHashTable *visited_set;
+  gboolean    result;
 
-  g_return_if_fail (GEGL_IS_VISITOR (self));
-  g_return_if_fail (GEGL_IS_VISITABLE (visitable));
+  g_return_val_if_fail (GEGL_IS_VISITOR (self), FALSE);
+  g_return_val_if_fail (GEGL_IS_VISITABLE (visitable), FALSE);
 
   visited_set = g_hash_table_new (NULL, NULL);
 
-  gegl_visitor_dfs_traverse_step (self, visitable, visited_set);
+  result = gegl_visitor_dfs_traverse_step (self, visitable, visited_set);
 
   g_hash_table_unref (visited_set);
+
+  return result;
 }
 
-static void
+static gboolean
 gegl_visitor_dfs_traverse_step (GeglVisitor   *self,
                                 GeglVisitable *visitable,
                                 GHashTable    *visited_set)
@@ -125,13 +134,24 @@ gegl_visitor_dfs_traverse_step (GeglVisitor   *self,
       GeglVisitable *dependency = iter->data;
 
       if (! g_hash_table_contains (visited_set, dependency))
-        gegl_visitor_dfs_traverse_step (self, dependency, visited_set);
+        {
+          if (gegl_visitor_dfs_traverse_step (self, dependency, visited_set))
+            {
+              g_slist_free (dependencies);
+
+              return TRUE;
+            }
+        }
     }
 
   g_slist_free (dependencies);
 
-  gegl_visitable_accept (visitable, self);
+  if (gegl_visitable_accept (visitable, self))
+    return TRUE;
+
   g_hash_table_add (visited_set, visitable);
+
+  return FALSE;
 }
 
 /**
@@ -140,16 +160,18 @@ gegl_visitor_dfs_traverse_step (GeglVisitor   *self,
  * @visitable: the root #GeglVisitable.
  *
  * Traverse breadth-first starting at @visitable.
+ *
+ * Returns: %TRUE if traversal was terminated early.
  **/
-void
+gboolean
 gegl_visitor_bfs_traverse (GeglVisitor   *self,
                            GeglVisitable *visitable)
 {
   GHashTable *edge_counts;
   GQueue      queue = G_QUEUE_INIT;
 
-  g_return_if_fail (GEGL_IS_VISITOR (self));
-  g_return_if_fail (GEGL_IS_VISITABLE (visitable));
+  g_return_val_if_fail (GEGL_IS_VISITOR (self), FALSE);
+  g_return_val_if_fail (GEGL_IS_VISITABLE (visitable), FALSE);
 
   edge_counts = g_hash_table_new (NULL, NULL);
 
@@ -162,7 +184,13 @@ gegl_visitor_bfs_traverse (GeglVisitor   *self,
       GSList *dependencies;
       GSList *iter;
 
-      gegl_visitable_accept (visitable, self);
+      if (gegl_visitable_accept (visitable, self))
+        {
+          g_queue_clear (&queue);
+          g_hash_table_unref (edge_counts);
+
+          return TRUE;
+        }
 
       dependencies = gegl_visitable_depends_on (visitable);
 
@@ -188,6 +216,8 @@ gegl_visitor_bfs_traverse (GeglVisitor   *self,
     }
 
   g_hash_table_unref (edge_counts);
+
+  return FALSE;
 }
 
 static void

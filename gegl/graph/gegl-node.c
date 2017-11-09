@@ -98,7 +98,7 @@ static GeglConnection *gegl_node_find_connection          (GeglNode      *sink,
                                                            GeglPad       *sink_pad);
 static void            gegl_node_visitable_iface_init     (gpointer       ginterface,
                                                            gpointer       interface_data);
-static void            gegl_node_visitable_accept         (GeglVisitable *visitable,
+static gboolean        gegl_node_visitable_accept         (GeglVisitable *visitable,
                                                            GeglVisitor   *visitor);
 static GSList*         gegl_node_visitable_depends_on     (GeglVisitable *visitable);
 static void            gegl_node_set_operation_object     (GeglNode      *self,
@@ -1077,11 +1077,11 @@ gegl_node_dump_depends_on (GeglNode *self)
   g_slist_free (depends_on);
 }
 
-static void
+static gboolean
 gegl_node_visitable_accept (GeglVisitable *visitable,
                             GeglVisitor   *visitor)
 {
-  gegl_visitor_visit_node (visitor, (GeglNode *) visitable);
+  return gegl_visitor_visit_node (visitor, (GeglNode *) visitable);
 }
 
 static GSList *

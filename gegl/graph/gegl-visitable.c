@@ -57,7 +57,7 @@ gegl_visitable_get_type (void)
   return type;
 }
 
-void
+gboolean
 gegl_visitable_accept (GeglVisitable *interface,
                        GeglVisitor   *visitor)
 {
@@ -67,7 +67,7 @@ gegl_visitable_accept (GeglVisitable *interface,
 
   interface_class = GEGL_VISITABLE_GET_CLASS (interface);
 
-  interface_class->accept (interface, visitor);
+  return interface_class->accept (interface, visitor);
 }
 
 GSList *
