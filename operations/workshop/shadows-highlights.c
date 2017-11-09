@@ -59,6 +59,8 @@ struct _GeglOp
   GeglOperationMeta parent_instance;
   gpointer          properties;
 
+  const Babl *blur_format;
+  GeglNode *blur_convert;
   GeglNode *input;
   GeglNode *output;
 };
@@ -92,6 +94,8 @@ do_setup (GeglOperation *operation)
   g_return_if_fail (GEGL_IS_NODE (self->input));
   g_return_if_fail (GEGL_IS_NODE (self->output));
 
+  self->blur_convert = NULL;
+
   children = gegl_node_get_children (operation->node);
   for (l = children; l != NULL; l = l->next)
     {
@@ -117,11 +121,19 @@ do_setup (GeglOperation *operation)
                                   "abyss-policy", 1,
                                   NULL);
 
+      if (self->blur_format == NULL)
+        self->blur_format = babl_format ("YaA float");
+
+      self->blur_convert = gegl_node_new_child (operation->node,
+                                                "operation", "gegl:convert-format",
+                                                "format",    self->blur_format,
+                                                NULL);
+
       shprocess = gegl_node_new_child (operation->node,
                                        "operation", "gegl:shadows-highlights-correction",
                                        NULL);
 
-      gegl_node_link (self->input, blur);
+      gegl_node_link_many (self->input, self->blur_convert, blur, NULL);
       gegl_node_link_many (self->input, shprocess, self->output, NULL);
 
       gegl_node_connect_to (blur, "output", shprocess, "aux");
@@ -135,7 +147,7 @@ do_setup (GeglOperation *operation)
       gegl_operation_meta_redirect (operation, "shadows-ccorrect", shprocess, "shadows-ccorrect");
       gegl_operation_meta_redirect (operation, "highlights-ccorrect", shprocess, "highlights-ccorrect");
 
-      gegl_operation_meta_watch_nodes (operation, blur, shprocess, NULL);
+      gegl_operation_meta_watch_nodes (operation, blur, self->blur_convert, shprocess, NULL);
     }
 
   g_slist_free (children);
@@ -152,6 +164,36 @@ attach (GeglOperation *operation)
   self->output = gegl_node_get_output_proxy (gegl, "output");
 
   do_setup (operation);
+}
+
+static void
+prepare (GeglOperation *operation)
+{
+  GeglOp *self = GEGL_OP (operation);
+  const Babl *blur_format = NULL;
+  const Babl *input_format;
+
+  input_format = gegl_operation_get_source_format (operation, "input");
+  if (input_format == NULL)
+    {
+      blur_format = babl_format ("YaA float");
+      goto out;
+    }
+
+  if (babl_format_has_alpha (input_format))
+    blur_format = babl_format ("YaA float");
+  else
+    blur_format = babl_format ("Y float");
+
+ out:
+  g_return_if_fail (blur_format != NULL);
+
+  if (self->blur_format != blur_format)
+    {
+      self->blur_format = blur_format;
+      if (self->blur_convert != NULL)
+        gegl_node_set (self->blur_convert, "format", self->blur_format, NULL);
+    }
 }
 
 static void
@@ -188,6 +230,7 @@ gegl_op_class_init (GeglOpClass *klass)
   object_class->set_property = my_set_property;
 
   operation_class->attach = attach;
+  operation_class->prepare = prepare;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:shadows-highlights",

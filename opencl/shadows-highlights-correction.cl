@@ -63,7 +63,7 @@ __kernel void shadows_highlights(__global const float4  *in,
     }
 
   /* blurred, inverted and desaturaed mask in m */
-  m.x = 100.0f - aux[3 * gid];
+  m.x = 100.0f - aux[gid];
 
   /* white point adjustment */
   io.x = io.x > 0.0f ? io.x/whitepoint : io.x;

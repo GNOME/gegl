@@ -60,10 +60,10 @@ static void
 prepare (GeglOperation *operation)
 {
   const Babl *cie_laba = babl_format ("CIE Lab alpha float");
-  const Babl *cie_lab  = babl_format ("CIE Lab float");
+  const Babl *cie_l    = babl_format ("CIE L float");
 
   gegl_operation_set_format (operation, "input",  cie_laba);
-  gegl_operation_set_format (operation, "aux",    cie_lab);
+  gegl_operation_set_format (operation, "aux",    cie_l);
   gegl_operation_set_format (operation, "output", cie_laba);
 }
 
@@ -196,7 +196,7 @@ process (GeglOperation       *operation,
 
       src += 4;
       dst += 4;
-      aux += 3;
+      aux += 1;
     }
 
   return TRUE;
