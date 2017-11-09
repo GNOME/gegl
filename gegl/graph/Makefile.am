@@ -28,6 +28,7 @@ libgraph_la_SOURCES = \
 	gegl-node.c		\
 	gegl-pad.c		\
 	gegl-visitor.c		\
+	gegl-callback-visitor.c	\
 	gegl-visitable.c	\
 	\
 	gegl-connection.h	\
@@ -35,6 +36,7 @@ libgraph_la_SOURCES = \
 	gegl-node-private.h	\
 	gegl-pad.h		\
 	gegl-visitor.h		\
+	gegl-callback-visitor.h	\
 	gegl-visitable.h
 
 #libgraph_la_SOURCES = $(libgraph_sources) $(libgraph_public_HEADERS)
