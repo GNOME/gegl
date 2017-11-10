@@ -574,7 +574,7 @@ gegl_create_chain_argv (char      **ops,
                       }
                   }
                 g_free (key);
-                if (end_block)
+                if (end_block && level >0)
                   {
                     level--;
                     gegl_node_connect_to (iter[level+1], "output", iter[level],
