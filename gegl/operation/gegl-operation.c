@@ -349,13 +349,21 @@ GeglNode *
 gegl_operation_get_source_node (GeglOperation *operation,
                                 const gchar   *input_pad_name)
 {
+  GeglNode *node;
   GeglPad *pad;
 
   g_return_val_if_fail (GEGL_IS_OPERATION (operation), NULL);
   g_return_val_if_fail (GEGL_IS_NODE (operation->node), NULL);
   g_return_val_if_fail (input_pad_name != NULL, NULL);
 
-  pad = gegl_node_get_pad (operation->node, input_pad_name);
+  node = operation->node;
+  if (node->is_graph)
+    {
+      node = gegl_node_get_input_proxy (node, input_pad_name);
+      input_pad_name = "input";
+    }
+
+  pad = gegl_node_get_pad (node, input_pad_name);
 
   if (!pad)
     return NULL;
