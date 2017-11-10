@@ -351,9 +351,10 @@ gegl_operation_get_source_node (GeglOperation *operation,
 {
   GeglPad *pad;
 
-  g_assert (operation &&
-            operation->node &&
-            input_pad_name);
+  g_return_val_if_fail (GEGL_IS_OPERATION (operation), NULL);
+  g_return_val_if_fail (GEGL_IS_NODE (operation->node), NULL);
+  g_return_val_if_fail (input_pad_name != NULL, NULL);
+
   pad = gegl_node_get_pad (operation->node, input_pad_name);
 
   if (!pad)
