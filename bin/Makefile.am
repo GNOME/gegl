@@ -43,7 +43,7 @@ gegl_SOURCES =			\
 if HAVE_MRG
 if HAVE_GEXIV2
 if HAVE_SDL
-gegl_SOURCES += ui.c
+gegl_SOURCES += ui.c mrg-gegl.c
 AM_CFLAGS += $(SDL_CFLAGS)
 AM_LDFLAGS += $(SDL_LIBS)
 endif

@@ -46,6 +46,14 @@
  */
 // #define DEBUG_OP_LIST  1
 
+void mrg_gegl_blit (Mrg *mrg,
+                    float x0, float y0,
+                    float width, float height,
+                    GeglNode *node,
+                    float u, float v,
+                    float scale,
+                    float preview_multiplier);
+
 
 static int audio_len    = 0;
 static int audio_pos    = 0;
@@ -157,14 +165,6 @@ static char *unsuffix_path (const char *path);
 static int is_gegl_path (const char *path);
 
 static void contrasty_stroke (cairo_t *cr);
-
-static void mrg_gegl_blit (Mrg *mrg,
-                           float x0, float y0,
-                           float width, float height,
-                           GeglNode *node,
-                           float u, float v,
-                           float scale,
-                           float preview_multiplier);
 
 gchar *get_thumb_path (const char *path);
 gchar *get_thumb_path (const char *path)
@@ -1196,85 +1196,6 @@ static void contrasty_stroke (cairo_t *cr)
   cairo_set_source_rgba (cr, 1,1,1,0.5);
   cairo_set_line_width (cr, y1);
   cairo_stroke (cr);
-}
-
-static unsigned char *copy_buf = NULL;
-static int copy_buf_len = 0;
-
-static void mrg_gegl_blit (Mrg *mrg,
-                           float x0, float y0,
-                           float width, float height,
-                           GeglNode *node,
-                           float u, float v,
-                           float scale,
-                           float preview_multiplier)
-{
-  float fake_factor = preview_multiplier;
-  GeglRectangle bounds;
-
-  cairo_t *cr = mrg_cr (mrg);
-  cairo_surface_t *surface = NULL;
-
-  if (!node)
-    return;
-
-  bounds = gegl_node_get_bounding_box (node);
-
-  if (width == -1 && height == -1)
-  {
-    width  = bounds.width;
-    height = bounds.height;
-  }
-
-  if (width == -1)
-    width = bounds.width * height / bounds.height;
-  if (height == -1)
-    height = bounds.height * width / bounds.width;
-
-  width /= fake_factor;
-  height /= fake_factor;
-  u /= fake_factor;
-  v /= fake_factor;
-
-  if (copy_buf_len < width * height * 4)
-  {
-    if (copy_buf)
-      free (copy_buf);
-    copy_buf_len = width * height * 4;
-    copy_buf = malloc (copy_buf_len);
-  }
-  {
-    static int foo = 0;
-    unsigned char *buf = copy_buf;
-    GeglRectangle roi = {u, v, width, height};
-    static const Babl *fmt = NULL;
-
-foo++;
-    if (!fmt) fmt = babl_format ("cairo-RGB24");
-    gegl_node_blit (node, scale / fake_factor, &roi, fmt, buf, width * 4,
-         GEGL_BLIT_DEFAULT);
-  surface = cairo_image_surface_create_for_data (buf, CAIRO_FORMAT_RGB24, width, height, width * 4);
-  }
-
-  cairo_save (cr);
-  cairo_surface_set_device_scale (surface, 1.0/fake_factor, 1.0/fake_factor);
-
-  width *= fake_factor;
-  height *= fake_factor;
-  u *= fake_factor;
-  v *= fake_factor;
-
-  cairo_rectangle (cr, x0, y0, width, height);
-
-  cairo_clip (cr);
-  cairo_translate (cr, x0 * fake_factor, y0 * fake_factor);
-  cairo_pattern_set_filter (cairo_get_source (cr), CAIRO_FILTER_NEAREST);
-  cairo_set_source_surface (cr, surface, 0, 0);
-
-  cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
-  cairo_paint (cr);
-  cairo_surface_destroy (surface);
-  cairo_restore (cr);
 }
 
 static void load_path (State *o)
