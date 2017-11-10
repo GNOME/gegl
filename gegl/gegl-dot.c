@@ -255,11 +255,8 @@ gegl_dot_add_node_and_dependencies (GString  *string,
 {
   GeglDotVisitor *dot_visitor;
   GeglPad        *pad;
-  gpointer        context_id = string;
 
-  dot_visitor = g_object_new (GEGL_TYPE_DOT_VISITOR,
-                              "id", context_id,
-                              NULL);
+  dot_visitor = g_object_new (GEGL_TYPE_DOT_VISITOR, NULL);
 
   gegl_dot_visitor_set_string_to_append (dot_visitor,
                                          string);

@@ -79,8 +79,6 @@ gegl_dot_visitor_visit_node (GeglVisitor *visitor,
 
   g_return_val_if_fail (self->priv->string_to_append != NULL, FALSE);
 
-  GEGL_VISITOR_CLASS (gegl_dot_visitor_parent_class)->visit_node (visitor, node);
-
   gegl_dot_util_add_node (self->priv->string_to_append, node);
 
   return FALSE;
@@ -96,8 +94,6 @@ gegl_dot_visitor_visit_pad (GeglVisitor *visitor,
   GSList         *pad_iter;
 
   g_return_val_if_fail (self->priv->string_to_append != NULL, FALSE);
-
-  GEGL_VISITOR_CLASS (gegl_dot_visitor_parent_class)->visit_pad (visitor, pad);
 
   for (pad_iter = pads; pad_iter; pad_iter = g_slist_next (pad_iter))
     {
