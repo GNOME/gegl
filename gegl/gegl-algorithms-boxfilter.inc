@@ -73,32 +73,30 @@ BOXFILTER_FUNCNAME (guchar              *dest_buf,
             }
             else
             {
-              const gfloat lt = left_weight[x] * top_weight;
-              const gfloat lm = left_weight[x] * middle_weight;
-              const gfloat lb = left_weight[x] * bottom_weight;
-              const gfloat ct = center_weight[x] * top_weight;
-              const gfloat cm = center_weight[x] * middle_weight;
-              const gfloat cb = center_weight[x] * bottom_weight;
-              const gfloat rt = right_weight[x] * top_weight;
-              const gfloat rm = right_weight[x] * middle_weight;
-              const gfloat rb = right_weight[x] * bottom_weight;
+              const gfloat l = left_weight[x];
+              const gfloat c = center_weight[x];
+              const gfloat r = right_weight[x];
 
-                dst[0] = BOXFILTER_ROUND(
-                  src[0][0] * lt + src[3][0] * lm + src[6][0] * lb +
-                  src[1][0] * ct + src[4][0] * cm + src[7][0] * cb +
-                  src[2][0] * rt + src[5][0] * rm + src[8][0] * rb);
-                dst[1] = BOXFILTER_ROUND(
-                  src[0][1] * lt + src[3][1] * lm + src[6][1] * lb +
-                  src[1][1] * ct + src[4][1] * cm + src[7][1] * cb +
-                  src[2][1] * rt + src[5][1] * rm + src[8][1] * rb);
-                dst[2] = BOXFILTER_ROUND(
-                  src[0][2] * lt + src[3][2] * lm + src[6][2] * lb +
-                  src[1][2] * ct + src[4][2] * cm + src[7][2] * cb +
-                  src[2][2] * rt + src[5][2] * rm + src[8][2] * rb);
-                dst[3] = BOXFILTER_ROUND(
-                  src[0][3] * lt + src[3][3] * lm + src[6][3] * lb +
-                  src[1][3] * ct + src[4][3] * cm + src[7][3] * cb +
-                  src[2][3] * rt + src[5][3] * rm + src[8][3] * rb);
+              const gfloat t = top_weight;
+              const gfloat m = middle_weight;
+              const gfloat b = bottom_weight;
+
+              dst[0] = BOXFILTER_ROUND(
+                (src[0][0] * t + src[3][0] * m + src[6][0] * b) * l +
+                (src[1][0] * t + src[4][0] * m + src[7][0] * b) * c +
+                (src[2][0] * t + src[5][0] * m + src[8][0] * b) * r);
+              dst[1] = BOXFILTER_ROUND(
+                (src[0][1] * t + src[3][1] * m + src[6][1] * b) * l +
+                (src[1][1] * t + src[4][1] * m + src[7][1] * b) * c +
+                (src[2][1] * t + src[5][1] * m + src[8][1] * b) * r);
+              dst[2] = BOXFILTER_ROUND(
+                (src[0][2] * t + src[3][2] * m + src[6][2] * b) * l +
+                (src[1][2] * t + src[4][2] * m + src[7][2] * b) * c +
+                (src[2][2] * t + src[5][2] * m + src[8][2] * b) * r);
+              dst[3] = BOXFILTER_ROUND(
+                (src[0][3] * t + src[3][3] * m + src[6][3] * b) * l +
+                (src[1][3] * t + src[4][3] * m + src[7][3] * b) * c +
+                (src[2][3] * t + src[5][3] * m + src[8][3] * b) * r);
               }
             dst += 4;
             }
@@ -116,27 +114,26 @@ BOXFILTER_FUNCNAME (guchar              *dest_buf,
             src[3] = src[4] - 3;
             src[6] = src[7] - 3;
             {
-              const gfloat lt = left_weight[x] * top_weight;
-              const gfloat lm = left_weight[x] * middle_weight;
-              const gfloat lb = left_weight[x] * bottom_weight;
-              const gfloat ct = center_weight[x] * top_weight;
-              const gfloat cm = center_weight[x] * middle_weight;
-              const gfloat cb = center_weight[x] * bottom_weight;
-              const gfloat rt = right_weight[x] * top_weight;
-              const gfloat rm = right_weight[x] * middle_weight;
-              const gfloat rb = right_weight[x] * bottom_weight;
+              const gfloat l = left_weight[x];
+              const gfloat c = center_weight[x];
+              const gfloat r = right_weight[x];
+
+              const gfloat t = top_weight;
+              const gfloat m = middle_weight;
+              const gfloat b = bottom_weight;
+
               dst[0] = BOXFILTER_ROUND(
-                src[0][0] * lt + src[3][0] * lm + src[6][0] * lb +
-                src[1][0] * ct + src[4][0] * cm + src[7][0] * cb +
-                src[2][0] * rt + src[5][0] * rm + src[8][0] * rb);
+                (src[0][0] * t + src[3][0] * m + src[6][0] * b) * l +
+                (src[1][0] * t + src[4][0] * m + src[7][0] * b) * c +
+                (src[2][0] * t + src[5][0] * m + src[8][0] * b) * r);
               dst[1] = BOXFILTER_ROUND(
-                src[0][1] * lt + src[3][1] * lm + src[6][1] * lb +
-                src[1][1] * ct + src[4][1] * cm + src[7][1] * cb +
-                src[2][1] * rt + src[5][1] * rm + src[8][1] * rb);
+                (src[0][1] * t + src[3][1] * m + src[6][1] * b) * l +
+                (src[1][1] * t + src[4][1] * m + src[7][1] * b) * c +
+                (src[2][1] * t + src[5][1] * m + src[8][1] * b) * r);
               dst[2] = BOXFILTER_ROUND(
-                src[0][2] * lt + src[3][2] * lm + src[6][2] * lb +
-                src[1][2] * ct + src[4][2] * cm + src[7][2] * cb +
-                src[2][2] * rt + src[5][2] * rm + src[8][2] * rb);
+                (src[0][2] * t + src[3][2] * m + src[6][2] * b) * l +
+                (src[1][2] * t + src[4][2] * m + src[7][2] * b) * c +
+                (src[2][2] * t + src[5][2] * m + src[8][2] * b) * r);
             }
             dst += 3;
             }
@@ -154,23 +151,22 @@ BOXFILTER_FUNCNAME (guchar              *dest_buf,
             src[3] = src[4] - 2;
             src[6] = src[7] - 2;
             {
-              const gfloat lt = left_weight[x] * top_weight;
-              const gfloat lm = left_weight[x] * middle_weight;
-              const gfloat lb = left_weight[x] * bottom_weight;
-              const gfloat ct = center_weight[x] * top_weight;
-              const gfloat cm = center_weight[x] * middle_weight;
-              const gfloat cb = center_weight[x] * bottom_weight;
-              const gfloat rt = right_weight[x] * top_weight;
-              const gfloat rm = right_weight[x] * middle_weight;
-              const gfloat rb = right_weight[x] * bottom_weight;
+              const gfloat l = left_weight[x];
+              const gfloat c = center_weight[x];
+              const gfloat r = right_weight[x];
+
+              const gfloat t = top_weight;
+              const gfloat m = middle_weight;
+              const gfloat b = bottom_weight;
+
               dst[0] = BOXFILTER_ROUND(
-                src[0][0] * lt + src[3][0] * lm + src[6][0] * lb +
-                src[1][0] * ct + src[4][0] * cm + src[7][0] * cb +
-                src[2][0] * rt + src[5][0] * rm + src[8][0] * rb);
+                (src[0][0] * t + src[3][0] * m + src[6][0] * b) * l +
+                (src[1][0] * t + src[4][0] * m + src[7][0] * b) * c +
+                (src[2][0] * t + src[5][0] * m + src[8][0] * b) * r);
               dst[1] = BOXFILTER_ROUND(
-                src[0][1] * lt + src[3][1] * lm + src[6][1] * lb +
-                src[1][1] * ct + src[4][1] * cm + src[7][1] * cb +
-                src[2][1] * rt + src[5][1] * rm + src[8][1] * rb);
+                (src[0][1] * t + src[3][1] * m + src[6][1] * b) * l +
+                (src[1][1] * t + src[4][1] * m + src[7][1] * b) * c +
+                (src[2][1] * t + src[5][1] * m + src[8][1] * b) * r);
             }
             dst += 2;
             }
@@ -188,19 +184,18 @@ BOXFILTER_FUNCNAME (guchar              *dest_buf,
             src[3] = src[4] - 1;
             src[6] = src[7] - 1;
             {
-              const gfloat lt = left_weight[x] * top_weight;
-              const gfloat lm = left_weight[x] * middle_weight;
-              const gfloat lb = left_weight[x] * bottom_weight;
-              const gfloat ct = center_weight[x] * top_weight;
-              const gfloat cm = center_weight[x] * middle_weight;
-              const gfloat cb = center_weight[x] * bottom_weight;
-              const gfloat rt = right_weight[x] * top_weight;
-              const gfloat rm = right_weight[x] * middle_weight;
-              const gfloat rb = right_weight[x] * bottom_weight;
+              const gfloat l = left_weight[x];
+              const gfloat c = center_weight[x];
+              const gfloat r = right_weight[x];
+
+              const gfloat t = top_weight;
+              const gfloat m = middle_weight;
+              const gfloat b = bottom_weight;
+
               dst[0] = BOXFILTER_ROUND(
-                src[0][0] * lt + src[3][0] * lm + src[6][0] * lb +
-                src[1][0] * ct + src[4][0] * cm + src[7][0] * cb +
-                src[2][0] * rt + src[5][0] * rm + src[8][0] * rb);
+                (src[0][0] * t + src[3][0] * m + src[6][0] * b) * l +
+                (src[1][0] * t + src[4][0] * m + src[7][0] * b) * c +
+                (src[2][0] * t + src[5][0] * m + src[8][0] * b) * r);
             }
             dst += 1;
             }
@@ -218,21 +213,20 @@ BOXFILTER_FUNCNAME (guchar              *dest_buf,
             src[3] = src[4] - components;
             src[6] = src[7] - components;
             {
-              const gfloat lt = left_weight[x] * top_weight;
-              const gfloat lm = left_weight[x] * middle_weight;
-              const gfloat lb = left_weight[x] * bottom_weight;
-              const gfloat ct = center_weight[x] * top_weight;
-              const gfloat cm = center_weight[x] * middle_weight;
-              const gfloat cb = center_weight[x] * bottom_weight;
-              const gfloat rt = right_weight[x] * top_weight;
-              const gfloat rm = right_weight[x] * middle_weight;
-              const gfloat rb = right_weight[x] * bottom_weight;
+              const gfloat l = left_weight[x];
+              const gfloat c = center_weight[x];
+              const gfloat r = right_weight[x];
+
+              const gfloat t = top_weight;
+              const gfloat m = middle_weight;
+              const gfloat b = bottom_weight;
+
               for (gint i = 0; i < components; ++i)
                 {
                   dst[i] = BOXFILTER_ROUND(
-                    src[0][i] * lt + src[3][i] * lm + src[6][i] * lb +
-                    src[1][i] * ct + src[4][i] * cm + src[7][i] * cb +
-                    src[2][i] * rt + src[5][i] * rm + src[8][i] * rb);
+                    (src[0][i] * t + src[3][i] * m + src[6][i] * b) * l +
+                    (src[1][i] * t + src[4][i] * m + src[7][i] * b) * c +
+                    (src[2][i] * t + src[5][i] * m + src[8][i] * b) * r);
                 }
               }
             dst += components;
