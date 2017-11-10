@@ -1,23 +1,55 @@
-GEGL-0.3.22 2017-10-
---------------------
+GEGL-0.3.22 2017-11-
+---------------------
 
 Core
 ~~~~
 
 Reduced temporary buffer allocation overhead in mipmap downscaling and
-autothreading code. Completely avoid loading plug-ins .so with -gpl3 in
-filename unless the application using GEGL explicitly has enabled GPL3
-operations.
+autothreading code.
+
+Completely avoid loading plug-ins .so with -gpl3 in filename unless the
+application using GEGL explicitly has enabled GPL3 operations.
+
+Migrated from intltool to GNU gettext
+
+Replace custom property redirection for meta-ops with GBinding.
+
+Make more use of visitors of the graph, removing exponential overhead for some
+graphs.
+
+Buffer
+~~~~~~
+
+Tweak nohalo and lohalo samplers to be orders of magnitude faster for scale
+factors > ~3% while also removing possible hangs.
 
 Operations
 ~~~~~~~~~~
 
 Improved threading awareness/capabilities of gegl:copy-buffer, gegl:wind,
-gegl:color-enhance, gegl:photocopy, gegl:matting-levin.
+gegl:color-enhance, gegl:photocopy, gegl:matting-levin, npd, contrast-curve,
+noise-spread, noise-pick, noise- slur, transform ops.
+
+Use of more modern GLib APIs like g_clear_ and make use of the fact that g_free
+is already NULL safe.
+
 Fixed grayscale behavior of gegl:noise-hurl.
 OpenCL vs CPU consistency fix for gegl:threshold, and optimization of
 gegl:wavelet-blur by decomposing to two 1d passes.
+median-blur, perform binning in a more perceptual space.
+hue-chroma: added OpenCL support
+threshold: make opencl match cpu
+wavelet-blur: decompose for performance
+illusion: performance improvement permitting partial result computation
+grey: add fast path for alpha-less input buffers.
 
+new ops in workshop: spherize, color-to-alpha-plus, shadows-highlights
+
+With contributions from:
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Debarshi Ray, Ell, Jehan, Jordi Mas, Marco Ciampa, Massimo, Nicolas Robidoux,
+Niels De Graef, Øyvind Kolås, Piotr Drąg and Thomas Manni.
 
 GEGL-0.3.20 2017-08-15
 ----------------------
