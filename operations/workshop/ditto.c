@@ -112,6 +112,7 @@ gegl_op_class_init (GeglOpClass *klass)
   "categories"  , "distort",
   "name"        , "gegl:ditto",
   "title"       , _("Ditto"),
+  "reference-hash", "bfe9694dd26005f259881d765b719205",
   "description" , _("Test op to do a 1:1 map of input to output, while sampling"),
   NULL);
 }
