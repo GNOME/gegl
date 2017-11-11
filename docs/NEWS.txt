@@ -4,6 +4,8 @@ GEGL-0.3.22 2017-11-
 Core
 ~~~~
 
+Refactored graph traversals to use topological sorts.
+
 Reduced temporary buffer allocation overhead in mipmap downscaling and
 autothreading code.
 
@@ -13,9 +15,6 @@ application using GEGL explicitly has enabled GPL3 operations.
 Migrated from intltool to GNU gettext
 
 Replace custom property redirection for meta-ops with GBinding.
-
-Make more use of visitors of the graph, removing exponential overhead for some
-graphs.
 
 Buffer
 ~~~~~~
