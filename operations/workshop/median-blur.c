@@ -629,6 +629,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:median-blur",
     "title",       _("Median Blur"),
     "categories",  "blur",
+    "reference-hash", "bd34e0f3b290d67713d6ab79492d9f1e",
     "description", _("Blur resulting from computing the median "
                      "color in the neighborhood of each pixel."),
     NULL);
