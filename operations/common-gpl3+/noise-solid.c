@@ -195,8 +195,8 @@ plain_noise (gdouble         x,
   sum = 0.0;
   x *= s;
   y *= s;
-  a = (gint) floor (x);
-  b = (gint) floor (y);
+  a = (gint) fabs (floor (x));
+  b = (gint) fabs (floor (y));
 
   for (i = 0; i < 2; i++)
     {
