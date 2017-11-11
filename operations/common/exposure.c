@@ -66,16 +66,19 @@ static GeglClRunData *cl_data_y = NULL;
 static GeglClRunData *cl_data_ya = NULL;
 
 static const char* kernel_source_rgb =
-"__kernel void kernel_exposure_rgb(__global const float3 *in,          \n"
-"                                  __global       float3 *out,         \n"
-"                                  float                  black_level, \n"
-"                                  float                  gain)        \n"
+"__kernel void kernel_exposure_rgb(__global const float *in,           \n"
+"                                  __global       float *out,          \n"
+"                                  float                 black_level,  \n"
+"                                  float                 gain)         \n"
 "{                                                                     \n"
 "  int gid = get_global_id(0);                                         \n"
-"  float3 in_v  = in[gid];                                             \n"
+"  int offset  = 3 * gid;                                              \n"
+"  float3 in_v = (float3) (in[offset], in[offset + 1], in[offset+2]);  \n"
 "  float3 out_v;                                                       \n"
 "  out_v.xyz =  ((in_v.xyz - black_level) * gain);                     \n"
-"  out[gid]  =  out_v;                                                 \n"
+"  out[offset]     = out_v.x;                                          \n"
+"  out[offset + 1] = out_v.y;                                          \n"
+"  out[offset + 2] = out_v.z;                                          \n"
 "}                                                                     \n";
 
 static const char* kernel_source_rgba =
