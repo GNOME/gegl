@@ -86,7 +86,7 @@ property_int (height, _("Height"), 768)
 #include "gegl-op.h"
 
 #define TABLE_SIZE  64
-#define WEIGHT(T)   ((2.0 * fabs (T) - 3.0) * (T) * (T) + 1.0)
+#define WEIGHT(T)   ((-6.0*(T)*(T) +15.0*fabs(T)- 10.0) * fabs((T)*(T)*(T)) + 1.0)
 
 typedef struct
 {
