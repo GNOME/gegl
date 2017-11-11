@@ -22,9 +22,8 @@
 struct _GeglGraphTraversal
 {
   GHashTable *contexts;
-  GList *dfs_path;
-  GList *bfs_path;
-  gboolean rects_dirty;
+  GQueue      path;
+  gboolean    rects_dirty;
   GeglBuffer *shared_empty;
 };
 

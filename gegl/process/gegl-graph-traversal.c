@@ -30,12 +30,13 @@
 
 #include "graph/gegl-node-private.h"
 #include "graph/gegl-pad.h"
+#include "graph/gegl-visitor.h"
+#include "graph/gegl-callback-visitor.h"
 #include "graph/gegl-visitable.h"
 #include "graph/gegl-connection.h"
 
 #include "process/gegl-graph-traversal.h"
 #include "process/gegl-graph-traversal-private.h"
-#include "process/gegl-list-visitor.h"
 
 #include "operation/gegl-operation.h"
 #include "operation/gegl-operation-context.h"
@@ -54,11 +55,22 @@ static void   _gegl_graph_do_build                     (GeglGraphTraversal *path
                                                         GeglNode           *node);
 static GeglBuffer *gegl_graph_get_shared_empty         (GeglGraphTraversal *path);
 
+static gboolean
+_gegl_graph_do_build_add_node (GeglNode *node,
+                               gpointer  data)
+{
+  GeglGraphTraversal *path = data;
+
+  g_queue_push_tail (&path->path, node);
+
+  return FALSE;
+}
+
 static void
 _gegl_graph_do_build (GeglGraphTraversal *path, GeglNode *node)
 {
   GeglPad *pad = NULL;
-  GeglListVisitor *list_visitor = g_object_new (GEGL_TYPE_LIST_VISITOR, NULL);
+  GeglVisitor *visitor;
 
   /* We need to check the real node of the output/input pad in case this is a proxy node */
   pad = gegl_node_get_pad (node, "output");
@@ -73,14 +85,17 @@ _gegl_graph_do_build (GeglGraphTraversal *path, GeglNode *node)
         node = gegl_pad_get_node (pad);
     }
 
-  path->dfs_path = gegl_list_visitor_get_dfs_path (list_visitor, GEGL_VISITABLE (node));
-  path->bfs_path = gegl_list_visitor_get_bfs_path (list_visitor, GEGL_VISITABLE (node));
+  visitor = gegl_callback_visitor_new (_gegl_graph_do_build_add_node, path);
+
+  gegl_visitor_traverse_topological (visitor, GEGL_VISITABLE (node));
+
+  g_object_unref (visitor);
+
   path->contexts = g_hash_table_new_full (NULL,
                                           NULL,
                                           NULL,
                                           (GDestroyNotify)gegl_operation_context_destroy);
   path->rects_dirty = FALSE;
-  g_object_unref (list_visitor);
 }
 
 /**
@@ -112,8 +127,7 @@ gegl_graph_build (GeglNode *node)
 void
 gegl_graph_rebuild (GeglGraphTraversal *path, GeglNode *node)
 {
-  g_list_free (path->dfs_path);
-  g_list_free (path->bfs_path);
+  g_queue_clear (&path->path);
   g_hash_table_unref (path->contexts);
 
   /* Replaces everything but shared_empty */
@@ -123,8 +137,7 @@ gegl_graph_rebuild (GeglGraphTraversal *path, GeglNode *node)
 void
 gegl_graph_free (GeglGraphTraversal *path)
 {
-  g_list_free (path->dfs_path);
-  g_list_free (path->bfs_path);
+  g_queue_clear (&path->path);
   g_hash_table_unref (path->contexts);
   g_clear_object (&path->shared_empty);
   g_free (path);
@@ -143,7 +156,7 @@ gegl_graph_free (GeglGraphTraversal *path)
 GeglRectangle
 gegl_graph_get_bounding_box (GeglGraphTraversal *path)
 {
-  GeglNode *node = GEGL_NODE (g_list_last (path->dfs_path)->data);
+  GeglNode *node = GEGL_NODE (g_queue_peek_tail (&path->path));
   if (node->valid_have_rect)
     {
       return node->have_rect;
@@ -162,7 +175,9 @@ gegl_graph_prepare (GeglGraphTraversal *path)
 {
   GList *list_iter = NULL;
 
-  for (list_iter = path->dfs_path; list_iter; list_iter = list_iter->next)
+  for (list_iter = g_queue_peek_head_link (&path->path);
+       list_iter;
+       list_iter = list_iter->next)
   {
     GeglNode *node = GEGL_NODE (list_iter->data);
     GeglNode *parent;
@@ -218,12 +233,14 @@ gegl_graph_prepare_request (GeglGraphTraversal  *path,
   GList *list_iter = NULL;
   static const GeglRectangle empty_rect = {0, 0, 0, 0};
 
-  g_return_if_fail (path->bfs_path);
+  g_return_if_fail (! g_queue_is_empty (&path->path));
 
   if (path->rects_dirty)
     {
       /* Zero all the needs rects so we can intersect with them below */
-      for (list_iter = path->bfs_path; list_iter; list_iter = list_iter->next)
+      for (list_iter = g_queue_peek_tail_link (&path->path);
+           list_iter;
+           list_iter = list_iter->prev)
         {
           GeglNode *node = GEGL_NODE (list_iter->data);
           GeglOperationContext *context = g_hash_table_lookup (path->contexts, node);
@@ -240,7 +257,7 @@ gegl_graph_prepare_request (GeglGraphTraversal  *path,
 
   {
     /* Prep the first node */
-    GeglNode *node = GEGL_NODE (path->bfs_path->data);
+    GeglNode *node = GEGL_NODE (g_queue_peek_tail (&path->path));
     GeglOperationContext *context = g_hash_table_lookup (path->contexts, node);
     GeglRectangle new_need;
 
@@ -253,7 +270,9 @@ gegl_graph_prepare_request (GeglGraphTraversal  *path,
   }
   
   /* Iterate over all the nodes and propagate the requested rectangle */
-  for (list_iter = path->bfs_path; list_iter; list_iter = list_iter->next)
+  for (list_iter = g_queue_peek_tail_link (&path->path);
+       list_iter;
+       list_iter = list_iter->prev)
     {
       GeglNode             *node      = GEGL_NODE (list_iter->data);
       GeglOperation        *operation = node->operation;
@@ -395,7 +414,9 @@ gegl_graph_process (GeglGraphTraversal *path,
   GeglOperationContext *last_context = NULL;
   GeglBuffer *operation_result = NULL;
 
-  for (list_iter = path->dfs_path; list_iter; list_iter = list_iter->next)
+  for (list_iter = g_queue_peek_head_link (&path->path);
+       list_iter;
+       list_iter = list_iter->next)
     {
       GeglNode *node = GEGL_NODE (list_iter->data);
       GeglOperation *operation = node->operation;

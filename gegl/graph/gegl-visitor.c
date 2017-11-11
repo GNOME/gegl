@@ -30,17 +30,18 @@
 #include "gegl-visitable.h"
 
 
-static void       gegl_visitor_class_init        (GeglVisitorClass *klass);
-static void       gegl_visitor_init              (GeglVisitor      *self);
-static gboolean   gegl_visitor_traverse_step     (GeglVisitor      *self,
-                                                  GeglVisitable    *visitable,
-                                                  GHashTable       *visited_set);
-static gboolean   gegl_visitor_dfs_traverse_step (GeglVisitor      *self,
-                                                  GeglVisitable    *visitable,
-                                                  GHashTable       *visited_set);
-static void       gegl_visitor_bfs_init_step     (GeglVisitor      *self,
-                                                  GeglVisitable    *visitable,
-                                                  GHashTable       *edge_counts);
+static void       gegl_visitor_class_init                        (GeglVisitorClass  *klass);
+static void       gegl_visitor_init                              (GeglVisitor       *self);
+static gboolean   gegl_visitor_traverse_step                     (GeglVisitor       *self,
+                                                                  GeglVisitable     *visitable,
+                                                                  GHashTable        *visited_set);
+static gboolean   gegl_visitor_traverse_topological_step         (GeglVisitor       *self,
+                                                                  GeglVisitable     *visitable,
+                                                                  GHashTable        *visited_set);
+static void       gegl_visitor_traverse_reverse_topological_step (GeglVisitor       *self,
+                                                                  GeglVisitable     *visitable,
+                                                                  GHashTable        *visited_set,
+                                                                  GSList           **stack);
 
 
 G_DEFINE_TYPE (GeglVisitor, gegl_visitor, G_TYPE_OBJECT)
@@ -99,9 +100,9 @@ gegl_visitor_visit_node (GeglVisitor *self,
  * @self: #GeglVisitor
  * @visitable: the start #GeglVisitable
  *
- * Traverse starting at @visitable in arbitrary order.
- * Use this function when you don't need a DFS/BFS
- * specifically, since it can be more efficient.
+ * Traverse in arbitrary order, starting at @visitable.
+ * Use this function when you don't need a specific
+ * traversal order, since it can be more efficient.
  *
  * Returns: %TRUE if traversal was terminated early.
  **/
@@ -117,7 +118,8 @@ gegl_visitor_traverse (GeglVisitor   *self,
 
   visited_set = g_hash_table_new (NULL, NULL);
 
-  result = gegl_visitor_traverse_step (self, visitable, visited_set);
+  result = gegl_visitor_traverse_step (self, visitable,
+                                       visited_set);
 
   g_hash_table_unref (visited_set);
 
@@ -143,7 +145,8 @@ gegl_visitor_traverse_step (GeglVisitor   *self,
 
       if (! g_hash_table_contains (visited_set, dependency))
         {
-          if (gegl_visitor_traverse_step (self, dependency, visited_set))
+          if (gegl_visitor_traverse_step (self, dependency,
+                                          visited_set))
             {
               g_slist_free (dependencies);
 
@@ -160,17 +163,18 @@ gegl_visitor_traverse_step (GeglVisitor   *self,
 }
 
 /**
- * gegl_visitor_dfs_traverse:
+ * gegl_visitor_traverse_topological:
  * @self: #GeglVisitor
  * @visitable: the start #GeglVisitable
  *
- * Traverse depth first starting at @visitable.
+ * Traverse in topological order (dependencies first),
+ * starting at @visitable.
  *
  * Returns: %TRUE if traversal was terminated early.
  **/
 gboolean
-gegl_visitor_dfs_traverse (GeglVisitor   *self,
-                           GeglVisitable *visitable)
+gegl_visitor_traverse_topological (GeglVisitor   *self,
+                                   GeglVisitable *visitable)
 {
   GHashTable *visited_set;
   gboolean    result;
@@ -180,7 +184,8 @@ gegl_visitor_dfs_traverse (GeglVisitor   *self,
 
   visited_set = g_hash_table_new (NULL, NULL);
 
-  result = gegl_visitor_dfs_traverse_step (self, visitable, visited_set);
+  result = gegl_visitor_traverse_topological_step (self, visitable,
+                                                   visited_set);
 
   g_hash_table_unref (visited_set);
 
@@ -188,9 +193,9 @@ gegl_visitor_dfs_traverse (GeglVisitor   *self,
 }
 
 static gboolean
-gegl_visitor_dfs_traverse_step (GeglVisitor   *self,
-                                GeglVisitable *visitable,
-                                GHashTable    *visited_set)
+gegl_visitor_traverse_topological_step (GeglVisitor   *self,
+                                        GeglVisitable *visitable,
+                                        GHashTable    *visited_set)
 {
   GSList *dependencies;
   GSList *iter;
@@ -203,7 +208,8 @@ gegl_visitor_dfs_traverse_step (GeglVisitor   *self,
 
       if (! g_hash_table_contains (visited_set, dependency))
         {
-          if (gegl_visitor_dfs_traverse_step (self, dependency, visited_set))
+          if (gegl_visitor_traverse_topological_step (self, dependency,
+                                                      visited_set))
             {
               g_slist_free (dependencies);
 
@@ -223,75 +229,54 @@ gegl_visitor_dfs_traverse_step (GeglVisitor   *self,
 }
 
 /**
- * gegl_visitor_bfs_traverse:
- * @self: a #GeglVisitor
- * @visitable: the root #GeglVisitable.
+ * gegl_visitor_traverse_reverse_topological:
+ * @self: #GeglVisitor
+ * @visitable: the start #GeglVisitable
  *
- * Traverse breadth-first starting at @visitable.
+ * Traverse in reverse-topological order (dependencies
+ * last), starting at @visitable.
  *
  * Returns: %TRUE if traversal was terminated early.
  **/
 gboolean
-gegl_visitor_bfs_traverse (GeglVisitor   *self,
-                           GeglVisitable *visitable)
+gegl_visitor_traverse_reverse_topological (GeglVisitor   *self,
+                                           GeglVisitable *visitable)
 {
-  GHashTable *edge_counts;
-  GQueue      queue = G_QUEUE_INIT;
+  GHashTable *visited_set;
+  GSList     *stack = NULL;
 
   g_return_val_if_fail (GEGL_IS_VISITOR (self), FALSE);
   g_return_val_if_fail (GEGL_IS_VISITABLE (visitable), FALSE);
 
-  edge_counts = g_hash_table_new (NULL, NULL);
+  visited_set = g_hash_table_new (NULL, NULL);
 
-  gegl_visitor_bfs_init_step (self, visitable, edge_counts);
+  gegl_visitor_traverse_reverse_topological_step (self, visitable,
+                                                  visited_set, &stack);
 
-  g_queue_push_tail (&queue, visitable);
+  g_hash_table_unref (visited_set);
 
-  while ((visitable = g_queue_pop_head (&queue)))
+  while (stack)
     {
-      GSList *dependencies;
-      GSList *iter;
+      visitable = stack->data;
+
+      stack = g_slist_delete_link (stack, stack);
 
       if (gegl_visitable_accept (visitable, self))
         {
-          g_queue_clear (&queue);
-          g_hash_table_unref (edge_counts);
+          g_slist_free (stack);
 
           return TRUE;
         }
-
-      dependencies = gegl_visitable_depends_on (visitable);
-
-      for (iter = dependencies; iter; iter = g_slist_next (iter))
-        {
-          GeglVisitable *dependency = iter->data;
-          gint           edges;
-
-          edges = GPOINTER_TO_INT (g_hash_table_lookup (edge_counts, dependency));
-
-          if (edges == 1)
-            {
-              g_queue_push_tail (&queue, dependency);
-            }
-          else
-            {
-              g_hash_table_insert (edge_counts,
-                                   dependency, GINT_TO_POINTER (edges - 1));
-            }
-        }
-
-      g_slist_free (dependencies);
     }
-
-  g_hash_table_unref (edge_counts);
 
   return FALSE;
 }
 
 static void
-gegl_visitor_bfs_init_step (GeglVisitor   *self,
-                            GeglVisitable *visitable,
-                            GHashTable    *edge_counts)
+gegl_visitor_traverse_reverse_topological_step (GeglVisitor    *self,
+                                                GeglVisitable  *visitable,
+                                                GHashTable     *visited_set,
+                                                GSList        **stack)
 {
   GSList *dependencies;
   GSList *iter;
@@ -301,15 +286,16 @@ gegl_visitor_bfs_init_step (GeglVisitor   *self,
   for (iter = dependencies; iter; iter = g_slist_next (iter))
     {
       GeglVisitable *dependency = iter->data;
-      gint           edges;
 
-      edges = GPOINTER_TO_INT (g_hash_table_lookup (edge_counts, dependency));
-      g_hash_table_insert (edge_counts,
-                           dependency, GINT_TO_POINTER (edges + 1));
-
-      if (edges == 0)
-        gegl_visitor_bfs_init_step (self, dependency, edge_counts);
+      if (! g_hash_table_contains (visited_set, dependency))
+        {
+          gegl_visitor_traverse_reverse_topological_step (self, dependency,
+                                                          visited_set, stack);
+        }
     }
 
   g_slist_free (dependencies);
+
+  *stack = g_slist_prepend (*stack, visitable);
+  g_hash_table_add (visited_set, visitable);
 }

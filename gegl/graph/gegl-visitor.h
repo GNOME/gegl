@@ -50,19 +50,19 @@ struct _GeglVisitorClass
 };
 
 
-GType      gegl_visitor_get_type     (void) G_GNUC_CONST;
+GType      gegl_visitor_get_type                     (void) G_GNUC_CONST;
 
-gboolean   gegl_visitor_visit_pad    (GeglVisitor   *self,
-                                      GeglPad       *pad);
-gboolean   gegl_visitor_visit_node   (GeglVisitor   *self,
-                                      GeglNode      *node);
+gboolean   gegl_visitor_visit_pad                    (GeglVisitor   *self,
+                                                      GeglPad       *pad);
+gboolean   gegl_visitor_visit_node                   (GeglVisitor   *self,
+                                                      GeglNode      *node);
 
-gboolean   gegl_visitor_traverse     (GeglVisitor   *self,
-                                      GeglVisitable *visitable);
-gboolean   gegl_visitor_dfs_traverse (GeglVisitor   *self,
-                                      GeglVisitable *visitable);
-gboolean   gegl_visitor_bfs_traverse (GeglVisitor   *self,
-                                      GeglVisitable *visitable);
+gboolean   gegl_visitor_traverse                     (GeglVisitor   *self,
+                                                      GeglVisitable *visitable);
+gboolean   gegl_visitor_traverse_topological         (GeglVisitor   *self,
+                                                      GeglVisitable *visitable);
+gboolean   gegl_visitor_traverse_reverse_topological (GeglVisitor   *self,
+                                                      GeglVisitable *visitable);
 
 
 G_END_DECLS

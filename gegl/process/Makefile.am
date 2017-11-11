@@ -27,14 +27,12 @@ libprocess_la_SOURCES = \
 	gegl-eval-manager.c		\
 	gegl-graph-traversal.c		\
 	gegl-graph-traversal-debug.c	\
-	gegl-list-visitor.c		\
 	gegl-processor.c		\
 	\
 	gegl-eval-manager.h		\
 	gegl-graph-debug.h		\
 	gegl-graph-traversal.h		\
 	gegl-graph-traversal-private.h	\
-	gegl-list-visitor.h		\
 	gegl-processor.h		\
 	gegl-processor-private.h
 

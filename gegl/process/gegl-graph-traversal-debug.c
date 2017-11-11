@@ -44,7 +44,9 @@ gegl_graph_dump_outputs (GeglNode *node)
 
   gegl_graph_prepare (path);
 
-  for (list_iter = path->dfs_path; list_iter; list_iter = list_iter->next)
+  for (list_iter = g_queue_peek_head_link (&path->path);
+       list_iter;
+       list_iter = list_iter->next)
   {
     GeglNode *cur_node = GEGL_NODE (list_iter->data);
     if (gegl_node_get_pad (cur_node, "output"))
@@ -78,7 +80,9 @@ gegl_graph_dump_request (GeglNode            *node,
   gegl_graph_prepare (path);
   gegl_graph_prepare_request (path, roi, 0);
 
-  for (list_iter = path->dfs_path; list_iter; list_iter = list_iter->next)
+  for (list_iter = g_queue_peek_head_link (&path->path);
+       list_iter;
+       list_iter = list_iter->next)
   {
     GeglNode *cur_node = GEGL_NODE (list_iter->data);
     GeglOperationContext *context = g_hash_table_lookup (path->contexts, cur_node);

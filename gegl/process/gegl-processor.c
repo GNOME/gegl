@@ -36,8 +36,8 @@
 #include "gegl-processor-private.h"
 
 #include "graph/gegl-visitor.h"
+#include "graph/gegl-callback-visitor.h"
 #include "graph/gegl-visitable.h"
-#include "process/gegl-list-visitor.h"
 
 #include "opencl/gegl-cl.h"
 
@@ -760,6 +760,14 @@ gegl_processor_render (GeglProcessor *processor,
   return !gegl_processor_is_rendered (processor);
 }
 
+static gboolean
+gegl_processor_work_is_opencl_node (GeglNode *node,
+                                    gpointer  data)
+{
+  return GEGL_OPERATION_GET_CLASS (node->operation)->cl_data ||
+         GEGL_OPERATION_GET_CLASS (node->operation)->opencl_support;
+}
+
 /* Will call gegl_processor_render and when there is no more work to be done,
  * it will write the result to the destination */
 gboolean
@@ -773,23 +781,14 @@ gegl_processor_work (GeglProcessor *processor,
       if (gegl_cl_is_accelerated ()
           && processor->chunk_size != GEGL_CL_CHUNK_SIZE)
         {
-          GeglListVisitor *visitor = g_object_new (GEGL_TYPE_LIST_VISITOR, NULL);
-          GList *iterator = NULL;
-          GList *visits_list = NULL;
-          visits_list = gegl_list_visitor_get_dfs_path (visitor, GEGL_VISITABLE (processor->real_node));
+          GeglVisitor *visitor;
 
-          for (iterator = visits_list; iterator; iterator = iterator->next)
-            {
-              GeglNode *node = (GeglNode*) iterator->data;
-              if (GEGL_OPERATION_GET_CLASS(node->operation)->cl_data
-                  || GEGL_OPERATION_GET_CLASS(node->operation)->opencl_support)
-                {
-                  processor->chunk_size = GEGL_CL_CHUNK_SIZE;
-                  break;
-                }
-            }
+          visitor = gegl_callback_visitor_new (gegl_processor_work_is_opencl_node,
+                                               NULL);
 
-          g_list_free (visits_list);
+          if (gegl_visitor_traverse (visitor, GEGL_VISITABLE (processor->real_node)))
+            processor->chunk_size = GEGL_CL_CHUNK_SIZE;
+
           g_object_unref (visitor);
         }
     }

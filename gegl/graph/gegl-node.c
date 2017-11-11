@@ -688,7 +688,7 @@ gegl_node_invalidated (GeglNode            *node,
                                          regions);
   visitable = gegl_node_output_visitable_new (node);
 
-  gegl_visitor_bfs_traverse (visitor, visitable);
+  gegl_visitor_traverse_reverse_topological (visitor, visitable);
 
   g_object_unref (visitable);
   g_object_unref (visitor);
@@ -771,7 +771,7 @@ gegl_node_invalidated (GeglNode            *node,
                                          rects);
   visitable = gegl_node_output_visitable_new (node);
 
-  gegl_visitor_bfs_traverse (visitor, visitable);
+  gegl_visitor_traverse_reverse_topological (visitor, visitable);
 
   g_object_unref (visitable);
   g_object_unref (visitor);
