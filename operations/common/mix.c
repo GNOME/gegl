@@ -89,6 +89,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:mix",
     "title",       _("Mix"),
+    "reference-hash", "20c678baa5b1f5c72692ab9dce6a5951",
     "description",
           _("do a lerp, linear interpolation (lerp) between input and aux"),
     NULL);
