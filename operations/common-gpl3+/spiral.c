@@ -443,6 +443,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "render",
     "position-dependent", "true",
     "license",            "GPL3+",
+    "reference-hash",     "1884feadc5b8456c8d02ab10efc2de80",
     "description",        _("Spiral renderer"),
     NULL);
 }
