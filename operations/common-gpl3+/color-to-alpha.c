@@ -254,7 +254,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Color to Alpha"),
     "categories",  "color",
     "license",     "GPL3+",
-    "reference-hash", "f110613097308e0fe96ac29f54ca4c2e",
+    "reference-hash", "ac91f678c9f6109e4b9255dcbed6f175",
     "description", _("Convert a specified color to transparency, works best with white."),
     "reference-composition", composition,
     NULL);
