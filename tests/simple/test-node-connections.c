@@ -13,7 +13,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  *
  * Copyright (C) 2013 Daniel Sabo
- * Copyright (C) 2016 Red Hat, Inc.
+ * Copyright (C) 2016, 2017 Red Hat, Inc.
  */
 
 #include "config.h"
@@ -21,6 +21,7 @@
 #include <stdio.h>
 
 #include "gegl.h"
+#include "gegl-plugin.h"
 
 static void
 already_connected_invalidated (gpointer user_data)
@@ -133,6 +134,80 @@ test_node_reconnect_many (void)
   return result;
 }
 
+static gboolean
+test_operation_get_source_node (void)
+{
+  gboolean result = FALSE;
+  GeglNode *node, *ptn, *sink, *src;
+  GeglOperation *sink_op;
+
+  ptn  = gegl_node_new ();
+  src  = gegl_node_new_child (ptn,
+                              "operation", "gegl:color",
+                              NULL);
+  sink = gegl_node_new_child (ptn,
+                              "operation", "gegl:nop",
+                              NULL);
+  gegl_node_link (src, sink);
+
+  sink_op = gegl_node_get_gegl_operation (sink);
+  if (GEGL_IS_OPERATION_META (sink_op))
+    {
+      g_warning ("Unexpected GeglOperationMeta");
+      goto out;
+    }
+
+  node = gegl_operation_get_source_node (sink_op, "input");
+  if (node != src)
+    {
+      g_warning ("Wrong source node");
+      goto out;
+    }
+
+  result = TRUE;
+
+ out:
+  g_object_unref (ptn);
+  return result;
+}
+
+static gboolean
+test_operation_meta_get_source_node (void)
+{
+  gboolean result = FALSE;
+  GeglNode *node, *ptn, *sink, *src;
+  GeglOperation *sink_op;
+
+  ptn  = gegl_node_new ();
+  src  = gegl_node_new_child (ptn,
+                              "operation", "gegl:color",
+                              NULL);
+  sink = gegl_node_new_child (ptn,
+                              "operation", "gegl:gaussian-blur",
+                              NULL);
+  gegl_node_link (src, sink);
+
+  sink_op = gegl_node_get_gegl_operation (sink);
+  if (!GEGL_IS_OPERATION_META (sink_op))
+    {
+      g_warning ("Expected GeglOperationMeta");
+      goto out;
+    }
+
+  node = gegl_operation_get_source_node (sink_op, "input");
+  if (node != src)
+    {
+      g_warning ("Wrong source node");
+      goto out;
+    }
+
+  result = TRUE;
+
+ out:
+  g_object_unref (ptn);
+  return result;
+}
+
 #define RUN_TEST(test_name) \
 { \
   if (test_name()) \
@@ -163,6 +238,8 @@ int main(int argc, char **argv)
   RUN_TEST (test_node_already_connected)
   RUN_TEST (test_node_dont_invalidate_source)
   RUN_TEST (test_node_reconnect_many)
+  RUN_TEST (test_operation_get_source_node)
+  RUN_TEST (test_operation_meta_get_source_node)
 
   gegl_exit ();
 
