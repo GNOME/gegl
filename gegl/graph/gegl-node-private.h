@@ -72,6 +72,11 @@ struct _GeglNode
    */
   GeglCache      *cache;
 
+  /* Used for traversing the graph in the output direction, rather
+   * than the input direction.
+   */
+  GeglVisitable  *output_visitable;
+
   /* Whether result is cached or not, inherited by children */
   gboolean        dont_cache;
 
@@ -125,6 +130,9 @@ GeglCache   * gegl_node_get_cache           (GeglNode      *node);
 void          gegl_node_invalidated         (GeglNode      *node,
                                              const GeglRectangle *rect,
                                              gboolean             clean_cache);
+
+GeglVisitable *
+             gegl_node_get_output_visitable (GeglNode      *self);
 
 const gchar * gegl_node_get_name            (GeglNode      *self);
 void          gegl_node_set_name            (GeglNode      *self,

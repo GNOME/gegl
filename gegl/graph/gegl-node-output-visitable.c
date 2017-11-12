@@ -31,16 +31,13 @@
 #include "gegl-visitor.h"
 
 
-static void                      gegl_node_output_visitable_class_init           (GeglNodeOutputVisitableClass *klass);
-static void                      gegl_node_output_visitable_init                 (GeglNodeOutputVisitable      *self);
-static void                      gegl_node_output_visitable_finalize             (GObject                      *object);
-static void                      gegl_node_output_visitable_visitable_iface_init (gpointer                      ginterface,
-                                                                                  gpointer                      interface_data);
-static gboolean                  gegl_node_output_visitable_visitable_accept     (GeglVisitable                *visitable,
-                                                                                  GeglVisitor                  *visitor);
-static GSList                  * gegl_node_output_visitable_visitable_depends_on (GeglVisitable                *visitable);
-
-static GeglNodeOutputVisitable * _gegl_node_output_visitable_new                 (GeglNode                     *node);
+static void       gegl_node_output_visitable_class_init           (GeglNodeOutputVisitableClass *klass);
+static void       gegl_node_output_visitable_init                 (GeglNodeOutputVisitable      *self);
+static void       gegl_node_output_visitable_visitable_iface_init (gpointer                      ginterface,
+                                                                   gpointer                      interface_data);
+static gboolean   gegl_node_output_visitable_visitable_accept     (GeglVisitable                *visitable,
+                                                                   GeglVisitor                  *visitor);
+static GSList   * gegl_node_output_visitable_visitable_depends_on (GeglVisitable                *visitable);
 
 
 G_DEFINE_TYPE_WITH_CODE (GeglNodeOutputVisitable, gegl_node_output_visitable, G_TYPE_OBJECT,
@@ -51,16 +48,12 @@ G_DEFINE_TYPE_WITH_CODE (GeglNodeOutputVisitable, gegl_node_output_visitable, G_
 static void
 gegl_node_output_visitable_class_init (GeglNodeOutputVisitableClass *klass)
 {
-  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  gobject_class->finalize = gegl_node_output_visitable_finalize;
 }
 
 static void
 gegl_node_output_visitable_init (GeglNodeOutputVisitable *self)
 {
-  self->node       = NULL;
-  self->visitables = NULL;
+  self->node = NULL;
 }
 
 static void
@@ -71,17 +64,6 @@ gegl_node_output_visitable_visitable_iface_init (gpointer ginterface,
 
   visitable_class->accept     = gegl_node_output_visitable_visitable_accept;
   visitable_class->depends_on = gegl_node_output_visitable_visitable_depends_on;
-}
-
-static void
-gegl_node_output_visitable_finalize (GObject *object)
-{
-  GeglNodeOutputVisitable *self = GEGL_NODE_OUTPUT_VISITABLE (object);
-
-  if (self->is_root)
-    g_hash_table_unref (self->visitables);
-
-  G_OBJECT_CLASS (gegl_node_output_visitable_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -102,44 +84,17 @@ gegl_node_output_visitable_visitable_depends_on (GeglVisitable *visitable)
 
   for (iter = gegl_node_get_sinks (self->node); iter; iter = g_slist_next (iter))
     {
-      GeglConnection          *connection = iter->data;
-      GeglNode                *sink_node;
-      GeglNodeOutputVisitable *sink_visitable;
+      GeglConnection *connection = iter->data;
+      GeglNode       *sink_node;
+      GeglVisitable  *sink_visitable;
 
-      sink_node = gegl_connection_get_sink_node (connection);
-
-      sink_visitable = g_hash_table_lookup (self->visitables, sink_node);
-
-      if (! sink_visitable)
-        {
-          sink_visitable = _gegl_node_output_visitable_new (sink_node);
-
-          /* don't ref 'visitables'; the root visitable owns it */
-          sink_visitable->visitables = self->visitables;
-
-          g_hash_table_insert (self->visitables, sink_node, sink_visitable);
-        }
+      sink_node      = gegl_connection_get_sink_node (connection);
+      sink_visitable = gegl_node_get_output_visitable (sink_node);
 
       dependencies = g_slist_prepend (dependencies, sink_visitable);
     }
 
   return dependencies;
-}
-
-GeglNodeOutputVisitable *
-_gegl_node_output_visitable_new (GeglNode *node)
-{
-  GeglNodeOutputVisitable *self;
-
-  self = g_object_new (GEGL_TYPE_NODE_OUTPUT_VISITABLE, NULL);
-
-  /* don't ref 'node', since we might be called during its destruction */
-  self->node       = node;
-
-  self->is_root    = FALSE;
-  self->visitables = NULL;
-
-  return self;
 }
 
 GeglVisitable *
@@ -149,10 +104,9 @@ gegl_node_output_visitable_new (GeglNode *node)
 
   g_return_val_if_fail (GEGL_IS_NODE (node), NULL);
 
-  self = _gegl_node_output_visitable_new (node);
+  self = g_object_new (GEGL_TYPE_NODE_OUTPUT_VISITABLE, NULL);
 
-  self->is_root    = TRUE;
-  self->visitables = g_hash_table_new_full (NULL, NULL, NULL, g_object_unref);
+  self->node = node;
 
   return GEGL_VISITABLE (self);
 }

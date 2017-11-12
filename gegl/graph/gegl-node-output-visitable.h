@@ -35,13 +35,9 @@ typedef struct _GeglNodeOutputVisitableClass GeglNodeOutputVisitableClass;
 
 struct _GeglNodeOutputVisitable
 {
-  GObject     parent_instance;
+  GObject   parent_instance;
 
-  GeglNode   *node;
-
-  /*< private >*/
-  gboolean    is_root;
-  GHashTable *visitables;
+  GeglNode *node;
 };
 
 struct _GeglNodeOutputVisitableClass

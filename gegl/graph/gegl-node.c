@@ -223,12 +223,13 @@ gegl_node_init (GeglNode *self)
                                             GEGL_TYPE_NODE,
                                             GeglNodePrivate);
 
-  self->pads        = NULL;
-  self->input_pads  = NULL;
-  self->output_pads = NULL;
-  self->operation   = NULL;
-  self->is_graph    = FALSE;
-  self->cache       = NULL;
+  self->pads             = NULL;
+  self->input_pads       = NULL;
+  self->output_pads      = NULL;
+  self->operation        = NULL;
+  self->is_graph         = FALSE;
+  self->cache            = NULL;
+  self->output_visitable = gegl_node_output_visitable_new (self);
   g_mutex_init (&self->mutex);
 
 }
@@ -275,6 +276,7 @@ gegl_node_finalize (GObject *gobject)
   g_slist_free (self->output_pads);
 
   g_clear_object (&self->operation);
+  g_clear_object (&self->output_visitable);
   g_free (self->priv->name);
   g_free (self->priv->debug_name);
 
@@ -2020,6 +2022,14 @@ gegl_node_get_cache (GeglNode *node)
   g_mutex_unlock (&node->mutex);
 
   return node->cache;
+}
+
+GeglVisitable *
+gegl_node_get_output_visitable (GeglNode *self)
+{
+  g_return_val_if_fail (GEGL_IS_NODE (self), NULL);
+
+  return self->output_visitable;
 }
 
 const gchar *
