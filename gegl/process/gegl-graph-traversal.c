@@ -111,6 +111,8 @@ gegl_graph_build (GeglNode *node)
 {
   GeglGraphTraversal *result = g_new0 (GeglGraphTraversal, 1);
 
+  g_queue_init (&result->path);
+
   _gegl_graph_do_build (result, node);
 
   return result;
