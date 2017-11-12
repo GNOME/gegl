@@ -669,9 +669,8 @@ gegl_node_invalidated (GeglNode            *node,
                        const GeglRectangle *rect,
                        gboolean             clear_cache)
 {
-  GHashTable    *regions;
-  GeglVisitor   *visitor;
-  GeglVisitable *visitable;
+  GHashTable  *regions;
+  GeglVisitor *visitor;
 
   g_return_if_fail (GEGL_IS_NODE (node));
 
@@ -686,13 +685,12 @@ gegl_node_invalidated (GeglNode            *node,
 
   g_hash_table_insert (regions, node, gegl_region_rectangle (rect));
 
-  visitor   = gegl_callback_visitor_new (gegl_node_invalidated_invalidate_node,
-                                         regions);
-  visitable = gegl_node_output_visitable_new (node);
+  visitor = gegl_callback_visitor_new (gegl_node_invalidated_invalidate_node,
+                                       regions);
 
-  gegl_visitor_traverse_reverse_topological (visitor, visitable);
+  gegl_visitor_traverse_reverse_topological (visitor,
+                                             gegl_node_get_output_visitable (node));
 
-  g_object_unref (visitable);
   g_object_unref (visitor);
   g_hash_table_unref (regions);
 }
@@ -753,9 +751,8 @@ gegl_node_invalidated (GeglNode            *node,
                        const GeglRectangle *rect,
                        gboolean             clear_cache)
 {
-  GHashTable    *rects;
-  GeglVisitor   *visitor;
-  GeglVisitable *visitable;
+  GHashTable  *rects;
+  GeglVisitor *visitor;
 
   g_return_if_fail (GEGL_IS_NODE (node));
 
@@ -769,13 +766,12 @@ gegl_node_invalidated (GeglNode            *node,
 
   g_hash_table_insert (rects, node, g_memdup (rect, sizeof (GeglRectangle)));
 
-  visitor   = gegl_callback_visitor_new (gegl_node_invalidated_invalidate_node,
-                                         rects);
-  visitable = gegl_node_output_visitable_new (node);
+  visitor = gegl_callback_visitor_new (gegl_node_invalidated_invalidate_node,
+                                       rects);
 
-  gegl_visitor_traverse_reverse_topological (visitor, visitable);
+  gegl_visitor_traverse_reverse_topological (visitor,
+                                             gegl_node_get_output_visitable (node));
 
-  g_object_unref (visitable);
   g_object_unref (visitor);
   g_hash_table_unref (rects);
 }
