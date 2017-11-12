@@ -74,7 +74,7 @@ static void thread_process (gpointer thread_data, gpointer unused)
                                     GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   if (data->aux2)
     aux2 = gegl_buffer_iterator_add (i, data->aux2, &data->result, data->level,
-                                    data->aux_format,
+                                    data->aux2_format,
                                     GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (i))
