@@ -40,53 +40,47 @@ typedef struct ThreadData
 {
   GeglOperationPointComposerClass *klass;
   GeglOperation                   *operation;
-  guchar                          *input;
-  guchar                          *aux;
-  guchar                          *output;
+  GeglBuffer                      *input;
+  GeglBuffer                      *aux;
+  GeglBuffer                      *output;
   gint                            *pending;
-  gint                            *started;
   gint                             level;
   gboolean                         success;
-  GeglRectangle                    roi;
+  GeglRectangle                    result;
 
-  guchar                          *in_tmp;
-  guchar                          *aux_tmp;
-  guchar                          *output_tmp;
-  const Babl *input_fish;
-  const Babl *aux_fish;
-  const Babl *output_fish;
+  const Babl *input_format;
+  const Babl *aux_format;
+  const Babl *output_format;
 } ThreadData;
 
 static void thread_process (gpointer thread_data, gpointer unused)
 {
   ThreadData *data = thread_data;
+  gint read = 0;
+  gint aux  = 0;
+  GeglBufferIterator *i = gegl_buffer_iterator_new (data->output,
+                                                    &data->result,
+                                                    data->level,
+                                                    data->output_format,
+                                                    GEGL_ACCESS_WRITE,
+                                                    GEGL_ABYSS_NONE);
 
-  guchar *input = data->input;
-  guchar *aux = data->aux;
-  guchar *output = data->output;
-  glong samples = data->roi.width * data->roi.height;
+  if (data->input)
+    read = gegl_buffer_iterator_add (i, data->input, &data->result, data->level,
+                                     data->input_format,
+                                     GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+  if (data->aux)
+    aux = gegl_buffer_iterator_add (i, data->aux, &data->result, data->level,
+                                    data->aux_format,
+                                    GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
-  if (data->input_fish && input)
-    {
-      babl_process (data->input_fish, data->input, data->in_tmp, samples);
-      input = data->in_tmp;
-    }
-  if (data->aux_fish && aux)
-    {
-      babl_process (data->aux_fish, data->aux, data->aux_tmp, samples);
-      aux = data->aux_tmp;
-    }
-  if (data->output_fish)
-    output = data->output_tmp;
-
-  if (!data->klass->process (data->operation,
-                       input, aux,
-                       output, samples,
-                       &data->roi, data->level))
-    data->success = FALSE;
-  
-  if (data->output_fish)
-    babl_process (data->output_fish, data->output_tmp, data->output, samples);
+  while (gegl_buffer_iterator_next (i))
+  {
+     data->success =
+     data->klass->process (data->operation, data->input?i->data[read]:NULL,
+                           data->aux?i->data[aux]:NULL,
+                           i->data[0], i->length, &(i->roi[0]), data->level);
+  }
 
   g_atomic_int_add (data->pending, -1);
 }
@@ -311,10 +305,6 @@ gegl_operation_point_composer_process (GeglOperation       *operation,
 
   if ((result->width > 0) && (result->height > 0))
     {
-      const Babl *in_buf_format  = input?gegl_buffer_get_format(input):NULL;
-      const Babl *aux_buf_format = aux?gegl_buffer_get_format(aux):NULL;
-      const Babl *output_buf_format = output?gegl_buffer_get_format(output):NULL;
-
       if (gegl_operation_use_opencl (operation) && (operation_class->cl_data || point_composer_class->cl_process))
         {
           if (gegl_operation_point_composer_cl_process (operation, input, aux, output, result, level))
@@ -324,119 +314,36 @@ gegl_operation_point_composer_process (GeglOperation       *operation,
       if (gegl_operation_use_threading (operation, result) && result->height > 1)
       {
         gint threads = gegl_config_threads ();
-        GThreadPool *pool = thread_pool ();
         ThreadData thread_data[GEGL_MAX_THREADS];
-        GeglBufferIterator *i = gegl_buffer_iterator_new (output, result, level, output_buf_format,
-                                                          GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
-        gint foo = 0, read = 0;
+        GThreadPool *pool = thread_pool ();
+        gint pending;
+        gint j;
+        GeglRectangle sub_result;
 
-        gint in_bpp = input?babl_format_get_bytes_per_pixel (in_format):0;
-        gint aux_bpp = aux?babl_format_get_bytes_per_pixel (aux_format):0;
-        gint out_bpp = babl_format_get_bytes_per_pixel (out_format);
-
-        gint in_buf_bpp = input?babl_format_get_bytes_per_pixel (in_buf_format):0;
-        gint aux_buf_bpp = aux?babl_format_get_bytes_per_pixel (aux_buf_format):0;
-        gint out_buf_bpp = babl_format_get_bytes_per_pixel (output_buf_format);
-        gint temp_id = 0;
-
-        if (input)
+        for (j = 0; j < threads; j++)
         {
-          read = gegl_buffer_iterator_add (i, input, result, level, in_buf_format,
-                                           GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
-          for (gint j = 0; j < threads; j ++)
-          {
-            if (in_buf_format != in_format)
-            {
-              thread_data[j].input_fish = babl_fish (in_buf_format, in_format);
-              thread_data[j].in_tmp = gegl_temp_buffer (temp_id++, in_bpp * output->tile_storage->tile_width * output->tile_storage->tile_height);
-            }
-            else
-            {
-              thread_data[j].input_fish = NULL;
-            }
-          }
+           sub_result = *result;
+           sub_result.height /= threads;
+           sub_result.y += sub_result.height * j;
+           if (j == threads-1)
+             sub_result.height = (result->height + result->y) - sub_result.y;
+          thread_data[j].klass = point_composer_class;
+          thread_data[j].operation = operation;
+          thread_data[j].input = input;
+          thread_data[j].aux = aux;
+          thread_data[j].output = output;
+          thread_data[j].pending = &pending;
+          thread_data[j].level = level;
+          thread_data[j].input_format = in_format;
+          thread_data[j].aux_format = aux_format;
+          thread_data[j].output_format = out_format;
+          thread_data[j].result = sub_result;
         }
-        else
-          for (gint j = 0; j < threads; j ++)
-            thread_data[j].input_fish = NULL;
-        if (aux)
-        {
-          foo = gegl_buffer_iterator_add (i, aux, result, level, aux_buf_format,
-                                          GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
-          for (gint j = 0; j < threads; j ++)
-          {
-            if (aux_buf_format != aux_format)
-            {
-              thread_data[j].aux_fish = babl_fish (aux_buf_format, aux_format);
-              thread_data[j].aux_tmp = gegl_temp_buffer (temp_id++, aux_bpp * output->tile_storage->tile_width * output->tile_storage->tile_height);
-            }
-            else
-            {
-              thread_data[j].aux_fish = NULL;
-            }
-          }
-        }
-        else
-        {
-          for (gint j = 0; j < threads; j ++)
-            thread_data[j].aux_fish = NULL;
-        }
-
-        for (gint j = 0; j < threads; j ++)
-        {
-          if (output_buf_format != gegl_buffer_get_format (output))
-          {
-            thread_data[j].output_fish = babl_fish (out_format, output_buf_format);
-            thread_data[j].output_tmp = gegl_temp_buffer (temp_id++, out_bpp * output->tile_storage->tile_width * output->tile_storage->tile_height);
-          }
-          else
-          {
-            thread_data[j].output_fish = NULL;
-          }
-        }
-
-        while (gegl_buffer_iterator_next (i))
-          {
-            gint threads = gegl_config_threads ();
-            gint pending;
-            gint bit;
-
-            if (i->roi[0].height < threads)
-            {
-              threads = i->roi[0].height;
-            }
-
-            bit = i->roi[0].height / threads;
-            pending = threads;
-
-            for (gint j = 0; j < threads; j++)
-            {
-              thread_data[j].roi.x = (i->roi[0]).x;
-              thread_data[j].roi.width = (i->roi[0]).width;
-              thread_data[j].roi.y = (i->roi[0]).y + bit * j;
-              thread_data[j].roi.height = bit;
-            }
-            thread_data[threads-1].roi.height = i->roi[0].height - (bit * (threads-1));
-            
-            for (gint j = 0; j < threads; j++)
-            {
-              thread_data[j].klass = point_composer_class;
-              thread_data[j].operation = operation;
-              thread_data[j].input = input?((guchar*)i->data[read]) + (bit * j * i->roi[0].width * in_buf_bpp):NULL;
-              thread_data[j].aux = aux?((guchar*)i->data[foo]) + (bit * j * i->roi[0].width * aux_buf_bpp):NULL;
-              thread_data[j].output = ((guchar*)i->data[0]) + (bit * j * i->roi[0].width * out_buf_bpp);
-              thread_data[j].pending = &pending;
-              thread_data[j].level = level;
-              thread_data[j].success = TRUE;
-            }
-            pending = threads;
-
-            for (gint j = 1; j < threads; j++)
-              g_thread_pool_push (pool, &thread_data[j], NULL);
-            thread_process (&thread_data[0], NULL);
-
-            while (g_atomic_int_get (&pending)) {};
-          }
+        pending = threads;
+        for (gint j = 1; j < threads; j++)
+          g_thread_pool_push (pool, &thread_data[j], NULL);
+        thread_process (&thread_data[0], NULL);
+        while (g_atomic_int_get (&pending)) {};
 
         return TRUE;
       }
