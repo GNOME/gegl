@@ -170,6 +170,9 @@ gegl_crop_process (GeglOperation        *operation,
 
       output = gegl_buffer_create_sub_buffer (input, &extent);
 
+      /* propagate forked state, meaning that in-place processing is not possible
+       * due to shared nature of underlying data
+       */
       if (gegl_object_get_has_forked (G_OBJECT (input)))
         gegl_object_set_has_forked (G_OBJECT (output));
 
