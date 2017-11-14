@@ -194,9 +194,7 @@ cl_box_blur (cl_mem                in_tex,
              gint                  radius)
 {
   cl_int cl_err = 0;
-  size_t global_ws_hor[2], global_ws_ver[2], global_ws[2];
-  size_t local_ws_hor[2], local_ws_ver[2], local_ws[2];
-  size_t step_size ;
+  
   if (!cl_data)
     {
       const char *kernel_name[] = { "kernel_blur_hor", "kernel_blur_ver","kernel_box_blur_fast", NULL};
@@ -205,13 +203,17 @@ cl_box_blur (cl_mem                in_tex,
 
   if (!cl_data)
     return TRUE;
-  step_size = 64;
-  local_ws[0]=256;
-  local_ws[1]=1;
 
-
+#if 0
+  /* XXX: this code path is commented out, because it introduces vertical stripes/gaps,
+          wheras the generic code path does not.  */
   if( radius <=110 )
   {
+    size_t global_ws[2];
+    local_ws[2];
+    size_t step_size = 64;
+    local_ws[0]=256;
+    local_ws[1]=1;
     global_ws[0] = (roi->width + local_ws[0] - 2 * radius - 1) / ( local_ws[0] - 2 * radius ) * local_ws[0];
     global_ws[1] = (roi->height + step_size - 1) / step_size;
     cl_err = gegl_cl_set_kernel_args(cl_data->kernel[2],
@@ -230,7 +232,11 @@ cl_box_blur (cl_mem                in_tex,
 
   }
   else
+#endif
   {
+    size_t global_ws_hor[2], global_ws_ver[2];
+    size_t local_ws_hor[2], local_ws_ver[2];
+
     local_ws_hor[0] = 1;
     local_ws_hor[1] = 256;
     global_ws_hor[0] = roi->height + 2 * radius;
