@@ -1317,7 +1317,6 @@ operations/transform/Makefile
 operations/workshop/Makefile
 operations/workshop/external/Makefile
 operations/workshop/generated/Makefile
-po/Makevars
 tools/Makefile
 docs/Makefile
 docs/index.txt

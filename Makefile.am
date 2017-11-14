@@ -32,21 +32,12 @@ EXTRA_DIST = 			\
 	autogen.sh		\
 	gegl-uninstalled.pc.in	\
 	m4/introspection.m4	\
-	po/Makevars.in		\
 	gegl.pc.in
 
 # DISTCHECK_CONFIGURE_FLAGS = --enable-introspection
 
 DISTCLEANFILES = \
 	$(built_dist_files)
-
-# The generated po/Makevars shouldn't be distributed, or we need a way
-# to insert custom variables in Gettext's Makevars. Failing that, this
-# stops distcheck from complaining about po/Makevars not getting removed
-# after a distclean.
-distcleancheck_listfiles = \
-	find . -type f -exec sh -c 'test -f $(srcdir)/$$1 || echo $$1' \
-		sh '{}' ';'
 
 if HAVE_W3M
 dist-check-w3m:
