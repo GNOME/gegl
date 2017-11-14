@@ -34,6 +34,7 @@
 #include <string.h>
 
 #include "opencl/gegl-cl.h"
+#include "gegl-buffer-cl-cache.h"
 #include "gegl-buffer-cl-iterator.h"
 
 typedef struct ThreadData
@@ -327,6 +328,7 @@ gegl_operation_point_composer_process (GeglOperation       *operation,
            sub_result.y += sub_result.height * j;
            if (j == threads-1)
              sub_result.height = (result->height + result->y) - sub_result.y;
+
           thread_data[j].klass = point_composer_class;
           thread_data[j].operation = operation;
           thread_data[j].input = input;
@@ -340,8 +342,15 @@ gegl_operation_point_composer_process (GeglOperation       *operation,
           thread_data[j].result = sub_result;
         }
         pending = threads;
+
+        if (input)
+          gegl_buffer_cl_cache_flush (input, result);
+        if (aux)
+          gegl_buffer_cl_cache_flush (aux, result);
+
         for (gint j = 1; j < threads; j++)
           g_thread_pool_push (pool, &thread_data[j], NULL);
+
         thread_process (&thread_data[0], NULL);
         while (g_atomic_int_get (&pending)) {};
 

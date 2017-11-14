@@ -35,6 +35,7 @@
 
 #include "opencl/gegl-cl.h"
 #include "gegl-buffer-cl-iterator.h"
+#include "gegl-buffer-cl-cache.h"
 
 typedef struct ThreadData
 {
@@ -313,6 +314,9 @@ gegl_operation_point_filter_process (GeglOperation       *operation,
         }
 
         pending = threads;
+
+        if (input)
+          gegl_buffer_cl_cache_flush (input, result);
 
         for (gint j = 1; j < threads; j++)
           g_thread_pool_push (pool, &thread_data[j], NULL);
