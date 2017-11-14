@@ -1995,6 +1995,8 @@ gegl_node_get_cache (GeglNode *node)
   if (node->cache)
     return node->cache;
 
+  gegl_node_get_bounding_box (node);
+
   g_mutex_lock (&node->mutex);
 
   if (!node->cache)
@@ -2006,7 +2008,6 @@ gegl_node_get_cache (GeglNode *node)
                             NULL);
 
       gegl_object_set_has_forked (G_OBJECT (cache));
-      gegl_node_get_bounding_box (node);
       gegl_buffer_set_extent (GEGL_BUFFER (cache), &node->have_rect);
 
       g_signal_connect_swapped (G_OBJECT (cache), "computed",
