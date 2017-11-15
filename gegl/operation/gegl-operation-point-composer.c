@@ -319,16 +319,35 @@ gegl_operation_point_composer_process (GeglOperation       *operation,
         GThreadPool *pool = thread_pool ();
         gint pending;
         gint j;
-        GeglRectangle sub_result;
+
+        if (result->width > result->height)
+          for (j = 0; j < threads; j++)
+          {
+            GeglRectangle rect = *result;
+            rect.width /= threads;
+            rect.x += rect.width * j;
+
+            if (j == threads-1)
+              rect.width = (result->width + result->x) - rect.x;
+
+            thread_data[j].result = rect;
+          }
+        else
+          for (j = 0; j < threads; j++)
+          {
+            GeglRectangle rect = *result;
+            rect = *result;
+            rect.height /= threads;
+            rect.y += rect.height * j;
+
+            if (j == threads-1)
+              rect.height = (result->height + result->y) - rect.y;
+
+            thread_data[j].result = rect;
+          }
 
         for (j = 0; j < threads; j++)
         {
-           sub_result = *result;
-           sub_result.height /= threads;
-           sub_result.y += sub_result.height * j;
-           if (j == threads-1)
-             sub_result.height = (result->height + result->y) - sub_result.y;
-
           thread_data[j].klass = point_composer_class;
           thread_data[j].operation = operation;
           thread_data[j].input = input;
@@ -339,7 +358,6 @@ gegl_operation_point_composer_process (GeglOperation       *operation,
           thread_data[j].input_format = in_format;
           thread_data[j].aux_format = aux_format;
           thread_data[j].output_format = out_format;
-          thread_data[j].result = sub_result;
         }
         pending = threads;
 
