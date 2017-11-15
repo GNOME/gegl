@@ -37,7 +37,7 @@ m4_define([gegl_stable],
 m4_define([gimp_full_name], [Generic Graphical Library])
 
 # required versions of external libraries
-m4_define([babl_required_version], [0.1.37])
+m4_define([babl_required_version], [0.1.38])
 m4_define([cairo_required_version], [1.12.2])
 m4_define([exiv2_required_version], [0.25])
 m4_define([gdk_pixbuf_required_version], [2.32.0])
