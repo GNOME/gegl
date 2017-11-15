@@ -237,7 +237,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                                    g_param_spec_boolean ("use-opencl",
                                                          "Use OpenCL",
                                                          "Try to use OpenCL",
-                                                         TRUE,
+                                                         FALSE,
                                                          G_PARAM_READWRITE |
                                                          G_PARAM_CONSTRUCT));
 
