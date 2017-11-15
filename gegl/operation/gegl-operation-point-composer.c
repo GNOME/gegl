@@ -343,10 +343,13 @@ gegl_operation_point_composer_process (GeglOperation       *operation,
         }
         pending = threads;
 
-        if (input)
-          gegl_buffer_cl_cache_flush (input, result);
-        if (aux)
-          gegl_buffer_cl_cache_flush (aux, result);
+        if (gegl_cl_is_accelerated ())
+        {
+          if (input)
+            gegl_buffer_cl_cache_flush (input, result);
+          if (aux)
+            gegl_buffer_cl_cache_flush (aux, result);
+        }
 
         for (gint j = 1; j < threads; j++)
           g_thread_pool_push (pool, &thread_data[j], NULL);

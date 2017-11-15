@@ -27,7 +27,10 @@ void scale(GeglBuffer *buffer)
 
   gegl = gegl_node_new ();
   source = gegl_node_new_child (gegl, "operation", "gegl:buffer-source", "buffer", buffer, NULL);
-  scale = gegl_node_new_child (gegl, "operation", "gegl:scale-ratio", "x", 0.4, "y", 0.4, NULL);
+  scale = gegl_node_new_child (gegl, "operation", "gegl:scale-ratio", "x", 0.4, "y", 0.4,
+  "sampler", GEGL_SAMPLER_LINEAR,
+
+NULL);
   sink = gegl_node_new_child (gegl, "operation", "gegl:buffer-sink", "buffer", &buffer2, NULL);
 
   gegl_node_link_many (source, scale, sink, NULL);

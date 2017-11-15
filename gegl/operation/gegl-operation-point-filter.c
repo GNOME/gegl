@@ -315,7 +315,7 @@ gegl_operation_point_filter_process (GeglOperation       *operation,
 
         pending = threads;
 
-        if (input)
+        if (gegl_cl_is_accelerated () && input)
           gegl_buffer_cl_cache_flush (input, result);
 
         for (gint j = 1; j < threads; j++)
