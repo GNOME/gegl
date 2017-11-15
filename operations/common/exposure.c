@@ -145,7 +145,7 @@ process_rgb (GeglOperation       *op,
   out_pixel = out_buf;
 
   white = exp2f (exposure_negated);
-  diff = MAX (white - black_level, 0.01);
+  diff = MAX (white - black_level, 0.000001);
   gain = 1.0f / diff;
 
   for (i=0; i<n_pixels; i++)
@@ -182,7 +182,7 @@ process_rgba (GeglOperation       *op,
   out_pixel = out_buf;
   
   white = exp2f (exposure_negated);
-  diff = MAX (white - black_level, 0.01);
+  diff = MAX (white - black_level, 0.000001);
   gain = 1.0f / diff;
 
   for (i=0; i<n_pixels; i++)
@@ -220,7 +220,7 @@ process_y (GeglOperation       *op,
   out_pixel = out_buf;
 
   white = exp2f (exposure_negated);
-  diff = MAX (white - black_level, 0.01);
+  diff = MAX (white - black_level, 0.000001);
   gain = 1.0f / diff;
 
   for (i=0; i<n_pixels; i++)
@@ -255,7 +255,7 @@ process_ya (GeglOperation       *op,
   out_pixel = out_buf;
 
   white = exp2f (exposure_negated);
-  diff = MAX (white - black_level, 0.01);
+  diff = MAX (white - black_level, 0.000001);
   gain = 1.0f / diff;
 
   for (i=0; i<n_pixels; i++)
@@ -407,7 +407,7 @@ cl_process (GeglOperation       *op,
   cl_data_local = *params->cl_data_ptr;
 
   white = exp2f (exposure_negated);
-  diff = MAX (white - black_level, 0.01);
+  diff = MAX (white - black_level, 0.000001);
   gain = 1.0f / diff;
 
   cl_err |= gegl_clSetKernelArg(cl_data_local->kernel[0], 0, sizeof(cl_mem),   (void*)&in_tex);
