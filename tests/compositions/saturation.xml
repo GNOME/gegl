@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gegl>
+  <node operation='gegl:over'>
+    <node operation='gegl:crop'>
+      <params>
+        <param name='x'>256.0</param>
+        <param name='y'>192.0</param>
+        <param name='width'>256.0</param>
+        <param name='height'>192.0</param>
+      </params>
+    </node>
+    <node operation='gegl:saturation'>
+      <params>
+        <param name='scale'>1.5</param>
+      </params>
+    </node>
+    <node operation='gegl:convert-format'>
+      <params>
+        <param name='format'>CIE LCH(ab) alpha float</param>
+      </params>
+    </node>
+    <clone ref='clone0'/>
+  </node>
+  <node operation='gegl:over'>
+    <node operation='gegl:crop'>
+      <params>
+        <param name='x'>0.0</param>
+        <param name='y'>192.0</param>
+        <param name='width'>256.0</param>
+        <param name='height'>192.0</param>
+      </params>
+    </node>
+    <node operation='gegl:saturation'>
+      <params>
+        <param name='scale'>1.5</param>
+      </params>
+    </node>
+    <node operation='gegl:convert-format'>
+      <params>
+        <param name='format'>CIE LCH(ab) float</param>
+      </params>
+    </node>
+    <clone ref='clone0'/>
+  </node>
+  <node operation='gegl:over'>
+    <node operation='gegl:crop'>
+      <params>
+        <param name='x'>256.0</param>
+        <param name='y'>0.0</param>
+        <param name='width'>256.0</param>
+        <param name='height'>192.0</param>
+      </params>
+    </node>
+    <node operation='gegl:saturation'>
+      <params>
+        <param name='scale'>1.5</param>
+      </params>
+    </node>
+    <node operation='gegl:convert-format'>
+      <params>
+        <param name='format'>RGBA float</param>
+      </params>
+    </node>
+    <clone ref='clone0'/>
+  </node>
+  <node operation='gegl:crop'>
+    <params>
+      <param name='x'>0.0</param>
+      <param name='y'>0.0</param>
+      <param name='width'>256.0</param>
+      <param name='height'>192.0</param>
+    </params>
+  </node>
+  <node operation='gegl:saturation'>
+    <params>
+      <param name='scale'>1.5</param>
+    </params>
+  </node>
+  <node operation='gegl:convert-format'>
+    <params>
+      <param name='format'>RGB float</param>
+    </params>
+  </node>
+  <node operation='gegl:load' id='clone0'>
+      <params>
+        <param name='path'>data/car-stack.png</param>
+      </params>
+  </node>
+</gegl>

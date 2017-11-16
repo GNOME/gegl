@@ -69,6 +69,7 @@ NO_OPENCL_TESTS =               \
   color-reduction.xml           \
   rgbe-load.xml                 \
   rgbe-save.xml                 \
+  saturation.xml                \
   shift.xml                     \
   stretch-contrast-hsv.xml      \
   pnm-raw-load.xml              \
