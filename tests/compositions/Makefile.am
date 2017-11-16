@@ -52,6 +52,7 @@ TESTS = \
   rotate-on-center.xml            \
   simple-scale.xml                \
   scale-size-keepaspect.xml       \
+  shadows-highlights.xml          \
   sinus.xml                       \
   stretch-contrast.xml            \
   supernova.xml                   \
