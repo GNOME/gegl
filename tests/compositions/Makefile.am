@@ -30,6 +30,7 @@ TESTS = \
   composite-transform.xml         \
   contrast-curve.xml              \
   edge.xml                        \
+  exposure.xml                    \
   fattal02.xml                    \
   gegl.xml                        \
   gamma.xml                       \
