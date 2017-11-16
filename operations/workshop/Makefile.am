@@ -22,6 +22,4 @@ op_LTLIBRARIES =    \
 	linear-sinusoid.la \
 	rawbayer-load.la \
 	segment-kmeans.la \
-	shadows-highlights.la \
-	shadows-highlights-correction.la \
 	spherize.la
