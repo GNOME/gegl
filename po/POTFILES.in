@@ -141,6 +141,8 @@ operations/common-gpl3+/plasma.c
 operations/common-gpl3+/polar-coordinates.c
 operations/common-gpl3+/red-eye-removal.c
 operations/common-gpl3+/ripple.c
+operations/common-gpl3+/shadows-highlights.c
+operations/common-gpl3+/shadows-highlights-correction.c
 operations/common-gpl3+/shift.c
 operations/common-gpl3+/sinus.c
 operations/common-gpl3+/softglow.c
@@ -252,6 +254,4 @@ operations/workshop/integral-image.c
 operations/workshop/linear-sinusoid.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
-operations/workshop/shadows-highlights.c
-operations/workshop/shadows-highlights-correction.c
 operations/workshop/spherize.c

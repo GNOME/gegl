@@ -45,6 +45,8 @@ gegl_common_gpl3_la_SOURCES =\
 	polar-coordinates.c \
 	red-eye-removal.c \
 	ripple.c \
+	shadows-highlights.c \
+	shadows-highlights-correction.c \
 	shift.c \
 	sinus.c \
 	softglow.c \
