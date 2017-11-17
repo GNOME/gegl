@@ -48,6 +48,9 @@ property_double  (alpha_percentile, _("Alpha percentile"), 50)
   value_range (0, 100)
   description (_("Neighborhood alpha percentile"))
 
+property_boolean (exact, _("Exact result"), FALSE)
+  description (_("Avoid clipping and quantization errors (slower)"))
+
 #else
 
 #define GEGL_OP_AREA_FILTER
@@ -56,20 +59,44 @@ property_double  (alpha_percentile, _("Alpha percentile"), 50)
 
 #include "gegl-op.h"
 
-#define N_BINS  1024
+#define DEFAULT_N_BINS   256
+#define MAX_CHUNK_WIDTH  128
+#define MAX_CHUNK_HEIGHT 128
+
+#define SAFE_CLAMP(x, min, max) ((x) > (min) ? (x) < (max) ? (x) : (max) : (min))
+
+static gfloat        default_bin_values[DEFAULT_N_BINS];
+static gint          default_alpha_values[DEFAULT_N_BINS];
+static volatile gint default_values_initialized = FALSE;
 
 typedef struct
 {
-  gint bins[N_BINS];
-  gint last_median;
-  gint last_median_sum;
+  gboolean  quantize;
+  gint     *neighborhood_outline;
+} UserData;
+
+typedef struct
+{
+  gfloat value;
+  gint   index;
+} InputValue;
+
+typedef struct
+{
+  gint   *bins;
+  gfloat *bin_values;
+  gint    last_median;
+  gint    last_median_sum;
 } HistogramComponent;
 
 typedef struct
 {
-  HistogramComponent components[4];
-  gint               count;
-  gint               size;
+  HistogramComponent  components[4];
+  gint               *alpha_values;
+  gint                count;
+  gint                size;
+  gint                n_components;
+  gint                n_color_components;
 } Histogram;
 
 typedef enum
@@ -89,7 +116,7 @@ histogram_get_median (Histogram *hist,
   gint                i     = comp->last_median;
   gint                sum   = comp->last_median_sum;
 
-  if (component == 3)
+  if (component == hist->n_color_components)
     count = hist->size;
 
   if (count == 0)
@@ -111,22 +138,23 @@ histogram_get_median (Histogram *hist,
   comp->last_median     = i;
   comp->last_median_sum = sum;
 
-  return (gfloat) i / (gfloat) (N_BINS - 1);
+  return comp->bin_values[i];
 }
 
 static inline void
 histogram_modify_val (Histogram    *hist,
                       const gint32 *src,
-                      gboolean      has_alpha,
-                      gint          diff)
+                      gint          diff,
+                      gint          n_color_components,
+                      gboolean      has_alpha)
 {
   gint alpha = diff;
   gint c;
 
   if (has_alpha)
-    alpha *= src[3];
+    alpha *= hist->alpha_values[src[n_color_components]];
 
-  for (c = 0; c < 3; c++)
+  for (c = 0; c < n_color_components; c++)
     {
       HistogramComponent *comp = &hist->components[c];
       gint                bin  = src[c];
@@ -145,8 +173,8 @@ histogram_modify_val (Histogram    *hist,
 
   if (has_alpha)
     {
-      HistogramComponent *comp = &hist->components[3];
-      gint                bin  = src[3];
+      HistogramComponent *comp = &hist->components[n_color_components];
+      gint                bin  = src[n_color_components];
 
       comp->bins[bin] += diff;
 
@@ -159,30 +187,76 @@ histogram_modify_val (Histogram    *hist,
 static inline void
 histogram_modify_vals (Histogram    *hist,
                        const gint32 *src,
-                       gint          bpp,
                        gint          stride,
-                       gboolean      has_alpha,
                        gint          xmin,
                        gint          ymin,
                        gint          xmax,
                        gint          ymax,
                        gint          diff)
 {
+  gint     n_components       = hist->n_components;
+  gint     n_color_components = hist->n_color_components;
+  gboolean has_alpha          = n_color_components < n_components;
   gint x;
   gint y;
 
   if (xmin > xmax || ymin > ymax)
     return;
 
-  src += ymin * stride + xmin * bpp;
+  src += ymin * stride + xmin * n_components;
 
-  for (y = ymin; y <= ymax; y++, src += stride)
+  if (n_color_components == 3)
     {
-      const gint32 *pixel = src;
-
-      for (x = xmin; x <= xmax; x++, pixel += bpp)
+      if (has_alpha)
         {
-          histogram_modify_val (hist, pixel, has_alpha, diff);
+          for (y = ymin; y <= ymax; y++, src += stride)
+            {
+              const gint32 *pixel = src;
+
+              for (x = xmin; x <= xmax; x++, pixel += n_components)
+                {
+                  histogram_modify_val (hist, pixel, diff, 3, TRUE);
+                }
+            }
+        }
+      else
+        {
+          for (y = ymin; y <= ymax; y++, src += stride)
+            {
+              const gint32 *pixel = src;
+
+              for (x = xmin; x <= xmax; x++, pixel += n_components)
+                {
+                  histogram_modify_val (hist, pixel, diff, 3, FALSE);
+                }
+            }
+        }
+    }
+  else
+    {
+      if (has_alpha)
+        {
+          for (y = ymin; y <= ymax; y++, src += stride)
+            {
+              const gint32 *pixel = src;
+
+              for (x = xmin; x <= xmax; x++, pixel += n_components)
+                {
+                  histogram_modify_val (hist, pixel, diff, 1, TRUE);
+                }
+            }
+        }
+      else
+        {
+          for (y = ymin; y <= ymax; y++, src += stride)
+            {
+              const gint32 *pixel = src;
+
+              for (x = xmin; x <= xmax; x++, pixel += n_components)
+                {
+                  histogram_modify_val (hist, pixel, diff, 1, FALSE);
+                }
+            }
         }
     }
 }
@@ -190,9 +264,7 @@ histogram_modify_vals (Histogram    *hist,
 static inline void
 histogram_update (Histogram                  *hist,
                   const gint32               *src,
-                  gint                        bpp,
                   gint                        stride,
-                  gboolean                    has_alpha,
                   GeglMedianBlurNeighborhood  neighborhood,
                   gint                        radius,
                   const gint                 *neighborhood_outline,
@@ -206,36 +278,36 @@ histogram_update (Histogram                  *hist,
       switch (dir)
         {
           case LEFT_TO_RIGHT:
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    -radius - 1, -radius,
                                    -radius - 1, +radius,
                                    -1);
 
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    +radius, -radius,
                                    +radius, +radius,
                                    +1);
             break;
 
           case RIGHT_TO_LEFT:
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    +radius + 1, -radius,
                                    +radius + 1, +radius,
                                    -1);
 
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    -radius, -radius,
                                    -radius, +radius,
                                    +1);
             break;
 
           case TOP_TO_BOTTOM:
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    -radius, -radius - 1,
                                    +radius, -radius - 1,
                                    -1);
 
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    -radius, +radius,
                                    +radius, +radius,
                                    +1);
@@ -249,31 +321,31 @@ histogram_update (Histogram                  *hist,
           case LEFT_TO_RIGHT:
             for (i = 0; i < radius; i++)
               {
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        -i - 1, -neighborhood_outline[i],
                                        -i - 1, -neighborhood_outline[i + 1] - 1,
                                        -1);
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        -i - 1, +neighborhood_outline[i + 1] + 1,
                                        -i - 1, +neighborhood_outline[i],
                                        -1);
 
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        +i, -neighborhood_outline[i],
                                        +i, -neighborhood_outline[i + 1] - 1,
                                        +1);
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        +i, +neighborhood_outline[i + 1] + 1,
                                        +i, +neighborhood_outline[i],
                                        +1);
               }
 
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    -i - 1, -neighborhood_outline[i],
                                    -i - 1, +neighborhood_outline[i],
                                    -1);
 
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    +i, -neighborhood_outline[i],
                                    +i, +neighborhood_outline[i],
                                    +1);
@@ -283,31 +355,31 @@ histogram_update (Histogram                  *hist,
           case RIGHT_TO_LEFT:
             for (i = 0; i < radius; i++)
               {
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        +i + 1, -neighborhood_outline[i],
                                        +i + 1, -neighborhood_outline[i + 1] - 1,
                                        -1);
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        +i + 1, +neighborhood_outline[i + 1] + 1,
                                        +i + 1, +neighborhood_outline[i],
                                        -1);
 
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        -i, -neighborhood_outline[i],
                                        -i, -neighborhood_outline[i + 1] - 1,
                                        +1);
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        -i, +neighborhood_outline[i + 1] + 1,
                                        -i, +neighborhood_outline[i],
                                        +1);
               }
 
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    +i + 1, -neighborhood_outline[i],
                                    +i + 1, +neighborhood_outline[i],
                                    -1);
 
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    -i, -neighborhood_outline[i],
                                    -i, +neighborhood_outline[i],
                                    +1);
@@ -317,31 +389,31 @@ histogram_update (Histogram                  *hist,
           case TOP_TO_BOTTOM:
             for (i = 0; i < radius; i++)
               {
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        -neighborhood_outline[i],         -i - 1,
                                        -neighborhood_outline[i + 1] - 1, -i - 1,
                                        -1);
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        +neighborhood_outline[i + 1] + 1, -i - 1,
                                        +neighborhood_outline[i],         -i - 1,
                                        -1);
 
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        -neighborhood_outline[i],         +i,
                                        -neighborhood_outline[i + 1] - 1, +i,
                                        +1);
-                histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+                histogram_modify_vals (hist, src, stride,
                                        +neighborhood_outline[i + 1] + 1, +i,
                                        +neighborhood_outline[i],         +i,
                                        +1);
               }
 
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    -neighborhood_outline[i], -i - 1,
                                    +neighborhood_outline[i], -i - 1,
                                    -1);
 
-            histogram_modify_vals (hist, src, bpp, stride, has_alpha,
+            histogram_modify_vals (hist, src, stride,
                                    -neighborhood_outline[i], +i,
                                    +neighborhood_outline[i], +i,
                                    +1);
@@ -380,31 +452,151 @@ init_neighborhood_outline (GeglMedianBlurNeighborhood  neighborhood,
 }
 
 static void
-convert_values_to_bins (gint32   *src,
-                        gint      bpp,
-                        gboolean  has_alpha,
-                        gint      count)
+sort_input_values (InputValue **values,
+                   InputValue **scratch,
+                   gint         n_values)
 {
-  gint components = 3;
-  gint c;
+  const InputValue *in     = *values;
+  InputValue       *out    = *scratch;
+  gint              size;
 
-  if (has_alpha)
-    components++;
-
-  while (count--)
+  for (size = 1; size < n_values; size *= 2)
     {
-      for (c = 0; c < components; c++)
+      InputValue *temp;
+      gint        i;
+
+      for (i = 0; i < n_values; )
         {
-          gfloat value = ((gfloat *) src)[c];
-          gint   bin;
+          gint l     = i;
+          gint l_end = MIN (l + size, n_values);
+          gint r     = l_end;
+          gint r_end = MIN (r + size, n_values);
 
-          bin = (gint) (value * (N_BINS - 1) + 0.5f);
-          bin = CLAMP (bin, 0, N_BINS - 1);
+          while (l < l_end && r < r_end)
+            {
+              if (in[r].value < in[l].value)
+                out[i] = in[r++];
+              else
+                out[i] = in[l++];
 
-          src[c] = bin;
+              i++;
+            }
+
+          memcpy (&out[i], &in[l], (l_end - l) * sizeof (InputValue));
+          i += l_end - l;
+
+          memcpy (&out[i], &in[r], (r_end - r) * sizeof (InputValue));
+          i += r_end - r;
         }
 
-      src += bpp;
+      temp = (InputValue *) in;
+      in   = out;
+      out  = temp;
+    }
+
+  *values  = (InputValue *) in;
+  *scratch = out;
+}
+
+static void
+convert_values_to_bins (Histogram *hist,
+                        gint32    *src,
+                        gint       n_pixels,
+                        gboolean   quantize)
+{
+  gint     n_components       = hist->n_components;
+  gint     n_color_components = hist->n_color_components;
+  gboolean has_alpha          = n_color_components < n_components;
+  gint     i;
+  gint     c;
+
+  if (quantize)
+    {
+      for (c = 0; c < n_components; c++)
+        {
+          hist->components[c].bins       = g_new0 (gint, DEFAULT_N_BINS);
+          hist->components[c].bin_values = default_bin_values;
+        }
+
+      while (n_pixels--)
+        {
+          for (c = 0; c < n_components; c++)
+            {
+              gfloat value = ((gfloat *) src)[c];
+              gint   bin;
+
+              bin = floorf (SAFE_CLAMP (value, 0.0f, 1.0f) * (DEFAULT_N_BINS - 1) + 0.5f);
+
+              src[c] = bin;
+            }
+
+          src += n_components;
+        }
+
+      hist->alpha_values = default_alpha_values;
+    }
+  else
+    {
+      InputValue *values       = g_new (InputValue, n_pixels);
+      InputValue *scratch      = g_new (InputValue, n_pixels);
+      gint       *alpha_values = NULL;
+
+      if (has_alpha)
+        {
+          alpha_values = g_new (gint, n_pixels);
+
+          hist->alpha_values = alpha_values;
+        }
+
+      for (i = 0; i < n_pixels; i++)
+        {
+          values[i].value = ((gfloat *) src)[i * n_components];
+          values[i].index = i;
+        }
+
+      for (c = 0; c < n_components; c++)
+        {
+          gint    bin        = 0;
+          gfloat  prev_value = values[0].value;
+          gfloat *bin_values;
+
+          bin_values    = g_new (gfloat, n_pixels);
+          bin_values[0] = prev_value;
+          if (c == n_color_components)
+            {
+              alpha_values[0] = floorf (SAFE_CLAMP (prev_value, 0.0f, 1.0f) *
+                                        (gfloat) (1 << 10) + 0.5f);
+            }
+
+          sort_input_values (&values, &scratch, n_pixels);
+
+          for (i = 0; i < n_pixels; i++)
+            {
+              gint32 *p = &src[values[i].index * n_components + c];
+
+              if (values[i].value != prev_value)
+                {
+                  bin++;
+                  prev_value      = values[i].value;
+                  bin_values[bin] = prev_value;
+                  if (c == n_color_components)
+                    {
+                      alpha_values[bin] = floorf (SAFE_CLAMP (prev_value, 0.0f, 1.0f) *
+                                                  (gfloat) (1 << 10) + 0.5f);
+                    }
+                }
+
+              *p = bin;
+              if (c < n_components - 1)
+                values[i].value = ((gfloat *) p)[1];
+            }
+
+          hist->components[c].bins       = g_new0 (gint, bin + 1);
+          hist->components[c].bin_values = bin_values;
+        }
+
+      g_free (scratch);
+      g_free (values);
     }
 }
 
@@ -414,20 +606,106 @@ prepare (GeglOperation *operation)
   GeglOperationAreaFilter *area      = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o         = GEGL_PROPERTIES (operation);
   const Babl              *in_format = gegl_operation_get_source_format (operation, "input");
-  const Babl              *format    = babl_format ("R'G'B' float");
+  const Babl              *format    = NULL;
+  gboolean                 exact     = o->exact;
+  UserData                *data;
 
   area->left   =
   area->right  =
   area->top    =
   area->bottom = o->radius;
 
-  o->user_data = g_renew (gint, o->user_data, o->radius + 1);
-  init_neighborhood_outline (o->neighborhood, o->radius, o->user_data);
+  if (! o->user_data)
+    o->user_data = g_slice_new0 (UserData);
+
+  data                       = o->user_data;
+  data->quantize             = ! exact;
+  data->neighborhood_outline = g_renew (gint, data->neighborhood_outline,
+                                        o->radius + 1);
+  init_neighborhood_outline (o->neighborhood, o->radius,
+                             data->neighborhood_outline);
 
   if (in_format)
     {
-      if (babl_format_has_alpha (in_format))
+      const Babl *model = babl_format_get_model (in_format);
+
+      if (exact)
+        {
+          if (model == babl_model ("Y"))
+            format = babl_format ("Y float");
+          else if (model == babl_model ("Y'"))
+            format = babl_format ("Y' float");
+          else if (model == babl_model ("YA") || model == babl_model ("YaA"))
+            format = babl_format ("YA float");
+          else if (model == babl_model ("Y'A") || model == babl_model ("Y'aA"))
+            format = babl_format ("Y'A float");
+          else if (model == babl_model ("RGB"))
+            format = babl_format ("RGB float");
+          else if (model == babl_model ("R'G'B'"))
+            format = babl_format ("R'G'B' float");
+          else if (model == babl_model ("RGBA") || model == babl_model ("RaGaBaA"))
+            format = babl_format ("RGBA float");
+          else if (model == babl_model ("R'G'B'A") || model == babl_model ("R'aG'aB'aA"))
+            format = babl_format ("R'G'B'A float");
+
+          if (format)
+            {
+              gint n_components = babl_format_get_n_components (in_format);
+              gint i;
+
+              data->quantize = TRUE;
+
+              for (i = 0; i < n_components; i++)
+                {
+                  if (babl_format_get_type (in_format, i) != babl_type ("u8"))
+                    {
+                      data->quantize = FALSE;
+                      break;
+                    }
+                }
+            }
+        }
+      else
+        {
+          if (model == babl_model ("Y") || model == babl_model ("Y'"))
+            format = babl_format ("Y' float");
+          else if (model == babl_model ("YA")  || model == babl_model ("YaA") ||
+                   model == babl_model ("Y'A") || model == babl_model ("Y'aA"))
+            format = babl_format ("Y'A float");
+          else if (model == babl_model ("RGB") || model == babl_model ("R'G'B'"))
+            format = babl_format ("R'G'B' float");
+          else if (model == babl_model ("RGBA")    || model == babl_model ("RaGaBaA") ||
+                   model == babl_model ("R'G'B'A") || model == babl_model ("R'aG'aB'aA"))
+            format = babl_format ("R'G'B'A float");
+        }
+
+      if (format == NULL)
+        {
+          if (babl_format_has_alpha (in_format))
+            format = babl_format ("R'G'B'A float");
+          else
+            format = babl_format ("R'G'B' float");
+        }
+    }
+  else
+    {
+      if (exact)
+        format = babl_format ("RGBA float");
+      else
         format = babl_format ("R'G'B'A float");
+    }
+
+  if (data->quantize && ! g_atomic_int_get (&default_values_initialized))
+    {
+      gint i;
+
+      for (i = 0; i < DEFAULT_N_BINS; i++)
+        {
+          default_bin_values[i]   = (gfloat) i / (gfloat) (DEFAULT_N_BINS - 1);
+          default_alpha_values[i] = i;
+        }
+
+      g_atomic_int_set (&default_values_initialized, TRUE);
     }
 
   gegl_operation_set_format (operation, "input", format);
@@ -456,14 +734,16 @@ process (GeglOperation       *operation,
          const GeglRectangle *roi,
          gint                 level)
 {
-  GeglProperties *o = GEGL_PROPERTIES (operation);
+  GeglProperties *o    = GEGL_PROPERTIES (operation);
+  UserData       *data = o->user_data;
 
   gdouble         percentile           = o->percentile       / 100.0;
   gdouble         alpha_percentile     = o->alpha_percentile / 100.0;
-  const gint     *neighborhood_outline = o->user_data;
+  const gint     *neighborhood_outline = data->neighborhood_outline;
 
   const Babl     *format               = gegl_operation_get_format (operation, "input");
   gint            n_components         = babl_format_get_n_components (format);
+  gint            n_color_components   = n_components;
   gboolean        has_alpha            = babl_format_has_alpha (format);
 
   G_STATIC_ASSERT (sizeof (gint32) == sizeof (gfloat));
@@ -472,7 +752,8 @@ process (GeglOperation       *operation,
   GeglRectangle   src_rect;
   gint            src_stride;
   gint            dst_stride;
-  gint            n_pixels;
+  gint            n_src_pixels;
+  gint            n_dst_pixels;
 
   Histogram      *hist;
 
@@ -484,19 +765,54 @@ process (GeglOperation       *operation,
   gint            i;
   gint            c;
 
-  src_rect   = gegl_operation_get_required_for_output (operation, "input", roi);
-  src_stride = src_rect.width * n_components;
-  dst_stride = roi->width * n_components;
-  n_pixels   = roi->width * roi->height;
-  dst_buf = g_new0 (gfloat, n_pixels                         * n_components);
-  src_buf = g_new0 (gint32, src_rect.width * src_rect.height * n_components);
+  if (! data->quantize &&
+      (roi->width > MAX_CHUNK_WIDTH || roi->height > MAX_CHUNK_HEIGHT))
+    {
+      gint n_x = (roi->width  + MAX_CHUNK_WIDTH  - 1) / MAX_CHUNK_WIDTH;
+      gint n_y = (roi->height + MAX_CHUNK_HEIGHT - 1) / MAX_CHUNK_HEIGHT;
+      gint x;
+      gint y;
+
+      for (y = 0; y < n_y; y++)
+        {
+          for (x = 0; x < n_x; x++)
+            {
+              GeglRectangle chunk;
+
+              chunk.x      = roi->x + roi->width  * x       / n_x;
+              chunk.y      = roi->y + roi->height * y       / n_y;
+              chunk.width  = roi->x + roi->width  * (x + 1) / n_x - chunk.x;
+              chunk.height = roi->y + roi->height * (y + 1) / n_y - chunk.y;
+
+              if (! process (operation, input, output, &chunk, level))
+                return FALSE;
+            }
+        }
+
+      return TRUE;
+    }
+
+  if (has_alpha)
+    n_color_components--;
+
+  g_return_val_if_fail (n_color_components == 1 || n_color_components == 3, FALSE);
+
+  hist = g_slice_new0 (Histogram);
+
+  hist->n_components       = n_components;
+  hist->n_color_components = n_color_components;
+
+  src_rect     = gegl_operation_get_required_for_output (operation, "input", roi);
+  src_stride   = src_rect.width * n_components;
+  dst_stride   = roi->width * n_components;
+  n_src_pixels = src_rect.width * src_rect.height;
+  n_dst_pixels = roi->width * roi->height;
+  src_buf = g_new (gint32, n_src_pixels * n_components);
+  dst_buf = g_new (gfloat, n_dst_pixels * n_components);
 
   gegl_buffer_get (input, &src_rect, 1.0, format, src_buf,
                    GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
-  convert_values_to_bins (src_buf, n_components, has_alpha,
-                          src_rect.width * src_rect.height);
-
-  hist = g_slice_new0 (Histogram);
+  convert_values_to_bins (hist, src_buf, n_src_pixels, data->quantize);
 
   src = src_buf + o->radius * (src_rect.width + 1) * n_components;
   dst = dst_buf;
@@ -505,7 +821,7 @@ process (GeglOperation       *operation,
 
   for (i = -o->radius; i <= o->radius; i++)
     {
-      histogram_modify_vals (hist, src, n_components, src_stride, has_alpha,
+      histogram_modify_vals (hist, src, src_stride,
                              i, -neighborhood_outline[abs (i)],
                              i, +neighborhood_outline[abs (i)],
                              +1);
@@ -513,19 +829,18 @@ process (GeglOperation       *operation,
       hist->size += 2 * neighborhood_outline[abs (i)] + 1;
     }
 
-  for (c = 0; c < 3; c++)
+  for (c = 0; c < n_color_components; c++)
     dst[c] = histogram_get_median (hist, c, percentile);
-
   if (has_alpha)
-    dst[3] = histogram_get_median (hist, 3, alpha_percentile);
+    dst[c] = histogram_get_median (hist, c, alpha_percentile);
 
   dst_x = 0;
   dst_y = 0;
 
-  n_pixels--;
+  n_dst_pixels--;
   dir = LEFT_TO_RIGHT;
 
-  while (n_pixels--)
+  while (n_dst_pixels--)
     {
       /* move the src coords based on current direction and positions */
       if (dir == LEFT_TO_RIGHT)
@@ -578,18 +893,28 @@ process (GeglOperation       *operation,
             }
         }
 
-      histogram_update (hist, src, n_components, src_stride, has_alpha,
+      histogram_update (hist, src, src_stride,
                         o->neighborhood, o->radius, neighborhood_outline,
                         dir);
 
-      for (c = 0; c < 3; c++)
+      for (c = 0; c < n_color_components; c++)
         dst[c] = histogram_get_median (hist, c, percentile);
-
       if (has_alpha)
-        dst[3] = histogram_get_median (hist, 3, alpha_percentile);
+        dst[c] = histogram_get_median (hist, c, alpha_percentile);
     }
 
   gegl_buffer_set (output, roi, 0, format, dst_buf, GEGL_AUTO_ROWSTRIDE);
+
+  for (c = 0; c < n_components; c++)
+    {
+      g_free (hist->components[c].bins);
+
+      if (! data->quantize)
+        g_free (hist->components[c].bin_values);
+    }
+
+  if (! data->quantize && has_alpha)
+    g_free (hist->alpha_values);
 
   g_slice_free (Histogram, hist);
   g_free (dst_buf);
@@ -604,7 +929,13 @@ finalize (GObject *object)
   GeglOperation  *op = (void*) object;
   GeglProperties *o  = GEGL_PROPERTIES (op);
 
-  g_clear_pointer (&o->user_data, g_free);
+  if (o->user_data)
+    {
+      UserData *data = o->user_data;
+
+      g_free (data->neighborhood_outline);
+      g_slice_free (UserData, data);
+    }
 
   G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);
 }
@@ -626,12 +957,12 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->get_bounding_box = get_bounding_box;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:median-blur",
-    "title",       _("Median Blur"),
-    "categories",  "blur",
-    "reference-hash", "bd34e0f3b290d67713d6ab79492d9f1e",
-    "description", _("Blur resulting from computing the median "
-                     "color in the neighborhood of each pixel."),
+    "name",           "gegl:median-blur",
+    "title",          _("Median Blur"),
+    "categories",     "blur",
+    "reference-hash", "1865918d2f3b95690359534bbd58b513",
+    "description",    _("Blur resulting from computing the median "
+                        "color in the neighborhood of each pixel."),
     NULL);
 }
 
