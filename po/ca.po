@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-10-24 15:22+0000\n"
-"PO-Revision-Date: 2017-10-24 23:53+0200\n"
+"POT-Creation-Date: 2017-11-15 03:26+0000\n"
+"PO-Revision-Date: 2017-10-25 22:48+0200\n"
 "Last-Translator: Albert F. <lakonfrariadelavila@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -270,55 +270,55 @@ msgstr "NoHalo"
 msgid "LoHalo"
 msgstr "LoHalo"
 
-#: gegl/gegl-init.c:280
+#: gegl/gegl-init.c:279
 msgid "Where GEGL stores its swap"
 msgstr "On la GEGL emmagatzema la seva memòria intermèdia"
 
-#: gegl/gegl-init.c:285
+#: gegl/gegl-init.c:284
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr ""
 "Quanta memòria es pot utilitzar, aproximadament, per a la memòria cau "
 "d'imatges"
 
-#: gegl/gegl-init.c:290
+#: gegl/gegl-init.c:289
 msgid "Default size of tiles in GeglBuffers"
 msgstr "La mida, per defecte, de les tessel·les en els GeglBuffers"
 
-#: gegl/gegl-init.c:295
+#: gegl/gegl-init.c:294
 msgid "The count of pixels to compute simultaneously"
 msgstr "El nombre de píxels que es poden calcular simultàniament"
 
-#: gegl/gegl-init.c:300
+#: gegl/gegl-init.c:299
 msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
 msgstr ""
 "La qualitat de la renderització, un valor entre 0.0 (ràpid) i 1.0 "
 "(referència)"
 
-#: gegl/gegl-init.c:305
+#: gegl/gegl-init.c:304
 msgid "The number of concurrent processing threads to use"
 msgstr "El nombre de fils de processament simultani que es poden utilitzar"
 
-#: gegl/gegl-init.c:310
+#: gegl/gegl-init.c:309
 msgid "Disable OpenCL"
 msgstr "Inhabilita l'OpenCL"
 
-#: gegl/module/geglmodule.c:353
+#: gegl/module/geglmodule.c:340
 msgid "Module error"
 msgstr "Error del mòdul"
 
-#: gegl/module/geglmodule.c:354
+#: gegl/module/geglmodule.c:341
 msgid "Loaded"
 msgstr "Carregat"
 
-#: gegl/module/geglmodule.c:355
+#: gegl/module/geglmodule.c:342
 msgid "Load failed"
 msgstr "S'ha produït un error en carregar"
 
-#: gegl/module/geglmodule.c:356
+#: gegl/module/geglmodule.c:343
 msgid "Not loaded"
 msgstr "No s'ha carregat"
 
-#: gegl/module/geglmodule.c:404
+#: gegl/module/geglmodule.c:389
 #, c-format
 msgid "Module '%s' load error: %s"
 msgstr "S'ha produït un error en carregar el mòdul «%s»: %s"
@@ -503,8 +503,7 @@ msgstr ""
 #: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
 #: operations/common-gpl3+/whirl-pinch.c:45
-#: operations/external/matting-levin.c:29 operations/workshop/kuwahara.c:25
-#: operations/workshop/median-blur.c:38
+#: operations/external/matting-levin.c:29 operations/workshop/median-blur.c:38
 #: operations/workshop/shadows-highlights.c:37
 msgid "Radius"
 msgstr "Radi"
@@ -514,11 +513,11 @@ msgid "Radius of square pixel region, (width and height will be radius*2+1)"
 msgstr ""
 "Radi de la regió quadrada de píxels (l'amplada i l'alçada seran el radi*2+1)"
 
-#: operations/common/box-blur.c:394
+#: operations/common/box-blur.c:400
 msgid "Box Blur"
 msgstr "Difuminat enquadrat"
 
-#: operations/common/box-blur.c:396
+#: operations/common/box-blur.c:402
 msgid "Blur resulting from averaging the colors of a square neighbourhood."
 msgstr "Difuminat generat amb la mitjana dels colors propers a un quadrat."
 
@@ -599,11 +598,11 @@ msgstr "Memòria intermèdia d'entrada"
 msgid "The GeglBuffer to load into the pipeline"
 msgstr "La memòria intermèdia Gegl per carregar a la canonada"
 
-#: operations/common/buffer-source.c:220
+#: operations/common/buffer-source.c:219
 msgid "Buffer Source"
 msgstr "Origen de la memòria intermèdia"
 
-#: operations/common/buffer-source.c:222
+#: operations/common/buffer-source.c:221
 msgid "Use an existing in-memory GeglBuffer as image source."
 msgstr ""
 "Utilitza una memòria intermèdia Gegl en memòria com a origen de les dades."
@@ -851,7 +850,7 @@ msgstr "Valor del to per sobre de la configuració del gris"
 
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
 #: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:33
-#: operations/common/saturation.c:218
+#: operations/common/saturation.c:223
 #: operations/external/lcms-from-profile.c:35
 msgid "Saturation"
 msgstr "Saturació"
@@ -888,11 +887,11 @@ msgid "Corrected estimation of the temperature of the light source in Kelvin."
 msgstr ""
 "Estimació corregida de la temperatura de la font de llum, en graus Kelvin."
 
-#: operations/common/color-temperature.c:281
+#: operations/common/color-temperature.c:273
 msgid "Color Temperature"
 msgstr "Temperatura del color"
 
-#: operations/common/color-temperature.c:284
+#: operations/common/color-temperature.c:276
 msgid ""
 "Change the color temperature of the image, from an assumed original color "
 "temperature to an intended one."
@@ -1149,11 +1148,11 @@ msgstr "Corba"
 msgid "The contrast curve."
 msgstr "La corba de contrast."
 
-#: operations/common/contrast-curve.c:258
+#: operations/common/contrast-curve.c:257
 msgid "Contrast Curve"
 msgstr "Corba de contrast"
 
-#: operations/common/contrast-curve.c:262
+#: operations/common/contrast-curve.c:261
 msgid ""
 "Adjusts the contrast of a grayscale image with a curve specifying contrast "
 "for intensity."
@@ -1615,7 +1614,7 @@ msgstr "Nivell de negre"
 msgid "Adjust the black level"
 msgstr "Ajusta el nivell de negre"
 
-#: operations/common/exposure.c:30 operations/common/exposure.c:181
+#: operations/common/exposure.c:30 operations/common/exposure.c:461
 msgid "Exposure"
 msgstr "Exposició"
 
@@ -1623,7 +1622,7 @@ msgstr "Exposició"
 msgid "Relative brightness change in stops"
 msgstr "La brillantor relativa varia a les parades"
 
-#: operations/common/exposure.c:184
+#: operations/common/exposure.c:465
 msgid ""
 "Changes Exposure of an image, allows stepping HDR and photographs up/down in "
 "stops. "
@@ -1659,7 +1658,7 @@ msgstr "Llindar del degradat per la reducció de la millora del detall"
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Fattal i altres. Mapador tonal 2002"
 
-#: operations/common/fattal02.c:1335
+#: operations/common/fattal02.c:1334
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -1735,7 +1734,7 @@ msgstr "El resultat s'hauria de retallar a la mida d'entrada"
 msgid "Gaussian Blur"
 msgstr "Difuminat gaussià"
 
-#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:930
+#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:931
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -1757,7 +1756,7 @@ msgstr "Orientació"
 msgid "The orientation of the blur - hor/ver"
 msgstr "Orientació del difuminat - hor/ver"
 
-#: operations/common/gblur-1d.c:927
+#: operations/common/gblur-1d.c:928
 msgid "1D Gaussian-blur"
 msgstr "Difuminat gaussià 1D"
 
@@ -1816,11 +1815,11 @@ msgstr ""
 "Hi ha un problema en la sintaxi o en l'aplicació dels valors de propietat "
 "analitzats. Tanmateix, les coses podrien normalment funcionar."
 
-#: operations/common/gegl.c:109
+#: operations/common/gegl.c:107
 msgid "GEGL graph"
 msgstr "Gràfic GEGL"
 
-#: operations/common/gegl.c:112
+#: operations/common/gegl.c:110
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -1831,11 +1830,11 @@ msgstr ""
 "per especificar una cadena amb una font com una cosa connectat a un "
 "encoixinat auxiliar."
 
-#: operations/common/grey.c:101
+#: operations/common/grey.c:143
 msgid "Make Grey"
 msgstr "Fes gris"
 
-#: operations/common/grey.c:104
+#: operations/common/grey.c:146
 msgid "Turns the image grayscale"
 msgstr "Converteix la imatge a escala de grisos"
 
@@ -1988,7 +1987,7 @@ msgstr ""
 msgid "Node"
 msgstr "Node"
 
-#: operations/common/introspect.c:163
+#: operations/common/introspect.c:159
 msgid "GEGL graph visualizer."
 msgstr "Visualitzador de gràfiques GEGL."
 
@@ -2052,11 +2051,11 @@ msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
 msgstr ""
 "Camí del fitxer de dades de la font (png, jpg, raw, svg, bmp, tif, ...)"
 
-#: operations/common/layer.c:271
+#: operations/common/layer.c:266
 msgid "Layer"
 msgstr "Capa"
 
-#: operations/common/layer.c:272
+#: operations/common/layer.c:267
 msgid "A layer in the traditional sense"
 msgstr "Una capa en el sentit tradicional"
 
@@ -2179,11 +2178,11 @@ msgstr "Detall"
 msgid "Level of emphasis on image gradient details"
 msgstr "Nivell d'èmfasi en els detalls del degradat de la imatge"
 
-#: operations/common/mantiuk06.c:1639
+#: operations/common/mantiuk06.c:1629
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Mapador tonal Mantiuk 2006"
 
-#: operations/common/mantiuk06.c:1643
+#: operations/common/mantiuk06.c:1633
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -2260,12 +2259,12 @@ msgstr "Humitat"
 msgid "The value represents the contribution of the past to the new frame."
 msgstr "El valor representa la contribució de l'anterior fotograma al nou."
 
-#: operations/common/mblur.c:145
+#: operations/common/mblur.c:143
 msgid "Temporal blur"
 msgstr "Difuminat temporal"
 
 #. XXX: doesn't really make sense...
-#: operations/common/mblur.c:148
+#: operations/common/mblur.c:146
 msgid ""
 "Accumulating motion blur using a kalman filter, for use with video sequences "
 "of frames."
@@ -2389,7 +2388,7 @@ msgstr ""
 msgid "Mix"
 msgstr "Mescla"
 
-#: operations/common/mix.c:93
+#: operations/common/mix.c:94
 msgid "do a lerp, linear interpolation (lerp) between input and aux"
 msgstr "Fes una interpolació lineal entre l'entrada i l'aux"
 
@@ -3133,7 +3132,7 @@ msgstr "Manté els valors dels píxels dins d'una franja específica"
 msgid "Scale, strength of effect"
 msgstr "Escala de potència de l'efecte"
 
-#: operations/common/saturation.c:220
+#: operations/common/saturation.c:225
 msgid "Changes the saturation"
 msgstr "Canvia la saturació"
 
@@ -3141,11 +3140,11 @@ msgstr "Canvia la saturació"
 msgid "Path of file to save."
 msgstr "Camí del fitxer que es vol desar."
 
-#: operations/common/save.c:201
+#: operations/common/save.c:200
 msgid "Save"
 msgstr "Desa"
 
-#: operations/common/save.c:204
+#: operations/common/save.c:203
 msgid ""
 "Multipurpose file saver, that uses other native save handlers depending on "
 "extension, use the format specific save ops to specify additional parameters."
@@ -3523,11 +3522,11 @@ msgstr "Comportament"
 msgid "Behavior of the op"
 msgstr "Comportament de l'operació"
 
-#: operations/common/warp.c:948
+#: operations/common/warp.c:937
 msgid "Warp"
 msgstr "Deforma"
 
-#: operations/common/warp.c:950
+#: operations/common/warp.c:939
 msgid "Compute a relative displacement mapping from a stroke"
 msgstr "Calcula el mapatge de desplaçament relatiu des d'un traç"
 
@@ -3570,11 +3569,11 @@ msgstr "Píxels aquosos"
 msgid "Superpixels based on the watershed transformation"
 msgstr "Super píxels basats en la transformació decisiva"
 
-#: operations/common/watershed-transform.c:384
+#: operations/common/watershed-transform.c:381
 msgid "Watershed Transform"
 msgstr "Transformació decisiva"
 
-#: operations/common/watershed-transform.c:387
+#: operations/common/watershed-transform.c:384
 msgid "Labels propagation by watershed transformation"
 msgstr "Etiquetes de propagació per a la transformació decisiva"
 
@@ -3608,11 +3607,11 @@ msgstr ""
 "Memòria intermèdia Gegl pre-existent per escriure les dades de memòria "
 "intermèdia entrants."
 
-#: operations/common/write-buffer.c:150
+#: operations/common/write-buffer.c:146
 msgid "Write Buffer"
 msgstr "Escriu la memòria intermèdia"
 
-#: operations/common/write-buffer.c:152
+#: operations/common/write-buffer.c:148
 msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr "Una superfície de destinació de la memòria intermèdia GEGL."
 
@@ -4081,7 +4080,7 @@ msgid "Mode of displacement"
 msgstr "Mode desplaçament"
 
 #: operations/common-gpl3+/displace.c:37 operations/external/npd.c:47
-#: operations/transform/transform-core.c:194 operations/workshop/ditto.c:27
+#: operations/transform/transform-core.c:198 operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Mostrejador"
 
@@ -4155,11 +4154,11 @@ msgstr "Coordenada X del desplaçament del centre"
 msgid "Y coordinate of the displacement center"
 msgstr "Coordenada Y del desplaçament del centre"
 
-#: operations/common-gpl3+/displace.c:481
+#: operations/common-gpl3+/displace.c:476
 msgid "Displace"
 msgstr "Desplaçament"
 
-#: operations/common-gpl3+/displace.c:484
+#: operations/common-gpl3+/displace.c:479
 msgid "Displace pixels as indicated by displacement maps"
 msgstr "Desplaçar els píxels segons els mapes de desplaçament"
 
@@ -5153,7 +5152,7 @@ msgstr "Direcció de l'espiral"
 msgid "Spiral"
 msgstr "Espiral"
 
-#: operations/common-gpl3+/spiral.c:446
+#: operations/common-gpl3+/spiral.c:447
 msgid "Spiral renderer"
 msgstr "Renderitzador de l'espiral"
 
@@ -5626,7 +5625,7 @@ msgstr "Els valors més alts incrementen la magnitud de l'efecte"
 msgid "Wind-like bleed effect"
 msgstr "Efecte d'escampada similar a la que provoca el vent"
 
-#: operations/core/cache.c:25 operations/core/cache.c:92
+#: operations/core/cache.c:25 operations/core/cache.c:88
 msgid "Cache"
 msgstr "Memòria cau"
 
@@ -5641,7 +5640,7 @@ msgstr ""
 "gegl_memòria_intermèdia_llista_vàlida_rectangles retorna la part de la "
 "memòria cau vàlida."
 
-#: operations/core/cache.c:94
+#: operations/core/cache.c:90
 msgid ""
 "An explicit caching node, caches results and should provide faster "
 "recomputation if what is cached by it is expensive but isn't changing."
@@ -5708,11 +5707,11 @@ msgstr "Converteix les dades al format especificat"
 msgid "Reset origin"
 msgstr "Restablir l'origen"
 
-#: operations/core/crop.c:223
+#: operations/core/crop.c:226
 msgid "Crop"
 msgstr "Escapça"
 
-#: operations/core/crop.c:224
+#: operations/core/crop.c:227
 msgid "Crop a buffer"
 msgstr "Retalla una memòria intermèdia"
 
@@ -5727,7 +5726,7 @@ msgstr "URI"
 msgid "URI of file to load."
 msgstr "URI del fitxer que s'ha de carregar"
 
-#: operations/core/load.c:368
+#: operations/core/load.c:367
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -5799,11 +5798,11 @@ msgstr "Còdec d'àudio"
 msgid "audio"
 msgstr "Àudio"
 
-#: operations/external/ff-load.c:785
+#: operations/external/ff-load.c:780
 msgid "FFmpeg Frame Loader"
 msgstr "Carregador de fotogrames FFmpeg"
 
-#: operations/external/ff-load.c:787
+#: operations/external/ff-load.c:782
 msgid "FFmpeg video frame importer."
 msgstr "Importador de fotogrames de vídeo FFmpeg."
 
@@ -5949,11 +5948,11 @@ msgstr "I-quant-desplaçament"
 msgid "me-subpel-quality"
 msgstr "me-subpel-qualitat"
 
-#: operations/external/ff-save.c:1112
+#: operations/external/ff-save.c:1111
 msgid "FFmpeg Frame Saver"
 msgstr "Desador de fotogrames FFmpeg"
 
-#: operations/external/ff-save.c:1114
+#: operations/external/ff-save.c:1113
 msgid "FFmpeg video output sink"
 msgstr "Conducte de sortida de vídeo FFmpeg"
 
@@ -6025,11 +6024,11 @@ msgstr "S'han assignat dades a un, o a més d'un, dels components R, G i B"
 msgid "Error reading row %d component %d"
 msgstr "S'ha produït un error en llegir la fila %d del component %d"
 
-#: operations/external/jp2-load.c:530
+#: operations/external/jp2-load.c:525
 msgid "JPEG 2000 File Loader"
 msgstr "Carregador d'imatges JPEG 2000"
 
-#: operations/external/jp2-load.c:532
+#: operations/external/jp2-load.c:527
 msgid "JPEG 2000 image loader using jasper."
 msgstr "Carregador d'imatges JPEG 2000 utilitzant el jaspi."
 
@@ -6252,7 +6251,7 @@ msgstr "Preserva el Model"
 msgid "When TRUE the model will not be freed"
 msgstr "Quan és TRUE no s'alliberarà el model"
 
-#: operations/external/npd.c:50 operations/transform/transform-core.c:195
+#: operations/external/npd.c:50 operations/transform/transform-core.c:199
 #: operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Mostrejador d'ús intern"
@@ -6261,11 +6260,11 @@ msgstr "Mostrejador d'ús intern"
 msgid "Performs n-point image deformation"
 msgstr "Realitza n-punts de la imatge de deformació"
 
-#: operations/external/npy-save.c:219
+#: operations/external/npy-save.c:215
 msgid "NumPy File Saver"
 msgstr "Desador de fitxers NumPy"
 
-#: operations/external/npy-save.c:221
+#: operations/external/npy-save.c:217
 msgid "NumPy (Numerical Python) image saver"
 msgstr "Desador d'imatge NumPy (desador de fitxer python numèric)"
 
@@ -6350,11 +6349,11 @@ msgstr "Vector"
 msgid "A GeglVector representing the path of the stroke"
 msgstr "Un vector Gegl que representa el camí del traç"
 
-#: operations/external/path.c:533
+#: operations/external/path.c:532
 msgid "Render Path"
 msgstr "Dibuixa el camí"
 
-#: operations/external/path.c:537
+#: operations/external/path.c:536
 msgid "Renders a brush stroke"
 msgstr "Renderitza un traç de pinzell"
 
@@ -6380,11 +6379,11 @@ msgstr ""
 msgid "URI for file to load."
 msgstr "URI pel fitxer que s'ha de carregar."
 
-#: operations/external/png-load.c:498
+#: operations/external/png-load.c:496
 msgid "PNG File Loader"
 msgstr "Carregador de fitxers PNG"
 
-#: operations/external/png-load.c:500
+#: operations/external/png-load.c:498
 msgid "PNG image loader."
 msgstr "Carregador d'imatges PNG."
 
@@ -6432,7 +6431,7 @@ msgstr "Carregador d'imatges PPM"
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "Desador d'imatge PPM (desador de mapes de píxels portables.)"
 
-#: operations/external/raw-load.c:252
+#: operations/external/raw-load.c:251
 msgid "libraw File Loader"
 msgstr "Carregador de fitxers del libraw"
 
@@ -6476,11 +6475,11 @@ msgstr "Títol de la icona"
 msgid "Icon to be used for output window"
 msgstr "Icona que s'utilitzarà per a la finestra de sortida"
 
-#: operations/external/sdl-display.c:172
+#: operations/external/sdl-display.c:168
 msgid "SDL Display"
 msgstr "Visualització SDL"
 
-#: operations/external/sdl-display.c:175
+#: operations/external/sdl-display.c:171
 msgid ""
 "Displays the input buffer in an SDL window (restricted to one display op/"
 "process, due to SDL implementation issues)."
@@ -6499,12 +6498,12 @@ msgstr "Amplada per la imatge renderitzada"
 msgid "Height for rendered image"
 msgstr "Alçada per la imatge renderitzada"
 
-#: operations/external/svg-load.c:293
+#: operations/external/svg-load.c:291
 msgid "SVG File Loader"
 msgstr "Carregador d'imatges SVG"
 
 #. not hidden because it has extra API
-#: operations/external/svg-load.c:295
+#: operations/external/svg-load.c:293
 msgid "Load an SVG file using librsvg"
 msgstr "Carrega un fitxer SVG amb la librsvg"
 
@@ -6581,11 +6580,11 @@ msgstr "Amplada de la renderització, en píxels. (només lectura)"
 msgid "Rendered height in pixels. (read only)"
 msgstr "Alçada de la renderització, en píxels. (només lectura)"
 
-#: operations/external/text.c:346
+#: operations/external/text.c:342
 msgid "Render Text"
 msgstr "Dibuixa el text"
 
-#: operations/external/text.c:349
+#: operations/external/text.c:345
 msgid "Display a string of text using pango and cairo."
 msgstr "Mostra una cadena de text amb Pango i Cairo."
 
@@ -6597,19 +6596,19 @@ msgstr "Directori"
 msgid "Image file directory (subfile)"
 msgstr "Directori d'arxius d'imatge (subfitxer)"
 
-#: operations/external/tiff-load.c:876
+#: operations/external/tiff-load.c:872
 msgid "TIFF File Loader"
 msgstr "Carregador de fitxers TIFF"
 
-#: operations/external/tiff-load.c:878
+#: operations/external/tiff-load.c:874
 msgid "TIFF image loader using libtiff"
 msgstr "Carregador d'imatges TIFF utilitzant libtiff"
 
-#: operations/external/tiff-save.c:621
+#: operations/external/tiff-save.c:614
 msgid "TIFF File Saver"
 msgstr "Desador de fitxers TIFF"
 
-#: operations/external/tiff-save.c:623
+#: operations/external/tiff-save.c:616
 msgid "TIFF image saver using libtiff"
 msgstr "Imatge TIFF desador, utilitzant libtiff"
 
@@ -6704,11 +6703,11 @@ msgstr "Traç vectorial"
 msgid "Renders a vector stroke"
 msgstr "Renderitza un traç vectorial"
 
-#: operations/external/webp-load.c:346
+#: operations/external/webp-load.c:344
 msgid "WebP File Loader"
 msgstr "Carregador de fitxers WebP"
 
-#: operations/external/webp-load.c:348
+#: operations/external/webp-load.c:346
 msgid "WebP image loader."
 msgstr "Carregador d'imatges WebP."
 
@@ -6716,11 +6715,11 @@ msgstr "Carregador d'imatges WebP."
 msgid "WebP compression quality"
 msgstr "Qualitat de la compressió WebP"
 
-#: operations/external/webp-save.c:196
+#: operations/external/webp-save.c:192
 msgid "WebP File Saver"
 msgstr "Desador de fitxers WebP"
 
-#: operations/external/webp-save.c:198
+#: operations/external/webp-save.c:194
 msgid "WebP image saver"
 msgstr "Desador d'imatges WebP"
 
@@ -7113,27 +7112,27 @@ msgstr "Cadena de la transformació amb sintaxi SVG"
 msgid "Do a transformation using SVG syntax transformation."
 msgstr "Fes una transformació utilitzant una transformació amb sintaxi SVG."
 
-#: operations/transform/transform-core.c:178
+#: operations/transform/transform-core.c:182
 msgid "Origin-x"
 msgstr "Origen X"
 
-#: operations/transform/transform-core.c:179
+#: operations/transform/transform-core.c:183
 msgid "X coordinate of origin"
 msgstr "Coordenada X de l'origen"
 
-#: operations/transform/transform-core.c:186
+#: operations/transform/transform-core.c:190
 msgid "Origin-y"
 msgstr "Origen Y"
 
-#: operations/transform/transform-core.c:187
+#: operations/transform/transform-core.c:191
 msgid "Y coordinate of origin"
 msgstr "Coordenada Y de l'origen"
 
-#: operations/transform/transform-core.c:202
+#: operations/transform/transform-core.c:206
 msgid "Clip to input"
 msgstr "Retalla a la mida d'entrada"
 
-#: operations/transform/transform-core.c:203
+#: operations/transform/transform-core.c:207
 msgid "Force output bounding box to be input bounding box."
 msgstr ""
 "Forceu la capsa contenidora de sortida perquè sigui una capsa contenidora "
@@ -7235,11 +7234,11 @@ msgstr "Desplaçament de Y"
 msgid "Offset for Y axis"
 msgstr "Desplaçament per l'eix Y"
 
-#: operations/workshop/bayer-matrix.c:328
+#: operations/workshop/bayer-matrix.c:324
 msgid "Bayer Matrix"
 msgstr "Matriu de Bayer"
 
-#: operations/workshop/bayer-matrix.c:333
+#: operations/workshop/bayer-matrix.c:329
 msgid "Generate a Bayer matrix pattern"
 msgstr "Genera un patró de matriu de Bayer"
 
@@ -7280,16 +7279,16 @@ msgid "The limit above which colors remain opaque."
 msgstr "El límit sobre el qual els colors romanen opacs."
 
 #: operations/workshop/color-to-alpha-plus.c:40
-#, fuzzy
-#| msgid "Lower threshold"
 msgid "Compress threshold range"
-msgstr "Llindar inferior"
+msgstr "Comprimeix el tram del llindar"
 
 #: operations/workshop/color-to-alpha-plus.c:41
 msgid ""
 "Compress the threshold range to the minimal extent that would produce "
 "different results."
 msgstr ""
+"Comprimiu el tram del llindar fins a l'àrea mínima que produiria resultats "
+"diferents."
 
 #: operations/workshop/color-to-alpha-plus.c:232
 msgid "Color to Alpha +"
@@ -7336,7 +7335,7 @@ msgstr ""
 msgid "Ditto"
 msgstr "Ditto"
 
-#: operations/workshop/ditto.c:115
+#: operations/workshop/ditto.c:116
 msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Operació de prova per fer un mapa 1:1, des de l'entrada a la sortida, mentre "
@@ -7574,11 +7573,11 @@ msgstr ""
 msgid "video device path"
 msgstr "Camí del dispositiu de vídeo"
 
-#: operations/workshop/external/v4l2.c:775
+#: operations/workshop/external/v4l2.c:774
 msgid "Video4Linux2 Frame Source"
 msgstr "Font del fotograma Video4Linux2"
 
-#: operations/workshop/external/v4l2.c:777
+#: operations/workshop/external/v4l2.c:776
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr ""
 "Entrada de Video4Linux2, càmeres web, capturadores de fotogrames i "
@@ -7657,11 +7656,11 @@ msgstr "Color 5"
 msgid "Stop 5"
 msgstr "Aturada 5"
 
-#: operations/workshop/gradient-map.c:245
+#: operations/workshop/gradient-map.c:241
 msgid "Gradient Map"
 msgstr "Mapa de degradat"
 
-#: operations/workshop/gradient-map.c:248
+#: operations/workshop/gradient-map.c:244
 msgid "Applies a color gradient."
 msgstr "Aplica un degradat de color."
 
@@ -7688,15 +7687,6 @@ msgstr "Imatge integral"
 #: operations/workshop/integral-image.c:254
 msgid "Compute integral and squared integral image"
 msgstr "Calcula la imatge integral i integral quadrada"
-
-#: operations/workshop/kuwahara.c:27
-msgid "Radius of square pixel region (width and height will be radius*2+1)"
-msgstr ""
-"Radi de la regió quadrada de píxels (l'amplada i l'alçada seran radi*2+1)"
-
-#: operations/workshop/kuwahara.c:245
-msgid "Edge preserving blur"
-msgstr "Difuminat que preserva la vora"
 
 #: operations/workshop/linear-sinusoid.c:26
 msgid "X Period"
@@ -7794,11 +7784,11 @@ msgstr "Percentil d'alfa"
 msgid "Neighborhood alpha percentile"
 msgstr "Percentil d'alfa del veïnat"
 
-#: operations/workshop/median-blur.c:634
+#: operations/workshop/median-blur.c:630
 msgid "Median Blur"
 msgstr "Mitjana de difuminat"
 
-#: operations/workshop/median-blur.c:636
+#: operations/workshop/median-blur.c:633
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -7868,15 +7858,15 @@ msgstr "Ajustament del color de les ombres"
 msgid "Highlights color adjustment"
 msgstr "Ajustament de color de ressaltats"
 
-#: operations/workshop/shadows-highlights.c:109
+#: operations/workshop/shadows-highlights.c:237
 msgid "Shadows-Highlights"
 msgstr "Ombres-ressaltats"
 
-#: operations/workshop/shadows-highlights.c:112
+#: operations/workshop/shadows-highlights.c:240
 msgid "Perform shadows and highlights correction"
 msgstr "Corregeix ombres i ressaltats"
 
-#: operations/workshop/shadows-highlights-correction.c:314
+#: operations/workshop/shadows-highlights-correction.c:305
 msgid "Lighten shadows and darken highlights"
 msgstr "Aclareix ombres i enfosqueix ressaltats"
 
@@ -7916,6 +7906,13 @@ msgstr "Esfèric"
 #: operations/workshop/spherize.c:330
 msgid "Wrap image around a spherical cap"
 msgstr "Embolcalla la imatge al voltant d'un tap esfèric"
+
+#~ msgid "Radius of square pixel region (width and height will be radius*2+1)"
+#~ msgstr ""
+#~ "Radi de la regió quadrada de píxels (l'amplada i l'alçada seran radi*2+1)"
+
+#~ msgid "Edge preserving blur"
+#~ msgstr "Difuminat que preserva la vora"
 
 #~ msgid "Resilient"
 #~ msgstr "Resistent"
