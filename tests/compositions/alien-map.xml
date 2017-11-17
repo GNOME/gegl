@@ -2,7 +2,7 @@
 <gegl>
   <node operation='gegl:alien-map'>
     <params>
-      <param name='color_model'>RGB</param>
+      <param name='color_model'>rgb</param>
       <param name='cpn_1_frequency'>2.0</param>
       <param name='cpn_2_frequency'>2.0</param>
       <param name='cpn_3_frequency'>2.0</param>
