@@ -171,7 +171,7 @@ parse_float_argument_list (float rgba_color[4],
         }
     }
 
-  /* Make sure there is a traling ')' and that that is the last token. */
+  /* Make sure there is a trailing ')' and that that is the last token. */
   if (g_scanner_get_next_token (scanner) == G_TOKEN_RIGHT_PAREN &&
       g_scanner_get_next_token (scanner) == G_TOKEN_EOF)
     {

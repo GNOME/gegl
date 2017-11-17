@@ -292,7 +292,7 @@ binary_dt_1st_pass (GeglOperation *operation,
  * @param output the output buffer.
  * @param result the region of interest.
  * @param level the level of detail
- * @return True, if the filter was successfull applied.
+ * @return True, if the filter was successfully applied.
  */
 static gboolean
 process (GeglOperation       *operation,

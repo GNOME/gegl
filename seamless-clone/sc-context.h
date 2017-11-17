@@ -96,7 +96,7 @@ void            gegl_sc_context_set_uvt_cache  (GeglScContext       *context,
 
 /**
  * Call this function to render the specified area of the seamless
- * cloning composition. This call must be preceeded by a call to
+ * cloning composition. This call must be preceded by a call to
  * the prepare function.
  */
 gboolean        gegl_sc_context_render         (GeglScContext       *context,

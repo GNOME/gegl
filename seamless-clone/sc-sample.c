@@ -112,7 +112,7 @@ gegl_sc_compute_sample_list_weights (gdouble           Px,
       /* Did the point match one of the outline points? If so, convert
        * the sample list to be made only of that outline point.
        * This shouldn't happen since we give a direct sample list to
-       * boundry points, but this is a backup and also in case that due
+       * boundary points, but this is a backup and also in case that due
        * to small distances the norm came out zero
        */
       if (norm1 == 0)

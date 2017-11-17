@@ -72,7 +72,7 @@ static GeglPathList *gegl_path_spiro_flatten (GeglPathList *original)
   gboolean closed = FALSE;
   gint count;
   gint i;
-  /* first we do a run through the path checking it's length
+  /* first we do a run through the path checking its length
    * and determining whether we can flatten the incoming path
    */
   for (count=0,iter = original; iter; iter=iter->next)

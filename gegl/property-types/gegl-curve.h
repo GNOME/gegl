@@ -165,7 +165,7 @@ gdouble      gegl_curve_calc_value     (GeglCurve   *curve,
  * gegl_curve_calc_values: (skip)
  * @curve: a #GeglCurve.
  * @x_min: the minimum value to compute for
- * @x_max: the maxmimum value to compute for
+ * @x_max: the maximum value to compute for
  * @num_samples: number of samples to calculate
  * @xs: return location for the x coordinates
  * @ys: return location for the y coordinates

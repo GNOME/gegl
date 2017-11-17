@@ -1,7 +1,7 @@
 
  /**
  * gegl_cl_init:
- * @error: Any error that occured
+ * @error: Any error that occurred
  *
  * Initialize and enable OpenCL, calling this function again
  * will re-enable OpenCL if it has been disabled.

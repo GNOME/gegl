@@ -45,7 +45,7 @@ struct _GeglOperationContext
 
 
   gboolean       cached;       /* true if the cache can be used directly, and
-                                  recomputation of inputs is unneccesary) */
+                                  recomputation of inputs is unnecessary) */
 
   gint           refs;         /* set to number of nodes that depends on it
                                   before evaluation begins, each time data is

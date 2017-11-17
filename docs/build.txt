@@ -1,6 +1,6 @@
 Building from source
 --------------------
-GEGL and it's dependencies are known to work on Linux based systems, windows
+GEGL and its dependencies are known to work on Linux based systems, windows
 with msys/mingw, and probably other platforms.
 
 Download

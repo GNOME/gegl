@@ -252,7 +252,7 @@ set_clone_prop_as_well:
         }
       else
         {
-          g_warning ("operation desired unknown parapspec type for %s",
+          g_warning ("operation desired unknown paramspec type for %s",
                      param_name);
         }
     }

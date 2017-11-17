@@ -26,7 +26,7 @@
  *   Island  - An opaque pixel with 8 non-opaque neighbors
  *   Edge    - An opaque pixel with at least 1 (out of 8) non-opaque
  *             neighbors
- *   Area    - A continuos region (using 8 neighbor connectivity) of
+ *   Area    - A continuous region (using 8 neighbor connectivity) of
  *             pixels with the same opacity state
  *   Outline - A non-repeating sequence of edge pixels where each pixel
  *             is a neighbor of the previous, and the first pixel is a
@@ -35,7 +35,7 @@
  * Currently, the logic in this file implements an algorithm for
  * finding one outline. If more than one outline exists (may happen due
  * to non-opaque areas inside opaque areas ("holes") or due to the
- * existance of more than one opaque area in the image)
+ * existence of more than one opaque area in the image)
  * NOTE: Island pixels are ignored in the outline finding algorithm
  */
 
@@ -147,7 +147,7 @@ is_valid_edge (const GeglRectangle *search_area,
  *   the line to the next outline pixel must contain only non-opaque
  *   pixels!
  * - So, use this property to go clockwise inside this circular sector
- *   untill you find an opaque pixel. That pixel must then be the next
+ *   until you find an opaque pixel. That pixel must then be the next
  *   edge pixel (when going in clock-wise direction)!
  */
 static inline GeglScDirection

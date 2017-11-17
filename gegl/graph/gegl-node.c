@@ -589,7 +589,7 @@ gegl_node_connect_to (GeglNode    *source,
 }
 
 /* the implementation of gegl_node_invalidated() can use either GeglRegions
- * or GeglRectangles (bounding boxes) for calculating the invadilated areas
+ * or GeglRectangles (bounding boxes) for calculating the invalidated areas
  * of the nodes in the graph.  The GeglRegion version is more granular,
  * invalidating exact areas, but has higher overhead, while the GeglRectangle
  * version in more coarse, potentially over-invalidating (but never under-

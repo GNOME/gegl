@@ -51,7 +51,7 @@ test_misc_case_insensitive_extension_handler (void)
 
   gegl_operation_handlers_register_loader (lowercase, handler);
 
-  /* Make sure comparisions are case insensitive */
+  /* Make sure comparisons are case insensitive */
   received_handler = gegl_operation_handlers_get_loader (uppercase);
   if (strcmp (received_handler, handler) != 0)
     result = FAILURE;

@@ -139,7 +139,7 @@ gegl_pad_disconnect (GeglPad        *sink,
 
   g_assert (sink == gegl_connection_get_sink_pad (connection));
   /*
-   *  this happends with ghostpads sometimes,. maybe check for that being
+   *  this happens with ghostpads sometimes,. maybe check for that being
    *  the case, and then do the assert, or bake it into the assert?
    *
      g_assert (source == gegl_connection_get_source_pad (connection));

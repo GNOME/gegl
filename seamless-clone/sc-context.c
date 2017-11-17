@@ -421,7 +421,7 @@ gegl_sc_context_sample_color_difference (GeglScRenderInfo *info,
   GeglScColor bg_c[GEGL_SC_COLORA_CHANNEL_COUNT];
 
   /* If the outline point is outside the background, then we can't
-   * compute a propper difference there. So, don't add it to the
+   * compute a proper difference there. So, don't add it to the
    * sampling.
    *
    * The outline point obviously must lie inside the foreground, so

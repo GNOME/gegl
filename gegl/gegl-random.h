@@ -86,7 +86,7 @@ void gegl_random_set_seed (GeglRandom *rand,
  * @n: number no (each x,y coordinate provides its own sequence of
  * numbers
  * @min: minimum value
- * @max: maxmimum value
+ * @max: maximum value
  *
  * Return a random floating point number in the range specified,
  * for the given x,y coordinates and GeglRandom provided, if multiple different
@@ -109,7 +109,7 @@ gfloat gegl_random_float_range (const GeglRandom *rand,
  * @n: number no (each x,y coordinate provides its own sequence of
  * numbers
  * @min: minimum value
- * @max: maxmimum value+1
+ * @max: maximum value+1
  *
  * Return a random integer point number in the range specified,
  * for the given x,y coordinates and GeglRandom provided, if multiple different

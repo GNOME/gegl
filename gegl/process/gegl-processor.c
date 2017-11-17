@@ -432,7 +432,7 @@ render_rectangle (GeglProcessor *processor)
   const Babl *format   = NULL;
   gint        pxsize;
 
-  /* Retreive the cache if the processor's node is not buffered if it's
+  /* Retrieve the cache if the processor's node is not buffered if its
    * operation is a sink and it doesn't use the full area  */
   buffered = !(GEGL_IS_OPERATION_SINK(processor->real_node->operation) &&
                !gegl_operation_sink_needs_full (processor->real_node->operation));
@@ -512,7 +512,7 @@ render_rectangle (GeglProcessor *processor)
               buf = g_malloc (dr->width * dr->height * pxsize);
               g_assert (buf);
 
-              /* FIXME: Check if the node caches naturaly, if so the buffer_set call isn't needed */
+              /* FIXME: Check if the node caches naturally, if so the buffer_set call isn't needed */
 
               /* do the image calculations using the buffer */
               gegl_node_blit (processor->input, 1.0/(1<<processor->level),

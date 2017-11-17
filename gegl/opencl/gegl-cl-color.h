@@ -38,12 +38,12 @@ gboolean      gegl_cl_color_compile_kernels (void);
 gboolean      gegl_cl_color_babl (const Babl *buffer_format,
                                   size_t     *bytes);
 
-/** Return TRUE if the convertion is OpenCL supported */
+/** Return TRUE if the conversion is OpenCL supported */
 GeglClColorOp gegl_cl_color_supported (const Babl *in_format,
                                        const Babl *out_format);
 
 /** Copy and convert size pixels from in_tex to aux_tex.
- *  Return TRUE if succesfull.
+ *  Return TRUE if successful.
  */
 gboolean      gegl_cl_color_conv (cl_mem        in_tex,
                                   cl_mem        aux_tex,

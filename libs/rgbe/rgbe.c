@@ -443,7 +443,7 @@ rgbe_header_read_orientation (rgbe_file *file,
           goto cleanup;
 
   /* The termination check is simplified to a space check, as each set of
-   * axis parameters are space seperated. We double check for a newline next
+   * axis parameters are space separated. We double check for a newline next
    * though.
    */
   } while (*data++ == ' ');

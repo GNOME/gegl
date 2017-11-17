@@ -47,7 +47,7 @@ struct _GeglCurvePoint
 
 struct _GeglCurvePrivate
 {
-  gdouble          y_min;  /*< should definitly be construct properties */
+  gdouble          y_min;  /*< should definitely be construct properties */
   gdouble          y_max;
   GArray          *points;
   gboolean         need_recalc;

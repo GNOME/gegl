@@ -46,7 +46,7 @@ struct _GeglOperationSinkClass
 {
   GeglOperationClass parent_class;
 
-  /* Wether or not the sink operation needs full input data in one go
+  /* Whether or not the sink operation needs full input data in one go
    * in order to be able to do its processing
    */
   gboolean              needs_full;

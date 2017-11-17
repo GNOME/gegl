@@ -127,7 +127,7 @@ GeglBuffer *     gegl_buffer_load             (const gchar         *path);
  * gegl_buffer_flush:
  * @buffer: a #GeglBuffer
  *
- * Flushes all unsaved data to disk, this is not neccesary for shared
+ * Flushes all unsaved data to disk, this is not necessary for shared
  * geglbuffers opened with gegl_buffer_open since they auto-sync on writes.
  */
 void            gegl_buffer_flush             (GeglBuffer          *buffer);
@@ -165,7 +165,7 @@ const GeglRectangle * gegl_buffer_get_extent  (GeglBuffer *buffer);
  * operation is valid on any buffer, reads on subbuffers outside the master
  * buffer's extent are at the moment undefined.
  *
- * Returns TRUE if the change of extent was succesful.
+ * Returns TRUE if the change of extent was successful.
  */
 gboolean          gegl_buffer_set_extent      (GeglBuffer          *buffer,
                                                const GeglRectangle *extent);
@@ -177,7 +177,7 @@ gboolean          gegl_buffer_set_extent      (GeglBuffer          *buffer,
  *
  * Changes the size and position of the abyss rectangle of a buffer.
  *
- * Returns TRUE if the change of abyss was succesful.
+ * Returns TRUE if the change of abyss was successful.
  */
 gboolean          gegl_buffer_set_abyss      (GeglBuffer          *buffer,
                                               const GeglRectangle *abyss);

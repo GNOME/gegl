@@ -40,7 +40,7 @@ link:gegl-operation-point-composer.h.html[GeglOperationPointComposer]::
 
 link:gegl-operation-source.h.html[GeglOperationSource]::
     Operations used as render sources or file loaders, the process method
-    receives a GeglBuffer to write it's output into
+    receives a GeglBuffer to write its output into
 
 link:gegl-operation-point-render.h.html[GeglOperationPointRender]::
     The point-render base class is a specialized source operation, where the

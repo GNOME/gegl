@@ -37,7 +37,7 @@ void gegl_instrument_enable   (void);
   }
 
 /* store a timing instrumentation (parent is expected to exist,
- * and to keep it's own record of the time-slice reported) */
+ * and to keep its own record of the time-slice reported) */
 #define gegl_instrument(parent, scale, usecs) \
   { if (gegl_instrument_enabled) { \
 real_gegl_instrument (parent, scale, usecs); \

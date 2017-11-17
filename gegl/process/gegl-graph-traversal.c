@@ -464,7 +464,7 @@ gegl_graph_process (GeglGraphTraversal *path,
               context->level = level;
 
               /* note: this hard-coding of "output" makes some more custom
-               * graph topologies harder than neccesary.
+               * graph topologies harder than necessary.
                */
               gegl_operation_process (operation, context, "output", &context->need_rect, context->level);
               operation_result = GEGL_BUFFER (gegl_operation_context_get_object (context, "output"));

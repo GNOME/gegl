@@ -15,11 +15,11 @@ Source overview
   │   │                  - read/write rectangular region as linear buffer for
   │   │                    any babl supported pixel format.
   │   ├──graph          graph storage and manipulation code.
-  │   ├──module         The code to load plug-ins located in a colon seperated
+  │   ├──module         The code to load plug-ins located in a colon separated
   │   │                 list of paths from the environment variable GEGL_PATH
   │   ├──opencl         The GEGL base class for OpenCL.
   │   ├──operation      The GeglOperation base class, and subclasses that act
-  │   │                 as baseclasses for implementeting different types of
+  │   │                 as baseclasses for implementing different types of
   │   │                 operation plug-ins.
   │   ├──process        The code controlling data processing.
   │   └──property-types specialized classes/paramspecs for GeglOperation
@@ -40,7 +40,7 @@ Source overview
   │   ├──external      Operations with external dependencies.
   │   ├──common        Other operations.
   │   └──workshop      Works in progress, (you must pass --enable-workshop
-  │       │            when configurig to build these by default, you can enter
+  │       │            when configuring to build these by default, you can enter
   │       │            the directory manually and type make && sudo make install
   │       │            as well.
   │       │

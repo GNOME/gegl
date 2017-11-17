@@ -109,7 +109,7 @@ GeglNode    * gegl_node_new_child        (GeglNode      *parent,
  *
  * Makes a connection between the pads of two nodes.
  *
- * Returns TRUE if the connection was succesfully made.
+ * Returns TRUE if the connection was successfully made.
  */
 
 gboolean      gegl_node_connect_from     (GeglNode      *sink,
@@ -126,7 +126,7 @@ gboolean      gegl_node_connect_from     (GeglNode      *sink,
  *
  * Makes a connection between the pads of two nodes.
  *
- * Returns TRUE if the connection was succesfully made.
+ * Returns TRUE if the connection was successfully made.
  */
 gboolean      gegl_node_connect_to       (GeglNode      *source,
                                           const gchar   *output_pad_name,
@@ -308,7 +308,7 @@ void          gegl_node_blit_buffer      (GeglNode            *node,
  * @sink_node: a #GeglNode without outputs.
  *
  * Render a composition. This can be used for instance on a node with a "png-save"
- * operation to render all neccesary data, and make it be written to file. This
+ * operation to render all necessary data, and make it be written to file. This
  * function wraps the usage of a GeglProcessor in a single blocking function
  * call. If you need a non-blocking operation, then make a direct use of
  * #gegl_processor_work. See #GeglProcessor.
@@ -580,7 +580,7 @@ gchar      ** gegl_node_list_output_pads (GeglNode      *node);
  *
  * Creates a new processing node that performs the specified operation.
  * All properties of the operation will have their default values. This
- * is included as an addiiton to #gegl_node_new_child in the public API to have
+ * is included as an addition to #gegl_node_new_child in the public API to have
  * a non varargs entry point for bindings as well as sometimes simpler more
  * readable code.
  *

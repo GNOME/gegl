@@ -173,7 +173,7 @@ gegl_operation_process (GeglOperation        *operation,
 }
 
 /* Calls an extending class' get_bound_box method if defined otherwise
- * just returns a zero-initiliased bouding box
+ * just returns a zero-initialised bounding box
  */
 GeglRectangle
 gegl_operation_get_bounding_box (GeglOperation *self)
