@@ -553,6 +553,49 @@ process (GeglOperation       *operation,
   return TRUE;
 }
 
+static gboolean
+operation_process (GeglOperation        *operation,
+                   GeglOperationContext *context,
+                   const gchar          *output_prop,
+                   const GeglRectangle  *result,
+                   gint                  level)
+{
+  GeglProperties  *o = GEGL_PROPERTIES (operation);
+  gboolean         success = FALSE;
+
+  if (o->dither_method == GEGL_DITHER_FLOYD_STEINBERG)
+    {
+      GeglOperationFilterClass *klass;
+      GeglBuffer  *input;
+      GeglBuffer  *output;
+
+      if (strcmp (output_prop, "output"))
+        {
+          g_warning ("requested processing of %s pad on a filter", output_prop);
+          return FALSE;
+        }
+
+      input  = gegl_operation_context_get_source (context, "input");
+      output = gegl_operation_context_get_output_maybe_in_place (operation,
+                                                                 context,
+                                                                 input,
+                                                                 result);
+      klass = GEGL_OPERATION_FILTER_GET_CLASS (operation);
+      success = klass->process (operation, input, output, result, level);
+
+      g_clear_object (&input);
+    }
+  else
+    {
+      GeglOperationClass  *operation_class;
+      operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+
+      success = operation_class->process (operation, context, output_prop, result, level);
+    }
+
+  return success;
+}
+
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
@@ -580,6 +623,7 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   operation_class->prepare = prepare;
+  operation_class->process = operation_process;
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->get_cached_region = get_cached_region;
   filter_class->process = process;
