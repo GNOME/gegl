@@ -11,6 +11,8 @@ Add meta-op graph case to gegl_operation_get_source_node
 
 Versioning of installed .mo files restored.
 
+Enable multi-threaded processes by default.
+
 Stop enabling opencl by default, performance with beignet is worse than
 multi-threading, and with nvidia blank results are being observed in GIMP;
 maybe improved opencl kernels would make it competetive with multi threaded
@@ -19,9 +21,18 @@ cpu?
 Operations
 ~~~~~~~~~~
 
+median-blur: now op coming out of the GEGL workshop.
+
 exposure: increase old lingering constant enabling larger range of valid inputs.
 
-transform: turn off multi-threading, it was currently degrading overall performance.
+transform: turn off multi-threading, it was currently degrading overall
+performance.
+
+Contributors
+~~~~~~~~~~~~
+
+Debarshi Ray, Ell, Jordi Mas, Øyvind Kolås, Richard Kreckel, Thomas Manni
+
 
 GEGL-0.3.22 2017-11-12
 ----------------------
