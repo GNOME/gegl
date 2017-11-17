@@ -65,6 +65,7 @@ gegl_common_la_SOURCES =\
 	map-relative.c \
 	matting-global.c \
 	mblur.c \
+	median-blur.c \
 	mirrors.c \
 	mix.c \
 	mono-mixer.c \

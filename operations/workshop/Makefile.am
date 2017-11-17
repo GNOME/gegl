@@ -20,7 +20,6 @@ op_LTLIBRARIES =    \
 	hstack.la \
 	integral-image.la \
 	linear-sinusoid.la \
-	median-blur.la \
 	rawbayer-load.la \
 	segment-kmeans.la \
 	shadows-highlights.la \

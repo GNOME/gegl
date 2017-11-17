@@ -55,6 +55,7 @@ operations/common/map-absolute.c
 operations/common/map-relative.c
 operations/common/matting-global.c
 operations/common/mblur.c
+operations/common/median-blur.c
 operations/common/mirrors.c
 operations/common/mix.c
 operations/common/mono-mixer.c
@@ -249,7 +250,6 @@ operations/workshop/gradient-map.c
 operations/workshop/hstack.c
 operations/workshop/integral-image.c
 operations/workshop/linear-sinusoid.c
-operations/workshop/median-blur.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/shadows-highlights.c
