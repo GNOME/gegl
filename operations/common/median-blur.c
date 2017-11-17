@@ -48,8 +48,8 @@ property_double  (alpha_percentile, _("Alpha percentile"), 50)
   value_range (0, 100)
   description (_("Neighborhood alpha percentile"))
 
-property_boolean (exact, _("Exact result"), FALSE)
-  description (_("Avoid clipping and quantization errors (slower)"))
+property_boolean (high_precision, _("High precision"), FALSE)
+  description (_("Avoid clipping and quantization (slower)"))
 
 #else
 
@@ -607,7 +607,6 @@ prepare (GeglOperation *operation)
   GeglProperties          *o         = GEGL_PROPERTIES (operation);
   const Babl              *in_format = gegl_operation_get_source_format (operation, "input");
   const Babl              *format    = NULL;
-  gboolean                 exact     = o->exact;
   UserData                *data;
 
   area->left   =
@@ -619,7 +618,7 @@ prepare (GeglOperation *operation)
     o->user_data = g_slice_new0 (UserData);
 
   data                       = o->user_data;
-  data->quantize             = ! exact;
+  data->quantize             = ! o->high_precision;
   data->neighborhood_outline = g_renew (gint, data->neighborhood_outline,
                                         o->radius + 1);
   init_neighborhood_outline (o->neighborhood, o->radius,
@@ -629,7 +628,7 @@ prepare (GeglOperation *operation)
     {
       const Babl *model = babl_format_get_model (in_format);
 
-      if (exact)
+      if (o->high_precision)
         {
           if (model == babl_model ("Y"))
             format = babl_format ("Y float");
@@ -689,7 +688,7 @@ prepare (GeglOperation *operation)
     }
   else
     {
-      if (exact)
+      if (o->high_precision)
         format = babl_format ("RGBA float");
       else
         format = babl_format ("R'G'B'A float");
