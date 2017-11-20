@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=GEGL&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-10-31 00:40+0100\n"
-"PO-Revision-Date: 2017-10-31 00:48+0100\n"
+"POT-Creation-Date: 2017-11-20 18:15+0100\n"
+"PO-Revision-Date: 2017-11-20 18:16+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -504,15 +504,14 @@ msgstr ""
 "originale."
 
 #: ../operations/common/box-blur.c:25 ../operations/common/c2g.c:27
-#: ../operations/common/edge-neon.c:47 ../operations/common/snn-mean.c:26
-#: ../operations/common/stress.c:27 ../operations/common/vignette.c:38
-#: ../operations/common/wavelet-blur-1d.c:28
+#: ../operations/common/edge-neon.c:47 ../operations/common/median-blur.c:38
+#: ../operations/common/snn-mean.c:26 ../operations/common/stress.c:27
+#: ../operations/common/vignette.c:38 ../operations/common/wavelet-blur-1d.c:28
 #: ../operations/common/wavelet-blur.c:27
 #: ../operations/common-gpl3+/spiral.c:47
 #: ../operations/common-gpl3+/supernova.c:45
 #: ../operations/common-gpl3+/whirl-pinch.c:45
 #: ../operations/external/matting-levin.c:29
-#: ../operations/workshop/median-blur.c:38
 #: ../operations/workshop/shadows-highlights.c:37
 msgid "Radius"
 msgstr "Raggio"
@@ -523,11 +522,11 @@ msgstr ""
 "Raggio della regione di pixel quadrata (larghezza e altezza saranno "
 "raggio*2+1)."
 
-#: ../operations/common/box-blur.c:394
+#: ../operations/common/box-blur.c:400
 msgid "Box Blur"
 msgstr "Sfocatura scatola"
 
-#: ../operations/common/box-blur.c:396
+#: ../operations/common/box-blur.c:402
 msgid "Blur resulting from averaging the colors of a square neighbourhood."
 msgstr ""
 "La sfocatura risultante dalla media dei colori di un quadrato di punti "
@@ -1492,11 +1491,11 @@ msgstr "Il metodo dithering da usare"
 msgid "Random seed"
 msgstr "Seme casuale"
 
-#: ../operations/common/dither.c:590
+#: ../operations/common/dither.c:634
 msgid "Dither"
 msgstr "Dither"
 
-#: ../operations/common/dither.c:593
+#: ../operations/common/dither.c:637
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
@@ -1644,7 +1643,7 @@ msgstr "Livello del nero"
 msgid "Adjust the black level"
 msgstr "Regola il livello del nero"
 
-#: ../operations/common/exposure.c:30 ../operations/common/exposure.c:181
+#: ../operations/common/exposure.c:30 ../operations/common/exposure.c:461
 msgid "Exposure"
 msgstr "Esposizione"
 
@@ -1652,7 +1651,7 @@ msgstr "Esposizione"
 msgid "Relative brightness change in stops"
 msgstr "Cambiamento brillantezza relativa in stop"
 
-#: ../operations/common/exposure.c:184
+#: ../operations/common/exposure.c:465
 msgid ""
 "Changes Exposure of an image, allows stepping HDR and photographs up/down in "
 "stops. "
@@ -1688,7 +1687,7 @@ msgstr "Soglia gradiente per abbassare l'aumento del dettaglio"
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Fattal et al. 2002 Tone Mapping"
 
-#: ../operations/common/fattal02.c:1335
+#: ../operations/common/fattal02.c:1334
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -1861,11 +1860,11 @@ msgstr ""
 "specificare una catena con una sorgente vista come qualcosa connessa a degli "
 "appunti ausiliari."
 
-#: ../operations/common/grey.c:101
+#: ../operations/common/grey.c:143
 msgid "Make Grey"
 msgstr "Rendi grigia"
 
-#: ../operations/common/grey.c:104
+#: ../operations/common/grey.c:146
 msgid "Turns the image grayscale"
 msgstr "Trasforma l'immagine in scala di grigi"
 
@@ -2308,6 +2307,69 @@ msgstr ""
 "Sommatoria di sfocature di movimento usando un filtro kalman, da usare con "
 "quadri di videosequenze."
 
+#: ../operations/common/median-blur.c:28 ../operations/common/pixelize.c:29
+#: ../operations/common/vignette.c:26
+msgid "Square"
+msgstr "Quadrato"
+
+#: ../operations/common/median-blur.c:29 ../operations/common/newsprint.c:26
+#: ../operations/common/vignette.c:25
+msgid "Circle"
+msgstr "Cerchio"
+
+#: ../operations/common/median-blur.c:30 ../operations/common/newsprint.c:27
+#: ../operations/common/pixelize.c:27 ../operations/common/vignette.c:27
+msgid "Diamond"
+msgstr "Rombo"
+
+#: ../operations/common/median-blur.c:33
+msgid "Neighborhood"
+msgstr "Vicinanza"
+
+#: ../operations/common/median-blur.c:36
+msgid "Neighborhood type"
+msgstr "Tipo vicinanza"
+
+#: ../operations/common/median-blur.c:41
+msgid "Neighborhood radius"
+msgstr "Raggio vicinanza"
+
+#: ../operations/common/median-blur.c:43
+msgid "Percentile"
+msgstr "Percentile"
+
+#: ../operations/common/median-blur.c:45
+msgid "Neighborhood color percentile"
+msgstr "Percentile colore vicinanza"
+
+#: ../operations/common/median-blur.c:47
+msgid "Alpha percentile"
+msgstr "Percentile alfa"
+
+#: ../operations/common/median-blur.c:49
+msgid "Neighborhood alpha percentile"
+msgstr "Percentile alfa vicinanza"
+
+#: ../operations/common/median-blur.c:51
+msgid "High precision"
+msgstr "Alta precisione"
+
+#: ../operations/common/median-blur.c:52
+msgid "Avoid clipping and quantization (slower)"
+msgstr "Evita ritagli e quantizzazione (più lento)"
+
+#: ../operations/common/median-blur.c:960
+msgid "Median Blur"
+msgstr "Sfocatura mediana"
+
+#: ../operations/common/median-blur.c:963
+msgid ""
+"Blur resulting from computing the median color in the neighborhood of each "
+"pixel."
+msgstr ""
+"La sfocatura risultante dal calcolo del colore mediano nella vicinanza di "
+"ognuno."
+
 #: ../operations/common/mirrors.c:30
 msgid "Mirror rotation"
 msgstr "Rotazione speculare"
@@ -2427,7 +2489,7 @@ msgstr ""
 msgid "Mix"
 msgstr "Mix"
 
-#: ../operations/common/mix.c:93
+#: ../operations/common/mix.c:94
 msgid "do a lerp, linear interpolation (lerp) between input and aux"
 msgstr "esegue una lerp, interpolazione lineare (lerp) tra ingresso e aux"
 
@@ -2492,16 +2554,6 @@ msgstr ""
 #: ../operations/common/newsprint.c:25
 msgid "Line"
 msgstr "Linea"
-
-#: ../operations/common/newsprint.c:26 ../operations/common/vignette.c:25
-#: ../operations/workshop/median-blur.c:29
-msgid "Circle"
-msgstr "Cerchio"
-
-#: ../operations/common/newsprint.c:27 ../operations/common/pixelize.c:27
-#: ../operations/common/vignette.c:27 ../operations/workshop/median-blur.c:30
-msgid "Diamond"
-msgstr "Rombo"
 
 #: ../operations/common/newsprint.c:28
 msgid "PSSquare (or Euclidian) dot"
@@ -2979,11 +3031,6 @@ msgstr ""
 #: ../operations/common/pixelize.c:28
 msgid "Round"
 msgstr "Tondo"
-
-#: ../operations/common/pixelize.c:29 ../operations/common/vignette.c:26
-#: ../operations/workshop/median-blur.c:28
-msgid "Square"
-msgstr "Quadrato"
 
 #: ../operations/common/pixelize.c:34
 msgid "The shape of pixels"
@@ -4130,7 +4177,7 @@ msgid "Mode of displacement"
 msgstr "Modalità di spostamento"
 
 #: ../operations/common-gpl3+/displace.c:37 ../operations/external/npd.c:47
-#: ../operations/transform/transform-core.c:194
+#: ../operations/transform/transform-core.c:198
 #: ../operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Campionatore"
@@ -5206,7 +5253,7 @@ msgstr "Direzione vortice spirale"
 msgid "Spiral"
 msgstr "Spirale"
 
-#: ../operations/common-gpl3+/spiral.c:446
+#: ../operations/common-gpl3+/spiral.c:447
 msgid "Spiral renderer"
 msgstr "Disegnatore di spirali"
 
@@ -5760,11 +5807,11 @@ msgstr "Conversione dei dati nel formato specificato"
 msgid "Reset origin"
 msgstr "Reimposta origine"
 
-#: ../operations/core/crop.c:223
+#: ../operations/core/crop.c:226
 msgid "Crop"
 msgstr "Ritaglia"
 
-#: ../operations/core/crop.c:224
+#: ../operations/core/crop.c:227
 msgid "Crop a buffer"
 msgstr "Ritaglia un buffer"
 
@@ -6301,7 +6348,7 @@ msgstr "Preserva modello"
 msgid "When TRUE the model will not be freed"
 msgstr "Se questo valore è vero il modello non sarà liberato"
 
-#: ../operations/external/npd.c:50 ../operations/transform/transform-core.c:195
+#: ../operations/external/npd.c:50 ../operations/transform/transform-core.c:199
 #: ../operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Campionatore usato internamente"
@@ -7149,27 +7196,27 @@ msgstr "Stringa di trasformazione sintattica SVG"
 msgid "Do a transformation using SVG syntax transformation."
 msgstr "Esegue una trasformazione usando una trasformazione sintattica SVG."
 
-#: ../operations/transform/transform-core.c:178
+#: ../operations/transform/transform-core.c:182
 msgid "Origin-x"
 msgstr "X origine"
 
-#: ../operations/transform/transform-core.c:179
+#: ../operations/transform/transform-core.c:183
 msgid "X coordinate of origin"
 msgstr "Coordinata X dell'origine"
 
-#: ../operations/transform/transform-core.c:186
+#: ../operations/transform/transform-core.c:190
 msgid "Origin-y"
 msgstr "Y origine"
 
-#: ../operations/transform/transform-core.c:187
+#: ../operations/transform/transform-core.c:191
 msgid "Y coordinate of origin"
 msgstr "Coordinata Y dell'origine"
 
-#: ../operations/transform/transform-core.c:202
+#: ../operations/transform/transform-core.c:206
 msgid "Clip to input"
 msgstr "Ritaglia all'ingresso"
 
-#: ../operations/transform/transform-core.c:203
+#: ../operations/transform/transform-core.c:207
 msgid "Force output bounding box to be input bounding box."
 msgstr "Forza il risultato in un riquadro delle dimensioni dell'ingresso."
 
@@ -7320,7 +7367,9 @@ msgstr "Comprimi campo di soglia"
 msgid ""
 "Compress the threshold range to the minimal extent that would produce "
 "different results."
-msgstr "Comprime il campo di soglia all'estensione minima che produca risultati diversi."
+msgstr ""
+"Comprime il campo di soglia all'estensione minima che produca risultati "
+"diversi."
 
 #: ../operations/workshop/color-to-alpha-plus.c:232
 msgid "Color to Alpha +"
@@ -7367,7 +7416,7 @@ msgstr ""
 msgid "Ditto"
 msgstr "Ditto"
 
-#: ../operations/workshop/ditto.c:115
+#: ../operations/workshop/ditto.c:116
 msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Operazione di test per fare una mappa 1:1 dell'ingresso sull'uscita, durante "
@@ -7787,46 +7836,6 @@ msgstr "Sinusoidale lineare"
 msgid "Generate a linear sinusoid pattern"
 msgstr "Genera un motivo lineare a sinusoidi"
 
-#: ../operations/workshop/median-blur.c:33
-msgid "Neighborhood"
-msgstr "Vicinanza"
-
-#: ../operations/workshop/median-blur.c:36
-msgid "Neighborhood type"
-msgstr "Tipo vicinanza"
-
-#: ../operations/workshop/median-blur.c:41
-msgid "Neighborhood radius"
-msgstr "Raggio vicinanza"
-
-#: ../operations/workshop/median-blur.c:43
-msgid "Percentile"
-msgstr "Percentile"
-
-#: ../operations/workshop/median-blur.c:45
-msgid "Neighborhood color percentile"
-msgstr "Percentile colore vicinanza"
-
-#: ../operations/workshop/median-blur.c:47
-msgid "Alpha percentile"
-msgstr "Percentile alfa"
-
-#: ../operations/workshop/median-blur.c:49
-msgid "Neighborhood alpha percentile"
-msgstr "Percentile alfa vicinanza"
-
-#: ../operations/workshop/median-blur.c:630
-msgid "Median Blur"
-msgstr "Sfocatura mediana"
-
-#: ../operations/workshop/median-blur.c:632
-msgid ""
-"Blur resulting from computing the median color in the neighborhood of each "
-"pixel."
-msgstr ""
-"La sfocatura risultante dal calcolo del colore mediano nella vicinanza di "
-"ognuno."
-
 #: ../operations/workshop/rawbayer-load.c:156
 msgid ""
 "Raw image loader, wrapping dcraw with pipes, provides the raw bayer grid as "
@@ -7891,15 +7900,15 @@ msgstr "Regolazione colore ombre"
 msgid "Highlights color adjustment"
 msgstr "Regolazione colore alteluci"
 
-#: ../operations/workshop/shadows-highlights.c:109
+#: ../operations/workshop/shadows-highlights.c:237
 msgid "Shadows-Highlights"
 msgstr "Ombre-alteluci"
 
-#: ../operations/workshop/shadows-highlights.c:112
+#: ../operations/workshop/shadows-highlights.c:240
 msgid "Perform shadows and highlights correction"
 msgstr "Esegue una correzione alteluci e ombre"
 
-#: ../operations/workshop/shadows-highlights-correction.c:313
+#: ../operations/workshop/shadows-highlights-correction.c:305
 msgid "Lighten shadows and darken highlights"
 msgstr "Illumina le ombre e scurisce le alteluci"
 
@@ -7927,7 +7936,8 @@ msgstr "Angolo massimo copertura sferica, come frazione del co-angolo di vista"
 msgid ""
 "Displacement scaling factor (negative values refer to the inverse "
 "displacement)"
-msgstr "Fattore di spostamento (valori negativi significano spostamento negativo)"
+msgstr ""
+"Fattore di spostamento (valori negativi significano spostamento negativo)"
 
 #: ../operations/workshop/spherize.c:326
 msgid "Spherize"
