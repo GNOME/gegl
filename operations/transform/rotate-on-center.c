@@ -94,11 +94,11 @@ generate_matrix (GeglMatrix3 *matrix,
    */
   matrix->coeff [0][0] =  cos (radians);
   matrix->coeff [0][1] =  sin (radians);
-  matrix->coeff [0][2] = -tx - x*cos (radians) - y*sin (radians);
+  matrix->coeff [0][2] = -tx + tcoords[0][0];
 
   matrix->coeff [1][0] = -sin (radians);
   matrix->coeff [1][1] =  cos (radians);
-  matrix->coeff [1][2] = -ty + x*sin (radians) - y*cos (radians);
+  matrix->coeff [1][2] = -ty + tcoords[0][1];
 
   matrix->coeff [2][0] = 0;
   matrix->coeff [2][1] = 0;
