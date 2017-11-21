@@ -431,8 +431,8 @@ operation_process (GeglOperation        *operation,
   GeglBuffer     *output;
   gboolean        success;
 
-  aux   = gegl_operation_context_get_source (context, "aux");
-  aux2  = gegl_operation_context_get_source (context, "aux2");
+  aux   = (GeglBuffer*) gegl_operation_context_dup_object (context, "aux");
+  aux2  = (GeglBuffer*) gegl_operation_context_dup_object (context, "aux2");
 
   if ((!aux && !aux2) ||
       (GEGL_FLOAT_IS_ZERO (o->amount_x) && GEGL_FLOAT_IS_ZERO (o->amount_y)))
@@ -444,7 +444,7 @@ operation_process (GeglOperation        *operation,
     }
   else
     {
-      input = gegl_operation_context_get_source (context, "input");
+      input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
       output = gegl_operation_context_get_target (context, "output");
 
       success = process (operation, input, aux, aux2, output, result, level);
