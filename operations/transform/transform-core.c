@@ -1147,7 +1147,7 @@ gegl_transform_process (GeglOperation        *operation,
       gegl_matrix3_is_identity (&matrix))
     {
       /* passing straight through (like gegl:nop) */
-      input  = gegl_operation_context_get_source (context, "input");
+      input  = (GeglBuffer*)gegl_operation_context_dup_object (context, "input");
       if (!input)
         {
           g_warning ("transform received NULL input");
@@ -1169,7 +1169,7 @@ gegl_transform_process (GeglOperation        *operation,
        * TODO: Should not be taken by non-interpolatory samplers (the
        * current cubic, for example).
        */
-      input  = gegl_operation_context_get_source (context, "input");
+      input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
       output =
         g_object_new (GEGL_TYPE_BUFFER,
                       "source", input,
@@ -1201,7 +1201,7 @@ gegl_transform_process (GeglOperation        *operation,
       /*
        * For all other cases, do a proper resampling
        */
-      input  = gegl_operation_context_get_source (context, "input");
+      input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
       output = gegl_operation_context_get_target (context, "output");
 
       /* flush opencl caches, to avoid racy flushing
