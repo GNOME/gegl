@@ -954,6 +954,7 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
         }
 
       e->pixels[PIXELS_ACTIVE] = e->pixels[PIXELS_FULL];
+      g_object_unref (buffer);
 
       /* Read the exposure time: relate APEX brightness value only as a
        * function of exposure time that is assume aperture = 1 and
