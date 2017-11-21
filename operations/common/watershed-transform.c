@@ -339,7 +339,7 @@ operation_process (GeglOperation        *operation,
   GeglBuffer     *output;
   gboolean        success;
 
-  aux = gegl_operation_context_get_source (context, "aux");
+  aux = (GeglBuffer*) gegl_operation_context_dup_object (context, "aux");
 
   if (!aux)
     {
@@ -347,7 +347,7 @@ operation_process (GeglOperation        *operation,
     }
   else
     {
-      input = gegl_operation_context_get_source (context, "input");
+      input = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
       output = gegl_operation_context_get_target (context, "output");
 
       success = process (operation, input, aux, output, result, level);
