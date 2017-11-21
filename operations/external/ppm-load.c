@@ -390,7 +390,7 @@ gegl_op_class_init (GeglOpClass *klass)
     ".ppm", "gegl:ppm-load");
 
   gegl_operation_handlers_register_loader (
-    "image/x-portable-graymap:", "gegl:ppm-load");
+    "image/x-portable-graymap", "gegl:ppm-load");
   gegl_operation_handlers_register_loader (
     ".pgm", "gegl:ppm-load");
 
