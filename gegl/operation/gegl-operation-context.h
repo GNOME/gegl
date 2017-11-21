@@ -26,6 +26,8 @@ G_BEGIN_DECLS
 GeglBuffer     *gegl_operation_context_get_target      (GeglOperationContext *self,
                                                         const gchar          *padname);
 GeglBuffer     *gegl_operation_context_get_source      (GeglOperationContext *self,
+                                                        const gchar          *padname) G_GNUC_DEPRECATED;
+GObject        *gegl_operation_context_dup_object      (GeglOperationContext *self,
                                                         const gchar          *padname);
 GObject        *gegl_operation_context_get_object      (GeglOperationContext *context,
                                                         const gchar          *padname);
