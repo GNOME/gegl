@@ -151,7 +151,7 @@ gegl_crop_process (GeglOperation        *operation,
   GeglBuffer     *input;
   gboolean        success = FALSE;
 
-  input = gegl_operation_context_get_source (context, "input");
+  input = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
 
   if (input)
     {

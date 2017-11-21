@@ -77,7 +77,7 @@ process (GeglOperation        *operation,
       return FALSE;
     }
 
-  input = gegl_operation_context_get_source (context, "input");
+  input = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
   if (! input)
     {
       g_warning ("cast: received NULL input");

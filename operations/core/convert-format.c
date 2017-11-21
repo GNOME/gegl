@@ -57,7 +57,7 @@ process (GeglOperation        *operation,
   GeglBuffer *input;
   GeglBuffer *output;
 
-  input  = gegl_operation_context_get_source (context, "input");
+  input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
 
   if (gegl_buffer_get_format (input) != o->format)
     {
