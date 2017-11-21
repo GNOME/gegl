@@ -250,6 +250,19 @@ gegl_operation_context_take_object (GeglOperationContext *context,
 }
 
 GObject *
+gegl_operation_context_dup_object (GeglOperationContext *context,
+                                   const gchar          *padname)
+{
+  GObject *ret;
+
+  ret = gegl_operation_context_get_object (context, padname);
+  if (ret != NULL)
+    g_object_ref (ret);
+
+  return ret;
+}
+
+GObject *
 gegl_operation_context_get_object (GeglOperationContext *context,
                                    const gchar          *padname)
 {
@@ -274,14 +287,9 @@ GeglBuffer *
 gegl_operation_context_get_source (GeglOperationContext *context,
                                    const gchar          *padname)
 {
-  GeglBuffer     *real_input;
-  GeglBuffer     *input;
+  GeglBuffer *input;
 
-  real_input = GEGL_BUFFER (gegl_operation_context_get_object (context, padname));
-  if (!real_input)
-    return NULL;
-  input = g_object_ref (real_input);
-
+  input = GEGL_BUFFER (gegl_operation_context_dup_object (context, padname));
   return input;
 }
 
