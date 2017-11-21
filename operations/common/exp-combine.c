@@ -926,7 +926,7 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
         }
 
       /* Add exposure to list */
-      buffer  = gegl_operation_context_get_source (context,
+      buffer = (GeglBuffer*)gegl_operation_context_dup_object (context,
                                                    gegl_pad_get_name (pad));
       if (!buffer)
           continue;
