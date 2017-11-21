@@ -197,17 +197,16 @@ gegl_matrix3_multiply (GeglMatrix3 *left,
 
 void
 gegl_matrix3_originate (GeglMatrix3 *matrix,
-                   gdouble x,
-                   gdouble y)
+                        gdouble      x,
+                        gdouble      y)
 {
-
   /* assumes last row is [0 0 1] (true for affine transforms) */
   matrix->coeff [0][2] = matrix->coeff [0][0] * (-x) +
-                  matrix->coeff [0][1] * (-y) +
-                  matrix->coeff [0][2] + x;
+                         matrix->coeff [0][1] * (-y) +
+                         matrix->coeff [0][2] + x;
   matrix->coeff [1][2] = matrix->coeff [1][0] * (-x) +
-                  matrix->coeff [1][1] * (-y) +
-                  matrix->coeff [1][2] + y;
+                         matrix->coeff [1][1] * (-y) +
+                         matrix->coeff [1][2] + y;
 }
 
 void

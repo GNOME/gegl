@@ -146,12 +146,19 @@ void       gegl_matrix3_multiply        (GeglMatrix3 *left,
  * @x: x coordinate of new origin
  * @y: y coordinate of new origin.
  *
- * Hmm not quite sure what this does.
+ * Shift the origin of the transformation specified by @matrix
+ * to (@x, @y). In other words, calculate the matrix that:
+ *
+ * 1. Translates the input by (-@x, -@y).
+ *
+ * 2. Transforms the result using the original @matrix.
+ *
+ * 3. Translates the result by (@x, @y).
  *
  */
 void       gegl_matrix3_originate       (GeglMatrix3 *matrix,
-                                         gdouble     x,
-                                         gdouble     y);
+                                         gdouble      x,
+                                         gdouble      y);
 
 
 /**
