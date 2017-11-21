@@ -90,7 +90,7 @@ gegl_operation_sink_process (GeglOperation        *operation,
 
   g_assert (klass->process);
 
-  input = gegl_operation_context_get_source (context, "input");
+  input = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
   if (input)
     {
       success = klass->process (operation, input, result, level);

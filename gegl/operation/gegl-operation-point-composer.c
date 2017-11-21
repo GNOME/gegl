@@ -132,13 +132,13 @@ gegl_operation_composer_process (GeglOperation        *operation,
     return TRUE;
   }
 
-  input  = gegl_operation_context_get_source (context, "input");
+  input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
   output = gegl_operation_context_get_output_maybe_in_place (operation,
                                                              context,
                                                              input,
                                                              result);
 
-  aux   = gegl_operation_context_get_source (context, "aux");
+  aux   = (GeglBuffer*) gegl_operation_context_dup_object (context, "aux");
 
   /* A composer with a NULL aux, can still be valid, the
    * subclass has to handle it.

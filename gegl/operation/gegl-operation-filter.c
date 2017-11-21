@@ -159,7 +159,7 @@ gegl_operation_filter_process (GeglOperation        *operation,
       return FALSE;
     }
 
-  input  = gegl_operation_context_get_source (context, "input");
+  input  = (GeglBuffer*)gegl_operation_context_dup_object (context, "input");
   output = gegl_operation_context_get_output_maybe_in_place (operation,
                                                              context,
                                                              input,
