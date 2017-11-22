@@ -986,6 +986,8 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
                            (GFunc)gegl_expcombine_destroy_exposure,
                            NULL);
           g_slist_free    (exposures);
+          g_slist_free (inputs);
+          gegl_expcombine_destroy_exposure (e);
 
           return NULL;
         }
