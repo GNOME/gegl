@@ -982,10 +982,7 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
       if (errno)
         {
           g_warning ("Invalid exposure values specified for exp-combine");
-          g_slist_foreach (exposures,
-                           (GFunc)gegl_expcombine_destroy_exposure,
-                           NULL);
-          g_slist_free    (exposures);
+          g_slist_free_full (exposures, (GDestroyNotify) gegl_expcombine_destroy_exposure);
           g_slist_free (inputs);
           gegl_expcombine_destroy_exposure (e);
 
@@ -1190,9 +1187,7 @@ gegl_expcombine_process (GeglOperation        *operation,
 
   /* Cleanup */
   g_free (hdr);
-
-  g_slist_foreach (exposures, (GFunc)gegl_expcombine_destroy_exposure, NULL);
-  g_slist_free    (exposures);
+  g_slist_free_full (exposures, (GDestroyNotify) gegl_expcombine_destroy_exposure);
 
   return TRUE;
 }
