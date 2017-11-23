@@ -38,11 +38,11 @@ enum_end (GeglNewsprintColorModel)
 
 property_enum (color_model, _("Color Model"),
               GeglNewsprintColorModel, gegl_newsprint_color_model, GEGL_NEWSPRINT_COLOR_MODEL_BLACK_ON_WHITE)
-              description (_("How many inks to use just black, rg, rgb(additive) or cmyk"))
+              description (_("How many inks to use just black, rg, rgb (additive), or cmyk"))
 
 property_enum (pattern, _("Pattern"),
               GeglNewsprintPattern, gegl_newsprint_pattern, GEGL_NEWSPRINT_PATTERN_LINE)
-              description (_("halftoning/dot pattern to use"))
+              description (_("Halftoning/dot pattern to use"))
 
 property_double (period, _("Period"), 12.0)
                  value_range (0.0, 200.0)
@@ -54,11 +54,11 @@ property_double (turbulence, _("Turbulence"), 0.0)
 
 property_double (blocksize, _("Blocksize"), -1.0)
                  value_range (-1.0, 64.0)
-                 description (_("number of periods per tile, this tiling avoids high frequency anomaly that angleboost causes"))
+                 description (_("Number of periods per tile, this tiling avoids high frequency anomaly that angle boost causes"))
 
-property_double (angleboost, _("Angleboost"), 0.0)
+property_double (angleboost, _("Angle Boost"), 0.0)
                  value_range (0.0, 4.0)
-                 description (_("multiplication factor for desired rotation of the local space for texture, the way this is computed makes it weak for desaturated colors and possibly stronger where there is color."))
+                 description (_("Multiplication factor for desired rotation of the local space for texture, the way this is computed makes it weak for desaturated colors and possibly stronger where there is color."))
 
 property_double (twist, _("Black and green angle"), 75.0)
                  value_range (-180.0, 180.0)
