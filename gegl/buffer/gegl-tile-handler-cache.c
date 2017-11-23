@@ -320,8 +320,8 @@ gegl_tile_handler_cache_wash (GeglTileHandlerCache *cache)
   if (last_dirty != NULL)
     {
       gegl_tile_store (last_dirty);
-      gegl_tile_unref (last_dirty);
       g_clear_object (&last_dirty->tile_storage);
+      gegl_tile_unref (last_dirty);
       return TRUE;
     }
   return FALSE;
