@@ -117,7 +117,8 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
     }
 
   if (gegl_config_threads()>1)
-  g_rec_mutex_lock (&buffer->tile_storage->mutex);
+    g_rec_mutex_lock (&buffer->tile_storage->mutex);
+
   {
     gint tile_width  = buffer->tile_width;
     gint tile_height = buffer->tile_height;
@@ -163,8 +164,9 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
           }
       }
   }
+
   if (gegl_config_threads()>1)
-  g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 }
 
 static inline void
@@ -184,7 +186,8 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
     return;
 
   if (gegl_config_threads()>1)
-  g_rec_mutex_lock (&buffer->tile_storage->mutex);
+    g_rec_mutex_lock (&buffer->tile_storage->mutex);
+
   {
     gint tile_width  = buffer->tile_width;
     gint tile_height = buffer->tile_height;
@@ -237,8 +240,9 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
         gegl_tile_unlock (tile);
       }
   }
+
   if (gegl_config_threads()>1)
-  g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 }
 
 enum _GeglBufferSetFlag {
@@ -305,6 +309,9 @@ gegl_buffer_flush (GeglBuffer *buffer)
   g_return_if_fail (GEGL_IS_BUFFER (buffer));
   backend = gegl_buffer_backend (buffer);
 
+  if (gegl_config_threads()>1)
+    g_rec_mutex_lock (&buffer->tile_storage->mutex);
+
   _gegl_buffer_drop_hot_tile (buffer);
 
   if (backend)
@@ -312,6 +319,9 @@ gegl_buffer_flush (GeglBuffer *buffer)
 
   gegl_tile_source_command (GEGL_TILE_SOURCE (buffer),
                             GEGL_TILE_FLUSH, 0,0,0,NULL);
+
+  if (gegl_config_threads()>1)
+    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 }
 
 static inline void
@@ -589,6 +599,9 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
     fish = babl_fish ((gpointer) buffer->soft_format,
                       (gpointer) format);
 
+  if (gegl_config_threads()>1)
+    g_rec_mutex_lock (&buffer->tile_storage->mutex);
+
   while (bufy < height)
     {
       gint tiledy  = buffer_y + bufy;
@@ -644,6 +657,9 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
         }
       bufy += (tile_height - offsety);
     }
+
+  if (gegl_config_threads()>1)
+    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 }
 
 static void
@@ -1676,6 +1692,9 @@ gegl_buffer_copy (GeglBuffer          *src,
             GeglTileHandlerCache *cache = dst->tile_storage->cache;
             gint dst_x, dst_y;
 
+            if (gegl_config_threads()>1)
+              g_rec_mutex_lock (&dst->tile_storage->mutex);
+
             for (dst_y = cow_rect.y + dst->shift_y; dst_y < cow_rect.y + dst->shift_y + cow_rect.height; dst_y += tile_height)
             for (dst_x = cow_rect.x + dst->shift_x; dst_x < cow_rect.x + dst->shift_x + cow_rect.width; dst_x += tile_width)
               {
@@ -1706,6 +1725,9 @@ gegl_buffer_copy (GeglBuffer          *src,
                 gegl_tile_unref (src_tile);
                 gegl_tile_unref (dst_tile);
               }
+
+            if (gegl_config_threads()>1)
+              g_rec_mutex_unlock (&dst->tile_storage->mutex);
           }
 
           top = *dst_rect;
@@ -1853,6 +1875,9 @@ gegl_buffer_clear (GeglBuffer          *dst,
 
             gint dst_x, dst_y;
 
+            if (gegl_config_threads()>1)
+              g_rec_mutex_lock (&dst->tile_storage->mutex);
+
             for (dst_y = cow_rect.y + dst->shift_y; dst_y < cow_rect.y + dst->shift_y + cow_rect.height; dst_y += tile_height)
             for (dst_x = cow_rect.x + dst->shift_x; dst_x < cow_rect.x + dst->shift_x + cow_rect.width; dst_x += tile_width)
               {
@@ -1863,6 +1888,9 @@ gegl_buffer_clear (GeglBuffer          *dst,
 
                 gegl_tile_source_void ((GeglTileSource*)dst, dtx, dty, 0);
               }
+
+            if (gegl_config_threads()>1)
+              g_rec_mutex_unlock (&dst->tile_storage->mutex);
           }
 
           top = *dst_rect;
