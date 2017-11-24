@@ -1,4 +1,4 @@
-GEGL-0.3.24 2017-11-16
+GEGL-0.3.24 2017-11-24
 ----------------------
 
 Core
@@ -18,6 +18,14 @@ multi-threading, and with nvidia blank results are being observed in GIMP;
 maybe improved opencl kernels would make it competetive with multi threaded
 cpu?
 
+Deprecate gegl_operation_context_get_source, replace usage with
+gegl_operation_context_get_object.
+
+Buffer
+~~~~~~
+
+More multi-thread proofing.
+
 Operations
 ~~~~~~~~~~
 
@@ -28,11 +36,13 @@ exposure: increase old lingering constant enabling larger range of valid inputs.
 transform: turn off multi-threading, it was currently degrading overall
 performance.
 
+ppm-load: fix file-loader registration.
+
 Contributors
 ~~~~~~~~~~~~
 
-Debarshi Ray, Ell, Jordi Mas, Øyvind Kolås, Richard Kreckel, Thomas Manni
-
+Debarshi Ray, Ell, Jordi Mas, Øyvind Kolås, Richard Kreckel, Thomas Manni,
+Marco Ciampa, Alexandre Prokoudine and Piotr Drąg.
 
 GEGL-0.3.22 2017-11-12
 ----------------------
