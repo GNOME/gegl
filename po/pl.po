@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-11-17 23:29+0000\n"
-"PO-Revision-Date: 2017-11-19 20:08+0100\n"
+"POT-Creation-Date: 2017-11-23 22:52+0000\n"
+"PO-Revision-Date: 2017-11-26 18:30+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -1588,11 +1588,11 @@ msgstr "Sigma wagi"
 msgid "Weight distribution sigma controlling response contributions"
 msgstr "Sigma dystrybucji wagi kontrolująca udział odpowiedzi"
 
-#: operations/common/exp-combine.c:1270
+#: operations/common/exp-combine.c:1271
 msgid "Combine Exposures"
 msgstr "Połącz ekspozycje"
 
-#: operations/common/exp-combine.c:1273
+#: operations/common/exp-combine.c:1274
 msgid "Combine multiple scene exposures into one high dynamic range image."
 msgstr ""
 "Połącz wiele ekspozycji scen w jeden obraz o wysokim zakresie dynamicznym."
@@ -2527,7 +2527,7 @@ msgid "Color Model"
 msgstr "Model kolorów"
 
 #: operations/common/newsprint.c:41
-msgid "How many inks to use just black, rg, rgb(additive) or cmyk"
+msgid "How many inks to use just black, rg, rgb (additive), or cmyk"
 msgstr "Ile atramentów stosować, tylko czerń, RG, RGB (addytywne) lub CMYK"
 
 #: operations/common/newsprint.c:43
@@ -2536,8 +2536,8 @@ msgid "Pattern"
 msgstr "Deseń"
 
 #: operations/common/newsprint.c:45
-msgid "halftoning/dot pattern to use"
-msgstr "używany deseń rastra/punktu"
+msgid "Halftoning/dot pattern to use"
+msgstr "Używany deseń rastra/punktu"
 
 #: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:36
 #: operations/common-gpl3+/waves.c:40
@@ -2567,23 +2567,23 @@ msgstr "Rozmiar bloku"
 
 #: operations/common/newsprint.c:57
 msgid ""
-"number of periods per tile, this tiling avoids high frequency anomaly that "
-"angleboost causes"
+"Number of periods per tile, this tiling avoids high frequency anomaly that "
+"angle boost causes"
 msgstr ""
-"liczba okresów na kafel, to kafelkowanie unika anomalii "
+"Liczba okresów na kafel, to kafelkowanie unika anomalii "
 "wysokoczęstotliwościowych powodowanych przez wzmocnienie kąta"
 
 #: operations/common/newsprint.c:59
-msgid "Angleboost"
+msgid "Angle Boost"
 msgstr "Wzmocnienie kąta"
 
 #: operations/common/newsprint.c:61
 msgid ""
-"multiplication factor for desired rotation of the local space for texture, "
+"Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
 "stronger where there is color."
 msgstr ""
-"współczynnik mnożenia dla żądanego obrotu lokalnej przestrzeni dla tekstury, "
+"Współczynnik mnożenia dla żądanego obrotu lokalnej przestrzeni dla tekstury, "
 "sposób obliczania sprawia, że odbarwione kolory są słabe, a miejsca "
 "z kolorami mogą być mocniejsze."
 
