@@ -492,7 +492,7 @@ gegl_create_chain_argv (char      **ops,
 
                         if (value[0] && babl_format_exists (value))
                           format = babl_format (value);
-                        else
+                        else if (error)
                           {
                             char *error_str = g_strdup_printf (
                                   "BablFormat \"%s\" doest not exist.", value);
