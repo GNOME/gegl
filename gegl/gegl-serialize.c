@@ -490,7 +490,7 @@ gegl_create_chain_argv (char      **ops,
                       {
                         const Babl *format = NULL;
 
-                        if (value[0])
+                        if (value[0] && babl_format_exists (value))
                           format = babl_format (value);
 
                         gegl_node_set (iter[level], key, format, NULL);
