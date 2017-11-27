@@ -18,6 +18,7 @@
 
 #include "config.h"
 #include "gegl.h"
+#include <glib/gi18n-lib.h>
 #include <string.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -144,7 +145,17 @@ gegl_create_chain_argv (char      **ops,
           else
             {
               if (!(g_str_equal (key, "}")))
-                fprintf (stderr, "unhandled path data %s:%s\n", key, value);
+              {
+                if (error)
+                  {
+                    char *error_str = g_strdup_printf (
+                       _("unhandled path data %s:%s\n"), key, value);
+                    *error = g_error_new_literal (
+                                g_quark_from_static_string ( "gegl"),
+                                0, error_str);
+                    g_free (error_str);
+                  }
+              }
             }
 
           g_free (key);
@@ -368,7 +379,7 @@ gegl_create_chain_argv (char      **ops,
                               {
                                 GString *str = g_string_new ("");
                                 g_string_append_printf (str,
-                                                        "op '%s' not found, partial matches: ",
+                                                        _("op '%s' not found, partial matches: "),
                                                         level_op[level]);
 
                                 *error = g_error_new_literal (g_quark_from_static_string (
@@ -397,13 +408,13 @@ gegl_create_chain_argv (char      **ops,
                             if (n_props <= 0)
                               {
                                 g_string_append_printf (str,
-                                                        "%s has no %s property.",
+                                                        _("%s has no %s property."),
                                                         level_op[level], key);
                               }
                             else
                               {
                                 g_string_append_printf (str,
-                                                        "%s has no %s property, properties: ",
+                                                        _("%s has no %s property, properties: "),
                                                         level_op[level], key);
 
                                 for (i = 0; i < n_props; i++)
@@ -495,7 +506,8 @@ gegl_create_chain_argv (char      **ops,
                         else if (error)
                           {
                             char *error_str = g_strdup_printf (
-                                  "BablFormat \"%s\" doest not exist.", value);
+                                  _("BablFormat \"%s\" doest not exist."),
+                                  value);
                             *error = g_error_new_literal (
                                         g_quark_from_static_string ( "gegl"),
                                         0, error_str);
@@ -627,7 +639,7 @@ gegl_create_chain_argv (char      **ops,
                   gint started = 0;
                   gint max = 12;
 
-                  g_string_append_printf (str, "No such op '%s'",
+                  g_string_append_printf (str, _("No such op '%s'"),
                                           level_op[level]);
 
                   for (i = 0; i < n_operations; i++)
