@@ -492,6 +492,15 @@ gegl_create_chain_argv (char      **ops,
 
                         if (value[0] && babl_format_exists (value))
                           format = babl_format (value);
+                        else
+                          {
+                            char *error_str = g_strdup_printf (
+                                  "BablFormat \"%s\" doest not exist.", value);
+                            *error = g_error_new_literal (
+                                        g_quark_from_static_string ( "gegl"),
+                                        0, error_str);
+                            g_free (error_str);
+                          }
 
                         gegl_node_set (iter[level], key, format, NULL);
                       }
