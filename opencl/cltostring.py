@@ -4,10 +4,6 @@ from __future__ import print_function
 import os
 import sys
 
-if len(sys.argv) != 2:
-  print("Usage: %s file.cl" % sys.argv[0])
-  sys.exit(1)
-
 # Search for lines that look like #include "blah.h" and replace them
 # with the contents of blah.h.
 def do_includes (source):
@@ -37,8 +33,18 @@ def escape_string(s):
   return result
 
 
-infile  = open(sys.argv[1], "r")
-outfile = open(sys.argv[1] + ".h", "w")
+if len(sys.argv) == 2:
+  infile  = open(sys.argv[1], "r")
+  outfile = open(sys.argv[1] + '.h',  "w")
+
+elif len(sys.argv) == 3:
+  infile  = open(sys.argv[1], "r")
+  outfile = open(sys.argv[2], "w")
+
+else:
+  print("Usage: %s input [output]" % sys.argv[0])
+  sys.exit(1)
+
 
 cl_source = infile.read()
 cl_source = do_includes(cl_source)
