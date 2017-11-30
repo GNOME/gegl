@@ -1,0 +1,8 @@
+subdir('buffer')
+subdir('compositions')
+subdir('ff-load-save')
+subdir('mipmap')
+subdir('opencl')
+subdir('python')
+subdir('simple')
+subdir('xml')
