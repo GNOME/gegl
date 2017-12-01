@@ -164,11 +164,10 @@ struct _GeglTile
   guint            stored_rev;  /* what revision was we when we from tile_storage?
                                    (currently set to 1 when loaded from disk */
 
-  gint             lock;        /* number of times the tile is write locked
-                                 * should in theory just have the values 0/1
-                                 */
+  gint             lock_count;  /* number of outstanding write locks */
   gint             is_zero_tile:1;
 
+  gint             clone_state; /* tile clone/unclone state & spinlock */
   gint            *n_clones;    /* shared atomic counter among all tiles
                                  * sharing the same data
                                  */

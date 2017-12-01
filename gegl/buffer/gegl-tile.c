@@ -34,6 +34,7 @@
 #include "gegl-buffer-private.h"
 #include "gegl-tile-source.h"
 #include "gegl-tile-storage.h"
+#include "gegl-config.h"
 
 /* the offset at which the tile data begins, when it shares the same buffer as
  * n_clones.  use 16 bytes, which is the alignment we use for gegl_malloc(), so
@@ -41,6 +42,13 @@
  */
 #define INLINE_N_ELEMENTS_DATA_OFFSET 16
 G_STATIC_ASSERT (INLINE_N_ELEMENTS_DATA_OFFSET >= sizeof (gint));
+
+enum
+{
+  CLONE_STATE_UNCLONED,
+  CLONE_STATE_CLONED,
+  CLONE_STATE_UNCLONING
+};
 
 GeglTile *gegl_tile_ref (GeglTile *tile)
 {
@@ -100,7 +108,8 @@ gegl_tile_new_bare_internal (void)
   tile->tile_storage = NULL;
   tile->stored_rev   = 1;
   tile->rev          = 1;
-  tile->lock         = 0;
+  tile->lock_count   = 0;
+  tile->clone_state  = CLONE_STATE_UNCLONED;
   tile->data         = NULL;
 
   return tile;
@@ -125,10 +134,15 @@ gegl_tile_dup (GeglTile *src)
 {
   GeglTile *tile = gegl_tile_new_bare_internal ();
 
+  g_warn_if_fail (src->lock_count == 0);
+
+  src->clone_state   = CLONE_STATE_CLONED;
+
   tile->tile_storage = src->tile_storage;
   tile->data         = src->data;
   tile->size         = src->size;
   tile->is_zero_tile = src->is_zero_tile;
+  tile->clone_state  = CLONE_STATE_CLONED;
   tile->n_clones     = src->n_clones;
 
   tile->destroy_notify      = src->destroy_notify;
@@ -212,17 +226,32 @@ gegl_tile_unclone (GeglTile *tile)
 void
 gegl_tile_lock (GeglTile *tile)
 {
-  int slept = 0;
-  while (! (g_atomic_int_compare_and_exchange (&tile->lock, 0, 1)))
-  {
-    if (slept++ == 1000)
-    {
-      g_warning ("blocking when trying to lock tile");
-    }
-    g_usleep (5);
-  }
+  g_atomic_int_inc (&tile->lock_count);
 
-  gegl_tile_unclone (tile);
+  while (TRUE)
+    {
+      switch (g_atomic_int_get (&tile->clone_state))
+        {
+        case CLONE_STATE_UNCLONED:
+          return;
+
+        case CLONE_STATE_CLONED:
+          if (g_atomic_int_compare_and_exchange (&tile->clone_state,
+                                                 CLONE_STATE_CLONED,
+                                                 CLONE_STATE_UNCLONING))
+            {
+              gegl_tile_unclone (tile);
+
+              g_atomic_int_set (&tile->clone_state, CLONE_STATE_UNCLONED);
+
+              return;
+            }
+          break;
+
+        case CLONE_STATE_UNCLONING:
+          break;
+        }
+    }
 }
 
 static void
@@ -244,10 +273,17 @@ gegl_tile_void_pyramid (GeglTile *tile)
       tile->tile_storage->seen_zoom &&
       tile->z == 0) /* we only accepting voiding the base level */
     {
+      if (gegl_config_threads()>1)
+        g_rec_mutex_lock (&tile->tile_storage->mutex);
+
       _gegl_tile_void_pyramid (GEGL_TILE_SOURCE (tile->tile_storage),
                                tile->x/2,
                                tile->y/2,
                                tile->z+1);
+
+      if (gegl_config_threads()>1)
+        g_rec_mutex_unlock (&tile->tile_storage->mutex);
+
       return;
     }
 }
@@ -255,25 +291,20 @@ gegl_tile_void_pyramid (GeglTile *tile)
 void
 gegl_tile_unlock (GeglTile *tile)
 {
-  if (tile->unlock_notify != NULL)
+  if (g_atomic_int_dec_and_test (&tile->lock_count))
     {
-      tile->unlock_notify (tile, tile->unlock_notify_data);
-    }
+      g_atomic_int_inc (&tile->rev);
 
-  if (tile->lock == 0)
-    {
-      g_warning ("unlocked a tile with lock count == 0");
-    }
-  else if (tile->lock==1)
-  {
-    if (tile->z == 0)
-      {
-        gegl_tile_void_pyramid (tile);
-      }
-      tile->rev++;
-  }
+      if (tile->unlock_notify != NULL)
+        {
+          tile->unlock_notify (tile, tile->unlock_notify_data);
+        }
 
-  g_atomic_int_add (&tile->lock, -1);
+      if (tile->z == 0)
+        {
+          gegl_tile_void_pyramid (tile);
+        }
+    }
 }
 
 void
@@ -291,12 +322,10 @@ gegl_tile_is_stored (GeglTile *tile)
 void
 gegl_tile_void (GeglTile *tile)
 {
-  g_rec_mutex_lock (&tile->tile_storage->mutex);
   gegl_tile_mark_as_stored (tile);
 
   if (tile->z == 0)
     gegl_tile_void_pyramid (tile);
-  g_rec_mutex_unlock (&tile->tile_storage->mutex);
 }
 
 gboolean gegl_tile_store (GeglTile *tile)
@@ -306,18 +335,27 @@ gboolean gegl_tile_store (GeglTile *tile)
     return TRUE;
   if (tile->tile_storage == NULL)
     return FALSE;
-  g_rec_mutex_lock (&tile->tile_storage->mutex);
-  if (gegl_tile_is_stored (tile))
-  {
-    g_rec_mutex_unlock (&tile->tile_storage->mutex);
-    return FALSE;
-  }
+
+  if (gegl_config_threads()>1)
+    {
+      g_rec_mutex_lock (&tile->tile_storage->mutex);
+
+      if (gegl_tile_is_stored (tile))
+        {
+          g_rec_mutex_unlock (&tile->tile_storage->mutex);
+          return FALSE;
+        }
+    }
+
   ret = gegl_tile_source_set_tile (GEGL_TILE_SOURCE (tile->tile_storage),
                                     tile->x,
                                     tile->y,
                                     tile->z,
                                     tile);
-  g_rec_mutex_unlock (&tile->tile_storage->mutex);
+
+  if (gegl_config_threads()>1)
+    g_rec_mutex_unlock (&tile->tile_storage->mutex);
+
   return ret;
 }
 
