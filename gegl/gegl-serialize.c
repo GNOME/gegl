@@ -506,7 +506,7 @@ gegl_create_chain_argv (char      **ops,
                         else if (error)
                           {
                             char *error_str = g_strdup_printf (
-                                  _("BablFormat \"%s\" doest not exist."),
+                                  _("BablFormat \"%s\" does not exist."),
                                   value);
                             *error = g_error_new_literal (
                                         g_quark_from_static_string ( "gegl"),
