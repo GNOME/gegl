@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-11-23 22:52+0000\n"
-"PO-Revision-Date: 2017-11-26 18:30+0100\n"
+"POT-Creation-Date: 2017-12-03 18:01+0000\n"
+"PO-Revision-Date: 2017-12-03 19:02+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -296,6 +296,36 @@ msgstr "Liczba jednocześnie używanych wątków przetwarzania"
 #: gegl/gegl-init.c:309
 msgid "Disable OpenCL"
 msgstr "Wyłącza OpenCL"
+
+#: gegl/gegl-serialize.c:152
+#, c-format
+msgid "unhandled path data %s:%s\n"
+msgstr "nieobsługiwane dane ścieżki %s:%s\n"
+
+#: gegl/gegl-serialize.c:382
+#, c-format
+msgid "op '%s' not found, partial matches: "
+msgstr "nie odnaleziono działania „%s”, częściowo pasują: "
+
+#: gegl/gegl-serialize.c:411
+#, c-format
+msgid "%s has no %s property."
+msgstr "%s nie ma właściwości %s."
+
+#: gegl/gegl-serialize.c:417
+#, c-format
+msgid "%s has no %s property, properties: "
+msgstr "%s nie ma właściwości %s, właściwości: "
+
+#: gegl/gegl-serialize.c:509
+#, c-format
+msgid "BablFormat \"%s\" does not exist."
+msgstr "BablFormat „%s” nie istnieje."
+
+#: gegl/gegl-serialize.c:642
+#, c-format
+msgid "No such op '%s'"
+msgstr "Nie ma działania „%s”"
 
 #: gegl/module/geglmodule.c:340
 msgid "Module error"
@@ -1588,11 +1618,11 @@ msgstr "Sigma wagi"
 msgid "Weight distribution sigma controlling response contributions"
 msgstr "Sigma dystrybucji wagi kontrolująca udział odpowiedzi"
 
-#: operations/common/exp-combine.c:1271
+#: operations/common/exp-combine.c:1268
 msgid "Combine Exposures"
 msgstr "Połącz ekspozycje"
 
-#: operations/common/exp-combine.c:1274
+#: operations/common/exp-combine.c:1271
 msgid "Combine multiple scene exposures into one high dynamic range image."
 msgstr ""
 "Połącz wiele ekspozycji scen w jeden obraz o wysokim zakresie dynamicznym."
