@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=GEGL&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-11-20 18:15+0100\n"
-"PO-Revision-Date: 2017-11-20 18:16+0100\n"
+"POT-Creation-Date: 2017-12-05 08:30+0100\n"
+"PO-Revision-Date: 2017-12-05 08:41+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -305,6 +305,36 @@ msgstr "Il numero di thread concorrenti da usare"
 #: ../gegl/gegl-init.c:309
 msgid "Disable OpenCL"
 msgstr "Disabilita OpenCL"
+
+#: ../gegl/gegl-serialize.c:152
+#, c-format
+msgid "unhandled path data %s:%s\n"
+msgstr "percorso dati non gestito %s:%s\n"
+
+#: ../gegl/gegl-serialize.c:382
+#, c-format
+msgid "op '%s' not found, partial matches: "
+msgstr "op '%s' non trovato, riscontri parziali: "
+
+#: ../gegl/gegl-serialize.c:411
+#, c-format
+msgid "%s has no %s property."
+msgstr "%s non ha la proprietà %s."
+
+#: ../gegl/gegl-serialize.c:417
+#, c-format
+msgid "%s has no %s property, properties: "
+msgstr "%s non ha la proprietà %s, proprietà: "
+
+#: ../gegl/gegl-serialize.c:509
+#, c-format
+msgid "BablFormat \"%s\" does not exist."
+msgstr "Il formato Babl \"%s\" non esiste."
+
+#: ../gegl/gegl-serialize.c:642
+#, c-format
+msgid "No such op '%s'"
+msgstr "Non c'è nessun op '%s'"
 
 #: ../gegl/module/geglmodule.c:340
 msgid "Module error"
@@ -1626,11 +1656,11 @@ msgid "Weight distribution sigma controlling response contributions"
 msgstr ""
 "Peso dei contributi alla risposta della distribuzione sigma controllata"
 
-#: ../operations/common/exp-combine.c:1270
+#: ../operations/common/exp-combine.c:1268
 msgid "Combine Exposures"
 msgstr "Combina esposizioni"
 
-#: ../operations/common/exp-combine.c:1273
+#: ../operations/common/exp-combine.c:1271
 msgid "Combine multiple scene exposures into one high dynamic range image."
 msgstr ""
 "Combina le esposizioni di più scene in un'unica immagine ad alta dinamica."
@@ -2580,7 +2610,7 @@ msgid "Color Model"
 msgstr "Modello colore"
 
 #: ../operations/common/newsprint.c:41
-msgid "How many inks to use just black, rg, rgb(additive) or cmyk"
+msgid "How many inks to use just black, rg, rgb (additive), or cmyk"
 msgstr "Quanti inchiostri per usare solo nero, rg, rgb(additivo) o cmyk"
 
 #: ../operations/common/newsprint.c:43
@@ -2589,8 +2619,8 @@ msgid "Pattern"
 msgstr "Motivo"
 
 #: ../operations/common/newsprint.c:45
-msgid "halftoning/dot pattern to use"
-msgstr "mezzitoni/motivo a puntini da usare"
+msgid "Halftoning/dot pattern to use"
+msgstr "Mezzitoni/motivo a puntini da usare"
 
 #: ../operations/common/newsprint.c:47 ../operations/common-gpl3+/ripple.c:36
 #: ../operations/common-gpl3+/waves.c:40
@@ -2620,25 +2650,20 @@ msgstr "Dimensione blocco"
 
 #: ../operations/common/newsprint.c:57
 msgid ""
-"number of periods per tile, this tiling avoids high frequency anomaly that "
-"angleboost causes"
-msgstr ""
-"numero di periodi per piastrella, questa piastrellatura evita le anomalie ad "
-"alta frequenzo che causa impulsoangolare"
+"Number of periods per tile, this tiling avoids high frequency anomaly that "
+"angle boost causes"
+msgstr "Numero di periodi per piastrella, questa piastrellatura evita le anomalie ad alta frequenza che causa Impulsoangolare"
 
 #: ../operations/common/newsprint.c:59
-msgid "Angleboost"
+msgid "Angle Boost"
 msgstr "Impulsoangolare"
 
 #: ../operations/common/newsprint.c:61
 msgid ""
-"multiplication factor for desired rotation of the local space for texture, "
+"Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
 "stronger where there is color."
-msgstr ""
-"fattore moltiplicativo per la rotazione desiderata dello spazio locale per "
-"il motivo, il modo in cui questo viene calcolato lo rende debole per colori "
-"desaturati e forse più forte dove c'è colore."
+msgstr "Fattore moltiplicativo per la rotazione desiderata dello spazio locale per il motivo, il modo in cui questo viene calcolato lo rende debole per colori desaturati e forse più forte dove c'è colore."
 
 #: ../operations/common/newsprint.c:63
 msgid "Black and green angle"
