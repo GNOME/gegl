@@ -11,7 +11,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=GEGL&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-11-23 02:09+0300\n"
-"PO-Revision-Date: 2017-12-06 00:33+0300\n"
+"PO-Revision-Date: 2017-12-06 01:05+0300\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: русский <>\n"
 "Language: ru\n"
@@ -367,42 +367,36 @@ msgid "Keep component 1"
 msgstr "Сохранить компонент 1"
 
 #: operations/common/alien-map.c:92
-#, fuzzy
 msgid "Keep red component"
-msgstr "Сохранить компонент 1"
+msgstr "Сохранить красный компонент"
 
 #: operations/common/alien-map.c:93
-#, fuzzy
 msgid "Keep hue component"
-msgstr "Сохранить компонент 1"
+msgstr "Сохранить компонент тона"
 
 #: operations/common/alien-map.c:95
 msgid "Keep component 2"
 msgstr "Сохранить компонент 2"
 
 #: operations/common/alien-map.c:98
-#, fuzzy
 msgid "Keep green component"
-msgstr "Сохранить компонент 1"
+msgstr "Сохранить зелёный компонент"
 
 #: operations/common/alien-map.c:99
-#, fuzzy
 msgid "Keep saturation component"
-msgstr "Сохранить компонент 1"
+msgstr "Сохранить компонент насыщенности"
 
 #: operations/common/alien-map.c:101
 msgid "Keep component 3"
 msgstr "Сохранить компонент 3"
 
 #: operations/common/alien-map.c:104
-#, fuzzy
 msgid "Keep blue component"
-msgstr "Сохранить компонент 1"
+msgstr "Сохранить синий компонент"
 
 #: operations/common/alien-map.c:105
-#, fuzzy
 msgid "Keep lightness component"
-msgstr "Сохранить компонент 1"
+msgstr "Сохранить компонент светлоты"
 
 #: operations/common/alien-map.c:260
 msgid "Alien Map"
@@ -3835,20 +3829,19 @@ msgstr ""
 
 #: operations/common-gpl3+/diffraction-patterns.c:31
 msgid "Light frequency (red)"
-msgstr ""
+msgstr "Частота света в красном канале"
 
 #: operations/common-gpl3+/diffraction-patterns.c:35
-#, fuzzy
 msgid "Light frequency (green)"
-msgstr "Угол освещения (в градусах)"
+msgstr "Частота света в зелёном канале"
 
 #: operations/common-gpl3+/diffraction-patterns.c:39
 msgid "Light frequency (blue)"
-msgstr ""
+msgstr "Частота света в синем канале"
 
 #: operations/common-gpl3+/diffraction-patterns.c:42
 msgid "Red contours"
-msgstr ""
+msgstr "Красные контуры"
 
 #: operations/common-gpl3+/diffraction-patterns.c:43
 #, fuzzy
@@ -3857,7 +3850,7 @@ msgstr "Количество цветов"
 
 #: operations/common-gpl3+/diffraction-patterns.c:46
 msgid "Green contours"
-msgstr ""
+msgstr "Зелёные контуры"
 
 #: operations/common-gpl3+/diffraction-patterns.c:47
 #, fuzzy
@@ -3866,7 +3859,7 @@ msgstr "Количество цветов"
 
 #: operations/common-gpl3+/diffraction-patterns.c:50
 msgid "Blue contours"
-msgstr ""
+msgstr "Синие контуры"
 
 #: operations/common-gpl3+/diffraction-patterns.c:51
 #, fuzzy
@@ -3875,7 +3868,7 @@ msgstr "Количество цветов"
 
 #: operations/common-gpl3+/diffraction-patterns.c:54
 msgid "Red sharp edges"
-msgstr ""
+msgstr "Чёткость красных краёв"
 
 #: operations/common-gpl3+/diffraction-patterns.c:55
 #, fuzzy
@@ -3883,9 +3876,8 @@ msgid "Number of sharp edges (red)"
 msgstr "Количество цветов"
 
 #: operations/common-gpl3+/diffraction-patterns.c:58
-#, fuzzy
 msgid "Green sharp edges"
-msgstr "Порог"
+msgstr "Чёткость зелёных краёв"
 
 #: operations/common-gpl3+/diffraction-patterns.c:59
 #, fuzzy
@@ -3893,9 +3885,8 @@ msgid "Number of sharp edges (green)"
 msgstr "Количество цветов"
 
 #: operations/common-gpl3+/diffraction-patterns.c:62
-#, fuzzy
 msgid "Blue sharp edges"
-msgstr "Порог"
+msgstr "Чёткость синих краёв"
 
 #: operations/common-gpl3+/diffraction-patterns.c:63
 #, fuzzy
@@ -3908,7 +3899,7 @@ msgstr ""
 
 #: operations/common-gpl3+/diffraction-patterns.c:70
 msgid "Scattering"
-msgstr ""
+msgstr "Разброс"
 
 #: operations/common-gpl3+/diffraction-patterns.c:71
 msgid "Scattering (speed vs. quality)"
@@ -4992,9 +4983,8 @@ msgid "Logarithmic"
 msgstr ""
 
 #: operations/common-gpl3+/spiral.c:33
-#, fuzzy
 msgid "Spiral type"
-msgstr "Тип фрактала"
+msgstr "Тип спирали"
 
 #: operations/common-gpl3+/spiral.c:36
 #, fuzzy
@@ -5007,9 +4997,8 @@ msgid "Spiral origin Y coordinate"
 msgstr "Координата X начала"
 
 #: operations/common-gpl3+/spiral.c:48
-#, fuzzy
 msgid "Spiral radius"
-msgstr "Радиус размывания"
+msgstr "Радиус спирали"
 
 #: operations/common-gpl3+/spiral.c:53
 msgid "Base"
@@ -6074,9 +6063,8 @@ msgid "Model - basic element we operate on"
 msgstr ""
 
 #: operations/external/npd.c:26
-#, fuzzy
 msgid "Square Size"
-msgstr "Квадрат"
+msgstr "Размер квадрата"
 
 #: operations/external/npd.c:28
 msgid "Size of an edge of square the mesh consists of"
