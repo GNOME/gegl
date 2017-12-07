@@ -49,3 +49,7 @@
 cscope.files
 cscope.out
 /*.project
+/docs/NEWS.html
+/docs/gcut.html
+/docs/gegl-chain.html
+tests/simple/test-node-exponential
