@@ -82,16 +82,18 @@ process (GeglOperation       *operation,
   gfloat *dst  = out_buf;
   gfloat *aux  = aux_buf;
 
-  gfloat shadows    = 2.f * fminf (fmaxf (-1.0, ((gfloat) o->shadows / 100.f)), 1.f);
-  gfloat highlights = 2.f * fminf (fmaxf (-1.0, ((gfloat) o->highlights / 100.f)), 1.f);
-  gfloat whitepoint = fmaxf (1.f - (gfloat) o->whitepoint / 100.f, 0.01f);
-  gfloat compress   = fminf (fmaxf (0, ((gfloat) o->compress / 100.f)), 0.99f);
+  gfloat shadows;
+  gfloat shadows_100 = (gfloat) o->shadows / 100.0f;
+  gfloat highlights;
+  gfloat highlights_100 = (gfloat) o->highlights / 100.0f;
+  gfloat whitepoint = 1.0f - (gfloat) o->whitepoint / 100.0f;
+  gfloat compress;
 
-  gfloat shadows_ccorrect = (fminf (fmaxf (0.0f, ((gfloat) o->shadows_ccorrect / 100.f)), 1.f) - 0.5f)
-                             * SIGN(shadows) + 0.5f;
+  gfloat shadows_ccorrect;
+  gfloat shadows_ccorrect_100 = (gfloat) o->shadows_ccorrect / 100.0f;
 
-  gfloat highlights_ccorrect = (fminf (fmaxf (0.0f, ((gfloat) o->highlights_ccorrect / 100.f)), 1.f) - 0.5f)
-                                * SIGN(-highlights) + 0.5f;
+  gfloat highlights_ccorrect;
+  gfloat highlights_ccorrect_100 = (gfloat) o->highlights_ccorrect / 100.0f;
 
   gfloat max[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
   gfloat min[4] = { 0.0f, -1.0f, -1.0f, 0.0f };
@@ -99,6 +101,23 @@ process (GeglOperation       *operation,
   gfloat halfmax = lmax / 2.0f;
   gfloat doublemax = lmax * 2.0f;
   gfloat low_approximation = 0.01f;
+
+  compress = fminf ((gfloat) o->compress / 100.0f, 0.99f);
+  g_return_val_if_fail (compress >= 0.0f, FALSE);
+
+  g_return_val_if_fail (-1.0f <= highlights_100 && highlights_100 <= 1.0f, FALSE);
+  highlights = 2.0f * highlights_100;
+
+  g_return_val_if_fail (0.0f <= highlights_ccorrect_100 && highlights_ccorrect_100 <= 1.0f, FALSE);
+  highlights_ccorrect = (highlights_ccorrect_100 - 0.5f) * SIGN (-highlights) + 0.5f;
+
+  g_return_val_if_fail (-1.0f <= shadows_100 && shadows_100 <= 1.0f, FALSE);
+  shadows = 2.0f * shadows_100;
+
+  g_return_val_if_fail (0.0f <= shadows_ccorrect_100 && shadows_ccorrect_100 <= 1.0f, FALSE);
+  shadows_ccorrect = (shadows_ccorrect_100 - 0.5f) * SIGN (shadows) + 0.5f;
+
+  g_return_val_if_fail (whitepoint >= 0.01f, FALSE);
 
   if (!aux)
     {
