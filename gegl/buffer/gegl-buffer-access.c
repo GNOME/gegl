@@ -1703,8 +1703,8 @@ gegl_buffer_copy (GeglBuffer          *src,
                 gint src_x, src_y;
                 gint stx, sty, dtx, dty;
 
-                src_x = dst_x - (dst_rect->x - src_rect->x) + src->shift_x;
-                src_y = dst_y - (dst_rect->y - src_rect->y) + src->shift_y;
+                src_x = dst_x + (src_rect->x - dst_rect->x) + (src->shift_x - dst->shift_x);
+                src_y = dst_y + (src_rect->y - dst_rect->y) + (src->shift_y - dst->shift_y);
 
                 stx = gegl_tile_indice (src_x, tile_width);
                 sty = gegl_tile_indice (src_y, tile_height);
