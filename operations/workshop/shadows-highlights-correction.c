@@ -82,22 +82,22 @@ process (GeglOperation       *operation,
   gfloat *dst  = out_buf;
   gfloat *aux  = aux_buf;
 
-  gfloat shadows    = 2.f * fminf (fmaxf (-1.0, (o->shadows / 100.f)), 1.f);
-  gfloat highlights = 2.f * fminf (fmaxf (-1.0, (o->highlights / 100.f)), 1.f);
-  gfloat whitepoint = fmaxf (1.f - o->whitepoint / 100.f, 0.01f);
-  gfloat compress   = fminf (fmaxf (0, (o->compress / 100.f)), 0.99f);
+  gfloat shadows    = 2.f * fminf (fmaxf (-1.0, ((gfloat) o->shadows / 100.f)), 1.f);
+  gfloat highlights = 2.f * fminf (fmaxf (-1.0, ((gfloat) o->highlights / 100.f)), 1.f);
+  gfloat whitepoint = fmaxf (1.f - (gfloat) o->whitepoint / 100.f, 0.01f);
+  gfloat compress   = fminf (fmaxf (0, ((gfloat) o->compress / 100.f)), 0.99f);
 
-  gfloat shadows_ccorrect = (fminf (fmaxf (0.0f, (o->shadows_ccorrect / 100.f)), 1.f) - 0.5f)
+  gfloat shadows_ccorrect = (fminf (fmaxf (0.0f, ((gfloat) o->shadows_ccorrect / 100.f)), 1.f) - 0.5f)
                              * SIGN(shadows) + 0.5f;
 
-  gfloat highlights_ccorrect = (fminf (fmaxf (0.0f, (o->highlights_ccorrect / 100.f)), 1.f) - 0.5f)
+  gfloat highlights_ccorrect = (fminf (fmaxf (0.0f, ((gfloat) o->highlights_ccorrect / 100.f)), 1.f) - 0.5f)
                                 * SIGN(-highlights) + 0.5f;
 
   gfloat max[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
   gfloat min[4] = { 0.0f, -1.0f, -1.0f, 0.0f };
-  gfloat lmax = max[0] + fabs(min[0]);
-  gfloat halfmax = lmax / 2.0;
-  gfloat doublemax = lmax * 2.0;
+  gfloat lmax = max[0] + fabsf(min[0]);
+  gfloat halfmax = lmax / 2.0f;
+  gfloat doublemax = lmax * 2.0f;
   gfloat low_approximation = 0.01f;
 
   if (!aux)
@@ -137,9 +137,9 @@ process (GeglOperation       *operation,
           gfloat la = ta[0];
           gfloat lb = (tb[0] - halfmax) * SIGN(-highlights) * SIGN(lmax - la) + halfmax;
 
-          lref = copysignf(fabs(la) > low_approximation ? 1.0f / fabs(la) : 1.0f / low_approximation, la);
+          lref = copysignf(fabsf(la) > low_approximation ? 1.0f / fabsf(la) : 1.0f / low_approximation, la);
           href = copysignf(
-              fabs(1.0f - la) > low_approximation ? 1.0f / fabs(1.0f - la) : 1.0f / low_approximation, 1.0f - la);
+              fabsf(1.0f - la) > low_approximation ? 1.0f / fabsf(1.0f - la) : 1.0f / low_approximation, 1.0f - la);
 
           chunk = highlights2 > 1.0f ? 1.0f : highlights2;
           optrans = chunk * highlights_xform;
@@ -168,9 +168,9 @@ process (GeglOperation       *operation,
 
         gfloat la = ta[0];
         gfloat lb = (tb[0] - halfmax) * SIGN(shadows) * SIGN(lmax - la) + halfmax;
-        lref = copysignf(fabs(la) > low_approximation ? 1.0f / fabs(la) : 1.0f / low_approximation, la);
+        lref = copysignf(fabsf(la) > low_approximation ? 1.0f / fabsf(la) : 1.0f / low_approximation, la);
         href = copysignf(
-            fabs(1.0f - la) > low_approximation ? 1.0f / fabs(1.0f - la) : 1.0f / low_approximation, 1.0f - la);
+            fabsf(1.0f - la) > low_approximation ? 1.0f / fabsf(1.0f - la) : 1.0f / low_approximation, 1.0f - la);
 
         chunk = shadows2 > 1.0f ? 1.0f : shadows2;
         optrans = chunk * shadows_xform;
