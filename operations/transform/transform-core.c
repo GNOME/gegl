@@ -594,14 +594,14 @@ gegl_transform_get_required_for_output (GeglOperation       *op,
   /*
    * Convert indices to absolute positions:
    */
-  need_points [0] = requested_rect.x + (gdouble) 0.5;
-  need_points [1] = requested_rect.y + (gdouble) 0.5;
+  need_points [0] = requested_rect.x;
+  need_points [1] = requested_rect.y;
 
-  need_points [2] = need_points [0] + (requested_rect.width  - (gint) 1);
+  need_points [2] = need_points [0] + requested_rect.width;
   need_points [3] = need_points [1];
 
   need_points [4] = need_points [2];
-  need_points [5] = need_points [3] + (requested_rect.height - (gint) 1);
+  need_points [5] = need_points [3] + requested_rect.height;
 
   need_points [6] = need_points [0];
   need_points [7] = need_points [5];
@@ -666,6 +666,15 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
   /*
    * TODO: Should the result be given extra elbow room all around to
    * allow for round off error (for "safety")?
+   *
+   * ^-- Looks like the answer is "yes": if we cut things too close,
+   * there can indeed be "missing pixels" at the edge of the input
+   * buffer (due to similar logic in get_required_for_output()).
+   * This might suggest that our sampling coordinates are not accurate
+   * enough, but for now, allowing some wiggle room, by computing the
+   * bounding box based on pixel corners, rather that pixel centers
+   * (in contrast to the last sentence of the previous comment) seems
+   * to be enough.
    */
 
   sampler = gegl_buffer_sampler_new_at_level (NULL,
@@ -707,14 +716,14 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
   /*
    * Convert indices to absolute positions:
    */
-  affected_points [0] = region.x + (gdouble) 0.5;
-  affected_points [1] = region.y + (gdouble) 0.5;
+  affected_points [0] = region.x;
+  affected_points [1] = region.y;
 
-  affected_points [2] = affected_points [0] + ( region.width  - (gint) 1);
+  affected_points [2] = affected_points [0] + region.width;
   affected_points [3] = affected_points [1];
 
   affected_points [4] = affected_points [2];
-  affected_points [5] = affected_points [3] + ( region.height - (gint) 1);
+  affected_points [5] = affected_points [3] + region.height;
 
   affected_points [6] = affected_points [0];
   affected_points [7] = affected_points [5];
