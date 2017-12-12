@@ -72,6 +72,13 @@ _new_empty_tile (const gint tile_size)
           allocated_tile->size           = common_empty_size;
           allocated_tile->is_zero_tile   = 1;
 
+          /* avoid counting duplicates of the empty tile towards the total
+           * cache size, both since this is unnecessary, and since they may
+           * have different sizes, which is inconsistent with the duplicate-
+           * tracking cache logic.
+           */
+          (*gegl_tile_n_cached_clones (allocated_tile))++;
+
           g_once_init_leave (&common_tile, allocated_tile);
         }
 

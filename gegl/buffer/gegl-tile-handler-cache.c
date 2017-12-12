@@ -87,13 +87,13 @@ static void       gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cach
                                                       gint                  z);
 
 
-static GMutex       mutex                 = { 0, };
-static GQueue      *cache_queue           = NULL;
-static gint         cache_wash_percentage = 20;
-static guint64      cache_total           = 0; /* approximate amount of bytes stored */
+static GMutex             mutex                 = { 0, };
+static GQueue            *cache_queue           = NULL;
+static gint               cache_wash_percentage = 20;
+static volatile guintptr  cache_total           = 0; /* approximate amount of bytes stored */
 #ifdef GEGL_DEBUG_CACHE_HITS
-static gint         cache_hits            = 0;
-static gint         cache_misses          = 0;
+static gint               cache_hits            = 0;
+static gint               cache_misses          = 0;
 #endif
 
 
@@ -114,6 +114,31 @@ gegl_tile_handler_cache_init (GeglTileHandlerCache *cache)
   ((GeglTileSource*)cache)->command = gegl_tile_handler_cache_command;
   cache->items = g_hash_table_new (gegl_tile_handler_cache_hashfunc, gegl_tile_handler_cache_equalfunc);
   gegl_tile_cache_init ();
+}
+
+static void
+drop_hot_tile (GeglTile *tile)
+{
+  GeglTileStorage *storage = tile->tile_storage;
+
+  if (storage)
+    {
+#if 0 /* the storage's mutex should already be locked at this point */
+      if (gegl_config_threads()>1)
+        g_rec_mutex_lock (&storage->mutex);
+#endif
+
+      if (storage->hot_tile == tile)
+        {
+          gegl_tile_unref (storage->hot_tile);
+          storage->hot_tile = NULL;
+        }
+
+#if 0
+      if (gegl_config_threads()>1)
+        g_rec_mutex_unlock (&storage->mutex);
+#endif
+    }
 }
 
 static void
@@ -140,8 +165,11 @@ gegl_tile_handler_cache_reinit (GeglTileHandlerCache *cache)
       item = (CacheItem *) value;
       if (item->tile)
         {
-          cache_total -= item->tile->size;
-          gegl_tile_mark_as_stored (item->tile); // to avoid saving 
+          if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
+            g_atomic_pointer_add (&cache_total, -item->tile->size);
+          drop_hot_tile (item->tile);
+          gegl_tile_mark_as_stored (item->tile); // to avoid saving
+          item->tile->tile_storage = NULL;
           gegl_tile_unref (item->tile);
           cache->count--;
         }
@@ -304,11 +332,10 @@ gegl_tile_handler_cache_wash (GeglTileHandlerCache *cache)
       CacheItem *item = LINK_GET_ITEM (link);
       GeglTile  *tile = item->tile;
 
-      if (!gegl_tile_is_stored (tile))
+      if (tile->tile_storage && ! gegl_tile_is_stored (tile))
         {
           last_dirty = tile;
-          if (last_dirty->tile_storage)
-            g_object_ref (last_dirty->tile_storage);
+          g_object_ref (last_dirty->tile_storage);
           gegl_tile_ref (last_dirty);
 
           break;
@@ -320,7 +347,7 @@ gegl_tile_handler_cache_wash (GeglTileHandlerCache *cache)
   if (last_dirty != NULL)
     {
       gegl_tile_store (last_dirty);
-      g_clear_object (&last_dirty->tile_storage);
+      g_object_unref (last_dirty->tile_storage);
       gegl_tile_unref (last_dirty);
       return TRUE;
     }
@@ -397,31 +424,6 @@ gegl_tile_handler_cache_has_tile (GeglTileHandlerCache *cache,
   return FALSE;
 }
 
-static void
-drop_hot_tile (GeglTile *tile)
-{
-  GeglTileStorage *storage = tile->tile_storage;
-
-  if (storage)
-    {
-#if 0 /* the storage's mutex should already be locked at this point */
-      if (gegl_config_threads()>1)
-        g_rec_mutex_lock (&storage->mutex);
-#endif
-
-      if (storage->hot_tile == tile)
-        {
-          gegl_tile_unref (storage->hot_tile);
-          storage->hot_tile = NULL;
-        }
-
-#if 0
-      if (gegl_config_threads()>1)
-        g_rec_mutex_unlock (&storage->mutex);
-#endif
-    }
-}
-
 static gboolean
 gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 {
@@ -429,7 +431,8 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 
   link = g_queue_peek_tail_link (cache_queue);
 
-  while (cache_total > gegl_config()->tile_cache_size)
+  while ((guintptr) g_atomic_pointer_get (&cache_total) >
+         gegl_config ()->tile_cache_size)
     {
       CacheItem       *last_writable;
       GeglTile        *tile;
@@ -480,13 +483,16 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
       prev_link = g_list_previous (link);
       g_queue_unlink (cache_queue, link);
       g_hash_table_remove (last_writable->handler->items, last_writable);
-      cache_total -= tile->size;
+      if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (tile)))
+        g_atomic_pointer_add (&cache_total, -tile->size);
       last_writable->handler->count--;
       /* drop_hot_tile (tile); */ /* XXX:  no use in trying to drop the hot
                                    * tile, since this tile can't be it --
                                    * the hot tile will have a ref-count of
                                    * at least two.
                                    */
+      gegl_tile_store (tile);
+      tile->tile_storage = NULL;
       gegl_tile_unref (tile);
 
       if (dirty && gegl_config_threads()>1)
@@ -511,7 +517,8 @@ gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cache,
   item = cache_lookup (cache, x, y, z);
   if (item)
     {
-      cache_total -= item->tile->size;
+      if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
+        g_atomic_pointer_add (&cache_total, -item->tile->size);
       cache->count--;
 
       g_queue_unlink (cache_queue, &item->link);
@@ -520,8 +527,8 @@ gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cache,
       g_mutex_unlock (&mutex);
 
       drop_hot_tile (item->tile);
-      item->tile->tile_storage = NULL;
       gegl_tile_mark_as_stored (item->tile); /* to cheat it out of being stored */
+      item->tile->tile_storage = NULL;
       gegl_tile_unref (item->tile);
 
       g_slice_free (CacheItem, item);
@@ -543,7 +550,8 @@ gegl_tile_handler_cache_void (GeglTileHandlerCache *cache,
   item = cache_lookup (cache, x, y, z);
   if (item)
     {
-      cache_total -= item->tile->size;
+      if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
+        g_atomic_pointer_add (&cache_total, -item->tile->size);
       g_queue_unlink (cache_queue, &item->link);
       g_hash_table_remove (cache->items, item);
       cache->count--;
@@ -554,6 +562,7 @@ gegl_tile_handler_cache_void (GeglTileHandlerCache *cache,
     {
       drop_hot_tile (item->tile);
       gegl_tile_void (item->tile);
+      item->tile->tile_storage = NULL;
       gegl_tile_unref (item->tile);
     }
 
@@ -578,18 +587,19 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
   item->y         = y;
   item->z         = z;
 
+  // XXX : remove entry if it already exists
+  gegl_tile_handler_cache_void (cache, x, y, z);
+
   tile->x = x;
   tile->y = y;
   tile->z = z;
   tile->tile_storage = cache->tile_storage;
 
-  // XXX : remove entry if it already exists
-  gegl_tile_handler_cache_void (cache, x, y, z);
-
   /* XXX: this is a window when the tile is a zero tile during update */
 
   g_mutex_lock (&mutex);
-  cache_total  += item->tile->size;
+  if (g_atomic_int_add (gegl_tile_n_cached_clones (tile), 1) == 0)
+    g_atomic_pointer_add (&cache_total, tile->size);
   g_queue_push_head_link (cache_queue, &item->link);
 
   cache->count ++;
@@ -599,6 +609,21 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
   gegl_tile_handler_cache_trim (cache);
 
   g_mutex_unlock (&mutex);
+}
+
+void
+gegl_tile_handler_cache_tile_uncloned (GeglTileHandlerCache *cache,
+                                       GeglTile             *tile)
+{
+  if ((guintptr) g_atomic_pointer_add (&cache_total, tile->size) + tile->size >
+      gegl_config ()->tile_cache_size)
+    {
+      g_mutex_lock (&mutex);
+
+      gegl_tile_handler_cache_trim (cache);
+
+      g_mutex_unlock (&mutex);
+    }
 }
 
 GeglTileHandler *

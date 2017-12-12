@@ -49,13 +49,16 @@ struct _GeglTileHandlerCacheClass
   GeglTileHandlerClass parent_class;
 };
 
-GType             gegl_tile_handler_cache_get_type (void) G_GNUC_CONST;
+GType             gegl_tile_handler_cache_get_type      (void) G_GNUC_CONST;
 
-GeglTileHandler * gegl_tile_handler_cache_new      (void);
-void              gegl_tile_handler_cache_insert   (GeglTileHandlerCache *cache,
-                                                    GeglTile             *tile,
-                                                    gint                  x,
-                                                    gint                  y,
-                                                    gint                  z);
+GeglTileHandler * gegl_tile_handler_cache_new           (void);
+
+void              gegl_tile_handler_cache_insert        (GeglTileHandlerCache *cache,
+                                                         GeglTile             *tile,
+                                                         gint                  x,
+                                                         gint                  y,
+                                                         gint                  z);
+void              gegl_tile_handler_cache_tile_uncloned (GeglTileHandlerCache *cache,
+                                                         GeglTile             *tile);
 
 #endif

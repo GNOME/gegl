@@ -168,8 +168,12 @@ struct _GeglTile
   gint             is_zero_tile:1;
 
   gint             clone_state; /* tile clone/unclone state & spinlock */
-  gint            *n_clones;    /* shared atomic counter among all tiles
-                                 * sharing the same data
+  gint            *n_clones;    /* an array of two atomic counters, shared
+                                 * among all tiles sharing the same data.
+                                 * the first counter indicates the number of
+                                 * tiles sharing the data, and the second
+                                 * counter indicates how many of those tiles
+                                 * are in the cache.
                                  */
 
   /* called when the tile is about to be destroyed */
@@ -199,6 +203,9 @@ gboolean gegl_buffer_scan_compatible (GeglBuffer *bufferA,
 #ifndef __GEGL_TILE_H__
 #define gegl_tile_get_data(tile)  ((tile)->data)
 #endif
+
+#define gegl_tile_n_clones(tile)         (&(tile)->n_clones[0])
+#define gegl_tile_n_cached_clones(tile)  (&(tile)->n_clones[1])
 
 /* computes the positive integer remainder (also for negative dividends)
  */
