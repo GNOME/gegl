@@ -45,10 +45,13 @@ gint            gegl_operation_context_get_level       (GeglOperationContext *se
 
 /* the rest of these functions are for internal use only */
 
-GeglBuffer *    gegl_operation_context_get_output_maybe_in_place (GeglOperation *operation,
-                                                            GeglOperationContext *context,
-                                                            GeglBuffer    *input,
-                                                            const GeglRectangle *roi);
+GeglBuffer *    gegl_operation_context_get_output_maybe_in_place (GeglOperation        *operation,
+                                                                  GeglOperationContext *context,
+                                                                  GeglBuffer           *input,
+                                                                  const GeglRectangle  *roi);
+GeglBuffer *    gegl_operation_context_dup_input_maybe_copy      (GeglOperationContext *context,
+                                                                  const gchar          *padname,
+                                                                  const GeglRectangle  *roi);
 
 
 G_END_DECLS

@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include <string.h>
+#include <math.h>
 
 #include <glib-object.h>
 
@@ -29,6 +30,7 @@
 #include "gegl-operation-context.h"
 #include "gegl-operation-context-private.h"
 #include "gegl-node-private.h"
+#include "gegl-buffer-private.h"
 #include "gegl-config.h"
 
 #include "operation/gegl-operation.h"
@@ -396,4 +398,99 @@ gegl_operation_context_get_output_maybe_in_place (GeglOperation *operation,
       output = gegl_operation_context_get_target (context, "output");
     }
   return output;
+}
+
+GeglBuffer *
+gegl_operation_context_dup_input_maybe_copy (GeglOperationContext *context,
+                                             const gchar          *padname,
+                                             const GeglRectangle  *roi)
+{
+  GeglBuffer    *input;
+  GeglBuffer    *output;
+  GeglBuffer    *result;
+  GeglRectangle  required;
+  GeglRectangle  temp;
+  gint           shift_x;
+  gint           shift_y;
+  gint           tile_width;
+  gint           tile_height;
+
+  input = GEGL_BUFFER (gegl_operation_context_get_object (context, padname));
+
+  if (! input)
+    return NULL;
+
+  /* return input directly when processing a level greater than 0, since
+   * gegl_buffer_copy() only copies level-0 tiles
+   */
+  if (context->level > 0)
+    return g_object_ref (input);
+
+  output = GEGL_BUFFER (gegl_operation_context_get_object (context, "output"));
+
+  /* return input directly when processing in-place, otherwise, the copied
+   * input buffer will occupy space in the cache after the original is modified
+   */
+  if (input == output)
+    return g_object_ref (input);
+
+  /* get required region to copy */
+  required = gegl_operation_get_required_for_output (context->operation,
+                                                     padname, roi);
+
+  /* return input directly if the required rectangle is infinite, so that we
+   * don't attempt to copy an infinite region
+   */
+  if (gegl_rectangle_is_infinite_plane (&required))
+    return g_object_ref (input);
+
+  /* align required region to the tile grid */
+  shift_x     = input->shift_x;
+  shift_y     = input->shift_y;
+  tile_width  = input->tile_width;
+  tile_height = input->tile_height;
+
+  temp.x      = (gint) floor ((gdouble) (required.x                   + shift_x) / tile_width)  * tile_width;
+  temp.y      = (gint) floor ((gdouble) (required.y                   + shift_y) / tile_height) * tile_height;
+  temp.width  = (gint) ceil  ((gdouble) (required.x + required.width  + shift_x) / tile_width)  * tile_width  - temp.x;
+  temp.height = (gint) ceil  ((gdouble) (required.y + required.height + shift_y) / tile_height) * tile_height - temp.y;
+
+  temp.x -= shift_x;
+  temp.y -= shift_y;
+
+  required = temp;
+
+  /* intersect required region with input abyss */
+  gegl_rectangle_intersect (&required, &required, &input->abyss);
+
+  /* create new buffer with similar characteristics to the input buffer */
+  result = g_object_new (GEGL_TYPE_BUFFER,
+                         "format",       input->soft_format,
+                         "x",            input->extent.x,
+                         "y",            input->extent.y,
+                         "width",        input->extent.width,
+                         "height",       input->extent.height,
+                         "abyss-x",      input->abyss.x,
+                         "abyss-y",      input->abyss.y,
+                         "abyss-width",  input->abyss.width,
+                         "abyss-height", input->abyss.height,
+                         "shift-x",      shift_x,
+                         "shift-y",      shift_y,
+                         "tile-width",   tile_width,
+                         "tile-height",  tile_height,
+                         NULL);
+
+  /* if the tile size doesn't match, bail */
+  if (result->tile_width != tile_width || result->tile_height != tile_height)
+    {
+      g_object_unref (result);
+
+      return g_object_ref (input);
+    }
+
+  /* copy required region from input to result -- tiles will generally be COWed */
+  gegl_buffer_copy (input,  &required, GEGL_ABYSS_NONE,
+                    result, &required);
+
+  return result;
 }
