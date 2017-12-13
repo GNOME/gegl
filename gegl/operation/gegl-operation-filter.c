@@ -109,7 +109,7 @@ typedef struct ThreadData
 {
   GeglOperationFilterClass *klass;
   GeglOperation            *operation;
-  GeglBuffer               *input;
+  GeglOperationContext     *context;
   GeglBuffer               *output;
   gint                     *pending;
   gint                      level;
@@ -117,12 +117,22 @@ typedef struct ThreadData
   GeglRectangle             roi;
 } ThreadData;
 
-static void thread_process (gpointer thread_data, gpointer unused)
+static void thread_process (gpointer thread_data, gpointer input)
 {
   ThreadData *data = thread_data;
+
+  if (! input)
+    {
+      input = gegl_operation_context_dup_input_maybe_copy (data->context,
+                                                           "input", &data->roi);
+    }
+
   if (!data->klass->process (data->operation,
-                       data->input, data->output, &data->roi, data->level))
+                             input, data->output, &data->roi, data->level))
     data->success = FALSE;
+
+  g_object_unref (input);
+
   g_atomic_int_add (data->pending, -1);
 }
 
@@ -219,7 +229,7 @@ gegl_operation_filter_process (GeglOperation        *operation,
     {
       thread_data[i].klass = klass;
       thread_data[i].operation = operation;
-      thread_data[i].input = input;
+      thread_data[i].context = context;
       thread_data[i].output = output;
       thread_data[i].pending = &pending;
       thread_data[i].level = level;
@@ -228,7 +238,7 @@ gegl_operation_filter_process (GeglOperation        *operation,
 
     for (gint i = 1; i < threads; i++)
       g_thread_pool_push (pool, &thread_data[i], NULL);
-    thread_process (&thread_data[0], NULL);
+    thread_process (&thread_data[0], g_object_ref (input));
 
     while (g_atomic_int_get (&pending)) {};
 
