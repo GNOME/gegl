@@ -375,13 +375,8 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
-  filter_class->process     = process;
-  operation_class->prepare  = prepare;
-  /* This operation is already quite slow, but it is terrible when
-   * multi-threaded. Disable multi-threading until we optimize it.
-   * See https://bugzilla.gnome.org/show_bug.cgi?id=791424
-   */
-  operation_class->threaded = FALSE;
+  filter_class->process    = process;
+  operation_class->prepare = prepare;
 
   /* we override defined region to avoid growing the size of what is defined
    * by the filter. This also allows the tricks used to treat alpha==0 pixels
