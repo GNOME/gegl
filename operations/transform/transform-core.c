@@ -169,9 +169,7 @@ op_transform_class_init (OpTransformClass *klass)
   op_class->process                   = gegl_transform_process;
   op_class->prepare                   = gegl_transform_prepare;
   op_class->no_cache                  = TRUE;
-  op_class->threaded                  = FALSE; // XXX : at the moment threading
-                                               // produces right result but
-                                               // slows down most transform - and significantly slows down scale
+  op_class->threaded                  = TRUE;
 
   klass->create_matrix = NULL;
 
