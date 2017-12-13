@@ -1,3 +1,30 @@
+GEGL-0.3.26 2017-12-14
+
+Core
+~~~~
+
+Make gegl-chain parser more robust wrt parsing babl formats, and improved -
+translatable - error handling.
+
+Add capabilitity to use per thread input buffers for multi-threaded
+filter/composer/composer3 ops, this reduces contention over the buffer tile
+locks and improves multi-threaded performance in some cases without reducing it
+for the majority of cases.
+
+Buffer
+~~~~~~
+
+Threads no longer blocked while locking tiles, and fixes to gegL_buffer_copy.
+Better clone accounting in tile cache.
+
+Operations
+~~~~~~~~~~
+
+  exp-combine: code cleanup/simplification
+  libraw: make bounding box handling consistent with rest of code.
+  transform ops: re-enabled multi-threading, reduced some format
+conversions and added wiggle-room in required/invalidated calculations.
+
 GEGL-0.3.24 2017-11-24
 ----------------------
 
