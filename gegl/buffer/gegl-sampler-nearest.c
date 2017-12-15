@@ -36,6 +36,9 @@ enum
 };
 
 static void
+gegl_sampler_nearest_dispose (GObject *self);
+
+static void
 gegl_sampler_nearest_get (GeglSampler*    restrict self,
                           const gdouble            absolute_x,
                           const gdouble            absolute_y,
@@ -51,7 +54,10 @@ G_DEFINE_TYPE (GeglSamplerNearest, gegl_sampler_nearest, GEGL_TYPE_SAMPLER)
 static void
 gegl_sampler_nearest_class_init (GeglSamplerNearestClass *klass)
 {
+  GObjectClass     *object_class  = G_OBJECT_CLASS (klass);
   GeglSamplerClass *sampler_class = GEGL_SAMPLER_CLASS (klass);
+
+  object_class->dispose = gegl_sampler_nearest_dispose;
 
   sampler_class->get = gegl_sampler_nearest_get;
   sampler_class->prepare = gegl_sampler_nearest_prepare;
@@ -70,6 +76,16 @@ gegl_sampler_nearest_init (GeglSamplerNearest *self)
   GEGL_SAMPLER (self)->level[0].context_rect.width = 1;
   GEGL_SAMPLER (self)->level[0].context_rect.height = 1;
   GEGL_SAMPLER (self)->interpolate_format = gegl_babl_rgbA_linear_float ();
+}
+
+static void
+gegl_sampler_nearest_dispose (GObject *object)
+{
+  GeglSamplerNearest *nearest_sampler = GEGL_SAMPLER_NEAREST (object);
+
+  g_clear_pointer (&nearest_sampler->hot_tile, gegl_tile_unref);
+
+  G_OBJECT_CLASS (gegl_sampler_nearest_parent_class)->dispose (object);
 }
 
 static void inline
@@ -131,8 +147,6 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
     }
 
   gegl_buffer_lock (sampler->buffer);
-  if (gegl_config_threads()>1)
-    g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
   {
     gint tile_width  = buffer->tile_width;
@@ -142,17 +156,25 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
     gint indice_x    = gegl_tile_indice (tiledx, tile_width);
     gint indice_y    = gegl_tile_indice (tiledy, tile_height);
 
-    GeglTile *tile = buffer->tile_storage->hot_tile;
+    GeglTile *tile = nearest_sampler->hot_tile;
 
     if (!(tile &&
           tile->x == indice_x &&
           tile->y == indice_y))
       {
-        _gegl_buffer_drop_hot_tile (buffer);
+        if (gegl_config_threads()>1)
+          g_rec_mutex_lock (&buffer->tile_storage->mutex);
+
+        if (tile)
+          gegl_tile_unref (tile);
+
         tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           indice_x, indice_y,
                                           0);
-        buffer->tile_storage->hot_tile = tile;
+        nearest_sampler->hot_tile = tile;
+
+        if (gegl_config_threads()>1)
+          g_rec_mutex_unlock (&buffer->tile_storage->mutex);
       }
 
     if (tile)
@@ -167,8 +189,7 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
         babl_process (sampler->fish, tp, buf, 1);
       }
   }
-  if (gegl_config_threads()>1)
-    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+
   gegl_buffer_unlock (sampler->buffer);
 }
 
@@ -185,20 +206,6 @@ gegl_sampler_nearest_get_same_format  (      GeglSampler*    restrict  sampler,
   gegl_buffer_get (sampler->buffer, &rectangle, 1.0, sampler->format, output, GEGL_AUTO_ROWSTRIDE, repeat_mode);
 }
 #endif
-
-static void
-gegl_sampler_nearest_get_threaded (      GeglSampler*    restrict  sampler,
-                          const gdouble                   absolute_x,
-                          const gdouble                   absolute_y,
-                                GeglMatrix2              *scale,
-                                void*           restrict  output,
-                                GeglAbyssPolicy           repeat_mode)
-{
-  GeglRectangle rect = {(gint) floorf ((double) absolute_x),
-                        (gint) floorf ((double) absolute_y),1,1};
-  gegl_buffer_get (sampler->buffer, &rect, 1.0, sampler->format, output, GEGL_AUTO_ROWSTRIDE, repeat_mode);
-  return;
-}
 
 static void
 gegl_sampler_nearest_get (      GeglSampler*    restrict  sampler,
@@ -229,9 +236,6 @@ gegl_sampler_nearest_prepare (GeglSampler* restrict sampler)
   if (!sampler->buffer) /* this happens when querying the extent of a sampler */
     return;
   GEGL_SAMPLER_NEAREST (sampler)->buffer_bpp = babl_format_get_bytes_per_pixel (sampler->buffer->format);
-
-  if (gegl_config_threads () > 1)
-    sampler->get = gegl_sampler_nearest_get_threaded;
 
 #if 0 // maybe re-enable; when certain result is correct
   if (sampler->format == sampler->buffer->soft_format)
