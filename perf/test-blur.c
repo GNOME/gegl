@@ -12,6 +12,10 @@ main (gint    argc,
 
   buffer = test_buffer(1024, 1024, babl_format("RGBA float"));
   bench("gaussian-blur", buffer, &blur);
+  g_object_unref (buffer);
+
+  gegl_exit ();
+  return 0;
 }
 
 void blur(GeglBuffer *buffer)
