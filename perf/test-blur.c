@@ -10,8 +10,20 @@ main (gint    argc,
 
   gegl_init(&argc, &argv);
 
+  buffer = test_buffer(1024, 1024, babl_format("RGB float"));
+  bench("gaussian-blur (RGB)", buffer, &blur);
+  g_object_unref (buffer);
+
   buffer = test_buffer(1024, 1024, babl_format("RGBA float"));
-  bench("gaussian-blur", buffer, &blur);
+  bench("gaussian-blur (RGBA)", buffer, &blur);
+  g_object_unref (buffer);
+
+  buffer = test_buffer(1024, 1024, babl_format("Y float"));
+  bench("gaussian-blur (Y)", buffer, &blur);
+  g_object_unref (buffer);
+
+  buffer = test_buffer(1024, 1024, babl_format("YA float"));
+  bench("gaussian-blur (YA)", buffer, &blur);
   g_object_unref (buffer);
 
   gegl_exit ();
