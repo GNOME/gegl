@@ -94,6 +94,16 @@ void          gegl_load_module_directory (const gchar *path);
  */
 GeglConfig   *gegl_config                (void);
 
+/**
+ * gegl_stats:
+ *
+ * Returns a GeglStats object with properties that can be read to monitor
+ * GEGL statistics.
+ *
+ * Return value: (transfer none): a #GeglStats
+ */
+GeglStats    *gegl_stats                 (void);
+
 gboolean gegl_is_main_thread (void);
 
 G_END_DECLS

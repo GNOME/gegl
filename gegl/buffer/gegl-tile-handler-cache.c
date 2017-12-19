@@ -632,6 +632,12 @@ gegl_tile_handler_cache_new (void)
   return g_object_new (GEGL_TYPE_TILE_HANDLER_CACHE, NULL);
 }
 
+gsize
+gegl_tile_handler_cache_get_total (void)
+{
+  return cache_total;
+}
+
 
 static guint
 gegl_tile_handler_cache_hashfunc (gconstpointer key)

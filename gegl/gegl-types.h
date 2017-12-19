@@ -55,6 +55,12 @@ GType gegl_config_get_type (void) G_GNUC_CONST;
 #define GEGL_CONFIG(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_CONFIG, GeglConfig))
 #define GEGL_IS_CONFIG(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_CONFIG))
 
+typedef struct _GeglStats GeglStats;
+GType gegl_stats_get_type (void) G_GNUC_CONST;
+#define GEGL_TYPE_STATS             (gegl_stats_get_type ())
+#define GEGL_STATS(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_STATS, GeglStats))
+#define GEGL_IS_STATS(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_STATS))
+
 typedef struct _GeglSampler       GeglSampler;
 typedef struct _GeglCurve         GeglCurve;
 typedef struct _GeglPath          GeglPath;

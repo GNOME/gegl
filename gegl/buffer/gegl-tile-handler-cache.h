@@ -61,4 +61,6 @@ void              gegl_tile_handler_cache_insert        (GeglTileHandlerCache *c
 void              gegl_tile_handler_cache_tile_uncloned (GeglTileHandlerCache *cache,
                                                          GeglTile             *tile);
 
+gsize             gegl_tile_handler_cache_get_total     (void);
+
 #endif

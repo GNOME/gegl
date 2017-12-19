@@ -98,6 +98,7 @@ GEGL_sources = \
 	gegl-gio.c			\
 	gegl-random.c			\
 	gegl-serialize.c		\
+	gegl-stats.c			\
 	gegl-matrix.c			\
 	\
 	gegl-algorithms.h \
@@ -115,6 +116,7 @@ GEGL_sources = \
 	gegl-op.h			    \
 	gegl-plugin.h			\
 	gegl-random-private.h		\
+	gegl-stats.h			\
 	gegl-gio-private.h		\
 	gegl-types-internal.h		\
 	gegl-xml.h

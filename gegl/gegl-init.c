@@ -102,6 +102,7 @@ guint gegl_debug_flags = 0;
 #include "buffer/gegl-tile-backend-ram.h"
 #include "buffer/gegl-tile-backend-file.h"
 #include "gegl-config.h"
+#include "gegl-stats.h"
 #include "graph/gegl-node-private.h"
 #include "gegl-random-private.h"
 
@@ -112,6 +113,8 @@ static gboolean  gegl_post_parse_hook (GOptionContext *context,
 
 
 static GeglConfig   *config = NULL;
+
+static GeglStats    *stats = NULL;
 
 static GeglModuleDB *module_db   = NULL;
 
@@ -413,6 +416,14 @@ GeglConfig *gegl_config (void)
       gegl_config_set_defaults (config);
     }
   return config;
+}
+
+GeglStats *gegl_stats (void)
+{
+  if (! stats)
+    stats = g_object_new (GEGL_TYPE_STATS, NULL);
+
+  return stats;
 }
 
 static void swap_clean (void)

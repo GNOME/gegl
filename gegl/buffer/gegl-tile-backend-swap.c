@@ -147,13 +147,15 @@ static void        gegl_tile_backend_swap_init          (GeglTileBackendSwap *se
 void               gegl_tile_backend_swap_cleanup       (void);
 
 
-static gchar  *path       = NULL;
-static gint    in_fd      = -1;
-static gint    out_fd     = -1;
-static gint64  in_offset  = 0;
-static gint64  out_offset = 0;
-static GList  *gap_list   = NULL;
-static gint64  total      = 0;
+static gchar    *path       = NULL;
+static gint      in_fd      = -1;
+static gint      out_fd     = -1;
+static gint64    in_offset  = 0;
+static gint64    out_offset = 0;
+static GList    *gap_list   = NULL;
+static gint64    file_size  = 0;
+static gint64    total      = 0;
+static gboolean  busy       = FALSE;
 
 static GThread      *writer_thread = NULL;
 static GQueue       *queue         = NULL;
@@ -168,6 +170,8 @@ static void
 gegl_tile_backend_swap_push_queue (ThreadParams *params,
                                    gboolean      head)
 {
+  busy = TRUE;
+
   if (head)
     g_queue_push_head (queue, params);
   else
@@ -183,15 +187,15 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
 static void
 gegl_tile_backend_swap_resize (gint64 size)
 {
-  total = size;
+  file_size = size;
 
-  if (ftruncate (out_fd, total) != 0)
+  if (ftruncate (out_fd, file_size) != 0)
     {
       g_warning ("failed to resize swap file: %s", g_strerror (errno));
       return;
     }
 
-  GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "resized swap to %i", (gint)total);
+  GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "resized swap to %i", (gint)file_size);
 }
 
 static SwapGap *
@@ -211,6 +215,8 @@ gegl_tile_backend_swap_find_offset (gint tile_size)
 {
   SwapGap *gap;
   gint64   offset;
+
+  total += tile_size;
 
   if (gap_list)
     {
@@ -243,11 +249,11 @@ gegl_tile_backend_swap_find_offset (gint tile_size)
         }
     }
 
-  offset = total;
+  offset = file_size;
 
-  gegl_tile_backend_swap_resize (total + 32 * tile_size);
+  gegl_tile_backend_swap_resize (file_size + 32 * tile_size);
 
-  gap = gegl_tile_backend_swap_gap_new (offset + tile_size, total);
+  gap = gegl_tile_backend_swap_gap_new (offset + tile_size, file_size);
   gap_list = g_list_append (gap_list, gap);
 
   return offset;
@@ -387,6 +393,8 @@ gegl_tile_backend_swap_destroy (ThreadParams *params)
   else
     gap_list = g_list_prepend (NULL,
                                gegl_tile_backend_swap_gap_new (start, end));
+
+  total -= end - start;
 }
 
 static gpointer
@@ -399,7 +407,11 @@ gegl_tile_backend_swap_writer_thread (gpointer ignored)
       ThreadParams *params;
 
       while (g_queue_is_empty (queue) && !exit_thread)
-        g_cond_wait (&queue_cond, &queue_mutex);
+        {
+          busy = FALSE;
+
+          g_cond_wait (&queue_cond, &queue_mutex);
+        }
 
       if (exit_thread)
         break;
@@ -904,13 +916,13 @@ gegl_tile_backend_swap_cleanup (void)
           if (gap_list->next)
             g_warning ("tile-backend-swap gap list had more than one element\n");
 
-          g_warn_if_fail (gap->start == 0 && gap->end == total);
+          g_warn_if_fail (gap->start == 0 && gap->end == file_size);
 
           g_slice_free (SwapGap, gap_list->data);
           g_list_free (gap_list);
         }
       else
-        g_warn_if_fail (total == 0);
+        g_warn_if_fail (file_size == 0);
 
       close (in_fd);
       close (out_fd);
@@ -926,4 +938,28 @@ gegl_tile_backend_swap_init (GeglTileBackendSwap *self)
 
   self->index = g_hash_table_new (gegl_tile_backend_swap_hashfunc,
                                   gegl_tile_backend_swap_equalfunc);
+}
+
+/* the following functions could theoretically return slightly wrong values on
+ * 32-bit platforms, due to non-atomic 64-bit access, but since it's not too
+ * important for these functions to be completely accurate at all times, it
+ * should be ok.
+ */
+ 
+guint64
+gegl_tile_backend_swap_get_total (void)
+{
+  return total;
+}
+
+guint64
+gegl_tile_backend_swap_get_file_size (void)
+{
+  return file_size;
+}
+
+gboolean
+gegl_tile_backend_swap_get_busy (void)
+{
+  return busy;
 }
