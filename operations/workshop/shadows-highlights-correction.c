@@ -240,16 +240,35 @@ cl_process (GeglOperation       *op,
 
   cl_int cl_err = 0;
 
-  gfloat shadows    = 2.f * fminf (fmaxf (-1.0f, ((gfloat) o->shadows / 100.f)), 1.f);
-  gfloat highlights = 2.f * fminf (fmaxf (-1.0f, ((gfloat) o->highlights / 100.f)), 1.f);
-  gfloat whitepoint = fmaxf (1.f - (gfloat) o->whitepoint / 100.f, 0.01f);
-  gfloat compress   = fminf (fmaxf (0.0f, ((gfloat) o->compress / 100.f)), 0.99f);
+  gfloat shadows;
+  gfloat shadows_100 = (gfloat) o->shadows / 100.0f;
+  gfloat highlights;
+  gfloat highlights_100 = (gfloat) o->highlights / 100.0f;
+  gfloat whitepoint = 1.0f - (gfloat) o->whitepoint / 100.f;
+  gfloat compress;
 
-  gfloat shadows_ccorrect = (fminf (fmaxf (0.0f, ((gfloat) o->shadows_ccorrect / 100.f)), 1.f) - 0.5f)
-                             * SIGN(shadows) + 0.5f;
+  gfloat shadows_ccorrect;
+  gfloat shadows_ccorrect_100 = (gfloat) o->shadows_ccorrect / 100.0f;
 
-  gfloat highlights_ccorrect = (fminf (fmaxf (0.0f, ((gfloat) o->highlights_ccorrect / 100.f)), 1.f) - 0.5f)
-                                * SIGN(-highlights) + 0.5f;
+  gfloat highlights_ccorrect;
+  gfloat highlights_ccorrect_100 = (gfloat) o->highlights_ccorrect / 100.0f;
+
+  compress = fminf ((gfloat) o->compress / 100.0f, 0.99f);
+  g_return_val_if_fail (compress >= 0.0f, TRUE);
+
+  g_return_val_if_fail (-1.0f <= highlights_100 && highlights_100 <= 1.0f, TRUE);
+  highlights = 2.0f * highlights_100;
+
+  g_return_val_if_fail (0.0f <= highlights_ccorrect_100 && highlights_ccorrect_100 <= 1.0f, TRUE);
+  highlights_ccorrect = (highlights_ccorrect_100 - 0.5f) * SIGN (-highlights) + 0.5f;
+
+  g_return_val_if_fail (-1.0f <= shadows_100 && shadows_100 <= 1.0f, TRUE);
+  shadows = 2.0f * shadows_100;
+
+  g_return_val_if_fail (0.0f <= shadows_ccorrect_100 && shadows_ccorrect_100 <= 1.0f, TRUE);
+  shadows_ccorrect = (shadows_ccorrect_100 - 0.5f) * SIGN (shadows) + 0.5f;
+
+  g_return_val_if_fail (whitepoint >= 0.01f, TRUE);
 
   if (!cl_data)
     {
