@@ -240,15 +240,15 @@ cl_process (GeglOperation       *op,
 
   cl_int cl_err = 0;
 
-  gfloat shadows    = 2.f * fminf (fmaxf (-1.0, (o->shadows / 100.f)), 1.f);
-  gfloat highlights = 2.f * fminf (fmaxf (-1.0, (o->highlights / 100.f)), 1.f);
-  gfloat whitepoint = fmaxf (1.f - o->whitepoint / 100.f, 0.01f);
-  gfloat compress   = fminf (fmaxf (0, (o->compress / 100.f)), 0.99f);
+  gfloat shadows    = 2.f * fminf (fmaxf (-1.0f, ((gfloat) o->shadows / 100.f)), 1.f);
+  gfloat highlights = 2.f * fminf (fmaxf (-1.0f, ((gfloat) o->highlights / 100.f)), 1.f);
+  gfloat whitepoint = fmaxf (1.f - (gfloat) o->whitepoint / 100.f, 0.01f);
+  gfloat compress   = fminf (fmaxf (0.0f, ((gfloat) o->compress / 100.f)), 0.99f);
 
-  gfloat shadows_ccorrect = (fminf (fmaxf (0.0f, (o->shadows_ccorrect / 100.f)), 1.f) - 0.5f)
+  gfloat shadows_ccorrect = (fminf (fmaxf (0.0f, ((gfloat) o->shadows_ccorrect / 100.f)), 1.f) - 0.5f)
                              * SIGN(shadows) + 0.5f;
 
-  gfloat highlights_ccorrect = (fminf (fmaxf (0.0f, (o->highlights_ccorrect / 100.f)), 1.f) - 0.5f)
+  gfloat highlights_ccorrect = (fminf (fmaxf (0.0f, ((gfloat) o->highlights_ccorrect / 100.f)), 1.f) - 0.5f)
                                 * SIGN(-highlights) + 0.5f;
 
   if (!cl_data)
