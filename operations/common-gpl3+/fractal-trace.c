@@ -223,24 +223,11 @@ process (GeglOperation       *operation,
 }
 
 static GeglRectangle
-get_bounding_box (GeglOperation *operation)
-{
-  GeglRectangle  result = { 0, 0, 0, 0 };
-  GeglRectangle *in_rect;
-
-  in_rect = gegl_operation_source_get_bounding_box (operation, "input");
-  if (!in_rect)
-    return result;
-
-  return *in_rect;
-}
-
-static GeglRectangle
 get_required_for_output (GeglOperation       *operation,
                          const gchar         *input_pad,
                          const GeglRectangle *roi)
 {
-  return get_bounding_box (operation);
+  return gegl_operation_get_bounding_box (operation);
 }
 
 static void
@@ -253,7 +240,6 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   operation_class->prepare                 = prepare;
-  operation_class->get_bounding_box        = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
 
   filter_class->process                    = process;
