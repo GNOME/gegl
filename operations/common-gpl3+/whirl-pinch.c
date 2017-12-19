@@ -192,20 +192,6 @@ apply_whirl_pinch (gdouble              whirl,
 
 /*****************************************************************************/
 
-/* Compute the region for which this operation is defined.
- */
-static GeglRectangle
-get_bounding_box (GeglOperation *operation)
-{
-  GeglRectangle  result = {0,0,0,0};
-  GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation, "input");
-
-  if (!in_rect)
-    return result;
-  else
-    return *in_rect;
-}
-
 /* Compute the input rectangle required to compute the specified region of interest (roi).
  */
 static GeglRectangle
@@ -267,7 +253,6 @@ gegl_op_class_init (GeglOpClass *klass)
 
   filter_class->process = process;
   operation_class->prepare = prepare;
-  operation_class->get_bounding_box = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
 
   gegl_operation_class_set_keys (operation_class,
