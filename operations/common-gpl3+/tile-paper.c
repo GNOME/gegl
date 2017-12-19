@@ -398,19 +398,6 @@ process (GeglOperation       *operation,
   return  TRUE;
 }
 
-static GeglRectangle
-get_bounding_box (GeglOperation *operation)
-{
-  GeglRectangle  result  = { 0, 0, 0, 0 };
-  GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation,
-                                                                   "input");
-
-  if (! in_rect)
-    return result;
-
-  return *in_rect;
-}
-
 /* Compute the input rectangle required to compute the specified
  * region of interest (roi).
  */
@@ -419,14 +406,14 @@ get_required_for_output (GeglOperation       *operation,
                          const gchar         *input_pad,
                          const GeglRectangle *roi)
 {
-  return get_bounding_box (operation);
+  return gegl_operation_get_bounding_box (operation);
 }
 
 static GeglRectangle
 get_cached_region (GeglOperation       *operation,
                    const GeglRectangle *roi)
 {
-  return get_bounding_box (operation);
+  return gegl_operation_get_bounding_box (operation);
 }
 
 static void
@@ -440,7 +427,6 @@ gegl_op_class_init (GeglOpClass *klass)
 
   operation_class->threaded                = FALSE;
   operation_class->prepare                 = prepare;
-  operation_class->get_bounding_box        = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->get_cached_region       = get_cached_region;
 
