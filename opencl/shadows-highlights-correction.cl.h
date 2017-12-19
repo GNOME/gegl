@@ -9,7 +9,6 @@ static const char* shadows_highlights_correction_cl_source =
 "  /* a contains underlying image; b contains mask */                          \n"
 "                                                                              \n"
 "  const float3 scale = (float3)(100.0f, 128.0f, 128.0f);                      \n"
-"  const float lmin = 0.0f;                                                    \n"
 "  const float lmax = 1.0f;                                                    \n"
 "  const float halfmax = 0.5f;                                                 \n"
 "  const float doublemax = 2.0f;                                               \n"

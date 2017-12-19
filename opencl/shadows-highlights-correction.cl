@@ -8,7 +8,6 @@ float3 overlay(const float3 in_a,
   /* a contains underlying image; b contains mask */
 
   const float3 scale = (float3)(100.0f, 128.0f, 128.0f);
-  const float lmin = 0.0f;
   const float lmax = 1.0f;
   const float halfmax = 0.5f;
   const float doublemax = 2.0f;
