@@ -181,6 +181,9 @@ gegl_operation_get_bounding_box (GeglOperation *self)
   GeglOperationClass *klass = GEGL_OPERATION_GET_CLASS (self);
   GeglRectangle       rect  = { 0, 0, 0, 0 };
 
+  g_return_val_if_fail (GEGL_IS_OPERATION (self), rect);
+  g_return_val_if_fail (GEGL_IS_NODE (self->node), rect);
+
   if (self->node->passthrough)
   {
     GeglRectangle  result = { 0, 0, 0, 0 };
