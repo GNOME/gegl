@@ -821,11 +821,21 @@ gegl_gblur_1d_process (GeglOperation       *operation,
   GeglRectangle rect2;
   if (level)
   {
+    /*
+      if a thread is asked to render rows from result->y to
+      result->y + result->height at a level, it means that the thread
+      rendering the chunk below will render starting from the row
+      (result->y + result->height) >> level
+
+      XXX: Probably it is also better to double check that it works seamlessly
+      around the origin (I mean I don't remember whether shifting negative
+      numbers rounds toward 0 or not)
+    */
     rect2 = *result;
     rect2.x      = result->x >> level;
     rect2.y      = result->y >> level;
-    rect2.width  = result->width >> level;
-    rect2.height = result->height >> level;
+    rect2.width  = ((result->width + result->x) >> level) - rect2.x;
+    rect2.height = ((result->height + result->y) >> level) - rect2.y;
     result = &rect2;
     std_dev = std_dev * (1.0/(1<<level));
   }
