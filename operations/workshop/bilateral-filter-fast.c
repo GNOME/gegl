@@ -55,7 +55,7 @@ property_int (s_sigma, _("Blur radius"), 8)
 
 inline static float lerp(float a, float b, float v)
 {
-  return (1.0f - v) * a + v * b;
+  return a + v * (b - a);
 }
 
 static void
