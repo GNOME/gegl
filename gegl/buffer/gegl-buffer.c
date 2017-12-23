@@ -274,10 +274,11 @@ gegl_buffer_set_property (GObject      *gobject,
 }
 
 #ifdef GEGL_ENABLE_DEBUG
-static GList *allocated_buffers_list = NULL;
+static GMutex         allocated_buffers_mutex;
+static GList         *allocated_buffers_list = NULL;
 #endif
-static gint   allocated_buffers      = 0;
-static gint   de_allocated_buffers   = 0;
+static volatile gint  allocated_buffers      = 0;
+static volatile gint  de_allocated_buffers   = 0;
 
 /* this should only be possible if this buffer matches all the buffers down to
  * storage, all of those parent buffers would change size as well, no tiles
@@ -326,6 +327,9 @@ gegl_buffer_leaks (void)
     {
       GList *leaked_buffer = NULL;
 
+      if (gegl_config_threads()>1)
+        g_mutex_lock (&allocated_buffers_mutex);
+
       for (leaked_buffer = allocated_buffers_list;
            leaked_buffer != NULL;
            leaked_buffer = leaked_buffer->next)
@@ -339,8 +343,12 @@ gegl_buffer_leaks (void)
           putc ('\n', stderr);
 #endif
         }
+
       g_list_free (allocated_buffers_list);
       allocated_buffers_list = NULL;
+
+      if (gegl_config_threads()>1)
+        g_mutex_unlock (&allocated_buffers_mutex);
     }
 #endif
 
@@ -397,13 +405,17 @@ gegl_buffer_finalize (GObject *object)
 #ifdef GEGL_ENABLE_DEBUG
   if (DEBUG_ALLOCATIONS)
     {
-      g_free (GEGL_BUFFER (object)->alloc_stack_trace);
+      if (gegl_config_threads()>1)
+        g_mutex_lock (&allocated_buffers_mutex);
       allocated_buffers_list = g_list_remove (allocated_buffers_list, object);
+      if (gegl_config_threads()>1)
+        g_mutex_unlock (&allocated_buffers_mutex);
+      g_free (GEGL_BUFFER (object)->alloc_stack_trace);
     }
 #endif
 
   g_free (GEGL_BUFFER (object)->path);
-  de_allocated_buffers++;
+  g_atomic_int_inc (&de_allocated_buffers);
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -910,13 +922,17 @@ gegl_buffer_init (GeglBuffer *buffer)
 
   ((GeglTileSource*)buffer)->command = gegl_buffer_command;
 
-  allocated_buffers++;
+  g_atomic_int_inc (&allocated_buffers);
 
 #ifdef GEGL_ENABLE_DEBUG
   if (DEBUG_ALLOCATIONS)
     {
       gegl_buffer_set_alloc_stack (buffer);
+      if (gegl_config_threads()>1)
+        g_mutex_lock (&allocated_buffers_mutex);
       allocated_buffers_list = g_list_prepend (allocated_buffers_list, buffer);
+      if (gegl_config_threads()>1)
+        g_mutex_unlock (&allocated_buffers_mutex);
     }
 #endif
 }
