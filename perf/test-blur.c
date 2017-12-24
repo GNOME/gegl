@@ -14,12 +14,20 @@ main (gint    argc,
   bench("gaussian-blur (RGB)", buffer, &blur);
   g_object_unref (buffer);
 
+  buffer = test_buffer(1024, 1024, babl_format("RaGaBaA float"));
+  bench("gaussian-blur (RaGaBaA)", buffer, &blur);
+  g_object_unref (buffer);
+
   buffer = test_buffer(1024, 1024, babl_format("RGBA float"));
   bench("gaussian-blur (RGBA)", buffer, &blur);
   g_object_unref (buffer);
 
   buffer = test_buffer(1024, 1024, babl_format("Y float"));
   bench("gaussian-blur (Y)", buffer, &blur);
+  g_object_unref (buffer);
+
+  buffer = test_buffer(1024, 1024, babl_format("YaA float"));
+  bench("gaussian-blur (YaA)", buffer, &blur);
   g_object_unref (buffer);
 
   buffer = test_buffer(1024, 1024, babl_format("YA float"));
