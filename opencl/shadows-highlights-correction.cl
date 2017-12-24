@@ -8,10 +8,6 @@ float3 overlay(const float3 in_a,
   /* a contains underlying image; b contains mask */
 
   const float3 scale = (float3)(100.0f, 128.0f, 128.0f);
-  const float lmax = 1.0f;
-  const float halfmax = 0.5f;
-  const float doublemax = 2.0f;
-
   float3 a = in_a / scale;
   float3 b = in_b / scale;
 
@@ -21,7 +17,7 @@ float3 overlay(const float3 in_a,
   while(opacity2 > 0.0f)
   {
     float la = a.x;
-    float lb = (b.x - halfmax) * sign(opacity)*sign(lmax - la) + halfmax;
+    float lb = (b.x - 0.5f) * sign(opacity)*sign(1.0f - la) + 0.5f;
     float lref = copysign(fabs(la) > low_approximation ? 1.0f/fabs(la) : 1.0f/low_approximation, la);
     float href = copysign(fabs(1.0f - la) > low_approximation ? 1.0f/fabs(1.0f - la) : 1.0f/low_approximation, 1.0f - la);
 
@@ -29,7 +25,7 @@ float3 overlay(const float3 in_a,
     float optrans = chunk * transform;
     opacity2 -= 1.0f;
 
-    a.x = la * (1.0f - optrans) + (la > halfmax ? lmax - (lmax - doublemax * (la - halfmax)) * (lmax-lb) : doublemax * la * lb) * optrans;
+    a.x = la * (1.0f - optrans) + (la > 0.5f ? 1.0f - (1.0f - 2.0f * (la - 0.5f)) * (1.0f-lb) : 2.0f * la * lb) * optrans;
     a.y = a.y * (1.0f - optrans) + (a.y + b.y) * (a.x*lref * ccorrect + (1.0f - a.x)*href * (1.0f - ccorrect)) * optrans;
     a.z = a.z * (1.0f - optrans) + (a.z + b.z) * (a.x*lref * ccorrect + (1.0f - a.x)*href * (1.0f - ccorrect)) * optrans;
   }
