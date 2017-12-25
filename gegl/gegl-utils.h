@@ -165,6 +165,24 @@ gboolean    gegl_rectangle_intersect     (GeglRectangle       *dest,
                                           const GeglRectangle *src2);
 
 /**
+ * gegl_rectangle_subtract_bounding_box:
+ * @destination: a #GeglRectangle
+ * @minuend: a #GeglRectangle
+ * @subtrahend: a #GeglRectangle
+ *
+ * Computes the bounding box of the area formed by subtracting @subtrahend
+ * from @minuend, and stores the result in in @destination.
+ *
+ * @destination may point to the same object as @minuend or @subtrahend.
+ *
+ * Returns TRUE if the result is not empty.
+ */
+gboolean
+    gegl_rectangle_subtract_bounding_box (GeglRectangle       *destination,
+                                          const GeglRectangle *minuend,
+                                          const GeglRectangle *subtrahend);
+
+/**
  * gegl_rectangle_contains:
  * @parent: a #GeglRectangle
  * @child: a #GeglRectangle

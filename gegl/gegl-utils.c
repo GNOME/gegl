@@ -129,6 +129,50 @@ gegl_rectangle_intersect (GeglRectangle       *dest,
   return TRUE;
 }
 
+gboolean
+gegl_rectangle_subtract_bounding_box (GeglRectangle       *dest,
+                                      const GeglRectangle *minuend,
+                                      const GeglRectangle *subtrahend)
+{
+  gint mx1, mx2;
+  gint my1, my2;
+
+  gint sx1, sx2;
+  gint sy1, sy2;
+
+  mx1 = minuend->x;
+  mx2 = minuend->x + minuend->width;
+  my1 = minuend->y;
+  my2 = minuend->y + minuend->height;
+
+  sx1 = subtrahend->x;
+  sx2 = subtrahend->x + subtrahend->width;
+  sy1 = subtrahend->y;
+  sy2 = subtrahend->y + subtrahend->height;
+
+  if (sx1 <= mx1 && sx2 >= mx2)
+    {
+      if (sy1 <= my1) my1 = MAX (my1, sy2);
+      if (sy2 >= my2) my2 = MIN (my2, sy1);
+    }
+  else if (sy1 <= my1 && sy2 >= my2)
+    {
+      if (sx1 <= mx1) mx1 = MAX (mx1, sx2);
+      if (sx2 >= mx2) mx2 = MIN (mx2, sx1);
+    }
+
+  if (mx1 < mx2 && my1 < my2)
+    {
+      gegl_rectangle_set (dest, mx1, my1, mx2 - mx1, my2 - my1);
+      return TRUE;
+    }
+  else
+    {
+      gegl_rectangle_set (dest, 0, 0, 0, 0);
+      return FALSE;
+    }
+}
+
 void
 gegl_rectangle_copy (GeglRectangle       *to,
                      const GeglRectangle *from)
