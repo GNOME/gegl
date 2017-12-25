@@ -171,7 +171,7 @@ gboolean    gegl_rectangle_intersect     (GeglRectangle       *dest,
  * @subtrahend: a #GeglRectangle
  *
  * Computes the bounding box of the area formed by subtracting @subtrahend
- * from @minuend, and stores the result in in @destination.
+ * from @minuend, and stores the result in @destination.
  *
  * @destination may point to the same object as @minuend or @subtrahend.
  *
