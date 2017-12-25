@@ -38,8 +38,8 @@ void blur(GeglBuffer *buffer)
   gegl = gegl_node_new ();
   source = gegl_node_new_child (gegl, "operation", "gegl:buffer-source", "buffer", buffer, NULL);
   node = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur",
-                                       "std-dev-x", 0.5,
-                                       "std-dev-y", 0.5,
+                                       "std-dev-x", 10.0,
+                                       "std-dev-y", 10.0,
                                        NULL);
   sink = gegl_node_new_child (gegl, "operation", "gegl:buffer-sink", "buffer", &buffer2, NULL);
 
