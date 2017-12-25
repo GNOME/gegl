@@ -81,6 +81,19 @@ property_boolean (clip_extent, _("Clip to the input extent"), TRUE)
  *
  **********************************************/
 
+typedef void (*IirYoungBlur1dFunc) (gfloat           *buf,
+                                    gdouble          *tmp,
+                                    const gdouble    *b,
+                                    gdouble         (*m)[3],
+                                    const gfloat     *iminus,
+                                    const gfloat     *uplus,
+                                    const gint        len,
+                                    GeglAbyssPolicy   policy);
+
+static const gfloat white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+static const gfloat black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+static const gfloat none[4]  = { 0.0f, 0.0f, 0.0f, 0.0f };
+
 static void
 iir_young_find_constants (gfloat   sigma,
                           gdouble *b,
@@ -122,11 +135,51 @@ iir_young_find_constants (gfloat   sigma,
 }
 
 static void
-fix_right_boundary (gdouble        *buf,
-                    gdouble       (*m)[3],
-                    const gdouble   uplus)
+get_boundaries (GeglAbyssPolicy   policy,
+                gfloat           *buf,
+                gint              len,
+                gint              nc,
+                const gfloat    **out_iminus,
+                const gfloat    **out_uplus)
 {
-  gdouble u[3] = { buf[-1] - uplus, buf[-2] - uplus, buf[-3] - uplus };
+  const gfloat *iminus;
+  const gfloat *uplus;
+
+  switch (policy)
+    {
+    case GEGL_ABYSS_CLAMP:
+    default:
+      iminus = &buf[nc * 3]; uplus = &buf[nc * (len + 2)];
+      break;
+
+    case GEGL_ABYSS_NONE:
+      iminus = uplus = &none[0];
+      break;
+
+    case GEGL_ABYSS_WHITE:
+      iminus = uplus = &white[0];
+      break;
+
+    case GEGL_ABYSS_BLACK:
+      iminus = uplus = &black[nc == 2 ? 2 : 0];
+      break;
+    }
+
+  if (out_iminus != NULL)
+    *out_iminus = iminus;
+
+  if (out_uplus != NULL)
+    *out_uplus = uplus;
+}
+
+static inline void
+fix_right_boundary_y (gdouble        *buf,
+                      gdouble       (*m)[3],
+                      const gfloat   *uplus)
+{
+  gdouble u[3] = { buf[-1] - uplus[0],
+                   buf[-2] - uplus[0],
+                   buf[-3] - uplus[0] };
   gint    i, k;
 
   for (i = 0; i < 3; i++)
@@ -136,69 +189,330 @@ fix_right_boundary (gdouble        *buf,
       for (k = 0; k < 3; k++)
         tmp += m[i][k] * u[k];
 
-      buf[i] = tmp + uplus;
-    }
-}
-
-static inline void
-iir_young_blur_1D (gfloat        *buf,
-                   gdouble       *tmp,
-                   const gdouble *b,
-                   gdouble      (*m)[3],
-                   const gint     len,
-                   const gint     nc,
-                   GeglAbyssPolicy policy)
-{
-  gfloat  white[4] = { 1, 1, 1, 1 };
-  gfloat  black[4] = { 0, 0, 0, 1 };
-  gfloat  none[4]  = { 0, 0, 0, 0 };
-  gfloat *uplus, *iminus;
-  gint    i, j, c;
-
-  switch (policy)
-    {
-    case GEGL_ABYSS_CLAMP: default:
-      iminus = &buf[nc * 3]; uplus = &buf[nc * (len + 2)]; break;
-
-    case GEGL_ABYSS_NONE:
-      iminus = uplus = &none[0]; break;
-
-    case GEGL_ABYSS_WHITE:
-      iminus = uplus = &white[0]; break;
-
-    case GEGL_ABYSS_BLACK:
-      iminus = uplus = &black[nc == 2 ? 2 : 0]; break;
-    }
-
-  for (c = 0; c < nc; ++c)
-    {
-      for (i = 0; i < 3; ++i)
-        tmp[i] = iminus[c];
-
-      for (i = 3; i < 3 + len; ++i)
-        {
-          tmp[i] = buf[nc * i + c] * b[0];
-
-          for (j = 1; j < 4; ++j)
-            tmp[i] += b[j] * tmp[i - j];
-        }
-
-      fix_right_boundary (&tmp[3 + len], m, uplus[c]);
-
-      for (i = 3 + len - 1; 3 <= i; --i)
-        {
-          gdouble tt = 0.;
-
-          for (j = 0; j < 4; ++j)
-            tt += b[j] * tmp[i + j];
-
-          buf[nc * i + c] = tmp[i] = tt;
-        }
+      buf[i] = tmp + uplus[0];
     }
 }
 
 static void
-iir_young_hor_blur (GeglBuffer          *src,
+iir_young_blur_1D_y (gfloat        *buf,
+                     gdouble       *tmp,
+                     const gdouble *b,
+                     gdouble      (*m)[3],
+                     const gfloat  *iminus,
+                     const gfloat  *uplus,
+                     const gint     len,
+                     GeglAbyssPolicy policy)
+{
+  gint    i, j;
+
+  for (i = 0; i < 3; i++, tmp++)
+    tmp[0] = iminus[0];
+
+  buf += 3;
+
+  for (i = 3; i < 3 + len; i++, buf++, tmp++)
+    {
+      tmp[0] = b[0] * buf[0];
+
+      for (j = 1; j < 4; ++j)
+        {
+          gint offset = -1 * j;
+          tmp[0] += b[j] * tmp[offset + 0];
+        }
+    }
+
+  fix_right_boundary_y (tmp, m, uplus);
+
+  buf--;
+  tmp--;
+
+  for (i = 3 + len - 1; 3 <= i; i--, buf--, tmp--)
+    {
+      tmp[0] *= b[0];
+
+      for (j = 1; j < 4; ++j)
+        {
+          gint offset = j;
+          tmp[0] += b[j] * tmp[offset + 0];
+        }
+
+      buf[0] = tmp[0];
+    }
+}
+
+static inline void
+fix_right_boundary_yA (gdouble        *buf,
+                       gdouble       (*m)[3],
+                       const gfloat   *uplus)
+{
+  gdouble u[6] = { buf[-2] - uplus[0], buf[-1] - uplus[1],
+                   buf[-4] - uplus[0], buf[-3] - uplus[1],
+                   buf[-6] - uplus[0], buf[-5] - uplus[1] };
+  gint    i, k;
+
+  for (i = 0; i < 3; i++)
+    {
+      gdouble tmp[2] = { 0.0, 0.0 };
+
+      for (k = 0; k < 3; k++)
+        {
+          tmp[0] += m[i][k] * u[k * 2 + 0];
+          tmp[1] += m[i][k] * u[k * 2 + 1];
+        }
+
+      buf[2 * i + 0] = tmp[0] + uplus[0];
+      buf[2 * i + 1] = tmp[1] + uplus[1];
+    }
+}
+
+static void
+iir_young_blur_1D_yA (gfloat           *buf,
+                      gdouble          *tmp,
+                      const gdouble    *b,
+                      gdouble         (*m)[3],
+                      const gfloat     *iminus,
+                      const gfloat     *uplus,
+                      const gint        len,
+                      GeglAbyssPolicy   policy)
+{
+  gint    i, j;
+
+  for (i = 0; i < 3; i++, tmp += 2)
+    {
+      tmp[0] = iminus[0];
+      tmp[1] = iminus[1];
+    }
+
+  buf += 6;
+
+  for (i = 3; i < 3 + len; i++, buf += 2, tmp += 2)
+    {
+      tmp[0] = b[0] * buf[0];
+      tmp[1] = b[0] * buf[1];
+
+      for (j = 1; j < 4; ++j)
+        {
+          gint offset = -2 * j;
+
+          tmp[0] += b[j] * tmp[offset + 0];
+          tmp[1] += b[j] * tmp[offset + 1];
+        }
+    }
+
+  fix_right_boundary_yA (tmp, m, uplus);
+
+  buf -= 2;
+  tmp -= 2;
+
+  for (i = 3 + len - 1; 3 <= i; i--, buf -= 2, tmp -= 2)
+    {
+      tmp[0] *= b[0];
+      tmp[1] *= b[0];
+
+      for (j = 1; j < 4; ++j)
+        {
+          gint offset = 2 * j;
+
+          tmp[0] += b[j] * tmp[offset + 0];
+          tmp[1] += b[j] * tmp[offset + 1];
+        }
+
+      buf[0] = tmp[0];
+      buf[1] = tmp[1];
+    }
+}
+
+static inline void
+fix_right_boundary_rgb (gdouble        *buf,
+                        gdouble       (*m)[3],
+                        const gfloat   *uplus)
+{
+  gdouble u[9] = { buf[-3] - uplus[0], buf[-2] - uplus[1], buf[-1] - uplus[2],
+                   buf[-6] - uplus[0], buf[-5] - uplus[1], buf[-4] - uplus[2],
+                   buf[-9] - uplus[0], buf[-8] - uplus[1], buf[-7] - uplus[2] };
+  gint    i, k;
+
+  for (i = 0; i < 3; i++)
+    {
+      gdouble tmp[3] = { 0.0, 0.0, 0.0 };
+
+      for (k = 0; k < 3; k++)
+        {
+          tmp[0] += m[i][k] * u[k * 3 + 0];
+          tmp[1] += m[i][k] * u[k * 3 + 1];
+          tmp[2] += m[i][k] * u[k * 3 + 2];
+        }
+
+      buf[3 * i + 0] = tmp[0] + uplus[0];
+      buf[3 * i + 1] = tmp[1] + uplus[1];
+      buf[3 * i + 2] = tmp[2] + uplus[2];
+    }
+}
+
+static void
+iir_young_blur_1D_rgb (gfloat           *buf,
+                       gdouble          *tmp,
+                       const gdouble    *b,
+                       gdouble         (*m)[3],
+                       const gfloat     *iminus,
+                       const gfloat     *uplus,
+                       const gint        len,
+                       GeglAbyssPolicy   policy)
+{
+  gint    i, j;
+
+  for (i = 0; i < 3; i++, tmp += 3)
+    {
+      tmp[0] = iminus[0];
+      tmp[1] = iminus[1];
+      tmp[2] = iminus[2];
+    }
+
+  buf += 9;
+
+  for (i = 3; i < 3 + len; i++, buf += 3, tmp += 3)
+    {
+      tmp[0] = b[0] * buf[0];
+      tmp[1] = b[0] * buf[1];
+      tmp[2] = b[0] * buf[2];
+
+      for (j = 1; j < 4; ++j)
+        {
+          gint offset = -3 * j;
+
+          tmp[0] += b[j] * tmp[offset + 0];
+          tmp[1] += b[j] * tmp[offset + 1];
+          tmp[2] += b[j] * tmp[offset + 2];
+        }
+    }
+
+  fix_right_boundary_rgb (tmp, m, uplus);
+
+  buf -= 3;
+  tmp -= 3;
+
+  for (i = 3 + len - 1; 3 <= i; i--, buf -= 3, tmp -= 3)
+    {
+      tmp[0] *= b[0];
+      tmp[1] *= b[0];
+      tmp[2] *= b[0];
+
+      for (j = 1; j < 4; ++j)
+        {
+          gint offset = 3 * j;
+
+          tmp[0] += b[j] * tmp[offset + 0];
+          tmp[1] += b[j] * tmp[offset + 1];
+          tmp[2] += b[j] * tmp[offset + 2];
+        }
+
+      buf[0] = tmp[0];
+      buf[1] = tmp[1];
+      buf[2] = tmp[2];
+    }
+}
+
+static inline void
+fix_right_boundary_rgbA (gdouble        *buf,
+                         gdouble       (*m)[3],
+                         const gfloat   *uplus)
+{
+  gdouble u[12] = { buf[-4] - uplus[0], buf[-3] - uplus[1], buf[-2] - uplus[2], buf[-1] - uplus[3],
+                    buf[-8] - uplus[0], buf[-7] - uplus[1], buf[-6] - uplus[2], buf[-5] - uplus[3],
+                    buf[-12] - uplus[0], buf[-11] - uplus[1], buf[-10] - uplus[2], buf[-9] - uplus[3] };
+  gint    i, k;
+
+  for (i = 0; i < 3; i++)
+    {
+      gdouble tmp[4] = { 0.0, 0.0, 0.0, 0.0 };
+
+      for (k = 0; k < 3; k++)
+        {
+          tmp[0] += m[i][k] * u[k * 4 + 0];
+          tmp[1] += m[i][k] * u[k * 4 + 1];
+          tmp[2] += m[i][k] * u[k * 4 + 2];
+          tmp[3] += m[i][k] * u[k * 4 + 3];
+        }
+
+      buf[4 * i + 0] = tmp[0] + uplus[0];
+      buf[4 * i + 1] = tmp[1] + uplus[1];
+      buf[4 * i + 2] = tmp[2] + uplus[2];
+      buf[4 * i + 3] = tmp[3] + uplus[3];
+    }
+}
+
+static void
+iir_young_blur_1D_rgbA (gfloat           *buf,
+                        gdouble          *tmp,
+                        const gdouble    *b,
+                        gdouble         (*m)[3],
+                        const gfloat     *iminus,
+                        const gfloat     *uplus,
+                        const gint        len,
+                        GeglAbyssPolicy   policy)
+{
+  gint     i, j;
+
+  for (i = 0; i < 3; i++, tmp += 4)
+    {
+      tmp[0] = iminus[0];
+      tmp[1] = iminus[1];
+      tmp[2] = iminus[2];
+      tmp[3] = iminus[3];
+    }
+
+  buf += 12;
+
+  for (i = 0; i < len; i++, buf += 4, tmp += 4)
+    {
+      tmp[0] = b[0] * buf[0];
+      tmp[1] = b[0] * buf[1];
+      tmp[2] = b[0] * buf[2];
+      tmp[3] = b[0] * buf[3];
+
+      for (j = 1; j < 4; ++j)
+        {
+          gint offset = -4 * j;
+
+          tmp[0] += b[j] * tmp[offset + 0];
+          tmp[1] += b[j] * tmp[offset + 1];
+          tmp[2] += b[j] * tmp[offset + 2];
+          tmp[3] += b[j] * tmp[offset + 3];
+        }
+    }
+
+  fix_right_boundary_rgbA (tmp, m, uplus);
+
+  buf -= 4;
+  tmp -= 4;
+
+  for (i = 3 + len - 1; 3 <= i; i--, buf -= 4, tmp -= 4)
+    {
+      tmp[0] *= b[0];
+      tmp[1] *= b[0];
+      tmp[2] *= b[0];
+      tmp[3] *= b[0];
+
+      for (j = 1; j < 4; ++j)
+        {
+          gint offset = 4 * j;
+
+          tmp[0] += b[j] * tmp[offset + 0];
+          tmp[1] += b[j] * tmp[offset + 1];
+          tmp[2] += b[j] * tmp[offset + 2];
+          tmp[3] += b[j] * tmp[offset + 3];
+        }
+
+      buf[0] = tmp[0];
+      buf[1] = tmp[1];
+      buf[2] = tmp[2];
+      buf[3] = tmp[3];
+    }
+}
+
+static void
+iir_young_hor_blur (IirYoungBlur1dFunc   real_blur_1D,
+                    GeglBuffer          *src,
                     const GeglRectangle *rect,
                     GeglBuffer          *dst,
                     const gdouble       *b,
@@ -210,19 +524,23 @@ iir_young_hor_blur (GeglBuffer          *src,
   GeglRectangle  cur_row = *rect;
   const gint     nc = babl_format_get_n_components (format);
   gfloat        *row = g_new (gfloat, (3 + rect->width + 3) * nc);
-  gdouble       *tmp = g_new (gdouble, (3 + rect->width + 3));
+  gdouble       *tmp = g_new (gdouble, (3 + rect->width + 3) * nc);
   gint           v;
 
   cur_row.height = 1;
 
   for (v = 0; v < rect->height; v++)
     {
+      const gfloat *iminus;
+      const gfloat *uplus;
+
       cur_row.y = rect->y + v;
 
       gegl_buffer_get (src, &cur_row, 1.0/(1<<level), format, &row[3 * nc],
                        GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-      iir_young_blur_1D (row, tmp, b, m, rect->width, nc, policy);
+      get_boundaries (policy, row, rect->width, nc, &iminus, &uplus);
+      real_blur_1D (row, tmp, b, m, iminus, uplus, rect->width, policy);
 
       gegl_buffer_set (dst, &cur_row, level, format, &row[3 * nc],
                        GEGL_AUTO_ROWSTRIDE);
@@ -233,7 +551,8 @@ iir_young_hor_blur (GeglBuffer          *src,
 }
 
 static void
-iir_young_ver_blur (GeglBuffer          *src,
+iir_young_ver_blur (IirYoungBlur1dFunc   real_blur_1D,
+                    GeglBuffer          *src,
                     const GeglRectangle *rect,
                     GeglBuffer          *dst,
                     const gdouble       *b,
@@ -245,19 +564,23 @@ iir_young_ver_blur (GeglBuffer          *src,
   GeglRectangle  cur_col = *rect;
   const gint     nc = babl_format_get_n_components (format);
   gfloat        *col = g_new (gfloat, (3 + rect->height + 3) * nc);
-  gdouble       *tmp = g_new (gdouble, (3 + rect->height + 3));
+  gdouble       *tmp = g_new (gdouble, (3 + rect->height + 3) * nc);
   gint           i;
 
   cur_col.width = 1;
 
   for (i = 0; i < rect->width; i++)
     {
+      const gfloat *iminus;
+      const gfloat *uplus;
+
       cur_col.x = rect->x + i;
 
       gegl_buffer_get (src, &cur_col, 1.0/(1<<level), format, &col[3 * nc],
                        GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-      iir_young_blur_1D (col, tmp, b, m, rect->height, nc, policy);
+      get_boundaries (policy, col, rect->height, nc, &iminus, &uplus);
+      real_blur_1D (col, tmp, b, m, iminus, uplus, rect->height, policy);
 
       gegl_buffer_set (dst, &cur_col, level, format, &col[3 * nc],
                        GEGL_AUTO_ROWSTRIDE);
@@ -610,8 +933,11 @@ filter_disambiguation (GeglGblur1dFilter filter,
 static void
 gegl_gblur_1d_prepare (GeglOperation *operation)
 {
+  GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *src_format = gegl_operation_get_source_format (operation, "input");
   const char *format     = "RaGaBaA float";
+
+  o->user_data = iir_young_blur_1D_rgbA;
 
   /*
    * FIXME: when the abyss policy is _NONE, the behavior at the edge
@@ -622,12 +948,21 @@ gegl_gblur_1d_prepare (GeglOperation *operation)
       const Babl *model = babl_format_get_model (src_format);
 
       if (model == babl_model ("RGB") || model == babl_model ("R'G'B'"))
-        format = "RGB float";
+        {
+          format = "RGB float";
+          o->user_data = iir_young_blur_1D_rgb;
+        }
       else if (model == babl_model ("Y") || model == babl_model ("Y'"))
-        format = "Y float";
+        {
+          format = "Y float";
+          o->user_data = iir_young_blur_1D_y;
+        }
       else if (model == babl_model ("YA") || model == babl_model ("Y'A") ||
                model == babl_model ("YaA") || model == babl_model ("Y'aA"))
-        format = "YaA float";
+        {
+          format = "YaA float";
+          o->user_data = iir_young_blur_1D_yA;
+        }
     }
 
   gegl_operation_set_format (operation, "input", babl_format (format));
@@ -843,14 +1178,15 @@ gegl_gblur_1d_process (GeglOperation       *operation,
 
   if (filter == GEGL_GBLUR_1D_IIR)
     {
+      IirYoungBlur1dFunc real_blur_1D = (IirYoungBlur1dFunc) o->user_data;
       gdouble b[4], m[3][3];
 
       iir_young_find_constants (std_dev, b, m);
 
       if (o->orientation == GEGL_ORIENTATION_HORIZONTAL)
-        iir_young_hor_blur (input, result, output, b, m, abyss_policy, format, level);
+        iir_young_hor_blur (real_blur_1D, input, result, output, b, m, abyss_policy, format, level);
       else
-        iir_young_ver_blur (input, result, output, b, m, abyss_policy, format, level);
+        iir_young_ver_blur (real_blur_1D, input, result, output, b, m, abyss_policy, format, level);
     }
   else
     {
