@@ -315,7 +315,7 @@ void gegl_create_chain_argv (char      **ops,
  *
  * Create a node chain from an unparsed commandline string.
  */
-void gegl_create_chain (const char *str,
+void gegl_create_chain (const char *ops,
                         GeglNode   *op_start,
                         GeglNode   *op_end,
                         double      time,
