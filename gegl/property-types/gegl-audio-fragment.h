@@ -134,7 +134,7 @@ int gegl_audio_fragment_get_channel_layout (GeglAudioFragment *audio);
 GType        gegl_param_audio_fragment_get_type         (void) G_GNUC_CONST;
 
 /**
- * gegl_param_spec_audio:
+ * gegl_param_spec_audio_fragment:
  * @name: canonical name of the property specified
  * @nick: nick name for the property specified
  * @blurb: description of the property specified
