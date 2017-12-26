@@ -60,8 +60,9 @@ property_double (JY, _("JY"), 0.5)
 property_int    (depth, _("Depth"), 3)
   value_range   (1, 65536)
 
-property_double (bailout, _("Bailout length"), G_MAXDOUBLE)
+property_double (bailout, _("Bailout length"), 10000.0)
   value_range   (0.0, G_MAXDOUBLE)
+  ui_range      (0.0, 10000.0)
 
 property_enum   (abyss_policy, _("Abyss policy"),
                    GeglAbyssPolicy, gegl_abyss_policy, GEGL_ABYSS_LOOP)
