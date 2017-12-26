@@ -1414,7 +1414,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
   if (format == NULL)
     format = buffer->soft_format;
 
-  if (scale == 1.0 &&
+  if (GEGL_FLOAT_EQUAL (scale, 1.0) &&
       rect &&
       rect->width == 1 &&
       rect->height == 1)
