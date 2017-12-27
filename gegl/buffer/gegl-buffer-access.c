@@ -1480,7 +1480,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       sample_rect.width  = factor * (x2 - x1);
       sample_rect.height = factor * (y2 - y1);
 
-      if (scale == 1.0)
+      if (GEGL_FLOAT_EQUAL (scale, 1.0))
         {
           gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
                                              (guchar*)dest_buf, rowstride,
