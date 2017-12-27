@@ -1607,10 +1607,31 @@ gegl_buffer_set (GeglBuffer          *buffer,
   if (format == NULL)
     format = buffer->soft_format;
 
-  if (rect && (rect->width == 1 && rect->height == 1))
-      _gegl_buffer_set_pixel (buffer, rect->x, rect->y, format, src,
-                              GEGL_BUFFER_SET_FLAG_LOCK|GEGL_BUFFER_SET_FLAG_NOTIFY);
-  else
+  if (rect && (rect->width == 1))
+    {
+      if (rect->height == 1)
+        {
+          _gegl_buffer_set_pixel (buffer, rect->x, rect->y,
+                                  format, src,
+                                  GEGL_BUFFER_SET_FLAG_LOCK|
+                                  GEGL_BUFFER_SET_FLAG_NOTIFY);
+          return;
+        }
+      else
+        {
+          int bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
+          if (buffer->soft_format != format)
+            {
+              uint8_t tmp[rect->width * rect->height * bpp];
+              babl_process (babl_fish (format, buffer->soft_format),
+                            src, &tmp[0], rect->height);
+              _gegl_buffer_set_with_flags (buffer, rect, level, buffer->soft_format, tmp, rowstride,
+                        GEGL_BUFFER_SET_FLAG_LOCK|
+                        GEGL_BUFFER_SET_FLAG_NOTIFY);
+            }
+        }
+    }
+
     _gegl_buffer_set_with_flags (buffer, rect, level, format, src, rowstride,
                                  GEGL_BUFFER_SET_FLAG_LOCK|
                                  GEGL_BUFFER_SET_FLAG_NOTIFY);
