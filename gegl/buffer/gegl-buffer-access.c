@@ -1421,13 +1421,34 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
   if (GEGL_FLOAT_EQUAL (scale, 1.0) &&
       rect &&
-      rect->width == 1 &&
-      rect->height == 1)
-    {
-      gegl_buffer_get_pixel (buffer, rect->x, rect->y, format, dest_buf,
-                             repeat_mode);
-      return;
-    }
+      rect->width == 1)
+  {
+    if (rect->height == 1)
+      {
+        gegl_buffer_get_pixel (buffer, rect->x, rect->y, format, dest_buf,
+                               repeat_mode);
+        return;
+      }
+    else
+      {
+        if (buffer->format == format)
+        {
+          gegl_buffer_iterate_read_dispatch (buffer, rect, dest_buf,
+                                             rowstride, format, 0, repeat_mode);
+        }
+        else
+        {
+          /* first fetch all pixels to a temporary buffer */
+          uint8_t tmp[rect->width * rect->height * 32];
+          gegl_buffer_iterate_read_dispatch (buffer, rect, &tmp[0],
+                                           rowstride, buffer->format, 0, repeat_mode);
+          /* then convert in a single shot */
+          babl_process (babl_fish (buffer->format, format),
+                        &tmp[0], dest_buf, rect->height);
+        }
+        return;
+      }
+  }
 
   if (!rect && GEGL_FLOAT_EQUAL (scale, 1.0))
     {
