@@ -1704,7 +1704,8 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       }
     else
       {
-        if (buffer->format == format)
+        gint bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
+        if (buffer->soft_format == format)
         {
           gegl_buffer_iterate_read_dispatch (buffer, rect, dest_buf,
                                              rowstride, format, 0, repeat_mode);
@@ -1712,11 +1713,11 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
         else
         {
           /* first fetch all pixels to a temporary buffer */
-          uint8_t tmp[rect->width * rect->height * 32];
+          uint8_t tmp[rect->width * rect->height * bpp];
           gegl_buffer_iterate_read_dispatch (buffer, rect, &tmp[0],
-                                           rowstride, buffer->format, 0, repeat_mode);
+                                           rowstride, buffer->soft_format, 0, repeat_mode);
           /* then convert in a single shot */
-          babl_process (babl_fish (buffer->format, format),
+          babl_process (babl_fish (buffer->soft_format, format),
                         &tmp[0], dest_buf, rect->height);
         }
         return;
