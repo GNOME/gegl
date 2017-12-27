@@ -453,6 +453,9 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
           tile_base = gegl_tile_get_data (tile);
           tp        = ((guchar *) tile_base) + (offsety * tile_width + offsetx) * px_size;
 
+          pixels -= lskip;
+          pixels -= rskip;
+
           if (fish)
             {
               for (row = offsety;
@@ -466,7 +469,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       buffer_y + y < abyss_y_total)
                     {
                       babl_process (fish, bp + lskip * bpx_size, tp + lskip * px_size,
-                                    pixels - lskip - rskip);
+                                    pixels);
                     }
 
                   tp += tile_stride;
@@ -479,15 +482,12 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                    row < tile_height && y < height;
                    row++, y++)
                 {
-
                   if (buffer_y + y >= buffer_abyss_y &&
                       buffer_y + y < abyss_y_total)
                     {
-
                       memcpy (tp + lskip * px_size, bp + lskip * px_size,
-                              (pixels - lskip - rskip) * px_size);
+                              pixels * px_size);
                     }
-
                   tp += tile_stride;
                   bp += buf_stride;
                 }
