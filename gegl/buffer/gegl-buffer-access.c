@@ -654,14 +654,97 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
             }
           else
             {
-              for (row = offsety;
-                   row < tile_height && y < height;
-                   row++, y++)
+              switch (pixels * px_size)
                 {
-                  memcpy (bp, tp, pixels * px_size);
-
-                  tp += tile_stride;
-                  bp += buf_stride;
+                  case 1:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         bp[0] = tp[0];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 2:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint16_t*)bp)[0] = ((uint16_t*)tp)[0];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 4:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint32_t*)bp)[0] = ((uint32_t*)tp)[0];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 8:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint64_t*)bp)[0] = ((uint64_t*)tp)[0];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 12:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint32_t*)bp)[0] = ((uint32_t*)tp)[0];
+                         ((uint32_t*)bp)[1] = ((uint32_t*)tp)[1];
+                         ((uint32_t*)bp)[2] = ((uint32_t*)tp)[2];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 16:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint64_t*)bp)[0] = ((uint64_t*)tp)[0];
+                         ((uint64_t*)bp)[1] = ((uint64_t*)tp)[1];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 24:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint64_t*)bp)[0] = ((uint64_t*)tp)[0];
+                         ((uint64_t*)bp)[1] = ((uint64_t*)tp)[1];
+                         ((uint64_t*)bp)[2] = ((uint64_t*)tp)[2];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 32:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint64_t*)bp)[0] = ((uint64_t*)tp)[0];
+                         ((uint64_t*)bp)[1] = ((uint64_t*)tp)[1];
+                         ((uint64_t*)bp)[2] = ((uint64_t*)tp)[2];
+                         ((uint64_t*)bp)[3] = ((uint64_t*)tp)[3];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  default:
+                    for (row = offsety;
+                         row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         memcpy (bp, tp, pixels * px_size);
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
                 }
             }
 
