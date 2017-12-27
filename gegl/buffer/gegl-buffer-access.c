@@ -639,17 +639,30 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
           tp        = ((guchar *) tile_base) + (offsety * tile_width + offsetx) * px_size;
 
           y = bufy;
-          for (row = offsety;
-               row < tile_height && y < height;
-               row++, y++)
-            {
-              if (fish)
-                babl_process (fish, tp, bp, pixels);
-              else
-                memcpy (bp, tp, pixels * px_size);
 
-              tp += tile_stride;
-              bp += buf_stride;
+          if (fish)
+            {
+              for (row = offsety;
+                   row < tile_height && y < height;
+                   row++, y++)
+                {
+                  babl_process (fish, tp, bp, pixels);
+
+                  tp += tile_stride;
+                  bp += buf_stride;
+                }
+            }
+          else
+            {
+              for (row = offsety;
+                   row < tile_height && y < height;
+                   row++, y++)
+                {
+                  memcpy (bp, tp, pixels * px_size);
+
+                  tp += tile_stride;
+                  bp += buf_stride;
+                }
             }
 
           gegl_tile_unref (tile);
