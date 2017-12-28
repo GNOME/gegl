@@ -478,6 +478,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
             }
           else
             {
+              int lskip_offset = lskip * px_size;
               switch (pixels * px_size)
                 {
                   case 1:
@@ -488,7 +489,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       if (buffer_y + y >= buffer_abyss_y &&
                           buffer_y + y < abyss_y_total)
                         {
-                          tp[lskip * px_size] = bp[lskip * px_size];
+                          tp[lskip_offset] = bp[lskip_offset];
                         }
                       tp += tile_stride;
                       bp += buf_stride;
@@ -502,8 +503,8 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       if (buffer_y + y >= buffer_abyss_y &&
                           buffer_y + y < abyss_y_total)
                         {
-                          ((uint16_t*)(&tp[lskip * px_size]))[0] =
-                          ((uint16_t*)(&bp[lskip * px_size]))[0];
+                          ((uint16_t*)(&tp[lskip_offset]))[0] =
+                          ((uint16_t*)(&bp[lskip_offset]))[0];
                         }
                       tp += tile_stride;
                       bp += buf_stride;
@@ -517,9 +518,9 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       if (buffer_y + y >= buffer_abyss_y &&
                           buffer_y + y < abyss_y_total)
                         {
-                          tp[lskip * px_size] = bp[lskip * px_size];
-                          tp[lskip * px_size+1] = bp[lskip * px_size+1];
-                          tp[lskip * px_size+2] = bp[lskip * px_size+2];
+                          tp[lskip_offset] = bp[lskip_offset];
+                          tp[lskip_offset+1] = bp[lskip_offset+1];
+                          tp[lskip_offset+2] = bp[lskip_offset+2];
                         }
                       tp += tile_stride;
                       bp += buf_stride;
@@ -533,8 +534,8 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       if (buffer_y + y >= buffer_abyss_y &&
                           buffer_y + y < abyss_y_total)
                         {
-                          ((uint32_t*)(&tp[lskip * px_size]))[0] =
-                          ((uint32_t*)(&bp[lskip * px_size]))[0];
+                          ((uint32_t*)(&tp[lskip_offset]))[0] =
+                          ((uint32_t*)(&bp[lskip_offset]))[0];
                         }
                       tp += tile_stride;
                       bp += buf_stride;
@@ -548,8 +549,8 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       if (buffer_y + y >= buffer_abyss_y &&
                           buffer_y + y < abyss_y_total)
                         {
-                          ((uint64_t*)(&tp[lskip * px_size]))[0] =
-                          ((uint64_t*)(&bp[lskip * px_size]))[0];
+                          ((uint64_t*)(&tp[lskip_offset]))[0] =
+                          ((uint64_t*)(&bp[lskip_offset]))[0];
                         }
                       tp += tile_stride;
                       bp += buf_stride;
@@ -563,12 +564,12 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       if (buffer_y + y >= buffer_abyss_y &&
                           buffer_y + y < abyss_y_total)
                         {
-                          ((uint32_t*)(&tp[lskip * px_size]))[0] =
-                          ((uint32_t*)(&bp[lskip * px_size]))[0];
-                          ((uint32_t*)(&tp[lskip * px_size]))[1] =
-                          ((uint32_t*)(&bp[lskip * px_size]))[1];
-                          ((uint32_t*)(&tp[lskip * px_size]))[2] =
-                          ((uint32_t*)(&bp[lskip * px_size]))[2];
+                          ((uint32_t*)(&tp[lskip_offset]))[0] =
+                          ((uint32_t*)(&bp[lskip_offset]))[0];
+                          ((uint32_t*)(&tp[lskip_offset]))[1] =
+                          ((uint32_t*)(&bp[lskip_offset]))[1];
+                          ((uint32_t*)(&tp[lskip_offset]))[2] =
+                          ((uint32_t*)(&bp[lskip_offset]))[2];
                         }
                       tp += tile_stride;
                       bp += buf_stride;
@@ -582,10 +583,10 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       if (buffer_y + y >= buffer_abyss_y &&
                           buffer_y + y < abyss_y_total)
                         {
-                          ((uint64_t*)(&tp[lskip * px_size]))[0] =
-                          ((uint64_t*)(&bp[lskip * px_size]))[0];
-                          ((uint64_t*)(&tp[lskip * px_size]))[1] =
-                          ((uint64_t*)(&bp[lskip * px_size]))[1];
+                          ((uint64_t*)(&tp[lskip_offset]))[0] =
+                          ((uint64_t*)(&bp[lskip_offset]))[0];
+                          ((uint64_t*)(&tp[lskip_offset]))[1] =
+                          ((uint64_t*)(&bp[lskip_offset]))[1];
                         }
                       tp += tile_stride;
                       bp += buf_stride;
@@ -599,12 +600,12 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       if (buffer_y + y >= buffer_abyss_y &&
                           buffer_y + y < abyss_y_total)
                         {
-                          ((uint64_t*)(&tp[lskip * px_size]))[0] =
-                          ((uint64_t*)(&bp[lskip * px_size]))[0];
-                          ((uint64_t*)(&tp[lskip * px_size]))[1] =
-                          ((uint64_t*)(&bp[lskip * px_size]))[1];
-                          ((uint64_t*)(&tp[lskip * px_size]))[2] =
-                          ((uint64_t*)(&bp[lskip * px_size]))[2];
+                          ((uint64_t*)(&tp[lskip_offset]))[0] =
+                          ((uint64_t*)(&bp[lskip_offset]))[0];
+                          ((uint64_t*)(&tp[lskip_offset]))[1] =
+                          ((uint64_t*)(&bp[lskip_offset]))[1];
+                          ((uint64_t*)(&tp[lskip_offset]))[2] =
+                          ((uint64_t*)(&bp[lskip_offset]))[2];
                         }
                       tp += tile_stride;
                       bp += buf_stride;
@@ -618,14 +619,118 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       if (buffer_y + y >= buffer_abyss_y &&
                           buffer_y + y < abyss_y_total)
                         {
-                          ((uint64_t*)(&tp[lskip * px_size]))[0] =
-                          ((uint64_t*)(&bp[lskip * px_size]))[0];
-                          ((uint64_t*)(&tp[lskip * px_size]))[1] =
-                          ((uint64_t*)(&bp[lskip * px_size]))[1];
-                          ((uint64_t*)(&tp[lskip * px_size]))[2] =
-                          ((uint64_t*)(&bp[lskip * px_size]))[2];
-                          ((uint64_t*)(&tp[lskip * px_size]))[3] =
-                          ((uint64_t*)(&bp[lskip * px_size]))[3];
+                          ((uint64_t*)(&tp[lskip_offset]))[0] =
+                          ((uint64_t*)(&bp[lskip_offset]))[0];
+                          ((uint64_t*)(&tp[lskip_offset]))[1] =
+                          ((uint64_t*)(&bp[lskip_offset]))[1];
+                          ((uint64_t*)(&tp[lskip_offset]))[2] =
+                          ((uint64_t*)(&bp[lskip_offset]))[2];
+                          ((uint64_t*)(&tp[lskip_offset]))[3] =
+                          ((uint64_t*)(&bp[lskip_offset]))[3];
+                        }
+                      tp += tile_stride;
+                      bp += buf_stride;
+                    }
+                    break;
+                  case 40:
+                    for (row = offsety;
+                         row < tile_height && y < height;
+                         row++, y++)
+                    {
+                      if (buffer_y + y >= buffer_abyss_y &&
+                          buffer_y + y < abyss_y_total)
+                        {
+                          ((uint64_t*)(&tp[lskip_offset]))[0] =
+                          ((uint64_t*)(&bp[lskip_offset]))[0];
+                          ((uint64_t*)(&tp[lskip_offset]))[1] =
+                          ((uint64_t*)(&bp[lskip_offset]))[1];
+                          ((uint64_t*)(&tp[lskip_offset]))[2] =
+                          ((uint64_t*)(&bp[lskip_offset]))[2];
+                          ((uint64_t*)(&tp[lskip_offset]))[3] =
+                          ((uint64_t*)(&bp[lskip_offset]))[3];
+                          ((uint64_t*)(&tp[lskip_offset]))[4] =
+                          ((uint64_t*)(&bp[lskip_offset]))[4];
+                        }
+                      tp += tile_stride;
+                      bp += buf_stride;
+                    }
+                    break;
+                  case 48:
+                    for (row = offsety;
+                         row < tile_height && y < height;
+                         row++, y++)
+                    {
+                      if (buffer_y + y >= buffer_abyss_y &&
+                          buffer_y + y < abyss_y_total)
+                        {
+                          ((uint64_t*)(&tp[lskip_offset]))[0] =
+                          ((uint64_t*)(&bp[lskip_offset]))[0];
+                          ((uint64_t*)(&tp[lskip_offset]))[1] =
+                          ((uint64_t*)(&bp[lskip_offset]))[1];
+                          ((uint64_t*)(&tp[lskip_offset]))[2] =
+                          ((uint64_t*)(&bp[lskip_offset]))[2];
+                          ((uint64_t*)(&tp[lskip_offset]))[3] =
+                          ((uint64_t*)(&bp[lskip_offset]))[3];
+                          ((uint64_t*)(&tp[lskip_offset]))[4] =
+                          ((uint64_t*)(&bp[lskip_offset]))[4];
+                          ((uint64_t*)(&tp[lskip_offset]))[5] =
+                          ((uint64_t*)(&bp[lskip_offset]))[5];
+                        }
+                      tp += tile_stride;
+                      bp += buf_stride;
+                    }
+                    break;
+                  case 56:
+                    for (row = offsety;
+                         row < tile_height && y < height;
+                         row++, y++)
+                    {
+                      if (buffer_y + y >= buffer_abyss_y &&
+                          buffer_y + y < abyss_y_total)
+                        {
+                          ((uint64_t*)(&tp[lskip_offset]))[0] =
+                          ((uint64_t*)(&bp[lskip_offset]))[0];
+                          ((uint64_t*)(&tp[lskip_offset]))[1] =
+                          ((uint64_t*)(&bp[lskip_offset]))[1];
+                          ((uint64_t*)(&tp[lskip_offset]))[2] =
+                          ((uint64_t*)(&bp[lskip_offset]))[2];
+                          ((uint64_t*)(&tp[lskip_offset]))[3] =
+                          ((uint64_t*)(&bp[lskip_offset]))[3];
+                          ((uint64_t*)(&tp[lskip_offset]))[4] =
+                          ((uint64_t*)(&bp[lskip_offset]))[4];
+                          ((uint64_t*)(&tp[lskip_offset]))[5] =
+                          ((uint64_t*)(&bp[lskip_offset]))[5];
+                          ((uint64_t*)(&tp[lskip_offset]))[6] =
+                          ((uint64_t*)(&bp[lskip_offset]))[6];
+                        }
+                      tp += tile_stride;
+                      bp += buf_stride;
+                    }
+                    break;
+                  case 64:
+                    for (row = offsety;
+                         row < tile_height && y < height;
+                         row++, y++)
+                    {
+                      if (buffer_y + y >= buffer_abyss_y &&
+                          buffer_y + y < abyss_y_total)
+                        {
+                          ((uint64_t*)(&tp[lskip_offset]))[0] =
+                          ((uint64_t*)(&bp[lskip_offset]))[0];
+                          ((uint64_t*)(&tp[lskip_offset]))[1] =
+                          ((uint64_t*)(&bp[lskip_offset]))[1];
+                          ((uint64_t*)(&tp[lskip_offset]))[2] =
+                          ((uint64_t*)(&bp[lskip_offset]))[2];
+                          ((uint64_t*)(&tp[lskip_offset]))[3] =
+                          ((uint64_t*)(&bp[lskip_offset]))[3];
+                          ((uint64_t*)(&tp[lskip_offset]))[4] =
+                          ((uint64_t*)(&bp[lskip_offset]))[4];
+                          ((uint64_t*)(&tp[lskip_offset]))[5] =
+                          ((uint64_t*)(&bp[lskip_offset]))[5];
+                          ((uint64_t*)(&tp[lskip_offset]))[6] =
+                          ((uint64_t*)(&bp[lskip_offset]))[6];
+                          ((uint64_t*)(&tp[lskip_offset]))[7] =
+                          ((uint64_t*)(&bp[lskip_offset]))[7];
                         }
                       tp += tile_stride;
                       bp += buf_stride;
@@ -639,8 +744,8 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
                       if (buffer_y + y >= buffer_abyss_y &&
                           buffer_y + y < abyss_y_total)
                         {
-                          memcpy (tp + lskip * px_size,
-                                  bp + lskip * px_size,
+                          memcpy (tp + lskip_offset,
+                                  bp + lskip_offset,
                                   pixels * px_size);
                         }
                       tp += tile_stride;
@@ -830,11 +935,33 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                          bp += buf_stride;
                       }
                     break;
+                  case 3:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         bp[0] = tp[0];
+                         bp[1] = tp[1];
+                         bp[2] = tp[2];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
                   case 4:
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
                          ((uint32_t*)bp)[0] = ((uint32_t*)tp)[0];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 6:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint16_t*)bp)[0] = ((uint16_t*)tp)[0];
+                         ((uint16_t*)bp)[1] = ((uint16_t*)tp)[1];
+                         ((uint16_t*)bp)[2] = ((uint16_t*)tp)[2];
                          tp += tile_stride;
                          bp += buf_stride;
                       }
@@ -892,6 +1019,65 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                          bp += buf_stride;
                       }
                     break;
+                  case 40:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint64_t*)bp)[0] = ((uint64_t*)tp)[0];
+                         ((uint64_t*)bp)[1] = ((uint64_t*)tp)[1];
+                         ((uint64_t*)bp)[2] = ((uint64_t*)tp)[2];
+                         ((uint64_t*)bp)[3] = ((uint64_t*)tp)[3];
+                         ((uint64_t*)bp)[4] = ((uint64_t*)tp)[4];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 48:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint64_t*)bp)[0] = ((uint64_t*)tp)[0];
+                         ((uint64_t*)bp)[1] = ((uint64_t*)tp)[1];
+                         ((uint64_t*)bp)[2] = ((uint64_t*)tp)[2];
+                         ((uint64_t*)bp)[3] = ((uint64_t*)tp)[3];
+                         ((uint64_t*)bp)[4] = ((uint64_t*)tp)[4];
+                         ((uint64_t*)bp)[5] = ((uint64_t*)tp)[5];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 56:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint64_t*)bp)[0] = ((uint64_t*)tp)[0];
+                         ((uint64_t*)bp)[1] = ((uint64_t*)tp)[1];
+                         ((uint64_t*)bp)[2] = ((uint64_t*)tp)[2];
+                         ((uint64_t*)bp)[3] = ((uint64_t*)tp)[3];
+                         ((uint64_t*)bp)[4] = ((uint64_t*)tp)[4];
+                         ((uint64_t*)bp)[5] = ((uint64_t*)tp)[5];
+                         ((uint64_t*)bp)[6] = ((uint64_t*)tp)[6];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+                  case 64:
+                    for (row = offsety; row < tile_height && y < height;
+                         row++, y++)
+                      {
+                         ((uint64_t*)bp)[0] = ((uint64_t*)tp)[0];
+                         ((uint64_t*)bp)[1] = ((uint64_t*)tp)[1];
+                         ((uint64_t*)bp)[2] = ((uint64_t*)tp)[2];
+                         ((uint64_t*)bp)[3] = ((uint64_t*)tp)[3];
+                         ((uint64_t*)bp)[4] = ((uint64_t*)tp)[4];
+                         ((uint64_t*)bp)[5] = ((uint64_t*)tp)[5];
+                         ((uint64_t*)bp)[6] = ((uint64_t*)tp)[6];
+                         ((uint64_t*)bp)[7] = ((uint64_t*)tp)[7];
+                         tp += tile_stride;
+                         bp += buf_stride;
+                      }
+                    break;
+
                   default:
                     for (row = offsety;
                          row < tile_height && y < height;
