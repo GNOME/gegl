@@ -462,7 +462,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",  "color",
     "reference-hash", "967bd5777363d1fec59f04889f358a99",
     "reference-chain", "load path=images/standard-input.png exposure exposure=1.5",
-    "description", _("Changes Exposure of an image, allows stepping HDR and photographs up/down in stops. "),
+    "description", _("Change exposure of an image in shutter speed stops"),
     "op-version",  "1:0",
     NULL);
 }
