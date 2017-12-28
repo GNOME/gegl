@@ -1891,7 +1891,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
     else
       {
         gint bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
-        if (buffer->soft_format == format)
+        if (buffer->soft_format == format || rowstride != bpp)
         {
           gegl_buffer_iterate_read_dispatch (buffer, rect, dest_buf,
                                              rowstride, format, 0, repeat_mode);
