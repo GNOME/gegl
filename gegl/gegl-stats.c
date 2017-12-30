@@ -184,3 +184,9 @@ gegl_stats_get_property (GObject    *object,
         break;
     }
 }
+
+void
+gegl_stats_reset (GeglStats *stats)
+{
+  gegl_tile_handler_cache_reset_stats ();
+}

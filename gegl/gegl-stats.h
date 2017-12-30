@@ -41,6 +41,8 @@ struct _GeglStatsClass
   GObjectClass  parent_class;
 };
 
+void   gegl_stats_reset (GeglStats *stats);
+
 G_END_DECLS
 
 #endif

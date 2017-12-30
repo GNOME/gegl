@@ -426,6 +426,11 @@ GeglStats *gegl_stats (void)
   return stats;
 }
 
+void gegl_reset_stats (void)
+{
+  gegl_stats_reset (gegl_stats ());
+}
+
 static void swap_clean (void)
 {
   const gchar  *swap_dir = gegl_swap_dir ();

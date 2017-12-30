@@ -104,6 +104,14 @@ GeglConfig   *gegl_config                (void);
  */
 GeglStats    *gegl_stats                 (void);
 
+/**
+ * gegl_reset_stats:
+ *
+ * Resets the cumulative data gathered by the #GeglStats object returned
+ * by #gegl_stats().
+ */
+void          gegl_reset_stats           (void);
+
 gboolean gegl_is_main_thread (void);
 
 G_END_DECLS

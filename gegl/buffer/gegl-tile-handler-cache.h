@@ -67,4 +67,6 @@ gsize             gegl_tile_handler_cache_get_total_uncloned (void);
 gint              gegl_tile_handler_cache_get_hits           (void);
 gint              gegl_tile_handler_cache_get_misses         (void);
 
+void              gegl_tile_handler_cache_reset_stats        (void);
+
 #endif

@@ -679,6 +679,14 @@ gegl_tile_handler_cache_get_misses (void)
   return cache_misses;
 }
 
+void
+gegl_tile_handler_cache_reset_stats (void)
+{
+  cache_total_max = cache_total;
+  cache_hits      = 0;
+  cache_misses    = 0;
+}
+
 
 static guint
 gegl_tile_handler_cache_hashfunc (gconstpointer key)
