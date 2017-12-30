@@ -49,18 +49,22 @@ struct _GeglTileHandlerCacheClass
   GeglTileHandlerClass parent_class;
 };
 
-GType             gegl_tile_handler_cache_get_type      (void) G_GNUC_CONST;
+GType             gegl_tile_handler_cache_get_type           (void) G_GNUC_CONST;
 
-GeglTileHandler * gegl_tile_handler_cache_new           (void);
+GeglTileHandler * gegl_tile_handler_cache_new                (void);
 
-void              gegl_tile_handler_cache_insert        (GeglTileHandlerCache *cache,
-                                                         GeglTile             *tile,
-                                                         gint                  x,
-                                                         gint                  y,
-                                                         gint                  z);
-void              gegl_tile_handler_cache_tile_uncloned (GeglTileHandlerCache *cache,
-                                                         GeglTile             *tile);
+void              gegl_tile_handler_cache_insert             (GeglTileHandlerCache *cache,
+                                                              GeglTile             *tile,
+                                                              gint                  x,
+                                                              gint                  y,
+                                                              gint                  z);
+void              gegl_tile_handler_cache_tile_uncloned      (GeglTileHandlerCache *cache,
+                                                              GeglTile             *tile);
 
-gsize             gegl_tile_handler_cache_get_total     (void);
+gsize             gegl_tile_handler_cache_get_total          (void);
+gsize             gegl_tile_handler_cache_get_total_max      (void);
+gsize             gegl_tile_handler_cache_get_total_uncloned (void);
+gint              gegl_tile_handler_cache_get_hits           (void);
+gint              gegl_tile_handler_cache_get_misses         (void);
 
 #endif

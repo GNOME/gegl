@@ -32,6 +32,10 @@ enum
 {
   PROP_0,
   PROP_TILE_CACHE_TOTAL,
+  PROP_TILE_CACHE_TOTAL_MAX,
+  PROP_TILE_CACHE_TOTAL_UNCLONED,
+  PROP_TILE_CACHE_HITS,
+  PROP_TILE_CACHE_MISSES,
   PROP_SWAP_TOTAL,
   PROP_SWAP_FILE_SIZE,
   PROP_SWAP_BUSY
@@ -65,6 +69,34 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                         "Total size of tile cache in bytes",
                                                         0, G_MAXUINT64, 0,
                                                         G_PARAM_READABLE));
+
+  g_object_class_install_property (object_class, PROP_TILE_CACHE_TOTAL_MAX,
+                                   g_param_spec_uint64 ("tile-cache-total-max",
+                                                        "Tile Cache maximal total size",
+                                                        "Maximal total size of tile cache throughout the session in bytes",
+                                                        0, G_MAXUINT64, 0,
+                                                        G_PARAM_READABLE));
+
+  g_object_class_install_property (object_class, PROP_TILE_CACHE_TOTAL_UNCLONED,
+                                   g_param_spec_uint64 ("tile-cache-total-uncloned",
+                                                        "Tile Cache total uncloned size",
+                                                        "Total size of tile cache if all tiles were uncloned in bytes",
+                                                        0, G_MAXUINT64, 0,
+                                                        G_PARAM_READABLE));
+
+  g_object_class_install_property (object_class, PROP_TILE_CACHE_HITS,
+                                   g_param_spec_int ("tile-cache-hits",
+                                                     "Tile Cache hits",
+                                                     "Number of tile cache hits",
+                                                     0, G_MAXINT, 0,
+                                                     G_PARAM_READABLE));
+
+  g_object_class_install_property (object_class, PROP_TILE_CACHE_MISSES,
+                                   g_param_spec_int ("tile-cache-misses",
+                                                     "Tile Cache misses",
+                                                     "Number of tile cache misses",
+                                                     0, G_MAXINT, 0,
+                                                     G_PARAM_READABLE));
 
   g_object_class_install_property (object_class, PROP_SWAP_TOTAL,
                                    g_param_spec_uint64 ("swap-total",
@@ -117,6 +149,22 @@ gegl_stats_get_property (GObject    *object,
     {
       case PROP_TILE_CACHE_TOTAL:
         g_value_set_uint64 (value, gegl_tile_handler_cache_get_total ());
+        break;
+
+      case PROP_TILE_CACHE_TOTAL_MAX:
+        g_value_set_uint64 (value, gegl_tile_handler_cache_get_total_max ());
+        break;
+
+      case PROP_TILE_CACHE_TOTAL_UNCLONED:
+        g_value_set_uint64 (value, gegl_tile_handler_cache_get_total_uncloned ());
+        break;
+
+      case PROP_TILE_CACHE_HITS:
+        g_value_set_int (value, gegl_tile_handler_cache_get_hits ());
+        break;
+
+      case PROP_TILE_CACHE_MISSES:
+        g_value_set_int (value, gegl_tile_handler_cache_get_misses ());
         break;
 
       case PROP_SWAP_TOTAL:

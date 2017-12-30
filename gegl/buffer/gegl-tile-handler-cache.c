@@ -91,10 +91,10 @@ static GMutex             mutex                 = { 0, };
 static GQueue            *cache_queue           = NULL;
 static gint               cache_wash_percentage = 20;
 static volatile guintptr  cache_total           = 0; /* approximate amount of bytes stored */
-#ifdef GEGL_DEBUG_CACHE_HITS
+static guintptr           cache_total_max       = 0; /* maximal value of cache_total */
+static guintptr           cache_total_uncloned  = 0; /* approximate amount of uncloned bytes stored */
 static gint               cache_hits            = 0;
 static gint               cache_misses          = 0;
-#endif
 
 
 G_DEFINE_TYPE (GeglTileHandlerCache, gegl_tile_handler_cache, GEGL_TYPE_TILE_HANDLER)
@@ -167,6 +167,7 @@ gegl_tile_handler_cache_reinit (GeglTileHandlerCache *cache)
         {
           if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
             g_atomic_pointer_add (&cache_total, -item->tile->size);
+          cache_total_uncloned -= item->tile->size;
           drop_hot_tile (item->tile);
           gegl_tile_mark_as_stored (item->tile); // to avoid saving
           item->tile->tile_storage = NULL;
@@ -214,14 +215,13 @@ gegl_tile_handler_cache_get_tile_command (GeglTileSource *tile_store,
   tile = gegl_tile_handler_cache_get_tile (cache, x, y, z);
   if (tile)
     {
-#ifdef GEGL_DEBUG_CACHE_HITS
+      /* we don't bother making cache_{hits,misses} atomic, since they're only
+       * needed for GeglStats.
+       */
       cache_hits++;
-#endif
       return tile;
     }
-#ifdef GEGL_DEBUG_CACHE_HITS
   cache_misses++;
-#endif
 
   if (source)
     tile = gegl_tile_source_get_tile (source, x, y, z);
@@ -485,6 +485,7 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
       g_hash_table_remove (last_writable->handler->items, last_writable);
       if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (tile)))
         g_atomic_pointer_add (&cache_total, -tile->size);
+      cache_total_uncloned -= tile->size;
       last_writable->handler->count--;
       /* drop_hot_tile (tile); */ /* XXX:  no use in trying to drop the hot
                                    * tile, since this tile can't be it --
@@ -519,6 +520,7 @@ gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cache,
     {
       if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
         g_atomic_pointer_add (&cache_total, -item->tile->size);
+      cache_total_uncloned -= item->tile->size;
       cache->count--;
 
       g_queue_unlink (cache_queue, &item->link);
@@ -552,6 +554,7 @@ gegl_tile_handler_cache_void (GeglTileHandlerCache *cache,
     {
       if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
         g_atomic_pointer_add (&cache_total, -item->tile->size);
+      cache_total_uncloned -= item->tile->size;
       g_queue_unlink (cache_queue, &item->link);
       g_hash_table_remove (cache->items, item);
       cache->count--;
@@ -600,6 +603,7 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
   g_mutex_lock (&mutex);
   if (g_atomic_int_add (gegl_tile_n_cached_clones (tile), 1) == 0)
     g_atomic_pointer_add (&cache_total, tile->size);
+  cache_total_uncloned += item->tile->size;
   g_queue_push_head_link (cache_queue, &item->link);
 
   cache->count ++;
@@ -608,6 +612,13 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
 
   gegl_tile_handler_cache_trim (cache);
 
+  /* there's a race between this assignment, and the one at the bottom of
+   * gegl_tile_handler_cache_tile_uncloned().  this is acceptable, though,
+   * since we only need cache_total_max for GeglStats, so its accuracy is not
+   * ciritical.
+   */
+  cache_total_max = MAX (cache_total_max, cache_total);
+
   g_mutex_unlock (&mutex);
 }
 
@@ -615,8 +626,12 @@ void
 gegl_tile_handler_cache_tile_uncloned (GeglTileHandlerCache *cache,
                                        GeglTile             *tile)
 {
-  if ((guintptr) g_atomic_pointer_add (&cache_total, tile->size) + tile->size >
-      gegl_config ()->tile_cache_size)
+  guintptr total;
+
+  total = (guintptr) g_atomic_pointer_add (&cache_total, tile->size) +
+          tile->size;
+
+  if (total > gegl_config ()->tile_cache_size)
     {
       g_mutex_lock (&mutex);
 
@@ -624,6 +639,8 @@ gegl_tile_handler_cache_tile_uncloned (GeglTileHandlerCache *cache,
 
       g_mutex_unlock (&mutex);
     }
+
+  cache_total_max = MAX (cache_total_max, total);
 }
 
 GeglTileHandler *
@@ -636,6 +653,30 @@ gsize
 gegl_tile_handler_cache_get_total (void)
 {
   return cache_total;
+}
+
+gsize
+gegl_tile_handler_cache_get_total_max (void)
+{
+  return cache_total_max;
+}
+
+gsize
+gegl_tile_handler_cache_get_total_uncloned (void)
+{
+  return cache_total_uncloned;
+}
+
+gint
+gegl_tile_handler_cache_get_hits (void)
+{
+  return cache_hits;
+}
+
+gint
+gegl_tile_handler_cache_get_misses (void)
+{
+  return cache_misses;
 }
 
 
