@@ -22,8 +22,9 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int   (holdness, _("Holdness"), 2)
+property_int   (holdness, _("Dulling"), 2)
    value_range (1, 8)
+   description (_("A high value lowers the randomness of the noise"))
 
 property_double (lightness_distance, _("Lightness"), 40.0)
    value_range  (0.0, 100.0)
