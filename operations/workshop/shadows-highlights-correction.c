@@ -123,7 +123,7 @@ process (GeglOperation       *operation,
   while (n_pixels--)
     {
       gfloat ta[3];
-      gfloat tb[3];
+      gfloat tb0;
       gfloat highlights2;
       gfloat highlights_xform;
       gfloat shadows2;
@@ -133,15 +133,13 @@ process (GeglOperation       *operation,
       ta[1] = src[1] / 128.f;
       ta[2] = src[2] / 128.f;
 
-      tb[0] = (100.f - aux[0]) / 100.f;
-      tb[1] = 0.f;
-      tb[2] = 0.f;
+      tb0 = (100.f - aux[0]) / 100.f;
 
       ta[0] = ta[0] > 0.0f ? ta[0] / whitepoint : ta[0];
-      tb[0] = tb[0] > 0.0f ? tb[0] / whitepoint : tb[0];
+      tb0 = tb0 > 0.0f ? tb0 / whitepoint : tb0;
 
       highlights2 = highlights * highlights;
-      highlights_xform = CLAMP(1.0f - tb[0] / (1.0f - compress), 0.0f, 1.0f);
+      highlights_xform = CLAMP(1.0f - tb0 / (1.0f - compress), 0.0f, 1.0f);
 
       while (highlights2 > 0.0f)
         {
@@ -149,7 +147,7 @@ process (GeglOperation       *operation,
           gfloat chunk, optrans;
 
           gfloat la = ta[0];
-          gfloat lb = (tb[0] - 0.5f) * SIGN(-highlights) * SIGN(1.0f - la) + 0.5f;
+          gfloat lb = (tb0 - 0.5f) * SIGN(-highlights) * SIGN(1.0f - la) + 0.5f;
 
           lref = copysignf(fabsf(la) > low_approximation ? 1.0f / fabsf(la) : 1.0f / low_approximation, la);
           href = copysignf(
@@ -163,16 +161,16 @@ process (GeglOperation       *operation,
                   + (la > 0.5f ? 1.0f - (1.0f - 2.0f * (la - 0.5f)) * (1.0f - lb) : 2.0f * la * lb) * optrans;
 
           ta[1] = ta[1] * (1.0f - optrans)
-                  + (ta[1] + tb[1]) * (ta[0] * lref * (1.0f - highlights_ccorrect)
-                                       + (1.0f - ta[0]) * href * highlights_ccorrect) * optrans;
+                  + ta[1] * (ta[0] * lref * (1.0f - highlights_ccorrect)
+                             + (1.0f - ta[0]) * href * highlights_ccorrect) * optrans;
 
           ta[2] = ta[2] * (1.0f - optrans)
-                  + (ta[2] + tb[2]) * (ta[0] * lref * (1.0f - highlights_ccorrect)
-                                       + (1.0f - ta[0]) * href * highlights_ccorrect) * optrans;
+                  + ta[2] * (ta[0] * lref * (1.0f - highlights_ccorrect)
+                             + (1.0f - ta[0]) * href * highlights_ccorrect) * optrans;
         }
 
     shadows2 = shadows * shadows;
-    shadows_xform = CLAMP(tb[0] / (1.0f - compress) - compress / (1.0f - compress), 0.0f, 1.0f);
+    shadows_xform = CLAMP(tb0 / (1.0f - compress) - compress / (1.0f - compress), 0.0f, 1.0f);
 
     while (shadows2 > 0.0f)
       {
@@ -180,7 +178,7 @@ process (GeglOperation       *operation,
         gfloat chunk, optrans;
 
         gfloat la = ta[0];
-        gfloat lb = (tb[0] - 0.5f) * SIGN(shadows) * SIGN(1.0f - la) + 0.5f;
+        gfloat lb = (tb0 - 0.5f) * SIGN(shadows) * SIGN(1.0f - la) + 0.5f;
         lref = copysignf(fabsf(la) > low_approximation ? 1.0f / fabsf(la) : 1.0f / low_approximation, la);
         href = copysignf(
             fabsf(1.0f - la) > low_approximation ? 1.0f / fabsf(1.0f - la) : 1.0f / low_approximation, 1.0f - la);
@@ -193,12 +191,12 @@ process (GeglOperation       *operation,
                 + (la > 0.5f ? 1.0f - (1.0f - 2.0f * (la - 0.5f)) * (1.0f - lb) : 2.0f * la * lb) * optrans;
 
         ta[1] = ta[1] * (1.0f - optrans)
-                + (ta[1] + tb[1]) * (ta[0] * lref * shadows_ccorrect
-                                     + (1.0f - ta[0]) * href * (1.0f - shadows_ccorrect)) * optrans;
+                + ta[1] * (ta[0] * lref * shadows_ccorrect
+                           + (1.0f - ta[0]) * href * (1.0f - shadows_ccorrect)) * optrans;
 
         ta[2] = ta[2] * (1.0f - optrans)
-                + (ta[2] + tb[2]) * (ta[0] * lref * shadows_ccorrect
-                                     + (1.0f - ta[0]) * href * (1.0f - shadows_ccorrect)) * optrans;
+                + ta[2] * (ta[0] * lref * shadows_ccorrect
+                           + (1.0f - ta[0]) * href * (1.0f - shadows_ccorrect)) * optrans;
       }
 
       dst[0] = ta[0] * 100.f;
