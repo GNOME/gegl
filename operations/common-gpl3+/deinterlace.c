@@ -237,7 +237,7 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglProperties              *o        = GEGL_PROPERTIES (operation);
+  GeglProperties          *o        = GEGL_PROPERTIES (operation);
   GeglOperationAreaFilter *op_area  = GEGL_OPERATION_AREA_FILTER (operation);
   const Babl              *format   = babl_format ("RGBA float");
   GeglRectangle            rect;
@@ -250,7 +250,7 @@ process (GeglOperation       *operation,
   rect.width  = CLAMP (result->width + op_area->left + op_area->right, 0,
                        boundary.width);
   rect.y      = CLAMP (result->y - op_area->top, boundary.y, boundary.y +
-                       boundary.width);
+                       boundary.height);
   rect.height = CLAMP (result->height + op_area->top + op_area->bottom, 0,
                        boundary.height);
 
