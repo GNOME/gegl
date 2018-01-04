@@ -142,7 +142,7 @@ process (GeglOperation       *operation,
 
       if (tb0 < 1.0f - compress)
         {
-          gfloat highlights2 = highlights * highlights;;
+          gfloat highlights2 = highlights * highlights;
           gfloat highlights_xform;
 
           highlights_xform = fminf(1.0f - tb0 / (1.0f - compress), 1.0f);
