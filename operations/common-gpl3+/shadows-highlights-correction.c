@@ -27,21 +27,27 @@
 #ifdef GEGL_PROPERTIES
 
 property_double (shadows, _("Shadows"), 50.0)
+    description (_("Adjust exposure of shadows"))
     value_range (-100.0, 100.0)
 
 property_double (highlights, _("Highlights"), -50.0)
+    description (_("Adjust exposure of highlights"))
     value_range (-100.0, 100.0)
 
 property_double (whitepoint, _("White point adjustment"), 0.0)
+    description (_("Shift white point"))
     value_range (-10.0, 10.0)
 
 property_double (compress, _("Compress"), 50.0)
+    description (_("Compress the effect on shadows/highlights and preserve midtones"))
     value_range (0.0, 100.0)
 
 property_double (shadows_ccorrect, _("Shadows color adjustment"), 100.0)
+    description (_("Adjust saturation of shadows"))
     value_range (0.0, 100.0)
 
 property_double (highlights_ccorrect, _("Highlights color adjustment"), 50.0)
+    description (_("Adjust saturation of highlights"))
     value_range (0.0, 100.0)
 
 #else
