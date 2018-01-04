@@ -153,10 +153,17 @@ process (GeglOperation       *operation,
               gfloat chunk, optrans;
 
               gfloat la = ta[0];
-              gfloat lb = (tb0 - 0.5f) * SIGN(-highlights) * SIGN(1.0f - la) + 0.5f;
+              gfloat la_abs;
+              gfloat la_inverted = 1.0f - la;
+              gfloat la_inverted_abs;
+              gfloat lb = (tb0 - 0.5f) * SIGN(-highlights) * SIGN(la_inverted) + 0.5f;
 
-              lref = copysignf(fabsf(la) > low_approximation ? 1.0f / fabsf(la) : 1.0f / low_approximation, la);
-              href = copysignf(fabsf(1.0f - la) > low_approximation ? 1.0f / fabsf(1.0f - la) : 1.0f / low_approximation, 1.0f - la);
+              la_abs = fabsf (la);
+              lref = copysignf(la_abs > low_approximation ? 1.0f / la_abs : 1.0f / low_approximation, la);
+
+              la_inverted_abs = fabsf (la_inverted);
+              href = copysignf(la_inverted_abs > low_approximation ? 1.0f / la_inverted_abs : 1.0f / low_approximation,
+                               la_inverted);
 
               chunk = highlights2 > 1.0f ? 1.0f : highlights2;
               optrans = chunk * highlights_xform;
@@ -188,9 +195,17 @@ process (GeglOperation       *operation,
             gfloat chunk, optrans;
 
             gfloat la = ta[0];
-            gfloat lb = (tb0 - 0.5f) * SIGN(shadows) * SIGN(1.0f - la) + 0.5f;
-            lref = copysignf(fabsf(la) > low_approximation ? 1.0f / fabsf(la) : 1.0f / low_approximation, la);
-            href = copysignf(fabsf(1.0f - la) > low_approximation ? 1.0f / fabsf(1.0f - la) : 1.0f / low_approximation, 1.0f - la);
+            gfloat la_abs;
+            gfloat la_inverted = 1.0f - la;
+            gfloat la_inverted_abs;
+            gfloat lb = (tb0 - 0.5f) * SIGN(shadows) * SIGN(la_inverted) + 0.5f;
+
+            la_abs = fabsf (la);
+            lref = copysignf(la_abs > low_approximation ? 1.0f / la_abs : 1.0f / low_approximation, la);
+
+            la_inverted_abs = fabsf (la_inverted);
+            href = copysignf(la_inverted_abs > low_approximation ? 1.0f / la_inverted_abs : 1.0f / low_approximation,
+                             la_inverted);
 
             chunk = shadows2 > 1.0f ? 1.0f : shadows2;
             optrans = chunk * shadows_xform;
