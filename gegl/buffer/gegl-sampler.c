@@ -254,89 +254,36 @@ GeglRectangle _gegl_sampler_compute_rectangle (GeglSampler *sampler,
   GeglRectangle rectangle;
   GeglSamplerLevel *level = &sampler->level[level_no];
 
-  if (level->last_x || level->last_y)
-  {
-    gint x_delta = x - level->last_x;
-    gint y_delta = y - level->last_y;
-    gint max_delta_squared = 60 * 60;
-
-    if (x_delta * x_delta < max_delta_squared &&
-        y_delta * y_delta < max_delta_squared)
-    {
-      level->x_delta = level->x_delta * 0.99 + x_delta * 0.01;
-      level->y_delta = level->y_delta * 0.99 + y_delta * 0.01;
-      if (x_delta < 0) x_delta = -x_delta;
-      if (y_delta < 0) y_delta = -y_delta;
-      level->x_magnitude = level->x_magnitude  * 0.99 + x_delta * 0.01;
-      level->y_magnitude = level->y_magnitude  * 0.99 + y_delta * 0.01;
-    }
-  }
-  level->last_x = x;
-  level->last_y = y;
-
   rectangle.width  = level->context_rect.width + 2;
   rectangle.height = level->context_rect.height + 2;
+
+  /* grow in direction of prediction */
+  if (level->delta_x * level->delta_x >
+      level->delta_y * level->delta_y)
+  {
+    rectangle.width *= 2;
+  }
+  else
+  {
+    rectangle.height *= 2;
+  }
 
   rectangle.x = x + level->context_rect.x;
   rectangle.y = y + level->context_rect.y;
 
-  /* grow area slightly, maybe getting a couple of extra
-     hits out of cour cache
-   */
-  rectangle.x      -= 2;
-  rectangle.y      -= 2;
-  rectangle.width  += 4;
-  rectangle.height += 4;
+  rectangle.x      -= 1;
+  rectangle.y      -= 1;
+  rectangle.width  += 2;
+  rectangle.height += 2;
 
-#if 0
-  /* XXX: FIXME: grow cached area based on sampling pattern profiling
-   * information, possibly with much bigger wins than the marginal wins the
-   * increase in size by 2 in each dir does.
-   */
+  //fprintf (stderr, "{%f %f}", level->delta_x, level->delta_y);
 
-
-  if (level->x_magnitude > 0.001 || level->y_magnitude > 0.001)
-    {
-      gfloat magnitude = sqrtf (level->x_magnitude * level->x_magnitude +
-                                level->y_magnitude * level->y_magnitude);
-      gfloat new_magnitude;
-
-      if (level->x_magnitude > level->y_magnitude)
-        new_magnitude =
-          4 + 60 * (level->x_magnitude - level->y_magnitude) / level->x_magnitude;
-      else
-        new_magnitude =
-          4 + 60 * (level->y_magnitude - level->x_magnitude) / level->y_magnitude;
-
-      rectangle.width = 
-        (level->x_magnitude / magnitude) * new_magnitude
-        + level->context_rect.width + 2;
-      rectangle.height = 
-        (level->y_magnitude / magnitude) * new_magnitude
-        + level->context_rect.height + 2;
-
-      /* todo: if both xmag and ymag are small - but similar in magnitude 
-         we should increase the size of the cache if it would fit, thus
-         perhaps working better on small local non-linear access patterns
-       */
-
-
-      /* align rectangle corner we've likely entered with sampled pixel
-       */
-      if (level->x_delta >=0)
-        rectangle.x = x + level->context_rect.x
-                        - (rectangle.width - level->context_rect.x)/10;
-      else
-        rectangle.x = x + level->context_rect.x
-                        - (rectangle.width - level->context_rect.width) * 9/10;
-
-      if (level->y_delta >=0)
-        rectangle.y = y + level->context_rect.y
-                        - (rectangle.height - level->context_rect.y)/10;
-      else
-        rectangle.y = y + level->context_rect.y 
-                        - (rectangle.height - level->context_rect.height) * 9/10;
-    }
+#if 1
+  /* shift area based on prediction */
+  if (level->delta_x >=0.01)
+    rectangle.x -= rectangle.width * 0.3;
+  if (level->delta_y >=0.01)
+    rectangle.y -= rectangle.height * 0.3;
 #endif
 
   if (rectangle.width >= GEGL_SAMPLER_MAXIMUM_WIDTH)

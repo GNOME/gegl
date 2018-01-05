@@ -20,6 +20,7 @@
 
 #include <glib-object.h>
 #include <babl/babl.h>
+#include <stdio.h>
 
 G_BEGIN_DECLS
 
@@ -52,13 +53,10 @@ typedef struct GeglSamplerLevel
   GeglRectangle  context_rect;
   gpointer       sampler_buffer;
   GeglRectangle  sampler_rectangle;
-
   gint           last_x;
   gint           last_y;
-  float          x_delta;
-  float          y_delta;
-  float          x_magnitude;
-  float          y_magnitude;
+  float          delta_x;
+  float          delta_y;
 } GeglSamplerLevel;
 
 struct _GeglSampler
@@ -126,6 +124,7 @@ gegl_sampler_get_ptr (GeglSampler    *sampler,
                       gint            y,
                       GeglAbyssPolicy repeat_mode)
 {
+  float delta_x, delta_y;
   gint dx, dy, sof;
   guchar *buffer_ptr;
 
@@ -137,7 +136,8 @@ gegl_sampler_get_ptr (GeglSampler    *sampler,
       (y + level->context_rect.y + level->context_rect.height >
        level->sampler_rectangle.y + level->sampler_rectangle.height))
     {
-      level->sampler_rectangle = _gegl_sampler_compute_rectangle (sampler, x, y, 0);
+      level->sampler_rectangle =
+         _gegl_sampler_compute_rectangle (sampler, x, y, 0);
 
       gegl_buffer_get (sampler->buffer,
                        &level->sampler_rectangle,
@@ -146,12 +146,23 @@ gegl_sampler_get_ptr (GeglSampler    *sampler,
                        level->sampler_buffer,
                        GEGL_SAMPLER_MAXIMUM_WIDTH * GEGL_SAMPLER_BPP,
                        repeat_mode);
+      level->last_x = x;
+      level->last_y = y;
+      level->delta_x = 0;
+      level->delta_y = 0;
     }
 
   dx         = x - level->sampler_rectangle.x;
   dy         = y - level->sampler_rectangle.y;
   sof        = (dx + dy * GEGL_SAMPLER_MAXIMUM_WIDTH) * GEGL_SAMPLER_BPP;
   buffer_ptr = (guchar *) level->sampler_buffer;
+
+  delta_x = level->last_x - x;
+  delta_y = level->last_y - y;
+  level->last_x = x;
+  level->last_y = y;
+  level->delta_x = (level->delta_x + delta_x) / 2;
+  level->delta_y = (level->delta_y + delta_y) / 2;
 
   return (gfloat *) (buffer_ptr + sof);
 }
