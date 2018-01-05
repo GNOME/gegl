@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <glib.h>
 #include "gegl.h"
-#include "gegl/opencl/gegl-cl-init.h"
+#include "opencl/gegl-cl-init.h"
 
 static long ticks_start;
 
