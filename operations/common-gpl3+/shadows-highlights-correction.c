@@ -90,8 +90,10 @@ process (GeglOperation       *operation,
 
   gfloat shadows;
   gfloat shadows_100 = (gfloat) o->shadows / 100.0f;
+  gfloat shadows_sign;
   gfloat highlights;
   gfloat highlights_100 = (gfloat) o->highlights / 100.0f;
+  gfloat highlights_sign_negated;
   gfloat whitepoint = 1.0f - (gfloat) o->whitepoint / 100.0f;
   gfloat compress;
 
@@ -108,15 +110,17 @@ process (GeglOperation       *operation,
 
   g_return_val_if_fail (-1.0f <= highlights_100 && highlights_100 <= 1.0f, FALSE);
   highlights = 2.0f * highlights_100;
+  highlights_sign_negated = copysignf (1.0f, -highlights);
 
   g_return_val_if_fail (0.0f <= highlights_ccorrect_100 && highlights_ccorrect_100 <= 1.0f, FALSE);
-  highlights_ccorrect = (highlights_ccorrect_100 - 0.5f) * SIGN (-highlights) + 0.5f;
+  highlights_ccorrect = (highlights_ccorrect_100 - 0.5f) * highlights_sign_negated + 0.5f;
 
   g_return_val_if_fail (-1.0f <= shadows_100 && shadows_100 <= 1.0f, FALSE);
   shadows = 2.0f * shadows_100;
+  shadows_sign = copysignf (1.0f, shadows);
 
   g_return_val_if_fail (0.0f <= shadows_ccorrect_100 && shadows_ccorrect_100 <= 1.0f, FALSE);
-  shadows_ccorrect = (shadows_ccorrect_100 - 0.5f) * SIGN (shadows) + 0.5f;
+  shadows_ccorrect = (shadows_ccorrect_100 - 0.5f) * shadows_sign + 0.5f;
 
   g_return_val_if_fail (whitepoint >= 0.01f, FALSE);
 
@@ -156,7 +160,7 @@ process (GeglOperation       *operation,
               gfloat la_abs;
               gfloat la_inverted = 1.0f - la;
               gfloat la_inverted_abs;
-              gfloat lb = (tb0 - 0.5f) * SIGN(-highlights) * SIGN(la_inverted) + 0.5f;
+              gfloat lb = (tb0 - 0.5f) * highlights_sign_negated * SIGN(la_inverted) + 0.5f;
 
               la_abs = fabsf (la);
               lref = copysignf(la_abs > low_approximation ? 1.0f / la_abs : 1.0f / low_approximation, la);
@@ -198,7 +202,7 @@ process (GeglOperation       *operation,
             gfloat la_abs;
             gfloat la_inverted = 1.0f - la;
             gfloat la_inverted_abs;
-            gfloat lb = (tb0 - 0.5f) * SIGN(shadows) * SIGN(la_inverted) + 0.5f;
+            gfloat lb = (tb0 - 0.5f) * shadows_sign * SIGN(la_inverted) + 0.5f;
 
             la_abs = fabsf (la);
             lref = copysignf(la_abs > low_approximation ? 1.0f / la_abs : 1.0f / low_approximation, la);
