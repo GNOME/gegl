@@ -26,11 +26,11 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_double (shadows, _("Shadows"), 50.0)
+property_double (shadows, _("Shadows"), 0.0)
     description (_("Adjust exposure of shadows"))
     value_range (-100.0, 100.0)
 
-property_double (highlights, _("Highlights"), -50.0)
+property_double (highlights, _("Highlights"), 0.0)
     description (_("Adjust exposure of highlights"))
     value_range (-100.0, 100.0)
 
