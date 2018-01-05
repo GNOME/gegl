@@ -39,18 +39,19 @@
 
 typedef struct CacheItem
 {
-  GeglTileHandlerCache *handler; /* The specific handler that cached this item*/
-  GeglTile *tile;                /* The tile */
-  GList     link;                /*  Link in the cache_queue, to avoid
-                                  *  queue lookups involving g_list_find() */
+  GeglTile *tile; /* The tile */
+  GList     link; /*  Link in the cache queue, to avoid
+                   *  queue lookups involving g_list_find() */
 
-  gint      x;                   /* The coordinates this tile was cached for */
+  gint      x;    /* The coordinates this tile was cached for */
   gint      y;
   gint      z;
 } CacheItem;
 
-#define LINK_GET_ITEM(link) \
-        ((CacheItem *) ((guchar *) link - G_STRUCT_OFFSET (CacheItem, link)))
+#define LINK_GET_CACHE(l) \
+        ((GeglTileHandlerCache *) ((guchar *) l - G_STRUCT_OFFSET (GeglTileHandlerCache, link)))
+#define LINK_GET_ITEM(l) \
+        ((CacheItem *) ((guchar *) l - G_STRUCT_OFFSET (CacheItem, link)))
 
 
 static gboolean   gegl_tile_handler_cache_equalfunc  (gconstpointer         a,
@@ -88,13 +89,14 @@ static void       gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cach
 
 
 static GMutex             mutex                 = { 0, };
-static GQueue            *cache_queue           = NULL;
+static GQueue             cache_queue           = G_QUEUE_INIT;
 static gint               cache_wash_percentage = 20;
 static volatile guintptr  cache_total           = 0; /* approximate amount of bytes stored */
 static guintptr           cache_total_max       = 0; /* maximal value of cache_total */
-static guintptr           cache_total_uncloned  = 0; /* approximate amount of uncloned bytes stored */
+static volatile guintptr  cache_total_uncloned  = 0; /* approximate amount of uncloned bytes stored */
 static gint               cache_hits            = 0;
 static gint               cache_misses          = 0;
+static guintptr           cache_time            = 0;
 
 
 G_DEFINE_TYPE (GeglTileHandlerCache, gegl_tile_handler_cache, GEGL_TYPE_TILE_HANDLER)
@@ -113,7 +115,12 @@ gegl_tile_handler_cache_init (GeglTileHandlerCache *cache)
 {
   ((GeglTileSource*)cache)->command = gegl_tile_handler_cache_command;
   cache->items = g_hash_table_new (gegl_tile_handler_cache_hashfunc, gegl_tile_handler_cache_equalfunc);
+  g_queue_init (&cache->queue);
   gegl_tile_cache_init ();
+
+  g_mutex_lock (&mutex);
+  g_queue_push_tail_link (&cache_queue, &cache->link);
+  g_mutex_unlock (&mutex);
 }
 
 static void
@@ -144,9 +151,10 @@ drop_hot_tile (GeglTile *tile)
 static void
 gegl_tile_handler_cache_reinit (GeglTileHandlerCache *cache)
 {
-  CacheItem            *item;
-  GHashTableIter        iter;
-  gpointer              key, value;
+  CacheItem *item;
+  GList     *link;
+
+  cache->time = cache->stamp = 0;
 
   if (cache->tile_storage->hot_tile)
     {
@@ -154,33 +162,23 @@ gegl_tile_handler_cache_reinit (GeglTileHandlerCache *cache)
       cache->tile_storage->hot_tile = NULL;
     }
 
-  if (!cache->count)
-    return;
+  g_hash_table_remove_all (cache->items);
 
-  g_mutex_lock (&mutex);
-  {
-    g_hash_table_iter_init (&iter, cache->items);
-    while (g_hash_table_iter_next (&iter, &key, &value))
+  while ((link = g_queue_pop_head_link (&cache->queue)))
     {
-      item = (CacheItem *) value;
+      item = LINK_GET_ITEM (link);
       if (item->tile)
         {
           if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
             g_atomic_pointer_add (&cache_total, -item->tile->size);
-          cache_total_uncloned -= item->tile->size;
+          g_atomic_pointer_add (&cache_total_uncloned, -item->tile->size);
           drop_hot_tile (item->tile);
           gegl_tile_mark_as_stored (item->tile); // to avoid saving
           item->tile->tile_storage = NULL;
           gegl_tile_unref (item->tile);
-          cache->count--;
         }
-      g_queue_unlink (cache_queue, &item->link);
-      g_hash_table_iter_remove (&iter);
       g_slice_free (CacheItem, item);
     }
-  }
-
-  g_mutex_unlock (&mutex);
 }
 
 static void
@@ -188,12 +186,11 @@ gegl_tile_handler_cache_dispose (GObject *object)
 {
   GeglTileHandlerCache *cache = GEGL_TILE_HANDLER_CACHE (object);
 
-  gegl_tile_handler_cache_reinit (cache);
+  g_mutex_lock (&mutex);
+  g_queue_unlink (&cache_queue, &cache->link);
+  g_mutex_unlock (&mutex);
 
-  if (cache->count < 0)
-    {
-      g_warning ("cache-handler tile balance not zero: %i\n", cache->count);
-    }
+  gegl_tile_handler_cache_reinit (cache);
 
   g_hash_table_destroy (cache->items);
   G_OBJECT_CLASS (gegl_tile_handler_cache_parent_class)->dispose (object);
@@ -247,26 +244,19 @@ gegl_tile_handler_cache_command (GeglTileSource  *tile_store,
     {
       case GEGL_TILE_FLUSH:
         {
+          GList *link;
+
           if (gegl_cl_is_accelerated ())
             gegl_buffer_cl_cache_flush2 (cache, NULL);
 
-          if (cache->count)
+          for (link = g_queue_peek_head_link (&cache->queue);
+               link;
+               link = g_list_next (link))
             {
-              CacheItem      *item;
-              GHashTableIter  iter;
-              gpointer        key, value;
+              CacheItem *item = LINK_GET_ITEM (link);
 
-              g_mutex_lock (&mutex);
-
-              g_hash_table_iter_init (&iter, cache->items);
-              while (g_hash_table_iter_next (&iter, &key, &value))
-                {
-                  item = (CacheItem *) value;
-                  if (item->tile)
-                    gegl_tile_store (item->tile);
-                }
-
-              g_mutex_unlock (&mutex);
+              if (item->tile)
+                gegl_tile_store (item->tile);
             }
         }
         break;
@@ -309,6 +299,91 @@ gegl_tile_handler_cache_command (GeglTileSource  *tile_store,
   return gegl_tile_handler_source_command (handler, command, x, y, z, data);
 }
 
+/* find the oldest (least-recently used) nonempty cache, after prev_cache (if
+ * not NULL).  passing the previous result of this function as prev_cache
+ * allows iterating over the caches in chronological order.
+ *
+ * if most caches haven't been accessed since the last call to this function,
+ * it should be rather cheap (approaching O(1)).
+ *
+ * the global cache mutex must be held while calling this function, however,
+ * individual caches may be accessed concurrently.  as a result, there is a
+ * race between modifying the caches' last-access time during access, and
+ * inspecting the time by this function.  this isn't critical, but it does mean
+ * that the result might not always be accurate.
+ */
+static GeglTileHandlerCache *
+gegl_tile_handler_cache_find_oldest_cache (GeglTileHandlerCache *prev_cache)
+{
+  GList                *link;
+  GeglTileHandlerCache *oldest_cache = NULL;
+  guintptr              oldest_time  = 0;
+
+  /* find the oldest cache, after prev_cache */
+  for (link = prev_cache ? g_list_next (&prev_cache->link) :
+                           g_queue_peek_head_link (&cache_queue);
+       link;
+       link = g_list_next (link))
+    {
+      GeglTileHandlerCache *cache = LINK_GET_CACHE (link);
+      guintptr              time  = cache->time;
+      guintptr              stamp = cache->stamp;
+
+      /* the cache is empty */
+      if (! time)
+        continue;
+
+      if (time == stamp)
+        {
+          oldest_cache = cache;
+          oldest_time  = time;
+
+          /* the cache is still stamped, so it must be the oldest of the
+           * remaining caches, and we can break early
+           */
+          break;
+        }
+      else if (! oldest_time || time < oldest_time)
+        {
+          oldest_cache = cache;
+          oldest_time  = time;
+        }
+    }
+
+  if (oldest_cache)
+    {
+      /* stamp the cache */
+      oldest_cache->stamp = oldest_time;
+
+      /* ... and move it after prev_cache */
+      g_queue_unlink (&cache_queue, &oldest_cache->link);
+
+      if (prev_cache)
+        {
+          if (prev_cache->link.next)
+            {
+              oldest_cache->link.prev = &prev_cache->link;
+              oldest_cache->link.next = prev_cache->link.next;
+
+              oldest_cache->link.prev->next = &oldest_cache->link;
+              oldest_cache->link.next->prev = &oldest_cache->link;
+
+              cache_queue.length++;
+            }
+          else
+            {
+              g_queue_push_tail_link (&cache_queue, &oldest_cache->link);
+            }
+        }
+      else
+        {
+          g_queue_push_head_link (&cache_queue, &oldest_cache->link);
+        }
+    }
+
+  return oldest_cache;
+}
+
 /* write the least recently used dirty tile to disk if it
  * is in the wash_percentage (20%) least recently used tiles,
  * calling this function in an idle handler distributes the
@@ -318,28 +393,53 @@ gboolean
 gegl_tile_handler_cache_wash (GeglTileHandlerCache *cache)
 {
   GeglTile  *last_dirty = NULL;
-  guint      count      = 0;
-  gint       length     = g_queue_get_length (cache_queue);
-  gint       wash_tiles = cache_wash_percentage * length / 100;
-  GList     *link;
+  guintptr   size       = 0;
+  guintptr   wash_size;
 
   g_mutex_lock (&mutex);
 
-  for (link = g_queue_peek_tail_link (cache_queue);
-       link && count < wash_tiles;
-       link = link->prev, count++)
+  wash_size = (gdouble) cache_total_uncloned *
+              cache_wash_percentage / 100.0 + 0.5;
+
+  cache = NULL;
+
+  while (size < wash_size)
     {
-      CacheItem *item = LINK_GET_ITEM (link);
-      GeglTile  *tile = item->tile;
+      GList *link;
 
-      if (tile->tile_storage && ! gegl_tile_is_stored (tile))
+      cache = gegl_tile_handler_cache_find_oldest_cache (cache);
+
+      if (cache == NULL)
+        break;
+
+      if (gegl_config_threads()>1 &&
+          ! g_rec_mutex_trylock (&cache->tile_storage->mutex))
         {
-          last_dirty = tile;
-          g_object_ref (last_dirty->tile_storage);
-          gegl_tile_ref (last_dirty);
-
-          break;
+          continue;
         }
+
+      for (link = g_queue_peek_tail_link (&cache->queue);
+           link && size < wash_size;
+           link = g_list_previous (link))
+        {
+          CacheItem *item = LINK_GET_ITEM (link);
+          GeglTile  *tile = item->tile;
+
+          if (tile->tile_storage && ! gegl_tile_is_stored (tile))
+            {
+              last_dirty = tile;
+              g_object_ref (last_dirty->tile_storage);
+              gegl_tile_ref (last_dirty);
+
+              size = wash_size;
+              break;
+            }
+
+          size += tile->size;
+        }
+
+      if (gegl_config_threads()>1)
+        g_rec_mutex_unlock (&cache->tile_storage->mutex);
     }
 
   g_mutex_unlock (&mutex);
@@ -362,10 +462,9 @@ cache_lookup (GeglTileHandlerCache *cache,
 {
   CacheItem key;
 
-  key.x       = x;
-  key.y       = y;
-  key.z       = z;
-  key.handler = cache;
+  key.x = x;
+  key.y = y;
+  key.z = z;
 
   return g_hash_table_lookup (cache->items, &key);
 }
@@ -380,30 +479,24 @@ gegl_tile_handler_cache_get_tile (GeglTileHandlerCache *cache,
 {
   CacheItem *result;
 
-  if (cache->count == 0)
+  if (g_queue_is_empty (&cache->queue))
     return NULL;
 
-  g_mutex_lock (&mutex);
   result = cache_lookup (cache, x, y, z);
   if (result)
     {
-      GeglTile *volatile tile;
-
-      g_queue_unlink (cache_queue, &result->link);
-      g_queue_push_head_link (cache_queue, &result->link);
+      g_queue_unlink (&cache->queue, &result->link);
+      g_queue_push_head_link (&cache->queue, &result->link);
+      cache->time = ++cache_time;
       while (result->tile == NULL)
       {
         g_printerr ("NULL tile in %s %p %i %i %i %p\n", __FUNCTION__, result, result->x, result->y, result->z,
                 result->tile);
-        g_mutex_unlock (&mutex);
         return NULL;
       }
       gegl_tile_ref (result->tile);
-      tile = result->tile;
-      g_mutex_unlock (&mutex);
-      return tile;
+      return result->tile;
     }
-  g_mutex_unlock (&mutex);
   return NULL;
 }
 
@@ -427,25 +520,58 @@ gegl_tile_handler_cache_has_tile (GeglTileHandlerCache *cache,
 static gboolean
 gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 {
+
   GList *link;
 
-  link = g_queue_peek_tail_link (cache_queue);
+  cache = NULL;
+  link  = NULL;
+
+  g_mutex_lock (&mutex);
 
   while ((guintptr) g_atomic_pointer_get (&cache_total) >
          gegl_config ()->tile_cache_size)
     {
-      CacheItem       *last_writable;
-      GeglTile        *tile;
-      GeglTileStorage *storage;
-      gboolean         dirty;
-      GList           *prev_link;
+      CacheItem *last_writable;
+      GeglTile  *tile;
+      GList     *prev_link;
 
 #ifdef GEGL_DEBUG_CACHE_HITS
       GEGL_NOTE(GEGL_DEBUG_CACHE, "cache_total:"G_GUINT64_FORMAT" > cache_size:"G_GUINT64_FORMAT, cache_total, gegl_config()->tile_cache_size);
-      GEGL_NOTE(GEGL_DEBUG_CACHE, "%f%% hit:%i miss:%i  %i]", cache_hits*100.0/(cache_hits+cache_misses), cache_hits, cache_misses, g_queue_get_length (cache_queue));
+      GEGL_NOTE(GEGL_DEBUG_CACHE, "%f%% hit:%i miss:%i  %i]", cache_hits*100.0/(cache_hits+cache_misses), cache_hits, cache_misses, g_queue_get_length (&cache_queue));
 #endif
 
-      for (; link != NULL; link = g_list_previous (link))
+      if (! link)
+        {
+          if (cache && gegl_config_threads()>1)
+            g_rec_mutex_unlock (&cache->tile_storage->mutex);
+
+          do
+            {
+              cache = gegl_tile_handler_cache_find_oldest_cache (cache);
+            }
+          while (cache &&
+                 /* XXX:  when trimming a dirty tile, gegl_tile_unref() will
+                  * try to store it, acquiring the cache's storage mutex in the
+                  * process.  this can lead to a deadlock if another thread is
+                  * already holding that mutex, and is waiting on the global
+                  * cache mutex, or on a tile-storage mutex held by the current
+                  * thread.  try locking the cache's storage mutex here, and
+                  * skip the cache if it fails.
+                  */
+                 gegl_config_threads()>1 &&
+                 ! g_rec_mutex_trylock (&cache->tile_storage->mutex));
+
+          if (! cache)
+            {
+              g_mutex_unlock (&mutex);
+
+              return FALSE;
+            }
+
+          link = g_queue_peek_tail_link (&cache->queue);
+        }
+
+      for (; link; link = g_list_previous (link))
         {
           last_writable = LINK_GET_ITEM (link);
           tile          = last_writable->tile;
@@ -458,35 +584,20 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
           if (tile->ref_count > 1)
             continue;
 
-          storage = tile->tile_storage;
-
-          dirty = storage && ! gegl_tile_is_stored (tile);
-          if (dirty && gegl_config_threads()>1)
-            {
-              /* XXX:  if the tile is dirty, then gegl_tile_unref() will try to
-               * store it, acquiring the storage mutex in the process.  this
-               * can lead to a deadlock if another thread is already holding
-               * that mutex, and is waiting on the global cache mutex, or on a
-               * tile storage mutex held by the current thread.  try locking
-               * the storage mutex here, and skip the tile if it fails.
-               */
-              if (! g_rec_mutex_trylock (&storage->mutex))
-                continue;
-            }
-
           break;
         }
 
-      if (link == NULL)
-        return FALSE;
+      if (! link)
+        continue;
 
       prev_link = g_list_previous (link);
-      g_queue_unlink (cache_queue, link);
-      g_hash_table_remove (last_writable->handler->items, last_writable);
+      g_queue_unlink (&cache->queue, link);
+      g_hash_table_remove (cache->items, last_writable);
+      if (g_queue_is_empty (&cache->queue))
+        cache->time = cache->stamp = 0;
       if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (tile)))
         g_atomic_pointer_add (&cache_total, -tile->size);
-      cache_total_uncloned -= tile->size;
-      last_writable->handler->count--;
+      g_atomic_pointer_add (&cache_total_uncloned, -tile->size);
       /* drop_hot_tile (tile); */ /* XXX:  no use in trying to drop the hot
                                    * tile, since this tile can't be it --
                                    * the hot tile will have a ref-count of
@@ -496,12 +607,14 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
       tile->tile_storage = NULL;
       gegl_tile_unref (tile);
 
-      if (dirty && gegl_config_threads()>1)
-        g_rec_mutex_unlock (&storage->mutex);
-
       g_slice_free (CacheItem, last_writable);
       link = prev_link;
     }
+
+  if (cache && gegl_config_threads()>1)
+    g_rec_mutex_unlock (&cache->tile_storage->mutex);
+
+  g_mutex_unlock (&mutex);
 
   return TRUE;
 }
@@ -514,19 +627,18 @@ gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cache,
 {
   CacheItem *item;
 
-  g_mutex_lock (&mutex);
   item = cache_lookup (cache, x, y, z);
   if (item)
     {
       if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
         g_atomic_pointer_add (&cache_total, -item->tile->size);
-      cache_total_uncloned -= item->tile->size;
-      cache->count--;
+      g_atomic_pointer_add (&cache_total_uncloned, -item->tile->size);
 
-      g_queue_unlink (cache_queue, &item->link);
+      g_queue_unlink (&cache->queue, &item->link);
       g_hash_table_remove (cache->items, item);
 
-      g_mutex_unlock (&mutex);
+      if (g_queue_is_empty (&cache->queue))
+        cache->time = cache->stamp = 0;
 
       drop_hot_tile (item->tile);
       gegl_tile_mark_as_stored (item->tile); /* to cheat it out of being stored */
@@ -535,8 +647,6 @@ gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cache,
 
       g_slice_free (CacheItem, item);
     }
-  else
-    g_mutex_unlock (&mutex);
 }
 
 
@@ -548,28 +658,26 @@ gegl_tile_handler_cache_void (GeglTileHandlerCache *cache,
 {
   CacheItem *item;
 
-  g_mutex_lock (&mutex);
   item = cache_lookup (cache, x, y, z);
   if (item)
     {
       if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
         g_atomic_pointer_add (&cache_total, -item->tile->size);
-      cache_total_uncloned -= item->tile->size;
-      g_queue_unlink (cache_queue, &item->link);
-      g_hash_table_remove (cache->items, item);
-      cache->count--;
-    }
-  g_mutex_unlock (&mutex);
+      g_atomic_pointer_add (&cache_total_uncloned, -item->tile->size);
 
-  if (item)
-    {
+      g_queue_unlink (&cache->queue, &item->link);
+      g_hash_table_remove (cache->items, item);
+
+      if (g_queue_is_empty (&cache->queue))
+        cache->time = cache->stamp = 0;
+
       drop_hot_tile (item->tile);
       gegl_tile_void (item->tile);
       item->tile->tile_storage = NULL;
       gegl_tile_unref (item->tile);
-    }
 
-  g_slice_free (CacheItem, item);
+      g_slice_free (CacheItem, item);
+    }
 }
 
 void
@@ -581,7 +689,6 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
 {
   CacheItem *item = g_slice_new (CacheItem);
 
-  item->handler   = cache;
   item->tile      = gegl_tile_ref (tile);
   item->link.data = item;
   item->link.next = NULL;
@@ -600,15 +707,13 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
 
   /* XXX: this is a window when the tile is a zero tile during update */
 
-  g_mutex_lock (&mutex);
+  cache->time = ++cache_time;
+
   if (g_atomic_int_add (gegl_tile_n_cached_clones (tile), 1) == 0)
     g_atomic_pointer_add (&cache_total, tile->size);
-  cache_total_uncloned += item->tile->size;
-  g_queue_push_head_link (cache_queue, &item->link);
-
-  cache->count ++;
-
+  g_atomic_pointer_add (&cache_total_uncloned, tile->size);
   g_hash_table_insert (cache->items, item, item);
+  g_queue_push_head_link (&cache->queue, &item->link);
 
   gegl_tile_handler_cache_trim (cache);
 
@@ -618,8 +723,6 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
    * ciritical.
    */
   cache_total_max = MAX (cache_total_max, cache_total);
-
-  g_mutex_unlock (&mutex);
 }
 
 void
@@ -632,13 +735,7 @@ gegl_tile_handler_cache_tile_uncloned (GeglTileHandlerCache *cache,
           tile->size;
 
   if (total > gegl_config ()->tile_cache_size)
-    {
-      g_mutex_lock (&mutex);
-
-      gegl_tile_handler_cache_trim (cache);
-
-      g_mutex_unlock (&mutex);
-    }
+    gegl_tile_handler_cache_trim (cache);
 
   cache_total_max = MAX (cache_total_max, total);
 }
@@ -711,7 +808,7 @@ gegl_tile_handler_cache_hashfunc (gconstpointer key)
       ADD_BIT (srcC & (1 << i));
 #undef ADD_BIT
     }
-  return hash ^ GPOINTER_TO_INT (e->handler);
+  return hash;
 }
 
 static gboolean
@@ -723,8 +820,7 @@ gegl_tile_handler_cache_equalfunc (gconstpointer a,
 
   if (ea->x == eb->x &&
       ea->y == eb->y &&
-      ea->z == eb->z &&
-      ea->handler == eb->handler)
+      ea->z == eb->z)
     return TRUE;
   return FALSE;
 }
@@ -732,17 +828,11 @@ gegl_tile_handler_cache_equalfunc (gconstpointer a,
 void
 gegl_tile_cache_init (void)
 {
-  if (cache_queue == NULL)
-    cache_queue = g_queue_new ();
 }
 
 void
 gegl_tile_cache_destroy (void)
 {
-  if (cache_queue)
-    {
-      while (g_queue_pop_head_link (cache_queue));
-      g_queue_free (cache_queue);
-    }
-  cache_queue = NULL;
+  g_warn_if_fail (g_queue_is_empty (&cache_queue));
+  g_queue_clear (&cache_queue);
 }
