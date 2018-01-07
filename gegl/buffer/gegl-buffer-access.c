@@ -463,23 +463,21 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
 
           if (fish)
             {
-              for (row = offsety;
-                   row < tile_height &&
-                     y < height &&
-                     buffer_y + y < abyss_y_total;
-                   row++, y++)
-                {
-
-                  if (buffer_y + y >= buffer_abyss_y &&
-                      buffer_y + y < abyss_y_total)
-                    {
-                      babl_process (fish, bp + lskip * bpx_size, tp + lskip * px_size,
-                                    pixels);
-                    }
-
-                  tp += tile_stride;
-                  bp += buf_stride;
-                }
+              int skip, rows = MIN(height - bufy, tile_height - offsety);
+              rows = MIN(abyss_y_total - bufy, rows);
+              skip = (buffer_abyss_y - bufy);
+              if (skip < 0) skip = 0;
+              rows-=skip;
+              if (rows==1)
+                babl_process (fish,bp + lskip * bpx_size, tp + lskip * px_size, pixels);
+              else
+                babl_process_rows (fish,
+                                   bp + lskip * bpx_size + skip * buf_stride,
+                                   buf_stride,
+                                   tp + lskip * px_size + skip * tile_stride,
+                                   tile_stride,
+                                   pixels,
+                                   rows);
             }
           else
             {
@@ -918,15 +916,21 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
 
           if (fish)
             {
-              for (row = offsety;
-                   row < tile_height && y < height;
-                   row++, y++)
-                {
-                  babl_process (fish, tp, bp, pixels);
+              int rows = MIN(height - bufy, tile_height - offsety);
+              if (rows == 1)
+              babl_process (fish,
+                            tp,
+                            bp,
+                            pixels);
+              else
+              babl_process_rows (fish,
+                                 tp,
+                                 tile_stride,
+                                 bp,
+                                 buf_stride,
+                                 pixels,
+                                 rows);
 
-                  tp += tile_stride;
-                  bp += buf_stride;
-                }
             }
           else
             {
