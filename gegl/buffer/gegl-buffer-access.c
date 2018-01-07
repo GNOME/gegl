@@ -1836,11 +1836,11 @@ _gegl_get_required_for_scale (const Babl          *format,
   else
     {
       gint x1 = floorf (roi->x / scale + GEGL_SCALE_EPSILON);
-      gint x2 = ceil ((roi->x + roi->width) / scale - GEGL_SCALE_EPSILON);
+      gint x2 = ceilf ((roi->x + roi->width) / scale - GEGL_SCALE_EPSILON);
       gint y1 = floorf (roi->y / scale + GEGL_SCALE_EPSILON);
-      gint y2 = ceil ((roi->y + roi->height) / scale - GEGL_SCALE_EPSILON);
+      gint y2 = ceilf ((roi->y + roi->height) / scale - GEGL_SCALE_EPSILON);
 
-      gint pad = (1.0 / scale > 1.0) ? ceil (1.0 / scale) : 1;
+      gint pad = (1.0 / scale > 1.0) ? ceilf (1.0 / scale) : 1;
 
       if (scale < 1.0)
         {
@@ -1938,9 +1938,9 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       gint    bpp         = babl_format_get_bytes_per_pixel (format);
       void   *sample_buf;
       gint    x1 = floorf (rect->x / scale + GEGL_SCALE_EPSILON);
-      gint    x2 = ceil ((rect->x + rect->width) / scale - GEGL_SCALE_EPSILON);
+      gint    x2 = ceilf ((rect->x + rect->width) / scale - GEGL_SCALE_EPSILON);
       gint    y1 = floorf (rect->y / scale + GEGL_SCALE_EPSILON);
-      gint    y2 = ceil ((rect->y + rect->height) / scale - GEGL_SCALE_EPSILON);
+      gint    y2 = ceilf ((rect->y + rect->height) / scale - GEGL_SCALE_EPSILON);
       gint    factor = 1;
       gint    offset = 0;
 
