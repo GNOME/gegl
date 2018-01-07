@@ -11,7 +11,7 @@ main (gint    argc,
 
   gegl_init (&argc, &argv);
 
-  buffer = test_buffer (1024, 1024, babl_format ("RGBA float"));
+  buffer = test_buffer (2048, 1024, babl_format ("RGBA float"));
   bench ("rotate", buffer, &rotate);
   bench ("rotate-nearest", buffer, &rotate_nearest);
 

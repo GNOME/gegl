@@ -20,7 +20,7 @@ if [ ! -d prefixes/$REV ]; then
   ( 
     cd checkout;
     if [ ! -f Makefile ]; then
-      CC=$CC ./autogen.sh --disable-introspection --prefix=`pwd`/../prefix;
+      CC=$CC ./autogen.sh --disable-docs --disable-introspection --prefix=`pwd`/../prefix;
     fi;
 
     make $MAKE_FLAGS ;

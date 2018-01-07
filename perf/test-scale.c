@@ -11,7 +11,7 @@ main (gint    argc,
 
   gegl_init (&argc, &argv);
 
-  buffer = test_buffer (1024, 1024, babl_format ("RGBA float"));
+  buffer = test_buffer (2048, 1024, babl_format ("RGBA float"));
   bench ("scale", buffer, &scale);
   bench ("scale-nearest", buffer, &scale_nearest);
   g_object_unref (buffer);

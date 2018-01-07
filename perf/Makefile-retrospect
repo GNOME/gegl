@@ -3,7 +3,7 @@
 
 SELF = Makefile-retrospect
 
-MAKE_FLAGS = -j3 -k
+MAKE_FLAGS = -j5 -k
 CC = "ccache gcc"   # if you do not have ccache replace with just gcc
 
 PROJECT_PATH = ../
@@ -12,7 +12,8 @@ PROJECT_PATH = ../
 #.SILENT:
 
 # replace sequential with random to build a random subset
-all: reset sequential
+#all: reset sequential
+all: reset reverse
 #all: reset random
 
 retry:

@@ -7,7 +7,7 @@ main (gint    argc,
       gchar **argv)
 {
   GeglBuffer    *buffer;
-  GeglRectangle  bound = {0, 0, 4024, 4024};
+  GeglRectangle  bound = {0, 0, 2048, 2048};
   const Babl *format;
   gchar *buf;
   gint i;
@@ -17,7 +17,7 @@ main (gint    argc,
   buffer = gegl_buffer_new (&bound, format);
   buf = g_malloc0 (bound.width * bound.height * BPP);
 
-#define ITERATIONS 4
+#define ITERATIONS 64
 
   /* pre-initialize */
   gegl_buffer_set (buffer, &bound, 0, NULL, buf, GEGL_AUTO_ROWSTRIDE);
@@ -27,7 +27,7 @@ main (gint    argc,
     {
       gegl_buffer_get (buffer, &bound, 1.0, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
      }
-  test_end ("gegl_buffer_get", bound.width * bound.height * ITERATIONS * BPP);
+  test_end ("gegl_buffer_get", 1.0 * bound.width * bound.height * ITERATIONS * BPP);
 
 
   test_start ();
@@ -35,10 +35,13 @@ main (gint    argc,
     {
       gegl_buffer_set (buffer, &bound, 0, NULL, buf, GEGL_AUTO_ROWSTRIDE);
      }
-  test_end ("gegl_buffer_set", bound.width * bound.height * ITERATIONS * BPP);
+  test_end ("gegl_buffer_set", 1.0 * bound.width * bound.height * ITERATIONS * BPP);
 
 
   format = babl_format ("RGBA float");
+
+#undef ITERATIONS
+#define ITERATIONS 128
 
   {
 #define SAMPLES 150000

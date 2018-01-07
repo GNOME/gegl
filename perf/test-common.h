@@ -12,10 +12,10 @@ long babl_ticks (void); /* using babl_ticks instead of gegl_ticks
 
 void test_start (void);
 void test_end (const gchar *id,
-               glong        bytes);
+               double       bytes);
 void test_end_suffix (const gchar *id,
                       const gchar *suffix,
-                      glong        bytes);
+                      gdouble      bytes);
 GeglBuffer *test_buffer (gint width,
                          gint height,
                          const Babl *format);
@@ -34,7 +34,7 @@ void test_start (void)
 
 void test_end_suffix (const gchar *id,
                       const gchar *suffix,
-                      glong        bytes)
+                      gdouble      bytes)
 {
   long ticks = babl_ticks ()-ticks_start;
   g_print ("@ %s%s: %.2f megabytes/second\n",
@@ -42,7 +42,7 @@ void test_end_suffix (const gchar *id,
 }
 
 void test_end (const gchar *id,
-               glong        bytes)
+               gdouble      bytes)
 {
     test_end_suffix (id, "", bytes);
 }
@@ -87,13 +87,13 @@ void do_bench (const gchar *id,
   // warm up
   test_func(buffer);
 
-#define ITERATIONS 16
+#define ITERATIONS 32
   test_start ();
   for (int i=0; i<ITERATIONS; ++i)
     {
       test_func(buffer);
     }
-  test_end_suffix (id, suffix, gegl_buffer_get_pixel_count (buffer) * 16 * ITERATIONS);
+  test_end_suffix (id, suffix, ((double)gegl_buffer_get_pixel_count (buffer)) * 16 * ITERATIONS);
 #undef ITERATIONS
 }
 
