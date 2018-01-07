@@ -211,7 +211,8 @@ gegl_buffer_set_property (GObject      *gobject,
         break;
 
       case PROP_PATH:
-        g_free (buffer->path);
+        if (buffer->path)
+          g_free (buffer->path);
         buffer->path = g_value_dup_string (value);
         break;
 
@@ -263,7 +264,8 @@ gegl_buffer_set_property (GObject      *gobject,
         break;
 
       case PROP_BACKEND:
-        g_clear_object (&buffer->backend);
+        if (buffer->backend)
+          g_object_unref (buffer->backend);
         buffer->backend = g_value_dup_object (value);
         break;
 
@@ -394,7 +396,11 @@ gegl_buffer_dispose (GObject *object)
 
   _gegl_buffer_drop_hot_tile (buffer);
 
-  g_clear_object (&buffer->backend);
+  if (buffer->backend)
+    {
+      g_object_unref (buffer->backend);
+      buffer->backend = NULL;
+    }
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -514,7 +520,8 @@ gegl_buffer_constructor (GType                  type,
           buffer->tile_width = gegl_tile_backend_get_tile_width (backend);
           buffer->tile_height = gegl_tile_backend_get_tile_height (backend);
 
-          g_free (buffer->path);
+          if (buffer->path)
+            g_free (buffer->path);
 
           if (GEGL_IS_TILE_BACKEND_FILE (backend))
             g_object_get (backend, "path", &buffer->path, NULL);

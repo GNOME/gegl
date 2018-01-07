@@ -63,7 +63,8 @@ load_info_destroy (LoadInfo *info)
 {
   if (!info)
     return;
-  g_free (info->path);
+  if (info->path)
+    g_free (info->path);
   if (info->i != -1)
     close (info->i);
   if (info->tiles != NULL)

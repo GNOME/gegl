@@ -879,7 +879,8 @@ gegl_tile_backend_file_set_property (GObject      *object,
   switch (property_id)
     {
       case PROP_PATH:
-        g_free (self->path);
+        if (self->path)
+          g_free (self->path);
         self->path = g_value_dup_string (value);
         break;
 
@@ -970,8 +971,11 @@ gegl_tile_backend_file_finalize (GObject *object)
       g_free (self->path);
     }
 
-  g_clear_object (&self->monitor);
-  g_clear_object (&self->file);
+  if (self->monitor)
+    g_object_unref (self->monitor);
+
+  if (self->file)
+    g_object_unref (self->file);
 
   g_cond_clear (&self->cond);
 
