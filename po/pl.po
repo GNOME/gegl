@@ -1,20 +1,20 @@
 # Polish translation for gegl.
-# Copyright © 1999-2017 the gegl authors.
+# Copyright © 1999-2018 the gegl authors.
 # This file is distributed under the same license as the gegl package.
 # Paweł Dziekoński, 1999-2000.
 # Bartosz Kosiorek <gang65@poczta.onet.pl>, 2005-2011.
 # Piotr Zaryk <pzaryk@aviary.pl>, 2008.
 # Robert Gomulka <carramba@epf.pl>, 2008.
-# Piotr Drąg <piotrdrag@gmail.com>, 2011-2017.
-# Aviary.pl <community-poland@mozilla.org>, 2011-2017.
+# Piotr Drąg <piotrdrag@gmail.com>, 2011-2018.
+# Aviary.pl <community-poland@mozilla.org>, 2011-2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-12-28 01:58+0000\n"
-"PO-Revision-Date: 2017-12-31 23:29+0100\n"
+"POT-Creation-Date: 2018-01-08 13:42+0000\n"
+"PO-Revision-Date: 2018-01-08 14:48+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -526,11 +526,11 @@ msgstr ""
 #: operations/common/edge-neon.c:47 operations/common/median-blur.c:38
 #: operations/common/snn-mean.c:26 operations/common/stress.c:27
 #: operations/common/vignette.c:38 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-gpl3+/spiral.c:47
-#: operations/common-gpl3+/supernova.c:45
+#: operations/common/wavelet-blur.c:27
+#: operations/common-gpl3+/shadows-highlights.c:40
+#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
 #: operations/common-gpl3+/whirl-pinch.c:45
 #: operations/external/matting-levin.c:29
-#: operations/workshop/shadows-highlights.c:37
 msgid "Radius"
 msgstr "Promień"
 
@@ -865,8 +865,8 @@ msgstr ""
 "Zmiana na to: zmienia kolory szarości na tę barwę i nasycenie"
 
 #: operations/common/color-rotate.c:79 operations/common/component-extract.c:28
-#: operations/common/hue-chroma.c:25 operations/common/noise-cie-lch.c:34
-#: operations/common/noise-hsv.c:30
+#: operations/common/hue-chroma.c:25 operations/common/noise-cie-lch.c:35
+#: operations/common/noise-hsv.c:31
 msgid "Hue"
 msgstr "Barwa"
 
@@ -875,7 +875,7 @@ msgid "Hue value for above gray settings"
 msgstr "Wartość barwy dla powyższych ustawień szarości"
 
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
-#: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:33
+#: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
 #: operations/common/saturation.c:223
 #: operations/external/lcms-from-profile.c:35
 msgid "Saturation"
@@ -1474,7 +1474,7 @@ msgid "The dithering method to use"
 msgstr "Używana metoda mieszania"
 
 #: operations/common/dither.c:51 operations/common/noise-cell.c:55
-#: operations/common/noise-cie-lch.c:37 operations/common/noise-hsv.c:39
+#: operations/common/noise-cie-lch.c:38 operations/common/noise-hsv.c:40
 #: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
 #: operations/common/noise-rgb.c:51 operations/common/noise-simplex.c:39
 #: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
@@ -1751,7 +1751,7 @@ msgstr "Czy kadrować obszar wyjściowy do obszaru wejściowego"
 msgid "Gaussian Blur"
 msgstr "Rozmycie Gaussa"
 
-#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:941
+#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1277
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -1773,7 +1773,7 @@ msgstr "Ułożenie"
 msgid "The orientation of the blur - hor/ver"
 msgstr "Orientacja rozmycia — pionowa/pozioma"
 
-#: operations/common/gblur-1d.c:938
+#: operations/common/gblur-1d.c:1274
 msgid "1D Gaussian-blur"
 msgstr "Jednowymiarowe rozmycie Gaussa"
 
@@ -1903,7 +1903,7 @@ msgstr "Uwydatnia drobne szczegóły."
 msgid "Hue adjustment"
 msgstr "Dostosowanie barwy"
 
-#: operations/common/hue-chroma.c:29 operations/common/noise-cie-lch.c:31
+#: operations/common/hue-chroma.c:29 operations/common/noise-cie-lch.c:32
 msgid "Chroma"
 msgstr "Nasycenie"
 
@@ -1911,7 +1911,7 @@ msgstr "Nasycenie"
 msgid "Chroma adjustment"
 msgstr "Dostosowanie nasycenia"
 
-#: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:28
+#: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
 msgid "Lightness"
 msgstr "Jasność"
 
@@ -2710,28 +2710,32 @@ msgid "Generates a cellular texture."
 msgstr "Tworzy teksturę komórkową."
 
 #: operations/common/noise-cie-lch.c:25 operations/common/noise-hsv.c:27
-msgid "Holdness"
-msgstr "Wstrzymanie"
+msgid "Dulling"
+msgstr "Zmatowienie"
 
-#: operations/common/noise-cie-lch.c:193
+#: operations/common/noise-cie-lch.c:27 operations/common/noise-hsv.c:29
+msgid "A high value lowers the randomness of the noise"
+msgstr "Wysoka wartość zmniejsza losowość szumu"
+
+#: operations/common/noise-cie-lch.c:194
 msgid "Add CIE Lch Noise"
 msgstr "Dodaj szum Lch CIE"
 
-#: operations/common/noise-cie-lch.c:196
+#: operations/common/noise-cie-lch.c:197
 msgid "Randomize lightness, chroma and hue independently"
 msgstr "Niezależne losowanie jasności, nasycenia i barwy"
 
-#: operations/common/noise-hsv.c:36 operations/generated/add.c:29
+#: operations/common/noise-hsv.c:37 operations/generated/add.c:29
 #: operations/generated/divide.c:29 operations/generated/gamma.c:29
 #: operations/generated/multiply.c:29 operations/generated/subtract.c:29
 msgid "Value"
 msgstr "Wartość"
 
-#: operations/common/noise-hsv.c:275
+#: operations/common/noise-hsv.c:276
 msgid "Add HSV Noise"
 msgstr "Dodaj szum HSV"
 
-#: operations/common/noise-hsv.c:278
+#: operations/common/noise-hsv.c:279
 msgid "Randomize hue, saturation and value independently"
 msgstr "Niezależne losowanie barwy, nasycenia i wartości"
 
@@ -5050,6 +5054,82 @@ msgstr "Falowanie"
 #: operations/common-gpl3+/ripple.c:176
 msgid "Displace pixels in a ripple pattern"
 msgstr "Rozmieść piksele na wzór zmarszczki"
+
+#: operations/common-gpl3+/shadows-highlights.c:28
+#: operations/common-gpl3+/shadows-highlights-correction.c:29
+msgid "Shadows"
+msgstr "Cień"
+
+#: operations/common-gpl3+/shadows-highlights.c:29
+#: operations/common-gpl3+/shadows-highlights-correction.c:30
+msgid "Adjust exposure of shadows"
+msgstr "Dostosuj ekspozycję cienia"
+
+#: operations/common-gpl3+/shadows-highlights.c:32
+#: operations/common-gpl3+/shadows-highlights-correction.c:33
+msgid "Highlights"
+msgstr "Podświetlenie"
+
+#: operations/common-gpl3+/shadows-highlights.c:33
+#: operations/common-gpl3+/shadows-highlights-correction.c:34
+msgid "Adjust exposure of highlights"
+msgstr "Dostosuj ekspozycję podświetlenia"
+
+#: operations/common-gpl3+/shadows-highlights.c:36
+#: operations/common-gpl3+/shadows-highlights-correction.c:37
+msgid "White point adjustment"
+msgstr "Dostosowanie punktu bieli"
+
+#: operations/common-gpl3+/shadows-highlights.c:37
+#: operations/common-gpl3+/shadows-highlights-correction.c:38
+msgid "Shift white point"
+msgstr "Punkt bieli przesunięcia"
+
+#: operations/common-gpl3+/shadows-highlights.c:41
+msgid "Spatial extent"
+msgstr "Skala przestrzenna"
+
+#: operations/common-gpl3+/shadows-highlights.c:45
+#: operations/common-gpl3+/shadows-highlights-correction.c:41
+msgid "Compress"
+msgstr "Kompresuj"
+
+#: operations/common-gpl3+/shadows-highlights.c:46
+#: operations/common-gpl3+/shadows-highlights-correction.c:42
+msgid "Compress the effect on shadows/highlights and preserve midtones"
+msgstr "Kompresuj efekt na cieniu/podświetleniu i zachowaj półtony"
+
+#: operations/common-gpl3+/shadows-highlights.c:49
+#: operations/common-gpl3+/shadows-highlights-correction.c:45
+msgid "Shadows color adjustment"
+msgstr "Dostosowanie koloru cienia"
+
+#: operations/common-gpl3+/shadows-highlights.c:50
+#: operations/common-gpl3+/shadows-highlights-correction.c:46
+msgid "Adjust saturation of shadows"
+msgstr "Dostosuj nasycenie cienia"
+
+#: operations/common-gpl3+/shadows-highlights.c:53
+#: operations/common-gpl3+/shadows-highlights-correction.c:49
+msgid "Highlights color adjustment"
+msgstr "Dostosowanie koloru podświetlenia"
+
+#: operations/common-gpl3+/shadows-highlights.c:54
+#: operations/common-gpl3+/shadows-highlights-correction.c:50
+msgid "Adjust saturation of highlights"
+msgstr "Dostosuj nasycenie podświetlenia"
+
+#: operations/common-gpl3+/shadows-highlights.c:244
+msgid "Shadows-Highlights"
+msgstr "Cień i podświetlenie"
+
+#: operations/common-gpl3+/shadows-highlights.c:247
+msgid "Perform shadows and highlights correction"
+msgstr "Wykonaj korekcję cieni i podświetleń"
+
+#: operations/common-gpl3+/shadows-highlights-correction.c:359
+msgid "Lighten shadows and darken highlights"
+msgstr "Rozjaśnij cienie i przyciemnij podświetlenia"
 
 #: operations/common-gpl3+/shift.c:26 operations/common-gpl3+/shift.c:144
 msgid "Shift"
@@ -7796,48 +7876,6 @@ msgstr "Segmentacja k-średnich"
 #: operations/workshop/segment-kmeans.c:394
 msgid "Segment colors using K-means clustering"
 msgstr "Segmentuj kolory za pomocą klastrów k-średnich"
-
-#: operations/workshop/shadows-highlights.c:28
-#: operations/workshop/shadows-highlights-correction.c:29
-msgid "Shadows"
-msgstr "Cień"
-
-#: operations/workshop/shadows-highlights.c:31
-#: operations/workshop/shadows-highlights-correction.c:32
-msgid "Highlights"
-msgstr "Podświetlenie"
-
-#: operations/workshop/shadows-highlights.c:34
-#: operations/workshop/shadows-highlights-correction.c:35
-msgid "White point adjustment"
-msgstr "Dostosowanie punktu bieli"
-
-#: operations/workshop/shadows-highlights.c:41
-#: operations/workshop/shadows-highlights-correction.c:38
-msgid "Compress"
-msgstr "Kompresuj"
-
-#: operations/workshop/shadows-highlights.c:44
-#: operations/workshop/shadows-highlights-correction.c:41
-msgid "Shadows color adjustment"
-msgstr "Dostosowanie koloru cienia"
-
-#: operations/workshop/shadows-highlights.c:47
-#: operations/workshop/shadows-highlights-correction.c:44
-msgid "Highlights color adjustment"
-msgstr "Dostosowanie koloru podświetlenia"
-
-#: operations/workshop/shadows-highlights.c:237
-msgid "Shadows-Highlights"
-msgstr "Cień i podświetlenie"
-
-#: operations/workshop/shadows-highlights.c:240
-msgid "Perform shadows and highlights correction"
-msgstr "Wykonaj korekcję cieni i podświetleń"
-
-#: operations/workshop/shadows-highlights-correction.c:336
-msgid "Lighten shadows and darken highlights"
-msgstr "Rozjaśnij cienie i przyciemnij podświetlenia"
 
 #: operations/workshop/spherize.c:26
 msgid "Radial"
