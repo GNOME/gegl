@@ -101,7 +101,7 @@ void gegl_tile_unref (GeglTile *tile)
   g_slice_free (GeglTile, tile);
 }
 
-static GeglTile *
+static inline GeglTile *
 gegl_tile_new_bare_internal (void)
 {
   GeglTile *tile     = g_slice_new0 (GeglTile);
@@ -173,7 +173,7 @@ gegl_tile_new (gint size)
   return tile;
 }
 
-static void
+static inline void
 gegl_tile_unclone (GeglTile *tile)
 {
   if (*gegl_tile_n_clones (tile) > 1)
@@ -277,7 +277,7 @@ gegl_tile_lock (GeglTile *tile)
     }
 }
 
-static void
+static inline void
 _gegl_tile_void_pyramid (GeglTileSource *source,
                          gint            x,
                          gint            y,
@@ -289,7 +289,7 @@ _gegl_tile_void_pyramid (GeglTileSource *source,
   _gegl_tile_void_pyramid (source, x/2, y/2, z+1);
 }
 
-static void
+static inline void
 gegl_tile_void_pyramid (GeglTile *tile)
 {
   if (tile->tile_storage &&

@@ -1868,17 +1868,12 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                            gint                 rowstride,
                            GeglAbyssPolicy      repeat_mode)
 {
-  g_return_if_fail (scale > 0.0);
-
-  if (format == NULL)
-    format = buffer->soft_format;
-
   if (gegl_cl_is_accelerated ())
     {
       gegl_buffer_cl_cache_flush (buffer, rect);
     }
 
-  if (GEGL_FLOAT_EQUAL (scale, 1.0) &&
+  if (scale == 1.0 &&
       rect &&
       rect->width == 1)
   {
@@ -1891,7 +1886,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
     else
       {
         gint bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
-        if (buffer->soft_format == format || rowstride != bpp)
+        if (!format || buffer->soft_format == format || rowstride != bpp)
         {
           gegl_buffer_iterate_read_dispatch (buffer, rect, dest_buf,
                                              rowstride, format, 0, repeat_mode);
@@ -1909,6 +1904,11 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
         return;
       }
   }
+
+  if (format == NULL)
+    format = buffer->soft_format;
+
+  g_return_if_fail (scale > 0.0);
 
   if (!rect && GEGL_FLOAT_EQUAL (scale, 1.0))
     {
