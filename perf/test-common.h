@@ -3,6 +3,14 @@
 #include "gegl.h"
 #include "opencl/gegl-cl-init.h"
 
+#define ITERATIONS 200
+#define PERCENTILE 0.8  /* if we want to bias to the better results with
+                           more noise, increase this number towards 1.0,
+                           like 0.8 */
+#define BAIL_THRESHOLD 0.01
+#define BAIL_COUNT     10
+#define MIN_ITER       16
+
 static long ticks_start;
 
 typedef void (*t_run_perf)(GeglBuffer *buffer);
@@ -27,18 +35,70 @@ void bench(const gchar *id,
            GeglBuffer  *buffer,
            t_run_perf   test_func );
 
+
+int  converged = 0;
+long ticks_iter_start = 0;
+long iter_db[ITERATIONS];
+int iter_no = 0;
+
 void test_start (void)
 {
   ticks_start = babl_ticks ();
+  iter_no = 0;
+  converged = 0;
+}
+
+float prev_median = 0.0;
+
+static void test_start_iter (void)
+{
+  ticks_iter_start = babl_ticks ();
+  prev_median = -1.0;
+}
+
+
+static int compare_long (const void * a, const void * b)
+{
+  return ( *(long*)a - *(long*)b );
+}
+static float compute_median (void)
+{
+  qsort(iter_db,iter_no,sizeof(long),compare_long);
+  return iter_db[(int)(iter_no * (1.0-PERCENTILE))];
+}
+
+#include <math.h>
+#include <stdio.h>
+
+static void test_end_iter (void)
+{
+  long ticks = babl_ticks ()-ticks_iter_start;
+  float median;
+  iter_db[iter_no] = ticks;
+  iter_no++;
+
+  median = compute_median ();
+  if (iter_no > MIN_ITER && fabs(1.0-fabs(median - prev_median * 1.0)/median) < BAIL_THRESHOLD) /// median < 0.05)
+   {
+     /* we've converged */
+     converged++;
+   }
+  else
+   {
+     converged = 0;
+   }
+  prev_median = median;
 }
 
 void test_end_suffix (const gchar *id,
                       const gchar *suffix,
                       gdouble      bytes)
 {
-  long ticks = babl_ticks ()-ticks_start;
+//  long ticks = babl_ticks ()-ticks_start;
   g_print ("@ %s%s: %.2f megabytes/second\n",
-       id, suffix, (bytes / 1024.0 / 1024.0)  / (ticks / 1000000.0));
+       id, suffix,
+        (bytes / 1024.0 / ITERATIONS/ 1024.0)  / (compute_median()/1000000.0));
+  //     (bytes / 1024.0 / 1024.0)  / (ticks / 1000000.0));
 }
 
 void test_end (const gchar *id,
@@ -87,11 +147,12 @@ void do_bench (const gchar *id,
   // warm up
   test_func(buffer);
 
-#define ITERATIONS 32
   test_start ();
-  for (int i=0; i<ITERATIONS; ++i)
+  for (int i=0; i<ITERATIONS && converged<4; ++i)
     {
+      test_start_iter();
       test_func(buffer);
+      test_end_iter();
     }
   test_end_suffix (id, suffix, ((double)gegl_buffer_get_pixel_count (buffer)) * 16 * ITERATIONS);
 #undef ITERATIONS

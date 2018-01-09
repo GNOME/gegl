@@ -1,5 +1,5 @@
 #CFILES = $(wildcard *.c)
-CFILES = test-rotate.c test-scale.c test-unsharpmask.c test-gegl-buffer-access.c
+CFILES = test-rotate.c test-scale.c test-unsharpmask.c test-samplers.c test-gegl-buffer-access.c
 bins   = $(subst ,,$(CFILES:.c=))
 
 all: $(bins)
