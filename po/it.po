@@ -1,7 +1,7 @@
 # Italian translation for the gegl package.
 # Copyright (C) 2012 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gegl package.
-# Marco Ciampa <ciampix@libero.it>, 2012-2017.
+# Marco Ciampa <ciampix@libero.it>, 2012-2018.
 #
 # Elenco termini adottati per uniformità:
 #
@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=GEGL&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-12-05 08:30+0100\n"
-"PO-Revision-Date: 2017-12-05 08:41+0100\n"
+"POT-Creation-Date: 2018-01-09 12:08+0100\n"
+"PO-Revision-Date: 2018-01-09 12:13+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -278,31 +278,31 @@ msgstr "Nessun alone"
 msgid "LoHalo"
 msgstr "Basso alone"
 
-#: ../gegl/gegl-init.c:279
+#: ../gegl/gegl-init.c:282
 msgid "Where GEGL stores its swap"
 msgstr "Dove GEGL memorizza la propria swap"
 
-#: ../gegl/gegl-init.c:284
+#: ../gegl/gegl-init.c:287
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Quanta memoria usare (approssimativamente) per la cache delle immagini"
 
-#: ../gegl/gegl-init.c:289
+#: ../gegl/gegl-init.c:292
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Dimensione predefinita delle tile in GeglBuffers"
 
-#: ../gegl/gegl-init.c:294
+#: ../gegl/gegl-init.c:297
 msgid "The count of pixels to compute simultaneously"
 msgstr "Il numero di pixel da elaborare simultaneamente"
 
-#: ../gegl/gegl-init.c:299
+#: ../gegl/gegl-init.c:302
 msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
 msgstr "La qualità del rendering, un valore tra 0.0(veloce) e 1.0(riferimento)"
 
-#: ../gegl/gegl-init.c:304
+#: ../gegl/gegl-init.c:307
 msgid "The number of concurrent processing threads to use"
 msgstr "Il numero di thread concorrenti da usare"
 
-#: ../gegl/gegl-init.c:309
+#: ../gegl/gegl-init.c:312
 msgid "Disable OpenCL"
 msgstr "Disabilita OpenCL"
 
@@ -538,11 +538,11 @@ msgstr ""
 #: ../operations/common/snn-mean.c:26 ../operations/common/stress.c:27
 #: ../operations/common/vignette.c:38 ../operations/common/wavelet-blur-1d.c:28
 #: ../operations/common/wavelet-blur.c:27
+#: ../operations/common-gpl3+/shadows-highlights.c:40
 #: ../operations/common-gpl3+/spiral.c:47
 #: ../operations/common-gpl3+/supernova.c:45
 #: ../operations/common-gpl3+/whirl-pinch.c:45
 #: ../operations/external/matting-levin.c:29
-#: ../operations/workshop/shadows-highlights.c:37
 msgid "Radius"
 msgstr "Raggio"
 
@@ -894,8 +894,8 @@ msgstr ""
 
 #: ../operations/common/color-rotate.c:79
 #: ../operations/common/component-extract.c:28
-#: ../operations/common/hue-chroma.c:25 ../operations/common/noise-cie-lch.c:34
-#: ../operations/common/noise-hsv.c:30
+#: ../operations/common/hue-chroma.c:25 ../operations/common/noise-cie-lch.c:35
+#: ../operations/common/noise-hsv.c:31
 msgid "Hue"
 msgstr "Tonalità"
 
@@ -904,7 +904,7 @@ msgid "Hue value for above gray settings"
 msgstr "Valore di tonalità sopra le impostazioni del grigio"
 
 #: ../operations/common/color-rotate.c:84 ../operations/common/fattal02.c:41
-#: ../operations/common/mantiuk06.c:35 ../operations/common/noise-hsv.c:33
+#: ../operations/common/mantiuk06.c:35 ../operations/common/noise-hsv.c:34
 #: ../operations/common/saturation.c:223
 #: ../operations/external/lcms-from-profile.c:35
 msgid "Saturation"
@@ -1504,7 +1504,7 @@ msgid "The dithering method to use"
 msgstr "Il metodo dithering da usare"
 
 #: ../operations/common/dither.c:51 ../operations/common/noise-cell.c:55
-#: ../operations/common/noise-cie-lch.c:37 ../operations/common/noise-hsv.c:39
+#: ../operations/common/noise-cie-lch.c:38 ../operations/common/noise-hsv.c:40
 #: ../operations/common/noise-hurl.c:37 ../operations/common/noise-pick.c:38
 #: ../operations/common/noise-rgb.c:51 ../operations/common/noise-simplex.c:39
 #: ../operations/common/noise-spread.c:41
@@ -1682,12 +1682,8 @@ msgid "Relative brightness change in stops"
 msgstr "Cambiamento brillantezza relativa in stop"
 
 #: ../operations/common/exposure.c:465
-msgid ""
-"Changes Exposure of an image, allows stepping HDR and photographs up/down in "
-"stops. "
-msgstr ""
-"Cambia l'esposizione di una immagine, regolando la fotografia normale e HDR "
-"in alto o in basso in stop. "
+msgid "Change exposure of an image in shutter speed stops"
+msgstr "Cambia l'esposizione di una immagine, in velocità di otturazione in stop."
 
 #: ../operations/common/fattal02.c:34
 msgid "Gradient threshold for detail enhancement"
@@ -1773,7 +1769,7 @@ msgstr "Come il nocciolo gaussiano viene discretizzato"
 #: ../operations/common/map-absolute.c:26
 #: ../operations/common/map-relative.c:31
 #: ../operations/common-gpl3+/displace.c:42
-#: ../operations/common-gpl3+/fractal-trace.c:66
+#: ../operations/common-gpl3+/fractal-trace.c:67
 msgid "Abyss policy"
 msgstr "Politica dell'abisso"
 
@@ -1796,7 +1792,8 @@ msgstr ""
 msgid "Gaussian Blur"
 msgstr "Sfocatura gaussiana"
 
-#: ../operations/common/gaussian-blur.c:121 ../operations/common/gblur-1d.c:931
+#: ../operations/common/gaussian-blur.c:121
+#: ../operations/common/gblur-1d.c:1277
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -1817,7 +1814,7 @@ msgstr "Orientamento"
 msgid "The orientation of the blur - hor/ver"
 msgstr "Orientamento della sfocatura - oriz/vert"
 
-#: ../operations/common/gblur-1d.c:928
+#: ../operations/common/gblur-1d.c:1274
 msgid "1D Gaussian-blur"
 msgstr "Sfocatura gaussiana 1D"
 
@@ -1946,7 +1943,7 @@ msgstr "Aumenta i dettagli fini."
 msgid "Hue adjustment"
 msgstr "Regolazione tonalità"
 
-#: ../operations/common/hue-chroma.c:29 ../operations/common/noise-cie-lch.c:31
+#: ../operations/common/hue-chroma.c:29 ../operations/common/noise-cie-lch.c:32
 msgid "Chroma"
 msgstr "Crominanza"
 
@@ -1954,7 +1951,7 @@ msgstr "Crominanza"
 msgid "Chroma adjustment"
 msgstr "Regolazione crominanza"
 
-#: ../operations/common/hue-chroma.c:33 ../operations/common/noise-cie-lch.c:28
+#: ../operations/common/hue-chroma.c:33 ../operations/common/noise-cie-lch.c:29
 msgid "Lightness"
 msgstr "Luminosità"
 
@@ -2652,7 +2649,9 @@ msgstr "Dimensione blocco"
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
-msgstr "Numero di periodi per piastrella, questa piastrellatura evita le anomalie ad alta frequenza che causa Impulsoangolare"
+msgstr ""
+"Numero di periodi per piastrella, questa piastrellatura evita le anomalie ad "
+"alta frequenza che causa Impulsoangolare"
 
 #: ../operations/common/newsprint.c:59
 msgid "Angle Boost"
@@ -2663,7 +2662,10 @@ msgid ""
 "Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
 "stronger where there is color."
-msgstr "Fattore moltiplicativo per la rotazione desiderata dello spazio locale per il motivo, il modo in cui questo viene calcolato lo rende debole per colori desaturati e forse più forte dove c'è colore."
+msgstr ""
+"Fattore moltiplicativo per la rotazione desiderata dello spazio locale per "
+"il motivo, il modo in cui questo viene calcolato lo rende debole per colori "
+"desaturati e forse più forte dove c'è colore."
 
 #: ../operations/common/newsprint.c:63
 msgid "Black and green angle"
@@ -2762,28 +2764,32 @@ msgid "Generates a cellular texture."
 msgstr "Genera un motivo a celle."
 
 #: ../operations/common/noise-cie-lch.c:25 ../operations/common/noise-hsv.c:27
-msgid "Holdness"
-msgstr "Tenuta"
+msgid "Dulling"
+msgstr "Monotonia"
 
-#: ../operations/common/noise-cie-lch.c:193
+#: ../operations/common/noise-cie-lch.c:27 ../operations/common/noise-hsv.c:29
+msgid "A high value lowers the randomness of the noise"
+msgstr "Alti valori abbassano la casualità del disturbo"
+
+#: ../operations/common/noise-cie-lch.c:194
 msgid "Add CIE Lch Noise"
 msgstr "Aggiungi disturbo CIE Lch"
 
-#: ../operations/common/noise-cie-lch.c:196
+#: ../operations/common/noise-cie-lch.c:197
 msgid "Randomize lightness, chroma and hue independently"
 msgstr "Casualizza indipendentemente la luminosità, cromaticità e tonalità"
 
-#: ../operations/common/noise-hsv.c:36 ../operations/generated/add.c:29
+#: ../operations/common/noise-hsv.c:37 ../operations/generated/add.c:29
 #: ../operations/generated/divide.c:29 ../operations/generated/gamma.c:29
 #: ../operations/generated/multiply.c:29 ../operations/generated/subtract.c:29
 msgid "Value"
 msgstr "Valore"
 
-#: ../operations/common/noise-hsv.c:275
+#: ../operations/common/noise-hsv.c:276
 msgid "Add HSV Noise"
 msgstr "Aggiungi disturbo HSV"
 
-#: ../operations/common/noise-hsv.c:278
+#: ../operations/common/noise-hsv.c:279
 msgid "Randomize hue, saturation and value independently"
 msgstr "Casualizza indipendentemente tonalità, saturazione e valore"
 
@@ -3852,11 +3858,11 @@ msgstr "Raggio maschera"
 msgid "Percent black"
 msgstr "Nero percentuale"
 
-#: ../operations/common-gpl3+/cartoon.c:316
+#: ../operations/common-gpl3+/cartoon.c:302
 msgid "Cartoon"
 msgstr "Fumetto"
 
-#: ../operations/common-gpl3+/cartoon.c:319
+#: ../operations/common-gpl3+/cartoon.c:305
 msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing "
 "subsequently shaded with color. This is achieved by enhancing edges and "
@@ -4202,7 +4208,7 @@ msgid "Mode of displacement"
 msgstr "Modalità di spostamento"
 
 #: ../operations/common-gpl3+/displace.c:37 ../operations/external/npd.c:47
-#: ../operations/transform/transform-core.c:198
+#: ../operations/transform/transform-core.c:197
 #: ../operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Campionatore"
@@ -4600,19 +4606,19 @@ msgstr "Valore del seme Y di Julia, posizione"
 msgid "Bailout length"
 msgstr "Lunghezza Bailout"
 
-#: ../operations/common-gpl3+/fractal-trace.c:68
+#: ../operations/common-gpl3+/fractal-trace.c:69
 msgid "How to deal with pixels outside of the input buffer"
 msgstr "Come gestire i pixel fuori dal buffer in ingresso"
 
-#: ../operations/common-gpl3+/fractal-trace.c:182
+#: ../operations/common-gpl3+/fractal-trace.c:183
 msgid "Unsupported fractal type"
 msgstr "Tipo di frattale non supportato"
 
-#: ../operations/common-gpl3+/fractal-trace.c:263
+#: ../operations/common-gpl3+/fractal-trace.c:250
 msgid "Fractal Trace"
 msgstr "Traccia frattale"
 
-#: ../operations/common-gpl3+/fractal-trace.c:268
+#: ../operations/common-gpl3+/fractal-trace.c:255
 msgid "Transform the image with the fractals"
 msgstr "Trasforma l'immagine con i frattali"
 
@@ -5087,11 +5093,11 @@ msgstr "Prendi il mezzo"
 msgid "Let origin point to be the middle one"
 msgstr "Fa in modo che il punto di origine sia il punto di mezzo"
 
-#: ../operations/common-gpl3+/polar-coordinates.c:435
+#: ../operations/common-gpl3+/polar-coordinates.c:421
 msgid "Polar Coordinates"
 msgstr "Coordinate polari"
 
-#: ../operations/common-gpl3+/polar-coordinates.c:440
+#: ../operations/common-gpl3+/polar-coordinates.c:426
 msgid "Convert image to or from polar coordinates"
 msgstr "Converte un'immagine da o per coordinate polari"
 
@@ -5135,6 +5141,82 @@ msgstr "Increspature"
 #: ../operations/common-gpl3+/ripple.c:176
 msgid "Displace pixels in a ripple pattern"
 msgstr "Dispone i pixel in un motivo ad ondine"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:28
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:29
+msgid "Shadows"
+msgstr "Ombre"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:29
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:30
+msgid "Adjust exposure of shadows"
+msgstr "Regola l'esposizione delle ombre"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:32
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:33
+msgid "Highlights"
+msgstr "Alteluci"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:33
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:34
+msgid "Adjust exposure of highlights"
+msgstr "Regola l'esposizione delle alteluci"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:36
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:37
+msgid "White point adjustment"
+msgstr "Regolazione del punto di bianco"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:37
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:38
+msgid "Shift white point"
+msgstr "Sposta punto di bianco"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:41
+msgid "Spatial extent"
+msgstr "Estensione spaziale"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:45
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:41
+msgid "Compress"
+msgstr "Compressione"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:46
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:42
+msgid "Compress the effect on shadows/highlights and preserve midtones"
+msgstr "Comprimi l'effetto sulle ombre/alteluci e preserva i mezzitoni"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:49
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:45
+msgid "Shadows color adjustment"
+msgstr "Regolazione colore ombre"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:50
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:46
+msgid "Adjust saturation of shadows"
+msgstr "Regola la saturazione delle ombre"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:53
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:49
+msgid "Highlights color adjustment"
+msgstr "Regolazione colore alteluci"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:54
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:50
+msgid "Adjust saturation of highlights"
+msgstr "Regola la saturazione delle alteluci"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:244
+msgid "Shadows-Highlights"
+msgstr "Ombre-alteluci"
+
+#: ../operations/common-gpl3+/shadows-highlights.c:247
+msgid "Perform shadows and highlights correction"
+msgstr "Esegue una correzione alteluci e ombre"
+
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:359
+msgid "Lighten shadows and darken highlights"
+msgstr "Illumina le ombre e scurisce le alteluci"
 
 #: ../operations/common-gpl3+/shift.c:26 ../operations/common-gpl3+/shift.c:144
 msgid "Shift"
@@ -5450,11 +5532,11 @@ msgstr "Centramento delle piastrelle"
 msgid "Background type"
 msgstr "Tipo di sfondo"
 
-#: ../operations/common-gpl3+/tile-paper.c:451
+#: ../operations/common-gpl3+/tile-paper.c:437
 msgid "Paper Tile"
 msgstr "Piastrelle di carta"
 
-#: ../operations/common-gpl3+/tile-paper.c:456
+#: ../operations/common-gpl3+/tile-paper.c:442
 msgid "Cut image into paper tiles, and slide them"
 msgstr "Taglia l'immagine in piastrelle di carta e le scambia"
 
@@ -5680,11 +5762,11 @@ msgstr ""
 "Raggio (1.0 è il più largo cerchio che entra nell'immagine, mentre 2.0 va "
 "sugli spigoli)"
 
-#: ../operations/common-gpl3+/whirl-pinch.c:275
+#: ../operations/common-gpl3+/whirl-pinch.c:260
 msgid "Whirl Pinch"
 msgstr "Vortice e pizzico"
 
-#: ../operations/common-gpl3+/whirl-pinch.c:280
+#: ../operations/common-gpl3+/whirl-pinch.c:265
 msgid "Distort an image by whirling and pinching"
 msgstr "Distorce un'immagine con un effetto vortice o pizzico"
 
@@ -6373,7 +6455,7 @@ msgstr "Preserva modello"
 msgid "When TRUE the model will not be freed"
 msgstr "Se questo valore è vero il modello non sarà liberato"
 
-#: ../operations/external/npd.c:50 ../operations/transform/transform-core.c:199
+#: ../operations/external/npd.c:50 ../operations/transform/transform-core.c:198
 #: ../operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Campionatore usato internamente"
@@ -6550,7 +6632,7 @@ msgstr "Salvatore immagini PPM."
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "Salvatore immagini RGBE (formato radianza HDR)"
 
-#: ../operations/external/raw-load.c:251
+#: ../operations/external/raw-load.c:241
 msgid "libraw File Loader"
 msgstr "Caricatore immagini libraw"
 
@@ -7221,27 +7303,27 @@ msgstr "Stringa di trasformazione sintattica SVG"
 msgid "Do a transformation using SVG syntax transformation."
 msgstr "Esegue una trasformazione usando una trasformazione sintattica SVG."
 
-#: ../operations/transform/transform-core.c:182
+#: ../operations/transform/transform-core.c:181
 msgid "Origin-x"
 msgstr "X origine"
 
-#: ../operations/transform/transform-core.c:183
+#: ../operations/transform/transform-core.c:182
 msgid "X coordinate of origin"
 msgstr "Coordinata X dell'origine"
 
-#: ../operations/transform/transform-core.c:190
+#: ../operations/transform/transform-core.c:189
 msgid "Origin-y"
 msgstr "Y origine"
 
-#: ../operations/transform/transform-core.c:191
+#: ../operations/transform/transform-core.c:190
 msgid "Y coordinate of origin"
 msgstr "Coordinata Y dell'origine"
 
-#: ../operations/transform/transform-core.c:206
+#: ../operations/transform/transform-core.c:205
 msgid "Clip to input"
 msgstr "Ritaglia all'ingresso"
 
-#: ../operations/transform/transform-core.c:207
+#: ../operations/transform/transform-core.c:206
 msgid "Force output bounding box to be input bounding box."
 msgstr "Forza il risultato in un riquadro delle dimensioni dell'ingresso."
 
@@ -7894,48 +7976,6 @@ msgstr "Segmentazione K-means"
 #: ../operations/workshop/segment-kmeans.c:394
 msgid "Segment colors using K-means clustering"
 msgstr "Segmenta i colori usando il clustering secondo il metodo K-means"
-
-#: ../operations/workshop/shadows-highlights.c:28
-#: ../operations/workshop/shadows-highlights-correction.c:29
-msgid "Shadows"
-msgstr "Ombre"
-
-#: ../operations/workshop/shadows-highlights.c:31
-#: ../operations/workshop/shadows-highlights-correction.c:32
-msgid "Highlights"
-msgstr "Alteluci"
-
-#: ../operations/workshop/shadows-highlights.c:34
-#: ../operations/workshop/shadows-highlights-correction.c:35
-msgid "White point adjustment"
-msgstr "Regolazione del punto di bianco"
-
-#: ../operations/workshop/shadows-highlights.c:41
-#: ../operations/workshop/shadows-highlights-correction.c:38
-msgid "Compress"
-msgstr "Compressione"
-
-#: ../operations/workshop/shadows-highlights.c:44
-#: ../operations/workshop/shadows-highlights-correction.c:41
-msgid "Shadows color adjustment"
-msgstr "Regolazione colore ombre"
-
-#: ../operations/workshop/shadows-highlights.c:47
-#: ../operations/workshop/shadows-highlights-correction.c:44
-msgid "Highlights color adjustment"
-msgstr "Regolazione colore alteluci"
-
-#: ../operations/workshop/shadows-highlights.c:237
-msgid "Shadows-Highlights"
-msgstr "Ombre-alteluci"
-
-#: ../operations/workshop/shadows-highlights.c:240
-msgid "Perform shadows and highlights correction"
-msgstr "Esegue una correzione alteluci e ombre"
-
-#: ../operations/workshop/shadows-highlights-correction.c:305
-msgid "Lighten shadows and darken highlights"
-msgstr "Illumina le ombre e scurisce le alteluci"
 
 #: ../operations/workshop/spherize.c:26
 msgid "Radial"
