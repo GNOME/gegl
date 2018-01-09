@@ -100,7 +100,6 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
   const GeglRectangle *abyss = &buffer->abyss;
   guchar              *buf   = data;
 
-
   if (y <  abyss->y ||
       x <  abyss->x ||
       y >= abyss->y + abyss->height ||
@@ -196,20 +195,6 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
   gegl_buffer_unlock (sampler->buffer);
 }
 
-#if 0
-static void
-gegl_sampler_nearest_get_same_format  (      GeglSampler*    restrict  sampler,
-                                       const gdouble                   absolute_x,
-                                       const gdouble                   absolute_y,
-                                             GeglMatrix2              *scale,
-                                             void*           restrict  output,
-                                             GeglAbyssPolicy           repeat_mode)
-{
-  GeglRectangle rectangle = {floorf(absolute_x), floorf(absolute_y), 1, 1};
-  gegl_buffer_get (sampler->buffer, &rectangle, 1.0, sampler->format, output, GEGL_AUTO_ROWSTRIDE, repeat_mode);
-}
-#endif
-
 static void
 gegl_sampler_nearest_get (      GeglSampler*    restrict  sampler,
                           const gdouble                   absolute_x,
@@ -218,18 +203,9 @@ gegl_sampler_nearest_get (      GeglSampler*    restrict  sampler,
                                 void*           restrict  output,
                                 GeglAbyssPolicy           repeat_mode)
 {
-#if 1
   gegl_sampler_get_pixel (sampler,
            floorf(absolute_x), floorf(absolute_y),
            output, repeat_mode);
-#else
-  const gfloat* restrict in_bptr =
-    gegl_sampler_get_ptr (sampler,
-                          (gint) floorf ((double) absolute_x),
-                          (gint) floorf ((double) absolute_y),
-                          repeat_mode);
-  babl_process (sampler->fish, in_bptr, output, 1);
-#endif
 }
 
 
