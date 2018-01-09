@@ -971,6 +971,10 @@ transform_generic (GeglOperation       *operation,
     {
       GeglRectangle *roi         = &i->roi[0];
       /*
+       * Obsolete comment and optimizationz, the samplers are now adaptive
+       * to access patterns.
+       *
+       * XXX XXX XXX XXX
        * This code uses a variant of the (novel?) method of ensuring
        * that scanlines stay, as much as possible, within an input
        * "tile", given that these wider than tall "tiles" are biased
@@ -1099,6 +1103,179 @@ transform_generic (GeglOperation       *operation,
   g_object_unref (sampler);
 }
 
+static void
+transform_nearest (GeglOperation       *operation,
+                   GeglBuffer          *dest,
+                   GeglBuffer          *src,
+                   GeglMatrix3         *matrix,
+                   const GeglRectangle *roi,
+                   gint                 level)
+{
+  const Babl          *format    = gegl_buffer_get_format (dest);
+  gint                 factor    = 1 << level;
+  GeglBufferIterator  *i;
+  GeglMatrix3          inverse;
+
+  GeglRectangle  dest_extent = *roi;
+  dest_extent.x >>= level;
+  dest_extent.y >>= level;
+  dest_extent.width >>= level;
+  dest_extent.height >>= level;
+
+  /*
+   * Construct an output tile iterator.
+   */
+  i = gegl_buffer_iterator_new (dest,
+                                &dest_extent,
+                                level,
+                                format,
+                                GEGL_ACCESS_WRITE,
+                                GEGL_ABYSS_NONE);
+
+  gegl_matrix3_copy_into (&inverse, matrix);
+
+  if (factor)
+  {
+    inverse.coeff[0][0] /= factor;
+    inverse.coeff[0][1] /= factor;
+    inverse.coeff[0][2] /= factor;
+    inverse.coeff[1][0] /= factor;
+    inverse.coeff[1][1] /= factor;
+    inverse.coeff[1][2] /= factor;
+  }
+
+  gegl_matrix3_invert (&inverse);
+
+  /*
+   * Fill the output tiles.
+   */
+  while (gegl_buffer_iterator_next (i))
+    {
+      GeglRectangle *roi         = &i->roi[0];
+      /*
+       * Obsolete comment and optimization, the samplers are now adaptive
+       * to access patterns.
+       *
+       * XXX XXX XXX XXX
+       * This code uses a variant of the (novel?) method of ensuring
+       * that scanlines stay, as much as possible, within an input
+       * "tile", given that these wider than tall "tiles" are biased
+       * so that there is more elbow room at the bottom and right than
+       * at the top and left, explained in the transform_affine
+       * function. It is not as foolproof because perspective
+       * transformations change the orientation of scanlines, and
+       * consequently what's good at the bottom may not be best at the
+       * top.
+       */
+      /*
+       * Determine whether tile access should be "flipped". First, in
+       * the y direction, because this is the one we can afford most
+       * not to get right.
+       */
+      const gdouble u_start_y =
+        inverse.coeff [0][0] * (roi->x + (gdouble) 0.5) +
+        inverse.coeff [0][1] * (roi->y + (gdouble) 0.5) +
+        inverse.coeff [0][2];
+      const gdouble v_start_y =
+        inverse.coeff [1][0] * (roi->x + (gdouble) 0.5) +
+        inverse.coeff [1][1] * (roi->y + (gdouble) 0.5) +
+        inverse.coeff [1][2];
+      const gdouble w_start_y =
+        inverse.coeff [2][0] * (roi->x + (gdouble) 0.5) +
+        inverse.coeff [2][1] * (roi->y + (gdouble) 0.5) +
+        inverse.coeff [2][2];
+
+      const gdouble u_float_y =
+        u_start_y + inverse.coeff [0][1] * (roi->height - (gint) 1);
+      const gdouble v_float_y =
+        v_start_y + inverse.coeff [1][1] * (roi->height - (gint) 1);
+      const gdouble w_float_y =
+        w_start_y + inverse.coeff [2][1] * (roi->height - (gint) 1);
+
+      /*
+       * Check whether the next scanline is likely to fall within the
+       * biased tile.
+       */
+      const gint bflip_y =
+        (u_float_y+v_float_y)/w_float_y < (u_start_y+v_start_y)/w_start_y
+        ?
+        (gint) 1
+        :
+        (gint) 0;
+
+      /*
+       * Determine whether to flip in the horizontal direction. Done
+       * last because this is the most important one, and consequently
+       * we want to use the likely "initial scanline" to at least get
+       * that one about right.
+       */
+      const gdouble u_start_x = bflip_y ? u_float_y : u_start_y;
+      const gdouble v_start_x = bflip_y ? v_float_y : v_start_y;
+      const gdouble w_start_x = bflip_y ? w_float_y : w_start_y;
+
+      const gdouble u_float_x =
+        u_start_x + inverse.coeff [0][0] * (roi->width - (gint) 1);
+      const gdouble v_float_x =
+        v_start_x + inverse.coeff [1][0] * (roi->width - (gint) 1);
+      const gdouble w_float_x =
+        w_start_x + inverse.coeff [2][0] * (roi->width - (gint) 1);
+
+      const gint bflip_x =
+        (u_float_x + v_float_x)/w_float_x < (u_start_x + v_start_x)/w_start_x
+        ?
+        (gint) 1
+        :
+        (gint) 0;
+
+      gfloat * restrict dest_ptr =
+        (gfloat *)i->data[0] +
+        (gint) 4 * ( bflip_x * (roi->width  - (gint) 1) +
+                     bflip_y * (roi->height - (gint) 1) * roi->width );
+
+      gdouble u_start = bflip_x ? u_float_x : u_start_x;
+      gdouble v_start = bflip_x ? v_float_x : v_start_x;
+      gdouble w_start = bflip_x ? w_float_x : w_start_x;
+
+      const gint flip_x = (gint) 1 - (gint) 2 * bflip_x;
+      const gint flip_y = (gint) 1 - (gint) 2 * bflip_y;
+
+      /*
+       * Assumes that height and width are > 0.
+       */
+      gint y = roi->height;
+      do {
+        gdouble u_float = u_start;
+        gdouble v_float = v_start;
+        gdouble w_float = w_start;
+
+        gint x = roi->width;
+        do {
+          gdouble w_recip = (gdouble) 1.0 / w_float;
+          gdouble u = u_float * w_recip;
+          gdouble v = v_float * w_recip;
+
+          gegl_buffer_get (src,
+                           GEGL_RECTANGLE((int)u, (int)v, 1, 1),
+                           1.0,
+                           format,
+                           dest_ptr,
+                           0,
+                           GEGL_ABYSS_NONE);
+
+          dest_ptr += flip_x * (gint) 4;
+          u_float += flip_x * inverse.coeff [0][0];
+          v_float += flip_x * inverse.coeff [1][0];
+          w_float += flip_x * inverse.coeff [2][0];
+        } while (--x);
+
+        dest_ptr += (gint) 4 * (flip_y - flip_x) * roi->width;
+        u_start += flip_y * inverse.coeff [0][1];
+        v_start += flip_y * inverse.coeff [1][1];
+        w_start += flip_y * inverse.coeff [2][1];
+      } while (--y);
+    }
+}
+
 /*
  * Use to determine if key transform matrix coefficients are close
  * enough to zero or integers.
@@ -1205,6 +1382,9 @@ gegl_transform_process (GeglOperation        *operation,
     }
   else
     {
+      /*
+       * For other cases, do a proper resampling
+       */
       void (*func) (GeglOperation       *operation,
                     GeglBuffer          *dest,
                     GeglBuffer          *src,
@@ -1215,9 +1395,9 @@ gegl_transform_process (GeglOperation        *operation,
       if (gegl_matrix3_is_affine (&matrix))
         func = transform_affine;
 
-      /*
-       * For all other cases, do a proper resampling
-       */
+      if (transform->sampler == GEGL_SAMPLER_NEAREST)
+        func = transform_nearest;
+
       input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
       output = gegl_operation_context_get_target (context, "output");
 
