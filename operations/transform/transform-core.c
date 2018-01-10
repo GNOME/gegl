@@ -1113,6 +1113,7 @@ transform_nearest (GeglOperation       *operation,
 {
   const Babl          *format    = gegl_buffer_get_format (dest);
   gint                 factor    = 1 << level;
+  gint                 px_size   = babl_format_get_bytes_per_pixel (format);
   GeglBufferIterator  *i;
   GeglMatrix3          inverse;
 
@@ -1227,10 +1228,10 @@ transform_nearest (GeglOperation       *operation,
         :
         (gint) 0;
 
-      gfloat * restrict dest_ptr =
-        (gfloat *)i->data[0] +
-        (gint) 4 * ( bflip_x * (roi->width  - (gint) 1) +
-                     bflip_y * (roi->height - (gint) 1) * roi->width );
+      guchar * restrict dest_ptr =
+        (guchar *)i->data[0] +
+        (gint) px_size * ( bflip_x * (roi->width  - (gint) 1) +
+                           bflip_y * (roi->height - (gint) 1) * roi->width );
 
       gdouble u_start = bflip_x ? u_float_x : u_start_x;
       gdouble v_start = bflip_x ? v_float_x : v_start_x;
@@ -1262,7 +1263,7 @@ transform_nearest (GeglOperation       *operation,
                            0,
                            GEGL_ABYSS_NONE);
 
-          dest_ptr += flip_x * (gint) 4;
+          dest_ptr += px_size;
           u_float += flip_x * inverse.coeff [0][0];
           v_float += flip_x * inverse.coeff [1][0];
           w_float += flip_x * inverse.coeff [2][0];
