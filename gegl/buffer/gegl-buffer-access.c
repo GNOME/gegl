@@ -127,18 +127,16 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
     gint indice_x    = gegl_tile_indice (tiledx, tile_width);
     gint indice_y    = gegl_tile_indice (tiledy, tile_height);
 
-    GeglTile *tile = buffer->tile_storage->hot_tile;
+    GeglTile *tile = NULL;
     const Babl *fish = NULL;
 
     if (!(tile &&
           tile->x == indice_x &&
           tile->y == indice_y))
       {
-        _gegl_buffer_drop_hot_tile (buffer);
         tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           indice_x, indice_y,
                                           0);
-        buffer->tile_storage->hot_tile = tile;
       }
 
     if (tile)
@@ -149,7 +147,7 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
         gint       offsety = tiledy - tile_origin_y;
         guchar    *tp;
 
-        if (format != buffer->soft_format)
+       if (format != buffer->soft_format)
           {
             gint px_size = babl_format_get_bytes_per_pixel (buffer->soft_format);
             fish    = babl_fish (buffer->soft_format, format);
@@ -162,6 +160,7 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
             tp = gegl_tile_get_data (tile) + (offsety * tile_width + offsetx) * px_size;
             memcpy (buf, tp, px_size);
           }
+        gegl_tile_unref (tile);
       }
   }
 
