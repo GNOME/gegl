@@ -246,59 +246,6 @@ dispose (GObject *gobject)
   G_OBJECT_CLASS (gegl_sampler_parent_class)->dispose (gobject);
 }
 
-GeglRectangle _gegl_sampler_compute_rectangle (GeglSampler *sampler,
-                                               gint         x,
-                                               gint         y,
-                                               gint         level_no)
-{
-  GeglRectangle rectangle;
-  GeglSamplerLevel *level = &sampler->level[level_no];
-
-  rectangle.width  = level->context_rect.width + 2;
-  rectangle.height = level->context_rect.height + 2;
-
-  /* grow in direction of prediction */
-  if (level->delta_x * level->delta_x >
-      level->delta_y * level->delta_y)
-  {
-    rectangle.width *= 2;
-  }
-  else
-  {
-    rectangle.height *= 2;
-  }
-
-  rectangle.x = x + level->context_rect.x;
-  rectangle.y = y + level->context_rect.y;
-
-  rectangle.x      -= 1;
-  rectangle.y      -= 1;
-  rectangle.width  += 2;
-  rectangle.height += 2;
-
-  //fprintf (stderr, "{%f %f}", level->delta_x, level->delta_y);
-
-#if 1
-  /* shift area based on prediction */
-  if (level->delta_x >=0.01)
-    rectangle.x -= rectangle.width * 0.3;
-  if (level->delta_y >=0.01)
-    rectangle.y -= rectangle.height * 0.3;
-#endif
-
-  if (rectangle.width >= GEGL_SAMPLER_MAXIMUM_WIDTH)
-    rectangle.width = GEGL_SAMPLER_MAXIMUM_WIDTH;
-  if (rectangle.height >= GEGL_SAMPLER_MAXIMUM_HEIGHT)
-    rectangle.height = GEGL_SAMPLER_MAXIMUM_HEIGHT;
-
-  if (rectangle.width < level->context_rect.width)
-    rectangle.width = level->context_rect.width;
-  if (rectangle.height < level->context_rect.height)
-    rectangle.height = level->context_rect.height;
-
-  return rectangle;
-}
-
 
 gfloat *
 gegl_sampler_get_from_mipmap (GeglSampler    *sampler,
