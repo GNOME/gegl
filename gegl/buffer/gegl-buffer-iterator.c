@@ -84,8 +84,8 @@ struct _GeglBufferIteratorPriv
 
 static gboolean threaded = TRUE;
 
-GeglBufferIterator *
-gegl_buffer_iterator_empty_new (void)
+static inline GeglBufferIterator *
+_gegl_buffer_iterator_empty_new (void)
 {
   GeglBufferIterator *iter = g_slice_new (GeglBufferIterator);
   iter->priv               = g_slice_new (GeglBufferIteratorPriv);
@@ -98,24 +98,16 @@ gegl_buffer_iterator_empty_new (void)
   return iter;
 }
 
+
 GeglBufferIterator *
-gegl_buffer_iterator_new (GeglBuffer          *buf,
-                          const GeglRectangle *roi,
-                          gint                 level,
-                          const Babl          *format,
-                          GeglAccessMode       access_mode,
-                          GeglAbyssPolicy      abyss_policy)
+gegl_buffer_iterator_empty_new (void)
 {
-  GeglBufferIterator *iter = gegl_buffer_iterator_empty_new ();
-
-  gegl_buffer_iterator_add (iter, buf, roi, level, format,
-                            access_mode, abyss_policy);
-
-  return iter;
+  return _gegl_buffer_iterator_empty_new ();
 }
 
-int
-gegl_buffer_iterator_add (GeglBufferIterator  *iter,
+
+static inline int
+_gegl_buffer_iterator_add (GeglBufferIterator  *iter,
                           GeglBuffer          *buf,
                           const GeglRectangle *roi,
                           gint                 level,
@@ -165,7 +157,36 @@ gegl_buffer_iterator_add (GeglBufferIterator  *iter,
   return index;
 }
 
-static void
+int
+gegl_buffer_iterator_add (GeglBufferIterator  *iter,
+                          GeglBuffer          *buf,
+                          const GeglRectangle *roi,
+                          gint                 level,
+                          const Babl          *format,
+                          GeglAccessMode       access_mode,
+                          GeglAbyssPolicy      abyss_policy)
+{
+  return _gegl_buffer_iterator_add (iter, buf, roi, level, format, access_mode,
+abyss_policy);
+}
+
+
+GeglBufferIterator *
+gegl_buffer_iterator_new (GeglBuffer          *buf,
+                          const GeglRectangle *roi,
+                          gint                 level,
+                          const Babl          *format,
+                          GeglAccessMode       access_mode,
+                          GeglAbyssPolicy      abyss_policy)
+{
+  GeglBufferIterator *iter = _gegl_buffer_iterator_empty_new ();
+  _gegl_buffer_iterator_add (iter, buf, roi, level, format,
+                             access_mode, abyss_policy);
+
+  return iter;
+}
+
+static inline void
 release_tile (GeglBufferIterator *iter,
               int index)
 {
@@ -218,7 +239,7 @@ release_tile (GeglBufferIterator *iter,
     }
 }
 
-static void
+static inline void
 retile_subs (GeglBufferIterator *iter,
              int                 x,
              int                 y)
@@ -259,7 +280,7 @@ retile_subs (GeglBufferIterator *iter,
     }
 }
 
-static gboolean
+static inline gboolean
 initialize_rects (GeglBufferIterator *iter)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
@@ -270,7 +291,7 @@ initialize_rects (GeglBufferIterator *iter)
   return TRUE;
 }
 
-static gboolean
+static inline gboolean
 increment_rects (GeglBufferIterator *iter)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
@@ -298,7 +319,7 @@ increment_rects (GeglBufferIterator *iter)
   return TRUE;
 }
 
-static void
+static inline void
 get_tile (GeglBufferIterator *iter,
           int                 index)
 {
@@ -350,7 +371,7 @@ level_to_scale (int level)
   return level?1.0/(1<<level):1.0;
 }
 
-static void
+static inline void
 get_indirect (GeglBufferIterator *iter,
               int        index)
 {
@@ -371,13 +392,13 @@ get_indirect (GeglBufferIterator *iter,
   sub->current_tile_mode = GeglIteratorTileMode_GetBuffer;
 }
 
-static gboolean
+static inline gboolean
 needs_indirect_read (GeglBufferIterator *iter,
                      int        index)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
   SubIterState           *sub  = &priv->sub_iter[index];
-  
+
   if (sub->access_mode & GEGL_ITERATOR_INCOMPATIBLE)
     return TRUE;
 
@@ -388,7 +409,7 @@ needs_indirect_read (GeglBufferIterator *iter,
   return FALSE;
 }
 
-static gboolean
+static inline gboolean
 needs_rows (GeglBufferIterator *iter,
             int        index)
 {
@@ -406,7 +427,7 @@ needs_rows (GeglBufferIterator *iter,
 }
 
 /* Do the final setup of the iter struct */
-static void
+static inline void
 prepare_iteration (GeglBufferIterator *iter)
 {
   int index;
@@ -464,7 +485,7 @@ prepare_iteration (GeglBufferIterator *iter)
     }
 }
 
-static void
+static inline void
 load_rects (GeglBufferIterator *iter)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
@@ -507,8 +528,8 @@ load_rects (GeglBufferIterator *iter)
   priv->state  = next_state;
 }
 
-void
-gegl_buffer_iterator_stop (GeglBufferIterator *iter)
+static inline void
+_gegl_buffer_iterator_stop (GeglBufferIterator *iter)
 {
   int index;
   GeglBufferIteratorPriv *priv = iter->priv;
@@ -541,6 +562,13 @@ gegl_buffer_iterator_stop (GeglBufferIterator *iter)
   g_slice_free (GeglBufferIteratorPriv, iter->priv);
   g_slice_free (GeglBufferIterator, iter);
 }
+
+void
+gegl_buffer_iterator_stop (GeglBufferIterator *iter)
+{
+  _gegl_buffer_iterator_stop (iter);
+}
+
 
 static void linear_shortcut (GeglBufferIterator *iter)
 {
@@ -667,7 +695,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
 
       if (increment_rects (iter) == FALSE)
         {
-          gegl_buffer_iterator_stop (iter);
+          _gegl_buffer_iterator_stop (iter);
           return FALSE;
         }
 
@@ -677,7 +705,7 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
     }
   else
     {
-      gegl_buffer_iterator_stop (iter);
+      _gegl_buffer_iterator_stop (iter);
       return FALSE;
     }
 }
