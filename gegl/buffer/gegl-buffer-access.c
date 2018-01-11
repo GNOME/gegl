@@ -116,8 +116,6 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
       }
     }
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
   {
     gint tile_width  = buffer->tile_width;
@@ -134,12 +132,19 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
           tile->x == indice_x &&
           tile->y == indice_y))
       {
+        if (gegl_config_threads()>1)
+         g_rec_mutex_lock (&buffer->tile_storage->mutex);
+
         _gegl_buffer_drop_hot_tile (buffer);
         tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           indice_x, indice_y,
                                           0);
         buffer->tile_storage->hot_tile = tile;
+
+        if (gegl_config_threads()>1)
+          g_rec_mutex_unlock (&buffer->tile_storage->mutex);
       }
+
 
     if (tile)
       {
@@ -165,8 +170,6 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
       }
   }
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 }
 
 static inline void
@@ -185,8 +188,6 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
       x >= abyss->x + abyss->width)
     return;
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
   {
     gint tile_width  = buffer->tile_width;
@@ -214,11 +215,17 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
           tile->x == indice_x &&
           tile->y == indice_y))
       {
+        if (gegl_config_threads()>1)
+          g_rec_mutex_lock (&buffer->tile_storage->mutex);
+
         _gegl_buffer_drop_hot_tile (buffer);
         tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           indice_x, indice_y,
                                           0);
         buffer->tile_storage->hot_tile = tile;
+
+        if (gegl_config_threads()>1)
+          g_rec_mutex_unlock (&buffer->tile_storage->mutex);
       }
 
     if (tile)
@@ -241,8 +248,6 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
       }
   }
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 }
 
 enum _GeglBufferSetFlag {
