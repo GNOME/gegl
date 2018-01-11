@@ -860,8 +860,6 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
     fish = babl_fish ((gpointer) buffer->soft_format,
                       (gpointer) format);
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
   while (bufy < height)
     {
@@ -884,10 +882,22 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
           else
             pixels = tile_width - offsetx;
 
-          tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
+          if (gegl_config_threads()>1)
+          {
+             g_rec_mutex_lock (&buffer->tile_storage->mutex);
+             tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                             gegl_tile_indice (tiledx, tile_width),
                                             gegl_tile_indice (tiledy, tile_height),
                                             level);
+            g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+          }
+          else
+          {
+             tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
+                                            gegl_tile_indice (tiledx, tile_width),
+                                            gegl_tile_indice (tiledy, tile_height),
+                                            level);
+          }
 
           if (!tile)
             {
@@ -1096,8 +1106,6 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
       bufy += (tile_height - offsety);
     }
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 }
 
 static void
