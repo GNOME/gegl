@@ -1116,6 +1116,10 @@ transform_nearest (GeglOperation       *operation,
   gint                 px_size   = babl_format_get_bytes_per_pixel (format);
   GeglBufferIterator  *i;
   GeglMatrix3          inverse;
+  GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format,
+                                         GEGL_SAMPLER_NEAREST,
+                                         level);
+  GeglSamplerGetFun sampler_get_fun = gegl_sampler_get_fun (sampler);
 
   GeglRectangle  dest_extent = *roi;
   dest_extent.x >>= level;
@@ -1255,12 +1259,10 @@ transform_nearest (GeglOperation       *operation,
           gdouble u = u_float * w_recip;
           gdouble v = v_float * w_recip;
 
-          gegl_buffer_get (src,
-                           GEGL_RECTANGLE((int)u, (int)v, 1, 1),
-                           1.0,
-                           format,
+          sampler_get_fun (sampler,
+                           u, v,
+                           NULL,
                            dest_ptr,
-                           0,
                            GEGL_ABYSS_NONE);
 
           dest_ptr += px_size;
