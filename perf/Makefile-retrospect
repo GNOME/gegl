@@ -63,6 +63,8 @@ reports/%:
 	# update report.pdf / report.png
 	./create-report.rb
 	echo
+purge:
+	(cd prefixes; for a in *;do grep $$a ../jobs || rm -rf $$a;done )
 
 clean:
 	rm -rf reports jobs report.pdf report.png checkout install
