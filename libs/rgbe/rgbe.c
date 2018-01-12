@@ -102,8 +102,16 @@ struct _rgbe_file
   const void  *scanlines;
 };
 
-
-static const gchar RADIANCE_MAGIC[] = "#?RADIANCE";
+/* Original magic number used to be "#?RADIANCE" but it turns out other
+ * software would output RGBE files with other magic numbers. Notably
+ * Photoshop generates these files with "#?RGBE" magic.
+ * This is confirmed by Blender implementation which has a comment
+ * saying: "actually, the 'RADIANCE' part is just an optional program
+ * name, the magic word is really only the '#?' part".
+ * So let's do the same and use "#?" followed by random characters
+ * ending with 0x0a.
+ */
+static const gchar RADIANCE_MAGIC[] = "#?";
 
 static const gchar *RGBE_FORMAT_STRINGS[] =
 {
@@ -465,7 +473,9 @@ cleanup:
 static gboolean
 rgbe_header_read (rgbe_file *file)
 {
+  gchar    *magic_end;
   gchar    *data;
+  gsize     data_size;
   gboolean  success = FALSE;
   goffset   cursor  = 0;
 
@@ -474,14 +484,21 @@ rgbe_header_read (rgbe_file *file)
 
   rgbe_header_init (&file->header);
 
-  data = g_mapped_file_get_contents (file->file);
-  if (strncmp (&data[cursor], RADIANCE_MAGIC, strlen (RADIANCE_MAGIC)))
-      goto cleanup;
-  cursor += strlen (RADIANCE_MAGIC);
+  /* g_mapped_file_get_contents() returned value is not assured to be
+   * zero-terminated. So we must protect any search and compare calls
+   * with max size to stay in bounds. Hence strstr() is not usable.
+   */
+  data_size = g_mapped_file_get_length (file->file);
+  data      = g_mapped_file_get_contents (file->file);
 
-  if (data[cursor] != '\n')
+  if (! data || strncmp (&data[cursor], RADIANCE_MAGIC,
+                         MIN (strlen (RADIANCE_MAGIC), data_size)))
       goto cleanup;
-  ++cursor;
+
+  magic_end = g_strstr_len (&data[cursor], data_size, "\n");
+  if (! magic_end)
+    goto cleanup;
+  cursor += magic_end - data + 1;
 
   if (!rgbe_header_read_variables (file, &cursor))
       goto cleanup;
@@ -731,7 +748,7 @@ rgbe_header_write (const rgbe_header *header,
   g_return_val_if_fail (f,      FALSE);
 
   /* Magic header bytes */
-  line = g_strconcat (RADIANCE_MAGIC, "\n", NULL);
+  line = g_strconcat (RADIANCE_MAGIC, "RADIANCE\n", NULL);
   if (!rgbe_write_line (f, line))
       goto cleanup;
 
