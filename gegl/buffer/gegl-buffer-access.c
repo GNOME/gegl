@@ -1890,6 +1890,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       gegl_buffer_cl_cache_flush (buffer, rect);
     }
 
+
   if (scale == 1.0 &&
       rect &&
       rect->width == 1)
@@ -1902,6 +1903,9 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       }
     else
       {
+        if (format == NULL)
+          format = buffer->soft_format;
+
         gint bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
         if (!format || buffer->soft_format == format || rowstride != bpp)
         {
@@ -1922,10 +1926,10 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       }
   }
 
+  g_return_if_fail (scale > 0.0);
+
   if (format == NULL)
     format = buffer->soft_format;
-
-  g_return_if_fail (scale > 0.0);
 
   if (!rect && GEGL_FLOAT_EQUAL (scale, 1.0))
     {
