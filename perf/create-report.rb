@@ -154,13 +154,14 @@ class Database
     def drawtext cr
       i = 0
       @runs.each { |run|
-        y = i * 10 + 20
+        y = i * 20 + 20
         while y > @height - @marginy
           y = y - @height + @marginy + 10
         end
         cr.move_to 1.0 * i / @runs.length * (@width - @marginlx-@marginrx) + @marginlx, y
 
         cr.set_source_rgba(0.6,0.6,0.6,1)
+        cr.set_font_size(20)
         cr.show_text(run[0..6])
         i+=1
       }
@@ -179,7 +180,8 @@ class Database
       max = val_max(key)
 
       cr.set_source_rgba(@colors[valno])
-      cr.move_to(@width - @marginrx + @rgap, valno * 14 + @marginy + 20)
+      cr.move_to(@width - @marginrx + @rgap, valno * 18 + @marginy + 20)
+      cr.set_font_size(18)
       cr.show_text(key)
 
       cr.line_width = 2
