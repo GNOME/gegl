@@ -465,8 +465,12 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
             {
               int skip, rows = MIN(height - bufy, tile_height - offsety);
               rows = MIN(abyss_y_total - bufy, rows);
+              skip = bufy - buffer_abyss_y;
+              if (skip < 0 || skip > tile_height) skip = 0;
+              rows-=skip;
+
               if (rows==1)
-                babl_process (fish,bp + lskip * bpx_size, tp + lskip * px_size, pixels);
+                babl_process (fish,bp + lskip * bpx_size + skip * buf_stride, tp + lskip * px_size + skip * tile_stride, pixels);
               else
                 babl_process_rows (fish,
                                    bp + lskip * bpx_size + skip * buf_stride,
@@ -1900,10 +1904,11 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       }
     else
       {
+        gint bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
+
         if (format == NULL)
           format = buffer->soft_format;
 
-        gint bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
         if (!format || buffer->soft_format == format || rowstride != bpp)
         {
           gegl_buffer_iterate_read_dispatch (buffer, rect, dest_buf,
