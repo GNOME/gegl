@@ -1265,13 +1265,13 @@ transform_nearest (GeglOperation       *operation,
                            dest_ptr,
                            GEGL_ABYSS_NONE);
 
-          dest_ptr += px_size;
+          dest_ptr += flip_x * px_size;
           u_float += flip_x * inverse.coeff [0][0];
           v_float += flip_x * inverse.coeff [1][0];
           w_float += flip_x * inverse.coeff [2][0];
         } while (--x);
 
-        dest_ptr += (gint) 4 * (flip_y - flip_x) * roi->width;
+        dest_ptr += px_size * (flip_y - flip_x) * roi->width;
         u_start += flip_y * inverse.coeff [0][1];
         v_start += flip_y * inverse.coeff [1][1];
         w_start += flip_y * inverse.coeff [2][1];
