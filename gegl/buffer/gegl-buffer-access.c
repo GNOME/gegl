@@ -465,7 +465,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
             {
               int skip, rows = MIN(height - bufy, tile_height - offsety);
               rows = MIN(abyss_y_total - bufy, rows);
-              skip = bufy - buffer_abyss_y;
+              skip = buffer_abyss_y - bufy;
               if (skip < 0 || skip > tile_height) skip = 0;
               rows-=skip;
 
@@ -863,7 +863,6 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
   else
     fish = babl_fish ((gpointer) buffer->soft_format,
                       (gpointer) format);
-
 
   while (bufy < height)
     {
