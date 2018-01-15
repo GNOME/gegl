@@ -463,15 +463,31 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
 
           if (fish)
             {
-              int skip, rows = MIN(height - bufy, tile_height - offsety);
+              int skip = 0, rows = MIN(height - bufy, tile_height - offsety);
               rows = MIN(abyss_y_total - bufy, rows);
-              skip = buffer_abyss_y - bufy;
-              if (skip < 0 || skip > tile_height) skip = 0;
-              rows-=skip;
 
+/*
+XXX XXX XXX
+Making the abyss geometry handling work with babl_process_rows is proving a bit
+tricky - the choice that skips the skipping at the start of a batch entering a
+tile seem to let all expected code paths work and no reported non-working code
+paths yet. This will also be a slight performance loss - but it might be that
+we seldom do writes that fall in the abyss anyways.
+
+Not writing into the abyss will permit better control over sliced rendering
+with multi-threading - and should be added back later.
+
+*/
+
+#if 0
+              skip = buffer_abyss_y - bufy;
+              if (skip < 0)
+                skip = 0;
+              rows-=skip;
+#endif
               if (rows==1)
                 babl_process (fish,bp + lskip * bpx_size + skip * buf_stride, tp + lskip * px_size + skip * tile_stride, pixels);
-              else
+              else if (rows>0)
                 babl_process_rows (fish,
                                    bp + lskip * bpx_size + skip * buf_stride,
                                    buf_stride,
