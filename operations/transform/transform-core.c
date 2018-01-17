@@ -40,6 +40,12 @@
 #include "transform-core.h"
 #include "module.h"
 
+/*
+ * Use to determine if key transform matrix coefficients are close
+ * enough to zero or integers.
+ */
+#define GEGL_TRANSFORM_CORE_EPSILON ((gdouble) 0.0000001)
+
 enum
 {
   PROP_ORIGIN_X = 1,
@@ -58,7 +64,12 @@ static void          gegl_transform_set_property                 (GObject       
                                                                   GParamSpec           *pspec);
 static void          gegl_transform_bounding_box                 (const gdouble        *points,
                                                                   const gint            num_points,
+                                                                  const GeglRectangle  *context_rect,
                                                                   GeglRectangle        *output);
+static gint          gegl_transform_depth_clip                   (const GeglMatrix3    *matrix,
+                                                                  const gdouble        *vertices,
+                                                                  gint                  n_vertices,
+                                                                  gdouble              *output);
 static gboolean      gegl_transform_is_intermediate_node         (OpTransform          *transform);
 static gboolean      gegl_transform_is_composite_node            (OpTransform          *transform);
 static void          gegl_transform_get_source_matrix            (OpTransform          *transform,
@@ -298,9 +309,10 @@ gegl_transform_create_composite_matrix (OpTransform *transform,
 }
 
 static void
-gegl_transform_bounding_box (const gdouble *points,
-                             const gint     num_points,
-                             GeglRectangle *output)
+gegl_transform_bounding_box (const gdouble       *points,
+                             const gint           num_points,
+                             const GeglRectangle *context_rect,
+                             GeglRectangle       *output)
 {
   /*
    * Take the points defined by consecutive pairs of gdoubles as
@@ -322,15 +334,19 @@ gegl_transform_bounding_box (const gdouble *points,
    * to give enough data to computations.
    */
 
-  gint    i,
-          num_coords;
-  gdouble min_x,
-          min_y,
-          max_x,
-          max_y;
+  const GeglRectangle pixel_rect = {0, 0, 1, 1};
+  gint                i,
+                      num_coords;
+  gdouble             min_x,
+                      min_y,
+                      max_x,
+                      max_y;
 
   if (num_points < 1)
     return;
+
+  if (! context_rect)
+    context_rect = &pixel_rect;
 
   num_coords = 2 * num_points;
 
@@ -352,6 +368,23 @@ gegl_transform_bounding_box (const gdouble *points,
       i++;
     }
 
+  /*
+   * Clamp the coordinates so that they don't overflow when converting to int,
+   * with wide enough margins for the sampler context rect.
+   */
+  min_x = CLAMP (min_x,
+                 G_MININT / 2 - context_rect->x,
+                 G_MAXINT / 2 + context_rect->width + context_rect->x - 1);
+  min_y = CLAMP (min_y,
+                 G_MININT / 2 - context_rect->y,
+                 G_MAXINT / 2 + context_rect->height + context_rect->y - 1);
+  max_x = CLAMP (max_x,
+                 G_MININT / 2 - context_rect->x,
+                 G_MAXINT / 2 + context_rect->width + context_rect->x - 1);
+  max_y = CLAMP (max_y,
+                 G_MININT / 2 - context_rect->y,
+                 G_MAXINT / 2 + context_rect->height + context_rect->y - 1);
+
   output->x = (gint) floor ((double) min_x);
   output->y = (gint) floor ((double) min_y);
   /*
@@ -367,6 +400,53 @@ gegl_transform_bounding_box (const gdouble *points,
   /* output->height = (gint) floor ((double) max_y) + ((gint) 1 - output->y); */
   output->width  = (gint) ceil ((double) max_x) - output->x;
   output->height = (gint) ceil ((double) max_y) - output->y;
+}
+
+/*
+ * Clip the polygon defined by 'vertices' to the backplane/horizon, according
+ * to the transformation defined by 'matrix'.  Store the vertices of the
+ * resulting polygon in 'output', and return their count.  If the polygon is
+ * convex, the number of output vertices is at most 'n_vertices + 1'.
+ */
+static gint
+gegl_transform_depth_clip (const GeglMatrix3 *matrix,
+                           const gdouble     *vertices,
+                           gint               n_vertices,
+                           gdouble           *output)
+{
+  const gdouble a = matrix->coeff[2][0];
+  const gdouble b = matrix->coeff[2][1];
+  const gdouble c = matrix->coeff[2][2] - GEGL_TRANSFORM_CORE_EPSILON;
+
+  gint          n = 0;
+  gint          i;
+
+  for (i = 0; i < 2 * n_vertices; i += 2)
+    {
+      const gdouble x1 = vertices[i];
+      const gdouble y1 = vertices[i + 1];
+      const gdouble x2 = vertices[(i + 2) % (2 * n_vertices)];
+      const gdouble y2 = vertices[(i + 3) % (2 * n_vertices)];
+
+      const gdouble w1 = a * x1 + b * y1 + c;
+      const gdouble w2 = a * x2 + b * y2 + c;
+
+      if (w1 >= 0.0)
+        {
+          output[n++] = x1;
+          output[n++] = y1;
+        }
+
+      if ((w1 >= 0.0) != (w2 >= 0.0))
+        {
+          output[n++] = (b * (x1 * y2 - x2 * y1) - c * (x2 - x1)) /
+                        (a * (x2 - x1) + b * (y2 - y1));
+          output[n++] = (a * (y1 * x2 - y2 * x1) - c * (y2 - y1)) /
+                        (a * (x2 - x1) + b * (y2 - y1));
+        }
+    }
+
+  return n / 2;
 }
 
 static gboolean
@@ -498,7 +578,7 @@ gegl_transform_get_bounding_box (GeglOperation *op)
                                   have_points + i,
                                   have_points + i + 1);
 
-  gegl_transform_bounding_box (have_points, 4, &have_rect);
+  gegl_transform_bounding_box (have_points, 4, NULL, &have_rect);
 
   return have_rect;
 }
@@ -564,10 +644,12 @@ gegl_transform_get_required_for_output (GeglOperation       *op,
   OpTransform   *transform = OP_TRANSFORM (op);
   GeglMatrix3    inverse;
   GeglRectangle  requested_rect,
-                 need_rect;
+                 need_rect = {};
   GeglRectangle  context_rect;
   GeglSampler   *sampler;
-  gdouble        need_points [8];
+  gdouble        vertices [8];
+  gdouble        need_points [10];
+  gint           n_need_points;
   gint           i;
 
   requested_rect = *region;
@@ -593,34 +675,46 @@ gegl_transform_get_required_for_output (GeglOperation       *op,
   /*
    * Convert indices to absolute positions:
    */
-  need_points [0] = requested_rect.x;
-  need_points [1] = requested_rect.y;
+  vertices [0] = requested_rect.x;
+  vertices [1] = requested_rect.y;
 
-  need_points [2] = need_points [0] + requested_rect.width;
-  need_points [3] = need_points [1];
+  vertices [2] = vertices [0] + requested_rect.width;
+  vertices [3] = vertices [1];
 
-  need_points [4] = need_points [2];
-  need_points [5] = need_points [3] + requested_rect.height;
+  vertices [4] = vertices [2];
+  vertices [5] = vertices [3] + requested_rect.height;
 
-  need_points [6] = need_points [0];
-  need_points [7] = need_points [5];
+  vertices [6] = vertices [0];
+  vertices [7] = vertices [5];
 
-  for (i = 0; i < 8; i += 2)
-    gegl_matrix3_transform_point (&inverse,
-                                  need_points + i,
-                                  need_points + i + 1);
-
-  gegl_transform_bounding_box (need_points, 4, &need_rect);
-
-  need_rect.x += context_rect.x;
-  need_rect.y += context_rect.y;
   /*
-   * One of the pixels of the width (resp. height) has to be
-   * already in the rectangle; It does not need to be counted
-   * twice, hence the "- (gint) 1"s.
+   * Clip polygon to the horizon.
    */
-  need_rect.width  += context_rect.width  - (gint) 1;
-  need_rect.height += context_rect.height - (gint) 1;
+  n_need_points = gegl_transform_depth_clip (&inverse, vertices, 4,
+                                             need_points);
+
+  if (n_need_points > 1)
+    {
+      for (i = 0; i < 2 * n_need_points; i += 2)
+        {
+          gegl_matrix3_transform_point (&inverse,
+                                        need_points + i,
+                                        need_points + i + 1);
+        }
+
+      gegl_transform_bounding_box (need_points, n_need_points,
+                                   &context_rect, &need_rect);
+
+      need_rect.x += context_rect.x;
+      need_rect.y += context_rect.y;
+      /*
+       * One of the pixels of the width (resp. height) has to be
+       * already in the rectangle; It does not need to be counted
+       * twice, hence the "- (gint) 1"s.
+       */
+      need_rect.width  += context_rect.width  - (gint) 1;
+      need_rect.height += context_rect.height - (gint) 1;
+    }
 
   return need_rect;
 }
@@ -632,12 +726,14 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
 {
   OpTransform   *transform = OP_TRANSFORM (op);
   GeglMatrix3    matrix;
-  GeglRectangle  affected_rect;
+  GeglRectangle  affected_rect = {};
 
   GeglRectangle  context_rect;
   GeglSampler   *sampler;
 
-  gdouble        affected_points [8];
+  gdouble        vertices [8];
+  gdouble        affected_points [10];
+  gint           n_affected_points;
   gint           i;
   GeglRectangle  region = *input_region;
 
@@ -715,24 +811,33 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
   /*
    * Convert indices to absolute positions:
    */
-  affected_points [0] = region.x;
-  affected_points [1] = region.y;
+  vertices [0] = region.x;
+  vertices [1] = region.y;
 
-  affected_points [2] = affected_points [0] + region.width;
-  affected_points [3] = affected_points [1];
+  vertices [2] = vertices [0] + region.width;
+  vertices [3] = vertices [1];
 
-  affected_points [4] = affected_points [2];
-  affected_points [5] = affected_points [3] + region.height;
+  vertices [4] = vertices [2];
+  vertices [5] = vertices [3] + region.height;
 
-  affected_points [6] = affected_points [0];
-  affected_points [7] = affected_points [5];
+  vertices [6] = vertices [0];
+  vertices [7] = vertices [5];
 
-  for (i = 0; i < 8; i += 2)
-    gegl_matrix3_transform_point (&matrix,
-                                  affected_points + i,
-                                  affected_points + i + 1);
+  /*
+   * Clip polygon to the backplane.
+   */
+  n_affected_points = gegl_transform_depth_clip (&matrix, vertices, 4,
+                                                 affected_points);
 
-  gegl_transform_bounding_box (affected_points, 4, &affected_rect);
+  if (n_affected_points > 1)
+    {
+      for (i = 0; i < 2 * n_affected_points; i += 2)
+        gegl_matrix3_transform_point (&matrix,
+                                      affected_points + i,
+                                      affected_points + i + 1);
+
+      gegl_transform_bounding_box (affected_points, 4, NULL, &affected_rect);
+    }
 
   return affected_rect;
 }
@@ -1278,12 +1383,6 @@ transform_nearest (GeglOperation       *operation,
       } while (--y);
     }
 }
-
-/*
- * Use to determine if key transform matrix coefficients are close
- * enough to zero or integers.
- */
-#define GEGL_TRANSFORM_CORE_EPSILON ((gdouble) 0.0000001)
 
 static inline gboolean is_zero (const gdouble f)
 {
