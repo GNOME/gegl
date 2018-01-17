@@ -702,8 +702,8 @@ gegl_transform_get_required_for_output (GeglOperation       *op,
                                         need_points + i + 1);
         }
 
-      gegl_transform_bounding_box (need_points, n_need_points,
-                                   &context_rect, &need_rect);
+      gegl_transform_bounding_box (need_points, n_need_points, &context_rect,
+                                   &need_rect);
 
       need_rect.x += context_rect.x;
       need_rect.y += context_rect.y;
@@ -836,7 +836,8 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
                                       affected_points + i,
                                       affected_points + i + 1);
 
-      gegl_transform_bounding_box (affected_points, 4, NULL, &affected_rect);
+      gegl_transform_bounding_box (affected_points, n_affected_points, NULL,
+                                   &affected_rect);
     }
 
   return affected_rect;
