@@ -1,15 +1,16 @@
 #define S(a)   ((DOWNSCALE_SUM)(a))
 
 void
-DOWNSCALE_FUNCNAME (gint    bpp,
-                    gint    src_width,
-                    gint    src_height,
-                    guchar *src_data,
-                    gint    src_rowstride,
-                    guchar *dst_data,
-                    gint    dst_rowstride)
+DOWNSCALE_FUNCNAME (const Babl *format,
+                    gint        src_width,
+                    gint        src_height,
+                    guchar     *src_data,
+                    gint        src_rowstride,
+                    guchar     *dst_data,
+                    gint        dst_rowstride)
 {
   gint y;
+  gint bpp = babl_format_get_bytes_per_pixel (format);
   gint diag = src_rowstride + bpp;
   const gint components = bpp / sizeof(DOWNSCALE_TYPE);
 

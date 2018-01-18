@@ -41,6 +41,45 @@ gegl_downscale_2x2_generic (const Babl *format,
                             guchar     *dst_data,
                             gint        dst_rowstride);
 
+typedef void (*GeglDownscale2x2Fun) (const Babl *format,
+                                     gint    src_width,
+                                     gint    src_height,
+                                     guchar *src_data,
+                                     gint    src_rowstride,
+                                     guchar *dst_data,
+                                     gint    dst_rowstride);
+
+static GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
+{
+  const Babl *comp_type = babl_format_get_type (format, 0);
+  const Babl *model     = babl_format_get_model (format);
+
+  if (gegl_babl_model_is_linear (model))
+  {
+    if (comp_type == gegl_babl_float())
+    {
+      return gegl_downscale_2x2_float;
+    }
+    else if (comp_type == gegl_babl_u8())
+    {
+      return gegl_downscale_2x2_u8;
+    }
+    else if (comp_type == gegl_babl_u16())
+    {
+      return gegl_downscale_2x2_u16;
+    }
+    else if (comp_type == gegl_babl_u32())
+    {
+      return gegl_downscale_2x2_u32;
+    }
+    else if (comp_type == gegl_babl_double())
+    {
+      return gegl_downscale_2x2_double;
+    }
+  }
+  return gegl_downscale_2x2_generic;
+}
+
 void gegl_downscale_2x2 (const Babl *format,
                          gint        src_width,
                          gint        src_height,
@@ -49,40 +88,9 @@ void gegl_downscale_2x2 (const Babl *format,
                          guchar     *dst_data,
                          gint        dst_rowstride)
 {
-  const gint  bpp = babl_format_get_bytes_per_pixel (format);
-  const Babl *comp_type = babl_format_get_type (format, 0);
-  const Babl *model     = babl_format_get_model (format);
-
-  if (gegl_babl_model_is_linear (model))
-  {
-    if (comp_type == gegl_babl_float())
-    {
-      gegl_downscale_2x2_float (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
-      return;
-    }
-    else if (comp_type == gegl_babl_u8())
-    {
-      gegl_downscale_2x2_u8 (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
-      return;
-    }
-    else if (comp_type == gegl_babl_u16())
-    {
-      gegl_downscale_2x2_u16 (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
-      return;
-    }
-    else if (comp_type == gegl_babl_u32())
-    {
-      gegl_downscale_2x2_u32 (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
-      return;
-    }
-    else if (comp_type == gegl_babl_double())
-    {
-      gegl_downscale_2x2_double (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
-      return;
-    }
-  }
-
-  gegl_downscale_2x2_generic (format, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
+  gegl_downscale_2x2_get_fun (format)(format, src_width, src_height,
+                                              src_data, src_rowstride,
+                                              src_data, dst_rowstride);;
 }
 
 #include <stdio.h>
@@ -126,7 +134,7 @@ gegl_downscale_2x2_generic (const Babl *format,
                      src_data, src_rowstride,
                      in_tmp,   in_tmp_rowstride,
                      src_width, src_height);
-  gegl_downscale_2x2_float (tmp_bpp, src_width, src_height,
+  gegl_downscale_2x2_float (tmp_format, src_width, src_height,
                             in_tmp,  in_tmp_rowstride,
                             out_tmp, out_tmp_rowstride);
   babl_process_rows (to_fish,
@@ -142,14 +150,15 @@ gegl_downscale_2x2_generic (const Babl *format,
 }
 
 void
-gegl_downscale_2x2_nearest (gint    bpp,
-                            gint    src_width,
-                            gint    src_height,
-                            guchar *src_data,
-                            gint    src_rowstride,
-                            guchar *dst_data,
-                            gint    dst_rowstride)
+gegl_downscale_2x2_nearest (const Babl *format,
+                            gint        src_width,
+                            gint        src_height,
+                            guchar     *src_data,
+                            gint        src_rowstride,
+                            guchar     *dst_data,
+                            gint        dst_rowstride)
 {
+  gint bpp = babl_format_get_bytes_per_pixel (format);
   gint y;
 
   for (y = 0; y < src_height / 2; y++)

@@ -44,6 +44,13 @@ struct _GeglTileHandlerZoom
   GeglTileHandler       parent_instance;
   GeglTileBackend      *backend;
   GeglTileStorage      *tile_storage;
+  void (*downscale_2x2) (gint    bpp,
+                         gint    src_width,
+                         gint    dst_dst_width,
+                         guchar *src_data,
+                         gint    src_rowstride,
+                         guchar *dst_data,
+                         gint    dst_rowstride);
 };
 
 struct _GeglTileHandlerZoomClass
