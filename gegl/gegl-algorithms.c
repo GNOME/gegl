@@ -94,11 +94,9 @@ gegl_downscale_2x2_generic (const Babl *format,
                             guchar     *dst_data,
                             gint        dst_rowstride)
 {
-  gint y;
   const Babl *tmp_format = gegl_babl_rgbA_linear_float ();
   const Babl *from_fish  = babl_fish (format, tmp_format);
   const Babl *to_fish    = babl_fish (tmp_format, format);
-  const gint bpp         = babl_format_get_bytes_per_pixel (format);
   const gint tmp_bpp     = 4 * 4;
   gint dst_width         = src_width / 2;
   gint dst_height        = src_height / 2;
@@ -153,6 +151,46 @@ gegl_downscale_2x2_nearest (gint    bpp,
     }
 }
 
+static void
+gegl_resample_boxfilter_generic (guchar       *dest_buf,
+                                 const guchar *source_buf,
+                                 const GeglRectangle *dst_rect,
+                                 const GeglRectangle *src_rect,
+                                 gint  s_rowstride,
+                                 gdouble scale,
+                                 const Babl *format,
+                                 gint d_rowstride)
+{
+  const Babl *tmp_format = gegl_babl_rgbA_linear_float ();
+  const Babl *from_fish  = babl_fish (format, tmp_format);
+  const Babl *to_fish    = babl_fish (tmp_format, format);
+  GeglRectangle in_tmp_rect = {src_rect->x, src_rect->y, src_rect->width, src_rect->height};
+  GeglRectangle out_tmp_rect = {dst_rect->x, dst_rect->y, dst_rect->width, dst_rect->height};
+
+  const gint tmp_bpp     = 4 * 4;
+  gint in_tmp_rowstride  = src_rect->width * tmp_bpp;
+  gint out_tmp_rowstride = dst_rect->width * tmp_bpp;
+
+  /* XXX: replace with self-aligned alloc for sized below a threshold */
+  void *in_tmp           = gegl_malloc (src_rect->height * in_tmp_rowstride * 2);
+  void *out_tmp          = gegl_malloc (dst_rect->height * out_tmp_rowstride * 2);
+
+  babl_process_rows (from_fish,
+                     source_buf, s_rowstride,
+                     in_tmp, in_tmp_rowstride,
+                     src_rect->width, src_rect->height);
+
+  gegl_resample_boxfilter_float (out_tmp, in_tmp, &out_tmp_rect, &in_tmp_rect,
+                                 in_tmp_rowstride, scale, tmp_bpp, out_tmp_rowstride);
+
+  babl_process_rows (to_fish,
+                     out_tmp,  out_tmp_rowstride,
+                     dest_buf, d_rowstride,
+                     dst_rect->width, dst_rect->height);
+  gegl_free (in_tmp);
+  gegl_free (out_tmp);
+}
+
 void gegl_resample_boxfilter (guchar              *dest_buf,
                               const guchar        *source_buf,
                               const GeglRectangle *dst_rect,
@@ -162,27 +200,37 @@ void gegl_resample_boxfilter (guchar              *dest_buf,
                               const Babl          *format,
                               gint                 d_rowstride)
 {
-  const Babl *comp_type  = babl_format_get_type (format, 0);
-  const gint bpp = babl_format_get_bytes_per_pixel (format);
+  const Babl *model     = babl_format_get_model (format);
 
-  if (comp_type == gegl_babl_float())
-    gegl_resample_boxfilter_float (dest_buf, source_buf, dst_rect, src_rect,
+  if (gegl_babl_model_is_linear (model))
+  {
+    const Babl *comp_type  = babl_format_get_type (format, 0);
+    const gint bpp = babl_format_get_bytes_per_pixel (format);
+
+    if (comp_type == gegl_babl_float())
+      gegl_resample_boxfilter_float (dest_buf, source_buf, dst_rect, src_rect,
+                                     s_rowstride, scale, bpp, d_rowstride);
+    else if (comp_type == gegl_babl_u8())
+      gegl_resample_boxfilter_u8 (dest_buf, source_buf, dst_rect, src_rect,
+                                  s_rowstride, scale, bpp, d_rowstride);
+    else if (comp_type == gegl_babl_u16())
+      gegl_resample_boxfilter_u16 (dest_buf, source_buf, dst_rect, src_rect,
                                    s_rowstride, scale, bpp, d_rowstride);
-  else if (comp_type == gegl_babl_u8())
-    gegl_resample_boxfilter_u8 (dest_buf, source_buf, dst_rect, src_rect,
-                                s_rowstride, scale, bpp, d_rowstride);
-  else if (comp_type == gegl_babl_u16())
-    gegl_resample_boxfilter_u16 (dest_buf, source_buf, dst_rect, src_rect,
-                                 s_rowstride, scale, bpp, d_rowstride);
-  else if (comp_type == gegl_babl_u32())
-    gegl_resample_boxfilter_u32 (dest_buf, source_buf, dst_rect, src_rect,
-                                 s_rowstride, scale, bpp, d_rowstride);
-  else if (comp_type == gegl_babl_double())
-    gegl_resample_boxfilter_double (dest_buf, source_buf, dst_rect, src_rect,
-                                    s_rowstride, scale, bpp, d_rowstride);
+    else if (comp_type == gegl_babl_u32())
+      gegl_resample_boxfilter_u32 (dest_buf, source_buf, dst_rect, src_rect,
+                                   s_rowstride, scale, bpp, d_rowstride);
+    else if (comp_type == gegl_babl_double())
+      gegl_resample_boxfilter_double (dest_buf, source_buf, dst_rect, src_rect,
+                                      s_rowstride, scale, bpp, d_rowstride);
+    else
+      gegl_resample_nearest (dest_buf, source_buf, dst_rect, src_rect,
+                             s_rowstride, scale, bpp, d_rowstride);
+    }
   else
-    gegl_resample_nearest (dest_buf, source_buf, dst_rect, src_rect,
-                           s_rowstride, scale, bpp, d_rowstride);
+    {
+      gegl_resample_boxfilter_generic (dest_buf, source_buf, dst_rect, src_rect,
+                                       s_rowstride, scale, format, d_rowstride);
+    }
 }
 
 void gegl_resample_bilinear (guchar              *dest_buf,
