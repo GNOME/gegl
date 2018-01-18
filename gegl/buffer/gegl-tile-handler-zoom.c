@@ -60,7 +60,8 @@ static inline void set_blank (GeglTile   *dst_tile,
     }
 }
 
-static inline void set_half (GeglTile   * dst_tile,
+static inline void set_half (GeglTileHandlerZoom *zoom,
+                             GeglTile   * dst_tile,
                              GeglTile   * src_tile,
                              gint         width,
                              gint         height,
@@ -75,7 +76,10 @@ static inline void set_half (GeglTile   * dst_tile,
   if (i) dst_data += bpp * width / 2;
   if (j) dst_data += bpp * width * height / 2;
 
-  gegl_downscale_2x2 (format, width, height, src_data, width * bpp, dst_data, width * bpp);
+  if (!zoom->downscale_2x2)
+    zoom->downscale_2x2 = gegl_downscale_2x2_get_fun (format);
+
+  zoom->downscale_2x2 (format, width, height, src_data, width * bpp, dst_data, width * bpp);
 }
 
 static GeglTile *
@@ -139,7 +143,7 @@ get_tile (GeglTileSource *gegl_tile_source,
         {
           if (source_tile[i][j])
             {
-              set_half (tile, source_tile[i][j], tile_width, tile_height, format, i, j);
+              set_half (zoom, tile, source_tile[i][j], tile_width, tile_height, format, i, j);
               gegl_tile_unref (source_tile[i][j]);
             }
           else

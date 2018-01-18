@@ -31,6 +31,7 @@ void gegl_downscale_2x2 (const Babl *format,
                          guchar     *dst_data,
                          gint        dst_rowstride);
 
+
 void gegl_downscale_2x2_double (const Babl *format,
                                 gint        src_width,
                                 gint        src_height,
@@ -46,6 +47,14 @@ void gegl_downscale_2x2_float (const Babl *format,
                                gint        src_rowstride,
                                guchar     *dst_data,
                                gint        dst_rowstride);
+
+typedef void (*GeglDownscale2x2Fun) (const Babl *format,
+                                     gint    src_width,
+                                     gint    src_height,
+                                     guchar *src_data,
+                                     gint    src_rowstride,
+                                     guchar *dst_data,
+                                     gint    dst_rowstride);
 
 void gegl_downscale_2x2_u32 (const Babl *format,
                              gint        src_width,
@@ -203,6 +212,7 @@ void gegl_resample_nearest (guchar              *dst,
                             gint                 bpp,
                             gint                 dst_stride);
 
+GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format);
 
 G_END_DECLS
 

@@ -41,15 +41,8 @@ gegl_downscale_2x2_generic (const Babl *format,
                             guchar     *dst_data,
                             gint        dst_rowstride);
 
-typedef void (*GeglDownscale2x2Fun) (const Babl *format,
-                                     gint    src_width,
-                                     gint    src_height,
-                                     guchar *src_data,
-                                     gint    src_rowstride,
-                                     guchar *dst_data,
-                                     gint    dst_rowstride);
 
-static GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
+GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
 {
   const Babl *comp_type = babl_format_get_type (format, 0);
   const Babl *model     = babl_format_get_model (format);
@@ -90,7 +83,7 @@ void gegl_downscale_2x2 (const Babl *format,
 {
   gegl_downscale_2x2_get_fun (format)(format, src_width, src_height,
                                               src_data, src_rowstride,
-                                              src_data, dst_rowstride);;
+                                              dst_data, dst_rowstride);;
 }
 
 #include <stdio.h>
