@@ -69,8 +69,6 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
   const GeglRectangle *abyss = &buffer->abyss;
   guchar              *buf   = data;
 
-  
-
   if (y <  abyss->y ||
       x <  abyss->x ||
       y >= abyss->y + abyss->height ||
@@ -116,7 +114,6 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
       }
     }
 
-
   {
     gint tile_width  = buffer->tile_width;
     gint tile_height = buffer->tile_height;
@@ -126,7 +123,6 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
     gint indice_y    = gegl_tile_indice (tiledy, tile_height);
 
     GeglTile *tile = buffer->tile_storage->hot_tile;
-    const Babl *fish = NULL;
 
     if (!(tile &&
           tile->x == indice_x &&
@@ -145,31 +141,25 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
           g_rec_mutex_unlock (&buffer->tile_storage->mutex);
       }
 
-
     if (tile)
       {
         gint tile_origin_x = indice_x * tile_width;
         gint tile_origin_y = indice_y * tile_height;
         gint       offsetx = tiledx - tile_origin_x;
         gint       offsety = tiledy - tile_origin_y;
-        guchar    *tp;
+        gint px_size = babl_format_get_bytes_per_pixel (buffer->soft_format);
+        guchar    *tp = gegl_tile_get_data (tile) + (offsety * tile_width + offsetx) * px_size;
 
-       if (format != buffer->soft_format)
+       if (format && format != buffer->soft_format)
           {
-            gint px_size = babl_format_get_bytes_per_pixel (buffer->soft_format);
-            fish    = babl_fish (buffer->soft_format, format);
-            tp = gegl_tile_get_data (tile) + (offsety * tile_width + offsetx) * px_size;
-            babl_process (fish, tp, buf, 1);
+            babl_process (babl_fish (buffer->soft_format, format), tp, buf, 1);
           }
         else
           {
-            gint px_size = babl_format_get_bytes_per_pixel (format);
-            tp = gegl_tile_get_data (tile) + (offsety * tile_width + offsetx) * px_size;
             memcpy (buf, tp, px_size);
           }
       }
   }
-
 }
 
 static inline void
