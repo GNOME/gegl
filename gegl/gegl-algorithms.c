@@ -51,21 +51,38 @@ void gegl_downscale_2x2 (const Babl *format,
 {
   const gint  bpp = babl_format_get_bytes_per_pixel (format);
   const Babl *comp_type = babl_format_get_type (format, 0);
+  const Babl *model     = babl_format_get_model (format);
 
-  if (comp_type == gegl_babl_float())
-    gegl_downscale_2x2_float (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
-  else if (comp_type == gegl_babl_u8())
-    gegl_downscale_2x2_u8 (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
-  else if (comp_type == gegl_babl_u16())
-    gegl_downscale_2x2_u16 (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
-  else if (comp_type == gegl_babl_u32())
-    gegl_downscale_2x2_u32 (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
-  else if (comp_type == gegl_babl_double())
-    gegl_downscale_2x2_double (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
-  else
+  if (gegl_babl_model_is_linear (model))
   {
-    gegl_downscale_2x2_generic (format, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
+    if (comp_type == gegl_babl_float())
+    {
+      gegl_downscale_2x2_float (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
+      return;
+    }
+    else if (comp_type == gegl_babl_u8())
+    {
+      gegl_downscale_2x2_u8 (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
+      return;
+    }
+    else if (comp_type == gegl_babl_u16())
+    {
+      gegl_downscale_2x2_u16 (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
+      return;
+    }
+    else if (comp_type == gegl_babl_u32())
+    {
+      gegl_downscale_2x2_u32 (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
+      return;
+    }
+    else if (comp_type == gegl_babl_double())
+    {
+      gegl_downscale_2x2_double (bpp, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
+      return;
+    }
   }
+
+  gegl_downscale_2x2_generic (format, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
 }
 
 static void
@@ -87,44 +104,22 @@ gegl_downscale_2x2_generic (const Babl *format,
   gint dst_height        = src_height / 2;
   gint in_tmp_rowstride  = src_width * tmp_bpp;
   gint out_tmp_rowstride = dst_width * tmp_bpp;
+
+  /* XXX: replace with self-aligned alloc for sized below a threshold */
   void *in_tmp           = gegl_malloc (src_height * in_tmp_rowstride);
   void *out_tmp          = gegl_malloc (dst_height * out_tmp_rowstride);
 
-  if (src_rowstride == src_width * bpp)
-    {
-      babl_process (from_fish, src_data, in_tmp, src_width * src_height);
-    }
-  else
-    {
-      guchar *src = src_data;
-      guchar *dst = in_tmp;
-
-      for (y = 0; y < src_height; y++)
-        {
-          babl_process (from_fish, src, dst, src_width);
-          src += src_rowstride;
-          dst += in_tmp_rowstride;
-        }
-    }
+  babl_process_rows (from_fish,
+                     src_data, src_rowstride,
+                     in_tmp,   in_tmp_rowstride,
+                     src_width, src_height);
   gegl_downscale_2x2_float (tmp_bpp, src_width, src_height,
                             in_tmp, in_tmp_rowstride,
                             out_tmp, out_tmp_rowstride);
-  if (dst_rowstride == dst_width * bpp)
-    {
-      babl_process (to_fish, out_tmp, dst_data, dst_width * dst_height);
-    }
-  else
-    {
-      guchar *src = out_tmp;
-      guchar *dst = dst_data;
-
-      for (y = 0; y < dst_height; y++)
-        {
-          babl_process (to_fish, src, dst, dst_width);
-          src += out_tmp_rowstride;
-          dst += dst_rowstride;
-        }
-    }
+  babl_process_rows (to_fish,
+                     out_tmp, out_tmp_rowstride,
+                     dst_data, dst_rowstride,
+                     dst_width, dst_height);
   gegl_free (in_tmp);
   gegl_free (out_tmp);
 }

@@ -76,6 +76,25 @@ GEGL_CACHED_BABL(type, u16, "u16")
 GEGL_CACHED_BABL(type, u32, "u32")
 GEGL_CACHED_BABL(type, double, "double")
 
+GEGL_CACHED_BABL(model, rgb_linear, "RGB")
+GEGL_CACHED_BABL(model, rgba_linear, "RGBA")
+GEGL_CACHED_BABL(model, rgbA_linear, "RaGaBaA")
+GEGL_CACHED_BABL(model, y_linear, "Y")
+GEGL_CACHED_BABL(model, ya_linear, "YA")
+GEGL_CACHED_BABL(model, yA_linear, "YaA")
+
+static inline gboolean gegl_babl_model_is_linear (const Babl *babl)
+{
+  if (babl == gegl_babl_rgba_linear() ||
+      babl == gegl_babl_rgbA_linear() ||
+      babl == gegl_babl_rgb_linear() ||
+      babl == gegl_babl_ya_linear() ||
+      babl == gegl_babl_ya_linear() ||
+      babl == gegl_babl_yA_linear())
+    return TRUE;
+  return FALSE;
+}
+
 GEGL_CACHED_BABL(format, rgba_float, "R'G'B'A float")
 GEGL_CACHED_BABL(format, rgbA_float, "R'aG'aB'aA float")
 GEGL_CACHED_BABL(format, rgba_linear_float, "RGBA float")
