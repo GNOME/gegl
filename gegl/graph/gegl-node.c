@@ -1164,8 +1164,14 @@ gegl_node_blit (GeglNode            *self,
     }
   else if (flags & GEGL_BLIT_CACHE)
     {
-      GeglCache  *cache  = gegl_node_get_cache (self);
-      GeglBuffer *buffer = GEGL_BUFFER (cache);
+      GeglCache  *cache;
+      GeglBuffer *buffer;
+
+      /* make sure we have an output format for the cache */
+      gegl_eval_manager_prepare (gegl_node_get_eval_manager (self));
+
+      cache  = gegl_node_get_cache (self);
+      buffer = GEGL_BUFFER (cache);
 
       if (!(flags & GEGL_BLIT_DIRTY))
         {
