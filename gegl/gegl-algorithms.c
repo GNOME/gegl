@@ -85,6 +85,9 @@ void gegl_downscale_2x2 (const Babl *format,
   gegl_downscale_2x2_generic (format, src_width, src_height, src_data, src_rowstride, dst_data, dst_rowstride);
 }
 
+#include <stdio.h>
+#define ALLOCA_THRESHOLD  8192 * 4   /* maybe this needs to be reduced for win32? */
+
 static void
 gegl_downscale_2x2_generic (const Babl *format,
                             gint        src_width,
@@ -102,10 +105,22 @@ gegl_downscale_2x2_generic (const Babl *format,
   gint dst_height        = src_height / 2;
   gint in_tmp_rowstride  = src_width * tmp_bpp;
   gint out_tmp_rowstride = dst_width * tmp_bpp;
+  gint do_free = 0;
 
-  /* XXX: replace with self-aligned alloc for sized below a threshold */
-  void *in_tmp           = gegl_malloc (src_height * in_tmp_rowstride);
-  void *out_tmp          = gegl_malloc (dst_height * out_tmp_rowstride);
+  void *in_tmp;
+  void *out_tmp;
+
+  if (src_height * in_tmp_rowstride + dst_height * out_tmp_rowstride < ALLOCA_THRESHOLD)
+  {
+    in_tmp = alloca (src_height * in_tmp_rowstride);
+    out_tmp = alloca (dst_height * out_tmp_rowstride);
+  }
+  else
+  {
+    in_tmp = gegl_malloc (src_height * in_tmp_rowstride);
+    out_tmp = gegl_malloc (dst_height * out_tmp_rowstride);
+    do_free = 1;
+  }
 
   babl_process_rows (from_fish,
                      src_data, src_rowstride,
@@ -118,8 +133,12 @@ gegl_downscale_2x2_generic (const Babl *format,
                      out_tmp,   out_tmp_rowstride,
                      dst_data,  dst_rowstride,
                      dst_width, dst_height);
-  gegl_free (in_tmp);
-  gegl_free (out_tmp);
+
+  if (do_free)
+   {
+     gegl_free (in_tmp);
+     gegl_free (out_tmp);
+   }
 }
 
 void
@@ -164,31 +183,44 @@ gegl_resample_boxfilter_generic (guchar       *dest_buf,
   const Babl *tmp_format = gegl_babl_rgbA_linear_float ();
   const Babl *from_fish  = babl_fish (format, tmp_format);
   const Babl *to_fish    = babl_fish (tmp_format, format);
-  GeglRectangle in_tmp_rect = {src_rect->x, src_rect->y, src_rect->width, src_rect->height};
-  GeglRectangle out_tmp_rect = {dst_rect->x, dst_rect->y, dst_rect->width, dst_rect->height};
 
   const gint tmp_bpp     = 4 * 4;
   gint in_tmp_rowstride  = src_rect->width * tmp_bpp;
   gint out_tmp_rowstride = dst_rect->width * tmp_bpp;
+  gint do_free = 0;
 
-  /* XXX: replace with self-aligned alloc for sized below a threshold */
-  void *in_tmp           = gegl_malloc (src_rect->height * in_tmp_rowstride * 2);
-  void *out_tmp          = gegl_malloc (dst_rect->height * out_tmp_rowstride * 2);
+  guchar *in_tmp, *out_tmp;
+
+  if (src_rect->height * in_tmp_rowstride + dst_rect->height * out_tmp_rowstride < ALLOCA_THRESHOLD)
+  {
+    in_tmp = alloca (src_rect->height * in_tmp_rowstride);
+    out_tmp = alloca (dst_rect->height * out_tmp_rowstride);
+  }
+  else
+  {
+    in_tmp  = gegl_malloc (src_rect->height * in_tmp_rowstride);
+    out_tmp = gegl_malloc (dst_rect->height * out_tmp_rowstride);
+    do_free = 1;
+  }
 
   babl_process_rows (from_fish,
                      source_buf, s_rowstride,
                      in_tmp, in_tmp_rowstride,
                      src_rect->width, src_rect->height);
 
-  gegl_resample_boxfilter_float (out_tmp, in_tmp, &out_tmp_rect, &in_tmp_rect,
+  gegl_resample_boxfilter_float (out_tmp, in_tmp, dst_rect, src_rect,
                                  in_tmp_rowstride, scale, tmp_bpp, out_tmp_rowstride);
 
   babl_process_rows (to_fish,
                      out_tmp,  out_tmp_rowstride,
                      dest_buf, d_rowstride,
                      dst_rect->width, dst_rect->height);
-  gegl_free (in_tmp);
-  gegl_free (out_tmp);
+
+  if (do_free)
+    {
+      gegl_free (in_tmp);
+      gegl_free (out_tmp);
+    }
 }
 
 void gegl_resample_boxfilter (guchar              *dest_buf,
@@ -234,43 +266,57 @@ void gegl_resample_boxfilter (guchar              *dest_buf,
 }
 
 static void
-gegl_resample_bilinear_generic (guchar       *dest_buf,
-                                const guchar *source_buf,
+gegl_resample_bilinear_generic (guchar              *dest_buf,
+                                const guchar        *source_buf,
                                 const GeglRectangle *dst_rect,
                                 const GeglRectangle *src_rect,
-                                gint  s_rowstride,
-                                gdouble scale,
-                                const Babl *format,
-                                gint d_rowstride)
+                                gint                 s_rowstride,
+                                gdouble              scale,
+                                const Babl          *format,
+                                gint                 d_rowstride)
 {
   const Babl *tmp_format = gegl_babl_rgbA_linear_float ();
   const Babl *from_fish  = babl_fish (format, tmp_format);
   const Babl *to_fish    = babl_fish (tmp_format, format);
-  GeglRectangle in_tmp_rect = {src_rect->x, src_rect->y, src_rect->width, src_rect->height};
-  GeglRectangle out_tmp_rect = {dst_rect->x, dst_rect->y, dst_rect->width, dst_rect->height};
 
   const gint tmp_bpp     = 4 * 4;
   gint in_tmp_rowstride  = src_rect->width * tmp_bpp;
   gint out_tmp_rowstride = dst_rect->width * tmp_bpp;
 
-  /* XXX: replace with self-aligned alloc for sized below a threshold */
-  void *in_tmp           = gegl_malloc (src_rect->height * in_tmp_rowstride * 2);
-  void *out_tmp          = gegl_malloc (dst_rect->height * out_tmp_rowstride * 2);
+  gint do_free = 0;
+
+  guchar *in_tmp, *out_tmp;
+
+  if (src_rect->height * in_tmp_rowstride + dst_rect->height * out_tmp_rowstride < ALLOCA_THRESHOLD)
+  {
+    in_tmp = alloca (src_rect->height * in_tmp_rowstride);
+    out_tmp = alloca (dst_rect->height * out_tmp_rowstride);
+  }
+  else
+  {
+    in_tmp  = gegl_malloc (src_rect->height * in_tmp_rowstride);
+    out_tmp = gegl_malloc (dst_rect->height * out_tmp_rowstride);
+    do_free = 1;
+  }
 
   babl_process_rows (from_fish,
                      source_buf, s_rowstride,
                      in_tmp, in_tmp_rowstride,
                      src_rect->width, src_rect->height);
 
-  gegl_resample_bilinear_float (out_tmp, in_tmp, &out_tmp_rect, &in_tmp_rect,
+  gegl_resample_bilinear_float (out_tmp, in_tmp, dst_rect, src_rect,
                                 in_tmp_rowstride, scale, tmp_bpp, out_tmp_rowstride);
 
   babl_process_rows (to_fish,
                      out_tmp,  out_tmp_rowstride,
                      dest_buf, d_rowstride,
                      dst_rect->width, dst_rect->height);
-  gegl_free (in_tmp);
-  gegl_free (out_tmp);
+
+  if (do_free)
+    {
+      gegl_free (in_tmp);
+      gegl_free (out_tmp);
+    }
 }
 
 void gegl_resample_bilinear (guchar              *dest_buf,

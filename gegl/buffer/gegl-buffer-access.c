@@ -2009,7 +2009,11 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
           buf_height += 2;
           offset = (buf_width + 1) * bpp;
           sample_buf = g_malloc0 (buf_height * buf_width * bpp);
-          
+          /* NOTE: this iterate read dispatch could perhaps with advantage
+             be done in the buffers format - or in a well suited for
+             scaling format - rather than the target format?, right now
+             requesting 8bit from floating point causes more conversions
+             than desired */
           gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
                                          (guchar*)sample_buf + offset,
                                          buf_width * bpp,
@@ -2033,7 +2037,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       else if (buf_height && buf_width)
         {
           sample_buf = g_malloc (buf_height * buf_width * bpp);
-          
+
           gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
                                          (guchar*)sample_buf,
                                          buf_width * bpp,
