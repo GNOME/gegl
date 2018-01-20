@@ -1,6 +1,6 @@
 HEAD
 
-master~10..master
+master~15..master
 
 # enable multi-thread by default
 

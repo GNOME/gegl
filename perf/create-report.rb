@@ -180,8 +180,8 @@ class Database
       max = val_max(key)
 
       cr.set_source_rgba(@colors[valno])
-      cr.move_to(@width - @marginrx + @rgap, valno * 18 + @marginy + 20)
-      cr.set_font_size(18)
+      cr.move_to(@width - @marginrx + @rgap/2, valno * 12 + @marginy + 20)
+      cr.set_font_size(12)
       cr.show_text(key)
 
       cr.line_width = 2

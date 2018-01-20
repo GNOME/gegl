@@ -1,22 +1,21 @@
 #include "test-common.h"
 
 #define BPP 16
-#define ITERATIONS 200
 
 gint
 main (gint    argc,
       gchar **argv)
 {
   GeglBuffer    *buffer;
-  GeglRectangle  bound = {0, 0, 2048, 2048};
+  GeglRectangle  bound = {0, 0, 1024, 1024};
   const Babl *format;
   gchar *buf;
   gint i;
 
   gegl_init (NULL, NULL);
   format = babl_format ("RGBA float");
-  buffer = gegl_buffer_new (&bound, format);
   buf = g_malloc0 (bound.width * bound.height * BPP);
+  buffer = gegl_buffer_new (&bound, format);
 
   /* pre-initialize */
   gegl_buffer_set (buffer, &bound, 0, NULL, buf, GEGL_AUTO_ROWSTRIDE);
@@ -29,6 +28,54 @@ main (gint    argc,
       test_end_iter ();
      }
   test_end ("gegl_buffer_get", 1.0 * bound.width * bound.height * ITERATIONS * BPP);
+
+  test_start ();
+  for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
+    {
+      GeglBuffer *buffer = gegl_buffer_new (&bound, format);
+  /* pre-initialize */
+      gegl_buffer_set (buffer, &bound, 0, NULL, buf, GEGL_AUTO_ROWSTRIDE);
+      test_start_iter ();
+      gegl_buffer_get (buffer, &bound, 0.333, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+      test_end_iter ();
+      g_object_unref (buffer);
+     }
+  test_end ("gegl_buffer_get 0.333", 1.0 * bound.width * bound.height * ITERATIONS * BPP);
+
+  {
+
+  test_start ();
+  for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
+    {
+      const Babl *format = babl_format ("R'G'B'A u8");
+      GeglBuffer *buffer = gegl_buffer_new (&bound, format);
+      gegl_buffer_set (buffer, &bound, 0, NULL, buf, GEGL_AUTO_ROWSTRIDE);
+  /* pre-initialize */
+      test_start_iter ();
+      gegl_buffer_get (buffer, &bound, 0.333, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+      test_end_iter ();
+      g_object_unref (buffer);
+     }
+  }
+  test_end ("gegl_buffer_get 8bit 0.333", 1.0 * bound.width * bound.height * ITERATIONS * 4);
+
+
+  {
+
+      const Babl *format = babl_format ("R'G'B'A u8");
+      GeglBuffer *buffer = gegl_buffer_new (&bound, format);
+      gegl_buffer_set (buffer, &bound, 0, NULL, buf, GEGL_AUTO_ROWSTRIDE);
+  test_start ();
+  for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
+    {
+  /* pre-initialize */
+      test_start_iter ();
+      gegl_buffer_get (buffer, &bound, 0.333, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+      test_end_iter ();
+     }
+      g_object_unref (buffer);
+  }
+  test_end ("gegl_buffer_getC8bit 0.333", 1.0 * bound.width * bound.height * ITERATIONS * 4);
 
 
   test_start ();
@@ -66,12 +113,8 @@ main (gint    argc,
       int x = rands[j*2];
       int y = rands[j*2+1];
       float px[4] = {0.2, 0.4, 0.1, 0.5};
-#if 1
       GeglRectangle rect = {x, y, 1, 1};
       gegl_buffer_set (buffer, &rect, 0, format, (void*)&px[0], GEGL_AUTO_ROWSTRIDE);
-#else
-      gegl_buffer_set_pixel (buffer, x, y, format, (void*)&px[0], 3);
-#endif
     }
     test_end_iter ();
   }

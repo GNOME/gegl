@@ -1,7 +1,7 @@
 #include "test-common.h"
 
 #define BPP 16
-#define ITERATIONS 100
+#define SAMPLES 250000
 
 gint
 main (gint    argc,
@@ -25,7 +25,6 @@ main (gint    argc,
   format = babl_format ("RGBA float");
 
   {
-#define SAMPLES 150000
     gint rands[SAMPLES*2];
 
   for (i = 0; i < SAMPLES; i ++)
@@ -52,7 +51,7 @@ main (gint    argc,
     }
     test_end_iter();
   }
-  test_end ("gegl_buffer_get 1x1 + babl", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_buffer_get 1x1 + babl", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -69,7 +68,7 @@ main (gint    argc,
     }
     test_end_iter();
   }
-  test_end ("gegl_buffer_sample nearest", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_buffer_sample nearest", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -86,7 +85,7 @@ main (gint    argc,
     }
     test_end_iter();
   }
-  test_end ("gegl_buffer_sample near+ba", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_buffer_sample near+ba", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -107,7 +106,7 @@ main (gint    argc,
     test_end_iter();
     g_object_unref (sampler);
   }
-  test_end ("gegl_sampler_get nearest", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_sampler_get nearest", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -129,7 +128,7 @@ main (gint    argc,
 
     g_object_unref (sampler);
   }
-  test_end ("sampler_get_fun nearest", SAMPLES * ITERATIONS * BPP);
+  test_end ("sampler_get_fun nearest", 1.0 * SAMPLES * ITERATIONS * BPP);
 
 
   test_start ();
@@ -152,7 +151,7 @@ main (gint    argc,
 
     g_object_unref (sampler);
   }
-  test_end ("sampler_get_fun nearest+babl", SAMPLES * ITERATIONS * BPP);
+  test_end ("sampler_get_fun nearest+babl", 1.0 * SAMPLES * ITERATIONS * BPP);
 
 
   test_start ();
@@ -170,7 +169,7 @@ main (gint    argc,
     }
     test_end_iter();
   }
-  test_end ("gegl_buffer_sample linear", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_buffer_sample linear", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -191,7 +190,7 @@ main (gint    argc,
 
     g_object_unref (sampler);
   }
-  test_end ("gegl_sampler_get linear", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_sampler_get linear", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -213,7 +212,7 @@ main (gint    argc,
 
     g_object_unref (sampler);
   }
-  test_end ("sampler_get_fun linear", SAMPLES * ITERATIONS * BPP);
+  test_end ("sampler_get_fun linear", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -230,7 +229,7 @@ main (gint    argc,
     }
     test_end_iter();
   }
-  test_end ("gegl_buffer_sample cubic", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_buffer_sample cubic", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -251,7 +250,7 @@ main (gint    argc,
 
     g_object_unref (sampler);
   }
-  test_end ("gegl_sampler_get cubic", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_sampler_get cubic", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -273,7 +272,7 @@ main (gint    argc,
 
     g_object_unref (sampler);
   }
-  test_end ("sampler_get_fun cubic", SAMPLES * ITERATIONS * BPP);
+  test_end ("sampler_get_fun cubic", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -294,7 +293,7 @@ main (gint    argc,
 
     g_object_unref (sampler);
   }
-  test_end ("gegl_sampler_get nohalo", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_sampler_get nohalo", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -315,7 +314,7 @@ main (gint    argc,
 
     g_object_unref (sampler);
   }
-  test_end ("gegl_sampler_get lohalo", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_sampler_get lohalo", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   }
 

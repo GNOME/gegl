@@ -3,13 +3,13 @@
 #include "gegl.h"
 #include "opencl/gegl-cl-init.h"
 
-#define ITERATIONS 200
-#define PERCENTILE 0.8  /* if we want to bias to the better results with
+#define ITERATIONS 600
+#define PERCENTILE 0.75  /* if we want to bias to the better results with
                            more noise, increase this number towards 1.0,
                            like 0.8 */
-#define BAIL_THRESHOLD 0.01
-#define BAIL_COUNT     10
-#define MIN_ITER       16
+#define BAIL_THRESHOLD 0.002
+#define BAIL_COUNT     150
+#define MIN_ITER       20
 
 static long ticks_start;
 
@@ -155,7 +155,6 @@ void do_bench (const gchar *id,
       test_end_iter();
     }
   test_end_suffix (id, suffix, ((double)gegl_buffer_get_pixel_count (buffer)) * 16 * ITERATIONS);
-#undef ITERATIONS
 }
 
 void bench (const gchar *id,
