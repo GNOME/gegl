@@ -1,4 +1,33 @@
+GEGL-0.3.28 2018-01-21
+----------------------
+
+Core
+~~~~
+  new GeglStats object
+  Automatically copy-on-write clone input buffers for threading.
+
+Buffer
+~~~~~~
+  changes to mipmap/scaling at fetch code to operate in linear
+  per buffer-instance tile queues - for reduced multi-thread contention
+  per instance hot-tile for nearest samplers
+  atomic counters for tracking leaked buffers
+  Optimizationz for fetching column of pixels
+  Adaptive sampler pre-fetch caching
+  Micro performance optimizations of minimizing branching/function calls in
+  hot-spot pixel setting/getting code.
+
+Operations
+~~~~~~~~~~
+  mipmap tuning and performance improvements to gaussian blur
+  transform added dedicated code paths for nearest sampler
+  various code cleanups
+  more generic RGBE file handling.
+
+
+
 GEGL-0.3.26 2017-12-14
+----------------------
 
 Core
 ~~~~
