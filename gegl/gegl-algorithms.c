@@ -252,7 +252,7 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
                 src[6][3] == 0 &&
                 src[7][3] == 0)
             {
-              dst[0] = dst[1] = dst[2] = dst[3] = 0;
+              (*(uint32_t*)(dst)) = 0;
             }
             else
             {
