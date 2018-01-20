@@ -238,6 +238,8 @@ gboolean gegl_is_main_thread (void)
   return g_thread_self () == main_thread;
 }
 
+void _gegl_init_u8_lut (void);
+
 void
 gegl_init (gint    *argc,
            gchar ***argv)
@@ -248,6 +250,7 @@ gegl_init (gint    *argc,
 
   if (initialized)
     return;
+
 
 
   initialized = TRUE;
@@ -650,6 +653,7 @@ gegl_post_parse_hook (GOptionContext *context,
   gegl_config_parse_env (config);
 
   babl_init ();
+  _gegl_init_u8_lut ();
 
 #ifdef GEGL_ENABLE_DEBUG
   {

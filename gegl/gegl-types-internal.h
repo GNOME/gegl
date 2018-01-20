@@ -98,6 +98,7 @@ static inline gboolean gegl_babl_model_is_linear (const Babl *babl)
 GEGL_CACHED_BABL(format, rgba_float, "R'G'B'A float")
 GEGL_CACHED_BABL(format, rgbA_float, "R'aG'aB'aA float")
 GEGL_CACHED_BABL(format, rgba_linear_float, "RGBA float")
+GEGL_CACHED_BABL(format, rgba_linear_u16, "RGBA u16")
 GEGL_CACHED_BABL(format, rgbA_linear_float, "RaGaBaA float")
 GEGL_CACHED_BABL(format, ya_float, "Y'A float")
 GEGL_CACHED_BABL(format, yA_float, "Y'aA float")
@@ -105,5 +106,7 @@ GEGL_CACHED_BABL(format, ya_linear_float, "Y float")
 GEGL_CACHED_BABL(format, yA_linear_float, "YaA float")
 
 G_END_DECLS
+
+#define GEGL_ALLOCA_THRESHOLD  8192 * 8   /* maybe this needs to be reduced for win32? */
 
 #endif /* __GEGL_TYPES_INTERNAL_H__ */
