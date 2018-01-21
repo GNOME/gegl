@@ -1186,25 +1186,32 @@ transform_generic (GeglOperation       *operation,
 
         gint x = roi->width;
         do {
-          gdouble w_recip = (gdouble) 1.0 / w_float;
-          gdouble u = u_float * w_recip;
-          gdouble v = v_float * w_recip;
+          if (w_float >= GEGL_TRANSFORM_CORE_EPSILON)
+            {
+              gdouble w_recip = (gdouble) 1.0 / w_float;
+              gdouble u = u_float * w_recip;
+              gdouble v = v_float * w_recip;
 
-          GeglMatrix2 inverse_jacobian;
-          inverse_jacobian.coeff [0][0] =
-            (inverse.coeff [0][0] - inverse.coeff [2][0] * u) * w_recip;
-          inverse_jacobian.coeff [0][1] =
-            (inverse.coeff [0][1] - inverse.coeff [2][1] * u) * w_recip;
-          inverse_jacobian.coeff [1][0] =
-            (inverse.coeff [1][0] - inverse.coeff [2][0] * v) * w_recip;
-          inverse_jacobian.coeff [1][1] =
-            (inverse.coeff [1][1] - inverse.coeff [2][1] * v) * w_recip;
+              GeglMatrix2 inverse_jacobian;
+              inverse_jacobian.coeff [0][0] =
+                (inverse.coeff [0][0] - inverse.coeff [2][0] * u) * w_recip;
+              inverse_jacobian.coeff [0][1] =
+                (inverse.coeff [0][1] - inverse.coeff [2][1] * u) * w_recip;
+              inverse_jacobian.coeff [1][0] =
+                (inverse.coeff [1][0] - inverse.coeff [2][0] * v) * w_recip;
+              inverse_jacobian.coeff [1][1] =
+                (inverse.coeff [1][1] - inverse.coeff [2][1] * v) * w_recip;
 
-          sampler_get_fun (sampler,
-                           u, v,
-                           &inverse_jacobian,
-                           dest_ptr,
-                           GEGL_ABYSS_NONE);
+              sampler_get_fun (sampler,
+                               u, v,
+                               &inverse_jacobian,
+                               dest_ptr,
+                               GEGL_ABYSS_NONE);
+            }
+          else
+            {
+              memset (dest_ptr, 0, 4 * sizeof (gfloat));
+            }
 
           dest_ptr += flip_x * (gint) 4;
           u_float += flip_x * inverse.coeff [0][0];
@@ -1373,15 +1380,22 @@ transform_nearest (GeglOperation       *operation,
 
         gint x = roi->width;
         do {
-          gdouble w_recip = (gdouble) 1.0 / w_float;
-          gdouble u = u_float * w_recip;
-          gdouble v = v_float * w_recip;
+          if (w_float >= GEGL_TRANSFORM_CORE_EPSILON)
+            {
+              gdouble w_recip = (gdouble) 1.0 / w_float;
+              gdouble u = u_float * w_recip;
+              gdouble v = v_float * w_recip;
 
-          sampler_get_fun (sampler,
-                           u, v,
-                           NULL,
-                           dest_ptr,
-                           GEGL_ABYSS_NONE);
+              sampler_get_fun (sampler,
+                               u, v,
+                               NULL,
+                               dest_ptr,
+                               GEGL_ABYSS_NONE);
+            }
+          else
+            {
+              memset (dest_ptr, 0, px_size);
+            }
 
           dest_ptr += flip_x * px_size;
           u_float += flip_x * inverse.coeff [0][0];
