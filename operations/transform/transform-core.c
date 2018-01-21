@@ -525,8 +525,10 @@ gegl_transform_get_bounding_box (GeglOperation *op)
   OpTransform  *transform = OP_TRANSFORM (op);
   GeglMatrix3   matrix;
   GeglRectangle in_rect   = {0,0,0,0},
-                have_rect;
-  gdouble       have_points [8];
+                have_rect = {0,0,0,0};
+  gdouble       vertices [8];
+  gdouble       have_points [10];
+  gint          n_have_points;
   gint          i;
 
   /*
@@ -557,28 +559,38 @@ gegl_transform_get_bounding_box (GeglOperation *op)
    * Convert indices to absolute positions of the left and top outer
    * pixel corners.
    */
-  have_points [0] = in_rect.x;
-  have_points [1] = in_rect.y;
+  vertices [0] = in_rect.x;
+  vertices [1] = in_rect.y;
 
   /*
    * When there are n pixels, their outer corners are distant by n (1
    * more than the distance between the outer pixel centers).
    */
-  have_points [2] = have_points [0] + in_rect.width;
-  have_points [3] = have_points [1];
+  vertices [2] = vertices [0] + in_rect.width;
+  vertices [3] = vertices [1];
 
-  have_points [4] = have_points [2];
-  have_points [5] = have_points [3] + in_rect.height;
+  vertices [4] = vertices [2];
+  vertices [5] = vertices [3] + in_rect.height;
 
-  have_points [6] = have_points [0];
-  have_points [7] = have_points [5];
+  vertices [6] = vertices [0];
+  vertices [7] = vertices [5];
 
-  for (i = 0; i < 8; i += 2)
-    gegl_matrix3_transform_point (&matrix,
-                                  have_points + i,
-                                  have_points + i + 1);
+  /*
+   * Clip polygon to the backplane.
+   */
+  n_have_points = gegl_transform_depth_clip (&matrix, vertices, 4,
+                                             have_points);
 
-  gegl_transform_bounding_box (have_points, 4, NULL, &have_rect);
+  if (n_have_points > 1)
+    {
+      for (i = 0; i < 2 * n_have_points; i += 2)
+        gegl_matrix3_transform_point (&matrix,
+                                      have_points + i,
+                                      have_points + i + 1);
+
+      gegl_transform_bounding_box (have_points, n_have_points, NULL,
+                                   &have_rect);
+    }
 
   return have_rect;
 }
