@@ -465,7 +465,23 @@ prepare (GeglOperation *operation)
             }
         }
 
-      p->video_codec = avcodec_find_decoder (p->video_stream->codec->codec_id);
+      if (p->video_stream)
+        {
+          p->video_codec = avcodec_find_decoder (p->video_stream->codec->codec_id);
+          if (p->video_codec == NULL)
+            g_warning ("video codec not found");
+          p->video_stream->codec->err_recognition = AV_EF_IGNORE_ERR |
+                                                    AV_EF_BITSTREAM |
+                                                    AV_EF_BUFFER;
+          p->video_stream->codec->workaround_bugs = FF_BUG_AUTODETECT;
+
+
+          if (avcodec_open2 (p->video_stream->codec, p->video_codec, NULL) < 0)
+          {
+            g_warning ("error opening codec %s", p->video_stream->codec->codec->name);
+            return;
+          }
+        }
 
       if (p->audio_stream)
         {
@@ -483,26 +499,15 @@ prepare (GeglOperation *operation)
             }
         }
 
-      p->video_stream->codec->err_recognition = AV_EF_IGNORE_ERR |
-                                                AV_EF_BITSTREAM |
-                                                AV_EF_BUFFER;
-      p->video_stream->codec->workaround_bugs = FF_BUG_AUTODETECT;
-
-      if (p->video_codec == NULL)
-          g_warning ("video codec not found");
-
-      if (avcodec_open2 (p->video_stream->codec, p->video_codec, NULL) < 0)
+      if (p->video_stream)
         {
-          g_warning ("error opening codec %s", p->video_stream->codec->codec->name);
-          return;
+          p->width = p->video_stream->codec->width;
+          p->height = p->video_stream->codec->height;
         }
-
-      p->width = p->video_stream->codec->width;
-      p->height = p->video_stream->codec->height;
       p->lavc_frame = av_frame_alloc ();
 
       g_free (o->video_codec);
-      if (p->video_codec->name)
+      if (p->video_codec && p->video_codec->name)
         o->video_codec = g_strdup (p->video_codec->name);
       else
         o->video_codec = g_strdup ("");
@@ -518,45 +523,55 @@ prepare (GeglOperation *operation)
       p->prevframe = -1;
       p->a_prevframe = -1;
 
-      o->frames = p->video_stream->nb_frames;
-      o->frame_rate = av_q2d (av_guess_frame_rate (p->video_fcontext, p->video_stream, NULL));
-      if (!o->frames)
-      {
-        /* this is a guesstimate of frame-count */
-        o->frames = p->video_fcontext->duration * o->frame_rate / AV_TIME_BASE;
-        /* make second guess for things like luxo */
-        if (o->frames < 1)
-          o->frames = 23;
-      }
+      if (p->video_stream)
+        {
+          o->frames = p->video_stream->nb_frames;
+          o->frame_rate = av_q2d (av_guess_frame_rate (p->video_fcontext, p->video_stream, NULL));
+          if (!o->frames)
+           {
+             /* this is a guesstimate of frame-count */
+             o->frames = p->video_fcontext->duration * o->frame_rate / AV_TIME_BASE;
+             /* make second guess for things like luxo */
+             if (o->frames < 1)
+               o->frames = 23;
+           }
 #if 0
-      {
-        int m ,h;
-        int s = o->frames / o->frame_rate;
-        m = s / 60;
-        s -= m * 60;
-        h = m / 60;
-        m -= h * 60;
-        fprintf (stdout, "duration: %02i:%02i:%02i\n", h, m, s);
-      }
+           {
+             int m ,h;
+             int s = o->frames / o->frame_rate;
+             m = s / 60;
+             s -= m * 60;
+             h = m / 60;
+             m -= h * 60;
+             fprintf (stdout, "duration: %02i:%02i:%02i\n", h, m, s);
+           }
 #endif
+          p->codec_delay = p->video_stream->codec->delay;
 
-    p->codec_delay = p->video_stream->codec->delay;
-
-    if (!strcmp (o->video_codec, "mpeg1video"))
-      p->codec_delay = 1;
-    else if (!strcmp (o->video_codec, "h264"))
-    {
-      if (strstr (p->video_fcontext->filename, ".mp4") ||
-          strstr (p->video_fcontext->filename, ".MP4"))  /* XXX: too hacky, isn't there an avformat thing to use?,
+          if (!strcmp (o->video_codec, "mpeg1video"))
+            p->codec_delay = 1;
+          else if (!strcmp (o->video_codec, "h264"))
+            {
+               if (strstr (p->video_fcontext->filename, ".mp4") ||
+                   strstr (p->video_fcontext->filename, ".MP4"))
+ /* XXX: too hacky, isn't there an avformat thing to use?,
  or perhaps we can measure this when decoding the first frame.
  */
-        p->codec_delay = 1;
+                p->codec_delay = 1;
+              else
+                p->codec_delay = 0;
+            }
+        }
       else
-        p->codec_delay = 0;
+        {
+          o->frame_rate = 10;
+          if (p->audio_stream)
+            o->frames = p->audio_fcontext->duration * o->frame_rate / AV_TIME_BASE;
+          if (o->frames < 1)
+            o->frames = 23;
+        }
+      clear_audio_track (o);
     }
-
-    clear_audio_track (o);
-  }
 }
 
 static GeglRectangle
@@ -710,6 +725,9 @@ process (GeglOperation       *operation,
           }
         }
 
+        if (p->video_stream == NULL)
+          return TRUE;
+
         if (p->video_stream->codec->pix_fmt == AV_PIX_FMT_RGB24)
         {
           GeglRectangle extent = {0,0,p->width,p->height};
@@ -732,7 +750,7 @@ process (GeglOperation       *operation,
         }
       }
   }
-  return  TRUE;
+  return TRUE;
 }
 
 static void
