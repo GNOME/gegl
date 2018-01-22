@@ -52,9 +52,7 @@ gcut_SOURCES =			\
 	clip.c
 
 if HAVE_MRG
-if HAVE_SDL
 gcut_SOURCES += gcut-ui.c renderer.c
 AM_CFLAGS += $(SDL_CFLAGS)
 AM_LDFLAGS += $(SDL_LIBS)
-endif
 endif

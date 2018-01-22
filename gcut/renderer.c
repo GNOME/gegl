@@ -7,7 +7,6 @@
 #include <gegl.h>
 #include <mrg.h>
 #include "gcut.h"
-#include <SDL.h>
 #include <gegl-audio-fragment.h>
 
 static GThread *thread = NULL;
@@ -16,13 +15,6 @@ static long prev_ticks = 0;
 int rendering_frame = -1;
 int done_frame     = -1;
 static int audio_started = 0;
-static int audio_len    = 0;
-static int audio_pos    = 0;
-static int audio_post   = 0;
-
-#define AUDIO_BUF_LEN 819200000
-
-int16_t audio_data[AUDIO_BUF_LEN];
 
 void gcut_cache_invalid (GeglEDL *edl)
 {
@@ -31,56 +23,10 @@ void gcut_cache_invalid (GeglEDL *edl)
   rendering_frame=-1;
 }
 
-
-static void sdl_audio_cb(void *udata, Uint8 *stream, int len)
+static void open_audio (Mrg *mrg, int frequency)
 {
-  int audio_remaining = audio_len - audio_pos;
-  if (audio_remaining < 0)
-    return;
-
-  if (audio_remaining < len) len = audio_remaining;
-
-  //SDL_MixAudio(stream, (uint8_t*)&audio_data[audio_pos/2], len, SDL_MIX_MAXVOLUME);
-  memcpy (stream, (uint8_t*)&audio_data[audio_pos/2], len);
-  audio_pos += len;
-  audio_post += len;
-  if (audio_pos >= AUDIO_BUF_LEN)
-  {
-    audio_pos = 0;
-  }
-}
-
-static void sdl_add_audio_sample (int sample_pos, float left, float right)
-{
-   audio_data[audio_len/2 + 0] = left * 32767.0 * 0.46;
-   audio_data[audio_len/2 + 1] = right * 32767.0 * 0.46;
-   audio_len += 4;
-
-   if (audio_len >= AUDIO_BUF_LEN)
-   {
-     audio_len = 0;
-   }
-}
-
-static void open_audio (int frequency)
-{
-  SDL_AudioSpec spec = {0};
-  SDL_Init(SDL_INIT_AUDIO);
-  spec.freq = frequency;
-  spec.format = AUDIO_S16SYS;
-  spec.channels = 2;
-  spec.samples = 1024;
-  spec.callback = sdl_audio_cb;
-  SDL_OpenAudio(&spec, 0);
-
-  if (spec.format != AUDIO_S16SYS)
-   {
-      fprintf (stderr, "not getting format we wanted\n");
-   }
-  if (spec.freq != frequency)
-   {
-      fprintf (stderr, "not getting desires samplerate(%i) we wanted got %i instead\n", frequency, spec.freq);
-   }
+  mrg_pcm_set_sample_rate (mrg, frequency);
+  mrg_pcm_set_format      (mrg, MRG_s16S);
 }
 
 static void end_audio (void)
@@ -138,13 +84,18 @@ static gpointer renderer_thread (gpointer data)
               int i;
               if (!audio_started)
               {
-                open_audio (gegl_audio_fragment_get_sample_rate (audio));
-                SDL_PauseAudio(0);
+                open_audio (edl->mrg, gegl_audio_fragment_get_sample_rate (audio));
                 audio_started = 1;
               }
-              for (i = 0; i < sample_count; i++)
+
               {
-                sdl_add_audio_sample (0, audio->data[0][i], audio->data[1][i]);
+                uint16_t temp_buf[sample_count*2];
+                for (i = 0; i < sample_count; i++)
+                {
+                  temp_buf[i*2] = audio->data[0][i] * 32767.0 * 0.46;
+                  temp_buf[i*2+1] = audio->data[1][i] * 32767.0 * 0.46;
+                }
+                mrg_pcm_queue (edl->mrg, (void*)&temp_buf[0], sample_count);
               }
             }
           }
