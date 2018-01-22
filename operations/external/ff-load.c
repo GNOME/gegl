@@ -325,6 +325,9 @@ decode_frame (GeglOperation *operation,
     }
 
   decodeframe = frame;
+  if (p->video_stream)
+  {
+
   if (frame < 2 || frame > prevframe + 64 || frame < prevframe )
   {
     int64_t seek_target = av_rescale_q (((frame) * AV_TIME_BASE * 1.0) / o->frame_rate
@@ -393,6 +396,7 @@ decode_frame (GeglOperation *operation,
       while (!got_picture);
     }
     while (decodeframe <= frame + p->codec_delay);
+  }
 
   p->prevframe = frame;
   return 0;
