@@ -1,28 +1,31 @@
-GEGL-0.3.28 2018-01-21
+GEGL-0.3.28 2018-01-23
 ----------------------
 
 Core
 ~~~~
-  new GeglStats object
-  Automatically copy-on-write clone input buffers for threading.
+  A new GeglStats object, which provides realtime statistics/profiling for use
+  in UIs.  Automatically copy-on-write clone input buffers for auto-threading of
+  operations.
 
 Buffer
 ~~~~~~
-  changes to mipmap/scaling at fetch code to operate in linear
-  per buffer-instance tile queues - for reduced multi-thread contention
-  per instance hot-tile for nearest samplers
-  atomic counters for tracking leaked buffers
-  Optimizationz for fetching column of pixels
-  Adaptive sampler pre-fetch caching
-  Micro performance optimizations of minimizing branching/function calls in
-  hot-spot pixel setting/getting code.
+  Many significant optimizations as well as a correctness improvement,
+  mipmap scaling and rendering is now done correctly in linear space,
+  thus GIMP will not only produce the right results but also avoid gamma
+  errors in thumbnails and viewport.
+
+  Among the signifcant performance boosters are per buffer-instance tile queues,
+  adaptive sampler pre-fetch caching and dedicated code paths for fetching
+  columns of pixels. Along with many multi-threadedness improvements due to
+  more significant testing.
 
 Operations
 ~~~~~~~~~~
-  mipmap tuning and performance improvements to gaussian blur
-  transform added dedicated code paths for nearest sampler
+  Mipmap tuning and performance improvements to gaussian blur
+  added dedicated code paths for nearest sampler in transform ops.
+  more generic RGBE file handling
+  ff-load: permit decoding audio files as well as video files.
   various code cleanups
-  more generic RGBE file handling.
 
 
 
