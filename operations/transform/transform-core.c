@@ -24,8 +24,6 @@
  *           2012 Nicolas Robidoux
  */
 
-/* TODO: only calculate pixels inside transformed polygon */
-
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -70,6 +68,13 @@ static gint          gegl_transform_depth_clip                   (const GeglMatr
                                                                   const gdouble        *vertices,
                                                                   gint                  n_vertices,
                                                                   gdouble              *output);
+static gboolean      gegl_transform_scanline_limits              (const GeglMatrix3    *inverse,
+                                                                  const GeglRectangle  *bounding_box,
+                                                                  gdouble               u0,
+                                                                  gdouble               v0,
+                                                                  gdouble               w0,
+                                                                  gint                 *first,
+                                                                  gint                 *last);
 static gboolean      gegl_transform_is_intermediate_node         (OpTransform          *transform);
 static gboolean      gegl_transform_is_composite_node            (OpTransform          *transform);
 static void          gegl_transform_get_source_matrix            (OpTransform          *transform,
@@ -447,6 +452,150 @@ gegl_transform_depth_clip (const GeglMatrix3 *matrix,
     }
 
   return n / 2;
+}
+
+/*
+ * Calculate the limits, '[first, last)', of the scanline whose initial
+ * coordinates are '(u0, v0, w0)', given the inverse transform 'inverse', and
+ * the input bounding box 'bounding_box' (including any margins needed for
+ * the sampler).
+ *
+ * Returns TRUE if the scanline should be rasterized.
+ */
+static gboolean
+gegl_transform_scanline_limits (const GeglMatrix3   *inverse,
+                                const GeglRectangle *bounding_box,
+                                gdouble              u0,
+                                gdouble              v0,
+                                gdouble              w0,
+                                gint                *first,
+                                gint                *last)
+{
+  const gdouble a  = inverse->coeff[0][0];
+  const gdouble b  = inverse->coeff[1][0];
+  const gdouble c  = inverse->coeff[2][0];
+
+  const gdouble x1 = bounding_box->x;
+  const gdouble y1 = bounding_box->y;
+  const gdouble x2 = bounding_box->x + bounding_box->width;
+  const gdouble y2 = bounding_box->y + bounding_box->height;
+
+  gdouble       i1 = *first;
+  gdouble       i2 = *last;
+
+  /*
+   * Left edge.
+   */
+  if (a - x1 * c > GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble min_i = (x1 * w0 - u0) / (a - x1 * c);
+
+      i1 = MAX (i1, min_i);
+    }
+  else if (a - x1 * c < -GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble max_i = (x1 * w0 - u0) / (a - x1 * c);
+
+      i2 = MIN (i2, max_i);
+    }
+  else if (u0 < x1 * w0)
+    {
+      return FALSE;
+    }
+
+  /*
+   * Top edge.
+   */
+  if (b - y1 * c > GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble min_i = (y1 * w0 - v0) / (b - y1 * c);
+
+      i1 = MAX (i1, min_i);
+    }
+  else if (b - y1 * c < -GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble max_i = (y1 * w0 - v0) / (b - y1 * c);
+
+      i2 = MIN (i2, max_i);
+    }
+  else if (v0 < y1 * w0)
+    {
+      return FALSE;
+    }
+
+  /*
+   * Right edge.
+   */
+  if (a - x2 * c > GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble max_i = (x2 * w0 - u0) / (a - x2 * c);
+
+      i2 = MIN (i2, max_i);
+    }
+  else if (a - x2 * c < -GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble min_i = (x2 * w0 - u0) / (a - x2 * c);
+
+      i1 = MAX (i1, min_i);
+    }
+  else if (u0 > x2 * w0)
+    {
+      return FALSE;
+    }
+
+  /*
+   * Bottom edge.
+   */
+  if (b - y2 * c > GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble max_i = (y2 * w0 - v0) / (b - y2 * c);
+
+      i2 = MIN (i2, max_i);
+    }
+  else if (b - y2 * c < -GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble min_i = (y2 * w0 - v0) / (b - y2 * c);
+
+      i1 = MAX (i1, min_i);
+    }
+  else if (v0 > y2 * w0)
+    {
+      return FALSE;
+    }
+
+  /*
+   * Add a 1-pixel border, to accommodate for box filtering.
+   */
+  i1 = MAX (i1 - 1.0, *first);
+  i2 = MIN (i2 + 1.0, *last);
+
+  /*
+   * Horizon.
+   */
+  if (c > GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble min_i = (GEGL_TRANSFORM_CORE_EPSILON - w0) / c;
+
+      i1 = MAX (i1, min_i);
+    }
+  else if (c < -GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble max_i = (GEGL_TRANSFORM_CORE_EPSILON - w0) / c;
+
+      i2 = MIN (i2, max_i);
+    }
+  else if (w0 < GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      return FALSE;
+    }
+
+  i1 = CLAMP (i1, G_MININT / 2, G_MAXINT / 2);
+  i2 = CLAMP (i2, G_MININT / 2, G_MAXINT / 2);
+
+  *first = ceil (i1);
+  *last  = ceil (i2);
+
+  return *first < *last;
 }
 
 static gboolean
@@ -927,16 +1076,26 @@ transform_affine (GeglOperation       *operation,
                                          level?GEGL_SAMPLER_NEAREST:transform->sampler,
                                          level);
 
-  GeglRectangle  dest_extent = *roi;
   GeglSamplerGetFun sampler_get_fun = gegl_sampler_get_fun (sampler);
 
-  dest_extent.x >>= level;
-  dest_extent.y >>= level;
-  dest_extent.width >>= level;
-  dest_extent.height >>= level;
+  GeglRectangle  bounding_box = *gegl_buffer_get_abyss (src);
+  GeglRectangle  context_rect = *gegl_sampler_get_context_rect (sampler);
+  GeglRectangle  dest_extent  = *roi;
 
+  bounding_box.x      >>= level;
+  bounding_box.y      >>= level;
+  bounding_box.width  >>= level;
+  bounding_box.height >>= level;
 
+  bounding_box.x       += context_rect.x;
+  bounding_box.y       += context_rect.y;
+  bounding_box.width   += context_rect.width  - 1;
+  bounding_box.height  += context_rect.height - 1;
 
+  dest_extent.x       >>= level;
+  dest_extent.y       >>= level;
+  dest_extent.width   >>= level;
+  dest_extent.height  >>= level;
 
   /*
    * XXX: fast paths as existing in files in the same dir as
@@ -1007,21 +1166,45 @@ transform_affine (GeglOperation       *operation,
 
         gint y = roi->height;
         do {
-          gdouble u_float = u_start;
-          gdouble v_float = v_start;
+          gint x1 = 0;
+          gint x2 = roi->width;
 
-          gint x = roi->width;
-          do {
-            sampler_get_fun (sampler,
-                             u_float, v_float,
-                             &inverse_jacobian,
-                             dest_ptr,
-                             GEGL_ABYSS_NONE);
-            dest_ptr += (gint) 4;
+          if (gegl_transform_scanline_limits (&inverse, &bounding_box,
+                                              u_start, v_start, 1.0,
+                                              &x1, &x2))
+            {
+              gdouble u_float = u_start;
+              gdouble v_float = v_start;
 
-            u_float += inverse_jacobian.coeff [0][0];
-            v_float += inverse_jacobian.coeff [1][0];
-          } while (--x);
+              gint x;
+
+              memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * x1);
+              dest_ptr += (gint) 4 * x1;
+
+              u_float += x1 * inverse_jacobian.coeff [0][0];
+              v_float += x1 * inverse_jacobian.coeff [1][0];
+
+              for (x = x1; x < x2; x++)
+                {
+                  sampler_get_fun (sampler,
+                                   u_float, v_float,
+                                   &inverse_jacobian,
+                                   dest_ptr,
+                                   GEGL_ABYSS_NONE);
+                  dest_ptr += (gint) 4;
+
+                  u_float += inverse_jacobian.coeff [0][0];
+                  v_float += inverse_jacobian.coeff [1][0];
+                }
+
+              memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * (roi->width - x2));
+              dest_ptr += (gint) 4 * (roi->width - x2);
+            }
+          else
+            {
+              memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * roi->width);
+              dest_ptr += (gint) 4 * roi->width;
+            }
 
           u_start += inverse_jacobian.coeff [0][1];
           v_start += inverse_jacobian.coeff [1][1];
@@ -1052,11 +1235,24 @@ transform_generic (GeglOperation       *operation,
                                          level);
   GeglSamplerGetFun sampler_get_fun = gegl_sampler_get_fun (sampler);
 
-  GeglRectangle  dest_extent = *roi;
-  dest_extent.x >>= level;
-  dest_extent.y >>= level;
-  dest_extent.width >>= level;
-  dest_extent.height >>= level;
+  GeglRectangle  bounding_box = *gegl_buffer_get_abyss (src);
+  GeglRectangle  context_rect = *gegl_sampler_get_context_rect (sampler);
+  GeglRectangle  dest_extent  = *roi;
+
+  bounding_box.x      >>= level;
+  bounding_box.y      >>= level;
+  bounding_box.width  >>= level;
+  bounding_box.height >>= level;
+
+  bounding_box.x       += context_rect.x;
+  bounding_box.y       += context_rect.y;
+  bounding_box.width   += context_rect.width  - 1;
+  bounding_box.height  += context_rect.height - 1;
+
+  dest_extent.x       >>= level;
+  dest_extent.y       >>= level;
+  dest_extent.width   >>= level;
+  dest_extent.height  >>= level;
 
   /*
    * Construct an output tile iterator.
@@ -1109,44 +1305,62 @@ transform_generic (GeglOperation       *operation,
        */
       gint y = roi->height;
       do {
-        gdouble u_float = u_start;
-        gdouble v_float = v_start;
-        gdouble w_float = w_start;
+        gint x1 = 0;
+        gint x2 = roi->width;
 
-        gint x = roi->width;
-        do {
-          if (w_float >= GEGL_TRANSFORM_CORE_EPSILON)
-            {
-              gdouble w_recip = (gdouble) 1.0 / w_float;
-              gdouble u = u_float * w_recip;
-              gdouble v = v_float * w_recip;
+        if (gegl_transform_scanline_limits (&inverse, &bounding_box,
+                                            u_start, v_start, w_start,
+                                            &x1, &x2))
+          {
+            gdouble u_float = u_start;
+            gdouble v_float = v_start;
+            gdouble w_float = w_start;
 
-              GeglMatrix2 inverse_jacobian;
-              inverse_jacobian.coeff [0][0] =
-                (inverse.coeff [0][0] - inverse.coeff [2][0] * u) * w_recip;
-              inverse_jacobian.coeff [0][1] =
-                (inverse.coeff [0][1] - inverse.coeff [2][1] * u) * w_recip;
-              inverse_jacobian.coeff [1][0] =
-                (inverse.coeff [1][0] - inverse.coeff [2][0] * v) * w_recip;
-              inverse_jacobian.coeff [1][1] =
-                (inverse.coeff [1][1] - inverse.coeff [2][1] * v) * w_recip;
+            gint x;
 
-              sampler_get_fun (sampler,
-                               u, v,
-                               &inverse_jacobian,
-                               dest_ptr,
-                               GEGL_ABYSS_NONE);
-            }
-          else
-            {
-              memset (dest_ptr, 0, 4 * sizeof (gfloat));
-            }
+            memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * x1);
+            dest_ptr += (gint) 4 * x1;
 
-          dest_ptr += (gint) 4;
-          u_float += inverse.coeff [0][0];
-          v_float += inverse.coeff [1][0];
-          w_float += inverse.coeff [2][0];
-        } while (--x);
+            u_float += x1 * inverse.coeff [0][0];
+            v_float += x1 * inverse.coeff [1][0];
+            w_float += x1 * inverse.coeff [2][0];
+
+            for (x = x1; x < x2; x++)
+              {
+                gdouble w_recip = (gdouble) 1.0 / w_float;
+                gdouble u = u_float * w_recip;
+                gdouble v = v_float * w_recip;
+
+                GeglMatrix2 inverse_jacobian;
+                inverse_jacobian.coeff [0][0] =
+                  (inverse.coeff [0][0] - inverse.coeff [2][0] * u) * w_recip;
+                inverse_jacobian.coeff [0][1] =
+                  (inverse.coeff [0][1] - inverse.coeff [2][1] * u) * w_recip;
+                inverse_jacobian.coeff [1][0] =
+                  (inverse.coeff [1][0] - inverse.coeff [2][0] * v) * w_recip;
+                inverse_jacobian.coeff [1][1] =
+                  (inverse.coeff [1][1] - inverse.coeff [2][1] * v) * w_recip;
+
+                sampler_get_fun (sampler,
+                                 u, v,
+                                 &inverse_jacobian,
+                                 dest_ptr,
+                                 GEGL_ABYSS_NONE);
+
+                dest_ptr += (gint) 4;
+                u_float += inverse.coeff [0][0];
+                v_float += inverse.coeff [1][0];
+                w_float += inverse.coeff [2][0];
+              }
+
+            memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * (roi->width - x2));
+            dest_ptr += (gint) 4 * (roi->width - x2);
+          }
+        else
+          {
+            memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * roi->width);
+            dest_ptr += (gint) 4 * roi->width;
+          }
 
         u_start += inverse.coeff [0][1];
         v_start += inverse.coeff [1][1];
@@ -1174,11 +1388,18 @@ transform_nearest (GeglOperation       *operation,
                                          level);
   GeglSamplerGetFun sampler_get_fun = gegl_sampler_get_fun (sampler);
 
-  GeglRectangle  dest_extent = *roi;
-  dest_extent.x >>= level;
-  dest_extent.y >>= level;
-  dest_extent.width >>= level;
-  dest_extent.height >>= level;
+  GeglRectangle  bounding_box = *gegl_buffer_get_abyss (src);
+  GeglRectangle  dest_extent  = *roi;
+
+  bounding_box.x      >>= level;
+  bounding_box.y      >>= level;
+  bounding_box.width  >>= level;
+  bounding_box.height >>= level;
+
+  dest_extent.x       >>= level;
+  dest_extent.y       >>= level;
+  dest_extent.width   >>= level;
+  dest_extent.height  >>= level;
 
   /*
    * Construct an output tile iterator.
@@ -1231,34 +1452,52 @@ transform_nearest (GeglOperation       *operation,
        */
       gint y = roi->height;
       do {
-        gdouble u_float = u_start;
-        gdouble v_float = v_start;
-        gdouble w_float = w_start;
+        gint x1 = 0;
+        gint x2 = roi->width;
 
-        gint x = roi->width;
-        do {
-          if (w_float >= GEGL_TRANSFORM_CORE_EPSILON)
-            {
-              gdouble w_recip = (gdouble) 1.0 / w_float;
-              gdouble u = u_float * w_recip;
-              gdouble v = v_float * w_recip;
+        if (gegl_transform_scanline_limits (&inverse, &bounding_box,
+                                            u_start, v_start, w_start,
+                                            &x1, &x2))
+          {
+            gdouble u_float = u_start;
+            gdouble v_float = v_start;
+            gdouble w_float = w_start;
 
-              sampler_get_fun (sampler,
-                               u, v,
-                               NULL,
-                               dest_ptr,
-                               GEGL_ABYSS_NONE);
-            }
-          else
-            {
-              memset (dest_ptr, 0, px_size);
-            }
+            gint x;
 
-          dest_ptr += px_size;
-          u_float += inverse.coeff [0][0];
-          v_float += inverse.coeff [1][0];
-          w_float += inverse.coeff [2][0];
-        } while (--x);
+            memset (dest_ptr, 0, px_size * x1);
+            dest_ptr += px_size * x1;
+
+            u_float += x1 * inverse.coeff [0][0];
+            v_float += x1 * inverse.coeff [1][0];
+            w_float += x1 * inverse.coeff [2][0];
+
+            for (x = x1; x < x2; x++)
+              {
+                gdouble w_recip = (gdouble) 1.0 / w_float;
+                gdouble u = u_float * w_recip;
+                gdouble v = v_float * w_recip;
+
+                sampler_get_fun (sampler,
+                                 u, v,
+                                 NULL,
+                                 dest_ptr,
+                                 GEGL_ABYSS_NONE);
+
+                dest_ptr += px_size;
+                u_float += inverse.coeff [0][0];
+                v_float += inverse.coeff [1][0];
+                w_float += inverse.coeff [2][0];
+              }
+
+            memset (dest_ptr, 0, px_size * (roi->width - x2));
+            dest_ptr += px_size * (roi->width - x2);
+          }
+        else
+          {
+            memset (dest_ptr, 0, px_size * roi->width);
+            dest_ptr += px_size * roi->width;
+          }
 
         u_start += inverse.coeff [0][1];
         v_start += inverse.coeff [1][1];
