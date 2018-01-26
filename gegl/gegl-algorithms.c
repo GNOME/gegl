@@ -180,7 +180,6 @@ static inline int int_floorf (float x)
   return i - ( i > x ); /* convert trunc to floor */
 }
 
-
 static void
 gegl_boxfilter_u8_nl (guchar              *dest_buf,
                       const guchar        *source_buf,
@@ -195,7 +194,7 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
   gint  components = bpp / sizeof(uint8_t);
 
   gfloat left_weight[dst_rect->width];
-  gfloat center_weight[dst_rect->width];
+  //gfloat center_weight[dst_rect->width];
   gfloat right_weight[dst_rect->width];
 
   gint   jj[dst_rect->width];
@@ -209,7 +208,7 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
     left_weight[x]   = MAX (0.0, left_weight[x]);
     right_weight[x]  = .5 - scale * ((jj[x] + 1) - sx);
     right_weight[x]  = MAX (0.0, right_weight[x]);
-    center_weight[x] = 1. - left_weight[x] - right_weight[x];
+    //center_weight[x] = 1. - left_weight[x] - right_weight[x];
 
     jj[x] *= components;
   }
@@ -233,32 +232,32 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
         case 4:
           for (gint x = 0; x < dst_rect->width; x++)
             {
-            src[4] = (const uint8_t*)src_base + jj[x];
-            src[1] = (const uint8_t*)(src_base - s_rowstride) + jj[x];
-            src[7] = (const uint8_t*)(src_base + s_rowstride) + jj[x];
-            src[2] = src[1] + 4;
-            src[5] = src[4] + 4;
-            src[8] = src[7] + 4;
-            src[0] = src[1] - 4;
-            src[3] = src[4] - 4;
-            src[6] = src[7] - 4;
+              src[4] = (const uint8_t*)src_base + jj[x];
+              src[1] = src[4] - s_rowstride;
+              src[7] = src[4] + s_rowstride;
+              src[2] = src[1] + 4;
+              src[5] = src[4] + 4;
+              src[8] = src[7] + 4;
+              src[0] = src[1] - 4;
+              src[3] = src[4] - 4;
+              src[6] = src[7] - 4;
 
-            if (src[0][3] == 0 &&  /* XXX: it would be even better to not call this at all for the abyss...  */
-                src[1][3] == 0 &&
-                src[2][3] == 0 &&
-                src[3][3] == 0 &&
-                src[4][3] == 0 &&
-                src[5][3] == 0 &&
-                src[6][3] == 0 &&
-                src[7][3] == 0)
-            {
-              (*(uint32_t*)(dst)) = 0;
-            }
+              if (src[0][3] == 0 &&  /* XXX: it would be even better to not call this at all for the abyss...  */
+                  src[1][3] == 0 &&
+                  src[2][3] == 0 &&
+                  src[3][3] == 0 &&
+                  src[4][3] == 0 &&
+                  src[5][3] == 0 &&
+                  src[6][3] == 0 &&
+                  src[7][3] == 0)
+              {
+                (*(uint32_t*)(dst)) = 0;
+              }
             else
             {
               const gfloat l = left_weight[x];
-              const gfloat c = center_weight[x];
               const gfloat r = right_weight[x];
+              const gfloat c = 1.f - l - r;
 
               const gfloat t = top_weight;
               const gfloat m = middle_weight;
@@ -300,8 +299,8 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
             src[6] = src[7] - 3;
             {
               const gfloat l = left_weight[x];
-              const gfloat c = center_weight[x];
               const gfloat r = right_weight[x];
+              const gfloat c = 1.f-l-r;
 
               const gfloat t = top_weight;
               const gfloat m = middle_weight;
@@ -337,8 +336,8 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
             src[6] = src[7] - 2;
             {
               const gfloat l = left_weight[x];
-              const gfloat c = center_weight[x];
               const gfloat r = right_weight[x];
+              const gfloat c = 1.f-l-r;
 
               const gfloat t = top_weight;
               const gfloat m = middle_weight;
@@ -370,8 +369,9 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
             src[6] = src[7] - 1;
             {
               const gfloat l = left_weight[x];
-              const gfloat c = center_weight[x];
               const gfloat r = right_weight[x];
+              const gfloat c = 1.f-l-r;
+
 
               const gfloat t = top_weight;
               const gfloat m = middle_weight;
@@ -399,8 +399,8 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
             src[6] = src[7] - components;
             {
               const gfloat l = left_weight[x];
-              const gfloat c = center_weight[x];
               const gfloat r = right_weight[x];
+              const gfloat c = 1.f - l - r;
 
               const gfloat t = top_weight;
               const gfloat m = middle_weight;
