@@ -1891,6 +1891,9 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                            gint                 rowstride,
                            GeglAbyssPolicy      repeat_mode)
 {
+  gboolean do_nearest = (repeat_mode & GEGL_BUFFER_NEAREST) != 0;
+  repeat_mode &= 0x7;
+
   if (gegl_cl_is_accelerated ())
     {
       gegl_buffer_cl_cache_flush (buffer, rect);
@@ -2003,7 +2006,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       buf_width  = x2 - x1;
       buf_height = y2 - y1;
 
-      if (scale <= 1.99)
+      if (!do_nearest && scale <= 1.99)
         {
           buf_width  += 2;
           buf_height += 2;

@@ -45,6 +45,7 @@ main (gint    argc,
       g_object_unref (buffer);
      }
   test_end ("gegl_buffer_get 0.333", 1.0 * bound.width * bound.height * ITERATIONS * BPP);
+#endif
   {
 
   test_start ();
@@ -61,7 +62,6 @@ main (gint    argc,
      }
   }
   test_end ("gegl_buffer_get 8bit 0.333", 1.0 * bound.width * bound.height * ITERATIONS * 4);
-#endif
 
   {
 

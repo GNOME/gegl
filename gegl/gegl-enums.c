@@ -35,6 +35,9 @@ gegl_abyss_policy_get_type (void)
         { GEGL_ABYSS_LOOP,  N_("Loop"),  "loop"  },
         { GEGL_ABYSS_BLACK, N_("Black"), "black" },
         { GEGL_ABYSS_WHITE, N_("White"), "white" },
+        // we do not really want this one introspected/translated,
+        // will this bite us?
+        //{ GEGL_BUFFER_NEAREST, N_("Nearest"), "nearest" },
         { 0, NULL, NULL }
       };
       gint i;
