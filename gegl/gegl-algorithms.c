@@ -180,6 +180,7 @@ static inline int int_floorf (float x)
   return i - ( i > x ); /* convert trunc to floor */
 }
 
+
 static void
 gegl_boxfilter_u8_nl (guchar              *dest_buf,
                       const guchar        *source_buf,
@@ -887,23 +888,73 @@ gegl_resample_nearest (guchar              *dst,
                        const gint           bpp,
                        const gint           dst_stride)
 {
-  int i, j;
+  gint jj[dst_rect->width];
+  gint x, y;
+  for (x = 0; x < dst_rect->width; x++)
+  {
+    const gfloat sx = (dst_rect->x + .5 + x) / scale - src_rect->x;
+    jj[x] = int_floorf (sx + GEGL_SCALE_EPSILON);
+  }
 
-  for (i = 0; i < dst_rect->height; i++)
-    {
-      const gfloat sy = (dst_rect->y + .5 + i) / scale - src_rect->y;
-      const gint   ii = int_floorf (sy + GEGL_SCALE_EPSILON);
+#define IMPL(...) do{ \
+  for (y = 0; y < dst_rect->height; y++)\
+    {\
+      const gfloat sy = (dst_rect->y + .5 + y) / scale - src_rect->y;\
+      const gint   ii = int_floorf (sy + GEGL_SCALE_EPSILON);\
+      guchar *d = &dst[y*dst_stride];\
+      const guchar *s = &src[ii * src_stride];\
+      for (x = 0; x < dst_rect->width; x++)\
+        {\
+          __VA_ARGS__;\
+          d += bpp; \
+        }\
+    }\
+  }while(0)
 
-      for (j = 0; j < dst_rect->width; j++)
-        {
-          const gfloat sx = (dst_rect->x + .5 + j) / scale - src_rect->x;
-          const gint   jj = int_floorf (sx + GEGL_SCALE_EPSILON);
-
-          memcpy (&dst[i * dst_stride + j * bpp],
-                  &src[ii * src_stride + jj * bpp],
-                  bpp);
-        }
-    }
+  switch(bpp)
+  {
+    case 1:IMPL(
+             d[0] = s[jj[x] * bpp];
+           );
+    break;
+    case 2:IMPL(
+             uint16_t* d16 = (void*) d;
+             const uint16_t* s16 = (void*) &s[jj[x] * bpp];
+             d16[0] = s16[0];
+           );
+    break;
+    case 3:IMPL(
+             d[0] = s[jj[x] * bpp];
+             d[1] = s[jj[x] * bpp + 1];
+             d[2] = s[jj[x] * bpp + 2];
+           );
+    break;
+    case 4:IMPL(
+             uint32_t* d32 = (void*) d;
+             const uint32_t* s32 = (void*) &s[jj[x] * bpp];
+             d32[0] = s32[0];
+           );
+    break;
+    case 8:IMPL(
+             uint64_t* d64 = (void*) d;
+             const uint64_t* s64 = (void*) &s[jj[x] * bpp];
+             d64[0] = s64[0];
+           );
+    break;
+    case 16:IMPL(
+             uint64_t* d64 = (void*) d;
+             const uint64_t* s64 = (void*) &s[jj[x] * bpp];
+             d64[0] = s64[0];
+             d64[1] = s64[1];
+           );
+    break;
+    default:
+         IMPL(
+          memcpy (&d[0], &s[jj[x] * bpp], bpp);
+           );
+    break;
+  }
+#undef IMPL
 }
 
 #define BOXFILTER_FUNCNAME   gegl_resample_boxfilter_double
