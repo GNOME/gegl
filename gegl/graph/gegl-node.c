@@ -1136,6 +1136,9 @@ gegl_node_blit (GeglNode            *self,
                 gint                 rowstride,
                 GeglBlitFlags        flags)
 {
+  gboolean do_nearest = (flags & GEGL_BUFFER_NEAREST) != 0;
+  flags &= 0xf;
+
   g_return_if_fail (GEGL_IS_NODE (self));
   g_return_if_fail (roi != NULL);
 
@@ -1158,7 +1161,7 @@ gegl_node_blit (GeglNode            *self,
           buffer = gegl_node_apply_roi (self, roi, 0);
         }
       if (buffer && destination_buf)
-        gegl_buffer_get (buffer, roi, scale, format, destination_buf, rowstride, GEGL_ABYSS_NONE);
+        gegl_buffer_get (buffer, roi, scale, format, destination_buf, rowstride, GEGL_ABYSS_NONE | (do_nearest?GEGL_BUFFER_NEAREST:0));
 
       g_clear_object (&buffer);
     }
@@ -1194,7 +1197,7 @@ gegl_node_blit (GeglNode            *self,
         {
           gegl_buffer_get (buffer, roi, scale,
                            format, destination_buf, rowstride,
-                           GEGL_ABYSS_NONE);
+                           GEGL_ABYSS_NONE|(do_nearest?GEGL_BUFFER_NEAREST:0));
         }
     }
 }
