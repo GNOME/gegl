@@ -30,7 +30,7 @@ AM_CPPFLAGS = \
 
 common_ldadd = $(top_builddir)/gegl/libgegl-@GEGL_API_VERSION@.la
 
-LDADD = $(common_ldadd) $(DEP_LIBS) $(BABL_LIBS) -lm
+LDADD = $(common_ldadd) $(DEP_LIBS) $(BABL_LIBS) $(MATH_LIB)
 
 perf-report: check
 
