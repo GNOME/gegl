@@ -195,7 +195,6 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
   gint  components = bpp / sizeof(uint8_t);
 
   gfloat left_weight[dst_rect->width];
-  //gfloat center_weight[dst_rect->width];
   gfloat right_weight[dst_rect->width];
 
   gint   jj[dst_rect->width];
@@ -209,7 +208,6 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
     left_weight[x]   = MAX (0.0, left_weight[x]);
     right_weight[x]  = .5 - scale * ((jj[x] + 1) - sx);
     right_weight[x]  = MAX (0.0, right_weight[x]);
-    //center_weight[x] = 1. - left_weight[x] - right_weight[x];
 
     jj[x] *= components;
   }
@@ -264,7 +262,7 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
               const gfloat m = middle_weight;
               const gfloat b = bottom_weight;
 
-#define BOXFILTER_ROUND(val) lut_u16_to_u8[((int)((val)+0.5))]
+#define BOXFILTER_ROUND(val) lut_u16_to_u8[((int)((val)+0.5f))]
 #define C(val)               lut_u8_to_u16[(val)]
               dst[0] = BOXFILTER_ROUND(
                 (C(src[0][0]) * t + C(src[3][0]) * m + C(src[6][0]) * b) * l +
@@ -290,8 +288,8 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
           for (gint x = 0; x < dst_rect->width; x++)
             {
             src[4] = (const uint8_t*)src_base + jj[x];
-            src[1] = (const uint8_t*)(src_base - s_rowstride) + jj[x];
-            src[7] = (const uint8_t*)(src_base + s_rowstride) + jj[x];
+            src[1] = src[4] - s_rowstride;
+            src[7] = src[4] + s_rowstride;
             src[2] = src[1] + 3;
             src[5] = src[4] + 3;
             src[8] = src[7] + 3;
@@ -327,8 +325,8 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
           for (gint x = 0; x < dst_rect->width; x++)
             {
             src[4] = (const uint8_t*)src_base + jj[x];
-            src[1] = (const uint8_t*)(src_base - s_rowstride) + jj[x];
-            src[7] = (const uint8_t*)(src_base + s_rowstride) + jj[x];
+            src[1] = src[4] - s_rowstride;
+            src[7] = src[4] + s_rowstride;
             src[2] = src[1] + 2;
             src[5] = src[4] + 2;
             src[8] = src[7] + 2;
@@ -360,8 +358,8 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
           for (gint x = 0; x < dst_rect->width; x++)
             {
             src[4] = (const uint8_t*)src_base + jj[x];
-            src[1] = (const uint8_t*)(src_base - s_rowstride) + jj[x];
-            src[7] = (const uint8_t*)(src_base + s_rowstride) + jj[x];
+            src[1] = src[4] - s_rowstride;
+            src[7] = src[4] + s_rowstride;
             src[2] = src[1] + 1;
             src[5] = src[4] + 1;
             src[8] = src[7] + 1;
@@ -390,8 +388,8 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
           for (gint x = 0; x < dst_rect->width; x++)
           {
             src[4] = (const uint8_t*)src_base + jj[x];
-            src[1] = (const uint8_t*)(src_base - s_rowstride) + jj[x];
-            src[7] = (const uint8_t*)(src_base + s_rowstride) + jj[x];
+            src[1] = src[4] - s_rowstride;
+            src[7] = src[4] + s_rowstride;
             src[2] = src[1] + components;
             src[5] = src[4] + components;
             src[8] = src[7] + components;
@@ -422,6 +420,135 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
     }
 }
 #undef BOXFILTER_ROUND
+#undef C
+
+static void
+gegl_bilinear_u8_nl (guchar              *dest_buf,
+                     const guchar        *source_buf,
+                     const GeglRectangle *dst_rect,
+                     const GeglRectangle *src_rect,
+                     const gint           s_rowstride,
+                     const gdouble        scale,
+                     const gint           components,
+                     const gint           d_rowstride)
+{
+  const gint ver  = s_rowstride;
+  const gint diag = ver + components;
+  const gint dst_y = dst_rect->y;
+  const gint src_y = src_rect->y;
+  const gint dst_width = dst_rect->width;
+  const gint dst_height = dst_rect->height;
+  gfloat dx[dst_rect->width];
+  gint jj[dst_rect->width];
+
+  for (gint x = 0; x < dst_rect->width; x++)
+  {
+    gfloat sx  = (dst_rect->x + x ) / scale - src_rect->x;
+    jj[x]  = int_floorf (sx);
+    dx[x]  = (sx - jj[x]);
+    jj[x] *= components;
+  }
+#define IMPL(components, ...) do{ \
+  for (gint y = 0; y < dst_height; y++)\
+    {\
+      const gfloat sy = (dst_y + y ) / scale - src_y;\
+      const gint   ii = int_floorf (sy);\
+      const gfloat dy = (sy - ii);\
+      const gfloat rdy = 1.0f - dy;\
+      guchar *dst = (guchar*)(dest_buf + y * d_rowstride);\
+      const guchar  *src_base = source_buf + ii * s_rowstride;\
+      gfloat *idx=&dx[0];\
+      gint *ijj=&jj[0];\
+\
+      for (gint x = 0; x < dst_width; x++)\
+      {\
+        const gfloat ldx = *(idx++);\
+        const gfloat rdx = 1.0f-ldx;\
+        const guchar *src[4];\
+        src[0] = (const guchar*)(src_base) + *(ijj++);\
+        src[1] = src[0] + components;\
+        src[2] = src[0] + ver;\
+        src[3] = src[0] + diag;\
+        __VA_ARGS__;\
+        dst += components;\
+      }\
+    }\
+}while(0)
+
+#define BILINEAR_ROUND(val) lut_u16_to_u8[int_floorf(val)]
+#define C(val)              lut_u8_to_u16[(val)]
+
+   switch (components)
+   {
+     default:
+       IMPL(components,
+         for (gint i = 0; i < components; ++i)
+            dst[i] =
+               BILINEAR_ROUND(
+               (C(src[0][i]) * rdx + C(src[1][i]) * ldx) * rdy +
+               (C(src[2][i]) * rdx + C(src[3][i]) * ldx) * dy);
+         );
+       break;
+     case 1:
+       IMPL(1,
+         dst[0] = BILINEAR_ROUND(
+               (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
+               (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
+           );
+       break;
+     case 2:
+       IMPL(2,
+         dst[0] = BILINEAR_ROUND(
+               (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
+               (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
+         dst[1] = BILINEAR_ROUND(
+               (C(src[0][1]) * rdx + C(src[1][1]) * ldx) * rdy +
+               (C(src[2][1]) * rdx + C(src[3][1]) * ldx) * dy);
+           );
+       break;
+     case 3:
+       IMPL(3,
+         dst[0] = BILINEAR_ROUND(
+               (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
+               (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
+         dst[1] = BILINEAR_ROUND(
+               (C(src[0][1]) * rdx + C(src[1][1]) * ldx) * rdy +
+               (C(src[2][1]) * rdx + C(src[3][1]) * ldx) * dy);
+         dst[2] = BILINEAR_ROUND(
+               (C(src[0][2]) * rdx + C(src[1][2]) * ldx) * rdy +
+               (C(src[2][2]) * rdx + C(src[3][2]) * ldx) * dy);
+           );
+       break;
+     case 4:
+       IMPL(4,
+         if (src[0][3] == 0 &&
+             src[1][3] == 0 &&
+             src[2][3] == 0 &&
+             src[3][3] == 0)
+         {
+            (*(uint32_t*)(dst)) = 0;
+         }
+         else
+         {
+           dst[0] = BILINEAR_ROUND(
+               (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
+               (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
+           dst[1] = BILINEAR_ROUND(
+               (C(src[0][1]) * rdx + C(src[1][1]) * ldx) * rdy +
+               (C(src[2][1]) * rdx + C(src[3][1]) * ldx) * dy);
+           dst[2] = BILINEAR_ROUND(
+               (C(src[0][2]) * rdx + C(src[1][2]) * ldx) * rdy +
+               (C(src[2][2]) * rdx + C(src[3][2]) * ldx) * dy);
+           dst[3] = BILINEAR_ROUND(
+               (C(src[0][3]) * rdx + C(src[1][3]) * ldx) * rdy +
+               (C(src[2][3]) * rdx + C(src[3][3]) * ldx) * dy);
+         }
+           );
+       break;
+   }
+#undef IMPL
+}
+#undef BILINEAR_ROUND
 #undef C
 
 static void
@@ -629,57 +756,6 @@ gegl_downscale_2x2_nearest (const Babl *format,
 }
 
 static void
-gegl_resample_boxfilter_generic_u16 (guchar       *dest_buf,
-                                 const guchar *source_buf,
-                                 const GeglRectangle *dst_rect,
-                                 const GeglRectangle *src_rect,
-                                 gint  s_rowstride,
-                                 gdouble scale,
-                                 const Babl *format,
-                                 gint d_rowstride)
-{
-  gint components = babl_format_get_n_components (format);
-  const gint tmp_bpp     = 4 * 2;
-  gint in_tmp_rowstride  = src_rect->width * tmp_bpp;
-  gint out_tmp_rowstride = dst_rect->width * tmp_bpp;
-  gint do_free = 0;
-
-  guchar *in_tmp, *out_tmp;
-
-  if (src_rect->height * in_tmp_rowstride + dst_rect->height * out_tmp_rowstride < GEGL_ALLOCA_THRESHOLD)
-  {
-    in_tmp = alloca (src_rect->height * in_tmp_rowstride);
-    out_tmp = alloca (dst_rect->height * out_tmp_rowstride);
-  }
-  else
-  {
-    in_tmp  = gegl_malloc (src_rect->height * in_tmp_rowstride);
-    out_tmp = gegl_malloc (dst_rect->height * out_tmp_rowstride);
-    do_free = 1;
-  }
-
-  u8_to_u16_rows (components,
-                  source_buf, s_rowstride,
-                  (void*)in_tmp, in_tmp_rowstride,
-                  src_rect->width, src_rect->height);
-
-  gegl_resample_boxfilter_u16 (out_tmp, in_tmp, dst_rect, src_rect,
-                               in_tmp_rowstride, scale, tmp_bpp, out_tmp_rowstride);
-
-  u16_to_u8_rows (components,
-                  (void*)out_tmp,  out_tmp_rowstride,
-                  dest_buf, d_rowstride,
-                  dst_rect->width, dst_rect->height);
-
-  if (do_free)
-    {
-      gegl_free (in_tmp);
-      gegl_free (out_tmp);
-    }
-}
-
-
-static void
 gegl_resample_boxfilter_generic (guchar       *dest_buf,
                                  const guchar *source_buf,
                                  const GeglRectangle *dst_rect,
@@ -770,15 +846,15 @@ void gegl_resample_boxfilter (guchar              *dest_buf,
   else
     {
       if (comp_type == gegl_babl_u8())
-        gegl_boxfilter_u8_nl (dest_buf, source_buf, dst_rect, src_rect,
-                              s_rowstride, scale, bpp, d_rowstride);
-#if 0
-        gegl_resample_boxfilter_generic_u16 (dest_buf, source_buf, dst_rect, src_rect,
-                                         s_rowstride, scale, format, d_rowstride);
-#endif
+        {
+          gegl_boxfilter_u8_nl (dest_buf, source_buf, dst_rect, src_rect,
+                                s_rowstride, scale, bpp, d_rowstride);
+        }
       else
+        {
         gegl_resample_boxfilter_generic (dest_buf, source_buf, dst_rect, src_rect,
                                          s_rowstride, scale, format, d_rowstride);
+        }
     }
 }
 
@@ -846,10 +922,9 @@ void gegl_resample_bilinear (guchar              *dest_buf,
                              gint                 d_rowstride)
 {
   const Babl *model     = babl_format_get_model (format);
-
+  const Babl *comp_type  = babl_format_get_type (format, 0);
   if (gegl_babl_model_is_linear (model))
   {
-    const Babl *comp_type  = babl_format_get_type (format, 0);
     const gint bpp = babl_format_get_bytes_per_pixel (format);
 
     if (comp_type == gegl_babl_float ())
@@ -873,8 +948,17 @@ void gegl_resample_bilinear (guchar              *dest_buf,
     }
   else
     {
+      if (comp_type == gegl_babl_u8 ())
+        {
+        const gint bpp = babl_format_get_bytes_per_pixel (format);
+        gegl_bilinear_u8_nl (dest_buf, source_buf, dst_rect, src_rect,
+                             s_rowstride, scale, bpp, d_rowstride);
+        }
+      else
+        {
       gegl_resample_bilinear_generic (dest_buf, source_buf, dst_rect, src_rect,
                                       s_rowstride, scale, format, d_rowstride);
+        }
     }
 }
 
@@ -893,7 +977,7 @@ gegl_resample_nearest (guchar              *dst,
   for (x = 0; x < dst_rect->width; x++)
   {
     const gfloat sx = (dst_rect->x + .5 + x) / scale - src_rect->x;
-    jj[x] = int_floorf (sx + GEGL_SCALE_EPSILON);
+    jj[x] = int_floorf (sx + GEGL_SCALE_EPSILON) * bpp;
   }
 
 #define IMPL(...) do{ \
@@ -901,6 +985,7 @@ gegl_resample_nearest (guchar              *dst,
     {\
       const gfloat sy = (dst_rect->y + .5 + y) / scale - src_rect->y;\
       const gint   ii = int_floorf (sy + GEGL_SCALE_EPSILON);\
+      gint *ijj = &jj[0];\
       guchar *d = &dst[y*dst_stride];\
       const guchar *s = &src[ii * src_stride];\
       for (x = 0; x < dst_rect->width; x++)\
@@ -914,43 +999,43 @@ gegl_resample_nearest (guchar              *dst,
   switch(bpp)
   {
     case 1:IMPL(
-             d[0] = s[jj[x] * bpp];
+             d[0] = s[*(ijj++)];
            );
     break;
     case 2:IMPL(
              uint16_t* d16 = (void*) d;
-             const uint16_t* s16 = (void*) &s[jj[x] * bpp];
+             const uint16_t* s16 = (void*) &s[*(ijj++)];
              d16[0] = s16[0];
            );
     break;
     case 3:IMPL(
-             d[0] = s[jj[x] * bpp];
-             d[1] = s[jj[x] * bpp + 1];
-             d[2] = s[jj[x] * bpp + 2];
+             d[0] = s[*ijj];
+             d[1] = s[*ijj + 1];
+             d[2] = s[*(ijj++) + 2];
            );
     break;
     case 4:IMPL(
              uint32_t* d32 = (void*) d;
-             const uint32_t* s32 = (void*) &s[jj[x] * bpp];
+             const uint32_t* s32 = (void*) &s[*(ijj++)];
              d32[0] = s32[0];
            );
     break;
     case 8:IMPL(
              uint64_t* d64 = (void*) d;
-             const uint64_t* s64 = (void*) &s[jj[x] * bpp];
+             const uint64_t* s64 = (void*) &s[*(ijj++)];
              d64[0] = s64[0];
            );
     break;
     case 16:IMPL(
              uint64_t* d64 = (void*) d;
-             const uint64_t* s64 = (void*) &s[jj[x] * bpp];
+             const uint64_t* s64 = (void*) &s[*(ijj++)];
              d64[0] = s64[0];
              d64[1] = s64[1];
            );
     break;
     default:
          IMPL(
-          memcpy (&d[0], &s[jj[x] * bpp], bpp);
+          memcpy (&d[0], &s[*(ijj++)], bpp);
            );
     break;
   }
