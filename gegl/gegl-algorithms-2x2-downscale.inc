@@ -29,9 +29,9 @@ DOWNSCALE_FUNCNAME (const Babl *format,
           for (x = 0; x < src_width / 2; x++)
             {
               DOWNSCALE_TYPE * aa = ((DOWNSCALE_TYPE *)(src));
-              DOWNSCALE_TYPE * ab = ((DOWNSCALE_TYPE *)(src + bpp));
-              DOWNSCALE_TYPE * ba = ((DOWNSCALE_TYPE *)(src + src_rowstride));
-              DOWNSCALE_TYPE * bb = ((DOWNSCALE_TYPE *)(src + diag));
+              DOWNSCALE_TYPE * ab = ((DOWNSCALE_TYPE *)((guchar*)(aa) + bpp));
+              DOWNSCALE_TYPE * ba = ((DOWNSCALE_TYPE *)((guchar*)(aa) + src_rowstride));
+              DOWNSCALE_TYPE * bb = ((DOWNSCALE_TYPE *)((guchar*)(aa) + diag));
 
               ((DOWNSCALE_TYPE *)dst)[0] = (S(aa[0]) + S(ab[0]) + S(ba[0]) + S(bb[0])) / DOWNSCALE_DIVISOR;
 
@@ -50,9 +50,9 @@ DOWNSCALE_FUNCNAME (const Babl *format,
           for (x = 0; x < src_width / 2; x++)
             {
               DOWNSCALE_TYPE * aa = ((DOWNSCALE_TYPE *)(src));
-              DOWNSCALE_TYPE * ab = ((DOWNSCALE_TYPE *)(src + bpp));
-              DOWNSCALE_TYPE * ba = ((DOWNSCALE_TYPE *)(src + src_rowstride));
-              DOWNSCALE_TYPE * bb = ((DOWNSCALE_TYPE *)(src + diag));
+              DOWNSCALE_TYPE * ab = ((DOWNSCALE_TYPE *)((guchar*)(aa) + bpp));
+              DOWNSCALE_TYPE * ba = ((DOWNSCALE_TYPE *)((guchar*)(aa) + src_rowstride));
+              DOWNSCALE_TYPE * bb = ((DOWNSCALE_TYPE *)((guchar*)(aa) + diag));
 
               ((DOWNSCALE_TYPE *)dst)[0] = (S(aa[0]) + S(ab[0]) + S(ba[0]) +
                 S(bb[0])) / DOWNSCALE_DIVISOR;
@@ -74,9 +74,9 @@ DOWNSCALE_FUNCNAME (const Babl *format,
           for (x = 0; x < src_width / 2; x++)
             {
               DOWNSCALE_TYPE * aa = ((DOWNSCALE_TYPE *)(src));
-              DOWNSCALE_TYPE * ab = ((DOWNSCALE_TYPE *)(src + bpp));
-              DOWNSCALE_TYPE * ba = ((DOWNSCALE_TYPE *)(src + src_rowstride));
-              DOWNSCALE_TYPE * bb = ((DOWNSCALE_TYPE *)(src + diag));
+              DOWNSCALE_TYPE * ab = ((DOWNSCALE_TYPE *)((guchar*)(aa) + bpp));
+              DOWNSCALE_TYPE * ba = ((DOWNSCALE_TYPE *)((guchar*)(aa) + src_rowstride));
+              DOWNSCALE_TYPE * bb = ((DOWNSCALE_TYPE *)((guchar*)(aa) + diag));
 
               ((DOWNSCALE_TYPE *)dst)[0] =
                (S(aa[0]) + S(ab[0]) + S(ba[0]) + S(bb[0])) / DOWNSCALE_DIVISOR;
@@ -100,9 +100,9 @@ DOWNSCALE_FUNCNAME (const Babl *format,
           for (x = 0; x < src_width / 2; x++)
             {
               DOWNSCALE_TYPE * aa = ((DOWNSCALE_TYPE *)(src));
-              DOWNSCALE_TYPE * ab = ((DOWNSCALE_TYPE *)(src + bpp));
-              DOWNSCALE_TYPE * ba = ((DOWNSCALE_TYPE *)(src + src_rowstride));
-              DOWNSCALE_TYPE * bb = ((DOWNSCALE_TYPE *)(src + diag));
+              DOWNSCALE_TYPE * ab = ((DOWNSCALE_TYPE *)((guchar*)(aa) + bpp));
+              DOWNSCALE_TYPE * ba = ((DOWNSCALE_TYPE *)((guchar*)(aa) + src_rowstride));
+              DOWNSCALE_TYPE * bb = ((DOWNSCALE_TYPE *)((guchar*)(aa) + diag));
 
               ((DOWNSCALE_TYPE *)dst)[0] =
                (S(aa[0]) + S(ab[0]) + S(ba[0]) + S(bb[0])) / DOWNSCALE_DIVISOR;
@@ -129,9 +129,9 @@ DOWNSCALE_FUNCNAME (const Babl *format,
             {
               gint i;
               DOWNSCALE_TYPE * aa = ((DOWNSCALE_TYPE *)(src));
-              DOWNSCALE_TYPE * ab = ((DOWNSCALE_TYPE *)(src + bpp));
-              DOWNSCALE_TYPE * ba = ((DOWNSCALE_TYPE *)(src + src_rowstride));
-              DOWNSCALE_TYPE * bb = ((DOWNSCALE_TYPE *)(src + diag));
+              DOWNSCALE_TYPE * ab = ((DOWNSCALE_TYPE *)((guchar*)(aa) + bpp));
+              DOWNSCALE_TYPE * ba = ((DOWNSCALE_TYPE *)((guchar*)(aa) + src_rowstride));
+              DOWNSCALE_TYPE * bb = ((DOWNSCALE_TYPE *)((guchar*)(aa) + diag));
 
               for (i = 0; i < components; i++)
                 ((DOWNSCALE_TYPE *)dst)[i] =
