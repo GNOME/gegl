@@ -1892,6 +1892,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                            GeglAbyssPolicy      repeat_mode)
 {
   gboolean do_nearest = (repeat_mode & GEGL_BUFFER_NEAREST) != 0;
+  gboolean do_bilinear = (repeat_mode & GEGL_BUFFER_BILINEAR) != 0;
   repeat_mode &= 0x7;
 
   if (gegl_cl_is_accelerated ())
@@ -2008,33 +2009,60 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
       if (!do_nearest && scale <= 1.99)
         {
-          buf_width  += 2;
-          buf_height += 2;
-          offset = (buf_width + 1) * bpp;
-          sample_buf = g_malloc0 (buf_height * buf_width * bpp);
-          /* NOTE: this iterate read dispatch could perhaps with advantage
-             be done in the buffers format - or in a well suited for
-             scaling format - rather than the target format?, right now
-             requesting 8bit from floating point causes more conversions
-             than desired */
-          gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
+          if (do_bilinear)
+            {
+              buf_width  += 1;
+              buf_height += 1;
+              sample_rect.width  += factor;
+              sample_rect.height += factor;
+
+              sample_buf = g_malloc (buf_height * buf_width * bpp);
+              gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
+                                         (guchar*)sample_buf,
+                                          buf_width * bpp,
+                                          format, level, repeat_mode);
+
+              sample_rect.x      = x1;
+              sample_rect.y      = y1;
+              sample_rect.width  = x2 - x1 + 1;
+              sample_rect.height = y2 - y1 + 1;
+
+              gegl_resample_bilinear (dest_buf,
+                                      sample_buf,
+                                      rect,
+                                      &sample_rect,
+                                      buf_width * bpp,
+                                      scale,
+                                      format,
+                                      rowstride);
+            }
+          else /* boxfilter */
+            {
+              buf_width  += 2;
+              buf_height += 2;
+              offset = (buf_width + 1) * bpp;
+
+              sample_buf = g_malloc (buf_height * buf_width * bpp);
+              gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
                                          (guchar*)sample_buf + offset,
-                                         buf_width * bpp,
-                                         format, level, repeat_mode);
+                                          buf_width * bpp,
+                                          format, level, repeat_mode);
 
-          sample_rect.x      = x1 - 1;
-          sample_rect.y      = y1 - 1;
-          sample_rect.width  = x2 - x1 + 2;
-          sample_rect.height = y2 - y1 + 2;
+              sample_rect.x      = x1 - 1;
+              sample_rect.y      = y1 - 1;
+              sample_rect.width  = x2 - x1 + 2;
+              sample_rect.height = y2 - y1 + 2;
 
-          gegl_resample_boxfilter (dest_buf,
-                                   sample_buf,
-                                   rect,
-                                   &sample_rect,
-                                   buf_width * bpp,
-                                   scale,
-                                   format,
-                                   rowstride);
+              gegl_resample_boxfilter (dest_buf,
+                                       sample_buf,
+                                       rect,
+                                       &sample_rect,
+                                       buf_width * bpp,
+                                       scale,
+                                       format,
+                                       rowstride);
+            }
+
           g_free (sample_buf);
         }
       else if (buf_height && buf_width)

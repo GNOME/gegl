@@ -1136,7 +1136,7 @@ gegl_node_blit (GeglNode            *self,
                 gint                 rowstride,
                 GeglBlitFlags        flags)
 {
-  gboolean do_nearest = (flags & GEGL_BUFFER_NEAREST) != 0;
+  gint interpolation = flags & (GEGL_BUFFER_NEAREST | GEGL_BUFFER_BILINEAR);
   flags &= 0xf;
 
   g_return_if_fail (GEGL_IS_NODE (self));
@@ -1145,7 +1145,7 @@ gegl_node_blit (GeglNode            *self,
   if (rowstride == GEGL_AUTO_ROWSTRIDE && format)
     rowstride = babl_format_get_bytes_per_pixel (format) * roi->width;
 
-  if (!flags)
+  if (flags == 0) // DEFAULT, just render, caching only if graph is explicitly caching itself
     {
       GeglBuffer *buffer;
 
@@ -1161,7 +1161,7 @@ gegl_node_blit (GeglNode            *self,
           buffer = gegl_node_apply_roi (self, roi, 0);
         }
       if (buffer && destination_buf)
-        gegl_buffer_get (buffer, roi, scale, format, destination_buf, rowstride, GEGL_ABYSS_NONE | (do_nearest?GEGL_BUFFER_NEAREST:0));
+        gegl_buffer_get (buffer, roi, scale, format, destination_buf, rowstride, GEGL_ABYSS_NONE | interpolation);
 
       g_clear_object (&buffer);
     }
@@ -1197,7 +1197,7 @@ gegl_node_blit (GeglNode            *self,
         {
           gegl_buffer_get (buffer, roi, scale,
                            format, destination_buf, rowstride,
-                           GEGL_ABYSS_NONE|(do_nearest?GEGL_BUFFER_NEAREST:0));
+                           GEGL_ABYSS_NONE|interpolation);
         }
     }
 }
