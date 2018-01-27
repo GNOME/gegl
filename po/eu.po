@@ -2,25 +2,25 @@
 # Copyright (C) 2013 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gegl package.
 #
+#
 # osoitz <oelkoro@gmail.com>, 2013.
-# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013.
+# Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013, 2018.
 # Edurne Labaka <elabaka@uzei.com>, 2015.
 # Asier Sarasua Garmendia <asier.sarasua@gmail.com>, 2018.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2018-01-25 18:03+0000\n"
-"PO-Revision-Date: 2018-01-26 12:00+0000\n"
-"Last-Translator: assar <asier.sarasua@gmail.com>, 2018\n"
+"PO-Revision-Date: 2018-01-27 16:57+0100\n"
+"Last-Translator: Inaki Larranaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: OmegaT\n"
+"X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: bin/gegl.c:174
@@ -5086,17 +5086,17 @@ msgstr "Itzalak"
 #: operations/common-gpl3+/shadows-highlights.c:29
 #: operations/common-gpl3+/shadows-highlights-correction.c:30
 msgid "Adjust exposure of shadows"
-msgstr ""
+msgstr "Doitu itzalen esposizioa"
 
 #: operations/common-gpl3+/shadows-highlights.c:32
 #: operations/common-gpl3+/shadows-highlights-correction.c:33
 msgid "Highlights"
-msgstr "Argi-ukituak"
+msgstr "Distirak"
 
 #: operations/common-gpl3+/shadows-highlights.c:33
 #: operations/common-gpl3+/shadows-highlights-correction.c:34
 msgid "Adjust exposure of highlights"
-msgstr ""
+msgstr "Doitu distiren esposizioa"
 
 #: operations/common-gpl3+/shadows-highlights.c:36
 #: operations/common-gpl3+/shadows-highlights-correction.c:37
@@ -5105,14 +5105,12 @@ msgstr "Puntu zuriaren konpentsazioa"
 
 #: operations/common-gpl3+/shadows-highlights.c:37
 #: operations/common-gpl3+/shadows-highlights-correction.c:38
-#, fuzzy
 msgid "Shift white point"
-msgstr "Desplazamenduaren noranzkoa"
+msgstr "Desplazatu puntu zuria"
 
 #: operations/common-gpl3+/shadows-highlights.c:41
-#, fuzzy
 msgid "Spatial extent"
-msgstr "Hedadura bertikala"
+msgstr "Hedadura espaziala"
 
 #: operations/common-gpl3+/shadows-highlights.c:45
 #: operations/common-gpl3+/shadows-highlights-correction.c:41
@@ -5122,7 +5120,7 @@ msgstr "Konprimatu"
 #: operations/common-gpl3+/shadows-highlights.c:46
 #: operations/common-gpl3+/shadows-highlights-correction.c:42
 msgid "Compress the effect on shadows/highlights and preserve midtones"
-msgstr ""
+msgstr "Konprimitu efektuak itzaletan/distiretan eta mantendu erdiko tonuak"
 
 #: operations/common-gpl3+/shadows-highlights.c:49
 #: operations/common-gpl3+/shadows-highlights-correction.c:45
@@ -5132,7 +5130,7 @@ msgstr "Itzalen kolore-doiketa"
 #: operations/common-gpl3+/shadows-highlights.c:50
 #: operations/common-gpl3+/shadows-highlights-correction.c:46
 msgid "Adjust saturation of shadows"
-msgstr ""
+msgstr "Doitu itzalen saturazioa"
 
 #: operations/common-gpl3+/shadows-highlights.c:53
 #: operations/common-gpl3+/shadows-highlights-correction.c:49
@@ -5142,7 +5140,7 @@ msgstr "Distiren kolore-doiketa"
 #: operations/common-gpl3+/shadows-highlights.c:54
 #: operations/common-gpl3+/shadows-highlights-correction.c:50
 msgid "Adjust saturation of highlights"
-msgstr ""
+msgstr "Doitu distiren saturazioa"
 
 #: operations/common-gpl3+/shadows-highlights.c:244
 msgid "Shadows-Highlights"
@@ -5242,7 +5240,7 @@ msgstr "Lausotze leuna"
 
 #: operations/common-gpl3+/softglow.c:237
 msgid "Simulate glow by making highlights intense and fuzzy"
-msgstr "Simulatu dirdira intentsitatea eta hurbilekoa nabarmenduz"
+msgstr "Simulatu distira intentsitatea eta hurbilekoa nabarmenduz"
 
 #: operations/common-gpl3+/spiral.c:27
 msgid "Logarithmic"
@@ -7945,3 +7943,4 @@ msgstr "Esferizatu"
 #: operations/workshop/spherize.c:330
 msgid "Wrap image around a spherical cap"
 msgstr "Egokitu irudia geruza esferiko baten inguruan"
+
