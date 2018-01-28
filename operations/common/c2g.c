@@ -13,9 +13,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2007,2009 Øyvind Kolås     <pippin@gimp.org>
- *                     Ivar Farup       <ivarf@hig.no>
- *                     Allesandro Rizzi <rizzi@dti.unimi.it>
+ * Copyright 2007,2009,2018 Øyvind Kolås     <pippin@gimp.org>
+ *           2007           Ivar Farup       <ivarf@hig.no>
+ *           2007           Allesandro Rizzi <rizzi@dti.unimi.it>
  */
 
 #include "config.h"
@@ -43,6 +43,9 @@ property_int (iterations, _("Iterations"), 10)
                      "provides less noisy results at a computational cost"))
   value_range (1, 1000)
   ui_range (1, 30)
+
+property_boolean (enhance_shadows, _("Enhance Shadows"), FALSE)
+    description(_("When enabled details in shadows are boosted at the expense of noise"))
 
 /*
 property_double (rgamma, _("Radial Gamma"), 0.0, 8.0, 2.0,
@@ -81,6 +84,7 @@ static void c2g (GeglOperation       *op,
     GeglBufferIterator *i = gegl_buffer_iterator_new (dst, dst_rect, 0, babl_format("YA float"),
                                                       GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
     GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format, GEGL_SAMPLER_NEAREST, level);
+    GeglSamplerGetFun getfun = gegl_sampler_get_fun (sampler);
 #if 0
     float total_pix = dst_rect->width * dst_rect->height;
 #endif
@@ -92,6 +96,8 @@ static void c2g (GeglOperation       *op,
       gint    dst_offset=0;
       gfloat *dst_buf = i->data[0];
 
+      if (GEGL_PROPERTIES(op)->enhance_shadows)
+      {
       for (y=i->roi[0].y; y < i->roi[0].y + i->roi[0].height; y++)
         {
           for (x=i->roi[0].x; x < i->roi[0].x + i->roi[0].width; x++)
@@ -100,7 +106,7 @@ static void c2g (GeglOperation       *op,
               gfloat  max[4];
               gfloat  pixel[4];
 
-              compute_envelopes (src, sampler,
+              compute_envelopes (src, sampler, getfun,
                                  x, y,
                                  radius, samples,
                                  iterations,
@@ -143,10 +149,61 @@ static void c2g (GeglOperation       *op,
 
             pix_done += i->roi[0].width;
           }
+      }
+      else
+      {
+        for (y=i->roi[0].y; y < i->roi[0].y + i->roi[0].height; y++)
+          for (x=i->roi[0].x; x < i->roi[0].x + i->roi[0].width; x++)
+            {
+              gfloat  max[4];
+              gfloat  pixel[4];
+
+              compute_envelopes (src, sampler, getfun,
+                                 x, y,
+                                 radius, samples,
+                                 iterations,
+                                 FALSE, /* same spray */
+                                 rgamma,
+                                 NULL, max, pixel, format);
+              {
+                /* this should be replaced with a better/faster projection of
+                 * pixel onto the vector spanned by min -> max, currently
+                 * computed by comparing the distance to min with the sum
+                 * of the distance to min/max.
+                 */
+
+                gfloat nominator = 0;
+                gfloat denominator = 0;
+                gint c;
+                for (c=0; c<3; c++)
+                  {
+                    nominator   += pixel[c] * pixel[c];
+                    denominator += (pixel[c] - max[c]) * (pixel[c] - max[c]);
+                  }
+
+                nominator = sqrtf (nominator);
+                denominator = sqrtf (denominator);
+                denominator = nominator + denominator;
+
+                if (denominator>0.000)
+                  {
+                    dst_buf[dst_offset+0] = nominator/denominator;
+                  }
+                else
+                  {
+                    /* shouldn't happen */
+                    dst_buf[dst_offset+0] = 0.5;
+                  }
+                dst_buf[dst_offset+1] = pixel[3];
+                dst_offset+=2;
+              }
+            }
+            pix_done += i->roi[0].width;
+          }
+      }
 #if 0
         gegl_operation_progress (op, pix_done / total_pix, "");
 #endif
-    }
     g_object_unref (sampler);
   }
 }

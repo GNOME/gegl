@@ -54,6 +54,7 @@ static void compute_luts(gdouble rgamma)
 static inline void
 sample_min_max (GeglBuffer  *buffer,
                 GeglSampler *sampler,
+                GeglSamplerGetFun getfun,
                 gint         x,
                 gint         y,
                 gint         radius,
@@ -109,7 +110,7 @@ retry:                      /* if we've sampled outside the valid image
 
       {
         gfloat pixel[4];
-        gegl_sampler_get (sampler, u, v, NULL, (void*)(&pixel[0]), GEGL_ABYSS_CLAMP);
+        getfun (sampler, u, v, NULL, (void*)(&pixel[0]), GEGL_ABYSS_CLAMP);
 
         if (pixel[3]>0.0) /* ignore fully transparent pixels */
           {
@@ -137,8 +138,9 @@ retry:                      /* if we've sampled outside the valid image
     }
 }
 
-static inline void compute_envelopes (GeglBuffer *buffer,
-                                      GeglSampler *sampler,
+static inline void compute_envelopes (GeglBuffer       *buffer,
+                                      GeglSampler      *sampler,
+                                      GeglSamplerGetFun getfun,
                                       gint     x,
                                       gint     y,
                                       gint     radius,
@@ -156,7 +158,7 @@ static inline void compute_envelopes (GeglBuffer *buffer,
   gfloat  range_sum[4]               = {0,0,0,0};
   gfloat  relative_brightness_sum[4] = {0,0,0,0};
 
-  gegl_sampler_get (sampler, x, y, NULL, (void*)(&pixel[0]), GEGL_ABYSS_CLAMP);
+  getfun (sampler, x, y, NULL, (void*)(&pixel[0]), GEGL_ABYSS_CLAMP);
 
   /* compute lookuptables for the gamma, currently not used/exposed
    * as a tweakable property */
@@ -174,6 +176,7 @@ static inline void compute_envelopes (GeglBuffer *buffer,
 
       sample_min_max (buffer,
                       sampler,
+                      getfun,
                       x, y,
                       radius, samples,
                       min, max, pixel, format);

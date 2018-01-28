@@ -13,9 +13,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2007 Øyvind Kolås     <oeyvindk@hig.no>
- *                Ivar Farup       <ivarf@hig.no>
- *                Allesandro Rizzi <rizzi@dti.unimi.it>
+ * Copyright 2007,2009,2018 Øyvind Kolås     <pippin@gimp.org>
+ *           2007           Ivar Farup       <ivarf@hig.no>
+ *           2007           Allesandro Rizzi <rizzi@dti.unimi.it>
  */
 
 #include "config.h"
@@ -40,6 +40,9 @@ property_int (iterations, _("Iterations"), 5)
     description(_("Number of iterations, a higher number of iterations provides a less noisy rendering at a computational cost"))
     value_range (1, 1000)
     ui_range    (1, 30)
+
+property_boolean (enhance_shadows, _("Enhance Shadows"), FALSE)
+    description(_("When enabled also enhances shadow regions - when disabled a more natural result is yielded"))
 
 /*
 
@@ -73,6 +76,7 @@ static void stress (GeglBuffer          *src,
                     gint                 samples,
                     gint                 iterations,
                     gdouble              rgamma,
+                    gboolean             enhance_shadows,
                     gint                 level)
 {
   const Babl *format = babl_format ("RGBA float");
@@ -82,6 +86,7 @@ static void stress (GeglBuffer          *src,
     GeglBufferIterator *i = gegl_buffer_iterator_new (dst, dst_rect, 0, babl_format("RaGaBaA float"),
                                                       GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
     GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format, GEGL_SAMPLER_NEAREST, level);
+    GeglSamplerGetFun getfun = gegl_sampler_get_fun (sampler);
 
     while (gegl_buffer_iterator_next (i))
     {
@@ -89,15 +94,16 @@ static void stress (GeglBuffer          *src,
       gint    dst_offset=0;
       gfloat *dst_buf = i->data[0];
 
-      for (y=i->roi[0].y; y < i->roi[0].y + i->roi[0].height; y++)
-        {
+      if (enhance_shadows)
+      {
+        for (y=i->roi[0].y; y < i->roi[0].y + i->roi[0].height; y++)
           for (x=i->roi[0].x; x < i->roi[0].x + i->roi[0].width; x++)
             {
               gfloat  min[4];
               gfloat  max[4];
               gfloat  pixel[4];
 
-              compute_envelopes (src, sampler,
+              compute_envelopes (src, sampler, getfun,
                                  x, y,
                                  radius, samples,
                                  iterations,
@@ -117,8 +123,7 @@ static void stress (GeglBuffer          *src,
                   gfloat delta = max[c]-min[c];
                   if (delta != 0)
                     {
-                      dst_buf[dst_offset+c] =
-                         (pixel[c]-min[c])/delta;
+                      dst_buf[dst_offset+c] = (pixel[c]-min[c])/delta;
                     }
                   else
                     {
@@ -130,7 +135,47 @@ static void stress (GeglBuffer          *src,
                 dst_offset+=4;
               }
             }
-          }
+      }
+      else
+      {
+        for (y=i->roi[0].y; y < i->roi[0].y + i->roi[0].height; y++)
+          for (x=i->roi[0].x; x < i->roi[0].x + i->roi[0].width; x++)
+            {
+              gfloat  max[4];
+              gfloat  pixel[4];
+
+              compute_envelopes (src, sampler, getfun,
+                                 x, y,
+                                 radius, samples,
+                                 iterations,
+                                 FALSE, /* same spray */
+                                 rgamma,
+                                 NULL, max, pixel, format);
+              {
+                /* this should be replaced with a better/faster projection of
+                 * pixel onto the vector spanned by min -> max, currently
+                 * computed by comparing the distance to min with the sum
+                 * of the distance to min/max.
+                 */
+
+              gint c;
+              for (c=0;c<3;c++)
+                {
+                  gfloat delta = max[c];
+                  if (delta != 0)
+                    {
+                      dst_buf[dst_offset+c] = (pixel[c])/delta;
+                    }
+                  else
+                    {
+                      dst_buf[dst_offset+c] = 0.5;
+                    }
+                }
+                dst_buf[dst_offset+3] = pixel[3];
+                dst_offset+=4;
+              }
+            }
+      }
     }
     g_object_unref (sampler);
   }
@@ -172,7 +217,9 @@ process (GeglOperation       *operation,
           o->radius,
           o->samples,
           o->iterations,
-          RGAMMA /*o->rgamma,*/, level);
+          RGAMMA /*o->rgamma,*/,
+          o->enhance_shadows,
+          level);
 
   return  TRUE;
 }
