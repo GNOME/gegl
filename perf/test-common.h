@@ -8,8 +8,8 @@
                            more noise, increase this number towards 1.0,
                            like 0.8 */
 #define BAIL_THRESHOLD 0.001
-#define BAIL_COUNT     250
-#define MIN_ITER       500
+#define BAIL_COUNT     75
+#define MIN_ITER       100
 
 static long ticks_start;
 
