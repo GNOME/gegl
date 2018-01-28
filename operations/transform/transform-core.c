@@ -1082,20 +1082,15 @@ transform_affine (GeglOperation       *operation,
   GeglRectangle  context_rect = *gegl_sampler_get_context_rect (sampler);
   GeglRectangle  dest_extent  = *roi;
 
-  bounding_box.x      >>= level;
-  bounding_box.y      >>= level;
-  bounding_box.width  >>= level;
-  bounding_box.height >>= level;
+  bounding_box.x      += context_rect.x;
+  bounding_box.y      += context_rect.y;
+  bounding_box.width  += context_rect.width  - 1;
+  bounding_box.height += context_rect.height - 1;
 
-  bounding_box.x       += context_rect.x;
-  bounding_box.y       += context_rect.y;
-  bounding_box.width   += context_rect.width  - 1;
-  bounding_box.height  += context_rect.height - 1;
-
-  dest_extent.x       >>= level;
-  dest_extent.y       >>= level;
-  dest_extent.width   >>= level;
-  dest_extent.height  >>= level;
+  dest_extent.x      >>= level;
+  dest_extent.y      >>= level;
+  dest_extent.width  >>= level;
+  dest_extent.height >>= level;
 
   /*
    * XXX: fast paths as existing in files in the same dir as
@@ -1239,20 +1234,15 @@ transform_generic (GeglOperation       *operation,
   GeglRectangle  context_rect = *gegl_sampler_get_context_rect (sampler);
   GeglRectangle  dest_extent  = *roi;
 
-  bounding_box.x      >>= level;
-  bounding_box.y      >>= level;
-  bounding_box.width  >>= level;
-  bounding_box.height >>= level;
+  bounding_box.x      += context_rect.x;
+  bounding_box.y      += context_rect.y;
+  bounding_box.width  += context_rect.width  - 1;
+  bounding_box.height += context_rect.height - 1;
 
-  bounding_box.x       += context_rect.x;
-  bounding_box.y       += context_rect.y;
-  bounding_box.width   += context_rect.width  - 1;
-  bounding_box.height  += context_rect.height - 1;
-
-  dest_extent.x       >>= level;
-  dest_extent.y       >>= level;
-  dest_extent.width   >>= level;
-  dest_extent.height  >>= level;
+  dest_extent.x      >>= level;
+  dest_extent.y      >>= level;
+  dest_extent.width  >>= level;
+  dest_extent.height >>= level;
 
   /*
    * Construct an output tile iterator.
@@ -1391,15 +1381,10 @@ transform_nearest (GeglOperation       *operation,
   GeglRectangle  bounding_box = *gegl_buffer_get_abyss (src);
   GeglRectangle  dest_extent  = *roi;
 
-  bounding_box.x      >>= level;
-  bounding_box.y      >>= level;
-  bounding_box.width  >>= level;
-  bounding_box.height >>= level;
-
-  dest_extent.x       >>= level;
-  dest_extent.y       >>= level;
-  dest_extent.width   >>= level;
-  dest_extent.height  >>= level;
+  dest_extent.x      >>= level;
+  dest_extent.y      >>= level;
+  dest_extent.width  >>= level;
+  dest_extent.height >>= level;
 
   /*
    * Construct an output tile iterator.
