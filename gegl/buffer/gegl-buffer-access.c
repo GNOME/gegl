@@ -1892,19 +1892,6 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                            GeglAbyssPolicy      flags)
 {
   GeglAbyssPolicy repeat_mode = flags & 0x7; /* mask off interpolation from repeat mode part of flags */
-  gint interpolation = (flags & GEGL_BUFFER_BOXFILTER); /* BOXFILTER is and of all interpols */
-
-  if (interpolation == 0)
-  {
-    /* with no specified interpolation we aim for a trade-off where
-       100-200% ends up using box-filter - which is a better transition
-       to nearest neighbor which happens beyond 200% further below.
-     */
-    if (scale > 1.0)
-      interpolation = GEGL_BUFFER_BOXFILTER;
-    else
-      interpolation = GEGL_BUFFER_BILINEAR; /*about 2x as fast as box filter*/
-  }
 
   if (gegl_cl_is_accelerated ())
     {
@@ -1987,6 +1974,9 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       gint    factor = 1;
       gint    offset = 0;
 
+      gint interpolation = (flags & GEGL_BUFFER_FILTER_ALL);
+
+
       while (scale <= 0.5)
         {
           x1 = 0 < x1 ? x1 / 2 : (x1 - 1) / 2;
@@ -2018,88 +2008,100 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       buf_width  = x2 - x1;
       buf_height = y2 - y1;
 
-      if ((interpolation != GEGL_BUFFER_NEAREST) && scale <= 1.99)
+      if (interpolation == GEGL_BUFFER_FILTER_AUTO)
+      {
+        /* with no specified interpolation we aim for a trade-off where
+           100-200% ends up using box-filter - which is a better transition
+           to nearest neighbor which happens beyond 200% further below.
+         */
+        if (scale >= 2.0)
+          interpolation = GEGL_BUFFER_FILTER_NEAREST;
+        else if (scale > 1.0)
+          interpolation = GEGL_BUFFER_FILTER_BOX;
+        else
+          interpolation = GEGL_BUFFER_FILTER_BILINEAR;
+      }
+
+      if (buf_height && buf_width)
+        switch(interpolation)
         {
-          if (interpolation == GEGL_BUFFER_BILINEAR)
-            {
-              buf_width  += 1;
-              buf_height += 1;
-              sample_rect.width  += factor;
-              sample_rect.height += factor;
+          case GEGL_BUFFER_FILTER_NEAREST:
+            sample_buf = g_malloc (buf_height * buf_width * bpp);
 
-              sample_buf = g_malloc (buf_height * buf_width * bpp);
-              gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
-                                         (guchar*)sample_buf,
-                                          buf_width * bpp,
-                                          format, level, repeat_mode);
+            gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
+                                               (guchar*)sample_buf,
+                                               buf_width * bpp,
+                                               format, level, repeat_mode);
+            sample_rect.x      = x1;
+            sample_rect.y      = y1;
+            sample_rect.width  = x2 - x1;
+            sample_rect.height = y2 - y1;
 
-              sample_rect.x      = x1;
-              sample_rect.y      = y1;
-              sample_rect.width  = x2 - x1 + 1;
-              sample_rect.height = y2 - y1 + 1;
+            gegl_resample_nearest (dest_buf,
+                                   sample_buf,
+                                   rect,
+                                   &sample_rect,
+                                   buf_width * bpp,
+                                   scale,
+                                   bpp,
+                                   rowstride);
+            g_free (sample_buf);
+            break;
+          case GEGL_BUFFER_FILTER_BILINEAR:
+            buf_width  += 1;
+            buf_height += 1;
+            sample_rect.width  += factor;
+            sample_rect.height += factor;
 
-              gegl_resample_bilinear (dest_buf,
-                                      sample_buf,
-                                      rect,
-                                      &sample_rect,
-                                      buf_width * bpp,
-                                      scale,
-                                      format,
-                                      rowstride);
-            }
-          else /* boxfilter */
-            {
-              buf_width  += 2;
-              buf_height += 2;
-              offset = (buf_width + 1) * bpp;
+            sample_buf = g_malloc (buf_height * buf_width * bpp);
+            gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
+                                       (guchar*)sample_buf,
+                                        buf_width * bpp,
+                                        format, level, repeat_mode);
 
-              sample_buf = g_malloc (buf_height * buf_width * bpp);
-              gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
-                                         (guchar*)sample_buf + offset,
-                                          buf_width * bpp,
-                                          format, level, repeat_mode);
+            sample_rect.x      = x1;
+            sample_rect.y      = y1;
+            sample_rect.width  = x2 - x1 + 1;
+            sample_rect.height = y2 - y1 + 1;
 
-              sample_rect.x      = x1 - 1;
-              sample_rect.y      = y1 - 1;
-              sample_rect.width  = x2 - x1 + 2;
-              sample_rect.height = y2 - y1 + 2;
+            gegl_resample_bilinear (dest_buf,
+                                    sample_buf,
+                                    rect,
+                                    &sample_rect,
+                                    buf_width * bpp,
+                                    scale,
+                                    format,
+                                    rowstride);
+            g_free (sample_buf);
+            break;
+          case GEGL_BUFFER_FILTER_BOX:
+          default:
+            buf_width  += 2;
+            buf_height += 2;
+            offset = (buf_width + 1) * bpp;
 
-              gegl_resample_boxfilter (dest_buf,
-                                       sample_buf,
-                                       rect,
-                                       &sample_rect,
-                                       buf_width * bpp,
-                                       scale,
-                                       format,
-                                       rowstride);
-            }
+            sample_buf = g_malloc (buf_height * buf_width * bpp);
+            gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
+                                       (guchar*)sample_buf + offset,
+                                        buf_width * bpp,
+                                        format, level, repeat_mode);
 
-          g_free (sample_buf);
-        }
-      else if (buf_height && buf_width)
-        {
-          sample_buf = g_malloc (buf_height * buf_width * bpp);
+            sample_rect.x      = x1 - 1;
+            sample_rect.y      = y1 - 1;
+            sample_rect.width  = x2 - x1 + 2;
+            sample_rect.height = y2 - y1 + 2;
 
-          gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
-                                         (guchar*)sample_buf,
-                                         buf_width * bpp,
-                                         format, level, repeat_mode);
-
-          sample_rect.x      = x1;
-          sample_rect.y      = y1;
-          sample_rect.width  = x2 - x1;
-          sample_rect.height = y2 - y1;
-
-          gegl_resample_nearest (dest_buf,
-                                 sample_buf,
-                                 rect,
-                                 &sample_rect,
-                                 buf_width * bpp,
-                                 scale,
-                                 bpp,
-                                 rowstride);
-          g_free (sample_buf);
-        }
+            gegl_resample_boxfilter (dest_buf,
+                                     sample_buf,
+                                     rect,
+                                     &sample_rect,
+                                     buf_width * bpp,
+                                     scale,
+                                     format,
+                                     rowstride);
+            g_free (sample_buf);
+            break;
+      }
     }
 }
 

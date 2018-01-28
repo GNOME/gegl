@@ -76,12 +76,12 @@ main (gint    argc,
     {
   /* pre-initialize */
       test_start_iter ();
-      gegl_buffer_get (buffer, &bound2, 0.333, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE|GEGL_BUFFER_BOXFILTER);
+      gegl_buffer_get (buffer, &bound2, 0.333, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE|GEGL_BUFFER_FILTER_BOX);
       test_end_iter ();
      }
       g_object_unref (buffer);
   }
-  test_end ("boxfilter 0.333", 1.0 * bound2.width * bound2.height * ITERATIONS * 4);
+  test_end ("box 0.333", 1.0 * bound2.width * bound2.height * ITERATIONS * 4);
 
 
   {
@@ -93,7 +93,7 @@ main (gint    argc,
     {
   /* pre-initialize */
       test_start_iter ();
-      gegl_buffer_get (buffer, &bound2, 0.333, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE|GEGL_BUFFER_NEAREST);
+      gegl_buffer_get (buffer, &bound2, 0.333, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE|GEGL_BUFFER_FILTER_NEAREST);
       test_end_iter ();
      }
       g_object_unref (buffer);
@@ -111,7 +111,7 @@ main (gint    argc,
     {
   /* pre-initialize */
       test_start_iter ();
-      gegl_buffer_get (buffer, &bound2, 0.333, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE|GEGL_BUFFER_BILINEAR);
+      gegl_buffer_get (buffer, &bound2, 0.333, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE|GEGL_BUFFER_FILTER_BILINEAR);
       test_end_iter ();
      }
       g_object_unref (buffer);

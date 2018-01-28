@@ -1136,7 +1136,7 @@ gegl_node_blit (GeglNode            *self,
                 gint                 rowstride,
                 GeglBlitFlags        flags)
 {
-  gint interpolation = flags & (GEGL_BUFFER_NEAREST | GEGL_BUFFER_BILINEAR);
+  gint interpolation = flags & (GEGL_BUFFER_FILTER_ALL);
   flags &= 0xf;
 
   g_return_if_fail (GEGL_IS_NODE (self));

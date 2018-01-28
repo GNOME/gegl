@@ -37,14 +37,27 @@
 G_BEGIN_DECLS
 
 typedef enum {
+  /* this enum should be renamed GeglBufferFlags, since it contains
+   * multiple flags - and possibly more in the future
+   */
+
+  /* XXX: API tidying of the following would be to make them be
+   *      GEGL_BUFFER_EDGE_NONE or GEGL_BUFFER_REPEAT_NONE instead.
+  */
   GEGL_ABYSS_NONE  = 0,
   GEGL_ABYSS_CLAMP = 1,
   GEGL_ABYSS_LOOP  = 2,
   GEGL_ABYSS_BLACK = 3,
   GEGL_ABYSS_WHITE = 4,
-  GEGL_BUFFER_BILINEAR  = 16,
-  GEGL_BUFFER_NEAREST   = 32,
-  GEGL_BUFFER_BOXFILTER = 48,
+
+  GEGL_BUFFER_FILTER_AUTO     = 0,
+  /* auto gives bilinear for scales <1.0 box for <2.0 and nearest above */
+  GEGL_BUFFER_FILTER_BILINEAR = 16,
+  GEGL_BUFFER_FILTER_NEAREST  = 32,
+  GEGL_BUFFER_FILTER_BOX      = 48,
+  GEGL_BUFFER_FILTER_ALL      = (GEGL_BUFFER_FILTER_BILINEAR|
+                                 GEGL_BUFFER_FILTER_NEAREST|
+                                 GEGL_BUFFER_FILTER_BOX),
 } GeglAbyssPolicy;
 
 GType gegl_abyss_policy_get_type (void) G_GNUC_CONST;
