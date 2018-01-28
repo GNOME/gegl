@@ -1889,11 +1889,22 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                            const Babl          *format,
                            gpointer             dest_buf,
                            gint                 rowstride,
-                           GeglAbyssPolicy      repeat_mode)
+                           GeglAbyssPolicy      flags)
 {
-  gboolean do_nearest = (repeat_mode & GEGL_BUFFER_NEAREST) != 0;
-  gboolean do_bilinear = (repeat_mode & GEGL_BUFFER_BILINEAR) != 0;
-  repeat_mode &= 0x7;
+  GeglAbyssPolicy repeat_mode = flags & 0x7; /* mask off interpolation from repeat mode part of flags */
+  gint interpolation = (flags & GEGL_BUFFER_BOXFILTER); /* BOXFILTER is and of all interpols */
+
+  if (interpolation == 0)
+  {
+    /* with no specified interpolation we aim for a trade-off where
+       100-200% ends up using box-filter - which is a better transition
+       to nearest neighbor which happens beyond 200% further below.
+     */
+    if (scale > 1.0)
+      interpolation = GEGL_BUFFER_BOXFILTER;
+    else
+      interpolation = GEGL_BUFFER_BILINEAR; /*about 2x as fast as box filter*/
+  }
 
   if (gegl_cl_is_accelerated ())
     {
@@ -2007,9 +2018,9 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       buf_width  = x2 - x1;
       buf_height = y2 - y1;
 
-      if (!do_nearest && scale <= 1.99)
+      if ((interpolation != GEGL_BUFFER_NEAREST) && scale <= 1.99)
         {
-          if (do_bilinear)
+          if (interpolation == GEGL_BUFFER_BILINEAR)
             {
               buf_width  += 1;
               buf_height += 1;

@@ -42,8 +42,9 @@ typedef enum {
   GEGL_ABYSS_LOOP  = 2,
   GEGL_ABYSS_BLACK = 3,
   GEGL_ABYSS_WHITE = 4,
-  GEGL_BUFFER_NEAREST = 32,
-  GEGL_BUFFER_BILINEAR = 64
+  GEGL_BUFFER_BILINEAR  = 16,
+  GEGL_BUFFER_NEAREST   = 32,
+  GEGL_BUFFER_BOXFILTER = 48,
 } GeglAbyssPolicy;
 
 GType gegl_abyss_policy_get_type (void) G_GNUC_CONST;
