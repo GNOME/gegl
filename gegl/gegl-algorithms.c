@@ -509,33 +509,28 @@ gegl_downscale_2x2_u8_nl (const Babl *format,
       guchar *src = src_data + src_rowstride * y * 2;
       guchar *dst = dst_data + dst_rowstride * y;
 
+#define CASE(case_val, ...) \
+case case_val: \
+  for (x = 0; x < src_width / 2; x++)\
+    {\
+      uint8_t * aa = ((uint8_t *)(src));\
+      uint8_t * ab = ((uint8_t *)(src + bpp));\
+      uint8_t * ba = ((uint8_t *)(src + src_rowstride));\
+      uint8_t * bb = ((uint8_t *)(src + diag));\
+      __VA_ARGS__;\
+      dst += bpp;\
+      src += bpp * 2;\
+    }\
+break;\
+
       switch (components)
       {
-          case 1:
-          for (x = 0; x < src_width / 2; x++)
-          {
-            uint8_t * aa = ((uint8_t *)(src));
-            uint8_t * ab = ((uint8_t *)(src + bpp));
-            uint8_t * ba = ((uint8_t *)(src + src_rowstride));
-            uint8_t * bb = ((uint8_t *)(src + diag));
-
+        CASE(1,
             ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
                                                   lut_u8_to_u16[ab[0]] +
                                                   lut_u8_to_u16[ba[0]] +
-                                                  lut_u8_to_u16[bb[0]])>>2 ];
-
-            dst += bpp;
-            src += bpp * 2;
-          }
-          break;
-        case 2:
-        for (x = 0; x < src_width / 2; x++)
-          {
-            uint8_t * aa = ((uint8_t *)(src));
-            uint8_t * ab = ((uint8_t *)(src + bpp));
-            uint8_t * ba = ((uint8_t *)(src + src_rowstride));
-            uint8_t * bb = ((uint8_t *)(src + diag));
-
+                                                  lut_u8_to_u16[bb[0]])>>2 ];);
+        CASE(2,
             ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
                                                   lut_u8_to_u16[ab[0]] +
                                                   lut_u8_to_u16[ba[0]] +
@@ -543,20 +538,8 @@ gegl_downscale_2x2_u8_nl (const Babl *format,
             ((uint8_t *)dst)[1] = lut_u16_to_u8[ (lut_u8_to_u16[aa[1]] +
                                                   lut_u8_to_u16[ab[1]] +
                                                   lut_u8_to_u16[ba[1]] +
-                                                  lut_u8_to_u16[bb[1]])>>2 ];
-
-            dst += bpp;
-            src += bpp * 2;
-          }
-          break;
-        case 3:
-        for (x = 0; x < src_width / 2; x++)
-          {
-            uint8_t * aa = ((uint8_t *)(src));
-            uint8_t * ab = ((uint8_t *)(src + bpp));
-            uint8_t * ba = ((uint8_t *)(src + src_rowstride));
-            uint8_t * bb = ((uint8_t *)(src + diag));
-
+                                                  lut_u8_to_u16[bb[1]])>>2 ];);
+        CASE(3,
             ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
                                                   lut_u8_to_u16[ab[0]] +
                                                   lut_u8_to_u16[ba[0]] +
@@ -568,20 +551,8 @@ gegl_downscale_2x2_u8_nl (const Babl *format,
             ((uint8_t *)dst)[2] = lut_u16_to_u8[ (lut_u8_to_u16[aa[2]] +
                                                   lut_u8_to_u16[ab[2]] +
                                                   lut_u8_to_u16[ba[2]] +
-                                                  lut_u8_to_u16[bb[2]])>>2 ];
-
-            dst += bpp;
-            src += bpp * 2;
-          }
-          break;
-        case 4:
-        for (x = 0; x < src_width / 2; x++)
-          {
-            uint8_t * aa = ((uint8_t *)(src));
-            uint8_t * ab = ((uint8_t *)(src + bpp));
-            uint8_t * ba = ((uint8_t *)(src + src_rowstride));
-            uint8_t * bb = ((uint8_t *)(src + diag));
-
+                                                  lut_u8_to_u16[bb[2]])>>2 ];);
+        CASE(4,
             ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
                                                   lut_u8_to_u16[ab[0]] +
                                                   lut_u8_to_u16[ba[0]] +
@@ -597,34 +568,18 @@ gegl_downscale_2x2_u8_nl (const Babl *format,
             ((uint8_t *)dst)[3] = lut_u16_to_u8[ (lut_u8_to_u16[aa[3]] +
                                                   lut_u8_to_u16[ab[3]] +
                                                   lut_u8_to_u16[ba[3]] +
-                                                  lut_u8_to_u16[bb[3]])>>2 ];
-
-            dst += bpp;
-            src += bpp * 2;
-          }
-          break;
+                                                  lut_u8_to_u16[bb[3]])>>2 ];);
         default:
-        for (x = 0; x < src_width / 2; x++)
-          {
-            gint i;
-            uint8_t * aa = ((uint8_t *)(src));
-            uint8_t * ab = ((uint8_t *)(src + bpp));
-            uint8_t * ba = ((uint8_t *)(src + src_rowstride));
-            uint8_t * bb = ((uint8_t *)(src + diag));
-
-            for (i = 0; i < components; i++)
+         CASE(0,
+            for (gint i = 0; i < components; i++)
               ((uint8_t *)dst)[i] =
                 lut_u16_to_u8[ (lut_u8_to_u16[aa[i]] +
                                 lut_u8_to_u16[ab[i]] +
                                 lut_u8_to_u16[ba[i]] +
-                                lut_u8_to_u16[bb[i]])>>2 ];
-            dst += bpp;
-            src += bpp * 2;
-          }
+                                lut_u8_to_u16[bb[i]])>>2 ];);
       }
   }
 }
-
 
 
 GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
