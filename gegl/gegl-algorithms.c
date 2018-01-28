@@ -226,6 +226,32 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
       bottom_weight = MAX (0., bottom_weight);
       middle_weight = 1. - top_weight - bottom_weight;
 
+#define CASE(case_val, ...)\
+  case case_val:\
+    for (gint x = 0; x < dst_rect->width; x++)\
+      {\
+      src[4] = (const uint8_t*)src_base + jj[x];\
+      src[1] = src[4] - s_rowstride;\
+      src[7] = src[4] + s_rowstride;\
+      src[2] = src[1] + case_val;\
+      src[5] = src[4] + case_val;\
+      src[8] = src[7] + case_val;\
+      src[0] = src[1] - case_val;\
+      src[3] = src[4] - case_val;\
+      src[6] = src[7] - case_val;\
+      {\
+        const gfloat l = left_weight[x];\
+        const gfloat r = right_weight[x];\
+        const gfloat c = 1.f-l-r;\
+        const gfloat t = top_weight;\
+        const gfloat m = middle_weight;\
+        const gfloat b = bottom_weight;\
+        __VA_ARGS__;\
+      }\
+      dst += components;\
+      }\
+  break;\
+
       switch (components)
       {
         case 4:
@@ -284,27 +310,7 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
             dst += 4;
             }
           break;
-        case 3:
-          for (gint x = 0; x < dst_rect->width; x++)
-            {
-            src[4] = (const uint8_t*)src_base + jj[x];
-            src[1] = src[4] - s_rowstride;
-            src[7] = src[4] + s_rowstride;
-            src[2] = src[1] + 3;
-            src[5] = src[4] + 3;
-            src[8] = src[7] + 3;
-            src[0] = src[1] - 3;
-            src[3] = src[4] - 3;
-            src[6] = src[7] - 3;
-            {
-              const gfloat l = left_weight[x];
-              const gfloat r = right_weight[x];
-              const gfloat c = 1.f-l-r;
-
-              const gfloat t = top_weight;
-              const gfloat m = middle_weight;
-              const gfloat b = bottom_weight;
-
+        CASE(3,
               dst[0] = BOXFILTER_ROUND(
                 (C(src[0][0]) * t + C(src[3][0]) * m + C(src[6][0]) * b) * l +
                 (C(src[1][0]) * t + C(src[4][0]) * m + C(src[7][0]) * b) * c +
@@ -317,31 +323,8 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
                 (C(src[0][2]) * t + C(src[3][2]) * m + C(src[6][2]) * b) * l +
                 (C(src[1][2]) * t + C(src[4][2]) * m + C(src[7][2]) * b) * c +
                 (C(src[2][2]) * t + C(src[5][2]) * m + C(src[8][2]) * b) * r);
-            }
-            dst += 3;
-            }
-          break;
-        case 2:
-          for (gint x = 0; x < dst_rect->width; x++)
-            {
-            src[4] = (const uint8_t*)src_base + jj[x];
-            src[1] = src[4] - s_rowstride;
-            src[7] = src[4] + s_rowstride;
-            src[2] = src[1] + 2;
-            src[5] = src[4] + 2;
-            src[8] = src[7] + 2;
-            src[0] = src[1] - 2;
-            src[3] = src[4] - 2;
-            src[6] = src[7] - 2;
-            {
-              const gfloat l = left_weight[x];
-              const gfloat r = right_weight[x];
-              const gfloat c = 1.f-l-r;
-
-              const gfloat t = top_weight;
-              const gfloat m = middle_weight;
-              const gfloat b = bottom_weight;
-
+            );
+        CASE(2,
               dst[0] = BOXFILTER_ROUND(
                 (C(src[0][0]) * t + C(src[3][0]) * m + C(src[6][0]) * b) * l +
                 (C(src[1][0]) * t + C(src[4][0]) * m + C(src[7][0]) * b) * c +
@@ -350,61 +333,15 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
                 (C(src[0][1]) * t + C(src[3][1]) * m + C(src[6][1]) * b) * l +
                 (C(src[1][1]) * t + C(src[4][1]) * m + C(src[7][1]) * b) * c +
                 (C(src[2][1]) * t + C(src[5][1]) * m + C(src[8][1]) * b) * r);
-            }
-            dst += 2;
-            }
-          break;
-        case 1:
-          for (gint x = 0; x < dst_rect->width; x++)
-            {
-            src[4] = (const uint8_t*)src_base + jj[x];
-            src[1] = src[4] - s_rowstride;
-            src[7] = src[4] + s_rowstride;
-            src[2] = src[1] + 1;
-            src[5] = src[4] + 1;
-            src[8] = src[7] + 1;
-            src[0] = src[1] - 1;
-            src[3] = src[4] - 1;
-            src[6] = src[7] - 1;
-            {
-              const gfloat l = left_weight[x];
-              const gfloat r = right_weight[x];
-              const gfloat c = 1.f-l-r;
-
-
-              const gfloat t = top_weight;
-              const gfloat m = middle_weight;
-              const gfloat b = bottom_weight;
-
+            );
+        CASE(1,
               dst[0] = BOXFILTER_ROUND(
                 (C(src[0][0]) * t + C(src[3][0]) * m + C(src[6][0]) * b) * l +
                 (C(src[1][0]) * t + C(src[4][0]) * m + C(src[7][0]) * b) * c +
                 (C(src[2][0]) * t + C(src[5][0]) * m + C(src[8][0]) * b) * r);
-            }
-            dst += 1;
-            }
-          break;
+            );
         default:
-          for (gint x = 0; x < dst_rect->width; x++)
-          {
-            src[4] = (const uint8_t*)src_base + jj[x];
-            src[1] = src[4] - s_rowstride;
-            src[7] = src[4] + s_rowstride;
-            src[2] = src[1] + components;
-            src[5] = src[4] + components;
-            src[8] = src[7] + components;
-            src[0] = src[1] - components;
-            src[3] = src[4] - components;
-            src[6] = src[7] - components;
-            {
-              const gfloat l = left_weight[x];
-              const gfloat r = right_weight[x];
-              const gfloat c = 1.f - l - r;
-
-              const gfloat t = top_weight;
-              const gfloat m = middle_weight;
-              const gfloat b = bottom_weight;
-
+        CASE(0,
               for (gint i = 0; i < components; ++i)
                 {
                   dst[i] = BOXFILTER_ROUND(
@@ -412,13 +349,11 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
                   (C(src[1][i]) * t + C(src[4][i]) * m + C(src[7][i]) * b) * c +
                   (C(src[2][i]) * t + C(src[5][i]) * m + C(src[8][i]) * b) * r);
                 }
-              }
-            dst += components;
-        }
-        break;
+           );
       }
     }
 }
+#undef CASE
 #undef BOXFILTER_ROUND
 #undef C
 
