@@ -48,6 +48,7 @@ enum
 {
   PROP_ORIGIN_X = 1,
   PROP_ORIGIN_Y,
+  PROP_NEAR_Z,
   PROP_SAMPLER,
   PROP_CLIP_TO_INPUT
 };
@@ -65,10 +66,12 @@ static void          gegl_transform_bounding_box                 (const gdouble 
                                                                   const GeglRectangle  *context_rect,
                                                                   GeglRectangle        *output);
 static gint          gegl_transform_depth_clip                   (const GeglMatrix3    *matrix,
+                                                                  gdouble               near_z,
                                                                   const gdouble        *vertices,
                                                                   gint                  n_vertices,
                                                                   gdouble              *output);
 static gboolean      gegl_transform_scanline_limits              (const GeglMatrix3    *inverse,
+                                                                  gdouble               inverse_near_z,
                                                                   const GeglRectangle  *bounding_box,
                                                                   gdouble               u0,
                                                                   gdouble               v0,
@@ -78,7 +81,8 @@ static gboolean      gegl_transform_scanline_limits              (const GeglMatr
 static gboolean      gegl_transform_is_intermediate_node         (OpTransform          *transform);
 static gboolean      gegl_transform_is_composite_node            (OpTransform          *transform);
 static void          gegl_transform_get_source_matrix            (OpTransform          *transform,
-                                                                  GeglMatrix3          *output);
+                                                                  GeglMatrix3          *output,
+                                                                  gdouble              *near_z);
 static GeglRectangle gegl_transform_get_bounding_box             (GeglOperation        *op);
 static GeglRectangle gegl_transform_get_invalidated_by_change    (GeglOperation        *operation,
                                                                   const gchar          *input_pad,
@@ -97,8 +101,9 @@ static GeglNode     *gegl_transform_detect                       (GeglOperation 
 
 static gboolean      gegl_matrix3_is_affine                      (GeglMatrix3          *matrix);
 static gboolean      gegl_transform_matrix3_allow_fast_translate (GeglMatrix3          *matrix);
-static void          gegl_transform_create_composite_matrix      (OpTransform *transform,
-                                                                  GeglMatrix3 *matrix);
+static void          gegl_transform_create_composite_matrix      (OpTransform          *transform,
+                                                                  GeglMatrix3          *matrix,
+                                                                  gdouble              *near_z);
 
 /* ************************* */
 
@@ -149,7 +154,7 @@ gegl_transform_prepare (GeglOperation *operation)
   GeglMatrix3  matrix;
   OpTransform *transform = (OpTransform *) operation;
 
-  gegl_transform_create_composite_matrix (transform, &matrix);
+  gegl_transform_create_composite_matrix (transform, &matrix, NULL);
 
   /* The identity matrix is also a fast translate matrix. */
   if (gegl_transform_is_intermediate_node (transform) ||
@@ -207,6 +212,14 @@ op_transform_class_init (OpTransformClass *klass)
                                      -G_MAXDOUBLE, G_MAXDOUBLE,
                                      0.,
                                      G_PARAM_CONSTRUCT | G_PARAM_READWRITE));
+  g_object_class_install_property (gobject_class, PROP_NEAR_Z,
+                                   g_param_spec_double (
+                                     "near-z",
+                                     _("Near-z"),
+                                     _("Z coordinate of the near clipping plane"),
+                                     0., 1.,
+                                     0.,
+                                     G_PARAM_CONSTRUCT | G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, PROP_SAMPLER,
                                    g_param_spec_enum (
                                      "sampler",
@@ -245,6 +258,9 @@ gegl_transform_get_property (GObject    *object,
     case PROP_ORIGIN_Y:
       g_value_set_double (value, self->origin_y);
       break;
+    case PROP_NEAR_Z:
+      g_value_set_double (value, self->near_z);
+      break;
     case PROP_SAMPLER:
       g_value_set_enum (value, self->sampler);
       break;
@@ -273,6 +289,9 @@ gegl_transform_set_property (GObject      *object,
     case PROP_ORIGIN_Y:
       self->origin_y = g_value_get_double (value);
       break;
+    case PROP_NEAR_Z:
+      self->near_z = g_value_get_double (value);
+      break;
     case PROP_SAMPLER:
       self->sampler = g_value_get_enum (value);
       break;
@@ -297,19 +316,27 @@ gegl_transform_create_matrix (OpTransform *transform,
 
 static void
 gegl_transform_create_composite_matrix (OpTransform *transform,
-                                        GeglMatrix3 *matrix)
+                                        GeglMatrix3 *matrix,
+                                        gdouble     *near_z)
 {
   gegl_transform_create_matrix (transform, matrix);
 
   if (transform->origin_x || transform->origin_y)
     gegl_matrix3_originate (matrix, transform->origin_x, transform->origin_y);
 
+  if (near_z)
+    *near_z = transform->near_z;
+
   if (gegl_transform_is_composite_node (transform))
     {
       GeglMatrix3 source;
+      gdouble     source_near_z;
 
-      gegl_transform_get_source_matrix (transform, &source);
+      gegl_transform_get_source_matrix (transform, &source, &source_near_z);
       gegl_matrix3_multiply (matrix, &source, matrix);
+
+      if (near_z)
+        *near_z = MAX (*near_z, source_near_z);
     }
 }
 
@@ -408,20 +435,22 @@ gegl_transform_bounding_box (const gdouble       *points,
 }
 
 /*
- * Clip the polygon defined by 'vertices' to the backplane/horizon, according
+ * Clip the polygon defined by 'vertices' to the near-plane/horizon, according
  * to the transformation defined by 'matrix'.  Store the vertices of the
  * resulting polygon in 'output', and return their count.  If the polygon is
  * convex, the number of output vertices is at most 'n_vertices + 1'.
  */
 static gint
 gegl_transform_depth_clip (const GeglMatrix3 *matrix,
+                           gdouble            near_z,
                            const gdouble     *vertices,
                            gint               n_vertices,
                            gdouble           *output)
 {
   const gdouble a = matrix->coeff[2][0];
   const gdouble b = matrix->coeff[2][1];
-  const gdouble c = matrix->coeff[2][2] - GEGL_TRANSFORM_CORE_EPSILON;
+  const gdouble c = matrix->coeff[2][2] -
+                    MAX (near_z, GEGL_TRANSFORM_CORE_EPSILON);
 
   gint          n = 0;
   gint          i;
@@ -433,8 +462,14 @@ gegl_transform_depth_clip (const GeglMatrix3 *matrix,
       const gdouble x2 = vertices[(i + 2) % (2 * n_vertices)];
       const gdouble y2 = vertices[(i + 3) % (2 * n_vertices)];
 
-      const gdouble w1 = a * x1 + b * y1 + c;
-      const gdouble w2 = a * x2 + b * y2 + c;
+      gdouble w1 = a * x1 + b * y1 + c;
+      gdouble w2 = a * x2 + b * y2 + c;
+
+      if (near_z > 1.0)
+        {
+          w1 = -w1;
+          w2 = -w2;
+        }
 
       if (w1 >= 0.0)
         {
@@ -464,6 +499,7 @@ gegl_transform_depth_clip (const GeglMatrix3 *matrix,
  */
 static gboolean
 gegl_transform_scanline_limits (const GeglMatrix3   *inverse,
+                                gdouble              inverse_near_z,
                                 const GeglRectangle *bounding_box,
                                 gdouble              u0,
                                 gdouble              v0,
@@ -482,6 +518,8 @@ gegl_transform_scanline_limits (const GeglMatrix3   *inverse,
 
   gdouble       i1 = *first;
   gdouble       i2 = *last;
+
+  inverse_near_z = MIN (inverse_near_z, 1.0 / GEGL_TRANSFORM_CORE_EPSILON);
 
   /*
    * Left edge.
@@ -589,6 +627,26 @@ gegl_transform_scanline_limits (const GeglMatrix3   *inverse,
       return FALSE;
     }
 
+  /*
+   * Near plane.
+   */
+  if (c > GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble max_i = (inverse_near_z - w0) / c;
+
+      i2 = MIN (i2, max_i);
+    }
+  else if (c < -GEGL_TRANSFORM_CORE_EPSILON)
+    {
+      const gdouble min_i = (inverse_near_z - w0) / c;
+
+      i1 = MAX (i1, min_i);
+    }
+  else if (w0 > inverse_near_z)
+    {
+      return FALSE;
+    }
+
   i1 = CLAMP (i1, G_MININT / 2, G_MAXINT / 2);
   i2 = CLAMP (i2, G_MININT / 2, G_MAXINT / 2);
 
@@ -651,7 +709,8 @@ gegl_transform_is_composite_node (OpTransform *transform)
 
 static void
 gegl_transform_get_source_matrix (OpTransform *transform,
-                                  GeglMatrix3 *output)
+                                  GeglMatrix3 *output,
+                                  gdouble     *near_z)
 {
   GeglOperation *op = GEGL_OPERATION (transform);
   GeglNode *source_node;
@@ -664,7 +723,7 @@ gegl_transform_get_source_matrix (OpTransform *transform,
   source = gegl_node_get_gegl_operation (source_node);
   g_assert (IS_OP_TRANSFORM (source));
 
-  gegl_transform_create_composite_matrix (OP_TRANSFORM (source), output);
+  gegl_transform_create_composite_matrix (OP_TRANSFORM (source), output, near_z);
   /*gegl_matrix3_copy (output, OP_TRANSFORM (source)->matrix);*/
 }
 
@@ -673,6 +732,7 @@ gegl_transform_get_bounding_box (GeglOperation *op)
 {
   OpTransform  *transform = OP_TRANSFORM (op);
   GeglMatrix3   matrix;
+  gdouble       near_z;
   GeglRectangle in_rect   = {0,0,0,0},
                 have_rect = {0,0,0,0};
   gdouble       vertices [8];
@@ -697,7 +757,7 @@ gegl_transform_get_bounding_box (GeglOperation *op)
       gegl_rectangle_is_infinite_plane (&in_rect))
     return in_rect;
 
-  gegl_transform_create_composite_matrix (transform, &matrix);
+  gegl_transform_create_composite_matrix (transform, &matrix, &near_z);
 
   if (gegl_transform_is_intermediate_node (transform) ||
       gegl_matrix3_is_identity (&matrix) ||
@@ -725,9 +785,9 @@ gegl_transform_get_bounding_box (GeglOperation *op)
   vertices [7] = vertices [5];
 
   /*
-   * Clip polygon to the backplane.
+   * Clip polygon to the near plane.
    */
-  n_have_points = gegl_transform_depth_clip (&matrix, vertices, 4,
+  n_have_points = gegl_transform_depth_clip (&matrix, near_z, vertices, 4,
                                              have_points);
 
   if (n_have_points > 1)
@@ -804,12 +864,15 @@ gegl_transform_get_required_for_output (GeglOperation       *op,
 {
   OpTransform   *transform = OP_TRANSFORM (op);
   GeglMatrix3    inverse;
+  gdouble        near_z;
   GeglRectangle  requested_rect,
                  need_rect = {};
   GeglRectangle  context_rect;
   GeglSampler   *sampler;
   gdouble        vertices [8];
-  gdouble        need_points [10];
+  gdouble        temp_points [10];
+  gint           n_temp_points;
+  gdouble        need_points [12];
   gint           n_need_points;
   gint           i;
 
@@ -819,7 +882,7 @@ gegl_transform_get_required_for_output (GeglOperation       *op,
       gegl_rectangle_is_infinite_plane (&requested_rect))
     return requested_rect;
 
-  gegl_transform_create_composite_matrix (transform, &inverse);
+  gegl_transform_create_composite_matrix (transform, &inverse, &near_z);
   gegl_matrix3_invert (&inverse);
 
   if (gegl_transform_is_intermediate_node (transform) ||
@@ -851,7 +914,14 @@ gegl_transform_get_required_for_output (GeglOperation       *op,
   /*
    * Clip polygon to the horizon.
    */
-  n_need_points = gegl_transform_depth_clip (&inverse, vertices, 4,
+  n_temp_points = gegl_transform_depth_clip (&inverse, 0.0, vertices, 4,
+                                             temp_points);
+
+  /*
+   * Clip polygon to the near plane.
+   */
+  n_need_points = gegl_transform_depth_clip (&inverse, 1.0 / near_z,
+                                             temp_points, n_temp_points,
                                              need_points);
 
   if (n_need_points > 1)
@@ -887,6 +957,7 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
 {
   OpTransform   *transform = OP_TRANSFORM (op);
   GeglMatrix3    matrix;
+  gdouble        near_z;
   GeglRectangle  affected_rect = {};
 
   GeglRectangle  context_rect;
@@ -940,18 +1011,7 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
   context_rect = *gegl_sampler_get_context_rect (sampler);
   g_object_unref (sampler);
 
-  gegl_transform_create_matrix (transform, &matrix);
-
-  if (transform->origin_x || transform->origin_y)
-    gegl_matrix3_originate (&matrix, transform->origin_x, transform->origin_y);
-
-  if (gegl_transform_is_composite_node (transform))
-    {
-      GeglMatrix3 source;
-
-      gegl_transform_get_source_matrix (transform, &source);
-      gegl_matrix3_multiply (&matrix, &source, &matrix);
-    }
+  gegl_transform_create_composite_matrix (transform, &matrix, &near_z);
 
   if (gegl_transform_is_intermediate_node (transform) ||
       gegl_matrix3_is_identity (&matrix))
@@ -985,9 +1045,9 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
   vertices [7] = vertices [5];
 
   /*
-   * Clip polygon to the backplane.
+   * Clip polygon to the near plane.
    */
-  n_affected_points = gegl_transform_depth_clip (&matrix, vertices, 4,
+  n_affected_points = gegl_transform_depth_clip (&matrix, near_z, vertices, 4,
                                                  affected_points);
 
   if (n_affected_points > 1)
@@ -1010,6 +1070,7 @@ typedef struct ThreadData
                 GeglBuffer          *dest,
                 GeglBuffer          *src,
                 GeglMatrix3         *matrix,
+                gdouble              near_z,
                 const GeglRectangle *roi,
                 gint                 level);
 
@@ -1019,6 +1080,7 @@ typedef struct ThreadData
   GeglBuffer               *output;
   gint                     *pending;
   GeglMatrix3              *matrix;
+  gdouble                   near_z;
   gint                      level;
   gboolean                  success;
   GeglRectangle             roi;
@@ -1038,6 +1100,7 @@ static void thread_process (gpointer thread_data, gpointer input)
               data->output,
               input,
               data->matrix,
+              data->near_z,
               &data->roi,
               data->level);
 
@@ -1063,6 +1126,7 @@ transform_affine (GeglOperation       *operation,
                   GeglBuffer          *dest,
                   GeglBuffer          *src,
                   GeglMatrix3         *matrix,
+                  gdouble              near_z,
                   const GeglRectangle *roi,
                   gint                 level)
 {
@@ -1070,6 +1134,7 @@ transform_affine (GeglOperation       *operation,
   OpTransform *transform = (OpTransform *) operation;
   const Babl  *format = babl_format ("RaGaBaA float");
   GeglMatrix3  inverse;
+  gdouble      inverse_near_z = 1.0 / near_z;
   GeglMatrix2  inverse_jacobian;
   GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src,
                                          babl_format("RaGaBaA float"),
@@ -1164,7 +1229,8 @@ transform_affine (GeglOperation       *operation,
           gint x1 = 0;
           gint x2 = roi->width;
 
-          if (gegl_transform_scanline_limits (&inverse, &bounding_box,
+          if (gegl_transform_scanline_limits (&inverse, inverse_near_z,
+                                              &bounding_box,
                                               u_start, v_start, 1.0,
                                               &x1, &x2))
             {
@@ -1215,6 +1281,7 @@ transform_generic (GeglOperation       *operation,
                    GeglBuffer          *dest,
                    GeglBuffer          *src,
                    GeglMatrix3         *matrix,
+                   gdouble              near_z,
                    const GeglRectangle *roi,
                    gint                 level)
 {
@@ -1223,6 +1290,7 @@ transform_generic (GeglOperation       *operation,
   gint                 factor = 1 << level;
   GeglBufferIterator  *i;
   GeglMatrix3          inverse;
+  gdouble              inverse_near_z = 1.0 / near_z;
   GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src,
                                          babl_format("RaGaBaA float"),
                                          level?GEGL_SAMPLER_NEAREST:
@@ -1298,7 +1366,8 @@ transform_generic (GeglOperation       *operation,
         gint x1 = 0;
         gint x2 = roi->width;
 
-        if (gegl_transform_scanline_limits (&inverse, &bounding_box,
+        if (gegl_transform_scanline_limits (&inverse, inverse_near_z,
+                                            &bounding_box,
                                             u_start, v_start, w_start,
                                             &x1, &x2))
           {
@@ -1365,6 +1434,7 @@ transform_nearest (GeglOperation       *operation,
                    GeglBuffer          *dest,
                    GeglBuffer          *src,
                    GeglMatrix3         *matrix,
+                   gdouble              near_z,
                    const GeglRectangle *roi,
                    gint                 level)
 {
@@ -1373,6 +1443,7 @@ transform_nearest (GeglOperation       *operation,
   gint                 px_size   = babl_format_get_bytes_per_pixel (format);
   GeglBufferIterator  *i;
   GeglMatrix3          inverse;
+  gdouble              inverse_near_z = 1.0 / near_z;
   GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format,
                                          GEGL_SAMPLER_NEAREST,
                                          level);
@@ -1410,6 +1481,8 @@ transform_nearest (GeglOperation       *operation,
 
   gegl_matrix3_invert (&inverse);
 
+  near_z = 1.0 / near_z;
+
   /*
    * Fill the output tiles.
    */
@@ -1440,7 +1513,8 @@ transform_nearest (GeglOperation       *operation,
         gint x1 = 0;
         gint x2 = roi->width;
 
-        if (gegl_transform_scanline_limits (&inverse, &bounding_box,
+        if (gegl_transform_scanline_limits (&inverse, inverse_near_z,
+                                            &bounding_box,
                                             u_start, v_start, w_start,
                                             &x1, &x2))
           {
@@ -1542,9 +1616,10 @@ gegl_transform_process (GeglOperation        *operation,
   GeglBuffer  *input;
   GeglBuffer  *output;
   GeglMatrix3  matrix;
+  gdouble      near_z;
   OpTransform *transform = (OpTransform *) operation;
 
-  gegl_transform_create_composite_matrix (transform, &matrix);
+  gegl_transform_create_composite_matrix (transform, &matrix, &near_z);
 
   if (gegl_transform_is_intermediate_node (transform) ||
       gegl_matrix3_is_identity (&matrix))
@@ -1598,6 +1673,7 @@ gegl_transform_process (GeglOperation        *operation,
                     GeglBuffer          *dest,
                     GeglBuffer          *src,
                     GeglMatrix3         *matrix,
+                    gdouble              near_z,
                     const GeglRectangle *roi,
                     gint                 level) = transform_generic;
 
@@ -1651,6 +1727,7 @@ gegl_transform_process (GeglOperation        *operation,
         {
           thread_data[i].func = func;
           thread_data[i].matrix = &matrix;
+          thread_data[i].near_z = near_z;
           thread_data[i].operation = operation;
           thread_data[i].context = context;
           thread_data[i].output = output;
@@ -1667,7 +1744,7 @@ gegl_transform_process (GeglOperation        *operation,
       }
       else
       {
-        func (operation, output, input, &matrix, result, level);
+        func (operation, output, input, &matrix, near_z, result, level);
       }
 
       g_clear_object (&input);

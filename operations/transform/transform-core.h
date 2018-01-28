@@ -19,6 +19,7 @@ struct _OpTransform
   GeglOperationFilter parent_instance;
   gdouble             origin_x;
   gdouble             origin_y;
+  gdouble             near_z;
   GeglSamplerType     sampler;
   gboolean            clip_to_input;
 };
