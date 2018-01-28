@@ -101,7 +101,8 @@ gegl_downscale_2x2_generic (const Babl *format,
 }
 
 static uint16_t lut_u8_to_u16[256];
-static uint8_t lut_u16_to_u8[65537];
+static float    lut_u8_to_u16f[256];
+static uint8_t  lut_u16_to_u8[65537];
 
 void _gegl_init_u8_lut (void);
 void _gegl_init_u8_lut (void)
@@ -118,6 +119,8 @@ void _gegl_init_u8_lut (void)
   babl_process (babl_fish (babl_format ("Y' u8"), babl_format("Y u16")),
                 &u8_ramp[0], &lut_u8_to_u16[0],
                 256);
+  for (i = 0; i < 256; i++)
+    lut_u8_to_u16f[i] = lut_u8_to_u16[i];
 
   /* workaround for bug, doing this conversion sample by sample */
   for (i = 0; i < 65536; i++)
@@ -201,13 +204,13 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
 
   for (gint x = 0; x < dst_rect->width; x++)
   {
-    gfloat sx  = (dst_rect->x + x + .5) / scale - src_rect->x;
+    gfloat sx  = (dst_rect->x + x + .5f) / scale - src_rect->x;
     jj[x]  = int_floorf (sx);
 
-    left_weight[x]   = .5 - scale * (sx - jj[x]);
-    left_weight[x]   = MAX (0.0, left_weight[x]);
-    right_weight[x]  = .5 - scale * ((jj[x] + 1) - sx);
-    right_weight[x]  = MAX (0.0, right_weight[x]);
+    left_weight[x]   = .5f - scale * (sx - jj[x]);
+    left_weight[x]   = MAX (0.0f, left_weight[x]);
+    right_weight[x]  = .5f - scale * ((jj[x] + 1) - sx);
+    right_weight[x]  = MAX (0.0f, right_weight[x]);
 
     jj[x] *= components;
   }
@@ -220,11 +223,11 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
       uint8_t             *dst = (uint8_t*)(dest_buf + y * d_rowstride);
       const guchar  *src_base = source_buf + ii * s_rowstride;
 
-      top_weight    = .5 - scale * (sy - ii);
-      top_weight    = MAX (0., top_weight);
-      bottom_weight = .5 - scale * ((ii + 1 ) - sy);
-      bottom_weight = MAX (0., bottom_weight);
-      middle_weight = 1. - top_weight - bottom_weight;
+      top_weight    = .5f - scale * (sy - ii);
+      top_weight    = MAX (0.f, top_weight);
+      bottom_weight = .5f - scale * ((ii + 1 ) - sy);
+      bottom_weight = MAX (0.f, bottom_weight);
+      middle_weight = 1.f - top_weight - bottom_weight;
 
 #define CASE(case_val, ...)\
   case case_val:\
@@ -289,7 +292,7 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
               const gfloat b = bottom_weight;
 
 #define BOXFILTER_ROUND(val) lut_u16_to_u8[((int)((val)+0.5f))]
-#define C(val)               lut_u8_to_u16[(val)]
+#define C(val)               lut_u8_to_u16f[(val)]
               dst[0] = BOXFILTER_ROUND(
                 (C(src[0][0]) * t + C(src[3][0]) * m + C(src[6][0]) * b) * l +
                 (C(src[1][0]) * t + C(src[4][0]) * m + C(src[7][0]) * b) * c +
@@ -410,8 +413,8 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
     }\
 }while(0)
 
-#define BILINEAR_ROUND(val) lut_u16_to_u8[int_floorf(val)]
-#define C(val)              lut_u8_to_u16[(val)]
+#define BILINEAR_ROUND(val) lut_u16_to_u8[(int)(val)]
+#define C(val)              lut_u8_to_u16f[(val)]
 
    switch (components)
    {
@@ -424,6 +427,7 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
                (C(src[2][i]) * rdx + C(src[3][i]) * ldx) * dy);
          );
        break;
+#if 1
      case 1:
        IMPL(1,
          dst[0] = BILINEAR_ROUND(
@@ -480,6 +484,7 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
          }
            );
        break;
+#endif
    }
 #undef IMPL
 }
