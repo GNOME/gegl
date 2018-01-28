@@ -5,10 +5,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gegl&k"
-"eywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-11-27 15:49+0000\n"
-"PO-Revision-Date: 2017-11-28 16:11+0300\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gegl&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2018-01-08 13:42+0000\n"
+"PO-Revision-Date: 2018-01-15 10:47+0200\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@lists.gnome.gr\n"
 "Language: el\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "X-Project-Style: gnome\n"
 
 #: bin/gegl.c:174
@@ -268,31 +268,31 @@ msgstr "NoHalo"
 msgid "LoHalo"
 msgstr "LoHalo"
 
-#: gegl/gegl-init.c:279
+#: gegl/gegl-init.c:282
 msgid "Where GEGL stores its swap"
 msgstr "Πού αποθηκεύει το GEGL την εναλλακτική μνήμη"
 
-#: gegl/gegl-init.c:284
+#: gegl/gegl-init.c:287
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Πόση μνήμη για χρήση (περίπου) για επαναποθήκευση εικόνας"
 
-#: gegl/gegl-init.c:289
+#: gegl/gegl-init.c:292
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Προεπιλεγμένο μέγεθος παραθέσεων στο GeglBuffers"
 
-#: gegl/gegl-init.c:294
+#: gegl/gegl-init.c:297
 msgid "The count of pixels to compute simultaneously"
 msgstr "Ο αριθμός των εικονοστοιχείων για ταυτόχρονο υπολογισμό"
 
-#: gegl/gegl-init.c:299
+#: gegl/gegl-init.c:302
 msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
 msgstr "Η ποιότητα απόδοσης μιας τιμής μεταξύ 0,0 (γρήγορη) και 1,0 (αναφορά)"
 
-#: gegl/gegl-init.c:304
+#: gegl/gegl-init.c:307
 msgid "The number of concurrent processing threads to use"
 msgstr "Ο αριθμός των σύγχρονων νημάτων επεξεργασίας για χρήση"
 
-#: gegl/gegl-init.c:309
+#: gegl/gegl-init.c:312
 msgid "Disable OpenCL"
 msgstr "Απενεργοποίηση OpenCL"
 
@@ -318,7 +318,7 @@ msgstr "Το %s δεν έχει καμιά ιδιότητα %s, ιδιότητε
 
 #: gegl/gegl-serialize.c:509
 #, c-format
-msgid "BablFormat \"%s\" doest not exist."
+msgid "BablFormat \"%s\" does not exist."
 msgstr "Το BablFormat \"%s\" δεν υπάρχει."
 
 #: gegl/gegl-serialize.c:642
@@ -526,11 +526,11 @@ msgstr ""
 #: operations/common/edge-neon.c:47 operations/common/median-blur.c:38
 #: operations/common/snn-mean.c:26 operations/common/stress.c:27
 #: operations/common/vignette.c:38 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-gpl3+/spiral.c:47
-#: operations/common-gpl3+/supernova.c:45
+#: operations/common/wavelet-blur.c:27
+#: operations/common-gpl3+/shadows-highlights.c:40
+#: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
 #: operations/common-gpl3+/whirl-pinch.c:45
 #: operations/external/matting-levin.c:29
-#: operations/workshop/shadows-highlights.c:37
 msgid "Radius"
 msgstr "Ακτίνα"
 
@@ -867,8 +867,8 @@ msgstr ""
 "και κορεσμό"
 
 #: operations/common/color-rotate.c:79 operations/common/component-extract.c:28
-#: operations/common/hue-chroma.c:25 operations/common/noise-cie-lch.c:34
-#: operations/common/noise-hsv.c:30
+#: operations/common/hue-chroma.c:25 operations/common/noise-cie-lch.c:35
+#: operations/common/noise-hsv.c:31
 msgid "Hue"
 msgstr "Απόχρωση"
 
@@ -877,7 +877,7 @@ msgid "Hue value for above gray settings"
 msgstr "Τιμή απόχρωσης για τις παραπάνω ρυθμίσεις του γκρίζου"
 
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
-#: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:33
+#: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
 #: operations/common/saturation.c:223
 #: operations/external/lcms-from-profile.c:35
 msgid "Saturation"
@@ -1474,7 +1474,7 @@ msgid "The dithering method to use"
 msgstr "Η μέθοδος πρόσμειξης για χρήση"
 
 #: operations/common/dither.c:51 operations/common/noise-cell.c:55
-#: operations/common/noise-cie-lch.c:37 operations/common/noise-hsv.c:39
+#: operations/common/noise-cie-lch.c:38 operations/common/noise-hsv.c:40
 #: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
 #: operations/common/noise-rgb.c:51 operations/common/noise-simplex.c:39
 #: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
@@ -1644,12 +1644,8 @@ msgid "Relative brightness change in stops"
 msgstr "Σχετική αλλαγή λαμπρότητας σε στάσεις"
 
 #: operations/common/exposure.c:465
-msgid ""
-"Changes Exposure of an image, allows stepping HDR and photographs up/down in "
-"stops. "
-msgstr ""
-"Αλλάζει την έκθεση μιας εικόνας, επιτρέπει τη HDR με βήματα και φωτογραφίες "
-"πάνω/κάτω σε στάσεις."
+msgid "Change exposure of an image in shutter speed stops"
+msgstr "Αλλαγή της έκθεσης εικόνας σε στάσεις της ταχύτητας διαφράγματος"
 
 #: operations/common/fattal02.c:34
 msgid "Gradient threshold for detail enhancement"
@@ -1734,7 +1730,7 @@ msgstr "Πώς ο πυρήνας Γκάους διακρίνεται"
 #: operations/common/gaussian-blur.c:58 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:31
 #: operations/common-gpl3+/displace.c:42
-#: operations/common-gpl3+/fractal-trace.c:66
+#: operations/common-gpl3+/fractal-trace.c:67
 msgid "Abyss policy"
 msgstr "Πολιτική αβύσσου"
 
@@ -1755,7 +1751,7 @@ msgstr "Αν θα πρέπει η έκταση εξόδου να περικοπ�
 msgid "Gaussian Blur"
 msgstr "Θόλωση Γκάους"
 
-#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:931
+#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1277
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -1777,7 +1773,7 @@ msgstr "Προσανατολισμός"
 msgid "The orientation of the blur - hor/ver"
 msgstr "Ο προσανατολισμός της θόλωσης - ορ/καθ"
 
-#: operations/common/gblur-1d.c:928
+#: operations/common/gblur-1d.c:1274
 msgid "1D Gaussian-blur"
 msgstr "Θόλωση Γκάους 1Δ"
 
@@ -1906,7 +1902,7 @@ msgstr "Βελτιώνει μικρές λεπτομέρειες."
 msgid "Hue adjustment"
 msgstr "Ρύθμιση απόχρωσης"
 
-#: operations/common/hue-chroma.c:29 operations/common/noise-cie-lch.c:31
+#: operations/common/hue-chroma.c:29 operations/common/noise-cie-lch.c:32
 msgid "Chroma"
 msgstr "Χρωματικότητα (Chroma)"
 
@@ -1914,7 +1910,7 @@ msgstr "Χρωματικότητα (Chroma)"
 msgid "Chroma adjustment"
 msgstr "Ρύθμιση χρωματικότητας (Chroma)"
 
-#: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:28
+#: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
 msgid "Lightness"
 msgstr "Φωτεινότητα"
 
@@ -2560,7 +2556,6 @@ msgid "Color Model"
 msgstr "Χρωματικό πρότυπο"
 
 #: operations/common/newsprint.c:41
-#| msgid "How many inks to use just black, rg, rgb(additive) or cmyk"
 msgid "How many inks to use just black, rg, rgb (additive), or cmyk"
 msgstr "Πόσα μελάνια για χρήση μόνο μαύρου, rg, rgb(προσθετικό) ή cmyk"
 
@@ -2570,7 +2565,6 @@ msgid "Pattern"
 msgstr "Μοτίβο"
 
 #: operations/common/newsprint.c:45
-#| msgid "halftoning/dot pattern to use"
 msgid "Halftoning/dot pattern to use"
 msgstr "Μοτίβο ενδιάμεσων τόνων/τελείας προς χρήση"
 
@@ -2601,9 +2595,6 @@ msgid "Blocksize"
 msgstr "Μέγεθος ομάδας"
 
 #: operations/common/newsprint.c:57
-#| msgid ""
-#| "number of periods per tile, this tiling avoids high frequency anomaly "
-#| "that angleboost causes"
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
@@ -2612,15 +2603,10 @@ msgstr ""
 "συχνότητας που προκαλεί η ανύψωση γωνίας"
 
 #: operations/common/newsprint.c:59
-#| msgid "Angleboost"
 msgid "Angle Boost"
 msgstr "Ανύψωση γωνίας"
 
 #: operations/common/newsprint.c:61
-#| msgid ""
-#| "multiplication factor for desired rotation of the local space for "
-#| "texture, the way this is computed makes it weak for desaturated colors "
-#| "and possibly stronger where there is color."
 msgid ""
 "Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
@@ -2727,28 +2713,32 @@ msgid "Generates a cellular texture."
 msgstr "Δημιουργεί μια κυψελώδη υφή."
 
 #: operations/common/noise-cie-lch.c:25 operations/common/noise-hsv.c:27
-msgid "Holdness"
-msgstr "Κράτημα"
+msgid "Dulling"
+msgstr "Εξασθένιση"
 
-#: operations/common/noise-cie-lch.c:193
+#: operations/common/noise-cie-lch.c:27 operations/common/noise-hsv.c:29
+msgid "A high value lowers the randomness of the noise"
+msgstr "Υψηλή τιμή χαμηλώνει την τυχαιότητα του θορύβου"
+
+#: operations/common/noise-cie-lch.c:194
 msgid "Add CIE Lch Noise"
 msgstr "Προσθήκη θορύβου CIE Lch"
 
-#: operations/common/noise-cie-lch.c:196
+#: operations/common/noise-cie-lch.c:197
 msgid "Randomize lightness, chroma and hue independently"
 msgstr "Τυχαία φωτεινότητα, χρωματικότητας (chroma) και απόχρωση ανεξάρτητα"
 
-#: operations/common/noise-hsv.c:36 operations/generated/add.c:29
+#: operations/common/noise-hsv.c:37 operations/generated/add.c:29
 #: operations/generated/divide.c:29 operations/generated/gamma.c:29
 #: operations/generated/multiply.c:29 operations/generated/subtract.c:29
 msgid "Value"
 msgstr "Τιμή"
 
-#: operations/common/noise-hsv.c:275
+#: operations/common/noise-hsv.c:276
 msgid "Add HSV Noise"
 msgstr "Προσθήκη θορύβου HSV"
 
-#: operations/common/noise-hsv.c:278
+#: operations/common/noise-hsv.c:279
 msgid "Randomize hue, saturation and value independently"
 msgstr "Τυχαία απόχρωση, κορεσμός και τιμή ανεξάρτητα"
 
@@ -3814,11 +3804,11 @@ msgstr "Ακτίνα μάσκας"
 msgid "Percent black"
 msgstr "Ποσοστό μαύρου"
 
-#: operations/common-gpl3+/cartoon.c:316
+#: operations/common-gpl3+/cartoon.c:302
 msgid "Cartoon"
 msgstr "Σκίτσο"
 
-#: operations/common-gpl3+/cartoon.c:319
+#: operations/common-gpl3+/cartoon.c:305
 msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing "
 "subsequently shaded with color. This is achieved by enhancing edges and "
@@ -4160,7 +4150,7 @@ msgid "Mode of displacement"
 msgstr "Κατάσταση μετατόπισης"
 
 #: operations/common-gpl3+/displace.c:37 operations/external/npd.c:47
-#: operations/transform/transform-core.c:198 operations/workshop/ditto.c:27
+#: operations/transform/transform-core.c:197 operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Δειγματοληψία"
 
@@ -4560,20 +4550,20 @@ msgstr "Θέση τιμής Υ σπόρου Julia"
 msgid "Bailout length"
 msgstr "Μήκος ορίου"
 
-#: operations/common-gpl3+/fractal-trace.c:68
+#: operations/common-gpl3+/fractal-trace.c:69
 msgid "How to deal with pixels outside of the input buffer"
 msgstr ""
 "Πώς να αντιμετωπίσετε εικονοστοιχεία έξω από την ενδιάμεση μνήμη εισόδου"
 
-#: operations/common-gpl3+/fractal-trace.c:182
+#: operations/common-gpl3+/fractal-trace.c:183
 msgid "Unsupported fractal type"
 msgstr "Μη υποστηριζόμενος τύπος κλαστικού"
 
-#: operations/common-gpl3+/fractal-trace.c:263
+#: operations/common-gpl3+/fractal-trace.c:250
 msgid "Fractal Trace"
 msgstr "Ίχνος κλαστικού"
 
-#: operations/common-gpl3+/fractal-trace.c:268
+#: operations/common-gpl3+/fractal-trace.c:255
 msgid "Transform the image with the fractals"
 msgstr "Μετασχηματισμός της εικόνας με τα κλαστικά"
 
@@ -5052,11 +5042,11 @@ msgstr "Επιλογή μεσαίου"
 msgid "Let origin point to be the middle one"
 msgstr "Να επιτρέπεται το αρχικό σημείο να είναι μεσαίο"
 
-#: operations/common-gpl3+/polar-coordinates.c:435
+#: operations/common-gpl3+/polar-coordinates.c:421
 msgid "Polar Coordinates"
 msgstr "Πολικές συντεταγμένες"
 
-#: operations/common-gpl3+/polar-coordinates.c:440
+#: operations/common-gpl3+/polar-coordinates.c:426
 msgid "Convert image to or from polar coordinates"
 msgstr "Μετατροπή εικόνας σε ή από πολικές συντεταγμένες"
 
@@ -5101,6 +5091,82 @@ msgstr "Κυματισμός"
 #: operations/common-gpl3+/ripple.c:176
 msgid "Displace pixels in a ripple pattern"
 msgstr "Μετατόπιση εικονοστοιχείων σε ένα μοτίβο κυματισμών"
+
+#: operations/common-gpl3+/shadows-highlights.c:28
+#: operations/common-gpl3+/shadows-highlights-correction.c:29
+msgid "Shadows"
+msgstr "Σκιές"
+
+#: operations/common-gpl3+/shadows-highlights.c:29
+#: operations/common-gpl3+/shadows-highlights-correction.c:30
+msgid "Adjust exposure of shadows"
+msgstr "Ρύθμιση έκθεσης σκιών"
+
+#: operations/common-gpl3+/shadows-highlights.c:32
+#: operations/common-gpl3+/shadows-highlights-correction.c:33
+msgid "Highlights"
+msgstr "Τονισμοί"
+
+#: operations/common-gpl3+/shadows-highlights.c:33
+#: operations/common-gpl3+/shadows-highlights-correction.c:34
+msgid "Adjust exposure of highlights"
+msgstr "Ρύθμιση έκθεσης τονισμών"
+
+#: operations/common-gpl3+/shadows-highlights.c:36
+#: operations/common-gpl3+/shadows-highlights-correction.c:37
+msgid "White point adjustment"
+msgstr "Ρύθμιση λευκού σημείου"
+
+#: operations/common-gpl3+/shadows-highlights.c:37
+#: operations/common-gpl3+/shadows-highlights-correction.c:38
+msgid "Shift white point"
+msgstr "Μετατόπιση λευκού σημείου"
+
+#: operations/common-gpl3+/shadows-highlights.c:41
+msgid "Spatial extent"
+msgstr "Χωρική έκταση"
+
+#: operations/common-gpl3+/shadows-highlights.c:45
+#: operations/common-gpl3+/shadows-highlights-correction.c:41
+msgid "Compress"
+msgstr "Συμπίεση"
+
+#: operations/common-gpl3+/shadows-highlights.c:46
+#: operations/common-gpl3+/shadows-highlights-correction.c:42
+msgid "Compress the effect on shadows/highlights and preserve midtones"
+msgstr "Συμπίεση του εφέ σε σκιές/τονισμούς και διατήρηση των ενδιάμεσων τόνων"
+
+#: operations/common-gpl3+/shadows-highlights.c:49
+#: operations/common-gpl3+/shadows-highlights-correction.c:45
+msgid "Shadows color adjustment"
+msgstr "Ρύθμιση χρώματος σκιών"
+
+#: operations/common-gpl3+/shadows-highlights.c:50
+#: operations/common-gpl3+/shadows-highlights-correction.c:46
+msgid "Adjust saturation of shadows"
+msgstr "Ρύθμιση κορεσμού σκιών"
+
+#: operations/common-gpl3+/shadows-highlights.c:53
+#: operations/common-gpl3+/shadows-highlights-correction.c:49
+msgid "Highlights color adjustment"
+msgstr "Ρύθμιση χρώματος τονισμών"
+
+#: operations/common-gpl3+/shadows-highlights.c:54
+#: operations/common-gpl3+/shadows-highlights-correction.c:50
+msgid "Adjust saturation of highlights"
+msgstr "Προσθήκη κορεσμού στους τονισμούς"
+
+#: operations/common-gpl3+/shadows-highlights.c:244
+msgid "Shadows-Highlights"
+msgstr "Τονισμοί σκιών"
+
+#: operations/common-gpl3+/shadows-highlights.c:247
+msgid "Perform shadows and highlights correction"
+msgstr "Εκτελεί διόρθωση σκιών και τονισμών"
+
+#: operations/common-gpl3+/shadows-highlights-correction.c:359
+msgid "Lighten shadows and darken highlights"
+msgstr "Ανοίγει τις σκιές και σκουραίνει τους τονισμούς"
 
 #: operations/common-gpl3+/shift.c:26 operations/common-gpl3+/shift.c:144
 msgid "Shift"
@@ -5415,11 +5481,11 @@ msgstr "Κεντράρισμα των πλακιδίων"
 msgid "Background type"
 msgstr "Τύπος παρασκηνίου"
 
-#: operations/common-gpl3+/tile-paper.c:451
+#: operations/common-gpl3+/tile-paper.c:437
 msgid "Paper Tile"
 msgstr "Πλακίδιο χαρτιού"
 
-#: operations/common-gpl3+/tile-paper.c:456
+#: operations/common-gpl3+/tile-paper.c:442
 msgid "Cut image into paper tiles, and slide them"
 msgstr "Κοπή εικόνας σε χάρτινα πλακίδια και μετακίνησή τους"
 
@@ -5647,11 +5713,11 @@ msgstr ""
 "Ακτίνα (1,0 είναι ο μέγιστος κύκλος που ταιριάζει στην εικόνα και το 2,0 "
 "πηγαίνει ολότελα μέχρι τις γωνίες)"
 
-#: operations/common-gpl3+/whirl-pinch.c:275
+#: operations/common-gpl3+/whirl-pinch.c:260
 msgid "Whirl Pinch"
 msgstr "Στροβιλισμός και πίεση"
 
-#: operations/common-gpl3+/whirl-pinch.c:280
+#: operations/common-gpl3+/whirl-pinch.c:265
 msgid "Distort an image by whirling and pinching"
 msgstr "Παραμόρφωση εικόνας με στροβιλισμό και πίεση"
 
@@ -6344,7 +6410,7 @@ msgstr "Διατήρηση μοντέλου"
 msgid "When TRUE the model will not be freed"
 msgstr "Όταν είναι αληθές, το μοντέλο θα ελευθερωθεί"
 
-#: operations/external/npd.c:50 operations/transform/transform-core.c:199
+#: operations/external/npd.c:50 operations/transform/transform-core.c:198
 #: operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Εσωτερικά χρησιμοποιούμενη δειγματοληψία"
@@ -6520,7 +6586,7 @@ msgstr "Φορτωτής αρχείου PPM"
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "Αποθήκευση εικόνας PPM (αποθήκευση φορητής pixmap.)"
 
-#: operations/external/raw-load.c:251
+#: operations/external/raw-load.c:241
 msgid "libraw File Loader"
 msgstr "Φορτωτής αρχείου libraw"
 
@@ -7196,27 +7262,27 @@ msgstr "Μετασχηματισμός συμβολοσειράς μετασχη
 msgid "Do a transformation using SVG syntax transformation."
 msgstr "Κάνει έναν μετασχηματισμό χρησιμοποιώντας μετασχηματισμό σύνταξης SVG."
 
-#: operations/transform/transform-core.c:182
+#: operations/transform/transform-core.c:181
 msgid "Origin-x"
 msgstr "Αρχικό-x"
 
-#: operations/transform/transform-core.c:183
+#: operations/transform/transform-core.c:182
 msgid "X coordinate of origin"
 msgstr "Συντεταγμένη X αρχικού"
 
-#: operations/transform/transform-core.c:190
+#: operations/transform/transform-core.c:189
 msgid "Origin-y"
 msgstr "Αρχικό-y"
 
-#: operations/transform/transform-core.c:191
+#: operations/transform/transform-core.c:190
 msgid "Y coordinate of origin"
 msgstr "Συντεταγμένη Y του αρχικού"
 
-#: operations/transform/transform-core.c:206
+#: operations/transform/transform-core.c:205
 msgid "Clip to input"
 msgstr "Περικοπή στην είσοδο"
 
-#: operations/transform/transform-core.c:207
+#: operations/transform/transform-core.c:206
 msgid "Force output bounding box to be input bounding box."
 msgstr ""
 "Εξαναγκασμός πλαισίου οριοθέτησης εξόδου να είναι το πλαίσιο οριοθέτησης "
@@ -7870,48 +7936,6 @@ msgstr "Τμηματοποίηση Κ-μέσων"
 msgid "Segment colors using K-means clustering"
 msgstr "Χρώματα συμπλέγματος χρησιμοποιώντας την ομαδοποίηση Κ-μέσων"
 
-#: operations/workshop/shadows-highlights.c:28
-#: operations/workshop/shadows-highlights-correction.c:29
-msgid "Shadows"
-msgstr "Σκιές"
-
-#: operations/workshop/shadows-highlights.c:31
-#: operations/workshop/shadows-highlights-correction.c:32
-msgid "Highlights"
-msgstr "Τονισμοί"
-
-#: operations/workshop/shadows-highlights.c:34
-#: operations/workshop/shadows-highlights-correction.c:35
-msgid "White point adjustment"
-msgstr "Ρύθμιση λευκού σημείου"
-
-#: operations/workshop/shadows-highlights.c:41
-#: operations/workshop/shadows-highlights-correction.c:38
-msgid "Compress"
-msgstr "Συμπίεση"
-
-#: operations/workshop/shadows-highlights.c:44
-#: operations/workshop/shadows-highlights-correction.c:41
-msgid "Shadows color adjustment"
-msgstr "Ρύθμιση χρώματος σκιών"
-
-#: operations/workshop/shadows-highlights.c:47
-#: operations/workshop/shadows-highlights-correction.c:44
-msgid "Highlights color adjustment"
-msgstr "Ρύθμιση χρώματος τονισμών"
-
-#: operations/workshop/shadows-highlights.c:237
-msgid "Shadows-Highlights"
-msgstr "Τονισμοί σκιών"
-
-#: operations/workshop/shadows-highlights.c:240
-msgid "Perform shadows and highlights correction"
-msgstr "Εκτελεί διόρθωση σκιών και τονισμών"
-
-#: operations/workshop/shadows-highlights-correction.c:305
-msgid "Lighten shadows and darken highlights"
-msgstr "Ανοίγει τις σκιές και σκουραίνει τους τονισμούς"
-
 #: operations/workshop/spherize.c:26
 msgid "Radial"
 msgstr "Ακτινικός"
@@ -7949,6 +7973,9 @@ msgstr "Σφαιρoποίηση"
 #: operations/workshop/spherize.c:330
 msgid "Wrap image around a spherical cap"
 msgstr "Αναδίπλωση εικόνας γύρω από σφαιρικό τμήμα"
+
+#~ msgid "Holdness"
+#~ msgstr "Κράτημα"
 
 #~ msgid "Radius of square pixel region (width and height will be radius*2+1)"
 #~ msgstr ""
@@ -8036,9 +8063,6 @@ msgstr "Αναδίπλωση εικόνας γύρω από σφαιρικό τ�
 #~ "Κάθε τελικό εικονοστοιχείο είναι ο μέσος όρος των γειτονικών "
 #~ "εικονοστοιχείων σταθμισμένων με την κανονική κατανομή με συγκεκριμένη "
 #~ "τυπική απόκλιση."
-
-#~ msgid "Adjust the exposure correction"
-#~ msgstr "Ρύθμιση της διόρθωσης έκθεσης"
 
 #~| msgid "A fast approximate implementation of the bilateral filter"
 #~ msgid "An implementation of Darktable's exposure filter."
@@ -8706,9 +8730,6 @@ msgstr "Αναδίπλωση εικόνας γύρω από σφαιρικό τ�
 
 #~ msgid "Brighten the image"
 #~ msgstr "Λαμπρότητα της εικόνας"
-
-#~ msgid "Shift horizontal"
-#~ msgstr "Οριζόντια μετατόπιση"
 
 #~ msgid "Shift vertical"
 #~ msgstr "Κάθετη μετατόπιση"
