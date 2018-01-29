@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-01-08 13:42+0000\n"
-"PO-Revision-Date: 2018-01-08 14:48+0100\n"
+"POT-Creation-Date: 2018-01-28 23:05+0000\n"
+"PO-Revision-Date: 2018-01-28 02:25+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -169,7 +169,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: gegl/gegl-enums.c:33 gegl/gegl-enums.c:87
+#: gegl/gegl-enums.c:33 gegl/gegl-enums.c:90
 #: operations/common/gaussian-blur.c:31 operations/common/gblur-1d.c:32
 #: operations/common-gpl3+/fractal-explorer.c:96
 msgid "None"
@@ -194,106 +194,106 @@ msgstr "Czarny"
 msgid "White"
 msgstr "Biały"
 
-#: gegl/gegl-enums.c:61
+#: gegl/gegl-enums.c:64
 msgid "Read"
 msgstr "Odczyt"
 
-#: gegl/gegl-enums.c:62
+#: gegl/gegl-enums.c:65
 msgid "Write"
 msgstr "Zapis"
 
-#: gegl/gegl-enums.c:63
+#: gegl/gegl-enums.c:66
 msgid "Read/Write"
 msgstr "Odczyt/zapis"
 
-#: gegl/gegl-enums.c:88
+#: gegl/gegl-enums.c:91
 msgid "Floyd-Steinberg"
 msgstr "Floyda-Steinberga"
 
-#: gegl/gegl-enums.c:89
+#: gegl/gegl-enums.c:92
 msgid "Bayer"
 msgstr "Bayera"
 
-#: gegl/gegl-enums.c:90 operations/common/waterpixels.c:35
+#: gegl/gegl-enums.c:93 operations/common/waterpixels.c:35
 msgid "Random"
 msgstr "Losowo"
 
-#: gegl/gegl-enums.c:91
+#: gegl/gegl-enums.c:94
 msgid "Random Covariant"
 msgstr "Losowy współzmienny"
 
-#: gegl/gegl-enums.c:92
+#: gegl/gegl-enums.c:95
 msgid "Arithmetic add"
 msgstr "Dodawanie arytmetyczne"
 
-#: gegl/gegl-enums.c:93
+#: gegl/gegl-enums.c:96
 msgid "Arithmetic add covariant"
 msgstr "Arytmetyczne dodawanie współzmiennej"
 
-#: gegl/gegl-enums.c:94
+#: gegl/gegl-enums.c:97
 msgid "Arithmetic xor"
 msgstr "Arytmetyczne „xor”"
 
-#: gegl/gegl-enums.c:95
+#: gegl/gegl-enums.c:98
 msgid "Arithmetic xor covariant"
 msgstr "Arytmetyczne „xor” współzmiennej"
 
-#: gegl/gegl-enums.c:120 operations/common/edge-sobel.c:27
+#: gegl/gegl-enums.c:123 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/workshop/spherize.c:27
 msgid "Horizontal"
 msgstr "Poziomy"
 
-#: gegl/gegl-enums.c:121 operations/common/edge-sobel.c:29
+#: gegl/gegl-enums.c:124 operations/common/edge-sobel.c:29
 #: operations/common/noise-spread.c:35 operations/workshop/spherize.c:28
 msgid "Vertical"
 msgstr "Pionowy"
 
-#: gegl/gegl-enums.c:145
+#: gegl/gegl-enums.c:148
 msgid "Nearest"
 msgstr "Najbliższy"
 
-#: gegl/gegl-enums.c:146 operations/common-gpl3+/bump-map.c:33
+#: gegl/gegl-enums.c:149 operations/common-gpl3+/bump-map.c:33
 #: operations/common-gpl3+/sinus.c:63 operations/common-gpl3+/spiral.c:26
 msgid "Linear"
 msgstr "Liniowy"
 
-#: gegl/gegl-enums.c:147
+#: gegl/gegl-enums.c:150
 msgid "Cubic"
 msgstr "Sześcienny"
 
-#: gegl/gegl-enums.c:148
+#: gegl/gegl-enums.c:151
 msgid "NoHalo"
 msgstr "NoHalo"
 
-#: gegl/gegl-enums.c:149
+#: gegl/gegl-enums.c:152
 msgid "LoHalo"
 msgstr "LoHalo"
 
-#: gegl/gegl-init.c:282
+#: gegl/gegl-init.c:285
 msgid "Where GEGL stores its swap"
 msgstr "Gdzie biblioteka GEGL przechowuje obszar wymiany"
 
-#: gegl/gegl-init.c:287
+#: gegl/gegl-init.c:290
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Ile pamięci (w przybliżeniu) do użycia do pamięci tymczasowej obrazów"
 
-#: gegl/gegl-init.c:292
+#: gegl/gegl-init.c:295
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Domyślny rozmiar kafla w GeglBuffer"
 
-#: gegl/gegl-init.c:297
+#: gegl/gegl-init.c:300
 msgid "The count of pixels to compute simultaneously"
 msgstr "Liczba pikseli do jednoczesnego obliczania"
 
-#: gegl/gegl-init.c:302
+#: gegl/gegl-init.c:305
 msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
 msgstr "Jakość wyświetlania, wartość między 0,0 (szybkie) a 1,0 (standardowe)"
 
-#: gegl/gegl-init.c:307
+#: gegl/gegl-init.c:310
 msgid "The number of concurrent processing threads to use"
 msgstr "Liczba jednocześnie używanych wątków przetwarzania"
 
-#: gegl/gegl-init.c:312
+#: gegl/gegl-init.c:315
 msgid "Disable OpenCL"
 msgstr "Wyłącza OpenCL"
 
@@ -665,7 +665,15 @@ msgstr ""
 "Liczba iteracji, wyższa liczba iteracji dostarcza wyniki z mniejszym szumem "
 "kosztem większej siły obliczeniowej"
 
-#: operations/common/c2g.c:396
+#: operations/common/c2g.c:47 operations/common/stress.c:44
+msgid "Enhance Shadows"
+msgstr "Uwydatnianie cienia"
+
+#: operations/common/c2g.c:48
+msgid "When enabled details in shadows are boosted at the expense of noise"
+msgstr "Po włączeniu szczegóły w cieniu są uwydatniane kosztem szumu"
+
+#: operations/common/c2g.c:453
 msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
@@ -3293,7 +3301,15 @@ msgstr ""
 "Liczba iteracji, wyższy numer iteracji dostarcza obraz o mniejszym szumie, "
 "kosztem mocy obliczeniowych"
 
-#: operations/common/stress.c:216 operations/common/stress.c:220
+#: operations/common/stress.c:45
+msgid ""
+"When enabled also enhances shadow regions - when disabled a more natural "
+"result is yielded"
+msgstr ""
+"Po włączeniu uwydatnia także obszary w cieniu — po wyłączeniu daje bardziej "
+"naturalny wynik"
+
+#: operations/common/stress.c:263 operations/common/stress.c:267
 msgid "Spatio Temporal Retinex-like Envelope with Stochastic Sampling"
 msgstr "STRESS"
 
@@ -4130,7 +4146,7 @@ msgid "Mode of displacement"
 msgstr "Tryb przesunięcia"
 
 #: operations/common-gpl3+/displace.c:37 operations/external/npd.c:47
-#: operations/transform/transform-core.c:197 operations/workshop/ditto.c:27
+#: operations/transform/transform-core.c:225 operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Próbka"
 
@@ -5917,11 +5933,11 @@ msgstr "kodek-dźwięku"
 msgid "audio"
 msgstr "dźwięk"
 
-#: operations/external/ff-load.c:780
+#: operations/external/ff-load.c:802
 msgid "FFmpeg Frame Loader"
 msgstr "Wczytywanie klatek biblioteki FFmpeg"
 
-#: operations/external/ff-load.c:782
+#: operations/external/ff-load.c:804
 msgid "FFmpeg video frame importer."
 msgstr "Importer klatek wideo biblioteki FFmpeg."
 
@@ -6367,7 +6383,7 @@ msgstr "Model zachowywania"
 msgid "When TRUE the model will not be freed"
 msgstr "Kiedy wynosi „true”, to model nie będzie zwalniany"
 
-#: operations/external/npd.c:50 operations/transform/transform-core.c:198
+#: operations/external/npd.c:50 operations/transform/transform-core.c:226
 #: operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Wewnętrznie używana próbka"
@@ -7206,30 +7222,29 @@ msgstr "Ciąg przekształcenia składni przekształceń SVG"
 msgid "Do a transformation using SVG syntax transformation."
 msgstr "Wykonaj przekształcenie za pomocą składni przekształceń SVG."
 
-#: operations/transform/transform-core.c:181
+#: operations/transform/transform-core.c:201
 msgid "Origin-x"
 msgstr "Początek układu współrzędnych na osi X"
 
-#: operations/transform/transform-core.c:182
+#: operations/transform/transform-core.c:202
 msgid "X coordinate of origin"
 msgstr "Współrzędna początku układu współrzędnych na osi X"
 
-#: operations/transform/transform-core.c:189
+#: operations/transform/transform-core.c:209
 msgid "Origin-y"
 msgstr "Początek układu współrzędnych na osi Y"
 
-#: operations/transform/transform-core.c:190
+#: operations/transform/transform-core.c:210
 msgid "Y coordinate of origin"
 msgstr "Współrzędna początku układu współrzędnych na osi Y"
 
-#: operations/transform/transform-core.c:205
-msgid "Clip to input"
-msgstr "Kadrowanie do wejścia"
+#: operations/transform/transform-core.c:217
+msgid "Near-z"
+msgstr "Blisko osi Z"
 
-#: operations/transform/transform-core.c:206
-msgid "Force output bounding box to be input bounding box."
-msgstr ""
-"Wymuszenie, aby wyjściowa bryła brzegowej była też wejściową bryłą brzegową."
+#: operations/transform/transform-core.c:218
+msgid "Z coordinate of the near clipping plane"
+msgstr "Współrzędna na osi Z bliskiej płaszczyzny przycinania"
 
 #: operations/transform/translate.c:26
 msgid "Horizontal translation"
