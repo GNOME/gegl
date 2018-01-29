@@ -100,30 +100,35 @@ gegl_downscale_2x2_generic (const Babl *format,
    }
 }
 
+#define LUT_DIVISOR 16
+
 static uint16_t lut_u8_to_u16[256];
 static float    lut_u8_to_u16f[256];
-static uint8_t  lut_u16_to_u8[65537];
+static uint8_t  lut_u16_to_u8[65536/LUT_DIVISOR];
 
 void _gegl_init_u8_lut (void);
 void _gegl_init_u8_lut (void)
 {
   static int lut_inited = 0;
   uint8_t u8_ramp[256];
-  uint16_t u16_ramp[65537];
+  uint16_t u16_ramp[65536/LUT_DIVISOR];
   int i;
 
   if (lut_inited)
     return;
   for (i = 0; i < 256; i++) u8_ramp[i]=i;
-  for (i = 0; i < 65536; i++) u16_ramp[i]=i;
+  for (i = 0; i < 65536/LUT_DIVISOR; i++) u16_ramp[i]=i * LUT_DIVISOR;
   babl_process (babl_fish (babl_format ("Y' u8"), babl_format("Y u16")),
                 &u8_ramp[0], &lut_u8_to_u16[0],
                 256);
   for (i = 0; i < 256; i++)
+  {
+    lut_u8_to_u16[i] = lut_u8_to_u16[i]/LUT_DIVISOR;
     lut_u8_to_u16f[i] = lut_u8_to_u16[i];
+  }
 
   /* workaround for bug, doing this conversion sample by sample */
-  for (i = 0; i < 65536; i++)
+  for (i = 0; i < 65536/LUT_DIVISOR; i++)
     babl_process (babl_fish (babl_format ("Y u16"), babl_format("Y' u8")),
                   &u16_ramp[i], &lut_u16_to_u8[i],
                   1);
