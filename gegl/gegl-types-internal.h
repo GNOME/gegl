@@ -105,8 +105,16 @@ GEGL_CACHED_BABL(format, yA_float, "Y'aA float")
 GEGL_CACHED_BABL(format, ya_linear_float, "Y float")
 GEGL_CACHED_BABL(format, yA_linear_float, "YaA float")
 
+
+#ifdef G_OS_WIN32
+  /* one use 16kb of stack before an exception triggered warning on win32 */
+  #define GEGL_ALLOCA_THRESHOLD  8192
+#else
+/* on linux/OSX 0.5mb is reasonable, the stack size of new threads is 2MB */
+  #define GEGL_ALLOCA_THRESHOLD  (1024*1024/2)
+#endif
+
 G_END_DECLS
 
-#define GEGL_ALLOCA_THRESHOLD  8192 * 8   /* maybe this needs to be reduced for win32? */
 
 #endif /* __GEGL_TYPES_INTERNAL_H__ */
