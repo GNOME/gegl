@@ -136,52 +136,6 @@ void _gegl_init_u8_lut (void)
   lut_inited = 1;
 }
 
-static inline void
-u8_to_u16_rows (int            components,
-                const uint8_t *source_buf,
-                int            source_stride,
-                uint16_t      *dest_buf,
-                int            dest_stride,
-                int            n,
-                int            rows)
-{
-  n *= components;
-
-  while (rows--)
-   {
-      const uint8_t *src = source_buf;
-      uint16_t      *dest = dest_buf;
-      int i = n;
-      while (i--)
-        *(dest++) = lut_u8_to_u16[*(src++)];
-      source_buf += source_stride;
-      dest_buf += (dest_stride / 2);
-   }
-}
-
-static inline void
-u16_to_u8_rows (int             components,
-                const uint16_t *source_buf,
-                int             source_stride,
-                uint8_t        *dest_buf,
-                int             dest_stride,
-                int             n,
-                int             rows)
-{
-  n *= components;
-  while (rows--)
-   {
-      int i = n;
-      const uint16_t *src = source_buf;
-      uint8_t      *dest = dest_buf;
-      while (i--)
-        *(dest++) = lut_u16_to_u8[*(src++)];
-
-      source_buf += (source_stride / 2);
-      dest_buf += dest_stride;
-   }
-}
-
 static inline int int_floorf (float x)
 {
   int i = (int)x; /* truncate */
@@ -223,7 +177,7 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
   for (gint y = 0; y < dst_rect->height; y++)
     {
       gfloat top_weight, middle_weight, bottom_weight;
-      const gfloat sy = (dst_rect->y + y + .5) / scale - src_rect->y;
+      const gfloat sy = (dst_rect->y + y + .5f) / scale - src_rect->y;
       const gint     ii = int_floorf (sy);
       uint8_t             *dst = (uint8_t*)(dest_buf + y * d_rowstride);
       const guchar  *src_base = source_buf + ii * s_rowstride;
@@ -589,6 +543,7 @@ break;\
                                 lut_u8_to_u16[bb[i]])>>2 ];);
       }
   }
+#undef CASE
 }
 
 
@@ -740,8 +695,8 @@ void gegl_resample_boxfilter (guchar              *dest_buf,
       gegl_resample_boxfilter_double (dest_buf, source_buf, dst_rect, src_rect,
                                       s_rowstride, scale, bpp, d_rowstride);
     else
-      gegl_resample_nearest (dest_buf, source_buf, dst_rect, src_rect,
-                             s_rowstride, scale, bpp, d_rowstride);
+      gegl_resample_boxfilter_generic (dest_buf, source_buf, dst_rect, src_rect,
+                                       s_rowstride, scale, format, d_rowstride);
     }
   else
     {
@@ -752,8 +707,8 @@ void gegl_resample_boxfilter (guchar              *dest_buf,
         }
       else
         {
-        gegl_resample_boxfilter_generic (dest_buf, source_buf, dst_rect, src_rect,
-                                         s_rowstride, scale, format, d_rowstride);
+          gegl_resample_boxfilter_generic (dest_buf, source_buf, dst_rect, src_rect,
+                                           s_rowstride, scale, format, d_rowstride);
         }
     }
 }
@@ -843,8 +798,8 @@ void gegl_resample_bilinear (guchar              *dest_buf,
       gegl_resample_bilinear_double (dest_buf, source_buf, dst_rect, src_rect,
                                      s_rowstride, scale, bpp, d_rowstride);
     else
-      gegl_resample_nearest (dest_buf, source_buf, dst_rect, src_rect,
-                             s_rowstride, scale, bpp, d_rowstride);
+      gegl_resample_bilinear_generic (dest_buf, source_buf, dst_rect, src_rect,
+                                      s_rowstride, scale, format, d_rowstride);
     }
   else
     {
