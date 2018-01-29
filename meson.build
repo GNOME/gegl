@@ -280,7 +280,7 @@ if get_option('with-webp')
   libwebp     = dependency('libwebp',         version: '>=0.5.0')
 endif
 
-# Required library eventually provided in libs/ subdir
+# Required library eventually provided in subprojects/ subdir
 poly2tri_c  = dependency('poly2tri-c',        version: '>=0.0.0',
   fallback: [ 'poly2tri-c', 'poly2tri_c' ],
 )

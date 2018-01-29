@@ -4,7 +4,8 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 # libraries, otherwise any potentially rebuilt libs won't be picked up until
 # the next run of make.
 SUBDIRS=\
-	libs \
+	libs/rgbe \
+	subprojects/poly2tri-c \
 	opencl \
 	gegl \
 	libs/npd \
