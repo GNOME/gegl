@@ -137,8 +137,8 @@ gegl_sampler_init (GeglSampler *sampler)
   } while ( ++i<GEGL_SAMPLER_MIPMAP_LEVELS );
 
   sampler->level[0].sampler_buffer =
-    g_malloc0 (GEGL_SAMPLER_MAXIMUM_WIDTH *
-               GEGL_SAMPLER_MAXIMUM_HEIGHT * GEGL_SAMPLER_BPP);
+    g_malloc (GEGL_SAMPLER_MAXIMUM_WIDTH *
+              GEGL_SAMPLER_MAXIMUM_HEIGHT * GEGL_SAMPLER_BPP);
 }
 
 static void
@@ -291,7 +291,7 @@ gegl_sampler_get_from_mipmap (GeglSampler    *sampler,
                                                                   level_no);
       if (!level->sampler_buffer)
         level->sampler_buffer =
-          g_malloc0 (GEGL_SAMPLER_ROWSTRIDE * GEGL_SAMPLER_MAXIMUM_HEIGHT);
+          g_malloc (GEGL_SAMPLER_ROWSTRIDE * GEGL_SAMPLER_MAXIMUM_HEIGHT);
 
       gegl_buffer_get (sampler->buffer,
                        &level->sampler_rectangle,
