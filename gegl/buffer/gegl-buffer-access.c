@@ -1935,7 +1935,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       }
   }
 
-  g_return_if_fail (scale > 0.0);
+  g_return_if_fail (scale > 0.0f);
 
   if (format == NULL)
     format = buffer->soft_format;
@@ -1960,51 +1960,87 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       return;
     }
   else
+  {
+    gint chunk_height;
+    GeglRectangle rect2       = *rect;
+    gint    bpp               = babl_format_get_bytes_per_pixel (format);
+    gint    ystart            = rect->y;
+    float   scale_orig        = scale;
+    gint    level             = 0;
+    void   *sample_buf;
+    gint    x1 = floorf (rect->x / scale_orig + GEGL_SCALE_EPSILON);
+    gint    x2 = ceilf ((rect->x + rect->width) / scale_orig - GEGL_SCALE_EPSILON);
+    int     max_bytes_per_row = ((rect->width+1) * bpp * 2);
+    int     allocated         = 0;
+    gint interpolation = (flags & GEGL_BUFFER_FILTER_ALL);
+    gint    factor = 1;
+
+    chunk_height = (1024 * 128) / max_bytes_per_row;
+
+    if (chunk_height < 4)
+      chunk_height = 4;
+
+    allocated = max_bytes_per_row * ((chunk_height+1) * 2);
+    if (allocated > GEGL_ALLOCA_THRESHOLD)
+      sample_buf  = g_malloc (allocated);
+    else
+    {
+      sample_buf  = alloca (allocated);
+      allocated = 0;
+    }
+
+    rect2.y = ystart;
+    rect2.height = chunk_height;
+    if (rect2.y + rect2.height > rect->y + rect->height)
+      rect2.height = (rect->y + rect->height) - rect2.y;
+
+    while (scale <= 0.5)
+      {
+        x1 = 0 < x1 ? x1 / 2 : (x1 - 1) / 2;
+        x2 = 0 < x2 ? (x2 + 1) / 2 : x2 / 2;
+        scale  *= 2;
+        factor *= 2;
+        level++;
+      }
+
+    while (rect2.width > 0 && rect2.height > 0)
     {
       GeglRectangle sample_rect;
-      gint    level       = 0;
-      gint    buf_width;
-      gint    buf_height;
-      gint    bpp         = babl_format_get_bytes_per_pixel (format);
-      void   *sample_buf;
-      gint    x1 = floorf (rect->x / scale + GEGL_SCALE_EPSILON);
-      gint    x2 = ceilf ((rect->x + rect->width) / scale - GEGL_SCALE_EPSILON);
-      gint    y1 = floorf (rect->y / scale + GEGL_SCALE_EPSILON);
-      gint    y2 = ceilf ((rect->y + rect->height) / scale - GEGL_SCALE_EPSILON);
-      gint    factor = 1;
-      gint    offset = 0;
-
-      gint interpolation = (flags & GEGL_BUFFER_FILTER_ALL);
-
+      gint    buf_width, buf_height;
+      gint    y1 = floorf (rect2.y / scale_orig + GEGL_SCALE_EPSILON);
+      gint    y2 = ceilf ((rect2.y + rect2.height) / scale_orig - GEGL_SCALE_EPSILON);
+      scale = scale_orig;
 
       while (scale <= 0.5)
         {
-          x1 = 0 < x1 ? x1 / 2 : (x1 - 1) / 2;
           y1 = 0 < y1 ? y1 / 2 : (y1 - 1) / 2;
-          x2 = 0 < x2 ? (x2 + 1) / 2 : x2 / 2;
           y2 = 0 < y2 ? (y2 + 1) / 2 : y2 / 2;
           scale  *= 2;
-          factor *= 2;
-          level++;
         }
 
+      if (GEGL_FLOAT_EQUAL (scale, 1.0))
+        {
+          sample_rect.x      = factor * x1;
+          sample_rect.y      = factor * y1;
+          sample_rect.width  = factor * (x2 - x1);
+          sample_rect.height = factor * (y2 - y1);
+          gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
+                                             (guchar*)dest_buf, rowstride,
+                                             format, level, repeat_mode);
+          goto setup_next_chunk;
+        }
+
+      if (rowstride == GEGL_AUTO_ROWSTRIDE)
+        rowstride = rect2.width * bpp;
+
+      /* this is the level where we split and chew through a small temp-buf worth of data
+       * possibly managing to keep things in L2 cache
+       */
 
       sample_rect.x      = factor * x1;
       sample_rect.y      = factor * y1;
       sample_rect.width  = factor * (x2 - x1);
       sample_rect.height = factor * (y2 - y1);
-
-      if (GEGL_FLOAT_EQUAL (scale, 1.0))
-        {
-          gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
-                                             (guchar*)dest_buf, rowstride,
-                                             format, level, repeat_mode);
-          return;
-        }
-
-      if (rowstride == GEGL_AUTO_ROWSTRIDE)
-        rowstride = rect->width * bpp;
-
       buf_width  = x2 - x1;
       buf_height = y2 - y1;
 
@@ -2026,7 +2062,6 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
         switch(interpolation)
         {
           case GEGL_BUFFER_FILTER_NEAREST:
-            sample_buf = g_malloc (buf_height * buf_width * bpp);
 
             gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
                                                (guchar*)sample_buf,
@@ -2039,21 +2074,18 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
             gegl_resample_nearest (dest_buf,
                                    sample_buf,
-                                   rect,
+                                   &rect2,
                                    &sample_rect,
                                    buf_width * bpp,
                                    scale,
                                    bpp,
                                    rowstride);
-            g_free (sample_buf);
             break;
           case GEGL_BUFFER_FILTER_BILINEAR:
             buf_width  += 1;
             buf_height += 1;
             sample_rect.width  += factor;
             sample_rect.height += factor;
-
-            sample_buf = g_malloc (buf_height * buf_width * bpp);
             gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
                                        (guchar*)sample_buf,
                                         buf_width * bpp,
@@ -2066,43 +2098,55 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
             gegl_resample_bilinear (dest_buf,
                                     sample_buf,
-                                    rect,
+                                    &rect2,
                                     &sample_rect,
                                     buf_width * bpp,
                                     scale,
                                     format,
                                     rowstride);
-            g_free (sample_buf);
             break;
           case GEGL_BUFFER_FILTER_BOX:
           default:
-            buf_width  += 2;
-            buf_height += 2;
-            offset = (buf_width + 1) * bpp;
+            {
+              gint offset;
+              buf_width  += 2;
+              buf_height += 2;
+              offset = (buf_width + 1) * bpp;
 
-            sample_buf = g_malloc (buf_height * buf_width * bpp);
-            gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
-                                       (guchar*)sample_buf + offset,
-                                        buf_width * bpp,
-                                        format, level, repeat_mode);
+              gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
+                                         (guchar*)sample_buf + offset,
+                                          buf_width * bpp,
+                                          format, level, repeat_mode);
 
-            sample_rect.x      = x1 - 1;
-            sample_rect.y      = y1 - 1;
-            sample_rect.width  = x2 - x1 + 2;
-            sample_rect.height = y2 - y1 + 2;
+              sample_rect.x      = x1 - 1;
+              sample_rect.y      = y1 - 1;
+              sample_rect.width  = x2 - x1 + 2;
+              sample_rect.height = y2 - y1 + 2;
 
-            gegl_resample_boxfilter (dest_buf,
-                                     sample_buf,
-                                     rect,
-                                     &sample_rect,
-                                     buf_width * bpp,
-                                     scale,
-                                     format,
-                                     rowstride);
-            g_free (sample_buf);
+              gegl_resample_boxfilter (dest_buf,
+                                       sample_buf,
+                                       &rect2,
+                                       &sample_rect,
+                                       buf_width * bpp,
+                                       scale,
+                                       format,
+                                       rowstride);
+            }
             break;
       }
+setup_next_chunk:
+    dest_buf = ((guchar*)dest_buf) + rowstride * rect2.height;
+    ystart+=rect2.height;
+    rect2.y = ystart;
+    rect2.height = chunk_height;
+    if (rect2.y + rect2.height > rect->y + rect->height)
+      rect2.height = (rect->y + rect->height) - rect2.y;
+
     }
+
+    if (allocated)
+      g_free (sample_buf);
+  }
 }
 
 void
