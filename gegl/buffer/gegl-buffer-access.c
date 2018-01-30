@@ -1882,6 +1882,14 @@ _gegl_get_required_for_scale (const Babl          *format,
       }
 }
 
+#define ALIGN 16
+static void inline *align_16 (unsigned char *ret)
+{
+  int offset = ALIGN - ((uintptr_t) ret) % ALIGN;
+  ret = ret + offset;
+  return ret;
+}
+
 static inline void
 _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                            gdouble              scale,
@@ -1981,11 +1989,11 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       chunk_height = 4;
 
     allocated = max_bytes_per_row * ((chunk_height+1) * 2);
-    if (allocated > GEGL_ALLOCA_THRESHOLD)
+    if (allocated > GEGL_ALLOCA_THRESHOLD || 1)
       sample_buf  = g_malloc (allocated);
     else
     {
-      sample_buf  = alloca (allocated);
+      sample_buf  = align_16 (alloca (allocated + 16));
       allocated = 0;
     }
 
