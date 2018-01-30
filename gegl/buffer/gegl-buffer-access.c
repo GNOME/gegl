@@ -1982,25 +1982,18 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
     int     allocated         = 0;
     gint interpolation = (flags & GEGL_BUFFER_FILTER_ALL);
     gint    factor = 1;
-
     chunk_height = (1024 * 128) / max_bytes_per_row;
 
     if (chunk_height < 4)
       chunk_height = 4;
 
-    allocated = max_bytes_per_row * ((chunk_height+1) * 2);
-    if (allocated > GEGL_ALLOCA_THRESHOLD || 1)
-      sample_buf  = g_malloc (allocated);
-    else
-    {
-      sample_buf  = align_16 (alloca (allocated + 16));
-      allocated = 0;
-    }
-
     rect2.y = ystart;
     rect2.height = chunk_height;
     if (rect2.y + rect2.height > rect->y + rect->height)
+    {
       rect2.height = (rect->y + rect->height) - rect2.y;
+      chunk_height = rect2.height;
+    }
 
     while (scale <= 0.5)
       {
@@ -2009,6 +2002,39 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
         scale  *= 2;
         factor *= 2;
         level++;
+      }
+
+    allocated = max_bytes_per_row * ((chunk_height+1) * 2);
+
+    if (interpolation == GEGL_BUFFER_FILTER_AUTO)
+    {
+      /* with no specified interpolation we aim for a trade-off where
+         100-200% ends up using box-filter - which is a better transition
+         to nearest neighbor which happens beyond 200% further below.
+       */
+      if (scale >= 2.0)
+        interpolation = GEGL_BUFFER_FILTER_NEAREST;
+      else if (scale > 1.0)
+        {
+          interpolation = GEGL_BUFFER_FILTER_BOX;
+        }
+      else
+        interpolation = GEGL_BUFFER_FILTER_BILINEAR;
+    }
+
+    if (interpolation == GEGL_BUFFER_FILTER_NEAREST)
+      {
+        sample_buf = g_malloc (allocated);
+      }
+    else
+      {
+        /* both bilinear and bicubic end up with memory corruption
+           glitchy artifacts - probably bleeding in from edges of
+           used buffer, when allocations are not cleared, there might
+           be somep performance gain in ensuring proper buffer filling -
+           or even selective zeroing.
+         */
+        sample_buf = g_malloc0 (allocated);
       }
 
     while (rect2.width > 0 && rect2.height > 0)
@@ -2052,19 +2078,6 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       buf_width  = x2 - x1;
       buf_height = y2 - y1;
 
-      if (interpolation == GEGL_BUFFER_FILTER_AUTO)
-      {
-        /* with no specified interpolation we aim for a trade-off where
-           100-200% ends up using box-filter - which is a better transition
-           to nearest neighbor which happens beyond 200% further below.
-         */
-        if (scale >= 2.0)
-          interpolation = GEGL_BUFFER_FILTER_NEAREST;
-        else if (scale > 1.0)
-          interpolation = GEGL_BUFFER_FILTER_BOX;
-        else
-          interpolation = GEGL_BUFFER_FILTER_BILINEAR;
-      }
 
       if (buf_height && buf_width)
         switch(interpolation)
@@ -2152,8 +2165,7 @@ setup_next_chunk:
 
     }
 
-    if (allocated)
-      g_free (sample_buf);
+    g_free (sample_buf);
   }
 }
 
