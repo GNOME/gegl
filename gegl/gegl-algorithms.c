@@ -47,6 +47,14 @@ void gegl_downscale_2x2 (const Babl *format,
 
 #include <stdio.h>
 
+#define ALIGN 16
+static void inline *align_16 (unsigned char *ret)
+{
+  int offset = ALIGN - ((uintptr_t) ret) % ALIGN;
+  ret = ret + offset;
+  return ret;
+}
+
 static void
 gegl_downscale_2x2_generic (const Babl *format,
                             gint        src_width,
@@ -71,8 +79,8 @@ gegl_downscale_2x2_generic (const Babl *format,
 
   if (src_height * in_tmp_rowstride + dst_height * out_tmp_rowstride < GEGL_ALLOCA_THRESHOLD)
   {
-    in_tmp = alloca (src_height * in_tmp_rowstride);
-    out_tmp = alloca (dst_height * out_tmp_rowstride);
+    in_tmp = align_16 (alloca (src_height * in_tmp_rowstride + 16));
+    out_tmp = align_16 (alloca (dst_height * out_tmp_rowstride + 16));
   }
   else
   {
@@ -633,8 +641,8 @@ gegl_resample_boxfilter_generic (guchar       *dest_buf,
 
   if (src_rect->height * in_tmp_rowstride + dst_rect->height * out_tmp_rowstride < GEGL_ALLOCA_THRESHOLD)
   {
-    in_tmp = alloca (src_rect->height * in_tmp_rowstride);
-    out_tmp = alloca (dst_rect->height * out_tmp_rowstride);
+    in_tmp = align_16 (alloca (src_rect->height * in_tmp_rowstride + 16));
+    out_tmp = align_16 (alloca (dst_rect->height * out_tmp_rowstride + 16));
   }
   else
   {
@@ -737,8 +745,8 @@ gegl_resample_bilinear_generic (guchar              *dest_buf,
 
   if (src_rect->height * in_tmp_rowstride + dst_rect->height * out_tmp_rowstride < GEGL_ALLOCA_THRESHOLD)
   {
-    in_tmp = alloca (src_rect->height * in_tmp_rowstride);
-    out_tmp = alloca (dst_rect->height * out_tmp_rowstride);
+    in_tmp = align_16 (alloca (src_rect->height * in_tmp_rowstride + 16));
+    out_tmp = align_16 (alloca (dst_rect->height * out_tmp_rowstride + 16));
   }
   else
   {
