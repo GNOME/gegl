@@ -20,13 +20,8 @@
 #include <glib-object.h>
 #include <string.h>
 
-#include "gegl-types.h"
-#include "gegl-buffer-types.h"
 #include "gegl-buffer-private.h"
-#include "gegl-utils.h"
-#include "gegl-tile-handler.h"
 #include "gegl-tile-handler-empty.h"
-#include "gegl-tile-backend.h"
 
 G_DEFINE_TYPE (GeglTileHandlerEmpty, gegl_tile_handler_empty,
                GEGL_TYPE_TILE_HANDLER)

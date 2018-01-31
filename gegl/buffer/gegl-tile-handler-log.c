@@ -21,7 +21,6 @@
 #include <string.h>
 
 #include "gegl-buffer-types.h"
-#include "gegl-tile-handler.h"
 #include "gegl-tile-handler-log.h"
 
 G_DEFINE_TYPE (GeglTileHandlerLog, gegl_tile_handler_log, GEGL_TYPE_TILE_HANDLER)

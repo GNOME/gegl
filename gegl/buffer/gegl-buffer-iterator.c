@@ -26,7 +26,6 @@
 #include <glib/gprintf.h>
 
 #include "gegl.h"
-#include "gegl-types-internal.h"
 #include "gegl-buffer-types.h"
 #include "gegl-buffer-iterator.h"
 #include "gegl-buffer-iterator-private.h"

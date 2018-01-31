@@ -27,7 +27,6 @@
 #include <unistd.h>
 
 #include "gegl.h"
-#include "gegl-types-internal.h"
 #include "gegl-buffer-private.h"
 #include "gegl-buffer-index.h"
 #include "gegl-debug.h"

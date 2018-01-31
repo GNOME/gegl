@@ -26,7 +26,6 @@
 
 #include "gegl.h"
 #include "gegl/gegl-debug.h"
-
 #include "gegl-buffer-types.h"
 #include "gegl-buffer-cl-iterator.h"
 #include "gegl-buffer-cl-cache.h"

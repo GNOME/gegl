@@ -23,14 +23,11 @@
 #include <babl/babl.h>
 #include <glib-object.h>
 
-#include "gegl-types.h"
 #include "gegl-buffer-types.h"
-#include "gegl-buffer-private.h"
 #include "gegl-tile-handler.h"
 #include "gegl-tile-handler-cache.h"
 #include "gegl-tile-handler-private.h"
 #include "gegl-tile-handler-zoom.h"
-#include "gegl-tile-backend.h"
 #include "gegl-tile-storage.h"
 #include "gegl-algorithms.h"
 

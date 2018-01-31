@@ -21,18 +21,11 @@
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
-#include "gegl.h"
 #include "gegl-buffer-types.h"
 #include "gegl-tile-storage.h"
-#include "gegl-tile.h"
 #include "gegl-tile-handler-empty.h"
 #include "gegl-tile-handler-zoom.h"
-#include "gegl-tile-handler-cache.h"
-#include "gegl-tile-handler-log.h"
 #include "gegl-tile-handler-private.h"
-#include "gegl-types-internal.h"
-#include "gegl-config.h"
-#include "gegl-buffer-private.h"
 
 
 G_DEFINE_TYPE (GeglTileStorage, gegl_tile_storage, GEGL_TYPE_TILE_HANDLER_CHAIN)

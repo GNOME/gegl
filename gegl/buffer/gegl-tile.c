@@ -26,15 +26,9 @@
 
 #include <glib-object.h>
 
-#include "gegl-types-internal.h"
-
-#include "gegl.h"
-#include "gegl-buffer.h"
 #include "gegl-tile.h"
 #include "gegl-buffer-private.h"
-#include "gegl-tile-source.h"
 #include "gegl-tile-storage.h"
-#include "gegl-tile-handler-cache.h"
 #include "gegl-config.h"
 
 /* the offset at which the tile data begins, when it shares the same buffer as

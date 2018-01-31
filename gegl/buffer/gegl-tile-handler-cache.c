@@ -21,14 +21,11 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "gegl.h"
-#include "gegl-types-internal.h"
 #include "gegl-config.h"
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
 #include "gegl-tile.h"
 #include "gegl-tile-handler-cache.h"
-#include "gegl-tile-storage.h"
 #include "gegl-debug.h"
 
 #include "gegl-buffer-cl-cache.h"

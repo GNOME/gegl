@@ -36,19 +36,15 @@
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
-#include "gegl.h"
-#include "gegl-types-internal.h"
 #include "gegl-buffer-types.h"
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
-#include "gegl-debug.h"
 #include "gegl-tile-storage.h"
 #include "gegl-tile-backend-file.h"
 #include "gegl-tile-backend-swap.h"
 #include "gegl-tile-backend-ram.h"
-#include "gegl-types-internal.h"
-#include "gegl-config.h"
 #include "gegl-buffer-cl-cache.h"
+#include "gegl-config.h" /* XXX: include of file outside buffer dir */
 
 #ifdef GEGL_ENABLE_DEBUG
 #define DEBUG_ALLOCATIONS (gegl_debug_flags & GEGL_DEBUG_BUFFER_ALLOC)

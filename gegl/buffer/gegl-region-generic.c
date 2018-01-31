@@ -75,7 +75,6 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "gegl.h"
 #include "gegl-region.h"
 #include "gegl-region-generic.h"
 
