@@ -19,6 +19,7 @@ op_LTLIBRARIES =    \
 	domain-transform.la \
 	gradient-map.la \
 	hstack.la \
+	inpaint.la \
 	integral-image.la \
 	linear-sinusoid.la \
 	rawbayer-load.la \
