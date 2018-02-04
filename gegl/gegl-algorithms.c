@@ -348,7 +348,7 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
 
   for (gint x = 0; x < dst_rect->width; x++)
   {
-    gfloat sx  = (dst_rect->x + x ) / scale - src_rect->x;
+    gfloat sx  = (dst_rect->x + x + 0.5f) / scale - src_rect->x - 0.5f;
     jj[x]  = int_floorf (sx);
     dx[x]  = (sx - jj[x]);
     jj[x] *= components;
@@ -356,7 +356,7 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
 #define IMPL(components, ...) do{ \
   for (gint y = 0; y < dst_height; y++)\
     {\
-      const gfloat sy = (dst_y + y ) / scale - src_y;\
+      const gfloat sy = (dst_y + y + 0.5f) / scale - src_y - 0.5f;\
       const gint   ii = int_floorf (sy);\
       const gfloat dy = (sy - ii);\
       const gfloat rdy = 1.0f - dy;\
@@ -813,14 +813,16 @@ void gegl_resample_bilinear (guchar              *dest_buf,
     {
       if (comp_type == gegl_babl_u8 ())
         {
-        const gint bpp = babl_format_get_bytes_per_pixel (format);
-        gegl_bilinear_u8_nl (dest_buf, source_buf, dst_rect, src_rect,
-                             s_rowstride, scale, bpp, d_rowstride);
+          const gint bpp = babl_format_get_bytes_per_pixel (format);
+          gegl_bilinear_u8_nl (dest_buf, source_buf, dst_rect, src_rect,
+                               s_rowstride, scale, bpp, d_rowstride);
         }
       else
         {
-      gegl_resample_bilinear_generic (dest_buf, source_buf, dst_rect, src_rect,
-                                      s_rowstride, scale, format, d_rowstride);
+          gegl_resample_bilinear_generic (dest_buf, source_buf,
+                                          dst_rect, src_rect,
+                                          s_rowstride, scale, format,
+                                          d_rowstride);
         }
     }
 }

@@ -17,7 +17,7 @@ BILINEAR_FUNCNAME (guchar              *dest_buf,
 
   for (gint x = 0; x < dst_rect->width; x++)
   {
-    gfloat sx  = (dst_rect->x + x) / scale - src_rect->x;
+    gfloat sx  = (dst_rect->x + x + 0.5f) / scale - src_rect->x - 0.5f;
     jj[x]  = int_floorf (sx);
     dx[x]  = sx - jj[x];
     jj[x] *= components;
@@ -25,7 +25,7 @@ BILINEAR_FUNCNAME (guchar              *dest_buf,
 #define IMPL(...) do{ \
   for (gint y = 0; y < dst_rect->height; y++)\
     {\
-      const gfloat sy = (dst_rect->y + y) / scale - src_rect->y;\
+      const gfloat sy = (dst_rect->y + y + 0.5f) / scale - src_rect->y - 0.5f;\
       const gint   ii = int_floorf (sy);\
       const gfloat dy = (sy - ii);\
       const gfloat rdy = 1.0 - dy;\
