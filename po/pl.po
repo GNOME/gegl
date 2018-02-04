@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-01-28 23:05+0000\n"
-"PO-Revision-Date: 2018-01-28 02:25+0100\n"
+"POT-Creation-Date: 2018-02-02 15:30+0000\n"
+"PO-Revision-Date: 2018-02-04 17:18+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -490,6 +490,7 @@ msgstr ""
 #: operations/common/bilateral-filter.c:26 operations/common/dropshadow.c:37
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
+#: operations/workshop/domain-transform.c:28
 msgid "Blur radius"
 msgstr "Promień rozmycia"
 
@@ -502,6 +503,7 @@ msgstr ""
 "promień*2+1)."
 
 #: operations/common/bilateral-filter.c:32
+#: operations/workshop/domain-transform.c:32
 msgid "Edge preservation"
 msgstr "Zachowywanie krawędzi"
 
@@ -6183,6 +6185,7 @@ msgid "Target path and filename, use '-' for stdout"
 msgstr "Docelowa ścieżka i nazwa pliku, „-” oznacza standardowe wyjście"
 
 #: operations/external/jpg-save.c:28 operations/external/webp-save.c:28
+#: operations/workshop/domain-transform.c:24
 msgid "Quality"
 msgstr "Jakość"
 
@@ -7446,6 +7449,38 @@ msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Testuj działanie, aby wykonać odwzorowanie 1∶1 wejścia do wyjścia podczas "
 "próbkowania"
+
+#: operations/workshop/domain-transform.c:25
+msgid ""
+"Number of filtering iterations. A value between 2 and 4 is usually enough."
+msgstr ""
+"Liczba iteracji filtrowania. Wartość między 2 a 4 jest zwykle wystarczająca."
+
+#: operations/workshop/domain-transform.c:29
+msgid "Spatial standard deviation of the blur kernel, measured in pixels."
+msgstr ""
+"Przestrzenne odchylenie standardowe jądra rozmycia, mierzone w pikselach."
+
+#: operations/workshop/domain-transform.c:33
+msgid ""
+"Amount of edge preservation. This quantity is inversely proportional to the "
+"range standard deviation of the blur kernel."
+msgstr ""
+"Ilość zachowywania krawędzi. Ta wielkość jest odwrotnie proporcjonalna do "
+"odchylenia standardowego zakresu jądra rozmycia."
+
+#: operations/workshop/domain-transform.c:499
+msgid "Domain Transform"
+msgstr "Przekształcenie domeny"
+
+#: operations/workshop/domain-transform.c:501
+msgid ""
+"An edge-preserving smoothing filter implemented with the Domain Transform "
+"recursive technique. Similar to a bilateral filter, but faster to compute."
+msgstr ""
+"Filtr wygładzania zachowujący krawędzie zaimplementowany za pomocą "
+"rekurencyjnej techniki przekształcenia domeny. Podobny do filtru "
+"dwustronnego, ale szybszy do obliczenia."
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
