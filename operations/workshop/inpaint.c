@@ -23,19 +23,19 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int (seek_distance, "seek radius", 16)
+property_int (seek_distance, "seek radius", 8)
   value_range (4, 512)
 
-property_int (min_neigh, "min neigh", 7)
+property_int (min_neigh, "min neigh", 2)
   value_range (1, 10)
 
-property_int (min_iter, "min iter", 96)
+property_int (min_iter, "min iter", 8)
   value_range (1, 512)
 
-property_double (chance_try, "try chance", 0.66)
+property_double (chance_try, "try chance", 0.5)
   value_range (0.0, 1.0)
 
-property_double (chance_retry, "retry chance", 0.33)
+property_double (chance_retry, "retry chance", 0.81)
   value_range (0.0, 1.0)
 
 #else
@@ -45,7 +45,6 @@ property_double (chance_retry, "retry chance", 0.33)
 #define GEGL_OP_C_SOURCE  inpaint.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdio.h>
 #include "pixel-duster.h"
 
@@ -55,11 +54,8 @@ get_required_for_output (GeglOperation       *operation,
                          const GeglRectangle *roi)
 {
   GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
-
-  /* Don't request an infinite plane */
   if (gegl_rectangle_is_infinite_plane (&result))
     return *roi;
-
   return result;
 }
 
@@ -81,12 +77,16 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o      = GEGL_PROPERTIES (operation);
-  PixelDuster    *duster = pixel_duster_new (input, output, result,
+  GeglRectangle in_rect = *gegl_buffer_get_extent (input);
+  GeglRectangle out_rect = *gegl_buffer_get_extent (output);
+  PixelDuster    *duster = pixel_duster_new (input, output, &in_rect, &out_rect,
                                              o->seek_distance,
                                              o->min_neigh,
                                              o->min_iter,
                                              o->chance_try,
                                              o->chance_retry,
+                                             1.0,
+                                             1.0,
                                              operation);
 
   gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);

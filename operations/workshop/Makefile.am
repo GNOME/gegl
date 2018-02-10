@@ -9,7 +9,7 @@ AM_CPPFLAGS += -I$(srcdir)
 LIBS = $(op_libs)
 
 opdir = $(ext_dir)
-op_LTLIBRARIES =    \
+op_LTLIBRARIES = \
 	bayer-matrix.la \
 	bilateral-filter-fast.la \
 	demosaic-bimedian.la \
@@ -18,9 +18,10 @@ op_LTLIBRARIES =    \
 	domain-transform.la \
 	gradient-map.la \
 	hstack.la \
+	enlarge.la \
 	inpaint.la \
 	integral-image.la \
 	linear-sinusoid.la \
-	rawbayer-load.la \
+	rawbayer-load.la  \
 	segment-kmeans.la \
 	spherize.la

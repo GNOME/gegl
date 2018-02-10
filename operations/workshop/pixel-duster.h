@@ -6,28 +6,44 @@
 #define POW2(x) ((x)*(x))
 
 #define INITIAL_SCORE 1200000000
-#define NEIGHBORHOOD 49
 
 typedef struct
 {
   GeglOperation *op;
-  GeglBuffer *input;
-  GeglBuffer *output;
-  GeglRectangle rect;
-  int         seek_radius;
-  int         minimum_neighbors;
-  int         minimum_iterations;
-  float       try_chance;
-  float       retry_chance;
-  GHashTable *ht;
-  GList      *probes;
-  int order[512][3];
+  GeglBuffer    *input;
+  GeglBuffer    *output;
+  GeglRectangle  in_rect;
+  GeglRectangle  out_rect;
+  int            seek_radius;
+  int            minimum_neighbors;
+  int            minimum_iterations;
+  float          try_chance;
+  float          retry_chance;
+  float          scale_x;
+  float          scale_y;
+  GHashTable    *ht;
+  GHashTable    *probes_ht;
+  int            order[512][3];
 } PixelDuster;
+
+typedef struct Probe {
+  int            target_x;
+  int            target_y;
+  int            score;
+  int            age;
+  int            source_x;
+  int            source_y;
+} Probe;
+
+/* used for hash-table keys */
+#define xy2offset(x,y)   GINT_TO_POINTER(((y) * 65536 + (x)))
+
+#define NEIGHBORHOOD 23
 
 static void init_order(PixelDuster *duster)
 {
   int i, x, y;
-#if 1
+#if 0
   int order_2d[][15]={
                  {  0,  0,  0,  0,  0,142,111,112,126,128,  0,  0,  0,  0,  0},
                  {  0,  0,  0,  0,124,110, 86, 87, 88,113,129,143,  0,  0,  0},
@@ -84,12 +100,15 @@ static void init_order(PixelDuster *duster)
 
 static PixelDuster * pixel_duster_new (GeglBuffer *input,
                                        GeglBuffer *output,
-                                       const GeglRectangle *rect,
+                                       const GeglRectangle *in_rect,
+                                       const GeglRectangle *out_rect,
                                        int         seek_radius,
                                        int         minimum_neighbors,
                                        int         minimum_iterations,
                                        float       try_chance,
                                        float       retry_chance,
+                                       float       scale_x,
+                                       float       scale_y,
                                        GeglOperation *op)
 {
   PixelDuster *ret = g_malloc0 (sizeof (PixelDuster));
@@ -101,8 +120,12 @@ static PixelDuster * pixel_duster_new (GeglBuffer *input,
   ret->try_chance = try_chance;
   ret->retry_chance = retry_chance;
   ret->op = op;
-  ret->rect = *rect;
+  ret->in_rect = *in_rect;
+  ret->out_rect = *out_rect;
+  ret->scale_x = scale_x;
+  ret->scale_y = scale_y;
   ret->ht = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
+  ret->probes_ht = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
   init_order (ret);
   return ret;
 }
@@ -110,32 +133,88 @@ static PixelDuster * pixel_duster_new (GeglBuffer *input,
 static void pixel_duster_destroy (PixelDuster *duster)
 {
   g_hash_table_destroy (duster->ht);
-  while (duster->probes)
-  {
-    g_free (duster->probes->data);
-    duster->probes = g_list_remove (duster->probes, duster->probes->data);
-  }
+  g_hash_table_destroy (duster->probes_ht);
   g_free (duster);
 }
 
 static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, guchar *dst)
 {
   static const Babl *format = NULL;
-  if (!format) format = babl_format ("R'G'B'A u8");
-  for (int i = 0; i <= NEIGHBORHOOD; i++)
-  {
-    gegl_buffer_sample (input,  x + duster->order[i][0], y + duster->order[i][1], NULL,
-      &dst[i*4], format, GEGL_SAMPLER_NEAREST, 0);
+  static const Babl *yformat = NULL;
+  guchar lum[8];
+  int bdir = 0;
+  if (!format){
+    format = babl_format ("R'G'B'A u8");
+    yformat = babl_format ("Y'aA u8");
   }
+
+  /* figure out which of the up/down/left/right pixels are brightest,
+     using premultiplied alpha - do punish blank spots  */
+
+  gegl_buffer_sample (input,  x + 1, y + 0, NULL, &lum[0], yformat, GEGL_SAMPLER_NEAREST, 0);
+  gegl_buffer_sample (input,  x - 1, y + 0, NULL, &lum[2], yformat, GEGL_SAMPLER_NEAREST, 0);
+  gegl_buffer_sample (input,  x + 0, y + 1, NULL, &lum[3], yformat, GEGL_SAMPLER_NEAREST, 0);
+  gegl_buffer_sample (input,  x + 0, y - 1, NULL, &lum[4], yformat, GEGL_SAMPLER_NEAREST, 0);
+
+  for (int i = 1; i < 4; i++)
+    if (lum[i*2] > bdir)
+      bdir = i;
+
+  /* and orient our neighborhood fetching based on that */
+  switch (bdir)
+  {
+    case 0:
+      for (int i = 0; i <= NEIGHBORHOOD; i++)
+        gegl_buffer_sample (input,
+                            x + duster->order[i][0],
+                            y + duster->order[i][1],
+                            NULL, &dst[i*4], format,
+                            GEGL_SAMPLER_NEAREST, 0);
+      break;
+    case 1:
+      for (int i = 0; i <= NEIGHBORHOOD; i++)
+        gegl_buffer_sample (input,
+                            x - duster->order[i][0],
+                            y - duster->order[i][1],
+                            NULL, &dst[i*4], format,
+                            GEGL_SAMPLER_NEAREST, 0);
+      break;
+    case 2:
+      for (int i = 0; i <= NEIGHBORHOOD; i++)
+        gegl_buffer_sample (input,
+                            x + duster->order[i][1],
+                            y + duster->order[i][0],
+                            NULL, &dst[i*4], format,
+                            GEGL_SAMPLER_NEAREST, 0);
+      break;
+    case 3:
+      for (int i = 0; i <= NEIGHBORHOOD; i++)
+        gegl_buffer_sample (input,
+                            x - duster->order[i][1],
+                            y - duster->order[i][0],
+                            NULL, &dst[i*4], format,
+                            GEGL_SAMPLER_NEAREST, 0);
+      break;
+
+    break;
+  }
+
+#if 0
+  how to normalize,. go for max of   up/down/left/
+#endif
+
 }
 
-static int u8_rgb_diff (guchar *a, guchar *b)
+static inline int u8_rgb_diff (guchar *a, guchar *b)
 {
-  return POW2(a[0]-b[0]) * 2 + POW2(a[1]-b[1]) * 4 + POW2(a[2]-b[2]) * 1;
+  return POW2(a[0]-b[0]) * 2 + POW2(a[1]-b[1]) * 4 + POW2(a[2]-b[2]);
 }
 
-
-static int inline score_site (PixelDuster *duster, guchar *needle, guchar *hay, int bail)
+static int inline
+score_site (PixelDuster *duster,
+            guchar      *needle,
+            guchar      *hay,
+            int          bail)
 {
   int i;
   int score = 0;
@@ -161,28 +240,21 @@ static int inline score_site (PixelDuster *duster, guchar *needle, guchar *hay, 
   return score;
 }
 
-typedef struct Probe {
-  int target_x;
-  int target_y;
-  int age;
-  int score;
-  int source_x;
-  int source_y;
-} Probe;
-
-
-static void add_probe (PixelDuster *duster, int target_x, int target_y)
+static void
+add_probe (PixelDuster *duster, int target_x, int target_y)
 {
   Probe *probe    = g_malloc0 (sizeof (Probe));
   probe->target_x = target_x;
   probe->target_y = target_y;
-  probe->source_x = target_x;
-  probe->source_y = target_y;
+  probe->source_x = target_x / duster->scale_x;
+  probe->source_y = target_y / duster->scale_y;
   probe->score    = INITIAL_SCORE;
-  duster->probes  = g_list_prepend (duster->probes, probe);
+  g_hash_table_insert (duster->probes_ht,
+                       xy2offset(target_x, target_y), probe);
 }
 
-static int probe_rel_is_set (GeglBuffer *output, Probe *probe, int rel_x, int rel_y)
+static int
+probe_rel_is_set (GeglBuffer *output, Probe *probe, int rel_x, int rel_y)
 {
   static const Babl *format = NULL;
   guchar pix[4];
@@ -191,32 +263,79 @@ static int probe_rel_is_set (GeglBuffer *output, Probe *probe, int rel_x, int re
   return pix[3] > 5;
 }
 
-
-static int probe_neighbors (GeglBuffer *output, Probe *probe)
+static int
+probe_neighbors (GeglBuffer *output, Probe *probe, int min)
 {
-  return probe_rel_is_set (output, probe, -1, 0) +
-         probe_rel_is_set (output, probe,  1, 0) +
-         probe_rel_is_set (output, probe,  0, 1) +
-         probe_rel_is_set (output, probe,  0, -1)
-#if 1
-         + probe_rel_is_set (output, probe,  1, 1)
-         + probe_rel_is_set (output, probe,  2, 0)
-         + probe_rel_is_set (output, probe,  0, 2)
-         + probe_rel_is_set (output, probe, -2, 0)
-         + probe_rel_is_set (output, probe,  0, -2)
-         + probe_rel_is_set (output, probe, -1,-1)
-         + probe_rel_is_set (output, probe,  1,-1)
-         + probe_rel_is_set (output, probe, -1, 1)
-         + probe_rel_is_set (output, probe, -3, 0)
-         + probe_rel_is_set (output, probe,  3, 0)
-         + probe_rel_is_set (output, probe,  0, 3)
-         + probe_rel_is_set (output, probe,  0, -3)
-#endif
-;
+  int found = 0;
+  if (probe_rel_is_set (output, probe, -1, 0)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  1, 0)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  0, 1)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  0, -1)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  1, 1)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  2, 0)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  0, 2)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe, -2, 0)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  0, -2)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe, -1,-1)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  1,-1)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe, -1, 1)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe, -3, 0)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  3, 0)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  0, 3)) found ++;
+  if (found >=min) return found;
+  if (probe_rel_is_set (output, probe,  0, -3)) found ++;
+  return found;
 }
 
-static int probe_improve (PixelDuster         *duster,
-                          Probe               *probe)
+static inline int
+spread_relative (PixelDuster *duster, Probe *probe, int dx, int dy)
+{
+  static const Babl *format = NULL;
+
+  if (!format)
+    format = babl_format ("RGBA float");
+
+  /* spread our resulting neighborhodo to unset neighbors */
+  if (!probe_rel_is_set (duster->output, probe, dx, dy))
+    {
+      Probe *neighbor_probe = g_hash_table_lookup (duster->probes_ht,
+              xy2offset(probe->target_x + dx, probe->target_y + dy));
+      if (neighbor_probe)
+        {
+          gfloat rgba[4];
+          gegl_buffer_sample (duster->input, probe->source_x + dx, probe->source_y + dy,  NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
+          if (rgba[3] > 0.001)
+           {
+             neighbor_probe->source_x = probe->source_x + dx;
+             neighbor_probe->source_y = probe->source_y + dy;
+             neighbor_probe->score = INITIAL_SCORE - 1;
+             gegl_buffer_set (duster->output,
+                              GEGL_RECTANGLE(neighbor_probe->target_x,
+                                             neighbor_probe->target_y, 1, 1),
+                              0, format, &rgba[0], 0);
+             return 1;
+           }
+        }
+      }
+  return 0;
+}
+
+static int probe_improve (PixelDuster *duster,
+                          Probe       *probe)
 {
   guchar needle[4 * NEIGHBORHOOD];
   gint  dst_x  = probe->target_x;
@@ -239,28 +358,25 @@ static int probe_improve (PixelDuster         *duster,
   for (int dy = -duster->seek_radius; dy < duster->seek_radius; dy ++)
     for (int dx = -duster->seek_radius ; dx < duster->seek_radius; dx ++)
       {
-#define xy2offset(x,y)   ((y) * duster->rect.width + (x))
-        int offset = xy2offset(start_x + dx, start_y + dy);
         int score;
         guchar *hay = NULL;
 
-        if (start_x + dx == dst_x &&
-            start_y + dy == dst_y)
+        if (duster->scale_x == 1.0 && start_x + dx == dst_x &&
+            duster->scale_y == 1.0 && start_y + dy == dst_y)
           continue;
-
-        if (offset < 0 || offset >= duster->rect.width * duster->rect.height)
-          continue;
+#if 1
         if (start_x + dx < 5 || start_y + dy < 5 ||
-            start_x + dx > duster->rect.width - 5 ||
-            start_y + dy > duster->rect.height - 5)
+            start_x + dx > duster->in_rect.width - 5 ||
+            start_y + dy > duster->in_rect.height - 5)
           continue;
-
-        hay = g_hash_table_lookup (duster->ht, GINT_TO_POINTER(offset));
+#endif
+        hay = g_hash_table_lookup (duster->ht, xy2offset(start_x + dx, start_y + dy));
         if (!hay)
         {
           hay = g_malloc (4 * NEIGHBORHOOD);
           extract_site (duster, duster->input, start_x + dx, start_y + dy, hay);
-          g_hash_table_insert (duster->ht, GINT_TO_POINTER(offset), hay);
+          g_hash_table_insert (duster->ht, xy2offset(start_x + dx, start_y + dy), hay);
+
         }
 
         score = score_site (duster, &needle[0], hay, probe->score);
@@ -272,102 +388,21 @@ static int probe_improve (PixelDuster         *duster,
             probe->score = score;
           }
       }
-
-  if (old_score != probe->score && old_score != INITIAL_SCORE) 
-    {
-      /* spread our resulting neighborhodo to unset neighbors */
-      if (!probe_rel_is_set (duster->output, probe, -1, 0))
-        {
-          for (GList *l = duster->probes; l; l = l->next)
-          {
-            Probe *neighbor_probe = l->data;
-            if ( (probe->target_y      == neighbor_probe->target_y) &&
-                ((probe->target_x - 1) == neighbor_probe->target_x))
-            {
-              gfloat rgba[4];
-              gegl_buffer_sample (duster->input, probe->source_x - 1, probe->source_y,  NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
-              if (rgba[3] > 0.001)
-               {
-                 neighbor_probe->source_x = probe->source_x - 1;
-                 neighbor_probe->source_y = probe->source_y;
-                 neighbor_probe->score --;
-                 gegl_buffer_set (duster->output, GEGL_RECTANGLE(neighbor_probe->target_x, neighbor_probe->target_y, 1, 1), 0, format, &rgba[0], 0);
-                 neighbor_probe->age++;
-               }
-            }
-          }
-        }
-
-      if (!probe_rel_is_set (duster->output, probe, 1, 0))
-        {
-          for (GList *l = duster->probes; l; l = l->next)
-          {
-            Probe *neighbor_probe = l->data;
-            if ( (probe->target_y      == neighbor_probe->target_y) &&
-                ((probe->target_x + 1) == neighbor_probe->target_x))
-            {
-              gfloat rgba[4];
-              gegl_buffer_sample (duster->input, probe->source_x + 1, probe->source_y,  NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
-              if (rgba[3] > 0.001)
-               {
-                 neighbor_probe->source_x = probe->source_x + 1;
-                 neighbor_probe->source_y = probe->source_y;
-                 neighbor_probe->score --;
-                 gegl_buffer_set (duster->output, GEGL_RECTANGLE(neighbor_probe->target_x, neighbor_probe->target_y, 1, 1), 0, format, &rgba[0], 0);
-                 neighbor_probe->age++;
-               }
-            }
-          }
-        }
-
-      if (!probe_rel_is_set (duster->output, probe, 0, -1))
-        {
-          for (GList *l = duster->probes; l; l = l->next)
-          {
-            Probe *neighbor_probe = l->data;
-            if ( (probe->target_y - 1  == neighbor_probe->target_y) &&
-                ((probe->target_x    ) == neighbor_probe->target_x))
-            {
-              gfloat rgba[4];
-              gegl_buffer_sample (duster->input, probe->source_x, probe->source_y - 1,  NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
-              if (rgba[3] > 0.001)
-               {
-                 neighbor_probe->source_x = probe->source_x;
-                 neighbor_probe->source_y = probe->source_y - 1;
-                 neighbor_probe->score --;
-                 gegl_buffer_set (duster->output, GEGL_RECTANGLE(neighbor_probe->target_x, neighbor_probe->target_y, 1, 1), 0, format, &rgba[0], 0);
-                 neighbor_probe->age++;
-               }
-            }
-          }
-        }
-
-      if (!probe_rel_is_set (duster->output, probe, 0, 1))
-        {
-          for (GList *l = duster->probes; l; l = l->next)
-          {
-            Probe *neighbor_probe = l->data;
-            if ( (probe->target_y + 1  == neighbor_probe->target_y) &&
-                ((probe->target_x    ) == neighbor_probe->target_x))
-            {
-              gfloat rgba[4];
-              gegl_buffer_sample (duster->input, probe->source_x, probe->source_y + 1,  NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
-              if (rgba[3] > 0.001)
-               {
-                 neighbor_probe->source_x = probe->source_x;
-                 neighbor_probe->source_y = probe->source_y + 1;
-                 neighbor_probe->score --;
-                 gegl_buffer_set (duster->output, GEGL_RECTANGLE(neighbor_probe->target_x, neighbor_probe->target_y, 1, 1), 0, format, &rgba[0], 0);
-                 neighbor_probe->age++;
-               }
-            }
-          }
-        }
-
-
-    }
   if (probe->score == old_score)
-    return -1;
+  return -1;
+  spread_relative (duster, probe, -1, -1);
+  spread_relative (duster, probe, -1, 0);
+  spread_relative (duster, probe,  0, -1);
+  spread_relative (duster, probe,  1, 0);
+  spread_relative (duster, probe,  0, 1);
+
+  probe->age++;
+
+  if (probe->age > 5)
+    {
+      g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
+    }
+
   return 0;
 }
 
@@ -375,7 +410,7 @@ static void pixel_duster_add_probes (PixelDuster *duster)
 {
   const Babl *format = babl_format ("RGBA float");
   GeglBufferIterator *i = gegl_buffer_iterator_new (duster->output,
-                                                    &duster->rect,
+                                                    &duster->out_rect,
                                                     0,
                                                     format,
                                                     GEGL_ACCESS_WRITE,
@@ -406,19 +441,18 @@ static void pixel_duster_add_probes (PixelDuster *duster)
 
 static void pixel_duster_fill (PixelDuster *duster)
 {
-  GeglProperties *o = GEGL_PROPERTIES (duster->op);
   const Babl *format = babl_format ("RGBA float");
   gint missing = 1;
   gint old_missing = 3;
   gint total = 0;
   gint runs = 0;
 
-  while (missing != old_missing || runs < o->min_iter)
+  while (  (missing >0 && missing != old_missing) || runs < duster->minimum_iterations)
   { runs++;
     total = 0;
     old_missing = missing;
     missing = 0;
-  for (GList *p= duster->probes; p; p= p->next)
+  for (GList *p= g_hash_table_get_values (duster->probes_ht); p; p= p->next)
   {
     Probe *probe = p->data;
     gint try_replace;
@@ -430,22 +464,20 @@ static void pixel_duster_fill (PixelDuster *duster)
     }
     else
     {
-      try_replace = (probe->age < 8 &&
-                     ((rand()%100)/100.0) < duster->retry_chance);
+      try_replace = ((rand()%100)/100.0) < duster->retry_chance;
     }
     total ++;
 
-    if ((probe->source_x == probe->target_x &&
-        probe->source_y == probe->target_y) || try_replace)
+    if (probe->score == INITIAL_SCORE || try_replace)
     {
        if ((probe->source_x == probe->target_x &&
             probe->source_y == probe->target_y))
          try_replace = 0;
 
-      if ((rand()%100)/100.0 < duster->try_chance && probe_neighbors (duster->output, probe) >= duster->minimum_neighbors)
+      if ((rand()%100)/100.0 < duster->try_chance && probe_neighbors (duster->output, probe, duster->minimum_neighbors) >= duster->minimum_neighbors)
       {
         if(try_replace)
-         probe->score = INITIAL_SCORE;
+          probe->score = INITIAL_SCORE;
         if (probe_improve (duster, probe) == 0)
         {
           gfloat rgba[4];
@@ -453,19 +485,18 @@ static void pixel_duster_fill (PixelDuster *duster)
           if (rgba[3] <= 0.01)
             fprintf (stderr, "eek %i,%i %f %f %f %f\n", probe->source_x, probe->source_y, rgba[0], rgba[1], rgba[2], rgba[3]);
           gegl_buffer_set (duster->output, GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1), 0, format, &rgba[0], 0);
-          probe->age++;
          }
       }
     }
   }
-  gegl_operation_progress (duster->op, (total-missing) * 1.0 / total,
-                           "finding suitable pixels");
-#if 0
+  if (duster->op)
+    gegl_operation_progress (duster->op, (total-missing) * 1.0 / total,
+                             "finding suitable pixels");
+#if 1
   fprintf (stderr, "\r%i/%i %2.2f run#:%i  ", total-missing, total, (total-missing) * 100.0 / total, runs);
 #endif
   }
-#if 0
+#if 1
   fprintf (stderr, "\n");
 #endif
 }
-
