@@ -14,8 +14,8 @@ op_LTLIBRARIES = \
 	gegl-common.la
 
 gegl_common_la_SOURCES =\
-    	module.c \
-    	alien-map.c \
+	module.c \
+	alien-map.c \
 	bilateral-filter.c \
 	box-blur.c \
 	brightness-contrast.c \
@@ -65,6 +65,7 @@ gegl_common_la_SOURCES =\
 	map-relative.c \
 	matting-global.c \
 	mblur.c \
+	mean-curvature-blur.c \
 	median-blur.c \
 	mirrors.c \
 	mix.c \
@@ -91,7 +92,7 @@ gegl_common_la_SOURCES =\
 	rectangle.c \
 	reinhard05.c \
 	remap.c \
-        rgb-clip.c \
+	rgb-clip.c \
 	saturation.c \
 	save.c \
 	sepia.c \
