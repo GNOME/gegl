@@ -2051,6 +2051,9 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
           scale  *= 2;
         }
 
+      if (rowstride == GEGL_AUTO_ROWSTRIDE)
+        rowstride = rect2.width * bpp;
+
       if (GEGL_FLOAT_EQUAL (scale, 1.0))
         {
           sample_rect.x      = factor * x1;
@@ -2062,9 +2065,6 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                                              format, level, repeat_mode);
           goto setup_next_chunk;
         }
-
-      if (rowstride == GEGL_AUTO_ROWSTRIDE)
-        rowstride = rect2.width * bpp;
 
       /* this is the level where we split and chew through a small temp-buf worth of data
        * possibly managing to keep things in L2 cache
