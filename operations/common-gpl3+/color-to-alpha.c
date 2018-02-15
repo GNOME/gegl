@@ -18,6 +18,7 @@
  * Copyright (C) 1995 Spencer Kimball and Peter Mattis
  * Copyright (C) 2011 Robert Sasu <sasu.robert@gmail.com>
  * Copyright (C) 2012 Øyvind Kolås <pippin@gimp.org>
+ * Copyright (C) 2017 Ell
  */
 
 #include "config.h"
@@ -28,6 +29,14 @@
 property_color (color, _("Color"), "white")
     description(_("The color to make transparent."))
 
+property_double (transparency_threshold, _("Transparency threshold"), 0.0)
+    description(_("The limit below which colors become transparent."))
+    value_range (0.0, 1.0)
+
+property_double (opacity_threshold, _("Opacity threshold"), 1.0)
+    description(_("The limit above which colors remain opaque."))
+    value_range (0.0, 1.0)
+
 #else
 
 #define GEGL_OP_POINT_FILTER
@@ -37,6 +46,8 @@ property_color (color, _("Color"), "white")
 #include "gegl-op.h"
 #include <stdio.h>
 #include <math.h>
+
+#define EPSILON 0.00001
 
 static void
 prepare (GeglOperation *operation)
@@ -83,52 +94,64 @@ prepare (GeglOperation *operation)
 static void
 color_to_alpha (const gfloat *color,
                 const gfloat *src,
-                gfloat       *dst)
+                gfloat       *dst,
+                gfloat        transparency_threshold,
+                gfloat        opacity_threshold)
 {
-  gint i;
-  gfloat alpha[4];
+  gint   i;
+  gfloat dist  = 0.0f;
+  gfloat alpha = 0.0f;
 
-  for (i=0; i<4; i++)
+  for (i = 0; i < 4; i++)
     dst[i] = src[i];
 
-  alpha[3] = dst[3];
-
-  for (i=0; i<3; i++)
+  for (i = 0; i < 3; i++)
     {
-      if (color[i] < 0.00001)
-        alpha[i] = dst[i];
-      else if (dst[i] > color[i] + 0.00001)
-        alpha[i] = (dst[i] - color[i]) / (1.0f - color[i]);
-      else if (dst[i] < color[i] - 0.00001)
-        alpha[i] = (color[i] - dst[i]) / (color[i]);
+      gfloat d;
+      gfloat a;
+
+      d = fabsf (dst[i] - color[i]);
+
+      if (d < transparency_threshold + EPSILON)
+        a = 0.0f;
+      else if (d > opacity_threshold - EPSILON)
+        a = 1.0f;
+      else if (dst[i] < color[i])
+        a = (d - transparency_threshold) / (MIN (opacity_threshold,        color[i]) - transparency_threshold);
       else
-        alpha[i] = 0.0f;
+        a = (d - transparency_threshold) / (MIN (opacity_threshold, 1.0f - color[i]) - transparency_threshold);
+
+      if (a > alpha)
+        {
+          alpha = a;
+          dist  = d;
+        }
     }
 
-  if (alpha[0] > alpha[1])
+  if (alpha > EPSILON)
     {
-      if (alpha[0] > alpha[2])
-        dst[3] = alpha[0];
-      else
-        dst[3] = alpha[2];
-    }
-  else if (alpha[1] > alpha[2])
-    {
-      dst[3] = alpha[1];
-    }
-  else
-    {
-      dst[3] = alpha[2];
+      gfloat ratio     = transparency_threshold / dist;
+      gfloat alpha_inv = 1.0f / alpha;
+
+      for (i = 0; i < 3; i++)
+        {
+          gfloat c;
+
+          c = color[i] + (dst[i] - color[i]) * ratio;
+
+          dst[i] = c + (dst[i] - c) * alpha_inv;
+        }
     }
 
-  if (dst[3] < 0.00001)
-    return;
-
-  for (i=0; i<3; i++)
-    dst[i] = (dst[i] - color[i]) / dst[3] + color[i];
-
-  dst[3] *= alpha[3];
+  dst[3] *= alpha;
 }
+
+
+/* FIXME:  the transparency-threshold and opacity-threshold properties are not
+ * handled by the opencl version atm.  re-enable the opencl version once
+ * they're implemented.
+ */
+#if 0
 
 #include "opencl/gegl-cl.h"
 #include "opencl/color-to-alpha.cl.h"
@@ -183,6 +206,7 @@ cl_process (GeglOperation       *operation,
   return TRUE;
 }
 
+#endif
 
 static gboolean
 process (GeglOperation       *operation,
@@ -192,10 +216,12 @@ process (GeglOperation       *operation,
          const GeglRectangle *roi,
          gint                 level)
 {
-  GeglProperties *o      = GEGL_PROPERTIES (operation);
-  const Babl *format = babl_format ("R'G'B'A float");
-  gfloat      color[4];
-  gint        x;
+  GeglProperties *o                      = GEGL_PROPERTIES (operation);
+  const Babl     *format                 = babl_format ("R'G'B'A float");
+  gfloat          color[4];
+  gfloat          transparency_threshold = o->transparency_threshold;
+  gfloat          opacity_threshold      = o->opacity_threshold;
+  gint            x;
 
   gfloat *in_buff = in_buf;
   gfloat *out_buff = out_buf;
@@ -204,7 +230,8 @@ process (GeglOperation       *operation,
 
   for (x = 0; x < n_pixels; x++)
     {
-      color_to_alpha (color, in_buff, out_buff);
+      color_to_alpha (color, in_buff, out_buff,
+                      transparency_threshold, opacity_threshold);
       in_buff  += 4;
       out_buff += 4;
     }
@@ -244,10 +271,14 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
 
   filter_class->process    = process;
+#if 0 /* see opencl comment above */
   filter_class->cl_process = cl_process;
+#endif
 
   operation_class->prepare = prepare;
+#if 0 /* see opencl comment above */
   operation_class->opencl_support = TRUE;
+#endif
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:color-to-alpha",
