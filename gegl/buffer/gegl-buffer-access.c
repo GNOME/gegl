@@ -1881,14 +1881,6 @@ _gegl_get_required_for_scale (const Babl          *format,
       }
 }
 
-#define ALIGN 16
-static void inline *align_16 (unsigned char *ret)
-{
-  int offset = ALIGN - ((uintptr_t) ret) % ALIGN;
-  ret = ret + offset;
-  return ret;
-}
-
 static inline void
 _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                            gdouble              scale,
