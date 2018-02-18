@@ -2,16 +2,15 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# Александр Прокудин <alexandre.prokoudine@gmail.com>, 2012, 2015.
-# Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2015, 2016, 2017, 2018.
+# Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2012, 2015, 2016, 2017, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: GEGL 0.3.30\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=GEGL&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-01-30 02:11+0300\n"
-"PO-Revision-Date: 2018-01-30 11:33+0300\n"
+"POT-Creation-Date: 2018-02-16 02:17+0300\n"
+"PO-Revision-Date: 2018-02-18 14:40+0300\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: русский <>\n"
 "Language: ru\n"
@@ -30,12 +29,12 @@ msgstr "Невозможно прочитать файл: %s"
 #: ../bin/gegl.c:222
 #, c-format
 msgid "Invalid graph, abort.\n"
-msgstr ""
+msgstr "Некорректный граф, прерывание."
 
 #: ../bin/gegl.c:378 ../bin/gegl-options.c:134
 #, c-format
 msgid "Unknown GeglOption mode: %d"
-msgstr ""
+msgstr "Неизвестный режим GeglOption: %d"
 
 #: ../bin/gegl-options.c:47
 #, c-format
@@ -146,7 +145,7 @@ msgstr "Чёрный"
 #: ../gegl/gegl-enums.c:37 ../operations/common/gaussian-blur.c:34
 #: ../operations/common/gblur-1d.c:35
 msgid "White"
-msgstr ""
+msgstr "Белый"
 
 #: ../gegl/gegl-enums.c:64
 msgid "Read"
@@ -204,16 +203,16 @@ msgstr "Вертикальное"
 
 #: ../gegl/gegl-enums.c:148
 msgid "Nearest"
-msgstr ""
+msgstr "Ближайший"
 
 #: ../gegl/gegl-enums.c:149 ../operations/common-gpl3+/bump-map.c:33
 #: ../operations/common-gpl3+/sinus.c:63 ../operations/common-gpl3+/spiral.c:26
 msgid "Linear"
-msgstr ""
+msgstr "Линейный"
 
 #: ../gegl/gegl-enums.c:150
 msgid "Cubic"
-msgstr ""
+msgstr "Кубический"
 
 #: ../gegl/gegl-enums.c:151
 msgid "NoHalo"
@@ -279,7 +278,7 @@ msgstr ""
 #: ../gegl/gegl-serialize.c:642
 #, c-format
 msgid "No such op '%s'"
-msgstr ""
+msgstr "Нет операции '%s'"
 
 #: ../gegl/module/geglmodule.c:340
 msgid "Module error"
@@ -291,11 +290,11 @@ msgstr "Загружен"
 
 #: ../gegl/module/geglmodule.c:342
 msgid "Load failed"
-msgstr ""
+msgstr "Не удалось загрузить"
 
 #: ../gegl/module/geglmodule.c:343
 msgid "Not loaded"
-msgstr ""
+msgstr "Не загружено"
 
 #: ../gegl/module/geglmodule.c:389
 #, c-format
@@ -443,6 +442,7 @@ msgstr ""
 #: ../operations/common/dropshadow.c:37
 #: ../operations/common-gpl3+/gaussian-blur-selective.c:29
 #: ../operations/workshop/bilateral-filter-fast.c:43
+#: ../operations/workshop/domain-transform.c:28
 msgid "Blur radius"
 msgstr "Радиус размывания"
 
@@ -450,15 +450,16 @@ msgstr "Радиус размывания"
 #: ../operations/common-gpl3+/gaussian-blur-selective.c:30
 #: ../operations/workshop/bilateral-filter-fast.c:44
 msgid "Radius of square pixel region, (width and height will be radius*2+1)."
-msgstr ""
+msgstr "Радиус области квадратного пикселя, (ширина и высота = радиус*2+1)."
 
 #: ../operations/common/bilateral-filter.c:32
+#: ../operations/workshop/domain-transform.c:32
 msgid "Edge preservation"
 msgstr "Сохранение краёв"
 
 #: ../operations/common/bilateral-filter.c:33
 msgid "Amount of edge preservation"
-msgstr ""
+msgstr "Как настойчиво сохранять края"
 
 #: ../operations/common/bilateral-filter.c:290
 msgid "Bilateral Filter"
@@ -542,7 +543,7 @@ msgstr "Расположение буфера"
 
 #: ../operations/common/buffer-sink.c:26
 msgid "The location where to store the output GeglBuffer"
-msgstr ""
+msgstr "Расположение сохраняемого GeglBuffer с выводом"
 
 #: ../operations/common/buffer-sink.c:27
 msgid "babl format"
@@ -552,6 +553,7 @@ msgstr "Формат babl"
 msgid ""
 "The babl format of the output GeglBuffer, NULL to use input buffer format"
 msgstr ""
+"Формат babl для GeglBuffer с выводом, NULL означает формат буфера ввода"
 
 #: ../operations/common/buffer-sink.c:83
 #, fuzzy
@@ -560,7 +562,7 @@ msgstr "Расположение буфера"
 
 #: ../operations/common/buffer-sink.c:85
 msgid "Create a new GEGL buffer to write the resulting rendering."
-msgstr ""
+msgstr "Создать новый буфер GEGL для записи конечной визуализации"
 
 #: ../operations/common/buffer-source.c:25
 msgid "Input buffer"
@@ -577,7 +579,7 @@ msgstr "Расположение буфера"
 
 #: ../operations/common/buffer-source.c:221
 msgid "Use an existing in-memory GeglBuffer as image source."
-msgstr ""
+msgstr "Использовать существующий в памяти GeglBuffer как источник изображения"
 
 #: ../operations/common/c2g.c:28
 msgid ""
@@ -594,6 +596,7 @@ msgid "Number of samples to do per iteration looking for the range of colors"
 msgstr ""
 
 #: ../operations/common/c2g.c:41 ../operations/common/matting-global.c:25
+#: ../operations/common/mean-curvature-blur.c:24
 #: ../operations/common/noise-cell.c:48 ../operations/common/noise-perlin.c:33
 #: ../operations/common/noise-simplex.c:35 ../operations/common/slic.c:38
 #: ../operations/common/stress.c:39
@@ -693,7 +696,7 @@ msgstr "Цвет 1"
 
 #: ../operations/common/checkerboard.c:54
 msgid "The first cell color"
-msgstr ""
+msgstr "Цвет первой клетки"
 
 #: ../operations/common/checkerboard.c:57 ../operations/common-gpl3+/sinus.c:60
 #: ../operations/common-gpl3+/spiral.c:82
@@ -703,7 +706,7 @@ msgstr "Цвет 2"
 
 #: ../operations/common/checkerboard.c:58
 msgid "The second cell color"
-msgstr ""
+msgstr "Цвет второй клетки"
 
 #: ../operations/common/checkerboard.c:61 ../operations/common/color.c:29
 msgid "Babl Format"
@@ -712,7 +715,7 @@ msgstr "Формат babl"
 #: ../operations/common/checkerboard.c:62 ../operations/common/color.c:30
 #: ../operations/core/cast-format.c:28 ../operations/core/convert-format.c:28
 msgid "The babl format of the output"
-msgstr ""
+msgstr "Babl-формат вывода"
 
 #: ../operations/common/checkerboard.c:347
 msgid "Checkerboard"
@@ -720,18 +723,17 @@ msgstr "Шахматная доска"
 
 #: ../operations/common/checkerboard.c:350
 msgid "Render a checkerboard pattern"
-msgstr ""
+msgstr "Отрисовать узор шахматной доски"
 
 #: ../operations/common/color.c:24 ../operations/common/color.c:92
 #: ../operations/common/dropshadow.c:43 ../operations/common/grid.c:64
 #: ../operations/common/rectangle.c:48 ../operations/common/vignette.c:34
-#: ../operations/common-gpl3+/color-to-alpha.c:28
+#: ../operations/common-gpl3+/color-to-alpha.c:29
 #: ../operations/common-gpl3+/supernova.c:61
 #: ../operations/common-gpl3+/tile-paper.c:30
 #: ../operations/common-gpl3+/value-propagate.c:55
 #: ../operations/external/text.c:37 ../operations/external/vector-fill.c:26
 #: ../operations/external/vector-stroke.c:27
-#: ../operations/workshop/color-to-alpha-plus.c:29
 msgid "Color"
 msgstr "Цвет"
 
@@ -743,13 +745,15 @@ msgstr ""
 
 #: ../operations/common/color-enhance.c:273
 msgid "Color Enhance"
-msgstr ""
+msgstr "Усиление цвета"
 
 #: ../operations/common/color-enhance.c:277
 msgid ""
 "Stretch color chroma to cover maximum possible range, keeping hue and "
 "lightness untouched."
 msgstr ""
+"Растянуть цветность, чтобы охватить максимально доступный диапазон, не "
+"трогая тона и светлоту"
 
 #: ../operations/common/color-rotate.c:35
 msgid "Treat as this"
@@ -875,11 +879,11 @@ msgstr ""
 
 #: ../operations/common/color-warp.c:36
 msgid "From 0"
-msgstr ""
+msgstr "Из 0"
 
 #: ../operations/common/color-warp.c:37
 msgid "To 0"
-msgstr ""
+msgstr "В 0"
 
 #: ../operations/common/color-warp.c:38
 #, fuzzy
@@ -888,11 +892,11 @@ msgstr "Высота"
 
 #: ../operations/common/color-warp.c:40
 msgid "From 1"
-msgstr ""
+msgstr "Из 1"
 
 #: ../operations/common/color-warp.c:41
 msgid "To 1"
-msgstr ""
+msgstr "В 1"
 
 #: ../operations/common/color-warp.c:42
 #, fuzzy
@@ -901,11 +905,11 @@ msgstr "Высота"
 
 #: ../operations/common/color-warp.c:44
 msgid "From 2"
-msgstr ""
+msgstr "Из 2"
 
 #: ../operations/common/color-warp.c:45
 msgid "To 2"
-msgstr ""
+msgstr "В 2"
 
 #: ../operations/common/color-warp.c:46
 #, fuzzy
@@ -914,11 +918,11 @@ msgstr "Высота"
 
 #: ../operations/common/color-warp.c:48
 msgid "From 3"
-msgstr ""
+msgstr "Из 3"
 
 #: ../operations/common/color-warp.c:49
 msgid "To 3"
-msgstr ""
+msgstr "В 3"
 
 #: ../operations/common/color-warp.c:50
 #, fuzzy
@@ -927,11 +931,11 @@ msgstr "Высота"
 
 #: ../operations/common/color-warp.c:52
 msgid "From 4"
-msgstr ""
+msgstr "Из 4"
 
 #: ../operations/common/color-warp.c:53
 msgid "To 4"
-msgstr ""
+msgstr "В 4"
 
 #: ../operations/common/color-warp.c:54
 #, fuzzy
@@ -940,11 +944,11 @@ msgstr "Высота"
 
 #: ../operations/common/color-warp.c:56
 msgid "From 5"
-msgstr ""
+msgstr "Из 5"
 
 #: ../operations/common/color-warp.c:57
 msgid "To 5"
-msgstr ""
+msgstr "В 5"
 
 #: ../operations/common/color-warp.c:58
 #, fuzzy
@@ -953,11 +957,11 @@ msgstr "Высота"
 
 #: ../operations/common/color-warp.c:60
 msgid "From 6"
-msgstr ""
+msgstr "Из 6"
 
 #: ../operations/common/color-warp.c:61
 msgid "To 6"
-msgstr ""
+msgstr "В 6"
 
 #: ../operations/common/color-warp.c:62
 #, fuzzy
@@ -966,11 +970,11 @@ msgstr "Высота"
 
 #: ../operations/common/color-warp.c:64
 msgid "From 7"
-msgstr ""
+msgstr "Из 7"
 
 #: ../operations/common/color-warp.c:65
 msgid "To 7"
-msgstr ""
+msgstr "В 7"
 
 #: ../operations/common/color-warp.c:66
 #, fuzzy
@@ -1093,7 +1097,7 @@ msgstr "Инвертировать компонент"
 
 #: ../operations/common/component-extract.c:54
 msgid "Invert the extracted component"
-msgstr ""
+msgstr "Инвертировать извлечённый компонент"
 
 #: ../operations/common/component-extract.c:56
 msgid "Linear output"
@@ -1101,7 +1105,7 @@ msgstr "Линейный вывод"
 
 #: ../operations/common/component-extract.c:57
 msgid "Use linear output instead of gamma corrected"
-msgstr ""
+msgstr "Использовать линейный вывод вместо гамма-корректированного"
 
 #: ../operations/common/component-extract.c:259
 msgid "Extract Component"
@@ -1113,11 +1117,11 @@ msgstr "Извлечь компонент цветовой модели"
 
 #: ../operations/common/contrast-curve.c:25
 msgid "Sample points"
-msgstr ""
+msgstr "Образцовые точки"
 
 #: ../operations/common/contrast-curve.c:26
 msgid "Number of curve sampling points.  0 for exact calculation."
-msgstr ""
+msgstr "Количество образцовых точек кривой. 0 — для точного вычисления."
 
 #: ../operations/common/contrast-curve.c:29
 msgid "Curve"
@@ -1492,7 +1496,7 @@ msgstr "Смещение тени по вертикали"
 #. TRANSLATORS: the string 'black' should not be translated
 #: ../operations/common/dropshadow.c:45
 msgid "The shadow's color (defaults to 'black')"
-msgstr ""
+msgstr "Цвет тени ('black' по умолчанию)"
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
@@ -1605,7 +1609,7 @@ msgstr "Относительная смена яркости в шагах эк�
 
 #: ../operations/common/exposure.c:465
 msgid "Change exposure of an image in shutter speed stops"
-msgstr ""
+msgstr "Изменить экспонированность изображения в шагах экспозиции"
 
 #: ../operations/common/fattal02.c:34
 msgid "Gradient threshold for detail enhancement"
@@ -1880,7 +1884,7 @@ msgstr "Коррекция тона, цветности и светлоты в L
 
 #: ../operations/common/image-compare.c:27
 msgid "Wrong pixels"
-msgstr ""
+msgstr "Не те пиксели"
 
 #: ../operations/common/image-compare.c:28
 msgid "Number of differing pixels."
@@ -2222,6 +2226,21 @@ msgid ""
 "of frames."
 msgstr ""
 
+#: ../operations/common/mean-curvature-blur.c:25
+#, fuzzy
+msgid "Controls the number of iterations"
+msgstr "Максимальное количество итераций"
+
+#: ../operations/common/mean-curvature-blur.c:245
+#, fuzzy
+msgid "Mean Curvature Blur"
+msgstr "Кривизна"
+
+#: ../operations/common/mean-curvature-blur.c:248
+msgid ""
+"Regularize geometry at a speed proportional to the local mean curvature value"
+msgstr ""
+
 #: ../operations/common/median-blur.c:28 ../operations/common/pixelize.c:29
 #: ../operations/common/vignette.c:26
 msgid "Square"
@@ -2341,7 +2360,7 @@ msgstr ""
 
 #: ../operations/common/mirrors.c:66
 msgid "Trim X"
-msgstr ""
+msgstr "Обрезка по X"
 
 #: ../operations/common/mirrors.c:67
 msgid "X axis ratio for trimming mirror expanse"
@@ -2349,7 +2368,7 @@ msgstr ""
 
 #: ../operations/common/mirrors.c:70
 msgid "Trim Y"
-msgstr ""
+msgstr "Обрезка по Y"
 
 #: ../operations/common/mirrors.c:71
 msgid "Y axis ratio for trimming mirror expanse"
@@ -2384,7 +2403,7 @@ msgstr ""
 
 #: ../operations/common/mirrors.c:433
 msgid "Kaleidoscopic Mirroring"
-msgstr ""
+msgstr "Отражение в калейдоскопе"
 
 #: ../operations/common/mirrors.c:437
 msgid "Create a kaleidoscope like effect."
@@ -3844,17 +3863,31 @@ msgstr ""
 "Заменить один цвет на другой, при необходимости установив порог "
 "конвертирования полутонов"
 
-#: ../operations/common-gpl3+/color-to-alpha.c:29
-#: ../operations/workshop/color-to-alpha-plus.c:30
+#: ../operations/common-gpl3+/color-to-alpha.c:30
 msgid "The color to make transparent."
 msgstr ""
 
-#: ../operations/common-gpl3+/color-to-alpha.c:254
+#: ../operations/common-gpl3+/color-to-alpha.c:32
+msgid "Transparency threshold"
+msgstr "Порог прозрачности"
+
+#: ../operations/common-gpl3+/color-to-alpha.c:33
+msgid "The limit below which colors become transparent."
+msgstr ""
+
+#: ../operations/common-gpl3+/color-to-alpha.c:36
+msgid "Opacity threshold"
+msgstr "Порог непрозрачности"
+
+#: ../operations/common-gpl3+/color-to-alpha.c:37
+msgid "The limit above which colors remain opaque."
+msgstr ""
+
+#: ../operations/common-gpl3+/color-to-alpha.c:285
 msgid "Color to Alpha"
 msgstr "Цвет в альфа-канал"
 
-#: ../operations/common-gpl3+/color-to-alpha.c:258
-#: ../operations/workshop/color-to-alpha-plus.c:236
+#: ../operations/common-gpl3+/color-to-alpha.c:289
 msgid "Convert a specified color to transparency, works best with white."
 msgstr "Сделать указанный цвет прозрачным, лучше всего работает с белым цветом"
 
@@ -5067,7 +5100,7 @@ msgstr "Тени-Света"
 msgid "Perform shadows and highlights correction"
 msgstr "Улучшает детали в тенях и на светлых участках"
 
-#: ../operations/common-gpl3+/shadows-highlights-correction.c:359
+#: ../operations/common-gpl3+/shadows-highlights-correction.c:363
 msgid "Lighten shadows and darken highlights"
 msgstr "Высветлить тени и затемнить света"
 
@@ -6098,6 +6131,7 @@ msgid "Target path and filename, use '-' for stdout"
 msgstr ""
 
 #: ../operations/external/jpg-save.c:28 ../operations/external/webp-save.c:28
+#: ../operations/workshop/domain-transform.c:24
 msgid "Quality"
 msgstr "Качество"
 
@@ -7235,37 +7269,6 @@ msgid ""
 "gaussian blur."
 msgstr ""
 
-#: ../operations/workshop/color-to-alpha-plus.c:32
-msgid "Transparency threshold"
-msgstr "Порог прозрачности"
-
-#: ../operations/workshop/color-to-alpha-plus.c:33
-msgid "The limit below which colors become transparent."
-msgstr ""
-
-#: ../operations/workshop/color-to-alpha-plus.c:36
-msgid "Opacity threshold"
-msgstr "Порог непрозрачности"
-
-#: ../operations/workshop/color-to-alpha-plus.c:37
-msgid "The limit above which colors remain opaque."
-msgstr ""
-
-#: ../operations/workshop/color-to-alpha-plus.c:40
-#, fuzzy
-msgid "Compress threshold range"
-msgstr "Нижний порог"
-
-#: ../operations/workshop/color-to-alpha-plus.c:41
-msgid ""
-"Compress the threshold range to the minimal extent that would produce "
-"different results."
-msgstr ""
-
-#: ../operations/workshop/color-to-alpha-plus.c:232
-msgid "Color to Alpha +"
-msgstr "Цвет в альфа-канал +"
-
 #: ../operations/workshop/demosaic-bimedian.c:26
 #: ../operations/workshop/demosaic-simple.c:25
 msgid "Bayer pattern"
@@ -7303,6 +7306,35 @@ msgstr ""
 
 #: ../operations/workshop/ditto.c:116
 msgid "Test op to do a 1:1 map of input to output, while sampling"
+msgstr ""
+
+#: ../operations/workshop/domain-transform.c:25
+msgid ""
+"Number of filtering iterations. A value between 2 and 4 is usually enough."
+msgstr ""
+
+#: ../operations/workshop/domain-transform.c:29
+#, fuzzy
+msgid "Spatial standard deviation of the blur kernel, measured in pixels."
+msgstr ""
+"Стандартное отклонение по вертикальной оси (умножить в ~2 раза для получения "
+"радиуса)"
+
+#: ../operations/workshop/domain-transform.c:33
+msgid ""
+"Amount of edge preservation. This quantity is inversely proportional to the "
+"range standard deviation of the blur kernel."
+msgstr ""
+
+#: ../operations/workshop/domain-transform.c:499
+#, fuzzy
+msgid "Domain Transform"
+msgstr "Карта расстояний"
+
+#: ../operations/workshop/domain-transform.c:501
+msgid ""
+"An edge-preserving smoothing filter implemented with the Domain Transform "
+"recursive technique. Similar to a bilateral filter, but faster to compute."
 msgstr ""
 
 #: ../operations/workshop/external/gluas.c:29
@@ -7769,6 +7801,13 @@ msgid "Wrap image around a spherical cap"
 msgstr ""
 
 #, fuzzy
+#~ msgid "Compress threshold range"
+#~ msgstr "Нижний порог"
+
+#~ msgid "Color to Alpha +"
+#~ msgstr "Цвет в альфа-канал +"
+
+#, fuzzy
 #~ msgid "Clip to input"
 #~ msgstr "Обрезать конечное изображение до размера исходного фрагмента"
 
@@ -7790,12 +7829,6 @@ msgstr ""
 
 #~ msgid "Offset value added"
 #~ msgstr "Добавлено значение смещения"
-
-#, fuzzy
-#~ msgid "Standard deviation for the vertical axis"
-#~ msgstr ""
-#~ "Стандартное отклонение по вертикальной оси (умножить в ~2 раза для "
-#~ "получения радиуса)"
 
 #~ msgid "Converts the input image to sepia"
 #~ msgstr "Применить эффект сепии к изображению"
