@@ -1151,7 +1151,7 @@ gegl_node_blit (GeglNode            *self,
 
       if (scale != 1.0)
         {
-          const GeglRectangle unscaled_roi = _gegl_get_required_for_scale (format, roi, scale);
+          const GeglRectangle unscaled_roi = _gegl_get_required_for_scale (roi, scale);
 
           buffer = gegl_node_apply_roi (self, &unscaled_roi,
               gegl_mipmap_rendering_enabled()?gegl_level_from_scale (scale):0);
@@ -1180,7 +1180,7 @@ gegl_node_blit (GeglNode            *self,
         {
           if (scale != 1.0)
             {
-              const GeglRectangle unscaled_roi = _gegl_get_required_for_scale (format, roi, scale);
+              const GeglRectangle unscaled_roi = _gegl_get_required_for_scale (roi, scale);
               gint  level = gegl_mipmap_rendering_enabled()?gegl_level_from_scale (scale):0;
 
               gegl_node_blit_buffer (self, buffer, &unscaled_roi, level, GEGL_ABYSS_NONE);

@@ -1849,8 +1849,7 @@ gegl_buffer_set (GeglBuffer          *buffer,
  * to satisfy a gegl_buffer_get() call at level 0.
  */
 GeglRectangle
-_gegl_get_required_for_scale (const Babl          *format,
-                              const GeglRectangle *roi,
+_gegl_get_required_for_scale (const GeglRectangle *roi,
                               gdouble              scale)
 {
   if (GEGL_FLOAT_EQUAL (scale, 1.0))

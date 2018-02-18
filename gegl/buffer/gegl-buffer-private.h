@@ -189,8 +189,7 @@ struct _GeglTile
 
 void _gegl_buffer_drop_hot_tile (GeglBuffer *buffer);
 
-GeglRectangle _gegl_get_required_for_scale (const Babl          *format,
-                                            const GeglRectangle *roi,
+GeglRectangle _gegl_get_required_for_scale (const GeglRectangle *roi,
                                             gdouble              scale);
 
 gboolean gegl_buffer_scan_compatible (GeglBuffer *bufferA,
