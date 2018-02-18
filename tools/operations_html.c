@@ -709,7 +709,7 @@ all:
         g_print ("%s\n", html_name);
         g_file_set_contents (html_name, s->str, -1, NULL);
       }
-        k = k->next;
+      if (k)  k = k->next;
    }
 
   return 0;
