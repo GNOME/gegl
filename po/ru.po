@@ -29,7 +29,7 @@ msgstr "Невозможно прочитать файл: %s"
 #: ../bin/gegl.c:222
 #, c-format
 msgid "Invalid graph, abort.\n"
-msgstr "Некорректный граф, прерывание."
+msgstr "Некорректный граф, прерывание.\n"
 
 #: ../bin/gegl.c:378 ../bin/gegl-options.c:134
 #, c-format
