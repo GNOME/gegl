@@ -39,17 +39,18 @@ G_BEGIN_DECLS
 #define GEGL_TILE_SOURCE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GEGL_TYPE_TILE_SOURCE, GeglTileSourceClass))
 
 typedef struct _GeglTileSourceClass GeglTileSourceClass;
-
-struct _GeglTileSource
-{
-  GObject   parent_instance;
-  gpointer  (*command)  (GeglTileSource  *gegl_tile_source,
+typedef gpointer  (*GeglTileSourceCommand)  (GeglTileSource  *gegl_tile_source,
                          GeglTileCommand  command,
                          gint             x,
                          gint             y,
                          gint             z,
                          gpointer         data);
-  gpointer  padding[4];
+
+struct _GeglTileSource
+{
+  GObject               parent_instance;
+  GeglTileSourceCommand command;
+  gpointer              padding[4];
 };
 
 struct _GeglTileSourceClass
