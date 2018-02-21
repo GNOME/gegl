@@ -33,8 +33,6 @@
 #include "gegl-buffer-cl-cache.h"
 #include "gegl-config.h"
 
-#define GEGL_ITERATOR_INCOMPATIBLE (1 << 2)
-
 typedef enum {
   GeglIteratorState_Start,
   GeglIteratorState_InTile,
@@ -553,8 +551,11 @@ _gegl_buffer_iterator_stop (GeglBufferIterator *iter)
 
           gegl_buffer_unlock (sub->buffer);
 
-          if (sub->access_mode & GEGL_ACCESS_WRITE)
-            gegl_buffer_emit_changed_signal (sub->buffer, &sub->full_rect);
+          if ((sub->access_mode & GEGL_ACCESS_WRITE) &&
+              ! (sub->access_mode & GEGL_ITERATOR_NO_NOTIFY))
+            {
+              gegl_buffer_emit_changed_signal (sub->buffer, &sub->full_rect);
+            }
         }
     }
 

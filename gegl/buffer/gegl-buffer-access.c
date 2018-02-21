@@ -36,6 +36,7 @@
 #include "gegl-sampler.h"
 #include "gegl-tile-backend.h"
 #include "gegl-buffer-iterator.h"
+#include "gegl-buffer-iterator-private.h"
 #include "gegl-buffer-cl-cache.h"
 #include "gegl-config.h"
 
@@ -2219,7 +2220,8 @@ gegl_buffer_copy2 (GeglBuffer          *src,
     dest_rect_r.height = src_rect->height;
 
     i = gegl_buffer_iterator_new (dst, &dest_rect_r, 0, dst->soft_format,
-                                  GEGL_ACCESS_WRITE, repeat_mode);
+                                  GEGL_ACCESS_WRITE | GEGL_ITERATOR_NO_NOTIFY,
+                                  repeat_mode);
     while (gegl_buffer_iterator_next (i))
       {
         GeglRectangle src_rect = i->roi[0];
@@ -2250,8 +2252,6 @@ gegl_buffer_copy (GeglBuffer          *src,
     {
       dst_rect = src_rect;
     }
-
-  gegl_buffer_block_changed_signal (dst);
 
   if (src->soft_format == dst->soft_format &&
       src_rect->width >= src->tile_width &&
@@ -2401,8 +2401,6 @@ gegl_buffer_copy (GeglBuffer          *src,
       gegl_buffer_copy2 (src, src_rect, repeat_mode, dst, dst_rect);
     }
 
-  gegl_buffer_unblock_changed_signal (dst);
-
   gegl_buffer_emit_changed_signal (dst, dst_rect);
 }
 
@@ -2432,7 +2430,8 @@ gegl_buffer_clear2 (GeglBuffer          *dst,
    * that fully voided tiles are dropped.
    */
   i = gegl_buffer_iterator_new (dst, dst_rect, 0, dst->soft_format,
-                                GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                GEGL_ACCESS_WRITE | GEGL_ITERATOR_NO_NOTIFY,
+                                GEGL_ABYSS_NONE);
   while (gegl_buffer_iterator_next (i))
     {
       memset (((guchar*)(i->data[0])), 0, i->length * pxsize);
@@ -2449,8 +2448,6 @@ gegl_buffer_clear (GeglBuffer          *dst,
     {
       dst_rect = gegl_buffer_get_extent (dst);
     }
-
-  gegl_buffer_block_changed_signal (dst);
 
 #if 1
   /* cow for clearing is currently broken */
@@ -2550,8 +2547,6 @@ gegl_buffer_clear (GeglBuffer          *dst,
     {
       gegl_buffer_clear2 (dst, dst_rect);
     }
-
-  gegl_buffer_unblock_changed_signal (dst);
 
   gegl_buffer_emit_changed_signal (dst, dst_rect);
 }
@@ -2682,8 +2677,6 @@ gegl_buffer_set_color (GeglBuffer          *dst,
 
   bpp = babl_format_get_bytes_per_pixel (dst->soft_format);
 
-  gegl_buffer_block_changed_signal (dst);
-
   /* FIXME: this can be even further optimized by special casing it so
    * that fully filled tiles are shared.
    */
@@ -2693,10 +2686,6 @@ gegl_buffer_set_color (GeglBuffer          *dst,
     {
       gegl_memset_pattern (i->data[0], pixel, bpp, i->length);
     }
-
-  gegl_buffer_unblock_changed_signal (dst);
-
-  gegl_buffer_emit_changed_signal (dst, dst_rect);
 }
 
 GeglBuffer *
