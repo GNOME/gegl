@@ -25,22 +25,10 @@
 
 /* most of these should go away - here for ease of algorithm experimentation */
 
-property_int (seek_distance, "seek radius", 8)
+property_int (seek_distance, "seek radius", 48)
   value_range (4, 512)
 
-property_int (min_neigh, "min neigh", 1)
-  value_range (1, 10)
-
-property_int (min_iter, "min iter", 3)
-  value_range (1, 512)
-
-property_double (chance_try, "try chance", 1.0)
-  value_range (0.0, 1.0)
-
-property_double (chance_retry, "retry chance", 0.33)
-  value_range (0.0, 1.0)
-
-property_double (scale, "scale", 4.0)
+property_double (scale, "scale", 2.0)
   value_range (0.01, 16.0)
 
 #else
@@ -75,9 +63,7 @@ prepare (GeglOperation *operation)
 
 static void scaled_copy (GeglBuffer *in,
                          GeglBuffer *out,
-                         gfloat      scale,
-                         int         mask_blank,
-                         int         mask_set)
+                         gfloat      scale)
 {
   GeglRectangle rect;
   const Babl *format = babl_format ("RGBA float");
@@ -87,22 +73,60 @@ static void scaled_copy (GeglBuffer *in,
   for (y = 0; y < rect.height; y++)
     for (x = 0; x < rect.width; x++)
       {
+        float rgba[4];
         GeglRectangle r = {x, y, 1, 1};
-        gfloat rgba[4] = {0.0, 0.0, 0.0, 0.0};
-        int bit = 1<< ((y%2)*2+(x%2));
-        if (mask_blank & bit)
-          {
-            gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
-          }
-        else if (mask_set & bit)
-          {
-            gegl_buffer_sample (in, x / scale, y / scale, NULL,
-                                &rgba[0], format,
-                                GEGL_SAMPLER_NOHALO, 0);
-            gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
-          }
+        gegl_buffer_sample (in, x / scale, y / scale, NULL,
+                            &rgba[0], format,
+                            GEGL_SAMPLER_NOHALO, 0);
+        gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
       }
 }
+
+
+static void improve (PixelDuster *duster,
+                     GeglBuffer *in,
+                     GeglBuffer *out,
+                     gfloat      scale)
+{
+  GeglRectangle rect;
+  const Babl *format = babl_format ("RGBA float");
+  gint x, y;
+
+  rect = *gegl_buffer_get_extent (out);
+  for (y = 0; y < rect.height; y++)
+  {
+    int xstart = 0;
+    int xinc = 1;
+    int xend = rect.width;
+#if 0 /* consistent scanline direction produces more consistent results */
+    if (y%2)
+     {
+       xstart = rect.width - 1;
+       xinc = -1;
+       xend = -1;
+     }
+#endif
+    for (x = xstart; x != xend; x+=xinc)
+      {
+        Probe *probe;
+        probe = add_probe (duster, x, y);
+#if 1
+        if (probe_improve (duster, probe) == 0)
+        {
+          gfloat rgba[4];
+          gegl_buffer_sample (duster->input, probe->source_x, probe->source_y,  NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
+          if (rgba[3] <= 0.01)
+            fprintf (stderr, "eek %i,%i %f %f %f %f\n", probe->source_x, probe->source_y, rgba[0], rgba[1], rgba[2], rgba[3]);
+          gegl_buffer_set (duster->output, GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1), 0, format, &rgba[0], 0);
+        }
+#endif
+        g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
+      }
+   fprintf (stderr, "\r%2.2f   ", y * 100.0 / rect.height);
+  }
+   fprintf (stderr, "\n");
+}
+
 
 static gboolean
 process (GeglOperation       *operation,
@@ -115,95 +139,16 @@ process (GeglOperation       *operation,
   GeglRectangle in_rect = *gegl_buffer_get_extent (input);
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
   PixelDuster    *duster;
-
-  scaled_copy (input, output, o->scale, 1, 14);
+  scaled_copy (input, output, o->scale);
   duster  = pixel_duster_new (input, output,
                               &in_rect, &out_rect,
                               o->seek_distance,
-                              o->min_neigh,
-                              o->min_iter,
-                              o->chance_try,
-                              o->chance_retry,
+                              1, 1, 1.0, 1.0,
                               o->scale,
                               o->scale,
                               NULL);
-  pixel_duster_add_probes (duster);
-  pixel_duster_fill (duster);
-  pixel_duster_destroy (duster);
-
-  scaled_copy (input, output, o->scale, 2, 12);
-  duster  = pixel_duster_new (input, output,
-                              &in_rect, &out_rect,
-                              o->seek_distance,
-                              o->min_neigh,
-                              o->min_iter,
-                              o->chance_try,
-                              o->chance_retry,
-                              o->scale,
-                              o->scale,
-                              NULL);
-  pixel_duster_add_probes (duster);
-  pixel_duster_fill (duster);
-  pixel_duster_destroy (duster);
-
-  scaled_copy (input, output, o->scale, 4, 8);
-  duster  = pixel_duster_new (input, output,
-                              &in_rect, &out_rect,
-                              o->seek_distance,
-                              o->min_neigh,
-                              o->min_iter,
-                              o->chance_try,
-                              o->chance_retry,
-                              o->scale,
-                              o->scale,
-                              NULL);
-  pixel_duster_add_probes (duster);
-  pixel_duster_fill (duster);
-  pixel_duster_destroy (duster);
-
-  scaled_copy (input, output, o->scale, 8, 0);
-  duster  = pixel_duster_new (input, output,
-                              &in_rect, &out_rect,
-                              o->seek_distance,
-                              o->min_neigh,
-                              o->min_iter,
-                              o->chance_try,
-                              o->chance_retry,
-                              o->scale,
-                              o->scale,
-                              NULL);
-  pixel_duster_add_probes (duster);
-  pixel_duster_fill (duster);
-  pixel_duster_destroy (duster);
-
-  scaled_copy (input, output, o->scale, 1, 0);
-  duster  = pixel_duster_new (input, output,
-                              &in_rect, &out_rect,
-                              o->seek_distance,
-                              o->min_neigh,
-                              o->min_iter,
-                              o->chance_try,
-                              o->chance_retry,
-                              o->scale,
-                              o->scale,
-                              NULL);
-  pixel_duster_add_probes (duster);
-  pixel_duster_fill (duster);
-  pixel_duster_destroy (duster);
-
-  scaled_copy (input, output, o->scale, 4, 0);
-  duster  = pixel_duster_new (input, output,
-                              &in_rect, &out_rect,
-                              o->seek_distance,
-                              o->min_neigh,
-                              o->min_iter,
-                              o->chance_try,
-                              o->chance_retry,
-                              o->scale,
-                              o->scale,
-                              NULL);
-  pixel_duster_add_probes (duster);
-  pixel_duster_fill (duster);
+  seed_db (duster);
+  improve (duster, input, output, o->scale);
   pixel_duster_destroy (duster);
 
   return TRUE;
@@ -213,7 +158,10 @@ static GeglRectangle
 get_bounding_box (GeglOperation *operation)
 {
   GeglProperties *o      = GEGL_PROPERTIES (operation);
-  GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
+  GeglRectangle *res = gegl_operation_source_get_bounding_box (operation, "input");
+  GeglRectangle result = {0,0,100,100};
+  if (res)
+    result = *res;
   result.x = 0;
   result.y = 0;
   result.width  *= o->scale;

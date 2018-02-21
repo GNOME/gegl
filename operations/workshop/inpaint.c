@@ -23,19 +23,19 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int (seek_distance, "seek radius", 8)
+property_int (seek_distance, "seek radius", 96)
   value_range (4, 512)
 
 property_int (min_neigh, "min neigh", 2)
   value_range (1, 10)
 
-property_int (min_iter, "min iter", 8)
+property_int (min_iter, "min iter", 4)
   value_range (1, 512)
 
-property_double (chance_try, "try chance", 0.5)
+property_double (chance_try, "try chance", 0.55)
   value_range (0.0, 1.0)
 
-property_double (chance_retry, "retry chance", 0.81)
+property_double (chance_retry, "retry chance", 0.2)
   value_range (0.0, 1.0)
 
 #else
@@ -88,9 +88,11 @@ process (GeglOperation       *operation,
                                              1.0,
                                              1.0,
                                              operation);
-
+  seed_db (duster);
   gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);
-  pixel_duster_add_probes (duster);
+  fprintf (stderr, "adding transparent probes");
+  pixel_duster_add_probes_for_transparent (duster);
+  fprintf (stderr, "\n");
   pixel_duster_fill (duster);
   pixel_duster_destroy (duster);
 
