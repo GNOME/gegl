@@ -74,6 +74,8 @@ struct _GeglBuffer
 
   gint              changed_signal_connections; /* to avoid firing changed signals
                                                    with no listeners */
+  gint              changed_signal_block_count; /* temporarily block changed
+                                                   signal */
 
   GeglTileBackend  *backend;
 };
@@ -138,8 +140,10 @@ void              gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 GeglBuffer *      gegl_buffer_new_ram     (const GeglRectangle *extent,
                                            const Babl          *format);
 
-void              gegl_buffer_emit_changed_signal (GeglBuffer *buffer,
-                                                   const GeglRectangle *rect);
+void              gegl_buffer_emit_changed_signal    (GeglBuffer *buffer,
+                                                      const GeglRectangle *rect);
+void              gegl_buffer_block_changed_signal   (GeglBuffer *buffer);
+void              gegl_buffer_unblock_changed_signal (GeglBuffer *buffer);
 
 /* the instance size of a GeglTile is a bit large, and should if possible be
  * trimmed down

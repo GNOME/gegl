@@ -1190,7 +1190,8 @@ void
 gegl_buffer_emit_changed_signal (GeglBuffer          *buffer,
                                  const GeglRectangle *rect)
 {
-  if (buffer->changed_signal_connections)
+  if (buffer->changed_signal_connections &&
+      buffer->changed_signal_block_count == 0)
   {
     GeglRectangle copy;
 
@@ -1201,6 +1202,20 @@ gegl_buffer_emit_changed_signal (GeglBuffer          *buffer,
 
     g_signal_emit (buffer, gegl_buffer_signals[CHANGED], 0, &copy, NULL);
   }
+}
+
+void
+gegl_buffer_block_changed_signal (GeglBuffer *buffer)
+{
+  buffer->changed_signal_block_count++;
+}
+
+void
+gegl_buffer_unblock_changed_signal (GeglBuffer *buffer)
+{
+  g_return_if_fail (buffer->changed_signal_block_count > 0);
+
+  buffer->changed_signal_block_count--;
 }
 
 glong gegl_buffer_signal_connect (GeglBuffer *buffer,

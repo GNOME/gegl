@@ -2251,6 +2251,7 @@ gegl_buffer_copy (GeglBuffer          *src,
       dst_rect = src_rect;
     }
 
+  gegl_buffer_block_changed_signal (dst);
 
   if (src->soft_format == dst->soft_format &&
       src_rect->width >= src->tile_width &&
@@ -2399,6 +2400,10 @@ gegl_buffer_copy (GeglBuffer          *src,
     {
       gegl_buffer_copy2 (src, src_rect, repeat_mode, dst, dst_rect);
     }
+
+  gegl_buffer_unblock_changed_signal (dst);
+
+  gegl_buffer_emit_changed_signal (dst, dst_rect);
 }
 
 static void
@@ -2444,6 +2449,8 @@ gegl_buffer_clear (GeglBuffer          *dst,
     {
       dst_rect = gegl_buffer_get_extent (dst);
     }
+
+  gegl_buffer_block_changed_signal (dst);
 
 #if 1
   /* cow for clearing is currently broken */
@@ -2543,6 +2550,10 @@ gegl_buffer_clear (GeglBuffer          *dst,
     {
       gegl_buffer_clear2 (dst, dst_rect);
     }
+
+  gegl_buffer_unblock_changed_signal (dst);
+
+  gegl_buffer_emit_changed_signal (dst, dst_rect);
 }
 
 void
@@ -2671,6 +2682,8 @@ gegl_buffer_set_color (GeglBuffer          *dst,
 
   bpp = babl_format_get_bytes_per_pixel (dst->soft_format);
 
+  gegl_buffer_block_changed_signal (dst);
+
   /* FIXME: this can be even further optimized by special casing it so
    * that fully filled tiles are shared.
    */
@@ -2680,6 +2693,10 @@ gegl_buffer_set_color (GeglBuffer          *dst,
     {
       gegl_memset_pattern (i->data[0], pixel, bpp, i->length);
     }
+
+  gegl_buffer_unblock_changed_signal (dst);
+
+  gegl_buffer_emit_changed_signal (dst, dst_rect);
 }
 
 GeglBuffer *
