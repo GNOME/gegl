@@ -23,26 +23,29 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int (seek_distance, "seek radius", 96)
+property_int (seek_distance, "seek radius", 8)
   value_range (4, 512)
 
-property_int (min_neigh, "min neigh", 2)
+property_double (scale, "scale", 2.0)
+  value_range (0.1, 20.0)
+
+property_int (min_neigh, "min neigh", 1)
   value_range (1, 10)
 
-property_int (min_iter, "min iter", 4)
+property_int (min_iter, "min iter", 512)
   value_range (1, 512)
 
-property_double (chance_try, "try chance", 0.88)
+property_double (chance_try, "try chance", 0.1)
   value_range (0.0, 1.0)
 
-property_double (chance_retry, "retry chance", 0.5)
+property_double (chance_retry, "retry chance", 0.0)
   value_range (0.0, 1.0)
 
 #else
 
 #define GEGL_OP_FILTER
-#define GEGL_OP_NAME      inpaint
-#define GEGL_OP_C_SOURCE  inpaint.c
+#define GEGL_OP_NAME      enlarge2
+#define GEGL_OP_C_SOURCE  enlarge2.c
 
 #include "gegl-op.h"
 #include <stdio.h>
@@ -68,6 +71,50 @@ prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", format);
 }
 
+static void scaled_copy (GeglBuffer *in,
+                         GeglBuffer *out,
+                         gfloat      scale)
+{
+  GeglRectangle rect;
+  const Babl *format = babl_format ("RGBA float");
+  gint x, y;
+
+  rect = *gegl_buffer_get_extent (out);
+  for (y = 0; y < rect.height; y++)
+    for (x = 0; x < rect.width; x++)
+      {
+        GeglRectangle r = {x, y, 1, 1};
+        gfloat rgba[4] = {0,0,0,0};
+        gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
+      }
+
+  rect = *gegl_buffer_get_extent (in);
+  for (y = 0; y < rect.height; y++)
+    for (x = 0; x < rect.width; x++)
+      {
+        GeglRectangle r = {x * scale , y * scale, 1, 1};
+        gfloat rgba[4];
+        gegl_buffer_sample (in, x, y, NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
+        gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
+      }
+}
+
+static void remove_grid (GeglBuffer *in,
+                         GeglBuffer *out,
+                         gfloat      scale)
+{
+  GeglRectangle rect;
+  const Babl *format = babl_format ("RGBA float");
+  gint x, y;
+  rect = *gegl_buffer_get_extent (in);
+  for (y = 0; y < rect.height; y++)
+    for (x = 0; x < rect.width; x++)
+      {
+        GeglRectangle r = {x * scale , y * scale, 1, 1};
+        gfloat rgba[4] = {0,0,0,0};
+        gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
+      }
+}
 
 static gboolean
 process (GeglOperation       *operation,
@@ -79,34 +126,60 @@ process (GeglOperation       *operation,
   GeglProperties *o      = GEGL_PROPERTIES (operation);
   GeglRectangle in_rect = *gegl_buffer_get_extent (input);
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
-  PixelDuster    *duster = pixel_duster_new (input, output, &in_rect, &out_rect,
-                                             o->seek_distance,
-                                             o->min_neigh,
-                                             o->min_iter,
-                                             o->chance_try,
-                                             o->chance_retry,
-                                             1.0,
-                                             1.0,
-                                             operation);
+  PixelDuster    *duster;
+
+  scaled_copy (input, output, o->scale);
+  duster  = pixel_duster_new (input, output,
+                              &in_rect, &out_rect,
+                              o->seek_distance,
+                              o->min_neigh,
+                              o->min_iter,
+                              o->chance_try,
+                              o->chance_retry,
+                              o->scale,
+                              o->scale,
+                              NULL);
   seed_db (duster);
-  gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);
-  fprintf (stderr, "adding transparent probes");
   pixel_duster_add_probes_for_transparent (duster);
-  fprintf (stderr, "\n");
   pixel_duster_fill (duster);
+#if 1
+  remove_grid (input, output, o->scale);
+  pixel_duster_remove_probes (duster);
+  pixel_duster_add_probes_for_transparent (duster);
+  pixel_duster_fill (duster);
+#endif
   pixel_duster_destroy (duster);
 
   return TRUE;
 }
 
 static GeglRectangle
+get_bounding_box (GeglOperation *operation)
+{
+  GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
+  GeglProperties *o      = GEGL_PROPERTIES (operation);
+  result.x = 0;
+  result.y = 0;
+  result.width  *= o->scale;
+  result.height *= o->scale;
+
+  return result;
+}
+
+
+static GeglRectangle
 get_cached_region (GeglOperation       *operation,
                    const GeglRectangle *roi)
 {
   GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
+  GeglProperties *o      = GEGL_PROPERTIES (operation);
 
   if (gegl_rectangle_is_infinite_plane (&result))
     return *roi;
+  result.x = 0;
+  result.y = 0;
+  result.width  *= o->scale;
+  result.height *= o->scale;
 
   return result;
 }
@@ -149,16 +222,17 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class->process                    = process;
   operation_class->prepare                 = prepare;
   operation_class->process                 = operation_process;
+  operation_class->get_bounding_box        = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->get_cached_region       = get_cached_region;
   operation_class->opencl_support          = FALSE;
   operation_class->threaded                = FALSE;
 
   gegl_operation_class_set_keys (operation_class,
-      "name",        "gegl:alpha-inpaint",
-      "title",       "Heal transparent",
+      "name",        "gegl:enlarge2",
+      "title",       "Smart enlarge",
       "categories",  "heal",
-      "description", "Replaces fully transparent pixels with good candidate pixels found in the neighbourhood of the hole",
+      "description", "Enlarges an images based on pixel contents",
       NULL);
 }
 

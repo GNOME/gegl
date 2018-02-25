@@ -77,11 +77,10 @@ static void scaled_copy (GeglBuffer *in,
         GeglRectangle r = {x, y, 1, 1};
         gegl_buffer_sample (in, x / scale, y / scale, NULL,
                             &rgba[0], format,
-                            GEGL_SAMPLER_NOHALO, 0);
+                            GEGL_SAMPLER_NEAREST, 0);
         gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
       }
 }
-
 
 static void improve (PixelDuster *duster,
                      GeglBuffer *in,
@@ -89,7 +88,7 @@ static void improve (PixelDuster *duster,
                      gfloat      scale)
 {
   GeglRectangle rect;
-  const Babl *format = babl_format ("RGBA float");
+  const Babl *format = babl_format ("R'G'B'A float");
   gint x, y;
 
   rect = *gegl_buffer_get_extent (out);
@@ -110,23 +109,58 @@ static void improve (PixelDuster *duster,
       {
         Probe *probe;
         probe = add_probe (duster, x, y);
-#if 1
         if (probe_improve (duster, probe) == 0)
         {
-          gfloat rgba[4];
-          gegl_buffer_sample (duster->input, probe->source_x, probe->source_y,  NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
+#if PIXDUST_REL_DIGEST==0
+          gfloat rgba[4*MAX_K];
+
+          for (int j = 0; j < MAX_K; j++)
+            gegl_buffer_sample (duster->input, probe->source_x[j], probe->source_y[j],  NULL, &rgba[j*4], format, GEGL_SAMPLER_NEAREST, 0);
+
+
+          for (int j = 1; j < probe->k; j++)
+            for (int c = 0; c < 4; c++)
+            {
+              rgba[0+c] += rgba[j*4+c];
+            }
+          for (int c = 0; c < 4; c++)
+            {
+              rgba[c] /= probe->k;
+            }
+
           if (rgba[3] <= 0.01)
-            fprintf (stderr, "eek %i,%i %f %f %f %f\n", probe->source_x, probe->source_y, rgba[0], rgba[1], rgba[2], rgba[3]);
+            fprintf (stderr, "eek %i,%i %f %f %f %f\n", probe->source_x[MAX_K/2], probe->source_y[MAX_K/2], rgba[0], rgba[1], rgba[2], rgba[3]);
+
           gegl_buffer_set (duster->output, GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1), 0, format, &rgba[0], 0);
-        }
+#else
+          gfloat rgba[4];
+          gfloat delta[4]={0,0,0,0};
+          {
+            int dx = 0, dy = 0;
+            duster_idx_to_x_y (duster, 1, probe->hay[0][0], &dx, &dy);
+            gegl_buffer_sample (duster->output, probe->target_x + dx, probe->target_y + dy,  NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
+          }
+
+          for (int k = 0; k < probe->k; k++)
+          {
+            for (int c = 0; c < 3; c ++)
+              delta[c] += ((probe->hay[k][4+c]-127.0) / 128);
+          }
+
+          for (int c = 0; c < 3; c ++)
+            rgba[c] = rgba[c] - delta[c] / probe->k;
+          rgba[3]=1.0;
+
+          gegl_buffer_set (duster->output, GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1), 0, format, &rgba[0], 0);
+
 #endif
+        }
         g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
       }
    fprintf (stderr, "\r%2.2f   ", y * 100.0 / rect.height);
   }
    fprintf (stderr, "\n");
 }
-
 
 static gboolean
 process (GeglOperation       *operation,
@@ -143,7 +177,7 @@ process (GeglOperation       *operation,
   duster  = pixel_duster_new (input, output,
                               &in_rect, &out_rect,
                               o->seek_distance,
-                              1, 1, 1.0, 1.0,
+                              1, 1, 1.0, 0.3,
                               o->scale,
                               o->scale,
                               NULL);
@@ -169,7 +203,6 @@ get_bounding_box (GeglOperation *operation)
 
   return result;
 }
-
 
 static GeglRectangle
 get_cached_region (GeglOperation       *operation,
