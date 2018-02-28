@@ -255,5 +255,6 @@ operations/workshop/hstack.c
 operations/workshop/integral-image.c
 operations/workshop/linear-sinusoid.c
 operations/workshop/rawbayer-load.c
+operations/workshop/recursive-transform.c
 operations/workshop/segment-kmeans.c
 operations/workshop/spherize.c
