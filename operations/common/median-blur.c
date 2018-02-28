@@ -556,9 +556,13 @@ convert_values_to_bins (Histogram *hist,
 
       for (c = 0; c < n_components; c++)
         {
-          gint    bin        = 0;
-          gfloat  prev_value = values[0].value;
+          gint    bin = 0;
+          gfloat  prev_value;
           gfloat *bin_values;
+
+          sort_input_values (&values, &scratch, n_pixels);
+
+          prev_value = values[0].value;
 
           bin_values    = g_new (gfloat, n_pixels);
           bin_values[0] = prev_value;
@@ -567,8 +571,6 @@ convert_values_to_bins (Histogram *hist,
               alpha_values[0] = floorf (SAFE_CLAMP (prev_value, 0.0f, 1.0f) *
                                         (gfloat) (1 << 10) + 0.5f);
             }
-
-          sort_input_values (&values, &scratch, n_pixels);
 
           for (i = 0; i < n_pixels; i++)
             {
