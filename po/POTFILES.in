@@ -236,6 +236,7 @@ operations/transform/transform-core.c
 operations/transform/translate.c
 operations/workshop/bayer-matrix.c
 operations/workshop/bilateral-filter-fast.c
+operations/workshop/color-overlay.c
 operations/workshop/demosaic-bimedian.c
 operations/workshop/demosaic-simple.c
 operations/workshop/ditto.c

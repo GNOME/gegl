@@ -12,6 +12,7 @@ opdir = $(ext_dir)
 op_LTLIBRARIES = \
 	bayer-matrix.la \
 	bilateral-filter-fast.la \
+	color-overlay.la \
 	demosaic-bimedian.la \
 	demosaic-simple.la \
 	ditto.la \
