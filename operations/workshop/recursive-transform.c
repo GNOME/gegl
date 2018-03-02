@@ -35,15 +35,9 @@ property_int     (iterations, _("Iterations"), 3)
     description  (_("Number of iterations"))
     value_range  (0, MAX_ITERATIONS)
 
-property_double (contrast, _("Contrast"),  1.0)
-    description  (_("Contrast scaling of each transformed image"))
-    value_range  (-5.0, 5.0)
-    ui_range     (0.5, 1.5)
-
-property_double (brightness, _("Brightness"), 0.0)
-    description  (_("Brightness offset of each transformed image"))
-    value_range  (-3.0, 3.0)
-    ui_range     (-0.5, 0.5)
+property_color (fade_color, _("Fade color"), "transparent")
+    description  (_("Color to fade transformed images towards, "
+                    "with a rate depending on its alpha"))
 
 property_boolean (paste_below, _("Paste below"), FALSE)
     description  (_("Paste transformed images below each other"))
@@ -64,7 +58,7 @@ property_enum    (sampler_type, _("Resampling method"),
 typedef struct
 {
   GeglNode *transform_node;
-  GeglNode *brightness_contrast_node;
+  GeglNode *color_overlay_node;
   GeglNode *over_node;
 } Iteration;
 
@@ -77,6 +71,7 @@ update_graph (GeglOperation *operation)
   GeglNode       *input;
   GeglNode       *output;
   GeglMatrix3     transform;
+  gdouble         fade_color[4];
   gint            i;
 
   if (! iters)
@@ -89,10 +84,10 @@ update_graph (GeglOperation *operation)
 
   for (i = 0; i <= MAX_ITERATIONS; i++)
     {
-      gegl_node_disconnect (iters[i].transform_node,           "input");
-      gegl_node_disconnect (iters[i].brightness_contrast_node, "input");
-      gegl_node_disconnect (iters[i].over_node,                "input");
-      gegl_node_disconnect (iters[i].over_node,                "aux");
+      gegl_node_disconnect (iters[i].transform_node,     "input");
+      gegl_node_disconnect (iters[i].color_overlay_node, "input");
+      gegl_node_disconnect (iters[i].over_node,          "input");
+      gegl_node_disconnect (iters[i].over_node,          "aux");
     }
 
   if (o->first_iteration == 0 && o->iterations == 0)
@@ -100,12 +95,18 @@ update_graph (GeglOperation *operation)
 
   gegl_matrix3_parse_string (&transform, o->transform);
 
+  gegl_color_get_rgba (o->fade_color,
+                       &fade_color[0],
+                       &fade_color[1],
+                       &fade_color[2],
+                       &fade_color[3]);
+
   for (i = o->iterations; i >= 0; i--)
     {
-      GeglNode    *source_node = iters[i].transform_node;
+      GeglNode    *source_node;
       GeglMatrix3  matrix;
       gchar       *matrix_str;
-      gint         n           = o->first_iteration + i;
+      gint         n = o->first_iteration + i;
       gint         j;
 
       gegl_matrix3_identity (&matrix);
@@ -123,28 +124,28 @@ update_graph (GeglOperation *operation)
       g_free (matrix_str);
 
       gegl_node_link (input, iters[i].transform_node);
+      source_node = iters[i].transform_node;
 
-      if (n > 0 && (fabs (o->brightness - 0.0) > EPSILON ||
-                    fabs (o->contrast   - 1.0) > EPSILON))
+      if (n > 0 && fabs (fade_color[3]) > EPSILON)
         {
-          gdouble b = o->brightness;
-          gdouble c = o->contrast;
+          GeglColor *color = gegl_color_new (NULL);
+          gdouble    a = 1.0 - pow (1.0 - fade_color[3], n);
 
-          if (fabs (c - 1.0) > EPSILON)
-            b *= (pow (c, n) - 1.0) / (c - 1.0);
-          else
-            b *= n;
+          gegl_color_set_rgba (color,
+                               fade_color[0],
+                               fade_color[1],
+                               fade_color[2],
+                               a);
 
-          c = pow (c, n);
-
-          gegl_node_set (iters[i].brightness_contrast_node,
-                         "brightness", b,
-                         "contrast",   c,
+          gegl_node_set (iters[i].color_overlay_node,
+                         "value", color,
+                         "srgb",  TRUE,
                          NULL);
 
-          gegl_node_link (source_node, iters[i].brightness_contrast_node);
+          g_object_unref (color);
 
-          source_node = iters[i].brightness_contrast_node;
+          gegl_node_link (source_node, iters[i].color_overlay_node);
+          source_node = iters[i].color_overlay_node;
         }
 
       gegl_node_connect_to (source_node,        "output",
@@ -182,9 +183,9 @@ attach (GeglOperation *operation)
                              "operation", "gegl:transform",
                              NULL);
 
-      iters[i].brightness_contrast_node =
+      iters[i].color_overlay_node =
         gegl_node_new_child (node,
-                             "operation", "gegl:brightness-contrast",
+                             "operation", "gegl:color-overlay",
                              NULL);
 
       iters[i].over_node =
@@ -194,7 +195,7 @@ attach (GeglOperation *operation)
 
       gegl_operation_meta_watch_nodes (operation,
                                        iters[i].transform_node,
-                                       iters[i].brightness_contrast_node,
+                                       iters[i].color_overlay_node,
                                        iters[i].over_node,
                                        NULL);
     }
