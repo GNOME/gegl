@@ -239,14 +239,18 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                               MAX (0.0, scale->coeff[1][0] + scale->coeff[1][1]));
       const gdouble w = x2 - x1;
       const gdouble h = y2 - y1;
-      const gint ix = floor (absolute_x - w / 2.0);
-      const gint iy = floor (absolute_y - h / 2.0);
-      const gint xx = ceil  (absolute_x + w / 2.0);
-      const gint yy = ceil  (absolute_y + h / 2.0);
+      const gdouble ixf = floor (absolute_x - w / 2.0);
+      const gdouble iyf = floor (absolute_y - h / 2.0);
+      const gdouble xxf = ceil  (absolute_x + w / 2.0);
+      const gdouble yyf = ceil  (absolute_y + h / 2.0);
+      const gint ix = CLAMP (ixf, -(G_MAXINT / 2), +(G_MAXINT / 2));
+      const gint iy = CLAMP (iyf, -(G_MAXINT / 2), +(G_MAXINT / 2));
+      const gint xx = CLAMP (xxf, -(G_MAXINT / 2), +(G_MAXINT / 2));
+      const gint yy = CLAMP (yyf, -(G_MAXINT / 2), +(G_MAXINT / 2));
       int u, v;
       int count = 0;
-      int hskip = w / n_samples;
-      int vskip = h / n_samples;
+      int hskip = (xx - ix) / n_samples;
+      int vskip = (yy - iy) / n_samples;
 
       if (hskip <= 0)
         hskip = 1;
@@ -268,10 +272,15 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
               count ++;
             }
         }
-      result[0] /= count;
-      result[1] /= count;
-      result[2] /= count;
-      result[3] /= count;
+
+      if (count)
+        {
+          result[0] /= count;
+          result[1] /= count;
+          result[2] /= count;
+          result[3] /= count;
+        }
+
       babl_process (self->fish, result, output, 1);
 
       return TRUE;
