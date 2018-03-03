@@ -32,7 +32,7 @@ typedef struct {
     gdouble coeff[2][2];
 } GeglMatrix2;
 
-/**
+/*
  * gegl_matrix2_determinant:
  * @matrix: a #GeglMatrix2
  *
