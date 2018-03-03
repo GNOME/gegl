@@ -24,6 +24,13 @@
 #include "gegl-matrix.h"
 
 
+gdouble
+gegl_matrix2_determinant (GeglMatrix2 *matrix)
+{
+  return matrix->coeff[0][0] * matrix->coeff[1][1] -
+         matrix->coeff[1][0] * matrix->coeff[0][1];
+}
+
 #if 0
 static void gegl_matrix3_debug (GeglMatrix3 *matrix)
 {
