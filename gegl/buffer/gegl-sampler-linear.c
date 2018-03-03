@@ -73,51 +73,6 @@ gegl_sampler_linear_init (GeglSamplerLinear *self)
   GEGL_SAMPLER (self)->interpolate_format = gegl_babl_rgbA_linear_float ();
 }
 
-static inline void
-gegl_sampler_box_get (GeglSampler*    restrict  self,
-                      const gdouble             absolute_x,
-                      const gdouble             absolute_y,
-                      GeglMatrix2              *scale,
-                      void*           restrict  output,
-                      GeglAbyssPolicy           repeat_mode)
-{
-  gfloat result[4] = {0,0,0,0};
-  const float iabsolute_x = (float) absolute_x - 0.5;
-  const float iabsolute_y = (float) absolute_y - 0.5;
-  const gint ix = floorf (iabsolute_x - scale->coeff[0][0]/2);
-  const gint iy = floorf (iabsolute_y - scale->coeff[1][1]/2);
-  const gint xx = ceilf (iabsolute_x + scale->coeff[0][0]/2);
-  const gint yy = ceilf (iabsolute_y + scale->coeff[1][1]/2);
-  int u, v;
-  int count = 0;
-  int hskip = scale->coeff[0][0] / 4;
-  int vskip = scale->coeff[1][1] / 4;
-
-  if (hskip <= 0)
-    hskip = 1;
-  if (vskip <= 0)
-    vskip = 1;
-
-  for (v = iy; v < yy; v += vskip)
-  {
-    for (u = ix; u < xx; u += hskip)
-    {
-      int c;
-      gfloat input[4];
-      GeglRectangle rect = {u, v, 1, 1};
-      gegl_buffer_get (self->buffer, &rect, 1.0, self->interpolate_format, input, GEGL_AUTO_ROWSTRIDE, repeat_mode);
-      for (c = 0; c < 4; c++)
-        result[c] += input[c];
-      count ++;
-    }
-  }
-  result[0] /= count;
-  result[1] /= count;
-  result[2] /= count;
-  result[3] /= count;
-  babl_process (self->fish, result, output, 1);
-}
-
 void
 gegl_sampler_linear_get (     GeglSampler     *self,
                         const gdouble          absolute_x,
@@ -126,13 +81,8 @@ gegl_sampler_linear_get (     GeglSampler     *self,
                               void            *output,
                               GeglAbyssPolicy  repeat_mode)
 {
-  if (scale && (scale->coeff[0][0] * scale->coeff[0][0] +
-      scale->coeff[1][1] * scale->coeff[1][1])
-    > 8.0)
-  {
-    gegl_sampler_box_get (self, absolute_x, absolute_y, scale, output, repeat_mode);
-  }
-  else
+  if (! _gegl_sampler_box_get (self, absolute_x, absolute_y, scale, 4,
+                               output, repeat_mode))
   {
     const gint pixels_per_buffer_row = GEGL_SAMPLER_MAXIMUM_WIDTH;
     const gint channels = 4;

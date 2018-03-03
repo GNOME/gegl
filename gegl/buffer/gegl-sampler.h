@@ -217,6 +217,71 @@ gegl_sampler_get_ptr (GeglSampler    *sampler,
   return (gfloat *) (buffer_ptr + sof);
 }
 
+static inline gboolean
+_gegl_sampler_box_get (GeglSampler*    restrict  self,
+                       const gdouble             absolute_x,
+                       const gdouble             absolute_y,
+                       GeglMatrix2              *scale,
+                       gint                      n_samples,
+                       void*           restrict  output,
+                       GeglAbyssPolicy           repeat_mode)
+{
+  if (scale && fabs (gegl_matrix2_determinant (scale)) >= 4.0)
+    {
+      gfloat result[4] = {0,0,0,0};
+      const gdouble x1 = MIN (MIN (scale->coeff[0][0], scale->coeff[0][1]),
+                              MIN (0.0, scale->coeff[0][0] + scale->coeff[0][1]));
+      const gdouble y1 = MIN (MIN (scale->coeff[1][0], scale->coeff[1][1]),
+                              MIN (0.0, scale->coeff[1][0] + scale->coeff[1][1]));
+      const gdouble x2 = MAX (MAX (scale->coeff[0][0], scale->coeff[0][1]),
+                              MAX (0.0, scale->coeff[0][0] + scale->coeff[0][1]));
+      const gdouble y2 = MAX (MAX (scale->coeff[1][0], scale->coeff[1][1]),
+                              MAX (0.0, scale->coeff[1][0] + scale->coeff[1][1]));
+      const gdouble w = x2 - x1;
+      const gdouble h = y2 - y1;
+      const gint ix = floor (absolute_x - w / 2.0);
+      const gint iy = floor (absolute_y - h / 2.0);
+      const gint xx = ceil  (absolute_x + w / 2.0);
+      const gint yy = ceil  (absolute_y + h / 2.0);
+      int u, v;
+      int count = 0;
+      int hskip = w / n_samples;
+      int vskip = h / n_samples;
+
+      if (hskip <= 0)
+        hskip = 1;
+      if (vskip <= 0)
+        vskip = 1;
+
+      for (v = iy; v < yy; v += vskip)
+        {
+          for (u = ix; u < xx; u += hskip)
+            {
+              int c;
+              gfloat input[4];
+              GeglRectangle rect = {u, v, 1, 1};
+              gegl_buffer_get (self->buffer, &rect, 1.0,
+                               self->interpolate_format, input,
+                               GEGL_AUTO_ROWSTRIDE, repeat_mode);
+              for (c = 0; c < 4; c++)
+                result[c] += input[c];
+              count ++;
+            }
+        }
+      result[0] /= count;
+      result[1] /= count;
+      result[2] /= count;
+      result[3] /= count;
+      babl_process (self->fish, result, output, 1);
+
+      return TRUE;
+    }
+  else
+    {
+      return FALSE;
+    }
+}
+
 G_END_DECLS
 
 #endif /* __GEGL_SAMPLER_H__ */
