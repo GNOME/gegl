@@ -65,13 +65,15 @@ struct _GeglSampler
   GeglSamplerGetFun get;
 
   /*< private >*/
-  GeglBuffer    *buffer;
-  gint           lvel;
-  const Babl    *format;
-  const Babl    *interpolate_format;
-  const Babl    *fish;
+  GeglBuffer        *buffer;
+  gint               lvel;
+  const Babl        *format;
+  const Babl        *interpolate_format;
+  const Babl        *fish;
+  GeglSampler       *nearest_sampler;
+  GeglSamplerGetFun  nearest_sampler_get_fun;
 
-  GeglSamplerLevel level[GEGL_SAMPLER_MIPMAP_LEVELS];
+  GeglSamplerLevel   level[GEGL_SAMPLER_MIPMAP_LEVELS];
 };
 
 struct _GeglSamplerClass
@@ -256,16 +258,23 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
           hskip += ! hskip;
           vskip += ! vskip;
 
+          if (! self->nearest_sampler)
+            {
+              self->nearest_sampler = gegl_buffer_sampler_new (self->buffer,
+                                                               self->format,
+                                                               GEGL_SAMPLER_NEAREST);
+              self->nearest_sampler_get_fun =
+                gegl_sampler_get_fun (self->nearest_sampler);
+            }
+
           for (v = iy; v < yy; v += vskip)
             {
               for (u = ix; u < xx; u += hskip)
                 {
                   int c;
                   gfloat input[4];
-                  GeglRectangle rect = {u, v, 1, 1};
-                  gegl_buffer_get (self->buffer, &rect, 1.0,
-                                   self->interpolate_format, input,
-                                   GEGL_AUTO_ROWSTRIDE, repeat_mode);
+                  self->nearest_sampler_get_fun (self->nearest_sampler,
+                                                 u, v, NULL, input, repeat_mode);
                   for (c = 0; c < 4; c++)
                     result[c] += input[c];
                   count ++;
