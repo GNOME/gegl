@@ -231,61 +231,63 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
   if (scale && fabs (gegl_matrix2_determinant (scale)) >= 4.0)
     {
       gfloat result[4] = {0,0,0,0};
-      const gdouble x1 = MIN (MIN (scale->coeff[0][0], scale->coeff[0][1]),
-                              MIN (0.0, scale->coeff[0][0] + scale->coeff[0][1]));
-      const gdouble y1 = MIN (MIN (scale->coeff[1][0], scale->coeff[1][1]),
-                              MIN (0.0, scale->coeff[1][0] + scale->coeff[1][1]));
-      const gdouble x2 = MAX (MAX (scale->coeff[0][0], scale->coeff[0][1]),
-                              MAX (0.0, scale->coeff[0][0] + scale->coeff[0][1]));
-      const gdouble y2 = MAX (MAX (scale->coeff[1][0], scale->coeff[1][1]),
-                              MAX (0.0, scale->coeff[1][0] + scale->coeff[1][1]));
-      const gdouble w = x2 - x1;
-      const gdouble h = y2 - y1;
-      const gint ix = floor (absolute_x - w / 2.0);
-      const gint iy = floor (absolute_y - h / 2.0);
-      const gint xx = ceil  (absolute_x + w / 2.0);
-      const gint yy = ceil  (absolute_y + h / 2.0);
-      int u, v;
-      int count = 0;
-      int hskip = xx - ix;
-      int vskip = yy - iy;
+      const gdouble u_norm         = sqrt (scale->coeff[0][0] * scale->coeff[0][0] +
+                                           scale->coeff[1][0] * scale->coeff[1][0]);
+      const gdouble v_norm         = sqrt (scale->coeff[0][1] * scale->coeff[0][1] +
+                                           scale->coeff[1][1] * scale->coeff[1][1]);
+      const gint    u_samples      = ceil (MIN (u_norm, n_samples));
+      const gint    v_samples      = ceil (MIN (v_norm, n_samples));
+      const gdouble u_samples_inv  = 1.0 / u_samples;
+      const gdouble v_samples_inv  = 1.0 / v_samples;
+      const gdouble uv_samples_inv = u_samples_inv * v_samples_inv;
+      const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
+      const gdouble u_dy           = scale->coeff[1][0] * u_samples_inv;
+      const gdouble v_dx           = scale->coeff[0][1] * v_samples_inv;
+      const gdouble v_dy           = scale->coeff[1][1] * v_samples_inv;
+      gdouble       x0             = absolute_x - (scale->coeff[0][0] - u_dx +
+                                                   scale->coeff[0][1] - v_dx) /
+                                                  2.0;
+      gdouble       y0             = absolute_y - (scale->coeff[1][0] - u_dy +
+                                                   scale->coeff[1][1] - v_dy) /
+                                                  2.0;
+      gint          u;
+      gint          v;
 
-      if (hskip > 0 && vskip > 0)
+      if (! self->nearest_sampler)
         {
-          hskip /= n_samples;
-          vskip /= n_samples;
-
-          hskip += ! hskip;
-          vskip += ! vskip;
-
-          if (! self->nearest_sampler)
-            {
-              self->nearest_sampler = gegl_buffer_sampler_new (self->buffer,
-                                                               self->format,
-                                                               GEGL_SAMPLER_NEAREST);
-              self->nearest_sampler_get_fun =
-                gegl_sampler_get_fun (self->nearest_sampler);
-            }
-
-          for (v = iy; v < yy; v += vskip)
-            {
-              for (u = ix; u < xx; u += hskip)
-                {
-                  int c;
-                  gfloat input[4];
-                  self->nearest_sampler_get_fun (self->nearest_sampler,
-                                                 u, v, NULL, input, repeat_mode);
-                  for (c = 0; c < 4; c++)
-                    result[c] += input[c];
-                  count ++;
-                }
-            }
-
-          result[0] /= count;
-          result[1] /= count;
-          result[2] /= count;
-          result[3] /= count;
+          self->nearest_sampler = gegl_buffer_sampler_new (self->buffer,
+                                                           self->format,
+                                                           GEGL_SAMPLER_NEAREST);
+          self->nearest_sampler_get_fun =
+            gegl_sampler_get_fun (self->nearest_sampler);
         }
+
+      for (v = 0; v < v_samples; v++)
+        {
+          gdouble x = x0;
+          gdouble y = y0;
+
+          for (u = 0; u < u_samples; u++)
+            {
+              int c;
+              gfloat input[4];
+              self->nearest_sampler_get_fun (self->nearest_sampler,
+                                             x, y, NULL, input, repeat_mode);
+              for (c = 0; c < 4; c++)
+                result[c] += input[c];
+
+              x += u_dx;
+              y += u_dy;
+            }
+
+          x0 += v_dx;
+          y0 += v_dy;
+        }
+
+      result[0] *= uv_samples_inv;
+      result[1] *= uv_samples_inv;
+      result[2] *= uv_samples_inv;
+      result[3] *= uv_samples_inv;
 
       babl_process (self->fish, result, output, 1);
 
