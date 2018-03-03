@@ -239,42 +239,39 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                               MAX (0.0, scale->coeff[1][0] + scale->coeff[1][1]));
       const gdouble w = x2 - x1;
       const gdouble h = y2 - y1;
-      const gdouble ixf = floor (absolute_x - w / 2.0);
-      const gdouble iyf = floor (absolute_y - h / 2.0);
-      const gdouble xxf = ceil  (absolute_x + w / 2.0);
-      const gdouble yyf = ceil  (absolute_y + h / 2.0);
-      const gint ix = CLAMP (ixf, -(G_MAXINT / 2), +(G_MAXINT / 2));
-      const gint iy = CLAMP (iyf, -(G_MAXINT / 2), +(G_MAXINT / 2));
-      const gint xx = CLAMP (xxf, -(G_MAXINT / 2), +(G_MAXINT / 2));
-      const gint yy = CLAMP (yyf, -(G_MAXINT / 2), +(G_MAXINT / 2));
+      const gint ix = floor (absolute_x - w / 2.0);
+      const gint iy = floor (absolute_y - h / 2.0);
+      const gint xx = ceil  (absolute_x + w / 2.0);
+      const gint yy = ceil  (absolute_y + h / 2.0);
       int u, v;
       int count = 0;
-      int hskip = (xx - ix) / n_samples;
-      int vskip = (yy - iy) / n_samples;
+      int hskip = xx - ix;
+      int vskip = yy - iy;
 
-      if (hskip <= 0)
-        hskip = 1;
-      if (vskip <= 0)
-        vskip = 1;
-
-      for (v = iy; v < yy; v += vskip)
+      if (hskip > 0 && vskip > 0)
         {
-          for (u = ix; u < xx; u += hskip)
+          hskip /= n_samples;
+          vskip /= n_samples;
+
+          hskip += ! hskip;
+          vskip += ! vskip;
+
+          for (v = iy; v < yy; v += vskip)
             {
-              int c;
-              gfloat input[4];
-              GeglRectangle rect = {u, v, 1, 1};
-              gegl_buffer_get (self->buffer, &rect, 1.0,
-                               self->interpolate_format, input,
-                               GEGL_AUTO_ROWSTRIDE, repeat_mode);
-              for (c = 0; c < 4; c++)
-                result[c] += input[c];
-              count ++;
+              for (u = ix; u < xx; u += hskip)
+                {
+                  int c;
+                  gfloat input[4];
+                  GeglRectangle rect = {u, v, 1, 1};
+                  gegl_buffer_get (self->buffer, &rect, 1.0,
+                                   self->interpolate_format, input,
+                                   GEGL_AUTO_ROWSTRIDE, repeat_mode);
+                  for (c = 0; c < 4; c++)
+                    result[c] += input[c];
+                  count ++;
+                }
             }
-        }
 
-      if (count)
-        {
           result[0] /= count;
           result[1] /= count;
           result[2] /= count;
