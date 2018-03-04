@@ -70,8 +70,8 @@ struct _GeglSampler
   const Babl        *format;
   const Babl        *interpolate_format;
   const Babl        *fish;
-  GeglSampler       *nearest_sampler;
-  GeglSamplerGetFun  nearest_sampler_get_fun;
+  GeglSampler       *point_sampler;
+  GeglSamplerGetFun  point_sampler_get_fun;
 
   GeglSamplerLevel   level[GEGL_SAMPLER_MIPMAP_LEVELS];
 };
@@ -224,9 +224,10 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                        const gdouble             absolute_x,
                        const gdouble             absolute_y,
                        GeglMatrix2              *scale,
-                       gint                      n_samples,
                        void*           restrict  output,
-                       GeglAbyssPolicy           repeat_mode)
+                       GeglAbyssPolicy           repeat_mode,
+                       GeglSamplerType           point_sampler_type,
+                       gint                      n_samples)
 {
   if (scale && fabs (gegl_matrix2_determinant (scale)) >= 4.0)
     {
@@ -253,13 +254,13 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
       gint          u;
       gint          v;
 
-      if (! self->nearest_sampler)
+      if (! self->point_sampler)
         {
-          self->nearest_sampler = gegl_buffer_sampler_new (self->buffer,
-                                                           self->format,
-                                                           GEGL_SAMPLER_NEAREST);
-          self->nearest_sampler_get_fun =
-            gegl_sampler_get_fun (self->nearest_sampler);
+          self->point_sampler = gegl_buffer_sampler_new (self->buffer,
+                                                         self->format,
+                                                         point_sampler_type);
+          self->point_sampler_get_fun =
+            gegl_sampler_get_fun (self->point_sampler);
         }
 
       for (v = 0; v < v_samples; v++)
@@ -271,8 +272,8 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
             {
               int c;
               gfloat input[4];
-              self->nearest_sampler_get_fun (self->nearest_sampler,
-                                             x, y, NULL, input, repeat_mode);
+              self->point_sampler_get_fun (self->point_sampler,
+                                           x, y, NULL, input, repeat_mode);
               for (c = 0; c < 4; c++)
                 result[c] += input[c];
 

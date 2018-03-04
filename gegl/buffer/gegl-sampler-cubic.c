@@ -160,8 +160,9 @@ gegl_sampler_cubic_get (      GeglSampler     *self,
                               void            *output,
                               GeglAbyssPolicy  repeat_mode)
 {
-  if (! _gegl_sampler_box_get (self, absolute_x, absolute_y, scale, 5,
-                               output, repeat_mode))
+  if (! _gegl_sampler_box_get (self, absolute_x, absolute_y, scale,
+                               output, repeat_mode,
+                               GEGL_SAMPLER_LINEAR, 5))
   {
     GeglSamplerCubic *cubic       = (GeglSamplerCubic*)(self);
     const gint        offsets[16] = {

@@ -242,7 +242,7 @@ dispose (GObject *gobject)
   /* This call handles unreffing the buffer and disconnecting signals */
   set_buffer (sampler, NULL);
 
-  g_clear_object (&sampler->nearest_sampler);
+  g_clear_object (&sampler->point_sampler);
 
   G_OBJECT_CLASS (gegl_sampler_parent_class)->dispose (gobject);
 }
