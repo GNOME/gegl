@@ -20,11 +20,11 @@
          for identical entries - thus not losing accurate median computation capabilitiy..
          do median instead of mean for matched pixel components
 
-         store values relative to center pixel instead of center pixel - thus
-         permitting a wider range of neighborhoods to produce valid data - thus will be
-         good at least for superresolution
+         complete code using relative to center pixel instead of center pixel -
+         thus permitting a wider range of neighborhoods to produce valid data - thus
+         will be good at least for superresolution
 
-         add mirroring - thus doubling data
+         add more symmetries mirroring each doubling data
  */
 
 #define POW2(x) ((x)*(x))
@@ -54,34 +54,24 @@ typedef struct
 } PixelDuster;
 
 
-/* todo: create neighbor color histogram - that can
-         be used as neighborhood separation criteria
-         ideally low-enough bits that it can be used
-         as selector.
-         gray axis as separate entity.
-
-         4x4x4
-
-*/
-
 #define MAX_K               1
 #define PIXDUST_REL_DIGEST  0
-#define NEIGHBORHOOD        32
+#define NEIGHBORHOOD        33
 #define PIXDUST_ORDERED     1
 #define MAX_DIR             4
 
-//#define ONLY_DIR 0
+//#define ONLY_DIR            1
 
 typedef struct Probe {
-  int            target_x;
-  int            target_y;
-  int            age;
-  int            k;
-  int            score;
-  int            k_score[MAX_K];
-  int            source_x[MAX_K];
-  int            source_y[MAX_K];
-  guchar        *hay[MAX_K];
+  int     target_x;
+  int     target_y;
+  int     age;
+  int     k;
+  int     score;
+  int     k_score[MAX_K];
+  int     source_x[MAX_K];
+  int     source_y[MAX_K];
+  guchar *hay[MAX_K];
 } Probe;
 
 /* used for hash-table keys */
@@ -173,6 +163,23 @@ static void duster_idx_to_x_y (PixelDuster *duster, int index, int dir, int *x, 
       *x =  duster->order[index][1];
       *y =  duster->order[index][0];
       break;
+
+    case 4: /* right */
+      *x =  -duster->order[index][0];
+      *y =   duster->order[index][1];
+      break;
+    case 5: /* left */
+      *x =  duster->order[index][0];
+      *y =  -duster->order[index][1];
+      break;
+    case 6: /* down */
+      *x =  -duster->order[index][1];
+      *y =  duster->order[index][0];
+      break;
+    case 7: /* up */
+      *x =  duster->order[index][1];
+      *y =  -duster->order[index][0];
+      break;
   }
 }
 
@@ -241,7 +248,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, 
   static const Babl *yformat = NULL;
   guchar lum[8];
   int bdir, maxlum;
-  uint32_t hist3dmask=0;
+  uint64_t hist3dmask=0;
 
   if (!format){
     format = babl_format ("R'G'B'A u8");
@@ -260,12 +267,23 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, 
  bdir = 0;
 
  maxlum = lum[0*2];
- for (int i = 1; i < MAX_DIR; i++)
+ for (int i = 1; i < MIN(4,MAX_DIR); i++)
    if (lum[i*2] > maxlum)
      {
        bdir = i;
        maxlum = lum[i*2];
      }
+
+ if (MAX_DIR > 4)
+ {
+   switch (bdir)
+   {
+     case 0: if (lum[4] > lum[6]) bdir += 4; break;
+     case 1: if (lum[6] > lum[4]) bdir += 4; break;
+     case 2: if (lum[0] > lum[2]) bdir += 4; break;
+     case 3: if (lum[2] > lum[0]) bdir += 4; break;
+   }
+ }
 
 #ifdef ONLY_DIR
   bdir = ONLY_DIR;
@@ -283,16 +301,13 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, 
                         y + dy,
                         NULL, &dst[i*4], format,
                         GEGL_SAMPLER_NEAREST, 0);
-
-
     {
       int hist_r = dst[i*4+0]/80;
       int hist_g = dst[i*4+1]/80;
-      int hist_b = dst[i*4+2]/128;
-      int hist_bit = hist_r * 4 * 2 + hist_g * 2 + hist_b;
+      int hist_b = dst[i*4+2]/80;
+      int hist_bit = hist_r * 4 * 4 + hist_g * 4 + hist_b;
       hist3dmask |= (1 << hist_bit);
     }
-
   }
 #else
   for (int i = 0; i <= NEIGHBORHOOD; i++)
@@ -324,7 +339,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, 
  }
 #endif
  dst[0] = bdir;
- *((uint32_t*)(&dst[4*NEIGHBORHOOD])) = hist3dmask;
+ *((uint64_t*)(&dst[4*NEIGHBORHOOD])) = hist3dmask;
 }
 
 static inline int u8_rgb_diff (guchar *a, guchar *b)
@@ -348,16 +363,16 @@ score_site (PixelDuster *duster,
   }
 
   {
-    uint32_t *needle_hist = (void*)&needle[NEIGHBORHOOD * 4];
-    uint32_t *hay_hist    = (void*)&hay[NEIGHBORHOOD * 4];
-    int       diff_hist = *needle_hist ^ *hay_hist;
+    uint64_t *needle_hist = (void*)&needle[NEIGHBORHOOD * 4];
+    uint64_t *hay_hist    = (void*)&hay[NEIGHBORHOOD * 4];
+    uint64_t  diff_hist = *needle_hist ^ *hay_hist;
     int missing = 0;
-  for (i = 0; i < 32; i ++)
+  for (i = 0; i < 64; i ++)
   {
     if (diff_hist & (1 << i)) missing ++;
     //else if ( *needle_hist & (i<<i)) missing ++;
   }
-    if (missing > 5)
+    if (missing > 32)
       return INITIAL_SCORE;
   }
 
@@ -556,7 +571,7 @@ static guchar *ensure_hay (PixelDuster *duster, int x, int y, int subset)
 
   if (!hay)
     {
-      hay = g_malloc (4 * NEIGHBORHOOD + 4);
+      hay = g_malloc (4 * NEIGHBORHOOD + 8);
       extract_site (duster, duster->input, x, y, hay);
       if (subset < 0)
       {
@@ -631,7 +646,7 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
 static int probe_improve (PixelDuster *duster,
                           Probe       *probe)
 {
-  guchar needle[4 * NEIGHBORHOOD + 4];
+  guchar needle[4 * NEIGHBORHOOD + 8];
   gint  dst_x  = probe->target_x;
   gint  dst_y  = probe->target_y;
   void *ptr[3] = {duster, probe, &needle[0]};
@@ -710,9 +725,9 @@ static inline void pixel_duster_add_probes_for_transparent (PixelDuster *duster)
     while (n_pixels--)
     {
       if (out_pix[3] <= 0.001 ||
-          (out_pix[0] <= 0.01 &&
-           out_pix[1] <= 0.01 &&
-           out_pix[2] <= 0.01))
+          (out_pix[0] <= 0.1 &&
+           out_pix[1] <= 0.1 &&
+           out_pix[2] <= 0.1))
       {
         add_probe (duster, x, y);
       }

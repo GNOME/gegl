@@ -116,6 +116,33 @@ static void remove_grid (GeglBuffer *in,
       }
 }
 
+static void remove_deviant (GeglBuffer *in,
+                            GeglBuffer *out,
+                            gfloat      scale)
+{
+  GeglRectangle rect;
+  const Babl *format = babl_format ("RGBA float");
+  gint x, y;
+  rect = *gegl_buffer_get_extent (out);
+  for (y = 0; y < rect.height; y++)
+    for (x = 0; x < rect.width; x++)
+      {
+        GeglRectangle r = {x * scale , y * scale, 1, 1};
+        gfloat rgba_in[4] = {0,0,0,0};
+        gfloat rgba_empty[4] = {0,0,0,0};
+        gfloat rgba_out[4] = {0,0,0,0};
+        gegl_buffer_sample (in, x / scale, y / scale, NULL, &rgba_in[0], format, GEGL_SAMPLER_NEAREST, 0);
+        gegl_buffer_sample (out, x, y, NULL, &rgba_out[0], format, GEGL_SAMPLER_NEAREST, 0);
+
+        if (POW2(rgba_in[0]-rgba_out[0])+
+            POW2(rgba_in[1]-rgba_out[1])+
+            POW2(rgba_in[2]-rgba_out[2]) > 14 + 14 + 14)
+        {
+          gegl_buffer_set (out, &r, 0, format, &rgba_empty[0], 0);
+        }
+      }
+}
+
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
@@ -142,12 +169,18 @@ process (GeglOperation       *operation,
   seed_db (duster);
   pixel_duster_add_probes_for_transparent (duster);
   pixel_duster_fill (duster);
-#if 1
+  remove_deviant (input, output, o->scale);
   remove_grid (input, output, o->scale);
   pixel_duster_remove_probes (duster);
   pixel_duster_add_probes_for_transparent (duster);
   pixel_duster_fill (duster);
-#endif
+
+  remove_deviant (input, output, o->scale);
+  pixel_duster_remove_probes (duster);
+  pixel_duster_add_probes_for_transparent (duster);
+  pixel_duster_fill (duster);
+
+  pixel_duster_remove_probes (duster);
   pixel_duster_destroy (duster);
 
   return TRUE;
