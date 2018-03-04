@@ -1928,7 +1928,7 @@ msgstr "Diferència màxima"
 
 #: operations/common/image-compare.c:31
 msgid "Maximum difference between two pixels."
-msgstr "Diferència màxima entre dos píxels"
+msgstr "Diferència màxima entre dos píxels."
 
 #: operations/common/image-compare.c:33
 msgid "Average difference (wrong)"
@@ -3026,7 +3026,7 @@ msgstr "Color per emplenar el fons"
 
 #: operations/common/pixelize.c:656
 msgid "Pixelize"
-msgstr "Pixelitza"
+msgstr "Pixela"
 
 #: operations/common/pixelize.c:658
 msgid "Simplify image into an array of solid-colored rectangles"
@@ -5661,7 +5661,7 @@ msgstr "Capdamunt"
 
 #: operations/common-gpl3+/wind.c:36
 msgid "Bottom"
-msgstr "Capdevall"
+msgstr "Capdavall"
 
 #: operations/common-gpl3+/wind.c:41
 msgid "Leading"
@@ -5801,7 +5801,7 @@ msgstr "URI"
 
 #: operations/core/load.c:31
 msgid "URI of file to load."
-msgstr "URI del fitxer que s'ha de carregar"
+msgstr "URI del fitxer que s'ha de carregar."
 
 #: operations/core/load.c:367
 msgid ""
