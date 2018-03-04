@@ -64,7 +64,7 @@ typedef struct
 
 */
 
-#define MAX_K               4
+#define MAX_K               1
 #define PIXDUST_REL_DIGEST  0
 #define NEIGHBORHOOD        32
 #define PIXDUST_ORDERED     1
@@ -241,6 +241,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, 
   static const Babl *yformat = NULL;
   guchar lum[8];
   int bdir, maxlum;
+  uint32_t hist3dmask=0;
 
   if (!format){
     format = babl_format ("R'G'B'A u8");
@@ -282,6 +283,16 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, 
                         y + dy,
                         NULL, &dst[i*4], format,
                         GEGL_SAMPLER_NEAREST, 0);
+
+
+    {
+      int hist_r = dst[i*4+0]/80;
+      int hist_g = dst[i*4+1]/80;
+      int hist_b = dst[i*4+2]/128;
+      int hist_bit = hist_r * 4 * 2 + hist_g * 2 + hist_b;
+      hist3dmask |= (1 << hist_bit);
+    }
+
   }
 #else
   for (int i = 0; i <= NEIGHBORHOOD; i++)
@@ -313,6 +324,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, 
  }
 #endif
  dst[0] = bdir;
+ *((uint32_t*)(&dst[4*NEIGHBORHOOD])) = hist3dmask;
 }
 
 static inline int u8_rgb_diff (guchar *a, guchar *b)
@@ -333,6 +345,20 @@ score_site (PixelDuster *duster,
   if (hay[3] < 2)
   {
     return INITIAL_SCORE;
+  }
+
+  {
+    uint32_t *needle_hist = (void*)&needle[NEIGHBORHOOD * 4];
+    uint32_t *hay_hist    = (void*)&hay[NEIGHBORHOOD * 4];
+    int       diff_hist = *needle_hist ^ *hay_hist;
+    int missing = 0;
+  for (i = 0; i < 32; i ++)
+  {
+    if (diff_hist & (1 << i)) missing ++;
+    //else if ( *needle_hist & (i<<i)) missing ++;
+  }
+    if (missing > 5)
+      return INITIAL_SCORE;
   }
 
   for (i = 1; i < NEIGHBORHOOD && score < bail; i++)
@@ -530,7 +556,7 @@ static guchar *ensure_hay (PixelDuster *duster, int x, int y, int subset)
 
   if (!hay)
     {
-      hay = g_malloc (4 * NEIGHBORHOOD);
+      hay = g_malloc (4 * NEIGHBORHOOD + 4);
       extract_site (duster, duster->input, x, y, hay);
       if (subset < 0)
       {
@@ -605,7 +631,7 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
 static int probe_improve (PixelDuster *duster,
                           Probe       *probe)
 {
-  guchar needle[4 * NEIGHBORHOOD];
+  guchar needle[4 * NEIGHBORHOOD + 4];
   gint  dst_x  = probe->target_x;
   gint  dst_y  = probe->target_y;
   void *ptr[3] = {duster, probe, &needle[0]};
