@@ -231,28 +231,8 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
 {
   if (scale && fabs (gegl_matrix2_determinant (scale)) >= 4.0)
     {
-      gfloat result[4] = {0,0,0,0};
-      const gdouble u_norm         = sqrt (scale->coeff[0][0] * scale->coeff[0][0] +
-                                           scale->coeff[1][0] * scale->coeff[1][0]);
-      const gdouble v_norm         = sqrt (scale->coeff[0][1] * scale->coeff[0][1] +
-                                           scale->coeff[1][1] * scale->coeff[1][1]);
-      const gint    u_samples      = ceil (MIN (u_norm, n_samples));
-      const gint    v_samples      = ceil (MIN (v_norm, n_samples));
-      const gdouble u_samples_inv  = 1.0 / u_samples;
-      const gdouble v_samples_inv  = 1.0 / v_samples;
-      const gdouble uv_samples_inv = u_samples_inv * v_samples_inv;
-      const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
-      const gdouble u_dy           = scale->coeff[1][0] * u_samples_inv;
-      const gdouble v_dx           = scale->coeff[0][1] * v_samples_inv;
-      const gdouble v_dy           = scale->coeff[1][1] * v_samples_inv;
-      gdouble       x0             = absolute_x - (scale->coeff[0][0] - u_dx +
-                                                   scale->coeff[0][1] - v_dx) /
-                                                  2.0;
-      gdouble       y0             = absolute_y - (scale->coeff[1][0] - u_dy +
-                                                   scale->coeff[1][1] - v_dy) /
-                                                  2.0;
-      gint          u;
-      gint          v;
+      gfloat  result[4] = {0,0,0,0};
+      gdouble uv_samples_inv;
 
       if (! self->point_sampler)
         {
@@ -263,26 +243,91 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
             gegl_sampler_get_fun (self->point_sampler);
         }
 
-      for (v = 0; v < v_samples; v++)
+      if (gegl_matrix2_is_scale (scale))
         {
-          gdouble x = x0;
-          gdouble y = y0;
+          const gdouble u_norm         = fabs (scale->coeff[0][0]);
+          const gdouble v_norm         = fabs (scale->coeff[1][1]);
+          const gint    u_samples      = ceil (MIN (u_norm, n_samples));
+          const gint    v_samples      = ceil (MIN (v_norm, n_samples));
+          const gdouble u_samples_inv  = 1.0 / u_samples;
+          const gdouble v_samples_inv  = 1.0 / v_samples;
+          const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
+          const gdouble v_dy           = scale->coeff[1][1] * v_samples_inv;
+          gdouble       x0             = absolute_x - (scale->coeff[0][0] - u_dx) /
+                                                      2.0;
+          gdouble       y0             = absolute_y - (scale->coeff[1][1] - v_dy) /
+                                                      2.0;
+          gint          u;
+          gint          v;
 
-          for (u = 0; u < u_samples; u++)
+          uv_samples_inv = u_samples_inv * v_samples_inv;
+
+          for (v = 0; v < v_samples; v++)
             {
-              int c;
-              gfloat input[4];
-              self->point_sampler_get_fun (self->point_sampler,
-                                           x, y, NULL, input, repeat_mode);
-              for (c = 0; c < 4; c++)
-                result[c] += input[c];
+              gdouble x = x0;
+              gdouble y = y0;
 
-              x += u_dx;
-              y += u_dy;
+              for (u = 0; u < u_samples; u++)
+                {
+                  int c;
+                  gfloat input[4];
+                  self->point_sampler_get_fun (self->point_sampler,
+                                               x, y, NULL, input, repeat_mode);
+                  for (c = 0; c < 4; c++)
+                    result[c] += input[c];
+
+                  x += u_dx;
+                }
+
+              y0 += v_dy;
             }
+        }
+      else
+        {
+          const gdouble u_norm         = sqrt (scale->coeff[0][0] * scale->coeff[0][0] +
+                                               scale->coeff[1][0] * scale->coeff[1][0]);
+          const gdouble v_norm         = sqrt (scale->coeff[0][1] * scale->coeff[0][1] +
+                                               scale->coeff[1][1] * scale->coeff[1][1]);
+          const gint    u_samples      = ceil (MIN (u_norm, n_samples));
+          const gint    v_samples      = ceil (MIN (v_norm, n_samples));
+          const gdouble u_samples_inv  = 1.0 / u_samples;
+          const gdouble v_samples_inv  = 1.0 / v_samples;
+          const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
+          const gdouble u_dy           = scale->coeff[1][0] * u_samples_inv;
+          const gdouble v_dx           = scale->coeff[0][1] * v_samples_inv;
+          const gdouble v_dy           = scale->coeff[1][1] * v_samples_inv;
+          gdouble       x0             = absolute_x - (scale->coeff[0][0] - u_dx +
+                                                       scale->coeff[0][1] - v_dx) /
+                                                      2.0;
+          gdouble       y0             = absolute_y - (scale->coeff[1][0] - u_dy +
+                                                       scale->coeff[1][1] - v_dy) /
+                                                      2.0;
+          gint          u;
+          gint          v;
 
-          x0 += v_dx;
-          y0 += v_dy;
+          uv_samples_inv = u_samples_inv * v_samples_inv;
+
+          for (v = 0; v < v_samples; v++)
+            {
+              gdouble x = x0;
+              gdouble y = y0;
+
+              for (u = 0; u < u_samples; u++)
+                {
+                  int c;
+                  gfloat input[4];
+                  self->point_sampler_get_fun (self->point_sampler,
+                                               x, y, NULL, input, repeat_mode);
+                  for (c = 0; c < 4; c++)
+                    result[c] += input[c];
+
+                  x += u_dx;
+                  y += u_dy;
+                }
+
+              x0 += v_dx;
+              y0 += v_dy;
+            }
         }
 
       result[0] *= uv_samples_inv;
