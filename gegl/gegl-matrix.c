@@ -24,6 +24,12 @@
 #include "gegl-matrix.h"
 
 
+gboolean
+gegl_matrix2_is_scale (GeglMatrix2 *matrix)
+{
+  return matrix->coeff[0][1] == 0.0 && matrix->coeff[1][0] == 0.0;
+}
+
 gdouble
 gegl_matrix2_determinant (GeglMatrix2 *matrix)
 {

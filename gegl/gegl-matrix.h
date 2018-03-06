@@ -33,6 +33,16 @@ typedef struct {
 } GeglMatrix2;
 
 /*
+ * gegl_matrix2_is_scale:
+ * @matrix: a #GeglMatrix2
+ *
+ * Check if a matrix only does scaling.
+ *
+ * Returns TRUE if the matrix only does scaling.
+ */
+gboolean   gegl_matrix2_is_scale        (GeglMatrix2 *matrix);
+
+/*
  * gegl_matrix2_determinant:
  * @matrix: a #GeglMatrix2
  *
