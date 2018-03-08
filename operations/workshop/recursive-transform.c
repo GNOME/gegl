@@ -39,6 +39,11 @@ property_color (fade_color, _("Fade color"), "transparent")
     description  (_("Color to fade transformed images towards, "
                     "with a rate depending on its alpha"))
 
+property_double  (fade_opacity, _("Fade opacity"), 1.0)
+    description  (_("Amount by which to scale the opacity of "
+                    "each transformed image"))
+    value_range  (0.0, 1.0)
+
 property_boolean (paste_below, _("Paste below"), FALSE)
     description  (_("Paste transformed images below each other"))
 
@@ -59,6 +64,7 @@ typedef struct
 {
   GeglNode *transform_node;
   GeglNode *color_overlay_node;
+  GeglNode *opacity_node;
   GeglNode *over_node;
 } Iteration;
 
@@ -148,6 +154,16 @@ update_graph (GeglOperation *operation)
           source_node = iters[i].color_overlay_node;
         }
 
+      if (n > 0 && fabs (o->fade_opacity - 1.0) > EPSILON)
+        {
+          gegl_node_set (iters[i].opacity_node,
+                         "value", pow (o->fade_opacity, n),
+                         NULL);
+
+          gegl_node_link (source_node, iters[i].opacity_node);
+          source_node = iters[i].opacity_node;
+        }
+
       gegl_node_connect_to (source_node,        "output",
                             iters[i].over_node, ! o->paste_below ? "input" :
                                                                    "aux");
@@ -186,6 +202,11 @@ attach (GeglOperation *operation)
       iters[i].color_overlay_node =
         gegl_node_new_child (node,
                              "operation", "gegl:color-overlay",
+                             NULL);
+
+      iters[i].opacity_node =
+        gegl_node_new_child (node,
+                             "operation", "gegl:opacity",
                              NULL);
 
       iters[i].over_node =
