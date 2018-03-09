@@ -7,6 +7,7 @@ noinst_PROGRAMS =			\
 	test-buffer-hot-tile	\
 	test-buffer-sharing  	\
 	test-buffer-tile-voiding	\
+	test-buffer-unaligned-access	\
 	test-change-processor-rect	\
 	test-convert-format		\
 	test-color-op			\
