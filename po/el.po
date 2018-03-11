@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-01-08 13:42+0000\n"
-"PO-Revision-Date: 2018-01-15 10:47+0200\n"
+"POT-Creation-Date: 2018-03-08 20:10+0000\n"
+"PO-Revision-Date: 2018-03-11 10:54+0000\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@lists.gnome.gr\n"
 "Language: el\n"
@@ -168,7 +168,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: gegl/gegl-enums.c:33 gegl/gegl-enums.c:87
+#: gegl/gegl-enums.c:33 gegl/gegl-enums.c:90
 #: operations/common/gaussian-blur.c:31 operations/common/gblur-1d.c:32
 #: operations/common-gpl3+/fractal-explorer.c:96
 msgid "None"
@@ -193,106 +193,106 @@ msgstr "Μαύρο"
 msgid "White"
 msgstr "Άσπρο"
 
-#: gegl/gegl-enums.c:61
+#: gegl/gegl-enums.c:64
 msgid "Read"
 msgstr "Ανάγνωση"
 
-#: gegl/gegl-enums.c:62
+#: gegl/gegl-enums.c:65
 msgid "Write"
 msgstr "Εγγραφή"
 
-#: gegl/gegl-enums.c:63
+#: gegl/gegl-enums.c:66
 msgid "Read/Write"
 msgstr "Ανάγνωση/Εγγραφή"
 
-#: gegl/gegl-enums.c:88
+#: gegl/gegl-enums.c:91
 msgid "Floyd-Steinberg"
 msgstr "Φλόϊντ-Στάϊνμπερκ"
 
-#: gegl/gegl-enums.c:89
+#: gegl/gegl-enums.c:92
 msgid "Bayer"
 msgstr "Μπάγιερ"
 
-#: gegl/gegl-enums.c:90 operations/common/waterpixels.c:35
+#: gegl/gegl-enums.c:93 operations/common/waterpixels.c:35
 msgid "Random"
 msgstr "Τυχαία"
 
-#: gegl/gegl-enums.c:91
+#: gegl/gegl-enums.c:94
 msgid "Random Covariant"
 msgstr "Τυχαία συμμεταβλητή"
 
-#: gegl/gegl-enums.c:92
+#: gegl/gegl-enums.c:95
 msgid "Arithmetic add"
 msgstr "Αριθμητική πρόσθεση"
 
-#: gegl/gegl-enums.c:93
+#: gegl/gegl-enums.c:96
 msgid "Arithmetic add covariant"
 msgstr "Συμμετάβλητη αριθμητική πρόσθεση"
 
-#: gegl/gegl-enums.c:94
+#: gegl/gegl-enums.c:97
 msgid "Arithmetic xor"
 msgstr "Αριθμητική αποκλειστική διάζευξη"
 
-#: gegl/gegl-enums.c:95
+#: gegl/gegl-enums.c:98
 msgid "Arithmetic xor covariant"
 msgstr "Συμμετάβλητη αριθμητική αποκλειστική διάζευξη"
 
-#: gegl/gegl-enums.c:120 operations/common/edge-sobel.c:27
+#: gegl/gegl-enums.c:123 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/workshop/spherize.c:27
 msgid "Horizontal"
 msgstr "Οριζόντια"
 
-#: gegl/gegl-enums.c:121 operations/common/edge-sobel.c:29
+#: gegl/gegl-enums.c:124 operations/common/edge-sobel.c:29
 #: operations/common/noise-spread.c:35 operations/workshop/spherize.c:28
 msgid "Vertical"
 msgstr "Κάθετη"
 
-#: gegl/gegl-enums.c:145
+#: gegl/gegl-enums.c:148
 msgid "Nearest"
 msgstr "Πλησιέστερη"
 
-#: gegl/gegl-enums.c:146 operations/common-gpl3+/bump-map.c:33
+#: gegl/gegl-enums.c:149 operations/common-gpl3+/bump-map.c:33
 #: operations/common-gpl3+/sinus.c:63 operations/common-gpl3+/spiral.c:26
 msgid "Linear"
 msgstr "Γραμμική"
 
-#: gegl/gegl-enums.c:147
+#: gegl/gegl-enums.c:150
 msgid "Cubic"
 msgstr "Κυβική"
 
-#: gegl/gegl-enums.c:148
+#: gegl/gegl-enums.c:151
 msgid "NoHalo"
 msgstr "NoHalo"
 
-#: gegl/gegl-enums.c:149
+#: gegl/gegl-enums.c:152
 msgid "LoHalo"
 msgstr "LoHalo"
 
-#: gegl/gegl-init.c:282
+#: gegl/gegl-init.c:285
 msgid "Where GEGL stores its swap"
 msgstr "Πού αποθηκεύει το GEGL την εναλλακτική μνήμη"
 
-#: gegl/gegl-init.c:287
+#: gegl/gegl-init.c:290
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Πόση μνήμη για χρήση (περίπου) για επαναποθήκευση εικόνας"
 
-#: gegl/gegl-init.c:292
+#: gegl/gegl-init.c:295
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Προεπιλεγμένο μέγεθος παραθέσεων στο GeglBuffers"
 
-#: gegl/gegl-init.c:297
+#: gegl/gegl-init.c:300
 msgid "The count of pixels to compute simultaneously"
 msgstr "Ο αριθμός των εικονοστοιχείων για ταυτόχρονο υπολογισμό"
 
-#: gegl/gegl-init.c:302
+#: gegl/gegl-init.c:305
 msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
 msgstr "Η ποιότητα απόδοσης μιας τιμής μεταξύ 0,0 (γρήγορη) και 1,0 (αναφορά)"
 
-#: gegl/gegl-init.c:307
+#: gegl/gegl-init.c:310
 msgid "The number of concurrent processing threads to use"
 msgstr "Ο αριθμός των σύγχρονων νημάτων επεξεργασίας για χρήση"
 
-#: gegl/gegl-init.c:312
+#: gegl/gegl-init.c:315
 msgid "Disable OpenCL"
 msgstr "Απενεργοποίηση OpenCL"
 
@@ -489,6 +489,7 @@ msgstr ""
 #: operations/common/bilateral-filter.c:26 operations/common/dropshadow.c:37
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
+#: operations/workshop/domain-transform.c:28
 msgid "Blur radius"
 msgstr "Ακτίνα θόλωσης"
 
@@ -501,6 +502,7 @@ msgstr ""
 "ακτίνα*2+1)."
 
 #: operations/common/bilateral-filter.c:32
+#: operations/workshop/domain-transform.c:32
 msgid "Edge preservation"
 msgstr "Διατήρηση άκρης"
 
@@ -654,9 +656,11 @@ msgstr ""
 "χρωμάτων"
 
 #: operations/common/c2g.c:41 operations/common/matting-global.c:25
-#: operations/common/noise-cell.c:48 operations/common/noise-perlin.c:33
-#: operations/common/noise-simplex.c:35 operations/common/slic.c:38
-#: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
+#: operations/common/mean-curvature-blur.c:24 operations/common/noise-cell.c:48
+#: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
+#: operations/common/slic.c:38 operations/common/stress.c:39
+#: operations/common-gpl3+/fractal-explorer.c:55
+#: operations/workshop/recursive-transform.c:34
 msgid "Iterations"
 msgstr "Επαναλήψεις"
 
@@ -668,7 +672,17 @@ msgstr ""
 "Αριθμός επαναλήψεων, ένας υψηλότερος αριθμός επαναλήψεων παρέχει λιγότερα "
 "θορυβώδη αποτελέσματα ανά υπολογιστικό κόστος"
 
-#: operations/common/c2g.c:396
+#: operations/common/c2g.c:47 operations/common/stress.c:44
+msgid "Enhance Shadows"
+msgstr "Βελτίωση σκιών"
+
+#: operations/common/c2g.c:48
+msgid "When enabled details in shadows are boosted at the expense of noise"
+msgstr ""
+"Όταν ενεργοποιούνται οι λεπτομέρειες στις σκιές ενισχύονται σε βάρος του "
+"θορύβου"
+
+#: operations/common/c2g.c:453
 msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
@@ -773,12 +787,12 @@ msgstr "Απόδοση μοτίβου σκακιέρας"
 #: operations/common/color.c:24 operations/common/color.c:92
 #: operations/common/dropshadow.c:43 operations/common/grid.c:64
 #: operations/common/rectangle.c:48 operations/common/vignette.c:34
-#: operations/common-gpl3+/color-to-alpha.c:28
+#: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:61
 #: operations/common-gpl3+/tile-paper.c:30
 #: operations/common-gpl3+/value-propagate.c:55 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
-#: operations/workshop/color-to-alpha-plus.c:29
+#: operations/workshop/color-overlay.c:26
 msgid "Color"
 msgstr "Χρώμα"
 
@@ -2211,6 +2225,7 @@ msgstr ""
 #: operations/common/map-absolute.c:22 operations/common/map-relative.c:28
 #: operations/common/panorama-projection.c:57
 #: operations/common-gpl3+/ripple.c:47 operations/common-gpl3+/waves.c:50
+#: operations/workshop/recursive-transform.c:50
 #: operations/workshop/spherize.c:57
 msgid "Resampling method"
 msgstr "Μέθοδος επαναδειγματοληψίας"
@@ -2287,6 +2302,21 @@ msgstr ""
 "Συσσώρευση Θόλωσης κίνησης χρησιμοποιώντας ένα φίλτρο Κάλμαν, για χρήση με "
 "σειρά λήψεων βίντεο."
 
+#: operations/common/mean-curvature-blur.c:25
+msgid "Controls the number of iterations"
+msgstr "Έλεγχος αριθμού επαναλήψεων"
+
+#: operations/common/mean-curvature-blur.c:245
+msgid "Mean Curvature Blur"
+msgstr "Μέση θόλωση καμπυλότητας"
+
+#: operations/common/mean-curvature-blur.c:248
+msgid ""
+"Regularize geometry at a speed proportional to the local mean curvature value"
+msgstr ""
+"Κανονικοποίηση της γεωμετρίας με ανάλογη ταχύτητα με την τοπική μέση τιμή "
+"της καμπυλότητας"
+
 #: operations/common/median-blur.c:28 operations/common/pixelize.c:29
 #: operations/common/vignette.c:26
 msgid "Square"
@@ -2338,11 +2368,11 @@ msgstr "Υψηλή ακρίβεια"
 msgid "Avoid clipping and quantization (slower)"
 msgstr "Αποφυγή ψαλιδίσματος και κβαντισμού (πιο αργό)"
 
-#: operations/common/median-blur.c:960
+#: operations/common/median-blur.c:962
 msgid "Median Blur"
 msgstr "Μέση θόλωση"
 
-#: operations/common/median-blur.c:963
+#: operations/common/median-blur.c:965
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -2916,7 +2946,7 @@ msgstr "Χρήση μιας GeglBuffer στον δίσκο ως πηγής δε�
 #: operations/generated/soft-light.c:38 operations/generated/src-atop.c:38
 #: operations/generated/src.c:38 operations/generated/src-in.c:38
 #: operations/generated/src-out.c:38 operations/generated/xor.c:38
-#: operations/workshop/gradient-map.c:36
+#: operations/workshop/color-overlay.c:30 operations/workshop/gradient-map.c:36
 msgid "sRGB"
 msgstr "sRGB"
 
@@ -2932,6 +2962,7 @@ msgstr "sRGB"
 #: operations/generated/soft-light.c:39 operations/generated/src-atop.c:39
 #: operations/generated/src.c:39 operations/generated/src-in.c:39
 #: operations/generated/src-out.c:39 operations/generated/xor.c:39
+#: operations/workshop/color-overlay.c:31
 msgid "Use sRGB gamma instead of linear"
 msgstr "Χρήση γάμα sRGB αντί για γραμμικό"
 
@@ -3254,7 +3285,7 @@ msgstr "Συνεκτικότητα"
 msgid "Cluster size"
 msgstr "Μέγεθος συμπλέγματος"
 
-#: operations/common/slic.c:39
+#: operations/common/slic.c:39 operations/workshop/recursive-transform.c:35
 msgid "Number of iterations"
 msgstr "Αριθμός επαναλήψεων"
 
@@ -3303,7 +3334,15 @@ msgstr ""
 "Αριθμός επαναλήψεων, ένας υψηλότερος αριθμός επαναλήψεων παρέχει λιγότερα "
 "θορυβώδη απόδοση ανά υπολογιστικό κόστος"
 
-#: operations/common/stress.c:216 operations/common/stress.c:220
+#: operations/common/stress.c:45
+msgid ""
+"When enabled also enhances shadow regions - when disabled a more natural "
+"result is yielded"
+msgstr ""
+"Όταν ενεργοποιείται βελτιώνονται επίσης οι περιοχές σκιών - όταν "
+"απενεργοποιείται αποδίδεται πιο φυσικό αποτέλεσμα"
+
+#: operations/common/stress.c:263 operations/common/stress.c:267
 msgid "Spatio Temporal Retinex-like Envelope with Stochastic Sampling"
 msgstr ""
 "Ο χωροχρονικός φάκελος παρόμοιος με ματόμυαλο με στοχαστική δειγματοληψία"
@@ -3956,17 +3995,31 @@ msgstr ""
 "Ανταλλαγή ενός χρώματος με ένα άλλο, προαιρετική ρύθμιση ενός κατωφλίου για "
 "μετατροπή από μια σκίαση σε μια άλλη."
 
-#: operations/common-gpl3+/color-to-alpha.c:29
-#: operations/workshop/color-to-alpha-plus.c:30
+#: operations/common-gpl3+/color-to-alpha.c:30
 msgid "The color to make transparent."
 msgstr "Το χρώμα που θα γίνει διαφανές."
 
-#: operations/common-gpl3+/color-to-alpha.c:254
+#: operations/common-gpl3+/color-to-alpha.c:32
+msgid "Transparency threshold"
+msgstr "Όριο διαφάνειας"
+
+#: operations/common-gpl3+/color-to-alpha.c:33
+msgid "The limit below which colors become transparent."
+msgstr "Το όριο κάτω από το οποίο τα χρώματα γίνονται διαφανή."
+
+#: operations/common-gpl3+/color-to-alpha.c:36
+msgid "Opacity threshold"
+msgstr "Όριο αδιαφάνειας"
+
+#: operations/common-gpl3+/color-to-alpha.c:37
+msgid "The limit above which colors remain opaque."
+msgstr "Το όριο πάνω από το οποίο τα χρώματα παραμένουν αδιαφανή."
+
+#: operations/common-gpl3+/color-to-alpha.c:285
 msgid "Color to Alpha"
 msgstr "Χρώμα σε άλφα"
 
-#: operations/common-gpl3+/color-to-alpha.c:258
-#: operations/workshop/color-to-alpha-plus.c:236
+#: operations/common-gpl3+/color-to-alpha.c:289
 msgid "Convert a specified color to transparency, works best with white."
 msgstr ""
 "Μετατροπή ενός καθορισμένου χρώματος σε διαφάνεια, δουλεύει άριστα με το "
@@ -4150,7 +4203,7 @@ msgid "Mode of displacement"
 msgstr "Κατάσταση μετατόπισης"
 
 #: operations/common-gpl3+/displace.c:37 operations/external/npd.c:47
-#: operations/transform/transform-core.c:197 operations/workshop/ditto.c:27
+#: operations/transform/transform-core.c:225 operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Δειγματοληψία"
 
@@ -5164,7 +5217,7 @@ msgstr "Τονισμοί σκιών"
 msgid "Perform shadows and highlights correction"
 msgstr "Εκτελεί διόρθωση σκιών και τονισμών"
 
-#: operations/common-gpl3+/shadows-highlights-correction.c:359
+#: operations/common-gpl3+/shadows-highlights-correction.c:363
 msgid "Lighten shadows and darken highlights"
 msgstr "Ανοίγει τις σκιές και σκουραίνει τους τονισμούς"
 
@@ -5677,7 +5730,9 @@ msgstr "Περίοδος (μήκος κύματος) κυματισμού"
 msgid "Aspect ratio"
 msgstr "Λόγος διαστάσεων"
 
-#: operations/common-gpl3+/waves.c:52 operations/workshop/spherize.c:59
+#: operations/common-gpl3+/waves.c:52
+#: operations/workshop/recursive-transform.c:52
+#: operations/workshop/spherize.c:59
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Μαθηματική μέθοδος για ανακατασκευή τιμών εικονοστοιχείου"
 
@@ -5959,11 +6014,11 @@ msgstr "κωδικοποιητής-ήχου"
 msgid "audio"
 msgstr "ήχος"
 
-#: operations/external/ff-load.c:780
+#: operations/external/ff-load.c:802
 msgid "FFmpeg Frame Loader"
 msgstr "Φόρτωση πλαισίου FFmpeg"
 
-#: operations/external/ff-load.c:782
+#: operations/external/ff-load.c:804
 msgid "FFmpeg video frame importer."
 msgstr "Εισαγωγή πλαισίου βίντεο FFmpeg."
 
@@ -6209,6 +6264,7 @@ msgid "Target path and filename, use '-' for stdout"
 msgstr "Στόχος διαδρομής και ονόματος αρχείου, χρήση '-' για τυπική έξοδο"
 
 #: operations/external/jpg-save.c:28 operations/external/webp-save.c:28
+#: operations/workshop/domain-transform.c:24
 msgid "Quality"
 msgstr "Ποιότητα"
 
@@ -6410,7 +6466,7 @@ msgstr "Διατήρηση μοντέλου"
 msgid "When TRUE the model will not be freed"
 msgstr "Όταν είναι αληθές, το μοντέλο θα ελευθερωθεί"
 
-#: operations/external/npd.c:50 operations/transform/transform-core.c:198
+#: operations/external/npd.c:50 operations/transform/transform-core.c:226
 #: operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Εσωτερικά χρησιμοποιούμενη δειγματοληψία"
@@ -6479,6 +6535,7 @@ msgstr "Προσδιορισμός γεμίσματος (μη μηδενικός
 #: operations/external/path.c:47 operations/external/vector-fill.c:37
 #: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
 #: operations/transform/transform.c:64
+#: operations/workshop/recursive-transform.c:27
 msgid "Transform"
 msgstr "Μετασχηματισμός"
 
@@ -7262,31 +7319,29 @@ msgstr "Μετασχηματισμός συμβολοσειράς μετασχη
 msgid "Do a transformation using SVG syntax transformation."
 msgstr "Κάνει έναν μετασχηματισμό χρησιμοποιώντας μετασχηματισμό σύνταξης SVG."
 
-#: operations/transform/transform-core.c:181
+#: operations/transform/transform-core.c:201
 msgid "Origin-x"
 msgstr "Αρχικό-x"
 
-#: operations/transform/transform-core.c:182
+#: operations/transform/transform-core.c:202
 msgid "X coordinate of origin"
 msgstr "Συντεταγμένη X αρχικού"
 
-#: operations/transform/transform-core.c:189
+#: operations/transform/transform-core.c:209
 msgid "Origin-y"
 msgstr "Αρχικό-y"
 
-#: operations/transform/transform-core.c:190
+#: operations/transform/transform-core.c:210
 msgid "Y coordinate of origin"
 msgstr "Συντεταγμένη Y του αρχικού"
 
-#: operations/transform/transform-core.c:205
-msgid "Clip to input"
-msgstr "Περικοπή στην είσοδο"
+#: operations/transform/transform-core.c:217
+msgid "Near-z"
+msgstr "Πλησιέστερη-z"
 
-#: operations/transform/transform-core.c:206
-msgid "Force output bounding box to be input bounding box."
-msgstr ""
-"Εξαναγκασμός πλαισίου οριοθέτησης εξόδου να είναι το πλαίσιο οριοθέτησης "
-"εισόδου."
+#: operations/transform/transform-core.c:218
+msgid "Z coordinate of the near clipping plane"
+msgstr "Συντεταγμένη Z του κοντινού επιπέδου αποκοπής"
 
 #: operations/transform/translate.c:26
 msgid "Horizontal translation"
@@ -7412,37 +7467,17 @@ msgstr ""
 "Μια γρήγορη προσέγγιση αμφίπλευρου φίλτρου, χρησιμοποιώντας ένα φίλτρο "
 "πλαισίου αντί για θόλωση Γκάους."
 
-#: operations/workshop/color-to-alpha-plus.c:32
-msgid "Transparency threshold"
-msgstr "Όριο διαφάνειας"
+#: operations/workshop/color-overlay.c:27
+msgid "The color to paint over the input"
+msgstr "Το χρώμα βαφής της εισόδου"
 
-#: operations/workshop/color-to-alpha-plus.c:33
-msgid "The limit below which colors become transparent."
-msgstr "Το όριο κάτω από το οποίο τα χρώματα γίνονται διαφανή."
+#: operations/workshop/color-overlay.c:156
+msgid "Color Overlay"
+msgstr "Χρώμα επικάλυψης"
 
-#: operations/workshop/color-to-alpha-plus.c:36
-msgid "Opacity threshold"
-msgstr "Όριο αδιαφάνειας"
-
-#: operations/workshop/color-to-alpha-plus.c:37
-msgid "The limit above which colors remain opaque."
-msgstr "Το όριο πάνω από το οποίο τα χρώματα παραμένουν αδιαφανή."
-
-#: operations/workshop/color-to-alpha-plus.c:40
-msgid "Compress threshold range"
-msgstr "Συμπίεση περιοχής ορίου"
-
-#: operations/workshop/color-to-alpha-plus.c:41
-msgid ""
-"Compress the threshold range to the minimal extent that would produce "
-"different results."
-msgstr ""
-"Συμπίεση της περιοχής ορίου στην ελάχιστη έκταση που μπορεί να παράξει "
-"διαφορετικά αποτελέσματα."
-
-#: operations/workshop/color-to-alpha-plus.c:232
-msgid "Color to Alpha +"
-msgstr "Χρώμα σε άλφα +"
+#: operations/workshop/color-overlay.c:157
+msgid "Paint a color overlay over the input, preseving its transparency."
+msgstr "Βαφή επικάλυψης χρώματος στην είσοδο, διατηρώντας την διαφάνεια."
 
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
@@ -7490,6 +7525,39 @@ msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Επιλογή ελέγχου για να γίνει μια απεικόνιση εισόδου 1:1 έξοδος, κατά τη "
 "δειγμετοληψία"
+
+#: operations/workshop/domain-transform.c:25
+msgid ""
+"Number of filtering iterations. A value between 2 and 4 is usually enough."
+msgstr ""
+"Αριθμός επαναλήψεων του φιλτραρίσματος. Τιμή μεταξύ 2 και 4 είναι συνήθως "
+"επαρκής."
+
+#: operations/workshop/domain-transform.c:29
+msgid "Spatial standard deviation of the blur kernel, measured in pixels."
+msgstr ""
+"Χωρική τυπική  απόκλιση του πυρήνα θόλωσης, μετρημένη σε εικονοστοιχεία."
+
+#: operations/workshop/domain-transform.c:33
+msgid ""
+"Amount of edge preservation. This quantity is inversely proportional to the "
+"range standard deviation of the blur kernel."
+msgstr ""
+"Ποσότητα διατήρησης γωνίας. Αυτή η ποσότητα είναι αντιστρόφως ανάλογη με την "
+"περιοχή τυπικής απόκλισης του πυρήνα θόλωσης."
+
+#: operations/workshop/domain-transform.c:499
+msgid "Domain Transform"
+msgstr "Μετασχηματισμός τομέα"
+
+#: operations/workshop/domain-transform.c:501
+msgid ""
+"An edge-preserving smoothing filter implemented with the Domain Transform "
+"recursive technique. Similar to a bilateral filter, but faster to compute."
+msgstr ""
+"Φίλτρο εξομάλυνσης διατήρησης γωνίας που υλοποιήθηκε με την αναδρομική "
+"τεχνική μετασχηματισμού τομέα. Παρόμοιο με το αμφίπλευρο φίλτρο, αλλά πιο "
+"γρήγορο στον υπολογισμό."
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -7915,6 +7983,50 @@ msgstr ""
 "dcraw, εάν η μορφή αρχείου είναι .rawbayerS θα εναλλάξει τους "
 "επιστρεφόμενους 16 δυαδικών αριθμούς (η φόρτωση pnm είναι προφανώς εσφαλμένη)"
 
+#: operations/workshop/recursive-transform.c:28
+msgid "Transformation matrix, using SVG syntax"
+msgstr "Πίνακας μετασχηματισμού, χρησιμοποιώντας σύνταξη SVG."
+
+#: operations/workshop/recursive-transform.c:30
+#: operations/workshop/recursive-transform.c:31
+msgid "First iteration"
+msgstr "Πρώτη επανάληψη"
+
+#: operations/workshop/recursive-transform.c:38
+msgid "Fade color"
+msgstr "Εξασθένιση χρώματος"
+
+#: operations/workshop/recursive-transform.c:39
+msgid ""
+"Color to fade transformed images towards, with a rate depending on its alpha"
+msgstr ""
+"Χρώμα εξασθένισης μετασχηματισμένων εικόνων, με ρυθμό που εξαρτάται από την "
+"άλφα."
+
+#: operations/workshop/recursive-transform.c:42
+msgid "Fade opacity"
+msgstr "Εξασθένιση αδιαφάνειας"
+
+#: operations/workshop/recursive-transform.c:43
+msgid "Amount by which to scale the opacity of each transformed image"
+msgstr "Ποσότητα κλιμάκωσης της αδιαφάνειας κάθε μετασχηματισμένης εικόνας"
+
+#: operations/workshop/recursive-transform.c:47
+msgid "Paste below"
+msgstr "Επικόλληση παρακάτω"
+
+#: operations/workshop/recursive-transform.c:48
+msgid "Paste transformed images below each other"
+msgstr "Επικόλληση μετασχηματισμένων εικόνων κάτω από κάθε μια"
+
+#: operations/workshop/recursive-transform.c:264
+msgid "Recursive Transform"
+msgstr "Αναδρομικός μετασχηματισμός"
+
+#: operations/workshop/recursive-transform.c:266
+msgid "Apply a transformation recursively."
+msgstr "Εφαρμογή αναδρομικού μετασχηματισμού."
+
 #: operations/workshop/segment-kmeans.c:27
 #: operations/workshop/segment-kmeans.c:28
 msgid "Number of clusters"
@@ -7973,6 +8085,27 @@ msgstr "Σφαιρoποίηση"
 #: operations/workshop/spherize.c:330
 msgid "Wrap image around a spherical cap"
 msgstr "Αναδίπλωση εικόνας γύρω από σφαιρικό τμήμα"
+
+#~ msgid "Clip to input"
+#~ msgstr "Περικοπή στην είσοδο"
+
+#~ msgid "Force output bounding box to be input bounding box."
+#~ msgstr ""
+#~ "Εξαναγκασμός πλαισίου οριοθέτησης εξόδου να είναι το πλαίσιο οριοθέτησης "
+#~ "εισόδου."
+
+#~ msgid "Compress threshold range"
+#~ msgstr "Συμπίεση περιοχής ορίου"
+
+#~ msgid ""
+#~ "Compress the threshold range to the minimal extent that would produce "
+#~ "different results."
+#~ msgstr ""
+#~ "Συμπίεση της περιοχής ορίου στην ελάχιστη έκταση που μπορεί να παράξει "
+#~ "διαφορετικά αποτελέσματα."
+
+#~ msgid "Color to Alpha +"
+#~ msgstr "Χρώμα σε άλφα +"
 
 #~ msgid "Holdness"
 #~ msgstr "Κράτημα"
@@ -8046,9 +8179,6 @@ msgstr "Αναδίπλωση εικόνας γύρω από σφαιρικό τ�
 
 #~ msgid "Offset value added"
 #~ msgstr "Πρόσθετη τιμή μετατόπισης"
-
-#~ msgid "Standard deviation for the vertical axis"
-#~ msgstr "Τυπική απόκλιση για τον κάθετο άξονα."
 
 #~ msgid ""
 #~ "Optional parameter to override the automatic selection of blur filter"
@@ -8548,9 +8678,6 @@ msgstr "Αναδίπλωση εικόνας γύρω από σφαιρικό τ�
 
 #~ msgid "Direction of light-source (in degrees)"
 #~ msgstr "Κατεύθυνση της πηγής φωτός (σε μοίρες)"
-
-#~ msgid "Iteration"
-#~ msgstr "Επανάληψη"
 
 #~ msgid "How many iteratarions to run the algorithm with"
 #~ msgstr "Αριθμός επαναλήψεων εκτέλεσης του αλγόριθμου"
