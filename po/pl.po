@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-03-02 17:18+0000\n"
-"PO-Revision-Date: 2018-03-04 16:40+0100\n"
+"POT-Creation-Date: 2018-03-08 20:10+0000\n"
+"PO-Revision-Date: 2018-03-11 16:55+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -2223,7 +2223,7 @@ msgstr ""
 #: operations/common/map-absolute.c:22 operations/common/map-relative.c:28
 #: operations/common/panorama-projection.c:57
 #: operations/common-gpl3+/ripple.c:47 operations/common-gpl3+/waves.c:50
-#: operations/workshop/recursive-transform.c:45
+#: operations/workshop/recursive-transform.c:50
 #: operations/workshop/spherize.c:57
 msgid "Resampling method"
 msgstr "Metoda resamplingu"
@@ -5689,7 +5689,7 @@ msgid "Aspect ratio"
 msgstr "Proporcje obrazu"
 
 #: operations/common-gpl3+/waves.c:52
-#: operations/workshop/recursive-transform.c:47
+#: operations/workshop/recursive-transform.c:52
 #: operations/workshop/spherize.c:59
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Matematyczna metoda rekonstrukcji wartości pikseli"
@@ -7934,7 +7934,7 @@ msgstr "Pierwsza iteracja"
 
 #: operations/workshop/recursive-transform.c:38
 msgid "Fade color"
-msgstr "Kolor gradientu"
+msgstr "Kolor rozmycia"
 
 #: operations/workshop/recursive-transform.c:39
 msgid ""
@@ -7944,18 +7944,26 @@ msgstr ""
 "od jego alfy"
 
 #: operations/workshop/recursive-transform.c:42
+msgid "Fade opacity"
+msgstr "Krycie rozmycia"
+
+#: operations/workshop/recursive-transform.c:43
+msgid "Amount by which to scale the opacity of each transformed image"
+msgstr "O ile skalować krycie każdego przekształcanego obrazu"
+
+#: operations/workshop/recursive-transform.c:47
 msgid "Paste below"
 msgstr "Wklej poniżej"
 
-#: operations/workshop/recursive-transform.c:43
+#: operations/workshop/recursive-transform.c:48
 msgid "Paste transformed images below each other"
 msgstr "Wklej przekształcone obrazy pod nimi"
 
-#: operations/workshop/recursive-transform.c:243
+#: operations/workshop/recursive-transform.c:264
 msgid "Recursive Transform"
 msgstr "Przekształcenie rekurencyjne"
 
-#: operations/workshop/recursive-transform.c:245
+#: operations/workshop/recursive-transform.c:266
 msgid "Apply a transformation recursively."
 msgstr "Zastosuj przekształcenie rekurencyjnie."
 
