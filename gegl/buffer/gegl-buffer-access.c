@@ -1826,18 +1826,17 @@ gegl_buffer_set (GeglBuffer          *buffer,
                                   GEGL_BUFFER_SET_FLAG_NOTIFY);
           return;
         }
-      else
+      else if (buffer->soft_format != format &&
+               rowstride == babl_format_get_bytes_per_pixel (format))
         {
-          int bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
-          if (buffer->soft_format != format)
-            {
-              uint8_t tmp[rect->width * rect->height * bpp];
-              babl_process (babl_fish (format, buffer->soft_format),
-                            src, &tmp[0], rect->height);
-              _gegl_buffer_set_with_flags (buffer, rect, level, buffer->soft_format, tmp, rowstride,
-                        GEGL_BUFFER_SET_FLAG_LOCK|
-                        GEGL_BUFFER_SET_FLAG_NOTIFY);
-            }
+          int     bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
+          uint8_t tmp[rect->height * bpp];
+          babl_process (babl_fish (format, buffer->soft_format),
+                        src, &tmp[0], rect->height);
+          _gegl_buffer_set_with_flags (buffer, rect, level, buffer->soft_format, tmp, bpp,
+                                       GEGL_BUFFER_SET_FLAG_LOCK|
+                                       GEGL_BUFFER_SET_FLAG_NOTIFY);
+          return;
         }
     }
 
@@ -1906,16 +1905,14 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       {
         gegl_buffer_get_pixel (buffer, rect->x, rect->y, format, dest_buf,
                                repeat_mode);
-        return;
       }
     else
       {
-        gint bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
-
         if (format == NULL)
           format = buffer->soft_format;
 
-        if (!format || buffer->soft_format == format || rowstride != bpp)
+        if (buffer->soft_format == format ||
+            rowstride != babl_format_get_bytes_per_pixel (format))
         {
           gegl_buffer_iterate_read_dispatch (buffer, rect, dest_buf,
                                              rowstride, format, 0, repeat_mode);
@@ -1923,6 +1920,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
         else
         {
           /* first fetch all pixels to a temporary buffer */
+          gint    bpp = babl_format_get_bytes_per_pixel (buffer->soft_format);
           uint8_t tmp[rect->height * bpp];
           gegl_buffer_iterate_read_dispatch (buffer, rect, &tmp[0],
                                              bpp, buffer->soft_format, 0, repeat_mode);
@@ -1930,8 +1928,8 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
           babl_process (babl_fish (buffer->soft_format, format),
                         &tmp[0], dest_buf, rect->height);
         }
-        return;
       }
+    return;
   }
 
   g_return_if_fail (scale > 0.0f);
