@@ -580,6 +580,26 @@ with multi-threading - and should be added back later.
                       bp += buf_stride;
                     }
                     break;
+                  case 6:
+                    CHECK_ALIGNMENT (uint16_t);
+                    for (row = offsety;
+                         row < tile_height && y < height;
+                         row++, y++)
+                    {
+                      if (buffer_y + y >= buffer_abyss_y &&
+                          buffer_y + y < abyss_y_total)
+                        {
+                          ((uint16_t*)(&tp[lskip_offset]))[0] =
+                          ((uint16_t*)(&bp[lskip_offset]))[0];
+                          ((uint16_t*)(&tp[lskip_offset]))[1] =
+                          ((uint16_t*)(&bp[lskip_offset]))[1];
+                          ((uint16_t*)(&tp[lskip_offset]))[2] =
+                          ((uint16_t*)(&bp[lskip_offset]))[2];
+                        }
+                      tp += tile_stride;
+                      bp += buf_stride;
+                    }
+                    break;
                   case 8:
                     CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety;
