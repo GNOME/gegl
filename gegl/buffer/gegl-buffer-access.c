@@ -489,9 +489,35 @@ with multi-threading - and should be added back later.
           else
             {
               int lskip_offset = lskip * px_size;
+
+              #ifdef __GNUC__
+              #define CHECK_ALIGNMENT_ALIGNOF __alignof__
+              #else
+              #define CHECK_ALIGNMENT_ALIGNOF(type) \
+                (G_STRUCT_OFFSET (struct alignof_helper, b))
+              #endif
+              #define CHECK_ALIGNMENT(type)                                    \
+                do                                                             \
+                  {                                                            \
+                    struct alignof_helper { char a; type b; };                 \
+                    /* verify 'alignof (type)' is a power of 2 */              \
+                    G_STATIC_ASSERT (! (CHECK_ALIGNMENT_ALIGNOF (type) &       \
+                                        (CHECK_ALIGNMENT_ALIGNOF (type) - 1)));\
+                    if ((((uintptr_t) tp + lskip_offset) |                     \
+                         ((uintptr_t) bp + lskip_offset) |                     \
+                         tile_stride                     |                     \
+                         buf_stride) &                                         \
+                        (CHECK_ALIGNMENT_ALIGNOF (type) - 1))                  \
+                      {                                                        \
+                        goto unaligned;                                        \
+                      }                                                        \
+                  }                                                            \
+                while (FALSE)
+
               switch (pixels * px_size)
                 {
                   case 1:
+                    CHECK_ALIGNMENT (guchar);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -506,6 +532,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 2:
+                    CHECK_ALIGNMENT (uint16_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -521,6 +548,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 3:
+                    CHECK_ALIGNMENT (guchar);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -537,6 +565,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 4:
+                    CHECK_ALIGNMENT (uint32_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -552,6 +581,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 8:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -567,6 +597,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 12:
+                    CHECK_ALIGNMENT (uint32_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -586,6 +617,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 16:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -603,6 +635,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 24:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -622,6 +655,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 32:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -643,6 +677,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 40:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -666,6 +701,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 48:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -691,6 +727,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 56:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -718,6 +755,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   case 64:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -747,6 +785,7 @@ with multi-threading - and should be added back later.
                     }
                     break;
                   default:
+                  unaligned:
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -762,6 +801,9 @@ with multi-threading - and should be added back later.
                       bp += buf_stride;
                     }
                 }
+
+              #undef CHECK_ALIGNMENT
+              #undef CHECK_ALIGNMENT_ALIGNOF
             }
 
           gegl_tile_unlock (tile);
@@ -940,9 +982,34 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
             }
           else
             {
+              #ifdef __GNUC__
+              #define CHECK_ALIGNMENT_ALIGNOF __alignof__
+              #else
+              #define CHECK_ALIGNMENT_ALIGNOF(type) \
+                (G_STRUCT_OFFSET (struct alignof_helper, b))
+              #endif
+              #define CHECK_ALIGNMENT(type)                                    \
+                do                                                             \
+                  {                                                            \
+                    struct alignof_helper { char a; type b; };                 \
+                    /* verify 'alignof (type)' is a power of 2 */              \
+                    G_STATIC_ASSERT (! (CHECK_ALIGNMENT_ALIGNOF (type) &       \
+                                        (CHECK_ALIGNMENT_ALIGNOF (type) - 1)));\
+                    if (((uintptr_t) tp |                                      \
+                         (uintptr_t) bp |                                      \
+                         tile_stride    |                                      \
+                         buf_stride) &                                         \
+                        (CHECK_ALIGNMENT_ALIGNOF (type) - 1))                  \
+                      {                                                        \
+                        goto unaligned;                                        \
+                      }                                                        \
+                  }                                                            \
+                while (FALSE)
+
               switch (pixels * px_size)
                 {
                   case 1:
+                    CHECK_ALIGNMENT (guchar);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -952,6 +1019,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 2:
+                    CHECK_ALIGNMENT (uint16_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -961,6 +1029,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 3:
+                    CHECK_ALIGNMENT (guchar);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -972,6 +1041,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 4:
+                    CHECK_ALIGNMENT (uint32_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -981,6 +1051,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 6:
+                    CHECK_ALIGNMENT (uint16_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -992,6 +1063,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 8:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -1001,6 +1073,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 12:
+                    CHECK_ALIGNMENT (uint32_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -1012,6 +1085,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 16:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -1022,6 +1096,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 24:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -1033,6 +1108,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 32:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -1045,6 +1121,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 40:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -1058,6 +1135,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 48:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -1072,6 +1150,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 56:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -1087,6 +1166,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                       }
                     break;
                   case 64:
+                    CHECK_ALIGNMENT (uint64_t);
                     for (row = offsety; row < tile_height && y < height;
                          row++, y++)
                       {
@@ -1104,6 +1184,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                     break;
 
                   default:
+                  unaligned:
                     for (row = offsety;
                          row < tile_height && y < height;
                          row++, y++)
@@ -1113,6 +1194,9 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
                          bp += buf_stride;
                       }
                 }
+
+              #undef CHECK_ALIGNMENT
+              #undef CHECK_ALIGNMENT_ALIGNOF
             }
 
           gegl_tile_unref (tile);
