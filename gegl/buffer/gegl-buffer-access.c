@@ -2672,13 +2672,15 @@ gegl_buffer_set_pattern (GeglBuffer          *buffer,
   extended_data_extent = pattern_data_extent;
 
   /* Avoid gegl_buffer_set on too small chunks */
-  while (extended_data_extent.width < buffer->tile_width * 2 &&
-         extended_data_extent.width < roi.width)
-    extended_data_extent.width += pattern_extent->width;
+  extended_data_extent.width  *= (buffer->tile_width  * 2 +
+                                  (extended_data_extent.width  - 1)) /
+                                 extended_data_extent.width;
+  extended_data_extent.width   = MIN (extended_data_extent.width,  roi.width);
 
-  while (extended_data_extent.height < buffer->tile_height * 2 &&
-         extended_data_extent.height < roi.height)
-    extended_data_extent.height += pattern_extent->height;
+  extended_data_extent.height *= (buffer->tile_height * 2 +
+                                  (extended_data_extent.height - 1)) /
+                                 extended_data_extent.height;
+  extended_data_extent.height  = MIN (extended_data_extent.height, roi.height);
 
   /* XXX: Bad taste, the pattern needs to be small enough.
    * See Bug 712814 for an alternative malloc-free implementation */
