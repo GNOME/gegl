@@ -150,7 +150,7 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
         gint px_size = babl_format_get_bytes_per_pixel (buffer->soft_format);
         guchar    *tp = gegl_tile_get_data (tile) + (offsety * tile_width + offsetx) * px_size;
 
-       if (format && format != buffer->soft_format)
+       if (format != buffer->soft_format)
           {
             babl_process (babl_fish (buffer->soft_format, format), tp, buf, 1);
           }
@@ -1995,11 +1995,15 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 {
   GeglAbyssPolicy repeat_mode = flags & 0x7; /* mask off interpolation from repeat mode part of flags */
 
+  g_return_if_fail (scale > 0.0f);
+
+  if (format == NULL)
+    format = buffer->soft_format;
+
   if (gegl_cl_is_accelerated ())
     {
       gegl_buffer_cl_cache_flush (buffer, rect);
     }
-
 
   if (scale == 1.0 &&
       rect &&
@@ -2012,9 +2016,6 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       }
     else
       {
-        if (format == NULL)
-          format = buffer->soft_format;
-
         if (buffer->soft_format == format ||
             rowstride != babl_format_get_bytes_per_pixel (format))
         {
@@ -2035,11 +2036,6 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       }
     return;
   }
-
-  g_return_if_fail (scale > 0.0f);
-
-  if (format == NULL)
-    format = buffer->soft_format;
 
   if (!rect && GEGL_FLOAT_EQUAL (scale, 1.0))
     {
