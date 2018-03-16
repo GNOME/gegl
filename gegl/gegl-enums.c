@@ -113,6 +113,33 @@ gegl_dither_method_get_type (void)
 }
 
 GType
+gegl_distance_metric_get_type (void)
+{
+  static GType etype = 0;
+
+  if (etype == 0)
+    {
+      static GEnumValue values[] = {
+        { GEGL_DISTANCE_EUCLIDEAN, N_("Euclidean"), "euclidean"  },
+        { GEGL_DISTANCE_MANHATTAN, N_("Manhattan"), "manhattan"  },
+        { GEGL_DISTANCE_CHEBYSHEV, N_("Chebyshev"), "chebyshev" },
+
+        { 0, NULL, NULL }
+      };
+      gint i;
+
+      for (i = 0; i < G_N_ELEMENTS (values); i++)
+        if (values[i].value_name)
+          values[i].value_name =
+            dgettext (GETTEXT_PACKAGE, values[i].value_name);
+
+      etype = g_enum_register_static ("GeglDistanceMetric", values);
+    }
+
+  return etype;
+}
+
+GType
 gegl_orientation_get_type (void)
 {
   static GType etype = 0;

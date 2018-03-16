@@ -92,6 +92,16 @@ GType gegl_dither_method_get_type (void) G_GNUC_CONST;
 
 #define GEGL_TYPE_DITHER_METHOD (gegl_dither_method_get_type ())
 
+typedef enum {
+  GEGL_DISTANCE_EUCLIDEAN,
+  GEGL_DISTANCE_MANHATTAN,
+  GEGL_DISTANCE_CHEBYSHEV
+} GeglDistanceMetric;
+
+GType gegl_distance_metric_get_type (void) G_GNUC_CONST;
+
+#define GEGL_TYPE_DISTANCE_METRIC (gegl_distance_metric_get_type ())
+
 
 typedef enum {
   GEGL_ORIENTATION_HORIZONTAL,

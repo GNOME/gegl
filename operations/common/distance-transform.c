@@ -27,14 +27,8 @@
 
 #ifdef GEGL_PROPERTIES
 
-enum_start (gegl_dt_metric)
-  enum_value (GEGL_DT_METRIC_EUCLIDEAN,  "euclidean",  N_("Euclidean"))
-  enum_value (GEGL_DT_METRIC_MANHATTAN,  "manhattan",  N_("Manhattan"))
-  enum_value (GEGL_DT_METRIC_CHESSBOARD, "chessboard", N_("Chessboard"))
-enum_end (GeglDTMetric)
-
 property_enum (metric, _("Metric"),
-    GeglDTMetric, gegl_dt_metric, GEGL_DT_METRIC_EUCLIDEAN)
+               GeglDistanceMetric, gegl_distance_metric, GEGL_DISTANCE_EUCLIDEAN)
     description (_("Metric to use for the distance calculation"))
 
 property_double (threshold_lo, _("Threshold low"), 0.0001)
@@ -147,13 +141,13 @@ cdt_sep (gint i, gint u, gfloat g_i, gfloat g_u)
 
 
 static void
-binary_dt_2nd_pass (GeglOperation *operation,
-                    gint           width,
-                    gint           height,
-                    gfloat         thres_lo,
-                    GeglDTMetric   metric,
-                    gfloat        *src,
-                    gfloat        *dest)
+binary_dt_2nd_pass (GeglOperation      *operation,
+                    gint                width,
+                    gint                height,
+                    gfloat              thres_lo,
+                    GeglDistanceMetric  metric,
+                    gfloat             *src,
+                    gfloat             *dest)
 {
   gint u, y;
   gint q, w, *t, *s;
@@ -164,15 +158,15 @@ binary_dt_2nd_pass (GeglOperation *operation,
 
   switch (metric)
     {
-      case GEGL_DT_METRIC_CHESSBOARD:
+      case GEGL_DISTANCE_CHEBYSHEV:
         dt_f   = cdt_f;
         dt_sep = cdt_sep;
         break;
-      case GEGL_DT_METRIC_MANHATTAN:
+      case GEGL_DISTANCE_MANHATTAN:
         dt_f   = mdt_f;
         dt_sep = mdt_sep;
         break;
-      default: /* GEGL_DT_METRIC_EUCLIDEAN */
+      default: /* GEGL_DISTANCE_EUCLIDEAN */
         dt_f   = edt_f;
         dt_sep = edt_sep;
         break;
@@ -305,10 +299,10 @@ process (GeglOperation       *operation,
   const Babl  *input_format = babl_format ("Y float");
   const int bytes_per_pixel = babl_format_get_bytes_per_pixel (input_format);
 
-  GeglDTMetric metric;
-  gint     width, height, averaging, i;
-  gfloat   threshold_lo, threshold_hi, maxval, *src_buf, *dst_buf;
-  gboolean normalize;
+  GeglDistanceMetric metric;
+  gint               width, height, averaging, i;
+  gfloat             threshold_lo, threshold_hi, maxval, *src_buf, *dst_buf;
+  gboolean           normalize;
 
   width  = result->width;
   height = result->height;
