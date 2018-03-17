@@ -120,9 +120,9 @@ gegl_distance_metric_get_type (void)
   if (etype == 0)
     {
       static GEnumValue values[] = {
-        { GEGL_DISTANCE_EUCLIDEAN, N_("Euclidean"), "euclidean"  },
-        { GEGL_DISTANCE_MANHATTAN, N_("Manhattan"), "manhattan"  },
-        { GEGL_DISTANCE_CHEBYSHEV, N_("Chebyshev"), "chebyshev" },
+        { GEGL_DISTANCE_METRIC_EUCLIDEAN, N_("Euclidean"), "euclidean"  },
+        { GEGL_DISTANCE_METRIC_MANHATTAN, N_("Manhattan"), "manhattan"  },
+        { GEGL_DISTANCE_METRIC_CHEBYSHEV, N_("Chebyshev"), "chebyshev" },
 
         { 0, NULL, NULL }
       };

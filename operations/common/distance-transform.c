@@ -28,7 +28,7 @@
 #ifdef GEGL_PROPERTIES
 
 property_enum (metric, _("Metric"),
-               GeglDistanceMetric, gegl_distance_metric, GEGL_DISTANCE_EUCLIDEAN)
+               GeglDistanceMetric, gegl_distance_metric, GEGL_DISTANCE_METRIC_EUCLIDEAN)
     description (_("Metric to use for the distance calculation"))
 
 property_double (threshold_lo, _("Threshold low"), 0.0001)
@@ -158,15 +158,15 @@ binary_dt_2nd_pass (GeglOperation      *operation,
 
   switch (metric)
     {
-      case GEGL_DISTANCE_CHEBYSHEV:
+      case GEGL_DISTANCE_METRIC_CHEBYSHEV:
         dt_f   = cdt_f;
         dt_sep = cdt_sep;
         break;
-      case GEGL_DISTANCE_MANHATTAN:
+      case GEGL_DISTANCE_METRIC_MANHATTAN:
         dt_f   = mdt_f;
         dt_sep = mdt_sep;
         break;
-      default: /* GEGL_DISTANCE_EUCLIDEAN */
+      default: /* GEGL_DISTANCE_METRIC_EUCLIDEAN */
         dt_f   = edt_f;
         dt_sep = edt_sep;
         break;
