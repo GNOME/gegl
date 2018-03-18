@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-03-08 20:10+0000\n"
-"PO-Revision-Date: 2018-03-11 16:55+0100\n"
+"POT-Creation-Date: 2018-03-17 14:59+0000\n"
+"PO-Revision-Date: 2018-03-18 01:37+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -238,34 +238,46 @@ msgstr "Arytmetyczne „xor”"
 msgid "Arithmetic xor covariant"
 msgstr "Arytmetyczne „xor” współzmiennej"
 
-#: gegl/gegl-enums.c:123 operations/common/edge-sobel.c:27
+#: gegl/gegl-enums.c:123
+msgid "Euclidean"
+msgstr "Euklidesowa"
+
+#: gegl/gegl-enums.c:124
+msgid "Manhattan"
+msgstr "Manhattan"
+
+#: gegl/gegl-enums.c:125
+msgid "Chebyshev"
+msgstr "Czebyszewa"
+
+#: gegl/gegl-enums.c:150 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/workshop/spherize.c:27
 msgid "Horizontal"
 msgstr "Poziomy"
 
-#: gegl/gegl-enums.c:124 operations/common/edge-sobel.c:29
+#: gegl/gegl-enums.c:151 operations/common/edge-sobel.c:29
 #: operations/common/noise-spread.c:35 operations/workshop/spherize.c:28
 msgid "Vertical"
 msgstr "Pionowy"
 
-#: gegl/gegl-enums.c:148
+#: gegl/gegl-enums.c:175
 msgid "Nearest"
 msgstr "Najbliższy"
 
-#: gegl/gegl-enums.c:149 operations/common-gpl3+/bump-map.c:33
+#: gegl/gegl-enums.c:176 operations/common-gpl3+/bump-map.c:33
 #: operations/common-gpl3+/sinus.c:63 operations/common-gpl3+/spiral.c:26
 msgid "Linear"
 msgstr "Liniowy"
 
-#: gegl/gegl-enums.c:150
+#: gegl/gegl-enums.c:177
 msgid "Cubic"
 msgstr "Sześcienny"
 
-#: gegl/gegl-enums.c:151
+#: gegl/gegl-enums.c:178
 msgid "NoHalo"
 msgstr "NoHalo"
 
-#: gegl/gegl-enums.c:152
+#: gegl/gegl-enums.c:179
 msgid "LoHalo"
 msgstr "LoHalo"
 
@@ -1322,7 +1334,7 @@ msgid "Alpha channel"
 msgstr "Kanał alfa"
 
 #: operations/common/convolution-matrix.c:64
-#: operations/common/distance-transform.c:52
+#: operations/common/distance-transform.c:46
 msgid "Normalize"
 msgstr "Normalizuj"
 
@@ -1397,51 +1409,39 @@ msgstr "Wyświetl"
 msgid "Display the input buffer in a window."
 msgstr "Wyświetl bufor wejściowy w oknie."
 
-#: operations/common/distance-transform.c:31
-msgid "Euclidean"
-msgstr "Euklidesowe"
-
-#: operations/common/distance-transform.c:32
-msgid "Manhattan"
-msgstr "Manhattan"
-
-#: operations/common/distance-transform.c:33
-msgid "Chessboard"
-msgstr "Szachownica"
-
-#: operations/common/distance-transform.c:36
+#: operations/common/distance-transform.c:30
 msgid "Metric"
 msgstr "Metryczne"
 
-#: operations/common/distance-transform.c:38
+#: operations/common/distance-transform.c:32
 msgid "Metric to use for the distance calculation"
 msgstr "Metryczne do obliczenia odległości"
 
-#: operations/common/distance-transform.c:40
+#: operations/common/distance-transform.c:34
 msgid "Threshold low"
 msgstr "Niskie progowanie"
 
-#: operations/common/distance-transform.c:43
+#: operations/common/distance-transform.c:37
 msgid "Threshold high"
 msgstr "Wysokie progowanie"
 
-#: operations/common/distance-transform.c:46
+#: operations/common/distance-transform.c:40
 msgid "Grayscale Averaging"
 msgstr "Uśrednianie odcieni szarości"
 
-#: operations/common/distance-transform.c:47
+#: operations/common/distance-transform.c:41
 msgid "Number of computations for grayscale averaging"
 msgstr "Liczba obliczeń dla uśredniania odcieni szarości"
 
-#: operations/common/distance-transform.c:53
+#: operations/common/distance-transform.c:47
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normalizacja wyjścia do zakresu 0,0 do 1,0."
 
-#: operations/common/distance-transform.c:427
+#: operations/common/distance-transform.c:421
 msgid "Distance Transform"
 msgstr "Przekształcenie odległości"
 
-#: operations/common/distance-transform.c:430
+#: operations/common/distance-transform.c:424
 msgid "Calculate a distance transform"
 msgstr "Oblicz przekształcenie odległości"
 
@@ -7959,11 +7959,11 @@ msgstr "Wklej poniżej"
 msgid "Paste transformed images below each other"
 msgstr "Wklej przekształcone obrazy pod nimi"
 
-#: operations/workshop/recursive-transform.c:264
+#: operations/workshop/recursive-transform.c:265
 msgid "Recursive Transform"
 msgstr "Przekształcenie rekurencyjne"
 
-#: operations/workshop/recursive-transform.c:266
+#: operations/workshop/recursive-transform.c:267
 msgid "Apply a transformation recursively."
 msgstr "Zastosuj przekształcenie rekurencyjnie."
 
