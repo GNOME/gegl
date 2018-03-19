@@ -21,6 +21,13 @@ if ENABLE_DOCS
 SUBDIRS+= docs
 endif
 
+# hack to make perf folder be included in dist, it doesn't harm to include perf in tests
+# for people that enable workshop, and as a side effect it gets disted.
+
+if ENABLE_WORKSHOP  
+SUBDIRS+= perf
+endif
+
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = gegl-$(GEGL_API_VERSION).pc
 
