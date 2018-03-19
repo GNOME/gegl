@@ -15,7 +15,6 @@ SUBDIRS=\
 	operations \
 	examples \
 	tests \
-	perf \
 	po
 
 if ENABLE_DOCS
