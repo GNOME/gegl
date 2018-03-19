@@ -1,3 +1,96 @@
+GEGL-0.3.30 2018-03-19
+----------------------
+
+GeglBuffer:
+~~~~~~~~~~~
+
+gegl_buffer_get now treats the final argument, which used to control only abyss
+behavior as a bit-field that also can have interpolation method to use when
+scaling down from the next larger mipmap level, valid values are
+GEGL_BUFFER_NEAREST, GEGL_BUFFER_BILINEAR, GEGL_BUFFER_BOXFILTER and
+GEGL_BUFFER_AUTO.
+
+All scaling is now done on linear data, making future results of mipmap
+computations more valid as well as providing correct results for scaled down
+thumbnails in user interfaces. Optimized code paths have been added for 8bit
+buffers (using 12bit linear as processing space) and other formats like 16bit
+float are now correctly handled by going through generic code paths.
+
+The scaling code paths has also been instrumented and optimized for
+performance. Improvements to pixel data fetching and setting functions leads to
+performance boosts across many GEGL operations, as well as display code paths
+in GEGL using applications. For some performance critical display cases
+performance should have improved 2-3x over last release.
+
+Improvements to logic switching to boxfiltering behavior and improve cubic
+samplers box filtering by using a linear sampler and a nearest sampler for the
+boxfiltering for the linear sampler. This slows down scaling down with the
+cubic sampler by half, but is less prone to aliasing, while keeping the faster
+code paths for the fast but not as bad as nearest - bilinear.
+
+gegl_buffer_copy gegl_buffer_clear and gegl_buffer_set color now only
+emit a single changed signal on the buffer.
+
+Operations:
+~~~~~~~~~~~
+
+c2g and stress have gained the ability to toggle the influence of the shadow
+neighborhood or not, the new default is to not improve shadow detail; yielding
+a bit more natural renditions.
+
+color-to-alpha now contains improvements from experiment in workshop which is
+gone.
+
+Fixed crahses in median-blur.
+
+Transform ops:
+~~~~~~~~~~~~~~
+
+Only rasterize inside the transformed polygon, saving cpu. The optimizations
+mentioned for GeglBuffer giving boosts and improved quality.
+
+New ops:
+~~~~~~~~
+
+Mean-curvature blur.
+
+News ops in workshop:
+
+color-overlay, enlarge, inpaint, domain-transform, recursive=transform.
+
+GEGL-0.3.28 2018-01-23
+----------------------
+
+Core
+~~~~
+
+A new GeglStats object, which provides realtime statistics/profiling for use
+in UIs.  Automatically copy-on-write clone input buffers for auto-threading of
+operations.
+
+Buffer
+~~~~~~
+
+Many significant optimizations as well as a correctness improvement, mipmap
+scaling and rendering is now done correctly in linear space, thus GIMP will not
+only produce the right results but also avoid gamma errors in thumbnails and
+viewport.
+
+Among the signifcant performance boosters are per buffer-instance tile queues,
+adaptive sampler pre-fetch caching and dedicated code paths for fetching
+columns of pixels. Along with many multi-threadedness improvements due to more
+significant testing.
+
+Operations
+~~~~~~~~~~
+
+Mipmap tuning and performance improvements to gaussian blur
+added dedicated code paths for nearest sampler in transform ops.
+more generic RGBE file handling
+ff-load: permit decoding audio files as well as video files.
+various code cleanups
+
+
 GEGL-0.3.28 2018-01-23
 ----------------------
 
