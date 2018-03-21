@@ -642,7 +642,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",  "distort",
     "reference-hash", "0bce414c416e2d705d0b9ecd8333d93b",
     "license",     "GPL3+",
-    "description", _("Propagate certain colors to neighboring pixels."),
+    "description", _("Propagate certain values to neighboring pixels. Erode and dilate any color or opacity."),
     NULL);
 }
 
