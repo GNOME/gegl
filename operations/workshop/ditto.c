@@ -25,7 +25,7 @@
 #ifdef GEGL_PROPERTIES
 
 property_enum (sampler_type, _("Sampler"), GeglSamplerType, gegl_sampler_type,
-                 GEGL_SAMPLER_CUBIC)
+                 GEGL_SAMPLER_NEAREST)
    description (_("Sampler used internally"))
 
 #else
@@ -69,12 +69,16 @@ process (GeglOperation       *operation,
 
   while (n_pixels--)
     {
+#if 0
       gegl_sampler_get (sampler,
                         x,
                         y,
                         NULL,
                         out_pixel,
-                        GEGL_ABYSS_NONE);
+                        GEGL_ABYSS_CLAMP);
+#else
+      gegl_buffer_get (input, GEGL_RECTANGLE(x,y,1,1), 1.0, babl_format("RGBA float"), out_pixel, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+#endif
 
       out_pixel += 4;
 
@@ -112,7 +116,7 @@ gegl_op_class_init (GeglOpClass *klass)
   "categories"  , "distort",
   "name"        , "gegl:ditto",
   "title"       , _("Ditto"),
-  "reference-hash", "bfe9694dd26005f259881d765b719205",
+  "reference-hash", "ffb9e86edb25bc92e8d4e68f59bbb04b",
   "description" , _("Test op to do a 1:1 map of input to output, while sampling"),
   NULL);
 }
