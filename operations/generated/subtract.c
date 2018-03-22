@@ -125,9 +125,9 @@ gegl_op_class_init (GeglOpClass *klass)
   "name"        , "gegl:subtract",
   "title"       , "Subtract",
   "categories"  , "compositors:math",
-  "reference-hash"  , "8e8b7b3712ca34b0b358da70c391882f",
+  "reference-hash"  , "964b3d0b0afea081c157fe0251600ba3",
   "description" ,
-       _("Math operation subtract, performs the operation per pixel, using either the constant provided in 'value' or the corresponding pixel from the buffer on aux as operands. (formula: result = input - value)"),
+       _("Math operation subtract, performs the operation per pixel, using either the constant provided in 'value' or the corresponding pixel from the buffer on aux as operands. The result is the evaluation of the expression result = input - value"),
        NULL);
 }
 #endif

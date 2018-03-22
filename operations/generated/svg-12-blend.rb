@@ -35,31 +35,31 @@ copyright = '
 
 a = [
  #     ['multiply',      'cA * cB +  cA * (1 - aB) + cB * (1 - aA)', '5910165f5e64ac11b4f57520e82c99e8'],
-      ['screen',        'cA + cB - cA * cB', '9642c59dd077663c4c27e4ebe556a382'],
-      ['darken',        'MIN (cA * aB, cB * aA) + cA * (1 - aB) + cB * (1 - aA)', '4a0c76cb0c19818779abfdae020c04d4'],
-      ['lighten',       'MAX (cA * aB, cB * aA) + cA * (1 - aB) + cB * (1 - aA)', '16ecf46ab388720e4976f0691c05f62f'],
-      ['difference',    'cA + cB - 2 * (MIN (cA * aB, cB * aA))', 'a6fc455c2374f5989229b8950bc00d79'],
-      ['exclusion',     '(cA * aB + cB * aA - 2 * cA * cB) + cA * (1 - aB) + cB * (1 - aA)', 'd4428801756f0799b656d276556ed47c']
+      ['screen',        'cA + cB - cA * cB', 'dd4057b688a2721774557d5637e59a50'],
+      ['darken',        'MIN (cA * aB, cB * aA) + cA * (1 - aB) + cB * (1 - aA)', '78d5adc0553b920894c5ffc109769a88'],
+      ['lighten',       'MAX (cA * aB, cB * aA) + cA * (1 - aB) + cB * (1 - aA)', '81d848688367b57294d91ea1e49880c7'],
+      ['difference',    'cA + cB - 2 * (MIN (cA * aB, cB * aA))', 'd49524773e0a1119d9128e3d9799bffc'],
+      ['exclusion',     '(cA * aB + cB * aA - 2 * cA * cB) + cA * (1 - aB) + cB * (1 - aA)', 'd26e0029c2f19b8f357069704eca580a']
     ]
 
 b = [
       ['overlay',       '2 * cB > aB',
                         '2 * cA * cB + cA * (1 - aB) + cB * (1 - aA)',
                         'aA * aB - 2 * (aB - cB) * (aA - cA) + cA * (1 - aB) + cB * (1 - aA)',
-                        '0148854c1b7d80cca8f015e216ce8fa3'],
+                        '5b0a600e815dd027ee127cc7c01c26cb'],
       ['color_dodge',   'cA * aB + cB * aA >= aA * aB',
                         'aA * aB + cA * (1 - aB) + cB * (1 - aA)',
                         '(cA == aA ? 1 : cB * aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)',
-                        '9e42179d64227eb71cb6f78b7308c927'],
+                        '30a75546688fe4a12e7d0721b5c357ce'],
 
       ['color_burn',    'cA * aB + cB * aA <= aA * aB',
                         'cA * (1 - aB) + cB * (1 - aA)',
                         '(cA == 0 ? 1 : (aA * (cA * aB + cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))',
-                        'f59eedae9e7ff4e7772341badec3f724'],
+                        'e9f58c8e3b67d0ed84d1e1875c414159'],
       ['hard_light',    '2 * cA < aA',
                         '2 * cA * cB + cA * (1 - aB) + cB * (1 - aA)',
                         'aA * aB - 2 * (aB - cB) * (aA - cA) + cA * (1 - aB) + cB * (1 - aA)',
-                        '7c64c9793501c9ad28dc96c9dd5f3c1e']
+                        '77f3994f122ac63313b0c67ebfddbcfe']
     ]
 
 c = [
@@ -68,13 +68,13 @@ c = [
                         '8 * cB <= aB',
                         'cB * (aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA - aA) * (aB == 0 ? 3 : 3 - 8 * cB / aB)) + cA * (1 - aB) + cB * (1 - aA)',
                         '(aA * cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - aA)',
-                        '84242bdbb83f6bfd01711106423b20ab']
+                        '21a00cc30644e8caafe2d42d77b089ef']
     ]
 
 d = [
       ['plus',          'cA + cB',
                         'MIN (aA + aB, 1)',
-                        '860a6a3c10939c3327ca16103703537e']
+                        '02568f1753f7ded71ed2534b38f26d73']
     ]
 
 file_head1 = '

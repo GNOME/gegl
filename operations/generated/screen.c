@@ -166,7 +166,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
   "name"        , "svg:screen",
   "compat-name" , "gegl:screen",
-  "reference-hash" , "9642c59dd077663c4c27e4ebe556a382",
+  "reference-hash" , "dd4057b688a2721774557d5637e59a50",
   "description" ,
         _("SVG blend operation screen (<code>d = cA + cB - cA * cB</code>)"),
         NULL);

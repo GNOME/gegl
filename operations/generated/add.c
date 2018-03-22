@@ -125,9 +125,9 @@ gegl_op_class_init (GeglOpClass *klass)
   "name"        , "gegl:add",
   "title"       , "Add",
   "categories"  , "compositors:math",
-  "reference-hash"  , "7a68e829c08d859a9a5cce3ffc2c91f4",
+  "reference-hash"  , "3b665a3c7f3d3aac89c67bd7051c276f",
   "description" ,
-       _("Math operation add, performs the operation per pixel, using either the constant provided in 'value' or the corresponding pixel from the buffer on aux as operands. (formula: result = input + value)"),
+       _("Math operation add, performs the operation per pixel, using either the constant provided in 'value' or the corresponding pixel from the buffer on aux as operands. The result is the evaluation of the expression result = input + value"),
        NULL);
 }
 #endif

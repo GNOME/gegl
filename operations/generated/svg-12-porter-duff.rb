@@ -42,37 +42,37 @@ a = [
        false, 'f6a66e7e92224fb5df43d15d8faf4262'],
       ['dst',           'cB',
                         'aB',
-       true, '9bbe341d798da4f7b181c903e6f442fd'],
+       true, 'ffb9e86edb25bc92e8d4e68f59bbb04b'],
 #      ['src_over',      'cA + cB * (1.0f - aA)',
 #                        'aA + aB - aA * aB',
 #       false],
       ['dst_over',      'cB + cA * (1.0f - aB)',
                         'aA + aB - aA * aB',
-       true, 'e288fa07b1c81431cd581f09e777198d'],
+       true, '2ae31f32b8b4e788e5f631827cad51b4'],
       ['dst_in',        'cB * aA', # <- XXX: typo?
                         'aA * aB',
-       false, 'a94543affd078e575419cced22a3dcfb'],
+       false, 'e7e478208bc463c6894049aefd1616b5'],
       ['src_out',       'cA * (1.0f - aB)',
                         'aA * (1.0f - aB)',
-       false, 'e26976d7bc7986e9cfe4937577261bfd'],
+       false, '64265021e1681dfc4485349cfe4f8a9e'],
       ['dst_out',       'cB * (1.0f - aA)',
                         'aB * (1.0f - aA)',
-       true, '7a51822400f0a06d339cc3f1925e0699'],
+       true, 'b0ffe0c9b9a5a48d21df751ce576ffa9'],
       ['src_atop',      'cA * aB + cB * (1.0f - aA)',
                         'aB',
-       true, '7e48d1097702179c39b513b2be9d6102'],
+       true, '7cb5948ed7e041e6f88b4939d352edf8'],
 
       ['dst_atop',      'cB * aA + cA * (1.0f - aB)',
                         'aA',
-        false, '67f3a1f0999875280dfb86faab13c948'],
+        false, 'daeb2e2e1ae75898af7db31934e240fb'],
       ['xor',           'cA * (1.0f - aB)+ cB * (1.0f - aA)',
                         'aA + aB - 2.0f * aA * aB',
-       true, 'e80ef5797385bf06ac3b7e7747bc5be0'],
+       true, 'd5c452c163acf983677da4dd5e5dca09'],
     ]
 
 b = [ ['src_in',        'cA * aB',  # the bounding box of this mode is the
                         'aA * aB',
-       'cd8b5c32799849fd2ca773a2759ab98e']]  # bounding box of the input only.
+       '2663ce60fd1362bb014d22534ab34ac7']]  # bounding box of the input only.
 
 file_head1 = '
 #include "config.h"

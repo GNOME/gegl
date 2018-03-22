@@ -25,11 +25,11 @@ copyright = '
  */'
 
 a = [
-      ['add',       'result = input + value', 0.0, '7a68e829c08d859a9a5cce3ffc2c91f4'],
-      ['subtract',  'result = input - value', 0.0, '8e8b7b3712ca34b0b358da70c391882f'],
+      ['add',       'result = input + value', 0.0, '3b665a3c7f3d3aac89c67bd7051c276f'],
+      ['subtract',  'result = input - value', 0.0, '964b3d0b0afea081c157fe0251600ba3'],
       ['multiply',  'result = input * value', 1.0, 'c80bb8504f405bb0a5ce2be4fad6af69'],
       ['divide',    'result = value==0.0f?0.0f:input/value', 1.0, 'c3bd84f8a6b2c03a239f3f832597592c'],
-      ['gamma',     'result = powf (input, value)', 1.0, 'ec7236147d64775ad190fe823ff03f43'],
+      ['gamma',     'result = powf (input, value)', 1.0, '2687ab0395fe31ccc25e2901a43a9c03'],
 #     ['threshold', 'result = c>=value?1.0f:0.0f', 0.5],
 #     ['invert',    'result = 1.0-c']
     ]

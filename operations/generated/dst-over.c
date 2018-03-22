@@ -144,7 +144,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name"       , "svg:dst-over",
     "compat-name", "gegl:dst-over",
     "title"      , "Dst-over",
-    "reference-hash" , "e288fa07b1c81431cd581f09e777198d",
+    "reference-hash" , "2ae31f32b8b4e788e5f631827cad51b4",
     "categories" , "compositors:porter-duff",
     "description",
         _("Porter Duff operation dst-over (d = cB + cA * (1.0f - aB))"),

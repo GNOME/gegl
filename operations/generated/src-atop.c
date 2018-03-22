@@ -144,7 +144,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name"       , "svg:src-atop",
     "compat-name", "gegl:src-atop",
     "title"      , "Src-atop",
-    "reference-hash" , "7e48d1097702179c39b513b2be9d6102",
+    "reference-hash" , "7cb5948ed7e041e6f88b4939d352edf8",
     "categories" , "compositors:porter-duff",
     "description",
         _("Porter Duff operation src-atop (d = cA * aB + cB * (1.0f - aA))"),

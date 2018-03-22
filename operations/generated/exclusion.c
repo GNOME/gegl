@@ -166,7 +166,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
   "name"        , "svg:exclusion",
   "compat-name" , "gegl:exclusion",
-  "reference-hash" , "d4428801756f0799b656d276556ed47c",
+  "reference-hash" , "d26e0029c2f19b8f357069704eca580a",
   "description" ,
         _("SVG blend operation exclusion (<code>d = (cA * aB + cB * aA - 2 * cA * cB) + cA * (1 - aB) + cB * (1 - aA)</code>)"),
         NULL);

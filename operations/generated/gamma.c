@@ -125,9 +125,9 @@ gegl_op_class_init (GeglOpClass *klass)
   "name"        , "gegl:gamma",
   "title"       , "Gamma",
   "categories"  , "compositors:math",
-  "reference-hash"  , "ec7236147d64775ad190fe823ff03f43",
+  "reference-hash"  , "2687ab0395fe31ccc25e2901a43a9c03",
   "description" ,
-       _("Math operation gamma, performs the operation per pixel, using either the constant provided in 'value' or the corresponding pixel from the buffer on aux as operands. (formula: result = powf (input, value))"),
+       _("Math operation gamma, performs the operation per pixel, using either the constant provided in 'value' or the corresponding pixel from the buffer on aux as operands. The result is the evaluation of the expression result = powf (input, value)"),
        NULL);
 }
 #endif
