@@ -273,7 +273,7 @@ gegl_op_class_init (GeglOpClass *klass)
   "name",      "gegl:reinhard05",
   "title",      _("Reinhard 2005 Tone Mapping"),
   "categories" , "tonemapping",
-  "reference-hash", "9b9792e2b12f6888732c1f16e835e389",
+  "reference-hash", "ce38b47d455298d78db3a91748c4f9a5",
   "description",
         _("Adapt an image, which may have a high dynamic range, for "
           "presentation using a low dynamic range. This is an efficient "

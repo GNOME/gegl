@@ -1329,7 +1329,7 @@ gegl_op_class_init (GeglOpClass *klass)
   "name"       , "gegl:fattal02",
   "title",       _("Fattal et al. 2002 Tone Mapping"),
   "categories" , "tonemapping:enhance",
-  "reference-hash", "62363b24d5f3e7c2022a8ce1d98c8d12",
+  "reference-hash", "6c025821070a93a3feae9fe2e563b9d0",
   "description",
         _("Adapt an image, which may have a high dynamic range, for "
 	  "presentation using a low dynamic range. This operator attenuates "

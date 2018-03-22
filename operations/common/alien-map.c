@@ -259,7 +259,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:alien-map",
     "title",       _("Alien Map"),
     "categories",  "artistic",
-    "reference-hash", "48146706af798ef888ba571ce89c1589",
+    "reference-hash", "503b16b8b84765c1a080fd992231e26d",
     "description", _("Heavily distort images colors by applying trigonometric functions to map color values."),
     NULL);
 }

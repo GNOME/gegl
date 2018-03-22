@@ -75,7 +75,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:translate",
     "title", _("Translate"),
     "categories", "transform",
-    "reference-hash", "fd7287903bdf467448454216712a0b2a",
+    "reference-hash", "8d3700ec06e9cbba3cb2b4a9f3061a10",
     "description", _("Repositions the buffer (with subpixel precision), if integer coordinates are passed a fast-path without resampling is used"),
     "reference-chain", "load path=images/standard-input.png translate x=23.0 y=42.0 clip-to-input=true",
     NULL);

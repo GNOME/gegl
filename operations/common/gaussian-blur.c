@@ -117,7 +117,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",           "gegl:gaussian-blur",
     "title",          _("Gaussian Blur"),
     "categories",     "blur",
-    "reference-hash", "5d10ee663c5ff908c3c081e516154873",
+    "reference-hash", "c33a8c5df033c403fceb47735cde22e3",
     "description", _("Performs an averaging of neighboring pixels with the "
                      "normal distribution as weighting"),
                                  NULL);

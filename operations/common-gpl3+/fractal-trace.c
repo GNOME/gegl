@@ -251,7 +251,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "position-dependent", "true",
     "categories",         "map",
     "license",            "GPL3+",
-    "reference-hash",     "df59be026bf7c4a2d0616b6060ddd3e8",
+    "reference-hash",     "2d7d619a67707cc37f36392b8eb438ed",
     "description", _("Transform the image with the fractals"),
     NULL);
 }

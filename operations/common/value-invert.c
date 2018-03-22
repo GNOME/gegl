@@ -147,7 +147,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:value-invert",
     "title",       _("Value Invert"),
     "categories" , "color",
-    "reference-hash", "19c7f1a09ed4c2a904f17bdc19e071de",
+    "reference-hash", "98a6a7c2b289209dc7ce9309063a6796",
     "description",
         _("Invert the value component, the result has the brightness "
           "inverted, keeping the color."),

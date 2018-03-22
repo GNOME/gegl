@@ -152,7 +152,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",           "gegl:copy-buffer",
     "title",          _("Copy Buffer"),
     "categories" ,    "programming",
-    "reference-hash", "9bbe341d798da4f7b181c903e6f442fd",
+    "reference-hash", "ffb9e86edb25bc92e8d4e68f59bbb04b",
     "description",    _("Writes image data to an already existing buffer"),
     NULL);
 }

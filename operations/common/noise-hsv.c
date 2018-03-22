@@ -275,7 +275,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",       "gegl:noise-hsv",
     "title",      _("Add HSV Noise"),
     "categories", "noise",
-    "reference-hash", "5754cd0bcadabd01bbc253b5c41cbd74",
+    "reference-hash", "e750e20f35e03f6c64a38bcc9c11490d",
     "description", _("Randomize hue, saturation and value independently"),
       NULL);
 }

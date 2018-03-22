@@ -2466,7 +2466,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Mosaic"),
     "categories",  "artistic:scramble",
     "license",     "GPL3+",
-    "reference-hash", "952d01e1ea3388e5ddee4fd33d52db3a",
+    "reference-hash", "1484cc9d8506473fcbef6c2ebe722699",
     "description", _("Mosaic is a filter which transforms an image into "
                      "what appears to be a mosaic, composed of small primitives, "
                      "each of constant color and of an approximate size."),

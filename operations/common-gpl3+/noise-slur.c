@@ -156,7 +156,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:noise-slur",
     "title",       _("Noise Slur"),
     "categories",  "noise",
-    "reference-hash", "513f96bea7ec5268e571e5587e212533",
+    "reference-hash", "8d921285191c7e1bfac09acb7ed67f21",
     "license",     "GPL3+",
     "description", _("Randomly slide some pixels downward (similar to melting)"),
     NULL);

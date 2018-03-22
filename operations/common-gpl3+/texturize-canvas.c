@@ -4381,7 +4381,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "artistic",
     "license",            "GPL3+",
     "position-dependent", "true",
-    "reference-hash",     "5e1dcaab9217e536cc278aad28d16e12",
+    "reference-hash",     "de335c86aa55cd0ecdb33a8d998c9041",
     "description",_("Textures the image as if it were an artist's canvas."),
     NULL);
 }

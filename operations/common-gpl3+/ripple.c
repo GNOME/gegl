@@ -172,7 +172,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "distort",
     "position-dependent", "true",
     "license",            "GPL3+",
-    "reference-hash",     "0e954f1ceea71d783bdc68d689733a3f",
+    "reference-hash",     "7aa0097faf41522087353718516b8e15",
     "description", _("Displace pixels in a ripple pattern"),
     NULL);
 }

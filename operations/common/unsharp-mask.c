@@ -83,7 +83,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:unsharp-mask",
     "title",       _("Unsharp Mask"),
     "categories",  "enhance:sharpen",
-    "reference-hash", "ecedf51ab754c690b8eecf815105a059",
+    "reference-hash", "5f94a8d1b946c82b1f066f50b9648a5a",
     "description", _("Sharpen image, by adding difference to blurred image, a technique for sharpening originally used in darkrooms."),
     NULL);
 }

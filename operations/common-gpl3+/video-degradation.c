@@ -322,7 +322,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",          _("Video Degradation"),
     "categories",     "distort",
     "license",        "GPL3+",
-    "reference-hash", "08bd4e3c08cb35890f384c914f0358c8",
+    "reference-hash", "1f7ad41dc1c0595b9b90ad1f72e18d2f",
     "description", _("This function simulates the degradation of "
                      "being on an old low-dotpitch RGB video monitor."),
     "cl-source"  , video_degradation_cl_source,

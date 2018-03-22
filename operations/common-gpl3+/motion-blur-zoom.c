@@ -243,7 +243,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "categories",         "blur",
       "position-dependent", "true",
       "license",            "GPL3+",
-      "reference-hash",     "43404a80660830fc48a1acb14ddedae8",
+      "reference-hash",     "c76c31c4de489aac562a1fc2fdaedc4f",
       "description", _("Zoom motion blur"),
       NULL);
 }

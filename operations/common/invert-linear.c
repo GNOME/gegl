@@ -74,7 +74,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Invert"),
     "compat-name", "gegl:invert",
     "categories" , "color",
-    "reference-hash", "1388c2198bcaf2f04c8036d5060719b8",
+    "reference-hash", "3fc7e35d7a5c45b9e55bc2d15890005a",
     "description",
        _("Invert the components (except alpha) in linear light, "
          "the result is the corresponding \"negative\" image."),

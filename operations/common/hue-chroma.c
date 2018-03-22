@@ -109,7 +109,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",           "gegl:hue-chroma",
       "title",          _("Hue-Chroma"),
       "categories",     "color",
-      "reference-hash", "9bbe341d798da4f7b181c903e6f442fd",
+      "reference-hash", "ffb9e86edb25bc92e8d4e68f59bbb04b",
       "cl-source",      hue_chroma_cl_source,
       "description",    _("Adjust LCH Hue, Chroma, and Lightness"),
       NULL);

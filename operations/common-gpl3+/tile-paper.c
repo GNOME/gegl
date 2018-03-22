@@ -438,7 +438,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "artistic:map",
     "license",            "GPL3+",
     "position-dependent", "true",
-    "reference-hash",     "8d5b9be5ebde7010cb87644d494e8b0b",
+    "reference-hash",     "cbff6974b1a06777de798ce16e215a99",
     "description",        _("Cut image into paper tiles, and slide them"),
     NULL);
 }

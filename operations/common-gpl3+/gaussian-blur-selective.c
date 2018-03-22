@@ -375,7 +375,7 @@ gegl_op_class_init (GeglOpClass *klass)
    "name",        "gegl:gaussian-blur-selective",
    "title",       _("Selective Gaussian Blur"),
    "categories",  "enhance:noise-reduction",
-   "reference-hash", "5af7851bcc4c6b9276c105fb6a6b6742",
+   "reference-hash", "6dc7390900636cc21289adbc509fb695",
    "license",     "GPL3+",
    "description", _("Blur neighboring pixels, but only in low-contrast areas"),
    NULL);

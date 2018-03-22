@@ -342,7 +342,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Supernova"),
     "categories",  "light",
     "license",     "GPL3+",
-    "reference-hash", "5a8898dfc39de4af59db4b1c77556081",
+    "reference-hash", "6d487855e0340f06c8fd5d3e3f913516",
     "description", _("This plug-in produces an effect like a supernova "
                      "burst. The amount of the light effect is "
                      "approximately in proportion to 1/r, where r is "

@@ -192,7 +192,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:noise-cie-lch",
     "title",       _("Add CIE Lch Noise"),
-    "reference-hash", "16eb13245531f033eabd9c12b22913b2",
+    "reference-hash", "438deabf01651025c15ce86c3637e652",
     "categories",  "noise",
     "description", _("Randomize lightness, chroma and hue independently"),
     NULL);

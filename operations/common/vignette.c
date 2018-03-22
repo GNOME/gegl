@@ -382,7 +382,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Vignette"),
     "position-dependent", "true",
     "categories",         "render:light",
-    "reference-hash",     "2057d35e0e44881c3319f0474e847d97",
+    "reference-hash",     "1ed16686a8ed98f8da4c3624a59b077c",
     "description", _("Applies a vignette to an image. Simulates the luminance "
                      "fall off at the edge of exposed film, and some other "
                      "fuzzier border effects that can naturally occur with "
