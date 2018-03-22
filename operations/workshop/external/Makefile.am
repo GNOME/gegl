@@ -19,10 +19,10 @@ gluas_la_CFLAGS  = $(LUA_CFLAGS) $(BABL_CFLAGS) $(GLIB_CFLAGS)
 endif
 
 if HAVE_LENSFUN
-ops += lens-correct.la
-lens_correct_la_SOURCES = lens-correct.c
-lens_correct_la_LIBADD = $(op_libs) $(LENSFUN_LIBS)
-lens_correct_la_CFLAGS = $(AM_CFLAGS) $(LENSFUN_CFLAGS)
+#ops += lens-correct.la
+#lens_correct_la_SOURCES = lens-correct.c
+#lens_correct_la_LIBADD = $(op_libs) $(LENSFUN_LIBS)
+#lens_correct_la_CFLAGS = $(AM_CFLAGS) $(LENSFUN_CFLAGS)
 endif
 
 if HAVE_V4L2

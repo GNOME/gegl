@@ -434,7 +434,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "position-dependent", "true",
 
     "description",        _("Generates a cellular texture."),
-    "reference-hash",     "24a97f60de37791a65ef8931c3ca3342",
+    "reference-hash",     "cdfe700e72f77251b9cc0d724ba54464",
 
     "reference",  "Steven Worley. 1996. A cellular texture basis function. In Proceedings of the 23rd annual conference on Computer graphics and interactive techniques (SIGGRAPH '96).",
 

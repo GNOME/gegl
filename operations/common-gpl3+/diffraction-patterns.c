@@ -384,7 +384,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Diffraction Patterns"),
     "categories",         "render",
     "position-dependent", "true",
-    "reference-hash",     "f709e421fe77197f8bd3e23212108823",
+    "reference-hash",     "0d0ecea7371357c8ee6dcb6b0cd063ff",
     "license",            "GPL3+",
     "description",        _("Generate diffraction patterns"),
     NULL);
