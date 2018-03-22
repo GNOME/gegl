@@ -14,6 +14,8 @@ transformops_la_SOURCES = \
 	reflect.c	\
 	rotate.c	\
 	rotate-on-center.c      \
+	scale.c \
+	scale.h \
 	scale-ratio.c \
 	scale-size.c \
 	scale-size-keepaspect.c \

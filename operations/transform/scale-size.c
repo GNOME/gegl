@@ -35,10 +35,10 @@ property_double (y, _("Y"), 100.0)
 #else
 
 #include "gegl-operation-filter.h"
-#include "transform-core.h"
+#include "scale.h"
 #define GEGL_OP_NO_SOURCE
-#define GEGL_OP_Parent  OpTransform
-#define GEGL_OP_PARENT  TYPE_OP_TRANSFORM
+#define GEGL_OP_Parent  OpScale
+#define GEGL_OP_PARENT  TYPE_OP_SCALE
 #define GEGL_OP_NAME    scale_size
 #define GEGL_OP_BUNDLE
 #define GEGL_OP_C_FILE  "scale-size.c"
