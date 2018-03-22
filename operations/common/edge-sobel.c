@@ -399,7 +399,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:edge-sobel",
     "title",       _("Sobel Edge Detection"),
     "categories",  "edge-detect",
-    "reference-hash", "56b83c838376302d42f4384cbc05b78a",
+    "reference-hash", "a89606b5fd8e75c98c0c0d2bb0314a87",
     "description", _("Specialized direction-dependent edge detection"),
           NULL);
 }

@@ -350,7 +350,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name"       , "gegl:snn-mean",
     "categories" , "enhance:noise-reduction",
     "title",       _("Symmetric Nearest Neighbour"),
-    "reference-hash", "8f34d0518b519baa77c29fe70ed73e5e",
+    "reference-hash", "1f5c30085011311cf743ddc91a44f1f0",
     "description",
         _("Noise reducing edge preserving blur filter based "
           "on Symmetric Nearest Neighbours"),

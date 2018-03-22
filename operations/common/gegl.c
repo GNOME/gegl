@@ -106,7 +106,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:gegl",
     "title",       _("GEGL graph"),
     "categories",  "generic",
-    "reference-hash", "feea1919710ead4759e30767c20c86f1",
+    "reference-hash", "29bf5654242f069e2867ba9cb41d8d4e",
     "description", _("Do a chain of operations, with key=value pairs after each operation name to set properties. And aux=[ source filter ] for specifying a chain with a source as something connected to an aux pad."),
     NULL);
 }

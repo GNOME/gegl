@@ -407,7 +407,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",          _("Laplacian Edge Detection"),
     "categories",     "edge-detect",
     "license",        "GPL3+",
-    "reference-hash", "a0d2c5b2bdf39c93bb2c2bdf2a9ea857",
+    "reference-hash", "c4ecceb172485fb4550e4b31a43eb2b1",
     "description",    _("High-resolution edge detection"),
     NULL);
 }
