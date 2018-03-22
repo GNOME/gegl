@@ -179,7 +179,7 @@ apply_whirl_pinch (gdouble              whirl,
         gegl_sampler_compute_scale (scale, roi->x + col, roi->y + row);
         gegl_unmap (roi->x + col, roi->y + row, cx, cy);
 
-        gegl_sampler_get (sampler, cx, cy, &scale, &dst_buf[(row * roi->width + col) * 4], GEGL_ABYSS_NONE);
+        gegl_sampler_get (sampler, cx, cy, &scale, &dst_buf[(row * roi->width + col) * 4], GEGL_ABYSS_CLAMP);
     } /* for */
   } /* for */
 
@@ -261,7 +261,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "distort:map",
     "license",            "GPL3+",
     "position-dependent", "true",
-    "reference-hash",     "f56bc33dafbe5a106cde720a30b14374",
+    "reference-hash",     "e24f6a5ec8c1c7faead1dbeeae34e386",
     "description", _("Distort an image by whirling and pinching"),
     NULL);
 }
