@@ -191,7 +191,8 @@ op_transform_class_init (OpTransformClass *klass)
   op_class->no_cache                  = TRUE;
   op_class->threaded                  = TRUE;
 
-  klass->create_matrix = NULL;
+  klass->create_matrix                = NULL;
+  klass->get_abyss_policy             = NULL;
 
   gegl_operation_class_set_key (op_class, "categories", "transform");
 
@@ -324,6 +325,15 @@ gegl_transform_create_composite_matrix (OpTransform *transform,
       if (near_z)
         *near_z = MAX (*near_z, source_near_z);
     }
+}
+
+static GeglAbyssPolicy
+gegl_transform_get_abyss_policy (OpTransform *transform)
+{
+  if (OP_TRANSFORM_GET_CLASS (transform)->get_abyss_policy)
+    return OP_TRANSFORM_GET_CLASS (transform)->get_abyss_policy (transform);
+
+  return GEGL_ABYSS_NONE;
 }
 
 static void
@@ -662,7 +672,10 @@ gegl_transform_is_intermediate_node (OpTransform *transform)
         {
           GeglOperation *sink = gegl_node_get_gegl_operation (consumers[i]);
 
-          if (! IS_OP_TRANSFORM (sink) || transform->sampler != OP_TRANSFORM (sink)->sampler)
+          if (! IS_OP_TRANSFORM (sink)                           ||
+              transform->sampler != OP_TRANSFORM (sink)->sampler ||
+              gegl_transform_get_abyss_policy (transform) !=
+              gegl_transform_get_abyss_policy (OP_TRANSFORM (sink)))
             {
               is_intermediate = FALSE;
               break;
@@ -1115,13 +1128,14 @@ transform_affine (GeglOperation       *operation,
                   const GeglRectangle *roi,
                   gint                 level)
 {
-  gint         factor = 1 << level;
-  OpTransform *transform = (OpTransform *) operation;
-  const Babl  *format = babl_format ("RaGaBaA float");
-  GeglMatrix3  inverse;
-  gdouble      inverse_near_z = 1.0 / near_z;
-  GeglMatrix2  inverse_jacobian;
-  GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src,
+  gint             factor = 1 << level;
+  OpTransform     *transform = (OpTransform *) operation;
+  const Babl      *format = babl_format ("RaGaBaA float");
+  GeglMatrix3      inverse;
+  gdouble          inverse_near_z = 1.0 / near_z;
+  GeglMatrix2      inverse_jacobian;
+  GeglAbyssPolicy  abyss_policy = gegl_transform_get_abyss_policy (transform);
+  GeglSampler     *sampler = gegl_buffer_sampler_new_at_level (src,
                                          babl_format("RaGaBaA float"),
                                          level?GEGL_SAMPLER_NEAREST:transform->sampler,
                                          level);
@@ -1236,7 +1250,7 @@ transform_affine (GeglOperation       *operation,
                                    u_float, v_float,
                                    &inverse_jacobian,
                                    dest_ptr,
-                                   GEGL_ABYSS_NONE);
+                                   abyss_policy);
                   dest_ptr += (gint) 4;
 
                   u_float += inverse_jacobian.coeff [0][0];
@@ -1276,6 +1290,7 @@ transform_generic (GeglOperation       *operation,
   GeglBufferIterator  *i;
   GeglMatrix3          inverse;
   gdouble              inverse_near_z = 1.0 / near_z;
+  GeglAbyssPolicy      abyss_policy = gegl_transform_get_abyss_policy (transform);
   GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src,
                                          babl_format("RaGaBaA float"),
                                          level?GEGL_SAMPLER_NEAREST:
@@ -1389,7 +1404,7 @@ transform_generic (GeglOperation       *operation,
                                  u, v,
                                  &inverse_jacobian,
                                  dest_ptr,
-                                 GEGL_ABYSS_NONE);
+                                 abyss_policy);
 
                 dest_ptr += (gint) 4;
                 u_float += inverse.coeff [0][0];
@@ -1423,12 +1438,14 @@ transform_nearest (GeglOperation       *operation,
                    const GeglRectangle *roi,
                    gint                 level)
 {
+  OpTransform         *transform = (OpTransform *) operation;
   const Babl          *format    = gegl_buffer_get_format (dest);
   gint                 factor    = 1 << level;
   gint                 px_size   = babl_format_get_bytes_per_pixel (format);
   GeglBufferIterator  *i;
   GeglMatrix3          inverse;
   gdouble              inverse_near_z = 1.0 / near_z;
+  GeglAbyssPolicy      abyss_policy = gegl_transform_get_abyss_policy (transform);
   GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format,
                                          GEGL_SAMPLER_NEAREST,
                                          level);
@@ -1526,7 +1543,7 @@ transform_nearest (GeglOperation       *operation,
                                  u, v,
                                  NULL,
                                  dest_ptr,
-                                 GEGL_ABYSS_NONE);
+                                 abyss_policy);
 
                 dest_ptr += px_size;
                 u_float += inverse.coeff [0][0];

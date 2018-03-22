@@ -29,8 +29,9 @@ struct _OpTransformClass
 {
   GeglOperationFilterClass parent_class;
 
-  void (* create_matrix) (OpTransform  *transform,
-                          GeglMatrix3  *matrix);
+  void            (* create_matrix)    (OpTransform *transform,
+                                        GeglMatrix3 *matrix);
+  GeglAbyssPolicy (* get_abyss_policy) (OpTransform *transform);
 };
 
 GType op_transform_get_type (void) G_GNUC_CONST;
