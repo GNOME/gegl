@@ -151,7 +151,7 @@ gegl_transform_prepare (GeglOperation *operation)
   GeglMatrix3  matrix;
   OpTransform *transform = (OpTransform *) operation;
 
-  gegl_transform_create_composite_matrix (transform, &matrix, NULL);
+  gegl_transform_create_composite_matrix (transform, &matrix);
 
   /* The identity matrix is also a fast translate matrix. */
   if (gegl_transform_is_intermediate_node (transform) ||
