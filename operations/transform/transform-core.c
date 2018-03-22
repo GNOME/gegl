@@ -80,8 +80,7 @@ static gboolean      gegl_transform_scanline_limits              (const GeglMatr
 static gboolean      gegl_transform_is_intermediate_node         (OpTransform          *transform);
 static gboolean      gegl_transform_is_composite_node            (OpTransform          *transform);
 static void          gegl_transform_get_source_matrix            (OpTransform          *transform,
-                                                                  GeglMatrix3          *output,
-                                                                  gdouble              *near_z);
+                                                                  GeglMatrix3          *output);
 static GeglRectangle gegl_transform_get_bounding_box             (GeglOperation        *op);
 static GeglRectangle gegl_transform_get_invalidated_by_change    (GeglOperation        *operation,
                                                                   const gchar          *input_pad,
@@ -101,8 +100,7 @@ static GeglNode     *gegl_transform_detect                       (GeglOperation 
 static gboolean      gegl_matrix3_is_affine                      (GeglMatrix3          *matrix);
 static gboolean      gegl_transform_matrix3_allow_fast_translate (GeglMatrix3          *matrix);
 static void          gegl_transform_create_composite_matrix      (OpTransform          *transform,
-                                                                  GeglMatrix3          *matrix,
-                                                                  gdouble              *near_z);
+                                                                  GeglMatrix3          *matrix);
 
 /* ************************* */
 
@@ -303,27 +301,19 @@ gegl_transform_create_matrix (OpTransform *transform,
 
 static void
 gegl_transform_create_composite_matrix (OpTransform *transform,
-                                        GeglMatrix3 *matrix,
-                                        gdouble     *near_z)
+                                        GeglMatrix3 *matrix)
 {
   gegl_transform_create_matrix (transform, matrix);
 
   if (transform->origin_x || transform->origin_y)
     gegl_matrix3_originate (matrix, transform->origin_x, transform->origin_y);
 
-  if (near_z)
-    *near_z = transform->near_z;
-
   if (gegl_transform_is_composite_node (transform))
     {
       GeglMatrix3 source;
-      gdouble     source_near_z;
 
-      gegl_transform_get_source_matrix (transform, &source, &source_near_z);
+      gegl_transform_get_source_matrix (transform, &source);
       gegl_matrix3_multiply (matrix, &source, matrix);
-
-      if (near_z)
-        *near_z = MAX (*near_z, source_near_z);
     }
 }
 
@@ -672,10 +662,11 @@ gegl_transform_is_intermediate_node (OpTransform *transform)
         {
           GeglOperation *sink = gegl_node_get_gegl_operation (consumers[i]);
 
-          if (! IS_OP_TRANSFORM (sink)                           ||
-              transform->sampler != OP_TRANSFORM (sink)->sampler ||
+          if (! IS_OP_TRANSFORM (sink)                              ||
+              transform->sampler != OP_TRANSFORM (sink)->sampler    ||
               gegl_transform_get_abyss_policy (transform) !=
-              gegl_transform_get_abyss_policy (OP_TRANSFORM (sink)))
+              gegl_transform_get_abyss_policy (OP_TRANSFORM (sink)) ||
+              transform->near_z != OP_TRANSFORM (sink)->near_z)
             {
               is_intermediate = FALSE;
               break;
@@ -708,8 +699,7 @@ gegl_transform_is_composite_node (OpTransform *transform)
 
 static void
 gegl_transform_get_source_matrix (OpTransform *transform,
-                                  GeglMatrix3 *output,
-                                  gdouble     *near_z)
+                                  GeglMatrix3 *output)
 {
   GeglOperation *op = GEGL_OPERATION (transform);
   GeglNode *source_node;
@@ -722,7 +712,7 @@ gegl_transform_get_source_matrix (OpTransform *transform,
   source = gegl_node_get_gegl_operation (source_node);
   g_assert (IS_OP_TRANSFORM (source));
 
-  gegl_transform_create_composite_matrix (OP_TRANSFORM (source), output, near_z);
+  gegl_transform_create_composite_matrix (OP_TRANSFORM (source), output);
   /*gegl_matrix3_copy (output, OP_TRANSFORM (source)->matrix);*/
 }
 
@@ -731,7 +721,6 @@ gegl_transform_get_bounding_box (GeglOperation *op)
 {
   OpTransform  *transform = OP_TRANSFORM (op);
   GeglMatrix3   matrix;
-  gdouble       near_z;
   GeglRectangle in_rect   = {0,0,0,0},
                 have_rect = {0,0,0,0};
   gdouble       vertices [8];
@@ -756,7 +745,7 @@ gegl_transform_get_bounding_box (GeglOperation *op)
       gegl_rectangle_is_infinite_plane (&in_rect))
     return in_rect;
 
-  gegl_transform_create_composite_matrix (transform, &matrix, &near_z);
+  gegl_transform_create_composite_matrix (transform, &matrix);
 
   if (gegl_transform_is_intermediate_node (transform) ||
       gegl_matrix3_is_identity (&matrix))
@@ -785,8 +774,8 @@ gegl_transform_get_bounding_box (GeglOperation *op)
   /*
    * Clip polygon to the near plane.
    */
-  n_have_points = gegl_transform_depth_clip (&matrix, near_z, vertices, 4,
-                                             have_points);
+  n_have_points = gegl_transform_depth_clip (&matrix, transform->near_z,
+                                             vertices, 4, have_points);
 
   if (n_have_points > 1)
     {
@@ -862,7 +851,6 @@ gegl_transform_get_required_for_output (GeglOperation       *op,
 {
   OpTransform   *transform = OP_TRANSFORM (op);
   GeglMatrix3    inverse;
-  gdouble        near_z;
   GeglRectangle  requested_rect,
                  need_rect = {};
   GeglRectangle  context_rect;
@@ -880,7 +868,7 @@ gegl_transform_get_required_for_output (GeglOperation       *op,
       gegl_rectangle_is_infinite_plane (&requested_rect))
     return requested_rect;
 
-  gegl_transform_create_composite_matrix (transform, &inverse, &near_z);
+  gegl_transform_create_composite_matrix (transform, &inverse);
   gegl_matrix3_invert (&inverse);
 
   if (gegl_transform_is_intermediate_node (transform) ||
@@ -918,7 +906,7 @@ gegl_transform_get_required_for_output (GeglOperation       *op,
   /*
    * Clip polygon to the near plane.
    */
-  n_need_points = gegl_transform_depth_clip (&inverse, 1.0 / near_z,
+  n_need_points = gegl_transform_depth_clip (&inverse, 1.0 / transform->near_z,
                                              temp_points, n_temp_points,
                                              need_points);
 
@@ -955,7 +943,6 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
 {
   OpTransform   *transform = OP_TRANSFORM (op);
   GeglMatrix3    matrix;
-  gdouble        near_z;
   GeglRectangle  affected_rect = {};
 
   GeglRectangle  context_rect;
@@ -1009,7 +996,7 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
   context_rect = *gegl_sampler_get_context_rect (sampler);
   g_object_unref (sampler);
 
-  gegl_transform_create_composite_matrix (transform, &matrix, &near_z);
+  gegl_transform_create_composite_matrix (transform, &matrix);
 
   if (gegl_transform_is_intermediate_node (transform) ||
       gegl_matrix3_is_identity (&matrix))
@@ -1045,8 +1032,8 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
   /*
    * Clip polygon to the near plane.
    */
-  n_affected_points = gegl_transform_depth_clip (&matrix, near_z, vertices, 4,
-                                                 affected_points);
+  n_affected_points = gegl_transform_depth_clip (&matrix, transform->near_z,
+                                                 vertices, 4, affected_points);
 
   if (n_affected_points > 1)
     {
@@ -1068,7 +1055,6 @@ typedef struct ThreadData
                 GeglBuffer          *dest,
                 GeglBuffer          *src,
                 GeglMatrix3         *matrix,
-                gdouble              near_z,
                 const GeglRectangle *roi,
                 gint                 level);
 
@@ -1078,7 +1064,6 @@ typedef struct ThreadData
   GeglBuffer               *output;
   gint                     *pending;
   GeglMatrix3              *matrix;
-  gdouble                   near_z;
   gint                      level;
   gboolean                  success;
   GeglRectangle             roi;
@@ -1098,7 +1083,6 @@ static void thread_process (gpointer thread_data, gpointer input)
               data->output,
               input,
               data->matrix,
-              data->near_z,
               &data->roi,
               data->level);
 
@@ -1124,7 +1108,6 @@ transform_affine (GeglOperation       *operation,
                   GeglBuffer          *dest,
                   GeglBuffer          *src,
                   GeglMatrix3         *matrix,
-                  gdouble              near_z,
                   const GeglRectangle *roi,
                   gint                 level)
 {
@@ -1132,7 +1115,7 @@ transform_affine (GeglOperation       *operation,
   OpTransform     *transform = (OpTransform *) operation;
   const Babl      *format = babl_format ("RaGaBaA float");
   GeglMatrix3      inverse;
-  gdouble          inverse_near_z = 1.0 / near_z;
+  gdouble          inverse_near_z = 1.0 / transform->near_z;
   GeglMatrix2      inverse_jacobian;
   GeglAbyssPolicy  abyss_policy = gegl_transform_get_abyss_policy (transform);
   GeglSampler     *sampler = gegl_buffer_sampler_new_at_level (src,
@@ -1280,7 +1263,6 @@ transform_generic (GeglOperation       *operation,
                    GeglBuffer          *dest,
                    GeglBuffer          *src,
                    GeglMatrix3         *matrix,
-                   gdouble              near_z,
                    const GeglRectangle *roi,
                    gint                 level)
 {
@@ -1289,7 +1271,7 @@ transform_generic (GeglOperation       *operation,
   gint                 factor = 1 << level;
   GeglBufferIterator  *i;
   GeglMatrix3          inverse;
-  gdouble              inverse_near_z = 1.0 / near_z;
+  gdouble              inverse_near_z = 1.0 / transform->near_z;
   GeglAbyssPolicy      abyss_policy = gegl_transform_get_abyss_policy (transform);
   GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src,
                                          babl_format("RaGaBaA float"),
@@ -1434,7 +1416,6 @@ transform_nearest (GeglOperation       *operation,
                    GeglBuffer          *dest,
                    GeglBuffer          *src,
                    GeglMatrix3         *matrix,
-                   gdouble              near_z,
                    const GeglRectangle *roi,
                    gint                 level)
 {
@@ -1444,7 +1425,7 @@ transform_nearest (GeglOperation       *operation,
   gint                 px_size   = babl_format_get_bytes_per_pixel (format);
   GeglBufferIterator  *i;
   GeglMatrix3          inverse;
-  gdouble              inverse_near_z = 1.0 / near_z;
+  gdouble              inverse_near_z = 1.0 / transform->near_z;
   GeglAbyssPolicy      abyss_policy = gegl_transform_get_abyss_policy (transform);
   GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format,
                                          GEGL_SAMPLER_NEAREST,
@@ -1482,8 +1463,6 @@ transform_nearest (GeglOperation       *operation,
   }
 
   gegl_matrix3_invert (&inverse);
-
-  near_z = 1.0 / near_z;
 
   /*
    * Fill the output tiles.
@@ -1618,10 +1597,9 @@ gegl_transform_process (GeglOperation        *operation,
   GeglBuffer  *input;
   GeglBuffer  *output;
   GeglMatrix3  matrix;
-  gdouble      near_z;
   OpTransform *transform = (OpTransform *) operation;
 
-  gegl_transform_create_composite_matrix (transform, &matrix, &near_z);
+  gegl_transform_create_composite_matrix (transform, &matrix);
 
   if (gegl_transform_is_intermediate_node (transform) ||
       gegl_matrix3_is_identity (&matrix))
@@ -1675,7 +1653,6 @@ gegl_transform_process (GeglOperation        *operation,
                     GeglBuffer          *dest,
                     GeglBuffer          *src,
                     GeglMatrix3         *matrix,
-                    gdouble              near_z,
                     const GeglRectangle *roi,
                     gint                 level) = transform_generic;
 
@@ -1729,7 +1706,6 @@ gegl_transform_process (GeglOperation        *operation,
         {
           thread_data[i].func = func;
           thread_data[i].matrix = &matrix;
-          thread_data[i].near_z = near_z;
           thread_data[i].operation = operation;
           thread_data[i].context = context;
           thread_data[i].output = output;
@@ -1746,7 +1722,7 @@ gegl_transform_process (GeglOperation        *operation,
       }
       else
       {
-        func (operation, output, input, &matrix, near_z, result, level);
+        func (operation, output, input, &matrix, result, level);
       }
 
       g_clear_object (&input);
