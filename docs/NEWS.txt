@@ -58,6 +58,12 @@ News ops in workshop:
 
 color-overlay, enlarge, inpaint, domain-transform, recursive=transform.
 
+Contributors for this release were: Alan Mortensen, Alexandre Prokoudine,
+Debarshi Ray, Dimitris Spingos, Ell, Felipeek, Inaki Larranaga Murgoitio,
+Jehan, Jordi Mas, Mario Blättermann, Michael Natterer, Øyvind Kolås, Piotr
+Drąg, Rūdolfs Mazurs, and Thomas Manni.
+
+
 GEGL-0.3.28 2018-01-23
 ----------------------
 
