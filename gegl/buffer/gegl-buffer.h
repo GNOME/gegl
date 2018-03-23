@@ -240,7 +240,11 @@ gboolean          gegl_buffer_set_abyss      (GeglBuffer          *buffer,
  * Valid values: GEGL_ABYSS_NONE (abyss pixels are zeroed), GEGL_ABYSS_WHITE
  * (abyss pixels are white), GEGL_ABYSS_BLACK (abyss pixels are black),
  * GEGL_ABYSS_CLAMP (coordinates are clamped to the abyss rectangle),
- * GEGL_ABYSS_LOOP (buffer contents are tiled if outside of the abyss rectangle).
+ * GEGL_ABYSS_LOOP (buffer contents are tiled if outside of the abyss rectangle)
+ * this argument also takes a GEGL_BUFFER_FILTER value or'ed into it, allowing
+ * to specify trade-off of performance/quality, valid values are:
+ * GEGL_BUFFER_FILTER_NEAREST, GEGL_BUFFER_FILTER_BILINEAR,
+ * GEGL_BUFFER_FILTER_BOX and GEGL_BUFFER_FILTER_AUTO.
  *
  * Fetch a rectangular linear buffer of pixel data from the GeglBuffer, the
  * data is converted to the desired BablFormat, if the BablFormat stored and
