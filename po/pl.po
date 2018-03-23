@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-03-17 14:59+0000\n"
-"PO-Revision-Date: 2018-03-18 01:37+0100\n"
+"POT-Creation-Date: 2018-03-22 18:50+0000\n"
+"PO-Revision-Date: 2018-03-23 20:01+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -2290,8 +2290,7 @@ msgstr "Wartość reprezentują udział przeszłych klatek w nowej klatce."
 msgid "Temporal blur"
 msgstr "Rozmycie tymczasowe"
 
-#. XXX: doesn't really make sense...
-#: operations/common/mblur.c:146
+#: operations/common/mblur.c:145
 msgid ""
 "Accumulating motion blur using a kalman filter, for use with video sequences "
 "of frames."
@@ -4324,7 +4323,7 @@ msgstr "Zachowanie wykrywania krawędzi"
 msgid "Edge Detection"
 msgstr "Wykrywanie krawędzi"
 
-#: operations/common-gpl3+/edge.c:356
+#: operations/common-gpl3+/edge.c:355
 msgid "Several simple methods for detecting edges"
 msgstr "Kilka prostych metod wykrywania krawędzi"
 
@@ -5605,8 +5604,12 @@ msgid "Value Propagate"
 msgstr "Rozprowadzanie wartości"
 
 #: operations/common-gpl3+/value-propagate.c:645
-msgid "Propagate certain colors to neighboring pixels."
-msgstr "Rozprowadź konkretne kolory do sąsiednich pikseli."
+msgid ""
+"Propagate certain values to neighboring pixels. Erode and dilate any color "
+"or opacity."
+msgstr ""
+"Rozprowadź konkretne wartości do sąsiednich pikseli. Eroduj lub rozciągnij "
+"dowolny kolor lub nieprzezroczystość."
 
 #: operations/common-gpl3+/video-degradation.c:34
 msgid "Staggered"
@@ -6893,11 +6896,13 @@ msgstr "globalna wartość używana, jeśli bufor pomocniczy nie zawiera danych"
 msgid ""
 "Math operation add, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. (formula: result = input + value)"
+"aux as operands. The result is the evaluation of the expression result = "
+"input + value"
 msgstr ""
 "Działanie matematyczne dodawania. Wykonuje działanie na każdym pikselu za "
 "pomocą stałej podanej jako „wartość” lub odpowiedniego piksela z bufora na "
-"dodatkowym wejściu jako argumenty (równanie: wynik = wejście + wartość)."
+"dodatkowym wejściu jako argumenty. Wynik to wyrażenie: wynik = wejście + "
+"wartość"
 
 #: operations/generated/clear.c:128
 msgid "Porter Duff operation clear (d = 0.0f)"
@@ -6945,12 +6950,13 @@ msgstr ""
 msgid ""
 "Math operation divide, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. (formula: result = value==0.0f?0.0f:input/value)"
+"aux as operands. The result is the evaluation of the expression result = "
+"value==0.0f?0.0f:input/value"
 msgstr ""
 "Działanie matematyczne dzielenia. Wykonuje działanie na każdym pikselu za "
 "pomocą stałej podanej jako „wartość” lub odpowiedniego piksela z bufora na "
-"dodatkowym wejściu jako argumenty (równanie: wynik = wartość==0.0f?0.0f:"
-"wejście/wartość)."
+"dodatkowym wejściu jako argumenty. Wynik to wyrażenie: wynik = wartość==0.0f?"
+"0.0f:wejście/wartość"
 
 #: operations/generated/dst-atop.c:128
 msgid "Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"
@@ -6984,12 +6990,13 @@ msgstr ""
 msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. (formula: result = powf (input, value))"
+"aux as operands. The result is the evaluation of the expression result = "
+"powf (input, value)"
 msgstr ""
 "Działanie matematyczne gammy. Wykonuje działanie na każdym pikselu za pomocą "
 "stałej podanej jako „wartość” lub odpowiedniego piksela z bufora na "
-"dodatkowym wejściu jako argumenty (równanie: wynik = powf (wejście, "
-"wartość))."
+"dodatkowym wejściu jako argumenty. Wynik to wyrażenie: wynik = powf "
+"(wejście, wartość)"
 
 #: operations/generated/hard-light.c:175
 msgid ""
@@ -7013,11 +7020,13 @@ msgstr ""
 msgid ""
 "Math operation multiply, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. (formula: result = input * value)"
+"aux as operands. The result is the evaluation of the expression result = "
+"input * value"
 msgstr ""
 "Działanie matematyczne mnożenia. Wykonuje działanie na każdym pikselu za "
 "pomocą stałej podanej jako „wartość” lub odpowiedniego piksela z bufora na "
-"dodatkowym wejściu jako argumenty (równanie: wynik = wejście * wartość)."
+"dodatkowym wejściu jako argumenty. Wynik to wyrażenie: wynik = wejście * "
+"wartość"
 
 #: operations/generated/overlay.c:175
 msgid ""
@@ -7073,11 +7082,13 @@ msgstr "Działanie Portera-Duffa „src-out” (d = cA * (1.0f - aB))"
 msgid ""
 "Math operation subtract, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. (formula: result = input - value)"
+"aux as operands. The result is the evaluation of the expression result = "
+"input - value"
 msgstr ""
 "Działanie matematyczne odejmowania. Wykonuje działanie na każdym pikselu za "
 "pomocą stałej podanej jako „wartość” lub odpowiedniego piksela z bufora na "
-"dodatkowym wejściu jako argumenty (równanie: wynik = wejście - wartość)."
+"dodatkowym wejściu jako argumenty. Wynik to wyrażenie: wynik = wejście - "
+"wartość"
 
 #: operations/generated/xor.c:150
 msgid "Porter Duff operation xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
@@ -7412,11 +7423,11 @@ msgstr ""
 msgid "The color to paint over the input"
 msgstr "Kolor, na jaki pomalować wejście"
 
-#: operations/workshop/color-overlay.c:156
+#: operations/workshop/color-overlay.c:157
 msgid "Color Overlay"
 msgstr "Pokrycie kolorem"
 
-#: operations/workshop/color-overlay.c:157
+#: operations/workshop/color-overlay.c:158
 msgid "Paint a color overlay over the input, preseving its transparency."
 msgstr "Pomaluj wejście na kolor, zachowując jego przezroczystość."
 
@@ -7457,11 +7468,11 @@ msgstr ""
 "Wykonuje naiwne usuwanie mozaiki „grayscale2color” z obrazu, bez "
 "interpolacji."
 
-#: operations/workshop/ditto.c:114
+#: operations/workshop/ditto.c:118
 msgid "Ditto"
 msgstr "Kopia"
 
-#: operations/workshop/ditto.c:116
+#: operations/workshop/ditto.c:120
 msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Testuj działanie, aby wykonać odwzorowanie 1∶1 wejścia do wyjścia podczas "
