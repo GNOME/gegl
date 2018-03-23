@@ -7,8 +7,8 @@ GeglBuffer:
 gegl_buffer_get now treats the final argument, which used to control only abyss
 behavior as a bit-field that also can have interpolation method to use when
 scaling down from the next larger mipmap level, valid values are
-GEGL_BUFFER_NEAREST, GEGL_BUFFER_BILINEAR, GEGL_BUFFER_BOXFILTER and
-GEGL_BUFFER_AUTO.
+GEGL_BUFFER_FILTER_NEAREST, GEGL_BUFFER_FILTER_BILINEAR,
+GEGL_BUFFER_FILTER_BOXFILTER and GEGL_BUFFER_FILTER_AUTO.
 
 All scaling is now done on linear data, making future results of mipmap
 computations more valid as well as providing correct results for scaled down
