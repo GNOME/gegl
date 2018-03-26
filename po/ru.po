@@ -6,11 +6,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GEGL 0.3.30\n"
+"Project-Id-Version: GEGL 0.3.31\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=GEGL&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2018-03-23 17:38+0300\n"
-"PO-Revision-Date: 2018-03-23 17:44+0300\n"
+"PO-Revision-Date: 2018-03-26 03:49+0300\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: русский <>\n"
 "Language: ru\n"
@@ -201,7 +201,7 @@ msgstr "Манхэттен"
 
 #: ../gegl/gegl-enums.c:125
 msgid "Chebyshev"
-msgstr ""
+msgstr "Чебышева"
 
 #: ../gegl/gegl-enums.c:150 ../operations/common/edge-sobel.c:27
 #: ../operations/common/noise-spread.c:29 ../operations/workshop/spherize.c:27
@@ -795,7 +795,7 @@ msgstr "От"
 
 #: ../operations/common/color-rotate.c:44
 msgid "Start angle of the source color range"
-msgstr ""
+msgstr "Начальный угол исходного диапазона цветов"
 
 #: ../operations/common/color-rotate.c:48
 #: ../operations/common/color-rotate.c:61
@@ -804,15 +804,15 @@ msgstr "До"
 
 #: ../operations/common/color-rotate.c:49
 msgid "End angle of the source color range"
-msgstr ""
+msgstr "Конечный угол исходного диапазона цветов"
 
 #: ../operations/common/color-rotate.c:57
 msgid "Start angle of the destination color range"
-msgstr ""
+msgstr "Начальный угол конечного диапазона цветов"
 
 #: ../operations/common/color-rotate.c:62
 msgid "End angle of the destination color range"
-msgstr ""
+msgstr "Конечный угол конечного диапазона цветов"
 
 #: ../operations/common/color-rotate.c:66
 msgid "Gray threshold"
@@ -1711,7 +1711,7 @@ msgstr "Обрезать конечное изображение до разме
 
 #: ../operations/common/gaussian-blur.c:63 ../operations/common/gblur-1d.c:65
 msgid "Should the output extent be clipped to the input extent"
-msgstr ""
+msgstr "Должен ли вывод быть обрезан по границам исходных данных"
 
 #: ../operations/common/gaussian-blur.c:118
 msgid "Gaussian Blur"
@@ -2138,7 +2138,7 @@ msgstr ""
 
 #: ../operations/common/mantiuk06.c:32
 msgid "The amount of contrast compression"
-msgstr ""
+msgstr "Количество сжатия контраста"
 
 #: ../operations/common/mantiuk06.c:39
 #: ../operations/common-gpl3+/noise-solid.c:51
@@ -2900,29 +2900,27 @@ msgstr ""
 
 #: ../operations/common/panorama-projection.c:23
 msgid "Pan"
-msgstr ""
+msgstr "Панорамирование"
 
 #: ../operations/common/panorama-projection.c:24
-#, fuzzy
 msgid "Horizontal camera panning"
-msgstr "Перемещение по горизонтали"
+msgstr "Горизонтальное перемещение камеры"
 
 #: ../operations/common/panorama-projection.c:28
 msgid "Tilt"
-msgstr ""
+msgstr "Наклон"
 
 #: ../operations/common/panorama-projection.c:29
-#, fuzzy
 msgid "Vertical camera panning"
-msgstr "Центр виньетирования по вертикали"
+msgstr "Вертикальное перемещение камеры"
 
 #: ../operations/common/panorama-projection.c:34
 msgid "Spin"
-msgstr ""
+msgstr "Вращение"
 
 #: ../operations/common/panorama-projection.c:35
 msgid "Spin angle around camera axis"
-msgstr ""
+msgstr "Вращение вокруг центральной оси объектива"
 
 #: ../operations/common/panorama-projection.c:43
 msgid "output/rendering width in pixels, -1 for input width"
@@ -3010,7 +3008,7 @@ msgstr "Цвет фона"
 
 #: ../operations/common/pixelize.c:63
 msgid "Color used to fill the background"
-msgstr ""
+msgstr "Цвет для заполнения фона"
 
 #: ../operations/common/pixelize.c:656
 msgid "Pixelize"
@@ -3022,7 +3020,7 @@ msgstr ""
 
 #: ../operations/common/posterize.c:25
 msgid "number of levels per component"
-msgstr ""
+msgstr "Количество уровней на компонент"
 
 #: ../operations/common/posterize.c:132
 msgid "Posterize"
@@ -3058,7 +3056,7 @@ msgstr ""
 
 #: ../operations/common/rectangle.c:49
 msgid "Color to render"
-msgstr ""
+msgstr "Рисуемый цвет"
 
 #: ../operations/common/rectangle.c:89
 msgid "Rectangle"
@@ -3110,11 +3108,11 @@ msgstr ""
 
 #: ../operations/common/rgb-clip.c:25 ../operations/common/rgb-clip.c:26
 msgid "Clip low pixel values"
-msgstr ""
+msgstr "Обрезать значения пикселей ниже этой границы"
 
 #: ../operations/common/rgb-clip.c:28
 msgid "Low limit"
-msgstr ""
+msgstr "Нижний предел"
 
 #: ../operations/common/rgb-clip.c:31
 msgid "Pixels values lower than this limit will be set to it"
@@ -3122,11 +3120,11 @@ msgstr ""
 
 #: ../operations/common/rgb-clip.c:34 ../operations/common/rgb-clip.c:35
 msgid "Clip high pixel values"
-msgstr ""
+msgstr "Обрезать значения пикселей выше этой границы"
 
 #: ../operations/common/rgb-clip.c:37
 msgid "High limit"
-msgstr ""
+msgstr "Верхний предел"
 
 #: ../operations/common/rgb-clip.c:40
 msgid "Pixels values higher than this limit will be set to it"
@@ -3134,7 +3132,7 @@ msgstr ""
 
 #: ../operations/common/rgb-clip.c:187
 msgid "Clip RGB"
-msgstr ""
+msgstr "Обрезать RGB"
 
 #: ../operations/common/rgb-clip.c:190
 msgid "Keep RGB pixels values inside a specific range"
@@ -3382,7 +3380,7 @@ msgstr ""
 
 #: ../operations/common/unsharp-mask.c:24
 msgid "Standard Deviation"
-msgstr ""
+msgstr "Стандартное отклонение"
 
 #: ../operations/common/unsharp-mask.c:84
 msgid "Unsharp Mask"
@@ -4557,7 +4555,7 @@ msgstr ""
 
 #: ../operations/common-gpl3+/lens-distortion.c:34
 msgid "Amount of second-order distortion"
-msgstr ""
+msgstr "Количество искажений второго порядка"
 
 #: ../operations/common-gpl3+/lens-distortion.c:37
 #, fuzzy
@@ -4566,7 +4564,7 @@ msgstr "Край:"
 
 #: ../operations/common-gpl3+/lens-distortion.c:38
 msgid "Amount of fourth-order distortion"
-msgstr ""
+msgstr "Количество искажений четвёртого порядка"
 
 #: ../operations/common-gpl3+/lens-distortion.c:42
 msgid "Rescale overall image size"
@@ -4586,7 +4584,7 @@ msgstr "Осветление"
 
 #: ../operations/common-gpl3+/lens-distortion.c:54
 msgid "Adjust brightness in corners"
-msgstr ""
+msgstr "Скорректировать яркость в углах"
 
 #: ../operations/common-gpl3+/lens-distortion.c:501
 msgid "Lens Distortion"
@@ -4690,7 +4688,7 @@ msgstr "Форма плиток"
 
 #: ../operations/common-gpl3+/mosaic.c:40
 msgid "What shape to use for tiles"
-msgstr ""
+msgstr "Форма элементов мозаики"
 
 #: ../operations/common-gpl3+/mosaic.c:48
 msgid "Tile height"
@@ -5359,7 +5357,7 @@ msgstr ""
 
 #: ../operations/common-gpl3+/tile-paper.c:28
 msgid "Inverted image"
-msgstr ""
+msgstr "Инвертированное изображение"
 
 #: ../operations/common-gpl3+/tile-paper.c:29
 msgid "Image"
@@ -5371,7 +5369,7 @@ msgstr "Фон"
 
 #: ../operations/common-gpl3+/tile-paper.c:35
 msgid "Ignore"
-msgstr ""
+msgstr "Игнорировать"
 
 #: ../operations/common-gpl3+/tile-paper.c:36
 msgid "Force"
@@ -5379,7 +5377,7 @@ msgstr "Сила"
 
 #: ../operations/common-gpl3+/tile-paper.c:40
 msgid "Width of the tile"
-msgstr ""
+msgstr "Ширина плитки"
 
 #: ../operations/common-gpl3+/tile-paper.c:47
 msgid "Height of the tile"
@@ -5399,24 +5397,20 @@ msgid "Wrap the fractional tiles"
 msgstr ""
 
 #: ../operations/common-gpl3+/tile-paper.c:62
-#, fuzzy
 msgid "Fractional type"
-msgstr "Тип фрактала"
+msgstr "Дробный тип"
 
 #: ../operations/common-gpl3+/tile-paper.c:65
-#, fuzzy
 msgid "Fractional Type"
-msgstr "Тип фрактала"
+msgstr "Дробный тип"
 
 #: ../operations/common-gpl3+/tile-paper.c:67
-#, fuzzy
 msgid "Centering"
-msgstr "Центр"
+msgstr "Центрирование"
 
 #: ../operations/common-gpl3+/tile-paper.c:68
-#, fuzzy
 msgid "Centering of the tiles"
-msgstr "Цвет линий сетки"
+msgstr "Центрирование плиток мозаики"
 
 #: ../operations/common-gpl3+/tile-paper.c:70
 #: ../operations/common-gpl3+/tile-paper.c:73
