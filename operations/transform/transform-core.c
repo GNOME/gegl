@@ -989,18 +989,18 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
    * to be enough.
    */
 
+  gegl_transform_create_composite_matrix (transform, &matrix);
+
+  if (gegl_transform_is_intermediate_node (transform) ||
+      gegl_matrix3_is_identity (&matrix))
+    return region;
+
   sampler = gegl_buffer_sampler_new_at_level (NULL,
                                      babl_format("RaGaBaA float"),
                                      transform->sampler,
                                      0); // XXX: need level?
   context_rect = *gegl_sampler_get_context_rect (sampler);
   g_object_unref (sampler);
-
-  gegl_transform_create_composite_matrix (transform, &matrix);
-
-  if (gegl_transform_is_intermediate_node (transform) ||
-      gegl_matrix3_is_identity (&matrix))
-    return region;
 
   /*
    * Fatten (dilate) the input region by the context_rect.
