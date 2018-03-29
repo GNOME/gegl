@@ -35,6 +35,8 @@
 G_DEFINE_TYPE (GeglTileHandlerZoom, gegl_tile_handler_zoom,
                GEGL_TYPE_TILE_HANDLER)
 
+static guint64 total_size = 0;
+
 static inline void set_blank (GeglTile   *dst_tile,
                               gint        width,
                               gint        height,
@@ -55,6 +57,8 @@ static inline void set_blank (GeglTile   *dst_tile,
       memset (dst, 0x0, bytes);
       dst += rowstride;
     }
+
+  total_size += (height / 2) * bytes;
 }
 
 static inline void set_half (GeglTileHandlerZoom *zoom,
@@ -77,6 +81,8 @@ static inline void set_half (GeglTileHandlerZoom *zoom,
     zoom->downscale_2x2 = gegl_downscale_2x2_get_fun (format);
 
   zoom->downscale_2x2 (format, width, height, src_data, width * bpp, dst_data, width * bpp);
+
+  total_size += (width / 2) * (height / 2) * bpp;
 }
 
 static GeglTile *
@@ -189,4 +195,16 @@ gegl_tile_handler_zoom_new (GeglTileBackend *backend)
   ret->backend = backend;
 
   return (void*)ret;
+}
+
+guint64
+gegl_tile_handler_zoom_get_total (void)
+{
+  return total_size;
+}
+
+void
+gegl_tile_handler_zoom_reset_stats (void)
+{
+  total_size = 0;
 }

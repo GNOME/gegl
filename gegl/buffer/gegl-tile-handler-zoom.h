@@ -64,6 +64,9 @@ GType             gegl_tile_handler_zoom_get_type (void) G_GNUC_CONST;
 
 GeglTileHandler * gegl_tile_handler_zoom_new      (GeglTileBackend *backend);
 
+guint64           gegl_tile_handler_zoom_get_total   (void);
+void              gegl_tile_handler_zoom_reset_stats (void);
+
 G_END_DECLS
 
 #endif

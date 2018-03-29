@@ -24,6 +24,7 @@
 #include "gegl-types-internal.h"
 #include "buffer/gegl-buffer-types.h"
 #include "buffer/gegl-tile-handler-cache.h"
+#include "buffer/gegl-tile-handler-zoom.h"
 #include "buffer/gegl-tile-backend-swap.h"
 #include "gegl-stats.h"
 
@@ -38,7 +39,8 @@ enum
   PROP_TILE_CACHE_MISSES,
   PROP_SWAP_TOTAL,
   PROP_SWAP_FILE_SIZE,
-  PROP_SWAP_BUSY
+  PROP_SWAP_BUSY,
+  PROP_ZOOM_TOTAL
 };
 
 
@@ -118,6 +120,13 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                          "Whether there is work queued for the swap",
                                                          FALSE,
                                                          G_PARAM_READABLE));
+
+  g_object_class_install_property (object_class, PROP_ZOOM_TOTAL,
+                                   g_param_spec_uint64 ("zoom-total",
+                                                        "Zoom total",
+                                                        "Total size of data processed by the zoom tile handler",
+                                                        0, G_MAXUINT64, 0,
+                                                        G_PARAM_READABLE));
 }
 
 static void
@@ -179,6 +188,10 @@ gegl_stats_get_property (GObject    *object,
         g_value_set_boolean (value, gegl_tile_backend_swap_get_busy ());
         break;
 
+      case PROP_ZOOM_TOTAL:
+        g_value_set_uint64 (value, gegl_tile_handler_zoom_get_total ());
+        break;
+
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
         break;
@@ -189,4 +202,5 @@ void
 gegl_stats_reset (GeglStats *stats)
 {
   gegl_tile_handler_cache_reset_stats ();
+  gegl_tile_handler_zoom_reset_stats ();
 }
