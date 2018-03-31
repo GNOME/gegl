@@ -269,6 +269,8 @@ gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
 
   for (z = 1; z <= handler->priv->tile_storage->seen_zoom; z++)
     {
+      gint U1, V1;
+      gint U2, V2;
       gint x,  y;
 
       X1 >>= 1;
@@ -281,11 +283,59 @@ gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
       x2 >>= 1;
       y2 >>= 1;
 
+      U1 = 8 * (X1 - x1 * tile_width)  / tile_width;
+      V1 = 8 * (Y1 - y1 * tile_height) / tile_height;
+      U2 = 8 * (X2 - x2 * tile_width)  / tile_width;
+      V2 = 8 * (Y2 - y2 * tile_height) / tile_height;
+
       for (x = x1; x <= x2; x++)
         {
+          gint  u1 = x == x1 ? U1 : 0;
+          gint  u2 = x == x2 ? U2 : 7;
+          guint base;
+
+          if (u1 == 0 && u2 == 7)
+            {
+              base = 0x00330033;
+            }
+          else
+            {
+              gint i;
+
+              base = 0;
+
+              for (i = u1; i <= u2; i++)
+                {
+                  base |= 1 << (((i & 1) << 0) |
+                                ((i & 2) << 1) |
+                                ((i & 4) << 2));
+                }
+            }
+
           for (y = y1; y <= y2; y++)
             {
-              gegl_tile_source_void (source, x, y, z);
+              gint v1 = y == y1 ? V1 : 0;
+              gint v2 = y == y2 ? V2 : 7;
+
+              if (u1 + v1 == 0 && u2 + v2 == 14)
+                {
+                  gegl_tile_source_void (source, x, y, z);
+                }
+              else
+                {
+                  guint64 damage = 0;
+                  gint    i;
+
+                  for (i = v1; i <= v2; i++)
+                    {
+                      damage |= (guint64) base << (((i & 1) << 1) |
+                                                   ((i & 2) << 2) |
+                                                   ((i & 4) << 3));
+                    }
+
+                  gegl_tile_source_command (source, GEGL_TILE_VOID, x, y, z,
+                                            &damage);
+                }
             }
         }
     }

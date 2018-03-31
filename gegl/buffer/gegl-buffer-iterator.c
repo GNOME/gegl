@@ -193,7 +193,7 @@ release_tile (GeglBufferIterator *iter,
   if (sub->current_tile_mode == GeglIteratorTileMode_DirectTile)
     {
       if (sub->access_mode & GEGL_ACCESS_WRITE)
-        gegl_tile_unlock (sub->current_tile);
+        gegl_tile_unlock_no_void (sub->current_tile);
       gegl_tile_unref (sub->current_tile);
 
       sub->current_tile = NULL;
@@ -545,8 +545,17 @@ _gegl_buffer_iterator_stop (GeglBufferIterator *iter)
           if (sub->linear_tile)
             {
               if (sub->access_mode & GEGL_ACCESS_WRITE)
-                gegl_tile_unlock (sub->linear_tile);
+                gegl_tile_unlock_no_void (sub->linear_tile);
               gegl_tile_unref (sub->linear_tile);
+            }
+
+          if (sub->level == 0                      &&
+              sub->access_mode & GEGL_ACCESS_WRITE &&
+              ! (sub->access_mode & GEGL_ITERATOR_INCOMPATIBLE))
+            {
+              gegl_tile_handler_damage_rect (
+                GEGL_TILE_HANDLER (sub->buffer->tile_storage),
+                &sub->full_rect);
             }
 
           gegl_buffer_unlock (sub->buffer);

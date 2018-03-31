@@ -78,7 +78,8 @@ void              gegl_tile_handler_cache_insert     (GeglTileHandlerCache *cach
 static void       gegl_tile_handler_cache_void       (GeglTileHandlerCache *cache,
                                                       gint                  x,
                                                       gint                  y,
-                                                      gint                  z);
+                                                      gint                  z,
+                                                      guint64               damage);
 static void       gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cache,
                                                       gint                  x,
                                                       gint                  y,
@@ -284,7 +285,9 @@ gegl_tile_handler_cache_command (GeglTileSource  *tile_store,
         gegl_tile_handler_cache_invalidate (cache, x, y, z);
         break;
       case GEGL_TILE_VOID:
-        gegl_tile_handler_cache_void (cache, x, y, z);
+        gegl_tile_handler_cache_void (cache, x, y, z,
+                                      data ? *(const guint64 *) data :
+                                             ~(guint64) 0);
         break;
       case GEGL_TILE_REINIT:
         gegl_tile_handler_cache_reinit (cache);
@@ -651,29 +654,33 @@ static void
 gegl_tile_handler_cache_void (GeglTileHandlerCache *cache,
                               gint                  x,
                               gint                  y,
-                              gint                  z)
+                              gint                  z,
+                              guint64               damage)
 {
   CacheItem *item;
 
   item = cache_lookup (cache, x, y, z);
   if (item)
     {
-      if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
-        g_atomic_pointer_add (&cache_total, -item->tile->size);
-      g_atomic_pointer_add (&cache_total_uncloned, -item->tile->size);
-
-      g_queue_unlink (&cache->queue, &item->link);
-      g_hash_table_remove (cache->items, item);
-
-      if (g_queue_is_empty (&cache->queue))
-        cache->time = cache->stamp = 0;
-
       drop_hot_tile (item->tile);
-      gegl_tile_void (item->tile);
-      item->tile->tile_storage = NULL;
-      gegl_tile_unref (item->tile);
 
-      g_slice_free (CacheItem, item);
+      if (gegl_tile_damage (item->tile, damage))
+        {
+          if (g_atomic_int_dec_and_test (gegl_tile_n_cached_clones (item->tile)))
+            g_atomic_pointer_add (&cache_total, -item->tile->size);
+          g_atomic_pointer_add (&cache_total_uncloned, -item->tile->size);
+
+          g_queue_unlink (&cache->queue, &item->link);
+          g_hash_table_remove (cache->items, item);
+
+          if (g_queue_is_empty (&cache->queue))
+            cache->time = cache->stamp = 0;
+
+          item->tile->tile_storage = NULL;
+          gegl_tile_unref (item->tile);
+
+          g_slice_free (CacheItem, item);
+        }
     }
 }
 
@@ -695,7 +702,7 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
   item->z         = z;
 
   // XXX : remove entry if it already exists
-  gegl_tile_handler_cache_void (cache, x, y, z);
+  gegl_tile_handler_cache_void (cache, x, y, z, ~(guint64) 0);
 
   tile->x = x;
   tile->y = y;

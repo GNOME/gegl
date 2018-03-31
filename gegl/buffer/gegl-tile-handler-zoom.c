@@ -29,6 +29,7 @@
 #include "gegl-tile-handler-private.h"
 #include "gegl-tile-handler-zoom.h"
 #include "gegl-tile-storage.h"
+#include "gegl-buffer-private.h"
 #include "gegl-algorithms.h"
 
 
@@ -37,52 +38,101 @@ G_DEFINE_TYPE (GeglTileHandlerZoom, gegl_tile_handler_zoom,
 
 static guint64 total_size = 0;
 
-static inline void set_blank (GeglTile   *dst_tile,
-                              gint        width,
-                              gint        height,
-                              const Babl *format,
-                              gint        i,
-                              gint        j)
+static void
+downscale (GeglTileHandlerZoom *zoom,
+           const Babl          *format,
+           gint                 bpp,
+           guchar              *src,
+           guchar              *dest,
+           gint                 stride,
+           gint                 x,
+           gint                 y,
+           gint                 width,
+           gint                 height,
+           guint                damage,
+           gint                 i)
 {
-  guchar *dst_data  = gegl_tile_get_data (dst_tile);
-  gint    bpp       = babl_format_get_bytes_per_pixel (format);
-  gint    rowstride = width * bpp;
-  gint    scanline;
+  gint  n    = 1 << i;
+  guint mask = (1 << n) - 1;
 
-  gint    bytes = width * bpp / 2;
-  guchar *dst   = dst_data + j * height / 2 * rowstride + i * rowstride / 2;
-
-  for (scanline = 0; scanline < height / 2; scanline++)
+  if ((damage & mask) == mask)
     {
-      memset (dst, 0x0, bytes);
-      dst += rowstride;
+      if (src)
+        {
+          if (!zoom->downscale_2x2)
+            zoom->downscale_2x2 = gegl_downscale_2x2_get_fun (format);
+
+          zoom->downscale_2x2 (format,
+                               width, height,
+                               src +   y      * stride +  x      * bpp, stride,
+                               dest + (y / 2) * stride + (x / 2) * bpp, stride);
+        }
+      else
+        {
+          gint h = height / 2;
+          gint n = (width / 2) * bpp;
+          gint i;
+
+          dest += (y / 2) * stride + (x / 2) * bpp;
+
+          for (i = 0; i < h; i++)
+            {
+              memset (dest, 0, n);
+              dest += stride;
+            }
+        }
+
+      total_size += (width / 2) * (height / 2) * bpp;
     }
+  else
+    {
+      i--;
+      n    /=  2;
+      mask >>= n;
 
-  total_size += (height / 2) * bytes;
-}
+      if (damage & mask)
+        {
+          if (i & 1)
+            {
+              downscale (zoom,
+                         format, bpp, src, dest, stride,
+                         x, y,
+                         width, height / 2,
+                         damage, i);
+            }
+          else
+            {
+              downscale (zoom,
+                         format, bpp, src, dest, stride,
+                         x, y,
+                         width / 2, height,
+                         damage, i);
 
-static inline void set_half (GeglTileHandlerZoom *zoom,
-                             GeglTile   * dst_tile,
-                             GeglTile   * src_tile,
-                             gint         width,
-                             gint         height,
-                             const Babl * format,
-                             gint i,
-                             gint j)
-{
-  guchar     *dst_data   = gegl_tile_get_data (dst_tile);
-  guchar     *src_data   = gegl_tile_get_data (src_tile);
-  gint        bpp        = babl_format_get_bytes_per_pixel (format);
+            }
+        }
 
-  if (i) dst_data += bpp * width / 2;
-  if (j) dst_data += bpp * width * height / 2;
+      damage >>= n;
 
-  if (!zoom->downscale_2x2)
-    zoom->downscale_2x2 = gegl_downscale_2x2_get_fun (format);
-
-  zoom->downscale_2x2 (format, width, height, src_data, width * bpp, dst_data, width * bpp);
-
-  total_size += (width / 2) * (height / 2) * bpp;
+      if (damage & mask)
+        {
+          if (i & 1)
+            {
+              downscale (zoom,
+                         format, bpp, src, dest, stride,
+                         x, y + height / 2,
+                         width, height / 2,
+                         damage, i);
+            }
+          else
+            {
+              downscale (zoom,
+                         format, bpp, src, dest, stride,
+                         x + width / 2, y,
+                         width / 2, height,
+                         damage, i);
+            }
+        }
+    }
 }
 
 static GeglTile *
@@ -101,7 +151,7 @@ get_tile (GeglTileSource *gegl_tile_source,
   if (source)
     tile = gegl_tile_source_get_tile (source, x, y, z);
 
-  if (tile || (z == 0))
+  if (z == 0 || (tile && ! tile->damage))
     return tile;
 
   tile_storage = _gegl_tile_handler_get_tile_storage ((GeglTileHandler *) zoom);
@@ -114,16 +164,27 @@ get_tile (GeglTileSource *gegl_tile_source,
 
   {
     gint        i, j;
-    const Babl *format = gegl_tile_backend_get_format (zoom->backend);
+    const Babl *format;
+    gint        bpp;
+    gint        stride;
+    guint64     damage;
     GeglTile   *source_tile[2][2] = { { NULL, NULL }, { NULL, NULL } };
+
+    if (tile)
+      damage = tile->damage;
+    else
+      damage = ~(guint64) 0;
 
     for (i = 0; i < 2; i++)
       for (j = 0; j < 2; j++)
         {
-          /* we get the tile from ourselves, to make successive rescales work
-           * correctly */
-            source_tile[i][j] = gegl_tile_source_get_tile (gegl_tile_source,
-                                                          x * 2 + i, y * 2 + j, z - 1);
+          if ((damage >> (32 * j + 16 * i)) & 0xffff)
+            {
+              /* we get the tile from ourselves, to make successive rescales
+               * work correctly */
+              source_tile[i][j] = gegl_tile_source_get_tile (
+                gegl_tile_source, x * 2 + i, y * 2 + j, z - 1);
+            }
         }
 
     if (source_tile[0][0] == NULL &&
@@ -135,23 +196,42 @@ get_tile (GeglTileSource *gegl_tile_source,
                           fill in the shared empty tile */
       }
 
-    g_assert (tile == NULL);
+    format = gegl_tile_backend_get_format (zoom->backend);
+    bpp    = babl_format_get_bytes_per_pixel (format);
+    stride = tile_width * bpp;
 
-    tile = gegl_tile_handler_create_tile (GEGL_TILE_HANDLER (zoom), x, y, z);
+    if (! tile)
+      tile = gegl_tile_handler_create_tile (GEGL_TILE_HANDLER (zoom), x, y, z);
 
     gegl_tile_lock (tile);
 
     for (i = 0; i < 2; i++)
       for (j = 0; j < 2; j++)
         {
-          if (source_tile[i][j])
+          guint dmg = (damage >> (32 * j + 16 * i)) & 0xffff;
+
+          if (dmg)
             {
-              set_half (zoom, tile, source_tile[i][j], tile_width, tile_height, format, i, j);
-              gegl_tile_unref (source_tile[i][j]);
-            }
-          else
-            {
-              set_blank (tile, tile_width, tile_height, format, i, j);
+              gint x = i * tile_width / 2;
+              gint y = j * tile_height / 2;
+              guchar *src;
+              guchar *dest;
+
+              if (source_tile[i][j] && ! source_tile[i][j]->is_zero_tile)
+                src = gegl_tile_get_data (source_tile[i][j]);
+              else
+                src = NULL;
+
+              dest = gegl_tile_get_data (tile) + y * stride + x * bpp;
+
+              downscale (zoom,
+                         format, bpp, src, dest, stride,
+                         0, 0,
+                         tile_width, tile_height,
+                         dmg, 4);
+
+              if (source_tile[i][j])
+                gegl_tile_unref (source_tile[i][j]);
             }
         }
     gegl_tile_unlock (tile);

@@ -131,6 +131,7 @@ gegl_tile_dup (GeglTile *src)
   GeglTile *tile = gegl_tile_new_bare_internal ();
 
   g_warn_if_fail (src->lock_count == 0);
+  g_warn_if_fail (! src->damage);
 
   src->clone_state   = CLONE_STATE_CLONED;
 
@@ -282,16 +283,43 @@ static inline void
 _gegl_tile_void_pyramid (GeglTileSource *source,
                          gint            x,
                          gint            y,
-                         gint            z)
+                         gint            z,
+                         guint64         damage)
 {
-  if (z > ((GeglTileStorage*)source)->seen_zoom)
+  guint new_damage;
+  guint mask;
+  gint  i;
+
+  if (z >= ((GeglTileStorage*)source)->seen_zoom)
     return;
-  gegl_tile_source_void (source, x, y, z);
-  _gegl_tile_void_pyramid (source, x/2, y/2, z+1);
+
+  damage |= damage >> 1;
+  damage |= damage >> 2;
+
+  new_damage = 0;
+  mask       = 1;
+
+  for (i = 0; i < 16; i++)
+    {
+      new_damage |= damage & mask;
+      damage >>= 3;
+      mask   <<= 1;
+    }
+
+  damage = (guint64) new_damage << (32 * (y & 1) + 16 * (x & 1));
+
+  x >>= 1;
+  y >>= 1;
+  z++;
+
+  gegl_tile_source_command (source, GEGL_TILE_VOID, x, y, z, &damage);
+
+  _gegl_tile_void_pyramid (source, x, y, z, damage);
 }
 
 static inline void
-gegl_tile_void_pyramid (GeglTile *tile)
+gegl_tile_void_pyramid (GeglTile *tile,
+                        guint64   damage)
 {
   if (tile->tile_storage &&
       tile->tile_storage->seen_zoom &&
@@ -301,9 +329,10 @@ gegl_tile_void_pyramid (GeglTile *tile)
         g_rec_mutex_lock (&tile->tile_storage->mutex);
 
       _gegl_tile_void_pyramid (GEGL_TILE_SOURCE (tile->tile_storage),
-                               tile->x/2,
-                               tile->y/2,
-                               tile->z+1);
+                               tile->x,
+                               tile->y,
+                               tile->z,
+                               damage);
 
       if (gegl_config_threads()>1)
         g_rec_mutex_unlock (&tile->tile_storage->mutex);
@@ -318,6 +347,7 @@ gegl_tile_unlock (GeglTile *tile)
   if (g_atomic_int_dec_and_test (&tile->lock_count))
     {
       g_atomic_int_inc (&tile->rev);
+      tile->damage = 0;
 
       if (tile->unlock_notify != NULL)
         {
@@ -326,7 +356,22 @@ gegl_tile_unlock (GeglTile *tile)
 
       if (tile->z == 0)
         {
-          gegl_tile_void_pyramid (tile);
+          gegl_tile_void_pyramid (tile, ~(guint64) 0);
+        }
+    }
+}
+
+void
+gegl_tile_unlock_no_void (GeglTile *tile)
+{
+  if (g_atomic_int_dec_and_test (&tile->lock_count))
+    {
+      g_atomic_int_inc (&tile->rev);
+      tile->damage = 0;
+
+      if (tile->unlock_notify != NULL)
+        {
+          tile->unlock_notify (tile, tile->unlock_notify_data);
         }
     }
 }
@@ -349,7 +394,28 @@ gegl_tile_void (GeglTile *tile)
   gegl_tile_mark_as_stored (tile);
 
   if (tile->z == 0)
-    gegl_tile_void_pyramid (tile);
+    gegl_tile_void_pyramid (tile, ~(guint64) 0);
+}
+
+gboolean
+gegl_tile_damage (GeglTile *tile,
+                  guint64   damage)
+{
+  tile->damage |= damage;
+
+  if (! ~tile->damage)
+    {
+      gegl_tile_void (tile);
+
+      return TRUE;
+    }
+  else
+    {
+      if (tile->z == 0)
+        gegl_tile_void_pyramid (tile, damage);
+
+      return FALSE;
+    }
 }
 
 gboolean gegl_tile_store (GeglTile *tile)
@@ -357,7 +423,7 @@ gboolean gegl_tile_store (GeglTile *tile)
   gboolean ret;
   if (gegl_tile_is_stored (tile))
     return TRUE;
-  if (tile->tile_storage == NULL)
+  if (tile->tile_storage == NULL || tile->damage)
     return FALSE;
 
   if (gegl_config_threads()>1)

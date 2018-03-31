@@ -176,6 +176,8 @@ struct _GeglTile
                                  * are in the cache.
                                  */
 
+  guint64          damage;
+
   /* called when the tile is about to be destroyed */
   GDestroyNotify   destroy_notify;
   gpointer         destroy_notify_data;
@@ -186,6 +188,10 @@ struct _GeglTile
   GeglTileCallback unlock_notify;
   gpointer         unlock_notify_data;
 };
+
+void     gegl_tile_unlock_no_void (GeglTile *tile);
+gboolean gegl_tile_damage         (GeglTile *tile,
+                                   guint64   damage);
 
 void _gegl_buffer_drop_hot_tile (GeglBuffer *buffer);
 

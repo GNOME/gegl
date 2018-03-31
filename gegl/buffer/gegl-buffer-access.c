@@ -826,12 +826,16 @@ with multi-threading - and should be added back later.
               #undef CHECK_ALIGNMENT_ALIGNOF
             }
 
-          gegl_tile_unlock (tile);
+          gegl_tile_unlock_no_void (tile);
           gegl_tile_unref (tile);
           bufx += (tile_width - offsetx);
         }
       bufy += (tile_height - offsety);
     }
+
+  if (level == 0)
+    gegl_tile_handler_damage_rect (GEGL_TILE_HANDLER (buffer->tile_storage),
+                                   roi);
 }
 
 static inline void
