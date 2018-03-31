@@ -19,6 +19,7 @@
 #include "config.h"
 
 #include <string.h>
+#include <math.h>
 
 #include <glib-object.h>
 
@@ -27,6 +28,7 @@
 #include "gegl-tile-handler-private.h"
 #include "gegl-tile-storage.h"
 #include "gegl-buffer-private.h"
+#include "gegl-config.h"
 
 struct _GeglTileHandlerPrivate
 {
@@ -221,4 +223,73 @@ gegl_tile_handler_dup_tile (GeglTileHandler *handler,
     gegl_tile_handler_cache_insert (handler->priv->cache, tile, x, y, z);
 
   return tile;
+}
+
+void
+gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
+                               const GeglRectangle *rect)
+{
+  GeglTileSource *source;
+  gint            tile_width;
+  gint            tile_height;
+  gint            X1, Y1;
+  gint            X2, Y2;
+  gint            x1, y1;
+  gint            x2, y2;
+  gint            z;
+
+  g_return_if_fail (GEGL_IS_TILE_HANDLER (handler));
+  g_return_if_fail (rect != NULL);
+
+  if (! handler->priv->tile_storage            ||
+      ! handler->priv->tile_storage->seen_zoom ||
+      rect->width  <= 0                        ||
+      rect->height <= 0)
+    {
+      return;
+    }
+
+  source = GEGL_TILE_SOURCE (handler);
+
+  if (gegl_config_threads()>1)
+    g_rec_mutex_lock (&handler->priv->tile_storage->mutex);
+
+  tile_width  = handler->priv->tile_storage->tile_width;
+  tile_height = handler->priv->tile_storage->tile_height;
+
+  X1 = rect->x;
+  Y1 = rect->y;
+  X2 = rect->x + rect->width  - 1;
+  Y2 = rect->y + rect->height - 1;
+
+  x1 = floor ((gdouble) X1 / tile_width);
+  y1 = floor ((gdouble) Y1 / tile_height);
+  x2 = floor ((gdouble) X2 / tile_width);
+  y2 = floor ((gdouble) Y2 / tile_height);
+
+  for (z = 1; z <= handler->priv->tile_storage->seen_zoom; z++)
+    {
+      gint x,  y;
+
+      X1 >>= 1;
+      Y1 >>= 1;
+      X2 >>= 1;
+      Y2 >>= 1;
+
+      x1 >>= 1;
+      y1 >>= 1;
+      x2 >>= 1;
+      y2 >>= 1;
+
+      for (x = x1; x <= x2; x++)
+        {
+          for (y = y1; y <= y2; y++)
+            {
+              gegl_tile_source_void (source, x, y, z);
+            }
+        }
+    }
+
+  if (gegl_config_threads()>1)
+    g_rec_mutex_unlock (&handler->priv->tile_storage->mutex);
 }
