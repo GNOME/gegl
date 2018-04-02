@@ -823,6 +823,110 @@ gegl_downscale_2x2_u8_nl_alpha (const Babl *format,
 #undef CASE
 }
 
+static void
+gegl_downscale_2x2_u8_rgba (const Babl *format,
+                            gint        src_width,
+                            gint        src_height,
+                            guchar     *src_data,
+                            gint        src_rowstride,
+                            guchar     *dst_data,
+                            gint        dst_rowstride)
+{
+  gint y;
+  const gint bpp = 4;
+  gint diag = src_rowstride + bpp;
+
+  if (!src_data || !dst_data)
+    return;
+
+  for (y = 0; y < src_height / 2; y++)
+    {
+      gint    x;
+      guchar *src = src_data + src_rowstride * y * 2;
+      guchar *dst = dst_data + dst_rowstride * y;
+
+      uint8_t * aa = ((uint8_t *)(src));
+      uint8_t * ab = ((uint8_t *)(src + bpp));
+      uint8_t * ba = ((uint8_t *)(src + src_rowstride));
+      uint8_t * bb = ((uint8_t *)(src + diag));
+
+      for (x = 0; x < src_width / 2; x++)
+        {
+
+          ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
+                                                lut_u8_to_u16[ab[0]] +
+                                                lut_u8_to_u16[ba[0]] +
+                                                lut_u8_to_u16[bb[0]])>>2 ];
+          ((uint8_t *)dst)[1] = lut_u16_to_u8[ (lut_u8_to_u16[aa[1]] +
+                                                lut_u8_to_u16[ab[1]] +
+                                                lut_u8_to_u16[ba[1]] +
+                                                lut_u8_to_u16[bb[1]])>>2 ];
+          ((uint8_t *)dst)[2] = lut_u16_to_u8[ (lut_u8_to_u16[aa[2]] +
+                                                lut_u8_to_u16[ab[2]] +
+                                                lut_u8_to_u16[ba[2]] +
+                                                lut_u8_to_u16[bb[2]])>>2 ];
+          ((uint8_t *)dst)[3] = (aa[3] + ab[3] + ba[3] + bb[3])>>2;
+
+          dst += bpp;
+          aa += bpp * 2;
+          ab += bpp * 2;
+          ba += bpp * 2;
+          bb += bpp * 2;
+        }
+  }
+}
+
+static void
+gegl_downscale_2x2_u8_rgb (const Babl *format,
+                           gint        src_width,
+                           gint        src_height,
+                           guchar     *src_data,
+                           gint        src_rowstride,
+                           guchar     *dst_data,
+                           gint        dst_rowstride)
+{
+  gint y;
+  const gint bpp = 3;
+  gint diag = src_rowstride + bpp;
+
+  if (!src_data || !dst_data)
+    return;
+
+  for (y = 0; y < src_height / 2; y++)
+    {
+      gint    x;
+      guchar *src = src_data + src_rowstride * y * 2;
+      guchar *dst = dst_data + dst_rowstride * y;
+
+      uint8_t * aa = ((uint8_t *)(src));
+      uint8_t * ab = ((uint8_t *)(src + bpp));
+      uint8_t * ba = ((uint8_t *)(src + src_rowstride));
+      uint8_t * bb = ((uint8_t *)(src + diag));
+
+      for (x = 0; x < src_width / 2; x++)
+        {
+
+          ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
+                                                lut_u8_to_u16[ab[0]] +
+                                                lut_u8_to_u16[ba[0]] +
+                                                lut_u8_to_u16[bb[0]])>>2 ];
+          ((uint8_t *)dst)[1] = lut_u16_to_u8[ (lut_u8_to_u16[aa[1]] +
+                                                lut_u8_to_u16[ab[1]] +
+                                                lut_u8_to_u16[ba[1]] +
+                                                lut_u8_to_u16[bb[1]])>>2 ];
+          ((uint8_t *)dst)[2] = lut_u16_to_u8[ (lut_u8_to_u16[aa[2]] +
+                                                lut_u8_to_u16[ab[2]] +
+                                                lut_u8_to_u16[ba[2]] +
+                                                lut_u8_to_u16[bb[2]])>>2 ];
+          dst += bpp;
+          aa += bpp * 2;
+          ab += bpp * 2;
+          ba += bpp * 2;
+          bb += bpp * 2;
+        }
+  }
+}
+
 
 GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
 {
@@ -854,6 +958,11 @@ GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
   }
   if (comp_type == gegl_babl_u8())
   {
+    if (format == gegl_babl_rgba_u8())
+      return gegl_downscale_2x2_u8_rgba;
+    if (format == gegl_babl_rgb_u8())
+      return gegl_downscale_2x2_u8_rgb;
+
     if (babl_format_has_alpha (format))
       return gegl_downscale_2x2_u8_nl_alpha;
     else
