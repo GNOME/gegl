@@ -111,6 +111,7 @@ gegl_downscale_2x2_generic (const Babl *format,
 #define LUT_DIVISOR 16
 
 static uint16_t lut_u8_to_u16[256];
+static uint16_t lut_u8_to_u14[256];
 static float    lut_u8_to_u16f[256];
 static uint8_t  lut_u16_to_u8[65536/LUT_DIVISOR];
 
@@ -131,6 +132,7 @@ void _gegl_init_u8_lut (void)
                 256);
   for (i = 0; i < 256; i++)
   {
+    lut_u8_to_u14[i] = lut_u8_to_u16[i]/LUT_DIVISOR/4;
     lut_u8_to_u16[i] = lut_u8_to_u16[i]/LUT_DIVISOR;
     lut_u8_to_u16f[i] = lut_u8_to_u16[i];
   }
@@ -853,18 +855,18 @@ gegl_downscale_2x2_u8_rgba (const Babl *format,
       for (x = 0; x < src_width / 2; x++)
         {
 
-          ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
-                                                lut_u8_to_u16[ab[0]] +
-                                                lut_u8_to_u16[ba[0]] +
-                                                lut_u8_to_u16[bb[0]])>>2 ];
-          ((uint8_t *)dst)[1] = lut_u16_to_u8[ (lut_u8_to_u16[aa[1]] +
-                                                lut_u8_to_u16[ab[1]] +
-                                                lut_u8_to_u16[ba[1]] +
-                                                lut_u8_to_u16[bb[1]])>>2 ];
-          ((uint8_t *)dst)[2] = lut_u16_to_u8[ (lut_u8_to_u16[aa[2]] +
-                                                lut_u8_to_u16[ab[2]] +
-                                                lut_u8_to_u16[ba[2]] +
-                                                lut_u8_to_u16[bb[2]])>>2 ];
+          ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u14[aa[0]] +
+                                                lut_u8_to_u14[ab[0]] +
+                                                lut_u8_to_u14[ba[0]] +
+                                                lut_u8_to_u14[bb[0]]) ];
+          ((uint8_t *)dst)[1] = lut_u16_to_u8[ (lut_u8_to_u14[aa[1]] +
+                                                lut_u8_to_u14[ab[1]] +
+                                                lut_u8_to_u14[ba[1]] +
+                                                lut_u8_to_u14[bb[1]]) ];
+          ((uint8_t *)dst)[2] = lut_u16_to_u8[ (lut_u8_to_u14[aa[2]] +
+                                                lut_u8_to_u14[ab[2]] +
+                                                lut_u8_to_u14[ba[2]] +
+                                                lut_u8_to_u14[bb[2]]) ];
           ((uint8_t *)dst)[3] = (aa[3] + ab[3] + ba[3] + bb[3])>>2;
 
           dst += bpp;
@@ -906,18 +908,18 @@ gegl_downscale_2x2_u8_rgb (const Babl *format,
       for (x = 0; x < src_width / 2; x++)
         {
 
-          ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
-                                                lut_u8_to_u16[ab[0]] +
-                                                lut_u8_to_u16[ba[0]] +
-                                                lut_u8_to_u16[bb[0]])>>2 ];
-          ((uint8_t *)dst)[1] = lut_u16_to_u8[ (lut_u8_to_u16[aa[1]] +
-                                                lut_u8_to_u16[ab[1]] +
-                                                lut_u8_to_u16[ba[1]] +
-                                                lut_u8_to_u16[bb[1]])>>2 ];
-          ((uint8_t *)dst)[2] = lut_u16_to_u8[ (lut_u8_to_u16[aa[2]] +
-                                                lut_u8_to_u16[ab[2]] +
-                                                lut_u8_to_u16[ba[2]] +
-                                                lut_u8_to_u16[bb[2]])>>2 ];
+          ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u14[aa[0]] +
+                                                lut_u8_to_u14[ab[0]] +
+                                                lut_u8_to_u14[ba[0]] +
+                                                lut_u8_to_u14[bb[0]]) ];
+          ((uint8_t *)dst)[1] = lut_u16_to_u8[ (lut_u8_to_u14[aa[1]] +
+                                                lut_u8_to_u14[ab[1]] +
+                                                lut_u8_to_u14[ba[1]] +
+                                                lut_u8_to_u14[bb[1]]) ];
+          ((uint8_t *)dst)[2] = lut_u16_to_u8[ (lut_u8_to_u14[aa[2]] +
+                                                lut_u8_to_u14[ab[2]] +
+                                                lut_u8_to_u14[ba[2]] +
+                                                lut_u8_to_u14[bb[2]]) ];
           dst += bpp;
           aa += bpp * 2;
           ab += bpp * 2;
@@ -930,43 +932,45 @@ gegl_downscale_2x2_u8_rgb (const Babl *format,
 
 GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
 {
-  const Babl *comp_type = babl_format_get_type (format, 0);
-  const Babl *model     = babl_format_get_model (format);
+  if (format == gegl_babl_rgba_u8())
+    return gegl_downscale_2x2_u8_rgba;
+  if (format == gegl_babl_rgb_u8())
+    return gegl_downscale_2x2_u8_rgb;
 
-  if (gegl_babl_model_is_linear (model))
   {
-    if (comp_type == gegl_babl_float())
-    {
-      return gegl_downscale_2x2_float;
-    }
-    else if (comp_type == gegl_babl_u8())
-    {
-      return gegl_downscale_2x2_u8;
-    }
-    else if (comp_type == gegl_babl_u16())
-    {
-      return gegl_downscale_2x2_u16;
-    }
-    else if (comp_type == gegl_babl_u32())
-    {
-      return gegl_downscale_2x2_u32;
-    }
-    else if (comp_type == gegl_babl_double())
-    {
-      return gegl_downscale_2x2_double;
-    }
-  }
-  if (comp_type == gegl_babl_u8())
-  {
-    if (format == gegl_babl_rgba_u8())
-      return gegl_downscale_2x2_u8_rgba;
-    if (format == gegl_babl_rgb_u8())
-      return gegl_downscale_2x2_u8_rgb;
+    const Babl *comp_type = babl_format_get_type (format, 0);
+    const Babl *model     = babl_format_get_model (format);
 
-    if (babl_format_has_alpha (format))
-      return gegl_downscale_2x2_u8_nl_alpha;
-    else
-      return gegl_downscale_2x2_u8_nl;
+    if (gegl_babl_model_is_linear (model))
+    {
+      if (comp_type == gegl_babl_float())
+      {
+        return gegl_downscale_2x2_float;
+      }
+      else if (comp_type == gegl_babl_u8())
+      {
+        return gegl_downscale_2x2_u8;
+      }
+      else if (comp_type == gegl_babl_u16())
+      {
+        return gegl_downscale_2x2_u16;
+      }
+      else if (comp_type == gegl_babl_u32())
+      {
+        return gegl_downscale_2x2_u32;
+      }
+      else if (comp_type == gegl_babl_double())
+      {
+        return gegl_downscale_2x2_double;
+      }
+    }
+    if (comp_type == gegl_babl_u8())
+    {
+      if (babl_format_has_alpha (format))
+        return gegl_downscale_2x2_u8_nl_alpha;
+      else
+        return gegl_downscale_2x2_u8_nl;
+    }
   }
   return gegl_downscale_2x2_generic;
 }
