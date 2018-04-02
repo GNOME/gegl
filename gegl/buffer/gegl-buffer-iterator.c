@@ -553,9 +553,16 @@ _gegl_buffer_iterator_stop (GeglBufferIterator *iter)
               sub->access_mode & GEGL_ACCESS_WRITE &&
               ! (sub->access_mode & GEGL_ITERATOR_INCOMPATIBLE))
             {
+              GeglRectangle damage_rect;
+
+              damage_rect.x      = sub->full_rect.x + sub->buffer->shift_x;
+              damage_rect.y      = sub->full_rect.y + sub->buffer->shift_y;
+              damage_rect.width  = sub->full_rect.width;
+              damage_rect.height = sub->full_rect.height;
+
               gegl_tile_handler_damage_rect (
                 GEGL_TILE_HANDLER (sub->buffer->tile_storage),
-                &sub->full_rect);
+                &damage_rect);
             }
 
           gegl_buffer_unlock (sub->buffer);

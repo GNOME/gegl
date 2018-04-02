@@ -834,8 +834,11 @@ with multi-threading - and should be added back later.
     }
 
   if (level == 0)
-    gegl_tile_handler_damage_rect (GEGL_TILE_HANDLER (buffer->tile_storage),
-                                   roi);
+    {
+      gegl_tile_handler_damage_rect (GEGL_TILE_HANDLER (buffer->tile_storage),
+                                     GEGL_RECTANGLE (buffer_x, buffer_y,
+                                                     width,    height));
+    }
 }
 
 static inline void
