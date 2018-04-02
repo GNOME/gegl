@@ -323,6 +323,136 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
       }
     }
 }
+
+static void
+gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
+                            const guchar        *source_buf,
+                            const GeglRectangle *dst_rect,
+                            const GeglRectangle *src_rect,
+                            const gint           s_rowstride,
+                            const gdouble        scale,
+                            const gint           bpp,
+                            const gint           d_rowstride)
+{
+  const uint8_t *src[9];
+  gint  components = bpp / sizeof(uint8_t);
+
+  gfloat left_weight[dst_rect->width];
+  gfloat right_weight[dst_rect->width];
+
+  gint   jj[dst_rect->width];
+
+  for (gint x = 0; x < dst_rect->width; x++)
+  {
+    gfloat sx  = (dst_rect->x + x + .5f) / scale - src_rect->x;
+    jj[x]  = int_floorf (sx);
+
+    left_weight[x]   = .5f - scale * (sx - jj[x]);
+    left_weight[x]   = MAX (0.0f, left_weight[x]);
+    right_weight[x]  = .5f - scale * ((jj[x] + 1) - sx);
+    right_weight[x]  = MAX (0.0f, right_weight[x]);
+
+    jj[x] *= components;
+  }
+
+  for (gint y = 0; y < dst_rect->height; y++)
+    {
+      gfloat top_weight, middle_weight, bottom_weight;
+      const gfloat sy = (dst_rect->y + y + .5f) / scale - src_rect->y;
+      const gint     ii = int_floorf (sy);
+      uint8_t             *dst = (uint8_t*)(dest_buf + y * d_rowstride);
+      const guchar  *src_base = source_buf + ii * s_rowstride;
+
+      top_weight    = .5f - scale * (sy - ii);
+      top_weight    = MAX (0.f, top_weight);
+      bottom_weight = .5f - scale * ((ii + 1 ) - sy);
+      bottom_weight = MAX (0.f, bottom_weight);
+      middle_weight = 1.f - top_weight - bottom_weight;
+
+      switch (components)
+      {
+        case 4:
+          for (gint x = 0; x < dst_rect->width; x++)
+            {
+              src[4] = (const uint8_t*)src_base + jj[x];
+              src[1] = src[4] - s_rowstride;
+              src[7] = src[4] + s_rowstride;
+              src[2] = src[1] + 4;
+              src[5] = src[4] + 4;
+              src[8] = src[7] + 4;
+              src[0] = src[1] - 4;
+              src[3] = src[4] - 4;
+              src[6] = src[7] - 4;
+
+              if (src[0][3] == 0 &&
+                  src[1][3] == 0 &&
+                  src[2][3] == 0 &&
+                  src[3][3] == 0 &&
+                  src[4][3] == 0 &&
+                  src[5][3] == 0 &&
+                  src[6][3] == 0 &&
+                  src[7][3] == 0)
+              {
+                (*(uint32_t*)(dst)) = 0;
+              }
+            else
+            {
+              const gfloat l = left_weight[x];
+              const gfloat r = right_weight[x];
+              const gfloat c = 1.f - l - r;
+
+              const gfloat t = top_weight;
+              const gfloat m = middle_weight;
+              const gfloat b = bottom_weight;
+
+              dst[0] = BOXFILTER_ROUND(
+                (C(src[0][0]) * t + C(src[3][0]) * m + C(src[6][0]) * b) * l +
+                (C(src[1][0]) * t + C(src[4][0]) * m + C(src[7][0]) * b) * c +
+                (C(src[2][0]) * t + C(src[5][0]) * m + C(src[8][0]) * b) * r);
+              dst[1] = BOXFILTER_ROUND(
+                (C(src[0][1]) * t + C(src[3][1]) * m + C(src[6][1]) * b) * l +
+                (C(src[1][1]) * t + C(src[4][1]) * m + C(src[7][1]) * b) * c +
+                (C(src[2][1]) * t + C(src[5][1]) * m + C(src[8][1]) * b) * r);
+              dst[2] = BOXFILTER_ROUND(
+                (C(src[0][2]) * t + C(src[3][2]) * m + C(src[6][2]) * b) * l +
+                (C(src[1][2]) * t + C(src[4][2]) * m + C(src[7][2]) * b) * c +
+                (C(src[2][2]) * t + C(src[5][2]) * m + C(src[8][2]) * b) * r);
+              dst[3] = (
+                ((src[0][3]) * t + (src[3][3]) * m + (src[6][3]) * b) * l +
+                ((src[1][3]) * t + (src[4][3]) * m + (src[7][3]) * b) * c +
+                ((src[2][3]) * t + (src[5][3]) * m + (src[8][3]) * b) * r) / 4;
+              }
+            dst += 4;
+            }
+          break;
+        CASE(2,
+              dst[0] = BOXFILTER_ROUND(
+                (C(src[0][0]) * t + C(src[3][0]) * m + C(src[6][0]) * b) * l +
+                (C(src[1][0]) * t + C(src[4][0]) * m + C(src[7][0]) * b) * c +
+                (C(src[2][0]) * t + C(src[5][0]) * m + C(src[8][0]) * b) * r);
+              dst[1] = (
+                ((src[0][1]) * t + (src[3][1]) * m + (src[6][1]) * b) * l +
+                ((src[1][1]) * t + (src[4][1]) * m + (src[7][1]) * b) * c +
+                ((src[2][1]) * t + (src[5][1]) * m + (src[8][1]) * b) * r) / 4;
+            );
+        break;
+        default:
+        CASE(0,
+              for (gint i = 0; i < components - 1; ++i)
+                {
+                  dst[i] = BOXFILTER_ROUND(
+                  (C(src[0][i]) * t + C(src[3][i]) * m + C(src[6][i]) * b) * l +
+                  (C(src[1][i]) * t + C(src[4][i]) * m + C(src[7][i]) * b) * c +
+                  (C(src[2][i]) * t + C(src[5][i]) * m + C(src[8][i]) * b) * r);
+                }
+              dst[components-1] = (
+                  ((src[0][components-1]) * t + (src[3][components-1]) * m + (src[6][components-1]) * b) * l +
+                  ((src[1][components-1]) * t + (src[4][components-1]) * m + (src[7][components-1]) * b) * c +
+                  ((src[2][components-1]) * t + (src[5][components-1]) * m + (src[8][components-1]) * b) * r) / 4;
+           );
+      }
+    }
+}
 #undef CASE
 #undef BOXFILTER_ROUND
 #undef C
@@ -453,6 +583,87 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
        break;
 #endif
    }
+}
+
+static void
+gegl_bilinear_u8_nl_alpha (guchar              *dest_buf,
+                           const guchar        *source_buf,
+                           const GeglRectangle *dst_rect,
+                           const GeglRectangle *src_rect,
+                           const gint           s_rowstride,
+                           const gdouble        scale,
+                           const gint           components,
+                           const gint           d_rowstride)
+{
+  const gint ver  = s_rowstride;
+  const gint diag = ver + components;
+  const gint dst_y = dst_rect->y;
+  const gint src_y = src_rect->y;
+  const gint dst_width = dst_rect->width;
+  const gint dst_height = dst_rect->height;
+  gfloat dx[dst_rect->width];
+  gint jj[dst_rect->width];
+
+  for (gint x = 0; x < dst_rect->width; x++)
+  {
+    gfloat sx  = (dst_rect->x + x + 0.5f) / scale - src_rect->x - 0.5f;
+    jj[x]  = int_floorf (sx);
+    dx[x]  = (sx - jj[x]);
+    jj[x] *= components;
+  }
+
+   switch (components)
+   {
+     default:
+       IMPL(components,
+         for (gint i = 0; i < components - 1; ++i)
+            dst[i] =
+               BILINEAR_ROUND(
+               (C(src[0][i]) * rdx + C(src[1][i]) * ldx) * rdy +
+               (C(src[2][i]) * rdx + C(src[3][i]) * ldx) * dy);
+         dst[components - 1] =
+           (
+             ((src[0][components-1]) * rdx + (src[1][components-1]) * ldx) * rdy +
+             ((src[2][components-1]) * rdx + (src[3][components-1]) * ldx) * dy);
+         );
+       break;
+     case 2:
+       IMPL(2,
+         dst[0] = BILINEAR_ROUND(
+               (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
+               (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
+         dst[1] = (
+               ((src[0][1]) * rdx + (src[1][1]) * ldx) * rdy +
+               ((src[2][1]) * rdx + (src[3][1]) * ldx) * dy);
+           );
+       break;
+     case 4:
+       IMPL(4,
+         if (src[0][3] == 0 &&
+             src[1][3] == 0 &&
+             src[2][3] == 0 &&
+             src[3][3] == 0)
+         {
+            (*(uint32_t*)(dst)) = 0;
+         }
+         else
+         {
+           dst[0] = BILINEAR_ROUND(
+               (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
+               (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
+           dst[1] = BILINEAR_ROUND(
+               (C(src[0][1]) * rdx + C(src[1][1]) * ldx) * rdy +
+               (C(src[2][1]) * rdx + C(src[3][1]) * ldx) * dy);
+           dst[2] = BILINEAR_ROUND(
+               (C(src[0][2]) * rdx + C(src[1][2]) * ldx) * rdy +
+               (C(src[2][2]) * rdx + C(src[3][2]) * ldx) * dy);
+           dst[3] = (
+               ((src[0][3]) * rdx + (src[1][3]) * ldx) * rdy +
+               ((src[2][3]) * rdx + (src[3][3]) * ldx) * dy);
+         }
+           );
+       break;
+   }
 #undef IMPL
 }
 #undef BILINEAR_ROUND
@@ -551,6 +762,64 @@ break;\
                                 lut_u8_to_u16[bb[i]])>>2 ];);
       }
   }
+}
+
+static void
+gegl_downscale_2x2_u8_nl_alpha (const Babl *format,
+                                gint        src_width,
+                                gint        src_height,
+                                guchar     *src_data,
+                                gint        src_rowstride,
+                                guchar     *dst_data,
+                                gint        dst_rowstride)
+{
+  gint y;
+  gint bpp = babl_format_get_bytes_per_pixel (format);
+  gint diag = src_rowstride + bpp;
+  const gint components = bpp / sizeof(uint8_t);
+
+  if (!src_data || !dst_data)
+    return;
+
+  for (y = 0; y < src_height / 2; y++)
+    {
+      gint    x;
+      guchar *src = src_data + src_rowstride * y * 2;
+      guchar *dst = dst_data + dst_rowstride * y;
+
+      switch (components)
+      {
+        CASE(2,
+            ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
+                                                  lut_u8_to_u16[ab[0]] +
+                                                  lut_u8_to_u16[ba[0]] +
+                                                  lut_u8_to_u16[bb[0]])>>2 ];
+            ((uint8_t *)dst)[1] = (aa[1] + ab[1] + ba[1] + bb[1])>>2;);
+        CASE(4,
+            ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
+                                                  lut_u8_to_u16[ab[0]] +
+                                                  lut_u8_to_u16[ba[0]] +
+                                                  lut_u8_to_u16[bb[0]])>>2 ];
+            ((uint8_t *)dst)[1] = lut_u16_to_u8[ (lut_u8_to_u16[aa[1]] +
+                                                  lut_u8_to_u16[ab[1]] +
+                                                  lut_u8_to_u16[ba[1]] +
+                                                  lut_u8_to_u16[bb[1]])>>2 ];
+            ((uint8_t *)dst)[2] = lut_u16_to_u8[ (lut_u8_to_u16[aa[2]] +
+                                                  lut_u8_to_u16[ab[2]] +
+                                                  lut_u8_to_u16[ba[2]] +
+                                                  lut_u8_to_u16[bb[2]])>>2 ];
+            ((uint8_t *)dst)[3] = (aa[3] + ab[3] + ba[3] + bb[3])>>2;);
+        default:
+         CASE(0,
+            for (gint i = 0; i < components - 1; i++)
+              ((uint8_t *)dst)[i] =
+                lut_u16_to_u8[ (lut_u8_to_u16[aa[i]] +
+                                lut_u8_to_u16[ab[i]] +
+                                lut_u8_to_u16[ba[i]] +
+                                lut_u8_to_u16[bb[i]])>>2 ];
+            ((uint8_t *)dst)[components-1] = (aa[components-1] + ab[components-1] + ba[components-1] + bb[components-1])>>2;);
+      }
+  }
 #undef CASE
 }
 
@@ -584,7 +853,12 @@ GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
     }
   }
   if (comp_type == gegl_babl_u8())
-    return gegl_downscale_2x2_u8_nl;
+  {
+    if (babl_format_has_alpha (format))
+      return gegl_downscale_2x2_u8_nl_alpha;
+    else
+      return gegl_downscale_2x2_u8_nl;
+  }
   return gegl_downscale_2x2_generic;
 }
 
@@ -710,8 +984,12 @@ void gegl_resample_boxfilter (guchar              *dest_buf,
     {
       if (comp_type == gegl_babl_u8())
         {
-          gegl_boxfilter_u8_nl (dest_buf, source_buf, dst_rect, src_rect,
-                                s_rowstride, scale, bpp, d_rowstride);
+          if (babl_format_has_alpha (format))
+            gegl_boxfilter_u8_nl_alpha (dest_buf, source_buf, dst_rect, src_rect,
+                                        s_rowstride, scale, bpp, d_rowstride);
+          else
+            gegl_boxfilter_u8_nl (dest_buf, source_buf, dst_rect, src_rect,
+                                  s_rowstride, scale, bpp, d_rowstride);
         }
       else
         {
@@ -814,8 +1092,12 @@ void gegl_resample_bilinear (guchar              *dest_buf,
       if (comp_type == gegl_babl_u8 ())
         {
           const gint bpp = babl_format_get_bytes_per_pixel (format);
-          gegl_bilinear_u8_nl (dest_buf, source_buf, dst_rect, src_rect,
-                               s_rowstride, scale, bpp, d_rowstride);
+          if (babl_format_has_alpha (format))
+            gegl_bilinear_u8_nl_alpha (dest_buf, source_buf, dst_rect, src_rect,
+                                       s_rowstride, scale, bpp, d_rowstride);
+          else
+            gegl_bilinear_u8_nl (dest_buf, source_buf, dst_rect, src_rect,
+                                 s_rowstride, scale, bpp, d_rowstride);
         }
       else
         {
