@@ -10,7 +10,7 @@ all: $(bins)
 
 check: $(bins)
 	for a in $(bins); do \
-	  GEGL_USE_OPENCL=no LD_LIBRARY_PATH=prefix/lib:$(LD_LIBRARY_PATH) ./$$a;\
+	  GEGL_USE_OPENCL=no GEGL_PATH=prefix/lib/gegl-0.3 LD_LIBRARY_PATH=prefix/lib:$(LD_LIBRARY_PATH) ./$$a;\
 	done
 
 clean:
