@@ -420,7 +420,7 @@ gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
               dst[3] = (
                 ((src[0][3]) * t + (src[3][3]) * m + (src[6][3]) * b) * l +
                 ((src[1][3]) * t + (src[4][3]) * m + (src[7][3]) * b) * c +
-                ((src[2][3]) * t + (src[5][3]) * m + (src[8][3]) * b) * r) / 4;
+                ((src[2][3]) * t + (src[5][3]) * m + (src[8][3]) * b) * r);
               }
             dst += 4;
             }
@@ -433,7 +433,7 @@ gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
               dst[1] = (
                 ((src[0][1]) * t + (src[3][1]) * m + (src[6][1]) * b) * l +
                 ((src[1][1]) * t + (src[4][1]) * m + (src[7][1]) * b) * c +
-                ((src[2][1]) * t + (src[5][1]) * m + (src[8][1]) * b) * r) / 4;
+                ((src[2][1]) * t + (src[5][1]) * m + (src[8][1]) * b) * r);
             );
         break;
         default:
@@ -448,7 +448,7 @@ gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
               dst[components-1] = (
                   ((src[0][components-1]) * t + (src[3][components-1]) * m + (src[6][components-1]) * b) * l +
                   ((src[1][components-1]) * t + (src[4][components-1]) * m + (src[7][components-1]) * b) * c +
-                  ((src[2][components-1]) * t + (src[5][components-1]) * m + (src[8][components-1]) * b) * r) / 4;
+                  ((src[2][components-1]) * t + (src[5][components-1]) * m + (src[8][components-1]) * b) * r);
            );
       }
     }
