@@ -692,14 +692,13 @@ gegl_downscale_2x2_u8_nl (const Babl *format,
   if (!src_data || !dst_data)
     return;
 
-  for (y = 0; y < src_height / 2; y++)
-    {
-      gint    x;
-      guchar *src = src_data + src_rowstride * y * 2;
-      guchar *dst = dst_data + dst_rowstride * y;
-
 #define CASE(case_val, ...) \
 case case_val: \
+  for (y = 0; y < src_height / 2; y++) \
+    { \
+      gint    x; \
+      guchar *src = src_data + src_rowstride * y * 2; \
+      guchar *dst = dst_data + dst_rowstride * y; \
   for (x = 0; x < src_width / 2; x++)\
     {\
       uint8_t * aa = ((uint8_t *)(src));\
@@ -710,6 +709,7 @@ case case_val: \
       dst += bpp;\
       src += bpp * 2;\
     }\
+   }\
 break;\
 
       switch (components)
@@ -767,7 +767,6 @@ break;\
                                 lut_u8_to_u16[ba[i]] +
                                 lut_u8_to_u16[bb[i]])>>2 ];);
       }
-  }
 }
 
 static void
@@ -786,12 +785,6 @@ gegl_downscale_2x2_u8_nl_alpha (const Babl *format,
 
   if (!src_data || !dst_data)
     return;
-
-  for (y = 0; y < src_height / 2; y++)
-    {
-      gint    x;
-      guchar *src = src_data + src_rowstride * y * 2;
-      guchar *dst = dst_data + dst_rowstride * y;
 
       switch (components)
       {
@@ -825,7 +818,6 @@ gegl_downscale_2x2_u8_nl_alpha (const Babl *format,
                                 lut_u8_to_u16[bb[i]])>>2 ];
             ((uint8_t *)dst)[components-1] = (aa[components-1] + ab[components-1] + ba[components-1] + bb[components-1])>>2;);
       }
-  }
 #undef CASE
 }
 
