@@ -108,7 +108,7 @@ gegl_downscale_2x2_generic (const Babl *format,
    }
 }
 
-#define LUT_DIVISOR 16
+#define LUT_DIVISOR 32
 
 static uint16_t lut_u8_to_u16[256];
 static uint16_t lut_u8_to_u14[256];
