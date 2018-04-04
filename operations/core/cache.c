@@ -62,7 +62,7 @@ process (GeglOperation       *operation,
       g_clear_object (&o->cache);
 
       if (operation->node->cache)
-        o->cache = g_object_ref (operation->node->cache);
+        o->cache = g_object_ref ((GObject *) operation->node->cache);
     }
 
   return TRUE;

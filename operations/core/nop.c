@@ -62,7 +62,8 @@ gegl_nop_process (GeglOperation        *operation,
       return FALSE;
     }
 
-  gegl_operation_context_take_object (context, "output", g_object_ref (input));
+  gegl_operation_context_take_object (context, "output",
+                                      g_object_ref ((GObject *) input));
   return TRUE;
 }
 
