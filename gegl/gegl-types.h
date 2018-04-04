@@ -79,7 +79,27 @@ struct _GeglRectangle
 GType gegl_rectangle_get_type (void) G_GNUC_CONST;
 #define GEGL_TYPE_RECTANGLE   (gegl_rectangle_get_type())
 
+#ifndef __cplusplus
+
 #define  GEGL_RECTANGLE(x,y,w,h) (&((GeglRectangle){(x), (y),   (w), (h)}))
+
+#else
+
+static inline GeglRectangle
+_gegl_rectangle_helper (gint x,
+                        gint y,
+                        gint width,
+                        gint height)
+{
+  GeglRectangle result = {x, y, width, height};
+
+  return result;
+}
+
+#define  GEGL_RECTANGLE(x,y,w,h) \
+  ((GeglRectangle *) &(const GeglRectangle &) ::_gegl_rectangle_helper (x, y, w, h))
+
+#endif /* __cplusplus */
 
 typedef struct _GeglTileBackend GeglTileBackend;
 
