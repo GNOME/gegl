@@ -225,6 +225,8 @@ get_bounding_box (GeglOperation *operation)
   pnm_struct    img;
   FILE         *fp;
 
+  img.bpc = 1;
+
   fp = (!strcmp (o->path, "-") ? stdin : fopen (o->path,"rb") );
 
   if (!fp)
@@ -275,6 +277,8 @@ process (GeglOperation       *operation,
   pnm_struct    img;
   GeglRectangle rect = {0,0,0,0};
   gboolean      ret = FALSE;
+
+  img.bpc = 1;
 
   fp = (!strcmp (o->path, "-") ? stdin : fopen (o->path,"rb"));
 
