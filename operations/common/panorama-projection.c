@@ -18,6 +18,11 @@
 
 #include <math.h>
 
+// uncomment the following - to enable code paths that strive to
+// enable reverse operation
+
+//#define ENABLE_REVERSE 1
+
 #ifdef GEGL_PROPERTIES
 
 property_double (pan, _("Pan"), 0.0)
@@ -50,6 +55,10 @@ property_int    (height, _("Height"), -1)
   value_range   (-1, 10000)
   ui_meta       ("role", "output-extent")
   ui_meta       ("axis", "y")
+
+#ifdef ENABLE_REVERSE
+property_boolean(reverse, _("reverse tranform"), FALSE)
+#endif
 
 property_boolean(little_planet, _("Little planet"), FALSE)
   description   (_("Render a stereographic mapping, a tilt value of 90, which means looking at nadir provides a good default value."))
@@ -86,6 +95,7 @@ struct _Transform
   float height;
   void (*xy2ll) (Transform *transform, float x, float  y, float *lon, float *lat);
   void (*ll2xy) (Transform *transform, float lon, float  lat, float *x, float *y);
+  int   reverse;
   int   do_spin;
   int   do_zoom;
 };
@@ -100,6 +110,9 @@ gnomonic_xy2ll (Transform *transform, float x, float y,
   float p, c;
   float longtitude, latitude;
   float sin_c, cos_c;
+
+  y -= 0.5;
+  x -= transform->xoffset;
 
   if (transform->do_spin)
   {
@@ -135,18 +148,22 @@ gnomonic_ll2xy (Transform *transform,
                 float lon, float lat,
                 float *x, float *y)
 {
-  float cos_c;
-  float sin_lon = sinf (lon);
-  float cos_lon = cosf (lon);
-  float cos_lat_minus_pan = cosf (lat - transform->pan);
+  float cos_c, sin_lat, cos_lat, cos_lon_minus_pan;
 
-  cos_c = (transform->sin_tilt * sin_lon +
-           transform->cos_tilt * cos (lon) *
-            cos_lat_minus_pan);
+  lat = lat * M_PI - M_PI/2;
+  lon = lon * (M_PI * 2);
 
-  *x = ((cos_lon * sin (lat - transform->pan)) / cos_c);
-  *y = ((transform->cos_tilt * sin_lon -
-         transform->sin_tilt * cos_lon * cos_lat_minus_pan) / cos_c);
+  sin_lat = sinf (lat);
+  cos_lat = cosf (lat);
+  cos_lon_minus_pan = cosf (lon - transform->pan);
+
+  cos_c = (transform->sin_tilt * sin_lat +
+           transform->cos_tilt * cos (lat) *
+            cos_lon_minus_pan);
+
+  *x = ((cos_lat * sin (lon - transform->pan)) / cos_c);
+  *y = ((transform->cos_tilt * sin_lat -
+         transform->sin_tilt * cos_lat * cos_lon_minus_pan) / cos_c);
 
   if (transform->do_zoom)
   {
@@ -159,6 +176,14 @@ gnomonic_ll2xy (Transform *transform,
     *x = tx * transform->cos_negspin - ty * transform->sin_negspin;
     *y = ty * transform->cos_negspin + tx * transform->sin_negspin;
   }
+
+  *x += transform->xoffset;
+  *y += 0.5f;
+
+  if (*x < -1.0)
+    *x += 1.0;
+  if (*x > 1.0)
+    *x -= 1.0;
 }
 
 static void inline
@@ -166,10 +191,14 @@ stereographic_ll2xy (Transform *transform,
                      float lon, float lat,
                      float *x,  float *y)
 {
-  float k;
-  float sin_lon = sinf (lon);
-  float cos_lon = cosf (lon);
-  float cos_lat_minus_pan = cosf (lat - transform->pan);
+  float k, sin_lon, cos_lon, cos_lat_minus_pan;
+
+  lat = lat * M_PI - M_PI/2;
+  lon = lon * (M_PI * 2);
+
+  sin_lon = sinf (lon);
+  cos_lon = cosf (lon);
+  cos_lat_minus_pan = cosf (lat - transform->pan);
 
   k = 2/(1 + transform->sin_tilt * sin_lon +
             transform->cos_tilt * cos (lon) *
@@ -191,6 +220,14 @@ stereographic_ll2xy (Transform *transform,
     *x = tx * transform->cos_negspin - ty * transform->sin_negspin;
     *y = ty * transform->cos_negspin + tx * transform->sin_negspin;
   }
+
+  *x += transform->xoffset;
+  *y += 0.5f;
+
+  if (*x < -1.0)
+    *x += 1.0;
+  if (*x > 1.0)
+    *x -= 1.0;
 }
 
 static void inline
@@ -201,6 +238,9 @@ stereographic_xy2ll (Transform *transform,
   float p, c;
   float longtitude, latitude;
   float sin_c, cos_c;
+
+  y -= 0.5;
+  x -= transform->xoffset;
 
   if (transform->do_spin)
   {
@@ -235,7 +275,8 @@ static void prepare_transform (Transform *transform,
                                float pan, float spin, float zoom, float tilt,
                                int little_planet,
                                float width, float height,
-                               float input_width, float input_height)
+                               float input_width, float input_height,
+                               int inverse)
 {
   float xoffset = 0.5;
   transform->xy2ll = gnomonic_xy2ll;
@@ -267,6 +308,18 @@ static void prepare_transform (Transform *transform,
     transform->xy2ll = stereographic_xy2ll;
     transform->ll2xy = stereographic_ll2xy;
   }
+
+#if 1
+  if (inverse)
+  {
+    void (*temp) (Transform *transform, float x, float  y, float *lon, float *lat) = transform->xy2ll;
+    transform->xy2ll = transform->ll2xy;
+    transform->ll2xy = temp;
+  }
+#else
+#endif
+  transform->reverse = inverse;
+
 
   transform->do_spin = fabs (spin) > 0.000001 ? 1 : 0;
   transform->do_zoom = fabs (zoom-1.0) > 0.000001 ? 1 : 0;
@@ -335,7 +388,13 @@ static void prepare_transform2 (Transform *transform,
   prepare_transform (transform,
                      o->pan, o->spin, o->zoom, o->tilt,
                      o->little_planet, o->width / factor, o->height / factor,
-                     in_rect.width, in_rect.height);
+                     in_rect.width, in_rect.height,
+#ifdef ENABLE_REVERSE
+                     o->reverse);
+#else
+                     0);
+#endif
+
 }
 
 static GeglRectangle
@@ -387,9 +446,9 @@ process (GeglOperation       *operation,
                                        sample_level);
   }
 
-  if (sampler_type == GEGL_SAMPLER_NOHALO ||
-      sampler_type == GEGL_SAMPLER_LOHALO)
+  if (sampler_type != GEGL_SAMPLER_NEAREST)
     scale = &scale_matrix;
+
 
   {
     float   ud = ((1.0/transform.width)*factor);
@@ -405,13 +464,16 @@ process (GeglOperation       *operation,
         gint x = it->roi->x; /* initial x                   */
         gint y = it->roi->y; /*           and y coordinates */
 
-        float   u0 = (((x*factor)/transform.width) - transform.xoffset);
+        float   u0 = (((x*factor)/transform.width));
         float   u, v;
 
         float *out = it->data[0];
+        int abyss_mode = GEGL_ABYSS_LOOP;
+        if (transform.reverse)
+          abyss_mode = GEGL_ABYSS_NONE;
 
         u = u0;
-        v = ((y*factor/transform.height) - 0.5);
+        v = ((y*factor/transform.height));
 
         if (scale)
           {
@@ -425,10 +487,9 @@ process (GeglOperation       *operation,
                 gegl_sampler_compute_scale (scale_matrix, u, v);
                 gegl_unmap(u,v, cx, cy);
 #undef gegl_unmap
-
                 gegl_sampler_get (sampler,
                                   cx * in_rect.width, cy * in_rect.height,
-                                  scale, out, GEGL_ABYSS_LOOP);
+                                  scale, out, abyss_mode);
                 out += 4;
 
                 /* update x, y and u,v coordinates */
@@ -450,10 +511,9 @@ process (GeglOperation       *operation,
                 float cx, cy;
 
                 transform.xy2ll (&transform, u, v, &cx, &cy);
-
                 gegl_sampler_get (sampler,
                                   cx * in_rect.width, cy * in_rect.height,
-                                  scale, out, GEGL_ABYSS_LOOP);
+                                  scale, out, abyss_mode);
                 out += 4;
 
                 /* update x, y and u,v coordinates */
