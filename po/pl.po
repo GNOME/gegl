@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-03-22 18:50+0000\n"
-"PO-Revision-Date: 2018-03-23 20:01+0100\n"
+"POT-Creation-Date: 2018-04-06 23:02+0000\n"
+"PO-Revision-Date: 2018-04-08 22:12+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -699,7 +699,7 @@ msgstr ""
 "szarości."
 
 #: operations/common/checkerboard.c:25 operations/common/grid.c:24
-#: operations/common/panorama-projection.c:42 operations/common/rectangle.c:36
+#: operations/common/panorama-projection.c:47 operations/common/rectangle.c:36
 #: operations/common-gpl3+/diffraction-patterns.c:78
 #: operations/common-gpl3+/maze.c:40 operations/common-gpl3+/noise-solid.c:64
 #: operations/common-gpl3+/plasma.c:54 operations/common-gpl3+/sinus.c:76
@@ -717,7 +717,7 @@ msgid "Horizontal width of cells pixels"
 msgstr "Pozioma szerokość pikseli komórek"
 
 #: operations/common/checkerboard.c:33 operations/common/grid.c:31
-#: operations/common/panorama-projection.c:48 operations/common/rectangle.c:42
+#: operations/common/panorama-projection.c:53 operations/common/rectangle.c:42
 #: operations/common-gpl3+/diffraction-patterns.c:86
 #: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:48
 #: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:62
@@ -1742,12 +1742,12 @@ msgstr "Sposób dyskretyzacji jądra Gaussa"
 #: operations/common/gaussian-blur.c:58 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:31
 #: operations/common-gpl3+/displace.c:42
-#: operations/common-gpl3+/fractal-trace.c:67
+#: operations/common-gpl3+/fractal-trace.c:67 operations/transform/scale.c:102
 msgid "Abyss policy"
 msgstr "Polityka głębi"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
-#: operations/common-gpl3+/displace.c:45
+#: operations/common-gpl3+/displace.c:45 operations/transform/scale.c:103
 msgid "How image edges are handled"
 msgstr "Sposób obsługi krawędzi obrazu"
 
@@ -2221,7 +2221,7 @@ msgstr ""
 
 #. XXX: needs better ui type
 #: operations/common/map-absolute.c:22 operations/common/map-relative.c:28
-#: operations/common/panorama-projection.c:57
+#: operations/common/panorama-projection.c:66
 #: operations/common-gpl3+/ripple.c:47 operations/common-gpl3+/waves.c:50
 #: operations/workshop/recursive-transform.c:50
 #: operations/workshop/spherize.c:57
@@ -2444,7 +2444,7 @@ msgstr "Przycinanie na osi Y"
 msgid "Y axis ratio for trimming mirror expanse"
 msgstr "Współrzędna osi Y do przycinania obszaru lustra"
 
-#: operations/common/mirrors.c:74 operations/common/panorama-projection.c:38
+#: operations/common/mirrors.c:74 operations/common/panorama-projection.c:43
 #: operations/common-gpl3+/fractal-explorer.c:58
 #: operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
@@ -2971,44 +2971,48 @@ msgstr ""
 "Działanie Portera-Duffa na (znane także jako zwykły tryb, i „src-over”) (d = "
 "cA + cB * (1 - aA))"
 
-#: operations/common/panorama-projection.c:23
+#: operations/common/panorama-projection.c:28
 msgid "Pan"
 msgstr "Panoramowanie"
 
-#: operations/common/panorama-projection.c:24
+#: operations/common/panorama-projection.c:29
 msgid "Horizontal camera panning"
 msgstr "Poziome przesunięcie kamery"
 
-#: operations/common/panorama-projection.c:28
+#: operations/common/panorama-projection.c:33
 msgid "Tilt"
 msgstr "Nachylenie"
 
-#: operations/common/panorama-projection.c:29
+#: operations/common/panorama-projection.c:34
 msgid "Vertical camera panning"
 msgstr "Pionowe przesunięcie kamery"
 
-#: operations/common/panorama-projection.c:34
+#: operations/common/panorama-projection.c:39
 msgid "Spin"
 msgstr "Obrót"
 
-#: operations/common/panorama-projection.c:35
+#: operations/common/panorama-projection.c:40
 msgid "Spin angle around camera axis"
 msgstr "Kąt obrotu wokół osi kamery"
 
-#: operations/common/panorama-projection.c:43
+#: operations/common/panorama-projection.c:48
 msgid "output/rendering width in pixels, -1 for input width"
 msgstr ""
 "szerokość wyjścia/renderowania w pikselach, -1 oznacza szerokość wejścia"
 
-#: operations/common/panorama-projection.c:49
+#: operations/common/panorama-projection.c:54
 msgid "output/rendering height in pixels, -1 for input height"
 msgstr "wysokość wyjścia/renderowania w pikselach, -1 oznacza wysokość wejścia"
 
-#: operations/common/panorama-projection.c:54
+#: operations/common/panorama-projection.c:60
+msgid "reverse tranform"
+msgstr "odwrotne przekształcenie"
+
+#: operations/common/panorama-projection.c:63
 msgid "Little planet"
 msgstr "Mała planeta"
 
-#: operations/common/panorama-projection.c:55
+#: operations/common/panorama-projection.c:64
 msgid ""
 "Render a stereographic mapping, a tilt value of 90, which means looking at "
 "nadir provides a good default value."
@@ -3016,15 +3020,15 @@ msgstr ""
 "Renderuj mapowanie stereograficzne, wartość nachylenia 90, co oznacza, że "
 "spojrzenie na najniższą wartość dostarcza dobrą wartość domyślną."
 
-#: operations/common/panorama-projection.c:59
+#: operations/common/panorama-projection.c:68
 msgid "Image resampling method to use"
 msgstr "Używana metoda resamplingu obrazów"
 
-#: operations/common/panorama-projection.c:540
+#: operations/common/panorama-projection.c:600
 msgid "Panorama Projection"
 msgstr "Rzut panoramy"
 
-#: operations/common/panorama-projection.c:545
+#: operations/common/panorama-projection.c:605
 msgid ""
 "Perform an equilinear/gnomonic or little planet/stereographic projection of "
 "an equirectangular input image."
@@ -3212,7 +3216,7 @@ msgstr "Wartości pikseli wyższe niż ta wartość będą na nią ustawiane"
 msgid "Clip RGB"
 msgstr "Obcinanie RGB"
 
-#: operations/common/rgb-clip.c:189
+#: operations/common/rgb-clip.c:190
 msgid "Keep RGB pixels values inside a specific range"
 msgstr "Utrzymywanie wartości pikseli RGB w podanym zakresie"
 
@@ -3220,7 +3224,7 @@ msgstr "Utrzymywanie wartości pikseli RGB w podanym zakresie"
 msgid "Scale, strength of effect"
 msgstr "Skaluj, siła efektu"
 
-#: operations/common/saturation.c:225
+#: operations/common/saturation.c:226
 msgid "Changes the saturation"
 msgstr "Zmienia nasycenie"
 
@@ -4180,7 +4184,7 @@ msgid "Mode of displacement"
 msgstr "Tryb przesunięcia"
 
 #: operations/common-gpl3+/displace.c:37 operations/external/npd.c:47
-#: operations/transform/transform-core.c:225 operations/workshop/ditto.c:27
+#: operations/transform/transform-core.c:224 operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Próbka"
 
@@ -5909,11 +5913,11 @@ msgstr ""
 "Wielozadaniowe wczytywanie plików używające natywnych modułów obsługi "
 "plików, i zapasowo używające konwersji za pomocą programu Image Magick."
 
-#: operations/core/nop.c:80
+#: operations/core/nop.c:81
 msgid "No Operation"
 msgstr "Brak działania"
 
-#: operations/core/nop.c:82
+#: operations/core/nop.c:83
 msgid "No operation (can be used as a routing point)"
 msgstr "Brak działania (może być używane jako punkt trasy)"
 
@@ -6424,7 +6428,7 @@ msgstr "Model zachowywania"
 msgid "When TRUE the model will not be freed"
 msgstr "Kiedy wynosi „true”, to model nie będzie zwalniany"
 
-#: operations/external/npd.c:50 operations/transform/transform-core.c:226
+#: operations/external/npd.c:50 operations/transform/transform-core.c:225
 #: operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Wewnętrznie używana próbka"
@@ -6578,11 +6582,11 @@ msgstr "Zapisywanie plików PNG"
 msgid "PNG image saver, using libpng"
 msgstr "Zapisywanie obrazów PNG za pomocą biblioteki libpng"
 
-#: operations/external/ppm-load.c:382
+#: operations/external/ppm-load.c:386
 msgid "PPM File Loader"
 msgstr "Wczytywanie plików PPM"
 
-#: operations/external/ppm-load.c:384
+#: operations/external/ppm-load.c:388
 msgid "PPM image loader."
 msgstr "Wczytywanie obrazów PPM."
 
@@ -7272,27 +7276,27 @@ msgstr "Ciąg przekształcenia składni przekształceń SVG"
 msgid "Do a transformation using SVG syntax transformation."
 msgstr "Wykonaj przekształcenie za pomocą składni przekształceń SVG."
 
-#: operations/transform/transform-core.c:201
+#: operations/transform/transform-core.c:200
 msgid "Origin-x"
 msgstr "Początek układu współrzędnych na osi X"
 
-#: operations/transform/transform-core.c:202
+#: operations/transform/transform-core.c:201
 msgid "X coordinate of origin"
 msgstr "Współrzędna początku układu współrzędnych na osi X"
 
-#: operations/transform/transform-core.c:209
+#: operations/transform/transform-core.c:208
 msgid "Origin-y"
 msgstr "Początek układu współrzędnych na osi Y"
 
-#: operations/transform/transform-core.c:210
+#: operations/transform/transform-core.c:209
 msgid "Y coordinate of origin"
 msgstr "Współrzędna początku układu współrzędnych na osi Y"
 
-#: operations/transform/transform-core.c:217
+#: operations/transform/transform-core.c:216
 msgid "Near-z"
 msgstr "Blisko osi Z"
 
-#: operations/transform/transform-core.c:218
+#: operations/transform/transform-core.c:217
 msgid "Z coordinate of the near clipping plane"
 msgstr "Współrzędna na osi Z bliskiej płaszczyzny przycinania"
 
