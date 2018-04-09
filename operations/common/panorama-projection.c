@@ -344,7 +344,12 @@ static void prepare_transform (Transform *transform,
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format ("RaGaBaA float");
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  const Babl *format;
+  if (o->sampler_type == GEGL_SAMPLER_NEAREST)
+    format = babl_format ("RGBA float");
+  else
+    format = babl_format ("RaGaBaA float");
 
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
@@ -438,10 +443,13 @@ process (GeglOperation       *operation,
       sampler_type = GEGL_SAMPLER_NEAREST;
   }
 
-  sampler = gegl_buffer_sampler_new_at_level (input, format_io, sampler_type, 0);
-
   if (sampler_type != GEGL_SAMPLER_NEAREST)
     scale = &scale_matrix;
+  else
+    format_io = babl_format ("RGBA float");
+
+  sampler = gegl_buffer_sampler_new_at_level (input, format_io, sampler_type, 0);
+
 
   {
     float   ud = ((1.0f/transform.width)*factor);
@@ -455,16 +463,15 @@ process (GeglOperation       *operation,
       {
         gint i;
         gint n_pixels = it->length;
-        gint x = it->roi->x; /* initial x                   */
-        gint y = it->roi->y; /*           and y coordinates */
+        gint x = it->roi->width; /* initial x                   */
 
-        float   u0 = (((x*factor * 1.0f)/transform.width));
+        float   u0 = (((it->roi->x*factor * 1.0f)/transform.width));
         float   u, v;
 
         float *out = it->data[0];
 
         u = u0;
-        v = ((y*factor * 1.0/transform.height));
+        v = ((it->roi->y*factor * 1.0/transform.height));
 
         if (scale)
           {
@@ -485,12 +492,11 @@ process (GeglOperation       *operation,
                 out += 4;
 
                 /* update x, y and u,v coordinates */
-                x++;
+                x--;
                 u+=ud;
-                if (x >= (it->roi->x + it->roi->width))
+                if (x == 0)
                   {
-                    x = it->roi->x;
-                    y++;
+                    x = it->roi->width;
                     u = u0;
                     v += vd;
                   }
@@ -501,7 +507,6 @@ process (GeglOperation       *operation,
             for (i=0; i<n_pixels; i++)
               {
                 float cx, cy;
-
                 transform.mapfun (&transform, u, v, &cx, &cy);
                 gegl_sampler_get (sampler,
                                   cx * transform.in_width + 0.5f,
@@ -510,13 +515,12 @@ process (GeglOperation       *operation,
                 out += 4;
 
                 /* update x, y and u,v coordinates */
-                x++;
+                x--;
                 u+=ud;
-                if (x >= (it->roi->x + it->roi->width))
+                if (x <= 0)
                   {
-                    x = it->roi->x;
+                    x = it->roi->width;
                     u = u0;
-                    y++;
                     v += vd;
                   }
               }
