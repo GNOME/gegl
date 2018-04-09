@@ -88,6 +88,8 @@ struct _Transform
   float xoffset;
   float width;
   float height;
+  float in_width;
+  float in_height;
   void (*mapfun) (Transform *transform, float x, float  y, float *lon, float *lat);
   int   reverse;
   int   do_spin;
@@ -329,6 +331,17 @@ static void prepare_transform (Transform *transform,
   transform->cos_negspin = cosf (-spin);
   transform->width       = width;
   transform->height      = height;
+  transform->in_width    = input_width;
+  transform->in_height   = input_height;
+
+  if (inverse)
+  {
+    float tmp;
+#define swap(a,b) tmp = a; a = b; b= tmp;
+    swap(transform->width, transform->in_width);
+    swap(transform->height, transform->in_height);
+#undef swap
+  }
 }
 
 static void
@@ -434,7 +447,7 @@ process (GeglOperation       *operation,
     scale = &scale_matrix;
 
   {
-    float   ud = ((1.0/(transform.reverse?in_rect.width:transform.width))*factor);
+    float   ud = ((1.0/transform.width)*factor);
     float   vd = ((1.0/transform.height)*factor);
     int abyss_mode = transform.reverse ? GEGL_ABYSS_NONE : GEGL_ABYSS_LOOP;
 
@@ -448,13 +461,13 @@ process (GeglOperation       *operation,
         gint x = it->roi->x; /* initial x                   */
         gint y = it->roi->y; /*           and y coordinates */
 
-        float   u0 = (((x*factor * 1.0)/(transform.reverse?in_rect.width:transform.width)));
+        float   u0 = (((x*factor * 1.0)/transform.width));
         float   u, v;
 
         float *out = it->data[0];
 
         u = u0;
-        v = ((y*factor * 1.0/in_rect.height));
+        v = ((y*factor * 1.0/transform.height));
 
         if (scale)
           {
@@ -469,7 +482,7 @@ process (GeglOperation       *operation,
                 gegl_unmap(u,v, cx, cy);
 #undef gegl_unmap
                 gegl_sampler_get (sampler,
-                                  cx * (transform.reverse?transform.width:in_rect.width), cy * in_rect.height,
+                                  cx * transform.in_width, cy * transform.in_height,
                                   scale, out, abyss_mode);
                 out += 4;
 
@@ -493,7 +506,7 @@ process (GeglOperation       *operation,
 
                 transform.mapfun (&transform, u, v, &cx, &cy);
                 gegl_sampler_get (sampler,
-                                  cx * (transform.reverse?transform.width:in_rect.width), cy * in_rect.height,
+                                  cx * transform.in_width, cy * transform.in_height,
                                   scale, out, abyss_mode);
                 out += 4;
 
@@ -544,7 +557,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",                  "gegl:panorama-projection",
     "title",                 _("Panorama Projection"),
     "reference-composition", composition,
-    "reference-hash",        "216b28fc8471fb8a741d9b42ac328d37",
+    "reference-hash",        "3ab9831053ff0a9e32623ecc8a148e67",
     "position-dependent",    "true",
     "categories" ,           "map",
     "description", _("Do panorama viewer rendering mapping or its inverse for an equirectangular input image. (2:1 ratio containing 360x180 degree panorama)."),
