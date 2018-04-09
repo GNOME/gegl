@@ -157,6 +157,13 @@ gnomonic_ll2xy (Transform *transform,
            transform->cos_tilt * cos_lat *
             cos_lon_minus_pan);
 
+  if (cos_c <= 0.01f)
+  {
+    *x = -.1f;
+    *y = -.1f;
+    return;
+  }
+
   *x = ((cos_lat * sin (lon - transform->pan)) / cos_c);
   *y = ((transform->cos_tilt * sin_lat -
          transform->sin_tilt * cos_lat * cos_lon_minus_pan) / cos_c);
@@ -176,11 +183,6 @@ gnomonic_ll2xy (Transform *transform,
   *x += transform->xoffset;
   *y += 0.5f;
 
-  if (cos_c <= 0.01f)
-  {
-    *x = -.1f;
-    *y = -.1f;
-  }
 }
 
 static void inline
