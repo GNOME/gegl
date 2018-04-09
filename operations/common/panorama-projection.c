@@ -477,7 +477,8 @@ process (GeglOperation       *operation,
                 gegl_unmap(u,v, cx, cy);
 #undef gegl_unmap
                 gegl_sampler_get (sampler,
-                                  cx * transform.in_width, cy * transform.in_height,
+                                  cx * transform.in_width + 0.5f,
+                                  cy * transform.in_height + 0.5f,
                                   scale, out, abyss_mode);
                 out += 4;
 
@@ -501,7 +502,8 @@ process (GeglOperation       *operation,
 
                 transform.mapfun (&transform, u, v, &cx, &cy);
                 gegl_sampler_get (sampler,
-                                  cx * transform.in_width, cy * transform.in_height,
+                                  cx * transform.in_width + 0.5f,
+                                  cy * transform.in_height + 0.5f,
                                   scale, out, abyss_mode);
                 out += 4;
 
