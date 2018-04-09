@@ -467,10 +467,6 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
                      const gint           components,
                      const gint           d_rowstride)
 {
-  /* performance optimizations notes:
-   *   replacing the floating point fractions with fixed point arithmetic
-   *   slows things down.
-   */
   const gint ver  = s_rowstride;
   const gint diag = ver + components;
   const gint dst_y = dst_rect->y;
@@ -838,15 +834,16 @@ gegl_downscale_2x2_u8_rgba (const Babl *format,
   for (y = 0; y < src_height / 2; y++)
     {
       gint    x;
-      guchar *aa = src_data + src_rowstride * y * 2;
+      guchar *src = src_data + src_rowstride * y * 2;
       guchar *dst = dst_data + dst_rowstride * y;
 
+      uint8_t * aa = ((uint8_t *)(src));
+      uint8_t * ab = ((uint8_t *)(src + bpp));
+      uint8_t * ba = ((uint8_t *)(src + src_rowstride));
+      uint8_t * bb = ((uint8_t *)(src + diag));
 
       for (x = 0; x < src_width / 2; x++)
         {
-          uint8_t * ab = ((uint8_t *)(aa + bpp));
-          uint8_t * ba = ((uint8_t *)(aa + src_rowstride));
-          uint8_t * bb = ((uint8_t *)(aa + diag));
 
           ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
                                                 lut_u8_to_u16[ab[0]] +
@@ -864,6 +861,9 @@ gegl_downscale_2x2_u8_rgba (const Babl *format,
 
           dst += bpp;
           aa += bpp * 2;
+          ab += bpp * 2;
+          ba += bpp * 2;
+          bb += bpp * 2;
         }
   }
 }
@@ -887,15 +887,16 @@ gegl_downscale_2x2_u8_rgb (const Babl *format,
   for (y = 0; y < src_height / 2; y++)
     {
       gint    x;
-      guchar *aa = src_data + src_rowstride * y * 2;
+      guchar *src = src_data + src_rowstride * y * 2;
       guchar *dst = dst_data + dst_rowstride * y;
 
+      uint8_t * aa = ((uint8_t *)(src));
+      uint8_t * ab = ((uint8_t *)(src + bpp));
+      uint8_t * ba = ((uint8_t *)(src + src_rowstride));
+      uint8_t * bb = ((uint8_t *)(src + diag));
 
       for (x = 0; x < src_width / 2; x++)
         {
-          uint8_t * ab = ((uint8_t *)(aa + bpp));
-          uint8_t * ba = ((uint8_t *)(aa + src_rowstride));
-          uint8_t * bb = ((uint8_t *)(aa + diag));
 
           ((uint8_t *)dst)[0] = lut_u16_to_u8[ (lut_u8_to_u16[aa[0]] +
                                                 lut_u8_to_u16[ab[0]] +
@@ -911,6 +912,9 @@ gegl_downscale_2x2_u8_rgb (const Babl *format,
                                                 lut_u8_to_u16[bb[2]])>>2 ];
           dst += bpp;
           aa += bpp * 2;
+          ab += bpp * 2;
+          ba += bpp * 2;
+          bb += bpp * 2;
         }
   }
 }

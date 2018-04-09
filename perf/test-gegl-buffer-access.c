@@ -8,7 +8,7 @@ main (gint    argc,
 {
   GeglBuffer    *buffer;
   GeglRectangle  bound = {0, 0, 1024, 1024};
-  GeglRectangle  bound2 = {0, 0, 341, 341};
+  GeglRectangle  bound2 = {0, 0, 300, 300};
   const Babl *format;
   guchar *sbuf;
   guchar *buf;
@@ -101,6 +101,7 @@ main (gint    argc,
   test_end ("nearest 0.333", 1.0 * bound2.width * bound2.height * ITERATIONS * 4);
 
 
+
   {
       const Babl *format = babl_format ("R'G'B'A u8");
       GeglBuffer *buffer = gegl_buffer_new (&bound, format);
@@ -116,22 +117,6 @@ main (gint    argc,
       g_object_unref (buffer);
   }
   test_end ("bilinear 0.333", 1.0 * bound2.width * bound2.height * ITERATIONS * 4);
-
-  {
-      const Babl *format = babl_format ("R'G'B'A u8");
-      GeglBuffer *buffer = gegl_buffer_new (&bound, format);
-  test_start ();
-  for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
-    {
-  /* pre-initialize */
-      gegl_buffer_set (buffer, &bound, 0, NULL, sbuf, GEGL_AUTO_ROWSTRIDE);
-      test_start_iter ();
-      gegl_buffer_get (buffer, &bound2, 0.333, NULL, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE|GEGL_BUFFER_FILTER_BILINEAR);
-      test_end_iter ();
-     }
-      g_object_unref (buffer);
-  }
-  test_end ("mip+bilin 0.333", 1.0 * bound2.width * bound2.height * ITERATIONS * 4);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
