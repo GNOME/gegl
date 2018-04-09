@@ -13,15 +13,11 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2014 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2014, 2018 Øyvind Kolås <pippin@gimp.org>
  */
 
 #include <math.h>
 
-// uncomment the following - to enable code paths that strive to
-// enable reverse operation
-
-//#define ENABLE_REVERSE 1
 
 #ifdef GEGL_PROPERTIES
 
@@ -56,15 +52,14 @@ property_int    (height, _("Height"), -1)
   ui_meta       ("role", "output-extent")
   ui_meta       ("axis", "y")
 
-#ifdef ENABLE_REVERSE
-property_boolean(reverse, _("reverse tranform"), FALSE)
-#endif
+property_boolean(reverse, _("Inverse tranform"), FALSE)
+  description   (_("Do the inverse mapping, useful for touching up zenith, nadir or other parts of panorama."))
 
 property_boolean(little_planet, _("Little planet"), FALSE)
   description   (_("Render a stereographic mapping, a tilt value of 90, which means looking at nadir provides a good default value."))
 
 property_enum   (sampler_type, _("Resampling method"),
-                  GeglSamplerType, gegl_sampler_type, GEGL_SAMPLER_NEAREST)
+                  GeglSamplerType, gegl_sampler_type, GEGL_SAMPLER_LINEAR)
   description   (_("Image resampling method to use"))
 
 #else
@@ -180,10 +175,11 @@ gnomonic_ll2xy (Transform *transform,
   *x += transform->xoffset;
   *y += 0.5f;
 
-  if (*x < -1.0)
-    *x += 1.0;
-  if (*x > 1.0)
-    *x -= 1.0;
+  if (cos_c <= 0)
+  {
+    *x = -.1;
+    *y = -.1;
+  }
 }
 
 static void inline
@@ -309,15 +305,12 @@ static void prepare_transform (Transform *transform,
     transform->ll2xy = stereographic_ll2xy;
   }
 
-#if 1
   if (inverse)
   {
     void (*temp) (Transform *transform, float x, float  y, float *lon, float *lat) = transform->xy2ll;
     transform->xy2ll = transform->ll2xy;
     transform->ll2xy = temp;
   }
-#else
-#endif
   transform->reverse = inverse;
 
 
@@ -376,7 +369,6 @@ get_bounding_box (GeglOperation *operation)
   return result;
 }
 
-
 static void prepare_transform2 (Transform *transform,
                                 GeglOperation *operation,
                                 gint level)
@@ -389,11 +381,7 @@ static void prepare_transform2 (Transform *transform,
                      o->pan, o->spin, o->zoom, o->tilt,
                      o->little_planet, o->width / factor, o->height / factor,
                      in_rect.width, in_rect.height,
-#ifdef ENABLE_REVERSE
                      o->reverse);
-#else
-                     0);
-#endif
 
 }
 
@@ -405,7 +393,6 @@ get_required_for_output (GeglOperation       *operation,
   GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
   return result;
 }
-
 
 static gboolean
 process (GeglOperation       *operation,
@@ -431,6 +418,9 @@ process (GeglOperation       *operation,
   if (level)
     sampler_type = GEGL_SAMPLER_NEAREST;
 
+  if (sampler_type != GEGL_SAMPLER_NEAREST) /* we crash with any other samplers */
+    sampler_type = GEGL_SAMPLER_LINEAR;
+
   format_io = babl_format ("RaGaBaA float");
   {
     /* XXX: panorama projection needs to sample from a higher resolution than
@@ -449,9 +439,8 @@ process (GeglOperation       *operation,
   if (sampler_type != GEGL_SAMPLER_NEAREST)
     scale = &scale_matrix;
 
-
   {
-    float   ud = ((1.0/transform.width)*factor);
+    float   ud = ((1.0/(transform.reverse?in_rect.width:transform.width))*factor);
     float   vd = ((1.0/transform.height)*factor);
 
     it = gegl_buffer_iterator_new (output, result, level, format_io,
@@ -464,7 +453,7 @@ process (GeglOperation       *operation,
         gint x = it->roi->x; /* initial x                   */
         gint y = it->roi->y; /*           and y coordinates */
 
-        float   u0 = (((x*factor)/transform.width));
+        float   u0 = (((x*factor * 1.0)/(transform.reverse?in_rect.width:transform.width)));
         float   u, v;
 
         float *out = it->data[0];
@@ -473,7 +462,7 @@ process (GeglOperation       *operation,
           abyss_mode = GEGL_ABYSS_NONE;
 
         u = u0;
-        v = ((y*factor/transform.height));
+        v = ((y*factor * 1.0/in_rect.height));
 
         if (scale)
           {
@@ -488,7 +477,7 @@ process (GeglOperation       *operation,
                 gegl_unmap(u,v, cx, cy);
 #undef gegl_unmap
                 gegl_sampler_get (sampler,
-                                  cx * in_rect.width, cy * in_rect.height,
+                                  cx * (transform.reverse?transform.width:in_rect.width), cy * in_rect.height,
                                   scale, out, abyss_mode);
                 out += 4;
 
@@ -512,7 +501,7 @@ process (GeglOperation       *operation,
 
                 transform.xy2ll (&transform, u, v, &cx, &cy);
                 gegl_sampler_get (sampler,
-                                  cx * in_rect.width, cy * in_rect.height,
+                                  cx * (transform.reverse?transform.width:in_rect.width), cy * in_rect.height,
                                   scale, out, abyss_mode);
                 out += 4;
 
@@ -532,43 +521,6 @@ process (GeglOperation       *operation,
   }
 
   g_object_unref (sampler);
-
-#if 0
-  {
-    float t;
-    float lat0  = 0;
-    float lon0 = 0;
-    float lat1  = 0.5;
-    float lon1 = 0.5;
-    int i = 0;
-    guchar pixel[4] = {255,0,0,255};
-
-    for (t = 0; t < 1.0; t+=0.01, i++)
-    {
-      float lat = lat0 * (1.0 - t) + lat1 * t;
-      float lon = lon0 * (1.0 - t) + lon1 * t;
-      float x, y;
-      float xx, yy;
-      GeglRectangle prect = {0,0,1,1};
-
-      ll2xy (&transform, lon, lat, &x, &y);
-
-      x += xoffset;
-      y += 0.5;
-
-      x *= width;
-      y *= height;
-
-      prect.x = floor (x);
-      prect.y = floor (y);
-      prect.width = 1;
-      prect.height = 1;
-
-      gegl_buffer_set (output, &prect, 0, babl_format ("R'G'B' u8"), pixel, 8);
-    }
-  }
-#endif
-
   return TRUE;
 }
 
@@ -602,7 +554,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "reference-hash",        "216b28fc8471fb8a741d9b42ac328d37",
     "position-dependent",    "true",
     "categories" ,           "map",
-    "description", _("Perform an equilinear/gnomonic or little planet/stereographic projection of an equirectangular input image."),
+    "description", _("Do panorama viewer rendering mapping or its inverse for an equirectangular input image. (2:1 ratio containing 360x180 degree panorama)."),
     NULL);
 }
 #endif
