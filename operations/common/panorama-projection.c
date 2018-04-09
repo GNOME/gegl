@@ -107,7 +107,7 @@ gnomonic_xy2ll (Transform *transform, float x, float y,
   float longtitude, latitude;
   float sin_c, cos_c;
 
-  y -= 0.5;
+  y -= 0.5f;
   x -= transform->xoffset;
 
   if (transform->do_spin)
@@ -132,7 +132,7 @@ gnomonic_xy2ll (Transform *transform, float x, float y,
   latitude = asinf (cos_c * transform->sin_tilt + ( y * sin_c * transform->cos_tilt) / p);
   longtitude = transform->pan + atan2f (x * sin_c, p * transform->cos_tilt * cos_c - y * transform->sin_tilt * sin_c);
 
-  if (longtitude < 0)
+  if (longtitude < 0.0f)
     longtitude += M_PI * 2;
 
   *lon = (longtitude / (M_PI * 2));
@@ -176,10 +176,10 @@ gnomonic_ll2xy (Transform *transform,
   *x += transform->xoffset;
   *y += 0.5f;
 
-  if (cos_c <= 0.01)
+  if (cos_c <= 0.01f)
   {
-    *x = -.1;
-    *y = -.1;
+    *x = -.1f;
+    *y = -.1f;
   }
 }
 
@@ -231,7 +231,7 @@ stereographic_xy2ll (Transform *transform,
   float longtitude, latitude;
   float sin_c, cos_c;
 
-  y -= 0.5;
+  y -= 0.5f;
   x -= transform->xoffset;
 
   if (transform->do_spin)
@@ -270,7 +270,7 @@ static void prepare_transform (Transform *transform,
                                float input_width, float input_height,
                                int inverse)
 {
-  float xoffset = 0.5;
+  float xoffset = 0.5f;
   transform->reverse = inverse;
   if (little_planet)
   {
@@ -289,7 +289,7 @@ static void prepare_transform (Transform *transform,
 
   pan  = pan / 360 * M_PI * 2;
   spin = spin / 360 * M_PI * 2;
-  zoom = little_planet?zoom / 1000.0:zoom / 100.0;
+  zoom = little_planet?zoom / 1000.0f:zoom / 100.0f;
   tilt = tilt / 360 * M_PI * 2;
 
   while (pan > M_PI)
@@ -299,13 +299,13 @@ static void prepare_transform (Transform *transform,
   {
     width = input_height;
     height = width;
-    xoffset = ((input_width - height)/height) / 2 + 0.5;
+    xoffset = ((input_width - height)/height) / 2 + 0.5f;
   }
   else
   {
     float orig_width = width;
     width = height;
-    xoffset = ((orig_width - height)/height) / 2 + 0.5;
+    xoffset = ((orig_width - height)/height) / 2 + 0.5f;
   }
 
 
@@ -442,8 +442,8 @@ process (GeglOperation       *operation,
     scale = &scale_matrix;
 
   {
-    float   ud = ((1.0/transform.width)*factor);
-    float   vd = ((1.0/transform.height)*factor);
+    float   ud = ((1.0f/transform.width)*factor);
+    float   vd = ((1.0f/transform.height)*factor);
     int abyss_mode = transform.reverse ? GEGL_ABYSS_NONE : GEGL_ABYSS_LOOP;
 
     it = gegl_buffer_iterator_new (output, result, level, format_io,
@@ -456,7 +456,7 @@ process (GeglOperation       *operation,
         gint x = it->roi->x; /* initial x                   */
         gint y = it->roi->y; /*           and y coordinates */
 
-        float   u0 = (((x*factor * 1.0)/transform.width));
+        float   u0 = (((x*factor * 1.0f)/transform.width));
         float   u, v;
 
         float *out = it->data[0];
