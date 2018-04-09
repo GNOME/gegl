@@ -52,7 +52,7 @@ property_int    (height, _("Height"), -1)
   ui_meta       ("role", "output-extent")
   ui_meta       ("axis", "y")
 
-property_boolean(reverse, _("Inverse tranform"), FALSE)
+property_boolean(inverse, _("Inverse tranform"), FALSE)
   description   (_("Do the inverse mapping, useful for touching up zenith, nadir or other parts of panorama."))
 
 property_boolean(little_planet, _("Little planet"), FALSE)
@@ -88,8 +88,7 @@ struct _Transform
   float xoffset;
   float width;
   float height;
-  void (*xy2ll) (Transform *transform, float x, float  y, float *lon, float *lat);
-  void (*ll2xy) (Transform *transform, float lon, float  lat, float *x, float *y);
+  void (*mapfun) (Transform *transform, float x, float  y, float *lon, float *lat);
   int   reverse;
   int   do_spin;
   int   do_zoom;
@@ -175,7 +174,7 @@ gnomonic_ll2xy (Transform *transform,
   *x += transform->xoffset;
   *y += 0.5f;
 
-  if (cos_c <= 0)
+  if (cos_c <= 0.01)
   {
     *x = -.1;
     *y = -.1;
@@ -275,8 +274,21 @@ static void prepare_transform (Transform *transform,
                                int inverse)
 {
   float xoffset = 0.5;
-  transform->xy2ll = gnomonic_xy2ll;
-  transform->ll2xy = gnomonic_ll2xy;
+  transform->reverse = inverse;
+  if (little_planet)
+  {
+    if (inverse)
+      transform->mapfun = stereographic_ll2xy;
+    else
+      transform->mapfun = stereographic_xy2ll;
+  }
+  else
+  {
+    if (inverse)
+      transform->mapfun = gnomonic_ll2xy;
+    else
+      transform->mapfun = gnomonic_xy2ll;
+  }
 
   pan  = pan / 360 * M_PI * 2;
   spin = spin / 360 * M_PI * 2;
@@ -299,19 +311,6 @@ static void prepare_transform (Transform *transform,
     xoffset = ((orig_width - height)/height) / 2 + 0.5;
   }
 
-  if (little_planet)
-  {
-    transform->xy2ll = stereographic_xy2ll;
-    transform->ll2xy = stereographic_ll2xy;
-  }
-
-  if (inverse)
-  {
-    void (*temp) (Transform *transform, float x, float  y, float *lon, float *lat) = transform->xy2ll;
-    transform->xy2ll = transform->ll2xy;
-    transform->ll2xy = temp;
-  }
-  transform->reverse = inverse;
 
 
   transform->do_spin = fabs (spin) > 0.000001 ? 1 : 0;
@@ -381,7 +380,7 @@ static void prepare_transform2 (Transform *transform,
                      o->pan, o->spin, o->zoom, o->tilt,
                      o->little_planet, o->width / factor, o->height / factor,
                      in_rect.width, in_rect.height,
-                     o->reverse);
+                     o->inverse);
 
 }
 
@@ -418,23 +417,18 @@ process (GeglOperation       *operation,
   if (level)
     sampler_type = GEGL_SAMPLER_NEAREST;
 
-  if (sampler_type != GEGL_SAMPLER_NEAREST) /* we crash with any other samplers */
-    sampler_type = GEGL_SAMPLER_LINEAR;
+  if (transform.reverse)
+  {
+    /* the computed scale matrix seem wrong for these samplers */
+    if (sampler_type == GEGL_SAMPLER_NOHALO ||
+        sampler_type == GEGL_SAMPLER_LOHALO)
+      sampler_type = GEGL_SAMPLER_CUBIC;
+  }
 
   format_io = babl_format ("RaGaBaA float");
-  {
-    /* XXX: panorama projection needs to sample from a higher resolution than
-     * its output to yield good results. This affects which level should
-     * be rendered for source nodes..
-     */
 
-    gint sample_level = level - 3;
-
-    if (sample_level < 0)
-      sample_level = 0;
-    sampler = gegl_buffer_sampler_new_at_level (input, format_io, sampler_type,
-                                       sample_level);
-  }
+  sampler = gegl_buffer_sampler_new_at_level (input, format_io, sampler_type,
+                                              0);
 
   if (sampler_type != GEGL_SAMPLER_NEAREST)
     scale = &scale_matrix;
@@ -442,6 +436,7 @@ process (GeglOperation       *operation,
   {
     float   ud = ((1.0/(transform.reverse?in_rect.width:transform.width))*factor);
     float   vd = ((1.0/transform.height)*factor);
+    int abyss_mode = transform.reverse ? GEGL_ABYSS_NONE : GEGL_ABYSS_LOOP;
 
     it = gegl_buffer_iterator_new (output, result, level, format_io,
                                    GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
@@ -457,9 +452,6 @@ process (GeglOperation       *operation,
         float   u, v;
 
         float *out = it->data[0];
-        int abyss_mode = GEGL_ABYSS_LOOP;
-        if (transform.reverse)
-          abyss_mode = GEGL_ABYSS_NONE;
 
         u = u0;
         v = ((y*factor * 1.0/in_rect.height));
@@ -471,7 +463,7 @@ process (GeglOperation       *operation,
                 float cx, cy;
 #define gegl_unmap(xx,yy,ud,vd) {                                       \
                   float rx, ry;                                         \
-                  transform.xy2ll (&transform, xx, yy, &rx, &ry);       \
+                  transform.mapfun (&transform, xx, yy, &rx, &ry);       \
                   ud = rx;vd = ry;}
                 gegl_sampler_compute_scale (scale_matrix, u, v);
                 gegl_unmap(u,v, cx, cy);
@@ -499,7 +491,7 @@ process (GeglOperation       *operation,
               {
                 float cx, cy;
 
-                transform.xy2ll (&transform, u, v, &cx, &cy);
+                transform.mapfun (&transform, u, v, &cx, &cy);
                 gegl_sampler_get (sampler,
                                   cx * (transform.reverse?transform.width:in_rect.width), cy * in_rect.height,
                                   scale, out, abyss_mode);
