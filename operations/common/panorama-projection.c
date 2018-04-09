@@ -92,8 +92,6 @@ struct _Transform
   float in_height;
   void (*mapfun) (Transform *transform, float x, float  y, float *lon, float *lat);
   int   reverse;
-  int   do_spin;
-  int   do_zoom;
 };
 
 /* formulas from:
@@ -110,17 +108,10 @@ gnomonic_xy2ll (Transform *transform, float x, float y,
   y -= 0.5f;
   x -= transform->xoffset;
 
-  if (transform->do_spin)
   {
     float tx = x, ty = y;
     x = tx * transform->cos_spin - ty * transform->sin_spin;
     y = ty * transform->cos_spin + tx * transform->sin_spin;
-  }
-
-  if (transform->do_zoom)
-  {
-    x /= transform->zoom;
-    y /= transform->zoom;
   }
 
   p = sqrtf (x*x+y*y);
@@ -168,12 +159,6 @@ gnomonic_ll2xy (Transform *transform,
   *y = ((transform->cos_tilt * sin_lat -
          transform->sin_tilt * cos_lat * cos_lon_minus_pan) / cos_c);
 
-  if (transform->do_zoom)
-  {
-    *x *= transform->zoom;
-    *y *= transform->zoom;
-  }
-  if (transform->do_spin)
   {
     float tx = *x, ty = *y;
     *x = tx * transform->cos_negspin - ty * transform->sin_negspin;
@@ -207,13 +192,6 @@ stereographic_ll2xy (Transform *transform,
   *y = k * ((transform->cos_tilt * sin_lat -
         transform->sin_tilt * cos_lat * cos_lon_minus_pan));
 
-  if (transform->do_zoom)
-  {
-    *x *= transform->zoom;
-    *y *= transform->zoom;
-  }
-
-  if (transform->do_spin)
   {
     float tx = *x, ty = *y;
     *x = tx * transform->cos_negspin - ty * transform->sin_negspin;
@@ -236,17 +214,10 @@ stereographic_xy2ll (Transform *transform,
   y -= 0.5f;
   x -= transform->xoffset;
 
-  if (transform->do_spin)
   {
     float tx = x, ty = y;
     x = tx * transform->cos_spin - ty * transform->sin_spin;
     y = ty * transform->cos_spin + tx * transform->sin_spin;
-  }
-
-  if (transform->do_zoom)
-  {
-    x /= transform->zoom;
-    y /= transform->zoom;
   }
 
   p = sqrtf (x*x+y*y);
@@ -312,20 +283,20 @@ static void prepare_transform (Transform *transform,
 
 
 
-  transform->do_spin = fabs (spin) > 0.000001 ? 1 : 0;
-  transform->do_zoom = fabs (zoom-1.0) > 0.000001 ? 1 : 0;
-
   transform->pan         = pan;
   transform->tilt        = tilt;
   transform->spin        = spin;
-  transform->zoom        = zoom;
   transform->xoffset     = xoffset;
   transform->sin_tilt    = sinf (tilt);
   transform->cos_tilt    = cosf (tilt);
-  transform->sin_spin    = sinf (spin);
-  transform->cos_spin    = cosf (spin);
-  transform->sin_negspin = sinf (-spin);
-  transform->cos_negspin = cosf (-spin);
+  transform->zoom        = zoom;
+
+
+  transform->sin_spin    = sinf (spin) * zoom;
+  transform->cos_spin    = cosf (spin) * zoom;
+  transform->sin_negspin = sinf (-spin) / zoom;
+  transform->cos_negspin = cosf (-spin) / zoom;
+
   transform->width       = width;
   transform->height      = height;
   transform->in_width    = input_width;
