@@ -59,8 +59,8 @@ property_boolean(little_planet, _("Little planet"), FALSE)
   description   (_("Render a stereographic mapping, a tilt value of 90, which means looking at nadir provides a good default value."))
 
 property_enum   (sampler_type, _("Resampling method"),
-                  GeglSamplerType, gegl_sampler_type, GEGL_SAMPLER_LINEAR)
-  description   (_("Image resampling method to use"))
+                  GeglSamplerType, gegl_sampler_type, GEGL_SAMPLER_NEAREST)
+  description   (_("Image resampling method to use, for good results with double resampling when retouching panoramas, use nearest to generate the view and cubic or better for the inverse transform back to panorama."))
 
 #else
 
