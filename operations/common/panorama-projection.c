@@ -154,7 +154,7 @@ gnomonic_ll2xy (Transform *transform,
   cos_lon_minus_pan = cosf (lon - transform->pan);
 
   cos_c = (transform->sin_tilt * sin_lat +
-           transform->cos_tilt * cos (lat) *
+           transform->cos_tilt * cos_lat *
             cos_lon_minus_pan);
 
   *x = ((cos_lat * sin (lon - transform->pan)) / cos_c);
@@ -188,22 +188,22 @@ stereographic_ll2xy (Transform *transform,
                      float lon, float lat,
                      float *x,  float *y)
 {
-  float k, sin_lon, cos_lon, cos_lat_minus_pan;
+  float k, sin_lat, cos_lat, cos_lon_minus_pan;
 
   lat = lat * M_PI - M_PI/2;
   lon = lon * (M_PI * 2);
 
-  sin_lon = sinf (lon);
-  cos_lon = cosf (lon);
-  cos_lat_minus_pan = cosf (lat - transform->pan);
+  sin_lat = sinf (lat);
+  cos_lat = cosf (lat);
+  cos_lon_minus_pan = cosf (lon - transform->pan);
 
-  k = 2/(1 + transform->sin_tilt * sin_lon +
-            transform->cos_tilt * cos (lon) *
-            cos_lat_minus_pan);
+  k = 2/(1 + transform->sin_tilt * sin_lat +
+             transform->cos_tilt * cos_lat *
+             cos_lon_minus_pan);
 
-  *x = k * ((cos_lon * sin (lat - transform->pan)));
-  *y = k * ((transform->cos_tilt * sin_lon -
-        transform->sin_tilt * cos_lon * cos_lat_minus_pan));
+  *x = k * ((cos_lat * sin (lon - transform->pan)));
+  *y = k * ((transform->cos_tilt * sin_lat -
+        transform->sin_tilt * cos_lat * cos_lon_minus_pan));
 
   if (transform->do_zoom)
   {
@@ -220,11 +220,6 @@ stereographic_ll2xy (Transform *transform,
 
   *x += transform->xoffset;
   *y += 0.5f;
-
-  if (*x < -1.0)
-    *x += 1.0;
-  if (*x > 1.0)
-    *x -= 1.0;
 }
 
 static void inline
@@ -415,14 +410,14 @@ process (GeglOperation       *operation,
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   Transform           transform;
-  const Babl         *format_io;
   GeglSampler        *sampler;
-  gint                factor = 1 << level;
+  gint                factor       = 1 << level;
   GeglBufferIterator *it;
-  GeglRectangle in_rect = *gegl_operation_source_get_bounding_box (operation, "input");
-  GeglMatrix2  scale_matrix;
-  GeglMatrix2 *scale = NULL;
-  gint sampler_type = o->sampler_type;
+  GeglMatrix2         scale_matrix;
+  GeglMatrix2        *scale        = NULL;
+  gint                sampler_type = o->sampler_type;
+  const Babl         *format_io    = babl_format ("RaGaBaA float");
+
   level = 0;
   factor = 1;
   prepare_transform2 (&transform, operation, level);
@@ -436,12 +431,12 @@ process (GeglOperation       *operation,
     if (sampler_type == GEGL_SAMPLER_NOHALO ||
         sampler_type == GEGL_SAMPLER_LOHALO)
       sampler_type = GEGL_SAMPLER_CUBIC;
+
+    if (o->little_planet)
+      sampler_type = GEGL_SAMPLER_NEAREST;
   }
 
-  format_io = babl_format ("RaGaBaA float");
-
-  sampler = gegl_buffer_sampler_new_at_level (input, format_io, sampler_type,
-                                              0);
+  sampler = gegl_buffer_sampler_new_at_level (input, format_io, sampler_type, 0);
 
   if (sampler_type != GEGL_SAMPLER_NEAREST)
     scale = &scale_matrix;
