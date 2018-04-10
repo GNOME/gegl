@@ -424,6 +424,7 @@ process (GeglOperation       *operation,
   GeglMatrix2        *scale        = NULL;
   gint                sampler_type = o->sampler_type;
   const Babl         *format_io    = babl_format ("RaGaBaA float");
+  GeglSamplerGetFun   getfun;
 
   level = 0;
   factor = 1;
@@ -434,7 +435,7 @@ process (GeglOperation       *operation,
 
   if (transform.reverse)
   {
-    /* the computed scale matrix seem wrong for these samplers */
+    /* artifacts have been observed with these samplers */
     if (sampler_type == GEGL_SAMPLER_NOHALO ||
         sampler_type == GEGL_SAMPLER_LOHALO)
       sampler_type = GEGL_SAMPLER_CUBIC;
@@ -443,13 +444,16 @@ process (GeglOperation       *operation,
       sampler_type = GEGL_SAMPLER_NEAREST;
   }
 
-  if (sampler_type != GEGL_SAMPLER_NEAREST)
+  if (sampler_type != GEGL_SAMPLER_NEAREST &&
+      !(o->little_planet == FALSE && o->inverse == FALSE)) // for forward transforms of non-little planet we
+                                                           // skip the inverse scale paths, since they are unlikely to be needed
+                                                           // and slow thing down
     scale = &scale_matrix;
   else
     format_io = babl_format ("RGBA float");
 
   sampler = gegl_buffer_sampler_new_at_level (input, format_io, sampler_type, 0);
-
+  getfun = gegl_sampler_get_fun (sampler);
 
   {
     float   ud = ((1.0f/transform.width)*factor);
@@ -478,17 +482,46 @@ process (GeglOperation       *operation,
             for (i=0; i<n_pixels; i++)
               {
                 float cx, cy;
-#define gegl_unmap(xx,yy,ud,vd) {                                       \
-                  float rx, ry;                                         \
-                  transform.mapfun (&transform, xx, yy, &rx, &ry);       \
+/* we need our own jacobian matrix approximator,
+ * since we do not operate on pixel values
+ */
+#define gegl_sampler_compute_scale2(matrix, x, y)        \
+{                                                        \
+  float ax, ay, bx, by;                                  \
+  gegl_unmap(x + 0.5 * ud, y, ax, ay);                   \
+  gegl_unmap(x - 0.5 * ud, y, bx, by);                   \
+  matrix.coeff[0][0] = (ax - bx) * transform.in_width;   \
+  matrix.coeff[1][0] = (ay - by) * transform.in_height;  \
+  gegl_unmap(x, y + 0.5 * ud, ax, ay);                   \
+  gegl_unmap(x, y - 0.5 * ud, bx, by);                   \
+  matrix.coeff[0][1] = (ax - bx) * transform.in_width;   \
+  matrix.coeff[1][1] = (ay - by) * transform.in_height;  \
+}
+
+#define gegl_unmap(xx,yy,ud,vd) {                                  \
+                  float rx, ry;                                    \
+                  transform.mapfun (&transform, xx, yy, &rx, &ry); \
                   ud = rx;vd = ry;}
-                gegl_sampler_compute_scale (scale_matrix, u, v);
+                gegl_sampler_compute_scale2 (scale_matrix, u, v);
                 gegl_unmap(u,v, cx, cy);
 #undef gegl_unmap
-                gegl_sampler_get (sampler,
-                                  cx * transform.in_width + 0.5f,
-                                  cy * transform.in_height + 0.5f,
-                                  scale, out, abyss_mode);
+
+#if 0
+                // special handling across pan-horizon, maybe there
+                // is more special cases needing handling as well
+                if (scale_matrix.coeff[0][0] > transform.in_width/2)
+                  scale_matrix.coeff[0][0] -= transform.in_width;
+                if (scale_matrix.coeff[0][0] < -transform.in_width/2)
+                  scale_matrix.coeff[0][0] += transform.in_width;
+                if (scale_matrix.coeff[0][1] > transform.in_width/2)
+                  scale_matrix.coeff[0][1] -= transform.in_width;
+                if (scale_matrix.coeff[0][1] < -transform.in_width/2)
+                  scale_matrix.coeff[0][1] += transform.in_width;
+#endif
+                getfun (sampler,
+                        cx * transform.in_width + 0.5f,
+                        cy * transform.in_height + 0.5f,
+                        scale, out, abyss_mode);
                 out += 4;
 
                 /* update x, y and u,v coordinates */
@@ -508,10 +541,10 @@ process (GeglOperation       *operation,
               {
                 float cx, cy;
                 transform.mapfun (&transform, u, v, &cx, &cy);
-                gegl_sampler_get (sampler,
-                                  cx * transform.in_width + 0.5f,
-                                  cy * transform.in_height + 0.5f,
-                                  scale, out, abyss_mode);
+                getfun (sampler,
+                        cx * transform.in_width + 0.5f,
+                        cy * transform.in_height + 0.5f,
+                        scale, out, abyss_mode);
                 out += 4;
 
                 /* update x, y and u,v coordinates */
@@ -552,7 +585,6 @@ gegl_op_class_init (GeglOpClass *klass)
 
   filter_class->process = process;
   operation_class->prepare = prepare;
-  operation_class->threaded = FALSE;
   operation_class->get_bounding_box = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
 
