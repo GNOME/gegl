@@ -445,9 +445,10 @@ process (GeglOperation       *operation,
   }
 
   if (sampler_type != GEGL_SAMPLER_NEAREST &&
-      !(o->little_planet == FALSE && o->inverse == FALSE)) // for forward transforms of non-little planet we
-                                                           // skip the inverse scale paths, since they are unlikely to be needed
-                                                           // and slow thing down
+      !(o->little_planet == FALSE && o->inverse == FALSE &&
+      fabs(o->tilt < 33)))
+    /* skip the computation of sampler neighborhood scale matrix in cases where
+     * we are unlikely to be scaling down */
     scale = &scale_matrix;
   else
     format_io = babl_format ("RGBA float");
@@ -490,12 +491,12 @@ process (GeglOperation       *operation,
   float ax, ay, bx, by;                                  \
   gegl_unmap(x + 0.5 * ud, y, ax, ay);                   \
   gegl_unmap(x - 0.5 * ud, y, bx, by);                   \
-  matrix.coeff[0][0] = (ax - bx) * transform.in_width;   \
-  matrix.coeff[1][0] = (ay - by) * transform.in_height;  \
+  matrix.coeff[0][0] = (ax - bx);   \
+  matrix.coeff[1][0] = (ay - by);  \
   gegl_unmap(x, y + 0.5 * ud, ax, ay);                   \
   gegl_unmap(x, y - 0.5 * ud, bx, by);                   \
-  matrix.coeff[0][1] = (ax - bx) * transform.in_width;   \
-  matrix.coeff[1][1] = (ay - by) * transform.in_height;  \
+  matrix.coeff[0][1] = (ax - bx);   \
+  matrix.coeff[1][1] = (ay - by);  \
 }
 
 #define gegl_unmap(xx,yy,ud,vd) {                                  \
@@ -506,22 +507,29 @@ process (GeglOperation       *operation,
                 gegl_unmap(u,v, cx, cy);
 #undef gegl_unmap
 
-#if 0
-                // special handling across pan-horizon, maybe there
-                // is more special cases needing handling as well
-                if (scale_matrix.coeff[0][0] > transform.in_width/2)
-                  scale_matrix.coeff[0][0] -= transform.in_width;
-                if (scale_matrix.coeff[0][0] < -transform.in_width/2)
-                  scale_matrix.coeff[0][0] += transform.in_width;
-                if (scale_matrix.coeff[0][1] > transform.in_width/2)
-                  scale_matrix.coeff[0][1] -= transform.in_width;
-                if (scale_matrix.coeff[0][1] < -transform.in_width/2)
-                  scale_matrix.coeff[0][1] += transform.in_width;
+#if 1
+                if (scale_matrix.coeff[0][0] > 0.5f)
+                  scale_matrix.coeff[0][0] = (scale_matrix.coeff[0][0]-1.0) * transform.in_width;
+                else if (scale_matrix.coeff[0][0] < -0.5f) 
+                  scale_matrix.coeff[0][0] = (scale_matrix.coeff[0][0]+1.0) * transform.in_width;
+                else
+                  scale_matrix.coeff[0][0] *= transform.in_width;
+
+                if (scale_matrix.coeff[0][1] > 0.5f)
+                  scale_matrix.coeff[0][1] = (scale_matrix.coeff[0][1]-1.0) * transform.in_width;
+                else if (scale_matrix.coeff[0][1] < -0.5f)
+                  scale_matrix.coeff[0][1] = (scale_matrix.coeff[0][1]+1.0) * transform.in_width;
+                else
+                  scale_matrix.coeff[0][1] *= transform.in_width;
+
+                scale_matrix.coeff[1][1] *= transform.in_height;
+                scale_matrix.coeff[1][0] *= transform.in_height;
 #endif
                 getfun (sampler,
                         cx * transform.in_width + 0.5f,
                         cy * transform.in_height + 0.5f,
                         scale, out, abyss_mode);
+
                 out += 4;
 
                 /* update x, y and u,v coordinates */
