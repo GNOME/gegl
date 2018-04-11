@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-04-06 23:02+0000\n"
-"PO-Revision-Date: 2018-04-08 22:12+0200\n"
+"POT-Creation-Date: 2018-04-09 18:51+0000\n"
+"PO-Revision-Date: 2018-04-11 09:55+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -699,7 +699,7 @@ msgstr ""
 "szarości."
 
 #: operations/common/checkerboard.c:25 operations/common/grid.c:24
-#: operations/common/panorama-projection.c:47 operations/common/rectangle.c:36
+#: operations/common/panorama-projection.c:43 operations/common/rectangle.c:36
 #: operations/common-gpl3+/diffraction-patterns.c:78
 #: operations/common-gpl3+/maze.c:40 operations/common-gpl3+/noise-solid.c:64
 #: operations/common-gpl3+/plasma.c:54 operations/common-gpl3+/sinus.c:76
@@ -717,7 +717,7 @@ msgid "Horizontal width of cells pixels"
 msgstr "Pozioma szerokość pikseli komórek"
 
 #: operations/common/checkerboard.c:33 operations/common/grid.c:31
-#: operations/common/panorama-projection.c:53 operations/common/rectangle.c:42
+#: operations/common/panorama-projection.c:49 operations/common/rectangle.c:42
 #: operations/common-gpl3+/diffraction-patterns.c:86
 #: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:48
 #: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:62
@@ -2221,7 +2221,7 @@ msgstr ""
 
 #. XXX: needs better ui type
 #: operations/common/map-absolute.c:22 operations/common/map-relative.c:28
-#: operations/common/panorama-projection.c:66
+#: operations/common/panorama-projection.c:61
 #: operations/common-gpl3+/ripple.c:47 operations/common-gpl3+/waves.c:50
 #: operations/workshop/recursive-transform.c:50
 #: operations/workshop/spherize.c:57
@@ -2444,7 +2444,7 @@ msgstr "Przycinanie na osi Y"
 msgid "Y axis ratio for trimming mirror expanse"
 msgstr "Współrzędna osi Y do przycinania obszaru lustra"
 
-#: operations/common/mirrors.c:74 operations/common/panorama-projection.c:43
+#: operations/common/mirrors.c:74 operations/common/panorama-projection.c:39
 #: operations/common-gpl3+/fractal-explorer.c:58
 #: operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
@@ -2971,48 +2971,56 @@ msgstr ""
 "Działanie Portera-Duffa na (znane także jako zwykły tryb, i „src-over”) (d = "
 "cA + cB * (1 - aA))"
 
-#: operations/common/panorama-projection.c:28
+#: operations/common/panorama-projection.c:24
 msgid "Pan"
 msgstr "Panoramowanie"
 
-#: operations/common/panorama-projection.c:29
+#: operations/common/panorama-projection.c:25
 msgid "Horizontal camera panning"
 msgstr "Poziome przesunięcie kamery"
 
-#: operations/common/panorama-projection.c:33
+#: operations/common/panorama-projection.c:29
 msgid "Tilt"
 msgstr "Nachylenie"
 
-#: operations/common/panorama-projection.c:34
+#: operations/common/panorama-projection.c:30
 msgid "Vertical camera panning"
 msgstr "Pionowe przesunięcie kamery"
 
-#: operations/common/panorama-projection.c:39
+#: operations/common/panorama-projection.c:35
 msgid "Spin"
 msgstr "Obrót"
 
-#: operations/common/panorama-projection.c:40
+#: operations/common/panorama-projection.c:36
 msgid "Spin angle around camera axis"
 msgstr "Kąt obrotu wokół osi kamery"
 
-#: operations/common/panorama-projection.c:48
+#: operations/common/panorama-projection.c:44
 msgid "output/rendering width in pixels, -1 for input width"
 msgstr ""
 "szerokość wyjścia/renderowania w pikselach, -1 oznacza szerokość wejścia"
 
-#: operations/common/panorama-projection.c:54
+#: operations/common/panorama-projection.c:50
 msgid "output/rendering height in pixels, -1 for input height"
 msgstr "wysokość wyjścia/renderowania w pikselach, -1 oznacza wysokość wejścia"
 
-#: operations/common/panorama-projection.c:60
-msgid "reverse tranform"
-msgstr "odwrotne przekształcenie"
+#: operations/common/panorama-projection.c:55
+msgid "Inverse tranform"
+msgstr "Odwrotne przekształcenie"
 
-#: operations/common/panorama-projection.c:63
+#: operations/common/panorama-projection.c:56
+msgid ""
+"Do the inverse mapping, useful for touching up zenith, nadir or other parts "
+"of panorama."
+msgstr ""
+"Wykonaj mapowanie odwrotne, przydatne do retuszowania zenitu, nadiru "
+"i innych części panoramy."
+
+#: operations/common/panorama-projection.c:58
 msgid "Little planet"
 msgstr "Mała planeta"
 
-#: operations/common/panorama-projection.c:64
+#: operations/common/panorama-projection.c:59
 msgid ""
 "Render a stereographic mapping, a tilt value of 90, which means looking at "
 "nadir provides a good default value."
@@ -3020,21 +3028,29 @@ msgstr ""
 "Renderuj mapowanie stereograficzne, wartość nachylenia 90, co oznacza, że "
 "spojrzenie na najniższą wartość dostarcza dobrą wartość domyślną."
 
-#: operations/common/panorama-projection.c:68
-msgid "Image resampling method to use"
-msgstr "Używana metoda resamplingu obrazów"
+#: operations/common/panorama-projection.c:63
+msgid ""
+"Image resampling method to use, for good results with double resampling when "
+"retouching panoramas, use nearest to generate the view and cubic or better "
+"for the inverse transform back to panorama."
+msgstr ""
+"Używana metoda resamplingu obrazów, aby uzyskać dobre wyniki za pomocą "
+"podwójnego resamplingu podczas retuszowania panoram, należy użyć najbliższej "
+"do utworzenia widoku i sześciennej lub lepszej do odwrotnego przekształcenia "
+"z powrotem na panoramę."
 
-#: operations/common/panorama-projection.c:600
+#: operations/common/panorama-projection.c:553
 msgid "Panorama Projection"
 msgstr "Rzut panoramy"
 
-#: operations/common/panorama-projection.c:605
+#: operations/common/panorama-projection.c:558
 msgid ""
-"Perform an equilinear/gnomonic or little planet/stereographic projection of "
-"an equirectangular input image."
+"Do panorama viewer rendering mapping or its inverse for an equirectangular "
+"input image. (2:1 ratio containing 360x180 degree panorama)."
 msgstr ""
-"Wykonaj gnomiczny lub małej planety/stereograficzny rzut prostokątnego "
-"obrazu wejściowego."
+"Wykonaj mapowanie renderowania przeglądarki panoram lub jego odwrotność dla "
+"obrazu wejściowego o odwzorowaniu walcowym równoodległościowym (proporcje "
+"2∶1 zawierające panoramę o stopniu 360×180)."
 
 #: operations/common/pixelize.c:28
 msgid "Round"
