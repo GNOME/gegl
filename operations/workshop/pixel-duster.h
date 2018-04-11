@@ -38,6 +38,7 @@ typedef struct
   GeglBuffer    *output;
   GeglRectangle  in_rect;
   GeglRectangle  out_rect;
+  int            max_k;
   int            seek_radius;
   int            minimum_neighbors;
   int            minimum_iterations;
@@ -54,10 +55,10 @@ typedef struct
 } PixelDuster;
 
 
-#define MAX_K               1
+#define MAX_K               4
 #define PIXDUST_REL_DIGEST  0
-#define NEIGHBORHOOD        33
-#define PIXDUST_ORDERED     1
+#define NEIGHBORHOOD        23
+#define PIXDUST_ORDERED     0
 #define MAX_DIR             4
 
 //#define ONLY_DIR            1
@@ -189,6 +190,7 @@ static PixelDuster * pixel_duster_new (GeglBuffer *input,
                                        const GeglRectangle *in_rect,
                                        const GeglRectangle *out_rect,
                                        int         seek_radius,
+                                       int         max_k,
                                        int         minimum_neighbors,
                                        int         minimum_iterations,
                                        float       try_chance,
@@ -206,6 +208,9 @@ static PixelDuster * pixel_duster_new (GeglBuffer *input,
   ret->try_chance   = try_chance;
   ret->retry_chance = retry_chance;
   ret->op = op;
+  if (max_k < 1) max_k = 1;
+  if (max_k > MAX_K) max_k = MAX_K;
+  ret->max_k = max_k;
   ret->in_rect  = *in_rect;
   ret->out_rect = *out_rect;
   ret->scale_x  = scale_x;
@@ -615,6 +620,15 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
   gint y = offset / 65536;
   int score;
 
+#if 0
+#define pow2(a)   ((a)*(a))
+  if ( duster->seek_radius > 1 &&
+       pow2 (probe->target_x - x * duster->scale_x) +
+       pow2 (probe->target_y - y * duster->scale_y) >
+       pow2 (duster->seek_radius))
+    return;
+#endif
+
 #if 1
   if (duster->scale_x == 1.0 && x == probe->target_x &&
 -     duster->scale_y == 1.0 && y == probe->target_y )
@@ -626,7 +640,7 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
   if (score <= probe->score)
     {
       int j;
-      for (j = MAX_K-1; j >= 1; j --)
+      for (j = duster->max_k-1; j >= 1; j --)
       {
         probe->source_x[j] = probe->source_x[j-1];
         probe->source_y[j] = probe->source_y[j-1];
@@ -634,8 +648,8 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
         probe->k_score[j] = probe->k_score[j-1];
       }
       probe->k++;
-      if (probe->k > MAX_K)
-        probe->k = MAX_K;
+      if (probe->k > duster->max_k)
+        probe->k = duster->max_k;
       probe->source_x[0] = x;
       probe->source_y[0] = y;
       probe->hay[0] = hay;

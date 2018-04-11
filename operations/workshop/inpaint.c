@@ -23,7 +23,7 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int (seek_distance, "seek radius", 96)
+property_int (seek_distance, "seek radius", 128)
   value_range (4, 512)
 
 property_int (min_neigh, "min neigh", 2)
@@ -81,6 +81,7 @@ process (GeglOperation       *operation,
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
   PixelDuster    *duster = pixel_duster_new (input, output, &in_rect, &out_rect,
                                              o->seek_distance,
+                                             1,
                                              o->min_neigh,
                                              o->min_iter,
                                              o->chance_try,

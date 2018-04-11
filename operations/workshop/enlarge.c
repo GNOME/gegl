@@ -25,8 +25,11 @@
 
 /* most of these should go away - here for ease of algorithm experimentation */
 
-property_int (seek_distance, "seek radius", 48)
+property_int (seek_distance, "seek radius", 128)
   value_range (4, 512)
+
+property_int (max_k, "max k", 4)
+  value_range (1, 4)
 
 property_double (scale, "scale", 2.0)
   value_range (0.01, 16.0)
@@ -177,6 +180,7 @@ process (GeglOperation       *operation,
   duster  = pixel_duster_new (input, output,
                               &in_rect, &out_rect,
                               o->seek_distance,
+                              o->max_k,
                               1, 1, 1.0, 0.3,
                               o->scale,
                               o->scale,
