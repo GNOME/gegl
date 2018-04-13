@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-04-09 18:51+0000\n"
-"PO-Revision-Date: 2018-04-11 09:55+0200\n"
+"POT-Creation-Date: 2018-04-12 15:42+0000\n"
+"PO-Revision-Date: 2018-04-12 14:30+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -33,7 +33,7 @@ msgstr "Nie można odczytać pliku: %s"
 msgid "Invalid graph, abort.\n"
 msgstr "Nieprawidłowy wykres, przerywanie.\n"
 
-#: bin/gegl.c:378 bin/gegl-options.c:134
+#: bin/gegl.c:378 bin/gegl-options.c:135
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Nieznany tryb GeglOption: %d"
@@ -50,8 +50,8 @@ msgid ""
 "\n"
 "     --exists        return 0 if the operation(s) exist\n"
 "\n"
-"     --properties    output the properties (name, type, description) of the "
-"operation\n"
+"     --info          output information about the operation:\n"
+"                     name, description, properties details.\n"
 "\n"
 "     -i, --file      read xml from named file\n"
 "\n"
@@ -85,7 +85,8 @@ msgstr ""
 "\n"
 "     --exists        zwraca 0, jeśli działania istnieją\n"
 "\n"
-"     --properties    wyświetla właściwości (nazwa, typ, opis) działania\n"
+"     --info          wyświetla informacje o działaniu:\n"
+"                     nazwa, opis, informacje o właściwościach.\n"
 "\n"
 "     -i, --file      odczytuje kod XML z podanego pliku\n"
 "\n"
@@ -110,32 +111,32 @@ msgstr ""
 "filtrów. Po połączeniu można ustawić nowe działanie we właściwościach\n"
 "za pomocą pary właściwość=wartość jako kolejne parametry.\n"
 
-#: bin/gegl-options.c:87
+#: bin/gegl-options.c:88
 #, c-format
 msgid "ERROR: '%s' option expected argument\n"
 msgstr "BŁĄD: opcja „%s” wymaga parametru\n"
 
-#: bin/gegl-options.c:126
+#: bin/gegl-options.c:127
 msgid "Display on screen"
 msgstr "Wyświetla na ekranie"
 
-#: bin/gegl-options.c:128
+#: bin/gegl-options.c:129
 msgid "Print XML"
 msgstr "Wyświetla kod XML"
 
-#: bin/gegl-options.c:130
+#: bin/gegl-options.c:131
 msgid "Output in a file"
 msgstr "Umieszcza w pliku"
 
-#: bin/gegl-options.c:132
+#: bin/gegl-options.c:133
 msgid "Display help information"
 msgstr "Wyświetla informacje o pomocy"
 
-#: bin/gegl-options.c:135
+#: bin/gegl-options.c:136
 msgid "unknown mode"
 msgstr "nieznany tryb"
 
-#: bin/gegl-options.c:140
+#: bin/gegl-options.c:141
 #, c-format
 msgid ""
 "Parsed commandline:\n"
@@ -154,7 +155,11 @@ msgstr ""
 "\tpozostałe: %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:354
+#: bin/gegl-options.c:332
+msgid "Properties:"
+msgstr "Właściwości:"
+
+#: bin/gegl-options.c:442
 #, c-format
 msgid ""
 "\n"
@@ -3039,11 +3044,11 @@ msgstr ""
 "do utworzenia widoku i sześciennej lub lepszej do odwrotnego przekształcenia "
 "z powrotem na panoramę."
 
-#: operations/common/panorama-projection.c:553
+#: operations/common/panorama-projection.c:601
 msgid "Panorama Projection"
 msgstr "Rzut panoramy"
 
-#: operations/common/panorama-projection.c:558
+#: operations/common/panorama-projection.c:606
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
