@@ -1,3 +1,31 @@
+GEGL-0.3.32 2018-04-13
+----------------------
+
+Operations
+~~~~~~~~~~
+
+panorama-projection: added reverse transform, which permits using GIMP for
+retouching zenith, nadir or other arbitrary gaze directions in equirectangular,
+also known as 360x180 panoramas.
+
+Added abyss-policy to base class for scale ops, making it possible to achieve
+hard edges on rescaled buffers.
+
+GeglBuffer
+~~~~~~~~~~
+
+Improved performance and correctness, avoid incorrectly gamma/ungamma
+correcting alpha in u8 formats, for a tiny 2-3% performance boost.
+
+Keep track of valid/invalid areas on smaller granularity than tiles in mipmap.
+
+Various micro-optimizations in display paths, with minuscle performance impact.
+
+
+
+Contributors to this release: Alexandre Prokoudine, Ell, Jehan, Marco Ciampa,
+Michael Natterer, Øyvind Kolås and Piotr Drąg.
+
 GEGL-0.3.30 2018-03-19
 ----------------------
 
