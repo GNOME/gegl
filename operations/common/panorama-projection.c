@@ -52,7 +52,7 @@ property_int    (height, _("Height"), -1)
   ui_meta       ("role", "output-extent")
   ui_meta       ("axis", "y")
 
-property_boolean(inverse, _("Inverse tranform"), FALSE)
+property_boolean(inverse, _("Inverse transform"), FALSE)
   description   (_("Do the inverse mapping, useful for touching up zenith, nadir or other parts of panorama."))
 
 property_boolean(little_planet, _("Little planet"), FALSE)
