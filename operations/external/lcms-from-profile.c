@@ -22,7 +22,7 @@
 #ifdef GEGL_PROPERTIES
 
 property_pointer (src_profile, _("Source Profile"),
-                    _("The cmsHPROFILE corresponding to the icc profile for "
+                    _("The cmsHPROFILE corresponding to the ICC profile for "
                       "the input data."))
 
 /* These are positioned so their values match up with the LCMS enum */
