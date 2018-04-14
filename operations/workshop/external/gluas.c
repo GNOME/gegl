@@ -31,14 +31,14 @@ property_string (script, _("Script"), THRESHOLD_SCRIPT)
     ui_meta    ("multiline", "true")
 
 property_string (error, _("Lua error"), "")
-    description(_("parse/compile error, if any"))
+    description(_("Parse/compile error, if any."))
     ui_meta    ("error", "true")
 
 property_file_path (file, _("File"), "")
-    description(_("a stored lua script on disk implementing an operation."))
+    description(_("A stored lua script on disk implementing an operation."))
 
 property_double (user_value, _("User value"), 1.0)
-    description(_("(appears in the global variable 'user_value' in lua."))
+    description(_("Available as a global variable 'user_value' in lua."))
     value_range (-1000.0, 1000.0)
 
 #else
