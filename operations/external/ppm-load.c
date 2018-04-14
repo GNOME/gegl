@@ -96,7 +96,8 @@ ppm_load_read_header(FILE       *fp,
 
     /* Get Width and Height */
     errno = 0;
-    img->width  = strtol (header,&ptr,10);
+
+    img->width = strtol (header, &ptr, 10);
     if (errno)
       {
         g_warning ("Error reading width: %s", strerror(errno));
@@ -144,14 +145,18 @@ ppm_load_read_header(FILE       *fp,
     }
 
     /* Later on, img->numsamples is multiplied with img->bpc to allocate
-     * memory. Ensure it doesn't overflow. */
+     * memory. Ensure it doesn't overflow. G_MAXSIZE might have been
+       good enough on 32bit, for now lets just fail if the size is beyond
+       2GB
+     */
+#define MAX_PPM_SIZE (1<<31)
+
     if (!img->width || !img->height ||
-        G_MAXSIZE / img->width / img->height / CHANNEL_COUNT < img->bpc)
+        MAX_PPM_SIZE / img->width / img->height / CHANNEL_COUNT < img->bpc)
       {
         g_warning ("Illegal width/height: %ld/%ld", img->width, img->height);
         return FALSE;
       }
-
 
     img->channels = channel_count;
     img->numsamples = img->width * img->height * channel_count;
