@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-04-14 10:10+0000\n"
-"PO-Revision-Date: 2018-04-14 13:00+0200\n"
+"POT-Creation-Date: 2018-04-14 19:11+0000\n"
+"PO-Revision-Date: 2018-04-15 10:48+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -6301,7 +6301,7 @@ msgid "Source Profile"
 msgstr "Profil źródłowy"
 
 #: operations/external/lcms-from-profile.c:25
-msgid "The cmsHPROFILE corresponding to the icc profile for the input data."
+msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
 msgstr "„cmsHPROFILE” odpowiadające profilowi ICC dla danych wejściowych."
 
 #: operations/external/lcms-from-profile.c:31
@@ -6603,11 +6603,11 @@ msgstr "Zapisywanie plików PNG"
 msgid "PNG image saver, using libpng"
 msgstr "Zapisywanie obrazów PNG za pomocą biblioteki libpng"
 
-#: operations/external/ppm-load.c:386
+#: operations/external/ppm-load.c:391
 msgid "PPM File Loader"
 msgstr "Wczytywanie plików PPM"
 
-#: operations/external/ppm-load.c:388
+#: operations/external/ppm-load.c:393
 msgid "PPM image loader."
 msgstr "Wczytywanie obrazów PPM."
 
@@ -7548,13 +7548,13 @@ msgid "Lua error"
 msgstr "Błąd języka Lua"
 
 #: operations/workshop/external/gluas.c:34
-msgid "parse/compile error, if any"
-msgstr "błąd przetwarzania/kompilowania, jeśli jakiś wystąpił"
+msgid "Parse/compile error, if any."
+msgstr "Błąd przetwarzania/kompilowania, jeśli jakiś wystąpił."
 
 #: operations/workshop/external/gluas.c:38
-msgid "a stored lua script on disk implementing an operation."
+msgid "A stored lua script on disk implementing an operation."
 msgstr ""
-"przechowywany na dysku skrypt języka Lua zawierający implementację tego "
+"Przechowywany na dysku skrypt języka Lua zawierający implementację tego "
 "działania."
 
 #: operations/workshop/external/gluas.c:40
@@ -7562,8 +7562,8 @@ msgid "User value"
 msgstr "Wartość użytkownika"
 
 #: operations/workshop/external/gluas.c:41
-msgid "(appears in the global variable 'user_value' in lua."
-msgstr "(pojawia się w globalnej zmiennej „user_value” w języku Lua."
+msgid "Available as a global variable 'user_value' in lua."
+msgstr "Dostępne jako globalna zmienna „user_value” w języku Lua."
 
 #: operations/workshop/external/gluas.c:995
 msgid "gluas"
