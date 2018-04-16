@@ -156,7 +156,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "categories", "color",
       "title",      _("Color Overlay"),
       "description", _("Paint a color overlay over the input, "
-                       "preseving its transparency."),
+                       "preserving its transparency."),
       NULL);
 }
 
