@@ -297,10 +297,10 @@ void   gegl_param_spec_enum_exclude_value (GeglParamSpecEnum *espec,
 
 struct _GeglParamSpecSeed
 {
-  GParamSpecInt parent_instance;
+  GParamSpecUInt parent_instance;
 
-  gint          ui_minimum;
-  gint          ui_maximum;
+  guint          ui_minimum;
+  guint          ui_maximum;
 };
 
 GType        gegl_param_seed_get_type (void) G_GNUC_CONST;

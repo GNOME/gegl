@@ -277,7 +277,7 @@ gegl_module_register (GTypeModule *module)
 #define property_pointer(name, label, def_val)    ITEM(name,label,def_val,pointer)
 #define property_object(name, label, def_val)     ITEM2(name,label,def_val,object)
 #define property_enum(name, label, enm, enum_name, def_val)  ITEM(name,label,def_val,pointer)
-#define property_seed(name, label, rand_name)     ITEM(name,label,def_val,int)
+#define property_seed(name, label, rand_name)     ITEM(name,label,def_val,uint)
 #define property_format(name, label, def_val)     ITEM(name,label,def_val,pointer)
 #define property_curve(name, label, def_val)      ITEM2(name,label,def_val,object)
 #define property_path(name, label, def_val)       ITEM2(name,label,def_val,object)
@@ -370,7 +370,7 @@ struct _GeglProperties
 #define property_pointer(name, label, def_val)         gpointer    name;
 #define property_format(name, label, def_val)          gpointer    name;
 #define property_enum(name, label, enum, enum_name, def_val) enum        name;
-#define property_seed(name, label, rand_name)          gint        name;\
+#define property_seed(name, label, rand_name)          guint       name;\
                                                        GeglRandom *rand_name;
 
 #include GEGL_OP_C_FILE
@@ -416,7 +416,7 @@ enum
 #define property_pointer(name, label, def_val)    ITEM(name,label,def_val,pointer)
 #define property_format(name, label, def_val)     ITEM(name,label,def_val,pointer)
 #define property_enum(name, label, enm, enum_name, def_val) ITEM(name,label,def_val,enum)
-#define property_seed(name, label, rand_name)     ITEM(name,label,def_val,int)
+#define property_seed(name, label, rand_name)     ITEM(name,label,def_val,uint)
 
 #include GEGL_OP_C_FILE
 
@@ -558,7 +558,7 @@ set_property (GObject      *gobject,
       break;
 #define property_seed(name, label, rand_name)                         \
     case PROP_##name:                                                 \
-      properties->name = g_value_get_int (value);                     \
+      properties->name = g_value_get_uint (value);                     \
       if (!properties->rand_name)                                     \
         properties->rand_name = gegl_random_new_with_seed (properties->name);\
       else                                                            \

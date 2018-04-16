@@ -577,7 +577,7 @@ gegl_param_seed_get_type (void)
         0,
         (GInstanceInitFunc) gegl_param_seed_init
       };
-      type = g_type_register_static (G_TYPE_PARAM_INT,
+      type = g_type_register_static (G_TYPE_PARAM_UINT,
                                      "GeglParamSeed", &info, 0);
     }
   return type;
@@ -586,7 +586,7 @@ gegl_param_seed_get_type (void)
 static void
 gegl_param_seed_class_init (GParamSpecClass *klass)
 {
-  klass->value_type = G_TYPE_INT;
+  klass->value_type = G_TYPE_UINT;
 }
 
 static void
@@ -595,7 +595,7 @@ gegl_param_seed_init (GParamSpec *pspec)
   GeglParamSpecSeed *gdpspec = GEGL_PARAM_SPEC_SEED (pspec);
 
   gdpspec->ui_minimum = 0;
-  gdpspec->ui_maximum = G_MAXINT;
+  gdpspec->ui_maximum = G_MAXUINT;
 }
 
 GParamSpec *
@@ -612,10 +612,10 @@ gegl_param_spec_seed (const gchar *name,
   ispec = G_PARAM_SPEC_INT (pspec);
 
   ispec->minimum = 0;
-  ispec->maximum = G_MAXINT;
+  ispec->maximum = G_MAXUINT;
   ispec->default_value = 0;
   pspec->ui_minimum = 0;
-  pspec->ui_maximum = G_MAXINT;
+  pspec->ui_maximum = G_MAXUINT;
 
   return G_PARAM_SPEC (pspec);
 }
