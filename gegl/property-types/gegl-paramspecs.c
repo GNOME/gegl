@@ -605,11 +605,11 @@ gegl_param_spec_seed (const gchar *name,
                       GParamFlags  flags)
 {
   GeglParamSpecSeed *pspec;
-  GParamSpecInt     *ispec;
+  GParamSpecUInt    *ispec;
 
   pspec = g_param_spec_internal (GEGL_TYPE_PARAM_SEED,
                                  name, nick, blurb, flags);
-  ispec = G_PARAM_SPEC_INT (pspec);
+  ispec = G_PARAM_SPEC_UINT (pspec);
 
   ispec->minimum = 0;
   ispec->maximum = G_MAXUINT;
