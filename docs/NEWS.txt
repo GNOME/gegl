@@ -1,3 +1,20 @@
+GEGL-0.3.32 2018-04-16
+----------------------
+
+Core
+~~~~
+
+Change GeglParamSpecSeed from int to uint to match the value range of
+GeglRandom's seed.
+
+Operations
+~~~~~~~~~~
+
+Limit allocations in ppm-load to 2GB CVE-2018-10114
+
+Contributors to this release: Piotr Drąg, Øyvind Kolås, Sebastian Rasmussen and
+Michael Natterer.
+
 GEGL-0.3.32 2018-04-13
 ----------------------
 
@@ -20,7 +37,6 @@ correcting alpha in u8 formats, for a tiny 2-3% performance boost.
 Keep track of valid/invalid areas on smaller granularity than tiles in mipmap.
 
 Various micro-optimizations in display paths, with minuscle performance impact.
-
 
 
 Contributors to this release: Alexandre Prokoudine, Ell, Jehan, Marco Ciampa,
