@@ -10,9 +10,9 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-04-14 19:11+0000\n"
-"PO-Revision-Date: 2018-04-16 00:38+0200\n"
-"Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
+"POT-Creation-Date: 2018-04-16 14:00+0000\n"
+"PO-Revision-Date: 2018-04-17 09:51+0200\n"
+"Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
@@ -640,7 +640,7 @@ msgstr "Skapa en ny GEGL-buffert att skriva den slutliga renderingen till."
 
 #: operations/common/buffer-source.c:25
 msgid "Input buffer"
-msgstr "Inmatningsbuffert"
+msgstr "Indatabuffert"
 
 #: operations/common/buffer-source.c:26
 msgid "The GeglBuffer to load into the pipeline"
@@ -693,7 +693,7 @@ msgstr "Förbättra skuggor"
 
 #: operations/common/c2g.c:48
 msgid "When enabled details in shadows are boosted at the expense of noise"
-msgstr ""
+msgstr "Då aktiverad förstärks detaljer i skuggor på bekostnad av brus"
 
 #: operations/common/c2g.c:453
 msgid ""
@@ -2092,7 +2092,7 @@ msgstr "Låg indata"
 
 #: operations/common/levels.c:27
 msgid "Input luminance level to become lowest output"
-msgstr "Indata luminansnivå som blir lägsta utdata"
+msgstr "Indataluminansnivå som blir lägsta utdata"
 
 #: operations/common/levels.c:31
 msgid "High input"
@@ -2100,7 +2100,7 @@ msgstr "Hög indata"
 
 #: operations/common/levels.c:32
 msgid "Input luminance level to become white"
-msgstr "Indata luminansnivå som blir vitt"
+msgstr "Indataluminansnivå som blir vitt"
 
 #: operations/common/levels.c:36
 msgid "Low output"
@@ -2300,15 +2300,15 @@ msgid "Controls the number of iterations"
 msgstr "Styr antalet iterationer"
 
 #: operations/common/mean-curvature-blur.c:245
-#, fuzzy
-#| msgid "Curvature"
 msgid "Mean Curvature Blur"
-msgstr "Kurvning"
+msgstr "Medelkrökningsoskärpa"
 
 #: operations/common/mean-curvature-blur.c:248
 msgid ""
 "Regularize geometry at a speed proportional to the local mean curvature value"
 msgstr ""
+"Regularisera geometri med en hastighet proportionell till det lokala "
+"medelkrökningsvärdet"
 
 #: operations/common/median-blur.c:28 operations/common/pixelize.c:29
 #: operations/common/vignette.c:26
@@ -3001,16 +3001,16 @@ msgid "output/rendering height in pixels, -1 for input height"
 msgstr "utdata/renderingshöjd i bildpunkter, -1 för indatahöjd"
 
 #: operations/common/panorama-projection.c:55
-#, fuzzy
-#| msgid "Watershed Transform"
 msgid "Inverse transform"
-msgstr "Vattendelningstransform"
+msgstr "Omvänd transform"
 
 #: operations/common/panorama-projection.c:56
 msgid ""
 "Do the inverse mapping, useful for touching up zenith, nadir or other parts "
 "of panorama."
 msgstr ""
+"Gör den omvända mappningen, användbart för att retuschera zenit, nadir eller "
+"andra delar av panorama."
 
 #: operations/common/panorama-projection.c:58
 msgid "Little planet"
@@ -3030,6 +3030,9 @@ msgid ""
 "retouching panoramas, use nearest to generate the view and cubic or better "
 "for the inverse transform back to panorama."
 msgstr ""
+"Bildomsamplingsmetod att använda, för bra resultat med dubbelomsampling då "
+"panoraman retuscheras, använd Närmaste för att generera vyn och Kubisk eller "
+"bättre för den omvända transformen tillbaka till panorama."
 
 #: operations/common/panorama-projection.c:601
 msgid "Panorama Projection"
@@ -3040,6 +3043,9 @@ msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
 msgstr ""
+"Gör panoramavisarens renderingsmappning eller dess invers för en "
+"ekvirektangulär indatabild. (2:1-förhållande som innehåller 360x180-graders "
+"panorama)."
 
 #: operations/common/pixelize.c:28
 msgid "Round"
@@ -3335,6 +3341,8 @@ msgid ""
 "When enabled also enhances shadow regions - when disabled a more natural "
 "result is yielded"
 msgstr ""
+"Då aktiverad förbättras också skuggregioner - då inaktiverad erhålls ett mer "
+"naturligt resultat"
 
 #: operations/common/stress.c:263 operations/common/stress.c:267
 msgid "Spatio Temporal Retinex-like Envelope with Stochastic Sampling"
@@ -5613,12 +5621,12 @@ msgid "Value Propagate"
 msgstr "Värdepropagering"
 
 #: operations/common-gpl3+/value-propagate.c:645
-#, fuzzy
-#| msgid "Propagate certain colors to neighboring pixels."
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
-msgstr "Propagera vissa färger till närliggande bildpunkter."
+msgstr ""
+"Propagera vissa färger till närliggande bildpunkter. Erodera och utvidga "
+"vilken färg eller opacitet som helst."
 
 #: operations/common-gpl3+/video-degradation.c:34
 msgid "Staggered"
@@ -5834,7 +5842,7 @@ msgstr ""
 
 #: operations/core/cast-format.c:25
 msgid "Input format"
-msgstr "Inmatningsformat"
+msgstr "Indataformat"
 
 #: operations/core/cast-format.c:26
 msgid "The babl format of the input"
@@ -7297,16 +7305,13 @@ msgid "Y coordinate of origin"
 msgstr "Y-koordinat för origo"
 
 #: operations/transform/transform-core.c:216
-#, fuzzy
-#| msgid "Nearest"
 msgid "Near-z"
-msgstr "Närmaste"
+msgstr "Nära-Z"
 
+# Planet 'near' i https://commons.wikimedia.org/wiki/File:ViewFrustum.svg
 #: operations/transform/transform-core.c:217
-#, fuzzy
-#| msgid "X coordinates of the flare center"
 msgid "Z coordinate of the near clipping plane"
-msgstr "X-koordinater för ljusreflexer"
+msgstr "Z-koordinat för det närliggande klippningsplanet"
 
 #: operations/transform/translate.c:26
 msgid "Horizontal translation"
@@ -7432,20 +7437,16 @@ msgstr ""
 "istället för en gaussisk oskärpa."
 
 #: operations/workshop/color-overlay.c:27
-#, fuzzy
-#| msgid "The babl format of the input"
 msgid "The color to paint over the input"
-msgstr "Babl-formatet för indata"
+msgstr "Färgen för att måla över indata"
 
 #: operations/workshop/color-overlay.c:157
-#, fuzzy
-#| msgid "Color averaging"
 msgid "Color Overlay"
-msgstr "Färgmedelvärdesbildning"
+msgstr "Färgöverlagring"
 
 #: operations/workshop/color-overlay.c:158
-msgid "Paint a color overlay over the input, preseving its transparency."
-msgstr ""
+msgid "Paint a color overlay over the input, preserving its transparency."
+msgstr "Måla en färgöverlagring över indata, bevarande dess transparens."
 
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
@@ -7501,16 +7502,16 @@ msgstr ""
 "tillräckligt."
 
 #: operations/workshop/domain-transform.c:29
-#, fuzzy
-#| msgid "Standard deviation for the vertical axis"
 msgid "Spatial standard deviation of the blur kernel, measured in pixels."
-msgstr "Standardavvikelse för den vertikala axeln"
+msgstr "Spatial standardavvikelse för oskärpekärnan, mätt i bildpunkter."
 
 #: operations/workshop/domain-transform.c:33
 msgid ""
 "Amount of edge preservation. This quantity is inversely proportional to the "
 "range standard deviation of the blur kernel."
 msgstr ""
+"Mängden kantbibehållning. Denna kvantitet är omvänt proportionell till "
+"intervallstandardavvikelsen för oskärpekärnan."
 
 #: operations/workshop/domain-transform.c:499
 msgid "Domain Transform"
@@ -7521,6 +7522,8 @@ msgid ""
 "An edge-preserving smoothing filter implemented with the Domain Transform "
 "recursive technique. Similar to a bilateral filter, but faster to compute."
 msgstr ""
+"Ett kantbibehållande utjämningsfilter implementerat med rekursiv "
+"domäntransformteknik. Liknar ett bilateralt filter, men snabbare att beräkna."
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -7952,39 +7955,35 @@ msgstr "Transformationsmatris med SVG-syntax"
 
 #: operations/workshop/recursive-transform.c:30
 #: operations/workshop/recursive-transform.c:31
-#, fuzzy
-#| msgid "Iterations"
 msgid "First iteration"
-msgstr "Iterationer"
+msgstr "Första iteration"
 
 #: operations/workshop/recursive-transform.c:38
-#, fuzzy
-#| msgid "Exchange color"
 msgid "Fade color"
-msgstr "Växla färg"
+msgstr "Toningsfärg"
 
 #: operations/workshop/recursive-transform.c:39
 msgid ""
 "Color to fade transformed images towards, with a rate depending on its alpha"
 msgstr ""
+"Färg som transformerade bilder ska tonas till, med en takt som beror på dess "
+"alfa"
 
 #: operations/workshop/recursive-transform.c:42
-#, fuzzy
-#| msgid "Fill opacity"
 msgid "Fade opacity"
-msgstr "Fyllnadsopacitet"
+msgstr "Toningsopacitet"
 
 #: operations/workshop/recursive-transform.c:43
 msgid "Amount by which to scale the opacity of each transformed image"
-msgstr ""
+msgstr "Mängd med vilken opaciteten ska skalas för varje transformerad bild"
 
 #: operations/workshop/recursive-transform.c:47
 msgid "Paste below"
-msgstr ""
+msgstr "Klistra in under"
 
 #: operations/workshop/recursive-transform.c:48
 msgid "Paste transformed images below each other"
-msgstr ""
+msgstr "Klistra in transformerade bilder under varandra"
 
 #: operations/workshop/recursive-transform.c:265
 msgid "Recursive Transform"
@@ -7992,7 +7991,7 @@ msgstr "Rekursiv transform"
 
 #: operations/workshop/recursive-transform.c:267
 msgid "Apply a transformation recursively."
-msgstr ""
+msgstr "Tillämpa en transformation rekursivt."
 
 #: operations/workshop/segment-kmeans.c:27
 #: operations/workshop/segment-kmeans.c:28
@@ -8029,7 +8028,7 @@ msgstr "Kameravinkel mot vy"
 
 #: operations/workshop/spherize.c:41
 msgid "Curvature"
-msgstr "Kurvning"
+msgstr "Krökning"
 
 #: operations/workshop/spherize.c:42
 msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
