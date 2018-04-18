@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=GEGL&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-03-27 09:05+0200\n"
-"PO-Revision-Date: 2018-03-27 11:13+0200\n"
+"POT-Creation-Date: 2018-04-18 17:46+0200\n"
+"PO-Revision-Date: 2018-04-18 17:58+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -36,7 +36,7 @@ msgstr "Impossibile leggere il file: %s"
 msgid "Invalid graph, abort.\n"
 msgstr "Grafo non valido, interrotto.\n"
 
-#: ../bin/gegl.c:378 ../bin/gegl-options.c:134
+#: ../bin/gegl.c:378 ../bin/gegl-options.c:135
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Modalità GeglOption sconosciuta: %d"
@@ -53,8 +53,8 @@ msgid ""
 "\n"
 "     --exists        return 0 if the operation(s) exist\n"
 "\n"
-"     --properties    output the properties (name, type, description) of the "
-"operation\n"
+"     --info          output information about the operation:\n"
+"                     name, description, properties details.\n"
 "\n"
 "     -i, --file      read xml from named file\n"
 "\n"
@@ -88,8 +88,8 @@ msgstr ""
 "\n"
 "     --exists        restituisce 0 se la/le operazioni esistono\n"
 "\n"
-"     --properties    emette le proprietà (nome, tipo, descrizione) "
-"dell'operazione\n"
+"     --info          emette informazioni sull'operazione:\n"
+"                     nome, descrizione, dettagli sulle proprietà.\n"
 "\n"
 "     -i, --file      legge l'xml dal file col nome specificato\n"
 "\n"
@@ -97,54 +97,49 @@ msgstr ""
 "\n"
 "     --dot           emette una descrizione a grafo graphviz\n"
 "\n"
-"     -o, --output    emette l'immagine generata sul file col nome "
-"specificato,\n"
+"     -o, --output    emette l'immagine generata sul file col nome specificato,\n"
 "                     del tipo determinato dalla sua estensione.\n"
 "\n"
-"     -p              incrementa i contatori di quadro di vari elementi "
-"quando\n"
+"     -p              incrementa i contatori di quadro di vari elementi quando\n"
 "                     termina l'elaborazione.\n"
 "\n"
-"     -s scala, --scale scala  scala le dimensioni del risultato di questo "
-"fattore.\n"
+"     -s scala, --scale scala  scala le dimensioni del risultato di questo fattore.\n"
 "\n"
 "     -X              emette l'XML che ha letto\n"
 "\n"
 "     -v, --verbose   stampa della diagnostica durante l'esecuzione\n"
 "\n"
 "Tutti i parametri che seguono i caratteri -- sono considerati operazioni da\n"
-"concatenare in piccole composizioni, in alternativa all'uso di un file xml; "
-"ciò\n"
-"consente una facile verifica dei filtri. Dopo la concatenazione una nuova "
-"op\n"
+"concatenare in piccole composizioni, in alternativa all'uso di un file xml; ciò\n"
+"consente una facile verifica dei filtri. Dopo la concatenazione una nuova op\n"
 "può essere impostata con coppie proprietà=valore come argomenti successivi.\n"
 
-#: ../bin/gegl-options.c:87
+#: ../bin/gegl-options.c:88
 #, c-format
 msgid "ERROR: '%s' option expected argument\n"
 msgstr "ERRORE: l'opzione \"%s\" richiede un argomento\n"
 
-#: ../bin/gegl-options.c:126
+#: ../bin/gegl-options.c:127
 msgid "Display on screen"
 msgstr "Mostra sullo schermo"
 
-#: ../bin/gegl-options.c:128
+#: ../bin/gegl-options.c:129
 msgid "Print XML"
 msgstr "Stampa XML"
 
-#: ../bin/gegl-options.c:130
+#: ../bin/gegl-options.c:131
 msgid "Output in a file"
 msgstr "Emetti in un file"
 
-#: ../bin/gegl-options.c:132
+#: ../bin/gegl-options.c:133
 msgid "Display help information"
 msgstr "Mostra le informazioni di aiuto"
 
-#: ../bin/gegl-options.c:135
+#: ../bin/gegl-options.c:136
 msgid "unknown mode"
 msgstr "modalità sconosciuta"
 
-#: ../bin/gegl-options.c:140
+#: ../bin/gegl-options.c:141
 #, c-format
 msgid ""
 "Parsed commandline:\n"
@@ -163,7 +158,11 @@ msgstr ""
 "\trest:      %s\n"
 "\t\n"
 
-#: ../bin/gegl-options.c:354
+#: ../bin/gegl-options.c:332
+msgid "Properties:"
+msgstr "Proprietà:"
+
+#: ../bin/gegl-options.c:442
 #, c-format
 msgid ""
 "\n"
@@ -704,7 +703,9 @@ msgstr "Aumenta ombre"
 
 #: ../operations/common/c2g.c:48
 msgid "When enabled details in shadows are boosted at the expense of noise"
-msgstr "Se abilitata i dettagli nelle ombre vengono aumentati a discapito dei disturbi"
+msgstr ""
+"Se abilitata i dettagli nelle ombre vengono aumentati a discapito dei "
+"disturbi"
 
 #: ../operations/common/c2g.c:453
 msgid ""
@@ -716,7 +717,7 @@ msgstr ""
 "le differenze di colore locali."
 
 #: ../operations/common/checkerboard.c:25 ../operations/common/grid.c:24
-#: ../operations/common/panorama-projection.c:42
+#: ../operations/common/panorama-projection.c:43
 #: ../operations/common/rectangle.c:36
 #: ../operations/common-gpl3+/diffraction-patterns.c:78
 #: ../operations/common-gpl3+/maze.c:40
@@ -736,7 +737,7 @@ msgid "Horizontal width of cells pixels"
 msgstr "Larghezza orizzontale delle celle di pixel"
 
 #: ../operations/common/checkerboard.c:33 ../operations/common/grid.c:31
-#: ../operations/common/panorama-projection.c:48
+#: ../operations/common/panorama-projection.c:49
 #: ../operations/common/rectangle.c:42
 #: ../operations/common-gpl3+/diffraction-patterns.c:86
 #: ../operations/common-gpl3+/engrave.c:31 ../operations/common-gpl3+/maze.c:48
@@ -2270,7 +2271,7 @@ msgstr ""
 #. XXX: needs better ui type
 #: ../operations/common/map-absolute.c:22
 #: ../operations/common/map-relative.c:28
-#: ../operations/common/panorama-projection.c:57
+#: ../operations/common/panorama-projection.c:61
 #: ../operations/common-gpl3+/ripple.c:47 ../operations/common-gpl3+/waves.c:50
 #: ../operations/workshop/recursive-transform.c:50
 #: ../operations/workshop/spherize.c:57
@@ -2359,7 +2360,9 @@ msgstr "Sfocatura curvatura media"
 #: ../operations/common/mean-curvature-blur.c:248
 msgid ""
 "Regularize geometry at a speed proportional to the local mean curvature value"
-msgstr "Regolarizza la geometria ad una velocità proporzionale al valore della media della curvatura locale"
+msgstr ""
+"Regolarizza la geometria ad una velocità proporzionale al valore della media "
+"della curvatura locale"
 
 #: ../operations/common/median-blur.c:28 ../operations/common/pixelize.c:29
 #: ../operations/common/vignette.c:26
@@ -2495,7 +2498,7 @@ msgid "Y axis ratio for trimming mirror expanse"
 msgstr "Rapporto asse Y per la regolazione dell'espansione dello specchio"
 
 #: ../operations/common/mirrors.c:74
-#: ../operations/common/panorama-projection.c:38
+#: ../operations/common/panorama-projection.c:39
 #: ../operations/common-gpl3+/fractal-explorer.c:58
 #: ../operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
@@ -3027,43 +3030,53 @@ msgstr ""
 "Sopra un'operazione Porter Duff (conosciuta anche come modalità normale, e "
 "src-over) (d = cA + cB * (1 - aA))"
 
-#: ../operations/common/panorama-projection.c:23
+#: ../operations/common/panorama-projection.c:24
 msgid "Pan"
 msgstr "Pan"
 
-#: ../operations/common/panorama-projection.c:24
+#: ../operations/common/panorama-projection.c:25
 msgid "Horizontal camera panning"
 msgstr "Traslazione orizzontale obiettivo"
 
-#: ../operations/common/panorama-projection.c:28
+#: ../operations/common/panorama-projection.c:29
 msgid "Tilt"
 msgstr "Tilt"
 
-#: ../operations/common/panorama-projection.c:29
+#: ../operations/common/panorama-projection.c:30
 msgid "Vertical camera panning"
 msgstr "Traslazione verticale obiettivo"
 
-#: ../operations/common/panorama-projection.c:34
+#: ../operations/common/panorama-projection.c:35
 msgid "Spin"
 msgstr "Spin"
 
-#: ../operations/common/panorama-projection.c:35
+#: ../operations/common/panorama-projection.c:36
 msgid "Spin angle around camera axis"
 msgstr "Rotazione angolo attorno all'asse dell'obiettivo"
 
-#: ../operations/common/panorama-projection.c:43
+#: ../operations/common/panorama-projection.c:44
 msgid "output/rendering width in pixels, -1 for input width"
 msgstr "larghezza risultato in pixel, -1 per la larghezza in ingresso"
 
-#: ../operations/common/panorama-projection.c:49
+#: ../operations/common/panorama-projection.c:50
 msgid "output/rendering height in pixels, -1 for input height"
 msgstr "altezza risultato in pixel, -1 per l'altezza in ingresso"
 
-#: ../operations/common/panorama-projection.c:54
+#: ../operations/common/panorama-projection.c:55
+msgid "Inverse transform"
+msgstr "Trasformazione inversa"
+
+#: ../operations/common/panorama-projection.c:56
+msgid ""
+"Do the inverse mapping, useful for touching up zenith, nadir or other parts "
+"of panorama."
+msgstr "Esegue la mappatura inversa, utile per ritoccare zenith, nadir o altre parti del panorama."
+
+#: ../operations/common/panorama-projection.c:58
 msgid "Little planet"
 msgstr "Piccolo pianeta"
 
-#: ../operations/common/panorama-projection.c:55
+#: ../operations/common/panorama-projection.c:59
 msgid ""
 "Render a stereographic mapping, a tilt value of 90, which means looking at "
 "nadir provides a good default value."
@@ -3071,21 +3084,22 @@ msgstr ""
 "Disegna una mappatura stereografica, un valore di tilt di 90, cioè guardando "
 "al nadir si fornisce un buon valore predefinito."
 
-#: ../operations/common/panorama-projection.c:59
-msgid "Image resampling method to use"
-msgstr "Metodo di ricampionamento immagine da usare"
+#: ../operations/common/panorama-projection.c:63
+msgid ""
+"Image resampling method to use, for good results with double resampling when "
+"retouching panoramas, use nearest to generate the view and cubic or better "
+"for the inverse transform back to panorama."
+msgstr "Metodo di ricampionamento da usare; per buoni risultati con doppio ricampionamento nel ritocco di panorami, usare il più vicino per generare la vista, e cubica o migliore per la trasformazione inversa per tornare al panorama."
 
-#: ../operations/common/panorama-projection.c:540
+#: ../operations/common/panorama-projection.c:601
 msgid "Panorama Projection"
 msgstr "Proiezione panorama"
 
-#: ../operations/common/panorama-projection.c:545
+#: ../operations/common/panorama-projection.c:606
 msgid ""
-"Perform an equilinear/gnomonic or little planet/stereographic projection of "
-"an equirectangular input image."
-msgstr ""
-"Esegue una proiezione equilineare/gnomonica o piccolo pianeta/stereografica "
-"di un'immagine equirettangolare in ingresso."
+"Do panorama viewer rendering mapping or its inverse for an equirectangular "
+"input image. (2:1 ratio containing 360x180 degree panorama)."
+msgstr "Esegue una mappatura del rendering del osservatore del panorama o la sua inversa per un'immagine in ingresso equirettangolare (rapporto 2:1 contenente 360x180 gradi di panorama)."
 
 #: ../operations/common/pixelize.c:28
 msgid "Round"
@@ -3386,7 +3400,9 @@ msgstr ""
 msgid ""
 "When enabled also enhances shadow regions - when disabled a more natural "
 "result is yielded"
-msgstr "Se abilitata aumenta anche le regioni d'ombra - se disabilitata si ottiene un risultato più naturale"
+msgstr ""
+"Se abilitata aumenta anche le regioni d'ombra - se disabilitata si ottiene "
+"un risultato più naturale"
 
 #: ../operations/common/stress.c:263 ../operations/common/stress.c:267
 msgid "Spatio Temporal Retinex-like Envelope with Stochastic Sampling"
@@ -5695,7 +5711,9 @@ msgstr "Propagazione valore"
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
-msgstr "Propaga certi colori ai pixel vicini. Erode e dilata qualsiasi colore o opacità."
+msgstr ""
+"Propaga certi colori ai pixel vicini. Erode e dilata qualsiasi colore o "
+"opacità."
 
 #: ../operations/common-gpl3+/video-degradation.c:34
 msgid "Staggered"
@@ -5994,11 +6012,11 @@ msgstr ""
 "Caricatore file multiuso; usa altri gestori nativi o, in mancanza di "
 "alternativa, usa il comando convert di ImageMagick."
 
-#: ../operations/core/nop.c:80
+#: ../operations/core/nop.c:81
 msgid "No Operation"
 msgstr "Nessuna operazione"
 
-#: ../operations/core/nop.c:82
+#: ../operations/core/nop.c:83
 msgid "No operation (can be used as a routing point)"
 msgstr "Nessuna operazione (può essere usata come un punto di diramazione)"
 
@@ -6361,8 +6379,8 @@ msgid "Source Profile"
 msgstr "Profilo sorgente"
 
 #: ../operations/external/lcms-from-profile.c:25
-msgid "The cmsHPROFILE corresponding to the icc profile for the input data."
-msgstr "Il cmsHPROFILE corrispondente al profilo icc dei dati in ingresso."
+msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
+msgstr "Il cmsHPROFILE corrispondente al profilo ICC dei dati in ingresso."
 
 #: ../operations/external/lcms-from-profile.c:31
 msgid "Perceptual"
@@ -6667,11 +6685,11 @@ msgstr "Salvatore immagini PNG."
 msgid "PNG image saver, using libpng"
 msgstr "Salvatore immagini PNG, usa libpng"
 
-#: ../operations/external/ppm-load.c:382
+#: ../operations/external/ppm-load.c:391
 msgid "PPM File Loader"
 msgstr "Caricatore immagini PPM."
 
-#: ../operations/external/ppm-load.c:384
+#: ../operations/external/ppm-load.c:393
 msgid "PPM image loader."
 msgstr "Caricatore immagini PPM."
 
@@ -6987,7 +7005,11 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "input + value"
-msgstr "Operazione matematica di somma, esegue l'operazione per pixel, usando la costante fornita in \"valore\" o il pixel corrispondente dal buffer su aux come operando. Il risultato è la valutazione dell'espressione risultato = ingresso + valore."
+msgstr ""
+"Operazione matematica di somma, esegue l'operazione per pixel, usando la "
+"costante fornita in \"valore\" o il pixel corrispondente dal buffer su aux "
+"come operando. Il risultato è la valutazione dell'espressione risultato = "
+"ingresso + valore."
 
 #: ../operations/generated/clear.c:128
 msgid "Porter Duff operation clear (d = 0.0f)"
@@ -7036,7 +7058,11 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "value==0.0f?0.0f:input/value"
-msgstr "Operazione matematica di divisione, esegue l'operazione per pixel, usando la costante fornita in \"valore\" o il pixel corrispondente dal buffer su aux come operando. Il risultato è la valutazione dell'espressione risultato = valore==0.0f?0.0f:ingresso/valore."
+msgstr ""
+"Operazione matematica di divisione, esegue l'operazione per pixel, usando la "
+"costante fornita in \"valore\" o il pixel corrispondente dal buffer su aux "
+"come operando. Il risultato è la valutazione dell'espressione risultato = "
+"valore==0.0f?0.0f:ingresso/valore."
 
 #: ../operations/generated/dst-atop.c:128
 msgid "Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"
@@ -7072,7 +7098,11 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "powf (input, value)"
-msgstr "Operazione matematica di gamma, esegue l'operazione per pixel, usando la costante fornita in \"valore\" o il pixel corrispondente dal buffer su aux come operando. Il risultato è la valutazione dell'espressione risultato = powf (ingresso, valore)"
+msgstr ""
+"Operazione matematica di gamma, esegue l'operazione per pixel, usando la "
+"costante fornita in \"valore\" o il pixel corrispondente dal buffer su aux "
+"come operando. Il risultato è la valutazione dell'espressione risultato = "
+"powf (ingresso, valore)"
 
 #: ../operations/generated/hard-light.c:175
 msgid ""
@@ -7098,7 +7128,11 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "input * value"
-msgstr "Operazione matematica di moltiplicazione, esegue l'operazione per pixel, usando la costante fornita in \"valore\" o il pixel corrispondente dal buffer su aux come operando. Il risultato è la valutazione dell'espressione risultato = ingresso * valore"
+msgstr ""
+"Operazione matematica di moltiplicazione, esegue l'operazione per pixel, "
+"usando la costante fornita in \"valore\" o il pixel corrispondente dal "
+"buffer su aux come operando. Il risultato è la valutazione dell'espressione "
+"risultato = ingresso * valore"
 
 #: ../operations/generated/overlay.c:175
 msgid ""
@@ -7157,7 +7191,11 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "input - value"
-msgstr "Operazione matematica di sottrazione, esegue l'operazione per pixel, usando la costante fornita in \"valore\" o il pixel corrispondente dal buffer su aux come operando. Il risultato è la valutazione dell'espressione risultato = ingresso - valore"
+msgstr ""
+"Operazione matematica di sottrazione, esegue l'operazione per pixel, usando "
+"la costante fornita in \"valore\" o il pixel corrispondente dal buffer su "
+"aux come operando. Il risultato è la valutazione dell'espressione risultato "
+"= ingresso - valore"
 
 #: ../operations/generated/xor.c:150
 msgid "Porter Duff operation xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
@@ -7504,8 +7542,8 @@ msgid "Color Overlay"
 msgstr "Rivestimento colore"
 
 #: ../operations/workshop/color-overlay.c:158
-msgid "Paint a color overlay over the input, preseving its transparency."
-msgstr "Disegna un colore di rivestimento sopra l'ingresso, mantenendone la trasparenza."
+msgid "Paint a color overlay over the input, preserving its transparency."
+msgstr "Dipinge un colore di rivestimento sopra l'ingresso, mantenendone la trasparenza."
 
 #: ../operations/workshop/demosaic-bimedian.c:26
 #: ../operations/workshop/demosaic-simple.c:25
@@ -7557,17 +7595,22 @@ msgstr ""
 #: ../operations/workshop/domain-transform.c:25
 msgid ""
 "Number of filtering iterations. A value between 2 and 4 is usually enough."
-msgstr "Numero di iterazioni del filtro. Un valore tra 2 e 4 è solitamente sufficiente."
+msgstr ""
+"Numero di iterazioni del filtro. Un valore tra 2 e 4 è solitamente "
+"sufficiente."
 
 #: ../operations/workshop/domain-transform.c:29
 msgid "Spatial standard deviation of the blur kernel, measured in pixels."
-msgstr "Deviazione spaziale standard del nocciolo di sfocatura, misurata in pixel."
+msgstr ""
+"Deviazione spaziale standard del nocciolo di sfocatura, misurata in pixel."
 
 #: ../operations/workshop/domain-transform.c:33
 msgid ""
 "Amount of edge preservation. This quantity is inversely proportional to the "
 "range standard deviation of the blur kernel."
-msgstr "Quantità di conservazione del bordo. Questa quantità è inversamente proporzionale al campo di deviazione standard del nocciolo di sfocatura."
+msgstr ""
+"Quantità di conservazione del bordo. Questa quantità è inversamente "
+"proporzionale al campo di deviazione standard del nocciolo di sfocatura."
 
 #: ../operations/workshop/domain-transform.c:499
 msgid "Domain Transform"
@@ -7577,7 +7620,10 @@ msgstr "Trasformazione dominio"
 msgid ""
 "An edge-preserving smoothing filter implemented with the Domain Transform "
 "recursive technique. Similar to a bilateral filter, but faster to compute."
-msgstr "Un filtro di ammorbidimento che conserva i bordi implementato con la tecnica ricorsiva della trasformazione di dominio. Simile ad un filtro bilaterale, ma più veloce da calcolare."
+msgstr ""
+"Un filtro di ammorbidimento che conserva i bordi implementato con la tecnica "
+"ricorsiva della trasformazione di dominio. Simile ad un filtro bilaterale, "
+"ma più veloce da calcolare."
 
 #: ../operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -7592,20 +7638,20 @@ msgid "Lua error"
 msgstr "Errore Lua"
 
 #: ../operations/workshop/external/gluas.c:34
-msgid "parse/compile error, if any"
-msgstr "errori annalisi/compilazione, se presenti"
+msgid "Parse/compile error, if any."
+msgstr "Errore di analisi/compilazione, se presente."
 
 #: ../operations/workshop/external/gluas.c:38
-msgid "a stored lua script on disk implementing an operation."
-msgstr "uno script lua memorizzato su disco che implementa un'operazione."
+msgid "A stored lua script on disk implementing an operation."
+msgstr "Uno script lua memorizzato su disco che implementa un'operazione."
 
 #: ../operations/workshop/external/gluas.c:40
 msgid "User value"
 msgstr "Valore utente"
 
 #: ../operations/workshop/external/gluas.c:41
-msgid "(appears in the global variable 'user_value' in lua."
-msgstr "(appare nella variabile globale \"user_value\" in lua."
+msgid "Available as a global variable 'user_value' in lua."
+msgstr "Disponibile come variabile globale \"user_value\" in lua."
 
 #: ../operations/workshop/external/gluas.c:995
 msgid "gluas"
@@ -8022,7 +8068,9 @@ msgstr "Sfuma colore"
 #: ../operations/workshop/recursive-transform.c:39
 msgid ""
 "Color to fade transformed images towards, with a rate depending on its alpha"
-msgstr "Colore verso il quale sfumare le immagini trasformate, con un rapporto che dipende dal suo alfa"
+msgstr ""
+"Colore verso il quale sfumare le immagini trasformate, con un rapporto che "
+"dipende dal suo alfa"
 
 #: ../operations/workshop/recursive-transform.c:42
 msgid "Fade opacity"
