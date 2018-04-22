@@ -25,6 +25,9 @@
 property_boolean (keep_colors, _("Keep colors"), TRUE)
     description(_("Impact each channel with the same amount"))
 
+property_boolean (perceptual, _("Non-linear components"), FALSE)
+    description(_("When set operate on gamma corrected values instead of linear RGB - acting like the old normalize filter in GIMP"))
+
 #else
 
 #define GEGL_OP_FILTER
@@ -36,12 +39,13 @@ property_boolean (keep_colors, _("Keep colors"), TRUE)
 
 static void
 buffer_get_min_max (GeglBuffer *buffer,
+                    const Babl *format,
                     gfloat     *min,
                     gfloat     *max)
 {
   GeglBufferIterator *gi;
   gint c;
-  gi = gegl_buffer_iterator_new (buffer, NULL, 0, babl_format ("RGB float"),
+  gi = gegl_buffer_iterator_new (buffer, NULL, 0, format,
                                  GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   for (c = 0; c < 3; c++)
     {
@@ -58,8 +62,8 @@ buffer_get_min_max (GeglBuffer *buffer,
         {
           for (c = 0; c < 3; c++)
             {
-              min[c] = MIN (buf [i * 3 + c], min[c]);
-              max[c] = MAX (buf [i * 3 + c], max[c]);
+              min[c] = MIN (buf [i * 4 + c], min[c]);
+              max[c] = MAX (buf [i * 4 + c], max[c]);
             }
         }
     }
@@ -90,8 +94,17 @@ reduce_min_max_global (gfloat *min,
 
 static void prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  if (o->perceptual)
+   {
+     gegl_operation_set_format (operation, "input", babl_format ("R'G'B'A float"));
+     gegl_operation_set_format (operation, "output", babl_format ("R'G'B'A float"));
+   }
+  else
+   {
+     gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
+     gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+   }
 }
 
 static GeglRectangle
@@ -455,6 +468,7 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
+  const Babl *out_format = gegl_operation_get_format (operation, "output");
   gfloat  min[3], max[3], diff[3];
   GeglBufferIterator *gi;
   GeglProperties         *o;
@@ -466,7 +480,7 @@ process (GeglOperation       *operation,
 
   o = GEGL_PROPERTIES (operation);
 
-  buffer_get_min_max (input, min, max);
+  buffer_get_min_max (input, out_format, min, max);
 
   if (o->keep_colors)
     reduce_min_max_global (min, max);
@@ -483,10 +497,10 @@ process (GeglOperation       *operation,
         }
     }
 
-  gi = gegl_buffer_iterator_new (input, result, 0, babl_format ("RGBA float"),
+  gi = gegl_buffer_iterator_new (input, result, 0, out_format,
                                  GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
-  gegl_buffer_iterator_add (gi, output, result, 0, babl_format ("RGBA float"),
+  gegl_buffer_iterator_add (gi, output, result, 0, out_format,
                             GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (gi))
