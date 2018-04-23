@@ -118,7 +118,7 @@ process (GeglOperation       *operation,
             gdouble lambda;
 
             gdouble angle_rad = o->angle / 180.0 * G_PI;
-            gdouble nx = x * cos (angle_rad) + y * sin (angle_rad);
+            gdouble nx = x * cos (angle_rad) - y * sin (angle_rad);
 
             switch (o->wave_type)
               {
