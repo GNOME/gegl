@@ -26,6 +26,7 @@
 
 enum_start (gegl_ripple_wave_type)
   enum_value (GEGL_RIPPLE_WAVE_TYPE_SINE,     "sine",     N_("Sine"))
+  enum_value (GEGL_RIPPLE_WAVE_TYPE_TRIANGLE, "triangle", N_("Triangle"))
   enum_value (GEGL_RIPPLE_WAVE_TYPE_SAWTOOTH, "sawtooth", N_("Sawtooth"))
 enum_end (GeglRippleWaveType)
 
@@ -123,7 +124,13 @@ process (GeglOperation       *operation,
             switch (o->wave_type)
               {
                 case GEGL_RIPPLE_WAVE_TYPE_SAWTOOTH:
-                  lambda = div (nx,o->period).rem - o->phi * o->period;
+                  lambda = div (nx + o->period / 2, o->period).rem - o->phi * o->period;
+                  if (lambda < 0)
+                    lambda += o->period;
+                  shift = o->amplitude * (((lambda / o->period) * 2) - 1);
+                  break;
+                case GEGL_RIPPLE_WAVE_TYPE_TRIANGLE:
+                  lambda = div (nx + o->period * 3 / 4, o->period).rem - o->phi * o->period;
                   if (lambda < 0)
                     lambda += o->period;
                   shift = o->amplitude * (fabs (((lambda / o->period) * 4) - 2) - 1);
