@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-04-16 14:00+0000\n"
-"PO-Revision-Date: 2018-04-17 09:51+0200\n"
+"POT-Creation-Date: 2018-04-23 09:25+0000\n"
+"PO-Revision-Date: 2018-04-23 18:16+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -2221,7 +2221,7 @@ msgstr ""
 #. XXX: needs better ui type
 #: operations/common/map-absolute.c:22 operations/common/map-relative.c:28
 #: operations/common/panorama-projection.c:61
-#: operations/common-gpl3+/ripple.c:47 operations/common-gpl3+/waves.c:50
+#: operations/common-gpl3+/ripple.c:48 operations/common-gpl3+/waves.c:50
 #: operations/workshop/recursive-transform.c:50
 #: operations/workshop/spherize.c:57
 msgid "Resampling method"
@@ -2528,7 +2528,7 @@ msgstr "Oskärpelängd i bildpunkter"
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:71
 #: operations/common-gpl3+/motion-blur-circular.c:52
-#: operations/common-gpl3+/ripple.c:43 operations/workshop/linear-sinusoid.c:66
+#: operations/common-gpl3+/ripple.c:44 operations/workshop/linear-sinusoid.c:66
 msgid "Angle"
 msgstr "Vinkel"
 
@@ -2591,7 +2591,7 @@ msgstr "Mönster"
 msgid "Halftoning/dot pattern to use"
 msgstr "Rastrerings-/punktmönster som ska användas"
 
-#: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:36
+#: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:37
 #: operations/common-gpl3+/waves.c:40
 msgid "Period"
 msgstr "Periodisk"
@@ -4738,7 +4738,7 @@ msgid "Maze algorithm type"
 msgstr "Algoritmtyp för labyrint"
 
 #: operations/common-gpl3+/maze.c:61 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:53
+#: operations/common-gpl3+/ripple.c:54
 msgid "Tileable"
 msgstr "Plattläggningsbar"
 
@@ -5092,31 +5092,35 @@ msgid "Remove the red eye effect caused by camera flashes"
 msgstr "Ta bort ”röda ögon”-effekten som orsakas av kamerablixtar"
 
 #: operations/common-gpl3+/ripple.c:29
+msgid "Triangle"
+msgstr "Triangel"
+
+#: operations/common-gpl3+/ripple.c:30
 msgid "Sawtooth"
 msgstr "Sågtand"
 
-#: operations/common-gpl3+/ripple.c:32 operations/common-gpl3+/waves.c:36
+#: operations/common-gpl3+/ripple.c:33 operations/common-gpl3+/waves.c:36
 #: operations/workshop/bayer-matrix.c:59
 msgid "Amplitude"
 msgstr "Amplitud"
 
-#: operations/common-gpl3+/ripple.c:40 operations/common-gpl3+/waves.c:44
+#: operations/common-gpl3+/ripple.c:41 operations/common-gpl3+/waves.c:44
 msgid "Phase shift"
 msgstr "Fasskifte"
 
-#: operations/common-gpl3+/ripple.c:50
+#: operations/common-gpl3+/ripple.c:51
 msgid "Wave type"
 msgstr "Vågtyp"
 
-#: operations/common-gpl3+/ripple.c:54
+#: operations/common-gpl3+/ripple.c:55
 msgid "Retain tilebility"
 msgstr "Bevara plattläggningsbarhet"
 
-#: operations/common-gpl3+/ripple.c:171
+#: operations/common-gpl3+/ripple.c:178
 msgid "Ripple"
 msgstr "Krusning"
 
-#: operations/common-gpl3+/ripple.c:176
+#: operations/common-gpl3+/ripple.c:183
 msgid "Displace pixels in a ripple pattern"
 msgstr "Förskjut bildpunkter i ett krusmönster"
 
