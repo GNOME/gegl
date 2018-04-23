@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
+ * Copyright 2018 Simon Budig <simon@gimp.org>
  * Copyright 2011 Michael Muré <batolettre@gmail.com>
  * Copyright 2011 Robert Sasu <sasu.robert@gmail.com>
  * Copyright 2011 Hans Lo <hansshulo@gmail.com>
@@ -50,6 +51,11 @@ property_enum  (sampler_type, _("Resampling method"),
 
 property_enum (wave_type, _("Wave type"),
     GeglRippleWaveType, gegl_ripple_wave_type, GEGL_RIPPLE_WAVE_TYPE_SINE)
+
+property_enum (abyss_policy, _("Abyss policy"),
+               GeglAbyssPolicy, gegl_abyss_policy,
+               GEGL_ABYSS_NONE)
+    description (_("How image edges are handled"))
 
 property_boolean (tileable, _("Tileable"), FALSE)
     description(_("Retain tilebility"))
@@ -92,14 +98,66 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglProperties         *o       = GEGL_PROPERTIES (operation);
+  GeglProperties     *o       = GEGL_PROPERTIES (operation);
   GeglSampler        *sampler = gegl_buffer_sampler_new_at_level (input,
                                                          babl_format ("RGBA float"),
                                                          o->sampler_type,
                                                          level);
   GeglBufferIterator *iter;
+  gdouble angle_rad, period, amplitude, phi;
 
-  GeglAbyssPolicy abyss = o->tileable ? GEGL_ABYSS_LOOP : GEGL_ABYSS_NONE;
+  angle_rad = o->angle / 180.0 * G_PI;
+  period    = o->period;
+  amplitude = o->amplitude;
+  phi       = o->phi;
+
+  if (period < 0.0001)
+    {
+      period = 1.0;
+      amplitude = 0.0;
+    }
+
+  if (o->tileable)
+    {
+      gint w, h;
+      gdouble n, m;
+
+      w = gegl_buffer_get_width (input);
+      h = gegl_buffer_get_height (input);
+
+      n = cos (angle_rad) * w / period;
+      m = sin (angle_rad) * h / period;
+
+      /* round away from zero but ensure a nonzero result */
+      n = n < 0 ? MIN (round (n), -1.0) : MAX (round (n), 1.0);
+      m = m < 0 ? MIN (round (m), -1.0) : MAX (round (m), 1.0);
+
+      /* magic! */
+      angle_rad = atan2 (m * w, h * n);
+      period = cos (angle_rad) * w / n;
+
+      /* ok, not actually.
+       *
+       * For the result of the ripple op being tileable you need
+       * to have the period/angle select in a way, so that the top left
+       * corner has an integer * period distance along the angle to
+       * the top right corner as well as the bottom left corner.
+       *
+       * I.e.:
+       *
+       * cos (angle) * width = n * period
+       * sin (angle) * height = m * period
+       *
+       * with n, m being integers.
+       *
+       * We determine n, m by rounding the results optained by the
+       * user specified angle/period and then calculate a hopefully only
+       * slightly modified new angle/period that meets these criteria.
+       *
+       * We determine the angle by computing tan(), thereby eliminating
+       * the period, then determining the period.
+       */
+    }
 
   iter = gegl_buffer_iterator_new (output, result, 0, babl_format ("RGBA float"),
                                    GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
@@ -118,26 +176,27 @@ process (GeglOperation       *operation,
             gdouble coordsy;
             gdouble lambda;
 
-            gdouble angle_rad = o->angle / 180.0 * G_PI;
             gdouble nx = x * cos (angle_rad) - y * sin (angle_rad);
 
             switch (o->wave_type)
               {
                 case GEGL_RIPPLE_WAVE_TYPE_SAWTOOTH:
-                  lambda = div (nx + o->period / 2, o->period).rem - o->phi * o->period;
+                  lambda = div (nx + period / 2, period).rem - phi * period;
                   if (lambda < 0)
-                    lambda += o->period;
-                  shift = o->amplitude * (((lambda / o->period) * 2) - 1);
+                    lambda += period;
+                  shift = amplitude * (((lambda / period) * 2) - 1);
                   break;
+
                 case GEGL_RIPPLE_WAVE_TYPE_TRIANGLE:
-                  lambda = div (nx + o->period * 3 / 4, o->period).rem - o->phi * o->period;
+                  lambda = div (nx + period * 3 / 4, period).rem - phi * period;
                   if (lambda < 0)
-                    lambda += o->period;
-                  shift = o->amplitude * (fabs (((lambda / o->period) * 4) - 2) - 1);
+                    lambda += period;
+                  shift = amplitude * (fabs (((lambda / period) * 4) - 2) - 1);
                   break;
+
                 case GEGL_RIPPLE_WAVE_TYPE_SINE:
                 default:
-                  shift = o->amplitude * sin (2.0 * G_PI * nx / o->period + 2.0 * G_PI * o->phi);
+                  shift = amplitude * sin (2.0 * G_PI * nx / period + 2.0 * G_PI * phi);
                   break;
               }
 
@@ -149,7 +208,7 @@ process (GeglOperation       *operation,
                               coordsy,
                               NULL,
                               out_pixel,
-                              abyss);
+                              o->abyss_policy);
 
             out_pixel += 4;
           }
@@ -157,7 +216,7 @@ process (GeglOperation       *operation,
 
   g_object_unref (sampler);
 
-  return  TRUE;
+  return TRUE;
 }
 
 
