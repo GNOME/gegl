@@ -251,7 +251,7 @@ prepare (GeglOperation *operation)
 
   if (p->image == NULL)
     {
-      jasper = jas_stream_memopen(NULL, -1);
+      jasper = jas_stream_memopen(NULL, 0);
       if (jasper == NULL)
         {
           g_warning("%s", _("could not create a new Jasper stream"));
