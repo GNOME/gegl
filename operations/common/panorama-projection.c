@@ -446,7 +446,7 @@ process (GeglOperation       *operation,
 
   if (sampler_type != GEGL_SAMPLER_NEAREST &&
       !(o->little_planet == FALSE && o->inverse == FALSE &&
-      fabs(o->tilt < 33)))
+      abs(o->tilt < 33)))
     /* skip the computation of sampler neighborhood scale matrix in cases where
      * we are unlikely to be scaling down */
     scale = &scale_matrix;
