@@ -24,6 +24,8 @@
 
 property_file_path (path, _("File"), "")
    description     (_("Path of file to load."))
+property_file_path (uri, _("URI"), "")
+   description     (_("URI of image to load."))
 
 #else
 
@@ -40,6 +42,7 @@ property_file_path (path, _("File"), "")
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <gegl-gio-private.h>
 
 typedef enum {
   PIXMAP_ASCII_GRAY = '2',
@@ -58,19 +61,79 @@ typedef struct {
   guchar    *data;
 } pnm_struct;
 
+static gssize
+read_until(GInputStream *stream, char *buffer, gsize max_length, char* stop_chars, int stop_chars_length)
+{
+    int pos;
+
+    for (pos = 0; pos<max_length-1; pos+=1)
+      {
+        char *current = &buffer[pos];
+        const gssize read = g_input_stream_read(stream, current, 1, NULL, NULL);
+        if (read <= 0)
+          {
+            return read; // error or EOS
+          }
+        for (int i = 0; i<stop_chars_length; i++) {
+            if (current[0] == stop_chars[i]) {
+                buffer[pos] = '\0';
+                return pos+1;
+            }
+        }
+    }
+
+    return pos+1;
+}
+
+static gssize
+read_line(GInputStream *stream, char *buffer, gsize max_length)
+{
+    return read_until(stream, buffer, max_length, "\n", 1);
+}
+
+static gint64
+read_value(GInputStream *stream)
+{
+    static const int MAX_CHARS = 20;
+    char buffer[MAX_CHARS];
+    gssize read = read_until(stream, buffer, MAX_CHARS, " \n", 2);
+
+    if (read == 1)
+      {
+        // delimiter only, try read next value
+        read = read_until(stream, buffer, MAX_CHARS, " \n", 2);
+      }
+
+    if (read <= 0)
+      {
+        // failed to read
+        return -2;
+      }
+    else
+      {
+        guint value;
+        errno = 0;
+        value = strtol(buffer, NULL, 10);
+        if (errno)
+          {
+            return -3;
+          }
+        return value;
+      }
+}
+
 static gboolean
-ppm_load_read_header(FILE       *fp,
+ppm_load_read_header(GInputStream *stream,
                      pnm_struct *img)
 {
     /* PPM Headers Variable Declaration */
     gchar *ptr;
-    //gchar *retval;
     gchar  header[MAX_CHARS_IN_ROW];
     gint   maxval;
     int    channel_count;
 
     /* Check the PPM file Type P3 or P6 */
-    if (fgets (header, MAX_CHARS_IN_ROW, fp) == NULL ||
+    if (read_line(stream, header, MAX_CHARS_IN_ROW) <= 0 ||
         header[0] != ASCII_P ||
         (header[1] != PIXMAP_ASCII_GRAY &&
          header[1] != PIXMAP_ASCII &&
@@ -89,8 +152,10 @@ ppm_load_read_header(FILE       *fp,
       channel_count = CHANNEL_COUNT;
 
     /* Check the Comments */
-    while((fgets (header, MAX_CHARS_IN_ROW, fp)) && (header[0] == '#'))
-      ;
+    while (read_line(stream, header, MAX_CHARS_IN_ROW) > 0 && (header[0] == '#'))
+      {
+        continue;
+      }
 
     /* Get Width and Height */
     errno = 0;
@@ -119,7 +184,7 @@ ppm_load_read_header(FILE       *fp,
         return FALSE;
       }
 
-    if (fgets (header, MAX_CHARS_IN_ROW, fp))
+    if (read_line(stream, header, MAX_CHARS_IN_ROW) > 0)
       maxval = strtol (header, &ptr, 10);
     else
       maxval = 0;
@@ -165,14 +230,15 @@ ppm_load_read_header(FILE       *fp,
 }
 
 static void
-ppm_load_read_image(FILE       *fp,
+ppm_load_read_image(GInputStream *stream,
                     pnm_struct *img)
 {
+    GDataInputStream *dstream = g_data_input_stream_new (stream);
     guint i;
 
     if (img->type == PIXMAP_RAW || img->type == PIXMAP_RAW_GRAY)
       {
-        if (fread (img->data, img->bpc, img->numsamples, fp) == 0)
+        if (g_input_stream_read (stream, img->data, img->bpc*img->numsamples, NULL, NULL) == 0)
           return;
 
         /* Fix endianness if necessary */
@@ -197,10 +263,10 @@ ppm_load_read_image(FILE       *fp,
 
             for (i = 0; i < img->numsamples; i++)
               {
-                guint sample;
-                if (!fscanf (fp, " %u", &sample))
-                  sample = 0;
-                *ptr++ = sample;
+                gint64 sample = read_value (stream);
+                if (sample >= 0) {
+                    *ptr++ = sample;
+                }
               }
           }
         else if (img->bpc == sizeof (gushort))
@@ -209,10 +275,10 @@ ppm_load_read_image(FILE       *fp,
 
             for (i = 0; i < img->numsamples; i++)
               {
-                guint sample;
-                if (!fscanf (fp, " %u", &sample))
-                  sample = 0;
-                *ptr++ = sample;
+                gint64 sample = read_value (stream);
+                if (sample >= 0) {
+                    *ptr++ = sample;
+                }
               }
           }
         else
@@ -220,6 +286,7 @@ ppm_load_read_image(FILE       *fp,
             g_warning ("%s: Programmer stupidity error", G_STRLOC);
           }
       }
+    g_object_unref (dstream);
 }
 
 static GeglRectangle
@@ -227,17 +294,17 @@ get_bounding_box (GeglOperation *operation)
 {
   GeglProperties   *o = GEGL_PROPERTIES (operation);
   GeglRectangle result = {0,0,0,0};
+  GInputStream *stream = NULL;
+  GFile *file = NULL;
   pnm_struct    img;
-  FILE         *fp;
 
   img.bpc = 1;
 
-  fp = (!strcmp (o->path, "-") ? stdin : fopen (o->path,"rb") );
-
-  if (!fp)
+  stream = gegl_gio_open_input_stream(o->uri, o->path, &file, NULL);
+  if (!stream)
     return result;
 
-  if (!ppm_load_read_header (fp, &img))
+  if (!ppm_load_read_header (stream, &img))
     goto out;
 
   if (img.bpc == 1)
@@ -265,8 +332,9 @@ get_bounding_box (GeglOperation *operation)
   result.height = img.height;
 
  out:
-  if (stdin != fp)
-    fclose (fp);
+  g_object_unref (stream);
+  if (file)
+    g_object_unref (file);
 
   return result;
 }
@@ -278,19 +346,19 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties   *o = GEGL_PROPERTIES (operation);
-  FILE         *fp;
   pnm_struct    img;
   GeglRectangle rect = {0,0,0,0};
   gboolean      ret = FALSE;
+  GInputStream *stream = NULL;
+  GFile *file = NULL;
 
   img.bpc = 1;
 
-  fp = (!strcmp (o->path, "-") ? stdin : fopen (o->path,"rb"));
-
-  if (!fp)
+  stream = gegl_gio_open_input_stream (o->uri, o->path, &file, NULL);
+  if (!stream)
     return FALSE;
 
-  if (!ppm_load_read_header (fp, &img))
+  if (!ppm_load_read_header (stream, &img))
     goto out;
 
   /* Allocating Array Size */
@@ -332,7 +400,7 @@ process (GeglOperation       *operation,
   else
     g_warning ("%s: Programmer stupidity error", G_STRLOC);
 
-  ppm_load_read_image (fp, &img);
+  ppm_load_read_image (stream, &img);
 
   if (img.bpc == 1)
     {
@@ -360,8 +428,9 @@ process (GeglOperation       *operation,
   ret = TRUE;
 
  out:
-  if (stdin != fp)
-    fclose (fp);
+    g_object_unref (stream);
+    if (file)
+        g_object_unref (file);
 
   return ret;
 }
