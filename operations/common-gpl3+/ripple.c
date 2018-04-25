@@ -121,20 +121,27 @@ process (GeglOperation       *operation,
     {
       gint w, h;
       gdouble n, m;
+      GeglRectangle *bbox;
 
-      w = gegl_buffer_get_width (input);
-      h = gegl_buffer_get_height (input);
+      bbox = gegl_operation_source_get_bounding_box (operation, "input");
+      w = bbox->width;
+      h = bbox->height;
 
       n = cos (angle_rad) * w / period;
       m = sin (angle_rad) * h / period;
 
-      /* round away from zero but ensure a nonzero result */
-      n = n < 0 ? MIN (round (n), -1.0) : MAX (round (n), 1.0);
-      m = m < 0 ? MIN (round (m), -1.0) : MAX (round (m), 1.0);
+      /* round away from zero */
+      n = round (n);
+      m = round (m);
+      if (n == 0 && m == 0)
+        {
+          n = 1;
+          amplitude = 0;
+        }
 
       /* magic! */
       angle_rad = atan2 (m * w, h * n);
-      period = cos (angle_rad) * w / n;
+      period = sqrt ((gdouble) h*h * w*w / (n*n * h*h + m*m * w*w));
 
       /* ok, not actually.
        *
@@ -155,7 +162,8 @@ process (GeglOperation       *operation,
        * slightly modified new angle/period that meets these criteria.
        *
        * We determine the angle by computing tan(), thereby eliminating
-       * the period, then determining the period.
+       * the period, then determining the period via a formula
+       * derived from the  sin²(a)+cos²(a) = 1  identity.
        */
     }
 
