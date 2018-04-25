@@ -1,3 +1,30 @@
+GEGL-0.4.0 2018-04-26
+---------------------
+
+GEGL 0.4.x is a stable release series of GEGL to have a stable API and ABI to
+go with GIMP-2.10. When the need arises to break API or ABI compatibility the
+0.4.x series will get its own branch and unstable API experiments and
+development, 0.5.x will happen in master. For now though master will track the
+0.4.x series.
+
+Core
+~~~~
+
+Change GeglParamSpecSeed from int to uint to match the value range of
+GeglRandom's seed.
+
+Operations
+~~~~~~~~~~
+
+ripple fixed remaining issues needed to remove legacy GIMP plug-in in GIMP.
+spherize, requrise transform and color-overlay moved out of workshop.  ppm-load
+ported to GIO.
+
+Contributors to this release: Ell, Piotr Drąg, Anders Mortensen, Anders
+Jonsson, Marco Ciampa, Daniel Korostil, Øyvind Kolås, Jon Nordby and Simon
+Budig.
+
+
 GEGL-0.3.32 2018-04-16
 ----------------------
 

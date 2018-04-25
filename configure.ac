@@ -13,8 +13,8 @@ dnl    set GEGL_BINARY_AGE _and_ GEGL_INTERFACE_AGE to 0.
 
 
 m4_define([gegl_major_version], [0])
-m4_define([gegl_minor_version], [3])
-m4_define([gegl_micro_version], [35])
+m4_define([gegl_minor_version], [4])
+m4_define([gegl_micro_version], [0])
 m4_define([gegl_real_version],
           [gegl_major_version.gegl_minor_version.gegl_micro_version])
 m4_define([gegl_version], [gegl_real_version])
@@ -27,7 +27,7 @@ m4_define([gegl_binary_age],
 m4_define([gegl_api_version], [gegl_major_version.gegl_minor_version])
 
 m4_define([stability_version_number],
-          m4_if(m4_eval(gegl_major_version || gegl_minor_version), [0], 
+          m4_if(m4_eval(gegl_major_version || gegl_minor_version), [0],
                         [gegl_micro_version], [gegl_minor_version]))
 m4_define([gegl_unstable],
           m4_if(m4_eval(stability_version_number % 2), [1], [yes], [no]))
@@ -79,10 +79,10 @@ m4_ifdef([AM_SILENT_RULES],
          [AC_SUBST([AM_DEFAULT_VERBOSITY], [1])])
 
 dnl ==========================================================================
-dnl                              Versioning              
+dnl                              Versioning
 dnl ==========================================================================
 
-dnl The triplet 
+dnl The triplet
 GEGL_MAJOR_VERSION=gegl_major_version
 GEGL_MINOR_VERSION=gegl_minor_version
 GEGL_MICRO_VERSION=gegl_micro_version
