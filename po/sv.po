@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-04-23 09:25+0000\n"
-"PO-Revision-Date: 2018-04-23 18:16+0200\n"
+"POT-Creation-Date: 2018-04-25 14:56+0000\n"
+"PO-Revision-Date: 2018-04-25 21:13+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -1744,12 +1744,14 @@ msgstr "Hur den gaussiska kärnan diskretiseras"
 #: operations/common/gaussian-blur.c:58 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:31
 #: operations/common-gpl3+/displace.c:42
-#: operations/common-gpl3+/fractal-trace.c:67 operations/transform/scale.c:102
+#: operations/common-gpl3+/fractal-trace.c:67
+#: operations/common-gpl3+/ripple.c:55 operations/transform/scale.c:102
 msgid "Abyss policy"
 msgstr "Avgrundspolicy"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
-#: operations/common-gpl3+/displace.c:45 operations/transform/scale.c:103
+#: operations/common-gpl3+/displace.c:45 operations/common-gpl3+/ripple.c:58
+#: operations/transform/scale.c:103
 msgid "How image edges are handled"
 msgstr "Hur bildkanter hanteras"
 
@@ -2221,7 +2223,7 @@ msgstr ""
 #. XXX: needs better ui type
 #: operations/common/map-absolute.c:22 operations/common/map-relative.c:28
 #: operations/common/panorama-projection.c:61
-#: operations/common-gpl3+/ripple.c:48 operations/common-gpl3+/waves.c:50
+#: operations/common-gpl3+/ripple.c:49 operations/common-gpl3+/waves.c:50
 #: operations/workshop/recursive-transform.c:50
 #: operations/workshop/spherize.c:57
 msgid "Resampling method"
@@ -2528,7 +2530,7 @@ msgstr "Oskärpelängd i bildpunkter"
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:71
 #: operations/common-gpl3+/motion-blur-circular.c:52
-#: operations/common-gpl3+/ripple.c:44 operations/workshop/linear-sinusoid.c:66
+#: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
 msgid "Angle"
 msgstr "Vinkel"
 
@@ -2591,7 +2593,7 @@ msgstr "Mönster"
 msgid "Halftoning/dot pattern to use"
 msgstr "Rastrerings-/punktmönster som ska användas"
 
-#: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:37
+#: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:38
 #: operations/common-gpl3+/waves.c:40
 msgid "Period"
 msgstr "Periodisk"
@@ -3356,11 +3358,23 @@ msgstr "Behåll färger"
 msgid "Impact each channel with the same amount"
 msgstr "Påverka varje kanal lika mycket"
 
-#: operations/common/stretch-contrast.c:568
+#: operations/common/stretch-contrast.c:28
+msgid "Non-linear components"
+msgstr "Icke-linjära komponenter"
+
+#: operations/common/stretch-contrast.c:29
+msgid ""
+"When set operate on gamma corrected values instead of linear RGB - acting "
+"like the old normalize filter in GIMP"
+msgstr ""
+"Då denna är satt, arbeta på gammakorrigerade värden istället för linjär RGB "
+"- på samma sätt som det gamla normaliseringsfiltret i GIMP"
+
+#: operations/common/stretch-contrast.c:582
 msgid "Stretch Contrast"
 msgstr "Utsträckningskontrast"
 
-#: operations/common/stretch-contrast.c:571
+#: operations/common/stretch-contrast.c:585
 msgid ""
 "Scales the components of the buffer to be in the 0.0-1.0 range. This "
 "improves images that make poor use of the available contrast (little "
@@ -4496,7 +4510,7 @@ msgid "Blue stretching factor"
 msgstr "Blå utsträckningsfaktor"
 
 #: operations/common-gpl3+/fractal-explorer.c:94
-#: operations/common-gpl3+/ripple.c:28
+#: operations/common-gpl3+/ripple.c:29
 msgid "Sine"
 msgstr "Sinus"
 
@@ -4738,7 +4752,7 @@ msgid "Maze algorithm type"
 msgstr "Algoritmtyp för labyrint"
 
 #: operations/common-gpl3+/maze.c:61 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:54
+#: operations/common-gpl3+/ripple.c:60
 msgid "Tileable"
 msgstr "Plattläggningsbar"
 
@@ -5091,36 +5105,36 @@ msgstr "Borttagning av röda ögon"
 msgid "Remove the red eye effect caused by camera flashes"
 msgstr "Ta bort ”röda ögon”-effekten som orsakas av kamerablixtar"
 
-#: operations/common-gpl3+/ripple.c:29
+#: operations/common-gpl3+/ripple.c:30
 msgid "Triangle"
 msgstr "Triangel"
 
-#: operations/common-gpl3+/ripple.c:30
+#: operations/common-gpl3+/ripple.c:31
 msgid "Sawtooth"
 msgstr "Sågtand"
 
-#: operations/common-gpl3+/ripple.c:33 operations/common-gpl3+/waves.c:36
+#: operations/common-gpl3+/ripple.c:34 operations/common-gpl3+/waves.c:36
 #: operations/workshop/bayer-matrix.c:59
 msgid "Amplitude"
 msgstr "Amplitud"
 
-#: operations/common-gpl3+/ripple.c:41 operations/common-gpl3+/waves.c:44
+#: operations/common-gpl3+/ripple.c:42 operations/common-gpl3+/waves.c:44
 msgid "Phase shift"
 msgstr "Fasskifte"
 
-#: operations/common-gpl3+/ripple.c:51
+#: operations/common-gpl3+/ripple.c:52
 msgid "Wave type"
 msgstr "Vågtyp"
 
-#: operations/common-gpl3+/ripple.c:55
+#: operations/common-gpl3+/ripple.c:61
 msgid "Retain tilebility"
 msgstr "Bevara plattläggningsbarhet"
 
-#: operations/common-gpl3+/ripple.c:178
+#: operations/common-gpl3+/ripple.c:245
 msgid "Ripple"
 msgstr "Krusning"
 
-#: operations/common-gpl3+/ripple.c:183
+#: operations/common-gpl3+/ripple.c:250
 msgid "Displace pixels in a ripple pattern"
 msgstr "Förskjut bildpunkter i ett krusmönster"
 
@@ -5911,8 +5925,8 @@ msgstr "Beskär en buffert"
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/png-load.c:29
-#: operations/external/svg-load.c:27 operations/external/tiff-load.c:27
-#: operations/external/webp-load.c:27
+#: operations/external/ppm-load.c:27 operations/external/svg-load.c:27
+#: operations/external/tiff-load.c:27 operations/external/webp-load.c:27
 msgid "URI"
 msgstr "URI"
 
@@ -6596,11 +6610,15 @@ msgstr "PNG-filsparare"
 msgid "PNG image saver, using libpng"
 msgstr "PNG-bildsparare, använder libpng"
 
-#: operations/external/ppm-load.c:391
+#: operations/external/ppm-load.c:28
+msgid "URI of image to load."
+msgstr "URI för bild att läsa in."
+
+#: operations/external/ppm-load.c:460
 msgid "PPM File Loader"
 msgstr "PPM-filinläsare"
 
-#: operations/external/ppm-load.c:393
+#: operations/external/ppm-load.c:462
 msgid "PPM image loader."
 msgstr "PPM-bildläsare."
 
