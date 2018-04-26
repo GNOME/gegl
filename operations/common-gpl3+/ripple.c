@@ -91,6 +91,15 @@ prepare (GeglOperation *operation)
                              babl_format ("RGBA float"));
 }
 
+static GeglAbyssPolicy
+get_abyss_policy (GeglOperation *operation,
+                  const gchar   *input_pad)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
+  return o->abyss_policy;
+}
+
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
@@ -227,18 +236,20 @@ process (GeglOperation       *operation,
   return TRUE;
 }
 
-
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GeglOperationClass       *operation_class;
-  GeglOperationFilterClass *filter_class;
+  GeglOperationClass           *operation_class;
+  GeglOperationFilterClass     *filter_class;
+  GeglOperationAreaFilterClass *area_class;
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
+  area_class      = GEGL_OPERATION_AREA_FILTER_CLASS (klass);
 
-  operation_class->prepare = prepare;
-  filter_class->process    = process;
+  operation_class->prepare     = prepare;
+  filter_class->process        = process;
+  area_class->get_abyss_policy = get_abyss_policy;
 
   gegl_operation_class_set_keys (operation_class,
     "name",               "gegl:ripple",

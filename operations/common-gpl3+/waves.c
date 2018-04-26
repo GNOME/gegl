@@ -79,6 +79,15 @@ prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
 }
 
+static GeglAbyssPolicy
+get_abyss_policy (GeglOperation *operation,
+                  const gchar   *input_pad)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
+  return o->clamp ? GEGL_ABYSS_CLAMP : GEGL_ABYSS_NONE;
+}
+
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
@@ -94,7 +103,7 @@ process (GeglOperation       *operation,
   GeglRectangle      *in_extent = gegl_operation_source_get_bounding_box (operation, "input");
   GeglBufferIterator *iter;
 
-  GeglAbyssPolicy abyss = o->clamp ? GEGL_ABYSS_CLAMP : GEGL_ABYSS_NONE;
+  GeglAbyssPolicy abyss = get_abyss_policy (operation, "input");
 
   gdouble px_x = gegl_coordinate_relative_to_pixel (o->x, in_extent->width);
   gdouble px_y = gegl_coordinate_relative_to_pixel (o->y, in_extent->height);
@@ -170,14 +179,17 @@ process (GeglOperation       *operation,
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GeglOperationClass       *operation_class;
-  GeglOperationFilterClass *filter_class;
+  GeglOperationClass           *operation_class;
+  GeglOperationFilterClass     *filter_class;
+  GeglOperationAreaFilterClass *area_class;
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
+  area_class      = GEGL_OPERATION_AREA_FILTER_CLASS (klass);
 
-  operation_class->prepare = prepare;
-  filter_class->process    = process;
+  operation_class->prepare     = prepare;
+  filter_class->process        = process;
+  area_class->get_abyss_policy = get_abyss_policy;
 
   gegl_operation_class_set_keys (operation_class,
     "name",               "gegl:waves",

@@ -598,14 +598,27 @@ get_required_for_output (GeglOperation       *operation,
   return get_bounding_box (operation);
 }
 
+static GeglAbyssPolicy
+get_abyss_policy (GeglOperation *operation,
+                  const gchar   *input_pad)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
+  return o->border;
+}
+
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GeglOperationClass       *operation_class;
-  GeglOperationFilterClass *filter_class;
+  GeglOperationClass           *operation_class;
+  GeglOperationFilterClass     *filter_class;
+  GeglOperationAreaFilterClass *area_class;
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
+  area_class      = GEGL_OPERATION_AREA_FILTER_CLASS (klass);
+
+  area_class->get_abyss_policy             = get_abyss_policy;
   filter_class->process                    = process;
   operation_class->prepare                 = prepare;
   operation_class->get_bounding_box        = get_bounding_box;
