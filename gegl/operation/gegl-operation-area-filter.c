@@ -85,10 +85,10 @@ get_bounding_box (GeglOperation *operation)
   if (result.width != 0 &&
       result.height != 0)
     {
-      result.x-= area->left;
-      result.y-= area->top;
-      result.width += area->left + area->right;
-      result.height += area->top + area->bottom;
+      result.x      -= area->right;
+      result.y      -= area->bottom;
+      result.width  += area->right + area->left;
+      result.height += area->bottom + area->top;
     }
 
   return result;
@@ -109,10 +109,10 @@ get_required_for_output (GeglOperation        *operation,
   if (rect.width  != 0 &&
       rect.height != 0)
     {
-      rect.x -= area->left;
-      rect.y -= area->top;
+      rect.x      -= area->left;
+      rect.y      -= area->top;
       rect.width  += area->left + area->right;
-      rect.height  += area->top + area->bottom;
+      rect.height += area->top + area->bottom;
     }
 
   return rect;
@@ -126,10 +126,10 @@ get_invalidated_by_change (GeglOperation        *operation,
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglRectangle            retval;
 
-  retval.x      = input_region->x - area->left;
-  retval.y      = input_region->y - area->top;
-  retval.width  = input_region->width  + area->left + area->right;
-  retval.height = input_region->height + area->top  + area->bottom;
+  retval.x      = input_region->x      - area->right;
+  retval.y      = input_region->y      - area->bottom;
+  retval.width  = input_region->width  + area->right  + area->left;
+  retval.height = input_region->height + area->bottom + area->top;
 
   return retval;
 }
