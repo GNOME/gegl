@@ -25,6 +25,7 @@ gegl_common_la_SOURCES =\
 	checkerboard.c \
 	dither.c \
 	color-enhance.c \
+	color-overlay.c \
 	color-rotate.c \
 	color-temperature.c \
 	color-warp.c \

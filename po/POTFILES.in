@@ -16,6 +16,7 @@ operations/common/c2g.c
 operations/common/checkerboard.c
 operations/common/color.c
 operations/common/color-enhance.c
+operations/common/color-overlay.c
 operations/common/color-rotate.c
 operations/common/color-temperature.c
 operations/common/color-warp.c
@@ -237,7 +238,6 @@ operations/transform/transform-core.c
 operations/transform/translate.c
 operations/workshop/bayer-matrix.c
 operations/workshop/bilateral-filter-fast.c
-operations/workshop/color-overlay.c
 operations/workshop/demosaic-bimedian.c
 operations/workshop/demosaic-simple.c
 operations/workshop/ditto.c

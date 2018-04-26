@@ -152,9 +152,9 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class->process = process;
 
   gegl_operation_class_set_keys (operation_class,
-      "name",       "gegl:color-overlay",
-      "categories", "color",
-      "title",      _("Color Overlay"),
+      "name",        "gegl:color-overlay",
+      "categories",  "color",
+      "title",       _("Color Overlay"),
       "description", _("Paint a color overlay over the input, "
                        "preserving its transparency."),
       NULL);
