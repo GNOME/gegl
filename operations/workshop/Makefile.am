@@ -24,6 +24,5 @@ op_LTLIBRARIES = \
 	integral-image.la \
 	linear-sinusoid.la \
 	rawbayer-load.la  \
-	recursive-transform.la \
 	segment-kmeans.la \
 	spherize.la

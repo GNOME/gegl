@@ -91,6 +91,7 @@ gegl_common_la_SOURCES =\
 	posterize.c \
 	radial-gradient.c \
 	rectangle.c \
+	recursive-transform.c \
 	reinhard05.c \
 	remap.c \
 	rgb-clip.c \
