@@ -91,6 +91,7 @@ operations/common/save.c
 operations/common/sepia.c
 operations/common/slic.c
 operations/common/snn-mean.c
+operations/common/spherize.c
 operations/common/stress.c
 operations/common/stretch-contrast.c
 operations/common/stretch-contrast-hsv.c
@@ -259,4 +260,3 @@ operations/workshop/integral-image.c
 operations/workshop/linear-sinusoid.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
-operations/workshop/spherize.c

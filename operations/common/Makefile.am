@@ -100,6 +100,7 @@ gegl_common_la_SOURCES =\
 	sepia.c \
 	slic.c \
 	snn-mean.c \
+	spherize.c \
 	stress.c \
 	stretch-contrast-hsv.c \
 	stretch-contrast.c \

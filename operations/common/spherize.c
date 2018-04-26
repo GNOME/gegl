@@ -36,7 +36,7 @@ property_enum (mode, _("Mode"),
 property_double (angle_of_view, _("Angle of view"), 0.0)
   description (_("Camera angle of view"))
   value_range (0.0, 180.0)
-  ui_meta ("unit", "degree")
+  ui_meta     ("unit", "degree")
 
 property_double (curvature, _("Curvature"), 1.0)
   description (_("Spherical cap apex angle, as a fraction of the co-angle of view"))
@@ -56,7 +56,7 @@ property_double (amount, _("Amount"), 1.0)
 
 property_enum (sampler_type, _("Resampling method"),
   GeglSamplerType, gegl_sampler_type, GEGL_SAMPLER_LINEAR)
-  description(_("Mathematical method for reconstructing pixel values"))
+  description (_("Mathematical method for reconstructing pixel values"))
 
 #else
 
@@ -326,7 +326,6 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Spherize"),
     "categories",         "distort:map",
     "position-dependent", "true",
-    "license",            "GPL3+",
     "description",        _("Wrap image around a spherical cap"),
     NULL);
 }
