@@ -157,6 +157,10 @@ set_clone_prop_as_well:
         {
           gegl_node_set (new, param_name, atoi (param_value), NULL);
         }
+      else if (paramspec->value_type == G_TYPE_UINT)
+        {
+          gegl_node_set (new, param_name, (guint) strtoul (param_value, NULL, 10), NULL);
+        }
       else if (paramspec->value_type == G_TYPE_FLOAT ||
                paramspec->value_type == G_TYPE_DOUBLE)
         {
@@ -853,6 +857,14 @@ serialize_properties (SerializeState *ss,
               gchar str[64];
               gegl_node_get (node, properties[i]->name, &value, NULL);
               g_snprintf (str, sizeof (str), "%i", value);
+              xml_param (ss, indent + 2, properties[i]->name, str);
+            }
+          else if (properties[i]->value_type == G_TYPE_UINT)
+            {
+              guint value;
+              gchar str[64];
+              gegl_node_get (node, properties[i]->name, &value, NULL);
+              g_snprintf (str, sizeof (str), "%u", value);
               xml_param (ss, indent + 2, properties[i]->name, str);
             }
           else if (properties[i]->value_type == G_TYPE_BOOLEAN)

@@ -432,8 +432,9 @@ gegl_create_chain_argv (char      **ops,
                       }
                     else
                     if (g_type_is_a (target_type, G_TYPE_DOUBLE) ||
-                        g_type_is_a (target_type, G_TYPE_FLOAT) ||
-                        g_type_is_a (target_type, G_TYPE_INT))
+                        g_type_is_a (target_type, G_TYPE_FLOAT)  ||
+                        g_type_is_a (target_type, G_TYPE_INT)    ||
+                        g_type_is_a (target_type, G_TYPE_UINT))
                       {
                         if (strstr (value, "rel"))
                           {
@@ -451,6 +452,9 @@ gegl_create_chain_argv (char      **ops,
                             if (g_type_is_a (target_type, G_TYPE_INT))
                               gegl_node_set (iter[level], key,
                                              (int)make_rel (value), NULL);
+                            else if (g_type_is_a (target_type, G_TYPE_UINT))
+                              gegl_node_set (iter[level], key,
+                                             (guint)make_rel (value), NULL);
                             else
                               gegl_node_set (iter[level], key,  make_rel (
                                                value), NULL);
@@ -460,10 +464,9 @@ gegl_create_chain_argv (char      **ops,
                             if (g_type_is_a (target_type, G_TYPE_INT))
                               gegl_node_set (iter[level], key,
                                              (int)g_strtod (value, NULL), NULL);
-
-
-
-
+                            else if (g_type_is_a (target_type, G_TYPE_UINT))
+                              gegl_node_set (iter[level], key,
+                                             (guint)g_strtod (value, NULL), NULL);
                             else
                               gegl_node_set (iter[level], key,
                                              g_strtod (value, NULL), NULL);
@@ -890,6 +893,32 @@ gegl_serialize2 (GeglNode *start, GeglNode *end, const char *basepath,
                         if (flags & GEGL_SERIALIZE_INDENT)
                           g_string_append_printf (s2, "  ");
                         g_snprintf (str, sizeof (str), "%i", value);
+                        g_string_append_printf (s2, " %s=%s%s", property_name,
+                                                str, rel_orig?"rel":"");
+                        printed = TRUE;
+                      }
+                  }
+                else if (property_type == G_TYPE_UINT)
+                  {
+                    guint defval = g_value_get_uint (default_value);
+                    guint value;
+                    gchar str[64];
+                    gegl_node_get (iter, properties[i]->name, &value, NULL);
+
+                    if (path)
+                    {
+                      g_string_append_printf (s2, " %s={ ", property_name);
+                      if (rel_orig)
+                        gegl_path_foreach (path, each_knot_rel, s2);
+                      else
+                        gegl_path_foreach (path, each_knot, s2);
+                      g_string_append_printf (s2, " } ");
+                    }
+                    else if (value != defval || (!trim_defaults))
+                      {
+                        if (flags & GEGL_SERIALIZE_INDENT)
+                          g_string_append_printf (s2, "  ");
+                        g_snprintf (str, sizeof (str), "%u", value);
                         g_string_append_printf (s2, " %s=%s%s", property_name,
                                                 str, rel_orig?"rel":"");
                         printed = TRUE;
