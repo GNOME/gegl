@@ -113,6 +113,40 @@ get_required_for_output (GeglOperation        *operation,
       rect.y      -= area->top;
       rect.width  += area->left + area->right;
       rect.height += area->top + area->bottom;
+
+      /* wrap rectangle around the input bounds, if using a LOOP abyss policy */
+      if (GEGL_OPERATION_AREA_FILTER_GET_CLASS (area)->get_abyss_policy &&
+          GEGL_OPERATION_AREA_FILTER_GET_CLASS (area)->get_abyss_policy (
+            operation, input_pad) == GEGL_ABYSS_LOOP)
+        {
+          GeglRectangle *in_rect;
+
+          in_rect = gegl_operation_source_get_bounding_box (operation,"input");
+          g_return_val_if_fail (in_rect != NULL, rect);
+
+          rect.x      = in_rect->x + (rect.x - in_rect->x) % in_rect->width;
+          rect.y      = in_rect->y + (rect.y - in_rect->y) % in_rect->height;
+          rect.width  = rect.width;
+          rect.height = rect.height;
+
+          if (rect.x < in_rect->x)
+            rect.x += in_rect->width;
+
+          if (rect.y < in_rect->y)
+            rect.y += in_rect->height;
+
+          if (rect.x + rect.width > in_rect->x + in_rect->width)
+            {
+              rect.x      = in_rect->x;
+              rect.width  = in_rect->width;
+            }
+
+          if (rect.y + rect.height > in_rect->y + in_rect->height)
+            {
+              rect.y      = in_rect->y;
+              rect.height = in_rect->height;
+            }
+        }
     }
 
   return rect;
@@ -123,13 +157,56 @@ get_invalidated_by_change (GeglOperation        *operation,
                            const gchar         *input_pad,
                            const GeglRectangle *input_region)
 {
-  GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
-  GeglRectangle            retval;
+  GeglOperationAreaFilter *area   = GEGL_OPERATION_AREA_FILTER (operation);
+  GeglRectangle            retval = *input_region;
 
-  retval.x      = input_region->x      - area->right;
-  retval.y      = input_region->y      - area->bottom;
-  retval.width  = input_region->width  + area->right  + area->left;
-  retval.height = input_region->height + area->bottom + area->top;
+  /* wrap rectangle around the input bounds, if using a LOOP abyss policy */
+  if (GEGL_OPERATION_AREA_FILTER_GET_CLASS (area)->get_abyss_policy &&
+      GEGL_OPERATION_AREA_FILTER_GET_CLASS (area)->get_abyss_policy (
+        operation, input_pad) == GEGL_ABYSS_LOOP)
+    {
+      GeglRectangle *in_rect;
+
+      in_rect = gegl_operation_source_get_bounding_box (operation,"input");
+
+      if (in_rect)
+        {
+          if (input_region->x -
+              in_rect->x      <
+              area->left + area->right)
+            {
+              retval.width = in_rect->width - (retval.x - in_rect->x);
+            }
+
+          if ((in_rect->x      + in_rect->width)      -
+              (input_region->x + input_region->width) <
+              area->right + area->left)
+            {
+              retval.width += retval.x - in_rect->x;
+              retval.x      = in_rect->x;
+            }
+
+          if (input_region->y -
+              in_rect->y      <
+              area->top + area->bottom)
+            {
+              retval.height = in_rect->height - (retval.y - in_rect->y);
+            }
+
+          if ((in_rect->y      + in_rect->height)      -
+              (input_region->y + input_region->height) <
+              area->bottom + area->top)
+            {
+              retval.height += retval.y - in_rect->y;
+              retval.y       = in_rect->y;
+            }
+        }
+    }
+
+  retval.x      -= area->right;
+  retval.y      -= area->bottom;
+  retval.width  += area->right  + area->left;
+  retval.height += area->bottom + area->top;
 
   return retval;
 }

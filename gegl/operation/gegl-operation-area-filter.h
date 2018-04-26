@@ -50,8 +50,15 @@ struct _GeglOperationAreaFilter
 typedef struct _GeglOperationAreaFilterClass GeglOperationAreaFilterClass;
 struct _GeglOperationAreaFilterClass
 {
-  GeglOperationFilterClass parent_class;
-  gpointer                 pad[4];
+  GeglOperationFilterClass    parent_class;
+
+  /* returns the abyss policy used when reading the input.  if not overridden,
+   * GEGL_ABYSS_NONE is assumed.
+   */
+  GeglAbyssPolicy          (* get_abyss_policy) (GeglOperation *operation,
+                                                 const gchar   *input_pad);
+
+  gpointer                    pad[3];
 };
 
 GType gegl_operation_area_filter_get_type (void) G_GNUC_CONST;
