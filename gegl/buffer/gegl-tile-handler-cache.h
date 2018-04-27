@@ -56,6 +56,9 @@ GType             gegl_tile_handler_cache_get_type           (void) G_GNUC_CONST
 
 GeglTileHandler * gegl_tile_handler_cache_new                (void);
 
+void              gegl_tile_handler_cache_connect            (GeglTileHandlerCache *cache);
+void              gegl_tile_handler_cache_disconnect         (GeglTileHandlerCache *cache);
+
 void              gegl_tile_handler_cache_insert             (GeglTileHandlerCache *cache,
                                                               GeglTile             *tile,
                                                               gint                  x,

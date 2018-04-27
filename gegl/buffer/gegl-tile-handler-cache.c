@@ -116,9 +116,7 @@ gegl_tile_handler_cache_init (GeglTileHandlerCache *cache)
   g_queue_init (&cache->queue);
   gegl_tile_cache_init ();
 
-  g_mutex_lock (&mutex);
-  g_queue_push_tail_link (&cache_queue, &cache->link);
-  g_mutex_unlock (&mutex);
+  gegl_tile_handler_cache_connect (cache);
 }
 
 static void
@@ -184,9 +182,7 @@ gegl_tile_handler_cache_dispose (GObject *object)
 {
   GeglTileHandlerCache *cache = GEGL_TILE_HANDLER_CACHE (object);
 
-  g_mutex_lock (&mutex);
-  g_queue_unlink (&cache_queue, &cache->link);
-  g_mutex_unlock (&mutex);
+  gegl_tile_handler_cache_disconnect (cache);
 
   gegl_tile_handler_cache_reinit (cache);
 
@@ -748,6 +744,34 @@ GeglTileHandler *
 gegl_tile_handler_cache_new (void)
 {
   return g_object_new (GEGL_TYPE_TILE_HANDLER_CACHE, NULL);
+}
+
+void
+gegl_tile_handler_cache_connect (GeglTileHandlerCache *cache)
+{
+  /* join the global cache queue */
+  if (! cache->link.data)
+    {
+      cache->link.data = cache;
+
+      g_mutex_lock (&mutex);
+      g_queue_push_tail_link (&cache_queue, &cache->link);
+      g_mutex_unlock (&mutex);
+    }
+}
+
+void
+gegl_tile_handler_cache_disconnect (GeglTileHandlerCache *cache)
+{
+  /* leave the global cache queue */
+  if (cache->link.data)
+    {
+      g_mutex_lock (&mutex);
+      g_queue_unlink (&cache_queue, &cache->link);
+      g_mutex_unlock (&mutex);
+
+      cache->link.data = NULL;
+    }
 }
 
 gsize

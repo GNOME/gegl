@@ -120,6 +120,20 @@ gegl_tile_storage_remove_handler (GeglTileStorage *tile_storage,
 }
 
 static void
+gegl_tile_storage_dispose (GObject *object)
+{
+  GeglTileStorage *self = GEGL_TILE_STORAGE (object);
+
+  /* disconnect the cache before destruction, to avoid a race condition with
+   * other threads trimming the global cache through an unrelated cache
+   * handler.  see bug #795597.
+   */
+  gegl_tile_handler_cache_disconnect (self->cache);
+
+  (*G_OBJECT_CLASS (parent_class)->dispose)(object);
+}
+
+static void
 gegl_tile_storage_finalize (GObject *object)
 {
   GeglTileStorage *self = GEGL_TILE_STORAGE (object);
@@ -135,6 +149,7 @@ gegl_tile_storage_class_init (GeglTileStorageClass *class)
   GObjectClass *gobject_class = G_OBJECT_CLASS (class);
 
   parent_class                = g_type_class_peek_parent (class);
+  gobject_class->dispose      = gegl_tile_storage_dispose;
   gobject_class->finalize     = gegl_tile_storage_finalize;
 
   gegl_tile_storage_signals[CHANGED] =
