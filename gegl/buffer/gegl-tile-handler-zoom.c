@@ -180,6 +180,18 @@ get_tile (GeglTileSource *gegl_tile_source,
         {
           if ((damage >> (32 * j + 16 * i)) & 0xffff)
             {
+              /* clear the tile damage region before fetching each lower-level
+               * tile, so that if this results in the corresponding portion of
+               * the pyramid being voided, our damage region never covers the
+               * entire tile, and we're not getting dropped from the cache.
+               *
+               * note that our damage region is cleared at the end of the
+               * process by gegl_tile_unlock() anyway, so clearing it here is
+               * harmless.
+               */
+              if (tile)
+                tile->damage = 0;
+
               /* we get the tile from ourselves, to make successive rescales
                * work correctly */
               source_tile[i][j] = gegl_tile_source_get_tile (
