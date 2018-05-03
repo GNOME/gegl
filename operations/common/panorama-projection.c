@@ -593,9 +593,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   filter_class->process = process;
   operation_class->prepare = prepare;
-  operation_class->threaded = FALSE; /* XXX: figure out a way to make
-multi-threaded access to cache-work, and add a flag to operation_class about
-not wanting duplicated inputs */
+  operation_class->threaded = TRUE;
   operation_class->get_bounding_box = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
 
