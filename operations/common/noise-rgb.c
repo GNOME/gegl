@@ -38,12 +38,16 @@ property_boolean (gaussian, _("Gaussian distribution"), TRUE)
 
 property_double (red, _("Red"), 0.20)
    value_range  (0.0, 1.0)
+   ui_meta      ("label", "[! independent : non-independent-label]")
+   ui_meta      ("non-independent-label", _("Value"))
 
 property_double (green, _("Green"), 0.20)
    value_range  (0.0, 1.0)
+   ui_meta      ("visible", "independent")
 
 property_double (blue, _("Blue"), 0.20)
    value_range  (0.0, 1.0)
+   ui_meta      ("visible", "independent")
 
 property_double (alpha, _("Alpha"), 0.0)
    value_range  (0.0, 1.0)
@@ -154,7 +158,7 @@ process (GeglOperation       *operation,
       if (b == 0 || o->independent || b == 3 )
          noise_coeff = noise[b] * noise_fun (o->rand, x, y, &n) * 0.5;
 
-      if (noise[b] > 0.0)
+      if (noise_coeff > 0.0)
       {
         if (o->correlated)
         {
