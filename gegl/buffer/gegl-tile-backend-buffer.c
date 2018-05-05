@@ -41,38 +41,44 @@ enum
 
 /*  local function prototypes  */
 
-static void       gegl_tile_backend_buffer_dispose         (GObject               *object);
-static void       gegl_tile_backend_buffer_set_property    (GObject               *object,
-                                                            guint                  property_id,
-                                                            const GValue          *value,
-                                                            GParamSpec            *pspec);
-static void       gegl_tile_backend_buffer_get_property    (GObject               *object,
-                                                            guint                  property_id,
-                                                            GValue                *value,
-                                                            GParamSpec            *pspec);
+static void       gegl_tile_backend_buffer_dispose             (GObject               *object);
+static void       gegl_tile_backend_buffer_set_property        (GObject               *object,
+                                                                guint                  property_id,
+                                                                const GValue          *value,
+                                                                GParamSpec            *pspec);
+static void       gegl_tile_backend_buffer_get_property        (GObject               *object,
+                                                                guint                  property_id,
+                                                                GValue                *value,
+                                                                GParamSpec            *pspec);
 
-static gpointer   gegl_tile_backend_buffer_command         (GeglTileSource        *tile_source,
-                                                            GeglTileCommand        command,
-                                                            gint                   x,
-                                                            gint                   y,
-                                                            gint                   z,
-                                                            gpointer               data);
+static gpointer   gegl_tile_backend_buffer_command             (GeglTileSource        *tile_source,
+                                                                GeglTileCommand        command,
+                                                                gint                   x,
+                                                                gint                   y,
+                                                                gint                   z,
+                                                                gpointer               data);
 
-static GeglTile * gegl_tile_backend_buffer_get_tile        (GeglTileBackendBuffer *tile_backend_buffer,
-                                                            gint                   x,
-                                                            gint                   y,
-                                                            gint                   z);
-static void       gegl_tile_backend_buffer_set_tile        (GeglTileBackendBuffer *tile_backend_buffer,
-                                                            GeglTile              *tile,
-                                                            gint                   x,
-                                                            gint                   y,
-                                                            gint                   z);
-static gpointer   gegl_tile_backend_buffer_forward_command (GeglTileBackendBuffer *tile_backend_buffer,
-                                                            GeglTileCommand        command,
-                                                            gint                   x,
-                                                            gint                   y,
-                                                            gint                   z,
-                                                            gpointer               data);
+static GeglTile * gegl_tile_backend_buffer_get_tile            (GeglTileBackendBuffer *tile_backend_buffer,
+                                                                gint                   x,
+                                                                gint                   y,
+                                                                gint                   z);
+static void       gegl_tile_backend_buffer_set_tile            (GeglTileBackendBuffer *tile_backend_buffer,
+                                                                GeglTile              *tile,
+                                                                gint                   x,
+                                                                gint                   y,
+                                                                gint                   z);
+static gpointer   gegl_tile_backend_buffer_forward_command     (GeglTileBackendBuffer *tile_backend_buffer,
+                                                                GeglTileCommand        command,
+                                                                gint                   x,
+                                                                gint                   y,
+                                                                gint                   z,
+                                                                gpointer               data,
+                                                                gboolean               emit_changed_signal);
+
+static void       gegl_tile_backend_buffer_emit_changed_signal (GeglTileBackendBuffer *tile_backend_buffer,
+                                                                gint                   x,
+                                                                gint                   y,
+                                                                gint                   z);
 
 
 G_DEFINE_TYPE (GeglTileBackendBuffer, gegl_tile_backend_buffer, GEGL_TYPE_TILE_BACKEND)
@@ -186,9 +192,14 @@ gegl_tile_backend_buffer_command (GeglTileSource  *tile_source,
       return NULL;
 
     case GEGL_TILE_VOID:
+      return gegl_tile_backend_buffer_forward_command (tile_backend_buffer,
+                                                       command, x, y, z, data,
+                                                       TRUE);
+
     case GEGL_TILE_EXIST:
       return gegl_tile_backend_buffer_forward_command (tile_backend_buffer,
-                                                       command, x, y, z, data);
+                                                       command, x, y, z, data,
+                                                       FALSE);
 
     default:
       g_return_val_if_fail (command >= 0 && command < GEGL_TILE_LAST_COMMAND,
@@ -245,17 +256,7 @@ gegl_tile_backend_buffer_set_tile (GeglTileBackendBuffer *tile_backend_buffer,
 
   gegl_tile_unref (dest_tile);
 
-  if (buffer->changed_signal_connections)
-    {
-      GeglRectangle rect;
-
-      rect.width  = buffer->tile_width  >> z;
-      rect.height = buffer->tile_height >> z;
-      rect.x      = x * rect.width  - buffer->shift_x;
-      rect.y      = y * rect.height - buffer->shift_y;
-
-      gegl_buffer_emit_changed_signal (buffer, &rect);
-    }
+  gegl_tile_backend_buffer_emit_changed_signal (tile_backend_buffer, x, y, z);
 }
 
 static gpointer
@@ -264,7 +265,8 @@ gegl_tile_backend_buffer_forward_command (GeglTileBackendBuffer *tile_backend_bu
                                           gint                   x,
                                           gint                   y,
                                           gint                   z,
-                                          gpointer               data)
+                                          gpointer               data,
+                                          gboolean               emit_changed_signal)
 {
   GeglBuffer     *buffer = tile_backend_buffer->buffer;
   GeglTileSource *source = GEGL_TILE_SOURCE (buffer);
@@ -278,7 +280,31 @@ gegl_tile_backend_buffer_forward_command (GeglTileBackendBuffer *tile_backend_bu
   if (gegl_config_threads()>1)
     g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 
+  if (emit_changed_signal)
+    gegl_tile_backend_buffer_emit_changed_signal (tile_backend_buffer, x, y, z);
+
   return result;
+}
+
+static void
+gegl_tile_backend_buffer_emit_changed_signal (GeglTileBackendBuffer *tile_backend_buffer,
+                                              gint                   x,
+                                              gint                   y,
+                                              gint                   z)
+{
+  GeglBuffer *buffer = tile_backend_buffer->buffer;
+
+  if (buffer->changed_signal_connections)
+    {
+      GeglRectangle rect;
+
+      rect.width  = buffer->tile_width  >> z;
+      rect.height = buffer->tile_height >> z;
+      rect.x      = x * rect.width  - buffer->shift_x;
+      rect.y      = y * rect.height - buffer->shift_y;
+
+      gegl_buffer_emit_changed_signal (buffer, &rect);
+    }
 }
 
 
