@@ -91,6 +91,8 @@ property_int (me_subpel_quality, _("me-subpel-quality"), 0)
 /* remove if libavcodec_required_version is changed to > 56.41.100 */
 #if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(56,41,100)
 # define AV_CODEC_FLAG_GLOBAL_HEADER	CODEC_FLAG_GLOBAL_HEADER
+# define AV_CODEC_CAP_VARIABLE_FRAME_SIZE	CODEC_CAP_VARIABLE_FRAME_SIZE
+# define AV_CODEC_CAP_INTRA_ONLY	CODEC_CAP_INTRA_ONLY
 #endif
 
 typedef struct
