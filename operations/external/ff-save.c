@@ -638,7 +638,7 @@ add_video_stream (GeglProperties *o, AVFormatContext * oc, int codec_id)
 #endif
 
    if (oc->oformat->flags & AVFMT_GLOBALHEADER)
-     c->flags |= CODEC_FLAG_GLOBAL_HEADER;
+     c->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
   return st;
 }
