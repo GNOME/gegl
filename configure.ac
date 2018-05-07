@@ -919,10 +919,6 @@ AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 
 
-AC_SUBST(OPENRAW_CFLAGS) 
-AC_SUBST(OPENRAW_LIBS) 
-
-
 ##################
 # Check for libraw
 ##################
