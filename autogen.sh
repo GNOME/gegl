@@ -21,7 +21,7 @@ if test -z $AUTORECONF; then
         exit 1
 fi
 
-autoreconf --force --install --verbose
+autoreconf --force --install --verbose || exit 1
 
 cd $ORIGDIR
 test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"
