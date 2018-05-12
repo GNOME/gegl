@@ -1831,7 +1831,7 @@ msgid ""
 msgstr ""
 "Feu una cadena d'operacions, amb clau=parells de valors després de cada nom de "
 "l'operació per establir les propietats. I auxiliar= [ filtre d'origen ] per "
-"especificar una cadena amb una font com una cosa connectat a un encoixinat "
+"especificar una cadena amb una font com una cosa connectada a un encoixinat "
 "auxiliar."
 
 #: operations/common/grey.c:143
@@ -2630,7 +2630,7 @@ msgstr "Paper premsa"
 
 #: operations/common/newsprint.c:558
 msgid "Digital halftoning with optional modulations. "
-msgstr "Semitons digital amb modulacions."
+msgstr "Semitons digitals amb modulacions."
 
 #: operations/common/noise-cell.c:37 operations/common/noise-simplex.c:32
 msgid "The scale of the noise function"
@@ -3357,7 +3357,7 @@ msgid ""
 "Scalar threshold level (overridden if an auxiliary input buffer is provided.)."
 msgstr ""
 "Nivell del llindar de l'escala (s'anul·la si es proporciona una memòria "
-"intermèdia auxiliar d'entrada)"
+"intermèdia auxiliar d'entrada)."
 
 #: operations/common/threshold.c:130
 msgid ""
@@ -4601,7 +4601,7 @@ msgstr "Corregeix la distorsió, de barril o de coixinet, de les lents."
 
 #: operations/common-gpl3+/lens-flare.c:28
 msgid "X position"
-msgstr "X posició"
+msgstr "Posició X"
 
 #: operations/common-gpl3+/lens-flare.c:29
 msgid "X coordinates of the flare center"
