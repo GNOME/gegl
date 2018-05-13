@@ -1,33 +1,29 @@
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Aviary.pl
-# Jeśli masz jakiekolwiek uwagi odnoszące się do tłumaczenia lub chcesz
-# pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
-# gnomepl@aviary.pl
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Polish translation for gegl.
+# Copyright © 1999-2018 the gegl authors.
+# This file is distributed under the same license as the gegl package.
 # Paweł Dziekoński, 1999-2000.
 # Bartosz Kosiorek <gang65@poczta.onet.pl>, 2005-2011.
 # Piotr Zaryk <pzaryk@aviary.pl>, 2008.
 # Robert Gomulka <carramba@epf.pl>, 2008.
-# Piotr Drąg <piotrdrag@gmail.com>, 2011-2015.
-# Aviary.pl <gnomepl@aviary.pl>, 2011-2015.
+# Piotr Drąg <piotrdrag@gmail.com>, 2011-2018.
+# Aviary.pl <community-poland@mozilla.org>, 2011-2018.
+#
 #: ../operations/common/display.c:23 ../operations/external/sdl-display.c:25
 #: ../operations/external/sdl-display.c:27
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-29 19:00+0200\n"
-"PO-Revision-Date: 2015-08-29 19:01+0200\n"
+"POT-Creation-Date: 2018-05-13 21:14+0200\n"
+"PO-Revision-Date: 2018-05-13 21:15+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
-"Language-Team: Polish <gnomepl@aviary.pl>\n"
+"Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: Poland\n"
 
 #: ../bin/gegl.c:146
 #, c-format
@@ -194,6 +190,46 @@ msgstr "Użycie OpenCL"
 msgid "Maximum number of entries in the file tile backend's writer queue"
 msgstr "Maksymalna liczba wpisów w kolejce zapisu mechanizmu kafla pliku"
 
+#: ../gegl/gegl-enums.c:33
+msgid "None"
+msgstr "Brak"
+
+#: ../gegl/gegl-enums.c:34
+msgid "Clamp"
+msgstr "Zacisk"
+
+#: ../gegl/gegl-enums.c:35
+msgid "Loop"
+msgstr "Pętla"
+
+#: ../gegl/gegl-enums.c:36
+msgid "Black"
+msgstr "Czarny"
+
+#: ../gegl/gegl-enums.c:37
+msgid "White"
+msgstr "Biały"
+
+#: ../gegl/gegl-enums.c:64
+msgid "Nearest"
+msgstr "Najbliższy"
+
+#: ../gegl/gegl-enums.c:65
+msgid "Linear"
+msgstr "Liniowy"
+
+#: ../gegl/gegl-enums.c:66
+msgid "Cubic"
+msgstr "Sześcienny"
+
+#: ../gegl/gegl-enums.c:67
+msgid "NoHalo"
+msgstr "NoHalo"
+
+#: ../gegl/gegl-enums.c:68
+msgid "LoHalo"
+msgstr "LoHalo"
+
 #: ../gegl/module/geglmodule.c:147 ../gegl/module/geglmodule.c:165
 #: ../gegl/module/geglmodule.c:274 ../gegl/module/geglmodule.c:301
 #: ../gegl/module/geglmodule.c:393
@@ -312,8 +348,7 @@ msgstr "O ile zwiększyć jasność"
 msgid "Changes the light level and contrast."
 msgstr "Zmienia poziom jasności i kontrastu."
 
-#: ../operations/common/buffer-sink.c:25
-#: ../operations/common/write-buffer.c:25
+#: ../operations/common/buffer-sink.c:25 ../operations/common/write-buffer.c:25
 msgid "Buffer location"
 msgstr "Położenie buforu"
 
@@ -1166,16 +1201,15 @@ msgstr ""
 "ważenie"
 
 #: ../operations/common/gegl-buffer-load-op.c:24
-#: ../operations/common/gegl-buffer-save-op.c:24
-#: ../operations/common/load.c:25 ../operations/common/magick-load.c:26
-#: ../operations/common/open-buffer.c:25 ../operations/common/raw-load.c:27
-#: ../operations/common/save.c:25 ../operations/external/ff-load.c:25
-#: ../operations/external/jp2-load.c:25 ../operations/external/jpg-load.c:25
-#: ../operations/external/jpg-save.c:25 ../operations/external/npy-save.c:31
-#: ../operations/external/png-load.c:27 ../operations/external/png-save.c:26
-#: ../operations/external/ppm-load.c:25 ../operations/external/ppm-save.c:25
-#: ../operations/external/rgbe-load.c:26 ../operations/external/rgbe-save.c:26
-#: ../operations/external/svg-load.c:25
+#: ../operations/common/gegl-buffer-save-op.c:24 ../operations/common/load.c:25
+#: ../operations/common/magick-load.c:26 ../operations/common/open-buffer.c:25
+#: ../operations/common/raw-load.c:27 ../operations/common/save.c:25
+#: ../operations/external/ff-load.c:25 ../operations/external/jp2-load.c:25
+#: ../operations/external/jpg-load.c:25 ../operations/external/jpg-save.c:25
+#: ../operations/external/npy-save.c:31 ../operations/external/png-load.c:27
+#: ../operations/external/png-save.c:26 ../operations/external/ppm-load.c:25
+#: ../operations/external/ppm-save.c:25 ../operations/external/rgbe-load.c:26
+#: ../operations/external/rgbe-save.c:26 ../operations/external/svg-load.c:25
 #: ../operations/workshop/external/ff-save.c:30
 #: ../operations/workshop/external/gluas.c:43
 #: ../operations/workshop/rawbayer-load.c:25
@@ -1724,8 +1758,7 @@ msgstr "Chroma"
 
 #: ../operations/common/noise-cielch.c:37
 #: ../operations/common/noise-cielch.c:39 ../operations/common/noise-hsv.c:31
-#: ../operations/common/noise-hsv.c:33
-#: ../operations/workshop/color-rotate.c:48
+#: ../operations/common/noise-hsv.c:33 ../operations/workshop/color-rotate.c:48
 msgid "Hue"
 msgstr "Odcień"
 
@@ -2639,7 +2672,7 @@ msgstr "Aktywne poziomy"
 msgid "Number of levels to perform solving"
 msgstr "Liczba poziomów do wykonywania rozwiązywania"
 
-#: ../operations/external/matting-levin.c:1439
+#: ../operations/external/matting-levin.c:1440
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
@@ -2774,7 +2807,7 @@ msgid "PNG image saver (passes the buffer through, saves as a side-effect.)"
 msgstr ""
 "Zapisywanie obrazów PNG (przekazuje bufor, zapisuje jako efekt uboczny)."
 
-#: ../operations/external/ppm-load.c:380
+#: ../operations/external/ppm-load.c:385
 msgid "PPM image loader."
 msgstr "Wczytywanie obrazów PPM."
 
@@ -2906,8 +2939,7 @@ msgstr ""
 "numer bieżącej klatki, może być zmieniony, aby wywołać ponowne wczytanie "
 "obrazu."
 
-#: ../operations/external/v4l.c:31
-#: ../operations/workshop/external/ff-save.c:32
+#: ../operations/external/v4l.c:31 ../operations/workshop/external/ff-save.c:32
 msgid "FPS"
 msgstr "FPS"
 
