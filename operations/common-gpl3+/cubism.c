@@ -447,6 +447,7 @@ process (GeglOperation       *operation,
 {
   GeglProperties          *o         = GEGL_PROPERTIES (operation);
   GeglOperationAreaFilter *op_area   = GEGL_OPERATION_AREA_FILTER (operation);
+  GeglSampler             *sampler;
   GeglRectangle            boundary  = get_effective_area (operation);
   GeglRectangle            extended;
   const Babl              *format    = babl_format ("RGBA float");
@@ -460,6 +461,10 @@ process (GeglOperation       *operation,
 
   Polygon poly;
   gint    i;
+
+  sampler = gegl_buffer_sampler_new_at_level (input,
+                                              format, GEGL_SAMPLER_NEAREST,
+                                              level);
 
   extended.x      = CLAMP (result->x - op_area->left, boundary.x, boundary.x +
                            boundary.width);
@@ -534,14 +539,14 @@ process (GeglOperation       *operation,
       ix = CLAMP (x, boundary.x, boundary.x + boundary.width - 1);
       iy = CLAMP (y, boundary.y, boundary.y + boundary.height - 1);
 
-      gegl_buffer_sample_at_level (input, ix, iy, NULL, color, format, level,
-                          GEGL_SAMPLER_NEAREST, GEGL_ABYSS_NONE);
+      gegl_sampler_get (sampler, ix, iy, NULL, color, GEGL_ABYSS_NONE);
 
       fill_poly_color (&poly, &extended, &boundary, dst_buf, color);
     }
 
   gegl_buffer_set (output, &extended, 0, format, dst_buf, GEGL_AUTO_ROWSTRIDE);
 
+  g_object_unref (sampler);
   g_free (dst_buf);
   g_free (random_indices);
   g_free (gr);
