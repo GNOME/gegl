@@ -9,10 +9,12 @@ EXTRA_DIST = $(TESTS)
 check: vids images
 
 images: 
+if HAVE_GEXIV2
 	for a in *.avi *.mp4 *.ogv ;do \
             GEGL_PATH=$(top_builddir)/operations $(top_builddir)/examples/gegl-video \
             $$a -s 74 -e 74 -of $$a- ;\
         done
+endif # HAVE_GEXIV2
 
 vids: $(TESTS) $(top_builddir)/examples/frame-counter
 	GEGL_PATH=$(top_builddir)/operations $(top_builddir)/examples/frame-counter \
