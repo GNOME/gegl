@@ -82,6 +82,7 @@ property_seed (seed, _("Random seed"), rand)
 typedef struct
 {
   GeglBuffer     *output;
+  GeglSampler    *sampler;
   GRand          *gr;
   GeglProperties *o;
   float          *buffer;
@@ -145,7 +146,7 @@ put_pixel (PlasmaContext *context,
       rect.width = 1;
       rect.height = 1;
 
-      gegl_buffer_set (context->output, &rect, 0, babl_format ("R'G'B' float"),
+      gegl_buffer_set (context->output, &rect, 0, NULL /* R'G'B' float */,
                        pixel, GEGL_AUTO_ROWSTRIDE);
       return;
     }
@@ -192,7 +193,7 @@ do_plasma (PlasmaContext *context,
       rect.width = x2 - x1 + 1;
       rect.height = y2 - y1 + 1;
 
-      gegl_buffer_get (context->output, &rect, 1.0, babl_format ("R'G'B' float"),
+      gegl_buffer_get (context->output, &rect, 1.0, NULL /* R'G'B' float */,
                        context->buffer, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
       context->using_buffer = TRUE;
@@ -204,7 +205,7 @@ do_plasma (PlasmaContext *context,
 
       context->using_buffer = FALSE;
 
-      gegl_buffer_set (context->output, &rect, 0, babl_format ("R'G'B' float"),
+      gegl_buffer_set (context->output, &rect, 0, NULL /* R'G'B' float */,
                        context->buffer, GEGL_AUTO_ROWSTRIDE);
 
       return ret;
@@ -250,18 +251,10 @@ do_plasma (PlasmaContext *context,
       if (x1 == x2 && y1 == y2)
         return FALSE;
 
-      gegl_buffer_sample_at_level (context->output, x1, y1, NULL, tl,
-                          babl_format ("R'G'B' float"), level,
-                          GEGL_SAMPLER_NEAREST, GEGL_ABYSS_NONE);
-      gegl_buffer_sample_at_level (context->output, x1, y2, NULL, bl,
-                          babl_format ("R'G'B' float"), level,
-                          GEGL_SAMPLER_NEAREST, GEGL_ABYSS_NONE);
-      gegl_buffer_sample_at_level (context->output, x2, y1, NULL, tr,
-                          babl_format ("R'G'B' float"), level,
-                          GEGL_SAMPLER_NEAREST, GEGL_ABYSS_NONE);
-      gegl_buffer_sample_at_level (context->output, x2, y2, NULL, br,
-                          babl_format ("R'G'B' float"), level,
-                          GEGL_SAMPLER_NEAREST, GEGL_ABYSS_NONE);
+      gegl_sampler_get (context->sampler, x1, y1, NULL, tl, GEGL_ABYSS_NONE);
+      gegl_sampler_get (context->sampler, x1, y2, NULL, bl, GEGL_ABYSS_NONE);
+      gegl_sampler_get (context->sampler, x2, y1, NULL, tr, GEGL_ABYSS_NONE);
+      gegl_sampler_get (context->sampler, x2, y2, NULL, br, GEGL_ABYSS_NONE);
 
       ran = context->o->turbulence / (2.0 * recursion_depth);
 
@@ -350,6 +343,8 @@ process (GeglOperation       *operation,
   context = g_new (PlasmaContext, 1);
   context->o = GEGL_PROPERTIES (operation);
   context->output = output;
+  context->sampler = gegl_buffer_sampler_new_at_level (
+    context->output, babl_format ("R'G'B' float"), GEGL_SAMPLER_NEAREST, level);
   context->buffer = g_malloc (TILE_SIZE * TILE_SIZE * 3 * sizeof (gfloat));
   context->using_buffer = FALSE;
 
@@ -371,9 +366,9 @@ process (GeglOperation       *operation,
   while (!do_plasma (context, result->x, result->y, x-1, y-1, depth, 0, level))
     depth++;
 
-  gegl_buffer_sample_cleanup (context->output);
   g_rand_free (context->gr);
   g_free (context->buffer);
+  g_object_unref (context->sampler);
   g_free (context);
 
   return TRUE;
