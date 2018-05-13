@@ -415,8 +415,11 @@ GeglBuffer *    gegl_buffer_dup               (GeglBuffer       *buffer);
  * GEGL_ABYSS_LOOP (buffer contents are tiled if outside of the abyss rectangle).
  *
  * Query interpolate pixel values at a given coordinate using a specified form
- * of interpolation. The samplers used cache for a small neighbourhood of the
- * buffer for more efficient access.
+ * of interpolation.
+ *
+ * If you intend to take multiple samples, consider using
+ * gegl_buffer_sampler_new_at_level() to create a sampler object instead, which
+ * is more efficient.
  */
 
 void              gegl_buffer_sample_at_level (GeglBuffer       *buffer,
@@ -449,8 +452,11 @@ void              gegl_buffer_sample_at_level (GeglBuffer       *buffer,
  * GEGL_ABYSS_LOOP (buffer contents are tiled if outside of the abyss rectangle).
  *
  * Query interpolate pixel values at a given coordinate using a specified form
- * of interpolation. The samplers used cache for a small neighbourhood of the
- * buffer for more efficient access.
+ * of interpolation.
+ *
+ * If you intend to take multiple samples, consider using
+ * gegl_buffer_sampler_new() to create a sampler object instead, which is more
+ * efficient.
  */
 void              gegl_buffer_sample          (GeglBuffer       *buffer,
                                                gdouble           x,
@@ -467,11 +473,12 @@ void              gegl_buffer_sample          (GeglBuffer       *buffer,
  * gegl_buffer_sample_cleanup:
  * @buffer: the GeglBuffer to sample from
  *
- * Clean up resources used by sampling framework of buffer (will be freed
- * automatically later when the buffer is destroyed, for long lived buffers
- * cleaning up the sampling infrastructure when it has been used for its
- * purpose will sometimes be more efficient).
+ * Clean up resources used by sampling framework of buffer.
+ *
+ * Deprecated: 0.4.2: This function has no effect. It is not necessary to call
+ * it after using gegl_buffer_sample() or gegl_buffer_sample_at_level().
  */
+G_DEPRECATED
 void            gegl_buffer_sample_cleanup    (GeglBuffer *buffer);
 
 typedef void (*GeglSamplerGetFun)  (GeglSampler     *self,

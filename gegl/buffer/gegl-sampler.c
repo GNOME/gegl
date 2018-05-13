@@ -414,8 +414,6 @@ gegl_sampler_gtype_from_enum (GeglSamplerType sampler_type)
     }
 }
 
-static GMutex gegl_buffer_sampler_mutex = {0,};
-
 void
 gegl_buffer_sample_at_level (GeglBuffer       *buffer,
                              gdouble           x,
@@ -427,55 +425,17 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
                              GeglSamplerType   sampler_type,
                              GeglAbyssPolicy   repeat_mode)
 {
-  /*
-  if (sampler_type == GEGL_SAMPLER_NEAREST && format == buffer->soft_format)
-  {
-    GeglRectangle rect = {floorf (x), floorf(y), 1, 1};
-    gegl_buffer_get (buffer, &rect, 1, NULL, dest, GEGL_AUTO_ROWSTRIDE, repeat_mode);
-    return;
-  }*/
+  GeglSampler *sampler;
 
   if (!format)
     format = buffer->soft_format;
 
-  if (gegl_cl_is_accelerated ())
-  {
-    GeglRectangle rect = {floorf (x), floorf(y), 1, 1};
-    gegl_buffer_cl_cache_flush (buffer, &rect);
-  }
+  sampler = gegl_buffer_sampler_new_at_level (buffer,
+                                              format, sampler_type, level);
 
-  /* unset the cached sampler if it dosn't match the needs */
-  if (buffer->sampler == NULL ||
-      (buffer->sampler != NULL &&
-          (buffer->sampler_type != sampler_type || buffer->sampler_format != format)))
-    {
-      gboolean  threaded = gegl_config_threads () > 1;
-      GType desired_type = gegl_sampler_gtype_from_enum (sampler_type);
+  gegl_sampler_get (sampler, x, y, scale, dest, repeat_mode);
 
-      if (threaded)
-        g_mutex_lock (&gegl_buffer_sampler_mutex);
-
-      if (buffer->sampler)
-      {
-        g_object_unref (buffer->sampler);
-        buffer->sampler = NULL;
-        buffer->sampler_type = 0;
-      }
-
-      buffer->sampler_type = sampler_type;
-      buffer->sampler = g_object_new (desired_type,
-                                      "buffer", buffer,
-                                      "format", format,
-                                      "level", level,
-                                      NULL);
-      buffer->sampler_format = format;
-      gegl_sampler_prepare (buffer->sampler);
-
-      if (threaded)
-        g_mutex_unlock (&gegl_buffer_sampler_mutex);
-    }
-
-  buffer->sampler->get(buffer->sampler, x, y, scale, dest, repeat_mode);
+  g_object_unref (sampler);
 }
 
 
@@ -495,26 +455,10 @@ gegl_buffer_sample (GeglBuffer       *buffer,
 void
 gegl_buffer_sample_cleanup (GeglBuffer *buffer)
 {
-  gboolean threaded;
-
-  g_return_if_fail (GEGL_IS_BUFFER (buffer));
-
-  if (! buffer->sampler)
-    return;
-
-  threaded = gegl_config_threads ()>1;
-
-  if (threaded)
-    g_mutex_lock (&gegl_buffer_sampler_mutex);
-
-  if (buffer->sampler)
-    {
-      g_object_unref (buffer->sampler);
-      buffer->sampler = NULL;
-    }
-
-  if (threaded)
-    g_mutex_unlock (&gegl_buffer_sampler_mutex);
+  /* this is a nop.  we used to have a per-buffer cached sampler, for use by
+   * gegl_buffer_sample[_at_level](), which this function would clear, but we
+   * don't anymore.
+   */
 }
 
 GeglSampler *

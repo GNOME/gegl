@@ -378,8 +378,6 @@ gegl_buffer_dispose (GObject *object)
   GeglBuffer  *buffer  = GEGL_BUFFER (object);
   GeglTileHandler *handler = GEGL_TILE_HANDLER (object);
 
-  gegl_buffer_sample_cleanup (buffer);
-
   if (gegl_cl_is_accelerated ())
     gegl_buffer_cl_cache_invalidate (GEGL_BUFFER (object), NULL);
 
