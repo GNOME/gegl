@@ -3907,7 +3907,7 @@ msgstr ""
 #: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/workshop/color-to-alpha-plus.c:30
 msgid "The color to make transparent."
-msgstr "Colr per fer transparent."
+msgstr "Color per fer transparent."
 
 #: operations/common-gpl3+/color-to-alpha.c:254
 msgid "Color to Alpha"
@@ -7258,7 +7258,7 @@ msgstr "Patró de l'angle de gir"
 
 #: operations/workshop/bayer-matrix.c:57
 msgid "Reflect the pattern horizontally"
-msgstr "Reflexa el patró horitzontalment"
+msgstr "Reflecteix el patró horitzontalment"
 
 #: operations/workshop/bayer-matrix.c:60
 msgid "Pattern amplitude (logarithmic scale)"
