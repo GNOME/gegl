@@ -331,7 +331,7 @@ lens_distort_func (gfloat              *src_buf,
                    LensValues          *lens,
                    gint                 xx,
                    gint                 yy,
-                   GeglBuffer          *input,
+                   GeglSampler         *sampler,
                    gfloat              *background,
                    gint                 level)
 {
@@ -381,11 +381,8 @@ lens_distort_func (gfloat              *src_buf,
                 }
               else
                 {
-                  gegl_buffer_sample_at_level (input, x, y, NULL, temp,
-                                      babl_format ("RGBA float"),
-                                      level,
-                                      GEGL_SAMPLER_LINEAR,
-                                      GEGL_ABYSS_CLAMP);
+                  gegl_sampler_get (sampler,
+                                    x, y, NULL, temp, GEGL_ABYSS_CLAMP);
                 }
 
               for (b = 0; b < 4; b++)
@@ -409,20 +406,25 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglProperties *o = GEGL_PROPERTIES (operation);
+  GeglProperties *o      = GEGL_PROPERTIES (operation);
+  const Babl     *format = babl_format ("RaGaBaA float");
+  GeglSampler    *sampler;
   LensValues      lens;
   GeglRectangle   boundary;
   gint            i, j;
   gfloat         *src_buf, *dst_buf;
   gfloat          background[4];
 
+  sampler  = gegl_buffer_sampler_new_at_level (input,
+                                               babl_format ("RGBA float"),
+                                               GEGL_SAMPLER_LINEAR, level);
   boundary = *gegl_operation_source_get_bounding_box (operation, "input");
   lens     =  lens_setup_calc (o, boundary);
 
   src_buf = g_new0 (gfloat, SQR (MAX_WH) * 4);
   dst_buf = g_new0 (gfloat, SQR (CHUNK_SIZE) * 4);
 
-  gegl_color_get_pixel (o->background, babl_format ("RaGaBaA float"), background);
+  gegl_color_get_pixel (o->background, format, background);
 
   for (j = 0; (j-1) * CHUNK_SIZE < result->height; j++)
     for (i = 0; (i-1) * CHUNK_SIZE < result->width; i++)
@@ -444,22 +446,24 @@ process (GeglOperation       *operation,
 
         clamp_area (&area, lens.centre_x, lens.centre_y);
 
-        gegl_buffer_get (input, &area, 1.0, babl_format ("RaGaBaA float"), src_buf,
+        gegl_buffer_get (input, &area, 1.0, format, src_buf,
                          GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
 
         for (y = chunked_result.y; y < chunked_result.y + chunked_result.height; y++)
           for (x = chunked_result.x; x < chunked_result.x + chunked_result.width; x++)
             {
               lens_distort_func (src_buf, dst_buf, &area, &chunked_result, &boundary,
-                                 &lens, x, y, input, background, level);
+                                 &lens, x, y, sampler, background, level);
             }
 
-        gegl_buffer_set (output, &chunked_result, 0, babl_format ("RaGaBaA float"),
+        gegl_buffer_set (output, &chunked_result, 0, format,
                          dst_buf, GEGL_AUTO_ROWSTRIDE);
       }
 
   g_free (dst_buf);
   g_free (src_buf);
+
+  g_object_unref (sampler);
 
   return TRUE;
 }
