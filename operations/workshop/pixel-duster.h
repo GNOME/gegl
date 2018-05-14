@@ -38,6 +38,9 @@ typedef struct
   GeglBuffer    *output;
   GeglRectangle  in_rect;
   GeglRectangle  out_rect;
+  GeglSampler   *in_sampler_yu8;
+  GeglSampler   *in_sampler_f;
+  GeglSampler   *in_sampler_u8;
   int            max_k;
   int            seek_radius;
   int            minimum_neighbors;
@@ -215,6 +218,15 @@ static PixelDuster * pixel_duster_new (GeglBuffer *input,
   ret->out_rect = *out_rect;
   ret->scale_x  = scale_x;
   ret->scale_y  = scale_y;
+
+  ret->in_sampler_yu8 = gegl_buffer_sampler_new (input, babl_format ("Y'aA u8"),
+                                                 GEGL_SAMPLER_NEAREST);
+  ret->in_sampler_u8 = gegl_buffer_sampler_new (input,
+                                                babl_format ("R'G'B'aA u8"),
+                                                GEGL_SAMPLER_NEAREST);
+  ret->in_sampler_f = gegl_buffer_sampler_new (input,
+                                               babl_format ("RGBA float"),
+                                               GEGL_SAMPLER_NEAREST);
   for (int i = 0; i < 4096; i++)
     ret->ht[i] = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
   ret->probes_ht = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
@@ -243,6 +255,11 @@ static void pixel_duster_destroy (PixelDuster *duster)
     g_hash_table_destroy (duster->ht[i]);
   }
   fprintf (stderr, "\n");
+
+  g_object_unref (duster->in_sampler_yu8);
+  g_object_unref (duster->in_sampler_u8);
+  g_object_unref (duster->in_sampler_f);
+
   g_free (duster);
 }
 
@@ -250,24 +267,23 @@ static void pixel_duster_destroy (PixelDuster *duster)
 static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, guchar *dst)
 {
   static const Babl *format = NULL;
-  static const Babl *yformat = NULL;
   guchar lum[8];
   int bdir, maxlum;
   uint64_t hist3dmask=0;
 
   if (!format){
     format = babl_format ("R'G'B'A u8");
-    yformat = babl_format ("Y'aA u8");
   }
+
 #define PIXDUST_DIR_INVARIANT 1
 #if PIXDUST_DIR_INVARIANT==1
   /* figure out which of the up/down/left/right pixels are brightest,
      using premultiplied alpha - do punish blank spots  */
 
-  gegl_buffer_sample (input, x + 1, y + 0, NULL, &lum[0], yformat, GEGL_SAMPLER_NEAREST, 0);
-  gegl_buffer_sample (input, x - 1, y + 0, NULL, &lum[2], yformat, GEGL_SAMPLER_NEAREST, 0);
-  gegl_buffer_sample (input, x + 0, y + 1, NULL, &lum[4], yformat, GEGL_SAMPLER_NEAREST, 0);
-  gegl_buffer_sample (input, x + 0, y - 1, NULL, &lum[6], yformat, GEGL_SAMPLER_NEAREST, 0);
+  gegl_sampler_get (duster->in_sampler_yu8, x + 1, y + 0, NULL, &lum[0], 0);
+  gegl_sampler_get (duster->in_sampler_yu8, x - 1, y + 0, NULL, &lum[2], 0);
+  gegl_sampler_get (duster->in_sampler_yu8, x + 0, y + 1, NULL, &lum[4], 0);
+  gegl_sampler_get (duster->in_sampler_yu8, x + 0, y - 1, NULL, &lum[6], 0);
 
  bdir = 0;
 
@@ -301,11 +317,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, 
   {
     int dx, dy;
     duster_idx_to_x_y (duster, i, bdir, &dx, &dy);
-    gegl_buffer_sample (input,
-                        x + dx,
-                        y + dy,
-                        NULL, &dst[i*4], format,
-                        GEGL_SAMPLER_NEAREST, 0);
+    gegl_sampler_get (duster->in_sampler_u8, x + dx, y + dy, NULL, &dst[i*4], 0);
     {
       int hist_r = dst[i*4+0]/80;
       int hist_g = dst[i*4+1]/80;
@@ -318,20 +330,12 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, 
   for (int i = 0; i <= NEIGHBORHOOD; i++)
   {
   guchar tmp[4];
-  gegl_buffer_sample (input,
-                      x,
-                      y,
-                      NULL, &tmp[0], format,
-                      GEGL_SAMPLER_NEAREST, 0);
+  gegl_sampler_get (duster->in_sampler_u8, x, y, NULL, &tmp[0], 0);
   for (int i = 0; i <= NEIGHBORHOOD; i++)
   {
     int dx, dy;
     duster_idx_to_x_y (duster, i, bdir, &dx, &dy);
-    gegl_buffer_sample (input,
-                        x + dx,
-                        y + dy,
-                        NULL, &dst[i*4], format,
-                        GEGL_SAMPLER_NEAREST, 0);
+    gegl_sampler_get (duster->in_sampler_u8, x + dx, y + dy, NULL, &dst[i*4], 0);
 
     if (i==0)
       for (int j = 0; j < 3; j++)
@@ -345,6 +349,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, int x, int y, 
 #endif
  dst[0] = bdir;
  *((uint64_t*)(&dst[4*NEIGHBORHOOD])) = hist3dmask;
+
 }
 
 static inline int u8_rgb_diff (guchar *a, guchar *b)
@@ -805,8 +810,8 @@ static inline void pixel_duster_fill (PixelDuster *duster)
 
           for (gint i = 0; i < probe->k; i++)
           {
-            gegl_buffer_sample (duster->input, probe->source_x[i], probe->source_y[i],
-                                NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
+            gegl_sampler_get (duster->in_sampler_f, probe->source_x[i], probe->source_y[i],
+                                NULL, &rgba[0], 0);
             for (gint c = 0; c < 4; c++)
               sum_rgba[c] += rgba[c];
           }

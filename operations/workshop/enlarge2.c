@@ -74,7 +74,8 @@ prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", format);
 }
 
-static void scaled_copy (GeglBuffer *in,
+static void scaled_copy (PixelDuster *duster,
+                         GeglBuffer *in,
                          GeglBuffer *out,
                          gfloat      scale)
 {
@@ -97,7 +98,7 @@ static void scaled_copy (GeglBuffer *in,
       {
         GeglRectangle r = {x * scale , y * scale, 1, 1};
         gfloat rgba[4];
-        gegl_buffer_sample (in, x, y, NULL, &rgba[0], format, GEGL_SAMPLER_NEAREST, 0);
+        gegl_sampler_get (duster->in_sampler_f, x, y, NULL, &rgba[0], 0);
         gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
       }
 }
@@ -119,7 +120,8 @@ static void remove_grid (GeglBuffer *in,
       }
 }
 
-static void remove_deviant (GeglBuffer *in,
+static void remove_deviant (PixelDuster *duster,
+                            GeglBuffer *in,
                             GeglBuffer *out,
                             gfloat      scale)
 {
@@ -134,7 +136,7 @@ static void remove_deviant (GeglBuffer *in,
         gfloat rgba_in[4] = {0,0,0,0};
         gfloat rgba_empty[4] = {0,0,0,0};
         gfloat rgba_out[4] = {0,0,0,0};
-        gegl_buffer_sample (in, x / scale, y / scale, NULL, &rgba_in[0], format, GEGL_SAMPLER_NEAREST, 0);
+        gegl_sampler_get (duster->in_sampler_f, x / scale, y / scale, NULL, &rgba_in[0], 0);
         gegl_buffer_sample (out, x, y, NULL, &rgba_out[0], format, GEGL_SAMPLER_NEAREST, 0);
 
         if (POW2(rgba_in[0]-rgba_out[0])+
@@ -158,7 +160,6 @@ process (GeglOperation       *operation,
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
   PixelDuster    *duster;
 
-  scaled_copy (input, output, o->scale);
   duster  = pixel_duster_new (input, output,
                               &in_rect, &out_rect,
                               o->seek_distance,
@@ -170,16 +171,17 @@ process (GeglOperation       *operation,
                               o->scale,
                               o->scale,
                               NULL);
+  scaled_copy (duster, input, output, o->scale);
   seed_db (duster);
   pixel_duster_add_probes_for_transparent (duster);
   pixel_duster_fill (duster);
-  remove_deviant (input, output, o->scale);
+  remove_deviant (duster, input, output, o->scale);
   remove_grid (input, output, o->scale);
   pixel_duster_remove_probes (duster);
   pixel_duster_add_probes_for_transparent (duster);
   pixel_duster_fill (duster);
 
-  remove_deviant (input, output, o->scale);
+  remove_deviant (duster, input, output, o->scale);
   pixel_duster_remove_probes (duster);
   pixel_duster_add_probes_for_transparent (duster);
   pixel_duster_fill (duster);

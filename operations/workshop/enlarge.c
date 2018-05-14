@@ -64,7 +64,8 @@ prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", format);
 }
 
-static void scaled_copy (GeglBuffer *in,
+static void scaled_copy (PixelDuster *duster,
+                         GeglBuffer *in,
                          GeglBuffer *out,
                          gfloat      scale)
 {
@@ -78,9 +79,8 @@ static void scaled_copy (GeglBuffer *in,
       {
         float rgba[4];
         GeglRectangle r = {x, y, 1, 1};
-        gegl_buffer_sample (in, x / scale, y / scale, NULL,
-                            &rgba[0], format,
-                            GEGL_SAMPLER_NEAREST, 0);
+        gegl_sampler_get (duster->in_sampler_f, x / scale, y / scale, NULL,
+                          &rgba[0], 0);
         gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
       }
 }
@@ -91,7 +91,7 @@ static void improve (PixelDuster *duster,
                      gfloat      scale)
 {
   GeglRectangle rect;
-  const Babl *format = babl_format ("R'G'B'A float");
+  const Babl *format = babl_format ("RGBA float");
   gint x, y;
 
   rect = *gegl_buffer_get_extent (out);
@@ -118,7 +118,8 @@ static void improve (PixelDuster *duster,
           gfloat rgba[4*MAX_K];
 
           for (int j = 0; j < MAX_K; j++)
-            gegl_buffer_sample (duster->input, probe->source_x[j], probe->source_y[j],  NULL, &rgba[j*4], format, GEGL_SAMPLER_NEAREST, 0);
+            gegl_sampler_get (duster->in_sampler_f, probe->source_x[j],
+                              probe->source_y[j], NULL, &rgba[j*4], 0);
 
 
           for (int j = 1; j < probe->k; j++)
@@ -176,7 +177,6 @@ process (GeglOperation       *operation,
   GeglRectangle in_rect = *gegl_buffer_get_extent (input);
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
   PixelDuster    *duster;
-  scaled_copy (input, output, o->scale);
   duster  = pixel_duster_new (input, output,
                               &in_rect, &out_rect,
                               o->seek_distance,
@@ -185,6 +185,7 @@ process (GeglOperation       *operation,
                               o->scale,
                               o->scale,
                               NULL);
+  scaled_copy (duster, input, output, o->scale);
   seed_db (duster);
   improve (duster, input, output, o->scale);
   pixel_duster_destroy (duster);
