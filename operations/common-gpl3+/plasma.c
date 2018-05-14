@@ -82,7 +82,6 @@ property_seed (seed, _("Random seed"), rand)
 typedef struct
 {
   GeglBuffer     *output;
-  GeglSampler    *sampler;
   GRand          *gr;
   GeglProperties *o;
   float          *buffer;
@@ -132,6 +131,40 @@ add_random (GRand  *gr,
 }
 
 static void
+get_pixel (PlasmaContext *context,
+           gfloat        *pixel,
+           gint           x,
+           gint           y)
+{
+  if (G_UNLIKELY (!context->using_buffer))
+    {
+      GeglRectangle rect;
+
+      rect.x = x;
+      rect.y = y;
+      rect.width = 1;
+      rect.height = 1;
+
+      gegl_buffer_get (context->output, &rect, 1.0, NULL /* R'G'B' float */,
+                       pixel, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+    }
+  else
+    {
+      float *ptr;
+      gint index;
+
+      index = ((y - context->buffer_y) * context->buffer_width +
+               x - context->buffer_x);
+
+      ptr = context->buffer + index * 3;
+
+      *pixel++ = *ptr++;
+      *pixel++ = *ptr++;
+      *pixel++ = *ptr++;
+    }
+}
+
+static void
 put_pixel (PlasmaContext *context,
            gfloat        *pixel,
            gint           x,
@@ -148,7 +181,6 @@ put_pixel (PlasmaContext *context,
 
       gegl_buffer_set (context->output, &rect, 0, NULL /* R'G'B' float */,
                        pixel, GEGL_AUTO_ROWSTRIDE);
-      return;
     }
   else
     {
@@ -173,8 +205,7 @@ do_plasma (PlasmaContext *context,
            gint           x2,
            gint           y2,
            gint           plasma_depth,
-           gint           recursion_depth,
-           gint           level)
+           gint           recursion_depth)
 {
   gfloat tl[3], ml[3], bl[3], mt[3], mm[3], mb[3], tr[3], mr[3], br[3];
   gfloat tmp[3];
@@ -201,7 +232,7 @@ do_plasma (PlasmaContext *context,
       context->buffer_y = y1;
       context->buffer_width = x2 - x1 + 1;
 
-      ret = do_plasma (context, x1, y1, x2, y2, plasma_depth, recursion_depth, level);
+      ret = do_plasma (context, x1, y1, x2, y2, plasma_depth, recursion_depth);
 
       context->using_buffer = FALSE;
 
@@ -251,10 +282,10 @@ do_plasma (PlasmaContext *context,
       if (x1 == x2 && y1 == y2)
         return FALSE;
 
-      gegl_sampler_get (context->sampler, x1, y1, NULL, tl, GEGL_ABYSS_NONE);
-      gegl_sampler_get (context->sampler, x1, y2, NULL, bl, GEGL_ABYSS_NONE);
-      gegl_sampler_get (context->sampler, x2, y1, NULL, tr, GEGL_ABYSS_NONE);
-      gegl_sampler_get (context->sampler, x2, y2, NULL, br, GEGL_ABYSS_NONE);
+      get_pixel (context, tl, x1, y1);
+      get_pixel (context, bl, x1, y2);
+      get_pixel (context, tr, x2, y1);
+      get_pixel (context, br, x2, y2);
 
       ran = context->o->turbulence / (2.0 * recursion_depth);
 
@@ -311,14 +342,14 @@ do_plasma (PlasmaContext *context,
   if (x1 < x2 || y1 < y2)
     {
       /* Top left. */
-      do_plasma (context, x1, y1, xm, ym, plasma_depth - 1, recursion_depth + 1, level);
+      do_plasma (context, x1, y1, xm, ym, plasma_depth - 1, recursion_depth + 1);
       /* Bottom left. */
-      do_plasma (context, x1, ym, xm, y2, plasma_depth - 1, recursion_depth + 1, level);
+      do_plasma (context, x1, ym, xm, y2, plasma_depth - 1, recursion_depth + 1);
       /* Top right. */
-      do_plasma (context, xm, y1, x2, ym, plasma_depth - 1, recursion_depth + 1, level);
+      do_plasma (context, xm, y1, x2, ym, plasma_depth - 1, recursion_depth + 1);
       /* Bottom right. */
       return do_plasma (context, xm, ym, x2, y2,
-                        plasma_depth - 1, recursion_depth + 1, level);
+                        plasma_depth - 1, recursion_depth + 1);
     }
 
   return TRUE;
@@ -343,8 +374,6 @@ process (GeglOperation       *operation,
   context = g_new (PlasmaContext, 1);
   context->o = GEGL_PROPERTIES (operation);
   context->output = output;
-  context->sampler = gegl_buffer_sampler_new_at_level (
-    context->output, babl_format ("R'G'B' float"), GEGL_SAMPLER_NEAREST, level);
   context->buffer = g_malloc (TILE_SIZE * TILE_SIZE * 3 * sizeof (gfloat));
   context->using_buffer = FALSE;
 
@@ -357,18 +386,17 @@ process (GeglOperation       *operation,
 
   context->gr = g_rand_new_with_seed (context->o->seed);
 
-  do_plasma (context, result->x, result->y, x-1, y-1, -1, 0, level);
+  do_plasma (context, result->x, result->y, x-1, y-1, -1, 0);
 
   /*
    * Now we recurse through the images, going deeper each time
    */
   depth = 1;
-  while (!do_plasma (context, result->x, result->y, x-1, y-1, depth, 0, level))
+  while (!do_plasma (context, result->x, result->y, x-1, y-1, depth, 0))
     depth++;
 
   g_rand_free (context->gr);
   g_free (context->buffer);
-  g_object_unref (context->sampler);
   g_free (context);
 
   return TRUE;
@@ -417,7 +445,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Plasma"),
     "categories",         "render",
     "position-dependent", "true",
-    "reference-hash",     "06418af5f015f21fab965ecf439d95f7",
+    "reference-hash",     "f5b2ec90eaf0b44d9b06130b3abb73c9",
     "license",            "GPL3+",
     "description", _("Creates an image filled with a plasma effect."),
     NULL);
