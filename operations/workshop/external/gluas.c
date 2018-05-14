@@ -58,6 +58,9 @@ typedef struct Priv
   GeglBuffer *in_drawable;
   GeglBuffer *aux_drawable;
   GeglBuffer *out_drawable;
+
+  GeglSampler *in_sampler;
+  GeglSampler *aux_sampler;
   const Babl *rgba_float;
 
   gint        bx1, by1;
@@ -173,6 +176,14 @@ drawable_lua_process (GeglOperation       *op,
     p.in_drawable  = drawable;
     p.aux_drawable = aux;
     p.out_drawable = result;
+    if (drawable)
+      p.in_sampler = gegl_buffer_sampler_new (drawable, p.rgba_float, GEGL_SAMPLER_NEAREST);
+    else
+      p.in_sampler = NULL;
+    if (aux)
+      p.aux_sampler = gegl_buffer_sampler_new (aux, p.rgba_float, GEGL_SAMPLER_NEAREST);
+    else
+      p.aux_sampler = NULL;
 
     lua_pushnumber (L, (double) p.bx1);
     lua_setglobal (L, "bound_x0");
@@ -212,6 +223,10 @@ drawable_lua_process (GeglOperation       *op,
       if (status != 0)
         gegl_node_set (op->node, "error", lua_tostring (L, -1), NULL);
     }
+  if (p.in_sampler)
+    g_object_unref (p.in_sampler);
+  if (p.aux_sampler)
+    g_object_unref (p.aux_sampler);
 }
 
 #if 0
@@ -253,9 +268,8 @@ get_rgba_pixel (void       *data,
       gint i;
       if (!p->in_drawable)
         return;
-      gegl_buffer_sample (p->in_drawable, x, y, NULL, buf,
-                          p->rgba_float,
-                          GEGL_SAMPLER_NEAREST, GEGL_ABYSS_NONE);
+      gegl_sampler_get (p->in_sampler, x, y, NULL, buf,
+                        GEGL_ABYSS_NONE);
       for (i = 0; i < 4; i++)
         pixel[i] = buf[i];
     }
@@ -264,9 +278,8 @@ get_rgba_pixel (void       *data,
       gint i;
       if (!p->aux_drawable)
         return;
-      gegl_buffer_sample (p->aux_drawable, x, y, NULL, buf,
-                          p->rgba_float,
-                          GEGL_SAMPLER_NEAREST, GEGL_ABYSS_NONE);
+      gegl_sampler_get (p->aux_sampler, x, y, NULL, buf,
+                        GEGL_ABYSS_NONE);
       for (i = 0; i < 4; i++)
         pixel[i] = buf[i];
     }
