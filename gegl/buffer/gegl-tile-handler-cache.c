@@ -126,21 +126,10 @@ drop_hot_tile (GeglTile *tile)
 
   if (storage)
     {
-#if 0 /* the storage's mutex should already be locked at this point */
-      if (gegl_config_threads()>1)
-        g_rec_mutex_lock (&storage->mutex);
-#endif
+      tile = gegl_tile_storage_try_steal_hot_tile (storage, tile);
 
-      if (storage->hot_tile == tile)
-        {
-          gegl_tile_unref (storage->hot_tile);
-          storage->hot_tile = NULL;
-        }
-
-#if 0
-      if (gegl_config_threads()>1)
-        g_rec_mutex_unlock (&storage->mutex);
-#endif
+      if (tile)
+        gegl_tile_unref (tile);
     }
 }
 

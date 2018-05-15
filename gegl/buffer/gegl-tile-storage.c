@@ -26,6 +26,7 @@
 #include "gegl-tile-handler-empty.h"
 #include "gegl-tile-handler-zoom.h"
 #include "gegl-tile-handler-private.h"
+#include "gegl-config.h"
 
 
 G_DEFINE_TYPE (GeglTileStorage, gegl_tile_storage, GEGL_TYPE_TILE_HANDLER_CHAIN)
@@ -117,6 +118,76 @@ gegl_tile_storage_remove_handler (GeglTileStorage *tile_storage,
   g_object_unref (handler);
 
   gegl_tile_handler_chain_bind (chain);
+}
+
+GeglTile *
+gegl_tile_storage_steal_hot_tile (GeglTileStorage *tile_storage)
+{
+  GeglTile *tile;
+
+  if (gegl_config_threads()>1)
+    {
+      tile = g_atomic_pointer_get (&tile_storage->hot_tile);
+
+      if (tile &&
+          ! g_atomic_pointer_compare_and_exchange (&tile_storage->hot_tile,
+                                                   tile, NULL))
+        {
+          tile = NULL;
+        }
+    }
+  else
+    {
+      tile                   = tile_storage->hot_tile;
+      tile_storage->hot_tile = NULL;
+    }
+
+  return tile;
+}
+
+GeglTile *
+gegl_tile_storage_try_steal_hot_tile (GeglTileStorage *tile_storage,
+                                      GeglTile        *tile)
+{
+  if (gegl_config_threads()>1)
+    {
+      if (tile &&
+          ! g_atomic_pointer_compare_and_exchange (&tile_storage->hot_tile,
+                                                   tile, NULL))
+        {
+          tile = NULL;
+        }
+    }
+  else
+    {
+      if (tile_storage->hot_tile == tile)
+        tile_storage->hot_tile = NULL;
+      else
+        tile                   = NULL;
+    }
+
+  return tile;
+}
+
+void
+gegl_tile_storage_take_hot_tile (GeglTileStorage *tile_storage,
+                                 GeglTile        *tile)
+{
+  if (gegl_config_threads()>1)
+    {
+      if (! g_atomic_pointer_compare_and_exchange (&tile_storage->hot_tile,
+                                                   NULL, tile))
+        {
+          gegl_tile_unref (tile);
+        }
+    }
+  else
+    {
+      if (! tile_storage->hot_tile)
+        tile_storage->hot_tile = tile;
+      else
+        gegl_tile_unref (tile);
+    }
 }
 
 static void

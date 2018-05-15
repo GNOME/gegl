@@ -358,18 +358,12 @@ void
 _gegl_buffer_drop_hot_tile (GeglBuffer *buffer)
 {
   GeglTileStorage *storage = buffer->tile_storage;
+  GeglTile        *tile;
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_lock (&storage->mutex);
+  tile = gegl_tile_storage_steal_hot_tile (storage);
 
-  if (storage->hot_tile)
-    {
-      gegl_tile_unref (storage->hot_tile);
-      storage->hot_tile = NULL;
-    }
-
-  if (gegl_config_threads()>1)
-    g_rec_mutex_unlock (&storage->mutex);
+  if (tile)
+    gegl_tile_unref (tile);
 }
 
 static void

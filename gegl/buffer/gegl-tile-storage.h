@@ -65,4 +65,10 @@ gegl_tile_storage_new (GeglTileBackend *backend);
 void gegl_tile_storage_add_handler (GeglTileStorage *tile_storage, GeglTileHandler *handler);
 void gegl_tile_storage_remove_handler (GeglTileStorage *tile_storage, GeglTileHandler *handler);
 
+GeglTile * gegl_tile_storage_steal_hot_tile     (GeglTileStorage *tile_storage);
+GeglTile * gegl_tile_storage_try_steal_hot_tile (GeglTileStorage *tile_storage,
+                                                 GeglTile        *tile);
+void       gegl_tile_storage_take_hot_tile      (GeglTileStorage *tile_storage,
+                                                 GeglTile        *tile);
+
 #endif

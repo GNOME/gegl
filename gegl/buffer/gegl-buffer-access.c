@@ -122,20 +122,21 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
     gint indice_x    = gegl_tile_indice (tiledx, tile_width);
     gint indice_y    = gegl_tile_indice (tiledy, tile_height);
 
-    GeglTile *tile = buffer->tile_storage->hot_tile;
+    GeglTile *tile = gegl_tile_storage_steal_hot_tile (buffer->tile_storage);
 
     if (!(tile &&
           tile->x == indice_x &&
           tile->y == indice_y))
       {
         if (gegl_config_threads()>1)
-         g_rec_mutex_lock (&buffer->tile_storage->mutex);
+          g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
-        _gegl_buffer_drop_hot_tile (buffer);
+        if (tile)
+          gegl_tile_unref (tile);
+
         tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           indice_x, indice_y,
                                           0);
-        buffer->tile_storage->hot_tile = tile;
 
         if (gegl_config_threads()>1)
           g_rec_mutex_unlock (&buffer->tile_storage->mutex);
@@ -158,6 +159,8 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
           {
             memcpy (buf, tp, px_size);
           }
+
+        gegl_tile_storage_take_hot_tile (buffer->tile_storage, tile);
       }
   }
 }
@@ -187,7 +190,7 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
     gint indice_x    = gegl_tile_indice (tiledx, tile_width);
     gint indice_y    = gegl_tile_indice (tiledy, tile_height);
 
-    GeglTile *tile = buffer->tile_storage->hot_tile;
+    GeglTile *tile = gegl_tile_storage_steal_hot_tile (buffer->tile_storage);
     const Babl *fish = NULL;
     gint px_size;
 
@@ -208,11 +211,12 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
         if (gegl_config_threads()>1)
           g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
-        _gegl_buffer_drop_hot_tile (buffer);
+        if (tile)
+          gegl_tile_unref (tile);
+
         tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           indice_x, indice_y,
                                           0);
-        buffer->tile_storage->hot_tile = tile;
 
         if (gegl_config_threads()>1)
           g_rec_mutex_unlock (&buffer->tile_storage->mutex);
@@ -235,6 +239,8 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
           memcpy (tp, buf, px_size);
 
         gegl_tile_unlock (tile);
+
+        gegl_tile_storage_take_hot_tile (buffer->tile_storage, tile);
       }
   }
 
