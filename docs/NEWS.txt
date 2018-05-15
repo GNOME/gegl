@@ -7,18 +7,8 @@ Build
 Abort early if autoreconf fails, remove unused bits, default to -Ofast as
 CFLAGS.
 
-Core
-~~~~
-
-Operations
+GeglBuffer
 ~~~~~~~~~~
-
-operation: add GeglOperationAreaFilter::get_abyss_policy() vfunc
-Copyright notice improvements to spherize, color-overlay.
-ff-save: implement defines handling compilation with ffmpeg 2.3-2.7, 4.0 compat
-
-Buffer
-~~~~~~
 
 Improve concurrency for trimming and destruction of tile caches. Improve cache
 invalidation during partial mipmap regeneration.
@@ -31,6 +21,17 @@ performance/threading it is better to create ones own samplers anyways. The old
 API still exists, though parts of it is now deprecated. The single special case
 where gegl_buffer_sample remains somewhat performant is with the NEAREST
 sampler, for all other samplers creating a caching sampler is better.
+
+Operations
+~~~~~~~~~~
+
+operation: add GeglOperationAreaFilter::get_abyss_policy() vfunc Copyright
+notice improvements to spherize, color-overlay.  ff-save: implement defines
+handling compilation with ffmpeg 2.3-2.7, 4.0 compat.
+
+Improved multi-threaded performance of panorama-projection and other
+transformation operations through optimizations in buffer and base-classes.
+
 
 Contributors
 ~~~~~~~~~~~~
