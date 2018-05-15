@@ -414,6 +414,40 @@ gegl_sampler_gtype_from_enum (GeglSamplerType sampler_type)
     }
 }
 
+static inline void
+_gegl_buffer_sample_at_level (GeglBuffer       *buffer,
+                              gdouble           x,
+                              gdouble           y,
+                              GeglMatrix2      *scale,
+                              gpointer          dest,
+                              const Babl       *format,
+                              gint              level,
+                              GeglSamplerType   sampler_type,
+                              GeglAbyssPolicy   repeat_mode)
+{
+  GeglSampler *sampler;
+
+  if (sampler_type == GEGL_SAMPLER_NEAREST &&
+      level == 0)
+    {
+      GeglRectangle rect = {x, y, 1, 1};
+      gegl_buffer_get (buffer, &rect, 1.0,
+                       format, dest, GEGL_AUTO_ROWSTRIDE,
+                       repeat_mode);
+      return;
+    }
+
+  if (!format)
+    format = buffer->soft_format;
+
+  sampler = gegl_buffer_sampler_new_at_level (buffer,
+                                              format, sampler_type, level);
+
+  gegl_sampler_get (sampler, x, y, scale, dest, repeat_mode);
+
+  g_object_unref (sampler);
+}
+
 void
 gegl_buffer_sample_at_level (GeglBuffer       *buffer,
                              gdouble           x,
@@ -425,17 +459,8 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
                              GeglSamplerType   sampler_type,
                              GeglAbyssPolicy   repeat_mode)
 {
-  GeglSampler *sampler;
-
-  if (!format)
-    format = buffer->soft_format;
-
-  sampler = gegl_buffer_sampler_new_at_level (buffer,
-                                              format, sampler_type, level);
-
-  gegl_sampler_get (sampler, x, y, scale, dest, repeat_mode);
-
-  g_object_unref (sampler);
+  _gegl_buffer_sample_at_level (buffer, x, y, scale, dest,
+                                format, level, sampler_type, repeat_mode);
 }
 
 
@@ -449,7 +474,7 @@ gegl_buffer_sample (GeglBuffer       *buffer,
                     GeglSamplerType   sampler_type,
                     GeglAbyssPolicy   repeat_mode)
 {
-  gegl_buffer_sample_at_level (buffer, x, y, scale, dest, format, 0, sampler_type, repeat_mode);
+  _gegl_buffer_sample_at_level (buffer, x, y, scale, dest, format, 0, sampler_type, repeat_mode);
 }
 
 void
