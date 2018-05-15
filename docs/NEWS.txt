@@ -1,3 +1,45 @@
+GEGL-0.4.2 2018-05-15
+---------------------
+
+Build
+~~~~~
+
+Abort early if autoreconf fails, remove unused bits, default to -Ofast as
+CFLAGS.
+
+Core
+~~~~
+
+Operations
+~~~~~~~~~~
+
+operation: add GeglOperationAreaFilter::get_abyss_policy() vfunc
+Copyright notice improvements to spherize, color-overlay.
+ff-save: implement defines handling compilation with ffmpeg 2.3-2.7, 4.0 compat
+
+Buffer
+~~~~~~
+
+Improve concurrency for trimming and destruction of tile caches. Improve cache
+invalidation during partial mipmap regeneration.
+
+Do new cheap clones of buffers with new internal gegl-buffer backed
+tile-backend.
+
+Do not keep cached sampler in buffer it makes cache invalidation hard, and for
+performance/threading it is better to create ones own samplers anyways. The old
+API still exists, though parts of it is now deprecated. The single special case
+where gegl_buffer_sample remains somewhat performant is with the NEAREST
+sampler, for all other samplers creating a caching sampler is better.
+
+Contributors
+~~~~~~~~~~~~
+
+code improvements and translations from:  Daniel Korostil, Debarshi Ray,
+Dimitris Spingos (Δημήτρης Σπίγγος), Ell, Franz Brausse, Jehan, Jordi Mas,
+Marco Ciampa, Øyvind Kolås, and Sebastian Pipping.
+
+
 GEGL-0.4.0 2018-04-26
 ---------------------
 
