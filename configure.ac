@@ -191,7 +191,7 @@ AC_PROG_MAKE_SET
 case "$CC" in
   clang* | gcc*)
     if test -z $user_set_cflags; then
-      CFLAGS="-g -O3"
+      CFLAGS="-g -Ofast"
     fi
     ;;
   *)
@@ -201,7 +201,7 @@ esac
 case "$CXX" in
   clang* | g++*)
     if test -z $user_set_cxxflags; then
-      CXXFLAGS="-g -O3"
+      CXXFLAGS="-g -Ofast"
     fi
     ;;
   *)
