@@ -47,29 +47,38 @@ prepare (GeglOperation *self)
 }
 
 static gboolean
-process (GeglOperation        *operation,
-         GeglOperationContext *context,
-         const gchar          *output_prop,
-         const GeglRectangle  *roi,
-         gint                  level)
+operation_process (GeglOperation        *operation,
+                   GeglOperationContext *context,
+                   const gchar          *output_prop,
+                   const GeglRectangle  *roi,
+                   gint                  level)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglBuffer *input;
-  GeglBuffer *output;
 
-  input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
+  input  = (GeglBuffer*) gegl_operation_context_get_object (context, "input");
 
-  if (gegl_buffer_get_format (input) != o->format)
+  if (gegl_buffer_get_format (input) == o->format)
     {
-      output = gegl_operation_context_get_target (context, "output");
-      gegl_buffer_copy (input, roi, GEGL_ABYSS_NONE,
-                        output, roi);
-      g_object_unref (input);
+      gegl_operation_context_set_object (context, "output", G_OBJECT (input));
+
+      return TRUE;
     }
-  else
-    {
-      gegl_operation_context_take_object (context, "output", G_OBJECT (input));
-    }
+
+  return GEGL_OPERATION_CLASS (gegl_op_parent_class)->process (operation,
+                                                               context,
+                                                               output_prop,
+                                                               roi, level);
+}
+
+static gboolean
+process (GeglOperation       *operation,
+         GeglBuffer          *input,
+         GeglBuffer          *output,
+         const GeglRectangle *roi,
+         gint                 level)
+{
+  gegl_buffer_copy (input, roi, GEGL_ABYSS_NONE, output, roi);
 
   return TRUE;
 }
@@ -77,11 +86,14 @@ process (GeglOperation        *operation,
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
+  GeglOperationClass       *operation_class = GEGL_OPERATION_CLASS (klass);
+  GeglOperationFilterClass *filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   operation_class->prepare  = prepare;
-  operation_class->process  = process;
+  operation_class->process  = operation_process;
   operation_class->no_cache = FALSE;
+
+  filter_class->process     = process;
 
   gegl_operation_class_set_keys (operation_class,
                 "name",       "gegl:convert-format",
