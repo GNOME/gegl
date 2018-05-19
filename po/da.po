@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: gegl gegl-0-2\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-04-16 12:48+0000\n"
-"PO-Revision-Date: 2018-04-18 08:34+0200\n"
+"POT-Creation-Date: 2018-05-13 19:20+0000\n"
+"PO-Revision-Date: 2018-05-19 09:51+0200\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -267,12 +267,12 @@ msgid "Chebyshev"
 msgstr "Chebyshev"
 
 #: gegl/gegl-enums.c:150 operations/common/edge-sobel.c:27
-#: operations/common/noise-spread.c:29 operations/workshop/spherize.c:27
+#: operations/common/noise-spread.c:29 operations/common/spherize.c:26
 msgid "Horizontal"
 msgstr "Vandret"
 
 #: gegl/gegl-enums.c:151 operations/common/edge-sobel.c:29
-#: operations/common/noise-spread.c:35 operations/workshop/spherize.c:28
+#: operations/common/noise-spread.c:35 operations/common/spherize.c:27
 msgid "Vertical"
 msgstr "Lodret"
 
@@ -349,12 +349,12 @@ msgstr "%s har ikke nogen %s-egenskab."
 msgid "%s has no %s property, properties: "
 msgstr "%s har ikke nogen %s-egenskab. Egenskaber: "
 
-#: gegl/gegl-serialize.c:509
+#: gegl/gegl-serialize.c:512
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat \"%s\" findes ikke."
 
-#: gegl/gegl-serialize.c:642
+#: gegl/gegl-serialize.c:645
 #, c-format
 msgid "No such op '%s'"
 msgstr "Ingen operation \"%s\""
@@ -688,9 +688,8 @@ msgstr "Antallet af prøver pr. gentagelse når farveområdet fastlægges"
 #: operations/common/c2g.c:41 operations/common/matting-global.c:25
 #: operations/common/mean-curvature-blur.c:24 operations/common/noise-cell.c:48
 #: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
-#: operations/common/slic.c:38 operations/common/stress.c:39
-#: operations/common-gpl3+/fractal-explorer.c:55
-#: operations/workshop/recursive-transform.c:34
+#: operations/common/recursive-transform.c:34 operations/common/slic.c:38
+#: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
 msgid "Iterations"
 msgstr "Gentagelser"
 
@@ -817,14 +816,13 @@ msgid "Render a checkerboard pattern"
 msgstr "Gengiver et skakbrætmønster"
 
 #: operations/common/color.c:24 operations/common/color.c:92
-#: operations/common/dropshadow.c:43 operations/common/grid.c:64
-#: operations/common/rectangle.c:48 operations/common/vignette.c:34
-#: operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/color-overlay.c:26 operations/common/dropshadow.c:43
+#: operations/common/grid.c:64 operations/common/rectangle.c:48
+#: operations/common/vignette.c:34 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:61
 #: operations/common-gpl3+/tile-paper.c:30
 #: operations/common-gpl3+/value-propagate.c:55 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
-#: operations/workshop/color-overlay.c:26
 msgid "Color"
 msgstr "Farve"
 
@@ -847,6 +845,50 @@ msgid ""
 msgstr ""
 "Strækker farvestyrken, så den dækker det størst mulige område, mens "
 "farvetone og lyshed bevares."
+
+#: operations/common/color-overlay.c:27
+msgid "The color to paint over the input"
+msgstr "Farven som skal males over inputtet"
+
+#: operations/common/color-overlay.c:30 operations/common/over.c:25
+#: operations/common/sepia.c:28 operations/generated/clear.c:38
+#: operations/generated/color-burn.c:38 operations/generated/color-dodge.c:38
+#: operations/generated/darken.c:38 operations/generated/difference.c:38
+#: operations/generated/dst-atop.c:38 operations/generated/dst.c:38
+#: operations/generated/dst-in.c:38 operations/generated/dst-out.c:38
+#: operations/generated/dst-over.c:38 operations/generated/exclusion.c:38
+#: operations/generated/hard-light.c:38 operations/generated/lighten.c:38
+#: operations/generated/overlay.c:38 operations/generated/plus.c:38
+#: operations/generated/screen.c:38 operations/generated/soft-light.c:38
+#: operations/generated/src-atop.c:38 operations/generated/src.c:38
+#: operations/generated/src-in.c:38 operations/generated/src-out.c:38
+#: operations/generated/xor.c:38 operations/workshop/gradient-map.c:36
+msgid "sRGB"
+msgstr "sRGB"
+
+#: operations/common/color-overlay.c:31 operations/common/over.c:26
+#: operations/common/sepia.c:29 operations/generated/clear.c:39
+#: operations/generated/color-burn.c:39 operations/generated/color-dodge.c:39
+#: operations/generated/darken.c:39 operations/generated/difference.c:39
+#: operations/generated/dst-atop.c:39 operations/generated/dst.c:39
+#: operations/generated/dst-in.c:39 operations/generated/dst-out.c:39
+#: operations/generated/dst-over.c:39 operations/generated/exclusion.c:39
+#: operations/generated/hard-light.c:39 operations/generated/lighten.c:39
+#: operations/generated/overlay.c:39 operations/generated/plus.c:39
+#: operations/generated/screen.c:39 operations/generated/soft-light.c:39
+#: operations/generated/src-atop.c:39 operations/generated/src.c:39
+#: operations/generated/src-in.c:39 operations/generated/src-out.c:39
+#: operations/generated/xor.c:39
+msgid "Use sRGB gamma instead of linear"
+msgstr "Brug sRGB-gamma i stedet for lineær gamma"
+
+#: operations/common/color-overlay.c:157
+msgid "Color Overlay"
+msgstr "Farveoverlejring"
+
+#: operations/common/color-overlay.c:158
+msgid "Paint a color overlay over the input, preserving its transparency."
+msgstr "Mal en farveoverlejring over inputtet, mens gennemsigtigheden bevares."
 
 #: operations/common/color-rotate.c:35
 msgid "Treat as this"
@@ -1167,7 +1209,7 @@ msgid "LCH H(ab)"
 msgstr "LCH H(ab)"
 
 #: operations/common/component-extract.c:45 operations/common/fattal02.c:33
-#: operations/common/noise-perlin.c:25 operations/common/noise-rgb.c:48
+#: operations/common/noise-perlin.c:25 operations/common/noise-rgb.c:52
 msgid "Alpha"
 msgstr "Alfa"
 
@@ -1371,11 +1413,11 @@ msgstr "Alfa-vægtning"
 msgid "Border"
 msgstr "Kant"
 
-#: operations/common/convolution-matrix.c:618
+#: operations/common/convolution-matrix.c:631
 msgid "Convolution Matrix"
 msgstr "Foldningsmatrix"
 
-#: operations/common/convolution-matrix.c:619
+#: operations/common/convolution-matrix.c:632
 msgid "Apply a generic 5x5 convolution matrix"
 msgstr "Anvender en generisk 5×5 foldningsmatrix"
 
@@ -1512,7 +1554,7 @@ msgstr "Den metode som anvendes til rastersimulering"
 #: operations/common/dither.c:51 operations/common/noise-cell.c:55
 #: operations/common/noise-cie-lch.c:38 operations/common/noise-hsv.c:40
 #: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
-#: operations/common/noise-rgb.c:51 operations/common/noise-simplex.c:39
+#: operations/common/noise-rgb.c:55 operations/common/noise-simplex.c:39
 #: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
 #: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:88
 #: operations/common-gpl3+/noise-slur.c:40
@@ -1771,12 +1813,14 @@ msgstr "Hvordan den gaussiske kerne diskretiseres"
 #: operations/common/gaussian-blur.c:58 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:31
 #: operations/common-gpl3+/displace.c:42
-#: operations/common-gpl3+/fractal-trace.c:67 operations/transform/scale.c:102
+#: operations/common-gpl3+/fractal-trace.c:67
+#: operations/common-gpl3+/ripple.c:55 operations/transform/scale.c:102
 msgid "Abyss policy"
 msgstr "Kantpolitik"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
-#: operations/common-gpl3+/displace.c:45 operations/transform/scale.c:103
+#: operations/common-gpl3+/displace.c:45 operations/common-gpl3+/ripple.c:58
+#: operations/transform/scale.c:103
 msgid "How image edges are handled"
 msgstr "Hvordan billedkanter håndteres"
 
@@ -2253,9 +2297,8 @@ msgstr ""
 #. XXX: needs better ui type
 #: operations/common/map-absolute.c:22 operations/common/map-relative.c:28
 #: operations/common/panorama-projection.c:61
-#: operations/common-gpl3+/ripple.c:47 operations/common-gpl3+/waves.c:50
-#: operations/workshop/recursive-transform.c:50
-#: operations/workshop/spherize.c:57
+#: operations/common/recursive-transform.c:50 operations/common/spherize.c:56
+#: operations/common-gpl3+/ripple.c:49 operations/common-gpl3+/waves.c:50
 msgid "Resampling method"
 msgstr "Genberegningsmetode"
 
@@ -2563,7 +2606,7 @@ msgstr "Sløringens længde (i pixels)"
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:71
 #: operations/common-gpl3+/motion-blur-circular.c:52
-#: operations/common-gpl3+/ripple.c:43 operations/workshop/linear-sinusoid.c:66
+#: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
 msgid "Angle"
 msgstr "Vinkel"
 
@@ -2626,7 +2669,7 @@ msgstr "Mønster"
 msgid "Halftoning/dot pattern to use"
 msgstr "Halvtone-/prikmønster der skal bruges"
 
-#: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:36
+#: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:38
 #: operations/common-gpl3+/waves.c:40
 msgid "Period"
 msgstr "Periode"
@@ -2788,9 +2831,10 @@ msgstr ""
 "Tilføjer støj til lyshed, farvestyrke og farvetone uafhængigt af hinanden"
 
 # Her er et problem, i det "value" i forbindelse med HSV er lyshed og ellers værdi
-#: operations/common/noise-hsv.c:37 operations/generated/add.c:29
-#: operations/generated/divide.c:29 operations/generated/gamma.c:29
-#: operations/generated/multiply.c:29 operations/generated/subtract.c:29
+#: operations/common/noise-hsv.c:37 operations/common/noise-rgb.c:42
+#: operations/generated/add.c:29 operations/generated/divide.c:29
+#: operations/generated/gamma.c:29 operations/generated/multiply.c:29
+#: operations/generated/subtract.c:29
 msgid "Value"
 msgstr "Værdi"
 
@@ -2896,19 +2940,19 @@ msgstr ""
 msgid "Red"
 msgstr "Rød"
 
-#: operations/common/noise-rgb.c:42
+#: operations/common/noise-rgb.c:44
 msgid "Green"
 msgstr "Grøn"
 
-#: operations/common/noise-rgb.c:45
+#: operations/common/noise-rgb.c:48
 msgid "Blue"
 msgstr "Blå"
 
-#: operations/common/noise-rgb.c:204
+#: operations/common/noise-rgb.c:208
 msgid "Add RGB Noise"
 msgstr "Tilføj RGB-støj"
 
-#: operations/common/noise-rgb.c:207
+#: operations/common/noise-rgb.c:211
 msgid "Distort colors by random amounts"
 msgstr "Forvrænger farver i tilfældig grad"
 
@@ -2963,38 +3007,6 @@ msgstr "Åbn GEGL-buffer"
 #: operations/common/open-buffer.c:133
 msgid "Use an on-disk GeglBuffer as data source."
 msgstr "Bruger en GeglBuffer på disken som datakilde."
-
-#: operations/common/over.c:25 operations/common/sepia.c:28
-#: operations/generated/clear.c:38 operations/generated/color-burn.c:38
-#: operations/generated/color-dodge.c:38 operations/generated/darken.c:38
-#: operations/generated/difference.c:38 operations/generated/dst-atop.c:38
-#: operations/generated/dst.c:38 operations/generated/dst-in.c:38
-#: operations/generated/dst-out.c:38 operations/generated/dst-over.c:38
-#: operations/generated/exclusion.c:38 operations/generated/hard-light.c:38
-#: operations/generated/lighten.c:38 operations/generated/overlay.c:38
-#: operations/generated/plus.c:38 operations/generated/screen.c:38
-#: operations/generated/soft-light.c:38 operations/generated/src-atop.c:38
-#: operations/generated/src.c:38 operations/generated/src-in.c:38
-#: operations/generated/src-out.c:38 operations/generated/xor.c:38
-#: operations/workshop/color-overlay.c:30 operations/workshop/gradient-map.c:36
-msgid "sRGB"
-msgstr "sRGB"
-
-#: operations/common/over.c:26 operations/common/sepia.c:29
-#: operations/generated/clear.c:39 operations/generated/color-burn.c:39
-#: operations/generated/color-dodge.c:39 operations/generated/darken.c:39
-#: operations/generated/difference.c:39 operations/generated/dst-atop.c:39
-#: operations/generated/dst.c:39 operations/generated/dst-in.c:39
-#: operations/generated/dst-out.c:39 operations/generated/dst-over.c:39
-#: operations/generated/exclusion.c:39 operations/generated/hard-light.c:39
-#: operations/generated/lighten.c:39 operations/generated/overlay.c:39
-#: operations/generated/plus.c:39 operations/generated/screen.c:39
-#: operations/generated/soft-light.c:39 operations/generated/src-atop.c:39
-#: operations/generated/src.c:39 operations/generated/src-in.c:39
-#: operations/generated/src-out.c:39 operations/generated/xor.c:39
-#: operations/workshop/color-overlay.c:31
-msgid "Use sRGB gamma instead of linear"
-msgstr "Brug sRGB-gamma i stedet for lineær gamma"
 
 #: operations/common/over.c:182
 msgid "Normal compositing"
@@ -3076,11 +3088,11 @@ msgstr ""
 "at lave visningen og kubisk eller bedre til den omvendte transformering "
 "tilbage til panoramaet."
 
-#: operations/common/panorama-projection.c:601
+#: operations/common/panorama-projection.c:602
 msgid "Panorama Projection"
 msgstr "Panoramaprojektion"
 
-#: operations/common/panorama-projection.c:606
+#: operations/common/panorama-projection.c:607
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
@@ -3198,6 +3210,66 @@ msgstr "Rektangel"
 #: operations/common/rectangle.c:94
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Tegner et rektangel i en uigennemsigtig farve"
+
+#: operations/common/recursive-transform.c:27 operations/external/path.c:47
+#: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
+#: operations/transform/transform.c:24 operations/transform/transform.c:64
+msgid "Transform"
+msgstr "Transformering"
+
+#: operations/common/recursive-transform.c:28
+msgid "Transformation matrix, using SVG syntax"
+msgstr "Transformeringsmatrix med brug af SVG-syntaks"
+
+#: operations/common/recursive-transform.c:30
+#: operations/common/recursive-transform.c:31
+msgid "First iteration"
+msgstr "Første gentagelse"
+
+#: operations/common/recursive-transform.c:35 operations/common/slic.c:39
+msgid "Number of iterations"
+msgstr "Antal gentagelser"
+
+#: operations/common/recursive-transform.c:38
+msgid "Fade color"
+msgstr "Udtoningsfarve"
+
+#: operations/common/recursive-transform.c:39
+msgid ""
+"Color to fade transformed images towards, with a rate depending on its alpha"
+msgstr ""
+"Farve som transformerede billeder skal udtones hen imod; hastigheden "
+"afhænger af alfa"
+
+#: operations/common/recursive-transform.c:42
+msgid "Fade opacity"
+msgstr "Udtoningsuigennemsigtighed"
+
+#: operations/common/recursive-transform.c:43
+msgid "Amount by which to scale the opacity of each transformed image"
+msgstr ""
+"Hvor meget uigennemsigtigheden af hvert transformeret billede skal skaleres"
+
+#: operations/common/recursive-transform.c:47
+msgid "Paste below"
+msgstr "Indsæt nedenunder"
+
+#: operations/common/recursive-transform.c:48
+msgid "Paste transformed images below each other"
+msgstr "Indsæt transformerede billeder under hinanden"
+
+#: operations/common/recursive-transform.c:52 operations/common/spherize.c:58
+#: operations/common-gpl3+/waves.c:52
+msgid "Mathematical method for reconstructing pixel values"
+msgstr "Matematisk metode til at rekonstruere pixelværdier"
+
+#: operations/common/recursive-transform.c:265
+msgid "Recursive Transform"
+msgstr "Rekursiv transformering"
+
+#: operations/common/recursive-transform.c:267
+msgid "Apply a transformation recursively."
+msgstr "Anvend en transformation rekursivt."
 
 #: operations/common/reinhard05.c:27
 msgid "Overall brightness of the image"
@@ -3335,10 +3407,6 @@ msgstr "Kompakthed"
 msgid "Cluster size"
 msgstr "Klyngestørrelse"
 
-#: operations/common/slic.c:39 operations/workshop/recursive-transform.c:35
-msgid "Number of iterations"
-msgstr "Antal gentagelser"
-
 #: operations/common/slic.c:453
 msgid "Simple Linear Iterative Clustering"
 msgstr "Simpel lineær iterativ klyngedannelse"
@@ -3368,6 +3436,64 @@ msgid ""
 msgstr ""
 "Støjreducerende, kantbevarende sløringsfilter baseret på symmetriske "
 "nærmeste naboer"
+
+#: operations/common/spherize.c:25
+msgid "Radial"
+msgstr "Radial"
+
+#: operations/common/spherize.c:30 operations/common-gpl3+/value-propagate.c:38
+msgid "Mode"
+msgstr "Tilstand"
+
+#: operations/common/spherize.c:33 operations/common-gpl3+/displace.c:32
+msgid "Displacement mode"
+msgstr "Forskydningstilstand"
+
+#: operations/common/spherize.c:35
+msgid "Angle of view"
+msgstr "Synsvinkel"
+
+#: operations/common/spherize.c:36
+msgid "Camera angle of view"
+msgstr "Kameraets synsvinkel"
+
+#: operations/common/spherize.c:40
+msgid "Curvature"
+msgstr "Krumning"
+
+# Kan ikke finde noget, der hedder co-angel
+#: operations/common/spherize.c:41
+msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
+msgstr "Kuglekalottens apeksvinkel som en brøkdel af komplementærvinklen"
+
+#. note that the code can handle negative curvatures
+#. * (in the [-1, 0) range), in which case the image is
+#. * wrapped around the back face, rather than the front
+#. * face, of the spherical cap.  we disable negative
+#. * curvatures atm, in particular, since they produce
+#. * the same result when the angle of view is 0, and
+#. * since their upper-bound, wrt the angle of view, is
+#. * arbitrary.
+#.
+#: operations/common/spherize.c:52 operations/common-gpl3+/edge.c:42
+msgid "Amount"
+msgstr "Grad"
+
+#: operations/common/spherize.c:53
+msgid ""
+"Displacement scaling factor (negative values refer to the inverse "
+"displacement)"
+msgstr ""
+"Skaleringsfaktor for forskydning (negative værdier svarer til en invers "
+"forskydning)"
+
+#: operations/common/spherize.c:325
+msgid "Spherize"
+msgstr "Sfærisk effekt"
+
+#: operations/common/spherize.c:328
+msgid "Wrap image around a spherical cap"
+msgstr "Folder billedet omkring en kuglekalot"
 
 # Hjælpetekst til Radius
 #: operations/common/stress.c:28
@@ -3408,11 +3534,23 @@ msgstr "Bevar farver"
 msgid "Impact each channel with the same amount"
 msgstr "Påvirk hver kanal i samme grad"
 
-#: operations/common/stretch-contrast.c:568
+#: operations/common/stretch-contrast.c:28
+msgid "Non-linear components"
+msgstr "Ikke-lineære komponenter"
+
+#: operations/common/stretch-contrast.c:29
+msgid ""
+"When set operate on gamma corrected values instead of linear RGB - acting "
+"like the old normalize filter in GIMP"
+msgstr ""
+"Hvis angivet, vil operationen blive udført på den gamma-korrigerede værdier "
+"i stedet for lineær RGB; virker som det gamle normaliseringsfilter i GIMP."
+
+#: operations/common/stretch-contrast.c:582
 msgid "Stretch Contrast"
 msgstr "Stræk kontrast"
 
-#: operations/common/stretch-contrast.c:571
+#: operations/common/stretch-contrast.c:585
 msgid ""
 "Scales the components of the buffer to be in the 0.0-1.0 range. This "
 "improves images that make poor use of the available contrast (little "
@@ -4253,10 +4391,6 @@ msgstr "Kartesisk"
 msgid "Polar"
 msgstr "Polært"
 
-#: operations/common-gpl3+/displace.c:32 operations/workshop/spherize.c:34
-msgid "Displacement mode"
-msgstr "Forskydningstilstand"
-
 #: operations/common-gpl3+/displace.c:35
 msgid "Mode of displacement"
 msgstr "Tilstand for forskydning"
@@ -4380,19 +4514,6 @@ msgstr "Algoritme"
 msgid "Edge detection algorithm"
 msgstr "Algoritme til kantgenkendelse"
 
-#. note that the code can handle negative curvatures
-#. * (in the [-1, 0) range), in which case the image is
-#. * wrapped around the back face, rather than the front
-#. * face, of the spherical cap.  we disable negative
-#. * curvatures atm, in particular, since they produce
-#. * the same result when the angle of view is 0, and
-#. * since their upper-bound, wrt the angle of view, is
-#. * arbitrary.
-#.
-#: operations/common-gpl3+/edge.c:42 operations/workshop/spherize.c:53
-msgid "Amount"
-msgstr "Grad"
-
 #: operations/common-gpl3+/edge.c:43
 msgid "Edge detection amount"
 msgstr "Graden af kantgenkendelse"
@@ -4405,11 +4526,11 @@ msgstr "Kantopførsel"
 msgid "Edge detection behavior"
 msgstr "Kantgenkendelsens opførsel"
 
-#: operations/common-gpl3+/edge.c:351
+#: operations/common-gpl3+/edge.c:363
 msgid "Edge Detection"
 msgstr "Kantgenkendelse"
 
-#: operations/common-gpl3+/edge.c:355
+#: operations/common-gpl3+/edge.c:367
 msgid "Several simple methods for detecting edges"
 msgstr "Adskillige simple metoder til kantgenkendelse"
 
@@ -4572,7 +4693,7 @@ msgid "Blue stretching factor"
 msgstr "Strækningsfaktor for blå"
 
 #: operations/common-gpl3+/fractal-explorer.c:94
-#: operations/common-gpl3+/ripple.c:28
+#: operations/common-gpl3+/ripple.c:29
 msgid "Sine"
 msgstr "Sinus"
 
@@ -4819,7 +4940,7 @@ msgstr "Typen af labyrintalgoritme"
 
 # Boolesk
 #: operations/common-gpl3+/maze.c:61 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:53
+#: operations/common-gpl3+/ripple.c:60
 msgid "Tileable"
 msgstr "Fliselagt"
 
@@ -5172,32 +5293,36 @@ msgstr "Fjern røde øjne"
 msgid "Remove the red eye effect caused by camera flashes"
 msgstr "Fjerner røde øjne som opstår pga. kamerablitzen"
 
-#: operations/common-gpl3+/ripple.c:29
+#: operations/common-gpl3+/ripple.c:30
+msgid "Triangle"
+msgstr "Trekant"
+
+#: operations/common-gpl3+/ripple.c:31
 msgid "Sawtooth"
 msgstr "Savtakker"
 
-#: operations/common-gpl3+/ripple.c:32 operations/common-gpl3+/waves.c:36
+#: operations/common-gpl3+/ripple.c:34 operations/common-gpl3+/waves.c:36
 #: operations/workshop/bayer-matrix.c:59
 msgid "Amplitude"
 msgstr "Amplitude"
 
-#: operations/common-gpl3+/ripple.c:40 operations/common-gpl3+/waves.c:44
+#: operations/common-gpl3+/ripple.c:42 operations/common-gpl3+/waves.c:44
 msgid "Phase shift"
 msgstr "Faseforskydning"
 
-#: operations/common-gpl3+/ripple.c:50
+#: operations/common-gpl3+/ripple.c:52
 msgid "Wave type"
 msgstr "Bølgetype"
 
-#: operations/common-gpl3+/ripple.c:54
+#: operations/common-gpl3+/ripple.c:61
 msgid "Retain tilebility"
 msgstr "Behold fliselagt udseende"
 
-#: operations/common-gpl3+/ripple.c:171
+#: operations/common-gpl3+/ripple.c:256
 msgid "Ripple"
 msgstr "Krusning"
 
-#: operations/common-gpl3+/ripple.c:176
+#: operations/common-gpl3+/ripple.c:261
 msgid "Displace pixels in a ripple pattern"
 msgstr "Forskyder pixels i et krusningsmønster"
 
@@ -5633,11 +5758,6 @@ msgstr "Mere uigennemsigtig"
 msgid "More transparent"
 msgstr "Mere gennemsigtig"
 
-#: operations/common-gpl3+/value-propagate.c:38
-#: operations/workshop/spherize.c:31
-msgid "Mode"
-msgstr "Tilstand"
-
 #: operations/common-gpl3+/value-propagate.c:41
 msgid "Mode of value propagation"
 msgstr "Tilstand for lyshedsudbredelse"
@@ -5798,12 +5918,6 @@ msgstr "Krusningens periode (bølgelængde)"
 msgid "Aspect ratio"
 msgstr "Højde-breddeforhold"
 
-#: operations/common-gpl3+/waves.c:52
-#: operations/workshop/recursive-transform.c:52
-#: operations/workshop/spherize.c:59
-msgid "Mathematical method for reconstructing pixel values"
-msgstr "Matematisk metode til at rekonstruere pixelværdier"
-
 #: operations/common-gpl3+/waves.c:54
 msgid "Clamp deformation"
 msgstr "Fasthold deformation"
@@ -5812,11 +5926,11 @@ msgstr "Fasthold deformation"
 msgid "Limit deformation in the image area."
 msgstr "Begræns deformationen til billedområdet."
 
-#: operations/common-gpl3+/waves.c:184
+#: operations/common-gpl3+/waves.c:196
 msgid "Waves"
 msgstr "Bølger"
 
-#: operations/common-gpl3+/waves.c:189
+#: operations/common-gpl3+/waves.c:201
 msgid "Distort the image with waves"
 msgstr "Forvrænger billedet med bølger"
 
@@ -6000,8 +6114,8 @@ msgstr "Beskærer en buffer"
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/png-load.c:29
-#: operations/external/svg-load.c:27 operations/external/tiff-load.c:27
-#: operations/external/webp-load.c:27
+#: operations/external/ppm-load.c:27 operations/external/svg-load.c:27
+#: operations/external/tiff-load.c:27 operations/external/webp-load.c:27
 msgid "URI"
 msgstr "URI"
 
@@ -6234,11 +6348,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1111
+#: operations/external/ff-save.c:1122
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg-stillbilledskriver"
 
-#: operations/external/ff-save.c:1113
+#: operations/external/ff-save.c:1124
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg — datamodtager af videooutput"
 
@@ -6604,13 +6718,6 @@ msgstr "Udfyldningsregel"
 msgid "How to determine what to fill (nonzero|evenodd)"
 msgstr "Hvordan det bestemmes, hvad der skal udfyldes (nonzero|evenodd)"
 
-#: operations/external/path.c:47 operations/external/vector-fill.c:37
-#: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
-#: operations/transform/transform.c:64
-#: operations/workshop/recursive-transform.c:27
-msgid "Transform"
-msgstr "Transformering"
-
 #: operations/external/path.c:48
 msgid "SVG style description of transform"
 msgstr "SVG-stilsbeskrivelse af transformeringen"
@@ -6693,11 +6800,15 @@ msgstr "PNG-filskriver"
 msgid "PNG image saver, using libpng"
 msgstr "Gem PNG-billeder med brug af libpng"
 
-#: operations/external/ppm-load.c:391
+#: operations/external/ppm-load.c:28
+msgid "URI of image to load."
+msgstr "URI til billede som skal indlæses."
+
+#: operations/external/ppm-load.c:460
 msgid "PPM File Loader"
 msgstr "PPM-filindlæser"
 
-#: operations/external/ppm-load.c:393
+#: operations/external/ppm-load.c:462
 msgid "PPM image loader."
 msgstr "PPM-billedindlæser."
 
@@ -7550,18 +7661,6 @@ msgstr ""
 "En hurtig tilnærmelse af bilateralt filter som bruger et kassefilter i "
 "stedet for gaussisk sløring."
 
-#: operations/workshop/color-overlay.c:27
-msgid "The color to paint over the input"
-msgstr "Farven som skal males over inputtet"
-
-#: operations/workshop/color-overlay.c:157
-msgid "Color Overlay"
-msgstr "Farveoverlejring"
-
-#: operations/workshop/color-overlay.c:158
-msgid "Paint a color overlay over the input, preserving its transparency."
-msgstr "Mal en farveoverlejring over inputtet, mens gennemsigtigheden bevares."
-
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
 msgid "Bayer pattern"
@@ -8062,51 +8161,6 @@ msgstr ""
 "filformatet er rawbayerS, vil de returnerede 16 bit-tal blive ombyttede (pnm-"
 "indlæseren er tilsyneladende fejlfyldt)"
 
-#: operations/workshop/recursive-transform.c:28
-msgid "Transformation matrix, using SVG syntax"
-msgstr "Transformeringsmatrix med brug af SVG-syntaks"
-
-#: operations/workshop/recursive-transform.c:30
-#: operations/workshop/recursive-transform.c:31
-msgid "First iteration"
-msgstr "Første gentagelse"
-
-#: operations/workshop/recursive-transform.c:38
-msgid "Fade color"
-msgstr "Udtoningsfarve"
-
-#: operations/workshop/recursive-transform.c:39
-msgid ""
-"Color to fade transformed images towards, with a rate depending on its alpha"
-msgstr ""
-"Farve som transformerede billeder skal udtones hen imod; hastigheden "
-"afhænger af alfa"
-
-#: operations/workshop/recursive-transform.c:42
-msgid "Fade opacity"
-msgstr "Udtoningsuigennemsigtighed"
-
-#: operations/workshop/recursive-transform.c:43
-msgid "Amount by which to scale the opacity of each transformed image"
-msgstr ""
-"Hvor meget uigennemsigtigheden af hvert transformeret billede skal skaleres"
-
-#: operations/workshop/recursive-transform.c:47
-msgid "Paste below"
-msgstr "Indsæt nedenunder"
-
-#: operations/workshop/recursive-transform.c:48
-msgid "Paste transformed images below each other"
-msgstr "Indsæt transformerede billeder under hinanden"
-
-#: operations/workshop/recursive-transform.c:265
-msgid "Recursive Transform"
-msgstr "Rekursiv transformering"
-
-#: operations/workshop/recursive-transform.c:267
-msgid "Apply a transformation recursively."
-msgstr "Anvend en transformation rekursivt."
-
 #: operations/workshop/segment-kmeans.c:27
 #: operations/workshop/segment-kmeans.c:28
 msgid "Number of clusters"
@@ -8127,43 +8181,6 @@ msgstr "K-means-segmentering"
 #: operations/workshop/segment-kmeans.c:394
 msgid "Segment colors using K-means clustering"
 msgstr "Segmentfarver med brug af K-means-klyngedannelse"
-
-#: operations/workshop/spherize.c:26
-msgid "Radial"
-msgstr "Radial"
-
-#: operations/workshop/spherize.c:36
-msgid "Angle of view"
-msgstr "Synsvinkel"
-
-#: operations/workshop/spherize.c:37
-msgid "Camera angle of view"
-msgstr "Kameraets synsvinkel"
-
-#: operations/workshop/spherize.c:41
-msgid "Curvature"
-msgstr "Krumning"
-
-# Kan ikke finde noget, der hedder co-angel
-#: operations/workshop/spherize.c:42
-msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
-msgstr "Kuglekalottens apeksvinkel som en brøkdel af komplementærvinklen"
-
-#: operations/workshop/spherize.c:54
-msgid ""
-"Displacement scaling factor (negative values refer to the inverse "
-"displacement)"
-msgstr ""
-"Skaleringsfaktor for forskydning (negative værdier svarer til en invers "
-"forskydning)"
-
-#: operations/workshop/spherize.c:326
-msgid "Spherize"
-msgstr "Kugleformet"
-
-#: operations/workshop/spherize.c:330
-msgid "Wrap image around a spherical cap"
-msgstr "Folder billedet omkring en kuglekalot"
 
 #~ msgid "Chessboard"
 #~ msgstr "Skakbræt"
