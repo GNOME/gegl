@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gegl"
 "&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-03-08 20:10+0000\n"
-"PO-Revision-Date: 2018-03-10 21:52+0200\n"
+"POT-Creation-Date: 2018-05-13 19:20+0000\n"
+"PO-Revision-Date: 2018-05-19 17:36+0200\n"
 "Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "Language: lv\n"
@@ -28,7 +28,7 @@ msgstr "Nevar nolasīt datni — %s"
 msgid "Invalid graph, abort.\n"
 msgstr "Nederīgs grafs, aptur.\n"
 
-#: bin/gegl.c:378 bin/gegl-options.c:134
+#: bin/gegl.c:378 bin/gegl-options.c:135
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Nezināms GeglOption režīms — %d"
@@ -45,8 +45,8 @@ msgid ""
 "\n"
 "     --exists        return 0 if the operation(s) exist\n"
 "\n"
-"     --properties    output the properties (name, type, description) of the "
-"operation\n"
+"     --info          output information about the operation:\n"
+"                     name, description, properties details.\n"
 "\n"
 "     -i, --file      read xml from named file\n"
 "\n"
@@ -97,32 +97,32 @@ msgstr ""
 "kopā mazā kompozīcija, nevis izmantojot xml datni; tas ļauj viegli testēt\n"
 "filtrus. Ņemiet vērā, ka noklusējuma vērtība tiks izmantota visām īpašībām\n"
 
-#: bin/gegl-options.c:87
+#: bin/gegl-options.c:88
 #, c-format
 msgid "ERROR: '%s' option expected argument\n"
 msgstr "KĻŪDA — “%s” sagaidīja parametru\n"
 
-#: bin/gegl-options.c:126
+#: bin/gegl-options.c:127
 msgid "Display on screen"
 msgstr "Rādīt uz ekrāna"
 
-#: bin/gegl-options.c:128
+#: bin/gegl-options.c:129
 msgid "Print XML"
 msgstr "Drukāt XML"
 
-#: bin/gegl-options.c:130
+#: bin/gegl-options.c:131
 msgid "Output in a file"
 msgstr "Izvadīt datnē"
 
-#: bin/gegl-options.c:132
+#: bin/gegl-options.c:133
 msgid "Display help information"
 msgstr "Parādīt palīdzības informāciju"
 
-#: bin/gegl-options.c:135
+#: bin/gegl-options.c:136
 msgid "unknown mode"
 msgstr "nezināms režīms"
 
-#: bin/gegl-options.c:140
+#: bin/gegl-options.c:141
 #, c-format
 msgid ""
 "Parsed commandline:\n"
@@ -141,14 +141,14 @@ msgstr ""
 "\tatlikušais:   %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:354
+#: bin/gegl-options.c:332
+#, fuzzy
+#| msgid "Proportion"
+msgid "Properties:"
+msgstr "Proporcija"
+
+#: bin/gegl-options.c:442
 #, c-format
-#| msgid ""
-#| "\n"
-#| "\n"
-#| "unknown parameter '%s' giving you help instead\n"
-#| "\n"
-#| "\n"
 msgid ""
 "\n"
 "\n"
@@ -208,12 +208,10 @@ msgid "Bayer"
 msgstr "Bayer"
 
 #: gegl/gegl-enums.c:93 operations/common/waterpixels.c:35
-#| msgid "Random seed"
 msgid "Random"
 msgstr "Nejaušs"
 
 #: gegl/gegl-enums.c:94
-#| msgid "Randomization"
 msgid "Random Covariant"
 msgstr "Nejaušs kovariants"
 
@@ -233,34 +231,46 @@ msgstr "Aritmētiskais izslēdzošais vai"
 msgid "Arithmetic xor covariant"
 msgstr "Aritmētiskai izslēdzošā vai kovariants"
 
-#: gegl/gegl-enums.c:123 operations/common/edge-sobel.c:27
-#: operations/common/noise-spread.c:29 operations/workshop/spherize.c:27
+#: gegl/gegl-enums.c:123
+msgid "Euclidean"
+msgstr "Eiklīda"
+
+#: gegl/gegl-enums.c:124
+msgid "Manhattan"
+msgstr "Manhetena"
+
+#: gegl/gegl-enums.c:125
+msgid "Chebyshev"
+msgstr ""
+
+#: gegl/gegl-enums.c:150 operations/common/edge-sobel.c:27
+#: operations/common/noise-spread.c:29 operations/common/spherize.c:26
 msgid "Horizontal"
 msgstr "Horizontāls"
 
-#: gegl/gegl-enums.c:124 operations/common/edge-sobel.c:29
-#: operations/common/noise-spread.c:35 operations/workshop/spherize.c:28
+#: gegl/gegl-enums.c:151 operations/common/edge-sobel.c:29
+#: operations/common/noise-spread.c:35 operations/common/spherize.c:27
 msgid "Vertical"
 msgstr "Vertikāls"
 
-#: gegl/gegl-enums.c:148
+#: gegl/gegl-enums.c:175
 msgid "Nearest"
 msgstr "Tuvākais"
 
-#: gegl/gegl-enums.c:149 operations/common-gpl3+/bump-map.c:33
+#: gegl/gegl-enums.c:176 operations/common-gpl3+/bump-map.c:33
 #: operations/common-gpl3+/sinus.c:63 operations/common-gpl3+/spiral.c:26
 msgid "Linear"
 msgstr "Lineārs"
 
-#: gegl/gegl-enums.c:150
+#: gegl/gegl-enums.c:177
 msgid "Cubic"
 msgstr "Kubisks"
 
-#: gegl/gegl-enums.c:151
+#: gegl/gegl-enums.c:178
 msgid "NoHalo"
 msgstr "Bez oreola"
 
-#: gegl/gegl-enums.c:152
+#: gegl/gegl-enums.c:179
 msgid "LoHalo"
 msgstr "Maz oreola"
 
@@ -312,12 +322,12 @@ msgstr "%s nav %s īpašības."
 msgid "%s has no %s property, properties: "
 msgstr "%s nav %s īpašības, ir īpašības: "
 
-#: gegl/gegl-serialize.c:509
+#: gegl/gegl-serialize.c:512
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat “%s” neeksistē."
 
-#: gegl/gegl-serialize.c:642
+#: gegl/gegl-serialize.c:645
 #, c-format
 msgid "No such op '%s'"
 msgstr "Nav tāda op “%s”"
@@ -369,7 +379,6 @@ msgid "Red frequency"
 msgstr "Sarkanā frekvence"
 
 #: operations/common/alien-map.c:44
-#| msgid "Blue stretch"
 msgid "Hue frequency"
 msgstr "Piesātinājuma frekvence"
 
@@ -379,12 +388,10 @@ msgstr "Komponentes 2 frekvence"
 
 #: operations/common/alien-map.c:51
 #: operations/common-gpl3+/diffraction-patterns.c:34
-#| msgid "Green stretch"
 msgid "Green frequency"
 msgstr "Zaļā frekvence"
 
 #: operations/common/alien-map.c:52
-#| msgid "Green stretch"
 msgid "Saturation frequency"
 msgstr "Piesātinājuma frekvence"
 
@@ -394,7 +401,6 @@ msgstr "Komponentes 3 frekvence"
 
 #: operations/common/alien-map.c:59
 #: operations/common-gpl3+/diffraction-patterns.c:38
-#| msgid "Blue stretch"
 msgid "Blue frequency"
 msgstr "Zilā frekvence"
 
@@ -407,12 +413,10 @@ msgid "Component 1 phase shift"
 msgstr "Komponentes 1 fāžu nobīde"
 
 #: operations/common/alien-map.c:68
-#| msgid "Phase shift"
 msgid "Red phase shift"
 msgstr "Sarkanās fāzes nobīde"
 
 #: operations/common/alien-map.c:69
-#| msgid "Phase shift"
 msgid "Hue phase shift"
 msgstr "Toņa fāzes nobīde"
 
@@ -421,12 +425,10 @@ msgid "Component 2 phase shift"
 msgstr "Komponentes 2 fāžu nobīde"
 
 #: operations/common/alien-map.c:77
-#| msgid "Phase shift"
 msgid "Green phase shift"
 msgstr "Zaļās fāzes nobīde"
 
 #: operations/common/alien-map.c:78
-#| msgid "Saturation"
 msgid "Saturation phase shift"
 msgstr "Piesātinājuma fāzes nobīde"
 
@@ -435,12 +437,10 @@ msgid "Component 3 phase shift"
 msgstr "Komponentes 3 fāžu nobīde"
 
 #: operations/common/alien-map.c:86
-#| msgid "Phase shift"
 msgid "Blue phase shift"
 msgstr "Zilās fāzes nobīde"
 
 #: operations/common/alien-map.c:87
-#| msgid "Phase shift"
 msgid "Lightness phase shift"
 msgstr "Gaišuma fāzes nobīde"
 
@@ -449,12 +449,10 @@ msgid "Keep component 1"
 msgstr "Paturēt komponenti 1"
 
 #: operations/common/alien-map.c:92
-#| msgid "number of levels per component"
 msgid "Keep red component"
 msgstr "Paturēt sarkano komponenti"
 
 #: operations/common/alien-map.c:93
-#| msgid "number of levels per component"
 msgid "Keep hue component"
 msgstr "Paturēt toņa komponenti"
 
@@ -463,12 +461,10 @@ msgid "Keep component 2"
 msgstr "Paturēt komponenti 2"
 
 #: operations/common/alien-map.c:98
-#| msgid "number of levels per component"
 msgid "Keep green component"
 msgstr "Paturēt zaļo komponenti"
 
 #: operations/common/alien-map.c:99
-#| msgid "number of levels per component"
 msgid "Keep saturation component"
 msgstr "Paturēt piesātinājuma komponenti"
 
@@ -477,12 +473,10 @@ msgid "Keep component 3"
 msgstr "Paturēt komponenti 3"
 
 #: operations/common/alien-map.c:104
-#| msgid "number of levels per component"
 msgid "Keep blue component"
 msgstr "Paturēt zilo komponenti"
 
 #: operations/common/alien-map.c:105
-#| msgid "number of levels per component"
 msgid "Keep lightness component"
 msgstr "Paturēt gaišuma komponenti"
 
@@ -495,8 +489,8 @@ msgid ""
 "Heavily distort images colors by applying trigonometric functions to map "
 "color values."
 msgstr ""
-"Spēcīgi sagrozīt attēla krāsas, pielietojot trigonometriskās funkcijas, lai"
-" attēlotu krāsu vērtības."
+"Spēcīgi sagrozīt attēla krāsas, pielietojot trigonometriskās funkcijas, lai "
+"attēlotu krāsu vērtības."
 
 #: operations/common/bilateral-filter.c:26 operations/common/dropshadow.c:37
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
@@ -591,7 +585,6 @@ msgid "Amount to increase brightness"
 msgstr "Apjoms, par kādu palielināt spilgtumu"
 
 #: operations/common/brightness-contrast.c:154
-#| msgid "Brightness"
 msgid "Brightness Contrast"
 msgstr "Spilgtums kontrasts"
 
@@ -602,9 +595,9 @@ msgid ""
 "light, 'contrast' is a scale factor around 50%% gray, and 'brightness' a "
 "constant offset to apply after contrast scaling."
 msgstr ""
-"Maina gaismas līmeni un kontrastu. Šī operācija darbojas lineārā gaismā,"
-" “kontrasts” ir mērogs ap 50%% pelēks, un “gaišums” — konstanta nobīde, ko"
-" pielietot pēc kontrasta mērogošanas."
+"Maina gaismas līmeni un kontrastu. Šī operācija darbojas lineārā gaismā, "
+"“kontrasts” ir mērogs ap 50%% pelēks, un “gaišums” — konstanta nobīde, ko "
+"pielietot pēc kontrasta mērogošanas."
 
 #: operations/common/buffer-sink.c:25 operations/common/write-buffer.c:25
 msgid "Buffer location"
@@ -624,7 +617,6 @@ msgid ""
 msgstr "babl formāts GeglBuffer izvadei. NULL, lai izmantotu ievades formātu"
 
 #: operations/common/buffer-sink.c:83
-#| msgid "Buffer location"
 msgid "Buffer Sink"
 msgstr "Bufera savācējs"
 
@@ -641,7 +633,6 @@ msgid "The GeglBuffer to load into the pipeline"
 msgstr "GeglBuffer, ko ielādēt konveijerā"
 
 #: operations/common/buffer-source.c:219
-#| msgid "Buffer location"
 msgid "Buffer Source"
 msgstr "Bufera avots"
 
@@ -668,9 +659,8 @@ msgstr "Paraugu skaits, kas jāņem katrā iterācijā, meklējot krāsu apgabal
 #: operations/common/c2g.c:41 operations/common/matting-global.c:25
 #: operations/common/mean-curvature-blur.c:24 operations/common/noise-cell.c:48
 #: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
-#: operations/common/slic.c:38 operations/common/stress.c:39
-#: operations/common-gpl3+/fractal-explorer.c:55
-#: operations/workshop/recursive-transform.c:34
+#: operations/common/recursive-transform.c:34 operations/common/slic.c:38
+#: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
 msgid "Iterations"
 msgstr "Iterācijas"
 
@@ -705,7 +695,7 @@ msgstr ""
 "kontrasta uzlabošanu"
 
 #: operations/common/checkerboard.c:25 operations/common/grid.c:24
-#: operations/common/panorama-projection.c:42 operations/common/rectangle.c:36
+#: operations/common/panorama-projection.c:43 operations/common/rectangle.c:36
 #: operations/common-gpl3+/diffraction-patterns.c:78
 #: operations/common-gpl3+/maze.c:40 operations/common-gpl3+/noise-solid.c:64
 #: operations/common-gpl3+/plasma.c:54 operations/common-gpl3+/sinus.c:76
@@ -723,7 +713,7 @@ msgid "Horizontal width of cells pixels"
 msgstr "Šūnu horizontālais platums pikseļos"
 
 #: operations/common/checkerboard.c:33 operations/common/grid.c:31
-#: operations/common/panorama-projection.c:48 operations/common/rectangle.c:42
+#: operations/common/panorama-projection.c:49 operations/common/rectangle.c:42
 #: operations/common-gpl3+/diffraction-patterns.c:86
 #: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:48
 #: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:62
@@ -798,27 +788,23 @@ msgid "Render a checkerboard pattern"
 msgstr "Atveidot dambretes galdiņu"
 
 #: operations/common/color.c:24 operations/common/color.c:92
-#: operations/common/dropshadow.c:43 operations/common/grid.c:64
-#: operations/common/rectangle.c:48 operations/common/vignette.c:34
-#: operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/color-overlay.c:26 operations/common/dropshadow.c:43
+#: operations/common/grid.c:64 operations/common/rectangle.c:48
+#: operations/common/vignette.c:34 operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:61
 #: operations/common-gpl3+/tile-paper.c:30
 #: operations/common-gpl3+/value-propagate.c:55 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
-#: operations/workshop/color-overlay.c:26
 msgid "Color"
 msgstr "Krāsa"
 
 #: operations/common/color.c:96
-#| msgid ""
-#| "Generates a buffer entirely filled with the specified color, crop it to "
-#| "get smaller dimensions."
 msgid ""
 "Generates a buffer entirely filled with the specified color, use gegl:crop "
 "to get smaller dimensions."
 msgstr ""
-"Izveidot buferi, kas ir pilnībā aizpildīts ar norādīto krāsu; izmantojiet"
-" gegl:crop, lai samazinātu izmērus."
+"Izveidot buferi, kas ir pilnībā aizpildīts ar norādīto krāsu; izmantojiet "
+"gegl:crop, lai samazinātu izmērus."
 
 #: operations/common/color-enhance.c:273
 msgid "Color Enhance"
@@ -828,6 +814,52 @@ msgstr "Krāsu uzlabošana"
 msgid ""
 "Stretch color chroma to cover maximum possible range, keeping hue and "
 "lightness untouched."
+msgstr ""
+
+#: operations/common/color-overlay.c:27
+#, fuzzy
+msgid "The color to paint over the input"
+msgstr "Nobīdes vērtība"
+
+#: operations/common/color-overlay.c:30 operations/common/over.c:25
+#: operations/common/sepia.c:28 operations/generated/clear.c:38
+#: operations/generated/color-burn.c:38 operations/generated/color-dodge.c:38
+#: operations/generated/darken.c:38 operations/generated/difference.c:38
+#: operations/generated/dst-atop.c:38 operations/generated/dst.c:38
+#: operations/generated/dst-in.c:38 operations/generated/dst-out.c:38
+#: operations/generated/dst-over.c:38 operations/generated/exclusion.c:38
+#: operations/generated/hard-light.c:38 operations/generated/lighten.c:38
+#: operations/generated/overlay.c:38 operations/generated/plus.c:38
+#: operations/generated/screen.c:38 operations/generated/soft-light.c:38
+#: operations/generated/src-atop.c:38 operations/generated/src.c:38
+#: operations/generated/src-in.c:38 operations/generated/src-out.c:38
+#: operations/generated/xor.c:38 operations/workshop/gradient-map.c:36
+msgid "sRGB"
+msgstr "sRGB"
+
+#: operations/common/color-overlay.c:31 operations/common/over.c:26
+#: operations/common/sepia.c:29 operations/generated/clear.c:39
+#: operations/generated/color-burn.c:39 operations/generated/color-dodge.c:39
+#: operations/generated/darken.c:39 operations/generated/difference.c:39
+#: operations/generated/dst-atop.c:39 operations/generated/dst.c:39
+#: operations/generated/dst-in.c:39 operations/generated/dst-out.c:39
+#: operations/generated/dst-over.c:39 operations/generated/exclusion.c:39
+#: operations/generated/hard-light.c:39 operations/generated/lighten.c:39
+#: operations/generated/overlay.c:39 operations/generated/plus.c:39
+#: operations/generated/screen.c:39 operations/generated/soft-light.c:39
+#: operations/generated/src-atop.c:39 operations/generated/src.c:39
+#: operations/generated/src-in.c:39 operations/generated/src-out.c:39
+#: operations/generated/xor.c:39
+msgid "Use sRGB gamma instead of linear"
+msgstr "Izmantot sRGB gamma, nevis lineāru"
+
+#: operations/common/color-overlay.c:157
+#, fuzzy
+msgid "Color Overlay"
+msgstr "Krāsa, ko attēlot"
+
+#: operations/common/color-overlay.c:158
+msgid "Paint a color overlay over the input, preserving its transparency."
 msgstr ""
 
 #: operations/common/color-rotate.c:35
@@ -852,7 +884,6 @@ msgid "From"
 msgstr "No"
 
 #: operations/common/color-rotate.c:44
-#| msgid "Starting angle for the color rotation"
 msgid "Start angle of the source color range"
 msgstr "Sākuma leņķis avota krāsu apgabalam"
 
@@ -861,17 +892,14 @@ msgid "To"
 msgstr "Līdz"
 
 #: operations/common/color-rotate.c:49
-#| msgid "End angle for the color rotation"
 msgid "End angle of the source color range"
 msgstr "Beigu leņķis avota krāsu apgabalam"
 
 #: operations/common/color-rotate.c:57
-#| msgid "Starting angle for the color rotation"
 msgid "Start angle of the destination color range"
 msgstr "Sākuma leņķis mērķa krāsu apgabalam"
 
 #: operations/common/color-rotate.c:62
-#| msgid "End angle for the color rotation"
 msgid "End angle of the destination color range"
 msgstr "Beigu leņķis mērķa krāsu apgabalam"
 
@@ -885,7 +913,6 @@ msgstr ""
 "Krāsas, kam ir mazāks piesātinājums par šo, tiks uzskatītas par pelēkām"
 
 #: operations/common/color-rotate.c:71
-#| msgid "Green mode"
 msgid "Gray mode"
 msgstr "Pelēkā režīms"
 
@@ -944,7 +971,6 @@ msgid "Corrected estimation of the temperature of the light source in Kelvin."
 msgstr "Gaismas avota temperatūras labotais novērtējums kelvinos."
 
 #: operations/common/color-temperature.c:273
-#| msgid "Original temperature"
 msgid "Color Temperature"
 msgstr "Krāsu temperatūra"
 
@@ -963,7 +989,6 @@ msgid "To 0"
 msgstr "Līdz 0"
 
 #: operations/common/color-warp.c:38
-#| msgid "Height"
 msgid "weight 0"
 msgstr "svars 0"
 
@@ -976,7 +1001,6 @@ msgid "To 1"
 msgstr "Līdz 1"
 
 #: operations/common/color-warp.c:42
-#| msgid "Height"
 msgid "weight 1"
 msgstr "svars 1"
 
@@ -989,7 +1013,6 @@ msgid "To 2"
 msgstr "Līdz 2"
 
 #: operations/common/color-warp.c:46
-#| msgid "Height"
 msgid "weight 2"
 msgstr "svars 2"
 
@@ -1002,7 +1025,6 @@ msgid "To 3"
 msgstr "Līdz 3"
 
 #: operations/common/color-warp.c:50
-#| msgid "Height"
 msgid "weight 3"
 msgstr "svars 3"
 
@@ -1015,7 +1037,6 @@ msgid "To 4"
 msgstr "Līdz 4"
 
 #: operations/common/color-warp.c:54
-#| msgid "Height"
 msgid "weight 4"
 msgstr "svars 4"
 
@@ -1028,7 +1049,6 @@ msgid "To 5"
 msgstr "Līdz 5"
 
 #: operations/common/color-warp.c:58
-#| msgid "Height"
 msgid "weight 5"
 msgstr "svars 5"
 
@@ -1041,7 +1061,6 @@ msgid "To 6"
 msgstr "Līdz 6"
 
 #: operations/common/color-warp.c:62
-#| msgid "Height"
 msgid "weight 6"
 msgstr "svars 6"
 
@@ -1054,7 +1073,6 @@ msgid "To 7"
 msgstr "Līdz 7"
 
 #: operations/common/color-warp.c:66
-#| msgid "Height"
 msgid "weight 7"
 msgstr "svars 7"
 
@@ -1063,7 +1081,6 @@ msgid "global weight scale"
 msgstr "globālā svaru skala"
 
 #: operations/common/color-warp.c:70
-#| msgid "Pinch amount"
 msgid "amount"
 msgstr "apjoms"
 
@@ -1083,32 +1100,26 @@ msgid "RGB Red"
 msgstr "RGB sarkans"
 
 #: operations/common/component-extract.c:26
-#| msgid "Green"
 msgid "RGB Green"
 msgstr "RGB zaļš"
 
 #: operations/common/component-extract.c:27
-#| msgid "Blue"
 msgid "RGB Blue"
 msgstr "RGB zils"
 
 #: operations/common/component-extract.c:29
-#| msgid "Saturation"
 msgid "HSV Saturation"
 msgstr "HSV piesātinājums"
 
 #: operations/common/component-extract.c:30
-#| msgid "Value"
 msgid "HSV Value"
 msgstr "HSV vērtība"
 
 #: operations/common/component-extract.c:31
-#| msgid "Saturation"
 msgid "HSL Saturation"
 msgstr "HSL piesātinājums"
 
 #: operations/common/component-extract.c:32
-#| msgid "Lightness"
 msgid "HSL Lightness"
 msgstr "HSL gaišums"
 
@@ -1161,12 +1172,11 @@ msgid "LCH H(ab)"
 msgstr "LCH H(ab)"
 
 #: operations/common/component-extract.c:45 operations/common/fattal02.c:33
-#: operations/common/noise-perlin.c:25 operations/common/noise-rgb.c:48
+#: operations/common/noise-perlin.c:25 operations/common/noise-rgb.c:52
 msgid "Alpha"
 msgstr "Alfa"
 
 #: operations/common/component-extract.c:48
-#| msgid "Exponent"
 msgid "Component"
 msgstr "Komponents"
 
@@ -1175,17 +1185,14 @@ msgid "Component to extract"
 msgstr "Komponents, ko izvilkt"
 
 #: operations/common/component-extract.c:53
-#| msgid "number of levels per component"
 msgid "Invert component"
 msgstr "Invertēt komponenti"
 
 #: operations/common/component-extract.c:54
-#| msgid "number of levels per component"
 msgid "Invert the extracted component"
 msgstr "Invertēt izvilkto komponenti"
 
 #: operations/common/component-extract.c:56
-#| msgid "Low output"
 msgid "Linear output"
 msgstr "Lineāra izvade"
 
@@ -1194,7 +1201,6 @@ msgid "Use linear output instead of gamma corrected"
 msgstr "Izmantot lineāru izvadi, nevis gamma koriģēto"
 
 #: operations/common/component-extract.c:259
-#| msgid "Exponent"
 msgid "Extract Component"
 msgstr "Izvilkt komponenti"
 
@@ -1219,7 +1225,6 @@ msgid "The contrast curve."
 msgstr "Kontrasta līkne."
 
 #: operations/common/contrast-curve.c:257
-#| msgid "The contrast curve."
 msgid "Contrast Curve"
 msgstr "Kontrasta līkne"
 
@@ -1358,7 +1363,7 @@ msgid "Alpha channel"
 msgstr "Alfa kanāls"
 
 #: operations/common/convolution-matrix.c:64
-#: operations/common/distance-transform.c:52
+#: operations/common/distance-transform.c:46
 msgid "Normalize"
 msgstr "Normalizēt"
 
@@ -1370,11 +1375,11 @@ msgstr "Alfa svēršana"
 msgid "Border"
 msgstr "Mala"
 
-#: operations/common/convolution-matrix.c:618
+#: operations/common/convolution-matrix.c:631
 msgid "Convolution Matrix"
 msgstr "Konvolūcijas matrica"
 
-#: operations/common/convolution-matrix.c:619
+#: operations/common/convolution-matrix.c:632
 msgid "Apply a generic 5x5 convolution matrix"
 msgstr "Pielietot vispārīgu 5x5 konvolūcijas matricu"
 
@@ -1388,12 +1393,10 @@ msgid ""
 msgstr ""
 
 #: operations/common/copy-buffer.c:153
-#| msgid "Crop a buffer"
 msgid "Copy Buffer"
 msgstr "Kopēt buferi"
 
 #: operations/common/copy-buffer.c:156
-#| msgid "Write to an existing GeglBuffer"
 msgid "Writes image data to an already existing buffer"
 msgstr "Raksta attēla datus jau esošā buferī"
 
@@ -1414,8 +1417,8 @@ msgid ""
 "Edge detection with control of edge thickness, based on the difference of "
 "two gaussian blurs"
 msgstr ""
-"Malu noteikšana, ar malu biezuma vadību, balstoties uz divu gausa"
-" apmiglošanas starpību"
+"Malu noteikšana, ar malu biezuma vadību, balstoties uz divu gausa "
+"apmiglošanas starpību"
 
 #: operations/common/display.c:23 operations/external/sdl-display.c:25
 msgid "Window title"
@@ -1426,7 +1429,6 @@ msgid "Title to be given to output window"
 msgstr "Virsraksts, ko dot izvades logam"
 
 #: operations/common/display.c:141
-#| msgid "Display on screen"
 msgid "Display"
 msgstr "Attēlot"
 
@@ -1434,55 +1436,39 @@ msgstr "Attēlot"
 msgid "Display the input buffer in a window."
 msgstr "Rādīt ievades buferi logā."
 
-#: operations/common/distance-transform.c:31
-msgid "Euclidean"
-msgstr "Eiklīda"
-
-#: operations/common/distance-transform.c:32
-msgid "Manhattan"
-msgstr "Manhetena"
-
-#: operations/common/distance-transform.c:33
-msgid "Chessboard"
-msgstr "Šaha galds"
-
-#: operations/common/distance-transform.c:36
+#: operations/common/distance-transform.c:30
 msgid "Metric"
 msgstr "Metrika"
 
-#: operations/common/distance-transform.c:38
+#: operations/common/distance-transform.c:32
 msgid "Metric to use for the distance calculation"
 msgstr "Metrika, ko izmantot attāluma aprēķināšanai"
 
-#: operations/common/distance-transform.c:40
-#| msgid "Threshold"
+#: operations/common/distance-transform.c:34
 msgid "Threshold low"
 msgstr "Slieksnis zems"
 
-#: operations/common/distance-transform.c:43
-#| msgid "Threshold"
+#: operations/common/distance-transform.c:37
 msgid "Threshold high"
 msgstr "Slieksnis augsts"
 
-#: operations/common/distance-transform.c:46
-#| msgid "Grayscale"
+#: operations/common/distance-transform.c:40
 msgid "Grayscale Averaging"
 msgstr "Pelēktoņu vidējā aprēķināšana"
 
-#: operations/common/distance-transform.c:47
+#: operations/common/distance-transform.c:41
 msgid "Number of computations for grayscale averaging"
 msgstr "Pelēktoņu vidējā aprēķināšanas aprēķinu skaits"
 
-#: operations/common/distance-transform.c:53
+#: operations/common/distance-transform.c:47
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normalizēt izvadi uz intervālu 0,0 līdz 1,0."
 
-#: operations/common/distance-transform.c:427
-#| msgid "Transform"
+#: operations/common/distance-transform.c:421
 msgid "Distance Transform"
 msgstr "Diskrētā transformācija"
 
-#: operations/common/distance-transform.c:430
+#: operations/common/distance-transform.c:424
 msgid "Calculate a distance transform"
 msgstr "Aprēķināt attāluma transformāciju"
 
@@ -1491,17 +1477,14 @@ msgid "Red levels"
 msgstr "Sarkanā līmeņi"
 
 #: operations/common/dither.c:28
-#| msgid "Number of bits for red channel"
 msgid "Number of levels for red channel"
 msgstr "Līmeņu skaits sarkanajā kanālā"
 
 #: operations/common/dither.c:32
-#| msgid "Green inversion"
 msgid "Green levels"
 msgstr "Zaļā līmeņi"
 
 #: operations/common/dither.c:33
-#| msgid "Number of bits for green channel"
 msgid "Number of levels for green channel"
 msgstr "Līmeņu skaits zaļajā kanālā"
 
@@ -1510,7 +1493,6 @@ msgid "Blue levels"
 msgstr "Zilā līmeņi"
 
 #: operations/common/dither.c:38
-#| msgid "Number of bits for blue channel"
 msgid "Number of levels for blue channel"
 msgstr "Līmeņu skaits zilajā kanālā"
 
@@ -1519,7 +1501,6 @@ msgid "Alpha levels"
 msgstr "Alfa līmeņi"
 
 #: operations/common/dither.c:43
-#| msgid "Number of bits for alpha channel"
 msgid "Number of levels for alpha channel"
 msgstr "Līmeņu skaits alfa kanālā"
 
@@ -1528,14 +1509,13 @@ msgid "Dithering method"
 msgstr "Pustoņu imitēšanas metode"
 
 #: operations/common/dither.c:49
-#| msgid "The dithering strategy to use"
 msgid "The dithering method to use"
 msgstr "Izmantojamā pustoņu imitēšanas metode"
 
 #: operations/common/dither.c:51 operations/common/noise-cell.c:55
 #: operations/common/noise-cie-lch.c:38 operations/common/noise-hsv.c:40
 #: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
-#: operations/common/noise-rgb.c:51 operations/common/noise-simplex.c:39
+#: operations/common/noise-rgb.c:55 operations/common/noise-simplex.c:39
 #: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
 #: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:88
 #: operations/common-gpl3+/noise-slur.c:40
@@ -1613,22 +1593,18 @@ msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Izveido krītošas ēnas efektu ievades buferī"
 
 #: operations/common/edge-neon.c:48
-#| msgid "Radius of circle around pixel"
 msgid "Radius of effect (in pixels)"
 msgstr "Efekta rādiuss pikseļos"
 
 #: operations/common/edge-neon.c:55
-#| msgid "Intensity Mode"
 msgid "Intensity"
 msgstr "Intensitāte"
 
 #: operations/common/edge-neon.c:56
-#| msgid "Scale, strength of effect"
 msgid "Strength of Effect"
 msgstr "Efekta stiprums"
 
 #: operations/common/edge-neon.c:551
-#| msgid "Edge preservation"
 msgid "Neon Edge Detection"
 msgstr "Neona malu noteikšana"
 
@@ -1637,7 +1613,6 @@ msgid "Performs edge detection using a Gaussian derivative method"
 msgstr ""
 
 #: operations/common/edge-sobel.c:31
-#| msgid "Keep Signal"
 msgid "Keep Sign"
 msgstr "Paturēt zīmi"
 
@@ -1686,13 +1661,11 @@ msgid "Combine Exposures"
 msgstr "Apvienot ekspozīcijas"
 
 #: operations/common/exp-combine.c:1271
-#| msgid "Combine multiple scene exposures into one high range buffer"
 msgid "Combine multiple scene exposures into one high dynamic range image."
 msgstr ""
 "Apvienot vairāku ainu ekspozīcijas vienā augta dinamiskā apgabala attēlā."
 
 #: operations/common/exposure.c:26
-#| msgid "Water level"
 msgid "Black level"
 msgstr "Melnā līmenis"
 
@@ -1741,10 +1714,6 @@ msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Fattal et al. 2002 toņu kartēšana"
 
 #: operations/common/fattal02.c:1334
-#| msgid ""
-#| "Adapt an image, which may have a high dynamic range, for presentation "
-#| "using a low dynamic range. This operator attenuates the magnitudes of "
-#| "local image gradients, producing luminance within the range 0.0-1.0"
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -1754,9 +1723,9 @@ msgid ""
 msgstr ""
 "Adaptēt attēlu, kam var būt augsts dinamiskais apgabals, prezentēšanai, "
 "izmantojot zemu dinamisko apgabalu. Šis operators vājina lokālā attēla krāsu "
-"pāreju lielumu, veidojot spilgtumu apgabalā 0.0-1.0. Šī toņu kartēšanas"
-" pieeja sākotnēji tika prezentēta Raanan Fattal 2002. gada SIGGRAPH rakstā"
-" “Gradient Domain High Dynamic Range Compression”."
+"pāreju lielumu, veidojot spilgtumu apgabalā 0.0-1.0. Šī toņu kartēšanas "
+"pieeja sākotnēji tika prezentēta Raanan Fattal 2002. gada SIGGRAPH rakstā "
+"“Gradient Domain High Dynamic Range Compression”."
 
 #: operations/common/gaussian-blur.c:25 operations/common/gblur-1d.c:39
 msgid "Auto"
@@ -1801,11 +1770,13 @@ msgstr ""
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:31
 #: operations/common-gpl3+/displace.c:42
 #: operations/common-gpl3+/fractal-trace.c:67
+#: operations/common-gpl3+/ripple.c:55 operations/transform/scale.c:102
 msgid "Abyss policy"
 msgstr "Bezdibeņa politika"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
-#: operations/common-gpl3+/displace.c:45
+#: operations/common-gpl3+/displace.c:45 operations/common-gpl3+/ripple.c:58
+#: operations/transform/scale.c:103
 msgid "How image edges are handled"
 msgstr ""
 
@@ -1867,7 +1838,7 @@ msgstr "Datne"
 
 #: operations/common/gegl-buffer-load-op.c:25
 msgid "Path of GeglBuffer file to load."
-msgstr "Ceļš uz ielādējamo GeglBuffer datni."
+msgstr "Ceļš uz GeglBuffer datni, kuru ielādēt."
 
 #: operations/common/gegl-buffer-load-op.c:90
 msgid "GeglBuffer file loader."
@@ -1898,11 +1869,10 @@ msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
 msgstr ""
-"Ir problēma ar sintaksi vai parsēto īpašību vērtību pielietojumu. Kaut kas no"
-" tā var arī strādāt."
+"Ir problēma ar sintaksi vai parsēto īpašību vērtību pielietojumu. Kaut kas "
+"no tā var arī strādāt."
 
 #: operations/common/gegl.c:107
-#| msgid "GEGL graph visualizer."
 msgid "GEGL graph"
 msgstr "GEGL grafs"
 
@@ -1918,7 +1888,6 @@ msgid "Make Grey"
 msgstr "Padarīt pelēku"
 
 #: operations/common/grey.c:146
-#| msgid "Turns the image greyscale"
 msgid "Turns the image grayscale"
 msgstr "Pārvērš attēlu pelēktoņos"
 
@@ -1983,12 +1952,10 @@ msgid "Lightness"
 msgstr "Gaišums"
 
 #: operations/common/hue-chroma.c:34
-#| msgid "Lightness"
 msgid "Lightness adjustment"
 msgstr "Gaišuma pielāgojums"
 
 #: operations/common/hue-chroma.c:110
-#| msgid "Chroma"
 msgid "Hue-Chroma"
 msgstr "Tonis-piesātinājums"
 
@@ -2056,17 +2023,14 @@ msgid "Both"
 msgstr "Abi"
 
 #: operations/common/image-gradient.c:32
-#| msgid "Output format"
 msgid "Output mode"
 msgstr "Izvades režīms"
 
 #: operations/common/image-gradient.c:35
-#| msgid "Output format"
 msgid "Output Mode"
 msgstr "Izvades režīms"
 
 #: operations/common/image-gradient.c:224
-#| msgid "Linear gradient renderer"
 msgid "Image Gradient"
 msgstr "Attēla krāsu pāreja"
 
@@ -2245,7 +2209,6 @@ msgid "The color at (x2, y2)"
 msgstr "Krāsa punktā (x2, y2)"
 
 #: operations/common/linear-gradient.c:139
-#| msgid "Linear gradient renderer"
 msgid "Linear Gradient"
 msgstr "Lineāra krāsu pāreja"
 
@@ -2258,7 +2221,7 @@ msgstr "Lineāras krāsu pārejas attēlotājs"
 #: operations/external/raw-load.c:28 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
-msgstr "Ceļš uz datni, ko ielādēt."
+msgstr "Ceļš uz datni, kuru ielādēt."
 
 #: operations/common/magick-load.c:145
 msgid "Image Magick wrapper using the png op."
@@ -2292,10 +2255,9 @@ msgstr ""
 
 #. XXX: needs better ui type
 #: operations/common/map-absolute.c:22 operations/common/map-relative.c:28
-#: operations/common/panorama-projection.c:57
-#: operations/common-gpl3+/ripple.c:47 operations/common-gpl3+/waves.c:50
-#: operations/workshop/recursive-transform.c:50
-#: operations/workshop/spherize.c:57
+#: operations/common/panorama-projection.c:61
+#: operations/common/recursive-transform.c:50 operations/common/spherize.c:56
+#: operations/common-gpl3+/ripple.c:49 operations/common-gpl3+/waves.c:50
 msgid "Resampling method"
 msgstr ""
 
@@ -2342,9 +2304,9 @@ msgid ""
 "Everything else will be treated as unknown and filled in."
 msgstr ""
 "Ja lietotājs ir devis trūcīgu tri-karti un ievades attēlu, izveidot "
-"priekšplāna alfas matējumu. Iestatiet balto kā priekšplānu un melno kā"
-" dibenplānu "
-"tri-kartei. Viss pārējais tiks uzskatīts par nezināmu un tiks aizpildīts."
+"priekšplāna alfas matējumu. Iestatiet balto kā priekšplānu un melno kā "
+"dibenplānu tri-kartei. Viss pārējais tiks uzskatīts par nezināmu un tiks "
+"aizpildīts."
 
 #: operations/common/mblur.c:25
 msgid "Dampness"
@@ -2358,15 +2320,13 @@ msgstr "Vērtība, kas apzīmē pienesumu no pagātnes jaunajam kadram."
 msgid "Temporal blur"
 msgstr "Pagaidu aizmiglošana"
 
-#. XXX: doesn't really make sense...
-#: operations/common/mblur.c:146
+#: operations/common/mblur.c:145
 msgid ""
 "Accumulating motion blur using a kalman filter, for use with video sequences "
 "of frames."
 msgstr ""
 
 #: operations/common/mean-curvature-blur.c:25
-#| msgid "Maximum number of iterations"
 msgid "Controls the number of iterations"
 msgstr "Kontrolē iterāciju skaitu"
 
@@ -2407,7 +2367,6 @@ msgid "Neighborhood radius"
 msgstr "Apkaimes rādiuss"
 
 #: operations/common/median-blur.c:43
-#| msgid "Percent White"
 msgid "Percentile"
 msgstr "Procentīle"
 
@@ -2416,7 +2375,6 @@ msgid "Neighborhood color percentile"
 msgstr "Apkaimes krāsas procentīle"
 
 #: operations/common/median-blur.c:47
-#| msgid "Alpha channel"
 msgid "Alpha percentile"
 msgstr "Alfa procentīle"
 
@@ -2510,7 +2468,7 @@ msgstr "Apgriezt Y"
 msgid "Y axis ratio for trimming mirror expanse"
 msgstr "Y ass attiecība spoguļa plašumu apgriešanai"
 
-#: operations/common/mirrors.c:74 operations/common/panorama-projection.c:38
+#: operations/common/mirrors.c:74 operations/common/panorama-projection.c:39
 #: operations/common-gpl3+/fractal-explorer.c:58
 #: operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
@@ -2545,7 +2503,6 @@ msgid "Create a kaleidoscope like effect."
 msgstr "Izveidot kaleidoskopa efektu."
 
 #: operations/common/mix.c:25
-#| msgid "Rotation"
 msgid "Ratio"
 msgstr "Samērs"
 
@@ -2554,7 +2511,6 @@ msgid "mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
 msgstr ""
 
 #: operations/common/mix.c:91
-#| msgid "Min"
 msgid "Mix"
 msgstr "Sajaukt"
 
@@ -2567,17 +2523,14 @@ msgid "Preserve luminosity"
 msgstr "Saglabāt spožumu"
 
 #: operations/common/mono-mixer.c:28
-#| msgid "Red channel"
 msgid "Red Channel Multiplier"
 msgstr "Sarkanā kanāla reizinātājs"
 
 #: operations/common/mono-mixer.c:32
-#| msgid "Green channel"
 msgid "Green Channel Multiplier"
 msgstr "Zaļā kanāla reizinātājs"
 
 #: operations/common/mono-mixer.c:36
-#| msgid "Blue channel"
 msgid "Blue Channel Multiplier"
 msgstr "Zilā kanāla reizinātājs"
 
@@ -2600,7 +2553,7 @@ msgstr "Pikseļu aizmiglošanas garums"
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:71
 #: operations/common-gpl3+/motion-blur-circular.c:52
-#: operations/common-gpl3+/ripple.c:43 operations/workshop/linear-sinusoid.c:66
+#: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
 msgid "Angle"
 msgstr "Leņķis"
 
@@ -2609,7 +2562,6 @@ msgid "Angle of blur in degrees"
 msgstr "Aizmiglošanas leņķis grādos"
 
 #: operations/common/motion-blur-linear.c:329
-#| msgid "Linear motion blur"
 msgid "Linear Motion Blur"
 msgstr "Lineārs kustības izplūdums"
 
@@ -2653,7 +2605,6 @@ msgstr ""
 
 #: operations/common/newsprint.c:43
 #: operations/common-gpl3+/video-degradation.c:53
-#| msgid "Bayer pattern"
 msgid "Pattern"
 msgstr "Raksts"
 
@@ -2661,7 +2612,7 @@ msgstr "Raksts"
 msgid "Halftoning/dot pattern to use"
 msgstr ""
 
-#: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:36
+#: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:38
 #: operations/common-gpl3+/waves.c:40
 msgid "Period"
 msgstr "Periods"
@@ -2682,7 +2633,6 @@ msgid "Color saturation dependent compression of period"
 msgstr ""
 
 #: operations/common/newsprint.c:55
-#| msgid "Block size"
 msgid "Blocksize"
 msgstr "Blokizmērs"
 
@@ -2706,7 +2656,6 @@ msgid ""
 msgstr ""
 
 #: operations/common/newsprint.c:63
-#| msgid "Green channel"
 msgid "Black and green angle"
 msgstr "Melns un zaļš leņķis"
 
@@ -2715,32 +2664,26 @@ msgid "angle offset for patterns"
 msgstr "leņķu nobīde rakstiem"
 
 #: operations/common/newsprint.c:72
-#| msgid "Green channel"
 msgid "Green angle"
 msgstr "Zaļais leņķis"
 
 #: operations/common/newsprint.c:73
-#| msgid "Offset angle"
 msgid "Black angle"
 msgstr "Melnais leņķis"
 
 #: operations/common/newsprint.c:75
-#| msgid "Red channel"
 msgid "Red and cyan angle"
 msgstr "Sarkanais un ciāna leņķis"
 
 #: operations/common/newsprint.c:81
-#| msgid "Offset angle"
 msgid "Red angle"
 msgstr "Sarkanais leņķis"
 
 #: operations/common/newsprint.c:82
-#| msgid "Rotation angle"
 msgid "Cyan angle"
 msgstr "Ciāna leņķis"
 
 #: operations/common/newsprint.c:84
-#| msgid "Green channel"
 msgid "Blue and magenta angle"
 msgstr "Zaļais un funksīna leņķis"
 
@@ -2749,7 +2692,6 @@ msgid "Blue angle"
 msgstr "Zilais leņķis"
 
 #: operations/common/newsprint.c:91
-#| msgid "Offset angle"
 msgid "Magenta angle"
 msgstr "Funksīna leņķis"
 
@@ -2804,7 +2746,6 @@ msgid "The random seed for the noise function"
 msgstr "Lanczos funkcijas platums"
 
 #: operations/common/noise-cell.c:432
-#| msgid "Noise"
 msgid "Cell Noise"
 msgstr "Šūnas troksnis"
 
@@ -2830,9 +2771,10 @@ msgstr ""
 msgid "Randomize lightness, chroma and hue independently"
 msgstr "Sajaukt gaišumu, piesātinājumu un toni neatkarīgi"
 
-#: operations/common/noise-hsv.c:37 operations/generated/add.c:29
-#: operations/generated/divide.c:29 operations/generated/gamma.c:29
-#: operations/generated/multiply.c:29 operations/generated/subtract.c:29
+#: operations/common/noise-hsv.c:37 operations/common/noise-rgb.c:42
+#: operations/generated/add.c:29 operations/generated/divide.c:29
+#: operations/generated/gamma.c:29 operations/generated/multiply.c:29
+#: operations/generated/subtract.c:29
 msgid "Value"
 msgstr "Vērtība"
 
@@ -2867,7 +2809,6 @@ msgid "Z offset"
 msgstr "Z nobīde"
 
 #: operations/common/noise-perlin.c:111
-#| msgid "Perlin noise generator"
 msgid "Perlin Noise"
 msgstr "Perlina troksnis"
 
@@ -2916,7 +2857,6 @@ msgid "Control amount of noise for each RGB channel separately"
 msgstr ""
 
 #: operations/common/noise-rgb.c:33
-#| msgid "Linear gradient renderer"
 msgid "Linear RGB"
 msgstr "Lineārs RGB"
 
@@ -2938,24 +2878,23 @@ msgstr ""
 msgid "Red"
 msgstr "Sarkans"
 
-#: operations/common/noise-rgb.c:42
+#: operations/common/noise-rgb.c:44
 msgid "Green"
 msgstr "Zaļš"
 
-#: operations/common/noise-rgb.c:45
+#: operations/common/noise-rgb.c:48
 msgid "Blue"
 msgstr "Zils"
 
-#: operations/common/noise-rgb.c:204
+#: operations/common/noise-rgb.c:208
 msgid "Add RGB Noise"
 msgstr "Pievienot RGB troksni"
 
-#: operations/common/noise-rgb.c:207
+#: operations/common/noise-rgb.c:211
 msgid "Distort colors by random amounts"
 msgstr "Sagroza krāsas nejaušā apjomā"
 
 #: operations/common/noise-simplex.c:332
-#| msgid "Sample points"
 msgid "Simplex Noise"
 msgstr "Simpleks troksnis"
 
@@ -2972,7 +2911,6 @@ msgid "Vertical spread amount"
 msgstr "Vertikālās izklāšanas apmērs"
 
 #: operations/common/noise-spread.c:159
-#| msgid "Noise spread filter"
 msgid "Noise Spread"
 msgstr "Trokšņa izklāšana"
 
@@ -3010,40 +2948,7 @@ msgstr "Atvērt GEGL buferi"
 msgid "Use an on-disk GeglBuffer as data source."
 msgstr "Avots, kas izmanto uz diska esošu GeglBuffer."
 
-#: operations/common/over.c:25 operations/common/sepia.c:28
-#: operations/generated/clear.c:38 operations/generated/color-burn.c:38
-#: operations/generated/color-dodge.c:38 operations/generated/darken.c:38
-#: operations/generated/difference.c:38 operations/generated/dst-atop.c:38
-#: operations/generated/dst.c:38 operations/generated/dst-in.c:38
-#: operations/generated/dst-out.c:38 operations/generated/dst-over.c:38
-#: operations/generated/exclusion.c:38 operations/generated/hard-light.c:38
-#: operations/generated/lighten.c:38 operations/generated/overlay.c:38
-#: operations/generated/plus.c:38 operations/generated/screen.c:38
-#: operations/generated/soft-light.c:38 operations/generated/src-atop.c:38
-#: operations/generated/src.c:38 operations/generated/src-in.c:38
-#: operations/generated/src-out.c:38 operations/generated/xor.c:38
-#: operations/workshop/color-overlay.c:30 operations/workshop/gradient-map.c:36
-msgid "sRGB"
-msgstr "sRGB"
-
-#: operations/common/over.c:26 operations/common/sepia.c:29
-#: operations/generated/clear.c:39 operations/generated/color-burn.c:39
-#: operations/generated/color-dodge.c:39 operations/generated/darken.c:39
-#: operations/generated/difference.c:39 operations/generated/dst-atop.c:39
-#: operations/generated/dst.c:39 operations/generated/dst-in.c:39
-#: operations/generated/dst-out.c:39 operations/generated/dst-over.c:39
-#: operations/generated/exclusion.c:39 operations/generated/hard-light.c:39
-#: operations/generated/lighten.c:39 operations/generated/overlay.c:39
-#: operations/generated/plus.c:39 operations/generated/screen.c:39
-#: operations/generated/soft-light.c:39 operations/generated/src-atop.c:39
-#: operations/generated/src.c:39 operations/generated/src-in.c:39
-#: operations/generated/src-out.c:39 operations/generated/xor.c:39
-#: operations/workshop/color-overlay.c:31
-msgid "Use sRGB gamma instead of linear"
-msgstr "Izmantot sRGB gamma, nevis lineāru"
-
 #: operations/common/over.c:182
-#| msgid "Horizontal position"
 msgid "Normal compositing"
 msgstr "Normāla kompozicionēšana"
 
@@ -3055,60 +2960,75 @@ msgid ""
 "+ cB * (1 - aA))"
 msgstr "Porter Duff operācija: src-over (d = cA + cB * (1.0f - aA))"
 
-#: operations/common/panorama-projection.c:23
+#: operations/common/panorama-projection.c:24
 msgid "Pan"
 msgstr "Panoramēšana"
 
-#: operations/common/panorama-projection.c:24
+#: operations/common/panorama-projection.c:25
 msgid "Horizontal camera panning"
 msgstr "Horizontālā kameras panoramēšana"
 
-#: operations/common/panorama-projection.c:28
+#: operations/common/panorama-projection.c:29
 msgid "Tilt"
 msgstr "Noliekšana"
 
-#: operations/common/panorama-projection.c:29
+#: operations/common/panorama-projection.c:30
 msgid "Vertical camera panning"
 msgstr "Vertikāla kameras panoramēšana"
 
-#: operations/common/panorama-projection.c:34
+#: operations/common/panorama-projection.c:35
 msgid "Spin"
 msgstr "Griezt"
 
-#: operations/common/panorama-projection.c:35
+#: operations/common/panorama-projection.c:36
 msgid "Spin angle around camera axis"
 msgstr "Griezt leņķi ap kameras asi"
 
-#: operations/common/panorama-projection.c:43
+#: operations/common/panorama-projection.c:44
 msgid "output/rendering width in pixels, -1 for input width"
 msgstr ""
 
-#: operations/common/panorama-projection.c:49
+#: operations/common/panorama-projection.c:50
 msgid "output/rendering height in pixels, -1 for input height"
 msgstr ""
 
-#: operations/common/panorama-projection.c:54
+#: operations/common/panorama-projection.c:55
+#, fuzzy
+#| msgid "Transform"
+msgid "Inverse transform"
+msgstr "Pārveidot"
+
+#: operations/common/panorama-projection.c:56
+msgid ""
+"Do the inverse mapping, useful for touching up zenith, nadir or other parts "
+"of panorama."
+msgstr ""
+
+#: operations/common/panorama-projection.c:58
 msgid "Little planet"
 msgstr "Mazā planēta"
 
-#: operations/common/panorama-projection.c:55
+#: operations/common/panorama-projection.c:59
 msgid ""
 "Render a stereographic mapping, a tilt value of 90, which means looking at "
 "nadir provides a good default value."
 msgstr ""
 
-#: operations/common/panorama-projection.c:59
-msgid "Image resampling method to use"
+#: operations/common/panorama-projection.c:63
+msgid ""
+"Image resampling method to use, for good results with double resampling when "
+"retouching panoramas, use nearest to generate the view and cubic or better "
+"for the inverse transform back to panorama."
 msgstr ""
 
-#: operations/common/panorama-projection.c:540
+#: operations/common/panorama-projection.c:602
 msgid "Panorama Projection"
 msgstr "Panorāmas projekcija"
 
-#: operations/common/panorama-projection.c:545
+#: operations/common/panorama-projection.c:607
 msgid ""
-"Perform an equilinear/gnomonic or little planet/stereographic projection of "
-"an equirectangular input image."
+"Do panorama viewer rendering mapping or its inverse for an equirectangular "
+"input image. (2:1 ratio containing 360x180 degree panorama)."
 msgstr ""
 
 #: operations/common/pixelize.c:28
@@ -3165,7 +3085,6 @@ msgid "Color used to fill the background"
 msgstr "Krāsa, ar ko aizpildīt dibenplānu"
 
 #: operations/common/pixelize.c:656
-#| msgid "Pixel depth"
 msgid "Pixelize"
 msgstr "Pikselizēt"
 
@@ -3186,7 +3105,6 @@ msgid "Reduces the number of levels in each color component of the image."
 msgstr "Samazina līmeņu skaitu katrai krāsu komponentei attēlā."
 
 #: operations/common/radial-gradient.c:126
-#| msgid "Radial gradient renderer"
 msgid "Radial Gradient"
 msgstr "Radiāla krāsu pāreja"
 
@@ -3215,13 +3133,78 @@ msgid "Color to render"
 msgstr "Krāsa, ko attēlot"
 
 #: operations/common/rectangle.c:89
-#| msgid "Offset angle"
 msgid "Rectangle"
 msgstr "Taisnstūris"
 
 #: operations/common/rectangle.c:94
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Taisnstūra avots ar fiksētu izmēru un viendabīgu krāsu"
+
+#: operations/common/recursive-transform.c:27 operations/external/path.c:47
+#: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
+#: operations/transform/transform.c:24 operations/transform/transform.c:64
+msgid "Transform"
+msgstr "Pārveidot"
+
+#: operations/common/recursive-transform.c:28
+#, fuzzy
+#| msgid "Transformation string"
+msgid "Transformation matrix, using SVG syntax"
+msgstr "Pārveidošanas virkne"
+
+#: operations/common/recursive-transform.c:30
+#: operations/common/recursive-transform.c:31
+#, fuzzy
+#| msgid "Iteration"
+msgid "First iteration"
+msgstr "Iterācija"
+
+#: operations/common/recursive-transform.c:35 operations/common/slic.c:39
+msgid "Number of iterations"
+msgstr "Iterāciju skaits"
+
+#: operations/common/recursive-transform.c:38
+#, fuzzy
+msgid "Fade color"
+msgstr "Aizpildījuma krāsa"
+
+#: operations/common/recursive-transform.c:39
+msgid ""
+"Color to fade transformed images towards, with a rate depending on its alpha"
+msgstr ""
+
+#: operations/common/recursive-transform.c:42
+#, fuzzy
+#| msgid "Fill opacity"
+msgid "Fade opacity"
+msgstr "Aizpildījuma blīvums"
+
+#: operations/common/recursive-transform.c:43
+msgid "Amount by which to scale the opacity of each transformed image"
+msgstr ""
+
+#: operations/common/recursive-transform.c:47
+msgid "Paste below"
+msgstr ""
+
+#: operations/common/recursive-transform.c:48
+msgid "Paste transformed images below each other"
+msgstr ""
+
+#: operations/common/recursive-transform.c:52 operations/common/spherize.c:58
+#: operations/common-gpl3+/waves.c:52
+msgid "Mathematical method for reconstructing pixel values"
+msgstr ""
+
+#: operations/common/recursive-transform.c:265
+#, fuzzy
+#| msgid "Transform"
+msgid "Recursive Transform"
+msgstr "Pārveidot"
+
+#: operations/common/recursive-transform.c:267
+msgid "Apply a transformation recursively."
+msgstr ""
 
 #: operations/common/reinhard05.c:27
 msgid "Overall brightness of the image"
@@ -3300,7 +3283,7 @@ msgstr ""
 msgid "Clip RGB"
 msgstr ""
 
-#: operations/common/rgb-clip.c:189
+#: operations/common/rgb-clip.c:190
 msgid "Keep RGB pixels values inside a specific range"
 msgstr ""
 
@@ -3308,7 +3291,7 @@ msgstr ""
 msgid "Scale, strength of effect"
 msgstr "Mērogs, efekta stiprums"
 
-#: operations/common/saturation.c:225
+#: operations/common/saturation.c:226
 #, fuzzy
 #| msgid "The value of saturation"
 msgid "Changes the saturation"
@@ -3359,24 +3342,16 @@ msgid "Regions size"
 msgstr "Reģionu izmērs"
 
 #: operations/common/slic.c:29
-#| msgid "Size of each block in pixels"
 msgid "Size of a region side"
 msgstr "Reģiona sāna izmērs"
 
 #: operations/common/slic.c:33
-#| msgid "Compression"
 msgid "Compactness"
 msgstr "Kompaktums"
 
 #: operations/common/slic.c:34
-#| msgid "Tile size"
 msgid "Cluster size"
 msgstr "Klastera izmērs"
-
-#: operations/common/slic.c:39 operations/workshop/recursive-transform.c:35
-#| msgid "Maximum number of iterations"
-msgid "Number of iterations"
-msgstr "Iterāciju skaits"
 
 #: operations/common/slic.c:453
 msgid "Simple Linear Iterative Clustering"
@@ -3399,15 +3374,73 @@ msgid "Symmetric Nearest Neighbour"
 msgstr "Simetriska tuvākā apkaime"
 
 #: operations/common/snn-mean.c:355
-#| msgid ""
-#| "Noise reducing edge enhancing blur filter based  on Symmetric Nearest "
-#| "Neighbours"
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbours"
 msgstr ""
 "Trokšņu mazinošs, malas saglabājošs, aizmiglošanas filtrs, kas balstīts uz "
 "Simetriskā Tuvākā Apkaime"
+
+#: operations/common/spherize.c:25
+#, fuzzy
+#| msgid "Radius"
+msgid "Radial"
+msgstr "Rādiuss"
+
+#: operations/common/spherize.c:30 operations/common-gpl3+/value-propagate.c:38
+msgid "Mode"
+msgstr ""
+
+#: operations/common/spherize.c:33 operations/common-gpl3+/displace.c:32
+msgid "Displacement mode"
+msgstr "Pārvietošanas režīms"
+
+#: operations/common/spherize.c:35
+msgid "Angle of view"
+msgstr ""
+
+#: operations/common/spherize.c:36
+msgid "Camera angle of view"
+msgstr ""
+
+#: operations/common/spherize.c:40
+#, fuzzy
+#| msgid "Curve"
+msgid "Curvature"
+msgstr "Līkne"
+
+#: operations/common/spherize.c:41
+msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
+msgstr ""
+
+#. note that the code can handle negative curvatures
+#. * (in the [-1, 0) range), in which case the image is
+#. * wrapped around the back face, rather than the front
+#. * face, of the spherical cap.  we disable negative
+#. * curvatures atm, in particular, since they produce
+#. * the same result when the angle of view is 0, and
+#. * since their upper-bound, wrt the angle of view, is
+#. * arbitrary.
+#.
+#: operations/common/spherize.c:52 operations/common-gpl3+/edge.c:42
+msgid "Amount"
+msgstr "Apjoms"
+
+#: operations/common/spherize.c:53
+msgid ""
+"Displacement scaling factor (negative values refer to the inverse "
+"displacement)"
+msgstr ""
+
+#: operations/common/spherize.c:325
+#, fuzzy
+#| msgid "Vertical"
+msgid "Spherize"
+msgstr "Vertikāls"
+
+#: operations/common/spherize.c:328
+msgid "Wrap image around a spherical cap"
+msgstr ""
 
 #: operations/common/stress.c:28
 msgid ""
@@ -3443,12 +3476,23 @@ msgstr "Paturēt krāsas"
 msgid "Impact each channel with the same amount"
 msgstr "Katru kanālu ietekmēt vienādā mērā"
 
-#: operations/common/stretch-contrast.c:568
-#| msgid "Contrast"
+#: operations/common/stretch-contrast.c:28
+#, fuzzy
+#| msgid "Invert component"
+msgid "Non-linear components"
+msgstr "Invertēt komponenti"
+
+#: operations/common/stretch-contrast.c:29
+msgid ""
+"When set operate on gamma corrected values instead of linear RGB - acting "
+"like the old normalize filter in GIMP"
+msgstr ""
+
+#: operations/common/stretch-contrast.c:582
 msgid "Stretch Contrast"
 msgstr "Izstiept kontrastu"
 
-#: operations/common/stretch-contrast.c:571
+#: operations/common/stretch-contrast.c:585
 msgid ""
 "Scales the components of the buffer to be in the 0.0-1.0 range. This "
 "improves images that make poor use of the available contrast (little "
@@ -3471,8 +3515,8 @@ msgid ""
 msgstr ""
 "Mērogo bufera komponentes, lai būtu apgabalā 0.0-1.0. Tas uzlabo attēlu, kas "
 "pilnībā neizmanto pieejamo kontrastu (mazs kontrasts, ļoti tumšs vai ļoti "
-"gaišs attēls). Šī versija atšķiras no kontrasta automātiskas izstiepšanas, jo"
-" tas darbojas HSV telpā un saglabā toņus."
+"gaišs attēls). Šī versija atšķiras no kontrasta automātiskas izstiepšanas, "
+"jo tas darbojas HSV telpā un saglabā toņus."
 
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
@@ -3485,7 +3529,6 @@ msgid "list of <number>s"
 msgstr "saraksts ar <skaitļ>iem"
 
 #: operations/common/svg-huerotate.c:118
-#| msgid "JPG image loader"
 msgid "SVG Hue Rotate"
 msgstr "SVG toņu pagriešana"
 
@@ -3510,7 +3553,6 @@ msgid "SVG color matrix operation svg_matrix"
 msgstr "SVG krāsu matricas operācija svg_matrix"
 
 #: operations/common/svg-saturate.c:128
-#| msgid "Saturation"
 msgid "SVG Saturate"
 msgstr "SVG piesātināt"
 
@@ -3591,7 +3633,6 @@ msgid ""
 msgstr ""
 
 #: operations/common/value-invert.c:148
-#| msgid "Blue inversion"
 msgid "Value Invert"
 msgstr "Invertēt pēc vērtības"
 
@@ -3670,7 +3711,6 @@ msgstr ""
 "analogajā fotografēšanā."
 
 #: operations/common/warp.c:26
-#| msgid "Wrong pixels"
 msgid "Move pixels"
 msgstr "Pārvietot pikseļus"
 
@@ -3699,7 +3739,6 @@ msgid "Erase warping"
 msgstr "Dzēst liekšanu"
 
 #: operations/common/warp.c:32
-#| msgid "Smoothing"
 msgid "Smooth warping"
 msgstr "Gludināt liekšanu"
 
@@ -3736,7 +3775,6 @@ msgid "Average"
 msgstr "Vidējais"
 
 #: operations/common/waterpixels.c:38
-#| msgid "Vertical size"
 msgid "Superpixels size"
 msgstr "Virspirkseļu izmērs"
 
@@ -3810,12 +3848,10 @@ msgid "A pre-existing GeglBuffer to write incoming buffer data to."
 msgstr ""
 
 #: operations/common/write-buffer.c:146
-#| msgid "Shears the buffer"
 msgid "Write Buffer"
 msgstr "Rakstīt buferi"
 
 #: operations/common/write-buffer.c:148
-#| msgid "A GEGL buffer destination surface."
 msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr "Rakstīt ievades datus esošā GEGL bufera mērķa virsmā."
 
@@ -3850,7 +3886,6 @@ msgid ""
 msgstr ""
 
 #: operations/common-gpl3+/bump-map.c:34
-#| msgid "Vertical"
 msgid "Spherical"
 msgstr "Sfērisks"
 
@@ -3934,7 +3969,6 @@ msgid "Percent black"
 msgstr "Procenti melns"
 
 #: operations/common-gpl3+/cartoon.c:302
-#| msgid "Cartoon effect"
 msgid "Cartoon"
 msgstr "Karikatūra"
 
@@ -3947,7 +3981,6 @@ msgstr ""
 
 #. Red channel
 #: operations/common-gpl3+/channel-mixer.c:34
-#| msgid "Red channel"
 msgid "Red in Red channel"
 msgstr "Sarkanais sarkanajā kanālā"
 
@@ -3956,7 +3989,6 @@ msgid "Set the red amount for the red channel"
 msgstr "Iestata sarkanās krāsas daudzumu sarkanajā kanālā"
 
 #: operations/common-gpl3+/channel-mixer.c:38
-#| msgid "Green channel"
 msgid "Green in Red channel"
 msgstr "Zaļais sarkanajā kanālā"
 
@@ -3965,7 +3997,6 @@ msgid "Set the green amount for the red channel"
 msgstr "Iestata zaļās krāsas daudzumu sarkanajā kanālā"
 
 #: operations/common-gpl3+/channel-mixer.c:42
-#| msgid "Blue channel"
 msgid "Blue in Red channel"
 msgstr "Zilais sarkanajā kanālā"
 
@@ -3975,7 +4006,6 @@ msgstr "Iestata zilās krāsas daudzumu sarkanajā kanālā"
 
 #. Green channel
 #: operations/common-gpl3+/channel-mixer.c:47
-#| msgid "Green channel"
 msgid "Red in Green channel"
 msgstr "Sarkanais zaļajā kanālā"
 
@@ -3984,7 +4014,6 @@ msgid "Set the red amount for the green channel"
 msgstr "Iestata sarkanās krāsas daudzumu zaļajā kanālā"
 
 #: operations/common-gpl3+/channel-mixer.c:51
-#| msgid "Green channel"
 msgid "Green for Green channel"
 msgstr "Zaļais zaļajā kanālā"
 
@@ -3993,7 +4022,6 @@ msgid "Set the green amount for the green channel"
 msgstr "Iestata zaļās krāsas daudzumu zaļajā kanālā"
 
 #: operations/common-gpl3+/channel-mixer.c:55
-#| msgid "Green channel"
 msgid "Blue in Green channel"
 msgstr "Zilais zaļajā kanālā"
 
@@ -4003,7 +4031,6 @@ msgstr "Iestata zilās krāsas daudzumu zaļajā kanālā"
 
 #. Blue channel
 #: operations/common-gpl3+/channel-mixer.c:60
-#| msgid "Blue channel"
 msgid "Red in Blue channel"
 msgstr "Sarkanais zilajā kanālā"
 
@@ -4012,7 +4039,6 @@ msgid "Set the red amount for the blue channel"
 msgstr "Iestata sarkanās krāsas daudzumu zilajā kanālā"
 
 #: operations/common-gpl3+/channel-mixer.c:64
-#| msgid "Green channel"
 msgid "Green in Blue channel"
 msgstr "Zaļais zilajā kanālā"
 
@@ -4021,7 +4047,6 @@ msgid "Set the green amount for the blue channel"
 msgstr "Iestata zaļās krāsas daudzumu zilajā kanālā"
 
 #: operations/common-gpl3+/channel-mixer.c:68
-#| msgid "Blue channel"
 msgid "Blue in Blue channel"
 msgstr "Zilais zilajā kanālā"
 
@@ -4039,17 +4064,14 @@ msgid ""
 msgstr ""
 
 #: operations/common-gpl3+/color-exchange.c:31
-#| msgid "Stroke Color"
 msgid "From Color"
 msgstr "No krāsas"
 
 #: operations/common-gpl3+/color-exchange.c:32
-#| msgid "The contrast curve."
 msgid "The color to change."
 msgstr "Krāsa, ko mainīt."
 
 #: operations/common-gpl3+/color-exchange.c:34
-#| msgid "Color"
 msgid "To Color"
 msgstr "Uz krāsu"
 
@@ -4058,7 +4080,6 @@ msgid "Replacement color."
 msgstr "Aizvietojuma krāsa."
 
 #: operations/common-gpl3+/color-exchange.c:37
-#| msgid "Threshold"
 msgid "Red Threshold"
 msgstr "Sarkanās slieksnis"
 
@@ -4075,7 +4096,6 @@ msgid "Green threshold of the input color"
 msgstr "Zaļās krāsas slieksnis ievades krāsā"
 
 #: operations/common-gpl3+/color-exchange.c:45
-#| msgid "Threshold"
 msgid "Blue Threshold"
 msgstr "Zilās slieksnis"
 
@@ -4092,8 +4112,8 @@ msgid ""
 "Exchange one color with another, optionally setting a threshold to convert "
 "from one shade to another."
 msgstr ""
-"Aizvietot vienu krāsu ar citu, var iestatīt slieksni, lai pārveidotu vienu"
-" nokrāsu uz otru."
+"Aizvietot vienu krāsu ar citu, var iestatīt slieksni, lai pārveidotu vienu "
+"nokrāsu uz otru."
 
 #: operations/common-gpl3+/color-to-alpha.c:30
 msgid "The color to make transparent."
@@ -4150,8 +4170,8 @@ msgid ""
 "Convert the image into randomly rotated square blobs, somehow resembling a "
 "cubist painting style"
 msgstr ""
-"Pārveidot attēlu par nejauši pagrieztiem kvadrātiskiem blokiem, kas kaut kādā"
-" mērā līdzinās kubistu gleznošanas stilam"
+"Pārveidot attēlu par nejauši pagrieztiem kvadrātiskiem blokiem, kas kaut "
+"kādā mērā līdzinās kubistu gleznošanas stilam"
 
 #: operations/common-gpl3+/deinterlace.c:31
 msgid "Keep even fields"
@@ -4203,47 +4223,38 @@ msgid "Light frequency (blue)"
 msgstr "Gaismas frekvence (zils)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:42
-#| msgid "Red bits"
 msgid "Red contours"
 msgstr "Sarkanas kontūras"
 
 #: operations/common-gpl3+/diffraction-patterns.c:43
-#| msgid "Number of colors"
 msgid "Number of contours (red)"
 msgstr "Kontūru skaits (sarkans)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:46
-#| msgid "Green bits"
 msgid "Green contours"
 msgstr "Zaļās kontūras"
 
 #: operations/common-gpl3+/diffraction-patterns.c:47
-#| msgid "Number of colors"
 msgid "Number of contours (green)"
 msgstr "Kontūru skaits (zaļš)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:50
-#| msgid "Blue bits"
 msgid "Blue contours"
 msgstr "Zilās kontūras"
 
 #: operations/common-gpl3+/diffraction-patterns.c:51
-#| msgid "Number of colors"
 msgid "Number of contours (blue)"
 msgstr "Kontūru skaits (zils)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:54
-#| msgid "Hard edges"
 msgid "Red sharp edges"
 msgstr "Sarkanas asas malas"
 
 #: operations/common-gpl3+/diffraction-patterns.c:55
-#| msgid "Number of downsampled levels to use"
 msgid "Number of sharp edges (red)"
 msgstr "Aso malu skaits (sarkans)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:58
-#| msgid "Green stretch"
 msgid "Green sharp edges"
 msgstr "Zaļas asas malas"
 
@@ -4252,12 +4263,10 @@ msgid "Number of sharp edges (green)"
 msgstr "Aso malu skaits (zaļš)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:62
-#| msgid "Hard edges"
 msgid "Blue sharp edges"
 msgstr "Zilas asas malas"
 
 #: operations/common-gpl3+/diffraction-patterns.c:63
-#| msgid "Number of downsampled levels to use"
 msgid "Number of sharp edges (blue)"
 msgstr "Aso malu skaits (zils)"
 
@@ -4275,7 +4284,6 @@ msgstr "Izkliede (ātrums pret kvalitāti)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:74
 #: operations/common-gpl3+/diffraction-patterns.c:75
-#| msgid "Randomization"
 msgid "Polarization"
 msgstr "Polarizācija"
 
@@ -4304,20 +4312,15 @@ msgid "Cartesian"
 msgstr "Dekarta"
 
 #: operations/common-gpl3+/displace.c:29
-#| msgid "To polar"
 msgid "Polar"
 msgstr "Polārās"
-
-#: operations/common-gpl3+/displace.c:32 operations/workshop/spherize.c:34
-msgid "Displacement mode"
-msgstr "Pārvietošanas režīms"
 
 #: operations/common-gpl3+/displace.c:35
 msgid "Mode of displacement"
 msgstr "Pārvietošanas režīms"
 
 #: operations/common-gpl3+/displace.c:37 operations/external/npd.c:47
-#: operations/transform/transform-core.c:225 operations/workshop/ditto.c:27
+#: operations/transform/transform-core.c:224 operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Paraugs"
 
@@ -4334,7 +4337,6 @@ msgid "Displace multiplier for X or radial direction"
 msgstr ""
 
 #: operations/common-gpl3+/displace.c:55
-#| msgid "Horizontal extent"
 msgid "Horizontal displacement"
 msgstr "Horizontālais pārvietojums"
 
@@ -4360,7 +4362,6 @@ msgid "Displace multiplier for Y or tangent (degrees) direction"
 msgstr ""
 
 #: operations/common-gpl3+/displace.c:70
-#| msgid "Vertical extent"
 msgid "Vertical displacement"
 msgstr "Vertikālais pārvietojums"
 
@@ -4400,7 +4401,6 @@ msgid "Y coordinate of the displacement center"
 msgstr "Lēcas vidus koordinātas"
 
 #: operations/common-gpl3+/displace.c:476
-#| msgid "Display on screen"
 msgid "Displace"
 msgstr "Pārvietot"
 
@@ -4425,7 +4425,6 @@ msgid "Roberts"
 msgstr "Roberts"
 
 #: operations/common-gpl3+/edge.c:33
-#| msgid "Percentile"
 msgid "Differential"
 msgstr "Diferenciāls"
 
@@ -4441,26 +4440,11 @@ msgstr "Algoritms"
 msgid "Edge detection algorithm"
 msgstr "Malu noteikšanas algoritms"
 
-#. note that the code can handle negative curvatures
-#. * (in the [-1, 0) range), in which case the image is
-#. * wrapped around the back face, rather than the front
-#. * face, of the spherical cap.  we disable negative
-#. * curvatures atm, in particular, since they produce
-#. * the same result when the angle of view is 0, and
-#. * since their upper-bound, wrt the angle of view, is
-#. * arbitrary.
-#.
-#: operations/common-gpl3+/edge.c:42 operations/workshop/spherize.c:53
-#| msgid "Amount of red"
-msgid "Amount"
-msgstr "Apjoms"
-
 #: operations/common-gpl3+/edge.c:43
 msgid "Edge detection amount"
 msgstr "Malu noteikšanas apjoms"
 
 #: operations/common-gpl3+/edge.c:47
-#| msgid "Behavior"
 msgid "Border behavior"
 msgstr "Malas uzvedība"
 
@@ -4468,12 +4452,11 @@ msgstr "Malas uzvedība"
 msgid "Edge detection behavior"
 msgstr "Malu noteikšanas uzvedība"
 
-#: operations/common-gpl3+/edge.c:351
-#| msgid "Edge preservation"
+#: operations/common-gpl3+/edge.c:363
 msgid "Edge Detection"
 msgstr "Malu noteikšana"
 
-#: operations/common-gpl3+/edge.c:356
+#: operations/common-gpl3+/edge.c:367
 msgid "Several simple methods for detecting edges"
 msgstr "Dažas vienkāršas metodes malu noteikšanai"
 
@@ -4532,13 +4515,11 @@ msgid "Engrave"
 msgstr "Gravēt"
 
 #: operations/common-gpl3+/engrave.c:204
-#| msgid "Emulate an oil painting"
 msgid "Simulate an antique engraving"
 msgstr "Imitēt antīku gravīru"
 
 #: operations/common-gpl3+/fractal-explorer.c:31
 #: operations/common-gpl3+/fractal-trace.c:26
-#| msgid "Mandelbrot set renderer"
 msgid "Mandelbrot"
 msgstr "Mandelbrots"
 
@@ -4636,7 +4617,7 @@ msgid "Blue stretching factor"
 msgstr "Zilā izvērsuma koeficients"
 
 #: operations/common-gpl3+/fractal-explorer.c:94
-#: operations/common-gpl3+/ripple.c:28
+#: operations/common-gpl3+/ripple.c:29
 msgid "Sine"
 msgstr "Sinuss"
 
@@ -4739,7 +4720,6 @@ msgid "Unsupported fractal type"
 msgstr "Neatbalstīts fraktāļa tips"
 
 #: operations/common-gpl3+/fractal-trace.c:250
-#| msgid "Fractal type"
 msgid "Fractal Trace"
 msgstr "Fraktāļu izsekošana"
 
@@ -4753,7 +4733,6 @@ msgid "Max. delta"
 msgstr "Maksimālā atšķirība"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:35
-#| msgid "Maximum difference"
 msgid "Maximum delta"
 msgstr "Maksimālā atšķirība"
 
@@ -4778,7 +4757,6 @@ msgid "Division"
 msgstr "Dalīšana"
 
 #: operations/common-gpl3+/illusion.c:33
-#| msgid "The value of the divisor"
 msgid "The number of divisions"
 msgstr "Dalījumu skaits"
 
@@ -4795,7 +4773,6 @@ msgid "Illusion"
 msgstr "Ilūzija"
 
 #: operations/common-gpl3+/illusion.c:276
-#| msgid "Performs fractal trace on the image"
 msgid "Superimpose many altered copies of the image."
 msgstr "Uzlikt virsū vairākas mainītas attēla kopijas."
 
@@ -4836,7 +4813,6 @@ msgid "Adjust brightness in corners"
 msgstr "Pielāgot gaišumu stūros"
 
 #: operations/common-gpl3+/lens-distortion.c:501
-#| msgid "Tile saturation"
 msgid "Lens Distortion"
 msgstr "Lēcas deformācija"
 
@@ -4845,7 +4821,6 @@ msgid "Corrects barrel or pincushion lens distortion."
 msgstr "Labo mucas vai adatu spilvena lēcu deformācijas."
 
 #: operations/common-gpl3+/lens-flare.c:28
-#| msgid "X1 value, position"
 msgid "X position"
 msgstr "X pozīcija"
 
@@ -4874,7 +4849,6 @@ msgid "Adds a lens flare effect."
 msgstr "Pievieno lēcas parazītiskā apgaismojuma efektu."
 
 #: operations/common-gpl3+/maze.c:36
-#| msgid "Depth"
 msgid "Depth first"
 msgstr "Dziļums vispirms"
 
@@ -4884,99 +4858,92 @@ msgstr "Prima algoritms"
 
 #: operations/common-gpl3+/maze.c:56
 msgid "Algorithm type"
-msgstr ""
+msgstr "Algoritma tips"
 
 #: operations/common-gpl3+/maze.c:59
 msgid "Maze algorithm type"
-msgstr ""
+msgstr "Labirinta algoritma tips"
 
 #: operations/common-gpl3+/maze.c:61 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:53
+#: operations/common-gpl3+/ripple.c:60
 msgid "Tileable"
 msgstr "Flīzējams"
 
 #: operations/common-gpl3+/maze.c:65
-#, fuzzy
 msgid "Foreground Color"
-msgstr "Fons"
+msgstr "Priekšplāna krāsa"
 
 #: operations/common-gpl3+/maze.c:66
-#, fuzzy
 msgid "The foreground color"
-msgstr "Fons"
+msgstr "Priekšplāna krāsa"
 
 #: operations/common-gpl3+/maze.c:69
-#, fuzzy
 msgid "Background Color"
-msgstr "Fons"
+msgstr "Dibenplāna krāsa"
 
 #: operations/common-gpl3+/maze.c:70
-#, fuzzy
 msgid "The background color"
-msgstr "Fons"
+msgstr "Dibenplāna krāsa"
 
 #: operations/common-gpl3+/maze.c:731
 msgid "Maze"
-msgstr ""
+msgstr "Labirints"
 
 #: operations/common-gpl3+/maze.c:736
 msgid "Draw a labyrinth"
-msgstr ""
+msgstr "Zīmēt labirintu"
 
 #: operations/common-gpl3+/mosaic.c:32
 msgid "Squares"
-msgstr ""
+msgstr "Kvadrāti"
 
 #: operations/common-gpl3+/mosaic.c:33
 msgid "Hexagons"
-msgstr ""
+msgstr "Sešstūri"
 
 #: operations/common-gpl3+/mosaic.c:34
 msgid "Octagons"
-msgstr ""
+msgstr "Astoņstūri"
 
 #: operations/common-gpl3+/mosaic.c:35
 msgid "Triangles"
-msgstr ""
+msgstr "Trijstūri"
 
 #: operations/common-gpl3+/mosaic.c:38
 msgid "Tile geometry"
-msgstr ""
+msgstr "Flīžu ģeometrija"
 
 #: operations/common-gpl3+/mosaic.c:40
 msgid "What shape to use for tiles"
-msgstr ""
+msgstr "Kādu formu izmantot flīzēm"
 
 #: operations/common-gpl3+/mosaic.c:48
-#, fuzzy
 msgid "Tile height"
-msgstr "Līnijas augstums"
+msgstr "Flīzes augstums"
 
 #: operations/common-gpl3+/mosaic.c:49
-#, fuzzy
 msgid "Apparent height of each tile (in pixels)"
-msgstr "Aptuvenais teksta augstums pikseļos."
+msgstr "Aptuvenais augstums katrai flīzei, pikseļos"
 
 #: operations/common-gpl3+/mosaic.c:53
 msgid "Tile neatness"
-msgstr ""
+msgstr "Flīžu sakārtotība"
 
 #: operations/common-gpl3+/mosaic.c:54
 msgid "Deviation from perfectly formed tiles"
-msgstr ""
+msgstr "Novirze no ideāli formētām flīzēm"
 
 #: operations/common-gpl3+/mosaic.c:57
-#, fuzzy
 msgid "Tile color variation"
-msgstr "Flīzes piesātinājums"
+msgstr "Flīžu krāsu variācija"
 
 #: operations/common-gpl3+/mosaic.c:61
 msgid "Color averaging"
-msgstr ""
+msgstr "Krāsu vidējais"
 
 #: operations/common-gpl3+/mosaic.c:62
 msgid "Tile color based on average of subsumed pixels"
-msgstr ""
+msgstr "Flīžu krāsa balstīta uz ietilpināto pikseļu vidējās vērtības"
 
 #: operations/common-gpl3+/mosaic.c:64
 msgid "Rough tile surface"
@@ -4995,40 +4962,36 @@ msgid "Allows splitting tiles at hard edges"
 msgstr ""
 
 #: operations/common-gpl3+/mosaic.c:70
-#, fuzzy
 msgid "Tile spacing"
-msgstr "Flīzes izmērs"
+msgstr "Flīžu atstatums"
 
 #: operations/common-gpl3+/mosaic.c:71
 msgid "Inter-tile spacing (in pixels)"
 msgstr ""
 
 #: operations/common-gpl3+/mosaic.c:76
-#, fuzzy
 msgid "Joints color"
-msgstr "Otra krāsa"
+msgstr "Savienojumu krāsa"
 
 #: operations/common-gpl3+/mosaic.c:78
-#, fuzzy
 msgid "Light color"
-msgstr "Lauciņa augstums"
+msgstr "Gaismas krāsa"
 
 #: operations/common-gpl3+/mosaic.c:80
-#, fuzzy
 msgid "Light direction"
-msgstr "Nobīdes virziens"
+msgstr "Gaismas virziens"
 
 #: operations/common-gpl3+/mosaic.c:85
 msgid "Antialiasing"
-msgstr ""
+msgstr "Nogludināšana"
 
 #: operations/common-gpl3+/mosaic.c:86
 msgid "Enables smoother tile output"
-msgstr ""
+msgstr "Ieslēdz gludāku flīžu izvadi"
 
 #: operations/common-gpl3+/mosaic.c:2466
 msgid "Mosaic"
-msgstr ""
+msgstr "Mozaīka"
 
 #: operations/common-gpl3+/mosaic.c:2470
 msgid ""
@@ -5042,29 +5005,24 @@ msgid "Rotation blur angle. A large angle may take some time to render"
 msgstr ""
 
 #: operations/common-gpl3+/motion-blur-circular.c:423
-#, fuzzy
 msgid "Circular Motion Blur"
-msgstr "Lineārs kustības izplūdums"
+msgstr "Apļveida kustības izplūdums"
 
 #: operations/common-gpl3+/motion-blur-circular.c:428
-#, fuzzy
 msgid "Circular motion blur"
-msgstr "Lineārs kustības izplūdums"
+msgstr "Apļveida kustības izplūdums"
 
 #: operations/common-gpl3+/motion-blur-zoom.c:50
-#, fuzzy
 msgid "Blurring factor"
-msgstr "Zilā izvērsuma koeficients"
+msgstr "Izpludināšanas koeficients"
 
 #: operations/common-gpl3+/motion-blur-zoom.c:242
-#, fuzzy
 msgid "Zooming Motion Blur"
-msgstr "Lineārs kustības izplūdums"
+msgstr "Tālummaiņas kustības izplūdums"
 
 #: operations/common-gpl3+/motion-blur-zoom.c:247
-#, fuzzy
 msgid "Zoom motion blur"
-msgstr "Lineārs kustības izplūdums"
+msgstr "Tālummaiņas kustības izplūdums"
 
 #: operations/common-gpl3+/noise-slur.c:157
 #, fuzzy
@@ -5077,58 +5035,51 @@ msgid "Randomly slide some pixels downward (similar to melting)"
 msgstr "Nejauši noslidināt lejup dažus pikseļus (līdzīgi kušanai)"
 
 #: operations/common-gpl3+/noise-solid.c:37
-#, fuzzy
 #| msgid "Size"
 msgid "X Size"
-msgstr "Izmērs"
+msgstr "X izmērs"
 
 #: operations/common-gpl3+/noise-solid.c:38
-#, fuzzy
 #| msgid "Horizontal size"
 msgid "Horizontal texture size"
-msgstr "Horizontālais izmērs"
+msgstr "Horizontālais tekstūras izmērs"
 
 #: operations/common-gpl3+/noise-solid.c:44
-#, fuzzy
 #| msgid "Size"
 msgid "Y Size"
-msgstr "Izmērs"
+msgstr "Y izmērs"
 
 #: operations/common-gpl3+/noise-solid.c:45
-#, fuzzy
 #| msgid "Vertical size"
 msgid "Vertical texture size"
-msgstr "Vertikālais izmērs"
+msgstr "Vertikālais tekstūras izmērs"
 
 #: operations/common-gpl3+/noise-solid.c:52
-#, fuzzy
 #| msgid "Detail"
 msgid "Detail level"
-msgstr "Detaļas"
+msgstr "Detalizētības līmenis"
 
 #: operations/common-gpl3+/noise-solid.c:57
 msgid "Create a tileable output"
-msgstr ""
+msgstr "Izveidot flīzējamu izvadi"
 
 #: operations/common-gpl3+/noise-solid.c:59
-#, fuzzy
 #| msgid "Turbulence"
 msgid "Turbulent"
-msgstr "Turbulence"
+msgstr "Turbulents"
 
 #: operations/common-gpl3+/noise-solid.c:60
 msgid "Make a turbulent noise"
-msgstr ""
+msgstr "Izveidot turbulentu troksni"
 
 #: operations/common-gpl3+/noise-solid.c:346
-#, fuzzy
 #| msgid "Noise"
 msgid "Solid Noise"
-msgstr "Troksnis"
+msgstr "Vienlaidu troksnis"
 
 #: operations/common-gpl3+/noise-solid.c:351
 msgid "Create a random cloud-like texture"
-msgstr ""
+msgstr "Izveidot nejaušu, mākoņainu tekstūru"
 
 #: operations/common-gpl3+/oilify.c:27 operations/common-gpl3+/photocopy.c:25
 msgid "Mask Radius"
@@ -5150,9 +5101,8 @@ msgid "Number of intensities"
 msgstr "Iterāciju skaits"
 
 #: operations/common-gpl3+/oilify.c:37
-#, fuzzy
 msgid "Histogram size"
-msgstr "Horizontālais izmērs"
+msgstr "Histogrammas izmērs"
 
 #: operations/common-gpl3+/oilify.c:40
 msgid "Intensity Mode"
@@ -5164,7 +5114,7 @@ msgstr "Lietot pikseļa spilgtuma vērtības"
 
 #: operations/common-gpl3+/oilify.c:480
 msgid "Oilify"
-msgstr ""
+msgstr "Rada eļļas gleznas efektu"
 
 #: operations/common-gpl3+/oilify.c:483
 msgid "Emulate an oil painting"
@@ -5183,14 +5133,13 @@ msgid "Percent White"
 msgstr "Procenti balts"
 
 #: operations/common-gpl3+/photocopy.c:329
-#, fuzzy
 #| msgid "Photocopy effect"
 msgid "Photocopy"
-msgstr "Fotokopijas efekts"
+msgstr "Fotokopija"
 
 #: operations/common-gpl3+/photocopy.c:331
 msgid "Simulate color distortion produced by a copy machine"
-msgstr ""
+msgstr "Imitēt krāsu deformāciju, ko rada kopēšanas mašīna"
 
 #: operations/common-gpl3+/plasma.c:37
 msgid "High values give more variation in details"
@@ -5198,19 +5147,19 @@ msgstr ""
 
 #: operations/common-gpl3+/plasma.c:41
 msgid "X start of the generated buffer"
-msgstr ""
+msgstr "Ģenerētā bufera X sākums"
 
 #: operations/common-gpl3+/plasma.c:48
 msgid "Y start of the generated buffer"
-msgstr ""
+msgstr "Ģenerētā bufera Y sākums"
 
 #: operations/common-gpl3+/plasma.c:422
 msgid "Plasma"
-msgstr ""
+msgstr "Plazma"
 
 #: operations/common-gpl3+/plasma.c:427
 msgid "Creates an image filled with a plasma effect."
-msgstr ""
+msgstr "Izveido attēlu, kas aizpildīts ar plazmas efektu."
 
 #: operations/common-gpl3+/polar-coordinates.c:34
 msgid "Circle depth in percent"
@@ -5258,92 +5207,91 @@ msgid "Let origin point to be the middle one"
 msgstr "Ļaut sākuma punktam būt viduspunktam"
 
 #: operations/common-gpl3+/polar-coordinates.c:421
-#, fuzzy
 #| msgid "Real coordinate"
 msgid "Polar Coordinates"
-msgstr "Reālā koordināta"
+msgstr "Polārās koordinātas"
 
 #: operations/common-gpl3+/polar-coordinates.c:426
-#, fuzzy
 msgid "Convert image to or from polar coordinates"
-msgstr "Sākuma punkts polārajām koordinātām"
+msgstr "Pārveidot attēlu no vai uz polārajām koordinātām"
 
 #: operations/common-gpl3+/red-eye-removal.c:32
-#, fuzzy
 msgid "Red eye threshold"
-msgstr "Sliekšņa vērtība"
+msgstr "Sarkano acu slieksnis"
 
 #: operations/common-gpl3+/red-eye-removal.c:170
-#, fuzzy
 msgid "Red Eye Removal"
-msgstr "Sliekšņa vērtība"
+msgstr "Sarkano acu noņemšana"
 
 #: operations/common-gpl3+/red-eye-removal.c:174
 msgid "Remove the red eye effect caused by camera flashes"
-msgstr ""
+msgstr "Noņemt sarkano acu efektu, ko rada fotoaparāta zibspuldzes"
 
-#: operations/common-gpl3+/ripple.c:29
+#: operations/common-gpl3+/ripple.c:30
+#| msgid "Green angle"
+msgid "Triangle"
+msgstr "Trijstūris"
+
+#: operations/common-gpl3+/ripple.c:31
 msgid "Sawtooth"
-msgstr ""
+msgstr "Zāģveida"
 
-#: operations/common-gpl3+/ripple.c:32 operations/common-gpl3+/waves.c:36
+#: operations/common-gpl3+/ripple.c:34 operations/common-gpl3+/waves.c:36
 #: operations/workshop/bayer-matrix.c:59
 msgid "Amplitude"
 msgstr "Amplitūda"
 
-#: operations/common-gpl3+/ripple.c:40 operations/common-gpl3+/waves.c:44
+#: operations/common-gpl3+/ripple.c:42 operations/common-gpl3+/waves.c:44
 msgid "Phase shift"
 msgstr "Fāžu nobīde"
 
-#: operations/common-gpl3+/ripple.c:50
+#: operations/common-gpl3+/ripple.c:52
 msgid "Wave type"
 msgstr "Vilnīša tips"
 
-#: operations/common-gpl3+/ripple.c:54
+#: operations/common-gpl3+/ripple.c:61
 msgid "Retain tilebility"
 msgstr "Paturēt flīzējamību"
 
-#: operations/common-gpl3+/ripple.c:171
+#: operations/common-gpl3+/ripple.c:256
 msgid "Ripple"
-msgstr ""
+msgstr "Vilnīši"
 
-#: operations/common-gpl3+/ripple.c:176
+#: operations/common-gpl3+/ripple.c:261
 msgid "Displace pixels in a ripple pattern"
-msgstr ""
+msgstr "Pārvietot pikseļus vilnīšu rakstā"
 
 #: operations/common-gpl3+/shadows-highlights.c:28
 #: operations/common-gpl3+/shadows-highlights-correction.c:29
 msgid "Shadows"
-msgstr ""
+msgstr "Ēnas"
 
 #: operations/common-gpl3+/shadows-highlights.c:29
 #: operations/common-gpl3+/shadows-highlights-correction.c:30
 msgid "Adjust exposure of shadows"
-msgstr ""
+msgstr "Pielāgot ēnu ekspozīciju"
 
 #: operations/common-gpl3+/shadows-highlights.c:32
 #: operations/common-gpl3+/shadows-highlights-correction.c:33
-#, fuzzy
 #| msgid "High input"
 msgid "Highlights"
-msgstr "Augstā ievade"
+msgstr "Gaišās vietas"
 
 #: operations/common-gpl3+/shadows-highlights.c:33
 #: operations/common-gpl3+/shadows-highlights-correction.c:34
 msgid "Adjust exposure of highlights"
-msgstr ""
+msgstr "Pielāgot gaišo vietu ekspozīciju"
 
 #: operations/common-gpl3+/shadows-highlights.c:36
 #: operations/common-gpl3+/shadows-highlights-correction.c:37
 msgid "White point adjustment"
-msgstr ""
+msgstr "Baltā punkta pielāgojums"
 
 #: operations/common-gpl3+/shadows-highlights.c:37
 #: operations/common-gpl3+/shadows-highlights-correction.c:38
-#, fuzzy
 #| msgid "Shift horizontal"
 msgid "Shift white point"
-msgstr "Nobīde horizontāli"
+msgstr "Nobīdīt balto punktu"
 
 #: operations/common-gpl3+/shadows-highlights.c:41
 #, fuzzy
@@ -5353,10 +5301,9 @@ msgstr "Vertikālais apjoms"
 
 #: operations/common-gpl3+/shadows-highlights.c:45
 #: operations/common-gpl3+/shadows-highlights-correction.c:41
-#, fuzzy
 #| msgid "Compression"
 msgid "Compress"
-msgstr "Saspiešana"
+msgstr "Saspiest"
 
 #: operations/common-gpl3+/shadows-highlights.c:46
 #: operations/common-gpl3+/shadows-highlights-correction.c:42
@@ -5366,26 +5313,26 @@ msgstr ""
 #: operations/common-gpl3+/shadows-highlights.c:49
 #: operations/common-gpl3+/shadows-highlights-correction.c:45
 msgid "Shadows color adjustment"
-msgstr ""
+msgstr "Ēnu krāsu pielāgojums"
 
 #: operations/common-gpl3+/shadows-highlights.c:50
 #: operations/common-gpl3+/shadows-highlights-correction.c:46
 msgid "Adjust saturation of shadows"
-msgstr ""
+msgstr "Pielāgot ēnu piesātinājumu"
 
 #: operations/common-gpl3+/shadows-highlights.c:53
 #: operations/common-gpl3+/shadows-highlights-correction.c:49
 msgid "Highlights color adjustment"
-msgstr ""
+msgstr "Gaišo vietu krāsu pielāgojums"
 
 #: operations/common-gpl3+/shadows-highlights.c:54
 #: operations/common-gpl3+/shadows-highlights-correction.c:50
 msgid "Adjust saturation of highlights"
-msgstr ""
+msgstr "Pielāgot gaišo vietu piesātinājumu"
 
 #: operations/common-gpl3+/shadows-highlights.c:244
 msgid "Shadows-Highlights"
-msgstr ""
+msgstr "Tumšās-gaišās vietas"
 
 #: operations/common-gpl3+/shadows-highlights.c:247
 msgid "Perform shadows and highlights correction"
@@ -5408,41 +5355,38 @@ msgid "Shift direction"
 msgstr "Nobīdes virziens"
 
 #: operations/common-gpl3+/shift.c:148
-#, fuzzy
 msgid "Shift each row or column of pixels by a random amount"
-msgstr "Sagroza krāsas nejaušā apjomā."
+msgstr "Nobīdīt katru pikseļu rindu vai kolonnu par nejaušu vērtību"
 
 #: operations/common-gpl3+/sinus.c:32 operations/workshop/bayer-matrix.c:30
-#, fuzzy
 #| msgid "Scale"
 msgid "X Scale"
-msgstr "Mērogs"
+msgstr "X mērogs"
 
 #: operations/common-gpl3+/sinus.c:33
 msgid "Scale value for x axis"
-msgstr ""
+msgstr "Mēroga vērtība x asij"
 
 #: operations/common-gpl3+/sinus.c:39 operations/workshop/bayer-matrix.c:37
-#, fuzzy
 #| msgid "Scale"
 msgid "Y Scale"
-msgstr "Mērogs"
+msgstr "Y mērogs"
 
 #: operations/common-gpl3+/sinus.c:40
 msgid "Scale value for y axis"
-msgstr ""
+msgstr "Mēroga vērtība y asij"
 
 #: operations/common-gpl3+/sinus.c:46
 msgid "Complexity"
-msgstr ""
+msgstr "Sarežģītība"
 
 #: operations/common-gpl3+/sinus.c:47
 msgid "Complexity factor"
-msgstr ""
+msgstr "Sarežģītības koeficients"
 
 #: operations/common-gpl3+/sinus.c:52
 msgid "Force tiling"
-msgstr ""
+msgstr "Uzspiest flīzēšanu"
 
 #: operations/common-gpl3+/sinus.c:53
 msgid "If set, the pattern generated will tile"
@@ -5450,7 +5394,7 @@ msgstr ""
 
 #: operations/common-gpl3+/sinus.c:55
 msgid "Distorted"
-msgstr ""
+msgstr "Sagrozīts"
 
 #: operations/common-gpl3+/sinus.c:56
 msgid "If set, the pattern will be a little more distorted"
@@ -5458,11 +5402,11 @@ msgstr ""
 
 #: operations/common-gpl3+/sinus.c:64
 msgid "Bilinear"
-msgstr ""
+msgstr "Bilineārs"
 
 #: operations/common-gpl3+/sinus.c:68
 msgid "Blend Mode"
-msgstr ""
+msgstr "Sapludināšanas režīms"
 
 #: operations/common-gpl3+/sinus.c:73
 msgid "Power used to stretch the blend"
@@ -5470,81 +5414,74 @@ msgstr ""
 
 #: operations/common-gpl3+/sinus.c:317
 msgid "Sinus"
-msgstr ""
+msgstr "Sinuss"
 
 #: operations/common-gpl3+/sinus.c:322
 msgid "Generate complex sinusoidal textures"
-msgstr ""
+msgstr "Izveidot sarežģītus sinusoidālus rakstus"
 
 #: operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
 msgstr "Spīduma rādiuss"
 
 #: operations/common-gpl3+/softglow.c:233
-#, fuzzy
 #| msgid "Softglow effect"
 msgid "Softglow"
-msgstr "Maigā spīduma efekts"
+msgstr "Maigs spīdums"
 
 #: operations/common-gpl3+/softglow.c:237
 msgid "Simulate glow by making highlights intense and fuzzy"
-msgstr ""
+msgstr "Imitēt spīdumu, gaišākās vietas padarot gaišākas un paplūdušas"
 
 #: operations/common-gpl3+/spiral.c:27
 msgid "Logarithmic"
-msgstr ""
+msgstr "Logaritmisks"
 
 #: operations/common-gpl3+/spiral.c:33
-#, fuzzy
 #| msgid "Fractal type"
 msgid "Spiral type"
-msgstr "Fraktāļa tips"
+msgstr "Spirāles tips"
 
 #: operations/common-gpl3+/spiral.c:36
-#, fuzzy
 #| msgid "Start x coordinate"
 msgid "Spiral origin X coordinate"
-msgstr "Sākuma x koordināta"
+msgstr "Spirāles sākuma X koordināta"
 
 #: operations/common-gpl3+/spiral.c:42
-#, fuzzy
 #| msgid "Start x coordinate"
 msgid "Spiral origin Y coordinate"
-msgstr "Sākuma x koordināta"
+msgstr "Spirāles sākuma Y koordināta"
 
 #: operations/common-gpl3+/spiral.c:48
-#, fuzzy
 #| msgid "Blur radius"
 msgid "Spiral radius"
-msgstr "Aizmiglošanas rādiuss"
+msgstr "Spirāles rādiuss"
 
 #: operations/common-gpl3+/spiral.c:53
 msgid "Base"
-msgstr ""
+msgstr "Bāze"
 
 #: operations/common-gpl3+/spiral.c:54
 msgid "Logarithmic spiral base"
-msgstr ""
+msgstr "Logaritmiskās spirāles bāze"
 
 #: operations/common-gpl3+/spiral.c:60
 msgid "Balance"
-msgstr ""
+msgstr "Līdzsvars"
 
 #: operations/common-gpl3+/spiral.c:61
 msgid "Area balance between the two colors"
-msgstr ""
+msgstr "Laukuma līdzsvars starp divām krāsām"
 
 #: operations/common-gpl3+/spiral.c:65
-#, fuzzy
 #| msgid "Mirror rotation"
 msgid "Spiral rotation"
-msgstr "Spoguļa pagrieziens"
+msgstr "Spirāles pagrieziens"
 
 #: operations/common-gpl3+/spiral.c:71
-#, fuzzy
 #| msgid "Switch to clockwise"
 msgid "Counter-clockwise"
-msgstr "Pāriet uz pulksteņrādītāja virzienu"
+msgstr "Pretēji pulksteņrādītāja virzienam"
 
 #: operations/common-gpl3+/spiral.c:77
 #, fuzzy
@@ -5554,13 +5491,12 @@ msgstr "Nobīdes virziens"
 
 #: operations/common-gpl3+/spiral.c:442
 msgid "Spiral"
-msgstr ""
+msgstr "Spirāle"
 
 #: operations/common-gpl3+/spiral.c:447
-#, fuzzy
 #| msgid "Grid renderer"
 msgid "Spiral renderer"
-msgstr "Režģa attēlotājs"
+msgstr "Spirāles attēlotājs"
 
 #: operations/common-gpl3+/supernova.c:34
 #, fuzzy
@@ -5575,25 +5511,23 @@ msgstr "Vilnīšu vidus X koordināta"
 
 #: operations/common-gpl3+/supernova.c:46
 msgid "Radius of supernova"
-msgstr ""
+msgstr "Supernovas rādiuss"
 
 #: operations/common-gpl3+/supernova.c:51
 #: operations/common-gpl3+/supernova.c:52
-#, fuzzy
 #| msgid "Number of colors"
 msgid "Number of spokes"
-msgstr "Krāsu skaits"
+msgstr "Spieķu skaits"
 
 #: operations/common-gpl3+/supernova.c:56
 #: operations/common-gpl3+/supernova.c:57
-#, fuzzy
 #| msgid "Random seed"
 msgid "Random hue"
-msgstr "Nejaušības sēkla"
+msgstr "Nejaušs tonis"
 
 #: operations/common-gpl3+/supernova.c:62
 msgid "The color of supernova."
-msgstr ""
+msgstr "Supernovas krāsa."
 
 #: operations/common-gpl3+/supernova.c:65
 #, fuzzy
@@ -5602,7 +5536,7 @@ msgstr "Lanczos funkcijas platums"
 
 #: operations/common-gpl3+/supernova.c:342
 msgid "Supernova"
-msgstr ""
+msgstr "Supernova"
 
 #: operations/common-gpl3+/supernova.c:346
 msgid ""
@@ -5613,23 +5547,21 @@ msgstr ""
 
 #: operations/common-gpl3+/texturize-canvas.c:29
 msgid "Top-right"
-msgstr ""
+msgstr "Augšā pa labi"
 
 #: operations/common-gpl3+/texturize-canvas.c:31
 msgid "Top-left"
-msgstr ""
+msgstr "Augšā pa kreisi"
 
 #: operations/common-gpl3+/texturize-canvas.c:33
-#, fuzzy
 #| msgid "Bottom"
 msgid "Bottom-left"
-msgstr "Apakšējais"
+msgstr "Apakšā pa kreisi"
 
 #: operations/common-gpl3+/texturize-canvas.c:35
-#, fuzzy
 #| msgid "Bottom"
 msgid "Bottom-right"
-msgstr "Apakšējais"
+msgstr "Apakšā pa labi"
 
 #: operations/common-gpl3+/texturize-canvas.c:41
 msgid ""
@@ -5653,62 +5585,56 @@ msgstr ""
 
 #: operations/common-gpl3+/tile-glass.c:28
 #: operations/common-gpl3+/tile-paper.c:39
-#, fuzzy
 msgid "Tile Width"
-msgstr "Līnijas platums"
+msgstr "Flīzes platums"
 
 #: operations/common-gpl3+/tile-glass.c:34
 #: operations/common-gpl3+/tile-paper.c:46
-#, fuzzy
 msgid "Tile Height"
-msgstr "Līnijas augstums"
+msgstr "Flīzes augstums"
 
 #: operations/common-gpl3+/tile-glass.c:234
-#, fuzzy
 #| msgid "Tile size"
 msgid "Tile Glass"
-msgstr "Flīzes izmērs"
+msgstr "Flīžu stikls"
 
 #: operations/common-gpl3+/tile-glass.c:239
 msgid "Simulate distortion caused by rectangular glass tiles"
-msgstr ""
+msgstr "Imitēt deformācijas, ko izraisa taisnstūra stikla flīzes"
 
 #: operations/common-gpl3+/tile-paper.c:27
-#, fuzzy
 #| msgid "Transform"
 msgid "Transparent"
-msgstr "Pārveidot"
+msgstr "Caurspīdīgs"
 
 #: operations/common-gpl3+/tile-paper.c:28
 msgid "Inverted image"
-msgstr ""
+msgstr "Invertēt attēlu"
 
 #: operations/common-gpl3+/tile-paper.c:29
 msgid "Image"
-msgstr ""
+msgstr "Attēls"
 
 #: operations/common-gpl3+/tile-paper.c:34
 msgid "Background"
-msgstr "Fons"
+msgstr "Dibenplāns"
 
 #: operations/common-gpl3+/tile-paper.c:35
 msgid "Ignore"
-msgstr ""
+msgstr "Ignorēt"
 
 #: operations/common-gpl3+/tile-paper.c:36
 msgid "Force"
-msgstr ""
+msgstr "Piespiest"
 
 #: operations/common-gpl3+/tile-paper.c:40
-#, fuzzy
 #| msgid "Width of plot"
 msgid "Width of the tile"
-msgstr "Lauciņa platums"
+msgstr "Flīzes platums"
 
 #: operations/common-gpl3+/tile-paper.c:47
-#, fuzzy
 msgid "Height of the tile"
-msgstr "Attēlotā attēla augstums"
+msgstr "Flīzes augstums"
 
 #: operations/common-gpl3+/tile-paper.c:53
 #: operations/common-gpl3+/tile-paper.c:54
@@ -5738,42 +5664,39 @@ msgid "Fractional Type"
 msgstr "Fraktāļa tips"
 
 #: operations/common-gpl3+/tile-paper.c:67
-#, fuzzy
 #| msgid "Center"
 msgid "Centering"
-msgstr "Vidus"
+msgstr "Centrējums"
 
 #: operations/common-gpl3+/tile-paper.c:68
-#, fuzzy
 #| msgid "Color of the grid lines"
 msgid "Centering of the tiles"
-msgstr "Režģa līniju krāsa"
+msgstr "Flīžu centrējums"
 
 #: operations/common-gpl3+/tile-paper.c:70
 #: operations/common-gpl3+/tile-paper.c:73
-#, fuzzy
 msgid "Background type"
-msgstr "Fons"
+msgstr "Dibenplāna tips"
 
 #: operations/common-gpl3+/tile-paper.c:437
 msgid "Paper Tile"
-msgstr ""
+msgstr "Papīra flīze"
 
 #: operations/common-gpl3+/tile-paper.c:442
 msgid "Cut image into paper tiles, and slide them"
-msgstr ""
+msgstr "Sadalīt attēlu papīra flīzēs un pārbīdīt tās"
 
 #: operations/common-gpl3+/value-propagate.c:29
 msgid "More white (larger value)"
-msgstr ""
+msgstr "Vairāk baltā (lielāka vērtība)"
 
 #: operations/common-gpl3+/value-propagate.c:30
 msgid "More black (smaller value)"
-msgstr ""
+msgstr "Vairāk melnā (mazāka vērtība)"
 
 #: operations/common-gpl3+/value-propagate.c:31
 msgid "Middle value to peaks"
-msgstr ""
+msgstr "Galotnes vidējās vērtības"
 
 #: operations/common-gpl3+/value-propagate.c:32
 #, fuzzy
@@ -5782,45 +5705,36 @@ msgid "Color to peaks"
 msgstr "Krāsa, ko attēlot"
 
 #: operations/common-gpl3+/value-propagate.c:33
-#, fuzzy
 msgid "Only color"
-msgstr "Aizpildījuma krāsa"
+msgstr "Tikai krāsas"
 
 #: operations/common-gpl3+/value-propagate.c:34
 msgid "More opaque"
-msgstr ""
+msgstr "Vairāk necaurspīdīgs"
 
 #: operations/common-gpl3+/value-propagate.c:35
 msgid "More transparent"
-msgstr ""
-
-#: operations/common-gpl3+/value-propagate.c:38
-#: operations/workshop/spherize.c:31
-msgid "Mode"
-msgstr ""
+msgstr "Vairāk caurspīdīgs"
 
 #: operations/common-gpl3+/value-propagate.c:41
-#, fuzzy
 #| msgid "The value of saturation"
 msgid "Mode of value propagation"
-msgstr "Piesātinājuma vērtība"
+msgstr "Vērtības izplatīšanas režīms"
 
 #: operations/common-gpl3+/value-propagate.c:43
 #: operations/common-gpl3+/value-propagate.c:44
-#, fuzzy
 msgid "Lower threshold"
-msgstr "Slieksnis"
+msgstr "Apakšējais slieksnis"
 
 #: operations/common-gpl3+/value-propagate.c:47
 #: operations/common-gpl3+/value-propagate.c:48
 #: operations/common-gpl3+/value-propagate.c:52
-#, fuzzy
 msgid "Upper threshold"
-msgstr "Slieksnis"
+msgstr "Augšējais slieksnis"
 
 #: operations/common-gpl3+/value-propagate.c:51
 msgid "Propagating rate"
-msgstr ""
+msgstr "Izplatības ātrums"
 
 #: operations/common-gpl3+/value-propagate.c:56
 msgid "Color to use for the \"Only color\" and \"Color to peaks\" modes"
@@ -5828,118 +5742,113 @@ msgstr ""
 
 #: operations/common-gpl3+/value-propagate.c:61
 msgid "To top"
-msgstr ""
+msgstr "Uz augšpusi"
 
 #: operations/common-gpl3+/value-propagate.c:62
 msgid "Propagate to top"
-msgstr ""
+msgstr "Izplatīt uz augšu"
 
 #: operations/common-gpl3+/value-propagate.c:64
 msgid "To left"
-msgstr ""
+msgstr "Uz kreiso pusi"
 
 #: operations/common-gpl3+/value-propagate.c:65
 msgid "Propagate to left"
-msgstr ""
+msgstr "Izplatīt uz kreiso pusi"
 
 #: operations/common-gpl3+/value-propagate.c:67
-#, fuzzy
 msgid "To right"
-msgstr "Līnijas augstums"
+msgstr "Uz labo pusi"
 
 #: operations/common-gpl3+/value-propagate.c:68
 msgid "Propagate to right"
-msgstr ""
+msgstr "Izplatīt uz labo pusi"
 
 #: operations/common-gpl3+/value-propagate.c:70
-#, fuzzy
 #| msgid "Bottom"
 msgid "To bottom"
-msgstr "Apakšējais"
+msgstr "Uz apakšu"
 
 #: operations/common-gpl3+/value-propagate.c:71
-#, fuzzy
 #| msgid "Value at bottom"
 msgid "Propagate to bottom"
-msgstr "Vērtība apakšā"
+msgstr "Izplatīt uz apakšu"
 
 #: operations/common-gpl3+/value-propagate.c:73
 #: operations/common-gpl3+/value-propagate.c:74
 msgid "Propagating value channel"
-msgstr ""
+msgstr "Izplata vērtību kanālu"
 
 #: operations/common-gpl3+/value-propagate.c:76
 #: operations/common-gpl3+/value-propagate.c:77
-#, fuzzy
 #| msgid "Alpha channel"
 msgid "Propagating alpha channel"
-msgstr "Alfa kanāls"
+msgstr "Izplata alfa kanālu"
 
 #: operations/common-gpl3+/value-propagate.c:641
 msgid "Value Propagate"
-msgstr ""
+msgstr "Vērtību izplatīšana"
 
 #: operations/common-gpl3+/value-propagate.c:645
-msgid "Propagate certain colors to neighboring pixels."
+msgid ""
+"Propagate certain values to neighboring pixels. Erode and dilate any color "
+"or opacity."
 msgstr ""
 
 #: operations/common-gpl3+/video-degradation.c:34
 msgid "Staggered"
-msgstr ""
+msgstr "Zigzagveida"
 
 #: operations/common-gpl3+/video-degradation.c:36
 msgid "Large staggered"
-msgstr ""
+msgstr "Liels zigzagveida"
 
 #: operations/common-gpl3+/video-degradation.c:38
 msgid "Striped"
-msgstr ""
+msgstr "Strīpots"
 
 #: operations/common-gpl3+/video-degradation.c:40
 msgid "Wide striped"
-msgstr ""
+msgstr "Plati strīpots"
 
 #: operations/common-gpl3+/video-degradation.c:42
 msgid "Long staggered"
-msgstr ""
+msgstr "Gari zigzagi"
 
 #: operations/common-gpl3+/video-degradation.c:44
 msgid "3x3"
-msgstr ""
+msgstr "3x3"
 
 #: operations/common-gpl3+/video-degradation.c:46
 msgid "Large 3x3"
-msgstr ""
+msgstr "Liels 3x3"
 
 #: operations/common-gpl3+/video-degradation.c:48
-#, fuzzy
 #| msgid "Hue"
 msgid "Hex"
-msgstr "Tonis"
+msgstr "Heksa"
 
 #: operations/common-gpl3+/video-degradation.c:50
 msgid "Dots"
-msgstr ""
+msgstr "Punkti"
 
 #: operations/common-gpl3+/video-degradation.c:56
-#, fuzzy
 #| msgid "The fill opacity to use"
 msgid "Type of RGB pattern to use"
-msgstr "Aizpildījuma blīvums, ko izmantot"
+msgstr "RGB raksta tips, ko izmantot"
 
 #: operations/common-gpl3+/video-degradation.c:58
 msgid "Additive"
-msgstr ""
+msgstr "Pievienojošs"
 
 #: operations/common-gpl3+/video-degradation.c:59
 msgid "Whether the function adds the result to the original image."
-msgstr ""
+msgstr "Vai funkcija pievieno rezultātu sākotnējam attēlam."
 
 #: operations/common-gpl3+/video-degradation.c:61
-#, fuzzy
 #| msgid "Rotation"
 msgid "Rotated"
-msgstr "Pagrieziens"
+msgstr "Pagriezts"
 
 #: operations/common-gpl3+/video-degradation.c:62
 msgid "Whether to rotate the RGB pattern by ninety degrees."
@@ -5947,7 +5856,7 @@ msgstr ""
 
 #: operations/common-gpl3+/video-degradation.c:322
 msgid "Video Degradation"
-msgstr ""
+msgstr "Video degradēšana"
 
 #: operations/common-gpl3+/video-degradation.c:326
 msgid ""
@@ -5960,20 +5869,12 @@ msgid "Amplitude of the ripple"
 msgstr "Sīku vilnīšu amplitūda"
 
 #: operations/common-gpl3+/waves.c:41
-#, fuzzy
 msgid "Period (wavelength) of the ripple"
-msgstr "Sīku vilnīšu periods"
+msgstr "Sīku vilnīšu periods (viļņu garums)"
 
 #: operations/common-gpl3+/waves.c:47
-#, fuzzy
 msgid "Aspect ratio"
-msgstr "Darbība"
-
-#: operations/common-gpl3+/waves.c:52
-#: operations/workshop/recursive-transform.c:52
-#: operations/workshop/spherize.c:59
-msgid "Mathematical method for reconstructing pixel values"
-msgstr ""
+msgstr "Izmēru attiecība"
 
 #: operations/common-gpl3+/waves.c:54
 msgid "Clamp deformation"
@@ -5983,14 +5884,13 @@ msgstr "Ierobežot deformācijas"
 msgid "Limit deformation in the image area."
 msgstr "Ierobežot deformācijas attēla apgabalā."
 
-#: operations/common-gpl3+/waves.c:184
+#: operations/common-gpl3+/waves.c:196
 msgid "Waves"
-msgstr ""
+msgstr "Viļņi"
 
-#: operations/common-gpl3+/waves.c:189
-#, fuzzy
+#: operations/common-gpl3+/waves.c:201
 msgid "Distort the image with waves"
-msgstr "Pārveidot buferi ar vilnīšiem"
+msgstr "Deformēt attēlu ar viļņiem"
 
 #: operations/common-gpl3+/whirl-pinch.c:37
 msgid "Whirl angle (degrees)"
@@ -6009,22 +5909,21 @@ msgstr ""
 "stūrim)"
 
 #: operations/common-gpl3+/whirl-pinch.c:260
-#, fuzzy
 #| msgid "Whirl"
 msgid "Whirl Pinch"
-msgstr "Sagriezt"
+msgstr "Sagriezt savilkt"
 
 #: operations/common-gpl3+/whirl-pinch.c:265
 msgid "Distort an image by whirling and pinching"
-msgstr ""
+msgstr "Deformēt attēlu ar sagriešanu un savilkšanu"
 
 #: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:561
 msgid "Wind"
-msgstr ""
+msgstr "Vējš"
 
 #: operations/common-gpl3+/wind.c:29
 msgid "Blast"
-msgstr ""
+msgstr "Uzšaut"
 
 #: operations/common-gpl3+/wind.c:33
 msgid "Left"
@@ -6044,37 +5943,34 @@ msgstr "Apakšējais"
 
 #: operations/common-gpl3+/wind.c:41
 msgid "Leading"
-msgstr ""
+msgstr "Vadošās"
 
 #: operations/common-gpl3+/wind.c:42
-#, fuzzy
 #| msgid "Scaling"
 msgid "Trailing"
-msgstr "Mērogošana"
+msgstr "Sekojošās"
 
 #: operations/common-gpl3+/wind.c:45
 msgid "Style"
-msgstr ""
+msgstr "Stils"
 
 #: operations/common-gpl3+/wind.c:48
-#, fuzzy
 #| msgid "Softglow effect"
 msgid "Style of effect"
-msgstr "Maigā spīduma efekts"
+msgstr "Efekta stils"
 
 #: operations/common-gpl3+/wind.c:53
 msgid "Direction of the effect"
-msgstr ""
+msgstr "Efekta virziens"
 
 #: operations/common-gpl3+/wind.c:55
 msgid "Edge Affected"
-msgstr ""
+msgstr "Ietekmētā mala"
 
 #: operations/common-gpl3+/wind.c:58
-#, fuzzy
 #| msgid "Behavior"
 msgid "Edge behavior"
-msgstr "Uzvedība"
+msgstr "Malu uzvedība"
 
 #: operations/common-gpl3+/wind.c:61
 msgid "Higher values restrict the effect to fewer areas of the image"
@@ -6090,7 +5986,7 @@ msgstr "Vējam līdzīgs asiņošanas efekts"
 
 #: operations/core/cache.c:25 operations/core/cache.c:88
 msgid "Cache"
-msgstr ""
+msgstr "Kešatmiņa"
 
 #: operations/core/cache.c:26
 msgid ""
@@ -6106,13 +6002,12 @@ msgid ""
 msgstr ""
 
 #: operations/core/cast-format.c:25
-#, fuzzy
 msgid "Input format"
-msgstr "Izvades formāts"
+msgstr "Ievades formāts"
 
 #: operations/core/cast-format.c:26
 msgid "The babl format of the input"
-msgstr ""
+msgstr "Ievades babl formāts"
 
 #: operations/core/cast-format.c:27 operations/core/convert-format.c:27
 msgid "Output format"
@@ -6139,7 +6034,7 @@ msgstr "Atsauces ID, ko izmantot kā ievadi (izmanto XML)"
 
 #: operations/core/clone.c:110
 msgid "Clone"
-msgstr ""
+msgstr "Klonēt"
 
 #: operations/core/clone.c:111
 msgid ""
@@ -6148,9 +6043,8 @@ msgid ""
 msgstr ""
 
 #: operations/core/convert-format.c:88
-#, fuzzy
 msgid "Convert Format"
-msgstr "Izvades formāts"
+msgstr "Pārveidot formātu"
 
 #: operations/core/convert-format.c:90
 msgid "Convert the data to the specified format"
@@ -6158,7 +6052,7 @@ msgstr "Pārveidot datus uz norādīto formātu"
 
 #: operations/core/crop.c:45
 msgid "Reset origin"
-msgstr ""
+msgstr "Atiestatīt pirmavotu"
 
 #: operations/core/crop.c:226
 msgid "Crop"
@@ -6170,16 +6064,15 @@ msgstr "Kadrēt buferi"
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/png-load.c:29
-#: operations/external/svg-load.c:27 operations/external/tiff-load.c:27
-#: operations/external/webp-load.c:27
+#: operations/external/ppm-load.c:27 operations/external/svg-load.c:27
+#: operations/external/tiff-load.c:27 operations/external/webp-load.c:27
 msgid "URI"
-msgstr ""
+msgstr "URI"
 
 #: operations/core/load.c:31
-#, fuzzy
 #| msgid "Path of file to load."
 msgid "URI of file to load."
-msgstr "Ceļš uz datni, ko ielādēt."
+msgstr "URI uz datni, kuru ielādēt."
 
 #: operations/core/load.c:367
 msgid ""
@@ -6189,42 +6082,37 @@ msgstr ""
 "Vairāku datņu ielādētājs, kas izmanto vietējos apstrādātājus, un atkāpšanās "
 "pārveidošana, izmantojot Image Magick konvertu."
 
-#: operations/core/nop.c:80
-#, fuzzy
+#: operations/core/nop.c:81
 #| msgid "Operation"
 msgid "No Operation"
-msgstr "Darbība"
+msgstr "Nav operācijas"
 
-#: operations/core/nop.c:82
+#: operations/core/nop.c:83
 msgid "No operation (can be used as a routing point)"
 msgstr "Nav operācijas (var izmantot ar maršrutēšanas punktu)"
 
 #: operations/external/exr-save.cc:25
-#, fuzzy
 #| msgid "Path of file to load."
 msgid "path of file to write to."
-msgstr "Ceļš uz datni, ko ielādēt."
+msgstr "ceļš uz datni, kurā rakstīt."
 
 #: operations/external/exr-save.cc:27
-#, fuzzy
 #| msgid "Tile size"
 msgid "tile size to use."
-msgstr "Flīzes izmērs"
+msgstr "flīzes izmērs, ko izmantot."
 
 #: operations/external/ff-load.c:30
-#, fuzzy
 msgid "Path of video file to load"
-msgstr "Ceļš uz datni, ko ielādēt"
+msgstr "Ceļš uz video datni, kuru ielādēt"
 
 #: operations/external/ff-load.c:32
 msgid "Frame number"
-msgstr "Ietvara numurs"
+msgstr "Kadra numurs"
 
 #: operations/external/ff-load.c:36
-#, fuzzy
 #| msgid "Frame"
 msgid "frames"
-msgstr "Ietvars"
+msgstr "kadri"
 
 #: operations/external/ff-load.c:37
 msgid ""
@@ -6260,7 +6148,7 @@ msgstr ""
 
 #: operations/external/ff-load.c:52 operations/external/ff-save.c:32
 msgid "audio"
-msgstr ""
+msgstr "audio"
 
 #: operations/external/ff-load.c:802
 #, fuzzy
@@ -6269,10 +6157,9 @@ msgid "FFmpeg Frame Loader"
 msgstr "FFmpeg video ietvara importētājs"
 
 #: operations/external/ff-load.c:804
-#, fuzzy
 #| msgid "FFmpeg video frame importer"
 msgid "FFmpeg video frame importer."
-msgstr "FFmpeg video ietvara importētājs"
+msgstr "FFmpeg video ietvara importētājs."
 
 #: operations/external/ff-save.c:30 operations/external/png-save.c:27
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
@@ -6281,7 +6168,7 @@ msgstr "Mērķa ceļš un datnes nosaukums, izmanto “-” standarta izvadei."
 
 #: operations/external/ff-save.c:33
 msgid "Audio codec"
-msgstr ""
+msgstr "Audio kodeks"
 
 #: operations/external/ff-save.c:34
 msgid ""
@@ -6305,13 +6192,12 @@ msgid "Target encoded video bitrate in kb/s"
 msgstr ""
 
 #: operations/external/ff-save.c:41
-#, fuzzy
 msgid "Frames/second"
-msgstr "kadri sekundē"
+msgstr "Kadri sekundē"
 
 #: operations/external/ff-save.c:44
 msgid "Video codec"
-msgstr ""
+msgstr "Video kodeks"
 
 #: operations/external/ff-save.c:45
 msgid ""
@@ -6323,15 +6209,13 @@ msgid "video bitrate in kb/s"
 msgstr ""
 
 #: operations/external/ff-save.c:48
-#, fuzzy
 #| msgid "Tile size"
 msgid "Video bufsize"
-msgstr "Flīzes izmērs"
+msgstr "Video bufera izmērs"
 
 #: operations/external/ff-save.c:50
-#, fuzzy
 msgid "Container format"
-msgstr "Izvades formāts"
+msgstr "Konteinera formāts"
 
 #: operations/external/ff-save.c:51
 msgid "Container format to use, or auto to autodetect based on file extension."
@@ -6339,13 +6223,12 @@ msgstr ""
 
 #: operations/external/ff-save.c:54
 msgid "global quality"
-msgstr ""
+msgstr "Globālā kvalitāte"
 
 #: operations/external/ff-save.c:55
-#, fuzzy
 #| msgid "Direction"
 msgid "noise reduction"
-msgstr "Virziens"
+msgstr "trokšņu reducēšana"
 
 #: operations/external/ff-save.c:56
 #, fuzzy
@@ -6354,15 +6237,15 @@ msgstr "Sliekšņa vērtība"
 
 #: operations/external/ff-save.c:57
 msgid "video bitrate min"
-msgstr ""
+msgstr "minimālais video bitu pārraides ātrums"
 
 #: operations/external/ff-save.c:58
 msgid "video bitrate max"
-msgstr ""
+msgstr "maksimālais video bitu pārraides ātrums"
 
 #: operations/external/ff-save.c:59
 msgid "video bitrate tolerance"
-msgstr ""
+msgstr "video bitu pārraides ātruma tolerance"
 
 #: operations/external/ff-save.c:61
 msgid "keyint-min"
@@ -6418,13 +6301,13 @@ msgstr ""
 msgid "me-subpel-quality"
 msgstr ""
 
-#: operations/external/ff-save.c:1111
+#: operations/external/ff-save.c:1122
 #, fuzzy
 #| msgid "FFmpeg video frame importer"
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg video ietvara importētājs"
 
-#: operations/external/ff-save.c:1113
+#: operations/external/ff-save.c:1124
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg video izvades savācējs"
 
@@ -6432,118 +6315,105 @@ msgstr "FFmpeg video izvades savācējs"
 #: operations/external/svg-load.c:26 operations/external/tiff-load.c:26
 #: operations/external/webp-load.c:26
 msgid "Path of file to load"
-msgstr "Ceļš uz datni, ko ielādēt"
+msgstr "Ceļš uz datni, kuru ielādēt"
 
 #: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
 #: operations/external/tiff-load.c:28 operations/external/webp-load.c:28
-#, fuzzy
 #| msgid "Path of file to load"
 msgid "URI for file to load"
-msgstr "Ceļš uz datni, ko ielādēt"
+msgstr "URI uz datni, kuru ielādēt"
 
 #: operations/external/jp2-load.c:128
-#, fuzzy
 #| msgid "Unknown JPEG 2000 image format in '%s'"
 msgid "Unknown JPEG 2000 image format"
-msgstr "Nezināms JPEG 2000 attēla formāts iekš “%s“"
+msgstr "Nezināms JPEG 2000 attēla formāts"
 
 #: operations/external/jp2-load.c:135
-#, fuzzy
 #| msgid "Unable to open JPEG 2000 image in '%s'"
 msgid "Unable to open JPEG 2000 image"
-msgstr "Nevar atvērt JPEG 2000 attēlu iekš “%s”"
+msgstr "Nevar atvērt JPEG 2000 attēlu"
 
 #: operations/external/jp2-load.c:142
-#, fuzzy
 #| msgid "Unable to create output color profile for '%s'"
 msgid "Unable to create output color profile"
-msgstr "Nevar izveidot “%s” izvades krāsu profilu"
+msgstr "Nevar izveidot izvades krāsu profilu"
 
 #: operations/external/jp2-load.c:150
-#, fuzzy
 #| msgid "Unable to convert image to sRGB color space when processing '%s'"
 msgid "Unable to convert image to sRGB color space"
-msgstr "Nevar pārveidot attēlu uz sRGB krāsu telpu, apstrādājot “%s”"
+msgstr "Nevar pārveidot attēlu uz sRGB krāsu telpu"
 
 #: operations/external/jp2-load.c:157
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unsupported non-RGB JPEG 2000 file with %d components in '%s'"
 msgid "Unsupported non-RGB JPEG 2000 file with %d components"
-msgstr "Neatbalstīta ne-RGB JPEG 2000 datne ar %d komponentēm iekš “%s”"
+msgstr "Neatbalstīta ne-RGB JPEG 2000 datne ar %d komponentēm"
 
 #: operations/external/jp2-load.c:169
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unsupported JPEG 2000 file with depth %d in '%s'"
 msgid "Unsupported JPEG 2000 file with depth %d"
-msgstr "Neatbalstīta JPEG 2000 datne ar dziļumu %d iekš “%s”"
+msgstr "Neatbalstīta JPEG 2000 datne ar dziļumu %d"
 
 #: operations/external/jp2-load.c:195
-#, fuzzy
 #| msgid "Components of input image '%s' don't match"
 msgid "Components of JPEG 2000 input don't match"
-msgstr "Komponentes ievades attēlam “%s” nesakrīt"
+msgstr "JPEG 2000 komponentes nesakrīt"
 
 #: operations/external/jp2-load.c:257
 msgid "could not create a new Jasper stream"
-msgstr ""
+msgstr "neizdevās izveidot Jasper straumi"
 
 #: operations/external/jp2-load.c:277 operations/external/jp2-load.c:279
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unable to open JPEG 2000 image in '%s'"
 msgid "failed to open JPEG 2000 from %s"
-msgstr "Nevar atvērt JPEG 2000 attēlu iekš “%s”"
+msgstr "neizdevās atvērt JPEG 2000 no %s"
 
 #: operations/external/jp2-load.c:293
 msgid "could not query JPEG 2000 file"
 msgstr ""
 
 #: operations/external/jp2-load.c:349
-#, fuzzy
 #| msgid "One or more of R, G, B components are missing from '%s'"
 msgid "One or more of R, G, B components are missing"
-msgstr "No “%s” trūkst viena vai vairākas R, G, B komponentes"
+msgstr "Trūkst viena vai vairākas R, G, B komponentes"
 
 #: operations/external/jp2-load.c:357
-#, fuzzy
 #| msgid "One or more of R, G, B components have signed data in '%s'"
 msgid "One or more of R, G, B components have signed data"
-msgstr "Vienai vai vairākām R, G, B komponentēm ir parakstīti dati iekš “%s”"
+msgstr "Vienai vai vairākām R, G, B komponentēm ir parakstīti dati"
 
 #: operations/external/jp2-load.c:390
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error reading row %d component %d from '%s'"
 msgid "Error reading row %d component %d"
-msgstr "Kļūda, nolasot rindas %d komponenti %d no “%s”"
+msgstr "Kļūda, nolasot rindas %d komponenti %d"
 
 #: operations/external/jp2-load.c:525
-#, fuzzy
 #| msgid "JPEG 2000 image loader"
 msgid "JPEG 2000 File Loader"
-msgstr "JPEG 2000 attēlu ielādētājs"
+msgstr "JPEG 2000 datnes ielādētājs"
 
 #: operations/external/jp2-load.c:527
-#, fuzzy
 #| msgid "JPEG 2000 image loader"
 msgid "JPEG 2000 image loader using jasper."
-msgstr "JPEG 2000 attēlu ielādētājs"
+msgstr "JPEG 2000 attēlu ielādētājs, izmantojot jasper."
 
 #: operations/external/jpg-load.c:27
-#, fuzzy
 #| msgid "Path of file to load"
 msgid "URI of file to load"
-msgstr "Ceļš uz datni, ko ielādēt"
+msgstr "URI uz datni, kuru ielādēt"
 
 #: operations/external/jpg-load.c:366
-#, fuzzy
 #| msgid "JPG image loader"
 msgid "JPEG File Loader"
-msgstr "JPG attēlu ielādētājs"
+msgstr "JPEG attēlu ielādētājs"
 
 #: operations/external/jpg-load.c:368
-#, fuzzy
 #| msgid "JPG image loader"
 msgid "JPEG image loader using libjpeg"
-msgstr "JPG attēlu ielādētājs"
+msgstr "JPEG attēlu ielādētājs, izmantojot libjpeg"
 
 #: operations/external/jpg-save.c:26 operations/external/npy-save.c:32
 #: operations/external/tiff-save.c:26 operations/external/webp-save.c:26
@@ -6593,38 +6463,36 @@ msgstr "Izveidot pelēktoņu (vienkrāsainu) attēlu"
 
 #: operations/external/jpg-save.c:303
 msgid "JPEG File Saver"
-msgstr ""
+msgstr "JPEG datņu saglabātājs"
 
 #: operations/external/jpg-save.c:305
 msgid "JPEG image saver, using libjpeg"
-msgstr ""
+msgstr "JPEG attēlu saglabātājs, izmantojot libjpeg"
 
 #: operations/external/lcms-from-profile.c:24
-#, fuzzy
 msgid "Source Profile"
-msgstr "Avots"
+msgstr "Avota profils"
 
 #: operations/external/lcms-from-profile.c:25
-msgid "The cmsHPROFILE corresponding to the icc profile for the input data."
+msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
 msgstr ""
 
 #: operations/external/lcms-from-profile.c:31
-#, fuzzy
 #| msgid "Percentile"
 msgid "Perceptual"
-msgstr "Procentīle"
+msgstr "Perceptuāls"
 
 #: operations/external/lcms-from-profile.c:33
 msgid "Relative Colorimetric"
-msgstr ""
+msgstr "Relatīvi kolorimetrisks"
 
 #: operations/external/lcms-from-profile.c:37
 msgid "Absolute Colorimetric"
-msgstr ""
+msgstr "Absolūti kolorimetrisks"
 
 #: operations/external/lcms-from-profile.c:41
 msgid "Rendering intent"
-msgstr ""
+msgstr "Renderēšanas nodoms"
 
 #: operations/external/lcms-from-profile.c:44
 msgid "The rendering intent to use in the conversion."
@@ -6632,16 +6500,15 @@ msgstr ""
 
 #: operations/external/lcms-from-profile.c:46
 msgid "Black point compensation"
-msgstr ""
+msgstr "Melnā punkta kompensācija"
 
 #: operations/external/lcms-from-profile.c:48
 msgid "Convert using black point compensation."
 msgstr ""
 
 #: operations/external/lcms-from-profile.c:243
-#, fuzzy
 msgid "LCMS From Profile"
-msgstr "Avots"
+msgstr "LCMS no profila"
 
 #: operations/external/lcms-from-profile.c:246
 msgid ""
@@ -6675,7 +6542,6 @@ msgid "Number of downsampled levels to use"
 msgstr "Izmantojamo samazināto paraugu lasījumu līmeņu skaits"
 
 #: operations/external/matting-levin.c:45
-#, fuzzy
 msgid "Active levels"
 msgstr "Aktīvie līmeņi"
 
@@ -6685,7 +6551,7 @@ msgstr "Līmeņu skaits, lai veiktu risināšanu"
 
 #: operations/external/matting-levin.c:1455
 msgid "Matting Levin"
-msgstr ""
+msgstr "Matēšana Levin"
 
 #: operations/external/matting-levin.c:1458
 msgid ""
@@ -6697,9 +6563,8 @@ msgstr ""
 "neizvēlētu tri-kartei."
 
 #: operations/external/npd.c:23
-#, fuzzy
 msgid "Model"
-msgstr "Modeļa sarkanais a:"
+msgstr "Modelis"
 
 #: operations/external/npd.c:24
 msgid "Model - basic element we operate on"
@@ -6707,7 +6572,7 @@ msgstr ""
 
 #: operations/external/npd.c:26
 msgid "Square Size"
-msgstr ""
+msgstr "Kvadrāta izmērs"
 
 #: operations/external/npd.c:28
 msgid "Size of an edge of square the mesh consists of"
@@ -6715,7 +6580,7 @@ msgstr ""
 
 #: operations/external/npd.c:30
 msgid "Rigidity"
-msgstr ""
+msgstr "Stingrums"
 
 #: operations/external/npd.c:32
 #, fuzzy
@@ -6758,7 +6623,7 @@ msgstr ""
 msgid "When TRUE the model will not be freed"
 msgstr ""
 
-#: operations/external/npd.c:50 operations/transform/transform-core.c:226
+#: operations/external/npd.c:50 operations/transform/transform-core.c:225
 #: operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Iekšēji lietots paraugs"
@@ -6768,10 +6633,9 @@ msgid "Performs n-point image deformation"
 msgstr ""
 
 #: operations/external/npy-save.c:215
-#, fuzzy
 #| msgid "PNG image loader."
 msgid "NumPy File Saver"
-msgstr "PNG attēlu ielādētājs."
+msgstr "NumPy datņu saglabātājs"
 
 #: operations/external/npy-save.c:217
 #, fuzzy
@@ -6827,13 +6691,6 @@ msgstr "Aizpildīšanas kārtula"
 msgid "How to determine what to fill (nonzero|evenodd)"
 msgstr "Kā noteikt, ko aizpildīt (nonzero|evenodd)"
 
-#: operations/external/path.c:47 operations/external/vector-fill.c:37
-#: operations/external/vector-stroke.c:38 operations/transform/transform.c:24
-#: operations/transform/transform.c:64
-#: operations/workshop/recursive-transform.c:27
-msgid "Transform"
-msgstr "Pārveidot"
-
 #: operations/external/path.c:48
 msgid "SVG style description of transform"
 msgstr "SVG stila apraksts, ko pārveidot"
@@ -6858,7 +6715,7 @@ msgstr "GeglVector, kas reprezentē vilkuma ceļu"
 
 #: operations/external/path.c:532
 msgid "Render Path"
-msgstr ""
+msgstr "Renderēšanas ceļš"
 
 #: operations/external/path.c:536
 msgid "Renders a brush stroke"
@@ -6873,26 +6730,23 @@ msgid "GdkPixbuf to use"
 msgstr "GdkPixbuf, ko izmantot"
 
 #: operations/external/pixbuf.c:109
-#, fuzzy
 #| msgid "GdkPixbuf to use"
 msgid "GdkPixbuf Source"
-msgstr "GdkPixbuf, ko izmantot"
+msgstr "GdkPixbuf avots"
 
 #: operations/external/pixbuf.c:112
 msgid "Uses the GdkPixbuf located at the memory location in <em>pixbuf</em>."
 msgstr "Izmanto GdkPixbuf, kas atrodas atmiņā iekš <em>pixbuf</em>."
 
 #: operations/external/png-load.c:30
-#, fuzzy
 #| msgid "Path of file to load."
 msgid "URI for file to load."
-msgstr "Ceļš uz datni, ko ielādēt."
+msgstr "URI uz datni, kuru ielādēt."
 
 #: operations/external/png-load.c:496
-#, fuzzy
 #| msgid "PNG image loader."
 msgid "PNG File Loader"
-msgstr "PNG attēlu ielādētājs."
+msgstr "PNG datņu ielādētājs"
 
 #: operations/external/png-load.c:498
 msgid "PNG image loader."
@@ -6911,27 +6765,29 @@ msgid "Bitdepth"
 msgstr "Bitu dziļums"
 
 #: operations/external/png-save.c:32 operations/external/ppm-save.c:30
-#, fuzzy
 msgid "8 and 16 are the currently accepted values."
-msgstr "8 un 16 ir starp pašlaik pieņemtajām vērtībām."
+msgstr "8 un 16 ir pašlaik pieņemtās vērtības."
 
 #: operations/external/png-save.c:256
-#, fuzzy
 #| msgid "PNG image loader."
 msgid "PNG File Saver"
-msgstr "PNG attēlu ielādētājs."
+msgstr "PNG datņu saglabātājs"
 
 #: operations/external/png-save.c:258
 msgid "PNG image saver, using libpng"
-msgstr ""
+msgstr "PNG attēlu saglabātājs, izmantojot libpng"
 
-#: operations/external/ppm-load.c:382
-#, fuzzy
+#: operations/external/ppm-load.c:28
+#| msgid "Path of file to load."
+msgid "URI of image to load."
+msgstr "URI uz attēlu, kuru ielādēt."
+
+#: operations/external/ppm-load.c:460
 #| msgid "PPM image loader."
 msgid "PPM File Loader"
-msgstr "PPM attēlu ielādētājs."
+msgstr "PPM datņu ielādētājs"
 
-#: operations/external/ppm-load.c:384
+#: operations/external/ppm-load.c:462
 msgid "PPM image loader."
 msgstr "PPM attēlu ielādētājs."
 
@@ -6940,10 +6796,9 @@ msgid "Raw format"
 msgstr "Jēls (raw) formāts"
 
 #: operations/external/ppm-save.c:190
-#, fuzzy
 #| msgid "PPM image loader."
 msgid "PPM File Saver"
-msgstr "PPM attēlu ielādētājs."
+msgstr "PPM datņu saglabātājs"
 
 #: operations/external/ppm-save.c:193
 msgid "PPM image saver (Portable pixmap saver.)"
@@ -6951,13 +6806,12 @@ msgstr "PPM attēlu saglabātājs (portējamas pikseļu kartes saglabātājs)."
 
 #: operations/external/raw-load.c:241
 msgid "libraw File Loader"
-msgstr ""
+msgstr "libraw datņu ielādētājs"
 
 #: operations/external/rgbe-load.c:136
-#, fuzzy
 #| msgid "JPG image loader"
 msgid "RGBE File Loader"
-msgstr "JPG attēlu ielādētājs"
+msgstr "RGBE datņu ielādētājs"
 
 #: operations/external/rgbe-load.c:138
 msgid "RGBE image loader (Radiance HDR format)."
@@ -6965,7 +6819,7 @@ msgstr "RGBE attēla ielādētājs (Radiance HDR formāts)."
 
 #: operations/external/rgbe-save.c:85
 msgid "RGBE File Saver"
-msgstr ""
+msgstr "RGBE datņu saglabātājs"
 
 #: operations/external/rgbe-save.c:88
 msgid "RGBE image saver (Radiance HDR format)"
@@ -6980,16 +6834,14 @@ msgid "The location where to store the output GdkPixbuf."
 msgstr "Vieta, kur saglabāt izvadi no GdkPixbuf."
 
 #: operations/external/save-pixbuf.c:111
-#, fuzzy
 #| msgid "Save output into a GdkPixbuf."
 msgid "Store in GdkPixbuf"
-msgstr "Saglabāt izvadu iekš GdkPixbuf."
+msgstr "Saglabāt iekš GdkPixbuf"
 
 #: operations/external/save-pixbuf.c:113
-#, fuzzy
 #| msgid "Save output into a GdkPixbuf."
 msgid "Store image in a GdkPixbuf."
-msgstr "Saglabāt izvadu iekš GdkPixbuf."
+msgstr "Saglabāt attēlu iekš GdkPixbuf."
 
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -7022,10 +6874,9 @@ msgid "Height for rendered image"
 msgstr "Attēlotā attēla augstums"
 
 #: operations/external/svg-load.c:291
-#, fuzzy
 #| msgid "JPG image loader"
 msgid "SVG File Loader"
-msgstr "JPG attēlu ielādētājs"
+msgstr "SVG datņu ielādētājs"
 
 #. not hidden because it has extra API
 #: operations/external/svg-load.c:293
@@ -7049,16 +6900,14 @@ msgid "Font family (utf8)"
 msgstr "Fontu saime (utf8)"
 
 #: operations/external/text.c:33
-#, fuzzy
 msgid "Font size in pixels."
-msgstr "Horizontālais novietojums"
+msgstr "Fonta izmērs pikseļos."
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/external/text.c:39
-#, fuzzy
 #| msgid "Color for the text (defaults to 'white')"
 msgid "Color for the text (defaults to 'black')"
-msgstr "Teksta krāsa (noklusējuma ir “white”)"
+msgstr "Teksta krāsa (noklusējuma ir “black”)"
 
 #: operations/external/text.c:41
 msgid "Wrap width"
@@ -7125,10 +6974,9 @@ msgid "Display a string of text using pango and cairo."
 msgstr "Attēlot teksta virkni, izmantojot pango un cairo."
 
 #: operations/external/tiff-load.c:30
-#, fuzzy
 #| msgid "Direction"
 msgid "Directory"
-msgstr "Virziens"
+msgstr "Direktorija"
 
 #: operations/external/tiff-load.c:31
 msgid "Image file directory (subfile)"
@@ -7136,7 +6984,7 @@ msgstr ""
 
 #: operations/external/tiff-load.c:872
 msgid "TIFF File Loader"
-msgstr ""
+msgstr "TIFF datņu ielādētājs"
 
 #: operations/external/tiff-load.c:874
 msgid "TIFF image loader using libtiff"
@@ -7148,7 +6996,7 @@ msgstr ""
 
 #: operations/external/tiff-save.c:616
 msgid "TIFF image saver using libtiff"
-msgstr ""
+msgstr "TIFF attēlu saglabātājs, izmantojot libtiff"
 
 #: operations/external/v4l.c:26 operations/workshop/external/v4l2.c:24
 msgid "Path"
@@ -7176,7 +7024,7 @@ msgstr "automātiski izraisīt pārlādi tik reizes sekundē."
 
 #: operations/external/v4l.c:331
 msgid "Video4Linux Frame Source"
-msgstr ""
+msgstr "Video4Linux kadru avots"
 
 #: operations/external/v4l.c:333
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
@@ -7205,10 +7053,9 @@ msgid "svg style description of transform."
 msgstr "svg stila apraksts, ko pārveidot."
 
 #: operations/external/vector-fill.c:276
-#, fuzzy
 #| msgid "Fill opacity"
 msgid "Fill Path"
-msgstr "Aizpildījuma blīvums"
+msgstr "Aizpildīt ceļu"
 
 #: operations/external/vector-fill.c:279
 msgid "Renders a filled region"
@@ -7231,39 +7078,33 @@ msgstr ""
 "veikta ar aerogrāfa rīku."
 
 #: operations/external/vector-stroke.c:301
-#, fuzzy
 #| msgid "Stroke"
 msgid "Vector Stroke"
-msgstr "Vilkums"
+msgstr "Vektoru vilkums"
 
 #: operations/external/vector-stroke.c:305
 msgid "Renders a vector stroke"
 msgstr "Attēlo vektora vilkumu"
 
 #: operations/external/webp-load.c:344
-#, fuzzy
 msgid "WebP File Loader"
-msgstr "PNG attēlu ielādētājs."
+msgstr "WebP datņu ielādētājs"
 
 #: operations/external/webp-load.c:346
-#, fuzzy
 msgid "WebP image loader."
-msgstr "PNG attēlu ielādētājs."
+msgstr "WebP attēlu ielādētājs."
 
 #: operations/external/webp-save.c:29
-#, fuzzy
 msgid "WebP compression quality"
-msgstr "JPEG saspiešanas kvalitāte (starp 1 un 100)"
+msgstr "WebP saspiešanas kvalitāte"
 
 #: operations/external/webp-save.c:192
-#, fuzzy
 msgid "WebP File Saver"
-msgstr "PNG attēlu ielādētājs."
+msgstr "WebP datņu saglabātājs"
 
 #: operations/external/webp-save.c:194
-#, fuzzy
 msgid "WebP image saver"
-msgstr "PNG attēlu ielādētājs."
+msgstr "WebP attēlu saglabātājs"
 
 #: operations/generated/add.c:30 operations/generated/divide.c:30
 #: operations/generated/gamma.c:30 operations/generated/multiply.c:30
@@ -7275,7 +7116,8 @@ msgstr "globāla vērtība, ja aux nesatur datus"
 msgid ""
 "Math operation add, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. (formula: result = input + value)"
+"aux as operands. The result is the evaluation of the expression result = "
+"input + value"
 msgstr ""
 
 #: operations/generated/clear.c:128
@@ -7324,7 +7166,8 @@ msgstr ""
 msgid ""
 "Math operation divide, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. (formula: result = value==0.0f?0.0f:input/value)"
+"aux as operands. The result is the evaluation of the expression result = "
+"value==0.0f?0.0f:input/value"
 msgstr ""
 
 #: operations/generated/dst-atop.c:128
@@ -7359,7 +7202,8 @@ msgstr ""
 msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. (formula: result = powf (input, value))"
+"aux as operands. The result is the evaluation of the expression result = "
+"powf (input, value)"
 msgstr ""
 
 #: operations/generated/hard-light.c:175
@@ -7384,7 +7228,8 @@ msgstr ""
 msgid ""
 "Math operation multiply, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. (formula: result = input * value)"
+"aux as operands. The result is the evaluation of the expression result = "
+"input * value"
 msgstr ""
 
 #: operations/generated/overlay.c:175
@@ -7444,7 +7289,8 @@ msgstr "Porter Duff operācija: src-out (d = cA * (1.0f - aB))"
 msgid ""
 "Math operation subtract, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. (formula: result = input - value)"
+"aux as operands. The result is the evaluation of the expression result = "
+"input - value"
 msgstr ""
 
 #: operations/generated/xor.c:150
@@ -7459,6 +7305,7 @@ msgstr ""
 msgid ""
 "Maximal scale of refinement points to be used for the interpolation mesh"
 msgstr ""
+"Maksimālā skala precizēšanas punktiem, ko izmantot interpolācijas režģim"
 
 #: operations/seamless-clone/seamless-clone.c:27
 #: operations/seamless-clone/seamless-clone.c:33
@@ -7469,7 +7316,7 @@ msgstr ""
 #: operations/seamless-clone/seamless-clone.c:38
 #: operations/seamless-clone/seamless-clone-compose.c:37
 msgid "Error message"
-msgstr ""
+msgstr "Kļūdas ziņojums"
 
 #: operations/seamless-clone/seamless-clone.c:39
 #: operations/seamless-clone/seamless-clone-compose.c:38
@@ -7490,7 +7337,7 @@ msgstr ""
 
 #: operations/seamless-clone/seamless-clone.c:201
 msgid "The opaque parts of the foreground are not above the background!"
-msgstr ""
+msgstr "Necaurspīdīgās priekšplāna daļas nav virs dibenplāna!"
 
 #: operations/seamless-clone/seamless-clone-compose.c:21
 msgid "Refinement steps"
@@ -7500,6 +7347,7 @@ msgstr ""
 msgid ""
 "Maximal amount of refinement points to be used for the interpolation mesh"
 msgstr ""
+"Maksimālais skaits precizēšanas punktu, kurus izmantot interpolācijas režģim"
 
 #: operations/seamless-clone/seamless-clone-compose.c:32
 msgid "How much vertical offset should applied to the paste"
@@ -7515,7 +7363,7 @@ msgstr "Virziena vektora Y komponente"
 
 #: operations/transform/reflect.c:84 operations/workshop/bayer-matrix.c:56
 msgid "Reflect"
-msgstr ""
+msgstr "Atspoguļot"
 
 #: operations/transform/reflect.c:86
 msgid ""
@@ -7525,19 +7373,17 @@ msgstr ""
 
 #: operations/transform/rotate.c:25 operations/transform/rotate-on-center.c:27
 msgid "Degrees"
-msgstr ""
+msgstr "Grādi"
 
 #: operations/transform/rotate.c:26 operations/transform/rotate-on-center.c:28
-#, fuzzy
 #| msgid "Angle to rotate (clockwise)"
 msgid "Angle to rotate (counter-clockwise)"
-msgstr "Pagriešanas leņķis (pa pulksteni)"
+msgstr "Pagriešanas leņķis (pretēji pulkstenim)"
 
 #: operations/transform/rotate.c:72
-#, fuzzy
 #| msgid "Rotation"
 msgid "Rotate"
-msgstr "Pagrieziens"
+msgstr "Pagriezt"
 
 #: operations/transform/rotate.c:76
 msgid "Rotate the buffer around the specified origin."
@@ -7600,10 +7446,9 @@ msgid "Vertical size"
 msgstr "Vertikālais izmērs"
 
 #: operations/transform/scale-size.c:84
-#, fuzzy
 #| msgid "Scale 1:1 size"
 msgid "Scale size"
-msgstr "Mērogs 1:1 izmērs"
+msgstr "Mēroga izmērs"
 
 #: operations/transform/scale-size.c:87
 msgid "Scales the buffer according to a size."
@@ -7629,13 +7474,12 @@ msgstr "Vertikālās šķiebšanas apmērs"
 
 #: operations/transform/shear.c:72
 msgid "Shear"
-msgstr ""
+msgstr "Sašķiebt"
 
 #: operations/transform/shear.c:76
-#, fuzzy
 #| msgid "Shears the buffer"
 msgid "Shears the buffer. "
-msgstr "Sašķiebj buferi"
+msgstr "Sašķiebj buferi."
 
 #: operations/transform/transform.c:25
 #, fuzzy
@@ -7647,27 +7491,27 @@ msgstr "Pārveidošanas virkne"
 msgid "Do a transformation using SVG syntax transformation."
 msgstr ""
 
-#: operations/transform/transform-core.c:201
+#: operations/transform/transform-core.c:200
 msgid "Origin-x"
 msgstr "Pirmavots x"
 
-#: operations/transform/transform-core.c:202
+#: operations/transform/transform-core.c:201
 msgid "X coordinate of origin"
 msgstr "Pirmavota X koordināta"
 
-#: operations/transform/transform-core.c:209
+#: operations/transform/transform-core.c:208
 msgid "Origin-y"
 msgstr "Pirmavots y"
 
-#: operations/transform/transform-core.c:210
+#: operations/transform/transform-core.c:209
 msgid "Y coordinate of origin"
 msgstr "Pirmavota Y koordināta"
 
-#: operations/transform/transform-core.c:217
+#: operations/transform/transform-core.c:216
 msgid "Near-z"
 msgstr ""
 
-#: operations/transform/transform-core.c:218
+#: operations/transform/transform-core.c:217
 #, fuzzy
 #| msgid "Coordinates of lens center"
 msgid "Z coordinate of the near clipping plane"
@@ -7697,15 +7541,13 @@ msgstr ""
 "ņemšanu"
 
 #: operations/workshop/bayer-matrix.c:26
-#, fuzzy
 msgid "Subdivisions"
-msgstr "Dalītājs: "
+msgstr "Apakšiedaļas"
 
 #: operations/workshop/bayer-matrix.c:27
-#, fuzzy
 #| msgid "The value of the divisor"
 msgid "Number of subdivisions"
-msgstr "Dalītāja vērtība"
+msgstr "Apakšiedaļu skaits"
 
 #: operations/workshop/bayer-matrix.c:31
 #, fuzzy
@@ -7763,35 +7605,30 @@ msgstr ""
 
 #: operations/workshop/bayer-matrix.c:74
 #: operations/workshop/linear-sinusoid.c:81
-#, fuzzy
 #| msgid "X offset"
 msgid "X Offset"
 msgstr "X nobīde"
 
 #: operations/workshop/bayer-matrix.c:75
 #: operations/workshop/linear-sinusoid.c:82
-#, fuzzy
 msgid "Offset for X axis"
-msgstr "Nobīde: "
+msgstr "Nobīde X asij"
 
 #: operations/workshop/bayer-matrix.c:81
 #: operations/workshop/linear-sinusoid.c:88
-#, fuzzy
 #| msgid "Y offset"
 msgid "Y Offset"
 msgstr "Y nobīde"
 
 #: operations/workshop/bayer-matrix.c:82
 #: operations/workshop/linear-sinusoid.c:89
-#, fuzzy
 msgid "Offset for Y axis"
-msgstr "Nobīde: "
+msgstr "Nobīde Y asij"
 
 #: operations/workshop/bayer-matrix.c:324
-#, fuzzy
 #| msgid "Bayer pattern"
 msgid "Bayer Matrix"
-msgstr "Bayer raksts"
+msgstr "Bayer matrica"
 
 #: operations/workshop/bayer-matrix.c:329
 #, fuzzy
@@ -7799,14 +7636,12 @@ msgid "Generate a Bayer matrix pattern"
 msgstr "Dambretes galdiņa atveidojums"
 
 #: operations/workshop/bilateral-filter-fast.c:39
-#, fuzzy
 msgid "Smoothness"
-msgstr "Mīkstums"
+msgstr "Gludums"
 
 #: operations/workshop/bilateral-filter-fast.c:40
-#, fuzzy
 msgid "Level of smoothness"
-msgstr "Loglog gludināšana"
+msgstr "Gluduma līmenis"
 
 #: operations/workshop/bilateral-filter-fast.c:502
 msgid "Bilateral Box Filter"
@@ -7817,22 +7652,8 @@ msgid ""
 "A fast approximation of bilateral filter, using a box-filter instead of a "
 "gaussian blur."
 msgstr ""
-"Ātrs divpusējā filtra tuvinājums, izmanto kastes filtru nevis gausa"
-" apmiglošanu."
-
-#: operations/workshop/color-overlay.c:27
-#, fuzzy
-msgid "The color to paint over the input"
-msgstr "Nobīdes vērtība"
-
-#: operations/workshop/color-overlay.c:156
-#, fuzzy
-msgid "Color Overlay"
-msgstr "Krāsa, ko attēlot"
-
-#: operations/workshop/color-overlay.c:157
-msgid "Paint a color overlay over the input, preseving its transparency."
-msgstr ""
+"Ātrs divpusējā filtra tuvinājums, izmanto kastes filtru nevis gausa "
+"apmiglošanu."
 
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
@@ -7870,11 +7691,11 @@ msgid ""
 msgstr ""
 "Veic naivo pelēktoņi-uz-krāsa attēla mozaīkas novēršanu, bez interpolācijas."
 
-#: operations/workshop/ditto.c:114
+#: operations/workshop/ditto.c:118
 msgid "Ditto"
 msgstr ""
 
-#: operations/workshop/ditto.c:116
+#: operations/workshop/ditto.c:120
 msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Testa darbība, lai veiktu 1:1 attēlojumu no ievades uz izvadi, nolasot "
@@ -7898,7 +7719,6 @@ msgid ""
 msgstr ""
 
 #: operations/workshop/domain-transform.c:499
-#| msgid "Transform"
 msgid "Domain Transform"
 msgstr "Domēna transformācija"
 
@@ -7907,9 +7727,9 @@ msgid ""
 "An edge-preserving smoothing filter implemented with the Domain Transform "
 "recursive technique. Similar to a bilateral filter, but faster to compute."
 msgstr ""
-"Malu saglabājošs nogludināšanas filtrs, implementēts ar domēna"
-" transformācijas rekursīvo tehniku. Līdzīgs divpusējam filtram, bet izskaitļo"
-" ātrāk."
+"Malu saglabājošs nogludināšanas filtrs, implementēts ar domēna "
+"transformācijas rekursīvo tehniku. Līdzīgs divpusējam filtram, bet izskaitļo "
+"ātrāk."
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -7926,19 +7746,22 @@ msgid "Lua error"
 msgstr "Kļūda modulī"
 
 #: operations/workshop/external/gluas.c:34
-msgid "parse/compile error, if any"
-msgstr ""
+msgid "Parse/compile error, if any."
+msgstr "Parsēšanas vai kompilēšanas kļūda, ja ir."
 
 #: operations/workshop/external/gluas.c:38
-msgid "a stored lua script on disk implementing an operation."
-msgstr "uz diska saglabāts lua skripts, kas implementē operāciju."
+#| msgid "a stored lua script on disk implementing an operation."
+msgid "A stored lua script on disk implementing an operation."
+msgstr "Uz diska saglabāts lua skripts, kas implementē operāciju."
 
 #: operations/workshop/external/gluas.c:40
 msgid "User value"
 msgstr "Lietotāja vērtība"
 
 #: operations/workshop/external/gluas.c:41
-msgid "(appears in the global variable 'user_value' in lua."
+#, fuzzy
+#| msgid "(appears in the global variable 'user_value' in lua."
+msgid "Available as a global variable 'user_value' in lua."
 msgstr "(parādās lua globālajā mainīgajā “user_value”."
 
 #: operations/workshop/external/gluas.c:995
@@ -7952,27 +7775,24 @@ msgid ""
 msgstr ""
 
 #: operations/workshop/external/lens-correct.c:28
-#, fuzzy
 msgid "Maker"
-msgstr "Ražotājs:"
+msgstr "Ražotājs"
 
 #: operations/workshop/external/lens-correct.c:29
 msgid "Write lens maker correctly"
 msgstr "Ierakstiet lēcas ražotāju pareizi"
 
 #: operations/workshop/external/lens-correct.c:31
-#, fuzzy
 msgid "Camera"
-msgstr "Fotoaparāts:"
+msgstr "Fotoaparāts"
 
 #: operations/workshop/external/lens-correct.c:32
 msgid "Write camera name correctly"
 msgstr "Ierakstiet ražotāja nosaukumu pareizi"
 
 #: operations/workshop/external/lens-correct.c:34
-#, fuzzy
 msgid "Lens"
-msgstr "Lēca:"
+msgstr "Objektīvs"
 
 #: operations/workshop/external/lens-correct.c:35
 msgid "Write your lens model with uppercase letters"
@@ -7995,9 +7815,8 @@ msgid "If you want center"
 msgstr "Ja vēlaties vidu"
 
 #: operations/workshop/external/lens-correct.c:44
-#, fuzzy
 msgid "Lens center X"
-msgstr "Lēcas vidus x"
+msgstr "Lēcas vidus V"
 
 #: operations/workshop/external/lens-correct.c:45
 #: operations/workshop/external/lens-correct.c:48
@@ -8005,9 +7824,8 @@ msgid "Coordinates of lens center"
 msgstr "Lēcas vidus koordinātas"
 
 #: operations/workshop/external/lens-correct.c:47
-#, fuzzy
 msgid "Lens center Y"
-msgstr "Lēcas vidus x"
+msgstr "Lēcas vidus Y"
 
 #: operations/workshop/external/lens-correct.c:51
 msgid "Scale of the image"
@@ -8022,84 +7840,68 @@ msgid "Autocorrect D values for lens correction models."
 msgstr "Automātiski labot D vērtības lēcu koriģēšanas modeļiem."
 
 #: operations/workshop/external/lens-correct.c:57
-#, fuzzy
 msgid "Model red a"
-msgstr "Modeļa sarkanais a:"
+msgstr "Modeļa sarkanais a"
 
 #: operations/workshop/external/lens-correct.c:59
-#, fuzzy
 msgid "Model red b"
-msgstr "Modeļa sarkanais b:"
+msgstr "Modeļa sarkanais b"
 
 #: operations/workshop/external/lens-correct.c:61
-#, fuzzy
 msgid "Model red c"
-msgstr "Modeļa sarkanais c:"
+msgstr "Modeļa sarkanais c"
 
 #: operations/workshop/external/lens-correct.c:63
-#, fuzzy
 msgid "Model red d"
-msgstr "Modeļa sarkanais d:"
+msgstr "Modeļa sarkanais d"
 
 #: operations/workshop/external/lens-correct.c:66
-#, fuzzy
 msgid "Model green a"
-msgstr "Modeļa zaļais a:"
+msgstr "Modeļa zaļais a"
 
 #: operations/workshop/external/lens-correct.c:68
-#, fuzzy
 msgid "Model green b"
-msgstr "Modeļa zaļais b:"
+msgstr "Modeļa zaļais b"
 
 #: operations/workshop/external/lens-correct.c:70
-#, fuzzy
 msgid "Model green c"
-msgstr "Modeļa zaļais c:"
+msgstr "Modeļa zaļais c"
 
 #: operations/workshop/external/lens-correct.c:72
-#, fuzzy
 msgid "Model green d"
-msgstr "Modeļa zaļais d:"
+msgstr "Modeļa zaļais d"
 
 #: operations/workshop/external/lens-correct.c:75
-#, fuzzy
 msgid "Model blue a"
-msgstr "Modeļa zilais a:"
+msgstr "Modeļa zilais a"
 
 #: operations/workshop/external/lens-correct.c:77
-#, fuzzy
 msgid "Model blue b"
-msgstr "Modeļa zilais b:"
+msgstr "Modeļa zilais b"
 
 #: operations/workshop/external/lens-correct.c:79
-#, fuzzy
 msgid "Model blue c"
-msgstr "Modeļa zilais c:"
+msgstr "Modeļa zilais c"
 
 #: operations/workshop/external/lens-correct.c:81
-#, fuzzy
 msgid "Model blue d"
-msgstr "Modeļa zilais d:"
+msgstr "Modeļa zilais d"
 
 #: operations/workshop/external/lens-correct.c:85
-#, fuzzy
 msgid "Model alpha a"
-msgstr "Modeļa alfa a:"
+msgstr "Modeļa alfa a"
 
 #: operations/workshop/external/lens-correct.c:87
-#, fuzzy
 msgid "Model alpha b"
-msgstr "Modeļa alfa b:"
+msgstr "Modeļa alfa b"
 
 #: operations/workshop/external/lens-correct.c:89
-#, fuzzy
 msgid "Model alpha c"
-msgstr "Modeļa alfa c:"
+msgstr "Modeļa alfa c"
 
 #: operations/workshop/external/lens-correct.c:91
-#, fuzzy
 msgid "Model alpha d"
-msgstr "Modeļa alfa d:"
+msgstr "Modeļa alfa d"
 
 #: operations/workshop/external/lens-correct.c:487
 msgid "Copies image performing lens distortion correction."
@@ -8161,18 +7963,17 @@ msgstr ""
 
 #: operations/workshop/external/v4l2.c:25
 msgid "video device path"
-msgstr ""
+msgstr "video ierīces ceļš"
 
 #: operations/workshop/external/v4l2.c:774
 msgid "Video4Linux2 Frame Source"
-msgstr ""
+msgstr "Video4Linux2 kadru avots"
 
 #: operations/workshop/external/v4l2.c:776
-#, fuzzy
 #| msgid "Video4Linux input, webcams framegrabbers and similar devices."
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr ""
-"Video4Linux ievade, tīmekļa kameras, kadru tvērēji un līdzīgas ierīces."
+"Video4Linux2 ievade, tīmekļa kameras, kadru tvērēji un līdzīgas ierīces."
 
 #: operations/workshop/generated/average.c:111
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
@@ -8215,46 +8016,43 @@ msgstr "Attēla sapludināšanas operācija: atņemošs (<tt>c = cA+cB-1.0</tt>)
 
 #: operations/workshop/gradient-map.c:27
 msgid "Stop 1"
-msgstr ""
+msgstr "Apturēt 1"
 
 #: operations/workshop/gradient-map.c:29
 msgid "Stop 2"
-msgstr ""
+msgstr "Apturēt 2"
 
 #: operations/workshop/gradient-map.c:30
-#, fuzzy
 msgid "Color 3"
-msgstr "Krāsa"
+msgstr "Krāsa 3"
 
 #: operations/workshop/gradient-map.c:31
 msgid "Stop 3"
-msgstr ""
+msgstr "Apturēt 3"
 
 #: operations/workshop/gradient-map.c:32
-#, fuzzy
 msgid "Color 4"
-msgstr "Krāsa"
+msgstr "Krāsa 4"
 
 #: operations/workshop/gradient-map.c:33
 msgid "Stop 4"
-msgstr ""
+msgstr "Apturēt 4"
 
 #: operations/workshop/gradient-map.c:34
-#, fuzzy
 msgid "Color 5"
-msgstr "Krāsa"
+msgstr "Krāsa 5"
 
 #: operations/workshop/gradient-map.c:35
 msgid "Stop 5"
-msgstr ""
+msgstr "Apturēt 5"
 
 #: operations/workshop/gradient-map.c:241
 msgid "Gradient Map"
-msgstr ""
+msgstr "Krāsu pārejas karte"
 
 #: operations/workshop/gradient-map.c:244
 msgid "Applies a color gradient."
-msgstr ""
+msgstr "Pielieto krāsu pāreju."
 
 #: operations/workshop/hstack.c:179
 msgid ""
@@ -8276,67 +8074,63 @@ msgstr ""
 
 #: operations/workshop/integral-image.c:252
 msgid "Integral Image"
-msgstr ""
+msgstr "Integrāļa attēls"
 
 #: operations/workshop/integral-image.c:254
 msgid "Compute integral and squared integral image"
 msgstr ""
 
 #: operations/workshop/linear-sinusoid.c:26
-#, fuzzy
 #| msgid "Period"
 msgid "X Period"
-msgstr "Periods"
+msgstr "X periods"
 
 #: operations/workshop/linear-sinusoid.c:27
 msgid "Period for X axis"
-msgstr ""
+msgstr "Periods X asij"
 
 #: operations/workshop/linear-sinusoid.c:33
-#, fuzzy
 #| msgid "Period"
 msgid "Y Period"
-msgstr "Periods"
+msgstr "Y periods"
 
 #: operations/workshop/linear-sinusoid.c:34
 msgid "Period for Y axis"
-msgstr ""
+msgstr "Periods Y asij"
 
 #: operations/workshop/linear-sinusoid.c:40
-#, fuzzy
 #| msgid "Amplitude"
 msgid "X Amplitude"
-msgstr "Amplitūda"
+msgstr "X amplitūda"
 
 #: operations/workshop/linear-sinusoid.c:41
 msgid "Amplitude for X axis (logarithmic scale)"
-msgstr ""
+msgstr "Amplitūda X asij (logaritmiskā skala)"
 
 #: operations/workshop/linear-sinusoid.c:46
-#, fuzzy
 #| msgid "Amplitude"
 msgid "Y Amplitude"
-msgstr "Amplitūda"
+msgstr "Y amplitūda"
 
 #: operations/workshop/linear-sinusoid.c:47
 msgid "Amplitude for Y axis (logarithmic scale)"
-msgstr ""
+msgstr "Amplitūda Y asij (logaritmiskā skala)"
 
 #: operations/workshop/linear-sinusoid.c:52
 msgid "X Phase"
-msgstr ""
+msgstr "X fāze"
 
 #: operations/workshop/linear-sinusoid.c:53
 msgid "Phase for X axis"
-msgstr ""
+msgstr "Fāze X asij"
 
 #: operations/workshop/linear-sinusoid.c:59
 msgid "Y Phase"
-msgstr ""
+msgstr "Y fāze"
 
 #: operations/workshop/linear-sinusoid.c:60
 msgid "Phase for Y axis"
-msgstr ""
+msgstr "Fāze Y asij"
 
 #: operations/workshop/linear-sinusoid.c:67
 #, fuzzy
@@ -8348,7 +8142,7 @@ msgstr "Pagrieziena leņķis"
 #, fuzzy
 #| msgid "Scaling"
 msgid "Supersampling"
-msgstr "Mērogošana"
+msgstr "Interpolācija"
 
 #: operations/workshop/linear-sinusoid.c:101
 msgid "Number of samples along each axis per pixel"
@@ -8378,57 +8172,6 @@ msgstr ""
 "rawbayerS, tiks apmainīti atgrieztie 16 bitu skaitļi (acīmredzot, pnm "
 "ielādētājs ir kļūdains)"
 
-#: operations/workshop/recursive-transform.c:28
-#, fuzzy
-#| msgid "Transformation string"
-msgid "Transformation matrix, using SVG syntax"
-msgstr "Pārveidošanas virkne"
-
-#: operations/workshop/recursive-transform.c:30
-#: operations/workshop/recursive-transform.c:31
-#, fuzzy
-#| msgid "Iteration"
-msgid "First iteration"
-msgstr "Iterācija"
-
-#: operations/workshop/recursive-transform.c:38
-#, fuzzy
-msgid "Fade color"
-msgstr "Aizpildījuma krāsa"
-
-#: operations/workshop/recursive-transform.c:39
-msgid ""
-"Color to fade transformed images towards, with a rate depending on its alpha"
-msgstr ""
-
-#: operations/workshop/recursive-transform.c:42
-#, fuzzy
-#| msgid "Fill opacity"
-msgid "Fade opacity"
-msgstr "Aizpildījuma blīvums"
-
-#: operations/workshop/recursive-transform.c:43
-msgid "Amount by which to scale the opacity of each transformed image"
-msgstr ""
-
-#: operations/workshop/recursive-transform.c:47
-msgid "Paste below"
-msgstr ""
-
-#: operations/workshop/recursive-transform.c:48
-msgid "Paste transformed images below each other"
-msgstr ""
-
-#: operations/workshop/recursive-transform.c:264
-#, fuzzy
-#| msgid "Transform"
-msgid "Recursive Transform"
-msgstr "Pārveidot"
-
-#: operations/workshop/recursive-transform.c:266
-msgid "Apply a transformation recursively."
-msgstr ""
-
 #: operations/workshop/segment-kmeans.c:27
 #: operations/workshop/segment-kmeans.c:28
 #, fuzzy
@@ -8454,45 +8197,8 @@ msgstr ""
 msgid "Segment colors using K-means clustering"
 msgstr ""
 
-#: operations/workshop/spherize.c:26
-#, fuzzy
-#| msgid "Radius"
-msgid "Radial"
-msgstr "Rādiuss"
-
-#: operations/workshop/spherize.c:36
-msgid "Angle of view"
-msgstr ""
-
-#: operations/workshop/spherize.c:37
-msgid "Camera angle of view"
-msgstr ""
-
-#: operations/workshop/spherize.c:41
-#, fuzzy
-#| msgid "Curve"
-msgid "Curvature"
-msgstr "Līkne"
-
-#: operations/workshop/spherize.c:42
-msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
-msgstr ""
-
-#: operations/workshop/spherize.c:54
-msgid ""
-"Displacement scaling factor (negative values refer to the inverse "
-"displacement)"
-msgstr ""
-
-#: operations/workshop/spherize.c:326
-#, fuzzy
-#| msgid "Vertical"
-msgid "Spherize"
-msgstr "Vertikāls"
-
-#: operations/workshop/spherize.c:330
-msgid "Wrap image around a spherical cap"
-msgstr ""
+#~ msgid "Chessboard"
+#~ msgstr "Šaha galds"
 
 #~ msgid "Red bits"
 #~ msgstr "Sarkanie biti"
