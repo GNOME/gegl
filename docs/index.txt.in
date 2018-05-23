@@ -26,15 +26,12 @@ site link:https://download.gimp.org/pub/gegl/0.3/[tarball releases].
 GEGL is link:copyright.html[Free Software], and both new functionality in
 link:operation-api.html[new operations] as well as relevant
 link:development.html[development], enhancement
-requests, patches and bug reports for GEGL and link:http://gegl.org/babl/[babl] in link:bugzilla.html[bugzilla].
+requests, patches and bug reports for GEGL at link:http://gitlab.gnome.org/GNOME/gegl/[gitlab.gnome.org/GNOME/gegl]
+,
 
-Important links for tracking GEGL development: http://gegl.org/NEWS.html[GEGL
-NEWS file], http://git.gnome.org/cgit/gegl/log/[GEGL commit log],
-http://bugzilla.gnome.org/buglist.cgi?product=GEGL&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&bug_status=UNCONFIRMED&bug_status=NEEDINFO[bugzilla],
-and IRC in #gegl (and #gimp) on GIMPnet (irc.gimp.org).
-links:https://mail.gnome.org/mailman/listinfo/gegl-developer-list[mailing list]
 Finanical support for fun new filters and capabilities as well as
-gardening/janitor bits part of project maintainership is welcome through
+gardening/janitor bits and offshoot new color related infrastructured as
+part of project maintainership is welcome through
 link:https://www.gimp.org/donating/[the patreon campaign at GIMPs donation
 page.]
 
