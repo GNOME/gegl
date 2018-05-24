@@ -4,24 +4,25 @@
 #
 # Francisco Vila <francisco.vila@hispalinux.es>, 2012.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2012, 2013.
+# Rodrigo <rodhos92@gmail.com>, 2018.
 #
 #: ../operations/common/display.c:23 ../operations/external/sdl-display.c:25
 #: ../operations/external/sdl-display.c:27
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-06-02 21:39+0000\n"
-"PO-Revision-Date: 2013-06-03 11:18+0200\n"
-"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"POT-Creation-Date: 2018-05-13 19:19+0000\n"
+"PO-Revision-Date: 2018-05-22 16:53+0200\n"
+"Last-Translator: Rodrigo <rodhos92@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
-"Language: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Gtranslator 2.91.5\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #: ../bin/gegl.c:146
 #, c-format
@@ -194,6 +195,50 @@ msgstr ""
 "Número máximo de entradas en ella cola baldosa escritora del archivo del "
 "«backend»"
 
+#: ../gegl/gegl-enums.c:33
+msgid "None"
+msgstr "Ninguno"
+
+# Más información: https://docs.gimp.org/2.10/en/gimp-tool-warp.html
+#: ../gegl/gegl-enums.c:34
+msgid "Clamp"
+msgstr "Sujetar"
+
+#: ../gegl/gegl-enums.c:35
+msgid "Loop"
+msgstr "Bucle"
+
+#: ../gegl/gegl-enums.c:36
+msgid "Black"
+msgstr "Negro"
+
+#: ../gegl/gegl-enums.c:37
+msgid "White"
+msgstr "Blanco"
+
+#: ../gegl/gegl-enums.c:64
+msgid "Nearest"
+msgstr "El más cercano"
+
+# Tipo de interpolación: Lineal, cúbica, NoHalo, etc.
+#: ../gegl/gegl-enums.c:65
+msgid "Linear"
+msgstr "Lineal"
+
+#: ../gegl/gegl-enums.c:66
+msgid "Cubic"
+msgstr "Cúbica"
+
+# Algoritmo de interpolación llamado No halo (sin halo). Al rotar una imagen evita que esta se vea borrosa.
+#: ../gegl/gegl-enums.c:67
+msgid "NoHalo"
+msgstr "Sin halo"
+
+# Algoritmo de interpolación llamado Low halo (de halo bajo). Al rotar la imagen se verá solo un poco borrosa.
+#: ../gegl/gegl-enums.c:68
+msgid "LoHalo"
+msgstr "Halo bajo"
+
 #: ../gegl/module/geglmodule.c:147 ../gegl/module/geglmodule.c:165
 #: ../gegl/module/geglmodule.c:274 ../gegl/module/geglmodule.c:301
 #: ../gegl/module/geglmodule.c:393
@@ -227,8 +272,8 @@ msgstr "Radio de desenfoque"
 #: ../operations/common/bilateral-filter-fast.c:39
 msgid "Radius of square pixel region, (width and height will be radius*2+1)."
 msgstr ""
-"Radio de la región cuadrada de píxeles (la anchura y la altura serán radio*2"
-"+1)."
+"Radio de la región cuadrada de píxeles (la anchura y la altura serán "
+"radio*2+1)."
 
 #: ../operations/common/bilateral-filter.c:29
 msgid "Edge preservation"
@@ -279,8 +324,8 @@ msgstr "Radio"
 #: ../operations/common/box-blur.c:26 ../operations/common/snn-mean.c:27
 msgid "Radius of square pixel region, (width and height will be radius*2+1)"
 msgstr ""
-"Radio de la región cuadrada de píxeles (la anchura y la altura serán radio*2"
-"+1)."
+"Radio de la región cuadrada de píxeles (la anchura y la altura serán "
+"radio*2+1)."
 
 #: ../operations/common/box-blur.c:343
 msgid "Performs an averaging of a square box of pixels"
@@ -313,8 +358,7 @@ msgstr "Grado de aumento del brillo"
 msgid "Changes the light level and contrast."
 msgstr "Cambia el nivel de luz y el contraste."
 
-#: ../operations/common/buffer-sink.c:25
-#: ../operations/common/write-buffer.c:25
+#: ../operations/common/buffer-sink.c:25 ../operations/common/write-buffer.c:25
 msgid "Buffer location"
 msgstr "Ubicación del búfer"
 
@@ -740,7 +784,6 @@ msgid "Vertical shadow offset"
 msgstr "Desplazamiento vertical de la sombra"
 
 #: ../operations/common/dropshadow.c:39
-#| msgid "The color to render (defaults to 'black')"
 msgid "The shadow's color (defaults to 'black')"
 msgstr "El color de la sombra (el predeterminado es «negro»)"
 
@@ -1169,16 +1212,15 @@ msgstr ""
 "ponderación"
 
 #: ../operations/common/gegl-buffer-load-op.c:24
-#: ../operations/common/gegl-buffer-save-op.c:24
-#: ../operations/common/load.c:25 ../operations/common/magick-load.c:26
-#: ../operations/common/open-buffer.c:25 ../operations/common/raw-load.c:27
-#: ../operations/common/save.c:25 ../operations/external/ff-load.c:25
-#: ../operations/external/jp2-load.c:25 ../operations/external/jpg-load.c:25
-#: ../operations/external/jpg-save.c:25 ../operations/external/npy-save.c:31
-#: ../operations/external/png-load.c:27 ../operations/external/png-save.c:26
-#: ../operations/external/ppm-load.c:25 ../operations/external/ppm-save.c:25
-#: ../operations/external/rgbe-load.c:26 ../operations/external/rgbe-save.c:26
-#: ../operations/external/svg-load.c:25
+#: ../operations/common/gegl-buffer-save-op.c:24 ../operations/common/load.c:25
+#: ../operations/common/magick-load.c:26 ../operations/common/open-buffer.c:25
+#: ../operations/common/raw-load.c:27 ../operations/common/save.c:25
+#: ../operations/external/ff-load.c:25 ../operations/external/jp2-load.c:25
+#: ../operations/external/jpg-load.c:25 ../operations/external/jpg-save.c:25
+#: ../operations/external/npy-save.c:31 ../operations/external/png-load.c:27
+#: ../operations/external/png-save.c:26 ../operations/external/ppm-load.c:25
+#: ../operations/external/ppm-save.c:25 ../operations/external/rgbe-load.c:26
+#: ../operations/external/rgbe-save.c:26 ../operations/external/svg-load.c:25
 #: ../operations/workshop/external/ff-save.c:30
 #: ../operations/workshop/external/gluas.c:43
 #: ../operations/workshop/rawbayer-load.c:25
@@ -1286,8 +1328,8 @@ msgid ""
 "Inverts the components (except alpha), the result is the corresponding "
 "\"negative\" image."
 msgstr ""
-"Invierte las componentes (excepto alfa), el resultado es la imagen «negativa» "
-"correspondiente."
+"Invierte las componentes (excepto alfa), el resultado es la imagen "
+"«negativa» correspondiente."
 
 #: ../operations/common/layer.c:30
 msgid "Operation"
@@ -1506,8 +1548,8 @@ msgid ""
 "Everything else will be treated as unknown and filled in."
 msgstr ""
 "Dados un tri-map difuso aportado por el usuario y una imagen de entrada, "
-"crear un «matte» de alfa en primer plano. Establezca blanco como primer plano "
-"y negro como fondo para el tri-map. Todo lo demás se tratará como "
+"crear un «matte» de alfa en primer plano. Establezca blanco como primer "
+"plano y negro como fondo para el tri-map. Todo lo demás se tratará como "
 "desconocido y se rellenará."
 
 #: ../operations/common/mblur.c:25
@@ -1652,13 +1694,11 @@ msgstr "Mezclador de canales monocromático."
 
 #: ../operations/common/motion-blur-circular.c:33
 #: ../operations/common/motion-blur-zoom.c:33
-#| msgid "Horizontal position"
 msgid "Horizontal center position"
 msgstr "Posición horizontal central"
 
 #: ../operations/common/motion-blur-circular.c:38
 #: ../operations/common/motion-blur-zoom.c:38
-#| msgid "Vertical position"
 msgid "Vertical center position"
 msgstr "Posición vertical central"
 
@@ -1669,12 +1709,10 @@ msgid "Angle"
 msgstr "Ángulo"
 
 #: ../operations/common/motion-blur-circular.c:43
-#| msgid "Rotation angle"
 msgid "Rotation blur angle"
 msgstr "Ángulo de rotación de desenfoque"
 
 #: ../operations/common/motion-blur-circular.c:266
-#| msgid "Linear motion blur"
 msgid "Circular motion blur"
 msgstr "Desenfoque de movimiento circular"
 
@@ -1695,17 +1733,14 @@ msgid "Linear motion blur"
 msgstr "Desenfoque de movimiento lineal"
 
 #: ../operations/common/motion-blur-zoom.c:40
-#| msgid "Vector"
 msgid "Factor"
 msgstr "Factor"
 
 #: ../operations/common/motion-blur-zoom.c:43
-#| msgid "Blue stretching factor"
 msgid "Bluring factor"
 msgstr "Factor de desenfoque"
 
 #: ../operations/common/motion-blur-zoom.c:216
-#| msgid "Linear motion blur"
 msgid "Zoom motion blur"
 msgstr "Desenfoque de movimiento de ampliación"
 
@@ -1739,8 +1774,7 @@ msgstr "Croma"
 
 #: ../operations/common/noise-cielch.c:37
 #: ../operations/common/noise-cielch.c:39 ../operations/common/noise-hsv.c:31
-#: ../operations/common/noise-hsv.c:33
-#: ../operations/workshop/color-rotate.c:48
+#: ../operations/common/noise-hsv.c:33 ../operations/workshop/color-rotate.c:48
 msgid "Hue"
 msgstr "Tono"
 
@@ -2041,8 +2075,8 @@ msgstr "Adaptación a la variación de luz a través de la imagen"
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This is an efficient global operator derived from "
-"simple physiological observations, producing luminance within the range 0.0-"
-"1.0"
+"simple physiological observations, producing luminance within the range "
+"0.0-1.0"
 msgstr ""
 "Adaptar una imagen, que puede tener un rango dinámico alto, para su "
 "presentación utilizando un rango dinámico bajo. Es un operador global "
@@ -2138,7 +2172,7 @@ msgstr "Pares"
 msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Número de pares; un número mayor preserva detalles más precisos"
 
-#: ../operations/common/snn-mean.c:326
+#: ../operations/common/snn-mean.c:315
 msgid ""
 "Noise reducing edge enhancing blur filter based  on Symmetric Nearest "
 "Neighbours"
@@ -2377,17 +2411,14 @@ msgid "X coordinate of the center of the waves"
 msgstr "Coordenada X del centro de las ondas"
 
 #: ../operations/common/waves.c:32
-#| msgid "X coordinate of the center of the waves"
 msgid "Y coordinate of the center of the waves"
 msgstr "Coordenada Y del centro de las ondas"
 
 #: ../operations/common/waves.c:40
-#| msgid "Period of the ripple"
 msgid "Period (wavelength) of the ripple"
 msgstr "Período (longitud de onda) del remolino"
 
 #: ../operations/common/waves.c:46 ../operations/common/waves.c:48
-#| msgid "Operation"
 msgid "Aspect ratio"
 msgstr "Relación de aspecto"
 
@@ -2400,7 +2431,6 @@ msgid "Limit deformation in the image area."
 msgstr "Limitar la deformación al área de la imagen."
 
 #: ../operations/common/waves.c:187
-#| msgid "Transform the buffer with waves"
 msgid "Distort the image with waves"
 msgstr "Distorsionar la imagen con ondas"
 
@@ -2661,7 +2691,7 @@ msgstr "Niveles activos"
 msgid "Number of levels to perform solving"
 msgstr "Número de niveles para el solucionado"
 
-#: ../operations/external/matting-levin.c:1439
+#: ../operations/external/matting-levin.c:1440
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
@@ -2801,7 +2831,7 @@ msgstr ""
 "Guardador de imágenes PNG (pasa el búfer a su través, guarda como efecto "
 "colateral)."
 
-#: ../operations/external/ppm-load.c:380
+#: ../operations/external/ppm-load.c:385
 msgid "PPM image loader."
 msgstr "Cargador de imágenes PPM."
 
@@ -2896,8 +2926,8 @@ msgid ""
 "Sets the width in pixels at which long lines will wrap. Use -1 for no "
 "wrapping."
 msgstr ""
-"Establece la anchura en píxeles en la que la líneas largas se ajustan. Use -"
-"1 para no ajustar."
+"Establece la anchura en píxeles en la que la líneas largas se ajustan. Use "
+"-1 para no ajustar."
 
 #: ../operations/external/text.c:36
 msgid "Justification"
@@ -2934,8 +2964,7 @@ msgstr ""
 "número del fotograma actual, se puede cambiar para que dispare una recarga "
 "de la imagen."
 
-#: ../operations/external/v4l.c:31
-#: ../operations/workshop/external/ff-save.c:32
+#: ../operations/external/v4l.c:31 ../operations/workshop/external/ff-save.c:32
 msgid "FPS"
 msgstr "FPS"
 
@@ -3146,10 +3175,6 @@ msgstr "Operación de Porter-Duff src-in (d = cA * aB)"
 msgid "Porter Duff operation src-out (d = cA * (1.0f - aB))"
 msgstr "Operación de Porter-Duff src-out (d = cA * (1.0f - aB))"
 
-#: ../operations/generated/src-over.c:116
-msgid "Porter Duff operation src-over (d = cA + cB * (1.0f - aA))"
-msgstr "Operación de Porter-Duff src-over (d = cA + cB * (1.0f - aA))"
-
 #: ../operations/generated/subtract.c:125
 msgid "Math operation subtract (c = c - value)"
 msgstr "Operación matemática restar (c = c - valor)"
@@ -3335,8 +3360,8 @@ msgstr ""
 #: ../operations/workshop/snn-percentile.c:28
 msgid "Radius of square pixel region (width and height will be radius*2+1)"
 msgstr ""
-"Radio de la región cuadrada de píxeles (la anchura y la altura serán radio*2"
-"+1)"
+"Radio de la región cuadrada de píxeles (la anchura y la altura serán "
+"radio*2+1)"
 
 #: ../operations/workshop/box-max.c:198
 msgid ""
@@ -4035,16 +4060,16 @@ msgid ""
 "Image blending operation 'soft-burn' (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 - "
 "cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
 msgstr ""
-"Operación de mezcla de imágenes «quemado suave» (<tt>c = (cA+cB<1.0)?0.5*cB / "
-"(1.0 - cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
+"Operación de mezcla de imágenes «quemado suave» (<tt>c = (cA+cB<1.0)?"
+"0.5*cB / (1.0 - cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
 
 #: ../operations/workshop/generated/soft-dodge.c:109
 msgid ""
 "Image blending operation 'soft-dodge' (<tt>c = (cA+cB<1.0)?0.5*cA / (1.0 - "
 "cB):1.0-0.5*(1.0 - cB)/cA</tt>)"
 msgstr ""
-"Operación de mezcla de imágenes «máscara suave» (<tt>c = (cA+cB<1.0)?0.5*cA / "
-"(1.0 - cB):1.0-0.5*(1.0 - cB)/cA</tt>)"
+"Operación de mezcla de imágenes «máscara suave» (<tt>c = (cA+cB<1.0)?"
+"0.5*cA / (1.0 - cB):1.0-0.5*(1.0 - cB)/cA</tt>)"
 
 #: ../operations/workshop/generated/subtractive.c:109
 msgid "Image blending operation 'subtractive' (<tt>c = cA+cB-1.0</tt>)"
@@ -4170,13 +4195,16 @@ msgid "The percentile to return, the default value 50 is equal to the median"
 msgstr ""
 "Percentil que devolver, el valor predeterminado 50 es igual a la mediana"
 
-#: ../operations/workshop/snn-percentile.c:272
+#: ../operations/workshop/snn-percentile.c:273
 msgid ""
 "Noise reducing edge enhancing percentile filter based on Symmetric Nearest "
 "Neighbours"
 msgstr ""
 "Filtro de percentil que resalta los bordes y reduce el ruido, basado en los "
 "vecinos simétricos más próximos"
+
+#~ msgid "Porter Duff operation src-over (d = cA + cB * (1.0f - aA))"
+#~ msgstr "Operación de Porter-Duff src-over (d = cA + cB * (1.0f - aA))"
 
 #~ msgid "Coordinate y of the center of the waves"
 #~ msgstr "Coordenada Y del centro de las ondas"
