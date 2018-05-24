@@ -114,7 +114,6 @@ gegl_tile_handler_cache_init (GeglTileHandlerCache *cache)
   ((GeglTileSource*)cache)->command = gegl_tile_handler_cache_command;
   cache->items = g_hash_table_new (gegl_tile_handler_cache_hashfunc, gegl_tile_handler_cache_equalfunc);
   g_queue_init (&cache->queue);
-  gegl_tile_cache_init ();
 
   gegl_tile_handler_cache_connect (cache);
 }
@@ -842,14 +841,28 @@ gegl_tile_handler_cache_equalfunc (gconstpointer a,
   return FALSE;
 }
 
+static void
+gegl_config_tile_cache_size_notify (GObject    *gobject,
+                                    GParamSpec *pspec,
+                                    gpointer    user_data)
+{
+  gegl_tile_handler_cache_trim (NULL);
+}
+
 void
 gegl_tile_cache_init (void)
 {
+  g_signal_connect (gegl_config (), "notify::tile-cache-size",
+                    G_CALLBACK (gegl_config_tile_cache_size_notify), NULL);
 }
 
 void
 gegl_tile_cache_destroy (void)
 {
+  g_signal_handlers_disconnect_by_func (gegl_config(),
+                                        gegl_config_tile_cache_size_notify,
+                                        NULL);
+
   g_warn_if_fail (g_queue_is_empty (&cache_queue));
   g_queue_clear (&cache_queue);
 }

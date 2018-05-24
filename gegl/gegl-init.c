@@ -523,7 +523,6 @@ gegl_exit (void)
                     "variable GEGL_DEBUG to \"buffer-alloc\"\n");
 #endif
     }
-  gegl_tile_cache_destroy ();
 
   if (gegl_swap_dir ())
     {
@@ -704,6 +703,7 @@ gegl_post_parse_hook (GOptionContext *context,
   GEGL_INSTRUMENT_START();
 
   gegl_operation_gtype_init ();
+  gegl_tile_cache_init ();
 
   if (!module_db)
     {
