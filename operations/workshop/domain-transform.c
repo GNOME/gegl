@@ -496,7 +496,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   gegl_operation_class_set_keys (operation_class,
       "name",        "gegl:domain-transform",
-      "title",       _("Domain Transform"),
+      "title",       _("Smooth by Domain Transform"),
       "categories" , "enhance:noise-reduction",
       "description", _("An edge-preserving smoothing filter implemented with the Domain Transform recursive technique. Similar to a bilateral filter, but faster to compute."),
       NULL);
