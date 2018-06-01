@@ -4,7 +4,7 @@ include $(top_srcdir)/operations/Makefile-common.am
 # Seamless cloning operations #
 ###############################
 
-AM_LDFLAGS += $(P2TC_LDLAGS)
+AM_LDFLAGS += $(P2TC_LDLAGS) $(P2TC_LIBS)
 AM_CFLAGS += $(P2TC_CFLAGS) -I$(top_srcdir)/seamless-clone
 
 LIBS = $(op_libs)
