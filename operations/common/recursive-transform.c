@@ -218,6 +218,7 @@ attach (GeglOperation *operation)
       gegl_operation_meta_watch_nodes (operation,
                                        iters[i].transform_node,
                                        iters[i].color_overlay_node,
+                                       iters[i].opacity_node,
                                        iters[i].over_node,
                                        NULL);
     }
