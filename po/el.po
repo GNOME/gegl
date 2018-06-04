@@ -1,26 +1,22 @@
 # Greek translation for gegl.
 # Copyright (C) 2012 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gegl package.
-# Dimitris Spingos <dmtrs32@gmail.com>, 2012.
-# Dimitris Spingos (Δημήτρης  Σπίγγος) <dmtrs32@gmail.com>, 2012.
-# Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>, 2012, 2013.
-#: ../operations/common/display.c:23 ../operations/external/sdl-display.c:25
-#: ../operations/external/sdl-display.c:27
+# Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>, 2012-2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gegl&k"
-"eywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2013-07-05 20:47+0000\n"
-"PO-Revision-Date: 2013-07-23 16:47+0300\n"
-"Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=gegl&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2018-05-13 19:19+0000\n"
+"PO-Revision-Date: 2018-06-04 11:53+0300\n"
+"Last-Translator: Spingos Dimitris(Σπίγγος Δημήτρης) <dmtrs32@gmail.com>\n"
 "Language-Team: team@gnome.gr\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "X-Project-Style: gnome\n"
 
 #: ../bin/gegl.c:146
@@ -193,6 +189,46 @@ msgstr ""
 "Μέγιστος αριθμός καταχωρίσεων στην παράθεση αρχείου της ουράς συγγραφής "
 "οπισθοφυλακής"
 
+#: ../gegl/gegl-enums.c:33
+msgid "None"
+msgstr "Καμία"
+
+#: ../gegl/gegl-enums.c:34
+msgid "Clamp"
+msgstr "Σφιγκτήρας"
+
+#: ../gegl/gegl-enums.c:35
+msgid "Loop"
+msgstr "Βρόχος"
+
+#: ../gegl/gegl-enums.c:36
+msgid "Black"
+msgstr "Μαύρο"
+
+#: ../gegl/gegl-enums.c:37
+msgid "White"
+msgstr "Άσπρο"
+
+#: ../gegl/gegl-enums.c:64
+msgid "Nearest"
+msgstr "Το πιο κοντινό"
+
+#: ../gegl/gegl-enums.c:65
+msgid "Linear"
+msgstr "Γραμμικό"
+
+#: ../gegl/gegl-enums.c:66
+msgid "Cubic"
+msgstr "Κυβικό"
+
+#: ../gegl/gegl-enums.c:67
+msgid "NoHalo"
+msgstr "NoHalo"
+
+#: ../gegl/gegl-enums.c:68
+msgid "LoHalo"
+msgstr "LoHalo"
+
 #: ../gegl/module/geglmodule.c:147 ../gegl/module/geglmodule.c:165
 #: ../gegl/module/geglmodule.c:274 ../gegl/module/geglmodule.c:301
 #: ../gegl/module/geglmodule.c:393
@@ -312,8 +348,7 @@ msgstr "Ποσότητα για αύξηση φωτεινότητας"
 msgid "Changes the light level and contrast."
 msgstr "Αλλάζει τη στάθμη φωτός και αντίθεσης."
 
-#: ../operations/common/buffer-sink.c:25
-#: ../operations/common/write-buffer.c:25
+#: ../operations/common/buffer-sink.c:25 ../operations/common/write-buffer.c:25
 msgid "Buffer location"
 msgstr "Τοποθεσία μνήμης"
 
@@ -481,7 +516,6 @@ msgid "The other cell color (defaults to 'white')"
 msgstr "Το άλλο χρώμα κελιού (προεπιλογή σε 'άσπρο')"
 
 #: ../operations/common/checkerboard.c:157
-#| msgid "Checkerboard renderer"
 msgid "Create a checkerboard pattern"
 msgstr "Δημιουργία μοτίβου σκακιέρας"
 
@@ -538,9 +572,6 @@ msgid "The dithering strategy to use"
 msgstr "Η στρατηγική πρόσμειξης για χρήση"
 
 #: ../operations/common/color-reduction.c:591
-#| msgid ""
-#| "Reduces the number of bits per channel (colors and alpha), with optional "
-#| "dithering"
 msgid ""
 "Reduce the number of colors in the image, by reducing the bits per channel "
 "(colors and alpha), with optional dithering"
@@ -566,7 +597,6 @@ msgid "Corrected estimation of the temperature of the light source in Kelvin."
 msgstr "Διορθωμένη εκτίμηση της θερμοκρασίας της πηγής φωτός σε Κέλβιν."
 
 #: ../operations/common/color-temperature.c:279
-#| msgid "Allows changing the color temperature of an image."
 msgid "Change the color temperature of the image"
 msgstr "Αλλαγή της θερμοκρασίας χρώματος της εικόνας"
 
@@ -603,7 +633,6 @@ msgid "Tile size"
 msgstr "Μέγεθος παράθεσης"
 
 #: ../operations/common/cubism.c:32
-#| msgid "Average difference between wrong pixels."
 msgid "Average diameter of each tile (in pixels)"
 msgstr "Μέσος όρος διαμέτρου κάθε παράθεσης (σε εικονοστοιχεία)"
 
@@ -616,7 +645,6 @@ msgid "Expand tiles by this amount"
 msgstr "Επέκταση πλακιδίων κατά αυτήν την ποσότητα"
 
 #: ../operations/common/cubism.c:38
-#| msgid "Background"
 msgid "Background Color"
 msgstr "Χρώμα παρασκηνίου"
 
@@ -640,7 +668,6 @@ msgid "Random seed"
 msgstr "Τυχαία σπορά"
 
 #: ../operations/common/cubism.c:614
-#| msgid "A filter that somehow resembles a cubist painting style"
 msgid ""
 "Convert the image into randomly rotated square blobs, somehow resembling a "
 "cubist painting style"
@@ -653,17 +680,14 @@ msgid "Keep"
 msgstr "Διατήρηση"
 
 #: ../operations/common/deinterlace.c:43
-#| msgid "Keep even/odd fields"
 msgid "Keep even or odd fields"
 msgstr "Διατήρηση ζυγών ή μονών πεδίων"
 
 #: ../operations/common/deinterlace.c:45
-#| msgid "Operation"
 msgid "Orientation"
 msgstr "Προσανατολισμός"
 
 #: ../operations/common/deinterlace.c:48
-#| msgid "Choose horizontal or vertical"
 msgid "Deinterlace horizontally or vertically"
 msgstr "Απόπλεξη οριζόντια ή κάθετα"
 
@@ -688,8 +712,6 @@ msgid "Radius 2"
 msgstr "Ακτίνα 2"
 
 #: ../operations/common/difference-of-gaussians.c:103
-#| msgid ""
-#| "Does an edge detection based on the difference of two gaussian blurs."
 msgid ""
 "Edge detection with control of edge thickness, based on the difference of "
 "two gaussian blurs"
@@ -752,7 +774,6 @@ msgid "Vertical shadow offset"
 msgstr "Κάθετη αντιστάθμιση σκιάς"
 
 #: ../operations/common/dropshadow.c:39
-#| msgid "The color to render (defaults to 'black')"
 msgid "The shadow's color (defaults to 'black')"
 msgstr "Το χρώμα της σκιάς (προεπιλογή σε 'μαύρο')"
 
@@ -805,7 +826,6 @@ msgid "Azimuth"
 msgstr "Αζιμούθιο"
 
 #: ../operations/common/emboss.c:36
-#| msgid "Whirl angle (degrees)"
 msgid "The light angle (degrees)"
 msgstr "Η γωνία φωτός (σε μοίρες)"
 
@@ -814,7 +834,6 @@ msgid "Elevation"
 msgstr "Ανύψωση"
 
 #: ../operations/common/emboss.c:40
-#| msgid "Whirl angle (degrees)"
 msgid "The elevation angle (degrees)"
 msgstr "Η γωνία ανύψωσης (σε μοίρες)"
 
@@ -883,9 +902,6 @@ msgid "Gamma correction"
 msgstr "Διόρθωση γάμμα"
 
 #: ../operations/common/exposure.c:187
-#| msgid ""
-#| "Changes Exposure and Contrast, mainly for use with high dynamic range "
-#| "images."
 msgid ""
 "Changes Exposure and Contrast, mainly for use with high dynamic range images"
 msgstr ""
@@ -1010,7 +1026,6 @@ msgid "Red mode"
 msgstr "Λειτουργία κόκκινου"
 
 #: ../operations/common/fractal-explorer.c:76
-#| msgid "Red application mode (0:SIN; 1:COS; 2:NONE)"
 msgid "Red application mode"
 msgstr "Λειτουργία εφαρμογής κόκκινου"
 
@@ -1019,7 +1034,6 @@ msgid "Green mode"
 msgstr "Λειτουργία πράσινου"
 
 #: ../operations/common/fractal-explorer.c:79
-#| msgid "Green application mode (0:SIN; 1:COS; 2:NONE)"
 msgid "Green application mode"
 msgstr "Λειτουργία εφαρμογής πράσινου"
 
@@ -1028,7 +1042,6 @@ msgid "Blue mode"
 msgstr "Λειτουργία γαλάζιου"
 
 #: ../operations/common/fractal-explorer.c:82
-#| msgid "Blue application mode (0:SIN; 1:COS; 2:NONE)"
 msgid "Blue application mode"
 msgstr "Λειτουργία εφαρμογής γαλάζιου"
 
@@ -1144,7 +1157,6 @@ msgid "Unsupported fractal type"
 msgstr "Μη υποστηριζόμενος τύπος κλαστικού"
 
 #: ../operations/common/fractal-trace.c:256
-#| msgid "Transform the buffer with waves"
 msgid "Transform the image with the fractals"
 msgstr "Μετασχηματισμός της εικόνας με τα κλαστικά"
 
@@ -1153,8 +1165,6 @@ msgid "Size X"
 msgstr "Μέγεθος Χ"
 
 #: ../operations/common/gaussian-blur.c:37
-#| msgid ""
-#| "Standard deviation for the horizontal axis. (multiply by ~2 to get radius)"
 msgid ""
 "Standard deviation for the horizontal axis (multiply by ~2 to get radius)"
 msgstr ""
@@ -1166,8 +1176,6 @@ msgid "Size Y"
 msgstr "Μέγεθος Υ"
 
 #: ../operations/common/gaussian-blur.c:42
-#| msgid ""
-#| "Standard deviation for the vertical axis. (multiply by ~2 to get radius.)"
 msgid "Standard deviation for the vertical axi. (multiply by ~2 to get radius)"
 msgstr ""
 "Τυπική απόκλιση για τον κάθετο άξονα. (πολλαπλασιασμός με ~2 για λήψη "
@@ -1179,9 +1187,6 @@ msgid "Filter"
 msgstr "Φίλτρο"
 
 #: ../operations/common/gaussian-blur.c:48
-#| msgid ""
-#| "Optional parameter to override the automatic selection of blur filter. "
-#| "Choices are fir, iir, auto"
 msgid "Optional parameter to override the automatic selection of blur filter"
 msgstr ""
 "Προαιρετική παράμετρος για υπερίσχυση της αυτόματης επιλογής του φίλτρου "
@@ -1196,16 +1201,15 @@ msgstr ""
 "ως αντιστάθμιση"
 
 #: ../operations/common/gegl-buffer-load-op.c:24
-#: ../operations/common/gegl-buffer-save-op.c:24
-#: ../operations/common/load.c:25 ../operations/common/magick-load.c:26
-#: ../operations/common/open-buffer.c:25 ../operations/common/raw-load.c:27
-#: ../operations/common/save.c:25 ../operations/external/ff-load.c:25
-#: ../operations/external/jp2-load.c:25 ../operations/external/jpg-load.c:25
-#: ../operations/external/jpg-save.c:25 ../operations/external/npy-save.c:31
-#: ../operations/external/png-load.c:27 ../operations/external/png-save.c:26
-#: ../operations/external/ppm-load.c:25 ../operations/external/ppm-save.c:25
-#: ../operations/external/rgbe-load.c:26 ../operations/external/rgbe-save.c:26
-#: ../operations/external/svg-load.c:25
+#: ../operations/common/gegl-buffer-save-op.c:24 ../operations/common/load.c:25
+#: ../operations/common/magick-load.c:26 ../operations/common/open-buffer.c:25
+#: ../operations/common/raw-load.c:27 ../operations/common/save.c:25
+#: ../operations/external/ff-load.c:25 ../operations/external/jp2-load.c:25
+#: ../operations/external/jpg-load.c:25 ../operations/external/jpg-save.c:25
+#: ../operations/external/npy-save.c:31 ../operations/external/png-load.c:27
+#: ../operations/external/png-save.c:26 ../operations/external/ppm-load.c:25
+#: ../operations/external/ppm-save.c:25 ../operations/external/rgbe-load.c:26
+#: ../operations/external/rgbe-save.c:26 ../operations/external/svg-load.c:25
 #: ../operations/workshop/external/ff-save.c:30
 #: ../operations/workshop/external/gluas.c:43
 #: ../operations/workshop/rawbayer-load.c:25
@@ -1355,7 +1359,6 @@ msgid "A layer in the traditional sense"
 msgstr "Μια στρώση στην παραδοσιακή έννοια"
 
 #: ../operations/common/lens-distortion.c:32
-#| msgid "Main:"
 msgid "Main"
 msgstr "Κύριο"
 
@@ -1369,7 +1372,6 @@ msgid "Zoom"
 msgstr "Εστίαση"
 
 #: ../operations/common/lens-distortion.c:39
-#| msgid "Edge:"
 msgid "Edge"
 msgstr "Άκρη"
 
@@ -1378,7 +1380,6 @@ msgid "Edge value of distortion"
 msgstr "Τιμή άκρης παραμόρφωσης"
 
 #: ../operations/common/lens-distortion.c:43
-#| msgid "Brighten:"
 msgid "Brighten"
 msgstr "Λαμπρότητα"
 
@@ -1387,7 +1388,6 @@ msgid "Brighten the image"
 msgstr "Λάμπρυσμα της εικόνας"
 
 #: ../operations/common/lens-distortion.c:47
-#| msgid "X shift:"
 msgid "X shift"
 msgstr "Μετατόπιση X"
 
@@ -1396,7 +1396,6 @@ msgid "Shift horizontal"
 msgstr "Οριζόντια μετατόπιση"
 
 #: ../operations/common/lens-distortion.c:51
-#| msgid "Y shift:"
 msgid "Y shift"
 msgstr "Μετατόπιση Y"
 
@@ -1405,7 +1404,6 @@ msgid "Shift vertical"
 msgstr "Κάθετη μετατόπιση"
 
 #: ../operations/common/lens-distortion.c:348
-#| msgid "Edge value of distortion"
 msgid "Corrects lens distortion"
 msgstr "Διόρθωση παραμόρφωσης φακών"
 
@@ -1682,13 +1680,11 @@ msgstr "Μονόχρωμος μείκτης καναλιού"
 
 #: ../operations/common/motion-blur-circular.c:33
 #: ../operations/common/motion-blur-zoom.c:33
-#| msgid "Horizontal position"
 msgid "Horizontal center position"
 msgstr "Κεντρική οριζόντια θέση"
 
 #: ../operations/common/motion-blur-circular.c:38
 #: ../operations/common/motion-blur-zoom.c:38
-#| msgid "Vertical position"
 msgid "Vertical center position"
 msgstr "Κεντρική κάθετη θέση"
 
@@ -1699,12 +1695,10 @@ msgid "Angle"
 msgstr "Γωνία"
 
 #: ../operations/common/motion-blur-circular.c:43
-#| msgid "Rotation angle"
 msgid "Rotation blur angle"
 msgstr "Γωνία περιστροφής θόλωσης"
 
 #: ../operations/common/motion-blur-circular.c:266
-#| msgid "Linear motion blur"
 msgid "Circular motion blur"
 msgstr "Θόλωση κυκλικής κίνησης"
 
@@ -1725,17 +1719,14 @@ msgid "Linear motion blur"
 msgstr "Θόλωση γραμμικής κίνησης"
 
 #: ../operations/common/motion-blur-zoom.c:40
-#| msgid "Vector"
 msgid "Factor"
 msgstr "Συντελεστής"
 
 #: ../operations/common/motion-blur-zoom.c:43
-#| msgid "Blue stretching factor"
 msgid "Bluring factor"
 msgstr "Συντελεστής θόλωσης"
 
 #: ../operations/common/motion-blur-zoom.c:216
-#| msgid "Linear motion blur"
 msgid "Zoom motion blur"
 msgstr "Θόλωση κίνησης εστίασης"
 
@@ -1769,8 +1760,7 @@ msgstr "Χρώμα"
 
 #: ../operations/common/noise-cielch.c:37
 #: ../operations/common/noise-cielch.c:39 ../operations/common/noise-hsv.c:31
-#: ../operations/common/noise-hsv.c:33
-#: ../operations/workshop/color-rotate.c:48
+#: ../operations/common/noise-hsv.c:33 ../operations/workshop/color-rotate.c:48
 msgid "Hue"
 msgstr "Απόχρωση"
 
@@ -1943,7 +1933,6 @@ msgid "Height of blocks in pixels"
 msgstr "Ύψος ομάδων σε εικονοστοιχεία"
 
 #: ../operations/common/pixelize.c:318
-#| msgid "Simplify image into an array of solid-colored dots"
 msgid "Simplify image into an array of solid-colored rectangles"
 msgstr "Απλοποίηση εικόνας σε έναν πίνακα ορθογωνίων με συμπαγή χρώματα"
 
@@ -2000,7 +1989,6 @@ msgid "Let origin point to be the middle one"
 msgstr "Να επιτρέπεται το αρχικό σημείο να είναι μεσαίο"
 
 #: ../operations/common/polar-coordinates.c:422
-#| msgid "Origin point for the polar coordinates"
 msgid "Convert image to or from polar coordinates"
 msgstr "Μετατροπή εικόνας σε ή από πολικές συντεταγμένες"
 
@@ -2046,7 +2034,6 @@ msgid "Threshold"
 msgstr "Όριο"
 
 #: ../operations/common/red-eye-removal.c:33
-#| msgid "The value of the threshold"
 msgid "Red eye threshold"
 msgstr "Κατώφλι κόκκινου ματιού"
 
@@ -2165,7 +2152,6 @@ msgid "Shift direction"
 msgstr "Κατεύθυνση μετατόπισης"
 
 #: ../operations/common/shift.c:230
-#| msgid "Distort colors by random amounts."
 msgid "Shift each row or column of pixels by a random amount"
 msgstr "Μετατόπιση κάθε γραμμής ή στήλης εικονοστοιχείων κατά τυχαία ποσότητα"
 
@@ -2179,7 +2165,7 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr ""
 "Αριθμός ζευγών· υψηλότερος αριθμός διατηρεί περισσότερο οξέα γνωρίσματα"
 
-#: ../operations/common/snn-mean.c:326
+#: ../operations/common/snn-mean.c:315
 msgid ""
 "Noise reducing edge enhancing blur filter based  on Symmetric Nearest "
 "Neighbours"
@@ -2285,9 +2271,6 @@ msgid "Scale, strength of effect"
 msgstr "Κλίμακα, ισχύς του φαινομένου"
 
 #: ../operations/common/unsharp-mask.c:77
-#| msgid ""
-#| "Performs an unsharp mask on the input buffer (sharpens an image by adding "
-#| "false mach-bands around edges)"
 msgid ""
 "The most widely used method for sharpening an image, sharpens by adding "
 "false mach-bands around edges"
@@ -2371,10 +2354,6 @@ msgid "Rotation angle"
 msgstr "Γωνία περιστροφής"
 
 #: ../operations/common/vignette.c:383
-#| msgid ""
-#| "A vignetting op, applies a vignette to an image. Simulates the luminance "
-#| "fall off at edge of exposed film, and some other fuzzier border effects "
-#| "that can naturally occur with analoge photograpy."
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -2425,17 +2404,14 @@ msgid "X coordinate of the center of the waves"
 msgstr "Η συντεταγμένη Χ του κέντρου των κυμάτων"
 
 #: ../operations/common/waves.c:32
-#| msgid "X coordinate of the center of the waves"
 msgid "Y coordinate of the center of the waves"
 msgstr "Η συντεταγμένη Υ του κέντρου των κυμάτων"
 
 #: ../operations/common/waves.c:40
-#| msgid "Period of the ripple"
 msgid "Period (wavelength) of the ripple"
 msgstr "Περίοδος (μήκος κύματος) κυματισμού"
 
 #: ../operations/common/waves.c:46 ../operations/common/waves.c:48
-#| msgid "Operation"
 msgid "Aspect ratio"
 msgstr "Λόγος διαστάσεων"
 
@@ -2448,7 +2424,6 @@ msgid "Limit deformation in the image area."
 msgstr "Όριο παραμόρφωσης στην περιοχή εικόνας."
 
 #: ../operations/common/waves.c:187
-#| msgid "Transform the buffer with waves"
 msgid "Distort the image with waves"
 msgstr "Παραμόρφωση της εικόνας με κύματα"
 
@@ -2710,7 +2685,7 @@ msgstr "Ενεργές στάθμες"
 msgid "Number of levels to perform solving"
 msgstr "Αριθμός σταθμών επίλυσης"
 
-#: ../operations/external/matting-levin.c:1439
+#: ../operations/external/matting-levin.c:1440
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
@@ -2726,7 +2701,6 @@ msgid "Target path and filename, use '-' for stdout."
 msgstr "Στόχος διαδρομής και ονόματος αρχείου, χρήση '-' για τυπική έξοδο."
 
 #: ../operations/external/npy-save.c:144
-#| msgid "PPM image saver (Portable pixmap saver.)"
 msgid "NPY image saver (Numerical python file saver.)"
 msgstr "Αποθήκευση εικόνας NPY (αποθήκευση αρχείου αριθμητικού python.)"
 
@@ -2849,7 +2823,7 @@ msgid "PNG image saver (passes the buffer through, saves as a side-effect.)"
 msgstr ""
 "Αποθήκευση εικόνας PNG (περνά μέσα από τη μνήμη, αποθήκευση ως παρενέργεια.)"
 
-#: ../operations/external/ppm-load.c:380
+#: ../operations/external/ppm-load.c:385
 msgid "PPM image loader."
 msgstr "Φόρτωση εικόνας PPM."
 
@@ -2980,8 +2954,7 @@ msgstr ""
 "τρέχον αριθμός πλαισίου, μπορεί να αλλαχθεί για έναυσμα επαναφόρτωσης της "
 "εικόνας."
 
-#: ../operations/external/v4l.c:31
-#: ../operations/workshop/external/ff-save.c:32
+#: ../operations/external/v4l.c:31 ../operations/workshop/external/ff-save.c:32
 msgid "FPS"
 msgstr "FPS"
 
@@ -3081,8 +3054,8 @@ msgid ""
 "SVG blend operation difference (<code>d = cA + cB - 2 * (MIN (cA * aB, cB * "
 "aA))</code>)"
 msgstr ""
-"Πράξης ανάμειξη SVG διαφορά (<code>d = cA + cB - 2 * (MIN (cA * aB, cB * aA))"
-"</code>)"
+"Πράξης ανάμειξη SVG διαφορά (<code>d = cA + cB - 2 * (MIN (cA * aB, cB * "
+"aA))</code>)"
 
 #: ../operations/generated/divide.c:125
 msgid "Math operation divide (c = value==0.0f?0.0f:c/value)"
@@ -4211,7 +4184,7 @@ msgid "The percentile to return, the default value 50 is equal to the median"
 msgstr ""
 "Το ποσοστό για επιστροφή, η προεπιλεγμένη τιμή 50 είναι ίση με τη διάμεση"
 
-#: ../operations/workshop/snn-percentile.c:272
+#: ../operations/workshop/snn-percentile.c:273
 msgid ""
 "Noise reducing edge enhancing percentile filter based on Symmetric Nearest "
 "Neighbours"
