@@ -25,4 +25,5 @@ op_LTLIBRARIES = \
 	linear-sinusoid.la \
 	rawbayer-load.la  \
 	recursive-transform-plus.la \
-	segment-kmeans.la
+	segment-kmeans.la \
+	selective-hue-saturation.c
