@@ -261,3 +261,4 @@ operations/workshop/linear-sinusoid.c
 operations/workshop/rawbayer-load.c
 operations/workshop/recursive-transform-plus.c
 operations/workshop/segment-kmeans.c
+operations/workshop/selective-hue-saturation.c
