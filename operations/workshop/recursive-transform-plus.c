@@ -67,7 +67,7 @@ typedef struct
   GeglNode *transform_nodes[MAX_TRANSFORMS];
   GeglNode *color_overlay_node;
   GeglNode *opacity_node;
-  GeglNode *over_nodes[MAX_TRANSFORMS - 1];
+  GeglNode *over_nodes[MAX_TRANSFORMS];
 } Iteration;
 
 static void
@@ -93,17 +93,17 @@ update_graph (GeglOperation *operation)
 
   for (i = 0; i <= MAX_ITERATIONS; i++)
     {
-      for (j = 0; j < MAX_TRANSFORMS; j++)
-        gegl_node_disconnect (iters[i].transform_nodes[j], "input");
-
-      gegl_node_disconnect (iters[i].color_overlay_node,   "input");
-      gegl_node_disconnect (iters[i].opacity_node,         "input");
-
-      for (j = 0; j < MAX_TRANSFORMS - 1; j++)
+      for (j = MAX_TRANSFORMS - 1; j >= 0; j--)
         {
           gegl_node_disconnect (iters[i].over_nodes[j],    "input");
           gegl_node_disconnect (iters[i].over_nodes[j],    "aux");
         }
+
+      gegl_node_disconnect (iters[i].opacity_node,         "input");
+      gegl_node_disconnect (iters[i].color_overlay_node,   "input");
+
+      for (j = 0; j < MAX_TRANSFORMS; j++)
+        gegl_node_disconnect (iters[i].transform_nodes[j], "input");
     }
 
   if (o->first_iteration == 0 && o->iterations == 0)
@@ -332,7 +332,7 @@ attach (GeglOperation *operation)
                                        iters[i].opacity_node,
                                        NULL);
 
-      for (j = 0; j < MAX_TRANSFORMS - 1; j++)
+      for (j = 0; j < MAX_TRANSFORMS; j++)
         {
           iters[i].over_nodes[j] =
             gegl_node_new_child (node,
