@@ -90,11 +90,11 @@ update_graph (GeglOperation *operation)
 
   for (i = 0; i <= MAX_ITERATIONS; i++)
     {
-      gegl_node_disconnect (iters[i].transform_node,     "input");
-      gegl_node_disconnect (iters[i].color_overlay_node, "input");
-      gegl_node_disconnect (iters[i].opacity_node,       "input");
       gegl_node_disconnect (iters[i].over_node,          "input");
       gegl_node_disconnect (iters[i].over_node,          "aux");
+      gegl_node_disconnect (iters[i].opacity_node,       "input");
+      gegl_node_disconnect (iters[i].color_overlay_node, "input");
+      gegl_node_disconnect (iters[i].transform_node,     "input");
     }
 
   if (o->first_iteration == 0 && o->iterations == 0)
