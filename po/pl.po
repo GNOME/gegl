@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-05-30 07:32+0000\n"
-"PO-Revision-Date: 2018-05-30 10:50+0200\n"
+"POT-Creation-Date: 2018-06-05 08:31+0000\n"
+"PO-Revision-Date: 2018-06-05 15:32+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -673,6 +673,7 @@ msgstr ""
 #: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
 #: operations/common/recursive-transform.c:34 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
+#: operations/workshop/recursive-transform-plus.c:36
 msgid "Iterations"
 msgstr "Iteracje"
 
@@ -2272,6 +2273,7 @@ msgstr ""
 #: operations/common/panorama-projection.c:61
 #: operations/common/recursive-transform.c:50 operations/common/spherize.c:56
 #: operations/common-gpl3+/ripple.c:49 operations/common-gpl3+/waves.c:50
+#: operations/workshop/recursive-transform-plus.c:52
 msgid "Resampling method"
 msgstr "Metoda resamplingu"
 
@@ -3178,6 +3180,7 @@ msgstr "Jednokolorowe, prostokątne źródło o stałym rozmiarze"
 #: operations/common/recursive-transform.c:27 operations/external/path.c:47
 #: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
 #: operations/transform/transform.c:24 operations/transform/transform.c:64
+#: operations/workshop/recursive-transform-plus.c:28
 msgid "Transform"
 msgstr "Przekształć"
 
@@ -3187,18 +3190,23 @@ msgstr "Macierz przekształcenia za pomocą składni SVG"
 
 #: operations/common/recursive-transform.c:30
 #: operations/common/recursive-transform.c:31
+#: operations/workshop/recursive-transform-plus.c:32
+#: operations/workshop/recursive-transform-plus.c:33
 msgid "First iteration"
 msgstr "Pierwsza iteracja"
 
 #: operations/common/recursive-transform.c:35 operations/common/slic.c:39
+#: operations/workshop/recursive-transform-plus.c:37
 msgid "Number of iterations"
 msgstr "Liczba iteracji"
 
 #: operations/common/recursive-transform.c:38
+#: operations/workshop/recursive-transform-plus.c:40
 msgid "Fade color"
 msgstr "Kolor rozmycia"
 
 #: operations/common/recursive-transform.c:39
+#: operations/workshop/recursive-transform-plus.c:41
 msgid ""
 "Color to fade transformed images towards, with a rate depending on its alpha"
 msgstr ""
@@ -3206,31 +3214,37 @@ msgstr ""
 "od jego alfy"
 
 #: operations/common/recursive-transform.c:42
+#: operations/workshop/recursive-transform-plus.c:44
 msgid "Fade opacity"
 msgstr "Krycie rozmycia"
 
 #: operations/common/recursive-transform.c:43
+#: operations/workshop/recursive-transform-plus.c:45
 msgid "Amount by which to scale the opacity of each transformed image"
 msgstr "O ile skalować krycie każdego przekształcanego obrazu"
 
 #: operations/common/recursive-transform.c:47
+#: operations/workshop/recursive-transform-plus.c:49
 msgid "Paste below"
 msgstr "Wklej poniżej"
 
 #: operations/common/recursive-transform.c:48
+#: operations/workshop/recursive-transform-plus.c:50
 msgid "Paste transformed images below each other"
 msgstr "Wklej przekształcone obrazy pod nimi"
 
 #: operations/common/recursive-transform.c:52 operations/common/spherize.c:58
 #: operations/common-gpl3+/waves.c:52
+#: operations/workshop/recursive-transform-plus.c:54
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Matematyczna metoda rekonstrukcji wartości pikseli"
 
-#: operations/common/recursive-transform.c:265
+#: operations/common/recursive-transform.c:266
 msgid "Recursive Transform"
 msgstr "Przekształcenie rekurencyjne"
 
-#: operations/common/recursive-transform.c:267
+#: operations/common/recursive-transform.c:268
+#: operations/workshop/recursive-transform-plus.c:388
 msgid "Apply a transformation recursively."
 msgstr "Zastosuj przekształcenie rekurencyjnie."
 
@@ -8054,6 +8068,18 @@ msgstr ""
 "zostanie to użyte zamiast zwykłego wczytywania plików za pomocą dcraw, jeśli "
 "format pliku to .rawbayerS, to zwrócone liczby 16-bitowe zostaną wymienione "
 "(wczytywanie plików PNM zawiera błędy)"
+
+#: operations/workshop/recursive-transform-plus.c:29
+msgid ""
+"Transformation matrix, using SVG syntax (or multiple matrices, separated by "
+"semicolons)"
+msgstr ""
+"Macierz przekształcenia za pomocą składni SVG (lub wielu macierzy, "
+"oddzielonych średnikami)"
+
+#: operations/workshop/recursive-transform-plus.c:386
+msgid "Recursive Transform Plus"
+msgstr "Rozszerzone przekształcenie rekurencyjne"
 
 #: operations/workshop/segment-kmeans.c:27
 #: operations/workshop/segment-kmeans.c:28
