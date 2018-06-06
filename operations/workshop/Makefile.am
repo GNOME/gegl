@@ -26,4 +26,4 @@ op_LTLIBRARIES = \
 	rawbayer-load.la  \
 	recursive-transform-plus.la \
 	segment-kmeans.la \
-	selective-hue-saturation.c
+	selective-hue-saturation.la
