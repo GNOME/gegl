@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-06-05 08:31+0000\n"
-"PO-Revision-Date: 2018-06-05 15:32+0200\n"
+"POT-Creation-Date: 2018-06-05 23:13+0000\n"
+"PO-Revision-Date: 2018-06-10 16:05+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -938,6 +938,7 @@ msgstr ""
 #: operations/common/color-rotate.c:79 operations/common/component-extract.c:28
 #: operations/common/hue-chroma.c:25 operations/common/noise-cie-lch.c:35
 #: operations/common/noise-hsv.c:31
+#: operations/workshop/selective-hue-saturation.c:34
 msgid "Hue"
 msgstr "Barwa"
 
@@ -949,6 +950,7 @@ msgstr "Wartość barwy dla powyższych ustawień szarości"
 #: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
 #: operations/common/saturation.c:223
 #: operations/external/lcms-from-profile.c:35
+#: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
 msgstr "Nasycenie"
 
@@ -1961,6 +1963,7 @@ msgid "Enhances fine details."
 msgstr "Uwydatnia drobne szczegóły."
 
 #: operations/common/hue-chroma.c:26
+#: operations/workshop/selective-hue-saturation.c:35
 msgid "Hue adjustment"
 msgstr "Dostosowanie barwy"
 
@@ -1973,10 +1976,12 @@ msgid "Chroma adjustment"
 msgstr "Dostosowanie nasycenia"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
+#: operations/workshop/selective-hue-saturation.c:42
 msgid "Lightness"
 msgstr "Jasność"
 
 #: operations/common/hue-chroma.c:34
+#: operations/workshop/selective-hue-saturation.c:43
 msgid "Lightness adjustment"
 msgstr "Dostosowanie jasności"
 
@@ -8101,3 +8106,31 @@ msgstr "Segmentacja k-średnich"
 #: operations/workshop/segment-kmeans.c:394
 msgid "Segment colors using K-means clustering"
 msgstr "Segmentuj kolory za pomocą klastrów k-średnich"
+
+#: operations/workshop/selective-hue-saturation.c:26
+msgid "Hue selection center"
+msgstr "Środek zaznaczenia barwy"
+
+#: operations/workshop/selective-hue-saturation.c:27
+msgid "Center of Hue selection interval  "
+msgstr "Środek odstępu zaznaczenia barwy  "
+
+#: operations/workshop/selective-hue-saturation.c:30
+msgid "Hue selection width"
+msgstr "Szerokość zaznaczenia barwy"
+
+#: operations/workshop/selective-hue-saturation.c:31
+msgid "Width of Hue selection interval  "
+msgstr "Szerokość odstępu zaznaczenia barwy  "
+
+#: operations/workshop/selective-hue-saturation.c:39
+msgid "Saturation adjustment"
+msgstr "Dostosowanie nasycenia"
+
+#: operations/workshop/selective-hue-saturation.c:170
+msgid "Selective Hue-Saturation"
+msgstr "Wybiórcza barwa-nasycenie"
+
+#: operations/workshop/selective-hue-saturation.c:173
+msgid "Selective adjust Hue, Saturation and Lightness"
+msgstr "Wybiórczo dostosuj barwę, nasycenie i jasność"
