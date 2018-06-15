@@ -284,6 +284,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:color-to-alpha",
     "title",       _("Color to Alpha"),
     "categories",  "color",
+    "needs-alpha",  "true", /* hint for GIMP that layers this op is performed on
+                               need to have alpha added */
     "license",     "GPL3+",
     "reference-hash", "f110613097308e0fe96ac29f54ca4c2e",
     "description", _("Convert a specified color to transparency, works best with white."),
