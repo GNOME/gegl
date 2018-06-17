@@ -20,12 +20,14 @@
 #include <glib/gi18n-lib.h>
 
 #define MAX_ITERATIONS 20
+#define MAX_TRANSFORMS 10
 #define EPSILON        1e-6
 
 #ifdef GEGL_PROPERTIES
 
-property_string  (transform, _("Transform"), "")
-    description  (_("Transformation matrix, using SVG syntax"))
+property_string  (transform, _("Transform"), "matrix (1, 0, 0, 0, 1, 0, 0, 0, 1)")
+    description  (_("Transformation matrix, using SVG syntax "
+                    "(or multiple matrices, separated by semicolons)"))
 
 property_int     (first_iteration, _("First iteration"), 0)
     description  (_("First iteration"))
@@ -62,23 +64,24 @@ property_enum    (sampler_type, _("Resampling method"),
 
 typedef struct
 {
-  GeglNode *transform_node;
+  GeglNode *transform_nodes[MAX_TRANSFORMS];
   GeglNode *color_overlay_node;
   GeglNode *opacity_node;
-  GeglNode *over_node;
+  GeglNode *over_nodes[MAX_TRANSFORMS];
 } Iteration;
 
 static void
 update_graph (GeglOperation *operation)
 {
-  GeglProperties *o     = GEGL_PROPERTIES (operation);
-  Iteration      *iters = o->user_data;
-  GeglNode       *node  = operation->node;
-  GeglNode       *input;
-  GeglNode       *output;
-  GeglMatrix3     transform;
-  gdouble         fade_color[4];
-  gint            i;
+  GeglProperties  *o     = GEGL_PROPERTIES (operation);
+  Iteration       *iters = o->user_data;
+  GeglNode        *node  = operation->node;
+  GeglNode        *input;
+  GeglNode        *output;
+  gchar          **matrix_strs;
+  gdouble          fade_color[4];
+  gint             i;
+  gint             j;
 
   if (! iters)
     return;
@@ -90,17 +93,30 @@ update_graph (GeglOperation *operation)
 
   for (i = 0; i <= MAX_ITERATIONS; i++)
     {
-      gegl_node_disconnect (iters[i].over_node,          "input");
-      gegl_node_disconnect (iters[i].over_node,          "aux");
-      gegl_node_disconnect (iters[i].opacity_node,       "input");
-      gegl_node_disconnect (iters[i].color_overlay_node, "input");
-      gegl_node_disconnect (iters[i].transform_node,     "input");
+      for (j = MAX_TRANSFORMS - 1; j >= 0; j--)
+        {
+          gegl_node_disconnect (iters[i].over_nodes[j],    "input");
+          gegl_node_disconnect (iters[i].over_nodes[j],    "aux");
+        }
+
+      gegl_node_disconnect (iters[i].opacity_node,         "input");
+      gegl_node_disconnect (iters[i].color_overlay_node,   "input");
+
+      for (j = 0; j < MAX_TRANSFORMS; j++)
+        gegl_node_disconnect (iters[i].transform_nodes[j], "input");
     }
 
   if (o->first_iteration == 0 && o->iterations == 0)
     return;
 
-  gegl_matrix3_parse_string (&transform, o->transform);
+  matrix_strs = g_strsplit (o->transform, ";", MAX_TRANSFORMS + 1);
+
+  if (! matrix_strs[0])
+    {
+      g_strfreev (matrix_strs);
+
+      return;
+    }
 
   gegl_color_get_rgba (o->fade_color,
                        &fade_color[0],
@@ -108,78 +124,172 @@ update_graph (GeglOperation *operation)
                        &fade_color[2],
                        &fade_color[3]);
 
-  for (i = o->iterations; i >= 0; i--)
+  if (! matrix_strs[1])
     {
-      GeglNode    *source_node;
-      GeglMatrix3  matrix;
-      gchar       *matrix_str;
-      gint         n = o->first_iteration + i;
-      gint         j;
+      GeglMatrix3 transform;
 
-      gegl_matrix3_identity (&matrix);
+      gegl_matrix3_parse_string (&transform, matrix_strs[0]);
 
-      for (j = 0; j < n; j++)
-        gegl_matrix3_multiply (&matrix, &transform, &matrix);
-
-      matrix_str = gegl_matrix3_to_string (&matrix);
-
-      gegl_node_set (iters[i].transform_node,
-                     "transform", matrix_str,
-                     "sampler",   o->sampler_type,
-                     NULL);
-
-      g_free (matrix_str);
-
-      gegl_node_link (input, iters[i].transform_node);
-      source_node = iters[i].transform_node;
-
-      if (n > 0 && fabs (fade_color[3]) > EPSILON)
+      for (i = o->iterations; i >= 0; i--)
         {
-          GeglColor *color = gegl_color_new (NULL);
-          gdouble    a = 1.0 - pow (1.0 - fade_color[3], n);
+          GeglNode    *source_node;
+          GeglMatrix3  matrix;
+          gchar       *matrix_str;
+          gint         n = o->first_iteration + i;
 
-          gegl_color_set_rgba (color,
-                               fade_color[0],
-                               fade_color[1],
-                               fade_color[2],
-                               a);
+          gegl_matrix3_identity (&matrix);
 
-          gegl_node_set (iters[i].color_overlay_node,
-                         "value", color,
-                         "srgb",  TRUE,
+          for (j = 0; j < n; j++)
+            gegl_matrix3_multiply (&matrix, &transform, &matrix);
+
+          matrix_str = gegl_matrix3_to_string (&matrix);
+
+          gegl_node_set (iters[i].transform_nodes[0],
+                         "transform", matrix_str,
+                         "sampler",   o->sampler_type,
                          NULL);
 
-          g_object_unref (color);
+          g_free (matrix_str);
 
-          gegl_node_link (source_node, iters[i].color_overlay_node);
-          source_node = iters[i].color_overlay_node;
-        }
+          gegl_node_link (input, iters[i].transform_nodes[0]);
+          source_node = iters[i].transform_nodes[0];
 
-      if (n > 0 && fabs (o->fade_opacity - 1.0) > EPSILON)
-        {
-          gegl_node_set (iters[i].opacity_node,
-                         "value", pow (o->fade_opacity, n),
-                         NULL);
+          if (n > 0 && fabs (fade_color[3]) > EPSILON)
+            {
+              GeglColor *color = gegl_color_new (NULL);
+              gdouble    a = 1.0 - pow (1.0 - fade_color[3], n);
 
-          gegl_node_link (source_node, iters[i].opacity_node);
-          source_node = iters[i].opacity_node;
-        }
+              gegl_color_set_rgba (color,
+                                   fade_color[0],
+                                   fade_color[1],
+                                   fade_color[2],
+                                   a);
 
-      gegl_node_connect_to (source_node,        "output",
-                            iters[i].over_node, ! o->paste_below ? "input" :
-                                                                   "aux");
+              gegl_node_set (iters[i].color_overlay_node,
+                             "value", color,
+                             "srgb",  TRUE,
+                             NULL);
 
-      if (i == 0)
-        {
-          gegl_node_link (iters[i].over_node, output);
-        }
-      else
-        {
-          gegl_node_connect_to (iters[i].over_node,     "output",
-                                iters[i - 1].over_node, ! o->paste_below ? "aux" :
-                                                                           "input");
+              g_object_unref (color);
+
+              gegl_node_link (source_node, iters[i].color_overlay_node);
+              source_node = iters[i].color_overlay_node;
+            }
+
+          if (n > 0 && fabs (o->fade_opacity - 1.0) > EPSILON)
+            {
+              gegl_node_set (iters[i].opacity_node,
+                             "value", pow (o->fade_opacity, n),
+                             NULL);
+
+              gegl_node_link (source_node, iters[i].opacity_node);
+              source_node = iters[i].opacity_node;
+            }
+
+          gegl_node_connect_to (source_node,            "output",
+                                iters[i].over_nodes[0], ! o->paste_below ? "input" :
+                                                                           "aux");
+
+          if (i == 0)
+            {
+              gegl_node_link (iters[i].over_nodes[0], output);
+            }
+          else
+            {
+              gegl_node_connect_to (iters[i].over_nodes[0],     "output",
+                                    iters[i - 1].over_nodes[0], ! o->paste_below ? "aux" :
+                                                                                   "input");
+            }
         }
     }
+  else
+    {
+      gint n_iterations = MIN (o->first_iteration + o->iterations, MAX_ITERATIONS);
+      gint n_transforms;
+
+      for (n_transforms = 0;
+           n_transforms < MAX_TRANSFORMS && matrix_strs[n_transforms];
+           n_transforms++);
+
+      for (i = n_iterations; i >= 0; i--)
+        {
+          if (i < n_iterations)
+            {
+              GeglNode *source_node = NULL;
+
+              for (j = 0; j < n_transforms; j++)
+                {
+                  gegl_node_set (iters[i].transform_nodes[j],
+                                 "transform", matrix_strs[j],
+                                 "sampler",   o->sampler_type,
+                                 NULL);
+
+                  gegl_node_link (iters[i + 1].over_nodes[n_transforms - 1],
+                                  iters[i].transform_nodes[j]);
+
+                  if (j == 0)
+                    {
+                      source_node = iters[i].transform_nodes[j];
+                    }
+                  else
+                    {
+                      if (! o->paste_below)
+                        {
+                          gegl_node_connect_to (source_node,                 "output",
+                                                iters[i].over_nodes[j - 1],  "input");
+                          gegl_node_connect_to (iters[i].transform_nodes[j], "output",
+                                                iters[i].over_nodes[j - 1],  "aux");
+                        }
+                      else
+                        {
+                          gegl_node_connect_to (source_node,                 "output",
+                                                iters[i].over_nodes[j - 1],  "aux");
+                          gegl_node_connect_to (iters[i].transform_nodes[j], "output",
+                                                iters[i].over_nodes[j - 1],  "input");
+                        }
+
+                      source_node = iters[i].over_nodes[j - 1];
+                    }
+                }
+
+              if (fabs (fade_color[3]) > EPSILON)
+                {
+                  gegl_node_set (iters[i].color_overlay_node,
+                                 "value", o->fade_color,
+                                 "srgb",  TRUE,
+                                 NULL);
+
+                  gegl_node_link (source_node, iters[i].color_overlay_node);
+                  source_node = iters[i].color_overlay_node;
+                }
+
+              if (fabs (o->fade_opacity - 1.0) > EPSILON)
+                {
+                  gegl_node_set (iters[i].opacity_node,
+                                 "value", o->fade_opacity,
+                                 NULL);
+
+                  gegl_node_link (source_node, iters[i].opacity_node);
+                  source_node = iters[i].opacity_node;
+                }
+
+              gegl_node_connect_to (source_node,                           "output",
+                                    iters[i].over_nodes[n_transforms - 1], ! o->paste_below ? "aux" :
+                                                                                              "input");
+            }
+
+          if (i >= o->first_iteration)
+            {
+              gegl_node_connect_to (input,                                 "output",
+                                    iters[i].over_nodes[n_transforms - 1], ! o->paste_below ? "input" :
+                                                                                              "aux");
+            }
+        }
+
+      gegl_node_link (iters[0].over_nodes[n_transforms - 1], output);
+    }
+
+  g_strfreev (matrix_strs);
 }
 
 static void
@@ -189,16 +299,23 @@ attach (GeglOperation *operation)
   Iteration      *iters = o->user_data;
   GeglNode       *node  = operation->node;
   gint            i;
+  gint            j;
 
   if (! iters)
     iters = o->user_data = g_new (Iteration, MAX_ITERATIONS + 1);
 
   for (i = 0; i <= MAX_ITERATIONS; i++)
     {
-      iters[i].transform_node =
-        gegl_node_new_child (node,
-                             "operation", "gegl:transform",
-                             NULL);
+      for (j = 0; j < MAX_TRANSFORMS; j++)
+        {
+          iters[i].transform_nodes[j] =
+            gegl_node_new_child (node,
+                                 "operation", "gegl:transform",
+                                 NULL);
+
+          gegl_operation_meta_watch_node (operation,
+                                          iters[i].transform_nodes[j]);
+        }
 
       iters[i].color_overlay_node =
         gegl_node_new_child (node,
@@ -210,17 +327,20 @@ attach (GeglOperation *operation)
                              "operation", "gegl:opacity",
                              NULL);
 
-      iters[i].over_node =
-        gegl_node_new_child (node,
-                             "operation", "gegl:over",
-                             NULL);
-
       gegl_operation_meta_watch_nodes (operation,
-                                       iters[i].transform_node,
                                        iters[i].color_overlay_node,
                                        iters[i].opacity_node,
-                                       iters[i].over_node,
                                        NULL);
+
+      for (j = 0; j < MAX_TRANSFORMS; j++)
+        {
+          iters[i].over_nodes[j] =
+            gegl_node_new_child (node,
+                                 "operation", "gegl:over",
+                                 NULL);
+
+          gegl_operation_meta_watch_node (operation, iters[i].over_nodes[j]);
+        }
     }
 
   update_graph (operation);

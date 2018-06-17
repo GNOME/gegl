@@ -24,6 +24,5 @@ op_LTLIBRARIES = \
 	integral-image.la \
 	linear-sinusoid.la \
 	rawbayer-load.la  \
-	recursive-transform-plus.la \
 	segment-kmeans.la \
 	selective-hue-saturation.la
