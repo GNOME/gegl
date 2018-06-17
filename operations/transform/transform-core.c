@@ -1408,6 +1408,7 @@ transform_generic (GeglOperation       *operation,
         w_start += inverse.coeff [2][1];
       } while (--y);
     }
+
   g_object_unref (sampler);
 }
 
@@ -1544,6 +1545,8 @@ transform_nearest (GeglOperation       *operation,
         w_start += inverse.coeff [2][1];
       } while (--y);
     }
+
+  g_object_unref (sampler);
 }
 
 static inline gboolean is_zero (const gdouble f)
