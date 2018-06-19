@@ -569,7 +569,7 @@ process (GeglOperation       *operation,
     if (cl_process (operation, input, output, roi))
       return TRUE;
 
-  if (o->size_x * o->size_y < SQR (ALLOC_THRESHOLD_SIZE))
+  if ((long)o->size_x * (long)o->size_y < SQR (ALLOC_THRESHOLD_SIZE))
     {
       gfloat  background_color[4];
       gfloat *input_buf  = g_new (gfloat,
