@@ -147,15 +147,19 @@ static void        gegl_tile_backend_swap_init          (GeglTileBackendSwap *se
 void               gegl_tile_backend_swap_cleanup       (void);
 
 
-static gchar    *path       = NULL;
-static gint      in_fd      = -1;
-static gint      out_fd     = -1;
-static gint64    in_offset  = 0;
-static gint64    out_offset = 0;
-static GList    *gap_list   = NULL;
-static gint64    file_size  = 0;
-static gint64    total      = 0;
-static gboolean  busy       = FALSE;
+static gchar    *path        = NULL;
+static gint      in_fd       = -1;
+static gint      out_fd      = -1;
+static gint64    in_offset   = 0;
+static gint64    out_offset  = 0;
+static GList    *gap_list    = NULL;
+static gint64    file_size   = 0;
+static gint64    total       = 0;
+static gboolean  busy        = FALSE;
+static gboolean  reading     = FALSE;
+static gint64    read_total  = 0;
+static gboolean  writing     = FALSE;
+static gint64    write_total = 0;
 
 static GThread      *writer_thread = NULL;
 static GQueue       *queue         = NULL;
@@ -285,6 +289,8 @@ gegl_tile_backend_swap_write (ThreadParams *params)
       out_offset = offset;
     }
 
+  writing = TRUE;
+
   while (to_be_written > 0)
     {
       gint wrote;
@@ -302,7 +308,11 @@ gegl_tile_backend_swap_write (ThreadParams *params)
 
       to_be_written -= wrote;
       out_offset    += wrote;
+
+      write_total   += wrote;
     }
+
+  writing = FALSE;
 
   GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "writer thread wrote at %i", (gint)offset);
 }
@@ -510,6 +520,8 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
       in_offset = offset;
     }
 
+  reading = TRUE;
+
   while (to_be_read > 0)
     {
       GError *error = NULL;
@@ -518,6 +530,8 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
       byte_read = read (in_fd, dest + tile_size - to_be_read, to_be_read);
       if (byte_read <= 0)
         {
+          reading = FALSE;
+
           g_mutex_unlock (&read_mutex);
 
           g_message ("unable to read tile data from swap: "
@@ -527,7 +541,11 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
         }
       to_be_read -= byte_read;
       in_offset  += byte_read;
+
+      read_total += byte_read;
     }
+
+  reading = FALSE;
 
   g_mutex_unlock (&read_mutex);
 
@@ -962,4 +980,35 @@ gboolean
 gegl_tile_backend_swap_get_busy (void)
 {
   return busy;
+}
+
+gboolean
+gegl_tile_backend_swap_get_reading (void)
+{
+  return reading;
+}
+
+guint64
+gegl_tile_backend_swap_get_read_total (void)
+{
+  return read_total;
+}
+
+gboolean
+gegl_tile_backend_swap_get_writing (void)
+{
+  return writing;
+}
+
+guint64
+gegl_tile_backend_swap_get_write_total (void)
+{
+  return write_total;
+}
+
+void
+gegl_tile_backend_swap_reset_stats (void)
+{
+  read_total  = 0;
+  write_total = 0;
 }

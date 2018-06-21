@@ -40,6 +40,10 @@ enum
   PROP_SWAP_TOTAL,
   PROP_SWAP_FILE_SIZE,
   PROP_SWAP_BUSY,
+  PROP_SWAP_READING,
+  PROP_SWAP_READ_TOTAL,
+  PROP_SWAP_WRITING,
+  PROP_SWAP_WRITE_TOTAL,
   PROP_ZOOM_TOTAL
 };
 
@@ -121,6 +125,36 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                          FALSE,
                                                          G_PARAM_READABLE));
 
+  g_object_class_install_property (object_class, PROP_SWAP_READING,
+                                   g_param_spec_boolean ("swap-reading",
+                                                         "Swap reading",
+                                                         "Whether data is being read from the swap",
+                                                         FALSE,
+                                                         G_PARAM_READABLE));
+
+
+  g_object_class_install_property (object_class, PROP_SWAP_READ_TOTAL,
+                                   g_param_spec_uint64 ("swap-read-total",
+                                                        "Swap read total",
+                                                        "Total amount of data read from the swap",
+                                                        0, G_MAXUINT64, 0,
+                                                        G_PARAM_READABLE));
+
+  g_object_class_install_property (object_class, PROP_SWAP_WRITING,
+                                   g_param_spec_boolean ("swap-writing",
+                                                         "Swap writing",
+                                                         "Whether data is being written to the swap",
+                                                         FALSE,
+                                                         G_PARAM_READABLE));
+
+
+  g_object_class_install_property (object_class, PROP_SWAP_WRITE_TOTAL,
+                                   g_param_spec_uint64 ("swap-write-total",
+                                                        "Swap write total",
+                                                        "Total amount of data written to the swap",
+                                                        0, G_MAXUINT64, 0,
+                                                        G_PARAM_READABLE));
+
   g_object_class_install_property (object_class, PROP_ZOOM_TOTAL,
                                    g_param_spec_uint64 ("zoom-total",
                                                         "Zoom total",
@@ -188,6 +222,22 @@ gegl_stats_get_property (GObject    *object,
         g_value_set_boolean (value, gegl_tile_backend_swap_get_busy ());
         break;
 
+      case PROP_SWAP_READING:
+        g_value_set_boolean (value, gegl_tile_backend_swap_get_reading ());
+        break;
+
+      case PROP_SWAP_READ_TOTAL:
+        g_value_set_uint64 (value, gegl_tile_backend_swap_get_read_total ());
+        break;
+
+      case PROP_SWAP_WRITING:
+        g_value_set_boolean (value, gegl_tile_backend_swap_get_writing ());
+        break;
+
+      case PROP_SWAP_WRITE_TOTAL:
+        g_value_set_uint64 (value, gegl_tile_backend_swap_get_write_total ());
+        break;
+
       case PROP_ZOOM_TOTAL:
         g_value_set_uint64 (value, gegl_tile_handler_zoom_get_total ());
         break;
@@ -202,5 +252,6 @@ void
 gegl_stats_reset (GeglStats *stats)
 {
   gegl_tile_handler_cache_reset_stats ();
+  gegl_tile_backend_swap_reset_stats ();
   gegl_tile_handler_zoom_reset_stats ();
 }
