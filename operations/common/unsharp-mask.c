@@ -21,15 +21,15 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_double (std_dev, _("Standard Deviation"), 0.55)
-    description(_("Standard deviation (spatial scale factor)"))
+property_double (std_dev, _("Radius"), 0.55)
+    description(_("Expressed as standard deviation, in pixels"))
     value_range (0.2, 300)
     ui_range    (0.2, 40.0)
     ui_gamma    (3.0)
     ui_meta     ("unit", "pixel-distance")
 
-property_double (scale, _("Scale"), 4.0)
-    description(_("Scale, strength of effect"))
+property_double (scale, _("Amount"), 4.0)
+    description(_("Scaling factor for unsharp-mask, the strength of effect"))
     value_range (0.0, 300.0)
     ui_range    (0.0, 10.0)
     ui_gamma    (3.0)
