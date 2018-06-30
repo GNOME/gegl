@@ -3,6 +3,12 @@
 #define BPP 16
 #define SAMPLES 250000
 
+/* gegl_buffer_sample() should not be used in performance-critical code.  the
+ * corresponding tests take a long time to finish, and are disabled by default.
+ * uncomment this line to enable them.
+ */
+/* #define TEST_BUFFER_SAMPLE */
+
 gint
 main (gint    argc,
       gchar **argv)
@@ -154,6 +160,7 @@ main (gint    argc,
   test_end ("sampler_get_fun nearest+babl", 1.0 * SAMPLES * ITERATIONS * BPP);
 
 
+#ifdef TEST_BUFFER_SAMPLE
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
   {
@@ -170,6 +177,7 @@ main (gint    argc,
     test_end_iter();
   }
   test_end ("gegl_buffer_sample linear", 1.0 * SAMPLES * ITERATIONS * BPP);
+#endif
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -214,6 +222,7 @@ main (gint    argc,
   }
   test_end ("sampler_get_fun linear", 1.0 * SAMPLES * ITERATIONS * BPP);
 
+#ifdef TEST_BUFFER_SAMPLE
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
   {
@@ -230,6 +239,7 @@ main (gint    argc,
     test_end_iter();
   }
   test_end ("gegl_buffer_sample cubic", 1.0 * SAMPLES * ITERATIONS * BPP);
+#endif
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
