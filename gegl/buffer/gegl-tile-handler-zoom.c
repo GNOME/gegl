@@ -245,9 +245,15 @@ get_tile (GeglTileSource *gegl_tile_source,
               guchar *dest;
 
               if (source_tile[i][j])
-                src = gegl_tile_get_data (source_tile[i][j]);
+                {
+                  gegl_tile_read_lock (source_tile[i][j]);
+
+                  src = gegl_tile_get_data (source_tile[i][j]);
+                }
               else
-                src = NULL;
+                {
+                  src = NULL;
+                }
 
               dest = gegl_tile_get_data (tile) + y * stride + x * bpp;
 
@@ -258,7 +264,11 @@ get_tile (GeglTileSource *gegl_tile_source,
                          dmg, 4);
 
               if (source_tile[i][j])
-                gegl_tile_unref (source_tile[i][j]);
+                {
+                  gegl_tile_read_unlock (source_tile[i][j]);
+
+                  gegl_tile_unref (source_tile[i][j]);
+                }
             }
         }
     gegl_tile_unlock (tile);

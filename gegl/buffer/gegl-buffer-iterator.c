@@ -194,6 +194,8 @@ release_tile (GeglBufferIterator *iter,
     {
       if (sub->access_mode & GEGL_ACCESS_WRITE)
         gegl_tile_unlock_no_void (sub->current_tile);
+      else
+        gegl_tile_read_unlock (sub->current_tile);
       gegl_tile_unref (sub->current_tile);
 
       sub->current_tile = NULL;
@@ -348,6 +350,8 @@ get_tile (GeglBufferIterator *iter,
 
       if (sub->access_mode & GEGL_ACCESS_WRITE)
         gegl_tile_lock (sub->current_tile);
+      else
+        gegl_tile_read_lock (sub->current_tile);
 
       sub->real_roi.x = (tile_x * tile_width)  - shift_x;
       sub->real_roi.y = (tile_y * tile_height) - shift_y;
@@ -473,6 +477,8 @@ prepare_iteration (GeglBufferIterator *iter)
 
               if (sub->access_mode & GEGL_ACCESS_WRITE)
                 gegl_tile_lock (sub->linear_tile);
+              else
+                gegl_tile_read_lock (sub->linear_tile);
             }
           else
             sub->access_mode |= GEGL_ITERATOR_INCOMPATIBLE;
@@ -546,6 +552,8 @@ _gegl_buffer_iterator_stop (GeglBufferIterator *iter)
             {
               if (sub->access_mode & GEGL_ACCESS_WRITE)
                 gegl_tile_unlock_no_void (sub->linear_tile);
+              else
+                gegl_tile_read_unlock (sub->linear_tile);
               gegl_tile_unref (sub->linear_tile);
             }
 

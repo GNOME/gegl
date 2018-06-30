@@ -83,7 +83,12 @@ gegl_sampler_nearest_dispose (GObject *object)
 {
   GeglSamplerNearest *nearest_sampler = GEGL_SAMPLER_NEAREST (object);
 
-  g_clear_pointer (&nearest_sampler->hot_tile, gegl_tile_unref);
+  if (nearest_sampler->hot_tile)
+    {
+      gegl_tile_read_unlock (nearest_sampler->hot_tile);
+
+      g_clear_pointer (&nearest_sampler->hot_tile, gegl_tile_unref);
+    }
 
   G_OBJECT_CLASS (gegl_sampler_nearest_parent_class)->dispose (object);
 }
@@ -165,12 +170,18 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
           g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
         if (tile)
-          gegl_tile_unref (tile);
+          {
+            gegl_tile_read_unlock (tile);
+
+            gegl_tile_unref (tile);
+          }
 
         tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
                                           indice_x, indice_y,
                                           0);
         nearest_sampler->hot_tile = tile;
+
+        gegl_tile_read_lock (tile);
 
         if (gegl_config_threads()>1)
           g_rec_mutex_unlock (&buffer->tile_storage->mutex);
@@ -183,7 +194,10 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
         gint       offsetx = tiledx - tile_origin_x;
         gint       offsety = tiledy - tile_origin_y;
 
-        guchar *tp = gegl_tile_get_data (tile) + (offsety * tile_width + offsetx) * nearest_sampler->buffer_bpp;
+        guchar *tp;
+
+        tp = gegl_tile_get_data (tile) +
+             (offsety * tile_width + offsetx) * nearest_sampler->buffer_bpp;
 
         babl_process (sampler->fish, tp, buf, 1);
       }
