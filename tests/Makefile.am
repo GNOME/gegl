@@ -1,3 +1,6 @@
+# Prevent parallel make check
+.NOTPARALLEL: check
+
 EXTRA_DIST=run-tests.py
 
 SUBDIRS = \
