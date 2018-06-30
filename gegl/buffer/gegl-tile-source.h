@@ -95,8 +95,8 @@ gegl_tile_source_get_tile (GeglTileSource *source,
   GeglTile *tile;
   
 
-  tile = gegl_tile_source_command (source, GEGL_TILE_GET,
-                                   x, y, z, NULL);
+  tile = (GeglTile *) gegl_tile_source_command (source, GEGL_TILE_GET,
+                                                x, y, z, NULL);
 
   return tile;
 }
