@@ -98,14 +98,15 @@ void gegl_tile_unref (GeglTile *tile)
 static inline GeglTile *
 gegl_tile_new_bare_internal (void)
 {
-  GeglTile *tile     = g_slice_new0 (GeglTile);
-  tile->ref_count    = 1;
-  tile->tile_storage = NULL;
-  tile->stored_rev   = 1;
-  tile->rev          = 1;
-  tile->lock_count   = 0;
-  tile->clone_state  = CLONE_STATE_UNCLONED;
-  tile->data         = NULL;
+  GeglTile *tile        = g_slice_new0 (GeglTile);
+  tile->ref_count       = 1;
+  tile->tile_storage    = NULL;
+  tile->stored_rev      = 1;
+  tile->rev             = 1;
+  tile->lock_count      = 0;
+  tile->read_lock_count = 0;
+  tile->clone_state     = CLONE_STATE_UNCLONED;
+  tile->data            = NULL;
 
   return tile;
 }
@@ -133,13 +134,14 @@ gegl_tile_dup (GeglTile *src)
   g_warn_if_fail (src->lock_count == 0);
   g_warn_if_fail (! src->damage);
 
-  src->clone_state   = CLONE_STATE_CLONED;
+  src->clone_state     = CLONE_STATE_CLONED;
 
-  tile->data         = src->data;
-  tile->size         = src->size;
-  tile->is_zero_tile = src->is_zero_tile;
-  tile->clone_state  = CLONE_STATE_CLONED;
-  tile->n_clones     = src->n_clones;
+  tile->data           = src->data;
+  tile->size           = src->size;
+  tile->is_zero_tile   = src->is_zero_tile;
+  tile->is_global_tile = src->is_global_tile;
+  tile->clone_state    = CLONE_STATE_CLONED;
+  tile->n_clones       = src->n_clones;
 
   /* if the tile is not empty, mark it as dirty, since, even though the in-
    * memory tile data is shared with the source tile, the stored tile data is
@@ -182,6 +184,17 @@ gegl_tile_unclone (GeglTile *tile)
     {
       GeglTileHandlerCache *notify_cache = NULL;
       gboolean              cached;
+      gboolean              global;
+
+      global               = tile->is_global_tile;
+      tile->is_global_tile = FALSE;
+
+      if (! global)
+        {
+          while (! g_atomic_int_compare_and_exchange (&tile->read_lock_count,
+                                                      0,
+                                                      -1));
+        }
 
       cached = tile->tile_storage && tile->tile_storage->cache;
 
@@ -205,9 +218,8 @@ gegl_tile_unclone (GeglTile *tile)
                */
               *gegl_tile_n_clones (tile)        = 1;
               *gegl_tile_n_cached_clones (tile) = cached;
-              if (notify_cache)
-                gegl_tile_handler_cache_tile_uncloned (notify_cache, tile);
-              return;
+
+              goto end;
             }
 
           tile->n_clones     = gegl_calloc (INLINE_N_ELEMENTS_DATA_OFFSET +
@@ -228,9 +240,8 @@ gegl_tile_unclone (GeglTile *tile)
               gegl_free (buf);
               *gegl_tile_n_clones (tile)        = 1;
               *gegl_tile_n_cached_clones (tile) = cached;
-              if (notify_cache)
-                gegl_tile_handler_cache_tile_uncloned (notify_cache, tile);
-              return;
+
+              goto end;
             }
 
           tile->n_clones = (gint *) buf;
@@ -238,14 +249,20 @@ gegl_tile_unclone (GeglTile *tile)
 
       *gegl_tile_n_clones (tile)        = 1;
       *gegl_tile_n_cached_clones (tile) = cached;
-      tile->data      = (guchar *) tile->n_clones +
-                        INLINE_N_ELEMENTS_DATA_OFFSET;
+
+      g_atomic_pointer_set (&tile->data,
+                            (guchar *) tile->n_clones +
+                            INLINE_N_ELEMENTS_DATA_OFFSET);
 
       tile->destroy_notify      = (void*)&free_n_clones_directly;
       tile->destroy_notify_data = NULL;
 
+end:
       if (notify_cache)
         gegl_tile_handler_cache_tile_uncloned (notify_cache, tile);
+
+      if (! global)
+        g_atomic_int_set (&tile->read_lock_count, 0);
     }
 }
 
@@ -375,6 +392,33 @@ gegl_tile_unlock_no_void (GeglTile *tile)
           tile->unlock_notify (tile, tile->unlock_notify_data);
         }
     }
+}
+
+void
+gegl_tile_read_lock (GeglTile *tile)
+{
+  while (TRUE)
+    {
+      gint count = g_atomic_int_get (&tile->read_lock_count);
+
+      if (count < 0)
+        {
+          continue;
+        }
+
+      if (g_atomic_int_compare_and_exchange (&tile->read_lock_count,
+                                             count,
+                                             count + 1))
+        {
+          break;
+        }
+    }
+}
+
+void
+gegl_tile_read_unlock (GeglTile *tile)
+{
+  g_atomic_int_dec_and_test (&tile->read_lock_count);
 }
 
 void

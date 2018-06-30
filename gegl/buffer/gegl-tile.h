@@ -38,6 +38,16 @@ void         gegl_tile_lock           (GeglTile         *tile);
  */
 void         gegl_tile_unlock         (GeglTile         *tile);
 
+/* lock a tile for reading, this would allow reading from buffers
+ * later gotten with get_data()
+ */
+void         gegl_tile_read_lock      (GeglTile         *tile);
+
+/* unlock the tile notifying the tile that we're done reading
+ * the data.
+ */
+void         gegl_tile_read_unlock    (GeglTile         *tile);
+
 
 void         gegl_tile_mark_as_stored (GeglTile         *tile);
 gboolean     gegl_tile_is_stored      (GeglTile         *tile);

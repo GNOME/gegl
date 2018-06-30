@@ -51,7 +51,7 @@ _new_empty_tile (const gint tile_size)
       tile = gegl_tile_new (tile_size);
 
       memset (gegl_tile_get_data (tile), 0x00, tile_size);
-      tile->is_zero_tile = 1;
+      tile->is_zero_tile = TRUE;
     }
   else
     {
@@ -65,7 +65,8 @@ _new_empty_tile (const gint tile_size)
           allocated_tile->data           = allocated_buffer;
           allocated_tile->destroy_notify = NULL;
           allocated_tile->size           = common_empty_size;
-          allocated_tile->is_zero_tile   = 1;
+          allocated_tile->is_zero_tile   = TRUE;
+          allocated_tile->is_global_tile = TRUE;
 
           /* avoid counting duplicates of the empty tile towards the total
            * cache size, both since this is unnecessary, and since they may

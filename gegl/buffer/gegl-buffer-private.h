@@ -157,11 +157,16 @@ struct _GeglTile
   guint            stored_rev;  /* what revision was we when we from tile_storage?
                                    (currently set to 1 when loaded from disk */
 
-  gint             lock_count;  /* number of outstanding write locks */
-  guint            is_zero_tile:1; /* whether the tile data is fully zeroed
-                                    * (allowing for false negatives, but not
-                                    * false positives)
-                                    */
+  gint             lock_count;       /* number of outstanding write locks */
+  gint             read_lock_count;  /* number of outstanding read locks */
+  guint            is_zero_tile:1;   /* whether the tile data is fully zeroed
+                                      * (allowing for false negatives, but not
+                                      * false positives)
+                                      */
+  guint            is_global_tile:1; /* whether the tile data is global (and
+                                      * therefore can never be owned by a
+                                      * single mutable tile)
+                                      */
 
   gint             clone_state; /* tile clone/unclone state & spinlock */
   gint            *n_clones;    /* an array of two atomic counters, shared
