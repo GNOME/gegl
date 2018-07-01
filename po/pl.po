@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-06-21 12:12+0000\n"
-"PO-Revision-Date: 2018-06-24 18:47+0200\n"
+"POT-Creation-Date: 2018-07-01 16:35+0000\n"
+"PO-Revision-Date: 2018-07-01 19:15+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -363,6 +363,18 @@ msgstr "Nie wczytano"
 #, c-format
 msgid "Module '%s' load error: %s"
 msgstr "Błąd podczas wczytywania modułu „%s”: %s"
+
+#: operations/common/absolute.c:79
+msgid "Absolute"
+msgstr "Bezwzględne"
+
+#: operations/common/absolute.c:83
+msgid ""
+"makes each linear RGB component be the absolute of its value, "
+"fabs(input_value)"
+msgstr ""
+"ustawia każdą składową liniowego RGB na bezwzględną swojej wartości, "
+"fabs(wartość_wejściowa)"
 
 #: operations/common/alien-map.c:29 operations/common/newsprint.c:35
 msgid "RGB"
@@ -3584,6 +3596,7 @@ msgid "SVG color matrix operation svg_saturate"
 msgstr "Działanie svg_saturate macierzy kolorów SVG"
 
 #: operations/common/threshold.c:25 operations/common/threshold.c:126
+#: operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -3653,11 +3666,11 @@ msgstr "Wyrażone jako odchylenie standardowe w pikselach"
 msgid "Scaling factor for unsharp-mask, the strength of effect"
 msgstr "Współczynnik skalowania maski wyostrzającej, siła efektu"
 
-#: operations/common/unsharp-mask.c:84
+#: operations/common/unsharp-mask.c:97
 msgid "Sharpen (Unsharp Mask)"
 msgstr "Wyostrz (maska wyostrzająca)"
 
-#: operations/common/unsharp-mask.c:87
+#: operations/common/unsharp-mask.c:100
 msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
