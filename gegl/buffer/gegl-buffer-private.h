@@ -158,7 +158,10 @@ struct _GeglTile
                                    (currently set to 1 when loaded from disk */
 
   gint             lock_count;  /* number of outstanding write locks */
-  gint             is_zero_tile:1;
+  guint            is_zero_tile:1; /* whether the tile data is fully zeroed
+                                    * (allowing for false negatives, but not
+                                    * false positives)
+                                    */
 
   gint             clone_state; /* tile clone/unclone state & spinlock */
   gint            *n_clones;    /* an array of two atomic counters, shared

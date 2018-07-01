@@ -196,6 +196,8 @@ gegl_tile_unclone (GeglTile *tile)
        */
       if (tile->is_zero_tile)
         {
+          tile->is_zero_tile = FALSE;
+
           if (g_atomic_int_dec_and_test (gegl_tile_n_clones (tile)))
             {
               /* someone else uncloned the tile in the meantime, and we're now
@@ -210,7 +212,6 @@ gegl_tile_unclone (GeglTile *tile)
 
           tile->n_clones     = gegl_calloc (INLINE_N_ELEMENTS_DATA_OFFSET +
                                             tile->size, 1);
-          tile->is_zero_tile = 0;
         }
       else
         {
