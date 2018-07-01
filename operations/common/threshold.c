@@ -37,9 +37,9 @@ property_double (value, _("Threshold"), 0.5)
 
 static void prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input",  babl_format ("YA float"));
-  gegl_operation_set_format (operation, "aux",    babl_format ("Y float"));
-  gegl_operation_set_format (operation, "output", babl_format ("YA float"));
+  gegl_operation_set_format (operation, "input",  babl_format ("Y'A float"));
+  gegl_operation_set_format (operation, "aux",    babl_format ("Y' float"));
+  gegl_operation_set_format (operation, "output", babl_format ("Y'A float"));
 }
 
 static gboolean
