@@ -15,6 +15,7 @@ op_LTLIBRARIES = \
 
 gegl_common_la_SOURCES =\
 	module.c \
+	absolute.c \
 	alien-map.c \
 	bilateral-filter.c \
 	box-blur.c \
