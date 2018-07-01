@@ -23,8 +23,8 @@
 
 property_double (std_dev, _("Radius"), 0.55)
     description(_("Expressed as standard deviation, in pixels"))
-    value_range (0.2, 300)
-    ui_range    (0.2, 40.0)
+    value_range (0.0, 300)
+    ui_range    (0.0, 40.0)
     ui_gamma    (3.0)
     ui_meta     ("unit", "pixel-distance")
 
@@ -33,6 +33,11 @@ property_double (scale, _("Amount"), 4.0)
     value_range (0.0, 300.0)
     ui_range    (0.0, 10.0)
     ui_gamma    (3.0)
+
+property_double (threshold, _("Threshold"), 0.0)
+    value_range (0.0, 1.0)
+    ui_range    (0.0, 1.0)
+    ui_gamma    (1.0)
 
 #else
 
@@ -45,7 +50,7 @@ property_double (scale, _("Amount"), 4.0)
 static void
 attach (GeglOperation *operation)
 {
-  GeglNode *gegl, *input, *output, *add, *multiply, *subtract, *blur;
+  GeglNode *gegl, *input, *output, *add, *multiply, *subtract, *blur, *multiply2, *absolute, *threshold, *multiply_mask;
 
   gegl = operation->node;
 
@@ -53,21 +58,29 @@ attach (GeglOperation *operation)
   output   = gegl_node_get_output_proxy (gegl, "output");
   add      = gegl_node_new_child (gegl, "operation", "gegl:add", NULL);
   multiply = gegl_node_new_child (gegl, "operation", "gegl:multiply", NULL);
+  multiply_mask = gegl_node_new_child (gegl, "operation", "gegl:multiply", NULL);
+  multiply2 = gegl_node_new_child (gegl, "operation", "gegl:multiply", "value", 2.0f, NULL);
   subtract = gegl_node_new_child (gegl, "operation", "gegl:subtract", NULL);
+  absolute = gegl_node_new_child (gegl, "operation", "gegl:abs", NULL);
+  threshold = gegl_node_new_child (gegl, "operation", "gegl:threshold", NULL);
   blur     = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur", NULL);
 
-  gegl_node_link_many (input, subtract, multiply, NULL);
+  gegl_node_link_many (input, subtract, multiply_mask, multiply, NULL);
   gegl_node_link (input, blur);
   gegl_node_link_many (multiply, add, output, NULL);
 
-  gegl_node_connect_from (subtract, "aux",   blur,     "output");
+  gegl_node_link_many (subtract, absolute, multiply2, threshold, NULL);
+  gegl_node_connect_from (multiply_mask, "aux",  threshold,  "output");
+
+  gegl_node_connect_from (subtract, "aux",   blur,  "output");
   gegl_node_connect_from (add,      "aux",   input, "output");
 
+  gegl_operation_meta_redirect (operation, "threshold", threshold, "value");
   gegl_operation_meta_redirect (operation, "scale", multiply, "value");
   gegl_operation_meta_redirect (operation, "std-dev", blur, "std-dev-x");
   gegl_operation_meta_redirect (operation, "std-dev", blur, "std-dev-y");
 
-  gegl_operation_meta_watch_nodes (operation, add, multiply, subtract, blur, NULL);
+  gegl_operation_meta_watch_nodes (operation, add, multiply, subtract, blur, threshold, NULL);
 }
 
 static void
