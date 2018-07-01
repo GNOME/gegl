@@ -6,6 +6,7 @@ gegl/gegl-enums.c
 gegl/gegl-init.c
 gegl/gegl-serialize.c
 gegl/module/geglmodule.c
+operations/common/absolute.c
 operations/common/alien-map.c
 operations/common/bilateral-filter.c
 operations/common/box-blur.c
