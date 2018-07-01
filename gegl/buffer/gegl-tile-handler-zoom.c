@@ -169,6 +169,7 @@ get_tile (GeglTileSource *gegl_tile_source,
     gint        stride;
     guint64     damage;
     GeglTile   *source_tile[2][2] = { { NULL, NULL }, { NULL, NULL } };
+    gboolean    empty             = TRUE;
 
     if (tile)
       damage = tile->damage;
@@ -196,14 +197,28 @@ get_tile (GeglTileSource *gegl_tile_source,
                * work correctly */
               source_tile[i][j] = gegl_tile_source_get_tile (
                 gegl_tile_source, x * 2 + i, y * 2 + j, z - 1);
+
+              if (source_tile[i][j])
+                {
+                  if (source_tile[i][j]->is_zero_tile)
+                    {
+                      gegl_tile_unref (source_tile[i][j]);
+
+                      source_tile[i][j] = NULL;
+                    }
+                  else
+                    {
+                      empty = FALSE;
+                    }
+                }
             }
         }
 
-    if (source_tile[0][0] == NULL &&
-        source_tile[0][1] == NULL &&
-        source_tile[1][0] == NULL &&
-        source_tile[1][1] == NULL)
+    if (empty)
       {
+        if (tile)
+          gegl_tile_unref (tile);
+
         return NULL;   /* no data from level below, return NULL and let GeglTileHandlerEmpty
                           fill in the shared empty tile */
       }
@@ -229,7 +244,7 @@ get_tile (GeglTileSource *gegl_tile_source,
               guchar *src;
               guchar *dest;
 
-              if (source_tile[i][j] && ! source_tile[i][j]->is_zero_tile)
+              if (source_tile[i][j])
                 src = gegl_tile_get_data (source_tile[i][j]);
               else
                 src = NULL;
