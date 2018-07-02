@@ -4,15 +4,15 @@ GEGL-0.4.4 2018-06-02
 Core
 ~~~~
 
-Point filters with need for format conversion of input are now parallel.  Added
-swap-reading, swap-writing, swap-read-total and swap-write-total properties to
-GeglStats.
+Point filters with need for format conversion of input are now parallel.
+Added swap-reading, swap-writing, swap-read-total and swap-write-total
+properties to GeglStats.
 
 Buffer
 ~~~~~~
 
 Trim tile-cache when shrinking.
-Add reading locks to tiles further improving concurrent access tolerance of
+Added reading locks to tiles further improving concurrent access tolerance of
 GeglBuffer.
 
 Operations
@@ -23,9 +23,9 @@ unsharp-mask: add rename standard-deviation and scale properties to 'Radius'
  and 'Amount', add 'Threshold' property.
 recursive-transform now supports applying multiple transformations
 simultanously.
-Fix integer overflow due to logic error in pixelize.
-new operation: gegl:abs which negates negative values.
-new operation in workshop: selective-hye-saturation.
+Fixed integer overflow due to logic error in pixelize.
+New operation: gegl:abs which negates negative values.
+New operation in workshop: selective-hue-saturation.
 
 Contributors
 ~~~~~~~~~~~~
