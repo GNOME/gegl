@@ -222,7 +222,7 @@ static PixelDuster * pixel_duster_new (GeglBuffer *input,
   ret->in_sampler_yu8 = gegl_buffer_sampler_new (input, babl_format ("Y'aA u8"),
                                                  GEGL_SAMPLER_NEAREST);
   ret->in_sampler_u8 = gegl_buffer_sampler_new (input,
-                                                babl_format ("R'G'B'aA u8"),
+                                                babl_format ("R'G'B'A u8"),
                                                 GEGL_SAMPLER_NEAREST);
   ret->in_sampler_f = gegl_buffer_sampler_new (input,
                                                babl_format ("RGBA float"),
