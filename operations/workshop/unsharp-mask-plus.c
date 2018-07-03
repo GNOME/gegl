@@ -21,14 +21,14 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_double (std_dev, _("Radius"), 0.55)
+property_double (std_dev, _("Radius"), 3.0)
     description(_("Expressed as standard deviation, in pixels"))
     value_range (0.0, 300)
     ui_range    (0.0, 40.0)
     ui_gamma    (3.0)
     ui_meta     ("unit", "pixel-distance")
 
-property_double (scale, _("Amount"), 4.0)
+property_double (scale, _("Amount"), 0.5)
     description(_("Scaling factor for unsharp-mask, the strength of effect"))
     value_range (0.0, 300.0)
     ui_range    (0.0, 10.0)
@@ -60,7 +60,6 @@ static void
 update_graph (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  if (!o) return;
   State *state = o->user_data;
   if (!state) return;
   if (o->threshold > 0.0001)
@@ -130,9 +129,10 @@ my_set_property (GObject      *object,
                  const GValue *value,
                  GParamSpec   *pspec)
 {
+  GeglProperties  *o     = GEGL_PROPERTIES (object);
+
   set_property (object, property_id, value, pspec);
 
-  GeglProperties  *o     = GEGL_PROPERTIES (object);
   if (o)
     update_graph ((void*)object);
 }
