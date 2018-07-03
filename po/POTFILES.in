@@ -239,6 +239,7 @@ operations/transform/shear.c
 operations/transform/transform.c
 operations/transform/transform-core.c
 operations/transform/translate.c
+operations/workshop/unsharp-mask-plus.c
 operations/workshop/bayer-matrix.c
 operations/workshop/bilateral-filter-fast.c
 operations/workshop/demosaic-bimedian.c
