@@ -47,10 +47,43 @@ property_double (threshold, _("Threshold"), 0.0)
 
 #include "gegl-op.h"
 
+typedef struct
+{
+  GeglNode *aa;
+  GeglNode *absolute;
+  GeglNode *subtract;
+  GeglNode *multiply_mask;
+  GeglNode *multiply;
+} State;
+
+static void
+update_graph (GeglOperation *operation)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  if (!o) return;
+  State *state = o->user_data;
+  if (!state) return;
+  if (o->threshold > 0.0001)
+  {
+    gegl_node_connect_from (state->absolute, "input",
+                            state->subtract, "output");
+    gegl_node_connect_from (state->multiply, "input",
+                            state->multiply_mask, "output");
+  }
+  else
+  {
+    gegl_node_connect_from (state->multiply, "input",
+                            state->subtract,  "output");
+  }
+}
+
 static void
 attach (GeglOperation *operation)
 {
+  GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglNode *gegl, *input, *output, *add, *multiply, *subtract, *blur, *multiply2, *absolute, *threshold, *aa, *multiply_mask;
+  State *state = g_malloc0 (sizeof (State));
+  o->user_data = state;
 
   gegl = operation->node;
 
@@ -65,6 +98,11 @@ attach (GeglOperation *operation)
   threshold = gegl_node_new_child (gegl, "operation", "gegl:threshold", NULL);
   aa = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur", "std-dev-x", 1.0, "std-dev-y", 1.0, NULL);
   blur     = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur", NULL);
+  state->aa = aa;
+  state->absolute = absolute;
+  state->subtract = subtract;
+  state->multiply = multiply;
+  state->multiply_mask = multiply_mask;
 
   gegl_node_link_many (input, subtract, multiply_mask, multiply, NULL);
   gegl_node_link (input, blur);
@@ -82,12 +120,40 @@ attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation, "std-dev", blur, "std-dev-y");
 
   gegl_operation_meta_watch_nodes (operation, add, multiply, subtract, blur, threshold, NULL);
+
+  update_graph (operation);
+}
+
+static void
+my_set_property (GObject      *object,
+                 guint         property_id,
+                 const GValue *value,
+                 GParamSpec   *pspec)
+{
+  set_property (object, property_id, value, pspec);
+
+  GeglProperties  *o     = GEGL_PROPERTIES (object);
+  if (o)
+    update_graph ((void*)object);
+}
+
+static void
+dispose (GObject *object)
+{
+   GeglProperties  *o     = GEGL_PROPERTIES (object);
+   g_clear_pointer (&o->user_data, g_free);
+   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
 }
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
+  GObjectClass       *object_class;
   GeglOperationClass *operation_class;
+
+  object_class    = G_OBJECT_CLASS (klass);
+  object_class->dispose      = dispose;
+  object_class->set_property = my_set_property;
 
   operation_class = GEGL_OPERATION_CLASS (klass);
 
