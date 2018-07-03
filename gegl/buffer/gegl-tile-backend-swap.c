@@ -484,7 +484,10 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
       if (queued_op)
         {
           tile = gegl_tile_dup (queued_op->tile);
+
           g_mutex_unlock (&queue_mutex);
+
+          gegl_tile_mark_as_stored (tile);
 
           GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "read entry %i, %i, %i from queue", entry->x, entry->y, entry->z);
 
