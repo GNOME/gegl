@@ -81,13 +81,6 @@ convert_k_to_rgb (gfloat  temperature,
 }
 
 
-static void prepare (GeglOperation *operation)
-{
-  const Babl *format = babl_format ("RGBA float");
-  gegl_operation_set_format (operation, "input", format);
-  gegl_operation_set_format (operation, "output", format);
-}
-
 static void
 finalize (GObject *object)
 {
@@ -260,8 +253,6 @@ gegl_op_class_init (GeglOpClass *klass)
 
   object_class->finalize = finalize;
   object_class->notify   = notify;
-
-  operation_class->prepare = prepare;
 
   point_filter_class->process    = process;
   point_filter_class->cl_process = cl_process;
