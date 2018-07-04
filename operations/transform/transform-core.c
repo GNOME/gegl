@@ -942,6 +942,7 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
                                           const gchar         *input_pad,
                                           const GeglRectangle *input_region)
 {
+  const Babl    *space = babl_format_get_space (gegl_operation_get_format (op, "output"));
   OpTransform   *transform = OP_TRANSFORM (op);
   GeglMatrix3    matrix;
   GeglRectangle  affected_rect = {};
@@ -997,7 +998,7 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
     return region;
 
   sampler = gegl_buffer_sampler_new_at_level (NULL,
-                                     babl_format("RaGaBaA float"),
+                                     babl_format_with_space ("RaGaBaA float", space),
                                      transform->sampler,
                                      0); // XXX: need level?
   context_rect = *gegl_sampler_get_context_rect (sampler);
@@ -1112,15 +1113,16 @@ transform_affine (GeglOperation       *operation,
                   const GeglRectangle *roi,
                   gint                 level)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   gint             factor = 1 << level;
   OpTransform     *transform = (OpTransform *) operation;
-  const Babl      *format = babl_format ("RaGaBaA float");
+  const Babl      *format = babl_format_with_space ("RaGaBaA float", space);
   GeglMatrix3      inverse;
   gdouble          inverse_near_z = 1.0 / transform->near_z;
   GeglMatrix2      inverse_jacobian;
   GeglAbyssPolicy  abyss_policy = gegl_transform_get_abyss_policy (transform);
   GeglSampler     *sampler = gegl_buffer_sampler_new_at_level (src,
-                                         babl_format("RaGaBaA float"),
+                                         format,
                                          level?GEGL_SAMPLER_NEAREST:transform->sampler,
                                          level);
 
@@ -1267,15 +1269,15 @@ transform_generic (GeglOperation       *operation,
                    const GeglRectangle *roi,
                    gint                 level)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   OpTransform *transform = (OpTransform *) operation;
-  const Babl          *format = babl_format ("RaGaBaA float");
+  const Babl          *format = babl_format_with_space ("RaGaBaA float", space);
   gint                 factor = 1 << level;
   GeglBufferIterator  *i;
   GeglMatrix3          inverse;
   gdouble              inverse_near_z = 1.0 / transform->near_z;
   GeglAbyssPolicy      abyss_policy = gegl_transform_get_abyss_policy (transform);
-  GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src,
-                                         babl_format("RaGaBaA float"),
+  GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format,
                                          level?GEGL_SAMPLER_NEAREST:
                                                transform->sampler,
                                          level);
