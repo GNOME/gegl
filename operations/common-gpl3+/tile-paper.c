@@ -126,13 +126,6 @@ random_move (gint             tile_x,
 }
 
 static void
-prepare (GeglOperation *operation)
-{
-  gegl_operation_set_format (operation, "input",  babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
-}
-
-static void
 randomize_tiles (GeglProperties      *o,
                  const GeglRectangle *rect,
                  gint                 division_x,
@@ -426,7 +419,6 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   operation_class->threaded                = FALSE;
-  operation_class->prepare                 = prepare;
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->get_cached_region       = get_cached_region;
 
