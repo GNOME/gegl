@@ -172,7 +172,15 @@ G_DEFINE_TYPE (GeglOperationPointComposer3, gegl_operation_point_composer3, GEGL
 
 static void prepare (GeglOperation *operation)
 {
-  const Babl *format = gegl_babl_rgba_linear_float ();
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format;
+  if (!space)
+    space = gegl_operation_get_source_space (operation, "aux");
+  if (!space)
+    space = gegl_operation_get_source_space (operation, "aux2");
+
+  format  = babl_format_with_space ("RGBA float", space);
+
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "aux", format);
   gegl_operation_set_format (operation, "aux2", format);

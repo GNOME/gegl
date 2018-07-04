@@ -61,7 +61,9 @@ gegl_operation_area_filter_init (GeglOperationAreaFilter *self)
 
 static void prepare (GeglOperation *operation)
 {
-  const Babl *format = gegl_babl_rgba_linear_float ();
+  const Babl *format = babl_format_with_space ("RGBA float",
+                  gegl_operation_get_source_space (operation, "input"));
+
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
 }
