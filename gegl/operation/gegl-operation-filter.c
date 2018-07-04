@@ -43,6 +43,15 @@ static GeglRectangle get_required_for_output   (GeglOperation       *operation,
                                                  const gchar         *input_pad,
                                                  const GeglRectangle *roi);
 
+static void prepare (GeglOperation *operation)
+{
+  const Babl *space  = NULL;//gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("RGBA float", space);
+
+  gegl_operation_set_format (operation, "input", format);
+  gegl_operation_set_format (operation, "output", format);
+}
+
 
 G_DEFINE_TYPE (GeglOperationFilter, gegl_operation_filter, GEGL_TYPE_OPERATION)
 
@@ -56,6 +65,7 @@ gegl_operation_filter_class_init (GeglOperationFilterClass * klass)
   operation_class->threaded                = TRUE;
   operation_class->attach                  = attach;
   operation_class->detect                  = detect;
+  operation_class->prepare                 = prepare;
   operation_class->get_bounding_box        = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
 }
