@@ -30,15 +30,6 @@
 
 #include "gegl-op.h"
 
-static void prepare (GeglOperation *operation)
-{
-  const Babl *format = babl_format ("RGBA float");
-
-  gegl_operation_set_format (operation, "input", format);
-  gegl_operation_set_format (operation, "aux", format);
-  gegl_operation_set_format (operation, "output", format);
-}
-
 #include "opencl/gegl-cl.h"
 #include "opencl/weighted-blend.cl.h"
 
@@ -178,7 +169,6 @@ gegl_op_class_init (GeglOpClass *klass)
 
   point_composer_class->process    = process;
   point_composer_class->cl_process = cl_process;
-  operation_class->prepare         = prepare;
   operation_class->opencl_support  = TRUE;
 
   gegl_operation_class_set_keys (operation_class,
