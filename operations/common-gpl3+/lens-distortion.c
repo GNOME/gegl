@@ -260,13 +260,6 @@ get_required_for_output (GeglOperation       *operation,
   return get_required (boundary, roi, operation);
 }
 
-static void
-prepare (GeglOperation *operation)
-{
-  gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
-}
-
 /*
  * Catmull-Rom cubic interpolation XXX: FIXME: use gegl resampler instead of
  *                                             reimplementing cubic sampler here
@@ -495,7 +488,6 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
-  operation_class->prepare                 = prepare;
   operation_class->get_required_for_output = get_required_for_output;
 
   filter_class->process                    = process;
