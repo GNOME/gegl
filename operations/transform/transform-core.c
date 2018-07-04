@@ -942,7 +942,6 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
                                           const gchar         *input_pad,
                                           const GeglRectangle *input_region)
 {
-  const Babl    *space = babl_format_get_space (gegl_operation_get_format (op, "output"));
   OpTransform   *transform = OP_TRANSFORM (op);
   GeglMatrix3    matrix;
   GeglRectangle  affected_rect = {};
@@ -998,7 +997,7 @@ gegl_transform_get_invalidated_by_change (GeglOperation       *op,
     return region;
 
   sampler = gegl_buffer_sampler_new_at_level (NULL,
-                                     babl_format_with_space ("RaGaBaA float", space),
+                                     babl_format_with_space ("RaGaBaA float", NULL),
                                      transform->sampler,
                                      0); // XXX: need level?
   context_rect = *gegl_sampler_get_context_rect (sampler);
