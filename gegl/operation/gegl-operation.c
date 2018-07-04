@@ -857,3 +857,12 @@ void gegl_operation_progress (GeglOperation *operation,
   if (operation->node)
     gegl_node_progress (operation->node, progress, message);
 }
+
+const Babl *
+gegl_operation_get_source_space (GeglOperation *operation, const char *in_pad)
+{
+ const Babl *source_format = gegl_operation_get_source_format (operation, "input");
+  if (source_format)
+    return babl_format_get_space (source_format);
+  return NULL;
+}

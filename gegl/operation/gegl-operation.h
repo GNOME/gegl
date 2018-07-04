@@ -298,6 +298,9 @@ guchar    *gegl_temp_buffer (int no, int min_size);
 
 void       gegl_operation_progress (GeglOperation *operation, gdouble progress, gchar *message);
 
+const Babl *gegl_operation_get_source_space (GeglOperation *operation, const char *in_pad);
+
+
 G_END_DECLS
 
 /***
