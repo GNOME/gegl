@@ -68,6 +68,10 @@ property_double (brightness, _("Brightness"), 0.0)
  * is requested to provide a rendered result. When prepare is called
  * all properties are known. For brightness contrast we use this
  * opportunity to dictate the formats of the input and output buffers.
+ *
+ * since we want to work on linear data, as indicated with "RGBA float" we
+ * strictly speaking wouldn't need to have a prepare() since the default
+ * implementation does the same.
  */
 static void prepare (GeglOperation *operation)
 {
