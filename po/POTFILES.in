@@ -52,6 +52,7 @@ operations/common/invert-linear.c
 operations/common/layer.c
 operations/common/levels.c
 operations/common/linear-gradient.c
+operations/common/little-planet.c
 operations/common/magick-load.c
 operations/common/mantiuk06.c
 operations/common/map-absolute.c

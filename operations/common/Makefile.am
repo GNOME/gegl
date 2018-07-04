@@ -61,6 +61,7 @@ gegl_common_la_SOURCES =\
 	layer.c \
 	levels.c \
 	linear-gradient.c \
+	little-planet.c \
 	magick-load.c \
 	mantiuk06.c \
 	map-absolute.c \
