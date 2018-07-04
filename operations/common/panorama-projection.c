@@ -55,9 +55,6 @@ property_int    (height, _("Height"), -1)
 property_boolean(inverse, _("Inverse transform"), FALSE)
   description   (_("Do the inverse mapping, useful for touching up zenith, nadir or other parts of panorama."))
 
-property_boolean(little_planet, _("Little planet"), FALSE)
-  description   (_("Render a stereographic mapping, a tilt value of 90, which means looking at nadir provides a good default value."))
-
 property_enum   (sampler_type, _("Resampling method"),
                   GeglSamplerType, gegl_sampler_type, GEGL_SAMPLER_NEAREST)
   description   (_("Image resampling method to use, for good results with double resampling when retouching panoramas, use nearest to generate the view and cubic or better for the inverse transform back to panorama."))
@@ -185,113 +182,22 @@ gnomonic_ll2xy (Transform *transform,
 
 }
 
-static void inline
-stereographic_ll2xy (Transform *transform,
-                     float lon, float lat,
-                     float *x,  float *y)
-{
-  float k, sin_lat, cos_lat, cos_lon_minus_pan;
-
-  lat = lat * M_PI - M_PI/2;
-  lon = lon * (M_PI * 2);
-
-  sin_lat = sinf (lat);
-  cos_lat = cosf (lat);
-  cos_lon_minus_pan = cosf (lon - transform->pan);
-
-  k = 2/(1 + transform->sin_tilt * sin_lat +
-             transform->cos_tilt * cos_lat *
-             cos_lon_minus_pan);
-
-  *x = k * ((cos_lat * sin (lon - transform->pan)));
-  *y = k * ((transform->cos_tilt * sin_lat -
-        transform->sin_tilt * cos_lat * cos_lon_minus_pan));
-
-  if (transform->do_zoom)
-  {
-    *x *= transform->zoom;
-    *y *= transform->zoom;
-  }
-
-  if (transform->do_spin)
-  {
-    float tx = *x, ty = *y;
-    *x = tx * transform->cos_negspin - ty * transform->sin_negspin;
-    *y = ty * transform->cos_negspin + tx * transform->sin_negspin;
-  }
-
-  *x += transform->xoffset;
-  *y += 0.5f;
-}
-
-static void inline
-stereographic_xy2ll (Transform *transform,
-                     float x, float y,
-                     float *lon, float *lat)
-{
-  float p, c;
-  float longtitude, latitude;
-  float sin_c, cos_c;
-
-  y -= 0.5f;
-  x -= transform->xoffset;
-
-  if (transform->do_spin)
-  {
-    float tx = x, ty = y;
-    x = tx * transform->cos_spin - ty * transform->sin_spin;
-    y = ty * transform->cos_spin + tx * transform->sin_spin;
-  }
-
-  if (transform->do_zoom)
-  {
-    x /= transform->zoom;
-    y /= transform->zoom;
-  }
-
-  p = sqrtf (x*x+y*y);
-  c = 2 * atan2f (p / 2, 1);
-
-  sin_c = sinf (c);
-  cos_c = cosf (c);
-
-  latitude = asinf (cos_c * transform->sin_tilt + ( y * sin_c * transform->cos_tilt) / p);
-  longtitude = transform->pan + atan2f ( x * sin_c, p * transform->cos_tilt * cos_c - y * transform->sin_tilt * sin_c);
-
-  if (longtitude < 0)
-    longtitude += M_PI * 2;
-
-  *lon = (longtitude / (M_PI * 2));
-  *lat = ((latitude + M_PI/2) / M_PI);
-}
-
 static void prepare_transform (Transform *transform,
                                float pan, float spin, float zoom, float tilt,
-                               int little_planet,
                                float width, float height,
                                float input_width, float input_height,
                                int inverse)
 {
   float xoffset = 0.5f;
   transform->reverse = inverse;
-  if (little_planet)
-  {
-    if (inverse)
-      transform->mapfun = stereographic_ll2xy;
-    else
-      transform->mapfun = stereographic_xy2ll;
-  }
+  if (inverse)
+    transform->mapfun = gnomonic_ll2xy;
   else
-  {
-    if (inverse)
-      transform->mapfun = gnomonic_ll2xy;
-    else
-      transform->mapfun = gnomonic_xy2ll;
-  }
+    transform->mapfun = gnomonic_xy2ll;
 
   pan  = pan / 360 * M_PI * 2;
   spin = spin / 360 * M_PI * 2;
-  zoom = little_planet?zoom / 1000.0f:zoom / 100.0f;
+  zoom = zoom / 100.0f;
   tilt = tilt / 360 * M_PI * 2;
 
   while (pan > M_PI)
@@ -393,7 +299,7 @@ static void prepare_transform2 (Transform *transform,
 
   prepare_transform (transform,
                      o->pan, o->spin, o->zoom, o->tilt,
-                     o->little_planet, o->width / factor, o->height / factor,
+                     o->width / factor, o->height / factor,
                      in_rect.width, in_rect.height,
                      o->inverse);
 
@@ -439,14 +345,10 @@ process (GeglOperation       *operation,
     if (sampler_type == GEGL_SAMPLER_NOHALO ||
         sampler_type == GEGL_SAMPLER_LOHALO)
       sampler_type = GEGL_SAMPLER_CUBIC;
-
-    if (o->little_planet)
-      sampler_type = GEGL_SAMPLER_NEAREST;
   }
 
   if (sampler_type != GEGL_SAMPLER_NEAREST &&
-      !(o->little_planet == FALSE && o->inverse == FALSE &&
-      abs(o->tilt < 33)))
+      !(o->inverse == FALSE && abs(o->tilt < 33)))
     /* skip the computation of sampler neighborhood scale matrix in cases where
      * we are unlikely to be scaling down */
     scale = &scale_matrix;
