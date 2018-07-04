@@ -147,7 +147,8 @@ op_transform_get_type (void)
 static void
 gegl_transform_prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format ("RaGaBaA float");
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("RaGaBaA float", space);
   GeglMatrix3  matrix;
   OpTransform *transform = (OpTransform *) operation;
 
