@@ -76,10 +76,14 @@ property_double (value, _(\"Value\"), #{item[2]})
 
 static void prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format (\"RGBA float\");
+  const Babl *space = gegl_operation_get_source_space (operation, \"input\");
+  const Babl *format;
+  if (!space)
+     space = gegl_operation_get_source_space (operation, \"aux\");
+  format  = babl_format_with_space (\"RGBA float\", space);
 
   gegl_operation_set_format (operation, \"input\", format);
-  gegl_operation_set_format (operation, \"aux\", babl_format (\"RGB float\"));
+  gegl_operation_set_format (operation, \"aux\", babl_format_with_space (\"RGB float\", space));
   gegl_operation_set_format (operation, \"output\", format);
 }
 
