@@ -161,13 +161,6 @@ compute_ramp (GeglBuffer  *dest1,
   return 0.0;
 }
 
-static void
-prepare (GeglOperation *operation)
-{
-  gegl_operation_set_format (operation, "input",  babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
-}
-
 static GeglRectangle
 get_required_for_output (GeglOperation       *operation,
                          const gchar         *input_pad,
@@ -289,7 +282,6 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
-  operation_class->prepare                 = prepare;
   operation_class->get_cached_region       = get_cached_region;
   operation_class->threaded                = FALSE;
   operation_class->get_required_for_output = get_required_for_output;
