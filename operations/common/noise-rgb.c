@@ -103,16 +103,21 @@ noise_linear (GeglRandom *rand, gint xx, gint yy, gint *n)
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglProperties *o  = GEGL_PROPERTIES (operation);
   if (o->linear)
     {
-      gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
-      gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+      gegl_operation_set_format (operation, "input",
+                                 babl_format_with_space ("RGBA float", space));
+      gegl_operation_set_format (operation, "output",
+                                 babl_format_with_space ("RGBA float", space));
     }
   else
     {
-      gegl_operation_set_format (operation, "input", babl_format ("R'G'B'A float"));
-      gegl_operation_set_format (operation, "output", babl_format ("R'G'B'A float"));
+      gegl_operation_set_format (operation, "input",
+                                 babl_format_with_space ("R~G~B~A float", space));
+      gegl_operation_set_format (operation, "output",
+                                 babl_format_with_space ("R~G~B~A float", space));
     }
 }
 
