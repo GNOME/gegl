@@ -35,8 +35,8 @@ property_double (ratio, _("Ratio"), 0.5)
 
 static void prepare (GeglOperation *operation)
 {
-  const Babl *format;
-  format = babl_format ("RGBA float");
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("RGBA float", space);
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "aux", format);
   gegl_operation_set_format (operation, "output", format);
