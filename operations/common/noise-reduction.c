@@ -145,12 +145,13 @@ noise_reduction (float *src_buf,     /* source buffer, one pixel to the left
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties              *o = GEGL_PROPERTIES (operation);
 
   area->left = area->right = area->top = area->bottom = o->iterations;
-  gegl_operation_set_format (operation, "input",  babl_format ("R'G'B'A float"));
-  gegl_operation_set_format (operation, "output", babl_format ("R'G'B'A float"));
+  gegl_operation_set_format (operation, "input",  babl_format_with_space ("R~G~B~A float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("R~G~B~A float", space));
 }
 
 #include "opencl/gegl-cl.h"
@@ -326,6 +327,8 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties   *o = GEGL_PROPERTIES (operation);
+  const Babl *in_format  = gegl_operation_get_format (operation, "input");
+  const Babl *out_format = gegl_operation_get_format (operation, "output");
 
   int iteration;
   int stride;
@@ -355,7 +358,7 @@ process (GeglOperation       *operation,
     rect.y      -= o->iterations;
     rect.width  += o->iterations*2;
     rect.height += o->iterations*2;
-    gegl_buffer_get (input, &rect, 1.0, babl_format ("R'G'B'A float"),
+    gegl_buffer_get (input, &rect, 1.0, in_format,
                      src_buf, stride * 4 * 4, GEGL_ABYSS_NONE);
   }
 
@@ -379,7 +382,7 @@ process (GeglOperation       *operation,
 #endif
     }
 
-  gegl_buffer_set (output, result, 0, babl_format ("R'G'B'A float"),
+  gegl_buffer_set (output, result, 0, out_format,
 #ifndef INPLACE
                    src_buf,
 #else
