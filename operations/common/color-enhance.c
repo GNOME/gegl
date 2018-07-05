@@ -39,15 +39,15 @@ buffer_get_min_max (GeglOperation       *operation,
                     GeglBuffer          *buffer,
                     const GeglRectangle *result,
                     gdouble             *min,
-                    gdouble             *max)
+                    gdouble             *max,
+                    const Babl          *format)
 {
   GeglBufferIterator *gi;
   gint                done_pixels = 0;
 
   gegl_operation_progress (operation, 0.0, "");
 
-  gi = gegl_buffer_iterator_new (buffer, result, 0,
-                                 babl_format ("CIE LCH(ab) float"),
+  gi = gegl_buffer_iterator_new (buffer, result, 0, format,
                                  GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   *min = G_MAXDOUBLE;
@@ -78,19 +78,20 @@ buffer_get_min_max (GeglOperation       *operation,
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   const Babl *format;
   const Babl *in_format = gegl_operation_get_source_format (operation, "input");
 
   if (in_format)
     {
        if (babl_format_has_alpha (in_format))
-         format = babl_format ("CIE LCH(ab) alpha float");
+         format = babl_format_with_space ("CIE LCH(ab) alpha float", space);
        else
-         format = babl_format ("CIE LCH(ab) float");
+         format = babl_format_with_space ("CIE LCH(ab) float", space);
     }
   else
     {
-      format = babl_format ("CIE LCH(ab) float");
+      format = babl_format_with_space ("CIE LCH(ab) float", space);
     }
 
   gegl_operation_set_format (operation, "input", format);
@@ -139,7 +140,9 @@ process (GeglOperation       *operation,
   gdouble  max;
   gdouble  delta;
 
-  buffer_get_min_max (operation, input, result, &min, &max);
+  buffer_get_min_max (operation, input, result, &min, &max,
+                      babl_format_with_space ("CIE LCH(ab) float",
+                      babl_format_get_space (format)));
 
   gegl_operation_progress (operation, 0.5, "");
 
