@@ -51,24 +51,26 @@ edge_sobel (GeglBuffer          *src,
             gboolean            horizontal,
             gboolean            vertical,
             gboolean            keep_sign,
-            gboolean            has_alpha);
+            gboolean            has_alpha,
+            const Babl         *format);
 
 
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
 
   const Babl *source_format = gegl_operation_get_source_format (operation, "input");
 
   area->left = area->right = area->top = area->bottom = SOBEL_RADIUS;
 
-  gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
+  gegl_operation_set_format (operation, "input", babl_format_with_space ("RGBA float", space));
 
   if (source_format && !babl_format_has_alpha (source_format))
-    gegl_operation_set_format (operation, "output", babl_format ("RGB float"));
+    gegl_operation_set_format (operation, "output", babl_format_with_space ("RGB float", space));
   else
-    gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+    gegl_operation_set_format (operation, "output", babl_format_with_space ("RGBA float", space));
 }
 
 /** FIXME - disabling CL
@@ -205,7 +207,9 @@ process (GeglOperation       *operation,
    */
 
   edge_sobel (input, &compute, output, result,
-              o->horizontal, o->vertical, o->keep_sign, has_alpha);
+              o->horizontal, o->vertical, o->keep_sign, has_alpha,
+              babl_format_with_space ("RGBA float",
+              gegl_operation_get_format (operation, "output")));
   return TRUE;
 }
 
@@ -223,7 +227,8 @@ edge_sobel (GeglBuffer          *src,
             gboolean            horizontal,
             gboolean            vertical,
             gboolean            keep_sign,
-            gboolean            has_alpha)
+            gboolean            has_alpha,
+            const Babl         *format)
 {
   gint x,y;
   gint offset;
@@ -234,7 +239,7 @@ edge_sobel (GeglBuffer          *src,
   src_buf = g_new0 (gfloat, src_rect->width * src_rect->height * 4);
   dst_buf = g_new0 (gfloat, dst_rect->width * dst_rect->height * 4);
 
-  gegl_buffer_get (src, src_rect, 1.0, babl_format ("RGBA float"),
+  gegl_buffer_get (src, src_rect, 1.0, format,
                    src_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   after_src_buf = src_buf + src_rect->width * src_rect->height * 4;
@@ -374,7 +379,7 @@ edge_sobel (GeglBuffer          *src,
         offset++;
       }
 
-  gegl_buffer_set (dst, dst_rect, 0, babl_format ("RGBA float"), dst_buf,
+  gegl_buffer_set (dst, dst_rect, 0, format, dst_buf,
                    GEGL_AUTO_ROWSTRIDE);
   g_free (src_buf);
   g_free (dst_buf);
