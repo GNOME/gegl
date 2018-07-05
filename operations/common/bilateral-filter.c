@@ -48,18 +48,21 @@ bilateral_filter (GeglBuffer          *src,
                   GeglBuffer          *dst,
                   const GeglRectangle *dst_rect,
                   gdouble              radius,
-                  gdouble              preserve);
+                  gdouble              preserve,
+                  const Babl          *format);
 
 #include <stdio.h>
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("RGBA float", space);
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties              *o = GEGL_PROPERTIES (operation);
 
   area->left = area->right = area->top = area->bottom = ceil (o->blur_radius);
-  gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+  gegl_operation_set_format (operation, "input", format);
+  gegl_operation_set_format (operation, "output", format);
 }
 
 #include "opencl/gegl-cl.h"
@@ -166,6 +169,7 @@ process (GeglOperation       *operation,
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglRectangle compute;
+  const Babl *format = gegl_operation_get_format (operation, "output");
 
   if (o->blur_radius >= 1.0 && gegl_operation_use_opencl (operation))
     if (cl_process (operation, input, output, result))
@@ -180,7 +184,7 @@ process (GeglOperation       *operation,
     }
   else
     {
-      bilateral_filter (input, &compute, output, result, o->blur_radius, o->edge_preservation);
+      bilateral_filter (input, &compute, output, result, o->blur_radius, o->edge_preservation, format);
     }
 
   return  TRUE;
@@ -192,7 +196,8 @@ bilateral_filter (GeglBuffer          *src,
                   GeglBuffer          *dst,
                   const GeglRectangle *dst_rect,
                   gdouble              radius,
-                  gdouble              preserve)
+                  gdouble              preserve,
+                  const Babl          *format)
 {
   gfloat *gauss;
   gint x,y;
@@ -208,7 +213,7 @@ bilateral_filter (GeglBuffer          *src,
   src_buf = g_new0 (gfloat, src_rect->width * src_rect->height * 4);
   dst_buf = g_new0 (gfloat, dst_rect->width * dst_rect->height * 4);
 
-  gegl_buffer_get (src, src_rect, 1.0, babl_format ("RGBA float"), src_buf, GEGL_AUTO_ROWSTRIDE,
+  gegl_buffer_get (src, src_rect, 1.0, format, src_buf, GEGL_AUTO_ROWSTRIDE,
                    GEGL_ABYSS_NONE);
 
   offset = 0;
@@ -264,7 +269,7 @@ bilateral_filter (GeglBuffer          *src,
           dst_buf[offset*4+u] = accumulated[u]/count;
         offset++;
       }
-  gegl_buffer_set (dst, dst_rect, 0, babl_format ("RGBA float"), dst_buf,
+  gegl_buffer_set (dst, dst_rect, 0, format, dst_buf,
                    GEGL_AUTO_ROWSTRIDE);
   g_free (src_buf);
   g_free (dst_buf);
