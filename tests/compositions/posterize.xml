@@ -2,7 +2,7 @@
 <gegl>
   <node operation='gegl:posterize'>
     <params>
-      <param name='levels'>8</param>
+      <param name='levels'>2</param>
     </params>
   </node>
   <node operation='gegl:load'>
