@@ -99,13 +99,14 @@ property_double (saturation, _("Saturation"), 0.0)
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   /* gamma-corrected RGB because that's what the HSV conversion
    * functions expect
    */
   gegl_operation_set_format (operation, "input",
-                             babl_format ("R'G'B'A float"));
+                             babl_format_with_space ("R~G~B~A float", space));
   gegl_operation_set_format (operation, "output",
-                             babl_format ("R'G'B'A float"));
+                             babl_format_with_space ("R~G~B~A float", space));
 }
 
 static void
