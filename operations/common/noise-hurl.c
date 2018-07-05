@@ -47,11 +47,14 @@ property_seed (seed, _("Random seed"), rand)
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   const Babl *input_format = gegl_operation_get_source_format (operation, "input");
   GeglProperties *o        = GEGL_PROPERTIES (operation);
 
-  gegl_operation_set_format (operation, "input" , babl_format ("R'G'B'A float"));
-  gegl_operation_set_format (operation, "output", babl_format ("R'G'B'A float"));
+  gegl_operation_set_format (operation, "input" ,
+                             babl_format_with_space ("R'G'B'A float", space));
+  gegl_operation_set_format (operation, "output",
+                             babl_format_with_space ("R'G'B'A float", space));
 
   if (input_format)
     {
