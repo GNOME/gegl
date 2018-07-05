@@ -46,6 +46,7 @@ property_double (angle, _("Angle"), 0.0)
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o       = GEGL_PROPERTIES (operation);
   gdouble                  theta   = o->angle * G_PI / 180.0;
@@ -63,8 +64,8 @@ prepare (GeglOperation *operation)
   op_area->top    =
   op_area->bottom = (gint) ceil (0.5 * offset_y);
 
-  gegl_operation_set_format (operation, "input",  babl_format ("RaGaBaA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
+  gegl_operation_set_format (operation, "input",  babl_format_with_space ("RaGaBaA float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("RaGaBaA float", space));
 }
 
 #include "opencl/gegl-cl.h"
@@ -220,7 +221,9 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
-  GeglProperties              *o       = GEGL_PROPERTIES (operation);
+  GeglProperties          *o       = GEGL_PROPERTIES (operation);
+  const Babl *in_format  = gegl_operation_get_format (operation, "input");
+  const Babl *out_format = gegl_operation_get_format (operation, "output");
   GeglRectangle            src_rect;
   gfloat                  *in_buf;
   gfloat                  *out_buf;
@@ -253,7 +256,7 @@ process (GeglOperation       *operation,
   out_buf = g_new0 (gfloat, roi->width * roi->height * 4);
   out_pixel = out_buf;
 
-  gegl_buffer_get (input, &src_rect, 1.0, babl_format ("RaGaBaA float"),
+  gegl_buffer_get (input, &src_rect, 1.0, in_format,
                    in_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   for (y = 0; y < roi->height; ++y)
@@ -301,7 +304,7 @@ process (GeglOperation       *operation,
         }
     }
 
-  gegl_buffer_set (output, roi, 0, babl_format ("RaGaBaA float"),
+  gegl_buffer_set (output, roi, 0, out_format,
                    out_buf, GEGL_AUTO_ROWSTRIDE);
 
   g_free (in_buf);
