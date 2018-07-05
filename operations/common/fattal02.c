@@ -1221,8 +1221,9 @@ fattal02_tonemap (const gfloat        *input,   /* Y */
 static void
 fattal02_prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input",  babl_format (OUTPUT_FORMAT));
-  gegl_operation_set_format (operation, "output", babl_format (OUTPUT_FORMAT));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input",  babl_format_with_space (OUTPUT_FORMAT, space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space (OUTPUT_FORMAT, space));
 }
 
 
@@ -1254,6 +1255,8 @@ fattal02_process (GeglOperation       *operation,
 {
   const GeglProperties *o     = GEGL_PROPERTIES (operation);
   gfloat            noise;
+  const Babl *out_format = gegl_operation_get_format (operation, "output");
+  const Babl *space = babl_format_get_space (out_format);
 
   const gint  pix_stride = 3; /* RGBA */
   gfloat     *lum_in,
@@ -1266,7 +1269,7 @@ fattal02_process (GeglOperation       *operation,
   g_return_val_if_fail (output, FALSE);
   g_return_val_if_fail (result, FALSE);
 
-  g_return_val_if_fail (babl_format_get_n_components (babl_format (OUTPUT_FORMAT)) == pix_stride, FALSE);
+  g_return_val_if_fail (babl_format_get_n_components (out_format) == pix_stride, FALSE);
 
   /* Adjust noise floor if not set by the user */
   if (o->noise == 0.0)
@@ -1282,11 +1285,11 @@ fattal02_process (GeglOperation       *operation,
   lum_in  = g_new (gfloat, result->width * result->height);
   lum_out = g_new (gfloat, result->width * result->height);
 
-  gegl_buffer_get (input, result, 1.0, babl_format ("Y float"),
+  gegl_buffer_get (input, result, 1.0, babl_format_with_space ("Y float", space),
                    lum_in, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   pix = g_new (gfloat, result->width * result->height * pix_stride);
-  gegl_buffer_get (input, result, 1.0, babl_format (OUTPUT_FORMAT),
+  gegl_buffer_get (input, result, 1.0, out_format,
                    pix, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   fattal02_tonemap (lum_in, result, lum_out, o->alpha, o->beta, noise);
@@ -1298,7 +1301,7 @@ fattal02_process (GeglOperation       *operation,
                 lum_out[i / pix_stride]);
     }
 
-  gegl_buffer_set (output, result, 0, babl_format (OUTPUT_FORMAT), pix,
+  gegl_buffer_set (output, result, 0, out_format, pix,
                    GEGL_AUTO_ROWSTRIDE);
   g_free (pix);
   g_free (lum_out);
