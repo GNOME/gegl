@@ -45,7 +45,8 @@ hor_blur (GeglBuffer          *src,
           const GeglRectangle *src_rect,
           GeglBuffer          *dst,
           const GeglRectangle *dst_rect,
-          gint                 radius)
+          gint                 radius,
+          const Babl          *format)
 {
   gint u,v;
   gint i;
@@ -61,7 +62,7 @@ hor_blur (GeglBuffer          *src,
   src_buf = g_new0 (gfloat, src_rect->width * src_rect->height * 4);
   dst_buf = g_new0 (gfloat, dst_rect->width * dst_rect->height * 4);
 
-  gegl_buffer_get (src, src_rect, 1.0, babl_format ("RaGaBaA float"),
+  gegl_buffer_get (src, src_rect, 1.0, format,
                    src_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
 
   offset = 0;
@@ -93,7 +94,7 @@ hor_blur (GeglBuffer          *src,
         }
     }
 
-  gegl_buffer_set (dst, dst_rect, 0, babl_format ("RaGaBaA float"),
+  gegl_buffer_set (dst, dst_rect, 0, format,
                    dst_buf, GEGL_AUTO_ROWSTRIDE);
 
   g_free (src_buf);
@@ -105,7 +106,8 @@ ver_blur (GeglBuffer          *src,
           const GeglRectangle *src_rect,
           GeglBuffer          *dst,
           const GeglRectangle *dst_rect,
-          gint                 radius)
+          gint                 radius,
+          const Babl          *format)
 {
   gint u, v;
   gint i;
@@ -121,7 +123,7 @@ ver_blur (GeglBuffer          *src,
   src_buf = g_new0 (gfloat, src_rect->width * src_rect->height * 4);
   dst_buf = g_new0 (gfloat, dst_rect->width * dst_rect->height * 4);
 
-  gegl_buffer_get (src, src_rect, 1.0, babl_format ("RaGaBaA float"),
+  gegl_buffer_get (src, src_rect, 1.0, format,
                    src_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
 
   /* prepare: set first row of pixels */
@@ -154,7 +156,7 @@ ver_blur (GeglBuffer          *src,
         }
     }
 
-  gegl_buffer_set (dst, dst_rect, 0, babl_format ("RaGaBaA float"),
+  gegl_buffer_set (dst, dst_rect, 0, format,
                    dst_buf, GEGL_AUTO_ROWSTRIDE);
 
   g_free (src_buf);
@@ -167,6 +169,8 @@ static void prepare (GeglOperation *operation)
 {
   GeglProperties              *o;
   GeglOperationAreaFilter *op_area;
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("RaGaBaA float", space);
 
   op_area = GEGL_OPERATION_AREA_FILTER (operation);
   o       = GEGL_PROPERTIES (operation);
@@ -176,8 +180,8 @@ static void prepare (GeglOperation *operation)
   op_area->top    =
   op_area->bottom = o->radius;
 
-  gegl_operation_set_format (operation, "input",  babl_format ("RaGaBaA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
+  gegl_operation_set_format (operation, "input",  format);
+  gegl_operation_set_format (operation, "output", format);
 }
 
 #include "opencl/gegl-cl.h"
@@ -353,6 +357,7 @@ process (GeglOperation       *operation,
   GeglBuffer *temp;
   GeglOperationAreaFilter *op_area;
   op_area = GEGL_OPERATION_AREA_FILTER (operation);
+  const Babl *out_format = gegl_operation_get_format (operation, "output");
 
   if (gegl_operation_use_opencl (operation))
     if (cl_process (operation, input, output, result))
@@ -369,12 +374,11 @@ process (GeglOperation       *operation,
   tmprect.y      -= o->radius;
   tmprect.height += o->radius * 2;
 
-  temp  = gegl_buffer_new (&tmprect,
-                           babl_format ("RaGaBaA float"));
+  temp  = gegl_buffer_new (&tmprect, out_format);
 
   /* doing second pass in separate gegl op may be significantly faster */
-  hor_blur (input, &rect, temp, &tmprect, o->radius);
-  ver_blur (temp, &rect, output, result, o->radius);
+  hor_blur (input, &rect, temp, &tmprect, o->radius, out_format);
+  ver_blur (temp, &rect, output, result, o->radius, out_format);
 
   g_object_unref (temp);
   return  TRUE;
