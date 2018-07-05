@@ -141,6 +141,7 @@ process_lch_alpha (GeglOperation       *operation,
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *format;
   const Babl *input_format;
@@ -150,7 +151,7 @@ static void prepare (GeglOperation *operation)
   input_format = gegl_operation_get_source_format (operation, "input");
   if (input_format == NULL)
     {
-      format = babl_format ("CIE Lab alpha float");
+      format = babl_format_with_space ("CIE Lab alpha float", space);
       o->user_data = process_lab_alpha;
       goto out;
     }
@@ -162,12 +163,12 @@ static void prepare (GeglOperation *operation)
       lch_model = babl_model ("CIE LCH(ab) alpha");
       if (input_model == lch_model)
         {
-          format = babl_format ("CIE LCH(ab) alpha float");
+          format = babl_format_with_space ("CIE LCH(ab) alpha float", space);
           o->user_data = process_lch_alpha;
         }
       else
         {
-          format = babl_format ("CIE Lab alpha float");
+          format = babl_format_with_space ("CIE Lab alpha float", space);
           o->user_data = process_lab_alpha;
         }
     }
@@ -176,12 +177,12 @@ static void prepare (GeglOperation *operation)
       lch_model = babl_model ("CIE LCH(ab)");
       if (input_model == lch_model)
         {
-          format = babl_format ("CIE LCH(ab) float");
+          format = babl_format_with_space ("CIE LCH(ab) float", space);
           o->user_data = process_lch;
         }
       else
         {
-          format = babl_format ("CIE Lab float");
+          format = babl_format_with_space ("CIE Lab float", space);
           o->user_data = process_lab;
         }
     }
