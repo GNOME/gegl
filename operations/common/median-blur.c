@@ -633,21 +633,21 @@ prepare (GeglOperation *operation)
       if (o->high_precision)
         {
           if (model == babl_model ("Y"))
-            format = babl_format ("Y float");
+            format = babl_format_with_space ("Y float", in_format);
           else if (model == babl_model ("Y'"))
-            format = babl_format ("Y' float");
+            format = babl_format_with_space ("Y' float", in_format);
           else if (model == babl_model ("YA") || model == babl_model ("YaA"))
-            format = babl_format ("YA float");
+            format = babl_format_with_space ("YA float", in_format);
           else if (model == babl_model ("Y'A") || model == babl_model ("Y'aA"))
-            format = babl_format ("Y'A float");
+            format = babl_format_with_space ("Y'A float", in_format);
           else if (model == babl_model ("RGB"))
-            format = babl_format ("RGB float");
+            format = babl_format_with_space ("RGB float", in_format);
           else if (model == babl_model ("R'G'B'"))
-            format = babl_format ("R'G'B' float");
+            format = babl_format_with_space ("R'G'B' float", in_format);
           else if (model == babl_model ("RGBA") || model == babl_model ("RaGaBaA"))
-            format = babl_format ("RGBA float");
+            format = babl_format_with_space ("RGBA float", in_format);
           else if (model == babl_model ("R'G'B'A") || model == babl_model ("R'aG'aB'aA"))
-            format = babl_format ("R'G'B'A float");
+            format = babl_format_with_space ("R'G'B'A float", in_format);
 
           if (format)
             {
@@ -669,31 +669,31 @@ prepare (GeglOperation *operation)
       else
         {
           if (model == babl_model ("Y") || model == babl_model ("Y'"))
-            format = babl_format ("Y' float");
+            format = babl_format_with_space ("Y' float", in_format);
           else if (model == babl_model ("YA")  || model == babl_model ("YaA") ||
                    model == babl_model ("Y'A") || model == babl_model ("Y'aA"))
-            format = babl_format ("Y'A float");
+            format = babl_format_with_space ("Y'A float", in_format);
           else if (model == babl_model ("RGB") || model == babl_model ("R'G'B'"))
-            format = babl_format ("R'G'B' float");
+            format = babl_format_with_space ("R'G'B' float", in_format);
           else if (model == babl_model ("RGBA")    || model == babl_model ("RaGaBaA") ||
                    model == babl_model ("R'G'B'A") || model == babl_model ("R'aG'aB'aA"))
-            format = babl_format ("R'G'B'A float");
+            format = babl_format_with_space ("R'G'B'A float", in_format);
         }
 
       if (format == NULL)
         {
           if (babl_format_has_alpha (in_format))
-            format = babl_format ("R'G'B'A float");
+            format = babl_format_with_space ("R'G'B'A float", in_format);
           else
-            format = babl_format ("R'G'B' float");
+            format = babl_format_with_space ("R'G'B' float", in_format);
         }
     }
   else
     {
       if (o->high_precision)
-        format = babl_format ("RGBA float");
+        format = babl_format_with_space ("RGBA float", in_format);
       else
-        format = babl_format ("R'G'B'A float");
+        format = babl_format_with_space ("R'G'B'A float", in_format);
     }
 
   if (data->quantize && ! g_atomic_int_get (&default_values_initialized))
