@@ -157,10 +157,11 @@ wav_ver_blur (GeglBuffer          *src,
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
 
   GeglProperties *o   = GEGL_PROPERTIES (operation);
-  const Babl *format  = babl_format ("R'G'B' float");
+  const Babl *format  = babl_format_with_space ("R'G'B' float", space);
 
   if (o->orientation == GEGL_ORIENTATION_HORIZONTAL)
     {
