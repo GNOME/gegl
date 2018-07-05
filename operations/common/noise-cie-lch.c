@@ -99,10 +99,11 @@ randomize_value (gfloat      now,
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   gegl_operation_set_format (operation, "input" ,
-                             babl_format ("CIE LCH(ab) alpha float"));
+                             babl_format_with_space ("CIE LCH(ab) alpha float", space));
   gegl_operation_set_format (operation, "output",
-                             babl_format ("CIE LCH(ab) alpha float"));
+                             babl_format_with_space ("CIE LCH(ab) alpha float", space));
 }
 
 static gboolean
