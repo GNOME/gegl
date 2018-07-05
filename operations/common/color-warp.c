@@ -196,11 +196,11 @@ static void cw_map (CoordWarp   *cw,
 static void maybe_add_pair (CoordWarp *cw,
                             GeglColor *colorA,
                             GeglColor *colorB,
-                            float      weight)
+                            float      weight,
+                            const Babl *colorformat)
 {
   gfloat from[4];
   gfloat to[4];
-  const Babl *colorformat = babl_format("CIE Lab float");
   gegl_color_get_pixel (colorA, colorformat, from);
   gegl_color_get_pixel (colorB, colorformat, to);
   if (from[0] == 0.0 &&
@@ -221,7 +221,8 @@ static void prepare (GeglOperation *operation)
 {
   CoordWarp *cw;
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  const Babl *format = babl_format ("CIE Lab float");
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("CIE Lab float", space);
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
 
@@ -230,14 +231,14 @@ static void prepare (GeglOperation *operation)
   cw = o->user_data;
 
   cw_clear_pairs (cw);
-  maybe_add_pair (cw, o->from_0, o->to_0, o->weight * o->weight_0);
-  maybe_add_pair (cw, o->from_1, o->to_1, o->weight * o->weight_1);
-  maybe_add_pair (cw, o->from_2, o->to_2, o->weight * o->weight_2);
-  maybe_add_pair (cw, o->from_3, o->to_3, o->weight * o->weight_3);
-  maybe_add_pair (cw, o->from_4, o->to_4, o->weight * o->weight_4);
-  maybe_add_pair (cw, o->from_5, o->to_5, o->weight * o->weight_5);
-  maybe_add_pair (cw, o->from_6, o->to_6, o->weight * o->weight_6);
-  maybe_add_pair (cw, o->from_7, o->to_7, o->weight * o->weight_7);
+  maybe_add_pair (cw, o->from_0, o->to_0, o->weight * o->weight_0, format);
+  maybe_add_pair (cw, o->from_1, o->to_1, o->weight * o->weight_1, format);
+  maybe_add_pair (cw, o->from_2, o->to_2, o->weight * o->weight_2, format);
+  maybe_add_pair (cw, o->from_3, o->to_3, o->weight * o->weight_3, format);
+  maybe_add_pair (cw, o->from_4, o->to_4, o->weight * o->weight_4, format);
+  maybe_add_pair (cw, o->from_5, o->to_5, o->weight * o->weight_5, format);
+  maybe_add_pair (cw, o->from_6, o->to_6, o->weight * o->weight_6, format);
+  maybe_add_pair (cw, o->from_7, o->to_7, o->weight * o->weight_7, format);
 }
 
 static void
