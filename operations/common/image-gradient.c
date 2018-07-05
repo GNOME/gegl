@@ -48,9 +48,10 @@ property_enum (output_mode, _("Output mode"),
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglOperationAreaFilter *area       = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o          = GEGL_PROPERTIES (operation);
-  const Babl              *rgb_format = babl_format ("R'G'B' float");
+  const Babl              *rgb_format = babl_format_with_space ("R'G'B' float", space);
   const Babl              *out_format = babl_format_n (babl_type ("float"), 2);
 
   area->left   =
@@ -91,7 +92,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties  *o          = GEGL_PROPERTIES (operation);
-  const Babl      *in_format  = babl_format ("R'G'B' float");
+  const Babl      *in_format  = gegl_operation_get_format (operation, "input");
   const Babl      *out_format = gegl_operation_get_format (operation, "output");
   gfloat *row1;
   gfloat *row2;
