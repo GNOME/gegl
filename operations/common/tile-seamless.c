@@ -35,10 +35,11 @@
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   gegl_operation_set_format (operation, "input",
-                             babl_format ("R'G'B'A float"));
+                             babl_format_with_space ("R'G'B'A float", space));
   gegl_operation_set_format (operation, "output",
-                             babl_format ("R'G'B'A float"));
+                             babl_format_with_space ("R'G'B'A float", space));
 }
 
 static gboolean
@@ -49,6 +50,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   const GeglRectangle *whole_region;
+  const Babl          *format = gegl_operation_get_format (operation, "output");
   GeglRectangle        shift_region;
   GeglBufferIterator  *gi;
   gint                 half_width;
@@ -67,15 +69,15 @@ process (GeglOperation       *operation,
   shift_region.height = whole_region->height;
 
   gi = gegl_buffer_iterator_new (output, whole_region,
-                                 0, babl_format ("R'G'B'A float"),
+                                 0, format,
                                  GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
   index_iter = gegl_buffer_iterator_add (gi, input, whole_region,
-                                         0, babl_format ("R'G'B'A float"),
+                                         0, format,
                                          GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   index_iter2 = gegl_buffer_iterator_add (gi, input, &shift_region,
-                                          0, babl_format ("R'G'B'A float"),
+                                          0, format,
                                           GEGL_ACCESS_READ, GEGL_ABYSS_LOOP);
 
   while (gegl_buffer_iterator_next (gi))
