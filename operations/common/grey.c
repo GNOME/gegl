@@ -35,22 +35,17 @@
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   const Babl *format;
   const Babl *input_format;
 
   input_format = gegl_operation_get_source_format (operation, "input");
-  if (input_format == NULL)
-    {
-      format = babl_format ("YA float");
-      goto out;
-    }
 
-  if (babl_format_has_alpha (input_format))
-    format = babl_format ("YA float");
+  if (input_format && babl_format_has_alpha (input_format))
+    format = babl_format_with_space ("YA float", space);
   else
-    format = babl_format ("Y float");
+    format = babl_format_with_space ("Y float", space);
 
- out:
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
 }
