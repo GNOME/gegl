@@ -272,6 +272,7 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   EParamsType *params;
   const Babl *format;
   const Babl *input_format;
@@ -303,7 +304,7 @@ prepare (GeglOperation *operation)
       y_model = babl_model ("YA");
       if (input_model == y_model)
         {
-          format = babl_format ("YA float");
+          format = babl_format_with_space ("YA float", space);
 
           params->process = process_ya;
 
@@ -313,7 +314,7 @@ prepare (GeglOperation *operation)
         }
       else
         {
-          format = babl_format ("RGBA float");
+          format = babl_format_with_space ("RGBA float", space);
 
           params->process = process_rgba;
 
@@ -327,7 +328,7 @@ prepare (GeglOperation *operation)
       y_model = babl_model ("Y");
       if (input_model == y_model)
         {
-          format = babl_format ("Y float");
+          format = babl_format_with_space ("Y float", space);
 
           params->process = process_y;
 
@@ -337,7 +338,7 @@ prepare (GeglOperation *operation)
         }
       else
         {
-          format = babl_format ("RGB float");
+          format = babl_format_with_space ("RGB float", space);
 
           params->process = process_rgb;
 
