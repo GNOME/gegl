@@ -815,6 +815,7 @@ gegl_expcombine_attach (GeglOperation *operation)
 static void
 gegl_expcombine_prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "exposure_0");
   GSList *inputs = gegl_node_get_input_pads (operation->node);
 
   /* Set all the pads output formats */
@@ -822,10 +823,10 @@ gegl_expcombine_prepare (GeglOperation *operation)
     {
       GeglPad *pad = inputs->data;
 
-      gegl_pad_set_format (pad, babl_format (PAD_FORMAT));
+      gegl_pad_set_format (pad, babl_format_with_space (PAD_FORMAT, space));
     }
 
-  gegl_operation_set_format (operation, "output", babl_format (PAD_FORMAT));
+  gegl_operation_set_format (operation, "output", babl_format_with_space (PAD_FORMAT, space));
 }
 
 
@@ -870,6 +871,7 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
                                const GeglRectangle  *full_roi,
                                GeglRectangle        *scaled_roi)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglProperties    *o          = GEGL_PROPERTIES (operation);
   gchar         *ev_cursor  = o->exposures;
   GSList        *exposures  = NULL,
@@ -935,7 +937,7 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
       e->pixels[PIXELS_FULL]   = g_new (gfloat, full_roi->width  *
                                                 full_roi->height *
                                                 components);
-      gegl_buffer_get (buffer, full_roi, 1.0, babl_format (PAD_FORMAT),
+      gegl_buffer_get (buffer, full_roi, 1.0, babl_format_with_space (PAD_FORMAT, space),
                        e->pixels[PIXELS_FULL], GEGL_AUTO_ROWSTRIDE,
                        GEGL_ABYSS_NONE);
 
@@ -948,7 +950,7 @@ gegl_expcombine_get_exposures (GeglOperation        *operation,
                                             (scaled_roi->width  *
                                              scaled_roi->height *
                                              components));
-          gegl_buffer_get (buffer, scaled_roi, scale, babl_format (PAD_FORMAT),
+          gegl_buffer_get (buffer, scaled_roi, scale, babl_format_with_space (PAD_FORMAT, space),
                            e->pixels[PIXELS_SCALED], GEGL_AUTO_ROWSTRIDE,
                            GEGL_ABYSS_NONE);
         }
@@ -1043,9 +1045,10 @@ gegl_expcombine_process (GeglOperation        *operation,
                          const GeglRectangle  *full_roi,
                          gint                  level)
 {
-  GeglProperties *o           = GEGL_PROPERTIES (operation);
-  GeglBuffer *output      = gegl_operation_context_get_target (context,
+  GeglProperties *o  = GEGL_PROPERTIES (operation);
+  GeglBuffer *output = gegl_operation_context_get_target (context,
                                                                output_pad);
+  const Babl *space = babl_format_get_space (gegl_operation_get_format (operation, "output"));
 
   GeglRectangle   scaled_roi;
   GSList         *cursor;
@@ -1182,7 +1185,7 @@ gegl_expcombine_process (GeglOperation        *operation,
 #endif
 
   /* Save the HDR components to the output buffer. */
-  gegl_buffer_set (output, full_roi, 0, babl_format (PAD_FORMAT), hdr,
+  gegl_buffer_set (output, full_roi, 0, babl_format_with_space (PAD_FORMAT, space), hdr,
                    GEGL_AUTO_ROWSTRIDE);
 
   /* Cleanup */
