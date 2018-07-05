@@ -77,13 +77,14 @@ static void stress (GeglBuffer          *src,
                     gint                 iterations,
                     gdouble              rgamma,
                     gboolean             enhance_shadows,
-                    gint                 level)
+                    gint                 level,
+                    const Babl          *space)
 {
-  const Babl *format = babl_format ("RGBA float");
+  const Babl *format = babl_format_with_space ("RGBA float", space);
 
   if (dst_rect->width > 0 && dst_rect->height > 0)
   {
-    GeglBufferIterator *i = gegl_buffer_iterator_new (dst, dst_rect, 0, babl_format("RaGaBaA float"),
+    GeglBufferIterator *i = gegl_buffer_iterator_new (dst, dst_rect, 0, babl_format_with_space ("RaGaBaA float", space),
                                                       GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
     GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format, GEGL_SAMPLER_NEAREST, level);
     GeglSamplerGetFun getfun = gegl_sampler_get_fun (sampler);
@@ -183,12 +184,13 @@ static void stress (GeglBuffer          *src,
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
   area->left = area->right = area->top = area->bottom =
       ceil (GEGL_PROPERTIES (operation)->radius);
 
   gegl_operation_set_format (operation, "output",
-                             babl_format ("RaGaBaA float"));
+                             babl_format_with_space ("RaGaBaA float", space));
 }
 
 static GeglRectangle
@@ -210,6 +212,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
+  const Babl *space = babl_format_get_space (gegl_operation_get_format (operation, "output"));
   GeglRectangle compute;
   compute = gegl_operation_get_required_for_output (operation, "input",result);
 
@@ -219,7 +222,8 @@ process (GeglOperation       *operation,
           o->iterations,
           RGAMMA /*o->rgamma,*/,
           o->enhance_shadows,
-          level);
+          level,
+          space);
 
   return  TRUE;
 }
