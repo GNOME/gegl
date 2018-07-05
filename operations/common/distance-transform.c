@@ -71,7 +71,8 @@ gint   cdt_sep (gint i, gint u, gfloat g_i, gfloat g_u);
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format ("Y float");
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("Y float", space);
 
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
@@ -296,7 +297,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties         *o = GEGL_PROPERTIES (operation);
-  const Babl  *input_format = babl_format ("Y float");
+  const Babl  *input_format = gegl_operation_get_format (operation, "output");
   const int bytes_per_pixel = babl_format_get_bytes_per_pixel (input_format);
 
   GeglDistanceMetric metric;
