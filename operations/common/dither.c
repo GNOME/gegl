@@ -63,8 +63,11 @@ property_seed (seed, _("Random seed"), rand)
 static void
 prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input", babl_format ("R'G'B'A u16"));
-  gegl_operation_set_format (operation, "output", babl_format ("R'G'B'A u16"));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input",
+                             babl_format_with_space ("R'G'B'A u16", space));
+  gegl_operation_set_format (operation, "output",
+                             babl_format_with_space ("R'G'B'A u16", space));
 }
 
 static inline guint
@@ -79,7 +82,8 @@ static void
 process_floyd_steinberg (GeglBuffer          *input,
                          GeglBuffer          *output,
                          const GeglRectangle *result,
-                         guint               *channel_levels)
+                         guint               *channel_levels,
+                         const Babl          *format)
 {
   GeglRectangle  line_rect;
   guint16       *line_buf;
@@ -120,7 +124,7 @@ process_floyd_steinberg (GeglBuffer          *input,
 
       /* Pull input row */
 
-      gegl_buffer_get (input, &line_rect, 1.0, babl_format ("R'G'B'A u16"), line_buf,
+      gegl_buffer_get (input, &line_rect, 1.0, format, line_buf,
                        GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
       /* Process the row */
@@ -173,7 +177,7 @@ process_floyd_steinberg (GeglBuffer          *input,
 
       /* Push output row */
 
-      gegl_buffer_set (output, &line_rect, 0, babl_format ("R'G'B'A u16"), line_buf, GEGL_AUTO_ROWSTRIDE);
+      gegl_buffer_set (output, &line_rect, 0, format, line_buf, GEGL_AUTO_ROWSTRIDE);
       line_rect.y++;
     }
 
@@ -447,14 +451,15 @@ process_standard (GeglBuffer          *input,
                   const GeglRectangle *result,
                   guint               *channel_levels,
                   GeglRandom          *rand,
-                  GeglDitherMethod     dither_method)
+                  GeglDitherMethod     dither_method,
+                  const Babl          *format)
 {
   GeglBufferIterator *gi;
 
-  gi = gegl_buffer_iterator_new (input, result, 0, babl_format ("R'G'B'A u16"),
+  gi = gegl_buffer_iterator_new (input, result, 0, format,
                                  GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
-  gegl_buffer_iterator_add (gi, output, result, 0, babl_format ("R'G'B'A u16"),
+  gegl_buffer_iterator_add (gi, output, result, 0, format,
                             GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (gi))
@@ -538,6 +543,7 @@ process (GeglOperation       *operation,
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   guint       channel_levels [4];
+  const Babl *format = gegl_operation_get_format (operation,"output");
 
   channel_levels [0] = o->red_levels;
   channel_levels [1] = o->green_levels;
@@ -546,9 +552,9 @@ process (GeglOperation       *operation,
 
   if (o->dither_method != GEGL_DITHER_FLOYD_STEINBERG)
     process_standard (input, output, result, channel_levels,
-                      o->rand, o->dither_method);
+                      o->rand, o->dither_method, format);
   else
-    process_floyd_steinberg (input, output, result, channel_levels);
+    process_floyd_steinberg (input, output, result, channel_levels, format);
 
   return TRUE;
 }
