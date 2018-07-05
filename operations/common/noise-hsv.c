@@ -100,8 +100,9 @@ randomize_value (gfloat      now,
 static void
 prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input", babl_format ("HSVA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("HSVA float"));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input", babl_format_with_space ("HSVA float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("HSVA float", space));
 }
 
 static gboolean
