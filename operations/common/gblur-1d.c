@@ -933,6 +933,7 @@ filter_disambiguation (GeglGblur1dFilter filter,
 static void
 gegl_gblur_1d_prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *src_format = gegl_operation_get_source_format (operation, "input");
   const char *format     = "RaGaBaA float";
@@ -965,8 +966,8 @@ gegl_gblur_1d_prepare (GeglOperation *operation)
         }
     }
 
-  gegl_operation_set_format (operation, "input", babl_format (format));
-  gegl_operation_set_format (operation, "output", babl_format (format));
+  gegl_operation_set_format (operation, "input", babl_format_with_space (format, space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space (format, space));
 }
 
 static GeglRectangle
