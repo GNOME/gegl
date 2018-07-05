@@ -41,7 +41,7 @@ typedef struct
 
 
 static void
-init (GeglProperties *o)
+init (GeglProperties *o, const Babl *format)
 {
   Priv         *priv = (Priv*)o->user_data;
   GeglRectangle extent = {0,0,1024,1024};
@@ -51,12 +51,13 @@ init (GeglProperties *o)
   priv = g_new0 (Priv, 1);
   o->user_data = (void*) priv;
 
-  priv->acc = gegl_buffer_new (&extent, babl_format ("RGBA float"));
+  priv->acc = gegl_buffer_new (&extent, format);
 }
 
 static void prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("RGBA float", space));
 }
 
 static gboolean
@@ -68,11 +69,12 @@ process (GeglOperation       *operation,
 {
   GeglProperties *o;
   Priv           *p;
+  const Babl *format = gegl_operation_get_format (operation, "output");
 
   o = GEGL_PROPERTIES (operation);
   p = (Priv*)o->user_data;
   if (p == NULL)
-    init (o);
+    init (o, format);
   p = (Priv*)o->user_data;
 
     {
@@ -86,8 +88,8 @@ process (GeglOperation       *operation,
         gfloat *acc = g_new (gfloat, pixels * 4);
         gfloat dampness;
         gint i;
-        gegl_buffer_get (p->acc, result, 1.0, babl_format ("RGBA float"), acc, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
-        gegl_buffer_get (temp_in, result, 1.0, babl_format ("RGBA float"), buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+        gegl_buffer_get (p->acc, result, 1.0, format, acc, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+        gegl_buffer_get (temp_in, result, 1.0, format, buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
         dampness = o->dampness;
         for (i=0;i<pixels;i++)
           {
@@ -95,8 +97,8 @@ process (GeglOperation       *operation,
             for (c=0;c<4;c++)
               acc[i*4+c]=acc[i*4+c]*dampness + buf[i*4+c]*(1.0-dampness);
           }
-        gegl_buffer_set (p->acc, result, 0, babl_format ("RGBA float"), acc, GEGL_AUTO_ROWSTRIDE);
-        gegl_buffer_set (output, result, 0, babl_format ("RGBA float"), acc, GEGL_AUTO_ROWSTRIDE);
+        gegl_buffer_set (p->acc, result, 0, format, acc, GEGL_AUTO_ROWSTRIDE);
+        gegl_buffer_set (output, result, 0, format, acc, GEGL_AUTO_ROWSTRIDE);
         g_free (buf);
         g_free (acc);
       }
