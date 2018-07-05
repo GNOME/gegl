@@ -50,17 +50,21 @@ snn_mean (GeglBuffer          *src,
           const GeglRectangle *dst_rect,
           gdouble              radius,
           gint                 pairs,
-          gint                 level);
+          gint                 level,
+          const Babl          *space);
 
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o    = GEGL_PROPERTIES (operation);
 
   area->left = area->right = area->top = area->bottom = ceil (o->radius);
-  gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+  gegl_operation_set_format (operation, "input",
+                             babl_format_with_space ("RGBA float", space));
+  gegl_operation_set_format (operation, "output",
+                             babl_format_with_space ("RGBA float", space));
 }
 
 static gboolean
@@ -91,7 +95,7 @@ process (GeglOperation       *operation,
     }
   else
     {
-      snn_mean (input, &compute, output, result, o->radius, o->pairs, level);
+      snn_mean (input, &compute, output, result, o->radius, o->pairs, level, gegl_operation_get_format (operation, "output"));
     }
 
   return  TRUE;
@@ -115,7 +119,8 @@ snn_mean (GeglBuffer          *src,
           const GeglRectangle *dst_rect,
           gdouble              dradius,
           gint                 pairs,
-          gint                 level)
+          gint                 level,
+          const Babl          *space)
 {
   gint x,y;
   gint offset;
@@ -145,7 +150,7 @@ snn_mean (GeglBuffer          *src,
   src_buf = g_new0 (gfloat, src_rect->width * src_rect->height * 4);
   dst_buf = g_new0 (gfloat, dst_rect->width * dst_rect->height * 4);
 
-  gegl_buffer_get (src, src_rect, 1.0/(1<<level), babl_format ("RGBA float"), src_buf, 
+  gegl_buffer_get (src, src_rect, 1.0/(1<<level), babl_format_with_space ("RGBA float", space), src_buf, 
                    GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   offset = 0;
@@ -225,7 +230,7 @@ snn_mean (GeglBuffer          *src,
           center_pix += 4;
         }
     }
-  gegl_buffer_set (dst, dst_rect, level, babl_format ("RGBA float"), dst_buf,
+  gegl_buffer_set (dst, dst_rect, level, babl_format_with_space ("RGBA float", space), dst_buf,
                    GEGL_AUTO_ROWSTRIDE);
   g_free (src_buf);
   g_free (dst_buf);
