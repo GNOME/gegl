@@ -55,8 +55,9 @@
 static void
 prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input", babl_format ("R'G'B'A float"));
-  gegl_operation_set_format (operation, "output", babl_format ("R'G'B'A float"));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input", babl_format_with_space ("R'G'B'A float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("R'G'B'A float", space));
 }
 
 static gboolean
