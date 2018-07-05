@@ -162,7 +162,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties      *o      = GEGL_PROPERTIES (operation);
-  const Babl          *format = babl_format ("RGBA float");
+  const Babl          *format = gegl_operation_get_format (operation, "output");
   GeglSampler         *sampler;
   GeglBufferIterator  *iter;
   const GeglRectangle *in_extent;
