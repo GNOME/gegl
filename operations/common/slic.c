@@ -79,7 +79,8 @@ get_distance (gfloat         *c1,
 static GArray *
 init_clusters (GeglBuffer     *input,
                GeglProperties *o,
-               gint            level)
+               gint            level,
+               const Babl     *format)
 {
   GeglSampler *sampler;
   GArray      *clusters;
@@ -107,7 +108,7 @@ init_clusters (GeglBuffer     *input,
   clusters = g_array_sized_new (FALSE, TRUE, sizeof (Cluster), n_clusters);
 
   sampler = gegl_buffer_sampler_new_at_level (input,
-                                              babl_format ("CIE Lab float"),
+                                              format,
                                               GEGL_SAMPLER_NEAREST, level);
   x = y = 0;
 
@@ -160,15 +161,15 @@ static void
 assign_labels (GeglBuffer     *labels,
                GeglBuffer     *input,
                GArray         *clusters,
-               GeglProperties *o)
+               GeglProperties *o,
+               const Babl     *format)
 {
   GeglBufferIterator *iter;
   GArray  *clusters_index;
 
   clusters_index = g_array_sized_new (FALSE, FALSE, sizeof (gint), 9);
 
-  iter = gegl_buffer_iterator_new (input, NULL, 0,
-                                   babl_format ("CIE Lab float"),
+  iter = gegl_buffer_iterator_new (input, NULL, 0, format,
                                    GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   gegl_buffer_iterator_add (iter, labels, NULL, 0,
@@ -298,12 +299,13 @@ update_clusters (GArray         *clusters,
 static void
 set_output (GeglBuffer *output,
             GeglBuffer *labels,
-            GArray     *clusters)
+            GArray     *clusters,
+            const Babl *format)
 {
   GeglBufferIterator *iter;
 
   iter = gegl_buffer_iterator_new (output, NULL, 0,
-                                   babl_format ("CIE Lab float"),
+                                   format,
                                    GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
   gegl_buffer_iterator_add (iter, labels, NULL, 0,
@@ -333,7 +335,8 @@ set_output (GeglBuffer *output,
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format ("CIE Lab float");
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("CIE Lab float", space);
 
   gegl_operation_set_format (operation, "input",  format);
   gegl_operation_set_format (operation, "output", format);
@@ -373,7 +376,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-
+  const Babl *format = gegl_operation_get_format (operation, "output");
   const GeglRectangle *src_region = gegl_buffer_get_extent (input);
   GeglBuffer *labels;
   GArray     *clusters;
@@ -383,20 +386,20 @@ process (GeglOperation       *operation,
 
   /* clusters initialization */
 
-  clusters = init_clusters (input, o, level);
+  clusters = init_clusters (input, o, level, format);
 
   /* perform segmentation */
 
   for (i = 0; i < o->iterations; i++)
     {
-      assign_labels (labels, input, clusters, o);
+      assign_labels (labels, input, clusters, o, format);
 
       update_clusters (clusters, o);
     }
 
   /* apply clusters colors to output */
 
-  set_output (output, labels, clusters);
+  set_output (output, labels, clusters, format);
 
   g_object_unref (labels);
   g_array_free (clusters, TRUE);
