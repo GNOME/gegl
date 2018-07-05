@@ -78,6 +78,7 @@ property_color  (background, _("Background color"), "white")
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglProperties              *o;
   GeglOperationAreaFilter *op_area;
 
@@ -89,8 +90,10 @@ prepare (GeglOperation *operation)
   op_area->top    =
   op_area->bottom = o->size_y;
 
-  gegl_operation_set_format (operation, "input",  babl_format ("RaGaBaA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
+  gegl_operation_set_format (operation, "input",
+                             babl_format_with_space ("RaGaBaA float", space));
+  gegl_operation_set_format (operation, "output",
+                             babl_format_with_space ("RaGaBaA float", space));
 }
 
 static GeglRectangle
@@ -111,13 +114,14 @@ get_bounding_box (GeglOperation *self)
 static void
 mean_rectangle_noalloc (GeglBuffer    *input,
                         GeglRectangle *rect,
-                        GeglColor     *color)
+                        GeglColor     *color,
+                        const Babl    *format)
 {
   GeglBufferIterator *gi;
   gfloat              col[] = {0.0, 0.0, 0.0, 0.0};
   gint                c;
 
-  gi = gegl_buffer_iterator_new (input, rect, 0, babl_format ("RaGaBaA float"),
+  gi = gegl_buffer_iterator_new (input, rect, 0, format,
                                  GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
 
   while (gegl_buffer_iterator_next (gi))
@@ -137,7 +141,7 @@ mean_rectangle_noalloc (GeglBuffer    *input,
   for (c = 0; c < 4; c++)
     col[c] /= rect->width * rect->height;
 
-  gegl_color_set_pixel (color, babl_format ("RaGaBaA float"), col);
+  gegl_color_set_pixel (color, format, col);
 }
 
 static void
@@ -217,7 +221,8 @@ set_rectangle_noalloc (GeglBuffer      *output,
                        GeglRectangle   *rect,
                        GeglRectangle   *rect_shape,
                        GeglColor       *color,
-                       GeglPixelizeNorm norm)
+                       GeglPixelizeNorm norm,
+                       const Babl      *format)
 {
   if (norm == GEGL_PIXELIZE_NORM_INFINITY)
     {
@@ -236,9 +241,9 @@ set_rectangle_noalloc (GeglBuffer      *output,
       center_x = rect_shape->x + rect_shape->width / 2.0f;
       center_y = rect_shape->y + rect_shape->height / 2.0f;
 
-      gegl_color_get_pixel (color, babl_format ("RaGaBaA float"), col);
+      gegl_color_get_pixel (color, format, col);
 
-      gi = gegl_buffer_iterator_new (output, rect, 0, babl_format ("RaGaBaA float"),
+      gi = gegl_buffer_iterator_new (output, rect, 0, format,
                                      GEGL_ACCESS_WRITE, GEGL_ABYSS_CLAMP);
 
       while (gegl_buffer_iterator_next (gi))
@@ -288,7 +293,8 @@ pixelize_noalloc (GeglBuffer          *input,
                   GeglBuffer          *output,
                   const GeglRectangle *roi,
                   const GeglRectangle *whole_region,
-                  GeglProperties          *o)
+                  GeglProperties      *o,
+                  const Babl          *format)
 {
   gint start_x = block_index (roi->x, o->size_x) * o->size_x;
   gint start_y = block_index (roi->y, o->size_y) * o->size_y;
@@ -315,14 +321,14 @@ pixelize_noalloc (GeglBuffer          *input,
         if (rect.width < 1 || rect.height < 1)
           continue;
 
-        mean_rectangle_noalloc (input, &rect, color);
+        mean_rectangle_noalloc (input, &rect, color, format);
 
         gegl_rectangle_intersect (&rect, roi, &rect);
 
         rect_shape.x = x + off_shape_x;
         rect_shape.y = y + off_shape_y;
 
-        set_rectangle_noalloc (output, &rect, &rect_shape, color, o->norm);
+        set_rectangle_noalloc (output, &rect, &rect_shape, color, o->norm, format);
       }
 
   g_object_unref (color);
@@ -479,10 +485,11 @@ static gboolean
 cl_process (GeglOperation       *operation,
             GeglBuffer          *input,
             GeglBuffer          *output,
-            const GeglRectangle *roi)
+            const GeglRectangle *roi,
+            const Babl          *format)
 {
-  const Babl *in_format  = babl_format ("RaGaBaA float");
-  const Babl *out_format = babl_format ("RaGaBaA float");
+  const Babl *in_format  = format;
+  const Babl *out_format = format;
   gint   err;
   gfloat bg_color[4];
   gint   norm;
@@ -516,7 +523,7 @@ cl_process (GeglOperation       *operation,
                                               op_area->bottom);
 
 
-  gegl_color_get_pixel (o->background, babl_format ("RaGaBaA float"), bg_color);
+  gegl_color_get_pixel (o->background, in_format, bg_color);
 
   norm = 0;
   norm = o->norm == GEGL_PIXELIZE_NORM_EUCLIDEAN ? 1 : norm;
@@ -560,13 +567,14 @@ process (GeglOperation       *operation,
   GeglRectangle           *whole_region;
   GeglProperties          *o = GEGL_PROPERTIES (operation);
   GeglOperationAreaFilter *op_area;
+  const Babl *format = gegl_operation_get_format (operation, "output");
 
   op_area = GEGL_OPERATION_AREA_FILTER (operation);
 
   whole_region = gegl_operation_source_get_bounding_box (operation, "input");
 
   if (gegl_operation_use_opencl (operation))
-    if (cl_process (operation, input, output, roi))
+    if (cl_process (operation, input, output, roi, format))
       return TRUE;
 
   if ((gint64)o->size_x * (gint64)o->size_y < SQR (ALLOC_THRESHOLD_SIZE))
@@ -578,7 +586,7 @@ process (GeglOperation       *operation,
       gfloat *output_buf = g_new (gfloat, SQR (CHUNK_SIZE) * 4);
       gint    i, j;
 
-      gegl_color_get_pixel (o->background, babl_format("RaGaBaA float"),
+      gegl_color_get_pixel (o->background, format,
                             background_color);
 
       for (j = 0; (j-1) * CHUNK_SIZE < roi->height; j++)
@@ -602,7 +610,7 @@ process (GeglOperation       *operation,
             src_rect.width += op_area->left + op_area->right;
             src_rect.height += op_area->top + op_area->bottom;
 
-            gegl_buffer_get (input, &src_rect, 1.0, babl_format ("RaGaBaA float"),
+            gegl_buffer_get (input, &src_rect, 1.0, format,
                              input_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
 
             gegl_rectangle_copy (&chunked_sizes, &chunked_result);
@@ -616,8 +624,7 @@ process (GeglOperation       *operation,
             pixelize (input_buf, output_buf, &chunked_result, &src_rect,
                       whole_region, o);
 
-            gegl_buffer_set (output, &chunked_result, 0,
-                             babl_format ("RaGaBaA float"),
+            gegl_buffer_set (output, &chunked_result, 0, format,
                              output_buf, GEGL_AUTO_ROWSTRIDE);
           }
 
@@ -627,7 +634,7 @@ process (GeglOperation       *operation,
   else
     {
       gegl_buffer_set_color (output, roi, o->background);
-      pixelize_noalloc (input, output, roi, whole_region, o);
+      pixelize_noalloc (input, output, roi, whole_region, o, format);
     }
 
   return  TRUE;
