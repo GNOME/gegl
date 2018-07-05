@@ -95,9 +95,11 @@ static void      combine_to_gradient (gfloat           *dest,
 
 static void neon_prepare (GeglOperation *operation)
 {
-  //const Babl *src_format = gegl_operation_get_source_format (operation, "input");
-  gegl_operation_set_format (operation, "input", babl_format ("R'G'B'A float"));
-  gegl_operation_set_format (operation, "output", babl_format("R'G'B'A float"));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("R'G'B'A float", space);
+
+  gegl_operation_set_format (operation, "input", format);
+  gegl_operation_set_format (operation, "output", format);
 }
 
 
@@ -122,7 +124,7 @@ neon_process (GeglOperation     *op,
     gdouble       vanish_pt;
 
     /* Retrieve a pointer to GeglProperties via Chant */
-    const Babl *rgba32 = babl_format("R'G'B'A float");
+    const Babl *rgba32 = gegl_operation_get_format (op, "output");
     GeglProperties *o = GEGL_PROPERTIES (op);
     gdouble      radius, amount;
     gdouble      std_dev;
