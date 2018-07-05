@@ -372,8 +372,9 @@ get_required_for_output (GeglOperation       *operation,
 static void
 prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input", babl_format ("RaGaBaA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input", babl_format_with_space ("RaGaBaA float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("RaGaBaA float", space));
 }
 
 /* Perform the specified operation.
@@ -388,7 +389,7 @@ process (GeglOperation       *operation,
   GeglProperties *o            = GEGL_PROPERTIES (operation);
   GeglRectangle   boundary     = gegl_operation_get_bounding_box (operation);
   GeglRectangle   eff_boundary = get_effective_area (operation);
-  const Babl     *format       = babl_format ("RaGaBaA float");
+  const Babl     *format       = gegl_operation_get_format (operation, "output");
 
 #ifdef DO_NOT_USE_BUFFER_SAMPLE
  g_warning ("NOT USING BUFFER SAMPLE!");
