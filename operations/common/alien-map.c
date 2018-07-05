@@ -116,20 +116,21 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
 
   if (o->color_model == GEGL_ALIEN_MAP_COLOR_MODEL_RGB)
     {
       gegl_operation_set_format (operation, "input",
-                                 babl_format ("R'G'B'A float"));
+                                 babl_format_with_space ("R'G'B'A float", space));
       gegl_operation_set_format (operation, "output",
-                                 babl_format ("R'G'B'A float"));
+                                 babl_format_with_space ("R'G'B'A float", space));
     }
   else
     {
       gegl_operation_set_format (operation, "input",
-                                 babl_format ("HSLA float"));
+                                 babl_format_with_space ("HSLA float", space));
       gegl_operation_set_format (operation, "output",
-                                 babl_format ("HSLA float"));
+                                 babl_format_with_space ("HSLA float", space));
     }
 }
 
