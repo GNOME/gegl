@@ -36,13 +36,14 @@ property_boolean (srgb, _("sRGB"), FALSE)
 static void prepare (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
 
   const Babl *format;
 
   if (o->srgb)
-    format = babl_format ("R'aG'aB'aA float");
+    format = babl_format_with_space ("R~aG~aB~aA float", space);
   else
-    format = babl_format ("RaGaBaA float");
+    format = babl_format_with_space ("RaGaBaA float", space);
 
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "aux", format);
