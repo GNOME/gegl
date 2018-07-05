@@ -75,13 +75,14 @@ static void c2g (GeglOperation       *op,
                  gdouble              rgamma,
                  gint                 level)
 {
-  const Babl *format = babl_format ("RGBA float");
+  const Babl *space = babl_format_get_space (gegl_operation_get_format (op, "output"));
+  const Babl *format = babl_format_with_space ("RGBA float", space);
 
   if (dst_rect->width > 0 && dst_rect->height > 0)
   {
     /* XXX: compute total pixels and progress by consumption
      */
-    GeglBufferIterator *i = gegl_buffer_iterator_new (dst, dst_rect, 0, babl_format("YA float"),
+    GeglBufferIterator *i = gegl_buffer_iterator_new (dst, dst_rect, 0, babl_format_with_space ("YA float", space),
                                                       GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
     GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format, GEGL_SAMPLER_NEAREST, level);
     GeglSamplerGetFun getfun = gegl_sampler_get_fun (sampler);
@@ -210,12 +211,16 @@ static void c2g (GeglOperation       *op,
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format_rgba = babl_format_with_space ("RGBA float", space);
+  const Babl *format_ya = babl_format_with_space ("YA float", space);
+
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
   area->left = area->right = area->top = area->bottom =
       ceil (GEGL_PROPERTIES (operation)->radius);
 
-  gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("YA float"));
+  gegl_operation_set_format (operation, "input", format_rgba);
+  gegl_operation_set_format (operation, "output", format_ya);
 }
 
 static GeglRectangle
@@ -339,8 +344,8 @@ cl_process (GeglOperation       *operation,
             GeglBuffer          *output,
             const GeglRectangle *result)
 {
-  const Babl *in_format  = babl_format("RGBA float");
   const Babl *out_format = gegl_operation_get_format (operation, "output");
+  const Babl *in_format  = babl_format_with_space ("RGBA float", babl_format_get_space (out_format));
   gint err;
 
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
