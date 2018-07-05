@@ -67,57 +67,58 @@ property_boolean (linear, _("Linear output"), FALSE)
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglProperties *o             = GEGL_PROPERTIES (operation);
   const Babl     *input_format  = NULL;
   const Babl     *output_format = (o->linear ?
-                                   babl_format ("Y float") :
-                                   babl_format ("Y' float"));
+                                   babl_format_with_space ("Y float", space) :
+                                   babl_format_with_space ("Y' float", space));
 
   switch (o->component)
     {
     case GEGL_COMPONENT_EXTRACT_ALPHA:
-      input_format = babl_format ("YA float");
+      input_format = babl_format_with_space ("YA float", space);
       break;
 
     case GEGL_COMPONENT_EXTRACT_RGB_RED:
     case GEGL_COMPONENT_EXTRACT_RGB_GREEN:
     case GEGL_COMPONENT_EXTRACT_RGB_BLUE:
-      input_format = babl_format ("R'G'B' float");
+      input_format = babl_format_with_space ("R'G'B' float", space);
       break;
 
     case GEGL_COMPONENT_EXTRACT_HUE:
     case GEGL_COMPONENT_EXTRACT_HSV_SATURATION:
     case GEGL_COMPONENT_EXTRACT_HSV_VALUE:
-      input_format = babl_format ("HSV float");
+      input_format = babl_format_with_space ("HSV float", space);
       break;
 
     case GEGL_COMPONENT_EXTRACT_HSL_LIGHTNESS:
     case GEGL_COMPONENT_EXTRACT_HSL_SATURATION:
-      input_format = babl_format ("HSL float");
+      input_format = babl_format_with_space ("HSL float", space);
       break;
 
     case GEGL_COMPONENT_EXTRACT_CMYK_CYAN:
     case GEGL_COMPONENT_EXTRACT_CMYK_MAGENTA:
     case GEGL_COMPONENT_EXTRACT_CMYK_YELLOW:
     case GEGL_COMPONENT_EXTRACT_CMYK_KEY:
-      input_format = babl_format ("CMYK float");
+      input_format = babl_format_with_space ("CMYK float", space);
       break;
 
     case GEGL_COMPONENT_EXTRACT_YCBCR_Y:
     case GEGL_COMPONENT_EXTRACT_YCBCR_CB:
     case GEGL_COMPONENT_EXTRACT_YCBCR_CR:
-      input_format = babl_format ("Y'CbCr float");
+      input_format = babl_format_with_space ("Y'CbCr float", space);
       break;
 
     case GEGL_COMPONENT_EXTRACT_LAB_L:
     case GEGL_COMPONENT_EXTRACT_LAB_A:
     case GEGL_COMPONENT_EXTRACT_LAB_B:
-      input_format = babl_format ("CIE Lab float");
+      input_format = babl_format_with_space ("CIE Lab float", space);
       break;
 
     case GEGL_COMPONENT_EXTRACT_LCH_C:
     case GEGL_COMPONENT_EXTRACT_LCH_H:
-      input_format = babl_format ("CIE LCH(ab) float");
+      input_format = babl_format_with_space ("CIE LCH(ab) float", space);
       break;
     }
 
