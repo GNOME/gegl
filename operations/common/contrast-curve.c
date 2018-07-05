@@ -39,7 +39,8 @@ property_curve (curve, _("Curve"), NULL)
 
 static void prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format ("YA float");
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("YA float", space);
 
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
