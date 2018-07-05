@@ -85,8 +85,9 @@ property_double (rotation, _("Rotation"), 0.0)
 static void
 prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input", babl_format ("RaGaBaA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input", babl_format_with_space ("RaGaBaA float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("RaGaBaA float", space));
 }
 
 /* conversion function mapping between scale and aspect
