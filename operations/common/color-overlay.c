@@ -41,13 +41,14 @@ property_boolean (srgb, _("sRGB"), FALSE)
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl     *format;
 
   if (! o->srgb)
-    format = babl_format ("RGBA float");
+    format = babl_format_with_space ("RGBA float", space);
   else
-    format = babl_format ("R'G'B'A float");
+    format = babl_format_with_space ("R~G~B~A float", space);
 
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
@@ -64,14 +65,9 @@ process (GeglOperation       *operation,
   GeglProperties *o   = GEGL_PROPERTIES (operation);
   gfloat         *in  = in_buf;
   gfloat         *out = out_buf;
-  const Babl     *format;
+  const Babl     *format = gegl_operation_get_format (operation, "output");
   gfloat          color[4];
   gfloat          alpha_c;
-
-  if (! o->srgb)
-    format = babl_format ("RaGaBaA float");
-  else
-    format = babl_format ("R'aG'aB'aA float");
 
   gegl_color_get_pixel (o->value, format, &color);
 
