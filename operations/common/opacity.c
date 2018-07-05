@@ -40,6 +40,7 @@ property_double (value, _("Opacity"), 1.0)
 static void
 prepare (GeglOperation *self)
 {
+  const Babl *space = gegl_operation_get_source_space (self, "input");
   const Babl *fmt = gegl_operation_get_source_format (self, "input");
   GeglProperties *o = GEGL_PROPERTIES (self);
 
@@ -51,13 +52,13 @@ prepare (GeglOperation *self)
           model == babl_model ("Y'aA"))
         {
           o->user_data = NULL;
-          fmt = babl_format ("R'aG'aB'aA float");
+          fmt = babl_format_with_space ("R'aG'aB'aA float", space);
         }
       else if (model == babl_model ("RaGaBaA") ||
                model == babl_model ("YaA"))
         {
           o->user_data = NULL;
-          fmt = babl_format ("RaGaBaA float");
+          fmt = babl_format_with_space ("RaGaBaA float", space);
         }
       else if (model == babl_model ("R'G'B'A") ||
                model == babl_model ("R'G'B'")  ||
@@ -65,23 +66,23 @@ prepare (GeglOperation *self)
                model == babl_model ("Y'A"))
         {
           o->user_data = (void*)0xabc;
-          fmt = babl_format ("R'G'B'A float");
+          fmt = babl_format_with_space ("R'G'B'A float", space);
         }
       else
         {
           o->user_data = (void*)0xabc;
-          fmt = babl_format ("RGBA float");
+          fmt = babl_format_with_space ("RGBA float", space);
         }
     }
   else
     {
       o->user_data = (void*)0xabc;
-      fmt = babl_format ("RGBA float");
+      fmt = babl_format_with_space ("RGBA float", space);
     }
 
   gegl_operation_set_format (self, "input", fmt);
   gegl_operation_set_format (self, "output", fmt);
-  gegl_operation_set_format (self, "aux", babl_format ("Y float"));
+  gegl_operation_set_format (self, "aux", babl_format_with_space ("Y float", space));
 
   return;
 }
