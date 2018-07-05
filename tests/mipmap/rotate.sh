@@ -8,7 +8,7 @@ if [ ! -f $abs_top_builddir/bin/gegl ]; then
   echo "Skipping test-rotate due to lack of gegl executable"
   exit 77
 else
-  GEGL_TILE_SIZE=8x8 GEGL_PATH=$abs_top_builddir/operations GEGL_USE_OPENCL=no GEGL_MIPMAP_RENDERING=1 $abs_top_builddir/bin/gegl                                       \
+  GEGL_TILE_SIZE=8x8 GEGL_PATH=$abs_top_builddir/operations GEGL_USE_OPENCL=no GEGL_MIPMAP_RENDERING=1 GEGL_THREADS=1 $abs_top_builddir/bin/gegl                                       \
           -s 0.33 $abs_top_srcdir/tests/compositions/data/car-stack.png -o      \
           $abs_top_builddir/tests/mipmap/rotate-output.png           \
           -- rotate degrees=10.0  \
