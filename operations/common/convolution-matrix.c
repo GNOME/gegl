@@ -234,8 +234,8 @@ convolve_pixel_componentwise (GeglProperties       *o,
       gint s_offset = ss_offset;
 
       if ((i == 0 && o->red)   ||
-          (i == 1 && o->blue)  ||
-          (i == 2 && o->green) ||
+          (i == 1 && o->green) ||
+          (i == 2 && o->blue)  ||
           (i == 3 && o->alpha))
         {
           gint x, y;
@@ -387,8 +387,8 @@ convolve_pixel_alpha_weight_componentwise (GeglProperties       *o,
       gint   s_offset = ss_offset;
 
       if ((i == 0 && o->red)   ||
-          (i == 1 && o->blue)  ||
-          (i == 2 && o->green))
+          (i == 1 && o->green) ||
+          (i == 2 && o->blue))
         {
           gint x, y;
           for (y = 0; y < matrix_size; y++)
