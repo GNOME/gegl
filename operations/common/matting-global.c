@@ -72,9 +72,10 @@ static const gchar *FORMAT_OUTPUT = "Y float";
 static void
 matting_prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input",  babl_format (FORMAT_INPUT));
-  gegl_operation_set_format (operation, "aux",    babl_format (FORMAT_AUX));
-  gegl_operation_set_format (operation, "output", babl_format (FORMAT_OUTPUT));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input",  babl_format_with_space (FORMAT_INPUT, space));
+  gegl_operation_set_format (operation, "aux",    babl_format_with_space (FORMAT_AUX, space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space (FORMAT_OUTPUT, space));
 }
 
 static GeglRectangle
@@ -285,7 +286,7 @@ matting_process (GeglOperation       *operation,
                  const GeglRectangle *result,
                  int                  level)
 {
-
+  const Babl *space = babl_format_get_space (gegl_operation_get_format (operation, "output"));
   const GeglProperties   *o       = GEGL_PROPERTIES (operation);
   gfloat                 *input   = NULL;
   guchar                 *trimap  = NULL;
@@ -298,9 +299,9 @@ matting_process (GeglOperation       *operation,
   GArray           *foreground_samples, *background_samples;
   GArray           *unknown_positions;
 
-  g_return_val_if_fail (babl_format_get_n_components (babl_format (FORMAT_INPUT )) == COMPONENTS_INPUT,  FALSE);
-  g_return_val_if_fail (babl_format_get_n_components (babl_format (FORMAT_AUX   )) == COMPONENTS_AUX,    FALSE);
-  g_return_val_if_fail (babl_format_get_n_components (babl_format (FORMAT_OUTPUT)) == COMPONENTS_OUTPUT, FALSE);
+  g_return_val_if_fail (babl_format_get_n_components (babl_format_with_space (FORMAT_INPUT, space)) == COMPONENTS_INPUT,  FALSE);
+  g_return_val_if_fail (babl_format_get_n_components (babl_format_with_space (FORMAT_AUX, space)) == COMPONENTS_AUX,    FALSE);
+  g_return_val_if_fail (babl_format_get_n_components (babl_format_with_space (FORMAT_OUTPUT, space)) == COMPONENTS_OUTPUT, FALSE);
 
   g_return_val_if_fail (operation,  FALSE);
   g_return_val_if_fail (input_buf,  FALSE);
@@ -316,8 +317,8 @@ matting_process (GeglOperation       *operation,
   output = g_new0 (gfloat, w * h * COMPONENTS_OUTPUT);
   buffer = g_new0 (BufferRecord, w * h);
 
-  gegl_buffer_get (input_buf, result, 1.0, babl_format (FORMAT_INPUT), input, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
-  gegl_buffer_get (  aux_buf, result, 1.0, babl_format (FORMAT_AUX),  trimap, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+  gegl_buffer_get (input_buf, result, 1.0, babl_format_with_space (FORMAT_INPUT, space), input, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+  gegl_buffer_get (  aux_buf, result, 1.0, babl_format_with_space (FORMAT_AUX, space),  trimap, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   foreground_samples = g_array_new(FALSE, FALSE, sizeof(ColorSample));
   background_samples = g_array_new(FALSE, FALSE, sizeof(ColorSample));
@@ -455,7 +456,7 @@ matting_process (GeglOperation       *operation,
     }
 
   // Save to buffer
-  gegl_buffer_set (output_buf, result, 0, babl_format (FORMAT_OUTPUT), output,
+  gegl_buffer_set (output_buf, result, 0, babl_format_with_space (FORMAT_OUTPUT, space), output,
                    GEGL_AUTO_ROWSTRIDE);
   success = TRUE;
 
