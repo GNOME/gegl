@@ -46,7 +46,8 @@ property_enum (abyss_policy, _("Abyss policy"),
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format ("RGBA float");
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("RGBA float", space);
 
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "aux", babl_format_n (babl_type ("float"), 2));
@@ -78,7 +79,7 @@ process (GeglOperation       *operation,
   GeglBufferIterator   *it;
   gint                  index_in, index_out, index_coords;
 
-  format_io = babl_format ("RGBA float");
+  format_io = gegl_operation_get_format (operation, "output");
   format_coords = babl_format_n (babl_type ("float"), 2);
 
   sampler = gegl_buffer_sampler_new_at_level (input, format_io, o->sampler_type, level);
