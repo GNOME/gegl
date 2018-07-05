@@ -240,12 +240,13 @@ static void prepare_transform (Transform *transform,
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *format;
   if (o->sampler_type == GEGL_SAMPLER_NEAREST)
-    format = babl_format ("RGBA float");
+    format = babl_format_with_space ("RGBA float", space);
   else
-    format = babl_format ("RaGaBaA float");
+    format = babl_format_with_space ("RaGaBaA float", space);
 
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
@@ -319,7 +320,7 @@ process (GeglOperation       *operation,
   GeglMatrix2         scale_matrix;
   GeglMatrix2        *scale        = NULL;
   gint                sampler_type = o->sampler_type;
-  const Babl         *format_io    = babl_format ("RaGaBaA float");
+  const Babl         *format_io    = gegl_operation_get_format (operation, "output");
   GeglSamplerGetFun   getfun;
 
   level = 0;
@@ -339,8 +340,6 @@ process (GeglOperation       *operation,
     /* skip the computation of sampler neighborhood scale matrix in cases where
      * we are unlikely to be scaling down */
     scale = &scale_matrix;
-  else
-    format_io = babl_format ("RGBA float");
 
   sampler = gegl_buffer_sampler_new_at_level (input, format_io, sampler_type, 0);
   getfun = gegl_sampler_get_fun (sampler);
