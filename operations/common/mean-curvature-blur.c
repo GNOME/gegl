@@ -40,9 +40,10 @@ property_int  (iterations, _("Iterations"), 20)
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglOperationAreaFilter *area   = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o      = GEGL_PROPERTIES (operation);
-  const Babl              *format = babl_format ("R'G'B'A float");
+  const Babl              *format = babl_format_with_space ("R'G'B'A float", space);
 
   area->left = area->right = area->top = area->bottom = o->iterations;
 
@@ -150,7 +151,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties  *o = GEGL_PROPERTIES (operation);
-  const Babl      *format = babl_format ("R'G'B'A float");
+  const Babl      *format = gegl_operation_get_format (operation, "output");
 
   gint iteration;
   gint stride;
