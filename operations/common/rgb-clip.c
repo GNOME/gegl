@@ -51,6 +51,7 @@ property_double (high_limit, _("High limit"), 1.0)
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   const Babl *src_format = gegl_operation_get_source_format (operation, "input");
   const char *format     = "RGB float";
 
@@ -70,8 +71,8 @@ prepare (GeglOperation *operation)
         format = "RGBA float";
     }
 
-  gegl_operation_set_format (operation, "input",  babl_format (format));
-  gegl_operation_set_format (operation, "output", babl_format (format));
+  gegl_operation_set_format (operation, "input",  babl_format_with_space (format, space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space (format, space));
 }
 
 static gboolean
