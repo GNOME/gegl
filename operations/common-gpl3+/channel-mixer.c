@@ -131,12 +131,12 @@ static void prepare (GeglOperation *operation)
   if (input_format == NULL || babl_format_has_alpha (input_format))
     {
       mix->has_alpha = TRUE;
-      format = babl_format ("RGBA float");
+      format = babl_format_with_space ("RGBA float", input_format);
     }
   else
     {
       mix->has_alpha = FALSE;
-      format = babl_format ("RGB float");
+      format = babl_format_with_space ("RGB float", input_format);
     }
 
   gegl_operation_set_format (operation, "input", format);
