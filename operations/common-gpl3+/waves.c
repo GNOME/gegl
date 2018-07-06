@@ -69,14 +69,15 @@ prepare (GeglOperation *operation)
 {
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o       = GEGL_PROPERTIES (operation);
+  const Babl              *space   = gegl_operation_get_source_space (operation, "input");
 
   op_area->left   = o->amplitude;
   op_area->right  = o->amplitude;
   op_area->top    = o->amplitude;
   op_area->bottom = o->amplitude;
 
-  gegl_operation_set_format (operation, "input",  babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+  gegl_operation_set_format (operation, "input",  babl_format_with_space ("RGBA float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("RGBA float", space));
 }
 
 static GeglAbyssPolicy
@@ -96,8 +97,8 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties     *o       = GEGL_PROPERTIES (operation);
-  GeglSampler        *sampler = gegl_buffer_sampler_new_at_level (input,
-                                                         babl_format ("RGBA float"),
+  const Babl         *format  = gegl_operation_get_format (operation, "output");
+  GeglSampler        *sampler = gegl_buffer_sampler_new_at_level (input, format,
                                                          o->sampler_type,
                                                          level);
   GeglRectangle      *in_extent = gegl_operation_source_get_bounding_box (operation, "input");
@@ -127,7 +128,7 @@ process (GeglOperation       *operation,
       scaley = 1.0;
     }
 
-  iter = gegl_buffer_iterator_new (output, result, 0, babl_format ("RGBA float"),
+  iter = gegl_buffer_iterator_new (output, result, 0, format,
                                    GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (iter))
