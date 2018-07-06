@@ -400,7 +400,8 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o      = GEGL_PROPERTIES (operation);
-  const Babl     *format = babl_format ("RaGaBaA float");
+  const Babl     *space  = gegl_operation_get_format (operation, "output");
+  const Babl     *format = babl_format_with_space ("RaGaBaA float", space);
   GeglSampler    *sampler;
   LensValues      lens;
   GeglRectangle   boundary;
@@ -409,7 +410,7 @@ process (GeglOperation       *operation,
   gfloat          background[4];
 
   sampler  = gegl_buffer_sampler_new_at_level (input,
-                                               babl_format ("RGBA float"),
+                                               babl_format_with_space ("RGBA float", space),
                                                GEGL_SAMPLER_LINEAR, level);
   boundary = *gegl_operation_source_get_bounding_box (operation, "input");
   lens     =  lens_setup_calc (o, boundary);
