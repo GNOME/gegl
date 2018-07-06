@@ -54,9 +54,9 @@ prepare (GeglOperation *operation)
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
 
   if (input_format == NULL || babl_format_has_alpha (input_format))
-    format = babl_format ("R'G'B'A float");
+    format = babl_format_with_space ("R'G'B'A float", input_format);
   else
-    format = babl_format ("R'G'B' float");
+    format = babl_format_with_space ("R'G'B' float", input_format);
 
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
