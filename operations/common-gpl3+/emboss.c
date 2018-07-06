@@ -185,15 +185,16 @@ prepare (GeglOperation *operation)
 {
   GeglProperties          *o       = GEGL_PROPERTIES (operation);
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
+  const Babl              *space   = gegl_operation_get_source_space (operation, "input");
 
   op_area->left = op_area->right = op_area->top = op_area->bottom = 3;
 
   if (o->type == GEGL_EMBOSS_TYPE_BUMPMAP)
     gegl_operation_set_format (operation, "output",
-                               babl_format ("RGBA float"));
+                               babl_format_with_space ("RGBA float", space));
   else
     gegl_operation_set_format (operation, "output",
-                               babl_format ("YA float"));
+                               babl_format_with_space ("YA float", space));
 }
 
 static gboolean
@@ -205,6 +206,7 @@ process (GeglOperation       *operation,
 {
   GeglProperties          *o       = GEGL_PROPERTIES (operation);
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
+  const Babl              *space   = gegl_operation_get_source_space (operation, "input");
 
   GeglRectangle  rect;
   gfloat        *src_buf;
@@ -216,12 +218,12 @@ process (GeglOperation       *operation,
   /*blur-map or emboss*/
   if (o->type == GEGL_EMBOSS_TYPE_BUMPMAP)
     {
-      format = babl_format ("RGBA float");
+      format = babl_format_with_space ("RGBA float", space);
       floats_per_pixel = 4;
     }
   else
     {
-      format = babl_format ("YA float");
+      format = babl_format_with_space ("YA float", space);
       floats_per_pixel = 2;
     }
 
