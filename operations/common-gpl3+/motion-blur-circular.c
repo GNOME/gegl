@@ -73,6 +73,7 @@ prepare (GeglOperation *operation)
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o       = GEGL_PROPERTIES (operation);
   gdouble                  angle   = o->angle * G_PI / 180.0;
+  const Babl              *space   = gegl_operation_get_source_space (operation, "input");
   GeglRectangle           *whole_region;
 
   while (angle < 0.0)
@@ -108,8 +109,8 @@ prepare (GeglOperation *operation)
       op_area->bottom = 0;
     }
 
-  gegl_operation_set_format (operation, "input",  babl_format ("RaGaBaA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
+  gegl_operation_set_format (operation, "input",  babl_format_with_space ("RaGaBaA float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("RaGaBaA float", space));
 }
 
 
@@ -283,6 +284,7 @@ process (GeglOperation       *operation,
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o       = GEGL_PROPERTIES (operation);
   gfloat                  *in_buf, *out_buf, *out_pixel;
+  const Babl              *space   = gegl_operation_get_format (operation, "output");
   gint                     x, y;
   GeglRectangle            src_rect;
   GeglRectangle           *whole_region;
@@ -314,7 +316,7 @@ process (GeglOperation       *operation,
   out_buf   = g_new0 (gfloat, roi->width * roi->height * 4);
   out_pixel = out_buf;
 
-  gegl_buffer_get (input, &src_rect, 1.0, babl_format ("RaGaBaA float"),
+  gegl_buffer_get (input, &src_rect, 1.0, babl_format_with_space ("RaGaBaA float", space),
                    in_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   for (y = roi->y; y < roi->height + roi->y; ++y)
@@ -395,7 +397,7 @@ process (GeglOperation       *operation,
         }
     }
 
-  gegl_buffer_set (output, roi, 0, babl_format ("RaGaBaA float"),
+  gegl_buffer_set (output, roi, 0, babl_format_with_space ("RaGaBaA float", space),
                    out_buf, GEGL_AUTO_ROWSTRIDE);
 
   g_free (in_buf);
