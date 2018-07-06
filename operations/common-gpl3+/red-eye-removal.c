@@ -49,10 +49,11 @@ property_double (threshold, _("Threshold"), 0.4)
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   gegl_operation_set_format (operation, "input",
-                             babl_format ("R'G'B'A float"));
+                             babl_format_with_space ("R'G'B'A float", space));
   gegl_operation_set_format (operation, "output",
-                             babl_format ("R'G'B'A float"));
+                             babl_format_with_space ("R'G'B'A float", space));
 }
 
 static void
