@@ -208,7 +208,7 @@ prepare (GeglOperation *operation)
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
 
   const Babl *input_f = gegl_operation_get_source_format (operation, "input");
-  const Babl *format  = babl_format ("R'G'B' float");
+  const Babl *format  = babl_format_with_space ("R'G'B' float", input_f);
 
   area->left   =
   area->right  =
@@ -218,7 +218,7 @@ prepare (GeglOperation *operation)
   if (input_f)
     {
       if (babl_format_has_alpha (input_f))
-        format = babl_format ("R'G'B'A float");
+        format = babl_format_with_space ("R'G'B'A float", input_f);
     }
 
   gegl_operation_set_format (operation, "input", format);
