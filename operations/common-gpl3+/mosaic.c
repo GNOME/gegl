@@ -363,7 +363,8 @@ mosaic (GeglOperation       *operation,
         GeglBuffer          *drawable,
         const GeglRectangle *result)
 {
-  GeglProperties          *o;
+  GeglProperties      *o;
+  const Babl          *format = gegl_operation_get_format (operation, "output");
   MosaicDatas          mdatas;
   gfloat              *rendered;
   const GeglRectangle *whole_region;
@@ -374,7 +375,7 @@ mosaic (GeglOperation       *operation,
   input_buf = g_new (gfloat, NB_CPN * result->width * result->height);
 
   gegl_buffer_get (drawable, result,
-                   1.0, babl_format ("R'G'B'A float"), input_buf,
+                   1.0, format, input_buf,
                    GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   {
@@ -2374,17 +2375,18 @@ polygon_reset (Polygon *poly)
 static void
 prepare (GeglOperation *operation)
 {
-  GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
-  GeglProperties              *o    = GEGL_PROPERTIES (operation);
+  GeglOperationAreaFilter *area  = GEGL_OPERATION_AREA_FILTER (operation);
+  GeglProperties          *o     = GEGL_PROPERTIES (operation);
+  const Babl              *space = gegl_operation_get_source_space (operation, "input");
 
   /* Should be slightly larger than needed */
   area->left = area->right = 2 * ceil (o->tile_size) + 1;
   area->top = area->bottom = 2 * ceil (o->tile_size) + 1;
 
   gegl_operation_set_format (operation, "input",
-                             babl_format ("R'G'B'A float"));
+                             babl_format_with_space ("R'G'B'A float", space));
   gegl_operation_set_format (operation, "output",
-                             babl_format ("R'G'B'A float"));
+                             babl_format_with_space ("R'G'B'A float", space));
 }
 
 static gboolean
@@ -2424,7 +2426,7 @@ process (GeglOperation       *operation,
   offset += (result->x - working_region.x);
   offset *= 4;
 
-  gegl_buffer_set (output, result, 0, babl_format ("R'G'B'A float"),
+  gegl_buffer_set (output, result, 0, gegl_operation_get_format (operation, "ouput"),
                    res + offset, rowstride);
 
   g_free (res);
