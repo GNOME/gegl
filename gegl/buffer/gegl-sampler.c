@@ -193,7 +193,9 @@ gegl_sampler_prepare (GeglSampler *self)
 
   if (klass->prepare)
     klass->prepare (self);
-  
+
+  self->interpolate_format = babl_format_with_space ("RaGaBaA float",
+                                         gegl_buffer_get_format(self->buffer));
   if (!self->fish)
     self->fish = babl_fish (self->interpolate_format, self->format);
 

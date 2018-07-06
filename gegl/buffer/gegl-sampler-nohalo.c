@@ -294,8 +294,6 @@ gegl_sampler_nohalo_init (GeglSamplerNohalo *self)
   level->context_rect.y   = -NOHALO_OFFSET_0;
   level->context_rect.width  = NOHALO_SIZE_0;
   level->context_rect.height = NOHALO_SIZE_0;
-
-  GEGL_SAMPLER (self)->interpolate_format = gegl_babl_rgbA_linear_float ();
 }
 
 static void inline

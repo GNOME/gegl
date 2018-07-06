@@ -75,7 +75,6 @@ gegl_sampler_nearest_init (GeglSamplerNearest *self)
   GEGL_SAMPLER (self)->level[0].context_rect.y = 0;
   GEGL_SAMPLER (self)->level[0].context_rect.width = 1;
   GEGL_SAMPLER (self)->level[0].context_rect.height = 1;
-  GEGL_SAMPLER (self)->interpolate_format = gegl_babl_rgbA_linear_float ();
 }
 
 static void
