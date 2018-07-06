@@ -65,8 +65,9 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglProperties *o      = GEGL_PROPERTIES (operation);
-  const Babl     *format = babl_format ("R'G'B'A float");
-  const Babl     *colorformat = babl_format ("R'G'B' float");
+  const Babl     *space  = gegl_operation_get_source_space (operation, "input");
+  const Babl     *format = babl_format_with_space ("R'G'B'A float", space);
+  const Babl     *colorformat = babl_format_with_space ("R'G'B' float", space);
   CeParamsType *params;
   gfloat        color_in[3];
   gfloat        color_out[3];
