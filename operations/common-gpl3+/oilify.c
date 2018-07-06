@@ -263,8 +263,9 @@ oilify_pixel (gint           x,
 static void
 prepare (GeglOperation *operation)
 {
-  GeglProperties              *o;
+  GeglProperties          *o;
   GeglOperationAreaFilter *op_area;
+  const Babl              *space = gegl_operation_get_source_space (operation, "input");
 
   op_area = GEGL_OPERATION_AREA_FILTER (operation);
   o       = GEGL_PROPERTIES (operation);
@@ -275,9 +276,9 @@ prepare (GeglOperation *operation)
   op_area->bottom = o->mask_radius;
 
   gegl_operation_set_format (operation, "input",
-                             babl_format ("RGBA float"));
+                             babl_format_with_space ("RGBA float", space));
   gegl_operation_set_format (operation, "output",
-                             babl_format ("RGBA float"));
+                             babl_format_with_space ("RGBA float", space));
 }
 
 #include "opencl/gegl-cl.h"
@@ -392,6 +393,7 @@ process (GeglOperation       *operation,
 {
   GeglProperties *o                = GEGL_PROPERTIES (operation);
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
+  const Babl *format               = gegl_operation_get_format (operation, "output");
 
   gint x = o->mask_radius; /* initial x                   */
   gint y = o->mask_radius; /*           and y coordinates */
@@ -421,11 +423,11 @@ process (GeglOperation       *operation,
   else
     inten_buf = NULL;
 
-  gegl_buffer_get (input, &src_rect, 1.0, babl_format ("RGBA float"),
+  gegl_buffer_get (input, &src_rect, 1.0, format,
                    src_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
 
   if (inten_buf)
-    gegl_buffer_get (input, &src_rect, 1.0, babl_format ("Y float"),
+    gegl_buffer_get (input, &src_rect, 1.0, babl_format_with_space ("Y float", format),
                    inten_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
 
   out_pixel = dst_buf;
@@ -451,7 +453,7 @@ process (GeglOperation       *operation,
 
 
   gegl_buffer_set (output, result, 0,
-                   babl_format ("RGBA float"),
+                   babl_format_with_space ("RGBA float", format),
                    dst_buf, GEGL_AUTO_ROWSTRIDE);
   gegl_free (src_buf);
   gegl_free (dst_buf);
