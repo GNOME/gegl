@@ -97,14 +97,15 @@ prepare (GeglOperation *operation)
 {
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o    = GEGL_PROPERTIES (operation);
+  const Babl              *space = gegl_operation_get_source_space (operation, "input");
 
   area->left = area->right = ceil (fabs (o->glow_radius)) +1;
   area->top = area->bottom = ceil (fabs (o->glow_radius)) +1;
 
   gegl_operation_set_format (operation, "input",
-                             babl_format ("RGBA float"));
+                             babl_format_with_space ("RGBA float", space));
   gegl_operation_set_format (operation, "output",
-                             babl_format ("RGBA float"));
+                             babl_format_with_space ("RGBA float", space));
 }
 
 static GeglRectangle
@@ -129,6 +130,7 @@ process (GeglOperation       *operation,
 {
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o    = GEGL_PROPERTIES (operation);
+  const Babl              *space = gegl_operation_get_format (operation, "output");
 
   GeglBuffer *dest, *dest_tmp;
 
@@ -146,12 +148,12 @@ process (GeglOperation       *operation,
 
   gegl_rectangle_intersect (&working_region, &working_region, whole_region);
 
-  dest_tmp = gegl_buffer_new (&working_region, babl_format ("Y' float"));
+  dest_tmp = gegl_buffer_new (&working_region, babl_format_with_space ("Y' float", space));
 
-  iter = gegl_buffer_iterator_new (dest_tmp, &working_region, 0, babl_format ("Y' float"),
+  iter = gegl_buffer_iterator_new (dest_tmp, &working_region, 0, babl_format_with_space ("Y' float", space),
                                    GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
-  gegl_buffer_iterator_add (iter, input, &working_region, 0, babl_format ("Y' float"),
+  gegl_buffer_iterator_add (iter, input, &working_region, 0, babl_format_with_space ("Y' float", space),
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (iter))
@@ -175,13 +177,13 @@ process (GeglOperation       *operation,
 
   dest = grey_blur_buffer (dest_tmp, o->glow_radius, result);
 
-  iter = gegl_buffer_iterator_new (output, result, 0, babl_format ("RGBA float"),
+  iter = gegl_buffer_iterator_new (output, result, 0, babl_format_with_space ("RGBA float", space),
                                    GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
-  gegl_buffer_iterator_add (iter, input, result, 0, babl_format ("RGBA float"),
+  gegl_buffer_iterator_add (iter, input, result, 0, babl_format_with_space ("RGBA float", space),
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
-  gegl_buffer_iterator_add (iter, dest, result, 0, babl_format ("Y' float"),
+  gegl_buffer_iterator_add (iter, dest, result, 0, babl_format_with_space ("Y' float", space),
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (iter))
