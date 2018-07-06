@@ -65,8 +65,9 @@ property_double (highlights_ccorrect, _("Highlights color adjustment"), 50.0)
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl *cie_laba = babl_format ("CIE Lab alpha float");
-  const Babl *cie_l    = babl_format ("CIE L float");
+  const Babl *space    = gegl_operation_get_source_space (operation, "input");
+  const Babl *cie_laba = babl_format_with_space ("CIE Lab alpha float", space);
+  const Babl *cie_l    = babl_format_with_space ("CIE L float", space);
 
   gegl_operation_set_format (operation, "input",  cie_laba);
   gegl_operation_set_format (operation, "aux",    cie_l);

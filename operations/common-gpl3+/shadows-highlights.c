@@ -188,9 +188,9 @@ prepare (GeglOperation *operation)
     }
 
   if (babl_format_has_alpha (input_format))
-    blur_format = babl_format ("YaA float");
+    blur_format = babl_format_with_space ("YaA float", input_format);
   else
-    blur_format = babl_format ("Y float");
+    blur_format = babl_format_with_space ("Y float", input_format);
 
  out:
   g_return_if_fail (blur_format != NULL);
