@@ -182,7 +182,7 @@ static const gint pattern[MAX_PATTERNS][MAX_PATTERN_SIZE] =
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl     *format = babl_format ("R'G'B'A float");
+  const Babl     *format = babl_format_with_space ("R'G'B'A float", gegl_operation_get_source_space (operation, "input"));
 
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
