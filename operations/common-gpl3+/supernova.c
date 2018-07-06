@@ -149,7 +149,8 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglProperties *o      = GEGL_PROPERTIES (operation);
-  const Babl     *format = babl_format ("R'G'B'A double");
+  const Babl     *format = babl_format_with_space ("R'G'B'A double",
+                              gegl_operation_get_source_space (operation, "input"));
   SnParamsType   *params;
   gdouble        c[4];
   gboolean need_preprocess_spokes = FALSE;
