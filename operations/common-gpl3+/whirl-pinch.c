@@ -161,7 +161,7 @@ apply_whirl_pinch (gdouble              whirl,
 
   scale_x = 1.0;
   scale_y = (gdouble) in_boundary->width / in_boundary->height;
-  sampler = gegl_buffer_sampler_new_at_level (src, babl_format ("RaGaBaA float"),
+  sampler = gegl_buffer_sampler_new_at_level (src, format,
                                      GEGL_SAMPLER_NOHALO, level);
 
   for (row = 0; row < roi->height; row++) {
@@ -209,8 +209,9 @@ get_required_for_output (GeglOperation       *operation,
 static void
 prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input", babl_format ("RaGaBaA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input", babl_format_with_space ("RaGaBaA float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("RaGaBaA float", space));
 }
 
 /* Perform the specified operation.
@@ -224,7 +225,7 @@ process (GeglOperation       *operation,
 {
   GeglProperties *o        = GEGL_PROPERTIES (operation);
   GeglRectangle   boundary = gegl_operation_get_bounding_box (operation);
-  const Babl     *format   = babl_format ("RaGaBaA float");
+  const Babl     *format   = gegl_operation_get_format (operation, "output");
 
   apply_whirl_pinch (o->whirl,
                      o->pinch,
