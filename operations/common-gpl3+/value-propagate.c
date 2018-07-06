@@ -463,6 +463,7 @@ prepare (GeglOperation *operation)
 {
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o    = GEGL_PROPERTIES (operation);
+  const Babl              *space = gegl_operation_get_source_space (operation, "input");
   VPParamsType            *params;
 
   if (o->user_data == NULL)
@@ -477,8 +478,8 @@ prepare (GeglOperation *operation)
 
   area->left = area->right = area->top = area->bottom = 1;
 
-  gegl_operation_set_format (operation, "input", babl_format ("R'G'B'A float"));
-  gegl_operation_set_format (operation, "output", babl_format ("R'G'B'A float"));
+  gegl_operation_set_format (operation, "input", babl_format_with_space ("R'G'B'A float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("R'G'B'A float", space));
 }
 
 static void
@@ -519,7 +520,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  const Babl     *format = babl_format ("R'G'B'A float");
+  const Babl     *format = gegl_operation_get_format (operation, "output");
   GeglRectangle   src_rect;
   gfloat         *src_buf;
   gfloat         *dst_buf;
