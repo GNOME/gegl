@@ -285,9 +285,9 @@ prepare (GeglOperation *operation)
   if (in_format)
     {
       if (babl_format_has_alpha (in_format))
-        in_format = babl_format ("R'G'B'A float");
+        in_format = babl_format_with_space ("R'G'B'A float", in_format);
       else
-        in_format = babl_format ("R'G'B' float");
+        in_format = babl_format_with_space ("R'G'B' float", in_format);
     }
   else
     in_format = babl_format ("R'G'B' float");
