@@ -73,8 +73,9 @@ typedef struct
 static void
 prepare (GeglOperation *operation)
 {
-  GeglProperties              *o       = GEGL_PROPERTIES (operation);
+  GeglProperties          *o       = GEGL_PROPERTIES (operation);
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
+  const Babl              *space   = gegl_operation_get_source_space (operation, "input");
 
   gint tmp;
   /*
@@ -88,8 +89,8 @@ prepare (GeglOperation *operation)
 
   op_area->left = op_area->right = op_area->top = op_area->bottom = tmp;
 
-  gegl_operation_set_format (operation, "input", babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output", babl_format ("RGBA float"));
+  gegl_operation_set_format (operation, "input", babl_format_with_space ("RGBA float", space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space ("RGBA float", space));
 }
 
 static inline gdouble
@@ -450,7 +451,7 @@ process (GeglOperation       *operation,
   GeglSampler             *sampler;
   GeglRectangle            boundary  = get_effective_area (operation);
   GeglRectangle            extended;
-  const Babl              *format    = babl_format ("RGBA float");
+  const Babl              *format    = gegl_operation_get_format (operation, "output");
 
   GRand  *gr = g_rand_new_with_seed (o->seed);
   gfloat  color[4];
