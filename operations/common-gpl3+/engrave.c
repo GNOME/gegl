@@ -97,7 +97,8 @@ prepare (GeglOperation *operation)
 {
   GeglOperationAreaFilter *area = GEGL_OPERATION_AREA_FILTER (operation);
   GeglProperties          *o = GEGL_PROPERTIES (operation);
-  const Babl              *format = babl_format ("Y'A float");
+  const Babl              *space   = gegl_operation_get_source_space (operation, "input");
+  const Babl              *format = babl_format_with_space ("Y'A float", space);
 
   area->left = area->right  = 0;
   area->top  = area->bottom = o->row_height;
@@ -129,7 +130,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o      = GEGL_PROPERTIES (operation);
-  const Babl     *format = babl_format ("Y'A float");
+  const Babl     *format = gegl_operation_get_format (operation, "output");
 
   GeglRectangle *whole_region;
   GeglRectangle in_rect;
