@@ -47,7 +47,8 @@ property_double (max_delta, _("Max. delta"), 0.2)
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format ("R'G'B'A float");
+  const Babl *format = babl_format_with_space ("R'G'B'A float",
+                           gegl_operation_get_source_space (operation, "input"));
 
   gegl_operation_set_format (operation, "input",  format);
   gegl_operation_set_format (operation, "aux",    format);
@@ -106,7 +107,7 @@ gblur_selective (GeglBuffer          *input,
                  gdouble              radius,
                  gdouble              max_delta)
 {
-  const Babl *format = babl_format ("R'G'B'A float");
+  const Babl *format = gegl_buffer_get_format (output);
   gfloat *gauss;
   gfloat *src_buf;
   gfloat *delta_buf;
