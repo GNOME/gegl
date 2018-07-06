@@ -99,7 +99,7 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  const Babl *format = babl_format ("RGBA float");
+  const Babl *format = babl_format_with_space ("RGBA float", gegl_operation_get_source_space (operation, "input"));
 
   GeglRectangle  *whole_region;
   AlParamsType   *params;
@@ -165,7 +165,7 @@ process (GeglOperation       *operation,
 {
   GeglProperties       *o = GEGL_PROPERTIES (operation);
   AlParamsType    *params = (AlParamsType *) o->user_data;
-  const Babl      *format = babl_format ("RGBA float");
+  const Babl      *format = gegl_operation_get_format (operation, "output");
 
   GeglSampler        *sampler;
   GeglBufferIterator *iter;
