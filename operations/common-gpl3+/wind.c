@@ -344,12 +344,12 @@ static void
 prepare (GeglOperation *operation)
 {
   const Babl *in_format = gegl_operation_get_source_format (operation, "input");
-  const Babl *format = babl_format ("RGB float");
+  const Babl *format = babl_format_with_space ("RGB float", in_format);
 
   if (in_format)
   {
     if (babl_format_has_alpha (in_format))
-      format = babl_format ("RGBA float");
+      format = babl_format_with_space ("RGBA float", in_format);
   }
 
   gegl_operation_set_format (operation, "input", format);
