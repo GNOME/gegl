@@ -44,7 +44,8 @@ static void
 buffer_get_auto_stretch_data (GeglOperation       *operation,
                               GeglBuffer          *buffer,
                               const GeglRectangle *result,
-                              AutostretchData     *data)
+                              AutostretchData     *data,
+                              const Babl          *space)
 {
   gfloat smin =  G_MAXFLOAT;
   gfloat smax = -G_MAXFLOAT;
@@ -56,7 +57,7 @@ buffer_get_auto_stretch_data (GeglOperation       *operation,
 
   gegl_operation_progress (operation, 0.0, "");
 
-  gi = gegl_buffer_iterator_new (buffer, result, 0, babl_format ("HSVA float"),
+  gi = gegl_buffer_iterator_new (buffer, result, 0, babl_format_with_space ("HSVA float", space),
                                  GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (gi))
@@ -153,19 +154,20 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
+  const Babl *space = gegl_operation_get_format (operation, "output");
   AutostretchData     data;
   GeglBufferIterator *gi;
   gint                done_pixels = 0;
 
-  buffer_get_auto_stretch_data (operation, input, result, &data);
+  buffer_get_auto_stretch_data (operation, input, result, &data, space);
   clean_autostretch_data (&data);
 
   gegl_operation_progress (operation, 0.5, "");
 
-  gi = gegl_buffer_iterator_new (input, result, 0, babl_format ("HSVA float"),
+  gi = gegl_buffer_iterator_new (input, result, 0, babl_format_with_space ("HSVA float", space),
                                  GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
-  gegl_buffer_iterator_add (gi, output, result, 0, babl_format ("HSVA float"),
+  gegl_buffer_iterator_add (gi, output, result, 0, babl_format_with_space ("HSVA float", space),
                             GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (gi))
