@@ -1542,8 +1542,9 @@ mantiuk06_contmap (const int                       c,
 static void
 mantiuk06_prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input",  babl_format (OUTPUT_FORMAT));
-  gegl_operation_set_format (operation, "output", babl_format (OUTPUT_FORMAT));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input",  babl_format_with_space (OUTPUT_FORMAT, space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space (OUTPUT_FORMAT, space));
 }
 
 
@@ -1573,6 +1574,7 @@ mantiuk06_process (GeglOperation       *operation,
                    const GeglRectangle *result,
                    gint                 level)
 {
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
   const GeglProperties *o      = GEGL_PROPERTIES (operation);
   const gint            pix_stride = 4; /* RGBA */
   gfloat               *lum, *pix;
@@ -1582,22 +1584,22 @@ mantiuk06_process (GeglOperation       *operation,
   g_return_val_if_fail (output, FALSE);
   g_return_val_if_fail (result, FALSE);
 
-  g_return_val_if_fail (babl_format_get_n_components (babl_format (OUTPUT_FORMAT)) == pix_stride, FALSE);
+  g_return_val_if_fail (babl_format_get_n_components (babl_format_with_space (OUTPUT_FORMAT, space)) == pix_stride, FALSE);
 
   /* Obtain the pixel data */
   lum = g_new (gfloat, result->width * result->height),
-  gegl_buffer_get (input, result, 1.0, babl_format ("Y float"),
+  gegl_buffer_get (input, result, 1.0, babl_format_with_space ("Y float", space),
                    lum, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   pix = g_new (gfloat, result->width * result->height * pix_stride);
-  gegl_buffer_get (input, result, 1.0, babl_format (OUTPUT_FORMAT),
+  gegl_buffer_get (input, result, 1.0, babl_format_with_space (OUTPUT_FORMAT, space),
                    pix, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   mantiuk06_contmap (result->width, result->height, pix, lum,
                      o->contrast, o->saturation, FALSE, 200, 1e-3, NULL);
 
   /* Cleanup and set the output */
-  gegl_buffer_set (output, result, 0, babl_format (OUTPUT_FORMAT), pix,
+  gegl_buffer_set (output, result, 0, babl_format_with_space (OUTPUT_FORMAT, space), pix,
                    GEGL_AUTO_ROWSTRIDE);
   g_free (pix);
   g_free (lum);
