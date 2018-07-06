@@ -60,7 +60,8 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
-  GeglProperties              *o       = GEGL_PROPERTIES (operation);
+  GeglProperties          *o       = GEGL_PROPERTIES (operation);
+  const Babl              *space   = gegl_operation_get_source_space (operation, "input");
 
   if (o->orientation == GEGL_ORIENTATION_HORIZONTAL)
     {
@@ -74,9 +75,9 @@ prepare (GeglOperation *operation)
     }
 
   gegl_operation_set_format (operation, "input",
-                             babl_format ("RGBA float"));
+                             babl_format_with_space ("RGBA float", space));
   gegl_operation_set_format (operation, "output",
-                             babl_format ("RGBA float"));
+                             babl_format_with_space ("RGBA float", space));
 }
 
 static GeglRectangle
@@ -239,7 +240,7 @@ process (GeglOperation       *operation,
 {
   GeglProperties          *o        = GEGL_PROPERTIES (operation);
   GeglOperationAreaFilter *op_area  = GEGL_OPERATION_AREA_FILTER (operation);
-  const Babl              *format   = babl_format ("RGBA float");
+  const Babl              *format   = gegl_operation_get_format (operation, "output");
   GeglRectangle            rect;
   GeglRectangle            boundary = get_bounding_box (operation);
   gint                     x, y;
