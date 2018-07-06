@@ -339,7 +339,8 @@ get_random_colors (CellsGrid  *grid)
 static void
 get_average_colors (GeglBuffer *input,
                     GeglBuffer *labels,
-                    CellsGrid  *grid)
+                    CellsGrid  *grid,
+                    const Babl *space)
 {
   GeglBufferIterator *iter;
   gint                i;
@@ -349,7 +350,7 @@ get_average_colors (GeglBuffer *input,
                                    GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   gegl_buffer_iterator_add (iter, input, gegl_buffer_get_extent (labels), 0,
-                            babl_format ("R'G'B' float"),
+                            babl_format_with_space ("R'G'B' float", space),
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (iter))
@@ -385,7 +386,8 @@ get_average_colors (GeglBuffer *input,
 static void
 fill_output (GeglBuffer *output,
              GeglBuffer *labels,
-             CellsGrid  *grid)
+             CellsGrid  *grid,
+             const Babl *space)
 {
   GeglBufferIterator *iter;
 
@@ -393,7 +395,7 @@ fill_output (GeglBuffer *output,
                                    GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   gegl_buffer_iterator_add (iter, output, NULL, 0,
-                            babl_format ("R'G'B' float"),
+                            babl_format_with_space ("R'G'B' float", space),
                             GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (iter))
@@ -419,7 +421,8 @@ fill_output (GeglBuffer *output,
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl *format = babl_format ("R'G'B' float");
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("R'G'B' float", space);
 
   gegl_operation_set_format (operation, "input",  format);
   gegl_operation_set_format (operation, "output", format);
@@ -459,7 +462,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties  *o = GEGL_PROPERTIES (operation);
-
+  const Babl *space = gegl_operation_get_format (operation, "output");
   GeglBuffer *gradient;
   GeglBuffer *initial_labels;
   GeglBuffer *propagated_labels;
@@ -478,9 +481,9 @@ process (GeglOperation       *operation,
   if (o->fill == GEGL_WATERPIXELS_FILL_RANDOM)
     get_random_colors (&grid);
   else
-    get_average_colors (input, propagated_labels, &grid);
+    get_average_colors (input, propagated_labels, &grid, space);
 
-  fill_output (output, propagated_labels, &grid);
+  fill_output (output, propagated_labels, &grid, space);
 
   g_object_unref (gradient);
   g_object_unref (initial_labels);
