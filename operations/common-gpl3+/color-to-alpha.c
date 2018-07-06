@@ -52,10 +52,11 @@ property_double (opacity_threshold, _("Opacity threshold"), 1.0)
 static void
 prepare (GeglOperation *operation)
 {
+  const Babl     *space  = gegl_operation_get_source_space (operation, "input");
   gegl_operation_set_format (operation, "input",
-                             babl_format ("R'G'B'A float"));
+                             babl_format_with_space ("R'G'B'A float", space));
   gegl_operation_set_format (operation, "output",
-                             babl_format ("R'G'B'A float"));
+                             babl_format_with_space ("R'G'B'A float", space));
 }
 
 /*
@@ -217,7 +218,7 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o                      = GEGL_PROPERTIES (operation);
-  const Babl     *format                 = babl_format ("R'G'B'A float");
+  const Babl     *format                 = gegl_operation_get_format (operation, "output");
   gfloat          color[4];
   gfloat          transparency_threshold = o->transparency_threshold;
   gfloat          opacity_threshold      = o->opacity_threshold;
