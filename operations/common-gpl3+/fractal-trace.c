@@ -192,14 +192,14 @@ process (GeglOperation       *operation,
 {
   GeglProperties    *o = GEGL_PROPERTIES (operation);
   GeglRectangle  boundary;
-  const Babl    *format;
+  const Babl    *format = babl_format_with_space ("RGBA float",
+                              gegl_operation_get_format (operation, "output"));
   GeglSampler   *sampler;
   gfloat        *dst_buf;
   gint           y;
 
   boundary = gegl_operation_get_bounding_box (operation);
 
-  format = babl_format ("RGBA float");
   dst_buf = g_new0 (gfloat, result->width * result->height * 4);
   sampler = gegl_buffer_sampler_new_at_level (input, format, GEGL_SAMPLER_CUBIC, level);
 
