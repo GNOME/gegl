@@ -56,8 +56,9 @@ static const gchar *OUTPUT_FORMAT = "RGBA float";
 static void
 reinhard05_prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input",  babl_format (OUTPUT_FORMAT));
-  gegl_operation_set_format (operation, "output", babl_format (OUTPUT_FORMAT));
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  gegl_operation_set_format (operation, "input",  babl_format_with_space (OUTPUT_FORMAT, space));
+  gegl_operation_set_format (operation, "output", babl_format_with_space (OUTPUT_FORMAT, space));
 }
 
 static GeglRectangle
@@ -124,6 +125,7 @@ reinhard05_process (GeglOperation       *operation,
                     const GeglRectangle *result,
                     gint                 level)
 {
+  const Babl *space = gegl_operation_get_format (operation, "output"); /* the format is sufficent */
   const GeglProperties *o = GEGL_PROPERTIES (operation);
 
   const gint  pix_stride = 4, /* RGBA */
@@ -159,11 +161,11 @@ reinhard05_process (GeglOperation       *operation,
 
   /* Obtain the pixel data */
   lum = g_new (gfloat, result->width * result->height),
-  gegl_buffer_get (input, result, 1.0, babl_format ("Y float"),
+  gegl_buffer_get (input, result, 1.0, babl_format_with_space ("Y float", space),
                    lum, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   pix = g_new (gfloat, result->width * result->height * pix_stride);
-  gegl_buffer_get (input, result, 1.0, babl_format (OUTPUT_FORMAT),
+  gegl_buffer_get (input, result, 1.0, babl_format_with_space (OUTPUT_FORMAT, space),
                    pix, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   /* Collect the image stats, averages, etc */
@@ -242,7 +244,7 @@ reinhard05_process (GeglOperation       *operation,
     }
 
   /* Cleanup and set the output */
-  gegl_buffer_set (output, result, 0, babl_format (OUTPUT_FORMAT), pix,
+  gegl_buffer_set (output, result, 0, babl_format_with_space (OUTPUT_FORMAT, space), pix,
                    GEGL_AUTO_ROWSTRIDE);
   g_free (pix);
   g_free (lum);
