@@ -112,7 +112,7 @@ check_valid_png_header(GInputStream *stream, GError **err)
 }
 
 static const Babl *
-get_babl_format(int bit_depth, int color_type)
+get_babl_format(int bit_depth, int color_type, const Babl *space)
 {
    gchar format_string[32];
 
@@ -155,7 +155,25 @@ get_babl_format(int bit_depth, int color_type)
         return NULL;
       }
 
-    return babl_format (format_string);
+    return babl_format_with_space (format_string, space);
+}
+
+
+static const Babl *
+gegl_png_space (png_structp load_png_ptr,
+                png_infop   load_info_ptr)
+{
+  char *name = NULL;
+  unsigned char *profile = NULL;
+  unsigned int   proflen = 0;
+  int   compression_type;
+  if (png_get_iCCP(load_png_ptr, load_info_ptr, &name, &compression_type, &profile, &proflen) ==
+      PNG_INFO_iCCP)
+   {
+     const char *error = NULL;
+     return babl_icc_make_space ((void*)profile, proflen, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
+   }
+  return NULL;
 }
 
 static gint
@@ -172,6 +190,7 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
   gint           bit_depth;
   gint           bpp;
   gint           number_of_passes=1;
+  const Babl    *space = NULL;
   png_uint_32    w;
   png_uint_32    h;
   png_structp    load_png_ptr;
@@ -270,6 +289,8 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
           return -1;
       }
 
+    space = gegl_png_space (load_png_ptr, load_info_ptr);
+
     if (color_type == PNG_COLOR_TYPE_PALETTE)
       png_set_palette_to_rgb (load_png_ptr);
 
@@ -277,7 +298,7 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
       bpp = bpp << 1;
 
     if (!format)
-      format = get_babl_format(bit_depth, color_type);
+      format = get_babl_format(bit_depth, color_type, space);
 
 #if BYTE_ORDER == LITTLE_ENDIAN
     if (bit_depth == 16)
@@ -344,6 +365,7 @@ static gint query_png (GInputStream *stream,
   png_uint_32   h;
   png_structp   load_png_ptr;
   png_infop     load_info_ptr;
+  const Babl *  space = NULL; // null means sRGB
 
   png_bytep  *row_p = NULL;
   g_return_val_if_fail(stream, -1);
@@ -393,14 +415,16 @@ static gint query_png (GInputStream *stream,
     if (png_get_valid (load_png_ptr, load_info_ptr, PNG_INFO_tRNS))
       color_type |= PNG_COLOR_MASK_ALPHA;
 
-    f = get_babl_format(bit_depth, color_type);
-    if (!f) 
+    space = gegl_png_space (load_png_ptr, load_info_ptr);
+
+    f = get_babl_format(bit_depth, color_type, space);
+    if (!f)
       {
         png_destroy_read_struct (&load_png_ptr, &load_info_ptr, NULL);
         return -1;
       }
     *format = f;
- 
+
   }
   png_destroy_read_struct (&load_png_ptr, &load_info_ptr, NULL);
   return 0;

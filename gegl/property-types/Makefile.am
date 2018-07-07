@@ -23,12 +23,14 @@ noinst_LTLIBRARIES = libpropertytypes.la
 libpropertytypes_la_SOURCES = \
 	gegl-audio-fragment.c \
 	gegl-color.c \
+	gegl-color-space.c	\
 	gegl-curve.c \
 	gegl-path.c \
 	gegl-paramspecs.c \
 	\
 	gegl-audio-fragment.h	\
 	gegl-color.h		\
+	gegl-color-space.h	\
 	gegl-curve.h		\
 	gegl-path.h		\
 	gegl-paramspecs.h
