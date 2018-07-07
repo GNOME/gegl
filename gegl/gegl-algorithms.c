@@ -64,7 +64,7 @@ gegl_downscale_2x2_generic (const Babl *format,
                             guchar     *dst_data,
                             gint        dst_rowstride)
 {
-  const Babl *tmp_format = gegl_babl_rgba_linear_float ();
+  const Babl *tmp_format = babl_format_with_space ("RGBA float", format);
   const Babl *from_fish  = babl_fish (format, tmp_format);
   const Babl *to_fish    = babl_fish (tmp_format, format);
   const gint tmp_bpp     = 4 * 4;
@@ -1003,7 +1003,7 @@ gegl_resample_boxfilter_generic (guchar       *dest_buf,
                                  const Babl *format,
                                  gint d_rowstride)
 {
-  const Babl *tmp_format = gegl_babl_rgba_linear_float ();
+  const Babl *tmp_format = babl_format_with_space ("RGBA float", format);
   const Babl *from_fish  = babl_fish (format, tmp_format);
   const Babl *to_fish    = babl_fish (tmp_format, format);
 
@@ -1110,7 +1110,7 @@ gegl_resample_bilinear_generic (guchar              *dest_buf,
                                 const Babl          *format,
                                 gint                 d_rowstride)
 {
-  const Babl *tmp_format = gegl_babl_rgba_linear_float ();
+  const Babl *tmp_format = babl_format_with_space ("RGBA float", format);
   const Babl *from_fish  = babl_fish (format, tmp_format);
   const Babl *to_fish    = babl_fish (tmp_format, format);
 
