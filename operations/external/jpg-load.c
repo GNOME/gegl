@@ -37,6 +37,16 @@ property_uri (uri, _("URI"), "")
 #include <jpeglib.h>
 #include <gegl-gio-private.h>
 
+/* icc-loading code from:  http://www.littlecms.com/1/iccjpeg.c */
+
+static boolean
+read_icc_profile (j_decompress_ptr cinfo,
+		  JOCTET **icc_data_ptr,
+		  unsigned int *icc_data_len);
+static void
+setup_read_icc_profile (j_decompress_ptr cinfo);
+
+
 static const gchar *
 jpeg_colorspace_name(J_COLOR_SPACE space)
 {
@@ -54,16 +64,16 @@ jpeg_colorspace_name(J_COLOR_SPACE space)
 }
 
 static const Babl *
-babl_from_jpeg_colorspace(J_COLOR_SPACE space)
+babl_from_jpeg_colorspace(J_COLOR_SPACE jpgspace, const Babl *space)
 {
     // XXX: assumes bitdepth == 8
   const Babl *format = NULL;
-  if (space == JCS_GRAYSCALE)
-    format = babl_format ("Y' u8");
-  else if (space == JCS_RGB)
-    format = babl_format ("R'G'B' u8");
-  else if (space == JCS_CMYK) {
-    format = babl_format("CMYK u8");
+  if (jpgspace == JCS_GRAYSCALE)
+    format = babl_format_with_space ("Y' u8", space);
+  else if (jpgspace == JCS_RGB)
+    format = babl_format_with_space ("R'G'B' u8", space);
+  else if (jpgspace == JCS_CMYK) {
+    format = babl_format_with_space ("CMYK u8", space);
   }
 
   return format;
@@ -166,11 +176,28 @@ gio_source_enable(j_decompress_ptr cinfo, struct jpeg_source_mgr* src, GioSource
     cinfo->src = src;
 }
 
+static const Babl *jpg_get_space (struct jpeg_decompress_struct *cinfo)
+{
+  JOCTET *icc_data = NULL;
+  unsigned int icc_len;
+  read_icc_profile (cinfo, &icc_data, &icc_len);
+  if (icc_data)
+  {
+    const char *error = NULL;
+    const Babl *ret;
+    ret = babl_icc_make_space ((void*)icc_data, icc_len,
+                                BABL_ICC_INTENT_RELATIVE_COLORIMETRIC,
+                                &error);
+    free (icc_data);
+    return ret;
+  }
+  return NULL;
+}
 
 static gint
 gegl_jpg_load_query_jpg (GInputStream *stream,
-                         gint        *width,
-                         gint        *height,
+                         gint         *width,
+                         gint         *height,
                          const Babl  **out_format)
 {
   struct jpeg_decompress_struct  cinfo;
@@ -182,12 +209,14 @@ gegl_jpg_load_query_jpg (GInputStream *stream,
 
   cinfo.err = jpeg_std_error (&jerr);
   jpeg_create_decompress (&cinfo);
+  setup_read_icc_profile (&cinfo);
 
   gio_source_enable(&cinfo, &src, &gio_source);
 
   (void) jpeg_read_header (&cinfo, TRUE);
 
-  format = babl_from_jpeg_colorspace(cinfo.out_color_space);
+  format = babl_from_jpeg_colorspace(cinfo.out_color_space,
+                                     jpg_get_space (&cinfo));
   if (width)
     *width = cinfo.image_width;
   if (height)
@@ -207,10 +236,10 @@ gegl_jpg_load_query_jpg (GInputStream *stream,
 }
 
 static gint
-gegl_jpg_load_buffer_import_jpg (GeglBuffer  *gegl_buffer,
+gegl_jpg_load_buffer_import_jpg (GeglBuffer   *gegl_buffer,
                                  GInputStream *stream,
-                                 gint         dest_x,
-                                 gint         dest_y)
+                                 gint          dest_x,
+                                 gint          dest_y)
 {
   gint row_stride;
   struct jpeg_decompress_struct  cinfo;
@@ -224,6 +253,7 @@ gegl_jpg_load_buffer_import_jpg (GeglBuffer  *gegl_buffer,
 
   cinfo.err = jpeg_std_error (&jerr);
   jpeg_create_decompress (&cinfo);
+  setup_read_icc_profile (&cinfo);
 
   gio_source_enable(&cinfo, &src, &gio_source);
 
@@ -237,7 +267,8 @@ gegl_jpg_load_buffer_import_jpg (GeglBuffer  *gegl_buffer,
 
   (void) jpeg_start_decompress (&cinfo);
 
-  format = babl_from_jpeg_colorspace(cinfo.out_color_space);
+  format = babl_from_jpeg_colorspace(cinfo.out_color_space,
+                                     jpg_get_space (&cinfo));
   if (!format)
     {
       g_warning ("attempted to load JPEG with unsupported color space: '%s'",
@@ -262,7 +293,7 @@ gegl_jpg_load_buffer_import_jpg (GeglBuffer  *gegl_buffer,
 
   // Most CMYK JPEG files are produced by Adobe Photoshop. Each component is stored where 0 means 100% ink
   // However this might not be case for all. Gory details: https://bugzilla.mozilla.org/show_bug.cgi?id=674619
-  is_inverted_cmyk = (format == babl_format("CMYK u8"));
+  is_inverted_cmyk = (babl_format_get_model (format) == babl_model("CMYK"));
 
   while (cinfo.output_scanline < cinfo.output_height)
     {
@@ -379,4 +410,160 @@ gegl_op_class_init (GeglOpClass *klass)
     ".jpg", "gegl:jpg-load");
 /*  done = TRUE; */
 }
+
+
+/*
+ * See if there was an ICC profile in the JPEG file being read;
+ * if so, reassemble and return the profile data.
+ *
+ * TRUE is returned if an ICC profile was found, FALSE if not.
+ * If TRUE is returned, *icc_data_ptr is set to point to the
+ * returned data, and *icc_data_len is set to its length.
+ *
+ * IMPORTANT: the data at **icc_data_ptr has been allocated with malloc()
+ * and must be freed by the caller with free() when the caller no longer
+ * needs it.  (Alternatively, we could write this routine to use the
+ * IJG library's memory allocator, so that the data would be freed implicitly
+ * at jpeg_finish_decompress() time.  But it seems likely that many apps
+ * will prefer to have the data stick around after decompression finishes.)
+ *
+ * NOTE: if the file contains invalid ICC APP2 markers, we just silently
+ * return FALSE.  You might want to issue an error message instead.
+ */
+
+
+
+
+#define ICC_MARKER  (JPEG_APP0 + 2)	/* JPEG marker code for ICC */
+#define ICC_OVERHEAD_LEN  14		/* size of non-profile data in APP2 */
+#define MAX_BYTES_IN_MARKER  65533	/* maximum data len of a JPEG marker */
+#define MAX_DATA_BYTES_IN_MARKER  (MAX_BYTES_IN_MARKER - ICC_OVERHEAD_LEN)
+
+
+/*
+ * Prepare for reading an ICC profile
+ */
+
+static void
+setup_read_icc_profile (j_decompress_ptr cinfo)
+{
+  /* Tell the library to keep any APP2 data it may find */
+  jpeg_save_markers(cinfo, ICC_MARKER, 0xFFFF);
+}
+
+
+/*
+ * Handy subroutine to test whether a saved marker is an ICC profile marker.
+ */
+
+static boolean
+marker_is_icc (jpeg_saved_marker_ptr marker)
+{
+  return
+    marker->marker == ICC_MARKER &&
+    marker->data_length >= ICC_OVERHEAD_LEN &&
+    /* verify the identifying string */
+    GETJOCTET(marker->data[0]) == 0x49 &&
+    GETJOCTET(marker->data[1]) == 0x43 &&
+    GETJOCTET(marker->data[2]) == 0x43 &&
+    GETJOCTET(marker->data[3]) == 0x5F &&
+    GETJOCTET(marker->data[4]) == 0x50 &&
+    GETJOCTET(marker->data[5]) == 0x52 &&
+    GETJOCTET(marker->data[6]) == 0x4F &&
+    GETJOCTET(marker->data[7]) == 0x46 &&
+    GETJOCTET(marker->data[8]) == 0x49 &&
+    GETJOCTET(marker->data[9]) == 0x4C &&
+    GETJOCTET(marker->data[10]) == 0x45 &&
+    GETJOCTET(marker->data[11]) == 0x0;
+}
+
+static boolean
+read_icc_profile (j_decompress_ptr cinfo,
+		  JOCTET **icc_data_ptr,
+		  unsigned int *icc_data_len)
+{
+  jpeg_saved_marker_ptr marker;
+  int num_markers = 0;
+  int seq_no;
+  JOCTET *icc_data;
+  unsigned int total_length;
+#define MAX_SEQ_NO  255		/* sufficient since marker numbers are bytes */
+  char marker_present[MAX_SEQ_NO+1];	  /* 1 if marker found */
+  unsigned int data_length[MAX_SEQ_NO+1]; /* size of profile data in marker */
+  unsigned int data_offset[MAX_SEQ_NO+1]; /* offset for data in marker */
+
+  *icc_data_ptr = NULL;		/* avoid confusion if FALSE return */
+  *icc_data_len = 0;
+
+  /* This first pass over the saved markers discovers whether there are
+   * any ICC markers and verifies the consistency of the marker numbering.
+   */
+
+  for (seq_no = 1; seq_no <= MAX_SEQ_NO; seq_no++)
+    marker_present[seq_no] = 0;
+
+  for (marker = cinfo->marker_list; marker != NULL; marker = marker->next) {
+    if (marker_is_icc(marker)) {
+      if (num_markers == 0)
+	num_markers = GETJOCTET(marker->data[13]);
+      else if (num_markers != GETJOCTET(marker->data[13]))
+	return FALSE;		/* inconsistent num_markers fields */
+      seq_no = GETJOCTET(marker->data[12]);
+      if (seq_no <= 0 || seq_no > num_markers)
+	return FALSE;		/* bogus sequence number */
+      if (marker_present[seq_no])
+	return FALSE;		/* duplicate sequence numbers */
+      marker_present[seq_no] = 1;
+      data_length[seq_no] = marker->data_length - ICC_OVERHEAD_LEN;
+    }
+  }
+
+  if (num_markers == 0)
+    return FALSE;
+
+  /* Check for missing markers, count total space needed,
+   * compute offset of each marker's part of the data.
+   */
+
+  total_length = 0;
+  for (seq_no = 1; seq_no <= num_markers; seq_no++) {
+    if (marker_present[seq_no] == 0)
+      return FALSE;		/* missing sequence number */
+    data_offset[seq_no] = total_length;
+    total_length += data_length[seq_no];
+  }
+
+  if (total_length <= 0)
+    return FALSE;		/* found only empty markers? */
+
+  /* Allocate space for assembled data */
+  icc_data = (JOCTET *) malloc(total_length * sizeof(JOCTET));
+  if (icc_data == NULL)
+    return FALSE;		/* oops, out of memory */
+
+  /* and fill it in */
+  for (marker = cinfo->marker_list; marker != NULL; marker = marker->next) {
+    if (marker_is_icc(marker)) {
+      JOCTET FAR *src_ptr;
+      JOCTET *dst_ptr;
+      unsigned int length;
+      seq_no = GETJOCTET(marker->data[12]);
+      dst_ptr = icc_data + data_offset[seq_no];
+      src_ptr = marker->data + ICC_OVERHEAD_LEN;
+      length = data_length[seq_no];
+      while (length--) {
+	*dst_ptr++ = *src_ptr++;
+      }
+    }
+  }
+
+  *icc_data_ptr = icc_data;
+  *icc_data_len = total_length;
+
+  return TRUE;
+}
+
+
+
+
 #endif
