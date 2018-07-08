@@ -169,10 +169,46 @@ gegl_png_space (png_structp load_png_ptr,
   int   compression_type;
   if (png_get_iCCP(load_png_ptr, load_info_ptr, &name, &compression_type, &profile, &proflen) ==
       PNG_INFO_iCCP)
-   {
-     const char *error = NULL;
-     return babl_icc_make_space ((void*)profile, proflen, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
-   }
+    {
+      const char *error = NULL;
+      return babl_icc_make_space ((void*)profile, proflen,
+                                 BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
+    }
+
+  if (png_get_valid (load_png_ptr, load_info_ptr, PNG_INFO_sRGB))
+    {
+      return NULL; // which in the end means the same as:
+      return babl_space ("sRGB");
+    }
+
+  if (png_get_valid(load_png_ptr, load_info_ptr, PNG_INFO_gAMA))
+    {
+      /* sRGB as defaults */
+      double wp[2]={0.3127, 0.3290};
+      double red[2]={0.6400, 0.3300};
+      double green[2]= {0.3000, 0.6000};
+      double blue[2]={0.1500, 0.0600};
+      double gamma;
+      png_get_gAMA(load_png_ptr, load_info_ptr, &gamma);
+
+      if (png_get_valid(load_png_ptr, load_info_ptr, PNG_INFO_cHRM))
+      {
+        png_get_cHRM(load_png_ptr, load_info_ptr,
+                     &wp[0], &wp[1],
+                     &red[0], &red[1],
+                     &green[0], &green[1],
+                     &blue[0], &blue[1]);
+      }
+      return babl_chromaticities_make_space (NULL, wp[0], wp[1],
+                                                   red[0], red[1],
+                                                   green[0], green[1],
+                                                   blue[0], blue[1],
+                                                   babl_trc_gamma (gamma),
+                                                   babl_trc_gamma (gamma),
+                                                   babl_trc_gamma (gamma),
+                                                   1);
+    }
+
   return NULL;
 }
 
