@@ -159,7 +159,21 @@ export_png (GeglOperation       *operation,
     png_set_swap (png);
 #endif
 
-  format = babl_format (format_string);
+  format = babl_format_with_space (format_string, format);
+
+  {
+    int icc_len;
+    const Babl*space = babl_format_get_space (format);
+    const char *name = babl_get_name (space);
+    char *icc_profile;
+    if (strlen (name) > 10) name = "babl/GEGL";
+    icc_profile = babl_space_to_icc (space, name, NULL, 0, &icc_len);
+    png_set_iCCP (png, info,
+                  name, 0, (void*)icc_profile, icc_len);
+    free (icc_profile);
+  }
+
+
   pixels = g_malloc0 (width * babl_format_get_bytes_per_pixel (format));
 
   for (i=0; i< height; i++)
@@ -171,7 +185,7 @@ export_png (GeglOperation       *operation,
       rect.width = width;
       rect.height = 1;
 
-      gegl_buffer_get (input, &rect, 1.0, babl_format (format_string), pixels, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+      gegl_buffer_get (input, &rect, 1.0, format, pixels, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
       png_write_rows (png, &pixels, 1);
     }
