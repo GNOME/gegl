@@ -354,6 +354,7 @@ query_tiff(GeglOperation *operation)
   gushort nb_extras, planar_config;
   gboolean fallback_mode = FALSE;
   gchar format_string[32];
+  const Babl *space = NULL;
   guint width, height;
 
   g_return_val_if_fail(p->tiff != NULL, -1);
@@ -495,7 +496,21 @@ query_tiff(GeglOperation *operation)
 
   TIFFGetFieldDefaulted(p->tiff, TIFFTAG_PLANARCONFIG, &planar_config);
 
-  p->format = babl_format(format_string);
+  {
+    uint32  profile_size;
+    guchar *icc_profile;
+
+    /* set the ICC profile - if found in the TIFF */
+    if (TIFFGetField (p->tiff, TIFFTAG_ICCPROFILE, &profile_size, &icc_profile))
+      {
+        const char *error = NULL;
+        space = babl_icc_make_space ((void*)icc_profile, profile_size,
+                                     BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
+      }
+
+  }
+
+  p->format = babl_format_with_space (format_string, space);
   if (fallback_mode)
     p->mode = TIFF_LOADING_RGBA;
   else if (planar_config == PLANARCONFIG_CONTIG)
