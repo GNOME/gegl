@@ -258,6 +258,8 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
       png_destroy_read_struct (&load_png_ptr, &load_info_ptr, NULL);
       return -1;
     }
+  png_set_benign_errors (load_png_ptr, TRUE);
+  png_set_option (load_png_ptr, PNG_SKIP_sRGB_CHECK_PROFILE, PNG_OPTION_ON);
 
   if (setjmp (png_jmpbuf (load_png_ptr)))
     {
@@ -423,6 +425,9 @@ static gint query_png (GInputStream *stream,
       png_destroy_read_struct (&load_png_ptr, &load_info_ptr, NULL);
       return -1;
     }
+  png_set_benign_errors (load_png_ptr, TRUE);
+  png_set_option (load_png_ptr, PNG_SKIP_sRGB_CHECK_PROFILE, PNG_OPTION_ON);
+
 
   if (setjmp (png_jmpbuf (load_png_ptr)))
     {
