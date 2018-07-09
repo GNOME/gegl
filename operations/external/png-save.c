@@ -161,7 +161,7 @@ export_png (GeglOperation       *operation,
 
   format = babl_format_with_space (format_string, format);
 
-  {
+  if (0) {
     int icc_len;
     const Babl*space = babl_format_get_space (format);
     const char *name = babl_get_name (space);
