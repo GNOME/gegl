@@ -37,6 +37,7 @@ extern "C" {
 #include <ImfChannelList.h>
 #include <ImfRgbaFile.h>
 #include <ImfRgbaYca.h>
+#include <ImfChromaticities.h>
 #include <ImfStandardAttributes.h>
 
 #include <stdio.h>
@@ -538,6 +539,7 @@ query_exr (const gchar *path,
 {
   gchar format_string[16];
   gint format_flags = 0;
+  const Babl *space = NULL;
 
   try
     {
@@ -549,6 +551,13 @@ query_exr (const gchar *path,
 
       *width  = dw.max.x - dw.min.x + 1;
       *height = dw.max.y - dw.min.y + 1;
+
+      if (hasChromaticities(file.header()))
+      {
+        const Chromaticities &c2 = chromaticities (file.header());
+        space = babl_chromaticities_make_space
+ (NULL, c2.white[0], c2.white[1], c2.red[0], c2.red[1], c2.green[0], c2.green[1], c2.blue[0], c2.blue[1], babl_trc ("linear"), babl_trc ("linear"), babl_trc ("linear"), 1);
+      }
 
       if (ch.findChannel ("R") || ch.findChannel ("G") || ch.findChannel ("B"))
         {
@@ -604,6 +613,8 @@ query_exr (const gchar *path,
             strcat (format_string, " float");
             break;
         }
+
+      
     }
   catch (...)
     {
@@ -612,7 +623,7 @@ query_exr (const gchar *path,
     }
 
   *ff_ptr = format_flags;
-  *format = (void*)babl_format (format_string);
+  *format = (void*)babl_format_with_space (format_string, space);
   return TRUE;
 }
 
