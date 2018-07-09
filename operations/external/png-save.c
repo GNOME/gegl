@@ -161,7 +161,7 @@ export_png (GeglOperation       *operation,
 
   format = babl_format_with_space (format_string, format);
 
-  if (0) {
+  {
     int icc_len;
     const Babl*space = babl_format_get_space (format);
     const char *name = babl_get_name (space);
@@ -172,7 +172,6 @@ export_png (GeglOperation       *operation,
                   name, 0, (void*)icc_profile, icc_len);
     free (icc_profile);
   }
-
 
   pixels = g_malloc0 (width * babl_format_get_bytes_per_pixel (format));
 
