@@ -203,9 +203,9 @@ gegl_png_space (png_structp load_png_ptr,
                                                    red[0], red[1],
                                                    green[0], green[1],
                                                    blue[0], blue[1],
-                                                   babl_trc_gamma (gamma),
-                                                   babl_trc_gamma (gamma),
-                                                   babl_trc_gamma (gamma),
+                                                   babl_trc_gamma (1.0/gamma),
+                                                   babl_trc_gamma (1.0/gamma),
+                                                   babl_trc_gamma (1.0/gamma),
                                                    1);
     }
 
