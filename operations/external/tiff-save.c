@@ -365,6 +365,7 @@ export_tiff (GeglOperation *operation,
              GeglBuffer *input,
              const GeglRectangle *result)
 {
+  const Babl *space = babl_format_get_space (gegl_buffer_get_format (input));
   GeglProperties *o = GEGL_PROPERTIES(operation);
   Priv *p = (Priv*) o->user_data;
   gshort color_space, compression = COMPRESSION_NONE;
@@ -385,6 +386,17 @@ export_tiff (GeglOperation *operation,
 
   TIFFSetField(p->tiff, TIFFTAG_IMAGEWIDTH, result->width);
   TIFFSetField(p->tiff, TIFFTAG_IMAGELENGTH, result->height);
+
+  {
+    int icc_len;
+    const char *name = babl_get_name (space);
+    char *icc_profile;
+    if (strlen (name) > 10) name = "babl/GEGL";
+    icc_profile = babl_space_to_icc (space, name, NULL, 0, &icc_len);
+    TIFFSetField (p->tiff, TIFFTAG_ICCPROFILE, icc_len, icc_profile);
+    free (icc_profile);
+  }
+
 
   format = gegl_buffer_get_format(input);
 
@@ -530,7 +542,7 @@ export_tiff (GeglOperation *operation,
   g_snprintf(format_string, 32, "%s %s",
              babl_get_name(model), babl_get_name(type));
 
-  format = babl_format(format_string);
+  format = babl_format_with_space (format_string, space);
 
   /* "Choose RowsPerStrip such that each strip is about 8K bytes." */
   bytes_per_row = babl_format_get_bytes_per_pixel(format) * result->width;
