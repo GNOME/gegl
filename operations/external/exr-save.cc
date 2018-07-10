@@ -42,6 +42,13 @@ extern "C" {
 #include <ImfTiledOutputFile.h>
 #include <ImfOutputFile.h>
 #include <ImfChannelList.h>
+#include <ImfChromaticities.h>
+#include <ImfStandardAttributes.h>
+#include <ImfArray.h>
+#include "ImathRandom.h"
+
+
+
 
 /**
  * create an Imf::Header for writing up to 4 channels (given in d).
@@ -116,6 +123,7 @@ create_frame_buffer (int          w,
  */
 static void
 write_tiled_exr (const float       *pixels,
+                 const Babl        *space,
                  int                w,
                  int                h,
                  int                d,
@@ -125,6 +133,26 @@ write_tiled_exr (const float       *pixels,
 {
   Imf::Header header (create_header (w, h, d));
   header.setTileDescription (Imf::TileDescription (tw, th, Imf::ONE_LEVEL));
+
+  {
+    double wp[2];
+    double red[2];
+    double green[2];
+    double blue[2];
+    babl_space_get (space, &wp[0], &wp[1],
+                          &red[0], &red[1],
+                          &green[0], &green[1],
+                          &blue[0], &blue[1],
+                          NULL, NULL, NULL);
+    {
+    Imf::Chromaticities c1 (Imath_2_2::V2f(wp[0],wp[1]),
+                       Imath_2_2::V2f(red[0],red[1]),
+                       Imath_2_2::V2f(green[0],green[1]),
+                       Imath_2_2::V2f(blue[0],blue[1]));
+    Imf::addChromaticities (header, c1);
+    }
+  }
+
   Imf::TiledOutputFile out (filename.c_str (), header);
   Imf::FrameBuffer fbuf (create_frame_buffer (w, h, d, pixels));
   out.setFrameBuffer (fbuf);
@@ -138,12 +166,31 @@ write_tiled_exr (const float       *pixels,
  */
 static void
 write_scanline_exr (const float       *pixels,
+                    const Babl        *space,
                     int                w,
                     int                h,
                     int                d,
                     const std::string &filename)
 {
   Imf::Header header (create_header (w, h, d));
+
+  {
+    double wp[2];
+    double red[2];
+    double green[2];
+    double blue[2];
+    babl_space_get (space, &wp[0], &wp[1],
+                           &red[0], &red[1],
+                           &green[0], &green[1],
+                           &blue[0], &blue[1],
+                           NULL, NULL, NULL);
+    Imf::Chromaticities c1 (Imath_2_2::V2f(wp[0],wp[1]),
+                       Imath_2_2::V2f(red[0],red[1]),
+                       Imath_2_2::V2f(green[0],green[1]),
+                       Imath_2_2::V2f(blue[0],blue[1]));
+    Imf::addChromaticities (header, c1);
+  }
+
   Imf::OutputFile out (filename.c_str (), header);
   Imf::FrameBuffer fbuf (create_frame_buffer (w, h, d, pixels));
   out.setFrameBuffer (fbuf);
@@ -157,6 +204,7 @@ write_scanline_exr (const float       *pixels,
  */
 static void
 exr_save_process (const float       *pixels,
+                  const Babl        *space,
                   int                w,
                   int                h,
                   int                d,
@@ -166,12 +214,12 @@ exr_save_process (const float       *pixels,
   if (tile_size == 0)
     {
       /* write a scanline exr image. */
-      write_scanline_exr (pixels, w, h, d, filename);
+      write_scanline_exr (pixels, space, w, h, d, filename);
     }
   else
     {
       /* write a tiled exr image. */
-      write_tiled_exr (pixels, w, h, d, tile_size, tile_size, filename);
+      write_tiled_exr (pixels, space, w, h, d, tile_size, tile_size, filename);
     }
 }
 
@@ -194,7 +242,9 @@ gegl_exr_save_process (GeglOperation       *operation,
    * numbers of channels and writes only Y or RGB data with optional alpha.
    */
   const Babl *original_format = gegl_buffer_get_format (input);
+  const Babl *original_space = babl_format_get_space (original_format);
   unsigned depth = babl_format_get_n_components (original_format);
+
   switch (depth)
     {
       case 1: output_format = "Y float";    break;
@@ -219,12 +269,14 @@ gegl_exr_save_process (GeglOperation       *operation,
         rect->width, rect->height, depth);
       return FALSE;
     }
-  gegl_buffer_get (input, rect, 1.0, babl_format (output_format.c_str ()),
+
+
+  gegl_buffer_get (input, rect, 1.0, babl_format_with_space (output_format.c_str (), original_space),
                    pixels, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
   bool status;
   try
     {
-      exr_save_process (pixels, rect->width, rect->height,
+      exr_save_process (pixels, original_space, rect->width, rect->height,
                         depth, tile_size, filename);
       status = TRUE;
     }
