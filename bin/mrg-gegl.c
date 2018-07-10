@@ -102,7 +102,15 @@ void mrg_gegl_blit (Mrg *mrg,
     static const Babl *fmt = NULL;
 
 foo++;
-    if (!fmt) fmt = babl_format ("cairo-RGB24");
+    if (!fmt)
+    {
+      int icc_length = 0;
+      unsigned const char *icc_data = mrg_get_profile (mrg, &icc_length);
+      const Babl *space = NULL;
+      if (icc_data)
+         space = babl_icc_make_space ((void*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, NULL);
+      fmt = babl_format_with_space ("cairo-RGB24", space);
+    }
     gegl_node_blit (node, scale / fake_factor, &roi, fmt, buf, width * 4,
          GEGL_BLIT_DEFAULT);
   surface = cairo_image_surface_create_for_data (buf, CAIRO_FORMAT_RGB24, width, height, width * 4);
