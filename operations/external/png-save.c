@@ -156,7 +156,7 @@ export_png (GeglOperation       *operation,
 
   format = babl_format_with_space (format_string, space);
 
-  {
+  if (space && space != babl_space("sRGB")){
     int icc_len;
     const char *name = babl_get_name (space);
     char *icc_profile;
