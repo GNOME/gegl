@@ -31,7 +31,7 @@ property_file_path (icc_path, _("ICC path"), "")
 
 #else
 
-#define GEGL_OP_FILTER
+#define GEGL_OP_COMPOSER
 #define GEGL_OP_NAME     cast_space
 #define GEGL_OP_C_SOURCE cast-space.c
 
@@ -43,6 +43,8 @@ prepare (GeglOperation *operation)
 {
   const Babl *in_format = gegl_operation_get_source_format (operation,
                                                             "input");
+  const Babl *aux_format = gegl_operation_get_source_format (operation,
+                                                            "aux");
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *space = babl_space (o->space);
   if (o->babl_space)
@@ -60,6 +62,10 @@ prepare (GeglOperation *operation)
       if (s) space = s;
       g_free (icc_data);
     }
+  }
+  if (aux_format)
+  {
+    space = babl_format_get_space (aux_format);
   }
   if (!space)
   {
