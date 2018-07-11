@@ -240,9 +240,9 @@ operations/transform/shear.c
 operations/transform/transform.c
 operations/transform/transform-core.c
 operations/transform/translate.c
-operations/workshop/cast-space.c
 operations/workshop/bayer-matrix.c
 operations/workshop/bilateral-filter-fast.c
+operations/workshop/cast-space.c
 operations/workshop/demosaic-bimedian.c
 operations/workshop/demosaic-simple.c
 operations/workshop/ditto.c
@@ -264,3 +264,4 @@ operations/workshop/linear-sinusoid.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
+operations/workshop/set-space.c
