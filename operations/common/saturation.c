@@ -160,7 +160,7 @@ static void prepare (GeglOperation *operation)
 
   if (babl_format_has_alpha (input_format))
     {
-      lch_model = babl_model ("CIE LCH(ab) alpha");
+      lch_model = babl_model_with_space ("CIE LCH(ab) alpha", space);
       if (input_model == lch_model)
         {
           format = babl_format_with_space ("CIE LCH(ab) alpha float", space);
@@ -174,7 +174,7 @@ static void prepare (GeglOperation *operation)
     }
   else
     {
-      lch_model = babl_model ("CIE LCH(ab)");
+      lch_model = babl_model_with_space ("CIE LCH(ab)", space);
       if (input_model == lch_model)
         {
           format = babl_format_with_space ("CIE LCH(ab) float", space);
