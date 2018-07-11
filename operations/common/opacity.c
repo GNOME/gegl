@@ -48,22 +48,22 @@ prepare (GeglOperation *self)
     {
       const Babl *model = babl_format_get_model (fmt);
 
-      if (model == babl_model ("R'aG'aB'aA") ||
-          model == babl_model ("Y'aA"))
+      if (babl_model_is (model, "R'aG'aB'aA") ||
+          babl_model_is (model, "Y'aA"))
         {
           o->user_data = NULL;
           fmt = babl_format_with_space ("R'aG'aB'aA float", space);
         }
-      else if (model == babl_model ("RaGaBaA") ||
-               model == babl_model ("YaA"))
+      else if (babl_model_is (model, "RaGaBaA") ||
+               babl_model_is (model, "YaA"))
         {
           o->user_data = NULL;
           fmt = babl_format_with_space ("RaGaBaA float", space);
         }
-      else if (model == babl_model ("R'G'B'A") ||
-               model == babl_model ("R'G'B'")  ||
-               model == babl_model ("Y'")      ||
-               model == babl_model ("Y'A"))
+      else if (babl_model_is (model, "R'G'B'A") ||
+               babl_model_is (model, "R'G'B'")  ||
+               babl_model_is (model, "Y'")      ||
+               babl_model_is (model, "Y'A"))
         {
           o->user_data = (void*)0xabc;
           fmt = babl_format_with_space ("R'G'B'A float", space);
