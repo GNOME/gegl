@@ -11,6 +11,7 @@ LIBS = $(op_libs)
 opdir = $(ext_dir)
 op_LTLIBRARIES = \
 	bayer-matrix.la \
+	cast-space.la \
 	bilateral-filter-fast.la \
 	demosaic-bimedian.la \
 	demosaic-simple.la \
