@@ -59,13 +59,13 @@ prepare (GeglOperation *operation)
     {
       const Babl *model = babl_format_get_model (src_format);
 
-      if (model == babl_model ("RGB"))
+      if (babl_model_is (model, "RGB"))
         format = "RGB float";
-      else if (model == babl_model ("RGBA"))
+      else if (babl_model_is (model, "RGBA"))
         format = "RGBA float";
-      else if (model == babl_model ("R'G'B'"))
+      else if (babl_model_is (model, "R'G'B'"))
         format = "R'G'B' float";
-      else if (model == babl_model ("R'G'B'A"))
+      else if (babl_model_is (model, "R'G'B'A"))
         format = "R'G'B'A float";
       else if (babl_format_has_alpha (src_format))
         format = "RGBA float";
