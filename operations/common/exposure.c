@@ -301,7 +301,7 @@ prepare (GeglOperation *operation)
 
   if (babl_format_has_alpha (input_format))
     {
-      y_model = babl_model ("YA");
+      y_model = babl_model_with_space ("YA", space);
       if (input_model == y_model)
         {
           format = babl_format_with_space ("YA float", space);
@@ -325,7 +325,7 @@ prepare (GeglOperation *operation)
     }
   else
     {
-      y_model = babl_model ("Y");
+      y_model = babl_model_with_space ("Y", space);
       if (input_model == y_model)
         {
           format = babl_format_with_space ("Y float", space);
