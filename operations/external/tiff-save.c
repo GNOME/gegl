@@ -365,7 +365,7 @@ export_tiff (GeglOperation *operation,
              GeglBuffer *input,
              const GeglRectangle *result)
 {
-  const Babl *space = babl_format_get_space (gegl_buffer_get_format (input));
+  const Babl *space;
   GeglProperties *o = GEGL_PROPERTIES(operation);
   Priv *p = (Priv*) o->user_data;
   gshort color_space, compression = COMPRESSION_NONE;
@@ -387,6 +387,11 @@ export_tiff (GeglOperation *operation,
   TIFFSetField(p->tiff, TIFFTAG_IMAGEWIDTH, result->width);
   TIFFSetField(p->tiff, TIFFTAG_IMAGELENGTH, result->height);
 
+  format = gegl_buffer_get_format(input);
+  model = babl_format_get_model(format);
+  space = babl_format_get_space (format);
+  type = babl_format_get_type(format, 0);
+
   {
     int icc_len;
     const char *name = babl_get_name (space);
@@ -397,20 +402,14 @@ export_tiff (GeglOperation *operation,
     free (icc_profile);
   }
 
-
-  format = gegl_buffer_get_format(input);
-
-  model = babl_format_get_model(format);
-  type = babl_format_get_type(format, 0);
-
-  if (model == babl_model("Y") || model == babl_model("Y'"))
+  if (model == babl_model_with_space("Y", space) || model == babl_model_with_space("Y'", space))
     {
       has_alpha = FALSE;
       color_space = PHOTOMETRIC_MINISBLACK;
       model = babl_model("Y'");
       samples_per_pixel = 1;
     }
-  else if (model == babl_model("YA") || model == babl_model("Y'A"))
+  else if (model == babl_model_with_space("YA",space) || model == babl_model_with_space("Y'A", space))
     {
       has_alpha = TRUE;
       alpha_is_premultiplied = FALSE;
@@ -418,7 +417,7 @@ export_tiff (GeglOperation *operation,
       model = babl_model("Y'A");
       samples_per_pixel = 2;
     }
-  else if (model == babl_model("YaA") || model == babl_model("Y'aA"))
+  else if (model == babl_model_with_space("YaA", space) || model == babl_model_with_space("Y'aA", space))
     {
       has_alpha = TRUE;
       alpha_is_premultiplied = TRUE;
@@ -426,7 +425,7 @@ export_tiff (GeglOperation *operation,
       model = babl_model("Y'aA");
       samples_per_pixel = 2;
     }
-  else if (model == babl_model("RGB") || model == babl_model("R'G'B'"))
+  else if (model == babl_model_with_space("RGB", space) || model == babl_model_with_space("R'G'B'", space))
     {
       has_alpha = FALSE;
       color_space = PHOTOMETRIC_RGB;
@@ -434,7 +433,7 @@ export_tiff (GeglOperation *operation,
       samples_per_pixel = 3;
       predictor = 2;
     }
-  else if (model == babl_model("RGBA") || model == babl_model("R'G'B'A"))
+  else if (model == babl_model_with_space("RGBA", space) || model == babl_model_with_space("R'G'B'A", space))
     {
       has_alpha = TRUE;
       alpha_is_premultiplied = FALSE;
@@ -443,7 +442,7 @@ export_tiff (GeglOperation *operation,
       samples_per_pixel = 4;
       predictor = 2;
     }
-  else if (model == babl_model("RaGaBaA") || model == babl_model("R'aG'aB'aA"))
+  else if (model == babl_model_with_space("RaGaBaA", space) || model == babl_model_with_space("R'aG'aB'aA", space))
     {
       has_alpha = TRUE;
       alpha_is_premultiplied = TRUE;
