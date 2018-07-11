@@ -394,12 +394,10 @@ export_tiff (GeglOperation *operation,
 
   {
     int icc_len;
-    const char *name = babl_get_name (space);
     char *icc_profile;
-    if (strlen (name) > 10) name = "babl/GEGL";
-    icc_profile = babl_space_to_icc (space, name, NULL, 0, &icc_len);
-    TIFFSetField (p->tiff, TIFFTAG_ICCPROFILE, icc_len, icc_profile);
-    free (icc_profile);
+    icc_profile = babl_space_get_icc (space, &icc_len);
+    if (icc_profile)
+      TIFFSetField (p->tiff, TIFFTAG_ICCPROFILE, icc_len, icc_profile);
   }
 
   if (model == babl_model_with_space("Y", space) || model == babl_model_with_space("Y'", space))

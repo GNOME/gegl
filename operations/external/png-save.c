@@ -161,12 +161,11 @@ export_png (GeglOperation       *operation,
     const char *name = babl_get_name (space);
     char *icc_profile;
     if (strlen (name) > 10) name = "GEGL";
-    icc_profile = babl_space_to_icc (space, name, NULL, 0, &icc_len);
+    icc_profile = babl_space_get_icc (space, &icc_len);
     if (icc_profile)
     {
       png_set_iCCP (png, info,
                     name, 0, (void*)icc_profile, icc_len);
-      free (icc_profile);
     }
   }
 

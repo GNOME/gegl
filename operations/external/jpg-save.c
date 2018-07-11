@@ -286,12 +286,10 @@ export_jpg (GeglOperation               *operation,
 
   {
     int icc_len;
-    const char *name = babl_get_name (space);
     char *icc_profile;
-    if (strlen (name) > 10) name = "babl/GEGL";
-    icc_profile = babl_space_to_icc (space, name, NULL, 0, &icc_len);
-    write_icc_profile (&cinfo, (void*)icc_profile, icc_len);
-    free (icc_profile);
+    icc_profile = babl_space_get_icc (space, &icc_len);
+    if (icc-profile)
+      write_icc_profile (&cinfo, (void*)icc_profile, icc_len);
   }
 
   if (!grayscale)
