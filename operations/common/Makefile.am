@@ -53,6 +53,7 @@ gegl_common_la_SOURCES =\
 	grid.c \
 	high-pass.c \
 	hue-chroma.c \
+	icc-save.c \
 	image-compare.c \
 	image-gradient.c \
 	introspect.c \

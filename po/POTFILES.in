@@ -44,6 +44,7 @@ operations/common/grey.c
 operations/common/grid.c
 operations/common/high-pass.c
 operations/common/hue-chroma.c
+operations/common/icc-save.c
 operations/common/image-compare.c
 operations/common/image-gradient.c
 operations/common/introspect.c
