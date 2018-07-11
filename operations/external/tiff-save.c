@@ -394,7 +394,7 @@ export_tiff (GeglOperation *operation,
 
   {
     int icc_len;
-    char *icc_profile;
+    const char *icc_profile;
     icc_profile = babl_space_get_icc (space, &icc_len);
     if (icc_profile)
       TIFFSetField (p->tiff, TIFFTAG_ICCPROFILE, icc_len, icc_profile);
