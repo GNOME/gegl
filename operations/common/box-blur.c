@@ -356,8 +356,9 @@ process (GeglOperation       *operation,
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglBuffer *temp;
   GeglOperationAreaFilter *op_area;
-  op_area = GEGL_OPERATION_AREA_FILTER (operation);
   const Babl *out_format = gegl_operation_get_format (operation, "output");
+
+  op_area = GEGL_OPERATION_AREA_FILTER (operation);
 
   if (gegl_operation_use_opencl (operation))
     if (cl_process (operation, input, output, result))
