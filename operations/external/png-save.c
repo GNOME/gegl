@@ -90,6 +90,8 @@ export_png (GeglOperation       *operation,
   png_color_16   white;
   int            png_color_type;
   gchar          format_string[16];
+  const Babl    *babl = gegl_buffer_get_format (input);
+  const Babl    *space = babl_format_get_space (babl);
   const Babl    *format;
 
   src_x = result->x;
@@ -98,7 +100,6 @@ export_png (GeglOperation       *operation,
   height = result->height;
 
   {
-    const Babl *babl = gegl_buffer_get_format (input);
 
     if (bit_depth != 16)
       bit_depth = 8;
@@ -141,7 +142,7 @@ export_png (GeglOperation       *operation,
      width, height, bit_depth, png_color_type,
      PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_DEFAULT);
 
-  if (png_color_type == PNG_COLOR_TYPE_RGB || png_color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+  if ((space == NULL || space == babl_space ("sRGB")) && (png_color_type == PNG_COLOR_TYPE_RGB || png_color_type == PNG_COLOR_TYPE_RGB_ALPHA))
     {
       white.red = 0xff;
       white.blue = 0xff;
@@ -152,27 +153,29 @@ export_png (GeglOperation       *operation,
     white.gray = 0xff;
   png_set_bKGD (png, info, &white);
 
+
+  format = babl_format_with_space (format_string, space);
+
+  {
+    int icc_len;
+    const char *name = babl_get_name (space);
+    char *icc_profile;
+    if (strlen (name) > 10) name = "GEGL";
+    icc_profile = babl_space_to_icc (space, name, NULL, 0, &icc_len);
+    if (icc_profile)
+    {
+      png_set_iCCP (png, info,
+                    name, 0, (void*)icc_profile, icc_len);
+      free (icc_profile);
+    }
+  }
+
   png_write_info (png, info);
 
 #if BYTE_ORDER == LITTLE_ENDIAN
   if (bit_depth > 8)
     png_set_swap (png);
 #endif
-
-  format = babl_format_with_space (format_string, format);
-
-  {
-    int icc_len;
-    const Babl*space = babl_format_get_space (format);
-    const char *name = babl_get_name (space);
-    char *icc_profile;
-    if (strlen (name) > 10) name = "babl/GEGL";
-    icc_profile = babl_space_to_icc (space, name, NULL, 0, &icc_len);
-    png_set_iCCP (png, info,
-                  name, 0, (void*)icc_profile, icc_len);
-    free (icc_profile);
-  }
-
   pixels = g_malloc0 (width * babl_format_get_bytes_per_pixel (format));
 
   for (i=0; i< height; i++)
