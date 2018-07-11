@@ -11,7 +11,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright (C) 1996 Stephen Norris  (srn@flibble.cs.su.oz.au)
  * Copyright (C) 1996 Eiichi Takamori (taka@ma1.seikyou.ne.jp)

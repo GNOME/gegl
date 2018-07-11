@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with N-point image deformation library.
- * If not, see <http://www.gnu.org/licenses/>.
+ * If not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright (C) 2013 Marek Dvoroznak <dvoromar@gmail.com>
  */

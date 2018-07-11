@@ -11,7 +11,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright (C) 1997 Hirotsuna Mizuno <s1041150@u-aizu.ac.jp>
  * Copyright (C) 2011 Robert Sasu <sasu.robert@gmail.com>

@@ -10,7 +10,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with GEGL; if not, see <http://www.gnu.org/licenses/>.
+ * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2006 Dominik Ernst <dernst@gmx.de>
  * Copyright 2013 Massimo Valentini <mvalentini@src.gnome.org>

@@ -11,7 +11,7 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with GEGL; if not, see <http://www.gnu.org/licenses/>.
+ * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 1997 Miles O'Neal <meo@rru.com>  http://www.rru.com/~meo/
  * Copyright 2012 Maxime Nicco <maxime.nicco@gmail.com>

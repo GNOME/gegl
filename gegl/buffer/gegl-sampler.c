@@ -12,7 +12,7 @@
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see
- * <http://www.gnu.org/licenses/>.
+ * <https://www.gnu.org/licenses/>.
  *
  * 2007 © Øyvind Kolås
  * 2009,2012 © Nicolas Robidoux

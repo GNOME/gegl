@@ -12,7 +12,7 @@ static const char* colors_8bit_lut_cl_source =
 " * Lesser General Public License for more details.                            \n"
 " *                                                                            \n"
 " * You should have received a copy of the GNU Lesser General Public           \n"
-" * License along with GEGL; if not, see <http://www.gnu.org/licenses/>.       \n"
+" * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.       \n"
 " *                                                                            \n"
 " * Copyright 2012 Victor Oliveira (victormatheus@gmail.com)                   \n"
 " *           2013 Daniel Sabo                                                 \n"
