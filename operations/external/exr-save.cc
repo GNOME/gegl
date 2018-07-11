@@ -145,10 +145,10 @@ write_tiled_exr (const float       *pixels,
                           &blue[0], &blue[1],
                           NULL, NULL, NULL);
     {
-    Imf::Chromaticities c1 (Imath_2_2::V2f(wp[0],wp[1]),
-                       Imath_2_2::V2f(red[0],red[1]),
-                       Imath_2_2::V2f(green[0],green[1]),
-                       Imath_2_2::V2f(blue[0],blue[1]));
+    Imf::Chromaticities c1 (Imath_2_2::V2f(red[0],red[1]),
+                            Imath_2_2::V2f(green[0],green[1]),
+                            Imath_2_2::V2f(blue[0],blue[1]),
+                            Imath_2_2::V2f(wp[0],wp[1]));
     Imf::addChromaticities (header, c1);
     }
   }
@@ -184,10 +184,10 @@ write_scanline_exr (const float       *pixels,
                            &green[0], &green[1],
                            &blue[0], &blue[1],
                            NULL, NULL, NULL);
-    Imf::Chromaticities c1 (Imath_2_2::V2f(wp[0],wp[1]),
-                       Imath_2_2::V2f(red[0],red[1]),
-                       Imath_2_2::V2f(green[0],green[1]),
-                       Imath_2_2::V2f(blue[0],blue[1]));
+    Imf::Chromaticities c1 (Imath_2_2::V2f(red[0],red[1]),
+                            Imath_2_2::V2f(green[0],green[1]),
+                            Imath_2_2::V2f(blue[0],blue[1]),
+                            Imath_2_2::V2f(wp[0],wp[1]));
     Imf::addChromaticities (header, c1);
   }
 
