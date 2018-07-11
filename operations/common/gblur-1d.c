@@ -948,18 +948,19 @@ gegl_gblur_1d_prepare (GeglOperation *operation)
     {
       const Babl *model = babl_format_get_model (src_format);
 
-      if (model == babl_model ("RGB") || model == babl_model ("R'G'B'"))
+      if (babl_model_is (model, "RGB") ||
+          babl_model_is (model, "R'G'B'"))
         {
           format = "RGB float";
           o->user_data = iir_young_blur_1D_rgb;
         }
-      else if (model == babl_model ("Y") || model == babl_model ("Y'"))
+      else if (babl_model_is (model, "Y") || babl_model_is (model, "Y'"))
         {
           format = "Y float";
           o->user_data = iir_young_blur_1D_y;
         }
-      else if (model == babl_model ("YA") || model == babl_model ("Y'A") ||
-               model == babl_model ("YaA") || model == babl_model ("Y'aA"))
+      else if (babl_model_is (model, "YA") || babl_model_is (model, "Y'A") ||
+               babl_model_is (model, "YaA") || babl_model_is (model, "Y'aA"))
         {
           format = "YaA float";
           o->user_data = iir_young_blur_1D_yA;
