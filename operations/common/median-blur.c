@@ -632,21 +632,21 @@ prepare (GeglOperation *operation)
 
       if (o->high_precision)
         {
-          if (model == babl_model ("Y"))
+          if (babl_model_is (model, "Y"))
             format = babl_format_with_space ("Y float", in_format);
-          else if (model == babl_model ("Y'"))
+          else if (babl_model_is (model, "Y'"))
             format = babl_format_with_space ("Y' float", in_format);
-          else if (model == babl_model ("YA") || model == babl_model ("YaA"))
+          else if (babl_model_is (model, "YA") || babl_model_is (model, "YaA"))
             format = babl_format_with_space ("YA float", in_format);
-          else if (model == babl_model ("Y'A") || model == babl_model ("Y'aA"))
+          else if (babl_model_is (model, "Y'A") || babl_model_is (model, "Y'aA"))
             format = babl_format_with_space ("Y'A float", in_format);
-          else if (model == babl_model ("RGB"))
+          else if (babl_model_is (model, "RGB"))
             format = babl_format_with_space ("RGB float", in_format);
-          else if (model == babl_model ("R'G'B'"))
+          else if (babl_model_is (model, "R'G'B'"))
             format = babl_format_with_space ("R'G'B' float", in_format);
-          else if (model == babl_model ("RGBA") || model == babl_model ("RaGaBaA"))
+          else if (babl_model_is (model, "RGBA") || babl_model_is (model, "RaGaBaA"))
             format = babl_format_with_space ("RGBA float", in_format);
-          else if (model == babl_model ("R'G'B'A") || model == babl_model ("R'aG'aB'aA"))
+          else if (babl_model_is (model, "R'G'B'A") || babl_model_is (model, "R'aG'aB'aA"))
             format = babl_format_with_space ("R'G'B'A float", in_format);
 
           if (format)
@@ -668,15 +668,15 @@ prepare (GeglOperation *operation)
         }
       else
         {
-          if (model == babl_model ("Y") || model == babl_model ("Y'"))
+          if (babl_model_is (model, "Y") || babl_model_is (model, "Y'"))
             format = babl_format_with_space ("Y' float", in_format);
-          else if (model == babl_model ("YA")  || model == babl_model ("YaA") ||
-                   model == babl_model ("Y'A") || model == babl_model ("Y'aA"))
+          else if (babl_model_is (model, "YA")  || babl_model_is (model, "YaA") ||
+                   babl_model_is (model, "Y'A") || babl_model_is (model, "Y'aA"))
             format = babl_format_with_space ("Y'A float", in_format);
-          else if (model == babl_model ("RGB") || model == babl_model ("R'G'B'"))
+          else if (babl_model_is (model, "RGB") || babl_model_is (model, "R'G'B'"))
             format = babl_format_with_space ("R'G'B' float", in_format);
-          else if (model == babl_model ("RGBA")    || model == babl_model ("RaGaBaA") ||
-                   model == babl_model ("R'G'B'A") || model == babl_model ("R'aG'aB'aA"))
+          else if (babl_model_is (model, "RGBA")    || babl_model_is (model, "RaGaBaA") ||
+                   babl_model_is (model, "R'G'B'A") || babl_model_is (model, "R'aG'aB'aA"))
             format = babl_format_with_space ("R'G'B'A float", in_format);
         }
 
