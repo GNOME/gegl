@@ -58,10 +58,12 @@ prepare (GeglOperation *operation)
 
   if (input_format)
     {
-      if (babl_format_get_model (input_format) == babl_model ("Y'") ||
-          babl_format_get_model (input_format) == babl_model ("Y'A") ||
-          babl_format_get_model (input_format) == babl_model ("Y") ||
-          babl_format_get_model (input_format) == babl_model ("YA"))
+      const Babl *model = babl_format_get_model (input_format);
+
+      if (babl_model_is (model, "Y'") ||
+          babl_model_is (model, "Y'A") ||
+          babl_model_is (model, "Y") ||
+          babl_model_is (model, "YA"))
         o->user_data = (void*)0x1;
 
       /* a bit hacky, signaling of data being grayscale data and only
