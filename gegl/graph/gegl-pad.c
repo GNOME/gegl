@@ -64,6 +64,12 @@ gegl_pad_init (GeglPad *self)
 }
 
 static void
+notify_unref_spec (gpointer ptr)
+{
+  g_param_spec_unref (ptr);
+}
+
+static void
 visitable_init (gpointer ginterface,
                 gpointer interface_data)
 {
@@ -80,7 +86,7 @@ finalize (GObject *gobject)
 
   g_assert (self->connections == NULL);
 
-  g_clear_pointer (&self->param_spec, (GDestroyNotify) g_param_spec_unref);
+  g_clear_pointer (&self->param_spec, notify_unref_spec);
   g_free (self->name);
 
   G_OBJECT_CLASS (gegl_pad_parent_class)->finalize (gobject);
