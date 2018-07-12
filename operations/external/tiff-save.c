@@ -400,14 +400,14 @@ export_tiff (GeglOperation *operation,
       TIFFSetField (p->tiff, TIFFTAG_ICCPROFILE, icc_len, icc_profile);
   }
 
-  if (model == babl_model_with_space("Y", space) || model == babl_model_with_space("Y'", space))
+  if (babl_model_is (model, "Y") || babl_model_is (model, "Y'"))
     {
       has_alpha = FALSE;
       color_space = PHOTOMETRIC_MINISBLACK;
       model = babl_model("Y'");
       samples_per_pixel = 1;
     }
-  else if (model == babl_model_with_space("YA",space) || model == babl_model_with_space("Y'A", space))
+  else if (babl_model_is (model, "YA") || babl_model_is (model, "Y'A"))
     {
       has_alpha = TRUE;
       alpha_is_premultiplied = FALSE;
@@ -415,7 +415,7 @@ export_tiff (GeglOperation *operation,
       model = babl_model("Y'A");
       samples_per_pixel = 2;
     }
-  else if (model == babl_model_with_space("YaA", space) || model == babl_model_with_space("Y'aA", space))
+  else if (babl_model_is (model, "YaA") || babl_model_is (model, "Y'aA"))
     {
       has_alpha = TRUE;
       alpha_is_premultiplied = TRUE;
@@ -423,7 +423,7 @@ export_tiff (GeglOperation *operation,
       model = babl_model("Y'aA");
       samples_per_pixel = 2;
     }
-  else if (model == babl_model_with_space("RGB", space) || model == babl_model_with_space("R'G'B'", space))
+  else if (babl_model_is (model, "RGB") || babl_model_is (model, "R'G'B'"))
     {
       has_alpha = FALSE;
       color_space = PHOTOMETRIC_RGB;
@@ -431,7 +431,7 @@ export_tiff (GeglOperation *operation,
       samples_per_pixel = 3;
       predictor = 2;
     }
-  else if (model == babl_model_with_space("RGBA", space) || model == babl_model_with_space("R'G'B'A", space))
+  else if (babl_model_is (model, "RGBA") || babl_model_is (model, "R'G'B'A"))
     {
       has_alpha = TRUE;
       alpha_is_premultiplied = FALSE;
@@ -440,7 +440,7 @@ export_tiff (GeglOperation *operation,
       samples_per_pixel = 4;
       predictor = 2;
     }
-  else if (model == babl_model_with_space("RaGaBaA", space) || model == babl_model_with_space("R'aG'aB'aA", space))
+  else if (babl_model_is (model, "RaGaBaA") || babl_model_is (model, "R'aG'aB'aA"))
     {
       has_alpha = TRUE;
       alpha_is_premultiplied = TRUE;
