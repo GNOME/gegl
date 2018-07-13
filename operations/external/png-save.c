@@ -150,11 +150,42 @@ export_png (GeglOperation       *operation,
       png_set_sRGB_gAMA_and_cHRM (png, info, PNG_sRGB_INTENT_RELATIVE);
     }
   else
-    white.gray = 0xff;
+    {
+      double wp[2];
+      double red[2];
+      double green[2];
+      double blue[2];
+      const Babl *trc[3];
+      babl_space_get (space, &wp[0], &wp[1],
+                      &red[0], &red[1],
+                      &green[0], &green[1],
+                      &blue[0], &blue[1],
+                      &trc[0], &trc[1], &trc[2]);
+      png_set_cHRM (png, info, wp[0], wp[1], red[0], red[1], green[0], green[1], blue[0], blue[1]);
+      /* XXX: should also set gamma based on trc! */
+      if (trc[0] == babl_trc("sRGB") ||
+          trc[0] == babl_trc("2.2"))
+      {
+        png_set_gAMA (png, info, 2.22);
+      }
+      else if (trc[0] == babl_trc("linear"))
+      {
+        png_set_gAMA (png, info, 1.0);
+      }
+      else
+      {
+        png_set_gAMA (png, info, 2.2);
+      }
+
+      white.gray = 0xff;
+    }
   png_set_bKGD (png, info, &white);
 
 
   format = babl_format_with_space (format_string, space);
+
+  {
+  }
 
   if (space && space != babl_space("sRGB")){
     int icc_len;
