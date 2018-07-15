@@ -166,8 +166,10 @@ operations/common-gpl3+/whirl-pinch.c
 operations/common-gpl3+/wind.c
 operations/core/cache.c
 operations/core/cast-format.c
+operations/core/cast-space.c
 operations/core/clone.c
 operations/core/convert-format.c
+operations/core/convert-space.c
 operations/core/crop.c
 operations/core/load.c
 operations/core/nop.c
@@ -243,7 +245,6 @@ operations/transform/transform-core.c
 operations/transform/translate.c
 operations/workshop/bayer-matrix.c
 operations/workshop/bilateral-filter-fast.c
-operations/workshop/cast-space.c
 operations/workshop/demosaic-bimedian.c
 operations/workshop/demosaic-simple.c
 operations/workshop/ditto.c
@@ -265,4 +266,3 @@ operations/workshop/linear-sinusoid.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
-operations/workshop/set-space.c

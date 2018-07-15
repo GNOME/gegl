@@ -40,10 +40,9 @@ property_enum (sampler_type, _("Sampler"), GeglSamplerType, gegl_sampler_type,
 
 static void prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input",
-                             babl_format ("RGBA float"));
-  gegl_operation_set_format (operation, "output",
-                             babl_format ("RGBA float"));
+  const Babl *format = gegl_operation_get_source_format (operation, "input");
+  fprintf (stderr, "%s\n", format?babl_get_name (babl_format_get_space (format)):"nil");
+  gegl_operation_set_format (operation, "output", format);
 }
 
 static gboolean

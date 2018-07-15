@@ -22,12 +22,12 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_string (space, _("Space"), "sRGB")
-   description (_("space to assign, using babls names"))
-property_format (babl_space, _("Babl space"), NULL)
-   description (_("pointer to a babl space"))
-property_file_path (icc_path, _("ICC path"), "")
-  description (_("Path to ICC matrix profile to load"))
+property_string (name, _("Name"), "sRGB")
+   description (_("One of: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"))
+property_format (pointer, _("Pointer"), NULL)
+   description (_("pointer to a const * Babl space"))
+property_file_path (path, _("Path"), "")
+  description (_("File system path to ICC matrix profile to load"))
 
 #else
 
@@ -46,14 +46,14 @@ prepare (GeglOperation *operation)
   const Babl *aux_format = gegl_operation_get_source_format (operation,
                                                             "aux");
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  const Babl *space = babl_space (o->space);
-  if (o->babl_space)
-    space = o->babl_space;
-  if (o->icc_path)
+  const Babl *space = babl_space (o->name);
+  if (o->pointer)
+    space = o->pointer;
+  if (o->path)
   {
     gchar *icc_data = NULL;
     gsize icc_length;
-    g_file_get_contents (o->icc_path, &icc_data, &icc_length, NULL);
+    g_file_get_contents (o->path, &icc_data, &icc_length, NULL);
     if (icc_data)
     {
       const char *error = NULL;
@@ -66,10 +66,6 @@ prepare (GeglOperation *operation)
   if (aux_format)
   {
     space = babl_format_get_space (aux_format);
-  }
-  if (!space)
-  {
-    fprintf (stderr, "unknown space %s\n", o->space);
   }
 
   gegl_operation_set_format (operation, "input",
@@ -130,9 +126,9 @@ gegl_op_class_init (GeglOpClass *klass)
 
   gegl_operation_class_set_keys (operation_class,
     "name",       "gegl:cast-space",
-    "title",      _("Cast space"),
+    "title",      _("Cast color space"),
     "categories", "core:color",
-    "description", _("assign a different babl space"),
+    "description", _("Override the specified color space setting a pointer to a format override the string property and setting an aux pad overrides both. "),
     NULL);
 }
 

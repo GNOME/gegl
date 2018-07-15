@@ -17,7 +17,9 @@ gegl_core_la_SOURCES =\
 	load.c \
 	clone.c \
 	cast-format.c \
+	cast-space.c \
 	convert-format.c \
+	convert-space.c \
 	crop.c \
 	json.c \
 	nop.c

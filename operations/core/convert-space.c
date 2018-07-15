@@ -22,36 +22,36 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_string (space, _("Space"), "sRGB")
-   description (_("space to assign, using babls names"))
-property_format (babl_space, _("Babl space"), NULL)
-   description (_("pointer to a babl space"))
-property_file_path (icc_path, _("ICC path"), "")
-  description (_("Path to ICC matrix profile to load"))
+property_string (name, _("Name"), "sRGB")
+   description (_("One of: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"))
+property_format (pointer, _("Pointer"), NULL)
+   description (_("pointer to a const * Babl space"))
+property_file_path (path, _("Path"), "")
+  description (_("File system path to ICC matrix profile to load"))
 
 #else
 
 #define GEGL_OP_FILTER
-#define GEGL_OP_NAME            set_space
-#define GEGL_OP_C_SOURCE        set-space.c
+#define GEGL_OP_NAME            convert_space
+#define GEGL_OP_C_SOURCE        convert-space.c
 
 #include "gegl-op.h"
 #include <stdio.h>
 
 static void
-gegl_set_space_prepare (GeglOperation *operation)
+gegl_convert_space_prepare (GeglOperation *operation)
 {
   const Babl *aux_format = gegl_operation_get_source_format (operation,
                                                             "aux");
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  const Babl *space = babl_space (o->space);
-  if (o->babl_space)
-    space = o->babl_space;
-  if (o->icc_path)
+  const Babl *space = babl_space (o->name);
+  if (o->pointer)
+    space = o->pointer;
+  if (o->path)
   {
     gchar *icc_data = NULL;
     gsize icc_length;
-    g_file_get_contents (o->icc_path, &icc_data, &icc_length, NULL);
+    g_file_get_contents (o->path, &icc_data, &icc_length, NULL);
     if (icc_data)
     {
       const char *error = NULL;
@@ -65,21 +65,17 @@ gegl_set_space_prepare (GeglOperation *operation)
   {
     space = babl_format_get_space (aux_format);
   }
-  if (!space)
-  {
-    fprintf (stderr, "unknown space %s\n", o->space);
-  }
 
   gegl_operation_set_format (operation, "output",
                              babl_format_with_space ("RGBA float", space));
 }
 
 static gboolean
-gegl_set_space_process (GeglOperation        *operation,
-                        GeglOperationContext *context,
-                        const gchar          *output_prop,
-                        const GeglRectangle  *result,
-                        gint                  level)
+gegl_convert_space_process (GeglOperation        *operation,
+                            GeglOperationContext *context,
+                            const gchar          *output_prop,
+                            const GeglRectangle  *result,
+                            gint                  level)
 {
   GeglBuffer *input;
 
@@ -100,14 +96,14 @@ gegl_op_class_init (GeglOpClass *klass)
   GeglOperationClass *operation_class;
 
   operation_class = GEGL_OPERATION_CLASS (klass);
-  operation_class->process = gegl_set_space_process;
-  operation_class->prepare = gegl_set_space_prepare;
+  operation_class->process = gegl_convert_space_process;
+  operation_class->prepare = gegl_convert_space_prepare;
 
   gegl_operation_class_set_keys (operation_class,
-              "name",        "gegl:set-space",
-              "title",       _("Set space"),
-              "categories",  "core",
-              "description", _("set color space, does not do a conversion but changes the space which subsequent formats in the pipeline are created with."),
+              "name",        "gegl:convert-space",
+              "title",       _("Convert color space"),
+              "categories",  "core:color",
+              "description", _("set color space which subsequent babl-formats in the pipeline are created with, and the ICC profile potentially embedded for external color management, setting a pointer to a format override the string property and setting an aux pad overrides both. "),
               NULL);
 }
 
