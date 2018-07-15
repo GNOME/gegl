@@ -346,6 +346,8 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
     if (interlace_type == PNG_INTERLACE_ADAM7)
       number_of_passes = png_set_interlace_handling (load_png_ptr);
 
+    if (!space)
+    {
     if (png_get_valid (load_png_ptr, load_info_ptr, PNG_INFO_gAMA))
       {
         gdouble gamma;
@@ -356,6 +358,7 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
       {
         png_set_gamma (load_png_ptr, 2.2, 0.45455);
       }
+    }
 
     png_read_update_info (load_png_ptr, load_info_ptr);
   }
