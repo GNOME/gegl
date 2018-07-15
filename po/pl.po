@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-08 12:24+0000\n"
-"PO-Revision-Date: 2018-07-08 17:00+0200\n"
+"POT-Creation-Date: 2018-07-15 17:39+0000\n"
+"PO-Revision-Date: 2018-07-15 19:48+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -570,11 +570,11 @@ msgstr ""
 "Promień kwadratowego obszaru pikseli (szerokość i wysokość będą wynosiły "
 "promień*2+1)"
 
-#: operations/common/box-blur.c:404
+#: operations/common/box-blur.c:405
 msgid "Box Blur"
 msgstr "Rozmycie prostopadłościenne"
 
-#: operations/common/box-blur.c:406
+#: operations/common/box-blur.c:407
 msgid "Blur resulting from averaging the colors of a square neighbourhood."
 msgstr ""
 "Rozmycie wynikające z uśredniania kolorów sąsiedniego prostopadłościanu."
@@ -1827,7 +1827,7 @@ msgstr "Czy kadrować obszar wyjściowy do obszaru wejściowego"
 msgid "Gaussian Blur"
 msgstr "Rozmycie Gaussa"
 
-#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1278
+#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1279
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -1849,12 +1849,12 @@ msgstr "Ułożenie"
 msgid "The orientation of the blur - hor/ver"
 msgstr "Orientacja rozmycia — pionowa/pozioma"
 
-#: operations/common/gblur-1d.c:1275
+#: operations/common/gblur-1d.c:1276
 msgid "1D Gaussian-blur"
 msgstr "Jednowymiarowe rozmycie Gaussa"
 
 #: operations/common/gegl-buffer-load-op.c:24
-#: operations/common/gegl-buffer-save-op.c:24
+#: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-save.c:25
 #: operations/common/magick-load.c:26 operations/common/open-buffer.c:25
 #: operations/common/save.c:25 operations/core/load.c:28
 #: operations/external/exr-save.cc:24 operations/external/ff-load.c:29
@@ -2005,6 +2005,20 @@ msgstr "Barwa i nasycenie"
 #: operations/common/hue-chroma.c:115
 msgid "Adjust LCH Hue, Chroma, and Lightness"
 msgstr "Dostosuj barwę, nasycenie i jasność LCH"
+
+#: operations/common/icc-save.c:26
+msgid "Target path and filename"
+msgstr "Docelowa ścieżka i nazwa pliku"
+
+#: operations/common/icc-save.c:72
+msgid "ICC profile saver"
+msgstr "Zapisywanie profili ICC"
+
+#: operations/common/icc-save.c:74
+msgid "Stores the ICC profile that would be embedded if stored as an image."
+msgstr ""
+"Przechowuje profil ICC, który byłby osadzony, jeśli byłby przechowywany jako "
+"obraz."
 
 #: operations/common/image-compare.c:27
 msgid "Wrong pixels"
@@ -2922,11 +2936,11 @@ msgstr "Losowość (%)"
 msgid "Repeat"
 msgstr "Powtarzanie"
 
-#: operations/common/noise-hurl.c:243
+#: operations/common/noise-hurl.c:245
 msgid "Randomly Shuffle Pixels"
 msgstr "Losowe mieszanie pikseli"
 
-#: operations/common/noise-hurl.c:246
+#: operations/common/noise-hurl.c:248
 msgid "Completely randomize a fraction of pixels"
 msgstr "Całkowicie losuj ułamek pikseli"
 
@@ -6439,11 +6453,11 @@ msgstr "Odcienie szarości"
 msgid "Create a grayscale (monochrome) image"
 msgstr "Obraz w odcieniach szarości (monochromatyczny)"
 
-#: operations/external/jpg-save.c:303
+#: operations/external/jpg-save.c:396
 msgid "JPEG File Saver"
 msgstr "Zapisywanie plików JPEG"
 
-#: operations/external/jpg-save.c:305
+#: operations/external/jpg-save.c:398
 msgid "JPEG image saver, using libjpeg"
 msgstr "Zapisywanie obrazów JPEG za pomocą biblioteki libjpeg"
 
@@ -6715,11 +6729,11 @@ msgstr "Używa GdkPixbuf położonego w pamięci w <em>pixbuf</em>."
 msgid "URI for file to load."
 msgstr "Adres URI pliku do wczytania."
 
-#: operations/external/png-load.c:520
+#: operations/external/png-load.c:564
 msgid "PNG File Loader"
 msgstr "Wczytywanie plików PNG"
 
-#: operations/external/png-load.c:522
+#: operations/external/png-load.c:566
 msgid "PNG image loader."
 msgstr "Wczytywanie obrazów PNG."
 
@@ -6739,11 +6753,11 @@ msgstr "Głębia bitowa"
 msgid "8 and 16 are the currently accepted values."
 msgstr "Obecnie przyjmowane są wartości 8 i 16."
 
-#: operations/external/png-save.c:256
+#: operations/external/png-save.c:302
 msgid "PNG File Saver"
 msgstr "Zapisywanie plików PNG"
 
-#: operations/external/png-save.c:258
+#: operations/external/png-save.c:304
 msgid "PNG image saver, using libpng"
 msgstr "Zapisywanie obrazów PNG za pomocą biblioteki libpng"
 
@@ -6936,19 +6950,19 @@ msgstr "Katalog"
 msgid "Image file directory (subfile)"
 msgstr "Katalog pliku obrazu (podplik)"
 
-#: operations/external/tiff-load.c:872
+#: operations/external/tiff-load.c:887
 msgid "TIFF File Loader"
 msgstr "Wczytywanie plików TIFF"
 
-#: operations/external/tiff-load.c:874
+#: operations/external/tiff-load.c:889
 msgid "TIFF image loader using libtiff"
 msgstr "Wczytywanie obrazów TIFF za pomocą biblioteki libtiff"
 
-#: operations/external/tiff-save.c:614
+#: operations/external/tiff-save.c:623
 msgid "TIFF File Saver"
 msgstr "Zapisywanie plików TIFF"
 
-#: operations/external/tiff-save.c:616
+#: operations/external/tiff-save.c:625
 msgid "TIFF image saver using libtiff"
 msgstr "Zapisywanie obrazów TIFF za pomocą biblioteki libtiff"
 
@@ -7592,6 +7606,38 @@ msgstr ""
 "Szybkie przybliżenie filtru dwustronnego, używające filtrowania "
 "prostopadłościennego zamiast rozmycia Gaussa."
 
+#: operations/workshop/cast-space.c:25 operations/workshop/set-space.c:25
+msgid "Space"
+msgstr "Przestrzeń"
+
+#: operations/workshop/cast-space.c:26 operations/workshop/set-space.c:26
+msgid "space to assign, using babls names"
+msgstr "przestrzeń do przydzielenia za pomocą nazw babl"
+
+#: operations/workshop/cast-space.c:27 operations/workshop/set-space.c:27
+msgid "Babl space"
+msgstr "Przestrzeń babl"
+
+#: operations/workshop/cast-space.c:28 operations/workshop/set-space.c:28
+msgid "pointer to a babl space"
+msgstr "wskaźnik do przestrzeni babl"
+
+#: operations/workshop/cast-space.c:29 operations/workshop/set-space.c:29
+msgid "ICC path"
+msgstr "Ścieżka do ICC"
+
+#: operations/workshop/cast-space.c:30 operations/workshop/set-space.c:30
+msgid "Path to ICC matrix profile to load"
+msgstr "Ścieżka do wczytywanego profilu macierzy ICC"
+
+#: operations/workshop/cast-space.c:133
+msgid "Cast space"
+msgstr "Przestrzeń rzutu"
+
+#: operations/workshop/cast-space.c:135
+msgid "assign a different babl space"
+msgstr "przydziel inną przestrzeń babl"
+
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
 msgid "Bayer pattern"
@@ -8143,3 +8189,15 @@ msgstr "Wybiórcza barwa-nasycenie"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Wybiórczo dostosuj barwę, nasycenie i jasność"
+
+#: operations/workshop/set-space.c:108
+msgid "Set space"
+msgstr "Ustaw przestrzeń"
+
+#: operations/workshop/set-space.c:110
+msgid ""
+"set color space, does not do a conversion but changes the space which "
+"subsequent formats in the pipeline are created with."
+msgstr ""
+"ustaw przestrzeń kolorów, nie wykonuje konwersji, ale zmienia przestrzeń, za "
+"pomocą której tworzone są kolejne formaty w potoku."
