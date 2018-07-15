@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-06-06 05:58+0000\n"
-"PO-Revision-Date: 2018-06-08 16:28+0200\n"
-"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"POT-Creation-Date: 2018-07-04 15:25+0000\n"
+"PO-Revision-Date: 2018-07-07 00:35+0200\n"
+"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #: bin/gegl.c:174
 #, c-format
@@ -364,6 +364,17 @@ msgstr "Не завантажено"
 msgid "Module '%s' load error: %s"
 msgstr "Помилка завантаження модуля «%s»: %s"
 
+#: operations/common/absolute.c:79
+#, fuzzy
+msgid "Absolute"
+msgstr "Абсолютний"
+
+#: operations/common/absolute.c:83
+msgid ""
+"makes each linear RGB component be the absolute of its value, "
+"fabs(input_value)"
+msgstr ""
+
 #: operations/common/alien-map.c:29 operations/common/newsprint.c:35
 msgid "RGB"
 msgstr "RGB"
@@ -543,8 +554,8 @@ msgstr ""
 #: operations/common/box-blur.c:25 operations/common/c2g.c:27
 #: operations/common/edge-neon.c:47 operations/common/median-blur.c:38
 #: operations/common/snn-mean.c:26 operations/common/stress.c:27
-#: operations/common/vignette.c:38 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27
+#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:38
+#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
 #: operations/common-gpl3+/whirl-pinch.c:45
@@ -582,7 +593,8 @@ msgstr "Контраст"
 msgid "Magnitude of contrast scaling >1.0 brighten < 1.0 darken"
 msgstr "Величина масштабування контрастності. >1,0 — світліше < 1,0 — темніше"
 
-#: operations/common/brightness-contrast.c:36 operations/common/reinhard05.c:26
+#: operations/common/brightness-contrast.c:36
+#: operations/common/reinhard05.c:26
 #: operations/common-gpl3+/diffraction-patterns.c:66
 #: operations/common-gpl3+/softglow.c:30
 msgid "Brightness"
@@ -670,11 +682,11 @@ msgstr ""
 "діапазону кольорів"
 
 #: operations/common/c2g.c:41 operations/common/matting-global.c:25
-#: operations/common/mean-curvature-blur.c:24 operations/common/noise-cell.c:48
-#: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
-#: operations/common/recursive-transform.c:34 operations/common/slic.c:38
+#: operations/common/mean-curvature-blur.c:24
+#: operations/common/noise-cell.c:48 operations/common/noise-perlin.c:33
+#: operations/common/noise-simplex.c:35
+#: operations/common/recursive-transform.c:36 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
-#: operations/workshop/recursive-transform-plus.c:36
 msgid "Iterations"
 msgstr "Ітерації"
 
@@ -706,6 +718,7 @@ msgstr ""
 "локальної різниці кольорів під час створення зображення у тонах сірого."
 
 #: operations/common/checkerboard.c:25 operations/common/grid.c:24
+#: operations/common/little-planet.c:43
 #: operations/common/panorama-projection.c:43 operations/common/rectangle.c:36
 #: operations/common-gpl3+/diffraction-patterns.c:78
 #: operations/common-gpl3+/maze.c:40 operations/common-gpl3+/noise-solid.c:64
@@ -724,14 +737,15 @@ msgid "Horizontal width of cells pixels"
 msgstr "Горизонтальна ширина комірок у пікселях"
 
 #: operations/common/checkerboard.c:33 operations/common/grid.c:31
+#: operations/common/little-planet.c:49
 #: operations/common/panorama-projection.c:49 operations/common/rectangle.c:42
 #: operations/common-gpl3+/diffraction-patterns.c:86
 #: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:48
-#: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:62
-#: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:93
-#: operations/core/crop.c:40 operations/external/svg-load.c:32
-#: operations/external/text.c:63 operations/external/v4l.c:31
-#: operations/workshop/external/line-profile.c:41
+#: operations/common-gpl3+/noise-solid.c:72
+#: operations/common-gpl3+/plasma.c:62 operations/common-gpl3+/sinus.c:84
+#: operations/common-gpl3+/spiral.c:93 operations/core/crop.c:40
+#: operations/external/svg-load.c:32 operations/external/text.c:63
+#: operations/external/v4l.c:31 operations/workshop/external/line-profile.c:41
 #: operations/workshop/external/v4l2.c:28
 msgid "Height"
 msgstr "Висота"
@@ -937,9 +951,9 @@ msgstr ""
 "Замінити на цей: замінити сірі кольори на колір із вказаним відтінком і "
 "насиченістю"
 
-#: operations/common/color-rotate.c:79 operations/common/component-extract.c:28
-#: operations/common/hue-chroma.c:25 operations/common/noise-cie-lch.c:35
-#: operations/common/noise-hsv.c:31
+#: operations/common/color-rotate.c:79
+#: operations/common/component-extract.c:28 operations/common/hue-chroma.c:25
+#: operations/common/noise-cie-lch.c:35 operations/common/noise-hsv.c:31
 #: operations/workshop/selective-hue-saturation.c:34
 msgid "Hue"
 msgstr "Відтінок"
@@ -1537,9 +1551,9 @@ msgstr "Метод розмиття, яким слід скористатися"
 #: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
 #: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:88
 #: operations/common-gpl3+/noise-slur.c:40
-#: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
-#: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
-#: operations/common-gpl3+/supernova.c:64
+#: operations/common-gpl3+/noise-solid.c:62
+#: operations/common-gpl3+/plasma.c:70 operations/common-gpl3+/shift.c:35
+#: operations/common-gpl3+/sinus.c:50 operations/common-gpl3+/supernova.c:64
 #: operations/common-gpl3+/tile-paper.c:80 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
 msgid "Random seed"
@@ -1775,7 +1789,7 @@ msgid "Size Y"
 msgstr "Розмір за Y"
 
 #: operations/common/gaussian-blur.c:46 operations/common/gblur-1d.c:45
-#: operations/common/high-pass.c:25 operations/common/unsharp-mask.c:25
+#: operations/common/high-pass.c:25
 msgid "Standard deviation (spatial scale factor)"
 msgstr "Стандартне відхилення (фактор просторового масштабування)"
 
@@ -1933,9 +1947,8 @@ msgid "Grid"
 msgstr "Сітка"
 
 #: operations/common/grid.c:161
-#, fuzzy
 msgid "Grid renderer"
-msgstr "Виправити вади показу"
+msgstr "Створення сітки"
 
 #: operations/common/high-pass.c:24
 msgid "Std. Dev."
@@ -2102,7 +2115,7 @@ msgstr "Вертикальне положення в точках"
 
 #: operations/common/layer.c:46 operations/common/noise-cell.c:36
 #: operations/common/noise-perlin.c:27 operations/common/noise-simplex.c:31
-#: operations/common/saturation.c:24 operations/common/unsharp-mask.c:31
+#: operations/common/saturation.c:24
 #: operations/workshop/external/lens-correct.c:50
 msgid "Scale"
 msgstr "Масштаб"
@@ -2134,7 +2147,7 @@ msgstr "Нижній вхідний"
 
 #: operations/common/levels.c:27
 msgid "Input luminance level to become lowest output"
-msgstr ""
+msgstr "Вхідний рівень освітленості, який відповідає найнижчому на виході"
 
 #: operations/common/levels.c:31
 msgid "High input"
@@ -2142,7 +2155,7 @@ msgstr "Вищий вхідний"
 
 #: operations/common/levels.c:32
 msgid "Input luminance level to become white"
-msgstr ""
+msgstr "Вхідний рівень освітленості, який відповідає білому"
 
 #: operations/common/levels.c:36
 msgid "Low output"
@@ -2150,7 +2163,7 @@ msgstr "Нижній вихідний"
 
 #: operations/common/levels.c:37
 msgid "Lowest luminance level in output"
-msgstr ""
+msgstr "Найнижчий рівень освітленості на виході"
 
 #: operations/common/levels.c:41
 msgid "High output"
@@ -2158,7 +2171,7 @@ msgstr "Вищий вихідний"
 
 #: operations/common/levels.c:42
 msgid "Highest luminance level in output"
-msgstr ""
+msgstr "Найвищий рівень освітленості на виході"
 
 #: operations/common/levels.c:203 operations/common/posterize.c:24
 #: operations/external/matting-levin.c:41
@@ -2223,6 +2236,91 @@ msgstr "Лінійний градієнт"
 msgid "Linear gradient renderer"
 msgstr "Обробник лінійних градієнтів"
 
+#: operations/common/little-planet.c:24
+#: operations/common/panorama-projection.c:24
+msgid "Pan"
+msgstr "Панорама"
+
+#: operations/common/little-planet.c:25
+#: operations/common/panorama-projection.c:25
+msgid "Horizontal camera panning"
+msgstr "Горизонтальне панорамування камерою"
+
+#: operations/common/little-planet.c:29
+#: operations/common/panorama-projection.c:29
+msgid "Tilt"
+msgstr "Нахил"
+
+#: operations/common/little-planet.c:30
+#: operations/common/panorama-projection.c:30
+msgid "Vertical camera panning"
+msgstr "Вертикальне панорамування камерою"
+
+#: operations/common/little-planet.c:35
+#: operations/common/panorama-projection.c:35
+msgid "Spin"
+msgstr "Поворот"
+
+#: operations/common/little-planet.c:36
+#: operations/common/panorama-projection.c:36
+msgid "Spin angle around camera axis"
+msgstr "Кут повороту навколо вісі камери"
+
+#: operations/common/little-planet.c:39 operations/common/mirrors.c:74
+#: operations/common/panorama-projection.c:39
+#: operations/common-gpl3+/fractal-explorer.c:58
+#: operations/common-gpl3+/lens-distortion.c:41
+msgid "Zoom"
+msgstr "Масштаб"
+
+#: operations/common/little-planet.c:44
+#: operations/common/panorama-projection.c:44
+msgid "output/rendering width in pixels, -1 for input width"
+msgstr ""
+
+#: operations/common/little-planet.c:50
+#: operations/common/panorama-projection.c:50
+msgid "output/rendering height in pixels, -1 for input height"
+msgstr ""
+
+#: operations/common/little-planet.c:55
+#: operations/common/panorama-projection.c:55
+msgid "Inverse transform"
+msgstr "Обернене перетворення"
+
+#: operations/common/little-planet.c:56
+#: operations/common/panorama-projection.c:56
+msgid ""
+"Do the inverse mapping, useful for touching up zenith, nadir or other parts "
+"of panorama."
+msgstr ""
+
+#. XXX: needs better ui type
+#: operations/common/little-planet.c:58 operations/common/map-absolute.c:22
+#: operations/common/map-relative.c:28
+#: operations/common/panorama-projection.c:58
+#: operations/common/recursive-transform.c:52 operations/common/spherize.c:56
+#: operations/common-gpl3+/ripple.c:49 operations/common-gpl3+/waves.c:50
+#, fuzzy
+msgid "Resampling method"
+msgstr "Метод:"
+
+#: operations/common/little-planet.c:60
+#: operations/common/panorama-projection.c:60
+msgid ""
+"Image resampling method to use, for good results with double resampling when "
+"retouching panoramas, use nearest to generate the view and cubic or better "
+"for the inverse transform back to panorama."
+msgstr ""
+
+#: operations/common/little-planet.c:491
+msgid "Little Planet"
+msgstr "Маленька планета"
+
+#: operations/common/little-planet.c:495
+msgid "Do a stereographic/little planet transform of an equirectangular image."
+msgstr ""
+
 #: operations/common/magick-load.c:27 operations/core/load.c:29
 #: operations/external/png-load.c:28 operations/external/ppm-load.c:26
 #: operations/external/raw-load.c:28 operations/external/rgbe-load.c:27
@@ -2256,16 +2354,6 @@ msgid ""
 "a low dynamic range. This operator constrains contrasts across multiple "
 "spatial frequencies, producing luminance within the range 0.0-1.0"
 msgstr ""
-
-#. XXX: needs better ui type
-#: operations/common/map-absolute.c:22 operations/common/map-relative.c:28
-#: operations/common/panorama-projection.c:61
-#: operations/common/recursive-transform.c:50 operations/common/spherize.c:56
-#: operations/common-gpl3+/ripple.c:49 operations/common-gpl3+/waves.c:50
-#: operations/workshop/recursive-transform-plus.c:52
-#, fuzzy
-msgid "Resampling method"
-msgstr "Метод:"
 
 #: operations/common/map-absolute.c:161
 #, fuzzy
@@ -2330,7 +2418,6 @@ msgid ""
 msgstr ""
 
 #: operations/common/mean-curvature-blur.c:25
-#, fuzzy
 msgid "Controls the number of iterations"
 msgstr "Керування числом ітерацій"
 
@@ -2364,33 +2451,28 @@ msgid "Neighborhood"
 msgstr "Сусідство"
 
 #: operations/common/median-blur.c:36
-#, fuzzy
 msgid "Neighborhood type"
-msgstr "Сусідство"
+msgstr "Тип сусідства"
 
 #: operations/common/median-blur.c:41
-#, fuzzy
 msgid "Neighborhood radius"
-msgstr "Сусідство"
+msgstr "Радіус сусідства"
 
 #: operations/common/median-blur.c:43
 msgid "Percentile"
 msgstr "Процентиль"
 
 #: operations/common/median-blur.c:45
-#, fuzzy
 msgid "Neighborhood color percentile"
-msgstr "Сусідство"
+msgstr "Процентиль сусіднього кольору"
 
 #: operations/common/median-blur.c:47
-#, fuzzy
 msgid "Alpha percentile"
-msgstr "Процентиль"
+msgstr "Процентиль прозорості"
 
 #: operations/common/median-blur.c:49
-#, fuzzy
 msgid "Neighborhood alpha percentile"
-msgstr "Сусідство"
+msgstr "Процентиль прозорості сусідства"
 
 #: operations/common/median-blur.c:51
 msgid "High precision"
@@ -2398,7 +2480,7 @@ msgstr "Висока точність"
 
 #: operations/common/median-blur.c:52
 msgid "Avoid clipping and quantization (slower)"
-msgstr ""
+msgstr "Запобігти обтинанню і квантуванню (повільніше)"
 
 #: operations/common/median-blur.c:962
 msgid "Median Blur"
@@ -2480,15 +2562,9 @@ msgstr "розміру області остаточного розміру (tri
 msgid "Y axis ratio for trimming mirror expanse"
 msgstr ""
 
-#: operations/common/mirrors.c:74 operations/common/panorama-projection.c:39
-#: operations/common-gpl3+/fractal-explorer.c:58
-#: operations/common-gpl3+/lens-distortion.c:41
-msgid "Zoom"
-msgstr "Масштаб"
-
 #: operations/common/mirrors.c:75 operations/common/mirrors.c:79
 msgid "Scale factor to make rendering size bigger"
-msgstr ""
+msgstr "Коефіцієнт збільшення результату обробки"
 
 #: operations/common/mirrors.c:78
 msgid "Expand"
@@ -2496,7 +2572,7 @@ msgstr "Розширити"
 
 #: operations/common/mirrors.c:82
 msgid "Clip result to input size"
-msgstr ""
+msgstr "Обітнути результат за вхідним розміром"
 
 #: operations/common/mirrors.c:84
 #, fuzzy
@@ -2531,7 +2607,8 @@ msgstr "Змішування"
 msgid "do a lerp, linear interpolation (lerp) between input and aux"
 msgstr ""
 
-#: operations/common/mono-mixer.c:26 operations/common-gpl3+/channel-mixer.c:31
+#: operations/common/mono-mixer.c:26
+#: operations/common-gpl3+/channel-mixer.c:31
 msgid "Preserve luminosity"
 msgstr "Зберігати яскравість світла"
 
@@ -2553,9 +2630,8 @@ msgid "Mono Mixer"
 msgstr "Мо_номікшер…"
 
 #: operations/common/mono-mixer.c:117
-#, fuzzy
 msgid "Monochrome channel mixer"
-msgstr "_Змішувач каналів…."
+msgstr "Монохромний змішувач каналів"
 
 #: operations/common/motion-blur-linear.c:26
 msgid "Length"
@@ -2568,7 +2644,8 @@ msgstr "Довжина розмиття в точках"
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:71
 #: operations/common-gpl3+/motion-blur-circular.c:52
-#: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
+#: operations/common-gpl3+/ripple.c:45
+#: operations/workshop/linear-sinusoid.c:66
 msgid "Angle"
 msgstr "Кут"
 
@@ -2733,7 +2810,7 @@ msgstr "Форма"
 
 #: operations/common/noise-cell.c:41
 msgid "Interpolate between Manhattan and Euclidean distance."
-msgstr ""
+msgstr "Інтерполяція між манхеттенською і евклідовою відстанню"
 
 #: operations/common/noise-cell.c:44
 msgid "Rank"
@@ -2741,7 +2818,7 @@ msgstr "Ранг"
 
 #: operations/common/noise-cell.c:45
 msgid "Select the n-th closest point"
-msgstr ""
+msgstr "Вибрати n-ну найближчу точку"
 
 #: operations/common/noise-cell.c:49 operations/common/noise-simplex.c:36
 msgid "The number of noise octaves."
@@ -2877,7 +2954,7 @@ msgstr "Лінійний RGB"
 
 #: operations/common/noise-rgb.c:34
 msgid "Operate on linearized RGB color data"
-msgstr ""
+msgstr "Працювати з лінеаризованими даними кольору RGB"
 
 #: operations/common/noise-rgb.c:36
 msgid "Gaussian distribution"
@@ -2907,7 +2984,7 @@ msgstr "Додати шум RGB"
 
 #: operations/common/noise-rgb.c:211
 msgid "Distort colors by random amounts"
-msgstr ""
+msgstr "Змінити кольори на випадкову величину"
 
 #: operations/common/noise-simplex.c:332
 msgid "Simplex Noise"
@@ -2978,72 +3055,11 @@ msgid ""
 "+ cB * (1 - aA))"
 msgstr ""
 
-#: operations/common/panorama-projection.c:24
-msgid "Pan"
-msgstr "Панорама"
-
-#: operations/common/panorama-projection.c:25
-msgid "Horizontal camera panning"
-msgstr "Горизонтальне панорамування камерою"
-
-#: operations/common/panorama-projection.c:29
-msgid "Tilt"
-msgstr "Нахил"
-
-#: operations/common/panorama-projection.c:30
-msgid "Vertical camera panning"
-msgstr "Вертикальне панорамування камерою"
-
-#: operations/common/panorama-projection.c:35
-msgid "Spin"
-msgstr "Поворот"
-
-#: operations/common/panorama-projection.c:36
-msgid "Spin angle around camera axis"
-msgstr "Кут повороту навколо вісі камери"
-
-#: operations/common/panorama-projection.c:44
-msgid "output/rendering width in pixels, -1 for input width"
-msgstr ""
-
-#: operations/common/panorama-projection.c:50
-msgid "output/rendering height in pixels, -1 for input height"
-msgstr ""
-
-#: operations/common/panorama-projection.c:55
-#, fuzzy
-msgid "Inverse transform"
-msgstr "Додати Зворотнє"
-
-#: operations/common/panorama-projection.c:56
-msgid ""
-"Do the inverse mapping, useful for touching up zenith, nadir or other parts "
-"of panorama."
-msgstr ""
-
-#: operations/common/panorama-projection.c:58
-#, fuzzy
-msgid "Little planet"
-msgstr "Маленький правий вплив"
-
-#: operations/common/panorama-projection.c:59
-msgid ""
-"Render a stereographic mapping, a tilt value of 90, which means looking at "
-"nadir provides a good default value."
-msgstr ""
-
-#: operations/common/panorama-projection.c:63
-msgid ""
-"Image resampling method to use, for good results with double resampling when "
-"retouching panoramas, use nearest to generate the view and cubic or better "
-"for the inverse transform back to panorama."
-msgstr ""
-
-#: operations/common/panorama-projection.c:602
+#: operations/common/panorama-projection.c:504
 msgid "Panorama Projection"
 msgstr "Панорамна проекція"
 
-#: operations/common/panorama-projection.c:607
+#: operations/common/panorama-projection.c:509
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
@@ -3112,7 +3128,7 @@ msgstr ""
 
 #: operations/common/posterize.c:25
 msgid "number of levels per component"
-msgstr ""
+msgstr "число рівнів на компонент"
 
 #: operations/common/posterize.c:132
 msgid "Posterize"
@@ -3120,7 +3136,7 @@ msgstr "Постеризувати"
 
 #: operations/common/posterize.c:136
 msgid "Reduces the number of levels in each color component of the image."
-msgstr ""
+msgstr "Зменшує число рівнів кожного колірного компоненту зображення."
 
 #: operations/common/radial-gradient.c:126
 msgid "Radial Gradient"
@@ -3162,72 +3178,64 @@ msgstr "Прямокутник"
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr ""
 
-#: operations/common/recursive-transform.c:27 operations/external/path.c:47
+#: operations/common/recursive-transform.c:28 operations/external/path.c:47
 #: operations/external/vector-fill.c:37 operations/external/vector-stroke.c:38
 #: operations/transform/transform.c:24 operations/transform/transform.c:64
-#: operations/workshop/recursive-transform-plus.c:28
 msgid "Transform"
 msgstr "Перетворення"
 
-#: operations/common/recursive-transform.c:28
-msgid "Transformation matrix, using SVG syntax"
+#: operations/common/recursive-transform.c:29
+msgid ""
+"Transformation matrix, using SVG syntax (or multiple matrices, separated by "
+"semicolons)"
 msgstr ""
+"Матриця перетворення, з використанням синтаксису SVG (або декілька матриць, "
+"відокремлених крапками з комою)"
 
-#: operations/common/recursive-transform.c:30
-#: operations/common/recursive-transform.c:31
-#: operations/workshop/recursive-transform-plus.c:32
-#: operations/workshop/recursive-transform-plus.c:33
+#: operations/common/recursive-transform.c:32
+#: operations/common/recursive-transform.c:33
 msgid "First iteration"
 msgstr "Перша ітерація"
 
-#: operations/common/recursive-transform.c:35 operations/common/slic.c:39
-#: operations/workshop/recursive-transform-plus.c:37
+#: operations/common/recursive-transform.c:37 operations/common/slic.c:39
 msgid "Number of iterations"
 msgstr "Число ітерацій"
 
-#: operations/common/recursive-transform.c:38
-#: operations/workshop/recursive-transform-plus.c:40
+#: operations/common/recursive-transform.c:40
 msgid "Fade color"
 msgstr "Колір згасання"
 
-#: operations/common/recursive-transform.c:39
-#: operations/workshop/recursive-transform-plus.c:41
+#: operations/common/recursive-transform.c:41
 msgid ""
 "Color to fade transformed images towards, with a rate depending on its alpha"
 msgstr ""
 
-#: operations/common/recursive-transform.c:42
-#: operations/workshop/recursive-transform-plus.c:44
+#: operations/common/recursive-transform.c:44
 msgid "Fade opacity"
 msgstr "Щільність згасання"
 
-#: operations/common/recursive-transform.c:43
-#: operations/workshop/recursive-transform-plus.c:45
+#: operations/common/recursive-transform.c:45
 msgid "Amount by which to scale the opacity of each transformed image"
 msgstr ""
 
-#: operations/common/recursive-transform.c:47
-#: operations/workshop/recursive-transform-plus.c:49
+#: operations/common/recursive-transform.c:49
 msgid "Paste below"
 msgstr "Вставити нижче"
 
-#: operations/common/recursive-transform.c:48
-#: operations/workshop/recursive-transform-plus.c:50
+#: operations/common/recursive-transform.c:50
 msgid "Paste transformed images below each other"
 msgstr ""
 
-#: operations/common/recursive-transform.c:52 operations/common/spherize.c:58
+#: operations/common/recursive-transform.c:54 operations/common/spherize.c:58
 #: operations/common-gpl3+/waves.c:52
-#: operations/workshop/recursive-transform-plus.c:54
 msgid "Mathematical method for reconstructing pixel values"
-msgstr ""
+msgstr "Математичний метод відновлення значень пікселів"
 
-#: operations/common/recursive-transform.c:266
+#: operations/common/recursive-transform.c:386
 msgid "Recursive Transform"
 msgstr "Рекурсивне перетворення"
 
-#: operations/common/recursive-transform.c:268
-#: operations/workshop/recursive-transform-plus.c:388
+#: operations/common/recursive-transform.c:388
 msgid "Apply a transformation recursively."
 msgstr "Застосувати перетворення рекурсивно."
 
@@ -3265,9 +3273,8 @@ msgid ""
 msgstr ""
 
 #: operations/common/remap.c:100
-#, fuzzy
 msgid "Remap"
-msgstr "Фарбування за зразком"
+msgstr ""
 
 #: operations/common/remap.c:102
 msgid "stretch components of pixels individually based on luminance envelopes"
@@ -3307,7 +3314,7 @@ msgstr "Обрізання RGB"
 msgid "Keep RGB pixels values inside a specific range"
 msgstr ""
 
-#: operations/common/saturation.c:25 operations/common/unsharp-mask.c:32
+#: operations/common/saturation.c:25
 msgid "Scale, strength of effect"
 msgstr "Масштаб, потужність ефекту"
 
@@ -3392,7 +3399,8 @@ msgstr ""
 msgid "Radial"
 msgstr "Радіальний"
 
-#: operations/common/spherize.c:30 operations/common-gpl3+/value-propagate.c:38
+#: operations/common/spherize.c:30
+#: operations/common-gpl3+/value-propagate.c:38
 msgid "Mode"
 msgstr "Режим"
 
@@ -3425,7 +3433,8 @@ msgstr ""
 #. * since their upper-bound, wrt the angle of view, is
 #. * arbitrary.
 #.
-#: operations/common/spherize.c:52 operations/common-gpl3+/edge.c:42
+#: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
+#: operations/common-gpl3+/edge.c:42
 msgid "Amount"
 msgstr "Об'єм"
 
@@ -3531,7 +3540,7 @@ msgstr "Дія з матрицею кольорів SVG svg_huerotate"
 msgid "SVG Luminance to Alpha"
 msgstr "Освітленість до прозорості SVG"
 
-#: operations/common/svg-luminancetoalpha.c:96
+#: operations/common/svg-luminancetoalpha.c:97
 msgid "SVG color matrix operation svg_luminancetoalpha"
 msgstr ""
 
@@ -3552,6 +3561,7 @@ msgid "SVG color matrix operation svg_saturate"
 msgstr ""
 
 #: operations/common/threshold.c:25 operations/common/threshold.c:126
+#: operations/common/unsharp-mask.c:37
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
@@ -3606,15 +3616,23 @@ msgid ""
 "to the babl format is not.)"
 msgstr ""
 
-#: operations/common/unsharp-mask.c:24
-msgid "Standard Deviation"
-msgstr "Стандартне відхилення"
+#: operations/common/unsharp-mask.c:25
+msgid "Expressed as standard deviation, in pixels"
+msgstr ""
 
-#: operations/common/unsharp-mask.c:84
-msgid "Unsharp Mask"
+#: operations/common/unsharp-mask.c:32
+#, fuzzy
+#| msgid "Scale, strength of effect"
+msgid "Scaling factor for unsharp-mask, the strength of effect"
+msgstr "Масштаб, потужність ефекту"
+
+#: operations/common/unsharp-mask.c:164
+#, fuzzy
+#| msgid "Unsharp Mask"
+msgid "Sharpen (Unsharp Mask)"
 msgstr "Нерізка маска"
 
-#: operations/common/unsharp-mask.c:87
+#: operations/common/unsharp-mask.c:167
 msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
@@ -3663,7 +3681,7 @@ msgstr "Пропорції"
 
 #: operations/common/vignette.c:51
 msgid "How close we are to image proportions"
-msgstr ""
+msgstr "Наскільки ми близько до пропорцій зображення"
 
 #: operations/common/vignette.c:54
 #, fuzzy
@@ -3688,6 +3706,9 @@ msgid ""
 "of exposed film, and some other fuzzier border effects that can naturally "
 "occur with analog photography"
 msgstr ""
+"Застосувати до зображення віньєтування. Імітує спад освітленості на краях "
+"кадра і деякі інші крайові ефекти, що зазвичай виникають під час аналогового "
+"фотографування"
 
 #: operations/common/warp.c:26
 msgid "Move pixels"
@@ -3840,9 +3861,8 @@ msgid "Antialias using the Scale3X edge-extrapolation algorithm"
 msgstr ""
 
 #: operations/common-gpl3+/apply-lens.c:36
-#, fuzzy
 msgid "Lens refraction index"
-msgstr "Об’єктив"
+msgstr "Показник заломлення лінзи"
 
 #: operations/common-gpl3+/apply-lens.c:41
 msgid "Keep original surroundings"
@@ -4103,23 +4123,23 @@ msgstr "Поріг прозорості"
 
 #: operations/common-gpl3+/color-to-alpha.c:33
 msgid "The limit below which colors become transparent."
-msgstr ""
+msgstr "Межа, нижче від якої кольори стають прозорими."
 
 #: operations/common-gpl3+/color-to-alpha.c:36
 msgid "Opacity threshold"
-msgstr ""
+msgstr "Поріг непрозорості"
 
 #: operations/common-gpl3+/color-to-alpha.c:37
 msgid "The limit above which colors remain opaque."
-msgstr ""
+msgstr "Межа, вище від якої кольори стають непрозорими."
 
 #: operations/common-gpl3+/color-to-alpha.c:285
 msgid "Color to Alpha"
 msgstr "Колір у альфу"
 
-#: operations/common-gpl3+/color-to-alpha.c:289
+#: operations/common-gpl3+/color-to-alpha.c:291
 msgid "Convert a specified color to transparency, works best with white."
-msgstr ""
+msgstr "Робить заданий колір прозорим, найкраще працює з білим."
 
 #: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:42
 msgid "Tile size"
@@ -4127,7 +4147,7 @@ msgstr "Розмір плитки"
 
 #: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:43
 msgid "Average diameter of each tile (in pixels)"
-msgstr ""
+msgstr "Середній діаметр кожної плитки (у пікселях)"
 
 #: operations/common-gpl3+/cubism.c:35
 #, fuzzy
@@ -4265,14 +4285,16 @@ msgid "Polarization"
 msgstr "Поляризація"
 
 #: operations/common-gpl3+/diffraction-patterns.c:79
-#: operations/common-gpl3+/noise-solid.c:65 operations/common-gpl3+/plasma.c:55
-#: operations/common-gpl3+/sinus.c:77 operations/common-gpl3+/spiral.c:86
+#: operations/common-gpl3+/noise-solid.c:65
+#: operations/common-gpl3+/plasma.c:55 operations/common-gpl3+/sinus.c:77
+#: operations/common-gpl3+/spiral.c:86
 msgid "Width of the generated buffer"
 msgstr "Ширина створеного буфера"
 
 #: operations/common-gpl3+/diffraction-patterns.c:87
-#: operations/common-gpl3+/noise-solid.c:73 operations/common-gpl3+/plasma.c:63
-#: operations/common-gpl3+/sinus.c:85 operations/common-gpl3+/spiral.c:94
+#: operations/common-gpl3+/noise-solid.c:73
+#: operations/common-gpl3+/plasma.c:63 operations/common-gpl3+/sinus.c:85
+#: operations/common-gpl3+/spiral.c:94
 msgid "Height of the generated buffer"
 msgstr "Висота створеного буфера"
 
@@ -4455,50 +4477,40 @@ msgid "Emboss Type"
 msgstr "Барельєф"
 
 #: operations/common-gpl3+/emboss.c:32
-#, fuzzy
 msgid "Rendering type"
-msgstr "Обробка"
+msgstr "Тип обробки"
 
 #: operations/common-gpl3+/emboss.c:35
 msgid "Light angle (degrees)"
-msgstr ""
+msgstr "Кут освітлення (градусів)"
 
 #: operations/common-gpl3+/emboss.c:40
-#, fuzzy
 msgid "Elevation angle (degrees)"
-msgstr "Кут зчеплення зубців (у градусах):"
+msgstr "Кут підняття (у градусах):"
 
 #: operations/common-gpl3+/emboss.c:45
-#, fuzzy
 msgid "Filter width"
-msgstr "Ширина області дії ефектів фільтра"
+msgstr "Ширина фільтра"
 
 #: operations/common-gpl3+/emboss.c:272
-#, fuzzy
 msgid "Simulates an image created by embossing"
-msgstr "Надати зображенню вигляд барельєфа"
+msgstr "Надає зображенню вигляд барельєфа"
 
 #: operations/common-gpl3+/engrave.c:32
-#, fuzzy
 msgid "Resolution in pixels"
 msgstr "Роздільність у точках"
 
 #: operations/common-gpl3+/engrave.c:36 operations/common-gpl3+/engrave.c:37
-#, fuzzy
 msgid "Limit line width"
-msgstr ""
-"Перетворити гостре з'єднання на скісне, якщо гостре може розширитися до "
-"відстані більшої, ніж межа гострого, помноженого на товщину лінії від "
-"актуальної точки з'єднання."
+msgstr "Межа товщини лінії"
 
 #: operations/common-gpl3+/engrave.c:200
 msgid "Engrave"
 msgstr "Гравірування"
 
 #: operations/common-gpl3+/engrave.c:204
-#, fuzzy
 msgid "Simulate an antique engraving"
-msgstr "Гравірування"
+msgstr "Імітація античного гравіювання"
 
 #: operations/common-gpl3+/fractal-explorer.c:31
 #: operations/common-gpl3+/fractal-trace.c:26
@@ -4549,9 +4561,8 @@ msgid "Type of a fractal"
 msgstr "Тип фрактала"
 
 #: operations/common-gpl3+/fractal-explorer.c:59
-#, fuzzy
 msgid "Zoom in the fractal space"
-msgstr "Фрактальний шум"
+msgstr "Масштаб у фрактальному просторі"
 
 #: operations/common-gpl3+/fractal-explorer.c:64
 #: operations/common-gpl3+/lens-distortion.c:45
@@ -4559,9 +4570,8 @@ msgid "Shift X"
 msgstr "Зсув за X"
 
 #: operations/common-gpl3+/fractal-explorer.c:65
-#, fuzzy
 msgid "X shift in the fractal space"
-msgstr "Зсув за X"
+msgstr "Зсув за X у фрактальному просторі"
 
 #: operations/common-gpl3+/fractal-explorer.c:68
 #: operations/common-gpl3+/lens-distortion.c:49
@@ -4569,9 +4579,8 @@ msgid "Shift Y"
 msgstr "Зсув за Y"
 
 #: operations/common-gpl3+/fractal-explorer.c:69
-#, fuzzy
 msgid "Y shift in the fractal space"
-msgstr "Зсув за Y"
+msgstr "Зсув за Y у фрактальному просторі"
 
 #: operations/common-gpl3+/fractal-explorer.c:72
 msgid "CX"
@@ -4579,7 +4588,7 @@ msgstr "CX"
 
 #: operations/common-gpl3+/fractal-explorer.c:73
 msgid "CX (No effect in Mandelbrot and Sierpinski)"
-msgstr ""
+msgstr "CX (не діє для Мандельброта і Серпінського)"
 
 #: operations/common-gpl3+/fractal-explorer.c:78
 msgid "CY"
@@ -4587,22 +4596,19 @@ msgstr "CY"
 
 #: operations/common-gpl3+/fractal-explorer.c:79
 msgid "CY (No effect in Mandelbrot and Sierpinski)"
-msgstr ""
+msgstr "CY (не діє для Мандельброта і Серпінського)"
 
 #: operations/common-gpl3+/fractal-explorer.c:84
-#, fuzzy
 msgid "Red stretching factor"
-msgstr "_Червоний:"
+msgstr "Коефіцієнт розтягу червоного"
 
 #: operations/common-gpl3+/fractal-explorer.c:87
-#, fuzzy
 msgid "Green stretching factor"
-msgstr "_Зелений:"
+msgstr "Коефіцієнт розтягу зеленого"
 
 #: operations/common-gpl3+/fractal-explorer.c:90
-#, fuzzy
 msgid "Blue stretching factor"
-msgstr "С_иній:"
+msgstr "Коефіцієнт розтягу синього"
 
 #: operations/common-gpl3+/fractal-explorer.c:94
 #: operations/common-gpl3+/ripple.c:29
@@ -4614,48 +4620,41 @@ msgid "Cosine"
 msgstr "Косинус"
 
 #: operations/common-gpl3+/fractal-explorer.c:99
-#, fuzzy
 msgid "Red application mode"
-msgstr "_Червоний:"
+msgstr "Режим накладання червоного"
 
 #: operations/common-gpl3+/fractal-explorer.c:103
-#, fuzzy
 msgid "Green application mode"
-msgstr "_Зелений:"
+msgstr "Режим накладання зеленого"
 
 #: operations/common-gpl3+/fractal-explorer.c:107
-#, fuzzy
 msgid "Blue application mode"
-msgstr "С_иній:"
+msgstr "Режим накладання синього"
 
 #: operations/common-gpl3+/fractal-explorer.c:111
-#, fuzzy
 msgid "Red inversion"
-msgstr "Без інверсії"
+msgstr "Інверсія червоного"
 
 #: operations/common-gpl3+/fractal-explorer.c:112
-#, fuzzy
 msgid "Green inversion"
-msgstr "Без інверсії"
+msgstr "Інверсія зеленого"
 
 #: operations/common-gpl3+/fractal-explorer.c:113
-#, fuzzy
 msgid "Blue inversion"
-msgstr "Без інверсії"
+msgstr "Інверсія синього"
 
 #: operations/common-gpl3+/fractal-explorer.c:115
 msgid "Number of colors"
 msgstr "Кількість кольорів"
 
 #: operations/common-gpl3+/fractal-explorer.c:118
-#, fuzzy
 msgid "Loglog smoothing"
-msgstr "Використовувати згладжування \"log log\""
+msgstr "Згладжування \"log log\""
 
 #: operations/common-gpl3+/fractal-explorer.c:375
-#, fuzzy, c-format
+#, c-format
 msgid "Unsupported fractal type: %d"
-msgstr "Тип фрактала"
+msgstr "Непідтримуваний тип фрактала: %d"
 
 #: operations/common-gpl3+/fractal-explorer.c:432
 msgid "Fractal Explorer"
@@ -4666,42 +4665,40 @@ msgid ""
 "Rendering of multiple different fractal systems, with configurable coloring "
 "options."
 msgstr ""
+"Створення багатьох різних фрактальних систем з налаштуванням параметрів "
+"кольору."
 
 #: operations/common-gpl3+/fractal-trace.c:35
-#, fuzzy
 msgid "X1 value, position"
-msgstr "x1:"
+msgstr "Значення X1, положення"
 
 #: operations/common-gpl3+/fractal-trace.c:39
-#, fuzzy
 msgid "X2 value, position"
-msgstr "x2:"
+msgstr "Значення X2, положення"
 
 #: operations/common-gpl3+/fractal-trace.c:43
-#, fuzzy
 msgid "Y1 value, position"
-msgstr "y1:"
+msgstr "Значення Y1, положення"
 
 #: operations/common-gpl3+/fractal-trace.c:47
-#, fuzzy
 msgid "Y2 value, position"
-msgstr "y2:"
+msgstr "Значення Y2, положення"
 
 #: operations/common-gpl3+/fractal-trace.c:50
 msgid "JX"
-msgstr ""
+msgstr "JX"
 
 #: operations/common-gpl3+/fractal-trace.c:51
 msgid "Julia seed X value, position"
-msgstr ""
+msgstr "Базове значення X Джулії, положення"
 
 #: operations/common-gpl3+/fractal-trace.c:55
 msgid "JY"
-msgstr ""
+msgstr "JY"
 
 #: operations/common-gpl3+/fractal-trace.c:56
 msgid "Julia seed Y value, position"
-msgstr ""
+msgstr "Базове значення Y Джулії, положення"
 
 #: operations/common-gpl3+/fractal-trace.c:63
 #, fuzzy
@@ -4710,21 +4707,19 @@ msgstr "Довірче значення для адаптивного вибор
 
 #: operations/common-gpl3+/fractal-trace.c:69
 msgid "How to deal with pixels outside of the input buffer"
-msgstr ""
+msgstr "Що робити з пікселями за межами вхідного буфера"
 
 #: operations/common-gpl3+/fractal-trace.c:183
-#, fuzzy
 msgid "Unsupported fractal type"
-msgstr "Тип фрактала"
+msgstr "Непідтримуваний тип фрактала"
 
 #: operations/common-gpl3+/fractal-trace.c:248
 msgid "Fractal Trace"
 msgstr "Фрактальний слід"
 
 #: operations/common-gpl3+/fractal-trace.c:253
-#, fuzzy
 msgid "Transform the image with the fractals"
-msgstr "_Фрактали"
+msgstr "Перетворити зображення за допомогою фракталів"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:34
 #, fuzzy
@@ -4742,7 +4737,7 @@ msgstr "Вибіркове розмиття за Гаусом"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:380
 msgid "Blur neighboring pixels, but only in low-contrast areas"
-msgstr ""
+msgstr "Розмивати сусідні пікселі, але тільки на малоконтрастних ділянках"
 
 #: operations/common-gpl3+/illusion.c:28
 msgid "Type 1"
@@ -4757,16 +4752,14 @@ msgid "Division"
 msgstr "Ділення"
 
 #: operations/common-gpl3+/illusion.c:33
-#, fuzzy
 msgid "The number of divisions"
-msgstr "Кругові поділки"
+msgstr "Число поділів"
 
 #: operations/common-gpl3+/illusion.c:37
 msgid "Illusion type"
 msgstr "Тип ілюзії"
 
 #: operations/common-gpl3+/illusion.c:40
-#, fuzzy
 msgid "Type of illusion"
 msgstr "Тип ілюзії"
 
@@ -4779,14 +4772,12 @@ msgid "Superimpose many altered copies of the image."
 msgstr ""
 
 #: operations/common-gpl3+/lens-distortion.c:33
-#, fuzzy
 msgid "Main"
-msgstr "ГОЛОВНИЙ"
+msgstr "Головне"
 
 #: operations/common-gpl3+/lens-distortion.c:34
-#, fuzzy
 msgid "Amount of second-order distortion"
-msgstr "Обернути напрямок другого контуру"
+msgstr "Рівень викривлення другого порядку"
 
 #: operations/common-gpl3+/lens-distortion.c:37
 msgid "Edge"
@@ -4802,23 +4793,20 @@ msgid "Rescale overall image size"
 msgstr "Загальна яскравість зображення"
 
 #: operations/common-gpl3+/lens-distortion.c:46
-#, fuzzy
 msgid "Effect centre offset in X"
-msgstr "Відступ за X:"
+msgstr "Зміщення центра ефекту за X"
 
 #: operations/common-gpl3+/lens-distortion.c:50
-#, fuzzy
 msgid "Effect centre offset in Y"
-msgstr "Відступ за Y:"
+msgstr "Зміщення центра ефекту за Y"
 
 #: operations/common-gpl3+/lens-distortion.c:53
 msgid "Brighten"
 msgstr "Підсвічування"
 
 #: operations/common-gpl3+/lens-distortion.c:54
-#, fuzzy
 msgid "Adjust brightness in corners"
-msgstr "Налаштовування яскравості перегляду"
+msgstr "Налаштувати яскравість у кутках"
 
 #: operations/common-gpl3+/lens-distortion.c:505
 msgid "Lens Distortion"
@@ -4833,27 +4821,24 @@ msgid "X position"
 msgstr "Розташування за X"
 
 #: operations/common-gpl3+/lens-flare.c:29
-#, fuzzy
 msgid "X coordinates of the flare center"
-msgstr "Центр _X:"
+msgstr "Координата X центра відблиску"
 
 #: operations/common-gpl3+/lens-flare.c:34
 msgid "Y position"
 msgstr "Розташування за Y"
 
 #: operations/common-gpl3+/lens-flare.c:35
-#, fuzzy
 msgid "Y coordinates of the flare center"
-msgstr "Центр _Y:"
+msgstr "Координата Y центра відблиску"
 
 #: operations/common-gpl3+/lens-flare.c:510
 msgid "Lens Flare"
 msgstr "Відблиск лінзи"
 
 #: operations/common-gpl3+/lens-flare.c:514
-#, fuzzy
 msgid "Adds a lens flare effect."
-msgstr "Відблиск  лінзи"
+msgstr "Додає ефект відблиску лінзи"
 
 #: operations/common-gpl3+/maze.c:36
 #, fuzzy
@@ -4861,9 +4846,8 @@ msgid "Depth first"
 msgstr "Глибина:"
 
 #: operations/common-gpl3+/maze.c:37
-#, fuzzy
 msgid "Prim's algorithm"
-msgstr "_Алгоритм:"
+msgstr "Алгоритм Прима"
 
 #: operations/common-gpl3+/maze.c:56
 msgid "Algorithm type"
@@ -4927,9 +4911,8 @@ msgid "What shape to use for tiles"
 msgstr "Яку форму використати для плиток"
 
 #: operations/common-gpl3+/mosaic.c:48
-#, fuzzy
 msgid "Tile height"
-msgstr "Виключити висоту плитки із зсуву"
+msgstr "Висота плитки"
 
 #: operations/common-gpl3+/mosaic.c:49
 msgid "Apparent height of each tile (in pixels)"
@@ -5130,7 +5113,8 @@ msgstr "Олійна фарба"
 msgid "Emulate an oil painting"
 msgstr "Імітація олійного живопису"
 
-#: operations/common-gpl3+/photocopy.c:28 operations/common-gpl3+/softglow.c:33
+#: operations/common-gpl3+/photocopy.c:28
+#: operations/common-gpl3+/softglow.c:33
 msgid "Sharpness"
 msgstr "Різкість"
 
@@ -5254,7 +5238,6 @@ msgid "Amplitude"
 msgstr "Амплітуда"
 
 #: operations/common-gpl3+/ripple.c:42 operations/common-gpl3+/waves.c:44
-#, fuzzy
 msgid "Phase shift"
 msgstr "Зсув фази"
 
@@ -5281,9 +5264,8 @@ msgstr "Тіні"
 
 #: operations/common-gpl3+/shadows-highlights.c:29
 #: operations/common-gpl3+/shadows-highlights-correction.c:30
-#, fuzzy
 msgid "Adjust exposure of shadows"
-msgstr "Експозиція"
+msgstr "Змінити експозицію тіней"
 
 #: operations/common-gpl3+/shadows-highlights.c:32
 #: operations/common-gpl3+/shadows-highlights-correction.c:33
@@ -5292,21 +5274,18 @@ msgstr "Виблиски"
 
 #: operations/common-gpl3+/shadows-highlights.c:33
 #: operations/common-gpl3+/shadows-highlights-correction.c:34
-#, fuzzy
 msgid "Adjust exposure of highlights"
-msgstr "Експозиція"
+msgstr "Змінити експозицію світліих ділянок"
 
 #: operations/common-gpl3+/shadows-highlights.c:36
 #: operations/common-gpl3+/shadows-highlights-correction.c:37
-#, fuzzy
 msgid "White point adjustment"
-msgstr "Точка білого:"
+msgstr "Зміна білої точки"
 
 #: operations/common-gpl3+/shadows-highlights.c:37
 #: operations/common-gpl3+/shadows-highlights-correction.c:38
-#, fuzzy
 msgid "Shift white point"
-msgstr "Точка білого:"
+msgstr "Змістити білу точку"
 
 #: operations/common-gpl3+/shadows-highlights.c:41
 #, fuzzy
@@ -5325,15 +5304,13 @@ msgstr ""
 
 #: operations/common-gpl3+/shadows-highlights.c:49
 #: operations/common-gpl3+/shadows-highlights-correction.c:45
-#, fuzzy
 msgid "Shadows color adjustment"
-msgstr "Колір тіней"
+msgstr "Корекція кольору тіней"
 
 #: operations/common-gpl3+/shadows-highlights.c:50
 #: operations/common-gpl3+/shadows-highlights-correction.c:46
-#, fuzzy
 msgid "Adjust saturation of shadows"
-msgstr "Корекція насиченості"
+msgstr "Корекція насиченості тіней"
 
 #: operations/common-gpl3+/shadows-highlights.c:53
 #: operations/common-gpl3+/shadows-highlights-correction.c:49
@@ -5399,9 +5376,8 @@ msgid "Complexity"
 msgstr "Складність"
 
 #: operations/common-gpl3+/sinus.c:47
-#, fuzzy
 msgid "Complexity factor"
-msgstr "Складність:"
+msgstr "Коефіцієнт складності"
 
 #: operations/common-gpl3+/sinus.c:52
 #, fuzzy
@@ -5439,10 +5415,9 @@ msgstr "Синус"
 
 #: operations/common-gpl3+/sinus.c:322
 msgid "Generate complex sinusoidal textures"
-msgstr ""
+msgstr "Створення складних синусоїдних текстур"
 
 #: operations/common-gpl3+/softglow.c:26
-#, fuzzy
 msgid "Glow radius"
 msgstr "Радіус сяйва"
 
@@ -5460,24 +5435,20 @@ msgid "Logarithmic"
 msgstr "Логарифмічний"
 
 #: operations/common-gpl3+/spiral.c:33
-#, fuzzy
 msgid "Spiral type"
-msgstr "Спіраль"
+msgstr "Тип спіралі"
 
 #: operations/common-gpl3+/spiral.c:36
-#, fuzzy
 msgid "Spiral origin X coordinate"
-msgstr "Координата X початку сітки"
+msgstr "Координата X центра спіралі"
 
 #: operations/common-gpl3+/spiral.c:42
-#, fuzzy
 msgid "Spiral origin Y coordinate"
-msgstr "Координата Y початку сітки"
+msgstr "Координата Y центра спіралі"
 
 #: operations/common-gpl3+/spiral.c:48
-#, fuzzy
 msgid "Spiral radius"
-msgstr "<b>Alt</b>: заблокувати радіус спіралі"
+msgstr "Радіус спіралі"
 
 #: operations/common-gpl3+/spiral.c:53
 msgid "Base"
@@ -5485,7 +5456,7 @@ msgstr "Основа"
 
 #: operations/common-gpl3+/spiral.c:54
 msgid "Logarithmic spiral base"
-msgstr ""
+msgstr "Основа логарифмічної спіралі"
 
 #: operations/common-gpl3+/spiral.c:60
 msgid "Balance"
@@ -5496,38 +5467,32 @@ msgid "Area balance between the two colors"
 msgstr ""
 
 #: operations/common-gpl3+/spiral.c:65
-#, fuzzy
 msgid "Spiral rotation"
-msgstr "Спіраль"
+msgstr "Поворот спіралі"
 
 #: operations/common-gpl3+/spiral.c:71
-#, fuzzy
 msgid "Counter-clockwise"
-msgstr "HSV (відтінок проти стрілки годинника)"
+msgstr "Проти стрілки годинника"
 
 #: operations/common-gpl3+/spiral.c:77
-#, fuzzy
 msgid "Spiral swirl direction"
-msgstr "Вихор"
+msgstr "Напрям закручування спіралі"
 
 #: operations/common-gpl3+/spiral.c:442
 msgid "Spiral"
 msgstr "Спіраль"
 
 #: operations/common-gpl3+/spiral.c:447
-#, fuzzy
 msgid "Spiral renderer"
-msgstr "Спіраль"
+msgstr "Побудова спіралі"
 
 #: operations/common-gpl3+/supernova.c:34
-#, fuzzy
 msgid "X coordinates of the center of supernova"
-msgstr "Центр _X:"
+msgstr "Координата X центра наднової"
 
 #: operations/common-gpl3+/supernova.c:40
-#, fuzzy
 msgid "Y coordinates of the center of supernova"
-msgstr "Центр _Y:"
+msgstr "Координата Y центра наднової"
 
 #: operations/common-gpl3+/supernova.c:46
 msgid "Radius of supernova"
@@ -5602,20 +5567,17 @@ msgstr ""
 
 #: operations/common-gpl3+/tile-glass.c:28
 #: operations/common-gpl3+/tile-paper.c:39
-#, fuzzy
 msgid "Tile Width"
-msgstr "Виключити ширину плитки із зсуву"
+msgstr "Ширина плитки"
 
 #: operations/common-gpl3+/tile-glass.c:34
 #: operations/common-gpl3+/tile-paper.c:46
-#, fuzzy
 msgid "Tile Height"
-msgstr "Виключити висоту плитки із зсуву"
+msgstr "Висота плитки"
 
 #: operations/common-gpl3+/tile-glass.c:234
-#, fuzzy
 msgid "Tile Glass"
-msgstr "_Скляна плитка…"
+msgstr "Скляна плитка"
 
 #: operations/common-gpl3+/tile-glass.c:239
 msgid "Simulate distortion caused by rectangular glass tiles"
@@ -5681,17 +5643,13 @@ msgid "Centering"
 msgstr "Центрування"
 
 #: operations/common-gpl3+/tile-paper.c:68
-#, fuzzy
 msgid "Centering of the tiles"
-msgstr "Центрування"
+msgstr "Центрування плиток"
 
 #: operations/common-gpl3+/tile-paper.c:70
 #: operations/common-gpl3+/tile-paper.c:73
-#, fuzzy
 msgid "Background type"
-msgstr ""
-"Тип тла шару. \"Копіювати\" призведе до копіювання попереднього шару перед "
-"виконанням малювання."
+msgstr "Тип тла"
 
 #: operations/common-gpl3+/tile-paper.c:437
 msgid "Paper Tile"
@@ -5702,9 +5660,8 @@ msgid "Cut image into paper tiles, and slide them"
 msgstr ""
 
 #: operations/common-gpl3+/value-propagate.c:29
-#, fuzzy
 msgid "More white (larger value)"
-msgstr "Степінь відбиття: більше значення дає «яскравіше»."
+msgstr "Більше білого (більше значення)"
 
 #: operations/common-gpl3+/value-propagate.c:30
 msgid "More black (smaller value)"
@@ -5721,19 +5678,16 @@ msgid "Color to peaks"
 msgstr "перевірка пікових значень звуку"
 
 #: operations/common-gpl3+/value-propagate.c:33
-#, fuzzy
 msgid "Only color"
 msgstr "Лише колір"
 
 #: operations/common-gpl3+/value-propagate.c:34
-#, fuzzy
 msgid "More opaque"
-msgstr "Непрозорість шару: зробити непрозорішим"
+msgstr "Непрозоріше"
 
 #: operations/common-gpl3+/value-propagate.c:35
-#, fuzzy
 msgid "More transparent"
-msgstr "Непрозорість шару: зробити прозорішим"
+msgstr "Прозоріше"
 
 #: operations/common-gpl3+/value-propagate.c:41
 msgid "Mode of value propagation"
@@ -5741,12 +5695,8 @@ msgstr ""
 
 #: operations/common-gpl3+/value-propagate.c:43
 #: operations/common-gpl3+/value-propagate.c:44
-#, fuzzy
 msgid "Lower threshold"
-msgstr ""
-"Нижній поріг відмінності кольорів. Пікселі, які відрізняються за кольором "
-"менше ніж на це значення (у порівнянні з відповідним пікселем маски), "
-"отримують нижнє значення непрозорості (зазвичай, прозорий)"
+msgstr "Нижній поріг"
 
 #: operations/common-gpl3+/value-propagate.c:47
 #: operations/common-gpl3+/value-propagate.c:48
@@ -5768,36 +5718,32 @@ msgid "To top"
 msgstr "Вгору"
 
 #: operations/common-gpl3+/value-propagate.c:62
-#, fuzzy
 msgid "Propagate to top"
-msgstr "По_ширення значення…"
+msgstr "Поширити вгору"
 
 #: operations/common-gpl3+/value-propagate.c:64
 msgid "To left"
 msgstr "Ліворуч"
 
 #: operations/common-gpl3+/value-propagate.c:65
-#, fuzzy
 msgid "Propagate to left"
-msgstr "По_ширення значення…"
+msgstr "Поширити вліво"
 
 #: operations/common-gpl3+/value-propagate.c:67
 msgid "To right"
 msgstr "Праворуч"
 
 #: operations/common-gpl3+/value-propagate.c:68
-#, fuzzy
 msgid "Propagate to right"
-msgstr "По_ширення значення…"
+msgstr "Поширити вправо"
 
 #: operations/common-gpl3+/value-propagate.c:70
 msgid "To bottom"
 msgstr "Вниз"
 
 #: operations/common-gpl3+/value-propagate.c:71
-#, fuzzy
 msgid "Propagate to bottom"
-msgstr "По_ширення значення…"
+msgstr "Поширити вниз"
 
 #: operations/common-gpl3+/value-propagate.c:73
 #: operations/common-gpl3+/value-propagate.c:74
@@ -5806,14 +5752,12 @@ msgstr ""
 
 #: operations/common-gpl3+/value-propagate.c:76
 #: operations/common-gpl3+/value-propagate.c:77
-#, fuzzy
 msgid "Propagating alpha channel"
-msgstr "Перетворити канал на прозорий"
+msgstr "Поширення альфа-каналу"
 
 #: operations/common-gpl3+/value-propagate.c:641
-#, fuzzy
 msgid "Value Propagate"
-msgstr "По_ширення значення…"
+msgstr "Поширення значення"
 
 #: operations/common-gpl3+/value-propagate.c:645
 msgid ""
@@ -5861,9 +5805,8 @@ msgid "Dots"
 msgstr "Крапки"
 
 #: operations/common-gpl3+/video-degradation.c:56
-#, fuzzy
 msgid "Type of RGB pattern to use"
-msgstr "Тип збереження RGB"
+msgstr "Тип шаблону RGB"
 
 #: operations/common-gpl3+/video-degradation.c:58
 #, fuzzy
@@ -5883,9 +5826,8 @@ msgid "Whether to rotate the RGB pattern by ninety degrees."
 msgstr ""
 
 #: operations/common-gpl3+/video-degradation.c:322
-#, fuzzy
 msgid "Video Degradation"
-msgstr "_Деградація відео…"
+msgstr "Деградація відео"
 
 #: operations/common-gpl3+/video-degradation.c:326
 msgid ""
@@ -5894,41 +5836,36 @@ msgid ""
 msgstr ""
 
 #: operations/common-gpl3+/waves.c:37
-#, fuzzy
 msgid "Amplitude of the ripple"
-msgstr "Пульсація"
+msgstr "Амплітуда хвиль"
 
 #: operations/common-gpl3+/waves.c:41
-#, fuzzy
 msgid "Period (wavelength) of the ripple"
-msgstr "Довжина хвилі:"
+msgstr "Період (довжина хвилі) "
 
 #: operations/common-gpl3+/waves.c:47
 msgid "Aspect ratio"
 msgstr "Відношення сторін"
 
 #: operations/common-gpl3+/waves.c:54
-#, fuzzy
 msgid "Clamp deformation"
-msgstr "Затискання"
+msgstr "Обмежити деформацію"
 
 #: operations/common-gpl3+/waves.c:55
 msgid "Limit deformation in the image area."
-msgstr ""
+msgstr "Обмежити деформацію областю зображення."
 
 #: operations/common-gpl3+/waves.c:196
 msgid "Waves"
 msgstr "Хвилі"
 
 #: operations/common-gpl3+/waves.c:201
-#, fuzzy
 msgid "Distort the image with waves"
-msgstr "Викривити зображення кадру за хвилястим шаблоном."
+msgstr "Викривити зображення хвилями"
 
 #: operations/common-gpl3+/whirl-pinch.c:37
-#, fuzzy
 msgid "Whirl angle (degrees)"
-msgstr "Кут вихру"
+msgstr "Кут вихору (градусів)"
 
 #: operations/common-gpl3+/whirl-pinch.c:42
 #, fuzzy
@@ -5940,6 +5877,8 @@ msgid ""
 "Radius (1.0 is the largest circle that fits in the image, and 2.0 goes all "
 "the way to the corners)"
 msgstr ""
+"Радіус (1.0 - найбільше коло, яке можна вписати в зображення; 2.0 - охоплює "
+"разом з кутами)"
 
 #: operations/common-gpl3+/whirl-pinch.c:260
 msgid "Whirl Pinch"
@@ -5987,14 +5926,12 @@ msgid "Style"
 msgstr "Стиль"
 
 #: operations/common-gpl3+/wind.c:48
-#, fuzzy
 msgid "Style of effect"
-msgstr "С_тиль"
+msgstr "Стиль ефекту"
 
 #: operations/common-gpl3+/wind.c:53
-#, fuzzy
 msgid "Direction of the effect"
-msgstr "напрямок"
+msgstr "Напрямок ефекту"
 
 #: operations/common-gpl3+/wind.c:55
 #, fuzzy
@@ -6011,7 +5948,7 @@ msgstr ""
 
 #: operations/common-gpl3+/wind.c:65
 msgid "Higher values increase the magnitude of the effect"
-msgstr ""
+msgstr "Більші значення підсилюють ефект"
 
 #: operations/common-gpl3+/wind.c:565
 #, fuzzy
@@ -6064,8 +6001,8 @@ msgstr "Зразок"
 #: operations/core/clone.c:26
 msgid "The reference ID used as input (for use in XML)."
 msgstr ""
-"Еталонний ідентифікатор, який використовується як вхідні дані (для"
-" використання у XML)."
+"Еталонний ідентифікатор, який використовується як вхідні дані (для "
+"використання у XML)."
 
 #: operations/core/clone.c:110
 msgid "Clone"
@@ -6086,18 +6023,16 @@ msgid "Convert the data to the specified format"
 msgstr "Перетворити дані до вказаного формату"
 
 #: operations/core/crop.c:45
-#, fuzzy
 msgid "Reset origin"
-msgstr "Походження"
+msgstr "Скинути опорну точку"
 
 #: operations/core/crop.c:226
 msgid "Crop"
 msgstr "Кадрування"
 
 #: operations/core/crop.c:227
-#, fuzzy
 msgid "Crop a buffer"
-msgstr "Обрізати"
+msgstr "Обрізати буфер"
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/png-load.c:29
@@ -6107,7 +6042,6 @@ msgid "URI"
 msgstr "Адреса"
 
 #: operations/core/load.c:31
-#, fuzzy
 msgid "URI of file to load."
 msgstr "Адреса файлу для завантаження."
 
@@ -6126,19 +6060,16 @@ msgid "No operation (can be used as a routing point)"
 msgstr ""
 
 #: operations/external/exr-save.cc:25
-#, fuzzy
 msgid "path of file to write to."
-msgstr "Шлях до цільового файлу для запису буфера Gegl."
+msgstr "шлях до цільового файлу для запису."
 
 #: operations/external/exr-save.cc:27
-#, fuzzy
 msgid "tile size to use."
-msgstr "Використовувати збережені розмір та позицію плитки"
+msgstr "розмір плитки."
 
 #: operations/external/ff-load.c:30
-#, fuzzy
 msgid "Path of video file to load"
-msgstr "Шлях для завантаження файлу буфера Gegl."
+msgstr "Шлях до відеофайлу для завантаження"
 
 #: operations/external/ff-load.c:32
 msgid "Frame number"
@@ -6185,18 +6116,15 @@ msgid "audio"
 msgstr "Звук"
 
 #: operations/external/ff-load.c:802
-#, fuzzy
 msgid "FFmpeg Frame Loader"
-msgstr "Клас завантажувача ресурсів:"
+msgstr "Завантажувач кадрів FFmpeg"
 
 #: operations/external/ff-load.c:804
-#, fuzzy
 msgid "FFmpeg video frame importer."
-msgstr "Параметри FFMPEG-кодування відео"
+msgstr "Імпортер кадрів відео FFmpeg"
 
 #: operations/external/ff-save.c:30 operations/external/png-save.c:27
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
-#, fuzzy
 msgid "Target path and filename, use '-' for stdout."
 msgstr "Цільовий шлях і назва файлу; вкажіть '-' для stdout"
 
@@ -6210,27 +6138,24 @@ msgid ""
 msgstr ""
 
 #: operations/external/ff-save.c:35
-#, fuzzy
 msgid "audio sample rate"
-msgstr "Типова частота дискретизації звуку"
+msgstr "частота дискретизації звуку"
 
 #: operations/external/ff-save.c:36
 msgid "-1 means autodetect on first audio fragment"
 msgstr "-1 означає «автоматично визначити перший звуковий фрагмент»"
 
 #: operations/external/ff-save.c:38
-#, fuzzy
 msgid "audio bitrate in kb/s"
-msgstr "Швидкість потоку звуку:"
+msgstr "швидкість потоку звуку в кбіт/сек"
 
 #: operations/external/ff-save.c:39 operations/external/ff-save.c:47
 msgid "Target encoded video bitrate in kb/s"
 msgstr ""
 
 #: operations/external/ff-save.c:41
-#, fuzzy
 msgid "Frames/second"
-msgstr "Частота кадрів в кадрах/сек"
+msgstr "Кадрів/секунду"
 
 #: operations/external/ff-save.c:44
 msgid "Video codec"
@@ -6242,14 +6167,12 @@ msgid ""
 msgstr ""
 
 #: operations/external/ff-save.c:46
-#, fuzzy
 msgid "video bitrate in kb/s"
-msgstr "Встановити допуск швидкості потоку відео (кбіт/сек)"
+msgstr "швидкість потоку відео в кбіт/сек"
 
 #: operations/external/ff-save.c:48
-#, fuzzy
 msgid "Video bufsize"
-msgstr "Розмір буфера:"
+msgstr "Розмір буфера відео"
 
 #: operations/external/ff-save.c:50
 msgid "Container format"
@@ -6260,65 +6183,56 @@ msgid "Container format to use, or auto to autodetect based on file extension."
 msgstr ""
 
 #: operations/external/ff-save.c:54
-#, fuzzy
 msgid "global quality"
-msgstr "Якість:"
+msgstr "загальна якість"
 
 #: operations/external/ff-save.c:55
 msgid "noise reduction"
 msgstr "Зменшення шумності"
 
 #: operations/external/ff-save.c:56
-#, fuzzy
 msgid "scenechange threshold"
-msgstr "Постеризація"
+msgstr "поріг зміни сцени"
 
 #: operations/external/ff-save.c:57
 msgid "video bitrate min"
-msgstr ""
+msgstr "мін. швидкість потоку відео"
 
 #: operations/external/ff-save.c:58
 msgid "video bitrate max"
-msgstr ""
+msgstr "макс. швидкість потоку відео"
 
 #: operations/external/ff-save.c:59
-#, fuzzy
 msgid "video bitrate tolerance"
-msgstr "Встановити допуск швидкості потоку відео (кбіт/сек)"
+msgstr "допуск швидкості потоку відео"
 
 #: operations/external/ff-save.c:61
-#, fuzzy
 msgid "keyint-min"
-msgstr "Min"
+msgstr "keyint-min"
 
 #: operations/external/ff-save.c:62
 msgid "trellis"
-msgstr ""
+msgstr "сітка"
 
 #: operations/external/ff-save.c:63
-#, fuzzy
 msgid "qmin"
-msgstr "qmin:"
+msgstr "qmin"
 
 #: operations/external/ff-save.c:64
-#, fuzzy
 msgid "qmax"
-msgstr "qmax:"
+msgstr "qmax"
 
 #: operations/external/ff-save.c:65
-#, fuzzy
 msgid "max_qdiff"
-msgstr "qdiff:"
+msgstr "max_qdiff"
 
 #: operations/external/ff-save.c:66
-#, fuzzy
 msgid "me_range"
-msgstr "Ще не реалізовано"
+msgstr "me_range"
 
 #: operations/external/ff-save.c:67
-#, fuzzy
 msgid "max_b_frames"
-msgstr "Максимальна кількість B-кадрів у послідовності"
+msgstr "max_b_frames"
 
 #: operations/external/ff-save.c:68
 msgid "gop-size"
@@ -6333,134 +6247,114 @@ msgid "qblur"
 msgstr "qblur"
 
 #: operations/external/ff-save.c:71
-#, fuzzy
 msgid "i-quant-factor"
-msgstr "Нелінійне квантування"
+msgstr "i-quant-factor"
 
 #: operations/external/ff-save.c:72
-#, fuzzy
 msgid "i-quant-offset"
-msgstr "Нелінійне квантування"
+msgstr "i-quant-offset"
 
 #: operations/external/ff-save.c:73
-#, fuzzy
 msgid "me-subpel-quality"
-msgstr "Ф-я порівн. Subpel:"
+msgstr "me-subpel-quality"
 
 #: operations/external/ff-save.c:1122
 msgid "FFmpeg Frame Saver"
 msgstr "Записувач кадрів FFmpeg"
 
 #: operations/external/ff-save.c:1124
-#, fuzzy
 msgid "FFmpeg video output sink"
-msgstr "Параметри FFMPEG-кодування відео"
+msgstr "Приймач вихідного відео FFmpeg"
 
 #: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
 #: operations/external/svg-load.c:26 operations/external/tiff-load.c:26
 #: operations/external/webp-load.c:26
-#, fuzzy
 msgid "Path of file to load"
-msgstr "Шлях для завантаження файлу буфера Gegl."
+msgstr "Шлях до файлу для завантаження"
 
 #: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
 #: operations/external/tiff-load.c:28 operations/external/webp-load.c:28
-#, fuzzy
 msgid "URI for file to load"
-msgstr "Адреса файлу для завантаження."
+msgstr "Адреса файлу для завантаження"
 
 #: operations/external/jp2-load.c:128
-#, fuzzy
 msgid "Unknown JPEG 2000 image format"
 msgstr "Невідомий формат зображення JPEG 2000"
 
 #: operations/external/jp2-load.c:135
-#, fuzzy
 msgid "Unable to open JPEG 2000 image"
 msgstr "Не вдалось відкрити зображення JPEG 2000"
 
 #: operations/external/jp2-load.c:142
-#, fuzzy
 msgid "Unable to create output color profile"
 msgstr "Не вдалось створити вихідний колірний профіль"
 
 #: operations/external/jp2-load.c:150
-#, fuzzy
 msgid "Unable to convert image to sRGB color space"
 msgstr "Не вдалось перетворити зображення у колірний простір sRGB"
 
 #: operations/external/jp2-load.c:157
-#, fuzzy, c-format
+#, c-format
 msgid "Unsupported non-RGB JPEG 2000 file with %d components"
 msgstr "Непідтримуваний не-RGB файл JPEG 2000 з %d компонентів"
 
 #: operations/external/jp2-load.c:169
-#, fuzzy, c-format
+#, c-format
 msgid "Unsupported JPEG 2000 file with depth %d"
 msgstr "Непідтримуваний файл JPEG 2000 з глибиною %d"
 
 #: operations/external/jp2-load.c:195
-#, fuzzy
 msgid "Components of JPEG 2000 input don't match"
 msgstr "Невідповідні компоненти JPEG 2000 на вході"
 
 #: operations/external/jp2-load.c:257
-#, fuzzy
 msgid "could not create a new Jasper stream"
 msgstr "не вдалось створити новий потік Jasper"
 
 #: operations/external/jp2-load.c:277 operations/external/jp2-load.c:279
-#, fuzzy, c-format
+#, c-format
 msgid "failed to open JPEG 2000 from %s"
 msgstr "не вдалось відкрити JPEG 2000 з %s"
 
 #: operations/external/jp2-load.c:293
-#, fuzzy
 msgid "could not query JPEG 2000 file"
 msgstr "не вдалось запитати файл JPEG 2000"
 
 #: operations/external/jp2-load.c:349
-#, fuzzy
 msgid "One or more of R, G, B components are missing"
 msgstr "Відсутній один або більше компонентів R, G, B"
 
 #: operations/external/jp2-load.c:357
 msgid "One or more of R, G, B components have signed data"
-msgstr ""
+msgstr "Один або більше компонентів R, G, B мають дані зі знаком"
 
 #: operations/external/jp2-load.c:390
-#, fuzzy, c-format
+#, c-format
 msgid "Error reading row %d component %d"
 msgstr "Помилка читання рядка %d компонента %d"
 
 #: operations/external/jp2-load.c:525
-#, fuzzy
 msgid "JPEG 2000 File Loader"
 msgstr "Завантажувач файлів JPEG 2000"
 
 #: operations/external/jp2-load.c:527
-#, fuzzy
 msgid "JPEG 2000 image loader using jasper."
 msgstr "Завантажувач файлів JPEG 2000 з використанням jasper."
 
 #: operations/external/jpg-load.c:27
-#, fuzzy
 msgid "URI of file to load"
-msgstr "Адреса файлу для завантаження."
+msgstr "Адреса файлу для завантаження"
 
 #: operations/external/jpg-load.c:366
-#, fuzzy
 msgid "JPEG File Loader"
 msgstr "Завантажувач файлів JPEG"
 
 #: operations/external/jpg-load.c:368
-#, fuzzy
 msgid "JPEG image loader using libjpeg"
 msgstr "Завантажувач файлів JPEG з використанням libjpeg"
 
 #: operations/external/jpg-save.c:26 operations/external/npy-save.c:32
 #: operations/external/tiff-save.c:26 operations/external/webp-save.c:26
-#, fuzzy
 msgid "Target path and filename, use '-' for stdout"
 msgstr "Цільовий шлях і назва файлу; вкажіть '-' для stdout"
 
@@ -6470,7 +6364,6 @@ msgid "Quality"
 msgstr "Якість"
 
 #: operations/external/jpg-save.c:29
-#, fuzzy
 msgid "JPEG compression quality (between 1 and 100)"
 msgstr "Якість стиску JPEG (від 1 до 100)"
 
@@ -6479,7 +6372,6 @@ msgid "Smoothing"
 msgstr "Згладжування"
 
 #: operations/external/jpg-save.c:33
-#, fuzzy
 msgid "Smoothing factor from 1 to 100; 0 disables smoothing"
 msgstr "Коефіцієнт згладжування від 1 до 100; 0 - вимкнути згладжування"
 
@@ -6488,27 +6380,24 @@ msgid "Optimize"
 msgstr "Оптимізувати"
 
 #: operations/external/jpg-save.c:37
-#, fuzzy
 msgid "Use optimized huffman tables"
-msgstr "Використовувати палітру оптимізовану для WWW"
+msgstr "Використовувати оптимізовані таблиці Гаффмана"
 
 #: operations/external/jpg-save.c:38
 msgid "Progressive"
 msgstr "Прогресивне"
 
 #: operations/external/jpg-save.c:39
-#, fuzzy
 msgid "Create progressive JPEG images"
-msgstr "Прогресивний jpeg:"
+msgstr "Створити прогресивні JPEG зображення"
 
 #: operations/external/jpg-save.c:40
 msgid "Grayscale"
 msgstr "Відтінки сірого"
 
 #: operations/external/jpg-save.c:41
-#, fuzzy
 msgid "Create a grayscale (monochrome) image"
-msgstr "Переводить зображення у відтінки сірого"
+msgstr "Створити зображення у відтінках сірого (монохромне)"
 
 #: operations/external/jpg-save.c:303
 msgid "JPEG File Saver"
@@ -6519,9 +6408,8 @@ msgid "JPEG image saver, using libjpeg"
 msgstr "Записувач файлів JPEG з використанням libjpeg"
 
 #: operations/external/lcms-from-profile.c:24
-#, fuzzy
 msgid "Source Profile"
-msgstr "_Профіль:"
+msgstr "Профіль джерела"
 
 #: operations/external/lcms-from-profile.c:25
 msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
@@ -6555,7 +6443,6 @@ msgid "Black point compensation"
 msgstr "Компенсація чорної точки"
 
 #: operations/external/lcms-from-profile.c:48
-#, fuzzy
 msgid "Convert using black point compensation."
 msgstr "Перетворити з використанням компенсації чорної точки."
 
@@ -6581,14 +6468,12 @@ msgid "Log of the error weighting"
 msgstr "З_берегти журнал помилок у файлі…"
 
 #: operations/external/matting-levin.c:30
-#, fuzzy
 msgid "Radius of the processing window"
-msgstr "Розріджені пікселі (_радіус вікна):"
+msgstr "Радіус вікна обробки"
 
 #: operations/external/matting-levin.c:34
-#, fuzzy
 msgid "Alpha threshold for multilevel processing"
-msgstr "Поріг _альфа-каналу:"
+msgstr "Поріг альфи для багаторівневої обробки"
 
 #: operations/external/matting-levin.c:39
 #, fuzzy
@@ -6627,9 +6512,8 @@ msgid "Model - basic element we operate on"
 msgstr ""
 
 #: operations/external/npd.c:26
-#, fuzzy
 msgid "Square Size"
-msgstr "Розмір квадрата (у пк):"
+msgstr "Розмір квадрата"
 
 #: operations/external/npd.c:28
 msgid "Size of an edge of square the mesh consists of"
@@ -6640,14 +6524,12 @@ msgid "Rigidity"
 msgstr "Жорсткість"
 
 #: operations/external/npd.c:32
-#, fuzzy
 msgid "The number of deformation iterations"
-msgstr "Кількість ітерацій"
+msgstr "Кількість ітерацій деформації"
 
 #: operations/external/npd.c:34
-#, fuzzy
 msgid "ASAP Deformation"
-msgstr "Деформація за сіткою"
+msgstr "Деформація ASAP"
 
 #: operations/external/npd.c:35
 msgid "ASAP deformation is performed when TRUE, ARAP deformation otherwise"
@@ -6673,9 +6555,8 @@ msgid "Alpha parameter of MLS weights"
 msgstr ""
 
 #: operations/external/npd.c:44
-#, fuzzy
 msgid "Preserve Model"
-msgstr "Резервувати"
+msgstr "Зберегти модель"
 
 #: operations/external/npd.c:45
 #, fuzzy
@@ -6689,7 +6570,7 @@ msgstr ""
 
 #: operations/external/npd.c:257
 msgid "Performs n-point image deformation"
-msgstr ""
+msgstr "Виконує n-точкову деформацію зображення"
 
 #: operations/external/npy-save.c:215
 msgid "NumPy File Saver"
@@ -6740,9 +6621,8 @@ msgid "Hardness of the brush, 0.0 for a soft brush, 1.0 for a hard brush"
 msgstr ""
 
 #: operations/external/path.c:44
-#, fuzzy
 msgid "Fill rule"
-msgstr "Зміна правила заповнення"
+msgstr "Правило заповнення"
 
 #: operations/external/path.c:45
 msgid "How to determine what to fill (nonzero|evenodd)"
@@ -6825,7 +6705,7 @@ msgstr "Бітова глибина"
 
 #: operations/external/png-save.c:32 operations/external/ppm-save.c:30
 msgid "8 and 16 are the currently accepted values."
-msgstr ""
+msgstr "Наразі допустимі значення 8 і 16."
 
 #: operations/external/png-save.c:256
 msgid "PNG File Saver"
@@ -6869,7 +6749,7 @@ msgstr "Завантажувач файлів RGBE."
 
 #: operations/external/rgbe-load.c:138
 msgid "RGBE image loader (Radiance HDR format)."
-msgstr ""
+msgstr "Завантажувач зображень RGBE (формат Radiance HDR)."
 
 #: operations/external/rgbe-save.c:85
 msgid "RGBE File Saver"
@@ -6885,9 +6765,8 @@ msgid "Pixbuf location"
 msgstr "Растрова піктограма"
 
 #: operations/external/save-pixbuf.c:29
-#, fuzzy
 msgid "The location where to store the output GdkPixbuf."
-msgstr "Каталог, у якому зберігатиметься виведений GeglBuffer"
+msgstr "ісце, де зберігатиметься виведений GdkPixbuf."
 
 #: operations/external/save-pixbuf.c:111
 msgid "Store in GdkPixbuf"
@@ -6898,14 +6777,12 @@ msgid "Store image in a GdkPixbuf."
 msgstr "Зберегти зображення в GdkPixbuf"
 
 #: operations/external/sdl-display.c:27
-#, fuzzy
 msgid "Icon title"
-msgstr "З_аголовок:"
+msgstr "Назва піктограми"
 
 #: operations/external/sdl-display.c:28
-#, fuzzy
 msgid "Icon to be used for output window"
-msgstr "_Використати вікно виведення"
+msgstr "Піктограма, що буде використана для вікна виведення"
 
 #: operations/external/sdl-display.c:168
 #, fuzzy
@@ -6920,15 +6797,13 @@ msgstr ""
 
 #: operations/external/svg-load.c:31 operations/external/v4l.c:29
 #: operations/workshop/external/v4l2.c:27
-#, fuzzy
 msgid "Width for rendered image"
-msgstr "Ширина зображення"
+msgstr "Ширина обробленого зображення"
 
 #: operations/external/svg-load.c:33 operations/external/v4l.c:32
 #: operations/workshop/external/v4l2.c:29
-#, fuzzy
 msgid "Height for rendered image"
-msgstr "Висота зображення"
+msgstr "Висота обробленого зображення"
 
 #: operations/external/svg-load.c:291
 msgid "SVG File Loader"
@@ -6995,9 +6870,8 @@ msgid "Alignment for multi-line text (0=Left, 1=Center, 2=Right)"
 msgstr ""
 
 #: operations/external/text.c:57
-#, fuzzy
 msgid "Vertical justification"
-msgstr "Розподіл"
+msgstr "Вертикальне вирівнювання"
 
 #: operations/external/text.c:59
 msgid "Vertical text alignment (0=Top, 1=Middle, 2=Bottom)"
@@ -7017,16 +6891,15 @@ msgstr "Обробка тексту"
 
 #: operations/external/text.c:345
 msgid "Display a string of text using pango and cairo."
-msgstr ""
+msgstr "Показує рядок тексту з використанням pango й cairo."
 
 #: operations/external/tiff-load.c:30
 msgid "Directory"
 msgstr "Каталог"
 
 #: operations/external/tiff-load.c:31
-#, fuzzy
 msgid "Image file directory (subfile)"
-msgstr "Файл є текою"
+msgstr "Тека файлу зображення (підфайл)"
 
 #: operations/external/tiff-load.c:872
 msgid "TIFF File Loader"
@@ -7049,9 +6922,8 @@ msgid "Path"
 msgstr "Контур"
 
 #: operations/external/v4l.c:27
-#, fuzzy
 msgid "Path to v4l device"
-msgstr "Пристрій"
+msgstr "Шлях до пристрою v4l"
 
 #: operations/external/v4l.c:34 operations/workshop/external/v4l2.c:30
 msgid "Frame"
@@ -7070,47 +6942,41 @@ msgid "autotrigger reload this many times a second."
 msgstr ""
 
 #: operations/external/v4l.c:331
-#, fuzzy
 msgid "Video4Linux Frame Source"
-msgstr "Замінити вибране (джерело - активний кадр)"
+msgstr "Джерело кадрів Video4Linux"
 
 #: operations/external/v4l.c:333
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
 msgstr ""
 
 #: operations/external/vector-fill.c:27
-#, fuzzy
 msgid "Color of paint to use for filling."
-msgstr "Корекція заливанням кольором"
+msgstr "Колір, що використовується для заповнення."
 
 #: operations/external/vector-fill.c:30
-#, fuzzy
 msgid "The fill opacity to use."
-msgstr "Непрозорість заповнення:"
+msgstr "Непрозорість заповнення."
 
 #. XXX: replace with enum?
 #: operations/external/vector-fill.c:34
-#, fuzzy
 msgid "Fill rule."
-msgstr "Зміна правила заповнення"
+msgstr "Правило заповнення."
 
 #: operations/external/vector-fill.c:35
 msgid "how to determine what to fill (nonzero|evenodd)"
 msgstr ""
 
 #: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
-#, fuzzy
 msgid "svg style description of transform."
-msgstr "Перетворення вбудованого SVG неможливе."
+msgstr "опис перетворення в стилі svg."
 
 #: operations/external/vector-fill.c:276
 msgid "Fill Path"
 msgstr "Заповнити контур"
 
 #: operations/external/vector-fill.c:279
-#, fuzzy
 msgid "Renders a filled region"
-msgstr "Всю область дії фільтра буде залито цим кольором."
+msgstr "Створює заповнену ділянку"
 
 #: operations/external/vector-stroke.c:28
 #, fuzzy
@@ -7129,9 +6995,8 @@ msgid ""
 msgstr ""
 
 #: operations/external/vector-stroke.c:301
-#, fuzzy
 msgid "Vector Stroke"
-msgstr "Вектор"
+msgstr "Векторybq inhb["
 
 #: operations/external/vector-stroke.c:305
 #, fuzzy
@@ -7418,7 +7283,7 @@ msgstr "Початок за X"
 #: operations/transform/rotate-on-center.c:32
 #: operations/transform/rotate-on-center.c:34
 msgid "Ignored. Always uses center of input buffer"
-msgstr ""
+msgstr "Знехтувано. Завжди використовується центр вхідного буфера"
 
 #: operations/transform/rotate-on-center.c:33
 msgid "origin-y"
@@ -7719,12 +7584,11 @@ msgstr "Скрипт"
 
 #: operations/workshop/external/gluas.c:30
 msgid "The lua script containing the implementation of this operation."
-msgstr ""
+msgstr "Скрипт мовою lua, в якому реалізовано цю операцію."
 
 #: operations/workshop/external/gluas.c:33
-#, fuzzy
 msgid "Lua error"
-msgstr "Файли lua"
+msgstr "Помилка lua"
 
 #: operations/workshop/external/gluas.c:34
 #, fuzzy
@@ -7733,7 +7597,7 @@ msgstr "помилка при синтаксичному розборі"
 
 #: operations/workshop/external/gluas.c:38
 msgid "A stored lua script on disk implementing an operation."
-msgstr ""
+msgstr "Збережений на диску скрипт мовою lua, в якому реалізовано операцію."
 
 #: operations/workshop/external/gluas.c:40
 msgid "User value"
@@ -7741,7 +7605,7 @@ msgstr "Користувацьке значення"
 
 #: operations/workshop/external/gluas.c:41
 msgid "Available as a global variable 'user_value' in lua."
-msgstr ""
+msgstr "Доступно як глобальна злінна 'user_value' в lua."
 
 #: operations/workshop/external/gluas.c:1008
 msgid "gluas"
@@ -7960,9 +7824,8 @@ msgid "video device path"
 msgstr "шлях до відеопристрою"
 
 #: operations/workshop/external/v4l2.c:774
-#, fuzzy
 msgid "Video4Linux2 Frame Source"
-msgstr "Замінити вибране (джерело - активний кадр)"
+msgstr "Джерело кадрів Video4Linux2"
 
 #: operations/workshop/external/v4l2.c:776
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
@@ -8052,7 +7915,7 @@ msgstr "Прямі кути"
 
 #: operations/workshop/integral-image.c:26
 msgid "Add squared values sum to the output"
-msgstr ""
+msgstr "Додати до виходу суму квадратів значень"
 
 #: operations/workshop/integral-image.c:252
 #, fuzzy
@@ -8142,16 +8005,6 @@ msgid ""
 "returned 16bit numbers (the pnm loader is apparently buggy)"
 msgstr ""
 
-#: operations/workshop/recursive-transform-plus.c:29
-msgid ""
-"Transformation matrix, using SVG syntax (or multiple matrices, separated by "
-"semicolons)"
-msgstr ""
-
-#: operations/workshop/recursive-transform-plus.c:386
-msgid "Recursive Transform Plus"
-msgstr "Рекурсивне перетворення плюс"
-
 #: operations/workshop/segment-kmeans.c:27
 #: operations/workshop/segment-kmeans.c:28
 msgid "Number of clusters"
@@ -8191,10 +8044,9 @@ msgid "Width of Hue selection interval  "
 msgstr "Ширина інтервалу вибору відтінку"
 
 #: operations/workshop/selective-hue-saturation.c:39
-#, fuzzy
 #| msgid "Saturation phase shift"
 msgid "Saturation adjustment"
-msgstr "Вирівнювання"
+msgstr "Регулювання насиченості"
 
 #: operations/workshop/selective-hue-saturation.c:170
 #, fuzzy
@@ -8207,3 +8059,8 @@ msgstr "Відтінок_насиченість"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Коригування відтінку, освітленості та насиченості"
 
+#~ msgid "Standard Deviation"
+#~ msgstr "Стандартне відхилення"
+
+#~ msgid "Recursive Transform Plus"
+#~ msgstr "Рекурсивне перетворення плюс"
