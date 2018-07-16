@@ -51,3 +51,62 @@ If you want to create a GIF as the final output, it is recommended to create a
 temporary video file, and use for instance ffmpeg to create a high quality GIF
 with a two pass approach.
 
+
+Color management
+~~~~~~~~~~~~~~~~
+
+Since GEGL-0.4.6 gegl is fully color managed and in addition to pixel data
+flowing through the chain Color Space Profiles specifying the CIE xy
+chromaticities and white point of the data.
+
+For files that contain ICC profiles, the ICC profile is preferred over chromaticities. For example EXR files use chromaticities if set and falls back to sRGB
+primaries when none are specified.
+
+The current color space at the end of the chain gets written by file savers
+for the file formats png, jpg, tif and exr.
+
+Convert from jpg to png keeping ICC profile:
+
+ $ gegl input.jpg -o output.png
+
+Scale to a thum-image 128px high, keeping ICC profile, the scaling will be
+performed in "RaGaBaA float" a linear encoding of the color space, wheras the
+file format export will bring it back to R'G'B' u8.
+
+ $ gegl input.jpg -o thumb.jpg -- scale-size-keepaspect x=-1 y=128
+
+Output ICC profile found in input image to a file:
+
+ $ gegl input.jpg -o output.icc
+
+Convert image to sRGB:
+
+ $ gegl input.jpg -o output.jpg -- convert-space name=sRGB
+
+Convert image to profile ICC profile custom.icc from disk:
+
+ $ gegl input.jpg -o output.jpg -- convert-space path=custom.icc
+
+Convert image to profile ICC profile contained in other.jpg:
+
+ $ gegl input.jpg -o output.jpg -- convert-space aux=[ load path=other.jpg  ]
+
+Override color space with ProPhoto:
+
+ $ gegl input.jpg -o output.jpg -- cast-space name=ProPhoto
+
+Overlay an sRGB watermark on arbitrary file:
+
+ $ gegl input.jpg -o output.jpg -- over aux=[ load path="watermark.png"  ]
+
+Note that no special handling was needed, what happens is that the icc profile
+coming on the main input pat of the over op wins and becomes the working space
+the auxiliary buffers contents gets converted to this buffers compositing and
+blending spaces.
+
+Perform shadows-highlights op, with default settings in ProPhoto RGB, and
+cast back to the original space when done:
+
+ $ gegl input.jpg -o output.jpg -- id=original_space cast-space name=ProPhoto shadows-highlights cast-space aux=[ ref=original_space  ]
+
+
