@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2006,2018 Øyvind Kolås <pippin@gimp.org>
  * Copyright 2008 Hubert Figuière <hub@figuiere.net>
  * Copyright 2011 Chong Kai Xiong <w_velocity@yahoo.com>
  * Copyright 2011 Paul Sbarra <tones111@hotmail.com>
@@ -24,9 +24,21 @@
 
 #ifdef GEGL_PROPERTIES
 
+enum_start (gegl_raw_color_space)
+  enum_value (GEGL_RAW_COLOR_SPACE_CAMERA_RGB, "camera", N_("Camera RGB"))
+  enum_value (GEGL_RAW_COLOR_SPACE_SRGB, "sRGB", N_("s RGB"))
+  enum_value (GEGL_RAW_COLOR_SPACE_ADOBISH, "Adobish", N_("Adobe RGB compatible"))
+  enum_value (GEGL_RAW_COLOR_SPACE_WIDEGAMUT, "Wide gamut", N_("Wide gamut RGB"))
+  enum_value (GEGL_RAW_COLOR_SPACE_PROPHOTO, "ProPhoto", N_("ProPhoto RGB"))
+  // XXX : todo add XYZ
+enum_end (GeglRawColorSpace)
+
 property_file_path (path, "File", "")
   description (_("Path of file to load."))
 property_int (image_num, "Image number", 0)
+property_enum (color_space, _("Color space"), GeglRawColorSpace,
+               gegl_raw_color_space, GEGL_RAW_COLOR_SPACE_SRGB)
+  description (_("Color space to use for loaded data"))
 property_int (quality, "quality", 10)
 
 #else
@@ -59,6 +71,7 @@ typedef struct {
   libraw_data_t            *LibRaw;
   libraw_processed_image_t *image;
   gchar                    *cached_path;
+  const Babl               *space;
 } Private;
 
 static void
@@ -101,15 +114,38 @@ prepare (GeglOperation *operation)
     
           p->LibRaw->params.aber[0] = 1.0;
           p->LibRaw->params.aber[2] = 1.0;
-          p->LibRaw->params.gamm[0] = 1.0 / 2.4;
-          p->LibRaw->params.gamm[1] = 12.92;
+          //p->LibRaw->params.gamm[0] = 1.0 / 2.4;
+          //p->LibRaw->params.gamm[1] = 12.92;
+          p->LibRaw->params.gamm[0] = 1.0;
+          p->LibRaw->params.gamm[1] = 1.0;
           p->LibRaw->params.bright = 1.0f;
           p->LibRaw->params.half_size = FALSE;
           p->LibRaw->params.highlight = 0;
           p->LibRaw->params.use_auto_wb = TRUE;
           p->LibRaw->params.use_camera_wb = TRUE;
           p->LibRaw->params.use_camera_matrix = 1;
-          p->LibRaw->params.output_color = 1;
+          switch (o->color_space)
+          {
+            case GEGL_RAW_COLOR_SPACE_CAMERA_RGB:
+              p->LibRaw->params.output_color = 0;
+              break;
+            case GEGL_RAW_COLOR_SPACE_SRGB:
+              p->space = babl_space ("sRGB");
+              p->LibRaw->params.output_color = 0;
+              break;
+            case GEGL_RAW_COLOR_SPACE_ADOBISH:
+              p->space = babl_space ("Adobish");
+              p->LibRaw->params.output_color = 0;
+              break;
+            case GEGL_RAW_COLOR_SPACE_WIDEGAMUT:
+              p->space = babl_space ("ACEScg"); // likely incorrect mapping
+              p->LibRaw->params.output_color = 0;
+              break;
+            case GEGL_RAW_COLOR_SPACE_PROPHOTO:
+              p->space = babl_space ("ProPhoto");
+              p->LibRaw->params.output_color = 0;
+              break;
+          }
           p->LibRaw->params.user_flip = 0;
           p->LibRaw->params.no_auto_bright = 1;
           p->LibRaw->params.auto_bright_thr = 0.01f;
@@ -149,7 +185,7 @@ get_bounding_box (GeglOperation *operation)
     {
       result.width  = p->LibRaw->sizes.width;
       result.height = p->LibRaw->sizes.height;
-      gegl_operation_set_format (operation, "output", babl_format ("R'G'B' u16"));
+      gegl_operation_set_format (operation, "output", babl_format_with_space ("RGB u16", p->space));
     }
 
   return result;
@@ -193,9 +229,9 @@ process (GeglOperation       *operation,
       rect.height = p->image->height;
 
       if (p->image->colors == 1)
-        format = babl_format ("Y' u16");
+        format = babl_format_with_space ("Y u16", p->space);
       else // 3 color channels
-        format = babl_format ("R'G'B' u16");
+        format = babl_format_with_space ("RGB u16", p->space);
 
       gegl_buffer_set (output, &rect, 0, format, p->image->data, GEGL_AUTO_ROWSTRIDE);
       return TRUE;
