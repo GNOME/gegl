@@ -555,7 +555,7 @@ query_exr (const gchar *path,
       if (hasChromaticities(file.header()))
       {
         const Chromaticities &c2 = chromaticities (file.header());
-        space = babl_chromaticities_make_space
+        space = babl_space_from_chromaticities
  (NULL, c2.white[0], c2.white[1], c2.red[0], c2.red[1], c2.green[0], c2.green[1], c2.blue[0], c2.blue[1], babl_trc ("sRGB"), babl_trc ("sRGB"), babl_trc ("sRGB"), BABL_SPACE_FLAG_EQUALIZE);
       }
 

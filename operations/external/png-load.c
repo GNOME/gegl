@@ -171,7 +171,7 @@ gegl_png_space (png_structp load_png_ptr,
       PNG_INFO_iCCP)
     {
       const char *error = NULL;
-      return babl_icc_make_space ((void*)profile, proflen,
+      return babl_space_from_icc ((void*)profile, proflen,
                                  BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
     }
 
@@ -199,14 +199,14 @@ gegl_png_space (png_structp load_png_ptr,
                      &green[0], &green[1],
                      &blue[0], &blue[1]);
       }
-      return babl_chromaticities_make_space (NULL, wp[0], wp[1],
-                                                   red[0], red[1],
-                                                   green[0], green[1],
-                                                   blue[0], blue[1],
-                                                   babl_trc_gamma (1.0/gamma),
-                                                   babl_trc_gamma (1.0/gamma),
-                                                   babl_trc_gamma (1.0/gamma),
-                                                   1);
+      return babl_space_from_chromaticities (NULL, wp[0], wp[1],
+                                             red[0], red[1],
+                                             green[0], green[1],
+                                             blue[0], blue[1],
+                                             babl_trc_gamma (1.0/gamma),
+                                             babl_trc_gamma (1.0/gamma),
+                                             babl_trc_gamma (1.0/gamma),
+                                             1);
     }
 
   return NULL;
