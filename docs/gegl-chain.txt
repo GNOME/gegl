@@ -83,6 +83,10 @@ Convert image to sRGB:
 
  $ gegl input.jpg -o output.jpg -- convert-space name=sRGB
 
+Convert image to sRGB and do value-invert, we do a rgb-clip op before the invert.
+
+ $ gegl input.jpg -o output.jpg -- convert-space name=sRGB rgb-clip value-invert
+
 Convert image to profile ICC profile custom.icc from disk:
 
  $ gegl input.jpg -o output.jpg -- convert-space path=custom.icc
@@ -100,7 +104,7 @@ Overlay an sRGB watermark on arbitrary file:
  $ gegl input.jpg -o output.jpg -- over aux=[ load path="watermark.png"  ]
 
 Note that no special handling was needed, what happens is that the icc profile
-coming on the main input pat of the over op wins and becomes the working space
+coming on the main input pad of the over op wins and becomes the working space
 the auxiliary buffers contents gets converted to this buffers compositing and
 blending spaces.
 
