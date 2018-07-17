@@ -19,6 +19,7 @@ op_LTLIBRARIES = \
 	gradient-map.la \
 	hstack.la \
 	enlarge.la \
+	filmic.la \
 	inpaint.la \
 	integral-image.la \
 	linear-sinusoid.la \
