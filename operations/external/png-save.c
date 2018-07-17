@@ -142,62 +142,70 @@ export_png (GeglOperation       *operation,
      width, height, bit_depth, png_color_type,
      PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_DEFAULT);
 
-  if ((space == NULL || space == babl_space ("sRGB")) && (png_color_type == PNG_COLOR_TYPE_RGB || png_color_type == PNG_COLOR_TYPE_RGB_ALPHA))
+  if (
+      (png_color_type == PNG_COLOR_TYPE_RGB || png_color_type == PNG_COLOR_TYPE_RGB_ALPHA))
     {
-      white.red = 0xff;
-      white.blue = 0xff;
-      white.green = 0xff;
-      png_set_sRGB_gAMA_and_cHRM (png, info, PNG_sRGB_INTENT_RELATIVE);
-    }
-  else
-    {
-      double wp[2];
-      double red[2];
-      double green[2];
-      double blue[2];
-      const Babl *trc[3];
-      babl_space_get (space, &wp[0], &wp[1],
-                      &red[0], &red[1],
-                      &green[0], &green[1],
-                      &blue[0], &blue[1],
-                      &trc[0], &trc[1], &trc[2]);
-      png_set_cHRM (png, info, wp[0], wp[1], red[0], red[1], green[0], green[1], blue[0], blue[1]);
-      /* XXX: should also set gamma based on trc! */
-      if (trc[0] == babl_trc("sRGB") ||
-          trc[0] == babl_trc("2.2"))
+      if (space == NULL || space == babl_space ("sRGB"))
       {
-        png_set_gAMA (png, info, 2.22);
-      }
-      else if (trc[0] == babl_trc("linear"))
-      {
-        png_set_gAMA (png, info, 1.0);
+        white.red = 0xff;
+        white.blue = 0xff;
+        white.green = 0xff;
+        png_set_sRGB_gAMA_and_cHRM (png, info, PNG_sRGB_INTENT_RELATIVE);
       }
       else
       {
-        png_set_gAMA (png, info, 2.2);
-      }
 
+        double wp[2];
+        double red[2];
+        double green[2];
+        double blue[2];
+        const Babl *trc[3];
+        babl_space_get (space, &wp[0], &wp[1],
+                        &red[0], &red[1],
+                        &green[0], &green[1],
+                        &blue[0], &blue[1],
+                        &trc[0], &trc[1], &trc[2]);
+        png_set_cHRM (png, info, wp[0], wp[1], red[0], red[1], green[0], green[1], blue[0], blue[1]);
+      /* XXX: should also set gamma based on trc! */
+        if (trc[0] == babl_trc("sRGB") ||
+            trc[0] == babl_trc("2.2"))
+        {
+          png_set_gAMA (png, info, 2.2);
+        }
+        else if (trc[0] == babl_trc("linear"))
+        {
+          png_set_gAMA (png, info, 1.0);
+        }
+        else
+        {
+          png_set_gAMA (png, info, 2.2);
+        }
+
+        {
+          int icc_len;
+          const char *name = babl_get_name (space);
+          const char *icc_profile;
+          if (strlen (name) > 10) name = "GEGL";
+          icc_profile = babl_space_get_icc (space, &icc_len);
+          if (icc_profile)
+          {
+             png_set_iCCP (png, info,
+                           name, 0, (void*)icc_profile, icc_len);
+          }
+        }
+      }
+    }
+  else
+    {
       white.gray = 0xff;
     }
   png_set_bKGD (png, info, &white);
 
-
   format = babl_format_with_space (format_string, space);
 
-  {
-  }
 
-  if (space && space != babl_space("sRGB")){
-    int icc_len;
-    const char *name = babl_get_name (space);
-    const char *icc_profile;
-    if (strlen (name) > 10) name = "GEGL";
-    icc_profile = babl_space_get_icc (space, &icc_len);
-    if (icc_profile)
-    {
-      png_set_iCCP (png, info,
-                    name, 0, (void*)icc_profile, icc_len);
-    }
+  if (space && space != babl_space("sRGB"))
+  {
   }
 
   png_write_info (png, info);
