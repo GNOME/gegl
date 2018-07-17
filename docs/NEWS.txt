@@ -1,4 +1,47 @@
-GEGL-0.4.4 2018-06-02
+GEGL-0.4.6 2018-07-
+---------------------
+
+Pass on or use Color Space information in pixelformats of buffers and graph.
+
+All const *Babl pixel format pointers have an unchangable color space that is
+assigned at format creation, if unspecified/NULL sRGB primaries and TRCs is
+assumed. The new call
+  babl_format_with_space(const char *encoding_string, const Babl *space);
+takes over for babl_format() and allows controlling the space.
+
+The meanings of RGB vs R'G'B' in encodings strings is now clarified, RGB has always meant linear data and now the ' suffixed components means use the TRC of the space. A new variant as well in R~G~B~ has been added, that overrides the
+TRC of the space and uses the sRGB perceptual TRC instead.
+
+"R'G'B'A u16" means to store in 16bit integer with the primaries from the space and its TRCs
+"RGBA float" means to store in 32bit floating point with the primaries
+from the space but no TRC
+"R~G~B~A float" means to store in 32bit floating point with the primaries
+from the space and with the perceptual sRGB TRC overriding the one from the space.
+"RaGaBaA float" means to store in 32bit floating point with the primaries
+from the space but no TRC, with premultiplied alpha.
+
+Also the pre-existing cairo and CIE Lab / Lch spaces get an associated space
+even if they are device independent, this way buffer in CIE Lab are both
+device-independent and knows from which device they came from.
+
+For information about how this can be used from the commandline and introduction
+to the new operations gegl:cast-space and gegl:convert-space see the new
+section about color management in the gegl-chain syntax documentation at
+http://gegl.org/gegl-chain.html
+
+Buffer loaders and exporters that now have color management for interfacing
+with the external world are: PNG, JPG, TIF and EXR, all other format handlers
+are unchanged and thus for the rest of the system is requesting sRGB data.
+
+New operations:
+
+litte-planet: taken out of the panorama-projection op as its own operation since it is a separate mapping.
+cast-space: override the color space information for a buffer/chain
+convert-space: change to a different color space and convert the buffers to it.
+filmic: ACES based HDR to SDR proof/preview point-filter tonemapping op.
+
+
+GEGL-0.4.4 2018-07-04
 ---------------------
 
 Core
