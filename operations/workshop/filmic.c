@@ -84,7 +84,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("ACES Filmic"),
     "categories" , "color:tonemapping",
     "description",
-       _("HDR to SDR proofing filter/mapping curve that is an approximation of the ACES filmic curve, useful for consistent previewing of content in near HDR range.").
+       _("HDR to SDR proofing filter/mapping curve that is an approximation of the ACES filmic curve, useful for consistent previewing of content in near HDR range."),
     NULL);
 }
 
