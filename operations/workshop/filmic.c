@@ -32,7 +32,7 @@
 
 #include "gegl-op.h"
 
-static inline float aces_filmic (float x)
+static inline float aces_rrt (float x)
 {
  /* source of approximation:
 
@@ -57,9 +57,9 @@ process (GeglOperation       *op,
 
   while (samples--)
     {
-      out[0] = aces_filmic (in[0]);
-      out[1] = aces_filmic (in[1]);
-      out[2] = aces_filmic (in[2]);
+      out[0] = aces_rrt (in[0]);
+      out[1] = aces_rrt (in[1]);
+      out[2] = aces_rrt (in[2]);
       out[3] = in[3];
 
       in += 4;
@@ -84,7 +84,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("ACES Filmic"),
     "categories" , "color:tonemapping",
     "description",
-       _("HDR to SDR proofing filter/mapping curve that is an approximation of the ACES filmic curve, useful for consistent previewing of content in near HDR range."),
+       _("HDR to SDR proofing filter/mapping curve that is an approximation of the ACES RRT (Reference Rendering Transform)."),
     NULL);
 }
 
