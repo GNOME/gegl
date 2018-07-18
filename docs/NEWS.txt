@@ -21,8 +21,9 @@ from the space and with the perceptual sRGB TRC overriding the one from the spac
 from the space but no TRC, with premultiplied alpha.
 
 Also the pre-existing cairo and CIE Lab / Lch spaces get an associated space
-even if they are device independent, this way buffer in CIE Lab are both
-device-independent and knows from which device they came from.
+even if they are device independent, this way buffer in CIE Lab is
+device-independent while also knowing from which device dependent/working space
+they came from.
 
 For information about how this can be used from the commandline and introduction
 to the new operations gegl:cast-space and gegl:convert-space see the new
@@ -31,14 +32,15 @@ http://gegl.org/gegl-chain.html
 
 Buffer loaders and exporters that now have color management for interfacing
 with the external world are: PNG, JPG, TIF and EXR, all other format handlers
-are unchanged and thus for the rest of the system is requesting sRGB data.
+are unchanged and thus provides or consumes sRGB data.
 
 New operations:
+~~~~~~~~~~~~~~
 
 litte-planet: taken out of the panorama-projection op as its own operation since it is a separate mapping.
 cast-space: override the color space information for a buffer/chain
 convert-space: change to a different color space and convert the buffers to it.
-filmic: ACES based HDR to SDR proof/preview point-filter tonemapping op.
+filmic: ACES RRT based HDR to SDR proof/preview point-filter tonemapping op.
 
 
 GEGL-0.4.4 2018-07-04
