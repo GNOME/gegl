@@ -21,7 +21,7 @@ link:commandline.html[commandline].
 
 The primary repository for the GEGL source code
 link:http://git.gnome.org/browse/gegl/[in GNOME git], and at GIMPs download
-site link:https://download.gimp.org/pub/gegl/0.3/[tarball releases].
+site link:https://download.gimp.org/pub/gegl/0.4/[tarball releases].
 
 GEGL is link:copyright.html[Free Software], and both new functionality in
 link:operation-api.html[new operations] as well as relevant
