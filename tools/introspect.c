@@ -461,10 +461,7 @@ stuff (gint    argc,
     {
       GeglNode  *gegl = g_object_new (GEGL_TYPE_NODE, NULL);
 
-      GeglNode  *save = gegl_node_new_child (gegl,
-                    "operation", "gegl:png-save",
-                    "path", "/dev/null",
-                    NULL);
+      GeglNode  *save = gegl_node_new_child (gegl, "operation", "gegl:nop", NULL);
       GeglNode *crop = gegl_node_new_child (gegl,
        "operation", "gegl:crop",
        "x", 0.0,
