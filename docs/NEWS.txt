@@ -11,20 +11,15 @@ float data and "R'G'B' u8" the ' indicates non-linear, and thus this is sRGB.
 and conversions are also provided through these formats including "CIE
 Lab float" and "HSV float".
 
-As a color management workflow for scene-referred imaging the above could be
-sufficient, but GIMP needs the 0.0-1.0 range for some dispaly referred blending
-modes to work properly - and as a consequence is currently passing the pixels
-of for instance ProPhoto "R'G'B'A float" off as "R'G'B'A float" and linear
-ProPhoto "RGBA float" as "RGBA float" this works for single operations, but
-falls apart when the colors are converted to CIE Lab. This is the good enough
-state where the other benefits of having a stable release powered by GEGL
-outweighed not being entirely correct.
+As a color management workflow for scene-referred imaging the above could be sufficient, but GIMP needs data in the 0.0-1.0 range for some display referred blending modes to work properly. As a consequence of this recognized short-coming GIMP has been passing the pixels of for instance ProPhoto "R'G'B'A float" off as "R'G'B'A float" and linear ProPhoto "RGBA float" as "RGBA float" this works for single operations, but falls apart when the colors are converted to CIE Lab. This is the good enough state where the other benefits of having a stable release powered by GEGL outweighed not being entirely correct.
 
 Since babl 0.1.32 of october 2017, all babl formats have an associated
 unchangable space associated with it, and since then GeglBuffer has worked
-correctly with it - since GeglBuffers use of babl API did not change, it
-has taken until the last month however to come up with a full plan for
-the rest of GEGL.
+correctly with it - since GeglBuffers use of babl API did not change, it has
+taken until the last month however to come up with a full plan for the rest of
+GEGL. GIMP is already using these parts of babl for ICC matrix based
+conversions since it is an order of magnitude faster than the lcms2 library for
+this.
 
 A space can be constructed from a preferenced name/specification, loaded/saved
 from ICC matrix profiles or constructed and serialized to whitepoint + rgb
@@ -55,9 +50,9 @@ provide means of overriding this behavior, see the new section about color
 management in the gegl-chain syntax documentation at
 http://gegl.org/gegl-chain.html
 
-Work is in progress on changing GIMP to also make use of and propagate color
-space information along with encoding in babl formats, changes which also
-will be integrated in the 2.10 branch.
+Work is in progress on updating GIMP to also make use of and propagate color
+space information along with encoding in babl formats, changes which also will
+be integrated in the 2.10 branch.
 
 Other changes to operations:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
