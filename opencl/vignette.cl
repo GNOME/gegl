@@ -53,7 +53,7 @@ __kernel void vignette_cl (__global const float4 *in,
   if (strength < 0.0f) strength = 0.0f;
   if (strength > 1.0f) strength = 1.0f;
 
-  if (gamma > 0.9999f && gamma < 2.0001f)
+  if (gamma > 1.9999f && gamma < 2.0001f)
     strength *= strength;
   else if (gamma != 1.0f)
     strength = pow(strength, gamma);

@@ -45,7 +45,7 @@ property_double (softness, _("Softness"), 0.8)
 
 property_double (gamma, _("Gamma"), 2.0)
     description (_("Falloff linearity"))
-    value_range (1.0, 20.0)
+    value_range (0.0, 10.0)
 
 property_double (proportion, _("Proportion"), 1.0)
     description(_("How close we are to image proportions"))
@@ -334,11 +334,12 @@ process (GeglOperation       *operation,
       if (strength>1.0)
         strength = 1.0;
 
-      if (o->gamma > 0.9999 && o->gamma < 2.0001)
+      if (o->gamma > 1.9999 && o->gamma < 2.0001)
         strength *= strength;  /* fast path for default gamma */
       else if (o->gamma != 1.0)
         strength = powf(strength, o->gamma); /* this gamma factor is
-                                              * very expensive..
+                                              * very expensive.. and precision
+                                              * is not very important
                                               */
 
       out_pixel[0]=in_pixel[0] * (1.0-strength) + color[0] * strength;

@@ -54,7 +54,7 @@ static const char* vignette_cl_source =
 "  if (strength < 0.0f) strength = 0.0f;                                       \n"
 "  if (strength > 1.0f) strength = 1.0f;                                       \n"
 "                                                                              \n"
-"  if (gamma > 0.9999f && gamma < 2.0001f)                                     \n"
+"  if (gamma > 1.9999f && gamma < 2.0001f)                                     \n"
 "    strength *= strength;                                                     \n"
 "  else if (gamma != 1.0f)                                                     \n"
 "    strength = pow(strength, gamma);                                          \n"
