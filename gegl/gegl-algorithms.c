@@ -135,11 +135,9 @@ void _gegl_init_u8_lut (void)
     lut_u8_to_u16f[i] = lut_u8_to_u16[i];
   }
 
-  /* workaround for bug, doing this conversion sample by sample */
-  for (i = 0; i < 65536/LUT_DIVISOR; i++)
-    babl_process (babl_fish (babl_format ("Y u16"), babl_format("Y' u8")),
-                  &u16_ramp[i], &lut_u16_to_u8[i],
-                  1);
+  babl_process (babl_fish (babl_format ("Y u16"), babl_format("Y' u8")),
+                &u16_ramp[0], &lut_u16_to_u8[0],
+                65536/LUT_DIVISOR);
 
   lut_inited = 1;
 }
