@@ -1,47 +1,78 @@
-GEGL-0.4.6 2018-07-
----------------------
+GEGL-0.4.6 2018-07-?? (not released yet)
+----------------------------------------
 
-Pass on or use Color Space information in pixelformats of buffers and graph.
+Up until now GEGL has been using a space corresponding to scRGB as an unbounded
+device independent color space - similar to how ACEScg works. babl formats,
+represented by a pointer and a corresponding encoding/format string have been
+used to specify the specific encoding of pixel values. The encoding including
+component order, data type and TRC encoding. Where "RGBA float" means 32bit
+float data and "R'G'B' u8" the ' indicates non-linear, and thus this is sRGB.
+"RaGaBaA half" gives premultiplied linear half data. Other encodings
+and conversions are also provided through these formats including "CIE
+Lab float" and "HSV float".
 
-All const *Babl pixel format pointers have an unchangable color space that is
-assigned at format creation, if unspecified/NULL sRGB primaries and TRCs is
-assumed. The new call
-  babl_format_with_space(const char *encoding_string, const Babl *space);
-takes over for babl_format() and allows controlling the space.
+As a color management workflow for scene-referred imaging the above could be
+sufficient, but GIMP needs the 0.0-1.0 range for some dispaly referred blending
+modes to work properly - and as a consequence is currently passing the pixels
+of for instance ProPhoto "R'G'B'A float" off as "R'G'B'A float" and linear
+ProPhoto "RGBA float" as "RGBA float" this works for single operations, but
+falls apart when the colors are converted to CIE Lab. This is the good enough
+state where the other benefits of having a stable release powered by GEGL
+outweighed not being entirely correct.
 
-The meanings of RGB vs R'G'B' in encodings strings is now clarified, RGB has always meant linear data and now the ' suffixed components means use the TRC of the space. A new variant as well in R~G~B~ has been added, that overrides the
-TRC of the space and uses the sRGB perceptual TRC instead.
+Since babl 0.1.32 of october 2017, all babl formats have an associated
+unchangable space associated with it, and since then GeglBuffer has worked
+correctly with it - since GeglBuffers use of babl API did not change, it
+has taken until the last month however to come up with a full plan for
+the rest of GEGL.
 
-"R'G'B'A u16" means to store in 16bit integer with the primaries from the space and its TRCs
-"RGBA float" means to store in 32bit floating point with the primaries
-from the space but no TRC
-"R~G~B~A float" means to store in 32bit floating point with the primaries
-from the space and with the perceptual sRGB TRC overriding the one from the space.
-"RaGaBaA float" means to store in 32bit floating point with the primaries
-from the space but no TRC, with premultiplied alpha.
+A space can be constructed from a preferenced name/specification, loaded/saved
+from ICC matrix profiles or constructed and serialized to whitepoint + rgb
+chromaticities / xyz matrix. More recently an additional trc mark has been
+added '~', giving this vocabulary for RGB formats:
 
-Also the pre-existing cairo and CIE Lab / Lch spaces get an associated space
-even if they are device independent, this way buffer in CIE Lab is
-device-independent while also knowing from which device dependent/working space
-they came from.
+ "RGB"     linear      primaries from space, linear data
+ "R'G'B'"  non-linear  primaries from space, TRCs from space
+ "R~G~B~"  perceptual  primaries from space, sRGB TRC
 
-For information about how this can be used from the commandline and introduction
-to the new operations gegl:cast-space and gegl:convert-space see the new
-section about color management in the gegl-chain syntax documentation at
+When creating device independent CIE based spaces they also get passed a space,
+this means that we can convert CIE Lab to RGB float, keeping track of which
+space / ICC profile the data correspond to.
+
+GEGL operations now construct their desired encodings of formats by taking the
+space of buffers on input pads into account. By default, For composers "input"
+wins over "aux" to determine ops space. If an operation is not ported, data
+will be converted to sRGB on input and sRGB will come out of the node.
+
+Buffer loaders PNG, JPG, TIFF and EXR generate custom spaces based on ICC
+profiles/primaries. The corresponding savers saves color space information, and
+a new save handler for .icc stores the icc profile.
+
+With no additional operations inserted, this now means that GEGL graphs operate
+on linear / non-linear variants of the color space used in the input images
+without conversion. The new operations gegl:cast-space and gegl:convert-space
+provide means of overriding this behavior, see the new section about color
+management in the gegl-chain syntax documentation at
 http://gegl.org/gegl-chain.html
 
-Buffer loaders and exporters that now have color management for interfacing
-with the external world are: PNG, JPG, TIF and EXR, all other format handlers
-are unchanged and thus provides or consumes sRGB data.
+Work is in progress on changing GIMP to also make use of and propagate color
+space information along with encoding in babl formats, changes which also
+will be integrated in the 2.10 branch.
+
+Other changes to operations:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+vignette: fixes to gamma property
 
 New operations:
-~~~~~~~~~~~~~~
 
-litte-planet: taken out of the panorama-projection op as its own operation since it is a separate mapping.
-cast-space: override the color space information for a buffer/chain
-convert-space: change to a different color space and convert the buffers to it.
-filmic: ACES RRT based HDR to SDR proof/preview point-filter tonemapping op.
+  cast-space: assign/override color space
+  convert-space: convert to a different color space
+  litte-planet: stereographic-mapping split out of the panorama-projection
 
+New operation in workshop:
+
+  filmic: ACES RRT based HDR to SDR proof/preview point-filter tonemapping op.
 
 GEGL-0.4.4 2018-07-04
 ---------------------
@@ -49,7 +80,7 @@ GEGL-0.4.4 2018-07-04
 Core
 ~~~~
 
-Point filters with need for format conversion of input are now parallel.
+
 Added swap-reading, swap-writing, swap-read-total and swap-write-total
 properties to GeglStats.
 
@@ -63,6 +94,8 @@ GeglBuffer.
 Operations
 ~~~~~~~~~~
 
+Point filters with need for format conversion of input are now parallel.
+
 threshold: operating format changed from linear to perceptual
 unsharp-mask: add rename standard-deviation and scale properties to 'Radius'
  and 'Amount', add 'Threshold' property.
@@ -71,6 +104,7 @@ simultanously.
 Fixed integer overflow due to logic error in pixelize.
 New operation: gegl:abs which negates negative values.
 New operation in workshop: selective-hue-saturation.
+
 
 Contributors
 ~~~~~~~~~~~~
@@ -300,29 +334,32 @@ GEGL-0.3.28 2018-01-23
 
 Core
 ~~~~
-  A new GeglStats object, which provides realtime statistics/profiling for use
-  in UIs.  Automatically copy-on-write clone input buffers for auto-threading of
-  operations.
+
+A new GeglStats object, which provides realtime statistics/profiling for use
+in UIs.  Automatically copy-on-write clone input buffers for auto-threading of
+operations.
 
 Buffer
 ~~~~~~
-  Many significant optimizations as well as a correctness improvement,
-  mipmap scaling and rendering is now done correctly in linear space,
-  thus GIMP will not only produce the right results but also avoid gamma
-  errors in thumbnails and viewport.
 
-  Among the signifcant performance boosters are per buffer-instance tile queues,
-  adaptive sampler pre-fetch caching and dedicated code paths for fetching
-  columns of pixels. Along with many multi-threadedness improvements due to
-  more significant testing.
+Many significant optimizations as well as a correctness improvement,
+mipmap scaling and rendering is now done correctly in linear space,
+thus GIMP will not only produce the right results but also avoid gamma
+errors in thumbnails and viewport.
+
+Among the signifcant performance boosters are per buffer-instance tile queues,
+adaptive sampler pre-fetch caching and dedicated code paths for fetching
+columns of pixels. Along with many multi-threadedness improvements due to
+more significant testing.
 
 Operations
 ~~~~~~~~~~
-  Mipmap tuning and performance improvements to gaussian blur
-  added dedicated code paths for nearest sampler in transform ops.
-  more generic RGBE file handling
-  ff-load: permit decoding audio files as well as video files.
-  various code cleanups
+
+Mipmap tuning and performance improvements to gaussian blur
+added dedicated code paths for nearest sampler in transform ops.
+more generic RGBE file handling
+ff-load: permit decoding audio files as well as video files.
+various code cleanups
 
 
 
@@ -352,7 +389,8 @@ Operations
   exp-combine: code cleanup/simplification
   libraw: make bounding box handling consistent with rest of code.
   transform ops: re-enabled multi-threading, reduced some format
-conversions and added wiggle-room in required/invalidated calculations.
+                 conversions and added wiggle-room in required/invalidated
+                 calculations.
 
 GEGL-0.3.24 2017-11-24
 ----------------------
