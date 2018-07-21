@@ -200,10 +200,12 @@ gegl_operation_context_add_value (GeglOperationContext *self,
 }
 
 GeglOperationContext *
-gegl_operation_context_new (GeglOperation *operation)
+gegl_operation_context_new (GeglOperation *operation,
+                            GHashTable    *hashtable)
 {
   GeglOperationContext *self = g_slice_new0 (GeglOperationContext);
   self->operation = operation;
+  self->contexts = hashtable;
   return self;
 }
 
@@ -400,6 +402,16 @@ gegl_operation_context_get_output_maybe_in_place (GeglOperation *operation,
     }
   return output;
 }
+
+GeglOperationContext *
+gegl_operation_context_node_get_context (GeglOperationContext *context,
+                                         GeglNode             *node)
+{
+  if (context->contexts)
+    return g_hash_table_lookup (context->contexts, node);
+  return NULL;
+}
+
 
 GeglBuffer *
 gegl_operation_context_dup_input_maybe_copy (GeglOperationContext *context,

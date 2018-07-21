@@ -208,7 +208,8 @@ gegl_graph_prepare (GeglGraphTraversal *path)
 
     if (!g_hash_table_contains (path->contexts, node))
       {
-        GeglOperationContext *context = gegl_operation_context_new (node->operation);
+        GeglOperationContext *context = gegl_operation_context_new (node->operation,
+                                           path->contexts);
 
         g_hash_table_insert (path->contexts,
                              node,

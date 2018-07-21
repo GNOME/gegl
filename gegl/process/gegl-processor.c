@@ -367,7 +367,7 @@ gegl_processor_set_rectangle (GeglProcessor       *processor,
 
       if (!processor->context)
         {
-          processor->context = gegl_operation_context_new (processor->real_node->operation);
+          processor->context = gegl_operation_context_new (processor->real_node->operation, NULL);
         }
 
       gegl_operation_context_set_object (processor->context, "input", G_OBJECT (cache));

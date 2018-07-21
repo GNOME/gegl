@@ -54,6 +54,10 @@ GeglBuffer *    gegl_operation_context_dup_input_maybe_copy      (GeglOperationC
                                                                   const GeglRectangle  *roi);
 
 
+GeglOperationContext *gegl_operation_context_node_get_context (GeglOperationContext *context,
+                                                               GeglNode             *node);
+
+
 G_END_DECLS
 
 #endif /* __GEGL_OPERATION_CONTEXT_H__ */
