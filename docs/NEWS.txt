@@ -1,29 +1,37 @@
 GEGL-0.4.6 2018-07-?? (not released yet)
 ----------------------------------------
 
-Up until now GEGL has been using a space corresponding to scRGB as an unbounded
-device independent color space - similar to how ACEScg works. babl formats,
-represented by a pointer and a corresponding encoding/format string have been
-used to specify the specific encoding of pixel values. The encoding including
-component order, data type and TRC encoding. Where "RGBA float" means 32bit
-float data and "R'G'B' u8" the ' indicates non-linear, and thus this is sRGB.
-"RaGaBaA half" gives premultiplied linear half data. Other encodings
-and conversions are also provided through these formats including "CIE
-Lab float" and "HSV float".
+Up until now GEGL has been using a color space corresponding to scRGB as an
+unbounded device independent/possibly scene-referred HDR color space - with a
+similar approach to to how ACEScg works but with a worse set of RGB primaries.
+babl formats, represented by a pointer and a corresponding encoding/format
+string have been used to specify the specific encoding of pixel values. The
+encoding including component order, data type and TRC encoding.  Where "RGBA
+float" means 32bit float data and "R'G'B' u8" the ' indicates non-linear, and
+thus this is sRGB.  "RaGaBaA half" gives premultiplied linear half data. Other
+encodings and conversions are also provided through these formats including
+"CIE Lab float" and "HSV float".
 
-As a color management workflow for scene-referred imaging the above could be sufficient, but GIMP needs data in the 0.0-1.0 range for some display referred blending modes to work properly. As a consequence of this recognized short-coming GIMP has been passing the pixels of for instance ProPhoto "R'G'B'A float" off as "R'G'B'A float" and linear ProPhoto "RGBA float" as "RGBA float" this works for single operations, but falls apart when the colors are converted to CIE Lab. This is the good enough state where the other benefits of having a stable release powered by GEGL outweighed not being entirely correct.
+As a color management workflow for scene-referred imaging the above could be
+sufficient, but GIMP needs data in the 0.0-1.0 range for some display referred
+blending modes to work properly. As a consequence of this recognized
+short-coming GIMP has been passing the pixels of for instance ProPhoto "R'G'B'A
+float" off as "R'G'B'A float" and linear ProPhoto "RGBA float" as "RGBA float"
+this works for single operations, but falls apart when the colors are converted
+to CIE Lab. This is the good enough state where the other benefits of having a
+stable release powered by GEGL outweighed not being entirely correct.
 
 Since babl 0.1.32 of october 2017, all babl formats have an associated
-unchangable space associated with it, and since then GeglBuffer has worked
+unchangable space associated with them, and since then GeglBuffer has worked
 correctly with it - since GeglBuffers use of babl API did not change.  GIMP is
-already using these parts of babl for ICC matrix based conversions since it is
-an order of magnitude faster than the lcms2 library for this.  It took time to
-come up with the above scheme of integrating arbitrary primaries and curves for
-spaces with babl in a maintainable manner, and it has taken until the last
-month to come up with a full plan for the rest of GEGL to be aware of and
-handling arbirary parametric ICC v2/v4 based color spaces for operations;
-without limiting the ability to extend and use the code for a wide-range of
-scenarios.
+already using these parts of babl for ICC matrix based conversions since using
+babl for ICC profile transforms is an order of magnitude faster than using the
+lcms2 library.  It took time to come up with the above scheme of integrating
+arbitrary primaries and curves for spaces with babl in a maintainable manner,
+and it has taken until the last month to come up with a full plan for the rest
+of GEGL to be aware of and handling arbirary parametric ICC v2/v4 based color
+spaces for operations; without limiting the ability to extend and use the code
+for a wide range of scenarios.
 
 A space can be constructed from a preferenced name/specification, loaded/saved
 from ICC matrix profiles or constructed and serialized to whitepoint + rgb
@@ -40,13 +48,14 @@ this means that we can convert CIE Lab to RGB float, keeping track of which
 space / ICC profile the data correspond to.
 
 GEGL operations now construct their desired encodings of formats by taking the
-space of buffers on input pads into account. By default, For composers "input"
+space of buffers on input pads into account. By default, for composers "input"
 wins over "aux" to determine ops space. If an operation is not ported, data
 will be converted to sRGB on input and sRGB will come out of the node.
 
 Buffer loaders PNG, JPG, TIFF and EXR generate custom spaces based on ICC
-profiles/primaries. The corresponding savers saves color space information, and
-a new save handler for .icc stores the icc profile.
+profiles/primaries. The corresponding savers saves color space information.
+A new save handler for the .icc extension, acts like an image storer but
+only saves the ICC profile of the buffer it gets on input.
 
 With no additional operations inserted, this now means that GEGL graphs operate
 on linear / non-linear variants of the color space used in the input images
@@ -72,7 +81,7 @@ New operations:
 
 New operation in workshop:
 
-  filmic: ACES RRT based HDR to SDR proof/preview point-filter tonemapping op.
+  acrs-rrt: ACES RRT based HDR to SDR proof/preview point-filter tonemapping op.
 
 GEGL-0.4.4 2018-07-04
 ---------------------
