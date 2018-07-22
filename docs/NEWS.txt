@@ -19,9 +19,11 @@ correctly with it - since GeglBuffers use of babl API did not change.  GIMP is
 already using these parts of babl for ICC matrix based conversions since it is
 an order of magnitude faster than the lcms2 library for this.  It took time to
 come up with the above scheme of integrating arbitrary primaries and curves for
-spaces with babl, and it has taken until the last month to come up with a full
-plan for the rest of GEGL to be aware of and handling arbirary parametric
-ICC v2/v4 based color spaces for operations.
+spaces with babl in a maintainable manner, and it has taken until the last
+month to come up with a full plan for the rest of GEGL to be aware of and
+handling arbirary parametric ICC v2/v4 based color spaces for operations;
+without limiting the ability to extend and use the code for a wide-range of
+scenarios.
 
 A space can be constructed from a preferenced name/specification, loaded/saved
 from ICC matrix profiles or constructed and serialized to whitepoint + rgb
