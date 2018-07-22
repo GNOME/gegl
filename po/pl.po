@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-15 17:39+0000\n"
-"PO-Revision-Date: 2018-07-15 19:48+0200\n"
+"POT-Creation-Date: 2018-07-22 12:50+0000\n"
+"PO-Revision-Date: 2018-07-22 19:50+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -2357,7 +2357,7 @@ msgstr ""
 
 #: operations/common/magick-load.c:27 operations/core/load.c:29
 #: operations/external/png-load.c:28 operations/external/ppm-load.c:26
-#: operations/external/raw-load.c:28 operations/external/rgbe-load.c:27
+#: operations/external/raw-load.c:37 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
 msgstr "Ścieżka pliku do wczytania."
@@ -3763,11 +3763,11 @@ msgstr "Ściśnij"
 msgid "Rotation"
 msgstr "Obrót"
 
-#: operations/common/vignette.c:383
+#: operations/common/vignette.c:384
 msgid "Vignette"
 msgstr "Winieta"
 
-#: operations/common/vignette.c:387
+#: operations/common/vignette.c:388
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -6038,6 +6038,43 @@ msgstr ""
 "Rzuca dane między „input_format” a „output_format”, oba formaty muszą mieć "
 "to samo bpp"
 
+#: operations/core/cast-space.c:25 operations/core/convert-space.c:25
+msgid "Name"
+msgstr "Nazwa"
+
+#: operations/core/cast-space.c:26 operations/core/convert-space.c:26
+msgid "One of: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"
+msgstr "Jedno z: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"
+
+#: operations/core/cast-space.c:27 operations/core/convert-space.c:27
+msgid "Pointer"
+msgstr "Wskaźnik"
+
+#: operations/core/cast-space.c:28 operations/core/convert-space.c:28
+msgid "pointer to a const * Babl space"
+msgstr "wskaźnik do przestrzeni const * Babl"
+
+#: operations/core/cast-space.c:29 operations/core/convert-space.c:29
+#: operations/external/v4l.c:26 operations/workshop/external/v4l2.c:24
+msgid "Path"
+msgstr "Ścieżka"
+
+#: operations/core/cast-space.c:30 operations/core/convert-space.c:30
+msgid "File system path to ICC matrix profile to load"
+msgstr "Ścieżka systemu plików do wczytywanego profilu macierzy ICC"
+
+#: operations/core/cast-space.c:129
+msgid "Cast color space"
+msgstr "Przestrzeń kolorów rzutu"
+
+#: operations/core/cast-space.c:131
+msgid ""
+"Override the specified color space setting a pointer to a format override "
+"the string property and setting an aux pad overrides both. "
+msgstr ""
+"Zastąp podane ustawienie przestrzeni kolorów wskaźnikiem do formatu "
+"zastępując właściwość ciągu, a ustawienie dodatkowego bloku zastępuje oba. "
+
 #: operations/core/clone.c:25
 msgid "Reference"
 msgstr "Odniesienie"
@@ -6067,6 +6104,22 @@ msgstr "Konwertuj format"
 #: operations/core/convert-format.c:102
 msgid "Convert the data to the specified format"
 msgstr "Konwertuj dane do podanego formatu"
+
+#: operations/core/convert-space.c:104
+msgid "Convert color space"
+msgstr "Konwertuj przestrzeń kolorów"
+
+#: operations/core/convert-space.c:106
+msgid ""
+"set color space which subsequent babl-formats in the pipeline are created "
+"with, and the ICC profile potentially embedded for external color "
+"management, setting a pointer to a format override the string property and "
+"setting an aux pad overrides both. "
+msgstr ""
+"ustaw przestrzeń kolorów, za pomocą której tworzone są kolejne formaty babl "
+"w potoku oraz profil ICC potencjalnie osadzony dla zewnętrznego zarządzania "
+"kolorami, ustawiając wskaźnik do formatu zastępując właściwość ciągu, "
+"a ustawienie dodatkowego bloku zastępuje oba. "
 
 #: operations/core/crop.c:45
 msgid "Reset origin"
@@ -6753,11 +6806,11 @@ msgstr "Głębia bitowa"
 msgid "8 and 16 are the currently accepted values."
 msgstr "Obecnie przyjmowane są wartości 8 i 16."
 
-#: operations/external/png-save.c:302
+#: operations/external/png-save.c:310
 msgid "PNG File Saver"
 msgstr "Zapisywanie plików PNG"
 
-#: operations/external/png-save.c:304
+#: operations/external/png-save.c:312
 msgid "PNG image saver, using libpng"
 msgstr "Zapisywanie obrazów PNG za pomocą biblioteki libpng"
 
@@ -6785,7 +6838,35 @@ msgstr "Zapisywanie plików PPM"
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "Zapisywanie obrazów PPM."
 
-#: operations/external/raw-load.c:241
+#: operations/external/raw-load.c:28
+msgid "Camera RGB"
+msgstr "RGB aparatu"
+
+#: operations/external/raw-load.c:29
+msgid "s RGB"
+msgstr "sRGB"
+
+#: operations/external/raw-load.c:30
+msgid "Adobe RGB compatible"
+msgstr "Zgodne z Adobe RGB"
+
+#: operations/external/raw-load.c:31
+msgid "Wide gamut RGB"
+msgstr "RGB o szerokiej gamie"
+
+#: operations/external/raw-load.c:32
+msgid "ProPhoto RGB"
+msgstr "ProPhoto RGB"
+
+#: operations/external/raw-load.c:39
+msgid "Color space"
+msgstr "Przestrzeń kolorów"
+
+#: operations/external/raw-load.c:41
+msgid "Color space to use for loaded data"
+msgstr "Przestrzeń kolorów używana dla wczytanych danych"
+
+#: operations/external/raw-load.c:277
 msgid "libraw File Loader"
 msgstr "Wczytywanie plików biblioteki libraw"
 
@@ -6965,10 +7046,6 @@ msgstr "Zapisywanie plików TIFF"
 #: operations/external/tiff-save.c:625
 msgid "TIFF image saver using libtiff"
 msgstr "Zapisywanie obrazów TIFF za pomocą biblioteki libtiff"
-
-#: operations/external/v4l.c:26 operations/workshop/external/v4l2.c:24
-msgid "Path"
-msgstr "Ścieżka"
 
 #: operations/external/v4l.c:27
 msgid "Path to v4l device"
@@ -7606,38 +7683,6 @@ msgstr ""
 "Szybkie przybliżenie filtru dwustronnego, używające filtrowania "
 "prostopadłościennego zamiast rozmycia Gaussa."
 
-#: operations/workshop/cast-space.c:25 operations/workshop/set-space.c:25
-msgid "Space"
-msgstr "Przestrzeń"
-
-#: operations/workshop/cast-space.c:26 operations/workshop/set-space.c:26
-msgid "space to assign, using babls names"
-msgstr "przestrzeń do przydzielenia za pomocą nazw babl"
-
-#: operations/workshop/cast-space.c:27 operations/workshop/set-space.c:27
-msgid "Babl space"
-msgstr "Przestrzeń babl"
-
-#: operations/workshop/cast-space.c:28 operations/workshop/set-space.c:28
-msgid "pointer to a babl space"
-msgstr "wskaźnik do przestrzeni babl"
-
-#: operations/workshop/cast-space.c:29 operations/workshop/set-space.c:29
-msgid "ICC path"
-msgstr "Ścieżka do ICC"
-
-#: operations/workshop/cast-space.c:30 operations/workshop/set-space.c:30
-msgid "Path to ICC matrix profile to load"
-msgstr "Ścieżka do wczytywanego profilu macierzy ICC"
-
-#: operations/workshop/cast-space.c:133
-msgid "Cast space"
-msgstr "Przestrzeń rzutu"
-
-#: operations/workshop/cast-space.c:135
-msgid "assign a different babl space"
-msgstr "przydziel inną przestrzeń babl"
-
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
 msgid "Bayer pattern"
@@ -7675,11 +7720,11 @@ msgstr ""
 "Wykonuje naiwne usuwanie mozaiki „grayscale2color” z obrazu, bez "
 "interpolacji."
 
-#: operations/workshop/ditto.c:118
+#: operations/workshop/ditto.c:117
 msgid "Ditto"
 msgstr "Kopia"
 
-#: operations/workshop/ditto.c:120
+#: operations/workshop/ditto.c:119
 msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Testuj działanie, aby wykonać odwzorowanie 1∶1 wejścia do wyjścia podczas "
@@ -7958,6 +8003,28 @@ msgstr "Źródło klatek Video4Linux2"
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr "Wyjście Video4Linux2, kamerki wideo i podobne urządzenia."
 
+#: operations/workshop/aces-rrt.c:134
+msgid "ACES RRT"
+msgstr "ACES RRT"
+
+#: operations/workshop/aces-rrt.c:137
+msgid ""
+"HDR to SDR proofing filter/mapping curve that is an approximation of the "
+"ACES RRT (Reference Rendering Transform). When feeding scene-refereed "
+"imagery into this op, the result is suitable for display referred transform "
+"to sRGB or output display using regular ICC matric profiles as the ODT. Note "
+"that for the time being, this is a luminance only approximation of the ACES "
+"RRT; without desaturation of highlights and shadows nor red hue "
+"modifications."
+msgstr ""
+"Filtr/krzywa mapowania symulacji HDR do SDR, która jest przybliżeniem ACES "
+"RRT („Reference Rendering Transform”). Podczas przekazywania obrazów "
+"odwoływanych przez scenę do tego działania wynik jest odpowiedni do "
+"wyświetlania odwołanego przekształcenia do sRGB lub ekranu wyjściowego za "
+"pomocą zwykłych profili macierzy ICC jako ODT. Proszę zauważyć, że w tej "
+"chwili jest to przybliżenie tylko luminancji ACES RRT, bez nasycenia "
+"podświetleń i cieni ani modyfikacji barwy czerwonej."
+
 #: operations/workshop/generated/average.c:111
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
 msgstr "Działanie mieszania obrazu „average” (<tt>c = (cA + aB)/2</tt>)"
@@ -8189,15 +8256,3 @@ msgstr "Wybiórcza barwa-nasycenie"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Wybiórczo dostosuj barwę, nasycenie i jasność"
-
-#: operations/workshop/set-space.c:108
-msgid "Set space"
-msgstr "Ustaw przestrzeń"
-
-#: operations/workshop/set-space.c:110
-msgid ""
-"set color space, does not do a conversion but changes the space which "
-"subsequent formats in the pipeline are created with."
-msgstr ""
-"ustaw przestrzeń kolorów, nie wykonuje konwersji, ale zmienia przestrzeń, za "
-"pomocą której tworzone są kolejne formaty w potoku."
