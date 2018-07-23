@@ -17,20 +17,12 @@
  *           2013 Daniel Sabo
  */
 
-#ifndef __GEGL_BUFFER_ITERATOR_H__
-#define __GEGL_BUFFER_ITERATOR_H__
+#ifndef __GEGL_BUFFER_ITERATOR2_H__
+#define __GEGL_BUFFER_ITERATOR2_H__
 
 #include "gegl-buffer.h"
 
-#define GEGL_BUFFER_READ      GEGL_ACCESS_READ
-#define GEGL_BUFFER_WRITE     GEGL_ACCESS_WRITE
-#define GEGL_BUFFER_READWRITE GEGL_ACCESS_READWRITE
-
-#ifndef GEGL_ITERATOR2_API
-
-#define GEGL_BUFFER_MAX_ITERATORS 6
-
-typedef struct _GeglBufferIteratorPriv GeglBufferIteratorPriv;
+typedef struct _GeglBufferIterator2Priv GeglBufferIterator2Priv;
 
 /***
  * GeglBufferIterator:
@@ -39,14 +31,19 @@ typedef struct _GeglBufferIteratorPriv GeglBufferIteratorPriv;
  * In each iteration the new data is available as a linear chunk of
  * memory. See gegl_buffer_iterator_new() and gegl_buffer_iterator_next()
  */
-typedef struct GeglBufferIterator
+
+typedef struct GeglBufferIterator2Item
+{
+  gpointer      data;
+  GeglRectangle roi;
+} GeglBufferIterator2Item;
+
+typedef struct GeglBufferIterator2
 {
   gint           length;
-  gpointer       data[GEGL_BUFFER_MAX_ITERATORS];
-  GeglRectangle  roi[GEGL_BUFFER_MAX_ITERATORS];
-  /* Private */
-  GeglBufferIteratorPriv *priv;
-} GeglBufferIterator;
+  GeglBufferIterator2Priv *priv;
+  GeglBufferIterator2Item  items[];
+} GeglBufferIterator2;
 
 
 /**
@@ -55,10 +52,10 @@ typedef struct GeglBufferIterator
  *
  * Returns: a new buffer iterator.
  */
-GeglBufferIterator *gegl_buffer_iterator_empty_new (void);
+GeglBufferIterator2 *gegl_buffer_iterator2_empty_new (int max_slots);
 
 /**
- * gegl_buffer_iterator_new: (skip)
+ * gegl_buffer_iterator2_new: (skip)
  * @buffer: a #GeglBuffer
  * @roi: the rectangle to iterate over
  * @level: the level at which we are iterating, the roi will indicate the
@@ -75,16 +72,18 @@ GeglBufferIterator *gegl_buffer_iterator_empty_new (void);
  * Returns: a new buffer iterator that can be used to iterate through the
  * buffers pixels.
  */
-GeglBufferIterator * gegl_buffer_iterator_new  (GeglBuffer          *buffer,
-                                                const GeglRectangle *roi,
-                                                gint                 level,
-                                                const Babl          *format,
-                                                GeglAccessMode       access_mode,
-                                                GeglAbyssPolicy      abyss_policy);
+GeglBufferIterator2 * gegl_buffer_iterator2_new  (
+                                                 GeglBuffer          *buffer,
+                                                 const GeglRectangle *roi,
+                                                 gint                 level,
+                                                 const Babl          *format,
+                                                 GeglAccessMode       access_mode,
+                                                 GeglAbyssPolicy      abyss_policy,
+                                                 gint                 max_slots);
 
 
 /**
- * gegl_buffer_iterator_add: (skip)
+ * gegl_buffer_iterator2_add: (skip)
  * @iterator: a #GeglBufferIterator
  * @buffer: a #GeglBuffer
  * @roi: the rectangle to iterate over
@@ -102,7 +101,7 @@ GeglBufferIterator * gegl_buffer_iterator_new  (GeglBuffer          *buffer,
  * Returns: an integer handle refering to the indice in the iterator structure
  * of the added buffer.
  */
-gint                 gegl_buffer_iterator_add  (GeglBufferIterator  *iterator,
+gint                 gegl_buffer_iterator2_add  (GeglBufferIterator2  *iterator,
                                                 GeglBuffer          *buffer,
                                                 const GeglRectangle *roi,
                                                 gint                 level,
@@ -111,13 +110,13 @@ gint                 gegl_buffer_iterator_add  (GeglBufferIterator  *iterator,
                                                 GeglAbyssPolicy      abyss_policy);
 
 /**
- * gegl_buffer_iterator_stop: (skip)
- * @iterator: a GeglBufferIterator
+ * gegl_buffer_iterator2_stop: (skip)
+ * @iterator: a GeglBufferIterator2
  *
  * Cancels the current iteration, freeing up any temporary resources. The
  * iterator handle is no longer valid after invoking this function.
  */
-void                 gegl_buffer_iterator_stop  (GeglBufferIterator *iterator);
+void                 gegl_buffer_iterator2_stop  (GeglBufferIterator2 *iterator);
 
 /**
  * gegl_buffer_iterator_next: (skip)
@@ -131,20 +130,8 @@ void                 gegl_buffer_iterator_stop  (GeglBufferIterator *iterator);
  *
  * Returns: TRUE if there is more work FALSE if iteration is complete.
  */
-gboolean             gegl_buffer_iterator_next (GeglBufferIterator *iterator);
+gboolean             gegl_buffer_iterator2_next (GeglBufferIterator2 *iterator);
 
-#else
 
-#include <gegl-buffer-iterator2.h>
-
-#define GeglBufferIteratorPriv GeglBufferIterator2Priv
-#define GeglBufferIterator GeglBufferIterator2
-#define gegl_buffer_iterator_empty_new #define gegl_buffer_iterator2_empty_new
-#define gegl_buffer_iterator_new gegl_buffer_iterator2_new
-#define gegl_buffer_iterator_add gegl_buffer_iterator2_add
-#define gegl_buffer_iterator_stop gegl_buffer_iterator2_stop
-#define gegl_buffer_iterator_next gegl_buffer_iterator2_next
-
-#endif
 
 #endif
