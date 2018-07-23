@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-19 09:11+0000\n"
-"PO-Revision-Date: 2018-07-19 14:08+0200\n"
+"POT-Creation-Date: 2018-07-23 02:37+0000\n"
+"PO-Revision-Date: 2018-07-23 13:46+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -2664,6 +2664,8 @@ msgstr "Proporción"
 #: operations/common/mix.c:26
 msgid "mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
 msgstr ""
+"proporción de la mezcla, leída como cantidad de aux, 0=entrada 0.5=mitad "
+"1.0=aux"
 
 #: operations/common/mix.c:91
 msgid "Mix"
@@ -2671,7 +2673,7 @@ msgstr "Mezclar"
 
 #: operations/common/mix.c:94
 msgid "do a lerp, linear interpolation (lerp) between input and aux"
-msgstr ""
+msgstr "hacer una lerp, interpolación lineal (lerp) entre la entrada y aux"
 
 #: operations/common/mono-mixer.c:26
 #: operations/common-gpl3+/channel-mixer.c:31
@@ -2727,14 +2729,17 @@ msgid ""
 "Blur pixels in a direction, simulates blurring caused by moving camera in a "
 "straight line during exposure."
 msgstr ""
+"Desenfocar píxeles en una dirección, simula el desenfoque causado al mover "
+"la cámara en línea recta durante la exposición."
 
 #: operations/common/newsprint.c:25
 msgid "Line"
 msgstr "Línea"
 
+# No he encontrado información
 #: operations/common/newsprint.c:28
 msgid "PSSquare (or Euclidian) dot"
-msgstr ""
+msgstr "Punto PSSquare (o Euclidiano)"
 
 #: operations/common/newsprint.c:29
 msgid "Orthogonal Lines"
@@ -2758,7 +2763,7 @@ msgstr "Modelo de color"
 
 #: operations/common/newsprint.c:41
 msgid "How many inks to use just black, rg, rgb (additive), or cmyk"
-msgstr ""
+msgstr "Cuantas tintas utilizar: sólo negro, rg, rgb (aditivo) o cmyk"
 
 #: operations/common/newsprint.c:43
 #: operations/common-gpl3+/video-degradation.c:53
@@ -2766,10 +2771,8 @@ msgid "Pattern"
 msgstr "Patrón"
 
 #: operations/common/newsprint.c:45
-#, fuzzy
-#| msgid "Horizontal texture size"
 msgid "Halftoning/dot pattern to use"
-msgstr "Tamaño de la textura horizontal"
+msgstr "Patrón de medio tono/punto que utilizar"
 
 #: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:38
 #: operations/common-gpl3+/waves.c:40
@@ -2781,6 +2784,8 @@ msgid ""
 "The number of pixels across one repetition of a base pattern at base "
 "resolution."
 msgstr ""
+"El número de píxeles sobre una repetición de un patrón base en la resolución "
+"base."
 
 #: operations/common/newsprint.c:51 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
@@ -2789,7 +2794,7 @@ msgstr "Turbulencia"
 #. rename to wave-pinch or period-pinch?
 #: operations/common/newsprint.c:53
 msgid "Color saturation dependent compression of period"
-msgstr ""
+msgstr "Compresión del periodo dependiente de la saturación de color"
 
 #: operations/common/newsprint.c:55
 msgid "Blocksize"
@@ -2800,12 +2805,12 @@ msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
 msgstr ""
+"Número de periodos por mosaico, en las que este mosaico evita anomalías de "
+"alta frecuencia causadas por el aumento del ángulo"
 
 #: operations/common/newsprint.c:59
-#, fuzzy
-#| msgid "Angle"
 msgid "Angle Boost"
-msgstr "Ángulo"
+msgstr "Aumento del ángulo"
 
 #: operations/common/newsprint.c:61
 msgid ""
@@ -2813,6 +2818,9 @@ msgid ""
 "the way this is computed makes it weak for desaturated colors and possibly "
 "stronger where there is color."
 msgstr ""
+"Factor de multiplicación para la rotación deseada del espacio local para la "
+"textura, la forma en la que se calcula lo hace débil para colores "
+"desaturados y posiblemente más fuerte donde hay color."
 
 #: operations/common/newsprint.c:63
 msgid "Black and green angle"
@@ -2820,7 +2828,7 @@ msgstr "Ángulo negro y verde"
 
 #: operations/common/newsprint.c:66
 msgid "angle offset for patterns"
-msgstr ""
+msgstr "desplazamiento del ángulo para patrones"
 
 #: operations/common/newsprint.c:72
 msgid "Green angle"
@@ -2839,16 +2847,12 @@ msgid "Red angle"
 msgstr "Ángulo rojo"
 
 #: operations/common/newsprint.c:82
-#, fuzzy
-#| msgid "Red in Red channel"
 msgid "Cyan angle"
-msgstr "Rojo en el canal rojo"
+msgstr "Ángulo cian"
 
 #: operations/common/newsprint.c:84
-#, fuzzy
-#| msgid "Blue in Green channel"
 msgid "Blue and magenta angle"
-msgstr "Azul en el canal verde"
+msgstr "Ángulo azul y magenta"
 
 #: operations/common/newsprint.c:90
 msgid "Blue angle"
@@ -2860,7 +2864,7 @@ msgstr "Ángulo magenta"
 
 #: operations/common/newsprint.c:93
 msgid "Yellow angle"
-msgstr ""
+msgstr "Ángulo amarillo"
 
 #: operations/common/newsprint.c:546
 msgid "Newsprint"
@@ -2868,7 +2872,7 @@ msgstr "Papel de periódico"
 
 #: operations/common/newsprint.c:550
 msgid "Digital halftoning with optional modulations. "
-msgstr ""
+msgstr "Medio tono digital con modulaciones opcionales. "
 
 #: operations/common/noise-cell.c:37 operations/common/noise-simplex.c:32
 msgid "The scale of the noise function"
@@ -2916,13 +2920,11 @@ msgstr "Genera una textura celular."
 
 #: operations/common/noise-cie-lch.c:25 operations/common/noise-hsv.c:27
 msgid "Dulling"
-msgstr ""
+msgstr "Opacado"
 
 #: operations/common/noise-cie-lch.c:27 operations/common/noise-hsv.c:29
-#, fuzzy
-#| msgid "Higher values increase the magnitude of the effect"
 msgid "A high value lowers the randomness of the noise"
-msgstr "Los valores más altos incrementan la magnitud del efecto"
+msgstr "Un valor alto disminuye la aleatoriedad del ruido"
 
 #: operations/common/noise-cie-lch.c:195
 msgid "Add CIE Lch Noise"
@@ -3015,7 +3017,7 @@ msgstr "RGB independiente"
 
 #: operations/common/noise-rgb.c:31
 msgid "Control amount of noise for each RGB channel separately"
-msgstr ""
+msgstr "Controlar la cantidad de ruido para cada canal RGB por separado"
 
 #: operations/common/noise-rgb.c:33
 msgid "Linear RGB"
@@ -3023,7 +3025,7 @@ msgstr "RGB lineal"
 
 #: operations/common/noise-rgb.c:34
 msgid "Operate on linearized RGB color data"
-msgstr ""
+msgstr "Operar con datos de color RGB linealizados"
 
 #: operations/common/noise-rgb.c:36
 msgid "Gaussian distribution"
@@ -3034,6 +3036,8 @@ msgid ""
 "Use a gaussian noise distribution, when unticked a linear noise distribution "
 "is used instead"
 msgstr ""
+"Usar una distribución de ruido gaussiana. Cuando está desmarcado se utiliza "
+"una distribución de ruido lineal en su lugar"
 
 #: operations/common/noise-rgb.c:39
 msgid "Red"
@@ -3104,24 +3108,21 @@ msgid "Open GEGL Buffer"
 msgstr "Abrir búfer GEGL"
 
 #: operations/common/open-buffer.c:133
-#, fuzzy
-#| msgid "A source that uses an on-disk GeglBuffer."
 msgid "Use an on-disk GeglBuffer as data source."
-msgstr "Una fuente que usa un GeglBuffer que está en el disco."
+msgstr "Usar un GeglBuffer en el disco como origen de datos."
 
 #: operations/common/over.c:183
-#, fuzzy
-#| msgid "Horizontal position"
 msgid "Normal compositing"
-msgstr "Posición horizontal"
+msgstr "Composición normal"
 
+# Thomas Porter y Tom Duff
 #: operations/common/over.c:188
-#, fuzzy
-#| msgid "Porter Duff operation src-over (d = cA + cB * (1.0f - aA))"
 msgid ""
 "Porter Duff operation over (also known as normal mode, and src-over) (d = cA "
 "+ cB * (1 - aA))"
-msgstr "Operación de Porter-Duff src-over (d = cA + cB * (1.0f - aA))"
+msgstr ""
+"Operación de Porter Duff sobre (también conocido como modo normal y src-"
+"over) (d = cA + cB * (1 - aA))"
 
 #: operations/common/panorama-projection.c:503
 msgid "Panorama Projection"
@@ -3132,6 +3133,9 @@ msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
 msgstr ""
+"Hacer una asignación de renderizado a la vista de panorama o su inversa para "
+"una imagen de entrada cilíndrica equidistante. (Proporción 2:1 que contiene "
+"un panorama de 360x180 grados)."
 
 #: operations/common/pixelize.c:28
 msgid "Round"
@@ -3251,6 +3255,8 @@ msgid ""
 "Transformation matrix, using SVG syntax (or multiple matrices, separated by "
 "semicolons)"
 msgstr ""
+"Matriz de transformación, que usa sintaxis SVG (o múltiples matrices, "
+"separadas por punto y coma)"
 
 #: operations/common/recursive-transform.c:32
 #: operations/common/recursive-transform.c:33
@@ -3262,33 +3268,31 @@ msgid "Number of iterations"
 msgstr "Número de iteraciones"
 
 #: operations/common/recursive-transform.c:40
-#, fuzzy
-#| msgid "Exchange color"
 msgid "Fade color"
-msgstr "Intercambiar color"
+msgstr "Color para desteñir"
 
 #: operations/common/recursive-transform.c:41
 msgid ""
 "Color to fade transformed images towards, with a rate depending on its alpha"
 msgstr ""
+"Color para desteñir en imágenes transformadas, con una proporción "
+"dependiendo de su alfa"
 
 #: operations/common/recursive-transform.c:44
-#, fuzzy
-#| msgid "Fill opacity"
 msgid "Fade opacity"
-msgstr "Opacidad del relleno"
+msgstr "Atenuar opacidad"
 
 #: operations/common/recursive-transform.c:45
 msgid "Amount by which to scale the opacity of each transformed image"
-msgstr ""
+msgstr "Cantidad por la cual escalar la opacidad de cada imagen transformada"
 
 #: operations/common/recursive-transform.c:49
 msgid "Paste below"
-msgstr ""
+msgstr "Pegar abajo"
 
 #: operations/common/recursive-transform.c:50
 msgid "Paste transformed images below each other"
-msgstr ""
+msgstr "Pegar las imágenes transformadas una debajo de la otra"
 
 #: operations/common/recursive-transform.c:54 operations/common/spherize.c:58
 #: operations/common-gpl3+/waves.c:52
@@ -3301,7 +3305,7 @@ msgstr "Transformación recursiva"
 
 #: operations/common/recursive-transform.c:388
 msgid "Apply a transformation recursively."
-msgstr ""
+msgstr "Aplicar una transformación recursivamente."
 
 #: operations/common/reinhard05.c:27
 msgid "Overall brightness of the image"
@@ -3341,7 +3345,7 @@ msgstr ""
 
 #: operations/common/remap.c:101
 msgid "Remap"
-msgstr ""
+msgstr "Reasignar"
 
 #: operations/common/remap.c:103
 msgid "stretch components of pixels individually based on luminance envelopes"
@@ -3399,59 +3403,47 @@ msgstr "Ruta del archivo que guardar."
 msgid "Save"
 msgstr "Guardar"
 
+# handler: gestor, manipulador, operario informático, nunca manejador.
 #: operations/common/save.c:203
-#, fuzzy
-#| msgid ""
-#| "Multipurpose file loader, that uses other native handlers, and fallback "
-#| "conversion using Image Magick's convert."
 msgid ""
 "Multipurpose file saver, that uses other native save handlers depending on "
 "extension, use the format specific save ops to specify additional parameters."
 msgstr ""
-"Cargador de archivos de multipropósito, que usa otros manejadores nativos, y "
-"conversión de último recurso usando la función «convert» de ImageMagick."
+"Guardador de archivos de multipropósito, que usa otros gestores de guardado "
+"nativos dependiendo de la extensión. Use el formato ops de guardado "
+"específico para especificar parámetros adicionales."
 
 #: operations/common/sepia.c:24
 msgid "Effect strength"
 msgstr "Fuerza del efecto"
 
 #: operations/common/sepia.c:25
-#, fuzzy
-#| msgid "Scale, strength of effect"
 msgid "Strength of the sepia effect"
-msgstr "Escala, fuerza del efecto"
+msgstr "Fuerza del efecto sepia"
 
 #: operations/common/sepia.c:112
 msgid "Sepia"
 msgstr "Sepia"
 
 #: operations/common/sepia.c:115
-#, fuzzy
-#| msgid "Infinitely repeats the input image."
 msgid "Apply a sepia tone to the input image"
-msgstr "Repite infinitamente la imagen de entrada."
+msgstr "Aplicar tono sepia a la imagen de entrada"
 
 #: operations/common/slic.c:28
 msgid "Regions size"
-msgstr ""
+msgstr "Tamaño de las regiones"
 
 #: operations/common/slic.c:29
-#, fuzzy
-#| msgid "Size of each block in pixels"
 msgid "Size of a region side"
-msgstr "Tamaño de cada bloque en píxeles"
+msgstr "Tamaño de un lado de la región"
 
 #: operations/common/slic.c:33
-#, fuzzy
-#| msgid "Compensate"
 msgid "Compactness"
-msgstr "Compensar"
+msgstr "Compactibilidad"
 
 #: operations/common/slic.c:34
-#, fuzzy
-#| msgid "Tile size"
 msgid "Cluster size"
-msgstr "Tamaño del mosaico"
+msgstr "Tamaño del grupo"
 
 #: operations/common/slic.c:456
 msgid "Simple Linear Iterative Clustering"
@@ -3814,11 +3806,11 @@ msgstr "Apretar"
 msgid "Rotation"
 msgstr "Rotación"
 
-#: operations/common/vignette.c:383
+#: operations/common/vignette.c:384
 msgid "Vignette"
 msgstr "Viñeta"
 
-#: operations/common/vignette.c:387
+#: operations/common/vignette.c:388
 #, fuzzy
 #| msgid ""
 #| "Applies a vignette to an image. Simulates the luminance fall off at the "
@@ -8234,14 +8226,19 @@ msgstr ""
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr "Entrada Video4Linux, capturadoras, webcams y dispositivos similares."
 
-#: operations/workshop/filmic.c:84
-msgid "ACES Filmic"
+#: operations/workshop/aces-rrt.c:134
+msgid "ACES RRT"
 msgstr ""
 
-#: operations/workshop/filmic.c:87
+#: operations/workshop/aces-rrt.c:137
 msgid ""
 "HDR to SDR proofing filter/mapping curve that is an approximation of the "
-"ACES RRT (Reference Rendering Transform)."
+"ACES RRT (Reference Rendering Transform). When feeding scene-refereed "
+"imagery into this op, the result is suitable for display referred transform "
+"to sRGB or output display using regular ICC matric profiles as the ODT. Note "
+"that for the time being, this is a luminance only approximation of the ACES "
+"RRT; without desaturation of highlights and shadows nor red hue "
+"modifications."
 msgstr ""
 
 #: operations/workshop/generated/average.c:111
