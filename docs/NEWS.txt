@@ -1,5 +1,5 @@
-GEGL-0.4.6 2018-07-?? (not released yet)
-----------------------------------------
+GEGL-0.4.6 2018-07-23
+---------------------
 
 Up until now GEGL has been using a color space corresponding to scRGB as an
 unbounded device independent/possibly scene-referred HDR color space - with a
@@ -64,9 +64,9 @@ provide means of overriding this behavior, see the new section about color
 management in the gegl-chain syntax documentation at
 http://gegl.org/gegl-chain.html
 
-Work is in progress on updating GIMP to also make use of and propagate color
-space information along with encoding in babl formats, changes which also will
-be integrated in the 2.10 branch.
+Initial work has started on making GIMP also use of and propagate color space
+information along with encoding in babl formats, changes which also will be
+integrated in the 2.10 branch.
 
 Other changes to operations:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,12 +83,19 @@ New operation in workshop:
 
   acrs-rrt: ACES RRT based HDR to SDR proof/preview point-filter tonemapping op.
 
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alan Mortensen, Daniel Korostil, Daniel Mustieles, Ell, Francisco Mariano-Neto,
+Marco Ciampa, Matej Urbančič, Michael Natterer, Michael Schumacher, Øyvind
+Kolås, Piotr Drąg, Rodrigo and Snehalata B Shirude.
+
+
 GEGL-0.4.4 2018-07-04
 ---------------------
 
 Core
 ~~~~
-
 
 Added swap-reading, swap-writing, swap-read-total and swap-write-total
 properties to GeglStats.
