@@ -5,23 +5,23 @@
 # Francisco Vila <francisco.vila@hispalinux.es>, 2012.
 #
 # Yolanda Alvarez Perez <yolandaa.alvarez.perez@gmail.com>, 2016.
-# Rodrigo <rodhos92@gmail.com>, 2018.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2012, 2013, 2014, 2015, 2016, 2017, 2018.
+# Rodrigo <rodhos92@gmail.com>, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-23 12:56+0000\n"
-"PO-Revision-Date: 2018-07-23 13:46+0200\n"
-"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
-"Language-Team: es <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2018-07-24 08:27+0000\n"
+"PO-Revision-Date: 2018-07-24 12:09+0200\n"
+"Last-Translator: Rodrigo <rodhos92@gmail.com>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #: bin/gegl.c:174
 #, c-format
@@ -567,7 +567,7 @@ msgstr ""
 #: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
-#: operations/common-gpl3+/whirl-pinch.c:45
+#: operations/common-gpl3+/whirl-pinch.c:46
 #: operations/external/matting-levin.c:29
 msgid "Radius"
 msgstr "Radio"
@@ -723,12 +723,12 @@ msgstr ""
 "la generación de escala de grises."
 
 #: operations/common/checkerboard.c:25 operations/common/grid.c:24
-#: operations/common/little-planet.c:43
-#: operations/common/panorama-projection.c:43 operations/common/rectangle.c:36
+#: operations/common/little-planet.c:46
+#: operations/common/panorama-projection.c:46 operations/common/rectangle.c:36
 #: operations/common-gpl3+/diffraction-patterns.c:78
 #: operations/common-gpl3+/maze.c:40 operations/common-gpl3+/noise-solid.c:64
 #: operations/common-gpl3+/plasma.c:54 operations/common-gpl3+/sinus.c:76
-#: operations/common-gpl3+/spiral.c:85 operations/core/crop.c:35
+#: operations/common-gpl3+/spiral.c:86 operations/core/crop.c:35
 #: operations/external/svg-load.c:30 operations/external/text.c:61
 #: operations/external/v4l.c:28 operations/external/vector-stroke.c:30
 #: operations/workshop/external/line-profile.c:39
@@ -742,12 +742,12 @@ msgid "Horizontal width of cells pixels"
 msgstr "Anchura horizontal de los píxeles de las celdillas"
 
 #: operations/common/checkerboard.c:33 operations/common/grid.c:31
-#: operations/common/little-planet.c:49
-#: operations/common/panorama-projection.c:49 operations/common/rectangle.c:42
+#: operations/common/little-planet.c:52
+#: operations/common/panorama-projection.c:52 operations/common/rectangle.c:42
 #: operations/common-gpl3+/diffraction-patterns.c:86
 #: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:48
 #: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:62
-#: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:93
+#: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:94
 #: operations/core/crop.c:40 operations/external/svg-load.c:32
 #: operations/external/text.c:63 operations/external/v4l.c:31
 #: operations/workshop/external/line-profile.c:41
@@ -761,7 +761,7 @@ msgid "Vertical width of cells pixels"
 msgstr "Anchura vertical de los píxeles de las celdillas"
 
 #: operations/common/checkerboard.c:41 operations/common/grid.c:38
-#: operations/common/mirrors.c:44 operations/common-gpl3+/bump-map.c:61
+#: operations/common/mirrors.c:46 operations/common-gpl3+/bump-map.c:62
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -772,7 +772,7 @@ msgid "Horizontal offset (from origin) for start of grid"
 msgstr "Desplazamiento horizontal (desde el origen) del comienzo de la rejilla"
 
 #: operations/common/checkerboard.c:47 operations/common/grid.c:44
-#: operations/common/mirrors.c:50 operations/common-gpl3+/bump-map.c:67
+#: operations/common/mirrors.c:52 operations/common-gpl3+/bump-map.c:68
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -783,7 +783,7 @@ msgid "Vertical offset (from origin) for start of grid"
 msgstr "Desplazamiento vertical (desde el origen) del comienzo de la rejilla"
 
 #: operations/common/checkerboard.c:53 operations/common-gpl3+/sinus.c:58
-#: operations/common-gpl3+/spiral.c:79 operations/workshop/gradient-map.c:26
+#: operations/common-gpl3+/spiral.c:80 operations/workshop/gradient-map.c:26
 msgid "Color 1"
 msgstr "Color 1"
 
@@ -792,7 +792,7 @@ msgid "The first cell color"
 msgstr "El primer color de celda"
 
 #: operations/common/checkerboard.c:57 operations/common-gpl3+/sinus.c:60
-#: operations/common-gpl3+/spiral.c:82 operations/workshop/gradient-map.c:28
+#: operations/common-gpl3+/spiral.c:83 operations/workshop/gradient-map.c:28
 msgid "Color 2"
 msgstr "Color 2"
 
@@ -902,7 +902,7 @@ msgid "Change to this"
 msgstr "Cambiar a éste"
 
 #: operations/common/color-rotate.c:40 operations/common/color-rotate.c:53
-#: operations/common-gpl3+/spiral.c:70
+#: operations/common-gpl3+/spiral.c:71
 msgid "Clockwise"
 msgstr "Horario"
 
@@ -1382,7 +1382,7 @@ msgstr "Divisor"
 
 #: operations/common/convolution-matrix.c:55
 #: operations/workshop/bayer-matrix.c:64
-#: operations/workshop/linear-sinusoid.c:71
+#: operations/workshop/linear-sinusoid.c:72
 msgid "Offset"
 msgstr "Desplazamiento"
 
@@ -1558,7 +1558,7 @@ msgstr "El método de tramado a usar"
 #: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
 #: operations/common/noise-rgb.c:55 operations/common/noise-simplex.c:39
 #: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
-#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:88
+#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:89
 #: operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
@@ -1584,7 +1584,7 @@ msgstr ""
 
 #: operations/common/dropshadow.c:25 operations/common/layer.c:36
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
-#: operations/common-gpl3+/polar-coordinates.c:51
+#: operations/common-gpl3+/polar-coordinates.c:52
 #: operations/common-gpl3+/spiral.c:35 operations/core/crop.c:25
 #: operations/transform/reflect.c:26 operations/transform/scale-ratio.c:25
 #: operations/transform/scale-size.c:25
@@ -1599,7 +1599,7 @@ msgstr "Desplazamiento horizontal de la sombra"
 
 #: operations/common/dropshadow.c:31 operations/common/layer.c:41
 #: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
-#: operations/common-gpl3+/polar-coordinates.c:58
+#: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
 #: operations/transform/reflect.c:30 operations/transform/scale-ratio.c:30
 #: operations/transform/scale-size.c:30
@@ -1816,12 +1816,12 @@ msgstr "¿Cómo se hace discreto el núcleo gaussiano?"
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:31
 #: operations/common-gpl3+/displace.c:42
 #: operations/common-gpl3+/fractal-trace.c:67
-#: operations/common-gpl3+/ripple.c:55 operations/transform/scale.c:102
+#: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
 msgid "Abyss policy"
 msgstr "Política del abismo"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
-#: operations/common-gpl3+/displace.c:45 operations/common-gpl3+/ripple.c:58
+#: operations/common-gpl3+/displace.c:45 operations/common-gpl3+/ripple.c:59
 #: operations/transform/scale.c:103
 msgid "How image edges are handled"
 msgstr "Cómo se manejan los bordes de la imagen"
@@ -2077,7 +2077,7 @@ msgstr ""
 msgid "Magnitude"
 msgstr "Magnitud"
 
-#: operations/common/image-gradient.c:28 operations/common-gpl3+/spiral.c:74
+#: operations/common/image-gradient.c:28 operations/common-gpl3+/spiral.c:75
 #: operations/common-gpl3+/texturize-canvas.c:38
 #: operations/common-gpl3+/wind.c:50
 msgid "Direction"
@@ -2286,50 +2286,50 @@ msgstr "Pan"
 msgid "Horizontal camera panning"
 msgstr "Cámara panorámica horizontal"
 
-#: operations/common/little-planet.c:29
-#: operations/common/panorama-projection.c:29
+#: operations/common/little-planet.c:30
+#: operations/common/panorama-projection.c:30
 msgid "Tilt"
 msgstr "Inclinar"
 
-#: operations/common/little-planet.c:30
-#: operations/common/panorama-projection.c:30
+#: operations/common/little-planet.c:31
+#: operations/common/panorama-projection.c:31
 msgid "Vertical camera panning"
 msgstr "Cámara panorámica vertical"
 
-#: operations/common/little-planet.c:35
-#: operations/common/panorama-projection.c:35
+#: operations/common/little-planet.c:37
+#: operations/common/panorama-projection.c:37
 msgid "Spin"
 msgstr "Girar"
 
-#: operations/common/little-planet.c:36
-#: operations/common/panorama-projection.c:36
+#: operations/common/little-planet.c:38
+#: operations/common/panorama-projection.c:38
 msgid "Spin angle around camera axis"
 msgstr "Ángulo de giro alrededor del eje de la cámara"
 
-#: operations/common/little-planet.c:39 operations/common/mirrors.c:74
-#: operations/common/panorama-projection.c:39
+#: operations/common/little-planet.c:42 operations/common/mirrors.c:76
+#: operations/common/panorama-projection.c:42
 #: operations/common-gpl3+/fractal-explorer.c:58
 #: operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
 msgstr "Ampliación"
 
-#: operations/common/little-planet.c:44
-#: operations/common/panorama-projection.c:44
+#: operations/common/little-planet.c:47
+#: operations/common/panorama-projection.c:47
 msgid "output/rendering width in pixels, -1 for input width"
 msgstr "Salida/anchura del renderizado en píxeles, -1 para el ancho de entrada"
 
-#: operations/common/little-planet.c:50
-#: operations/common/panorama-projection.c:50
+#: operations/common/little-planet.c:53
+#: operations/common/panorama-projection.c:53
 msgid "output/rendering height in pixels, -1 for input height"
 msgstr "Salida/altura del renderizado en píxeles, -1 para la altura de entrada"
 
-#: operations/common/little-planet.c:55
-#: operations/common/panorama-projection.c:55
+#: operations/common/little-planet.c:58
+#: operations/common/panorama-projection.c:58
 msgid "Inverse transform"
 msgstr "Transformación inversa"
 
-#: operations/common/little-planet.c:56
-#: operations/common/panorama-projection.c:56
+#: operations/common/little-planet.c:59
+#: operations/common/panorama-projection.c:59
 msgid ""
 "Do the inverse mapping, useful for touching up zenith, nadir or other parts "
 "of panorama."
@@ -2338,16 +2338,16 @@ msgstr ""
 "panorama."
 
 #. XXX: needs better ui type
-#: operations/common/little-planet.c:58 operations/common/map-absolute.c:22
+#: operations/common/little-planet.c:61 operations/common/map-absolute.c:22
 #: operations/common/map-relative.c:28
-#: operations/common/panorama-projection.c:58
+#: operations/common/panorama-projection.c:61
 #: operations/common/recursive-transform.c:52 operations/common/spherize.c:56
-#: operations/common-gpl3+/ripple.c:49 operations/common-gpl3+/waves.c:50
+#: operations/common-gpl3+/ripple.c:50 operations/common-gpl3+/waves.c:50
 msgid "Resampling method"
 msgstr "Método de remuestreo"
 
-#: operations/common/little-planet.c:60
-#: operations/common/panorama-projection.c:60
+#: operations/common/little-planet.c:63
+#: operations/common/panorama-projection.c:63
 msgid ""
 "Image resampling method to use, for good results with double resampling when "
 "retouching panoramas, use nearest to generate the view and cubic or better "
@@ -2358,11 +2358,11 @@ msgstr ""
 "la vista y cúbica o mejor para que la transformada inversa vuelva al "
 "panorama."
 
-#: operations/common/little-planet.c:490
+#: operations/common/little-planet.c:493
 msgid "Little Planet"
 msgstr "Planeta pequeño"
 
-#: operations/common/little-planet.c:494
+#: operations/common/little-planet.c:497
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
 "Hacer una transformada de planeta estereográfico/pequeño de una imagen "
@@ -2565,27 +2565,27 @@ msgstr "Rotación de los espejos"
 msgid "Rotation applied to the mirrors"
 msgstr "Rotación aplicada a los espejos"
 
-#: operations/common/mirrors.c:35
+#: operations/common/mirrors.c:36
 msgid "Result rotation"
 msgstr "Rotación del resultado"
 
-#: operations/common/mirrors.c:36
+#: operations/common/mirrors.c:37
 msgid "Rotation applied to the result"
 msgstr "Rotación aplicada al resultado"
 
-#: operations/common/mirrors.c:40
+#: operations/common/mirrors.c:42
 msgid "Mirrors"
 msgstr "Espejos"
 
-#: operations/common/mirrors.c:41
+#: operations/common/mirrors.c:43
 msgid "Number of mirrors to use"
 msgstr "Número de espejos que usar"
 
-#: operations/common/mirrors.c:45 operations/common/mirrors.c:51
+#: operations/common/mirrors.c:47 operations/common/mirrors.c:53
 msgid "position of symmetry center in output"
 msgstr "Posición del centro de simetría en la salida"
 
-#: operations/common/mirrors.c:56 operations/common/vignette.c:61
+#: operations/common/mirrors.c:58 operations/common/vignette.c:61
 #: operations/common-gpl3+/displace.c:80
 #: operations/common-gpl3+/motion-blur-circular.c:41
 #: operations/common-gpl3+/motion-blur-zoom.c:40
@@ -2593,11 +2593,11 @@ msgstr "Posición del centro de simetría en la salida"
 msgid "Center X"
 msgstr "Centro X"
 
-#: operations/common/mirrors.c:57
+#: operations/common/mirrors.c:59
 msgid "X axis ratio for the center of mirroring"
 msgstr "Proporción en el eje X para el centro de la reflexión"
 
-#: operations/common/mirrors.c:61 operations/common/vignette.c:66
+#: operations/common/mirrors.c:63 operations/common/vignette.c:66
 #: operations/common-gpl3+/displace.c:87
 #: operations/common-gpl3+/motion-blur-circular.c:46
 #: operations/common-gpl3+/motion-blur-zoom.c:45
@@ -2605,53 +2605,53 @@ msgstr "Proporción en el eje X para el centro de la reflexión"
 msgid "Center Y"
 msgstr "Centro Y"
 
-#: operations/common/mirrors.c:62
+#: operations/common/mirrors.c:64
 msgid "Y axis ratio for the center of mirroring"
 msgstr "Proporción en el eje Y para el centro de la reflexión"
 
-#: operations/common/mirrors.c:66
+#: operations/common/mirrors.c:68
 msgid "Trim X"
 msgstr "Recorte X"
 
-#: operations/common/mirrors.c:67
+#: operations/common/mirrors.c:69
 msgid "X axis ratio for trimming mirror expanse"
 msgstr ""
 "Proporción en el eje X para recortar la expansión producida por el espejo"
 
-#: operations/common/mirrors.c:70
+#: operations/common/mirrors.c:72
 msgid "Trim Y"
 msgstr "Recortar Y"
 
-#: operations/common/mirrors.c:71
+#: operations/common/mirrors.c:73
 msgid "Y axis ratio for trimming mirror expanse"
 msgstr ""
 "Proporción en el eje Y para recortar la expansión producida por el espejo"
 
-#: operations/common/mirrors.c:75 operations/common/mirrors.c:79
+#: operations/common/mirrors.c:77 operations/common/mirrors.c:81
 msgid "Scale factor to make rendering size bigger"
 msgstr "Factor de escala para aumentar el tamaño del renderizado"
 
-#: operations/common/mirrors.c:78
+#: operations/common/mirrors.c:80
 msgid "Expand"
 msgstr "Expandir"
 
-#: operations/common/mirrors.c:82
+#: operations/common/mirrors.c:84
 msgid "Clip result to input size"
 msgstr "Recortar el resultado al tamaño de la entrada"
 
-#: operations/common/mirrors.c:84
+#: operations/common/mirrors.c:86
 msgid "Wrap input"
 msgstr "Ajustar la entrada"
 
-#: operations/common/mirrors.c:85
+#: operations/common/mirrors.c:87
 msgid "Fill full output area"
 msgstr "Rellenar toda el área de salida"
 
-#: operations/common/mirrors.c:434
+#: operations/common/mirrors.c:436
 msgid "Kaleidoscopic Mirroring"
 msgstr "Reflejo caleidoscópico"
 
-#: operations/common/mirrors.c:438
+#: operations/common/mirrors.c:440
 msgid "Create a kaleidoscope like effect."
 msgstr "Crear un efecto caleidoscopio."
 
@@ -2706,7 +2706,7 @@ msgid "Length of blur in pixels"
 msgstr "Longitud del desenfoque en píxeles"
 
 #. FIXME: With a large angle, we lose AreaFilter's flavours
-#: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:71
+#: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:72
 #: operations/common-gpl3+/motion-blur-circular.c:52
 #: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
 msgid "Angle"
@@ -2716,11 +2716,11 @@ msgstr "Ángulo"
 msgid "Angle of blur in degrees"
 msgstr "Ángulo del desenfoque en grados"
 
-#: operations/common/motion-blur-linear.c:332
+#: operations/common/motion-blur-linear.c:333
 msgid "Linear Motion Blur"
 msgstr "Desenfoque de movimiento lineal"
 
-#: operations/common/motion-blur-linear.c:336
+#: operations/common/motion-blur-linear.c:337
 msgid ""
 "Blur pixels in a direction, simulates blurring caused by moving camera in a "
 "straight line during exposure."
@@ -2822,51 +2822,51 @@ msgstr ""
 msgid "Black and green angle"
 msgstr "Ángulo negro y verde"
 
-#: operations/common/newsprint.c:66
+#: operations/common/newsprint.c:67
 msgid "angle offset for patterns"
 msgstr "desplazamiento del ángulo para patrones"
 
-#: operations/common/newsprint.c:72
+#: operations/common/newsprint.c:73
 msgid "Green angle"
 msgstr "Ángulo verde"
 
-#: operations/common/newsprint.c:73
+#: operations/common/newsprint.c:74
 msgid "Black angle"
 msgstr "Ángulo negro"
 
-#: operations/common/newsprint.c:75
+#: operations/common/newsprint.c:76
 msgid "Red and cyan angle"
 msgstr "Ángulo rojo y cian"
 
-#: operations/common/newsprint.c:81
+#: operations/common/newsprint.c:83
 msgid "Red angle"
 msgstr "Ángulo rojo"
 
-#: operations/common/newsprint.c:82
+#: operations/common/newsprint.c:84
 msgid "Cyan angle"
 msgstr "Ángulo cian"
 
-#: operations/common/newsprint.c:84
+#: operations/common/newsprint.c:86
 msgid "Blue and magenta angle"
 msgstr "Ángulo azul y magenta"
 
-#: operations/common/newsprint.c:90
+#: operations/common/newsprint.c:93
 msgid "Blue angle"
 msgstr "Ángulo azul"
 
-#: operations/common/newsprint.c:91
+#: operations/common/newsprint.c:94
 msgid "Magenta angle"
 msgstr "Ángulo magenta"
 
-#: operations/common/newsprint.c:93
+#: operations/common/newsprint.c:96
 msgid "Yellow angle"
 msgstr "Ángulo amarillo"
 
-#: operations/common/newsprint.c:546
+#: operations/common/newsprint.c:550
 msgid "Newsprint"
 msgstr "Papel de periódico"
 
-#: operations/common/newsprint.c:550
+#: operations/common/newsprint.c:554
 msgid "Digital halftoning with optional modulations. "
 msgstr "Medio tono digital con modulaciones opcionales. "
 
@@ -3120,11 +3120,11 @@ msgstr ""
 "Operación de Porter Duff sobre (también conocido como modo normal y src-"
 "over) (d = cA + cB * (1 - aA))"
 
-#: operations/common/panorama-projection.c:503
+#: operations/common/panorama-projection.c:506
 msgid "Panorama Projection"
 msgstr "Proyección panorámica"
 
-#: operations/common/panorama-projection.c:508
+#: operations/common/panorama-projection.c:511
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
@@ -3443,11 +3443,14 @@ msgstr "Tamaño del grupo"
 
 #: operations/common/slic.c:456
 msgid "Simple Linear Iterative Clustering"
-msgstr ""
+msgstr "Agrupación iterativa lineal simple"
 
+# Wikipedia: K-means es un método de agrupamiento, que tiene como objetivo la partición de un conjunto de n observaciones en k grupos en el que cada observación pertenece al grupo cuyo valor medio es más cercano.
+#
+# O se deja en inglés «k-means» o lo traducimos a «medias-k».
 #: operations/common/slic.c:459
 msgid "Superpixels based on k-means clustering"
-msgstr ""
+msgstr "Superpíxeles basados en agrupaciones k-means"
 
 #: operations/common/snn-mean.c:33
 msgid "Pairs"
@@ -3462,7 +3465,6 @@ msgid "Symmetric Nearest Neighbour"
 msgstr "Simétrica del vecino más cercano"
 
 #: operations/common/snn-mean.c:360
-#, fuzzy
 #| msgid ""
 #| "Noise reducing edge enhancing blur filter based  on Symmetric Nearest "
 #| "Neighbours"
@@ -3474,10 +3476,9 @@ msgstr ""
 "vecinos simétricos más próximos"
 
 #: operations/common/spherize.c:25
-#, fuzzy
 #| msgid "Radius"
 msgid "Radial"
-msgstr "Radio"
+msgstr "Radial"
 
 #: operations/common/spherize.c:30 operations/common-gpl3+/value-propagate.c:38
 msgid "Mode"
@@ -3489,11 +3490,11 @@ msgstr "Modo de desplazamiento"
 
 #: operations/common/spherize.c:35
 msgid "Angle of view"
-msgstr ""
+msgstr "Ángulo de visión"
 
 #: operations/common/spherize.c:36
 msgid "Camera angle of view"
-msgstr ""
+msgstr "Ángulo de visión de la cámara"
 
 #: operations/common/spherize.c:40
 msgid "Curvature"
@@ -3502,6 +3503,8 @@ msgstr "Curvatura"
 #: operations/common/spherize.c:41
 msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
 msgstr ""
+"Ángulo de la cúspide del casquete esférico, como fracción del co-ángulo de "
+"vista"
 
 #. note that the code can handle negative curvatures
 #. * (in the [-1, 0) range), in which case the image is
@@ -3522,18 +3525,19 @@ msgid ""
 "Displacement scaling factor (negative values refer to the inverse "
 "displacement)"
 msgstr ""
+"Factor de escala del desplazamiento (valores negativos se refieren al "
+"desplazamiento inverso)"
 
+# Podríamos usar «esferizar»...
 #: operations/common/spherize.c:317
-#, fuzzy
 #| msgid "Spherical"
 msgid "Spherize"
-msgstr "Esférico"
+msgstr "Dar forma de esfera"
 
 #: operations/common/spherize.c:320
-#, fuzzy
 #| msgid "Spin angle around camera axis"
 msgid "Wrap image around a spherical cap"
-msgstr "Ángulo de giro alrededor del eje de la cámara"
+msgstr "Envolver la imagen alrededor de un casquete esférico"
 
 #: operations/common/stress.c:28
 msgid ""
@@ -3557,6 +3561,8 @@ msgid ""
 "When enabled also enhances shadow regions - when disabled a more natural "
 "result is yielded"
 msgstr ""
+"Cuando está activado también realza las regiones de sombra - cuando está "
+"desactivado se produce un resultado más natural"
 
 #: operations/common/stress.c:267 operations/common/stress.c:271
 msgid "Spatio Temporal Retinex-like Envelope with Stochastic Sampling"
@@ -3571,16 +3577,18 @@ msgid "Impact each channel with the same amount"
 msgstr "Impactar cada canal con la misma cantidad"
 
 #: operations/common/stretch-contrast.c:28
-#, fuzzy
 #| msgid "Invert component"
 msgid "Non-linear components"
-msgstr "Invertir componente"
+msgstr "Componentes no lineales"
 
+# Supongo corregidos en el canal gamma
 #: operations/common/stretch-contrast.c:29
 msgid ""
 "When set operate on gamma corrected values instead of linear RGB - acting "
 "like the old normalize filter in GIMP"
 msgstr ""
+"Cuando se establece, opera en valores corregidos en gamma, en lugar de RGB "
+"lineal - actuando como el filtro para normalizar antiguo en GIMP"
 
 #: operations/common/stretch-contrast.c:583
 msgid "Stretch Contrast"
@@ -3601,16 +3609,17 @@ msgid "Stretch Contrast HSV"
 msgstr "Expansión del contraste HSV"
 
 #: operations/common/stretch-contrast-hsv.c:256
-#, fuzzy
 msgid ""
 "Scales the components of the buffer to be in the 0.0-1.0 range. This "
 "improves images that make poor use of the available contrast (little "
 "contrast, very dark, or very bright images). This version differs from "
 "Contrast Autostretch in that it works in HSV space, and preserves hue."
 msgstr ""
-"Escala las componentes del búfer para que estén en el rango de 0.0 a 1.0. "
-"Esto mejora las imágenes que hacen un uso pobre del contraste disponible "
-"(imágenes con poco contraste, muy oscuras o muy claras)."
+"Escala las componentes del búfer para que estén en el rango de 0,0 a 1,0. "
+"Esto mejora las imágenes que hacen un mal uso del contraste disponible "
+"(imágenes con poco contraste, muy oscuras o muy claras). Esta versión "
+"difiere de «Autoestiramiento de contraste» en que trabaja en el espacio HSV "
+"y conserva el tono."
 
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
@@ -3623,10 +3632,9 @@ msgid "list of <number>s"
 msgstr "lista de <number>s"
 
 #: operations/common/svg-huerotate.c:119
-#, fuzzy
 #| msgid "JPG image loader"
 msgid "SVG Hue Rotate"
-msgstr "Cargador de imágenes JPG"
+msgstr "Giro de tono SVG"
 
 #: operations/common/svg-huerotate.c:120
 msgid "SVG color matrix operation svg_huerotate"
@@ -3634,7 +3642,7 @@ msgstr "Operación svg_huerotate de la matriz de colores SVG"
 
 #: operations/common/svg-luminancetoalpha.c:94
 msgid "SVG Luminance to Alpha"
-msgstr ""
+msgstr "Luminancia SVG a alfa"
 
 #: operations/common/svg-luminancetoalpha.c:98
 msgid "SVG color matrix operation svg_luminancetoalpha"
@@ -3663,13 +3671,16 @@ msgstr "Operación svg_saturate de la matriz de colores SVG"
 msgid "Threshold"
 msgstr "Umbral"
 
+# Escalar/vectorial
+#
+# Avisar al desarrollador del doble punto xD
 #: operations/common/threshold.c:28
-#, fuzzy
 msgid ""
 "Scalar threshold level (overridden if an auxiliary input buffer is "
 "provided.)."
 msgstr ""
-"Nivel del umbral global (usado cuando no hay búfer de entrada auxiliar)."
+"Nivel del umbral escalar (se ignora si se proporciona un búfer de entrada "
+"auxiliar)."
 
 #: operations/common/threshold.c:131
 msgid ""
@@ -3696,15 +3707,19 @@ msgstr "Mosaico"
 msgid "Infinitely repeats the input image."
 msgstr "Repite infinitamente la imagen de entrada."
 
+# mosaicable continuamente
 #: operations/common/tile-seamless.c:167
 msgid "Make Seamlessly tileable"
-msgstr ""
+msgstr "Hacer un mosaico continuo"
 
 #: operations/common/tile-seamless.c:171
 msgid ""
 "Make the input buffer seamlessly tileable. The algorithm is not content-"
 "aware, so the result may need post-processing."
 msgstr ""
+"Hacer que continuamente, el búfer de entrada pueda ser un mosaico. El "
+"algoritmo no tiene en cuenta el contenido, por lo que el resultado podría "
+"necesitar procesamiento posterior."
 
 #: operations/common/unpremultiply.c:78
 msgid "Unpremultiply alpha"
@@ -3721,16 +3736,14 @@ msgid "Expressed as standard deviation, in pixels"
 msgstr ""
 
 #: operations/common/unsharp-mask.c:32
-#, fuzzy
 #| msgid "Scale, strength of effect"
 msgid "Scaling factor for unsharp-mask, the strength of effect"
-msgstr "Escala, fuerza del efecto"
+msgstr "Factor de escala para desafilar-máscara, fuerza del efecto"
 
 #: operations/common/unsharp-mask.c:164
-#, fuzzy
 #| msgid "Unsharp Mask"
 msgid "Sharpen (Unsharp Mask)"
-msgstr "Desenfocar máscara"
+msgstr "Afilar (Desafilar máscara)"
 
 #: operations/common/unsharp-mask.c:167
 msgid ""
@@ -3743,7 +3756,6 @@ msgid "Value Invert"
 msgstr "Invertir valor"
 
 #: operations/common/value-invert.c:153
-#, fuzzy
 #| msgid ""
 #| "Inverts just the value component, the result is the corresponding "
 #| "`inverted' image."
@@ -3751,8 +3763,8 @@ msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
 msgstr ""
-"Invierte sólo la componente de valor, el resultado es la correspondiente "
-"imagen «invertida»."
+"Invierte la componente de valor, el resultado tiene el brillo invertido, "
+"manteniendo el color."
 
 #: operations/common/vignette.c:30
 msgid "Vignette shape"
@@ -3797,15 +3809,15 @@ msgstr "Apretar"
 
 #: operations/common/vignette.c:71 operations/common-gpl3+/spiral.c:64
 #: operations/workshop/bayer-matrix.c:51
-#: operations/workshop/linear-sinusoid.c:95
+#: operations/workshop/linear-sinusoid.c:96
 msgid "Rotation"
 msgstr "Rotación"
 
-#: operations/common/vignette.c:384
+#: operations/common/vignette.c:385
 msgid "Vignette"
 msgstr "Viñeta"
 
-#: operations/common/vignette.c:388
+#: operations/common/vignette.c:389
 #, fuzzy
 #| msgid ""
 #| "Applies a vignette to an image. Simulates the luminance fall off at the "
@@ -4050,33 +4062,33 @@ msgstr "Mapa de relieve en mosaico"
 msgid "Azimuth"
 msgstr "Azimut"
 
-#: operations/common-gpl3+/bump-map.c:55 operations/common-gpl3+/emboss.c:39
+#: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
 msgid "Elevation"
 msgstr "Elevación"
 
-#: operations/common-gpl3+/bump-map.c:58 operations/common-gpl3+/emboss.c:44
+#: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
 msgid "Depth"
 msgstr "Profundidad"
 
-#: operations/common-gpl3+/bump-map.c:73
+#: operations/common-gpl3+/bump-map.c:74
 msgid "Waterlevel"
 msgstr "Nivel del agua"
 
-#: operations/common-gpl3+/bump-map.c:74
+#: operations/common-gpl3+/bump-map.c:75
 msgid "Level that full transparency should represent"
 msgstr "Nivel que una total transparencia debe representar"
 
-#: operations/common-gpl3+/bump-map.c:77
+#: operations/common-gpl3+/bump-map.c:78
 msgid "Ambient lighting factor"
 msgstr "Factor de iluminación ambiente"
 
-#: operations/common-gpl3+/bump-map.c:455
+#: operations/common-gpl3+/bump-map.c:456
 msgid "Bump Map"
 msgstr "Mapa de relieve"
 
-#: operations/common-gpl3+/bump-map.c:457
+#: operations/common-gpl3+/bump-map.c:458
 #, fuzzy
 #| msgid ""
 #| "This plug-in uses the algorithm described by John Schlag, \"Fast "
@@ -4428,13 +4440,13 @@ msgstr "Polarización"
 
 #: operations/common-gpl3+/diffraction-patterns.c:79
 #: operations/common-gpl3+/noise-solid.c:65 operations/common-gpl3+/plasma.c:55
-#: operations/common-gpl3+/sinus.c:77 operations/common-gpl3+/spiral.c:86
+#: operations/common-gpl3+/sinus.c:77 operations/common-gpl3+/spiral.c:87
 msgid "Width of the generated buffer"
 msgstr "Anchura del búfer generado"
 
 #: operations/common-gpl3+/diffraction-patterns.c:87
 #: operations/common-gpl3+/noise-solid.c:73 operations/common-gpl3+/plasma.c:63
-#: operations/common-gpl3+/sinus.c:85 operations/common-gpl3+/spiral.c:94
+#: operations/common-gpl3+/sinus.c:85 operations/common-gpl3+/spiral.c:95
 msgid "Height of the generated buffer"
 msgstr "Altura del búfer generado"
 
@@ -4482,7 +4494,7 @@ msgid "Horizontal displacement"
 msgstr "Dimensión horizontal"
 
 #: operations/common-gpl3+/displace.c:56
-#: operations/common-gpl3+/whirl-pinch.c:41
+#: operations/common-gpl3+/whirl-pinch.c:42
 msgid "Pinch"
 msgstr "Aspiración"
 
@@ -4619,7 +4631,7 @@ msgstr "Detección de bordes Laplaciano"
 msgid "High-resolution edge detection"
 msgstr "Detección de bordes de alta resolución"
 
-#: operations/common-gpl3+/emboss.c:26 operations/common-gpl3+/emboss.c:270
+#: operations/common-gpl3+/emboss.c:26 operations/common-gpl3+/emboss.c:271
 msgid "Emboss"
 msgstr "Repujado"
 
@@ -4639,15 +4651,15 @@ msgstr "Tipo de renderizado"
 msgid "Light angle (degrees)"
 msgstr "El ángulo de la luz (grados)"
 
-#: operations/common-gpl3+/emboss.c:40
+#: operations/common-gpl3+/emboss.c:41
 msgid "Elevation angle (degrees)"
 msgstr "El ángulo de elevación (grados)"
 
-#: operations/common-gpl3+/emboss.c:45
+#: operations/common-gpl3+/emboss.c:46
 msgid "Filter width"
 msgstr "Anchura del filtro"
 
-#: operations/common-gpl3+/emboss.c:274
+#: operations/common-gpl3+/emboss.c:275
 msgid "Simulates an image created by embossing"
 msgstr "Simula una imagen creada mediante repujado"
 
@@ -5014,7 +5026,7 @@ msgid "Maze algorithm type"
 msgstr "Tipo de algoritmo de laberinto"
 
 #: operations/common-gpl3+/maze.c:61 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:60
+#: operations/common-gpl3+/ripple.c:61
 msgid "Tileable"
 msgstr "Convertible en mosaico"
 
@@ -5131,19 +5143,19 @@ msgstr "Color claro"
 msgid "Light direction"
 msgstr "Dirección de la luz"
 
-#: operations/common-gpl3+/mosaic.c:85
+#: operations/common-gpl3+/mosaic.c:86
 msgid "Antialiasing"
 msgstr "Alisado"
 
-#: operations/common-gpl3+/mosaic.c:86
+#: operations/common-gpl3+/mosaic.c:87
 msgid "Enables smoother tile output"
 msgstr "Permite la salida más suave del mosaico"
 
-#: operations/common-gpl3+/mosaic.c:2468
+#: operations/common-gpl3+/mosaic.c:2469
 msgid "Mosaic"
 msgstr "Mosaico"
 
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2473
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -5156,11 +5168,11 @@ msgstr ""
 "Ángulo de rotación del desenfoque. Un ángulo grande puede tardar algún "
 "tiempo en renderizar"
 
-#: operations/common-gpl3+/motion-blur-circular.c:425
+#: operations/common-gpl3+/motion-blur-circular.c:422
 msgid "Circular Motion Blur"
 msgstr "Desenfoque de movimiento circular"
 
-#: operations/common-gpl3+/motion-blur-circular.c:430
+#: operations/common-gpl3+/motion-blur-circular.c:427
 msgid "Circular motion blur"
 msgstr "Desenfoque de movimiento circular"
 
@@ -5235,7 +5247,7 @@ msgstr "Radio del círculo alrededor del píxel"
 
 #: operations/common-gpl3+/oilify.c:33 operations/common-gpl3+/sinus.c:72
 #: operations/workshop/bayer-matrix.c:69
-#: operations/workshop/linear-sinusoid.c:76
+#: operations/workshop/linear-sinusoid.c:77
 msgid "Exponent"
 msgstr "Exponente"
 
@@ -5311,48 +5323,48 @@ msgstr "Profundidad del círculo en porcentaje"
 msgid "Offset angle"
 msgstr "Ángulo de desfase"
 
-#: operations/common-gpl3+/polar-coordinates.c:42
+#: operations/common-gpl3+/polar-coordinates.c:43
 msgid "Map backwards"
 msgstr "Mapear hacia atrás"
 
-#: operations/common-gpl3+/polar-coordinates.c:43
+#: operations/common-gpl3+/polar-coordinates.c:44
 msgid "Start from the right instead of the left"
 msgstr "Empezar desde la derecha en lugar de la izquierda"
 
-#: operations/common-gpl3+/polar-coordinates.c:45
+#: operations/common-gpl3+/polar-coordinates.c:46
 msgid "Map from top"
 msgstr "Mapear desde arriba"
 
-#: operations/common-gpl3+/polar-coordinates.c:46
+#: operations/common-gpl3+/polar-coordinates.c:47
 msgid "Put the top row in the middle and the bottom row on the outside"
 msgstr "Poner la fila superior en el medio y la inferior en la parte exterior"
 
-#: operations/common-gpl3+/polar-coordinates.c:48
+#: operations/common-gpl3+/polar-coordinates.c:49
 msgid "To polar"
 msgstr "A polares"
 
-#: operations/common-gpl3+/polar-coordinates.c:49
+#: operations/common-gpl3+/polar-coordinates.c:50
 msgid "Map the image to a circle"
 msgstr "Mapear la imagen a un círculo"
 
-#: operations/common-gpl3+/polar-coordinates.c:52
-#: operations/common-gpl3+/polar-coordinates.c:59
+#: operations/common-gpl3+/polar-coordinates.c:53
+#: operations/common-gpl3+/polar-coordinates.c:60
 msgid "Origin point for the polar coordinates"
 msgstr "Punto de origen para las coordenadas polares"
 
-#: operations/common-gpl3+/polar-coordinates.c:65
+#: operations/common-gpl3+/polar-coordinates.c:66
 msgid "Choose middle"
 msgstr "Seleccionar el punto medio"
 
-#: operations/common-gpl3+/polar-coordinates.c:66
+#: operations/common-gpl3+/polar-coordinates.c:67
 msgid "Let origin point to be the middle one"
 msgstr "Hacer que el punto de origen sea el punto medio"
 
-#: operations/common-gpl3+/polar-coordinates.c:411
+#: operations/common-gpl3+/polar-coordinates.c:412
 msgid "Polar Coordinates"
 msgstr "Coordenadas polares"
 
-#: operations/common-gpl3+/polar-coordinates.c:416
+#: operations/common-gpl3+/polar-coordinates.c:417
 msgid "Convert image to or from polar coordinates"
 msgstr "Convertir la imagen a o de coordenadas polares"
 
@@ -5385,19 +5397,19 @@ msgstr "Amplitud"
 msgid "Phase shift"
 msgstr "Desfase"
 
-#: operations/common-gpl3+/ripple.c:52
+#: operations/common-gpl3+/ripple.c:53
 msgid "Wave type"
 msgstr "Tipo de onda"
 
-#: operations/common-gpl3+/ripple.c:61
+#: operations/common-gpl3+/ripple.c:62
 msgid "Retain tilebility"
 msgstr "Conservar enlosabilidad"
 
-#: operations/common-gpl3+/ripple.c:258
+#: operations/common-gpl3+/ripple.c:259
 msgid "Ripple"
 msgstr "Onda"
 
-#: operations/common-gpl3+/ripple.c:263
+#: operations/common-gpl3+/ripple.c:264
 msgid "Displace pixels in a ripple pattern"
 msgstr "Desplazar los píxeles en un patrón de remolino"
 
@@ -5615,21 +5627,21 @@ msgstr ""
 msgid "Spiral rotation"
 msgstr "Rotación de la espiral"
 
-#: operations/common-gpl3+/spiral.c:71
+#: operations/common-gpl3+/spiral.c:72
 msgid "Counter-clockwise"
 msgstr "Sentido antihorario"
 
-#: operations/common-gpl3+/spiral.c:77
+#: operations/common-gpl3+/spiral.c:78
 #, fuzzy
 #| msgid "Shift direction"
 msgid "Spiral swirl direction"
 msgstr "Dirección del desplazamiento"
 
-#: operations/common-gpl3+/spiral.c:443
+#: operations/common-gpl3+/spiral.c:444
 msgid "Spiral"
 msgstr "Espiral"
 
-#: operations/common-gpl3+/spiral.c:448
+#: operations/common-gpl3+/spiral.c:449
 #, fuzzy
 #| msgid "Grid renderer"
 msgid "Spiral renderer"
@@ -6016,11 +6028,11 @@ msgstr "Distorsionar la imagen con ondas"
 msgid "Whirl angle (degrees)"
 msgstr "Ángulo de remolino (grados)"
 
-#: operations/common-gpl3+/whirl-pinch.c:42
+#: operations/common-gpl3+/whirl-pinch.c:43
 msgid "Pinch amount"
 msgstr "Grado de pellizcado"
 
-#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/common-gpl3+/whirl-pinch.c:47
 msgid ""
 "Radius (1.0 is the largest circle that fits in the image, and 2.0 goes all "
 "the way to the corners)"
@@ -6028,11 +6040,11 @@ msgstr ""
 "Radio (1.0 el el círculo mayor inscrito en la imagen, y 2.0 llega "
 "completamente hasta las esquinas)"
 
-#: operations/common-gpl3+/whirl-pinch.c:261
+#: operations/common-gpl3+/whirl-pinch.c:262
 msgid "Whirl Pinch"
 msgstr "Remolino y aspiración"
 
-#: operations/common-gpl3+/whirl-pinch.c:266
+#: operations/common-gpl3+/whirl-pinch.c:267
 msgid "Distort an image by whirling and pinching"
 msgstr "Distorsionar la imagen con remolinos y aspiraciones"
 
@@ -7621,11 +7633,11 @@ msgstr "Grados"
 msgid "Angle to rotate (counter-clockwise)"
 msgstr "Ángulo de rotación (sentido horario)"
 
-#: operations/transform/rotate.c:72
+#: operations/transform/rotate.c:73
 msgid "Rotate"
 msgstr "Rotar"
 
-#: operations/transform/rotate.c:76
+#: operations/transform/rotate.c:77
 msgid "Rotate the buffer around the specified origin."
 msgstr "Girar el búfer alrededor del origen especificado."
 
@@ -7819,7 +7831,7 @@ msgid "270°"
 msgstr "270°"
 
 #: operations/workshop/bayer-matrix.c:54
-#: operations/workshop/linear-sinusoid.c:96
+#: operations/workshop/linear-sinusoid.c:97
 #, fuzzy
 #| msgid "Rotation angle"
 msgid "Pattern rotation angle"
@@ -7834,34 +7846,34 @@ msgid "Pattern amplitude (logarithmic scale)"
 msgstr ""
 
 #: operations/workshop/bayer-matrix.c:65
-#: operations/workshop/linear-sinusoid.c:72
+#: operations/workshop/linear-sinusoid.c:73
 #, fuzzy
 #| msgid "Vertical offset"
 msgid "Value offset"
 msgstr "Desplazamiento vertical"
 
 #: operations/workshop/bayer-matrix.c:70
-#: operations/workshop/linear-sinusoid.c:77
+#: operations/workshop/linear-sinusoid.c:78
 msgid "Value exponent (logarithmic scale)"
 msgstr ""
 
 #: operations/workshop/bayer-matrix.c:74
-#: operations/workshop/linear-sinusoid.c:81
+#: operations/workshop/linear-sinusoid.c:82
 msgid "X Offset"
 msgstr "Desplazamiento X"
 
 #: operations/workshop/bayer-matrix.c:75
-#: operations/workshop/linear-sinusoid.c:82
+#: operations/workshop/linear-sinusoid.c:83
 msgid "Offset for X axis"
 msgstr "Desplazamiento del eje X"
 
 #: operations/workshop/bayer-matrix.c:81
-#: operations/workshop/linear-sinusoid.c:88
+#: operations/workshop/linear-sinusoid.c:89
 msgid "Y Offset"
 msgstr "Desplazamiento Y"
 
 #: operations/workshop/bayer-matrix.c:82
-#: operations/workshop/linear-sinusoid.c:89
+#: operations/workshop/linear-sinusoid.c:90
 msgid "Offset for Y axis"
 msgstr "Desplazamiento del eje Y"
 
@@ -8398,21 +8410,21 @@ msgstr "Valor de escala para el eje x"
 msgid "Axis separation angle"
 msgstr "Ángulo de rotación"
 
-#: operations/workshop/linear-sinusoid.c:100
+#: operations/workshop/linear-sinusoid.c:102
 msgid "Supersampling"
 msgstr "Supermuestreo"
 
-#: operations/workshop/linear-sinusoid.c:101
+#: operations/workshop/linear-sinusoid.c:103
 msgid "Number of samples along each axis per pixel"
 msgstr ""
 
-#: operations/workshop/linear-sinusoid.c:297
+#: operations/workshop/linear-sinusoid.c:299
 #, fuzzy
 #| msgid "Sinusoidal"
 msgid "Linear Sinusoid"
 msgstr "Sinusoidal"
 
-#: operations/workshop/linear-sinusoid.c:302
+#: operations/workshop/linear-sinusoid.c:304
 #, fuzzy
 #| msgid "Generate complex sinusoidal textures"
 msgid "Generate a linear sinusoid pattern"
@@ -8804,8 +8816,7 @@ msgstr ""
 
 #~ msgid "Multipurpose file saver, that uses other native handlers."
 #~ msgstr ""
-#~ "Guardador de archivos de varios usos, que utiliza otros gestores "
-#~ "nativos."
+#~ "Guardador de archivos de varios usos, que utiliza otros gestores nativos."
 
 #~ msgid ""
 #~ "The most widely used method for sharpening an image, sharpens by adding "
