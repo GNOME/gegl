@@ -51,7 +51,7 @@ property_double (center_y, _("Center Y"), 0.5)
 /* FIXME: With a large angle, we lose AreaFilter's flavours */
 property_double (angle, _("Angle"), 5.0)
     description (_("Rotation blur angle. A large angle may take some time to render"))
-    value_range (-180.0, 180.0)
+    value_range (0.0, 360.0)
     ui_meta     ("unit", "degree")
 
 #else
@@ -75,9 +75,6 @@ prepare (GeglOperation *operation)
   gdouble                  angle   = o->angle * G_PI / 180.0;
   const Babl              *space   = gegl_operation_get_source_space (operation, "input");
   GeglRectangle           *whole_region;
-
-  while (angle < 0.0)
-    angle += 2 * G_PI;
 
   whole_region = gegl_operation_source_get_bounding_box (operation, "input");
 
