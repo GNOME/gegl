@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-23 02:37+0000\n"
+"POT-Creation-Date: 2018-07-23 12:56+0000\n"
 "PO-Revision-Date: 2018-07-23 13:46+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
@@ -602,8 +602,7 @@ msgstr "Contraste"
 msgid "Magnitude of contrast scaling >1.0 brighten < 1.0 darken"
 msgstr "Magnitud de la escala de contraste >1.0 iluminar < 1.0 oscurecer"
 
-#: operations/common/brightness-contrast.c:36
-#: operations/common/reinhard05.c:26
+#: operations/common/brightness-contrast.c:36 operations/common/reinhard05.c:26
 #: operations/common-gpl3+/diffraction-patterns.c:66
 #: operations/common-gpl3+/softglow.c:30
 msgid "Brightness"
@@ -690,9 +689,8 @@ msgstr ""
 "colores"
 
 #: operations/common/c2g.c:41 operations/common/matting-global.c:25
-#: operations/common/mean-curvature-blur.c:24
-#: operations/common/noise-cell.c:48 operations/common/noise-perlin.c:33
-#: operations/common/noise-simplex.c:35
+#: operations/common/mean-curvature-blur.c:24 operations/common/noise-cell.c:48
+#: operations/common/noise-perlin.c:33 operations/common/noise-simplex.c:35
 #: operations/common/recursive-transform.c:36 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
 msgid "Iterations"
@@ -748,11 +746,11 @@ msgstr "Anchura horizontal de los píxeles de las celdillas"
 #: operations/common/panorama-projection.c:49 operations/common/rectangle.c:42
 #: operations/common-gpl3+/diffraction-patterns.c:86
 #: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:48
-#: operations/common-gpl3+/noise-solid.c:72
-#: operations/common-gpl3+/plasma.c:62 operations/common-gpl3+/sinus.c:84
-#: operations/common-gpl3+/spiral.c:93 operations/core/crop.c:40
-#: operations/external/svg-load.c:32 operations/external/text.c:63
-#: operations/external/v4l.c:31 operations/workshop/external/line-profile.c:41
+#: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:62
+#: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:93
+#: operations/core/crop.c:40 operations/external/svg-load.c:32
+#: operations/external/text.c:63 operations/external/v4l.c:31
+#: operations/workshop/external/line-profile.c:41
 #: operations/workshop/external/v4l2.c:28
 msgid "Height"
 msgstr "Altura"
@@ -958,9 +956,9 @@ msgstr ""
 "tratados como si tuvieran este tono y saturación\n"
 "Cambiar a esto: Cambiar colores grises a este tono y saturación"
 
-#: operations/common/color-rotate.c:79
-#: operations/common/component-extract.c:28 operations/common/hue-chroma.c:25
-#: operations/common/noise-cie-lch.c:35 operations/common/noise-hsv.c:31
+#: operations/common/color-rotate.c:79 operations/common/component-extract.c:28
+#: operations/common/hue-chroma.c:25 operations/common/noise-cie-lch.c:35
+#: operations/common/noise-hsv.c:31
 #: operations/workshop/selective-hue-saturation.c:34
 msgid "Hue"
 msgstr "Tono"
@@ -1562,9 +1560,9 @@ msgstr "El método de tramado a usar"
 #: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
 #: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:88
 #: operations/common-gpl3+/noise-slur.c:40
-#: operations/common-gpl3+/noise-solid.c:62
-#: operations/common-gpl3+/plasma.c:70 operations/common-gpl3+/shift.c:35
-#: operations/common-gpl3+/sinus.c:50 operations/common-gpl3+/supernova.c:64
+#: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
+#: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
+#: operations/common-gpl3+/supernova.c:64
 #: operations/common-gpl3+/tile-paper.c:80 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
 msgid "Random seed"
@@ -2675,8 +2673,7 @@ msgstr "Mezclar"
 msgid "do a lerp, linear interpolation (lerp) between input and aux"
 msgstr "hacer una lerp, interpolación lineal (lerp) entre la entrada y aux"
 
-#: operations/common/mono-mixer.c:26
-#: operations/common-gpl3+/channel-mixer.c:31
+#: operations/common/mono-mixer.c:26 operations/common-gpl3+/channel-mixer.c:31
 msgid "Preserve luminosity"
 msgstr "Conservar la luminosidad"
 
@@ -2711,8 +2708,7 @@ msgstr "Longitud del desenfoque en píxeles"
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:71
 #: operations/common-gpl3+/motion-blur-circular.c:52
-#: operations/common-gpl3+/ripple.c:45
-#: operations/workshop/linear-sinusoid.c:66
+#: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
 msgid "Angle"
 msgstr "Ángulo"
 
@@ -3403,7 +3399,7 @@ msgstr "Ruta del archivo que guardar."
 msgid "Save"
 msgstr "Guardar"
 
-# handler: gestor, manipulador, operario informático, nunca manejador.
+# handler: gestor, manipulador, operario informático, nunca gestor.
 #: operations/common/save.c:203
 msgid ""
 "Multipurpose file saver, that uses other native save handlers depending on "
@@ -3483,8 +3479,7 @@ msgstr ""
 msgid "Radial"
 msgstr "Radio"
 
-#: operations/common/spherize.c:30
-#: operations/common-gpl3+/value-propagate.c:38
+#: operations/common/spherize.c:30 operations/common-gpl3+/value-propagate.c:38
 msgid "Mode"
 msgstr "Modo"
 
@@ -4432,16 +4427,14 @@ msgid "Polarization"
 msgstr "Polarización"
 
 #: operations/common-gpl3+/diffraction-patterns.c:79
-#: operations/common-gpl3+/noise-solid.c:65
-#: operations/common-gpl3+/plasma.c:55 operations/common-gpl3+/sinus.c:77
-#: operations/common-gpl3+/spiral.c:86
+#: operations/common-gpl3+/noise-solid.c:65 operations/common-gpl3+/plasma.c:55
+#: operations/common-gpl3+/sinus.c:77 operations/common-gpl3+/spiral.c:86
 msgid "Width of the generated buffer"
 msgstr "Anchura del búfer generado"
 
 #: operations/common-gpl3+/diffraction-patterns.c:87
-#: operations/common-gpl3+/noise-solid.c:73
-#: operations/common-gpl3+/plasma.c:63 operations/common-gpl3+/sinus.c:85
-#: operations/common-gpl3+/spiral.c:94
+#: operations/common-gpl3+/noise-solid.c:73 operations/common-gpl3+/plasma.c:63
+#: operations/common-gpl3+/sinus.c:85 operations/common-gpl3+/spiral.c:94
 msgid "Height of the generated buffer"
 msgstr "Altura del búfer generado"
 
@@ -5270,8 +5263,7 @@ msgstr "Pintura al óleo"
 msgid "Emulate an oil painting"
 msgstr "Emular una pintura al óleo"
 
-#: operations/common-gpl3+/photocopy.c:28
-#: operations/common-gpl3+/softglow.c:33
+#: operations/common-gpl3+/photocopy.c:28 operations/common-gpl3+/softglow.c:33
 msgid "Sharpness"
 msgstr "Nitidez"
 
@@ -6263,7 +6255,7 @@ msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
 msgstr ""
-"Cargador de archivos de multipropósito, que usa otros manejadores nativos, y "
+"Cargador de archivos de multipropósito, que usa otros gestores nativos, y "
 "conversión de último recurso usando la función «convert» de ImageMagick."
 
 #: operations/core/nop.c:81
@@ -8812,7 +8804,7 @@ msgstr ""
 
 #~ msgid "Multipurpose file saver, that uses other native handlers."
 #~ msgstr ""
-#~ "Guardador de archivos de varios usos, que utiliza otros manejadores "
+#~ "Guardador de archivos de varios usos, que utiliza otros gestores "
 #~ "nativos."
 
 #~ msgid ""
