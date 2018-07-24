@@ -35,6 +35,7 @@ property_double (azimuth, _("Azimuth"), 30.0)
     description (_("Light angle (degrees)"))
     value_range (0, 360)
     ui_meta ("unit", "degree")
+    ui_meta ("direction", "ccw")
 
 property_double (elevation, _("Elevation"), 45.0)
     description (_("Elevation angle (degrees)"))

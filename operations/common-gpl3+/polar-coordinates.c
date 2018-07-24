@@ -38,6 +38,7 @@ property_double (depth, _("Circle depth in percent"), 100.0)
 property_double (angle, _("Offset angle"), 0.0)
   value_range   (0.0, 360.0)
   ui_meta       ("unit", "degree")
+  ui_meta       ("direction", "ccw")
 
 property_boolean (bw, _("Map backwards"), FALSE)
   description    (_("Start from the right instead of the left"))

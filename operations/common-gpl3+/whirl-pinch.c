@@ -37,6 +37,7 @@ property_double (whirl, _("Whirl"), 90.0)
     description (_("Whirl angle (degrees)"))
     ui_range    (-720, 720)
     ui_meta     ("unit", "degree")
+    ui_meta     ("direction", "ccw")
 
 property_double (pinch, _("Pinch"), 0.0)
     description (_("Pinch amount"))

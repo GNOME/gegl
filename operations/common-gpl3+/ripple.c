@@ -45,6 +45,7 @@ property_double (phi, _("Phase shift"), 0.0)
 property_double (angle, _("Angle"), 0.0)
     value_range (-180, 180)
     ui_meta     ("unit", "degree")
+    ui_meta     ("direction", "ccw")
 
 property_enum  (sampler_type, _("Resampling method"),
     GeglSamplerType, gegl_sampler_type, GEGL_SAMPLER_CUBIC)

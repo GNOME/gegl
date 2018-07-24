@@ -65,6 +65,7 @@ property_double (rotation, _("Rotation"), 0.0)
   description (_("Spiral rotation"))
   value_range (0.0, 360.0)
   ui_meta     ("unit", "degree")
+  ui_meta     ("direction", "ccw")
 
 enum_start (gegl_spiral_direction)
   enum_value (GEGL_SPIRAL_DIRECTION_CLOCKWISE,        "cw",  N_("Clockwise"))

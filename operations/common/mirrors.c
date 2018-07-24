@@ -31,11 +31,13 @@ property_double (m_angle, _("Mirror rotation"), 0.0)
     description (_("Rotation applied to the mirrors"))
     value_range (0.0, 180.0)
     ui_meta     ("unit", "degree")
+    ui_meta     ("direction", "cw")
 
 property_double (r_angle, _("Result rotation"), 0.0)
     description (_("Rotation applied to the result"))
     value_range (0.0, 360.0)
     ui_meta     ("unit", "degree")
+    ui_meta     ("direction", "cw")
 
 property_int    (n_segs, _("Mirrors"), 6)
     description (_("Number of mirrors to use"))

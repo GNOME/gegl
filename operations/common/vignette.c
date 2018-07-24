@@ -71,6 +71,7 @@ property_double (y, _("Center Y"), 0.5)
 property_double (rotation, _("Rotation"), 0.0)
     value_range (0.0, 360.0)
     ui_meta     ("unit", "degree") /* XXX: change to radians */
+    ui_meta     ("direction", "cw")
 
 #else
 

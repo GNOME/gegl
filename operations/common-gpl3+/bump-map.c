@@ -51,6 +51,7 @@ property_boolean (tiled, _("Tiled"), FALSE)
 property_double  (azimuth, _("Azimuth"), 135.0)
   value_range (0.0, 360.0)
   ui_meta     ("unit", "degree")
+  ui_meta     ("direction", "ccw")
 
 property_double  (elevation, _("Elevation"), 45.0)
   value_range (0.5, 90.0)

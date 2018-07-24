@@ -34,6 +34,7 @@ property_double (angle, _("Angle"), 0.0)
     description (_("Angle of blur in degrees"))
     value_range (-180, 180)
     ui_meta     ("unit", "degree")
+    ui_meta     ("direction", "cw")
 
 #else
 

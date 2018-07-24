@@ -81,6 +81,7 @@ property_double (light_dir, _("Light direction"), 135.0)
     description (("Direction of light-source (in degrees)"))
     value_range (0.0, 360.0)
     ui_meta     ("unit", "degree")
+    ui_meta     ("direction", "ccw")
 
 property_boolean (antialiasing, _("Antialiasing"), TRUE)
     description  (_("Enables smoother tile output"))
