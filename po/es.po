@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-24 08:27+0000\n"
-"PO-Revision-Date: 2018-07-24 12:09+0200\n"
+"POT-Creation-Date: 2018-07-24 10:30+0000\n"
+"PO-Revision-Date: 2018-07-25 14:10+0200\n"
 "Last-Translator: Rodrigo <rodhos92@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -3465,9 +3465,6 @@ msgid "Symmetric Nearest Neighbour"
 msgstr "Simétrica del vecino más cercano"
 
 #: operations/common/snn-mean.c:360
-#| msgid ""
-#| "Noise reducing edge enhancing blur filter based  on Symmetric Nearest "
-#| "Neighbours"
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbours"
@@ -3476,7 +3473,6 @@ msgstr ""
 "vecinos simétricos más próximos"
 
 #: operations/common/spherize.c:25
-#| msgid "Radius"
 msgid "Radial"
 msgstr "Radial"
 
@@ -3530,12 +3526,10 @@ msgstr ""
 
 # Podríamos usar «esferizar»...
 #: operations/common/spherize.c:317
-#| msgid "Spherical"
 msgid "Spherize"
 msgstr "Dar forma de esfera"
 
 #: operations/common/spherize.c:320
-#| msgid "Spin angle around camera axis"
 msgid "Wrap image around a spherical cap"
 msgstr "Envolver la imagen alrededor de un casquete esférico"
 
@@ -3577,7 +3571,6 @@ msgid "Impact each channel with the same amount"
 msgstr "Impactar cada canal con la misma cantidad"
 
 #: operations/common/stretch-contrast.c:28
-#| msgid "Invert component"
 msgid "Non-linear components"
 msgstr "Componentes no lineales"
 
@@ -3632,7 +3625,6 @@ msgid "list of <number>s"
 msgstr "lista de <number>s"
 
 #: operations/common/svg-huerotate.c:119
-#| msgid "JPG image loader"
 msgid "SVG Hue Rotate"
 msgstr "Giro de tono SVG"
 
@@ -3723,42 +3715,44 @@ msgstr ""
 
 #: operations/common/unpremultiply.c:78
 msgid "Unpremultiply alpha"
-msgstr ""
+msgstr "Despremultiplicar alfa"
 
+# Avisar al desarrollador que por favor deje de poner los puntos dentro del paréntesis lol.
 #: operations/common/unpremultiply.c:80
 msgid ""
 "Unpremultiplies a buffer that contains pre-multiplied colors (but according "
 "to the babl format is not.)"
 msgstr ""
+"Despremultiplica un búfer que contiene colores premultiplicados (pero según "
+"el formato babl no lo están)."
 
 #: operations/common/unsharp-mask.c:25
 msgid "Expressed as standard deviation, in pixels"
-msgstr ""
+msgstr "Expresado como desviación estándar, en píxeles"
 
 #: operations/common/unsharp-mask.c:32
-#| msgid "Scale, strength of effect"
 msgid "Scaling factor for unsharp-mask, the strength of effect"
-msgstr "Factor de escala para desafilar-máscara, fuerza del efecto"
+msgstr "Factor de escala para desenfocar-máscara, fuerza del efecto"
 
+# He estado cometiendo este error constantemente. No es afilar sino aclarar o enfocar la imagen ya que «sharp» se refiere a nitidez.
+# Voy a tener que revisar todos los paquetes de GIMP.
 #: operations/common/unsharp-mask.c:164
-#| msgid "Unsharp Mask"
 msgid "Sharpen (Unsharp Mask)"
-msgstr "Afilar (Desafilar máscara)"
+msgstr "Enfocar (Desenfocar máscara)"
 
 #: operations/common/unsharp-mask.c:167
 msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
 msgstr ""
+"Enfocar la imagen añadiendo diferencias a la imagen desenfocada, una técnica "
+"para enfocar usada originalmente en cuartos oscuros."
 
 #: operations/common/value-invert.c:149
 msgid "Value Invert"
 msgstr "Invertir valor"
 
 #: operations/common/value-invert.c:153
-#| msgid ""
-#| "Inverts just the value component, the result is the corresponding "
-#| "`inverted' image."
 msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
@@ -3818,7 +3812,6 @@ msgid "Vignette"
 msgstr "Viñeta"
 
 #: operations/common/vignette.c:389
-#, fuzzy
 #| msgid ""
 #| "Applies a vignette to an image. Simulates the luminance fall off at the "
 #| "edge of exposed film, and some other fuzzier border effects that can "
@@ -3829,7 +3822,7 @@ msgid ""
 "occur with analog photography"
 msgstr ""
 "Aplica una viñeta a una imagen. Simula el descenso de luminancia en los "
-"bordes de la película expuesta, y otros efectos de borde borroso que pueden "
+"bordes de la película expuesta y otros efectos de borde difuso que pueden "
 "ocurrir de forma natural con la fotografía analógica."
 
 #: operations/common/warp.c:26
@@ -3845,26 +3838,23 @@ msgid "Shrink area"
 msgstr "Encoger área"
 
 #: operations/common/warp.c:29
-#, fuzzy
 #| msgid "Switch to clockwise"
 msgid "Swirl clockwise"
-msgstr "Cambiar al sentido de las agujas del reloj"
+msgstr "Rotar en sentido de las agujas del reloj"
 
 #: operations/common/warp.c:30
-#, fuzzy
 #| msgid "Switch to clockwise"
 msgid "Swirl counter-clockwise"
-msgstr "Cambiar al sentido de las agujas del reloj"
+msgstr "Rotar en sentido contrario a las agujas del reloj"
 
 #: operations/common/warp.c:31
 msgid "Erase warping"
 msgstr "Borrar deformación"
 
 #: operations/common/warp.c:32
-#, fuzzy
 #| msgid "Smoothing"
 msgid "Smooth warping"
-msgstr "Suavizado"
+msgstr "Suavizar deformación"
 
 #: operations/common/warp.c:41 operations/external/path.c:40
 msgid "Hardness"
@@ -3899,72 +3889,76 @@ msgid "Average"
 msgstr "Media"
 
 #: operations/common/waterpixels.c:38
-#, fuzzy
 #| msgid "Vertical size"
 msgid "Superpixels size"
-msgstr "Tamaño vertical"
+msgstr "Tamaño de superpíxeles"
 
 #: operations/common/waterpixels.c:42
-#, fuzzy
 #| msgid "Level of smoothness"
 msgid "Gradient smoothness"
-msgstr "Nivel de suavidad"
+msgstr "Suavidad del degradado"
 
 #: operations/common/waterpixels.c:47
-#, fuzzy
 #| msgid "Saturation"
 msgid "Spatial regularization"
-msgstr "Saturación"
+msgstr "Normalización espacial"
 
 #: operations/common/waterpixels.c:49
 msgid ""
 "trade-off between superpixel regularity and adherence to object boundaries"
 msgstr ""
+"compensación entre uniformidad de superpíxeles y adherencia a fronteras de "
+"objeto"
 
 #: operations/common/waterpixels.c:52
-#, fuzzy
 msgid "Superpixels color"
-msgstr "Color inicial"
+msgstr "Color de superpíxeles"
 
 #: operations/common/waterpixels.c:55
 msgid "How to fill superpixels"
-msgstr ""
+msgstr "Como rellenar superpíxeles"
 
+# Otros nombres son bienvenidos
+# Sugerencias: Píxeles de agua, píxeles inundados, aguapíxeles, ...
+# Pero se debería indicar el nombre en inglés entre paréntesis para que no haya confusión.
 #: operations/common/waterpixels.c:513
-#, fuzzy
 #| msgid "Wrong pixels"
 msgid "Waterpixels"
-msgstr "Píxeles incorrectos"
+msgstr "Waterpíxeles"
 
+# https://es.wikipedia.org/wiki/Transformaci%C3%B3n_divisoria
 #: operations/common/waterpixels.c:516
-#, fuzzy
 #| msgid "What color model used for the transformation"
 msgid "Superpixels based on the watershed transformation"
-msgstr "El modelo de color que usar para la transformación"
+msgstr "Superpíxeles basados en la transformación divisoria"
 
+# Watershed: Cuenca, punto de inflexión.
+# https://es.wikipedia.org/wiki/Transformaci%C3%B3n_divisoria
 #: operations/common/watershed-transform.c:381
-#, fuzzy
 #| msgid "Distance Transform"
 msgid "Watershed Transform"
-msgstr "Transformación de la distancia"
+msgstr "Transformación divisoria"
 
 #: operations/common/watershed-transform.c:384
 msgid "Labels propagation by watershed transformation"
-msgstr ""
+msgstr "Propagación de etiquetas por la transformación divisoria"
 
 #: operations/common/wavelet-blur-1d.c:29 operations/common/wavelet-blur.c:28
 msgid "Radius of the wavelet blur"
-msgstr ""
+msgstr "Radio del difuminado de ondícula"
 
 #: operations/common/wavelet-blur-1d.c:275
 msgid "1D Wavelet-blur"
-msgstr ""
+msgstr "Difuminado de ondícula 1D"
 
+# Si quieres cambiar a emborronado está bien. A mi me gusta más esta palabra.
 #: operations/common/wavelet-blur-1d.c:277 operations/common/wavelet-blur.c:82
 msgid ""
 "This blur is used for the wavelet decomposition filter, each pixel is "
 "computed from another by the HAT transform"
 msgstr ""
+"Este difuminado se utiliza en el filtro de descomposición de ondícula. Cada "
+"píxel se calcula desde otro mediante la transformación HAT."
 
 #: operations/common/weighted-blend.c:176
 msgid "Weighted Blend"
@@ -3977,18 +3971,19 @@ msgstr "mezclar dos imágenes usando los valores de alfa como pesos"
 #: operations/common/write-buffer.c:26
 msgid "A pre-existing GeglBuffer to write incoming buffer data to."
 msgstr ""
+"Un GeglBuffer preexistente en el que escribir datos del búfer entrantes."
 
 #: operations/common/write-buffer.c:146
-#, fuzzy
 #| msgid "Shears the buffer"
 msgid "Write Buffer"
-msgstr "Inclina el búfer"
+msgstr "Escribir en el búfer"
 
 #: operations/common/write-buffer.c:148
-#, fuzzy
 #| msgid "A GEGL buffer destination surface."
 msgid "Write input data into an existing GEGL buffer destination surface."
-msgstr "Una superficie de destino para el búfer GEGL."
+msgstr ""
+"Escribir datos de entrada en una superficie de destino de búfer GEGL "
+"existente."
 
 #: operations/common-gpl3+/antialias.c:278
 msgid "Scale3X Antialiasing"
@@ -4089,7 +4084,6 @@ msgid "Bump Map"
 msgstr "Mapa de relieve"
 
 #: operations/common-gpl3+/bump-map.c:458
-#, fuzzy
 #| msgid ""
 #| "This plug-in uses the algorithm described by John Schlag, \"Fast "
 #| "Embossing Effects on Raster Image Data\" in Graphics GEMS IV (ISBN "
@@ -4103,7 +4097,7 @@ msgid ""
 msgstr ""
 "Este complemento usa el algoritmo descrito por John Schlag, «Fast Embossing "
 "Effects on Raster Image Data» en Graphics GEMS IV (ISBN 0-12-336155-9). Toma "
-"un dibujable que aplicar como mapa de relieve a otra imagen y genera un "
+"un búfer que se aplica como un mapa de relieve a otro búfer y genera un "
 "efecto de repujado."
 
 #: operations/common-gpl3+/cartoon.c:28
@@ -4124,6 +4118,10 @@ msgid ""
 "subsequently shaded with color. This is achieved by enhancing edges and "
 "darkening areas that are already distinctly darker than their neighborhood"
 msgstr ""
+"Simula una caricatura, con un resultado similar a un dibujo de rotulador "
+"negro sombreado posteriormente con color. Esto se consigue realzando los "
+"bordes y oscureciendo las áreas que ya son notablemente más oscuras que su "
+"entorno."
 
 #. Red channel
 #: operations/common-gpl3+/channel-mixer.c:34
@@ -4272,20 +4270,19 @@ msgid "Transparency threshold"
 msgstr "Umbral de transparencia"
 
 #: operations/common-gpl3+/color-to-alpha.c:33
-#, fuzzy
 #| msgid "The color to make transparent."
 msgid "The limit below which colors become transparent."
-msgstr "El color que hacer transparente."
+msgstr "El límite por debajo del que los colores se vuelven transparentes."
 
 #: operations/common-gpl3+/color-to-alpha.c:36
-#, fuzzy
 #| msgid "Gray threshold"
 msgid "Opacity threshold"
-msgstr "Umbral de gris"
+msgstr "Umbral de opacidad"
 
+# ¿por encima del cual?
 #: operations/common-gpl3+/color-to-alpha.c:37
 msgid "The limit above which colors remain opaque."
-msgstr ""
+msgstr "El límite por encima del que los colores permanecen opacos."
 
 #: operations/common-gpl3+/color-to-alpha.c:286
 msgid "Color to Alpha"
@@ -4423,7 +4420,7 @@ msgstr "Número de bordes afilados (azul)"
 
 #: operations/common-gpl3+/diffraction-patterns.c:67
 msgid "Brightness and shifting/fattening of contours"
-msgstr ""
+msgstr "Brillo y desplazamiento/engorde de contornos"
 
 #: operations/common-gpl3+/diffraction-patterns.c:70
 msgid "Scattering"
@@ -4477,7 +4474,7 @@ msgstr "Muestreador"
 
 #: operations/common-gpl3+/displace.c:40
 msgid "Type of GeglSampler used to fetch input pixels"
-msgstr ""
+msgstr "Tipo de GeglSampler utilizado para recuperar los píxeles de entrada"
 
 #: operations/common-gpl3+/displace.c:47
 msgid "X displacement"
@@ -4488,10 +4485,9 @@ msgid "Displace multiplier for X or radial direction"
 msgstr "Desplazar multiplicador para X o dirección radial"
 
 #: operations/common-gpl3+/displace.c:55
-#, fuzzy
 #| msgid "Horizontal extent"
 msgid "Horizontal displacement"
-msgstr "Dimensión horizontal"
+msgstr "Desplazamiento horizontal"
 
 #: operations/common-gpl3+/displace.c:56
 #: operations/common-gpl3+/whirl-pinch.c:42
@@ -4499,16 +4495,14 @@ msgid "Pinch"
 msgstr "Aspiración"
 
 #: operations/common-gpl3+/displace.c:59
-#, fuzzy
 #| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the horizontal direction"
-msgstr "Desplazar multiplicador para X o dirección radial"
+msgstr "Multiplicador de desplazamiento para la dirección horizontal"
 
 #: operations/common-gpl3+/displace.c:60
-#, fuzzy
 #| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the radial direction"
-msgstr "Desplazar multiplicador para X o dirección radial"
+msgstr "Multiplicador de desplazamiento para la dirección radial"
 
 #: operations/common-gpl3+/displace.c:62
 msgid "Y displacement"
@@ -4519,10 +4513,9 @@ msgid "Displace multiplier for Y or tangent (degrees) direction"
 msgstr "Desplazar multiplicador para Y o dirección tangente (grados)"
 
 #: operations/common-gpl3+/displace.c:70
-#, fuzzy
 #| msgid "X displacement"
 msgid "Vertical displacement"
-msgstr "Desplazamiento X"
+msgstr "Desplazamiento vertical"
 
 #: operations/common-gpl3+/displace.c:71
 #: operations/common-gpl3+/whirl-pinch.c:36
@@ -4530,38 +4523,33 @@ msgid "Whirl"
 msgstr "Remolino"
 
 #: operations/common-gpl3+/displace.c:74
-#, fuzzy
 #| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the vertical direction"
-msgstr "Desplazar multiplicador para X o dirección radial"
+msgstr "Multiplicador de desplazamiento para la dirección vertical"
 
 #: operations/common-gpl3+/displace.c:75
-#, fuzzy
 #| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the angular offset"
-msgstr "Desplazar multiplicador para X o dirección radial"
+msgstr "Multiplicador de desplazamiento para la compensación angular"
 
 #: operations/common-gpl3+/displace.c:77
 msgid "Center displacement"
 msgstr "Desplazamiento del centro"
 
 #: operations/common-gpl3+/displace.c:78
-#, fuzzy
 #| msgid "Rotate the buffer around the specified origin."
 msgid "Center the displacement around a specified point"
-msgstr "Girar el búfer alrededor del origen especificado."
+msgstr "Centrar el desplazamiento alrededor del punto especificado"
 
 #: operations/common-gpl3+/displace.c:81
-#, fuzzy
 #| msgid "Coordinates of lens center"
 msgid "X coordinate of the displacement center"
-msgstr "Coordenadas del centro del objetivo"
+msgstr "Coordenada X del centro de desplazamiento"
 
 #: operations/common-gpl3+/displace.c:88
-#, fuzzy
 #| msgid "Coordinates of lens center"
 msgid "Y coordinate of the displacement center"
-msgstr "Coordenadas del centro del objetivo"
+msgstr "Coordenada Y del centro de desplazamiento"
 
 #: operations/common-gpl3+/displace.c:477
 msgid "Displace"
@@ -4932,10 +4920,9 @@ msgid "Illusion"
 msgstr "Ilusión"
 
 #: operations/common-gpl3+/illusion.c:276
-#, fuzzy
 #| msgid "Performs fractal trace on the image"
 msgid "Superimpose many altered copies of the image."
-msgstr "Efectúa una traza fractal sobre la imagen"
+msgstr "Superponer varias copias alteradas de la imagen."
 
 #: operations/common-gpl3+/lens-distortion.c:33
 msgid "Main"
@@ -4986,20 +4973,18 @@ msgid "X position"
 msgstr "Posición X"
 
 #: operations/common-gpl3+/lens-flare.c:29
-#, fuzzy
 #| msgid "Coordinates of lens center"
 msgid "X coordinates of the flare center"
-msgstr "Coordenadas del centro del objetivo"
+msgstr "Coordenadas X del centro del reflejo"
 
 #: operations/common-gpl3+/lens-flare.c:34
 msgid "Y position"
-msgstr "Posición X"
+msgstr "Posición Y"
 
 #: operations/common-gpl3+/lens-flare.c:35
-#, fuzzy
 #| msgid "Coordinates of lens center"
 msgid "Y coordinates of the flare center"
-msgstr "Coordenadas del centro del objetivo"
+msgstr "Coordenadas Y del centro del reflejo"
 
 #: operations/common-gpl3+/lens-flare.c:511
 msgid "Lens Flare"
@@ -5128,12 +5113,12 @@ msgstr "Espaciado del mosaico"
 
 #: operations/common-gpl3+/mosaic.c:71
 msgid "Inter-tile spacing (in pixels)"
-msgstr ""
+msgstr "Espaciado entre mosaico (en píxeles)"
 
+# Junta o bisagra
 #: operations/common-gpl3+/mosaic.c:76
-#, fuzzy
 msgid "Joints color"
-msgstr "Otro color"
+msgstr "Color de juntas"
 
 #: operations/common-gpl3+/mosaic.c:78
 msgid "Light color"
@@ -5161,6 +5146,9 @@ msgid ""
 "mosaic, composed of small primitives, each of constant color and of an "
 "approximate size."
 msgstr ""
+"Mosaico es un filtro que transforma una imagen en lo que parece ser un "
+"mosaico, compuesto de elementos pequeños, cada uno con un color constante y "
+"de un tamaño aproximado."
 
 #: operations/common-gpl3+/motion-blur-circular.c:53
 msgid "Rotation blur angle. A large angle may take some time to render"
@@ -5217,9 +5205,10 @@ msgstr "Tamaño de la textura vertical"
 msgid "Detail level"
 msgstr "Nivel de detalle"
 
+# mosaicable
 #: operations/common-gpl3+/noise-solid.c:57
 msgid "Create a tileable output"
-msgstr ""
+msgstr "Crear una salida que pueda tener forma de mosaico"
 
 #: operations/common-gpl3+/noise-solid.c:59
 msgid "Turbulent"
@@ -5421,7 +5410,7 @@ msgstr "Sombras"
 #: operations/common-gpl3+/shadows-highlights.c:29
 #: operations/common-gpl3+/shadows-highlights-correction.c:30
 msgid "Adjust exposure of shadows"
-msgstr ""
+msgstr "Ajustar la exposición de las sombras"
 
 #: operations/common-gpl3+/shadows-highlights.c:32
 #: operations/common-gpl3+/shadows-highlights-correction.c:33
@@ -5431,7 +5420,7 @@ msgstr "Resaltados"
 #: operations/common-gpl3+/shadows-highlights.c:33
 #: operations/common-gpl3+/shadows-highlights-correction.c:34
 msgid "Adjust exposure of highlights"
-msgstr ""
+msgstr "Ajustar la exposición de los resaltados"
 
 #: operations/common-gpl3+/shadows-highlights.c:36
 #: operations/common-gpl3+/shadows-highlights-correction.c:37
@@ -5440,16 +5429,14 @@ msgstr "Ajuste del punto blanco"
 
 #: operations/common-gpl3+/shadows-highlights.c:37
 #: operations/common-gpl3+/shadows-highlights-correction.c:38
-#, fuzzy
 #| msgid "Shift horizontal"
 msgid "Shift white point"
-msgstr "Desplazamiento horizontal"
+msgstr "Desplazar el punto blanco"
 
 #: operations/common-gpl3+/shadows-highlights.c:41
-#, fuzzy
 #| msgid "Vertical extent"
 msgid "Spatial extent"
-msgstr "Dimensión vertical"
+msgstr "Extensión espacial"
 
 #: operations/common-gpl3+/shadows-highlights.c:45
 #: operations/common-gpl3+/shadows-highlights-correction.c:41
@@ -5459,43 +5446,41 @@ msgstr "Comprimir"
 #: operations/common-gpl3+/shadows-highlights.c:46
 #: operations/common-gpl3+/shadows-highlights-correction.c:42
 msgid "Compress the effect on shadows/highlights and preserve midtones"
-msgstr ""
+msgstr "Comprimir el efecto en sombras/resaltados y conservar los tonos medios"
 
 #: operations/common-gpl3+/shadows-highlights.c:49
 #: operations/common-gpl3+/shadows-highlights-correction.c:45
-#, fuzzy
 #| msgid "Mask radius"
 msgid "Shadows color adjustment"
-msgstr "Radio de la máscara"
+msgstr "Ajuste de color de sombras"
 
 #: operations/common-gpl3+/shadows-highlights.c:50
 #: operations/common-gpl3+/shadows-highlights-correction.c:46
 msgid "Adjust saturation of shadows"
-msgstr ""
+msgstr "Ajustar la saturación de las sombras"
 
 #: operations/common-gpl3+/shadows-highlights.c:53
 #: operations/common-gpl3+/shadows-highlights-correction.c:49
-#, fuzzy
 #| msgid "Pinch amount"
 msgid "Highlights color adjustment"
-msgstr "Grado de pellizcado"
+msgstr "Ajuste de color de resaltados"
 
 #: operations/common-gpl3+/shadows-highlights.c:54
 #: operations/common-gpl3+/shadows-highlights-correction.c:50
 msgid "Adjust saturation of highlights"
-msgstr ""
+msgstr "Ajustar la saturación de los resaltados"
 
 #: operations/common-gpl3+/shadows-highlights.c:244
 msgid "Shadows-Highlights"
-msgstr ""
+msgstr "Sombras-Resaltados"
 
 #: operations/common-gpl3+/shadows-highlights.c:247
 msgid "Perform shadows and highlights correction"
-msgstr ""
+msgstr "Realizar corrección de sombras y resaltados"
 
 #: operations/common-gpl3+/shadows-highlights-correction.c:364
 msgid "Lighten shadows and darken highlights"
-msgstr ""
+msgstr "Iluminar sombras y oscurecer resaltados"
 
 #: operations/common-gpl3+/shift.c:26 operations/common-gpl3+/shift.c:144
 msgid "Shift"
@@ -5562,7 +5547,6 @@ msgid "Blend Mode"
 msgstr "Modo de mezcla"
 
 #: operations/common-gpl3+/sinus.c:73
-#, fuzzy
 #| msgid "Power used to strech the blend"
 msgid "Power used to stretch the blend"
 msgstr "Poder usado para estirar la mezcla"
@@ -5613,15 +5597,15 @@ msgstr "Base"
 
 #: operations/common-gpl3+/spiral.c:54
 msgid "Logarithmic spiral base"
-msgstr ""
+msgstr "Base de espiral logarítmica"
 
 #: operations/common-gpl3+/spiral.c:60
 msgid "Balance"
-msgstr ""
+msgstr "Balance"
 
 #: operations/common-gpl3+/spiral.c:61
 msgid "Area balance between the two colors"
-msgstr ""
+msgstr "Balance de área entre los dos colores"
 
 #: operations/common-gpl3+/spiral.c:65
 msgid "Spiral rotation"
@@ -5632,20 +5616,18 @@ msgid "Counter-clockwise"
 msgstr "Sentido antihorario"
 
 #: operations/common-gpl3+/spiral.c:78
-#, fuzzy
 #| msgid "Shift direction"
 msgid "Spiral swirl direction"
-msgstr "Dirección del desplazamiento"
+msgstr "Dirección de giro espiral"
 
 #: operations/common-gpl3+/spiral.c:444
 msgid "Spiral"
 msgstr "Espiral"
 
 #: operations/common-gpl3+/spiral.c:449
-#, fuzzy
 #| msgid "Grid renderer"
 msgid "Spiral renderer"
-msgstr "Renderizador de la rejilla"
+msgstr "Renderizador espiral"
 
 #: operations/common-gpl3+/supernova.c:34
 msgid "X coordinates of the center of supernova"
@@ -5687,6 +5669,9 @@ msgid ""
 "light effect is approximately in proportion to 1/r, where r is the distance "
 "from the center of the star."
 msgstr ""
+"Este complemento produce un efecto parecido a una explosión de supernova. La "
+"cantidad del efecto de luz es aproximadamente proporcional a 1/r, donde r es "
+"la distancia desde el centro de la estrella."
 
 #: operations/common-gpl3+/texturize-canvas.c:29
 msgid "Top-right"
