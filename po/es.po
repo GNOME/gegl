@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-24 10:30+0000\n"
-"PO-Revision-Date: 2018-07-25 14:10+0200\n"
+"POT-Creation-Date: 2018-07-25 13:00+0000\n"
+"PO-Revision-Date: 2018-07-26 11:54+0200\n"
 "Last-Translator: Rodrigo <rodhos92@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -3812,10 +3812,6 @@ msgid "Vignette"
 msgstr "Viñeta"
 
 #: operations/common/vignette.c:389
-#| msgid ""
-#| "Applies a vignette to an image. Simulates the luminance fall off at the "
-#| "edge of exposed film, and some other fuzzier border effects that can "
-#| "naturally occur with analog photograpy"
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -3838,12 +3834,10 @@ msgid "Shrink area"
 msgstr "Encoger área"
 
 #: operations/common/warp.c:29
-#| msgid "Switch to clockwise"
 msgid "Swirl clockwise"
 msgstr "Rotar en sentido de las agujas del reloj"
 
 #: operations/common/warp.c:30
-#| msgid "Switch to clockwise"
 msgid "Swirl counter-clockwise"
 msgstr "Rotar en sentido contrario a las agujas del reloj"
 
@@ -3852,7 +3846,6 @@ msgid "Erase warping"
 msgstr "Borrar deformación"
 
 #: operations/common/warp.c:32
-#| msgid "Smoothing"
 msgid "Smooth warping"
 msgstr "Suavizar deformación"
 
@@ -3889,17 +3882,14 @@ msgid "Average"
 msgstr "Media"
 
 #: operations/common/waterpixels.c:38
-#| msgid "Vertical size"
 msgid "Superpixels size"
 msgstr "Tamaño de superpíxeles"
 
 #: operations/common/waterpixels.c:42
-#| msgid "Level of smoothness"
 msgid "Gradient smoothness"
 msgstr "Suavidad del degradado"
 
 #: operations/common/waterpixels.c:47
-#| msgid "Saturation"
 msgid "Spatial regularization"
 msgstr "Normalización espacial"
 
@@ -3922,20 +3912,17 @@ msgstr "Como rellenar superpíxeles"
 # Sugerencias: Píxeles de agua, píxeles inundados, aguapíxeles, ...
 # Pero se debería indicar el nombre en inglés entre paréntesis para que no haya confusión.
 #: operations/common/waterpixels.c:513
-#| msgid "Wrong pixels"
 msgid "Waterpixels"
 msgstr "Waterpíxeles"
 
 # https://es.wikipedia.org/wiki/Transformaci%C3%B3n_divisoria
 #: operations/common/waterpixels.c:516
-#| msgid "What color model used for the transformation"
 msgid "Superpixels based on the watershed transformation"
 msgstr "Superpíxeles basados en la transformación divisoria"
 
 # Watershed: Cuenca, punto de inflexión.
 # https://es.wikipedia.org/wiki/Transformaci%C3%B3n_divisoria
 #: operations/common/watershed-transform.c:381
-#| msgid "Distance Transform"
 msgid "Watershed Transform"
 msgstr "Transformación divisoria"
 
@@ -3974,12 +3961,10 @@ msgstr ""
 "Un GeglBuffer preexistente en el que escribir datos del búfer entrantes."
 
 #: operations/common/write-buffer.c:146
-#| msgid "Shears the buffer"
 msgid "Write Buffer"
 msgstr "Escribir en el búfer"
 
 #: operations/common/write-buffer.c:148
-#| msgid "A GEGL buffer destination surface."
 msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr ""
 "Escribir datos de entrada en una superficie de destino de búfer GEGL "
@@ -4084,11 +4069,6 @@ msgid "Bump Map"
 msgstr "Mapa de relieve"
 
 #: operations/common-gpl3+/bump-map.c:458
-#| msgid ""
-#| "This plug-in uses the algorithm described by John Schlag, \"Fast "
-#| "Embossing Effects on Raster Image Data\" in Graphics GEMS IV (ISBN "
-#| "0-12-336155-9). It takes a drawable to be applied as a bump map to "
-#| "another image and produces a nice embossing effect."
 msgid ""
 "This plug-in uses the algorithm described by John Schlag, \"Fast Embossing "
 "Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). It "
@@ -4270,12 +4250,10 @@ msgid "Transparency threshold"
 msgstr "Umbral de transparencia"
 
 #: operations/common-gpl3+/color-to-alpha.c:33
-#| msgid "The color to make transparent."
 msgid "The limit below which colors become transparent."
 msgstr "El límite por debajo del que los colores se vuelven transparentes."
 
 #: operations/common-gpl3+/color-to-alpha.c:36
-#| msgid "Gray threshold"
 msgid "Opacity threshold"
 msgstr "Umbral de opacidad"
 
@@ -4485,7 +4463,6 @@ msgid "Displace multiplier for X or radial direction"
 msgstr "Desplazar multiplicador para X o dirección radial"
 
 #: operations/common-gpl3+/displace.c:55
-#| msgid "Horizontal extent"
 msgid "Horizontal displacement"
 msgstr "Desplazamiento horizontal"
 
@@ -4495,12 +4472,10 @@ msgid "Pinch"
 msgstr "Aspiración"
 
 #: operations/common-gpl3+/displace.c:59
-#| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the horizontal direction"
 msgstr "Multiplicador de desplazamiento para la dirección horizontal"
 
 #: operations/common-gpl3+/displace.c:60
-#| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the radial direction"
 msgstr "Multiplicador de desplazamiento para la dirección radial"
 
@@ -4513,7 +4488,6 @@ msgid "Displace multiplier for Y or tangent (degrees) direction"
 msgstr "Desplazar multiplicador para Y o dirección tangente (grados)"
 
 #: operations/common-gpl3+/displace.c:70
-#| msgid "X displacement"
 msgid "Vertical displacement"
 msgstr "Desplazamiento vertical"
 
@@ -4523,12 +4497,10 @@ msgid "Whirl"
 msgstr "Remolino"
 
 #: operations/common-gpl3+/displace.c:74
-#| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the vertical direction"
 msgstr "Multiplicador de desplazamiento para la dirección vertical"
 
 #: operations/common-gpl3+/displace.c:75
-#| msgid "Displace multiplier for X or radial direction"
 msgid "Displacement multiplier for the angular offset"
 msgstr "Multiplicador de desplazamiento para la compensación angular"
 
@@ -4537,17 +4509,14 @@ msgid "Center displacement"
 msgstr "Desplazamiento del centro"
 
 #: operations/common-gpl3+/displace.c:78
-#| msgid "Rotate the buffer around the specified origin."
 msgid "Center the displacement around a specified point"
 msgstr "Centrar el desplazamiento alrededor del punto especificado"
 
 #: operations/common-gpl3+/displace.c:81
-#| msgid "Coordinates of lens center"
 msgid "X coordinate of the displacement center"
 msgstr "Coordenada X del centro de desplazamiento"
 
 #: operations/common-gpl3+/displace.c:88
-#| msgid "Coordinates of lens center"
 msgid "Y coordinate of the displacement center"
 msgstr "Coordenada Y del centro de desplazamiento"
 
@@ -4920,7 +4889,6 @@ msgid "Illusion"
 msgstr "Ilusión"
 
 #: operations/common-gpl3+/illusion.c:276
-#| msgid "Performs fractal trace on the image"
 msgid "Superimpose many altered copies of the image."
 msgstr "Superponer varias copias alteradas de la imagen."
 
@@ -4973,7 +4941,6 @@ msgid "X position"
 msgstr "Posición X"
 
 #: operations/common-gpl3+/lens-flare.c:29
-#| msgid "Coordinates of lens center"
 msgid "X coordinates of the flare center"
 msgstr "Coordenadas X del centro del reflejo"
 
@@ -4982,7 +4949,6 @@ msgid "Y position"
 msgstr "Posición Y"
 
 #: operations/common-gpl3+/lens-flare.c:35
-#| msgid "Coordinates of lens center"
 msgid "Y coordinates of the flare center"
 msgstr "Coordenadas Y del centro del reflejo"
 
@@ -5429,12 +5395,10 @@ msgstr "Ajuste del punto blanco"
 
 #: operations/common-gpl3+/shadows-highlights.c:37
 #: operations/common-gpl3+/shadows-highlights-correction.c:38
-#| msgid "Shift horizontal"
 msgid "Shift white point"
 msgstr "Desplazar el punto blanco"
 
 #: operations/common-gpl3+/shadows-highlights.c:41
-#| msgid "Vertical extent"
 msgid "Spatial extent"
 msgstr "Extensión espacial"
 
@@ -5450,7 +5414,6 @@ msgstr "Comprimir el efecto en sombras/resaltados y conservar los tonos medios"
 
 #: operations/common-gpl3+/shadows-highlights.c:49
 #: operations/common-gpl3+/shadows-highlights-correction.c:45
-#| msgid "Mask radius"
 msgid "Shadows color adjustment"
 msgstr "Ajuste de color de sombras"
 
@@ -5461,7 +5424,6 @@ msgstr "Ajustar la saturación de las sombras"
 
 #: operations/common-gpl3+/shadows-highlights.c:53
 #: operations/common-gpl3+/shadows-highlights-correction.c:49
-#| msgid "Pinch amount"
 msgid "Highlights color adjustment"
 msgstr "Ajuste de color de resaltados"
 
@@ -5547,7 +5509,6 @@ msgid "Blend Mode"
 msgstr "Modo de mezcla"
 
 #: operations/common-gpl3+/sinus.c:73
-#| msgid "Power used to strech the blend"
 msgid "Power used to stretch the blend"
 msgstr "Poder usado para estirar la mezcla"
 
@@ -5616,7 +5577,6 @@ msgid "Counter-clockwise"
 msgstr "Sentido antihorario"
 
 #: operations/common-gpl3+/spiral.c:78
-#| msgid "Shift direction"
 msgid "Spiral swirl direction"
 msgstr "Dirección de giro espiral"
 
@@ -5625,7 +5585,6 @@ msgid "Spiral"
 msgstr "Espiral"
 
 #: operations/common-gpl3+/spiral.c:449
-#| msgid "Grid renderer"
 msgid "Spiral renderer"
 msgstr "Renderizador espiral"
 
@@ -5694,12 +5653,17 @@ msgid ""
 "Position of the light source which lightens the canvas: Top-right, Top-left, "
 "Bottom-left or Bottom-right"
 msgstr ""
+"Posición de la fuente de luz que ilumina el lienzo: superior derecha, "
+"superior izquierda, inferior izquierda o inferior derecha"
 
+# En arte render es representar, reproducir, retratar pero en procesamiento de imagenes renderizar es otra cosa. Ya que es un efecto mi intuición me dice que el significado es el primero pero podría estar equivocado.
 #: operations/common-gpl3+/texturize-canvas.c:45
 msgid ""
 "Apparent depth of the rendered canvas effect; from 1 (very flat) to 50 (very "
 "deep)"
 msgstr ""
+"Profundidad aparente del efecto de lienzo retratado; desde 1 (muy plano) a "
+"50 (muy profundo)"
 
 #: operations/common-gpl3+/texturize-canvas.c:4380
 msgid "Texturize Canvas"
@@ -5723,10 +5687,10 @@ msgstr "Altura del mosaico"
 msgid "Tile Glass"
 msgstr "Mosaico de cristal"
 
+# en este caso la palabra azulejo tendría sentido ya que están hechos de vidrio pero como se ha venido usando la palabra mosaico y se entiende igualmente...
 #: operations/common-gpl3+/tile-glass.c:239
-#, fuzzy
 msgid "Simulate distortion caused by rectangular glass tiles"
-msgstr "Simular la distorsión de color producida por una fotocopiadora"
+msgstr "Simular la distorsión producida por mosaicos de vidrio rectangulares"
 
 #: operations/common-gpl3+/tile-paper.c:27
 msgid "Transparent"
@@ -5770,28 +5734,29 @@ msgid "Wrap around"
 msgstr "Envolver alrededor"
 
 #: operations/common-gpl3+/tile-paper.c:60
-#, fuzzy
 #| msgid "Map the image to a circle"
 msgid "Wrap the fractional tiles"
-msgstr "Mapear la imagen a un círculo"
+msgstr "Envolver los mosaicos fraccionarios"
 
+# Ya hay una palabra muy utilizada en matemáticas «fraccionario». No se si «fraccional» está generalizado o no, en cuyo caso propongo debatirlo.
 #: operations/common-gpl3+/tile-paper.c:62
 msgid "Fractional type"
-msgstr "Tipo fraccional"
+msgstr "Tipo faccionario"
 
 #: operations/common-gpl3+/tile-paper.c:65
 msgid "Fractional Type"
-msgstr "Tipo fraccional"
+msgstr "Tipo faccionario"
 
+# Ya me ha pasado antes: scanning -> escaneando, escaneo
+# Así que he mirado la siguiente que es claramente centrado en vez de centrando.
 #: operations/common-gpl3+/tile-paper.c:67
 msgid "Centering"
-msgstr "Centrando"
+msgstr "Centrado"
 
 #: operations/common-gpl3+/tile-paper.c:68
-#, fuzzy
 #| msgid "Period of the ripple"
 msgid "Centering of the tiles"
-msgstr "Período del remolino"
+msgstr "Centrado de las baldosas"
 
 #: operations/common-gpl3+/tile-paper.c:70
 #: operations/common-gpl3+/tile-paper.c:73
@@ -5835,10 +5800,9 @@ msgid "More transparent"
 msgstr "Más transparente"
 
 #: operations/common-gpl3+/value-propagate.c:41
-#, fuzzy
 #| msgid "The value of saturation"
 msgid "Mode of value propagation"
-msgstr "Valor de la saturación"
+msgstr "Modo de propagación del valor"
 
 #: operations/common-gpl3+/value-propagate.c:43
 #: operations/common-gpl3+/value-propagate.c:44
@@ -5888,32 +5852,33 @@ msgid "To bottom"
 msgstr "Hacia abajo"
 
 #: operations/common-gpl3+/value-propagate.c:71
-#, fuzzy
 #| msgid "Value at bottom"
 msgid "Propagate to bottom"
-msgstr "Valor en la parte inferior"
+msgstr "Propagar al fondo"
 
 #: operations/common-gpl3+/value-propagate.c:73
 #: operations/common-gpl3+/value-propagate.c:74
 msgid "Propagating value channel"
 msgstr "Propagación de canal del valor"
 
+# Siguiendo el modelo de la cadena superior como he comentado antes...
 #: operations/common-gpl3+/value-propagate.c:76
 #: operations/common-gpl3+/value-propagate.c:77
 msgid "Propagating alpha channel"
-msgstr "Propagando canal alfa"
+msgstr "Propagación del canal alfa"
 
 #: operations/common-gpl3+/value-propagate.c:642
 msgid "Value Propagate"
 msgstr "Valor propagado"
 
 #: operations/common-gpl3+/value-propagate.c:646
-#, fuzzy
 #| msgid "Propagate certain colors to neighboring pixels."
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
-msgstr "Propagar determinados colores de los píxeles vecinos."
+msgstr ""
+"Propagar determinados valores a los píxeles vecinos. Erosionar y dilatar "
+"cualquier color u opacidad."
 
 #: operations/common-gpl3+/video-degradation.c:34
 msgid "Staggered"
@@ -5980,6 +5945,8 @@ msgid ""
 "This function simulates the degradation of being on an old low-dotpitch RGB "
 "video monitor."
 msgstr ""
+"Esta función simula el deterioro de estar en un monitor de video RGB antiguo "
+"de baja resolución."
 
 #: operations/common-gpl3+/waves.c:37
 msgid "Amplitude of the ripple"
@@ -6070,10 +6037,9 @@ msgid "Style"
 msgstr "Estilo"
 
 #: operations/common-gpl3+/wind.c:48
-#, fuzzy
 #| msgid "Softglow effect"
 msgid "Style of effect"
-msgstr "Efecto resplandor suave"
+msgstr "Estilo del efecto"
 
 #: operations/common-gpl3+/wind.c:53
 msgid "Direction of the effect"
@@ -6109,19 +6075,24 @@ msgid ""
 "buffer where gegl_buffer_list_valid_rectangles returns the part of the cache "
 "that is valid."
 msgstr ""
+"NULL o un GeglBuffer que contiene resultados de renderización en caché, este "
+"es un búfer especial donde gegl_buffer_list_valid_rectangles devuelve la "
+"parte de la caché que es válida."
 
 #: operations/core/cache.c:90
 msgid ""
 "An explicit caching node, caches results and should provide faster "
 "recomputation if what is cached by it is expensive but isn't changing."
 msgstr ""
+"Un nodo de almacenamiento en caché explícito almacena los resultados en "
+"caché y debe proporcionar un recálculo más rápido si lo que se almacenó en "
+"caché es costoso pero no cambia."
 
 #: operations/core/cast-format.c:25
 msgid "Input format"
 msgstr "Formato de entrada"
 
 #: operations/core/cast-format.c:26
-#, fuzzy
 msgid "The babl format of the input"
 msgstr "El formato de babl de la salida"
 
@@ -6131,33 +6102,34 @@ msgstr "Formato de salida"
 
 #: operations/core/cast-format.c:111
 msgid "Cast Format"
-msgstr ""
+msgstr "Formato de lanzamiento"
 
 #: operations/core/cast-format.c:113
 msgid ""
 "Cast the data between input_format and output_format, both formats must have "
 "the same bpp"
 msgstr ""
+"Lanzar los datos entre input_format y output_format, ambos formatos deben "
+"tener el mismo bpp"
 
 #: operations/core/cast-space.c:25 operations/core/convert-space.c:25
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #: operations/core/cast-space.c:26 operations/core/convert-space.c:26
 msgid "One of: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"
 msgstr ""
+"Uno de estos: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"
 
 #: operations/core/cast-space.c:27 operations/core/convert-space.c:27
-#, fuzzy
 #| msgid "Center"
 msgid "Pointer"
-msgstr "Centrar"
+msgstr "Puntero"
 
 #: operations/core/cast-space.c:28 operations/core/convert-space.c:28
-#, fuzzy
 #| msgid "Zoom in the fractal space"
 msgid "pointer to a const * Babl space"
-msgstr "Amplia el espacio fractal"
+msgstr "apuntar a un espacio const * Babl"
 
 #: operations/core/cast-space.c:29 operations/core/convert-space.c:29
 #: operations/external/v4l.c:26 operations/workshop/external/v4l2.c:24
@@ -6165,22 +6137,23 @@ msgid "Path"
 msgstr "Ruta"
 
 #: operations/core/cast-space.c:30 operations/core/convert-space.c:30
-#, fuzzy
 #| msgid "Path to SVG file to load"
 msgid "File system path to ICC matrix profile to load"
-msgstr "Ruta al archivo SVG que cargar"
+msgstr "Ruta del sistema de archivos al perfil de la matriz ICC que cargar"
 
 #: operations/core/cast-space.c:129
-#, fuzzy
 #| msgid "Color Enhance"
 msgid "Cast color space"
-msgstr "Mejorar color"
+msgstr "Lanzar espacio de color"
 
 #: operations/core/cast-space.c:131
 msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
 msgstr ""
+"Remplazar el espacio de color especificado asignando un puntero a un formato "
+"que remplaza la propiedad de la cadena y asignando una almohadilla auxiliar "
+"que remplaza ambos."
 
 #: operations/core/clone.c:25
 msgid "Reference"
@@ -6199,6 +6172,9 @@ msgid ""
 "Clone a buffer, this is the same as gegl:nop but can get special treatment "
 "to get more human readable references in serializations/UI."
 msgstr ""
+"Clonar un búfer, esto es lo mismo que gegl:nop, pero puede obtener un "
+"tratamiento especial para obtener referencias más legibles en "
+"serializaciones/IU."
 
 #: operations/core/convert-format.c:100
 msgid "Convert Format"
@@ -6209,10 +6185,9 @@ msgid "Convert the data to the specified format"
 msgstr "Convertir los datos al formato especificado"
 
 #: operations/core/convert-space.c:104
-#, fuzzy
 #| msgid "Convert Format"
 msgid "Convert color space"
-msgstr "Convertir formato"
+msgstr "Convertir espacio de color"
 
 #: operations/core/convert-space.c:106
 msgid ""
@@ -6221,6 +6196,11 @@ msgid ""
 "management, setting a pointer to a format override the string property and "
 "setting an aux pad overrides both. "
 msgstr ""
+"establecer el espacio de color con el que se crean los formatos babl "
+"posteriores en la línea de ensamblaje y el perfil ICC potencialmente "
+"integrado para la gestión de color externa; asignar un puntero a un formato "
+"remplaza la propiedad de la cadena y asignar un panel auxiliar remplaza "
+"ambos."
 
 #: operations/core/crop.c:45
 msgid "Reset origin"
@@ -6242,10 +6222,9 @@ msgid "URI"
 msgstr "URI"
 
 #: operations/core/load.c:31
-#, fuzzy
 #| msgid "Path of file to load."
 msgid "URI of file to load."
-msgstr "Ruta del archivo que cargar"
+msgstr "URI del archivo que cargar."
 
 #: operations/core/load.c:367
 msgid ""
@@ -6256,26 +6235,24 @@ msgstr ""
 "conversión de último recurso usando la función «convert» de ImageMagick."
 
 #: operations/core/nop.c:81
-#, fuzzy
 #| msgid "Operation"
 msgid "No Operation"
-msgstr "Operación"
+msgstr "Ninguna operación"
 
+# me dice wordreference que enrutamiento es coloquial pero «asignación de ruta» me parece demasiado largo. ¿Lo dejamos así?
 #: operations/core/nop.c:83
 msgid "No operation (can be used as a routing point)"
 msgstr "Ninguna operación (se puede usar como punto de enrutado)"
 
 #: operations/external/exr-save.cc:25
-#, fuzzy
 #| msgid "Path of file to load."
 msgid "path of file to write to."
-msgstr "Ruta del archivo que cargar"
+msgstr "Ruta del archivo en el que escribir."
 
 #: operations/external/exr-save.cc:27
-#, fuzzy
 #| msgid "Tile size"
 msgid "tile size to use."
-msgstr "Tamaño del mosaico"
+msgstr "Tamaño del mosaico que utilizar."
 
 #: operations/external/ff-load.c:30
 msgid "Path of video file to load"
@@ -6302,14 +6279,13 @@ msgid "audio_sample_rate"
 msgstr "Frecuencia de muestreo de sonido"
 
 #: operations/external/ff-load.c:42
-#, fuzzy
 #| msgid "Red channel"
 msgid "audio_channels"
-msgstr "Canal rojo"
+msgstr "canales_de_audio"
 
 #: operations/external/ff-load.c:44
 msgid "frame-rate"
-msgstr ""
+msgstr "tasa-de-fotogramas"
 
 #: operations/external/ff-load.c:45
 msgid "Frames per second, permits computing time vs frame"
@@ -6328,16 +6304,14 @@ msgid "audio"
 msgstr "sonido"
 
 #: operations/external/ff-load.c:802
-#, fuzzy
 #| msgid "FFmpeg video frame importer"
 msgid "FFmpeg Frame Loader"
-msgstr "Importador de fotogramas de vídeo FFmpeg"
+msgstr "Cargador de fotogramas FFmpeg"
 
 #: operations/external/ff-load.c:804
-#, fuzzy
 #| msgid "FFmpeg video frame importer"
 msgid "FFmpeg video frame importer."
-msgstr "Importador de fotogramas de vídeo FFmpeg"
+msgstr "Importador de fotogramas de vídeo FFmpeg."
 
 #: operations/external/ff-save.c:30 operations/external/png-save.c:27
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
@@ -6391,10 +6365,9 @@ msgid "video bitrate in kb/s"
 msgstr "Tasa de bits de vídeo en kb/s"
 
 #: operations/external/ff-save.c:48
-#, fuzzy
 #| msgid "Tile size"
 msgid "Video bufsize"
-msgstr "Tamaño del mosaico"
+msgstr "Tamaño del búfer de vídeo"
 
 #: operations/external/ff-save.c:50
 msgid "Container format"
@@ -6415,10 +6388,9 @@ msgid "noise reduction"
 msgstr "reducción de ruido"
 
 #: operations/external/ff-save.c:56
-#, fuzzy
 #| msgid "Red eye threshold"
 msgid "scenechange threshold"
-msgstr "Umbral de ojos rojos"
+msgstr "Umbral de cambio de escena"
 
 #: operations/external/ff-save.c:57
 msgid "video bitrate min"
@@ -6434,67 +6406,65 @@ msgstr "Tolerancia de tasa de bits de vídeo"
 
 #: operations/external/ff-save.c:61
 msgid "keyint-min"
-msgstr ""
+msgstr "keyint-min"
 
 #: operations/external/ff-save.c:62
 msgid "trellis"
-msgstr ""
+msgstr "enrejado"
 
 #: operations/external/ff-save.c:63
 msgid "qmin"
-msgstr ""
+msgstr "qmin"
 
 #: operations/external/ff-save.c:64
 msgid "qmax"
-msgstr ""
+msgstr "qmax"
 
 #: operations/external/ff-save.c:65
 msgid "max_qdiff"
-msgstr ""
+msgstr "qdif_max"
 
 #: operations/external/ff-save.c:66
 msgid "me_range"
-msgstr ""
+msgstr "rango_me"
 
 #: operations/external/ff-save.c:67
 msgid "max_b_frames"
-msgstr ""
+msgstr "max_fotogramas_b"
 
 #: operations/external/ff-save.c:68
 msgid "gop-size"
-msgstr ""
+msgstr "tamaño_gop"
 
 #: operations/external/ff-save.c:69
-#, fuzzy
 #| msgid "Compression"
 msgid "qcompress"
-msgstr "Compresión"
+msgstr "qcompresión"
 
 #: operations/external/ff-save.c:70
 msgid "qblur"
-msgstr ""
+msgstr "qdesenfoque"
 
 #: operations/external/ff-save.c:71
 msgid "i-quant-factor"
-msgstr ""
+msgstr "i-factor-cant"
 
 #: operations/external/ff-save.c:72
 msgid "i-quant-offset"
-msgstr ""
+msgstr "i-despl-cant"
 
 #: operations/external/ff-save.c:73
 msgid "me-subpel-quality"
-msgstr ""
+msgstr "me-calidad-subpel"
 
 #: operations/external/ff-save.c:1122
-#, fuzzy
 #| msgid "FFmpeg video frame importer"
 msgid "FFmpeg Frame Saver"
-msgstr "Importador de fotogramas de vídeo FFmpeg"
+msgstr "Guardador de fotogramas FFmpeg"
 
 #: operations/external/ff-save.c:1124
 msgid "FFmpeg video output sink"
-msgstr "Sumidero de salida de vídeo FFmpeg"
+msgstr "Receptor de salida de vídeo FFmpeg"
 
 #: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
 #: operations/external/svg-load.c:26 operations/external/tiff-load.c:26
@@ -6539,7 +6509,7 @@ msgstr "Las componentes de la imagen de entrada no se corresponden"
 
 #: operations/external/jp2-load.c:257
 msgid "could not create a new Jasper stream"
-msgstr ""
+msgstr "no se pudo crear una transmisión Jasper nueva"
 
 #: operations/external/jp2-load.c:277 operations/external/jp2-load.c:279
 #, c-format
@@ -6548,17 +6518,16 @@ msgstr "Falló al abrir la imagen JPEG 2000 desde %s"
 
 #: operations/external/jp2-load.c:293
 msgid "could not query JPEG 2000 file"
-msgstr ""
+msgstr "no se pudo consultar el archivo JPEG 2000"
 
 #: operations/external/jp2-load.c:349
 msgid "One or more of R, G, B components are missing"
 msgstr "Faltan una o más componentes de R, G, B"
 
 #: operations/external/jp2-load.c:357
-#, fuzzy
 #| msgid "One or more of R, G, B components have signed data in '%s'"
 msgid "One or more of R, G, B components have signed data"
-msgstr "Una o más componentes de R, G, B tienen datos firmados en «%s»"
+msgstr "Una o más de las componentes R, G, B tienen datos firmados"
 
 #: operations/external/jp2-load.c:390
 #, c-format
@@ -6570,26 +6539,23 @@ msgid "JPEG 2000 File Loader"
 msgstr "Cargador de imágenes JPEG 2000"
 
 #: operations/external/jp2-load.c:527
-#, fuzzy
 #| msgid "JPEG 2000 image loader"
 msgid "JPEG 2000 image loader using jasper."
-msgstr "Cargador de imágenes JPEG 2000"
+msgstr "Cargador de imágenes JPEG 2000 que usa jasper."
 
 #: operations/external/jpg-load.c:27
-#, fuzzy
 #| msgid "Path of file to load"
 msgid "URI of file to load"
-msgstr "Archivo de perfil para cargar"
+msgstr "URI del archivo que cargar"
 
 #: operations/external/jpg-load.c:397
 msgid "JPEG File Loader"
 msgstr "Cargador de imágenes JPEG"
 
 #: operations/external/jpg-load.c:399
-#, fuzzy
 #| msgid "JPG image loader"
 msgid "JPEG image loader using libjpeg"
-msgstr "Cargador de imágenes JPG"
+msgstr "Cargador de imágenes JPEG que usa libjpeg"
 
 #: operations/external/jpg-save.c:26 operations/external/npy-save.c:32
 #: operations/external/tiff-save.c:26 operations/external/webp-save.c:26
@@ -6639,20 +6605,20 @@ msgstr "Crear una imagen de escala de grises (monocromática)"
 
 #: operations/external/jpg-save.c:396
 msgid "JPEG File Saver"
-msgstr ""
+msgstr "Guardador de archivos JPEG"
 
 #: operations/external/jpg-save.c:398
 msgid "JPEG image saver, using libjpeg"
-msgstr ""
+msgstr "Guardador de imágenes JPEG, que usa libjpeg"
 
 #: operations/external/lcms-from-profile.c:24
-#, fuzzy
 msgid "Source Profile"
-msgstr "Origen"
+msgstr "Perfil origen"
 
 #: operations/external/lcms-from-profile.c:25
 msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
 msgstr ""
+"El cmsHPROFILE que corresponde con el perfil ICC para los datos de entrada."
 
 #: operations/external/lcms-from-profile.c:31
 msgid "Perceptual"
