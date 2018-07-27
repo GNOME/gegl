@@ -5,17 +5,17 @@
 # Francisco Vila <francisco.vila@hispalinux.es>, 2012.
 #
 # Yolanda Alvarez Perez <yolandaa.alvarez.perez@gmail.com>, 2016.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2012, 2013, 2014, 2015, 2016, 2017, 2018.
 # Rodrigo <rodhos92@gmail.com>, 2018.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2012, 2013, 2014, 2015, 2016, 2017, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-25 13:00+0000\n"
-"PO-Revision-Date: 2018-07-26 11:54+0200\n"
-"Last-Translator: Rodrigo <rodhos92@gmail.com>\n"
-"Language-Team: Español <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2018-07-26 10:19+0000\n"
+"PO-Revision-Date: 2018-07-27 12:57+0200\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
+"Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -815,7 +815,7 @@ msgstr "Tablero de ajedrez"
 
 #: operations/common/checkerboard.c:350
 msgid "Render a checkerboard pattern"
-msgstr "Reproducir un patrón de tablero de ajedrez"
+msgstr "Renderizar un patrón de tablero de ajedrez"
 
 #: operations/common/color.c:24 operations/common/color.c:92
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:43
@@ -5734,7 +5734,6 @@ msgid "Wrap around"
 msgstr "Envolver alrededor"
 
 #: operations/common-gpl3+/tile-paper.c:60
-#| msgid "Map the image to a circle"
 msgid "Wrap the fractional tiles"
 msgstr "Envolver los mosaicos fraccionarios"
 
@@ -5754,7 +5753,6 @@ msgid "Centering"
 msgstr "Centrado"
 
 #: operations/common-gpl3+/tile-paper.c:68
-#| msgid "Period of the ripple"
 msgid "Centering of the tiles"
 msgstr "Centrado de las baldosas"
 
@@ -5800,7 +5798,6 @@ msgid "More transparent"
 msgstr "Más transparente"
 
 #: operations/common-gpl3+/value-propagate.c:41
-#| msgid "The value of saturation"
 msgid "Mode of value propagation"
 msgstr "Modo de propagación del valor"
 
@@ -5852,7 +5849,6 @@ msgid "To bottom"
 msgstr "Hacia abajo"
 
 #: operations/common-gpl3+/value-propagate.c:71
-#| msgid "Value at bottom"
 msgid "Propagate to bottom"
 msgstr "Propagar al fondo"
 
@@ -5872,7 +5868,6 @@ msgid "Value Propagate"
 msgstr "Valor propagado"
 
 #: operations/common-gpl3+/value-propagate.c:646
-#| msgid "Propagate certain colors to neighboring pixels."
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
@@ -6037,7 +6032,6 @@ msgid "Style"
 msgstr "Estilo"
 
 #: operations/common-gpl3+/wind.c:48
-#| msgid "Softglow effect"
 msgid "Style of effect"
 msgstr "Estilo del efecto"
 
@@ -6122,12 +6116,10 @@ msgstr ""
 "Uno de estos: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"
 
 #: operations/core/cast-space.c:27 operations/core/convert-space.c:27
-#| msgid "Center"
 msgid "Pointer"
 msgstr "Puntero"
 
 #: operations/core/cast-space.c:28 operations/core/convert-space.c:28
-#| msgid "Zoom in the fractal space"
 msgid "pointer to a const * Babl space"
 msgstr "apuntar a un espacio const * Babl"
 
@@ -6137,12 +6129,10 @@ msgid "Path"
 msgstr "Ruta"
 
 #: operations/core/cast-space.c:30 operations/core/convert-space.c:30
-#| msgid "Path to SVG file to load"
 msgid "File system path to ICC matrix profile to load"
 msgstr "Ruta del sistema de archivos al perfil de la matriz ICC que cargar"
 
 #: operations/core/cast-space.c:129
-#| msgid "Color Enhance"
 msgid "Cast color space"
 msgstr "Lanzar espacio de color"
 
@@ -6185,7 +6175,6 @@ msgid "Convert the data to the specified format"
 msgstr "Convertir los datos al formato especificado"
 
 #: operations/core/convert-space.c:104
-#| msgid "Convert Format"
 msgid "Convert color space"
 msgstr "Convertir espacio de color"
 
@@ -6222,7 +6211,6 @@ msgid "URI"
 msgstr "URI"
 
 #: operations/core/load.c:31
-#| msgid "Path of file to load."
 msgid "URI of file to load."
 msgstr "URI del archivo que cargar."
 
@@ -6235,7 +6223,6 @@ msgstr ""
 "conversión de último recurso usando la función «convert» de ImageMagick."
 
 #: operations/core/nop.c:81
-#| msgid "Operation"
 msgid "No Operation"
 msgstr "Ninguna operación"
 
@@ -6245,12 +6232,10 @@ msgid "No operation (can be used as a routing point)"
 msgstr "Ninguna operación (se puede usar como punto de enrutado)"
 
 #: operations/external/exr-save.cc:25
-#| msgid "Path of file to load."
 msgid "path of file to write to."
 msgstr "Ruta del archivo en el que escribir."
 
 #: operations/external/exr-save.cc:27
-#| msgid "Tile size"
 msgid "tile size to use."
 msgstr "Tamaño del mosaico que utilizar."
 
@@ -6279,7 +6264,6 @@ msgid "audio_sample_rate"
 msgstr "Frecuencia de muestreo de sonido"
 
 #: operations/external/ff-load.c:42
-#| msgid "Red channel"
 msgid "audio_channels"
 msgstr "canales_de_audio"
 
@@ -6304,12 +6288,10 @@ msgid "audio"
 msgstr "sonido"
 
 #: operations/external/ff-load.c:802
-#| msgid "FFmpeg video frame importer"
 msgid "FFmpeg Frame Loader"
 msgstr "Cargador de fotogramas FFmpeg"
 
 #: operations/external/ff-load.c:804
-#| msgid "FFmpeg video frame importer"
 msgid "FFmpeg video frame importer."
 msgstr "Importador de fotogramas de vídeo FFmpeg."
 
@@ -6365,7 +6347,6 @@ msgid "video bitrate in kb/s"
 msgstr "Tasa de bits de vídeo en kb/s"
 
 #: operations/external/ff-save.c:48
-#| msgid "Tile size"
 msgid "Video bufsize"
 msgstr "Tamaño del búfer de vídeo"
 
@@ -6388,7 +6369,6 @@ msgid "noise reduction"
 msgstr "reducción de ruido"
 
 #: operations/external/ff-save.c:56
-#| msgid "Red eye threshold"
 msgid "scenechange threshold"
 msgstr "Umbral de cambio de escena"
 
@@ -6437,7 +6417,6 @@ msgid "gop-size"
 msgstr "tamaño_gop"
 
 #: operations/external/ff-save.c:69
-#| msgid "Compression"
 msgid "qcompress"
 msgstr "qcompresión"
 
@@ -6458,7 +6437,6 @@ msgid "me-subpel-quality"
 msgstr "me-calidad-subpel"
 
 #: operations/external/ff-save.c:1122
-#| msgid "FFmpeg video frame importer"
 msgid "FFmpeg Frame Saver"
 msgstr "Guardador de fotogramas FFmpeg"
 
@@ -6525,7 +6503,6 @@ msgid "One or more of R, G, B components are missing"
 msgstr "Faltan una o más componentes de R, G, B"
 
 #: operations/external/jp2-load.c:357
-#| msgid "One or more of R, G, B components have signed data in '%s'"
 msgid "One or more of R, G, B components have signed data"
 msgstr "Una o más de las componentes R, G, B tienen datos firmados"
 
@@ -6539,12 +6516,10 @@ msgid "JPEG 2000 File Loader"
 msgstr "Cargador de imágenes JPEG 2000"
 
 #: operations/external/jp2-load.c:527
-#| msgid "JPEG 2000 image loader"
 msgid "JPEG 2000 image loader using jasper."
 msgstr "Cargador de imágenes JPEG 2000 que usa jasper."
 
 #: operations/external/jpg-load.c:27
-#| msgid "Path of file to load"
 msgid "URI of file to load"
 msgstr "URI del archivo que cargar"
 
@@ -6553,7 +6528,6 @@ msgid "JPEG File Loader"
 msgstr "Cargador de imágenes JPEG"
 
 #: operations/external/jpg-load.c:399
-#| msgid "JPG image loader"
 msgid "JPEG image loader using libjpeg"
 msgstr "Cargador de imágenes JPEG que usa libjpeg"
 
@@ -6649,9 +6623,8 @@ msgid "Convert using black point compensation."
 msgstr "Convertir usando compensación de punto negro."
 
 #: operations/external/lcms-from-profile.c:243
-#, fuzzy
 msgid "LCMS From Profile"
-msgstr "Origen"
+msgstr "LCMS desde el perfil"
 
 #: operations/external/lcms-from-profile.c:246
 msgid ""
@@ -6659,6 +6632,9 @@ msgid ""
 "The buffer's data will then be correctly managed by GEGL for further "
 "processing."
 msgstr ""
+"Convierte la entrada de un perfil de color ICC a un formato babl bien "
+"definido. De esta forma GEGL gestiona correctamente los datos del búfer para "
+"su posterior procesamiento."
 
 #: operations/external/matting-levin.c:25
 msgid "Epsilon"
@@ -6711,7 +6687,7 @@ msgstr "Modelo"
 
 #: operations/external/npd.c:24
 msgid "Model - basic element we operate on"
-msgstr ""
+msgstr "Modelo - elemento básico en el que operamos"
 
 #: operations/external/npd.c:26
 msgid "Square Size"
@@ -6719,17 +6695,15 @@ msgstr "Tamaño cuadrado"
 
 #: operations/external/npd.c:28
 msgid "Size of an edge of square the mesh consists of"
-msgstr ""
+msgstr "Tamaño del lado del cuadrado con el que está hecha la malla"
 
 #: operations/external/npd.c:30
 msgid "Rigidity"
 msgstr "Rigidez"
 
 #: operations/external/npd.c:32
-#, fuzzy
-#| msgid "Number of iterations"
 msgid "The number of deformation iterations"
-msgstr "Número de iteraciones"
+msgstr "El número de iteraciones de deformación"
 
 #: operations/external/npd.c:34
 msgid "ASAP Deformation"
@@ -6738,11 +6712,12 @@ msgstr "Deformación ASAP"
 #: operations/external/npd.c:35
 msgid "ASAP deformation is performed when TRUE, ARAP deformation otherwise"
 msgstr ""
+"La deformación ASAP se realiza cuando es VERDADERO, de otro modo se realiza "
+"deformación ARAP"
 
 #: operations/external/npd.c:37
-#, fuzzy
 msgid "MLS Weights"
-msgstr "Altura de la línea"
+msgstr "Pesos MLS"
 
 #: operations/external/npd.c:38
 msgid "Use MLS weights"
@@ -6774,16 +6749,12 @@ msgid "Performs n-point image deformation"
 msgstr "Realiza deformación de la imagen n-punto"
 
 #: operations/external/npy-save.c:215
-#, fuzzy
-#| msgid "PNG image loader."
 msgid "NumPy File Saver"
-msgstr "Cargador de imágenes PNG."
+msgstr "Guardador de archivos NumPy"
 
 #: operations/external/npy-save.c:217
-#, fuzzy
-#| msgid "NPY image saver (Numerical python file saver.)"
 msgid "NumPy (Numerical Python) image saver"
-msgstr "Guardador de imágenes NPY (guardador de archivos numéricos Python)."
+msgstr "Guardador de imágenes NumPy (Python numérico)"
 
 #: operations/external/path.c:26
 msgid "Fill Color"
@@ -6859,7 +6830,7 @@ msgstr "Un vector GeglVector que representa la ruta del trazo"
 
 #: operations/external/path.c:532
 msgid "Render Path"
-msgstr ""
+msgstr "Renderizar ruta"
 
 #: operations/external/path.c:536
 msgid "Renders a brush stroke"
@@ -6908,27 +6879,20 @@ msgid "Bitdepth"
 msgstr "Bits de profundidad"
 
 #: operations/external/png-save.c:32 operations/external/ppm-save.c:30
-#, fuzzy
 msgid "8 and 16 are the currently accepted values."
-msgstr "8 y 16 están entre los valores comúnmente aceptados."
+msgstr "8 y 16 son los valores actualmente aceptados."
 
 #: operations/external/png-save.c:310
-#, fuzzy
-#| msgid "PNG image loader."
 msgid "PNG File Saver"
-msgstr "Cargador de imágenes PNG."
+msgstr "Guardador de imágenes PNG"
 
 #: operations/external/png-save.c:312
-#, fuzzy
-#| msgid "JPG image loader"
 msgid "PNG image saver, using libpng"
-msgstr "Cargador de imágenes JPG"
+msgstr "Guardador de imágenes PNG, que usa libpng"
 
 #: operations/external/ppm-load.c:28
-#, fuzzy
-#| msgid "Path of file to load."
 msgid "URI of image to load."
-msgstr "Ruta del archivo que cargar"
+msgstr "URI de la imagen que cargar."
 
 #: operations/external/ppm-load.c:460
 msgid "PPM File Loader"
@@ -6943,64 +6907,50 @@ msgid "Raw format"
 msgstr "Formato Raw"
 
 #: operations/external/ppm-save.c:190
-#, fuzzy
-#| msgid "PPM image loader."
 msgid "PPM File Saver"
-msgstr "Cargador de imágenes PPM."
+msgstr "Guardador de archivos PPM"
 
 #: operations/external/ppm-save.c:193
 msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "Guardador de imágenes PPM (guardador de mapas de píxeles portables)."
 
 #: operations/external/raw-load.c:28
-#, fuzzy
-#| msgid "Camera"
 msgid "Camera RGB"
-msgstr "Cámara"
+msgstr "Cámara RGB"
 
 #: operations/external/raw-load.c:29
-#, fuzzy
-#| msgid "Clip RGB"
 msgid "s RGB"
-msgstr "Cortar RGB"
+msgstr "s RGB"
 
 #: operations/external/raw-load.c:30
-#, fuzzy
-#| msgid "Add RGB Noise"
 msgid "Adobe RGB compatible"
-msgstr "Añadir ruido RGB"
+msgstr "Compatible con RGB de Adobe"
 
+# gama, espectro, escala
 #: operations/external/raw-load.c:31
 msgid "Wide gamut RGB"
-msgstr ""
+msgstr "RGB de gama amplia"
 
+# It is an output referred RGB color space developed by Kodak.
 #: operations/external/raw-load.c:32
 msgid "ProPhoto RGB"
-msgstr ""
+msgstr "RGB ProPhoto"
 
 #: operations/external/raw-load.c:39
-#, fuzzy
-#| msgid "Color Enhance"
 msgid "Color space"
-msgstr "Mejorar color"
+msgstr "Espacio de color"
 
 #: operations/external/raw-load.c:41
-#, fuzzy
-#| msgid "Color of paint to use for stroking"
 msgid "Color space to use for loaded data"
-msgstr "Color de la pintura que usar para el trazado"
+msgstr "Espacio de color para usar con datos cargados"
 
 #: operations/external/raw-load.c:277
-#, fuzzy
-#| msgid "WebP image loader."
 msgid "libraw File Loader"
-msgstr "Cargador de imágenes WebP."
+msgstr "Cargador de archivos libraw"
 
 #: operations/external/rgbe-load.c:136
-#, fuzzy
-#| msgid "JPG image loader"
 msgid "RGBE File Loader"
-msgstr "Cargador de imágenes JPG"
+msgstr "Cargador de archivos RGBE"
 
 #: operations/external/rgbe-load.c:138
 msgid "RGBE image loader (Radiance HDR format)."
@@ -7008,7 +6958,7 @@ msgstr "Cargador de imágenes RGBE (formato HDR de radiancia)."
 
 #: operations/external/rgbe-save.c:85
 msgid "RGBE File Saver"
-msgstr ""
+msgstr "Guardador de archivos RGBE"
 
 #: operations/external/rgbe-save.c:88
 msgid "RGBE image saver (Radiance HDR format)"
@@ -7023,16 +6973,12 @@ msgid "The location where to store the output GdkPixbuf."
 msgstr "Lugar donde almacenar el GdkPixbuf de salida."
 
 #: operations/external/save-pixbuf.c:111
-#, fuzzy
-#| msgid "Save output into a GdkPixbuf."
 msgid "Store in GdkPixbuf"
-msgstr "Guardar la salida en un GdkPixbuf."
+msgstr "Guardar en GdkPixbuf"
 
 #: operations/external/save-pixbuf.c:113
-#, fuzzy
-#| msgid "Save output into a GdkPixbuf."
 msgid "Store image in a GdkPixbuf."
-msgstr "Guardar la salida en un GdkPixbuf."
+msgstr "Guardar la imagen en un GdkPixbuf."
 
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -7096,10 +7042,8 @@ msgstr "Tamaño de la tipografía, en píxeles."
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/external/text.c:39
-#, fuzzy
-#| msgid "Color for the text (defaults to 'white')"
 msgid "Color for the text (defaults to 'black')"
-msgstr "Color del texto (el predeterminado es «blanco»)"
+msgstr "Color del texto (el predeterminado es «negro»)"
 
 #: operations/external/text.c:41
 msgid "Wrap width"
@@ -7118,16 +7062,12 @@ msgid "Wrap height"
 msgstr "Ajustar la altura"
 
 #: operations/external/text.c:47
-#, fuzzy
-#| msgid ""
-#| "Sets the width in pixels at which long lines will wrap. Use -1 for no "
-#| "wrapping."
 msgid ""
 "Sets the height in pixels according to which the text is vertically "
 "justified. Use -1 for no vertical justification."
 msgstr ""
-"Establece la anchura en píxeles en la que la líneas largas se ajustan. Use "
-"-1 para no ajustar."
+"Establece la altura en píxeles en la que el texto se justifica "
+"verticalmente. Use -1 para quitar la justificación vertical."
 
 #: operations/external/text.c:53
 msgid "Justification"
@@ -7139,14 +7079,12 @@ msgstr ""
 "Alineación para textos de varias líneas (0=Izquierda, 1=Centro, 2=Derecha)"
 
 #: operations/external/text.c:57
-#, fuzzy
-#| msgid "Vertical position"
 msgid "Vertical justification"
-msgstr "Posición vertical"
+msgstr "Justificación vertical"
 
 #: operations/external/text.c:59
 msgid "Vertical text alignment (0=Top, 1=Middle, 2=Bottom)"
-msgstr ""
+msgstr "Alineación vertical de texto (0=Arriba, 1=Centrado, 2=Abajo)"
 
 #: operations/external/text.c:62
 msgid "Rendered width in pixels. (read only)"
@@ -7177,22 +7115,16 @@ msgid "TIFF File Loader"
 msgstr "Cargador de archivos TIFF"
 
 #: operations/external/tiff-load.c:889
-#, fuzzy
-#| msgid "JPG image loader"
 msgid "TIFF image loader using libtiff"
-msgstr "Cargador de imágenes JPG"
+msgstr "Cargador de imágenes TIFF que usa libtiff"
 
 #: operations/external/tiff-save.c:623
-#, fuzzy
-#| msgid "PNG image loader."
 msgid "TIFF File Saver"
-msgstr "Cargador de imágenes PNG."
+msgstr "Guardador de archivos TIFF"
 
 #: operations/external/tiff-save.c:625
-#, fuzzy
-#| msgid "JPG image loader"
 msgid "TIFF image saver using libtiff"
-msgstr "Cargador de imágenes JPG"
+msgstr "Guardador de imágenes TIFF que usa libtiff"
 
 #: operations/external/v4l.c:27
 msgid "Path to v4l device"
@@ -7218,7 +7150,7 @@ msgstr "autodisparar la recarga esta cantidad de veces por segundo."
 
 #: operations/external/v4l.c:331
 msgid "Video4Linux Frame Source"
-msgstr ""
+msgstr "Origen de fotograma de Video4Linux"
 
 #: operations/external/v4l.c:333
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
@@ -7246,10 +7178,8 @@ msgid "svg style description of transform."
 msgstr "descripción estilo SVG de la transformación."
 
 #: operations/external/vector-fill.c:276
-#, fuzzy
-#| msgid "Fill opacity"
 msgid "Fill Path"
-msgstr "Opacidad del relleno"
+msgstr "Rellenar ruta"
 
 #: operations/external/vector-fill.c:279
 msgid "Renders a filled region"
@@ -7272,10 +7202,8 @@ msgstr ""
 "momento el trazado se hace con una herramienta de aerógrafo."
 
 #: operations/external/vector-stroke.c:301
-#, fuzzy
-#| msgid "Stroke"
 msgid "Vector Stroke"
-msgstr "Trazo"
+msgstr "Trazo de vector"
 
 #: operations/external/vector-stroke.c:305
 msgid "Renders a vector stroke"
@@ -7290,19 +7218,16 @@ msgid "WebP image loader."
 msgstr "Cargador de imágenes WebP."
 
 #: operations/external/webp-save.c:29
-#, fuzzy
 msgid "WebP compression quality"
-msgstr "Calidad de la compresión JPEG (entre 1 y 100)"
+msgstr "Calidad de compresión WebP"
 
 #: operations/external/webp-save.c:192
-#, fuzzy
 msgid "WebP File Saver"
-msgstr "Cargador de imágenes PNG."
+msgstr "Guardador de archivos WebP"
 
 #: operations/external/webp-save.c:194
-#, fuzzy
 msgid "WebP image saver"
-msgstr "Cargador de imágenes PNG."
+msgstr "Guardador de imágenes WebP"
 
 #: operations/generated/add.c:30 operations/generated/divide.c:30
 #: operations/generated/gamma.c:30 operations/generated/multiply.c:30
@@ -7495,18 +7420,14 @@ msgid "Porter Duff operation xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
 msgstr "Operación de Porter-Duff xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
 
 #: operations/seamless-clone/seamless-clone.c:22
-#, fuzzy
 msgid "Refinement scale"
-msgstr "Pasos de refinamiento"
+msgstr "Escala de refinamiento"
 
 #: operations/seamless-clone/seamless-clone.c:23
-#, fuzzy
-#| msgid ""
-#| "Maximal amount of refinement points to be used for the interpolation mesh"
 msgid ""
 "Maximal scale of refinement points to be used for the interpolation mesh"
 msgstr ""
-"Cantidad máxima de puntos de refinamiento que usar para la malla de "
+"Escala máxima de puntos de refinamiento que usar para la malla de "
 "interpolación"
 
 #: operations/seamless-clone/seamless-clone.c:27
@@ -7579,10 +7500,8 @@ msgid "Degrees"
 msgstr "Grados"
 
 #: operations/transform/rotate.c:26 operations/transform/rotate-on-center.c:28
-#, fuzzy
-#| msgid "Angle to rotate (clockwise)"
 msgid "Angle to rotate (counter-clockwise)"
-msgstr "Ángulo de rotación (sentido horario)"
+msgstr "Ángulo de rotación (sentido antihorario)"
 
 #: operations/transform/rotate.c:73
 msgid "Rotate"
@@ -7593,10 +7512,8 @@ msgid "Rotate the buffer around the specified origin."
 msgstr "Girar el búfer alrededor del origen especificado."
 
 #: operations/transform/rotate-on-center.c:31
-#, fuzzy
-#| msgid "Origin-x"
 msgid "origin-x"
-msgstr "Origen X"
+msgstr "origen-x"
 
 #: operations/transform/rotate-on-center.c:32
 #: operations/transform/rotate-on-center.c:34
@@ -7604,10 +7521,8 @@ msgid "Ignored. Always uses center of input buffer"
 msgstr "Ignorado. Siempre usa el centro del búfer de entrada"
 
 #: operations/transform/rotate-on-center.c:33
-#, fuzzy
-#| msgid "Origin-y"
 msgid "origin-y"
-msgstr "Origen Y"
+msgstr "origen-y"
 
 #: operations/transform/rotate-on-center.c:148
 #, fuzzy
@@ -7616,10 +7531,10 @@ msgid "Rotate on center"
 msgstr "Coordenadas del centro del objetivo"
 
 #: operations/transform/rotate-on-center.c:152
-#, fuzzy
-#| msgid "Rotate the buffer around the specified origin."
 msgid "Rotate the buffer around its center, taking care of possible offsets."
-msgstr "Girar el búfer alrededor del origen especificado."
+msgstr ""
+"Girar el búfer alrededor de su centro, teniendo en cuenta posibles "
+"desplazamientos."
 
 #: operations/transform/scale-ratio.c:26
 msgid "Horizontal scale factor"
@@ -7682,10 +7597,8 @@ msgid "Shear"
 msgstr "Inclinar"
 
 #: operations/transform/shear.c:76
-#, fuzzy
-#| msgid "Shears the buffer"
 msgid "Shears the buffer. "
-msgstr "Inclina el búfer"
+msgstr "Inclina el búfer. "
 
 #: operations/transform/transform.c:25
 #, fuzzy
@@ -7714,10 +7627,8 @@ msgid "Y coordinate of origin"
 msgstr "Coordenada Y del origen"
 
 #: operations/transform/transform-core.c:217
-#, fuzzy
-#| msgid "Nearest"
 msgid "Near-z"
-msgstr "Más cercano"
+msgstr "Cercano a Z"
 
 #: operations/transform/transform-core.c:218
 #, fuzzy
@@ -7833,10 +7744,8 @@ msgid "Bayer Matrix"
 msgstr "Matriz de Bayer"
 
 #: operations/workshop/bayer-matrix.c:329
-#, fuzzy
-#| msgid "Generate diffraction patterns"
 msgid "Generate a Bayer matrix pattern"
-msgstr "Generar patrones de difracción"
+msgstr "Generar un patrón de matriz de Bayern"
 
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
@@ -7941,10 +7850,8 @@ msgid "The lua script containing the implementation of this operation."
 msgstr "Script LUA que contiene la implementación de esta operación."
 
 #: operations/workshop/external/gluas.c:33
-#, fuzzy
-#| msgid "Module error"
 msgid "Lua error"
-msgstr "Error del módulo"
+msgstr "Error Lua"
 
 #: operations/workshop/external/gluas.c:34
 #, fuzzy
@@ -7995,9 +7902,8 @@ msgid "Write camera name correctly"
 msgstr "Escriba correctamente el nombre de la cámara"
 
 #: operations/workshop/external/lens-correct.c:34
-#, fuzzy
 msgid "Lens"
-msgstr "Objetivo:"
+msgstr "Objetivo"
 
 #: operations/workshop/external/lens-correct.c:35
 msgid "Write your lens model with uppercase letters"
@@ -8020,7 +7926,6 @@ msgid "If you want center"
 msgstr "Si quiere centrar"
 
 #: operations/workshop/external/lens-correct.c:44
-#, fuzzy
 msgid "Lens center X"
 msgstr "Centro X del objetivo"
 
@@ -8030,9 +7935,8 @@ msgid "Coordinates of lens center"
 msgstr "Coordenadas del centro del objetivo"
 
 #: operations/workshop/external/lens-correct.c:47
-#, fuzzy
 msgid "Lens center Y"
-msgstr "Centro X del objetivo"
+msgstr "Centro Y del objetivo"
 
 #: operations/workshop/external/lens-correct.c:51
 msgid "Scale of the image"
@@ -8155,9 +8059,8 @@ msgid "Value at top"
 msgstr "Valor en la parte superior"
 
 #: operations/workshop/external/line-profile.c:196
-#, fuzzy
 msgid "Line Profile"
-msgstr "Origen"
+msgstr "Perfil de linea"
 
 #: operations/workshop/external/line-profile.c:198
 msgid ""
@@ -8175,7 +8078,7 @@ msgstr "Ruta del dispositivo de vídeo"
 
 #: operations/workshop/external/v4l2.c:774
 msgid "Video4Linux2 Frame Source"
-msgstr ""
+msgstr "Origen de fotogramas de Video4Linux2"
 
 #: operations/workshop/external/v4l2.c:776
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
@@ -8183,7 +8086,7 @@ msgstr "Entrada Video4Linux, capturadoras, webcams y dispositivos similares."
 
 #: operations/workshop/aces-rrt.c:134
 msgid "ACES RRT"
-msgstr ""
+msgstr "ACES RRT"
 
 #: operations/workshop/aces-rrt.c:137
 msgid ""
@@ -8284,20 +8187,16 @@ msgstr ""
 "derecha de la «entrada»)"
 
 #: operations/workshop/integral-image.c:25
-#, fuzzy
-#| msgid "Sampler used internally"
 msgid "squared integral"
-msgstr "Muestreador usado internamente"
+msgstr "integral cuadrada"
 
 #: operations/workshop/integral-image.c:26
 msgid "Add squared values sum to the output"
 msgstr ""
 
 #: operations/workshop/integral-image.c:252
-#, fuzzy
-#| msgid "Inverted image"
 msgid "Integral Image"
-msgstr "Imagen invertida"
+msgstr "Imagen integral"
 
 #: operations/workshop/integral-image.c:254
 msgid "Compute integral and squared integral image"
@@ -8309,7 +8208,7 @@ msgstr "Periodo X"
 
 #: operations/workshop/linear-sinusoid.c:27
 msgid "Period for X axis"
-msgstr ""
+msgstr "Periodo del eje X"
 
 #: operations/workshop/linear-sinusoid.c:33
 msgid "Y Period"
@@ -8317,7 +8216,7 @@ msgstr "Periodo Y"
 
 #: operations/workshop/linear-sinusoid.c:34
 msgid "Period for Y axis"
-msgstr ""
+msgstr "Periodo del eje Y"
 
 #: operations/workshop/linear-sinusoid.c:40
 msgid "X Amplitude"
@@ -8325,7 +8224,7 @@ msgstr "Amplitud X"
 
 #: operations/workshop/linear-sinusoid.c:41
 msgid "Amplitude for X axis (logarithmic scale)"
-msgstr ""
+msgstr "Amplitud del eje X (escala logarítmica)"
 
 #: operations/workshop/linear-sinusoid.c:46
 msgid "Y Amplitude"
@@ -8333,33 +8232,27 @@ msgstr "Amplitud Y"
 
 #: operations/workshop/linear-sinusoid.c:47
 msgid "Amplitude for Y axis (logarithmic scale)"
-msgstr ""
+msgstr "Amplitud del eje Y (escala logarítmica)"
 
 #: operations/workshop/linear-sinusoid.c:52
 msgid "X Phase"
 msgstr "Fase X"
 
 #: operations/workshop/linear-sinusoid.c:53
-#, fuzzy
-#| msgid "Scale value for x axis"
 msgid "Phase for X axis"
-msgstr "Valor de escala para el eje x"
+msgstr "Fase del eje X"
 
 #: operations/workshop/linear-sinusoid.c:59
 msgid "Y Phase"
 msgstr "Fase Y"
 
 #: operations/workshop/linear-sinusoid.c:60
-#, fuzzy
-#| msgid "Scale value for x axis"
 msgid "Phase for Y axis"
-msgstr "Valor de escala para el eje x"
+msgstr "Fase del eje Y"
 
 #: operations/workshop/linear-sinusoid.c:67
-#, fuzzy
-#| msgid "Rotation angle"
 msgid "Axis separation angle"
-msgstr "Ángulo de rotación"
+msgstr "Ángulo de separación de los ejes"
 
 #: operations/workshop/linear-sinusoid.c:102
 msgid "Supersampling"
@@ -8370,10 +8263,8 @@ msgid "Number of samples along each axis per pixel"
 msgstr ""
 
 #: operations/workshop/linear-sinusoid.c:299
-#, fuzzy
-#| msgid "Sinusoidal"
 msgid "Linear Sinusoid"
-msgstr "Sinusoidal"
+msgstr "Sinusoide lineal"
 
 #: operations/workshop/linear-sinusoid.c:304
 #, fuzzy
@@ -8394,12 +8285,11 @@ msgstr ""
 "formato de archivo es .rawbayerS intercambiará los números de 16 bit "
 "devueltos (aparentemente el cargador de pnm tiene fallos)."
 
+# grupos, agrupaciones, aglomeraciones, etc.
 #: operations/workshop/segment-kmeans.c:27
 #: operations/workshop/segment-kmeans.c:28
-#, fuzzy
-#| msgid "Number of colors"
 msgid "Number of clusters"
-msgstr "Número de colores"
+msgstr "Número de grupos"
 
 #: operations/workshop/segment-kmeans.c:32
 msgid "Max. Iterations"
@@ -8428,20 +8318,16 @@ msgid "Center of Hue selection interval  "
 msgstr ""
 
 #: operations/workshop/selective-hue-saturation.c:30
-#, fuzzy
-#| msgid "Edge detection algorithm"
 msgid "Hue selection width"
-msgstr "Algoritmo de detección de bordes"
+msgstr "Ancho de selección de tono"
 
 #: operations/workshop/selective-hue-saturation.c:31
 msgid "Width of Hue selection interval  "
 msgstr ""
 
 #: operations/workshop/selective-hue-saturation.c:39
-#, fuzzy
-#| msgid "Saturation phase shift"
 msgid "Saturation adjustment"
-msgstr "Saturación de saturación"
+msgstr "Ajuste de saturación"
 
 #: operations/workshop/selective-hue-saturation.c:170
 #, fuzzy
