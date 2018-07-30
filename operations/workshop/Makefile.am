@@ -23,6 +23,7 @@ op_LTLIBRARIES = \
 	inpaint.la \
 	integral-image.la \
 	linear-sinusoid.la \
+	long-shadow.la \
 	rawbayer-load.la  \
 	segment-kmeans.la \
 	selective-hue-saturation.la
