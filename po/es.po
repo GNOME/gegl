@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-27 11:05+0000\n"
-"PO-Revision-Date: 2018-07-30 11:47+0200\n"
+"POT-Creation-Date: 2018-07-30 09:55+0000\n"
+"PO-Revision-Date: 2018-07-30 13:00+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -2316,7 +2316,8 @@ msgstr "Ampliación"
 #: operations/common/little-planet.c:47
 #: operations/common/panorama-projection.c:47
 msgid "output/rendering width in pixels, -1 for input width"
-msgstr "Salida/anchura del renderizado en píxeles, -1 para el ancho de entrada"
+msgstr ""
+"Salida/anchura del renderizado en píxeles, -1 para la anchura de entrada"
 
 #: operations/common/little-planet.c:53
 #: operations/common/panorama-projection.c:53
@@ -7618,10 +7619,8 @@ msgid "Shears the buffer. "
 msgstr "Inclina el búfer. "
 
 #: operations/transform/transform.c:25
-#, fuzzy
-#| msgid "Transformation string"
 msgid "Transformation SVG syntax transformation string"
-msgstr "Cadena de transformación"
+msgstr "Cadena de transformación de sintaxis SVG de la transformación"
 
 #: operations/transform/transform.c:66
 msgid "Do a transformation using SVG syntax transformation."
@@ -7850,13 +7849,16 @@ msgstr ""
 
 #: operations/workshop/domain-transform.c:499
 msgid "Smooth by Domain Transform"
-msgstr ""
+msgstr "Suavizado por transformación de dominio"
 
 #: operations/workshop/domain-transform.c:501
 msgid ""
 "An edge-preserving smoothing filter implemented with the Domain Transform "
 "recursive technique. Similar to a bilateral filter, but faster to compute."
 msgstr ""
+"Un filtro de suavizado que conserva los bordes implementado con la técnica "
+"recursiva de transformación de dominio. Similar a un filtro bilateral, pero "
+"más rápido de calcular."
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -8103,6 +8105,9 @@ msgstr "Entrada Video4Linux, capturadoras, webcams y dispositivos similares."
 msgid "ACES RRT"
 msgstr "ACES RRT"
 
+# He hecho lo mejor que he podido. HDR es high dynamic range. Es una transformación de más colores a menos colores.
+#
+# Nota: Estoy seguro que no es matic profiles sino matrix profiles y el desarrollador cometió un error.
 #: operations/workshop/aces-rrt.c:137
 msgid ""
 "HDR to SDR proofing filter/mapping curve that is an approximation of the "
@@ -8113,6 +8118,14 @@ msgid ""
 "RRT; without desaturation of highlights and shadows nor red hue "
 "modifications."
 msgstr ""
+"Curva de filtro/aplicación de corrección de HDR a SDR que es una "
+"aproximación de la RRT ACES (transformada de renderizado de referencia). "
+"Cuando se introducen imágenes con referencia a escenas en esta operación, el "
+"resultado es adecuado para la visualización de transformación referida a "
+"sRGB o visualización de salida utilizando perfiles de matriz ICC habituales "
+"como el ODT. Tenga en cuenta que, por el momento, esta es una aproximación "
+"de solo luminancia de la RRT ACES; sin desaturación de luces y sombras ni "
+"modificaciones de tonos rojos."
 
 #: operations/workshop/generated/average.c:111
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
@@ -8207,7 +8220,7 @@ msgstr "integral cuadrada"
 
 #: operations/workshop/integral-image.c:26
 msgid "Add squared values sum to the output"
-msgstr ""
+msgstr "Sumar valores cuadrados a la salida"
 
 #: operations/workshop/integral-image.c:252
 msgid "Integral Image"
@@ -8215,7 +8228,7 @@ msgstr "Imagen integral"
 
 #: operations/workshop/integral-image.c:254
 msgid "Compute integral and squared integral image"
-msgstr ""
+msgstr "Calcular la imagen integral e integral cuadrada"
 
 #: operations/workshop/linear-sinusoid.c:26
 msgid "X Period"
@@ -8318,39 +8331,35 @@ msgstr "Segmentación K-means"
 
 #: operations/workshop/segment-kmeans.c:394
 msgid "Segment colors using K-means clustering"
-msgstr ""
+msgstr "Segmentar colores usando la agrupación K-means"
 
 #: operations/workshop/selective-hue-saturation.c:26
-#, fuzzy
-#| msgid "Coordinates of lens center"
 msgid "Hue selection center"
-msgstr "Coordenadas del centro del objetivo"
+msgstr "Centro de selección de tono"
 
 #: operations/workshop/selective-hue-saturation.c:27
 msgid "Center of Hue selection interval  "
-msgstr ""
+msgstr "Centro del intervalo de selección de tono"
 
 #: operations/workshop/selective-hue-saturation.c:30
 msgid "Hue selection width"
-msgstr "Ancho de selección de tono"
+msgstr "Anchura de selección de tono"
 
 #: operations/workshop/selective-hue-saturation.c:31
 msgid "Width of Hue selection interval  "
-msgstr ""
+msgstr "Anchura del intervalo de selección de tono"
 
 #: operations/workshop/selective-hue-saturation.c:39
 msgid "Saturation adjustment"
 msgstr "Ajuste de saturación"
 
 #: operations/workshop/selective-hue-saturation.c:170
-#, fuzzy
-#| msgid "HSV Saturation"
 msgid "Selective Hue-Saturation"
-msgstr "Saturación HSV"
+msgstr "Tono-Saturación selectivo"
 
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
-msgstr ""
+msgstr "Ajustar selectivamente tono, saturación y brillo"
 
 #, fuzzy
 #~| msgid "Spacing"
