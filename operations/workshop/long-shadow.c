@@ -701,12 +701,9 @@ init_buffers (Context    *ctx,
   else
     {
       ctx->input_row0  = ctx->input_row  + 4 * (ctx->area.width - 1);
-      ctx->output_row0 = ctx->output_row + 4 * (ctx->area.width - 1);
+      ctx->output_row0 = ctx->output_row + 4 * (ctx->roi.width  - 1);
 
       ctx->row_step    = -4;
-
-      if (ctx->output_row == ctx->input_row)
-        ctx->output_row0 -= 4 * (ctx->roi.x - ctx->area.x);
     }
 
   if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FINITE)
@@ -1099,6 +1096,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:long-shadow",
     "title",       _("Long Shadow"),
     "categories",  "light",
+    "needs-alpha", "true",
     "description", _("Creates a long-shadow effect"),
     NULL);
 }
