@@ -30,6 +30,11 @@ enum_start (gegl_median_blur_neighborhood)
   enum_value (GEGL_MEDIAN_BLUR_NEIGHBORHOOD_DIAMOND, "diamond", N_("Diamond"))
 enum_end (GeglMedianBlurNeighborhood)
 
+enum_start (gegl_median_blur_abyss_policy)
+   enum_value (GEGL_MEDIAN_BLUR_ABYSS_NONE,  "none",  N_("None"))
+   enum_value (GEGL_MEDIAN_BLUR_ABYSS_CLAMP, "clamp", N_("Clamp"))
+enum_end (GeglMedianBlurAbyssPolicy)
+
 property_enum (neighborhood, _("Neighborhood"),
                GeglMedianBlurNeighborhood, gegl_median_blur_neighborhood,
                GEGL_MEDIAN_BLUR_NEIGHBORHOOD_CIRCLE)
@@ -47,6 +52,10 @@ property_double  (percentile, _("Percentile"), 50)
 property_double  (alpha_percentile, _("Alpha percentile"), 50)
   value_range (0, 100)
   description (_("Neighborhood alpha percentile"))
+
+property_enum (abyss_policy, _("Abyss policy"), GeglMedianBlurAbyssPolicy,
+               gegl_median_blur_abyss_policy, GEGL_MEDIAN_BLUR_ABYSS_CLAMP)
+  description (_("How image edges are handled"))
 
 property_boolean (high_precision, _("High precision"), FALSE)
   description (_("Avoid clipping and quantization (slower)"))
@@ -716,16 +725,37 @@ prepare (GeglOperation *operation)
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
 {
-  GeglRectangle  result = { 0, 0, 0, 0 };
-  GeglRectangle *in_rect;
+  GeglProperties *o = GEGL_PROPERTIES (operation);
 
-  in_rect = gegl_operation_source_get_bounding_box (operation, "input");
-  if (in_rect)
-  {
-    result = *in_rect;
-  }
+  if (o->abyss_policy != GEGL_MEDIAN_BLUR_ABYSS_NONE)
+    {
+      GeglRectangle  result = { 0, 0, 0, 0 };
+      GeglRectangle *in_rect;
 
-  return result;
+      in_rect = gegl_operation_source_get_bounding_box (operation, "input");
+
+      if (in_rect)
+        result = *in_rect;
+
+      return result;
+    }
+
+  return GEGL_OPERATION_CLASS (gegl_op_parent_class)->get_bounding_box (operation);
+}
+
+static GeglAbyssPolicy
+get_abyss_policy (GeglOperation *operation,
+                  const gchar   *input_pad)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
+  switch (o->abyss_policy)
+    {
+    case GEGL_MEDIAN_BLUR_ABYSS_NONE:  return GEGL_ABYSS_NONE;
+    case GEGL_MEDIAN_BLUR_ABYSS_CLAMP: return GEGL_ABYSS_CLAMP;
+    }
+
+  g_return_val_if_reached (GEGL_ABYSS_NONE);
 }
 
 static gboolean
@@ -812,7 +842,7 @@ process (GeglOperation       *operation,
   dst_buf = g_new (gfloat, n_dst_pixels * n_components);
 
   gegl_buffer_get (input, &src_rect, 1.0, format, src_buf,
-                   GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
+                   GEGL_AUTO_ROWSTRIDE, get_abyss_policy (operation, "input"));
   convert_values_to_bins (hist, src_buf, n_src_pixels, data->quantize);
 
   src = src_buf + o->radius * (src_rect.width + 1) * n_components;
@@ -944,18 +974,21 @@ finalize (GObject *object)
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GObjectClass             *object_class;
-  GeglOperationClass       *operation_class;
-  GeglOperationFilterClass *filter_class;
+  GObjectClass                 *object_class;
+  GeglOperationClass           *operation_class;
+  GeglOperationFilterClass     *filter_class;
+  GeglOperationAreaFilterClass *area_class;
 
   object_class    = G_OBJECT_CLASS (klass);
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
+  area_class      = GEGL_OPERATION_AREA_FILTER_CLASS (klass);
 
   object_class->finalize            = finalize;
   filter_class->process             = process;
   operation_class->prepare          = prepare;
   operation_class->get_bounding_box = get_bounding_box;
+  area_class->get_abyss_policy      = get_abyss_policy;
 
   gegl_operation_class_set_keys (operation_class,
     "name",           "gegl:median-blur",
