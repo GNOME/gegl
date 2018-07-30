@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-26 10:19+0000\n"
-"PO-Revision-Date: 2018-07-27 12:57+0200\n"
+"POT-Creation-Date: 2018-07-27 11:05+0000\n"
+"PO-Revision-Date: 2018-07-30 11:47+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -7242,6 +7242,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input + value"
 msgstr ""
+"La operación matemática sumar, realiza la operación por píxel, usando la "
+"constante proporcionada en «valor» o el píxel correspondiente del búfer en "
+"aux como operandos. El resultado es la evaluación de la expresión: resultado "
+"= entrada + valor"
 
 #: operations/generated/clear.c:131
 msgid "Porter Duff operation clear (d = 0.0f)"
@@ -7292,6 +7296,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "value==0.0f?0.0f:input/value"
 msgstr ""
+"La operación matemática dividir, realiza la operación por píxel, usando la "
+"constante proporcionada en «valor» o el píxel correspondiente del búfer en "
+"aux como operandos. El resultado es la evaluación de la expresión: resultado "
+"= valor==0.0f?0.0f:entrada/valor"
 
 #: operations/generated/dst-atop.c:131
 msgid "Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"
@@ -7321,6 +7329,7 @@ msgstr ""
 "Operación de mezcla SVG exclusión (<code>d = (cA * aB + cB * aA - 2 * cA * "
 "cB) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
+# powf means power function?
 #: operations/generated/gamma.c:134
 msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
@@ -7328,6 +7337,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "powf (input, value)"
 msgstr ""
+"La operación matemática gamma, realiza la operación por píxel, usando la "
+"constante proporcionada en «valor» o el píxel correspondiente del búfer en "
+"aux como operandos. El resultado es la evaluación de la expresión: resultado "
+"= powf (entrada, valor)"
 
 #: operations/generated/hard-light.c:178
 msgid ""
@@ -7354,6 +7367,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input * value"
 msgstr ""
+"La operación matemática multiplicar, realiza la operación por píxel, usando "
+"la constante proporcionada en «valor» o el píxel correspondiente del búfer "
+"en aux como operandos. El resultado es la evaluación de la expresión: "
+"resultado = entrada * valor"
 
 #: operations/generated/overlay.c:178
 msgid ""
@@ -7398,10 +7415,8 @@ msgid "Porter Duff operation src (d = cA)"
 msgstr "Operación de Porter-Duff src (d = cA)"
 
 #: operations/generated/src-in.c:139
-#, fuzzy
-#| msgid "Porter Duff operation src-in (d = cA * aB)"
 msgid "Porter Duff compositing operation src-in (formula:   cA * aB)"
-msgstr "Operación de Porter-Duff src-in (d = cA * aB)"
+msgstr "Operación de composición de Porter Duff src-in (fórmula:   cA * aB)"
 
 #: operations/generated/src-out.c:131
 msgid "Porter Duff operation src-out (d = cA * (1.0f - aB))"
@@ -7414,6 +7429,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input - value"
 msgstr ""
+"La operación matemática restar, realiza la operación por píxel, utilizando "
+"la constante proporcionada en «valor» o el píxel correspondiente del búfer "
+"en aux como operandos. El resultado es la evaluación de la expresión: "
+"resultado = entrada - valor"
 
 #: operations/generated/xor.c:153
 msgid "Porter Duff operation xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
@@ -7494,6 +7513,8 @@ msgid ""
 "Reflect an image about a line, whose direction is specified by the vector "
 "that is defined by the x and y properties. "
 msgstr ""
+"Refleja una imagen sobre una línea, cuya dirección está especificada por el "
+"vector que está definido por las propiedades x e y. "
 
 #: operations/transform/rotate.c:25 operations/transform/rotate-on-center.c:27
 msgid "Degrees"
@@ -7525,10 +7546,8 @@ msgid "origin-y"
 msgstr "origen-y"
 
 #: operations/transform/rotate-on-center.c:148
-#, fuzzy
-#| msgid "Coordinates of lens center"
 msgid "Rotate on center"
-msgstr "Coordenadas del centro del objetivo"
+msgstr "Rotar en el centro"
 
 #: operations/transform/rotate-on-center.c:152
 msgid "Rotate the buffer around its center, taking care of possible offsets."
@@ -7544,11 +7563,11 @@ msgstr "Factor de escalado horizontal"
 msgid "Vertical scale factor"
 msgstr "Factor de escalado vertical"
 
+# ¿Podría ser «proporción de escala»?
+# Pero la descripción de abajo da a entender que es una función y no una entrada de datos.
 #: operations/transform/scale-ratio.c:74
-#, fuzzy
-#| msgid "Size ratio X"
 msgid "Scale ratio"
-msgstr "Proporción de tamaño X"
+msgstr "Escalar a proporción"
 
 #: operations/transform/scale-ratio.c:78
 msgid "Scales the buffer according to a ratio."
@@ -7564,25 +7583,23 @@ msgstr "Tamaño horizontal"
 msgid "Vertical size"
 msgstr "Tamaño vertical"
 
+# ¿Podría ser «tamaño de escala»?
 #: operations/transform/scale-size.c:84
-#, fuzzy
-#| msgid "Scale 1:1 size"
 msgid "Scale size"
-msgstr "Escalar al tamaño 1:1"
+msgstr "Escalar a tamaño"
 
 #: operations/transform/scale-size.c:87
 msgid "Scales the buffer according to a size."
 msgstr "Escala el búfer según un tamaño."
 
+# Nótese que quieren mantener las frases cortas: Escalar tamaño mantener aspecto
 #: operations/transform/scale-size-keepaspect.c:104
 msgid "Scale size keep aspect"
-msgstr ""
+msgstr "Escalar a tamaño manteniendo el aspecto"
 
 #: operations/transform/scale-size-keepaspect.c:107
-#, fuzzy
-#| msgid "Scales the buffer according to a ratio."
 msgid "Scales the buffer to a size, preserving aspect ratio"
-msgstr "Escala el búfer según una proporción."
+msgstr "Escala el búfer a un tamaño, manteniendo la relación de aspecto"
 
 #: operations/transform/shear.c:26
 msgid "Horizontal shear amount"
@@ -7608,7 +7625,7 @@ msgstr "Cadena de transformación"
 
 #: operations/transform/transform.c:66
 msgid "Do a transformation using SVG syntax transformation."
-msgstr ""
+msgstr "Hacer una transformación usando la transformación de sintaxis SVG."
 
 #: operations/transform/transform-core.c:201
 msgid "Origin-x"
@@ -7631,10 +7648,8 @@ msgid "Near-z"
 msgstr "Cercano a Z"
 
 #: operations/transform/transform-core.c:218
-#, fuzzy
-#| msgid "Coordinates of lens center"
 msgid "Z coordinate of the near clipping plane"
-msgstr "Coordenadas del centro del objetivo"
+msgstr "Coordenada Z del plano de recorte más cercano"
 
 #: operations/transform/translate.c:26
 msgid "Horizontal translation"
@@ -7665,16 +7680,12 @@ msgid "Number of subdivisions"
 msgstr "El número de subdivisiones"
 
 #: operations/workshop/bayer-matrix.c:31
-#, fuzzy
-#| msgid "Horizontal texture size"
 msgid "Horizontal pattern scale"
-msgstr "Tamaño de la textura horizontal"
+msgstr "Escala de patrón horizontal"
 
 #: operations/workshop/bayer-matrix.c:38
-#, fuzzy
-#| msgid "Vertical texture size"
 msgid "Vertical pattern scale"
-msgstr "Tamaño de la textura vertical"
+msgstr "Escala de patrón vertical"
 
 #: operations/workshop/bayer-matrix.c:45
 msgid "0°"
@@ -7694,30 +7705,26 @@ msgstr "270°"
 
 #: operations/workshop/bayer-matrix.c:54
 #: operations/workshop/linear-sinusoid.c:97
-#, fuzzy
-#| msgid "Rotation angle"
 msgid "Pattern rotation angle"
-msgstr "Ángulo de rotación"
+msgstr "Ángulo de rotación del patrón"
 
 #: operations/workshop/bayer-matrix.c:57
 msgid "Reflect the pattern horizontally"
-msgstr ""
+msgstr "Reflejar el patrón horizontalmente"
 
 #: operations/workshop/bayer-matrix.c:60
 msgid "Pattern amplitude (logarithmic scale)"
-msgstr ""
+msgstr "Amplitud del patrón (escala logarítmica)"
 
 #: operations/workshop/bayer-matrix.c:65
 #: operations/workshop/linear-sinusoid.c:73
-#, fuzzy
-#| msgid "Vertical offset"
 msgid "Value offset"
-msgstr "Desplazamiento vertical"
+msgstr "Desplazamiento del valor"
 
 #: operations/workshop/bayer-matrix.c:70
 #: operations/workshop/linear-sinusoid.c:78
 msgid "Value exponent (logarithmic scale)"
-msgstr ""
+msgstr "Exponente del valor (escala logarítmica)"
 
 #: operations/workshop/bayer-matrix.c:74
 #: operations/workshop/linear-sinusoid.c:82
@@ -7781,32 +7788,37 @@ msgstr ""
 "Patrón de Bayer usado, 0 parece funcionar para algunos archivos de Nikon, 2 "
 "para algunos archivos de Fuji."
 
+# Un algoritmo de interpolación cromática (conocida en inglés como demosaicing o demosaicking) es un proceso digital de imagen utilizado para reconstruir una imagen en color mediante las muestras cromáticas incompletas adquiridas desde un sensor de imagen recubierto con un mosaico de filtro de color (CFA).
+#
+# It is also known as CFA interpolation or color reconstruction.
 #: operations/workshop/demosaic-bimedian.c:220
 msgid "Demosaic With Bimedian Interpolation"
-msgstr ""
+msgstr "Reconstrucción de color con interpolación bimediana"
 
 #: operations/workshop/demosaic-bimedian.c:223
 msgid ""
 "Performs a grayscale2color demosaicing of an image, using bimedian "
 "interpolation."
 msgstr ""
-"Efectúa una desmosaiquización de tipo grayscale2color de la imagen, usando "
-"interpolación bimediana."
+"Efectúa una reconstrucción de color de tipo grayscale2color de la imagen, "
+"usando interpolación bimediana."
 
+# No quería poner «Interpolación sin interpolación» ya que es contradictorio
 #: operations/workshop/demosaic-simple.c:152
 msgid "Demosaic Without Interpolation"
-msgstr ""
+msgstr "Reconstrucción de color sin interpolación"
 
+# Naive: ignenuo, inexperto, primitivo
 #: operations/workshop/demosaic-simple.c:155
 msgid ""
 "Performs a naive grayscale2color demosaicing of an image, no interpolation."
 msgstr ""
-"Efectúa una desmosaiquización grayscale2color de tipo ingenuo, sin "
+"Efectúa una reconstrucción de color grayscale2color primitiva, sin "
 "interpolación."
 
 #: operations/workshop/ditto.c:117
 msgid "Ditto"
-msgstr ""
+msgstr "Duplicar"
 
 #: operations/workshop/ditto.c:119
 msgid "Test op to do a 1:1 map of input to output, while sampling"
@@ -7818,18 +7830,23 @@ msgstr ""
 msgid ""
 "Number of filtering iterations. A value between 2 and 4 is usually enough."
 msgstr ""
+"Cantidad de iteraciones de filtrado. Un valor entre 2 y 4 suele ser "
+"suficiente."
 
+# In image processing, a kernel, convolution matrix, or mask is a small matrix. It is used for blurring, sharpening, embossing, edge detection, and more.
 #: operations/workshop/domain-transform.c:29
-#, fuzzy
-#| msgid "Standard deviation for the vertical axis"
 msgid "Spatial standard deviation of the blur kernel, measured in pixels."
-msgstr "Desviación estándar para el eje vertical"
+msgstr ""
+"Desviación estándar espacial del núcleo de desenfoque, medido en píxeles."
 
+# Entiéndase rango de una matriz
 #: operations/workshop/domain-transform.c:33
 msgid ""
 "Amount of edge preservation. This quantity is inversely proportional to the "
 "range standard deviation of the blur kernel."
 msgstr ""
+"Cantidad de preservación del borde. Esta cantidad es inversamente "
+"proporcional a la desviación estándar del rango del núcleo de desenfoque."
 
 #: operations/workshop/domain-transform.c:499
 msgid "Smooth by Domain Transform"
@@ -7847,43 +7864,41 @@ msgstr "Script"
 
 #: operations/workshop/external/gluas.c:30
 msgid "The lua script containing the implementation of this operation."
-msgstr "Script LUA que contiene la implementación de esta operación."
+msgstr "Script Lua que contiene la implementación de esta operación."
 
 #: operations/workshop/external/gluas.c:33
 msgid "Lua error"
 msgstr "Error Lua"
 
 #: operations/workshop/external/gluas.c:34
-#, fuzzy
-#| msgid "parse/compile error, if any"
 msgid "Parse/compile error, if any."
-msgstr "Analizar/compilar error, si existe"
+msgstr "Analizar/compilar error, si existe."
 
 #: operations/workshop/external/gluas.c:38
-#, fuzzy
-#| msgid "a stored lua script on disk implementing an operation."
 msgid "A stored lua script on disk implementing an operation."
-msgstr "un script LUA almacenado en disco que implementa una operación."
+msgstr "Un script Lua almacenado en disco que implementa una operación."
 
 #: operations/workshop/external/gluas.c:40
 msgid "User value"
 msgstr "Valor del usuario"
 
+# Lua es un lenguaje de programación imperativo, estructurado y bastante ligero que fue diseñado como un lenguaje interpretado con una semántica extendible. El nombre significa «luna» en portugués.
 #: operations/workshop/external/gluas.c:41
-#, fuzzy
-#| msgid "(appears in the global variable 'user_value' in lua."
 msgid "Available as a global variable 'user_value' in lua."
-msgstr "(aparece en la variable global «user_value» en LUA)."
+msgstr "Disponible como una variable global «user_value» en Lua."
 
+# gluas = global lua variables
 #: operations/workshop/external/gluas.c:1008
 msgid "gluas"
-msgstr ""
+msgstr "gluas"
 
 #: operations/workshop/external/gluas.c:1010
 msgid ""
 "Pixel level filter/composer scripting prototyping with lua. See http://"
 "pippin.gimp.org/image-processing/ for further details."
 msgstr ""
+"Creación de prototipos de scripts de filtro/compositor a nivel de píxel con "
+"Lua. Ver http://pippin.gimp.org/image-processing/ para más detalles."
 
 #: operations/workshop/external/lens-correct.c:28
 msgid "Maker"
@@ -8260,17 +8275,15 @@ msgstr "Supermuestreo"
 
 #: operations/workshop/linear-sinusoid.c:103
 msgid "Number of samples along each axis per pixel"
-msgstr ""
+msgstr "Número de muestras a lo largo de cada eje por píxel"
 
 #: operations/workshop/linear-sinusoid.c:299
 msgid "Linear Sinusoid"
 msgstr "Sinusoide lineal"
 
 #: operations/workshop/linear-sinusoid.c:304
-#, fuzzy
-#| msgid "Generate complex sinusoidal textures"
 msgid "Generate a linear sinusoid pattern"
-msgstr "Generar texturas sinusoidales complejas"
+msgstr "Generar un patrón sinusoidal lineal"
 
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
