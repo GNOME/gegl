@@ -443,6 +443,24 @@ init_screen (Context *ctx)
   ctx->filter_pixel_shadow_width = SCREEN_RESOLUTION * (1.0 + ctx->tan_angle);
 }
 
+static inline void
+clear_pixel_queue (Context *ctx,
+                   Pixel   *pixel)
+{
+  ShadowItem *item = pixel->queue;
+
+  while (item)
+    {
+      ShadowItem *next = item->next;
+
+      g_slice_free (ShadowItem, item);
+
+      item = next;
+    }
+
+  pixel->queue = NULL;
+}
+
 static void
 cleanup_screen (Context *ctx)
 {
@@ -452,18 +470,7 @@ cleanup_screen (Context *ctx)
       gint   u;
 
       for (u = ctx->u0; u < ctx->u1; u++)
-        {
-          ShadowItem *item = p[u].queue;
-
-          while (item)
-            {
-              ShadowItem *next = item->next;
-
-              g_slice_free (ShadowItem, item);
-
-              item = next;
-            }
-        }
+        clear_pixel_queue (ctx, &p[u]);
     }
 
   ctx->screen = (guchar *) ctx->screen + ctx->pixel_size * ctx->u0;
@@ -486,8 +493,8 @@ shift_pixel (Context *ctx,
       return;
     }
 
-  pixel->shadow       = item->shadow;
-  pixel->queue        = item->next;
+  pixel->shadow        = item->shadow;
+  pixel->queue         = item->next;
   if (pixel->queue)
     pixel->queue->prev = item->prev;
 
@@ -572,10 +579,12 @@ add_shadow (Context *ctx,
 
           if (value >= pixel->shadow.value)
             {
+              ctx->n_active_pixels += ! pixel->shadow.value;
+
               pixel->shadow.value = value;
               pixel->shadow.fy    = fy;
 
-              ctx->n_active_pixels += (pixel->shadow.value != 0.0f);
+              clear_pixel_queue (ctx, pixel);
             }
           else if (! pixel->queue)
             {
