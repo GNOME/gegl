@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-22 12:50+0000\n"
-"PO-Revision-Date: 2018-07-22 19:50+0200\n"
+"POT-Creation-Date: 2018-08-03 10:18+0000\n"
+"PO-Revision-Date: 2018-08-05 19:02+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -175,12 +175,13 @@ msgstr ""
 
 #: gegl/gegl-enums.c:33 gegl/gegl-enums.c:90
 #: operations/common/gaussian-blur.c:31 operations/common/gblur-1d.c:32
+#: operations/common/median-blur.c:34
 #: operations/common-gpl3+/fractal-explorer.c:96
 msgid "None"
 msgstr "Brak"
 
 #: gegl/gegl-enums.c:34 operations/common/gaussian-blur.c:32
-#: operations/common/gblur-1d.c:33
+#: operations/common/gblur-1d.c:33 operations/common/median-blur.c:35
 msgid "Clamp"
 msgstr "Zacisk"
 
@@ -553,13 +554,13 @@ msgstr ""
 "ważony także przez różnicę kolorów z pierwotnego środkowego piksela. "
 
 #: operations/common/box-blur.c:25 operations/common/c2g.c:27
-#: operations/common/edge-neon.c:47 operations/common/median-blur.c:38
+#: operations/common/edge-neon.c:47 operations/common/median-blur.c:43
 #: operations/common/snn-mean.c:26 operations/common/stress.c:27
 #: operations/common/unsharp-mask.c:24 operations/common/vignette.c:38
 #: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
-#: operations/common-gpl3+/whirl-pinch.c:45
+#: operations/common-gpl3+/whirl-pinch.c:46
 #: operations/external/matting-levin.c:29
 msgid "Radius"
 msgstr "Promień"
@@ -714,12 +715,12 @@ msgstr ""
 "szarości."
 
 #: operations/common/checkerboard.c:25 operations/common/grid.c:24
-#: operations/common/little-planet.c:43
-#: operations/common/panorama-projection.c:43 operations/common/rectangle.c:36
+#: operations/common/little-planet.c:46
+#: operations/common/panorama-projection.c:46 operations/common/rectangle.c:36
 #: operations/common-gpl3+/diffraction-patterns.c:78
 #: operations/common-gpl3+/maze.c:40 operations/common-gpl3+/noise-solid.c:64
 #: operations/common-gpl3+/plasma.c:54 operations/common-gpl3+/sinus.c:76
-#: operations/common-gpl3+/spiral.c:85 operations/core/crop.c:35
+#: operations/common-gpl3+/spiral.c:86 operations/core/crop.c:35
 #: operations/external/svg-load.c:30 operations/external/text.c:61
 #: operations/external/v4l.c:28 operations/external/vector-stroke.c:30
 #: operations/workshop/external/line-profile.c:39
@@ -733,12 +734,12 @@ msgid "Horizontal width of cells pixels"
 msgstr "Pozioma szerokość pikseli komórek"
 
 #: operations/common/checkerboard.c:33 operations/common/grid.c:31
-#: operations/common/little-planet.c:49
-#: operations/common/panorama-projection.c:49 operations/common/rectangle.c:42
+#: operations/common/little-planet.c:52
+#: operations/common/panorama-projection.c:52 operations/common/rectangle.c:42
 #: operations/common-gpl3+/diffraction-patterns.c:86
 #: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:48
 #: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:62
-#: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:93
+#: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:94
 #: operations/core/crop.c:40 operations/external/svg-load.c:32
 #: operations/external/text.c:63 operations/external/v4l.c:31
 #: operations/workshop/external/line-profile.c:41
@@ -752,7 +753,7 @@ msgid "Vertical width of cells pixels"
 msgstr "Pionowa szerokość pikseli komórek"
 
 #: operations/common/checkerboard.c:41 operations/common/grid.c:38
-#: operations/common/mirrors.c:44 operations/common-gpl3+/bump-map.c:61
+#: operations/common/mirrors.c:46 operations/common-gpl3+/bump-map.c:62
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -764,7 +765,7 @@ msgstr ""
 "Poziome przesunięcie (od początku układu współrzędnych) dla początku siatki"
 
 #: operations/common/checkerboard.c:47 operations/common/grid.c:44
-#: operations/common/mirrors.c:50 operations/common-gpl3+/bump-map.c:67
+#: operations/common/mirrors.c:52 operations/common-gpl3+/bump-map.c:68
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -776,7 +777,7 @@ msgstr ""
 "Pionowe przesunięcie (od początku układu współrzędnych) dla początku siatki"
 
 #: operations/common/checkerboard.c:53 operations/common-gpl3+/sinus.c:58
-#: operations/common-gpl3+/spiral.c:79 operations/workshop/gradient-map.c:26
+#: operations/common-gpl3+/spiral.c:80 operations/workshop/gradient-map.c:26
 msgid "Color 1"
 msgstr "1. kolor"
 
@@ -785,7 +786,7 @@ msgid "The first cell color"
 msgstr "Kolor pierwszej komórki"
 
 #: operations/common/checkerboard.c:57 operations/common-gpl3+/sinus.c:60
-#: operations/common-gpl3+/spiral.c:82 operations/workshop/gradient-map.c:28
+#: operations/common-gpl3+/spiral.c:83 operations/workshop/gradient-map.c:28
 msgid "Color 2"
 msgstr "2. kolor"
 
@@ -818,6 +819,7 @@ msgstr "Renderuj wzór szachownicy"
 #: operations/common-gpl3+/tile-paper.c:30
 #: operations/common-gpl3+/value-propagate.c:55 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
+#: operations/workshop/long-shadow.c:59
 msgid "Color"
 msgstr "Kolor"
 
@@ -894,7 +896,7 @@ msgid "Change to this"
 msgstr "Zmiana na to"
 
 #: operations/common/color-rotate.c:40 operations/common/color-rotate.c:53
-#: operations/common-gpl3+/spiral.c:70
+#: operations/common-gpl3+/spiral.c:71
 msgid "Clockwise"
 msgstr "Zgodnie z ruchem wskazówek zegara"
 
@@ -1375,7 +1377,7 @@ msgstr "Podzielnik"
 
 #: operations/common/convolution-matrix.c:55
 #: operations/workshop/bayer-matrix.c:64
-#: operations/workshop/linear-sinusoid.c:71
+#: operations/workshop/linear-sinusoid.c:72
 msgid "Offset"
 msgstr "Przesunięcie"
 
@@ -1552,7 +1554,7 @@ msgstr "Używana metoda mieszania"
 #: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
 #: operations/common/noise-rgb.c:55 operations/common/noise-simplex.c:39
 #: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
-#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:88
+#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:89
 #: operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
@@ -1578,7 +1580,7 @@ msgstr ""
 
 #: operations/common/dropshadow.c:25 operations/common/layer.c:36
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
-#: operations/common-gpl3+/polar-coordinates.c:51
+#: operations/common-gpl3+/polar-coordinates.c:52
 #: operations/common-gpl3+/spiral.c:35 operations/core/crop.c:25
 #: operations/transform/reflect.c:26 operations/transform/scale-ratio.c:25
 #: operations/transform/scale-size.c:25
@@ -1593,7 +1595,7 @@ msgstr "Poziome przesunięcie cienia"
 
 #: operations/common/dropshadow.c:31 operations/common/layer.c:41
 #: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
-#: operations/common-gpl3+/polar-coordinates.c:58
+#: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
 #: operations/transform/reflect.c:30 operations/transform/scale-ratio.c:30
 #: operations/transform/scale-size.c:30
@@ -1803,15 +1805,15 @@ msgstr "Sposób dyskretyzacji jądra Gaussa"
 
 #: operations/common/gaussian-blur.c:58 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:31
-#: operations/common-gpl3+/displace.c:42
+#: operations/common/median-blur.c:56 operations/common-gpl3+/displace.c:42
 #: operations/common-gpl3+/fractal-trace.c:67
-#: operations/common-gpl3+/ripple.c:55 operations/transform/scale.c:102
+#: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
 msgid "Abyss policy"
 msgstr "Polityka głębi"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
-#: operations/common-gpl3+/displace.c:45 operations/common-gpl3+/ripple.c:58
-#: operations/transform/scale.c:103
+#: operations/common/median-blur.c:58 operations/common-gpl3+/displace.c:45
+#: operations/common-gpl3+/ripple.c:59 operations/transform/scale.c:103
 msgid "How image edges are handled"
 msgstr "Sposób obsługi krawędzi obrazu"
 
@@ -2066,7 +2068,7 @@ msgstr ""
 msgid "Magnitude"
 msgstr "Wielkość"
 
-#: operations/common/image-gradient.c:28 operations/common-gpl3+/spiral.c:74
+#: operations/common/image-gradient.c:28 operations/common-gpl3+/spiral.c:75
 #: operations/common-gpl3+/texturize-canvas.c:38
 #: operations/common-gpl3+/wind.c:50
 msgid "Direction"
@@ -2272,51 +2274,51 @@ msgstr "Panoramowanie"
 msgid "Horizontal camera panning"
 msgstr "Poziome przesunięcie kamery"
 
-#: operations/common/little-planet.c:29
-#: operations/common/panorama-projection.c:29
+#: operations/common/little-planet.c:30
+#: operations/common/panorama-projection.c:30
 msgid "Tilt"
 msgstr "Nachylenie"
 
-#: operations/common/little-planet.c:30
-#: operations/common/panorama-projection.c:30
+#: operations/common/little-planet.c:31
+#: operations/common/panorama-projection.c:31
 msgid "Vertical camera panning"
 msgstr "Pionowe przesunięcie kamery"
 
-#: operations/common/little-planet.c:35
-#: operations/common/panorama-projection.c:35
+#: operations/common/little-planet.c:37
+#: operations/common/panorama-projection.c:37
 msgid "Spin"
 msgstr "Obrót"
 
-#: operations/common/little-planet.c:36
-#: operations/common/panorama-projection.c:36
+#: operations/common/little-planet.c:38
+#: operations/common/panorama-projection.c:38
 msgid "Spin angle around camera axis"
 msgstr "Kąt obrotu wokół osi kamery"
 
-#: operations/common/little-planet.c:39 operations/common/mirrors.c:74
-#: operations/common/panorama-projection.c:39
+#: operations/common/little-planet.c:42 operations/common/mirrors.c:76
+#: operations/common/panorama-projection.c:42
 #: operations/common-gpl3+/fractal-explorer.c:58
 #: operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
 msgstr "Powiększenie"
 
-#: operations/common/little-planet.c:44
-#: operations/common/panorama-projection.c:44
+#: operations/common/little-planet.c:47
+#: operations/common/panorama-projection.c:47
 msgid "output/rendering width in pixels, -1 for input width"
 msgstr ""
 "szerokość wyjścia/renderowania w pikselach, -1 oznacza szerokość wejścia"
 
-#: operations/common/little-planet.c:50
-#: operations/common/panorama-projection.c:50
+#: operations/common/little-planet.c:53
+#: operations/common/panorama-projection.c:53
 msgid "output/rendering height in pixels, -1 for input height"
 msgstr "wysokość wyjścia/renderowania w pikselach, -1 oznacza wysokość wejścia"
 
-#: operations/common/little-planet.c:55
-#: operations/common/panorama-projection.c:55
+#: operations/common/little-planet.c:58
+#: operations/common/panorama-projection.c:58
 msgid "Inverse transform"
 msgstr "Odwrotne przekształcenie"
 
-#: operations/common/little-planet.c:56
-#: operations/common/panorama-projection.c:56
+#: operations/common/little-planet.c:59
+#: operations/common/panorama-projection.c:59
 msgid ""
 "Do the inverse mapping, useful for touching up zenith, nadir or other parts "
 "of panorama."
@@ -2325,16 +2327,16 @@ msgstr ""
 "i innych części panoramy."
 
 #. XXX: needs better ui type
-#: operations/common/little-planet.c:58 operations/common/map-absolute.c:22
+#: operations/common/little-planet.c:61 operations/common/map-absolute.c:22
 #: operations/common/map-relative.c:28
-#: operations/common/panorama-projection.c:58
+#: operations/common/panorama-projection.c:61
 #: operations/common/recursive-transform.c:52 operations/common/spherize.c:56
-#: operations/common-gpl3+/ripple.c:49 operations/common-gpl3+/waves.c:50
+#: operations/common-gpl3+/ripple.c:50 operations/common-gpl3+/waves.c:50
 msgid "Resampling method"
 msgstr "Metoda resamplingu"
 
-#: operations/common/little-planet.c:60
-#: operations/common/panorama-projection.c:60
+#: operations/common/little-planet.c:63
+#: operations/common/panorama-projection.c:63
 msgid ""
 "Image resampling method to use, for good results with double resampling when "
 "retouching panoramas, use nearest to generate the view and cubic or better "
@@ -2345,11 +2347,11 @@ msgstr ""
 "do utworzenia widoku i sześciennej lub lepszej do odwrotnego przekształcenia "
 "z powrotem na panoramę."
 
-#: operations/common/little-planet.c:490
+#: operations/common/little-planet.c:493
 msgid "Little Planet"
 msgstr "Mała planeta"
 
-#: operations/common/little-planet.c:494
+#: operations/common/little-planet.c:497
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
 "Wykonaj przekształcenie stereograficzne/małej planety obrazu walcowego "
@@ -2493,47 +2495,47 @@ msgstr "Okrąg"
 msgid "Diamond"
 msgstr "Romb"
 
-#: operations/common/median-blur.c:33
+#: operations/common/median-blur.c:38
 msgid "Neighborhood"
 msgstr "Sąsiedztwo"
 
-#: operations/common/median-blur.c:36
+#: operations/common/median-blur.c:41
 msgid "Neighborhood type"
 msgstr "Typ sąsiedztwa"
 
-#: operations/common/median-blur.c:41
+#: operations/common/median-blur.c:46
 msgid "Neighborhood radius"
 msgstr "Promień sąsiedztwa"
 
-#: operations/common/median-blur.c:43
+#: operations/common/median-blur.c:48
 msgid "Percentile"
 msgstr "Procent"
 
-#: operations/common/median-blur.c:45
+#: operations/common/median-blur.c:50
 msgid "Neighborhood color percentile"
 msgstr "Procent koloru sąsiedztwa"
 
-#: operations/common/median-blur.c:47
+#: operations/common/median-blur.c:52
 msgid "Alpha percentile"
 msgstr "Procent alfy"
 
-#: operations/common/median-blur.c:49
+#: operations/common/median-blur.c:54
 msgid "Neighborhood alpha percentile"
 msgstr "Procent alfy sąsiedztwa"
 
-#: operations/common/median-blur.c:51
+#: operations/common/median-blur.c:60
 msgid "High precision"
 msgstr "Wysoka dokładność"
 
-#: operations/common/median-blur.c:52
+#: operations/common/median-blur.c:61
 msgid "Avoid clipping and quantization (slower)"
 msgstr "Unikaj przycinania i kwantyzacji (wolniejsze)"
 
-#: operations/common/median-blur.c:962
+#: operations/common/median-blur.c:995
 msgid "Median Blur"
 msgstr "Rozmycie środkowe"
 
-#: operations/common/median-blur.c:965
+#: operations/common/median-blur.c:998
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -2549,27 +2551,27 @@ msgstr "Obrót lustrzany"
 msgid "Rotation applied to the mirrors"
 msgstr "Obrót zastosowywany do luster"
 
-#: operations/common/mirrors.c:35
+#: operations/common/mirrors.c:36
 msgid "Result rotation"
 msgstr "Wynik obrotu"
 
-#: operations/common/mirrors.c:36
+#: operations/common/mirrors.c:37
 msgid "Rotation applied to the result"
 msgstr "Obrót zastosowywany do wyniku"
 
-#: operations/common/mirrors.c:40
+#: operations/common/mirrors.c:42
 msgid "Mirrors"
 msgstr "Lustra"
 
-#: operations/common/mirrors.c:41
+#: operations/common/mirrors.c:43
 msgid "Number of mirrors to use"
 msgstr "Liczba używanych luster"
 
-#: operations/common/mirrors.c:45 operations/common/mirrors.c:51
+#: operations/common/mirrors.c:47 operations/common/mirrors.c:53
 msgid "position of symmetry center in output"
 msgstr "położenie środka symetrii w wyjściu"
 
-#: operations/common/mirrors.c:56 operations/common/vignette.c:61
+#: operations/common/mirrors.c:58 operations/common/vignette.c:61
 #: operations/common-gpl3+/displace.c:80
 #: operations/common-gpl3+/motion-blur-circular.c:41
 #: operations/common-gpl3+/motion-blur-zoom.c:40
@@ -2577,11 +2579,11 @@ msgstr "położenie środka symetrii w wyjściu"
 msgid "Center X"
 msgstr "Środek na osi X"
 
-#: operations/common/mirrors.c:57
+#: operations/common/mirrors.c:59
 msgid "X axis ratio for the center of mirroring"
 msgstr "Współrzędna osi X środka lustra"
 
-#: operations/common/mirrors.c:61 operations/common/vignette.c:66
+#: operations/common/mirrors.c:63 operations/common/vignette.c:66
 #: operations/common-gpl3+/displace.c:87
 #: operations/common-gpl3+/motion-blur-circular.c:46
 #: operations/common-gpl3+/motion-blur-zoom.c:45
@@ -2589,51 +2591,51 @@ msgstr "Współrzędna osi X środka lustra"
 msgid "Center Y"
 msgstr "Środek na osi Y"
 
-#: operations/common/mirrors.c:62
+#: operations/common/mirrors.c:64
 msgid "Y axis ratio for the center of mirroring"
 msgstr "Współrzędna osi Y środka lustra"
 
-#: operations/common/mirrors.c:66
+#: operations/common/mirrors.c:68
 msgid "Trim X"
 msgstr "Przycinanie na osi X"
 
-#: operations/common/mirrors.c:67
+#: operations/common/mirrors.c:69
 msgid "X axis ratio for trimming mirror expanse"
 msgstr "Współrzędna osi X do przycinania obszaru lustra"
 
-#: operations/common/mirrors.c:70
+#: operations/common/mirrors.c:72
 msgid "Trim Y"
 msgstr "Przycinanie na osi Y"
 
-#: operations/common/mirrors.c:71
+#: operations/common/mirrors.c:73
 msgid "Y axis ratio for trimming mirror expanse"
 msgstr "Współrzędna osi Y do przycinania obszaru lustra"
 
-#: operations/common/mirrors.c:75 operations/common/mirrors.c:79
+#: operations/common/mirrors.c:77 operations/common/mirrors.c:81
 msgid "Scale factor to make rendering size bigger"
 msgstr "Współczynnik skalowania, aby zwiększyć rozmiar renderowania"
 
-#: operations/common/mirrors.c:78
+#: operations/common/mirrors.c:80
 msgid "Expand"
 msgstr "Rozszerz"
 
-#: operations/common/mirrors.c:82
+#: operations/common/mirrors.c:84
 msgid "Clip result to input size"
 msgstr "Kadruj wynik do rozmiaru wejściowego"
 
-#: operations/common/mirrors.c:84
+#: operations/common/mirrors.c:86
 msgid "Wrap input"
 msgstr "Zawijaj wejście"
 
-#: operations/common/mirrors.c:85
+#: operations/common/mirrors.c:87
 msgid "Fill full output area"
 msgstr "Wypełnij pełny obszar wyjściowy"
 
-#: operations/common/mirrors.c:434
+#: operations/common/mirrors.c:436
 msgid "Kaleidoscopic Mirroring"
 msgstr "Odzwierciedlanie kalejdoskopowe"
 
-#: operations/common/mirrors.c:438
+#: operations/common/mirrors.c:440
 msgid "Create a kaleidoscope like effect."
 msgstr "Utwórz efekt podobny do kalejdoskopu."
 
@@ -2680,6 +2682,7 @@ msgid "Monochrome channel mixer"
 msgstr "Monochromatyczny mikser kanałów"
 
 #: operations/common/motion-blur-linear.c:26
+#: operations/workshop/long-shadow.c:47
 msgid "Length"
 msgstr "Długość"
 
@@ -2688,9 +2691,10 @@ msgid "Length of blur in pixels"
 msgstr "Długość rozmycia w pikselach"
 
 #. FIXME: With a large angle, we lose AreaFilter's flavours
-#: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:71
+#: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:72
 #: operations/common-gpl3+/motion-blur-circular.c:52
 #: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
+#: operations/workshop/long-shadow.c:41
 msgid "Angle"
 msgstr "Kąt"
 
@@ -2698,11 +2702,11 @@ msgstr "Kąt"
 msgid "Angle of blur in degrees"
 msgstr "Kąt rozmycia w stopniach"
 
-#: operations/common/motion-blur-linear.c:332
+#: operations/common/motion-blur-linear.c:333
 msgid "Linear Motion Blur"
 msgstr "Liniowe rozmycie ruchu"
 
-#: operations/common/motion-blur-linear.c:336
+#: operations/common/motion-blur-linear.c:337
 msgid ""
 "Blur pixels in a direction, simulates blurring caused by moving camera in a "
 "straight line during exposure."
@@ -2803,51 +2807,51 @@ msgstr ""
 msgid "Black and green angle"
 msgstr "Kąt czarny i zielony"
 
-#: operations/common/newsprint.c:66
+#: operations/common/newsprint.c:67
 msgid "angle offset for patterns"
 msgstr "przesunięcie kąta dla deseni"
 
-#: operations/common/newsprint.c:72
+#: operations/common/newsprint.c:73
 msgid "Green angle"
 msgstr "Kąt zielony"
 
-#: operations/common/newsprint.c:73
+#: operations/common/newsprint.c:74
 msgid "Black angle"
 msgstr "Kąt czarny"
 
-#: operations/common/newsprint.c:75
+#: operations/common/newsprint.c:76
 msgid "Red and cyan angle"
 msgstr "Kąt czerwony i niebieskozielony"
 
-#: operations/common/newsprint.c:81
+#: operations/common/newsprint.c:83
 msgid "Red angle"
 msgstr "Kąt czerwony"
 
-#: operations/common/newsprint.c:82
+#: operations/common/newsprint.c:84
 msgid "Cyan angle"
 msgstr "Kąt niebieskozielony"
 
-#: operations/common/newsprint.c:84
+#: operations/common/newsprint.c:86
 msgid "Blue and magenta angle"
 msgstr "Kąt niebieski i purpurowy"
 
-#: operations/common/newsprint.c:90
+#: operations/common/newsprint.c:93
 msgid "Blue angle"
 msgstr "Kąt niebieski"
 
-#: operations/common/newsprint.c:91
+#: operations/common/newsprint.c:94
 msgid "Magenta angle"
 msgstr "Kąt purpurowy"
 
-#: operations/common/newsprint.c:93
+#: operations/common/newsprint.c:96
 msgid "Yellow angle"
 msgstr "Kąt żółty"
 
-#: operations/common/newsprint.c:546
+#: operations/common/newsprint.c:550
 msgid "Newsprint"
 msgstr "Papier gazetowy"
 
-#: operations/common/newsprint.c:550
+#: operations/common/newsprint.c:554
 msgid "Digital halftoning with optional modulations. "
 msgstr "Cyfrowy raster z opcjonalnymi modulacjami. "
 
@@ -3099,11 +3103,11 @@ msgstr ""
 "Działanie Portera-Duffa na (znane także jako zwykły tryb, i „src-over”) (d = "
 "cA + cB * (1 - aA))"
 
-#: operations/common/panorama-projection.c:503
+#: operations/common/panorama-projection.c:506
 msgid "Panorama Projection"
 msgstr "Rzut panoramy"
 
-#: operations/common/panorama-projection.c:508
+#: operations/common/panorama-projection.c:511
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
@@ -3759,15 +3763,15 @@ msgstr "Ściśnij"
 
 #: operations/common/vignette.c:71 operations/common-gpl3+/spiral.c:64
 #: operations/workshop/bayer-matrix.c:51
-#: operations/workshop/linear-sinusoid.c:95
+#: operations/workshop/linear-sinusoid.c:96
 msgid "Rotation"
 msgstr "Obrót"
 
-#: operations/common/vignette.c:384
+#: operations/common/vignette.c:385
 msgid "Vignette"
 msgstr "Winieta"
 
-#: operations/common/vignette.c:388
+#: operations/common/vignette.c:389
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -3990,33 +3994,33 @@ msgstr "Kafelkowa mapa wypukłości"
 msgid "Azimuth"
 msgstr "Azymut"
 
-#: operations/common-gpl3+/bump-map.c:55 operations/common-gpl3+/emboss.c:39
+#: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
 msgid "Elevation"
 msgstr "Wysokość"
 
-#: operations/common-gpl3+/bump-map.c:58 operations/common-gpl3+/emboss.c:44
+#: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
 msgid "Depth"
 msgstr "Głębia"
 
-#: operations/common-gpl3+/bump-map.c:73
+#: operations/common-gpl3+/bump-map.c:74
 msgid "Waterlevel"
 msgstr "Poziom przezroczystości"
 
-#: operations/common-gpl3+/bump-map.c:74
+#: operations/common-gpl3+/bump-map.c:75
 msgid "Level that full transparency should represent"
 msgstr "Poziom, który powinien reprezentować pełną przezroczystość"
 
-#: operations/common-gpl3+/bump-map.c:77
+#: operations/common-gpl3+/bump-map.c:78
 msgid "Ambient lighting factor"
 msgstr "Współczynnik otaczającego oświetlenia"
 
-#: operations/common-gpl3+/bump-map.c:455
+#: operations/common-gpl3+/bump-map.c:456
 msgid "Bump Map"
 msgstr "Mapa wypukłości"
 
-#: operations/common-gpl3+/bump-map.c:457
+#: operations/common-gpl3+/bump-map.c:458
 msgid ""
 "This plug-in uses the algorithm described by John Schlag, \"Fast Embossing "
 "Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). It "
@@ -4359,13 +4363,13 @@ msgstr "Polaryzacja"
 
 #: operations/common-gpl3+/diffraction-patterns.c:79
 #: operations/common-gpl3+/noise-solid.c:65 operations/common-gpl3+/plasma.c:55
-#: operations/common-gpl3+/sinus.c:77 operations/common-gpl3+/spiral.c:86
+#: operations/common-gpl3+/sinus.c:77 operations/common-gpl3+/spiral.c:87
 msgid "Width of the generated buffer"
 msgstr "Szerokość tworzonego bufora"
 
 #: operations/common-gpl3+/diffraction-patterns.c:87
 #: operations/common-gpl3+/noise-solid.c:73 operations/common-gpl3+/plasma.c:63
-#: operations/common-gpl3+/sinus.c:85 operations/common-gpl3+/spiral.c:94
+#: operations/common-gpl3+/sinus.c:85 operations/common-gpl3+/spiral.c:95
 msgid "Height of the generated buffer"
 msgstr "Wysokość tworzonego bufora"
 
@@ -4411,7 +4415,7 @@ msgid "Horizontal displacement"
 msgstr "Przesunięcie poziome"
 
 #: operations/common-gpl3+/displace.c:56
-#: operations/common-gpl3+/whirl-pinch.c:41
+#: operations/common-gpl3+/whirl-pinch.c:42
 msgid "Pinch"
 msgstr "Ściśnięcie"
 
@@ -4532,7 +4536,7 @@ msgstr "Wykrywanie krawędzi laplace"
 msgid "High-resolution edge detection"
 msgstr "Wykrywanie krawędzi wysokiej rozdzielczości"
 
-#: operations/common-gpl3+/emboss.c:26 operations/common-gpl3+/emboss.c:270
+#: operations/common-gpl3+/emboss.c:26 operations/common-gpl3+/emboss.c:271
 msgid "Emboss"
 msgstr "Wytłocz"
 
@@ -4552,15 +4556,15 @@ msgstr "Typ renderowania"
 msgid "Light angle (degrees)"
 msgstr "Kąt oświetlenia (w stopniach)"
 
-#: operations/common-gpl3+/emboss.c:40
+#: operations/common-gpl3+/emboss.c:41
 msgid "Elevation angle (degrees)"
 msgstr "Kąt wysokości (w stopniach)"
 
-#: operations/common-gpl3+/emboss.c:45
+#: operations/common-gpl3+/emboss.c:46
 msgid "Filter width"
 msgstr "Szerokość filtru"
 
-#: operations/common-gpl3+/emboss.c:274
+#: operations/common-gpl3+/emboss.c:275
 msgid "Simulates an image created by embossing"
 msgstr "Symuluje obraz utworzony przez wytłaczanie"
 
@@ -4920,7 +4924,7 @@ msgid "Maze algorithm type"
 msgstr "Typ algorytmu labiryntu"
 
 #: operations/common-gpl3+/maze.c:61 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:60
+#: operations/common-gpl3+/ripple.c:61
 msgid "Tileable"
 msgstr "Kafelkowalność"
 
@@ -5036,19 +5040,19 @@ msgstr "Kolor światła"
 msgid "Light direction"
 msgstr "Kierunek światła"
 
-#: operations/common-gpl3+/mosaic.c:85
+#: operations/common-gpl3+/mosaic.c:86
 msgid "Antialiasing"
 msgstr "Wygładzanie"
 
-#: operations/common-gpl3+/mosaic.c:86
+#: operations/common-gpl3+/mosaic.c:87
 msgid "Enables smoother tile output"
 msgstr "Włącza gładsze wyjście kafli"
 
-#: operations/common-gpl3+/mosaic.c:2468
+#: operations/common-gpl3+/mosaic.c:2469
 msgid "Mosaic"
 msgstr "Mozaika"
 
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2473
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -5062,11 +5066,11 @@ msgstr ""
 msgid "Rotation blur angle. A large angle may take some time to render"
 msgstr "Kąt rozmycia obrotu. Duży kąt może zająć więcej czasu do wyświetlania"
 
-#: operations/common-gpl3+/motion-blur-circular.c:425
+#: operations/common-gpl3+/motion-blur-circular.c:422
 msgid "Circular Motion Blur"
 msgstr "Odśrodkowe rozmycie ruchu"
 
-#: operations/common-gpl3+/motion-blur-circular.c:430
+#: operations/common-gpl3+/motion-blur-circular.c:427
 msgid "Circular motion blur"
 msgstr "Odśrodkowe rozmycie ruchu"
 
@@ -5140,7 +5144,7 @@ msgstr "Promień okręgu wokół piksela"
 
 #: operations/common-gpl3+/oilify.c:33 operations/common-gpl3+/sinus.c:72
 #: operations/workshop/bayer-matrix.c:69
-#: operations/workshop/linear-sinusoid.c:76
+#: operations/workshop/linear-sinusoid.c:77
 msgid "Exponent"
 msgstr "Wykładnik potęgi"
 
@@ -5216,48 +5220,48 @@ msgstr "Głębia okręgu w procentach"
 msgid "Offset angle"
 msgstr "Kąt przesunięcia"
 
-#: operations/common-gpl3+/polar-coordinates.c:42
+#: operations/common-gpl3+/polar-coordinates.c:43
 msgid "Map backwards"
 msgstr "Odwzoruj odwrotnie"
 
-#: operations/common-gpl3+/polar-coordinates.c:43
+#: operations/common-gpl3+/polar-coordinates.c:44
 msgid "Start from the right instead of the left"
 msgstr "Rozpocznij od prawej strony zamiast od lewej"
 
-#: operations/common-gpl3+/polar-coordinates.c:45
+#: operations/common-gpl3+/polar-coordinates.c:46
 msgid "Map from top"
 msgstr "Odwzoruj od góry"
 
-#: operations/common-gpl3+/polar-coordinates.c:46
+#: operations/common-gpl3+/polar-coordinates.c:47
 msgid "Put the top row in the middle and the bottom row on the outside"
 msgstr "Umieść górny rząd na środku i dolny rząd na zewnątrz"
 
-#: operations/common-gpl3+/polar-coordinates.c:48
+#: operations/common-gpl3+/polar-coordinates.c:49
 msgid "To polar"
 msgstr "Do bieguna"
 
-#: operations/common-gpl3+/polar-coordinates.c:49
+#: operations/common-gpl3+/polar-coordinates.c:50
 msgid "Map the image to a circle"
 msgstr "Odwzoruj obraz do okręgu"
 
-#: operations/common-gpl3+/polar-coordinates.c:52
-#: operations/common-gpl3+/polar-coordinates.c:59
+#: operations/common-gpl3+/polar-coordinates.c:53
+#: operations/common-gpl3+/polar-coordinates.c:60
 msgid "Origin point for the polar coordinates"
 msgstr "Początek układu współrzędnych dla współrzędnych bieguna"
 
-#: operations/common-gpl3+/polar-coordinates.c:65
+#: operations/common-gpl3+/polar-coordinates.c:66
 msgid "Choose middle"
 msgstr "Wybierz środek"
 
-#: operations/common-gpl3+/polar-coordinates.c:66
+#: operations/common-gpl3+/polar-coordinates.c:67
 msgid "Let origin point to be the middle one"
 msgstr "Początek układu współrzędnych ma być środkowy"
 
-#: operations/common-gpl3+/polar-coordinates.c:411
+#: operations/common-gpl3+/polar-coordinates.c:412
 msgid "Polar Coordinates"
 msgstr "Współrzędne polarne"
 
-#: operations/common-gpl3+/polar-coordinates.c:416
+#: operations/common-gpl3+/polar-coordinates.c:417
 msgid "Convert image to or from polar coordinates"
 msgstr "Konwertuj obraz do lub ze współrzędnych bieguna"
 
@@ -5290,19 +5294,19 @@ msgstr "Amplituda"
 msgid "Phase shift"
 msgstr "Przesunięcie rzutu"
 
-#: operations/common-gpl3+/ripple.c:52
+#: operations/common-gpl3+/ripple.c:53
 msgid "Wave type"
 msgstr "Typ fali"
 
-#: operations/common-gpl3+/ripple.c:61
+#: operations/common-gpl3+/ripple.c:62
 msgid "Retain tilebility"
 msgstr "Zachowaj kafelkowalność"
 
-#: operations/common-gpl3+/ripple.c:258
+#: operations/common-gpl3+/ripple.c:259
 msgid "Ripple"
 msgstr "Falowanie"
 
-#: operations/common-gpl3+/ripple.c:263
+#: operations/common-gpl3+/ripple.c:264
 msgid "Displace pixels in a ripple pattern"
 msgstr "Rozmieść piksele na wzór zmarszczki"
 
@@ -5510,19 +5514,19 @@ msgstr "Równowaga obszarów między dwoma kolorami"
 msgid "Spiral rotation"
 msgstr "Obrót spirali"
 
-#: operations/common-gpl3+/spiral.c:71
+#: operations/common-gpl3+/spiral.c:72
 msgid "Counter-clockwise"
 msgstr "Przeciwnie do ruchu wskazówek zegara"
 
-#: operations/common-gpl3+/spiral.c:77
+#: operations/common-gpl3+/spiral.c:78
 msgid "Spiral swirl direction"
 msgstr "Kierunek wiru spirali"
 
-#: operations/common-gpl3+/spiral.c:443
+#: operations/common-gpl3+/spiral.c:444
 msgid "Spiral"
 msgstr "Spirala"
 
-#: operations/common-gpl3+/spiral.c:448
+#: operations/common-gpl3+/spiral.c:449
 msgid "Spiral renderer"
 msgstr "Rysowanie spirali"
 
@@ -5907,11 +5911,11 @@ msgstr "Zniekształć obraz za pomocą fal"
 msgid "Whirl angle (degrees)"
 msgstr "Kąt skręcania (stopnie)"
 
-#: operations/common-gpl3+/whirl-pinch.c:42
+#: operations/common-gpl3+/whirl-pinch.c:43
 msgid "Pinch amount"
 msgstr "Ilość ściśnięcia"
 
-#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/common-gpl3+/whirl-pinch.c:47
 msgid ""
 "Radius (1.0 is the largest circle that fits in the image, and 2.0 goes all "
 "the way to the corners)"
@@ -5919,11 +5923,11 @@ msgstr ""
 "Promień (1,0 oznacza największy okrąg pasujący do obrazu, a 2,0 oznacza "
 "promień do samych rogów obrazu)"
 
-#: operations/common-gpl3+/whirl-pinch.c:261
+#: operations/common-gpl3+/whirl-pinch.c:262
 msgid "Whirl Pinch"
 msgstr "Skręć i zaciśnij"
 
-#: operations/common-gpl3+/whirl-pinch.c:266
+#: operations/common-gpl3+/whirl-pinch.c:267
 msgid "Distort an image by whirling and pinching"
 msgstr "Zniekształć obraz przez skręcanie i ściskanie"
 
@@ -5959,7 +5963,7 @@ msgstr "Początkowe"
 msgid "Trailing"
 msgstr "Końcowe"
 
-#: operations/common-gpl3+/wind.c:45
+#: operations/common-gpl3+/wind.c:45 operations/workshop/long-shadow.c:36
 msgid "Style"
 msgstr "Styl"
 
@@ -7441,11 +7445,11 @@ msgstr "Stopnie"
 msgid "Angle to rotate (counter-clockwise)"
 msgstr "Kąt obrotu (przeciwnie do ruchu wskazówek zegara)"
 
-#: operations/transform/rotate.c:72
+#: operations/transform/rotate.c:73
 msgid "Rotate"
 msgstr "Obróć"
 
-#: operations/transform/rotate.c:76
+#: operations/transform/rotate.c:77
 msgid "Rotate the buffer around the specified origin."
 msgstr "Obróć bufor wokół podanego początku układu współrzędnych."
 
@@ -7613,7 +7617,7 @@ msgid "270°"
 msgstr "270°"
 
 #: operations/workshop/bayer-matrix.c:54
-#: operations/workshop/linear-sinusoid.c:96
+#: operations/workshop/linear-sinusoid.c:97
 msgid "Pattern rotation angle"
 msgstr "Kąt obrotu desenia"
 
@@ -7626,32 +7630,32 @@ msgid "Pattern amplitude (logarithmic scale)"
 msgstr "Amplituda desenia (skala logarytmiczna)"
 
 #: operations/workshop/bayer-matrix.c:65
-#: operations/workshop/linear-sinusoid.c:72
+#: operations/workshop/linear-sinusoid.c:73
 msgid "Value offset"
 msgstr "Przesunięcie wartości"
 
 #: operations/workshop/bayer-matrix.c:70
-#: operations/workshop/linear-sinusoid.c:77
+#: operations/workshop/linear-sinusoid.c:78
 msgid "Value exponent (logarithmic scale)"
 msgstr "Odwrócenie wykładnika (skala logarytmiczna)"
 
 #: operations/workshop/bayer-matrix.c:74
-#: operations/workshop/linear-sinusoid.c:81
+#: operations/workshop/linear-sinusoid.c:82
 msgid "X Offset"
 msgstr "Przesunięcie na osi X"
 
 #: operations/workshop/bayer-matrix.c:75
-#: operations/workshop/linear-sinusoid.c:82
+#: operations/workshop/linear-sinusoid.c:83
 msgid "Offset for X axis"
 msgstr "Przesunięcie na osi X"
 
 #: operations/workshop/bayer-matrix.c:81
-#: operations/workshop/linear-sinusoid.c:88
+#: operations/workshop/linear-sinusoid.c:89
 msgid "Y Offset"
 msgstr "Przesunięcie na osi Y"
 
 #: operations/workshop/bayer-matrix.c:82
-#: operations/workshop/linear-sinusoid.c:89
+#: operations/workshop/linear-sinusoid.c:90
 msgid "Offset for Y axis"
 msgstr "Przesunięcie na osi Y"
 
@@ -8179,21 +8183,85 @@ msgstr "Rzut na osi Y"
 msgid "Axis separation angle"
 msgstr "Kąt oddzielenia osi"
 
-#: operations/workshop/linear-sinusoid.c:100
+#: operations/workshop/linear-sinusoid.c:102
 msgid "Supersampling"
 msgstr "Nadpróbkowanie"
 
-#: operations/workshop/linear-sinusoid.c:101
+#: operations/workshop/linear-sinusoid.c:103
 msgid "Number of samples along each axis per pixel"
 msgstr "Liczba próbek wzdłuż każdej osi na piksel"
 
-#: operations/workshop/linear-sinusoid.c:297
+#: operations/workshop/linear-sinusoid.c:299
 msgid "Linear Sinusoid"
 msgstr "Sinusoid liniowy"
 
-#: operations/workshop/linear-sinusoid.c:302
+#: operations/workshop/linear-sinusoid.c:304
 msgid "Generate a linear sinusoid pattern"
 msgstr "Utwórz liniowy deseń sinusoidy"
+
+#: operations/workshop/long-shadow.c:25
+msgid "Finite"
+msgstr "Skończone"
+
+#: operations/workshop/long-shadow.c:26
+msgid "Infinite"
+msgstr "Nieskończone"
+
+#: operations/workshop/long-shadow.c:27
+msgid "Fading"
+msgstr "Rozmywanie"
+
+#: operations/workshop/long-shadow.c:31
+msgid "Shadow plus image"
+msgstr "Cień plus obraz"
+
+#: operations/workshop/long-shadow.c:32
+msgid "Shadow only"
+msgstr "Tylko cień"
+
+#: operations/workshop/long-shadow.c:33
+msgid "Shadow minus image"
+msgstr "Cień minus obraz"
+
+#: operations/workshop/long-shadow.c:39
+msgid "Shadow style"
+msgstr "Styl cienia"
+
+#: operations/workshop/long-shadow.c:42
+msgid "Shadow angle"
+msgstr "Kąt cienia"
+
+#: operations/workshop/long-shadow.c:48
+msgid "Shadow length"
+msgstr "Długość cienia"
+
+#: operations/workshop/long-shadow.c:53
+msgid "Midpoint"
+msgstr "Punkt środkowy"
+
+#: operations/workshop/long-shadow.c:54
+msgid "Shadow fade midpoint"
+msgstr "Punkt środkowy rozmycia cienia"
+
+#: operations/workshop/long-shadow.c:60
+msgid "Shadow color"
+msgstr "Kolor cienia"
+
+#: operations/workshop/long-shadow.c:63
+msgid "Composition"
+msgstr "Ułożenie"
+
+#: operations/workshop/long-shadow.c:66
+msgid "Output composition"
+msgstr "Ułożenie wyjściowe"
+
+#: operations/workshop/long-shadow.c:1106
+msgid "Long Shadow"
+msgstr "Długi cień"
+
+#: operations/workshop/long-shadow.c:1109
+msgid "Creates a long-shadow effect"
+msgstr "Tworzy efekt długiego cienia"
 
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
