@@ -1068,7 +1068,8 @@ process (GeglOperation       *operation,
           input_pixel += ctx.row_step;
         }
 
-      set_row (&ctx, fy);
+      if (fy >= ctx.roi.y)
+        set_row (&ctx, fy);
     }
 
   cleanup_buffers (&ctx);
