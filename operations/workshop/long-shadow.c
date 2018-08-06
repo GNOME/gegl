@@ -158,6 +158,7 @@ typedef struct
 
   gint               level;
   gdouble            scale;
+  gdouble            scale_inv;
 } Context;
 
 static void
@@ -167,8 +168,9 @@ init_options (Context              *ctx,
 {
   ctx->options = *options;
 
-  ctx->level = level;
-  ctx->scale = 1.0 / (1 << level);
+  ctx->level     = level;
+  ctx->scale     = 1.0 / (1 << level);
+  ctx->scale_inv = 1 << level;
 
   ctx->options.length   *= ctx->scale;
   ctx->options.midpoint *= ctx->scale;
@@ -246,6 +248,9 @@ transform_coords_to_filter (Context *ctx,
   if (ctx->flip_vertically)
     iy = -iy;
 
+  ix *= ctx->scale;
+  iy *= ctx->scale;
+
   *fx = ix;
   *fy = iy;
 }
@@ -257,6 +262,9 @@ transform_coords_to_image (Context *ctx,
                            gdouble *ix,
                            gdouble *iy)
 {
+  fx *= ctx->scale_inv;
+  fy *= ctx->scale_inv;
+
   if (ctx->flip_vertically)
     fy = -fy;
 
@@ -273,7 +281,8 @@ transform_coords_to_image (Context *ctx,
 static inline void
 transform_rect_to_filter (Context             *ctx,
                           const GeglRectangle *irect,
-                          GeglRectangle       *frect)
+                          GeglRectangle       *frect,
+                          gboolean             scale)
 {
   *frect = *irect;
 
@@ -288,14 +297,37 @@ transform_rect_to_filter (Context             *ctx,
 
   if (ctx->flip_vertically)
     frect->y = -frect->y - frect->height;
+
+  if (scale)
+    {
+      frect->width  += frect->x;
+      frect->height += frect->y;
+
+      frect->x      = (frect->x      + 0) >> ctx->level;
+      frect->y      = (frect->y      + 0) >> ctx->level;
+      frect->width  = (frect->width  + 1) >> ctx->level;
+      frect->height = (frect->height + 1) >> ctx->level;
+
+      frect->width  -= frect->x;
+      frect->height -= frect->y;
+    }
 }
 
 static inline void
 transform_rect_to_image (Context             *ctx,
                          const GeglRectangle *frect,
-                         GeglRectangle       *irect)
+                         GeglRectangle       *irect,
+                         gboolean             scale)
 {
   *irect = *frect;
+
+  if (scale)
+    {
+      irect->x      <<= ctx->level;
+      irect->y      <<= ctx->level;
+      irect->width  <<= ctx->level;
+      irect->height <<= ctx->level;
+    }
 
   if (ctx->flip_vertically)
     irect->y = -irect->y - irect->height;
@@ -384,11 +416,11 @@ init_area (Context             *ctx,
   input_bounds = gegl_operation_source_get_bounding_box (operation, "input");
 
   if (input_bounds)
-    transform_rect_to_filter (ctx, input_bounds, &ctx->input_bounds);
+    transform_rect_to_filter (ctx, input_bounds, &ctx->input_bounds, TRUE);
   else
     ctx->input_bounds = *GEGL_RECTANGLE (0, 0, 0, 0);
 
-  transform_rect_to_filter (ctx, roi, &ctx->roi);
+  transform_rect_to_filter (ctx, roi, &ctx->roi, TRUE);
 
   get_affecting_screen_range (ctx,
                               ctx->roi.x, 0,
@@ -749,7 +781,7 @@ get_row (Context *ctx,
 {
   GeglRectangle row = {ctx->area.x, fy, ctx->area.width, 1};
 
-  transform_rect_to_image (ctx, &row, &row);
+  transform_rect_to_image (ctx, &row, &row, FALSE);
 
   gegl_buffer_get (ctx->input,
                    &row, ctx->scale, ctx->format, ctx->input_row,
@@ -762,7 +794,7 @@ set_row (Context *ctx,
 {
   GeglRectangle row = {ctx->roi.x, fy, ctx->roi.width, 1};
 
-  transform_rect_to_image (ctx, &row, &row);
+  transform_rect_to_image (ctx, &row, &row, FALSE);
 
   gegl_buffer_set (ctx->output,
                    &row, ctx->level, ctx->format, ctx->output_row,
@@ -905,7 +937,7 @@ get_required_for_output (GeglOperation       *operation,
 
       gegl_rectangle_intersect (&result, &result, &ctx.input_bounds);
 
-      transform_rect_to_image (&ctx, &result, &result);
+      transform_rect_to_image (&ctx, &result, &result, TRUE);
     }
   else
     {
@@ -936,7 +968,7 @@ get_invalidated_by_change (GeglOperation       *operation,
       init_options  (&ctx, o, 0);
       init_geometry (&ctx);
 
-      transform_rect_to_filter (&ctx, roi, &result);
+      transform_rect_to_filter (&ctx, roi, &result, TRUE);
 
       get_affected_screen_range (&ctx,
                                  0, result.x + result.width,
@@ -954,7 +986,7 @@ get_invalidated_by_change (GeglOperation       *operation,
 
       result.width = MAX (result.width, fx1 - result.x);
 
-      transform_rect_to_image (&ctx, &result, &result);
+      transform_rect_to_image (&ctx, &result, &result, TRUE);
     }
   else
     {
