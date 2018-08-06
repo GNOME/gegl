@@ -619,7 +619,7 @@ add_shadow (Context *ctx,
 
                   new_item->prev  = last_item;
                   last_item->next = new_item;
-              }
+                }
 
               new_item->shadow.value = value;
               new_item->shadow.fy    = fy;
