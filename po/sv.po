@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2018-08-05 17:04+0000\n"
-"PO-Revision-Date: 2018-08-09 15:04+0200\n"
+"PO-Revision-Date: 2018-08-09 20:22+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -6066,7 +6066,7 @@ msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
 msgstr ""
-"Åsidosätt den angivna färgrymden, att ställa in en pekare till ett format "
+"Åsidosätt den angivna färgrymden, ställa in en pekare till ett format "
 "åsidosätter strängegenskapen och att ställa in en tillsatskontakt "
 "åsidosätter båda. "
 
@@ -6093,7 +6093,7 @@ msgstr ""
 
 #: operations/core/convert-format.c:100
 msgid "Convert Format"
-msgstr "Konverteringsformat"
+msgstr "Konvertera format"
 
 #: operations/core/convert-format.c:102
 msgid "Convert the data to the specified format"
@@ -6101,7 +6101,7 @@ msgstr "Konvertera data till det angivna formatet"
 
 #: operations/core/convert-space.c:104
 msgid "Convert color space"
-msgstr "Konverteringsfärgrymd"
+msgstr "Konvertera färgrymd"
 
 # TODO: trailing space?
 #: operations/core/convert-space.c:106
@@ -6112,9 +6112,9 @@ msgid ""
 "setting an aux pad overrides both. "
 msgstr ""
 "ställ in färgrymd vilken efterföljande babl-format i rörledningen skapas "
-"med, och ICC-profilen potentiellt inbäddad för extern färghantering, att "
-"ställa in en pekare till ett format åsidosätter strängegenskapen och att "
-"ställa in en tillsatskontakt åsidosätter båda. "
+"med, och ICC-profilen potentiellt inbäddad för extern färghantering, ställa "
+"in en pekare till ett format åsidosätter strängegenskapen och att ställa in "
+"en tillsatskontakt åsidosätter båda. "
 
 #: operations/core/crop.c:45
 msgid "Reset origin"
@@ -6846,7 +6846,7 @@ msgstr "Adobe RGB-kompatibel"
 
 #: operations/external/raw-load.c:31
 msgid "Wide gamut RGB"
-msgstr "Stort färgomfång RGB"
+msgstr "RGB med stort färgomfång"
 
 #: operations/external/raw-load.c:32
 msgid "ProPhoto RGB"
@@ -8509,11 +8509,6 @@ msgstr "Justera selektivt nyans, mättnad och ljushet"
 
 #~ msgid "Dithering strategy"
 #~ msgstr "Dithering-strategi"
-
-#, fuzzy
-#~| msgid "Filter"
-#~ msgid "Insta Filter"
-#~ msgstr "Filter"
 
 #~ msgid "Colors"
 #~ msgstr "Färger"
