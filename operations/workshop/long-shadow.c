@@ -74,6 +74,9 @@ property_enum (composition, _("Composition"),
 #include "gegl-op.h"
 #include <math.h>
 
+/* virtual screen resolution, as a factor of the image resolution.  must be an
+ * integer.
+ */
 #define SCREEN_RESOLUTION 16
 #define EPSILON           1e-6
 
@@ -108,57 +111,58 @@ typedef struct
 
 typedef struct
 {
-  GeglProperties     options;
+  GeglProperties options;
 
   /* image -> filter coordinate transformation */
-  gboolean           flip_horizontally;
-  gboolean           flip_vertically;
-  gboolean           flip_diagonally;
+  gboolean       flip_horizontally;
+  gboolean       flip_vertically;
+  gboolean       flip_diagonally;
 
   /* in filter coordinates */
-  gdouble            tan_angle;
+  gdouble        tan_angle;
 
-  gdouble            sample_offset_x;
-  gdouble            sample_offset_y;
+  gint           shadow_height;
+  gfloat         shadow_remainder;
 
-  gint               shadow_height;
+  gfloat         fade_rate;
 
-  gfloat             fade_rate;
-
-  GeglRectangle      input_bounds;
-  GeglRectangle      roi;
-  GeglRectangle      area;
+  GeglRectangle   input_bounds;
+  GeglRectangle   roi;
+  GeglRectangle   area;
 
   /* in screen coordinates */
-  gint               u0, u1;
+  gint            u0, u1;
 
-  gpointer           screen;
-  gint               pixel_size;
-  gint               n_active_pixels;
-  gint               prev_n_active_pixels;
+  gpointer        screen;
+  gint            pixel_size;
+  gint            active_u0;
+  gint            active_u1;
 
-  gdouble            filter_pixel_shadow_width;
+  GeglBuffer     *input;
+  GeglBuffer     *output;
 
-  GeglBuffer        *input;
-  GeglBuffer        *output;
+  const Babl     *format;
 
-  const Babl        *format;
+  gfloat         *input_row;
+  gfloat         *output_row;
 
-  gfloat            *input_row;
-  gfloat            *output_row;
+  gfloat         *input_row0;
+  gfloat         *output_row0;
+  gint            row_step;
 
-  gfloat            *input_row0;
-  gfloat            *output_row0;
-  gint               row_step;
+  gint            row_fx0;
+  gint            row_fx1;
+  gint            row_u0;
+  gint            row_input_pixel_offset0;
+  gint            row_input_pixel_offset1;
+  gint            row_output_pixel_span;
+  gfloat          row_output_pixel_kernel[2 * SCREEN_RESOLUTION + 1];
 
-  GeglSampler       *sampler;
-  GeglSamplerGetFun  sampler_get_fun;
+  gfloat          color[4];
 
-  gfloat             color[4];
-
-  gint               level;
-  gdouble            scale;
-  gdouble            scale_inv;
+  gint            level;
+  gdouble         scale;
+  gdouble         scale_inv;
 } Context;
 
 static void
@@ -179,6 +183,8 @@ init_options (Context              *ctx,
 static void
 init_geometry (Context *ctx)
 {
+  gdouble shadow_height;
+
   ctx->flip_horizontally = FALSE;
   ctx->flip_vertically   = FALSE;
   ctx->flip_diagonally   = FALSE;
@@ -216,10 +222,10 @@ init_geometry (Context *ctx)
 
   ctx->tan_angle = tan (ctx->options.angle);
 
-  ctx->sample_offset_x = -sin (ctx->options.angle) * ctx->options.length;
-  ctx->sample_offset_y = -cos (ctx->options.angle) * ctx->options.length;
+  shadow_height = cos (ctx->options.angle) * ctx->options.length;
 
-  ctx->shadow_height = floor (-ctx->sample_offset_y);
+  ctx->shadow_height    = ceil (shadow_height);
+  ctx->shadow_remainder = 1.0 - (ctx->shadow_height - shadow_height);
 
   if (ctx->options.midpoint > EPSILON)
     {
@@ -378,8 +384,8 @@ get_affected_filter_range (Context *ctx,
                            gint    *fx0,
                            gint    *fx1)
 {
-  if (fx0) *fx0 = floor (project_to_filter (ctx, u0, fy));
-  if (fx1) *fx1 = ceil  (project_to_filter (ctx, u1, fy));
+  if (fx0) *fx0 = floor (project_to_filter (ctx, u0, fy - 0.5));
+  if (fx1) *fx1 = ceil  (project_to_filter (ctx, u1, fy + 0.5));
 }
 
 static inline void
@@ -390,8 +396,8 @@ get_affecting_screen_range (Context *ctx,
                             gint    *u0,
                             gint    *u1)
 {
-  if (u0) *u0 = floor (project_to_screen (ctx, fx0, fy));
-  if (u1) *u1 = ceil  (project_to_screen (ctx, fx1, fy));
+  if (u0) *u0 = floor (project_to_screen (ctx, fx0, fy + 0.5));
+  if (u1) *u1 = ceil  (project_to_screen (ctx, fx1, fy - 0.5));
 }
 
 static inline void
@@ -469,10 +475,8 @@ init_screen (Context *ctx)
   ctx->screen = g_malloc0 (ctx->pixel_size * (ctx->u1 - ctx->u0));
   ctx->screen = (guchar *) ctx->screen - ctx->pixel_size * ctx->u0;
 
-  ctx->n_active_pixels      = 0;
-  ctx->prev_n_active_pixels = 1;
-
-  ctx->filter_pixel_shadow_width = SCREEN_RESOLUTION * (1.0 + ctx->tan_angle);
+  ctx->active_u0 = ctx->u1;
+  ctx->active_u1 = ctx->u0;
 }
 
 static inline void
@@ -510,7 +514,68 @@ cleanup_screen (Context *ctx)
   g_free (ctx->screen);
 }
 
-static inline void
+static void
+init_row (Context *ctx,
+          gint     fy)
+{
+  gdouble u0, u1;
+  gdouble v0, v1;
+  gdouble b;
+  gint    i;
+
+  get_affecting_filter_range (ctx,
+                              ctx->u0, ctx->u1,
+                              fy,
+                              &ctx->row_fx0, &ctx->row_fx1);
+
+  ctx->row_fx0 = MAX (ctx->row_fx0, ctx->area.x);
+  ctx->row_fx1 = MIN (ctx->row_fx1, ctx->area.x + ctx->area.width);
+
+  u0 = project_to_screen (ctx, ctx->row_fx0,       fy + 0.5);
+  u1 = project_to_screen (ctx, ctx->row_fx0 + 1.0, fy - 0.5);
+
+  ctx->row_u0                  = floor (u0);
+
+  ctx->row_input_pixel_offset0 = floor (u0 + 0.5) - ctx->row_u0;
+  ctx->row_input_pixel_offset1 = floor (u1 + 0.5) - ctx->row_u0;
+
+  ctx->row_output_pixel_span  = ceil (u1) - floor (u0);
+
+  b = ctx->tan_angle * SCREEN_RESOLUTION;
+
+  v0 = u0 + b;
+  v1 = u1 - b;
+
+  for (i = 0; i < ctx->row_output_pixel_span; i++)
+    {
+      gdouble w0, w1;
+      gdouble value = 0.0;
+
+      if (b > EPSILON)
+        {
+          w0     = CLAMP (ctx->row_u0 + i,       u0, v0);
+          w1     = CLAMP (ctx->row_u0 + i + 1.0, u0, v0);
+          value += (w1 - w0) * (w0 + w1 - 2.0 * u0) / (2.0 * b);
+        }
+
+      w0     = CLAMP (ctx->row_u0 + i,       v0, v1);
+      w1     = CLAMP (ctx->row_u0 + i + 1.0, v0, v1);
+      value += w1 - w0;
+
+      if (b > EPSILON)
+        {
+          w0     = CLAMP (ctx->row_u0 + i,       v1, u1);
+          w1     = CLAMP (ctx->row_u0 + i + 1.0, v1, u1);
+          value += (w1 - w0) * (2.0 * u1 - w0 - w1) / (2.0 * b);
+        }
+
+      value /= SCREEN_RESOLUTION;
+
+      ctx->row_output_pixel_kernel[i] = value;
+    }
+}
+
+static inline gboolean
 shift_pixel (Context *ctx,
              Pixel   *pixel)
 {
@@ -520,9 +585,7 @@ shift_pixel (Context *ctx,
     {
       pixel->shadow.value = 0.0f;
 
-      ctx->n_active_pixels--;
-
-      return;
+      return FALSE;
     }
 
   pixel->shadow        = item->shadow;
@@ -531,53 +594,72 @@ shift_pixel (Context *ctx,
     pixel->queue->prev = item->prev;
 
   g_slice_free (ShadowItem, item);
+
+  return TRUE;
 }
 
 static void
 trim_shadow (Context *ctx,
              gint     fy)
 {
-  ctx->prev_n_active_pixels = ctx->n_active_pixels;
-
-  if (! ctx->n_active_pixels)
+  if (ctx->active_u0 >= ctx->active_u1)
     return;
 
   switch (ctx->options.style)
     {
     case GEGL_LONG_SHADOW_STYLE_FINITE:
       {
-        Pixel *p = ctx->screen;
+        Pixel *p         = ctx->screen;
+        gint   active_u0 = ctx->u1;
+        gint   active_u1 = ctx->u0;
         gint   u;
 
         fy -= ctx->shadow_height;
 
-        for (u = ctx->u0; u < ctx->u1; u++)
+        for (u = ctx->active_u0; u < ctx->active_u1; u++)
           {
-            Pixel *pixel = &p[u];
+            Pixel    *pixel  = &p[u];
+            gboolean  active = (pixel->shadow.value != 0.0);
 
-            while (pixel->shadow.value && pixel->shadow.fy < fy)
-              shift_pixel (ctx, pixel);
+            if (active && pixel->shadow.fy < fy)
+              active = shift_pixel (ctx, pixel);
+
+            if (active)
+              {
+                active_u0 = MIN (active_u0, u);
+                active_u1 = u + 1;
+              }
           }
+
+        ctx->active_u0 = active_u0;
+        ctx->active_u1 = active_u1;
       }
       break;
 
     case GEGL_LONG_SHADOW_STYLE_FADING:
       {
-        gfloat   *p             = ctx->screen;
-        gboolean  active_pixels = FALSE;
-        gint      u;
+        gfloat *p         = ctx->screen;
+        gint    active_u0 = ctx->u1;
+        gint    active_u1 = ctx->u0;
+        gint    u;
 
-        for (u = ctx->u0; u < ctx->u1; u++)
+        for (u = ctx->active_u0; u < ctx->active_u1; u++)
           {
             p[u] *= ctx->fade_rate;
 
             if (p[u] < EPSILON)
-              p[u] = 0.0f;
+              {
+                p[u] = 0.0f;
+              }
             else
-              active_pixels = TRUE;
+              {
+                active_u0 = MIN (active_u0, u);
+                active_u1 = u + 1;
+              }
           }
 
-        ctx->n_active_pixels = active_pixels;
+        ctx->active_u0 = active_u0;
+        ctx->active_u1 = active_u1;
       }
       break;
 
@@ -611,21 +693,25 @@ add_shadow (Context *ctx,
 
           if (value >= pixel->shadow.value)
             {
-              ctx->n_active_pixels += ! pixel->shadow.value;
-
               pixel->shadow.value = value;
               pixel->shadow.fy    = fy;
 
               clear_pixel_queue (ctx, pixel);
+
+              ctx->active_u0 = MIN (ctx->active_u0, u0);
+              ctx->active_u1 = MAX (ctx->active_u1, u1);
             }
           else if (! pixel->queue)
             {
-              pixel->queue = g_slice_new (ShadowItem);
+              if (fy != pixel->shadow.fy)
+                {
+                  pixel->queue = g_slice_new (ShadowItem);
 
-              pixel->queue->shadow.value = value;
-              pixel->queue->shadow.fy    = fy;
-              pixel->queue->next         = NULL;
-              pixel->queue->prev         = pixel->queue;
+                  pixel->queue->shadow.value = value;
+                  pixel->queue->shadow.fy    = fy;
+                  pixel->queue->next         = NULL;
+                  pixel->queue->prev         = pixel->queue;
+                }
             }
           else
             {
@@ -647,6 +733,9 @@ add_shadow (Context *ctx,
 
               if (! new_item)
                 {
+                  if (fy == last_item->shadow.fy)
+                    continue;
+
                   new_item = g_slice_new (ShadowItem);
 
                   new_item->prev  = last_item;
@@ -668,19 +757,20 @@ add_shadow (Context *ctx,
       for (u = u0; u < u1; u++)
         p[u] = MAX (p[u], value);
 
-      ctx->n_active_pixels = 1;
+      ctx->active_u0 = MIN (ctx->active_u0, u0);
+      ctx->active_u1 = MAX (ctx->active_u1, u1);
     }
 }
 
 static inline void
 add_shadow_at (Context *ctx,
-               gdouble  u0,
+               gint     u,
                gint     fy,
                gfloat   value)
 {
   add_shadow (ctx,
-              floor (u0 + 0.5),
-              floor (u0 + ctx->filter_pixel_shadow_width + 0.5),
+              u + ctx->row_input_pixel_offset0,
+              u + ctx->row_input_pixel_offset1,
               fy,
               value);
 }
@@ -692,9 +782,18 @@ get_pixel_shadow (Context       *ctx,
 {
   if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FINITE)
     {
-      const Pixel *p = pixel;
+      const Pixel *p     = pixel;
+      gfloat       value = p->shadow.value;
 
-      return p->shadow.value;
+      if (value && p->shadow.fy + ctx->shadow_height == fy)
+        {
+          value *= ctx->shadow_remainder;
+
+          if (p->queue)
+            value += (1.0 - ctx->shadow_remainder) * p->queue->shadow.value;
+        }
+
+      return value;
     }
   else
     {
@@ -746,26 +845,11 @@ init_buffers (Context    *ctx,
 
       ctx->row_step    = -4;
     }
-
-  if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FINITE)
-    {
-      ctx->sampler = gegl_buffer_sampler_new_at_level (input, ctx->format,
-                                                       GEGL_SAMPLER_LINEAR,
-                                                       ctx->level);
-
-      ctx->sampler_get_fun = gegl_sampler_get_fun (ctx->sampler);
-    }
-  else
-    {
-      ctx->sampler = NULL;
-    }
 }
 
 static void
 cleanup_buffers (Context *ctx)
 {
-  g_clear_object (&ctx->sampler);
-
   if (ctx->options.composition !=
       GEGL_LONG_SHADOW_COMPOSITION_SHADOW_PLUS_IMAGE)
     {
@@ -802,67 +886,30 @@ set_row (Context *ctx,
 }
 
 static gfloat
-get_shadow (Context *ctx,
-            gdouble  u0,
-            gdouble  u1,
-            gint     fx,
-            gint     fy)
+get_shadow_at (Context *ctx,
+               gint     u,
+               gint     fy)
 {
   gfloat result = 0.0f;
 
-  if (ctx->n_active_pixels)
+  if (ctx->active_u0 < ctx->active_u1)
     {
-      gdouble       u0i, u0f;
-      gdouble       u1i, u1f;
-      gint          a, b;
-      const guchar *pixel;
-      gint          u;
+      const guchar *pixel = ctx->screen;
+      gint          u0, u1;
+      gint          i;
 
-      u0 = MAX (u0, ctx->u0);
-      u1 = MIN (u1, ctx->u1);
+      u0 = MAX (u,                              ctx->active_u0);
+      u1 = MIN (u + ctx->row_output_pixel_span, ctx->active_u1);
 
-      u0i = ceil (u0);
-      u0f = u0i - u0;
+      pixel += u0 * ctx->pixel_size;
 
-      u1i = floor (u1);
-      u1f = u1 - u1i;
-
-      a = u0i;
-      b = u1i;
-
-      pixel  = ctx->screen;
-      pixel += (a - 1) * ctx->pixel_size;
-
-      if (u0f)
-        result += get_pixel_shadow (ctx, pixel, fy) * u0f;
-      pixel += ctx->pixel_size;
-
-      for (u = a; u < b; u++)
+      for (i = u0 - u; i < u1 - u; i++)
         {
-          result += get_pixel_shadow (ctx, pixel, fy);
-          pixel  += ctx->pixel_size;
+          result += ctx->row_output_pixel_kernel[i] *
+                    get_pixel_shadow (ctx, pixel, fy);
+
+          pixel += ctx->pixel_size;
         }
-
-      if (u1f)
-        result += get_pixel_shadow (ctx, pixel, fy) * u1f;
-
-      result /= SCREEN_RESOLUTION;
-    }
-
-  if (ctx->sampler && (ctx->n_active_pixels || ctx->prev_n_active_pixels))
-    {
-      gdouble ix, iy;
-      gfloat  sample[4];
-
-      transform_coords_to_image (ctx,
-                                 fx + 0.5 + ctx->sample_offset_x,
-                                 fy + 0.5 + ctx->sample_offset_y,
-                                 &ix, &iy);
-
-      ctx->sampler_get_fun (ctx->sampler,
-                            ix, iy, NULL, sample, GEGL_ABYSS_NONE);
-
-      result = MAX (result, sample[3]);
     }
 
   return result;
@@ -918,24 +965,12 @@ get_required_for_output (GeglOperation       *operation,
   if (o->style == GEGL_LONG_SHADOW_STYLE_FINITE)
     {
       Context ctx;
-      gdouble sample_x;
-      gdouble sample_y;
 
       init_options  (&ctx, o, 0);
       init_geometry (&ctx);
       init_area     (&ctx, operation, roi);
 
-      sample_x = ctx.roi.x + ctx.sample_offset_x;
-      sample_y = ctx.roi.y + ctx.sample_offset_y;
-
-      result.x      = floor (sample_x);
-      result.y      = floor (sample_y);
-      result.width  = roi->width  + (result.x < sample_x);
-      result.height = roi->height + (result.y < sample_y);
-
-      gegl_rectangle_bounding_box (&result, &result, &ctx.area);
-
-      gegl_rectangle_intersect (&result, &result, &ctx.input_bounds);
+      gegl_rectangle_intersect (&result, &ctx.area, &ctx.input_bounds);
 
       transform_rect_to_image (&ctx, &result, &result, TRUE);
     }
@@ -981,10 +1016,8 @@ get_invalidated_by_change (GeglOperation       *operation,
 
       fx1++;
 
-      result.width  += ceil (-ctx.sample_offset_x);
-      result.height += ceil (-ctx.sample_offset_y);
-
-      result.width = MAX (result.width, fx1 - result.x);
+      result.width   = fx1 - result.x;
+      result.height += ctx.shadow_height;
 
       transform_rect_to_image (&ctx, &result, &result, TRUE);
     }
@@ -1052,50 +1085,35 @@ process (GeglOperation       *operation,
     {
       const gfloat *input_pixel;
       gfloat       *output_pixel;
-      gdouble       u0;
-      gdouble       shadow_offset;
-      gint          fx0, fx1;
+      gint          u;
+
+      init_row (&ctx, fy);
 
       get_row (&ctx, fy);
 
       if (fy > ctx.roi.y)
         trim_shadow (&ctx, fy);
 
-      get_affecting_filter_range (&ctx,
-                                  ctx.u0, ctx.u1,
-                                  fy,
-                                  &fx0, &fx1);
-
-      fx0 = MAX (fx0, ctx.area.x);
-      fx1 = MIN (fx1, ctx.area.x + ctx.area.width);
-
-      u0 = project_to_screen (&ctx, fx0, fy);
-
-      shadow_offset = project_to_screen (&ctx, fx0, fy + 0.5) - u0;
-
-      input_pixel  = ctx.input_row0 + (fx0 - ctx.area.x) * ctx.row_step;
+      input_pixel  = ctx.input_row0 +
+                     (ctx.row_fx0 - ctx.area.x) * ctx.row_step;
       output_pixel = ctx.output_row0;
 
-      for (fx = fx0; fx < fx1; fx++)
+      u = ctx.row_u0;
+
+      for (fx = ctx.row_fx0; fx < ctx.row_fx1; fx++)
         {
-          add_shadow_at (&ctx, u0 + shadow_offset, fy, input_pixel[3]);
+          add_shadow_at (&ctx, u, fy, input_pixel[3]);
 
           if (fy >= ctx.roi.y && fx >= ctx.roi.x)
             {
-              gfloat shadow_value;
-
-              shadow_value = get_shadow (&ctx,
-                                         u0, u0 + SCREEN_RESOLUTION,
-                                         fx, fy);
-
               set_output_pixel (&ctx,
                                 input_pixel, output_pixel,
-                                shadow_value);
+                                get_shadow_at (&ctx, u, fy));
 
               output_pixel += ctx.row_step;
             }
 
-          u0 += SCREEN_RESOLUTION;
+          u += SCREEN_RESOLUTION;
 
           input_pixel += ctx.row_step;
         }
