@@ -1153,11 +1153,12 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class->process                      = process;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:long-shadow",
-    "title",       _("Long Shadow"),
-    "categories",  "light",
-    "needs-alpha", "true",
-    "description", _("Creates a long-shadow effect"),
+    "name",           "gegl:long-shadow",
+    "title",          _("Long Shadow"),
+    "categories",     "light",
+    "needs-alpha",    "true",
+    "reference-hash", "0fdf6db2382f0c1a2919ef5684c7dc30",
+    "description",    _("Creates a long-shadow effect"),
     NULL);
 }
 
