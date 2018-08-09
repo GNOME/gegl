@@ -54,6 +54,7 @@ operations/common/layer.c
 operations/common/levels.c
 operations/common/linear-gradient.c
 operations/common/little-planet.c
+operations/common/long-shadow.c
 operations/common/magick-load.c
 operations/common/mantiuk06.c
 operations/common/map-absolute.c
@@ -264,7 +265,6 @@ operations/workshop/gradient-map.c
 operations/workshop/hstack.c
 operations/workshop/integral-image.c
 operations/workshop/linear-sinusoid.c
-operations/workshop/long-shadow.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
