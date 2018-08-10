@@ -1,16 +1,15 @@
 # German translation for gegl.
 # Copyright (C) 2012 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gegl package.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2012, 2017.
-# Christian Kirbach <Christian.Kirbach@gmail.com>, 2012, 2013.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2012, 2017-2018.
+# Christian Kirbach <Christian.Kirbach@gmail.com>, 2012-2013.
 # Daniel Winzen <d@winzen4.de>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=gegl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-11-28 23:24+0000\n"
-"PO-Revision-Date: 2017-01-21 23:05+0100\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
+"POT-Creation-Date: 2018-08-03 15:40+0000\n"
+"PO-Revision-Date: 2018-08-10 14:00+0200\n"
 "Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -18,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.1\n"
 "X-Project-Style: gnome\n"
 
 #: ../bin/gegl.c:146
@@ -192,6 +191,46 @@ msgstr ""
 "Maximale Anzahl der Einträge in der Schreibwarteschlange des Backends der "
 "Kacheldatei"
 
+#: ../gegl/gegl-enums.c:33
+msgid "None"
+msgstr ""
+
+#: ../gegl/gegl-enums.c:34
+msgid "Clamp"
+msgstr ""
+
+#: ../gegl/gegl-enums.c:35
+msgid "Loop"
+msgstr ""
+
+#: ../gegl/gegl-enums.c:36
+msgid "Black"
+msgstr "Schwarz"
+
+#: ../gegl/gegl-enums.c:37
+msgid "White"
+msgstr "Weiß"
+
+#: ../gegl/gegl-enums.c:64
+msgid "Nearest"
+msgstr ""
+
+#: ../gegl/gegl-enums.c:65
+msgid "Linear"
+msgstr "Linear"
+
+#: ../gegl/gegl-enums.c:66
+msgid "Cubic"
+msgstr "Kubisch"
+
+#: ../gegl/gegl-enums.c:67
+msgid "NoHalo"
+msgstr "NoHalo"
+
+#: ../gegl/gegl-enums.c:68
+msgid "LoHalo"
+msgstr "LoHalo"
+
 #: ../gegl/module/geglmodule.c:147 ../gegl/module/geglmodule.c:165
 #: ../gegl/module/geglmodule.c:274 ../gegl/module/geglmodule.c:301
 #: ../gegl/module/geglmodule.c:393
@@ -278,7 +317,7 @@ msgstr "Radius der Quadratpixelregion (Breite und Höhe sind Radius*2+1)"
 
 #: ../operations/common/box-blur.c:343
 msgid "Performs an averaging of a square box of pixels"
-msgstr ""
+msgstr "Führt eine Mittelung eines Feldes benachbarter Pixel durch"
 
 #. ... are the properties of the filter, these are all scalar values
 #. * (doubles), the the parameters are:
@@ -1832,6 +1871,8 @@ msgid ""
 "Weights the opacity of the input both the value of the aux input and the "
 "global value property."
 msgstr ""
+"Gewichtet die Deckkraft der Eingabe sowohl nach dem Wert der externen "
+"Eingabe und dem Globalwert."
 
 #: ../operations/common/open-buffer.c:25
 msgid "a GeglBuffer on disk to open"
@@ -2204,10 +2245,11 @@ msgid "Scale, strength of effect"
 msgstr "Skalierung, Stärke des Effekts"
 
 #: ../operations/common/unsharp-mask.c:77
+#, fuzzy
 msgid ""
 "The most widely used method for sharpening an image, sharpens by adding "
 "false mach-bands around edges"
-msgstr ""
+msgstr "Die am häufigsten genutzte Methode zur Bildschärfung,"
 
 # Negativbild?
 #: ../operations/common/value-invert.c:150
@@ -2350,10 +2392,8 @@ msgid "Aspect ratio"
 msgstr "Seitenverhältnis"
 
 #: ../operations/common/waves.c:55
-#, fuzzy
-#| msgid "Operation"
 msgid "Clamp deformation"
-msgstr "Am Anfang abschneiden"
+msgstr "Klemmverformung"
 
 #: ../operations/common/waves.c:57
 msgid "Limit deformation in the image area."
@@ -2410,11 +2450,8 @@ msgid "Higher values increase the magnitude of the effect"
 msgstr "Je höher dieser Wert ist, umso stärker wirkt dieser Effekt"
 
 #: ../operations/common/wind.c:367
-#, fuzzy
 msgid "Wind-like bleed effect"
-msgstr ""
-"Das Bild in ein Halbtonbild umwandeln, um einen zeitungsähnlichen Effekt zu "
-"erzeugen"
+msgstr "Windähnlicher Verwehungseffekt"
 
 #: ../operations/common/write-buffer.c:26
 msgid "Write to an existing GeglBuffer"
@@ -2626,7 +2663,7 @@ msgstr "Aktive Ebenen"
 msgid "Number of levels to perform solving"
 msgstr "Zahl der Stufen für die Lösung"
 
-#: ../operations/external/matting-levin.c:1439
+#: ../operations/external/matting-levin.c:1440
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
@@ -2759,7 +2796,7 @@ msgstr "8 und 16 sind unter den derzeit akzeptierten Werten."
 msgid "PNG image saver (passes the buffer through, saves as a side-effect.)"
 msgstr "PNG-Bildspeicherer (reicht den Puffer durch und speichert nebenbei)"
 
-#: ../operations/external/ppm-load.c:380
+#: ../operations/external/ppm-load.c:385
 msgid "PPM image loader."
 msgstr "PPM-Bildlader."
 
@@ -3135,11 +3172,12 @@ msgstr ""
 #: ../operations/seamless-clone/seamless-clone-compose.c:25
 msgid "How much horizontal offset should applied to the paste"
 msgstr ""
+"Legt fest, um welchen Wert beim Einfügen horizontal versetzt werden soll"
 
 #: ../operations/seamless-clone/seamless-clone.c:28
 #: ../operations/seamless-clone/seamless-clone-compose.c:28
 msgid "How much vertical offset should applied to the paste"
-msgstr ""
+msgstr "Legt fest, um welchen Wert beim Einfügen vertikal versetzt werden soll"
 
 #: ../operations/seamless-clone/seamless-clone.c:30
 #: ../operations/seamless-clone/seamless-clone-compose.c:30
@@ -4121,58 +4159,3 @@ msgstr ""
 "Rauschreduzierender, Kantenverbessernder Fitler mit "
 "Überschreitungswahrscheinlichkeit, basierend auf dem symmetrisch nächsten "
 "Nachbarn."
-
-#~ msgid "Cartoon effect"
-#~ msgstr "Cartoon-Effekt"
-
-#~ msgid "Zoom:"
-#~ msgstr "Maßstab:"
-
-#~ msgid "Photocopy effect"
-#~ msgstr "Fotokopie-Effekt"
-
-#~ msgid "Simplify image into an array of solid-colored squares"
-#~ msgstr "Das Bild in eine Matrix einfarbiger Quadrate vereinfachen"
-
-#~ msgid "X:"
-#~ msgstr "X:"
-
-#~ msgid "Y:"
-#~ msgstr "Y:"
-
-#, fuzzy
-#~ msgid "Performs polar-coordinates on the image."
-#~ msgstr "Das Bild in oder von Polarkoordinaten umwandeln"
-
-#~ msgid "Softglow effect"
-#~ msgstr "Sanfter Leuchteffekt"
-
-#~ msgid "Shape to use: 0=circle 1=square 2=diamond"
-#~ msgstr "Zu verwendende Form: 0=Kreis 1=Quadrat 2=Raute"
-
-#~ msgid "Coordinate y of the center of the waves"
-#~ msgstr "Y-Koordinate des Mittelpunkts der Wellen"
-
-#~ msgid "Porter Duff operation src-over (d = cA + cB * (1.0f - aA))"
-#~ msgstr "Porter-Duff-Operation src-over (d = cA + cB * (1.0f - aA))"
-
-#~ msgid "Even/Odd"
-#~ msgstr "Gerade/Ungerade"
-
-#~ msgid "Horizontal/Vertical"
-#~ msgstr "Horizontal/Vertikal"
-
-#~ msgid "Performs deinterlace on the image"
-#~ msgstr "Fügt die Halbbilder des Bildes zusammen"
-
-#~ msgid "The value of azimuth"
-#~ msgstr "Der Azimut-Wert"
-
-#~ msgid "Pixel depth"
-#~ msgstr "Pixeltiefe"
-
-#~ msgid "Fractal"
-#~ msgstr "Fraktal"
-
-#~ msgid "Performs red-eye-removal on the image"
-#~ msgstr "Führt eine Rote-Augen-Reduzierung im Bild aus"
