@@ -1142,13 +1142,12 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->get_bounding_box          = get_bounding_box;
   operation_class->get_cached_region         = get_cached_region;
 
-  /* FIXME:  we want 'threaded == TRUE, want_in_place == FALSE' for finite
-   * shadows, and 'threaded == FALSE, want_in_place == TRUE' for infinite and
-   * fading shadows.  right now, since there's no way to control these
-   * attributes dynamically, we settle for the lowest common denominator.
+  /* FIXME:  we want 'threaded == TRUE' for finite shadows, and
+   * 'threaded == FALSE' for infinite and fading shadows.  right now, there's
+   * no way to control this dynamically, so we settle for the latter.
    */
   operation_class->threaded                  = FALSE;
-  operation_class->want_in_place             = FALSE;
+  operation_class->want_in_place             = TRUE;
 
   filter_class->process                      = process;
 
