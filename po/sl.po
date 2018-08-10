@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-22 12:50+0000\n"
-"PO-Revision-Date: 2018-07-25 00:05+0200\n"
+"POT-Creation-Date: 2018-08-05 17:04+0000\n"
+"PO-Revision-Date: 2018-08-10 11:23+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 2.1\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: bin/gegl.c:174
 #, c-format
@@ -190,12 +190,13 @@ msgstr ""
 
 #: gegl/gegl-enums.c:33 gegl/gegl-enums.c:90
 #: operations/common/gaussian-blur.c:31 operations/common/gblur-1d.c:32
+#: operations/common/median-blur.c:34
 #: operations/common-gpl3+/fractal-explorer.c:96
 msgid "None"
 msgstr "Brez"
 
 #: gegl/gegl-enums.c:34 operations/common/gaussian-blur.c:32
-#: operations/common/gblur-1d.c:33
+#: operations/common/gblur-1d.c:33 operations/common/median-blur.c:35
 msgid "Clamp"
 msgstr "Spni"
 
@@ -566,13 +567,13 @@ msgstr ""
 "z barvno razliko od izvorne središčne slikovne točke. "
 
 #: operations/common/box-blur.c:25 operations/common/c2g.c:27
-#: operations/common/edge-neon.c:47 operations/common/median-blur.c:38
+#: operations/common/edge-neon.c:47 operations/common/median-blur.c:43
 #: operations/common/snn-mean.c:26 operations/common/stress.c:27
 #: operations/common/unsharp-mask.c:24 operations/common/vignette.c:38
 #: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
-#: operations/common-gpl3+/whirl-pinch.c:45
+#: operations/common-gpl3+/whirl-pinch.c:46
 #: operations/external/matting-levin.c:29
 msgid "Radius"
 msgstr "Radij"
@@ -720,12 +721,12 @@ msgstr ""
 "STRESS, da izvede krajevno barvno razliko in ohranja sivinsko tvorbo."
 
 #: operations/common/checkerboard.c:25 operations/common/grid.c:24
-#: operations/common/little-planet.c:43
-#: operations/common/panorama-projection.c:43 operations/common/rectangle.c:36
+#: operations/common/little-planet.c:46
+#: operations/common/panorama-projection.c:46 operations/common/rectangle.c:36
 #: operations/common-gpl3+/diffraction-patterns.c:78
 #: operations/common-gpl3+/maze.c:40 operations/common-gpl3+/noise-solid.c:64
 #: operations/common-gpl3+/plasma.c:54 operations/common-gpl3+/sinus.c:76
-#: operations/common-gpl3+/spiral.c:85 operations/core/crop.c:35
+#: operations/common-gpl3+/spiral.c:86 operations/core/crop.c:35
 #: operations/external/svg-load.c:30 operations/external/text.c:61
 #: operations/external/v4l.c:28 operations/external/vector-stroke.c:30
 #: operations/workshop/external/line-profile.c:39
@@ -739,12 +740,12 @@ msgid "Horizontal width of cells pixels"
 msgstr "Vodoravni širina celic v slikovnih točkah."
 
 #: operations/common/checkerboard.c:33 operations/common/grid.c:31
-#: operations/common/little-planet.c:49
-#: operations/common/panorama-projection.c:49 operations/common/rectangle.c:42
+#: operations/common/little-planet.c:52
+#: operations/common/panorama-projection.c:52 operations/common/rectangle.c:42
 #: operations/common-gpl3+/diffraction-patterns.c:86
 #: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:48
 #: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:62
-#: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:93
+#: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:94
 #: operations/core/crop.c:40 operations/external/svg-load.c:32
 #: operations/external/text.c:63 operations/external/v4l.c:31
 #: operations/workshop/external/line-profile.c:41
@@ -758,7 +759,7 @@ msgid "Vertical width of cells pixels"
 msgstr "Navpična širina celic v slikovnih točkah."
 
 #: operations/common/checkerboard.c:41 operations/common/grid.c:38
-#: operations/common/mirrors.c:44 operations/common-gpl3+/bump-map.c:61
+#: operations/common/mirrors.c:46 operations/common-gpl3+/bump-map.c:62
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -769,7 +770,7 @@ msgid "Horizontal offset (from origin) for start of grid"
 msgstr "Vodoravni odmik (od izvora) za začetek mreže."
 
 #: operations/common/checkerboard.c:47 operations/common/grid.c:44
-#: operations/common/mirrors.c:50 operations/common-gpl3+/bump-map.c:67
+#: operations/common/mirrors.c:52 operations/common-gpl3+/bump-map.c:68
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -780,7 +781,7 @@ msgid "Vertical offset (from origin) for start of grid"
 msgstr "Navpični odmik (od izvora) za začetek mreže."
 
 #: operations/common/checkerboard.c:53 operations/common-gpl3+/sinus.c:58
-#: operations/common-gpl3+/spiral.c:79 operations/workshop/gradient-map.c:26
+#: operations/common-gpl3+/spiral.c:80 operations/workshop/gradient-map.c:26
 msgid "Color 1"
 msgstr "Barva 1"
 
@@ -789,7 +790,7 @@ msgid "The first cell color"
 msgstr "Barva prve celice"
 
 #: operations/common/checkerboard.c:57 operations/common-gpl3+/sinus.c:60
-#: operations/common-gpl3+/spiral.c:82 operations/workshop/gradient-map.c:28
+#: operations/common-gpl3+/spiral.c:83 operations/workshop/gradient-map.c:28
 msgid "Color 2"
 msgstr "Barva 2"
 
@@ -822,6 +823,7 @@ msgstr "Upodobi vzorec šahovnice"
 #: operations/common-gpl3+/tile-paper.c:30
 #: operations/common-gpl3+/value-propagate.c:55 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
+#: operations/workshop/long-shadow.c:59
 msgid "Color"
 msgstr "Barva"
 
@@ -900,7 +902,7 @@ msgid "Change to this"
 msgstr "Spremeni v to"
 
 #: operations/common/color-rotate.c:40 operations/common/color-rotate.c:53
-#: operations/common-gpl3+/spiral.c:70
+#: operations/common-gpl3+/spiral.c:71
 msgid "Clockwise"
 msgstr "V SUK"
 
@@ -1371,7 +1373,7 @@ msgstr "Delitelj"
 
 #: operations/common/convolution-matrix.c:55
 #: operations/workshop/bayer-matrix.c:64
-#: operations/workshop/linear-sinusoid.c:71
+#: operations/workshop/linear-sinusoid.c:72
 msgid "Offset"
 msgstr "Odmik"
 
@@ -1547,7 +1549,7 @@ msgstr "Metoda drgeta, ki jo želite uporabiti"
 #: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
 #: operations/common/noise-rgb.c:55 operations/common/noise-simplex.c:39
 #: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
-#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:88
+#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:89
 #: operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
@@ -1562,19 +1564,18 @@ msgid "Dither"
 msgstr "Stresanje"
 
 #: operations/common/dither.c:643
-#, fuzzy
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
 "counteract quantization induced banding."
 msgstr ""
-"Zmanjša število barv v sliki, tako da zmanjša število bitov na kanal (barvni "
+"Zmanjša število barv v sliki, tako da zmanjša število ravni na kanal (barvni "
 "in alfa). Določite lahko različne metode drgeta, ki so protiutež s "
-"kvantizacijo povzročenih pasov."
+"kvantizacijo povzročenih kvantizacij."
 
 #: operations/common/dropshadow.c:25 operations/common/layer.c:36
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
-#: operations/common-gpl3+/polar-coordinates.c:51
+#: operations/common-gpl3+/polar-coordinates.c:52
 #: operations/common-gpl3+/spiral.c:35 operations/core/crop.c:25
 #: operations/transform/reflect.c:26 operations/transform/scale-ratio.c:25
 #: operations/transform/scale-size.c:25
@@ -1589,7 +1590,7 @@ msgstr "Vodoravni odmik sence"
 
 #: operations/common/dropshadow.c:31 operations/common/layer.c:41
 #: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
-#: operations/common-gpl3+/polar-coordinates.c:58
+#: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
 #: operations/transform/reflect.c:30 operations/transform/scale-ratio.c:30
 #: operations/transform/scale-size.c:30
@@ -1798,15 +1799,15 @@ msgstr ""
 
 #: operations/common/gaussian-blur.c:58 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:31
-#: operations/common-gpl3+/displace.c:42
+#: operations/common/median-blur.c:56 operations/common-gpl3+/displace.c:42
 #: operations/common-gpl3+/fractal-trace.c:67
-#: operations/common-gpl3+/ripple.c:55 operations/transform/scale.c:102
+#: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
 msgid "Abyss policy"
 msgstr "Politika ponora"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
-#: operations/common-gpl3+/displace.c:45 operations/common-gpl3+/ripple.c:58
-#: operations/transform/scale.c:103
+#: operations/common/median-blur.c:58 operations/common-gpl3+/displace.c:45
+#: operations/common-gpl3+/ripple.c:59 operations/transform/scale.c:103
 msgid "How image edges are handled"
 msgstr "Kako se obravnavajo robovi slike"
 
@@ -2052,7 +2053,7 @@ msgstr ""
 msgid "Magnitude"
 msgstr "Magnituda"
 
-#: operations/common/image-gradient.c:28 operations/common-gpl3+/spiral.c:74
+#: operations/common/image-gradient.c:28 operations/common-gpl3+/spiral.c:75
 #: operations/common-gpl3+/texturize-canvas.c:38
 #: operations/common-gpl3+/wind.c:50
 msgid "Direction"
@@ -2258,79 +2259,77 @@ msgstr "Zasuk"
 msgid "Horizontal camera panning"
 msgstr "Vodoravni zasuk kamere"
 
-#: operations/common/little-planet.c:29
-#: operations/common/panorama-projection.c:29
+#: operations/common/little-planet.c:30
+#: operations/common/panorama-projection.c:30
 msgid "Tilt"
 msgstr "Naklon"
 
-#: operations/common/little-planet.c:30
-#: operations/common/panorama-projection.c:30
+#: operations/common/little-planet.c:31
+#: operations/common/panorama-projection.c:31
 msgid "Vertical camera panning"
 msgstr "Navpični zasuk kamere"
 
-#: operations/common/little-planet.c:35
-#: operations/common/panorama-projection.c:35
+#: operations/common/little-planet.c:37
+#: operations/common/panorama-projection.c:37
 msgid "Spin"
 msgstr "Zavrti"
 
-#: operations/common/little-planet.c:36
-#: operations/common/panorama-projection.c:36
+#: operations/common/little-planet.c:38
+#: operations/common/panorama-projection.c:38
 msgid "Spin angle around camera axis"
 msgstr "Kot vrstenja okoli osi kamere"
 
-#: operations/common/little-planet.c:39 operations/common/mirrors.c:74
-#: operations/common/panorama-projection.c:39
+#: operations/common/little-planet.c:42 operations/common/mirrors.c:76
+#: operations/common/panorama-projection.c:42
 #: operations/common-gpl3+/fractal-explorer.c:58
 #: operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
 msgstr "Povečava"
 
-#: operations/common/little-planet.c:44
-#: operations/common/panorama-projection.c:44
+#: operations/common/little-planet.c:47
+#: operations/common/panorama-projection.c:47
 msgid "output/rendering width in pixels, -1 for input width"
 msgstr ""
 
-#: operations/common/little-planet.c:50
-#: operations/common/panorama-projection.c:50
+#: operations/common/little-planet.c:53
+#: operations/common/panorama-projection.c:53
 msgid "output/rendering height in pixels, -1 for input height"
 msgstr ""
 
-#: operations/common/little-planet.c:55
-#: operations/common/panorama-projection.c:55
-#, fuzzy
-#| msgid "Transform"
+#: operations/common/little-planet.c:58
+#: operations/common/panorama-projection.c:58
 msgid "Inverse transform"
-msgstr "Preoblikuj"
+msgstr "Inverzno preoblikovanje"
 
-#: operations/common/little-planet.c:56
-#: operations/common/panorama-projection.c:56
+#: operations/common/little-planet.c:59
+#: operations/common/panorama-projection.c:59
 msgid ""
 "Do the inverse mapping, useful for touching up zenith, nadir or other parts "
 "of panorama."
 msgstr ""
 
 #. XXX: needs better ui type
-#: operations/common/little-planet.c:58 operations/common/map-absolute.c:22
+#: operations/common/little-planet.c:61 operations/common/map-absolute.c:22
 #: operations/common/map-relative.c:28
-#: operations/common/panorama-projection.c:58
+#: operations/common/panorama-projection.c:61
 #: operations/common/recursive-transform.c:52 operations/common/spherize.c:56
-#: operations/common-gpl3+/ripple.c:49 operations/common-gpl3+/waves.c:50
+#: operations/common-gpl3+/ripple.c:50 operations/common-gpl3+/waves.c:50
 msgid "Resampling method"
 msgstr "Metoda prevzorčenja"
 
-#: operations/common/little-planet.c:60
-#: operations/common/panorama-projection.c:60
+#: operations/common/little-planet.c:63
+#: operations/common/panorama-projection.c:63
 msgid ""
 "Image resampling method to use, for good results with double resampling when "
 "retouching panoramas, use nearest to generate the view and cubic or better "
 "for the inverse transform back to panorama."
 msgstr ""
 
-#: operations/common/little-planet.c:490
+#: operations/common/little-planet.c:493
 msgid "Little Planet"
 msgstr "Majhen planet"
 
-#: operations/common/little-planet.c:494
+#: operations/common/little-planet.c:497
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
 
@@ -2441,10 +2440,8 @@ msgid ""
 msgstr ""
 
 #: operations/common/mean-curvature-blur.c:25
-#, fuzzy
-#| msgid "Number of iterations"
 msgid "Controls the number of iterations"
-msgstr "Število ponovitev"
+msgstr "Nadzira število iteracij"
 
 #: operations/common/mean-curvature-blur.c:246
 msgid "Mean Curvature Blur"
@@ -2470,47 +2467,47 @@ msgstr "Krog"
 msgid "Diamond"
 msgstr "Karo"
 
-#: operations/common/median-blur.c:33
+#: operations/common/median-blur.c:38
 msgid "Neighborhood"
 msgstr "Soseščina"
 
-#: operations/common/median-blur.c:36
+#: operations/common/median-blur.c:41
 msgid "Neighborhood type"
 msgstr "Vrsta soseščine"
 
-#: operations/common/median-blur.c:41
+#: operations/common/median-blur.c:46
 msgid "Neighborhood radius"
 msgstr "Polmer soseščine"
 
-#: operations/common/median-blur.c:43
+#: operations/common/median-blur.c:48
 msgid "Percentile"
 msgstr "Odstotek"
 
-#: operations/common/median-blur.c:45
+#: operations/common/median-blur.c:50
 msgid "Neighborhood color percentile"
 msgstr "Barvni percentil soseščine"
 
-#: operations/common/median-blur.c:47
+#: operations/common/median-blur.c:52
 msgid "Alpha percentile"
 msgstr "Alfa percentil"
 
-#: operations/common/median-blur.c:49
+#: operations/common/median-blur.c:54
 msgid "Neighborhood alpha percentile"
 msgstr "Alfa percentil soseščine"
 
-#: operations/common/median-blur.c:51
+#: operations/common/median-blur.c:60
 msgid "High precision"
 msgstr "Visoka natančnost"
 
-#: operations/common/median-blur.c:52
+#: operations/common/median-blur.c:61
 msgid "Avoid clipping and quantization (slower)"
 msgstr ""
 
-#: operations/common/median-blur.c:962
+#: operations/common/median-blur.c:995
 msgid "Median Blur"
 msgstr "Zabrisanost mediane"
 
-#: operations/common/median-blur.c:965
+#: operations/common/median-blur.c:998
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -2524,27 +2521,27 @@ msgstr "Sukanje zrcal"
 msgid "Rotation applied to the mirrors"
 msgstr "Sukanje, uporabljeno na zrcalih"
 
-#: operations/common/mirrors.c:35
+#: operations/common/mirrors.c:36
 msgid "Result rotation"
 msgstr "Sukanje rezultata"
 
-#: operations/common/mirrors.c:36
+#: operations/common/mirrors.c:37
 msgid "Rotation applied to the result"
 msgstr "Sukanje, uporabljeno na rezultatu"
 
-#: operations/common/mirrors.c:40
+#: operations/common/mirrors.c:42
 msgid "Mirrors"
 msgstr "Zrcala"
 
-#: operations/common/mirrors.c:41
+#: operations/common/mirrors.c:43
 msgid "Number of mirrors to use"
 msgstr "Število uporabljenih zrcal"
 
-#: operations/common/mirrors.c:45 operations/common/mirrors.c:51
+#: operations/common/mirrors.c:47 operations/common/mirrors.c:53
 msgid "position of symmetry center in output"
 msgstr "Položaj središča simetrije v izhodu"
 
-#: operations/common/mirrors.c:56 operations/common/vignette.c:61
+#: operations/common/mirrors.c:58 operations/common/vignette.c:61
 #: operations/common-gpl3+/displace.c:80
 #: operations/common-gpl3+/motion-blur-circular.c:41
 #: operations/common-gpl3+/motion-blur-zoom.c:40
@@ -2552,11 +2549,11 @@ msgstr "Položaj središča simetrije v izhodu"
 msgid "Center X"
 msgstr "Središče X"
 
-#: operations/common/mirrors.c:57
+#: operations/common/mirrors.c:59
 msgid "X axis ratio for the center of mirroring"
 msgstr "Razmerje osi X za središče zrcaljenja"
 
-#: operations/common/mirrors.c:61 operations/common/vignette.c:66
+#: operations/common/mirrors.c:63 operations/common/vignette.c:66
 #: operations/common-gpl3+/displace.c:87
 #: operations/common-gpl3+/motion-blur-circular.c:46
 #: operations/common-gpl3+/motion-blur-zoom.c:45
@@ -2564,51 +2561,51 @@ msgstr "Razmerje osi X za središče zrcaljenja"
 msgid "Center Y"
 msgstr "Središče Y"
 
-#: operations/common/mirrors.c:62
+#: operations/common/mirrors.c:64
 msgid "Y axis ratio for the center of mirroring"
 msgstr "Razmerje osi Y za središče zrcaljenja"
 
-#: operations/common/mirrors.c:66
+#: operations/common/mirrors.c:68
 msgid "Trim X"
 msgstr "Pristriži X"
 
-#: operations/common/mirrors.c:67
+#: operations/common/mirrors.c:69
 msgid "X axis ratio for trimming mirror expanse"
 msgstr "Razmerje osi X za porezavo razširjenosti zrcaljenja"
 
-#: operations/common/mirrors.c:70
+#: operations/common/mirrors.c:72
 msgid "Trim Y"
 msgstr "Pristriži Y"
 
-#: operations/common/mirrors.c:71
+#: operations/common/mirrors.c:73
 msgid "Y axis ratio for trimming mirror expanse"
 msgstr "Razmerje osi Y za porezavo razširjenosti zrcaljenja"
 
-#: operations/common/mirrors.c:75 operations/common/mirrors.c:79
+#: operations/common/mirrors.c:77 operations/common/mirrors.c:81
 msgid "Scale factor to make rendering size bigger"
 msgstr "Faktor spremembe merila, ki poveča velikost izrisa"
 
-#: operations/common/mirrors.c:78
+#: operations/common/mirrors.c:80
 msgid "Expand"
 msgstr "Razširi"
 
-#: operations/common/mirrors.c:82
+#: operations/common/mirrors.c:84
 msgid "Clip result to input size"
 msgstr "Poreži rezultat na velikost vhoda"
 
-#: operations/common/mirrors.c:84
+#: operations/common/mirrors.c:86
 msgid "Wrap input"
 msgstr "Ovij vnos"
 
-#: operations/common/mirrors.c:85
+#: operations/common/mirrors.c:87
 msgid "Fill full output area"
 msgstr "Zapolni celotno izhodno območje"
 
-#: operations/common/mirrors.c:434
+#: operations/common/mirrors.c:436
 msgid "Kaleidoscopic Mirroring"
 msgstr "Kalejdoskopsko zrcaljenje"
 
-#: operations/common/mirrors.c:438
+#: operations/common/mirrors.c:440
 msgid "Create a kaleidoscope like effect."
 msgstr "Ustvari učinek, podoben kalejdoskopu."
 
@@ -2653,6 +2650,7 @@ msgid "Monochrome channel mixer"
 msgstr "Monokromatični mešalnik kanalov"
 
 #: operations/common/motion-blur-linear.c:26
+#: operations/workshop/long-shadow.c:47
 msgid "Length"
 msgstr "Dolžina"
 
@@ -2661,9 +2659,10 @@ msgid "Length of blur in pixels"
 msgstr "Dolžina zabrisanosti v slikovnih točkah"
 
 #. FIXME: With a large angle, we lose AreaFilter's flavours
-#: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:71
+#: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:72
 #: operations/common-gpl3+/motion-blur-circular.c:52
 #: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
+#: operations/workshop/long-shadow.c:41
 msgid "Angle"
 msgstr "Kot"
 
@@ -2671,11 +2670,11 @@ msgstr "Kot"
 msgid "Angle of blur in degrees"
 msgstr "Kot zabrisanosti v stopinjah"
 
-#: operations/common/motion-blur-linear.c:332
+#: operations/common/motion-blur-linear.c:333
 msgid "Linear Motion Blur"
 msgstr "Linearna zabrisanost v gibanju"
 
-#: operations/common/motion-blur-linear.c:336
+#: operations/common/motion-blur-linear.c:337
 msgid ""
 "Blur pixels in a direction, simulates blurring caused by moving camera in a "
 "straight line during exposure."
@@ -2769,53 +2768,53 @@ msgstr ""
 msgid "Black and green angle"
 msgstr "Črni in zeleni kot"
 
-#: operations/common/newsprint.c:66
+#: operations/common/newsprint.c:67
 msgid "angle offset for patterns"
 msgstr "Kotni odmik za vzorce"
 
-#: operations/common/newsprint.c:72
+#: operations/common/newsprint.c:73
 msgid "Green angle"
 msgstr "Zeleni kot"
 
-#: operations/common/newsprint.c:73
+#: operations/common/newsprint.c:74
 msgid "Black angle"
 msgstr "Črni kot"
 
-#: operations/common/newsprint.c:75
+#: operations/common/newsprint.c:76
 msgid "Red and cyan angle"
 msgstr "Rdeč in cianov kot"
 
-#: operations/common/newsprint.c:81
+#: operations/common/newsprint.c:83
 msgid "Red angle"
 msgstr "Rdeči kot"
 
-#: operations/common/newsprint.c:82
+#: operations/common/newsprint.c:84
 msgid "Cyan angle"
 msgstr "Cianov kot"
 
-#: operations/common/newsprint.c:84
+#: operations/common/newsprint.c:86
 msgid "Blue and magenta angle"
 msgstr ""
 
-#: operations/common/newsprint.c:90
+#: operations/common/newsprint.c:93
 msgid "Blue angle"
 msgstr "Modri kot"
 
-#: operations/common/newsprint.c:91
+#: operations/common/newsprint.c:94
 #, fuzzy
 #| msgid "Offset angle"
 msgid "Magenta angle"
 msgstr "Kot zamika"
 
-#: operations/common/newsprint.c:93
+#: operations/common/newsprint.c:96
 msgid "Yellow angle"
 msgstr "Rumeni kot"
 
-#: operations/common/newsprint.c:546
+#: operations/common/newsprint.c:550
 msgid "Newsprint"
 msgstr "Časopisni tisk"
 
-#: operations/common/newsprint.c:550
+#: operations/common/newsprint.c:554
 msgid "Digital halftoning with optional modulations. "
 msgstr ""
 
@@ -3069,11 +3068,11 @@ msgstr ""
 "Operacija Porter Duff over (znana tudi kot navadni način in src-over; d = cA "
 "+ cB * (1 - aA))"
 
-#: operations/common/panorama-projection.c:503
+#: operations/common/panorama-projection.c:506
 msgid "Panorama Projection"
 msgstr "Panoramska projekcija"
 
-#: operations/common/panorama-projection.c:508
+#: operations/common/panorama-projection.c:511
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
@@ -3200,10 +3199,8 @@ msgstr ""
 
 #: operations/common/recursive-transform.c:32
 #: operations/common/recursive-transform.c:33
-#, fuzzy
-#| msgid "Iteration"
 msgid "First iteration"
-msgstr "Ponovitve"
+msgstr "Prva ponovitev"
 
 #: operations/common/recursive-transform.c:37 operations/common/slic.c:39
 msgid "Number of iterations"
@@ -3732,15 +3729,15 @@ msgstr "Stisni"
 
 #: operations/common/vignette.c:71 operations/common-gpl3+/spiral.c:64
 #: operations/workshop/bayer-matrix.c:51
-#: operations/workshop/linear-sinusoid.c:95
+#: operations/workshop/linear-sinusoid.c:96
 msgid "Rotation"
 msgstr "Sukanje"
 
-#: operations/common/vignette.c:384
+#: operations/common/vignette.c:385
 msgid "Vignette"
 msgstr "Vinjetiranje"
 
-#: operations/common/vignette.c:388
+#: operations/common/vignette.c:389
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -3963,33 +3960,33 @@ msgstr "Tlakovan poslikani odtis"
 msgid "Azimuth"
 msgstr "Azimut"
 
-#: operations/common-gpl3+/bump-map.c:55 operations/common-gpl3+/emboss.c:39
+#: operations/common-gpl3+/bump-map.c:56 operations/common-gpl3+/emboss.c:40
 msgid "Elevation"
 msgstr "Dvignjenost"
 
-#: operations/common-gpl3+/bump-map.c:58 operations/common-gpl3+/emboss.c:44
+#: operations/common-gpl3+/bump-map.c:59 operations/common-gpl3+/emboss.c:45
 #: operations/common-gpl3+/fractal-trace.c:60
 #: operations/common-gpl3+/texturize-canvas.c:44
 msgid "Depth"
 msgstr "Globina"
 
-#: operations/common-gpl3+/bump-map.c:73
+#: operations/common-gpl3+/bump-map.c:74
 msgid "Waterlevel"
 msgstr "Raven vode"
 
-#: operations/common-gpl3+/bump-map.c:74
+#: operations/common-gpl3+/bump-map.c:75
 msgid "Level that full transparency should represent"
 msgstr "Raven, ki naj jo predstavlja polna prosojnost"
 
-#: operations/common-gpl3+/bump-map.c:77
+#: operations/common-gpl3+/bump-map.c:78
 msgid "Ambient lighting factor"
 msgstr "Faktor ambientalne osvetlitve"
 
-#: operations/common-gpl3+/bump-map.c:455
+#: operations/common-gpl3+/bump-map.c:456
 msgid "Bump Map"
 msgstr "Poslikaj odtis"
 
-#: operations/common-gpl3+/bump-map.c:457
+#: operations/common-gpl3+/bump-map.c:458
 msgid ""
 "This plug-in uses the algorithm described by John Schlag, \"Fast Embossing "
 "Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). It "
@@ -4327,13 +4324,13 @@ msgstr "Polarizacija"
 
 #: operations/common-gpl3+/diffraction-patterns.c:79
 #: operations/common-gpl3+/noise-solid.c:65 operations/common-gpl3+/plasma.c:55
-#: operations/common-gpl3+/sinus.c:77 operations/common-gpl3+/spiral.c:86
+#: operations/common-gpl3+/sinus.c:77 operations/common-gpl3+/spiral.c:87
 msgid "Width of the generated buffer"
 msgstr "Širina ustvarjenega medpomnilnika"
 
 #: operations/common-gpl3+/diffraction-patterns.c:87
 #: operations/common-gpl3+/noise-solid.c:73 operations/common-gpl3+/plasma.c:63
-#: operations/common-gpl3+/sinus.c:85 operations/common-gpl3+/spiral.c:94
+#: operations/common-gpl3+/sinus.c:85 operations/common-gpl3+/spiral.c:95
 msgid "Height of the generated buffer"
 msgstr "Višina ustvarjenega medpomnilnika"
 
@@ -4379,7 +4376,7 @@ msgid "Horizontal displacement"
 msgstr "Vodoravna razmestitev"
 
 #: operations/common-gpl3+/displace.c:56
-#: operations/common-gpl3+/whirl-pinch.c:41
+#: operations/common-gpl3+/whirl-pinch.c:42
 msgid "Pinch"
 msgstr "Priščipni"
 
@@ -4500,7 +4497,7 @@ msgstr "Laplacova razpoznava robov"
 msgid "High-resolution edge detection"
 msgstr "Razpoznava robov visoke ločljivosti"
 
-#: operations/common-gpl3+/emboss.c:26 operations/common-gpl3+/emboss.c:270
+#: operations/common-gpl3+/emboss.c:26 operations/common-gpl3+/emboss.c:271
 msgid "Emboss"
 msgstr "Bočenje"
 
@@ -4522,19 +4519,17 @@ msgstr "Vrsta upodabljanja"
 msgid "Light angle (degrees)"
 msgstr "Kot svetlobe (stopinje)"
 
-#: operations/common-gpl3+/emboss.c:40
+#: operations/common-gpl3+/emboss.c:41
 #, fuzzy
 #| msgid "The elevation angle (degrees)"
 msgid "Elevation angle (degrees)"
 msgstr "Kot dvignjenosti (stopinje)"
 
-#: operations/common-gpl3+/emboss.c:45
-#, fuzzy
-#| msgid "The filter width"
+#: operations/common-gpl3+/emboss.c:46
 msgid "Filter width"
 msgstr "Širina filtra"
 
-#: operations/common-gpl3+/emboss.c:274
+#: operations/common-gpl3+/emboss.c:275
 msgid "Simulates an image created by embossing"
 msgstr "Simulira sliko, ustvarjeno z reliefnim krašenjem"
 
@@ -4894,7 +4889,7 @@ msgid "Maze algorithm type"
 msgstr "Vrsta algoritma za labirint"
 
 #: operations/common-gpl3+/maze.c:61 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:60
+#: operations/common-gpl3+/ripple.c:61
 msgid "Tileable"
 msgstr "Tlakovalnost"
 
@@ -5010,19 +5005,19 @@ msgstr "Barva svetlobe"
 msgid "Light direction"
 msgstr "Smer svetlobe"
 
-#: operations/common-gpl3+/mosaic.c:85
+#: operations/common-gpl3+/mosaic.c:86
 msgid "Antialiasing"
 msgstr "Glajenje robov"
 
-#: operations/common-gpl3+/mosaic.c:86
+#: operations/common-gpl3+/mosaic.c:87
 msgid "Enables smoother tile output"
 msgstr "Omogoča bolj gladek izhod tlakovcev"
 
-#: operations/common-gpl3+/mosaic.c:2468
+#: operations/common-gpl3+/mosaic.c:2469
 msgid "Mosaic"
 msgstr "Mozaik"
 
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2473
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -5036,11 +5031,11 @@ msgid "Rotation blur angle. A large angle may take some time to render"
 msgstr ""
 "Kot sukane zabrisanosti. Večji kot lahko pomeni daljši čas upodabljanja."
 
-#: operations/common-gpl3+/motion-blur-circular.c:425
+#: operations/common-gpl3+/motion-blur-circular.c:422
 msgid "Circular Motion Blur"
 msgstr "Krožna zabrisanost gibanja"
 
-#: operations/common-gpl3+/motion-blur-circular.c:430
+#: operations/common-gpl3+/motion-blur-circular.c:427
 msgid "Circular motion blur"
 msgstr "Krožna zabrisanost gibanja"
 
@@ -5116,7 +5111,7 @@ msgstr "Polmer kroga okoli slik. točke"
 
 #: operations/common-gpl3+/oilify.c:33 operations/common-gpl3+/sinus.c:72
 #: operations/workshop/bayer-matrix.c:69
-#: operations/workshop/linear-sinusoid.c:76
+#: operations/workshop/linear-sinusoid.c:77
 msgid "Exponent"
 msgstr "Eksponentno"
 
@@ -5192,48 +5187,48 @@ msgstr "Globina kroga v odstotkih"
 msgid "Offset angle"
 msgstr "Kot zamika"
 
-#: operations/common-gpl3+/polar-coordinates.c:42
+#: operations/common-gpl3+/polar-coordinates.c:43
 msgid "Map backwards"
 msgstr "Poslikaj nazaj"
 
-#: operations/common-gpl3+/polar-coordinates.c:43
+#: operations/common-gpl3+/polar-coordinates.c:44
 msgid "Start from the right instead of the left"
 msgstr "Začni z desne namesto z leve"
 
-#: operations/common-gpl3+/polar-coordinates.c:45
+#: operations/common-gpl3+/polar-coordinates.c:46
 msgid "Map from top"
 msgstr "Poslikaj z vrha"
 
-#: operations/common-gpl3+/polar-coordinates.c:46
+#: operations/common-gpl3+/polar-coordinates.c:47
 msgid "Put the top row in the middle and the bottom row on the outside"
 msgstr "Postavi vrhnjo vrstico na sredo in spodnjo vrstico izven"
 
-#: operations/common-gpl3+/polar-coordinates.c:48
+#: operations/common-gpl3+/polar-coordinates.c:49
 msgid "To polar"
 msgstr "V polarne"
 
-#: operations/common-gpl3+/polar-coordinates.c:49
+#: operations/common-gpl3+/polar-coordinates.c:50
 msgid "Map the image to a circle"
 msgstr "Preslikaj sliko na krog"
 
-#: operations/common-gpl3+/polar-coordinates.c:52
-#: operations/common-gpl3+/polar-coordinates.c:59
+#: operations/common-gpl3+/polar-coordinates.c:53
+#: operations/common-gpl3+/polar-coordinates.c:60
 msgid "Origin point for the polar coordinates"
 msgstr "Izvorna točka za polarne koordinate"
 
-#: operations/common-gpl3+/polar-coordinates.c:65
+#: operations/common-gpl3+/polar-coordinates.c:66
 msgid "Choose middle"
 msgstr "Izberite srednjo"
 
-#: operations/common-gpl3+/polar-coordinates.c:66
+#: operations/common-gpl3+/polar-coordinates.c:67
 msgid "Let origin point to be the middle one"
 msgstr "Naj bo izvorna točka osrednja točka"
 
-#: operations/common-gpl3+/polar-coordinates.c:411
+#: operations/common-gpl3+/polar-coordinates.c:412
 msgid "Polar Coordinates"
 msgstr "Polarne koordinate"
 
-#: operations/common-gpl3+/polar-coordinates.c:416
+#: operations/common-gpl3+/polar-coordinates.c:417
 msgid "Convert image to or from polar coordinates"
 msgstr "Pretvori sliko iz ali v polarne koordinate"
 
@@ -5266,19 +5261,19 @@ msgstr "Amplituda"
 msgid "Phase shift"
 msgstr "Fazni zamik"
 
-#: operations/common-gpl3+/ripple.c:52
+#: operations/common-gpl3+/ripple.c:53
 msgid "Wave type"
 msgstr "Vrsta valovanja"
 
-#: operations/common-gpl3+/ripple.c:61
+#: operations/common-gpl3+/ripple.c:62
 msgid "Retain tilebility"
 msgstr "Ohrani tlakovalnost"
 
-#: operations/common-gpl3+/ripple.c:258
+#: operations/common-gpl3+/ripple.c:259
 msgid "Ripple"
 msgstr "Val"
 
-#: operations/common-gpl3+/ripple.c:263
+#: operations/common-gpl3+/ripple.c:264
 msgid "Displace pixels in a ripple pattern"
 msgstr "Razmesti slikovne točke v vzorcu valovanja."
 
@@ -5419,7 +5414,6 @@ msgid "If set, the pattern will be a little more distorted"
 msgstr "Če je nastavljeno, bo vzorec malo manj zmaličen."
 
 #: operations/common-gpl3+/sinus.c:64
-#, fuzzy
 msgid "Bilinear"
 msgstr "Bilinearno"
 
@@ -5460,16 +5454,12 @@ msgid "Spiral type"
 msgstr "Vrsta spirale"
 
 #: operations/common-gpl3+/spiral.c:36
-#, fuzzy
-#| msgid "Start x coordinate"
 msgid "Spiral origin X coordinate"
-msgstr "Začetna koordinata X"
+msgstr "Začetna koordinata spirale X"
 
 #: operations/common-gpl3+/spiral.c:42
-#, fuzzy
-#| msgid "Start x coordinate"
 msgid "Spiral origin Y coordinate"
-msgstr "Začetna koordinata X"
+msgstr "Začetna koordinata spirale X"
 
 #: operations/common-gpl3+/spiral.c:48
 msgid "Spiral radius"
@@ -5495,21 +5485,19 @@ msgstr ""
 msgid "Spiral rotation"
 msgstr "Sukanje spirale"
 
-#: operations/common-gpl3+/spiral.c:71
+#: operations/common-gpl3+/spiral.c:72
 msgid "Counter-clockwise"
 msgstr "Nasprotno smeri urinega kazalca"
 
-#: operations/common-gpl3+/spiral.c:77
-#, fuzzy
-#| msgid "Shift direction"
+#: operations/common-gpl3+/spiral.c:78
 msgid "Spiral swirl direction"
-msgstr "Smer odmika"
+msgstr "Smer vrtinčenja spirale"
 
-#: operations/common-gpl3+/spiral.c:443
+#: operations/common-gpl3+/spiral.c:444
 msgid "Spiral"
 msgstr "Spirala"
 
-#: operations/common-gpl3+/spiral.c:448
+#: operations/common-gpl3+/spiral.c:449
 msgid "Spiral renderer"
 msgstr "Upodobljevalnik spirale"
 
@@ -5888,11 +5876,11 @@ msgstr "Popači sliko z valovi"
 msgid "Whirl angle (degrees)"
 msgstr "Kot vrtinca (stopinje)"
 
-#: operations/common-gpl3+/whirl-pinch.c:42
+#: operations/common-gpl3+/whirl-pinch.c:43
 msgid "Pinch amount"
 msgstr "Količina odščipa"
 
-#: operations/common-gpl3+/whirl-pinch.c:46
+#: operations/common-gpl3+/whirl-pinch.c:47
 msgid ""
 "Radius (1.0 is the largest circle that fits in the image, and 2.0 goes all "
 "the way to the corners)"
@@ -5900,11 +5888,11 @@ msgstr ""
 "Polmer (1,0 je največji krog, ki ga je mogoče postaviti v sliko, 2,0 pa sega "
 "vse do robov slike)"
 
-#: operations/common-gpl3+/whirl-pinch.c:261
+#: operations/common-gpl3+/whirl-pinch.c:262
 msgid "Whirl Pinch"
 msgstr "Vrtinči in odščipni"
 
-#: operations/common-gpl3+/whirl-pinch.c:266
+#: operations/common-gpl3+/whirl-pinch.c:267
 msgid "Distort an image by whirling and pinching"
 msgstr "Popači sliko z vrtinčenjem in priščipnjenjem"
 
@@ -5937,12 +5925,10 @@ msgid "Leading"
 msgstr "Vodilno"
 
 #: operations/common-gpl3+/wind.c:42
-#, fuzzy
-#| msgid "Scaling"
 msgid "Trailing"
-msgstr "Spreminjanje merila"
+msgstr "Sled"
 
-#: operations/common-gpl3+/wind.c:45
+#: operations/common-gpl3+/wind.c:45 operations/workshop/long-shadow.c:36
 msgid "Style"
 msgstr "Slog"
 
@@ -6077,10 +6063,8 @@ msgid "Convert the data to the specified format"
 msgstr "Pretvori podatke v navedeno obliko"
 
 #: operations/core/convert-space.c:104
-#, fuzzy
-#| msgid "Convert a specified color to transparency"
 msgid "Convert color space"
-msgstr "Pretvori navedeno barvo v prosojnost"
+msgstr "Pretvori barvni prostor"
 
 #: operations/core/convert-space.c:106
 msgid ""
@@ -6342,10 +6326,8 @@ msgstr "Pot datoteke, ki jo želite naložiti"
 
 #: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
 #: operations/external/tiff-load.c:28 operations/external/webp-load.c:28
-#, fuzzy
-#| msgid "Path of file to load"
 msgid "URI for file to load"
-msgstr "Pot datoteke, ki jo želite naložiti"
+msgstr "URI datoteke, ki jo želite naložiti."
 
 #: operations/external/jp2-load.c:128
 msgid "Unknown JPEG 2000 image format"
@@ -6743,10 +6725,8 @@ msgstr ""
 "Uporablja GdkPixbug, ki se nahaja na pomnilniškem mestu v <em>pixbuf</em>."
 
 #: operations/external/png-load.c:30
-#, fuzzy
-#| msgid "Path of file to load."
 msgid "URI for file to load."
-msgstr "Pot datoteke, ki jo želite naložiti."
+msgstr "URI datoteke, ki jo želite naložiti."
 
 #: operations/external/png-load.c:564
 msgid "PNG File Loader"
@@ -6781,10 +6761,8 @@ msgid "PNG image saver, using libpng"
 msgstr "Shranjevalnik slik PNG z uporabo libpng"
 
 #: operations/external/ppm-load.c:28
-#, fuzzy
-#| msgid "Path of file to load."
 msgid "URI of image to load."
-msgstr "Pot datoteke, ki jo želite naložiti."
+msgstr "URI slike za nalaganje."
 
 #: operations/external/ppm-load.c:460
 msgid "PPM File Loader"
@@ -6831,10 +6809,8 @@ msgid "Color space"
 msgstr "Barvni prostor"
 
 #: operations/external/raw-load.c:41
-#, fuzzy
-#| msgid "Color of paint to use for stroking"
 msgid "Color space to use for loaded data"
-msgstr "Barva, uporabljena za potezo"
+msgstr "Barvni prostor, uporabljen za naložene podatke"
 
 #: operations/external/raw-load.c:277
 msgid "libraw File Loader"
@@ -7395,11 +7371,11 @@ msgstr "Diplome"
 msgid "Angle to rotate (counter-clockwise)"
 msgstr "Kot sukanja (v obratni SUK)"
 
-#: operations/transform/rotate.c:72
+#: operations/transform/rotate.c:73
 msgid "Rotate"
 msgstr "Zasukaj"
 
-#: operations/transform/rotate.c:76
+#: operations/transform/rotate.c:77
 msgid "Rotate the buffer around the specified origin."
 msgstr "Zasukaj medpomnilnik okoli navedenega izvora."
 
@@ -7579,7 +7555,7 @@ msgid "270°"
 msgstr "270°"
 
 #: operations/workshop/bayer-matrix.c:54
-#: operations/workshop/linear-sinusoid.c:96
+#: operations/workshop/linear-sinusoid.c:97
 msgid "Pattern rotation angle"
 msgstr "Kot sukanja vzorca"
 
@@ -7592,32 +7568,32 @@ msgid "Pattern amplitude (logarithmic scale)"
 msgstr "Amplituda vzorca (logaritemsko merilo)"
 
 #: operations/workshop/bayer-matrix.c:65
-#: operations/workshop/linear-sinusoid.c:72
+#: operations/workshop/linear-sinusoid.c:73
 msgid "Value offset"
 msgstr "Odmik vrednosti"
 
 #: operations/workshop/bayer-matrix.c:70
-#: operations/workshop/linear-sinusoid.c:77
+#: operations/workshop/linear-sinusoid.c:78
 msgid "Value exponent (logarithmic scale)"
 msgstr "Eksponent vrednosti (logaritemsko merilo)"
 
 #: operations/workshop/bayer-matrix.c:74
-#: operations/workshop/linear-sinusoid.c:81
+#: operations/workshop/linear-sinusoid.c:82
 msgid "X Offset"
 msgstr "Odmik X"
 
 #: operations/workshop/bayer-matrix.c:75
-#: operations/workshop/linear-sinusoid.c:82
+#: operations/workshop/linear-sinusoid.c:83
 msgid "Offset for X axis"
 msgstr "Odmik na osi X"
 
 #: operations/workshop/bayer-matrix.c:81
-#: operations/workshop/linear-sinusoid.c:88
+#: operations/workshop/linear-sinusoid.c:89
 msgid "Y Offset"
 msgstr "Odmik Y"
 
 #: operations/workshop/bayer-matrix.c:82
-#: operations/workshop/linear-sinusoid.c:89
+#: operations/workshop/linear-sinusoid.c:90
 msgid "Offset for Y axis"
 msgstr "Odmik na osi Y"
 
@@ -8131,23 +8107,90 @@ msgstr "Faza osi Y"
 msgid "Axis separation angle"
 msgstr "Kot sukanja"
 
-#: operations/workshop/linear-sinusoid.c:100
+#: operations/workshop/linear-sinusoid.c:102
 msgid "Supersampling"
 msgstr "Prevzorčenje"
 
-#: operations/workshop/linear-sinusoid.c:101
+#: operations/workshop/linear-sinusoid.c:103
 msgid "Number of samples along each axis per pixel"
 msgstr ""
 
-#: operations/workshop/linear-sinusoid.c:297
+#: operations/workshop/linear-sinusoid.c:299
 #, fuzzy
 #| msgid "Linear motion blur"
 msgid "Linear Sinusoid"
 msgstr "Linearna zabrisanost gibanja"
 
-#: operations/workshop/linear-sinusoid.c:302
+#: operations/workshop/linear-sinusoid.c:304
 msgid "Generate a linear sinusoid pattern"
 msgstr "Ustvari linearni sinusoidni vzorec"
+
+#: operations/workshop/long-shadow.c:25
+msgid "Finite"
+msgstr ""
+
+#: operations/workshop/long-shadow.c:26
+msgid "Infinite"
+msgstr ""
+
+#: operations/workshop/long-shadow.c:27
+#, fuzzy
+#| msgid "Leading"
+msgid "Fading"
+msgstr "Vodilno"
+
+#: operations/workshop/long-shadow.c:31
+msgid "Shadow plus image"
+msgstr ""
+
+#: operations/workshop/long-shadow.c:32
+msgid "Shadow only"
+msgstr "Samo senca"
+
+#: operations/workshop/long-shadow.c:33
+msgid "Shadow minus image"
+msgstr ""
+
+#: operations/workshop/long-shadow.c:39
+msgid "Shadow style"
+msgstr "Slog sence"
+
+#: operations/workshop/long-shadow.c:42
+msgid "Shadow angle"
+msgstr "Kot sence"
+
+#: operations/workshop/long-shadow.c:48
+msgid "Shadow length"
+msgstr "Dolžina sence"
+
+#: operations/workshop/long-shadow.c:53
+msgid "Midpoint"
+msgstr ""
+
+#: operations/workshop/long-shadow.c:54
+msgid "Shadow fade midpoint"
+msgstr ""
+
+#: operations/workshop/long-shadow.c:60
+msgid "Shadow color"
+msgstr "Barva senc"
+
+#: operations/workshop/long-shadow.c:63
+msgid "Composition"
+msgstr "Kompozicija"
+
+#: operations/workshop/long-shadow.c:66
+msgid "Output composition"
+msgstr "Izhodna kompozicija"
+
+#: operations/workshop/long-shadow.c:1106
+#, fuzzy
+msgid "Long Shadow"
+msgstr "Vrzi sen_co …"
+
+#: operations/workshop/long-shadow.c:1109
+msgid "Creates a long-shadow effect"
+msgstr "Ustvari učinek, podoben dolgi senci"
 
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
@@ -8202,10 +8245,8 @@ msgid "Width of Hue selection interval  "
 msgstr ""
 
 #: operations/workshop/selective-hue-saturation.c:39
-#, fuzzy
-#| msgid "Saturation"
 msgid "Saturation adjustment"
-msgstr "Nasičenost"
+msgstr "Prilagoditev nasičenosti"
 
 #: operations/workshop/selective-hue-saturation.c:170
 #, fuzzy
