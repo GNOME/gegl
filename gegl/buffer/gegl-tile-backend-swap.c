@@ -631,6 +631,12 @@ gegl_tile_backend_swap_entry_destroy (GeglTileBackendSwap *self,
       /* reuse the queued op, changing it to an OP_DESTROY. */
       queued_op->operation = OP_DESTROY;
 
+      /* move to op to the top of the queue, so that it gets served before any
+       * write ops, which are then free to reuse the reclaimed space.
+       */
+      g_queue_unlink (queue, link);
+      g_queue_push_head_link (queue, link);
+
       return;
     }
 
