@@ -326,9 +326,11 @@ gegl_tile_backend_swap_destroy (ThreadParams *params)
   start = params->entry->offset;
   end = start + params->length;
 
-  g_assert (start >= 0);
-
   g_slice_free (SwapEntry, params->entry);
+
+  /* storage for entry not allocated yet.  nothing more to do. */
+  if (start < 0)
+    return;
 
   if ((hlink = gap_list))
     while (hlink)
@@ -626,26 +628,8 @@ gegl_tile_backend_swap_entry_destroy (GeglTileBackendSwap *self,
           queued_op->tile = NULL;
         }
 
-      if (entry->offset >= 0)
-        {
-          /* the queued op's entry already has storage allocated to it, which
-           * needs to be reclaimed.  change it to an OP_DESTROY, and move it to
-           * the top.
-           */
-          queued_op->operation = OP_DESTROY;
-
-          g_queue_unlink (queue, link);
-          g_queue_push_head_link (queue, link);
-        }
-      else
-        {
-          /* the queued op's entry doesn't have storage allocated to it, so we
-           * can simply free it here.
-           */
-          g_queue_delete_link (queue, link);
-          g_slice_free (ThreadParams, queued_op);
-          g_slice_free (SwapEntry, entry);
-        }
+      /* reuse the queued op, changing it to an OP_DESTROY. */
+      queued_op->operation = OP_DESTROY;
 
       return;
     }
