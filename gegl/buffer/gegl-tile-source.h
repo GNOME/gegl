@@ -200,6 +200,46 @@ gegl_tile_source_void (GeglTileSource *source,
   gegl_tile_source_command (source, GEGL_TILE_VOID, x, y, z, NULL);
 }
 
+/**
+ * gegl_tile_source_copy:
+ * @source: a GeglTileSource *
+ * @x: x coordinate
+ * @y: y coordinate
+ * @z: tile zoom level
+ * @dst_buffer: destination buffer, or #NULL
+ * @dst_x: x coordinate of destination tile
+ * @dst_y: y coordinate of destination tile
+ * @dst_z: z coordinate of destination tile
+ *
+ * Copies a tile from @source to @dst_buffer, or, if @dst_buffer is #NULL, to
+ * the buffer @source belongs to.
+ *
+ * Returns: #TRUE if the tile was copied.
+ */
+static inline gboolean
+gegl_tile_source_copy (GeglTileSource *source,
+                       gint            x,
+                       gint            y,
+                       gint            z,
+                       GeglBuffer     *dst_buffer,
+                       gint            dst_x,
+                       gint            dst_y,
+                       gint            dst_z)
+{
+  GeglTileCopyParams params;
+
+  params.dst_buffer = dst_buffer;
+
+  params.dst_x      = dst_x;
+  params.dst_y      = dst_y;
+  params.dst_z      = dst_z;
+
+  if (gegl_tile_source_command (source, GEGL_TILE_COPY, x, y, z, &params))
+    return TRUE;
+  else
+    return FALSE;
+}
+
 /*    INTERNAL API
  * gegl_tile_source_refetch:
  * @source: a GeglTileSource *

@@ -46,8 +46,18 @@ typedef enum
   GEGL_TILE_FLUSH,
   GEGL_TILE_REFETCH,
   GEGL_TILE_REINIT,
+  GEGL_TILE_COPY,
   GEGL_TILE_LAST_COMMAND
 } GeglTileCommand;
+
+typedef struct _GeglTileCopyParams
+{
+  GeglBuffer *dst_buffer;
+
+  gint        dst_x;
+  gint        dst_y;
+  gint        dst_z;
+} GeglTileCopyParams;
 
 G_END_DECLS
 
