@@ -51,39 +51,44 @@ typedef struct CacheItem
         ((CacheItem *) ((guchar *) l - G_STRUCT_OFFSET (CacheItem, link)))
 
 
-static gboolean   gegl_tile_handler_cache_equalfunc  (gconstpointer         a,
-                                                      gconstpointer         b);
-static guint      gegl_tile_handler_cache_hashfunc   (gconstpointer         key);
-static void       gegl_tile_handler_cache_dispose    (GObject              *object);
-static gboolean   gegl_tile_handler_cache_wash       (GeglTileHandlerCache *cache);
-static gpointer   gegl_tile_handler_cache_command    (GeglTileSource       *tile_store,
-                                                      GeglTileCommand       command,
-                                                      gint                  x,
-                                                      gint                  y,
-                                                      gint                  z,
-                                                      gpointer              data);
-static GeglTile * gegl_tile_handler_cache_get_tile   (GeglTileHandlerCache *cache,
-                                                      gint                  x,
-                                                      gint                  y,
-                                                      gint                  z);
-static gboolean   gegl_tile_handler_cache_has_tile   (GeglTileHandlerCache *cache,
-                                                      gint                  x,
-                                                      gint                  y,
-                                                      gint                  z);
-void              gegl_tile_handler_cache_insert     (GeglTileHandlerCache *cache,
-                                                      GeglTile             *tile,
-                                                      gint                  x,
-                                                      gint                  y,
-                                                      gint                  z);
-static void       gegl_tile_handler_cache_void       (GeglTileHandlerCache *cache,
-                                                      gint                  x,
-                                                      gint                  y,
-                                                      gint                  z,
-                                                      guint64               damage);
-static void       gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cache,
-                                                      gint                  x,
-                                                      gint                  y,
-                                                      gint                  z);
+static gboolean   gegl_tile_handler_cache_equalfunc  (gconstpointer             a,
+                                                      gconstpointer             b);
+static guint      gegl_tile_handler_cache_hashfunc   (gconstpointer             key);
+static void       gegl_tile_handler_cache_dispose    (GObject                  *object);
+static gboolean   gegl_tile_handler_cache_wash       (GeglTileHandlerCache     *cache);
+static gpointer   gegl_tile_handler_cache_command    (GeglTileSource           *tile_store,
+                                                      GeglTileCommand           command,
+                                                      gint                      x,
+                                                      gint                      y,
+                                                      gint                      z,
+                                                      gpointer                  data);
+static GeglTile * gegl_tile_handler_cache_get_tile   (GeglTileHandlerCache     *cache,
+                                                      gint                      x,
+                                                      gint                      y,
+                                                      gint                      z);
+static gboolean   gegl_tile_handler_cache_has_tile   (GeglTileHandlerCache     *cache,
+                                                      gint                      x,
+                                                      gint                      y,
+                                                      gint                      z);
+void              gegl_tile_handler_cache_insert     (GeglTileHandlerCache     *cache,
+                                                      GeglTile                 *tile,
+                                                      gint                      x,
+                                                      gint                      y,
+                                                      gint                      z);
+static void       gegl_tile_handler_cache_void       (GeglTileHandlerCache     *cache,
+                                                      gint                      x,
+                                                      gint                      y,
+                                                      gint                      z,
+                                                      guint64                   damage);
+static void       gegl_tile_handler_cache_invalidate (GeglTileHandlerCache     *cache,
+                                                      gint                      x,
+                                                      gint                      y,
+                                                      gint                      z);
+static gboolean   gegl_tile_handler_cache_copy       (GeglTileHandlerCache     *cache,
+                                                      gint                      x,
+                                                      gint                      y,
+                                                      gint                      z,
+                                                      const GeglTileCopyParams *params);
 
 
 static GMutex             mutex                 = { 0, };
@@ -276,6 +281,12 @@ gegl_tile_handler_cache_command (GeglTileSource  *tile_store,
       case GEGL_TILE_REINIT:
         gegl_tile_handler_cache_reinit (cache);
         break;
+      case GEGL_TILE_COPY:
+        /* we potentially chain up in gegl_tile_handler_cache_copy(), because
+         * its logic is interleaved with that of the backend.
+         */
+        return GINT_TO_POINTER (gegl_tile_handler_cache_copy (cache,
+                                                              x, y, z, data));
       default:
         break;
     }
@@ -631,6 +642,110 @@ gegl_tile_handler_cache_invalidate (GeglTileHandlerCache *cache,
 
       g_slice_free (CacheItem, item);
     }
+}
+
+static gboolean
+gegl_tile_handler_cache_copy (GeglTileHandlerCache     *cache,
+                              gint                      x,
+                              gint                      y,
+                              gint                      z,
+                              const GeglTileCopyParams *params)
+{
+  GeglTile *tile;
+  GeglTile *dst_tile = NULL;
+  gboolean  success  = FALSE;
+
+  if (G_UNLIKELY (gegl_cl_is_accelerated ()))
+    gegl_buffer_cl_cache_flush2 (cache, NULL);
+
+  tile = gegl_tile_handler_cache_get_tile (cache, x, y, z);
+
+  /* if the tile is not fully valid, bail, so that the copy happens using a
+   * TILE_GET commands, validating the tile in the process.
+   */
+  if (tile && tile->damage)
+    {
+      gegl_tile_unref (tile);
+
+      return FALSE;
+    }
+
+  /* otherwise, if we have the tile and it's valid, copy it directly to the
+   * destination first, so that the copied tile will already be present in the
+   * destination cache.
+   */
+  if (tile)
+    {
+      GeglTileHandler *dst_handler;
+
+      if (params->dst_buffer)
+        dst_handler = GEGL_TILE_HANDLER (params->dst_buffer->tile_storage);
+      else
+        dst_handler = GEGL_TILE_HANDLER (cache);
+
+      dst_tile = gegl_tile_handler_dup_tile (dst_handler,
+                                             tile,
+                                             params->dst_x,
+                                             params->dst_y,
+                                             params->dst_z);
+
+      success = TRUE;
+    }
+
+  /* then, if we don't have the tile, or if the tile is stored, iow, if the
+   * tile might exist in the backend in an up-to-date state ...
+   */
+  if (! tile || gegl_tile_is_stored (tile))
+    {
+      /* ... try letting the backend copy the tile, so that the copied tile
+       * will already be stored in the destination backend.
+       */
+      if (gegl_tile_handler_source_command (GEGL_TILE_HANDLER (cache),
+                                            GEGL_TILE_COPY, x, y, z,
+                                            (gpointer) params))
+        {
+          /* if the backend copied the tile, we can either mark the copied tile
+           * as stored, or, if we didn't have the tile, void any existing tile
+           * in the destination cache.
+           */
+
+          if (dst_tile)
+            {
+              gegl_tile_mark_as_stored (dst_tile);
+            }
+          else
+            {
+              GeglTileHandlerCache *dst_cache;
+
+              if (params->dst_buffer)
+                dst_cache = params->dst_buffer->tile_storage->cache;
+              else
+                dst_cache = cache;
+
+              if (dst_cache)
+                {
+                  gegl_tile_handler_cache_void (dst_cache,
+                                                params->dst_x,
+                                                params->dst_y,
+                                                params->dst_z,
+                                                ~(guint64) 0);
+                }
+            }
+
+          success = TRUE;
+        }
+    }
+
+  if (dst_tile)
+    gegl_tile_unref (dst_tile);
+
+  if (tile)
+    gegl_tile_unref (tile);
+
+  /* the copy is considered successful if either we or the backend (or both)
+   * copied the tile.
+   */
+  return success;
 }
 
 
