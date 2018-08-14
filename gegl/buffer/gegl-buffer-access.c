@@ -2403,17 +2403,40 @@ gegl_buffer_copy (GeglBuffer          *src,
            */
           {
             /* first we do a dumb copy,. but with fetched tiles */
-            GeglTileHandlerCache *cache = dst->tile_storage->cache;
+            GeglTileSource       *source = GEGL_TILE_SOURCE (src->tile_storage);
+            GeglTileHandlerCache *cache  = dst->tile_storage->cache;
+            gboolean fast_copy;
             gint dst_x, dst_y;
 
+            /* we only attempt performing a fast copy, using the TILE_COPY
+             * command, if the source buffer doesn't have any user-provided
+             * tile handlers.  the problem with user-provided tile handlers is
+             * that they might intenrally track the validity of tile contents,
+             * in a way that's opaque to gegl, and the only way to know for
+             * sure a given tile is valid, is to fetch it using TILE_GET.
+             *
+             * in the future, it might make sense to relax this condition, by
+             * adding some api, or changing the requirements of tile handlers.
+             */
+            fast_copy = (src->tile_storage->n_user_handlers == 0);
+
             if (gegl_config_threads()>1)
-              g_rec_mutex_lock (&dst->tile_storage->mutex);
+              {
+                if (src < dst)
+                  {
+                    g_rec_mutex_lock (&src->tile_storage->mutex);
+                    g_rec_mutex_lock (&dst->tile_storage->mutex);
+                  }
+                else
+                  {
+                    g_rec_mutex_lock (&dst->tile_storage->mutex);
+                    g_rec_mutex_lock (&src->tile_storage->mutex);
+                  }
+              }
 
             for (dst_y = cow_rect.y + dst->shift_y; dst_y < cow_rect.y + dst->shift_y + cow_rect.height; dst_y += tile_height)
             for (dst_x = cow_rect.x + dst->shift_x; dst_x < cow_rect.x + dst->shift_x + cow_rect.width; dst_x += tile_width)
               {
-                GeglTile *src_tile;
-                GeglTile *dst_tile;
                 gint src_x, src_y;
                 gint stx, sty, dtx, dty;
 
@@ -2425,22 +2448,33 @@ gegl_buffer_copy (GeglBuffer          *src,
                 dtx = gegl_tile_indice (dst_x, tile_width);
                 dty = gegl_tile_indice (dst_y, tile_height);
 
-                src_tile = gegl_buffer_get_tile (src, stx, sty, 0);
+                if (! fast_copy ||
+                    ! gegl_tile_source_copy (source, stx, sty, 0,
+                                             dst,    dtx, dty, 0))
+                  {
+                    GeglTile *src_tile;
+                    GeglTile *dst_tile;
 
-                dst_tile = gegl_tile_dup (src_tile);
-                dst_tile->tile_storage = dst->tile_storage;
-                dst_tile->x = dtx;
-                dst_tile->y = dty;
-                dst_tile->z = 0;
+                    src_tile = gegl_tile_source_get_tile (source, stx, sty, 0);
 
-                gegl_tile_handler_cache_insert (cache, dst_tile, dtx, dty, 0);
+                    dst_tile = gegl_tile_dup (src_tile);
+                    dst_tile->tile_storage = dst->tile_storage;
+                    dst_tile->x = dtx;
+                    dst_tile->y = dty;
+                    dst_tile->z = 0;
 
-                gegl_tile_unref (src_tile);
-                gegl_tile_unref (dst_tile);
+                    gegl_tile_handler_cache_insert (cache, dst_tile, dtx, dty, 0);
+
+                    gegl_tile_unref (dst_tile);
+                    gegl_tile_unref (src_tile);
+                  }
               }
 
             if (gegl_config_threads()>1)
-              g_rec_mutex_unlock (&dst->tile_storage->mutex);
+              {
+                g_rec_mutex_unlock (&src->tile_storage->mutex);
+                g_rec_mutex_unlock (&dst->tile_storage->mutex);
+              }
           }
 
           top = *dst_rect;

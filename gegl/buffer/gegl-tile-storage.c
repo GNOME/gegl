@@ -102,6 +102,8 @@ gegl_tile_storage_add_handler (GeglTileStorage *tile_storage,
   chain->chain = g_slist_insert (chain->chain, handler, 2);
 
   gegl_tile_handler_chain_bind (chain);
+
+  tile_storage->n_user_handlers++;
 }
 
 void
@@ -118,6 +120,8 @@ gegl_tile_storage_remove_handler (GeglTileStorage *tile_storage,
   g_object_unref (handler);
 
   gegl_tile_handler_chain_bind (chain);
+
+  tile_storage->n_user_handlers--;
 }
 
 GeglTile *
