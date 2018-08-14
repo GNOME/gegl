@@ -143,12 +143,10 @@ gegl_tile_dup (GeglTile *src)
   tile->clone_state    = CLONE_STATE_CLONED;
   tile->n_clones       = src->n_clones;
 
-  /* if the tile is not empty, mark it as dirty, since, even though the in-
-   * memory tile data is shared with the source tile, the stored tile data is
-   * separate.
+  /* mark the tile as dirty, since, even though the in-memory tile data is
+   * shared with the source tile, the stored tile data is separate.
    */
-  if (! tile->is_zero_tile)
-    tile->rev++;
+  tile->rev++;
 
   tile->destroy_notify      = src->destroy_notify;
   tile->destroy_notify_data = src->destroy_notify_data;

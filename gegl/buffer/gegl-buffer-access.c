@@ -2432,7 +2432,6 @@ gegl_buffer_copy (GeglBuffer          *src,
                 dst_tile->x = dtx;
                 dst_tile->y = dty;
                 dst_tile->z = 0;
-                dst_tile->rev++;
 
                 gegl_tile_handler_cache_insert (cache, dst_tile, dtx, dty, 0);
 

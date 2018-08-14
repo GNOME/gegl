@@ -107,8 +107,15 @@ get_tile (GeglTileSource *gegl_tile_source,
       empty->tile    = _new_empty_tile (tile_size);
     }
 
-  return gegl_tile_handler_dup_tile (GEGL_TILE_HANDLER (empty),
+  tile = gegl_tile_handler_dup_tile (GEGL_TILE_HANDLER (empty),
                                      empty->tile, x, y, z);
+
+  /* no need to store the tile, since we'll just create another empty tile on-
+   * demand if it's dropped.
+   */
+  gegl_tile_mark_as_stored (tile);
+
+  return tile;
 }
 
 static gpointer
