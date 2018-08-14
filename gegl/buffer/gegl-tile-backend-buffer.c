@@ -201,6 +201,21 @@ gegl_tile_backend_buffer_command (GeglTileSource  *tile_source,
                                                        command, x, y, z, data,
                                                        FALSE);
 
+    case GEGL_TILE_COPY:
+      /* we avoid forwarding the TILE_COPY command to the underlying buffer if
+       * it has user-provided tile handlers, for the same reason we avoid using
+       * this command in gegl_buffer_copy() under the same conditions.  see the
+       * comment regarding 'fast_copy' in gegl_buffer_copy().
+       */
+      if (tile_backend_buffer->buffer->tile_storage->n_user_handlers == 0)
+        {
+          return gegl_tile_backend_buffer_forward_command (tile_backend_buffer,
+                                                           command,
+                                                           x, y, z, data,
+                                                           FALSE);
+        }
+      return GINT_TO_POINTER (FALSE);
+
     default:
       g_return_val_if_fail (command >= 0 && command < GEGL_TILE_LAST_COMMAND,
                             NULL);
