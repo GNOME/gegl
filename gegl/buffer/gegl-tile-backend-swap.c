@@ -38,6 +38,7 @@
 #include "gegl.h"
 #include "gegl-buffer-types.h"
 #include "gegl-buffer-backend.h"
+#include "gegl-buffer-private.h"
 #include "gegl-tile-backend.h"
 #include "gegl-tile-backend-swap.h"
 #include "gegl-debug.h"
@@ -687,25 +688,36 @@ gegl_tile_backend_swap_set_tile (GeglTileSource *self,
                                  gint            y,
                                  gint            z)
 {
-  GeglTileBackend     *backend;
-  GeglTileBackendSwap *tile_backend_swap;
-  SwapEntry           *entry;
-
-  backend           = GEGL_TILE_BACKEND (self);
-  tile_backend_swap = GEGL_TILE_BACKEND_SWAP (backend);
-  entry             = gegl_tile_backend_swap_lookup_entry (tile_backend_swap, x, y, z);
-
-  if (entry == NULL)
+  if (tile->is_zero_tile)
     {
-      entry = gegl_tile_backend_swap_entry_create (x, y, z);
-      g_hash_table_insert (tile_backend_swap->index, entry, entry);
+      /* the tile is empty.  avoid an expensive write to disk, and just drop
+       * the existing tile (if there is one); the empty tile handler will serve
+       * a new empty tile upon request.
+       */
+      gegl_tile_backend_swap_void_tile (self, NULL, x, y, z);
     }
+  else
+    {
+      GeglTileBackend     *backend;
+      GeglTileBackendSwap *tile_backend_swap;
+      SwapEntry           *entry;
 
-  gegl_tile_backend_swap_entry_write (tile_backend_swap, entry, tile);
+      backend           = GEGL_TILE_BACKEND (self);
+      tile_backend_swap = GEGL_TILE_BACKEND_SWAP (backend);
+      entry             = gegl_tile_backend_swap_lookup_entry (tile_backend_swap, x, y, z);
+
+      if (entry == NULL)
+        {
+          entry = gegl_tile_backend_swap_entry_create (x, y, z);
+          g_hash_table_insert (tile_backend_swap->index, entry, entry);
+        }
+
+      gegl_tile_backend_swap_entry_write (tile_backend_swap, entry, tile);
+    }
 
   gegl_tile_mark_as_stored (tile);
 
-  return NULL;
+  return GINT_TO_POINTER (TRUE);
 }
 
 static gpointer
