@@ -67,16 +67,22 @@ typedef enum
 
 typedef struct
 {
+  gint    ref_count;
   gint64  offset;
   GList  *link;
-  gint    x;
-  gint    y;
-  gint    z;
+} SwapBlock;
+
+typedef struct
+{
+  gint       x;
+  gint       y;
+  gint       z;
+  SwapBlock *block;
 } SwapEntry;
 
 typedef struct
 {
-  SwapEntry *entry;
+  SwapBlock *block;
   gint       length;
   GeglTile  *tile;
   ThreadOp   operation;
@@ -89,78 +95,95 @@ typedef struct
 } SwapGap;
 
 
-static void        gegl_tile_backend_swap_push_queue    (ThreadParams          *params,
-                                                         gboolean               head);
-static void        gegl_tile_backend_swap_resize        (gint64                 size);
-static SwapGap *   gegl_tile_backend_swap_gap_new       (gint64                 start,
-                                                         gint64                 end);
-static gint64      gegl_tile_backend_swap_find_offset   (gint                   tile_size);
-static void        gegl_tile_backend_swap_write         (ThreadParams          *params);
-static void        gegl_tile_backend_swap_destroy       (ThreadParams          *params);
-static gpointer    gegl_tile_backend_swap_writer_thread (gpointer ignored);
-static GeglTile   *gegl_tile_backend_swap_entry_read    (GeglTileBackendSwap   *self,
-                                                         SwapEntry             *entry);
-static void        gegl_tile_backend_swap_entry_write   (GeglTileBackendSwap   *self,
-                                                         SwapEntry             *entry,
-                                                         GeglTile              *tile);
-static SwapEntry * gegl_tile_backend_swap_entry_create  (gint                   x,
-                                                         gint                   y,
-                                                         gint                   z);
-static void        gegl_tile_backend_swap_entry_destroy (GeglTileBackendSwap   *self,
-                                                         SwapEntry             *entry);
-static SwapEntry * gegl_tile_backend_swap_lookup_entry  (GeglTileBackendSwap   *self,
-                                                         gint                   x,
-                                                         gint                   y,
-                                                         gint                   z);
-static GeglTile *  gegl_tile_backend_swap_get_tile      (GeglTileSource        *self,
-                                                         gint                   x,
-                                                         gint                   y,
-                                                         gint                   z);
-static gpointer    gegl_tile_backend_swap_set_tile      (GeglTileSource        *self,
-                                                         GeglTile              *tile,
-                                                         gint                   x,
-                                                         gint                   y,
-                                                         gint                   z);
-static gpointer    gegl_tile_backend_swap_void_tile     (GeglTileSource        *self,
-                                                         GeglTile              *tile,
-                                                         gint                   x,
-                                                         gint                   y,
-                                                         gint                   z);
-static gpointer    gegl_tile_backend_swap_exist_tile    (GeglTileSource        *self,
-                                                         GeglTile              *tile,
-                                                         gint                   x,
-                                                         gint                   y,
-                                                         gint                   z);
-static gpointer    gegl_tile_backend_swap_command       (GeglTileSource        *self,
-                                                         GeglTileCommand        command,
-                                                         gint                   x,
-                                                         gint                   y,
-                                                         gint                   z,
-                                                         gpointer               data);
-static guint       gegl_tile_backend_swap_hashfunc      (gconstpointer key);
-static gboolean    gegl_tile_backend_swap_equalfunc     (gconstpointer          a,
-                                                         gconstpointer          b);
-static void        gegl_tile_backend_swap_constructed   (GObject *object);
-static void        gegl_tile_backend_swap_finalize      (GObject *object);
-static void        gegl_tile_backend_swap_ensure_exist  (void);
-static void        gegl_tile_backend_swap_class_init    (GeglTileBackendSwapClass *klass);
-static void        gegl_tile_backend_swap_init          (GeglTileBackendSwap *self);
-void               gegl_tile_backend_swap_cleanup       (void);
+static void        gegl_tile_backend_swap_push_queue      (ThreadParams             *params,
+                                                           gboolean                  head);
+static void        gegl_tile_backend_swap_resize          (gint64                    size);
+static SwapGap *   gegl_tile_backend_swap_gap_new         (gint64                    start,
+                                                           gint64                    end);
+static gint64      gegl_tile_backend_swap_find_offset     (gint                      tile_size);
+static void        gegl_tile_backend_swap_write           (ThreadParams             *params);
+static void        gegl_tile_backend_swap_destroy         (ThreadParams             *params);
+static gpointer    gegl_tile_backend_swap_writer_thread   (gpointer ignored);
+static GeglTile   *gegl_tile_backend_swap_entry_read      (GeglTileBackendSwap      *self,
+                                                           SwapEntry                *entry);
+static void        gegl_tile_backend_swap_entry_write     (GeglTileBackendSwap      *self,
+                                                           SwapEntry                *entry,
+                                                           GeglTile                 *tile);
+static SwapBlock * gegl_tile_backend_swap_block_create    (GeglTileBackendSwap      *self);
+static void        gegl_tile_backend_swap_block_free      (SwapBlock                *block);
+static SwapBlock * gegl_tile_backend_swap_block_ref       (GeglTileBackendSwap      *self,
+                                                           SwapBlock                *block);
+static void        gegl_tile_backend_swap_block_unref     (GeglTileBackendSwap      *self,
+                                                           SwapBlock                *block,
+                                                           gboolean                  lock);
+static gboolean    gegl_tile_backend_swap_block_is_unique (GeglTileBackendSwap      *self,
+                                                           SwapBlock                *block);
+static SwapEntry * gegl_tile_backend_swap_entry_create    (GeglTileBackendSwap      *self,
+                                                           gint                      x,
+                                                           gint                      y,
+                                                           gint                      z,
+                                                           SwapBlock                *block);
+static void        gegl_tile_backend_swap_entry_destroy   (GeglTileBackendSwap      *self,
+                                                           SwapEntry                *entry,
+                                                           gboolean                  lock);
+static SwapEntry * gegl_tile_backend_swap_lookup_entry    (GeglTileBackendSwap      *self,
+                                                           gint                      x,
+                                                           gint                      y,
+                                                           gint                      z);
+static GeglTile *  gegl_tile_backend_swap_get_tile        (GeglTileSource           *self,
+                                                           gint                      x,
+                                                           gint                      y,
+                                                           gint                      z);
+static gpointer    gegl_tile_backend_swap_set_tile        (GeglTileSource           *self,
+                                                           GeglTile                 *tile,
+                                                           gint                      x,
+                                                           gint                      y,
+                                                           gint                      z);
+static gpointer    gegl_tile_backend_swap_void_tile       (GeglTileSource           *self,
+                                                           gint                      x,
+                                                           gint                      y,
+                                                           gint                      z);
+static gpointer    gegl_tile_backend_swap_exist_tile      (GeglTileSource           *self,
+                                                           GeglTile                 *tile,
+                                                           gint                      x,
+                                                           gint                      y,
+                                                           gint                      z);
+static gpointer    gegl_tile_backend_swap_copy_tile       (GeglTileSource           *self,
+                                                           gint                      x,
+                                                           gint                      y,
+                                                           gint                      z,
+                                                           const GeglTileCopyParams *params);
+static gpointer    gegl_tile_backend_swap_command         (GeglTileSource           *self,
+                                                           GeglTileCommand           command,
+                                                           gint                      x,
+                                                           gint                      y,
+                                                           gint                      z,
+                                                           gpointer                  data);
+static guint       gegl_tile_backend_swap_hashfunc        (gconstpointer             key);
+static gboolean    gegl_tile_backend_swap_equalfunc       (gconstpointer             a,
+                                                           gconstpointer             b);
+static void        gegl_tile_backend_swap_constructed     (GObject                  *object);
+static void        gegl_tile_backend_swap_finalize        (GObject                  *object);
+static void        gegl_tile_backend_swap_ensure_exist    (void);
+static void        gegl_tile_backend_swap_class_init      (GeglTileBackendSwapClass *klass);
+static void        gegl_tile_backend_swap_init            (GeglTileBackendSwap      *self);
+void               gegl_tile_backend_swap_cleanup         (void);
 
 
-static gchar    *path        = NULL;
-static gint      in_fd       = -1;
-static gint      out_fd      = -1;
-static gint64    in_offset   = 0;
-static gint64    out_offset  = 0;
-static GList    *gap_list    = NULL;
-static gint64    file_size   = 0;
-static gint64    total       = 0;
-static gboolean  busy        = FALSE;
-static gboolean  reading     = FALSE;
-static gint64    read_total  = 0;
-static gboolean  writing     = FALSE;
-static gint64    write_total = 0;
+static gchar    *path         = NULL;
+static gint      in_fd        = -1;
+static gint      out_fd       = -1;
+static gint64    in_offset    = 0;
+static gint64    out_offset   = 0;
+static GList    *gap_list     = NULL;
+static gint64    file_size    = 0;
+static gint64    total        = 0;
+static guintptr  cloned_total = 0;
+static gboolean  busy         = FALSE;
+static gboolean  reading      = FALSE;
+static gint64    read_total   = 0;
+static gboolean  writing      = FALSE;
+static gint64    write_total  = 0;
 
 static GThread      *writer_thread = NULL;
 static GQueue       *queue         = NULL;
@@ -182,8 +205,8 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
   else
     g_queue_push_tail (queue, params);
 
-  if (params->entry)
-    params->entry->link = g_queue_peek_tail_link (queue);
+  if (params->block)
+    params->block->link = g_queue_peek_tail_link (queue);
 
   /* wake up the writer thread */
   g_cond_signal (&queue_cond);
@@ -268,7 +291,7 @@ static void
 gegl_tile_backend_swap_write (ThreadParams *params)
 {
   gint   to_be_written = params->length;
-  gint64 offset        = params->entry->offset;
+  gint64 offset        = params->block->offset;
 
   gegl_tile_backend_swap_ensure_exist ();
 
@@ -277,7 +300,7 @@ gegl_tile_backend_swap_write (ThreadParams *params)
       /* storage for entry not allocated yet.  allocate now. */
       offset = gegl_tile_backend_swap_find_offset (to_be_written);
 
-      params->entry->offset = offset;
+      params->block->offset = offset;
     }
 
   if (out_offset != offset)
@@ -324,10 +347,10 @@ gegl_tile_backend_swap_destroy (ThreadParams *params)
   gint64  start, end;
   GList  *hlink;
 
-  start = params->entry->offset;
-  end = start + params->length;
+  start = params->block->offset;
+  end   = start + params->length;
 
-  g_slice_free (SwapEntry, params->entry);
+  gegl_tile_backend_swap_block_free (params->block);
 
   /* storage for entry not allocated yet.  nothing more to do. */
   if (start < 0)
@@ -430,10 +453,10 @@ gegl_tile_backend_swap_writer_thread (gpointer ignored)
         break;
 
       params = (ThreadParams *)g_queue_pop_head (queue);
-      if (params->entry)
+      if (params->block)
         {
           in_progress = params;
-          params->entry->link = NULL;
+          params->block->link = NULL;
         }
 
       g_mutex_unlock (&queue_mutex);
@@ -475,13 +498,13 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
 
   g_mutex_lock (&queue_mutex);
 
-  if (entry->link || in_progress)
+  if (entry->block->link || in_progress)
     {
       ThreadParams *queued_op = NULL;
 
-      if (entry->link)
-        queued_op = entry->link->data;
-      else if (in_progress->entry == entry)
+      if (entry->block->link)
+        queued_op = entry->block->link->data;
+      else if (in_progress->block == entry->block)
         queued_op = in_progress;
 
       if (queued_op)
@@ -498,7 +521,7 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
         }
     }
 
-  offset = entry->offset;
+  offset = entry->block->offset;
 
   g_mutex_unlock (&queue_mutex);
 
@@ -570,15 +593,15 @@ gegl_tile_backend_swap_entry_write (GeglTileBackendSwap *self,
 
   g_mutex_lock (&queue_mutex);
 
-  if (entry->link)
+  if (entry->block->link)
     {
-      params = entry->link->data;
+      params = entry->block->link->data;
       g_assert (params->operation == OP_WRITE);
       gegl_tile_unref (params->tile);
       params->tile = gegl_tile_dup (tile);
       g_mutex_unlock (&queue_mutex);
 
-      GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "tile %i, %i, %i at %i is already enqueued, changed data", entry->x, entry->y, entry->z, (gint)entry->offset);
+      GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "tile %i, %i, %i at %i is already enqueued, changed data", entry->x, entry->y, entry->z, (gint)entry->block->offset);
 
       return;
     }
@@ -587,69 +610,148 @@ gegl_tile_backend_swap_entry_write (GeglTileBackendSwap *self,
   params->operation = OP_WRITE;
   params->length    = length;
   params->tile      = gegl_tile_dup (tile);
-  params->entry     = entry;
+  params->block     = entry->block;
 
   gegl_tile_backend_swap_push_queue (params, /* head = */ FALSE);
 
   g_mutex_unlock (&queue_mutex);
 
-  GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "pushed write of entry %i, %i, %i at %i", entry->x, entry->y, entry->z, (gint)entry->offset);
+  GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "pushed write of entry %i, %i, %i at %i", entry->x, entry->y, entry->z, (gint)entry->block->offset);
+}
+
+static SwapBlock *
+gegl_tile_backend_swap_block_create (GeglTileBackendSwap *self)
+{
+  SwapBlock *block = g_slice_new (SwapBlock);
+
+  block->ref_count = 1;
+  block->link      = NULL;
+  block->offset    = -1;
+
+  return block;
+}
+
+static void
+gegl_tile_backend_swap_block_free (SwapBlock *block)
+{
+  g_return_if_fail (block->ref_count == 0);
+
+  g_slice_free (SwapBlock, block);
+}
+
+static SwapBlock *
+gegl_tile_backend_swap_block_ref (GeglTileBackendSwap *self,
+                                  SwapBlock           *block)
+{
+  if (g_atomic_int_add (&block->ref_count, +1) == 1)
+    {
+      g_atomic_pointer_add (
+        &cloned_total,
+        +gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self)));
+    }
+
+  return block;
+}
+
+static void
+gegl_tile_backend_swap_block_unref (GeglTileBackendSwap *self,
+                                    SwapBlock           *block,
+                                    gboolean             lock)
+{
+  gint ref_count;
+
+  ref_count = g_atomic_int_add (&block->ref_count, -1) - 1;
+
+  if (ref_count == 0)
+    {
+      if (lock)
+        g_mutex_lock (&queue_mutex);
+
+      if (block->link)
+        {
+          GList        *link      = block->link;
+          ThreadParams *queued_op = link->data;
+
+          if (queued_op->tile)
+            {
+              gegl_tile_unref (queued_op->tile);
+              queued_op->tile = NULL;
+            }
+
+          /* reuse the queued op, changing it to an OP_DESTROY. */
+          queued_op->operation = OP_DESTROY;
+
+          /* move to op to the top of the queue, so that it gets served before
+           * any write ops, which are then free to reuse the reclaimed space.
+           */
+          g_queue_unlink (queue, link);
+          g_queue_push_head_link (queue, link);
+        }
+      else
+        {
+          ThreadParams *params;
+
+          params            = g_slice_new0 (ThreadParams);
+          params->operation = OP_DESTROY;
+          params->length    = gegl_tile_backend_get_tile_size (
+                                GEGL_TILE_BACKEND (self));
+          params->block     = block;
+
+          /* push the destroy op at the top of the queue, so that it gets
+           * served before any write ops, which are then free to reuse the
+           * reclaimed space.
+           */
+          gegl_tile_backend_swap_push_queue (params, /* head = */ TRUE);
+        }
+
+      if (lock)
+        g_mutex_unlock (&queue_mutex);
+    }
+  else if (ref_count == 1)
+    {
+      g_atomic_pointer_add (
+        &cloned_total,
+        -gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self)));
+    }
+}
+
+static gboolean
+gegl_tile_backend_swap_block_is_unique (GeglTileBackendSwap *self,
+                                        SwapBlock           *block)
+{
+  return g_atomic_int_get (&block->ref_count) == 1;
 }
 
 static SwapEntry *
-gegl_tile_backend_swap_entry_create (gint x,
-                                     gint y,
-                                     gint z)
+gegl_tile_backend_swap_entry_create (GeglTileBackendSwap *self,
+                                     gint                 x,
+                                     gint                 y,
+                                     gint                 z,
+                                     SwapBlock           *block)
 {
-  SwapEntry *entry = g_slice_new0 (SwapEntry);
+  SwapEntry *entry = g_slice_new (SwapEntry);
 
-  entry->x      = x;
-  entry->y      = y;
-  entry->z      = z;
-  entry->link   = NULL;
-  entry->offset = -1;
+  if (block)
+    gegl_tile_backend_swap_block_ref (self, block);
+  else
+    block = gegl_tile_backend_swap_block_create (self);
+
+  entry->x     = x;
+  entry->y     = y;
+  entry->z     = z;
+  entry->block = block;
 
   return entry;
 }
 
 static void
 gegl_tile_backend_swap_entry_destroy (GeglTileBackendSwap *self,
-                                      SwapEntry           *entry)
+                                      SwapEntry           *entry,
+                                      gboolean             lock)
 {
-  ThreadParams *params;
+  gegl_tile_backend_swap_block_unref (self, entry->block, lock);
 
-  if (entry->link)
-    {
-      GList        *link      = entry->link;
-      ThreadParams *queued_op = link->data;
-
-      if (queued_op->tile)
-        {
-          gegl_tile_unref (queued_op->tile);
-          queued_op->tile = NULL;
-        }
-
-      /* reuse the queued op, changing it to an OP_DESTROY. */
-      queued_op->operation = OP_DESTROY;
-
-      /* move to op to the top of the queue, so that it gets served before any
-       * write ops, which are then free to reuse the reclaimed space.
-       */
-      g_queue_unlink (queue, link);
-      g_queue_push_head_link (queue, link);
-
-      return;
-    }
-
-  params            = g_slice_new0 (ThreadParams);
-  params->operation = OP_DESTROY;
-  params->length    = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self));
-  params->entry     = entry;
-
-  /* push the destroy op at the top of the queue, so that it gets served before
-   * any write ops, which are then free to reuse the reclaimed space.
-   */
-  gegl_tile_backend_swap_push_queue (params, /* head = */ TRUE);
+  g_slice_free (SwapEntry, entry);
 }
 
 static SwapEntry *
@@ -658,7 +760,7 @@ gegl_tile_backend_swap_lookup_entry (GeglTileBackendSwap *self,
                                      gint                 y,
                                      gint                 z)
 {
-  SwapEntry key = {0, NULL, x, y, z};
+  SwapEntry key = {x, y, z};
 
   return g_hash_table_lookup (self->index, &key);
 }
@@ -669,16 +771,16 @@ gegl_tile_backend_swap_get_tile (GeglTileSource *self,
                                  gint            y,
                                  gint            z)
 {
-  GeglTileBackendSwap *tile_backend_swap;
+  GeglTileBackendSwap *swap;
   SwapEntry           *entry;
 
-  tile_backend_swap = GEGL_TILE_BACKEND_SWAP (self);
-  entry             = gegl_tile_backend_swap_lookup_entry (tile_backend_swap, x, y, z);
+  swap  = GEGL_TILE_BACKEND_SWAP (self);
+  entry = gegl_tile_backend_swap_lookup_entry (swap, x, y, z);
 
-  if (!entry)
+  if (! entry)
     return NULL;
 
-  return gegl_tile_backend_swap_entry_read (tile_backend_swap, entry);
+  return gegl_tile_backend_swap_entry_read (swap, entry);
 }
 
 static gpointer
@@ -688,32 +790,40 @@ gegl_tile_backend_swap_set_tile (GeglTileSource *self,
                                  gint            y,
                                  gint            z)
 {
+  GeglTileBackendSwap *swap;
+  SwapEntry           *entry;
+
   if (tile->is_zero_tile)
     {
       /* the tile is empty.  avoid an expensive write to disk, and just drop
        * the existing tile (if there is one); the empty tile handler will serve
        * a new empty tile upon request.
        */
-      gegl_tile_backend_swap_void_tile (self, NULL, x, y, z);
+      gegl_tile_backend_swap_void_tile (self, x, y, z);
+
+      gegl_tile_mark_as_stored (tile);
+
+      return GINT_TO_POINTER (TRUE);
+    }
+
+  swap  = GEGL_TILE_BACKEND_SWAP (self);
+  entry = gegl_tile_backend_swap_lookup_entry (swap, x, y, z);
+
+  if (entry)
+    {
+      if (! gegl_tile_backend_swap_block_is_unique (swap, entry->block))
+        {
+          gegl_tile_backend_swap_block_unref (swap, entry->block, TRUE);
+          entry->block = gegl_tile_backend_swap_block_create (swap);
+        }
     }
   else
     {
-      GeglTileBackend     *backend;
-      GeglTileBackendSwap *tile_backend_swap;
-      SwapEntry           *entry;
-
-      backend           = GEGL_TILE_BACKEND (self);
-      tile_backend_swap = GEGL_TILE_BACKEND_SWAP (backend);
-      entry             = gegl_tile_backend_swap_lookup_entry (tile_backend_swap, x, y, z);
-
-      if (entry == NULL)
-        {
-          entry = gegl_tile_backend_swap_entry_create (x, y, z);
-          g_hash_table_insert (tile_backend_swap->index, entry, entry);
-        }
-
-      gegl_tile_backend_swap_entry_write (tile_backend_swap, entry, tile);
+      entry = gegl_tile_backend_swap_entry_create (swap, x, y, z, NULL);
+      g_hash_table_insert (swap->index, entry, entry);
     }
+
+  gegl_tile_backend_swap_entry_write (swap, entry, tile);
 
   gegl_tile_mark_as_stored (tile);
 
@@ -722,30 +832,22 @@ gegl_tile_backend_swap_set_tile (GeglTileSource *self,
 
 static gpointer
 gegl_tile_backend_swap_void_tile (GeglTileSource *self,
-                                  GeglTile       *tile,
                                   gint            x,
                                   gint            y,
                                   gint            z)
 {
-  GeglTileBackend     *backend;
-  GeglTileBackendSwap *tile_backend_swap;
+  GeglTileBackendSwap *swap;
   SwapEntry           *entry;
 
-  backend           = GEGL_TILE_BACKEND (self);
-  tile_backend_swap = GEGL_TILE_BACKEND_SWAP (backend);
-  entry             = gegl_tile_backend_swap_lookup_entry (tile_backend_swap, x, y, z);
+  swap  = GEGL_TILE_BACKEND_SWAP (self);
+  entry = gegl_tile_backend_swap_lookup_entry (swap, x, y, z);
 
   if (entry != NULL)
     {
       GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "void tile %i, %i, %i", x, y, z);
 
-      g_hash_table_remove (tile_backend_swap->index, entry);
-
-      g_mutex_lock (&queue_mutex);
-
-      gegl_tile_backend_swap_entry_destroy (tile_backend_swap, entry);
-
-      g_mutex_unlock (&queue_mutex);
+      g_hash_table_remove (swap->index, entry);
+      gegl_tile_backend_swap_entry_destroy (swap, entry, TRUE);
     }
 
   return NULL;
@@ -758,15 +860,72 @@ gegl_tile_backend_swap_exist_tile (GeglTileSource *self,
                                    gint            y,
                                    gint            z)
 {
-  GeglTileBackend     *backend;
-  GeglTileBackendSwap *tile_backend_swap;
+  GeglTileBackendSwap *swap;
   SwapEntry           *entry;
 
-  backend           = GEGL_TILE_BACKEND (self);
-  tile_backend_swap = GEGL_TILE_BACKEND_SWAP (backend);
-  entry             = gegl_tile_backend_swap_lookup_entry (tile_backend_swap, x, y, z);
+  swap  = GEGL_TILE_BACKEND_SWAP (self);
+  entry = gegl_tile_backend_swap_lookup_entry (swap, x, y, z);
 
-  return entry!=NULL?((gpointer)0x1):NULL;
+  return GINT_TO_POINTER (entry != NULL);
+}
+
+static gpointer
+gegl_tile_backend_swap_copy_tile (GeglTileSource           *self,
+                                  gint                      x,
+                                  gint                      y,
+                                  gint                      z,
+                                  const GeglTileCopyParams *params)
+{
+  GeglTileBackendSwap *swap;
+  GeglTileBackendSwap *dst_swap;
+  SwapEntry           *entry;
+  SwapEntry           *dst_entry;
+
+  if (params->dst_buffer &&
+      ! GEGL_IS_TILE_BACKEND_SWAP (params->dst_buffer->backend))
+    {
+      return GINT_TO_POINTER (FALSE);
+    }
+
+  swap  = GEGL_TILE_BACKEND_SWAP (self);
+  entry = gegl_tile_backend_swap_lookup_entry (swap, x, y, z);
+
+  if (! entry)
+    return GINT_TO_POINTER (FALSE);
+
+  if (params->dst_buffer)
+    dst_swap = GEGL_TILE_BACKEND_SWAP (params->dst_buffer->backend);
+  else
+    dst_swap = swap;
+  dst_entry  = gegl_tile_backend_swap_lookup_entry (dst_swap,
+                                                    params->dst_x,
+                                                    params->dst_y,
+                                                    params->dst_z);
+
+  if (dst_entry)
+    {
+      if (dst_entry->block == entry->block)
+        {
+          return GINT_TO_POINTER (TRUE);
+        }
+      else
+        {
+          gegl_tile_backend_swap_block_unref (dst_swap, dst_entry->block, TRUE);
+          dst_entry->block = gegl_tile_backend_swap_block_ref (dst_swap,
+                                                               entry->block);
+        }
+    }
+  else
+    {
+      dst_entry = gegl_tile_backend_swap_entry_create (dst_swap,
+                                                       params->dst_x,
+                                                       params->dst_y,
+                                                       params->dst_z,
+                                                       entry->block);
+      g_hash_table_insert (dst_swap->index, dst_entry, dst_entry);
+    }
+
+  return GINT_TO_POINTER (TRUE);
 }
 
 static gpointer
@@ -786,17 +945,21 @@ gegl_tile_backend_swap_command (GeglTileSource  *self,
       case GEGL_TILE_IDLE:
         return NULL;
       case GEGL_TILE_VOID:
-        return gegl_tile_backend_swap_void_tile (self, data, x, y, z);
+        return gegl_tile_backend_swap_void_tile (self, x, y, z);
       case GEGL_TILE_EXIST:
         return gegl_tile_backend_swap_exist_tile (self, data, x, y, z);
       case GEGL_TILE_FLUSH:
         return NULL;
+      case GEGL_TILE_COPY:
+        return gegl_tile_backend_swap_copy_tile (self, x, y, z, data);
 
       default:
-        g_assert (command < GEGL_TILE_LAST_COMMAND &&
-                  command >= 0);
+        g_return_val_if_fail (command < GEGL_TILE_LAST_COMMAND &&
+                              command >= 0,
+                              NULL);
     }
-  return FALSE;
+
+  return NULL;
 }
 
 static guint
@@ -870,7 +1033,7 @@ gegl_tile_backend_swap_finalize (GObject *object)
           g_mutex_lock (&queue_mutex);
 
           while (g_hash_table_iter_next (&iter, &key, &value))
-            gegl_tile_backend_swap_entry_destroy (self, value);
+            gegl_tile_backend_swap_entry_destroy (self, value, FALSE);
 
           g_mutex_unlock (&queue_mutex);
         }
@@ -983,11 +1146,17 @@ gegl_tile_backend_swap_init (GeglTileBackendSwap *self)
  * important for these functions to be completely accurate at all times, it
  * should be ok.
  */
- 
+
 guint64
 gegl_tile_backend_swap_get_total (void)
 {
   return total;
+}
+
+guint64
+gegl_tile_backend_swap_get_total_uncloned (void)
+{
+  return total + cloned_total;
 }
 
 guint64

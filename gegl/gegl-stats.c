@@ -38,6 +38,7 @@ enum
   PROP_TILE_CACHE_HITS,
   PROP_TILE_CACHE_MISSES,
   PROP_SWAP_TOTAL,
+  PROP_SWAP_TOTAL_UNCLONED,
   PROP_SWAP_FILE_SIZE,
   PROP_SWAP_BUSY,
   PROP_SWAP_READING,
@@ -108,6 +109,13 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                    g_param_spec_uint64 ("swap-total",
                                                         "Swap total size",
                                                         "Total size of the data in the swap",
+                                                        0, G_MAXUINT64, 0,
+                                                        G_PARAM_READABLE));
+
+  g_object_class_install_property (object_class, PROP_SWAP_TOTAL_UNCLONED,
+                                   g_param_spec_uint64 ("swap-total-uncloned",
+                                                        "Swap total uncloned size",
+                                                        "Total size of if the data in the swap if all the entries were uncloned in bytes",
                                                         0, G_MAXUINT64, 0,
                                                         G_PARAM_READABLE));
 
@@ -212,6 +220,10 @@ gegl_stats_get_property (GObject    *object,
 
       case PROP_SWAP_TOTAL:
         g_value_set_uint64 (value, gegl_tile_backend_swap_get_total ());
+        break;
+
+      case PROP_SWAP_TOTAL_UNCLONED:
+        g_value_set_uint64 (value, gegl_tile_backend_swap_get_total_uncloned ());
         break;
 
       case PROP_SWAP_FILE_SIZE:

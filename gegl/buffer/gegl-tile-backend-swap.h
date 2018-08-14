@@ -46,17 +46,18 @@ struct _GeglTileBackendSwap
   GHashTable      *index;
 };
 
-GType      gegl_tile_backend_swap_get_type      (void) G_GNUC_CONST;
+GType      gegl_tile_backend_swap_get_type           (void) G_GNUC_CONST;
 
-guint64    gegl_tile_backend_swap_get_total       (void);
-guint64    gegl_tile_backend_swap_get_file_size   (void);
-gboolean   gegl_tile_backend_swap_get_busy        (void);
-gboolean   gegl_tile_backend_swap_get_reading     (void);
-guint64    gegl_tile_backend_swap_get_read_total  (void);
-gboolean   gegl_tile_backend_swap_get_writing     (void);
-guint64    gegl_tile_backend_swap_get_write_total (void);
+guint64    gegl_tile_backend_swap_get_total          (void);
+guint64    gegl_tile_backend_swap_get_total_uncloned (void);
+guint64    gegl_tile_backend_swap_get_file_size      (void);
+gboolean   gegl_tile_backend_swap_get_busy           (void);
+gboolean   gegl_tile_backend_swap_get_reading        (void);
+guint64    gegl_tile_backend_swap_get_read_total     (void);
+gboolean   gegl_tile_backend_swap_get_writing        (void);
+guint64    gegl_tile_backend_swap_get_write_total    (void);
 
-void       gegl_tile_backend_swap_reset_stats     (void);
+void       gegl_tile_backend_swap_reset_stats        (void);
 
 G_END_DECLS
 
