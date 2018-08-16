@@ -466,7 +466,7 @@ process (GeglOperation       *operation,
 
 static gchar *composition = "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
-    "<node operation='gegl:panorama-projection' width='200' height='200'/>"
+    "<node operation='gegl:stereographic-projection' width='200' height='200'/>"
     "<node operation='gegl:load'>"
     "  <params>"
     "    <param name='path'>standard-panorama.png</param>"
@@ -490,6 +490,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   gegl_operation_class_set_keys (operation_class,
     "name",                  "gegl:stereographic-projection",
+    "compat-name",           "gegl:little-planet",
     "title",                 _("Little Planet"),
     "reference-composition", composition,
     "position-dependent",    "true",
