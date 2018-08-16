@@ -921,36 +921,51 @@ gegl_tile_backend_swap_class_init (GeglTileBackendSwapClass *klass)
 void
 gegl_tile_backend_swap_cleanup (void)
 {
-  if (in_fd != -1 && out_fd != -1)
+  if (! writer_thread)
+    return;
+
+  g_mutex_lock (&queue_mutex);
+  exit_thread = TRUE;
+  g_cond_signal (&queue_cond);
+  g_mutex_unlock (&queue_mutex);
+  g_thread_join (writer_thread);
+  writer_thread = NULL;
+
+  if (g_queue_get_length (queue) != 0)
+    g_warning ("tile-backend-swap writer queue wasn't empty before freeing\n");
+
+  g_queue_free (queue);
+  queue = NULL;
+
+  if (gap_list)
     {
-      exit_thread = TRUE;
-      g_cond_signal (&queue_cond);
-      g_thread_join (writer_thread);
+      SwapGap *gap = gap_list->data;
 
-      if (g_queue_get_length (queue) != 0)
-        g_warning ("tile-backend-swap writer queue wasn't empty before freeing\n");
+      if (gap_list->next)
+        g_warning ("tile-backend-swap gap list had more than one element\n");
 
-      g_queue_free (queue);
+      g_warn_if_fail (gap->start == 0 && gap->end == file_size);
 
-      if (gap_list)
-        {
-          SwapGap *gap = gap_list->data;
+      g_slice_free (SwapGap, gap_list->data);
+      g_list_free (gap_list);
 
-          if (gap_list->next)
-            g_warning ("tile-backend-swap gap list had more than one element\n");
+      gap_list = NULL;
+    }
+  else
+    {
+      g_warn_if_fail (file_size == 0);
+    }
 
-          g_warn_if_fail (gap->start == 0 && gap->end == file_size);
-
-          g_slice_free (SwapGap, gap_list->data);
-          g_list_free (gap_list);
-        }
-      else
-        g_warn_if_fail (file_size == 0);
-
+  if (in_fd != -1)
+    {
       close (in_fd);
-      close (out_fd);
+      in_fd = -1;
+    }
 
-      in_fd = out_fd = -1;
+  if (out_fd != -1)
+    {
+      close (out_fd);
+      out_fd = -1;
     }
 }
 
