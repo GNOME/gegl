@@ -1,3 +1,26 @@
+GEGL-0.4.8 2018-08-17
+---------------------
+
+Core/GeglBuffer
+~~~~~~~~~~~~~~~
+
+Fixes to races during buffer/tile storage destruction, improve swap usage for
+stored empty tiles.
+
+Operations
+~~~~~~~~~~
+
+ motion-blur-circular - improve/clarify property ui
+ median-blur          - added abyss-policy property
+ long-shadow          - new operation
+
+Contributors to this release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alexandre Prokoudine, Anders Jonsson, Daniel Mustieles, Ell, Marco Ciampa,
+Martin Srebotnjak, Matej Urbančič, Øyvind Kolås, Piotr Drąg, and Rodrigo Lledó
+
+
 GEGL-0.4.6 2018-07-23
 ---------------------
 
