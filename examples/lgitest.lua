@@ -2,7 +2,7 @@
 
 local lgi = require 'lgi'
 local GObject = lgi.GObject --
-local Gegl = lgi.Gegl 
+local Gegl = lgi.Gegl
 
 Gegl.init(arg)
 local graph = Gegl.Node()
