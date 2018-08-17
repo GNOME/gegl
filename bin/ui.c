@@ -803,7 +803,7 @@ static void ui_dir_viewer (State *o)
         else
           wdim = dim * (1.0 * w / h);
 
-        mrg_image (mrg, x + (dim-wdim)/2, y + (dim-hdim)/2, wdim, hdim, thumbpath);
+        mrg_image (mrg, x + (dim-wdim)/2, y + (dim-hdim)/2, wdim, hdim, thumbpath, NULL, NULL);
       }
       g_free (thumbpath);
 
