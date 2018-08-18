@@ -126,7 +126,8 @@ operation_process (GeglOperation        *operation,
 
   operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
 
-  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+  // XXX: hack to force nop, many people are enabling as many things as possible when configuring gegl not realising that they shouldn't enable the workshop
+  if (TRUE || (in_rect && gegl_rectangle_is_infinite_plane (in_rect)))
     {
       gpointer in = gegl_operation_context_get_object (context, "input");
       gegl_operation_context_take_object (context, "output",

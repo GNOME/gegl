@@ -1240,7 +1240,7 @@ AM_CONDITIONAL(HAVE_W3M, test "x$W3M" != "xno")
 
 dnl disable build of workshop operations.
 AC_ARG_ENABLE([workshop],
-              [  --enable-workshop       enable build of workshop operations (default=no)],,
+              [  --enable-workshop       enable build of workshop operations (default=no) do not enable this for distributed builds or CI of GEGL/GIMP it is only for development and testing],,
               enable_workshop="no")
 
 AM_CONDITIONAL(ENABLE_WORKSHOP, test "x$enable_workshop" = "xyes")
