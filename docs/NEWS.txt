@@ -13,6 +13,7 @@ Operations
  motion-blur-circular - improve/clarify property ui
  median-blur          - added abyss-policy property
  long-shadow          - new operation
+ little-planet        - adapt reference composition
 
 Contributors to this release
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
