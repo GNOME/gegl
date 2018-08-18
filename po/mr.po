@@ -5,11 +5,13 @@
 # Snehalata B Shirude <snehalata.shirude@gmail.com>, 2018.
 # Project Developed by School of Computer Sciences, North Maharashtra University, Jalgaon MS, India, 
 # And Rajya Marathi Vikas Sanstha Mumbai, MS, India
+#: ../operations/common/display.c:23 ../operations/external/sdl-display.c:25
+#: ../operations/external/sdl-display.c:27
 msgid ""
 msgstr ""
 "Project-Id-Version: GIMP\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-06-04 14:39+0000\n"
+"POT-Creation-Date: 2018-08-10 12:01+0000\n"
 "PO-Revision-Date: 2018-07-07 14:57+0000\n"
 "Last-Translator: Snehalata B Shirude <snehalata.shirude@gmail.com>\n"
 "Language-Team: Marathi\n"
@@ -35,43 +37,7 @@ msgid "Unknown GeglOption mode: %d"
 msgstr "अज्ञात भौगोलिक मोड: %d"
 
 #: ../bin/gegl-options.c:45
-#, fuzzy, c-format
-#| msgid ""
-#| "usage: %s [options] <file | -- [op [op] ..]>\n"
-#| "\n"
-#| "  Options:\n"
-#| "     -h, --help      this help information\n"
-#| "\n"
-#| "     --list-all      list all known operations\n"
-#| "\n"
-#| "     --exists        return 0 if the operation(s) exist\n"
-#| "\n"
-#| "     --info          output information about the operation:\n"
-#| "                     name, description, properties details.\n"
-#| "\n"
-#| "     -i, --file      read xml from named file\n"
-#| "\n"
-#| "     -x, --xml       use xml provided in next argument\n"
-#| "\n"
-#| "     --dot           output a graphviz graph description\n"
-#| "\n"
-#| "     -o, --output    output generated image to named file, type based\n"
-#| "                     on extension.\n"
-#| "\n"
-#| "     -p              increment frame counters of various elements when\n"
-#| "                     processing is done.\n"
-#| "\n"
-#| "     -s scale, --scale scale  scale output dimensions by this factor.\n"
-#| "\n"
-#| "     -X              output the XML that was read in\n"
-#| "\n"
-#| "     -v, --verbose   print diagnostics while running\n"
-#| "\n"
-#| "All parameters following -- are considered ops to be chained together\n"
-#| "into a small composition instead of using an xml file, this allows for\n"
-#| "easy testing of filters. After chaining a new op in properties can be "
-#| "set\n"
-#| "with property=value pairs as subsequent arguments.\n"
+#, c-format
 msgid ""
 "usage: %s [options] <file | -- [op [op] ..]>\n"
 "\n"
@@ -102,36 +68,27 @@ msgstr ""
 "वापर: %s [पर्याय] <धारिका | -- [ऑप [ऑप] ..]>\n"
 "\n"
 "  पर्याय:\n"
-"      -h, --माहिती          हे मदत माहिती \n"
+"     -h, --माहिती          हे मदत माहिती \n"
 "\n"
-"      --सर्व-सूची              सर्व ज्ञात क्रिया \n"
+"     -i, --धारिका          नामित धारिकेवरून एक्सएमएल वाचा\n"
 "\n"
-"      --अस्तित्वात             0 परत येईल जर क्रिया अस्तित्वात असेल \n"
+"     -x, --एक्सएमएल     पुढील वितर्क मध्ये प्रदान केलेले xml वापरा\n"
 "\n"
-"      --माहिती                  क्रियाविषयी आऊटपुट माहिती:\n"
-"\t\t        नाव, वर्णन, गुणधर्म तपशील.\n"
+"     --बिंदू                     आउटपुट एक ग्राफव्हिज आलेख वर्णन\n"
+"\n"
+"     -o, --आउटपुट       नामित धारिकेवर आउटपुट उत्पादित प्रतिमा, प्रकार\n"
+"                     विस्तार वर आधारित आहे.\n"
 " \n"
-"      -i, --धारिका         नावाच्या धारिकेमधून एक्सएमएल वाचणे \n"
+"     -p              प्रक्रिया केली जाते तेव्हा विविध घटकांचे\n"
+"                     चौकट काउंटर वाढवा.\n"
 "\n"
-"      -x, --एक्सएमएल    वापरा एक्सएमएल पुढील वितर्काने प्रदान केले आहे \n"
+"     -x              ज्यामध्ये वाचले होते ती एक्सएमएल आउटपुट\n"
 "\n"
-"      --बिंदू                     आलेख आउटपुट वर्णन करतात \n"
+"     -v, --शब्दशः         चालत असताना निदान मुद्रण करा\n"
 "\n"
-"      -o, - आउटपुट      नामांकीत धारिकेवर आउटपुट निर्मीत प्रतिमा,प्रकार  \n"
-"                      एक्सटेन्शनवर आधारित आहे.\n"
-"\n"
-"      -p              विविध घटकांचे वर्धित चौकट विरुद्ध\n"
-"                      प्रक्रिया केली जाते.\n"
-"\n"
-"      -s प्रमाण, --प्रमाण प्रमाण  या घटकाद्वारे प्रमाणबध्द गतिशील आउटपुट.\n"
-"\n"
-"      -X               ज्यामध्ये वाचले होते ती एक्सएमएल आउटपुट\n"
-"\n"
-"      -v, --शब्दशः      चालत असताना मुद्रित निदान\n"
-"\n"
-"खालील सर्व घटक - एकत्रित जोडलेल्या ऑप्सची गणना केली जाते\n"
-"गाळणीचे सोपे परीक्षण गुणधर्म मध्ये एक नवीन आज्ञा चेनिंग नंतर सेट केले जाऊ शकते\n"
-"गुणधर्म = मूल्य जोड्यांसह पुढील बाब.\n"
+"खालील सर्व घटक -- एक्सएमएल धारिका वापरण्याऐवजी ऑक्स एकत्रित केले जातात,\n"
+"हे गाळणीच्या सुलभ चाचणीसाठी परवानगी देते. \n"
+"जागृत रहा की सर्व गुणधर्मांसाठी मुलभूत मूल्य वापरले जातील.\n"
 
 #: ../bin/gegl-options.c:77
 #, c-format
@@ -178,13 +135,7 @@ msgstr ""
 "\t\n"
 
 #: ../bin/gegl-options.c:257
-#, fuzzy, c-format
-#| msgid ""
-#| "\n"
-#| "\n"
-#| "unknown argument '%s' giving you help instead\n"
-#| "\n"
-#| "\n"
+#, c-format
 msgid ""
 "\n"
 "\n"
@@ -194,13 +145,13 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"अज्ञात तर्क '%s' आपल्याला त्याऐवजी मदत देत आहे\n"
+"अज्ञात घटक '%s' आपल्याला त्याऐवजी मदत देत आहे\n"
 "\n"
 "\n"
 
 #: ../gegl/gegl-init.c:245
 msgid "babls error tolerance, a value between 0.2 and 0.000000001"
-msgstr ""
+msgstr "babls त्रुटी सहिष्णुता, मूल्य 0.2 आणि 0.000000001 दरम्यान "
 
 #: ../gegl/gegl-init.c:250
 msgid "Where GEGL stores its swap"
@@ -213,7 +164,8 @@ msgstr "गुप्तसाठा प्रतिमेसाठी कित�
 #: ../gegl/gegl-init.c:260
 msgid "Default size of tiles in GeglBuffers"
 msgstr ""
-"ज्या जागेचे आउटपुट जीईजीएल संग्रह संचयित करायचे ते ठिकाण संग्रहामधील टाइलचा मूळचा आकार"
+"ज्या जागेचे आउटपुट जीईजीएल संग्रह संचयित करायचे ते ठिकाण संग्रहामधील टाइलचा क्रियापूर्व "
+"आकार"
 
 #: ../gegl/gegl-init.c:265
 msgid "The count of pixels to compute simultaneously"
@@ -228,14 +180,12 @@ msgid "The number of concurrent processing threads to use"
 msgstr "वापरण्यासाठी समवर्ती प्रक्रिया थ्रेडची संख्या"
 
 #: ../gegl/gegl-init.c:280
-#, fuzzy
-#| msgid "Disable OpenCL"
 msgid "Use OpenCL"
-msgstr "OpenCL अक्षम करा"
+msgstr "OpenCL वापरा"
 
 #: ../gegl/gegl-init.c:285
 msgid "Maximum number of entries in the file tile backend's writer queue"
-msgstr ""
+msgstr "धारिका टाइल बॅकएंडच्या लेखक रांगेत नोंदींची कमाल संख्या"
 
 #: ../gegl/gegl-enums.c:33
 msgid "None"
@@ -320,30 +270,25 @@ msgid "Amount of edge preservation"
 msgstr "किनाऱ्यावर संरक्षण"
 
 #: ../operations/common/bilateral-filter.c:274
-#, fuzzy
-#| msgid ""
-#| "Like a gaussian blur; but where the contribution for each neighbourhood "
-#| "pixel is also weighted by the color difference with the original center "
-#| "pixel. "
 msgid ""
 "An edge preserving blur filter that can be used for noise reduction. It is a "
 "gaussian blur where the contribution of neighbourhood pixels are weighted by "
 "the color difference from the center pixel."
 msgstr ""
-"गॉसीयन ब्लर प्रमाणे; पण जेथे प्रत्येक अतिपरिचित क्षेत्रासाठी योगदानदृश्यबिंदूला मूळ केंद्राने "
-"रंगभेदाने देखील भारित केले आहेदृश्यबिंदू"
+"आवाज कमी करण्यासाठी वापरली जाऊ शकणारी कडा संरक्षण अस्पष्ट गाळणी. हे गॉसियन अस्पष्ट "
+"आहे जेथे केंद्र दृश्यबिंदूमधील रंगाच्या फरकाने अतिपरिचित दृश्यबिंदू भारित केले जातात."
 
 #: ../operations/common/bilateral-filter-fast.c:33
 msgid "Smoothness"
-msgstr ""
+msgstr "गुळगुळीतपणा"
 
 #: ../operations/common/bilateral-filter-fast.c:35
 msgid "Level of smoothness"
-msgstr ""
+msgstr "गुळगुळीतपणाची पातळी"
 
 #: ../operations/common/bilateral-filter-fast.c:474
 msgid "A fast approximate implementation of the bilateral filter"
-msgstr ""
+msgstr "द्विपक्षीय गाळणीची जलद अंदाजे अंमलबजावणी"
 
 #: ../operations/common/box-blur.c:25 ../operations/common/c2g.c:27
 #: ../operations/common/difference-of-gaussians.c:26
@@ -366,7 +311,7 @@ msgstr "चौरस दृश्यबिंदू क्षेत्राच�
 
 #: ../operations/common/box-blur.c:343
 msgid "Performs an averaging of a square box of pixels"
-msgstr ""
+msgstr "दृश्यबिंदूच्या चौरस पेटीचे सरासरीकरण करते"
 
 #. ... are the properties of the filter, these are all scalar values
 #. * (doubles), the the parameters are:
@@ -378,10 +323,8 @@ msgid "Contrast"
 msgstr "विरोधाभास"
 
 #: ../operations/common/brightness-contrast.c:30
-#, fuzzy
-#| msgid "Red stretching factor"
 msgid "Range scale factor"
-msgstr "लाल घटक पसरवणे"
+msgstr "श्रेणी मोजपट्टी घटक"
 
 #: ../operations/common/brightness-contrast.c:31
 #: ../operations/common/reinhard05.c:27 ../operations/common/softglow.c:30
@@ -395,7 +338,7 @@ msgstr "तेजस्वीपणा वाढविण्यासाठी �
 
 #: ../operations/common/brightness-contrast.c:147
 msgid "Changes the light level and contrast."
-msgstr ""
+msgstr "प्रकाश पातळी आणि तीव्रता बदलते. "
 
 #: ../operations/common/buffer-sink.c:25 ../operations/common/write-buffer.c:25
 msgid "Buffer location"
@@ -417,10 +360,8 @@ msgstr ""
 
 #: ../operations/common/buffer-sink.c:83
 #: ../operations/common/write-buffer.c:132
-#, fuzzy
-#| msgid "Write input data into an existing GEGL buffer destination surface."
 msgid "A GEGL buffer destination surface."
-msgstr "अस्तित्वात असलेल्या GEGL बफर गंतव्य पृष्ठावर इनपुट डेटा लिहा."
+msgstr "जीईजीएल संग्रह गंतव्य पृष्ठभाग."
 
 #: ../operations/common/buffer-source.c:25
 msgid "Input buffer"
@@ -432,7 +373,7 @@ msgstr "जीईजीएलसंग्रह पाइपलाइनमध�
 
 #: ../operations/common/buffer-source.c:190
 msgid "A source that uses an in-memory GeglBuffer, for use internally by GEGL."
-msgstr ""
+msgstr "स्त्रोत जे जीईजीएल द्वारा अंतर्गत वापरासाठी, आतील स्मृती जीईजीएलसंग्रह वापरतात. "
 
 #: ../operations/common/c2g.c:29
 msgid ""
@@ -465,18 +406,13 @@ msgstr ""
 "परिणाम प्रदान करते"
 
 #: ../operations/common/c2g.c:340
-#, fuzzy
-#| msgid ""
-#| "Color to grayscale conversion, uses envelopes formed with the STRESS "
-#| "approach to perform local color-difference preserving grayscale "
-#| "generation."
 msgid ""
 "Color to grayscale conversion, uses envelopes formed from spatial color "
 "differences to perform color-feature preserving grayscale spatial contrast "
 "enhancement"
 msgstr ""
-"ग्रेस्केल रूपांतरण रंग, ताण सह स्थापना लिफाफे वापरतेग्रेस्केल पिढीच्या सुरक्षिततेसाठी स्थानिक "
-"रंग-फरक करण्यासाठी दृष्टिकोण."
+"ग्रेस्केल रूपांतरण करिता रंग, अवकाशीय रंगभेदांपासून तयार केलेल्या लिफाफेचा वापर करते-ज्यायोगे "
+"ग्रेस्केल अवकाशीय तीव्रता वाढ संरक्षित केली जाते "
 
 #: ../operations/common/cartoon.c:25 ../operations/common/cartoon.c:27
 msgid "Mask radius"
@@ -487,10 +423,8 @@ msgid "Percent black"
 msgstr "टक्के काळा"
 
 #: ../operations/common/cartoon.c:379
-#, fuzzy
-#| msgid "Simulate an antique engraving"
 msgid "Simulate a cartoon by enhancing edges"
-msgstr "एखाद्या प्राचीन खोदकामाचे अनुकरण करा"
+msgstr "कडा वाढवून कार्टून अनुकरण करा"
 
 #: ../operations/common/checkerboard.c:25
 #: ../operations/common/fractal-explorer.c:30
@@ -517,19 +451,15 @@ msgid "Height"
 msgstr "उंची"
 
 #: ../operations/common/checkerboard.c:31 ../operations/common/grid.c:27
-#, fuzzy
-#| msgid "Vertical width of cells pixels"
 msgid "Vertical width of cells in pixels"
-msgstr "सेल दृश्यबिंदूची उभी रूंदी"
+msgstr "दृश्यबिंदूमध्ये सेलची उभी रूंदी"
 
 #: ../operations/common/checkerboard.c:33 ../operations/common/grid.c:28
 #: ../operations/common/mirrors.c:36
 #: ../operations/seamless-clone/seamless-clone.c:24
 #: ../operations/seamless-clone/seamless-clone-compose.c:24
-#, fuzzy
-#| msgid "Z offset"
 msgid "X offset"
-msgstr "Z चा संच"
+msgstr "X चा संच"
 
 #: ../operations/common/checkerboard.c:35 ../operations/common/grid.c:29
 msgid "Horizontal offset (from origin) for start of grid"
@@ -539,10 +469,8 @@ msgstr "जाळीच्या प्रारंभी आडव्या स
 #: ../operations/common/mirrors.c:38
 #: ../operations/seamless-clone/seamless-clone.c:27
 #: ../operations/seamless-clone/seamless-clone-compose.c:27
-#, fuzzy
-#| msgid "Z offset"
 msgid "Y offset"
-msgstr "Z चा संच"
+msgstr "Y चा संच"
 
 #: ../operations/common/checkerboard.c:39 ../operations/common/grid.c:31
 msgid "Vertical offset (from origin) for start of grid"
@@ -560,121 +488,80 @@ msgid "Color"
 msgstr "रंग"
 
 #: ../operations/common/checkerboard.c:43
-#, fuzzy
-#| msgid "The shadow's color (defaults to 'black')"
 msgid "One of the cell colors (defaults to 'black')"
-msgstr "सावलीचा रंग ('काळा' करण्यासाठी मूळचा) "
+msgstr "सेल रंगांपैकी एक (क्रियापूर्व 'काळा')"
 
 #: ../operations/common/checkerboard.c:45
 #: ../operations/workshop/linear-gradient.c:30
 #: ../operations/workshop/radial-gradient.c:30
-#, fuzzy
-#| msgid "Fade color"
 msgid "Other color"
-msgstr "फिका रंग"
+msgstr "अन्य रंग"
 
 #: ../operations/common/checkerboard.c:47
-#, fuzzy
-#| msgid "The shadow's color (defaults to 'black')"
 msgid "The other cell color (defaults to 'white')"
-msgstr "सावलीचा रंग ('काळा' करण्यासाठी मूळचा) "
+msgstr "अन्य सेल रंग (क्रियापूर्व 'पांढरा')"
 
 #: ../operations/common/checkerboard.c:157
-#, fuzzy
-#| msgid "Render a checkerboard pattern"
 msgid "Create a checkerboard pattern"
-msgstr "एक समीक्षाफलक नमुना सादर करा"
+msgstr "एक समीक्षाफलक नमुना तयार करा"
 
 #: ../operations/common/color.c:25
-#, fuzzy
-#| msgid "The shadow's color (defaults to 'black')"
 msgid "The color to render (defaults to 'black')"
-msgstr "सावलीचा रंग ('काळा' करण्यासाठी मूळचा) "
+msgstr "प्रस्तुत करण्यासाठी रंग (क्रियापूर्व 'काळा')"
 
 #: ../operations/common/color.c:88
-#, fuzzy
-#| msgid ""
-#| "Generates a buffer entirely filled with the specified color, use gegl:"
-#| "crop to get smaller dimensions."
 msgid ""
 "Generates a buffer entirely filled with the specified color, crop it to get "
 "smaller dimensions."
-msgstr ""
-"निर्दिष्ट रंगाने भरलेला संग्रह उत्पन्न करा, भौगोलिक वापरा: लहान गतिशीलता मिळवण्यासाठी "
-"कापा."
+msgstr "निर्दिष्ट रंगाने भरलेला संग्रह तयार करते, लहान परिमाणे मिळविण्यासाठी ते कापा."
 
 #: ../operations/common/color-reduction.c:35
-#, fuzzy
-#| msgid "Red contours"
 msgid "Red bits"
-msgstr "लाल रुपरेषा"
+msgstr "लाल बीट्स"
 
 #: ../operations/common/color-reduction.c:37
-#, fuzzy
-#| msgid "Number of levels for red channel"
 msgid "Number of bits for red channel"
-msgstr "लाल चॅनेलसाठी स्तरांची संख्या"
+msgstr "लाल चॅनेलसाठी बीट्सची संख्या"
 
 #: ../operations/common/color-reduction.c:39
-#, fuzzy
-#| msgid "Green contours"
 msgid "Green bits"
-msgstr "हिरवा रूपरेषा"
+msgstr "हिरवा बीट्स"
 
 #: ../operations/common/color-reduction.c:41
-#, fuzzy
-#| msgid "Number of levels for green channel"
 msgid "Number of bits for green channel"
-msgstr "हिरव्या चॅनेलसाठी स्तरांची संख्या"
+msgstr "हिरव्या चॅनेलसाठी बीट्सची संख्या"
 
 #: ../operations/common/color-reduction.c:43
-#, fuzzy
-#| msgid "Blue contours"
 msgid "Blue bits"
-msgstr "निळा रूपरेषा"
+msgstr "निळा बीट्स"
 
 #: ../operations/common/color-reduction.c:45
-#, fuzzy
-#| msgid "Number of levels for blue channel"
 msgid "Number of bits for blue channel"
-msgstr "निळ्या चॅनेलसाठी स्तरांची संख्या"
+msgstr "निळ्या चॅनेलसाठी बीट्सची संख्या"
 
 #: ../operations/common/color-reduction.c:47
-#, fuzzy
-#| msgid "Alpha"
 msgid "Alpha bits"
-msgstr "अल्फा"
+msgstr "अल्फा बीट्स"
 
 #: ../operations/common/color-reduction.c:49
-#, fuzzy
-#| msgid "Number of levels for alpha channel"
 msgid "Number of bits for alpha channel"
-msgstr "अल्फा चॅनेलसाठी स्तरांची संख्या"
+msgstr "अल्फा चॅनेलसाठी बीट्सची संख्या"
 
 #: ../operations/common/color-reduction.c:51
-#, fuzzy
-#| msgid "Dithering method"
 msgid "Dithering Strategy"
-msgstr "थरथरणारी पद्धत"
+msgstr "थरथरणारे धोरण"
 
 #: ../operations/common/color-reduction.c:53
-#, fuzzy
-#| msgid "The dithering method to use"
 msgid "The dithering strategy to use"
-msgstr "वापरण्यासाठी थरथरणारी पद्धत"
+msgstr "वापरण्यासाठी थरथरणारे धोरण"
 
 #: ../operations/common/color-reduction.c:591
-#, fuzzy
-#| msgid ""
-#| "Reduce the number of colors in the image, by reducing the levels per "
-#| "channel (colors and alpha). Different dithering methods can be specified "
-#| "to counteract quantization induced banding."
 msgid ""
 "Reduce the number of colors in the image, by reducing the bits per channel "
 "(colors and alpha), with optional dithering"
 msgstr ""
-"प्रति चॅनेल पातळी कमी करून, प्रतिमेतील रंगांची संख्या कमी करा(रंग आणि अल्फा). विविध "
-"निराधार पद्धतीपरिमाणाद्वारे प्रेरित बँडिंग."
+"पर्यायी थरथरणाऱ्या सह प्रति चॅनेल (रंग आणि अल्फा) बीट्स कमी करून, प्रतिमेतील रंगांची संख्या "
+"कमी करा"
 
 #: ../operations/common/color-temperature.c:27
 msgid "Original temperature"
@@ -694,22 +581,16 @@ msgid "Corrected estimation of the temperature of the light source in Kelvin."
 msgstr "केल्विन मधील प्रकाशाच्या स्रोताचे तपमान सुधारले"
 
 #: ../operations/common/color-temperature.c:279
-#, fuzzy
-#| msgid "Remaps the intensity range of the image"
 msgid "Change the color temperature of the image"
-msgstr "प्रतिमेची तीव्रता श्रेणी लक्षात ठेवते"
+msgstr "प्रतिमेचे रंग तापमान बदला"
 
 #: ../operations/common/color-to-alpha.c:30
-#, fuzzy
-#| msgid "The shadow's color (defaults to 'black')"
 msgid "The color to render (defaults to 'white')"
-msgstr "सावलीचा रंग ('काळा' करण्यासाठी मूळचा) "
+msgstr "प्रस्तुत करण्यासाठी रंग (क्रियापूर्व 'पांढरा')"
 
 #: ../operations/common/color-to-alpha.c:200
-#, fuzzy
-#| msgid "Convert a specified color to transparency, works best with white."
 msgid "Convert a specified color to transparency"
-msgstr "निर्दिष्ट रंग पारदर्शीत रुपांतरित करा, पांढर्यासह उत्कृष्ट कार्य करते"
+msgstr "निर्दिष्ट रंग पारदर्शीतेमध्ये रूपांतरित करा"
 
 #: ../operations/common/contrast-curve.c:25
 msgid "Sample points"
@@ -728,12 +609,8 @@ msgid "The contrast curve."
 msgstr "विरोधाभास वक्र"
 
 #: ../operations/common/contrast-curve.c:125
-#, fuzzy
-#| msgid ""
-#| "Adjusts the contrast of a grayscale image with a curve specifying "
-#| "contrast for intensity."
 msgid "Adjusts the contrast of the image according to a curve."
-msgstr "वक्र निर्दिष्ट विरोधाभाससह एक ग्रेस्केल प्रतिमेची तीव्रता समायोजित करतेतीव्रतेसाठी"
+msgstr "वक्रानुसार प्रतिमेची तीव्रता समायोजित करते."
 
 #: ../operations/common/cubism.c:30
 msgid "Tile size"
@@ -756,10 +633,8 @@ msgid "Background Color"
 msgstr "पृष्ठभाग  रंग"
 
 #: ../operations/common/cubism.c:40
-#, fuzzy
-#| msgid "The background color"
 msgid "The tiles' background color"
-msgstr "पार्श्वभूमी रंग"
+msgstr "टाइल 'पार्श्वभूमी रंग"
 
 #: ../operations/common/cubism.c:42 ../operations/common/noise.c:31
 #: ../operations/common/noise-hurl.c:31 ../operations/common/noise-pick.c:31
@@ -767,7 +642,7 @@ msgstr "पार्श्वभूमी रंग"
 #: ../operations/common/noise-spread.c:37 ../operations/common/shift.c:35
 #: ../operations/common/wind.c:33 ../operations/workshop/plasma.c:33
 msgid "Seed"
-msgstr ""
+msgstr "सीड"
 
 #: ../operations/common/cubism.c:43 ../operations/common/noise-hurl.c:32
 #: ../operations/common/noise-pick.c:32 ../operations/common/noise-rgb.c:53
@@ -835,34 +710,24 @@ msgid "Display the input buffer in a window."
 msgstr "इनपुट संग्रह एका पटलामध्ये प्रदर्शित करा."
 
 #: ../operations/common/dot.c:26 ../operations/common/pixelize.c:25
-#, fuzzy
-#| msgid "Block width"
 msgid "Block Width"
-msgstr "ब्लॉक रुंदी"
+msgstr "ब्लॉकची रुंदी"
 
 #: ../operations/common/dot.c:28
-#, fuzzy
-#| msgid "Width of blocks in pixels"
 msgid "Size of each block in pixels"
-msgstr "ब्लॉक्सची दृश्यबिंदूची रूंदी"
+msgstr "प्रत्येक ब्लॉकचा आकार दृश्यबिंदू मध्ये आहे"
 
 #: ../operations/common/dot.c:30
-#, fuzzy
-#| msgid "Size ratio X"
 msgid "Dot size ratio"
-msgstr "आकार गुणोत्तर X"
+msgstr "बिंदू आकार गुणोत्तर"
 
 #: ../operations/common/dot.c:32
-#, fuzzy
-#| msgid "Vertical size ratio of a pixel inside each block"
 msgid "Size ratio of a dot inside each block"
-msgstr "प्रत्येक ब्लॉकच्या आत दृश्यबिंदूचा अनुलंब आकार गुणोत्तर"
+msgstr "प्रत्येक ब्लॉक मधील बिंदू चे आकार गुणोत्तर"
 
 #: ../operations/common/dot.c:194
-#, fuzzy
-#| msgid "Simplify image into an array of solid-colored rectangles"
 msgid "Simplify image into an array of solid-colored dots"
-msgstr "सौम्य-रंगीत आयतांबद्दलच्या अॅरे मध्ये प्रतिमा सरळ करा"
+msgstr "ठराविक रंगाच्या बिंदूंची प्रतिमा असलेल्या सरणीमधील प्रतिमा सरळ करा"
 
 #: ../operations/common/dropshadow.c:25 ../operations/common/layer.c:34
 #: ../operations/common/motion-blur-circular.c:30
@@ -892,7 +757,7 @@ msgstr "उभ्या सावलीचा संच"
 
 #: ../operations/common/dropshadow.c:39
 msgid "The shadow's color (defaults to 'black')"
-msgstr "सावलीचा रंग ('काळा' करण्यासाठी मूळचा) "
+msgstr "सावलीचा रंग (क्रियापूर्व 'काळा') "
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
@@ -923,10 +788,8 @@ msgid "Vertical"
 msgstr "उभा"
 
 #: ../operations/common/edge-sobel.c:35 ../operations/common/edge-sobel.c:37
-#, fuzzy
-#| msgid "Keep Sign"
 msgid "Keep Signal"
-msgstr "साइन ठेवा"
+msgstr "सांकेतिक खूण ठेवा"
 
 #: ../operations/common/edge-sobel.c:377
 msgid "Specialized direction-dependent edge detection"
@@ -938,15 +801,13 @@ msgstr "एम्बॉस प्रकार"
 
 #: ../operations/common/emboss.c:32
 msgid "Emboss or Bumpmap"
-msgstr ""
+msgstr "एम्बॉस किंवा बंप मंच"
 
 #: ../operations/common/emboss.c:34
 msgid "Azimuth"
 msgstr "अझिमथ"
 
 #: ../operations/common/emboss.c:36
-#, fuzzy
-#| msgid "Light angle (degrees)"
 msgid "The light angle (degrees)"
 msgstr "प्रकाश कोन (अंश)"
 
@@ -955,8 +816,6 @@ msgid "Elevation"
 msgstr "उत्थान"
 
 #: ../operations/common/emboss.c:40
-#, fuzzy
-#| msgid "Elevation angle (degrees)"
 msgid "The elevation angle (degrees)"
 msgstr "उंची कोन (अंश)"
 
@@ -965,8 +824,6 @@ msgid "Depth"
 msgstr "खोली"
 
 #: ../operations/common/emboss.c:44
-#, fuzzy
-#| msgid "Filter width"
 msgid "The filter width"
 msgstr "गाळणी रूंदी"
 
@@ -975,18 +832,14 @@ msgid "Simulates an image created by embossing"
 msgstr "एम्बॉसिंगद्वारे तयार केलेल्या प्रतिमेचे अनुकरण"
 
 #: ../operations/common/exp-combine.c:25
-#, fuzzy
-#| msgid "Exposure values"
 msgid "Exposure Values"
-msgstr "असुरक्षितता मूल्य"
+msgstr "असुरक्षितता मूल्ये"
 
 #: ../operations/common/exp-combine.c:26
 msgid "Relative brightness of each exposure in EV"
 msgstr "EV मध्ये प्रत्येक प्रदर्शनाची सापेक्ष चमक"
 
 #: ../operations/common/exp-combine.c:27
-#, fuzzy
-#| msgid "Discretization bits"
 msgid "Discretization Bits"
 msgstr "डिस्ककेटीकरण बिट्स"
 
@@ -995,8 +848,6 @@ msgid "Log2 of source's discretization steps"
 msgstr "स्रोत च्या डिस्ककेटीकरण पायऱ्या लॉग 2 "
 
 #: ../operations/common/exp-combine.c:30
-#, fuzzy
-#| msgid "Weight sigma"
 msgid "Weight Sigma"
 msgstr "वजन सिग्मा"
 
@@ -1005,10 +856,8 @@ msgid "Weight distribution sigma controlling response contributions"
 msgstr "वजन वितरण सिग्मा नियंत्रण प्रतिसाद सहयोग"
 
 #: ../operations/common/exp-combine.c:1293
-#, fuzzy
-#| msgid "Combine multiple scene exposures into one high dynamic range image."
 msgid "Combine multiple scene exposures into one high range buffer"
-msgstr "एकाधिक दृश्य असुरक्षितता एक उच्च गतिशील श्रेणी प्रतिमा एकत्रित करा."
+msgstr "एकाधिक दृश्य असुरक्षितता उच्च श्रेणी संग्रहमध्ये एकत्रित करा"
 
 #: ../operations/common/exposure.c:25
 msgid "Exposure"
@@ -1023,27 +872,22 @@ msgid "Offset"
 msgstr "चा संच"
 
 #: ../operations/common/exposure.c:31
-#, fuzzy
-#| msgid "Offset angle"
 msgid "Offset value added"
-msgstr "चासंच  कोन"
+msgstr "चा संच मूल्य जोडले"
 
 #: ../operations/common/exposure.c:33 ../operations/common/vignette.c:49
 msgid "Gamma"
 msgstr "गामा"
 
 #: ../operations/common/exposure.c:35
-#, fuzzy
-#| msgid "Panorama Projection"
 msgid "Gamma correction"
-msgstr "पॅनोरामा प्रक्षेपन"
+msgstr "गामा सुधारणा"
 
 #: ../operations/common/exposure.c:187
-#, fuzzy
-#| msgid "Combine multiple scene exposures into one high dynamic range image."
 msgid ""
 "Changes Exposure and Contrast, mainly for use with high dynamic range images"
-msgstr "एकाधिक दृश्य असुरक्षितता एक उच्च गतिशील श्रेणी प्रतिमा एकत्रित करा."
+msgstr ""
+"असुरक्षितता आणि विरोधाभास बदलते, प्रामुख्याने उच्च गतिशील श्रेणी प्रतिमेसह वापरण्यासाठी"
 
 #: ../operations/common/fattal02.c:33 ../operations/common/noise.c:25
 #: ../operations/common/noise-rgb.c:48 ../operations/common/noise-rgb.c:50
@@ -1082,19 +926,14 @@ msgid "Gradient threshold for lowering detail enhancement"
 msgstr "तपशील वृद्धी कमी करण्यासाठी रंगछटा मर्यादा "
 
 #: ../operations/common/fattal02.c:1325
-#, fuzzy
-#| msgid ""
-#| "Adapt an image, which may have a high dynamic range, for presentation "
-#| "using a low dynamic range. This operator constrains contrasts across "
-#| "multiple spatial frequencies, producing luminance within the range 0.0-1.0"
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
 "gradients, producing luminance within the range 0.0-1.0"
 msgstr ""
 "कमी गतिमान श्रेणी वापरून एका सादरीकरणासाठी, एक उच्च गतिशील श्रेणी असावी अशी प्रतिमा "
-"अनुकूलित करा.हे यंत्रचालक मर्यादा एकाधिक रूपात विरोधात आहेविशिष्ट वारंवारिता, 0.0-1.0 "
-"या ओळींतून प्रकाशाचे उत्पादन"
+"अनुकूलित करा. हे ऑपरेटर स्थानिक प्रतिमा रंग मर्यादेच्या आकारमानास उतरवून घेतो, जे 0.0-1.0 "
+"या श्रेणीतील चकाकी उत्पादन करते"
 
 #: ../operations/common/fractal-explorer.c:47
 #: ../operations/common/fractal-trace.c:30
@@ -1128,7 +967,7 @@ msgstr "CX"
 
 #: ../operations/common/fractal-explorer.c:58
 msgid "CX (only Julia)"
-msgstr ""
+msgstr "CX (फक्त जुलिया)"
 
 #: ../operations/common/fractal-explorer.c:59
 msgid "CY"
@@ -1136,33 +975,27 @@ msgstr "CY"
 
 #: ../operations/common/fractal-explorer.c:59
 msgid "CY (only Julia)"
-msgstr ""
+msgstr "CY (फक्त जुलिया)"
 
 #: ../operations/common/fractal-explorer.c:61
-#, fuzzy
-#| msgid "Red stretching factor"
 msgid "Red stretch"
-msgstr "लाल घटक पसरवणे"
+msgstr "लाल पसरणे"
 
 #: ../operations/common/fractal-explorer.c:62
 msgid "Red stretching factor"
 msgstr "लाल घटक पसरवणे"
 
 #: ../operations/common/fractal-explorer.c:63
-#, fuzzy
-#| msgid "Green stretching factor"
 msgid "Green stretch"
-msgstr "हिरवा घटक पसरवणे"
+msgstr "हिरवा पसरणे"
 
 #: ../operations/common/fractal-explorer.c:64
 msgid "Green stretching factor"
 msgstr "हिरवा घटक पसरवणे"
 
 #: ../operations/common/fractal-explorer.c:65
-#, fuzzy
-#| msgid "Blue stretching factor"
 msgid "Blue stretch"
-msgstr "निळा घटक पसरवणे"
+msgstr "निळा पसरणे"
 
 #: ../operations/common/fractal-explorer.c:66
 msgid "Blue stretching factor"
@@ -1170,27 +1003,23 @@ msgstr "निळा घटक पसरवणे"
 
 #: ../operations/common/fractal-explorer.c:74
 msgid "Red mode"
-msgstr ""
+msgstr "लाल रीत"
 
 #: ../operations/common/fractal-explorer.c:76
 msgid "Red application mode"
 msgstr "लाल अनुप्रयोग रीत"
 
 #: ../operations/common/fractal-explorer.c:77
-#, fuzzy
-#| msgid "Gray mode"
 msgid "Green mode"
-msgstr "करडा रीत"
+msgstr "हिरवी रीत"
 
 #: ../operations/common/fractal-explorer.c:79
 msgid "Green application mode"
 msgstr "हिरवा अनुप्रयोग रीत"
 
 #: ../operations/common/fractal-explorer.c:80
-#, fuzzy
-#| msgid "Blue angle"
 msgid "Blue mode"
-msgstr "निळा कोन"
+msgstr "निळी रीत "
 
 #: ../operations/common/fractal-explorer.c:82
 msgid "Blue application mode"
@@ -1212,8 +1041,6 @@ msgid "Blue inversion"
 msgstr "निळा उलटा"
 
 #: ../operations/common/fractal-explorer.c:91
-#, fuzzy
-#| msgid "Color"
 msgid "Colors"
 msgstr "रंग"
 
@@ -1226,10 +1053,8 @@ msgid "Loglog smoothing"
 msgstr "लॉगलॉग लाकूडकाम"
 
 #: ../operations/common/fractal-explorer.c:95
-#, fuzzy
-#| msgid "Loglog smoothing"
 msgid "Use loglog smoothing"
-msgstr "लॉगलॉग लाकूडकाम"
+msgstr "लॉगलॉग लाकूडकाम वापरा"
 
 #: ../operations/common/fractal-explorer.c:477
 msgid "Fractal Explorer"
@@ -1287,16 +1112,12 @@ msgid "Julia seed Y value, position"
 msgstr "जुलिया सीड Y मूल्य, स्थिती"
 
 #: ../operations/common/fractal-trace.c:57
-#, fuzzy
-#| msgid "Depth"
 msgid "Depth value"
-msgstr "खोली"
+msgstr "खोली मूल्य"
 
 #: ../operations/common/fractal-trace.c:59
-#, fuzzy
-#| msgid "Bailout length"
 msgid "Bailout"
-msgstr "बेलआउटची लांबी"
+msgstr "बेलआउट"
 
 #: ../operations/common/fractal-trace.c:61
 msgid "Bailout length"
@@ -1323,21 +1144,17 @@ msgid "Size X"
 msgstr "आकार X"
 
 #: ../operations/common/gaussian-blur.c:37
-#, fuzzy
-#| msgid "Standard deviation for the horizontal axis"
 msgid ""
 "Standard deviation for the horizontal axis (multiply by ~2 to get radius)"
-msgstr "आडव्या अक्षासाठी प्रमाणित विचलन"
+msgstr "क्षैतिज अक्ष साठी मानक विचलन (त्रिज्या मिळविण्यासाठी ~2 ने गुणाकार करा)"
 
 #: ../operations/common/gaussian-blur.c:40
 msgid "Size Y"
 msgstr "आकार Y"
 
 #: ../operations/common/gaussian-blur.c:42
-#, fuzzy
-#| msgid "Standard deviation for the horizontal axis"
 msgid "Standard deviation for the vertical axi. (multiply by ~2 to get radius)"
-msgstr "आडव्या अक्षासाठी प्रमाणित विचलन"
+msgstr "अनुलंब अक्ष साठी मानक विचलन (त्रिज्या मिळविण्यासाठी ~2 ने गुणाकार करा)"
 
 #: ../operations/common/gaussian-blur.c:45
 #: ../operations/transform/transform-core.c:195
@@ -1346,17 +1163,13 @@ msgstr "गाळणी"
 
 #: ../operations/common/gaussian-blur.c:48
 msgid "Optional parameter to override the automatic selection of blur filter"
-msgstr ""
+msgstr "अस्पष्ट गाळणीची स्वयंचलित निवड रद्द करण्यासाठी पर्यायी घटक"
 
 #: ../operations/common/gaussian-blur.c:695
-#, fuzzy
-#| msgid ""
-#| "Performs an averaging of neighboring pixels with the normal distribution "
-#| "asweighting"
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
-msgstr "सामान्य वितरणासह शेजारच्या दृश्यबिंदूची सरासरी म्हणून कार्य करतेभारांकन"
+msgstr "सामान्य वितरणासह शेजारच्या दृश्यबिंदू चे भार सरासरी म्हणून कार्य करते"
 
 #: ../operations/common/gegl-buffer-load-op.c:24
 #: ../operations/common/gegl-buffer-save-op.c:24 ../operations/common/load.c:25
@@ -1391,14 +1204,10 @@ msgid "GeglBuffer file writer."
 msgstr "जिइजीएल संग्रह धारिका लेखक."
 
 #: ../operations/common/grey.c:106
-#, fuzzy
-#| msgid "Turns the image grayscale"
 msgid "Turns the image greyscale"
 msgstr "प्रतिमा ग्रेस्केल चालू करते"
 
 #: ../operations/common/grid.c:32
-#, fuzzy
-#| msgid "Line width"
 msgid "Line Width"
 msgstr "रेषेची रुंदी"
 
@@ -1407,8 +1216,6 @@ msgid "Width of grid lines in pixels"
 msgstr "जाळी रेषेची रूंदी दृश्यबिंदूमध्ये"
 
 #: ../operations/common/grid.c:34
-#, fuzzy
-#| msgid "Line height"
 msgid "Line Height"
 msgstr "रेषेची उंची"
 
@@ -1457,17 +1264,10 @@ msgid "Average difference between all pixels."
 msgstr "सर्व दृश्यबिंदूमध्ये सरासरी फरक"
 
 #: ../operations/common/image-compare.c:210
-#, fuzzy
-#| msgid ""
-#| "Compares if input and aux buffers are different. Global statistics are "
-#| "saved in the properties and a visual difference image is produced as a "
-#| "visual result. "
 msgid ""
 "Compares if input and aux buffers are different. Results are saved in the "
 "properties."
-msgstr ""
-"इनपुट आणि ऑक्स संग्रह वेगळे असल्यास ompares. जागतिक सांख्यिकी जतन केले जातातगुणधर्मांमध्ये "
-"आणि दृश्यमान फरकची प्रतिमा दृश्य म्हणून निर्मिती केली आहेपरिणाम"
+msgstr "इनपुट आणि ऑक्स संग्रह वेगळे असल्यास तुलना करते. परिणाम गुणधर्मांमध्ये जतन केले जातात."
 
 #: ../operations/common/introspect.c:26
 msgid "Node"
@@ -1475,23 +1275,18 @@ msgstr "नोड"
 
 #: ../operations/common/introspect.c:26
 msgid "GeglNode to introspect"
-msgstr ""
+msgstr "आत्मनिरीक्षणासाठी जीइजीएल नोड"
 
 #: ../operations/common/introspect.c:160
 msgid "GEGL graph visualizer."
 msgstr "जीइजीएल आलेख व्हिज्युअलायझर"
 
 #: ../operations/common/invert.c:76
-#, fuzzy
-#| msgid ""
-#| "Invert the components (except alpha) perceptually, the result is the "
-#| "corresponding \"negative\" image."
 msgid ""
 "Inverts the components (except alpha), the result is the corresponding "
 "\"negative\" image."
 msgstr ""
-"संकल्पना (अवयव वगळून) घटक अवतरण करा, त्याचा परिणाम असा आहेसंबंधित \"नकारात्मक \" "
-"प्रतिमा"
+"घटकांना अपरिवर्तनीय (अल्फा वगळता), परिणाम म्हणजे संबंधित \"नकारात्मक \" प्रतिमा."
 
 #: ../operations/common/layer.c:30
 msgid "Operation"
@@ -1524,11 +1319,8 @@ msgid "Source"
 msgstr "स्त्रोत"
 
 #: ../operations/common/layer.c:41
-#, fuzzy
-#| msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
 msgid "Source datafile (png, jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
-"स्रोत प्रतिमा धारिका मार्ग  (पीएनजी, जेपीजी, कच्चा, एसटीजी, बीएमपी, टीआयएफ, ...)"
+msgstr "स्रोत डेटाधारिका (png, jpg, raw, svg, bmp, tif, ...)"
 
 #: ../operations/common/layer.c:267
 msgid "A layer in the traditional sense"
@@ -1540,10 +1332,8 @@ msgstr "मुख्य"
 
 #: ../operations/common/lens-distortion.c:34
 #: ../operations/common/lens-distortion.c:38
-#, fuzzy
-#| msgid "X1 value, position"
 msgid "Main value of distortion"
-msgstr "X1 मूल्य, स्थिती"
+msgstr "विरूपणचे मुख्य मूल्य"
 
 #: ../operations/common/lens-distortion.c:36 ../operations/common/mirrors.c:48
 msgid "Zoom"
@@ -1554,50 +1344,36 @@ msgid "Edge"
 msgstr "कडा"
 
 #: ../operations/common/lens-distortion.c:41
-#, fuzzy
-#| msgid "X1 value, position"
 msgid "Edge value of distortion"
-msgstr "X1 मूल्य, स्थिती"
+msgstr "विरूपणचे कडा मूल्य"
 
 #: ../operations/common/lens-distortion.c:43
 msgid "Brighten"
 msgstr "तेजस्वी"
 
 #: ../operations/common/lens-distortion.c:45
-#, fuzzy
-#| msgid "Overall brightness of the image"
 msgid "Brighten the image"
-msgstr "प्रतिमेची एकूण चमक"
+msgstr "प्रतिमा तेजस्वी करा"
 
 #: ../operations/common/lens-distortion.c:47
-#, fuzzy
-#| msgid "Phase shift"
 msgid "X shift"
-msgstr "फेज स्थालांतर"
+msgstr "X स्थलांतर"
 
 #: ../operations/common/lens-distortion.c:49
-#, fuzzy
-#| msgid "Horizontal"
 msgid "Shift horizontal"
-msgstr "आडवा"
+msgstr "क्षैतिज स्थलांतर करा"
 
 #: ../operations/common/lens-distortion.c:51
-#, fuzzy
-#| msgid "Phase shift"
 msgid "Y shift"
-msgstr "फेज स्थालांतर"
+msgstr "Y स्थलांतर"
 
 #: ../operations/common/lens-distortion.c:53
-#, fuzzy
-#| msgid "Spherical"
 msgid "Shift vertical"
-msgstr "गोलाकार"
+msgstr "अनुलंब स्थलांतर करा"
 
 #: ../operations/common/lens-distortion.c:348
-#, fuzzy
-#| msgid "Corrects barrel or pincushion lens distortion."
 msgid "Corrects lens distortion"
-msgstr "बॅरेल किंवा पन्सुशशन लेंस विरूपण सुधारते."
+msgstr "भिंग विरूपण सुधारते"
 
 #: ../operations/common/levels.c:26
 msgid "Low input"
@@ -1605,17 +1381,15 @@ msgstr "कमी इनपुट"
 
 #: ../operations/common/levels.c:27
 msgid "Input luminance level to become lowest output"
-msgstr "नपुट लुमिनन्स पातळी सर्वात कमी आउटपुट बनण्यासाठी"
+msgstr "इनपुट चकाकी पातळी सर्वात कमी आउटपुट बनण्यासाठी"
 
 #: ../operations/common/levels.c:28
 msgid "High input"
 msgstr "उच्च इनपुट"
 
 #: ../operations/common/levels.c:29
-#, fuzzy
-#| msgid "Input luminance level to become white"
 msgid "Input luminance level to become white."
-msgstr "इनपुट लुमिनन्स स्तर पांढरा होईल"
+msgstr "इनपुट चकाकी स्तर पांढरा होईल."
 
 #: ../operations/common/levels.c:30
 msgid "Low output"
@@ -1736,10 +1510,8 @@ msgid "The value represents the contribution of the past to the new frame."
 msgstr "तो मूल्य नवीन फ्रेमसाठी भूतकाळाचे योगदान दर्शवते."
 
 #: ../operations/common/mblur.c:144
-#, fuzzy
-#| msgid "Circular motion blur"
 msgid "Accumulating motion blur"
-msgstr "परिपत्रक गति अस्पष्ट"
+msgstr "गति अस्पष्ट साठवणे"
 
 #: ../operations/common/mirrors.c:30
 msgid "Mirror rotation"
@@ -1766,16 +1538,12 @@ msgid "Number of mirrors to use"
 msgstr "वापरण्यासाठी आरशांची  संख्या"
 
 #: ../operations/common/mirrors.c:36
-#, fuzzy
-#| msgid "X axis ratio for the center of mirroring"
 msgid "X offset of the result of mirroring"
-msgstr "आरशाच्या केंद्रासाठी एक्स अक्षाचे गुणोत्तर"
+msgstr "आरशाच्या परिणामाचे X ऑफसेट"
 
 #: ../operations/common/mirrors.c:38
-#, fuzzy
-#| msgid "Y axis ratio for the center of mirroring"
 msgid "Y offset of the result of mirroring"
-msgstr "आरशाच्या केंद्रासाठी Y अक्षाचे गुणोत्तर"
+msgstr "आरशाच्या परिणामाचे Y ऑफसेट"
 
 #: ../operations/common/mirrors.c:40
 msgid "Center X"
@@ -1818,10 +1586,8 @@ msgid "Expand"
 msgstr "विस्तृत करा"
 
 #: ../operations/common/mirrors.c:52
-#, fuzzy
-#| msgid "Clip result to input size"
 msgid "Clip result"
-msgstr "इनपुट आकारात क्लिप परिणाम"
+msgstr "क्लिप परिणाम"
 
 #: ../operations/common/mirrors.c:52
 msgid "Clip result to input size"
@@ -1837,7 +1603,7 @@ msgstr "पूर्ण आउटपुट क्षेत्र भरा"
 
 #: ../operations/common/mirrors.c:401
 msgid "Applies mirroring effect on the image."
-msgstr ""
+msgstr "प्रतिमेवर प्रतिबिंब प्रभाव लागू करते"
 
 #: ../operations/common/mono-mixer.c:26 ../operations/common/noise-rgb.c:36
 #: ../operations/common/noise-rgb.c:38
@@ -1846,10 +1612,8 @@ msgid "Red"
 msgstr "लाल"
 
 #: ../operations/common/mono-mixer.c:28
-#, fuzzy
-#| msgid "Amount"
 msgid "Amount of red"
-msgstr "रास "
+msgstr "लाल रंगाची संख्या "
 
 #: ../operations/common/mono-mixer.c:30 ../operations/common/noise-rgb.c:40
 #: ../operations/common/noise-rgb.c:42
@@ -1858,10 +1622,8 @@ msgid "Green"
 msgstr "हिरवा"
 
 #: ../operations/common/mono-mixer.c:32
-#, fuzzy
-#| msgid "Amount of edge preservation"
 msgid "Amount of green"
-msgstr "किनाऱ्यावर संरक्षण"
+msgstr "हिरव्या रंगाची संख्या"
 
 #: ../operations/common/mono-mixer.c:34 ../operations/common/noise-rgb.c:44
 #: ../operations/common/noise-rgb.c:46
@@ -1870,10 +1632,8 @@ msgid "Blue"
 msgstr "निळा"
 
 #: ../operations/common/mono-mixer.c:36
-#, fuzzy
-#| msgid "Amount"
 msgid "Amount of blue"
-msgstr "रास "
+msgstr "निळ्या रंगाची संख्या"
 
 #: ../operations/common/mono-mixer.c:98
 msgid "Monochrome channel mixer"
@@ -1881,17 +1641,13 @@ msgstr "एका रंगात रंगवलेले चॅनेल म�
 
 #: ../operations/common/motion-blur-circular.c:33
 #: ../operations/common/motion-blur-zoom.c:33
-#, fuzzy
-#| msgid "Horizontal position"
 msgid "Horizontal center position"
-msgstr "आडवी स्थिती"
+msgstr "क्षैतिज केंद्र स्थिती"
 
 #: ../operations/common/motion-blur-circular.c:38
 #: ../operations/common/motion-blur-zoom.c:38
-#, fuzzy
-#| msgid "Vertical position"
 msgid "Vertical center position"
-msgstr "उभी स्थिती"
+msgstr "अनुलंब केंद्र स्थिती"
 
 #: ../operations/common/motion-blur-circular.c:40
 #: ../operations/common/motion-blur-linear.c:30
@@ -1901,7 +1657,7 @@ msgstr "कोन"
 
 #: ../operations/common/motion-blur-circular.c:43
 msgid "Rotation blur angle"
-msgstr ""
+msgstr "अस्पष्ट कोन परिभ्रमण"
 
 #: ../operations/common/motion-blur-circular.c:266
 msgid "Circular motion blur"
@@ -1920,20 +1676,14 @@ msgid "Angle of blur in degrees"
 msgstr "अंशामधील अस्पष्ट कोन"
 
 #: ../operations/common/motion-blur-linear.c:293
-#, fuzzy
-#| msgid "Linear Motion Blur"
 msgid "Linear motion blur"
 msgstr "रेषीय गती अस्पष्ट"
 
 #: ../operations/common/motion-blur-zoom.c:40
-#, fuzzy
-#| msgid "Vector"
 msgid "Factor"
-msgstr "सदिश (पर"
+msgstr "घटक"
 
 #: ../operations/common/motion-blur-zoom.c:43
-#, fuzzy
-#| msgid "Blurring factor"
 msgid "Bluring factor"
 msgstr "अस्पष्ट घटक"
 
@@ -1946,8 +1696,6 @@ msgid "Z offset"
 msgstr "Z चा संच"
 
 #: ../operations/common/noise.c:33
-#, fuzzy
-#| msgid "Iterations"
 msgid "Iteration"
 msgstr "फेरबदल"
 
@@ -1958,10 +1706,8 @@ msgstr "पर्लिन नॉईस उत्पादक"
 #: ../operations/common/noise-cielch.c:25
 #: ../operations/common/noise-cielch.c:27 ../operations/common/noise-hsv.c:27
 #: ../operations/common/noise-hsv.c:29
-#, fuzzy
-#| msgid "Hardness"
 msgid "Holdness"
-msgstr "कडकपणा"
+msgstr "होल्डनेस"
 
 #: ../operations/common/noise-cielch.c:29
 #: ../operations/common/noise-cielch.c:31
@@ -2001,10 +1747,8 @@ msgstr "यादृच्छिकता (%)"
 
 #: ../operations/common/noise-hurl.c:36 ../operations/common/noise-pick.c:36
 #: ../operations/common/noise-slur.c:39
-#, fuzzy
-#| msgid "Randomization (%)"
 msgid "Randomization"
-msgstr "यादृच्छिकता (%)"
+msgstr "यादृच्छिकता"
 
 #: ../operations/common/noise-hurl.c:38 ../operations/common/noise-hurl.c:40
 #: ../operations/common/noise-pick.c:38 ../operations/common/noise-pick.c:40
@@ -2027,7 +1771,7 @@ msgstr "सामर्थ्य"
 
 #: ../operations/common/noise-reduction.c:26
 msgid "How many iteratarions to run the algorithm with"
-msgstr ""
+msgstr "अल्गोरिदम सह कार्यान्वित करण्यासाठी किती पुनरावृत्ती आहेत"
 
 #: ../operations/common/noise-rgb.c:28 ../operations/common/noise-rgb.c:30
 msgid "Correlated noise"
@@ -2038,10 +1782,8 @@ msgid "Independent RGB"
 msgstr "स्वतंत्र आरजीबी"
 
 #: ../operations/common/noise-rgb.c:186
-#, fuzzy
-#| msgid "Distort colors by random amounts"
 msgid "Distort colors by random amounts."
-msgstr "स्वैरपणे रंगांद्वारे रंग विकृत करा"
+msgstr "यादृच्छिक रंगांद्वारे रंग विकृत करा."
 
 #: ../operations/common/noise-slur.c:195
 msgid "Randomly slide some pixels downward (similar to melting)"
@@ -2109,20 +1851,12 @@ msgid "a GeglBuffer on disk to open"
 msgstr "उघडण्यासाठी चकतीवरील एक जीइजीएल संग्रह"
 
 #: ../operations/common/open-buffer.c:130
-#, fuzzy
-#| msgid "Use an on-disk GeglBuffer as data source."
 msgid "A source that uses an on-disk GeglBuffer."
-msgstr "माहिती स्त्रोत म्हणून ऑन-डिस्क जीइजीएल संग्रह वापरा."
+msgstr "स्रोत जे ऑन-डिस्क जीईजीएलसंग्रह वापरते."
 
 #: ../operations/common/over.c:141
-#, fuzzy
-#| msgid ""
-#| "Porter Duff operation over (also known as normal mode, and src-over) (d = "
-#| "cA + cB * (1 - aA))"
 msgid "Porter Duff operation over (d = cA + cB * (1 - aA))"
-msgstr ""
-"पोर्टर डफ ऑपरेशन (सामान्य मोड, आणि src-ओपन म्हणूनही ओळखले जाते)(d = cA+ cB * (1 - "
-"aA))"
+msgstr "पोर्टर डफ क्रिया वर (d = cA + cB * (1 - aA))"
 
 #: ../operations/common/photocopy.c:29 ../operations/common/photocopy.c:31
 #: ../operations/common/softglow.c:34 ../operations/common/softglow.c:36
@@ -2146,10 +1880,8 @@ msgid "Width of blocks in pixels"
 msgstr "ब्लॉक्सची दृश्यबिंदूची रूंदी"
 
 #: ../operations/common/pixelize.c:29
-#, fuzzy
-#| msgid "Block height"
 msgid "Block Height"
-msgstr "ब्लॉक उंची"
+msgstr "ब्लॉकची उंची"
 
 #: ../operations/common/pixelize.c:31
 msgid "Height of blocks in pixels"
@@ -2169,10 +1901,8 @@ msgid "Offset angle"
 msgstr "चासंच  कोन"
 
 #: ../operations/common/polar-coordinates.c:40
-#, fuzzy
-#| msgid "Offset angle"
 msgid "Offset angle."
-msgstr "चासंच  कोन"
+msgstr "चासंच  कोन."
 
 #: ../operations/common/polar-coordinates.c:42
 msgid "Map backwards"
@@ -2230,7 +1960,7 @@ msgstr "प्रतिमेच्या प्रत्येक रंग घ
 
 #: ../operations/common/raw-load.c:183
 msgid "Raw image loader, wrapping dcraw with pipes."
-msgstr ""
+msgstr "कच्च्या प्रतिमा लोडर, पाईप्स सह डोक्रो ओघळत आहे."
 
 #: ../operations/common/rectangle.c:34
 msgid "Horizontal extent"
@@ -2268,8 +1998,6 @@ msgid "Overall brightness of the image"
 msgstr "प्रतिमेची एकूण चमक"
 
 #: ../operations/common/reinhard05.c:30
-#, fuzzy
-#| msgid "Chromatic adaptation"
 msgid "Chromatic Adaptation"
 msgstr "क्रोमॅटिक अनुकूलन"
 
@@ -2278,8 +2006,6 @@ msgid "Adaptation to color variation across the image"
 msgstr "प्रतिमेवर रंग भिन्नता करण्यासाठी रुपांतर"
 
 #: ../operations/common/reinhard05.c:33
-#, fuzzy
-#| msgid "Light adaptation"
 msgid "Light Adaptation"
 msgstr "प्रकाश अनुकूलन"
 
@@ -2315,10 +2041,8 @@ msgid "Period"
 msgstr "कालावधी"
 
 #: ../operations/common/ripple.c:38
-#, fuzzy
-#| msgid "Period (wavelength) of the ripple"
 msgid "Period of the ripple"
-msgstr "लहरचा कालावधी (तरंगलांबी)"
+msgstr "तरंगाचा कालावधी"
 
 #: ../operations/common/ripple.c:40 ../operations/common/ripple.c:42
 #: ../operations/common/waves.c:42 ../operations/common/waves.c:44
@@ -2326,20 +2050,16 @@ msgid "Phase shift"
 msgstr "फेज स्थालांतर"
 
 #: ../operations/common/ripple.c:46
-#, fuzzy
-#| msgid "Angle of blur in degrees"
 msgid "Angle in degree"
-msgstr "अंशामधील अस्पष्ट कोन"
+msgstr "अंश मध्ये कोन"
 
 #: ../operations/common/ripple.c:52
 msgid "Wave type"
 msgstr "वेव्ह प्रकार"
 
 #: ../operations/common/ripple.c:55
-#, fuzzy
-#| msgid "Type of map"
 msgid "Type of wave"
-msgstr "नकाशाचा प्रकार"
+msgstr "लाटाचा प्रकार"
 
 #: ../operations/common/ripple.c:57
 msgid "Tileable"
@@ -2358,13 +2078,8 @@ msgid "Path of file to save."
 msgstr "जतन करण्यासाठी धारिकेचे मार्ग "
 
 #: ../operations/common/save.c:195
-#, fuzzy
-#| msgid ""
-#| "Multipurpose file loader, that uses other native handlers, and fallback "
-#| "conversion using Image Magick's convert."
 msgid "Multipurpose file saver, that uses other native handlers."
-msgstr ""
-"मल्टीपर्पज धारिका लोडर, जो इतर मॅनेजल हँडलरचा वापर करते आणि फ्लेबबॅक रूपांतरण वापरते आहे."
+msgstr "बहुउद्देशीय धारिका जतनकर्ता, जे इतर स्थानिक हँडलर वापरते."
 
 #: ../operations/common/shift.c:31
 msgid "Shift"
@@ -2396,14 +2111,10 @@ msgid "Number of pairs; higher number preserves more acute features"
 msgstr "जोड्यांची संख्या; उच्च संख्या अधिक तीव्र वैशिष्ट्ये जतन करते"
 
 #: ../operations/common/snn-mean.c:315
-#, fuzzy
-#| msgid ""
-#| "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-#| "Neighbours"
 msgid ""
 "Noise reducing edge enhancing blur filter based  on Symmetric Nearest "
 "Neighbours"
-msgstr "सममित जवळील शेजारीधारकांवर आधारित अस्पष्ट गाळणीचे रक्षण करणारे नॉईस कमी करणे"
+msgstr "सममित जवळील शेजारीच्या आधारावर नॉईस कमी करणारी कडा वाढवणारी अस्पष्ट गाळणी "
 
 #: ../operations/common/softglow.c:26 ../operations/common/softglow.c:28
 msgid "Glow radius"
@@ -2471,12 +2182,8 @@ msgid "SVG color matrix operation svg_saturate"
 msgstr "एसव्हीजी रंग मॅट्रिक्स क्रिया एसव्हीजी_संतृप्त"
 
 #: ../operations/common/threshold.c:26
-#, fuzzy
-#| msgid ""
-#| "Scalar threshold level (overridden if an auxiliary input buffer is "
-#| "provided.)."
 msgid "Global threshold level (used when there is no auxiliary input buffer)."
-msgstr "स्केलर सीमा मर्यादा स्तर (अधिकृत इनपुट संग्रह प्रदान केले असल्यास अधिलिखित.)."
+msgstr "ग्लोबल रंग मर्यादा पातळी (जेव्हा कोणतेही पूरक इनपुट संग्रह नसते तेव्हा वापरलेले)."
 
 #: ../operations/common/threshold.c:110
 msgid ""
@@ -2507,16 +2214,14 @@ msgid ""
 "The most widely used method for sharpening an image, sharpens by adding "
 "false mach-bands around edges"
 msgstr ""
+"प्रतिमा धारदार करण्यासाठी सर्वाधिक प्रमाणात वापरली जाणारी पद्धत, किनार्यांभोवती खोटे "
+"मच-बँड्स जोडून तीक्ष्ण होते"
 
 #: ../operations/common/value-invert.c:150
-#, fuzzy
-#| msgid ""
-#| "Invert the value component, the result has the brightness inverted, "
-#| "keeping the color."
 msgid ""
 "Inverts just the value component, the result is the corresponding `inverted' "
 "image."
-msgstr "मूल्ये घटक उलटा, परिणामी उजेडात येणारी चमक, रंग ठेवून."
+msgstr " फक्त मूल्य घटक उलट करते, परिणाम संबंधित 'उलट' प्रतिमा आहे."
 
 #: ../operations/common/vignette.c:30
 msgid "Shape"
@@ -2524,7 +2229,7 @@ msgstr "आकार"
 
 #: ../operations/common/vignette.c:33
 msgid "Shape of the vignette"
-msgstr ""
+msgstr "लघुचित्रांचे आकार"
 
 #: ../operations/common/vignette.c:37
 msgid ""
@@ -2562,68 +2267,54 @@ msgid ""
 "inf:1, this is applied after proportion is taken into account, to directly "
 "use squeeze factor as proportions, set proportion to 0.0."
 msgstr ""
+"वापरण्यासाठी आस्पेक्ट गुणोत्तर, -0.5 = 1: 2, 0.0 = 1: 1, 0.5 = 2: 1, -1.0 = 1: inf "
+"1.0 = inf: 1, हे गुणोत्तर प्रमाणित केल्यानंतर लगेच लागू केले जाते, प्रमाण म्हणून परिमाण "
+"वापरले जाते, प्रमाण 0.0 ला सेट करा."
 
 #: ../operations/common/vignette.c:66
-#, fuzzy
-#| msgid "Horizontal camera panning"
 msgid "Horizontal center of vignetting"
-msgstr "क्षैतिज कॅमेरा पॅनिंग"
+msgstr "लघुचित्रासाठी चे क्षैतिज केंद्र"
 
 #: ../operations/common/vignette.c:70
-#, fuzzy
-#| msgid "Vertical camera panning"
 msgid "Vertical center of vignetting"
-msgstr "अनुलंब कॅमेरा पॅनिंग"
+msgstr "लघुचित्रासाठी चे अनुलंब केंद्र"
 
 #: ../operations/common/vignette.c:72
 msgid "Rotation"
 msgstr "परिभ्रमण"
 
 #: ../operations/common/vignette.c:74
-#, fuzzy
-#| msgid "Rotation"
 msgid "Rotation angle"
-msgstr "परिभ्रमण"
+msgstr "फिरवायचे कोन"
 
 #: ../operations/common/vignette.c:383
-#, fuzzy
-#| msgid ""
-#| "Applies a vignette to an image. Simulates the luminance fall off at the "
-#| "edge of exposed film, and some other fuzzier border effects that can "
-#| "naturally occur with analog photography"
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
 "occur with analog photograpy"
 msgstr ""
-"एखाद्या प्रतिमेत रेखाचित्र लागू केले जाते उद्रेक चित्रपटाच्या काठावर ल्यूमिनन्स पटकन करते आणि "
-"काही इतर अस्पष्ट सीमा परिणाम जे नैसर्गिकरित्या एनालॉग फोटोग्राफी"
+"एखाद्या प्रतिमेत रेखाचित्र लागू केले जाते. उद्रेक चित्रपटाच्या काठावर चकाकी पडते, आणि काही "
+"इतर अस्पष्ट सीमा प्रभाव जे नैसर्गिकरीत्या समान छायाचित्रणासह येऊ शकतात."
 
 #: ../operations/common/warp.c:37 ../operations/common/warp.c:48
-#, fuzzy
-#| msgid "Effect strength"
 msgid "Effect Strength"
-msgstr "प्रभाव ताकद"
+msgstr "प्रभावी मजबूतपणा"
 
 #: ../operations/common/warp.c:39 ../operations/external/text.c:29
 msgid "Size"
 msgstr "आकार "
 
 #: ../operations/common/warp.c:41
-#, fuzzy
-#| msgid "Effect strength"
 msgid "Effect Size"
-msgstr "प्रभाव ताकद"
+msgstr "प्रभाव आकारमान"
 
 #: ../operations/common/warp.c:43 ../operations/external/path.c:38
 msgid "Hardness"
 msgstr "कडकपणा"
 
 #: ../operations/common/warp.c:45
-#, fuzzy
-#| msgid "Hardness"
 msgid "Effect Hardness"
-msgstr "कडकपणा"
+msgstr "प्रभाव कडकपणा"
 
 #: ../operations/common/warp.c:47
 msgid "Stroke"
@@ -2642,16 +2333,12 @@ msgid "Compute a relative displacement mapping from a stroke"
 msgstr "बाह्यरेषेवरून सापेक्ष विस्थापन मंचाची गणना करा"
 
 #: ../operations/common/waves.c:28
-#, fuzzy
-#| msgid "X coordinates of the center of supernova"
 msgid "X coordinate of the center of the waves"
-msgstr "सुपरनोव्हाच्या केंद्रस्थानी X समन्वय"
+msgstr "लाटाच्या केंद्रस्थानी X समन्वय"
 
 #: ../operations/common/waves.c:32
-#, fuzzy
-#| msgid "Y coordinates of the center of supernova"
 msgid "Y coordinate of the center of the waves"
-msgstr "सुपरनोव्हाच्या केंद्रस्थानी Y समन्वय"
+msgstr "लाटाच्या केंद्रस्थानी Y समन्वय"
 
 #: ../operations/common/waves.c:40
 msgid "Period (wavelength) of the ripple"
@@ -2677,7 +2364,7 @@ msgstr "लाटा सह प्रतिमा विकृत"
 #: ../operations/generated/divide.c:29 ../operations/generated/gamma.c:29
 #: ../operations/generated/multiply.c:29 ../operations/generated/subtract.c:29
 msgid "global value used if aux doesn't contain data"
-msgstr ""
+msgstr "aux मध्ये डेटा नसल्यास वैश्विक मूल्य वापरले जाते"
 
 #: ../operations/common/weighted-blend.c:124
 msgid "blend two images using alpha values as weights"
@@ -2722,20 +2409,16 @@ msgid "Wind-like bleed effect"
 msgstr "वारा सारखी ब्लीड प्रभाव"
 
 #: ../operations/common/write-buffer.c:26
-#, fuzzy
-#| msgid "Writes image data to an already existing buffer"
 msgid "Write to an existing GeglBuffer"
-msgstr "आधीच विद्यमान संग्रहमध्ये प्रतिमा माहिती लिहिते"
+msgstr "अस्तित्वात असलेल्या जीईजीएल संग्रह वर लिहा"
 
 #: ../operations/common/write-buffer.c:28
-#, fuzzy
-#| msgid "Input buffer"
 msgid "Flush buffer"
-msgstr "इनपुट संग्रह"
+msgstr "लोट संग्रह"
 
 #: ../operations/common/write-buffer.c:29
 msgid "Flush buffer after writing"
-msgstr ""
+msgstr "लिहिल्यानंतर लोट संग्रह"
 
 #: ../operations/core/clone.c:25
 msgid "Reference"
@@ -2746,20 +2429,16 @@ msgid "The reference ID used as input (for use in XML)."
 msgstr "इनपुट आयडी (एक्सएमएल मध्ये वापरण्यासाठी) म्हणून वापरला जाणारा संदर्भ आयडी  "
 
 #: ../operations/core/clone.c:110
-#, fuzzy
-#| msgid "Crop a buffer"
 msgid "Clone a buffer"
-msgstr "संग्रह क्रॉप करा"
+msgstr "संग्रह ची निवडक प्रतिलिपी करा"
 
 #: ../operations/core/convert-format.c:28
 msgid "Output format"
 msgstr "आउटपुट स्वरूप"
 
 #: ../operations/core/convert-format.c:29
-#, fuzzy
-#| msgid "Output format"
 msgid "Babl output format string"
-msgstr "आउटपुट स्वरूप"
+msgstr "Babl आउटपुट स्वरूप शब्धक्रम"
 
 #: ../operations/core/convert-format.c:81
 msgid "Convert the data to the specified format"
@@ -2780,89 +2459,73 @@ msgstr "लोड करण्यासाठी धारिकेचे मा
 
 #: ../operations/external/ff-load.c:26 ../operations/external/v4l.c:29
 msgid "Frame"
-msgstr ""
+msgstr "चौकट"
 
 #: ../operations/external/ff-load.c:26
 msgid "Frame number"
-msgstr "फ्रेम क्रमांक"
+msgstr "चौकट क्रमांक"
 
 #: ../operations/external/ff-load.c:471
-#, fuzzy
-#| msgid "FFmpeg video frame importer."
 msgid "FFmpeg video frame importer"
-msgstr "FFmpeg व्हिडिओ फ्रेम आयातक."
+msgstr "FFmpeg व्हिडिओ चौकट आयातक"
 
 #: ../operations/external/jp2-load.c:70
-#, fuzzy, c-format
-#| msgid "Unknown JPEG 2000 image format"
+#, c-format
 msgid "Unknown JPEG 2000 image format in '%s'"
-msgstr "अज्ञात जेपीइजी 2000 प्रतिमा स्वरूप"
+msgstr "अज्ञात जेपीइजी 2000 प्रतिमा स्वरूप '%s' मध्ये"
 
 #: ../operations/external/jp2-load.c:77
-#, fuzzy, c-format
-#| msgid "Unable to open JPEG 2000 image"
+#, c-format
 msgid "Unable to open JPEG 2000 image in '%s'"
-msgstr "जेपीइजी 2000 प्रतिमा उघडण्यात अक्षम"
+msgstr "जेपीइजी 2000 प्रतिमा '%s' मध्ये उघडण्यास अक्षम"
 
 #: ../operations/external/jp2-load.c:84
-#, fuzzy, c-format
-#| msgid "Unable to create output color profile"
+#, c-format
 msgid "Unable to create output color profile for '%s'"
-msgstr "आउटपुट रंग प्रोफाइल तयार करण्यात अक्षम"
+msgstr "आउटपुट रंग प्रोफाइल '%s'साठी तयार करण्यात अक्षम"
 
 #: ../operations/external/jp2-load.c:92
-#, fuzzy, c-format
-#| msgid "Unable to convert image to sRGB color space"
+#, c-format
 msgid "Unable to convert image to sRGB color space when processing '%s'"
-msgstr "प्रतिमास एसआरजीबी रंग जागेमध्ये बदलण्यास अक्षम"
+msgstr "प्रतिमेस एसआरजीबी रंग '%s' प्रक्रिया करताना जागेमध्ये बदलण्यास अक्षम"
 
 #: ../operations/external/jp2-load.c:100
-#, fuzzy, c-format
-#| msgid "Unsupported non-RGB JPEG 2000 file with %d components"
+#, c-format
 msgid "Unsupported non-RGB JPEG 2000 file with %d components in '%s'"
-msgstr "%d  घटकांसह असमर्थित चुकीचे- आरजीबी  JPEG 2000 धारिका"
+msgstr "%d घटकांसह असमर्थित चुकीचे-आरजीबी  जेपीइजी 2000 धारिका '%s' मध्ये"
 
 #: ../operations/external/jp2-load.c:111
-#, fuzzy, c-format
-#| msgid "Unsupported JPEG 2000 file with depth %d"
+#, c-format
 msgid "Unsupported JPEG 2000 file with depth %d in '%s'"
-msgstr "खोली% d सह असमर्थित JPEG 2000 धारिका"
+msgstr "खोली %d सह '%s' मध्ये असमर्थित जेपीइजी 2000 धारिका"
 
 #: ../operations/external/jp2-load.c:124
-#, fuzzy, c-format
-#| msgid "Components of JPEG 2000 input don't match"
+#, c-format
 msgid "Components of input image '%s' don't match"
-msgstr "JPEG 2000 इनपुटचे घटक जुळत नाहीत"
+msgstr "इनपुट प्रतिमेचे घटक '%s' जुळत नाहीत"
 
 #: ../operations/external/jp2-load.c:209
-#, fuzzy, c-format
-#| msgid "One or more of R, G, B components are missing"
+#, c-format
 msgid "One or more of R, G, B components are missing from '%s'"
-msgstr "आर, जी, बी चे एक किंवा अधिक घटक गहाळ आहेत"
+msgstr "आर, जी, बी चे एक किंवा अधिक घटक '%s' मधून गहाळ आहेत"
 
 #: ../operations/external/jp2-load.c:218
-#, fuzzy, c-format
-#| msgid "One or more of R, G, B components have signed data"
+#, c-format
 msgid "One or more of R, G, B components have signed data in '%s'"
-msgstr "आर, जी, बी घटकांपैकी एक किंवा अधिक डेटावर स्वाक्षरी केली आहे"
+msgstr "आर, जी, बी घटकांपैकी एक किंवा अधिक '%s' मधील डेटावर स्वाक्षरी केली आहे"
 
 #: ../operations/external/jp2-load.c:252
-#, fuzzy, c-format
-#| msgid "Error reading row %d component %d"
+#, c-format
 msgid "Error reading row %d component %d from '%s'"
-msgstr "%d घटक %d वाचताना त्रुटी"
+msgstr "ओळ  %d घटक  %d '%s' मधून वाचताना त्रुटी"
 
 #: ../operations/external/jp2-load.c:397
-#, fuzzy
-#| msgid "JPEG 2000 File Loader"
 msgid "JPEG 2000 image loader"
-msgstr "JPEG 2000 धारिका लोडर"
+msgstr "जेपीइजी 2000 धारिका लोडर"
 
 #: ../operations/external/jpg-load.c:223
-#, fuzzy
-#| msgid "PNG image loader."
 msgid "JPG image loader"
-msgstr "पीएनजी प्रतिमा लोडर"
+msgstr "जेपीजी प्रतिमा लोडर"
 
 #: ../operations/external/jpg-save.c:26
 msgid "Target path and filename, use '-' for stdout"
@@ -2894,7 +2557,7 @@ msgstr "अनुकूल हफमन तक्ता वापरा"
 
 #: ../operations/external/jpg-save.c:33
 msgid "Progressive"
-msgstr "प्रोग्रेसिव्ह"
+msgstr "प्रगतिशील"
 
 #: ../operations/external/jpg-save.c:34
 msgid "Create progressive JPEG images"
@@ -2911,7 +2574,7 @@ msgstr "एक ग्रेस्केल तयार करा (एका र
 
 #: ../operations/external/jpg-save.c:192
 msgid "JPEG image saver (passes the buffer through, saves as a side-effect)"
-msgstr ""
+msgstr "जेपीईजी प्रतिमा जतनकर्ता (संग्रह पास करून, बाजूला-प्रभाव म्हणून जतन करते)"
 
 #: ../operations/external/matting-levin.c:25
 msgid "Epsilon"
@@ -2942,10 +2605,8 @@ msgid "Number of downsampled levels to use"
 msgstr "त्रिकोण प्रभाव घटक"
 
 #: ../operations/external/matting-levin.c:39
-#, fuzzy
-#| msgid "Active levels"
 msgid "Active Levels"
-msgstr "सक्रिय पातळी"
+msgstr "सक्रिय रंग पातळ्या"
 
 #: ../operations/external/matting-levin.c:41
 msgid "Number of levels to perform solving"
@@ -2966,10 +2627,8 @@ msgid "Target path and filename, use '-' for stdout."
 msgstr "लक्ष्य मार्ग आणि धारिका नाव , stdout साठी '-' वापरा."
 
 #: ../operations/external/npy-save.c:144
-#, fuzzy
-#| msgid "NumPy (Numerical Python) image saver"
 msgid "NPY image saver (Numerical python file saver.)"
-msgstr "NumPy (न्युमेरिकल पायथन) प्रतिमा सेव्हर"
+msgstr "एनपीवाय प्रतिमा जतनकर्ता (संख्यात्मक पायथन धारिका जतनकर्ता.)"
 
 #: ../operations/external/path.c:27
 msgid "Fill Color"
@@ -3039,7 +2698,7 @@ msgstr "वापरण्यासाठी फिल ओपॅसिटी"
 #: ../operations/external/path.c:50 ../operations/external/vector-fill.c:39
 #: ../operations/external/vector-stroke.c:39
 msgid "Vector"
-msgstr "सदिश (पर"
+msgstr "सदिश "
 
 #: ../operations/external/path.c:51 ../operations/external/vector-fill.c:40
 #: ../operations/external/vector-stroke.c:40
@@ -3060,7 +2719,7 @@ msgstr "वापरण्यासाठी GdkPixbuf"
 
 #: ../operations/external/pixbuf.c:103
 msgid "Uses the GdkPixbuf located at the memory location in <em>pixbuf</em>."
-msgstr "<Em> पिक्चुफ </ em> मध्ये मेमरी स्थानावर स्थित GdkPixbuf वापरते"
+msgstr "<Em> पिक्सबफ </ em> मध्ये मेमरी स्थानावर स्थित GdkPixbuf वापरते"
 
 #: ../operations/external/png-load.c:446
 msgid "PNG image loader."
@@ -3079,14 +2738,12 @@ msgid "Bitdepth"
 msgstr "बिटडिपेथ"
 
 #: ../operations/external/png-save.c:31 ../operations/external/ppm-save.c:30
-#, fuzzy
-#| msgid "8 and 16 are the currently accepted values."
 msgid "8 and 16 are amongst the currently accepted values."
-msgstr "8 आणि 16 ही सध्या स्वीकारलेली मूल्ये आहेत"
+msgstr "8 आणि 16 ही सध्या स्वीकारलेली मूल्ये आहेत."
 
 #: ../operations/external/png-save.c:233
 msgid "PNG image saver (passes the buffer through, saves as a side-effect.)"
-msgstr ""
+msgstr "पीएनजी प्रतिमा जतनकर्ता (संग्रह पास करून, बाजूला-प्रभाव म्हणून जतन करते)"
 
 #: ../operations/external/ppm-load.c:385
 msgid "PPM image loader."
@@ -3098,7 +2755,7 @@ msgstr "कच्चा स्वरूप"
 
 #: ../operations/external/ppm-save.c:190
 msgid "PPM image saver (Portable pixmap saver.)"
-msgstr "पीपीएम प्रतिमा सेव्हर (पोर्टेबल पिक्मिएप सेव्हर.)"
+msgstr "पीपीएम प्रतिमा जतनकर्ता (पोर्टेबल पिक्मिएप जतनकर्ता.)"
 
 #: ../operations/external/rgbe-load.c:135
 msgid "RGBE image loader (Radiance HDR format)."
@@ -3106,7 +2763,7 @@ msgstr "आरजीबीई प्रतिमा लोडर (रेडि�
 
 #: ../operations/external/rgbe-save.c:86
 msgid "RGBE image saver (Radiance HDR format)"
-msgstr "आरजीबीई प्रतिमा सेव्हर (रेडिआन्स एचडीआर स्वरूप)"
+msgstr "आरजीबीई प्रतिमा जतनकर्ता (रेडिआन्स एचडीआर स्वरूप)"
 
 #: ../operations/external/save-pixbuf.c:28
 msgid "Pixbuf location"
@@ -3117,10 +2774,8 @@ msgid "The location where to store the output GdkPixbuf."
 msgstr "आउटपुट GdkPixbuf संचयीत करण्यासाठी स्थान"
 
 #: ../operations/external/save-pixbuf.c:106
-#, fuzzy
-#| msgid "Store image in a GdkPixbuf."
 msgid "Save output into a GdkPixbuf."
-msgstr "GdkPixbuf मध्ये प्रतिमा संचयित करा"
+msgstr "आउटपुट GdkPixbuf मध्ये जतन करा."
 
 #: ../operations/external/sdl-display.c:28
 msgid "Icon to be used for output window"
@@ -3131,14 +2786,12 @@ msgid ""
 "Displays the input buffer in an SDL window (restricted to one display op/"
 "process, due to SDL implementation issues)."
 msgstr ""
-"इनपुट बफर SDL पटलामध्ये प्रदर्शित करते (एसडीएलच्या अंमलबजावणी मुद्द्यांमुळे एका प्रदर्शनास / "
-"प्रक्रियापुरते मर्यादित)"
+"इनपुट संग्रह SDL पटलामध्ये प्रदर्शित करते (एसडीएलच्या अंमलबजावणी मुद्द्यांमुळे एका "
+"प्रदर्शनास / प्रक्रियापुरते मर्यादित)"
 
 #: ../operations/external/svg-load.c:26
-#, fuzzy
-#| msgid "Path of file to load"
 msgid "Path to SVG file to load"
-msgstr "लोड करण्यासाठी धारिकेचे मार्ग"
+msgstr "लोड करण्यासाठी SVG धारिके चा मार्ग"
 
 #: ../operations/external/svg-load.c:28 ../operations/external/v4l.c:27
 msgid "Width for rendered image"
@@ -3170,16 +2823,12 @@ msgid "Font family (utf8)"
 msgstr "टंक परिवार (यूटीएफ -8)"
 
 #: ../operations/external/text.c:30
-#, fuzzy
-#| msgid "Apparent height of each tile (in pixels)"
 msgid "Approximate height of text in pixels."
-msgstr "प्रत्येक टाइलची स्पष्ट उंची (दृश्यबिंदूमध्ये)"
+msgstr "दृश्यबिंदू मध्ये मजकुराची अंदाजे उंची."
 
 #: ../operations/external/text.c:32
-#, fuzzy
-#| msgid "Color for the text (defaults to 'black')"
 msgid "Color for the text (defaults to 'white')"
-msgstr "मजकूरासाठी रंग (क्रियापूर्व 'काळा')"
+msgstr "मजकूरासाठी रंग (क्रियापूर्व 'पांढरा')"
 
 #: ../operations/external/text.c:33
 msgid "Wrap width"
@@ -3209,82 +2858,84 @@ msgstr "दृश्यबिंदूमध्ये दिशानिर्�
 
 #: ../operations/external/text.c:301
 msgid "Display a string of text using pango and cairo."
-msgstr ""
+msgstr "पॅन्गो आणि कैरोचा वापर करून मजकूरांची एक स्ट्रिंग प्रदर्शित करा."
 
 #: ../operations/external/v4l.c:26
 msgid "Path"
-msgstr ""
+msgstr "मार्ग"
 
 #: ../operations/external/v4l.c:26
 msgid "Path to v4l device"
-msgstr ""
+msgstr "v4l साधनांसाठी मार्ग "
 
 #: ../operations/external/v4l.c:30
 msgid "current frame number, can be changed to trigger a reload of the image."
-msgstr ""
+msgstr "वर्तमान चौकट क्रमांक, प्रतिमा पुन्हा लोड करण्यासाठी ट्रिगर करता येते."
 
 #: ../operations/external/v4l.c:31 ../operations/workshop/external/ff-save.c:32
 msgid "FPS"
-msgstr ""
+msgstr "FPS"
 
 #: ../operations/external/v4l.c:32
 msgid "autotrigger reload this many times a second."
-msgstr ""
+msgstr "ऑटोट्रिगर एक सेकंदात अनेक वेळा हे पुन्हा लोड करतात"
 
 #: ../operations/external/v4l.c:322
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
-msgstr ""
+msgstr "Video4Linux इनपुट, वेबकॅम फ्रेमग्रेबर आणि तत्सम साधने."
 
 #: ../operations/external/vector-fill.c:28
 msgid "Color of paint to use for filling."
-msgstr ""
+msgstr "पेंटचा रंग भरण्यासाठी वापरण्यासाठी."
 
 #: ../operations/external/vector-fill.c:31
 msgid "The fill opacity to use."
-msgstr ""
+msgstr " भरलेली अपारदर्शकता वापरण्यासाठी."
 
 #: ../operations/external/vector-fill.c:33
 msgid "Fill rule."
-msgstr ""
+msgstr "नियम भरा."
 
 #: ../operations/external/vector-fill.c:34
 msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr ""
+msgstr "काय भरावे हे कसे निर्धारीत करावे (शून्य समान नाही | सम विषम)"
 
 #: ../operations/external/vector-fill.c:37
 #: ../operations/external/vector-stroke.c:37
 msgid "svg style description of transform."
-msgstr ""
+msgstr "परिवर्तनचे svg शैली वर्णन."
 
 #: ../operations/external/vector-fill.c:268
 msgid "Renders a filled region"
-msgstr ""
+msgstr "भरलेले क्षेत्र प्रस्तुत करते"
 
 #: ../operations/external/vector-stroke.c:28
 msgid "Color of paint to use for stroking."
-msgstr ""
+msgstr "बाह्यरेषेसाठी वापरण्याजोगे पेंटचा रंग"
 
 #: ../operations/external/vector-stroke.c:31
 msgid "The width of the brush used to stroke the path."
-msgstr ""
+msgstr "बाह्यरेषा मार्गासाठी कुंचल्याची रूंदी वापरली जाते."
 
 #: ../operations/external/vector-stroke.c:34
 msgid ""
 "Opacity of stroke, note, does not behave like SVG since at the moment "
 "stroking is done using an airbrush tool."
 msgstr ""
+"स्ट्रोकची अपारदर्शकता, टीप, एसव्हीजी सारख्या पद्धतीने वागत नाही कारण क्षणार्धात फवारा "
+"साधनाचा वापर करून स्ट्रोकिंग केले जाते. "
 
 #: ../operations/external/vector-stroke.c:280
 msgid "Renders a vector stroke"
-msgstr ""
+msgstr "वेक्टर स्ट्रोक प्रस्तुत करते"
 
 #: ../operations/generated/add.c:125
 msgid "Math operation add (c = c + value)"
-msgstr ""
+msgstr "गणिती क्रिया बेरीज (c = c + मूल्य )"
 
 #: ../operations/generated/clear.c:116
 msgid "Porter Duff operation clear (d = 0.0f)"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया स्पष्ट (d = 0.0f)"
 
 #: ../operations/generated/color-burn.c:165
 msgid ""
@@ -3292,6 +2943,9 @@ msgid ""
 "cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == 0 ? 1 : (aA * (cA * aB + "
 "cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
 msgstr ""
+"एसव्हीजी मिश्रण क्रिया रंग-गडद (<code>जर cA * aB + cB * aA <= aA * aB: d = cA * "
+"(1 - aB) + cB * (1 - aA) अन्यथा: d = (cA == 0 ? 1 : (aA * (cA * aB + cB * aA "
+"- aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
 
 #: ../operations/generated/color-dodge.c:165
 msgid ""
@@ -3299,52 +2953,61 @@ msgid ""
 "aA * aB + cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == aA ? 1 : cB * "
 "aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"एसव्हीजी मिश्रण क्रिया रंग-हलका (<code>जर cA * aB + cB * aA >= aA * aB: d = aA * "
+"aB + cA * (1 - aB) + cB * (1 - aA) अन्यथा: d = (cA == aA ? 1 : cB * aA / (aA "
+"== 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: ../operations/generated/darken.c:163
 msgid ""
 "SVG blend operation darken (<code>d = MIN (cA * aB, cB * aA) + cA * (1 - aB) "
 "+ cB * (1 - aA)</code>)"
 msgstr ""
+"एसव्हीजी मिश्रण क्रिया गडद (<code>d = MIN (cA * aB, cB * aA) + cA * (1 - aB) + "
+"cB * (1 - aA)</code>)"
 
 #: ../operations/generated/difference.c:163
 msgid ""
 "SVG blend operation difference (<code>d = cA + cB - 2 * (MIN (cA * aB, cB * "
 "aA))</code>)"
 msgstr ""
+"एसव्हीजी मिश्रण क्रिया फरक (<code>d = cA + cB - 2 * (MIN (cA * aB, cB * aA))</"
+"code>)"
 
 #: ../operations/generated/divide.c:125
 msgid "Math operation divide (c = value==0.0f?0.0f:c/value)"
-msgstr ""
+msgstr "गणिती क्रिया विभागणे (c = मूल्य==0.0f?0.0f:c/मूल्य)"
 
 #: ../operations/generated/dst-atop.c:116
 msgid "Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया dst-atop (d = cB * aA + cA * (1.0f - aB))"
 
 #: ../operations/generated/dst.c:116
 msgid "Porter Duff operation dst (d = cB)"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया dst (d = cB)"
 
 #: ../operations/generated/dst-in.c:116
 msgid "Porter Duff operation dst-in (d = cB * aA)"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया dst-in (d = cB * aA)"
 
 #: ../operations/generated/dst-out.c:116
 msgid "Porter Duff operation dst-out (d = cB * (1.0f - aA))"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया dst-out (d = cB * (1.0f - aA))"
 
 #: ../operations/generated/dst-over.c:116
 msgid "Porter Duff operation dst-over (d = cB + cA * (1.0f - aB))"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया dst-over (d = cB + cA * (1.0f - aB))"
 
 #: ../operations/generated/exclusion.c:163
 msgid ""
 "SVG blend operation exclusion (<code>d = (cA * aB + cB * aA - 2 * cA * cB) + "
 "cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"एसव्हीजी मिश्रण क्रिया वगळताना (<code>d = (cA * aB + cB * aA - 2 * cA * cB) + "
+"cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: ../operations/generated/gamma.c:125
 msgid "Math operation gamma (c = powf (c, value))"
-msgstr ""
+msgstr "गणिती क्रिया गॅमा (c = powf (c, मूल्य))"
 
 #: ../operations/generated/hard-light.c:165
 msgid ""
@@ -3352,16 +3015,21 @@ msgid ""
 "(1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) "
 "+ cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"एसव्हीजी मिश्रण क्रिया कठीण-प्रकाश (<code>जर 2 * cA < aA: d = 2 * cA * cB + cA * "
+"(1 - aB) + cB * (1 - aA) अन्यथा: d = aA * aB - 2 * (aB - cB) * (aA - cA) + cA "
+"* (1 - aB) + cB * (1 - aA)</code>)"
 
 #: ../operations/generated/lighten.c:163
 msgid ""
 "SVG blend operation lighten (<code>d = MAX (cA * aB, cB * aA) + cA * (1 - "
 "aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"एसव्हीजी मिश्रण क्रिया फिकट (<code>d = MAX (cA * aB, cB * aA) + cA * (1 - aB) + "
+"cB * (1 - aA)</code>)"
 
 #: ../operations/generated/multiply.c:125
 msgid "Math operation multiply (c = c * value)"
-msgstr ""
+msgstr "गणिती क्रिया गुणाकार (c = c * मूल्य)"
 
 #: ../operations/generated/overlay.c:165
 msgid ""
@@ -3369,14 +3037,17 @@ msgid ""
 "- aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) + "
 "cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"एसव्हीजी मिश्रण क्रिया आच्छादन (<code>जर 2 * cB > aB: d = 2 * cA * cB + cA * (1 "
+"- aB) + cB * (1 - aA) अन्यथा: d = aA * aB - 2 * (aB - cB) * (aA - cA) + cA * "
+"(1 - aB) + cB * (1 - aA)</code>)"
 
 #: ../operations/generated/plus.c:163
 msgid "SVG blend operation plus (<code>d = cA + cB</code>)"
-msgstr ""
+msgstr "एसव्हीजी मिश्रण क्रिया अधिक (<code>d = cA + cB</code>)"
 
 #: ../operations/generated/screen.c:163
 msgid "SVG blend operation screen (<code>d = cA + cB - cA * cB</code>)"
-msgstr ""
+msgstr "एसव्हीजी मिश्रण क्रिया पडदा (<code>d = cA + cB - cA * cB</code>)"
 
 #: ../operations/generated/soft-light.c:167
 msgid ""
@@ -3387,226 +3058,226 @@ msgid ""
 "(aA * cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - aA)) + cA * "
 "(1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"एसव्हीजी मिश्रण क्रिया मंद-प्रकाश (<code>जर 2 * cA < aA: d = cB * (aA - (aB == "
+"0 ? 1 : 1 - cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - aA); if 8 "
+"* cB <= aB: d = cB * (aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA - aA) * (aB "
+"== 0 ? 3 : 3 - 8 * cB / aB)) + cA * (1 - aB) + cB * (1 - aA); अन्यथा: d = (aA "
+"* cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - aA)) + cA * (1 - "
+"aB) + cB * (1 - aA)</code>)"
 
 #: ../operations/generated/src-atop.c:116
 msgid "Porter Duff operation src-atop (d = cA * aB + cB * (1.0f - aA))"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया src-atop (d = cA * aB + cB * (1.0f - aA))"
 
 #: ../operations/generated/src.c:116
 msgid "Porter Duff operation src (d = cA)"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया src (d = cA)"
 
 #: ../operations/generated/src-in.c:125
 msgid "Porter Duff operation src-in (d = cA * aB)"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया src-in (d = cA * aB)"
 
 #: ../operations/generated/src-out.c:116
 msgid "Porter Duff operation src-out (d = cA * (1.0f - aB))"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया src-out (d = cA * (1.0f - aB))"
 
 #: ../operations/generated/subtract.c:125
 msgid "Math operation subtract (c = c - value)"
-msgstr ""
+msgstr "गणिती क्रिया वजा (c = c - मूल्य)"
 
 #: ../operations/generated/svg-multiply.c:163
 msgid ""
 "SVG blend operation multiply (<code>d = cA * cB +  cA * (1 - aB) + cB * (1 - "
 "aA)</code>)"
 msgstr ""
+"एसव्हीजी मिश्रण क्रिया गुणाकार (<code>d = cA * cB +  cA * (1 - aB) + cB * (1 - "
+"aA)</code>)"
 
 #: ../operations/generated/xor.c:116
 msgid "Porter Duff operation xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
-msgstr ""
+msgstr "पोर्टर डफ क्रिया xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
 
 #: ../operations/seamless-clone/seamless-clone.c:21
 #: ../operations/seamless-clone/seamless-clone-compose.c:21
 msgid "Refinement Steps"
-msgstr ""
+msgstr "परिष्कृत पायऱ्या"
 
 #: ../operations/seamless-clone/seamless-clone.c:22
 #: ../operations/seamless-clone/seamless-clone-compose.c:22
 msgid ""
 "Maximal amount of refinement points to be used for the interpolation mesh"
-msgstr ""
+msgstr "प्रक्षिप्त जाळीसाठी वापरल्या जाणार्या परिष्करण गुणांची जास्तीत जास्त संख्या"
 
 #: ../operations/seamless-clone/seamless-clone.c:25
 #: ../operations/seamless-clone/seamless-clone-compose.c:25
 msgid "How much horizontal offset should applied to the paste"
-msgstr ""
+msgstr "पेस्टसाठी किती आडवे ऑफसेट लागू करावे"
 
 #: ../operations/seamless-clone/seamless-clone.c:28
 #: ../operations/seamless-clone/seamless-clone-compose.c:28
 msgid "How much vertical offset should applied to the paste"
-msgstr ""
+msgstr "पेस्टसाठी किती उभे ऑफसेट लागू करावे  "
 
 #: ../operations/seamless-clone/seamless-clone.c:30
 #: ../operations/seamless-clone/seamless-clone-compose.c:30
 msgid "Error message"
-msgstr ""
+msgstr "त्रुटी संदेश"
 
 #: ../operations/seamless-clone/seamless-clone.c:30
 #: ../operations/seamless-clone/seamless-clone-compose.c:30
 msgid "An error message in case of a failure"
-msgstr ""
+msgstr "अयशस्वी झाल्यास त्रुटी संदेश"
 
 #: ../operations/seamless-clone/seamless-clone.c:161
 msgid "The foreground does not contain opaque parts"
-msgstr ""
+msgstr "अग्रभागामध्ये अपारदर्शक भाग नाहीत"
 
 #: ../operations/seamless-clone/seamless-clone.c:164
 msgid "The foreground is too small to use"
-msgstr ""
+msgstr "अग्रभाग वापरण्यासाठी खूप लहान आहे"
 
 #: ../operations/seamless-clone/seamless-clone.c:167
 msgid "The foreground contains holes and/or several unconnected parts"
-msgstr ""
+msgstr "अग्रभागांमध्ये छिद्र आणि / किंवा असंबद्ध भाग आहेत"
 
 #: ../operations/seamless-clone/seamless-clone.c:178
 msgid "The opaque parts of the foreground are not above the background!"
-msgstr ""
+msgstr "अग्रभागाचा अपारदर्शक भाग पृष्ठभागाच्या वर नाही!"
 
 #: ../operations/transform/reflect.c:30
 msgid "Direction vector's X component"
-msgstr ""
+msgstr "दिशा वेक्टरचा X घटक"
 
 #: ../operations/transform/reflect.c:32
 msgid "Direction vector's Y component"
-msgstr ""
+msgstr "दिशा वेक्टरचा Y घटक"
 
 #: ../operations/transform/rotate.c:26
 msgid "Angle to rotate (clockwise)"
-msgstr ""
+msgstr "फिरवण्यासाठी कोन (घड्याळाच्या दिशेने)"
 
 #: ../operations/transform/rotate.c:31
 msgid "Rotate the buffer around the specified origin."
-msgstr ""
+msgstr "निर्दिष्ट मूळ च्या भोवती संग्रह फिरवा."
 
 #: ../operations/transform/scale.c:29 ../operations/transform/scale-ratio.c:26
 msgid "Horizontal scale factor"
-msgstr ""
+msgstr "क्षैतिज स्केल घटक"
 
 #: ../operations/transform/scale.c:31 ../operations/transform/scale-ratio.c:28
 msgid "Vertical scale factor"
-msgstr ""
+msgstr "अनुलंब स्केल घटक"
 
 #: ../operations/transform/scale.c:36
 msgid "Scales the buffer."
-msgstr ""
+msgstr "संग्रह स्केल करते. "
 
 #: ../operations/transform/scale-ratio.c:33
 msgid "Scales the buffer according to a ratio."
-msgstr ""
+msgstr "गुणोत्तरानुसार संग्रह स्केल करतात."
 
 #: ../operations/transform/scale-size.c:26
 msgid "Horizontal size"
-msgstr ""
+msgstr "क्षैतिज आकार"
 
 #: ../operations/transform/scale-size.c:28
 msgid "Vertical size"
-msgstr ""
+msgstr "अनुलंब आकार"
 
 #: ../operations/transform/scale-size.c:33
 msgid "Scales the buffer according to a size."
-msgstr ""
+msgstr "आकारानुसार संग्रह स्केल करते."
 
 #: ../operations/transform/shear.c:26
 msgid "Horizontal shear amount"
-msgstr ""
+msgstr "क्षैतिज कातरणे राशी "
 
 #: ../operations/transform/shear.c:28
 msgid "Vertical shear amount"
-msgstr ""
+msgstr "अनुलंब कातरणे राशी "
 
 #: ../operations/transform/shear.c:33
-#, fuzzy
-#| msgid "Write Buffer"
 msgid "Shears the buffer"
-msgstr "बफर लिहा"
+msgstr "संग्रह कातरणे"
 
 #: ../operations/transform/transform.c:25
-#, fuzzy
-#| msgid "Transformation matrix, using SVG syntax"
 msgid "Transformation string"
-msgstr "एसव्हीजी मांडणीचा वापर करून रूपांतर साचा"
+msgstr "रूपांतरण स्ट्रिंग"
 
 #: ../operations/transform/transform.c:30
 msgid "Transforms the group (used by svg)."
-msgstr ""
+msgstr "समूह बदलते (एसव्हीजी द्वारे वापरलेले)."
 
 #: ../operations/transform/transform-core.c:179
 msgid "Origin-x"
-msgstr ""
+msgstr "मूळ-x"
 
 #: ../operations/transform/transform-core.c:180
 msgid "X coordinate of origin"
-msgstr ""
+msgstr "मूळ चा X निर्देशांक"
 
 #: ../operations/transform/transform-core.c:187
 msgid "Origin-y"
-msgstr ""
+msgstr "मूळ-y"
 
 #: ../operations/transform/transform-core.c:188
 msgid "Y coordinate of origin"
-msgstr ""
+msgstr "मूळ चा Y निर्देशांक"
 
 #: ../operations/transform/transform-core.c:196
 msgid "Filter type (nearest, linear, cubic, nohalo, lohalo)"
-msgstr ""
+msgstr "गाळणी प्रकार (जवळचे, रेषीय, घनाकृती, नोहलो, लोहलो)"
 
 #: ../operations/transform/transform-core.c:202
 #: ../operations/transform/transform-core.c:203
-#, fuzzy
-#| msgid "Hardness"
 msgid "Hard edges"
-msgstr "कडकपणा"
+msgstr "कठीण कडा"
 
 #: ../operations/transform/transform-core.c:212
-#, fuzzy
-#| msgid "Line width"
 msgid "Lanczos width"
-msgstr "रेषेची रुंदी"
+msgstr "Lanczos रुंदी"
 
 #: ../operations/transform/transform-core.c:213
-#, fuzzy
-#| msgid "The scale of the noise function"
 msgid "Width of the Lanczos function"
-msgstr "आवाज कार्याचे मोजमाप"
+msgstr "Lanczos कार्याची रूंदी"
 
 #: ../operations/transform/translate.c:26
 msgid "Horizontal translation"
-msgstr ""
+msgstr "क्षैतिज भाषांतर"
 
 #: ../operations/transform/translate.c:28
 msgid "Vertical translation"
-msgstr ""
+msgstr "अनुलंब भाषांतर"
 
 #: ../operations/transform/translate.c:33
 msgid ""
 "Repositions the buffer (with subpixel precision), if integer coordinates are "
 "passed a fast-path without resampling is used"
 msgstr ""
+"संग्रह पुनर्क्रमित करतो (उपदृश्यबिंदूच्या सुस्पष्टतेसह), जर पूर्णांक समन्वयला पास केले असेल तर "
+"जलद-मार्ग न बदलता वापरले जाते"
 
 #: ../operations/workshop/box-max.c:26 ../operations/workshop/box-min.c:26
 #: ../operations/workshop/box-percentile.c:28
 #: ../operations/workshop/disc-percentile.c:27
 #: ../operations/workshop/kuwahara.c:26
 #: ../operations/workshop/snn-percentile.c:28
-#, fuzzy
-#| msgid "Radius of square pixel region, (width and height will be radius*2+1)"
 msgid "Radius of square pixel region (width and height will be radius*2+1)"
-msgstr "चौरस दृश्यबिंदू क्षेत्राचा त्रिज्या, (रुंदी आणि उंची त्रिज्या * 2 + 1 असेल)"
+msgstr "चौरस दृश्यबिंदू क्षेत्राची त्रिज्या (रुंदी आणि उंची त्रिज्या*2+1 असेल)"
 
 #: ../operations/workshop/box-max.c:198
 msgid ""
 "Sets the target pixel to the value of the maximum value in a box surrounding "
 "the pixel"
 msgstr ""
+"दृश्यबिंदूच्या आसपास असलेल्या पेटीमधील जास्तीत जास्त मूल्याच्या मूल्यावर लक्ष्य दृश्यबिंदू सेट करते"
 
 #: ../operations/workshop/box-min.c:198
 msgid ""
 "Sets the target pixel to the value of the minimum value in a box surrounding "
 "the pixel"
 msgstr ""
+"दृश्यबिंदूच्या आसपास असलेल्या पेटीमधील कमीत कमी मूल्याच्या मूल्यावर लक्ष्य दृश्यबिंदू सेट करते"
 
 #: ../operations/workshop/box-percentile.c:29
 #: ../operations/workshop/disc-percentile.c:28
@@ -3616,30 +3287,29 @@ msgstr "टक्केवारी"
 
 #: ../operations/workshop/box-percentile.c:30
 msgid "The percentile to compute, defaults to 50, which is a median filter"
-msgstr ""
+msgstr "मोजण्यासाठी टक्केवारी, क्रियापूर्व 50, जे एक मध्यक गाळणी आहे"
 
 #: ../operations/workshop/box-percentile.c:230
 msgid ""
 "Sets the target pixel to the color corresponding to a given percentile when "
 "colors are sorted by luminance"
 msgstr ""
+"चकाकी द्वारे रंग क्रमवारी लावल्यावर दिलेल्या टक्केवारीशी संबंधित रंगासाठी लक्ष्य दृश्यबिंदू सेट "
+"करते"
 
 #: ../operations/workshop/buffer-cache.c:25
-#, fuzzy
-#| msgid "Crop a buffer"
 msgid "Cache buffer"
-msgstr "संग्रह क्रॉप करा"
+msgstr "गुप्त साठा संग्रह"
 
 #: ../operations/workshop/buffer-cache.c:26
-#, fuzzy
-#| msgid "The GeglBuffer to load into the pipeline"
 msgid "The GeglBuffer where the caching is done"
-msgstr "जीईजीएलसंग्रह पाइपलाइनमध्ये लोड करणे"
+msgstr "जीईजीएलसंग्रह जेथे कॅशींग केले आहे"
 
 #: ../operations/workshop/buffer-cache.c:96
 msgid ""
 "Cache the input buffer internally, further process take this buffer as input."
 msgstr ""
+"आतील बाजूस इनपुट संग्रह गुप्त साठा करा, आणखी प्रक्रिया ही संग्रहला इनपुट म्हणून घ्या."
 
 #: ../operations/workshop/color-rotate.c:33
 #: ../operations/workshop/color-rotate.c:39
@@ -3653,350 +3323,272 @@ msgstr "घड्याळाच्या दिशेने बंद करा
 
 #: ../operations/workshop/color-rotate.c:35
 #: ../operations/workshop/color-rotate.c:41
-#, fuzzy
-#| msgid "From"
 msgid "From:"
-msgstr "पासून"
+msgstr "पासून:"
 
 #: ../operations/workshop/color-rotate.c:36
 #: ../operations/workshop/color-rotate.c:42
-#, fuzzy
-#| msgid "Start angle of the source color range"
 msgid "Starting angle for the color rotation"
-msgstr "स्त्रोत रंग श्रेणीच्या कोनाचा प्रारंभ करा"
+msgstr "रंग परिभ्रमणसाठी कोनाचा प्रारंभ करत आहे"
 
 #: ../operations/workshop/color-rotate.c:37
 #: ../operations/workshop/color-rotate.c:43
-#, fuzzy
-#| msgid "To"
 msgid "To:"
-msgstr "ते"
+msgstr "ते:"
 
 #: ../operations/workshop/color-rotate.c:38
 #: ../operations/workshop/color-rotate.c:44
-#, fuzzy
-#| msgid "End angle of the source color range"
 msgid "End angle for the color rotation"
-msgstr "स्त्रोत रंग श्रेणीच्या अंतिम कोनाचा शेवट करा"
+msgstr "रंग परिभ्रमणसाठी अंतिम कोन"
 
 #: ../operations/workshop/color-rotate.c:47
 msgid "Choose in case of grayscale images"
-msgstr ""
+msgstr "ग्रेस्केल प्रतिमांच्या बाबतीत निवडा"
 
 #: ../operations/workshop/color-rotate.c:49
-#, fuzzy
-#| msgid "The shape of pixels"
 msgid "The value of hue"
-msgstr "दृषबिंदूचा आकार"
+msgstr "गडद रंगछटा मूल्य"
 
 #: ../operations/workshop/color-rotate.c:51
-#, fuzzy
-#| msgid "Tile saturation"
 msgid "The value of saturation"
-msgstr "टाइल संपृक्तता"
+msgstr "संपृक्तता मूल्य"
 
 #: ../operations/workshop/color-rotate.c:52
 #: ../operations/workshop/color-rotate.c:53
-#, fuzzy
-#| msgid "Change to this"
 msgid "Change/Treat to this"
-msgstr "यामध्ये बदला"
+msgstr "यामध्ये बदला/उपचार"
 
 #: ../operations/workshop/color-rotate.c:55
-#, fuzzy
-#| msgid "Red eye threshold"
 msgid "The value of gray threshold"
-msgstr "लाल डोळा मर्यादा"
+msgstr "राखाडी रंग मर्यादेचे मूल्य"
 
 #: ../operations/workshop/color-rotate.c:383
-#, fuzzy
-#| msgid "Adaptation to color variation across the image"
 msgid "Rotate colors on the image"
-msgstr "प्रतिमेवर रंग भिन्नता करण्यासाठी रुपांतर"
+msgstr "प्रतिमेवरील रंग फिरवा"
 
 #: ../operations/workshop/convolution-matrix.c:25
-#, fuzzy
-#| msgid "(1,1)"
 msgid "(1,1) "
-msgstr "(1,1)"
+msgstr "(1,1) "
 
 #: ../operations/workshop/convolution-matrix.c:26
 msgid "Value of the element in position (1,1)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (1,1)"
 
 #: ../operations/workshop/convolution-matrix.c:27
-#, fuzzy
-#| msgid "(1,2)"
 msgid "(1,2) "
-msgstr "(1,2)"
+msgstr "(1,2) "
 
 #: ../operations/workshop/convolution-matrix.c:28
 msgid "Value of the element in position (1,2)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (1,2)"
 
 #: ../operations/workshop/convolution-matrix.c:29
-#, fuzzy
-#| msgid "(1,3)"
 msgid "(1,3) "
-msgstr "(1,3)"
+msgstr "(1,3) "
 
 #: ../operations/workshop/convolution-matrix.c:30
 msgid "Value of the element in position (1,3)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (1,3)"
 
 #: ../operations/workshop/convolution-matrix.c:31
-#, fuzzy
-#| msgid "(1,4)"
 msgid "(1,4) "
-msgstr "(1,4)"
+msgstr "(1,4) "
 
 #: ../operations/workshop/convolution-matrix.c:32
 msgid "Value of the element in position (1,4)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (1,4)"
 
 #: ../operations/workshop/convolution-matrix.c:33
-#, fuzzy
-#| msgid "(1,5)"
 msgid "(1,5) "
-msgstr "(1,5)"
+msgstr "(1,5) "
 
 #: ../operations/workshop/convolution-matrix.c:34
 msgid "Value of the element in position (1,5)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (1,5)"
 
 #: ../operations/workshop/convolution-matrix.c:35
-#, fuzzy
-#| msgid "(2,1)"
 msgid "(2,1) "
-msgstr "(2,1)"
+msgstr "(2,1) "
 
 #: ../operations/workshop/convolution-matrix.c:36
 msgid "Value of the element in position (2,1)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (2,1)"
 
 #: ../operations/workshop/convolution-matrix.c:37
-#, fuzzy
-#| msgid "(2,2)"
 msgid "(2,2) "
-msgstr "(2,2)"
+msgstr "(2,2) "
 
 #: ../operations/workshop/convolution-matrix.c:38
 msgid "Value of the element in position (2,2)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (2,2)"
 
 #: ../operations/workshop/convolution-matrix.c:39
-#, fuzzy
-#| msgid "(2,3)"
 msgid "(2,3) "
-msgstr "(2,3)"
+msgstr "(2,3) "
 
 #: ../operations/workshop/convolution-matrix.c:40
 msgid "Value of the element in position (2,3)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (2,3)"
 
 #: ../operations/workshop/convolution-matrix.c:41
-#, fuzzy
-#| msgid "(2,4)"
 msgid "(2,4) "
-msgstr "(2,4)"
+msgstr "(2,4) "
 
 #: ../operations/workshop/convolution-matrix.c:42
 msgid "Value of the element in position (2,4)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (2,4)"
 
 #: ../operations/workshop/convolution-matrix.c:43
-#, fuzzy
-#| msgid "(2,5)"
 msgid "(2,5) "
-msgstr "(2,5)"
+msgstr "(2,5) "
 
 #: ../operations/workshop/convolution-matrix.c:44
 msgid "Value of the element in position (2,5)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (2,5)"
 
 #: ../operations/workshop/convolution-matrix.c:45
-#, fuzzy
-#| msgid "(3,1)"
 msgid "(3,1) "
-msgstr "(3,1)"
+msgstr "(3,1) "
 
 #: ../operations/workshop/convolution-matrix.c:46
 msgid "Value of the element in position (3,1)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (3,1)"
 
 #: ../operations/workshop/convolution-matrix.c:47
-#, fuzzy
-#| msgid "(3,2)"
 msgid "(3,2) "
-msgstr "(3,2)"
+msgstr "(3,2) "
 
 #: ../operations/workshop/convolution-matrix.c:48
 msgid "Value of the element in position (3,2)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (3,2)"
 
 #: ../operations/workshop/convolution-matrix.c:49
-#, fuzzy
-#| msgid "(3,3)"
 msgid "(3,3) "
-msgstr "(3,3)"
+msgstr "(3,3) "
 
 #: ../operations/workshop/convolution-matrix.c:50
 msgid "Value of the element in position (3,3)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (3,3)"
 
 #: ../operations/workshop/convolution-matrix.c:51
-#, fuzzy
-#| msgid "(3,4)"
 msgid "(3,4) "
-msgstr "(3,4)"
+msgstr "(3,4) "
 
 #: ../operations/workshop/convolution-matrix.c:52
 msgid "Value of the element in position (3,4)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (3,4)"
 
 #: ../operations/workshop/convolution-matrix.c:53
-#, fuzzy
-#| msgid "(3,5)"
 msgid "(3,5) "
-msgstr "(3,5)"
+msgstr "(3,5) "
 
 #: ../operations/workshop/convolution-matrix.c:54
 msgid "Value of the element in position (3,5)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (3,5)"
 
 #: ../operations/workshop/convolution-matrix.c:55
-#, fuzzy
-#| msgid "(4,1)"
 msgid "(4,1) "
-msgstr "(4,1)"
+msgstr "(4,1) "
 
 #: ../operations/workshop/convolution-matrix.c:56
 msgid "Value of the element in position (4,1)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (4,1)"
 
 #: ../operations/workshop/convolution-matrix.c:57
-#, fuzzy
-#| msgid "(4,2)"
 msgid "(4,2) "
-msgstr "(4,2)"
+msgstr "(4,2) "
 
 #: ../operations/workshop/convolution-matrix.c:58
 msgid "Value of the element in position (4,2)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (4,2)"
 
 #: ../operations/workshop/convolution-matrix.c:59
-#, fuzzy
-#| msgid "(4,3)"
 msgid "(4,3) "
-msgstr "(4,3)"
+msgstr "(4,3) "
 
 #: ../operations/workshop/convolution-matrix.c:60
 msgid "Value of the element in position (4,3)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (4,3)"
 
 #: ../operations/workshop/convolution-matrix.c:61
-#, fuzzy
-#| msgid "(4,4)"
 msgid "(4,4) "
-msgstr "(4,4)"
+msgstr "(4,4) "
 
 #: ../operations/workshop/convolution-matrix.c:62
 msgid "Value of the element in position (4,4)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (4,4)"
 
 #: ../operations/workshop/convolution-matrix.c:63
-#, fuzzy
-#| msgid "(4,5)"
 msgid "(4,5) "
-msgstr "(4,5)"
+msgstr "(4,5) "
 
 #: ../operations/workshop/convolution-matrix.c:64
 msgid "Value of the element in position (4,5)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (4,5)"
 
 #: ../operations/workshop/convolution-matrix.c:65
-#, fuzzy
-#| msgid "(5,1)"
 msgid "(5,1) "
-msgstr "(5,1)"
+msgstr "(5,1) "
 
 #: ../operations/workshop/convolution-matrix.c:66
 msgid "Value of the element in position (5,1)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (5,1)"
 
 #: ../operations/workshop/convolution-matrix.c:67
-#, fuzzy
-#| msgid "(5,2)"
 msgid "(5,2) "
-msgstr "(5,2)"
+msgstr "(5,2) "
 
 #: ../operations/workshop/convolution-matrix.c:68
 msgid "Value of the element in position (5,2)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (5,2)"
 
 #: ../operations/workshop/convolution-matrix.c:69
-#, fuzzy
-#| msgid "(5,3)"
 msgid "(5,3) "
-msgstr "(5,3)"
+msgstr "(5,3) "
 
 #: ../operations/workshop/convolution-matrix.c:70
 msgid "Value of the element in position (5,3)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (5,3)"
 
 #: ../operations/workshop/convolution-matrix.c:71
-#, fuzzy
-#| msgid "(5,4)"
 msgid "(5,4) "
-msgstr "(5,4)"
+msgstr "(5,4) "
 
 #: ../operations/workshop/convolution-matrix.c:72
 msgid "Value of the element in position (5,4)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (5,4)"
 
 #: ../operations/workshop/convolution-matrix.c:73
-#, fuzzy
-#| msgid "(5,5)"
 msgid "(5,5) "
-msgstr "(5,5)"
+msgstr "(5,5) "
 
 #: ../operations/workshop/convolution-matrix.c:74
 msgid "Value of the element in position (5,5)"
-msgstr ""
+msgstr "स्थितीतील घटकाचे मूल्य (5,5)"
 
 #: ../operations/workshop/convolution-matrix.c:76
-#, fuzzy
-#| msgid "Divisor"
 msgid "Divisor: "
-msgstr "विभाजक"
+msgstr "विभाजक: "
 
 #: ../operations/workshop/convolution-matrix.c:77
-#, fuzzy
-#| msgid "The number of divisions"
 msgid "The value of the divisor"
-msgstr "विभागांची संख्या"
+msgstr "विभाजकांचे मूल्य"
 
 #: ../operations/workshop/convolution-matrix.c:78
-#, fuzzy
-#| msgid "Offset X"
 msgid "Offset: "
-msgstr "चा संच X"
+msgstr "चा संच: "
 
 #: ../operations/workshop/convolution-matrix.c:79
-#, fuzzy
-#| msgid "The scale of the noise function"
 msgid "The value of the offset"
-msgstr "आवाज कार्याचे मोजमाप"
+msgstr "ऑफसेटचे मूल्य"
 
 #: ../operations/workshop/convolution-matrix.c:81
 msgid "Normalize"
 msgstr "सामान्य"
 
 #: ../operations/workshop/convolution-matrix.c:81
-#, fuzzy
-#| msgid "Normalize"
 msgid "Normalize or not"
-msgstr "सामान्य"
+msgstr "सामान्य किंवा नाही"
 
 #: ../operations/workshop/convolution-matrix.c:83
 msgid "Red channel"
@@ -4019,10 +3611,8 @@ msgid "Alpha-weighting"
 msgstr "अल्फा-भारांकन"
 
 #: ../operations/workshop/convolution-matrix.c:88
-#, fuzzy
-#| msgid "Alpha-weighting"
 msgid "Alpha weighting"
-msgstr "अल्फा-भारांकन"
+msgstr "अल्फा भारांकन"
 
 #: ../operations/workshop/convolution-matrix.c:90
 msgid "Border"
@@ -4032,15 +3622,17 @@ msgstr "सीमा"
 msgid ""
 "Type of border to choose. Choices are extend, wrap, crop. Default is extend"
 msgstr ""
+"निवडण्यासाठी सीमेचा प्रकार. पर्याय विस्तारीत, ओघ, क्रोप केलेले आहेत. क्रियापूर्व विस्तारित "
+"आहे"
 
 #: ../operations/workshop/convolution-matrix.c:433
 msgid "Creates image by manually set convolution matrix"
-msgstr ""
+msgstr "व्यक्तिचलितपणे रूपांतरित मॅट्रिक्स सेट करुन प्रतिमा तयार करते"
 
 #: ../operations/workshop/demosaic-bimedian.c:26
 #: ../operations/workshop/demosaic-simple.c:25
 msgid "Bayer pattern"
-msgstr ""
+msgstr "बायर नमुना"
 
 #: ../operations/workshop/demosaic-bimedian.c:27
 #: ../operations/workshop/demosaic-simple.c:26
@@ -4048,45 +3640,46 @@ msgid ""
 "Bayer pattern used, 0 seems to work for some nikon files, 2 for some Fuji "
 "files."
 msgstr ""
+"वापरलेला बायर नमुना, 0 काही निकॉन धारिकांसाठी कार्यरत आहे, काही फुजी धारिकांसाठी 2."
 
 #: ../operations/workshop/demosaic-bimedian.c:220
 msgid ""
 "Performs a grayscale2color demosaicing of an image, using bimedian "
 "interpolation."
-msgstr ""
+msgstr "बिमेडियन प्रक्षेपण वापरून प्रतिमेचे ग्रेस्केल2रंग कार्यान्वीत करते."
 
 #: ../operations/workshop/demosaic-simple.c:152
 msgid ""
 "Performs a naive grayscale2color demosaicing of an image, no interpolation."
-msgstr ""
+msgstr "प्रतिमेचा साधा ग्रेस्केल२रंग कार्यान्वित करतो, प्रक्षेपण नाही."
 
 #: ../operations/workshop/disc-percentile.c:29
 msgid "The percentile to compute, defaults to 50, which is a median filter."
-msgstr ""
+msgstr "मोजण्यासाठी टक्केवारी, क्रियापूर्व 50, जे एक मध्यक गाळणी आहे."
 
 #: ../operations/workshop/disc-percentile.c:234
 msgid ""
 "Sets the target pixel to the color corresponding to a given percentile when "
 "colors are sorted by luminance."
 msgstr ""
+"चकाकी द्वारे रंग क्रमवारी लावल्यावर दिलेल्या टक्केवारीशी संबंधित रंगासाठी लक्ष्य दृश्यबिंदू सेट "
+"करते."
 
 #: ../operations/workshop/ditto.c:112
 msgid "Test op to do a 1:1 map of input to output, while sampling"
-msgstr ""
+msgstr "चाचणीसाठी 1: 1 इनपुट ते आउटपुटचा नकाशा तयार करताना, नमुना करताना"
 
 #: ../operations/workshop/external/ff-save.c:31
 msgid "Bitrate"
-msgstr ""
+msgstr "बिटरेट"
 
 #: ../operations/workshop/external/ff-save.c:31
 msgid "target bitrate"
-msgstr ""
+msgstr "लक्ष्य बिटरेट"
 
 #: ../operations/workshop/external/ff-save.c:32
-#, fuzzy
-#| msgid "Frames/second"
 msgid "frames per second"
-msgstr "फ्रेम्स/सेकंद"
+msgstr "चौकट प्रति सेकंद"
 
 #: ../operations/workshop/external/ff-save.c:889
 msgid "FFmpeg video output sink"
@@ -4094,100 +3687,98 @@ msgstr "FFmpeg व्हिडिओ आऊटपुट सिंक"
 
 #: ../operations/workshop/external/gluas.c:41
 msgid "Script"
-msgstr ""
+msgstr "हस्तलेख"
 
 #: ../operations/workshop/external/gluas.c:42
 msgid "The lua script containing the implementation of this operation."
-msgstr ""
+msgstr "या क्रियेची अंमलबजावणी असलेला लूआ हस्तलेख."
 
 #: ../operations/workshop/external/gluas.c:43
 msgid "a stored lua script on disk implementing an operation."
-msgstr ""
+msgstr "कार्यप्रणाली अंमलात आणण्यासाठी डिस्कवर साठवलेले लूआ हस्तलेख."
 
 #: ../operations/workshop/external/gluas.c:44
 msgid "User value"
-msgstr ""
+msgstr "वापरकर्ता मूल्य"
 
 #: ../operations/workshop/external/gluas.c:45
 msgid "(appears in the global variable 'user_value' in lua."
-msgstr ""
+msgstr "(लूआ मध्ये जागतिक चल 'वापरकर्ता_मूल्य' मध्ये दिसते."
 
 #: ../operations/workshop/external/gluas.c:984
 msgid ""
 "A general purpose filter/composer implementation proxy for the lua "
 "programming language."
-msgstr ""
+msgstr "लूआ प्रोग्रामिंग लँग्वेजसाठी सामान्य उद्देश गाळणी / कम्पोझर अंमलबजावणी प्रॉक्सी."
 
 #: ../operations/workshop/external/lens-correct.c:28
-#, fuzzy
-#| msgid "Make Grey"
 msgid "Maker:"
-msgstr "करडा बनवा"
+msgstr "निर्माता:"
 
 #: ../operations/workshop/external/lens-correct.c:29
 msgid "Write lens maker correctly"
-msgstr ""
+msgstr "भिंग कर्ता योग्यरित्या लिहा"
 
 #: ../operations/workshop/external/lens-correct.c:30
 msgid "Camera:"
-msgstr ""
+msgstr "कॅमेरा:"
 
 #: ../operations/workshop/external/lens-correct.c:31
 msgid "Write camera name correctly"
-msgstr ""
+msgstr "कॅमेरा नाव योग्यरित्या लिहा"
 
 #: ../operations/workshop/external/lens-correct.c:32
 msgid "Lens:"
-msgstr ""
+msgstr "भिंग:"
 
 #: ../operations/workshop/external/lens-correct.c:33
 msgid "Write your lens model with uppercase letters"
-msgstr ""
+msgstr "मोठ्या आकारातील अक्षरांसह आपले भिंग मॉडेल लिहा"
 
 #: ../operations/workshop/external/lens-correct.c:34
 msgid "Focal of the camera"
-msgstr ""
+msgstr "कॅमेरा चे केंद्रस्थ"
 
 #: ../operations/workshop/external/lens-correct.c:35
 msgid "Calculate b value from focal"
-msgstr ""
+msgstr "केंद्रस्थ पासून b मूल्याची गणना करा"
 
 #: ../operations/workshop/external/lens-correct.c:37
 msgid "Center"
-msgstr ""
+msgstr "मध्यबिंदू"
 
 #: ../operations/workshop/external/lens-correct.c:38
 msgid "If you want center"
-msgstr ""
+msgstr "आपण केंद्र इच्छित असल्यास"
 
 #: ../operations/workshop/external/lens-correct.c:39
 msgid "Lens center x"
-msgstr ""
+msgstr "भिंग केंद्र x"
 
 #: ../operations/workshop/external/lens-correct.c:40
 #: ../operations/workshop/external/lens-correct.c:42
 msgid "Coordinates of lens center"
-msgstr ""
+msgstr "भिंग केंद्राचे समन्वय"
 
 #: ../operations/workshop/external/lens-correct.c:41
 msgid "Lens center y"
-msgstr ""
+msgstr "भिंग केंद्र y"
 
 #: ../operations/workshop/external/lens-correct.c:44
 msgid "Scale of the image"
-msgstr ""
+msgstr "प्रतिमेचे स्केल"
 
 #: ../operations/workshop/external/lens-correct.c:45
 msgid "Autocorrect d values"
-msgstr ""
+msgstr "स्वयंदुरुप d मूल्य"
 
 #: ../operations/workshop/external/lens-correct.c:46
 msgid "Autocorrect D values for lens correction models."
-msgstr ""
+msgstr "भिंग सुधारणा नमुनासाठी स्वयंदुरुप d मूल्य."
 
 #: ../operations/workshop/external/lens-correct.c:48
 msgid "Model red a:"
-msgstr ""
+msgstr "नमुना लाल a:"
 
 #: ../operations/workshop/external/lens-correct.c:49
 #: ../operations/workshop/external/lens-correct.c:51
@@ -4202,132 +3793,126 @@ msgstr ""
 #: ../operations/workshop/external/lens-correct.c:71
 #: ../operations/workshop/external/lens-correct.c:73
 msgid "Correction parameters for each color channel"
-msgstr ""
+msgstr "प्रत्येक रंगीत चॅनेलसाठी स्तरांची संख्या"
 
 #: ../operations/workshop/external/lens-correct.c:50
 msgid "Model red b:"
-msgstr ""
+msgstr "नमुना लाल b:"
 
 #: ../operations/workshop/external/lens-correct.c:52
 msgid "Model red c:"
-msgstr ""
+msgstr "नमुना लाल c:"
 
 #: ../operations/workshop/external/lens-correct.c:54
 msgid "Model red d:"
-msgstr ""
+msgstr "नमुना लाल d:"
 
 #: ../operations/workshop/external/lens-correct.c:57
 msgid "Model green a:"
-msgstr ""
+msgstr "नमुना हिरवा a:"
 
 #: ../operations/workshop/external/lens-correct.c:59
 msgid "Model green b:"
-msgstr ""
+msgstr "नमुना हिरवा b:"
 
 #: ../operations/workshop/external/lens-correct.c:61
 msgid "Model green c:"
-msgstr ""
+msgstr "नमुना हिरवा c:"
 
 #: ../operations/workshop/external/lens-correct.c:63
 msgid "Model green d:"
-msgstr ""
+msgstr "नमुना हिरवा d:"
 
 #: ../operations/workshop/external/lens-correct.c:66
 msgid "Model blue a:"
-msgstr ""
+msgstr "नमुना निळा a:"
 
 #: ../operations/workshop/external/lens-correct.c:68
 msgid "Model blue b:"
-msgstr ""
+msgstr "नमुना निळा b:"
 
 #: ../operations/workshop/external/lens-correct.c:70
 msgid "Model blue c:"
-msgstr ""
+msgstr "नमुना निळा c:"
 
 #: ../operations/workshop/external/lens-correct.c:72
 msgid "Model blue d:"
-msgstr ""
+msgstr "नमुना निळा d:"
 
 #: ../operations/workshop/external/lens-correct.c:75
 msgid "Model alpha a:"
-msgstr ""
+msgstr "नमुना अल्फा a:"
 
 #: ../operations/workshop/external/lens-correct.c:76
 #: ../operations/workshop/external/lens-correct.c:78
 #: ../operations/workshop/external/lens-correct.c:80
 #: ../operations/workshop/external/lens-correct.c:82
-#, fuzzy
-#| msgid "Number of levels for alpha channel"
 msgid "Correction parameters for alpha channel"
-msgstr "अल्फा चॅनेलसाठी स्तरांची संख्या"
+msgstr "अल्फा चॅनेलसाठी सुधारणा घटक"
 
 #: ../operations/workshop/external/lens-correct.c:77
 msgid "Model alpha b:"
-msgstr ""
+msgstr "नमुना अल्फा b:"
 
 #: ../operations/workshop/external/lens-correct.c:79
 msgid "Model alpha c:"
-msgstr ""
+msgstr "नमुना अल्फा c:"
 
 #: ../operations/workshop/external/lens-correct.c:81
 msgid "Model alpha d:"
-msgstr ""
+msgstr "नमुना अल्फा d:"
 
 #: ../operations/workshop/external/lens-correct.c:476
 msgid "Copies image performing lens distortion correction."
-msgstr ""
+msgstr "प्रतिमेचे भिंग विरूपण सुधारणा केल्याची प्रतिलिपी करते."
 
 #: ../operations/workshop/external/line-profile.c:25
 msgid "X0"
-msgstr ""
+msgstr "X0"
 
 #: ../operations/workshop/external/line-profile.c:25
 msgid "Start x coordinate"
-msgstr ""
+msgstr "x समन्वय प्रारंभ करा"
 
 #: ../operations/workshop/external/line-profile.c:26
 msgid "End x coordinate"
-msgstr ""
+msgstr "x समन्वय समाप्त करा"
 
 #: ../operations/workshop/external/line-profile.c:27
 msgid "Y0"
-msgstr ""
+msgstr "Y0"
 
 #: ../operations/workshop/external/line-profile.c:27
 msgid "Start y coordinate"
-msgstr ""
+msgstr "y समन्वय प्रारंभ करा"
 
 #: ../operations/workshop/external/line-profile.c:28
 msgid "End y coordinate"
-msgstr ""
+msgstr "y समन्वय समाप्त करा"
 
 #: ../operations/workshop/external/line-profile.c:29
-#, fuzzy
-#| msgid "Width of the tile"
 msgid "Width of plot"
-msgstr "टाइलची रूंदी"
+msgstr "प्लॉटची रुंदी"
 
 #: ../operations/workshop/external/line-profile.c:30
-#, fuzzy
-#| msgid "Height of the tile"
 msgid "Height of plot"
-msgstr "टाइलची उंची"
+msgstr "प्लॉटची उंची"
 
 #: ../operations/workshop/external/line-profile.c:31
 msgid "Min"
-msgstr ""
+msgstr "किमान"
 
 #: ../operations/workshop/external/line-profile.c:31
 msgid "Value at bottom"
-msgstr ""
+msgstr "तळाशी मूल्य"
 
 #: ../operations/workshop/external/line-profile.c:32
 msgid "Max"
-msgstr ""
+msgstr "कमाल"
 
 #: ../operations/workshop/external/line-profile.c:32
 msgid "Value at top"
-msgstr ""
+msgstr "शीर्षस्थानी मूल्य"
 
 #: ../operations/workshop/external/line-profile.c:178
 msgid ""
@@ -4335,57 +3920,65 @@ msgid ""
 "specified line in the input buffer, plotted in a buffer of the specified "
 "size."
 msgstr ""
+" निर्दिष्ट आकाराच्या संग्रहमध्ये प्लॉट केलेल्या, इनपुट संग्रहमध्ये निर्दिष्ट केलेल्या रेषेवरील लाल "
+"हिरव्या आणि निळा घटकांसाठी चकाकी प्रोफाइल प्रस्तुत करते."
 
 #: ../operations/workshop/generated/average.c:109
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
-msgstr ""
+msgstr "प्रतिमा मिश्रण क्रिया 'सरासरी' (<tt>c = (cA + aB)/2</tt>)"
 
 #: ../operations/workshop/generated/blend-reflect.c:109
 msgid ""
 "Image blending operation 'blend-reflect' (<tt>c = cB>=1.0?1.0:cA*cA / (1.0-"
 "cB)</tt>)"
 msgstr ""
+"प्रतिमा मिश्रण क्रिया 'मिश्रित प्रतिबिंब'(<tt>c = cB>=1.0?1.0:cA*cA / (1.0-cB)</"
+"tt>)"
 
 #: ../operations/workshop/generated/negation.c:109
 msgid ""
 "Image blending operation 'negation' (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
-msgstr ""
+msgstr "प्रतिमा मिश्रण क्रिया 'नकार' (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
 
 #: ../operations/workshop/generated/soft-burn.c:109
 msgid ""
 "Image blending operation 'soft-burn' (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 - "
 "cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
 msgstr ""
+"प्रतिमा मिश्रण क्रिया 'मऊ-गडद' (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 - "
+"cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
 
 #: ../operations/workshop/generated/soft-dodge.c:109
 msgid ""
 "Image blending operation 'soft-dodge' (<tt>c = (cA+cB<1.0)?0.5*cA / (1.0 - "
 "cB):1.0-0.5*(1.0 - cB)/cA</tt>)"
 msgstr ""
+"प्रतिमा मिश्रण क्रिया 'मऊ-हलका' (<tt>c = (cA+cB<1.0)?0.5*cA / (1.0 - "
+"cB):1.0-0.5*(1.0 - cB)/cA</tt>)"
 
 #: ../operations/workshop/generated/subtractive.c:109
 msgid "Image blending operation 'subtractive' (<tt>c = cA+cB-1.0</tt>)"
-msgstr ""
+msgstr "प्रतिमा मिश्रण क्रिया 'वजाबाकी' (<tt>c = cA+cB-1.0</tt>)"
 
 #: ../operations/workshop/hstack.c:178
 msgid ""
 "Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right of "
 "\"input\")"
 msgstr ""
+"क्षैतिजरित्या रास इनपुट, (\"आउटपुट\" मध्ये \"इनपुट \" च्या उजवीकडे ठेवण्यात आलेला \"ऑक्स "
+"\" )"
 
 #: ../operations/workshop/kuwahara.c:243
-#, fuzzy
-#| msgid "Edge preservation"
 msgid "Edge preserving blur"
-msgstr "कडा संरक्षण"
+msgstr "कडा संरक्षित अस्पष्ट"
 
 #: ../operations/workshop/linear-gradient.c:29
 msgid "One end of a agradient"
-msgstr ""
+msgstr "रंग मर्यादेचे एक टोक"
 
 #: ../operations/workshop/linear-gradient.c:31
 msgid "The other end of a gradient"
-msgstr ""
+msgstr "रंग मर्यादेचे दुसरे टोक"
 
 #: ../operations/workshop/linear-gradient.c:136
 msgid "Linear gradient renderer"
@@ -4393,84 +3986,72 @@ msgstr "रेषीय रंगछटा प्रस्तुतकर्त�
 
 #: ../operations/workshop/mandelbrot.c:25
 msgid "Real"
-msgstr ""
+msgstr "वास्तविक "
 
 #: ../operations/workshop/mandelbrot.c:26
-#, fuzzy
-#| msgid "Polar Coordinates"
 msgid "Real coordinate"
-msgstr "ध्रुवीय समन्वय"
+msgstr "वास्तविक समन्वय"
 
 #: ../operations/workshop/mandelbrot.c:27
 msgid "Imaginary"
-msgstr ""
+msgstr "काल्पनिक"
 
 #: ../operations/workshop/mandelbrot.c:28
-#, fuzzy
-#| msgid "Spiral origin X coordinate"
 msgid "Imaginary coordinate"
-msgstr "आवर्त उत्पत्ति X समन्वय"
+msgstr "काल्पनिक समन्वय"
 
 #: ../operations/workshop/mandelbrot.c:29
-#, fuzzy
-#| msgid "Levels"
 msgid "Level"
-msgstr "पातळी"
+msgstr "स्तर"
 
 #: ../operations/workshop/mandelbrot.c:30
-#, fuzzy
-#| msgid "Waterlevel"
 msgid "Water level"
 msgstr "पाण्याची पातळी"
 
 #: ../operations/workshop/mandelbrot.c:32
 msgid "Maximum number of iterations"
-msgstr ""
+msgstr "पुनरावृत्तीची कमाल संख्या"
 
 #: ../operations/workshop/mandelbrot.c:144
-#, fuzzy
-#| msgid "Linear gradient renderer"
 msgid "Mandelbrot set renderer"
-msgstr "रेषीय रंगछटा प्रस्तुतकर्ता"
+msgstr "Mandelbrot संच प्रस्तुतकर्ता"
 
 #: ../operations/workshop/plasma.c:34
 msgid "Random seed. Passing -1 implies that the seed is randomly chosen."
-msgstr ""
+msgstr "यादृच्छिक सीड. -1 पास करणे सुचवते की सीड यादृच्छिकपणे निवडले जातात."
 
 #: ../operations/workshop/plasma.c:35
 msgid "Turbulence"
 msgstr "गोंधळ"
 
 #: ../operations/workshop/plasma.c:36
-#, fuzzy
-#| msgid "The scale of the noise function"
 msgid "The value of the turbulence"
-msgstr "आवाज कार्याचे मोजमाप"
+msgstr "गोंधळ मूल्य"
 
 #: ../operations/workshop/plasma.c:389
 msgid "Performs plasma effect on the image"
-msgstr ""
+msgstr "प्लाजमा प्रभाव प्रतिमेवर कार्य करतो "
 
 #: ../operations/workshop/radial-gradient.c:24
 msgid "x1"
-msgstr ""
+msgstr "x1"
 
 #: ../operations/workshop/radial-gradient.c:25
 msgid "y1"
-msgstr ""
+msgstr "y1"
 
 #: ../operations/workshop/radial-gradient.c:26
 msgid "x2"
-msgstr ""
+msgstr "x2"
 
 #: ../operations/workshop/radial-gradient.c:27
 msgid "y2"
-msgstr ""
+msgstr "y2"
 
 #: ../operations/workshop/radial-gradient.c:29
 #: ../operations/workshop/radial-gradient.c:31
 msgid "One end of gradient"
-msgstr ""
+msgstr "रंग मर्यादेचे एक टोक"
 
 #: ../operations/workshop/radial-gradient.c:128
 msgid "Radial gradient renderer"
@@ -4483,23 +4064,21 @@ msgid ""
 "the normal dcraw loader, if the fileformat is .rawbayerS it will swap the "
 "returned 16bit numbers (the pnm loader is apparently buggy)"
 msgstr ""
+"कच्चा प्रतिमा लोडर, पाईप्सने dcraw ओघ वळविणे, कच्चे बायर ग्रिडला ग्रेस्केल पुरविते, धारिका "
+"स्वरूप .rawbayer असल्यास सामान्य dcraw लोडर ऐवजी हे लोडर वापरेल, धारिका स्वरूप ."
+"rawbayer असल्यास 16bit क्रमांक स्वॅप करेल (पीएनएम लोडर वरवर पाहता दोषपूर्ण आहे)"
 
 #: ../operations/workshop/snn-percentile.c:30
-#, fuzzy
-#| msgid "Number of pairs; higher number preserves more acute features"
 msgid "Number of pairs, higher number preserves more acute features"
-msgstr "जोड्यांची संख्या; उच्च संख्या अधिक तीव्र वैशिष्ट्ये जतन करते"
+msgstr "जोड्यांची संख्या, उच्च संख्या अधिक तीव्र वैशिष्ट्ये जतन करते"
 
 #: ../operations/workshop/snn-percentile.c:32
 msgid "The percentile to return, the default value 50 is equal to the median"
-msgstr ""
+msgstr "माघारी येण्याकरिता टक्केवारी, पूर्वनिर्धारित मूल्य 50 हे मध्यक समान आहे"
 
 #: ../operations/workshop/snn-percentile.c:273
-#, fuzzy
-#| msgid ""
-#| "Noise reducing edge preserving blur filter based on Symmetric Nearest "
-#| "Neighbours"
 msgid ""
 "Noise reducing edge enhancing percentile filter based on Symmetric Nearest "
 "Neighbours"
-msgstr "सममित जवळील शेजारीधारकांवर आधारित अस्पष्ट गाळणीचे रक्षण करणारे नॉईस कमी करणे"
+msgstr ""
+"सममित जवळील शेजारीधारकांवर आधारित नॉईस कमी करणारी कडा वाढवणारी टक्केवारी गाळणी"
