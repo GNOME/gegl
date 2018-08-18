@@ -41,6 +41,9 @@ enum
   PROP_SWAP_TOTAL_UNCLONED,
   PROP_SWAP_FILE_SIZE,
   PROP_SWAP_BUSY,
+  PROP_SWAP_QUEUED_TOTAL,
+  PROP_SWAP_QUEUE_FULL,
+  PROP_SWAP_QUEUE_STALLS,
   PROP_SWAP_READING,
   PROP_SWAP_READ_TOTAL,
   PROP_SWAP_WRITING,
@@ -132,6 +135,30 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                          "Whether there is work queued for the swap",
                                                          FALSE,
                                                          G_PARAM_READABLE));
+
+
+  g_object_class_install_property (object_class, PROP_SWAP_QUEUED_TOTAL,
+                                   g_param_spec_uint64 ("swap-queued-total",
+                                                        "Swap total queued size",
+                                                        "Total size of the data queued for writing to the swap",
+                                                        0, G_MAXUINT64, 0,
+                                                        G_PARAM_READABLE));
+
+
+  g_object_class_install_property (object_class, PROP_SWAP_QUEUE_FULL,
+                                   g_param_spec_boolean ("swap-queue-full",
+                                                         "Swap queue full",
+                                                         "Whether the swap queue is full",
+                                                         FALSE,
+                                                         G_PARAM_READABLE));
+
+  g_object_class_install_property (object_class, PROP_SWAP_QUEUE_STALLS,
+                                   g_param_spec_int ("swap-queue-stalls",
+                                                     "Swap queue stall count",
+                                                     "Number of times writing to the swap has been stalled, "
+                                                     "due to a full queue",
+                                                     0, G_MAXINT, 0,
+                                                     G_PARAM_READABLE));
 
   g_object_class_install_property (object_class, PROP_SWAP_READING,
                                    g_param_spec_boolean ("swap-reading",
@@ -232,6 +259,18 @@ gegl_stats_get_property (GObject    *object,
 
       case PROP_SWAP_BUSY:
         g_value_set_boolean (value, gegl_tile_backend_swap_get_busy ());
+        break;
+
+      case PROP_SWAP_QUEUED_TOTAL:
+        g_value_set_uint64 (value, gegl_tile_backend_swap_get_queued_total ());
+        break;
+
+      case PROP_SWAP_QUEUE_FULL:
+        g_value_set_boolean (value, gegl_tile_backend_swap_get_queue_full ());
+        break;
+
+      case PROP_SWAP_QUEUE_STALLS:
+        g_value_set_int (value, gegl_tile_backend_swap_get_queue_stalls ());
         break;
 
       case PROP_SWAP_READING:
