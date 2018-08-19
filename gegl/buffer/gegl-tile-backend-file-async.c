@@ -862,10 +862,11 @@ gegl_tile_backend_file_command (GeglTileSource  *self,
         return gegl_tile_backend_file_flush (self, data, x, y, z);
 
       default:
-        g_assert (command < GEGL_TILE_LAST_COMMAND &&
-                  command >= 0);
+        break;
     }
-  return FALSE;
+
+  return gegl_tile_backend_command (GEGL_TILE_BACKEND (self),
+                                    command, x, y, z, data);
 }
 
 static void

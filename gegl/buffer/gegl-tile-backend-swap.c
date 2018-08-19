@@ -1000,12 +1000,11 @@ gegl_tile_backend_swap_command (GeglTileSource  *self,
         return gegl_tile_backend_swap_copy_tile (self, x, y, z, data);
 
       default:
-        g_return_val_if_fail (command < GEGL_TILE_LAST_COMMAND &&
-                              command >= 0,
-                              NULL);
+        break;
     }
 
-  return NULL;
+  return gegl_tile_backend_command (GEGL_TILE_BACKEND (self),
+                                    command, x, y, z, data);
 }
 
 static guint

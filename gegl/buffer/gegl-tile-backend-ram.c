@@ -231,10 +231,11 @@ gegl_tile_backend_ram_command (GeglTileSource  *tile_store,
         return GINT_TO_POINTER (exist_tile (tile_store, data, x, y, z));
 
       default:
-        g_assert (command < GEGL_TILE_LAST_COMMAND &&
-                  command >= 0);
+        break;
     }
-  return NULL;
+
+  return gegl_tile_backend_command (GEGL_TILE_BACKEND (tile_store),
+                                    command, x, y, z, data);
 }
 
 static void

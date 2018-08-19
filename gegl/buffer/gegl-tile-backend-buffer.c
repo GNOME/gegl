@@ -217,10 +217,8 @@ gegl_tile_backend_buffer_command (GeglTileSource  *tile_source,
       return GINT_TO_POINTER (FALSE);
 
     default:
-      g_return_val_if_fail (command >= 0 && command < GEGL_TILE_LAST_COMMAND,
-                            NULL);
-
-      return NULL;
+      return gegl_tile_backend_command (GEGL_TILE_BACKEND (tile_source),
+                                        command, x, y, z, data);
     }
 }
 
