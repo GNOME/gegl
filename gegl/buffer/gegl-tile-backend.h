@@ -121,6 +121,27 @@ void gegl_tile_backend_set_flush_on_destroy (GeglTileBackend *tile_backend,
 
 gboolean gegl_tile_backend_get_flush_on_destroy (GeglTileBackend *tile_backend);
 
+/**
+ * gegl_tile_backend_command:
+ * @backend: a #GeglTileBackend
+ * @command: the tile command
+ * @x: x coordinate
+ * @y: y coordinate
+ * @z: tile zoom level
+ * @data: user data
+ *
+ * The default tile-backend command handler.  Tile backends should forward
+ * commands they don't handle themselves to this function.
+ *
+ * Returns: Command result.
+ */
+gpointer gegl_tile_backend_command (GeglTileBackend *backend,
+                                    GeglTileCommand  command,
+                                    gint             x,
+                                    gint             y,
+                                    gint             z,
+                                    gpointer         data);
+
 GType gegl_tile_backend_get_type (void) G_GNUC_CONST;
 
 /**

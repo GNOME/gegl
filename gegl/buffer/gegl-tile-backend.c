@@ -115,10 +115,93 @@ set_property (GObject      *gobject,
     }
 }
 
+/* before 0.4.10, tile backends used to assert that
+ * '0 <= command < GEGL_TILE_LAST_COMMAND' in their command handlers, which
+ * prevented us from adding new tile commands without breaking the abi, since
+ * GEGL_TILE_LAST_COMMAND is a compile-time constant.  tile backends are now
+ * expected to forward unhandled commands to gegl_tile_backend_command()
+ * instead.
+ *
+ * in order to keep supporting tile backends that were compiled against 0.4.8
+ * or earlier, we replace the backend's command handler with a thunk
+ * (tile_command_check_0_4_8()) upon construction, which tests whether the
+ * backend forwards unhandled commands to gegl_tile_backend_command(), and
+ * subsequently replaces the command handler with either the original command
+ * handler if it does, or a compatibility shim (tile_command()) if it doesn't.
+ */
+
+/* this is the actual default command handler, called by
+ * gegl_tile_backend_command().  currently, it simply validates the command
+ * range, and returns NULL to any command.  we can add special behavior for
+ * different commands as needed.
+ */
+static inline gpointer
+_gegl_tile_backend_command (GeglTileBackend *backend,
+                            GeglTileCommand  command,
+                            gint             x,
+                            gint             y,
+                            gint             z,
+                            gpointer         data)
+{
+  g_return_val_if_fail (command >= 0 && command < GEGL_TILE_LAST_COMMAND, NULL);
+
+  return NULL;
+}
+
+/* this is a compatibility shim for backends compiled against 0.4.8 or earlier.
+ * it forwards commands that were present in these versions to the original
+ * handler, and newer commands to the default handler.
+ */
+static gpointer
+tile_command (GeglTileSource  *source,
+              GeglTileCommand  command,
+              gint             x,
+              gint             y,
+              gint             z,
+              gpointer         data)
+{
+  GeglTileBackend *backend = GEGL_TILE_BACKEND (source);
+
+  if (command < _GEGL_TILE_LAST_0_4_8_COMMAND)
+    return backend->priv->command (source, command, x, y, z, data);
+
+  return _gegl_tile_backend_command (backend, command, x, y, z, data);
+}
+
+/* this is a thunk, testing whether the backend forwards unhandled commands to
+ * gegl_tile_backend_command().  if it does, we replace the thunk by the
+ * original handler; if it doesn't, we assume the backend can't handle post-
+ * 0.4.8 commands, and replace the thunk with the compatibility shim.
+ */
+static gpointer
+tile_command_check_0_4_8 (GeglTileSource  *source,
+                          GeglTileCommand  command,
+                          gint             x,
+                          gint             y,
+                          gint             z,
+                          gpointer         data)
+{
+  GeglTileBackend *backend = GEGL_TILE_BACKEND (source);
+
+  /* start by replacing the thunk by the compatibility shim */
+  source->command = tile_command;
+
+  /* pass the original handler a dummy command.  we use GEGL_TILE_IS_CACHED,
+   * since backends shouldn't handle this command.  if the handler forwards the
+   * command to gegl_tile_backend_command(), it will replace the shim by the
+   * original handler.
+   */
+  backend->priv->command (source, GEGL_TILE_IS_CACHED, 0, 0, 0, NULL);
+
+  /* forward the command to either the shim or the original handler */
+  return source->command (source, command, x, y, z, data);
+}
+
 static void
 constructed (GObject *object)
 {
   GeglTileBackend *backend = GEGL_TILE_BACKEND (object);
+  GeglTileSource  *source  = GEGL_TILE_SOURCE (object);
 
   G_OBJECT_CLASS (parent_class)->constructed (object);
 
@@ -127,6 +210,9 @@ constructed (GObject *object)
 
   backend->priv->px_size = babl_format_get_bytes_per_pixel (backend->priv->format);
   backend->priv->tile_size = backend->priv->tile_width * backend->priv->tile_height * backend->priv->px_size;
+
+  backend->priv->command = source->command;
+  source->command        = tile_command_check_0_4_8;
 }
 
 static void
@@ -240,6 +326,28 @@ gboolean
 gegl_tile_backend_get_flush_on_destroy (GeglTileBackend *tile_backend)
 {
   return tile_backend->priv->flush_on_destroy;
+}
+
+gpointer
+gegl_tile_backend_command (GeglTileBackend *backend,
+                           GeglTileCommand  command,
+                           gint             x,
+                           gint             y,
+                           gint             z,
+                           gpointer         data)
+{
+  /* we've been called during the tile_command() test, which means the backend
+   * is post-0.4.8 compatible.  replace the shim with the original handler.
+   */
+  if (backend->priv->command)
+    {
+      GeglTileSource *source = GEGL_TILE_SOURCE (backend);
+
+      source->command        = backend->priv->command;
+      backend->priv->command = NULL;
+    }
+
+  return _gegl_tile_backend_command (backend, command, x, y, z, data);
 }
 
 void
