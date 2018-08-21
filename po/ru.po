@@ -6,11 +6,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GEGL 0.3.31\n"
+"Project-Id-Version: GEGL 0.4.10\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=GEGL&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-08-02 23:31+0300\n"
-"PO-Revision-Date: 2018-08-02 23:54+0300\n"
+"POT-Creation-Date: 2018-08-21 02:40+0300\n"
+"PO-Revision-Date: 2018-08-21 03:20+0300\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: русский <>\n"
 "Language: ru\n"
@@ -280,12 +280,12 @@ msgstr ""
 #: ../gegl/gegl-serialize.c:411
 #, c-format
 msgid "%s has no %s property."
-msgstr ""
+msgstr "У %s нет свойства %s."
 
 #: ../gegl/gegl-serialize.c:417
 #, c-format
 msgid "%s has no %s property, properties: "
-msgstr ""
+msgstr "У %s нет свойства %s, а есть: "
 
 #: ../gegl/gegl-serialize.c:512
 #, c-format
@@ -758,15 +758,14 @@ msgstr "Отрисовать узор шахматной доски"
 
 #: ../operations/common/color.c:24 ../operations/common/color.c:92
 #: ../operations/common/color-overlay.c:26 ../operations/common/dropshadow.c:43
-#: ../operations/common/grid.c:64 ../operations/common/rectangle.c:48
-#: ../operations/common/vignette.c:34
+#: ../operations/common/grid.c:64 ../operations/common/long-shadow.c:59
+#: ../operations/common/rectangle.c:48 ../operations/common/vignette.c:34
 #: ../operations/common-gpl3+/color-to-alpha.c:29
 #: ../operations/common-gpl3+/supernova.c:61
 #: ../operations/common-gpl3+/tile-paper.c:30
 #: ../operations/common-gpl3+/value-propagate.c:55
 #: ../operations/external/text.c:37 ../operations/external/vector-fill.c:26
 #: ../operations/external/vector-stroke.c:27
-#: ../operations/workshop/long-shadow.c:59
 msgid "Color"
 msgstr "Цвет"
 
@@ -969,9 +968,8 @@ msgid "To 0"
 msgstr "В 0"
 
 #: ../operations/common/color-warp.c:38
-#, fuzzy
 msgid "weight 0"
-msgstr "Высота"
+msgstr "Вес 0"
 
 #: ../operations/common/color-warp.c:40
 msgid "From 1"
@@ -982,9 +980,8 @@ msgid "To 1"
 msgstr "В 1"
 
 #: ../operations/common/color-warp.c:42
-#, fuzzy
 msgid "weight 1"
-msgstr "Высота"
+msgstr "Вес 1"
 
 #: ../operations/common/color-warp.c:44
 msgid "From 2"
@@ -995,9 +992,8 @@ msgid "To 2"
 msgstr "В 2"
 
 #: ../operations/common/color-warp.c:46
-#, fuzzy
 msgid "weight 2"
-msgstr "Высота"
+msgstr "Вес 2"
 
 #: ../operations/common/color-warp.c:48
 msgid "From 3"
@@ -1008,9 +1004,8 @@ msgid "To 3"
 msgstr "В 3"
 
 #: ../operations/common/color-warp.c:50
-#, fuzzy
 msgid "weight 3"
-msgstr "Высота"
+msgstr "Вес 3"
 
 #: ../operations/common/color-warp.c:52
 msgid "From 4"
@@ -1021,9 +1016,8 @@ msgid "To 4"
 msgstr "В 4"
 
 #: ../operations/common/color-warp.c:54
-#, fuzzy
 msgid "weight 4"
-msgstr "Высота"
+msgstr "Вес 4"
 
 #: ../operations/common/color-warp.c:56
 msgid "From 5"
@@ -1034,9 +1028,8 @@ msgid "To 5"
 msgstr "В 5"
 
 #: ../operations/common/color-warp.c:58
-#, fuzzy
 msgid "weight 5"
-msgstr "Высота"
+msgstr "Вес 5"
 
 #: ../operations/common/color-warp.c:60
 msgid "From 6"
@@ -1047,9 +1040,8 @@ msgid "To 6"
 msgstr "В 6"
 
 #: ../operations/common/color-warp.c:62
-#, fuzzy
 msgid "weight 6"
-msgstr "Высота"
+msgstr "Вес 6"
 
 #: ../operations/common/color-warp.c:64
 msgid "From 7"
@@ -1060,9 +1052,8 @@ msgid "To 7"
 msgstr "В 7"
 
 #: ../operations/common/color-warp.c:66
-#, fuzzy
 msgid "weight 7"
-msgstr "Высота"
+msgstr "Вес 7"
 
 #: ../operations/common/color-warp.c:68
 msgid "global weight scale"
@@ -1965,9 +1956,8 @@ msgid "Target path and filename"
 msgstr ""
 
 #: ../operations/common/icc-save.c:72
-#, fuzzy
 msgid "ICC profile saver"
-msgstr "Сохранение изображений TIFF"
+msgstr "Сохранение ICC-профилей"
 
 #: ../operations/common/icc-save.c:74
 msgid "Stores the ICC profile that would be embedded if stored as an image."
@@ -2139,7 +2129,7 @@ msgstr ""
 
 #: ../operations/common/levels.c:37
 msgid "Lowest luminance level in output"
-msgstr ""
+msgstr "Низший уровень светимости в выводе"
 
 #: ../operations/common/levels.c:41
 msgid "High output"
@@ -2147,7 +2137,7 @@ msgstr ""
 
 #: ../operations/common/levels.c:42
 msgid "Highest luminance level in output"
-msgstr ""
+msgstr "Наивысший уровень светимости в выводе"
 
 #: ../operations/common/levels.c:203 ../operations/common/posterize.c:24
 #: ../operations/external/matting-levin.c:41
@@ -2261,9 +2251,8 @@ msgstr ""
 
 #: ../operations/common/little-planet.c:58
 #: ../operations/common/panorama-projection.c:58
-#, fuzzy
 msgid "Inverse transform"
-msgstr "Карта расстояний"
+msgstr "Обратное преобразование"
 
 #: ../operations/common/little-planet.c:59
 #: ../operations/common/panorama-projection.c:59
@@ -2298,6 +2287,89 @@ msgstr "Маленькая планета"
 #: ../operations/common/little-planet.c:497
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
+
+#: ../operations/common/long-shadow.c:25
+msgid "Finite"
+msgstr "Конечная"
+
+#: ../operations/common/long-shadow.c:26
+msgid "Infinite"
+msgstr "Бесконечная"
+
+#: ../operations/common/long-shadow.c:27
+msgid "Fading"
+msgstr "Угасание"
+
+#: ../operations/common/long-shadow.c:31
+msgid "Shadow plus image"
+msgstr "Тень плюс изображение"
+
+#: ../operations/common/long-shadow.c:32
+msgid "Shadow only"
+msgstr "Только тень"
+
+#: ../operations/common/long-shadow.c:33
+msgid "Shadow minus image"
+msgstr "Тень минус изображение"
+
+#: ../operations/common/long-shadow.c:36 ../operations/common-gpl3+/wind.c:45
+msgid "Style"
+msgstr "Стиль"
+
+#: ../operations/common/long-shadow.c:39
+msgid "Shadow style"
+msgstr "Стиль тени"
+
+#. FIXME: With a large angle, we lose AreaFilter's flavours
+#: ../operations/common/long-shadow.c:41
+#: ../operations/common/motion-blur-linear.c:33
+#: ../operations/common/newsprint.c:72
+#: ../operations/common-gpl3+/motion-blur-circular.c:52
+#: ../operations/common-gpl3+/ripple.c:45
+#: ../operations/workshop/linear-sinusoid.c:66
+msgid "Angle"
+msgstr "Угол"
+
+#: ../operations/common/long-shadow.c:42
+msgid "Shadow angle"
+msgstr "Угол тени"
+
+#: ../operations/common/long-shadow.c:47
+#: ../operations/common/motion-blur-linear.c:26
+msgid "Length"
+msgstr "Длина"
+
+#: ../operations/common/long-shadow.c:48
+msgid "Shadow length"
+msgstr "Длина тени"
+
+#: ../operations/common/long-shadow.c:53
+msgid "Midpoint"
+msgstr "Средняя точка"
+
+#: ../operations/common/long-shadow.c:54
+msgid "Shadow fade midpoint"
+msgstr "Средняя точка угасающей тени"
+
+#: ../operations/common/long-shadow.c:60
+msgid "Shadow color"
+msgstr "Цвет тени"
+
+#: ../operations/common/long-shadow.c:63
+msgid "Composition"
+msgstr "Композиция"
+
+#: ../operations/common/long-shadow.c:66
+msgid "Output composition"
+msgstr "Композиция вывода"
+
+#: ../operations/common/long-shadow.c:1156
+msgid "Long Shadow"
+msgstr "Длинная тень"
+
+#: ../operations/common/long-shadow.c:1160
+msgid "Creates a long-shadow effect"
+msgstr "Создать эффект длинной отбрасываемой тени"
 
 #: ../operations/common/magick-load.c:27 ../operations/core/load.c:29
 #: ../operations/external/png-load.c:28 ../operations/external/ppm-load.c:26
@@ -2394,9 +2466,8 @@ msgid ""
 msgstr ""
 
 #: ../operations/common/mean-curvature-blur.c:25
-#, fuzzy
 msgid "Controls the number of iterations"
-msgstr "Максимальное количество итераций"
+msgstr "Контролирует количество итераций"
 
 #: ../operations/common/mean-curvature-blur.c:246
 #, fuzzy
@@ -2610,24 +2681,9 @@ msgstr "Монохромный микшер каналов"
 msgid "Monochrome channel mixer"
 msgstr "Монохромный микшер каналов"
 
-#: ../operations/common/motion-blur-linear.c:26
-#: ../operations/workshop/long-shadow.c:47
-msgid "Length"
-msgstr "Длина"
-
 #: ../operations/common/motion-blur-linear.c:27
 msgid "Length of blur in pixels"
 msgstr "Длина размывания в пикселах"
-
-#. FIXME: With a large angle, we lose AreaFilter's flavours
-#: ../operations/common/motion-blur-linear.c:33
-#: ../operations/common/newsprint.c:72
-#: ../operations/common-gpl3+/motion-blur-circular.c:52
-#: ../operations/common-gpl3+/ripple.c:45
-#: ../operations/workshop/linear-sinusoid.c:66
-#: ../operations/workshop/long-shadow.c:41
-msgid "Angle"
-msgstr "Угол"
 
 #: ../operations/common/motion-blur-linear.c:34
 msgid "Angle of blur in degrees"
@@ -2797,7 +2853,7 @@ msgstr ""
 
 #: ../operations/common/noise-cell.c:45
 msgid "Select the n-th closest point"
-msgstr ""
+msgstr "Выбрать n-ближайшую точку"
 
 #: ../operations/common/noise-cell.c:49 ../operations/common/noise-simplex.c:36
 msgid "The number of noise octaves."
@@ -3167,9 +3223,8 @@ msgid "First iteration"
 msgstr "Первая итерация"
 
 #: ../operations/common/recursive-transform.c:37 ../operations/common/slic.c:39
-#, fuzzy
 msgid "Number of iterations"
-msgstr "Максимальное количество итераций"
+msgstr "Количество итераций"
 
 #: ../operations/common/recursive-transform.c:40
 msgid "Fade color"
@@ -3755,7 +3810,7 @@ msgstr "Цвет суперпикселей"
 
 #: ../operations/common/waterpixels.c:55
 msgid "How to fill superpixels"
-msgstr ""
+msgstr "Как заливать суперпиксели"
 
 #: ../operations/common/waterpixels.c:513
 #, fuzzy
@@ -4812,7 +4867,7 @@ msgstr "Блик линзы"
 
 #: ../operations/common-gpl3+/lens-flare.c:515
 msgid "Adds a lens flare effect."
-msgstr ""
+msgstr "Добавить эффект бликующей линзы"
 
 #: ../operations/common-gpl3+/maze.c:36
 msgid "Depth first"
@@ -5008,19 +5063,16 @@ msgid "X Size"
 msgstr "Размер"
 
 #: ../operations/common-gpl3+/noise-solid.c:38
-#, fuzzy
 msgid "Horizontal texture size"
-msgstr "Размер по горизонтали"
+msgstr "Размер текстуры по горизонтали"
 
 #: ../operations/common-gpl3+/noise-solid.c:44
-#, fuzzy
 msgid "Y Size"
-msgstr "Размер"
+msgstr "Размер по Y"
 
 #: ../operations/common-gpl3+/noise-solid.c:45
-#, fuzzy
 msgid "Vertical texture size"
-msgstr "Размер по вертикали"
+msgstr "Размер текстуры по вертикали"
 
 #: ../operations/common-gpl3+/noise-solid.c:52
 msgid "Detail level"
@@ -5273,9 +5325,8 @@ msgstr ""
 
 #: ../operations/common-gpl3+/shadows-highlights.c:49
 #: ../operations/common-gpl3+/shadows-highlights-correction.c:45
-#, fuzzy
 msgid "Shadows color adjustment"
-msgstr "Радиус маски"
+msgstr "Коррекция цвета тени"
 
 #: ../operations/common-gpl3+/shadows-highlights.c:50
 #: ../operations/common-gpl3+/shadows-highlights-correction.c:46
@@ -5654,9 +5705,8 @@ msgid "More transparent"
 msgstr "Больше прозрачности"
 
 #: ../operations/common-gpl3+/value-propagate.c:41
-#, fuzzy
 msgid "Mode of value propagation"
-msgstr "Значение насыщенности"
+msgstr "Режим распространения значения"
 
 #: ../operations/common-gpl3+/value-propagate.c:43
 #: ../operations/common-gpl3+/value-propagate.c:44
@@ -5803,9 +5853,8 @@ msgid "Amplitude of the ripple"
 msgstr "Амплитуда ряби"
 
 #: ../operations/common-gpl3+/waves.c:41
-#, fuzzy
 msgid "Period (wavelength) of the ripple"
-msgstr "Период ряби"
+msgstr "Период (длина волны) ряби"
 
 #: ../operations/common-gpl3+/waves.c:47
 msgid "Aspect ratio"
@@ -5880,10 +5929,6 @@ msgstr "Передний"
 #: ../operations/common-gpl3+/wind.c:42
 msgid "Trailing"
 msgstr "Задний"
-
-#: ../operations/common-gpl3+/wind.c:45 ../operations/workshop/long-shadow.c:36
-msgid "Style"
-msgstr "Стиль"
 
 #: ../operations/common-gpl3+/wind.c:48
 msgid "Style of effect"
@@ -5961,9 +6006,8 @@ msgid "One of: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"
 msgstr ""
 
 #: ../operations/core/cast-space.c:27 ../operations/core/convert-space.c:27
-#, fuzzy
 msgid "Pointer"
-msgstr "Центр"
+msgstr "Указатель"
 
 #: ../operations/core/cast-space.c:28 ../operations/core/convert-space.c:28
 #, fuzzy
@@ -6167,7 +6211,7 @@ msgstr "кадров в секунду"
 
 #: ../operations/external/ff-save.c:44
 msgid "Video codec"
-msgstr ""
+msgstr "Видеокодек"
 
 #: ../operations/external/ff-save.c:45
 msgid ""
@@ -6321,12 +6365,12 @@ msgstr ""
 
 #: ../operations/external/jp2-load.c:257
 msgid "could not create a new Jasper stream"
-msgstr ""
+msgstr "Не удалось создать новый поток Jasper"
 
 #: ../operations/external/jp2-load.c:277 ../operations/external/jp2-load.c:279
 #, c-format
 msgid "failed to open JPEG 2000 from %s"
-msgstr ""
+msgstr "Не удалось открыть JPEG 2000 из %s"
 
 #: ../operations/external/jp2-load.c:293
 msgid "could not query JPEG 2000 file"
@@ -6389,7 +6433,7 @@ msgstr ""
 
 #: ../operations/external/jpg-save.c:36
 msgid "Optimize"
-msgstr ""
+msgstr "Оптимизировать"
 
 #: ../operations/external/jpg-save.c:37
 msgid "Use optimized huffman tables"
@@ -6528,7 +6572,7 @@ msgstr ""
 
 #: ../operations/external/npd.c:30
 msgid "Rigidity"
-msgstr ""
+msgstr "Жёсткость"
 
 #: ../operations/external/npd.c:32
 #, fuzzy
@@ -6708,7 +6752,7 @@ msgstr ""
 
 #: ../operations/external/png-save.c:310
 msgid "PNG File Saver"
-msgstr ""
+msgstr "Сохранение файла PNG"
 
 #: ../operations/external/png-save.c:312
 msgid "PNG image saver, using libpng"
@@ -7778,7 +7822,7 @@ msgstr ""
 
 #: ../operations/workshop/external/line-profile.c:25
 msgid "X0"
-msgstr ""
+msgstr "X0"
 
 #: ../operations/workshop/external/line-profile.c:26
 msgid "Start x coordinate"
@@ -7790,7 +7834,7 @@ msgstr "Координата X конца"
 
 #: ../operations/workshop/external/line-profile.c:32
 msgid "Y0"
-msgstr ""
+msgstr "Y0"
 
 #: ../operations/workshop/external/line-profile.c:33
 msgid "Start y coordinate"
@@ -8017,73 +8061,6 @@ msgstr "Линейная синусоида"
 #: ../operations/workshop/linear-sinusoid.c:304
 msgid "Generate a linear sinusoid pattern"
 msgstr ""
-
-#: ../operations/workshop/long-shadow.c:25
-msgid "Finite"
-msgstr "Конечная"
-
-#: ../operations/workshop/long-shadow.c:26
-msgid "Infinite"
-msgstr "Бесконечная"
-
-#: ../operations/workshop/long-shadow.c:27
-msgid "Fading"
-msgstr "Угасание"
-
-#: ../operations/workshop/long-shadow.c:31
-msgid "Shadow plus image"
-msgstr "Тень плюс изображение"
-
-#: ../operations/workshop/long-shadow.c:32
-msgid "Shadow only"
-msgstr "Только тень"
-
-#: ../operations/workshop/long-shadow.c:33
-msgid "Shadow minus image"
-msgstr "Тень минус изображение"
-
-#: ../operations/workshop/long-shadow.c:39
-msgid "Shadow style"
-msgstr "Стиль тени"
-
-#: ../operations/workshop/long-shadow.c:42
-msgid "Shadow angle"
-msgstr "Угол тени"
-
-#: ../operations/workshop/long-shadow.c:48
-msgid "Shadow length"
-msgstr "Длина тени"
-
-#: ../operations/workshop/long-shadow.c:53
-msgid "Midpoint"
-msgstr "Средняя точка"
-
-#: ../operations/workshop/long-shadow.c:54
-#, fuzzy
-msgid "Shadow fade midpoint"
-msgstr "Средняя точка тени"
-
-#: ../operations/workshop/long-shadow.c:60
-msgid "Shadow color"
-msgstr "Цвет тени"
-
-#: ../operations/workshop/long-shadow.c:63
-#, fuzzy
-msgid "Composition"
-msgstr "Положение X"
-
-#: ../operations/workshop/long-shadow.c:66
-#, fuzzy
-msgid "Output composition"
-msgstr "Формат вывода"
-
-#: ../operations/workshop/long-shadow.c:1106
-msgid "Long Shadow"
-msgstr "Длинная тень"
-
-#: ../operations/workshop/long-shadow.c:1109
-msgid "Creates a long-shadow effect"
-msgstr "Создать эффект длинной отбрасываемой тени"
 
 #: ../operations/workshop/rawbayer-load.c:156
 msgid ""
