@@ -43,7 +43,7 @@ property_int  (wrap, _("Wrap width"), -1)
                      "Use -1 for no wrapping."))
     ui_meta ("unit", "pixel-distance")
     value_range (-1, 1000000)
-property_int  (vertical_wrap, _("Wrap height"), 0)
+property_int  (vertical_wrap, _("Wrap height"), -1)
     description (_("Sets the height in pixels according to which the text is "
                    "vertically justified. "
                    "Use -1 for no vertical justification."))
@@ -252,7 +252,9 @@ get_bounding_box (GeglOperation *operation)
       (extent->font && strcmp (extent->font, o->font)) ||
       extent->size != o->size ||
       extent->wrap != o->wrap ||
-      extent->alignment != o->alignment)
+      extent->vertical_wrap != o->vertical_wrap ||
+      extent->alignment != o->alignment ||
+      extent->vertical_alignment != o->vertical_alignment)
     { /* get extents */
       cairo_t *cr;
 
@@ -269,7 +271,8 @@ get_bounding_box (GeglOperation *operation)
       extent->font = g_strdup (o->font);
       extent->size = o->size;
       extent->wrap = o->wrap;
-      extent->alignment = o->alignment;
+      extent->vertical_wrap = o->vertical_wrap;
+      extent->vertical_alignment = o->vertical_alignment;
 
       /* store the measured size for later use */
       o->width  = extent->defined.width  - extent->defined.x;
