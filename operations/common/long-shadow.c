@@ -22,9 +22,11 @@
 #ifdef GEGL_PROPERTIES
 
 enum_start (gegl_long_shadow_style)
-  enum_value (GEGL_LONG_SHADOW_STYLE_FINITE,   "finite",   N_("Finite"))
-  enum_value (GEGL_LONG_SHADOW_STYLE_INFINITE, "infinite", N_("Infinite"))
-  enum_value (GEGL_LONG_SHADOW_STYLE_FADING,   "fading",   N_("Fading"))
+  enum_value (GEGL_LONG_SHADOW_STYLE_FINITE,              "finite",              N_("Finite"))
+  enum_value (GEGL_LONG_SHADOW_STYLE_INFINITE,            "infinite",            N_("Infinite"))
+  enum_value (GEGL_LONG_SHADOW_STYLE_FADING,              "fading",              N_("Fading"))
+  enum_value (GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH, "fading-fixed-length", N_("Fading (fixed length)"))
+  enum_value (GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE,   "fading-fixed-rate",   N_("Fading (fixed rate)"))
 enum_end (GeglLongShadowStyle)
 
 enum_start (gegl_long_shadow_composition)
@@ -48,7 +50,9 @@ property_double (length, _("Length"), 100.0)
   description (_("Shadow length"))
   value_range (0.0, G_MAXDOUBLE)
   ui_range    (0.0, 1000.0)
-  ui_meta     ("visible", "style {finite}")
+  ui_meta     ("visible", "style {finite,              "
+                          "       fading-fixed-length, "
+                          "       fading-fixed-rate}")
 
 property_double (midpoint, _("Midpoint"), 100.0)
   description (_("Shadow fade midpoint"))
@@ -126,44 +130,80 @@ typedef struct
 
   gfloat         fade_rate;
 
-  GeglRectangle   input_bounds;
-  GeglRectangle   roi;
-  GeglRectangle   area;
+  GeglRectangle  input_bounds;
+  GeglRectangle  roi;
+  GeglRectangle  area;
 
   /* in screen coordinates */
-  gint            u0, u1;
+  gint           u0, u1;
 
-  gpointer        screen;
-  gint            pixel_size;
-  gint            active_u0;
-  gint            active_u1;
+  gpointer       screen;
+  gint           pixel_size;
+  gint           active_u0;
+  gint           active_u1;
 
-  GeglBuffer     *input;
-  GeglBuffer     *output;
+  GeglBuffer    *input;
+  GeglBuffer    *output;
 
-  const Babl     *format;
+  const Babl    *format;
 
-  gfloat         *input_row;
-  gfloat         *output_row;
+  gfloat        *input_row;
+  gfloat        *output_row;
 
-  gfloat         *input_row0;
-  gfloat         *output_row0;
-  gint            row_step;
+  gfloat        *input_row0;
+  gfloat        *output_row0;
+  gint           row_step;
 
-  gint            row_fx0;
-  gint            row_fx1;
-  gint            row_u0;
-  gint            row_input_pixel_offset0;
-  gint            row_input_pixel_offset1;
-  gint            row_output_pixel_span;
-  gfloat          row_output_pixel_kernel[2 * SCREEN_RESOLUTION + 1];
+  gint           row_fx0;
+  gint           row_fx1;
+  gint           row_u0;
+  gint           row_input_pixel_offset0;
+  gint           row_input_pixel_offset1;
+  gint           row_output_pixel_span;
+  gfloat         row_output_pixel_kernel[2 * SCREEN_RESOLUTION + 1];
 
-  gfloat          color[4];
+  gfloat         color[4];
 
-  gint            level;
-  gdouble         scale;
-  gdouble         scale_inv;
+  gint           level;
+  gdouble        scale;
+  gdouble        scale_inv;
 } Context;
+
+static inline gboolean
+is_finite (const GeglProperties *options)
+{
+  switch (options->style)
+    {
+    case GEGL_LONG_SHADOW_STYLE_FINITE:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE:
+      return TRUE;
+
+    case GEGL_LONG_SHADOW_STYLE_INFINITE:
+    case GEGL_LONG_SHADOW_STYLE_FADING:
+      return FALSE;
+    }
+
+  g_return_val_if_reached (FALSE);
+}
+
+static inline gboolean
+is_fading (const GeglProperties *options)
+{
+  switch (options->style)
+    {
+    case GEGL_LONG_SHADOW_STYLE_FADING:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE:
+      return TRUE;
+
+    case GEGL_LONG_SHADOW_STYLE_FINITE:
+    case GEGL_LONG_SHADOW_STYLE_INFINITE:
+      return FALSE;
+    }
+
+  g_return_val_if_reached (FALSE);
+}
 
 static void
 init_options (Context              *ctx,
@@ -183,8 +223,6 @@ init_options (Context              *ctx,
 static void
 init_geometry (Context *ctx)
 {
-  gdouble shadow_height;
-
   ctx->flip_horizontally = FALSE;
   ctx->flip_vertically   = FALSE;
   ctx->flip_diagonally   = FALSE;
@@ -222,19 +260,14 @@ init_geometry (Context *ctx)
 
   ctx->tan_angle = tan (ctx->options.angle);
 
-  shadow_height = cos (ctx->options.angle) * ctx->options.length;
-
-  ctx->shadow_height    = ceil (shadow_height);
-  ctx->shadow_remainder = 1.0 - (ctx->shadow_height - shadow_height);
-
-  if (ctx->options.midpoint > EPSILON)
+  if (is_finite (&ctx->options))
     {
-      ctx->fade_rate = pow (0.5, 1.0 / (cos (ctx->options.angle) *
-                                        ctx->options.midpoint));
-    }
-  else
-    {
-      ctx->fade_rate = 0.0f;
+      gdouble shadow_height;
+
+      shadow_height = cos (ctx->options.angle) * ctx->options.length;
+
+      ctx->shadow_height    = ceil (shadow_height);
+      ctx->shadow_remainder = 1.0 - (ctx->shadow_height - shadow_height);
     }
 }
 
@@ -413,6 +446,42 @@ get_affecting_filter_range (Context *ctx,
 }
 
 static void
+init_fade (Context *ctx)
+{
+  switch (ctx->options.style)
+    {
+    case GEGL_LONG_SHADOW_STYLE_FADING:
+      if (ctx->options.midpoint > EPSILON)
+        {
+          ctx->fade_rate = pow (0.5, 1.0 / (cos (ctx->options.angle) *
+                                            ctx->options.midpoint));
+        }
+      else
+        {
+          ctx->fade_rate = 0.0f;
+        }
+      break;
+
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE:
+      if (ctx->shadow_height > 0)
+        {
+          ctx->fade_rate = 1.0 / (cos (ctx->options.angle) *
+                                  ctx->options.length);
+        }
+      else
+        {
+          ctx->fade_rate = 1.0f;
+        }
+      break;
+
+    case GEGL_LONG_SHADOW_STYLE_FINITE:
+    case GEGL_LONG_SHADOW_STYLE_INFINITE:
+      break;
+    }
+}
+
+static void
 init_area (Context             *ctx,
            GeglOperation       *operation,
            const GeglRectangle *roi)
@@ -439,7 +508,7 @@ init_area (Context             *ctx,
 
   ctx->area = ctx->roi;
 
-  if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FINITE)
+  if (is_finite (&ctx->options))
     {
       gint u0;
 
@@ -467,10 +536,19 @@ init_area (Context             *ctx,
 static void
 init_screen (Context *ctx)
 {
-  if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FINITE)
-    ctx->pixel_size = sizeof (Pixel);
-  else
-    ctx->pixel_size = sizeof (gfloat);
+  switch (ctx->options.style)
+    {
+    case GEGL_LONG_SHADOW_STYLE_FINITE:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH:
+      ctx->pixel_size = sizeof (Pixel);
+      break;
+
+    case GEGL_LONG_SHADOW_STYLE_INFINITE:
+    case GEGL_LONG_SHADOW_STYLE_FADING:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE:
+      ctx->pixel_size = sizeof (gfloat);
+      break;
+    }
 
   ctx->screen = g_malloc0 (ctx->pixel_size * (ctx->u1 - ctx->u0));
   ctx->screen = (guchar *) ctx->screen - ctx->pixel_size * ctx->u0;
@@ -500,7 +578,7 @@ clear_pixel_queue (Context *ctx,
 static void
 cleanup_screen (Context *ctx)
 {
-  if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FINITE)
+  if (ctx->pixel_size == sizeof (Pixel))
     {
       Pixel *p = ctx->screen;
       gint   u;
@@ -575,6 +653,22 @@ init_row (Context *ctx,
     }
 }
 
+static inline gfloat
+shadow_value (Context      *ctx,
+              const Shadow *shadow,
+              gint          fy)
+{
+  if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FINITE ||
+      ! shadow->value)
+    {
+      return shadow->value;
+    }
+  else
+    {
+      return shadow->value * (1.0f - ctx->fade_rate * (fy - shadow->fy));
+    }
+}
+
 static inline gboolean
 shift_pixel (Context *ctx,
              Pixel   *pixel)
@@ -602,30 +696,75 @@ static void
 trim_shadow (Context *ctx,
              gint     fy)
 {
+  if (fy <= ctx->roi.y && ! is_fading (&ctx->options))
+    return;
+
   if (ctx->active_u0 >= ctx->active_u1)
     return;
 
   switch (ctx->options.style)
     {
     case GEGL_LONG_SHADOW_STYLE_FINITE:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH:
       {
-        Pixel *p         = ctx->screen;
-        gint   active_u0 = ctx->u1;
-        gint   active_u1 = ctx->u0;
+        Pixel *p                = ctx->screen;
+        gint   active_u0        = ctx->u1;
+        gint   active_u1        = ctx->u0;
+        gint   fy_shadow_height = fy - ctx->shadow_height;
         gint   u;
-
-        fy -= ctx->shadow_height;
 
         for (u = ctx->active_u0; u < ctx->active_u1; u++)
           {
             Pixel    *pixel  = &p[u];
             gboolean  active = (pixel->shadow.value != 0.0);
 
-            if (active && pixel->shadow.fy < fy)
+            if (active && pixel->shadow.fy < fy_shadow_height)
               active = shift_pixel (ctx, pixel);
 
             if (active)
               {
+                if (ctx->options.style ==
+                    GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH &&
+                    pixel->queue)
+                  {
+                    ShadowItem *item      = pixel->queue->prev;
+                    ShadowItem *last_item = item;
+                    gfloat      prev_value;
+
+                    prev_value = shadow_value (ctx, &item->shadow, fy);
+
+                    item = item->prev;
+
+                    while (item != last_item)
+                      {
+                        ShadowItem *prev = item->prev;
+                        gfloat      value;
+
+                        value = shadow_value (ctx, &item->shadow, fy);
+
+                        if (value <= prev_value)
+                          {
+                            if (item->prev != last_item)
+                              item->prev->next = item->next;
+                            else
+                              pixel->queue = item->next;
+
+                            item->next->prev = item->prev;
+
+                            g_slice_free (ShadowItem, item);
+                          }
+                        else
+                          {
+                            prev_value = value;
+                          }
+
+                        item = prev;
+                      }
+
+                    if (shadow_value (ctx, &pixel->shadow, fy) <= prev_value)
+                      shift_pixel (ctx, pixel);
+                  }
+
                 active_u0 = MIN (active_u0, u);
                 active_u1 = u + 1;
               }
@@ -645,9 +784,12 @@ trim_shadow (Context *ctx,
 
         for (u = ctx->active_u0; u < ctx->active_u1; u++)
           {
+            if (! p[u])
+              continue;
+
             p[u] *= ctx->fade_rate;
 
-            if (p[u] < EPSILON)
+            if (p[u] <= EPSILON)
               {
                 p[u] = 0.0f;
               }
@@ -663,7 +805,37 @@ trim_shadow (Context *ctx,
       }
       break;
 
-    default:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE:
+      {
+        gfloat *p         = ctx->screen;
+        gint    active_u0 = ctx->u1;
+        gint    active_u1 = ctx->u0;
+        gint    u;
+
+        for (u = ctx->active_u0; u < ctx->active_u1; u++)
+          {
+            if (! p[u])
+              continue;
+
+            p[u] -= ctx->fade_rate;
+
+            if (p[u] <= EPSILON)
+              {
+                p[u] = 0.0f;
+              }
+            else
+              {
+                active_u0 = MIN (active_u0, u);
+                active_u1 = u + 1;
+              }
+          }
+
+        ctx->active_u0 = active_u0;
+        ctx->active_u1 = active_u1;
+      }
+      break;
+
+    case GEGL_LONG_SHADOW_STYLE_INFINITE:
       break;
     }
 }
@@ -683,7 +855,7 @@ add_shadow (Context *ctx,
   u0 = MAX (u0, ctx->u0);
   u1 = MIN (u1, ctx->u1);
 
-  if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FINITE)
+  if (ctx->pixel_size == sizeof (Pixel))
     {
       Pixel *p = ctx->screen;
 
@@ -691,7 +863,7 @@ add_shadow (Context *ctx,
         {
           Pixel *pixel = &p[u];
 
-          if (value >= pixel->shadow.value)
+          if (value >= shadow_value (ctx, &pixel->shadow, fy))
             {
               pixel->shadow.value = value;
               pixel->shadow.fy    = fy;
@@ -721,7 +893,7 @@ add_shadow (Context *ctx,
 
               do
                 {
-                  if (value < item->shadow.value)
+                  if (value < shadow_value (ctx, &item->shadow, fy))
                     break;
 
                   g_slice_free (ShadowItem, new_item);
@@ -780,17 +952,18 @@ get_pixel_shadow (Context       *ctx,
                   gconstpointer  pixel,
                   gint           fy)
 {
-  if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FINITE)
+  if (ctx->pixel_size == sizeof (Pixel))
     {
       const Pixel *p     = pixel;
-      gfloat       value = p->shadow.value;
+      gfloat       value = shadow_value (ctx, &p->shadow, fy);
 
       if (value && p->shadow.fy + ctx->shadow_height == fy)
         {
           value *= ctx->shadow_remainder;
 
           if (p->queue)
-            value += (1.0 - ctx->shadow_remainder) * p->queue->shadow.value;
+            value += (1.0 - ctx->shadow_remainder) *
+                     shadow_value (ctx, &p->queue->shadow, fy);
         }
 
       return value;
@@ -962,7 +1135,7 @@ get_required_for_output (GeglOperation       *operation,
   GeglProperties *o      = GEGL_PROPERTIES (operation);
   GeglRectangle   result = {};
 
-  if (o->style == GEGL_LONG_SHADOW_STYLE_FINITE)
+  if (is_finite (o))
     {
       Context ctx;
 
@@ -994,7 +1167,7 @@ get_invalidated_by_change (GeglOperation       *operation,
   GeglProperties *o      = GEGL_PROPERTIES (operation);
   GeglRectangle   result = {};
 
-  if (o->style == GEGL_LONG_SHADOW_STYLE_FINITE)
+  if (is_finite (o))
     {
       Context ctx;
       gint    u1;
@@ -1044,7 +1217,7 @@ get_bounding_box (GeglOperation *operation)
     {
       GeglProperties *o = GEGL_PROPERTIES (operation);
 
-      if (o->style == GEGL_LONG_SHADOW_STYLE_FINITE)
+      if (is_finite (o))
         result = get_invalidated_by_change (operation, "input", in_rect);
       else
         result = *in_rect;
@@ -1059,7 +1232,7 @@ get_cached_region (GeglOperation       *operation,
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
 
-  if (o->style == GEGL_LONG_SHADOW_STYLE_FINITE)
+  if (is_finite (o))
     return *roi;
   else
     return get_bounding_box (operation);
@@ -1077,6 +1250,7 @@ process (GeglOperation       *operation,
 
   init_options  (&ctx, GEGL_PROPERTIES (operation), level);
   init_geometry (&ctx);
+  init_fade     (&ctx);
   init_area     (&ctx, operation, roi);
   init_screen   (&ctx);
   init_buffers  (&ctx, input, output);
@@ -1091,8 +1265,7 @@ process (GeglOperation       *operation,
 
       get_row (&ctx, fy);
 
-      if (fy > ctx.roi.y)
-        trim_shadow (&ctx, fy);
+      trim_shadow (&ctx, fy);
 
       input_pixel  = ctx.input_row0 +
                      (ctx.row_fx0 - ctx.area.x) * ctx.row_step;
