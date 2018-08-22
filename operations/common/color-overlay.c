@@ -68,8 +68,12 @@ process (GeglOperation       *operation,
   const Babl     *format = gegl_operation_get_format (operation, "output");
   gfloat          color[4];
   gfloat          alpha_c;
+  gint            i;
 
   gegl_color_get_pixel (o->value, format, &color);
+
+  for (i = 0; i < 3; i++)
+    color[i] *= color[3];
 
   alpha_c = 1.0f - color[3];
 
