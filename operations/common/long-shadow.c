@@ -60,6 +60,13 @@ property_double (midpoint, _("Midpoint"), 100.0)
   ui_range    (0.0, 1000.0)
   ui_meta     ("visible", "style {fading}")
 
+property_double (midpoint_rel, _("Midpoint (relative)"), 0.5)
+  description (_("Shadow fade midpoint, as a factor of the shadow length"))
+  value_range (0.0, 1.0)
+  ui_meta     ("visible", "style {fading-fixed-length, fading-fixed-rate}")
+  ui_meta     ("label", "alt-label")
+  ui_meta     ("alt-label", _("Midpoint"))
+
 property_color (color, _("Color"), "black")
   description (_("Shadow color"))
   ui_meta     ("role", "color-primary")
@@ -93,6 +100,24 @@ property_enum (composition, _("Composition"),
     }                    \
   G_STMT_END
 
+typedef enum
+{
+  VARIANT_FINITE,
+  VARIANT_FADING_FIXED_LENGTH_ACCELERATING,
+  VARIANT_FADING_FIXED_LENGTH_DECELERATING,
+  VARIANT_FADING_FIXED_RATE_NONLINEAR,
+  VARIANT_FADING_FIXED_RATE_LINEAR,
+  VARIANT_INFINITE,
+  VARIANT_FADING
+} Variant;
+
+typedef struct
+{
+  gfloat *fade_lut;
+  gint    fade_lut_size;
+  gfloat  fade_lut_gamma;
+} Data;
+
 typedef struct
 {
   gfloat value;
@@ -115,7 +140,26 @@ typedef struct
 
 typedef struct
 {
+  Pixel  pixel;
+  Shadow max1;
+  gfloat max2;
+} FFLPixel;
+
+typedef struct
+{
+  gfloat value;
+  gfloat fy;
+  gint   last_fy;
+} FFRPixel;
+
+typedef struct
+{
   GeglProperties options;
+
+  gboolean       is_finite;
+  gboolean       is_fading;
+
+  Variant        variant;
 
   /* image -> filter coordinate transformation */
   gboolean       flip_horizontally;
@@ -126,9 +170,15 @@ typedef struct
   gdouble        tan_angle;
 
   gint           shadow_height;
+  gfloat         shadow_proj;
   gfloat         shadow_remainder;
 
   gfloat         fade_rate;
+  gfloat         fade_rate_inv;
+  gfloat         fade_gamma;
+  gfloat         fade_gamma_inv;
+
+  const gfloat  *fade_lut;
 
   GeglRectangle  input_bounds;
   GeglRectangle  roi;
@@ -212,6 +262,55 @@ init_options (Context              *ctx,
 {
   ctx->options = *options;
 
+  ctx->is_finite = is_finite (options);
+  ctx->is_fading = is_fading (options);
+
+  if (ctx->is_finite && ctx->is_fading)
+    {
+      if (ctx->options.length       <= EPSILON ||
+          ctx->options.midpoint_rel <= EPSILON ||
+          ctx->options.midpoint_rel >= 1.0 - EPSILON)
+        {
+          if (ctx->options.midpoint_rel <= EPSILON ||
+              ctx->options.style == GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE)
+            {
+              ctx->options.length = 0.0;
+            }
+
+          ctx->options.style = GEGL_LONG_SHADOW_STYLE_FINITE;
+          ctx->is_fading     = FALSE;
+        }
+    }
+
+  switch (ctx->options.style)
+    {
+    case GEGL_LONG_SHADOW_STYLE_INFINITE:
+      ctx->variant = VARIANT_INFINITE;
+      break;
+
+    case GEGL_LONG_SHADOW_STYLE_FINITE:
+      ctx->variant = VARIANT_FINITE;
+      break;
+
+    case GEGL_LONG_SHADOW_STYLE_FADING:
+      ctx->variant = VARIANT_FADING;
+      break;
+
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH:
+      if (ctx->options.midpoint_rel >= 0.5)
+        ctx->variant = VARIANT_FADING_FIXED_LENGTH_ACCELERATING;
+      else
+        ctx->variant = VARIANT_FADING_FIXED_LENGTH_DECELERATING;
+      break;
+
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE:
+      if (fabs (ctx->options.midpoint_rel - 0.5) > EPSILON)
+        ctx->variant = VARIANT_FADING_FIXED_RATE_NONLINEAR;
+      else
+        ctx->variant = VARIANT_FADING_FIXED_RATE_LINEAR;
+      break;
+    }
+
   ctx->level     = level;
   ctx->scale     = 1.0 / (1 << level);
   ctx->scale_inv = 1 << level;
@@ -260,14 +359,12 @@ init_geometry (Context *ctx)
 
   ctx->tan_angle = tan (ctx->options.angle);
 
-  if (is_finite (&ctx->options))
+  if (ctx->is_finite)
     {
-      gdouble shadow_height;
+      ctx->shadow_proj = cos (ctx->options.angle) * ctx->options.length;
 
-      shadow_height = cos (ctx->options.angle) * ctx->options.length;
-
-      ctx->shadow_height    = ceil (shadow_height);
-      ctx->shadow_remainder = 1.0 - (ctx->shadow_height - shadow_height);
+      ctx->shadow_height    = ceil (ctx->shadow_proj);
+      ctx->shadow_remainder = 1.0 - (ctx->shadow_height - ctx->shadow_proj);
     }
 }
 
@@ -445,6 +542,13 @@ get_affecting_filter_range (Context *ctx,
   if (fx1) *fx1 = ceil  (project_to_filter (ctx, u1 - 0.5, fy + 0.5));
 }
 
+static inline gfloat
+fade_value (Context *ctx,
+            gfloat   fy)
+{
+  return 1.0f - powf (fy * ctx->fade_rate, ctx->fade_gamma);
+}
+
 static void
 init_fade (Context *ctx)
 {
@@ -464,14 +568,38 @@ init_fade (Context *ctx)
 
     case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH:
     case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE:
-      if (ctx->shadow_height > 0)
+      ctx->fade_rate      = 1.0 / (ctx->shadow_proj + 1.0);
+      ctx->fade_gamma     = -G_LN2 / log (ctx->options.midpoint_rel);
+
+      ctx->fade_rate_inv  = 1.0 / ctx->fade_rate;
+      ctx->fade_gamma_inv = 1.0 / ctx->fade_gamma;
+
+      if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH)
         {
-          ctx->fade_rate = 1.0 / (cos (ctx->options.angle) *
-                                  ctx->options.length);
-        }
-      else
-        {
-          ctx->fade_rate = 1.0f;
+          Data *data = ctx->options.user_data;
+
+          if (! data)
+            {
+              data = g_slice_new0 (Data);
+
+              ctx->options.user_data = data;
+            }
+
+          if (ctx->shadow_height + 1 != data->fade_lut_size ||
+              ctx->fade_gamma        != data->fade_lut_gamma)
+            {
+              gint fy;
+
+              data->fade_lut       = g_renew (gfloat, data->fade_lut,
+                                              ctx->shadow_height + 1);
+              data->fade_lut_size  = ctx->shadow_height + 1;
+              data->fade_lut_gamma = ctx->fade_gamma;
+
+              for (fy = 0; fy <= ctx->shadow_height; fy++)
+                data->fade_lut[fy] = fade_value (ctx, fy);
+            }
+
+          ctx->fade_lut = data->fade_lut;
         }
       break;
 
@@ -508,7 +636,7 @@ init_area (Context             *ctx,
 
   ctx->area = ctx->roi;
 
-  if (is_finite (&ctx->options))
+  if (ctx->is_finite)
     {
       gint u0;
 
@@ -536,16 +664,24 @@ init_area (Context             *ctx,
 static void
 init_screen (Context *ctx)
 {
-  switch (ctx->options.style)
+  switch (ctx->variant)
     {
-    case GEGL_LONG_SHADOW_STYLE_FINITE:
-    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH:
+    case VARIANT_FINITE:
+    case VARIANT_FADING_FIXED_LENGTH_ACCELERATING:
       ctx->pixel_size = sizeof (Pixel);
       break;
 
-    case GEGL_LONG_SHADOW_STYLE_INFINITE:
-    case GEGL_LONG_SHADOW_STYLE_FADING:
-    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE:
+    case VARIANT_FADING_FIXED_LENGTH_DECELERATING:
+      ctx->pixel_size = sizeof (FFLPixel);
+      break;
+
+    case VARIANT_FADING_FIXED_RATE_NONLINEAR:
+      ctx->pixel_size = sizeof (FFRPixel);
+      break;
+
+    case VARIANT_FADING_FIXED_RATE_LINEAR:
+    case VARIANT_INFINITE:
+    case VARIANT_FADING:
       ctx->pixel_size = sizeof (gfloat);
       break;
     }
@@ -578,13 +714,25 @@ clear_pixel_queue (Context *ctx,
 static void
 cleanup_screen (Context *ctx)
 {
-  if (ctx->pixel_size == sizeof (Pixel))
+  switch (ctx->options.style)
     {
-      Pixel *p = ctx->screen;
-      gint   u;
+    case GEGL_LONG_SHADOW_STYLE_FINITE:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH:
+      {
+        guchar *p = ctx->screen;
+        gint    u;
 
-      for (u = ctx->u0; u < ctx->u1; u++)
-        clear_pixel_queue (ctx, &p[u]);
+        p += ctx->u0 * ctx->pixel_size;
+
+        for (u = ctx->u0; u < ctx->u1; u++, p += ctx->pixel_size)
+          clear_pixel_queue (ctx, (Pixel *) p);
+      }
+      break;
+
+    case GEGL_LONG_SHADOW_STYLE_INFINITE:
+    case GEGL_LONG_SHADOW_STYLE_FADING:
+    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE:
+      break;
     }
 
   ctx->screen = (guchar *) ctx->screen + ctx->pixel_size * ctx->u0;
@@ -658,14 +806,25 @@ shadow_value (Context      *ctx,
               const Shadow *shadow,
               gint          fy)
 {
-  if (ctx->options.style == GEGL_LONG_SHADOW_STYLE_FINITE ||
-      ! shadow->value)
+  if (! ctx->is_fading)
+    return shadow->value;
+  else
+    return shadow->value * ctx->fade_lut[fy - shadow->fy];
+}
+
+static inline gfloat
+shadow_collation_value (Context      *ctx,
+                        const Shadow *shadow,
+                        gint          fy)
+{
+  if (ctx->variant == VARIANT_FINITE ||
+      ctx->variant == VARIANT_FADING_FIXED_LENGTH_DECELERATING)
     {
       return shadow->value;
     }
   else
     {
-      return shadow->value * (1.0f - ctx->fade_rate * (fy - shadow->fy));
+      return shadow->value * ctx->fade_lut[fy - shadow->fy];
     }
 }
 
@@ -696,26 +855,29 @@ static void
 trim_shadow (Context *ctx,
              gint     fy)
 {
-  if (fy <= ctx->roi.y && ! is_fading (&ctx->options))
+  if (fy <= ctx->roi.y && ! ctx->is_fading)
     return;
 
   if (ctx->active_u0 >= ctx->active_u1)
     return;
 
-  switch (ctx->options.style)
+  switch (ctx->variant)
     {
-    case GEGL_LONG_SHADOW_STYLE_FINITE:
-    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH:
+    case VARIANT_FINITE:
+    case VARIANT_FADING_FIXED_LENGTH_ACCELERATING:
+    case VARIANT_FADING_FIXED_LENGTH_DECELERATING:
       {
-        Pixel *p                = ctx->screen;
-        gint   active_u0        = ctx->u1;
-        gint   active_u1        = ctx->u0;
-        gint   fy_shadow_height = fy - ctx->shadow_height;
-        gint   u;
+        guchar *p                = ctx->screen;
+        gint    active_u0        = ctx->u1;
+        gint    active_u1        = ctx->u0;
+        gint    fy_shadow_height = fy - ctx->shadow_height;
+        gint    u;
 
-        for (u = ctx->active_u0; u < ctx->active_u1; u++)
+        p += ctx->active_u0 * ctx->pixel_size;
+
+        for (u = ctx->active_u0; u < ctx->active_u1; u++, p += ctx->pixel_size)
           {
-            Pixel    *pixel  = &p[u];
+            Pixel    *pixel  = (Pixel *) p;
             gboolean  active = (pixel->shadow.value != 0.0);
 
             if (active && pixel->shadow.fy < fy_shadow_height)
@@ -723,9 +885,33 @@ trim_shadow (Context *ctx,
 
             if (active)
               {
-                if (ctx->options.style ==
-                    GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH &&
-                    pixel->queue)
+                if (ctx->variant ==
+                    VARIANT_FADING_FIXED_LENGTH_DECELERATING)
+                  {
+                    FFLPixel   *ffl_pixel = (FFLPixel *) p;
+                    ShadowItem *item;
+
+                    ffl_pixel->max1.value = shadow_value (ctx,
+                                                          &pixel->shadow, fy);
+                    ffl_pixel->max1.fy    = pixel->shadow.fy;
+                    ffl_pixel->max2       = 0.0f;
+
+                    for (item = pixel->queue; item; item = item->next)
+                      {
+                        gfloat value = shadow_value (ctx, &item->shadow, fy);
+
+                        if (value > ffl_pixel->max1.value)
+                          {
+                            ffl_pixel->max2       = ffl_pixel->max1.value;
+
+                            ffl_pixel->max1.value = value;
+                            ffl_pixel->max1.fy    = item->shadow.fy;
+                          }
+                      }
+                  }
+                else if (ctx->variant ==
+                         VARIANT_FADING_FIXED_LENGTH_ACCELERATING &&
+                         pixel->queue)
                   {
                     ShadowItem *item      = pixel->queue->prev;
                     ShadowItem *last_item = item;
@@ -775,26 +961,28 @@ trim_shadow (Context *ctx,
       }
       break;
 
-    case GEGL_LONG_SHADOW_STYLE_FADING:
+    case VARIANT_FADING_FIXED_RATE_NONLINEAR:
       {
-        gfloat *p         = ctx->screen;
-        gint    active_u0 = ctx->u1;
-        gint    active_u1 = ctx->u0;
-        gint    u;
+        FFRPixel *p         = ctx->screen;
+        gint      active_u0 = ctx->u1;
+        gint      active_u1 = ctx->u0;
+        gint      u;
 
         for (u = ctx->active_u0; u < ctx->active_u1; u++)
           {
-            if (! p[u])
+            FFRPixel *pixel = &p[u];
+
+            if (! pixel->value)
               continue;
 
-            p[u] *= ctx->fade_rate;
-
-            if (p[u] <= EPSILON)
+            if (pixel->last_fy < fy)
               {
-                p[u] = 0.0f;
+                pixel->value = 0.0f;
               }
             else
               {
+                pixel->value = fade_value (ctx, fy - pixel->fy);
+
                 active_u0 = MIN (active_u0, u);
                 active_u1 = u + 1;
               }
@@ -805,7 +993,7 @@ trim_shadow (Context *ctx,
       }
       break;
 
-    case GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE:
+    case VARIANT_FADING_FIXED_RATE_LINEAR:
       {
         gfloat *p         = ctx->screen;
         gint    active_u0 = ctx->u1;
@@ -835,7 +1023,37 @@ trim_shadow (Context *ctx,
       }
       break;
 
-    case GEGL_LONG_SHADOW_STYLE_INFINITE:
+    case VARIANT_FADING:
+      {
+        gfloat *p         = ctx->screen;
+        gint    active_u0 = ctx->u1;
+        gint    active_u1 = ctx->u0;
+        gint    u;
+
+        for (u = ctx->active_u0; u < ctx->active_u1; u++)
+          {
+            if (! p[u])
+              continue;
+
+            p[u] *= ctx->fade_rate;
+
+            if (p[u] <= EPSILON)
+              {
+                p[u] = 0.0f;
+              }
+            else
+              {
+                active_u0 = MIN (active_u0, u);
+                active_u1 = u + 1;
+              }
+          }
+
+        ctx->active_u0 = active_u0;
+        ctx->active_u1 = active_u1;
+      }
+      break;
+
+    case VARIANT_INFINITE:
       break;
     }
 }
@@ -855,83 +1073,123 @@ add_shadow (Context *ctx,
   u0 = MAX (u0, ctx->u0);
   u1 = MIN (u1, ctx->u1);
 
-  if (ctx->pixel_size == sizeof (Pixel))
+  switch (ctx->variant)
     {
-      Pixel *p = ctx->screen;
+    case VARIANT_FINITE:
+    case VARIANT_FADING_FIXED_LENGTH_ACCELERATING:
+    case VARIANT_FADING_FIXED_LENGTH_DECELERATING:
+      {
+        guchar *p = ctx->screen;
 
-      for (u = u0; u < u1; u++)
-        {
-          Pixel *pixel = &p[u];
+        p += u0 * ctx->pixel_size;
 
-          if (value >= shadow_value (ctx, &pixel->shadow, fy))
-            {
-              pixel->shadow.value = value;
-              pixel->shadow.fy    = fy;
+        for (u = u0; u < u1; u++, p += ctx->pixel_size)
+          {
+            Pixel *pixel = (Pixel *) p;
 
-              clear_pixel_queue (ctx, pixel);
+            if (value >= shadow_collation_value (ctx, &pixel->shadow, fy))
+              {
+                pixel->shadow.value = value;
+                pixel->shadow.fy    = fy;
 
-              ctx->active_u0 = MIN (ctx->active_u0, u0);
-              ctx->active_u1 = MAX (ctx->active_u1, u1);
-            }
-          else if (! pixel->queue)
-            {
-              if (fy != pixel->shadow.fy)
-                {
-                  pixel->queue = g_slice_new (ShadowItem);
+                clear_pixel_queue (ctx, pixel);
+              }
+            else if (! pixel->queue)
+              {
+                if (fy != pixel->shadow.fy)
+                  {
+                    pixel->queue = g_slice_new (ShadowItem);
 
-                  pixel->queue->shadow.value = value;
-                  pixel->queue->shadow.fy    = fy;
-                  pixel->queue->next         = NULL;
-                  pixel->queue->prev         = pixel->queue;
-                }
-            }
-          else
-            {
-              ShadowItem *item      = pixel->queue->prev;
-              ShadowItem *last_item = item;
-              ShadowItem *new_item  = NULL;
+                    pixel->queue->shadow.value = value;
+                    pixel->queue->shadow.fy    = fy;
+                    pixel->queue->next         = NULL;
+                    pixel->queue->prev         = pixel->queue;
+                  }
+              }
+            else
+              {
+                ShadowItem *item      = pixel->queue->prev;
+                ShadowItem *last_item = item;
+                ShadowItem *new_item  = NULL;
 
-              do
-                {
-                  if (value < shadow_value (ctx, &item->shadow, fy))
-                    break;
+                do
+                  {
+                    if (value < shadow_collation_value (ctx, &item->shadow, fy))
+                      break;
 
-                  g_slice_free (ShadowItem, new_item);
-                  new_item = item;
+                    g_slice_free (ShadowItem, new_item);
+                    new_item = item;
 
-                  item = item->prev;
-                }
-              while (item != last_item);
+                    item = item->prev;
+                  }
+                while (item != last_item);
 
-              if (! new_item)
-                {
-                  if (fy == last_item->shadow.fy)
-                    continue;
+                if (! new_item)
+                  {
+                    if (fy == last_item->shadow.fy)
+                      continue;
 
-                  new_item = g_slice_new (ShadowItem);
+                    new_item = g_slice_new (ShadowItem);
 
-                  new_item->prev  = last_item;
-                  last_item->next = new_item;
-                }
+                    new_item->prev  = last_item;
+                    last_item->next = new_item;
+                  }
 
-              new_item->shadow.value = value;
-              new_item->shadow.fy    = fy;
-              new_item->next         = NULL;
+                new_item->shadow.value = value;
+                new_item->shadow.fy    = fy;
+                new_item->next         = NULL;
 
-              pixel->queue->prev     = new_item;
-            }
-        }
+                pixel->queue->prev     = new_item;
+              }
+
+            if (ctx->variant == VARIANT_FADING_FIXED_LENGTH_DECELERATING)
+              {
+                FFLPixel *ffl_pixel = (FFLPixel *) p;
+
+                if (value >= ffl_pixel->max1.value)
+                  {
+                    ffl_pixel->max1.value = value;
+                    ffl_pixel->max1.fy    = fy;
+                  }
+              }
+          }
+      }
+      break;
+
+    case VARIANT_FADING_FIXED_RATE_NONLINEAR:
+      {
+        FFRPixel *p = ctx->screen;
+
+        for (u = u0; u < u1; u++)
+          {
+            FFRPixel *pixel = &p[u];
+
+            if (value >= pixel->value)
+              {
+                pixel->value   = value;
+                pixel->fy      = fy - powf (1.0f - value,
+                                            ctx->fade_gamma_inv) *
+                                      ctx->fade_rate_inv;
+                pixel->last_fy = ceilf (pixel->fy + ctx->shadow_proj);
+              }
+          }
+      }
+      break;
+
+    case VARIANT_FADING_FIXED_RATE_LINEAR:
+    case VARIANT_INFINITE:
+    case VARIANT_FADING:
+      {
+        gfloat *p = ctx->screen;
+
+        for (u = u0; u < u1; u++)
+          p[u] = MAX (p[u], value);
+      }
+      break;
     }
-  else
-    {
-      gfloat *p = ctx->screen;
 
-      for (u = u0; u < u1; u++)
-        p[u] = MAX (p[u], value);
-
-      ctx->active_u0 = MIN (ctx->active_u0, u0);
-      ctx->active_u1 = MAX (ctx->active_u1, u1);
-    }
+  ctx->active_u0 = MIN (ctx->active_u0, u0);
+  ctx->active_u1 = MAX (ctx->active_u1, u1);
 }
 
 static inline void
@@ -952,28 +1210,66 @@ get_pixel_shadow (Context       *ctx,
                   gconstpointer  pixel,
                   gint           fy)
 {
-  if (ctx->pixel_size == sizeof (Pixel))
+  switch (ctx->variant)
     {
-      const Pixel *p     = pixel;
-      gfloat       value = shadow_value (ctx, &p->shadow, fy);
+    case VARIANT_FINITE:
+    case VARIANT_FADING_FIXED_LENGTH_ACCELERATING:
+      {
+        const Pixel *p     = pixel;
+        gfloat       value = shadow_value (ctx, &p->shadow, fy);
 
-      if (value && p->shadow.fy + ctx->shadow_height == fy)
-        {
-          value *= ctx->shadow_remainder;
+        if (value && p->shadow.fy + ctx->shadow_height == fy)
+          {
+            value *= ctx->shadow_remainder;
 
-          if (p->queue)
-            value += (1.0 - ctx->shadow_remainder) *
-                     shadow_value (ctx, &p->queue->shadow, fy);
-        }
+            if (p->queue)
+              value += (1.0 - ctx->shadow_remainder) *
+                       shadow_value (ctx, &p->queue->shadow, fy);
+          }
 
-      return value;
+        return value;
+      }
+
+    case VARIANT_FADING_FIXED_LENGTH_DECELERATING:
+      {
+        const FFLPixel *p     = pixel;
+        gfloat          value = p->max1.value;
+
+        if (value && p->max1.fy + ctx->shadow_height == fy)
+          {
+            value *= ctx->shadow_remainder;
+            value += (1.0 - ctx->shadow_remainder) * p->max2;
+          }
+
+        return value;
+      }
+
+    case VARIANT_FADING_FIXED_RATE_NONLINEAR:
+      {
+        const FFRPixel *p     = pixel;
+        gfloat          value = p->value;
+
+        if (fy == p->last_fy)
+          {
+            gfloat remainder = p->fy + ctx->shadow_proj + 1.0f - fy;
+
+            value *= remainder;
+          }
+
+        return value;
+      }
+
+    case VARIANT_FADING_FIXED_RATE_LINEAR:
+    case VARIANT_INFINITE:
+    case VARIANT_FADING:
+      {
+        const gfloat *p = pixel;
+
+        return *p;
+      }
     }
-  else
-    {
-      const gfloat *p = pixel;
 
-      return *p;
-    }
+  g_return_val_if_reached (0.0f);
 }
 
 static void
@@ -1245,10 +1541,11 @@ process (GeglOperation       *operation,
          const GeglRectangle *roi,
          gint                 level)
 {
-  Context ctx;
-  gint    fx, fy;
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  Context         ctx;
+  gint            fx, fy;
 
-  init_options  (&ctx, GEGL_PROPERTIES (operation), level);
+  init_options  (&ctx, o, level);
   init_geometry (&ctx);
   init_fade     (&ctx);
   init_area     (&ctx, operation, roi);
@@ -1295,6 +1592,8 @@ process (GeglOperation       *operation,
         set_row (&ctx, fy);
     }
 
+  o->user_data = ctx.options.user_data;
+
   cleanup_buffers (&ctx);
   cleanup_screen  (&ctx);
 
@@ -1302,13 +1601,36 @@ process (GeglOperation       *operation,
 }
 
 static void
+dispose (GObject *object)
+{
+  GeglProperties *o = GEGL_PROPERTIES (object);
+
+  if (o->user_data)
+    {
+      Data *data = o->user_data;
+
+      g_free (data->fade_lut);
+
+      g_slice_free (Data, data);
+
+      o->user_data = NULL;
+    }
+
+  G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
+}
+
+static void
 gegl_op_class_init (GeglOpClass *klass)
 {
+  GObjectClass             *object_class;
   GeglOperationClass       *operation_class;
   GeglOperationFilterClass *filter_class;
 
+  object_class    = G_OBJECT_CLASS (klass);
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
+
+  object_class->dispose                      = dispose;
 
   operation_class->get_required_for_output   = get_required_for_output;
   operation_class->get_invalidated_by_change = get_invalidated_by_change;
