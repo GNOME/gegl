@@ -1124,6 +1124,8 @@ transform_affine (GeglOperation       *operation,
   GeglRectangle  context_rect = *gegl_sampler_get_context_rect (sampler);
   GeglRectangle  dest_extent  = *roi;
 
+  g_message ("roi: (%d, %d), %dx%d", roi->x, roi->y, roi->width, roi->height);
+
   bounding_box.x      += context_rect.x;
   bounding_box.y      += context_rect.y;
   bounding_box.width  += context_rect.width  - 1;
@@ -1146,6 +1148,17 @@ transform_affine (GeglOperation       *operation,
    * GEGL_TRANSFORM_CORE_EPSILON).
    */
 
+  g_message ("matrix: %f %f %f, %f %f %f, %f %f %f",
+             matrix->coeff[0][0],
+             matrix->coeff[0][1],
+             matrix->coeff[0][2],
+             matrix->coeff[1][0],
+             matrix->coeff[1][1],
+             matrix->coeff[1][2],
+             matrix->coeff[2][0],
+             matrix->coeff[2][1],
+             matrix->coeff[2][2]);
+
   gegl_matrix3_copy_into (&inverse, matrix);
 
   if (factor)
@@ -1159,6 +1172,17 @@ transform_affine (GeglOperation       *operation,
   }
 
   gegl_matrix3_invert (&inverse);
+
+  g_message ("inverse(matrix): %f %f %f, %f %f %f, %f %f %f",
+             inverse.coeff[0][0],
+             inverse.coeff[0][1],
+             inverse.coeff[0][2],
+             inverse.coeff[1][0],
+             inverse.coeff[1][1],
+             inverse.coeff[1][2],
+             inverse.coeff[2][0],
+             inverse.coeff[2][1],
+             inverse.coeff[2][2]);
 
   {
     GeglBufferIterator *i = gegl_buffer_iterator_new (dest,
@@ -1186,6 +1210,12 @@ transform_affine (GeglOperation       *operation,
       inverse.coeff [0][1];
     inverse_jacobian.coeff [1][1] =
       inverse.coeff [1][1];
+
+    g_message ("inverse(jacobian): %f %f, %f %f",
+               inverse_jacobian.coeff[0][0],
+               inverse_jacobian.coeff[0][1],
+               inverse_jacobian.coeff[1][0],
+               inverse_jacobian.coeff[1][1]);
 
     while (gegl_buffer_iterator_next (i))
       {
@@ -1216,6 +1246,9 @@ transform_affine (GeglOperation       *operation,
 
               gint x;
 
+              g_message ("u_start = %f, v_start = %f", u_start, v_start);
+              g_message ("x1 = %d, x2 = %d", x1, x2);
+
               memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * x1);
               dest_ptr += (gint) 4 * x1;
 
@@ -1229,6 +1262,7 @@ transform_affine (GeglOperation       *operation,
                                    &inverse_jacobian,
                                    dest_ptr,
                                    abyss_policy);
+                  g_message ("(%f, %f): (%f %f %f %f)", u_float, v_float, dest_ptr[0], dest_ptr[1], dest_ptr[2], dest_ptr[3]);
                   dest_ptr += (gint) 4;
 
                   u_float += inverse_jacobian.coeff [0][0];
@@ -1654,6 +1688,8 @@ gegl_transform_process (GeglOperation        *operation,
                     const GeglRectangle *roi,
                     gint                 level) = transform_generic;
 
+      g_message ("result: (%d, %d), %dx%d", result->x, result->y, result->width, result->height);
+
       if (gegl_matrix3_is_affine (&matrix))
         func = transform_affine;
 
@@ -1680,6 +1716,7 @@ gegl_transform_process (GeglOperation        *operation,
         data.roi = result;
         data.level = level;
 
+        g_message ("distribute threads");
         gegl_parallel_distribute_area (
           result,
           gegl_operation_get_pixels_per_thread (operation),
