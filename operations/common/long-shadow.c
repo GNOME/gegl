@@ -806,7 +806,7 @@ shadow_value (Context      *ctx,
               const Shadow *shadow,
               gint          fy)
 {
-  if (! ctx->is_fading)
+  if (! ctx->is_fading || ! shadow->value)
     return shadow->value;
   else
     return shadow->value * ctx->fade_lut[fy - shadow->fy];
@@ -817,8 +817,9 @@ shadow_collation_value (Context      *ctx,
                         const Shadow *shadow,
                         gint          fy)
 {
-  if (ctx->variant == VARIANT_FINITE ||
-      ctx->variant == VARIANT_FADING_FIXED_LENGTH_DECELERATING)
+  if (ctx->variant == VARIANT_FINITE                           ||
+      ctx->variant == VARIANT_FADING_FIXED_LENGTH_DECELERATING ||
+      ! shadow->value)
     {
       return shadow->value;
     }
