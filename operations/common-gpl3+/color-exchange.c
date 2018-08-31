@@ -242,6 +242,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:color-exchange",
     "title",       _("Exchange color"),
+    "reference-hash", "d44569682486dd5187db20243520ff5d",
     "categories",  "color",
     "license",     "GPL3+",
     "description", _("Exchange one color with another, optionally setting "

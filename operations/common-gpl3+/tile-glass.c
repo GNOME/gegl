@@ -234,7 +234,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Tile Glass"),
     "license",            "GPL3+",
     "name",               "gegl:tile-glass",
-    "reference-hash",     "1cbbd91251831ec9f280536fa7a81cc2",
+    "reference-hash",     "3a564b45ae023a0f7acf1146c81fe41d",
     "position-dependent", "true",
     "description", _("Simulate distortion caused by rectangular glass tiles"),
     NULL);

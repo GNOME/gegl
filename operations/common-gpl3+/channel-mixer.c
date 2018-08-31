@@ -264,6 +264,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
       "name",       "gegl:channel-mixer",
       "categories", "color",
+      "reference-hash", "c7b822f909ec17da9c6fa4259d076da6",
       "title",      _("Channel Mixer"),
       "license",    "GPL3+",
       "description", _("Remix colors; by defining relative contributions from source components."),

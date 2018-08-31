@@ -235,7 +235,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Softglow"),
     "categories",  "artistic",
     "license",     "GPL3+",
-    "reference-hash", "8d3e761f53fb0a5cf0cc7a5c417e09a0",
+    "reference-hash", "04db4506b2e646a5a24e40472407956d",
     "description", _("Simulate glow by making highlights intense and fuzzy"),
     NULL);
 }

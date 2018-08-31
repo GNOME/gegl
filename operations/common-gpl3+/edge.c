@@ -363,7 +363,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Edge Detection"),
     "categories",  "edge-detect",
     "license",     "GPL3+",
-    "reference-hash",  "a8eaae9513e1868a5c86a241c0643170",
+    "reference-hash",  "9d6ae823f6e380f30f9acbda88bbfb6d",
     "description", _("Several simple methods for detecting edges"),
     NULL);
 }

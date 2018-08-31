@@ -197,7 +197,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Waves"),
     "categories",         "distort",
     "position-dependent", "true",
-    "reference-hash",     "8db35f18f7991b9f6c56f6ca25188fd6",
+    "reference-hash",     "5c9428be7c567630854d681617bc245f",
     "license",            "GPL3+",
     "description", _("Distort the image with waves"),
     NULL);

@@ -481,7 +481,7 @@ gegl_op_class_init (GeglOpClass *klass)
                                  "name"       , "gegl:oilify",
                                  "title",      _("Oilify"),
                                  "license",     "GPL3+",
-                                 "reference-hash", "b52e2c7f1d8478dc8f71d792b10058af",
+                                 "reference-hash", "eb7a8c8106cb6ff616965c0183dc130b",
                                  "description",_("Emulate an oil painting"),
                                  NULL);
 }

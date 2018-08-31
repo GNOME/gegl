@@ -803,7 +803,7 @@ static void ui_dir_viewer (State *o)
         else
           wdim = dim * (1.0 * w / h);
 
-        mrg_image (mrg, x + (dim-wdim)/2, y + (dim-hdim)/2, wdim, hdim, thumbpath, NULL, NULL);
+        mrg_image (mrg, x + (dim-wdim)/2, y + (dim-hdim)/2, wdim, hdim, 1.0, thumbpath, NULL, NULL);
       }
       g_free (thumbpath);
 
@@ -1186,7 +1186,11 @@ static void load_path (State *o)
   path  = o->path;
 
   if (access (o->save_path, F_OK) != -1)
-    path = o->save_path;
+  {
+    /* XXX : fix this in the fuse layer of zn! XXX XXX XXX XXX */
+    if (!strstr (o->save_path, ".zn.fs"))
+      path = o->save_path;
+  }
 
   g_object_unref (o->gegl);
   o->gegl = NULL;

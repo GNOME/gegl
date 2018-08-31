@@ -619,7 +619,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Cubism"),
     "name",        "gegl:cubism",
     "categories",  "artistic:scramble",
-    "reference-hash", "fe131f5ed2842b0b09739e16d7e5960d",
+    "reference-hash", "142b7257d4783a35afbbaaf185a1cf61",
     "license",     "GPL3+",
     "description", _("Convert the image into randomly rotated square blobs, somehow resembling a cubist painting style"),
     NULL);

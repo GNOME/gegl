@@ -222,7 +222,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:saturation",
     "title",       _("Saturation"),
-    "reference-hash", "ffb9e86edb25bc92e8d4e68f59bbb04b",
+    "reference-hash", "584bfe714947a573f10399965c8b45b0",
     "categories" , "color",
     "description", _("Changes the saturation"),
     NULL);

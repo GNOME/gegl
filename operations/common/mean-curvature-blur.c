@@ -245,7 +245,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",           "gegl:mean-curvature-blur",
     "title",          _("Mean Curvature Blur"),
     "categories",     "blur",
-    "reference-hash", "8856d371c39a439e501dc2f2a74d6417",
+    "reference-hash", "87ef39a3c8f9b9020b54c260a39d0e1f",
     "description",    _("Regularize geometry at a speed proportional to the local mean curvature value"),
     NULL);
 }

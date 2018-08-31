@@ -292,7 +292,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",  "artistic",
     "name",        "gegl:cartoon",
     "title",       _("Cartoon"),
-    "reference-hash", "99661bc960ff6ef005120c7ff63dfa70",
+    "reference-hash", "ef2005279a968cc34f597e5ed0b5fc05",
     "license",     "GPL3+",
     "description", _("Simulates a cartoon, its result is similar to a black"
                      " felt pen drawing subsequently shaded with color. This"

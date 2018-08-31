@@ -510,7 +510,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:lens-flare",
     "title",       _("Lens Flare"),
     "categories",  "light",
-    "reference-hash", "202b3fdd87aed2dc3a10da9c9cad5608",
+    "reference-hash", "ad7ee885223deeb38ed660627f6e8dc6",
     "license",     "GPL3+",
     "description", _("Adds a lens flare effect."),
     NULL);

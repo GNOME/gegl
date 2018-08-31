@@ -186,7 +186,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:rgb-clip",
     "title",       _("Clip RGB"),
-    "reference-hash", "ffb9e86edb25bc92e8d4e68f59bbb04b",
+    "reference-hash", "d44569682486dd5187db20243520ff5d",
     "categories",  "color",
     "description", _("Keep RGB pixels values inside a specific range"),
     NULL);
