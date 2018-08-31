@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-07-30 16:08+0000\n"
-"PO-Revision-Date: 2018-07-31 11:46+0200\n"
+"POT-Creation-Date: 2018-08-22 08:46+0000\n"
+"PO-Revision-Date: 2018-08-23 11:35+0200\n"
 "Last-Translator: Rodrigo <rodhos92@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -820,13 +820,13 @@ msgstr "Renderizar un patrón de tablero de ajedrez"
 
 #: operations/common/color.c:24 operations/common/color.c:92
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:43
-#: operations/common/grid.c:64 operations/common/rectangle.c:48
-#: operations/common/vignette.c:34 operations/common-gpl3+/color-to-alpha.c:29
+#: operations/common/grid.c:64 operations/common/long-shadow.c:63
+#: operations/common/rectangle.c:48 operations/common/vignette.c:34
+#: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:61
 #: operations/common-gpl3+/tile-paper.c:30
 #: operations/common-gpl3+/value-propagate.c:55 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
-#: operations/workshop/long-shadow.c:59
 msgid "Color"
 msgstr "Color"
 
@@ -2361,15 +2361,103 @@ msgstr ""
 "la vista y cúbica o mejor para que la transformada inversa vuelva al "
 "panorama."
 
-#: operations/common/little-planet.c:493
+#: operations/common/little-planet.c:494
 msgid "Little Planet"
 msgstr "Planeta pequeño"
 
-#: operations/common/little-planet.c:497
+#: operations/common/little-planet.c:498
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
 "Hacer una transformada de planeta estereográfico/pequeño de una imagen "
 "cilíndrica equidistante."
+
+#: operations/common/long-shadow.c:25
+msgid "Finite"
+msgstr "Finito"
+
+#: operations/common/long-shadow.c:26
+msgid "Infinite"
+msgstr "Infinito"
+
+#: operations/common/long-shadow.c:27
+msgid "Fading"
+msgstr "Desvanecido"
+
+#: operations/common/long-shadow.c:28
+msgid "Fading (fixed length)"
+msgstr "Desvanecido (longitud fija)"
+
+#: operations/common/long-shadow.c:29
+msgid "Fading (fixed rate)"
+msgstr "Desvanecido (tasa fija)"
+
+#: operations/common/long-shadow.c:33
+msgid "Shadow plus image"
+msgstr "Sombra más la imagen"
+
+#: operations/common/long-shadow.c:34
+msgid "Shadow only"
+msgstr "Solo sombra"
+
+#: operations/common/long-shadow.c:35
+msgid "Shadow minus image"
+msgstr "Sombra menos la imagen"
+
+#: operations/common/long-shadow.c:38 operations/common-gpl3+/wind.c:45
+msgid "Style"
+msgstr "Estilo"
+
+#: operations/common/long-shadow.c:41
+msgid "Shadow style"
+msgstr "Estilo de sombra"
+
+#. FIXME: With a large angle, we lose AreaFilter's flavours
+#: operations/common/long-shadow.c:43 operations/common/motion-blur-linear.c:33
+#: operations/common/newsprint.c:72
+#: operations/common-gpl3+/motion-blur-circular.c:52
+#: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
+msgid "Angle"
+msgstr "Ángulo"
+
+#: operations/common/long-shadow.c:44
+msgid "Shadow angle"
+msgstr "Ángulo de sombra"
+
+#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:26
+msgid "Length"
+msgstr "Longitud"
+
+#: operations/common/long-shadow.c:50
+msgid "Shadow length"
+msgstr "Longitud de sombra"
+
+#: operations/common/long-shadow.c:57
+msgid "Midpoint"
+msgstr "Punto medio"
+
+#: operations/common/long-shadow.c:58
+msgid "Shadow fade midpoint"
+msgstr "Punto medio del desvanecido de sombra"
+
+#: operations/common/long-shadow.c:64
+msgid "Shadow color"
+msgstr "Color de sombra"
+
+#: operations/common/long-shadow.c:67
+msgid "Composition"
+msgstr "Composición"
+
+#: operations/common/long-shadow.c:70
+msgid "Output composition"
+msgstr "Composición de salida"
+
+#: operations/common/long-shadow.c:1329
+msgid "Long Shadow"
+msgstr "Sombra alargada"
+
+#: operations/common/long-shadow.c:1333
+msgid "Creates a long-shadow effect"
+msgstr "Crea un efecto de sombra alargada"
 
 #: operations/common/magick-load.c:27 operations/core/load.c:29
 #: operations/external/png-load.c:28 operations/external/ppm-load.c:26
@@ -2700,22 +2788,9 @@ msgstr "Mezclador mono"
 msgid "Monochrome channel mixer"
 msgstr "Mezclador de canales monocromático."
 
-#: operations/common/motion-blur-linear.c:26
-#: operations/workshop/long-shadow.c:47
-msgid "Length"
-msgstr "Longitud"
-
 #: operations/common/motion-blur-linear.c:27
 msgid "Length of blur in pixels"
 msgstr "Longitud del desenfoque en píxeles"
-
-#. FIXME: With a large angle, we lose AreaFilter's flavours
-#: operations/common/motion-blur-linear.c:33 operations/common/newsprint.c:72
-#: operations/common-gpl3+/motion-blur-circular.c:52
-#: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
-#: operations/workshop/long-shadow.c:41
-msgid "Angle"
-msgstr "Ángulo"
 
 #: operations/common/motion-blur-linear.c:34
 msgid "Angle of blur in degrees"
@@ -6032,10 +6107,6 @@ msgstr "Importante"
 msgid "Trailing"
 msgstr "Sobrante"
 
-#: operations/common-gpl3+/wind.c:45 operations/workshop/long-shadow.c:36
-msgid "Style"
-msgstr "Estilo"
-
 #: operations/common-gpl3+/wind.c:48
 msgid "Style of effect"
 msgstr "Estilo del efecto"
@@ -7099,11 +7170,11 @@ msgstr "Anchura del renderizado en píxeles (solo lectura)."
 msgid "Rendered height in pixels. (read only)"
 msgstr "Altura del renderizado en píxeles (solo lectura)."
 
-#: operations/external/text.c:342
+#: operations/external/text.c:345
 msgid "Render Text"
 msgstr "Generar texto"
 
-#: operations/external/text.c:345
+#: operations/external/text.c:348
 msgid "Display a string of text using pango and cairo."
 msgstr "Presentar una cadena de texto usando Pango y Cairo."
 
@@ -8301,81 +8372,6 @@ msgstr "Sinusoide lineal"
 #: operations/workshop/linear-sinusoid.c:304
 msgid "Generate a linear sinusoid pattern"
 msgstr "Generar un patrón sinusoidal lineal"
-
-#: operations/workshop/long-shadow.c:25
-msgid "Finite"
-msgstr "Finito"
-
-#: operations/workshop/long-shadow.c:26
-msgid "Infinite"
-msgstr "Infinito"
-
-#: operations/workshop/long-shadow.c:27
-#| msgid "Leading"
-msgid "Fading"
-msgstr "Desvanecido"
-
-#: operations/workshop/long-shadow.c:31
-msgid "Shadow plus image"
-msgstr "Sombra más la imagen"
-
-#: operations/workshop/long-shadow.c:32
-#| msgid "Shadows"
-msgid "Shadow only"
-msgstr "Solo sombra"
-
-#: operations/workshop/long-shadow.c:33
-msgid "Shadow minus image"
-msgstr "Sombra menos la imagen"
-
-#: operations/workshop/long-shadow.c:39
-#| msgid "Shadows"
-msgid "Shadow style"
-msgstr "Estilo de sombra"
-
-#: operations/workshop/long-shadow.c:42
-#| msgid "Yellow angle"
-msgid "Shadow angle"
-msgstr "Ángulo de sombra"
-
-#: operations/workshop/long-shadow.c:48
-#| msgid "Bailout length"
-msgid "Shadow length"
-msgstr "Longitud de sombra"
-
-#: operations/workshop/long-shadow.c:53
-msgid "Midpoint"
-msgstr "Punto medio"
-
-#: operations/workshop/long-shadow.c:54
-#| msgid "Pinch amount"
-msgid "Shadow fade midpoint"
-msgstr "Punto medio del desvanecido de sombra"
-
-#: operations/workshop/long-shadow.c:60
-#| msgid "Fade color"
-msgid "Shadow color"
-msgstr "Color de sombra"
-
-#: operations/workshop/long-shadow.c:63
-#| msgid "X position"
-msgid "Composition"
-msgstr "Composición"
-
-#: operations/workshop/long-shadow.c:66
-#| msgid "Output format"
-msgid "Output composition"
-msgstr "Composición de salida"
-
-#: operations/workshop/long-shadow.c:1100
-#| msgid "Shadows"
-msgid "Long Shadow"
-msgstr "Sombra alargada"
-
-#: operations/workshop/long-shadow.c:1102
-#| msgid "Create a kaleidoscope like effect."
-msgid "Creates a long-shadow effect"
-msgstr "Crea un efecto de sombra alargada"
 
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
