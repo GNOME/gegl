@@ -2427,7 +2427,7 @@ process (GeglOperation       *operation,
   offset += (result->x - working_region.x);
   offset *= 4;
 
-  gegl_buffer_set (output, result, 0, gegl_operation_get_format (operation, "ouput"),
+  gegl_buffer_set (output, result, 0, gegl_operation_get_format (operation, "output"),
                    res + offset, rowstride);
 
   g_free (res);
