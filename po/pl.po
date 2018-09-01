@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-08-22 08:46+0000\n"
-"PO-Revision-Date: 2018-08-26 18:18+0200\n"
+"POT-Creation-Date: 2018-08-29 17:04+0000\n"
+"PO-Revision-Date: 2018-09-01 20:00+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -813,7 +813,7 @@ msgstr "Renderuj wzór szachownicy"
 
 #: operations/common/color.c:24 operations/common/color.c:92
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:43
-#: operations/common/grid.c:64 operations/common/long-shadow.c:63
+#: operations/common/grid.c:64 operations/common/long-shadow.c:70
 #: operations/common/rectangle.c:48 operations/common/vignette.c:34
 #: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:61
@@ -879,11 +879,11 @@ msgstr "sRGB"
 msgid "Use sRGB gamma instead of linear"
 msgstr "Użycie gammy sRGB zamiast liniowej"
 
-#: operations/common/color-overlay.c:153
+#: operations/common/color-overlay.c:157
 msgid "Color Overlay"
 msgstr "Pokrycie kolorem"
 
-#: operations/common/color-overlay.c:154
+#: operations/common/color-overlay.c:158
 msgid "Paint a color overlay over the input, preserving its transparency."
 msgstr "Pomaluj wejście na kolor, zachowując jego przezroczystość."
 
@@ -2417,7 +2417,7 @@ msgstr "Długość"
 msgid "Shadow length"
 msgstr "Długość cienia"
 
-#: operations/common/long-shadow.c:57
+#: operations/common/long-shadow.c:57 operations/common/long-shadow.c:68
 msgid "Midpoint"
 msgstr "Punkt środkowy"
 
@@ -2425,23 +2425,31 @@ msgstr "Punkt środkowy"
 msgid "Shadow fade midpoint"
 msgstr "Punkt środkowy rozmycia cienia"
 
+#: operations/common/long-shadow.c:63
+msgid "Midpoint (relative)"
+msgstr "Punkt środkowy (względny)"
+
 #: operations/common/long-shadow.c:64
+msgid "Shadow fade midpoint, as a factor of the shadow length"
+msgstr "Punkt środkowy rozmycia cienia jako czynnik długości cienia"
+
+#: operations/common/long-shadow.c:71
 msgid "Shadow color"
 msgstr "Kolor cienia"
 
-#: operations/common/long-shadow.c:67
+#: operations/common/long-shadow.c:74
 msgid "Composition"
 msgstr "Ułożenie"
 
-#: operations/common/long-shadow.c:70
+#: operations/common/long-shadow.c:77
 msgid "Output composition"
 msgstr "Ułożenie wyjściowe"
 
-#: operations/common/long-shadow.c:1329
+#: operations/common/long-shadow.c:1651
 msgid "Long Shadow"
 msgstr "Długi cień"
 
-#: operations/common/long-shadow.c:1333
+#: operations/common/long-shadow.c:1655
 msgid "Creates a long-shadow effect"
 msgstr "Tworzy efekt długiego cienia"
 
