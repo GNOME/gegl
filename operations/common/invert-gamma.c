@@ -80,7 +80,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name"       , "gegl:invert-gamma",
     "title",      _("Invert in Perceptual space"),
     "categories" , "color",
-    "reference-hash", "f602d2a04555e341aa6efe755f1d5999",
+    "reference-hash", "db07b9d85f2786db29560bd50ae0e7a1",
     "description",
        _("Invert the components (except alpha) perceptually, "
          "the result is the corresponding \"negative\" image."),
