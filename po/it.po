@@ -14,10 +14,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
-"product=GEGL&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-07-28 17:37+0200\n"
-"PO-Revision-Date: 2018-07-28 17:46+0200\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
+"POT-Creation-Date: 2018-09-05 17:04+0200\n"
+"PO-Revision-Date: 2018-09-05 17:10+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -184,12 +183,13 @@ msgstr ""
 
 #: ../gegl/gegl-enums.c:33 ../gegl/gegl-enums.c:90
 #: ../operations/common/gaussian-blur.c:31 ../operations/common/gblur-1d.c:32
+#: ../operations/common/median-blur.c:34
 #: ../operations/common-gpl3+/fractal-explorer.c:96
 msgid "None"
 msgstr "Nessuna"
 
 #: ../gegl/gegl-enums.c:34 ../operations/common/gaussian-blur.c:32
-#: ../operations/common/gblur-1d.c:33
+#: ../operations/common/gblur-1d.c:33 ../operations/common/median-blur.c:35
 msgid "Clamp"
 msgstr "Morsa"
 
@@ -564,7 +564,7 @@ msgstr ""
 "originale."
 
 #: ../operations/common/box-blur.c:25 ../operations/common/c2g.c:27
-#: ../operations/common/edge-neon.c:47 ../operations/common/median-blur.c:38
+#: ../operations/common/edge-neon.c:47 ../operations/common/median-blur.c:43
 #: ../operations/common/snn-mean.c:26 ../operations/common/stress.c:27
 #: ../operations/common/unsharp-mask.c:24 ../operations/common/vignette.c:38
 #: ../operations/common/wavelet-blur-1d.c:28
@@ -837,8 +837,8 @@ msgstr "Disegna un motivo a scacchiera"
 
 #: ../operations/common/color.c:24 ../operations/common/color.c:92
 #: ../operations/common/color-overlay.c:26 ../operations/common/dropshadow.c:43
-#: ../operations/common/grid.c:64 ../operations/common/rectangle.c:48
-#: ../operations/common/vignette.c:34
+#: ../operations/common/grid.c:64 ../operations/common/long-shadow.c:70
+#: ../operations/common/rectangle.c:48 ../operations/common/vignette.c:34
 #: ../operations/common-gpl3+/color-to-alpha.c:29
 #: ../operations/common-gpl3+/supernova.c:61
 #: ../operations/common-gpl3+/tile-paper.c:30
@@ -906,11 +906,11 @@ msgstr "sRGB"
 msgid "Use sRGB gamma instead of linear"
 msgstr "Usa la gamma sRGB invece di quella lineare"
 
-#: ../operations/common/color-overlay.c:153
+#: ../operations/common/color-overlay.c:157
 msgid "Color Overlay"
 msgstr "Rivestimento colore"
 
-#: ../operations/common/color-overlay.c:154
+#: ../operations/common/color-overlay.c:158
 msgid "Paint a color overlay over the input, preserving its transparency."
 msgstr ""
 "Dipinge un colore di rivestimento sopra l'ingresso, mantenendone la "
@@ -1851,7 +1851,7 @@ msgstr "Come il nocciolo gaussiano viene discretizzato"
 
 #: ../operations/common/gaussian-blur.c:58 ../operations/common/gblur-1d.c:60
 #: ../operations/common/map-absolute.c:26
-#: ../operations/common/map-relative.c:31
+#: ../operations/common/map-relative.c:31 ../operations/common/median-blur.c:56
 #: ../operations/common-gpl3+/displace.c:42
 #: ../operations/common-gpl3+/fractal-trace.c:67
 #: ../operations/common-gpl3+/ripple.c:56 ../operations/transform/scale.c:102
@@ -1859,6 +1859,7 @@ msgid "Abyss policy"
 msgstr "Politica dell'abisso"
 
 #: ../operations/common/gaussian-blur.c:60 ../operations/common/gblur-1d.c:62
+#: ../operations/common/median-blur.c:58
 #: ../operations/common-gpl3+/displace.c:45
 #: ../operations/common-gpl3+/ripple.c:59 ../operations/transform/scale.c:103
 msgid "How image edges are handled"
@@ -2402,15 +2403,114 @@ msgstr ""
 "vista, e cubica o migliore per la trasformazione inversa per tornare al "
 "panorama."
 
-#: ../operations/common/little-planet.c:493
+#: ../operations/common/little-planet.c:494
 msgid "Little Planet"
 msgstr "Piccolo pianeta"
 
-#: ../operations/common/little-planet.c:497
+#: ../operations/common/little-planet.c:498
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
 "Fa una trasformazione stereografica/piccolo pianeta di un'immagine "
 "equirettangolare."
+
+#: ../operations/common/long-shadow.c:25
+msgid "Finite"
+msgstr "Finita"
+
+#: ../operations/common/long-shadow.c:26
+msgid "Infinite"
+msgstr "Infinita"
+
+#: ../operations/common/long-shadow.c:27
+msgid "Fading"
+msgstr "Dissolvenza"
+
+#: ../operations/common/long-shadow.c:28
+msgid "Fading (fixed length)"
+msgstr "Dissolvenza (lunghezza finita)"
+
+#: ../operations/common/long-shadow.c:29
+msgid "Fading (fixed rate)"
+msgstr "Dissolvenza (frequenza fissa)"
+
+#: ../operations/common/long-shadow.c:33
+msgid "Shadow plus image"
+msgstr "Ombra più immagine"
+
+#: ../operations/common/long-shadow.c:34
+msgid "Shadow only"
+msgstr "Solo ombra"
+
+#: ../operations/common/long-shadow.c:35
+msgid "Shadow minus image"
+msgstr "Ombra meno immagine"
+
+#: ../operations/common/long-shadow.c:38 ../operations/common-gpl3+/wind.c:45
+msgid "Style"
+msgstr "Stile"
+
+#: ../operations/common/long-shadow.c:41
+msgid "Shadow style"
+msgstr "Stile ombra"
+
+#. FIXME: With a large angle, we lose AreaFilter's flavours
+#: ../operations/common/long-shadow.c:43
+#: ../operations/common/motion-blur-linear.c:33
+#: ../operations/common/newsprint.c:72
+#: ../operations/common-gpl3+/motion-blur-circular.c:52
+#: ../operations/common-gpl3+/ripple.c:45
+#: ../operations/workshop/linear-sinusoid.c:66
+msgid "Angle"
+msgstr "Angolo"
+
+#: ../operations/common/long-shadow.c:44
+msgid "Shadow angle"
+msgstr "Angolo ombra"
+
+#: ../operations/common/long-shadow.c:49
+#: ../operations/common/motion-blur-linear.c:26
+msgid "Length"
+msgstr "Lunghezza"
+
+#: ../operations/common/long-shadow.c:50
+msgid "Shadow length"
+msgstr "Lunghezza ombra"
+
+#: ../operations/common/long-shadow.c:57 ../operations/common/long-shadow.c:68
+msgid "Midpoint"
+msgstr "Punto mediano"
+
+#: ../operations/common/long-shadow.c:58
+msgid "Shadow fade midpoint"
+msgstr "Punto mediano sfumo ombra"
+
+#: ../operations/common/long-shadow.c:63
+msgid "Midpoint (relative)"
+msgstr "Punto mediano (relativo)"
+
+#: ../operations/common/long-shadow.c:64
+msgid "Shadow fade midpoint, as a factor of the shadow length"
+msgstr "Punto mediano sfumo ombra, dipendente dalla lunghezza dell'ombra"
+
+#: ../operations/common/long-shadow.c:71
+msgid "Shadow color"
+msgstr "Colore ombra"
+
+#: ../operations/common/long-shadow.c:74
+msgid "Composition"
+msgstr "Composizione"
+
+#: ../operations/common/long-shadow.c:77
+msgid "Output composition"
+msgstr "Composizione in uscita"
+
+#: ../operations/common/long-shadow.c:1652
+msgid "Long Shadow"
+msgstr "Ombra lunga"
+
+#: ../operations/common/long-shadow.c:1656
+msgid "Creates a long-shadow effect"
+msgstr "Crea un effetto ombra lunga"
 
 #: ../operations/common/magick-load.c:27 ../operations/core/load.c:29
 #: ../operations/external/png-load.c:28 ../operations/external/ppm-load.c:26
@@ -2551,47 +2651,47 @@ msgstr "Cerchio"
 msgid "Diamond"
 msgstr "Rombo"
 
-#: ../operations/common/median-blur.c:33
+#: ../operations/common/median-blur.c:38
 msgid "Neighborhood"
 msgstr "Vicinanza"
 
-#: ../operations/common/median-blur.c:36
+#: ../operations/common/median-blur.c:41
 msgid "Neighborhood type"
 msgstr "Tipo vicinanza"
 
-#: ../operations/common/median-blur.c:41
+#: ../operations/common/median-blur.c:46
 msgid "Neighborhood radius"
 msgstr "Raggio vicinanza"
 
-#: ../operations/common/median-blur.c:43
+#: ../operations/common/median-blur.c:48
 msgid "Percentile"
 msgstr "Percentile"
 
-#: ../operations/common/median-blur.c:45
+#: ../operations/common/median-blur.c:50
 msgid "Neighborhood color percentile"
 msgstr "Percentile colore vicinanza"
 
-#: ../operations/common/median-blur.c:47
+#: ../operations/common/median-blur.c:52
 msgid "Alpha percentile"
 msgstr "Percentile alfa"
 
-#: ../operations/common/median-blur.c:49
+#: ../operations/common/median-blur.c:54
 msgid "Neighborhood alpha percentile"
 msgstr "Percentile alfa vicinanza"
 
-#: ../operations/common/median-blur.c:51
+#: ../operations/common/median-blur.c:60
 msgid "High precision"
 msgstr "Alta precisione"
 
-#: ../operations/common/median-blur.c:52
+#: ../operations/common/median-blur.c:61
 msgid "Avoid clipping and quantization (slower)"
 msgstr "Evita ritagli e quantizzazione (più lento)"
 
-#: ../operations/common/median-blur.c:962
+#: ../operations/common/median-blur.c:995
 msgid "Median Blur"
 msgstr "Sfocatura mediana"
 
-#: ../operations/common/median-blur.c:965
+#: ../operations/common/median-blur.c:998
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -2740,22 +2840,9 @@ msgstr "Mixer mono"
 msgid "Monochrome channel mixer"
 msgstr "Mixer canale monocromatico"
 
-#: ../operations/common/motion-blur-linear.c:26
-msgid "Length"
-msgstr "Lunghezza"
-
 #: ../operations/common/motion-blur-linear.c:27
 msgid "Length of blur in pixels"
 msgstr "Lunghezza della sfocatura in pixel"
-
-#. FIXME: With a large angle, we lose AreaFilter's flavours
-#: ../operations/common/motion-blur-linear.c:33
-#: ../operations/common/newsprint.c:72
-#: ../operations/common-gpl3+/motion-blur-circular.c:52
-#: ../operations/common-gpl3+/ripple.c:45
-#: ../operations/workshop/linear-sinusoid.c:66
-msgid "Angle"
-msgstr "Angolo"
 
 #: ../operations/common/motion-blur-linear.c:34
 msgid "Angle of blur in degrees"
@@ -4209,11 +4296,11 @@ msgstr "Blu nel canale del blu"
 msgid "Set the blue amount for the blue channel"
 msgstr "Imposta la quantità di blu per il canale blu"
 
-#: ../operations/common-gpl3+/channel-mixer.c:267
+#: ../operations/common-gpl3+/channel-mixer.c:268
 msgid "Channel Mixer"
 msgstr "Mixer dei canali"
 
-#: ../operations/common-gpl3+/channel-mixer.c:269
+#: ../operations/common-gpl3+/channel-mixer.c:270
 msgid ""
 "Remix colors; by defining relative contributions from source components."
 msgstr ""
@@ -4263,7 +4350,7 @@ msgstr "Soglia del blu del colore in ingresso"
 msgid "Exchange color"
 msgstr "Scambio colore"
 
-#: ../operations/common-gpl3+/color-exchange.c:247
+#: ../operations/common-gpl3+/color-exchange.c:248
 msgid ""
 "Exchange one color with another, optionally setting a threshold to convert "
 "from one shade to another."
@@ -6058,10 +6145,6 @@ msgstr "All'inizio"
 msgid "Trailing"
 msgstr "Alla fine"
 
-#: ../operations/common-gpl3+/wind.c:45
-msgid "Style"
-msgstr "Stile"
-
 #: ../operations/common-gpl3+/wind.c:48
 msgid "Style of effect"
 msgstr "Stile dell'effetto"
@@ -7117,11 +7200,11 @@ msgstr "Larghezza renderizzazione in pixel (sola lettura)."
 msgid "Rendered height in pixels. (read only)"
 msgstr "Altezza renderizzazione in pixel (sola lettura)."
 
-#: ../operations/external/text.c:342
+#: ../operations/external/text.c:345
 msgid "Render Text"
 msgstr "Disegna testo"
 
-#: ../operations/external/text.c:345
+#: ../operations/external/text.c:348
 msgid "Display a string of text using pango and cairo."
 msgstr "Mostra una stringa di testo usando pango e cairo."
 
@@ -8126,7 +8209,14 @@ msgid ""
 "that for the time being, this is a luminance only approximation of the ACES "
 "RRT; without desaturation of highlights and shadows nor red hue "
 "modifications."
-msgstr "Filtro provino/curva di mappatura da HDR a SDR che è un'approssimazione dell'ACES RRT (Reference Rendering Transform). Quando si forniscono immagini scena-referenziate in questa op, il risultato è adatto alla trasformazione riferita al display in sRGB o display d'uscita usando normali profili di matrice ICC come l'ODT. Si noti che per il momento si tratta di un'approssimazione della sola luminanza dell'RRT ACES; senza desaturazione delle alteluci e ombre né modifiche di tonalità rosse."
+msgstr ""
+"Filtro provino/curva di mappatura da HDR a SDR che è un'approssimazione "
+"dell'ACES RRT (Reference Rendering Transform). Quando si forniscono immagini "
+"scena-referenziate in questa op, il risultato è adatto alla trasformazione "
+"riferita al display in sRGB o display d'uscita usando normali profili di "
+"matrice ICC come l'ODT. Si noti che per il momento si tratta di "
+"un'approssimazione della sola luminanza dell'RRT ACES; senza desaturazione "
+"delle alteluci e ombre né modifiche di tonalità rosse."
 
 #: ../operations/workshop/generated/average.c:111
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
@@ -8363,29 +8453,3 @@ msgstr "Tonalità-saturazione selettive"
 #: ../operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Regolazione della tonalità, saturazione e luminosità selettive"
-
-#~ msgid "ACES Filmic"
-#~ msgstr "ACES Filmic"
-
-#~ msgid ""
-#~ "HDR to SDR proofing filter/mapping curve that is an approximation of the "
-#~ "ACES RRT (Reference Rendering Transform)."
-#~ msgstr ""
-#~ "Curva da HDR a SDR di proofing filtro/mappatura che è un'approssimazione "
-#~ "dell'ACES RRT (Reference Rendering Transform)."
-
-#~ msgid ""
-#~ "Render a stereographic mapping, a tilt value of 90, which means looking "
-#~ "at nadir provides a good default value."
-#~ msgstr ""
-#~ "Disegna una mappatura stereografica, un valore di tilt di 90, cioè "
-#~ "guardando al nadir si fornisce un buon valore predefinito."
-
-#~ msgid "Transformation matrix, using SVG syntax"
-#~ msgstr "Matrice di trasformazione, usando la sintassi SVG"
-
-#~ msgid "Standard Deviation"
-#~ msgstr "Deviazione standard"
-
-#~ msgid "Recursive Transform Plus"
-#~ msgstr "Trasformazione ricorsiva Avanzata"
