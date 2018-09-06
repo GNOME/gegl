@@ -108,7 +108,7 @@ foo++;
       unsigned const char *icc_data = mrg_get_profile (mrg, &icc_length);
       const Babl *space = NULL;
       if (icc_data)
-         space = babl_space_from_icc ((void*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, NULL);
+         space = babl_space_from_icc ((char*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, NULL);
       fmt = babl_format_with_space ("cairo-RGB24", space);
     }
     gegl_node_blit (node, scale / fake_factor, &roi, fmt, buf, width * 4,

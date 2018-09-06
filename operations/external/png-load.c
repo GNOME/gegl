@@ -171,7 +171,7 @@ gegl_png_space (png_structp load_png_ptr,
       PNG_INFO_iCCP)
     {
       const char *error = NULL;
-      return babl_space_from_icc ((void*)profile, proflen,
+      return babl_space_from_icc ((char*)profile, (int)proflen,
                                  BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
     }
 

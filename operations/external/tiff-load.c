@@ -504,7 +504,7 @@ query_tiff(GeglOperation *operation)
     if (TIFFGetField (p->tiff, TIFFTAG_ICCPROFILE, &profile_size, &icc_profile))
       {
         const char *error = NULL;
-        space = babl_space_from_icc ((void*)icc_profile, profile_size,
+        space = babl_space_from_icc ((char*)icc_profile, (gint)profile_size,
                                      BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
       }
 

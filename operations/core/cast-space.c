@@ -57,7 +57,7 @@ prepare (GeglOperation *operation)
     if (icc_data)
     {
       const char *error = NULL;
-      const Babl *s = babl_space_from_icc ((void*)icc_data, icc_length,
+      const Babl *s = babl_space_from_icc (icc_data, (gint)icc_length,
                                  BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
       if (s) space = s;
       g_free (icc_data);
