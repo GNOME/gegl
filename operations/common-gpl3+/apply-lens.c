@@ -28,6 +28,7 @@
  *       rectangle. Right now it simply asks for the entire image...
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -175,24 +176,24 @@ process (GeglOperation       *operation,
                                               GEGL_SAMPLER_CUBIC, level);
 
   iter = gegl_buffer_iterator_new (output, roi, level, format,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, input, roi, level, format,
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (iter))
     {
-      gfloat *out_pixel = iter->data[0];
-      gfloat *in_pixel  = iter->data[1];
+      gfloat *out_pixel = iter->items[0].data;
+      gfloat *in_pixel  = iter->items[1].data;
 
-      for (y = iter->roi->y; y < iter->roi->y + iter->roi->height; y++)
+      for (y = iter->items[0].roi.y; y < iter->items[0].roi.y + iter->items[0].roi.height; y++)
         {
           gdouble dy, dysqr;
 
           dy = -((gdouble) y - params->b + 0.5);
           dysqr = dy * dy;
 
-          for (x = iter->roi->x; x < iter->roi->x + iter->roi->width; x++)
+          for (x = iter->items[0].roi.x; x < iter->items[0].roi.x + iter->items[0].roi.width; x++)
             {
               gdouble dx, dxsqr;
 
