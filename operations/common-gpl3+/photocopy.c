@@ -17,6 +17,8 @@
  * Copyright 2011 Hans Lo <hansshulo@gmail.com>
  */
 
+#define GEGL_ITERATOR2_API
+
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -144,7 +146,7 @@ compute_ramp (GeglBuffer          *dest1,
   iter = gegl_buffer_iterator_new (dest1, roi, 0,
                                    babl_format ("Y float"),
                                    GEGL_ACCESS_READ,
-                                   GEGL_ABYSS_NONE);
+                                   GEGL_ABYSS_NONE, 2);
   gegl_buffer_iterator_add (iter, dest2, roi, 0,
                             babl_format ("Y float"),
                             GEGL_ACCESS_READ,
@@ -157,8 +159,8 @@ compute_ramp (GeglBuffer          *dest1,
   while (gegl_buffer_iterator_next (iter))
   {
     gint n_pixels = iter->length;
-    gfloat *ptr1  = iter->data[0];
-    gfloat *ptr2  = iter->data[1];
+    gfloat *ptr1  = iter->items[0].data;
+    gfloat *ptr2  = iter->items[1].data;
 
     while (n_pixels--)
       {
@@ -253,7 +255,7 @@ process (GeglOperation       *operation,
   iter = gegl_buffer_iterator_new (dest1, result, 0,
                                    babl_format ("Y float"),
                                    GEGL_ACCESS_READ,
-                                   GEGL_ABYSS_NONE);
+                                   GEGL_ABYSS_NONE, 4);
   gegl_buffer_iterator_add (iter, dest2, result, 0,
                             babl_format ("Y float"),
                             GEGL_ACCESS_READ,
@@ -266,9 +268,9 @@ process (GeglOperation       *operation,
   while (gegl_buffer_iterator_next (iter))
     {
       gint    n_pixels  = iter->length;
-      gfloat *ptr1      = iter->data[0];
-      gfloat *ptr2      = iter->data[1];
-      gfloat *out_pixel = iter->data[2];
+      gfloat *ptr1      = iter->items[0].data;
+      gfloat *ptr2      = iter->items[1].data;
+      gfloat *out_pixel = iter->items[2].data;
 
       while (n_pixels--)
         {
