@@ -80,7 +80,7 @@ GeglBufferIterator * gegl_buffer_iterator_new  (GeglBuffer          *buffer,
                                                 gint                 level,
                                                 const Babl          *format,
                                                 GeglAccessMode       access_mode,
-                                                GeglAbyssPolicy      abyss_policy);
+                                                GeglAbyssPolicy      abyss_policy) G_DEPRECATED;
 
 
 /**
