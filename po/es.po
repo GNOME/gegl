@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-08-22 08:46+0000\n"
-"PO-Revision-Date: 2018-08-23 11:35+0200\n"
+"POT-Creation-Date: 2018-09-03 14:58+0000\n"
+"PO-Revision-Date: 2018-09-09 17:47+0200\n"
 "Last-Translator: Rodrigo <rodhos92@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -820,7 +820,7 @@ msgstr "Renderizar un patrón de tablero de ajedrez"
 
 #: operations/common/color.c:24 operations/common/color.c:92
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:43
-#: operations/common/grid.c:64 operations/common/long-shadow.c:63
+#: operations/common/grid.c:64 operations/common/long-shadow.c:70
 #: operations/common/rectangle.c:48 operations/common/vignette.c:34
 #: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:61
@@ -886,11 +886,11 @@ msgstr "sRGB"
 msgid "Use sRGB gamma instead of linear"
 msgstr "Usar gamma sRGB en lugar de lineal"
 
-#: operations/common/color-overlay.c:153
+#: operations/common/color-overlay.c:157
 msgid "Color Overlay"
 msgstr "Revestimiento de color"
 
-#: operations/common/color-overlay.c:154
+#: operations/common/color-overlay.c:158
 msgid "Paint a color overlay over the input, preserving its transparency."
 msgstr ""
 "Pintar una capa de color sobre la entrada, preservando su transparencia."
@@ -2431,7 +2431,7 @@ msgstr "Longitud"
 msgid "Shadow length"
 msgstr "Longitud de sombra"
 
-#: operations/common/long-shadow.c:57
+#: operations/common/long-shadow.c:57 operations/common/long-shadow.c:68
 msgid "Midpoint"
 msgstr "Punto medio"
 
@@ -2439,23 +2439,34 @@ msgstr "Punto medio"
 msgid "Shadow fade midpoint"
 msgstr "Punto medio del desvanecido de sombra"
 
+#: operations/common/long-shadow.c:63
+#| msgid "Map Relative"
+msgid "Midpoint (relative)"
+msgstr "Punto medio (relativo)"
+
 #: operations/common/long-shadow.c:64
+msgid "Shadow fade midpoint, as a factor of the shadow length"
+msgstr ""
+"Punto medio del desvanecido de sombra, como un factor de la longitud de la "
+"sombra"
+
+#: operations/common/long-shadow.c:71
 msgid "Shadow color"
 msgstr "Color de sombra"
 
-#: operations/common/long-shadow.c:67
+#: operations/common/long-shadow.c:74
 msgid "Composition"
 msgstr "Composición"
 
-#: operations/common/long-shadow.c:70
+#: operations/common/long-shadow.c:77
 msgid "Output composition"
 msgstr "Composición de salida"
 
-#: operations/common/long-shadow.c:1329
+#: operations/common/long-shadow.c:1652
 msgid "Long Shadow"
 msgstr "Sombra alargada"
 
-#: operations/common/long-shadow.c:1333
+#: operations/common/long-shadow.c:1656
 msgid "Creates a long-shadow effect"
 msgstr "Crea un efecto de sombra alargada"
 
@@ -4258,11 +4269,11 @@ msgstr "Azul en el canal azul"
 msgid "Set the blue amount for the blue channel"
 msgstr "Establecer la cantidad de azul para el canal azul"
 
-#: operations/common-gpl3+/channel-mixer.c:267
+#: operations/common-gpl3+/channel-mixer.c:268
 msgid "Channel Mixer"
 msgstr "Mezclador de canales"
 
-#: operations/common-gpl3+/channel-mixer.c:269
+#: operations/common-gpl3+/channel-mixer.c:270
 msgid ""
 "Remix colors; by defining relative contributions from source components."
 msgstr ""
@@ -4313,7 +4324,7 @@ msgstr "Umbral azul del color de entrada"
 msgid "Exchange color"
 msgstr "Intercambiar color"
 
-#: operations/common-gpl3+/color-exchange.c:247
+#: operations/common-gpl3+/color-exchange.c:248
 msgid ""
 "Exchange one color with another, optionally setting a threshold to convert "
 "from one shade to another."
