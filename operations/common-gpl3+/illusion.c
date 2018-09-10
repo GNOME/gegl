@@ -19,6 +19,7 @@
  *
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -149,7 +150,7 @@ process (GeglOperation       *operation,
   in_pixel2 = g_new (float, components);
 
   iter = gegl_buffer_iterator_new (output, result, level, format,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, input, result, level, format,
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
@@ -166,11 +167,11 @@ process (GeglOperation       *operation,
 
   while (gegl_buffer_iterator_next (iter))
     {
-       gfloat  *out_pixel = iter->data[0];
-       gfloat  *in_pixel1 = iter->data[1];
+       gfloat  *out_pixel = iter->items[0].data;
+       gfloat  *in_pixel1 = iter->items[1].data;
 
-       for (y = iter->roi[0].y; y < iter->roi[0].y + iter->roi[0].height; ++y)
-         for (x = iter->roi[0].x; x < iter->roi[0].x + iter->roi[0].width; ++x)
+       for (y = iter->items[0].roi.y; y < iter->items[0].roi.y + iter->items[0].roi.height; ++y)
+         for (x = iter->items[0].roi.x; x < iter->items[0].roi.x + iter->items[0].roi.width; ++x)
            {
               cy = ((gdouble) y - center_y) / scale;
               cx = ((gdouble) x - center_x) / scale;
