@@ -20,6 +20,7 @@
 #include "config.h"
 
 #include <glib-object.h>
+#define GEGL_ITERATOR2_API
 
 #include "gegl.h"
 #include "gegl-operation-point-composer3.h"
@@ -63,7 +64,7 @@ static void thread_process (gpointer thread_data, gpointer unused)
                                                     data->level,
                                                     data->output_format,
                                                     GEGL_ACCESS_WRITE,
-                                                    GEGL_ABYSS_NONE);
+                                                    GEGL_ABYSS_NONE, 4);
 
   if (data->input)
     read = gegl_buffer_iterator_add (i, data->input, &data->result, data->level,
@@ -82,10 +83,10 @@ static void thread_process (gpointer thread_data, gpointer unused)
   {
      data->success =
      data->klass->process (data->operation,
-                           data->input?i->data[read]:NULL,
-                           data->aux?i->data[aux]:NULL,
-                           data->aux2?i->data[aux2]:NULL,
-                           i->data[0], i->length, &(i->roi[0]), data->level);
+                           data->input?i->items[read].data:NULL,
+                           data->aux?i->items[aux].data:NULL,
+                           data->aux2?i->items[aux2].data:NULL,
+                           i->items[0].data, i->length, &(i->items[0].roi), data->level);
   }
 
   g_atomic_int_add (data->pending, -1);
@@ -307,7 +308,7 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
       else
       {
         GeglBufferIterator *i = gegl_buffer_iterator_new (output, result, level, out_format,
-                                                          GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                                          GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 4);
         gint foo = 0, bar = 0, read = 0;
 
         if (input)
@@ -322,10 +323,10 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
 
         while (gegl_buffer_iterator_next (i))
           {
-            point_composer3_class->process (operation, input?i->data[read]:NULL,
-                                                       aux?i->data[foo]:NULL,
-                                                       aux2?i->data[bar]:NULL,
-                                                       i->data[0], i->length, &(i->roi[0]), level);
+            point_composer3_class->process (operation, input?i->items[read].data:NULL,
+                                                       aux?i->items[foo].data:NULL,
+                                                       aux2?i->items[bar].data:NULL,
+                                                       i->items[0].data, i->length, &(i->items[0].roi), level);
           }
         return TRUE;
       }

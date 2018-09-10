@@ -21,6 +21,7 @@
 
 #include <glib-object.h>
 
+#define GEGL_ITERATOR2_API
 #include "gegl.h"
 #include "gegl-debug.h"
 #include "gegl-operation-point-filter.h"
@@ -59,7 +60,7 @@ static void thread_process (gpointer thread_data, gpointer unused)
                                                     data->level,
                                                     data->output_format,
                                                     GEGL_ACCESS_WRITE,
-                                                    GEGL_ABYSS_NONE);
+                                                    GEGL_ABYSS_NONE, 4);
   gint read = 0;
   if (data->input)
     read = gegl_buffer_iterator_add (i, data->input, &data->result, data->level,
@@ -69,8 +70,8 @@ static void thread_process (gpointer thread_data, gpointer unused)
   while (gegl_buffer_iterator_next (i))
   {
      data->success =
-     data->klass->process (data->operation, data->input?i->data[read]:NULL,
-                           i->data[0], i->length, &(i->roi[0]), data->level);
+     data->klass->process (data->operation, data->input?i->items[read].data:NULL,
+                           i->items[0].data, i->length, &(i->items[0].roi), data->level);
   }
 
   g_atomic_int_add (data->pending, -1);
@@ -344,7 +345,7 @@ gegl_operation_point_filter_process (GeglOperation       *operation,
       else
       {
         GeglBufferIterator *i = gegl_buffer_iterator_new (output, result, level, out_format,
-                                                          GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                                          GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 4);
         gint read = 0;
 
         if (input)
@@ -353,8 +354,8 @@ gegl_operation_point_filter_process (GeglOperation       *operation,
 
         while (gegl_buffer_iterator_next (i))
           {
-            point_filter_class->process (operation, input?i->data[read]:NULL,
-                                                    i->data[0], i->length, &(i->roi[0]), level);
+            point_filter_class->process (operation, input?i->items[read].data:NULL,
+                                                    i->items[0].data, i->length, &(i->items[0].roi), level);
           }
         return TRUE;
       }
