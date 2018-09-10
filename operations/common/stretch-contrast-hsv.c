@@ -20,6 +20,7 @@
  *
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -58,11 +59,11 @@ buffer_get_auto_stretch_data (GeglOperation       *operation,
   gegl_operation_progress (operation, 0.0, "");
 
   gi = gegl_buffer_iterator_new (buffer, result, 0, babl_format_with_space ("HSVA float", space),
-                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 1);
 
   while (gegl_buffer_iterator_next (gi))
     {
-      gfloat *buf = gi->data[0];
+      gfloat *buf = gi->items[0].data;
       gint    i;
 
       for (i = 0; i < gi->length; i++)
@@ -165,15 +166,15 @@ process (GeglOperation       *operation,
   gegl_operation_progress (operation, 0.5, "");
 
   gi = gegl_buffer_iterator_new (input, result, 0, babl_format_with_space ("HSVA float", space),
-                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (gi, output, result, 0, babl_format_with_space ("HSVA float", space),
                             GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (gi))
     {
-      gfloat *in  = gi->data[0];
-      gfloat *out = gi->data[1];
+      gfloat *in  = gi->items[0].data;
+      gfloat *out = gi->items[1].data;
       gint    i;
 
       for (i = 0; i < gi->length; i++)
