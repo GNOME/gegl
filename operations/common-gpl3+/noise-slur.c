@@ -25,6 +25,7 @@
  *      10% from above right.
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 
 #include <glib/gi18n-lib.h>
@@ -89,14 +90,14 @@ process (GeglOperation       *operation,
   bpp = babl_format_get_bytes_per_pixel (format);
 
   gi = gegl_buffer_iterator_new (output, result, 0, format,
-                                 GEGL_ACCESS_WRITE, GEGL_ABYSS_CLAMP);
+                                 GEGL_ACCESS_WRITE, GEGL_ABYSS_CLAMP, 1);
 
   sampler = gegl_buffer_sampler_new_at_level (input, format, GEGL_SAMPLER_NEAREST, level);
 
   while (gegl_buffer_iterator_next (gi))
     {
-      gchar        *data = gi->data[0];
-      GeglRectangle roi  = gi->roi[0];
+      gchar        *data = gi->items[0].data;
+      GeglRectangle roi  = gi->items[0].roi;
       gint          i, j;
 
       for (j = roi.y; j < roi.y + roi.height ; j++)
