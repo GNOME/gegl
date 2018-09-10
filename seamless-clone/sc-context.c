@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#define GEGL_ITERATOR2_API
 #include <gegl.h>
 #include <poly2tri-c/refine/refine.h>
 #include <poly2tri-c/render/mesh-render.h>
@@ -551,19 +552,19 @@ gegl_sc_compute_uvt_cache (P2trMesh            *mesh,
   uvt = gegl_buffer_new (area, GEGL_SC_BABL_UVT_FORMAT);
 
   iter = gegl_buffer_iterator_new (uvt, area, 0, GEGL_SC_BABL_UVT_FORMAT,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
 
   config.step_x = config.step_y = 1;
   config.cpp = GEGL_SC_COLOR_CHANNEL_COUNT; /* Not that it will be used, but it won't harm */
 
   while (gegl_buffer_iterator_next (iter))
     {
-      config. min_x = iter->roi[0].x;
-      config.min_y = iter->roi[0].y;
-      config.x_samples = iter->roi[0].width;
-      config.y_samples = iter->roi[0].height;
+      config. min_x = iter->items[0].roi.x;
+      config.min_y = iter->items[0].roi.y;
+      config.x_samples = iter->items[0].roi.width;
+      config.y_samples = iter->items[0].roi.height;
       p2tr_mesh_render_cache_uvt_exact (mesh,
-                                        (P2trUVT*) iter->data[0],
+                                        (P2trUVT*) iter->items[0].data,
                                         iter->length,
                                         &config);
     }
@@ -658,7 +659,7 @@ gegl_sc_context_render (GeglScContext       *context,
                                         0,
                                         format,
                                         GEGL_ACCESS_WRITE,
-                                        GEGL_ABYSS_NONE);
+                                        GEGL_ABYSS_NONE, 4);
   out_index = 0;
 
   gegl_rectangle_set (&to_render_fg,
@@ -695,20 +696,20 @@ gegl_sc_context_render (GeglScContext       *context,
       P2trUVT         *uvt_raw;
       int              x, y;
 
-      imcfg.min_x = iter->roi[fg_index].x;
-      imcfg.min_y = iter->roi[fg_index].y;
+      imcfg.min_x = iter->items[fg_index].roi.x;
+      imcfg.min_y = iter->items[fg_index].roi.y;
       imcfg.step_x = imcfg.step_y = 1;
-      imcfg.x_samples = iter->roi[fg_index].width;
-      imcfg.y_samples = iter->roi[fg_index].height;
+      imcfg.x_samples = iter->items[fg_index].roi.width;
+      imcfg.y_samples = iter->items[fg_index].roi.height;
       /* This is without the alpha! */
       imcfg.cpp = GEGL_SC_COLOR_CHANNEL_COUNT;
       /* WARNING: This must be synched with GEGL_SC_COLOR_BABL_NAME!!! */
       imcfg.alpha_last = TRUE;
 
-      out_raw = (gfloat*)iter->data[out_index];
-      fg_raw = (gfloat*)iter->data[fg_index];
+      out_raw = (gfloat*)iter->items[out_index].data;
+      fg_raw = (gfloat*)iter->items[fg_index].data;
       if (uvt_index != -1)
-        uvt_raw = (P2trUVT*)iter->data[uvt_index];
+        uvt_raw = (P2trUVT*)iter->items[uvt_index].data;
 
       if (uvt_index != -1)
         {
