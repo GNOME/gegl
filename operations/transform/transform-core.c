@@ -24,6 +24,8 @@
  *           2012 Nicolas Robidoux
  */
 
+#define GEGL_ITERATOR2_API
+
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -1173,7 +1175,7 @@ transform_affine (GeglOperation       *operation,
                                                       level,
                                                       format,
                                                       GEGL_ACCESS_WRITE,
-                                                      GEGL_ABYSS_NONE);
+                                                      GEGL_ABYSS_NONE, 1);
 
     /*
      * Hoist most of what can out of the while loop:
@@ -1196,8 +1198,8 @@ transform_affine (GeglOperation       *operation,
 
     while (gegl_buffer_iterator_next (i))
       {
-        GeglRectangle *roi = &i->roi[0];
-        gfloat * restrict dest_ptr = (gfloat *)i->data[0];
+        GeglRectangle *roi = &i->items[0].roi;
+        gfloat * restrict dest_ptr = (gfloat *)i->items[0].data;
 
         gdouble u_start =
           base_u +
@@ -1304,7 +1306,7 @@ transform_generic (GeglOperation       *operation,
                                 level,
                                 format,
                                 GEGL_ACCESS_WRITE,
-                                GEGL_ABYSS_NONE);
+                                GEGL_ABYSS_NONE, 1);
 
   gegl_matrix3_copy_into (&inverse, matrix);
 
@@ -1325,7 +1327,7 @@ transform_generic (GeglOperation       *operation,
    */
   while (gegl_buffer_iterator_next (i))
     {
-      GeglRectangle *roi = &i->roi[0];
+      GeglRectangle *roi = &i->items[0].roi;
 
       gdouble u_start =
         inverse.coeff [0][0] * (roi->x + (gdouble) 0.5) +
@@ -1340,7 +1342,7 @@ transform_generic (GeglOperation       *operation,
         inverse.coeff [2][1] * (roi->y + (gdouble) 0.5) +
         inverse.coeff [2][2];
 
-      gfloat * restrict dest_ptr = (gfloat *) i->data[0];
+      gfloat * restrict dest_ptr = (gfloat *)i->items[0].data;
 
       /*
        * Assumes that height and width are > 0.
@@ -1451,7 +1453,7 @@ transform_nearest (GeglOperation       *operation,
                                 level,
                                 format,
                                 GEGL_ACCESS_WRITE,
-                                GEGL_ABYSS_NONE);
+                                GEGL_ABYSS_NONE, 1);
 
   gegl_matrix3_copy_into (&inverse, matrix);
 
@@ -1472,7 +1474,7 @@ transform_nearest (GeglOperation       *operation,
    */
   while (gegl_buffer_iterator_next (i))
     {
-      GeglRectangle *roi = &i->roi[0];
+      GeglRectangle *roi = &i->items[0].roi;
 
       gdouble u_start =
         inverse.coeff [0][0] * (roi->x + (gdouble) 0.5) +
@@ -1487,7 +1489,7 @@ transform_nearest (GeglOperation       *operation,
         inverse.coeff [2][1] * (roi->y + (gdouble) 0.5) +
         inverse.coeff [2][2];
 
-      guchar * restrict dest_ptr = (guchar *) i->data[0];
+      guchar * restrict dest_ptr = (guchar *) i->items[0].data;
 
       /*
        * Assumes that height and width are > 0.
