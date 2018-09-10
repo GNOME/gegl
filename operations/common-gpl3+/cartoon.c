@@ -20,6 +20,7 @@
  * Copyright 2012 Maxime Nicco <maxime.nicco@gmail.com>
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -118,15 +119,15 @@ compute_ramp (GeglBuffer  *dest1,
   count = 0;
 
   iter = gegl_buffer_iterator_new (dest1, NULL, 0, babl_format ("Y' float"),
-                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, dest2, NULL, 0, babl_format ("Y' float"),
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (iter))
     {
-      gfloat *pixel1   = iter->data[0];
-      gfloat *pixel2   = iter->data[1];
+      gfloat *pixel1   = iter->items[0].data;
+      gfloat *pixel2   = iter->items[1].data;
       glong   n_pixels = iter->length;
 
       while (n_pixels--)
@@ -207,7 +208,7 @@ process (GeglOperation       *operation,
 
   iter = gegl_buffer_iterator_new (output, result, 0,
                                    babl_format ("Y'CbCrA float"),
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 5);
 
   gegl_buffer_iterator_add (iter, input, result, 0,
                             babl_format ("Y'CbCrA float"),
@@ -224,10 +225,10 @@ process (GeglOperation       *operation,
 
   while (gegl_buffer_iterator_next (iter))
     {
-      gfloat *out_pixel = iter->data[0];
-      gfloat *in_pixel  = iter->data[1];
-      gfloat *grey1     = iter->data[2];
-      gfloat *grey2     = iter->data[3];
+      gfloat *out_pixel = iter->items[0].data;
+      gfloat *in_pixel  = iter->items[1].data;
+      gfloat *grey1     = iter->items[2].data;
+      gfloat *grey2     = iter->items[3].data;
       glong   n_pixels  = iter->length;
 
       progress += n_pixels / pixels_count;
