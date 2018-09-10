@@ -16,6 +16,7 @@
  * Copyright (C) 2017 Ell
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -184,7 +185,7 @@ process (GeglOperation       *operation,
                                               o->sampler_type, level);
 
   iter = gegl_buffer_iterator_new (output, roi, level, format,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, input, roi, level, format,
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
@@ -231,17 +232,18 @@ process (GeglOperation       *operation,
 
   while (gegl_buffer_iterator_next (iter))
     {
-      gfloat       *out_pixel = iter->data[0];
-      const gfloat *in_pixel  = iter->data[1];
+      gfloat       *out_pixel = iter->items[0].data;
+      const gfloat *in_pixel  = iter->items[1].data;
+      GeglRectangle *roi = &iter->items[0].roi;
       gfloat        x,  y;
 
-      y = dy * (iter->roi->y + 0.5 - cy);
+      y = dy * (roi->y + 0.5 - cy);
 
-      for (j = iter->roi->y; j < iter->roi->y + iter->roi->height; j++, y += dy)
+      for (j = roi->y; j < roi->y + roi->height; j++, y += dy)
         {
-          x = dx * (iter->roi->x + 0.5 - cx);
+          x = dx * (roi->x + 0.5 - cx);
 
-          for (i = iter->roi->x; i < iter->roi->x + iter->roi->width; i++, x += dx)
+          for (i = roi->x; i < roi->x + roi->width; i++, x += dx)
             {
               gfloat d2;
 
