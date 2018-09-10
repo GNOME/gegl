@@ -17,6 +17,7 @@
  */
 
 #include <math.h>
+#define GEGL_ITERATOR2_API
 
 
 #ifdef GEGL_PROPERTIES
@@ -353,21 +354,21 @@ process (GeglOperation       *operation,
     int abyss_mode = transform.reverse ? GEGL_ABYSS_NONE : GEGL_ABYSS_LOOP;
 
     it = gegl_buffer_iterator_new (output, result, level, format_io,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
 
     while (gegl_buffer_iterator_next (it))
       {
         gint i;
         gint n_pixels = it->length;
-        gint x = it->roi->width; /* initial x                   */
+        gint x = it->items[0].roi.width; /* initial x                   */
 
-        float   u0 = (((it->roi->x*factor * 1.0f)/transform.width));
+        float   u0 = (((it->items[0].roi.x*factor * 1.0f)/transform.width));
         float   u, v;
 
-        float *out = it->data[0];
+        float *out = it->items[0].data;
 
         u = u0;
-        v = ((it->roi->y*factor * 1.0/transform.height));
+        v = ((it->items[0].roi.y*factor * 1.0/transform.height));
 
         if (scale)
           {
@@ -428,7 +429,7 @@ process (GeglOperation       *operation,
                 u+=ud;
                 if (x == 0)
                   {
-                    x = it->roi->width;
+                    x = it->items[0].roi.width;
                     u = u0;
                     v += vd;
                   }
@@ -451,7 +452,7 @@ process (GeglOperation       *operation,
                 u+=ud;
                 if (x <= 0)
                   {
-                    x = it->roi->width;
+                    x = it->items[0].roi.width;
                     u = u0;
                     v += vd;
                   }
