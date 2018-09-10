@@ -18,6 +18,7 @@
 
  /* Propagate labels by wathershed transformation using hierarchical queues */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -231,7 +232,7 @@ process (GeglOperation       *operation,
   HQ_init (&hq);
 
   iter = gegl_buffer_iterator_new (input, extent, 0, labels_format,
-                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 3);
 
   gegl_buffer_iterator_add (iter, aux, extent, 0, gradient_format,
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
@@ -241,12 +242,13 @@ process (GeglOperation       *operation,
 
   while (gegl_buffer_iterator_next (iter))
     {
-      guint32  *label    = iter->data[0];
-      guint8   *pixel    = iter->data[1];
-      guint32  *outlabel = iter->data[2];
+      guint32  *label    = iter->items[0].data;
+      guint8   *pixel    = iter->items[1].data;
+      guint32  *outlabel = iter->items[2].data;
+      GeglRectangle *roi = &iter->items[0].roi;
 
-      for (y = iter->roi->y; y < iter->roi->y + iter->roi->height; y++)
-        for (x = iter->roi->x; x < iter->roi->x + iter->roi->width; x++)
+      for (y = roi->y; y < roi->y + roi->height; y++)
+        for (x = roi->x; x < roi->x + roi->width; x++)
           {
             if (label[1] != 0)
               {
