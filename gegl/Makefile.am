@@ -79,7 +79,7 @@ GEGL_public_HEADERS = \
 	gegl-op.h			\
 	gegl-plugin.h			\
 	buffer/gegl-tile.h \
-	buffer/gegl-buffer-cl-iterator.h
+	opencl/gegl-buffer-cl-iterator.h
 
 GEGL_sources = \
 	gegl-algorithms.c \
