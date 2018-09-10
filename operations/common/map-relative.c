@@ -18,6 +18,7 @@
  */
 
 
+#define GEGL_ITERATOR2_API
 #ifdef GEGL_PROPERTIES
 
 property_double (scaling, _("Scaling"), 1.0)
@@ -87,7 +88,7 @@ process (GeglOperation       *operation,
   if (aux != NULL && o->scaling != 0.0)
     {
       it = gegl_buffer_iterator_new (output, result, level, format_io,
-                                     GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                     GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 3);
       index_out = 0;
 
       index_coords = gegl_buffer_iterator_add (it, aux, result, level, format_coords,
@@ -102,17 +103,18 @@ process (GeglOperation       *operation,
           gfloat      x;
           gfloat      y;
           gfloat      scaling = GEGL_PROPERTIES (operation)->scaling;
-          gfloat     *in = it->data[index_in];
-          gfloat     *out = it->data[index_out];
-          gfloat     *coords = it->data[index_coords];
+          gfloat     *in = it->items[index_in].data;
+          gfloat     *out = it->items[index_out].data;
+          gfloat     *coords = it->items[index_coords].data;
+          GeglRectangle *roi = &it->items[0].roi;
 
-          y = it->roi->y + 0.5; /* initial y coordinate */
+          y = roi->y + 0.5; /* initial y coordinate */
 
-          for (h = it->roi->height; h; h--, y++)
+          for (h = roi->height; h; h--, y++)
             {
-              x = it->roi->x + 0.5; /* initial x coordinate */
+              x = roi->x + 0.5; /* initial x coordinate */
 
-              for (w = it->roi->width; w; w--, x++)
+              for (w = roi->width; w; w--, x++)
                 {
                   /* if the coordinate asked is an exact pixel, we fetch it
                    * directly, to avoid the blur of sampling */
