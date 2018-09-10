@@ -206,6 +206,12 @@ gboolean gegl_buffer_scan_compatible (GeglBuffer *bufferA,
                                       gint        xB,
                                       gint        yB);
 
+
+extern void (*gegl_tile_handler_cache_ext_flush) (void *tile_handler_cache, const GeglRectangle *rect);
+extern void (*gegl_buffer_ext_flush) (GeglBuffer *buffer, const GeglRectangle *rect);
+extern void (*gegl_buffer_ext_invalidate) (GeglBuffer *buffer, const GeglRectangle *rect);
+
+
 #ifndef __GEGL_TILE_H__
 #define gegl_tile_get_data(tile)  ((tile)->data)
 #endif

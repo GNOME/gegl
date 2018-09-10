@@ -37,8 +37,8 @@
 #include "gegl-tile-backend.h"
 #include "gegl-buffer-iterator.h"
 #include "gegl-buffer-iterator-private.h"
-#include "gegl-buffer-cl-cache.h"
 #include "gegl-config.h"
+#include "gegl-types-internal.h"
 
 static void gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
                                               const GeglRectangle *roi,
@@ -862,9 +862,9 @@ gegl_buffer_set_internal (GeglBuffer          *buffer,
                           const void          *src,
                           gint                 rowstride)
 {
-  if (gegl_cl_is_accelerated ())
+  if (gegl_buffer_ext_flush)
     {
-      gegl_buffer_cl_cache_flush (buffer, rect);
+      gegl_buffer_ext_flush (buffer, rect);
     }
 
   gegl_buffer_iterate_write (buffer, rect, (void *) src, rowstride, format, level);
@@ -2023,9 +2023,9 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
   if (format == NULL)
     format = buffer->soft_format;
 
-  if (gegl_cl_is_accelerated ())
+  if (gegl_buffer_ext_flush)
     {
-      gegl_buffer_cl_cache_flush (buffer, rect);
+      gegl_buffer_ext_flush (buffer, rect);
     }
 
   if (scale == 1.0 &&
@@ -2551,8 +2551,10 @@ gegl_buffer_clear2 (GeglBuffer          *dst,
 
   pxsize = babl_format_get_bytes_per_pixel (dst->soft_format);
 
-  if (gegl_cl_is_accelerated ())
-    gegl_buffer_cl_cache_invalidate (dst, dst_rect);
+  if (gegl_buffer_ext_invalidate)
+    {
+      gegl_buffer_ext_invalidate (dst, dst_rect);
+    }
 
   i = gegl_buffer_iterator_new (dst, dst_rect, 0, dst->soft_format,
                                 GEGL_ACCESS_WRITE | GEGL_ITERATOR_NO_NOTIFY,

@@ -30,7 +30,6 @@
 #include "gegl-buffer-iterator.h"
 #include "gegl-buffer-iterator-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-buffer-cl-cache.h"
 #include "gegl-config.h"
 
 typedef enum {
@@ -666,11 +665,11 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
           && FALSE) /* XXX: conditions are not strict enough, GIMPs TIFF
                        plug-in fails; but GEGLs buffer test suite passes */
       {
-        if (gegl_cl_is_accelerated ())
+        if (gegl_buffer_ext_flush)
           for (index = 0; index < priv->num_buffers; index++)
             {
               SubIterState *sub = &priv->sub_iter[index];
-              gegl_buffer_cl_cache_flush (sub->buffer, &sub->full_rect);
+              gegl_buffer_ext_flush (sub->buffer, &sub->full_rect);
             }
         linear_shortcut (iter);
         return TRUE;
@@ -678,11 +677,11 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
 
       prepare_iteration (iter);
 
-      if (gegl_cl_is_accelerated ())
+      if (gegl_buffer_ext_flush)
         for (index = 0; index < priv->num_buffers; index++)
           {
             SubIterState *sub = &priv->sub_iter[index];
-            gegl_buffer_cl_cache_flush (sub->buffer, &sub->full_rect);
+            gegl_buffer_ext_flush (sub->buffer, &sub->full_rect);
           }
 
       initialize_rects (iter);

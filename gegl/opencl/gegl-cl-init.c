@@ -39,6 +39,9 @@
 
 #include "gegl/gegl-debug.h"
 
+#include "gegl/buffer/gegl-buffer-private.h"
+#include "gegl-buffer-cl-cache.h"
+
 GQuark gegl_opencl_error_quark (void);
 
 GQuark
@@ -170,6 +173,10 @@ void
 gegl_cl_disable (void)
 {
   _gegl_cl_is_accelerated = FALSE;
+
+  gegl_buffer_ext_flush = NULL;
+  gegl_buffer_ext_invalidate = NULL;
+  gegl_tile_handler_cache_ext_flush = NULL;
 }
 
 void
@@ -177,6 +184,10 @@ gegl_cl_hard_disable (void)
 {
   cl_state.hard_disable = TRUE;
   _gegl_cl_is_accelerated = FALSE;
+
+  gegl_buffer_ext_flush = NULL;
+  gegl_buffer_ext_invalidate = NULL;
+  gegl_tile_handler_cache_ext_flush = NULL;
 }
 
 cl_platform_id
@@ -778,6 +789,12 @@ gegl_cl_init_common (cl_device_type          requested_device_type,
 
   if (cl_state.is_loaded)
     _gegl_cl_is_accelerated = TRUE;
+
+  {
+    gegl_buffer_ext_flush = (void*)gegl_buffer_cl_cache_flush;
+    gegl_buffer_ext_invalidate = (void*)gegl_buffer_cl_cache_invalidate;
+    gegl_tile_handler_cache_ext_flush = (void*)gegl_buffer_cl_cache_flush2;
+  }
 
   return TRUE;
 }

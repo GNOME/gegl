@@ -28,13 +28,13 @@
 #include "gegl-buffer-types.h"
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
-#include "gegl-buffer-cl-cache.h"
 
 #include "gegl-sampler-nearest.h"
 #include "gegl-sampler-linear.h"
 #include "gegl-sampler-cubic.h"
 #include "gegl-sampler-nohalo.h"
 #include "gegl-sampler-lohalo.h"
+#include "gegl-types-internal.h"
 
 #include "gegl-config.h"
 
@@ -169,10 +169,10 @@ gegl_sampler_get (GeglSampler     *self,
     return;
   }
 
-  if (gegl_cl_is_accelerated ())
+  if (gegl_buffer_ext_flush)
     {
       GeglRectangle rect={x,y,1,1};
-      gegl_buffer_cl_cache_flush (self->buffer, &rect);
+      gegl_buffer_ext_flush (self->buffer, &rect);
     }
   self->get (self, x, y, scale, output, repeat_mode);
 }
@@ -268,10 +268,10 @@ gegl_sampler_get_from_mipmap (GeglSampler    *sampler,
   const gint maximum_width  = GEGL_SAMPLER_MAXIMUM_WIDTH;
   const gint maximum_height = GEGL_SAMPLER_MAXIMUM_HEIGHT;
 
-  if (gegl_cl_is_accelerated ())
+  if (gegl_buffer_ext_flush)
     {
       GeglRectangle rect = {x, y, 1, 1};
-      gegl_buffer_cl_cache_flush (sampler->buffer, &rect);
+      gegl_buffer_ext_flush (sampler->buffer, &rect);
     }
 
   g_assert (level_no >= 0 && level_no < GEGL_SAMPLER_MIPMAP_LEVELS);
@@ -554,8 +554,8 @@ GeglSamplerGetFun gegl_sampler_get_fun (GeglSampler *sampler)
   /* this flushes the buffer in preparation for the use of the sampler,
    * thus one can consider the handed out sampler function only temporarily
    * available*/
-  if (gegl_cl_is_accelerated ())
-    gegl_buffer_cl_cache_flush (sampler->buffer, NULL);
+  if (gegl_buffer_ext_flush)
+    gegl_buffer_ext_flush (sampler->buffer, NULL);
   return sampler->get;
 }
 

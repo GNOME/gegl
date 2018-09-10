@@ -43,7 +43,11 @@ libcl_sources = \
 	gegl-cl-color.h \
 	gegl-cl-introspection-support.h \
 	gegl-cl-random.c \
-	gegl-cl-random.h
+	gegl-cl-random.h \
+	gegl-buffer-cl-iterator.c \
+	gegl-buffer-cl-cache.c \
+	gegl-buffer-cl-iterator.h \
+	gegl-buffer-cl-cache.h
 
 noinst_LTLIBRARIES = libcl.la
 

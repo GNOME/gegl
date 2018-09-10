@@ -44,8 +44,11 @@
 #include "gegl-tile-backend-file.h"
 #include "gegl-tile-backend-swap.h"
 #include "gegl-tile-backend-ram.h"
-#include "gegl-buffer-cl-cache.h"
+
+//#include "opencl/gegl-cl.h"
 #include "gegl-config.h" /* XXX: include of file outside buffer dir */
+
+#include "gegl-types-internal.h"
 
 #ifdef GEGL_ENABLE_DEBUG
 #define DEBUG_ALLOCATIONS (gegl_debug_flags & GEGL_DEBUG_BUFFER_ALLOC)
@@ -279,6 +282,8 @@ static GList         *allocated_buffers_list = NULL;
 static volatile gint  allocated_buffers      = 0;
 static volatile gint  de_allocated_buffers   = 0;
 
+
+
 /* this should only be possible if this buffer matches all the buffers down to
  * storage, all of those parent buffers would change size as well, no tiles
  * would be voided as a result of changing the extent.
@@ -372,8 +377,8 @@ gegl_buffer_dispose (GObject *object)
   GeglBuffer  *buffer  = GEGL_BUFFER (object);
   GeglTileHandler *handler = GEGL_TILE_HANDLER (object);
 
-  if (gegl_cl_is_accelerated ())
-    gegl_buffer_cl_cache_invalidate (GEGL_BUFFER (object), NULL);
+  if (gegl_buffer_ext_flush)
+    gegl_buffer_ext_flush (buffer, NULL);
 
   if (GEGL_IS_TILE_STORAGE (handler->source))
     {
@@ -525,7 +530,7 @@ gegl_buffer_constructor (GType                  type,
           if (!buffer->format)
             {
               g_warning ("Buffer constructed without format, assuming RGBA float");
-              buffer->format = gegl_babl_rgba_linear_float ();
+              buffer->format = babl_format ("RGBA float");
             }
 
           /* make a new backend & storage */
@@ -1235,3 +1240,7 @@ gegl_buffer_get_tile (GeglBuffer *buffer,
 
   return tile;
 }
+
+void (*gegl_tile_handler_cache_ext_flush) (void *cache, const GeglRectangle *rect)=NULL;
+void (*gegl_buffer_ext_flush) (GeglBuffer *buffer, const GeglRectangle *rect)=NULL;
+void (*gegl_buffer_ext_invalidate) (GeglBuffer *buffer, const GeglRectangle *rect)=NULL;
