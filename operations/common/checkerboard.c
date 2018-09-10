@@ -16,6 +16,8 @@
  * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
  */
 
+#define GEGL_ITERATOR2_API
+
 #include "config.h"
 #include <glib/gi18n-lib.h>
 #include <stdlib.h>
@@ -319,10 +321,10 @@ operation_source_process (GeglOperation       *operation,
         }
 
       iter = gegl_buffer_iterator_new (output, result, level, out_format,
-                                       GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                       GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
 
       while (gegl_buffer_iterator_next (iter))
-        checkerboard_process (operation, iter->data[0], iter->length, &iter->roi[0], level);
+        checkerboard_process (operation, iter->items[0].data, iter->length, &iter->items[0].roi, level);
     }
   return TRUE;
 }
