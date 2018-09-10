@@ -290,11 +290,11 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
         if (gegl_cl_is_accelerated ())
         {
           if (input)
-            gegl_buffer_cl_cache_flush (input, result);
+            gegl_buffer_flush_ext (input, result);
           if (aux)
-            gegl_buffer_cl_cache_flush (aux, result);
+            gegl_buffer_flush_ext (aux, result);
           if (aux2)
-            gegl_buffer_cl_cache_flush (aux2, result);
+            gegl_buffer_flush_ext (aux2, result);
         }
 
         for (gint j = 1; j < threads; j++)

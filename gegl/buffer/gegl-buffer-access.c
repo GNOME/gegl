@@ -332,6 +332,15 @@ gegl_buffer_flush (GeglBuffer *buffer)
     g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 }
 
+void
+gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglRectangle *rect)
+{
+  if (gegl_buffer_ext_flush)
+    gegl_buffer_ext_flush (buffer, rect);
+}
+
+
+
 static inline void
 gegl_buffer_iterate_write (GeglBuffer          *buffer,
                            const GeglRectangle *roi,

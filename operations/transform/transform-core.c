@@ -1672,8 +1672,7 @@ gegl_transform_process (GeglOperation        *operation,
 
       /* flush opencl caches, to avoid racy flushing
        */
-      if (gegl_cl_is_accelerated ())
-        gegl_buffer_cl_cache_flush (input, NULL);
+      gegl_buffer_flush_ext (input, NULL);
 
       if (gegl_operation_use_threading (operation, result))
       {

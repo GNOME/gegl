@@ -699,6 +699,20 @@ glong gegl_buffer_signal_connect (GeglBuffer *buffer,
                                   GCallback   c_handler,
                                   gpointer    data);
 
+/**
+ * gegl_buffer_flush_ext:
+ * @buffer: a GeglBuffer
+ * @rect: rectangle
+ *
+ * Invokes the external flush function, if any is set on the provided buffer -
+ * this ensures that data pending - in the current implementation only OpenCL -
+ * externally to be synchronized with the buffer. Multi threaded code should
+ * call such a synchronization before branching out to avoid each of the
+ * threads having an implicit synchronization of its own.
+ */
+void
+gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglRectangle *rect);
+
 #include <gegl-buffer-iterator.h>
 
 G_END_DECLS
