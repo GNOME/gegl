@@ -1,3 +1,4 @@
+#define GEGL_ITERATOR2_API
 
 #include <gegl.h>
 #include <SDL.h>
@@ -194,15 +195,18 @@ draw_circle (GeglBuffer *buffer, int x, int y, float r)
   iter = gegl_buffer_iterator_new (buffer, &roi, 0,
                                    babl_format ("RGBA float"),
                                    GEGL_ACCESS_READWRITE,
-                                   GEGL_ABYSS_NONE);
+                                   GEGL_ABYSS_NONE, 1);
 
   while (gegl_buffer_iterator_next (iter))
     {
-      float *pixel = (float *)iter->data[0];
+      float *pixel = (float *)iter->items[0].data;
       int iy, ix;
-      for (iy = iter->roi[0].y; iy < iter->roi[0].y + iter->roi[0].height; iy++)
+      GeglRectangle roi = iter->items[0].roi;
+
+
+      for (iy = roi.y; iy < roi.y + roi.height; iy++)
         {
-          for (ix = iter->roi[0].x; ix < iter->roi[0].x +  iter->roi[0].width; ix++)
+          for (ix = roi.x; ix < roi.x +  roi.width; ix++)
             {
               float d_sqr = powf(x-ix, 2.0f) + powf(y-iy, 2.0f);
                 if (d_sqr < r_sqr)
