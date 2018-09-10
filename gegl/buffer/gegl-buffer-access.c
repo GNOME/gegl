@@ -17,6 +17,8 @@
  *           2013 Daniel Sabo
  */
 
+#define  GEGL_ITERATOR2_API
+
 #include "config.h"
 #include <string.h>
 #include <stdlib.h>
@@ -2330,13 +2332,13 @@ gegl_buffer_copy2 (GeglBuffer          *src,
 
   i = gegl_buffer_iterator_new (dst, dst_rect, 0, dst->soft_format,
                                 GEGL_ACCESS_WRITE | GEGL_ITERATOR_NO_NOTIFY,
-                                repeat_mode);
+                                repeat_mode, 1);
   while (gegl_buffer_iterator_next (i))
     {
-      GeglRectangle src_rect = i->roi[0];
+      GeglRectangle src_rect = i->items[0].roi;
       src_rect.x += offset_x;
       src_rect.y += offset_y;
-      gegl_buffer_iterate_read_dispatch (src, &src_rect, i->data[0], 0,
+      gegl_buffer_iterate_read_dispatch (src, &src_rect, i->items[0].data, 0,
                                          dst->soft_format, 0, repeat_mode);
     }
 }
@@ -2567,10 +2569,10 @@ gegl_buffer_clear2 (GeglBuffer          *dst,
 
   i = gegl_buffer_iterator_new (dst, dst_rect, 0, dst->soft_format,
                                 GEGL_ACCESS_WRITE | GEGL_ITERATOR_NO_NOTIFY,
-                                GEGL_ABYSS_NONE);
+                                GEGL_ABYSS_NONE, 1);
   while (gegl_buffer_iterator_next (i))
     {
-      memset (((guchar*)(i->data[0])), 0, i->length * pxsize);
+      memset (((guchar*)(i->items[0].data)), 0, i->length * pxsize);
     }
 }
 
@@ -2825,10 +2827,10 @@ gegl_buffer_set_color (GeglBuffer          *dst,
    * that fully filled tiles are shared.
    */
   i = gegl_buffer_iterator_new (dst, dst_rect, 0, dst->soft_format,
-                                GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
   while (gegl_buffer_iterator_next (i))
     {
-      gegl_memset_pattern (i->data[0], pixel, bpp, i->length);
+      gegl_memset_pattern (i->items[0].data, pixel, bpp, i->length);
     }
 }
 
