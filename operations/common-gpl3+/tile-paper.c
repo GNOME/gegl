@@ -17,6 +17,7 @@
  * Copyright 2015 Akash Hiremath (akash akya) <akashh246@gmail.com>
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -307,14 +308,14 @@ set_background (GeglProperties      *o,
         }
 
       iter = gegl_buffer_iterator_new (input, &clear, 0, format,
-                                       GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                       GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
       gegl_buffer_iterator_add (iter, output, &clear, 0, format,
                                 GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
       while (gegl_buffer_iterator_next (iter))
         {
-          gfloat  *src      = iter->data[0];
-          gfloat  *dst      = iter->data[1];
+          gfloat  *src      = iter->items[0].data;
+          gfloat  *dst      = iter->items[1].data;
           glong    n_pixels = iter->length;
 
           while (n_pixels--)
