@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#define GEGL_ITERATOR2_API
 #define main iconographer_main
 
 #include <gegl.h>
@@ -434,7 +435,7 @@ static void record_pix_stats (GeglBuffer *buffer, GeglBuffer *previous_buffer,
   GeglBufferIterator *it = gegl_buffer_iterator_new (buffer, NULL, 0,
           babl_format ("R'G'B' u8"),
           GEGL_BUFFER_READ,
-          GEGL_ABYSS_NONE);
+          GEGL_ABYSS_NONE, 3);
   if (previous_video_frame)
     gegl_buffer_iterator_add (it, previous_buffer, NULL, 0,
           babl_format ("R'G'B' u8"),
@@ -446,7 +447,7 @@ static void record_pix_stats (GeglBuffer *buffer, GeglBuffer *previous_buffer,
 
   while (gegl_buffer_iterator_next (it))
   {
-    uint8_t *data = (void*)it->data[0];
+    uint8_t *data = (void*)it->items[0].data;
     int i;
     if (strstr (format, "histogram"))
     {
@@ -474,7 +475,7 @@ static void record_pix_stats (GeglBuffer *buffer, GeglBuffer *previous_buffer,
   
       if (previous_buffer)
       {
-        uint8_t *data_prev = (void*)it->data[1];
+        uint8_t *data_prev = (void*)it->items[1].data;
         int i;
         for (i = 0; i < it->length; i++)
         {
