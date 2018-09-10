@@ -21,6 +21,7 @@
  *
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 #include <math.h>
@@ -355,10 +356,10 @@ process (GeglOperation       *operation,
     }
 
   iter = gegl_buffer_iterator_new (out_buf, roi, level, out_format,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
 
   while (gegl_buffer_iterator_next (iter))
-    c_process (operation, iter->data[0], &iter->roi[0]);
+    c_process (operation, iter->items[0].data, &iter->items[0].roi);
 
   return  TRUE;
 }
