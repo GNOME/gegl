@@ -16,6 +16,7 @@
  * Copyright 2014, 2018 Øyvind Kolås <pippin@gimp.org>
  */
 
+#define GEGL_ITERATOR2_API
 #include <math.h>
 
 
@@ -366,21 +367,22 @@ process (GeglOperation       *operation,
     int abyss_mode = transform.reverse ? GEGL_ABYSS_NONE : GEGL_ABYSS_LOOP;
 
     it = gegl_buffer_iterator_new (output, result, level, format_io,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
 
     while (gegl_buffer_iterator_next (it))
       {
+        GeglRectangle *roi = &it->items[0].roi;
         gint i;
         gint n_pixels = it->length;
-        gint x = it->roi->width; /* initial x                   */
+        gint x = roi->width; /* initial x                   */
 
-        float   u0 = (((it->roi->x*factor * 1.0f)/transform.width));
+        float   u0 = (((roi->x*factor * 1.0f)/transform.width));
         float   u, v;
 
-        float *out = it->data[0];
+        float *out = it->items[0].data;
 
         u = u0;
-        v = ((it->roi->y*factor * 1.0/transform.height));
+        v = ((roi->y*factor * 1.0/transform.height));
 
         if (scale)
           {
@@ -441,7 +443,7 @@ process (GeglOperation       *operation,
                 u+=ud;
                 if (x == 0)
                   {
-                    x = it->roi->width;
+                    x = roi->width;
                     u = u0;
                     v += vd;
                   }
@@ -464,7 +466,7 @@ process (GeglOperation       *operation,
                 u+=ud;
                 if (x <= 0)
                   {
-                    x = it->roi->width;
+                    x = roi->width;
                     u = u0;
                     v += vd;
                   }
