@@ -17,6 +17,7 @@
  *     Tim Rowley <tor@cs.brown.edu>
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -70,7 +71,7 @@ process (GeglOperation       *operation,
 
   gi = gegl_buffer_iterator_new (output, whole_region,
                                  0, format,
-                                 GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                 GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 3);
 
   index_iter = gegl_buffer_iterator_add (gi, input, whole_region,
                                          0, format,
@@ -86,10 +87,11 @@ process (GeglOperation       *operation,
       gfloat *data_out;
       gfloat *data_in1;
       gfloat *data_in2;
+      GeglRectangle *roi = &gi->items[0].roi;
 
-      data_out = (gfloat*) gi->data[0];
-      data_in1 = (gfloat*) gi->data[index_iter];
-      data_in2 = (gfloat*) gi->data[index_iter2];
+      data_out = (gfloat*) gi->items[0].data;
+      data_in1 = (gfloat*) gi->items[index_iter].data;
+      data_in2 = (gfloat*) gi->items[index_iter2].data;
 
       for (k = 0; k < gi->length; k++)
         {
@@ -99,8 +101,8 @@ process (GeglOperation       *operation,
           gfloat w, w1, w2;
           const gfloat eps = 1e-4;
 
-          x = gi->roi[0].x + k % gi->roi[0].width;
-          y = gi->roi[0].y + k / gi->roi[0].width;
+          x = roi->x + k % roi->width;
+          y = roi->y + k / roi->width;
 
           val_x = (half_width - x) / (gfloat) half_width;
           val_y = (half_height - y) / (gfloat) half_height;
