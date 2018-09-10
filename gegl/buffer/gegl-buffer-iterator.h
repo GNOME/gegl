@@ -139,7 +139,7 @@ gboolean             gegl_buffer_iterator_next (GeglBufferIterator *iterator);
 
 #define GeglBufferIteratorPriv GeglBufferIterator2Priv
 #define GeglBufferIterator GeglBufferIterator2
-#define gegl_buffer_iterator_empty_new #define gegl_buffer_iterator2_empty_new
+#define gegl_buffer_iterator_empty_new gegl_buffer_iterator2_empty_new
 #define gegl_buffer_iterator_new gegl_buffer_iterator2_new
 #define gegl_buffer_iterator_add gegl_buffer_iterator2_add
 #define gegl_buffer_iterator_stop gegl_buffer_iterator2_stop
