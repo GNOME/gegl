@@ -17,6 +17,7 @@
  * Copyright 2013 Téo Mazars   <teo.mazars@ensimag.fr>
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 #include <math.h>
@@ -122,12 +123,12 @@ mean_rectangle_noalloc (GeglBuffer    *input,
   gint                c;
 
   gi = gegl_buffer_iterator_new (input, rect, 0, format,
-                                 GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP);
+                                 GEGL_ACCESS_READ, GEGL_ABYSS_CLAMP, 1);
 
   while (gegl_buffer_iterator_next (gi))
     {
       gint    k;
-      gfloat *data = (gfloat*) gi->data[0];
+      gfloat *data = (gfloat*) gi->items[0].data;
 
       for (k = 0; k < gi->length; k++)
         {
@@ -244,12 +245,12 @@ set_rectangle_noalloc (GeglBuffer      *output,
       gegl_color_get_pixel (color, format, col);
 
       gi = gegl_buffer_iterator_new (output, rect, 0, format,
-                                     GEGL_ACCESS_WRITE, GEGL_ABYSS_CLAMP);
+                                     GEGL_ACCESS_WRITE, GEGL_ABYSS_CLAMP, 1);
 
       while (gegl_buffer_iterator_next (gi))
         {
-          gfloat       *data = (gfloat*) gi->data[0];
-          GeglRectangle roi = gi->roi[0];
+          gfloat       *data = (gfloat*) gi->items[0].data;
+          GeglRectangle roi = gi->items[0].roi;
 
           switch (norm)
             {
