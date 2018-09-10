@@ -62,8 +62,6 @@ libbuffer_la_SOURCES = \
     gegl-buffer-iterator.h	\
     gegl-buffer-iterator2.h	\
     gegl-buffer-iterator-private.h	\
-    gegl-buffer-cl-iterator.h	\
-    gegl-buffer-cl-cache.h	\
     gegl-buffer-types.h		\
     gegl-cache.h		\
     gegl-sampler.h		\
