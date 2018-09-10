@@ -31,7 +31,7 @@
 #include <gegl.h>
 #include <gegl-plugin.h>
 
-#include "buffer/gegl-buffer-cl-cache.h"
+#include "opencl/gegl-buffer-cl-cache.h"
 
 #include "gegl-config.h"
 
