@@ -17,6 +17,7 @@
  * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -46,7 +47,7 @@ buffer_get_min_max (GeglBuffer *buffer,
   GeglBufferIterator *gi;
   gint c;
   gi = gegl_buffer_iterator_new (buffer, NULL, 0, format,
-                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 1);
   for (c = 0; c < 3; c++)
     {
       min[c] =  G_MAXFLOAT;
@@ -55,7 +56,7 @@ buffer_get_min_max (GeglBuffer *buffer,
 
   while (gegl_buffer_iterator_next (gi))
     {
-      gfloat *buf = gi->data[0];
+      gfloat *buf = gi->items[0].data;
 
       gint i;
       for (i = 0; i < gi->length; i++)
@@ -499,15 +500,15 @@ process (GeglOperation       *operation,
     }
 
   gi = gegl_buffer_iterator_new (input, result, 0, out_format,
-                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (gi, output, result, 0, out_format,
                             GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (gi))
     {
-      gfloat *in  = gi->data[0];
-      gfloat *out = gi->data[1];
+      gfloat *in  = gi->items[0].data;
+      gfloat *out = gi->items[1].data;
 
       gint o;
       for (o = 0; o < gi->length; o++)
