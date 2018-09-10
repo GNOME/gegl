@@ -18,6 +18,7 @@
  *           2007           Allesandro Rizzi <rizzi@dti.unimi.it>
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -85,7 +86,7 @@ static void stress (GeglBuffer          *src,
   if (dst_rect->width > 0 && dst_rect->height > 0)
   {
     GeglBufferIterator *i = gegl_buffer_iterator_new (dst, dst_rect, 0, babl_format_with_space ("RaGaBaA float", space),
-                                                      GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                                      GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
     GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format, GEGL_SAMPLER_NEAREST, level);
     GeglSamplerGetFun getfun = gegl_sampler_get_fun (sampler);
 
@@ -93,12 +94,13 @@ static void stress (GeglBuffer          *src,
     {
       gint x,y;
       gint    dst_offset=0;
-      gfloat *dst_buf = i->data[0];
+      gfloat *dst_buf = i->items[0].data;
+      GeglRectangle *roi = &i->items[0].roi;
 
       if (enhance_shadows)
       {
-        for (y=i->roi[0].y; y < i->roi[0].y + i->roi[0].height; y++)
-          for (x=i->roi[0].x; x < i->roi[0].x + i->roi[0].width; x++)
+        for (y=roi->y; y < roi->y + roi->height; y++)
+          for (x=roi->x; x < roi->x + roi->width; x++)
             {
               gfloat  min[4];
               gfloat  max[4];
@@ -139,8 +141,8 @@ static void stress (GeglBuffer          *src,
       }
       else
       {
-        for (y=i->roi[0].y; y < i->roi[0].y + i->roi[0].height; y++)
-          for (x=i->roi[0].x; x < i->roi[0].x + i->roi[0].width; x++)
+        for (y=roi->y; y < roi->y + roi->height; y++)
+          for (x=roi->x; x < roi->x + roi->width; x++)
             {
               gfloat  max[4];
               gfloat  pixel[4];
