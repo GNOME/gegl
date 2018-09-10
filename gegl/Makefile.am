@@ -82,7 +82,6 @@ GEGL_public_HEADERS = \
 	opencl/gegl-buffer-cl-iterator.h
 
 GEGL_sources = \
-	gegl-algorithms.c \
 	gegl-apply.c			\
 	gegl-config.c			\
 	gegl-cpuaccel.c			\
@@ -101,7 +100,6 @@ GEGL_sources = \
 	gegl-stats.c			\
 	gegl-matrix.c			\
 	\
-	gegl-algorithms.h \
 	gegl-config.h			\
 	gegl-cpuaccel.h			\
 	gegl-cpuaccel-private.h		\
@@ -121,7 +119,6 @@ GEGL_sources = \
 	gegl-types-internal.h		\
 	gegl-xml.h
 
-EXTRA_DIST = gegl-algorithms-boxfilter.inc gegl-algorithms-2x2-downscale.inc gegl-algorithms-bilinear.inc
 
 lib_LTLIBRARIES = libgegl-@GEGL_API_VERSION@.la
 
@@ -171,6 +168,6 @@ CLEANFILES += $(vapi_DATA)
 
 endif # HAVE_VALA
 
-EXTRA_DIST += gegl-@GEGL_API_VERSION@.deps
+EXTRA_DIST = gegl-@GEGL_API_VERSION@.deps
 
 endif # HAVE_INTROSPECTION

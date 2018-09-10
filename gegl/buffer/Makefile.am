@@ -16,12 +16,15 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/gegl/property-types	\
 	-DG_LOG_DOMAIN=\"GEGL\"
 
+EXTRA_DIST = gegl-algorithms-boxfilter.inc gegl-algorithms-2x2-downscale.inc gegl-algorithms-bilinear.inc
 
 AM_CFLAGS = $(DEP_CFLAGS) $(BABL_CFLAGS)
 
 noinst_LTLIBRARIES = libbuffer.la
 
 libbuffer_la_SOURCES = \
+    gegl-algorithms.c \
+    gegl-algorithms.h \
     gegl-buffer.c		\
     gegl-buffer-access.c	\
     gegl-buffer-index.h		\
