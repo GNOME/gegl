@@ -1,3 +1,5 @@
+#define GEGL_ITERATOR2_API
+
 #include "config.h"
 #include <gegl.h>
 #include <gegl-buffer.h>
@@ -293,10 +295,10 @@ static void fill_rect (GeglBuffer          *buffer,
 {
   GeglBufferIterator *gi;
   gi = gegl_buffer_iterator_new (buffer, roi, 0, NULL,
-                                 GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                 GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
   while (gegl_buffer_iterator_next (gi))
     {
-      gfloat *buf = gi->data[0];
+      gfloat *buf = gi->items[0].data;
       gint    i;
       for (i=0; i<gi->length; i++)
         {

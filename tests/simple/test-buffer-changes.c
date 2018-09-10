@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  */
-
+#define GEGL_ITERATOR2_API
 #include <gegl.h>
 
 typedef struct {
@@ -105,7 +105,7 @@ test_buffer_change_signal_with_iter(guint access_method, guint expected_signal_c
     GeglRectangle rect = {0, 0, 100, 100};
     char *tmp = g_malloc(rect.height*rect.width*1*4);
     GeglBufferIterator *gi = gegl_buffer_iterator_new(test_case->buffer, &rect, 0,
-                                test_case->buffer_format, access_method, GEGL_ABYSS_NONE);
+                                test_case->buffer_format, access_method, GEGL_ABYSS_NONE, 1);
     
     gegl_buffer_signal_connect(test_case->buffer, "changed", (GCallback)handle_buffer_changed, test_case);
 

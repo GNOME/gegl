@@ -24,11 +24,11 @@ TEST ()
 
   {
     GeglBufferIterator *iterator = gegl_buffer_iterator_new (buffer2,
-        &dest, 1, babl_format ("Y float"), GEGL_BUFFER_WRITE, GEGL_ABYSS_NONE);
+        &dest, 1, babl_format ("Y float"), GEGL_BUFFER_WRITE, GEGL_ABYSS_NONE, 1);
     while (gegl_buffer_iterator_next (iterator))
     {
       int i;
-      gfloat *d = iterator->data[0];
+      gfloat *d = iterator->items[0].data;
       for (i = 0; i < iterator->length; i++)
         d[i] = 0;
     }

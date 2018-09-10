@@ -16,6 +16,7 @@
  * Copyright (C) 2018 Ell
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 
 #include <stddef.h>
@@ -131,12 +132,12 @@ test_unaligned_fill (FillFunc fill_func)
   g_object_unref (color);
 
   iter = gegl_buffer_iterator_new (buffer, NULL, 0, format,
-                                   GEGL_BUFFER_READ, GEGL_ABYSS_NONE);
+                                   GEGL_BUFFER_READ, GEGL_ABYSS_NONE, 1);
 
   while (gegl_buffer_iterator_next (iter))
     {
-      const guchar        *src = iter->data[0];
-      const GeglRectangle *roi = &iter->roi[0];
+      const guchar        *src = iter->items[0].data;
+      const GeglRectangle *roi = &iter->items[0].roi;
       gint                 x;
       gint                 y;
 

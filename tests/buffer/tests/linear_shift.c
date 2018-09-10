@@ -48,7 +48,7 @@ TEST ()
   out = gegl_buffer_new (&out_extent, babl_format ("Y float"));
 
   iter = gegl_buffer_iterator_new (out, &out_extent, 0, NULL,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 8);
 
   gegl_buffer_iterator_add (iter, linear_a, &out_extent, 0, NULL,
                             GEGL_ACCESS_READ, GEGL_ABYSS_BLACK);
@@ -67,14 +67,18 @@ TEST ()
       gint ix, iy, pos;
 
       pos = 0;
-      for (iy = iter->roi[0].y; iy < iter->roi[0].y + iter->roi[0].height; ++iy)
-        for (ix = iter->roi[0].x; ix < iter->roi[0].x + iter->roi[0].width; ++ix)
+      for (iy = iter->items[0].roi.y; iy < iter->items[0].roi.y + iter->items[0].roi.height; ++iy)
+        for (ix = iter->items[0].roi.x; ix < iter->items[0].roi.x + iter->items[0].roi.width; ++ix)
           {
-            gfloat **fdata = (gfloat **)iter->data;
+            gfloat *fdata0 = (gfloat *)iter->items[0].data;
+            gfloat *fdata1 = (gfloat *)iter->items[1].data;
+            gfloat *fdata2 = (gfloat *)iter->items[2].data;
+            gfloat *fdata3 = (gfloat *)iter->items[3].data;
+            gfloat *fdata4 = (gfloat *)iter->items[4].data;
 
-            fdata[0][pos] = fdata[1][pos] + fdata[2][pos] + fdata[3][pos] + fdata[4][pos];
-            if (fdata[0][pos] > 1.0f)
-              fdata[0][pos] = 1.0f;
+            fdata0[pos] = fdata1[pos] + fdata2[pos] + fdata3[pos] + fdata4[pos];
+            if (fdata0[pos] > 1.0f)
+              fdata0[pos] = 1.0f;
 
             ++pos;
           }

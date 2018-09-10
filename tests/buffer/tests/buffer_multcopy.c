@@ -1,3 +1,6 @@
+#define GEGL_ITERATOR2_API
+
+
 TEST ()
 {
   GeglBuffer    *buffer, *buffer2;
@@ -27,15 +30,15 @@ TEST ()
           fill (buffer2, 1.0);
 
           iter = gegl_buffer_iterator_new (buffer2, &source, 0, NULL,
-                                           GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                           GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 4);
 
           gegl_buffer_iterator_add (iter, buffer, &source, 0, NULL,
                                     GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
           while (gegl_buffer_iterator_next (iter))
             {
-              gfloat *s = iter->data[0];
-              gfloat *d = iter->data[1];
+              gfloat *s = iter->items[0].data;
+              gfloat *d = iter->items[1].data;
               gint length = iter->length;
 
               while (length--)
