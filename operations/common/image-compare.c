@@ -21,6 +21,7 @@
 #include "config.h"
 #include <math.h>
 #include <glib/gi18n-lib.h>
+#define GEGL_ITERATOR2_API
 
 #ifdef GEGL_PROPERTIES
 
@@ -94,7 +95,7 @@ process (GeglOperation       *operation,
   diff_buffer = gegl_buffer_new (result, yadbl);
 
   iter = gegl_buffer_iterator_new (diff_buffer, result, 0, yadbl,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 3);
 
   gegl_buffer_iterator_add (iter, input, result, 0, cielab,
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
@@ -105,9 +106,9 @@ process (GeglOperation       *operation,
   while (gegl_buffer_iterator_next (iter))
     {
       gint    i;
-      gdouble *data_out = iter->data[0];
-      gfloat  *data_in1 = iter->data[1];
-      gfloat  *data_in2 = iter->data[2];
+      gdouble *data_out = iter->items[0].data;
+      gfloat  *data_in1 = iter->items[1].data;
+      gfloat  *data_in2 = iter->items[2].data;
 
       for (i = 0; i < iter->length; i++)
         {
@@ -142,7 +143,7 @@ process (GeglOperation       *operation,
     }
 
   iter  = gegl_buffer_iterator_new (output, result, 0, srgb,
-                                    GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                    GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, diff_buffer, result, 0, yadbl,
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
@@ -150,8 +151,8 @@ process (GeglOperation       *operation,
   while (gegl_buffer_iterator_next (iter))
     {
       gint     i;
-      guchar  *out  = iter->data[0];
-      gdouble *data = iter->data[1];
+      guchar  *out  = iter->items[0].data;
+      gdouble *data = iter->items[1].data;
 
       for (i = 0; i < iter->length; i++)
         {
