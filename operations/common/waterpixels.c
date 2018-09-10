@@ -25,6 +25,7 @@
  * TODO: option to add superpixels boundaries to the output
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -180,14 +181,15 @@ regularize_gradient  (GeglBuffer *gradient,
   gint x, y;
 
   iter = gegl_buffer_iterator_new (gradient, NULL, 0, babl_format ("Y float"),
-                                   GEGL_ACCESS_READWRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_READWRITE, GEGL_ABYSS_NONE, 1);
 
   while (gegl_buffer_iterator_next (iter))
     {
-      gfloat  *pixel = iter->data[0];
+      GeglRectangle *roi = &iter->items[0].roi;
+      gfloat  *pixel = iter->items[0].data;
 
-      for (y = iter->roi->y; y < iter->roi->y + iter->roi->height; y++)
-        for (x = iter->roi->x; x < iter->roi->x + iter->roi->width; x++)
+      for (y = roi->y; y < roi->y + roi->height; y++)
+        for (x = roi->x; x < roi->x + roi->width; x++)
           {
             gint X = x / grid->cell_size;
             gint Y = y / grid->cell_size;
@@ -347,7 +349,7 @@ get_average_colors (GeglBuffer *input,
 
   iter = gegl_buffer_iterator_new (labels, gegl_buffer_get_extent (labels),
                                    0, babl_format ("YA u32"),
-                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, input, gegl_buffer_get_extent (labels), 0,
                             babl_format_with_space ("R'G'B' float", space),
@@ -355,8 +357,8 @@ get_average_colors (GeglBuffer *input,
 
   while (gegl_buffer_iterator_next (iter))
     {
-      guint32  *label    = iter->data[0];
-      gfloat   *pixel    = iter->data[1];
+      guint32  *label    = iter->items[0].data;
+      gfloat   *pixel    = iter->items[1].data;
       glong     n_pixels = iter->length;
 
       while (n_pixels--)
@@ -392,7 +394,7 @@ fill_output (GeglBuffer *output,
   GeglBufferIterator *iter;
 
   iter = gegl_buffer_iterator_new (labels, NULL, 0, babl_format ("YA u32"),
-                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, output, NULL, 0,
                             babl_format_with_space ("R'G'B' float", space),
@@ -400,8 +402,8 @@ fill_output (GeglBuffer *output,
 
   while (gegl_buffer_iterator_next (iter))
     {
-      guint32  *label    = iter->data[0];
-      gfloat   *pixel    = iter->data[1];
+      guint32  *label    = iter->items[0].data;
+      gfloat   *pixel    = iter->items[1].data;
       glong     n_pixels = iter->length;
 
       while (n_pixels--)
