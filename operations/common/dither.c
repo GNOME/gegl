@@ -16,6 +16,7 @@
  * Copyright 2008 Hans Petter Jansson <hpj@copyleft.no>
  *           2012 Øyvind Kolås <pippin@gimp.org>
  */
+#define GEGL_ITERATOR2_API
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
@@ -203,12 +204,13 @@ process_row_bayer (GeglBufferIterator *gi,
                    guint               channel_levels [4],
                    gint                y)
 {
-  guint16 *data_in  = (guint16*) gi->data [0];
-  guint16 *data_out = (guint16*) gi->data [1];
+  guint16 *data_in  = (guint16*) gi->items[0].data;
+  guint16 *data_out = (guint16*) gi->items[1].data;
+  GeglRectangle *roi = &gi->items[0].roi;
   guint x;
-  for (x = 0; x < gi->roi->width; x++)
+  for (x = 0; x < roi->width; x++)
     {
-      guint pixel = 4 * (gi->roi->width * y + x);
+      guint pixel = 4 * (roi->width * y + x);
       guint ch;
 
       for (ch = 0; ch < 4; ch++)
@@ -218,7 +220,7 @@ process_row_bayer (GeglBufferIterator *gi,
           gdouble value_clamped;
           gdouble quantized;
 
-          bayer         = bayer_matrix_8x8 [((gi->roi->y + y) % 8) * 8 + ((gi->roi->x + x) % 8)];
+          bayer         = bayer_matrix_8x8 [((roi->y + y) % 8) * 8 + ((roi->x + x) % 8)];
           bayer         = ((bayer - 32) * 65536.0 / 65.0) / channel_levels [ch];
           value         = data_in [pixel + ch] + bayer;
           value_clamped = CLAMP (value, 0.0, 65535.0);
@@ -235,18 +237,19 @@ process_row_arithmetic_add (GeglBufferIterator *gi,
                             guint               channel_levels [4],
                             gint                y)
 {
-  guint16 *data_in  = (guint16*) gi->data [0];
-  guint16 *data_out = (guint16*) gi->data [1];
+  guint16 *data_in  = (guint16*) gi->items[0].data;
+  guint16 *data_out = (guint16*) gi->items[1].data;
+  GeglRectangle *roi = &gi->items[0].roi;
   guint x;
-  for (x = 0; x < gi->roi->width; x++)
+  for (x = 0; x < roi->width; x++)
     {
-      guint pixel = 4 * (gi->roi->width * y + x);
+      guint pixel = 4 * (roi->width * y + x);
       guint ch;
 
       for (ch = 0; ch < 4; ch++)
         {
-          gint u = gi->roi->x + x;
-          gint v = gi->roi->y + y;
+          gint u = roi->x + x;
+          gint v = roi->y + y;
           gfloat mask;
           gfloat value;
           gfloat value_clamped;
@@ -268,18 +271,19 @@ process_row_arithmetic_xor (GeglBufferIterator *gi,
                             guint               channel_levels [4],
                             gint                y)
 {
-  guint16 *data_in  = (guint16*) gi->data [0];
-  guint16 *data_out = (guint16*) gi->data [1];
+  guint16 *data_in  = (guint16*) gi->items[0].data;
+  guint16 *data_out = (guint16*) gi->items[1].data;
+  GeglRectangle *roi = &gi->items[0].roi;
   guint x;
-  for (x = 0; x < gi->roi->width; x++)
+  for (x = 0; x < roi->width; x++)
     {
-      guint pixel = 4 * (gi->roi->width * y + x);
+      guint pixel = 4 * (roi->width * y + x);
       guint ch;
 
       for (ch = 0; ch < 4; ch++)
         {
-          gint u = gi->roi->x + x;
-          gint v = gi->roi->y + y;
+          gint u = roi->x + x;
+          gint v = roi->y + y;
           gfloat mask;
           gfloat value;
           gfloat value_clamped;
@@ -301,18 +305,19 @@ process_row_arithmetic_add_covariant (GeglBufferIterator *gi,
                                       guint               channel_levels [4],
                                       gint                y)
 {
-  guint16 *data_in  = (guint16*) gi->data [0];
-  guint16 *data_out = (guint16*) gi->data [1];
+  guint16 *data_in  = (guint16*) gi->items[0].data;
+  guint16 *data_out = (guint16*) gi->items[1].data;
+  GeglRectangle *roi = &gi->items[0].roi;
   guint x;
-  for (x = 0; x < gi->roi->width; x++)
+  for (x = 0; x < roi->width; x++)
     {
-      guint pixel = 4 * (gi->roi->width * y + x);
+      guint pixel = 4 * (roi->width * y + x);
       guint ch;
 
       for (ch = 0; ch < 4; ch++)
         {
-          gint u = gi->roi->x + x;
-          gint v = gi->roi->y + y;
+          gint u = roi->x + x;
+          gint v = roi->y + y;
           gfloat mask;
           gfloat value;
           gfloat value_clamped;
@@ -334,18 +339,19 @@ process_row_arithmetic_xor_covariant (GeglBufferIterator *gi,
                                       guint               channel_levels [4],
                                       gint                y)
 {
-  guint16 *data_in  = (guint16*) gi->data [0];
-  guint16 *data_out = (guint16*) gi->data [1];
+  guint16 *data_in  = (guint16*) gi->items[0].data;
+  guint16 *data_out = (guint16*) gi->items[1].data;
+  GeglRectangle *roi = &gi->items[0].roi;
   guint x;
-  for (x = 0; x < gi->roi->width; x++)
+  for (x = 0; x < roi->width; x++)
     {
-      guint pixel = 4 * (gi->roi->width * y + x);
+      guint pixel = 4 * (roi->width * y + x);
       guint ch;
 
       for (ch = 0; ch < 4; ch++)
         {
-          gint u = gi->roi->x + x;
-          gint v = gi->roi->y + y;
+          gint u = roi->x + x;
+          gint v = roi->y + y;
           gfloat mask;
           gfloat value;
           gfloat value_clamped;
@@ -368,15 +374,16 @@ process_row_random_covariant (GeglBufferIterator *gi,
                               gint                y,
                               GeglRandom         *rand)
 {
-  guint16 *data_in  = (guint16*) gi->data [0];
-  guint16 *data_out = (guint16*) gi->data [1];
+  guint16 *data_in  = (guint16*) gi->items[0].data;
+  guint16 *data_out = (guint16*) gi->items[1].data;
+  GeglRectangle *roi = &gi->items[0].roi;
   guint x;
-  for (x = 0; x < gi->roi->width; x++)
+  for (x = 0; x < roi->width; x++)
     {
-      guint pixel = 4 * (gi->roi->width * y + x);
+      guint pixel = 4 * (roi->width * y + x);
       guint ch;
-      gint  r = REDUCE_16B (gegl_random_int (rand, gi->roi->x + x,
-                                             gi->roi->y + y, 0, 0)) - (1<<15);
+      gint  r = REDUCE_16B (gegl_random_int (rand, roi->x + x,
+                                             roi->y + y, 0, 0)) - (1<<15);
       for (ch = 0; ch < 4; ch++)
         {
           gfloat value;
@@ -399,20 +406,21 @@ process_row_random (GeglBufferIterator *gi,
                     gint                y,
                     GeglRandom         *rand)
 {
-  guint16 *data_in  = (guint16*) gi->data [0];
-  guint16 *data_out = (guint16*) gi->data [1];
+  guint16 *data_in  = (guint16*) gi->items[0].data;
+  guint16 *data_out = (guint16*) gi->items[1].data;
+  GeglRectangle *roi = &gi->items[0].roi;
   guint x;
-  for (x = 0; x < gi->roi->width; x++)
+  for (x = 0; x < roi->width; x++)
     {
-      guint pixel = 4 * (gi->roi->width * y + x);
+      guint pixel = 4 * (roi->width * y + x);
       guint ch;
       for (ch = 0; ch < 4; ch++)
         {
           gdouble value;
           gdouble value_clamped;
           gdouble quantized;
-          gint    r = REDUCE_16B (gegl_random_int (rand, gi->roi->x + x,
-                                                   gi->roi->y + y, 0, ch)) - (1<<15);
+          gint    r = REDUCE_16B (gegl_random_int (rand, roi->x + x,
+                                                   roi->y + y, 0, ch)) - (1<<15);
 
           value         = data_in [pixel + ch] + (r * 1.0) / channel_levels [ch];
           value_clamped = CLAMP (value, 0.0, 65535.0);
@@ -429,12 +437,13 @@ process_row_no_dither (GeglBufferIterator *gi,
                        guint               channel_levels [4],
                        guint               y)
 {
-  guint16 *data_in  = (guint16*) gi->data [0];
-  guint16 *data_out = (guint16*) gi->data [1];
+  guint16 *data_in  = (guint16*) gi->items[0].data;
+  guint16 *data_out = (guint16*) gi->items[1].data;
+  GeglRectangle *roi = &gi->items[0].roi;
   guint x;
-  for (x = 0; x < gi->roi->width; x++)
+  for (x = 0; x < roi->width; x++)
     {
-      guint pixel = 4 * (gi->roi->width * y + x);
+      guint pixel = 4 * (roi->width * y + x);
       guint ch;
       for (ch = 0; ch < 4; ch++)
         {
@@ -457,53 +466,54 @@ process_standard (GeglBuffer          *input,
   GeglBufferIterator *gi;
 
   gi = gegl_buffer_iterator_new (input, result, 0, format,
-                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (gi, output, result, 0, format,
                             GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (gi))
     {
+      GeglRectangle *roi = &gi->items[0].roi;
       guint    y;
       switch (dither_method)
         {
           case GEGL_DITHER_NONE:
-            for (y = 0; y < gi->roi->height; y++)
+            for (y = 0; y < roi->height; y++)
               process_row_no_dither (gi, channel_levels, y);
             break;
           case GEGL_DITHER_RANDOM:
-            for (y = 0; y < gi->roi->height; y++)
+            for (y = 0; y < roi->height; y++)
               process_row_random (gi, channel_levels, y, rand);
             break;
           case GEGL_DITHER_RANDOM_COVARIANT:
-            for (y = 0; y < gi->roi->height; y++)
+            for (y = 0; y < roi->height; y++)
               process_row_random_covariant (gi, channel_levels, y, rand);
              break;
           case GEGL_DITHER_BAYER:
-            for (y = 0; y < gi->roi->height; y++)
+            for (y = 0; y < roi->height; y++)
               process_row_bayer (gi, channel_levels, y);
             break;
           case GEGL_DITHER_FLOYD_STEINBERG:
             /* Done separately */
             break;
           case GEGL_DITHER_ARITHMETIC_ADD:
-            for (y = 0; y < gi->roi->height; y++)
+            for (y = 0; y < roi->height; y++)
               process_row_arithmetic_add (gi, channel_levels, y);
             break;
           case GEGL_DITHER_ARITHMETIC_XOR:
-            for (y = 0; y < gi->roi->height; y++)
+            for (y = 0; y < roi->height; y++)
               process_row_arithmetic_xor (gi, channel_levels, y);
             break;
           case GEGL_DITHER_ARITHMETIC_ADD_COVARIANT:
-            for (y = 0; y < gi->roi->height; y++)
+            for (y = 0; y < roi->height; y++)
               process_row_arithmetic_add_covariant (gi, channel_levels, y);
             break;
           case GEGL_DITHER_ARITHMETIC_XOR_COVARIANT:
-            for (y = 0; y < gi->roi->height; y++)
+            for (y = 0; y < roi->height; y++)
               process_row_arithmetic_xor_covariant (gi, channel_levels, y);
             break;
           default:
-            for (y = 0; y < gi->roi->height; y++)
+            for (y = 0; y < roi->height; y++)
               process_row_no_dither (gi, channel_levels, y);
         }
     }
