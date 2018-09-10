@@ -20,6 +20,7 @@
  *
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -170,7 +171,7 @@ assign_labels (GeglBuffer     *labels,
   clusters_index = g_array_sized_new (FALSE, FALSE, sizeof (gint), 9);
 
   iter = gegl_buffer_iterator_new (input, NULL, 0, format,
-                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, labels, NULL, 0,
                             babl_format_n (babl_type ("u32"), 1),
@@ -178,13 +179,14 @@ assign_labels (GeglBuffer     *labels,
 
   while (gegl_buffer_iterator_next (iter))
    {
-      gfloat  *pixel = iter->data[0];
-      guint32 *label = iter->data[1];
+      GeglRectangle *roi = &iter->items[0].roi;
+      gfloat  *pixel = iter->items[0].data;
+      guint32 *label = iter->items[1].data;
       glong    n_pixels = iter->length;
       gint     x, y, i;
 
-      x = iter->roi->x;
-      y = iter->roi->y;
+      x = roi->x;
+      y = roi->y;
 
       /* construct an array of clusters index for which search_window
        * intersect with the current roi
@@ -194,13 +196,13 @@ assign_labels (GeglBuffer     *labels,
         {
           Cluster *c = &g_array_index (clusters, Cluster, i);
 
-          if (gegl_rectangle_intersect (NULL, &c->search_window, iter->roi))
+          if (gegl_rectangle_intersect (NULL, &c->search_window, roi))
             g_array_append_val (clusters_index, i);
         }
 
       if (!clusters_index->len)
         {
-          g_printerr ("no clusters for roi %d,%d,%d,%d\n", iter->roi->x, iter->roi->y, iter->roi->width, iter->roi->height);
+          g_printerr ("no clusters for roi %d,%d,%d,%d\n", roi->x, roi->y, roi->width, roi->height);
           continue;
         }
 
@@ -252,10 +254,10 @@ assign_labels (GeglBuffer     *labels,
           label++;
 
           x++;
-          if (x >= iter->roi->x + iter->roi->width)
+          if (x >= roi->x + roi->width)
             {
               y++;
-              x = iter->roi->x;
+              x = roi->x;
             }
         }
 
@@ -306,7 +308,7 @@ set_output (GeglBuffer *output,
 
   iter = gegl_buffer_iterator_new (output, NULL, 0,
                                    format,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, labels, NULL, 0,
                             babl_format_n (babl_type ("u32"), 1),
@@ -314,8 +316,8 @@ set_output (GeglBuffer *output,
 
   while (gegl_buffer_iterator_next (iter))
     {
-      gfloat  *pixel    = iter->data[0];
-      guint32 *label    = iter->data[1];
+      gfloat  *pixel    = iter->items[0].data;
+      guint32 *label    = iter->items[1].data;
       glong    n_pixels = iter->length;
 
       while (n_pixels--)
