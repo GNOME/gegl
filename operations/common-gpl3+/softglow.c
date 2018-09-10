@@ -18,6 +18,7 @@
  * Copyright 2013 Téo Mazars <teo.mazars@ensimag.fr>
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -151,7 +152,7 @@ process (GeglOperation       *operation,
   dest_tmp = gegl_buffer_new (&working_region, babl_format_with_space ("Y' float", space));
 
   iter = gegl_buffer_iterator_new (dest_tmp, &working_region, 0, babl_format_with_space ("Y' float", space),
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, input, &working_region, 0, babl_format_with_space ("Y' float", space),
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
@@ -159,8 +160,8 @@ process (GeglOperation       *operation,
   while (gegl_buffer_iterator_next (iter))
     {
       gint    i;
-      gfloat *data_out = iter->data[0];
-      gfloat *data_in  = iter->data[1];
+      gfloat *data_out = iter->items[0].data;
+      gfloat *data_in  = iter->items[1].data;
 
       for (i = 0; i < iter->length; i++)
         {
@@ -178,7 +179,7 @@ process (GeglOperation       *operation,
   dest = grey_blur_buffer (dest_tmp, o->glow_radius, result);
 
   iter = gegl_buffer_iterator_new (output, result, 0, babl_format_with_space ("RGBA float", space),
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 3);
 
   gegl_buffer_iterator_add (iter, input, result, 0, babl_format_with_space ("RGBA float", space),
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
@@ -189,9 +190,9 @@ process (GeglOperation       *operation,
   while (gegl_buffer_iterator_next (iter))
     {
       gint    i;
-      gfloat *data_out  = iter->data[0];
-      gfloat *data_in   = iter->data[1];
-      gfloat *data_blur = iter->data[2];
+      gfloat *data_out  = iter->items[0].data;
+      gfloat *data_in   = iter->items[1].data;
+      gfloat *data_blur = iter->items[2].data;
 
       for (i = 0; i < iter->length; i++)
         {
