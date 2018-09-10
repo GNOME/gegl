@@ -17,6 +17,7 @@
  * Copyright (c) 1997 Eric L. Hernes (erich@rrnet.com), Stephen Norris
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 #include <math.h>
@@ -129,16 +130,16 @@ process (GeglOperation       *operation,
     }
 
   iter = gegl_buffer_iterator_new (output, result, 0, format,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
 
   while (gegl_buffer_iterator_next (iter))
     {
       gint x = result->x;
       gint y = result->y;
-      gfloat *out_pixel = iter->data[0];
+      gfloat *out_pixel = iter->items[0].data;
 
-      for (y = iter->roi[0].y; y < iter->roi[0].y + iter->roi[0].height; ++y)
-        for (x = iter->roi[0].x; x < iter->roi[0].x + iter->roi[0].width; ++x)
+      for (y = iter->items[0].roi.y; y < iter->items[0].roi.y + iter->items[0].roi.height; ++y)
+        for (x = iter->items[0].roi.x; x < iter->items[0].roi.x + iter->items[0].roi.width; ++x)
           {
             gdouble radius;
             gdouble shift;
