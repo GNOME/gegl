@@ -18,6 +18,8 @@
  *           2007           Allesandro Rizzi <rizzi@dti.unimi.it>
  */
 
+#define GEGL_ITERATOR2_API
+
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -83,7 +85,7 @@ static void c2g (GeglOperation       *op,
     /* XXX: compute total pixels and progress by consumption
      */
     GeglBufferIterator *i = gegl_buffer_iterator_new (dst, dst_rect, 0, babl_format_with_space ("YA float", space),
-                                                      GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                                      GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
     GeglSampler *sampler = gegl_buffer_sampler_new_at_level (src, format, GEGL_SAMPLER_NEAREST, level);
     GeglSamplerGetFun getfun = gegl_sampler_get_fun (sampler);
 #if 0
@@ -95,13 +97,14 @@ static void c2g (GeglOperation       *op,
     {
       gint x,y;
       gint    dst_offset=0;
-      gfloat *dst_buf = i->data[0];
+      gfloat *dst_buf = i->items[0].data;
 
       if (GEGL_PROPERTIES(op)->enhance_shadows)
       {
-      for (y=i->roi[0].y; y < i->roi[0].y + i->roi[0].height; y++)
+         GeglRectangle roi = i->items[0].roi;
+      for (y=roi.y; y < roi.y + roi.height; y++)
         {
-          for (x=i->roi[0].x; x < i->roi[0].x + i->roi[0].width; x++)
+          for (x=roi.x; x < roi.x + roi.width; x++)
             {
               gfloat  min[4];
               gfloat  max[4];
@@ -148,13 +151,14 @@ static void c2g (GeglOperation       *op,
               }
             }
 
-            pix_done += i->roi[0].width;
+            pix_done += roi.width;
           }
       }
       else
       {
-        for (y=i->roi[0].y; y < i->roi[0].y + i->roi[0].height; y++)
-          for (x=i->roi[0].x; x < i->roi[0].x + i->roi[0].width; x++)
+         GeglRectangle roi = i->items[0].roi;
+        for (y=roi.y; y < roi.y + roi.height; y++)
+          for (x=roi.x; x < roi.x + roi.width; x++)
             {
               gfloat  max[4];
               gfloat  pixel[4];
@@ -199,7 +203,7 @@ static void c2g (GeglOperation       *op,
                 dst_offset+=2;
               }
             }
-            pix_done += i->roi[0].width;
+            pix_done += roi.width;
           }
       }
 #if 0
