@@ -19,6 +19,8 @@
  *
  */
 
+#define GEGL_ITERATOR2_API
+
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -337,7 +339,7 @@ process (GeglOperation       *operation,
                                                  o->sampler_type, level);
 
   iter = gegl_buffer_iterator_new (output, result, level, inout_format,
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 4);
 
   if (aux)
     {
@@ -373,13 +375,13 @@ process (GeglOperation       *operation,
 
   while (gegl_buffer_iterator_next (iter))
     {
-      gfloat *out_pixel  = iter->data[0];
-      gfloat *aux_pixel  = aux ? iter->data[aux_index] : NULL;
-      gfloat *aux2_pixel = aux2 ? iter->data[aux2_index] : NULL;
+      gfloat *out_pixel  = iter->items[0].data;
+      gfloat *aux_pixel  = aux ? iter->items[aux_index].data : NULL;
+      gfloat *aux2_pixel = aux2 ? iter->items[aux2_index].data : NULL;
       gint b;
 
-      for (y = iter->roi[0].y; y < iter->roi[0].y + iter->roi[0].height; y++)
-        for (x = iter->roi[0].x; x < iter->roi[0].x + iter->roi[0].width; x++)
+      for (y = iter->items[0].roi.y; y < iter->items[0].roi.y + iter->items[0].roi.height; y++)
+        for (x = iter->items[0].roi.x; x < iter->items[0].roi.x + iter->items[0].roi.width; x++)
           {
             gdouble src_x, src_y;
 
