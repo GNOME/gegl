@@ -36,6 +36,9 @@ property_double (value, _("Opacity"), 1.0)
 #include "gegl-op.h"
 
 #include <stdio.h>
+#include <math.h>
+
+#define EPSILON 1e-6f
 
 static void
 prepare (GeglOperation *self)
@@ -103,7 +106,6 @@ process_RaGaBaAfloat (GeglOperation       *op,
 
   if (aux == NULL)
     {
-      g_assert (value != 1.0); /* buffer should have been passed through */
       while (samples--)
         {
           gint j;
@@ -113,7 +115,7 @@ process_RaGaBaAfloat (GeglOperation       *op,
           out += 4;
         }
     }
-  else if (value == 1.0)
+  else if (fabsf (value - 1.0f) <= EPSILON)
     while (samples--)
       {
         gint j;
@@ -152,7 +154,6 @@ process_RGBAfloat (GeglOperation       *op,
 
   if (aux == NULL)
     {
-      g_assert (value != 1.0); /* buffer should have been passed through */
       while (samples--)
         {
           gint j;
@@ -163,7 +164,7 @@ process_RGBAfloat (GeglOperation       *op,
           out += 4;
         }
     }
-  else if (value == 1.0)
+  else if (fabsf (value - 1.0f) <= EPSILON)
     while (samples--)
       {
         gint j;
@@ -266,13 +267,14 @@ static gboolean operation_process (GeglOperation        *operation,
 {
   GeglOperationClass  *operation_class;
   gpointer in, aux;
+  gfloat value = GEGL_PROPERTIES (operation)->value;
   operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
 
   /* get the raw values this does not increase the reference count */
   in = gegl_operation_context_get_object (context, "input");
   aux = gegl_operation_context_get_object (context, "aux");
 
-  if (in && !aux && GEGL_PROPERTIES (operation)->value == 1.0)
+  if (in && !aux && fabsf (value - 1.0f) <= EPSILON)
     {
       gegl_operation_context_take_object (context, "output",
                                           g_object_ref (G_OBJECT (in)));
