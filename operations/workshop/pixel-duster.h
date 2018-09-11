@@ -734,13 +734,13 @@ static inline void pixel_duster_add_probes_for_transparent (PixelDuster *duster)
                                                     0,
                                                     format,
                                                     GEGL_ACCESS_WRITE,
-                                                    GEGL_ABYSS_NONE);
+                                                    GEGL_ABYSS_NONE, 1);
   while (gegl_buffer_iterator_next (i))
   {
-    gint x = i->roi[0].x;
-    gint y = i->roi[0].y;
-    gint n_pixels  = i->roi[0].width * i->roi[0].height;
-    float *out_pix = i->data[0];
+    gint x = i->items[0].roi.x;
+    gint y = i->items[0].roi.y;
+    gint n_pixels  = i->items[0].roi.width * i->items[0].roi.height;
+    float *out_pix = i->items[0].data;
     while (n_pixels--)
     {
       if (out_pix[3] <= 0.001 ||
@@ -753,9 +753,9 @@ static inline void pixel_duster_add_probes_for_transparent (PixelDuster *duster)
       out_pix += 4;
 
       x++;
-      if (x >= i->roi[0].x + i->roi[0].width)
+      if (x >= i->items[0].roi.x + i->items[0].roi.width)
       {
-        x = i->roi[0].x;
+        x = i->items[0].roi.x;
         y++;
       }
     }

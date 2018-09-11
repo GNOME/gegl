@@ -19,6 +19,7 @@
  *
  */
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -177,11 +178,11 @@ assign_pixels_to_clusters (GeglBuffer *input,
   GeglBufferIterator *iter;
 
   iter = gegl_buffer_iterator_new (input, NULL, 0, babl_format ("CIE Lab float"),
-                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 1);
 
   while (gegl_buffer_iterator_next (iter))
     {
-      gfloat *pixel = iter->data[0];
+      gfloat *pixel = iter->items[0].data;
       glong   n_pixels = iter->length;
 
       while (n_pixels--)
@@ -242,15 +243,15 @@ set_output (GeglBuffer *input,
   GeglBufferIterator *iter;
 
   iter = gegl_buffer_iterator_new (output, NULL, 0, babl_format ("CIE Lab float"),
-                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 2);
 
   gegl_buffer_iterator_add (iter, input, NULL, 0, babl_format ("CIE Lab float"),
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (iter))
     {
-      gfloat *out_pixel = iter->data[0];
-      gfloat *in_pixel  = iter->data[1];
+      gfloat *out_pixel = iter->items[0].data;
+      gfloat *in_pixel  = iter->items[1].data;
       glong   n_pixels = iter->length;
 
       while (n_pixels--)
