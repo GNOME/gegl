@@ -37,6 +37,8 @@ property_int (frame, _("frame"), 0)
   description (_("frame number to decode"))
 property_int (frames, _("frames"), 0)
   description (_("Number of frames in gif animation"))
+property_int (frame_delay, _("frame-delay"), 100)
+  description (_("Delay in ms for last decoded frame"))
 
 #else
 
@@ -188,7 +190,7 @@ process (GeglOperation       *operation,
   gegl_buffer_set (output, result, 0, p->format,
                    p->gif.frame_image,
                    p->gif.width * 4);
-
+  o->frame_delay = p->gif.frames[o->frame].frame_delay * 10;
   return FALSE;
 }
 
