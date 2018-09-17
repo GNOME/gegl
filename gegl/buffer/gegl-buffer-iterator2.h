@@ -98,6 +98,16 @@ GeglBufferIterator2 * gegl_buffer_iterator2_new  (
  * the corresponding scans and regions will be serialized automatically using
  * gegl_buffer_get.
  *
+ * If the buffer shares its tiles with a previously-added buffer (in
+ * particular, if the same buffer is added more than once), and at least one of
+ * the buffers is accessed for writing, the corresponding iterated-over areas
+ * should either completely overlap, or not overlap at all, in the coordinate-
+ * system of the underlying tile storage (that is, after shifting each area by
+ * the corresponding buffer's shift-x and shift-y properties).  If the areas
+ * overlap, at most one of the buffers may be accessed for writing, and the
+ * data pointers of the corresponding iterator items may refer to the same
+ * data.
+ *
  * Returns: an integer handle refering to the indice in the iterator structure
  * of the added buffer.
  */

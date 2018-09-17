@@ -5,6 +5,7 @@ noinst_PROGRAMS =			\
 	test-buffer-changes		\
 	test-buffer-extract		\
 	test-buffer-hot-tile	\
+	test-buffer-iterator-aliasing	\
 	test-buffer-sharing  	\
 	test-buffer-tile-voiding	\
 	test-buffer-unaligned-access	\
