@@ -273,7 +273,6 @@ static gchar    *cmd_gegl_swap           = NULL;
 static gchar    *cmd_gegl_cache_size     = NULL;
 static gchar    *cmd_gegl_chunk_size     = NULL;
 static gchar    *cmd_gegl_quality        = NULL;
-static gchar    *cmd_gegl_tile_size      = NULL;
 static gchar    *cmd_gegl_threads        = NULL;
 static gboolean *cmd_gegl_disable_opencl = NULL;
 
@@ -288,11 +287,6 @@ static const GOptionEntry cmd_entries[]=
      "gegl-cache-size", 0, 0,
      G_OPTION_ARG_STRING, &cmd_gegl_cache_size,
      N_("How much memory to (approximately) use for caching imagery"), "<megabytes>"
-    },
-    {
-     "gegl-tile-size", 0, 0,
-     G_OPTION_ARG_STRING, &cmd_gegl_tile_size,
-     N_("Default size of tiles in GeglBuffers"), "<widthxheight>"
     },
     {
      "gegl-chunk-size", 0, 0,
@@ -367,15 +361,6 @@ static void gegl_config_parse_env (GeglConfig *config)
 
   if (g_getenv ("GEGL_CHUNK_SIZE"))
     config->chunk_size = atoi(g_getenv("GEGL_CHUNK_SIZE"));
-
-  if (g_getenv ("GEGL_TILE_SIZE"))
-    {
-      const gchar *str = g_getenv ("GEGL_TILE_SIZE");
-      config->tile_width = atoi(str);
-      str = strchr (str, 'x');
-      if (str)
-        config->tile_height = atoi(str+1);
-    }
 
   if (g_getenv ("GEGL_THREADS"))
     {
@@ -677,14 +662,6 @@ gegl_post_parse_hook (GOptionContext *context,
     config->tile_cache_size = atoll (cmd_gegl_cache_size)*1024*1024;
   if (cmd_gegl_chunk_size)
     config->chunk_size = atoi (cmd_gegl_chunk_size);
-  if (cmd_gegl_tile_size)
-    {
-      const gchar *str = cmd_gegl_tile_size;
-      config->tile_width = atoi(str);
-      str = strchr (str, 'x');
-      if (str)
-        config->tile_height = atoi(str+1);
-    }
   if (cmd_gegl_threads)
     {
       _gegl_threads = atoi (cmd_gegl_threads);

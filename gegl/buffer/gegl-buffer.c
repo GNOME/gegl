@@ -848,17 +848,30 @@ gegl_buffer_class_init (GeglBufferClass *class)
                                                         G_PARAM_READWRITE |
                                                         G_PARAM_CONSTRUCT_ONLY));
 
-  g_object_class_install_property (gobject_class, PROP_TILE_HEIGHT,
-                                   g_param_spec_int ("tile-height", "tile-height", "height of a tile",
-                                                     -1, G_MAXINT, gegl_config()->tile_height,
-                                                     G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+  {
+    gint tile_height = 128;
+    gint tile_width = 128;
+    if (g_getenv ("GEGL_TILE_SIZE"))
+    {
+      const gchar *str = g_getenv ("GEGL_TILE_SIZE");
+      tile_width = atoi(str);
+      str = strchr (str, 'x');
+      if (str)
+        tile_height = atoi(str+1);
+    }
 
-  g_object_class_install_property (gobject_class, PROP_TILE_WIDTH,
-                                   g_param_spec_int ("tile-width", "tile-width", "width of a tile",
-                                                     -1, G_MAXINT, gegl_config()->tile_width,
-                                                     G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (gobject_class, PROP_TILE_HEIGHT,
+                                     g_param_spec_int ("tile-height", "tile-height", "height of a tile",
+                                                       -1, G_MAXINT, tile_height,
+                                                       G_PARAM_READWRITE |
+                                                       G_PARAM_CONSTRUCT_ONLY));
+
+    g_object_class_install_property (gobject_class, PROP_TILE_WIDTH,
+                                     g_param_spec_int ("tile-width", "tile-width", "width of a tile",
+                                                       -1, G_MAXINT, tile_width,
+                                                       G_PARAM_READWRITE |
+                                                       G_PARAM_CONSTRUCT_ONLY));
+  }
 
   g_object_class_install_property (gobject_class, PROP_PATH,
                                    g_param_spec_string ("path", "Path",
