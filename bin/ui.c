@@ -94,6 +94,7 @@ struct _State {
   int         is_video;
   int         frame_no;
   int         prev_frame_played;
+  double      prev_ms;
 };
 
 typedef struct ActionData {
@@ -990,13 +991,6 @@ static void gegl_ui (Mrg *mrg, void *data)
 {
   State *o = data;
 
-  if (o->is_video)
-   {
-     o->frame_no++;
-     fprintf (stderr, "\r%i", o->frame_no);   /* */
-     gegl_node_set (o->load, "frame", o->frame_no, NULL);
-     mrg_queue_draw (o->mrg, NULL);
-   }
 
   mrg_gegl_blit (mrg,
                  0, 0,
@@ -1005,6 +999,35 @@ static void gegl_ui (Mrg *mrg, void *data)
                  o->u, o->v,
                  o->scale,
                  o->render_quality);
+
+  if (g_str_has_suffix (o->path, ".gif") ||
+      g_str_has_suffix (o->path, ".GIF"))
+   {
+     int frames = 0;
+     int frame_delay = 0;
+     gegl_node_get (o->load, "frames", &frames, "frame-delay", &frame_delay, NULL);
+     if (o->prev_ms + frame_delay  < mrg_ms (mrg))
+     {
+       o->frame_no++;
+       fprintf (stderr, "\r%i/%i", o->frame_no, frames);   /* */
+       if (o->frame_no >= frames)
+         o->frame_no = 0;
+       gegl_node_set (o->load, "frame", o->frame_no, NULL);
+       o->prev_ms = mrg_ms (mrg);
+    }
+     mrg_queue_draw (o->mrg, NULL);
+   }
+  else if (o->is_video)
+   {
+     int frames = 0;
+     o->frame_no++;
+     gegl_node_get (o->load, "frames", &frames, NULL);
+     fprintf (stderr, "\r%i/%i", o->frame_no, frames);   /* */
+     if (o->frame_no >= frames)
+       o->frame_no = 0;
+     gegl_node_set (o->load, "frame", o->frame_no, NULL);
+     mrg_queue_draw (o->mrg, NULL);
+   }
 
   if (o->is_video)
   {
@@ -1203,7 +1226,18 @@ static void load_path (State *o)
   o->frame_no = 0;
   o->prev_frame_played = 0;
 
-  if (gegl_str_has_video_suffix (path))
+  if (g_str_has_suffix (path, ".gif"))
+  {
+    o->gegl = gegl_node_new ();
+    o->sink = gegl_node_new_child (o->gegl,
+                       "operation", "gegl:nop", NULL);
+    o->source = gegl_node_new_child (o->gegl,
+                       "operation", "gegl:nop", NULL);
+    o->load = gegl_node_new_child (o->gegl,
+         "operation", "gegl:gif-load", "path", path, "frame", o->frame_no, NULL);
+    gegl_node_link_many (o->load, o->source, o->sink, NULL);
+  }
+  else if (gegl_str_has_video_suffix (path))
   {
     o->is_video = 1;
     o->gegl = gegl_node_new ();
