@@ -1,3 +1,35 @@
+GEGL-0.4.10 2018-09-2x
+----------------------
+
+GeglBuffer
+~~~~~~~~~~
+
+Added GEGL_TILE_COPY command for backends, for more efficient buffer
+duplication/copies.
+
+New GeglBufferIterator API.
+
+Move tyoe-generic scaling algorithms to GeglBuffer folder, move opencl
+integration bits out of buffer.
+
+Operations
+~~~~~~~~~~
+
+gif-load: new operation for decoding GIF images/animations, with frame delay
+exposed as an out-property.
+
+exr-save: do not hard-code a version name space
+long-shadow: add mipoint parameter
+
+Updated all operations to use new iterator API
+
+Contributors to this release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alexandre Prokoudine, Debarshi Ray, Ell, Hussam Al-Tayeb, Marco Ciampa,
+Øyvind Kolås, Piotr Drąg, Rodrigo Lledó and Tim Sabsch
+
+
 GEGL-0.4.8 2018-08-17
 ---------------------
 
