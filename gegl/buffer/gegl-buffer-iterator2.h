@@ -25,7 +25,7 @@
 typedef struct _GeglBufferIterator2Priv GeglBufferIterator2Priv;
 
 /***
- * GeglBufferIterator:
+ * GeglBufferIterator2:
  *
  * GeglBufferIterator allows to iterate over one or more GeglBuffers.
  * In each iteration the new data is available as a linear chunk of
@@ -47,7 +47,7 @@ typedef struct GeglBufferIterator2
 
 
 /**
- * gegl_buffer_iterator_empty_new: (skip)
+ * gegl_buffer_iterator2_empty_new: (skip)
  * Create a new buffer iterator without adding any buffers.
  *
  * Returns: a new buffer iterator.
@@ -129,7 +129,7 @@ gint                 gegl_buffer_iterator2_add  (GeglBufferIterator2  *iterator,
 void                 gegl_buffer_iterator2_stop  (GeglBufferIterator2 *iterator);
 
 /**
- * gegl_buffer_iterator_next: (skip)
+ * gegl_buffer_iterator2_next: (skip)
  * @iterator: a #GeglBufferIterator
  *
  * Do an iteration, this causes a new set of iterator->data[] to become
