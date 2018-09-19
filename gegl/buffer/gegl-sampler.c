@@ -36,7 +36,6 @@
 #include "gegl-sampler-lohalo.h"
 #include "gegl-types-internal.h"
 
-#include "gegl-config.h"
 
 enum
 {

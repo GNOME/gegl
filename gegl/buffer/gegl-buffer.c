@@ -38,6 +38,7 @@
 
 #include "gegl-buffer-types.h"
 #include "gegl-buffer.h"
+#include "gegl-config.h" // XXX should be removed
 #include "gegl-buffer-private.h"
 #include "gegl-debug.h"
 #include "gegl-tile-storage.h"
@@ -46,7 +47,6 @@
 #include "gegl-tile-backend-ram.h"
 
 //#include "opencl/gegl-cl.h"
-#include "gegl-config.h" /* XXX: include of file outside buffer dir */
 
 #include "gegl-types-internal.h"
 
@@ -331,8 +331,7 @@ gegl_buffer_leaks (void)
     {
       GList *leaked_buffer = NULL;
 
-      if (gegl_config_threads()>1)
-        g_mutex_lock (&allocated_buffers_mutex);
+      g_mutex_lock (&allocated_buffers_mutex);
 
       for (leaked_buffer = allocated_buffers_list;
            leaked_buffer != NULL;
@@ -351,8 +350,7 @@ gegl_buffer_leaks (void)
       g_list_free (allocated_buffers_list);
       allocated_buffers_list = NULL;
 
-      if (gegl_config_threads()>1)
-        g_mutex_unlock (&allocated_buffers_mutex);
+      g_mutex_unlock (&allocated_buffers_mutex);
     }
 #endif
 
@@ -405,11 +403,9 @@ gegl_buffer_finalize (GObject *object)
 #ifdef GEGL_ENABLE_DEBUG
   if (DEBUG_ALLOCATIONS)
     {
-      if (gegl_config_threads()>1)
-        g_mutex_lock (&allocated_buffers_mutex);
+      g_mutex_lock (&allocated_buffers_mutex);
       allocated_buffers_list = g_list_remove (allocated_buffers_list, object);
-      if (gegl_config_threads()>1)
-        g_mutex_unlock (&allocated_buffers_mutex);
+      g_mutex_unlock (&allocated_buffers_mutex);
       g_free (GEGL_BUFFER (object)->alloc_stack_trace);
     }
 #endif
@@ -929,11 +925,9 @@ gegl_buffer_init (GeglBuffer *buffer)
   if (DEBUG_ALLOCATIONS)
     {
       gegl_buffer_set_alloc_stack (buffer);
-      if (gegl_config_threads()>1)
-        g_mutex_lock (&allocated_buffers_mutex);
+      g_mutex_lock (&allocated_buffers_mutex);
       allocated_buffers_list = g_list_prepend (allocated_buffers_list, buffer);
-      if (gegl_config_threads()>1)
-        g_mutex_unlock (&allocated_buffers_mutex);
+      g_mutex_unlock (&allocated_buffers_mutex);
     }
 #endif
 }
@@ -1127,18 +1121,14 @@ gegl_buffer_try_lock (GeglBuffer *buffer)
   {
     GeglTileBackend *backend = gegl_buffer_backend (buffer);
 
-    gboolean threaded = gegl_config_threads ()>1;
-
-    if (threaded)
-      g_rec_mutex_lock (&buffer->tile_storage->mutex);
+    g_rec_mutex_lock (&buffer->tile_storage->mutex);
     if (buffer->lock_count > 0)
       buffer->lock_count++;
     else if (gegl_tile_backend_file_try_lock (GEGL_TILE_BACKEND_FILE (backend)))
       buffer->lock_count++;
     else
       ret = FALSE;
-    if (threaded)
-      g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
   }
 
   return ret;
@@ -1163,11 +1153,9 @@ gegl_buffer_unlock (GeglBuffer *buffer)
 
   if (gegl_buffer_is_shared (buffer))
   {
-    gboolean threaded = gegl_config_threads ()>1;
     GeglTileBackend *backend = gegl_buffer_backend (buffer);
 
-    if (threaded)
-      g_rec_mutex_lock (&buffer->tile_storage->mutex);
+    g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
     buffer->lock_count--;
     g_assert (buffer->lock_count >= 0);
@@ -1175,8 +1163,7 @@ gegl_buffer_unlock (GeglBuffer *buffer)
     if (buffer->lock_count == 0)
       ret = gegl_tile_backend_file_unlock (GEGL_TILE_BACKEND_FILE (backend));
 
-    if (threaded)
-      g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
   }
 
   return ret;
@@ -1219,23 +1206,16 @@ gegl_buffer_get_tile (GeglBuffer *buffer,
   GeglTile *tile;
 
   g_assert (source);
-
-  if (gegl_config_threads () > 1)
   {
-    GeglTileStorage *tile_storage = buffer->tile_storage;
-    g_assert (tile_storage);
+  GeglTileStorage *tile_storage = buffer->tile_storage;
+  g_assert (tile_storage);
 
-    g_rec_mutex_lock (&tile_storage->mutex);
+  g_rec_mutex_lock (&tile_storage->mutex);
 
-    tile = gegl_tile_source_command (source, GEGL_TILE_GET,
-                                     x, y, z, NULL);
+  tile = gegl_tile_source_command (source, GEGL_TILE_GET,
+                                   x, y, z, NULL);
 
-    g_rec_mutex_unlock (&tile_storage->mutex);
-  }
-  else
-  {
-    return gegl_tile_source_command (source, GEGL_TILE_GET,
-                                     x, y, z, NULL);
+  g_rec_mutex_unlock (&tile_storage->mutex);
   }
 
   return tile;

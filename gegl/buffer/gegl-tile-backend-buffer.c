@@ -22,8 +22,6 @@
 
 #include "gegl-buffer-types.h"
 
-#include "gegl-config.h"
-
 #include "gegl-buffer-backend.h"
 #include "gegl-buffer-private.h"
 #include "gegl-tile-backend.h"
@@ -259,13 +257,11 @@ gegl_tile_backend_buffer_set_tile (GeglTileBackendBuffer *tile_backend_buffer,
 
   dest_tile = gegl_tile_dup (tile);
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_lock (&buffer->tile_storage->mutex);
+  g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
   gegl_tile_handler_cache_insert (cache, dest_tile, x, y, z);
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+  g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 
   gegl_tile_unref (dest_tile);
 
@@ -285,13 +281,11 @@ gegl_tile_backend_buffer_forward_command (GeglTileBackendBuffer *tile_backend_bu
   GeglTileSource *source = GEGL_TILE_SOURCE (buffer);
   gpointer        result;
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_lock (&buffer->tile_storage->mutex);
+  g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
   result = gegl_tile_source_command (source, command, x, y, z, data);
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+  g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 
   if (emit_changed_signal)
     gegl_tile_backend_buffer_emit_changed_signal (tile_backend_buffer, x, y, z);

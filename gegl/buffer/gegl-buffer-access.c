@@ -39,7 +39,6 @@
 #include "gegl-tile-backend.h"
 #include "gegl-buffer-iterator.h"
 #include "gegl-buffer-iterator-private.h"
-#include "gegl-config.h"
 #include "gegl-types-internal.h"
 
 static void gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
@@ -130,8 +129,7 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
           tile->x == indice_x &&
           tile->y == indice_y))
       {
-        if (gegl_config_threads()>1)
-          g_rec_mutex_lock (&buffer->tile_storage->mutex);
+        g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
         if (tile)
           gegl_tile_unref (tile);
@@ -140,8 +138,7 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
                                           indice_x, indice_y,
                                           0);
 
-        if (gegl_config_threads()>1)
-          g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+        g_rec_mutex_unlock (&buffer->tile_storage->mutex);
       }
 
     if (tile)
@@ -217,8 +214,7 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
           tile->x == indice_x &&
           tile->y == indice_y))
       {
-        if (gegl_config_threads()>1)
-          g_rec_mutex_lock (&buffer->tile_storage->mutex);
+        g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
         if (tile)
           gegl_tile_unref (tile);
@@ -227,8 +223,7 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
                                           indice_x, indice_y,
                                           0);
 
-        if (gegl_config_threads()>1)
-          g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+        g_rec_mutex_unlock (&buffer->tile_storage->mutex);
       }
 
     if (tile)
@@ -319,8 +314,7 @@ gegl_buffer_flush (GeglBuffer *buffer)
   g_return_if_fail (GEGL_IS_BUFFER (buffer));
   backend = gegl_buffer_backend (buffer);
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_lock (&buffer->tile_storage->mutex);
+  g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
   _gegl_buffer_drop_hot_tile (buffer);
 
@@ -330,8 +324,7 @@ gegl_buffer_flush (GeglBuffer *buffer)
   gegl_tile_source_command (GEGL_TILE_SOURCE (buffer),
                             GEGL_TILE_FLUSH, 0,0,0,NULL);
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+  g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 }
 
 void
@@ -984,22 +977,12 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
           else
             pixels = tile_width - offsetx;
 
-          if (gegl_config_threads()>1)
-          {
-             g_rec_mutex_lock (&buffer->tile_storage->mutex);
-             tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
-                                            gegl_tile_indice (tiledx, tile_width),
-                                            gegl_tile_indice (tiledy, tile_height),
-                                            level);
-            g_rec_mutex_unlock (&buffer->tile_storage->mutex);
-          }
-          else
-          {
-             tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
-                                            gegl_tile_indice (tiledx, tile_width),
-                                            gegl_tile_indice (tiledy, tile_height),
-                                            level);
-          }
+          g_rec_mutex_lock (&buffer->tile_storage->mutex);
+          tile = gegl_tile_source_get_tile ((GeglTileSource *) (buffer),
+                                          gegl_tile_indice (tiledx, tile_width),
+                                          gegl_tile_indice (tiledy, tile_height),
+                                          level);
+          g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 
           if (!tile)
             {
@@ -2431,18 +2414,15 @@ gegl_buffer_copy (GeglBuffer          *src,
              */
             fast_copy = (src->tile_storage->n_user_handlers == 0);
 
-            if (gegl_config_threads()>1)
+            if (src < dst)
               {
-                if (src < dst)
-                  {
-                    g_rec_mutex_lock (&src->tile_storage->mutex);
-                    g_rec_mutex_lock (&dst->tile_storage->mutex);
-                  }
-                else
-                  {
-                    g_rec_mutex_lock (&dst->tile_storage->mutex);
-                    g_rec_mutex_lock (&src->tile_storage->mutex);
-                  }
+                g_rec_mutex_lock (&src->tile_storage->mutex);
+                g_rec_mutex_lock (&dst->tile_storage->mutex);
+              }
+            else
+              {
+                g_rec_mutex_lock (&dst->tile_storage->mutex);
+                g_rec_mutex_lock (&src->tile_storage->mutex);
               }
 
             for (dst_y = cow_rect.y + dst->shift_y; dst_y < cow_rect.y + dst->shift_y + cow_rect.height; dst_y += tile_height)
@@ -2481,11 +2461,8 @@ gegl_buffer_copy (GeglBuffer          *src,
                   }
               }
 
-            if (gegl_config_threads()>1)
-              {
-                g_rec_mutex_unlock (&src->tile_storage->mutex);
-                g_rec_mutex_unlock (&dst->tile_storage->mutex);
-              }
+            g_rec_mutex_unlock (&src->tile_storage->mutex);
+            g_rec_mutex_unlock (&dst->tile_storage->mutex);
           }
 
           top = *dst_rect;
@@ -2631,8 +2608,7 @@ gegl_buffer_clear (GeglBuffer          *dst,
 
             gint dst_x, dst_y;
 
-            if (gegl_config_threads()>1)
-              g_rec_mutex_lock (&dst->tile_storage->mutex);
+            g_rec_mutex_lock (&dst->tile_storage->mutex);
 
             for (dst_y = cow_rect.y + dst->shift_y; dst_y < cow_rect.y + dst->shift_y + cow_rect.height; dst_y += tile_height)
             for (dst_x = cow_rect.x + dst->shift_x; dst_x < cow_rect.x + dst->shift_x + cow_rect.width; dst_x += tile_width)
@@ -2645,8 +2621,7 @@ gegl_buffer_clear (GeglBuffer          *dst,
                 gegl_tile_source_void ((GeglTileSource*)dst, dtx, dty, 0);
               }
 
-            if (gegl_config_threads()>1)
-              g_rec_mutex_unlock (&dst->tile_storage->mutex);
+            g_rec_mutex_unlock (&dst->tile_storage->mutex);
           }
 
           top = *dst_rect;

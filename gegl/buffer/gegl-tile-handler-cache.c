@@ -406,8 +406,7 @@ gegl_tile_handler_cache_wash (GeglTileHandlerCache *cache)
       if (cache == NULL)
         break;
 
-      if (gegl_config_threads()>1 &&
-          ! g_rec_mutex_trylock (&cache->tile_storage->mutex))
+      if (! g_rec_mutex_trylock (&cache->tile_storage->mutex))
         {
           continue;
         }
@@ -432,8 +431,7 @@ gegl_tile_handler_cache_wash (GeglTileHandlerCache *cache)
           size += tile->size;
         }
 
-      if (gegl_config_threads()>1)
-        g_rec_mutex_unlock (&cache->tile_storage->mutex);
+      g_rec_mutex_unlock (&cache->tile_storage->mutex);
     }
 
   g_mutex_unlock (&mutex);
@@ -536,7 +534,7 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 
       if (! link)
         {
-          if (cache && gegl_config_threads()>1)
+          if (cache)
             g_rec_mutex_unlock (&cache->tile_storage->mutex);
 
           do
@@ -552,7 +550,6 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
                   * thread.  try locking the cache's storage mutex here, and
                   * skip the cache if it fails.
                   */
-                 gegl_config_threads()>1 &&
                  ! g_rec_mutex_trylock (&cache->tile_storage->mutex));
 
           if (! cache)
@@ -605,7 +602,7 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
       link = prev_link;
     }
 
-  if (cache && gegl_config_threads()>1)
+  if (cache)
     g_rec_mutex_unlock (&cache->tile_storage->mutex);
 
   g_mutex_unlock (&mutex);

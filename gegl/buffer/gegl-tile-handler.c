@@ -28,7 +28,6 @@
 #include "gegl-tile-handler-private.h"
 #include "gegl-tile-storage.h"
 #include "gegl-buffer-private.h"
-#include "gegl-config.h"
 
 struct _GeglTileHandlerPrivate
 {
@@ -251,8 +250,7 @@ gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
 
   source = GEGL_TILE_SOURCE (handler);
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_lock (&handler->priv->tile_storage->mutex);
+  g_rec_mutex_lock (&handler->priv->tile_storage->mutex);
 
   tile_width  = handler->priv->tile_storage->tile_width;
   tile_height = handler->priv->tile_storage->tile_height;
@@ -340,6 +338,5 @@ gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
         }
     }
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_unlock (&handler->priv->tile_storage->mutex);
+  g_rec_mutex_unlock (&handler->priv->tile_storage->mutex);
 }

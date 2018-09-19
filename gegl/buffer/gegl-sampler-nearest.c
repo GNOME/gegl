@@ -26,7 +26,6 @@
 #include "gegl-buffer-private.h"
 #include "gegl-tile-storage.h"
 #include "gegl-tile-backend.h"
-#include "gegl-config.h"
 #include "gegl-sampler-nearest.h"
 
 enum
@@ -165,8 +164,7 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
           tile->x == indice_x &&
           tile->y == indice_y))
       {
-        if (gegl_config_threads()>1)
-          g_rec_mutex_lock (&buffer->tile_storage->mutex);
+        g_rec_mutex_lock (&buffer->tile_storage->mutex);
 
         if (tile)
           {
@@ -182,8 +180,7 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
 
         gegl_tile_read_lock (tile);
 
-        if (gegl_config_threads()>1)
-          g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+        g_rec_mutex_unlock (&buffer->tile_storage->mutex);
       }
 
     if (tile)

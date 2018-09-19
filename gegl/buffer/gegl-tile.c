@@ -29,7 +29,6 @@
 #include "gegl-tile.h"
 #include "gegl-buffer-private.h"
 #include "gegl-tile-storage.h"
-#include "gegl-config.h"
 
 /* the offset at which the tile data begins, when it shares the same buffer as
  * n_clones.  use 16 bytes, which is the alignment we use for gegl_malloc(), so
@@ -341,8 +340,7 @@ gegl_tile_void_pyramid (GeglTile *tile,
       tile->tile_storage->seen_zoom &&
       tile->z == 0) /* we only accepting voiding the base level */
     {
-      if (gegl_config_threads()>1)
-        g_rec_mutex_lock (&tile->tile_storage->mutex);
+      g_rec_mutex_lock (&tile->tile_storage->mutex);
 
       _gegl_tile_void_pyramid (GEGL_TILE_SOURCE (tile->tile_storage),
                                tile->x,
@@ -350,8 +348,7 @@ gegl_tile_void_pyramid (GeglTile *tile,
                                tile->z,
                                damage);
 
-      if (gegl_config_threads()>1)
-        g_rec_mutex_unlock (&tile->tile_storage->mutex);
+      g_rec_mutex_unlock (&tile->tile_storage->mutex);
 
       return;
     }
@@ -469,15 +466,12 @@ gboolean gegl_tile_store (GeglTile *tile)
   if (tile->tile_storage == NULL || tile->damage)
     return FALSE;
 
-  if (gegl_config_threads()>1)
-    {
-      g_rec_mutex_lock (&tile->tile_storage->mutex);
+  g_rec_mutex_lock (&tile->tile_storage->mutex);
 
-      if (gegl_tile_is_stored (tile))
-        {
-          g_rec_mutex_unlock (&tile->tile_storage->mutex);
-          return FALSE;
-        }
+  if (gegl_tile_is_stored (tile))
+    {
+      g_rec_mutex_unlock (&tile->tile_storage->mutex);
+      return FALSE;
     }
 
   ret = gegl_tile_source_set_tile (GEGL_TILE_SOURCE (tile->tile_storage),
@@ -486,8 +480,7 @@ gboolean gegl_tile_store (GeglTile *tile)
                                     tile->z,
                                     tile);
 
-  if (gegl_config_threads()>1)
-    g_rec_mutex_unlock (&tile->tile_storage->mutex);
+  g_rec_mutex_unlock (&tile->tile_storage->mutex);
 
   return ret;
 }

@@ -30,7 +30,6 @@
 #include "gegl-buffer-iterator.h"
 #include "gegl-buffer-iterator-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-config.h"
 
 typedef enum {
   GeglIteratorState_Start,
@@ -78,8 +77,6 @@ struct _GeglBufferIteratorPriv
   SubIterState      sub_iter[GEGL_BUFFER_MAX_ITERATORS];
 };
 
-static gboolean threaded = TRUE;
-
 static inline GeglBufferIterator *
 _gegl_buffer_iterator_empty_new (void)
 {
@@ -88,8 +85,6 @@ _gegl_buffer_iterator_empty_new (void)
 
   iter->priv->num_buffers = 0;
   iter->priv->state       = GeglIteratorState_Start;
-
-  threaded = gegl_config_threads () > 1;
 
   return iter;
 }
