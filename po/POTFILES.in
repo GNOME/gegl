@@ -177,6 +177,7 @@ operations/core/nop.c
 operations/external/exr-save.cc
 operations/external/ff-load.c
 operations/external/ff-save.c
+operations/external/gif-load.c
 operations/external/jp2-load.c
 operations/external/jpg-load.c
 operations/external/jpg-save.c
@@ -244,7 +245,6 @@ operations/transform/shear.c
 operations/transform/transform.c
 operations/transform/transform-core.c
 operations/transform/translate.c
-operations/workshop/gif-load.c
 operations/workshop/bayer-matrix.c
 operations/workshop/bilateral-filter-fast.c
 operations/workshop/demosaic-bimedian.c

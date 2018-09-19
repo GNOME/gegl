@@ -11,6 +11,8 @@ text_la_LIBADD = $(op_libs) $(PANGOCAIRO_LIBS)
 text_la_CFLAGS = $(AM_CFLAGS) $(PANGOCAIRO_CFLAGS)
 endif
 
+ops += gif-load.la 
+
 if HAVE_CAIRO
 ops += path.la vector-fill.la vector-stroke.la
 path_la_SOURCES = path.c

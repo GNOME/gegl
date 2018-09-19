@@ -14,7 +14,6 @@ op_LTLIBRARIES = \
 	bilateral-filter-fast.la \
 	demosaic-bimedian.la \
 	demosaic-simple.la \
-	gif-load.la \
 	ditto.la \
 	domain-transform.la \
 	gradient-map.la \
