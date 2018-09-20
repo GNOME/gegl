@@ -35,7 +35,8 @@ struct _GeglTileHandlerPrivate
   GeglTileHandlerCache *cache;
 };
 
-G_DEFINE_TYPE (GeglTileHandler, gegl_tile_handler, GEGL_TYPE_TILE_SOURCE)
+G_DEFINE_TYPE_WITH_PRIVATE (GeglTileHandler, gegl_tile_handler,
+                            GEGL_TYPE_TILE_SOURCE)
 
 enum
 {
@@ -128,8 +129,6 @@ gegl_tile_handler_class_init (GeglTileHandlerClass *klass)
                                                         G_TYPE_OBJECT,
                                                         G_PARAM_READWRITE |
                                                         G_PARAM_CONSTRUCT));
-
-  g_type_class_add_private (gobject_class, sizeof (GeglTileHandlerPrivate));
 }
 
 static void
@@ -137,9 +136,7 @@ gegl_tile_handler_init (GeglTileHandler *self)
 {
   ((GeglTileSource *) self)->command = gegl_tile_handler_command;
 
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                            GEGL_TYPE_TILE_HANDLER,
-                                            GeglTileHandlerPrivate);
+  self->priv = gegl_tile_handler_get_instance_private (self);
 }
 
 void

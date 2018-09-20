@@ -47,7 +47,8 @@ static void      get_property (GObject    *gobject,
                                GValue     *value,
                                GParamSpec *pspec);
 
-G_DEFINE_TYPE (GeglAudioFragment, gegl_audio_fragment, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GeglAudioFragment, gegl_audio_fragment,
+                            G_TYPE_OBJECT)
 
 
 static void deallocate_data (GeglAudioFragment *audio)
@@ -77,7 +78,7 @@ static void allocate_data (GeglAudioFragment *audio)
 static void
 gegl_audio_fragment_init (GeglAudioFragment *self)
 {
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), GEGL_TYPE_AUDIO_FRAGMENT, GeglAudioFragmentPrivate);
+  self->priv = gegl_audio_fragment_get_instance_private ((self));
   self->priv->max_samples = GEGL_MAX_AUDIO_SAMPLES;
   allocate_data (self);
 }
@@ -104,8 +105,6 @@ gegl_audio_fragment_class_init (GeglAudioFragmentClass *klass)
                                                         "A String representation of the GeglAudioFragment",
                                                         "",
                                                         G_PARAM_READWRITE));
-
-  g_type_class_add_private (klass, sizeof (GeglAudioFragmentPrivate));
 }
 
 static void

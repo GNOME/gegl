@@ -121,6 +121,7 @@ static void            gegl_node_update_debug_name        (GeglNode *node);
 
 
 G_DEFINE_TYPE_WITH_CODE (GeglNode, gegl_node, G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (GeglNode)
                          G_IMPLEMENT_INTERFACE (GEGL_TYPE_VISITABLE,
                                                 gegl_node_visitable_iface_init))
 
@@ -129,8 +130,6 @@ static void
 gegl_node_class_init (GeglNodeClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-
-  g_type_class_add_private (klass, sizeof (GeglNodePrivate));
 
   gobject_class->finalize     = gegl_node_finalize;
   gobject_class->dispose      = gegl_node_dispose;
@@ -219,9 +218,7 @@ gegl_node_class_init (GeglNodeClass *klass)
 static void
 gegl_node_init (GeglNode *self)
 {
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                            GEGL_TYPE_NODE,
-                                            GeglNodePrivate);
+  self->priv = gegl_node_get_instance_private (self);
 
   self->pads             = NULL;
   self->input_pads       = NULL;

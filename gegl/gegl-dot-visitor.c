@@ -29,7 +29,7 @@
 #include "graph/gegl-visitable.h"
 
 
-struct _GeglDotVisitorPriv
+struct _GeglDotVisitorPrivate
 {
   GString *string_to_append;
 };
@@ -42,7 +42,7 @@ static gboolean   gegl_dot_visitor_visit_pad  (GeglVisitor         *self,
                                                GeglPad             *pad);
 
 
-G_DEFINE_TYPE (GeglDotVisitor, gegl_dot_visitor, GEGL_TYPE_VISITOR)
+G_DEFINE_TYPE_WITH_PRIVATE (GeglDotVisitor, gegl_dot_visitor, GEGL_TYPE_VISITOR)
 
 
 static void
@@ -52,16 +52,12 @@ gegl_dot_visitor_class_init (GeglDotVisitorClass *klass)
 
   visitor_class->visit_node = gegl_dot_visitor_visit_node;
   visitor_class->visit_pad = gegl_dot_visitor_visit_pad;
-
-  g_type_class_add_private (klass, sizeof (GeglDotVisitorPriv));
 }
 
 static void
 gegl_dot_visitor_init (GeglDotVisitor *self)
 {
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                            GEGL_TYPE_DOT_VISITOR,
-                                            GeglDotVisitorPriv);
+  self->priv = gegl_dot_visitor_get_instance_private (self);
 }
 
 void

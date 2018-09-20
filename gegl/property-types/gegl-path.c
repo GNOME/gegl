@@ -60,9 +60,10 @@ struct _GeglPathPrivate
 
 typedef struct _GeglPathPrivate  GeglPathPrivate;
 
-G_DEFINE_TYPE (GeglPath, gegl_path, G_TYPE_OBJECT)
-#define GEGL_PATH_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o),\
-                                   GEGL_TYPE_PATH, GeglPathPrivate))
+G_DEFINE_TYPE_WITH_PRIVATE (GeglPath, gegl_path, G_TYPE_OBJECT)
+
+#define GEGL_PATH_GET_PRIVATE(o) \
+  ((GeglPathPrivate *) gegl_path_get_instance_private ((GeglPath *) (o)))
 
 enum
 {
@@ -204,8 +205,6 @@ gegl_path_class_init (GeglPathClass *klass)
   gobject_class->finalize     = finalize;
   gobject_class->set_property = set_property;
   gobject_class->get_property = get_property;
-
-  g_type_class_add_private (klass, sizeof (GeglPathPrivate));
 
   gegl_path_signals[GEGL_PATH_CHANGED] =
     g_signal_new ("changed", G_TYPE_FROM_CLASS (klass),

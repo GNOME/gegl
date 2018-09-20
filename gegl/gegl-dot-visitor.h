@@ -31,14 +31,14 @@ G_BEGIN_DECLS
 #define GEGL_IS_DOT_VISITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GEGL_TYPE_DOT_VISITOR))
 #define GEGL_DOT_VISITOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GEGL_TYPE_DOT_VISITOR, GeglDotVisitorClass))
 
-typedef struct _GeglDotVisitorPriv GeglDotVisitorPriv;
-typedef struct _GeglDotVisitorClass GeglDotVisitorClass;
+typedef struct _GeglDotVisitorPrivate GeglDotVisitorPrivate;
+typedef struct _GeglDotVisitorClass   GeglDotVisitorClass;
 
 struct _GeglDotVisitor
 {
-  GeglVisitor         parent_instance;
+  GeglVisitor            parent_instance;
 
-  GeglDotVisitorPriv *priv;
+  GeglDotVisitorPrivate *priv;
 };
 
 struct _GeglDotVisitorClass

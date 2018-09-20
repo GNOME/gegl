@@ -95,13 +95,13 @@ static const gfloat parsing_error_color[4] = { 0.f, 1.f, 1.f, 0.67f };
 /* Copied into all GeglColor:s at their instantiation. */
 static const gfloat init_color[4] = { 1.f, 1.f, 1.f, 1.f };
 
-G_DEFINE_TYPE (GeglColor, gegl_color, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GeglColor, gegl_color, G_TYPE_OBJECT)
 
 
 static void
 gegl_color_init (GeglColor *self)
 {
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE ((self), GEGL_TYPE_COLOR, GeglColorPrivate);
+  self->priv = gegl_color_get_instance_private ((self));
 
   memcpy (self->priv->rgba_color, init_color, sizeof (init_color));
 }
@@ -120,8 +120,6 @@ gegl_color_class_init (GeglColorClass *klass)
                                                         "A String representation of the GeglColor",
                                                         "",
                                                         G_PARAM_READWRITE));
-
-  g_type_class_add_private (klass, sizeof (GeglColorPrivate));
 }
 
 static gboolean

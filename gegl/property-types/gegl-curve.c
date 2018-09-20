@@ -64,10 +64,10 @@ static void get_property (GObject      *gobject,
                           GValue       *value,
                           GParamSpec   *pspec);
 
-G_DEFINE_TYPE (GeglCurve, gegl_curve, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (GeglCurve, gegl_curve, G_TYPE_OBJECT)
 
-#define GEGL_CURVE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o),\
-                                   GEGL_TYPE_CURVE, GeglCurvePrivate))
+#define GEGL_CURVE_GET_PRIVATE(o) \
+  ((GeglCurvePrivate *) gegl_curve_get_instance_private ((GeglCurve *) (o)))
 
 static void
 gegl_curve_init (GeglCurve *self)
@@ -89,8 +89,6 @@ gegl_curve_class_init (GeglCurveClass *klass)
   gobject_class->finalize     = finalize;
   gobject_class->set_property = set_property;
   gobject_class->get_property = get_property;
-
-  g_type_class_add_private (klass, sizeof (GeglCurvePrivate));
 }
 
 static void

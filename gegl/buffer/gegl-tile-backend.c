@@ -28,7 +28,8 @@
 #include "gegl-tile-backend.h"
 #include "gegl-config.h"
 
-G_DEFINE_TYPE (GeglTileBackend, gegl_tile_backend, GEGL_TYPE_TILE_SOURCE)
+G_DEFINE_TYPE_WITH_PRIVATE (GeglTileBackend, gegl_tile_backend,
+                            GEGL_TYPE_TILE_SOURCE)
 
 #define parent_class gegl_tile_backend_parent_class
 
@@ -256,16 +257,12 @@ gegl_tile_backend_class_init (GeglTileBackendClass *klass)
                                                          "Cache tiles will be flushed before the backend is destroyed",
                                                          TRUE,
                                                          G_PARAM_READWRITE));
-
-  g_type_class_add_private (gobject_class, sizeof (GeglTileBackendPrivate));
 }
 
 static void
 gegl_tile_backend_init (GeglTileBackend *self)
 {
-  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-                                            GEGL_TYPE_TILE_BACKEND,
-                                            GeglTileBackendPrivate);
+  self->priv = gegl_tile_backend_get_instance_private (self);
   self->priv->shared = FALSE;
   self->priv->flush_on_destroy = TRUE;
 }

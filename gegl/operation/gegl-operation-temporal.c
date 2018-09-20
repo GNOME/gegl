@@ -38,12 +38,11 @@ struct _GeglOperationTemporalPrivate
 
 static void gegl_operation_temporal_prepare (GeglOperation *operation);
 
-G_DEFINE_TYPE (GeglOperationTemporal,
-               gegl_operation_temporal,
-               GEGL_TYPE_OPERATION_FILTER)
+G_DEFINE_TYPE_WITH_PRIVATE (GeglOperationTemporal, gegl_operation_temporal,
+                            GEGL_TYPE_OPERATION_FILTER)
 
 #define GEGL_OPERATION_TEMPORAL_GET_PRIVATE(obj) \
-  G_TYPE_INSTANCE_GET_PRIVATE (obj, GEGL_TYPE_OPERATION_TEMPORAL, GeglOperationTemporalPrivate)
+  ((GeglOperationTemporalPrivate *) gegl_operation_temporal_get_instance_private ((GeglOperationTemporal *) (obj)))
 
 
 
@@ -127,8 +126,6 @@ gegl_operation_temporal_class_init (GeglOperationTemporalClass *klass)
 
   operation_class->prepare = gegl_operation_temporal_prepare;
   operation_filter_class->process = gegl_operation_temporal_process;
-
-  g_type_class_add_private (klass, sizeof (GeglOperationTemporalPrivate));
 }
 
 static void
