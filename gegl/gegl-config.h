@@ -39,6 +39,8 @@ struct _GeglConfig
   guint64  tile_cache_size;
   gint     chunk_size; /* The size of elements being processed at once */
   gdouble  quality;
+  gint     tile_width;
+  gint     tile_height;
   gboolean use_opencl;
   gint     queue_size;
   gchar   *application_license;

@@ -40,6 +40,8 @@ enum
   PROP_TILE_CACHE_SIZE,
   PROP_CHUNK_SIZE,
   PROP_SWAP,
+  PROP_TILE_WIDTH,
+  PROP_TILE_HEIGHT,
   PROP_THREADS,
   PROP_USE_OPENCL,
   PROP_QUEUE_SIZE,
@@ -64,6 +66,14 @@ gegl_config_get_property (GObject    *gobject,
 
       case PROP_CHUNK_SIZE:
         g_value_set_int (value, config->chunk_size);
+        break;
+
+      case PROP_TILE_WIDTH:
+        g_value_set_int (value, config->tile_width);
+        break;
+
+      case PROP_TILE_HEIGHT:
+        g_value_set_int (value, config->tile_height);
         break;
 
       case PROP_QUALITY:
@@ -112,6 +122,12 @@ gegl_config_set_property (GObject      *gobject,
       case PROP_CHUNK_SIZE:
         config->chunk_size = g_value_get_int (value);
         break;
+      case PROP_TILE_WIDTH:
+        config->tile_width = g_value_get_int (value);
+        break;
+      case PROP_TILE_HEIGHT:
+        config->tile_height = g_value_get_int (value);
+        break;
       case PROP_QUALITY:
         config->quality = g_value_get_double (value);
         return;
@@ -159,6 +175,23 @@ gegl_config_class_init (GeglConfigClass *klass)
   gobject_class->set_property = gegl_config_set_property;
   gobject_class->get_property = gegl_config_get_property;
   gobject_class->finalize     = gegl_config_finalize;
+
+
+  g_object_class_install_property (gobject_class, PROP_TILE_WIDTH,
+                                   g_param_spec_int ("tile-width",
+                                                     "Tile width",
+                                                     "default tile width for created buffers.",
+                                                     0, G_MAXINT, 128,
+                                                     G_PARAM_READWRITE |
+                                                     G_PARAM_CONSTRUCT));
+
+  g_object_class_install_property (gobject_class, PROP_TILE_HEIGHT,
+                                   g_param_spec_int ("tile-height",
+                                                     "Tile height",
+                                                     "default tile height for created buffers.",
+                                                     0, G_MAXINT, 128,
+                                                     G_PARAM_READWRITE |
+                                                     G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class, PROP_TILE_CACHE_SIZE,
                                    g_param_spec_uint64 ("tile-cache-size",
