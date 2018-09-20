@@ -21,7 +21,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "gegl-config.h"
+#include "gegl-buffer-config.h"
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
 #include "gegl-tile.h"
@@ -521,14 +521,14 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
   g_mutex_lock (&mutex);
 
   while ((guintptr) g_atomic_pointer_get (&cache_total) >
-         gegl_config ()->tile_cache_size)
+         gegl_buffer_config ()->tile_cache_size)
     {
       CacheItem *last_writable;
       GeglTile  *tile;
       GList     *prev_link;
 
 #ifdef GEGL_DEBUG_CACHE_HITS
-      GEGL_NOTE(GEGL_DEBUG_CACHE, "cache_total:"G_GUINT64_FORMAT" > cache_size:"G_GUINT64_FORMAT, cache_total, gegl_config()->tile_cache_size);
+      GEGL_NOTE(GEGL_DEBUG_CACHE, "cache_total:"G_GUINT64_FORMAT" > cache_size:"G_GUINT64_FORMAT, cache_total, gegl_buffer_config()->tile_cache_size);
       GEGL_NOTE(GEGL_DEBUG_CACHE, "%f%% hit:%i miss:%i  %i]", cache_hits*100.0/(cache_hits+cache_misses), cache_hits, cache_misses, g_queue_get_length (&cache_queue));
 #endif
 
@@ -833,7 +833,7 @@ gegl_tile_handler_cache_tile_uncloned (GeglTileHandlerCache *cache,
   total = (guintptr) g_atomic_pointer_add (&cache_total, tile->size) +
           tile->size;
 
-  if (total > gegl_config ()->tile_cache_size)
+  if (total > gegl_buffer_config ()->tile_cache_size)
     gegl_tile_handler_cache_trim (cache);
 
   cache_total_max = MAX (cache_total_max, total);
@@ -953,9 +953,9 @@ gegl_tile_handler_cache_equalfunc (gconstpointer a,
 }
 
 static void
-gegl_config_tile_cache_size_notify (GObject    *gobject,
-                                    GParamSpec *pspec,
-                                    gpointer    user_data)
+gegl_buffer_config_tile_cache_size_notify (GObject    *gobject,
+                                           GParamSpec *pspec,
+                                           gpointer    user_data)
 {
   gegl_tile_handler_cache_trim (NULL);
 }
@@ -963,15 +963,15 @@ gegl_config_tile_cache_size_notify (GObject    *gobject,
 void
 gegl_tile_cache_init (void)
 {
-  g_signal_connect (gegl_config (), "notify::tile-cache-size",
-                    G_CALLBACK (gegl_config_tile_cache_size_notify), NULL);
+  g_signal_connect (gegl_buffer_config (), "notify::tile-cache-size",
+                    G_CALLBACK (gegl_buffer_config_tile_cache_size_notify), NULL);
 }
 
 void
 gegl_tile_cache_destroy (void)
 {
-  g_signal_handlers_disconnect_by_func (gegl_config(),
-                                        gegl_config_tile_cache_size_notify,
+  g_signal_handlers_disconnect_by_func (gegl_buffer_config(),
+                                        gegl_buffer_config_tile_cache_size_notify,
                                         NULL);
 
   g_warn_if_fail (g_queue_is_empty (&cache_queue));

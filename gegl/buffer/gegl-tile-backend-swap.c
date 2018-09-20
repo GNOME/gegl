@@ -42,7 +42,7 @@
 #include "gegl-tile-backend.h"
 #include "gegl-tile-backend-swap.h"
 #include "gegl-debug.h"
-#include "gegl-config.h"
+#include "gegl-buffer-config.h"
 
 
 #ifndef HAVE_FSYNC
@@ -1097,7 +1097,7 @@ gegl_tile_backend_swap_ensure_exist (void)
   if (in_fd == -1 || out_fd == -1)
     {
       gchar *filename = g_strdup_printf ("%i-shared.swap", getpid ());
-      path = g_build_filename (gegl_config ()->swap, filename, NULL);
+      path = g_build_filename (gegl_buffer_config ()->swap, filename, NULL);
       g_free (filename);
 
       GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "creating swapfile %s", path);
@@ -1143,11 +1143,11 @@ gegl_tile_backend_swap_class_init (GeglTileBackendSwapClass *klass)
                                 gegl_tile_backend_swap_writer_thread,
                                 NULL);
 
-  g_signal_connect (gegl_config (), "notify::tile-cache-size",
+  g_signal_connect (gegl_buffer_config (), "notify::tile-cache-size",
                     G_CALLBACK (gegl_tile_backend_swap_tile_cache_size_notify),
                     NULL);
 
-  gegl_tile_backend_swap_tile_cache_size_notify (G_OBJECT (gegl_config ()),
+  gegl_tile_backend_swap_tile_cache_size_notify (G_OBJECT (gegl_buffer_config ()),
                                                  NULL, NULL);
 }
 
@@ -1158,7 +1158,7 @@ gegl_tile_backend_swap_cleanup (void)
     return;
 
   g_signal_handlers_disconnect_by_func (
-    gegl_config (),
+    gegl_buffer_config (),
     gegl_tile_backend_swap_tile_cache_size_notify,
     NULL);
 

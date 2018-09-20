@@ -26,6 +26,7 @@
 #include "gegl.h"
 #include "gegl-types-internal.h"
 #include "gegl-config.h"
+#include "gegl-buffer-config.h"
 
 #include "opencl/gegl-cl.h"
 
@@ -264,6 +265,16 @@ gegl_config_class_init (GeglConfigClass *klass)
 static void
 gegl_config_init (GeglConfig *self)
 {
+  char *forward_props[]={"swap",
+                         "queue-size",
+                         "tile-width",
+                         "tile-height",
+                         "tile-cache-size",
+                         NULL};
+  GeglBufferConfig *bconf = gegl_buffer_config ();
+  for (int i = 0; forward_props[i]; i++)
+    g_object_bind_property (bconf, forward_props[i],
+                            self, forward_props[i], G_BINDING_BIDIRECTIONAL);
 }
 
 #undef  gegl_config_threads

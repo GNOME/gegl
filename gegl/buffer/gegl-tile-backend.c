@@ -26,7 +26,7 @@
 #include "gegl-buffer-private.h"
 #include "gegl-tile-source.h"
 #include "gegl-tile-backend.h"
-#include "gegl-config.h"
+#include "gegl-buffer-config.h"
 
 G_DEFINE_TYPE_WITH_PRIVATE (GeglTileBackend, gegl_tile_backend,
                             GEGL_TYPE_TILE_SOURCE)
@@ -354,7 +354,7 @@ gegl_tile_backend_unlink_swap (gchar *path)
 
   /* Ensure we delete only files in our known swap directory for safety. */
   if (g_file_test (path, G_FILE_TEST_EXISTS) &&
-      g_strcmp0 (dirname, gegl_config()->swap) == 0)
+      g_strcmp0 (dirname, gegl_buffer_config()->swap) == 0)
     g_unlink (path);
 
   g_free (dirname);

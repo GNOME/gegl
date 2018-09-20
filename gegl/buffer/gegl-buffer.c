@@ -38,7 +38,7 @@
 
 #include "gegl-buffer-types.h"
 #include "gegl-buffer.h"
-#include "gegl-config.h" // XXX should be removed
+#include "gegl-buffer-config.h"
 #include "gegl-buffer-private.h"
 #include "gegl-debug.h"
 #include "gegl-tile-storage.h"
@@ -534,7 +534,7 @@ gegl_buffer_constructor (GType                  type,
           if (buffer->path)
             maybe_path = buffer->path;
           else
-            maybe_path = gegl_config ()->swap;
+            maybe_path = gegl_buffer_config ()->swap;
 
           if (maybe_path)
             use_ram = g_ascii_strcasecmp (maybe_path, "ram") == 0;
@@ -850,13 +850,13 @@ gegl_buffer_class_init (GeglBufferClass *class)
 
   g_object_class_install_property (gobject_class, PROP_TILE_HEIGHT,
                                    g_param_spec_int ("tile-height", "tile-height", "height of a tile",
-                                                     -1, G_MAXINT, gegl_config()->tile_height,
+                                                     -1, G_MAXINT, gegl_buffer_config()->tile_height,
                                                      G_PARAM_READWRITE |
                                                      G_PARAM_CONSTRUCT_ONLY));
 
   g_object_class_install_property (gobject_class, PROP_TILE_WIDTH,
                                    g_param_spec_int ("tile-width", "tile-width", "width of a tile",
-                                                     -1, G_MAXINT, gegl_config()->tile_width,
+                                                     -1, G_MAXINT, gegl_buffer_config()->tile_width,
                                                      G_PARAM_READWRITE |
                                                      G_PARAM_CONSTRUCT_ONLY));
 

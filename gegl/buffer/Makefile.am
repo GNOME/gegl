@@ -27,6 +27,8 @@ libbuffer_la_SOURCES = \
     gegl-algorithms.h \
     gegl-buffer.c		\
     gegl-buffer-access.c	\
+    gegl-buffer-config.c	\
+    gegl-buffer-config.h	\
     gegl-buffer-index.h		\
     gegl-buffer-iterator.c	\
     gegl-buffer-iterator2.c	\

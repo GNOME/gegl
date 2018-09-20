@@ -51,7 +51,7 @@
 #include "gegl-buffer-index.h"
 #include "gegl-buffer-types.h"
 #include "gegl-debug.h"
-#include "gegl-config.h"
+#include "gegl-buffer-config.h"
 
 
 #ifndef HAVE_FSYNC
@@ -177,7 +177,7 @@ gegl_tile_backend_file_push_queue (GeglFileBackendThreadParams *params)
   g_mutex_lock (&mutex);
 
   /* block if the queue has gotten too big */
-  while (queue_size > gegl_config ()->queue_size)
+  while (queue_size > gegl_buffer_config ()->queue_size)
     g_cond_wait (&max_cond, &mutex);
 
   params->file->pending_ops += 1;
@@ -294,7 +294,7 @@ gegl_tile_backend_file_writer_thread (gpointer ignored)
           g_free (params->source);
 
           /* unblock the main thread if the queue had gotten too big */
-          if (queue_size < gegl_config ()->queue_size)
+          if (queue_size < gegl_buffer_config ()->queue_size)
             g_cond_signal (&max_cond);
         }
 
