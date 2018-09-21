@@ -286,12 +286,14 @@ gegl_module_register (GTypeModule *module)
 
 #define enum_start(enum_name)   typedef enum {
 #define enum_value(value, nick, name)    value ,
+#define enum_value_skip(value)           value ,
 #define enum_end(enum)          } enum ;
 
 #include GEGL_OP_C_FILE
 
 #undef enum_start
 #undef enum_value
+#undef enum_value_skip
 #undef enum_end
 
 #ifdef GETTEXT_PACKAGE
@@ -310,6 +312,8 @@ static GType enum_name ## _get_type (void)               \
 
 #define enum_value(value, nick, name)                \
       { value, name, nick },
+
+#define enum_value_skip(value)
 
 #define enum_end(enum)                                            \
       { 0, NULL, NULL }                                           \
@@ -346,9 +350,11 @@ static GType enum_name ## _get_type (void)               \
 #undef property_path
 #undef enum_start
 #undef enum_value
+#undef enum_value_skip
 #undef enum_end
 #define enum_start(enum_name)
 #define enum_value(value, nick, name)
+#define enum_value_skip(value)
 #define enum_end(enum)
 
 /* Properties */
