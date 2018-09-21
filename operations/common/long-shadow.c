@@ -19,14 +19,20 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
+#define WITH_FADING_FIXED_RATE
+
 #ifdef GEGL_PROPERTIES
 
 enum_start (gegl_long_shadow_style)
-  enum_value (GEGL_LONG_SHADOW_STYLE_FINITE,              "finite",              N_("Finite"))
-  enum_value (GEGL_LONG_SHADOW_STYLE_INFINITE,            "infinite",            N_("Infinite"))
-  enum_value (GEGL_LONG_SHADOW_STYLE_FADING,              "fading",              N_("Fading"))
-  enum_value (GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH, "fading-fixed-length", N_("Fading (fixed length)"))
-  enum_value (GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE,   "fading-fixed-rate",   N_("Fading (fixed rate)"))
+  enum_value      (GEGL_LONG_SHADOW_STYLE_FINITE,              "finite",              N_("Finite"))
+  enum_value      (GEGL_LONG_SHADOW_STYLE_INFINITE,            "infinite",            N_("Infinite"))
+  enum_value      (GEGL_LONG_SHADOW_STYLE_FADING,              "fading",              N_("Fading"))
+  enum_value      (GEGL_LONG_SHADOW_STYLE_FADING_FIXED_LENGTH, "fading-fixed-length", N_("Fading (fixed length)"))
+#ifdef WITH_FADING_FIXED_RATE
+  enum_value      (GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE,   "fading-fixed-rate",   N_("Fading (fixed rate)"))
+#else
+  enum_value_skip (GEGL_LONG_SHADOW_STYLE_FADING_FIXED_RATE)
+#endif
 enum_end (GeglLongShadowStyle)
 
 enum_start (gegl_long_shadow_composition)
@@ -50,9 +56,12 @@ property_double (length, _("Length"), 100.0)
   description (_("Shadow length"))
   value_range (0.0, G_MAXDOUBLE)
   ui_range    (0.0, 1000.0)
-  ui_meta     ("visible", "style {finite,              "
-                          "       fading-fixed-length, "
-                          "       fading-fixed-rate}")
+  ui_meta     ("visible", "style {finite,            "
+                          "       fading-fixed-length"
+#ifdef WITH_FADING_FIXED_RATE
+                          "       , fading-fixed-rate"
+#endif
+                          "      }")
 
 property_double (midpoint, _("Midpoint"), 100.0)
   description (_("Shadow fade midpoint"))
@@ -63,7 +72,11 @@ property_double (midpoint, _("Midpoint"), 100.0)
 property_double (midpoint_rel, _("Midpoint (relative)"), 0.5)
   description (_("Shadow fade midpoint, as a factor of the shadow length"))
   value_range (0.0, 1.0)
-  ui_meta     ("visible", "style {fading-fixed-length, fading-fixed-rate}")
+  ui_meta     ("visible", "style {fading-fixed-length"
+#ifdef WITH_FADING_FIXED_RATE
+                          "       , fading-fixed-rate"
+#endif
+                          "      }")
   ui_meta     ("label", "alt-label")
   ui_meta     ("alt-label", _("Midpoint"))
 
