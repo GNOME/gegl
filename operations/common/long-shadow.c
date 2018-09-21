@@ -19,7 +19,7 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
-#define WITH_FADING_FIXED_RATE
+/* #define WITH_FADING_FIXED_RATE */
 
 #ifdef GEGL_PROPERTIES
 
