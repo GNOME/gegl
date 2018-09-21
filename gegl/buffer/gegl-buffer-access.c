@@ -2816,9 +2816,25 @@ gegl_buffer_dup (GeglBuffer *buffer)
 
   g_return_val_if_fail (GEGL_IS_BUFFER (buffer), NULL);
 
-  new_buffer = gegl_buffer_new (gegl_buffer_get_extent (buffer), buffer->soft_format);
+  new_buffer = g_object_new (GEGL_TYPE_BUFFER,
+                             "format",       buffer->soft_format,
+                             "x",            buffer->extent.x,
+                             "y",            buffer->extent.y,
+                             "width",        buffer->extent.width,
+                             "height",       buffer->extent.height,
+                             "abyss-x",      buffer->abyss.x,
+                             "abyss-y",      buffer->abyss.y,
+                             "abyss-width",  buffer->abyss.width,
+                             "abyss-height", buffer->abyss.height,
+                             "shift-x",      buffer->shift_x,
+                             "shift-y",      buffer->shift_y,
+                             "tile-width",   buffer->tile_width,
+                             "tile-height",  buffer->tile_height,
+                             NULL);
+
   gegl_buffer_copy (buffer, gegl_buffer_get_extent (buffer), GEGL_ABYSS_NONE,
                     new_buffer, gegl_buffer_get_extent (buffer));
+
   return new_buffer;
 }
 
