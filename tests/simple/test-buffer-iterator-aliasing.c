@@ -42,14 +42,18 @@ test_aligned_read_write (void)
   GeglBuffer         *buffer2;
   GeglColor          *color;
   GeglBufferIterator *iter;
-  GeglRectangle       rect = {};
+  gint                tile_width;
+  gint                tile_height;
 
-  g_object_get (gegl_config (),
-                "tile-width",  &rect.width,
-                "tile-height", &rect.height,
+  buffer1 = gegl_buffer_new (NULL, babl_format ("RGBA float"));
+
+  g_object_get (buffer1,
+                "tile-width",  &tile_width,
+                "tile-height", &tile_height,
                 NULL);
 
-  buffer1 = gegl_buffer_new (&rect, babl_format ("RGBA float"));
+  gegl_buffer_set_extent (buffer1,
+                          GEGL_RECTANGLE (0, 0, tile_width, tile_height));
 
   color = gegl_color_new ("white");
 
@@ -80,16 +84,21 @@ test_unaligned_read_write_read (void)
   GeglBuffer         *buffer2;
   GeglColor          *color;
   GeglBufferIterator *iter;
-  gint                width;
-  gint                height;
+  gint                tile_width;
+  gint                tile_height;
 
-  g_object_get (gegl_config (),
-                "tile-width",  &width,
-                "tile-height", &height,
+  buffer1 = gegl_buffer_new (NULL, babl_format ("RGBA float"));
+
+  g_object_get (buffer1,
+                "tile-width",  &tile_width,
+                "tile-height", &tile_height,
                 NULL);
 
-  buffer1 = gegl_buffer_new (GEGL_RECTANGLE (0, 0, width + 1, height + 1),
-                             babl_format ("RGBA float"));
+  gegl_buffer_set_extent (buffer1,
+                          GEGL_RECTANGLE (0,
+                                          0,
+                                          tile_width  + 1,
+                                          tile_height + 1));
 
   color = gegl_color_new ("white");
 
@@ -100,19 +109,25 @@ test_unaligned_read_write_read (void)
   buffer2 = gegl_buffer_dup (buffer1);
 
   iter = gegl_buffer_iterator_new (buffer2,
-                                   GEGL_RECTANGLE (0,         0,
-                                                   width / 2, height / 2),
+                                   GEGL_RECTANGLE (0,
+                                                   0,
+                                                   tile_width  / 2,
+                                                   tile_height / 2),
                                    0, NULL, GEGL_ACCESS_READ, GEGL_ABYSS_NONE,
                                    3);
   gegl_buffer_iterator_add        (iter,
                                    buffer2,
-                                   GEGL_RECTANGLE (width / 2, height / 2,
-                                                   width / 2, height / 2),
+                                   GEGL_RECTANGLE (tile_width  / 2,
+                                                   tile_height / 2,
+                                                   tile_width  / 2,
+                                                   tile_height / 2),
                                    0, NULL, GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
   gegl_buffer_iterator_add        (iter,
                                    buffer2,
-                                   GEGL_RECTANGLE (0,         0,
-                                                   width / 2, height / 2),
+                                   GEGL_RECTANGLE (0,
+                                                   0,
+                                                   tile_width  / 2,
+                                                   tile_height / 2),
                                    0, NULL, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
   while (gegl_buffer_iterator_next (iter));

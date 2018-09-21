@@ -33,19 +33,22 @@ static gint
 test_set_clear_get (void)
 {
   gint                 result = SUCCESS;
-  gint                 width, height;
+  gint                 tile_width, tile_height;
   const Babl          *format;
   GeglBuffer          *buffer;
   guchar               pixel;
   const GeglRectangle  pixel_rect = {0, 0, 1, 1};
 
-  g_object_get (gegl_config(),
-                "tile-width",  &width,
-                "tile-height", &height,
+  format = babl_format ("Y u8");
+  buffer = gegl_buffer_new (NULL, format);
+
+  g_object_get (buffer,
+                "tile-width",  &tile_width,
+                "tile-height", &tile_height,
                 NULL);
 
-  format = babl_format ("Y u8");
-  buffer = gegl_buffer_new (GEGL_RECTANGLE (0, 0, width, height), format);
+  gegl_buffer_set_extent (buffer,
+                          GEGL_RECTANGLE (0, 0, tile_width, tile_height));
 
   /* Write 1 to the top-left pixel of the buffer. */
   pixel = 1;

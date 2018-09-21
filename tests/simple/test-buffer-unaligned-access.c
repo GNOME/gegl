@@ -102,7 +102,7 @@ test_unaligned_fill (FillFunc fill_func)
   gint                result = SUCCESS;
   const Babl         *format = babl_format ("RGBA float");
   gint                bpp    = babl_format_get_bytes_per_pixel (format);
-  gint                width, height;
+  gint                tile_width, tile_height;
   GeglRectangle       rect;
   GeglBuffer         *buffer;
   GeglBufferIterator *iter;
@@ -110,17 +110,19 @@ test_unaligned_fill (FillFunc fill_func)
   guchar              pixel1[bpp];
   guchar              pixel2[bpp];
 
-  g_object_get (gegl_config(),
-                "tile-width",  &width,
-                "tile-height", &height,
+  buffer = gegl_buffer_new (NULL, format);
+
+  g_object_get (buffer,
+                "tile-width",  &tile_width,
+                "tile-height", &tile_height,
                 NULL);
 
-  rect.x      = width  / 4;
-  rect.y      = height / 4;
-  rect.width  = width  / 2;
-  rect.height = height / 2;
+  rect.x      = tile_width  / 4;
+  rect.y      = tile_height / 4;
+  rect.width  = tile_width  / 2;
+  rect.height = tile_height / 2;
 
-  buffer = gegl_buffer_new (GEGL_RECTANGLE (0, 0, width, height), format);
+  gegl_buffer_set_extent (buffer, &rect);
 
   color = gegl_color_new ("white");
   gegl_buffer_set_color (buffer, NULL, color);
