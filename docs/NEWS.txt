@@ -1,15 +1,18 @@
-GEGL-0.4.10 2018-09-2x
+GEGL-0.4.10 2019-01-xx
 ----------------------
 
 GeglBuffer
 ~~~~~~~~~~
+
+gegl_buffer_dup now matches source buffer abyss, shift and tile-size more
+closely.
 
 Added GEGL_TILE_COPY command for backends, for more efficient buffer
 duplication/copies.
 
 New GeglBufferIterator API.
 
-Move tyoe-generic scaling algorithms to GeglBuffer folder, move opencl
+Move type-generic scaling algorithms to GeglBuffer folder, move opencl
 integration bits out of buffer.
 
 Operations
