@@ -24,6 +24,7 @@ noinst_LTLIBRARIES = libgraph.la
 #libgraph_public_HEADERS = #
 
 libgraph_la_SOURCES = \
+	gegl-cache.c			\
 	gegl-connection.c		\
 	gegl-node.c			\
 	gegl-pad.c			\
@@ -32,6 +33,7 @@ libgraph_la_SOURCES = \
 	gegl-visitable.c		\
 	gegl-node-output-visitable.c	\
 	\
+	gegl-cache.h			\
 	gegl-connection.h		\
 	gegl-node.h			\
 	gegl-node-private.h		\

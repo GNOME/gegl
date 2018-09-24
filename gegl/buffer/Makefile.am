@@ -35,7 +35,6 @@ libbuffer_la_SOURCES = \
     gegl-buffer-linear.c	\
 	gegl-buffer-load.c	\
     gegl-buffer-save.c		\
-    gegl-cache.c		\
     gegl-sampler.c		\
     gegl-sampler-cubic.c	\
     gegl-sampler-linear.c	\
@@ -65,7 +64,6 @@ libbuffer_la_SOURCES = \
     gegl-buffer-iterator2.h	\
     gegl-buffer-iterator-private.h	\
     gegl-buffer-types.h		\
-    gegl-cache.h		\
     gegl-sampler.h		\
     gegl-sampler-cubic.h	\
     gegl-sampler-linear.h	\
