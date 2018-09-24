@@ -59,7 +59,7 @@ gegl_eval_manager_finalize (GObject *self_object)
   GeglEvalManager *self = GEGL_EVAL_MANAGER (self_object);
 
   g_free (self->pad_name);
-  gegl_clear_pointer (&self->traversal, gegl_graph_free);
+  g_clear_pointer (&self->traversal, gegl_graph_free);
 
   g_signal_handlers_disconnect_by_data (self->node, self);
 
