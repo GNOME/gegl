@@ -61,7 +61,9 @@ cleanup(GeglOperation *operation)
 
   if (p != NULL)
     {
-      g_clear_pointer (&p->decoder, (GDestroyNotify) WebPIDelete);
+      if (p->decoder)
+        WebPIDelete (p->decoder);
+      p->decoder = NULL;
 
       if (p->config != NULL)
         WebPFreeDecBuffer (&p->config->output);
