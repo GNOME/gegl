@@ -347,6 +347,15 @@ gchar *gegl_serialize  (GeglNode         *start,
 GeglNode *gegl_node_new_from_serialized (const gchar *chaindata,
                                          const gchar *path_root);
 
+
+#define gegl_clear_pointer(ptr, dfun) \
+  do { \
+    if (*ptr) { \
+      dfun(*ptr);\
+      *ptr = NULL;\
+    } \
+  } while(0)
+
 G_END_DECLS
 
 #endif /* __GEGL_UTILS_H__ */

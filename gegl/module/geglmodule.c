@@ -98,7 +98,7 @@ gegl_module_finalize (GObject *object)
 {
   GeglModule *module = GEGL_MODULE (object);
 
-  g_clear_pointer (&module->info, (GDestroyNotify) gegl_module_info_free);
+  gegl_clear_pointer (&module->info, gegl_module_info_free);
 
   g_free (module->last_module_error);
   g_free (module->filename);

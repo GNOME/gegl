@@ -155,19 +155,20 @@ gegl_processor_constructed (GObject *object)
   processor->queued_region = gegl_region_new ();
 }
 
+
 static void
 gegl_processor_finalize (GObject *self_object)
 {
   GeglProcessor *processor = GEGL_PROCESSOR (self_object);
 
-  g_clear_pointer (&processor->context, (GDestroyNotify) gegl_operation_context_destroy);
+  gegl_clear_pointer (&processor->context, gegl_operation_context_destroy);
 
   g_clear_object (&processor->node);
   g_clear_object (&processor->real_node);
   g_clear_object (&processor->input);
 
-  g_clear_pointer (&processor->queued_region, (GDestroyNotify) gegl_region_destroy);
-  g_clear_pointer (&processor->valid_region, (GDestroyNotify) gegl_region_destroy);
+  gegl_clear_pointer (&processor->queued_region, gegl_region_destroy);
+  gegl_clear_pointer (&processor->valid_region, gegl_region_destroy);
 
   G_OBJECT_CLASS (gegl_processor_parent_class)->finalize (self_object);
 }
