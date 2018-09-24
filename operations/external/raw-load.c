@@ -80,8 +80,12 @@ raw_close (GeglProperties *o)
   Private *p = (Private*)o->user_data;
 
   g_clear_pointer (&p->cached_path, g_free);
-  g_clear_pointer (&p->image, (GDestroyNotify) libraw_dcraw_clear_mem);
-  g_clear_pointer (&p->LibRaw, (GDestroyNotify) libraw_close);
+  if (p->image)
+    libraw_dcraw_clear_mem (p->image);
+  if (p->LibRaw)
+    libraw_close (p->LibRaw);
+  p->image = NULL;
+  p->LibRaw = NULL;
 }
 
 static void
