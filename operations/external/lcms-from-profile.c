@@ -49,6 +49,8 @@ property_boolean (black_point_compensation, _("Black point compensation"),
 
 #else
 
+#define GEGL_ITERATOR2_API
+
 #define GEGL_OP_FILTER
 #define GEGL_OP_NAME lcms_from_profile
 #define GEGL_OP_C_SOURCE lcms-from-profile.c
@@ -180,7 +182,7 @@ process (GeglOperation       *operation,
     GeglBufferIterator *gi;
 
     gi = gegl_buffer_iterator_new (input, result, 0, in_format,
-                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
 
     gegl_buffer_iterator_add (gi, output, result, 0, out_format,
                               GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
@@ -188,9 +190,9 @@ process (GeglOperation       *operation,
     while (gegl_buffer_iterator_next (gi))
       {
         if (alpha)
-          memcpy (gi->data[1], gi->data[0], bpp * gi->length);
+          memcpy (gi->items[1].data, gi->items[0].data, bpp * gi->length);
 
-        cmsDoTransform (transform, gi->data[0], gi->data[1], gi->length);
+        cmsDoTransform (transform, gi->items[0].data, gi->items[1].data, gi->length);
       }
   }
 
