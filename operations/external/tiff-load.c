@@ -38,6 +38,8 @@ property_int(directory, _("Directory"), 1)
 #define GEGL_OP_NAME     tiff_load
 #define GEGL_OP_C_SOURCE tiff-load.c
 
+#define GEGL_ITERATOR2_API
+
 #include <gegl-op.h>
 #include <gegl-gio-private.h>
 #include <glib/gprintf.h>
@@ -678,7 +680,7 @@ load_separated(GeglOperation *operation,
               iterator = gegl_buffer_iterator_new(linear, &plane_tile,
                                                   0, NULL,
                                                   GEGL_ACCESS_READ,
-                                                  GEGL_ABYSS_NONE);
+                                                  GEGL_ABYSS_NONE, 2);
 
               gegl_buffer_iterator_add(iterator, output, &output_tile,
                                        0, p->format,
@@ -687,8 +689,8 @@ load_separated(GeglOperation *operation,
 
               while (gegl_buffer_iterator_next(iterator))
                 {
-                  guchar *plane_buffer = iterator->data[0];
-                  guchar *output_buffer = iterator->data[1];
+                  guchar *plane_buffer = iterator->items[0].data;
+                  guchar *output_buffer = iterator->items[1].data;
                   gint nb_pixels = iterator->length;
 
                   output_buffer += offset;
