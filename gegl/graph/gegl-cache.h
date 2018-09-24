@@ -19,6 +19,7 @@
 #ifndef __GEGL_CACHE_H__
 #define __GEGL_CACHE_H__
 
+#include "gegl-types-internal.h"
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
 

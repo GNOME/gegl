@@ -50,7 +50,6 @@ typedef struct _GeglTileHandlerChain      GeglTileHandlerChain;
 
 typedef struct _GeglTileStorage           GeglTileStorage;
 
-typedef struct _GeglCache                 GeglCache;
 
 typedef struct _GeglRegion                GeglRegion;
 

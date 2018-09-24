@@ -24,6 +24,7 @@
 
 G_BEGIN_DECLS
 
+typedef struct _GeglCache            GeglCache;
 typedef struct _GeglPad              GeglPad;
 typedef struct _GeglConnection       GeglConnection;
 

@@ -35,7 +35,7 @@
 #include "gegl-visitable.h"
 #include "gegl-config.h"
 
-#include "buffer/gegl-region.h"
+#include "gegl-region.h"
 
 #include "graph/gegl-visitor.h"
 #include "graph/gegl-callback-visitor.h"

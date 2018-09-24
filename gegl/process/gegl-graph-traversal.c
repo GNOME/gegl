@@ -26,7 +26,7 @@
 #include "gegl-debug.h"
 #include "gegl-instrument.h"
 
-#include "buffer/gegl-region.h"
+#include "gegl-region.h"
 
 #include "graph/gegl-node-private.h"
 #include "graph/gegl-pad.h"

@@ -32,8 +32,11 @@ libgraph_la_SOURCES = \
 	gegl-callback-visitor.c		\
 	gegl-visitable.c		\
 	gegl-node-output-visitable.c	\
+	gegl-region-generic.c		\
 	\
 	gegl-cache.h			\
+	gegl-region.h			\
+	gegl-region-generic.h		\
 	gegl-connection.h		\
 	gegl-node.h			\
 	gegl-node-private.h		\
