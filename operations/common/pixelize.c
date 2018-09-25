@@ -94,8 +94,9 @@ static gint
 align_offset (gint offset,
               gint size)
 {
-  offset = offset % size;
-  return offset <= 0 ? (offset * -1) : (size - offset);
+  gint align = abs(offset) % size;
+  
+  return offset <= 0 ? align : (size - align);
 }
 
 static void
