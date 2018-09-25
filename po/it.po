@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2018-09-05 17:04+0200\n"
-"PO-Revision-Date: 2018-09-05 17:10+0200\n"
+"PO-Revision-Date: 2018-09-25 22:37+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -864,9 +864,7 @@ msgstr "Aumento del colore"
 msgid ""
 "Stretch color chroma to cover maximum possible range, keeping hue and "
 "lightness untouched."
-msgstr ""
-"Stira la cromaticità del colore per coprire il massimo campo possibile, "
-"mantenendo tonalità e luminosità invariate."
+msgstr "Stira la crominanza del colore per coprire il massimo campo possibile, mantenendo tonalità e luminosità invariate."
 
 #: ../operations/common/color-overlay.c:27
 msgid "The color to paint over the input"
@@ -3059,7 +3057,7 @@ msgstr "Aggiungi disturbo CIE Lch"
 
 #: ../operations/common/noise-cie-lch.c:198
 msgid "Randomize lightness, chroma and hue independently"
-msgstr "Casualizza indipendentemente la luminosità, cromaticità e tonalità"
+msgstr "Casualizza indipendentemente la luminosità, crominanza e tonalità"
 
 #: ../operations/common/noise-hsv.c:37 ../operations/common/noise-rgb.c:42
 #: ../operations/generated/add.c:29 ../operations/generated/divide.c:29
