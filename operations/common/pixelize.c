@@ -50,6 +50,20 @@ property_int    (size_y, _("Block height"), 16)
     ui_meta     ("unit", "pixel-distance")
     ui_meta     ("axis", "y")
 
+property_int    (offset_x, _("Offset X"), 0)
+    description (_("Horizontal offset of blocks in pixels"))
+    value_range (G_MININT, G_MAXINT)
+    ui_range    (0, 2048)
+    ui_meta     ("unit", "pixel-coordinate")
+    ui_meta     ("axis", "x")
+
+property_int    (offset_y, _("Offset Y"), 0)
+    description (_("Vertical offset of blocks in pixels"))
+    value_range (G_MININT, G_MAXINT)
+    ui_range    (0, 2048)
+    ui_meta     ("unit", "pixel-coordinate")
+    ui_meta     ("axis", "y")
+
 property_double (ratio_x, _("Size ratio X"), 1.0)
     description (_("Horizontal size ratio of a pixel inside each block"))
     value_range (0.0, 1.0)
@@ -76,6 +90,14 @@ property_color  (background, _("Background color"), "white")
 #define ALLOC_THRESHOLD_SIZE (64)
 #define SQR(x)               ((x)*(x))
 
+static gint
+align_offset (gint offset,
+              gint size)
+{
+  offset = offset % size;
+  return offset <= 0 ? (offset * -1) : (size - offset);
+}
+
 static void
 prepare (GeglOperation *operation)
 {
@@ -86,9 +108,9 @@ prepare (GeglOperation *operation)
   op_area = GEGL_OPERATION_AREA_FILTER (operation);
   o       = GEGL_PROPERTIES (operation);
 
-  op_area->left   =
+  op_area->left   = o->size_x + align_offset(o->offset_x, o->size_x);
   op_area->right  = o->size_x;
-  op_area->top    =
+  op_area->top    = o->size_y + align_offset(o->offset_y, o->size_y);
   op_area->bottom = o->size_y;
 
   gegl_operation_set_format (operation, "input",
@@ -297,8 +319,11 @@ pixelize_noalloc (GeglBuffer          *input,
                   GeglProperties      *o,
                   const Babl          *format)
 {
-  gint start_x = block_index (roi->x, o->size_x) * o->size_x;
-  gint start_y = block_index (roi->y, o->size_y) * o->size_y;
+  gint align_x = align_offset(o->offset_x, o->size_x);
+  gint align_y = align_offset(o->offset_y, o->size_y);
+
+  gint start_x = block_index (roi->x, o->size_x) * o->size_x - align_x;
+  gint start_y = block_index (roi->y, o->size_y) * o->size_y - align_y;
   gint x, y;
   gint off_shape_x, off_shape_y;
 
@@ -343,8 +368,12 @@ pixelize (gfloat              *input,
           const GeglRectangle *whole_region,
           GeglProperties          *o)
 {
-  gint          start_x = block_index (roi->x, o->size_x) * o->size_x;
-  gint          start_y = block_index (roi->y, o->size_y) * o->size_y;
+  
+  gint          align_x = align_offset(o->offset_x, o->size_x);
+  gint          align_y = align_offset(o->offset_y, o->size_y);
+
+  gint          start_x = block_index (roi->x, o->size_x) * o->size_x - align_x;
+  gint          start_y = block_index (roi->y, o->size_y) * o->size_y - align_y;
   gint          x, y;
   gint          off_shape_x, off_shape_y;
   gfloat        color[4];
@@ -582,8 +611,8 @@ process (GeglOperation       *operation,
     {
       gfloat  background_color[4];
       gfloat *input_buf  = g_new (gfloat,
-                                  (CHUNK_SIZE + o->size_x * 2) *
-                                  (CHUNK_SIZE + o->size_y * 2) * 4);
+                                  (CHUNK_SIZE + o->size_x * 2 + align_offset(o->offset_x, o->size_x)) *
+                                  (CHUNK_SIZE + o->size_y * 2 + align_offset(o->offset_y, o->size_y)) * 4);
       gfloat *output_buf = g_new (gfloat, SQR (CHUNK_SIZE) * 4);
       gint    i, j;
 
