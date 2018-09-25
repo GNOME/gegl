@@ -25,18 +25,21 @@
 property_double (x, _("X"), 20.0)
   description   (_("Horizontal shadow offset"))
   ui_range      (-40.0, 40.0)
+  ui_steps      (1, 10)
   ui_meta       ("unit", "pixel-distance")
   ui_meta       ("axis", "x")
 
 property_double (y, _("Y"), 20.0)
   description   (_("Vertical shadow offset"))
   ui_range      (-40.0, 40.0)
+  ui_steps      (1, 10)
   ui_meta       ("unit", "pixel-distance")
   ui_meta       ("axis", "y")
 
 property_double (radius, _("Blur radius"), 10.0)
   value_range   (0.0, G_MAXDOUBLE)
   ui_range      (0.0, 300.0)
+  ui_steps      (1, 5)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
 
@@ -49,6 +52,7 @@ property_color  (color, _("Color"), "black")
  */
 property_double (opacity, _("Opacity"), 0.5)
   value_range   (0.0, 2.0)
+  ui_steps      (0.01, 0.10)
 
 #else
 
