@@ -61,7 +61,6 @@ GType gegl_stats_get_type (void) G_GNUC_CONST;
 #define GEGL_STATS(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_STATS, GeglStats))
 #define GEGL_IS_STATS(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_STATS))
 
-typedef struct _GeglSampler       GeglSampler;
 typedef struct _GeglCurve         GeglCurve;
 typedef struct _GeglPath          GeglPath;
 typedef struct _GeglColor         GeglColor;
@@ -101,16 +100,7 @@ _gegl_rectangle_helper (gint x,
 
 #endif /* __cplusplus */
 
-typedef struct _GeglTileBackend GeglTileBackend;
-
 typedef struct _GeglOperationContext GeglOperationContext;
-
-typedef struct _GeglBuffer  GeglBuffer;
-GType gegl_buffer_get_type  (void) G_GNUC_CONST;
-#define GEGL_TYPE_BUFFER    (gegl_buffer_get_type ())
-#define GEGL_BUFFER(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_BUFFER, GeglBuffer))
-#define GEGL_IS_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_BUFFER))
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglBuffer, g_object_unref)
 
 typedef struct _GeglOperation  GeglOperation;
 GType gegl_operation_get_type  (void) G_GNUC_CONST;
@@ -136,6 +126,8 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglProcessor, g_object_unref)
 typedef struct _GeglRandom  GeglRandom;
 GType gegl_random_get_type  (void) G_GNUC_CONST;
 #define GEGL_TYPE_RANDOM    (gegl_random_get_type())
+
+#include <gegl-buffer.h>
 
 G_END_DECLS
 

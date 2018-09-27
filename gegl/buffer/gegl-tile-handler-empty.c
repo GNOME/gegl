@@ -20,6 +20,7 @@
 #include <glib-object.h>
 #include <string.h>
 
+#include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
 #include "gegl-tile-handler-empty.h"
 

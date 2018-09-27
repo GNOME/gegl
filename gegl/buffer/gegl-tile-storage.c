@@ -21,6 +21,7 @@
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
+#include "gegl-buffer.h"
 #include "gegl-buffer-types.h"
 #include "gegl-tile-storage.h"
 #include "gegl-tile-handler-empty.h"

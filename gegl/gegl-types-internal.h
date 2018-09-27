@@ -14,7 +14,7 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2003 Calvin Williamson
- *           2006 Øyvind Kolås
+ *      2006,2018 Øyvind Kolås
  */
 
 #ifndef __GEGL_TYPES_INTERNAL_H__
@@ -24,6 +24,7 @@
 
 G_BEGIN_DECLS
 
+typedef struct _GeglRegion           GeglRegion;
 typedef struct _GeglCache            GeglCache;
 typedef struct _GeglPad              GeglPad;
 typedef struct _GeglConnection       GeglConnection;

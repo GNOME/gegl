@@ -23,6 +23,7 @@
 
 #include <glib-object.h>
 
+#include "gegl-buffer.h"
 #include "gegl-buffer-types.h"
 #include "gegl-tile-handler-cache.h"
 #include "gegl-tile-handler-private.h"

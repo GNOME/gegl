@@ -24,7 +24,15 @@
 #include <gegl-matrix.h>
 #include <gegl-types.h>
 
+#define GEGL_AUTO_ROWSTRIDE 0
+
 G_BEGIN_DECLS
+typedef struct _GeglTileBackend GeglTileBackend;
+typedef struct _GeglBuffer  GeglBuffer;
+typedef struct _GeglSampler       GeglSampler;
+
+
+
 
 /***
  * GeglBuffer:
@@ -714,6 +722,15 @@ void
 gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglRectangle *rect);
 
 #include <gegl-buffer-iterator.h>
+
+
+
+GType gegl_buffer_get_type  (void) G_GNUC_CONST;
+#define GEGL_TYPE_BUFFER    (gegl_buffer_get_type ())
+#define GEGL_BUFFER(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_BUFFER, GeglBuffer))
+#define GEGL_IS_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_BUFFER))
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglBuffer, g_object_unref)
+
 
 G_END_DECLS
 #endif

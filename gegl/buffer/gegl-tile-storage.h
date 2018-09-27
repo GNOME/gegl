@@ -19,6 +19,7 @@
 #ifndef __GEGL_TILE_STORAGE_H__
 #define __GEGL_TILE_STORAGE_H__
 
+#include "gegl-buffer.h"
 #include "gegl-tile-handler-chain.h"
 #include "gegl-tile-handler-cache.h"
 

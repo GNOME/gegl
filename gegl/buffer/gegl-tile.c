@@ -26,6 +26,7 @@
 
 #include <glib-object.h>
 
+#include "gegl-buffer.h"
 #include "gegl-tile.h"
 #include "gegl-buffer-private.h"
 #include "gegl-tile-storage.h"

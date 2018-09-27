@@ -51,6 +51,4 @@ typedef struct _GeglTileHandlerChain      GeglTileHandlerChain;
 typedef struct _GeglTileStorage           GeglTileStorage;
 
 
-typedef struct _GeglRegion                GeglRegion;
-
 #endif

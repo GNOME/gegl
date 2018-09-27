@@ -18,6 +18,7 @@
 #include "config.h"
 #include <glib.h>
 #include <glib-object.h>
+#include "gegl-buffer.h"
 #include "gegl-buffer-types.h"
 #include "gegl-tile-source.h"
 

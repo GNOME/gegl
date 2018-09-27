@@ -36,8 +36,8 @@
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
-#include "gegl-buffer-types.h"
 #include "gegl-buffer.h"
+#include "gegl-buffer-types.h"
 #include "gegl-buffer-config.h"
 #include "gegl-buffer-private.h"
 #include "gegl-debug.h"

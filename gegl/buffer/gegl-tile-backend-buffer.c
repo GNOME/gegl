@@ -20,6 +20,7 @@
 
 #include <glib-object.h>
 
+#include "gegl-buffer.h"
 #include "gegl-buffer-types.h"
 
 #include "gegl-buffer-backend.h"

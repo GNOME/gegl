@@ -21,6 +21,7 @@
 
 #include <glib-object.h>
 
+#include "gegl-buffer.h"
 #include "gegl-buffer-backend.h"
 #include "gegl-tile-backend.h"
 #include "gegl-tile-backend-ram.h"
