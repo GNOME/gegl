@@ -2774,19 +2774,17 @@ gegl_buffer_set_pattern (GeglBuffer          *buffer,
   gegl_free (pattern_data);
 }
 
-void
-gegl_buffer_set_color (GeglBuffer          *dst,
+static void
+gegl_buffer_set_value (GeglBuffer          *dst,
                        const GeglRectangle *dst_rect,
-                       GeglColor           *color)
+                       uint8_t             *value,
+                       const Babl          *pixel_format)
 {
   GeglBufferIterator *i;
-  gchar               pixel[128];
   gint                bpp;
 
   g_return_if_fail (GEGL_IS_BUFFER (dst));
-  g_return_if_fail (color);
-
-  gegl_color_get_pixel (color, dst->soft_format, pixel);
+  g_return_if_fail (value);
 
   if (!dst_rect)
     {
@@ -2796,17 +2794,31 @@ gegl_buffer_set_color (GeglBuffer          *dst,
       dst_rect->height == 0)
     return;
 
-  bpp = babl_format_get_bytes_per_pixel (dst->soft_format);
+  bpp = babl_format_get_bytes_per_pixel (pixel_format);
 
   /* FIXME: this can be even further optimized by special casing it so
    * that fully filled tiles are shared.
    */
-  i = gegl_buffer_iterator_new (dst, dst_rect, 0, dst->soft_format,
+  i = gegl_buffer_iterator_new (dst, dst_rect, 0, pixel_format,
                                 GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
   while (gegl_buffer_iterator_next (i))
     {
-      gegl_memset_pattern (i->items[0].data, pixel, bpp, i->length);
+      gegl_memset_pattern (i->items[0].data, value, bpp, i->length);
     }
+}
+
+
+void
+gegl_buffer_set_color (GeglBuffer          *dst,
+                       const GeglRectangle *dst_rect,
+                       GeglColor           *color)
+{
+  uint8_t pixel[128];
+  g_return_if_fail (GEGL_IS_BUFFER (dst));
+  g_return_if_fail (color);
+
+  gegl_color_get_pixel (color, dst->soft_format, pixel);
+  gegl_buffer_set_value (dst, dst_rect, &pixel[0], dst->soft_format);
 }
 
 GeglBuffer *
