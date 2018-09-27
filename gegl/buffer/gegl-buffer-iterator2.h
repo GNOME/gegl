@@ -34,13 +34,13 @@ typedef struct _GeglBufferIterator2Priv GeglBufferIterator2Priv;
 
 typedef struct GeglBufferIterator2Item
 {
-  gpointer      data;
-  GeglRectangle roi;
+  gpointer            data;
+  GeglBufferRectangle roi;
 } GeglBufferIterator2Item;
 
 typedef struct GeglBufferIterator2
 {
-  gint           length;
+  gint                     length;
   GeglBufferIterator2Priv *priv;
   GeglBufferIterator2Item  items[];
 } GeglBufferIterator2;
@@ -73,13 +73,13 @@ GeglBufferIterator2 *gegl_buffer_iterator2_empty_new (int max_slots);
  * buffers pixels.
  */
 GeglBufferIterator2 * gegl_buffer_iterator2_new  (
-                                                 GeglBuffer          *buffer,
-                                                 const GeglRectangle *roi,
-                                                 gint                 level,
-                                                 const Babl          *format,
-                                                 GeglAccessMode       access_mode,
-                                                 GeglAbyssPolicy      abyss_policy,
-                                                 gint                 max_slots);
+                                                 GeglBuffer                *buffer,
+                                                 const GeglBufferRectangle *roi,
+                                                 gint                       level,
+                                                 const Babl                *format,
+                                                 GeglAccessMode             access_mode,
+                                                 GeglAbyssPolicy            abyss_policy,
+                                                 gint                       max_slots);
 
 
 /**
@@ -111,13 +111,13 @@ GeglBufferIterator2 * gegl_buffer_iterator2_new  (
  * Returns: an integer handle refering to the indice in the iterator structure
  * of the added buffer.
  */
-gint                 gegl_buffer_iterator2_add  (GeglBufferIterator2  *iterator,
-                                                GeglBuffer          *buffer,
-                                                const GeglRectangle *roi,
-                                                gint                 level,
-                                                const Babl          *format,
-                                                GeglAccessMode       access_mode,
-                                                GeglAbyssPolicy      abyss_policy);
+gint                gegl_buffer_iterator2_add  (GeglBufferIterator2       *iterator,
+                                                GeglBuffer                *buffer,
+                                                const GeglBufferRectangle *roi,
+                                                gint                       level,
+                                                const Babl                *format,
+                                                GeglAccessMode             access_mode,
+                                                GeglAbyssPolicy            abyss_policy);
 
 /**
  * gegl_buffer_iterator2_stop: (skip)

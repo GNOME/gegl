@@ -188,9 +188,9 @@ gegl_buffer_header_init (GeglBufferHeader *header,
 }
 
 void
-gegl_buffer_save (GeglBuffer          *buffer,
-                  const gchar         *path,
-                  const GeglRectangle *roi)
+gegl_buffer_save (GeglBuffer                *buffer,
+                  const gchar               *path,
+                  const GeglBufferRectangle *roi)
 {
   SaveInfo *info = g_slice_new0 (SaveInfo);
 

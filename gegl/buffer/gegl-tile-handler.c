@@ -223,8 +223,8 @@ gegl_tile_handler_dup_tile (GeglTileHandler *handler,
 }
 
 void
-gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
-                               const GeglRectangle *rect)
+gegl_tile_handler_damage_rect (GeglTileHandler           *handler,
+                               const GeglBufferRectangle *rect)
 {
   GeglTileSource *source;
   gint            tile_width;

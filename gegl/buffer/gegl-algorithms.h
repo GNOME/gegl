@@ -92,125 +92,125 @@ void gegl_downscale_2x2_nearest (const Babl *format,
  * available for #format fall back to nearest neighbor.
  * #scale is assumed to be between 0.5 and +inf.
  */
-void gegl_resample_boxfilter (guchar              *dest_buf,
-                              const guchar        *source_buf,
-                              const GeglRectangle *dst_rect,
-                              const GeglRectangle *src_rect,
-                              gint                 s_rowstride,
-                              gdouble              scale,
-                              const Babl          *format,
-                              gint                 d_rowstride);
+void gegl_resample_boxfilter (guchar                    *dest_buf,
+                              const guchar              *source_buf,
+                              const GeglBufferRectangle *dst_rect,
+                              const GeglBufferRectangle *src_rect,
+                              gint                       s_rowstride,
+                              gdouble                    scale,
+                              const Babl                *format,
+                              gint                       d_rowstride);
 
-void gegl_resample_boxfilter_double (guchar              *dest_buf,
-                                     const guchar        *source_buf,
-                                     const GeglRectangle *dst_rect,
-                                     const GeglRectangle *src_rect,
-                                     gint                 s_rowstride,
-                                     gdouble              scale,
-                                     gint                 bpp,
-                                     gint                 d_rowstride);
+void gegl_resample_boxfilter_double (guchar                    *dest_buf,
+                                     const guchar              *source_buf,
+                                     const GeglBufferRectangle *dst_rect,
+                                     const GeglBufferRectangle *src_rect,
+                                     gint                       s_rowstride,
+                                     gdouble                    scale,
+                                     gint                       bpp,
+                                     gint                       d_rowstride);
 
-void gegl_resample_boxfilter_float (guchar              *dest_buf,
-                                    const guchar        *source_buf,
-                                    const GeglRectangle *dst_rect,
-                                    const GeglRectangle *src_rect,
-                                    gint                 s_rowstride,
-                                    gdouble              scale,
-                                    gint                 bpp,
-                                    gint                 d_rowstride);
+void gegl_resample_boxfilter_float (guchar                    *dest_buf,
+                                    const guchar              *source_buf,
+                                    const GeglBufferRectangle *dst_rect,
+                                    const GeglBufferRectangle *src_rect,
+                                    gint                       s_rowstride,
+                                    gdouble                    scale,
+                                    gint                       bpp,
+                                    gint                       d_rowstride);
 
-void gegl_resample_boxfilter_u32 (guchar              *dest_buf,
-                                  const guchar        *source_buf,
-                                  const GeglRectangle *dst_rect,
-                                  const GeglRectangle *src_rect,
-                                  gint                 s_rowstride,
-                                  gdouble              scale,
-                                  gint                 bpp,
-                                  gint                 d_rowstride);
+void gegl_resample_boxfilter_u32 (guchar                    *dest_buf,
+                                  const guchar              *source_buf,
+                                  const GeglBufferRectangle *dst_rect,
+                                  const GeglBufferRectangle *src_rect,
+                                  gint                       s_rowstride,
+                                  gdouble                    scale,
+                                  gint                       bpp,
+                                  gint                       d_rowstride);
 
-void gegl_resample_boxfilter_u16 (guchar              *dest_buf,
-                                  const guchar        *source_buf,
-                                  const GeglRectangle *dst_rect,
-                                  const GeglRectangle *src_rect,
-                                  gint                 s_rowstride,
-                                  gdouble              scale,
-                                  gint                 bpp,
-                                  gint                 d_rowstride);
+void gegl_resample_boxfilter_u16 (guchar                    *dest_buf,
+                                  const guchar              *source_buf,
+                                  const GeglBufferRectangle *dst_rect,
+                                  const GeglBufferRectangle *src_rect,
+                                  gint                       s_rowstride,
+                                  gdouble                    scale,
+                                  gint                       bpp,
+                                  gint                       d_rowstride);
 
-void gegl_resample_boxfilter_u8 (guchar              *dest_buf,
-                                 const guchar        *source_buf,
-                                 const GeglRectangle *dst_rect,
-                                 const GeglRectangle *src_rect,
-                                 gint                 s_rowstride,
-                                 gdouble              scale,
-                                 gint                 bpp,
-                                 gint                 d_rowstride);
+void gegl_resample_boxfilter_u8 (guchar                    *dest_buf,
+                                 const guchar              *source_buf,
+                                 const GeglBufferRectangle *dst_rect,
+                                 const GeglBufferRectangle *src_rect,
+                                 gint                       s_rowstride,
+                                 gdouble                    scale,
+                                 gint                       bpp,
+                                 gint                       d_rowstride);
 
 /* Attempt to resample with a 2x2 bilinear filter, if no implementation is
  * available for #format fall back to nearest neighbor.
  */
-void gegl_resample_bilinear (guchar              *dest_buf,
-                             const guchar        *source_buf,
-                             const GeglRectangle *dst_rect,
-                             const GeglRectangle *src_rect,
-                             gint                 s_rowstride,
-                             gdouble              scale,
-                             const Babl          *format,
-                             gint                 d_rowstride);
+void gegl_resample_bilinear (guchar                    *dest_buf,
+                             const guchar              *source_buf,
+                             const GeglBufferRectangle *dst_rect,
+                             const GeglBufferRectangle *src_rect,
+                             gint                       s_rowstride,
+                             gdouble                    scale,
+                             const Babl                *format,
+                             gint                       d_rowstride);
 
-void gegl_resample_bilinear_double (guchar              *dest_buf,
-                                    const guchar        *source_buf,
-                                    const GeglRectangle *dst_rect,
-                                    const GeglRectangle *src_rect,
-                                    gint                 s_rowstride,
-                                    gdouble              scale,
-                                    gint                 bpp,
-                                    gint                 d_rowstride);
+void gegl_resample_bilinear_double (guchar                    *dest_buf,
+                                    const guchar              *source_buf,
+                                    const GeglBufferRectangle *dst_rect,
+                                    const GeglBufferRectangle *src_rect,
+                                    gint                       s_rowstride,
+                                    gdouble                    scale,
+                                    gint                       bpp,
+                                    gint                       d_rowstride);
 
-void gegl_resample_bilinear_float (guchar              *dest_buf,
-                                   const guchar        *source_buf,
-                                   const GeglRectangle *dst_rect,
-                                   const GeglRectangle *src_rect,
-                                   gint                 s_rowstride,
-                                   gdouble              scale,
-                                   gint                 bpp,
-                                   gint                 d_rowstride);
+void gegl_resample_bilinear_float (guchar                    *dest_buf,
+                                   const guchar              *source_buf,
+                                   const GeglBufferRectangle *dst_rect,
+                                   const GeglBufferRectangle *src_rect,
+                                   gint                       s_rowstride,
+                                   gdouble                    scale,
+                                   gint                       bpp,
+                                   gint                       d_rowstride);
 
-void gegl_resample_bilinear_u32 (guchar              *dest_buf,
-                                 const guchar        *source_buf,
-                                 const GeglRectangle *dst_rect,
-                                 const GeglRectangle *src_rect,
-                                 gint                 s_rowstride,
-                                 gdouble              scale,
-                                 gint                 bpp,
-                                 gint                 d_rowstride);
+void gegl_resample_bilinear_u32 (guchar                    *dest_buf,
+                                 const guchar              *source_buf,
+                                 const GeglBufferRectangle *dst_rect,
+                                 const GeglBufferRectangle *src_rect,
+                                 gint                       s_rowstride,
+                                 gdouble                    scale,
+                                 gint                       bpp,
+                                 gint                       d_rowstride);
 
-void gegl_resample_bilinear_u16 (guchar              *dest_buf,
-                                 const guchar        *source_buf,
-                                 const GeglRectangle *dst_rect,
-                                 const GeglRectangle *src_rect,
-                                 gint                 s_rowstride,
-                                 gdouble              scale,
-                                 gint                 bpp,
-                                 gint                 d_rowstride);
+void gegl_resample_bilinear_u16 (guchar                    *dest_buf,
+                                 const guchar              *source_buf,
+                                 const GeglBufferRectangle *dst_rect,
+                                 const GeglBufferRectangle *src_rect,
+                                 gint                       s_rowstride,
+                                 gdouble                    scale,
+                                 gint                       bpp,
+                                 gint                       d_rowstride);
 
-void gegl_resample_bilinear_u8 (guchar              *dest_buf,
-                                const guchar        *source_buf,
-                                const GeglRectangle *dst_rect,
-                                const GeglRectangle *src_rect,
-                                gint                 s_rowstride,
-                                gdouble              scale,
-                                gint                 bpp,
-                                gint                 d_rowstride);
+void gegl_resample_bilinear_u8 (guchar                    *dest_buf,
+                                const guchar              *source_buf,
+                                const GeglBufferRectangle *dst_rect,
+                                const GeglBufferRectangle *src_rect,
+                                gint                       s_rowstride,
+                                gdouble                    scale,
+                                gint                       bpp,
+                                gint                       d_rowstride);
 
-void gegl_resample_nearest (guchar              *dst,
-                            const guchar        *src,
-                            const GeglRectangle *dst_rect,
-                            const GeglRectangle *src_rect,
-                            gint                 src_stride,
-                            gdouble              scale,
-                            gint                 bpp,
-                            gint                 dst_stride);
+void gegl_resample_nearest (guchar                    *dst,
+                            const guchar              *src,
+                            const GeglBufferRectangle *dst_rect,
+                            const GeglBufferRectangle *src_rect,
+                            gint                       src_stride,
+                            gdouble                    scale,
+                            gint                       bpp,
+                            gint                       dst_stride);
 
 GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format);
 

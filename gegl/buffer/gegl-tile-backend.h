@@ -103,10 +103,14 @@ GeglTileSource *gegl_tile_backend_peek_storage  (GeglTileBackend *tile_backend);
  * backend with the width/height information when constructing proxy
  * GeglBuffers to interact with other systems
  */
-void  gegl_tile_backend_set_extent    (GeglTileBackend     *tile_backend,
-                                       const GeglRectangle *rectangle);
+void  gegl_tile_backend_set_extent    (GeglTileBackend           *tile_backend,
+                                       const GeglBufferRectangle *rectangle);
 
-GeglRectangle gegl_tile_backend_get_extent (GeglTileBackend *tile_backend);
+/**
+ * gegl_tile_backend_get_extent: (skip)
+ * @tile_backend: a #GeglTileBackend
+ */
+GeglBufferRectangle gegl_tile_backend_get_extent (GeglTileBackend *tile_backend);
 
 /**
  * gegl_tile_backend_set_flush_on_destroy:

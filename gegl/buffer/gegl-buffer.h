@@ -31,6 +31,36 @@ typedef struct _GeglTileBackend GeglTileBackend;
 typedef struct _GeglBuffer  GeglBuffer;
 typedef struct _GeglSampler       GeglSampler;
 
+typedef struct _GeglBufferRectangle GeglBufferRectangle;
+
+struct _GeglBufferRectangle
+{
+  gint x;
+  gint y;
+  gint width;
+  gint height;
+};
+
+#ifndef __cplusplus
+
+#define  GEGL_BUFFER_RECTANGLE(x,y,w,h) (&((GeglBufferRectangle){(x), (y),   (w), (h)}))
+
+#else
+
+static inline GeglBufferRectangle
+_gegl_buffer_rectangle_helper (gint x,
+                               gint y,
+                               gint width,
+                               gint height)
+{
+  GeglBufferRectangle result = {x, y, width, height};
+  return result;
+}
+
+#define  GEGL_BUFFER_RECTANGLE(x,y,w,h) \
+  ((GeglBufferRectangle *) &(const GeglBufferRectangle &) ::_gegl_buffer_rectangle_helper (x, y, w, h))
+
+#endif /* __cplusplus */
 
 
 
@@ -49,7 +79,7 @@ typedef struct _GeglSampler       GeglSampler;
 /**
  * gegl_buffer_new: (skip)
  * @extent: the geometry of the buffer (origin, width and height) a
- * GeglRectangle.
+ * GeglBufferRectangle.
  * @format: the Babl pixel format to be used, create one with babl_format("RGBA
  * u8") and similar.
  *
@@ -57,13 +87,13 @@ typedef struct _GeglSampler       GeglSampler;
  * possible to pass in NULL for both extent and format, a NULL extent creates
  * an empty buffer and a NULL format makes the buffer default to "RGBA float".
  */
-GeglBuffer *    gegl_buffer_new               (const GeglRectangle *extent,
-                                               const Babl          *format);
+GeglBuffer *    gegl_buffer_new               (const GeglBufferRectangle *extent,
+                                               const Babl                *format);
 
 /**
  * gegl_buffer_new_for_backend:
  * @extent: the geometry of the buffer (origin, width and height) a
- * GeglRectangle.
+ * GeglBufferRectangle.
  * @backend: an instance of a GeglTileBackend subclass.
  *
  * Create a new GeglBuffer from a backend, if NULL is passed in the extent of
@@ -71,7 +101,7 @@ GeglBuffer *    gegl_buffer_new               (const GeglRectangle *extent,
  *
  * returns a GeglBuffer, that holds a reference to the provided backend.
  */
-GeglBuffer *   gegl_buffer_new_for_backend    (const GeglRectangle *extent,
+GeglBuffer *   gegl_buffer_new_for_backend    (const GeglBufferRectangle *extent,
                                                GeglTileBackend     *backend);
 
 /**
@@ -115,9 +145,9 @@ GeglBuffer *    gegl_buffer_open              (const gchar         *path);
  *
  * Write a GeglBuffer to a file.
  */
-void            gegl_buffer_save              (GeglBuffer          *buffer,
-                                               const gchar         *path,
-                                               const GeglRectangle *roi);
+void            gegl_buffer_save              (GeglBuffer                *buffer,
+                                               const gchar               *path,
+                                               const GeglBufferRectangle *roi);
 
 /**
  * gegl_buffer_load:
@@ -150,18 +180,18 @@ void            gegl_buffer_flush             (GeglBuffer          *buffer);
  *
  * Return value: (transfer full): the new sub buffer
  */
-GeglBuffer *    gegl_buffer_create_sub_buffer (GeglBuffer          *buffer,
-                                               const GeglRectangle *extent);
+GeglBuffer *    gegl_buffer_create_sub_buffer (GeglBuffer                *buffer,
+                                               const GeglBufferRectangle *extent);
 
 /**
  * gegl_buffer_get_extent:
  * @buffer: the buffer to operate on.
  *
- * Returns a pointer to a GeglRectangle structure defining the geometry of a
+ * Returns a pointer to a GeglBufferRectangle structure defining the geometry of a
  * specific GeglBuffer, this is also the default width/height of buffers passed
  * in to gegl_buffer_set and gegl_buffer_get (with a scale of 1.0 at least).
  */
-const GeglRectangle * gegl_buffer_get_extent  (GeglBuffer *buffer);
+const GeglBufferRectangle * gegl_buffer_get_extent  (GeglBuffer *buffer);
 
 
 /**
@@ -175,8 +205,8 @@ const GeglRectangle * gegl_buffer_get_extent  (GeglBuffer *buffer);
  *
  * Returns TRUE if the change of extent was successful.
  */
-gboolean          gegl_buffer_set_extent      (GeglBuffer          *buffer,
-                                               const GeglRectangle *extent);
+gboolean          gegl_buffer_set_extent      (GeglBuffer               *buffer,
+                                               const GeglBufferRectangle *extent);
 
 /**
  * gegl_buffer_set_abyss:
@@ -187,8 +217,8 @@ gboolean          gegl_buffer_set_extent      (GeglBuffer          *buffer,
  *
  * Returns TRUE if the change of abyss was successful.
  */
-gboolean          gegl_buffer_set_abyss      (GeglBuffer          *buffer,
-                                              const GeglRectangle *abyss);
+gboolean          gegl_buffer_set_abyss      (GeglBuffer                *buffer,
+                                              const GeglBufferRectangle *abyss);
 
 /* convenience access macros */
 
@@ -260,13 +290,13 @@ gboolean          gegl_buffer_set_abyss      (GeglBuffer          *buffer,
  * the tile structure into a linear buffer.
  *
  */
-void            gegl_buffer_get               (GeglBuffer          *buffer,
-                                               const GeglRectangle *rect,
-                                               gdouble              scale,
-                                               const Babl          *format,
-                                               gpointer             dest,
-                                               gint                 rowstride,
-                                               GeglAbyssPolicy      repeat_mode);
+void            gegl_buffer_get               (GeglBuffer                *buffer,
+                                               const GeglBufferRectangle *rect,
+                                               gdouble                    scale,
+                                               const Babl                *format,
+                                               gpointer                   dest,
+                                               gint                       rowstride,
+                                               GeglAbyssPolicy            repeat_mode);
 
 /**
  * gegl_buffer_set: (skip)
@@ -283,12 +313,12 @@ void            gegl_buffer_get               (GeglBuffer          *buffer,
  *
  * Store a linear raster buffer into the GeglBuffer.
  */
-void            gegl_buffer_set               (GeglBuffer          *buffer,
-                                               const GeglRectangle *rect,
-                                               gint                 mipmap_level,
-                                               const Babl          *format,
-                                               const void          *src,
-                                               gint                 rowstride);
+void            gegl_buffer_set               (GeglBuffer                *buffer,
+                                               const GeglBufferRectangle *rect,
+                                               gint                       mipmap_level,
+                                               const Babl                *format,
+                                               const void                *src,
+                                               gint                       rowstride);
 
 
 /**
@@ -299,9 +329,9 @@ void            gegl_buffer_set               (GeglBuffer          *buffer,
  *
  * Sets the region covered by rect to the specified color.
  */
-void            gegl_buffer_set_color         (GeglBuffer          *buffer,
-                                               const GeglRectangle *rect,
-                                               GeglColor           *color);
+void            gegl_buffer_set_color         (GeglBuffer                *buffer,
+                                               const GeglBufferRectangle *rect,
+                                               GeglColor                 *color);
 
 
 /**
@@ -314,10 +344,10 @@ void            gegl_buffer_set_color         (GeglBuffer          *buffer,
  * Sets the region covered by rect to the the provided pixel.
  */
 void
-gegl_buffer_set_color_from_pixel (GeglBuffer          *buffer,
-                                  const GeglRectangle *rect,
-                                  const guchar        *pixel,
-                                  const Babl          *pixel_format);
+gegl_buffer_set_color_from_pixel (GeglBuffer                *buffer,
+                                  const GeglBufferRectangle *rect,
+                                  const guchar              *pixel,
+                                  const Babl                *pixel_format);
 
 
 /**
@@ -332,11 +362,11 @@ gegl_buffer_set_color_from_pixel (GeglBuffer          *buffer,
  * relative to the origin (0, 0) and not to the rectangle. So be carefull
  * about the origin of @pattern and @buffer extents.
  */
-void            gegl_buffer_set_pattern       (GeglBuffer          *buffer,
-                                               const GeglRectangle *rect,
-                                               GeglBuffer          *pattern,
-                                               gint                 x_offset,
-                                               gint                 y_offset);
+void            gegl_buffer_set_pattern       (GeglBuffer                *buffer,
+                                               const GeglBufferRectangle *rect,
+                                               GeglBuffer                *pattern,
+                                               gint                       x_offset,
+                                               gint                       y_offset);
 
 /**
  * gegl_buffer_get_format: (skip)
@@ -377,8 +407,8 @@ const Babl *    gegl_buffer_set_format        (GeglBuffer          *buffer,
  * Clears the provided rectangular region by setting all the associated memory
  * to 0.
  */
-void            gegl_buffer_clear             (GeglBuffer          *buffer,
-                                               const GeglRectangle *roi);
+void            gegl_buffer_clear             (GeglBuffer                *buffer,
+                                               const GeglBufferRectangle *roi);
 
 
 /**
@@ -398,11 +428,11 @@ void            gegl_buffer_clear             (GeglBuffer          *buffer,
  * This function never does any scaling. When src_rect and dst_rect do not have
  * the same width and height, the size of src_rect is used.
  */
-void            gegl_buffer_copy              (GeglBuffer          *src,
-                                               const GeglRectangle *src_rect,
-                                               GeglAbyssPolicy      repeat_mode,
-                                               GeglBuffer          *dst,
-                                               const GeglRectangle *dst_rect);
+void            gegl_buffer_copy              (GeglBuffer                *src,
+                                               const GeglBufferRectangle *src_rect,
+                                               GeglAbyssPolicy            repeat_mode,
+                                               GeglBuffer                *dst,
+                                               const GeglBufferRectangle *dst_rect);
 
 
 
@@ -619,7 +649,7 @@ void              gegl_sampler_get            (GeglSampler    *sampler,
  *
  * Returns:The context rectangle of the given @sampler.
  */
-const GeglRectangle * gegl_sampler_get_context_rect (GeglSampler *sampler);
+const GeglBufferRectangle * gegl_sampler_get_context_rect (GeglSampler *sampler);
 
 /**
  * gegl_buffer_linear_new: (skip)
@@ -632,8 +662,8 @@ const GeglRectangle * gegl_sampler_get_context_rect (GeglSampler *sampler);
  *
  * Returns: a GeglBuffer that can be used as any other GeglBuffer.
  */
-GeglBuffer *  gegl_buffer_linear_new          (const GeglRectangle *extent,
-                                               const Babl          *format);
+GeglBuffer *  gegl_buffer_linear_new          (const GeglBufferRectangle *extent,
+                                               const Babl                *format);
 
 /**
  * gegl_buffer_linear_new_from_data: (skip)
@@ -653,12 +683,12 @@ GeglBuffer *  gegl_buffer_linear_new          (const GeglRectangle *extent,
  *
  * Returns: a GeglBuffer that can be used as any other GeglBuffer.
  */
-GeglBuffer * gegl_buffer_linear_new_from_data (const gpointer       data,
-                                               const Babl          *format,
-                                               const GeglRectangle *extent,
-                                               gint                 rowstride,
-                                               GDestroyNotify       destroy_fn,
-                                               gpointer             destroy_fn_data);
+GeglBuffer * gegl_buffer_linear_new_from_data (const gpointer             data,
+                                               const Babl                *format,
+                                               const GeglBufferRectangle *extent,
+                                               gint                       rowstride,
+                                               GDestroyNotify             destroy_fn,
+                                               gpointer                   destroy_fn_data);
 
 /**
  * gegl_buffer_linear_open: (skip)
@@ -673,10 +703,10 @@ GeglBuffer * gegl_buffer_linear_new_from_data (const gpointer       data,
  * request is compatible with the underlying data storage direct access
  * to the underlying data is provided. Otherwise, it returns a copy of the data.
  */
-gpointer        gegl_buffer_linear_open       (GeglBuffer          *buffer,
-                                               const GeglRectangle *extent,
-                                               gint                *rowstride,
-                                               const Babl          *format);
+gpointer        gegl_buffer_linear_open       (GeglBuffer                *buffer,
+                                               const GeglBufferRectangle *extent,
+                                               gint                      *rowstride,
+                                               const Babl                *format);
 
 /**
  * gegl_buffer_linear_close:
@@ -699,7 +729,7 @@ void            gegl_buffer_linear_close      (GeglBuffer    *buffer,
  * Return the abyss extent of a buffer, this expands out to the parents extent in
  * subbuffers.
  */
-const GeglRectangle * gegl_buffer_get_abyss   (GeglBuffer           *buffer);
+const GeglBufferRectangle * gegl_buffer_get_abyss   (GeglBuffer           *buffer);
 
 
 
@@ -735,7 +765,7 @@ glong gegl_buffer_signal_connect (GeglBuffer *buffer,
  * threads having an implicit synchronization of its own.
  */
 void
-gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglRectangle *rect);
+gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglBufferRectangle *rect);
 
 #include <gegl-buffer-iterator.h>
 
@@ -746,6 +776,10 @@ GType gegl_buffer_get_type  (void) G_GNUC_CONST;
 #define GEGL_BUFFER(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_BUFFER, GeglBuffer))
 #define GEGL_IS_BUFFER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_BUFFER))
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglBuffer, g_object_unref)
+
+
+
+
 
 
 G_END_DECLS

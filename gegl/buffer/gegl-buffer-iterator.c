@@ -49,7 +49,7 @@ typedef enum {
 } GeglIteratorTileMode;
 
 typedef struct _SubIterState {
-  GeglRectangle        full_rect; /* The entire area we are iterating over */
+  GeglBufferRectangle  full_rect; /* The entire area we are iterating over */
   GeglBuffer          *buffer;
   GeglAccessMode       access_mode;
   GeglAbyssPolicy      abyss_policy;
@@ -57,7 +57,7 @@ typedef struct _SubIterState {
   gint                 format_bpp;
   GeglIteratorTileMode current_tile_mode;
   gint                 row_stride;
-  GeglRectangle        real_roi;
+  GeglBufferRectangle  real_roi;
   gint                 level;
   /* Direct data members */
   GeglTile            *current_tile;
@@ -70,11 +70,11 @@ typedef struct _SubIterState {
 
 struct _GeglBufferIteratorPriv
 {
-  gint              num_buffers;
-  GeglIteratorState state;
-  GeglRectangle     origin_tile;
-  gint              remaining_rows;
-  SubIterState      sub_iter[GEGL_BUFFER_MAX_ITERATORS];
+  gint                num_buffers;
+  GeglIteratorState   state;
+  GeglBufferRectangle origin_tile;
+  gint                remaining_rows;
+  SubIterState        sub_iter[GEGL_BUFFER_MAX_ITERATORS];
 };
 
 static inline GeglBufferIterator *
@@ -98,13 +98,13 @@ gegl_buffer_iterator_empty_new (void)
 
 
 static inline int
-_gegl_buffer_iterator_add (GeglBufferIterator  *iter,
-                          GeglBuffer          *buf,
-                          const GeglRectangle *roi,
-                          gint                 level,
-                          const Babl          *format,
-                          GeglAccessMode       access_mode,
-                          GeglAbyssPolicy      abyss_policy)
+_gegl_buffer_iterator_add (GeglBufferIterator        *iter,
+                          GeglBuffer                *buf,
+                          const GeglBufferRectangle *roi,
+                          gint                       level,
+                          const Babl                *format,
+                          GeglAccessMode             access_mode,
+                          GeglAbyssPolicy            abyss_policy)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
   int                     index;
@@ -149,13 +149,13 @@ _gegl_buffer_iterator_add (GeglBufferIterator  *iter,
 }
 
 int
-gegl_buffer_iterator_add (GeglBufferIterator  *iter,
-                          GeglBuffer          *buf,
-                          const GeglRectangle *roi,
-                          gint                 level,
-                          const Babl          *format,
-                          GeglAccessMode       access_mode,
-                          GeglAbyssPolicy      abyss_policy)
+gegl_buffer_iterator_add (GeglBufferIterator        *iter,
+                          GeglBuffer                *buf,
+                          const GeglBufferRectangle *roi,
+                          gint                       level,
+                          const Babl                *format,
+                          GeglAccessMode             access_mode,
+                          GeglAbyssPolicy            abyss_policy)
 {
   return _gegl_buffer_iterator_add (iter, buf, roi, level, format, access_mode,
 abyss_policy);
@@ -163,12 +163,12 @@ abyss_policy);
 
 
 GeglBufferIterator *
-gegl_buffer_iterator_new (GeglBuffer          *buf,
-                          const GeglRectangle *roi,
-                          gint                 level,
-                          const Babl          *format,
-                          GeglAccessMode       access_mode,
-                          GeglAbyssPolicy      abyss_policy)
+gegl_buffer_iterator_new (GeglBuffer                *buf,
+                          const GeglBufferRectangle *roi,
+                          gint                       level,
+                          const Babl                *format,
+                          GeglAccessMode             access_mode,
+                          GeglAbyssPolicy            abyss_policy)
 {
   GeglBufferIterator *iter = _gegl_buffer_iterator_empty_new ();
   _gegl_buffer_iterator_add (iter, buf, roi, level, format,
@@ -238,7 +238,7 @@ retile_subs (GeglBufferIterator *iter,
              int                 y)
 {
   GeglBufferIteratorPriv *priv = iter->priv;
-  GeglRectangle real_roi;
+  GeglBufferRectangle real_roi;
   int index;
 
   int shift_x = priv->origin_tile.x;
@@ -555,7 +555,7 @@ _gegl_buffer_iterator_stop (GeglBufferIterator *iter)
               sub->access_mode & GEGL_ACCESS_WRITE &&
               ! (sub->access_mode & GEGL_ITERATOR_INCOMPATIBLE))
             {
-              GeglRectangle damage_rect;
+              GeglBufferRectangle damage_rect;
 
               damage_rect.x      = sub->full_rect.x + sub->buffer->shift_x;
               damage_rect.y      = sub->full_rect.y + sub->buffer->shift_y;

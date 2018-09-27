@@ -100,7 +100,7 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
 {
   GeglSamplerNearest *nearest_sampler = (GeglSamplerNearest*)(sampler);
   GeglBuffer *buffer = sampler->buffer;
-  const GeglRectangle *abyss = &buffer->abyss;
+  const GeglBufferRectangle *abyss = &buffer->abyss;
   guchar              *buf   = data;
 
   if (y <  abyss->y ||

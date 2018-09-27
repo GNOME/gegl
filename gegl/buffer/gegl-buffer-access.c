@@ -40,23 +40,23 @@
 #include "gegl-buffer-iterator-private.h"
 #include "gegl-types-internal.h"
 
-static void gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
-                                              const GeglRectangle *roi,
-                                              const GeglRectangle *abyss,
-                                              guchar              *buf,
-                                              gint                 buf_stride,
-                                              const Babl          *format,
-                                              gint                 level,
-                                              GeglAbyssPolicy      repeat_mode);
+static void gegl_buffer_iterate_read_fringed (GeglBuffer                *buffer,
+                                              const GeglBufferRectangle *roi,
+                                              const GeglBufferRectangle *abyss,
+                                              guchar                    *buf,
+                                              gint                       buf_stride,
+                                              const Babl                *format,
+                                              gint                       level,
+                                              GeglAbyssPolicy            repeat_mode);
 
 
-static void gegl_buffer_iterate_read_dispatch (GeglBuffer          *buffer,
-                                               const GeglRectangle *roi,
-                                               guchar              *buf,
-                                               gint                 rowstride,
-                                               const Babl          *format,
-                                               gint                 level,
-                                               GeglAbyssPolicy      repeat_mode);
+static void gegl_buffer_iterate_read_dispatch (GeglBuffer                *buffer,
+                                               const GeglBufferRectangle *roi,
+                                               guchar                    *buf,
+                                               gint                       rowstride,
+                                               const Babl                *format,
+                                               gint                       level,
+                                               GeglAbyssPolicy            repeat_mode);
 
 static void inline
 gegl_buffer_get_pixel (GeglBuffer     *buffer,
@@ -66,7 +66,7 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
                        gpointer        data,
                        GeglAbyssPolicy repeat_mode)
 {
-  const GeglRectangle *abyss = &buffer->abyss;
+  const GeglBufferRectangle *abyss = &buffer->abyss;
   guchar              *buf   = data;
 
   if (y <  abyss->y ||
@@ -177,8 +177,8 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
                        const Babl     *format,
                        gconstpointer   data)
 {
-  const GeglRectangle *abyss = &buffer->abyss;
-  const guchar        *buf   = data;
+  const GeglBufferRectangle *abyss = &buffer->abyss;
+  const guchar              *buf   = data;
 
   if (y <  abyss->y ||
       x <  abyss->x ||
@@ -260,13 +260,13 @@ enum _GeglBufferSetFlag {
 typedef enum _GeglBufferSetFlag GeglBufferSetFlag;
 
 void
-gegl_buffer_set_with_flags (GeglBuffer          *buffer,
-                            const GeglRectangle *rect,
-                            gint                 level,
-                            const Babl          *format,
-                            const void          *src,
-                            gint                 rowstride,
-                            GeglBufferSetFlag    set_flags);
+gegl_buffer_set_with_flags (GeglBuffer                *buffer,
+                            const GeglBufferRectangle *rect,
+                            gint                       level,
+                            const Babl                *format,
+                            const void                *src,
+                            gint                       rowstride,
+                            GeglBufferSetFlag          set_flags);
 
 
 static inline void
@@ -277,7 +277,7 @@ _gegl_buffer_set_pixel (GeglBuffer       *buffer,
                         gconstpointer     data,
                         GeglBufferSetFlag flags)
 {
-  GeglRectangle rect = {x,y,1,1};
+  GeglBufferRectangle rect = {x,y,1,1};
   switch (flags)
   {
     case GEGL_BUFFER_SET_FLAG_FAST:
@@ -327,7 +327,7 @@ gegl_buffer_flush (GeglBuffer *buffer)
 }
 
 void
-gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglRectangle *rect)
+gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglBufferRectangle *rect)
 {
   if (gegl_buffer_ext_flush)
     gegl_buffer_ext_flush (buffer, rect);
@@ -336,12 +336,12 @@ gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglRectangle *rect)
 
 
 static inline void
-gegl_buffer_iterate_write (GeglBuffer          *buffer,
-                           const GeglRectangle *roi,
-                           guchar              *buf,
-                           gint                 rowstride,
-                           const Babl          *format,
-                           gint                 level)
+gegl_buffer_iterate_write (GeglBuffer                *buffer,
+                           const GeglBufferRectangle *roi,
+                           guchar                    *buf,
+                           gint                       rowstride,
+                           const Babl                *format,
+                           gint                       level)
 {
   gint tile_width  = buffer->tile_storage->tile_width;
   gint tile_height = buffer->tile_storage->tile_height;
@@ -365,7 +365,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
   gint abyss_y_total  = buffer_abyss_y + buffer->abyss.height;
   gint factor         = 1<<level;
   const Babl *fish;
-  GeglRectangle scaled_rect;
+  GeglBufferRectangle scaled_rect;
   if (level && roi)
   {
     scaled_rect = *roi;
@@ -852,18 +852,18 @@ with multi-threading - and should be added back later.
   if (level == 0)
     {
       gegl_tile_handler_damage_rect (GEGL_TILE_HANDLER (buffer->tile_storage),
-                                     GEGL_RECTANGLE (buffer_x, buffer_y,
-                                                     width,    height));
+                                     GEGL_BUFFER_RECTANGLE (buffer_x, buffer_y,
+                                                            width,    height));
     }
 }
 
 static inline void
-gegl_buffer_set_internal (GeglBuffer          *buffer,
-                          const GeglRectangle *rect,
-                          gint                 level,
-                          const Babl          *format,
-                          const void          *src,
-                          gint                 rowstride)
+gegl_buffer_set_internal (GeglBuffer                *buffer,
+                          const GeglBufferRectangle *rect,
+                          gint                       level,
+                          const Babl                *format,
+                          const void                *src,
+                          gint                       rowstride)
 {
   if (gegl_buffer_ext_flush)
     {
@@ -879,13 +879,13 @@ gegl_buffer_set_internal (GeglBuffer          *buffer,
 }
 
 static void inline
-_gegl_buffer_set_with_flags (GeglBuffer       *buffer,
-                            const GeglRectangle *rect,
-                            gint                 level,
-                            const Babl          *format,
-                            const void          *src,
-                            gint                 rowstride,
-                            GeglBufferSetFlag    flags)
+_gegl_buffer_set_with_flags (GeglBuffer               *buffer,
+                            const GeglBufferRectangle *rect,
+                            gint                       level,
+                            const Babl                *format,
+                            const void                *src,
+                            gint                       rowstride,
+                            GeglBufferSetFlag          flags)
 {
   switch (flags)
   {
@@ -913,13 +913,13 @@ _gegl_buffer_set_with_flags (GeglBuffer       *buffer,
 }
 
 void
-gegl_buffer_set_with_flags (GeglBuffer       *buffer,
-                            const GeglRectangle *rect,
-                            gint                 level,
-                            const Babl          *format,
-                            const void          *src,
-                            gint                 rowstride,
-                            GeglBufferSetFlag    flags)
+gegl_buffer_set_with_flags (GeglBuffer                *buffer,
+                            const GeglBufferRectangle *rect,
+                            gint                       level,
+                            const Babl                *format,
+                            const void                *src,
+                            gint                       rowstride,
+                            GeglBufferSetFlag          flags)
 {
   g_return_if_fail (GEGL_IS_BUFFER (buffer));
   if (format == NULL)
@@ -928,12 +928,12 @@ gegl_buffer_set_with_flags (GeglBuffer       *buffer,
 }
 
 static void
-gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
-                                 const GeglRectangle *roi,
-                                 guchar              *buf,
-                                 gint                 buf_stride,
-                                 const Babl          *format,
-                                 gint                 level)
+gegl_buffer_iterate_read_simple (GeglBuffer                *buffer,
+                                 const GeglBufferRectangle *roi,
+                                 guchar                    *buf,
+                                 gint                       buf_stride,
+                                 const Babl                *format,
+                                 gint                       level)
 {
   gint tile_width  = buffer->tile_storage->tile_width;
   gint tile_height = buffer->tile_storage->tile_height;
@@ -1280,17 +1280,17 @@ fill_abyss_color (guchar *buf, gint width, gint height, gint buf_stride, guchar 
 }
 
 static void
-gegl_buffer_iterate_read_abyss_color (GeglBuffer          *buffer,
-                                      const GeglRectangle *roi,
-                                      const GeglRectangle *abyss,
-                                      guchar              *buf,
-                                      gint                 buf_stride,
-                                      const Babl          *format,
-                                      gint                 level,
-                                      guchar              *color,
-                                      GeglAbyssPolicy      repeat_mode)
+gegl_buffer_iterate_read_abyss_color (GeglBuffer                *buffer,
+                                      const GeglBufferRectangle *roi,
+                                      const GeglBufferRectangle *abyss,
+                                      guchar                    *buf,
+                                      gint                       buf_stride,
+                                      const Babl                *format,
+                                      gint                       level,
+                                      guchar                    *color,
+                                      GeglAbyssPolicy            repeat_mode)
 {
-  GeglRectangle current_roi = *roi;
+  GeglBufferRectangle current_roi = *roi;
   gint bpp = babl_format_get_bytes_per_pixel (format);
 
   if (current_roi.y < abyss->y)
@@ -1310,7 +1310,7 @@ gegl_buffer_iterate_read_abyss_color (GeglBuffer          *buffer,
 
   if (current_roi.height && (current_roi.y < abyss->y + abyss->height))
     {
-      GeglRectangle inner_roi = current_roi;
+      GeglBufferRectangle inner_roi = current_roi;
       guchar *inner_buf       = buf;
 
       if (inner_roi.height + inner_roi.y > abyss->height + abyss->y)
@@ -1391,16 +1391,16 @@ gegl_buffer_iterate_read_abyss_color (GeglBuffer          *buffer,
 }
 
 static void
-gegl_buffer_iterate_read_abyss_clamp (GeglBuffer          *buffer,
-                                      const GeglRectangle *roi,
-                                      const GeglRectangle *abyss,
-                                      guchar              *buf,
-                                      gint                 buf_stride,
-                                      const Babl          *format,
-                                      gint                 level)
+gegl_buffer_iterate_read_abyss_clamp (GeglBuffer                *buffer,
+                                      const GeglBufferRectangle *roi,
+                                      const GeglBufferRectangle *abyss,
+                                      guchar                    *buf,
+                                      gint                       buf_stride,
+                                      const Babl                *format,
+                                      gint                       level)
 {
-  GeglRectangle read_output_rect;
-  GeglRectangle read_input_rect;
+  GeglBufferRectangle read_output_rect;
+  GeglBufferRectangle read_input_rect;
 
   gint    bpp           = babl_format_get_bytes_per_pixel (format);
   gint    x_read_offset = 0;
@@ -1423,10 +1423,10 @@ gegl_buffer_iterate_read_abyss_clamp (GeglBuffer          *buffer,
   /* Intersect our shifted abyss with the roi */
   gegl_rectangle_intersect (&read_output_rect,
                             roi,
-                            GEGL_RECTANGLE (abyss->x + x_read_offset,
-                                            abyss->y + y_read_offset,
-                                            abyss->width,
-                                            abyss->height));
+                            GEGL_BUFFER_RECTANGLE (abyss->x + x_read_offset,
+                                                   abyss->y + y_read_offset,
+                                                   abyss->width,
+                                                   abyss->height));
 
   /* Offset into *buf based on the intersected rect's x & y */
   buf_offset_cols = read_output_rect.x - roi->x;
@@ -1565,15 +1565,15 @@ gegl_buffer_iterate_read_abyss_clamp (GeglBuffer          *buffer,
 }
 
 static void
-gegl_buffer_iterate_read_abyss_loop (GeglBuffer          *buffer,
-                                     const GeglRectangle *roi,
-                                     const GeglRectangle *abyss,
-                                     guchar              *buf,
-                                     gint                 buf_stride,
-                                     const Babl          *format,
-                                     gint                 level)
+gegl_buffer_iterate_read_abyss_loop (GeglBuffer                *buffer,
+                                     const GeglBufferRectangle *roi,
+                                     const GeglBufferRectangle *abyss,
+                                     guchar                    *buf,
+                                     gint                       buf_stride,
+                                     const Babl                *format,
+                                     gint                       level)
 {
-  GeglRectangle current_roi;
+  GeglBufferRectangle current_roi;
   gint          bpp = babl_format_get_bytes_per_pixel (format);
   gint          origin_x;
 
@@ -1596,14 +1596,14 @@ gegl_buffer_iterate_read_abyss_loop (GeglBuffer          *buffer,
 
       while (current_roi.x < roi->x + roi->width)
         {
-          GeglRectangle simple_roi;
+          GeglBufferRectangle simple_roi;
           gegl_rectangle_intersect (&simple_roi, &current_roi, roi);
 
           gegl_buffer_iterate_read_simple (buffer,
-                                           GEGL_RECTANGLE (abyss->x + (simple_roi.x - current_roi.x),
-                                                           abyss->y + (simple_roi.y - current_roi.y),
-                                                           simple_roi.width,
-                                                           simple_roi.height),
+                                           GEGL_BUFFER_RECTANGLE (abyss->x + (simple_roi.x - current_roi.x),
+                                                                  abyss->y + (simple_roi.y - current_roi.y),
+                                                                  simple_roi.width,
+                                                                  simple_roi.height),
                                            inner_buf,
                                            buf_stride,
                                            format,
@@ -1623,13 +1623,13 @@ gegl_buffer_iterate_read_abyss_loop (GeglBuffer          *buffer,
 }
 
 static gpointer
-gegl_buffer_read_at_level (GeglBuffer          *buffer,
-                           const GeglRectangle *roi,
-                           guchar              *buf,
-                           gint                 rowstride,
-                           const Babl          *format,
-                           gint                 level,
-                           GeglAbyssPolicy      repeat_mode)
+gegl_buffer_read_at_level (GeglBuffer                *buffer,
+                           const GeglBufferRectangle *roi,
+                           guchar                    *buf,
+                           gint                       rowstride,
+                           const Babl                *format,
+                           gint                       level,
+                           GeglAbyssPolicy            repeat_mode)
 {
   gint bpp = babl_format_get_bytes_per_pixel (format);
 
@@ -1653,7 +1653,7 @@ gegl_buffer_read_at_level (GeglBuffer          *buffer,
   else
     {
       gpointer scratch;
-      GeglRectangle next_roi;
+      GeglBufferRectangle next_roi;
       next_roi.x = roi->x * 2;
       next_roi.y = roi->y * 2;
       next_roi.width = roi->width * 2;
@@ -1662,8 +1662,8 @@ gegl_buffer_read_at_level (GeglBuffer          *buffer,
       /* If the next block is too big split it in half */
       if (next_roi.width * next_roi.height > 256 * 256)
         {
-          GeglRectangle next_roi_a = next_roi;
-          GeglRectangle next_roi_b = next_roi;
+          GeglBufferRectangle next_roi_a = next_roi;
+          GeglBufferRectangle next_roi_b = next_roi;
           gint scratch_stride = next_roi.width * bpp;
           gpointer scratch_a;
           gpointer scratch_b;
@@ -1724,14 +1724,14 @@ gegl_buffer_read_at_level (GeglBuffer          *buffer,
 }
 
 static void
-gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
-                                  const GeglRectangle *roi,
-                                  const GeglRectangle *abyss,
-                                  guchar              *buf,
-                                  gint                 buf_stride,
-                                  const Babl          *format,
-                                  gint                 level,
-                                  GeglAbyssPolicy      repeat_mode)
+gegl_buffer_iterate_read_fringed (GeglBuffer                *buffer,
+                                  const GeglBufferRectangle *roi,
+                                  const GeglBufferRectangle *abyss,
+                                  guchar                    *buf,
+                                  gint                       buf_stride,
+                                  const Babl                *format,
+                                  gint                       level,
+                                  GeglAbyssPolicy            repeat_mode)
 {
   gint x = roi->x;
   gint y = roi->y;
@@ -1743,7 +1743,7 @@ gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
 
   if (x <= abyss->x)
     {
-      GeglRectangle fringe_roi = {x, y, 1, height};
+      GeglBufferRectangle fringe_roi = {x, y, 1, height};
       guchar *fringe_buf = inner_buf;
 
       gegl_buffer_read_at_level (buffer, &fringe_roi, fringe_buf, buf_stride, format, level, repeat_mode);
@@ -1757,7 +1757,7 @@ gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
 
   if (y <= abyss->y)
     {
-      GeglRectangle fringe_roi = {x, y, width, 1};
+      GeglBufferRectangle fringe_roi = {x, y, width, 1};
       guchar *fringe_buf = inner_buf;
 
       gegl_buffer_read_at_level (buffer, &fringe_roi, fringe_buf, buf_stride, format, level, repeat_mode);
@@ -1771,7 +1771,7 @@ gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
 
   if (y + height >= abyss->y + abyss->height)
     {
-      GeglRectangle fringe_roi = {x, y + height - 1, width, 1};
+      GeglBufferRectangle fringe_roi = {x, y + height - 1, width, 1};
       guchar *fringe_buf = inner_buf + (height - 1) * buf_stride;
 
       gegl_buffer_read_at_level (buffer, &fringe_roi, fringe_buf, buf_stride, format, level, repeat_mode);
@@ -1783,7 +1783,7 @@ gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
 
   if (x + width >= abyss->x + abyss->width)
     {
-      GeglRectangle fringe_roi = {x + width - 1, y, 1, height};
+      GeglBufferRectangle fringe_roi = {x + width - 1, y, 1, height};
       guchar *fringe_buf = inner_buf + (width - 1) * bpp;
 
       gegl_buffer_read_at_level (buffer, &fringe_roi, fringe_buf, buf_stride, format, level, repeat_mode);
@@ -1794,7 +1794,7 @@ gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
     }
 
   gegl_buffer_iterate_read_simple (buffer,
-                                   GEGL_RECTANGLE (x, y, width, height),
+                                   GEGL_BUFFER_RECTANGLE (x, y, width, height),
                                    inner_buf,
                                    buf_stride,
                                    format,
@@ -1802,17 +1802,17 @@ gegl_buffer_iterate_read_fringed (GeglBuffer          *buffer,
 }
 
 static void
-gegl_buffer_iterate_read_dispatch (GeglBuffer          *buffer,
-                                   const GeglRectangle *roi,
-                                   guchar              *buf,
-                                   gint                 rowstride,
-                                   const Babl          *format,
-                                   gint                 level,
-                                   GeglAbyssPolicy      repeat_mode)
+gegl_buffer_iterate_read_dispatch (GeglBuffer                *buffer,
+                                   const GeglBufferRectangle *roi,
+                                   guchar                    *buf,
+                                   gint                       rowstride,
+                                   const Babl                *format,
+                                   gint                       level,
+                                   GeglAbyssPolicy            repeat_mode)
 {
-  GeglRectangle abyss          = buffer->abyss;
-  GeglRectangle abyss_factored = abyss;
-  GeglRectangle roi_factored   = *roi;
+  GeglBufferRectangle abyss          = buffer->abyss;
+  GeglBufferRectangle abyss_factored = abyss;
+  GeglBufferRectangle roi_factored   = *roi;
 
   if (level)
     {
@@ -1900,24 +1900,24 @@ gegl_buffer_iterate_read_dispatch (GeglBuffer          *buffer,
 }
 
 void
-gegl_buffer_set_unlocked (GeglBuffer          *buffer,
-                          const GeglRectangle *rect,
-                          gint                 level,
-                          const Babl          *format,
-                          const void          *src,
-                          gint                 rowstride)
+gegl_buffer_set_unlocked (GeglBuffer                *buffer,
+                          const GeglBufferRectangle *rect,
+                          gint                       level,
+                          const Babl                *format,
+                          const void                *src,
+                          gint                       rowstride)
 {
   _gegl_buffer_set_with_flags (buffer, rect, level, format, src, rowstride,
                                GEGL_BUFFER_SET_FLAG_NOTIFY);
 }
 
 void
-gegl_buffer_set_unlocked_no_notify (GeglBuffer          *buffer,
-                                    const GeglRectangle *rect,
-                                    gint                 level,
-                                    const Babl          *format,
-                                    const void          *src,
-                                    gint                 rowstride)
+gegl_buffer_set_unlocked_no_notify (GeglBuffer                *buffer,
+                                    const GeglBufferRectangle *rect,
+                                    gint                       level,
+                                    const Babl                *format,
+                                    const void                *src,
+                                    gint                       rowstride)
 {
   _gegl_buffer_set_with_flags (buffer, rect, level, format, src, rowstride,
                                GEGL_BUFFER_SET_FLAG_FAST);
@@ -1925,12 +1925,12 @@ gegl_buffer_set_unlocked_no_notify (GeglBuffer          *buffer,
 
 
 void
-gegl_buffer_set (GeglBuffer          *buffer,
-                 const GeglRectangle *rect,
-                 gint                 level,
-                 const Babl          *format,
-                 const void          *src,
-                 gint                 rowstride)
+gegl_buffer_set (GeglBuffer                *buffer,
+                 const GeglBufferRectangle *rect,
+                 gint                       level,
+                 const Babl                *format,
+                 const void                *src,
+                 gint                       rowstride)
 {
   g_return_if_fail (GEGL_IS_BUFFER (buffer));
   if (format == NULL)
@@ -1968,9 +1968,9 @@ gegl_buffer_set (GeglBuffer          *buffer,
 /* Expand roi by scale so it uncludes all pixels needed
  * to satisfy a gegl_buffer_get() call at level 0.
  */
-GeglRectangle
-_gegl_get_required_for_scale (const GeglRectangle *roi,
-                              gdouble              scale)
+GeglBufferRectangle
+_gegl_get_required_for_scale (const GeglBufferRectangle *roi,
+                              gdouble                    scale)
 {
   if (GEGL_FLOAT_EQUAL (scale, 1.0))
     return *roi;
@@ -1985,29 +1985,26 @@ _gegl_get_required_for_scale (const GeglRectangle *roi,
 
       if (scale < 1.0)
         {
-          return *GEGL_RECTANGLE (x1 - pad,
-                                  y1 - pad,
-                                  x2 - x1 + 2 * pad,
-                                  y2 - y1 + 2 * pad);
+          return *GEGL_BUFFER_RECTANGLE (x1 - pad, y1 - pad,
+                                         x2 - x1 + 2 * pad, y2 - y1 + 2 * pad);
         }
       else
         {
-          return *GEGL_RECTANGLE (x1,
-                                  y1,
-                                  x2 - x1,
-                                  y2 - y1);
+          return *GEGL_BUFFER_RECTANGLE (x1, y1,
+                                         x2 - x1,
+                                         y2 - y1);
         }
       }
 }
 
 static inline void
-_gegl_buffer_get_unlocked (GeglBuffer          *buffer,
-                           gdouble              scale,
-                           const GeglRectangle *rect,
-                           const Babl          *format,
-                           gpointer             dest_buf,
-                           gint                 rowstride,
-                           GeglAbyssPolicy      flags)
+_gegl_buffer_get_unlocked (GeglBuffer                *buffer,
+                           gdouble                    scale,
+                           const GeglBufferRectangle *rect,
+                           const Babl                *format,
+                           gpointer                   dest_buf,
+                           gint                       rowstride,
+                           GeglAbyssPolicy            flags)
 {
   GeglAbyssPolicy repeat_mode = flags & 0x7; /* mask off interpolation from repeat mode part of flags */
 
@@ -2075,7 +2072,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
   else
   {
     gint chunk_height;
-    GeglRectangle rect2       = *rect;
+    GeglBufferRectangle rect2 = *rect;
     gint    bpp               = babl_format_get_bytes_per_pixel (format);
     gint    ystart            = rect->y;
     float   scale_orig        = scale;
@@ -2144,7 +2141,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
     while (rect2.width > 0 && rect2.height > 0)
     {
-      GeglRectangle sample_rect;
+      GeglBufferRectangle sample_rect;
       gint    buf_width, buf_height;
       gint    y1 = floorf (rect2.y / scale_orig + GEGL_SCALE_EPSILON);
       gint    y2 = ceilf ((rect2.y + rect2.height) / scale_orig - GEGL_SCALE_EPSILON);
@@ -2275,25 +2272,25 @@ setup_next_chunk:
 }
 
 void
-gegl_buffer_get_unlocked (GeglBuffer          *buffer,
-                          gdouble              scale,
-                          const GeglRectangle *rect,
-                          const Babl          *format,
-                          gpointer             dest_buf,
-                          gint                 rowstride,
-                          GeglAbyssPolicy      repeat_mode)
+gegl_buffer_get_unlocked (GeglBuffer                *buffer,
+                          gdouble                    scale,
+                          const GeglBufferRectangle *rect,
+                          const Babl                *format,
+                          gpointer                   dest_buf,
+                          gint                       rowstride,
+                          GeglAbyssPolicy            repeat_mode)
 {
   return _gegl_buffer_get_unlocked (buffer, scale, rect, format, dest_buf, rowstride, repeat_mode);
 }
 
 void
-gegl_buffer_get (GeglBuffer          *buffer,
-                 const GeglRectangle *rect,
-                 gdouble              scale,
-                 const Babl          *format,
-                 gpointer             dest_buf,
-                 gint                 rowstride,
-                 GeglAbyssPolicy      repeat_mode)
+gegl_buffer_get (GeglBuffer                *buffer,
+                 const GeglBufferRectangle *rect,
+                 gdouble                    scale,
+                 const Babl                *format,
+                 gpointer                   dest_buf,
+                 gint                       rowstride,
+                 GeglAbyssPolicy            repeat_mode)
 {
   g_return_if_fail (GEGL_IS_BUFFER (buffer));
   gegl_buffer_lock (buffer);
@@ -2302,11 +2299,11 @@ gegl_buffer_get (GeglBuffer          *buffer,
 }
 
 static void
-gegl_buffer_copy2 (GeglBuffer          *src,
-                   const GeglRectangle *src_rect,
-                   GeglAbyssPolicy      repeat_mode,
-                   GeglBuffer          *dst,
-                   const GeglRectangle *dst_rect)
+gegl_buffer_copy2 (GeglBuffer                *src,
+                   const GeglBufferRectangle *src_rect,
+                   GeglAbyssPolicy            repeat_mode,
+                   GeglBuffer                *dst,
+                   const GeglBufferRectangle *dst_rect)
 {
   GeglBufferIterator *i;
   gint offset_x = src_rect->x - dst_rect->x;
@@ -2317,7 +2314,7 @@ gegl_buffer_copy2 (GeglBuffer          *src,
                                 repeat_mode, 1);
   while (gegl_buffer_iterator_next (i))
     {
-      GeglRectangle src_rect = i->items[0].roi;
+      GeglBufferRectangle src_rect = i->items[0].roi;
       src_rect.x += offset_x;
       src_rect.y += offset_y;
       gegl_buffer_iterate_read_dispatch (src, &src_rect, i->items[0].data, 0,
@@ -2326,13 +2323,13 @@ gegl_buffer_copy2 (GeglBuffer          *src,
 }
 
 void
-gegl_buffer_copy (GeglBuffer          *src,
-                  const GeglRectangle *src_rect,
-                  GeglAbyssPolicy      repeat_mode,
-                  GeglBuffer          *dst,
-                  const GeglRectangle *dst_rect)
+gegl_buffer_copy (GeglBuffer                *src,
+                  const GeglBufferRectangle *src_rect,
+                  GeglAbyssPolicy            repeat_mode,
+                  GeglBuffer                *dst,
+                  const GeglBufferRectangle *dst_rect)
 {
-  GeglRectangle dest_rect_r;
+  GeglBufferRectangle dest_rect_r;
 
   g_return_if_fail (GEGL_IS_BUFFER (src));
   g_return_if_fail (GEGL_IS_BUFFER (dst));
@@ -2367,7 +2364,7 @@ gegl_buffer_copy (GeglBuffer          *src,
       gint tile_width  = dst->tile_width;
       gint tile_height = dst->tile_height;
 
-      GeglRectangle cow_rect = *dst_rect;
+      GeglBufferRectangle cow_rect = *dst_rect;
       gint          rem;
 
       /* adjust origin to match the start of tile alignment */
@@ -2389,7 +2386,7 @@ gegl_buffer_copy (GeglBuffer          *src,
 
       if (cow_rect.width > 0 && cow_rect.height > 0)
         {
-          GeglRectangle top, bottom, left, right;
+          GeglBufferRectangle top, bottom, left, right;
 
           /* iterate over rectangle that can be cow copied, duplicating
            * one and one tile
@@ -2493,27 +2490,27 @@ gegl_buffer_copy (GeglBuffer          *src,
 
           if (top.height)
           gegl_buffer_copy2 (src,
-                             GEGL_RECTANGLE (src_rect->x + (top.x-dst_rect->x),
+                             GEGL_BUFFER_RECTANGLE (src_rect->x + (top.x-dst_rect->x),
                                              src_rect->y + (top.y-dst_rect->y),
-                                 top.width, top.height),
+                                             top.width, top.height),
                              repeat_mode, dst, &top);
           if (bottom.height)
           gegl_buffer_copy2 (src,
-                             GEGL_RECTANGLE (src_rect->x + (bottom.x-dst_rect->x),
-                                             src_rect->y + (bottom.y-dst_rect->y),
-                                 bottom.width, bottom.height),
+                             GEGL_BUFFER_RECTANGLE (src_rect->x + (bottom.x-dst_rect->x),
+                                                    src_rect->y + (bottom.y-dst_rect->y),
+                                                    bottom.width, bottom.height),
                              repeat_mode, dst, &bottom);
           if (left.width && left.height)
           gegl_buffer_copy2 (src,
-                             GEGL_RECTANGLE (src_rect->x + (left.x-dst_rect->x),
-                                             src_rect->y + (left.y-dst_rect->y),
-                                 left.width, left.height),
+                             GEGL_BUFFER_RECTANGLE (src_rect->x + (left.x-dst_rect->x),
+                                                    src_rect->y + (left.y-dst_rect->y),
+                                                    left.width, left.height),
                              repeat_mode, dst, &left);
           if (right.width && right.height)
           gegl_buffer_copy2 (src,
-                             GEGL_RECTANGLE (src_rect->x + (right.x-dst_rect->x),
-                                             src_rect->y + (right.y-dst_rect->y),
-                                 right.width, right.height),
+                             GEGL_BUFFER_RECTANGLE (src_rect->x + (right.x-dst_rect->x),
+                                                    src_rect->y + (right.y-dst_rect->y),
+                                                    right.width, right.height),
                              repeat_mode, dst, &right);
         }
       else
@@ -2530,8 +2527,8 @@ gegl_buffer_copy (GeglBuffer          *src,
 }
 
 static void
-gegl_buffer_clear2 (GeglBuffer          *dst,
-                    const GeglRectangle *dst_rect)
+gegl_buffer_clear2 (GeglBuffer                *dst,
+                    const GeglBufferRectangle *dst_rect)
 {
   GeglBufferIterator *i;
   gint                pxsize;
@@ -2553,8 +2550,8 @@ gegl_buffer_clear2 (GeglBuffer          *dst,
 }
 
 void
-gegl_buffer_clear (GeglBuffer          *dst,
-                   const GeglRectangle *dst_rect)
+gegl_buffer_clear (GeglBuffer                *dst,
+                   const GeglBufferRectangle *dst_rect)
 {
   g_return_if_fail (GEGL_IS_BUFFER (dst));
 
@@ -2575,7 +2572,7 @@ gegl_buffer_clear (GeglBuffer          *dst,
       gint tile_width  = dst->tile_width;
       gint tile_height = dst->tile_height;
 
-      GeglRectangle cow_rect = *dst_rect;
+      GeglBufferRectangle cow_rect = *dst_rect;
       gint          rem;
 
       /* adjust origin to match the start of tile alignment */
@@ -2597,7 +2594,7 @@ gegl_buffer_clear (GeglBuffer          *dst,
 
       if (cow_rect.width > 0 && cow_rect.height > 0)
         {
-          GeglRectangle top, bottom, left, right;
+          GeglBufferRectangle top, bottom, left, right;
 
           /* iterate over rectangle that can be cow copied, duplicating
            * one and one tile
@@ -2670,17 +2667,17 @@ gegl_buffer_clear (GeglBuffer          *dst,
 }
 
 void
-gegl_buffer_set_pattern (GeglBuffer          *buffer,
-                         const GeglRectangle *rect,
-                         GeglBuffer          *pattern,
-                         gint                 x_offset,
-                         gint                 y_offset)
+gegl_buffer_set_pattern (GeglBuffer                *buffer,
+                         const GeglBufferRectangle *rect,
+                         GeglBuffer                *pattern,
+                         gint                       x_offset,
+                         gint                       y_offset)
 {
-  const GeglRectangle *pattern_extent;
+  const GeglBufferRectangle *pattern_extent;
   const Babl          *buffer_format;
-  GeglRectangle        roi;                  /* the rect if not NULL, else the whole buffer */
-  GeglRectangle        pattern_data_extent;  /* pattern_extent clamped to rect */
-  GeglRectangle        extended_data_extent; /* many patterns to avoid copying too small chunks of data */
+  GeglBufferRectangle        roi;                  /* the rect if not NULL, else the whole buffer */
+  GeglBufferRectangle        pattern_data_extent;  /* pattern_extent clamped to rect */
+  GeglBufferRectangle        extended_data_extent; /* many patterns to avoid copying too small chunks of data */
   gint                 bpp;
   gint                 x, y;
   gint                 rowstride;
@@ -2760,7 +2757,7 @@ gegl_buffer_set_pattern (GeglBuffer          *buffer,
   for (y = roi.y; y < roi.y + roi.height; y += extended_data_extent.height)
     for (x = roi.x; x < roi.x + roi.width; x += extended_data_extent.width)
       {
-        GeglRectangle dest_rect = {x, y,
+        GeglBufferRectangle dest_rect = {x, y,
                                    extended_data_extent.width,
                                    extended_data_extent.height};
 
@@ -2774,10 +2771,10 @@ gegl_buffer_set_pattern (GeglBuffer          *buffer,
 }
 
 void
-gegl_buffer_set_color_from_pixel (GeglBuffer          *dst,
-                                  const GeglRectangle *dst_rect,
-                                  const uint8_t       *pixel,
-                                  const Babl          *pixel_format)
+gegl_buffer_set_color_from_pixel (GeglBuffer                *dst,
+                                  const GeglBufferRectangle *dst_rect,
+                                  const uint8_t             *pixel,
+                                  const Babl                *pixel_format)
 {
   GeglBufferIterator *i;
   gint                bpp;

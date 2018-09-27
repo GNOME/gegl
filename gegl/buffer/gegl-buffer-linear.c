@@ -13,8 +13,8 @@
 #include "gegl-tile-handler-cache.h"
 
 GeglBuffer *
-gegl_buffer_linear_new (const GeglRectangle *extent,
-                        const Babl          *format)
+gegl_buffer_linear_new (const GeglBufferRectangle *extent,
+                        const Babl                *format)
 {
   GeglBuffer *buffer;
 
@@ -56,12 +56,12 @@ void gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
                                      gint                  z);
 
 GeglBuffer *
-gegl_buffer_linear_new_from_data (const gpointer       data,
-                                  const Babl          *format,
-                                  const GeglRectangle *extent,
-                                  gint                 rowstride,
-                                  GDestroyNotify       destroy_fn,
-                                  gpointer             destroy_fn_data)
+gegl_buffer_linear_new_from_data (const gpointer             data,
+                                  const Babl                *format,
+                                  const GeglBufferRectangle *extent,
+                                  gint                       rowstride,
+                                  GDestroyNotify             destroy_fn,
+                                  gpointer                   destroy_fn_data)
 {
   GeglBuffer *buffer;
   GeglTile   *tile;
@@ -123,20 +123,20 @@ gegl_buffer_linear_new_from_data (const gpointer       data,
  * an immediate shared access to the linear buffer.
  */
 typedef struct {
-  gpointer       buf;
-  GeglRectangle  extent;
-  const Babl    *format;
-  gint           refs;
+  gpointer             buf;
+  GeglBufferRectangle  extent;
+  const Babl          *format;
+  gint                 refs;
 } BufferInfo;
 
 /* FIXME: make this use direct data access in more cases than the
  * case of the base buffer.
  */
 gpointer
-gegl_buffer_linear_open (GeglBuffer          *buffer,
-                         const GeglRectangle *extent,   /* if NULL, use buf  */
-                         gint                *rowstride,/* returns rowstride */
-                         const Babl          *format)   /* if NULL, from buf */
+gegl_buffer_linear_open (GeglBuffer                *buffer,
+                         const GeglBufferRectangle *extent,   /* if NULL, use buf  */
+                         gint                      *rowstride,/* returns rowstride */
+                         const Babl                *format)   /* if NULL, from buf */
 {
   if (!format)
     format = buffer->soft_format;

@@ -30,20 +30,19 @@
 
 struct _GeglTileBackendPrivate
 {
-  gint                   tile_width;
-  gint                   tile_height;
-  const Babl            *format;    /* defaults to the babl format "R'G'B'A u8" */
-  gint                   px_size;   /* size of a single pixel in bytes */
-  gint                   tile_size; /* size of an entire tile in bytes */
+  gint                         tile_width;
+  gint                         tile_height;
+  const Babl                  *format;    /* defaults to the babl format "R'G'B'A u8" */
+  gint                         px_size;   /* size of a single pixel in bytes */
+  gint                         tile_size; /* size of an entire tile in bytes */
+  gboolean                     flush_on_destroy;
 
-  gboolean               flush_on_destroy;
+  GeglBufferRectangle          extent;
 
-  GeglRectangle          extent;
+  gpointer                     storage;
+  gboolean                     shared;
 
-  gpointer               storage;
-  gboolean               shared;
-
-  GeglTileSourceCommand  command;
+  GeglTileSourceCommand        command;
 };
 
 typedef struct _GeglTileHandlerChain      GeglTileHandlerChain;

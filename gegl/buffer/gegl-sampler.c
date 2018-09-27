@@ -68,9 +68,9 @@ static void set_property            (GObject             *gobject,
 static void set_buffer              (GeglSampler         *self,
                                      GeglBuffer          *buffer);
 
-static void buffer_contents_changed (GeglBuffer          *buffer,
-                                     const GeglRectangle *changed_rect,
-                                     gpointer             userdata);
+static void buffer_contents_changed (GeglBuffer                *buffer,
+                                     const GeglBufferRectangle *changed_rect,
+                                     gpointer                   userdata);
 
 static void constructed (GObject *sampler);
 
@@ -127,8 +127,8 @@ gegl_sampler_init (GeglSampler *sampler)
   gint i = 0;
   sampler->buffer = NULL;
   do {
-    GeglRectangle context_rect      = {0,0,1,1};
-    GeglRectangle sampler_rectangle = {0,0,0,0};
+    GeglBufferRectangle context_rect      = {0,0,1,1};
+    GeglBufferRectangle sampler_rectangle = {0,0,0,0};
     sampler->level[i].sampler_buffer = NULL;
     sampler->level[i].context_rect   = context_rect;
     sampler->level[i].sampler_rectangle = sampler_rectangle;
@@ -163,14 +163,14 @@ gegl_sampler_get (GeglSampler     *self,
   if (self->lvel)
   {
     double factor = 1.0 / (1 << self->lvel);
-    GeglRectangle rect={floorf (x * factor), floorf (y * factor),1,1};
+    GeglBufferRectangle rect={floorf (x * factor), floorf (y * factor),1,1};
     gegl_buffer_get (self->buffer, &rect, factor, self->format, output, GEGL_AUTO_ROWSTRIDE, repeat_mode);
     return;
   }
 
   if (gegl_buffer_ext_flush)
     {
-      GeglRectangle rect={x,y,1,1};
+      GeglBufferRectangle rect={x,y,1,1};
       gegl_buffer_ext_flush (self->buffer, &rect);
     }
   self->get (self, x, y, scale, output, repeat_mode);
@@ -269,7 +269,7 @@ gegl_sampler_get_from_mipmap (GeglSampler    *sampler,
 
   if (gegl_buffer_ext_flush)
     {
-      GeglRectangle rect = {x, y, 1, 1};
+      GeglBufferRectangle rect = {x, y, 1, 1};
       gegl_buffer_ext_flush (sampler->buffer, &rect);
     }
 
@@ -431,7 +431,7 @@ _gegl_buffer_sample_at_level (GeglBuffer       *buffer,
   if (sampler_type == GEGL_SAMPLER_NEAREST &&
       level == 0)
     {
-      GeglRectangle rect = {x, y, 1, 1};
+      GeglBufferRectangle rect = {x, y, 1, 1};
       gegl_buffer_get (buffer, &rect, 1.0,
                        format, dest, GEGL_AUTO_ROWSTRIDE,
                        repeat_mode);
@@ -521,16 +521,16 @@ gegl_buffer_sampler_new (GeglBuffer      *buffer,
 }
 
 
-const GeglRectangle*
+const GeglBufferRectangle*
 gegl_sampler_get_context_rect (GeglSampler *sampler)
 {
   return &(sampler->level[0].context_rect);
 }
 
 static void
-buffer_contents_changed (GeglBuffer          *buffer,
-                         const GeglRectangle *changed_rect,
-                         gpointer             userdata)
+buffer_contents_changed (GeglBuffer                *buffer,
+                         const GeglBufferRectangle *changed_rect,
+                         gpointer                   userdata)
 {
   GeglSampler *self = GEGL_SAMPLER (userdata);
   int i;
