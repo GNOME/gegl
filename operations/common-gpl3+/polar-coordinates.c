@@ -330,7 +330,7 @@ process (GeglOperation       *operation,
   gdouble   px, py;
   gdouble   cen_x, cen_y;
 
-  GeglMatrix2  scale;        /* a matrix indicating scaling factors around the
+  GeglBufferMatrix2  scale;  /* a matrix indicating scaling factors around the
                                 current center pixel.
                              */
 

@@ -152,7 +152,7 @@
 #include <math.h>
 
 #include "gegl.h"
-#include "gegl-types-internal.h"
+#include "gegl-buffer-formats.h"
 #include "gegl-sampler-nohalo.h"
 
 /*
@@ -240,7 +240,7 @@ enum
 static void gegl_sampler_nohalo_get (      GeglSampler* restrict  self,
                                      const gdouble                absolute_x,
                                      const gdouble                absolute_y,
-                                           GeglMatrix2           *scale,
+                                           GeglBufferMatrix2     *scale,
                                            void*        restrict  output,
                                            GeglAbyssPolicy        repeat_mode);
 
@@ -1217,7 +1217,7 @@ static void
 gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
                          const gdouble                   absolute_x,
                          const gdouble                   absolute_y,
-                               GeglMatrix2              *scale,
+                               GeglBufferMatrix2        *scale,
                                void*           restrict  output,
                                GeglAbyssPolicy           repeat_mode)
 {

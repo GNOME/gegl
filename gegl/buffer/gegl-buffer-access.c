@@ -38,7 +38,7 @@
 #include "gegl-tile-backend.h"
 #include "gegl-buffer-iterator.h"
 #include "gegl-buffer-iterator-private.h"
-#include "gegl-types-internal.h"
+#include "gegl-buffer-formats.h"
 
 static void gegl_buffer_iterate_read_fringed (GeglBuffer                *buffer,
                                               const GeglBufferRectangle *roi,

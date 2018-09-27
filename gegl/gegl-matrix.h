@@ -22,33 +22,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gegl-buffer-matrix2.h>
 
 G_BEGIN_DECLS
-
-/* Currenly only used internally.
- * Note: If making use of this in public API, add a boxed type for introspection
- */
-typedef struct {
-    gdouble coeff[2][2];
-} GeglMatrix2;
-
-/*
- * gegl_matrix2_is_scale:
- * @matrix: a #GeglMatrix2
- *
- * Check if a matrix only does scaling.
- *
- * Returns TRUE if the matrix only does scaling.
- */
-gboolean   gegl_matrix2_is_scale        (GeglMatrix2 *matrix);
-
-/*
- * gegl_matrix2_determinant:
- * @matrix: a #GeglMatrix2
- *
- * Returns the determinant of @matrix.
- */
-gdouble    gegl_matrix2_determinant     (GeglMatrix2 *matrix);
 
 /***
  * GeglMatrix3:

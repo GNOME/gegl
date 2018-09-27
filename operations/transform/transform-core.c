@@ -1120,7 +1120,7 @@ transform_affine (GeglOperation       *operation,
   const Babl      *format = babl_format_with_space ("RaGaBaA float", space);
   GeglMatrix3      inverse;
   gdouble          inverse_near_z = 1.0 / transform->near_z;
-  GeglMatrix2      inverse_jacobian;
+  GeglBufferMatrix2 inverse_jacobian;
   GeglAbyssPolicy  abyss_policy = gegl_transform_get_abyss_policy (transform);
   GeglSampler     *sampler = gegl_buffer_sampler_new_at_level (src,
                                          format,
@@ -1376,7 +1376,7 @@ transform_generic (GeglOperation       *operation,
                 gdouble u = u_float * w_recip;
                 gdouble v = v_float * w_recip;
 
-                GeglMatrix2 inverse_jacobian;
+                GeglBufferMatrix2 inverse_jacobian;
                 inverse_jacobian.coeff [0][0] =
                   (inverse.coeff [0][0] - inverse.coeff [2][0] * u) * w_recip;
                 inverse_jacobian.coeff [0][1] =

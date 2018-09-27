@@ -121,7 +121,7 @@ fractaltrace (GeglBuffer            *input,
               const Babl            *format,
               gint                   level)
 {
-  GeglMatrix2  scale;        /* a matrix indicating scaling factors around the
+  GeglBufferMatrix2  scale;   /* a matrix indicating scaling factors around the
                                 current center pixel.
                               */
   gint         x, i, offset;

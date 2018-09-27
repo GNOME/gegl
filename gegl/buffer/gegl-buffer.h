@@ -21,7 +21,7 @@
 
 #include <glib-object.h>
 #include <babl/babl.h>
-#include <gegl-matrix.h>
+#include "gegl-buffer-matrix2.h"
 #include <gegl-types.h>
 
 #define GEGL_AUTO_ROWSTRIDE 0
@@ -321,17 +321,6 @@ void            gegl_buffer_set               (GeglBuffer                *buffer
                                                gint                       rowstride);
 
 
-/**
- * gegl_buffer_set_color:
- * @buffer: a #GeglBuffer
- * @rect: a rectangular region to fill with a color.
- * @color: the GeglColor to fill with.
- *
- * Sets the region covered by rect to the specified color.
- */
-void            gegl_buffer_set_color         (GeglBuffer                *buffer,
-                                               const GeglBufferRectangle *rect,
-                                               GeglColor                 *color);
 
 
 /**
@@ -476,15 +465,15 @@ GeglBuffer *    gegl_buffer_dup               (GeglBuffer       *buffer);
  * is more efficient.
  */
 
-void              gegl_buffer_sample_at_level (GeglBuffer       *buffer,
-                                               gdouble           x,
-                                               gdouble           y,
-                                               GeglMatrix2      *scale,
-                                               gpointer          dest,
-                                               const Babl       *format,
-                                               gint              level,
-                                               GeglSamplerType   sampler_type,
-                                               GeglAbyssPolicy   repeat_mode);
+void              gegl_buffer_sample_at_level (GeglBuffer        *buffer,
+                                               gdouble            x,
+                                               gdouble            y,
+                                               GeglBufferMatrix2 *scale,
+                                               gpointer           dest,
+                                               const Babl        *format,
+                                               gint               level,
+                                               GeglSamplerType    sampler_type,
+                                               GeglAbyssPolicy    repeat_mode);
 
 /**
  * gegl_buffer_sample: (skip)
@@ -512,14 +501,14 @@ void              gegl_buffer_sample_at_level (GeglBuffer       *buffer,
  * gegl_buffer_sampler_new() to create a sampler object instead, which is more
  * efficient.
  */
-void              gegl_buffer_sample          (GeglBuffer       *buffer,
-                                               gdouble           x,
-                                               gdouble           y,
-                                               GeglMatrix2      *scale,
-                                               gpointer          dest,
-                                               const Babl       *format,
-                                               GeglSamplerType   sampler_type,
-                                               GeglAbyssPolicy   repeat_mode);
+void              gegl_buffer_sample          (GeglBuffer        *buffer,
+                                               gdouble            x,
+                                               gdouble            y,
+                                               GeglBufferMatrix2 *scale,
+                                               gpointer           dest,
+                                               const Babl        *format,
+                                               GeglSamplerType    sampler_type,
+                                               GeglAbyssPolicy    repeat_mode);
 
 
 
@@ -535,12 +524,12 @@ void              gegl_buffer_sample          (GeglBuffer       *buffer,
 G_DEPRECATED
 void            gegl_buffer_sample_cleanup    (GeglBuffer *buffer);
 
-typedef void (*GeglSamplerGetFun)  (GeglSampler     *self,
-                                    gdouble          x,
-                                    gdouble          y,
-                                    GeglMatrix2     *scale,
-                                    void            *output,
-                                    GeglAbyssPolicy  repeat_mode);
+typedef void (*GeglSamplerGetFun)  (GeglSampler       *self,
+                                    gdouble            x,
+                                    gdouble            y,
+                                    GeglBufferMatrix2 *scale,
+                                    void              *output,
+                                    GeglAbyssPolicy    repeat_mode);
 
 /**
  * gegl_sampler_get_fun: (skip)
@@ -607,12 +596,12 @@ GeglSampler *    gegl_buffer_sampler_new_at_level (GeglBuffer       *buffer,
  *
  * Perform a sampling with the provided @sampler.
  */
-void              gegl_sampler_get            (GeglSampler    *sampler,
-                                               gdouble         x,
-                                               gdouble         y,
-                                               GeglMatrix2    *scale,
-                                               void           *output,
-                                               GeglAbyssPolicy repeat_mode);
+void              gegl_sampler_get            (GeglSampler       *sampler,
+                                               gdouble            x,
+                                               gdouble            y,
+                                               GeglBufferMatrix2 *scale,
+                                               void              *output,
+                                               GeglAbyssPolicy   repeat_mode);
 
 /* code template utility, updates the jacobian matrix using
  * a user defined mapping function for displacement, example

@@ -20,7 +20,7 @@
 #include <string.h>
 
 #include "gegl.h"
-#include "gegl-types-internal.h"
+#include "gegl-buffer-formats.h"
 #include "gegl-buffer-types.h"
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
@@ -41,7 +41,7 @@ static void
 gegl_sampler_nearest_get (GeglSampler*    restrict self,
                           const gdouble            absolute_x,
                           const gdouble            absolute_y,
-                          GeglMatrix2             *scale,
+                          GeglBufferMatrix2       *scale,
                           void*           restrict output,
                           GeglAbyssPolicy          repeat_mode);
 
@@ -206,7 +206,7 @@ static void
 gegl_sampler_nearest_get (      GeglSampler*    restrict  sampler,
                           const gdouble                   absolute_x,
                           const gdouble                   absolute_y,
-                                GeglMatrix2              *scale,
+                                GeglBufferMatrix2        *scale,
                                 void*           restrict  output,
                                 GeglAbyssPolicy           repeat_mode)
 {

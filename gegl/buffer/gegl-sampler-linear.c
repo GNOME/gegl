@@ -22,7 +22,7 @@
 #include <math.h>
 
 #include "gegl.h"
-#include "gegl-types-internal.h"
+#include "gegl-buffer-formats.h"
 #include "gegl-sampler-linear.h"
 
 enum
@@ -34,7 +34,7 @@ enum
 static void gegl_sampler_linear_get (      GeglSampler* restrict  self,
                                      const gdouble                absolute_x,
                                      const gdouble                absolute_y,
-                                           GeglMatrix2           *scale,
+                                           GeglBufferMatrix2     *scale,
                                            void*        restrict  output,
                                            GeglAbyssPolicy        repeat_mode);
 
@@ -73,10 +73,10 @@ gegl_sampler_linear_init (GeglSamplerLinear *self)
 }
 
 void
-gegl_sampler_linear_get (     GeglSampler     *self,
-                        const gdouble          absolute_x,
-                        const gdouble          absolute_y,
-                              GeglMatrix2     *scale,
+gegl_sampler_linear_get (     GeglSampler       *self,
+                        const gdouble            absolute_x,
+                        const gdouble            absolute_y,
+                              GeglBufferMatrix2 *scale,
                               void            *output,
                               GeglAbyssPolicy  repeat_mode)
 {

@@ -34,7 +34,7 @@
 #include "gegl-sampler-cubic.h"
 #include "gegl-sampler-nohalo.h"
 #include "gegl-sampler-lohalo.h"
-#include "gegl-types-internal.h"
+#include "gegl-buffer-formats.h"
 
 
 enum
@@ -148,12 +148,12 @@ constructed (GObject *self)
 }
 
 void
-gegl_sampler_get (GeglSampler     *self,
-                  gdouble          x,
-                  gdouble          y,
-                  GeglMatrix2     *scale,
-                  void            *output,
-                  GeglAbyssPolicy  repeat_mode)
+gegl_sampler_get (GeglSampler       *self,
+                  gdouble            x,
+                  gdouble            y,
+                  GeglBufferMatrix2 *scale,
+                  void              *output,
+                  GeglAbyssPolicy    repeat_mode)
 {
   if (G_UNLIKELY(!isfinite (x)))
     x = 0.0;
@@ -416,15 +416,15 @@ gegl_sampler_gtype_from_enum (GeglSamplerType sampler_type)
 }
 
 static inline void
-_gegl_buffer_sample_at_level (GeglBuffer       *buffer,
-                              gdouble           x,
-                              gdouble           y,
-                              GeglMatrix2      *scale,
-                              gpointer          dest,
-                              const Babl       *format,
-                              gint              level,
-                              GeglSamplerType   sampler_type,
-                              GeglAbyssPolicy   repeat_mode)
+_gegl_buffer_sample_at_level (GeglBuffer        *buffer,
+                              gdouble            x,
+                              gdouble            y,
+                              GeglBufferMatrix2 *scale,
+                              gpointer           dest,
+                              const Babl        *format,
+                              gint               level,
+                              GeglSamplerType    sampler_type,
+                              GeglAbyssPolicy    repeat_mode)
 {
   GeglSampler *sampler;
 
@@ -450,15 +450,15 @@ _gegl_buffer_sample_at_level (GeglBuffer       *buffer,
 }
 
 void
-gegl_buffer_sample_at_level (GeglBuffer       *buffer,
-                             gdouble           x,
-                             gdouble           y,
-                             GeglMatrix2      *scale,
-                             gpointer          dest,
-                             const Babl       *format,
-                             gint              level,
-                             GeglSamplerType   sampler_type,
-                             GeglAbyssPolicy   repeat_mode)
+gegl_buffer_sample_at_level (GeglBuffer        *buffer,
+                             gdouble            x,
+                             gdouble            y,
+                             GeglBufferMatrix2 *scale,
+                             gpointer           dest,
+                             const Babl        *format,
+                             gint               level,
+                             GeglSamplerType    sampler_type,
+                             GeglAbyssPolicy    repeat_mode)
 {
   _gegl_buffer_sample_at_level (buffer, x, y, scale, dest,
                                 format, level, sampler_type, repeat_mode);
@@ -466,14 +466,14 @@ gegl_buffer_sample_at_level (GeglBuffer       *buffer,
 
 
 void
-gegl_buffer_sample (GeglBuffer       *buffer,
-                    gdouble           x,
-                    gdouble           y,
-                    GeglMatrix2      *scale,
-                    gpointer          dest,
-                    const Babl       *format,
-                    GeglSamplerType   sampler_type,
-                    GeglAbyssPolicy   repeat_mode)
+gegl_buffer_sample (GeglBuffer        *buffer,
+                    gdouble            x,
+                    gdouble            y,
+                    GeglBufferMatrix2 *scale,
+                    gpointer           dest,
+                    const Babl        *format,
+                    GeglSamplerType    sampler_type,
+                    GeglAbyssPolicy    repeat_mode)
 {
   _gegl_buffer_sample_at_level (buffer, x, y, scale, dest, format, 0, sampler_type, repeat_mode);
 }

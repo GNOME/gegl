@@ -331,8 +331,8 @@ process (GeglOperation       *operation,
   GeglSampler        *sampler;
   gint                factor       = 1 << level;
   GeglBufferIterator *it;
-  GeglMatrix2         scale_matrix;
-  GeglMatrix2        *scale        = NULL;
+  GeglBufferMatrix2   scale_matrix;
+  GeglBufferMatrix2  *scale        = NULL;
   gint                sampler_type = o->sampler_type;
   const Babl         *format_io    = gegl_operation_get_format (operation, "output");
   GeglSamplerGetFun   getfun;

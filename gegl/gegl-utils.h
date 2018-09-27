@@ -348,6 +348,19 @@ GeglNode *gegl_node_new_from_serialized (const gchar *chaindata,
                                          const gchar *path_root);
 
 
+/**
+ * gegl_buffer_set_color:
+ * @buffer: a #GeglBuffer
+ * @rect: a rectangular region to fill with a color.
+ * @color: the GeglColor to fill with.
+ *
+ * Sets the region covered by rect to the specified color.
+ */
+void            gegl_buffer_set_color         (GeglBuffer                *buffer,
+                                               const GeglBufferRectangle *rect,
+                                               GeglColor                 *color);
+
+
 G_END_DECLS
 
 #endif /* __GEGL_UTILS_H__ */

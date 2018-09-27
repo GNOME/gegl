@@ -167,7 +167,7 @@ apply_whirl_pinch (gdouble              whirl,
 
   for (row = 0; row < roi->height; row++) {
     for (col = 0; col < roi->width; col++) {
-        GeglMatrix2 scale;
+        GeglBufferMatrix2 scale;
 #define gegl_unmap(u,v,du,dv) \
         { \
           calc_undistorted_coords (u, v,\

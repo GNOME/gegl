@@ -40,15 +40,11 @@
 #include "gegl-buffer-types.h"
 #include "gegl-buffer-config.h"
 #include "gegl-buffer-private.h"
-#include "gegl-debug.h"
 #include "gegl-tile-storage.h"
 #include "gegl-tile-backend-file.h"
 #include "gegl-tile-backend-swap.h"
 #include "gegl-tile-backend-ram.h"
-
-//#include "opencl/gegl-cl.h"
-
-#include "gegl-types-internal.h"
+#include "gegl-buffer-formats.h"
 
 #ifdef GEGL_ENABLE_DEBUG
 #define DEBUG_ALLOCATIONS (gegl_debug_flags & GEGL_DEBUG_BUFFER_ALLOC)

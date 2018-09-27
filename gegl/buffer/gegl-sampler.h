@@ -223,13 +223,13 @@ static inline gboolean
 _gegl_sampler_box_get (GeglSampler*    restrict  self,
                        const gdouble             absolute_x,
                        const gdouble             absolute_y,
-                       GeglMatrix2              *scale,
+                       GeglBufferMatrix2        *scale,
                        void*           restrict  output,
                        GeglAbyssPolicy           repeat_mode,
                        GeglSamplerType           point_sampler_type,
                        gint                      n_samples)
 {
-  if (scale && fabs (gegl_matrix2_determinant (scale)) >= 4.0)
+  if (scale && fabs (gegl_buffer_matrix2_determinant (scale)) >= 4.0)
     {
       gfloat  result[4] = {0,0,0,0};
       gdouble uv_samples_inv;
@@ -243,7 +243,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
             gegl_sampler_get_fun (self->point_sampler);
         }
 
-      if (gegl_matrix2_is_scale (scale))
+      if (gegl_buffer_matrix2_is_scale (scale))
         {
           const gdouble u_norm         = fabs (scale->coeff[0][0]);
           const gdouble v_norm         = fabs (scale->coeff[1][1]);

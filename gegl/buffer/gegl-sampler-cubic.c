@@ -22,7 +22,7 @@
 #include <math.h>
 
 #include "gegl.h"
-#include "gegl-types-internal.h"
+#include "gegl-buffer-formats.h"
 #include "gegl-sampler-cubic.h"
 
 enum
@@ -38,7 +38,7 @@ static void gegl_sampler_cubic_finalize (      GObject         *gobject);
 static void gegl_sampler_cubic_get      (      GeglSampler     *sampler,
                                          const gdouble          absolute_x,
                                          const gdouble          absolute_y,
-                                               GeglMatrix2     *scale,
+                                               GeglBufferMatrix2*scale,
                                                void            *output,
                                                GeglAbyssPolicy  repeat_mode);
 static void get_property                (      GObject         *gobject,
@@ -152,12 +152,12 @@ gegl_sampler_cubic_init (GeglSamplerCubic *self)
 }
 
 void
-gegl_sampler_cubic_get (      GeglSampler     *self,
-                        const gdouble          absolute_x,
-                        const gdouble          absolute_y,
-                              GeglMatrix2     *scale,
-                              void            *output,
-                              GeglAbyssPolicy  repeat_mode)
+gegl_sampler_cubic_get (      GeglSampler       *self,
+                        const gdouble            absolute_x,
+                        const gdouble            absolute_y,
+                              GeglBufferMatrix2 *scale,
+                              void              *output,
+                              GeglAbyssPolicy    repeat_mode)
 {
   if (! _gegl_sampler_box_get (self, absolute_x, absolute_y, scale,
                                output, repeat_mode,
