@@ -367,3 +367,20 @@ gegl_memset_pattern (void * restrict       dst_ptr,
       memcpy (dst, src, remaining_size);
     }
 }
+
+
+void
+gegl_buffer_set_color (GeglBuffer          *dst,
+                       const GeglRectangle *dst_rect,
+                       GeglColor           *color)
+{
+  guchar pixel[128];
+  const Babl *format;
+  g_return_if_fail (GEGL_IS_BUFFER (dst));
+  g_return_if_fail (color);
+  format = gegl_buffer_get_format (dst);
+
+  gegl_color_get_pixel (color, format, pixel);
+  gegl_buffer_set_color_from_pixel (dst, dst_rect, &pixel[0], format);
+}
+

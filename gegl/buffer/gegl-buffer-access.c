@@ -29,7 +29,6 @@
 #include <gio/gio.h>
 
 #include "gegl.h"
-#include "gegl-debug.h"
 #include "gegl-algorithms.h"
 #include "gegl-buffer-types.h"
 #include "gegl-buffer.h"
@@ -2807,19 +2806,6 @@ gegl_buffer_set_color_from_pixel (GeglBuffer          *dst,
     {
       gegl_memset_pattern (i->items[0].data, pixel, bpp, i->length);
     }
-}
-
-void
-gegl_buffer_set_color (GeglBuffer          *dst,
-                       const GeglRectangle *dst_rect,
-                       GeglColor           *color)
-{
-  uint8_t pixel[128];
-  g_return_if_fail (GEGL_IS_BUFFER (dst));
-  g_return_if_fail (color);
-
-  gegl_color_get_pixel (color, dst->soft_format, pixel);
-  gegl_buffer_set_color_from_pixel (dst, dst_rect, &pixel[0], dst->soft_format);
 }
 
 GeglBuffer *

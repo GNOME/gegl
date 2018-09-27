@@ -304,7 +304,6 @@ void            gegl_buffer_set_color         (GeglBuffer          *buffer,
                                                GeglColor           *color);
 
 
-
 /**
  * gegl_buffer_set_color_from_pixel:
  * @buffer: a #GeglBuffer
