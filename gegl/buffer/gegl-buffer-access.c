@@ -2774,17 +2774,19 @@ gegl_buffer_set_pattern (GeglBuffer          *buffer,
   gegl_free (pattern_data);
 }
 
-static void
-gegl_buffer_set_value (GeglBuffer          *dst,
-                       const GeglRectangle *dst_rect,
-                       uint8_t             *value,
-                       const Babl          *pixel_format)
+void
+gegl_buffer_set_color_from_pixel (GeglBuffer          *dst,
+                                  const GeglRectangle *dst_rect,
+                                  const uint8_t       *pixel,
+                                  const Babl          *pixel_format)
 {
   GeglBufferIterator *i;
   gint                bpp;
 
   g_return_if_fail (GEGL_IS_BUFFER (dst));
-  g_return_if_fail (value);
+  g_return_if_fail (pixel);
+  if (pixel_format == NULL)
+    pixel_format = dst->soft_format;
 
   if (!dst_rect)
     {
@@ -2803,10 +2805,9 @@ gegl_buffer_set_value (GeglBuffer          *dst,
                                 GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
   while (gegl_buffer_iterator_next (i))
     {
-      gegl_memset_pattern (i->items[0].data, value, bpp, i->length);
+      gegl_memset_pattern (i->items[0].data, pixel, bpp, i->length);
     }
 }
-
 
 void
 gegl_buffer_set_color (GeglBuffer          *dst,
@@ -2818,7 +2819,7 @@ gegl_buffer_set_color (GeglBuffer          *dst,
   g_return_if_fail (color);
 
   gegl_color_get_pixel (color, dst->soft_format, pixel);
-  gegl_buffer_set_value (dst, dst_rect, &pixel[0], dst->soft_format);
+  gegl_buffer_set_color_from_pixel (dst, dst_rect, &pixel[0], dst->soft_format);
 }
 
 GeglBuffer *

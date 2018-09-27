@@ -304,6 +304,23 @@ void            gegl_buffer_set_color         (GeglBuffer          *buffer,
                                                GeglColor           *color);
 
 
+
+/**
+ * gegl_buffer_set_color_from_pixel:
+ * @buffer: a #GeglBuffer
+ * @rect: a rectangular region to fill with a color.
+ * @pixel: pointer to the data of a single pixel
+ * @pixel_format: the babl format of the pixel, if missing - the soft format of dst.
+ *
+ * Sets the region covered by rect to the the provided pixel.
+ */
+void
+gegl_buffer_set_color_from_pixel (GeglBuffer          *buffer,
+                                  const GeglRectangle *rect,
+                                  const guchar        *pixel,
+                                  const Babl          *pixel_format);
+
+
 /**
  * gegl_buffer_set_pattern:
  * @buffer: a #GeglBuffer
