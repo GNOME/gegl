@@ -22,7 +22,8 @@ gif-load: new operation for decoding GIF images/animations, with frame delay
 exposed as an out-property.
 
 exr-save: do not hard-code a version name space
-long-shadow: add mipoint parameter
+long-shadow: add 'Fading (fixed length)' style with a new user-defined
+'Midpoint' parameter
 
 Updated all operations to use new iterator API
 
