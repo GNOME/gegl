@@ -29,12 +29,15 @@ libbuffer_la_SOURCES = \
     gegl-buffer-access.c	\
     gegl-buffer-config.c	\
     gegl-buffer-config.h	\
+    gegl-buffer-enums.c		\
+    gegl-buffer-enums.h		\
     gegl-buffer-matrix2.c	\
     gegl-buffer-matrix2.h	\
     gegl-buffer-index.h		\
     gegl-buffer-iterator.c	\
     gegl-buffer-iterator2.c	\
     gegl-buffer-linear.c	\
+    gegl-rectangle.c	\
 	gegl-buffer-load.c	\
     gegl-buffer-save.c		\
     gegl-sampler.c		\
@@ -64,6 +67,7 @@ libbuffer_la_SOURCES = \
     gegl-buffer-iterator.h	\
     gegl-buffer-iterator2.h	\
     gegl-buffer-iterator-private.h	\
+    gegl-rectangle.h	\
     gegl-buffer-types.h		\
     gegl-buffer-formats.h	\
     gegl-sampler.h		\

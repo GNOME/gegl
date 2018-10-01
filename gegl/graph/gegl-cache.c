@@ -28,6 +28,7 @@
 #include "gegl-types-internal.h"
 #include "gegl-cache.h"
 #include "gegl-region.h"
+#include "gegl-buffer.h" /* for GeglRectangle XXX ... */
 
 enum
 {

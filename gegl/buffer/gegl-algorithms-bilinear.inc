@@ -1,12 +1,12 @@
 void
-BILINEAR_FUNCNAME (guchar              *dest_buf,
-                   const guchar        *source_buf,
+BILINEAR_FUNCNAME (guchar                    *dest_buf,
+                   const guchar              *source_buf,
                    const GeglRectangle *dst_rect,
                    const GeglRectangle *src_rect,
-                   const gint           s_rowstride,
-                   const gdouble        scale,
-                   const gint           bpp,
-                   const gint           d_rowstride)
+                   const gint                 s_rowstride,
+                   const gdouble              scale,
+                   const gint                 bpp,
+                   const gint                 d_rowstride)
 {
   const gint components = bpp / sizeof(BILINEAR_TYPE);
   const gint ver  = s_rowstride/(bpp/components);

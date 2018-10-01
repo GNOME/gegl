@@ -61,8 +61,6 @@ GType gegl_stats_get_type (void) G_GNUC_CONST;
 #define GEGL_STATS(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GEGL_TYPE_STATS, GeglStats))
 #define GEGL_IS_STATS(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_STATS))
 
-
-
 typedef struct _GeglCurve         GeglCurve;
 typedef struct _GeglPath          GeglPath;
 typedef struct _GeglColor         GeglColor;
@@ -96,34 +94,6 @@ GType gegl_random_get_type  (void) G_GNUC_CONST;
 #define GEGL_TYPE_RANDOM    (gegl_random_get_type())
 
 #include <gegl-buffer.h>
-
-typedef struct _GeglBufferRectangle     GeglRectangle;
-
-GType gegl_rectangle_get_type (void) G_GNUC_CONST;
-#define GEGL_TYPE_RECTANGLE   (gegl_rectangle_get_type())
-
-#ifndef __cplusplus
-
-#define  GEGL_RECTANGLE(x,y,w,h) (&((GeglRectangle){(x), (y),   (w), (h)}))
-
-#else
-
-static inline GeglRectangle
-_gegl_rectangle_helper (gint x,
-                        gint y,
-                        gint width,
-                        gint height)
-{
-  GeglRectangle result = {x, y, width, height};
-
-  return result;
-}
-
-#define  GEGL_RECTANGLE(x,y,w,h) \
-  ((GeglRectangle *) &(const GeglRectangle &) ::_gegl_rectangle_helper (x, y, w, h))
-
-#endif /* __cplusplus */
-
 
 G_END_DECLS
 

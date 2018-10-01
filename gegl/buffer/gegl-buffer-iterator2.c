@@ -25,13 +25,13 @@
 #include <glib-object.h>
 #include <glib/gprintf.h>
 
-#include "gegl.h"
+#include "gegl-buffer.h"
 #include "gegl-buffer-types.h"
+#include "gegl-rectangle.h"
 #include "gegl-buffer-iterator.h"
 #include "gegl-buffer-iterator2.h"
 #include "gegl-buffer-iterator-private.h"
 #include "gegl-buffer-private.h"
-#include "gegl-buffer-cl-cache.h"
 
 typedef enum {
   GeglIteratorState_Start,
@@ -51,7 +51,7 @@ typedef enum {
 } GeglIteratorTileMode;
 
 typedef struct _SubIterState {
-  GeglBufferRectangle  full_rect; /* The entire area we are iterating over */
+  GeglRectangle        full_rect; /* The entire area we are iterating over */
   GeglBuffer          *buffer;
   GeglAccessMode       access_mode;
   GeglAbyssPolicy      abyss_policy;
@@ -59,7 +59,7 @@ typedef struct _SubIterState {
   gint                 format_bpp;
   GeglIteratorTileMode current_tile_mode;
   gint                 row_stride;
-  GeglBufferRectangle  real_roi;
+  GeglRectangle        real_roi;
   gint                 level;
   /* Direct data members */
   GeglTile            *current_tile;
@@ -72,12 +72,12 @@ typedef struct _SubIterState {
 
 struct _GeglBufferIterator2Priv
 {
-  gint                num_buffers;
-  GeglIteratorState   state;
-  GeglBufferRectangle origin_tile;
-  gint                remaining_rows;
-  gint                max_slots;
-  SubIterState        sub_iter[];
+  gint              num_buffers;
+  GeglIteratorState state;
+  GeglRectangle     origin_tile;
+  gint              remaining_rows;
+  gint              max_slots;
+  SubIterState      sub_iter[];
   /* gint           access_order[]; */ /* allocated, but accessed through
                                         * get_access_order().
                                         */
@@ -119,13 +119,13 @@ gegl_buffer_iterator2_empty_new (gint max_slots)
 
 
 static inline int
-_gegl_buffer_iterator2_add (GeglBufferIterator2       *iter,
-                            GeglBuffer                *buf,
-                            const GeglBufferRectangle *roi,
-                            gint                       level,
-                            const Babl                *format,
-                            GeglAccessMode             access_mode,
-                            GeglAbyssPolicy            abyss_policy)
+_gegl_buffer_iterator2_add (GeglBufferIterator2  *iter,
+                          GeglBuffer          *buf,
+                          const GeglRectangle *roi,
+                          gint                 level,
+                          const Babl          *format,
+                          GeglAccessMode       access_mode,
+                          GeglAbyssPolicy      abyss_policy)
 {
   GeglBufferIterator2Priv *priv = iter->priv;
   int                     index;
@@ -170,13 +170,13 @@ _gegl_buffer_iterator2_add (GeglBufferIterator2       *iter,
 }
 
 int
-gegl_buffer_iterator2_add (GeglBufferIterator2      *iter,
-                          GeglBuffer                *buf,
-                          const GeglBufferRectangle *roi,
-                          gint                       level,
-                          const Babl                *format,
-                          GeglAccessMode             access_mode,
-                          GeglAbyssPolicy            abyss_policy)
+gegl_buffer_iterator2_add (GeglBufferIterator2  *iter,
+                          GeglBuffer          *buf,
+                          const GeglRectangle *roi,
+                          gint                 level,
+                          const Babl          *format,
+                          GeglAccessMode       access_mode,
+                          GeglAbyssPolicy      abyss_policy)
 {
   return _gegl_buffer_iterator2_add (iter, buf, roi, level, format, access_mode,
 abyss_policy);
@@ -184,13 +184,13 @@ abyss_policy);
 
 
 GeglBufferIterator2 *
-gegl_buffer_iterator2_new (GeglBuffer                *buf,
-                          const GeglBufferRectangle *roi,
-                          gint                       level,
-                          const Babl                *format,
-                          GeglAccessMode             access_mode,
-                          GeglAbyssPolicy            abyss_policy,
-                          gint                       max_slots)
+gegl_buffer_iterator2_new (GeglBuffer          *buf,
+                          const GeglRectangle *roi,
+                          gint                 level,
+                          const Babl          *format,
+                          GeglAccessMode       access_mode,
+                          GeglAbyssPolicy      abyss_policy,
+                          gint                 max_slots)
 {
   GeglBufferIterator2 *iter = _gegl_buffer_iterator2_empty_new (max_slots);
   _gegl_buffer_iterator2_add (iter, buf, roi, level, format,
@@ -260,7 +260,7 @@ retile_subs (GeglBufferIterator2 *iter,
              int                 y)
 {
   GeglBufferIterator2Priv *priv = iter->priv;
-  GeglBufferRectangle real_roi;
+  GeglRectangle real_roi;
   int index;
 
   int shift_x = priv->origin_tile.x;
@@ -605,7 +605,7 @@ _gegl_buffer_iterator2_stop (GeglBufferIterator2 *iter)
               sub->access_mode & GEGL_ACCESS_WRITE &&
               ! (sub->access_mode & GEGL_ITERATOR_INCOMPATIBLE))
             {
-              GeglBufferRectangle damage_rect;
+              GeglRectangle damage_rect;
 
               damage_rect.x      = sub->full_rect.x + sub->buffer->shift_x;
               damage_rect.y      = sub->full_rect.y + sub->buffer->shift_y;
@@ -710,11 +710,11 @@ gegl_buffer_iterator2_next (GeglBufferIterator2 *iter)
 
                        XXX: still? */
       {
-        if (gegl_cl_is_accelerated ())
+        if (gegl_buffer_ext_flush)
           for (index = 0; index < priv->num_buffers; index++)
             {
               SubIterState *sub = &priv->sub_iter[index];
-              gegl_buffer_cl_cache_flush (sub->buffer, &sub->full_rect);
+              gegl_buffer_ext_flush (sub->buffer, &sub->full_rect);
             }
         linear_shortcut (iter);
         return TRUE;
@@ -722,11 +722,11 @@ gegl_buffer_iterator2_next (GeglBufferIterator2 *iter)
 
       prepare_iteration (iter);
 
-      if (gegl_cl_is_accelerated ())
+      if (gegl_buffer_ext_flush)
         for (index = 0; index < priv->num_buffers; index++)
           {
             SubIterState *sub = &priv->sub_iter[index];
-            gegl_buffer_cl_cache_flush (sub->buffer, &sub->full_rect);
+            gegl_buffer_ext_flush (sub->buffer, &sub->full_rect);
           }
 
       initialize_rects (iter);

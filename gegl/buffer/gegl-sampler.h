@@ -50,13 +50,13 @@ typedef struct _GeglSamplerClass GeglSamplerClass;
 
 typedef struct GeglSamplerLevel
 {
-  GeglBufferRectangle  context_rect;
-  gpointer             sampler_buffer;
-  GeglBufferRectangle  sampler_rectangle;
-  gint                 last_x;
-  gint                 last_y;
-  float                delta_x;
-  float                delta_y;
+  GeglRectangle  context_rect;
+  gpointer       sampler_buffer;
+  GeglRectangle  sampler_rectangle;
+  gint           last_x;
+  gint           last_y;
+  float          delta_x;
+  float          delta_y;
 } GeglSamplerLevel;
 
 struct _GeglSampler
@@ -107,13 +107,13 @@ gfloat * _gegl_sampler_get_ptr        (GeglSampler     *sampler,
                                        gint             y,
                                        GeglAbyssPolicy  repeat_mode);
 
-static inline GeglBufferRectangle _gegl_sampler_compute_rectangle (
+static inline GeglRectangle _gegl_sampler_compute_rectangle (
                                       GeglSampler *sampler,
                                       gint         x,
                                       gint         y,
                                       gint         level_no)
 {
-  GeglBufferRectangle rectangle;
+  GeglRectangle rectangle;
   GeglSamplerLevel *level = &sampler->level[level_no];
 
   rectangle.width  = level->context_rect.width + 2;

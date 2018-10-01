@@ -101,8 +101,8 @@ GeglTile * gegl_tile_handler_dup_tile    (GeglTileHandler *handler,
                                           gint             y,
                                           gint             z);
 
-void       gegl_tile_handler_damage_rect (GeglTileHandler           *handler,
-                                          const GeglBufferRectangle *rect);
+void       gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
+                                          const GeglRectangle *rect);
 
 G_END_DECLS
 

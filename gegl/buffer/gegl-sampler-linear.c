@@ -21,7 +21,7 @@
 #include "config.h"
 #include <math.h>
 
-#include "gegl.h"
+#include "gegl-buffer.h"
 #include "gegl-buffer-formats.h"
 #include "gegl-sampler-linear.h"
 

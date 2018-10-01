@@ -19,7 +19,7 @@
 #ifndef __GEGL_BUFFER_TYPES_H__
 #define __GEGL_BUFFER_TYPES_H__
 
-#include "gegl-types.h"
+#include "gegl-buffer-enums.h"
 #include "gegl-buffer-backend.h"
 
 
@@ -30,19 +30,19 @@
 
 struct _GeglTileBackendPrivate
 {
-  gint                         tile_width;
-  gint                         tile_height;
-  const Babl                  *format;    /* defaults to the babl format "R'G'B'A u8" */
-  gint                         px_size;   /* size of a single pixel in bytes */
-  gint                         tile_size; /* size of an entire tile in bytes */
-  gboolean                     flush_on_destroy;
+  gint                   tile_width;
+  gint                   tile_height;
+  const Babl            *format;    /* defaults to the babl format "R'G'B'A u8" */
+  gint                   px_size;   /* size of a single pixel in bytes */
+  gint                   tile_size; /* size of an entire tile in bytes */
 
-  GeglBufferRectangle          extent;
+  gboolean               flush_on_destroy;
+  GeglRectangle          extent;
 
-  gpointer                     storage;
-  gboolean                     shared;
+  gpointer               storage;
+  gboolean               shared;
 
-  GeglTileSourceCommand        command;
+  GeglTileSourceCommand  command;
 };
 
 typedef struct _GeglTileHandlerChain      GeglTileHandlerChain;

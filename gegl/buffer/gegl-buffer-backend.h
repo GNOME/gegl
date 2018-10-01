@@ -19,7 +19,6 @@
 #ifndef __GEGL_BUFFER_BACKEND_H__
 #define __GEGL_BUFFER_BACKEND_H__
 
-#include "gegl-types.h"
 
 G_BEGIN_DECLS
 
@@ -30,6 +29,8 @@ typedef struct _GeglTileHandler           GeglTileHandler;
 
 typedef void   (*GeglTileCallback)       (GeglTile *tile,
                                           gpointer user_data);
+
+
 
 /* All commands have the ability to pass commands to all tiles the handlers
  * add abstraction to the commands the documentaiton given here is valid
@@ -65,6 +66,8 @@ typedef struct _GeglTileCopyParams
 
 G_END_DECLS
 
+#include "gegl-buffer.h"
+#include "gegl-buffer-enums.h"
 #include "gegl-tile-backend.h"
 #include "gegl-tile-source.h"
 #include "gegl-tile-handler.h"

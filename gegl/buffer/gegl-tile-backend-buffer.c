@@ -304,7 +304,7 @@ gegl_tile_backend_buffer_emit_changed_signal (GeglTileBackendBuffer *tile_backen
 
   if (buffer->changed_signal_connections)
     {
-      GeglBufferRectangle rect;
+      GeglRectangle rect;
 
       rect.width  = buffer->tile_width  >> z;
       rect.height = buffer->tile_height >> z;

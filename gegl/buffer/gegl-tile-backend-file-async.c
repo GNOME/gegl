@@ -44,7 +44,7 @@
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
 
-#include "gegl.h"
+#include "gegl-buffer.h"
 #include "gegl-buffer-backend.h"
 #include "gegl-tile-backend.h"
 #include "gegl-tile-backend-file.h"
@@ -523,7 +523,7 @@ gegl_tile_backend_file_write_header (GeglTileBackendFile *self)
 {
   GeglFileBackendThreadParams *params = g_new0 (GeglFileBackendThreadParams, 1);
   guchar *new_source = g_malloc (256);
-  GeglBufferRectangle roi = gegl_tile_backend_get_extent ((GeglTileBackend *)self);
+  GeglRectangle roi = gegl_tile_backend_get_extent ((GeglTileBackend *)self);
 
   gegl_tile_backend_file_ensure_exist (self);
 
@@ -1088,7 +1088,7 @@ gegl_tile_backend_file_load_index (GeglTileBackendFile *self,
             {
               GeglTileStorage *storage =
                 (void*)gegl_tile_backend_peek_storage (backend);
-              GeglBufferRectangle rect;
+              GeglRectangle rect;
               g_hash_table_remove (self->index, existing);
 
               gegl_tile_source_refetch (GEGL_TILE_SOURCE (storage),
@@ -1193,7 +1193,7 @@ gegl_tile_backend_file_constructed (GObject *object)
       backend->priv->tile_size   = backend->priv->tile_width *
                                     backend->priv->tile_height *
                                     backend->priv->px_size;
-      backend->priv->extent      = (GeglBufferRectangle) {self->header.x,
+      backend->priv->extent      = (GeglRectangle) {self->header.x,
                                                     self->header.y,
                                                     self->header.width,
                                                     self->header.height};

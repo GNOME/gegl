@@ -19,9 +19,10 @@
 #ifndef __GEGL_BUFFER_FORMATS_H__
 #define __GEGL_BUFFER_FORMATS_H__
 
-#include <babl/babl.h>
 
-G_BEGIN_DECLS
+//G_BEGIN_DECLS
+
+#include <babl/babl.h>
 
 /* the code in babl for looking up models, formats and types is quick -
    but when formats end up being used as consts for comparisons in the core of
@@ -79,6 +80,6 @@ GEGL_CACHED_BABL(format, yA_linear_float, "YaA float")
   #define GEGL_ALLOCA_THRESHOLD  (1024*1024/2)
 #endif
 
-G_END_DECLS
+//G_END_DECLS
 
 #endif /* __GEGL_BUFFER_FORMATS_H__ */

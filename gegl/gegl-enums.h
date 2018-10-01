@@ -37,46 +37,6 @@
 G_BEGIN_DECLS
 
 typedef enum {
-  /* this enum should be renamed GeglBufferFlags, since it contains
-   * multiple flags - and possibly more in the future
-   */
-
-  /* XXX: API tidying of the following would be to make them be
-   *      GEGL_BUFFER_EDGE_NONE or GEGL_BUFFER_REPEAT_NONE instead.
-  */
-  GEGL_ABYSS_NONE  = 0,
-  GEGL_ABYSS_CLAMP = 1,
-  GEGL_ABYSS_LOOP  = 2,
-  GEGL_ABYSS_BLACK = 3,
-  GEGL_ABYSS_WHITE = 4,
-
-  GEGL_BUFFER_FILTER_AUTO     = 0,
-  /* auto gives bilinear for scales <1.0 box for <2.0 and nearest above */
-  GEGL_BUFFER_FILTER_BILINEAR = 16,
-  GEGL_BUFFER_FILTER_NEAREST  = 32,
-  GEGL_BUFFER_FILTER_BOX      = 48,
-  GEGL_BUFFER_FILTER_ALL      = (GEGL_BUFFER_FILTER_BILINEAR|
-                                 GEGL_BUFFER_FILTER_NEAREST|
-                                 GEGL_BUFFER_FILTER_BOX),
-} GeglAbyssPolicy;
-
-GType gegl_abyss_policy_get_type (void) G_GNUC_CONST;
-
-#define GEGL_TYPE_ABYSS_POLICY (gegl_abyss_policy_get_type ())
-
-
-typedef enum {
-  GEGL_ACCESS_READ      = 1 << 0,
-  GEGL_ACCESS_WRITE     = 1 << 1,
-  GEGL_ACCESS_READWRITE = (GEGL_ACCESS_READ | GEGL_ACCESS_WRITE)
-} GeglAccessMode;
-
-GType gegl_access_mode_get_type (void) G_GNUC_CONST;
-
-#define GEGL_TYPE_ACCESS_MODE (gegl_access_mode_get_type ())
-
-
-typedef enum {
   GEGL_DITHER_NONE,
   GEGL_DITHER_FLOYD_STEINBERG,
   GEGL_DITHER_BAYER,
@@ -111,19 +71,6 @@ typedef enum {
 GType gegl_orientation_get_type (void) G_GNUC_CONST;
 
 #define GEGL_TYPE_ORIENTATION (gegl_orientation_get_type ())
-
-
-typedef enum {
-  GEGL_SAMPLER_NEAREST,
-  GEGL_SAMPLER_LINEAR,
-  GEGL_SAMPLER_CUBIC,
-  GEGL_SAMPLER_NOHALO,
-  GEGL_SAMPLER_LOHALO
-} GeglSamplerType;
-
-GType gegl_sampler_type_get_type (void) G_GNUC_CONST;
-
-#define GEGL_TYPE_SAMPLER_TYPE (gegl_sampler_type_get_type ())
 
 G_END_DECLS
 

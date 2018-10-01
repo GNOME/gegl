@@ -219,7 +219,7 @@ gegl_tile_unclone (GeglTile *tile)
 
               goto end;
             }
-
+          // XXX : should not use aligned calloc
           tile->n_clones     = gegl_calloc (INLINE_N_ELEMENTS_DATA_OFFSET +
                                             tile->size, 1);
         }

@@ -23,7 +23,6 @@
 #include "gegl-buffer.h"
 #include "gegl-tile-handler.h"
 #include "gegl-buffer-iterator.h"
-#include "gegl-buffer-cl-iterator.h"
 
 #define GEGL_BUFFER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GEGL_TYPE_BUFFER, GeglBufferClass))
 #define GEGL_IS_BUFFER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GEGL_TYPE_BUFFER))
@@ -33,22 +32,22 @@ typedef struct _GeglBufferClass GeglBufferClass;
 
 struct _GeglBuffer
 {
-  GeglTileHandler     parent_instance; /* which is a GeglTileHandler which has a
+  GeglTileHandler   parent_instance; /* which is a GeglTileHandler which has a
                                         source field which is used for chaining
                                         sub buffers with their anchestors */
 
-  GeglBufferRectangle extent;        /* the dimensions of the buffer */
+  GeglRectangle     extent;        /* the dimensions of the buffer */
 
-  const Babl         *format;  /* the pixel format used for pixels in this
+  const Babl       *format;  /* the pixel format used for pixels in this
                                 buffer */
-  const Babl         *soft_format;  /* the format the buffer pretends to be, might
-                                       be different from format */
+  const Babl  *soft_format;  /* the format the buffer pretends to be, might
+                                be different from format */
 
   gint              shift_x; /* The relative offset of origins compared with */
   gint              shift_y; /* anchestral tile_storage buffer, during       */
                              /* construction relative to immediate source    */
 
-  GeglBufferRectangle abyss;
+  GeglRectangle     abyss;
   gboolean          abyss_tracks_extent; /* specifies whether the abyss rectangle
                                             should track any modifications to the
                                             extent rectangle */
@@ -106,33 +105,33 @@ gboolean          gegl_buffer_lock        (GeglBuffer *buffer);
 gboolean          gegl_buffer_unlock      (GeglBuffer *buffer);
 #endif
 
-void              gegl_buffer_set_unlocked (GeglBuffer                *buffer,
-                                            const GeglBufferRectangle *rect,
-                                            gint                       level,
-                                            const Babl                *format,
-                                            const void                *src,
-                                            gint                       rowstride);
+void              gegl_buffer_set_unlocked (GeglBuffer          *buffer,
+                                            const GeglRectangle *rect,
+                                            gint                 level,
+                                            const Babl          *format,
+                                            const void          *src,
+                                            gint                 rowstride);
 
-void              gegl_buffer_set_unlocked_no_notify (GeglBuffer                *buffer,
-                                                      const GeglBufferRectangle *rect,
-                                                      gint                       level,
-                                                      const Babl                *format,
-                                                      const void                *src,
-                                                      gint                       rowstride);
+void              gegl_buffer_set_unlocked_no_notify (GeglBuffer          *buffer,
+                                                      const GeglRectangle *rect,
+                                                      gint                 level,
+                                                      const Babl          *format,
+                                                      const void          *src,
+                                                      gint                 rowstride);
 
-void              gegl_buffer_get_unlocked (GeglBuffer                *buffer,
-                                            gdouble                    scale,
-                                            const GeglBufferRectangle *rect,
-                                            const Babl                *format,
-                                            gpointer                   dest_buf,
-                                            gint                       rowstride,
-                                            GeglAbyssPolicy            repeat_mode);
+void              gegl_buffer_get_unlocked (GeglBuffer          *buffer,
+                                            gdouble              scale,
+                                            const GeglRectangle *rect,
+                                            const Babl          *format,
+                                            gpointer             dest_buf,
+                                            gint                 rowstride,
+                                            GeglAbyssPolicy      repeat_mode);
 
-GeglBuffer *      gegl_buffer_new_ram     (const GeglBufferRectangle *extent,
-                                           const Babl                *format);
+GeglBuffer *      gegl_buffer_new_ram     (const GeglRectangle *extent,
+                                           const Babl          *format);
 
 void              gegl_buffer_emit_changed_signal (GeglBuffer *buffer,
-                                                   const GeglBufferRectangle *rect);
+                                                   const GeglRectangle *rect);
 
 /* the instance size of a GeglTile is a bit large, and should if possible be
  * trimmed down
@@ -196,8 +195,8 @@ gboolean gegl_tile_damage         (GeglTile *tile,
 
 void _gegl_buffer_drop_hot_tile (GeglBuffer *buffer);
 
-GeglBufferRectangle _gegl_get_required_for_scale (const GeglBufferRectangle *roi,
-                                                  gdouble                    scale);
+GeglRectangle _gegl_get_required_for_scale (const GeglRectangle *roi,
+                                            gdouble              scale);
 
 gboolean gegl_buffer_scan_compatible (GeglBuffer *bufferA,
                                       gint        xA,
@@ -207,9 +206,9 @@ gboolean gegl_buffer_scan_compatible (GeglBuffer *bufferA,
                                       gint        yB);
 
 
-extern void (*gegl_tile_handler_cache_ext_flush) (void *tile_handler_cache, const GeglBufferRectangle *rect);
-extern void (*gegl_buffer_ext_flush) (GeglBuffer *buffer, const GeglBufferRectangle *rect);
-extern void (*gegl_buffer_ext_invalidate) (GeglBuffer *buffer, const GeglBufferRectangle *rect);
+extern void (*gegl_tile_handler_cache_ext_flush) (void *tile_handler_cache, const GeglRectangle *rect);
+extern void (*gegl_buffer_ext_flush) (GeglBuffer *buffer, const GeglRectangle *rect);
+extern void (*gegl_buffer_ext_invalidate) (GeglBuffer *buffer, const GeglRectangle *rect);
 
 
 #ifndef __GEGL_TILE_H__

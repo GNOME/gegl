@@ -295,13 +295,13 @@ gegl_tile_backend_get_format (GeglTileBackend *tile_backend)
 
 
 void
-gegl_tile_backend_set_extent (GeglTileBackend           *tile_backend,
-                              const GeglBufferRectangle *rectangle)
+gegl_tile_backend_set_extent (GeglTileBackend     *tile_backend,
+                              const GeglRectangle *rectangle)
 {
   tile_backend->priv->extent = *rectangle;
 }
 
-GeglBufferRectangle
+GeglRectangle
 gegl_tile_backend_get_extent (GeglTileBackend *tile_backend)
 {
   return tile_backend->priv->extent;

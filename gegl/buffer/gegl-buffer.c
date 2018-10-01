@@ -36,10 +36,12 @@
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
+#include "gegl-debug.h"
 #include "gegl-buffer.h"
 #include "gegl-buffer-types.h"
 #include "gegl-buffer-config.h"
 #include "gegl-buffer-private.h"
+#include "gegl-rectangle.h"
 #include "gegl-tile-storage.h"
 #include "gegl-tile-backend-file.h"
 #include "gegl-tile-backend-swap.h"
@@ -285,8 +287,8 @@ static volatile gint  de_allocated_buffers   = 0;
  * would be voided as a result of changing the extent.
  */
 gboolean
-gegl_buffer_set_extent (GeglBuffer                *buffer,
-                        const GeglBufferRectangle *extent)
+gegl_buffer_set_extent (GeglBuffer          *buffer,
+                        const GeglRectangle *extent)
 {
   g_return_val_if_fail (GEGL_IS_BUFFER (buffer), FALSE);
 
@@ -302,8 +304,8 @@ gegl_buffer_set_extent (GeglBuffer                *buffer,
 }
 
 gboolean
-gegl_buffer_set_abyss (GeglBuffer                *buffer,
-                       const GeglBufferRectangle *abyss)
+gegl_buffer_set_abyss (GeglBuffer          *buffer,
+                       const GeglRectangle *abyss)
 {
   g_return_val_if_fail (GEGL_IS_BUFFER (buffer), FALSE);
 
@@ -453,9 +455,9 @@ gegl_buffer_tile_storage (GeglBuffer *buffer)
 }
 
 static void
-gegl_buffer_storage_changed (GeglTileStorage           *storage,
-                             const GeglBufferRectangle *rect,
-                             gpointer                   userdata)
+gegl_buffer_storage_changed (GeglTileStorage     *storage,
+                             const GeglRectangle *rect,
+                             gpointer             userdata)
 {
   gegl_buffer_emit_changed_signal (GEGL_BUFFER (userdata), rect);
 }
@@ -648,9 +650,9 @@ gegl_buffer_constructor (GType                  type,
   if (GEGL_IS_BUFFER (source))
     {
       GeglBuffer *source_buf = GEGL_BUFFER (source);
-      GeglBufferRectangle parent;
-      GeglBufferRectangle request;
-      GeglBufferRectangle self;
+      GeglRectangle parent;
+      GeglRectangle request;
+      GeglRectangle self;
 
       parent.x = source_buf->abyss.x - buffer->shift_x;
       parent.y = source_buf->abyss.y - buffer->shift_y;
@@ -929,7 +931,7 @@ gegl_buffer_init (GeglBuffer *buffer)
 }
 
 
-const GeglBufferRectangle *
+const GeglRectangle *
 gegl_buffer_get_extent (GeglBuffer *buffer)
 {
   g_return_val_if_fail (GEGL_IS_BUFFER (buffer), NULL);
@@ -937,7 +939,7 @@ gegl_buffer_get_extent (GeglBuffer *buffer)
   return &(buffer->extent);
 }
 
-const GeglBufferRectangle *
+const GeglRectangle *
 gegl_buffer_get_abyss (GeglBuffer *buffer)
 {
   g_return_val_if_fail (GEGL_IS_BUFFER (buffer), NULL);
@@ -947,10 +949,10 @@ gegl_buffer_get_abyss (GeglBuffer *buffer)
 
 
 GeglBuffer *
-gegl_buffer_new_ram (const GeglBufferRectangle *extent,
-                     const Babl                *format)
+gegl_buffer_new_ram (const GeglRectangle *extent,
+                     const Babl          *format)
 {
-  GeglBufferRectangle empty={0,0,0,0};
+  GeglRectangle empty={0,0,0,0};
 
   if (extent == NULL)
     extent = &empty;
@@ -969,10 +971,10 @@ gegl_buffer_new_ram (const GeglBufferRectangle *extent,
 }
 
 GeglBuffer *
-gegl_buffer_new (const GeglBufferRectangle *extent,
-                 const Babl                *format)
+gegl_buffer_new (const GeglRectangle *extent,
+                 const Babl          *format)
 {
-  GeglBufferRectangle empty={0,0,0,0};
+  GeglRectangle empty={0,0,0,0};
 
   if (extent == NULL)
     extent = &empty;
@@ -990,10 +992,10 @@ gegl_buffer_new (const GeglBufferRectangle *extent,
 }
 
 GeglBuffer *
-gegl_buffer_new_for_backend (const GeglBufferRectangle *extent,
-                             GeglTileBackend           *backend)
+gegl_buffer_new_for_backend (const GeglRectangle *extent,
+                             GeglTileBackend     *backend)
 {
-  GeglBufferRectangle rect = { 0, 0, 0, 0 };
+  GeglRectangle rect = { 0, 0, 0, 0 };
   const Babl   *format;
 
   /* if no extent is passed in inherit from backend */
@@ -1038,8 +1040,8 @@ gegl_buffer_remove_handler (GeglBuffer *buffer,
  * on runtime, and recycling them through a hashtable?
  */
 GeglBuffer*
-gegl_buffer_create_sub_buffer (GeglBuffer                *buffer,
-                               const GeglBufferRectangle *extent)
+gegl_buffer_create_sub_buffer (GeglBuffer          *buffer,
+                               const GeglRectangle *extent)
 {
   g_return_val_if_fail (GEGL_IS_BUFFER (buffer), NULL);
 
@@ -1167,12 +1169,12 @@ gegl_buffer_unlock (GeglBuffer *buffer)
 #endif
 
 void
-gegl_buffer_emit_changed_signal (GeglBuffer                *buffer,
-                                 const GeglBufferRectangle *rect)
+gegl_buffer_emit_changed_signal (GeglBuffer          *buffer,
+                                 const GeglRectangle *rect)
 {
   if (buffer->changed_signal_connections)
   {
-    GeglBufferRectangle copy;
+    GeglRectangle copy;
 
     if (rect == NULL)
       copy = *gegl_buffer_get_extent (buffer);
@@ -1217,6 +1219,6 @@ gegl_buffer_get_tile (GeglBuffer *buffer,
   return tile;
 }
 
-void (*gegl_tile_handler_cache_ext_flush) (void *cache, const GeglBufferRectangle *rect)=NULL;
-void (*gegl_buffer_ext_flush) (GeglBuffer *buffer, const GeglBufferRectangle *rect)=NULL;
-void (*gegl_buffer_ext_invalidate) (GeglBuffer *buffer, const GeglBufferRectangle *rect)=NULL;
+void (*gegl_tile_handler_cache_ext_flush) (void *cache, const GeglRectangle *rect)=NULL;
+void (*gegl_buffer_ext_flush) (GeglBuffer *buffer, const GeglRectangle *rect)=NULL;
+void (*gegl_buffer_ext_invalidate) (GeglBuffer *buffer, const GeglRectangle *rect)=NULL;

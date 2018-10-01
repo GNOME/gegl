@@ -23,10 +23,9 @@
 #include <glib-object.h>
 #include <glib/gprintf.h>
 
-#include "gegl.h"
+#include "gegl-buffer.h"
 #include "gegl-buffer-config.h"
 
-#include "opencl/gegl-cl.h"
 
 G_DEFINE_TYPE (GeglBufferConfig, gegl_buffer_config, G_TYPE_OBJECT)
 

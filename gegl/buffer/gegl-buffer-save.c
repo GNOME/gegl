@@ -29,7 +29,7 @@
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
-#include "gegl.h"
+#include "gegl-buffer.h"
 #include "gegl-buffer-types.h"
 #include "gegl-buffer-private.h"
 #include "gegl-debug.h"
@@ -188,9 +188,9 @@ gegl_buffer_header_init (GeglBufferHeader *header,
 }
 
 void
-gegl_buffer_save (GeglBuffer                *buffer,
-                  const gchar               *path,
-                  const GeglBufferRectangle *roi)
+gegl_buffer_save (GeglBuffer          *buffer,
+                  const gchar         *path,
+                  const GeglRectangle *roi)
 {
   SaveInfo *info = g_slice_new0 (SaveInfo);
 

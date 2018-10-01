@@ -41,9 +41,9 @@ typedef struct _GeglBufferIteratorPriv GeglBufferIteratorPriv;
  */
 typedef struct GeglBufferIterator
 {
-  gint                 length;
-  gpointer             data[GEGL_BUFFER_MAX_ITERATORS];
-  GeglBufferRectangle  roi[GEGL_BUFFER_MAX_ITERATORS];
+  gint           length;
+  gpointer       data[GEGL_BUFFER_MAX_ITERATORS];
+  GeglRectangle  roi[GEGL_BUFFER_MAX_ITERATORS];
   /* Private */
   GeglBufferIteratorPriv *priv;
 } GeglBufferIterator;
@@ -75,12 +75,12 @@ GeglBufferIterator *gegl_buffer_iterator_empty_new (void);
  * Returns: a new buffer iterator that can be used to iterate through the
  * buffers pixels.
  */
-GeglBufferIterator * gegl_buffer_iterator_new  (GeglBuffer                *buffer,
-                                                const GeglBufferRectangle *roi,
-                                                gint                       level,
-                                                const Babl                *format,
-                                                GeglAccessMode             access_mode,
-                                                GeglAbyssPolicy            abyss_policy) G_DEPRECATED;
+GeglBufferIterator * gegl_buffer_iterator_new  (GeglBuffer          *buffer,
+                                                const GeglRectangle *roi,
+                                                gint                 level,
+                                                const Babl          *format,
+                                                GeglAccessMode       access_mode,
+                                                GeglAbyssPolicy      abyss_policy) G_DEPRECATED;
 
 
 /**
@@ -102,13 +102,13 @@ GeglBufferIterator * gegl_buffer_iterator_new  (GeglBuffer                *buffe
  * Returns: an integer handle refering to the indice in the iterator structure
  * of the added buffer.
  */
-gint                 gegl_buffer_iterator_add  (GeglBufferIterator        *iterator,
-                                                GeglBuffer                *buffer,
-                                                const GeglBufferRectangle *roi,
-                                                gint                       level,
-                                                const Babl                *format,
-                                                GeglAccessMode             access_mode,
-                                                GeglAbyssPolicy            abyss_policy);
+gint                 gegl_buffer_iterator_add  (GeglBufferIterator  *iterator,
+                                                GeglBuffer          *buffer,
+                                                const GeglRectangle *roi,
+                                                gint                 level,
+                                                const Babl          *format,
+                                                GeglAccessMode       access_mode,
+                                                GeglAbyssPolicy      abyss_policy);
 
 /**
  * gegl_buffer_iterator_stop: (skip)

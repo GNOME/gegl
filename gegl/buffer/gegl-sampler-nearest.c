@@ -19,7 +19,7 @@
 #include <math.h>
 #include <string.h>
 
-#include "gegl.h"
+#include "gegl-buffer.h"
 #include "gegl-buffer-formats.h"
 #include "gegl-buffer-types.h"
 #include "gegl-buffer.h"
@@ -100,7 +100,7 @@ gegl_sampler_get_pixel (GeglSampler    *sampler,
 {
   GeglSamplerNearest *nearest_sampler = (GeglSamplerNearest*)(sampler);
   GeglBuffer *buffer = sampler->buffer;
-  const GeglBufferRectangle *abyss = &buffer->abyss;
+  const GeglRectangle *abyss = &buffer->abyss;
   guchar              *buf   = data;
 
   if (y <  abyss->y ||
