@@ -2,6 +2,7 @@
 # Please keep this file sorted alphabetically.
 bin/gegl.c
 bin/gegl-options.c
+gegl/buffer/gegl-buffer-enums.c
 gegl/gegl-enums.c
 gegl/gegl-init.c
 gegl/gegl-serialize.c
