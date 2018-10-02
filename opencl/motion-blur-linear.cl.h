@@ -1,5 +1,4 @@
 static const char* motion_blur_linear_cl_source =
-"                                                                              \n"
 "float4 get_pixel_color(const __global float4 *in_buf,                         \n"
 "                       int     rect_width,                                    \n"
 "                       int     rect_height,                                   \n"
