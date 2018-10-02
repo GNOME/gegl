@@ -12,6 +12,9 @@ text_la_CFLAGS = $(AM_CFLAGS) $(PANGOCAIRO_CFLAGS)
 endif
 
 ops += gif-load.la 
+gif_load_la_SOURCES = gif-load.c
+gif_load_la_LIBADD = $(op_libs)
+gif_load_la_CFLAGS = $(AM_CFLAGS)
 
 if HAVE_CAIRO
 ops += path.la vector-fill.la vector-stroke.la
