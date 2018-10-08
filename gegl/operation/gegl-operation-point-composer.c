@@ -17,15 +17,16 @@
  */
 
 
+#define GEGL_ITERATOR2_API
 #include "config.h"
 
 #include <glib-object.h>
-
 
 #include "gegl.h"
 #include "gegl-debug.h"
 #include "gegl-operation-point-composer.h"
 #include "gegl-operation-context.h"
+#include "gegl-operation-pipeline.h"
 #include "gegl-config.h"
 #include "gegl-types-internal.h"
 #include "gegl-buffer-private.h"
@@ -64,8 +65,7 @@ thread_process (const GeglRectangle *area,
                                                     data->level,
                                                     data->output_format,
                                                     GEGL_ACCESS_WRITE,
-                                                    GEGL_ABYSS_NONE,
-                                                    4);
+                                                    GEGL_ABYSS_NONE, 3);
 
   if (data->input)
     read = gegl_buffer_iterator_add (i, data->input, area, data->level,
@@ -93,10 +93,12 @@ gegl_operation_composer_process (GeglOperation        *operation,
                                  gint                  level)
 {
   GeglOperationComposerClass *klass   = GEGL_OPERATION_COMPOSER_GET_CLASS (operation);
+  GeglOperationPointComposerClass *point_composer_class = GEGL_OPERATION_POINT_COMPOSER_GET_CLASS (operation);
   GeglBuffer                 *input;
   GeglBuffer                 *aux;
   GeglBuffer                 *output;
   gboolean                    success = FALSE;
+  GeglOperationPipeLine      *pipeline;
 
   GeglRectangle scaled_result = *result;
   if (level)
@@ -121,12 +123,55 @@ gegl_operation_composer_process (GeglOperation        *operation,
   }
 
   input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
-  output = gegl_operation_context_get_output_maybe_in_place (operation,
-                                                             context,
-                                                             input,
-                                                             result);
-
   aux   = (GeglBuffer*) gegl_operation_context_dup_object (context, "aux");
+
+  if (!input && !aux)
+    return FALSE;
+
+  if (gegl_operation_is_pipelinable (operation))
+  {
+    pipeline = gegl_operation_pipeline_ensure (operation, context, input);
+
+    gegl_operation_pipeline_add (pipeline, operation, 2,
+         gegl_operation_get_format (operation, "input"),
+         gegl_operation_get_format (operation, "output"),
+         gegl_operation_get_format (operation, "aux"),
+         NULL,
+         aux, NULL,
+         point_composer_class->process);
+
+    if (gegl_operation_pipeline_is_intermediate_node (operation, pipeline))
+    {
+      gegl_operation_context_take_object (context, "output", G_OBJECT (input));
+
+      return TRUE;
+    }
+
+    output = gegl_operation_context_get_output_maybe_in_place (operation,
+                                                               context,
+                                                               input,
+                                                               result);
+
+    gegl_operation_context_set_pipeline (context, NULL);
+    if (gegl_operation_pipeline_get_entries (pipeline) > 1)
+    {
+      gegl_operation_pipeline_process (pipeline, output, result, level);
+      gegl_operation_pipeline_destroy (pipeline);
+      return TRUE;
+    }
+    g_object_ref (input);
+    if (aux)
+      g_object_ref (aux);
+    gegl_operation_pipeline_destroy (pipeline);
+
+  }
+  else
+  {
+    output = gegl_operation_context_get_output_maybe_in_place (operation,
+                                                               context,
+                                                               input,
+                                                               result);
+  }
 
   /* A composer with a NULL aux, can still be valid, the
    * subclass has to handle it.
@@ -338,7 +383,7 @@ gegl_operation_point_composer_process (GeglOperation       *operation,
       }
       else
       {
-        GeglBufferIterator *i = gegl_buffer_iterator_new (output, result, level, out_format, GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 4);
+        GeglBufferIterator *i = gegl_buffer_iterator_new (output, result, level, out_format, GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 3);
         gint foo = 0, read = 0;
 
         if (input)

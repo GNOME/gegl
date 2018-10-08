@@ -23,7 +23,6 @@
 
 G_BEGIN_DECLS
 
-#include "gegl-operation.h"
 
 /**
  * When a node in a GEGL graph does processing, it needs context such
@@ -61,6 +60,8 @@ struct _GeglOperationContext
                                                                    2 = 1:4,
                                                                    4 = 1:8,
                                                                    6 = 1:16 .. */
+  GeglOperationPipeLine  *pipeline;
+
   GHashTable    *contexts;      /* to be able to look up the context of
                                    other nodes/ops in the graph we store the
                                    hashtable we will be stored in */

@@ -392,6 +392,42 @@ gegl_operation_get_source_node (GeglOperation *operation,
   return gegl_pad_get_node (pad);
 }
 
+GeglNode *
+gegl_operation_get_target_node (GeglOperation *operation,
+                                const gchar   *output_pad_name)
+{
+  GeglNode *node;
+  GeglPad *pad;
+
+  g_return_val_if_fail (GEGL_IS_OPERATION (operation), NULL);
+  g_return_val_if_fail (GEGL_IS_NODE (operation->node), NULL);
+  g_return_val_if_fail (output_pad_name != NULL, NULL);
+
+  node = operation->node;
+#if 0
+  if (node->is_graph)
+    {
+      node = gegl_node_get_output_proxy (node, output_pad_name);
+      output_pad_name = "input";
+    }
+#endif
+
+  pad = gegl_node_get_pad (node, output_pad_name);
+
+  if (!pad)
+    return NULL;
+
+  pad = gegl_pad_get_connected_to (pad);
+
+  if (!pad)
+    return NULL;
+
+  g_assert (gegl_pad_get_node (pad));
+
+  return gegl_pad_get_node (pad);
+}
+
+
 GeglRectangle *
 gegl_operation_source_get_bounding_box (GeglOperation *operation,
                                         const gchar   *input_pad_name)

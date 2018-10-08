@@ -148,6 +148,17 @@ gegl_node_emit_computed (GeglNode *node,
                          const GeglRectangle *rect);
 
 
+struct _GeglNodePrivate
+{
+  GSList          *source_connections;
+  GSList          *sink_connections;
+  GSList          *children;  /*  used for children */
+  GeglNode        *parent;
+  gchar           *name;
+  gchar           *debug_name;
+  GeglEvalManager *eval_manager;
+};
+
 G_END_DECLS
 
 #endif /* __GEGL_NODE_PRIVATE_H__ */

@@ -303,6 +303,9 @@ void       gegl_operation_progress (GeglOperation *operation, gdouble progress, 
 
 const Babl *gegl_operation_get_source_space (GeglOperation *operation, const char *in_pad);
 
+GeglNode *
+gegl_operation_get_target_node (GeglOperation *operation,
+                                const gchar   *output_pad_name);
 
 G_END_DECLS
 

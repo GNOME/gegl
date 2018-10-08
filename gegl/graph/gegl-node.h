@@ -693,6 +693,12 @@ void           gegl_node_set_passthrough (GeglNode      *node,
 
 gboolean        gegl_node_is_graph       (GeglNode *node);
 
+gint
+gegl_node_get_consumers2 (GeglNode      *node,
+                         const gchar   *output_pad,
+                         GeglNode    ***nodes,
+                         const gchar ***pads);
+
 void       gegl_node_progress (GeglNode *node, gdouble progress, gchar *message);
 
 const char *gegl_operation_get_op_version (const gchar *op_name);

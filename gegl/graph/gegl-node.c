@@ -69,16 +69,6 @@ enum
 };
 
 
-struct _GeglNodePrivate
-{
-  GSList          *source_connections;
-  GSList          *sink_connections;
-  GSList          *children;  /*  used for children */
-  GeglNode        *parent;
-  gchar           *name;
-  gchar           *debug_name;
-  GeglEvalManager *eval_manager;
-};
 
 
 static guint gegl_node_signals[LAST_SIGNAL] = {0};
@@ -2421,3 +2411,91 @@ const char *gegl_operation_get_op_version (const char *op_name)
   return ret;
 }
 
+gint
+gegl_node_get_consumers2 (GeglNode      *node,
+                         const gchar   *output_pad,
+                         GeglNode    ***nodes,
+                         const gchar ***pads)
+{
+  GSList  *connections;
+  gint     n_connections;
+  GeglPad *pad;
+  gchar  **pasp = NULL;
+
+  g_return_val_if_fail (output_pad != NULL, 0);
+
+  if(node->is_graph)
+    node = gegl_node_get_input_proxy(node, "input");
+
+  g_return_val_if_fail (GEGL_IS_NODE (node), 0);
+
+  pad = gegl_node_get_pad (node, output_pad);
+
+  if (!pad)
+    {
+      g_warning ("%s: no such pad %s for %s",
+                 G_STRFUNC, output_pad, gegl_node_get_debug_name (node));
+      return 0;
+    }
+
+  connections = gegl_pad_get_connections (pad);
+  {
+    GSList *iter;
+    gint    pasp_size = 0;
+    gint    i;
+    gint    pasp_pos = 0;
+
+    n_connections = g_slist_length (connections);
+    pasp_size    += (n_connections + 1) * sizeof (gchar *);
+
+    for (iter = connections; iter; iter = g_slist_next (iter))
+      {
+        GeglConnection *connection = iter->data;
+        GeglPad        *pad        = gegl_connection_get_sink_pad (connection);
+        pasp_size += strlen (gegl_pad_get_name (pad)) + 1;
+      }
+    if (nodes)
+      *nodes = g_malloc ((n_connections + 1) * sizeof (void *));
+    if (pads)
+      {
+        pasp  = g_malloc (pasp_size);
+        *pads = (void *) pasp;
+      }
+    i        = 0;
+    pasp_pos = (n_connections + 1) * sizeof (void *);
+    for (iter = connections; iter; iter = g_slist_next (iter))
+      {
+        GeglConnection  *connection = iter->data;
+        GeglPad                 *pad        = gegl_connection_get_sink_pad (connection);
+        GeglNode        *node       = gegl_connection_get_sink_node (connection);
+        const gchar     *pad_name   = gegl_pad_get_name (pad);
+        const gchar     *name       = gegl_node_get_name(node);
+
+        gchar* proxy_name = g_strconcat("proxynop-", pad_name, NULL);
+        if(!strcmp(name, proxy_name))
+          {
+            node = g_object_get_data(G_OBJECT(node), "graph");
+            name = gegl_node_get_name(node);
+          }
+        else
+          {
+          }
+        g_free (proxy_name);
+
+        if (nodes)
+          (*nodes)[i] = node;
+        if (pasp)
+          {
+            pasp[i] = ((gchar *) pasp) + pasp_pos;
+            strcpy (pasp[i], pad_name);
+          }
+        pasp_pos += strlen (pad_name) + 1;
+        i++;
+      }
+    if (nodes)
+      (*nodes)[i] = NULL;
+    if (pads)
+      pasp[i] = NULL;
+  }
+  return n_connections;
+}

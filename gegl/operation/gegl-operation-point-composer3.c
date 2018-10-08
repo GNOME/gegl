@@ -24,6 +24,7 @@
 #include "gegl.h"
 #include "gegl-operation-point-composer3.h"
 #include "gegl-operation-context.h"
+#include "gegl-operation-pipeline.h"
 #include "gegl-types-internal.h"
 #include "gegl-config.h"
 #include "gegl-buffer-private.h"
@@ -96,11 +97,13 @@ gegl_operation_composer3_process (GeglOperation        *operation,
                                   gint                  level)
 {
   GeglOperationComposer3Class *klass   = GEGL_OPERATION_COMPOSER3_GET_CLASS (operation);
+  GeglOperationPointComposer3Class *point_composer3_class = GEGL_OPERATION_POINT_COMPOSER3_GET_CLASS (operation);
   GeglBuffer                  *input;
   GeglBuffer                  *aux;
   GeglBuffer                  *aux2;
   GeglBuffer                  *output;
   gboolean                     success = FALSE;
+  GeglOperationPipeLine       *pipeline;
 
   if (strcmp (output_prop, "output"))
     {
@@ -115,13 +118,57 @@ gegl_operation_composer3_process (GeglOperation        *operation,
   }
 
   input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
-  output = gegl_operation_context_get_output_maybe_in_place (operation,
-                                                             context,
-                                                             input,
-                                                             result);
-
   aux   = (GeglBuffer*) gegl_operation_context_dup_object (context, "aux");
-  aux2  = (GeglBuffer*) gegl_operation_context_dup_object (context, "aux2");
+  aux2   = (GeglBuffer*) gegl_operation_context_dup_object (context, "aux2");
+
+  if (!input && !aux && !aux2)
+    return FALSE;
+
+  if (gegl_operation_is_pipelinable (operation))
+  {
+    pipeline = gegl_operation_pipeline_ensure (operation, context, input);
+
+    gegl_operation_pipeline_add (pipeline, operation, 3,
+       gegl_operation_get_format (operation, "input"),
+       gegl_operation_get_format (operation, "output"),
+       gegl_operation_get_format (operation, "aux"),
+       gegl_operation_get_format (operation, "aux2"),
+       aux, aux2,
+       point_composer3_class->process);
+
+    if (gegl_operation_pipeline_is_intermediate_node (operation, pipeline))
+    {
+      gegl_operation_context_take_object (context, "output", G_OBJECT (input));
+
+      return TRUE;
+    }
+
+    output = gegl_operation_context_get_output_maybe_in_place (operation,
+                                                                context,
+                                                                input,
+                                                                result);
+    gegl_operation_context_set_pipeline (context, NULL);
+
+    if (gegl_operation_pipeline_get_entries (pipeline) > 1)
+    {
+      gegl_operation_pipeline_process (pipeline, output, result, level);
+      gegl_operation_pipeline_destroy (pipeline);
+      return TRUE;
+    }
+    g_object_ref (input);
+    if (aux)
+      g_object_ref (aux);
+    if (aux2)
+      g_object_ref (aux2);
+    gegl_operation_pipeline_destroy (pipeline);
+  }
+  else
+  {
+    output = gegl_operation_context_get_output_maybe_in_place (operation,
+                                                               context,
+                                                               input,
+                                                               result);
+  }
 
   /* A composer with a NULL aux, can still be valid, the
    * subclass has to handle it.

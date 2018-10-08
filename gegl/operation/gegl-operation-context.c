@@ -414,6 +414,19 @@ gegl_operation_context_node_get_context (GeglOperationContext *context,
 }
 
 
+GeglOperationPipeLine *gegl_operation_context_get_pipeline (GeglOperationContext *context)
+{
+  if (!context) return NULL;
+  return context->pipeline;
+}
+void gegl_operation_context_set_pipeline (GeglOperationContext  *context,
+                                          GeglOperationPipeLine *pipeline)
+{
+  if (!context) return;
+  context->pipeline = pipeline;
+}
+
+
 GeglBuffer *
 gegl_operation_context_dup_input_maybe_copy (GeglOperationContext *context,
                                              const gchar          *padname,

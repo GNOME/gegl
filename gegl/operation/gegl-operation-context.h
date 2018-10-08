@@ -23,6 +23,8 @@
 
 G_BEGIN_DECLS
 
+typedef struct _GeglOperationPipeLine GeglOperationPipeLine;
+
 GeglBuffer     *gegl_operation_context_get_target      (GeglOperationContext *self,
                                                         const gchar          *padname);
 GeglBuffer     *gegl_operation_context_get_source      (GeglOperationContext *self,
@@ -56,6 +58,11 @@ GeglBuffer *    gegl_operation_context_dup_input_maybe_copy      (GeglOperationC
 
 GeglOperationContext *gegl_operation_context_node_get_context (GeglOperationContext *context,
                                                                GeglNode             *node);
+
+GeglOperationPipeLine *gegl_operation_context_get_pipeline (GeglOperationContext *context);
+
+void      gegl_operation_context_set_pipeline (GeglOperationContext  *context,
+                                               GeglOperationPipeLine *pipeline);
 
 
 G_END_DECLS
