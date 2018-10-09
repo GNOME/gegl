@@ -1491,9 +1491,9 @@ mantiuk06_contmap (const int                       c,
 
   /* Renormalize luminance */
   {
-    const gfloat CUT_MARGIN = 0.1f;
-    gfloat      *temp = mantiuk06_matrix_alloc (n),
-                 trim, delta, l_min, l_max;
+    const gdouble CUT_MARGIN = 0.1;
+    gfloat       *temp = mantiuk06_matrix_alloc (n);
+    gdouble       trim, delta, l_min, l_max;
 
     /* copy Y to temp */
     mantiuk06_matrix_copy (n, Y, temp);
@@ -1502,19 +1502,19 @@ mantiuk06_contmap (const int                       c,
 
     /* const float median = (temp[(int)((n-1)/2)] + temp[(int)((n-1)/2+1)]) * 0.5f; */
     /* calculate median */
-    trim  = (n - 1) * CUT_MARGIN * 0.01f;
-    delta = trim - floorf (trim);
-    l_min = temp[(int)floorf (trim)] * delta +
-            temp[(int) ceilf (trim)] * (1.0f - delta);
+    trim  = (n - 1) * CUT_MARGIN * 0.01;
+    delta = trim - floor (trim);
+    l_min = temp[(int)floor (trim)] * delta +
+            temp[(int) ceil (trim)] * (1.0 - delta);
 
-    trim  = (n - 1) * (100.0f - CUT_MARGIN) * 0.01f;
-    delta = trim - floorf (trim);
-    l_max = temp[(int)floorf (trim)] * delta +
-            temp[(int) ceilf (trim)] * (1.0f - delta);
+    trim  = (n - 1) * (100.0 - CUT_MARGIN) * 0.01;
+    delta = trim - floor (trim);
+    l_max = temp[(int)floor (trim)] * delta +
+            temp[(int) ceil (trim)] * (1.0 - delta);
 
     mantiuk06_matrix_free (temp);
     {
-      const gfloat disp_dyn_range = 2.3f;
+      const gdouble disp_dyn_range = 2.3;
       _OMP (omp parallel for schedule(static))
       for (j = 0; j < n; j++)
           /* x scaled */
