@@ -383,7 +383,11 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Watershed Transform"),
     "reference-hash", "c5623beeef052a9b47acd178dd420864",
     "categories",  "hidden",
-    "description", _("Labels propagation by watershed transformation"),
+    "description", _("Labels propagation by watershed transformation. "
+                     "Output and expected input are \"YA u32\" grayscale buffers. "
+                     "The Y value represents a label. When a pixel is not labelled, "
+                     "its alpha value has to be set to 0. "
+                     "The mandatory aux buffer is a \"Y u8\" image representing the priority levels."),
     NULL);
 }
 
