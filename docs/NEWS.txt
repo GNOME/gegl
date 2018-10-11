@@ -25,13 +25,18 @@ exr-save: do not hard-code a version name space
 long-shadow: add 'Fading (fixed length)' style with a new user-defined
 'Midpoint' parameter
 
+maniuk06: use double precision, permitting to work on larger images.
+
+watershed-transform: improved description
+
 Updated all operations to use new iterator API
 
 Contributors to this release
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Alexandre Prokoudine, Debarshi Ray, Ell, Hussam Al-Tayeb, Marco Ciampa,
-Øyvind Kolås, Piotr Drąg, Rodrigo Lledó and Tim Sabsch
+Alexandre Prokoudine, Anders Jonsson, Debarshi Ray, Ell, Hussam Al-Tayeb, Marco
+Ciampa, Massimo Valentini, Øyvind Kolås, Piotr Drąg, Rodrigo Lledó and Tim
+Sabsch
 
 
 GEGL-0.4.8 2018-08-17
