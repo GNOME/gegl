@@ -8,6 +8,7 @@ BOXFILTER_FUNCNAME (guchar                    *dest_buf,
                     const gint                 bpp,
                     const gint                 d_rowstride)
 {
+#define TT BOXFILTER_TEMP_TYPE
   const BOXFILTER_TYPE *src[9];
   gint  components = bpp / sizeof(BOXFILTER_TYPE);
 
@@ -36,7 +37,7 @@ BOXFILTER_FUNCNAME (guchar                    *dest_buf,
       gfloat top_weight, middle_weight, bottom_weight;
       const gfloat sy = (dst_rect->y + y + .5) / scale - src_rect->y;
       const gint     ii = int_floorf (sy);
-      BOXFILTER_TYPE             *dst = (BOXFILTER_TYPE*)(dest_buf + y * d_rowstride);
+      BOXFILTER_TYPE *dst = (BOXFILTER_TYPE*)(dest_buf + y * d_rowstride);
       const guchar  *src_base = source_buf + ii * s_rowstride;
 
       top_weight    = .5 - scale * (sy - ii);
@@ -82,21 +83,21 @@ BOXFILTER_FUNCNAME (guchar                    *dest_buf,
               const gfloat b = bottom_weight;
 
               dst[0] = BOXFILTER_ROUND(
-                (src[0][0] * t + src[3][0] * m + src[6][0] * b) * l +
-                (src[1][0] * t + src[4][0] * m + src[7][0] * b) * c +
-                (src[2][0] * t + src[5][0] * m + src[8][0] * b) * r);
+                ((TT)src[0][0] * t + (TT)src[3][0] * m + (TT)src[6][0] * b) * l +
+                ((TT)src[1][0] * t + (TT)src[4][0] * m + (TT)src[7][0] * b) * c +
+                ((TT)src[2][0] * t + (TT)src[5][0] * m + (TT)src[8][0] * b) * r);
               dst[1] = BOXFILTER_ROUND(
-                (src[0][1] * t + src[3][1] * m + src[6][1] * b) * l +
-                (src[1][1] * t + src[4][1] * m + src[7][1] * b) * c +
-                (src[2][1] * t + src[5][1] * m + src[8][1] * b) * r);
+                ((TT)src[0][1] * t + (TT)src[3][1] * m + (TT)src[6][1] * b) * l +
+                ((TT)src[1][1] * t + (TT)src[4][1] * m + (TT)src[7][1] * b) * c +
+                ((TT)src[2][1] * t + (TT)src[5][1] * m + (TT)src[8][1] * b) * r);
               dst[2] = BOXFILTER_ROUND(
-                (src[0][2] * t + src[3][2] * m + src[6][2] * b) * l +
-                (src[1][2] * t + src[4][2] * m + src[7][2] * b) * c +
-                (src[2][2] * t + src[5][2] * m + src[8][2] * b) * r);
+                ((TT)src[0][2] * t + (TT)src[3][2] * m + (TT)src[6][2] * b) * l +
+                ((TT)src[1][2] * t + (TT)src[4][2] * m + (TT)src[7][2] * b) * c +
+                ((TT)src[2][2] * t + (TT)src[5][2] * m + (TT)src[8][2] * b) * r);
               dst[3] = BOXFILTER_ROUND(
-                (src[0][3] * t + src[3][3] * m + src[6][3] * b) * l +
-                (src[1][3] * t + src[4][3] * m + src[7][3] * b) * c +
-                (src[2][3] * t + src[5][3] * m + src[8][3] * b) * r);
+                ((TT)src[0][3] * t + (TT)src[3][3] * m + (TT)src[6][3] * b) * l +
+                ((TT)src[1][3] * t + (TT)src[4][3] * m + (TT)src[7][3] * b) * c +
+                ((TT)src[2][3] * t + (TT)src[5][3] * m + (TT)src[8][3] * b) * r);
               }
             dst += 4;
             }
@@ -123,17 +124,17 @@ BOXFILTER_FUNCNAME (guchar                    *dest_buf,
               const gfloat b = bottom_weight;
 
               dst[0] = BOXFILTER_ROUND(
-                (src[0][0] * t + src[3][0] * m + src[6][0] * b) * l +
-                (src[1][0] * t + src[4][0] * m + src[7][0] * b) * c +
-                (src[2][0] * t + src[5][0] * m + src[8][0] * b) * r);
+                ((TT)src[0][0] * t + (TT)src[3][0] * m + (TT)src[6][0] * b) * l +
+                ((TT)src[1][0] * t + (TT)src[4][0] * m + (TT)src[7][0] * b) * c +
+                ((TT)src[2][0] * t + (TT)src[5][0] * m + (TT)src[8][0] * b) * r);
               dst[1] = BOXFILTER_ROUND(
-                (src[0][1] * t + src[3][1] * m + src[6][1] * b) * l +
-                (src[1][1] * t + src[4][1] * m + src[7][1] * b) * c +
-                (src[2][1] * t + src[5][1] * m + src[8][1] * b) * r);
+                ((TT)src[0][1] * t + (TT)src[3][1] * m + (TT)src[6][1] * b) * l +
+                ((TT)src[1][1] * t + (TT)src[4][1] * m + (TT)src[7][1] * b) * c +
+                ((TT)src[2][1] * t + (TT)src[5][1] * m + (TT)src[8][1] * b) * r);
               dst[2] = BOXFILTER_ROUND(
-                (src[0][2] * t + src[3][2] * m + src[6][2] * b) * l +
-                (src[1][2] * t + src[4][2] * m + src[7][2] * b) * c +
-                (src[2][2] * t + src[5][2] * m + src[8][2] * b) * r);
+                ((TT)src[0][2] * t + (TT)src[3][2] * m + (TT)src[6][2] * b) * l +
+                ((TT)src[1][2] * t + (TT)src[4][2] * m + (TT)src[7][2] * b) * c +
+                ((TT)src[2][2] * t + (TT)src[5][2] * m + (TT)src[8][2] * b) * r);
             }
             dst += 3;
             }
@@ -160,13 +161,13 @@ BOXFILTER_FUNCNAME (guchar                    *dest_buf,
               const gfloat b = bottom_weight;
 
               dst[0] = BOXFILTER_ROUND(
-                (src[0][0] * t + src[3][0] * m + src[6][0] * b) * l +
-                (src[1][0] * t + src[4][0] * m + src[7][0] * b) * c +
-                (src[2][0] * t + src[5][0] * m + src[8][0] * b) * r);
+                ((TT)src[0][0] * t + (TT)src[3][0] * m + (TT)src[6][0] * b) * l +
+                ((TT)src[1][0] * t + (TT)src[4][0] * m + (TT)src[7][0] * b) * c +
+                ((TT)src[2][0] * t + (TT)src[5][0] * m + (TT)src[8][0] * b) * r);
               dst[1] = BOXFILTER_ROUND(
-                (src[0][1] * t + src[3][1] * m + src[6][1] * b) * l +
-                (src[1][1] * t + src[4][1] * m + src[7][1] * b) * c +
-                (src[2][1] * t + src[5][1] * m + src[8][1] * b) * r);
+                ((TT)src[0][1] * t + (TT)src[3][1] * m + (TT)src[6][1] * b) * l +
+                ((TT)src[1][1] * t + (TT)src[4][1] * m + (TT)src[7][1] * b) * c +
+                ((TT)src[2][1] * t + (TT)src[5][1] * m + (TT)src[8][1] * b) * r);
             }
             dst += 2;
             }
@@ -193,9 +194,9 @@ BOXFILTER_FUNCNAME (guchar                    *dest_buf,
               const gfloat b = bottom_weight;
 
               dst[0] = BOXFILTER_ROUND(
-                (src[0][0] * t + src[3][0] * m + src[6][0] * b) * l +
-                (src[1][0] * t + src[4][0] * m + src[7][0] * b) * c +
-                (src[2][0] * t + src[5][0] * m + src[8][0] * b) * r);
+                ((TT)src[0][0] * t + (TT)src[3][0] * m + (TT)src[6][0] * b) * l +
+                ((TT)src[1][0] * t + (TT)src[4][0] * m + (TT)src[7][0] * b) * c +
+                ((TT)src[2][0] * t + (TT)src[5][0] * m + (TT)src[8][0] * b) * r);
             }
             dst += 1;
             }
@@ -224,9 +225,9 @@ BOXFILTER_FUNCNAME (guchar                    *dest_buf,
               for (gint i = 0; i < components; ++i)
                 {
                   dst[i] = BOXFILTER_ROUND(
-                    (src[0][i] * t + src[3][i] * m + src[6][i] * b) * l +
-                    (src[1][i] * t + src[4][i] * m + src[7][i] * b) * c +
-                    (src[2][i] * t + src[5][i] * m + src[8][i] * b) * r);
+                    ((TT)src[0][i] * t + (TT)src[3][i] * m + (TT)src[6][i] * b) * l +
+                    ((TT)src[1][i] * t + (TT)src[4][i] * m + (TT)src[7][i] * b) * c +
+                    ((TT)src[2][i] * t + (TT)src[5][i] * m + (TT)src[8][i] * b) * r);
                 }
               }
             dst += components;
@@ -234,4 +235,5 @@ BOXFILTER_FUNCNAME (guchar                    *dest_buf,
         break;
       }
     }
+#undef TT
 }

@@ -1289,41 +1289,58 @@ gegl_resample_nearest (guchar              *dst,
 
 #define BOXFILTER_FUNCNAME   gegl_resample_boxfilter_double
 #define BOXFILTER_TYPE       gdouble
+#define BOXFILTER_TEMP_TYPE  gdouble
 #define BOXFILTER_ROUND(val) (val)
 #include "gegl-algorithms-boxfilter.inc"
 #undef BOXFILTER_FUNCNAME
 #undef BOXFILTER_TYPE
+#undef BOXFILTER_TEMP_TYPE
 #undef BOXFILTER_ROUND
 
 #define BOXFILTER_FUNCNAME   gegl_resample_boxfilter_float
 #define BOXFILTER_TYPE       gfloat
+#define BOXFILTER_TEMP_TYPE  gfloat
 #define BOXFILTER_ROUND(val) (val)
 #include "gegl-algorithms-boxfilter.inc"
 #undef BOXFILTER_FUNCNAME
 #undef BOXFILTER_TYPE
+#undef BOXFILTER_TEMP_TYPE
 #undef BOXFILTER_ROUND
 
 #define BOXFILTER_FUNCNAME   gegl_resample_boxfilter_u8
 #define BOXFILTER_TYPE       guchar
+#define BOXFILTER_TEMP_TYPE  guchar
 #define BOXFILTER_ROUND(val) ((int)((val)+0.5))
 #include "gegl-algorithms-boxfilter.inc"
 #undef BOXFILTER_FUNCNAME
 #undef BOXFILTER_TYPE
+#undef BOXFILTER_TEMP_TYPE
 #undef BOXFILTER_ROUND
 
 #define BOXFILTER_FUNCNAME   gegl_resample_boxfilter_u16
 #define BOXFILTER_TYPE       guint16
+#define BOXFILTER_TEMP_TYPE  guint16
 #define BOXFILTER_ROUND(val) ((int)((val)+0.5))
 #include "gegl-algorithms-boxfilter.inc"
 #undef BOXFILTER_FUNCNAME
 #undef BOXFILTER_TYPE
+#undef BOXFILTER_TEMP_TYPE
 #undef BOXFILTER_ROUND
+
+static inline guint32 _gegl_trunc_u32(guint64 value)
+{
+  if ((guint64) value > ((1l<<32)-1))
+   return (1l<<32)-1;
+  return value;
+}
 
 #define BOXFILTER_FUNCNAME   gegl_resample_boxfilter_u32
 #define BOXFILTER_TYPE       guint32
-#define BOXFILTER_ROUND(val) ((int)((val)+0.5))
+#define BOXFILTER_TEMP_TYPE  guint64
+#define BOXFILTER_ROUND(val) _gegl_trunc_u32((val)+0.5)
 #include "gegl-algorithms-boxfilter.inc"
 #undef BOXFILTER_FUNCNAME
+#undef BOXFILTER_TEMP_TYPE
 #undef BOXFILTER_TYPE
 #undef BOXFILTER_ROUND
 
