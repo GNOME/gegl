@@ -2129,20 +2129,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
         interpolation = GEGL_BUFFER_FILTER_BILINEAR;
     }
 
-    if (interpolation == GEGL_BUFFER_FILTER_NEAREST)
-      {
-        sample_buf = g_malloc (allocated);
-      }
-    else
-      {
-        /* both bilinear and bicubic end up with memory corruption
-           glitchy artifacts - probably bleeding in from edges of
-           used buffer, when allocations are not cleared, there might
-           be somep performance gain in ensuring proper buffer filling -
-           or even selective zeroing.
-         */
-        sample_buf = g_malloc0 (allocated);
-      }
+    sample_buf = g_malloc (allocated);
 
     while (rect2.width > 0 && rect2.height > 0)
     {
@@ -2212,6 +2199,26 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
           case GEGL_BUFFER_FILTER_BILINEAR:
             buf_width  += 1;
             buf_height += 1;
+
+            /* fill the regions of the buffer outside the sampled area with
+             * zeros, since they may be involved in the arithmetic.  even
+             * though their actual value should have no, or negligible, effect,
+             * they must at least be finite, when dealing with float formats.
+             */
+            {
+              guchar *p = sample_buf;
+              gint    y;
+
+              for (y = 0; y < buf_height - 1; y++)
+                {
+                  memset (p + (buf_width - 1) * bpp, 0, bpp);
+
+                  p += buf_width * bpp;
+                }
+
+              memset (p, 0, buf_width * bpp);
+            }
+
             gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
                                        (guchar*)sample_buf,
                                         buf_width * bpp,
@@ -2238,6 +2245,28 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
               buf_width  += 2;
               buf_height += 2;
               offset = (buf_width + 1) * bpp;
+
+              /* fill the regions of the buffer outside the sampled area with
+               * zeros, since they may be involved in the arithmetic.  even
+               * though their actual value should have no, or negligible,
+               * effect, they must at least be finite, when dealing with float
+               * formats.
+               */
+              {
+                guchar *p = sample_buf;
+                gint    y;
+
+                memset (p, 0, (buf_width - 1) * bpp);
+
+                for (y = 0; y < buf_height - 1; y++)
+                  {
+                    memset (p + (buf_width - 1) * bpp, 0, 2 * bpp);
+
+                    p += buf_width * bpp;
+                  }
+
+                memset (p + bpp, 0, (buf_width - 1) * bpp);
+              }
 
               gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
                                          (guchar*)sample_buf + offset,
