@@ -2212,8 +2212,6 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
           case GEGL_BUFFER_FILTER_BILINEAR:
             buf_width  += 1;
             buf_height += 1;
-            sample_rect.width  += factor;
-            sample_rect.height += factor;
             gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
                                        (guchar*)sample_buf,
                                         buf_width * bpp,
@@ -2221,8 +2219,8 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
             sample_rect.x      = x1;
             sample_rect.y      = y1;
-            sample_rect.width  = x2 - x1 + 1;
-            sample_rect.height = y2 - y1 + 1;
+            sample_rect.width  = x2 - x1;
+            sample_rect.height = y2 - y1;
 
             gegl_resample_bilinear (dest_buf,
                                     sample_buf,
@@ -2246,13 +2244,13 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                                           buf_width * bpp,
                                           format, level, repeat_mode);
 
-              sample_rect.x      = x1 - 1;
-              sample_rect.y      = y1 - 1;
-              sample_rect.width  = x2 - x1 + 2;
-              sample_rect.height = y2 - y1 + 2;
+              sample_rect.x      = x1;
+              sample_rect.y      = y1;
+              sample_rect.width  = x2 - x1;
+              sample_rect.height = y2 - y1;
 
               gegl_resample_boxfilter (dest_buf,
-                                       sample_buf,
+                                       (guchar*)sample_buf + offset,
                                        &rect2,
                                        &sample_rect,
                                        buf_width * bpp,
