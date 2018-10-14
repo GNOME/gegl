@@ -2089,6 +2089,35 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
     int     allocated         = 0;
     gint interpolation = (flags & GEGL_BUFFER_FILTER_ALL);
     gint    factor = 1;
+
+    while (scale <= 0.5)
+      {
+        x1 = 0 < x1 ? x1 / 2 : (x1 - 1) / 2;
+        x2 = 0 < x2 ? (x2 + 1) / 2 : x2 / 2;
+        scale  *= 2;
+        factor *= 2;
+        level++;
+      }
+
+    if (GEGL_FLOAT_EQUAL (scale, 1.0))
+      {
+        GeglRectangle rect0;
+
+        rect0.x      = floorf (rect->x / scale_orig + GEGL_SCALE_EPSILON);
+        rect0.y      = floorf (rect->y / scale_orig + GEGL_SCALE_EPSILON);
+        rect0.width  = ceilf ((rect->x + rect->width) / scale_orig -
+                              GEGL_SCALE_EPSILON) -
+                       rect0.x;
+        rect0.height = ceilf ((rect->y + rect->height) / scale_orig -
+                              GEGL_SCALE_EPSILON) -
+                       rect0.y;
+
+        gegl_buffer_iterate_read_dispatch (buffer, &rect0,
+                                           dest_buf, rowstride,
+                                           format, level, repeat_mode);
+        return;
+      }
+
     chunk_height = (1024 * 128) / max_bytes_per_row;
 
     if (chunk_height < 4)
@@ -2101,15 +2130,6 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       rect2.height = (rect->y + rect->height) - rect2.y;
       chunk_height = rect2.height;
     }
-
-    while (scale <= 0.5)
-      {
-        x1 = 0 < x1 ? x1 / 2 : (x1 - 1) / 2;
-        x2 = 0 < x2 ? (x2 + 1) / 2 : x2 / 2;
-        scale  *= 2;
-        factor *= 2;
-        level++;
-      }
 
     allocated = max_bytes_per_row * ((chunk_height+1) * 2);
 
@@ -2148,18 +2168,6 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
       if (rowstride == GEGL_AUTO_ROWSTRIDE)
         rowstride = rect2.width * bpp;
-
-      if (GEGL_FLOAT_EQUAL (scale, 1.0))
-        {
-          sample_rect.x      = factor * x1;
-          sample_rect.y      = factor * y1;
-          sample_rect.width  = factor * (x2 - x1);
-          sample_rect.height = factor * (y2 - y1);
-          gegl_buffer_iterate_read_dispatch (buffer, &sample_rect,
-                                             (guchar*)dest_buf, rowstride,
-                                             format, level, repeat_mode);
-          goto setup_next_chunk;
-        }
 
       /* this is the level where we split and chew through a small temp-buf worth of data
        * possibly managing to keep things in L2 cache
@@ -2289,7 +2297,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
             }
             break;
       }
-setup_next_chunk:
+
     dest_buf = ((guchar*)dest_buf) + rowstride * rect2.height;
     ystart+=rect2.height;
     rect2.y = ystart;
