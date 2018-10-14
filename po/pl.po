@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-09-12 16:04+0000\n"
-"PO-Revision-Date: 2018-09-16 17:20+0200\n"
+"POT-Creation-Date: 2018-10-11 07:37+0000\n"
+"PO-Revision-Date: 2018-10-14 17:24+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -173,118 +173,118 @@ msgstr ""
 "\n"
 "\n"
 
-#: gegl/gegl-enums.c:33 gegl/gegl-enums.c:90
+#: gegl/buffer/gegl-buffer-enums.c:32 gegl/gegl-enums.c:33
 #: operations/common/gaussian-blur.c:31 operations/common/gblur-1d.c:32
 #: operations/common/median-blur.c:34
 #: operations/common-gpl3+/fractal-explorer.c:96
 msgid "None"
 msgstr "Brak"
 
-#: gegl/gegl-enums.c:34 operations/common/gaussian-blur.c:32
+#: gegl/buffer/gegl-buffer-enums.c:33 operations/common/gaussian-blur.c:32
 #: operations/common/gblur-1d.c:33 operations/common/median-blur.c:35
 msgid "Clamp"
 msgstr "Zacisk"
 
-#: gegl/gegl-enums.c:35
+#: gegl/buffer/gegl-buffer-enums.c:34
 msgid "Loop"
 msgstr "Pętla"
 
-#: gegl/gegl-enums.c:36 operations/common/gaussian-blur.c:33
+#: gegl/buffer/gegl-buffer-enums.c:35 operations/common/gaussian-blur.c:33
 #: operations/common/gblur-1d.c:34
 msgid "Black"
 msgstr "Czarny"
 
-#: gegl/gegl-enums.c:37 operations/common/gaussian-blur.c:34
+#: gegl/buffer/gegl-buffer-enums.c:36 operations/common/gaussian-blur.c:34
 #: operations/common/gblur-1d.c:35
 msgid "White"
 msgstr "Biały"
 
-#: gegl/gegl-enums.c:64
+#: gegl/buffer/gegl-buffer-enums.c:63
 msgid "Read"
 msgstr "Odczyt"
 
-#: gegl/gegl-enums.c:65
+#: gegl/buffer/gegl-buffer-enums.c:64
 msgid "Write"
 msgstr "Zapis"
 
-#: gegl/gegl-enums.c:66
+#: gegl/buffer/gegl-buffer-enums.c:65
 msgid "Read/Write"
 msgstr "Odczyt/zapis"
 
-#: gegl/gegl-enums.c:91
-msgid "Floyd-Steinberg"
-msgstr "Floyda-Steinberga"
-
-#: gegl/gegl-enums.c:92
-msgid "Bayer"
-msgstr "Bayera"
-
-#: gegl/gegl-enums.c:93 operations/common/waterpixels.c:36
-msgid "Random"
-msgstr "Losowo"
-
-#: gegl/gegl-enums.c:94
-msgid "Random Covariant"
-msgstr "Losowy współzmienny"
-
-#: gegl/gegl-enums.c:95
-msgid "Arithmetic add"
-msgstr "Dodawanie arytmetyczne"
-
-#: gegl/gegl-enums.c:96
-msgid "Arithmetic add covariant"
-msgstr "Arytmetyczne dodawanie współzmiennej"
-
-#: gegl/gegl-enums.c:97
-msgid "Arithmetic xor"
-msgstr "Arytmetyczne „xor”"
-
-#: gegl/gegl-enums.c:98
-msgid "Arithmetic xor covariant"
-msgstr "Arytmetyczne „xor” współzmiennej"
-
-#: gegl/gegl-enums.c:123
-msgid "Euclidean"
-msgstr "Euklidesowa"
-
-#: gegl/gegl-enums.c:124
-msgid "Manhattan"
-msgstr "Manhattan"
-
-#: gegl/gegl-enums.c:125
-msgid "Chebyshev"
-msgstr "Czebyszewa"
-
-#: gegl/gegl-enums.c:150 operations/common/edge-sobel.c:27
-#: operations/common/noise-spread.c:30 operations/common/spherize.c:27
-msgid "Horizontal"
-msgstr "Poziomy"
-
-#: gegl/gegl-enums.c:151 operations/common/edge-sobel.c:29
-#: operations/common/noise-spread.c:36 operations/common/spherize.c:28
-msgid "Vertical"
-msgstr "Pionowy"
-
-#: gegl/gegl-enums.c:175
+#: gegl/buffer/gegl-buffer-enums.c:89
 msgid "Nearest"
 msgstr "Najbliższy"
 
-#: gegl/gegl-enums.c:176 operations/common-gpl3+/bump-map.c:33
+#: gegl/buffer/gegl-buffer-enums.c:90 operations/common-gpl3+/bump-map.c:33
 #: operations/common-gpl3+/sinus.c:63 operations/common-gpl3+/spiral.c:26
 msgid "Linear"
 msgstr "Liniowy"
 
-#: gegl/gegl-enums.c:177
+#: gegl/buffer/gegl-buffer-enums.c:91
 msgid "Cubic"
 msgstr "Sześcienny"
 
-#: gegl/gegl-enums.c:178
+#: gegl/buffer/gegl-buffer-enums.c:92
 msgid "NoHalo"
 msgstr "NoHalo"
 
-#: gegl/gegl-enums.c:179
+#: gegl/buffer/gegl-buffer-enums.c:93
 msgid "LoHalo"
 msgstr "LoHalo"
+
+#: gegl/gegl-enums.c:34
+msgid "Floyd-Steinberg"
+msgstr "Floyda-Steinberga"
+
+#: gegl/gegl-enums.c:35
+msgid "Bayer"
+msgstr "Bayera"
+
+#: gegl/gegl-enums.c:36 operations/common/waterpixels.c:36
+msgid "Random"
+msgstr "Losowo"
+
+#: gegl/gegl-enums.c:37
+msgid "Random Covariant"
+msgstr "Losowy współzmienny"
+
+#: gegl/gegl-enums.c:38
+msgid "Arithmetic add"
+msgstr "Dodawanie arytmetyczne"
+
+#: gegl/gegl-enums.c:39
+msgid "Arithmetic add covariant"
+msgstr "Arytmetyczne dodawanie współzmiennej"
+
+#: gegl/gegl-enums.c:40
+msgid "Arithmetic xor"
+msgstr "Arytmetyczne „xor”"
+
+#: gegl/gegl-enums.c:41
+msgid "Arithmetic xor covariant"
+msgstr "Arytmetyczne „xor” współzmiennej"
+
+#: gegl/gegl-enums.c:66
+msgid "Euclidean"
+msgstr "Euklidesowa"
+
+#: gegl/gegl-enums.c:67
+msgid "Manhattan"
+msgstr "Manhattan"
+
+#: gegl/gegl-enums.c:68
+msgid "Chebyshev"
+msgstr "Czebyszewa"
+
+#: gegl/gegl-enums.c:93 operations/common/edge-sobel.c:27
+#: operations/common/noise-spread.c:30 operations/common/spherize.c:27
+msgid "Horizontal"
+msgstr "Poziomy"
+
+#: gegl/gegl-enums.c:94 operations/common/edge-sobel.c:29
+#: operations/common/noise-spread.c:36 operations/common/spherize.c:28
+msgid "Vertical"
+msgstr "Pionowy"
 
 #: gegl/gegl-init.c:285
 msgid "Where GEGL stores its swap"
@@ -813,7 +813,7 @@ msgstr "Renderuj wzór szachownicy"
 
 #: operations/common/color.c:24 operations/common/color.c:92
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:43
-#: operations/common/grid.c:64 operations/common/long-shadow.c:70
+#: operations/common/grid.c:64 operations/common/long-shadow.c:83
 #: operations/common/rectangle.c:48 operations/common/vignette.c:34
 #: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:61
@@ -1860,15 +1860,15 @@ msgstr "Jednowymiarowe rozmycie Gaussa"
 #: operations/common/magick-load.c:26 operations/common/open-buffer.c:25
 #: operations/common/save.c:25 operations/core/load.c:28
 #: operations/external/exr-save.cc:24 operations/external/ff-load.c:29
-#: operations/external/ff-save.c:29 operations/external/jp2-load.c:25
-#: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
-#: operations/external/npy-save.c:31 operations/external/png-load.c:27
-#: operations/external/png-save.c:26 operations/external/ppm-load.c:25
-#: operations/external/ppm-save.c:25 operations/external/rgbe-load.c:26
-#: operations/external/rgbe-save.c:26 operations/external/svg-load.c:25
-#: operations/external/tiff-load.c:25 operations/external/tiff-save.c:25
-#: operations/external/webp-load.c:25 operations/external/webp-save.c:25
-#: operations/workshop/gif-load.c:34 operations/workshop/external/gluas.c:37
+#: operations/external/ff-save.c:29 operations/external/gif-load.c:34
+#: operations/external/jp2-load.c:25 operations/external/jpg-load.c:24
+#: operations/external/jpg-save.c:25 operations/external/npy-save.c:31
+#: operations/external/png-load.c:27 operations/external/png-save.c:26
+#: operations/external/ppm-load.c:25 operations/external/ppm-save.c:25
+#: operations/external/rgbe-load.c:26 operations/external/rgbe-save.c:26
+#: operations/external/svg-load.c:25 operations/external/tiff-load.c:25
+#: operations/external/tiff-save.c:25 operations/external/webp-load.c:25
+#: operations/external/webp-save.c:25 operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
 msgid "File"
 msgstr "Plik"
@@ -2357,99 +2357,99 @@ msgstr ""
 "Wykonaj przekształcenie stereograficzne/małej planety obrazu walcowego "
 "równoodległościowego."
 
-#: operations/common/long-shadow.c:25
+#: operations/common/long-shadow.c:27
 msgid "Finite"
 msgstr "Skończone"
 
-#: operations/common/long-shadow.c:26
+#: operations/common/long-shadow.c:28
 msgid "Infinite"
 msgstr "Nieskończone"
 
-#: operations/common/long-shadow.c:27
+#: operations/common/long-shadow.c:29
 msgid "Fading"
 msgstr "Rozmywanie"
 
-#: operations/common/long-shadow.c:28
+#: operations/common/long-shadow.c:30
 msgid "Fading (fixed length)"
 msgstr "Rozmywanie (stała długość)"
 
-#: operations/common/long-shadow.c:29
+#: operations/common/long-shadow.c:32
 msgid "Fading (fixed rate)"
 msgstr "Rozmywanie (stała częstotliwość)"
 
-#: operations/common/long-shadow.c:33
+#: operations/common/long-shadow.c:39
 msgid "Shadow plus image"
 msgstr "Cień plus obraz"
 
-#: operations/common/long-shadow.c:34
+#: operations/common/long-shadow.c:40
 msgid "Shadow only"
 msgstr "Tylko cień"
 
-#: operations/common/long-shadow.c:35
+#: operations/common/long-shadow.c:41
 msgid "Shadow minus image"
 msgstr "Cień minus obraz"
 
-#: operations/common/long-shadow.c:38 operations/common-gpl3+/wind.c:45
+#: operations/common/long-shadow.c:44 operations/common-gpl3+/wind.c:45
 msgid "Style"
 msgstr "Styl"
 
-#: operations/common/long-shadow.c:41
+#: operations/common/long-shadow.c:47
 msgid "Shadow style"
 msgstr "Styl cienia"
 
 #. FIXME: With a large angle, we lose AreaFilter's flavours
-#: operations/common/long-shadow.c:43 operations/common/motion-blur-linear.c:33
+#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:33
 #: operations/common/newsprint.c:72
 #: operations/common-gpl3+/motion-blur-circular.c:52
 #: operations/common-gpl3+/ripple.c:46 operations/workshop/linear-sinusoid.c:66
 msgid "Angle"
 msgstr "Kąt"
 
-#: operations/common/long-shadow.c:44
+#: operations/common/long-shadow.c:50
 msgid "Shadow angle"
 msgstr "Kąt cienia"
 
-#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:26
+#: operations/common/long-shadow.c:55 operations/common/motion-blur-linear.c:26
 msgid "Length"
 msgstr "Długość"
 
-#: operations/common/long-shadow.c:50
+#: operations/common/long-shadow.c:56
 msgid "Shadow length"
 msgstr "Długość cienia"
 
-#: operations/common/long-shadow.c:57 operations/common/long-shadow.c:68
+#: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
 msgid "Midpoint"
 msgstr "Punkt środkowy"
 
-#: operations/common/long-shadow.c:58
+#: operations/common/long-shadow.c:67
 msgid "Shadow fade midpoint"
 msgstr "Punkt środkowy rozmycia cienia"
 
-#: operations/common/long-shadow.c:63
+#: operations/common/long-shadow.c:72
 msgid "Midpoint (relative)"
 msgstr "Punkt środkowy (względny)"
 
-#: operations/common/long-shadow.c:64
+#: operations/common/long-shadow.c:73
 msgid "Shadow fade midpoint, as a factor of the shadow length"
 msgstr "Punkt środkowy rozmycia cienia jako czynnik długości cienia"
 
-#: operations/common/long-shadow.c:71
+#: operations/common/long-shadow.c:84
 msgid "Shadow color"
 msgstr "Kolor cienia"
 
-#: operations/common/long-shadow.c:74
+#: operations/common/long-shadow.c:87
 msgid "Composition"
 msgstr "Ułożenie"
 
-#: operations/common/long-shadow.c:77
+#: operations/common/long-shadow.c:90
 msgid "Output composition"
 msgstr "Ułożenie wyjściowe"
 
-#: operations/common/long-shadow.c:1652
+#: operations/common/long-shadow.c:1665
 msgid "Long Shadow"
 msgstr "Długi cień"
 
-#: operations/common/long-shadow.c:1656
+#: operations/common/long-shadow.c:1669
 msgid "Creates a long-shadow effect"
 msgstr "Tworzy efekt długiego cienia"
 
@@ -3963,8 +3963,17 @@ msgid "Watershed Transform"
 msgstr "Przekształcenie działu wodnego"
 
 #: operations/common/watershed-transform.c:386
-msgid "Labels propagation by watershed transformation"
-msgstr "Rozprowadzanie etykiet według przekształcenia działu wodnego"
+msgid ""
+"Labels propagation by watershed transformation. Output and expected input "
+"are \"YA u32\" grayscale buffers. The Y value represents a label. When a "
+"pixel is not labelled, its alpha value has to be set to 0. The mandatory aux "
+"buffer is a \"Y u8\" image representing the priority levels."
+msgstr ""
+"Rozprowadzanie etykiet według przekształcenia działu wodnego. Wyjście "
+"i oczekiwane wejście to bufory odcieni szarości „YA u32”. Wartość Y "
+"reprezentuje etykietę. Kiedy bufor nie ma etykiety, jego wartość alfa musi "
+"być ustawiona na 0. Obowiązkowy dodatkowy bufor to obraz „Y u8” "
+"reprezentujący poziomy priorytetów."
 
 #: operations/common/wavelet-blur-1d.c:29 operations/common/wavelet-blur.c:28
 msgid "Radius of the wavelet blur"
@@ -6259,7 +6268,7 @@ msgstr "Ścieżka do wczytywanego pliku wideo"
 msgid "Frame number"
 msgstr "Liczba klatek"
 
-#: operations/external/ff-load.c:36 operations/workshop/gif-load.c:38
+#: operations/external/ff-load.c:36 operations/external/gif-load.c:38
 msgid "frames"
 msgstr "klatki"
 
@@ -6456,11 +6465,39 @@ msgstr "Zapisywanie klatek biblioteki FFmpeg"
 msgid "FFmpeg video output sink"
 msgstr "Odpływ wyjścia wideo biblioteki FFmpeg"
 
-#: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
-#: operations/external/svg-load.c:26 operations/external/tiff-load.c:26
-#: operations/external/webp-load.c:26 operations/workshop/gif-load.c:35
+#: operations/external/gif-load.c:35 operations/external/jp2-load.c:26
+#: operations/external/jpg-load.c:25 operations/external/svg-load.c:26
+#: operations/external/tiff-load.c:26 operations/external/webp-load.c:26
 msgid "Path of file to load"
 msgstr "Ścieżka do wczytywanego pliku"
+
+#: operations/external/gif-load.c:36
+msgid "frame"
+msgstr "klatka"
+
+#: operations/external/gif-load.c:37
+msgid "frame number to decode"
+msgstr "numer klatki do zdekodowania"
+
+#: operations/external/gif-load.c:39
+msgid "Number of frames in gif animation"
+msgstr "Liczba klatek w animacji GIF"
+
+#: operations/external/gif-load.c:40
+msgid "frame-delay"
+msgstr "opóźnienie-klatek"
+
+#: operations/external/gif-load.c:41
+msgid "Delay in ms for last decoded frame"
+msgstr "Opóźnienie w milisekundach dla ostatniej zdekodowanej klatki"
+
+#: operations/external/gif-load.c:239
+msgid "GIF File Loader"
+msgstr "Wczytywanie plików GIF"
+
+#: operations/external/gif-load.c:241
+msgid "GIF image loader."
+msgstr "Wczytywanie obrazów GIF."
 
 #: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
 #: operations/external/tiff-load.c:28 operations/external/webp-load.c:28
@@ -6633,11 +6670,11 @@ msgstr "Kompensacja czarnego punktu"
 msgid "Convert using black point compensation."
 msgstr "Konwertuj za pomocą kompensacji czarnego punktu."
 
-#: operations/external/lcms-from-profile.c:243
+#: operations/external/lcms-from-profile.c:245
 msgid "LCMS From Profile"
 msgstr "LCMS z profilu"
 
-#: operations/external/lcms-from-profile.c:246
+#: operations/external/lcms-from-profile.c:248
 msgid ""
 "Converts the input from an ICC color profile to a well defined babl format. "
 "The buffer's data will then be correctly managed by GEGL for further "
@@ -6949,7 +6986,7 @@ msgstr "Przestrzeń kolorów"
 msgid "Color space to use for loaded data"
 msgstr "Przestrzeń kolorów używana dla wczytanych danych"
 
-#: operations/external/raw-load.c:277
+#: operations/external/raw-load.c:281
 msgid "libraw File Loader"
 msgstr "Wczytywanie plików biblioteki libraw"
 
@@ -7114,11 +7151,11 @@ msgstr "Katalog"
 msgid "Image file directory (subfile)"
 msgstr "Katalog pliku obrazu (podplik)"
 
-#: operations/external/tiff-load.c:887
+#: operations/external/tiff-load.c:889
 msgid "TIFF File Loader"
 msgstr "Wczytywanie plików TIFF"
 
-#: operations/external/tiff-load.c:889
+#: operations/external/tiff-load.c:891
 msgid "TIFF image loader using libtiff"
 msgstr "Wczytywanie obrazów TIFF za pomocą biblioteki libtiff"
 
@@ -7213,11 +7250,11 @@ msgstr "Pociągnięcie wektorowe"
 msgid "Renders a vector stroke"
 msgstr "Rysuje pociągnięcie wektorowe"
 
-#: operations/external/webp-load.c:344
+#: operations/external/webp-load.c:346
 msgid "WebP File Loader"
 msgstr "Wczytywanie plików WebP"
 
-#: operations/external/webp-load.c:346
+#: operations/external/webp-load.c:348
 msgid "WebP image loader."
 msgstr "Wczytywanie obrazów WebP."
 
@@ -7662,34 +7699,6 @@ msgid ""
 msgstr ""
 "Zmienia położenie bufora (o dokładności podpikselowej), jeśli podano "
 "współrzędne całkowite, to używana jest szybka ścieżka bez resamplingu"
-
-#: operations/workshop/gif-load.c:36
-msgid "frame"
-msgstr "klatka"
-
-#: operations/workshop/gif-load.c:37
-msgid "frame number to decode"
-msgstr "numer klatki do zdekodowania"
-
-#: operations/workshop/gif-load.c:39
-msgid "Number of frames in gif animation"
-msgstr "Liczba klatek w animacji GIF"
-
-#: operations/workshop/gif-load.c:40
-msgid "frame-delay"
-msgstr "opóźnienie-klatek"
-
-#: operations/workshop/gif-load.c:41
-msgid "Delay in ms for last decoded frame"
-msgstr "Opóźnienie w milisekundach dla ostatniej zdekodowanej klatki"
-
-#: operations/workshop/gif-load.c:236
-msgid "GIF File Loader"
-msgstr "Wczytywanie plików GIF"
-
-#: operations/workshop/gif-load.c:238
-msgid "GIF image loader."
-msgstr "Wczytywanie obrazów GIF."
 
 #: operations/workshop/bayer-matrix.c:26
 msgid "Subdivisions"
