@@ -23,7 +23,7 @@
 
 property_double (std_dev, _("Radius"), 3.0)
     description(_("Expressed as standard deviation, in pixels"))
-    value_range (0.0, 300)
+    value_range (0.0, 1500)
     ui_range    (0.0, 40.0)
     ui_gamma    (3.0)
     ui_meta     ("unit", "pixel-distance")
