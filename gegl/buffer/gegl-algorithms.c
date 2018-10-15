@@ -255,8 +255,9 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
               const gfloat m = middle_weight;
               const gfloat b = bottom_weight;
 
-#define BOXFILTER_ROUND(val) lut_u16_to_u8[((int)((val)+0.5f))]
-#define C(val)               lut_u8_to_u16f[(val)]
+#define C(val)                     lut_u8_to_u16f[(val)]
+#define BOXFILTER_ROUND(val)       lut_u16_to_u8[((int)((val)+0.5f))]
+#define BOXFILTER_ROUND_ALPHA(val) ((int)((val)+0.5f))
               dst[0] = BOXFILTER_ROUND(
                 (C(src[0][0]) * t + C(src[3][0]) * m + C(src[6][0]) * b) * l +
                 (C(src[1][0]) * t + C(src[4][0]) * m + C(src[7][0]) * b) * c +
@@ -414,7 +415,7 @@ gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
                 (C(src[0][2]) * t + C(src[3][2]) * m + C(src[6][2]) * b) * l +
                 (C(src[1][2]) * t + C(src[4][2]) * m + C(src[7][2]) * b) * c +
                 (C(src[2][2]) * t + C(src[5][2]) * m + C(src[8][2]) * b) * r);
-              dst[3] = (
+              dst[3] = BOXFILTER_ROUND_ALPHA(
                 ((src[0][3]) * t + (src[3][3]) * m + (src[6][3]) * b) * l +
                 ((src[1][3]) * t + (src[4][3]) * m + (src[7][3]) * b) * c +
                 ((src[2][3]) * t + (src[5][3]) * m + (src[8][3]) * b) * r);
@@ -427,7 +428,7 @@ gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
                 (C(src[0][0]) * t + C(src[3][0]) * m + C(src[6][0]) * b) * l +
                 (C(src[1][0]) * t + C(src[4][0]) * m + C(src[7][0]) * b) * c +
                 (C(src[2][0]) * t + C(src[5][0]) * m + C(src[8][0]) * b) * r);
-              dst[1] = (
+              dst[1] = BOXFILTER_ROUND_ALPHA(
                 ((src[0][1]) * t + (src[3][1]) * m + (src[6][1]) * b) * l +
                 ((src[1][1]) * t + (src[4][1]) * m + (src[7][1]) * b) * c +
                 ((src[2][1]) * t + (src[5][1]) * m + (src[8][1]) * b) * r);
@@ -442,7 +443,7 @@ gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
                   (C(src[1][i]) * t + C(src[4][i]) * m + C(src[7][i]) * b) * c +
                   (C(src[2][i]) * t + C(src[5][i]) * m + C(src[8][i]) * b) * r);
                 }
-              dst[components-1] = (
+              dst[components-1] = BOXFILTER_ROUND_ALPHA(
                   ((src[0][components-1]) * t + (src[3][components-1]) * m + (src[6][components-1]) * b) * l +
                   ((src[1][components-1]) * t + (src[4][components-1]) * m + (src[7][components-1]) * b) * c +
                   ((src[2][components-1]) * t + (src[5][components-1]) * m + (src[8][components-1]) * b) * r);
@@ -451,8 +452,9 @@ gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
     }
 }
 #undef CASE
-#undef BOXFILTER_ROUND
 #undef C
+#undef BOXFILTER_ROUND
+#undef BOXFILTER_ROUND_ALPHA
 
 static void
 gegl_bilinear_u8_nl (guchar              *dest_buf,
@@ -507,8 +509,9 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
     }\
 }while(0)
 
-#define BILINEAR_ROUND(val) lut_u16_to_u8[(int)(val)]
-#define C(val)              lut_u8_to_u16f[(val)]
+#define C(val)                    lut_u8_to_u16f[(val)]
+#define BILINEAR_ROUND(val)       lut_u16_to_u8[((int)((val)+0.5f))]
+#define BILINEAR_ROUND_ALPHA(val) ((int)((val)+0.5f))
 
    switch (components)
    {
@@ -619,7 +622,7 @@ gegl_bilinear_u8_nl_alpha (guchar              *dest_buf,
                (C(src[0][i]) * rdx + C(src[1][i]) * ldx) * rdy +
                (C(src[2][i]) * rdx + C(src[3][i]) * ldx) * dy);
          dst[components - 1] =
-           (
+           BILINEAR_ROUND_ALPHA(
              ((src[0][components-1]) * rdx + (src[1][components-1]) * ldx) * rdy +
              ((src[2][components-1]) * rdx + (src[3][components-1]) * ldx) * dy);
          );
@@ -629,7 +632,7 @@ gegl_bilinear_u8_nl_alpha (guchar              *dest_buf,
          dst[0] = BILINEAR_ROUND(
                (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
                (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
-         dst[1] = (
+         dst[1] = BILINEAR_ROUND_ALPHA(
                ((src[0][1]) * rdx + (src[1][1]) * ldx) * rdy +
                ((src[2][1]) * rdx + (src[3][1]) * ldx) * dy);
            );
@@ -654,7 +657,7 @@ gegl_bilinear_u8_nl_alpha (guchar              *dest_buf,
            dst[2] = BILINEAR_ROUND(
                (C(src[0][2]) * rdx + C(src[1][2]) * ldx) * rdy +
                (C(src[2][2]) * rdx + C(src[3][2]) * ldx) * dy);
-           dst[3] = (
+           dst[3] = BILINEAR_ROUND_ALPHA(
                ((src[0][3]) * rdx + (src[1][3]) * ldx) * rdy +
                ((src[2][3]) * rdx + (src[3][3]) * ldx) * dy);
          }
@@ -663,8 +666,9 @@ gegl_bilinear_u8_nl_alpha (guchar              *dest_buf,
    }
 #undef IMPL
 }
-#undef BILINEAR_ROUND
 #undef C
+#undef BILINEAR_ROUND
+#undef BILINEAR_ROUND_ALPHA
 
 static void
 gegl_downscale_2x2_u8_nl (const Babl *format,
