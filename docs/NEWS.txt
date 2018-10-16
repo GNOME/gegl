@@ -1,8 +1,16 @@
-GEGL-0.4.10 2019-01-xx
+GEGL-0.4.10 2018-10-16
 ----------------------
 
 GeglBuffer
 ~~~~~~~~~~
+
+Fix integer overflow issues for u32 blit scaling code paths.
+
+Reduced memory clearing overhead for temporary buffers during blit.
+
+Round alpha component during u8 bilinear/box filtering (this caused artifacts
+on OSX through interaction without unknown platform differences in
+libc/compilter/graphics stack)
 
 gegl_buffer_dup now matches source buffer abyss, shift and tile-size more
 closely.
@@ -29,6 +37,8 @@ maniuk06: use double precision, permitting to work on larger images.
 
 watershed-transform: improved description
 
+unsharp-mask: permit std-dev radius of up to 1500px (from 300).
+
 Updated all operations to use new iterator API
 
 Contributors to this release
@@ -36,7 +46,7 @@ Contributors to this release
 
 Alexandre Prokoudine, Anders Jonsson, Debarshi Ray, Ell, Hussam Al-Tayeb, Marco
 Ciampa, Massimo Valentini, Øyvind Kolås, Piotr Drąg, Rodrigo Lledó and Tim
-Sabsch
+Sabsch.
 
 
 GEGL-0.4.8 2018-08-17
