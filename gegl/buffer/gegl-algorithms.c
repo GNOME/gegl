@@ -921,6 +921,26 @@ gegl_downscale_2x2_u8_rgb (const Babl *format,
 }
 
 
+/* FIXME:  disable the _alpha() variants for now, so that we use the same gamma
+ * curve for the alpha component as we do for the color components.  this is
+ * necessary to avoid producing over-saturated pixels when using a format with
+ * premultiplied alpha (note that, either way, using such a format with these
+ * functions produces wrong results in general, when the data is not fully
+ * opaque.)  most notably, when using cairo-ARGB32 (which we do in GIMP's
+ * display code), this avoids potential overflow during compositing in cairo.
+ *
+ * see issue #104.
+ *
+ * we use the comma operator to avoid "defined but not used" warnings.
+ */
+#define gegl_boxfilter_u8_nl_alpha     ((void) gegl_boxfilter_u8_nl_alpha,     \
+                                        gegl_boxfilter_u8_nl)
+#define gegl_bilinear_u8_nl_alpha      ((void) gegl_bilinear_u8_nl_alpha,      \
+                                        gegl_bilinear_u8_nl)
+#define gegl_downscale_2x2_u8_nl_alpha ((void) gegl_downscale_2x2_u8_nl_alpha, \
+                                        gegl_downscale_2x2_u8_nl)
+
+
 GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
 {
   const Babl *comp_type = babl_format_get_type (format, 0);
