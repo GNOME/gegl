@@ -2234,8 +2234,8 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
             sample_rect.x      = x1;
             sample_rect.y      = y1;
-            sample_rect.width  = x2 - x1;
-            sample_rect.height = y2 - y1;
+            sample_rect.width  = x2 - x1 + 1;
+            sample_rect.height = y2 - y1 + 1;
 
             gegl_resample_bilinear (dest_buf,
                                     sample_buf,
@@ -2281,13 +2281,13 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
                                           buf_width * bpp,
                                           format, level, repeat_mode);
 
-              sample_rect.x      = x1;
-              sample_rect.y      = y1;
-              sample_rect.width  = x2 - x1;
-              sample_rect.height = y2 - y1;
+              sample_rect.x      = x1 - 1;
+              sample_rect.y      = y1 - 1;
+              sample_rect.width  = x2 - x1 + 2;
+              sample_rect.height = y2 - y1 + 2;
 
               gegl_resample_boxfilter (dest_buf,
-                                       (guchar*)sample_buf + offset,
+                                       sample_buf,
                                        &rect2,
                                        &sample_rect,
                                        buf_width * bpp,
