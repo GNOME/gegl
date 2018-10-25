@@ -4,11 +4,20 @@ include $(top_srcdir)/operations/Makefile-common.am
 # for a specific dependency.
 ops =
 
+
+
+
+
 if HAVE_CAIRO
 line_profile_la_SOURCES = line-profile.c
 line_profile_la_LIBADD = $(op_libs) $(CAIRO_LIBS) $(PANGO_LIBS)
 line_profile_la_CFLAGS = $(CAIRO_CFLAGS) $(PANGO_CFLAGS) $(BABL_CFLAGS) $(GLIB_CFLAGS)
-ops += line-profile.la
+ops += line-profile.la spyrograph.la
+
+spyrograph_la_SOURCES = spyrograph.c
+spyrograph_la_LIBADD = $(op_libs) $(CAIRO_LIBS)
+spyrograph_la_CFLAGS = $(AM_CFLAGS) $(CAIRO_CFLAGS)
+
 endif
 
 if HAVE_LUA

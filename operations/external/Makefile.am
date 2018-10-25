@@ -17,7 +17,7 @@ gif_load_la_LIBADD = $(op_libs)
 gif_load_la_CFLAGS = $(AM_CFLAGS)
 
 if HAVE_CAIRO
-ops += path.la vector-fill.la vector-stroke.la spyrograph.la
+ops += path.la vector-fill.la vector-stroke.la
 path_la_SOURCES = path.c
 path_la_LIBADD = $(op_libs) $(CAIRO_LIBS)
 path_la_CFLAGS = $(AM_CFLAGS) $(CAIRO_CFLAGS)
@@ -27,9 +27,6 @@ vector_fill_la_CFLAGS = $(AM_CFLAGS) $(CAIRO_CFLAGS)
 vector_stroke_la_SOURCES = vector-stroke.c
 vector_stroke_la_LIBADD = $(op_libs) $(CAIRO_LIBS)
 vector_stroke_la_CFLAGS = $(AM_CFLAGS) $(CAIRO_CFLAGS)
-spyrograph_la_SOURCES = spyrograph.c
-spyrograph_la_LIBADD = $(op_libs) $(CAIRO_LIBS)
-spyrograph_la_CFLAGS = $(AM_CFLAGS) $(CAIRO_CFLAGS)
 endif
 
 if HAVE_PNG
