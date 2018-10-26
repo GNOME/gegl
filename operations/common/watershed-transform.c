@@ -24,6 +24,13 @@
 
 #ifdef GEGL_PROPERTIES
 
+property_int (flag_component, _("Index of component flagging unlabelled pixels"), -1)
+   description(_("Index of component flagging unlabelled pixels"))
+   ui_range    (-1, 4)
+
+property_format (flag, _("flag"), NULL)
+   description (_("Pointer to flag value for unlabelled pixels"))
+
 #else
 
 #define GEGL_OP_FILTER
@@ -160,10 +167,9 @@ attach (GeglOperation *self)
 static void
 prepare (GeglOperation *operation)
 {
-  const Babl  *labels_format   = babl_format ("YA u32");
-  const Babl  *gradient_format = babl_format ("Y u8");
+  const Babl *labels_format   = gegl_operation_get_source_format (operation, "input");
+  const Babl *gradient_format = babl_format ("Y u8");
 
-  gegl_operation_set_format (operation, "input",  labels_format);
   gegl_operation_set_format (operation, "output", labels_format);
   gegl_operation_set_format (operation, "aux",    gradient_format);
 }
@@ -210,18 +216,23 @@ process (GeglOperation       *operation,
          GeglBuffer          *aux,
          GeglBuffer          *output,
          const GeglRectangle *result,
-         gint                 level)
+         gint                 level,
+         guint8              *flag,
+         gint                 flag_idx)
 {
   HQ      hq;
-  guint32 square3x3[18];
+  guint8  square3x3[72];
+  gint    i;
   gint    j;
   gint    x, y;
   GeglBufferIterator  *iter;
   GeglSampler         *gradient_sampler;
   const GeglRectangle *extent = gegl_buffer_get_extent (input);
 
-  const Babl  *labels_format   = babl_format ("YA u32");
   const Babl  *gradient_format = babl_format ("Y u8");
+  const Babl  *labels_format   = gegl_buffer_get_format (input);
+  gint         bpp             = babl_format_get_bytes_per_pixel (labels_format);
+  gint         bpc             = bpp / babl_format_get_n_components (labels_format);
 
   gint neighbors_coords[8][2] = {{-1, -1},{0, -1},{1, -1},
                                  {-1, 0},         {1, 0},
@@ -242,15 +253,23 @@ process (GeglOperation       *operation,
 
   while (gegl_buffer_iterator_next (iter))
     {
-      guint32  *label    = iter->items[0].data;
+      guint8   *label    = iter->items[0].data;
       guint8   *pixel    = iter->items[1].data;
-      guint32  *outlabel = iter->items[2].data;
+      guint8   *outlabel = iter->items[2].data;
       GeglRectangle *roi = &iter->items[0].roi;
 
       for (y = roi->y; y < roi->y + roi->height; y++)
         for (x = roi->x; x < roi->x + roi->width; x++)
           {
-            if (label[1] != 0)
+            gboolean flagged = TRUE;
+
+            for (i = 0; i < bpc; i++)
+              if (label[flag_idx * bpc + i] != (flag ? flag[i] : 0))
+                {
+                  flagged = FALSE;
+                  break;
+                }
+            if (! flagged)
               {
                 PixelCoords *p = g_new (PixelCoords, 1);
                 p->x = x;
@@ -259,12 +278,12 @@ process (GeglOperation       *operation,
                 HQ_push (&hq, *pixel, p);
               }
 
-            outlabel[0] = label[0];
-            outlabel[1] = label[1];
+            for (i = 0; i < bpp; i++)
+              outlabel[i] = label[i];
 
             pixel++;
-            label += 2;
-            outlabel += 2;
+            label    += bpp;
+            outlabel += bpp;
           }
     }
 
@@ -275,7 +294,7 @@ process (GeglOperation       *operation,
   while (!HQ_is_empty (&hq))
     {
       PixelCoords *p = (PixelCoords *) HQ_pop (&hq);
-      guint32 label[2];
+      guint8       label[bpp];
 
       GeglRectangle square_rect = {p->x - 1, p->y - 1, 3, 3};
 
@@ -283,22 +302,29 @@ process (GeglOperation       *operation,
                        square3x3,
                        GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-      label[0] = square3x3[8];
-      label[1] = square3x3[9];
+      for (i = 0; i < bpp; i++)
+        label[i] = square3x3[4 * bpp + i];
 
       /* compute neighbors coordinate */
       for (j = 0; j < 8; j++)
         {
-          guint32 *neighbor_label;
-          gint nx = p->x + neighbors_coords[j][0];
-          gint ny = p->y + neighbors_coords[j][1];
+          guint8   *neighbor_label;
+          gint      nx = p->x + neighbors_coords[j][0];
+          gint      ny = p->y + neighbors_coords[j][1];
+          gboolean  flagged = TRUE;
 
           if (nx < 0 || nx >= extent->width || ny < 0 || ny >= extent->height)
             continue;
 
-          neighbor_label = square3x3 + ((neighbors_coords[j][0] + 1) + (neighbors_coords[j][1] + 1) * 3) * 2;
+          neighbor_label = square3x3 + ((neighbors_coords[j][0] + 1) + (neighbors_coords[j][1] + 1) * 3) * bpp;
 
-          if (neighbor_label[1] == 0)
+          for (i = 0; i < bpc; i++)
+            if (neighbor_label[flag_idx * bpc + i] != (flag ? flag[i] : 0))
+              {
+                flagged = FALSE;
+                break;
+              }
+          if (flagged)
             {
               guint8 gradient_value;
               GeglRectangle n_rect = {nx, ny, 1, 1};
@@ -313,8 +339,8 @@ process (GeglOperation       *operation,
 
               HQ_push (&hq, gradient_value, n);
 
-              neighbor_label[0] = label[0];
-              neighbor_label[1] = 1;
+              for (i = 0; i < bpp; i++)
+                neighbor_label[i] = label[i];
 
               gegl_buffer_set (output, &n_rect,
                                0, labels_format,
@@ -340,19 +366,32 @@ operation_process (GeglOperation        *operation,
   GeglBuffer     *aux;
   GeglBuffer     *output;
   gboolean        success;
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  gint            n_comp;
 
-  aux = (GeglBuffer*) gegl_operation_context_dup_object (context, "aux");
+  aux    = (GeglBuffer*) gegl_operation_context_dup_object (context, "aux");
+  input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
+  n_comp = babl_format_get_n_components (gegl_buffer_get_format (input));
 
-  if (!aux)
+  if (o->flag_component >= n_comp || o->flag_component < -n_comp)
     {
+      g_warning ("The input buffer has %d components. Invalid flag component: %d",
+                 n_comp, o->flag_component);
+      success = FALSE;
+    }
+  else if (! aux)
+    {
+      g_warning ("Missing priority buffer");
       success = FALSE;
     }
   else
     {
-      input = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
+      gint flag_idx = o->flag_component < 0 ? n_comp + o->flag_component : o->flag_component;
+
       output = gegl_operation_context_get_target (context, "output");
 
-      success = process (operation, input, aux, output, result, level);
+      success = process (operation, input, aux, output, result, level,
+                         (guint8 *) o->flag, flag_idx);
     }
 
   g_clear_object (&input);
@@ -384,9 +423,9 @@ gegl_op_class_init (GeglOpClass *klass)
     "reference-hash", "c5623beeef052a9b47acd178dd420864",
     "categories",  "hidden",
     "description", _("Labels propagation by watershed transformation. "
-                     "Output and expected input are \"YA u32\" grayscale buffers. "
-                     "The Y value represents a label. When a pixel is not labelled, "
-                     "its alpha value has to be set to 0. "
+                     "Output buffer will keep the input format. "
+                     "Unlabelled pixels are marked with a given flag value "
+                     "(by default: last component with NULL value). "
                      "The mandatory aux buffer is a \"Y u8\" image representing the priority levels."),
     NULL);
 }
