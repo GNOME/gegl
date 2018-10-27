@@ -243,7 +243,7 @@ process (GeglOperation       *operation,
   HQ_init (&hq);
 
   iter = gegl_buffer_iterator_new (input, extent, 0, labels_format,
-                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 3);
+                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 11);
 
   gegl_buffer_iterator_add (iter, aux, extent, 0, gradient_format,
                             GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
@@ -251,11 +251,47 @@ process (GeglOperation       *operation,
   gegl_buffer_iterator_add (iter, output, extent, 0, labels_format,
                             GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
 
+  /* Add 8 neighbours. */
+  gegl_buffer_iterator_add (iter, input,
+                            GEGL_RECTANGLE (-1, -1, extent->width, extent->height),
+                            0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+  gegl_buffer_iterator_add (iter, input,
+                            GEGL_RECTANGLE (0, -1, extent->width, extent->height),
+                            0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+  gegl_buffer_iterator_add (iter, input,
+                            GEGL_RECTANGLE (1, -1, extent->width, extent->height),
+                            0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+  gegl_buffer_iterator_add (iter, input,
+                            GEGL_RECTANGLE (-1, 0, extent->width, extent->height),
+                            0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+  gegl_buffer_iterator_add (iter, input,
+                            GEGL_RECTANGLE (1, 0, extent->width, extent->height),
+                            0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+  gegl_buffer_iterator_add (iter, input,
+                            GEGL_RECTANGLE (-1, 1, extent->width, extent->height),
+                            0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+  gegl_buffer_iterator_add (iter, input,
+                            GEGL_RECTANGLE (0, 1, extent->width, extent->height),
+                            0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+  gegl_buffer_iterator_add (iter, input,
+                            GEGL_RECTANGLE (1, 1, extent->width, extent->height),
+                            0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   while (gegl_buffer_iterator_next (iter))
     {
       guint8   *label    = iter->items[0].data;
       guint8   *pixel    = iter->items[1].data;
       guint8   *outlabel = iter->items[2].data;
+      guint8   *n[8]     =
+        {
+          iter->items[3].data,
+          iter->items[4].data,
+          iter->items[5].data,
+          iter->items[6].data,
+          iter->items[7].data,
+          iter->items[8].data,
+          iter->items[9].data,
+          iter->items[10].data
+        };
       GeglRectangle *roi = &iter->items[0].roi;
 
       for (y = roi->y; y < roi->y + roi->height; y++)
@@ -271,11 +307,38 @@ process (GeglOperation       *operation,
                 }
             if (! flagged)
               {
-                PixelCoords *p = g_new (PixelCoords, 1);
-                p->x = x;
-                p->y = y;
+                for (j = 0; j < 8; j++)
+                  {
+                    if (x == 0 && (j == 0 || j == 3 || j == 5))
+                      continue;
+                    if (y == 0 && (j == 0 || j == 1 || j == 2))
+                      continue;
+                    if (x == extent->width - 1 && (j == 2 || j == 4 || j == 7))
+                      continue;
+                    if (y == extent->height - 1 && (j == 5 || j == 6 || j == 7))
+                      continue;
 
-                HQ_push (&hq, *pixel, p);
+                    flagged = TRUE;
+                    for (i = 0; i < bpc; i++)
+                      if (n[j][flag_idx * bpc + i] != (flag ? flag[i] : 0))
+                        {
+                          flagged = FALSE;
+                          break;
+                        }
+                    if (flagged)
+                      break;
+                  }
+                if (flagged)
+                  {
+                    /* This pixel is not flagged and has at least one flagged
+                     * neighbour.
+                     */
+                    PixelCoords *p = g_new (PixelCoords, 1);
+                    p->x = x;
+                    p->y = y;
+
+                    HQ_push (&hq, *pixel, p);
+                  }
               }
 
             for (i = 0; i < bpp; i++)
@@ -284,6 +347,8 @@ process (GeglOperation       *operation,
             pixel++;
             label    += bpp;
             outlabel += bpp;
+            for (j = 0; j < 8; j++)
+              n[j] += bpp;
           }
     }
 
