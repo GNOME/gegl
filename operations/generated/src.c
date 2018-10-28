@@ -48,18 +48,55 @@ property_boolean (srgb, _("sRGB"), FALSE)
 
 static void prepare (GeglOperation *operation)
 {
-  const Babl *space = gegl_operation_get_source_space (operation, "input");
-  const Babl *format;
-  if (!space)
-    space = gegl_operation_get_source_space (operation, "aux");
+  int use_srgb = GEGL_PROPERTIES (operation)->srgb?1:0;
+  const Babl *format = gegl_operation_get_source_format (operation, "input");
+  const Babl *space = NULL;
+  const Babl *model = NULL;
+  if (!format)
+    format = gegl_operation_get_source_format (operation, "aux");
+  if (format)
+  {
+    model = babl_format_get_model (format);
+  }
 
-  if (GEGL_PROPERTIES (operation)->srgb)
-    format = babl_format_with_space ("R~aG~aB~aA float", space);
+  if (babl_model_is (model, "Y") ||
+      babl_model_is (model, "Y'") ||
+      babl_model_is (model, "Y~"))
+  {
+    format  = babl_format_with_space (use_srgb?"Y~ float":"Y float", space);
+  }
+  else if (babl_model_is (model, "YA") ||
+           babl_model_is (model, "Y'A") ||
+           babl_model_is (model, "Y~A") ||
+           babl_model_is (model, "YaA") ||
+           babl_model_is (model, "Y'aA"))
+  {
+    format  = babl_format_with_space (use_srgb?"Y~aA float":"YaA float", space);
+  }
+  else if (babl_model_is (model, "RGB") ||
+           babl_model_is (model, "R'G'B'") ||
+           babl_model_is (model, "R~G~B~"))
+  {
+    format  = babl_format_with_space (use_srgb?"R~G~B~ float":"RGB float", space);
+  }
+  else if (babl_model_is (model, "RGBA")    ||
+           babl_model_is (model, "RGB")     ||
+           babl_model_is (model, "R'G'B'A") ||
+           babl_model_is (model, "R'G'B'")  ||
+           babl_model_is (model, "R~G~B~A") ||
+           babl_model_is (model, "R~G~B~")  ||
+           babl_model_is (model, "RaGaBaA") ||
+           babl_model_is (model, "R'aG'aB'aA"))
+  {
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~a float":"RaGaBaA float", space);
+  }
   else
-    format = babl_format_with_space ("RaGaBaA float", space);
+  {
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~a float":"RaGaBaA float", space);
+  }
 
-  gegl_operation_set_format (operation, "input", format);
-  gegl_operation_set_format (operation, "aux", format);
+  gegl_operation_set_format (operation, "input",  format);
+  gegl_operation_set_format (operation, "aux",    format);
   gegl_operation_set_format (operation, "output", format);
 }
 
@@ -76,6 +113,9 @@ process (GeglOperation        *op,
   gfloat * GEGL_ALIGNED in = in_buf;
   gfloat * GEGL_ALIGNED aux = aux_buf;
   gfloat * GEGL_ALIGNED out = out_buf;
+  const Babl *format = gegl_operation_get_format (op, "output");
+  gint    components = babl_format_get_n_components (format);
+  gint    alpha      = babl_format_has_alpha (format);
 
   if (!aux)
     return TRUE;
@@ -86,11 +126,18 @@ process (GeglOperation        *op,
           gint   j;
           gfloat aA G_GNUC_UNUSED, aB G_GNUC_UNUSED, aD G_GNUC_UNUSED;
 
-          aB = in[3];
-          aA = aux[3];
+          if (alpha)
+          {
+            aB = in[components-1];
+            aA = aux[components-1];
+          }
+          else
+          {
+            aB = aA = 1.0f;
+          }
           aD = aA;
 
-          for (j = 0; j < 3; j++)
+          for (j = 0; j < components-alpha; j++)
             {
               gfloat cA G_GNUC_UNUSED, cB G_GNUC_UNUSED;
 
@@ -98,10 +145,11 @@ process (GeglOperation        *op,
               cA = aux[j];
               out[j] = cA;
             }
-          out[3] = aD;
-          in  += 4;
-          aux += 4;
-          out += 4;
+          if (alpha)
+            out[components-alpha] = aD;
+          in  += components;
+          aux += components;
+          out += components;
         }
     }
   return TRUE;

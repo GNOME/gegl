@@ -46,14 +46,56 @@ property_double (value, _("Value"), 0.0)
 
 static void prepare (GeglOperation *operation)
 {
-  const Babl *space = gegl_operation_get_source_space (operation, "input");
-  const Babl *format;
-  if (!space)
-     space = gegl_operation_get_source_space (operation, "aux");
-  format  = babl_format_with_space ("RGBA float", space);
+  const Babl *format = gegl_operation_get_source_format (operation, "input");
+  const Babl *space = NULL;
+  const Babl *model = NULL;
+  if (!format)
+    format = gegl_operation_get_source_format (operation, "aux");
+  if (format)
+  {
+    model = babl_format_get_model (format);
+  }
+
+  if (babl_model_is (model, "Y") ||
+      babl_model_is (model, "Y'") ||
+      babl_model_is (model, "Y~"))
+  {
+    format  = babl_format_with_space ("Y float", space);
+  }
+  else if (babl_model_is (model, "YA") ||
+           babl_model_is (model, "Y'A") ||
+           babl_model_is (model, "Y~A") ||
+           babl_model_is (model, "YaA") ||
+           babl_model_is (model, "Y'aA"))
+  {
+    format  = babl_format_with_space ("YA float", space);
+  }
+  else if (babl_model_is (model, "RGB") ||
+           babl_model_is (model, "R'G'B'") ||
+           babl_model_is (model, "R~G~B~"))
+  {
+    format  = babl_format_with_space ("RGB float", space);
+  }
+#if 0
+  else if (babl_model_is (model, "RGBA") ||
+           babl_model_is (model, "RGB") ||
+           babl_model_is (model, "R'G'B'A") ||
+           babl_model_is (model, "R'G'B'") ||
+           babl_model_is (model, "R~G~B~A") ||
+           babl_model_is (model, "R~G~B~") ||
+           babl_model_is (model, "RaGaBaA") ||
+           babl_model_is (model, "R'aG'aB'aA"))
+  {
+    format  = babl_format_with_space ("RGBA float", space);
+  }
+#endif
+  else
+  {
+    format  = babl_format_with_space ("RGBA float", space);
+  }
 
   gegl_operation_set_format (operation, "input", format);
-  gegl_operation_set_format (operation, "aux", babl_format_with_space ("RGB float", space));
+  gegl_operation_set_format (operation, "aux", format);
   gegl_operation_set_format (operation, "output", format);
 }
 
@@ -69,6 +111,9 @@ process (GeglOperation       *op,
   gfloat * GEGL_ALIGNED in = in_buf;
   gfloat * GEGL_ALIGNED out = out_buf;
   gfloat * GEGL_ALIGNED aux = aux_buf;
+  const Babl *format = gegl_operation_get_format (op, "output");
+  gint    components = babl_format_get_n_components (format);
+  gint    alpha      = babl_format_has_alpha (format);
   gint    i;
 
   if (aux == NULL)
@@ -77,16 +122,17 @@ process (GeglOperation       *op,
       for (i=0; i<n_pixels; i++)
         {
           gint   j;
-          for (j=0; j<3; j++)
+          for (j=0; j<components-alpha; j++)
             {
               gfloat result;
               gfloat input=in[j];
               result = input - value;
               out[j]=result;
             }
-          out[3]=in[3];
-          in += 4;
-          out+= 4;
+          if (alpha)
+            out[components-1]=in[components-1];
+          in += components;
+          out+= components;
         }
     }
   else
@@ -95,7 +141,7 @@ process (GeglOperation       *op,
         {
           gint   j;
           gfloat value;
-          for (j=0; j<3; j++)
+          for (j=0; j<components-alpha; j++)
             {
               gfloat input =in[j];
               gfloat result;
@@ -103,13 +149,14 @@ process (GeglOperation       *op,
               result = input - value;
               out[j]=result;
             }
-          out[3]=in[3];
-          in += 4;
-          aux += 3;
-          out+= 4;
+          if (alpha)
+            out[components-1]=in[components-1];
+
+          in  += components;
+          aux += components;
+          out += components;
         }
     }
-
   return TRUE;
 }
 
