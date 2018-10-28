@@ -61,25 +61,19 @@ static void prepare (GeglOperation *operation)
 
   if (babl_model_is (model, "Y") ||
       babl_model_is (model, "Y'") ||
-      babl_model_is (model, "Y~"))
-  {
-    format  = babl_format_with_space (use_srgb?"Y~ float":"Y float", space);
-  }
-  else if (babl_model_is (model, "YA") ||
-           babl_model_is (model, "Y'A") ||
-           babl_model_is (model, "Y~A") ||
-           babl_model_is (model, "YaA") ||
-           babl_model_is (model, "Y'aA"))
+      babl_model_is (model, "Y~") ||
+      babl_model_is (model, "YA") ||
+      babl_model_is (model, "Y'A") ||
+      babl_model_is (model, "Y~A") ||
+      babl_model_is (model, "YaA") ||
+      babl_model_is (model, "Y'aA"))
   {
     format  = babl_format_with_space (use_srgb?"Y~aA float":"YaA float", space);
   }
   else if (babl_model_is (model, "RGB") ||
            babl_model_is (model, "R'G'B'") ||
-           babl_model_is (model, "R~G~B~"))
-  {
-    format  = babl_format_with_space (use_srgb?"R~G~B~ float":"RGB float", space);
-  }
-  else if (babl_model_is (model, "RGBA")    ||
+           babl_model_is (model, "R~G~B~")  ||
+           babl_model_is (model, "RGBA")    ||
            babl_model_is (model, "RGB")     ||
            babl_model_is (model, "R'G'B'A") ||
            babl_model_is (model, "R'G'B'")  ||
@@ -88,11 +82,11 @@ static void prepare (GeglOperation *operation)
            babl_model_is (model, "RaGaBaA") ||
            babl_model_is (model, "R'aG'aB'aA"))
   {
-    format  = babl_format_with_space (use_srgb?"R~aG~aB~a float":"RaGaBaA float", space);
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
   }
   else
   {
-    format  = babl_format_with_space (use_srgb?"R~aG~aB~a float":"RaGaBaA float", space);
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
   }
 
   gegl_operation_set_format (operation, "input",  format);
@@ -115,7 +109,7 @@ process (GeglOperation        *op,
   gfloat * GEGL_ALIGNED out = out_buf;
   const Babl *format = gegl_operation_get_format (op, "output");
   gint    components = babl_format_get_n_components (format);
-  gint    alpha      = babl_format_has_alpha (format);
+  gint    alpha      = components-1;
 
   if (!aux)
     return TRUE;
@@ -126,18 +120,11 @@ process (GeglOperation        *op,
           gint   j;
           gfloat aA G_GNUC_UNUSED, aB G_GNUC_UNUSED, aD G_GNUC_UNUSED;
 
-          if (alpha)
-          {
-            aB = in[components-1];
-            aA = aux[components-1];
-          }
-          else
-          {
-            aB = aA = 1.0f;
-          }
+          aB = in[alpha];
+          aA = aux[alpha];
           aD = aA * (1.0f - aB);
 
-          for (j = 0; j < components-alpha; j++)
+          for (j = 0; j < alpha; j++)
             {
               gfloat cA G_GNUC_UNUSED, cB G_GNUC_UNUSED;
 
@@ -145,8 +132,7 @@ process (GeglOperation        *op,
               cA = aux[j];
               out[j] = cA * (1.0f - aB);
             }
-          if (alpha)
-            out[components-alpha] = aD;
+          out[alpha] = aD;
           in  += components;
           aux += components;
           out += components;

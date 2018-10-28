@@ -88,11 +88,11 @@ static void prepare (GeglOperation *operation)
            babl_model_is (model, "RaGaBaA") ||
            babl_model_is (model, "R'aG'aB'aA"))
   {
-    format  = babl_format_with_space (use_srgb?"R~aG~aB~a float":"RaGaBaA float", space);
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
   }
   else
   {
-    format  = babl_format_with_space (use_srgb?"R~aG~aB~a float":"RaGaBaA float", space);
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
   }
 
   gegl_operation_set_format (operation, "input",  format);
