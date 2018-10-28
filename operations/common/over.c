@@ -33,7 +33,7 @@ property_boolean (srgb, _("sRGB"), FALSE)
 
 #include "gegl-op.h"
 
-static void prepare (GeglOperation *operation)
+static void opencl_prepare (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *space = gegl_operation_get_source_space (operation, "input");
@@ -50,6 +50,64 @@ static void prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", format);
 }
 
+static void prepare (GeglOperation *operation)
+{
+  int use_srgb = GEGL_PROPERTIES (operation)->srgb?1:0;
+  const Babl *format = gegl_operation_get_source_format (operation, "input");
+  const Babl *space = NULL;
+  const Babl *model = NULL;
+
+  if (gegl_operation_use_opencl (operation))
+  {
+    opencl_prepare (operation);
+    return;
+  }
+
+  if (!format)
+    format = gegl_operation_get_source_format (operation, "aux");
+  if (format)
+  {
+    model = babl_format_get_model (format);
+  }
+
+  if (babl_model_is (model, "Y") ||
+      babl_model_is (model, "Y'") ||
+      babl_model_is (model, "Y~") ||
+      babl_model_is (model, "YA") ||
+      babl_model_is (model, "Y'A") ||
+      babl_model_is (model, "Y~A") ||
+      babl_model_is (model, "YaA") ||
+      babl_model_is (model, "Y'aA"))
+  {
+    format  = babl_format_with_space (use_srgb?"Y~aA float":"YaA float", space);
+  }
+#if 0 // just treat as else
+  else if (babl_model_is (model, "RGB") ||
+           babl_model_is (model, "R'G'B'") ||
+           babl_model_is (model, "R~G~B~") ||
+           babl_model_is (model, "RGBA")    ||
+           babl_model_is (model, "RGB")     ||
+           babl_model_is (model, "R'G'B'A") ||
+           babl_model_is (model, "R'G'B'")  ||
+           babl_model_is (model, "R~G~B~A") ||
+           babl_model_is (model, "R~G~B~")  ||
+           babl_model_is (model, "RaGaBaA") ||
+           babl_model_is (model, "R'aG'aB'aA"))
+  {
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
+  }
+#endif
+  else
+  {
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
+  }
+
+  gegl_operation_set_format (operation, "input",  format);
+  gegl_operation_set_format (operation, "aux",    format);
+  gegl_operation_set_format (operation, "output", format);
+}
+
+
 static gboolean
 process (GeglOperation       *op,
          void                *in_buf,
@@ -59,24 +117,27 @@ process (GeglOperation       *op,
          const GeglRectangle *roi,
          gint                 level)
 {
+  const Babl *format = gegl_operation_get_format (op, "output");
+  gint  components = babl_format_get_n_components (format);
+  gint  alpha = components - 1;
+
   gfloat * GEGL_ALIGNED in = in_buf;
   gfloat * GEGL_ALIGNED aux = aux_buf;
   gfloat * GEGL_ALIGNED out = out_buf;
+
 
   if (aux==NULL)
     return TRUE;
 
   while (n_pixels--)
-    {
-      out[0] = aux[0] + in[0] * (1.0f - aux[3]);
-      out[1] = aux[1] + in[1] * (1.0f - aux[3]);
-      out[2] = aux[2] + in[2] * (1.0f - aux[3]);
-      out[3] = aux[3] + in[3] - aux[3] * in[3];
-
-      in  += 4;
-      aux += 4;
-      out += 4;
-    }
+  {
+    for (int i = 0; i < alpha; i ++)
+      out[i] = aux[i] + in[i] * (1.0f - aux[alpha]);
+    out[alpha] = aux[alpha] + in[alpha] - aux[alpha] * in[alpha];
+    in  += components;
+    aux += components;
+    out += components;
+  }
   return TRUE;
 }
 
