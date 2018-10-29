@@ -14,7 +14,7 @@
  *
  * Copyright 2006 Dominik Ernst <dernst@gmx.de>
  * Copyright 2013 Massimo Valentini <mvalentini@src.gnome.org>
- *           2017 Øyvind Kolås <pippin@gimp.org>
+ *     2017, 2018 Øyvind Kolås <pippin@gimp.org>
  *
  * Recursive Gauss IIR Filter as described by Young / van Vliet
  * in "Signal Processing 44 (1995) 139 - 151"
@@ -88,6 +88,7 @@ typedef void (*IirYoungBlur1dFunc) (gfloat           *buf,
                                     const gfloat     *iminus,
                                     const gfloat     *uplus,
                                     const gint        len,
+                                    const gint        components,
                                     GeglAbyssPolicy   policy);
 
 static const gfloat white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -201,6 +202,7 @@ iir_young_blur_1D_y (gfloat        *buf,
                      const gfloat  *iminus,
                      const gfloat  *uplus,
                      const gint     len,
+                     const gint     components,
                      GeglAbyssPolicy policy)
 {
   gint    i, j;
@@ -273,6 +275,7 @@ iir_young_blur_1D_yA (gfloat           *buf,
                       const gfloat     *iminus,
                       const gfloat     *uplus,
                       const gint        len,
+                      const gint        components,
                       GeglAbyssPolicy   policy)
 {
   gint    i, j;
@@ -322,6 +325,95 @@ iir_young_blur_1D_yA (gfloat           *buf,
     }
 }
 
+
+static inline void
+fix_right_boundary_generic (gdouble        *buf,
+                            gdouble       (*m)[3],
+                            const gfloat   *uplus,
+                            const gint      nc)
+{
+  gdouble u[nc*3];
+  gint    i, k, c;
+
+  for (k = 0; k < 3; k++)
+    for (c = 0; c < nc; c++)
+   u[k * nc + c] = buf[(-k-1)*nc+c] - uplus[c];
+
+  for (i = 0; i < 3; i++)
+    {
+      gdouble tmp[nc];
+      for (c = 0; c < nc ; c++)
+        tmp[c] = 0.0;
+
+      for (k = 0; k < 3; k++)
+        {
+          for (c = 0; c < nc ; c++)
+            tmp[c] += m[i][k] * u[k * nc + c];
+        }
+
+      for (c = 0; c < nc ; c++)
+        buf[nc * i + c] = tmp[c] + uplus[c];
+    }
+}
+
+static void
+iir_young_blur_1D_generic (gfloat           *buf,
+                           gdouble          *tmp,
+                           const gdouble    *b,
+                           gdouble         (*m)[3],
+                           const gfloat     *iminus,
+                           const gfloat     *uplus,
+                           const gint        len,
+                           const gint        components,
+                           GeglAbyssPolicy   policy)
+{
+  gint    i, j, c;
+
+  for (i = 0; i < 3; i++, tmp += components)
+    {
+      for (c = 0; c < components; c++)
+        tmp[c] = iminus[c];
+    }
+
+  buf += 3 * components;
+
+  for (i = 0; i < len; i++, buf += components, tmp += components)
+    {
+      for (c = 0; c < components; c++)
+        tmp[c] = b[0] * buf[c];
+
+      for (j = 1; j < 4; ++j)
+        {
+          gint offset = -components * j;
+
+          for (c = 0; c < components; c++)
+            tmp[c] += b[j] * tmp[offset + c];
+        }
+    }
+
+  fix_right_boundary_generic (tmp, m, uplus, components);
+
+  buf -= components;
+  tmp -= components;
+
+  for (i = 3 + len - 1; 3 <= i; i--, buf -= components, tmp -= components)
+    {
+      for (c = 0; c < components; c++)
+        tmp[c] *= b[0];
+
+      for (j = 1; j < 4; ++j)
+        {
+          gint offset = components * j;
+
+          for (c = 0; c < components; c++)
+            tmp[c] += b[j] * tmp[offset + c];
+        }
+
+      for (c = 0; c < components; c++)
+        buf[c] = tmp[c];
+    }
+}
+
 static inline void
 fix_right_boundary_rgb (gdouble        *buf,
                         gdouble       (*m)[3],
@@ -357,6 +449,7 @@ iir_young_blur_1D_rgb (gfloat           *buf,
                        const gfloat     *iminus,
                        const gfloat     *uplus,
                        const gint        len,
+                       const gint        components,
                        GeglAbyssPolicy   policy)
 {
   gint    i, j;
@@ -449,6 +542,7 @@ iir_young_blur_1D_rgbA (gfloat           *buf,
                         const gfloat     *iminus,
                         const gfloat     *uplus,
                         const gint        len,
+                        const gint        components,
                         GeglAbyssPolicy   policy)
 {
   gint     i, j;
@@ -540,7 +634,7 @@ iir_young_hor_blur (IirYoungBlur1dFunc   real_blur_1D,
                        GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
       get_boundaries (policy, row, rect->width, nc, &iminus, &uplus);
-      real_blur_1D (row, tmp, b, m, iminus, uplus, rect->width, policy);
+      real_blur_1D (row, tmp, b, m, iminus, uplus, rect->width, nc, policy);
 
       gegl_buffer_set (dst, &cur_row, level, format, &row[3 * nc],
                        GEGL_AUTO_ROWSTRIDE);
@@ -580,7 +674,7 @@ iir_young_ver_blur (IirYoungBlur1dFunc   real_blur_1D,
                        GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
       get_boundaries (policy, col, rect->height, nc, &iminus, &uplus);
-      real_blur_1D (col, tmp, b, m, iminus, uplus, rect->height, policy);
+      real_blur_1D (col, tmp, b, m, iminus, uplus, rect->height, nc, policy);
 
       gegl_buffer_set (dst, &cur_col, level, format, &col[3 * nc],
                        GEGL_AUTO_ROWSTRIDE);
@@ -914,7 +1008,8 @@ filter_disambiguation (GeglGblur1dFilter filter,
 {
   if (filter == GEGL_GBLUR_1D_AUTO)
     {
-      /* Threshold 1.0 is arbitrary */
+      /* Threshold 1.0 is arbitrary - but we really do not want IIR for much
+         smaller stdevs */
       if (std_dev < 1.0)
         filter = GEGL_GBLUR_1D_FIR;
       else
@@ -966,6 +1061,8 @@ gegl_gblur_1d_prepare (GeglOperation *operation)
           o->user_data = iir_young_blur_1D_yA;
         }
     }
+  if (0)
+    o->user_data = iir_young_blur_1D_generic;
 
   gegl_operation_set_format (operation, "input", babl_format_with_space (format, space));
   gegl_operation_set_format (operation, "output", babl_format_with_space (format, space));
