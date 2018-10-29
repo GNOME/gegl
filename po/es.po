@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-10-11 07:37+0000\n"
-"PO-Revision-Date: 2018-10-20 17:06+0200\n"
+"POT-Creation-Date: 2018-10-26 11:27+0000\n"
+"PO-Revision-Date: 2018-10-27 11:30+0200\n"
 "Last-Translator: Rodrigo <rodhos92@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -570,6 +570,7 @@ msgstr ""
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
 #: operations/common-gpl3+/whirl-pinch.c:46
 #: operations/external/matting-levin.c:29
+#: operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "Radio"
 
@@ -1592,6 +1593,7 @@ msgstr ""
 #: operations/transform/scale-size.c:25
 #: operations/transform/scale-size-keepaspect.c:25
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
+#: operations/workshop/external/spyrograph.c:51
 msgid "X"
 msgstr "X"
 
@@ -1607,6 +1609,7 @@ msgstr "Desplazamiento horizontal de la sombra"
 #: operations/transform/scale-size.c:30
 #: operations/transform/scale-size-keepaspect.c:30
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
+#: operations/workshop/external/spyrograph.c:57
 msgid "Y"
 msgstr "Y"
 
@@ -3893,6 +3896,7 @@ msgstr "Apretar"
 
 #: operations/common/vignette.c:71 operations/common-gpl3+/spiral.c:64
 #: operations/workshop/bayer-matrix.c:51
+#: operations/workshop/external/spyrograph.c:69
 #: operations/workshop/linear-sinusoid.c:96
 msgid "Rotation"
 msgstr "Rotación"
@@ -3940,6 +3944,7 @@ msgid "Smooth warping"
 msgstr "Suavizar deformación"
 
 #: operations/common/warp.c:41 operations/external/path.c:40
+#: operations/workshop/external/spyrograph.c:85
 msgid "Hardness"
 msgstr "Dureza"
 
@@ -4010,24 +4015,42 @@ msgstr "Waterpíxeles"
 msgid "Superpixels based on the watershed transformation"
 msgstr "Superpíxeles basados en la transformación divisoria"
 
+#: operations/common/watershed-transform.c:27
+#: operations/common/watershed-transform.c:28
+msgid "Index of component flagging unlabelled pixels"
+msgstr "Índice de componentes que indican los píxeles sin etiquetar"
+
+#: operations/common/watershed-transform.c:31
+msgid "flag"
+msgstr "indicador"
+
+#: operations/common/watershed-transform.c:32
+msgid "Pointer to flag value for unlabelled pixels"
+msgstr "Puntero hacia el valor del indicador para píxeles sin etiquetar"
+
 # Watershed: Cuenca, punto de inflexión.
 # https://es.wikipedia.org/wiki/Transformaci%C3%B3n_divisoria
-#: operations/common/watershed-transform.c:383
+#: operations/common/watershed-transform.c:422
 msgid "Watershed Transform"
 msgstr "Transformación divisoria"
 
-#: operations/common/watershed-transform.c:386
+#: operations/common/watershed-transform.c:425
+#| msgid ""
+#| "Labels propagation by watershed transformation. Output and expected input "
+#| "are \"YA u32\" grayscale buffers. The Y value represents a label. When a "
+#| "pixel is not labelled, its alpha value has to be set to 0. The mandatory "
+#| "aux buffer is a \"Y u8\" image representing the priority levels."
 msgid ""
-"Labels propagation by watershed transformation. Output and expected input "
-"are \"YA u32\" grayscale buffers. The Y value represents a label. When a "
-"pixel is not labelled, its alpha value has to be set to 0. The mandatory aux "
-"buffer is a \"Y u8\" image representing the priority levels."
+"Labels propagation by watershed transformation. Output buffer will keep the "
+"input format. Unlabelled pixels are marked with a given flag value (by "
+"default: last component with NULL value). The mandatory aux buffer is a \"Y "
+"u8\" image representing the priority levels."
 msgstr ""
-"Propagación de etiquetas por transformación divisoria. La salida y la "
-"entrada esperada son búferes de escala de grises «YA u32». El valor Y "
-"representa una etiqueta. Cuando un píxel no está etiquetado, su valor alfa "
-"debe establecerse en 0. El búfer auxiliar obligatorio es una imagen «Y u8» "
-"que representa los niveles de prioridad."
+"Propagación de etiquetas por transformación divisoria. El búfer de salida "
+"mantendrá el formato de entrada. Los píxeles que no están etiquetados se "
+"marcan con un valor de indicador dado (de manera predeterminada es la última "
+"componente con valor NULL). El búfer auxiliar obligatorio es una imagen «Y "
+"u8» que representa los niveles de prioridad."
 
 #: operations/common/wavelet-blur-1d.c:29 operations/common/wavelet-blur.c:28
 msgid "Radius of the wavelet blur"
@@ -6889,27 +6912,27 @@ msgstr ""
 "Color de la pintura que usar para el relleno, use opacidad 0 para desactivar "
 "el rellenado"
 
-#: operations/external/path.c:29
+#: operations/external/path.c:29 operations/workshop/external/spyrograph.c:74
 msgid "Stroke Color"
 msgstr "Color del trazo"
 
-#: operations/external/path.c:30
+#: operations/external/path.c:30 operations/workshop/external/spyrograph.c:75
 msgid "Color of paint to use for stroking"
 msgstr "Color de la pintura que usar para el trazado"
 
-#: operations/external/path.c:32
+#: operations/external/path.c:32 operations/workshop/external/spyrograph.c:77
 msgid "Stroke width"
 msgstr "Anchura del trazo"
 
-#: operations/external/path.c:33
+#: operations/external/path.c:33 operations/workshop/external/spyrograph.c:78
 msgid "The width of the brush used to stroke the path"
 msgstr "Anchura del pincel que se usa para trazar la ruta"
 
-#: operations/external/path.c:36
+#: operations/external/path.c:36 operations/workshop/external/spyrograph.c:81
 msgid "Stroke opacity"
 msgstr "Opacidad del trazo"
 
-#: operations/external/path.c:37
+#: operations/external/path.c:37 operations/workshop/external/spyrograph.c:82
 msgid ""
 "Opacity of stroke, note, does not behave like SVG since at the moment "
 "stroking is done using an airbrush tool"
@@ -6917,7 +6940,7 @@ msgstr ""
 "Opacidad del trazo. Observe que no se comporta como SVG porque por el "
 "momento el trazado se hace con una herramienta de aerógrafo"
 
-#: operations/external/path.c:41
+#: operations/external/path.c:41 operations/workshop/external/spyrograph.c:86
 msgid "Hardness of the brush, 0.0 for a soft brush, 1.0 for a hard brush"
 msgstr "Dureza del pincel, 0.0 para un pincel blando, 1.0 para un pincel duro"
 
@@ -8222,6 +8245,90 @@ msgstr "Origen de fotogramas de Video4Linux2"
 #: operations/workshop/external/v4l2.c:776
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr "Entrada Video4Linux, capturadoras, webcams y dispositivos similares."
+
+#: operations/workshop/external/spyrograph.c:27
+msgid "Spyrograph"
+msgstr "Espirógrafo"
+
+#: operations/workshop/external/spyrograph.c:28
+msgid "EPITROCHOID"
+msgstr "Epitrocoide"
+
+#: operations/workshop/external/spyrograph.c:31
+#| msgid "Curve"
+msgid "Curve Type"
+msgstr "Tipo de curva"
+
+#: operations/workshop/external/spyrograph.c:34
+#| msgid "Wave type"
+msgid "Curve type"
+msgstr "Tipo de curva"
+
+#: operations/workshop/external/spyrograph.c:36
+msgid "Fixed Gear Teeth"
+msgstr "Dientes del engranaje fijo"
+
+#: operations/workshop/external/spyrograph.c:37
+#| msgid "Number of differing pixels."
+msgid "Number of teeth in fixed gear."
+msgstr "Número de dientes en el engranaje fijo."
+
+#: operations/workshop/external/spyrograph.c:40
+msgid "Moving Gear Teeth"
+msgstr "Dientes del engranaje en movimiento"
+
+#: operations/workshop/external/spyrograph.c:41
+msgid ""
+"Number of teeth in moving gear. Radius of moving gear, relative to radius of "
+"fixed gear, is determined by the proportion between the number of teeth in "
+"gears."
+msgstr ""
+"Número de dientes en el engranaje en movimiento. El radio del engranaje en "
+"movimiento, relativo al radio del engranaje fijo, se determina por la "
+"proporción entre el número de dientes en los engranajes."
+
+#: operations/workshop/external/spyrograph.c:46
+#| msgid "Percentile"
+msgid "Hole Percent"
+msgstr "Porcentaje del agujero"
+
+#: operations/workshop/external/spyrograph.c:47
+msgid ""
+"How far the hole is from the center of the moving gear. 100 means that the "
+"hole is at the gear's edge."
+msgstr ""
+"Distancia del agujero al centro del engranaje en movimiento. 100 implica que "
+"el agujero está en el borde del engranaje."
+
+#: operations/workshop/external/spyrograph.c:52
+#| msgid "X coordinates of the flare center"
+msgid "X coordinate of pattern center"
+msgstr "Coordenadas X del centro del patrón"
+
+#: operations/workshop/external/spyrograph.c:58
+#| msgid "Y coordinates of the flare center"
+msgid "Y coordinate of pattern center"
+msgstr "Coordenadas Y del centro del patrón"
+
+#: operations/workshop/external/spyrograph.c:64
+#| msgid "Radius of supernova"
+msgid "Radius of fixed gear"
+msgstr "Radio del engranaje fijo"
+
+#: operations/workshop/external/spyrograph.c:70
+#| msgid "Pattern rotation angle"
+msgid "Pattern rotation"
+msgstr "Rotación del patrón"
+
+#: operations/workshop/external/spyrograph.c:612
+#| msgid "Render Path"
+msgid "Render Spyrograph"
+msgstr "Trazar espirógrafo"
+
+#: operations/workshop/external/spyrograph.c:616
+#| msgid "Render a checkerboard pattern"
+msgid "Renders a Spyrograph pattern"
+msgstr "Traza un patrón de espirógrafo"
 
 #: operations/workshop/aces-rrt.c:134
 msgid "ACES RRT"
