@@ -135,7 +135,7 @@ gegl_sampler_init (GeglSampler *sampler)
 
   sampler->level[0].sampler_buffer =
     g_malloc (GEGL_SAMPLER_MAXIMUM_WIDTH *
-              GEGL_SAMPLER_MAXIMUM_HEIGHT * GEGL_SAMPLER_BPP);
+              GEGL_SAMPLER_MAXIMUM_HEIGHT * 5 * 4); // XXX : maxes out at 5 components
 }
 
 static void
@@ -192,8 +192,46 @@ gegl_sampler_prepare (GeglSampler *self)
   if (klass->prepare)
     klass->prepare (self);
 
-  self->interpolate_format = babl_format_with_space ("RaGaBaA float",
-                                         gegl_buffer_get_format(self->buffer));
+  {
+    const Babl *model = babl_format_get_model (gegl_buffer_get_format (self->buffer));
+
+    if (babl_model_is (model, "Y")||
+        babl_model_is (model, "Y'")||
+        babl_model_is (model, "Y~")||
+        babl_model_is (model, "YA")||
+        babl_model_is (model, "YaA")||
+        babl_model_is (model, "Y'aA")||
+        babl_model_is (model, "Y'A")||
+        babl_model_is (model, "Y~A"))
+    {
+       self->interpolate_format = babl_format_with_space ("YaA float",
+                                     gegl_buffer_get_format(self->buffer));
+    }
+#if 0
+    else if (babl_model_is (model, "RGB")||
+        babl_model_is (model, "R'G'B'")||
+        babl_model_is (model, "R~G~B~") ||
+        babl_model_is (model, "RGBA")||
+        babl_model_is (model, "R'G'B'A")||
+        babl_model_is (model, "R~G~B~A")||
+        babl_model_is (model, "RaGaBaA")||
+        babl_model_is (model, "R'aG'aB'aA")||
+        babl_model_is (model, "R~aG~aB~aA"))
+    {
+       self->interpolate_format = babl_format_with_space ("RaGaBaA float",
+                                     gegl_buffer_get_format(self->buffer));
+    }
+#endif
+    else
+    {
+       self->interpolate_format = babl_format_with_space ("RaGaBaA float",
+                                     gegl_buffer_get_format(self->buffer));
+    }
+
+    self->interpolate_bpp = babl_format_get_bytes_per_pixel (self->interpolate_format);
+    self->interpolate_components = babl_format_get_n_components (self->interpolate_format);
+  }
+
   if (!self->fish)
     self->fish = babl_fish (self->interpolate_format, self->format);
 
@@ -203,7 +241,6 @@ gegl_sampler_prepare (GeglSampler *self)
    */
   self->level[0].sampler_rectangle.width = 0;
   self->level[0].sampler_rectangle.height = 0;
-
 }
 
 void
@@ -292,21 +329,21 @@ gegl_sampler_get_from_mipmap (GeglSampler    *sampler,
                                                                   level_no);
       if (!level->sampler_buffer)
         level->sampler_buffer =
-          g_malloc (GEGL_SAMPLER_ROWSTRIDE * GEGL_SAMPLER_MAXIMUM_HEIGHT);
+          g_malloc (GEGL_SAMPLER_MAXIMUM_WIDTH * sampler->interpolate_bpp * GEGL_SAMPLER_MAXIMUM_HEIGHT);
 
       gegl_buffer_get (sampler->buffer,
                        &level->sampler_rectangle,
                        scale,
                        sampler->interpolate_format,
                        level->sampler_buffer,
-                       GEGL_SAMPLER_ROWSTRIDE,
+                       GEGL_SAMPLER_MAXIMUM_WIDTH * sampler->interpolate_bpp,
                        repeat_mode);
     }
 
   dx         = x - level->sampler_rectangle.x;
   dy         = y - level->sampler_rectangle.y;
   buffer_ptr = (guchar *) level->sampler_buffer;
-  sof        = (dx + dy * GEGL_SAMPLER_MAXIMUM_WIDTH) * GEGL_SAMPLER_BPP;
+  sof        = (dx + dy * GEGL_SAMPLER_MAXIMUM_WIDTH) * sampler->interpolate_bpp;
 
   return (gfloat*) (buffer_ptr + sof);
 }

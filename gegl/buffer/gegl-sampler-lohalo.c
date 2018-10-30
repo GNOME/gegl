@@ -364,7 +364,7 @@ ewa_update (const gint              j,
                   gfloat*  restrict ewa_newval)
 {
   const gint skip = j * channels + i * row_skip;
-
+  gint c;
   const gfloat weight = robidoux (c_major_x,
                                   c_major_y,
                                   c_minor_x,
@@ -373,10 +373,8 @@ ewa_update (const gint              j,
                                   y_0 - (gfloat) i);
 
   *total_weight += weight;
-  ewa_newval[0] += weight * input_ptr[ skip     ];
-  ewa_newval[1] += weight * input_ptr[ skip + 1 ];
-  ewa_newval[2] += weight * input_ptr[ skip + 2 ];
-  ewa_newval[3] += weight * input_ptr[ skip + 3 ];
+  for (c = 0; c < channels; c++)
+    ewa_newval[c] += weight * input_ptr[ skip + c ];
 }
 
 static void
@@ -392,7 +390,7 @@ gegl_sampler_lohalo_get (      GeglSampler*    restrict  self,
    * provided by gegl_sampler_get_ptr (self, ix, iy). pixels_per_row
    * corresponds to fetch_rectangle.width in gegl_sampler_get_ptr.
    */
-  const gint channels       = 4;
+  const gint channels       = self->interpolate_components;
   const gint pixels_per_row = GEGL_SAMPLER_MAXIMUM_WIDTH;
   const gint row_skip       = channels * pixels_per_row;
 
@@ -501,86 +499,52 @@ gegl_sampler_lohalo_get (      GeglSampler*    restrict  self,
   const gfloat tre = ay - qua - yt3;
   const gfloat two = xt2 - one + xt3;
   const gfloat dos = yt2 - uno + yt3;
-
+  gint c;
   /*
    * The newval array will contain one computed resampled value per
    * channel:
    */
   gfloat newval[channels];
-  newval[0] =
+  for (c = 0; c < channels-1; c++)
+   newval[c] =
     extended_sigmoidal (
-      uno * ( one * inverse_sigmoidal (input_ptr[ uno_one_shift ]) +
-              two * inverse_sigmoidal (input_ptr[ uno_two_shift ]) +
-              thr * inverse_sigmoidal (input_ptr[ uno_thr_shift ]) +
-              fou * inverse_sigmoidal (input_ptr[ uno_fou_shift ]) ) +
-      dos * ( one * inverse_sigmoidal (input_ptr[ dos_one_shift ]) +
-              two * inverse_sigmoidal (input_ptr[ dos_two_shift ]) +
-              thr * inverse_sigmoidal (input_ptr[ dos_thr_shift ]) +
-              fou * inverse_sigmoidal (input_ptr[ dos_fou_shift ]) ) +
-      tre * ( one * inverse_sigmoidal (input_ptr[ tre_one_shift ]) +
-              two * inverse_sigmoidal (input_ptr[ tre_two_shift ]) +
-              thr * inverse_sigmoidal (input_ptr[ tre_thr_shift ]) +
-              fou * inverse_sigmoidal (input_ptr[ tre_fou_shift ]) ) +
-      qua * ( one * inverse_sigmoidal (input_ptr[ qua_one_shift ]) +
-              two * inverse_sigmoidal (input_ptr[ qua_two_shift ]) +
-              thr * inverse_sigmoidal (input_ptr[ qua_thr_shift ]) +
-              fou * inverse_sigmoidal (input_ptr[ qua_fou_shift ]) ) );
-  newval[1] =
-    extended_sigmoidal (
-      uno * ( one * inverse_sigmoidal (input_ptr[ uno_one_shift + 1 ]) +
-              two * inverse_sigmoidal (input_ptr[ uno_two_shift + 1 ]) +
-              thr * inverse_sigmoidal (input_ptr[ uno_thr_shift + 1 ]) +
-              fou * inverse_sigmoidal (input_ptr[ uno_fou_shift + 1 ]) ) +
-      dos * ( one * inverse_sigmoidal (input_ptr[ dos_one_shift + 1 ]) +
-              two * inverse_sigmoidal (input_ptr[ dos_two_shift + 1 ]) +
-              thr * inverse_sigmoidal (input_ptr[ dos_thr_shift + 1 ]) +
-              fou * inverse_sigmoidal (input_ptr[ dos_fou_shift + 1 ]) ) +
-      tre * ( one * inverse_sigmoidal (input_ptr[ tre_one_shift + 1 ]) +
-              two * inverse_sigmoidal (input_ptr[ tre_two_shift + 1 ]) +
-              thr * inverse_sigmoidal (input_ptr[ tre_thr_shift + 1 ]) +
-              fou * inverse_sigmoidal (input_ptr[ tre_fou_shift + 1 ]) ) +
-      qua * ( one * inverse_sigmoidal (input_ptr[ qua_one_shift + 1 ]) +
-              two * inverse_sigmoidal (input_ptr[ qua_two_shift + 1 ]) +
-              thr * inverse_sigmoidal (input_ptr[ qua_thr_shift + 1 ]) +
-              fou * inverse_sigmoidal (input_ptr[ qua_fou_shift + 1 ]) ) );
-  newval[2] =
-    extended_sigmoidal (
-      uno * ( one * inverse_sigmoidal (input_ptr[ uno_one_shift + 2 ]) +
-              two * inverse_sigmoidal (input_ptr[ uno_two_shift + 2 ]) +
-              thr * inverse_sigmoidal (input_ptr[ uno_thr_shift + 2 ]) +
-              fou * inverse_sigmoidal (input_ptr[ uno_fou_shift + 2 ]) ) +
-      dos * ( one * inverse_sigmoidal (input_ptr[ dos_one_shift + 2 ]) +
-              two * inverse_sigmoidal (input_ptr[ dos_two_shift + 2 ]) +
-              thr * inverse_sigmoidal (input_ptr[ dos_thr_shift + 2 ]) +
-              fou * inverse_sigmoidal (input_ptr[ dos_fou_shift + 2 ]) ) +
-      tre * ( one * inverse_sigmoidal (input_ptr[ tre_one_shift + 2 ]) +
-              two * inverse_sigmoidal (input_ptr[ tre_two_shift + 2 ]) +
-              thr * inverse_sigmoidal (input_ptr[ tre_thr_shift + 2 ]) +
-              fou * inverse_sigmoidal (input_ptr[ tre_fou_shift + 2 ]) ) +
-      qua * ( one * inverse_sigmoidal (input_ptr[ qua_one_shift + 2 ]) +
-              two * inverse_sigmoidal (input_ptr[ qua_two_shift + 2 ]) +
-              thr * inverse_sigmoidal (input_ptr[ qua_thr_shift + 2 ]) +
-              fou * inverse_sigmoidal (input_ptr[ qua_fou_shift + 2 ]) ) );
+      uno * ( one * inverse_sigmoidal (input_ptr[ uno_one_shift + c ]) +
+              two * inverse_sigmoidal (input_ptr[ uno_two_shift + c ]) +
+              thr * inverse_sigmoidal (input_ptr[ uno_thr_shift + c ]) +
+              fou * inverse_sigmoidal (input_ptr[ uno_fou_shift + c ]) ) +
+      dos * ( one * inverse_sigmoidal (input_ptr[ dos_one_shift + c ]) +
+              two * inverse_sigmoidal (input_ptr[ dos_two_shift + c ]) +
+              thr * inverse_sigmoidal (input_ptr[ dos_thr_shift + c ]) +
+              fou * inverse_sigmoidal (input_ptr[ dos_fou_shift + c ]) ) +
+      tre * ( one * inverse_sigmoidal (input_ptr[ tre_one_shift + c ]) +
+              two * inverse_sigmoidal (input_ptr[ tre_two_shift + c ]) +
+              thr * inverse_sigmoidal (input_ptr[ tre_thr_shift + c ]) +
+              fou * inverse_sigmoidal (input_ptr[ tre_fou_shift + c ]) ) +
+      qua * ( one * inverse_sigmoidal (input_ptr[ qua_one_shift + c ]) +
+              two * inverse_sigmoidal (input_ptr[ qua_two_shift + c ]) +
+              thr * inverse_sigmoidal (input_ptr[ qua_thr_shift + c ]) +
+              fou * inverse_sigmoidal (input_ptr[ qua_fou_shift + c ]) ) );
   /*
    * It appears that it is a bad idea to sigmoidize the transparency
    * channel (in RaGaBaA, at least). So don't.
    */
-  newval[3] = uno * ( one * input_ptr[ uno_one_shift + 3 ] +
-                      two * input_ptr[ uno_two_shift + 3 ] +
-                      thr * input_ptr[ uno_thr_shift + 3 ] +
-                      fou * input_ptr[ uno_fou_shift + 3 ] ) +
-              dos * ( one * input_ptr[ dos_one_shift + 3 ] +
-                      two * input_ptr[ dos_two_shift + 3 ] +
-                      thr * input_ptr[ dos_thr_shift + 3 ] +
-                      fou * input_ptr[ dos_fou_shift + 3 ] ) +
-              tre * ( one * input_ptr[ tre_one_shift + 3 ] +
-                      two * input_ptr[ tre_two_shift + 3 ] +
-                      thr * input_ptr[ tre_thr_shift + 3 ] +
-                      fou * input_ptr[ tre_fou_shift + 3 ] ) +
-              qua * ( one * input_ptr[ qua_one_shift + 3 ] +
-                      two * input_ptr[ qua_two_shift + 3 ] +
-                      thr * input_ptr[ qua_thr_shift + 3 ] +
-                      fou * input_ptr[ qua_fou_shift + 3 ] );
+  newval[channels-1] =
+              uno * ( one * input_ptr[ uno_one_shift + channels - 1 ] +
+                      two * input_ptr[ uno_two_shift + channels - 1 ] +
+                      thr * input_ptr[ uno_thr_shift + channels - 1 ] +
+                      fou * input_ptr[ uno_fou_shift + channels - 1 ] ) +
+              dos * ( one * input_ptr[ dos_one_shift + channels - 1 ] +
+                      two * input_ptr[ dos_two_shift + channels - 1 ] +
+                      thr * input_ptr[ dos_thr_shift + channels - 1 ] +
+                      fou * input_ptr[ dos_fou_shift + channels - 1 ] ) +
+              tre * ( one * input_ptr[ tre_one_shift + channels - 1 ] +
+                      two * input_ptr[ tre_two_shift + channels - 1 ] +
+                      thr * input_ptr[ tre_thr_shift + channels - 1 ] +
+                      fou * input_ptr[ tre_fou_shift + channels - 1 ] ) +
+              qua * ( one * input_ptr[ qua_one_shift + channels - 1 ] +
+                      two * input_ptr[ qua_two_shift + channels - 1 ] +
+                      thr * input_ptr[ qua_thr_shift + channels - 1 ] +
+                      fou * input_ptr[ qua_fou_shift + channels - 1 ] );
 
   {
     /*
@@ -1025,10 +989,9 @@ gegl_sampler_lohalo_get (      GeglSampler*    restrict  self,
            */
           const gfloat beta = twice_s1s1 > (gdouble) 2. ? (gfloat) ( ( (gdouble) 1.0 - theta ) / total_weight ) : (gfloat) 0.;
           const gfloat newtheta = twice_s1s1 > (gdouble) 2. ? theta : (gfloat) 1.;
-          newval[0] = newtheta * newval[0] + beta * ewa_newval[0];
-          newval[1] = newtheta * newval[1] + beta * ewa_newval[1];
-          newval[2] = newtheta * newval[2] + beta * ewa_newval[2];
-          newval[3] = newtheta * newval[3] + beta * ewa_newval[3];
+          gint c;
+          for (c = 0; c < channels; c++)
+            newval[c] = newtheta * newval[c] + beta * ewa_newval[c];
         }
       }
 

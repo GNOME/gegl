@@ -77,15 +77,15 @@ gegl_sampler_linear_get (     GeglSampler       *self,
                         const gdouble            absolute_x,
                         const gdouble            absolute_y,
                               GeglBufferMatrix2 *scale,
-                              void            *output,
-                              GeglAbyssPolicy  repeat_mode)
+                              void              *output,
+                              GeglAbyssPolicy    repeat_mode)
 {
+  gint nc = self->interpolate_components;
   if (! _gegl_sampler_box_get (self, absolute_x, absolute_y, scale,
                                output, repeat_mode,
                                GEGL_SAMPLER_NEAREST, 4))
   {
     const gint pixels_per_buffer_row = GEGL_SAMPLER_MAXIMUM_WIDTH;
-    const gint channels = 4;
 
     /*
      * The "-1/2"s are there because we want the index of the pixel to
@@ -125,16 +125,16 @@ gegl_sampler_linear_get (     GeglSampler       *self,
     /*
      * Load top row:
      */
-    const gfloat top_left_0 = *in_bptr++;
-    const gfloat top_left_1 = *in_bptr++;
-    const gfloat top_left_2 = *in_bptr++;
-    const gfloat top_left_3 = *in_bptr++;
-    const gfloat top_rite_0 = *in_bptr++;
-    const gfloat top_rite_1 = *in_bptr++;
-    const gfloat top_rite_2 = *in_bptr++;
-    const gfloat top_rite_3 = *in_bptr;
+    gfloat top_left[nc];
+    gfloat top_rite[nc];
 
-    in_bptr += 1 + ( pixels_per_buffer_row - 2 ) * channels;
+    for (gint c = 0; c < nc; c++)
+      top_left[c] = *in_bptr++;
+
+    for (gint c = 0; c < nc; c++)
+      top_rite[c] = *in_bptr++;
+
+    in_bptr += ( pixels_per_buffer_row - 2 ) * nc;
 
     {
     /*
@@ -148,59 +148,33 @@ gegl_sampler_linear_get (     GeglSampler       *self,
     /*
      * Load bottom row:
      */
-    const gfloat bot_left_0 = *in_bptr++;
-    const gfloat bot_left_1 = *in_bptr++;
-    const gfloat bot_left_2 = *in_bptr++;
-    const gfloat bot_left_3 = *in_bptr++;
-    const gfloat bot_rite_0 = *in_bptr++;
-    const gfloat bot_rite_1 = *in_bptr++;
-    const gfloat bot_rite_2 = *in_bptr++;
-    const gfloat bot_rite_3 = *in_bptr;
+    gfloat bot_left[4];
+    gfloat bot_rite[4];
+    for (gint c = 0; c < nc; c++)
+      bot_left[c] = *in_bptr++;
+    for (gint c = 0; c < nc; c++)
+      bot_rite[c] = *in_bptr++;
 
     /*
      * Last bilinear weight:
      */
+    {
     const gfloat w_times_z = (gfloat) 1. - ( x + w_times_y );
 
     gfloat newval[4];
 
-    newval[0] =
-      x_times_y * bot_rite_0
-      +
-      w_times_y * bot_left_0
-      +
-      x_times_z * top_rite_0
-      +
-      w_times_z * top_left_0;
-
-    newval[1] =
-      x_times_y * bot_rite_1
-      +
-      w_times_y * bot_left_1
-      +
-      x_times_z * top_rite_1
-      +
-      w_times_z * top_left_1;
-
-    newval[2] =
-      x_times_y * bot_rite_2
-      +
-      w_times_y * bot_left_2
-      +
-      x_times_z * top_rite_2
-      +
-      w_times_z * top_left_2;
-
-    newval[3] =
-      x_times_y * bot_rite_3
-      +
-      w_times_y * bot_left_3
-      +
-      x_times_z * top_rite_3
-      +
-      w_times_z * top_left_3;
+      for (gint c = 0; c < nc; c++)
+        newval[c] =
+        x_times_y * bot_rite[c]
+        +
+        w_times_y * bot_left[c]
+        +
+        x_times_z * top_rite[c]
+        +
+        w_times_z * top_left[c];
 
       babl_process (self->fish, newval, output, 1);
+    }
     }
   }
 }

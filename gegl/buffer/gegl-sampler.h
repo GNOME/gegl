@@ -43,8 +43,6 @@ G_BEGIN_DECLS
 
 #define GEGL_SAMPLER_MAXIMUM_HEIGHT 64
 #define GEGL_SAMPLER_MAXIMUM_WIDTH (GEGL_SAMPLER_MAXIMUM_HEIGHT)
-#define GEGL_SAMPLER_BPP 16
-#define GEGL_SAMPLER_ROWSTRIDE (GEGL_SAMPLER_MAXIMUM_WIDTH * GEGL_SAMPLER_BPP)
 
 typedef struct _GeglSamplerClass GeglSamplerClass;
 
@@ -70,6 +68,8 @@ struct _GeglSampler
   const Babl        *format;
   const Babl        *interpolate_format;
   const Babl        *fish;
+  gint               interpolate_bpp;
+  gint               interpolate_components;
   GeglSampler       *point_sampler;
   GeglSamplerGetFun  point_sampler_get_fun;
 
@@ -196,7 +196,7 @@ gegl_sampler_get_ptr (GeglSampler    *sampler,
                        1.0,
                        sampler->interpolate_format,
                        level->sampler_buffer,
-                       GEGL_SAMPLER_MAXIMUM_WIDTH * GEGL_SAMPLER_BPP,
+                       GEGL_SAMPLER_MAXIMUM_WIDTH * sampler->interpolate_bpp,
                        repeat_mode);
       level->last_x = x;
       level->last_y = y;
@@ -206,7 +206,7 @@ gegl_sampler_get_ptr (GeglSampler    *sampler,
 
   dx         = x - level->sampler_rectangle.x;
   dy         = y - level->sampler_rectangle.y;
-  sof        = (dx + dy * GEGL_SAMPLER_MAXIMUM_WIDTH) * GEGL_SAMPLER_BPP;
+  sof        = (dx + dy * GEGL_SAMPLER_MAXIMUM_WIDTH) * sampler->interpolate_bpp;
   buffer_ptr = (guchar *) level->sampler_buffer;
 
   delta_x = level->last_x - x;
@@ -229,10 +229,14 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                        GeglSamplerType           point_sampler_type,
                        gint                      n_samples)
 {
+  gint channels = self->interpolate_components;
   if (scale && fabs (gegl_buffer_matrix2_determinant (scale)) >= 4.0)
     {
-      gfloat  result[4] = {0,0,0,0};
+      gfloat  result[channels];
       gdouble uv_samples_inv;
+
+      for (gint c = 0; c < channels; c++)
+        result[c] = 0.0f;
 
       if (! self->point_sampler)
         {
@@ -315,10 +319,10 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
               for (u = 0; u < u_samples; u++)
                 {
                   int c;
-                  gfloat input[4];
+                  gfloat input[channels];
                   self->point_sampler_get_fun (self->point_sampler,
                                                x, y, NULL, input, repeat_mode);
-                  for (c = 0; c < 4; c++)
+                  for (c = 0; c < channels; c++)
                     result[c] += input[c];
 
                   x += u_dx;
@@ -330,10 +334,8 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
             }
         }
 
-      result[0] *= uv_samples_inv;
-      result[1] *= uv_samples_inv;
-      result[2] *= uv_samples_inv;
-      result[3] *= uv_samples_inv;
+      for (gint c = 0; c < channels; c++)
+        result[c] *= uv_samples_inv;
 
       babl_process (self->fish, result, output, 1);
 

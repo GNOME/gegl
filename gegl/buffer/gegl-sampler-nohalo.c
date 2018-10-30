@@ -17,6 +17,7 @@
  * 2012 (c) Nicolas Robidoux
  * 2009-2011 (c) Nicolas Robidoux, Adam Turcotte, Chantal Racette,
  * Anthony Thyssen, John Cupitt and Øyvind Kolås.
+ * 2018 Øyvind Kolås
  */
 
 /*
@@ -1205,12 +1206,11 @@ ewa_update (const gint              j,
                                 c_minor_y,
                                 x_0 - (gfloat) j,
                                 y_0 - (gfloat) i);
+  gint c;
 
   *total_weight += weight;
-  ewa_newval[0] += weight * input_ptr[ skip     ];
-  ewa_newval[1] += weight * input_ptr[ skip + 1 ];
-  ewa_newval[2] += weight * input_ptr[ skip + 2 ];
-  ewa_newval[3] += weight * input_ptr[ skip + 3 ];
+  for (c = 0; c < channels; c++)
+    ewa_newval[c] += weight * input_ptr[ skip + c ];
 }
 
 static void
@@ -1226,7 +1226,7 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
    * provided by gegl_sampler_get_ptr (self, ix, iy). pixels_per_row
    * corresponds to fetch_rectangle.width in gegl_sampler_get_ptr.
    */
-  const gint channels       = 4;
+  const gint channels       = self->interpolate_components;
   const gint pixels_per_row = GEGL_SAMPLER_MAXIMUM_WIDTH;
   const gint row_skip       = channels * pixels_per_row;
 
@@ -1311,75 +1311,12 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
   const gint cin_thr_shift =                    shift_forw_2_row;
   const gint cin_fou_shift = shift_forw_1_pix + shift_forw_2_row;
 
-  /*
-   * Channel by channel computation of the new pixel values:
-   */
-  gfloat uno_one_0, uno_two_0, uno_thr_0, uno_fou_0;
-  gfloat dos_one_0, dos_two_0, dos_thr_0, dos_fou_0;
-  gfloat tre_one_0, tre_two_0, tre_thr_0, tre_fou_0;
-  gfloat qua_one_0, qua_two_0, qua_thr_0, qua_fou_0;
-
-  gfloat uno_one_1, uno_two_1, uno_thr_1, uno_fou_1;
-  gfloat dos_one_1, dos_two_1, dos_thr_1, dos_fou_1;
-  gfloat tre_one_1, tre_two_1, tre_thr_1, tre_fou_1;
-  gfloat qua_one_1, qua_two_1, qua_thr_1, qua_fou_1;
-
-  gfloat uno_one_2, uno_two_2, uno_thr_2, uno_fou_2;
-  gfloat dos_one_2, dos_two_2, dos_thr_2, dos_fou_2;
-  gfloat tre_one_2, tre_two_2, tre_thr_2, tre_fou_2;
-  gfloat qua_one_2, qua_two_2, qua_thr_2, qua_fou_2;
-
-  gfloat uno_one_3, uno_two_3, uno_thr_3, uno_fou_3;
-  gfloat dos_one_3, dos_two_3, dos_thr_3, dos_fou_3;
-  gfloat tre_one_3, tre_two_3, tre_thr_3, tre_fou_3;
-  gfloat qua_one_3, qua_two_3, qua_thr_3, qua_fou_3;
 
   /*
    * The newval array will contain one computed resampled value per
    * channel:
    */
   gfloat newval[channels];
-
-  /*
-   * First channel:
-   */
-  nohalo_subdivision (input_ptr[ uno_two_shift ],
-                      input_ptr[ uno_thr_shift ],
-                      input_ptr[ uno_fou_shift ],
-                      input_ptr[ dos_one_shift ],
-                      input_ptr[ dos_two_shift ],
-                      input_ptr[ dos_thr_shift ],
-                      input_ptr[ dos_fou_shift ],
-                      input_ptr[ dos_fiv_shift ],
-                      input_ptr[ tre_one_shift ],
-                      input_ptr[ tre_two_shift ],
-                      input_ptr[ tre_thr_shift ],
-                      input_ptr[ tre_fou_shift ],
-                      input_ptr[ tre_fiv_shift ],
-                      input_ptr[ qua_one_shift ],
-                      input_ptr[ qua_two_shift ],
-                      input_ptr[ qua_thr_shift ],
-                      input_ptr[ qua_fou_shift ],
-                      input_ptr[ qua_fiv_shift ],
-                      input_ptr[ cin_two_shift ],
-                      input_ptr[ cin_thr_shift ],
-                      input_ptr[ cin_fou_shift ],
-                      &uno_one_0,
-                      &uno_two_0,
-                      &uno_thr_0,
-                      &uno_fou_0,
-                      &dos_one_0,
-                      &dos_two_0,
-                      &dos_thr_0,
-                      &dos_fou_0,
-                      &tre_one_0,
-                      &tre_two_0,
-                      &tre_thr_0,
-                      &tre_fou_0,
-                      &qua_one_0,
-                      &qua_two_0,
-                      &qua_thr_0,
-                      &qua_fou_0);
 
   {
     /*
@@ -1466,7 +1403,54 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
     const gfloat c11dxdy =
       xm1over2_times_ym1over2 * xp1over2sq_times_yp1over2sq;
 
-    newval[0] = lbb (c00,
+  for (gint c = 0; c < channels; c++)
+  {
+  /*
+   * Channel by channel computation of the new pixel values:
+   */
+  gfloat uno_one, uno_two, uno_thr, uno_fou;
+  gfloat dos_one, dos_two, dos_thr, dos_fou;
+  gfloat tre_one, tre_two, tre_thr, tre_fou;
+  gfloat qua_one, qua_two, qua_thr, qua_fou;
+  nohalo_subdivision (input_ptr[ uno_two_shift + c],
+                      input_ptr[ uno_thr_shift + c],
+                      input_ptr[ uno_fou_shift + c],
+                      input_ptr[ dos_one_shift + c],
+                      input_ptr[ dos_two_shift + c],
+                      input_ptr[ dos_thr_shift + c],
+                      input_ptr[ dos_fou_shift + c],
+                      input_ptr[ dos_fiv_shift + c],
+                      input_ptr[ tre_one_shift + c],
+                      input_ptr[ tre_two_shift + c],
+                      input_ptr[ tre_thr_shift + c],
+                      input_ptr[ tre_fou_shift + c],
+                      input_ptr[ tre_fiv_shift + c],
+                      input_ptr[ qua_one_shift + c],
+                      input_ptr[ qua_two_shift + c],
+                      input_ptr[ qua_thr_shift + c],
+                      input_ptr[ qua_fou_shift + c],
+                      input_ptr[ qua_fiv_shift + c],
+                      input_ptr[ cin_two_shift + c],
+                      input_ptr[ cin_thr_shift + c],
+                      input_ptr[ cin_fou_shift + c],
+                      &uno_one,
+                      &uno_two,
+                      &uno_thr,
+                      &uno_fou,
+                      &dos_one,
+                      &dos_two,
+                      &dos_thr,
+                      &dos_fou,
+                      &tre_one,
+                      &tre_two,
+                      &tre_thr,
+                      &tre_fou,
+                      &qua_one,
+                      &qua_two,
+                      &qua_thr,
+                      &qua_fou);
+
+    newval[c] = lbb (c00,
                      c10,
                      c01,
                      c11,
@@ -1482,238 +1466,24 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
                      c10dxdy,
                      c01dxdy,
                      c11dxdy,
-                     uno_one_0,
-                     uno_two_0,
-                     uno_thr_0,
-                     uno_fou_0,
-                     dos_one_0,
-                     dos_two_0,
-                     dos_thr_0,
-                     dos_fou_0,
-                     tre_one_0,
-                     tre_two_0,
-                     tre_thr_0,
-                     tre_fou_0,
-                     qua_one_0,
-                     qua_two_0,
-                     qua_thr_0,
-                     qua_fou_0);
-    /*
-     * Second channel:
-     */
-    nohalo_subdivision (input_ptr[ uno_two_shift + 1 ],
-                        input_ptr[ uno_thr_shift + 1 ],
-                        input_ptr[ uno_fou_shift + 1 ],
-                        input_ptr[ dos_one_shift + 1 ],
-                        input_ptr[ dos_two_shift + 1 ],
-                        input_ptr[ dos_thr_shift + 1 ],
-                        input_ptr[ dos_fou_shift + 1 ],
-                        input_ptr[ dos_fiv_shift + 1 ],
-                        input_ptr[ tre_one_shift + 1 ],
-                        input_ptr[ tre_two_shift + 1 ],
-                        input_ptr[ tre_thr_shift + 1 ],
-                        input_ptr[ tre_fou_shift + 1 ],
-                        input_ptr[ tre_fiv_shift + 1 ],
-                        input_ptr[ qua_one_shift + 1 ],
-                        input_ptr[ qua_two_shift + 1 ],
-                        input_ptr[ qua_thr_shift + 1 ],
-                        input_ptr[ qua_fou_shift + 1 ],
-                        input_ptr[ qua_fiv_shift + 1 ],
-                        input_ptr[ cin_two_shift + 1 ],
-                        input_ptr[ cin_thr_shift + 1 ],
-                        input_ptr[ cin_fou_shift + 1 ],
-                        &uno_one_1,
-                        &uno_two_1,
-                        &uno_thr_1,
-                        &uno_fou_1,
-                        &dos_one_1,
-                        &dos_two_1,
-                        &dos_thr_1,
-                        &dos_fou_1,
-                        &tre_one_1,
-                        &tre_two_1,
-                        &tre_thr_1,
-                        &tre_fou_1,
-                        &qua_one_1,
-                        &qua_two_1,
-                        &qua_thr_1,
-                        &qua_fou_1);
-    newval[1] = lbb (c00,
-                     c10,
-                     c01,
-                     c11,
-                     c00dx,
-                     c10dx,
-                     c01dx,
-                     c11dx,
-                     c00dy,
-                     c10dy,
-                     c01dy,
-                     c11dy,
-                     c00dxdy,
-                     c10dxdy,
-                     c01dxdy,
-                     c11dxdy,
-                     uno_one_1,
-                     uno_two_1,
-                     uno_thr_1,
-                     uno_fou_1,
-                     dos_one_1,
-                     dos_two_1,
-                     dos_thr_1,
-                     dos_fou_1,
-                     tre_one_1,
-                     tre_two_1,
-                     tre_thr_1,
-                     tre_fou_1,
-                     qua_one_1,
-                     qua_two_1,
-                     qua_thr_1,
-                     qua_fou_1);
-    /*
-     * Third channel:
-     */
-    nohalo_subdivision (input_ptr[ uno_two_shift + 2 ],
-                        input_ptr[ uno_thr_shift + 2 ],
-                        input_ptr[ uno_fou_shift + 2 ],
-                        input_ptr[ dos_one_shift + 2 ],
-                        input_ptr[ dos_two_shift + 2 ],
-                        input_ptr[ dos_thr_shift + 2 ],
-                        input_ptr[ dos_fou_shift + 2 ],
-                        input_ptr[ dos_fiv_shift + 2 ],
-                        input_ptr[ tre_one_shift + 2 ],
-                        input_ptr[ tre_two_shift + 2 ],
-                        input_ptr[ tre_thr_shift + 2 ],
-                        input_ptr[ tre_fou_shift + 2 ],
-                        input_ptr[ tre_fiv_shift + 2 ],
-                        input_ptr[ qua_one_shift + 2 ],
-                        input_ptr[ qua_two_shift + 2 ],
-                        input_ptr[ qua_thr_shift + 2 ],
-                        input_ptr[ qua_fou_shift + 2 ],
-                        input_ptr[ qua_fiv_shift + 2 ],
-                        input_ptr[ cin_two_shift + 2 ],
-                        input_ptr[ cin_thr_shift + 2 ],
-                        input_ptr[ cin_fou_shift + 2 ],
-                        &uno_one_2,
-                        &uno_two_2,
-                        &uno_thr_2,
-                        &uno_fou_2,
-                        &dos_one_2,
-                        &dos_two_2,
-                        &dos_thr_2,
-                        &dos_fou_2,
-                        &tre_one_2,
-                        &tre_two_2,
-                        &tre_thr_2,
-                        &tre_fou_2,
-                        &qua_one_2,
-                        &qua_two_2,
-                        &qua_thr_2,
-                        &qua_fou_2);
-    newval[2] = lbb (c00,
-                     c10,
-                     c01,
-                     c11,
-                     c00dx,
-                     c10dx,
-                     c01dx,
-                     c11dx,
-                     c00dy,
-                     c10dy,
-                     c01dy,
-                     c11dy,
-                     c00dxdy,
-                     c10dxdy,
-                     c01dxdy,
-                     c11dxdy,
-                     uno_one_2,
-                     uno_two_2,
-                     uno_thr_2,
-                     uno_fou_2,
-                     dos_one_2,
-                     dos_two_2,
-                     dos_thr_2,
-                     dos_fou_2,
-                     tre_one_2,
-                     tre_two_2,
-                     tre_thr_2,
-                     tre_fou_2,
-                     qua_one_2,
-                     qua_two_2,
-                     qua_thr_2,
-                     qua_fou_2);
-    /*
-     * Fourth channel:
-     */
-    nohalo_subdivision (input_ptr[ uno_two_shift + 3 ],
-                        input_ptr[ uno_thr_shift + 3 ],
-                        input_ptr[ uno_fou_shift + 3 ],
-                        input_ptr[ dos_one_shift + 3 ],
-                        input_ptr[ dos_two_shift + 3 ],
-                        input_ptr[ dos_thr_shift + 3 ],
-                        input_ptr[ dos_fou_shift + 3 ],
-                        input_ptr[ dos_fiv_shift + 3 ],
-                        input_ptr[ tre_one_shift + 3 ],
-                        input_ptr[ tre_two_shift + 3 ],
-                        input_ptr[ tre_thr_shift + 3 ],
-                        input_ptr[ tre_fou_shift + 3 ],
-                        input_ptr[ tre_fiv_shift + 3 ],
-                        input_ptr[ qua_one_shift + 3 ],
-                        input_ptr[ qua_two_shift + 3 ],
-                        input_ptr[ qua_thr_shift + 3 ],
-                        input_ptr[ qua_fou_shift + 3 ],
-                        input_ptr[ qua_fiv_shift + 3 ],
-                        input_ptr[ cin_two_shift + 3 ],
-                        input_ptr[ cin_thr_shift + 3 ],
-                        input_ptr[ cin_fou_shift + 3 ],
-                        &uno_one_3,
-                        &uno_two_3,
-                        &uno_thr_3,
-                        &uno_fou_3,
-                        &dos_one_3,
-                        &dos_two_3,
-                        &dos_thr_3,
-                        &dos_fou_3,
-                        &tre_one_3,
-                        &tre_two_3,
-                        &tre_thr_3,
-                        &tre_fou_3,
-                        &qua_one_3,
-                        &qua_two_3,
-                        &qua_thr_3,
-                        &qua_fou_3);
-    newval[3] = lbb (c00,
-                     c10,
-                     c01,
-                     c11,
-                     c00dx,
-                     c10dx,
-                     c01dx,
-                     c11dx,
-                     c00dy,
-                     c10dy,
-                     c01dy,
-                     c11dy,
-                     c00dxdy,
-                     c10dxdy,
-                     c01dxdy,
-                     c11dxdy,
-                     uno_one_3,
-                     uno_two_3,
-                     uno_thr_3,
-                     uno_fou_3,
-                     dos_one_3,
-                     dos_two_3,
-                     dos_thr_3,
-                     dos_fou_3,
-                     tre_one_3,
-                     tre_two_3,
-                     tre_thr_3,
-                     tre_fou_3,
-                     qua_one_3,
-                     qua_two_3,
-                     qua_thr_3,
-                     qua_fou_3);
+                     uno_one,
+                     uno_two,
+                     uno_thr,
+                     uno_fou,
+                     dos_one,
+                     dos_two,
+                     dos_thr,
+                     dos_fou,
+                     tre_one,
+                     tre_two,
+                     tre_thr,
+                     tre_fou,
+                     qua_one,
+                     qua_two,
+                     qua_thr,
+                     qua_fou);
+  }
+
 
     {
       /*
@@ -1925,7 +1695,7 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
        * ImageMagick (now fixed, thanks to Cristy, the lead dev).
        */
       const double sqrt_discriminant =
-        sqrt (discriminant > 0. ? discriminant : 0.);
+        discriminant > 0. ? sqrt (discriminant) : 0.;
 
       /*
        * Initially, we only compute the squares of the singular
@@ -2109,10 +1879,8 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
            * Storage for the EWA contribution:
            */
           gfloat ewa_newval[channels];
-          ewa_newval[0] = (gfloat) 0;
-          ewa_newval[1] = (gfloat) 0;
-          ewa_newval[2] = (gfloat) 0;
-          ewa_newval[3] = (gfloat) 0;
+          for (gint c = 0; c < channels; c++)
+            ewa_newval[c] = (gfloat) 0;
 
           {
             gint i = out_top_0;
@@ -2143,10 +1911,8 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
                */
               const gfloat beta =
                 (gfloat) ( ( (gdouble) 1.0 - theta ) / total_weight );
-              newval[0] = theta * newval[0] + beta * ewa_newval[0];
-              newval[1] = theta * newval[1] + beta * ewa_newval[1];
-              newval[2] = theta * newval[2] + beta * ewa_newval[2];
-              newval[3] = theta * newval[3] + beta * ewa_newval[3];
+              for (gint c = 0; c < channels; c++)
+                newval[c] = theta * newval[c] + beta * ewa_newval[c];
             }
           }
         }

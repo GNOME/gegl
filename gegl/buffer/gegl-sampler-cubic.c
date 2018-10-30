@@ -15,6 +15,7 @@
  *
  * Copyright 2012 Nicolas Robidoux based on earlier code
  *           2012 Massimo Valentini
+ *           2018 Øyvind Kolås <pippin@gimp.org>
  */
 
 #include "config.h"
@@ -164,16 +165,18 @@ gegl_sampler_cubic_get (      GeglSampler       *self,
                                GEGL_SAMPLER_LINEAR, 5))
   {
     GeglSamplerCubic *cubic       = (GeglSamplerCubic*)(self);
+    gint              components = self->interpolate_components;
     const gint        offsets[16] = {
-                                      -4-GEGL_SAMPLER_MAXIMUM_WIDTH   *4, 4, 4, 4,
-                                        (GEGL_SAMPLER_MAXIMUM_WIDTH-3)*4, 4, 4, 4,
-                                        (GEGL_SAMPLER_MAXIMUM_WIDTH-3)*4, 4, 4, 4,
-                                        (GEGL_SAMPLER_MAXIMUM_WIDTH-3)*4, 4, 4, 4
+                                      -components-GEGL_SAMPLER_MAXIMUM_WIDTH   *components, components, components, components,
+                                        (GEGL_SAMPLER_MAXIMUM_WIDTH-3)*components, components, components, components,
+                                        (GEGL_SAMPLER_MAXIMUM_WIDTH-3)*components, components, components, components,
+                                        (GEGL_SAMPLER_MAXIMUM_WIDTH-3)*components, components, components, components
                                     };
     gfloat           *sampler_bptr;
     gfloat            factor;
-    gfloat            newval[4]   = {0, 0, 0, 0};
-    gint              i,
+    gfloat            newval[components];
+    gint              c,
+                      i,
                       j,
                       k           = 0;
 
@@ -204,6 +207,9 @@ gegl_sampler_cubic_get (      GeglSampler       *self,
 
     sampler_bptr = gegl_sampler_get_ptr (self, ix, iy, repeat_mode);
 
+    for (c = 0; c < components; c++)
+      newval[c] = 0.0f;
+
     for (j=-1; j<3; j++)
       for (i=-1; i<3; i++)
         {
@@ -212,10 +218,8 @@ gegl_sampler_cubic_get (      GeglSampler       *self,
           factor = cubicKernel (y - j, cubic->b, cubic->c) *
                    cubicKernel (x - i, cubic->b, cubic->c);
 
-          newval[0] += factor * sampler_bptr[0];
-          newval[1] += factor * sampler_bptr[1];
-          newval[2] += factor * sampler_bptr[2];
-          newval[3] += factor * sampler_bptr[3];
+          for (c = 0; c < components; c++)
+            newval[c] += factor * sampler_bptr[c];
         }
 
     babl_process (self->fish, newval, output, 1);
