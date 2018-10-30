@@ -343,9 +343,9 @@ fix_right_boundary_generic (gdouble        *buf,
     {
       gdouble tmp[nc];
       for (c = 0; c < nc ; c++)
-        tmp[c] = 0.0;
+        tmp[c] = m[i][0] * u[0 * nc + c];
 
-      for (k = 0; k < 3; k++)
+      for (k = 1; k < 3; k++)
         {
           for (c = 0; c < nc ; c++)
             tmp[c] += m[i][k] * u[k * nc + c];
