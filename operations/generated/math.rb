@@ -77,52 +77,9 @@ property_double (value, _(\"Value\"), #{item[2]})
 static void prepare (GeglOperation *operation)
 {
   const Babl *format = gegl_operation_get_source_format (operation, \"input\");
-  const Babl *space = NULL;
-  const Babl *model = NULL;
   if (!format)
     format = gegl_operation_get_source_format (operation, \"aux\");
-  if (format)
-  {
-    model = babl_format_get_model (format);
-  }
-
-  if (babl_model_is (model, \"Y\") ||
-      babl_model_is (model, \"Y'\") ||
-      babl_model_is (model, \"Y~\"))
-  {
-    format  = babl_format_with_space (\"Y float\", space);
-  }
-  else if (babl_model_is (model, \"YA\") ||
-           babl_model_is (model, \"Y'A\") ||
-           babl_model_is (model, \"Y~A\") ||
-           babl_model_is (model, \"YaA\") ||
-           babl_model_is (model, \"Y'aA\"))
-  {
-    format  = babl_format_with_space (\"YA float\", space);
-  }
-  else if (babl_model_is (model, \"RGB\") ||
-           babl_model_is (model, \"R'G'B'\") ||
-           babl_model_is (model, \"R~G~B~\"))
-  {
-    format  = babl_format_with_space (\"RGB float\", space);
-  }
-#if 0
-  else if (babl_model_is (model, \"RGBA\") ||
-           babl_model_is (model, \"RGB\") ||
-           babl_model_is (model, \"R'G'B'A\") ||
-           babl_model_is (model, \"R'G'B'\") ||
-           babl_model_is (model, \"R~G~B~A\") ||
-           babl_model_is (model, \"R~G~B~\") ||
-           babl_model_is (model, \"RaGaBaA\") ||
-           babl_model_is (model, \"R'aG'aB'aA\"))
-  {
-    format  = babl_format_with_space (\"RGBA float\", space);
-  }
-#endif
-  else
-  {
-    format  = babl_format_with_space (\"RGBA float\", space);
-  }
+  format = gegl_babl_variant (format, GEGL_BABL_VARIANT_LINEAR);
 
   gegl_operation_set_format (operation, \"input\", format);
   gegl_operation_set_format (operation, \"aux\", format);

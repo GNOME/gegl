@@ -93,52 +93,14 @@ property_boolean (srgb, _("sRGB"), FALSE)
 file_head2 = '
 static void prepare (GeglOperation *operation)
 {
-  int use_srgb = GEGL_PROPERTIES (operation)->srgb?1:0;
   const Babl *format = gegl_operation_get_source_format (operation, "input");
-  const Babl *space = NULL;
-  const Babl *model = NULL;
   if (!format)
     format = gegl_operation_get_source_format (operation, "aux");
-  if (format)
-  {
-    model = babl_format_get_model (format);
-  }
 
-  if (babl_model_is (model, "Y") ||
-      babl_model_is (model, "Y\'") ||
-      babl_model_is (model, "Y~"))
-  {
-    format  = babl_format_with_space (use_srgb?"Y~ float":"Y float", space);
-  }
-  else if (babl_model_is (model, "YA") ||
-           babl_model_is (model, "Y\'A") ||
-           babl_model_is (model, "Y~A") ||
-           babl_model_is (model, "YaA") ||
-           babl_model_is (model, "Y\'aA"))
-  {
-    format  = babl_format_with_space (use_srgb?"Y~aA float":"YaA float", space);
-  }
-  else if (babl_model_is (model, "RGB") ||
-           babl_model_is (model, "R\'G\'B\'") ||
-           babl_model_is (model, "R~G~B~"))
-  {
-    format  = babl_format_with_space (use_srgb?"R~G~B~ float":"RGB float", space);
-  }
-  else if (babl_model_is (model, "RGBA")    ||
-           babl_model_is (model, "RGB")     ||
-           babl_model_is (model, "R\'G\'B\'A") ||
-           babl_model_is (model, "R\'G\'B\'")  ||
-           babl_model_is (model, "R~G~B~A") ||
-           babl_model_is (model, "R~G~B~")  ||
-           babl_model_is (model, "RaGaBaA") ||
-           babl_model_is (model, "R\'aG\'aB\'aA"))
-  {
-    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
-  }
+  if(GEGL_PROPERTIES (operation)->srgb)
+    format = gegl_babl_variant (format, GEGL_BABL_VARIANT_PERCEPTUAL_PREMULTIPLIED);
   else
-  {
-    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
-  }
+    format = gegl_babl_variant (format, GEGL_BABL_VARIANT_LINEAR_PREMULTIPLIED);
 
   gegl_operation_set_format (operation, "input",  format);
   gegl_operation_set_format (operation, "aux",    format);
