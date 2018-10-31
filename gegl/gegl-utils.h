@@ -116,6 +116,8 @@ void            gegl_buffer_set_color         (GeglBuffer          *buffer,
                                                const GeglRectangle *rect,
                                                GeglColor           *color);
 
+const Babl *gegl_babl_variant (const Babl *format, GeglBablVariant variant);
+
 
 G_END_DECLS
 

@@ -107,3 +107,33 @@ gegl_orientation_get_type (void)
   return etype;
 }
 
+GType
+gegl_babl_variant_get_type (void)
+{
+  static GType etype = 0;
+
+  if (etype == 0)
+    {
+      static GEnumValue values[] = {
+        { GEGL_BABL_VARIANT_FLOAT, N_("Float"), "float"},
+        { GEGL_BABL_VARIANT_LINEAR, N_("Linear"), "linear"},
+        { GEGL_BABL_VARIANT_NONLINEAR, N_("Non-linear"), "non-linear"},
+        { GEGL_BABL_VARIANT_PERCEPTUAL, N_("Perceptual"), "perceptual"},
+        { GEGL_BABL_VARIANT_LINEAR_PREMULTIPLIED, N_("Linear-premultiplied"), "linear-premultiplied"},
+        { GEGL_BABL_VARIANT_PERCEPTUAL_PREMULTIPLIED, N_("Perceptual-premultiplied"), "perceptual-premultiplied"},
+        { GEGL_BABL_VARIANT_LINEAR_PREMULTIPLIED_IF_ALPHA, N_("Linear-premultiplied-if-alpha"), "linear-premultiplied-if-alpha"},
+        { GEGL_BABL_VARIANT_PERCEPTUAL_PREMULTIPLIED_IF_ALPHA, N_("Perceptual-premultiplied-if-alpha"), "perceptual-premultiplied-if-alpha"},
+        { 0, NULL, NULL }
+      };
+      gint i;
+
+      for (i = 0; i < G_N_ELEMENTS (values); i++)
+        if (values[i].value_name)
+          values[i].value_name =
+            dgettext (GETTEXT_PACKAGE, values[i].value_name);
+
+      etype = g_enum_register_static ("GeglBablVariant", values);
+    }
+
+  return etype;
+}

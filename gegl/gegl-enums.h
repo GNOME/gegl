@@ -72,6 +72,32 @@ GType gegl_orientation_get_type (void) G_GNUC_CONST;
 
 #define GEGL_TYPE_ORIENTATION (gegl_orientation_get_type ())
 
+
+enum _GeglBablVariant
+{
+  GEGL_BABL_VARIANT_FLOAT=0,
+     /* pass this one to just ensure a format is float */
+  GEGL_BABL_VARIANT_LINEAR,
+     /* Y YA RGB RGBA         */
+  GEGL_BABL_VARIANT_NONLINEAR,
+     /* Y' Y'A R'G'B' R'G'B'A */
+  GEGL_BABL_VARIANT_PERCEPTUAL,
+     /* Y~ Y~A R~G~B~ R~G~B~A */
+  GEGL_BABL_VARIANT_LINEAR_PREMULTIPLIED,
+     /* YaA RaGaBaA           */
+  GEGL_BABL_VARIANT_PERCEPTUAL_PREMULTIPLIED,
+     /* Y~aA R~aG~aB~aA       */
+  GEGL_BABL_VARIANT_LINEAR_PREMULTIPLIED_IF_ALPHA,
+     /* Y YaA RGB RaGaBaA           */
+  GEGL_BABL_VARIANT_PERCEPTUAL_PREMULTIPLIED_IF_ALPHA,
+     /* Y~ Y~aA R~G~B~A R~aG~aB~aA       */
+};
+typedef enum _GeglBablVariant GeglBablVariant;
+
+GType gegl_babl_variant_get_type (void) G_GNUC_CONST;
+
+#define GEGL_TYPE_BABL_VARIANT (gegl_babl_variant_get_type ())
+
 G_END_DECLS
 
 #endif /* __GEGL_ENUMS_H__ */

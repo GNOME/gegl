@@ -42,3 +42,299 @@ gegl_buffer_set_color (GeglBuffer          *dst,
   gegl_buffer_set_color_from_pixel (dst, dst_rect, &pixel[0], format);
 }
 
+
+static const Babl *gegl_babl_format_linear_float (const Babl *format)
+{
+  const Babl *space = babl_format_get_space (format);
+  const Babl *model = NULL;
+  if (!format)
+    return babl_format ("RGBA float");
+
+  model = babl_format_get_model (format);
+
+  if (babl_model_is (model, "Y") ||
+      babl_model_is (model, "Y'") ||
+      babl_model_is (model, "Y~"))
+  {
+    format = babl_format_with_space ("Y float", space);
+  }
+  else if (babl_model_is (model, "YA") ||
+           babl_model_is (model, "Y'A") ||
+           babl_model_is (model, "Y~A") ||
+           babl_model_is (model, "YaA") ||
+           babl_model_is (model, "Y'aA"))
+  {
+    format = babl_format_with_space ("YA float", space);
+  }
+  else if (babl_model_is (model, "RGB") ||
+           babl_model_is (model, "R'G'B'") ||
+           babl_model_is (model, "R~G~B~"))
+  {
+    format = babl_format_with_space ("RGB float", space);
+  }
+#if 0 // just treat as else
+           babl_model_is (model, "RGBA")    ||
+           babl_model_is (model, "R'G'B'A") ||
+           babl_model_is (model, "R'G'B'")  ||
+           babl_model_is (model, "R~G~B~A") ||
+           babl_model_is (model, "R~G~B~")  ||
+           babl_model_is (model, "RaGaBaA") ||
+           babl_model_is (model, "R'aG'aB'aA"))
+  {
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
+  }
+#endif
+  else
+  {
+    format  = babl_format_with_space ("RGBA float", space);
+  }
+  return format;
+}
+
+static const Babl *gegl_babl_format_perceptual_float (const Babl *format)
+{
+  const Babl *space = babl_format_get_space (format);
+  const Babl *model = NULL;
+  if (!format)
+    return babl_format ("R~G~B~A float");
+
+  model = babl_format_get_model (format);
+
+  if (babl_model_is (model, "Y") ||
+      babl_model_is (model, "Y'") ||
+      babl_model_is (model, "Y~"))
+  {
+    format = babl_format_with_space ("Y~ float", space);
+  }
+  else if (babl_model_is (model, "YA") ||
+           babl_model_is (model, "Y'A") ||
+           babl_model_is (model, "Y~A") ||
+           babl_model_is (model, "YaA") ||
+           babl_model_is (model, "Y'aA"))
+  {
+    format = babl_format_with_space ("Y~A float", space);
+  }
+  else if (babl_model_is (model, "RGB") ||
+           babl_model_is (model, "R'G'B'") ||
+           babl_model_is (model, "R~G~B~"))
+  {
+    format = babl_format_with_space ("R~G~B~ float", space);
+  }
+#if 0 // just treat as else
+           babl_model_is (model, "RGBA")    ||
+           babl_model_is (model, "R'G'B'A") ||
+           babl_model_is (model, "R'G'B'")  ||
+           babl_model_is (model, "R~G~B~A") ||
+           babl_model_is (model, "R~G~B~")  ||
+           babl_model_is (model, "RaGaBaA") ||
+           babl_model_is (model, "R'aG'aB'aA"))
+  {
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
+  }
+#endif
+  else
+  {
+    format  = babl_format_with_space ("R~G~B~A float", space);
+  }
+  return format;
+}
+
+static const Babl *gegl_babl_format_nonlinear_float (const Babl *format)
+{
+  const Babl *space = babl_format_get_space (format);
+  const Babl *model = NULL;
+  if (!format)
+    return babl_format ("R'G'B'A float");
+
+  model = babl_format_get_model (format);
+
+  if (babl_model_is (model, "Y") ||
+      babl_model_is (model, "Y'") ||
+      babl_model_is (model, "Y~"))
+  {
+    format = babl_format_with_space ("Y' float", space);
+  }
+  else if (babl_model_is (model, "YA") ||
+           babl_model_is (model, "Y'A") ||
+           babl_model_is (model, "Y~A") ||
+           babl_model_is (model, "YaA") ||
+           babl_model_is (model, "Y'aA"))
+  {
+    format = babl_format_with_space ("Y'A float", space);
+  }
+  else if (babl_model_is (model, "RGB") ||
+           babl_model_is (model, "R'G'B'") ||
+           babl_model_is (model, "R~G~B~"))
+  {
+    format = babl_format_with_space ("R'G'B' float", space);
+  }
+#if 0 // just treat as else
+           babl_model_is (model, "RGBA")    ||
+           babl_model_is (model, "R'G'B'A") ||
+           babl_model_is (model, "R'G'B'")  ||
+           babl_model_is (model, "R~G~B~A") ||
+           babl_model_is (model, "R~G~B~")  ||
+           babl_model_is (model, "RaGaBaA") ||
+           babl_model_is (model, "R'aG'aB'aA"))
+  {
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
+  }
+#endif
+  else
+  {
+    format  = babl_format_with_space ("R'G'B'A float", space);
+  }
+  return format;
+}
+
+static const Babl *gegl_babl_format_premultiplied_linear_float (const Babl *format)
+{
+  const Babl *space = babl_format_get_space (format);
+  const Babl *model = NULL;
+  if (!format)
+    return babl_format ("RaGaBaA float");
+
+  model = babl_format_get_model (format);
+
+  if (babl_model_is (model, "Y") ||
+      babl_model_is (model, "Y'") ||
+      babl_model_is (model, "Y~") ||
+      babl_model_is (model, "YA") ||
+      babl_model_is (model, "Y'A") ||
+      babl_model_is (model, "Y~A") ||
+      babl_model_is (model, "YaA") ||
+      babl_model_is (model, "Y'aA"))
+  {
+    format = babl_format_with_space ("YaA float", space);
+  }
+#if 0 // just treat as else
+  else if (babl_model_is (model, "RGB") ||
+           babl_model_is (model, "R'G'B'") ||
+           babl_model_is (model, "R~G~B~") ||
+           babl_model_is (model, "RGBA")    ||
+           babl_model_is (model, "RGB")     ||
+           babl_model_is (model, "R'G'B'A") ||
+           babl_model_is (model, "R'G'B'")  ||
+           babl_model_is (model, "R~G~B~A") ||
+           babl_model_is (model, "R~G~B~")  ||
+           babl_model_is (model, "RaGaBaA") ||
+           babl_model_is (model, "R'aG'aB'aA"))
+  {
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
+  }
+#endif
+  else
+  {
+    format  = babl_format_with_space ("RaGaBaA float", space);
+  }
+  return format;
+}
+
+static const Babl *gegl_babl_format_premultiplied_perceptual_float (const Babl *format)
+{
+  const Babl *space = babl_format_get_space (format);
+  const Babl *model = NULL;
+  if (!format)
+    return babl_format ("R~aG~aB~aA float");
+
+  model = babl_format_get_model (format);
+
+  if (babl_model_is (model, "Y") ||
+      babl_model_is (model, "Y'") ||
+      babl_model_is (model, "Y~") ||
+      babl_model_is (model, "YA") ||
+      babl_model_is (model, "Y'A") ||
+      babl_model_is (model, "Y~A") ||
+      babl_model_is (model, "YaA") ||
+      babl_model_is (model, "Y'aA"))
+  {
+    format = babl_format_with_space ("Y~aA float", space);
+  }
+#if 0 // just treat as else
+  else if (babl_model_is (model, "RGB") ||
+           babl_model_is (model, "R'G'B'") ||
+           babl_model_is (model, "R~G~B~") ||
+           babl_model_is (model, "RGBA")    ||
+           babl_model_is (model, "RGB")     ||
+           babl_model_is (model, "R'G'B'A") ||
+           babl_model_is (model, "R'G'B'")  ||
+           babl_model_is (model, "R~G~B~A") ||
+           babl_model_is (model, "R~G~B~")  ||
+           babl_model_is (model, "RaGaBaA") ||
+           babl_model_is (model, "R'aG'aB'aA"))
+  {
+    format  = babl_format_with_space (use_srgb?"R~aG~aB~aA float":"RaGaBaA float", space);
+  }
+#endif
+  else
+  {
+    format  = babl_format_with_space ("R~aG~aB~aA float", space);
+  }
+  return format;
+}
+
+static const Babl *gegl_babl_format_float (const Babl *format)
+{
+  const Babl *space;
+  const char *encoding;
+  if (!format)
+    return NULL;
+  space = babl_format_get_space (format);
+  encoding  = babl_format_get_encoding (format);
+
+  char *encdup = g_strdup (encoding);
+  char *newenc;
+  char *s = strrchr (encdup, ' ');
+  if (s) *s = 0;
+  newenc = g_strdup_printf ("%s float", encdup);
+  format = babl_format_with_space (newenc, space);
+
+  g_free (encdup);
+  g_free (newenc);
+  return format;
+}
+
+static const Babl *gegl_babl_format_float_premultiplied_linear_if_alpha (const Babl *format)
+{
+  if (!format)
+    return NULL;
+  if (babl_format_has_alpha (format))
+    return gegl_babl_format_premultiplied_linear_float (format);
+  return gegl_babl_format_float (format);
+}
+
+static const Babl *gegl_babl_format_float_premultiplied_perceptual_if_alpha (const Babl *format)
+{
+  if (!format)
+    return NULL;
+  if (babl_format_has_alpha (format))
+    return gegl_babl_format_premultiplied_perceptual_float (format);
+  return gegl_babl_format_float (format);
+}
+
+const Babl *gegl_babl_variant (const Babl *format, GeglBablVariant variant)
+{
+  if (!format)
+    return NULL;
+  switch (variant)
+  {
+    case GEGL_BABL_VARIANT_FLOAT:
+      return gegl_babl_format_float (format);
+    case GEGL_BABL_VARIANT_LINEAR:
+      return gegl_babl_format_linear_float (format);
+    case GEGL_BABL_VARIANT_NONLINEAR:
+      return gegl_babl_format_nonlinear_float (format);
+    case GEGL_BABL_VARIANT_PERCEPTUAL:
+      return gegl_babl_format_perceptual_float (format);
+    case GEGL_BABL_VARIANT_LINEAR_PREMULTIPLIED:
+      return gegl_babl_format_premultiplied_linear_float (format);
+    case GEGL_BABL_VARIANT_PERCEPTUAL_PREMULTIPLIED:
+      return gegl_babl_format_premultiplied_perceptual_float (format);
+    case GEGL_BABL_VARIANT_LINEAR_PREMULTIPLIED_IF_ALPHA:
+      return gegl_babl_format_float_premultiplied_linear_if_alpha (format);
+    case GEGL_BABL_VARIANT_PERCEPTUAL_PREMULTIPLIED_IF_ALPHA:
+      return gegl_babl_format_float_premultiplied_perceptual_if_alpha (format);
+  }
+  return format;
+}
+
