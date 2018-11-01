@@ -163,7 +163,7 @@ process (GeglOperation       *operation,
       if (b == 0 || o->independent || b == 3 )
          noise_coeff = noise[b] * noise_fun (o->rand, x, y, &n) * 0.5;
 
-      if (noise_coeff > 0.0)
+      if (noise_coeff != 0.0)
       {
         if (o->correlated)
         {
