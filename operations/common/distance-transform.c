@@ -25,6 +25,8 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
+#include "gegl-config.h"
+
 #ifdef GEGL_PROPERTIES
 
 property_enum (metric, _("Metric"),
@@ -63,6 +65,44 @@ gfloat mdt_f   (gfloat x, gfloat i, gfloat g_i);
 gint   mdt_sep (gint i, gint u, gfloat g_i, gfloat g_u);
 gfloat cdt_f   (gfloat x, gfloat i, gfloat g_i);
 gint   cdt_sep (gint i, gint u, gfloat g_i, gfloat g_u);
+
+typedef struct ThreadUserData
+{
+  gint                width;
+  gint                height;
+  GeglDistanceMetric  metric;
+  gfloat             *src;
+} ThreadUserData;
+
+typedef struct ThreadData
+{
+  void     (*func) (GeglOperation      *operation,
+                    gint                width,
+                    gint                height,
+                    gfloat              thres_lo,
+                    GeglDistanceMetric  metric,
+                    gfloat             *src,
+                    gfloat             *dest,
+                    gint                start,
+                    gint                end);
+  gint      start;
+  gint      end;
+  gfloat    threshold;
+  gfloat   *dest;
+  gint     *pending;
+} ThreadData;
+
+static void
+thread_func (gpointer data,
+             gpointer user_data)
+{
+  ThreadUserData *ud = (ThreadUserData *) user_data;
+  ThreadData     *d  = (ThreadData *) data;
+
+  d->func (NULL, ud->width, ud->height, d->threshold,
+           ud->metric, ud->src, d->dest, d->start, d->end);
+  g_atomic_int_add (d->pending, -1);
+}
 
 /**
  * Prepare function of gegl filter.
@@ -142,13 +182,15 @@ cdt_sep (gint i, gint u, gfloat g_i, gfloat g_u)
 
 
 static void
-binary_dt_2nd_pass (GeglOperation      *operation,
-                    gint                width,
-                    gint                height,
-                    gfloat              thres_lo,
-                    GeglDistanceMetric  metric,
-                    gfloat             *src,
-                    gfloat             *dest)
+binary_dt_2nd_pass_sub (GeglOperation      *operation,
+                        gint                width,
+                        gint                height,
+                        gfloat              thres_lo,
+                        GeglDistanceMetric  metric,
+                        gfloat             *src,
+                        gfloat             *dest,
+                        gint                start,
+                        gint                end)
 {
   gint u, y;
   gint q, w, *t, *s;
@@ -179,8 +221,7 @@ binary_dt_2nd_pass (GeglOperation      *operation,
   t = gegl_calloc (sizeof (gint), width);
   row_copy = gegl_calloc (sizeof (gfloat), width);
 
-  /* this could be parallelized */
-  for (y = 0; y < height; y++)
+  for (y = start; y < end; y++)
     {
       q = 0;
       s[0] = 0;
@@ -233,8 +274,9 @@ binary_dt_2nd_pass (GeglOperation      *operation,
             }
         }
 
-      gegl_operation_progress (operation,
-                               (gdouble) y / (gdouble) height / 2.0 + 0.5, "");
+      if (operation)
+        gegl_operation_progress (operation,
+                                 (gdouble) y / (gdouble) height / 2.0 + 0.5, "");
     }
 
   gegl_free (t);
@@ -242,19 +284,69 @@ binary_dt_2nd_pass (GeglOperation      *operation,
   gegl_free (row_copy);
 }
 
+static void
+binary_dt_2nd_pass (GeglOperation      *operation,
+                    GThreadPool        *pool,
+                    gint                width,
+                    gint                height,
+                    gfloat              thres_lo,
+                    GeglDistanceMetric  metric,
+                    gfloat             *src,
+                    gfloat             *dest,
+                    gint                threads)
+{
+  ThreadData data[GEGL_MAX_THREADS];
+
+  if (pool)
+    {
+      gint subheight = height / (threads + 1);
+      gint i;
+      gint y = 0;
+      gint pending = threads;
+
+      for (i = 0; i < threads; i++)
+        {
+          data[i].func      = binary_dt_2nd_pass_sub;
+          data[i].start     = y;
+          data[i].end       = y + subheight;
+          data[i].threshold = thres_lo;
+          data[i].dest      = dest;
+          data[i].pending   = &pending;
+
+          y = data[i].end;
+
+          g_thread_pool_push (pool, &data[i], NULL);
+        }
+      binary_dt_2nd_pass_sub (NULL, width, height, thres_lo, metric,
+                              src, dest, y, height);
+      while (g_atomic_int_get (&pending))
+        {
+          gegl_operation_progress (operation,
+                                   (gdouble) (threads - pending) / (gdouble) threads / 2.0 + 0.5, "");
+        };
+    }
+  else
+    {
+      binary_dt_2nd_pass_sub (operation, width, height, thres_lo,
+                              metric, src, dest, 0, height);
+    }
+}
+
 
 static void
-binary_dt_1st_pass (GeglOperation *operation,
-                    gint           width,
-                    gint           height,
-                    gfloat         thres_lo,
-                    gfloat        *src,
-                    gfloat        *dest)
+binary_dt_1st_pass_sub (GeglOperation      *operation,
+                        gint                width,
+                        gint                height,
+                        gfloat              thres_lo,
+                        GeglDistanceMetric  metric G_GNUC_UNUSED,
+                        gfloat             *src,
+                        gfloat             *dest,
+                        gint                start,
+                        gint                end)
 {
   int x, y;
 
-  /* this loop could be parallelized */
-  for (x = 0; x < width; x++)
+  for (x = start; x < end; x++)
     {
       /* consider out-of-range as 0, i.e. the outside is "empty" */
       dest[x + 0 * width] = src[x + 0 * width] > thres_lo ? 1.0 : 0.0;
@@ -273,12 +365,60 @@ binary_dt_1st_pass (GeglOperation *operation,
           if (dest[x + (y + 1) * width] + 1.0 < dest[x + y * width])
             dest [x + y * width] = dest[x + (y + 1) * width] + 1.0;
         }
-
-      gegl_operation_progress (operation,
-                               (gdouble) x / (gdouble) width / 2.0, "");
+      if (operation)
+        gegl_operation_progress (operation,
+                                 (gdouble) x / (gdouble) width / 2.0, "");
     }
 }
 
+static void
+binary_dt_1st_pass (GeglOperation      *operation,
+                    GThreadPool        *pool,
+                    gint                width,
+                    gint                height,
+                    gfloat              thres_lo,
+                    GeglDistanceMetric  metric,
+                    gfloat             *src,
+                    gfloat             *dest,
+                    gint                threads)
+{
+  ThreadData data[GEGL_MAX_THREADS];
+
+  if (pool)
+    {
+      gint subwidth = width / (threads + 1);
+      gint i;
+      gint x = 0;
+      gint pending = threads;
+
+      for (i = 0; i < threads; i++)
+        {
+          data[i].func      = binary_dt_1st_pass_sub;
+          data[i].start     = x;
+          data[i].end       = x + subwidth;
+          data[i].threshold = thres_lo;
+          data[i].dest      = dest;
+          data[i].pending   = &pending;
+
+          x = data[i].end;
+
+          g_thread_pool_push (pool, &data[i], NULL);
+        }
+      binary_dt_1st_pass_sub (NULL, width, height, thres_lo, metric,
+                              src, dest, x, width);
+      while (g_atomic_int_get (&pending))
+        {
+          gegl_operation_progress (operation,
+                                   (gdouble) (threads - pending) / (gdouble) threads / 2.0, "");
+        }
+      gegl_operation_progress (operation, 0.5, "");
+    }
+  else
+    {
+      binary_dt_1st_pass_sub (operation, width, height, thres_lo,
+                              metric, src, dest, 0, width);
+    }
+}
 
 /**
  * Process the gegl filter
@@ -290,20 +430,27 @@ binary_dt_1st_pass (GeglOperation *operation,
  * @return True, if the filter was successfully applied.
  */
 static gboolean
-process (GeglOperation       *operation,
-         GeglBuffer          *input,
-         GeglBuffer          *output,
-         const GeglRectangle *result,
-         gint                 level)
+process (GeglOperation        *operation,
+         GeglOperationContext *context,
+         const gchar          *output_prop,
+         const GeglRectangle  *result,
+         gint                  level)
 {
-  GeglProperties         *o = GEGL_PROPERTIES (operation);
-  const Babl  *input_format = gegl_operation_get_format (operation, "output");
-  const int bytes_per_pixel = babl_format_get_bytes_per_pixel (input_format);
+  GeglProperties     *o               = GEGL_PROPERTIES (operation);
+  GeglBuffer         *input           = NULL;
+  const Babl         *input_format    = gegl_operation_get_format (operation, "input");
+  const int           bytes_per_pixel = babl_format_get_bytes_per_pixel (input_format);
+  GeglBuffer         *output;
+  GThreadPool        *pool            = NULL;
+  gint                threads         = gegl_config_threads () - 1;
+  ThreadUserData      user_data;
+  GeglDistanceMetric  metric;
+  gint                width, height, averaging, i;
+  gfloat              threshold_lo, threshold_hi, maxval, *src_buf, *dst_buf;
+  gboolean            normalize;
 
-  GeglDistanceMetric metric;
-  gint               width, height, averaging, i;
-  gfloat             threshold_lo, threshold_hi, maxval, *src_buf, *dst_buf;
-  gboolean           normalize;
+  input  = (GeglBuffer*) gegl_operation_context_get_object (context, "input");
+  output = gegl_operation_context_get_target (context, "output");
 
   width  = result->width;
   height = result->height;
@@ -322,12 +469,23 @@ process (GeglOperation       *operation,
   gegl_buffer_get (input, result, 1.0, input_format, src_buf,
                    GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
+  if (gegl_operation_use_threading (operation, result) &&
+      width / (threads + 1) > 0 && height / (threads + 1) > 0)
+    {
+      user_data.width  = width;
+      user_data.height = height;
+      user_data.metric = metric;
+      user_data.src    = src_buf;
+
+      pool = g_thread_pool_new (thread_func, &user_data, threads, FALSE, NULL);
+    }
+
   if (!averaging)
     {
-      binary_dt_1st_pass (operation, width, height, threshold_lo,
-                          src_buf, dst_buf);
-      binary_dt_2nd_pass (operation, width, height, threshold_lo, metric,
-                          src_buf, dst_buf);
+      binary_dt_1st_pass (operation, pool, width, height, threshold_lo, metric,
+                          src_buf, dst_buf, threads);
+      binary_dt_2nd_pass (operation, pool, width, height, threshold_lo, metric,
+                          src_buf, dst_buf, threads);
     }
   else
     {
@@ -343,10 +501,10 @@ process (GeglOperation       *operation,
           thres = (i+1) * (threshold_hi - threshold_lo) / (averaging + 1);
           thres += threshold_lo;
 
-          binary_dt_1st_pass (operation, width, height, thres,
-                              src_buf, tmp_buf);
-          binary_dt_2nd_pass (operation, width, height, thres, metric,
-                              src_buf, tmp_buf);
+          binary_dt_1st_pass (operation, pool, width, height, thres, metric,
+                              src_buf, tmp_buf, threads);
+          binary_dt_2nd_pass (operation, pool, width, height, thres, metric,
+                              src_buf, tmp_buf, threads);
 
           for (j = 0; j < width * height; j++)
             dst_buf[j] += tmp_buf[j];
@@ -380,6 +538,8 @@ process (GeglOperation       *operation,
 
   gegl_free (dst_buf);
   gegl_free (src_buf);
+  if (pool)
+    g_thread_pool_free (pool, TRUE, FALSE);
 
   return TRUE;
 }
@@ -389,7 +549,6 @@ static void
 gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass       *operation_class;
-  GeglOperationFilterClass *filter_class;
   gchar                    *composition =
     "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
@@ -410,12 +569,11 @@ gegl_op_class_init (GeglOpClass *klass)
     "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
-  filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
-  operation_class->threaded          = FALSE;
+  operation_class->threaded          = TRUE;
   operation_class->prepare           = prepare;
   operation_class->get_cached_region = get_cached_region;
-  filter_class->process              = process;
+  operation_class->process           = process;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:distance-transform",
