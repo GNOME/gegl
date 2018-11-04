@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-10-26 11:27+0000\n"
-"PO-Revision-Date: 2018-10-28 21:32+0100\n"
+"POT-Creation-Date: 2018-10-31 18:03+0000\n"
+"PO-Revision-Date: 2018-11-04 16:40+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -215,8 +215,9 @@ msgstr "Odczyt/zapis"
 msgid "Nearest"
 msgstr "Najbliższy"
 
-#: gegl/buffer/gegl-buffer-enums.c:90 operations/common-gpl3+/bump-map.c:33
-#: operations/common-gpl3+/sinus.c:63 operations/common-gpl3+/spiral.c:26
+#: gegl/buffer/gegl-buffer-enums.c:90 gegl/gegl-enums.c:119
+#: operations/common-gpl3+/bump-map.c:33 operations/common-gpl3+/sinus.c:63
+#: operations/common-gpl3+/spiral.c:26
 msgid "Linear"
 msgstr "Liniowy"
 
@@ -285,6 +286,34 @@ msgstr "Poziomy"
 #: operations/common/noise-spread.c:36 operations/common/spherize.c:28
 msgid "Vertical"
 msgstr "Pionowy"
+
+#: gegl/gegl-enums.c:118
+msgid "Float"
+msgstr "Zmiennoprzecinkowy"
+
+#: gegl/gegl-enums.c:120
+msgid "Non-linear"
+msgstr "Nieliniowy"
+
+#: gegl/gegl-enums.c:121 operations/external/lcms-from-profile.c:31
+msgid "Perceptual"
+msgstr "Percepcyjny"
+
+#: gegl/gegl-enums.c:122
+msgid "Linear-premultiplied"
+msgstr "Liniowo odwrócone mnożenie"
+
+#: gegl/gegl-enums.c:123
+msgid "Perceptual-premultiplied"
+msgstr "Percepcyjnie odwrócone mnożenie"
+
+#: gegl/gegl-enums.c:124
+msgid "Linear-premultiplied-if-alpha"
+msgstr "Liniowo odwrócone mnożenie, jeśli alfa"
+
+#: gegl/gegl-enums.c:125
+msgid "Perceptual-premultiplied-if-alpha"
+msgstr "Percepcyjnie odwrócone mnożenie, jeśli alfa"
 
 #: gegl/gegl-init.c:285
 msgid "Where GEGL stores its swap"
@@ -1832,7 +1861,7 @@ msgstr "Czy kadrować obszar wyjściowy do obszaru wejściowego"
 msgid "Gaussian Blur"
 msgstr "Rozmycie Gaussa"
 
-#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1279
+#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1376
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -1854,7 +1883,7 @@ msgstr "Ułożenie"
 msgid "The orientation of the blur - hor/ver"
 msgstr "Orientacja rozmycia — pionowa/pozioma"
 
-#: operations/common/gblur-1d.c:1276
+#: operations/common/gblur-1d.c:1373
 msgid "1D Gaussian-blur"
 msgstr "Jednowymiarowe rozmycie Gaussa"
 
@@ -3177,11 +3206,11 @@ msgstr "Otwórz bufor biblioteki GEGL"
 msgid "Use an on-disk GeglBuffer as data source."
 msgstr "Użyj GeglBuffer na dysku jako źródło danych."
 
-#: operations/common/over.c:183
+#: operations/common/over.c:209
 msgid "Normal compositing"
 msgstr "Zwykłe składanie"
 
-#: operations/common/over.c:188
+#: operations/common/over.c:214
 msgid ""
 "Porter Duff operation over (also known as normal mode, and src-over) (d = cA "
 "+ cB * (1 - aA))"
@@ -3976,11 +4005,11 @@ msgstr "flaga"
 msgid "Pointer to flag value for unlabelled pixels"
 msgstr "Wskaźnik do wartości flagi dla pikseli bez etykiety"
 
-#: operations/common/watershed-transform.c:422
+#: operations/common/watershed-transform.c:487
 msgid "Watershed Transform"
 msgstr "Przekształcenie działu wodnego"
 
-#: operations/common/watershed-transform.c:425
+#: operations/common/watershed-transform.c:490
 msgid ""
 "Labels propagation by watershed transformation. Output buffer will keep the "
 "input format. Unlabelled pixels are marked with a given flag value (by "
@@ -6660,10 +6689,6 @@ msgstr "Profil źródłowy"
 msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
 msgstr "„cmsHPROFILE” odpowiadające profilowi ICC dla danych wejściowych."
 
-#: operations/external/lcms-from-profile.c:31
-msgid "Perceptual"
-msgstr "Percepcyjny"
-
 #: operations/external/lcms-from-profile.c:33
 msgid "Relative Colorimetric"
 msgstr "Względny kolorymetryczny"
@@ -7294,7 +7319,7 @@ msgstr "Zapisywanie obrazów WebP"
 msgid "global value used if aux doesn't contain data"
 msgstr "globalna wartość używana, jeśli bufor pomocniczy nie zawiera danych"
 
-#: operations/generated/add.c:134
+#: operations/generated/add.c:138
 msgid ""
 "Math operation add, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -7306,11 +7331,11 @@ msgstr ""
 "dodatkowym wejściu jako argumenty. Wynik to wyrażenie: wynik = wejście + "
 "wartość"
 
-#: operations/generated/clear.c:131
+#: operations/generated/clear.c:133
 msgid "Porter Duff operation clear (d = 0.0f)"
 msgstr "Czyszczenie działania Portera-Duffa (d = 0.0f)"
 
-#: operations/generated/color-burn.c:178
+#: operations/generated/color-burn.c:188
 msgid ""
 "SVG blend operation color-burn (<code>if cA * aB + cB * aA <= aA * aB: d = "
 "cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == 0 ? 1 : (aA * (cA * aB + "
@@ -7321,7 +7346,7 @@ msgstr ""
 "1 : (aA * (cA * aB + cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - "
 "aA))</code>)"
 
-#: operations/generated/color-dodge.c:178
+#: operations/generated/color-dodge.c:188
 msgid ""
 "SVG blend operation color-dodge (<code>if cA * aB + cB * aA >= aA * aB: d = "
 "aA * aB + cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == aA ? 1 : cB * "
@@ -7332,7 +7357,7 @@ msgstr ""
 "(cA == aA ? 1 : cB * aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB "
 "* (1 - aA)</code>)"
 
-#: operations/generated/darken.c:174
+#: operations/generated/darken.c:184
 msgid ""
 "SVG blend operation darken (<code>d = MIN (cA * aB, cB * aA) + cA * (1 - aB) "
 "+ cB * (1 - aA)</code>)"
@@ -7340,7 +7365,7 @@ msgstr ""
 "Działanie mieszania „darken” SVG (<code>d = MIN (cA * aB, cB * aA) + cA * (1 "
 "- aB) + cB * (1 - aA)</code>)"
 
-#: operations/generated/difference.c:174
+#: operations/generated/difference.c:184
 msgid ""
 "SVG blend operation difference (<code>d = cA + cB - 2 * (MIN (cA * aB, cB * "
 "aA))</code>)"
@@ -7348,7 +7373,7 @@ msgstr ""
 "Działanie mieszania „difference” SVG (<code>d = cA + cB - 2 * (MIN (cA * aB, "
 "cB * aA))</code>)"
 
-#: operations/generated/divide.c:134
+#: operations/generated/divide.c:138
 msgid ""
 "Math operation divide, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -7360,27 +7385,27 @@ msgstr ""
 "dodatkowym wejściu jako argumenty. Wynik to wyrażenie: wynik = wartość==0.0f?"
 "0.0f:wejście/wartość"
 
-#: operations/generated/dst-atop.c:131
+#: operations/generated/dst-atop.c:133
 msgid "Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"
 msgstr "Działanie Portera-Duffa „dst-atop” (d = cB * aA + cA * (1.0f - aB))"
 
-#: operations/generated/dst.c:153
+#: operations/generated/dst.c:155
 msgid "Porter Duff operation dst (d = cB)"
 msgstr "Działanie Portera-Duffa „dst” (d = cB)"
 
-#: operations/generated/dst-in.c:131
+#: operations/generated/dst-in.c:133
 msgid "Porter Duff operation dst-in (d = cB * aA)"
 msgstr "Działanie Portera-Duffa „dst-in” (d = cB * aA)"
 
-#: operations/generated/dst-out.c:153
+#: operations/generated/dst-out.c:155
 msgid "Porter Duff operation dst-out (d = cB * (1.0f - aA))"
 msgstr "Działanie Portera-Duffa „dst-out” (d = cB * (1.0f - aA))"
 
-#: operations/generated/dst-over.c:153
+#: operations/generated/dst-over.c:155
 msgid "Porter Duff operation dst-over (d = cB + cA * (1.0f - aB))"
 msgstr "Działanie Portera-Duffa „dst-over” (d = cB + cA * (1.0f - aB))"
 
-#: operations/generated/exclusion.c:174
+#: operations/generated/exclusion.c:184
 msgid ""
 "SVG blend operation exclusion (<code>d = (cA * aB + cB * aA - 2 * cA * cB) + "
 "cA * (1 - aB) + cB * (1 - aA)</code>)"
@@ -7388,7 +7413,7 @@ msgstr ""
 "Działanie mieszania „exclusion” SVG (<code>d = (cA * aB + cB * aA - 2 * cA * "
 "cB) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
-#: operations/generated/gamma.c:134
+#: operations/generated/gamma.c:138
 msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -7400,7 +7425,7 @@ msgstr ""
 "dodatkowym wejściu jako argumenty. Wynik to wyrażenie: wynik = powf "
 "(wejście, wartość)"
 
-#: operations/generated/hard-light.c:178
+#: operations/generated/hard-light.c:188
 msgid ""
 "SVG blend operation hard-light (<code>if 2 * cA < aA: d = 2 * cA * cB + cA * "
 "(1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) "
@@ -7410,7 +7435,7 @@ msgstr ""
 "+ cA * (1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA "
 "- cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
-#: operations/generated/lighten.c:174
+#: operations/generated/lighten.c:184
 msgid ""
 "SVG blend operation lighten (<code>d = MAX (cA * aB, cB * aA) + cA * (1 - "
 "aB) + cB * (1 - aA)</code>)"
@@ -7418,7 +7443,7 @@ msgstr ""
 "Działanie mieszania „lighten” SVG (<code>d = MAX (cA * aB, cB * aA) + cA * "
 "(1 - aB) + cB * (1 - aA)</code>)"
 
-#: operations/generated/multiply.c:134
+#: operations/generated/multiply.c:138
 msgid ""
 "Math operation multiply, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -7430,7 +7455,7 @@ msgstr ""
 "dodatkowym wejściu jako argumenty. Wynik to wyrażenie: wynik = wejście * "
 "wartość"
 
-#: operations/generated/overlay.c:178
+#: operations/generated/overlay.c:188
 msgid ""
 "SVG blend operation overlay (<code>if 2 * cB > aB: d = 2 * cA * cB + cA * (1 "
 "- aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) + "
@@ -7440,15 +7465,15 @@ msgstr ""
 "cA * (1 - aB) + cB * (1 - aA), w przeciwnym przypadku: d = aA * aB - 2 * (aB "
 "- cB) * (aA - cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
-#: operations/generated/plus.c:176
+#: operations/generated/plus.c:186
 msgid "SVG blend operation plus (<code>d = cA + cB</code>)"
 msgstr "Działanie mieszania „plus” SVG (<code>d = cA + cB</code>)"
 
-#: operations/generated/screen.c:174
+#: operations/generated/screen.c:184
 msgid "SVG blend operation screen (<code>d = cA + cB - cA * cB</code>)"
 msgstr "Działanie mieszania „screen” SVG (<code>d = cA + cB - cA * cB</code>)"
 
-#: operations/generated/soft-light.c:180
+#: operations/generated/soft-light.c:192
 msgid ""
 "SVG blend operation soft-light (<code>if 2 * cA < aA: d = cB * (aA - (aB == "
 "0 ? 1 : 1 - cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - aA); if 8 "
@@ -7464,23 +7489,23 @@ msgstr ""
 "w przeciwnym przypadku: d = (aA * cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - "
 "cB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
-#: operations/generated/src-atop.c:153
+#: operations/generated/src-atop.c:155
 msgid "Porter Duff operation src-atop (d = cA * aB + cB * (1.0f - aA))"
 msgstr "Działanie Portera-Duffa „src-atop” (d = cA * aB + cB * (1.0f - aA))"
 
-#: operations/generated/src.c:131
+#: operations/generated/src.c:133
 msgid "Porter Duff operation src (d = cA)"
 msgstr "Działanie Portera-Duffa „src” (d = cA)"
 
-#: operations/generated/src-in.c:139
+#: operations/generated/src-in.c:142
 msgid "Porter Duff compositing operation src-in (formula:   cA * aB)"
 msgstr "Działanie składania Portera-Duffa „src-in” (wzór:   cA * aB)"
 
-#: operations/generated/src-out.c:131
+#: operations/generated/src-out.c:133
 msgid "Porter Duff operation src-out (d = cA * (1.0f - aB))"
 msgstr "Działanie Portera-Duffa „src-out” (d = cA * (1.0f - aB))"
 
-#: operations/generated/subtract.c:134
+#: operations/generated/subtract.c:138
 msgid ""
 "Math operation subtract, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -7492,7 +7517,7 @@ msgstr ""
 "dodatkowym wejściu jako argumenty. Wynik to wyrażenie: wynik = wejście - "
 "wartość"
 
-#: operations/generated/xor.c:153
+#: operations/generated/xor.c:155
 msgid "Porter Duff operation xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
 msgstr "Działanie Portera-Duffa „xor” (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
 
@@ -8175,9 +8200,9 @@ msgid ""
 "fixed gear, is determined by the proportion between the number of teeth in "
 "gears."
 msgstr ""
-"Liczba zębatek ruchomej przekładni. Promień ruchomej przekładni, względny "
-"do promienia stałej przekładni, jest ustalany według proporcji między "
-"liczbami zębatek w przekładniach."
+"Liczba zębatek ruchomej przekładni. Promień ruchomej przekładni, względny do "
+"promienia stałej przekładni, jest ustalany według proporcji między liczbami "
+"zębatek w przekładniach."
 
 #: operations/workshop/external/spyrograph.c:46
 msgid "Hole Percent"
