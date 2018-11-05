@@ -415,6 +415,7 @@ process (GeglOperation       *operation,
 
       g_free (p);
     }
+  g_object_unref (gradient_sampler);
 
   HQ_clean (&hq);
   return  TRUE;
