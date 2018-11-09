@@ -62,7 +62,7 @@ jpeg_colorspace_name(J_COLOR_SPACE space)
     const gint idx = (space > 0 && space < n_valid_names) ? (gint)space : 0;
     return names[idx];
 }
-
+#include <stdio.h>
 static const Babl *
 babl_from_jpeg_colorspace(J_COLOR_SPACE jpgspace, const Babl *space)
 {
@@ -73,7 +73,7 @@ babl_from_jpeg_colorspace(J_COLOR_SPACE jpgspace, const Babl *space)
   else if (jpgspace == JCS_RGB)
     format = babl_format_with_space ("R'G'B' u8", space);
   else if (jpgspace == JCS_CMYK) {
-    format = babl_format_with_space ("CMYK u8", space);
+    format = babl_format_with_space ("cmyk u8", space);
   }
 
   return format;
@@ -248,7 +248,6 @@ gegl_jpg_load_buffer_import_jpg (GeglBuffer   *gegl_buffer,
   JSAMPARRAY                     buffer;
   const Babl                    *format;
   GeglRectangle                  write_rect;
-  gboolean                       is_inverted_cmyk = FALSE;
   GioSource gio_source = { stream, NULL, 1024 };
 
   cinfo.err = jpeg_std_error (&jerr);
@@ -293,22 +292,16 @@ gegl_jpg_load_buffer_import_jpg (GeglBuffer   *gegl_buffer,
 
   // Most CMYK JPEG files are produced by Adobe Photoshop. Each component is stored where 0 means 100% ink
   // However this might not be case for all. Gory details: https://bugzilla.mozilla.org/show_bug.cgi?id=674619
-  is_inverted_cmyk = (babl_format_get_model (format) == babl_model("CMYK"));
+  //
+  // inverted cmyks are however how babl now expects jpgs so we're good
 
   while (cinfo.output_scanline < cinfo.output_height)
     {
       jpeg_read_scanlines (&cinfo, buffer, 1);
 
-      if (is_inverted_cmyk) {
-        for (int i=0; i<row_stride; i++) {
-            buffer[0][i] = 255-buffer[0][i];
-        }
-      }
-
       gegl_buffer_set (gegl_buffer, &write_rect, 0,
                        format, buffer[0],
                        GEGL_AUTO_ROWSTRIDE);
-
       write_rect.y += 1;
     }
 
