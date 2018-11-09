@@ -207,6 +207,21 @@ gegl_sampler_prepare (GeglSampler *self)
        self->interpolate_format = babl_format_with_space ("YaA float",
                                      gegl_buffer_get_format(self->buffer));
     }
+    else if (babl_model_is (model, "cmyk")||
+             babl_model_is (model, "cmykA") ||
+             babl_model_is (model, "camayakaA"))
+    {
+       self->interpolate_format = babl_format_with_space ("camayakaA float",
+                                     gegl_buffer_get_format(self->buffer));
+    }
+    else if (
+        babl_model_is (model, "CMYK")||
+        babl_model_is (model, "CMYKA") ||
+        babl_model_is (model, "CaMaYaKaA"))
+    {
+       self->interpolate_format = babl_format_with_space ("CaMaYaKaA float",
+                                     gegl_buffer_get_format(self->buffer));
+    }
 #if 0
     else if (babl_model_is (model, "RGB")||
         babl_model_is (model, "R'G'B'")||
