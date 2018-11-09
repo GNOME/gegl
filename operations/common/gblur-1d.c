@@ -72,7 +72,6 @@ property_boolean (clip_extent, _("Clip to the input extent"), TRUE)
 
 #include "gegl-op.h"
 #include <math.h>
-#include <stdio.h>
 
 
 /**********************************************
@@ -368,7 +367,6 @@ iir_young_blur_1D_generic (gfloat           *buf,
                            GeglAbyssPolicy   policy)
 {
   gint    i, j, c;
-
   for (i = 0; i < 3; i++, tmp += components)
     {
       for (c = 0; c < components; c++)
@@ -1032,7 +1030,6 @@ gegl_gblur_1d_prepare (GeglOperation *operation)
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *src_format = gegl_operation_get_source_format (operation, "input");
   const char *format     = "RaGaBaA float";
-
   o->user_data = iir_young_blur_1D_rgbA;
 
   /*
@@ -1060,9 +1057,18 @@ gegl_gblur_1d_prepare (GeglOperation *operation)
           format = "YaA float";
           o->user_data = iir_young_blur_1D_yA;
         }
+      else if (babl_model_is (model, "cmyk"))
+        {
+          format = "cmyk float";
+          o->user_data = iir_young_blur_1D_generic;
+        }
+      else if (babl_model_is (model, "cmykA") ||
+               babl_model_is (model, "camayakaA"))
+        {
+          format = "camayakaA float";
+          o->user_data = iir_young_blur_1D_generic;
+        }
     }
-  if (0)
-    o->user_data = iir_young_blur_1D_generic;
 
   gegl_operation_set_format (operation, "input", babl_format_with_space (format, space));
   gegl_operation_set_format (operation, "output", babl_format_with_space (format, space));
