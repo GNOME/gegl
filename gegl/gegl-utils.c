@@ -66,6 +66,15 @@ static const Babl *gegl_babl_format_linear_float (const Babl *format)
   {
     format = babl_format_with_space ("YA float", space);
   }
+  else if (babl_model_is (model, "cmyk") ||
+           babl_model_is (model, "cmykA") ||
+           babl_model_is (model, "camayakaA") ||
+           babl_model_is (model, "CMYK") ||
+           babl_model_is (model, "CMYKA") ||
+           babl_model_is (model, "CaMaYaKaA"))
+  {
+    format  = babl_format_with_space ("cmykA float", space);
+  }
   else if (babl_model_is (model, "RGB") ||
            babl_model_is (model, "R'G'B'") ||
            babl_model_is (model, "R~G~B~"))
@@ -113,6 +122,15 @@ static const Babl *gegl_babl_format_perceptual_float (const Babl *format)
            babl_model_is (model, "Y'aA"))
   {
     format = babl_format_with_space ("Y~A float", space);
+  }
+  else if (babl_model_is (model, "cmyk") ||
+           babl_model_is (model, "cmykA") ||
+           babl_model_is (model, "camayakaA") ||
+           babl_model_is (model, "CMYK") ||
+           babl_model_is (model, "CMYKA") ||
+           babl_model_is (model, "CaMaYaKaA"))
+  {
+    format  = babl_format_with_space ("cmykA float", space);
   }
   else if (babl_model_is (model, "RGB") ||
            babl_model_is (model, "R'G'B'") ||
@@ -162,6 +180,15 @@ static const Babl *gegl_babl_format_nonlinear_float (const Babl *format)
   {
     format = babl_format_with_space ("Y'A float", space);
   }
+  else if (babl_model_is (model, "cmyk") ||
+           babl_model_is (model, "cmykA") ||
+           babl_model_is (model, "camayakaA") ||
+           babl_model_is (model, "CMYK") ||
+           babl_model_is (model, "CMYKA") ||
+           babl_model_is (model, "CaMaYaKaA"))
+  {
+    format  = babl_format_with_space ("cmykA float", space);
+  }
   else if (babl_model_is (model, "RGB") ||
            babl_model_is (model, "R'G'B'") ||
            babl_model_is (model, "R~G~B~"))
@@ -207,6 +234,15 @@ static const Babl *gegl_babl_format_premultiplied_linear_float (const Babl *form
   {
     format = babl_format_with_space ("YaA float", space);
   }
+  else if (babl_model_is (model, "cmyk") ||
+           babl_model_is (model, "cmykA") ||
+           babl_model_is (model, "camayakaA") ||
+           babl_model_is (model, "CMYK") ||
+           babl_model_is (model, "CMYKA") ||
+           babl_model_is (model, "CaMaYaKaA"))
+  {
+    format  = babl_format_with_space ("camayakaA float", space);
+  }
 #if 0 // just treat as else
   else if (babl_model_is (model, "RGB") ||
            babl_model_is (model, "R'G'B'") ||
@@ -249,6 +285,15 @@ static const Babl *gegl_babl_format_premultiplied_perceptual_float (const Babl *
       babl_model_is (model, "Y'aA"))
   {
     format = babl_format_with_space ("Y~aA float", space);
+  }
+  else if (babl_model_is (model, "cmyk") ||
+      babl_model_is (model, "cmykA") ||
+      babl_model_is (model, "camayakaA") ||
+      babl_model_is (model, "CMYK") ||
+      babl_model_is (model, "CMYKA") ||
+      babl_model_is (model, "CaMaYaKaA"))
+  {
+    format  = babl_format_with_space ("camayakaA float", space);
   }
 #if 0 // just treat as else
   else if (babl_model_is (model, "RGB") ||
