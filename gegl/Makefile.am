@@ -55,6 +55,7 @@ GEGL_introspectable_headers =	\
 	gegl-matrix.h			\
 	gegl-lookup.h			\
 	gegl-random.h			\
+	gegl-parallel.h			\
 	gegl-init.h			\
 	gegl-version.h			\
 	buffer/gegl-buffer.h		\
@@ -100,6 +101,7 @@ GEGL_sources = \
 	gegl-xml.c			\
 	gegl-gio.c			\
 	gegl-random.c			\
+	gegl-parallel.c			\
 	gegl-serialize.c		\
 	gegl-stats.c			\
 	gegl-matrix.c			\
@@ -118,6 +120,7 @@ GEGL_sources = \
 	gegl-op.h			    \
 	gegl-plugin.h			\
 	gegl-random-private.h		\
+	gegl-parallel-private.h		\
 	gegl-stats.h			\
 	gegl-gio-private.h		\
 	gegl-types-internal.h		\

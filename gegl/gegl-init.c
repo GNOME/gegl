@@ -105,6 +105,7 @@ guint gegl_debug_flags = 0;
 #include "gegl-stats.h"
 #include "graph/gegl-node-private.h"
 #include "gegl-random-private.h"
+#include "gegl-parallel-private.h"
 
 static gboolean  gegl_post_parse_hook (GOptionContext *context,
                                        GOptionGroup   *group,
@@ -489,6 +490,7 @@ gegl_exit (void)
   gegl_operation_gtype_cleanup ();
   gegl_operation_handlers_cleanup ();
   gegl_random_cleanup ();
+  gegl_parallel_cleanup ();
   gegl_cl_cleanup ();
 
   gegl_temp_buffer_free ();
@@ -702,6 +704,7 @@ gegl_post_parse_hook (GOptionContext *context,
 
   GEGL_INSTRUMENT_START();
 
+  gegl_parallel_init ();
   gegl_operation_gtype_init ();
   gegl_tile_cache_init ();
 

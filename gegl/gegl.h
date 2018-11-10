@@ -37,6 +37,7 @@
 #include <gegl-init.h>
 #include <gegl-version.h>
 #include <gegl-random.h>
+#include <gegl-parallel.h>
 #include <gegl-node.h>
 #include <gegl-processor.h>
 #include <gegl-apply.h>
