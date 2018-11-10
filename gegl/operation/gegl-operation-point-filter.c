@@ -44,26 +44,25 @@ typedef struct ThreadData
   GeglOperation                 *operation;
   GeglBuffer                    *input;
   GeglBuffer                    *output;
-  gint                          *pending;
-  GeglRectangle                  result;
   gint                           level;
   gboolean                       success;
   const Babl                    *input_format;
   const Babl                    *output_format;
 } ThreadData;
 
-static void thread_process (gpointer thread_data, gpointer unused)
+static void
+thread_process (const GeglRectangle *area,
+                ThreadData          *data)
 {
-  ThreadData *data = thread_data;
   GeglBufferIterator *i = gegl_buffer_iterator_new (data->output,
-                                                    &data->result,
+                                                    area,
                                                     data->level,
                                                     data->output_format,
                                                     GEGL_ACCESS_WRITE,
                                                     GEGL_ABYSS_NONE, 4);
   gint read = 0;
   if (data->input)
-    read = gegl_buffer_iterator_add (i, data->input, &data->result, data->level,
+    read = gegl_buffer_iterator_add (i, data->input, area, data->level,
                                      data->input_format,
                                      GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
@@ -73,19 +72,6 @@ static void thread_process (gpointer thread_data, gpointer unused)
      data->klass->process (data->operation, data->input?i->items[read].data:NULL,
                            i->items[0].data, i->length, &(i->items[0].roi), data->level);
   }
-
-  g_atomic_int_add (data->pending, -1);
-}
-
-static GThreadPool *thread_pool (void)
-{
-  static GThreadPool *pool = NULL;
-  if (!pool)
-    {
-      pool =  g_thread_pool_new (thread_process, NULL, gegl_config_threads (),
-                                 FALSE, NULL);
-    }
-  return pool;
 }
 
 static gboolean
@@ -286,59 +272,27 @@ gegl_operation_point_filter_process (GeglOperation       *operation,
             return TRUE;
       }
 
-      if (gegl_operation_use_threading (operation, result) && result->height > 1)
+      if (gegl_operation_use_threading (operation, result))
       {
-        gint threads = gegl_config_threads ();
-        ThreadData thread_data[GEGL_MAX_THREADS];
-        GThreadPool *pool = thread_pool ();
-        gint pending;
-        int j;
+        ThreadData data;
 
-        if (result->width > result->height)
-          for (j = 0; j < threads; j++)
-          {
-            GeglRectangle rect = *result;
-            rect.width /= threads;
-            rect.x += rect.width * j;
-
-            if (j == threads-1)
-              rect.width = (result->width + result->x) - rect.x;
-
-            thread_data[j].result = rect;
-          }
-        else
-          for (j = 0; j < threads; j++)
-          {
-            GeglRectangle rect = *result;
-            rect = *result;
-            rect.height /= threads;
-            rect.y += rect.height * j;
-            if (j == threads-1)
-              rect.height = (result->height + result->y) - rect.y;
-            thread_data[j].result = rect;
-          }
-
-        for (j = 0; j < threads; j++)
-        {
-          thread_data[j].klass = point_filter_class;
-          thread_data[j].operation = operation;
-          thread_data[j].input = input;
-          thread_data[j].output = output;
-          thread_data[j].pending = &pending;
-          thread_data[j].level = level;
-          thread_data[j].input_format = in_format;
-          thread_data[j].output_format = out_format;
-        }
-
-        pending = threads;
+        data.klass = point_filter_class;
+        data.operation = operation;
+        data.input = input;
+        data.output = output;
+        data.level = level;
+        data.input_format = in_format;
+        data.output_format = out_format;
 
         if (gegl_cl_is_accelerated () && input)
           gegl_buffer_flush_ext (input, result);
 
-        for (gint j = 1; j < threads; j++)
-          g_thread_pool_push (pool, &thread_data[j], NULL);
-        thread_process (&thread_data[0], NULL);
-        while (g_atomic_int_get (&pending)) {};
+        gegl_parallel_distribute_area (
+          result,
+          gegl_operation_get_min_threaded_sub_area (operation),
+          GEGL_SPLIT_STRATEGY_AUTO,
+          (GeglParallelDistributeAreaFunc) thread_process,
+          &data);
 
         return TRUE;
       }

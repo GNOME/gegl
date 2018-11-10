@@ -816,10 +816,18 @@ gegl_operation_use_threading (GeglOperation *operation,
       return FALSE;
 
     if (op_class->threaded &&
-        roi->width * roi->height > 64*64)
+        roi->width * roi->height >
+        gegl_operation_get_min_threaded_sub_area (operation))
       return TRUE;
   }
   return FALSE;
+}
+
+gsize
+gegl_operation_get_min_threaded_sub_area (GeglOperation *operation)
+{
+  /* FIXME: too arbitrary? */
+  return 64 * 64;
 }
 
 static guchar *gegl_temp_alloc[GEGL_MAX_THREADS * 4]={NULL,};

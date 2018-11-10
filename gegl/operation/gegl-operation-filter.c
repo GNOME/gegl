@@ -120,41 +120,34 @@ typedef struct ThreadData
   GeglOperationFilterClass *klass;
   GeglOperation            *operation;
   GeglOperationContext     *context;
+  GeglBuffer               *input;
   GeglBuffer               *output;
-  gint                     *pending;
+  const GeglRectangle      *roi;
   gint                      level;
   gboolean                  success;
-  GeglRectangle             roi;
 } ThreadData;
 
-static void thread_process (gpointer thread_data, gpointer input)
+static void
+thread_process (const GeglRectangle *area,
+                ThreadData          *data)
 {
-  ThreadData *data = thread_data;
+  GeglBuffer *input;
 
-  if (! input)
+  if (area->x == data->roi->x && area->y == data->roi->y)
+    {
+      input = g_object_ref (data->input);
+    }
+  else
     {
       input = gegl_operation_context_dup_input_maybe_copy (data->context,
-                                                           "input", &data->roi);
+                                                           "input", area);
     }
 
   if (!data->klass->process (data->operation,
-                             input, data->output, &data->roi, data->level))
+                             input, data->output, area, data->level))
     data->success = FALSE;
 
   g_object_unref (input);
-
-  g_atomic_int_add (data->pending, -1);
-}
-
-static GThreadPool *thread_pool (void)
-{
-  static GThreadPool *pool = NULL;
-  if (!pool)
-    {
-      pool =  g_thread_pool_new (thread_process, NULL, gegl_config_threads (),
-                                 FALSE, NULL);
-    }
-  return pool;
 }
 
 static gboolean
@@ -187,11 +180,8 @@ gegl_operation_filter_process (GeglOperation        *operation,
 
   if (gegl_operation_use_threading (operation, result))
   {
-    gint threads = gegl_config_threads ();
+    ThreadData        data;
     GeglSplitStrategy split_strategy = GEGL_SPLIT_STRATEGY_AUTO;
-    GThreadPool *pool = thread_pool ();
-    ThreadData thread_data[GEGL_MAX_THREADS];
-    gint pending = threads;
 
     if (klass->get_split_strategy)
     {
@@ -199,60 +189,23 @@ gegl_operation_filter_process (GeglOperation        *operation,
                                                   output_prop, result, level);
     }
 
-    if (split_strategy == GEGL_SPLIT_STRATEGY_AUTO)
-    {
-      if (result->width > result->height)
-        split_strategy = GEGL_SPLIT_STRATEGY_VERTICAL;
-      else
-        split_strategy = GEGL_SPLIT_STRATEGY_HORIZONTAL;
-    }
+    data.klass = klass;
+    data.operation = operation;
+    data.context = context;
+    data.input = input;
+    data.output = output;
+    data.roi = result;
+    data.level = level;
+    data.success = TRUE;
 
-    if (split_strategy == GEGL_SPLIT_STRATEGY_VERTICAL)
-    {
-      gint bit = result->width / threads;
-      for (gint j = 0; j < threads; j++)
-      {
-        thread_data[j].roi.y = result->y;
-        thread_data[j].roi.height = result->height;
-        thread_data[j].roi.x = result->x + bit * j;
-        thread_data[j].roi.width = bit;
-      }
-      thread_data[threads-1].roi.width = result->width - (bit * (threads-1));
-    }
-    else if (split_strategy == GEGL_SPLIT_STRATEGY_HORIZONTAL)
-    {
-      gint bit = result->height / threads;
-      for (gint j = 0; j < threads; j++)
-      {
-        thread_data[j].roi.x = result->x;
-        thread_data[j].roi.width = result->width;
-        thread_data[j].roi.y = result->y + bit * j;
-        thread_data[j].roi.height = bit;
-      }
-      thread_data[threads-1].roi.height = result->height - (bit * (threads-1));
-    }
-    else
-    {
-      g_return_val_if_reached (FALSE);
-    }
-    for (gint i = 0; i < threads; i++)
-    {
-      thread_data[i].klass = klass;
-      thread_data[i].operation = operation;
-      thread_data[i].context = context;
-      thread_data[i].output = output;
-      thread_data[i].pending = &pending;
-      thread_data[i].level = level;
-      thread_data[i].success = TRUE;
-    }
+    gegl_parallel_distribute_area (
+      result,
+      gegl_operation_get_min_threaded_sub_area (operation),
+      split_strategy,
+      (GeglParallelDistributeAreaFunc) thread_process,
+      &data);
 
-    for (gint i = 1; i < threads; i++)
-      g_thread_pool_push (pool, &thread_data[i], NULL);
-    thread_process (&thread_data[0], g_object_ref (input));
-
-    while (g_atomic_int_get (&pending)) {};
-
-    success = thread_data[0].success;
+    success = data.success;
   }
   else
   {

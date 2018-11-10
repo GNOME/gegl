@@ -42,10 +42,8 @@ typedef struct ThreadData
   GeglBuffer                       *aux;
   GeglBuffer                       *aux2;
   GeglBuffer                       *output;
-  gint                             *pending;
   gint                              level;
   gboolean                          success;
-  GeglRectangle                     result;
 
   const Babl *input_format;
   const Babl *aux_format;
@@ -53,29 +51,30 @@ typedef struct ThreadData
   const Babl *output_format;
 } ThreadData;
 
-static void thread_process (gpointer thread_data, gpointer unused)
+static void
+thread_process (const GeglRectangle *area,
+                ThreadData          *data)
 {
-  ThreadData *data = thread_data;
   gint read = 0;
   gint aux  = 0;
   gint aux2 = 0;
   GeglBufferIterator *i = gegl_buffer_iterator_new (data->output,
-                                                    &data->result,
+                                                    area,
                                                     data->level,
                                                     data->output_format,
                                                     GEGL_ACCESS_WRITE,
                                                     GEGL_ABYSS_NONE, 4);
 
   if (data->input)
-    read = gegl_buffer_iterator_add (i, data->input, &data->result, data->level,
+    read = gegl_buffer_iterator_add (i, data->input, area, data->level,
                                      data->input_format,
                                      GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   if (data->aux)
-    aux = gegl_buffer_iterator_add (i, data->aux, &data->result, data->level,
+    aux = gegl_buffer_iterator_add (i, data->aux, area, data->level,
                                     data->aux_format,
                                     GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
   if (data->aux2)
-    aux2 = gegl_buffer_iterator_add (i, data->aux2, &data->result, data->level,
+    aux2 = gegl_buffer_iterator_add (i, data->aux2, area, data->level,
                                     data->aux2_format,
                                     GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
 
@@ -88,19 +87,6 @@ static void thread_process (gpointer thread_data, gpointer unused)
                            data->aux2?i->items[aux2].data:NULL,
                            i->items[0].data, i->length, &(i->items[0].roi), data->level);
   }
-
-  g_atomic_int_add (data->pending, -1);
-}
-
-static GThreadPool *thread_pool (void)
-{
-  static GThreadPool *pool = NULL;
-  if (!pool)
-    {
-      pool =  g_thread_pool_new (thread_process, NULL, gegl_config_threads (),
-                                 FALSE, NULL);
-    }
-  return pool;
 }
 
 static gboolean
@@ -235,58 +221,21 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
 
   if ((result->width > 0) && (result->height > 0))
     {
-      if (gegl_operation_use_threading (operation, result) && result->height > 1)
+      if (gegl_operation_use_threading (operation, result))
       {
-        gint threads = gegl_config_threads ();
-        ThreadData thread_data[GEGL_MAX_THREADS];
-        GThreadPool *pool = thread_pool ();
-        gint pending;
-        gint j;
+        ThreadData data;
 
-        if (result->width > result->height)
-          for (j = 0; j < threads; j++)
-          {
-            GeglRectangle rect = *result;
-
-            rect.width /= threads;
-            rect.x += rect.width * j;
-
-            if (j == threads-1)
-              rect.width = (result->width + result->x) - rect.x;
-
-            thread_data[j].result = rect;
-          }
-        else
-          for (j = 0; j < threads; j++)
-          {
-            GeglRectangle rect = *result;
-
-            rect = *result;
-            rect.height /= threads;
-            rect.y += rect.height * j;
-
-            if (j == threads-1)
-              rect.height = (result->height + result->y) - rect.y;
-
-            thread_data[j].result = rect;
-          }
-
-        for (j = 0; j < threads; j++)
-        {
-          thread_data[j].klass = point_composer3_class;
-          thread_data[j].operation = operation;
-          thread_data[j].input = input;
-          thread_data[j].aux = aux;
-          thread_data[j].aux2 = aux2;
-          thread_data[j].output = output;
-          thread_data[j].pending = &pending;
-          thread_data[j].level = level;
-          thread_data[j].input_format = in_format;
-          thread_data[j].aux_format = aux_format;
-          thread_data[j].aux2_format = aux2_format;
-          thread_data[j].output_format = out_format;
-        }
-        pending = threads;
+        data.klass = point_composer3_class;
+        data.operation = operation;
+        data.input = input;
+        data.aux = aux;
+        data.aux2 = aux2;
+        data.output = output;
+        data.level = level;
+        data.input_format = in_format;
+        data.aux_format = aux_format;
+        data.aux2_format = aux2_format;
+        data.output_format = out_format;
 
         if (gegl_cl_is_accelerated ())
         {
@@ -298,10 +247,12 @@ gegl_operation_point_composer3_process (GeglOperation       *operation,
             gegl_buffer_flush_ext (aux2, result);
         }
 
-        for (gint j = 1; j < threads; j++)
-          g_thread_pool_push (pool, &thread_data[j], NULL);
-        thread_process (&thread_data[0], NULL);
-        while (g_atomic_int_get (&pending)) {};
+        gegl_parallel_distribute_area (
+          result,
+          gegl_operation_get_min_threaded_sub_area (operation),
+          GEGL_SPLIT_STRATEGY_AUTO,
+          (GeglParallelDistributeAreaFunc) thread_process,
+          &data);
 
         return TRUE;
       }

@@ -248,6 +248,8 @@ gboolean      gegl_operation_use_opencl         (const GeglOperation *operation)
 gboolean
 gegl_operation_use_threading (GeglOperation *operation,
                               const GeglRectangle *roi);
+gsize
+gegl_operation_get_min_threaded_sub_area (GeglOperation *operation);
 
 /* Invalidate a specific rectangle, indicating the any computation depending
  * on this roi is now invalid.
