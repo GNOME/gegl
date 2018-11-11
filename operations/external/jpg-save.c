@@ -239,6 +239,7 @@ export_jpg (GeglOperation               *operation,
   const Babl *format;
   const Babl *fmt = gegl_buffer_get_format (input);
   const Babl *space = babl_format_get_space (fmt);
+  gint     cmyk = babl_space_is_cmyk (space);
 
   src_x = result->x;
   src_y = result->y;
@@ -250,8 +251,16 @@ export_jpg (GeglOperation               *operation,
 
   if (!grayscale)
     {
-      cinfo.input_components = 3;
-      cinfo.in_color_space = JCS_RGB;
+      if (cmyk)
+      {
+        cinfo.input_components = 4;
+        cinfo.in_color_space = JCS_CMYK;
+      }
+      else
+      {
+        cinfo.input_components = 3;
+        cinfo.in_color_space = JCS_RGB;
+      }
     }
   else
     {
@@ -294,8 +303,16 @@ export_jpg (GeglOperation               *operation,
 
   if (!grayscale)
     {
-      format = babl_format_with_space ("R'G'B' u8", space);
-      row_pointer[0] = g_malloc (width * 3);
+      if (cmyk)
+      {
+        format = babl_format_with_space ("cmyk u8", space);
+        row_pointer[0] = g_malloc (width * 4);
+      }
+      else
+      {
+        format = babl_format_with_space ("R'G'B' u8", space);
+        row_pointer[0] = g_malloc (width * 3);
+      }
     }
   else
     {
