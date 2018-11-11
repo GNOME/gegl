@@ -127,5 +127,6 @@ gegl_common_la_SOURCES =\
 	weighted-blend.c \
 	write-buffer.c
 
-module.c: $(gegl_common_la_SOURCES)
-	$(top_srcdir)/tools/gen-loader.sh $^ > module.c
+module.c: Makefile $(gegl_common_la_SOURCES)
+	$(AM_V_GEN) \
+	$(top_srcdir)/tools/gen-loader.sh `echo $^ | cut -d' ' -f2-` > module.c
