@@ -208,6 +208,14 @@ case "$CXX" in
     ;;
 esac
 
+dnl C++11 support
+have_cxx11="no"
+AX_CXX_COMPILE_STDCXX([11], , [optional])
+if test "x$HAVE_CXX11" = "x1"; then
+  have_cxx11="yes"
+fi
+AM_CONDITIONAL(HAVE_CXX11, test "x$have_cxx11" = "xyes")
+
 dnl Large file support.
 AC_SYS_LARGEFILE
 
@@ -1306,6 +1314,7 @@ operations/json/Makefile
 operations/common/Makefile
 operations/common/perlin/Makefile
 operations/common-gpl3+/Makefile
+operations/common-cxx/Makefile
 operations/seamless-clone/Makefile
 operations/external/Makefile
 operations/generated/Makefile
@@ -1358,6 +1367,7 @@ Optional features:
   Build website:   $have_asciidoc
   SIMD:            sse:$enable_sse mmx:$enable_mmx
   Vala support:    $have_vala
+  C++11:           $have_cxx11
 
 Optional dependencies:
   asciidoc:        $have_asciidoc

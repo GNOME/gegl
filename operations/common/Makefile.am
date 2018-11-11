@@ -119,7 +119,6 @@ gegl_common_la_SOURCES =\
 	unpremultiply.c \
 	value-invert.c \
 	vignette.c \
-	warp.c \
 	waterpixels.c \
 	watershed-transform.c \
 	wavelet-blur-1d.c \

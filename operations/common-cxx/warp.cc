@@ -20,6 +20,8 @@
 #include <glib/gi18n-lib.h>
 #include <math.h>
 
+#define MIN_PARALLEL_SUB_SIZE 64
+
 #ifdef GEGL_PROPERTIES
 
 enum_start (gegl_warp_behavior)
@@ -54,7 +56,7 @@ property_enum   (behavior, _("Behavior"),
 #else
 
 #define GEGL_OP_FILTER
-#define GEGL_OP_C_SOURCE warp.c
+#define GEGL_OP_C_SOURCE warp.cc
 #define GEGL_OP_NAME     warp
 
 #include "gegl-plugin.h"
@@ -233,12 +235,12 @@ path_changed (GeglPath            *path,
    * validating the stroke.
    */
   g_signal_handlers_block_by_func (operation->node,
-                                   node_invalidated, operation);
+                                   (gpointer) node_invalidated, operation);
 
   gegl_operation_invalidate (operation, &rect, FALSE);
 
   g_signal_handlers_unblock_by_func (operation->node,
-                                     node_invalidated, operation);
+                                     (gpointer) node_invalidated, operation);
 }
 
 static gdouble
@@ -310,7 +312,8 @@ attach (GeglOperation *operation)
   GEGL_OPERATION_CLASS (gegl_op_parent_class)->attach (operation);
 
   g_signal_connect_object (operation->node, "invalidated",
-                           G_CALLBACK (node_invalidated), operation, 0);
+                           G_CALLBACK (node_invalidated), operation,
+                           (GConnectFlags) 0);
 }
 
 static void
@@ -396,24 +399,17 @@ stamp (GeglProperties      *o,
        gfloat               y)
 {
   WarpPrivate   *priv = (WarpPrivate*) o->user_data;
-  gfloat         stamp_force, influence;
   gfloat         x_mean = 0.0;
   gfloat         y_mean = 0.0;
-  gint           x_iter, y_iter;
-  gfloat         xi, yi;
   GeglRectangle  area;
   gint           sample_min_x, sample_max_x;
   gint           sample_min_y, sample_max_y;
   gfloat        *stampbuf;
-  gfloat        *vals;
-  gfloat        *srcvals;
   gfloat         stamp_radius_sq = 0.25 * o->size * o->size;
   gfloat         strength = 0.01 * o->strength;
   const gfloat  *lookup = priv->lookup;
   gfloat         s = 0, c = 0;
   gfloat         motion_x, motion_y;
-  gfloat         lim;
-  gint           min_x, max_x;
 
   motion_x = priv->last_x - x;
   motion_y = priv->last_y - y;
@@ -462,42 +458,67 @@ stamp (GeglProperties      *o,
     {
       gfloat total_weight = 0.0f;
 
-      yi = -y + 0.5f;
-
-      for (y_iter = 0; y_iter < area.height; y_iter++, yi++)
+      gegl_parallel_distribute_range (area.height, MIN_PARALLEL_SUB_SIZE,
+                                      [&] (gint y0, gint height)
         {
-          lim = stamp_radius_sq - yi * yi;
+          static GMutex mutex;
+          gfloat        local_x_mean       = 0.0f;
+          gfloat        local_y_mean       = 0.0f;
+          gfloat        local_total_weight = 0.0f;
+          gfloat        yi;
+          gint          y_iter;
 
-          if (lim < 0.0f)
-            continue;
+          yi = -y + y0 + 0.5f;
 
-          lim = sqrtf (lim);
-
-          pixel_range (x - lim, x + lim,
-                       &min_x,  &max_x);
-
-          if (max_x < 0 || min_x >= area.width)
-            continue;
-
-          min_x = CLAMP (min_x, 0, area.width - 1);
-          max_x = CLAMP (max_x, 0, area.width - 1);
-
-          srcvals = srcbuf + srcbuf_stride * y_iter + 2 * min_x;
-
-          xi = -x + min_x + 0.5f;
-
-          for (x_iter  = min_x;
-               x_iter <= max_x;
-               x_iter++, xi++, srcvals += 2)
+          for (y_iter = y0; y_iter < y0 + height; y_iter++, yi++)
             {
-              stamp_force = get_stamp_force (xi, yi, lookup);
+              gfloat  lim;
+              gint    min_x, max_x;
+              gfloat *srcvals;
+              gfloat  xi;
+              gint    x_iter;
 
-              x_mean += stamp_force * srcvals[0];
-              y_mean += stamp_force * srcvals[1];
+              lim = stamp_radius_sq - yi * yi;
 
-              total_weight += stamp_force;
+              if (lim < 0.0f)
+                continue;
+
+              lim = sqrtf (lim);
+
+              pixel_range (x - lim, x + lim,
+                           &min_x,  &max_x);
+
+              if (max_x < 0 || min_x >= area.width)
+                continue;
+
+              min_x = CLAMP (min_x, 0, area.width - 1);
+              max_x = CLAMP (max_x, 0, area.width - 1);
+
+              srcvals = srcbuf + srcbuf_stride * y_iter + 2 * min_x;
+
+              xi = -x + min_x + 0.5f;
+
+              for (x_iter  = min_x;
+                   x_iter <= max_x;
+                   x_iter++, xi++, srcvals += 2)
+                {
+                  gfloat stamp_force = get_stamp_force (xi, yi, lookup);
+
+                  local_x_mean += stamp_force * srcvals[0];
+                  local_y_mean += stamp_force * srcvals[1];
+
+                  local_total_weight += stamp_force;
+                }
             }
-        }
+
+          g_mutex_lock (&mutex);
+
+          x_mean       += local_x_mean;
+          y_mean       += local_y_mean;
+          total_weight += local_total_weight;
+
+          g_mutex_unlock (&mutex);
+        });
 
       x_mean /= total_weight;
       y_mean /= total_weight;
@@ -532,171 +553,197 @@ stamp (GeglProperties      *o,
    */
   stampbuf = g_new (gfloat, 2 * area.height * area.width);
 
-  yi = -y + 0.5f;
-
-  for (y_iter = 0; y_iter < area.height; y_iter++, yi++)
+  gegl_parallel_distribute_range (area.height, MIN_PARALLEL_SUB_SIZE,
+                                  [=] (gint y0, gint height)
     {
-      lim = stamp_radius_sq - yi * yi;
+      gfloat yi;
+      gint   y_iter;
 
-      if (lim < 0.0f)
-        continue;
+      yi = -y + y0 + 0.5f;
 
-      lim = sqrtf (lim);
-
-      pixel_range (x - lim, x + lim,
-                   &min_x,  &max_x);
-
-      if (max_x < 0 || min_x >= area.width)
-        continue;
-
-      min_x = CLAMP (min_x, 0, area.width - 1);
-      max_x = CLAMP (max_x, 0, area.width - 1);
-
-      vals    = stampbuf + 2 * area.width * y_iter + 2 * min_x;
-      srcvals = srcbuf   + srcbuf_stride  * y_iter + 2 * min_x;
-
-      xi = -x + min_x + 0.5f;
-
-      for (x_iter  = min_x;
-           x_iter <= max_x;
-           x_iter++, xi++, vals += 2, srcvals += 2)
+      for (y_iter = y0; y_iter < y0 + height; y_iter++, yi++)
         {
-          gfloat nvx, nvy;
-          gfloat fx, fy;
-          gint   dx, dy;
-          gfloat weight_x, weight_y;
-          gfloat a0, b0;
-          gfloat a1, b1;
-          gfloat *srcptr;
+          gfloat  lim;
+          gint    min_x, max_x;
+          gfloat *vals;
+          gfloat *srcvals;
+          gfloat  xi;
+          gint    x_iter;
 
-          stamp_force = get_stamp_force (xi, yi, lookup);
-          influence   = strength * stamp_force;
+          lim = stamp_radius_sq - yi * yi;
 
-          switch (o->behavior)
+          if (lim < 0.0f)
+            continue;
+
+          lim = sqrtf (lim);
+
+          pixel_range (x - lim, x + lim,
+                       &min_x,  &max_x);
+
+          if (max_x < 0 || min_x >= area.width)
+            continue;
+
+          min_x = CLAMP (min_x, 0, area.width - 1);
+          max_x = CLAMP (max_x, 0, area.width - 1);
+
+          vals    = stampbuf + 2 * area.width * y_iter + 2 * min_x;
+          srcvals = srcbuf   + srcbuf_stride  * y_iter + 2 * min_x;
+
+          xi = -x + min_x + 0.5f;
+
+          for (x_iter  = min_x;
+               x_iter <= max_x;
+               x_iter++, xi++, vals += 2, srcvals += 2)
             {
-              case GEGL_WARP_BEHAVIOR_MOVE:
-                nvx = influence * motion_x;
-                nvy = influence * motion_y;
-                break;
-              case GEGL_WARP_BEHAVIOR_GROW:
-              case GEGL_WARP_BEHAVIOR_SHRINK:
-                nvx = influence * xi;
-                nvy = influence * yi;
-                break;
-              case GEGL_WARP_BEHAVIOR_SWIRL_CW:
-              case GEGL_WARP_BEHAVIOR_SWIRL_CCW:
-                nvx = stamp_force * ( c * xi - s * yi);
-                nvy = stamp_force * ( s * xi + c * yi);
-                break;
-              case GEGL_WARP_BEHAVIOR_ERASE:
-              case GEGL_WARP_BEHAVIOR_SMOOTH:
-              default:
-                /* shut up, gcc */
-                nvx = 0.0f;
-                nvy = 0.0f;
-                break;
-            }
+              gfloat nvx, nvy;
+              gfloat fx, fy;
+              gint   dx, dy;
+              gfloat weight_x, weight_y;
+              gfloat a0, b0;
+              gfloat a1, b1;
+              gfloat *srcptr;
 
-          if (o->behavior == GEGL_WARP_BEHAVIOR_ERASE)
-            {
-              vals[0] = srcvals[0] * (1.0f - influence);
-              vals[1] = srcvals[1] * (1.0f - influence);
-            }
-          else if (o->behavior == GEGL_WARP_BEHAVIOR_SMOOTH)
-            {
-              vals[0] = srcvals[0] + influence * (x_mean - srcvals[0]);
-              vals[1] = srcvals[1] + influence * (y_mean - srcvals[1]);
-            }
-          else
-            {
-              fx = floorf (nvx);
-              fy = floorf (nvy);
+              gfloat stamp_force = get_stamp_force (xi, yi, lookup);
+              gfloat influence   = strength * stamp_force;
 
-              weight_x = nvx - fx;
-              weight_y = nvy - fy;
-
-              dx = fx;
-              dy = fy;
-
-              dx += x_iter;
-              dy += y_iter;
-
-              /* clamp the sampled coordinates to the sample bounds */
-              if (dx < sample_min_x || dx >= sample_max_x ||
-                  dy < sample_min_y || dy >= sample_max_y)
+              switch (o->behavior)
                 {
-                  if (dx < sample_min_x)
-                    {
-                      dx = sample_min_x;
-                      weight_x = 0.0f;
-                    }
-                  else if (dx >= sample_max_x)
-                    {
-                      dx = sample_max_x;
-                      weight_x = 0.0f;
-                    }
-
-                  if (dy < sample_min_y)
-                    {
-                      dy = sample_min_y;
-                      weight_y = 0.0f;
-                    }
-                  else if (dy >= sample_max_y)
-                    {
-                      dy = sample_max_y;
-                      weight_y = 0.0f;
-                    }
+                  case GEGL_WARP_BEHAVIOR_MOVE:
+                    nvx = influence * motion_x;
+                    nvy = influence * motion_y;
+                    break;
+                  case GEGL_WARP_BEHAVIOR_GROW:
+                  case GEGL_WARP_BEHAVIOR_SHRINK:
+                    nvx = influence * xi;
+                    nvy = influence * yi;
+                    break;
+                  case GEGL_WARP_BEHAVIOR_SWIRL_CW:
+                  case GEGL_WARP_BEHAVIOR_SWIRL_CCW:
+                    nvx = stamp_force * ( c * xi - s * yi);
+                    nvy = stamp_force * ( s * xi + c * yi);
+                    break;
+                  case GEGL_WARP_BEHAVIOR_ERASE:
+                  case GEGL_WARP_BEHAVIOR_SMOOTH:
+                  default:
+                    /* shut up, gcc */
+                    nvx = 0.0f;
+                    nvy = 0.0f;
+                    break;
                 }
 
-              srcptr = srcbuf + srcbuf_stride * dy + 2 * dx;
+              if (o->behavior == GEGL_WARP_BEHAVIOR_ERASE)
+                {
+                  vals[0] = srcvals[0] * (1.0f - influence);
+                  vals[1] = srcvals[1] * (1.0f - influence);
+                }
+              else if (o->behavior == GEGL_WARP_BEHAVIOR_SMOOTH)
+                {
+                  vals[0] = srcvals[0] + influence * (x_mean - srcvals[0]);
+                  vals[1] = srcvals[1] + influence * (y_mean - srcvals[1]);
+                }
+              else
+                {
+                  fx = floorf (nvx);
+                  fy = floorf (nvy);
 
-              /* bilinear interpolation of the vectors */
+                  weight_x = nvx - fx;
+                  weight_y = nvy - fy;
 
-              a0 = srcptr[0] + (srcptr[2] - srcptr[0]) * weight_x;
-              b0 = srcptr[srcbuf_stride + 0] +
-                   (srcptr[srcbuf_stride + 2] - srcptr[srcbuf_stride + 0]) *
-                   weight_x;
+                  dx = fx;
+                  dy = fy;
 
-              a1 = srcptr[1] + (srcptr[3] - srcptr[1]) * weight_x;
-              b1 = srcptr[srcbuf_stride + 1] +
-                   (srcptr[srcbuf_stride + 3] - srcptr[srcbuf_stride + 1]) *
-                   weight_x;
+                  dx += x_iter;
+                  dy += y_iter;
 
-              vals[0] = a0 + (b0 - a0) * weight_y;
-              vals[1] = a1 + (b1 - a1) * weight_y;
+                  /* clamp the sampled coordinates to the sample bounds */
+                  if (dx < sample_min_x || dx >= sample_max_x ||
+                      dy < sample_min_y || dy >= sample_max_y)
+                    {
+                      if (dx < sample_min_x)
+                        {
+                          dx = sample_min_x;
+                          weight_x = 0.0f;
+                        }
+                      else if (dx >= sample_max_x)
+                        {
+                          dx = sample_max_x;
+                          weight_x = 0.0f;
+                        }
 
-              vals[0] += nvx;
-              vals[1] += nvy;
+                      if (dy < sample_min_y)
+                        {
+                          dy = sample_min_y;
+                          weight_y = 0.0f;
+                        }
+                      else if (dy >= sample_max_y)
+                        {
+                          dy = sample_max_y;
+                          weight_y = 0.0f;
+                        }
+                    }
+
+                  srcptr = srcbuf + srcbuf_stride * dy + 2 * dx;
+
+                  /* bilinear interpolation of the vectors */
+
+                  a0 = srcptr[0] + (srcptr[2] - srcptr[0]) * weight_x;
+                  b0 = srcptr[srcbuf_stride + 0] +
+                       (srcptr[srcbuf_stride + 2] - srcptr[srcbuf_stride + 0]) *
+                       weight_x;
+
+                  a1 = srcptr[1] + (srcptr[3] - srcptr[1]) * weight_x;
+                  b1 = srcptr[srcbuf_stride + 1] +
+                       (srcptr[srcbuf_stride + 3] - srcptr[srcbuf_stride + 1]) *
+                       weight_x;
+
+                  vals[0] = a0 + (b0 - a0) * weight_y;
+                  vals[1] = a1 + (b1 - a1) * weight_y;
+
+                  vals[0] += nvx;
+                  vals[1] += nvy;
+                }
             }
         }
-    }
+    });
 
   /* Paste the stamp into the source buffer. */
-  yi = -y + 0.5f;
-
-  for (y_iter = 0; y_iter < area.height; y_iter++, yi++)
+  gegl_parallel_distribute_range (area.height, MIN_PARALLEL_SUB_SIZE,
+                                  [=] (gint y0, gint height)
     {
-      lim = stamp_radius_sq - yi * yi;
+      gfloat yi;
+      gint   y_iter;
 
-      if (lim < 0.0f)
-        continue;
+      yi = -y + y0 + 0.5f;
 
-      lim = sqrtf (lim);
+      for (y_iter = y0; y_iter < y0 + height; y_iter++, yi++)
+        {
+          gfloat  lim;
+          gint    min_x, max_x;
+          gfloat *vals;
+          gfloat *srcvals;
 
-      pixel_range (x - lim, x + lim,
-                   &min_x,  &max_x);
+          lim = stamp_radius_sq - yi * yi;
 
-      if (max_x < 0 || min_x >= area.width)
-        continue;
+          if (lim < 0.0f)
+            continue;
 
-      min_x = CLAMP (min_x, 0, area.width - 1);
-      max_x = CLAMP (max_x, 0, area.width - 1);
+          lim = sqrtf (lim);
 
-      vals    = stampbuf + 2 * area.width * y_iter + 2 * min_x;
-      srcvals = srcbuf   + srcbuf_stride  * y_iter + 2 * min_x;
+          pixel_range (x - lim, x + lim,
+                       &min_x,  &max_x);
 
-      memcpy (srcvals, vals, 2 * sizeof (gfloat) * (max_x - min_x + 1));
-    }
+          if (max_x < 0 || min_x >= area.width)
+            continue;
+
+          min_x = CLAMP (min_x, 0, area.width - 1);
+          max_x = CLAMP (max_x, 0, area.width - 1);
+
+          vals    = stampbuf + 2 * area.width * y_iter + 2 * min_x;
+          srcvals = srcbuf   + srcbuf_stride  * y_iter + 2 * min_x;
+
+          memcpy (srcvals, vals, 2 * sizeof (gfloat) * (max_x - min_x + 1));
+        }
+    });
 
   g_free (stampbuf);
 }
