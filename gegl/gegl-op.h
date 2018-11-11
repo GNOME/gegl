@@ -515,22 +515,23 @@ set_property (GObject      *gobject,
 #define property_object(name, label, def_val)                         \
     case PROP_##name:                                                 \
       g_clear_object (&properties->name);                             \
-      properties->name = g_value_dup_object (value);                  \
+      properties->name = G_OBJECT (g_value_dup_object (value));       \
       break;
 #define property_curve(name, label, def_val)                          \
     case PROP_##name:                                                 \
       g_clear_object (&properties->name);                             \
-      properties->name = g_value_dup_object (value);                  \
+      properties->name = GEGL_CURVE (g_value_dup_object (value));     \
       break;
 #define property_color(name, label, def_val)                          \
     case PROP_##name:                                                 \
       g_clear_object (&properties->name);                             \
-      properties->name = g_value_dup_object (value);                  \
+      properties->name = GEGL_COLOR (g_value_dup_object (value));     \
       break;
 #define property_audio_fragment(name, label, def_val)                 \
     case PROP_##name:                                                 \
       g_clear_object (&properties->name);                             \
-      properties->name = g_value_dup_object (value);                  \
+      properties->name =                                              \
+        GEGL_AUDIO_FRAGMENT (g_value_dup_object (value);              \
       break;
 #define property_path(name, label, def_val)                           \
     case PROP_##name:                                                 \
@@ -542,7 +543,7 @@ set_property (GObject      *gobject,
           properties->path_changed_handler = 0;                       \
           g_object_unref (properties->name);                          \
         }                                                             \
-      properties->name = g_value_dup_object (value);                  \
+      properties->name = GEGL_PATH (g_value_dup_object (value));      \
       if (properties->name != NULL)                                   \
         {                                                             \
           properties->path_changed_handler =                          \
@@ -560,7 +561,7 @@ set_property (GObject      *gobject,
       break;
 #define property_enum(name, label, enum, enum_name, def_val)          \
     case PROP_##name:                                                 \
-      properties->name = g_value_get_enum (value);                    \
+      properties->name = (enum) g_value_get_enum (value);             \
       break;
 #define property_seed(name, label, rand_name)                         \
     case PROP_##name:                                                 \
