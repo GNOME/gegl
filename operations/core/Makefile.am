@@ -28,3 +28,4 @@ module.c: Makefile $(gegl_core_la_SOURCES)
 	$(AM_V_GEN) \
 	$(top_srcdir)/tools/gen-loader.sh `echo $^ | cut -d' ' -f2-` > module.c
 
+CLEANFILES = module.c

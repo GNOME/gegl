@@ -64,3 +64,5 @@ gegl_common_gpl3_la_SOURCES =\
 module.c: Makefile $(gegl_common_gpl3_la_SOURCES)
 	$(AM_V_GEN) \
 	$(top_srcdir)/tools/gen-loader.sh `echo $^ | cut -d' ' -f2-` > module.c
+
+CLEANFILES = module.c
