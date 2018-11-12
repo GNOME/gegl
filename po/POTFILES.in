@@ -28,7 +28,7 @@ operations/common/convolution-matrix.c
 operations/common/copy-buffer.c
 operations/common/difference-of-gaussians.c
 operations/common/display.c
-operations/common/distance-transform.c
+operations/common/distance-transform.cc
 operations/common/dither.c
 operations/common/dropshadow.c
 operations/common/edge-neon.c

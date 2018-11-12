@@ -14,6 +14,7 @@ op_LTLIBRARIES = \
 
 gegl_common_cxx_la_SOURCES =\
 	module.c \
+	distance-transform.cc \
 	warp.cc
 
 module.c: Makefile $(gegl_common_cxx_la_SOURCES)

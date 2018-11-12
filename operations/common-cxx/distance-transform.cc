@@ -25,6 +25,8 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
+#define MIN_PARALLEL_SUB_SIZE 64
+
 #ifdef GEGL_PROPERTIES
 
 property_enum (metric, _("Metric"),
@@ -50,7 +52,7 @@ property_boolean (normalize, _("Normalize"), TRUE)
 
 #define GEGL_OP_FILTER
 #define GEGL_OP_NAME     distance_transform
-#define GEGL_OP_C_SOURCE distance-transform.c
+#define GEGL_OP_C_SOURCE distance-transform.cc
 #include "gegl-op.h"
 #include <math.h>
 #include <stdio.h>
@@ -150,10 +152,6 @@ binary_dt_2nd_pass (GeglOperation      *operation,
                     gfloat             *src,
                     gfloat             *dest)
 {
-  gint u, y;
-  gint q, w, *t, *s;
-  gfloat *g, *row_copy;
-
   gfloat (*dt_f)   (gfloat, gfloat, gfloat);
   gint   (*dt_sep) (gint, gint, gfloat, gfloat);
 
@@ -173,73 +171,81 @@ binary_dt_2nd_pass (GeglOperation      *operation,
         break;
     }
 
-  /* sorry for the variable naming, they are taken from the paper */
-
-  s = gegl_calloc (sizeof (gint), width);
-  t = gegl_calloc (sizeof (gint), width);
-  row_copy = gegl_calloc (sizeof (gfloat), width);
-
-  /* this could be parallelized */
-  for (y = 0; y < height; y++)
+  /* Parallelize the loop. We don't even need a mutex as we edit data per
+   * lines (i.e. each thread will work on a given range of lines without
+   * needing to read data updated by other threads).
+   */
+  gegl_parallel_distribute_range (height, MIN_PARALLEL_SUB_SIZE,
+                                  [&] (gint y0, gint size)
     {
-      q = 0;
-      s[0] = 0;
-      t[0] = 0;
-      g = dest + y * width;
+      gfloat *g, *row_copy;
+      gint q, w, *t, *s;
+      gint u, y;
 
-      dest[0 + y * width] = MIN (dest[0 + y * width], 1.0);
-      dest[width - 1 + y * width] = MIN (dest[width - 1 + y * width], 1.0);
+      /* sorry for the variable naming, they are taken from the paper */
 
-      for (u = 1; u < width; u++)
+      s = (gint *) gegl_calloc (sizeof (gint), width);
+      t = (gint *) gegl_calloc (sizeof (gint), width);
+      row_copy = (gfloat *) gegl_calloc (sizeof (gfloat), width);
+
+      for (y = y0; y < y0 + size; y++)
         {
-          while (q >= 0 &&
-                 dt_f (t[q], s[q], g[s[q]]) >= dt_f (t[q], u, g[u]) + EPSILON)
-            {
-              q --;
-            }
+          q = 0;
+          s[0] = 0;
+          t[0] = 0;
+          g = dest + y * width;
 
-          if (q < 0)
-            {
-              q = 0;
-              s[0] = u;
-            }
-          else
-            {
-              /* function Sep from paper */
-              w = dt_sep (s[q], u, g[s[q]], g[u]);
-              w += 1;
+          dest[0 + y * width] = MIN (dest[0 + y * width], 1.0);
+          dest[width - 1 + y * width] = MIN (dest[width - 1 + y * width], 1.0);
 
-              if (w < width)
+          for (u = 1; u < width; u++)
+            {
+              while (q >= 0 &&
+                     dt_f (t[q], s[q], g[s[q]]) >= dt_f (t[q], u, g[u]) + EPSILON)
                 {
-                  q ++;
-                  s[q] = u;
-                  t[q] = w;
+                  q --;
+                }
+
+              if (q < 0)
+                {
+                  q = 0;
+                  s[0] = u;
+                }
+              else
+                {
+                  /* function Sep from paper */
+                  w = dt_sep (s[q], u, g[s[q]], g[u]);
+                  w += 1;
+
+                  if (w < width)
+                    {
+                      q ++;
+                      s[q] = u;
+                      t[q] = w;
+                    }
+                }
+            }
+
+          memcpy (row_copy, g, width * sizeof (gfloat));
+
+          for (u = width - 1; u >= 0; u--)
+            {
+              if (u == s[q])
+                g[u] = row_copy[u];
+              else
+                g[u] = dt_f (u, s[q], row_copy[s[q]]);
+
+              if (q > 0 && u == t[q])
+                {
+                  q--;
                 }
             }
         }
 
-      memcpy (row_copy, g, width * sizeof (gfloat));
-
-      for (u = width - 1; u >= 0; u--)
-        {
-          if (u == s[q])
-            g[u] = row_copy[u];
-          else
-            g[u] = dt_f (u, s[q], row_copy[s[q]]);
-
-          if (q > 0 && u == t[q])
-            {
-              q--;
-            }
-        }
-
-      gegl_operation_progress (operation,
-                               (gdouble) y / (gdouble) height / 2.0 + 0.5, "");
-    }
-
-  gegl_free (t);
-  gegl_free (s);
-  gegl_free (row_copy);
+      gegl_free (t);
+      gegl_free (s);
+      gegl_free (row_copy);
+    });
 }
 
 
@@ -251,32 +257,37 @@ binary_dt_1st_pass (GeglOperation *operation,
                     gfloat        *src,
                     gfloat        *dest)
 {
-  int x, y;
-
-  /* this loop could be parallelized */
-  for (x = 0; x < width; x++)
+  /* Parallelize the loop. We don't even need a mutex as we edit data per
+   * columns (i.e. each thread will work on a given range of columns without
+   * needing to read data updated by other threads).
+   */
+  gegl_parallel_distribute_range (width, MIN_PARALLEL_SUB_SIZE,
+                                  [&] (gint x0, gint size)
     {
-      /* consider out-of-range as 0, i.e. the outside is "empty" */
-      dest[x + 0 * width] = src[x + 0 * width] > thres_lo ? 1.0 : 0.0;
+      gint x;
+      gint y;
 
-      for (y = 1; y < height; y++)
+      for (x = x0; x < x0 + size; x++)
         {
-          if (src[x + y * width] > thres_lo)
-            dest[x + y * width] = 1.0 + dest[x + (y - 1) * width];
-          else
-            dest[x + y * width] = 0.0;
-        }
+          /* consider out-of-range as 0, i.e. the outside is "empty" */
+          dest[x + 0 * width] = src[x + 0 * width] > thres_lo ? 1.0 : 0.0;
 
-      dest[x + (height - 1) * width] = MIN (dest[x + (height - 1) * width], 1.0);
-      for (y = height - 2; y >= 0; y--)
-        {
-          if (dest[x + (y + 1) * width] + 1.0 < dest[x + y * width])
-            dest [x + y * width] = dest[x + (y + 1) * width] + 1.0;
-        }
+          for (y = 1; y < height; y++)
+            {
+              if (src[x + y * width] > thres_lo)
+                dest[x + y * width] = 1.0 + dest[x + (y - 1) * width];
+              else
+                dest[x + y * width] = 0.0;
+            }
 
-      gegl_operation_progress (operation,
-                               (gdouble) x / (gdouble) width / 2.0, "");
-    }
+          dest[x + (height - 1) * width] = MIN (dest[x + (height - 1) * width], 1.0);
+          for (y = height - 2; y >= 0; y--)
+            {
+              if (dest[x + (y + 1) * width] + 1.0 < dest[x + y * width])
+                dest [x + y * width] = dest[x + (y + 1) * width] + 1.0;
+            }
+        }
+    });
 }
 
 
@@ -314,10 +325,10 @@ process (GeglOperation       *operation,
   metric       = o->metric;
   averaging    = o->averaging;
 
-  src_buf = gegl_malloc (width * height * bytes_per_pixel);
-  dst_buf = gegl_calloc (width * height, bytes_per_pixel);
+  src_buf = (gfloat *) gegl_malloc (width * height * bytes_per_pixel);
+  dst_buf = (gfloat *) gegl_calloc (width * height, bytes_per_pixel);
 
-  gegl_operation_progress (operation, 0.0, "");
+  gegl_operation_progress (operation, 0.0, (gchar *) "");
 
   gegl_buffer_get (input, result, 1.0, input_format, src_buf,
                    GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
@@ -326,6 +337,7 @@ process (GeglOperation       *operation,
     {
       binary_dt_1st_pass (operation, width, height, threshold_lo,
                           src_buf, dst_buf);
+      gegl_operation_progress (operation, 0.5, (gchar *) "");
       binary_dt_2nd_pass (operation, width, height, threshold_lo, metric,
                           src_buf, dst_buf);
     }
@@ -334,7 +346,7 @@ process (GeglOperation       *operation,
       gfloat *tmp_buf;
       gint i, j;
 
-      tmp_buf = gegl_malloc (width * height * bytes_per_pixel);
+      tmp_buf = (gfloat *) gegl_malloc (width * height * bytes_per_pixel);
 
       for (i = 0; i < averaging; i++)
         {
@@ -345,8 +357,11 @@ process (GeglOperation       *operation,
 
           binary_dt_1st_pass (operation, width, height, thres,
                               src_buf, tmp_buf);
+          gegl_operation_progress (operation, (i + 1) / averaging - 1 / (2 * averaging),
+                                   (gchar *) "");
           binary_dt_2nd_pass (operation, width, height, thres, metric,
                               src_buf, tmp_buf);
+          gegl_operation_progress (operation, (i + 1) / averaging, (gchar *) "");
 
           for (j = 0; j < width * height; j++)
             dst_buf[j] += tmp_buf[j];
@@ -376,7 +391,7 @@ process (GeglOperation       *operation,
   gegl_buffer_set (output, result, 0, input_format, dst_buf,
                    GEGL_AUTO_ROWSTRIDE);
 
-  gegl_operation_progress (operation, 1.0, "");
+  gegl_operation_progress (operation, 1.0, (gchar *) "");
 
   gegl_free (dst_buf);
   gegl_free (src_buf);
@@ -390,7 +405,7 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass       *operation_class;
   GeglOperationFilterClass *filter_class;
-  gchar                    *composition =
+  const gchar              *composition =
     "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
     "<node operation='gegl:distance-transform'>"
