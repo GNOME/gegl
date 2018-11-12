@@ -26,8 +26,6 @@ operations/common/component-extract.c
 operations/common/contrast-curve.c
 operations/common/convolution-matrix.c
 operations/common/copy-buffer.c
-operations/common-cxx/distance-transform.cc
-operations/common-cxx/warp.cc
 operations/common/difference-of-gaussians.c
 operations/common/display.c
 operations/common/dither.c
@@ -118,6 +116,8 @@ operations/common/wavelet-blur-1d.c
 operations/common/wavelet-blur.c
 operations/common/weighted-blend.c
 operations/common/write-buffer.c
+operations/common-cxx/distance-transform.cc
+operations/common-cxx/warp.cc
 operations/common-gpl3+/antialias.c
 operations/common-gpl3+/apply-lens.c
 operations/common-gpl3+/bump-map.c
