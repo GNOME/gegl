@@ -26,9 +26,10 @@ operations/common/component-extract.c
 operations/common/contrast-curve.c
 operations/common/convolution-matrix.c
 operations/common/copy-buffer.c
+operations/common-cxx/distance-transform.cc
+operations/common-cxx/warp.cc
 operations/common/difference-of-gaussians.c
 operations/common/display.c
-operations/common/distance-transform.cc
 operations/common/dither.c
 operations/common/dropshadow.c
 operations/common/edge-neon.c
@@ -111,7 +112,6 @@ operations/common/unpremultiply.c
 operations/common/unsharp-mask.c
 operations/common/value-invert.c
 operations/common/vignette.c
-operations/common/warp.c
 operations/common/waterpixels.c
 operations/common/watershed-transform.c
 operations/common/wavelet-blur-1d.c
@@ -246,6 +246,7 @@ operations/transform/shear.c
 operations/transform/transform.c
 operations/transform/transform-core.c
 operations/transform/translate.c
+operations/workshop/aces-rrt.c
 operations/workshop/bayer-matrix.c
 operations/workshop/bilateral-filter-fast.c
 operations/workshop/demosaic-bimedian.c
@@ -255,9 +256,8 @@ operations/workshop/domain-transform.c
 operations/workshop/external/gluas.c
 operations/workshop/external/lens-correct.c
 operations/workshop/external/line-profile.c
-operations/workshop/external/v4l2.c
 operations/workshop/external/spyrograph.c
-operations/workshop/aces-rrt.c
+operations/workshop/external/v4l2.c
 operations/workshop/generated/average.c
 operations/workshop/generated/blend-reflect.c
 operations/workshop/generated/negation.c
