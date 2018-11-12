@@ -531,7 +531,7 @@ set_property (GObject      *gobject,
     case PROP_##name:                                                 \
       g_clear_object (&properties->name);                             \
       properties->name =                                              \
-        GEGL_AUDIO_FRAGMENT (g_value_dup_object (value);              \
+        GEGL_AUDIO_FRAGMENT (g_value_dup_object (value));              \
       break;
 #define property_path(name, label, def_val)                           \
     case PROP_##name:                                                 \
