@@ -53,16 +53,16 @@ typedef struct
 
 /*  local function prototypes  */
 
-static void                       gegl_parallel_notify_threads                   (GeglConfig                   *config);
+static void          gegl_parallel_notify_threads                   (GeglConfig                   *config);
 
-static void                       gegl_parallel_set_n_threads                    (gint                          n_threads,
-                                                                                  gboolean                      finish_tasks);
+static void          gegl_parallel_set_n_threads                    (gint                          n_threads,
+                                                                     gboolean                      finish_tasks);
 
-static void                       gegl_parallel_distribute_set_n_threads         (gint                          n_threads);
-static gpointer                   gegl_parallel_distribute_thread_func           (GeglParallelDistributeThread *thread);
+static void          gegl_parallel_distribute_set_n_threads         (gint                          n_threads);
+static gpointer      gegl_parallel_distribute_thread_func           (GeglParallelDistributeThread *thread);
 
-static inline gint                gegl_parallel_distribute_get_optimal_n_threads (gdouble                       n_elements,
-                                                                                  gdouble                       thread_cost);
+static inline gint   gegl_parallel_distribute_get_optimal_n_threads (gdouble                       n_elements,
+                                                                     gdouble                       thread_cost);
 
 
 /*  local variables  */
