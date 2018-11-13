@@ -20,8 +20,6 @@
 #include <glib/gi18n-lib.h>
 #include <math.h>
 
-#define MIN_PARALLEL_SUB_SIZE 64
-
 #ifdef GEGL_PROPERTIES
 
 enum_start (gegl_warp_behavior)
@@ -391,7 +389,8 @@ get_stamp_force (gfloat        x,
 }
 
 static void
-stamp (GeglProperties      *o,
+stamp (GeglOperation       *operation,
+       GeglProperties      *o,
        gfloat              *srcbuf,
        gint                 srcbuf_stride,
        const GeglRectangle *srcbuf_extent,
@@ -458,8 +457,10 @@ stamp (GeglProperties      *o,
     {
       gfloat total_weight = 0.0f;
 
-      gegl_parallel_distribute_range (area.height, MIN_PARALLEL_SUB_SIZE,
-                                      [&] (gint y0, gint height)
+      gegl_parallel_distribute_range (
+        area.height, gegl_operation_get_pixels_per_thread (operation) /
+                     area.width,
+        [&] (gint y0, gint height)
         {
           static GMutex mutex;
           gfloat        local_x_mean       = 0.0f;
@@ -553,8 +554,9 @@ stamp (GeglProperties      *o,
    */
   stampbuf = g_new (gfloat, 2 * area.height * area.width);
 
-  gegl_parallel_distribute_range (area.height, MIN_PARALLEL_SUB_SIZE,
-                                  [=] (gint y0, gint height)
+  gegl_parallel_distribute_range (
+    area.height, gegl_operation_get_pixels_per_thread (operation) / area.width,
+    [=] (gint y0, gint height)
     {
       gfloat yi;
       gint   y_iter;
@@ -707,8 +709,9 @@ stamp (GeglProperties      *o,
     });
 
   /* Paste the stamp into the source buffer. */
-  gegl_parallel_distribute_range (area.height, MIN_PARALLEL_SUB_SIZE,
-                                  [=] (gint y0, gint height)
+  gegl_parallel_distribute_range (
+    area.height, gegl_operation_get_pixels_per_thread (operation) / area.width,
+    [=] (gint y0, gint height)
     {
       gfloat yi;
       gint   y_iter;
@@ -898,7 +901,7 @@ process (GeglOperation        *operation,
 
           if (stamps == 1)
             {
-              stamp (o,
+              stamp (operation, o,
                      srcbuf, srcbuf_stride, &srcbuf_extent,
                      next.x, next.y);
             }
@@ -909,7 +912,7 @@ process (GeglOperation        *operation,
                   t = 1.0 - ((stamps - i - 1) * spacing) / dist;
 
                   gegl_path_point_lerp (&lerp, &prev, &next, t);
-                  stamp (o,
+                  stamp (operation, o,
                          srcbuf, srcbuf_stride, &srcbuf_extent,
                          lerp.x, lerp.y);
                 }

@@ -25,8 +25,6 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
-#define MIN_PARALLEL_SUB_SIZE 64
-
 #ifdef GEGL_PROPERTIES
 
 property_enum (metric, _("Metric"),
@@ -175,8 +173,9 @@ binary_dt_2nd_pass (GeglOperation      *operation,
    * lines (i.e. each thread will work on a given range of lines without
    * needing to read data updated by other threads).
    */
-  gegl_parallel_distribute_range (height, MIN_PARALLEL_SUB_SIZE,
-                                  [&] (gint y0, gint size)
+  gegl_parallel_distribute_range (
+    height, gegl_operation_get_pixels_per_thread (operation) / width,
+    [&] (gint y0, gint size)
     {
       gfloat *g, *row_copy;
       gint q, w, *t, *s;
@@ -261,8 +260,9 @@ binary_dt_1st_pass (GeglOperation *operation,
    * columns (i.e. each thread will work on a given range of columns without
    * needing to read data updated by other threads).
    */
-  gegl_parallel_distribute_range (width, MIN_PARALLEL_SUB_SIZE,
-                                  [&] (gint x0, gint size)
+  gegl_parallel_distribute_range (
+    width, gegl_operation_get_pixels_per_thread (operation) / height,
+    [&] (gint x0, gint size)
     {
       gint x;
       gint y;

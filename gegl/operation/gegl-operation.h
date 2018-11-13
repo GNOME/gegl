@@ -245,11 +245,9 @@ void          gegl_operation_set_key           (const gchar *operation_type,
 
 gboolean      gegl_operation_use_opencl         (const GeglOperation *operation);
 
-gboolean
-gegl_operation_use_threading (GeglOperation *operation,
-                              const GeglRectangle *roi);
-gsize
-gegl_operation_get_min_threaded_sub_area (GeglOperation *operation);
+gboolean      gegl_operation_use_threading         (GeglOperation       *operation,
+                                                    const GeglRectangle *roi);
+gdouble       gegl_operation_get_pixels_per_thread (GeglOperation       *operation);
 
 /* Invalidate a specific rectangle, indicating the any computation depending
  * on this roi is now invalid.

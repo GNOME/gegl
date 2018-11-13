@@ -182,7 +182,7 @@ gegl_operation_composer_process (GeglOperation        *operation,
 
         gegl_parallel_distribute_area (
           result,
-          gegl_operation_get_min_threaded_sub_area (operation),
+          gegl_operation_get_pixels_per_thread (operation),
           GEGL_SPLIT_STRATEGY_AUTO,
           (GeglParallelDistributeAreaFunc) thread_process,
           &data);

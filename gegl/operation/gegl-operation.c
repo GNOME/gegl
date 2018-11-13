@@ -816,15 +816,15 @@ gegl_operation_use_threading (GeglOperation *operation,
       return FALSE;
 
     if (op_class->threaded &&
-        roi->width * roi->height >
-        gegl_operation_get_min_threaded_sub_area (operation))
+        (gdouble) roi->width * (gdouble) roi->height >=
+        2 * gegl_operation_get_pixels_per_thread (operation))
       return TRUE;
   }
   return FALSE;
 }
 
-gsize
-gegl_operation_get_min_threaded_sub_area (GeglOperation *operation)
+gdouble
+gegl_operation_get_pixels_per_thread (GeglOperation *operation)
 {
   /* FIXME: too arbitrary? */
   return 64 * 64;
