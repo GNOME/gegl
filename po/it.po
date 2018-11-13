@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-10-10 14:44+0200\n"
-"PO-Revision-Date: 2018-10-10 14:47+0200\n"
+"POT-Creation-Date: 2018-11-13 18:40+0100\n"
+"PO-Revision-Date: 2018-11-13 18:40+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -224,7 +224,7 @@ msgstr "Lettura/Scrittura"
 msgid "Nearest"
 msgstr "Più vicino"
 
-#: ../gegl/buffer/gegl-buffer-enums.c:90
+#: ../gegl/buffer/gegl-buffer-enums.c:90 ../gegl/gegl-enums.c:119
 #: ../operations/common-gpl3+/bump-map.c:33
 #: ../operations/common-gpl3+/sinus.c:63 ../operations/common-gpl3+/spiral.c:26
 msgid "Linear"
@@ -296,31 +296,59 @@ msgstr "Orizzontale"
 msgid "Vertical"
 msgstr "Verticale"
 
-#: ../gegl/gegl-init.c:285
+#: ../gegl/gegl-enums.c:118
+msgid "Float"
+msgstr "Virgola mobile"
+
+#: ../gegl/gegl-enums.c:120
+msgid "Non-linear"
+msgstr "Non-lineare"
+
+#: ../gegl/gegl-enums.c:121 ../operations/external/lcms-from-profile.c:31
+msgid "Perceptual"
+msgstr "Percettiva"
+
+#: ../gegl/gegl-enums.c:122
+msgid "Linear-premultiplied"
+msgstr "Lineare-premoltiplicata"
+
+#: ../gegl/gegl-enums.c:123
+msgid "Perceptual-premultiplied"
+msgstr "Percettiva-premoltiplicata"
+
+#: ../gegl/gegl-enums.c:124
+msgid "Linear-premultiplied-if-alpha"
+msgstr "Lineare-premoltiplicata-se-alfa"
+
+#: ../gegl/gegl-enums.c:125
+msgid "Perceptual-premultiplied-if-alpha"
+msgstr "Percettiva-premoltiplicata-se-alfa"
+
+#: ../gegl/gegl-init.c:286
 msgid "Where GEGL stores its swap"
 msgstr "Dove GEGL memorizza la propria swap"
 
-#: ../gegl/gegl-init.c:290
+#: ../gegl/gegl-init.c:291
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Quanta memoria usare (approssimativamente) per la cache delle immagini"
 
-#: ../gegl/gegl-init.c:295
+#: ../gegl/gegl-init.c:296
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Dimensione predefinita delle tile in GeglBuffers"
 
-#: ../gegl/gegl-init.c:300
+#: ../gegl/gegl-init.c:301
 msgid "The count of pixels to compute simultaneously"
 msgstr "Il numero di pixel da elaborare simultaneamente"
 
-#: ../gegl/gegl-init.c:305
+#: ../gegl/gegl-init.c:306
 msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
 msgstr "La qualità del rendering, un valore tra 0.0(veloce) e 1.0(riferimento)"
 
-#: ../gegl/gegl-init.c:310
+#: ../gegl/gegl-init.c:311
 msgid "The number of concurrent processing threads to use"
 msgstr "Il numero di thread concorrenti da usare"
 
-#: ../gegl/gegl-init.c:315
+#: ../gegl/gegl-init.c:316
 msgid "Disable OpenCL"
 msgstr "Disabilita OpenCL"
 
@@ -576,6 +604,7 @@ msgstr ""
 #: ../operations/common-gpl3+/supernova.c:45
 #: ../operations/common-gpl3+/whirl-pinch.c:46
 #: ../operations/external/matting-levin.c:29
+#: ../operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "Raggio"
 
@@ -1437,7 +1466,7 @@ msgid "Alpha channel"
 msgstr "Canale alfa"
 
 #: ../operations/common/convolution-matrix.c:64
-#: ../operations/common/distance-transform.c:46
+#: ../operations/common-cxx/distance-transform.cc:46
 msgid "Normalize"
 msgstr "Normalizza"
 
@@ -1511,42 +1540,6 @@ msgstr "Schermo"
 #: ../operations/common/display.c:143
 msgid "Display the input buffer in a window."
 msgstr "Mostra il buffer di ingresso in una finestra."
-
-#: ../operations/common/distance-transform.c:30
-msgid "Metric"
-msgstr "Metrica"
-
-#: ../operations/common/distance-transform.c:32
-msgid "Metric to use for the distance calculation"
-msgstr "La metrica da usare per il calcolo della distanza"
-
-#: ../operations/common/distance-transform.c:34
-msgid "Threshold low"
-msgstr "Soglia bassa"
-
-#: ../operations/common/distance-transform.c:37
-msgid "Threshold high"
-msgstr "Soglia alta"
-
-#: ../operations/common/distance-transform.c:40
-msgid "Grayscale Averaging"
-msgstr "Media scala di grigi"
-
-#: ../operations/common/distance-transform.c:41
-msgid "Number of computations for grayscale averaging"
-msgstr "Numero di computazioni per la media della scala di grigi"
-
-#: ../operations/common/distance-transform.c:47
-msgid "Normalize output to range 0.0 to 1.0."
-msgstr "Normalizza il campo dei risultati da 0,0 a 1,0."
-
-#: ../operations/common/distance-transform.c:422
-msgid "Distance Transform"
-msgstr "Trasformazione distanza"
-
-#: ../operations/common/distance-transform.c:425
-msgid "Calculate a distance transform"
-msgstr "Calcola una trasformazione di distanza"
 
 #: ../operations/common/dither.c:28
 msgid "Red levels"
@@ -1629,6 +1622,7 @@ msgstr ""
 #: ../operations/transform/scale-size.c:25
 #: ../operations/transform/scale-size-keepaspect.c:25
 #: ../operations/transform/shear.c:25 ../operations/transform/translate.c:25
+#: ../operations/workshop/external/spyrograph.c:51
 msgid "X"
 msgstr "X"
 
@@ -1645,6 +1639,7 @@ msgstr "Scostamento orizzontale dell'ombra"
 #: ../operations/transform/scale-size.c:30
 #: ../operations/transform/scale-size-keepaspect.c:30
 #: ../operations/transform/shear.c:29 ../operations/transform/translate.c:31
+#: ../operations/workshop/external/spyrograph.c:57
 msgid "Y"
 msgstr "Y"
 
@@ -1882,14 +1877,14 @@ msgid "Gaussian Blur"
 msgstr "Sfocatura gaussiana"
 
 #: ../operations/common/gaussian-blur.c:121
-#: ../operations/common/gblur-1d.c:1279
+#: ../operations/common/gblur-1d.c:1376
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
 msgstr ""
 "Esegue una media dei pixel adiacenti con la distribuzione normale come peso"
 
-#: ../operations/common/gblur-1d.c:44 ../operations/common/warp.c:38
+#: ../operations/common/gblur-1d.c:44 ../operations/common-cxx/warp.cc:38
 #: ../operations/external/text.c:32
 msgid "Size"
 msgstr "Dimensione"
@@ -1903,7 +1898,7 @@ msgstr "Orientamento"
 msgid "The orientation of the blur - hor/ver"
 msgstr "Orientamento della sfocatura - oriz/vert"
 
-#: ../operations/common/gblur-1d.c:1276
+#: ../operations/common/gblur-1d.c:1373
 msgid "1D Gaussian-blur"
 msgstr "Sfocatura gaussiana 1D"
 
@@ -3116,8 +3111,8 @@ msgstr "Disturbo a prelievo"
 msgid "Randomly interchange some pixels with neighbors"
 msgstr "Scambia a caso alcuni pixel con i suoi vicini"
 
-#: ../operations/common/noise-reduction.c:26 ../operations/common/warp.c:35
-#: ../operations/common-gpl3+/wind.c:64
+#: ../operations/common/noise-reduction.c:26
+#: ../operations/common-cxx/warp.cc:35 ../operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Forza"
 
@@ -3240,11 +3235,11 @@ msgstr "Apri un buffer GEGL"
 msgid "Use an on-disk GeglBuffer as data source."
 msgstr "Usa un GeglBuffer su disco come sorgente dati."
 
-#: ../operations/common/over.c:183
+#: ../operations/common/over.c:209
 msgid "Normal compositing"
 msgstr "Composizione normale"
 
-#: ../operations/common/over.c:188
+#: ../operations/common/over.c:214
 msgid ""
 "Porter Duff operation over (also known as normal mode, and src-over) (d = cA "
 "+ cB * (1 - aA))"
@@ -3926,6 +3921,7 @@ msgstr "Spremi"
 
 #: ../operations/common/vignette.c:71 ../operations/common-gpl3+/spiral.c:64
 #: ../operations/workshop/bayer-matrix.c:51
+#: ../operations/workshop/external/spyrograph.c:69
 #: ../operations/workshop/linear-sinusoid.c:96
 msgid "Rotation"
 msgstr "Rotazione"
@@ -3943,62 +3939,6 @@ msgstr ""
 "Applica un effetto vignettatura all'immagine. Simula la diminuzione di "
 "luminanza e altri effetti particolari ai bordi, un fenomeno tipico "
 "dell'esposizione delle vecchie pellicole analogiche."
-
-#: ../operations/common/warp.c:26
-msgid "Move pixels"
-msgstr "Sposta pixel"
-
-#: ../operations/common/warp.c:27
-msgid "Grow area"
-msgstr "Accresci area"
-
-#: ../operations/common/warp.c:28
-msgid "Shrink area"
-msgstr "Riduci area"
-
-#: ../operations/common/warp.c:29
-msgid "Swirl clockwise"
-msgstr "Vortice in senso orario"
-
-#: ../operations/common/warp.c:30
-msgid "Swirl counter-clockwise"
-msgstr "Vortice in senso anti-orario"
-
-#: ../operations/common/warp.c:31
-msgid "Erase warping"
-msgstr "Distorsione cancellamento"
-
-#: ../operations/common/warp.c:32
-msgid "Smooth warping"
-msgstr "Distorsione smussatura"
-
-#: ../operations/common/warp.c:41 ../operations/external/path.c:40
-msgid "Hardness"
-msgstr "Durezza"
-
-#: ../operations/common/warp.c:44
-msgid "Spacing"
-msgstr "Spaziatura"
-
-#: ../operations/common/warp.c:47
-msgid "Stroke"
-msgstr "Tratto"
-
-#: ../operations/common/warp.c:49
-msgid "Behavior"
-msgstr "Comportamento"
-
-#: ../operations/common/warp.c:52
-msgid "Behavior of the op"
-msgstr "Comportamento dell'operazione"
-
-#: ../operations/common/warp.c:937
-msgid "Warp"
-msgstr "Warp"
-
-#: ../operations/common/warp.c:939
-msgid "Compute a relative displacement mapping from a stroke"
-msgstr "Calcola la mappatura di uno spostamento relativo da un tratto"
 
 #: ../operations/common/waterpixels.c:35
 msgid "Average"
@@ -4038,13 +3978,35 @@ msgstr "Pixelacque"
 msgid "Superpixels based on the watershed transformation"
 msgstr "I superpixel basati sulla trasformazione spartiacque"
 
-#: ../operations/common/watershed-transform.c:383
+#: ../operations/common/watershed-transform.c:27
+#: ../operations/common/watershed-transform.c:28
+msgid "Index of component flagging unlabelled pixels"
+msgstr "Indice del componente che segnala i pixel non etichettati"
+
+#: ../operations/common/watershed-transform.c:31
+msgid "flag"
+msgstr "segnale"
+
+#: ../operations/common/watershed-transform.c:32
+msgid "Pointer to flag value for unlabelled pixels"
+msgstr "Puntatore al valore segnale di pixel non etichettati"
+
+#: ../operations/common/watershed-transform.c:488
 msgid "Watershed Transform"
 msgstr "Trasformazione spartiacque"
 
-#: ../operations/common/watershed-transform.c:386
-msgid "Labels propagation by watershed transformation"
-msgstr "Propagazione etichette per trasformazione spartiacque"
+#: ../operations/common/watershed-transform.c:491
+msgid ""
+"Labels propagation by watershed transformation. Output buffer will keep the "
+"input format. Unlabelled pixels are marked with a given flag value (by "
+"default: last component with NULL value). The mandatory aux buffer is a \"Y "
+"u8\" image representing the priority levels."
+msgstr ""
+"Propagazione etichette mediante trasformazione spartiacque. Il buffer "
+"d'uscita conterrà il formato in ingresso. I pixel non etichettati sono "
+"contrassegnati con un determinato valore segnale (per impostazione "
+"predefinita: ultimo componente con valore NULL). Il buffer aux obbligatorio "
+"è un'immagine \"Y u8\" che rappresenta i livelli di priorità."
 
 #: ../operations/common/wavelet-blur-1d.c:29
 #: ../operations/common/wavelet-blur.c:28
@@ -4085,6 +4047,99 @@ msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr ""
 "Scrive i dati di ingresso in un preesistente buffer superficie di "
 "destinazione GEGL."
+
+#: ../operations/common-cxx/distance-transform.cc:30
+msgid "Metric"
+msgstr "Metrica"
+
+#: ../operations/common-cxx/distance-transform.cc:32
+msgid "Metric to use for the distance calculation"
+msgstr "La metrica da usare per il calcolo della distanza"
+
+#: ../operations/common-cxx/distance-transform.cc:34
+msgid "Threshold low"
+msgstr "Soglia bassa"
+
+#: ../operations/common-cxx/distance-transform.cc:37
+msgid "Threshold high"
+msgstr "Soglia alta"
+
+#: ../operations/common-cxx/distance-transform.cc:40
+msgid "Grayscale Averaging"
+msgstr "Media scala di grigi"
+
+#: ../operations/common-cxx/distance-transform.cc:41
+msgid "Number of computations for grayscale averaging"
+msgstr "Numero di computazioni per la media della scala di grigi"
+
+#: ../operations/common-cxx/distance-transform.cc:47
+msgid "Normalize output to range 0.0 to 1.0."
+msgstr "Normalizza il campo dei risultati da 0,0 a 1,0."
+
+#: ../operations/common-cxx/distance-transform.cc:437
+msgid "Distance Transform"
+msgstr "Trasformazione distanza"
+
+#: ../operations/common-cxx/distance-transform.cc:440
+msgid "Calculate a distance transform"
+msgstr "Calcola una trasformazione di distanza"
+
+#: ../operations/common-cxx/warp.cc:26
+msgid "Move pixels"
+msgstr "Sposta pixel"
+
+#: ../operations/common-cxx/warp.cc:27
+msgid "Grow area"
+msgstr "Accresci area"
+
+#: ../operations/common-cxx/warp.cc:28
+msgid "Shrink area"
+msgstr "Riduci area"
+
+#: ../operations/common-cxx/warp.cc:29
+msgid "Swirl clockwise"
+msgstr "Vortice in senso orario"
+
+#: ../operations/common-cxx/warp.cc:30
+msgid "Swirl counter-clockwise"
+msgstr "Vortice in senso anti-orario"
+
+#: ../operations/common-cxx/warp.cc:31
+msgid "Erase warping"
+msgstr "Distorsione cancellamento"
+
+#: ../operations/common-cxx/warp.cc:32
+msgid "Smooth warping"
+msgstr "Distorsione smussatura"
+
+#: ../operations/common-cxx/warp.cc:41 ../operations/external/path.c:40
+#: ../operations/workshop/external/spyrograph.c:85
+msgid "Hardness"
+msgstr "Durezza"
+
+#: ../operations/common-cxx/warp.cc:44
+msgid "Spacing"
+msgstr "Spaziatura"
+
+#: ../operations/common-cxx/warp.cc:47
+msgid "Stroke"
+msgstr "Tratto"
+
+#: ../operations/common-cxx/warp.cc:49
+msgid "Behavior"
+msgstr "Comportamento"
+
+#: ../operations/common-cxx/warp.cc:52
+msgid "Behavior of the op"
+msgstr "Comportamento dell'operazione"
+
+#: ../operations/common-cxx/warp.cc:987
+msgid "Warp"
+msgstr "Warp"
+
+#: ../operations/common-cxx/warp.cc:989
+msgid "Compute a relative displacement mapping from a stroke"
+msgstr "Calcola la mappatura di uno spostamento relativo da un tratto"
 
 #: ../operations/common-gpl3+/antialias.c:278
 msgid "Scale3X Antialiasing"
@@ -6735,10 +6790,6 @@ msgstr "Profilo sorgente"
 msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
 msgstr "Il cmsHPROFILE corrispondente al profilo ICC dei dati in ingresso."
 
-#: ../operations/external/lcms-from-profile.c:31
-msgid "Perceptual"
-msgstr "Percettiva"
-
 #: ../operations/external/lcms-from-profile.c:33
 msgid "Relative Colorimetric"
 msgstr "Colorimetrica relativa"
@@ -6908,26 +6959,32 @@ msgstr ""
 "riempimento"
 
 #: ../operations/external/path.c:29
+#: ../operations/workshop/external/spyrograph.c:74
 msgid "Stroke Color"
 msgstr "Colore delineatura"
 
 #: ../operations/external/path.c:30
+#: ../operations/workshop/external/spyrograph.c:75
 msgid "Color of paint to use for stroking"
 msgstr "Tinta da usare per la delineatura"
 
 #: ../operations/external/path.c:32
+#: ../operations/workshop/external/spyrograph.c:77
 msgid "Stroke width"
 msgstr "Spessore delineatura"
 
 #: ../operations/external/path.c:33
+#: ../operations/workshop/external/spyrograph.c:78
 msgid "The width of the brush used to stroke the path"
 msgstr "Lo spessore del pennello usato per delineare un percorso"
 
 #: ../operations/external/path.c:36
+#: ../operations/workshop/external/spyrograph.c:81
 msgid "Stroke opacity"
 msgstr "Opacità delineatura"
 
 #: ../operations/external/path.c:37
+#: ../operations/workshop/external/spyrograph.c:82
 msgid ""
 "Opacity of stroke, note, does not behave like SVG since at the moment "
 "stroking is done using an airbrush tool"
@@ -6936,6 +6993,7 @@ msgstr ""
 "momento, la delineatura viene effettuata usando lo strumento aerografo."
 
 #: ../operations/external/path.c:41
+#: ../operations/workshop/external/spyrograph.c:86
 msgid "Hardness of the brush, 0.0 for a soft brush, 1.0 for a hard brush"
 msgstr "Durezza del pennello, 0.0 per un pennello morbido, 1.0 per uno duro"
 
@@ -7372,7 +7430,7 @@ msgstr "Salvatore immagini WebP"
 msgid "global value used if aux doesn't contain data"
 msgstr "valore globale usato se aux non contiene dati"
 
-#: ../operations/generated/add.c:134
+#: ../operations/generated/add.c:138
 msgid ""
 "Math operation add, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -7384,11 +7442,11 @@ msgstr ""
 "come operando. Il risultato è la valutazione dell'espressione risultato = "
 "ingresso + valore."
 
-#: ../operations/generated/clear.c:131
+#: ../operations/generated/clear.c:133
 msgid "Porter Duff operation clear (d = 0.0f)"
 msgstr "Operazione pulitura Porter Duff (d = 0.0f)"
 
-#: ../operations/generated/color-burn.c:178
+#: ../operations/generated/color-burn.c:188
 msgid ""
 "SVG blend operation color-burn (<code>if cA * aB + cB * aA <= aA * aB: d = "
 "cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == 0 ? 1 : (aA * (cA * aB + "
@@ -7398,7 +7456,7 @@ msgstr ""
 "aB: d = cA * (1 - aB) + cB * (1 - aA) altrimenti: d = (cA == 0 ? 1 : (aA * "
 "(cA * aB + cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
 
-#: ../operations/generated/color-dodge.c:178
+#: ../operations/generated/color-dodge.c:188
 msgid ""
 "SVG blend operation color-dodge (<code>if cA * aB + cB * aA >= aA * aB: d = "
 "aA * aB + cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == aA ? 1 : cB * "
@@ -7409,7 +7467,7 @@ msgstr ""
 "aA ? 1 : cB * aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - "
 "aA)</code>)"
 
-#: ../operations/generated/darken.c:174
+#: ../operations/generated/darken.c:184
 msgid ""
 "SVG blend operation darken (<code>d = MIN (cA * aB, cB * aA) + cA * (1 - aB) "
 "+ cB * (1 - aA)</code>)"
@@ -7417,7 +7475,7 @@ msgstr ""
 "Operazione fusione SVG scurisci (<code>d = MIN (cA * aB, cB * aA) + cA * (1 "
 "- aB) + cB * (1 - aA)</code>)"
 
-#: ../operations/generated/difference.c:174
+#: ../operations/generated/difference.c:184
 msgid ""
 "SVG blend operation difference (<code>d = cA + cB - 2 * (MIN (cA * aB, cB * "
 "aA))</code>)"
@@ -7425,7 +7483,7 @@ msgstr ""
 "Operazione fusione SVG differenza (<code>d = cA + cB - 2 * (MIN (cA * aB, cB "
 "* aA))</code>)"
 
-#: ../operations/generated/divide.c:134
+#: ../operations/generated/divide.c:138
 msgid ""
 "Math operation divide, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -7437,27 +7495,27 @@ msgstr ""
 "come operando. Il risultato è la valutazione dell'espressione risultato = "
 "valore==0.0f?0.0f:ingresso/valore."
 
-#: ../operations/generated/dst-atop.c:131
+#: ../operations/generated/dst-atop.c:133
 msgid "Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"
 msgstr "Operazione Porter Duff dst-atop (d = cB * aA + cA * (1.0f - aB))"
 
-#: ../operations/generated/dst.c:153
+#: ../operations/generated/dst.c:155
 msgid "Porter Duff operation dst (d = cB)"
 msgstr "Operazione Porter Duff dst (d = cB)"
 
-#: ../operations/generated/dst-in.c:131
+#: ../operations/generated/dst-in.c:133
 msgid "Porter Duff operation dst-in (d = cB * aA)"
 msgstr "Operazione Porter Duff dst-in (d = cB * aA)"
 
-#: ../operations/generated/dst-out.c:153
+#: ../operations/generated/dst-out.c:155
 msgid "Porter Duff operation dst-out (d = cB * (1.0f - aA))"
 msgstr "Operazione Porter Duff dst-out (d = cB * (1.0f - aA))"
 
-#: ../operations/generated/dst-over.c:153
+#: ../operations/generated/dst-over.c:155
 msgid "Porter Duff operation dst-over (d = cB + cA * (1.0f - aB))"
 msgstr "Operazione Porter Duff dst-over (d = cB + cA * (1.0f - aB))"
 
-#: ../operations/generated/exclusion.c:174
+#: ../operations/generated/exclusion.c:184
 msgid ""
 "SVG blend operation exclusion (<code>d = (cA * aB + cB * aA - 2 * cA * cB) + "
 "cA * (1 - aB) + cB * (1 - aA)</code>)"
@@ -7465,7 +7523,7 @@ msgstr ""
 "Operazione di fusione SVG esclusione (<code>d = (cA * aB + cB * aA - 2 * cA "
 "* cB) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
-#: ../operations/generated/gamma.c:134
+#: ../operations/generated/gamma.c:138
 msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -7477,7 +7535,7 @@ msgstr ""
 "come operando. Il risultato è la valutazione dell'espressione risultato = "
 "powf (ingresso, valore)"
 
-#: ../operations/generated/hard-light.c:178
+#: ../operations/generated/hard-light.c:188
 msgid ""
 "SVG blend operation hard-light (<code>if 2 * cA < aA: d = 2 * cA * cB + cA * "
 "(1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) "
@@ -7487,7 +7545,7 @@ msgstr ""
 "cB + cA * (1 - aB) + cB * (1 - aA) altrimenti: d = aA * aB - 2 * (aB - cB) * "
 "(aA - cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
-#: ../operations/generated/lighten.c:174
+#: ../operations/generated/lighten.c:184
 msgid ""
 "SVG blend operation lighten (<code>d = MAX (cA * aB, cB * aA) + cA * (1 - "
 "aB) + cB * (1 - aA)</code>)"
@@ -7495,7 +7553,7 @@ msgstr ""
 "Operazione di fusione SVG \"illumina\" (<code>d = MAX (cA * aB, cB * aA) + "
 "cA * (1 - aB) + cB * (1 - aA)</code>)"
 
-#: ../operations/generated/multiply.c:134
+#: ../operations/generated/multiply.c:138
 msgid ""
 "Math operation multiply, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -7507,7 +7565,7 @@ msgstr ""
 "buffer su aux come operando. Il risultato è la valutazione dell'espressione "
 "risultato = ingresso * valore"
 
-#: ../operations/generated/overlay.c:178
+#: ../operations/generated/overlay.c:188
 msgid ""
 "SVG blend operation overlay (<code>if 2 * cB > aB: d = 2 * cA * cB + cA * (1 "
 "- aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) + "
@@ -7517,16 +7575,16 @@ msgstr ""
 "* cB + cA * (1 - aB) + cB * (1 - aA) altrimenti: d = aA * aB - 2 * (aB - cB) "
 "* (aA - cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
-#: ../operations/generated/plus.c:176
+#: ../operations/generated/plus.c:186
 msgid "SVG blend operation plus (<code>d = cA + cB</code>)"
 msgstr "Operazione di fusione SVG \"più\" (<code>d = cA + cB</code>)"
 
-#: ../operations/generated/screen.c:174
+#: ../operations/generated/screen.c:184
 msgid "SVG blend operation screen (<code>d = cA + cB - cA * cB</code>)"
 msgstr ""
 "Operazione di fusione SVG \"schermo\" (<code>d = cA + cB - cA * cB</code>)"
 
-#: ../operations/generated/soft-light.c:180
+#: ../operations/generated/soft-light.c:192
 msgid ""
 "SVG blend operation soft-light (<code>if 2 * cA < aA: d = cB * (aA - (aB == "
 "0 ? 1 : 1 - cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - aA); if 8 "
@@ -7542,23 +7600,23 @@ msgstr ""
 "altrimenti: d = (aA * cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * "
 "cA - aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
-#: ../operations/generated/src-atop.c:153
+#: ../operations/generated/src-atop.c:155
 msgid "Porter Duff operation src-atop (d = cA * aB + cB * (1.0f - aA))"
 msgstr "Operazione Porter Duff src-atop (d = cA * aB + cB * (1.0f - aA))"
 
-#: ../operations/generated/src.c:131
+#: ../operations/generated/src.c:133
 msgid "Porter Duff operation src (d = cA)"
 msgstr "Operazione Porter Duff src (d = cA)"
 
-#: ../operations/generated/src-in.c:139
+#: ../operations/generated/src-in.c:142
 msgid "Porter Duff compositing operation src-in (formula:   cA * aB)"
 msgstr "Operazione Porter Duff src-in (formula = cA * aB)"
 
-#: ../operations/generated/src-out.c:131
+#: ../operations/generated/src-out.c:133
 msgid "Porter Duff operation src-out (d = cA * (1.0f - aB))"
 msgstr "Operazione Porter Duff src-out (d = cA * (1.0f - aB))"
 
-#: ../operations/generated/subtract.c:134
+#: ../operations/generated/subtract.c:138
 msgid ""
 "Math operation subtract, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -7570,7 +7628,7 @@ msgstr ""
 "aux come operando. Il risultato è la valutazione dell'espressione risultato "
 "= ingresso - valore"
 
-#: ../operations/generated/xor.c:153
+#: ../operations/generated/xor.c:155
 msgid "Porter Duff operation xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
 msgstr "Operazione Porter Duff xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
 
@@ -7802,6 +7860,28 @@ msgid ""
 msgstr ""
 "Riposiziona il buffer (con precisione subpixel), se le coordinate intere "
 "sono passate da una scorciatoia senza usare il ricampionamento"
+
+#: ../operations/workshop/aces-rrt.c:134
+msgid "ACES RRT"
+msgstr "ACES RRT"
+
+#: ../operations/workshop/aces-rrt.c:137
+msgid ""
+"HDR to SDR proofing filter/mapping curve that is an approximation of the "
+"ACES RRT (Reference Rendering Transform). When feeding scene-refereed "
+"imagery into this op, the result is suitable for display referred transform "
+"to sRGB or output display using regular ICC matric profiles as the ODT. Note "
+"that for the time being, this is a luminance only approximation of the ACES "
+"RRT; without desaturation of highlights and shadows nor red hue "
+"modifications."
+msgstr ""
+"Filtro provino/curva di mappatura da HDR a SDR che è un'approssimazione "
+"dell'ACES RRT (Reference Rendering Transform). Quando si forniscono immagini "
+"scena-referenziate in questa op, il risultato è adatto alla trasformazione "
+"riferita al display in sRGB o display d'uscita usando normali profili di "
+"matrice ICC come l'ODT. Si noti che per il momento si tratta di "
+"un'approssimazione della sola luminanza dell'RRT ACES; senza desaturazione "
+"delle alteluci e ombre né modifiche di tonalità rosse."
 
 #: ../operations/workshop/bayer-matrix.c:26
 msgid "Subdivisions"
@@ -8214,6 +8294,80 @@ msgstr ""
 "linea specificata nel buffer di ingresso, disegnati in un buffer della "
 "dimensione specificata."
 
+#: ../operations/workshop/external/spyrograph.c:27
+msgid "Spyrograph"
+msgstr "Spirografo"
+
+#: ../operations/workshop/external/spyrograph.c:28
+msgid "EPITROCHOID"
+msgstr "EPITROCOIDE"
+
+#: ../operations/workshop/external/spyrograph.c:31
+msgid "Curve Type"
+msgstr "Tipo curva"
+
+#: ../operations/workshop/external/spyrograph.c:34
+msgid "Curve type"
+msgstr "Tipo curva"
+
+#: ../operations/workshop/external/spyrograph.c:36
+msgid "Fixed Gear Teeth"
+msgstr "Denti ingranaggio fisso"
+
+#: ../operations/workshop/external/spyrograph.c:37
+msgid "Number of teeth in fixed gear."
+msgstr "Numero di denti nell'ingranaggio fisso."
+
+#: ../operations/workshop/external/spyrograph.c:40
+msgid "Moving Gear Teeth"
+msgstr "Denti ingranaggio mobile"
+
+#: ../operations/workshop/external/spyrograph.c:41
+msgid ""
+"Number of teeth in moving gear. Radius of moving gear, relative to radius of "
+"fixed gear, is determined by the proportion between the number of teeth in "
+"gears."
+msgstr ""
+"Numero di denti presenti nell'ingranaggio mobile. Il raggio dell'ingranaggio "
+"mobile, relativo al raggio dell'ingranaggio fisso, è determinato dalla "
+"proporzione tra il numero di denti negli ingranaggi."
+
+#: ../operations/workshop/external/spyrograph.c:46
+msgid "Hole Percent"
+msgstr "Percento foro"
+
+#: ../operations/workshop/external/spyrograph.c:47
+msgid ""
+"How far the hole is from the center of the moving gear. 100 means that the "
+"hole is at the gear's edge."
+msgstr ""
+"Quanto dista il buco dal centro dell'ingranaggio mobile. 100 significa che "
+"il buco si trova sul bordo dell'ingranaggio."
+
+#: ../operations/workshop/external/spyrograph.c:52
+msgid "X coordinate of pattern center"
+msgstr "coordinata X del centro del motivo"
+
+#: ../operations/workshop/external/spyrograph.c:58
+msgid "Y coordinate of pattern center"
+msgstr "coordinata Y del centro del motivo"
+
+#: ../operations/workshop/external/spyrograph.c:64
+msgid "Radius of fixed gear"
+msgstr "Raggio ingranaggio fisso"
+
+#: ../operations/workshop/external/spyrograph.c:70
+msgid "Pattern rotation"
+msgstr "Motivo di rotazione"
+
+#: ../operations/workshop/external/spyrograph.c:612
+msgid "Render Spyrograph"
+msgstr "Disegna spirografo"
+
+#: ../operations/workshop/external/spyrograph.c:616
+msgid "Renders a Spyrograph pattern"
+msgstr "Disegna un motivo tipo spirografo"
+
 #: ../operations/workshop/external/v4l2.c:25
 msgid "video device path"
 msgstr "percorso dispositivo video"
@@ -8225,28 +8379,6 @@ msgstr "Sorgente quadri Video4Linux2"
 #: ../operations/workshop/external/v4l2.c:776
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr "Ingresso video4Linux2, webcam, framegrabber e dispositivi similari."
-
-#: ../operations/workshop/aces-rrt.c:134
-msgid "ACES RRT"
-msgstr "ACES RRT"
-
-#: ../operations/workshop/aces-rrt.c:137
-msgid ""
-"HDR to SDR proofing filter/mapping curve that is an approximation of the "
-"ACES RRT (Reference Rendering Transform). When feeding scene-refereed "
-"imagery into this op, the result is suitable for display referred transform "
-"to sRGB or output display using regular ICC matric profiles as the ODT. Note "
-"that for the time being, this is a luminance only approximation of the ACES "
-"RRT; without desaturation of highlights and shadows nor red hue "
-"modifications."
-msgstr ""
-"Filtro provino/curva di mappatura da HDR a SDR che è un'approssimazione "
-"dell'ACES RRT (Reference Rendering Transform). Quando si forniscono immagini "
-"scena-referenziate in questa op, il risultato è adatto alla trasformazione "
-"riferita al display in sRGB o display d'uscita usando normali profili di "
-"matrice ICC come l'ODT. Si noti che per il momento si tratta di "
-"un'approssimazione della sola luminanza dell'RRT ACES; senza desaturazione "
-"delle alteluci e ombre né modifiche di tonalità rosse."
 
 #: ../operations/workshop/generated/average.c:111
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
