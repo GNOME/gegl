@@ -18,6 +18,8 @@
 
 #include "config.h"
 
+#include <math.h>
+
 #include <glib.h>
 
 #include "gegl.h"
@@ -51,13 +53,16 @@ typedef struct
 
 /*  local function prototypes  */
 
-static void                       gegl_parallel_notify_threads           (GeglConfig                   *config);
+static void                       gegl_parallel_notify_threads                   (GeglConfig                   *config);
 
-static void                       gegl_parallel_set_n_threads            (gint                          n_threads,
-                                                                          gboolean                      finish_tasks);
+static void                       gegl_parallel_set_n_threads                    (gint                          n_threads,
+                                                                                  gboolean                      finish_tasks);
 
-static void                       gegl_parallel_distribute_set_n_threads (gint                          n_threads);
-static gpointer                   gegl_parallel_distribute_thread_func   (GeglParallelDistributeThread *thread);
+static void                       gegl_parallel_distribute_set_n_threads         (gint                          n_threads);
+static gpointer                   gegl_parallel_distribute_thread_func           (GeglParallelDistributeThread *thread);
+
+static inline gint                gegl_parallel_distribute_get_optimal_n_threads (gdouble                       n_elements,
+                                                                                  gdouble                       thread_cost);
 
 
 /*  local variables  */
@@ -184,29 +189,35 @@ gegl_parallel_distribute_range_func (gint                             i,
 
 void
 gegl_parallel_distribute_range (gsize                           size,
-                                gsize                           min_sub_size,
+                                gdouble                         thread_cost,
                                 GeglParallelDistributeRangeFunc func,
                                 gpointer                        user_data)
 {
   GeglParallelDistributeRangeData data;
-  gsize                           n = size;
+  gint                            n_threads;
 
   g_return_if_fail (func != NULL);
 
   if (size == 0)
     return;
 
-  if (min_sub_size > 1)
-    n /= min_sub_size;
+  n_threads = gegl_parallel_distribute_get_optimal_n_threads (
+    size,
+    thread_cost);
 
-  n = CLAMP (n, 1, gegl_parallel_distribute_n_threads);
+  if (n_threads == 1)
+    {
+      func (0, size, user_data);
+
+      return;
+    }
 
   data.size      = size;
   data.func      = func;
   data.user_data = user_data;
 
   gegl_parallel_distribute (
-    n,
+    n_threads,
     (GeglParallelDistributeFunc) gegl_parallel_distribute_range_func,
     &data);
 }
@@ -261,19 +272,30 @@ gegl_parallel_distribute_area_func (gint                            i,
 
 void
 gegl_parallel_distribute_area (const GeglRectangle            *area,
-                               gsize                           min_sub_area,
+                               gdouble                         thread_cost,
                                GeglSplitStrategy               split_strategy,
                                GeglParallelDistributeAreaFunc  func,
                                gpointer                        user_data)
 {
   GeglParallelDistributeAreaData data;
-  gsize                          n;
+  gint                           n_threads;
 
   g_return_if_fail (area != NULL);
   g_return_if_fail (func != NULL);
 
   if (area->width <= 0 || area->height <= 0)
     return;
+
+  n_threads = gegl_parallel_distribute_get_optimal_n_threads (
+    (gdouble) area->width * (gdouble) area->height,
+    thread_cost);
+
+  if (n_threads == 1)
+    {
+      func (area, user_data);
+
+      return;
+    }
 
   if (split_strategy == GEGL_SPLIT_STRATEGY_AUTO)
     {
@@ -283,20 +305,13 @@ gegl_parallel_distribute_area (const GeglRectangle            *area,
         split_strategy = GEGL_SPLIT_STRATEGY_HORIZONTAL;
     }
 
-  n = (gsize) area->width * (gsize) area->height;
-
-  if (min_sub_area > 1)
-    n /= min_sub_area;
-
-  n = CLAMP (n, 1, gegl_parallel_distribute_n_threads);
-
   data.area           = area;
   data.split_strategy = split_strategy;
   data.func           = func;
   data.user_data      = user_data;
 
   gegl_parallel_distribute (
-    n,
+    n_threads,
     (GeglParallelDistributeFunc) gegl_parallel_distribute_area_func,
     &data);
 }
@@ -415,4 +430,38 @@ gegl_parallel_distribute_thread_func (GeglParallelDistributeThread *thread)
   g_mutex_unlock (&thread->mutex);
 
   return NULL;
+}
+
+/* calculates the optimal number of threads, n_threads, to process n_elements
+ * elements, assuming the cost of processing the elements is proportional to
+ * the number of elements to be processed by each thread, and assuming that
+ * each thread additionally incurs a fixed cost of thread_cost, relative to the
+ * cost of processing a single element.
+ *
+ * in other words, the assumption is that the total cost of processing the
+ * elements is proportional to:
+ *
+ *   n_elements / n_threads + thread_cost * n_threads
+ */
+static inline gint
+gegl_parallel_distribute_get_optimal_n_threads (gdouble n_elements,
+                                                gdouble thread_cost)
+{
+  gint n_threads;
+
+  if (n_elements > 0 && thread_cost > 0.0)
+    {
+      gdouble n = n_elements;
+      gdouble c = thread_cost;
+
+      n_threads = floor ((c + sqrt (c * (c + 4.0 * n))) / (2.0 * c));
+      n_threads = CLAMP (n_threads, 1, gegl_parallel_distribute_n_threads);
+    }
+  else
+    {
+      n_threads = n_elements;
+      n_threads = CLAMP (n_threads, 0, gegl_parallel_distribute_n_threads);
+    }
+
+  return n_threads;
 }

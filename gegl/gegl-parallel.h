@@ -45,11 +45,11 @@ typedef void (* GeglParallelDistributeFunc)      (gint                 i,
  * @size: the current data size
  * @user_data: user data pointer
  *
- * Specifies the type of function passed to gegl_parallel_distribute_range().
+ * Specifies the type of function passed to
+ * gegl_parallel_distribute_range().
  *
  * The function should process @size elements of the data, starting
- * at @offset.  @size may be greater-than or equal-to the @min_sub_size
- * argument passed to gegl_parallel_distribute_range().
+ * at @offset.
  */
 typedef void (* GeglParallelDistributeRangeFunc) (gsize                offset,
                                                   gsize                size,
@@ -57,14 +57,13 @@ typedef void (* GeglParallelDistributeRangeFunc) (gsize                offset,
 
 /**
  * GeglParallelDistributeAreaFunc:
- * @area: the current sub-region
+ * @area: the current sub-area
  * @user_data: user data pointer
  *
- * Specifies the type of function passed to gegl_parallel_distribute_area().
+ * Specifies the type of function passed to
+ * gegl_parallel_distribute_area().
  *
- * The function should process the sub-region specified by @area, whose
- * area may be greater-than or equal-to the @min_sub_area argument passed
- * to gegl_parallel_distribute_area().
+ * The function should process the sub-area specified by @area.
  *
  */
 typedef void (* GeglParallelDistributeAreaFunc)  (const GeglRectangle *area,
@@ -87,7 +86,8 @@ void   gegl_parallel_distribute       (gint                             max_n,
 /**
  * gegl_parallel_distribute_range:
  * @size: the total size of the data
- * @min_sub_size: the minimal data size to be processed by each thread
+ * @thread_cost: the cost of using each additional thread, relative
+ *               to the cost of processing a single data element
  * @func: (closure user_data) (scope call): the function to call
  * @user_data: user data to pass to the function
  *
@@ -96,24 +96,25 @@ void   gegl_parallel_distribute       (gint                             max_n,
  * sub-ranges on different threads.
  */
 void   gegl_parallel_distribute_range (gsize                            size,
-                                       gsize                            min_sub_size,
+                                       gdouble                          thread_cost,
                                        GeglParallelDistributeRangeFunc  func,
                                        gpointer                         user_data);
 
 /**
  * gegl_parallel_distribute_area:
- * @area: the region to process
- * @min_sub_area: the minimal area to be processed by each thread
- * @split_strategy: the strategy to use for dividing the region
+ * @area: the area to process
+ * @thread_cost: the cost of using each additional thread, relative
+ *               to the cost of processing a single data element
+ * @split_strategy: the strategy to use for dividing the area
  * @func: (closure user_data) (scope call): the function to call
  * @user_data: user data to pass to the function
  *
  * Distributes the processing of a planar data-structure across
  * multiple threads, by calling the given function with different
- * sub-regions on different threads.
+ * sub-areas on different threads.
  */
 void   gegl_parallel_distribute_area  (const GeglRectangle             *area,
-                                       gsize                            min_sub_area,
+                                       gdouble                          thread_cost,
                                        GeglSplitStrategy                split_strategy,
                                        GeglParallelDistributeAreaFunc   func,
                                        gpointer                         user_data);
@@ -145,10 +146,10 @@ gegl_parallel_distribute (gint                   max_n,
 template <class ParallelDistributeRangeFunc>
 inline void
 gegl_parallel_distribute_range (gsize                       size,
-                                gsize                       min_sub_size,
+                                gdouble                     thread_cost,
                                 ParallelDistributeRangeFunc func)
 {
-  gegl_parallel_distribute_range (size, min_sub_size,
+  gegl_parallel_distribute_range (size, thread_cost,
                                   [] (gsize    offset,
                                       gsize    size,
                                       gpointer user_data)
@@ -164,11 +165,11 @@ gegl_parallel_distribute_range (gsize                       size,
 template <class ParallelDistributeAreaFunc>
 inline void
 gegl_parallel_distribute_area (const GeglRectangle        *area,
-                               gsize                       min_sub_area,
+                               gdouble                     thread_cost,
                                GeglSplitStrategy           split_strategy,
                                ParallelDistributeAreaFunc  func)
 {
-  gegl_parallel_distribute_area (area, min_sub_area, split_strategy,
+  gegl_parallel_distribute_area (area, thread_cost, split_strategy,
                                  [] (const GeglRectangle *area,
                                      gpointer             user_data)
                                  {
