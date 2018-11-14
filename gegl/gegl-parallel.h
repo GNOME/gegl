@@ -181,6 +181,16 @@ gegl_parallel_distribute_area (const GeglRectangle        *area,
                                  &func);
 }
 
+template <class ParallelDistributeAreaFunc>
+inline void
+gegl_parallel_distribute_area (const GeglRectangle        *area,
+                               gdouble                     thread_cost,
+                               ParallelDistributeAreaFunc  func)
+{
+  gegl_parallel_distribute_area (area, thread_cost, GEGL_SPLIT_STRATEGY_AUTO,
+                                 func);
+}
+
 }
 
 #endif /* __cplusplus */
