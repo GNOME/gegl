@@ -21,6 +21,13 @@
 
 
 gboolean
+gegl_buffer_matrix2_is_identity (GeglBufferMatrix2 *matrix)
+{
+  return matrix->coeff[0][0] == 1.0 && matrix->coeff[0][1] == 0.0 &&
+         matrix->coeff[1][0] == 0.0 && matrix->coeff[1][1] == 1.0;
+}
+
+gboolean
 gegl_buffer_matrix2_is_scale (GeglBufferMatrix2 *matrix)
 {
   return matrix->coeff[0][1] == 0.0 && matrix->coeff[1][0] == 0.0;
@@ -32,4 +39,3 @@ gegl_buffer_matrix2_determinant (GeglBufferMatrix2 *matrix)
   return matrix->coeff[0][0] * matrix->coeff[1][1] -
          matrix->coeff[1][0] * matrix->coeff[0][1];
 }
-

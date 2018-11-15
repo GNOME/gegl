@@ -33,6 +33,16 @@ typedef struct {
 } GeglBufferMatrix2;
 
 /*
+ * gegl_buffer_matrix2_is_identity:
+ * @matrix: a #GeglBufferMatrix2
+ *
+ * Check if a matrix is the identity matrix.
+ *
+ * Returns TRUE if the matrix is the identity matrix.
+ */
+gboolean   gegl_buffer_matrix2_is_identity (GeglBufferMatrix2 *matrix);
+
+/*
  * gegl_buffer_matrix2_is_scale:
  * @matrix: a #GeglBufferMatrix2
  *
@@ -40,7 +50,7 @@ typedef struct {
  *
  * Returns TRUE if the matrix only does scaling.
  */
-gboolean   gegl_buffer_matrix2_is_scale        (GeglBufferMatrix2 *matrix);
+gboolean   gegl_buffer_matrix2_is_scale    (GeglBufferMatrix2 *matrix);
 
 /*
  * gegl_buffer_matrix2_determinant:
@@ -48,7 +58,7 @@ gboolean   gegl_buffer_matrix2_is_scale        (GeglBufferMatrix2 *matrix);
  *
  * Returns the determinant of @matrix.
  */
-gdouble    gegl_buffer_matrix2_determinant     (GeglBufferMatrix2 *matrix);
+gdouble    gegl_buffer_matrix2_determinant (GeglBufferMatrix2 *matrix);
 
 
 G_END_DECLS
