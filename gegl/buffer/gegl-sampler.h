@@ -230,121 +230,129 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                        gint                      n_samples)
 {
   gint channels = self->interpolate_components;
-  if (scale && fabs (gegl_buffer_matrix2_determinant (scale)) >= 4.0)
+  if (scale)
     {
-      gfloat  result[channels];
-      gdouble uv_samples_inv;
+      const gdouble u_norm2 = scale->coeff[0][0] * scale->coeff[0][0] +
+                              scale->coeff[1][0] * scale->coeff[1][0];
+      const gdouble v_norm2 = scale->coeff[0][1] * scale->coeff[0][1] +
+                              scale->coeff[1][1] * scale->coeff[1][1];
 
-      for (gint c = 0; c < channels; c++)
-        result[c] = 0.0f;
-
-      if (! self->point_sampler)
+      if (u_norm2 >= 4.0 || v_norm2 >= 4.0)
         {
-          self->point_sampler = gegl_buffer_sampler_new (self->buffer,
-                                                         self->format,
-                                                         point_sampler_type);
-          self->point_sampler_get_fun =
-            gegl_sampler_get_fun (self->point_sampler);
-        }
+          gfloat  result[channels];
+          gdouble uv_samples_inv;
 
-      if (gegl_buffer_matrix2_is_scale (scale))
-        {
-          const gdouble u_norm         = fabs (scale->coeff[0][0]);
-          const gdouble v_norm         = fabs (scale->coeff[1][1]);
-          const gint    u_samples      = ceil (MIN (u_norm, n_samples));
-          const gint    v_samples      = ceil (MIN (v_norm, n_samples));
-          const gdouble u_samples_inv  = 1.0 / u_samples;
-          const gdouble v_samples_inv  = 1.0 / v_samples;
-          const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
-          const gdouble v_dy           = scale->coeff[1][1] * v_samples_inv;
-          gdouble       x0             = absolute_x - (scale->coeff[0][0] - u_dx) /
-                                                      2.0;
-          gdouble       y0             = absolute_y - (scale->coeff[1][1] - v_dy) /
-                                                      2.0;
-          gint          u;
-          gint          v;
+          for (gint c = 0; c < channels; c++)
+            result[c] = 0.0f;
 
-          uv_samples_inv = u_samples_inv * v_samples_inv;
-
-          for (v = 0; v < v_samples; v++)
+          if (! self->point_sampler)
             {
-              gdouble x = x0;
-              gdouble y = y0;
-
-              for (u = 0; u < u_samples; u++)
-                {
-                  int c;
-                  gfloat input[4];
-                  self->point_sampler_get_fun (self->point_sampler,
-                                               x, y, NULL, input, repeat_mode);
-                  for (c = 0; c < 4; c++)
-                    result[c] += input[c];
-
-                  x += u_dx;
-                }
-
-              y0 += v_dy;
+              self->point_sampler = gegl_buffer_sampler_new (self->buffer,
+                                                             self->format,
+                                                             point_sampler_type);
+              self->point_sampler_get_fun =
+                gegl_sampler_get_fun (self->point_sampler);
             }
-        }
-      else
-        {
-          const gdouble u_norm         = sqrt (scale->coeff[0][0] * scale->coeff[0][0] +
-                                               scale->coeff[1][0] * scale->coeff[1][0]);
-          const gdouble v_norm         = sqrt (scale->coeff[0][1] * scale->coeff[0][1] +
-                                               scale->coeff[1][1] * scale->coeff[1][1]);
-          const gint    u_samples      = ceil (MIN (u_norm, n_samples));
-          const gint    v_samples      = ceil (MIN (v_norm, n_samples));
-          const gdouble u_samples_inv  = 1.0 / u_samples;
-          const gdouble v_samples_inv  = 1.0 / v_samples;
-          const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
-          const gdouble u_dy           = scale->coeff[1][0] * u_samples_inv;
-          const gdouble v_dx           = scale->coeff[0][1] * v_samples_inv;
-          const gdouble v_dy           = scale->coeff[1][1] * v_samples_inv;
-          gdouble       x0             = absolute_x - (scale->coeff[0][0] - u_dx +
-                                                       scale->coeff[0][1] - v_dx) /
-                                                      2.0;
-          gdouble       y0             = absolute_y - (scale->coeff[1][0] - u_dy +
-                                                       scale->coeff[1][1] - v_dy) /
-                                                      2.0;
-          gint          u;
-          gint          v;
 
-          uv_samples_inv = u_samples_inv * v_samples_inv;
-
-          for (v = 0; v < v_samples; v++)
+          if (gegl_buffer_matrix2_is_scale (scale))
             {
-              gdouble x = x0;
-              gdouble y = y0;
+              const gdouble u_norm         = fabs (scale->coeff[0][0]);
+              const gdouble v_norm         = fabs (scale->coeff[1][1]);
+              const gint    u_norm_i       = ceil (u_norm);
+              const gint    v_norm_i       = ceil (v_norm);
+              const gint    u_samples      = CLAMP (u_norm_i, 1, n_samples);
+              const gint    v_samples      = CLAMP (v_norm_i, 1, n_samples);
+              const gdouble u_samples_inv  = 1.0 / u_samples;
+              const gdouble v_samples_inv  = 1.0 / v_samples;
+              const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
+              const gdouble v_dy           = scale->coeff[1][1] * v_samples_inv;
+              gdouble       x0             = absolute_x - (scale->coeff[0][0] - u_dx) /
+                                                          2.0;
+              gdouble       y0             = absolute_y - (scale->coeff[1][1] - v_dy) /
+                                                          2.0;
+              gint          u;
+              gint          v;
 
-              for (u = 0; u < u_samples; u++)
+              uv_samples_inv = u_samples_inv * v_samples_inv;
+
+              for (v = 0; v < v_samples; v++)
                 {
-                  int c;
-                  gfloat input[channels];
-                  self->point_sampler_get_fun (self->point_sampler,
-                                               x, y, NULL, input, repeat_mode);
-                  for (c = 0; c < channels; c++)
-                    result[c] += input[c];
+                  gdouble x = x0;
+                  gdouble y = y0;
 
-                  x += u_dx;
-                  y += u_dy;
+                  for (u = 0; u < u_samples; u++)
+                    {
+                      int c;
+                      gfloat input[4];
+                      self->point_sampler_get_fun (self->point_sampler,
+                                                   x, y, NULL, input, repeat_mode);
+                      for (c = 0; c < 4; c++)
+                        result[c] += input[c];
+
+                      x += u_dx;
+                    }
+
+                  y0 += v_dy;
                 }
-
-              x0 += v_dx;
-              y0 += v_dy;
             }
+          else
+            {
+              const gdouble u_norm         = sqrt (u_norm2);
+              const gdouble v_norm         = sqrt (v_norm2);
+              const gint    u_norm_i       = ceil (u_norm);
+              const gint    v_norm_i       = ceil (v_norm);
+              const gint    u_samples      = CLAMP (u_norm_i, 1, n_samples);
+              const gint    v_samples      = CLAMP (v_norm_i, 1, n_samples);
+              const gdouble u_samples_inv  = 1.0 / u_samples;
+              const gdouble v_samples_inv  = 1.0 / v_samples;
+              const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
+              const gdouble u_dy           = scale->coeff[1][0] * u_samples_inv;
+              const gdouble v_dx           = scale->coeff[0][1] * v_samples_inv;
+              const gdouble v_dy           = scale->coeff[1][1] * v_samples_inv;
+              gdouble       x0             = absolute_x - (scale->coeff[0][0] - u_dx +
+                                                           scale->coeff[0][1] - v_dx) /
+                                                          2.0;
+              gdouble       y0             = absolute_y - (scale->coeff[1][0] - u_dy +
+                                                           scale->coeff[1][1] - v_dy) /
+                                                          2.0;
+              gint          u;
+              gint          v;
+
+              uv_samples_inv = u_samples_inv * v_samples_inv;
+
+              for (v = 0; v < v_samples; v++)
+                {
+                  gdouble x = x0;
+                  gdouble y = y0;
+
+                  for (u = 0; u < u_samples; u++)
+                    {
+                      int c;
+                      gfloat input[channels];
+                      self->point_sampler_get_fun (self->point_sampler,
+                                                   x, y, NULL, input, repeat_mode);
+                      for (c = 0; c < channels; c++)
+                        result[c] += input[c];
+
+                      x += u_dx;
+                      y += u_dy;
+                    }
+
+                  x0 += v_dx;
+                  y0 += v_dy;
+                }
+            }
+
+          for (gint c = 0; c < channels; c++)
+            result[c] *= uv_samples_inv;
+
+          babl_process (self->fish, result, output, 1);
+
+          return TRUE;
         }
-
-      for (gint c = 0; c < channels; c++)
-        result[c] *= uv_samples_inv;
-
-      babl_process (self->fish, result, output, 1);
-
-      return TRUE;
     }
-  else
-    {
-      return FALSE;
-    }
+
+  return FALSE;
 }
 
 G_END_DECLS
