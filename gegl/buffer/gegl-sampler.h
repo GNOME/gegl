@@ -237,7 +237,8 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
       const gdouble v_norm2 = scale->coeff[0][1] * scale->coeff[0][1] +
                               scale->coeff[1][1] * scale->coeff[1][1];
 
-      if (u_norm2 >= 4.0 || v_norm2 >= 4.0)
+      if ((u_norm2 >= 4.0 && v_norm2 >= 1.0) ||
+          (v_norm2 >= 4.0 && u_norm2 >= 1.0))
         {
           gfloat  result[channels];
           gdouble uv_samples_inv;
@@ -260,8 +261,8 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
               const gdouble v_norm         = fabs (scale->coeff[1][1]);
               const gint    u_norm_i       = ceil (u_norm);
               const gint    v_norm_i       = ceil (v_norm);
-              const gint    u_samples      = CLAMP (u_norm_i, 1, n_samples);
-              const gint    v_samples      = CLAMP (v_norm_i, 1, n_samples);
+              const gint    u_samples      = MIN (u_norm_i, n_samples);
+              const gint    v_samples      = MIN (v_norm_i, n_samples);
               const gdouble u_samples_inv  = 1.0 / u_samples;
               const gdouble v_samples_inv  = 1.0 / v_samples;
               const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
@@ -301,8 +302,8 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
               const gdouble v_norm         = sqrt (v_norm2);
               const gint    u_norm_i       = ceil (u_norm);
               const gint    v_norm_i       = ceil (v_norm);
-              const gint    u_samples      = CLAMP (u_norm_i, 1, n_samples);
-              const gint    v_samples      = CLAMP (v_norm_i, 1, n_samples);
+              const gint    u_samples      = MIN (u_norm_i, n_samples);
+              const gint    v_samples      = MIN (v_norm_i, n_samples);
               const gdouble u_samples_inv  = 1.0 / u_samples;
               const gdouble v_samples_inv  = 1.0 / v_samples;
               const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
