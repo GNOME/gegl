@@ -66,6 +66,7 @@ gegl_common_la_SOURCES =\
 	magick-load.c \
 	mantiuk06.c \
 	map-absolute.c \
+	map-common.h \
 	map-relative.c \
 	matting-global.c \
 	mblur.c \
