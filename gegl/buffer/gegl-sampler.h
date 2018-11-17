@@ -59,8 +59,8 @@ typedef struct GeglSamplerLevel
 
 struct _GeglSampler
 {
-  GObject           parent_instance;
-  GeglSamplerGetFun get;
+  GObject            parent_instance;
+  GeglSamplerGetFun  get;
 
   /*< private >*/
   GeglBuffer        *buffer;
@@ -70,8 +70,6 @@ struct _GeglSampler
   const Babl        *fish;
   gint               interpolate_bpp;
   gint               interpolate_components;
-  GeglSampler       *point_sampler;
-  GeglSamplerGetFun  point_sampler_get_fun;
 
   GeglSamplerLevel   level[GEGL_SAMPLER_MIPMAP_LEVELS];
 };
@@ -226,8 +224,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                        GeglBufferMatrix2        *scale,
                        void*           restrict  output,
                        GeglAbyssPolicy           repeat_mode,
-                       GeglSamplerType           point_sampler_type,
-                       gint                      n_samples)
+                       gint                      max_n_samples)
 {
   gint channels = self->interpolate_components;
   if (scale)
@@ -237,8 +234,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
       const gdouble v_norm2 = scale->coeff[0][1] * scale->coeff[0][1] +
                               scale->coeff[1][1] * scale->coeff[1][1];
 
-      if ((u_norm2 >= 4.0 && v_norm2 >= 1.0) ||
-          (v_norm2 >= 4.0 && u_norm2 >= 1.0))
+      if (u_norm2 >= 4.0 || v_norm2 >= 4.0)
         {
           gfloat  result[channels];
           gdouble uv_samples_inv;
@@ -246,23 +242,14 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
           for (gint c = 0; c < channels; c++)
             result[c] = 0.0f;
 
-          if (! self->point_sampler)
-            {
-              self->point_sampler = gegl_buffer_sampler_new (self->buffer,
-                                                             self->format,
-                                                             point_sampler_type);
-              self->point_sampler_get_fun =
-                gegl_sampler_get_fun (self->point_sampler);
-            }
-
           if (gegl_buffer_matrix2_is_scale (scale))
             {
               const gdouble u_norm         = fabs (scale->coeff[0][0]);
               const gdouble v_norm         = fabs (scale->coeff[1][1]);
-              const gint    u_norm_i       = ceil (u_norm);
-              const gint    v_norm_i       = ceil (v_norm);
-              const gint    u_samples      = MIN (u_norm_i, n_samples);
-              const gint    v_samples      = MIN (v_norm_i, n_samples);
+              const gint    u_norm_i       = floor (u_norm);
+              const gint    v_norm_i       = floor (v_norm);
+              const gint    u_samples      = CLAMP (u_norm_i, 1, max_n_samples);
+              const gint    v_samples      = CLAMP (v_norm_i, 1, max_n_samples);
               const gdouble u_samples_inv  = 1.0 / u_samples;
               const gdouble v_samples_inv  = 1.0 / v_samples;
               const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
@@ -285,8 +272,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                     {
                       int c;
                       gfloat input[4];
-                      self->point_sampler_get_fun (self->point_sampler,
-                                                   x, y, NULL, input, repeat_mode);
+                      self->get (self, x, y, NULL, input, repeat_mode);
                       for (c = 0; c < 4; c++)
                         result[c] += input[c];
 
@@ -300,10 +286,10 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
             {
               const gdouble u_norm         = sqrt (u_norm2);
               const gdouble v_norm         = sqrt (v_norm2);
-              const gint    u_norm_i       = ceil (u_norm);
-              const gint    v_norm_i       = ceil (v_norm);
-              const gint    u_samples      = MIN (u_norm_i, n_samples);
-              const gint    v_samples      = MIN (v_norm_i, n_samples);
+              const gint    u_norm_i       = floor (u_norm);
+              const gint    v_norm_i       = floor (v_norm);
+              const gint    u_samples      = CLAMP (u_norm_i, 1, max_n_samples);
+              const gint    v_samples      = CLAMP (v_norm_i, 1, max_n_samples);
               const gdouble u_samples_inv  = 1.0 / u_samples;
               const gdouble v_samples_inv  = 1.0 / v_samples;
               const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
@@ -330,8 +316,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                     {
                       int c;
                       gfloat input[channels];
-                      self->point_sampler_get_fun (self->point_sampler,
-                                                   x, y, NULL, input, repeat_mode);
+                      self->get (self, x, y, NULL, input, repeat_mode);
                       for (c = 0; c < channels; c++)
                         result[c] += input[c];
 

@@ -161,8 +161,7 @@ gegl_sampler_cubic_get (      GeglSampler       *self,
                               GeglAbyssPolicy    repeat_mode)
 {
   if (! _gegl_sampler_box_get (self, absolute_x, absolute_y, scale,
-                               output, repeat_mode,
-                               GEGL_SAMPLER_LINEAR, 5))
+                               output, repeat_mode, 5))
   {
     GeglSamplerCubic *cubic       = (GeglSamplerCubic*)(self);
     gint              components = self->interpolate_components;
