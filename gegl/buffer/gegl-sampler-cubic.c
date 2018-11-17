@@ -51,8 +51,8 @@ static void set_property                (      GObject         *gobject,
                                          const GValue          *value,
                                                GParamSpec      *pspec);
 static inline gfloat cubicKernel        (const gfloat           x,
-                                         const gdouble          b,
-                                         const gdouble          c);
+                                         const gfloat           b,
+                                         const gfloat           c);
 
 
 G_DEFINE_TYPE (GeglSamplerCubic, gegl_sampler_cubic, GEGL_TYPE_SAMPLER)
@@ -163,21 +163,16 @@ gegl_sampler_cubic_get (      GeglSampler       *self,
   if (! _gegl_sampler_box_get (self, absolute_x, absolute_y, scale,
                                output, repeat_mode, 5))
   {
-    GeglSamplerCubic *cubic       = (GeglSamplerCubic*)(self);
+    GeglSamplerCubic *cubic      = (GeglSamplerCubic*)(self);
     gint              components = self->interpolate_components;
-    const gint        offsets[16] = {
-                                      -components-GEGL_SAMPLER_MAXIMUM_WIDTH   *components, components, components, components,
-                                        (GEGL_SAMPLER_MAXIMUM_WIDTH-3)*components, components, components, components,
-                                        (GEGL_SAMPLER_MAXIMUM_WIDTH-3)*components, components, components, components,
-                                        (GEGL_SAMPLER_MAXIMUM_WIDTH-3)*components, components, components, components
-                                    };
+    gfloat            cubic_b    = cubic->b;
+    gfloat            cubic_c    = cubic->c;
     gfloat           *sampler_bptr;
-    gfloat            factor;
+    gfloat            factor_i[4];
     gfloat            newval[components];
-    gint              c,
-                      i,
-                      j,
-                      k           = 0;
+    gint              c;
+    gint              i;
+    gint              j;
 
     /*
      * The "-1/2"s are there because we want the index of the pixel
@@ -204,22 +199,31 @@ gegl_sampler_cubic_get (      GeglSampler       *self,
     const gfloat x = iabsolute_x - ix;
     const gfloat y = iabsolute_y - iy;
 
-    sampler_bptr = gegl_sampler_get_ptr (self, ix, iy, repeat_mode);
+    sampler_bptr = gegl_sampler_get_ptr (self, ix, iy, repeat_mode) -
+                   (GEGL_SAMPLER_MAXIMUM_WIDTH + 1) * components;
 
     for (c = 0; c < components; c++)
       newval[c] = 0.0f;
 
-    for (j=-1; j<3; j++)
-      for (i=-1; i<3; i++)
-        {
-          sampler_bptr += offsets[k++];
+    for (i = 0; i < 4; i++)
+      factor_i[i] = cubicKernel (x - (i - 1), cubic_b, cubic_c);
 
-          factor = cubicKernel (y - j, cubic->b, cubic->c) *
-                   cubicKernel (x - i, cubic->b, cubic->c);
+    for (j = 0; j < 4; j++)
+      {
+        gfloat factor_j = cubicKernel (y - (j - 1), cubic_b, cubic_c);
 
-          for (c = 0; c < components; c++)
-            newval[c] += factor * sampler_bptr[c];
-        }
+        for (i = 0; i < 4; i++)
+          {
+            const gfloat factor = factor_j * factor_i[i];
+
+            for (c = 0; c < components; c++)
+              newval[c] += factor * sampler_bptr[c];
+
+            sampler_bptr += components;
+          }
+
+        sampler_bptr += (GEGL_SAMPLER_MAXIMUM_WIDTH - 4) * components;
+      }
 
     babl_process (self->fish, newval, output, 1);
   }
@@ -274,12 +278,12 @@ set_property (GObject      *object,
 }
 
 static inline gfloat
-cubicKernel (const gfloat  x,
-             const gdouble b,
-             const gdouble c)
+cubicKernel (const gfloat x,
+             const gfloat b,
+             const gfloat c)
 {
   const gfloat x2 = x*x;
-  const gfloat ax = ( x<(gfloat) 0. ? -x : x );
+  const gfloat ax = fabsf (x);
 
   if (x2 <= (gfloat) 1.) return ( (gfloat) ((12-9*b-6*c)/6) * ax +
                                   (gfloat) ((-18+12*b+6*c)/6) ) * x2 +
