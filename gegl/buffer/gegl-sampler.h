@@ -244,20 +244,20 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
 
           if (gegl_buffer_matrix2_is_scale (scale))
             {
-              const gdouble u_norm         = fabs (scale->coeff[0][0]);
-              const gdouble v_norm         = fabs (scale->coeff[1][1]);
-              const gint    u_norm_i       = floor (u_norm);
-              const gint    v_norm_i       = floor (v_norm);
-              const gint    u_samples      = CLAMP (u_norm_i, 1, max_n_samples);
-              const gint    v_samples      = CLAMP (v_norm_i, 1, max_n_samples);
-              const gdouble u_samples_inv  = 1.0 / u_samples;
-              const gdouble v_samples_inv  = 1.0 / v_samples;
-              const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
-              const gdouble v_dy           = scale->coeff[1][1] * v_samples_inv;
-              gdouble       x0             = absolute_x - (scale->coeff[0][0] - u_dx) /
-                                                          2.0;
-              gdouble       y0             = absolute_y - (scale->coeff[1][1] - v_dy) /
-                                                          2.0;
+              const gdouble u_norm        = fabs (scale->coeff[0][0]);
+              const gdouble v_norm        = fabs (scale->coeff[1][1]);
+              const gint    u_norm_i      = floor (u_norm);
+              const gint    v_norm_i      = floor (v_norm);
+              const gint    u_samples     = CLAMP (u_norm_i, 1, max_n_samples);
+              const gint    v_samples     = CLAMP (v_norm_i, 1, max_n_samples);
+              const gdouble u_samples_inv = 1.0 / u_samples;
+              const gdouble v_samples_inv = 1.0 / v_samples;
+              const gdouble u_dx          = scale->coeff[0][0] * u_samples_inv;
+              const gdouble v_dy          = scale->coeff[1][1] * v_samples_inv;
+              gdouble       x0            = absolute_x - (scale->coeff[0][0] - u_dx) /
+                                                         2.0;
+              gdouble       y0            = absolute_y - (scale->coeff[1][1] - v_dy) /
+                                                         2.0;
               gint          u;
               gint          v;
 
@@ -284,24 +284,24 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
             }
           else
             {
-              const gdouble u_norm         = sqrt (u_norm2);
-              const gdouble v_norm         = sqrt (v_norm2);
-              const gint    u_norm_i       = floor (u_norm);
-              const gint    v_norm_i       = floor (v_norm);
-              const gint    u_samples      = CLAMP (u_norm_i, 1, max_n_samples);
-              const gint    v_samples      = CLAMP (v_norm_i, 1, max_n_samples);
-              const gdouble u_samples_inv  = 1.0 / u_samples;
-              const gdouble v_samples_inv  = 1.0 / v_samples;
-              const gdouble u_dx           = scale->coeff[0][0] * u_samples_inv;
-              const gdouble u_dy           = scale->coeff[1][0] * u_samples_inv;
-              const gdouble v_dx           = scale->coeff[0][1] * v_samples_inv;
-              const gdouble v_dy           = scale->coeff[1][1] * v_samples_inv;
-              gdouble       x0             = absolute_x - (scale->coeff[0][0] - u_dx +
-                                                           scale->coeff[0][1] - v_dx) /
-                                                          2.0;
-              gdouble       y0             = absolute_y - (scale->coeff[1][0] - u_dy +
-                                                           scale->coeff[1][1] - v_dy) /
-                                                          2.0;
+              const gdouble u_norm        = sqrt (u_norm2);
+              const gdouble v_norm        = sqrt (v_norm2);
+              const gint    u_norm_i      = floor (u_norm);
+              const gint    v_norm_i      = floor (v_norm);
+              const gint    u_samples     = CLAMP (u_norm_i, 1, max_n_samples);
+              const gint    v_samples     = CLAMP (v_norm_i, 1, max_n_samples);
+              const gdouble u_samples_inv = 1.0 / u_samples;
+              const gdouble v_samples_inv = 1.0 / v_samples;
+              const gdouble u_dx          = scale->coeff[0][0] * u_samples_inv;
+              const gdouble u_dy          = scale->coeff[1][0] * u_samples_inv;
+              const gdouble v_dx          = scale->coeff[0][1] * v_samples_inv;
+              const gdouble v_dy          = scale->coeff[1][1] * v_samples_inv;
+              gdouble       x0            = absolute_x - (scale->coeff[0][0] - u_dx +
+                                                          scale->coeff[0][1] - v_dx) /
+                                                         2.0;
+              gdouble       y0            = absolute_y - (scale->coeff[1][0] - u_dy +
+                                                          scale->coeff[1][1] - v_dy) /
+                                                         2.0;
               gint          u;
               gint          v;
 
