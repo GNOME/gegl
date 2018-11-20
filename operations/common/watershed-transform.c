@@ -226,7 +226,7 @@ process (GeglOperation       *operation,
   gint    j;
   gint    x, y;
   GeglBufferIterator  *iter;
-  GeglSampler         *gradient_sampler;
+  GeglSampler         *gradient_sampler = NULL;
   const GeglRectangle *extent = gegl_buffer_get_extent (input);
 
   const Babl  *gradient_format = babl_format ("Y u8");
@@ -243,10 +243,8 @@ process (GeglOperation       *operation,
   HQ_init (&hq);
 
   iter = gegl_buffer_iterator_new (input, extent, 0, labels_format,
-                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 11);
-
-  gegl_buffer_iterator_add (iter, aux, extent, 0, gradient_format,
-                            GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+                                   GEGL_ACCESS_READ, GEGL_ABYSS_NONE,
+                                   aux ? 11 : 10);
 
   gegl_buffer_iterator_add (iter, output, extent, 0, labels_format,
                             GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
@@ -276,23 +274,28 @@ process (GeglOperation       *operation,
   gegl_buffer_iterator_add (iter, input,
                             GEGL_RECTANGLE (1, 1, extent->width, extent->height),
                             0, labels_format, GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+  /* Priority map: lower is higher priority. */
+  if (aux)
+    gegl_buffer_iterator_add (iter, aux, extent, 0, gradient_format,
+                              GEGL_ACCESS_READ, GEGL_ABYSS_NONE);
+
   while (gegl_buffer_iterator_next (iter))
     {
-      guint8   *label    = iter->items[0].data;
-      guint8   *pixel    = iter->items[1].data;
-      guint8   *outlabel = iter->items[2].data;
-      guint8   *n[8]     =
+      GeglRectangle *roi      = &iter->items[0].roi;
+      guint8        *label    = iter->items[0].data;
+      guint8        *outlabel = iter->items[1].data;
+      guint8        *n[8]     =
         {
+          iter->items[2].data,
           iter->items[3].data,
           iter->items[4].data,
           iter->items[5].data,
           iter->items[6].data,
           iter->items[7].data,
           iter->items[8].data,
-          iter->items[9].data,
-          iter->items[10].data
+          iter->items[9].data
         };
-      GeglRectangle *roi = &iter->items[0].roi;
+      guint8        *prio    = aux ? iter->items[10].data : NULL;
 
       for (y = roi->y; y < roi->y + roi->height; y++)
         for (x = roi->x; x < roi->x + roi->width; x++)
@@ -337,14 +340,15 @@ process (GeglOperation       *operation,
                     p->x = x;
                     p->y = y;
 
-                    HQ_push (&hq, *pixel, p);
+                    HQ_push (&hq, prio ? *prio : 0, p);
                   }
               }
 
             for (i = 0; i < bpp; i++)
               outlabel[i] = label[i];
 
-            pixel++;
+            if (prio)
+              prio++;
             label    += bpp;
             outlabel += bpp;
             for (j = 0; j < 8; j++)
@@ -352,10 +356,11 @@ process (GeglOperation       *operation,
           }
     }
 
-  gradient_sampler = gegl_buffer_sampler_new_at_level (aux,
-                                                       gradient_format,
-                                                       GEGL_SAMPLER_NEAREST,
-                                                       level);
+  if (aux)
+    gradient_sampler = gegl_buffer_sampler_new_at_level (aux,
+                                                         gradient_format,
+                                                         GEGL_SAMPLER_NEAREST,
+                                                         level);
   while (!HQ_is_empty (&hq))
     {
       PixelCoords *p = (PixelCoords *) HQ_pop (&hq);
@@ -391,16 +396,17 @@ process (GeglOperation       *operation,
               }
           if (flagged)
             {
-              guint8 gradient_value;
+              guint8 gradient_value = 0;
               GeglRectangle n_rect = {nx, ny, 1, 1};
               PixelCoords *n = g_new (PixelCoords, 1);
               n->x = nx;
               n->y = ny;
 
-              gegl_sampler_get (gradient_sampler,
-                                (gdouble) nx,
-                                (gdouble) ny,
-                                NULL, &gradient_value, GEGL_ABYSS_NONE);
+              if (gradient_sampler)
+                gegl_sampler_get (gradient_sampler,
+                                  (gdouble) nx,
+                                  (gdouble) ny,
+                                  NULL, &gradient_value, GEGL_ABYSS_NONE);
 
               HQ_push (&hq, gradient_value, n);
 
@@ -415,7 +421,8 @@ process (GeglOperation       *operation,
 
       g_free (p);
     }
-  g_object_unref (gradient_sampler);
+  if (gradient_sampler)
+    g_object_unref (gradient_sampler);
 
   HQ_clean (&hq);
   return  TRUE;
@@ -443,11 +450,6 @@ operation_process (GeglOperation        *operation,
     {
       g_warning ("The input buffer has %d components. Invalid flag component: %d",
                  n_comp, o->flag_component);
-      success = FALSE;
-    }
-  else if (! aux)
-    {
-      g_warning ("Missing priority buffer");
       success = FALSE;
     }
   else
@@ -492,7 +494,10 @@ gegl_op_class_init (GeglOpClass *klass)
                      "Output buffer will keep the input format. "
                      "Unlabelled pixels are marked with a given flag value "
                      "(by default: last component with NULL value). "
-                     "The mandatory aux buffer is a \"Y u8\" image representing the priority levels."),
+                     "The aux buffer is a \"Y u8\" image representing the priority levels "
+                     "(lower value is higher priority). If aux is absent, "
+                     "all labellized pixels have the same priority "
+                     "and propagated labels have a lower priority."),
     NULL);
 }
 
