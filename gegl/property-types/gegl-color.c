@@ -37,7 +37,13 @@ typedef struct _ColorNameEntity ColorNameEntity;
 
 struct _GeglColorPrivate
 {
-  gfloat rgba_color[4];
+  const Babl *format;
+
+  union
+  {
+    guint8  pixel[32];
+    gdouble alignment;
+  };
 };
 
 struct _ColorNameEntity
@@ -103,7 +109,9 @@ gegl_color_init (GeglColor *self)
 {
   self->priv = gegl_color_get_instance_private ((self));
 
-  memcpy (self->priv->rgba_color, init_color, sizeof (init_color));
+  self->priv->format = gegl_babl_rgba_linear_float ();
+
+  memcpy (self->priv->pixel, init_color, sizeof (init_color));
 }
 
 static void
@@ -264,12 +272,21 @@ gegl_color_set_pixel (GeglColor   *color,
                       const Babl  *format,
                       const void  *pixel)
 {
+  gint bpp;
+
   g_return_if_fail (GEGL_IS_COLOR (color));
   g_return_if_fail (format);
   g_return_if_fail (pixel);
 
-  babl_process (babl_fish (format, gegl_babl_rgba_linear_float ()),
-                pixel, color->priv->rgba_color, 1);
+  bpp = babl_format_get_bytes_per_pixel (format);
+
+  if (bpp <= sizeof (color->priv->pixel))
+    color->priv->format = format;
+  else
+    color->priv->format = gegl_babl_rgba_linear_float ();
+
+  babl_process (babl_fish (format, color->priv->format),
+                pixel, color->priv->pixel, 1);
 }
 
 void
@@ -281,8 +298,8 @@ gegl_color_get_pixel (GeglColor   *color,
   g_return_if_fail (format);
   g_return_if_fail (pixel);
 
-  babl_process (babl_fish (gegl_babl_rgba_linear_float (), format),
-                color->priv->rgba_color, pixel, 1);
+  babl_process (babl_fish (color->priv->format, format),
+                color->priv->pixel, pixel, 1);
 }
 
 void
@@ -292,12 +309,11 @@ gegl_color_set_rgba (GeglColor *self,
                      gdouble    b,
                      gdouble    a)
 {
+  const gfloat rgba[4] = {r, g, b, a};
+
   g_return_if_fail (GEGL_IS_COLOR (self));
 
-  self->priv->rgba_color[0] = r;
-  self->priv->rgba_color[1] = g;
-  self->priv->rgba_color[2] = b;
-  self->priv->rgba_color[3] = a;
+  gegl_color_set_pixel (self, gegl_babl_rgba_linear_float (), rgba);
 }
 
 void
@@ -307,12 +323,16 @@ gegl_color_get_rgba (GeglColor *self,
                      gdouble   *b,
                      gdouble   *a)
 {
+  gfloat rgba[4];
+
   g_return_if_fail (GEGL_IS_COLOR (self));
 
-  if (r) *r = self->priv->rgba_color[0];
-  if (g) *g = self->priv->rgba_color[1];
-  if (b) *b = self->priv->rgba_color[2];
-  if (a) *a = self->priv->rgba_color[3];
+  gegl_color_get_pixel (self, gegl_babl_rgba_linear_float (), rgba);
+
+  if (r) *r = rgba[0];
+  if (g) *g = rgba[1];
+  if (b) *b = rgba[2];
+  if (a) *a = rgba[3];
 }
 
 static void
@@ -361,13 +381,14 @@ gegl_color_set_from_string (GeglColor   *self,
 
   if (color_parsing_successfull)
     {
-        gegl_color_set_pixel(self, format, rgba);
+      gegl_color_set_pixel(self, format, rgba);
     }
   else 
     {
-      memcpy (self->priv->rgba_color,
-              parsing_error_color,
-              sizeof (parsing_error_color));
+      gegl_color_set_pixel(self,
+                           gegl_babl_rgba_linear_float (),
+                           parsing_error_color);
+
       g_warning ("Parsing of color string \"%s\" into GeglColor failed! "
                  "Using transparent cyan instead",
                  color_string);
@@ -379,21 +400,25 @@ gegl_color_set_from_string (GeglColor   *self,
 static gchar *
 gegl_color_get_string (GeglColor *color)
 {
-  if (color->priv->rgba_color[3] == 1.0)
+  gfloat rgba[4];
+
+  gegl_color_get_pixel (color, gegl_babl_rgba_linear_float (), rgba);
+
+  if (rgba[3] == 1.0)
     {
       gchar buf [3][G_ASCII_DTOSTR_BUF_SIZE];
-      g_ascii_formatd (buf[0], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", color->priv->rgba_color[0]);
-      g_ascii_formatd (buf[1], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", color->priv->rgba_color[1]);
-      g_ascii_formatd (buf[2], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", color->priv->rgba_color[2]);
+      g_ascii_formatd (buf[0], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[0]);
+      g_ascii_formatd (buf[1], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[1]);
+      g_ascii_formatd (buf[2], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[2]);
       return g_strdup_printf ("rgb(%s, %s, %s)", buf[0], buf[1], buf[2]);
     }
   else
     {
       gchar buf [4][G_ASCII_DTOSTR_BUF_SIZE];
-      g_ascii_formatd (buf[0], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", color->priv->rgba_color[0]);
-      g_ascii_formatd (buf[1], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", color->priv->rgba_color[1]);
-      g_ascii_formatd (buf[2], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", color->priv->rgba_color[2]);
-      g_ascii_formatd (buf[3], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", color->priv->rgba_color[3]);
+      g_ascii_formatd (buf[0], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[0]);
+      g_ascii_formatd (buf[1], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[1]);
+      g_ascii_formatd (buf[2], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[2]);
+      g_ascii_formatd (buf[3], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[3]);
       return g_strdup_printf ("rgba(%s, %s, %s, %s)", buf[0], buf[1], buf[2], buf[3]);
     }
 }
