@@ -8,8 +8,7 @@ AM_CPPFLAGS += -I$(srcdir)
 
 LIBS = $(op_libs)
 
-opdir = $(ext_dir)
-op_LTLIBRARIES = \
+ops = \
 	bayer-matrix.la \
 	bilateral-filter-fast.la \
 	connected-components.la \
@@ -27,3 +26,15 @@ op_LTLIBRARIES = \
 	rawbayer-load.la  \
 	segment-kmeans.la \
 	selective-hue-saturation.la
+
+if HAVE_CXX11
+
+voronoi_diagram_la_SOURCES = voronoi-diagram.cc
+
+ops += \
+	voronoi-diagram.la
+
+endif
+
+opdir = $(ext_dir)
+op_LTLIBRARIES = $(ops)
