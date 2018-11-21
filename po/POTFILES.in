@@ -249,6 +249,7 @@ operations/transform/translate.c
 operations/workshop/aces-rrt.c
 operations/workshop/bayer-matrix.c
 operations/workshop/bilateral-filter-fast.c
+operations/workshop/connected-components.c
 operations/workshop/demosaic-bimedian.c
 operations/workshop/demosaic-simple.c
 operations/workshop/ditto.c
