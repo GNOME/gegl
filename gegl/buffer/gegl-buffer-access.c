@@ -2015,6 +2015,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
   g_return_if_fail (scale > 0.0f);
 
+
   if (format == NULL)
     format = buffer->soft_format;
 
@@ -2089,6 +2090,17 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
     int     allocated         = 0;
     gint interpolation = (flags & GEGL_BUFFER_FILTER_ALL);
     gint    factor = 1;
+
+    /* XXX: temporary, force nearest neighbor filter for blit saling of
+       CMYK based buffers
+     */
+    const Babl *bfmt = gegl_buffer_get_format (buffer);
+    const char *babl_name = babl_get_name (bfmt);
+    if (babl_name[0] == 'c' ||
+        babl_name[0] == 'C')
+    {
+      interpolation = GEGL_BUFFER_FILTER_NEAREST;
+    }
 
     while (scale <= 0.5)
       {
