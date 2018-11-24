@@ -19,7 +19,6 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
-
 #ifdef GEGL_PROPERTIES
 
 property_file_path (path, _("File"), "")
@@ -455,7 +454,35 @@ query_tiff(GeglOperation *operation)
       else
         g_strlcpy(format_string, "R'G'B' ", 32);
       break;
+    case PHOTOMETRIC_SEPARATED:
+      if (samples_per_pixel > 4 + nb_extras)
+        {
+          nb_extras = samples_per_pixel - 5;
+          has_alpha = TRUE;
+        }
+#if 0
+      if (has_alpha)
+        {
+          if (alpha_is_premultiplied)
+            g_strlcpy(format_string, "camayakaA ", 32);
+          else
+            g_strlcpy(format_string, "cmykA ", 32);
+        }
+      else
+        g_strlcpy(format_string, "cmyk ", 32);
+#else
+      if (has_alpha)
+        {
+          if (alpha_is_premultiplied)
+            g_strlcpy(format_string, "CaMaYaKaA ", 32);
+          else
+            g_strlcpy(format_string, "CMYKA ", 32);
+        }
+      else
+        g_strlcpy(format_string, "CMYK ", 32);
+#endif
 
+      break;
     default:
       fallback_mode = TRUE;
       break;
@@ -579,8 +606,29 @@ load_contiguous(GeglOperation *operation,
   guint32 tile_height = 1;
   guchar *buffer;
   gint x, y;
+  const Babl *format = p->format;
+  const Babl *type = babl_format_get_type (format, 0);
+
+  gint is_cmyk = babl_space_is_cmyk (format);
+  gint bytes_per_pixel = babl_format_get_bytes_per_pixel (format);
+  gint components = babl_format_get_n_components (format);
+  gint bytes_per_component = 1;
+  int ccomponents = components;
 
   g_return_val_if_fail(p->tiff != NULL, -1);
+
+  if (type == babl_type ("u16"))
+    bytes_per_component = 2;
+
+  if (is_cmyk)
+  {
+    if (components == 5) ccomponents = 4;
+  }
+  else
+  {
+    if (components == 4) ccomponents = 3;
+    if (components == 2) ccomponents = 1;
+  }
 
   if (!TIFFIsTiled(p->tiff))
       buffer = g_try_new(guchar, TIFFScanlineSize(p->tiff));
@@ -605,6 +653,23 @@ load_contiguous(GeglOperation *operation,
           else
             TIFFReadScanline(p->tiff, buffer, y, 0);
 
+          if (is_cmyk)
+          {
+/*
+   cmy
+   cmyk
+   cmykA
+   camayakaA
+
+   CMY
+   CMYK
+   CMYKA
+   CaMaYaKaA
+
+*/
+
+
+          }
           gegl_buffer_set(output, &tile, 0, p->format,
                           (guchar *) buffer,
                           GEGL_AUTO_ROWSTRIDE);
