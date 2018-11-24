@@ -431,6 +431,39 @@ export_tiff (GeglOperation *operation,
       samples_per_pixel = 3;
       predictor = 2;
     }
+  else if (babl_model_is (model, "cmyk") ||
+           babl_model_is (model, "CMYK"))
+    {
+      has_alpha = FALSE;
+      color_space = PHOTOMETRIC_SEPARATED;
+      model = babl_model("CMYK");
+      samples_per_pixel = 4;
+      predictor = 2;
+    }
+  else if (babl_model_is (model, "cmykA") ||
+           babl_model_is (model, "CMYKA") ||
+           babl_model_is (model, "camayakaA")||
+           babl_model_is (model, "CaMaYaKaA"))
+    {
+      has_alpha = TRUE;
+      alpha_is_premultiplied = FALSE;
+      color_space = PHOTOMETRIC_SEPARATED;
+      model = babl_model("CMYKA");
+      samples_per_pixel = 5;
+      predictor = 2;
+    }
+#if 0
+  else if (babl_model_is (model, "camayakaA")||
+           babl_model_is (model, "CaMaYaKaA"))
+    {
+      has_alpha = TRUE;
+      alpha_is_premultiplied = TRUE;
+      color_space = PHOTOMETRIC_SEPARATED;
+      model = babl_model("CaMaYaKaA");
+      samples_per_pixel = 5;
+      predictor = 2;
+    }
+#endif
   else if (babl_model_is (model, "RGBA") || babl_model_is (model, "R'G'B'A"))
     {
       has_alpha = TRUE;
