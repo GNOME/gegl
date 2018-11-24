@@ -277,7 +277,12 @@ static void gegl_config_parse_env (GeglConfig *config)
     }
 
   if (g_getenv ("GEGL_CACHE_SIZE"))
-    config->tile_cache_size = atoll(g_getenv("GEGL_CACHE_SIZE"))* 1024*1024;
+    {
+      g_object_set (config,
+                    "tile-cache-size",
+                    (guint64) atoll(g_getenv("GEGL_CACHE_SIZE")) * 1024 * 1024,
+                    NULL);
+    }
 
   if (g_getenv ("GEGL_CHUNK_SIZE"))
     config->chunk_size = atoi(g_getenv("GEGL_CHUNK_SIZE"));
@@ -285,10 +290,16 @@ static void gegl_config_parse_env (GeglConfig *config)
   if (g_getenv ("GEGL_TILE_SIZE"))
     {
       const gchar *str = g_getenv ("GEGL_TILE_SIZE");
-      config->tile_width = atoi(str);
+      gint         width;
+      gint         height;
+      width = height = atoi(str);
       str = strchr (str, 'x');
       if (str)
-        config->tile_height = atoi(str+1);
+        height = atoi(str+1);
+      g_object_set (config,
+                    "tile-width",  width,
+                    "tile-height", height,
+                    NULL);
     }
 
   if (g_getenv ("GEGL_THREADS"))
@@ -517,16 +528,27 @@ gegl_post_parse_hook (GOptionContext *context,
   if (cmd_gegl_quality)
     config->quality = atof (cmd_gegl_quality);
   if (cmd_gegl_cache_size)
-    config->tile_cache_size = atoll (cmd_gegl_cache_size)*1024*1024;
+    {
+      g_object_set (config,
+                    "tile-cache-size",
+                    (guint64) atoll (cmd_gegl_cache_size) * 1024 * 1024,
+                    NULL);
+    }
   if (cmd_gegl_chunk_size)
     config->chunk_size = atoi (cmd_gegl_chunk_size);
   if (cmd_gegl_tile_size)
     {
       const gchar *str = cmd_gegl_tile_size;
-      config->tile_width = atoi(str);
+      gint         width;
+      gint         height;
+      width = height = atoi(str);
       str = strchr (str, 'x');
       if (str)
-        config->tile_height = atoi(str+1);
+        height = atoi(str+1);
+      g_object_set (config,
+                    "tile-width",  width,
+                    "tile-height", height,
+                    NULL);
     }
   if (cmd_gegl_threads)
     {
