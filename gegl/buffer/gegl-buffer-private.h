@@ -80,8 +80,6 @@ gint              gegl_buffer_leaks       (void);
 
 void              gegl_buffer_stats       (void);
 
-const gchar      *gegl_swap_dir           (void);
-
 void              gegl_tile_cache_init    (void);
 
 void              gegl_tile_cache_destroy (void);
