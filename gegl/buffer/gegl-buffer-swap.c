@@ -38,7 +38,14 @@
 #include "gegl-buffer-swap-private.h"
 
 
-#define SWAP_PREFIX "gegl-swap-"
+#define SWAP_PREFIX        "gegl-swap-"
+
+/* this used to be the suffix for swap files before commit
+ * b61f9015bf19611225df9832db3cfd9ee2558fc9.  let's keep
+ * cleaning files that match this suffix on startup, at least
+ * for a while.
+ */
+#define SWAP_LEGACY_SUFFIX "-shared.swap"
 
 
 /*  local function prototypes  */
@@ -238,18 +245,20 @@ gegl_buffer_swap_clean_dir (void)
 
       while ((basename = g_dir_read_name (dir)) != NULL)
         {
+          gint pid = 0;
+
           if (g_str_has_prefix (basename, SWAP_PREFIX))
+            pid = atoi (basename + strlen (SWAP_PREFIX));
+          else if (g_str_has_suffix (basename, SWAP_LEGACY_SUFFIX))
+            pid = atoi (basename);
+
+          if (pid && ! gegl_buffer_swap_pid_is_running (pid))
             {
-              gint pid = atoi (basename + strlen (SWAP_PREFIX));
+              gchar *path = g_build_filename (swap_dir, basename, NULL);
 
-              if (! gegl_buffer_swap_pid_is_running (pid))
-                {
-                  gchar *path = g_build_filename (swap_dir, basename, NULL);
+              g_unlink (path);
 
-                  g_unlink (path);
-
-                  g_free (path);
-                }
+              g_free (path);
             }
          }
 
