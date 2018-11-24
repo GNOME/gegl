@@ -40,6 +40,7 @@ libbuffer_la_SOURCES = \
     gegl-rectangle.c	\
 	gegl-buffer-load.c	\
     gegl-buffer-save.c		\
+    gegl-buffer-swap.c		\
     gegl-sampler.c		\
     gegl-sampler-cubic.c	\
     gegl-sampler-linear.c	\
@@ -70,6 +71,8 @@ libbuffer_la_SOURCES = \
     gegl-rectangle.h	\
     gegl-buffer-types.h		\
     gegl-buffer-formats.h	\
+    gegl-buffer-swap.h		\
+    gegl-buffer-swap-private.h	\
     gegl-sampler.h		\
     gegl-sampler-cubic.h	\
     gegl-sampler-linear.h	\

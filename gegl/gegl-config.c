@@ -183,24 +183,21 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                      "Tile width",
                                                      "default tile width for created buffers.",
                                                      0, G_MAXINT, 128,
-                                                     G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+                                                     G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_TILE_HEIGHT,
                                    g_param_spec_int ("tile-height",
                                                      "Tile height",
                                                      "default tile height for created buffers.",
                                                      0, G_MAXINT, 128,
-                                                     G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+                                                     G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_TILE_CACHE_SIZE,
                                    g_param_spec_uint64 ("tile-cache-size",
                                                         "Tile Cache size",
                                                         "size of tile cache in bytes",
                                                         0, G_MAXUINT64, 512 * 1024 * 1024,
-                                                        G_PARAM_READWRITE |
-                                                        G_PARAM_CONSTRUCT));
+                                                        G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_CHUNK_SIZE,
                                    g_param_spec_int ("chunk-size",
@@ -223,8 +220,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                         "Swap",
                                                         "where gegl stores it's swap files",
                                                         NULL,
-                                                        G_PARAM_READWRITE |
-                                                        G_PARAM_CONSTRUCT));
+                                                        G_PARAM_READWRITE));
 
   _gegl_threads = g_get_num_processors ();
   _gegl_threads = MIN (_gegl_threads, GEGL_MAX_THREADS);
@@ -250,8 +246,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                      "Queue size",
                                                      "Maximum size of a file backend's writer thread queue (in bytes)",
                                                      2, G_MAXINT, 50 * 1024 *1024,
-                                                     G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+                                                     G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_APPLICATION_LICENSE,
                                    g_param_spec_string ("application-license",
@@ -274,7 +269,8 @@ gegl_config_init (GeglConfig *self)
   GeglBufferConfig *bconf = gegl_buffer_config ();
   for (int i = 0; forward_props[i]; i++)
     g_object_bind_property (bconf, forward_props[i],
-                            self, forward_props[i], G_BINDING_BIDIRECTIONAL);
+                            self, forward_props[i],
+                            G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 }
 
 #undef  gegl_config_threads

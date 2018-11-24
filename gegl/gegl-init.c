@@ -56,29 +56,6 @@ DllMain (HINSTANCE hinstDLL,
   return TRUE;
 }
 
-static inline gboolean
-pid_is_running (gint pid)
-{
-  HANDLE h;
-  DWORD exitcode = 0;
-
-  h = OpenProcess (PROCESS_QUERY_INFORMATION, FALSE, pid);
-  GetExitCodeProcess (h, &exitcode);
-  CloseHandle (h);
-
-  return exitcode == STILL_ACTIVE;
-}
-
-#else
-
-#include <sys/types.h>
-#include <signal.h>
-
-static inline gboolean
-pid_is_running (gint pid)
-{
-  return (kill (pid, 0) == 0);
-}
 #endif
 
 
@@ -99,6 +76,7 @@ guint gegl_debug_flags = 0;
 #include "operation/gegl-operation-handlers-private.h"
 #include "buffer/gegl-buffer-private.h"
 #include "buffer/gegl-buffer-iterator-private.h"
+#include "buffer/gegl-buffer-swap-private.h"
 #include "buffer/gegl-tile-backend-ram.h"
 #include "buffer/gegl-tile-backend-file.h"
 #include "gegl-config.h"
@@ -120,58 +98,6 @@ static GeglStats    *stats = NULL;
 static GeglModuleDB *module_db   = NULL;
 
 static glong         global_time = 0;
-
-static gboolean      swap_init_done = FALSE;
-
-static gchar        *swap_dir = NULL;
-
-static void
-gegl_init_swap_dir (void)
-{
-  gchar *swapdir = NULL;
-
-  if (config->swap)
-    {
-      if (g_ascii_strcasecmp (config->swap, "ram") == 0)
-        {
-          swapdir = NULL;
-        }
-      else
-        {
-          swapdir = g_strstrip (g_strdup (config->swap));
-
-          /* Remove any trailing separator, unless the path is only made of a leading separator. */
-          while (strlen (swapdir) > strlen (G_DIR_SEPARATOR_S) && g_str_has_suffix (swapdir, G_DIR_SEPARATOR_S))
-            swapdir[strlen (swapdir) - strlen (G_DIR_SEPARATOR_S)] = '\0';
-        }
-    }
-
-  if (swapdir &&
-      ! g_file_test (swapdir, G_FILE_TEST_IS_DIR) &&
-      g_mkdir_with_parents (swapdir, S_IRUSR | S_IWUSR | S_IXUSR) != 0)
-    {
-      g_clear_pointer (&swapdir, g_free);
-    }
-
-  g_object_set (config, "swap", swapdir, NULL);
-
-  swap_dir = swapdir;
-
-  swap_init_done = TRUE;
-}
-
-/* Return the swap directory, or NULL if swapping is disabled */
-const gchar *
-gegl_swap_dir (void)
-{
-  if (!swap_init_done)
-  {
-    g_critical ("swap parsing not done");
-    gegl_init_swap_dir ();
-  }
-
-  return swap_dir;
-}
 
 static void load_module_path(gchar *path, GeglModuleDB *db);
 
@@ -334,19 +260,6 @@ gegl_get_option_group (void)
   return group;
 }
 
-static void gegl_config_set_defaults (GeglConfig *config)
-{
-  gchar *swapdir = g_build_filename (g_get_user_cache_dir(),
-                                     GEGL_LIBRARY,
-                                     "swap",
-                                     NULL);
-  g_object_set (config,
-                "swap", swapdir,
-                NULL);
-
-  g_free (swapdir);
-}
-
 static void gegl_config_parse_env (GeglConfig *config)
 {
   if (g_getenv ("GEGL_QUALITY"))
@@ -415,10 +328,8 @@ static void gegl_config_parse_env (GeglConfig *config)
 GeglConfig *gegl_config (void)
 {
   if (!config)
-    {
-      config = g_object_new (GEGL_TYPE_CONFIG, NULL);
-      gegl_config_set_defaults (config);
-    }
+    config = g_object_new (GEGL_TYPE_CONFIG, NULL);
+
   return config;
 }
 
@@ -433,43 +344,6 @@ GeglStats *gegl_stats (void)
 void gegl_reset_stats (void)
 {
   gegl_stats_reset (gegl_stats ());
-}
-
-static void swap_clean (void)
-{
-  const gchar  *swap_dir = gegl_swap_dir ();
-  GDir         *dir;
-
-  if (! swap_dir)
-    return;
-
-  dir = g_dir_open (gegl_swap_dir (), 0, NULL);
-
-  if (dir != NULL)
-    {
-      GPatternSpec *pattern = g_pattern_spec_new ("*");
-      const gchar  *name;
-
-      while ((name = g_dir_read_name (dir)) != NULL)
-        {
-          if (g_pattern_match_string (pattern, name))
-            {
-              gint readpid = atoi (name);
-
-              if (!pid_is_running (readpid))
-                {
-                  gchar *fname = g_build_filename (gegl_swap_dir (),
-                                                   name,
-                                                   NULL);
-                  g_unlink (fname);
-                  g_free (fname);
-                }
-            }
-         }
-
-      g_pattern_spec_free (pattern);
-      g_dir_close (dir);
-    }
 }
 
 void gegl_temp_buffer_free (void);
@@ -491,6 +365,7 @@ gegl_exit (void)
   gegl_operation_handlers_cleanup ();
   gegl_random_cleanup ();
   gegl_parallel_cleanup ();
+  gegl_buffer_swap_cleanup ();
   gegl_cl_cleanup ();
 
   gegl_temp_buffer_free ();
@@ -526,43 +401,9 @@ gegl_exit (void)
 #endif
     }
 
-  if (gegl_swap_dir ())
-    {
-      /* remove all files matching <$GEGL_SWAP>/GEGL-<pid>-*.swap */
-
-      guint         pid     = getpid ();
-      GDir         *dir     = g_dir_open (gegl_swap_dir (), 0, NULL);
-
-      gchar        *glob    = g_strdup_printf ("%i-*", pid);
-      GPatternSpec *pattern = g_pattern_spec_new (glob);
-      g_free (glob);
-
-      if (dir != NULL)
-        {
-          const gchar *name;
-
-          while ((name = g_dir_read_name (dir)) != NULL)
-            {
-              if (g_pattern_match_string (pattern, name))
-                {
-                  gchar *fname = g_build_filename (gegl_swap_dir (),
-                                                   name,
-                                                   NULL);
-                  g_unlink (fname);
-                  g_free (fname);
-                }
-            }
-
-          g_dir_close (dir);
-        }
-
-      g_pattern_spec_free (pattern);
-    }
   g_clear_object (&config);
   global_time = 0;
 }
-
-static void swap_clean (void);
 
 void
 gegl_get_version (int *major,
@@ -700,10 +541,9 @@ gegl_post_parse_hook (GOptionContext *context,
   if (cmd_gegl_disable_opencl)
     gegl_cl_hard_disable ();
 
-  gegl_init_swap_dir ();
-
   GEGL_INSTRUMENT_START();
 
+  gegl_buffer_swap_init ();
   gegl_parallel_init ();
   gegl_operation_gtype_init ();
   gegl_tile_cache_init ();
@@ -719,8 +559,6 @@ gegl_post_parse_hook (GOptionContext *context,
   GEGL_INSTRUMENT_END ("gegl_init", "load modules");
 
   gegl_instrument ("gegl", "gegl_init", gegl_ticks () - global_time);
-
-  swap_clean ();
 
   g_signal_connect (G_OBJECT (config),
                    "notify::use-opencl",
