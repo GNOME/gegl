@@ -87,85 +87,49 @@ prepare (GeglOperation *operation)
 struct BasicMetric
 {
   static gint
-  prepare_y (gint y)
+  distance (gint x)
   {
-    return y;
-  }
-
-  static gint
-  no_intersection ()
-  {
-    return G_MAXINT / 2;
+    return x;
   }
 };
 
 struct EuclideanMetric : BasicMetric
 {
   static gint
-  prepare_y (gint y)
+  distance (gint x)
   {
-    return y * y;
+    return x * x;
   }
 
   static gint
-  distance (gint x,
+  distance (gint x2,
             gint y2)
   {
-    return x * x + y2;
-  }
-
-  static gint
-  intersection (gint x_1,
-                gint y2_1,
-                gint x_2,
-                gint y2_2)
-  {
-    return (distance (x_2, y2_2) - distance (x_1, y2_1) + (x_1 - x_2)) /
-           (2 * (x_1 - x_2));
+    return x2 + y2;
   }
 };
 
 struct ManhattanMetric : BasicMetric
 {
+  using BasicMetric::distance;
+
   static gint
   distance (gint x,
             gint y)
   {
     return x + y;
   }
-
-  static gint
-  intersection (gint x_1,
-                gint y_1,
-                gint x_2,
-                gint y_2)
-  {
-    if (y_2 - y_1 <= x_1 - x_2)
-      return 0;
-    else
-      return no_intersection ();
-  }
 };
 
 struct ChebyshevMetric : BasicMetric
 {
+  using BasicMetric::distance;
+
   static gint
   distance (gint x,
             gint y)
   {
     return MAX (x, y);
-  }
-
-  static gint
-  intersection (gint x_1,
-                gint y_1,
-                gint x_2,
-                gint y_2)
-  {
-    if (y_2 <= y_1)
-      return 0;
-    else
-      return y_2 - x_1;
   }
 };
 
@@ -200,29 +164,34 @@ process (GeglOperation       *operation,
     roi->width, gegl_operation_get_pixels_per_thread (operation) / roi->height,
     [=] (gint x0, gint width)
     {
-      guint8  *in_row;
-      guint8  *out_row;
-      guint32 *dist_row;
-      guint8  *aux_row;
+      guint8  *in_col;
+      guint8  *out_col;
+      guint32 *dist_col;
+      guint8  *aux_col;
       gint     x;
 
-      in_row   = (guint8 *) g_malloc (bpp * (roi->height + 2));
-      out_row  = (guint8 *) g_malloc (bpp * roi->height);
-      dist_row = g_new (guint32, roi->height);
+      in_col   = (guint8 *) g_malloc (bpp * (roi->height + 2));
+      out_col  = (guint8 *) g_malloc (bpp * roi->height);
+      dist_col = g_new (guint32, roi->height);
 
-      in_row += bpp;
+      in_col += bpp;
 
       if (aux)
-        aux_row = (guint8 *) g_malloc (bpp * roi->height);
+        aux_col = (guint8 *) g_malloc (aux_bpp * roi->height);
       else
-        aux_row = in_row;
+        aux_col = in_col;
 
       for (x = x0; x < x0 + width; x++)
         {
+          const guint8 *aux_ptr = aux_col;
+          gint          state   = -1;
+          gint          y0;
+          gint          y;
+
           gegl_buffer_get (input,
                            GEGL_RECTANGLE (roi->x + x, roi->y - 1,
                                            1,          roi->height + 2),
-                           1.0, format, in_row - bpp,
+                           1.0, format, in_col - bpp,
                            GEGL_AUTO_ROWSTRIDE, o->abyss_policy);
 
           if (aux)
@@ -230,60 +199,115 @@ process (GeglOperation       *operation,
               gegl_buffer_get (aux,
                                GEGL_RECTANGLE (roi->x + x, roi->y,
                                                1,          roi->height),
-                               1.0, aux_format, aux_row,
+                               1.0, aux_format, aux_col,
                                GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
             }
 
-          auto pass = [&] (gint first, gint last, gint step)
+          auto segment = [&] (gint first, gint last)
           {
-            gint          d = o->seed_edges ? 0 : roi->width + roi->height + 1;
-            const guint8 *p = in_row + (first - step) * bpp;
-            gint          y;
+            gint i;
 
-            for (y = first; y != last; y += step)
+            if (state == 0)
               {
-                gint dy;
-
-                if ((! memcmp (aux_row + y * bpp, mask, aux_bpp)) == invert)
+                if (! o->seed_edges)
                   {
-                    d = 0;
-                    p = in_row + y * bpp;
+                    if (first == 0)
+                      {
+                        if (last == roi->height)
+                          {
+                            guint32 d = metric.distance (roi->width  +
+                                                         roi->height +
+                                                         1);
+
+                            gegl_memset_pattern (dist_col, &d,
+                                                 sizeof (d), roi->height);
+                          }
+                        else
+                          {
+                            gegl_memset_pattern (out_col,
+                                                 in_col + last * bpp,
+                                                 bpp, last);
+
+                            for (i = 0; i < last; i++)
+                              dist_col[i] = metric.distance (last - i);
+                          }
+
+                        return;
+                      }
+                    else if (last == roi->height)
+                      {
+                        last -= first;
+
+                        gegl_memset_pattern (out_col + first       * bpp,
+                                             in_col  + (first - 1) * bpp,
+                                             bpp, last);
+
+                        for (i = 0; i < last; i++)
+                          dist_col[first + i] = metric.distance (i + 1);
+
+                        return;
+                      }
                   }
-                else
+
+                gegl_memset_pattern (out_col + first       * bpp,
+                                     in_col  + (first - 1) * bpp,
+                                     bpp, (last - first + 1) / 2);
+                gegl_memset_pattern (out_col + (first + last + 1) / 2 * bpp,
+                                     in_col  + last                   * bpp,
+                                     bpp, (last - first) / 2);
+
+                for (i = 0; i < (last - first + 1) / 2; i++)
                   {
-                    d++;
+                    gint d = metric.distance (i + 1);
+
+                    dist_col[first      + i] = d;
+                    dist_col[(last - 1) - i] = d;
                   }
+              }
+            else if (state == 1)
+              {
+                memcpy (out_col + first * bpp,
+                        in_col  + first * bpp,
+                        (last - first) * bpp);
 
-                dy = metric.prepare_y (d);
-
-                if (step > 0 || dy < dist_row[y])
-                  {
-                    memcpy (out_row + y * bpp, p, bpp);
-
-                    dist_row[y] = dy;
-                  }
+                memset (dist_col + first, 0,
+                        (last - first) * sizeof (guint32));
               }
           };
 
-          pass (0,               roi->height, +1);
-          pass (roi->height - 1, -1,          -1);
+          for (y = 0; y < roi->height; y++)
+            {
+              gint new_state = ((! memcmp (aux_ptr, mask, aux_bpp)) == invert);
+
+              if (new_state != state)
+                {
+                  segment (y0, y);
+
+                  state = new_state;
+                  y0    = y;
+                }
+
+              aux_ptr += aux_bpp;
+            }
+
+          segment (y0, y);
 
           gegl_buffer_set (output,
                            GEGL_RECTANGLE (roi->x + x, roi->y, 1, roi->height),
-                           0, format, out_row, GEGL_AUTO_ROWSTRIDE);
+                           0, format, out_col, GEGL_AUTO_ROWSTRIDE);
           gegl_buffer_set (dist,
                            GEGL_RECTANGLE (roi->x + x, roi->y, 1, roi->height),
-                           0, dist_format, dist_row, GEGL_AUTO_ROWSTRIDE);
+                           0, dist_format, dist_col, GEGL_AUTO_ROWSTRIDE);
         }
 
-      in_row -= bpp;
+      in_col -= bpp;
 
-      g_free (in_row);
-      g_free (out_row);
-      g_free (dist_row);
+      g_free (in_col);
+      g_free (out_col);
+      g_free (dist_col);
 
       if (aux)
-        g_free (aux_row);
+        g_free (aux_col);
     });
 
   gegl_parallel_distribute_range (
@@ -293,115 +317,141 @@ process (GeglOperation       *operation,
       guint8  *in_row;
       guint8  *out_row;
       guint32 *dist_row;
-      gint    *queue;
-      gint    *hdist;
       gint     y;
 
       in_row   = (guint8 *) g_malloc (bpp * (roi->width + 2));
       out_row  = (guint8 *) g_malloc (bpp * roi->width);
-      dist_row = g_new (guint32, roi->width);
+      dist_row = g_new (guint32, roi->width + 2);
 
       in_row += bpp;
 
-      queue = g_new (gint, roi->width);
-      hdist = g_new (gint, roi->width);
+      dist_row++;
+      dist_row[-1]         = 0;
+      dist_row[roi->width] = 0;
 
       for (y = y0; y < y0 + height; y++)
         {
           gegl_buffer_get (output,
-                           GEGL_RECTANGLE (roi->x - 1,     roi->y + y,
-                                           roi->width + 2, 1),
-                           1.0, format, in_row - bpp,
-                           GEGL_AUTO_ROWSTRIDE, o->abyss_policy);
+                           GEGL_RECTANGLE (roi->x,     roi->y + y,
+                                           roi->width, 1),
+                           1.0, format, in_row,
+                           GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+
+          if (o->seed_edges)
+            {
+              gegl_buffer_get (input,
+                               GEGL_RECTANGLE (roi->x - 1, roi->y + y,
+                                               1,          1),
+                               1.0, format, in_row - bpp,
+                               GEGL_AUTO_ROWSTRIDE, o->abyss_policy);
+              gegl_buffer_get (input,
+                               GEGL_RECTANGLE (roi->x + roi->width, roi->y + y,
+                                               1,                   1),
+                               1.0, format, in_row + roi->width * bpp,
+                               GEGL_AUTO_ROWSTRIDE, o->abyss_policy);
+            }
+
           gegl_buffer_get (dist,
                            GEGL_RECTANGLE (roi->x,     roi->y + y,
                                            roi->width, 1),
                            1.0, dist_format, dist_row,
                            GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-          auto pass = [&] (gint first, gint last, gint step)
+          auto bisect = [&] (gint in_first,  gint in_last,
+                             gint out_first, gint out_last,
+                             auto bisect) -> void
           {
-            gint          dx;
-            gint          dy;
-            const guint8 *p;
-            gint          x;
-
-            dx = o->seed_edges ? 0 : roi->width + 1;
-            dy = metric.prepare_y (o->seed_edges ? 0 : roi->height + 1);
-            p  = in_row + (first - step) * bpp;
-
-            memset (queue, 0, roi->width * sizeof (gint));
-
-            for (x = first; x != last; x += step)
+            if (in_last - in_first == 1)
               {
-                gint d;
+                gegl_memset_pattern (out_row + out_first * bpp,
+                                     in_row  + in_first  * bpp,
+                                     bpp, out_last - out_first);
+              }
+            else
+              {
+                gint cx  = (out_first + out_last) / 2;
+                gint mx  = cx;
+                gint md  = dist_row[mx];
+                gint any = md;
+                gint x;
 
-                if (dist_row[x] == 0)
+                for (x = cx - 1; x >= in_first; x--)
                   {
-                    dx = 0;
-                    dy = metric.prepare_y (0);
-                    p  = in_row + x * bpp;
+                    gint dx = metric.distance (cx - x);
+                    gint dy = dist_row[x];
+
+                    if (any && md <= dx)
+                      break;
+
+                    any |= dy;
+
+                    if (dy < md)
+                      {
+                        gint d = metric.distance (dx, dy);
+
+                        if (d < md)
+                          {
+                            mx = x;
+                            md = d;
+                          }
+                      }
+                  }
+
+                for (x = cx + 1; x < in_last; x++)
+                  {
+                    gint dx = metric.distance (x - cx);
+                    gint dy = dist_row[x];
+
+                    if (any && md <= dx)
+                      break;
+
+                    any |= dy;
+
+                    if (dy < md)
+                      {
+                        gint d = metric.distance (dx, dy);
+
+                        if (d < md)
+                          {
+                            mx = x;
+                            md = d;
+                          }
+                      }
+                  }
+
+                if (! any)
+                  {
+                    gint first = MAX (in_first, out_first);
+                    gint last  = MIN (in_last,  out_last);
+
+                    gegl_memset_pattern (out_row + out_first * bpp,
+                                         in_row  + in_first  * bpp,
+                                         bpp, first - out_first);
+
+                    memcpy (out_row + first * bpp,
+                            in_row  + first * bpp,
+                            (last - first) * bpp);
+
+                    gegl_memset_pattern (out_row + last          * bpp,
+                                         in_row  + (in_last - 1) * bpp,
+                                         bpp, out_last - last);
                   }
                 else
                   {
-                    gint qx = queue[x] - 1;
-                    gint dv;
-                    gint n;
+                    memcpy (out_row + cx * bpp, in_row + mx * bpp, bpp);
 
-                    dx++;
-
-                    if (qx >= 0)
-                      {
-                        gint dh = (x - qx) * step;
-
-                        if (dh < dx)
-                          {
-                            dv = dist_row[qx];
-
-                            n = metric.intersection (dx, dy, dh, dv);
-
-                            if (n <= 0)
-                              {
-                                dx = dh;
-                                dy = dv;
-                                p  = in_row + qx * bpp;
-                              }
-                            else if (n < (last - x) * step)
-                              {
-                                queue[x + n * step] = qx + 1;
-                              }
-                          }
-                      }
-
-                    dv = dist_row[x];
-
-                    n = metric.intersection (dx, dy, 0, dv);
-
-                    if (n <= 0)
-                      {
-                        dx = 0;
-                        dy = dv;
-                        p  = in_row + x * bpp;
-                      }
-                    else if (n < (last - x) * step)
-                      {
-                        queue[x + n * step] = x + 1;
-                      }
-                  }
-
-                d = metric.distance (dx, dy);
-
-                if (step > 0 || d < hdist[x])
-                  {
-                    memcpy (out_row + x * bpp, p, bpp);
-
-                    hdist[x] = d;
+                    if (out_first < cx)
+                      bisect (in_first, mx + 1, out_first, cx, bisect);
+                    if (cx + 1 < out_last)
+                      bisect (mx, in_last, cx + 1, out_last, bisect);
                   }
               }
           };
 
-          pass (0,              roi->width, +1);
-          pass (roi->width - 1, -1,         -1);
+          if (o->seed_edges)
+            bisect (-1, roi->width + 1, 0, roi->width, bisect);
+          else
+            bisect (0,  roi->width,     0, roi->width, bisect);
 
           gegl_buffer_set (output,
                            GEGL_RECTANGLE (roi->x, roi->y + y, roi->width, 1),
@@ -410,12 +460,11 @@ process (GeglOperation       *operation,
 
       in_row -= bpp;
 
+      dist_row--;
+
       g_free (in_row);
       g_free (out_row);
       g_free (dist_row);
-
-      g_free (queue);
-      g_free (hdist);
     });
 
   g_object_unref (dist);
