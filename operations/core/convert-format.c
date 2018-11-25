@@ -58,7 +58,7 @@ operation_process (GeglOperation        *operation,
 
   input  = (GeglBuffer*) gegl_operation_context_get_object (context, "input");
 
-  if (gegl_buffer_get_format (input) == o->format)
+  if (! o->format || gegl_buffer_get_format (input) == o->format)
     {
       gegl_operation_context_set_object (context, "output", G_OBJECT (input));
 
