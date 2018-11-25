@@ -527,7 +527,7 @@ gegl_op_class_init (GeglOpClass *klass)
                        "noise-hurl pct-random=0.1 "
                        "crop width=256 height=256 "
                        "voronoi-diagram mask=black",
-    "reference-hash",  "0731590098ed020b5a9e7a71b71735dc",
+    "reference-hash",  "983f0fd7b29e1ac36721038817f4de74",
     "description",     _("Paints each non-seed pixel with the color of "
                          "the nearest seed pixel."),
     NULL);
