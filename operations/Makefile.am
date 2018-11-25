@@ -1,4 +1,4 @@
-if HAVE_CXX11
+if HAVE_CXX14
 common_cxx = common-cxx
 endif
 

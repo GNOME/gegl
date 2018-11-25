@@ -208,13 +208,13 @@ case "$CXX" in
     ;;
 esac
 
-dnl C++11 support
-have_cxx11="no"
-AX_CXX_COMPILE_STDCXX([11], , [optional])
-if test "x$HAVE_CXX11" = "x1"; then
-  have_cxx11="yes"
+dnl C++14 support
+have_cxx14="no"
+AX_CXX_COMPILE_STDCXX([14], , [optional])
+if test "x$HAVE_CXX14" = "x1"; then
+  have_cxx14="yes"
 fi
-AM_CONDITIONAL(HAVE_CXX11, test "x$have_cxx11" = "xyes")
+AM_CONDITIONAL(HAVE_CXX14, test "x$have_cxx14" = "xyes")
 
 dnl Large file support.
 AC_SYS_LARGEFILE
@@ -1367,7 +1367,7 @@ Optional features:
   Build website:   $have_asciidoc
   SIMD:            sse:$enable_sse mmx:$enable_mmx
   Vala support:    $have_vala
-  C++11:           $have_cxx11
+  C++14:           $have_cxx14
 
 Optional dependencies:
   asciidoc:        $have_asciidoc

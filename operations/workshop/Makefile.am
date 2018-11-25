@@ -27,7 +27,7 @@ ops = \
 	segment-kmeans.la \
 	selective-hue-saturation.la
 
-if HAVE_CXX11
+if HAVE_CXX14
 
 voronoi_diagram_la_SOURCES = voronoi-diagram.cc
 
