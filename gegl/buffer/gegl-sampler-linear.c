@@ -147,8 +147,8 @@ gegl_sampler_linear_get (     GeglSampler       *self,
     /*
      * Load bottom row:
      */
-    gfloat bot_left[4];
-    gfloat bot_rite[4];
+    gfloat bot_left[5];
+    gfloat bot_rite[5];
     for (gint c = 0; c < nc; c++)
       bot_left[c] = *in_bptr++;
     for (gint c = 0; c < nc; c++)
@@ -160,7 +160,7 @@ gegl_sampler_linear_get (     GeglSampler       *self,
     {
     const gfloat w_times_z = (gfloat) 1. - ( x + w_times_y );
 
-    gfloat newval[4];
+    gfloat newval[5];
 
       for (gint c = 0; c < nc; c++)
         newval[c] =
