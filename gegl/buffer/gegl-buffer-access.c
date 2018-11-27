@@ -2095,9 +2095,10 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
        CMYK based buffers
      */
     const Babl *bfmt = gegl_buffer_get_format (buffer);
-    const char *babl_name = babl_get_name (bfmt);
-    if (babl_name[0] == 'c' ||
-        babl_name[0] == 'C')
+    const Babl *model = babl_format_get_model (bfmt);
+    BablModelFlag model_flags = babl_model_get_flags (model);
+
+    if (model_flags & BABL_MODEL_FLAG_CMYK)
     {
       interpolation = GEGL_BUFFER_FILTER_NEAREST;
     }

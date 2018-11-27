@@ -47,18 +47,6 @@ GEGL_CACHED_BABL(model, y_linear, "Y")
 GEGL_CACHED_BABL(model, ya_linear, "YA")
 GEGL_CACHED_BABL(model, yA_linear, "YaA")
 
-static inline gboolean gegl_babl_model_is_linear (const Babl *babl)
-{
-  if (babl == gegl_babl_rgba_linear() ||
-      babl == gegl_babl_rgbA_linear() ||
-      babl == gegl_babl_rgb_linear()  ||
-      babl == gegl_babl_y_linear()    ||
-      babl == gegl_babl_ya_linear()   ||
-      babl == gegl_babl_yA_linear())
-    return TRUE;
-  return FALSE;
-}
-
 GEGL_CACHED_BABL(format, rgba_float, "R'G'B'A float")
 GEGL_CACHED_BABL(format, rgba_u8, "R'G'B'A u8")
 GEGL_CACHED_BABL(format, rgb_u8, "R'G'B' u8")

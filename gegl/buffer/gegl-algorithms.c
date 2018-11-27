@@ -945,8 +945,10 @@ GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
 {
   const Babl *comp_type = babl_format_get_type (format, 0);
   const Babl *model     = babl_format_get_model (format);
-
-  if (gegl_babl_model_is_linear (model))
+  BablModelFlag model_flags = babl_model_get_flags (model);
+  
+  if ((model_flags & BABL_MODEL_FLAG_LINEAR)||
+      (model_flags & BABL_MODEL_FLAG_CMYK))
   {
     if (comp_type == gegl_babl_float())
     {
@@ -1079,8 +1081,10 @@ void gegl_resample_boxfilter (guchar              *dest_buf,
   const Babl *model     = babl_format_get_model (format);
   const Babl *comp_type  = babl_format_get_type (format, 0);
   const gint bpp = babl_format_get_bytes_per_pixel (format);
+  BablModelFlag model_flags = babl_model_get_flags (model);
 
-  if (gegl_babl_model_is_linear (model))
+  if ((model_flags & BABL_MODEL_FLAG_LINEAR)||
+      (model_flags & BABL_MODEL_FLAG_CMYK))
   {
 
     if (comp_type == gegl_babl_float())
@@ -1186,7 +1190,10 @@ void gegl_resample_bilinear (guchar              *dest_buf,
 {
   const Babl *model     = babl_format_get_model (format);
   const Babl *comp_type  = babl_format_get_type (format, 0);
-  if (gegl_babl_model_is_linear (model))
+  BablModelFlag model_flags = babl_model_get_flags (model);
+
+  if ((model_flags & BABL_MODEL_FLAG_LINEAR)||
+      (model_flags & BABL_MODEL_FLAG_CMYK))
   {
     const gint bpp = babl_format_get_bytes_per_pixel (format);
 
