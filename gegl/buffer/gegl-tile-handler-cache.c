@@ -800,6 +800,11 @@ gegl_tile_handler_cache_void (GeglTileHandlerCache *cache,
       if (gegl_tile_damage (item->tile, damage))
         gegl_tile_handler_cache_remove_item (cache, item);
     }
+  else if (z == 0 && damage)
+    {
+      gegl_tile_handler_damage_tile (GEGL_TILE_HANDLER (cache),
+                                     x, y, z, damage);
+    }
 }
 
 void
