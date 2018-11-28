@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2008 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2008-2018 Øyvind Kolås <pippin@gimp.org>
  *           2013 Daniel Sabo
  */
 
@@ -26,10 +26,6 @@
 #define GEGL_BUFFER_WRITE     GEGL_ACCESS_WRITE
 #define GEGL_BUFFER_READWRITE GEGL_ACCESS_READWRITE
 
-#ifndef GEGL_ITERATOR2_API
-
-#define GEGL_BUFFER_MAX_ITERATORS 6
-
 typedef struct _GeglBufferIteratorPriv GeglBufferIteratorPriv;
 
 /***
@@ -39,13 +35,18 @@ typedef struct _GeglBufferIteratorPriv GeglBufferIteratorPriv;
  * In each iteration the new data is available as a linear chunk of
  * memory. See gegl_buffer_iterator_new() and gegl_buffer_iterator_next()
  */
+
+typedef struct GeglBufferIteratorItem
+{
+  gpointer      data;
+  GeglRectangle roi;
+} GeglBufferIteratorItem;
+
 typedef struct GeglBufferIterator
 {
   gint           length;
-  gpointer       data[GEGL_BUFFER_MAX_ITERATORS];
-  GeglRectangle  roi[GEGL_BUFFER_MAX_ITERATORS];
-  /* Private */
   GeglBufferIteratorPriv *priv;
+  GeglBufferIteratorItem  items[];
 } GeglBufferIterator;
 
 
@@ -55,7 +56,7 @@ typedef struct GeglBufferIterator
  *
  * Returns: a new buffer iterator.
  */
-GeglBufferIterator *gegl_buffer_iterator_empty_new (void);
+GeglBufferIterator *gegl_buffer_iterator_empty_new (int max_slots);
 
 /**
  * gegl_buffer_iterator_new: (skip)
@@ -75,12 +76,14 @@ GeglBufferIterator *gegl_buffer_iterator_empty_new (void);
  * Returns: a new buffer iterator that can be used to iterate through the
  * buffers pixels.
  */
-GeglBufferIterator * gegl_buffer_iterator_new  (GeglBuffer          *buffer,
-                                                const GeglRectangle *roi,
-                                                gint                 level,
-                                                const Babl          *format,
-                                                GeglAccessMode       access_mode,
-                                                GeglAbyssPolicy      abyss_policy) G_DEPRECATED;
+GeglBufferIterator * gegl_buffer_iterator_new  (
+                                                 GeglBuffer          *buffer,
+                                                 const GeglRectangle *roi,
+                                                 gint                 level,
+                                                 const Babl          *format,
+                                                 GeglAccessMode       access_mode,
+                                                 GeglAbyssPolicy      abyss_policy,
+                                                 gint                 max_slots);
 
 
 /**
@@ -98,6 +101,16 @@ GeglBufferIterator * gegl_buffer_iterator_new  (GeglBuffer          *buffer,
  * the original one, if the buffer doesn't align with the other for tile access
  * the corresponding scans and regions will be serialized automatically using
  * gegl_buffer_get.
+ *
+ * If the buffer shares its tiles with a previously-added buffer (in
+ * particular, if the same buffer is added more than once), and at least one of
+ * the buffers is accessed for writing, the corresponding iterated-over areas
+ * should either completely overlap, or not overlap at all, in the coordinate-
+ * system of the underlying tile storage (that is, after shifting each area by
+ * the corresponding buffer's shift-x and shift-y properties).  If the areas
+ * overlap, at most one of the buffers may be accessed for writing, and the
+ * data pointers of the corresponding iterator items may refer to the same
+ * data.
  *
  * Returns: an integer handle refering to the indice in the iterator structure
  * of the added buffer.
@@ -133,18 +146,6 @@ void                 gegl_buffer_iterator_stop  (GeglBufferIterator *iterator);
  */
 gboolean             gegl_buffer_iterator_next (GeglBufferIterator *iterator);
 
-#else
 
-#include <gegl-buffer-iterator2.h>
-
-#define GeglBufferIteratorPriv GeglBufferIterator2Priv
-#define GeglBufferIterator GeglBufferIterator2
-#define gegl_buffer_iterator_empty_new gegl_buffer_iterator2_empty_new
-#define gegl_buffer_iterator_new gegl_buffer_iterator2_new
-#define gegl_buffer_iterator_add gegl_buffer_iterator2_add
-#define gegl_buffer_iterator_stop gegl_buffer_iterator2_stop
-#define gegl_buffer_iterator_next gegl_buffer_iterator2_next
-
-#endif
 
 #endif

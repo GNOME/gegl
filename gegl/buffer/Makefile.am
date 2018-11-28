@@ -36,6 +36,7 @@ libbuffer_la_SOURCES = \
     gegl-buffer-index.h		\
     gegl-buffer-iterator.c	\
     gegl-buffer-iterator2.c	\
+    gegl-buffer-iterator2.h	\
     gegl-buffer-linear.c	\
     gegl-rectangle.c	\
 	gegl-buffer-load.c	\
@@ -66,7 +67,6 @@ libbuffer_la_SOURCES = \
     gegl-buffer.h		\
     gegl-buffer-private.h	\
     gegl-buffer-iterator.h	\
-    gegl-buffer-iterator2.h	\
     gegl-buffer-iterator-private.h	\
     gegl-rectangle.h	\
     gegl-buffer-types.h		\
