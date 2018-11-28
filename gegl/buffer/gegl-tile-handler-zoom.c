@@ -213,6 +213,10 @@ get_tile (GeglTileSource *gegl_tile_source,
                     }
                 }
             }
+          else
+            {
+              empty = FALSE;
+            }
         }
 
     if (empty)
