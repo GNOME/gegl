@@ -2503,6 +2503,14 @@ gegl_buffer_copy (GeglBuffer          *src,
               }
 
             g_rec_mutex_unlock (&src->tile_storage->mutex);
+
+            gegl_tile_handler_damage_rect (
+              GEGL_TILE_HANDLER (dst->tile_storage),
+              GEGL_RECTANGLE (cow_rect.x + dst->shift_x,
+                              cow_rect.y + dst->shift_y,
+                              cow_rect.width,
+                              cow_rect.height));
+
             g_rec_mutex_unlock (&dst->tile_storage->mutex);
           }
 
