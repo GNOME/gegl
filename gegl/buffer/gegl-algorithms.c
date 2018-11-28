@@ -234,18 +234,6 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
               src[3] = src[4] - 4;
               src[6] = src[7] - 4;
 
-              if (src[0][3] == 0 &&  /* XXX: it would be even better to not call this at all for the abyss...  */
-                  src[1][3] == 0 &&
-                  src[2][3] == 0 &&
-                  src[3][3] == 0 &&
-                  src[4][3] == 0 &&
-                  src[5][3] == 0 &&
-                  src[6][3] == 0 &&
-                  src[7][3] == 0)
-              {
-                (*(uint32_t*)(dst)) = 0;
-              }
-            else
             {
               const gfloat l = left_weight[x];
               const gfloat r = right_weight[x];
@@ -382,18 +370,6 @@ gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
               src[3] = src[4] - 4;
               src[6] = src[7] - 4;
 
-              if (src[0][3] == 0 &&
-                  src[1][3] == 0 &&
-                  src[2][3] == 0 &&
-                  src[3][3] == 0 &&
-                  src[4][3] == 0 &&
-                  src[5][3] == 0 &&
-                  src[6][3] == 0 &&
-                  src[7][3] == 0)
-              {
-                (*(uint32_t*)(dst)) = 0;
-              }
-            else
             {
               const gfloat l = left_weight[x];
               const gfloat r = right_weight[x];
@@ -557,15 +533,6 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
        break;
      case 4:
        IMPL(4,
-         if (src[0][3] == 0 &&
-             src[1][3] == 0 &&
-             src[2][3] == 0 &&
-             src[3][3] == 0)
-         {
-            (*(uint32_t*)(dst)) = 0;
-         }
-         else
-         {
            dst[0] = BILINEAR_ROUND(
                (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
                (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
@@ -578,7 +545,25 @@ gegl_bilinear_u8_nl (guchar              *dest_buf,
            dst[3] = BILINEAR_ROUND(
                (C(src[0][3]) * rdx + C(src[1][3]) * ldx) * rdy +
                (C(src[2][3]) * rdx + C(src[3][3]) * ldx) * dy);
-         }
+           );
+       break;
+     case 5:
+       IMPL(5,
+           dst[0] = BILINEAR_ROUND(
+               (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
+               (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
+           dst[1] = BILINEAR_ROUND(
+               (C(src[0][1]) * rdx + C(src[1][1]) * ldx) * rdy +
+               (C(src[2][1]) * rdx + C(src[3][1]) * ldx) * dy);
+           dst[2] = BILINEAR_ROUND(
+               (C(src[0][2]) * rdx + C(src[1][2]) * ldx) * rdy +
+               (C(src[2][2]) * rdx + C(src[3][2]) * ldx) * dy);
+           dst[3] = BILINEAR_ROUND(
+               (C(src[0][3]) * rdx + C(src[1][3]) * ldx) * rdy +
+               (C(src[2][3]) * rdx + C(src[3][3]) * ldx) * dy);
+           dst[4] = BILINEAR_ROUND(
+               (C(src[0][4]) * rdx + C(src[1][4]) * ldx) * rdy +
+               (C(src[2][4]) * rdx + C(src[3][4]) * ldx) * dy);
            );
        break;
 #endif
@@ -639,15 +624,6 @@ gegl_bilinear_u8_nl_alpha (guchar              *dest_buf,
        break;
      case 4:
        IMPL(4,
-         if (src[0][3] == 0 &&
-             src[1][3] == 0 &&
-             src[2][3] == 0 &&
-             src[3][3] == 0)
-         {
-            (*(uint32_t*)(dst)) = 0;
-         }
-         else
-         {
            dst[0] = BILINEAR_ROUND(
                (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
                (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
@@ -660,7 +636,25 @@ gegl_bilinear_u8_nl_alpha (guchar              *dest_buf,
            dst[3] = BILINEAR_ROUND_ALPHA(
                ((src[0][3]) * rdx + (src[1][3]) * ldx) * rdy +
                ((src[2][3]) * rdx + (src[3][3]) * ldx) * dy);
-         }
+           );
+       break;
+     case 5:
+       IMPL(5,
+           dst[0] = BILINEAR_ROUND(
+               (C(src[0][0]) * rdx + C(src[1][0]) * ldx) * rdy +
+               (C(src[2][0]) * rdx + C(src[3][0]) * ldx) * dy);
+           dst[1] = BILINEAR_ROUND(
+               (C(src[0][1]) * rdx + C(src[1][1]) * ldx) * rdy +
+               (C(src[2][1]) * rdx + C(src[3][1]) * ldx) * dy);
+           dst[2] = BILINEAR_ROUND(
+               (C(src[0][2]) * rdx + C(src[1][2]) * ldx) * rdy +
+               (C(src[2][2]) * rdx + C(src[3][2]) * ldx) * dy);
+           dst[3] = BILINEAR_ROUND(
+               ((src[0][3]) * rdx + (src[1][3]) * ldx) * rdy +
+               ((src[2][3]) * rdx + (src[3][3]) * ldx) * dy);
+           dst[4] = BILINEAR_ROUND_ALPHA(
+               ((src[0][4]) * rdx + (src[1][4]) * ldx) * rdy +
+               ((src[2][4]) * rdx + (src[3][4]) * ldx) * dy);
            );
        break;
    }
