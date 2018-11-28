@@ -105,6 +105,25 @@ BILINEAR_FUNCNAME (guchar                    *dest_buf,
                (src[2][3] * (rdx) + src[3][3] * (ldx)) * (dy));
            );
        break;
+     case 5:
+       IMPL(
+         dst[0] = BILINEAR_ROUND(
+               (src[0][0] * (rdx) + src[1][0] * (ldx)) * (rdy) +
+               (src[2][0] * (rdx) + src[3][0] * (ldx)) * (dy));
+         dst[1] = BILINEAR_ROUND(
+               (src[0][1] * (rdx) + src[1][1] * (ldx)) * (rdy) +
+               (src[2][1] * (rdx) + src[3][1] * (ldx)) * (dy));
+         dst[2] = BILINEAR_ROUND(
+               (src[0][2] * (rdx) + src[1][2] * (ldx)) * (rdy) +
+               (src[2][2] * (rdx) + src[3][2] * (ldx)) * (dy));
+         dst[3] = BILINEAR_ROUND(
+               (src[0][3] * (rdx) + src[1][3] * (ldx)) * (rdy) +
+               (src[2][3] * (rdx) + src[3][3] * (ldx)) * (dy));
+         dst[4] = BILINEAR_ROUND(
+               (src[0][4] * (rdx) + src[1][4] * (ldx)) * (rdy) +
+               (src[2][4] * (rdx) + src[3][4] * (ldx)) * (dy));
+           );
+       break;
    }
 #undef IMPL
 }
