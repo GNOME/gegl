@@ -2091,17 +2091,9 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
     gint interpolation = (flags & GEGL_BUFFER_FILTER_ALL);
     gint    factor = 1;
 
-    /* XXX: temporary, force nearest neighbor filter for blit saling of
-       CMYK based buffers
-     */
     const Babl *bfmt = gegl_buffer_get_format (buffer);
     const Babl *model = babl_format_get_model (bfmt);
     BablModelFlag model_flags = babl_model_get_flags (model);
-
-    if (model_flags & BABL_MODEL_FLAG_CMYK)
-    {
-      interpolation = GEGL_BUFFER_FILTER_NEAREST;
-    }
 
     while (scale <= 0.5)
       {
