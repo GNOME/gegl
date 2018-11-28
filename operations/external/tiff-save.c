@@ -24,6 +24,12 @@
 
 property_file_path (path, _("File"), "")
     description (_("Target path and filename, use '-' for stdout"))
+property_int (bitdepth, _("Bitdepth"), -1)
+  description (_("-1, 8, 16, 32 and 64 are the currently accepted values, -1 means auto"))
+  value_range (-1, 64)
+property_int (ieeef, _("IEEEF"), -1)
+  description (_("floating point -1 means auto, 0 means integer 1 meant float."))
+  value_range (-1, 1)
 
 #else
 
@@ -549,11 +555,37 @@ export_tiff (GeglOperation *operation,
   else
     {
       g_warning("sample format not supported: %s", babl_get_name(type));
-
       sample_format = SAMPLEFORMAT_UINT;
       type = babl_type("u8");
       bits_per_sample = 8;
     }
+
+  if (o->bitdepth > 0)
+  {
+    switch (o->bitdepth)
+    {
+      case 8:
+        bits_per_sample = 8;
+      break;
+      case 16:
+        bits_per_sample = 16;
+      break;
+      case 32:
+        bits_per_sample = 32;
+      break;
+      case 64:
+        bits_per_sample = 64;
+      break;
+    }
+  }
+  if (o->ieeef >= 0)
+  {
+    if (o->ieeef == 1)
+      sample_format = SAMPLEFORMAT_IEEEFP;
+    else
+      sample_format = SAMPLEFORMAT_UINT;
+  }
+
 
   TIFFSetField(p->tiff, TIFFTAG_BITSPERSAMPLE, bits_per_sample);
   TIFFSetField(p->tiff, TIFFTAG_SAMPLEFORMAT, sample_format);
@@ -569,8 +601,23 @@ export_tiff (GeglOperation *operation,
       return -1;
     }
 
+  if (o->bitdepth > 0 || o->ieeef >= 0)
+  {
+    switch (bits_per_sample)
+    {
+      case 8: type = babl_type ("u8"); 
+              sample_format = SAMPLEFORMAT_UINT;
+              break;
+      case 16: type = babl_type (o->ieeef==1?"half":"u16"); break;
+      case 32: type = babl_type (o->ieeef==1?"float":"u32"); break;
+      case 64: type = babl_type ("double");
+              sample_format = SAMPLEFORMAT_IEEEFP;
+              break;
+    }
+  }
+
   g_snprintf(format_string, 32, "%s %s",
-             babl_get_name(model), babl_get_name(type));
+              babl_get_name(model), babl_get_name(type));
 
   format = babl_format_with_space (format_string, space);
 

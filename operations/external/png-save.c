@@ -160,6 +160,8 @@ export_png (GeglOperation       *operation,
         double green[2];
         double blue[2];
         const Babl *trc[3];
+        int is_cmyk = babl_space_is_cmyk (space);
+
         babl_space_get (space, &wp[0], &wp[1],
                         &red[0], &red[1],
                         &green[0], &green[1],
@@ -168,7 +170,7 @@ export_png (GeglOperation       *operation,
         png_set_cHRM (png, info, wp[0], wp[1], red[0], red[1], green[0], green[1], blue[0], blue[1]);
       /* XXX: should also set gamma based on trc! */
         if (trc[0] == babl_trc("sRGB") ||
-            trc[0] == babl_trc("2.2"))
+            trc[0] == babl_trc("2.2") || is_cmyk)
         {
           png_set_gAMA (png, info, 2.2);
         }
@@ -181,7 +183,7 @@ export_png (GeglOperation       *operation,
           png_set_gAMA (png, info, 2.2);
         }
 
-        {
+        if (!is_cmyk) {
           int icc_len;
           const char *name = babl_get_name (space);
           const char *icc_profile;
