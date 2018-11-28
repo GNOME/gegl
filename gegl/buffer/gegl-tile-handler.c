@@ -223,6 +223,60 @@ gegl_tile_handler_dup_tile (GeglTileHandler *handler,
 }
 
 void
+gegl_tile_handler_damage_tile (GeglTileHandler *handler,
+                               gint             x,
+                               gint             y,
+                               gint             z,
+                               guint64          damage)
+{
+  GeglTileSource *source;
+
+  g_return_if_fail (GEGL_IS_TILE_HANDLER (handler));
+
+  if (z != 0                        ||
+      ! damage                      ||
+      ! handler->priv->tile_storage ||
+      ! handler->priv->tile_storage->seen_zoom)
+    {
+      return;
+    }
+
+  source = GEGL_TILE_SOURCE (handler);
+
+  g_rec_mutex_lock (&handler->priv->tile_storage->mutex);
+
+  while (z < handler->priv->tile_storage->seen_zoom)
+    {
+      guint new_damage;
+      guint mask;
+      gint  i;
+
+      damage |= damage >> 1;
+      damage |= damage >> 2;
+
+      new_damage = 0;
+      mask       = 1;
+
+      for (i = 0; i < 16; i++)
+        {
+          new_damage |= damage & mask;
+          damage >>= 3;
+          mask   <<= 1;
+        }
+
+      damage = (guint64) new_damage << (32 * (y & 1) + 16 * (x & 1));
+
+      x >>= 1;
+      y >>= 1;
+      z++;
+
+      gegl_tile_source_command (source, GEGL_TILE_VOID, x, y, z, &damage);
+    }
+
+  g_rec_mutex_unlock (&handler->priv->tile_storage->mutex);
+}
+
+void
 gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
                                const GeglRectangle *rect)
 {

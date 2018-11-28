@@ -296,44 +296,6 @@ gegl_tile_lock (GeglTile *tile)
 }
 
 static inline void
-_gegl_tile_void_pyramid (GeglTileSource *source,
-                         gint            x,
-                         gint            y,
-                         gint            z,
-                         guint64         damage)
-{
-  guint new_damage;
-  guint mask;
-  gint  i;
-
-  if (z >= ((GeglTileStorage*)source)->seen_zoom)
-    return;
-
-  damage |= damage >> 1;
-  damage |= damage >> 2;
-
-  new_damage = 0;
-  mask       = 1;
-
-  for (i = 0; i < 16; i++)
-    {
-      new_damage |= damage & mask;
-      damage >>= 3;
-      mask   <<= 1;
-    }
-
-  damage = (guint64) new_damage << (32 * (y & 1) + 16 * (x & 1));
-
-  x >>= 1;
-  y >>= 1;
-  z++;
-
-  gegl_tile_source_command (source, GEGL_TILE_VOID, x, y, z, &damage);
-
-  _gegl_tile_void_pyramid (source, x, y, z, damage);
-}
-
-static inline void
 gegl_tile_void_pyramid (GeglTile *tile,
                         guint64   damage)
 {
@@ -341,17 +303,9 @@ gegl_tile_void_pyramid (GeglTile *tile,
       tile->tile_storage->seen_zoom &&
       tile->z == 0) /* we only accepting voiding the base level */
     {
-      g_rec_mutex_lock (&tile->tile_storage->mutex);
-
-      _gegl_tile_void_pyramid (GEGL_TILE_SOURCE (tile->tile_storage),
-                               tile->x,
-                               tile->y,
-                               tile->z,
-                               damage);
-
-      g_rec_mutex_unlock (&tile->tile_storage->mutex);
-
-      return;
+      gegl_tile_handler_damage_tile (GEGL_TILE_HANDLER (tile->tile_storage),
+                                     tile->x, tile->y, tile->z,
+                                     damage);
     }
 }
 

@@ -101,6 +101,11 @@ GeglTile * gegl_tile_handler_dup_tile    (GeglTileHandler *handler,
                                           gint             y,
                                           gint             z);
 
+void       gegl_tile_handler_damage_tile (GeglTileHandler     *handler,
+                                          gint                 x,
+                                          gint                 y,
+                                          gint                 z,
+                                          guint64              damage);
 void       gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
                                           const GeglRectangle *rect);
 
