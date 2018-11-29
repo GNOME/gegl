@@ -27,7 +27,7 @@ property_file_path (path, _("File"), "")
 property_int (bitdepth, _("Bitdepth"), -1)
   description (_("-1, 8, 16, 32 and 64 are the currently accepted values, -1 means auto"))
   value_range (-1, 64)
-property_int (ieeef, _("IEEEF"), -1)
+property_int (fp, _("use floating point"), -1)
   description (_("floating point -1 means auto, 0 means integer 1 meant float."))
   value_range (-1, 1)
 
@@ -578,9 +578,9 @@ export_tiff (GeglOperation *operation,
       break;
     }
   }
-  if (o->ieeef >= 0)
+  if (o->fp>= 0)
   {
-    if (o->ieeef == 1)
+    if (o->fp== 1)
       sample_format = SAMPLEFORMAT_IEEEFP;
     else
       sample_format = SAMPLEFORMAT_UINT;
@@ -601,15 +601,19 @@ export_tiff (GeglOperation *operation,
       return -1;
     }
 
-  if (o->bitdepth > 0 || o->ieeef >= 0)
+  if (o->bitdepth > 0 || o->fp >= 0)
   {
+    int ieeef = o->fp;
+    if (ieeef == -1)
+      ieeef = (sample_format == SAMPLEFORMAT_IEEEFP);
+
     switch (bits_per_sample)
     {
-      case 8: type = babl_type ("u8"); 
+      case 8: type = babl_type ("u8");
               sample_format = SAMPLEFORMAT_UINT;
               break;
-      case 16: type = babl_type (o->ieeef==1?"half":"u16"); break;
-      case 32: type = babl_type (o->ieeef==1?"float":"u32"); break;
+      case 16: type = babl_type (ieeef==1?"half":"u16"); break;
+      case 32: type = babl_type (ieeef==1?"float":"u32"); break;
       case 64: type = babl_type ("double");
               sample_format = SAMPLEFORMAT_IEEEFP;
               break;
