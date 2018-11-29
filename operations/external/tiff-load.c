@@ -606,29 +606,8 @@ load_contiguous(GeglOperation *operation,
   guint32 tile_height = 1;
   guchar *buffer;
   gint x, y;
-  const Babl *format = p->format;
-  const Babl *type = babl_format_get_type (format, 0);
-
-  gint is_cmyk = babl_space_is_cmyk (format);
-  gint bytes_per_pixel = babl_format_get_bytes_per_pixel (format);
-  gint components = babl_format_get_n_components (format);
-  gint bytes_per_component = 1;
-  int ccomponents = components;
 
   g_return_val_if_fail(p->tiff != NULL, -1);
-
-  if (type == babl_type ("u16"))
-    bytes_per_component = 2;
-
-  if (is_cmyk)
-  {
-    if (components == 5) ccomponents = 4;
-  }
-  else
-  {
-    if (components == 4) ccomponents = 3;
-    if (components == 2) ccomponents = 1;
-  }
 
   if (!TIFFIsTiled(p->tiff))
       buffer = g_try_new(guchar, TIFFScanlineSize(p->tiff));
@@ -653,23 +632,6 @@ load_contiguous(GeglOperation *operation,
           else
             TIFFReadScanline(p->tiff, buffer, y, 0);
 
-          if (is_cmyk)
-          {
-/*
-   cmy
-   cmyk
-   cmykA
-   camayakaA
-
-   CMY
-   CMYK
-   CMYKA
-   CaMaYaKaA
-
-*/
-
-
-          }
           gegl_buffer_set(output, &tile, 0, p->format,
                           (guchar *) buffer,
                           GEGL_AUTO_ROWSTRIDE);
