@@ -103,12 +103,22 @@ gegl_create_chain_argv (char      **ops,
   GHashTable *ht = NULL;
   GeglPath   *path = NULL;
   GString    *string = NULL;
+  GeglNode **ret_sinkp = NULL;
+
+  if (error && *error)
+  {
+    GeglNode **an = (void*)error;
+    ret_sinkp = *an;
+    *error = NULL;
+  }
 
   remove_in_betweens (start, proxy);
 
   level_op[level] = *arg;
 
   ht = g_hash_table_new (g_str_hash, g_str_equal);
+
+
 
   while (*arg)
     {
@@ -627,10 +637,17 @@ gegl_create_chain_argv (char      **ops,
                                                proxy), "operation",
                                              level_op[level], NULL);
 
-                  if (iter[level] && gegl_node_has_pad (new, "input"))
-                    gegl_node_link_many (iter[level], new, proxy, NULL);
+                  if (gegl_node_has_pad (new, "output"))
+                  {
+                    if (iter[level] && gegl_node_has_pad (new, "input"))
+                      gegl_node_link_many (iter[level], new, proxy, NULL);
+                    else
+                      gegl_node_link_many (new, proxy, NULL);
+                  }
                   else
-                    gegl_node_link_many (new, proxy, NULL);
+                  {
+                    gegl_node_link_many (iter[level], new, NULL);
+                  }
                   iter[level] = new;
                 }
               else if (error)
@@ -695,7 +712,17 @@ gegl_create_chain_argv (char      **ops,
 
   g_free (prop);
   g_hash_table_unref (ht);
-  gegl_node_link_many (iter[level], proxy, NULL);
+
+
+  if (gegl_node_has_pad (iter[level], "output"))
+    gegl_node_link_many (iter[level], proxy, NULL);
+  else
+  {
+    if (ret_sinkp)
+    {
+      *ret_sinkp = iter[level];
+    }
+  }
 }
 
 void
