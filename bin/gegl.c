@@ -204,6 +204,7 @@ main (gint    argc,
         }
     }
 
+
   if (o->mode == GEGL_RUN_MODE_DISPLAY)
     {
 #if HAVE_MRG
@@ -228,11 +229,18 @@ main (gint    argc,
   GeglNode *iter = gegl_node_get_producer (proxy, "input", NULL);
   if (o->rest)
     {
-      GError *error = NULL;
+      GeglNode *ret_sink = NULL;
+
+      GError *error = (void*)(&ret_sink);
       gegl_create_chain_argv (o->rest, iter, proxy, 0, gegl_node_get_bounding_box (gegl).height, path_root, &error);
       if (error)
       {
         fprintf (stderr, "Error: %s\n", error->message);
+      }
+      if (ret_sink)
+      {
+        gegl_node_process (ret_sink);
+        exit(0);
       }
       if (o->serialize)
       {

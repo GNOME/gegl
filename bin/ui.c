@@ -1321,7 +1321,8 @@ static void load_path (State *o)
   }
   if (o->ops)
   {
-    GError *error = NULL;
+    GeglNode *ret_sink = NULL;
+    GError *error = (void*)(&ret_sink);
 
     char *containing_path = get_path_parent (o->path);
     gegl_create_chain_argv (o->ops,
@@ -1333,6 +1334,11 @@ static void load_path (State *o)
     if (error)
     {
       fprintf (stderr, "Error: %s\n", error->message);
+    }
+    if (ret_sink)
+    {
+      gegl_node_process (ret_sink);
+      exit(0);
     }
 
     zoom_to_fit (o);
