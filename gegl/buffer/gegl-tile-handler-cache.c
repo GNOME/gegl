@@ -765,7 +765,7 @@ gegl_tile_handler_cache_remove_item (GeglTileHandlerCache *cache,
   g_slice_free (CacheItem, item);
 }
 
-static void
+void
 gegl_tile_handler_cache_remove (GeglTileHandlerCache *cache,
                                 gint                  x,
                                 gint                  y,

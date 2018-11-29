@@ -64,6 +64,10 @@ void              gegl_tile_handler_cache_insert             (GeglTileHandlerCac
                                                               gint                  x,
                                                               gint                  y,
                                                               gint                  z);
+void              gegl_tile_handler_cache_remove             (GeglTileHandlerCache *cache,
+                                                              gint                  x,
+                                                              gint                  y,
+                                                              gint                  z);
 void              gegl_tile_handler_cache_tile_uncloned      (GeglTileHandlerCache *cache,
                                                               GeglTile             *tile);
 
