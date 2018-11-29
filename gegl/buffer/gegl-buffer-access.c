@@ -2870,14 +2870,69 @@ gegl_buffer_set_pattern (GeglBuffer          *buffer,
   gegl_free (pattern_data);
 }
 
+typedef struct
+{
+  gconstpointer  pixel;
+  gint           bpp;
+
+  GeglTile      *tile;
+} SetColorFromPixelData;
+
+static void
+gegl_buffer_set_color_from_pixel_tile (GeglBuffer            *dst,
+                                       gint                   tile_x,
+                                       gint                   tile_y,
+                                       SetColorFromPixelData *data)
+{
+  GeglTile *tile;
+
+  if (! data->tile)
+    {
+      data->tile = gegl_tile_new (dst->tile_storage->tile_size);
+
+      gegl_tile_lock (data->tile);
+
+      gegl_memset_pattern (gegl_tile_get_data (data->tile),
+                           data->pixel,
+                           data->bpp,
+                           dst->tile_storage->tile_size / data->bpp);
+
+      gegl_tile_unlock (data->tile);
+    }
+
+  tile = gegl_tile_dup (data->tile);
+
+  gegl_tile_handler_cache_insert (dst->tile_storage->cache, tile,
+                                  tile_x, tile_y, 0);
+
+  gegl_tile_unref (tile);
+}
+
+static void
+gegl_buffer_set_color_from_pixel_rect (GeglBuffer            *dst,
+                                       const GeglRectangle   *dst_rect,
+                                       SetColorFromPixelData *data)
+{
+  GeglBufferIterator *i;
+
+  i = gegl_buffer_iterator_new (dst, dst_rect, 0, dst->soft_format,
+                                GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
+  while (gegl_buffer_iterator_next (i))
+    {
+      gegl_memset_pattern (i->items[0].data,
+                           data->pixel,
+                           data->bpp,
+                           i->length);
+    }
+}
+
 void
 gegl_buffer_set_color_from_pixel (GeglBuffer          *dst,
                                   const GeglRectangle *dst_rect,
                                   const uint8_t       *pixel,
                                   const Babl          *pixel_format)
 {
-  GeglBufferIterator *i;
-  gint                bpp;
+  SetColorFromPixelData data = {};
 
   g_return_if_fail (GEGL_IS_BUFFER (dst));
   g_return_if_fail (pixel);
@@ -2888,21 +2943,33 @@ gegl_buffer_set_color_from_pixel (GeglBuffer          *dst,
     {
       dst_rect = gegl_buffer_get_extent (dst);
     }
-  if (dst_rect->width == 0 ||
-      dst_rect->height == 0)
+  if (dst_rect->width <= 0 ||
+      dst_rect->height <= 0)
     return;
 
-  bpp = babl_format_get_bytes_per_pixel (pixel_format);
+  data.bpp = babl_format_get_bytes_per_pixel (dst->soft_format);
 
-  /* FIXME: this can be even further optimized by special casing it so
-   * that fully filled tiles are shared.
-   */
-  i = gegl_buffer_iterator_new (dst, dst_rect, 0, pixel_format,
-                                GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
-  while (gegl_buffer_iterator_next (i))
+  /* convert the pixel data to the buffer format */
+  if (pixel_format == dst->soft_format)
     {
-      gegl_memset_pattern (i->items[0].data, pixel, bpp, i->length);
+      data.pixel = pixel;
     }
+  else
+    {
+      data.pixel = g_alloca (data.bpp);
+
+      babl_process (babl_fish (pixel_format, dst->soft_format),
+                    pixel, (gpointer) data.pixel, 1);
+    }
+
+  gegl_buffer_foreach_tile (
+    dst, dst_rect,
+    (GeglBufferTileFunc) gegl_buffer_set_color_from_pixel_tile,
+    (GeglBufferRectFunc) gegl_buffer_set_color_from_pixel_rect,
+    &data);
+
+  if (data.tile)
+    gegl_tile_unref (data.tile);
 }
 
 GeglBuffer *
