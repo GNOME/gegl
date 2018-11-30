@@ -16,7 +16,6 @@
  * Copyright (C) 2018 Ell
  */
 
-#define GEGL_ITERATOR2_API
 #include "config.h"
 
 #include <stdio.h>

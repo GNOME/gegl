@@ -1,5 +1,3 @@
-#define GEGL_ITERATOR2_API
-
 
 TEST ()
 {

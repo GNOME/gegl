@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  */
-#define GEGL_ITERATOR2_API
 #include <gegl.h>
 
 typedef struct {
