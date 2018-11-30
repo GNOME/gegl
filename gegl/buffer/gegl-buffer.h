@@ -756,6 +756,19 @@ void     gegl_free                    (gpointer mem);
 gpointer gegl_calloc (gsize size, int n_memb) G_GNUC_MALLOC;
 
 /**
+ * gegl_memeq_zero: (skip)
+ * @ptr: pointer to the memory block
+ * @size: block size
+ *
+ * Checks if all the bytes of the memory block @ptr, of size @size,
+ * are equal to zero.
+ *
+ * Returns: TRUE if all the bytes are equal to zero.
+ */
+gboolean gegl_memeq_zero (gconstpointer ptr,
+                          gsize         size);
+
+/**
  * gegl_memset_pattern: (skip)
  * @dst_ptr: pointer to copy to
  * @src_ptr: pointer to copy from

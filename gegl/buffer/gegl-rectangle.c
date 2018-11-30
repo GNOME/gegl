@@ -304,6 +304,78 @@ gegl_free (gpointer buf)
   g_free ((gchar*)buf - *((guint8*)buf -1));
 }
 
+gboolean
+gegl_memeq_zero (gconstpointer ptr,
+                 gsize         size)
+{
+  const guint8 *p = ptr;
+
+  if (size >= 1 && (guintptr) p & 0x1)
+    {
+      if (*(const guint8 *) p)
+        return FALSE;
+
+      p    += 1;
+      size -= 1;
+    }
+
+  if (size >= 2 && (guintptr) p & 0x2)
+    {
+      if (*(const guint16 *) p)
+        return FALSE;
+
+      p    += 2;
+      size -= 2;
+    }
+
+  if (size >= 4 && (guintptr) p & 0x4)
+    {
+      if (*(const guint32 *) p)
+        return FALSE;
+
+      p    += 4;
+      size -= 4;
+    }
+
+  while (size >= 8)
+    {
+      if (*(const guint64 *) p)
+        return FALSE;
+
+      p    += 8;
+      size -= 8;
+    }
+
+  if (size >= 4)
+    {
+      if (*(const guint32 *) p)
+        return FALSE;
+
+      p    += 4;
+      size -= 4;
+    }
+
+  if (size >= 2)
+    {
+      if (*(const guint16 *) p)
+        return FALSE;
+
+      p    += 2;
+      size -= 2;
+    }
+
+  if (size >= 1)
+    {
+      if (*(const guint8 *) p)
+        return FALSE;
+
+      p    += 1;
+      size -= 1;
+    }
+
+  return TRUE;
+}
+
 void
 gegl_memset_pattern (void * restrict       dst_ptr,
                             const void * restrict src_ptr,
