@@ -49,7 +49,6 @@ property_boolean (black_point_compensation, _("Black point compensation"),
 
 #else
 
-#define GEGL_ITERATOR2_API
 
 #define GEGL_OP_FILTER
 #define GEGL_OP_NAME lcms_from_profile

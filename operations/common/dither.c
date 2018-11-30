@@ -16,7 +16,6 @@
  * Copyright 2008 Hans Petter Jansson <hpj@copyleft.no>
  *           2012 Øyvind Kolås <pippin@gimp.org>
  */
-#define GEGL_ITERATOR2_API
 
 #include "config.h"
 #include <glib/gi18n-lib.h>

@@ -37,7 +37,6 @@ property_int(directory, _("Directory"), 1)
 #define GEGL_OP_NAME     tiff_load
 #define GEGL_OP_C_SOURCE tiff-load.c
 
-#define GEGL_ITERATOR2_API
 
 #include <gegl-op.h>
 #include <gegl-gio-private.h>

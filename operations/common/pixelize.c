@@ -17,7 +17,6 @@
  * Copyright 2013 Téo Mazars   <teo.mazars@ensimag.fr>
  */
 
-#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 #include <math.h>

@@ -23,7 +23,6 @@
  *     We pick a pixel at random from the neighborhood of the current pixel.
  */
 
-#define GEGL_ITERATOR2_API
 #include "config.h"
 
 #include <glib/gi18n-lib.h>

@@ -21,7 +21,6 @@
 #include "config.h"
 #include <math.h>
 #include <glib/gi18n-lib.h>
-#define GEGL_ITERATOR2_API
 
 #ifdef GEGL_PROPERTIES
 

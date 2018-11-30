@@ -28,7 +28,6 @@
  *       rectangle. Right now it simply asks for the entire image...
  */
 
-#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 

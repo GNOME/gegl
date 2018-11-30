@@ -17,7 +17,6 @@
  */
 
 #include <math.h>
-#define GEGL_ITERATOR2_API
 
 
 #ifdef GEGL_PROPERTIES

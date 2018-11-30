@@ -17,7 +17,6 @@
  * Copyright (c) 1997 Eric L. Hernes (erich@rrnet.com), Stephen Norris
  */
 
-#define GEGL_ITERATOR2_API
 #include "config.h"
 #include <glib/gi18n-lib.h>
 #include <math.h>

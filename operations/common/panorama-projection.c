@@ -16,7 +16,6 @@
  * Copyright 2014, 2018 Øyvind Kolås <pippin@gimp.org>
  */
 
-#define GEGL_ITERATOR2_API
 #include <math.h>
 
 

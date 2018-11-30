@@ -25,7 +25,6 @@
  *      10% from above right.
  */
 
-#define GEGL_ITERATOR2_API
 #include "config.h"
 
 #include <glib/gi18n-lib.h>

@@ -17,7 +17,6 @@
  *
  */
 
-#define GEGL_ITERATOR2_API
 #ifdef GEGL_PROPERTIES
 
 property_enum (sampler_type, _("Resampling method"),

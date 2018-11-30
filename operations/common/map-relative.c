@@ -17,7 +17,6 @@
  *
  */
 
-#define GEGL_ITERATOR2_API
 #ifdef GEGL_PROPERTIES
 
 property_double (scaling, _("Scaling"), 1.0)
