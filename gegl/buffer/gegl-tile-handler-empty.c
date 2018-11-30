@@ -39,55 +39,6 @@ finalize (GObject *object)
 }
 
 static GeglTile *
-_new_empty_tile (const gint tile_size)
-{
-  static GeglTile   *common_tile = NULL;
-  static const gint  common_empty_size = sizeof (gdouble) * 4 * 128 * 128;
-
-  GeglTile *tile;
-
-  if (tile_size > common_empty_size)
-    {
-      /* The tile size is too big to use the shared buffer */
-      tile = gegl_tile_new (tile_size);
-
-      memset (gegl_tile_get_data (tile), 0x00, tile_size);
-      tile->is_zero_tile = TRUE;
-    }
-  else
-    {
-      if (!g_atomic_pointer_get (&common_tile) &&
-          g_once_init_enter (&common_tile))
-        {
-          GeglTile *allocated_tile = gegl_tile_new_bare ();
-          guchar *allocated_buffer = gegl_malloc (common_empty_size);
-          memset (allocated_buffer, 0x00, common_empty_size);
-
-          allocated_tile->data           = allocated_buffer;
-          allocated_tile->destroy_notify = NULL;
-          allocated_tile->size           = common_empty_size;
-          allocated_tile->is_zero_tile   = TRUE;
-          allocated_tile->is_global_tile = TRUE;
-
-          /* avoid counting duplicates of the empty tile towards the total
-           * cache size, both since this is unnecessary, and since they may
-           * have different sizes, which is inconsistent with the duplicate-
-           * tracking cache logic.
-           */
-          (*gegl_tile_n_cached_clones (allocated_tile))++;
-
-          g_once_init_leave (&common_tile, allocated_tile);
-        }
-
-      tile = gegl_tile_dup (common_tile);
-
-      tile->size = tile_size;
-    }
-
-  return tile;
-}
-
-static GeglTile *
 get_tile (GeglTileSource *gegl_tile_source,
           gint            x,
           gint            y,
@@ -105,7 +56,7 @@ get_tile (GeglTileSource *gegl_tile_source,
   if (!empty->tile)
     {
       gint tile_size = gegl_tile_backend_get_tile_size (empty->backend);
-      empty->tile    = _new_empty_tile (tile_size);
+      empty->tile    = gegl_tile_handler_empty_new_tile (tile_size);
     }
 
   tile = gegl_tile_handler_dup_tile (GEGL_TILE_HANDLER (empty),
@@ -156,4 +107,53 @@ gegl_tile_handler_empty_new (GeglTileBackend *backend)
   empty->tile    = NULL;
 
   return (void*)empty;
+}
+
+GeglTile *
+gegl_tile_handler_empty_new_tile (gint tile_size)
+{
+  static GeglTile   *common_tile = NULL;
+  static const gint  common_empty_size = sizeof (gdouble) * 4 * 128 * 128;
+
+  GeglTile *tile;
+
+  if (tile_size > common_empty_size)
+    {
+      /* The tile size is too big to use the shared buffer */
+      tile = gegl_tile_new (tile_size);
+
+      memset (gegl_tile_get_data (tile), 0x00, tile_size);
+      tile->is_zero_tile = TRUE;
+    }
+  else
+    {
+      if (!g_atomic_pointer_get (&common_tile) &&
+          g_once_init_enter (&common_tile))
+        {
+          GeglTile *allocated_tile = gegl_tile_new_bare ();
+          guchar *allocated_buffer = gegl_malloc (common_empty_size);
+          memset (allocated_buffer, 0x00, common_empty_size);
+
+          allocated_tile->data           = allocated_buffer;
+          allocated_tile->destroy_notify = NULL;
+          allocated_tile->size           = common_empty_size;
+          allocated_tile->is_zero_tile   = TRUE;
+          allocated_tile->is_global_tile = TRUE;
+
+          /* avoid counting duplicates of the empty tile towards the total
+           * cache size, both since this is unnecessary, and since they may
+           * have different sizes, which is inconsistent with the duplicate-
+           * tracking cache logic.
+           */
+          (*gegl_tile_n_cached_clones (allocated_tile))++;
+
+          g_once_init_leave (&common_tile, allocated_tile);
+        }
+
+      tile = gegl_tile_dup (common_tile);
+
+      tile->size = tile_size;
+    }
+
+  return tile;
 }

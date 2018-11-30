@@ -58,6 +58,8 @@ GType             gegl_tile_handler_empty_get_type (void) G_GNUC_CONST;
 
 GeglTileHandler * gegl_tile_handler_empty_new      (GeglTileBackend *backend);
 
+GeglTile        * gegl_tile_handler_empty_new_tile (gint tile_size);
+
 G_END_DECLS
 
 #endif

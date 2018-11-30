@@ -33,6 +33,7 @@
 #include "gegl-buffer.h"
 #include "gegl-buffer-private.h"
 #include "gegl-tile-storage.h"
+#include "gegl-tile-handler-empty.h"
 #include "gegl-sampler.h"
 #include "gegl-tile-backend.h"
 #include "gegl-buffer-iterator.h"
@@ -2880,26 +2881,40 @@ gegl_buffer_set_color_from_pixel_tile (GeglBuffer            *dst,
 {
   GeglTile *tile;
 
-  if (! data->tile)
+  if (data->tile)
     {
-      data->tile = gegl_tile_new (dst->tile_storage->tile_size);
-
-      gegl_tile_lock (data->tile);
-
-      gegl_memset_pattern (gegl_tile_get_data (data->tile),
-                           data->pixel,
-                           data->bpp,
-                           dst->tile_storage->tile_size / data->bpp);
-
-      gegl_tile_unlock (data->tile);
+      tile = gegl_tile_dup (data->tile);
     }
+  else
+    {
+      gint tile_size = dst->tile_storage->tile_size;
 
-  tile = gegl_tile_dup (data->tile);
+      if (gegl_memeq_zero (data->pixel, data->bpp))
+        {
+          tile = gegl_tile_handler_empty_new_tile (tile_size);
+        }
+      else
+        {
+          tile = gegl_tile_new (tile_size);
+
+          gegl_tile_lock (tile);
+
+          gegl_memset_pattern (gegl_tile_get_data (tile),
+                               data->pixel,
+                               data->bpp,
+                               tile_size / data->bpp);
+
+          gegl_tile_unlock (tile);
+        }
+    }
 
   gegl_tile_handler_cache_insert (dst->tile_storage->cache, tile,
                                   tile_x, tile_y, 0);
 
-  gegl_tile_unref (tile);
+  if (data->tile)
+    gegl_tile_unref (tile);
+  else
+    data->tile = tile;
 }
 
 static void
