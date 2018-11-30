@@ -14,7 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define GEGL_ITERATOR2_API
 #define main iconographer_main
 
 #include <gegl.h>
