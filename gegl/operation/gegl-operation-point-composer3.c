@@ -20,7 +20,6 @@
 #include "config.h"
 
 #include <glib-object.h>
-#define GEGL_ITERATOR2_API
 
 #include "gegl.h"
 #include "gegl-operation-point-composer3.h"

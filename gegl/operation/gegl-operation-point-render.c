@@ -21,7 +21,6 @@
 
 #include <glib-object.h>
 
-#define GEGL_ITERATOR2_API
 #include "gegl.h"
 #include "gegl-operation-point-render.h"
 #include "gegl-operation-context.h"
