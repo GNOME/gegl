@@ -512,8 +512,8 @@ gegl_tile_handler_cache_has_tile (GeglTileHandlerCache *cache,
 static gboolean
 gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 {
-
-  GList *link;
+  GList        *link;
+  static guint  counter;
 
   cache = NULL;
   link  = NULL;
@@ -574,6 +574,21 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
            */
           if (tile->ref_count > 1)
             continue;
+
+          /* a set of cloned tiles is only counted once toward the total cache
+           * size, so the entire set has to be removed from the cache in order
+           * to reclaim the memory of a single tile.  in other words, in a set
+           * of n cloned tiles, we can assume that each individual tile
+           * contributes only 1/n of its size to the total cache size.  on the
+           * other hand, storing a cloned tile is as expensive as storing an
+           * uncloned tile.  therefore, if the tile needs to be stored, we only
+           * remove it with a probability of 1/n.
+           */
+          if (gegl_tile_needs_store (tile) &&
+              counter++ % *gegl_tile_n_cached_clones (tile))
+            {
+              continue;
+            }
 
           break;
         }
