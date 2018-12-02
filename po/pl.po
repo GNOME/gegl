@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-11-15 20:15+0000\n"
-"PO-Revision-Date: 2018-11-18 13:15+0100\n"
+"POT-Creation-Date: 2018-11-29 13:22+0000\n"
+"PO-Revision-Date: 2018-12-02 12:10+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -28,11 +28,11 @@ msgstr ""
 msgid "Unable to read file: %s"
 msgstr "Nie można odczytać pliku: %s"
 
-#: bin/gegl.c:222
+#: bin/gegl.c:223
 msgid "Invalid graph, abort.\n"
 msgstr "Nieprawidłowy wykres, przerywanie.\n"
 
-#: bin/gegl.c:378 bin/gegl-options.c:135
+#: bin/gegl.c:386 bin/gegl-options.c:135
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Nieznany tryb GeglOption: %d"
@@ -218,6 +218,7 @@ msgstr "Najbliższy"
 #: gegl/buffer/gegl-buffer-enums.c:90 gegl/gegl-enums.c:119
 #: operations/common-gpl3+/bump-map.c:33 operations/common-gpl3+/sinus.c:63
 #: operations/common-gpl3+/spiral.c:26
+#: operations/workshop/connected-components.c:45
 msgid "Linear"
 msgstr "Liniowy"
 
@@ -315,60 +316,60 @@ msgstr "Liniowo odwrócone mnożenie, jeśli alfa"
 msgid "Perceptual-premultiplied-if-alpha"
 msgstr "Percepcyjnie odwrócone mnożenie, jeśli alfa"
 
-#: gegl/gegl-init.c:286
+#: gegl/gegl-init.c:212
 msgid "Where GEGL stores its swap"
 msgstr "Gdzie biblioteka GEGL przechowuje obszar wymiany"
 
-#: gegl/gegl-init.c:291
+#: gegl/gegl-init.c:217
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Ile pamięci (w przybliżeniu) do użycia do pamięci tymczasowej obrazów"
 
-#: gegl/gegl-init.c:296
+#: gegl/gegl-init.c:222
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Domyślny rozmiar kafla w GeglBuffer"
 
-#: gegl/gegl-init.c:301
+#: gegl/gegl-init.c:227
 msgid "The count of pixels to compute simultaneously"
 msgstr "Liczba pikseli do jednoczesnego obliczania"
 
-#: gegl/gegl-init.c:306
+#: gegl/gegl-init.c:232
 msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
 msgstr "Jakość wyświetlania, wartość między 0,0 (szybkie) a 1,0 (standardowe)"
 
-#: gegl/gegl-init.c:311
+#: gegl/gegl-init.c:237
 msgid "The number of concurrent processing threads to use"
 msgstr "Liczba jednocześnie używanych wątków przetwarzania"
 
-#: gegl/gegl-init.c:316
+#: gegl/gegl-init.c:242
 msgid "Disable OpenCL"
 msgstr "Wyłącza OpenCL"
 
-#: gegl/gegl-serialize.c:152
+#: gegl/gegl-serialize.c:162
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "nieobsługiwane dane ścieżki %s:%s\n"
 
-#: gegl/gegl-serialize.c:382
+#: gegl/gegl-serialize.c:392
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "nie odnaleziono działania „%s”, częściowo pasują: "
 
-#: gegl/gegl-serialize.c:411
+#: gegl/gegl-serialize.c:421
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s nie ma właściwości %s."
 
-#: gegl/gegl-serialize.c:417
+#: gegl/gegl-serialize.c:427
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s nie ma właściwości %s, właściwości: "
 
-#: gegl/gegl-serialize.c:512
+#: gegl/gegl-serialize.c:522
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat „%s” nie istnieje."
 
-#: gegl/gegl-serialize.c:645
+#: gegl/gegl-serialize.c:662
 #, c-format
 msgid "No such op '%s'"
 msgstr "Nie ma działania „%s”"
@@ -1258,6 +1259,7 @@ msgid "Invert the extracted component"
 msgstr "Odwrócenie wydobytej składowej"
 
 #: operations/common/component-extract.c:56
+#: operations/workshop/connected-components.c:46
 msgid "Linear output"
 msgstr "Wyjście liniowe"
 
@@ -1429,6 +1431,7 @@ msgstr "Kanał alfa"
 
 #: operations/common/convolution-matrix.c:64
 #: operations/common-cxx/distance-transform.cc:46
+#: operations/workshop/connected-components.c:42
 msgid "Normalize"
 msgstr "Normalizuj"
 
@@ -1804,12 +1807,14 @@ msgstr "Sposób dyskretyzacji jądra Gaussa"
 #: operations/common/median-blur.c:56 operations/common-gpl3+/displace.c:44
 #: operations/common-gpl3+/fractal-trace.c:67
 #: operations/common-gpl3+/ripple.c:57 operations/transform/scale.c:102
+#: operations/workshop/voronoi-diagram.cc:38
 msgid "Abyss policy"
 msgstr "Polityka głębi"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
 #: operations/common/median-blur.c:58 operations/common-gpl3+/displace.c:47
 #: operations/common-gpl3+/ripple.c:60 operations/transform/scale.c:103
+#: operations/workshop/voronoi-diagram.cc:41
 msgid "How image edges are handled"
 msgstr "Sposób obsługi krawędzi obrazu"
 
@@ -1825,7 +1830,7 @@ msgstr "Czy kadrować obszar wyjściowy do obszaru wejściowego"
 msgid "Gaussian Blur"
 msgstr "Rozmycie Gaussa"
 
-#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1376
+#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1393
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -1847,7 +1852,7 @@ msgstr "Ułożenie"
 msgid "The orientation of the blur - hor/ver"
 msgstr "Orientacja rozmycia — pionowa/pozioma"
 
-#: operations/common/gblur-1d.c:1373
+#: operations/common/gblur-1d.c:1390
 msgid "1D Gaussian-blur"
 msgstr "Jednowymiarowe rozmycie Gaussa"
 
@@ -1862,7 +1867,7 @@ msgstr "Jednowymiarowe rozmycie Gaussa"
 #: operations/external/png-load.c:27 operations/external/png-save.c:26
 #: operations/external/ppm-load.c:25 operations/external/ppm-save.c:25
 #: operations/external/rgbe-load.c:26 operations/external/rgbe-save.c:26
-#: operations/external/svg-load.c:25 operations/external/tiff-load.c:25
+#: operations/external/svg-load.c:25 operations/external/tiff-load.c:24
 #: operations/external/tiff-save.c:25 operations/external/webp-load.c:25
 #: operations/external/webp-save.c:25 operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
@@ -2111,6 +2116,8 @@ msgstr ""
 "obrazu."
 
 #: operations/common/invert-linear.c:74 operations/common-gpl3+/bump-map.c:45
+#: operations/workshop/connected-components.c:29
+#: operations/workshop/voronoi-diagram.cc:32
 msgid "Invert"
 msgstr "Odwracanie"
 
@@ -3916,22 +3923,26 @@ msgstr "flaga"
 msgid "Pointer to flag value for unlabelled pixels"
 msgstr "Wskaźnik do wartości flagi dla pikseli bez etykiety"
 
-#: operations/common/watershed-transform.c:488
+#: operations/common/watershed-transform.c:490
 msgid "Watershed Transform"
 msgstr "Przekształcenie działu wodnego"
 
-#: operations/common/watershed-transform.c:491
+#: operations/common/watershed-transform.c:493
 msgid ""
 "Labels propagation by watershed transformation. Output buffer will keep the "
 "input format. Unlabelled pixels are marked with a given flag value (by "
-"default: last component with NULL value). The mandatory aux buffer is a \"Y "
-"u8\" image representing the priority levels."
+"default: last component with NULL value). The aux buffer is a \"Y u8\" image "
+"representing the priority levels (lower value is higher priority). If aux is "
+"absent, all labellized pixels have the same priority and propagated labels "
+"have a lower priority."
 msgstr ""
 "Rozprowadzanie etykiet według przekształcenia działu wodnego. Bufor "
 "wyjściowy będzie miał format wejścia. Piksele bez etykiet są oznaczone "
 "podaną wartością flagi (domyślnie: ostatnia składowa z wartością NULL). "
-"Obowiązkowy dodatkowy bufor to obraz „Y u8” reprezentujący poziomy "
-"priorytetów."
+"Dodatkowy bufor to obraz „Y u8” reprezentujący poziomy priorytetów (niższa "
+"wartość to wyższy priorytet). Jeśli dodatkowy bufor jest nieobecny, to "
+"wszystkie piksele z etykietami mają ten sam priorytet, a rozprowadzane "
+"etykiety mają niższy priorytet."
 
 #: operations/common/wavelet-blur-1d.c:29 operations/common/wavelet-blur.c:28
 msgid "Radius of the wavelet blur"
@@ -3973,10 +3984,12 @@ msgstr ""
 "GEGL."
 
 #: operations/common-cxx/distance-transform.cc:30
+#: operations/workshop/voronoi-diagram.cc:24
 msgid "Metric"
 msgstr "Metryczne"
 
 #: operations/common-cxx/distance-transform.cc:32
+#: operations/workshop/voronoi-diagram.cc:27
 msgid "Metric to use for the distance calculation"
 msgstr "Metryczne do obliczenia odległości"
 
@@ -5638,6 +5651,7 @@ msgid "Spiral radius"
 msgstr "Promień spirali"
 
 #: operations/common-gpl3+/spiral.c:53
+#: operations/workshop/connected-components.c:32
 msgid "Base"
 msgstr "Podstawa"
 
@@ -6279,7 +6293,7 @@ msgstr "Kadruj bufor"
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/png-load.c:29
 #: operations/external/ppm-load.c:27 operations/external/svg-load.c:27
-#: operations/external/tiff-load.c:27 operations/external/webp-load.c:27
+#: operations/external/tiff-load.c:26 operations/external/webp-load.c:27
 msgid "URI"
 msgstr "Adres URI"
 
@@ -6518,7 +6532,7 @@ msgstr "Odpływ wyjścia wideo biblioteki FFmpeg"
 
 #: operations/external/gif-load.c:35 operations/external/jp2-load.c:26
 #: operations/external/jpg-load.c:25 operations/external/svg-load.c:26
-#: operations/external/tiff-load.c:26 operations/external/webp-load.c:26
+#: operations/external/tiff-load.c:25 operations/external/webp-load.c:26
 msgid "Path of file to load"
 msgstr "Ścieżka do wczytywanego pliku"
 
@@ -6551,7 +6565,7 @@ msgid "GIF image loader."
 msgstr "Wczytywanie obrazów GIF."
 
 #: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
-#: operations/external/tiff-load.c:28 operations/external/webp-load.c:28
+#: operations/external/tiff-load.c:27 operations/external/webp-load.c:28
 msgid "URI for file to load"
 msgstr "Adres URI wczytywanego pliku"
 
@@ -6623,11 +6637,11 @@ msgstr "Wczytywanie obrazów JPEG 2000 za pomocą biblioteki jasper."
 msgid "URI of file to load"
 msgstr "Adres URI wczytywanego pliku"
 
-#: operations/external/jpg-load.c:397
+#: operations/external/jpg-load.c:390
 msgid "JPEG File Loader"
 msgstr "Wczytywanie plików JPEG"
 
-#: operations/external/jpg-load.c:399
+#: operations/external/jpg-load.c:392
 msgid "JPEG image loader using libjpeg"
 msgstr "Wczytywanie obrazów JPEG za pomocą biblioteki libjpeg"
 
@@ -6677,11 +6691,11 @@ msgstr "Odcienie szarości"
 msgid "Create a grayscale (monochrome) image"
 msgstr "Obraz w odcieniach szarości (monochromatyczny)"
 
-#: operations/external/jpg-save.c:396
+#: operations/external/jpg-save.c:413
 msgid "JPEG File Saver"
 msgstr "Zapisywanie plików JPEG"
 
-#: operations/external/jpg-save.c:398
+#: operations/external/jpg-save.c:415
 msgid "JPEG image saver, using libjpeg"
 msgstr "Zapisywanie obrazów JPEG za pomocą biblioteki libjpeg"
 
@@ -6966,6 +6980,7 @@ msgid "PNG compression level from 1 to 9"
 msgstr "Poziom kompresji PNG od 1 do 9"
 
 #: operations/external/png-save.c:31 operations/external/ppm-save.c:29
+#: operations/external/tiff-save.c:27
 msgid "Bitdepth"
 msgstr "Głębia bitowa"
 
@@ -6973,11 +6988,11 @@ msgstr "Głębia bitowa"
 msgid "8 and 16 are the currently accepted values."
 msgstr "Obecnie przyjmowane są wartości 8 i 16."
 
-#: operations/external/png-save.c:310
+#: operations/external/png-save.c:312
 msgid "PNG File Saver"
 msgstr "Zapisywanie plików PNG"
 
-#: operations/external/png-save.c:312
+#: operations/external/png-save.c:314
 msgid "PNG image saver, using libpng"
 msgstr "Zapisywanie obrazów PNG za pomocą biblioteki libpng"
 
@@ -7190,27 +7205,42 @@ msgstr "Renderuj tekst"
 msgid "Display a string of text using pango and cairo."
 msgstr "Wyświetl ciąg tekstowy za pomocą bibliotek Pango i cairo."
 
-#: operations/external/tiff-load.c:30
+#: operations/external/tiff-load.c:29
 msgid "Directory"
 msgstr "Katalog"
 
-#: operations/external/tiff-load.c:31
+#: operations/external/tiff-load.c:30
 msgid "Image file directory (subfile)"
 msgstr "Katalog pliku obrazu (podplik)"
 
-#: operations/external/tiff-load.c:889
+#: operations/external/tiff-load.c:916
 msgid "TIFF File Loader"
 msgstr "Wczytywanie plików TIFF"
 
-#: operations/external/tiff-load.c:891
+#: operations/external/tiff-load.c:918
 msgid "TIFF image loader using libtiff"
 msgstr "Wczytywanie obrazów TIFF za pomocą biblioteki libtiff"
 
-#: operations/external/tiff-save.c:623
+#: operations/external/tiff-save.c:28
+msgid "-1, 8, 16, 32 and 64 are the currently accepted values, -1 means auto"
+msgstr ""
+"Obecnie przyjmowane są wartości -1, 8, 16, 32 i 64, -1 oznacza automatycznie"
+
+#: operations/external/tiff-save.c:30
+msgid "use floating point"
+msgstr "użycie liczb zmiennoprzecinkowych"
+
+#: operations/external/tiff-save.c:31
+msgid "floating point -1 means auto, 0 means integer 1 meant float."
+msgstr ""
+"liczba zmiennoprzecinkowa -1 oznacza automatycznie, 0 oznacza liczby "
+"całkowite, 1 oznacza liczby zmiennoprzecinkowe"
+
+#: operations/external/tiff-save.c:707
 msgid "TIFF File Saver"
 msgstr "Zapisywanie plików TIFF"
 
-#: operations/external/tiff-save.c:625
+#: operations/external/tiff-save.c:709
 msgid "TIFF image saver using libtiff"
 msgstr "Zapisywanie obrazów TIFF za pomocą biblioteki libtiff"
 
@@ -7872,6 +7902,46 @@ msgstr ""
 "Szybkie przybliżenie filtru dwustronnego, używające filtrowania "
 "prostopadłościennego zamiast rozmycia Gaussa."
 
+#: operations/workshop/connected-components.c:26
+msgid "Separator"
+msgstr "Separator"
+
+#: operations/workshop/connected-components.c:27
+msgid "Component separator color"
+msgstr "Kolor separatora składowej"
+
+#: operations/workshop/connected-components.c:30
+msgid "Invert the separator region"
+msgstr "Odwrócenie regionu separatora"
+
+#: operations/workshop/connected-components.c:33
+msgid "Base index"
+msgstr "Indeks podstawy"
+
+#: operations/workshop/connected-components.c:37
+msgid "Step"
+msgstr "Krok"
+
+#: operations/workshop/connected-components.c:38
+msgid "Index step"
+msgstr "Krok indeksu"
+
+#: operations/workshop/connected-components.c:43
+msgid "Normalize output to the range [base,base + step]"
+msgstr "Normalizacja wyjścia do zakresu [podstawa,podstawa + krok]"
+
+#: operations/workshop/connected-components.c:285
+msgid "Connected Components"
+msgstr "Połączone składowe"
+
+#: operations/workshop/connected-components.c:292
+msgid ""
+"Fills each connected region of the input, separated from the rest of the "
+"input by a given color, with a unique color."
+msgstr ""
+"Wypełnia unikalnym kolorem każdy połączony region wyjścia, oddzielony od "
+"reszty wejścia podanym kolorem."
+
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
 msgid "Bayer pattern"
@@ -8497,3 +8567,31 @@ msgstr "Wybiórcza barwa-nasycenie"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Wybiórczo dostosuj barwę, nasycenie i jasność"
+
+#: operations/workshop/voronoi-diagram.cc:29
+msgid "Mask"
+msgstr "Maska"
+
+#: operations/workshop/voronoi-diagram.cc:30
+msgid "Unseeded region color"
+msgstr "Kolor regionu nieziarnowanego"
+
+#: operations/workshop/voronoi-diagram.cc:33
+msgid "Invert mask"
+msgstr "Odwracanie maski"
+
+#: operations/workshop/voronoi-diagram.cc:35
+msgid "Seed edges"
+msgstr "Ziarnowanie krawędzi"
+
+#: operations/workshop/voronoi-diagram.cc:36
+msgid "Whether the image edges are also seeded"
+msgstr "Czy krawędzie obrazu są także ziarnowane"
+
+#: operations/workshop/voronoi-diagram.cc:524
+msgid "Voronoi Diagram"
+msgstr "Diagram Woronoja"
+
+#: operations/workshop/voronoi-diagram.cc:531
+msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
+msgstr "Maluje każdy nieziarnowany piksel kolorem najbliższego piksela ziarna."
