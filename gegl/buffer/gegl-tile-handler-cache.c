@@ -815,6 +815,7 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
                                 gint                  z)
 {
   CacheItem *item = g_slice_new (CacheItem);
+  guintptr   total;
 
   item->tile      = gegl_tile_ref (tile);
   item->link.data = item;
@@ -837,12 +838,15 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
   cache->time = ++cache_time;
 
   if (g_atomic_int_add (gegl_tile_n_cached_clones (tile), 1) == 0)
-    g_atomic_pointer_add (&cache_total, tile->size);
+    total = g_atomic_pointer_add (&cache_total, tile->size) + tile->size;
+  else
+    total = (guintptr) g_atomic_pointer_get (&cache_total);
   g_atomic_pointer_add (&cache_total_uncloned, tile->size);
   g_hash_table_insert (cache->items, item, item);
   g_queue_push_head_link (&cache->queue, &item->link);
 
-  gegl_tile_handler_cache_trim (cache);
+  if (total > gegl_buffer_config ()->tile_cache_size)
+    gegl_tile_handler_cache_trim (cache);
 
   /* there's a race between this assignment, and the one at the bottom of
    * gegl_tile_handler_cache_tile_uncloned().  this is acceptable, though,
