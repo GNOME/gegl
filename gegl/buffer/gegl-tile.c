@@ -383,6 +383,14 @@ gegl_tile_is_stored (GeglTile *tile)
   return tile->stored_rev == tile->rev;
 }
 
+gboolean
+gegl_tile_needs_store (GeglTile *tile)
+{
+  return tile->tile_storage           &&
+         ! gegl_tile_is_stored (tile) &&
+         ! tile->damage;
+}
+
 void
 gegl_tile_void (GeglTile *tile)
 {
@@ -418,7 +426,7 @@ gboolean gegl_tile_store (GeglTile *tile)
   gboolean ret;
   if (gegl_tile_is_stored (tile))
     return TRUE;
-  if (tile->tile_storage == NULL || tile->damage)
+  else if (! gegl_tile_needs_store (tile))
     return FALSE;
 
   g_rec_mutex_lock (&tile->tile_storage->mutex);
@@ -426,7 +434,7 @@ gboolean gegl_tile_store (GeglTile *tile)
   if (gegl_tile_is_stored (tile))
     {
       g_rec_mutex_unlock (&tile->tile_storage->mutex);
-      return FALSE;
+      return TRUE;
     }
 
   ret = gegl_tile_source_set_tile (GEGL_TILE_SOURCE (tile->tile_storage),

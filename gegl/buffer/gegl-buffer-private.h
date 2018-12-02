@@ -187,6 +187,7 @@ struct _GeglTile
   gpointer         unlock_notify_data;
 };
 
+gboolean gegl_tile_needs_store    (GeglTile *tile);
 void     gegl_tile_unlock_no_void (GeglTile *tile);
 gboolean gegl_tile_damage         (GeglTile *tile,
                                    guint64   damage);
