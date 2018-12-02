@@ -41,7 +41,7 @@ struct _GeglColorPrivate
 
   union
   {
-    guint8  pixel[32];
+    guint8  pixel[40];
     gdouble alignment;
   };
 };
@@ -289,6 +289,13 @@ gegl_color_set_pixel (GeglColor   *color,
                 pixel, color->priv->pixel, 1);
 }
 
+const Babl *
+gegl_color_get_format (GeglColor *color)
+{
+  g_return_val_if_fail (GEGL_IS_COLOR (color), NULL);
+  return color->priv->format;
+}
+
 void
 gegl_color_get_pixel (GeglColor   *color,
                       const Babl  *format,
@@ -343,8 +350,9 @@ gegl_color_set_from_string (GeglColor   *self,
   GTokenType        token_type;
   GTokenValue       token_value;
   gboolean          color_parsing_successfull;
-  float rgba[4] = {0.0, 0.0, 0.0, 1.0};
+  float cmyka[5] = {0.0, 0.0, 0.0, 1.0, 1.0};
   const Babl *format = gegl_babl_rgba_float ();
+  float *rgba=&cmyka[0];
 
   scanner                               = g_scanner_new (NULL);
   scanner->config->cpair_comment_single = "";
@@ -354,6 +362,23 @@ gegl_color_set_from_string (GeglColor   *self,
   token_value = g_scanner_cur_value (scanner);
 
   if (token_type == G_TOKEN_IDENTIFIER &&
+      g_ascii_strcasecmp (token_value.v_identifier, "cmyk") == 0)
+    {
+      color_parsing_successfull = parse_float_argument_list (cmyka, scanner, 4);
+      for (int i = 0; i<4;i++)
+        cmyka[i] /= 100.0;
+
+      format = babl_format ("CMYK float");
+    }
+  else if (token_type == G_TOKEN_IDENTIFIER &&
+      g_ascii_strcasecmp (token_value.v_identifier, "cmyka") == 0)
+    {
+      color_parsing_successfull = parse_float_argument_list (cmyka, scanner, 5);
+      for (int i = 0; i<4;i++)
+        cmyka[i] /= 100.0;
+      format = babl_format ("CMYKA float");
+    }
+  else if (token_type == G_TOKEN_IDENTIFIER &&
       g_ascii_strcasecmp (token_value.v_identifier, "rgb") == 0)
     {
       color_parsing_successfull = parse_float_argument_list (rgba, scanner, 3);
@@ -381,9 +406,9 @@ gegl_color_set_from_string (GeglColor   *self,
 
   if (color_parsing_successfull)
     {
-      gegl_color_set_pixel(self, format, rgba);
+      gegl_color_set_pixel(self, format, cmyka);
     }
-  else 
+  else
     {
       gegl_color_set_pixel(self,
                            gegl_babl_rgba_linear_float (),

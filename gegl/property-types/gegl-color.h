@@ -193,6 +193,17 @@ GParamSpec * gegl_param_spec_color_from_string (const gchar *name,
 GeglColor *
 gegl_param_spec_color_get_default (GParamSpec *self);
 
+
+/**
+ * gegl_color_get_format;
+ * @self: a #GeglColor
+ *
+ * Return: (transfer none): the pixel format encoding of the set color.
+ */
+const Babl *
+gegl_color_get_format (GeglColor *color);
+
+
 G_END_DECLS
 
 #endif /* __GEGL_COLOR_H__ */
