@@ -939,7 +939,7 @@ GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format)
 {
   const Babl *comp_type = babl_format_get_type (format, 0);
   const Babl *model     = babl_format_get_model (format);
-  BablModelFlag model_flags = babl_model_get_flags (model);
+  BablModelFlag model_flags = babl_get_model_flags (model);
   
   if ((model_flags & BABL_MODEL_FLAG_LINEAR)||
       (model_flags & BABL_MODEL_FLAG_CMYK))
@@ -1075,7 +1075,7 @@ void gegl_resample_boxfilter (guchar              *dest_buf,
   const Babl *model     = babl_format_get_model (format);
   const Babl *comp_type  = babl_format_get_type (format, 0);
   const gint bpp = babl_format_get_bytes_per_pixel (format);
-  BablModelFlag model_flags = babl_model_get_flags (model);
+  BablModelFlag model_flags = babl_get_model_flags (model);
 
   if ((model_flags & BABL_MODEL_FLAG_LINEAR)||
       (model_flags & BABL_MODEL_FLAG_CMYK))
@@ -1184,7 +1184,7 @@ void gegl_resample_bilinear (guchar              *dest_buf,
 {
   const Babl *model     = babl_format_get_model (format);
   const Babl *comp_type  = babl_format_get_type (format, 0);
-  BablModelFlag model_flags = babl_model_get_flags (model);
+  BablModelFlag model_flags = babl_get_model_flags (model);
 
   if ((model_flags & BABL_MODEL_FLAG_LINEAR)||
       (model_flags & BABL_MODEL_FLAG_CMYK))
