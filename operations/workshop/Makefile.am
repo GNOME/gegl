@@ -17,6 +17,7 @@ ops = \
 	ditto.la \
 	domain-transform.la \
 	gradient-map.la \
+	gcr.la \
 	hstack.la \
 	enlarge.la \
 	aces-rrt.la \
