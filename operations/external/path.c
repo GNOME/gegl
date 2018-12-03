@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2006, 2018 Øyvind Kolås <pippin@gimp.org>
  */
 
 
@@ -216,20 +216,22 @@ gegl_path_stamp (GeglBuffer *buffer,
                  GeglColor  *color,
                  gdouble     opacity)
 {
-  gfloat col[4];
+  gfloat col[5];
   StampStatic s = {FALSE,}; /* there should be a cache of stamps,
                                note that stamps are accessed in multiple threads
                              */
-
   GeglRectangle temp;
   GeglRectangle roi;
+  const Babl *format = gegl_color_get_format (color);
+  BablModelFlag model_flags = babl_get_model_flags (format);
+  int is_cmyk = model_flags & BABL_MODEL_FLAG_CMYK ? 1 : 0;
 
   roi.x = floor(x-radius);
   roi.y = floor(y-radius);
   roi.width = ceil (x+radius) - floor (x-radius);
   roi.height = ceil (y+radius) - floor (y-radius);
 
-  gegl_color_get_pixel (color, babl_format ("RGBA float"), col);
+  gegl_color_get_pixel (color, babl_format (is_cmyk?"cmykA float":"RGBA float"), col);
 
   /* bail out if we wouldn't leave a mark on the buffer */
   if (!gegl_rectangle_intersect (&temp, &roi, clip_rect))
@@ -238,7 +240,7 @@ gegl_path_stamp (GeglBuffer *buffer,
     }
 
   if (s.format == NULL)
-    s.format = babl_format ("RaGaBaA float");
+    s.format = babl_format (is_cmyk?"camayakaA float":"RaGaBaA float");
 
   if (s.buf == NULL ||
       s.radius != radius)
@@ -246,7 +248,7 @@ gegl_path_stamp (GeglBuffer *buffer,
       g_free (s.buf);
       /* allocate a little bit more, just in case due to rounding errors and
        * such */
-      s.buf = g_malloc (4*4* (roi.width + 2 ) * (roi.height + 2));
+      s.buf = g_malloc (4*5* (roi.width + 2 ) * (roi.height + 2));
       s.radius = radius;
       s.valid = TRUE;
     }
@@ -257,6 +259,7 @@ gegl_path_stamp (GeglBuffer *buffer,
   {
     gint u, v;
     gint i=0;
+    gint components = is_cmyk ? 5 : 4;
 
     gfloat radius_squared = radius * radius;
     gfloat inner_radius_squared = (radius * hardness)*(radius * hardness);
@@ -270,10 +273,10 @@ gegl_path_stamp (GeglBuffer *buffer,
           gfloat o = (u-x) * (u-x) + vy2;
 
           if (o < inner_radius_squared)
-             o = col[3];
+             o = col[components-1];
           else if (o < radius_squared)
             {
-              o = (1.0 - (o-inner_radius_squared) / (soft_range)) * col[3];
+              o = (1.0 - (o-inner_radius_squared) / (soft_range)) * col[components-1];
             }
           else
             {
@@ -283,8 +286,8 @@ gegl_path_stamp (GeglBuffer *buffer,
            {
              gint c;
              o = o*opacity;
-             for (c=0;c<4;c++)
-               s.buf[i*4+c] = (s.buf[i*4+c] * (1.0-o) + col[c] * o);
+             for (c=0;c<components;c++)
+               s.buf[i*components+c] = (s.buf[i*components+c] * (1.0-o) + col[c] * o);
            }
          i++;
         }
@@ -314,7 +317,20 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  gegl_operation_set_format (operation, "output", babl_format ("R'aG'aB'aA float"));
+
+  const Babl *fill_format = gegl_color_get_format (o->fill);
+  const Babl *stroke_format = gegl_color_get_format (o->stroke);
+  BablModelFlag model_flags = babl_get_model_flags (fill_format) |
+                              babl_get_model_flags (stroke_format);
+
+  if (model_flags & BABL_MODEL_FLAG_CMYK)
+  {
+    gegl_operation_set_format (operation, "output", babl_format ("camayakaA float"));
+  }
+  else
+  {
+    gegl_operation_set_format (operation, "output", babl_format ("R'aG'aB'aA float"));
+  }
   if (o->transform && o->transform[0] != '\0')
     {
       GeglMatrix3 matrix;
@@ -358,6 +374,11 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
+  const Babl *format =  gegl_operation_get_format (operation, "output");
+
+  int is_cmyk = babl_get_model_flags (format) & BABL_MODEL_FLAG_CMYK?1:0;
+
+  const Babl *formats[4]={NULL, NULL, NULL};
 
   if (input)
     {
@@ -369,13 +390,28 @@ process (GeglOperation       *operation,
       gegl_buffer_clear (output, result);
     }
 
+  if (is_cmyk)
+  {
+    formats[0]=babl_format ("cairo-ACYK32");
+    formats[1]=babl_format ("cairo-ACMK32");
+  }
+  else
+  {
+    formats[0]=babl_format ("cairo-ARGB32");
+  }
+
   if (o->fill_opacity > 0.0001 && o->fill)
     {
-      gdouble color[4] = {0, 0, 0, 0};
-      gegl_color_get_pixel (o->fill, babl_format ("R'G'B'A double"), color);
-      color[3] *= o->fill_opacity;
+      int alpha_no = is_cmyk ? 4 : 3;
+      gdouble color[5] = {0, 0, 0, 0, 0};
 
-      if (color[3] > 0.001)
+      if (is_cmyk)
+        gegl_color_get_pixel (o->fill, babl_format ("cmykA double"), color);
+      else
+        gegl_color_get_pixel (o->fill, babl_format ("R'G'B'A double"), color);
+      color[alpha_no] *= o->fill_opacity;
+
+      if (color[alpha_no] > 0.001)
         {
           static GMutex mutex = { 0, };
           cairo_t *cr;
@@ -383,7 +419,10 @@ process (GeglOperation       *operation,
           guchar *data;
 
           g_mutex_lock (&mutex);
-          data = gegl_buffer_linear_open (output, result, NULL, babl_format ("cairo-ARGB32"));
+
+          for (int i = 0; formats[i]; i++)
+          {
+          data = gegl_buffer_linear_open (output, result, NULL, formats[i]);
           surface = cairo_image_surface_create_for_data (data,
                                                          CAIRO_FORMAT_ARGB32,
                                                          result->width,
@@ -398,11 +437,25 @@ process (GeglOperation       *operation,
             }
 
           gegl_path_cairo_play (o->d, cr);
-          cairo_set_source_rgba (cr, color[0], color[1], color[2], color[3]);
+
+          switch (i + is_cmyk)
+          {
+            case 0:
+              cairo_set_source_rgba (cr, color[0], color[1], color[2], color[3]);
+              break;
+            case 1:
+              cairo_set_source_rgba (cr, color[0], color[2], color[3], color[4]);
+              break;
+            case 2:
+              cairo_set_source_rgba (cr, color[0], color[1], color[3], color[4]);
+              break;
+          }
           cairo_fill (cr);
 
-          g_mutex_unlock (&mutex);
           gegl_buffer_linear_close (output, data);
+          }
+
+          g_mutex_unlock (&mutex);
         }
     }
 
