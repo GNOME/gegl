@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2006, 2018 Øyvind Kolås <pippin@gimp.org>
  */
 
 
@@ -78,7 +78,17 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  gegl_operation_set_format (operation, "output", babl_format ("R'aG'aB'aA float"));
+  const Babl *color_format = gegl_color_get_format (o->color);
+  BablModelFlag model_flags = babl_get_model_flags (color_format);
+
+  if (model_flags & BABL_MODEL_FLAG_CMYK)
+  {
+    gegl_operation_set_format (operation, "output", babl_format ("camayakaA float"));
+  }
+  else
+  {
+    gegl_operation_set_format (operation, "output", babl_format ("R'aG'aB'aA float"));
+  }
 
   if (o->transform && o->transform[0] != '\0')
     {
@@ -124,7 +134,20 @@ process (GeglOperation       *operation,
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   gboolean need_fill = FALSE;
-  gdouble color[4] = {0, 0, 0, 0};
+  const Babl *format =  gegl_operation_get_format (operation, "output");
+  gdouble color[5] = {0, 0, 0, 0, 0};
+  const Babl *formats[4] = {NULL, NULL, NULL, NULL};
+  int is_cmyk = babl_get_model_flags (format) & BABL_MODEL_FLAG_CMYK ? 1 : 0;
+
+  if (is_cmyk)
+  {
+    formats[0]=babl_format ("cairo-ACYK32");
+    formats[1]=babl_format ("cairo-ACMK32");
+  }
+  else
+  {
+    formats[0]=babl_format ("cairo-ARGB32");
+  }
 
   if (input)
     {
@@ -135,43 +158,66 @@ process (GeglOperation       *operation,
       gegl_buffer_clear (output, result);
     }
 
-
   if (o->opacity > 0.0001 && o->color)
     {
-      gegl_color_get_pixel (o->color, babl_format ("R'G'B'A double"), color);
-      color[3] *= o->opacity;
-      if (color[3] > 0.001)
-        need_fill=TRUE;
+      if (is_cmyk)
+      {
+        gegl_color_get_pixel (o->color, babl_format ("cmykA double"), color);
+        color[4] *= o->opacity;
+        if (color[4] > 0.001)
+          need_fill=TRUE;
+      }
+      else
+      {
+        gegl_color_get_pixel (o->color, babl_format ("R'G'B'A double"), color);
+        color[3] *= o->opacity;
+        if (color[3] > 0.001)
+          need_fill=TRUE;
+      }
     }
 
   if (need_fill)
     {
       static GMutex mutex = { 0, };
-      cairo_t *cr;
-      cairo_surface_t *surface;
-      guchar *data;
 
       g_mutex_lock (&mutex);
-      data = gegl_buffer_linear_open (output, result, NULL, babl_format ("cairo-ARGB32"));
-      surface = cairo_image_surface_create_for_data (data,
+
+      for (int i = 0; formats[i]; i++)
+      {
+        guchar *data = gegl_buffer_linear_open (output, result, NULL,
+                                                formats[i]);
+        cairo_surface_t *surface = cairo_image_surface_create_for_data (data,
                                                      CAIRO_FORMAT_ARGB32,
                                                      result->width,
                                                      result->height,
                                                      result->width * 4);
-
-      cr = cairo_create (surface);
-      cairo_translate (cr, -result->x, -result->y);
-      if (g_str_equal (o->fill_rule, "evenodd"))
+        cairo_t *cr = cairo_create (surface);
+        cairo_translate (cr, -result->x, -result->y);
+        if (g_str_equal (o->fill_rule, "evenodd"))
           cairo_set_fill_rule (cr, CAIRO_FILL_RULE_EVEN_ODD);
 
-      gegl_path_cairo_play (o->d, cr);
-      cairo_set_source_rgba (cr, color[0], color[1], color[2], color[3]);
-      cairo_fill (cr);
-      cairo_destroy (cr);
+        gegl_path_cairo_play (o->d, cr);
 
-      gegl_buffer_linear_close (output, data);
+        switch (i+is_cmyk)
+        {
+          case 0:
+            cairo_set_source_rgba (cr, color[0], color[1], color[2], color[3]);
+            break;
+          case 1:
+            cairo_set_source_rgba (cr, color[0], color[2], color[3], color[4]);
+            break;
+          case 2:
+            cairo_set_source_rgba (cr, color[0], color[1], color[3], color[4]);
+            break;
+        }
+        cairo_fill (cr);
+        cairo_destroy (cr);
+
+        gegl_buffer_linear_close (output, data);
+      }
       g_mutex_unlock (&mutex);
     }
+
   return  TRUE;
 }
 
