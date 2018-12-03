@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2006,2018 Øyvind Kolås <pippin@gimp.org>
  */
 
 #include "config.h"
@@ -108,7 +108,8 @@ GEGL_DEFINE_DYNAMIC_OPERATION (GEGL_TYPE_OPERATION_SOURCE)
 static void text_layout_text (GeglOp        *self,
                               cairo_t       *cr,
                               gdouble        rowstride,
-                              GeglRectangle *bounds)
+                              GeglRectangle *bounds,
+                              int            component_set)
 {
   GeglProperties       *o = GEGL_PROPERTIES (self);
   PangoFontDescription *desc;
@@ -149,7 +150,20 @@ static void text_layout_text (GeglOp        *self,
 
   attrs = pango_attr_list_new ();
 
-  gegl_color_get_pixel (o->color, babl_format ("R'G'B'A u16"), color);
+  switch (component_set)
+  {
+    case 0:
+      gegl_color_get_pixel (o->color, babl_format ("R'G'B'A u16"), color);
+      break;
+    case 1:
+      gegl_color_get_pixel (o->color, babl_format ("cykA u16"), color);
+      break;
+    case 2:
+      gegl_color_get_pixel (o->color, babl_format ("cmkA u16"), color);
+      break;
+  }
+
+
   pango_attr_list_insert (
     attrs,
     pango_attr_foreground_new (color[0], color[1], color[2]));
@@ -207,26 +221,43 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglOp *self = GEGL_OP (operation);
+  const Babl *format =  gegl_operation_get_format (operation, "output");
+  const Babl *formats[4] = {NULL, NULL, NULL, NULL};
+  int is_cmyk = babl_get_model_flags (format) & BABL_MODEL_FLAG_CMYK ? 1 : 0;
 
-  guchar          *data = g_new0 (guchar, result->width * result->height * 4);
   cairo_t         *cr;
   cairo_surface_t *surface;
+  if (is_cmyk)
+  {
+    formats[0]=babl_format ("cairo-ACYK32");
+    formats[1]=babl_format ("cairo-ACMK32");
+  }
+  else
+  {
+    formats[0]=babl_format ("cairo-ARGB32");
+  }
 
-  surface = cairo_image_surface_create_for_data (data,
+  for (int i = 0; formats[i]; i++)
+  {
+    guchar *data;
+    data  = g_new0 (guchar, result->width * result->height * 4);
+
+    surface = cairo_image_surface_create_for_data (data,
                                                  CAIRO_FORMAT_ARGB32,
                                                  result->width,
                                                  result->height,
                                                  result->width * 4);
-  cr = cairo_create (surface);
-  cairo_translate (cr, -result->x, -result->y);
-  text_layout_text (self, cr, 0, NULL);
+    cr = cairo_create (surface);
+    cairo_translate (cr, -result->x, -result->y);
+    text_layout_text (self, cr, 0, NULL, i+is_cmyk);
 
-  gegl_buffer_set (output, result, 0, babl_format ("cairo-ARGB32"), data,
-                   GEGL_AUTO_ROWSTRIDE);
+    gegl_buffer_set (output, result, 0, formats[i], data,
+                     GEGL_AUTO_ROWSTRIDE);
 
-  cairo_destroy (cr);
-  cairo_surface_destroy (surface);
-  g_free (data);
+    cairo_destroy (cr);
+    cairo_surface_destroy (surface);
+    g_free (data);
+  }
 
   return  TRUE;
 }
@@ -261,7 +292,7 @@ get_bounding_box (GeglOperation *operation)
       cairo_surface_t *surface  = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
           1, 1);
       cr = cairo_create (surface);
-      text_layout_text (self, cr, 0, &extent->defined);
+      text_layout_text (self, cr, 0, &extent->defined, 0);
       cairo_destroy (cr);
       cairo_surface_destroy (surface);
 
@@ -277,12 +308,6 @@ get_bounding_box (GeglOperation *operation)
       /* store the measured size for later use */
       o->width  = extent->defined.width  - extent->defined.x;
       o->height = extent->defined.height - extent->defined.y;
-
-      /* XXX: this invalidation is *probably* unnecessary.  having
-       * get_bounding_box() cause an invalidation can be surprising,
-       * so disabling it for now.
-       */
-      /* gegl_operation_invalidate (operation, NULL, TRUE); */
     }
 
   if (status)
@@ -307,11 +332,24 @@ finalize (GObject *object)
 static void
 prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  const Babl *color_format = gegl_color_get_format (o->color);
+  BablModelFlag model_flags = babl_get_model_flags (color_format);
+
+  if (model_flags & BABL_MODEL_FLAG_CMYK)
+  {
+    gegl_operation_set_format (operation, "output",
+                               babl_format ("camayakaA u8"));
+  }
+  else
+  {
+    gegl_operation_set_format (operation, "output",
+                               babl_format ("RaGaBaA float"));
+  }
 }
 
 static const gchar *composition =
-    "<?xml version='1.0'             encoding='UTF-8'?>"
+    "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
     "<node operation='gegl:crop' width='200' height='200'/>"
     "<node operation='gegl:text'>"
