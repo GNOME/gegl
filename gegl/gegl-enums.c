@@ -123,6 +123,7 @@ gegl_babl_variant_get_type (void)
         { GEGL_BABL_VARIANT_PERCEPTUAL_PREMULTIPLIED, N_("Perceptual-premultiplied"), "perceptual-premultiplied"},
         { GEGL_BABL_VARIANT_LINEAR_PREMULTIPLIED_IF_ALPHA, N_("Linear-premultiplied-if-alpha"), "linear-premultiplied-if-alpha"},
         { GEGL_BABL_VARIANT_PERCEPTUAL_PREMULTIPLIED_IF_ALPHA, N_("Perceptual-premultiplied-if-alpha"), "perceptual-premultiplied-if-alpha"},
+        { GEGL_BABL_VARIANT_ALPHA, N_("add-alpha"), "add-alpha"},
         { 0, NULL, NULL }
       };
       gint i;

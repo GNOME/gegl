@@ -91,6 +91,8 @@ enum _GeglBablVariant
      /* Y YaA RGB RaGaBaA           */
   GEGL_BABL_VARIANT_PERCEPTUAL_PREMULTIPLIED_IF_ALPHA,
      /* Y~ Y~aA R~G~B~A R~aG~aB~aA       */
+  GEGL_BABL_VARIANT_ALPHA
+     /* add alpha if missing keep as premultiplied if already so  */
 };
 typedef enum _GeglBablVariant GeglBablVariant;
 

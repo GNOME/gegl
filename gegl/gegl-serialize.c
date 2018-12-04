@@ -108,7 +108,7 @@ gegl_create_chain_argv (char      **ops,
   if (error && *error)
   {
     GeglNode **an = (void*)error;
-    ret_sinkp = *an;
+    ret_sinkp = (void*)*an;
     *error = NULL;
   }
 

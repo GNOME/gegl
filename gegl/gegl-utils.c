@@ -327,6 +327,7 @@ static const Babl *gegl_babl_format_float (const Babl *format)
   space = babl_format_get_space (format);
   encoding  = babl_format_get_encoding (format);
 
+  {
   char *encdup = g_strdup (encoding);
   char *newenc;
   char *s = strrchr (encdup, ' ');
@@ -336,8 +337,49 @@ static const Babl *gegl_babl_format_float (const Babl *format)
 
   g_free (encdup);
   g_free (newenc);
+  }
   return format;
 }
+
+static const Babl *gegl_babl_format_alpha (const Babl *format)
+{
+  const Babl *model = babl_format_get_model (format);
+  if (babl_get_model_flags (model) & BABL_MODEL_FLAG_ALPHA)
+  {
+    const Babl *type = babl_format_get_type (format, 0);
+    if (type == babl_type ("float"))
+      return format;
+  }
+
+  if (babl_model_is (model, "Y'"))
+  {
+    return babl_format_with_space ("Y'A float", format);
+  }
+  else if (babl_model_is (model, "Y"))
+  {
+    return babl_format_with_space ("YA float", format);
+  }
+  else if (babl_model_is (model, "RGB"))
+  {
+    return babl_format_with_space ("RGBA float", format);
+  }
+  else if (babl_model_is (model, "R'G'B'"))
+  {
+    return babl_format_with_space ("R'G'B'A float", format);
+  }
+  else if (babl_model_is (model, "cmyk") ||
+      babl_model_is (model, "CMYK") ||
+      babl_model_is (model, "CMYKA") ||
+      babl_model_is (model, "cmykaA") ||
+      babl_model_is (model, "CaMaYaKaA") ||
+      babl_model_is (model, "camayakaA"))
+  {
+    return babl_format_with_space ("cmykA float", format);
+  }
+
+  return babl_format_with_space ("RGBA float", format);
+}
+
 
 static const Babl *gegl_babl_format_float_premultiplied_linear_if_alpha (const Babl *format)
 {
@@ -363,6 +405,8 @@ const Babl *gegl_babl_variant (const Babl *format, GeglBablVariant variant)
     return NULL;
   switch (variant)
   {
+    case GEGL_BABL_VARIANT_ALPHA:
+      return gegl_babl_format_alpha (format);
     case GEGL_BABL_VARIANT_FLOAT:
       return gegl_babl_format_float (format);
     case GEGL_BABL_VARIANT_LINEAR:
