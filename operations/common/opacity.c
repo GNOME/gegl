@@ -45,43 +45,9 @@ prepare (GeglOperation *self)
 {
   const Babl *space = gegl_operation_get_source_space (self, "input");
   const Babl *fmt = gegl_operation_get_source_format (self, "input");
-  GeglProperties *o = GEGL_PROPERTIES (self);
+  //GeglProperties *o = GEGL_PROPERTIES (self);
 
-  if (fmt)
-    {
-      const Babl *model = babl_format_get_model (fmt);
-
-      if (babl_model_is (model, "R'aG'aB'aA") ||
-          babl_model_is (model, "Y'aA"))
-        {
-          o->user_data = NULL;
-          fmt = babl_format_with_space ("R'aG'aB'aA float", space);
-        }
-      else if (babl_model_is (model, "RaGaBaA") ||
-               babl_model_is (model, "YaA"))
-        {
-          o->user_data = NULL;
-          fmt = babl_format_with_space ("RaGaBaA float", space);
-        }
-      else if (babl_model_is (model, "R'G'B'A") ||
-               babl_model_is (model, "R'G'B'")  ||
-               babl_model_is (model, "Y'")      ||
-               babl_model_is (model, "Y'A"))
-        {
-          o->user_data = (void*)0xabc;
-          fmt = babl_format_with_space ("R'G'B'A float", space);
-        }
-      else
-        {
-          o->user_data = (void*)0xabc;
-          fmt = babl_format_with_space ("RGBA float", space);
-        }
-    }
-  else
-    {
-      o->user_data = (void*)0xabc;
-      fmt = babl_format_with_space ("RGBA float", space);
-    }
+  fmt = gegl_babl_variant (fmt, GEGL_BABL_VARIANT_ALPHA);
 
   gegl_operation_set_format (self, "input", fmt);
   gegl_operation_set_format (self, "output", fmt);
@@ -91,13 +57,14 @@ prepare (GeglOperation *self)
 }
 
 static void
-process_RaGaBaAfloat (GeglOperation       *op,
+process_premultiplied_float (GeglOperation       *op,
                       void                *in_buf,
                       void                *aux_buf,
                       void                *out_buf,
                       glong                samples,
                       const GeglRectangle *roi,
-                      gint                 level)
+                      gint                 level,
+                      gint                 components)
 {
   gfloat *in = in_buf;
   gfloat *out = out_buf;
@@ -109,20 +76,20 @@ process_RaGaBaAfloat (GeglOperation       *op,
       while (samples--)
         {
           gint j;
-          for (j=0; j<4; j++)
+          for (j=0; j<components; j++)
             out[j] = in[j] * value;
-          in  += 4;
-          out += 4;
+          in  += components;
+          out += components;
         }
     }
   else if (fabsf (value - 1.0f) <= EPSILON)
     while (samples--)
       {
         gint j;
-        for (j=0; j<4; j++)
+        for (j=0; j<components; j++)
           out[j] = in[j] * (*aux);
-        in  += 4;
-        out += 4;
+        in  += components;
+        out += components;
         aux += 1;
       }
   else
@@ -130,26 +97,28 @@ process_RaGaBaAfloat (GeglOperation       *op,
       {
         gfloat v = (*aux) * value;
         gint j;
-        for (j=0; j<4; j++)
+        for (j=0; j<components; j++)
           out[j] = in[j] * v;
-        in  += 4;
-        out += 4;
+        in  += components;
+        out += components;
         aux += 1;
       }
 }
 
 static void
-process_RGBAfloat (GeglOperation       *op,
-                   void                *in_buf,
-                   void                *aux_buf,
-                   void                *out_buf,
-                   glong                samples,
-                   const GeglRectangle *roi,
-                   gint                 level)
+process_with_alpha_float (GeglOperation       *op,
+                          void                *in_buf,
+                          void                *aux_buf,
+                          void                *out_buf,
+                          glong                samples,
+                          const GeglRectangle *roi,
+                          gint                 level,
+                          gint                 components)
 {
   gfloat *in = in_buf;
   gfloat *out = out_buf;
   gfloat *aux = aux_buf;
+  gint ccomponents = components - 1;
   gfloat value = GEGL_PROPERTIES (op)->value;
 
   if (aux == NULL)
@@ -157,22 +126,22 @@ process_RGBAfloat (GeglOperation       *op,
       while (samples--)
         {
           gint j;
-          for (j=0; j<3; j++)
+          for (j=0; j<ccomponents; j++)
             out[j] = in[j];
-          out[3] = in[3] * value;
-          in  += 4;
-          out += 4;
+          out[ccomponents] = in[ccomponents] * value;
+          in  += components;
+          out += components;
         }
     }
   else if (fabsf (value - 1.0f) <= EPSILON)
     while (samples--)
       {
         gint j;
-        for (j=0; j<3; j++)
+        for (j=0; j<ccomponents; j++)
           out[j] = in[j];
-        out[3] = in[3] * (*aux);
-        in  += 4;
-        out += 4;
+        out[ccomponents] = in[ccomponents] * (*aux);
+        in  += components;
+        out += components;
         aux += 1;
       }
   else
@@ -180,11 +149,11 @@ process_RGBAfloat (GeglOperation       *op,
       {
         gfloat v = (*aux) * value;
         gint j;
-        for (j=0; j<3; j++)
+        for (j=0; j<ccomponents; j++)
           out[j] = in[j];
-        out[3] = in[3] * v;
-        in  += 4;
-        out += 4;
+        out[ccomponents] = in[ccomponents] * v;
+        in  += components;
+        out += components;
         aux += 1;
       }
 }
@@ -198,10 +167,13 @@ process (GeglOperation       *op,
          const GeglRectangle *roi,
          gint                 level)
 {
-  if (GEGL_PROPERTIES (op)->user_data != NULL)
-    process_RGBAfloat (op, in_buf, aux_buf, out_buf, samples, roi, level);
+  const Babl *format = gegl_operation_get_format (op, "output");
+  int components = babl_format_get_n_components (format);
+
+  if (babl_get_model_flags (format) & BABL_MODEL_FLAG_PREMULTIPLIED)
+    process_premultiplied_float (op, in_buf, aux_buf, out_buf, samples, roi, level, components);
   else
-    process_RaGaBaAfloat (op, in_buf, aux_buf, out_buf, samples, roi, level);
+    process_with_alpha_float (op, in_buf, aux_buf, out_buf, samples, roi, level, components);
 
   return TRUE;
 }
