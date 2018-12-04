@@ -1068,12 +1068,8 @@ gegl_gblur_1d_prepare (GeglOperation *operation)
           o->user_data = iir_young_blur_1D_generic;
         }
       else if (babl_model_is (model, "cmykA") ||
-               babl_model_is (model, "camayakaA"))
-        {
-          format = "CaMaYaKaA float";
-          o->user_data = iir_young_blur_1D_generic;
-        }
-      else if (babl_model_is (model, "CMYKA") ||
+               babl_model_is (model, "camayakaA") ||
+               babl_model_is (model, "CMYKA") ||
                babl_model_is (model, "CaMaYaKaA"))
         {
           format = "camayakaA float";
