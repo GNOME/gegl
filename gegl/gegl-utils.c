@@ -370,7 +370,7 @@ static const Babl *gegl_babl_format_alpha (const Babl *format)
   else if (babl_model_is (model, "cmyk") ||
       babl_model_is (model, "CMYK") ||
       babl_model_is (model, "CMYKA") ||
-      babl_model_is (model, "cmykaA") ||
+      babl_model_is (model, "cmykA") ||
       babl_model_is (model, "CaMaYaKaA") ||
       babl_model_is (model, "camayakaA"))
   {
