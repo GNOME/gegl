@@ -377,6 +377,7 @@ export_tiff (GeglOperation *operation,
   gshort color_space, compression = COMPRESSION_NONE;
   gushort bits_per_sample, samples_per_pixel;
   gboolean has_alpha, alpha_is_premultiplied = FALSE;
+  BablModelFlag model_flags;
   gushort sample_format, predictor = 0;
   gushort extra_types[1];
   glong rows_per_stripe = 1;
@@ -397,6 +398,7 @@ export_tiff (GeglOperation *operation,
   model = babl_format_get_model(format);
   space = babl_format_get_space (format);
   type = babl_format_get_type(format, 0);
+  model_flags = babl_get_model_flags (model);
 
   {
     int icc_len;
@@ -406,6 +408,24 @@ export_tiff (GeglOperation *operation,
       TIFFSetField (p->tiff, TIFFTAG_ICCPROFILE, icc_len, icc_profile);
   }
 
+  if (babl_space_is_cmyk (space))
+    {
+      color_space = PHOTOMETRIC_SEPARATED;
+      predictor = 2;
+      if (model_flags & BABL_MODEL_FLAG_ALPHA)
+      {
+        has_alpha = TRUE;
+        alpha_is_premultiplied = FALSE;
+        model = babl_model("CMYKA");
+        samples_per_pixel = 5;
+      }
+      else
+      {
+        has_alpha = FALSE;
+        model = babl_model("CMYK");
+        samples_per_pixel = 4;
+      }
+    }
   if (babl_model_is (model, "Y") || babl_model_is (model, "Y'"))
     {
       has_alpha = FALSE;
@@ -429,12 +449,17 @@ export_tiff (GeglOperation *operation,
       model = babl_model("Y'aA");
       samples_per_pixel = 2;
     }
-  else if (babl_model_is (model, "RGB") || babl_model_is (model, "R'G'B'"))
+  else if (babl_model_is (model, "cmykA") ||
+           babl_model_is (model, "CMYKA") ||
+           babl_model_is (model, "camayakaA")||
+           babl_model_is (model, "CaMaYaKaA") ||
+           babl_space_is_cmyk (space))
     {
-      has_alpha = FALSE;
-      color_space = PHOTOMETRIC_RGB;
-      model = babl_model("R'G'B'");
-      samples_per_pixel = 3;
+      has_alpha = TRUE;
+      alpha_is_premultiplied = FALSE;
+      color_space = PHOTOMETRIC_SEPARATED;
+      model = babl_model("CMYKA");
+      samples_per_pixel = 5;
       predictor = 2;
     }
   else if (babl_model_is (model, "cmyk") ||
@@ -446,16 +471,12 @@ export_tiff (GeglOperation *operation,
       samples_per_pixel = 4;
       predictor = 2;
     }
-  else if (babl_model_is (model, "cmykA") ||
-           babl_model_is (model, "CMYKA") ||
-           babl_model_is (model, "camayakaA")||
-           babl_model_is (model, "CaMaYaKaA"))
+  else if (babl_model_is (model, "RGB") || babl_model_is (model, "R'G'B'"))
     {
-      has_alpha = TRUE;
-      alpha_is_premultiplied = FALSE;
-      color_space = PHOTOMETRIC_SEPARATED;
-      model = babl_model("CMYKA");
-      samples_per_pixel = 5;
+      has_alpha = FALSE;
+      color_space = PHOTOMETRIC_RGB;
+      model = babl_model("R'G'B'");
+      samples_per_pixel = 3;
       predictor = 2;
     }
 #if 0
