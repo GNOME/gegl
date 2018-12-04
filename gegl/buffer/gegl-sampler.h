@@ -31,6 +31,18 @@ G_BEGIN_DECLS
 #define GEGL_IS_SAMPLER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GEGL_TYPE_SAMPLER))
 #define GEGL_SAMPLER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GEGL_TYPE_SAMPLER, GeglSamplerClass))
 
+/* empirically derived bound on limit, derived using fractal trace offsetting the mandelbrot to
+ * make it converge on infinity in loop mode.
+ */
+#define GEGL_BUFFER_MAX_COORDINATE 2000000000.0
+#define GEGL_BUFFER_VALID_COORDINATE(v) \
+         ((v)*(v) < GEGL_BUFFER_MAX_COORDINATE * GEGL_BUFFER_MAX_COORDINATE)
+#if 0
+         /* the above is equivalent to the following, but presumably faster */
+         ((v)>-GEGL_BUFFER_MAX_COORDINATE && (v)< GEGL_BUFFER_MAX_COORDINATE)
+#endif
+
+
 /*
  * This should be set to the largest number of mipmap levels (counted
  * starting at 0 = no box filtering) actually used by any sampler.
@@ -217,6 +229,8 @@ gegl_sampler_get_ptr (GeglSampler    *sampler,
   return (gfloat *) (buffer_ptr + sof);
 }
 
+#include <stdio.h>
+
 static inline gboolean
 _gegl_sampler_box_get (GeglSampler*    restrict  self,
                        const gdouble             absolute_x,
@@ -307,25 +321,29 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
 
               uv_samples_inv = u_samples_inv * v_samples_inv;
 
-              for (v = 0; v < v_samples; v++)
+              if (GEGL_BUFFER_VALID_COORDINATE(x0) &&
+                  GEGL_BUFFER_VALID_COORDINATE(y0))
                 {
-                  gdouble x = x0;
-                  gdouble y = y0;
-
-                  for (u = 0; u < u_samples; u++)
+                  for (v = 0; v < v_samples; v++)
                     {
-                      int c;
-                      gfloat input[channels];
-                      self->get (self, x, y, NULL, input, repeat_mode);
-                      for (c = 0; c < channels; c++)
-                        result[c] += input[c];
+                      gdouble x = x0;
+                      gdouble y = y0;
 
-                      x += u_dx;
-                      y += u_dy;
+                      for (u = 0; u < u_samples; u++)
+                        {
+                          int c;
+                          gfloat input[channels];
+                          self->get (self, x, y, NULL, input, repeat_mode);
+                          for (c = 0; c < channels; c++)
+                            result[c] += input[c];
+
+                          x += u_dx;
+                          y += u_dy;
+                        }
+
+                      x0 += v_dx;
+                      y0 += v_dy;
                     }
-
-                  x0 += v_dx;
-                  y0 += v_dy;
                 }
             }
 
