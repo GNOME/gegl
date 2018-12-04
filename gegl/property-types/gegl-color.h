@@ -196,7 +196,7 @@ gegl_param_spec_color_get_default (GParamSpec *self);
 
 /**
  * gegl_color_get_format:
- * @self: a #GeglColor
+ * @color: a #GeglColor
  *
  * Return: (transfer none): the pixel format encoding of the set color.
  */
