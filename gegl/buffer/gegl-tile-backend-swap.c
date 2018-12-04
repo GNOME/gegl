@@ -681,12 +681,11 @@ static SwapBlock *
 gegl_tile_backend_swap_block_ref (GeglTileBackendSwap *self,
                                   SwapBlock           *block)
 {
-  if (g_atomic_int_add (&block->ref_count, +1) == 1)
-    {
-      g_atomic_pointer_add (
-        &cloned_total,
-        +gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self)));
-    }
+  g_atomic_int_inc (&block->ref_count);
+
+  g_atomic_pointer_add (
+    &cloned_total,
+    +gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self)));
 
   return block;
 }
@@ -696,11 +695,7 @@ gegl_tile_backend_swap_block_unref (GeglTileBackendSwap *self,
                                     SwapBlock           *block,
                                     gboolean             lock)
 {
-  gint ref_count;
-
-  ref_count = g_atomic_int_add (&block->ref_count, -1) - 1;
-
-  if (ref_count == 0)
+  if (g_atomic_int_dec_and_test (&block->ref_count))
     {
       if (lock)
         g_mutex_lock (&queue_mutex);
@@ -753,7 +748,7 @@ gegl_tile_backend_swap_block_unref (GeglTileBackendSwap *self,
       if (lock)
         g_mutex_unlock (&queue_mutex);
     }
-  else if (ref_count == 1)
+  else
     {
       g_atomic_pointer_add (
         &cloned_total,
