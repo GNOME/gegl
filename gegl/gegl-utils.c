@@ -344,7 +344,8 @@ static const Babl *gegl_babl_format_float (const Babl *format)
 static const Babl *gegl_babl_format_alpha (const Babl *format)
 {
   const Babl *model = babl_format_get_model (format);
-  if (babl_get_model_flags (model) & BABL_MODEL_FLAG_ALPHA)
+  BablModelFlag model_flags = babl_get_model_flags (model);
+  if (model_flags & BABL_MODEL_FLAG_ALPHA)
   {
     const Babl *type = babl_format_get_type (format, 0);
     if (type == babl_type ("float"))
@@ -359,22 +360,41 @@ static const Babl *gegl_babl_format_alpha (const Babl *format)
   {
     return babl_format_with_space ("YA float", format);
   }
-  else if (babl_model_is (model, "RGB"))
+  else if (babl_model_is (model, "RGB")||
+           babl_model_is (model, "RGBA"))
   {
     return babl_format_with_space ("RGBA float", format);
   }
-  else if (babl_model_is (model, "R'G'B'"))
+  else if (babl_model_is (model, "RaGaBaA"))
+  {
+    return babl_format_with_space ("RaGaBaA float", format);
+  }
+  else if (babl_model_is (model, "R'aG'aB'aA"))
+  {
+    return babl_format_with_space ("R'aG'aB'aA float", format);
+  }
+  else if (babl_model_is (model, "R'G'B'")||
+           babl_model_is (model, "R'G'B'A"))
   {
     return babl_format_with_space ("R'G'B'A float", format);
   }
   else if (babl_model_is (model, "cmyk") ||
-      babl_model_is (model, "CMYK") ||
-      babl_model_is (model, "CMYKA") ||
-      babl_model_is (model, "cmykA") ||
-      babl_model_is (model, "CaMaYaKaA") ||
-      babl_model_is (model, "camayakaA"))
+           babl_model_is (model, "cmykA"))
   {
     return babl_format_with_space ("cmykA float", format);
+  }
+  else if (babl_model_is (model, "CMYK") ||
+           babl_model_is (model, "CMYKA"))
+  {
+    return babl_format_with_space ("cmykA float", format);
+  }
+  else if (babl_model_is (model, "CaMaYaKaA"))
+  {
+    return babl_format_with_space ("CaMaYaKaA float", format);
+  }
+  else if (babl_model_is (model, "camayakaA"))
+  {
+    return babl_format_with_space ("camayakaA float", format);
   }
 
   return babl_format_with_space ("RGBA float", format);
