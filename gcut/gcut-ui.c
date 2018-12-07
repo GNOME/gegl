@@ -3434,7 +3434,7 @@ gboolean cache_renderer_iteration (Mrg *mrg, gpointer data)
   if (!edl->playing)
     {
       int i;
-      int render_slaves = g_get_num_processors ();
+      int render_slaves = 1; //g_get_num_processors ();
       killpg(0, SIGUSR2); // this will cause previous set of renderers to quite after current frame
       for (i = 0; i < render_slaves; i ++)
       {
