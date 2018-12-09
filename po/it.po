@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-12-06 14:12+0100\n"
-"PO-Revision-Date: 2018-12-06 14:51+0100\n"
+"POT-Creation-Date: 2018-12-09 19:44+0100\n"
+"PO-Revision-Date: 2018-12-09 19:44+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -3610,8 +3610,8 @@ msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbours"
 msgstr ""
-"Filtro sfocatura a riduzione del rumore e mantenimento dei bordi basato sui "
-"Vicini più prossimi simmetrici"
+"Filtro sfocatura a riduzione del rumore e mantenimento dei bordi basato sul "
+"metodo degli elementi simmetrici più vicini"
 
 #: ../operations/common/spherize.c:25
 msgid "Radial"
@@ -4018,7 +4018,14 @@ msgid ""
 "representing the priority levels (lower value is higher priority). If aux is "
 "absent, all labellized pixels have the same priority and propagated labels "
 "have a lower priority."
-msgstr "Propagazione etichette mediante trasformazione spartiacque. Il buffer d'uscita conterrà il formato in ingresso. I pixel non etichettati sono contrassegnati con un determinato valore segnale (per impostazione predefinita: ultimo componente con valore NULL). Il buffer aux obbligatorio è un'immagine \"Y u8\" che rappresenta i livelli di priorità (i valori basso hanno priorità maggiore). Se aux è assente, tutti i pixel etichettati hanno la stessa priorità e le etichette propagate hanno una priorità più bassa."
+msgstr ""
+"Propagazione etichette mediante trasformazione spartiacque. Il buffer "
+"d'uscita conterrà il formato in ingresso. I pixel non etichettati sono "
+"contrassegnati con un determinato valore segnale (per impostazione "
+"predefinita: ultimo componente con valore NULL). Il buffer aux obbligatorio "
+"è un'immagine \"Y u8\" che rappresenta i livelli di priorità (i valori basso "
+"hanno priorità maggiore). Se aux è assente, tutti i pixel etichettati hanno "
+"la stessa priorità e le etichette propagate hanno una priorità più bassa."
 
 #: ../operations/common/wavelet-blur-1d.c:29
 #: ../operations/common/wavelet-blur.c:28
@@ -7330,7 +7337,8 @@ msgstr "Caricatore immagini TIFF che usa libtiff"
 
 #: ../operations/external/tiff-save.c:28
 msgid "-1, 8, 16, 32 and 64 are the currently accepted values, -1 means auto"
-msgstr "-1, 8, 16, 32 e 64 sono i valori attualmente accettati, -1 significa auto"
+msgstr ""
+"-1, 8, 16, 32 e 64 sono i valori attualmente accettati, -1 significa auto"
 
 #: ../operations/external/tiff-save.c:30
 msgid "use floating point"
@@ -7338,7 +7346,9 @@ msgstr "usa la virgola mobile"
 
 #: ../operations/external/tiff-save.c:31
 msgid "floating point -1 means auto, 0 means integer 1 meant float."
-msgstr "virgola mobile -1 significa auto, 0 significa intero, 1 significa virgola mobile."
+msgstr ""
+"virgola mobile -1 significa auto, 0 significa intero, 1 significa virgola "
+"mobile."
 
 #: ../operations/external/tiff-save.c:728
 msgid "TIFF File Saver"
@@ -8050,7 +8060,9 @@ msgstr "Componenti connessi"
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
-msgstr "Riempie ogni regione connessa dell'ingresso, separata dal resto dell'ingresso da un dato colore, con un colore unico."
+msgstr ""
+"Riempie ogni regione connessa dell'ingresso, separata dal resto "
+"dell'ingresso da un dato colore, con un colore unico."
 
 #: ../operations/workshop/demosaic-bimedian.c:26
 #: ../operations/workshop/demosaic-simple.c:25
