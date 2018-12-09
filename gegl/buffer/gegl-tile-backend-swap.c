@@ -92,6 +92,7 @@ typedef struct
 {
   SwapBlock *block;
   gint       length;
+  gint       cost;
   GeglTile  *tile;
   ThreadOp   operation;
 } ThreadParams;
@@ -196,6 +197,7 @@ static gint64    read_total   = 0;
 static gboolean  writing      = FALSE;
 static gint64    write_total  = 0;
 static gint64    queued_total = 0;
+static gint64    queued_cost  = 0;
 static gint64    queued_max   = 0;
 static gint      queue_stalls = 0;
 
@@ -215,15 +217,16 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
 {
   if (params->tile)
     {
-      if (queued_total > queued_max)
+      if (queued_cost > queued_max)
         {
           queue_stalls++;
 
-          while (queued_total > queued_max)
+          while (queued_cost > queued_max)
             g_cond_wait (&push_cond, &queue_mutex);
         }
 
       queued_total += params->length;
+      queued_cost  += params->cost;
     }
 
   busy = TRUE;
@@ -508,9 +511,10 @@ gegl_tile_backend_swap_writer_thread (gpointer ignored)
           gegl_tile_unref (params->tile);
 
           queued_total -= params->length;
+          queued_cost  -= params->cost;
 
-          if (queued_total <= queued_max &&
-              queued_total + params->length > queued_max)
+          if (queued_cost <= queued_max &&
+              queued_cost + params->cost > queued_max)
             {
               g_cond_broadcast (&push_cond);
             }
@@ -627,7 +631,13 @@ gegl_tile_backend_swap_entry_write (GeglTileBackendSwap *self,
                                     GeglTile            *tile)
 {
   ThreadParams *params;
-  gint          length = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self));
+  gint          n_clones;
+  gint          length;
+  gint          cost;
+
+  n_clones = *gegl_tile_n_clones (tile);
+  length   = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (self));
+  cost     = (length + n_clones / 2) / n_clones;
 
   g_mutex_lock (&queue_mutex);
 
@@ -647,6 +657,7 @@ gegl_tile_backend_swap_entry_write (GeglTileBackendSwap *self,
   params            = g_slice_new0 (ThreadParams);
   params->operation = OP_WRITE;
   params->length    = length;
+  params->cost      = cost;
   params->tile      = gegl_tile_dup (tile);
   params->block     = entry->block;
 
@@ -711,9 +722,10 @@ gegl_tile_backend_swap_block_unref (GeglTileBackendSwap *self,
               queued_op->tile = NULL;
 
               queued_total -= queued_op->length;
+              queued_cost  -= queued_op->cost;
 
-              if (queued_total <= queued_max &&
-                  queued_total + queued_op->length > queued_max)
+              if (queued_cost <= queued_max &&
+                  queued_cost + queued_op->cost > queued_max)
                 {
                   g_cond_broadcast (&push_cond);
                 }
@@ -1250,7 +1262,7 @@ gegl_tile_backend_swap_get_queued_total (void)
 gboolean
 gegl_tile_backend_swap_get_queue_full (void)
 {
-  return queued_total > queued_max;
+  return queued_cost > queued_max;
 }
 
 gint
