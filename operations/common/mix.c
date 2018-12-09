@@ -35,8 +35,17 @@ property_double (ratio, _("Ratio"), 0.5)
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *format = gegl_operation_get_source_format (operation, "input");
   const Babl *space = gegl_operation_get_source_space (operation, "input");
-  const Babl *format = babl_format_with_space ("RGBA float", space);
+  BablModelFlag flag = babl_get_model_flags (format);
+
+  if (flag & BABL_MODEL_FLAG_CMYK)
+   format = babl_format_with_space ("cmykA float", space);
+  else if (flag & BABL_MODEL_FLAG_GRAY)
+   format = babl_format_with_space ("YA float", space);
+  else
+   format = babl_format_with_space ("RGBA float", space);
+
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "aux", format);
   gegl_operation_set_format (operation, "output", format);
@@ -57,19 +66,31 @@ process (GeglOperation       *op,
   gfloat * GEGL_ALIGNED out = out_buf;
   gfloat r = o->ratio;
   gfloat rr = 1.0 - o->ratio;
+  const Babl *format = gegl_operation_get_format (op, "output");
+  int components = babl_format_get_n_components (format);
 
   if (aux==NULL)
+  {
+     while (n_pixels--)
+      {
+        for (int c = 0; c < components; c++)
+          out[c] = in[c];
+        in  += components;
+        aux += components;
+        out += components;
+      }
+
     return TRUE;
+  }
 
   while (n_pixels--)
     {
-      out[0] = aux[0] * r + in[0] * rr;
-      out[1] = aux[1] * r + in[1] * rr;
-      out[2] = aux[2] * r + in[2] * rr;
-      out[3] = aux[3] * r + in[3] * rr;
-      in  += 4;
-      aux += 4;
-      out += 4;
+      for (int c = 0; c < components; c++)
+        out[c] = aux[c] * r + in[c] * rr;
+
+      in  += components;
+      aux += components;
+      out += components;
     }
   return TRUE;
 }
