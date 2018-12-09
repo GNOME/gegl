@@ -33,6 +33,11 @@
 #define GEGL_DEBUG_CACHE_HITS
 */
 
+#define GEGL_CACHE_TRIM_INTERVAL   100000 /* microseconds */
+#define GEGL_CACHE_TRIM_RATIO_MIN  0.01
+#define GEGL_CACHE_TRIM_RATIO_MAX  0.50
+#define GEGL_CACHE_TRIM_RATIO_RATE 2.0
+
 typedef struct CacheItem
 {
   GeglTile *tile; /* The tile */
@@ -512,16 +517,34 @@ gegl_tile_handler_cache_has_tile (GeglTileHandlerCache *cache,
 static gboolean
 gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 {
-  GList        *link;
-  static guint  counter;
+  GList          *link;
+  gint64          time;
+  static gint64   last_time;
+  static gdouble  ratio  = GEGL_CACHE_TRIM_RATIO_MIN;
+  guint64         target_size;
+  static guint    counter;
 
   cache = NULL;
   link  = NULL;
 
   g_mutex_lock (&mutex);
 
-  while ((guintptr) g_atomic_pointer_get (&cache_total) >
-         gegl_buffer_config ()->tile_cache_size)
+  time = g_get_monotonic_time ();
+
+  if (time - last_time < GEGL_CACHE_TRIM_INTERVAL)
+    {
+      ratio = MIN (ratio * GEGL_CACHE_TRIM_RATIO_RATE,
+                   GEGL_CACHE_TRIM_RATIO_MAX);
+    }
+  else if (time - last_time >= 2 * GEGL_CACHE_TRIM_INTERVAL)
+    {
+      ratio = GEGL_CACHE_TRIM_RATIO_MIN;
+    }
+
+  target_size  = gegl_buffer_config ()->tile_cache_size;
+  target_size -= target_size * ratio;
+
+  while ((guintptr) g_atomic_pointer_get (&cache_total) > target_size)
     {
       CacheItem *last_writable;
       GeglTile  *tile;
@@ -553,11 +576,7 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
                  ! g_rec_mutex_trylock (&cache->tile_storage->mutex));
 
           if (! cache)
-            {
-              g_mutex_unlock (&mutex);
-
-              return FALSE;
-            }
+            break;
 
           link = g_queue_peek_tail_link (&cache->queue);
         }
@@ -620,9 +639,11 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
   if (cache)
     g_rec_mutex_unlock (&cache->tile_storage->mutex);
 
+  last_time = g_get_monotonic_time ();
+
   g_mutex_unlock (&mutex);
 
-  return TRUE;
+  return cache != NULL;
 }
 
 static void
@@ -1004,7 +1025,11 @@ gegl_buffer_config_tile_cache_size_notify (GObject    *gobject,
                                            GParamSpec *pspec,
                                            gpointer    user_data)
 {
-  gegl_tile_handler_cache_trim (NULL);
+  if ((guintptr) g_atomic_pointer_get (&cache_total) >
+      gegl_buffer_config () ->tile_cache_size)
+    {
+      gegl_tile_handler_cache_trim (NULL);
+    }
 }
 
 void
