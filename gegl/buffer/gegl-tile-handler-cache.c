@@ -529,6 +529,15 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 
   g_mutex_lock (&mutex);
 
+  target_size = gegl_buffer_config ()->tile_cache_size;
+
+  if ((guintptr) g_atomic_pointer_get (&cache_total) <= target_size)
+    {
+      g_mutex_unlock (&mutex);
+
+      return TRUE;
+    }
+
   time = g_get_monotonic_time ();
 
   if (time - last_time < GEGL_CACHE_TRIM_INTERVAL)
@@ -541,7 +550,6 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
       ratio = GEGL_CACHE_TRIM_RATIO_MIN;
     }
 
-  target_size  = gegl_buffer_config ()->tile_cache_size;
   target_size -= target_size * ratio;
 
   while ((guintptr) g_atomic_pointer_get (&cache_total) > target_size)
