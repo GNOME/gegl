@@ -14,7 +14,7 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2006 Philip Lafleur
- *           2006-2012 Øyvind Kolås
+ *           2006-2018 Øyvind Kolås
  *           2009 Martin Nordholts
  *           2010 Debarshi Ray
  *           2011 Mikael Magnusson
@@ -148,10 +148,11 @@ op_transform_get_type (void)
 static void
 gegl_transform_prepare (GeglOperation *operation)
 {
-  const Babl *space = gegl_operation_get_source_space (operation, "input");
-  const Babl *format = babl_format_with_space ("RaGaBaA float", space);
+  const Babl *source_format = gegl_operation_get_source_format (operation, "input");
+  const Babl *space = source_format?babl_format_get_space (source_format):NULL;
   GeglMatrix3  matrix;
   OpTransform *transform = (OpTransform *) operation;
+  const Babl *format = source_format;
 
   gegl_transform_create_composite_matrix (transform, &matrix);
 
@@ -162,10 +163,16 @@ gegl_transform_prepare (GeglOperation *operation)
        transform->sampler == GEGL_SAMPLER_NEAREST) ||
       (transform->sampler == GEGL_SAMPLER_NEAREST))
     {
-      const Babl *fmt = gegl_operation_get_source_format (operation, "input");
-
-      if (fmt)
-        format = fmt;
+    }
+  else
+    {
+      BablModelFlag model_flags = babl_get_model_flags (source_format);
+      if (model_flags & BABL_MODEL_FLAG_CMYK)
+        format = babl_format_with_space ("camayakaA float", space);
+      else if (model_flags & BABL_MODEL_FLAG_GRAY)
+        format = babl_format_with_space ("YaA float", space);
+      else
+        format = babl_format_with_space ("RaGaBaA float", space);
     }
 
   gegl_operation_set_format (operation, "input", format);
@@ -1105,10 +1112,9 @@ transform_affine (GeglOperation       *operation,
                   const GeglRectangle *roi,
                   gint                 level)
 {
-  const Babl *space = gegl_operation_get_source_space (operation, "input");
   gint             factor = 1 << level;
   OpTransform     *transform = (OpTransform *) operation;
-  const Babl      *format = babl_format_with_space ("RaGaBaA float", space);
+  const Babl      *format = gegl_operation_get_format (operation, "output");
   GeglMatrix3      inverse;
   gdouble          inverse_near_z = 1.0 / transform->near_z;
   GeglBufferMatrix2 inverse_jacobian;
@@ -1123,6 +1129,7 @@ transform_affine (GeglOperation       *operation,
   GeglRectangle  bounding_box = *gegl_buffer_get_abyss (src);
   GeglRectangle  context_rect = *gegl_sampler_get_context_rect (sampler);
   GeglRectangle  dest_extent  = *roi;
+  gint           components = babl_format_get_n_components (format);
 
   bounding_box.x      += context_rect.x;
   bounding_box.y      += context_rect.y;
@@ -1216,8 +1223,8 @@ transform_affine (GeglOperation       *operation,
 
               gint x;
 
-              memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * x1);
-              dest_ptr += (gint) 4 * x1;
+              memset (dest_ptr, 0, (gint) components * sizeof (gfloat) * x1);
+              dest_ptr += (gint) components * x1;
 
               u_float += x1 * inverse_jacobian.coeff [0][0];
               v_float += x1 * inverse_jacobian.coeff [1][0];
@@ -1229,19 +1236,19 @@ transform_affine (GeglOperation       *operation,
                                    &inverse_jacobian,
                                    dest_ptr,
                                    abyss_policy);
-                  dest_ptr += (gint) 4;
+                  dest_ptr += (gint) components;
 
                   u_float += inverse_jacobian.coeff [0][0];
                   v_float += inverse_jacobian.coeff [1][0];
                 }
 
-              memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * (roi->width - x2));
-              dest_ptr += (gint) 4 * (roi->width - x2);
+              memset (dest_ptr, 0, (gint) components * sizeof (gfloat) * (roi->width - x2));
+              dest_ptr += (gint) components * (roi->width - x2);
             }
           else
             {
-              memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * roi->width);
-              dest_ptr += (gint) 4 * roi->width;
+              memset (dest_ptr, 0, (gint) components * sizeof (gfloat) * roi->width);
+              dest_ptr += (gint) components * roi->width;
             }
 
           u_start += inverse_jacobian.coeff [0][1];
@@ -1261,9 +1268,8 @@ transform_generic (GeglOperation       *operation,
                    const GeglRectangle *roi,
                    gint                 level)
 {
-  const Babl *space = gegl_operation_get_source_space (operation, "input");
   OpTransform *transform = (OpTransform *) operation;
-  const Babl          *format = babl_format_with_space ("RaGaBaA float", space);
+  const Babl          *format = gegl_operation_get_format (operation, "output");
   gint                 factor = 1 << level;
   GeglBufferIterator  *i;
   GeglMatrix3          inverse;
@@ -1278,6 +1284,7 @@ transform_generic (GeglOperation       *operation,
   GeglRectangle  bounding_box = *gegl_buffer_get_abyss (src);
   GeglRectangle  context_rect = *gegl_sampler_get_context_rect (sampler);
   GeglRectangle  dest_extent  = *roi;
+  gint           components   = babl_format_get_n_components (format);
 
   bounding_box.x      += context_rect.x;
   bounding_box.y      += context_rect.y;
@@ -1354,8 +1361,8 @@ transform_generic (GeglOperation       *operation,
 
             gint x;
 
-            memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * x1);
-            dest_ptr += (gint) 4 * x1;
+            memset (dest_ptr, 0, (gint) components * sizeof (gfloat) * x1);
+            dest_ptr += (gint) components * x1;
 
             u_float += x1 * inverse.coeff [0][0];
             v_float += x1 * inverse.coeff [1][0];
@@ -1383,19 +1390,19 @@ transform_generic (GeglOperation       *operation,
                                  dest_ptr,
                                  abyss_policy);
 
-                dest_ptr += (gint) 4;
+                dest_ptr += (gint) components;
                 u_float += inverse.coeff [0][0];
                 v_float += inverse.coeff [1][0];
                 w_float += inverse.coeff [2][0];
               }
 
-            memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * (roi->width - x2));
-            dest_ptr += (gint) 4 * (roi->width - x2);
+            memset (dest_ptr, 0, (gint) components * sizeof (gfloat) * (roi->width - x2));
+            dest_ptr += (gint) components * (roi->width - x2);
           }
         else
           {
-            memset (dest_ptr, 0, (gint) 4 * sizeof (gfloat) * roi->width);
-            dest_ptr += (gint) 4 * roi->width;
+            memset (dest_ptr, 0, (gint) components * sizeof (gfloat) * roi->width);
+            dest_ptr += (gint) components * roi->width;
           }
 
         u_start += inverse.coeff [0][1];
