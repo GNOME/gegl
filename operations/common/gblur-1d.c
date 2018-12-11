@@ -108,12 +108,13 @@ iir_young_find_constants (gfloat   sigma,
 
   const gdouble b0 = 1.57825 + q*(K1 + q*(    K2 + q *     K3));
   const gdouble b1 =           q*(K1 + q*(2 * K2 + q * 3 * K3));
-  const gdouble b2 =         - q*      q*(    K2 + q * 3 * K3);
+  const gdouble b2 =     (-K2 * q * q) + (-K3 * 3 * q * q * q);
   const gdouble b3 =           q*      q*          q *     K3;
 
   const gdouble a1 = b1 / b0;
   const gdouble a2 = b2 / b0;
   const gdouble a3 = b3 / b0;
+
   const gdouble c  = 1. / ((1+a1-a2+a3) * (1+a2+(a1-a3)*a3));
 
   m[0][0] = c * (-a3*(a1+a3)-a2 + 1);
