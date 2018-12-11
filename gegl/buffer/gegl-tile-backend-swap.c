@@ -26,11 +26,6 @@
 #include <string.h>
 #include <errno.h>
 
-#ifdef G_OS_WIN32
-#include <process.h>
-#define getpid() _getpid()
-#endif
-
 #include <glib-object.h>
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
@@ -39,6 +34,7 @@
 #include "gegl-buffer-types.h"
 #include "gegl-buffer-backend.h"
 #include "gegl-buffer-private.h"
+#include "gegl-buffer-swap.h"
 #include "gegl-tile-backend.h"
 #include "gegl-tile-backend-swap.h"
 #include "gegl-debug.h"
@@ -1103,9 +1099,14 @@ gegl_tile_backend_swap_ensure_exist (void)
 {
   if (in_fd == -1 || out_fd == -1)
     {
-      gchar *filename = g_strdup_printf ("%i-shared.swap", getpid ());
-      path = g_build_filename (gegl_buffer_config ()->swap, filename, NULL);
-      g_free (filename);
+      path = gegl_buffer_swap_create_file ("shared");
+
+      if (! path)
+        {
+          g_warning ("using swap backend, but swap is disabled");
+
+          return;
+        }
 
       GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "creating swapfile %s", path);
 
@@ -1113,7 +1114,13 @@ gegl_tile_backend_swap_ensure_exist (void)
       in_fd = g_open (path, O_RDONLY, 0);
 
       if (out_fd == -1 || in_fd == -1)
-        g_warning ("Could not open swap file '%s': %s", path, g_strerror (errno));
+        {
+          g_warning ("could not open swap file '%s': %s",
+                     path, g_strerror (errno));
+
+          gegl_buffer_swap_remove_file (path);
+          g_clear_pointer (&path, g_free);
+        }
     }
 }
 
@@ -1211,6 +1218,12 @@ gegl_tile_backend_swap_cleanup (void)
     {
       close (out_fd);
       out_fd = -1;
+    }
+
+  if (path)
+    {
+      gegl_buffer_swap_remove_file (path);
+      g_clear_pointer (&path, g_free);
     }
 }
 
