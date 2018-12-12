@@ -215,6 +215,7 @@ process (GeglOperation       *operation,
   const Babl    *format;
   gint           y;
   gint           floats_per_pixel;
+  float          factor = 1.0f / (1<<level);
 
   /*blur-map or emboss*/
   if (o->type == GEGL_EMBOSS_TYPE_BUMPMAP)
@@ -233,18 +234,26 @@ process (GeglOperation       *operation,
   rect.y      = result->y - op_area->top;
   rect.height = result->height + op_area->top + op_area->bottom;
 
+  if (level)
+  {
+    rect.x      *= factor;
+    rect.y      *= factor;
+    rect.width  *= factor;
+    rect.height *= factor;
+  }
+
   src_buf = g_new0 (gfloat, rect.width * rect.height * floats_per_pixel);
   dst_buf = g_new0 (gfloat, rect.width * rect.height * floats_per_pixel);
 
-  gegl_buffer_get (input, &rect, 1.0, format, src_buf,
+  gegl_buffer_get (input, &rect, factor, format, src_buf,
                    GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
   /*do for every row*/
   for (y = 0; y < rect.height; y++)
     emboss (src_buf, &rect, dst_buf, &rect, o->type, y, floats_per_pixel,
-            DEG_TO_RAD (o->azimuth), DEG_TO_RAD (o->elevation), o->depth);
+            DEG_TO_RAD (o->azimuth), DEG_TO_RAD (o->elevation), o->depth * factor);
 
-  gegl_buffer_set (output, &rect, 0, format,
+  gegl_buffer_set (output, &rect, level, format,
                    dst_buf, GEGL_AUTO_ROWSTRIDE);
 
   g_free (src_buf);
