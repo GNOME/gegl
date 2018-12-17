@@ -833,7 +833,7 @@ AC_ARG_WITH(zlib, [  --without-zlib          build without zlib support])
 
 have_zlib="no"
 if test "x$with_zlib" != "xno"; then
-  PKG_CHECK_MODULES(ZLIB, zlib,
+  PKG_CHECK_MODULES(ZLIB, zlib >= zlib_required_version,
     AC_DEFINE(HAVE_ZLIB, 1,
                 [Define to 1 if the zlib library is available])
     have_zlib="yes",

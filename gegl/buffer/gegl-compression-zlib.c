@@ -25,6 +25,7 @@
 
 #include <zlib.h>
 
+
 typedef struct
 {
   GeglCompression compression;
