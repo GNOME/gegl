@@ -235,7 +235,7 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
         {
           queue_stalls++;
 
-          if (params->tile && compression)
+          if (params->tile && params->block->compression)
             {
               gint     bpp = babl_format_get_bytes_per_pixel (params->format);
               gpointer compressed;
@@ -247,7 +247,8 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
               max_compressed_size = params->size * COMPRESSION_MAX_RATIO;
               compressed          = g_malloc (max_compressed_size);
 
-              if (gegl_compression_compress (compression, params->format,
+              if (gegl_compression_compress (params->block->compression,
+                                             params->format,
                                              gegl_tile_get_data (params->tile),
                                              params->size / bpp,
                                              compressed, &compressed_size,
