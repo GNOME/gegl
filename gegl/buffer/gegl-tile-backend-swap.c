@@ -1480,7 +1480,7 @@ gegl_tile_backend_swap_get_total (void)
 }
 
 guint64
-gegl_tile_backend_swap_get_total_uncloned (void)
+gegl_tile_backend_swap_get_total_uncompressed (void)
 {
   return total_uncompressed;
 }

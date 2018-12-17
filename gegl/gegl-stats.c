@@ -34,11 +34,11 @@ enum
   PROP_0,
   PROP_TILE_CACHE_TOTAL,
   PROP_TILE_CACHE_TOTAL_MAX,
-  PROP_TILE_CACHE_TOTAL_UNCLONED,
+  PROP_TILE_CACHE_TOTAL_UNCOMPRESSED,
   PROP_TILE_CACHE_HITS,
   PROP_TILE_CACHE_MISSES,
   PROP_SWAP_TOTAL,
-  PROP_SWAP_TOTAL_UNCLONED,
+  PROP_SWAP_TOTAL_UNCOMPRESSED,
   PROP_SWAP_FILE_SIZE,
   PROP_SWAP_BUSY,
   PROP_SWAP_QUEUED_TOTAL,
@@ -87,10 +87,10 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                         0, G_MAXUINT64, 0,
                                                         G_PARAM_READABLE));
 
-  g_object_class_install_property (object_class, PROP_TILE_CACHE_TOTAL_UNCLONED,
-                                   g_param_spec_uint64 ("tile-cache-total-uncloned",
-                                                        "Tile Cache total uncloned size",
-                                                        "Total size of tile cache if all tiles were uncloned in bytes",
+  g_object_class_install_property (object_class, PROP_TILE_CACHE_TOTAL_UNCOMPRESSED,
+                                   g_param_spec_uint64 ("tile-cache-total-uncompressed",
+                                                        "Tile Cache total uncompressed size",
+                                                        "Total size of tile cache if no compression was employed in bytes",
                                                         0, G_MAXUINT64, 0,
                                                         G_PARAM_READABLE));
 
@@ -115,10 +115,10 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                         0, G_MAXUINT64, 0,
                                                         G_PARAM_READABLE));
 
-  g_object_class_install_property (object_class, PROP_SWAP_TOTAL_UNCLONED,
-                                   g_param_spec_uint64 ("swap-total-uncloned",
-                                                        "Swap total uncloned size",
-                                                        "Total size of if the data in the swap if all the entries were uncloned in bytes",
+  g_object_class_install_property (object_class, PROP_SWAP_TOTAL_UNCOMPRESSED,
+                                   g_param_spec_uint64 ("swap-total-uncompressed",
+                                                        "Swap total uncompressed size",
+                                                        "Total size of if the data in the swap if no compression was employed in bytes",
                                                         0, G_MAXUINT64, 0,
                                                         G_PARAM_READABLE));
 
@@ -233,8 +233,8 @@ gegl_stats_get_property (GObject    *object,
         g_value_set_uint64 (value, gegl_tile_handler_cache_get_total_max ());
         break;
 
-      case PROP_TILE_CACHE_TOTAL_UNCLONED:
-        g_value_set_uint64 (value, gegl_tile_handler_cache_get_total_uncloned ());
+      case PROP_TILE_CACHE_TOTAL_UNCOMPRESSED:
+        g_value_set_uint64 (value, gegl_tile_handler_cache_get_total_uncompressed ());
         break;
 
       case PROP_TILE_CACHE_HITS:
@@ -249,8 +249,8 @@ gegl_stats_get_property (GObject    *object,
         g_value_set_uint64 (value, gegl_tile_backend_swap_get_total ());
         break;
 
-      case PROP_SWAP_TOTAL_UNCLONED:
-        g_value_set_uint64 (value, gegl_tile_backend_swap_get_total_uncloned ());
+      case PROP_SWAP_TOTAL_UNCOMPRESSED:
+        g_value_set_uint64 (value, gegl_tile_backend_swap_get_total_uncompressed ());
         break;
 
       case PROP_SWAP_FILE_SIZE:

@@ -71,12 +71,12 @@ void              gegl_tile_handler_cache_remove             (GeglTileHandlerCac
 void              gegl_tile_handler_cache_tile_uncloned      (GeglTileHandlerCache *cache,
                                                               GeglTile             *tile);
 
-gsize             gegl_tile_handler_cache_get_total          (void);
-gsize             gegl_tile_handler_cache_get_total_max      (void);
-gsize             gegl_tile_handler_cache_get_total_uncloned (void);
-gint              gegl_tile_handler_cache_get_hits           (void);
-gint              gegl_tile_handler_cache_get_misses         (void);
+gsize             gegl_tile_handler_cache_get_total              (void);
+gsize             gegl_tile_handler_cache_get_total_max          (void);
+gsize             gegl_tile_handler_cache_get_total_uncompressed (void);
+gint              gegl_tile_handler_cache_get_hits               (void);
+gint              gegl_tile_handler_cache_get_misses             (void);
 
-void              gegl_tile_handler_cache_reset_stats        (void);
+void              gegl_tile_handler_cache_reset_stats            (void);
 
 #endif

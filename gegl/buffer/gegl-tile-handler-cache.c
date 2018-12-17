@@ -962,7 +962,7 @@ gegl_tile_handler_cache_get_total_max (void)
 }
 
 gsize
-gegl_tile_handler_cache_get_total_uncloned (void)
+gegl_tile_handler_cache_get_total_uncompressed (void)
 {
   return cache_total_uncloned;
 }
