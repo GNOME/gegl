@@ -10,6 +10,7 @@ noinst_PROGRAMS =			\
 	test-buffer-tile-voiding	\
 	test-buffer-unaligned-access	\
 	test-change-processor-rect	\
+	test-compression		\
 	test-convert-format		\
 	test-color-op			\
 	test-empty-tile			\

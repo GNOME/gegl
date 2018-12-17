@@ -11,7 +11,8 @@ noinst_PROGRAMS = \
 	test-rotate \
 	test-saturation \
 	test-scale \
-	test-translate
+	test-translate \
+	test-compression
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/ \
@@ -35,7 +36,15 @@ LDADD = $(common_ldadd) $(DEP_LIBS) $(BABL_LIBS) $(MATH_LIB)
 perf-report: check
 
 check:
-	for a in $(noinst_PROGRAMS);do GEGL_PATH=../operations ./$$a;done;true
+	$(AM_V_at)                         \
+	for a in $(noinst_PROGRAMS); do    \
+	  echo;                            \
+	  echo $$a:;                       \
+	  GEGL_PATH=../operations          \
+	  ABS_TOP_SRCDIR=$(abs_top_srcdir) \
+	  ./$$a;                           \
+	done;                              \
+	true
 
 test_rotate_SOURCES = test-rotate.c
 test_saturation_SOURCES = test-saturation.c
@@ -49,6 +58,7 @@ test_init_SOURCES = test-init.c
 test_unsharpmask_SOURCES = test-unsharpmask.c
 test_gegl_buffer_access_SOURCES = test-gegl-buffer-access.c
 test_samplers_SOURCES = test-samplers.c
+test_compression_SOURCES = test-compression.c
 
 EXTRA_DIST = Makefile-retrospect Makefile-tests create-report.rb test-common.h
 
