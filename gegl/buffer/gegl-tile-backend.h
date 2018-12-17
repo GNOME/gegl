@@ -158,7 +158,11 @@ GType gegl_tile_backend_get_type (void) G_GNUC_CONST;
  *
  * For safety, this function will check that the swap file is in the swap
  * directory before deletion but it won't perform any other check.
+ *
+ * Deprecated: 0.4.14: This function is not compatible with a dynamically-
+ * changing swap path. Use gegl_buffer_swap_remove_file() instead.
  */
+G_DEPRECATED_FOR (gegl_buffer_swap_remove_file)
 void gegl_tile_backend_unlink_swap (gchar *path);
 
 G_END_DECLS

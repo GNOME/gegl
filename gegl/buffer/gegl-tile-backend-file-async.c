@@ -49,6 +49,7 @@
 #include "gegl-tile-backend.h"
 #include "gegl-tile-backend-file.h"
 #include "gegl-buffer-index.h"
+#include "gegl-buffer-swap.h"
 #include "gegl-buffer-types.h"
 #include "gegl-debug.h"
 #include "gegl-buffer-config.h"
@@ -968,7 +969,9 @@ gegl_tile_backend_file_finalize (GObject *object)
 
   if (self->path)
     {
-      gegl_tile_backend_unlink_swap (self->path);
+      if (gegl_buffer_swap_has_file (self->path))
+        gegl_buffer_swap_remove_file (self->path);
+
       g_free (self->path);
     }
 
