@@ -174,6 +174,22 @@ gegl_buffer_swap_remove_file (const gchar *path)
     g_warning ("attempt to remove unregistered swap file '%s'", path);
 }
 
+gboolean
+gegl_buffer_swap_has_file (const gchar *path)
+{
+  gboolean found;
+
+  g_return_val_if_fail (path != NULL, FALSE);
+
+  g_mutex_lock (&swap_mutex);
+
+  found = (g_hash_table_lookup (swap_files, path) != NULL);
+
+  g_mutex_unlock (&swap_mutex);
+
+  return found;
+}
+
 
 /*  private functions  */
 

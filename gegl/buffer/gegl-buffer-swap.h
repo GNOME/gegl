@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * file path, or %NULL is the swap is disabled.  The returned string
  * should be freed with g_free() when no longer needed.
  */
-gchar * gegl_buffer_swap_create_file (const gchar *suffix);
+gchar    * gegl_buffer_swap_create_file (const gchar *suffix);
 
 /**
  * gegl_buffer_swap_remove_file:
@@ -47,7 +47,17 @@ gchar * gegl_buffer_swap_create_file (const gchar *suffix);
  * Removes a swap file, generated using gegl_buffer_swap_create_file(),
  * unlinking the file, if exists.
  */
-void    gegl_buffer_swap_remove_file (const gchar *path);
+void       gegl_buffer_swap_remove_file (const gchar *path);
+
+/**
+ * gegl_buffer_swap_has_file:
+ * @path: (type filename): a filename
+ *
+ * Tests if @path is a swap file, that is, if it has been created
+ * with gegl_buffer_swap_create_file(), and hasn't been removed
+ * yet.
+ */
+gboolean   gegl_buffer_swap_has_file (const gchar *path);
 
 G_END_DECLS
 
