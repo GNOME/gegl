@@ -41,7 +41,8 @@
 
 /*  private functions  */
 
-static gboolean __attribute__ ((noinline))
+G_GNUC_NO_INLINE
+static gboolean
 gegl_compression_rle_compress_pass (const guint8 *data,
                                     gint          n,
                                     gint          shift,
@@ -310,7 +311,8 @@ end:
 
 /*  private functions  */
 
-static void __attribute__ ((noinline))
+G_GNUC_NO_INLINE
+static void
 gegl_compression_rle_decompress_pass (guint8        *data,
                                       gint           n,
                                       gint           bpp,
