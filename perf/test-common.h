@@ -8,8 +8,8 @@
                            more noise, increase this number towards 1.0,
                            like 0.8 */
 #define BAIL_THRESHOLD 0.001
-#define BAIL_COUNT     75
-#define MIN_ITER       100
+#define BAIL_COUNT     20
+#define MIN_ITER       20
 
 static long ticks_start;
 
@@ -40,20 +40,19 @@ int  converged = 0;
 long ticks_iter_start = 0;
 long iter_db[ITERATIONS];
 int iter_no = 0;
+float prev_median = 0.0;
 
 void test_start (void)
 {
   ticks_start = babl_ticks ();
   iter_no = 0;
   converged = 0;
+  prev_median = 0.0;
 }
-
-float prev_median = 0.0;
 
 static void test_start_iter (void)
 {
   ticks_iter_start = babl_ticks ();
-  prev_median = -1.0;
 }
 
 
@@ -78,7 +77,8 @@ static void test_end_iter (void)
   iter_no++;
 
   median = compute_median ();
-  if (iter_no > MIN_ITER && fabs(1.0-fabs(median - prev_median * 1.0)/median) < BAIL_THRESHOLD) /// median < 0.05)
+  if (iter_no > MIN_ITER &&
+      fabs ((median - prev_median) / median) < BAIL_THRESHOLD)
    {
      /* we've converged */
      converged++;
