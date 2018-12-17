@@ -20,6 +20,7 @@
 #include <string.h>
 
 #include "gegl-compression.h"
+#include "gegl-compression-nop.h"
 
 
 /*  local variables  */
@@ -35,6 +36,8 @@ gegl_compression_init (void)
   g_return_if_fail (algorithms == NULL);
 
   algorithms = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+  gegl_compression_nop_init ();
 }
 
 void
