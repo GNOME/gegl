@@ -22,6 +22,7 @@
 #include "gegl-compression.h"
 #include "gegl-compression-nop.h"
 #include "gegl-compression-rle.h"
+#include "gegl-compression-zlib.h"
 
 
 /*  local variables  */
@@ -40,6 +41,7 @@ gegl_compression_init (void)
 
   gegl_compression_nop_init ();
   gegl_compression_rle_init ();
+  gegl_compression_zlib_init ();
 }
 
 void

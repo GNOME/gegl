@@ -41,7 +41,7 @@ AM_LDFLAGS = \
 	$(no_undefined) -export-dynamic -version-info $(GEGL_LIBRARY_VERSION)
 
 LIBS = \
-	$(DEP_LIBS) $(BABL_LIBS) $(MATH_LIB)
+	$(DEP_LIBS) $(BABL_LIBS) $(ZLIB_LIBS) $(MATH_LIB)
 
 GEGL_publicdir = $(includedir)/gegl-$(GEGL_API_VERSION)
 

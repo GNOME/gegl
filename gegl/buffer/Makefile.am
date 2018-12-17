@@ -18,7 +18,7 @@ AM_CPPFLAGS = \
 
 EXTRA_DIST = gegl-algorithms-boxfilter.inc gegl-algorithms-2x2-downscale.inc gegl-algorithms-bilinear.inc
 
-AM_CFLAGS = $(DEP_CFLAGS) $(BABL_CFLAGS)
+AM_CFLAGS = $(DEP_CFLAGS) $(BABL_CFLAGS) $(ZLIB_CFLAGS)
 
 noinst_LTLIBRARIES = libbuffer.la
 
@@ -45,6 +45,7 @@ libbuffer_la_SOURCES = \
     gegl-compression.c		\
     gegl-compression-nop.c	\
     gegl-compression-rle.c	\
+    gegl-compression-zlib.c	\
     gegl-sampler.c		\
     gegl-sampler-cubic.c	\
     gegl-sampler-linear.c	\
@@ -79,6 +80,7 @@ libbuffer_la_SOURCES = \
     gegl-compression.h		\
     gegl-compression-nop.h	\
     gegl-compression-rle.h	\
+    gegl-compression-zlib.h	\
     gegl-sampler.h		\
     gegl-sampler-cubic.h	\
     gegl-sampler-linear.h	\

@@ -53,6 +53,7 @@ m4_define([lua_required_version], [5.1.0])
 m4_define([openexr_required_version], [1.6.1])
 m4_define([libraw_required_version], [0.15.4])
 m4_define([pango_required_version], [1.38.0])
+m4_define([zlib_required_version], [1.2.0])
 m4_define([png_required_version], [1.6.0])
 m4_define([sdl_required_version], [1.2.0])
 m4_define([libtiff_required_version], [4.0.0])
@@ -824,6 +825,25 @@ if test "$jpeg_ok" != "yes"; then
    AC_MSG_ERROR([Could not find a usable JPEG library with header files])
 fi
 
+################
+# Check for zlib
+################
+
+AC_ARG_WITH(zlib, [  --without-zlib          build without zlib support])
+
+have_zlib="no"
+if test "x$with_zlib" != "xno"; then
+  PKG_CHECK_MODULES(ZLIB, zlib,
+    AC_DEFINE(HAVE_ZLIB, 1,
+                [Define to 1 if the zlib library is available])
+    have_zlib="yes",
+    have_zlib="no  (zlib not found)")
+fi
+
+AM_CONDITIONAL(HAVE_ZLIB, test "$have_zlib" = "yes")
+
+AC_SUBST(ZLIB_CFLAGS)
+AC_SUBST(ZLIB_LIBS)
 
 ##################
 # Check for libpng
@@ -1380,6 +1400,7 @@ Optional dependencies:
   pangocairo:      $have_pangocairo
   GDKPixbuf:       $have_gdk_pixbuf
   JPEG:            $jpeg_ok
+  zlib:            $have_zlib
   PNG:             $have_libpng
   OpenEXR:         $have_openexr
   rsvg:            $have_librsvg
