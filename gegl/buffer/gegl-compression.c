@@ -16,6 +16,7 @@
 
 #include "config.h"
 
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -25,9 +26,42 @@
 #include "gegl-compression-zlib.h"
 
 
+/*  local function prototypes  */
+
+void   gegl_compression_register_alias (const gchar *name,
+                                        ...) G_GNUC_NULL_TERMINATED;
+
+
 /*  local variables  */
 
 GHashTable *algorithms;
+
+
+/*  private functions  */
+
+void
+gegl_compression_register_alias (const gchar *name,
+                                 ...)
+{
+  va_list      args;
+  const gchar *algorithm;
+
+  va_start (args, name);
+
+  while ((algorithm = va_arg (args, const gchar *)))
+    {
+      const GeglCompression *compression = gegl_compression (algorithm);
+
+      if (compression)
+        {
+          gegl_compression_register (name, compression);
+
+          break;
+        }
+    }
+
+  va_end (args);
+}
 
 
 /*  public functions  */
@@ -42,6 +76,27 @@ gegl_compression_init (void)
   gegl_compression_nop_init ();
   gegl_compression_rle_init ();
   gegl_compression_zlib_init ();
+
+  gegl_compression_register_alias ("fast",
+                                   /* in order of precedence: */
+                                   "rle8",
+                                   "zlib1",
+                                   "nop",
+                                   NULL);
+
+  gegl_compression_register_alias ("balanced",
+                                   /* in order of precedence: */
+                                   "rle4",
+                                   "zlib",
+                                   "nop",
+                                   NULL);
+
+  gegl_compression_register_alias ("best",
+                                   /* in order of precedence: */
+                                   "zlib9",
+                                   "rle1",
+                                   "nop",
+                                   NULL);
 }
 
 void
