@@ -36,6 +36,7 @@ enum
   PROP_0,
   PROP_TILE_CACHE_SIZE,
   PROP_SWAP,
+  PROP_SWAP_COMPRESSION,
   PROP_TILE_WIDTH,
   PROP_TILE_HEIGHT,
   PROP_QUEUE_SIZE,
@@ -65,6 +66,10 @@ gegl_buffer_config_get_property (GObject    *gobject,
 
       case PROP_SWAP:
         g_value_set_string (value, config->swap);
+        break;
+
+      case PROP_SWAP_COMPRESSION:
+        g_value_set_string (value, config->swap_compression);
         break;
 
       case PROP_QUEUE_SIZE:
@@ -103,6 +108,10 @@ gegl_buffer_config_set_property (GObject      *gobject,
         g_free (config->swap);
         config->swap = g_value_dup_string (value);
         break;
+      case PROP_SWAP_COMPRESSION:
+        g_free (config->swap_compression);
+        config->swap_compression = g_value_dup_string (value);
+        break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, property_id, pspec);
         break;
@@ -115,6 +124,7 @@ gegl_buffer_config_finalize (GObject *gobject)
   GeglBufferConfig *config = GEGL_BUFFER_CONFIG (gobject);
 
   g_free (config->swap);
+  g_free (config->swap_compression);
 
   G_OBJECT_CLASS (gegl_buffer_config_parent_class)->finalize (gobject);
 }
@@ -160,6 +170,14 @@ gegl_buffer_config_class_init (GeglBufferConfigClass *klass)
                                                         "Swap",
                                                         "where gegl stores it's swap files",
                                                         NULL,
+                                                        G_PARAM_READWRITE |
+                                                        G_PARAM_CONSTRUCT));
+
+  g_object_class_install_property (gobject_class, PROP_SWAP_COMPRESSION,
+                                   g_param_spec_string ("swap-compression",
+                                                        "Swap compression",
+                                                        "compression algorithm used for data stored in the swap",
+                                                        "fast",
                                                         G_PARAM_READWRITE |
                                                         G_PARAM_CONSTRUCT));
 

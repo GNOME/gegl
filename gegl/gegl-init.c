@@ -77,6 +77,7 @@ guint gegl_debug_flags = 0;
 #include "buffer/gegl-buffer-private.h"
 #include "buffer/gegl-buffer-iterator-private.h"
 #include "buffer/gegl-buffer-swap-private.h"
+#include "buffer/gegl-compression.h"
 #include "buffer/gegl-tile-backend-ram.h"
 #include "buffer/gegl-tile-backend-file.h"
 #include "gegl-config.h"
@@ -196,13 +197,14 @@ gegl_init (gint    *argc,
   g_option_context_free (context);
 }
 
-static gchar    *cmd_gegl_swap           = NULL;
-static gchar    *cmd_gegl_cache_size     = NULL;
-static gchar    *cmd_gegl_chunk_size     = NULL;
-static gchar    *cmd_gegl_quality        = NULL;
-static gchar    *cmd_gegl_tile_size      = NULL;
-static gchar    *cmd_gegl_threads        = NULL;
-static gboolean *cmd_gegl_disable_opencl = NULL;
+static gchar    *cmd_gegl_swap             = NULL;
+static gchar    *cmd_gegl_swap_compression = NULL;
+static gchar    *cmd_gegl_cache_size       = NULL;
+static gchar    *cmd_gegl_chunk_size       = NULL;
+static gchar    *cmd_gegl_quality          = NULL;
+static gchar    *cmd_gegl_tile_size        = NULL;
+static gchar    *cmd_gegl_threads          = NULL;
+static gboolean *cmd_gegl_disable_opencl   = NULL;
 
 static const GOptionEntry cmd_entries[]=
 {
@@ -210,6 +212,11 @@ static const GOptionEntry cmd_entries[]=
      "gegl-swap", 0, 0,
      G_OPTION_ARG_STRING, &cmd_gegl_swap,
      N_("Where GEGL stores its swap"), "<uri>"
+    },
+    {
+     "gegl-swap-compression", 0, 0,
+     G_OPTION_ARG_STRING, &cmd_gegl_swap_compression,
+     N_("Compression algorithm used for data stored in the swap"), "<algorithm>"
     },
     {
      "gegl-cache-size", 0, 0,
@@ -334,6 +341,13 @@ static void gegl_config_parse_env (GeglConfig *config)
 
   if (g_getenv ("GEGL_SWAP"))
     g_object_set (config, "swap", g_getenv ("GEGL_SWAP"), NULL);
+
+  if (g_getenv ("GEGL_SWAP_COMPRESSION"))
+    {
+      g_object_set (config,
+                    "swap-compression", g_getenv ("GEGL_SWAP_COMPRESSION"),
+                    NULL);
+    }
 }
 
 GeglConfig *gegl_config (void)
@@ -374,6 +388,7 @@ gegl_exit (void)
   gegl_tile_cache_destroy ();
   gegl_operation_gtype_cleanup ();
   gegl_operation_handlers_cleanup ();
+  gegl_compression_cleanup ();
   gegl_random_cleanup ();
   gegl_parallel_cleanup ();
   gegl_buffer_swap_cleanup ();
@@ -525,6 +540,8 @@ gegl_post_parse_hook (GOptionContext *context,
 
   if (cmd_gegl_swap)
     g_object_set (config, "swap", cmd_gegl_swap, NULL);
+  if (cmd_gegl_swap_compression)
+    g_object_set (config, "swap-compression", cmd_gegl_swap_compression, NULL);
   if (cmd_gegl_quality)
     config->quality = atof (cmd_gegl_quality);
   if (cmd_gegl_cache_size)
@@ -567,6 +584,7 @@ gegl_post_parse_hook (GOptionContext *context,
 
   gegl_buffer_swap_init ();
   gegl_parallel_init ();
+  gegl_compression_init ();
   gegl_operation_gtype_init ();
   gegl_tile_cache_init ();
 

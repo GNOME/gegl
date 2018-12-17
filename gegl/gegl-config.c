@@ -41,6 +41,7 @@ enum
   PROP_TILE_CACHE_SIZE,
   PROP_CHUNK_SIZE,
   PROP_SWAP,
+  PROP_SWAP_COMPRESSION,
   PROP_TILE_WIDTH,
   PROP_TILE_HEIGHT,
   PROP_THREADS,
@@ -83,6 +84,10 @@ gegl_config_get_property (GObject    *gobject,
 
       case PROP_SWAP:
         g_value_set_string (value, config->swap);
+        break;
+
+      case PROP_SWAP_COMPRESSION:
+        g_value_set_string (value, config->swap_compression);
         break;
 
       case PROP_THREADS:
@@ -136,6 +141,10 @@ gegl_config_set_property (GObject      *gobject,
         g_free (config->swap);
         config->swap = g_value_dup_string (value);
         break;
+      case PROP_SWAP_COMPRESSION:
+        g_free (config->swap_compression);
+        config->swap_compression = g_value_dup_string (value);
+        break;
       case PROP_THREADS:
         _gegl_threads = g_value_get_int (value);
         return;
@@ -161,6 +170,7 @@ gegl_config_finalize (GObject *gobject)
   GeglConfig *config = GEGL_CONFIG (gobject);
 
   g_free (config->swap);
+  g_free (config->swap_compression);
   g_free (config->application_license);
 
   G_OBJECT_CLASS (gegl_config_parent_class)->finalize (gobject);
@@ -222,6 +232,13 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                         NULL,
                                                         G_PARAM_READWRITE));
 
+  g_object_class_install_property (gobject_class, PROP_SWAP_COMPRESSION,
+                                   g_param_spec_string ("swap-compression",
+                                                        "Swap compression",
+                                                        "compression algorithm used for data stored in the swap",
+                                                        NULL,
+                                                        G_PARAM_READWRITE));
+
   _gegl_threads = g_get_num_processors ();
   _gegl_threads = MIN (_gegl_threads, GEGL_MAX_THREADS);
   g_object_class_install_property (gobject_class, PROP_THREADS,
@@ -261,6 +278,7 @@ static void
 gegl_config_init (GeglConfig *self)
 {
   char *forward_props[]={"swap",
+                         "swap-compression",
                          "queue-size",
                          "tile-width",
                          "tile-height",

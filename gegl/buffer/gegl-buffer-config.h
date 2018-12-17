@@ -44,6 +44,7 @@ struct _GeglBufferConfig
   GObject  parent_instance;
 
   gchar   *swap;
+  gchar   *swap_compression;
   guint64  tile_cache_size;
   gint     tile_width;
   gint     tile_height;
