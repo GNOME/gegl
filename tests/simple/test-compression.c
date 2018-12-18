@@ -159,6 +159,8 @@ main (gint    argc,
 
 fail:
       printf ("FAIL\n");
+
+      result = FAILURE;
     }
 
   g_free (algorithms);
