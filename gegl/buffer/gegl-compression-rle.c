@@ -28,6 +28,15 @@
 #define RLE_DECOMPRESS_REPEAT_UNROLL   16
 
 
+#ifdef G_GNUC_NO_INLINE
+  #define RLE_NOINLINE G_GNUC_NO_INLINE
+#elif defined (__GNUC__)
+  #define RLE_NOINLINE __attribute__ ((noinline))
+#else
+  #define RLE_NOINLINE
+#endif
+
+
 #ifdef RLE_BITS
 
 
@@ -41,7 +50,7 @@
 
 /*  private functions  */
 
-G_GNUC_NO_INLINE
+RLE_NOINLINE
 static gboolean
 gegl_compression_rle_compress_pass (const guint8 *data,
                                     gint          n,
@@ -311,7 +320,7 @@ end:
 
 /*  private functions  */
 
-G_GNUC_NO_INLINE
+RLE_NOINLINE
 static void
 gegl_compression_rle_decompress_pass (guint8        *data,
                                       gint           n,
