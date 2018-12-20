@@ -1110,7 +1110,7 @@ gegl_node_blit_buffer (GeglNode            *self,
 
   if (result)
     {
-      if (buffer)
+      if (buffer && buffer != result)
         gegl_buffer_copy (result, &request, GEGL_ABYSS_NONE, buffer, NULL);
       g_object_unref (result);
     }
