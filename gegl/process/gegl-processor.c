@@ -431,7 +431,6 @@ render_rectangle (GeglProcessor *processor)
   const gint  max_area = processor->chunk_size * (1<<processor->level) * (1<<processor->level);
   GeglCache  *cache    = NULL;
   const Babl *format   = NULL;
-  gint        pxsize;
 
   /* Retrieve the cache if the processor's node is not buffered if its
    * operation is a sink and it doesn't use the full area  */
@@ -441,7 +440,6 @@ render_rectangle (GeglProcessor *processor)
     {
       cache = gegl_node_get_cache (processor->input);
       format = gegl_buffer_get_format ((GeglBuffer *)cache);
-      pxsize = babl_format_get_bytes_per_pixel (format);
     }
 
   if (processor->dirty_rectangles)
@@ -507,31 +505,13 @@ render_rectangle (GeglProcessor *processor)
 
           if (!found_full)
             {
-              /* create a buffer and initialise it */
-              guchar *buf;
-
-              buf = g_malloc (dr->width * dr->height * pxsize);
-              g_assert (buf);
-
-              /* FIXME: Check if the node caches naturally, if so the buffer_set call isn't needed */
-
               /* do the image calculations using the buffer */
               gegl_node_blit (processor->input, 1.0/(1<<processor->level),
-                              dr, format, buf,
-                              GEGL_AUTO_ROWSTRIDE, GEGL_BLIT_DEFAULT);
-
-              /* copy the buffer data into the cache */
-              {
-                gint level = processor->level;
-                GeglRectangle sr = {dr->x >> level, dr->y >> level, dr->width >> level, dr->height >> level };
-                gegl_buffer_set (GEGL_BUFFER (cache), &sr, level, format, buf, GEGL_AUTO_ROWSTRIDE);
-              }
+                              dr, format, NULL,
+                              GEGL_AUTO_ROWSTRIDE, GEGL_BLIT_CACHE);
 
               /* tells the cache that the rectangle (dr) has been computed */
               gegl_cache_computed (cache, dr, processor->level);
-
-              /* release the buffer */
-              g_free (buf);
             }
           g_slice_free (GeglRectangle, dr);
         }
