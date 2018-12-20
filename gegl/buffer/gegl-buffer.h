@@ -383,8 +383,7 @@ void            gegl_buffer_clear             (GeglBuffer          *buffer,
  * @src_rect: source rectangle (or NULL to copy entire source buffer)
  * @repeat_mode: the abyss policy to be using if src_rect is outside src's extent.
  * @dst: (transfer none): destination buffer.
- * @dst_rect: position of upper left destination pixel, or NULL for top
- * left coordinates of the buffer extents.
+ * @dst_rect: position of upper left destination pixel (or NULL to match @src_rect)
  *
  * Copy a region from source buffer to destination buffer.
  *
