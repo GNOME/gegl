@@ -1105,12 +1105,13 @@ ensure_flattened (GeglPath *vector)
   gint i;
   GeglPathList *path = priv->path;
   GeglPathList *new_path;
+  GeglPathList *old_path = NULL;
   GeglPathClass *klass= GEGL_PATH_GET_CLASS (vector);
 
   if (priv->flat_path_clean)
     return;
   if (priv->flat_path)
-    gegl_path_list_destroy (priv->flat_path);
+    old_path = priv->flat_path;
 
   for (i=0;klass->flattener[i];i++)
     {
@@ -1124,6 +1125,8 @@ ensure_flattened (GeglPath *vector)
     }
 
   priv->flat_path = gegl_path_list_flatten (&priv->matrix, path);
+  if (old_path)
+    gegl_path_list_destroy (old_path);
   if (path != priv->path)
     gegl_path_list_destroy (path);
   priv->flat_path_clean = TRUE;
