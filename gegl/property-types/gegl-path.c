@@ -519,7 +519,7 @@ gegl_path_calc (GeglPath   *self,
                 gdouble    *yd)
 {
   GeglPathPrivate *priv = GEGL_PATH_GET_PRIVATE (self);
-  GeglPathList *entry = priv->flat_path;
+  GeglPathList *entry;
   GeglPathList *stop  = NULL;
   gdouble rel_pos  = 0.0;
   gdouble leftover = 0.0;
@@ -528,6 +528,7 @@ gegl_path_calc (GeglPath   *self,
   if (!self)
     return FALSE;
   ensure_flattened (self);
+  entry = priv->flat_path;
 
   if (priv->calc_clean && (pos > priv->calc_leftover))
     {
