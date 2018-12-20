@@ -313,6 +313,8 @@ gegl_operation_context_get_target (GeglOperationContext *context,
   g_return_val_if_fail (GEGL_IS_OPERATION_CONTEXT (context), NULL);
 #endif
 
+  g_return_val_if_fail (g_strcmp0 (padname, "output") == 0, NULL);
+
   if (linear_buffers == -1)
     linear_buffers = g_getenv ("GEGL_LINEAR_BUFFERS")?1:0;
 
@@ -327,7 +329,6 @@ gegl_operation_context_get_target (GeglOperationContext *context,
       format = gegl_babl_rgba_linear_float ();
     }
   g_assert (format != NULL);
-  g_assert (!strcmp (padname, "output"));
 
   result = &context->result_rect;
 
