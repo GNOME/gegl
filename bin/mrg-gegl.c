@@ -45,6 +45,15 @@
 static unsigned char *copy_buf = NULL;
 static int copy_buf_len = 0;
 
+void mrg_gegl_buffer_blit (Mrg *mrg,
+                           float x0, float y0,
+                           float width, float height,
+                           GeglBuffer *buffer,
+                           float u, float v,
+                           float scale,
+                           float preview_multiplier);
+
+
 void mrg_gegl_blit (Mrg *mrg,
                     float x0, float y0,
                     float width, float height,
@@ -52,6 +61,94 @@ void mrg_gegl_blit (Mrg *mrg,
                     float u, float v,
                     float scale,
                     float preview_multiplier);
+
+
+void mrg_gegl_buffer_blit (Mrg *mrg,
+                           float x0, float y0,
+                           float width, float height,
+                           GeglBuffer *buffer,
+                           float u, float v,
+                           float scale,
+                           float preview_multiplier)
+{
+  float fake_factor = preview_multiplier;
+  GeglRectangle bounds;
+
+  cairo_t *cr = mrg_cr (mrg);
+  cairo_surface_t *surface = NULL;
+
+  if (!buffer)
+    return;
+
+  bounds = *gegl_buffer_get_extent (buffer);
+
+  if (width == -1 && height == -1)
+  {
+    width  = bounds.width;
+    height = bounds.height;
+  }
+
+  if (width == -1)
+    width = bounds.width * height / bounds.height;
+  if (height == -1)
+    height = bounds.height * width / bounds.width;
+
+  width /= fake_factor;
+  height /= fake_factor;
+  u /= fake_factor;
+  v /= fake_factor;
+
+  if (copy_buf_len < width * height * 4)
+  {
+    if (copy_buf)
+      free (copy_buf);
+    copy_buf_len = width * height * 4;
+    copy_buf = malloc (copy_buf_len);
+  }
+  {
+    static int foo = 0;
+    unsigned char *buf = copy_buf;
+    GeglRectangle roi = {u, v, width, height};
+    static const Babl *fmt = NULL;
+
+foo++;
+    if (!fmt)
+    {
+      int icc_length = 0;
+      unsigned const char *icc_data = mrg_get_profile (mrg, &icc_length);
+      const Babl *space = NULL;
+      if (icc_data)
+         space = babl_space_from_icc ((char*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, NULL);
+      fmt = babl_format_with_space ("cairo-RGB24", space);
+      fmt = babl_format_with_space ("cairo-RGB24", NULL);
+    }
+    gegl_buffer_get (buffer, &roi, scale / fake_factor, fmt, buf, width * 4,
+         GEGL_ABYSS_NONE);
+  surface = cairo_image_surface_create_for_data (buf, CAIRO_FORMAT_RGB24, width, height, width * 4);
+  }
+
+  cairo_save (cr);
+  cairo_surface_set_device_scale (surface, 1.0/fake_factor, 1.0/fake_factor);
+
+  width *= fake_factor;
+  height *= fake_factor;
+  u *= fake_factor;
+  v *= fake_factor;
+
+  cairo_rectangle (cr, x0, y0, width, height);
+
+  cairo_clip (cr);
+  cairo_translate (cr, x0 * fake_factor, y0 * fake_factor);
+  cairo_pattern_set_filter (cairo_get_source (cr), CAIRO_FILTER_NEAREST);
+  cairo_set_source_surface (cr, surface, 0, 0);
+
+  cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
+  cairo_paint (cr);
+  cairo_surface_destroy (surface);
+  cairo_restore (cr);
+}
+
+
 
 void mrg_gegl_blit (Mrg *mrg,
                     float x0, float y0,

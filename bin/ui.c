@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (C) 2015 Øyvind Kolås pippin@gimp.org
+ * Copyright (C) 2015, 2018 Øyvind Kolås pippin@gimp.org
  */
 
 /* The code in this file is an image viewer/editor written using microraptor
@@ -52,6 +52,14 @@ void mrg_gegl_blit (Mrg *mrg,
                     float u, float v,
                     float scale,
                     float preview_multiplier);
+
+void mrg_gegl_buffer_blit (Mrg *mrg,
+                           float x0, float y0,
+                           float width, float height,
+                           GeglBuffer *buffer,
+                           float u, float v,
+                           float scale,
+                           float preview_multiplier);
 
 
 //static int audio_start = 0; /* which sample no is at the start of our circular buffer */
