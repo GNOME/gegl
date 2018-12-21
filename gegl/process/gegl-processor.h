@@ -78,6 +78,17 @@ void           gegl_processor_set_rectangle (GeglProcessor       *processor,
  */
 gboolean       gegl_processor_work          (GeglProcessor *processor,
                                              gdouble       *progress);
+/**
+ * gegl_processor_get_buffer:
+ * @processor: a #GeglProcessor
+ *
+ * Returns the (cache) buffer the processor is rendering into, another way of
+ * getting to the same pixel data is calling gegl_node_blit with flags
+ * indicating that we want caching and accept dirty data.
+ */
+
+GeglBuffer *gegl_processor_get_buffer (GeglProcessor *processor);
+
 
 G_END_DECLS
 

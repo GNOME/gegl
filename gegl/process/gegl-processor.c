@@ -819,6 +819,13 @@ void gegl_processor_set_level (GeglProcessor *processor,
   processor->level = level;
   set_scaled_rectangle (processor);
 }
+
+GeglBuffer *gegl_processor_get_buffer (GeglProcessor *processor)
+{
+  return processor?GEGL_BUFFER(gegl_node_get_cache (processor->input)):NULL;
+}
+
+
 void gegl_processor_set_scale (GeglProcessor *processor,
                                gdouble        scale)
 {
