@@ -131,7 +131,7 @@ struct _State {
   int         rev;
   float       u, v;
   float       scale;
-  int         show_actions;
+  int         show_graph;
   int         show_controls;
   float       render_quality;
   float       preview_quality;
@@ -347,7 +347,6 @@ static gboolean renderer_task (gpointer data)
 static int has_quit = 0;
 static gpointer renderer_thread (gpointer data)
 {
-  State *o = data;
   while (!has_quit)
   {
     renderer_task (data);
@@ -417,6 +416,8 @@ int mrg_ui_main (int argc, char **argv, char **ops)
       break;
   }
 
+  if (o.active)
+    o.show_graph = 1;
 
   mrg_main (mrg);
   has_quit = 1;
@@ -2130,7 +2131,7 @@ static void list_ops (State *o, GeglNode *iter, int indent)
 {
   Mrg *mrg = o->mrg;
   
-  while (iter && iter != o->source)
+  while (iter) // && iter != o->source)
    {
      char *opname = NULL;
 
@@ -2545,12 +2546,15 @@ static void run_command (MrgEvent *event, void *data1, void *data2)
 
 }
 
-
 static void commandline_run (MrgEvent *event, void *data1, void *data2)
 {
   State *o = data1;
   if (commandline[0])
     run_command (event, data1, commandline);
+  else
+    {
+      o->show_graph = !o->show_graph;
+    }
 
   commandline[0]=0;
   mrg_set_cursor_pos (event->mrg, 0);
@@ -2663,7 +2667,7 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   ui_canvas_handling (mrg, o);
 
-  if (o->show_actions || o->active)
+  if (o->show_graph)
   {
     ui_debug_op_chain (o);
   }
@@ -2695,7 +2699,7 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   if (!edited_prop && !o->editing_op_name)
   {
-    mrg_add_binding (mrg, "return", NULL, NULL, edit_op, o);
+    //mrg_add_binding (mrg, "return", NULL, NULL, edit_op, o);
     mrg_add_binding (mrg, "up", NULL, NULL, node_up, o);
     mrg_add_binding (mrg, "down", NULL, NULL, node_down, o);
     mrg_add_binding (mrg, "right", NULL, NULL, node_right, o);
@@ -3352,7 +3356,8 @@ static void scroll_cb (MrgEvent *event, void *data1, void *data2)
 static void toggle_actions_cb (MrgEvent *event, void *data1, void *data2)
 {
   State *o = data1;
-  o->show_actions = !o->show_actions;
+  o->show_graph = !o->show_graph;
+  fprintf (stderr, "!\n");
   mrg_queue_draw (o->mrg, NULL);
 }
 
@@ -3363,68 +3368,6 @@ static void toggle_fullscreen_cb (MrgEvent *event, void *data1, void *data2)
   mrg_event_stop_propagate (event);
   mrg_add_timeout (event->mrg, 250, deferred_zoom_to_fit, o);
 }
-
-#if 0
-static void activate_op_cb (MrgEvent *event, void *data1, void *data2)
-{
-  State *o = data1;
-  GeglNode *found;
-  //ActionData *ad = data2;
-  o->show_actions = 0;
-  o->rev ++;
-  found = locate_node (o, ad->op_name);
-  if (found)
-    {
-       o->active = found;
-       if (!strcmp (ad->op_name, "gegl:crop"))
-         o->rotate = locate_node (o, "gegl:rotate");
-    }
-  else
-    {
-      if (!strcmp (ad->op_name, "gegl:rotate"))
-      {
-        const GeglRectangle *extent = gegl_buffer_get_extent (o->buffer);
-        o->active = gegl_node_new_child (o->gegl,
-          "operation", ad->op_name, NULL);
-           gegl_node_set (o->active, "origin-x", extent->width * 0.5,
-                                     "origin-y", extent->height * 0.5,
-                                     "degrees", 0.0,
-                                     NULL);
-      } else if (!strcmp (ad->op_name, "gegl:crop"))
-      {
-         const GeglRectangle *extent = gegl_buffer_get_extent (o->buffer);
-         o->active = gegl_node_new_child (o->gegl,
-            "operation", ad->op_name, NULL);
-            gegl_node_set (o->active, "x", 0.0,
-                                      "y", 0.0,
-                                      "width", extent->width * 1.0,
-                                      "height", extent->height * 1.0,
-                                      NULL);
-        o->rotate = gegl_node_new_child (o->gegl,
-          "operation", "gegl:rotate", NULL);
-           gegl_node_set (o->rotate, "origin-x", extent->width * 0.5,
-                                     "origin-y", extent->height * 0.5,
-                                     "degrees", 0.0,
-                                     NULL);
-
-       gegl_node_link_many (gegl_node_get_producer (o->sink, "input", NULL),
-                              o->rotate,
-                              o->sink,
-                              NULL);
-
-       } else
-       {
-          o->active = gegl_node_new_child (o->gegl, "operation", ad->op_name, NULL);
-       }
-
-       gegl_node_link_many (gegl_node_get_producer (o->sink, "input", NULL),
-                              o->active,
-                              o->sink,
-                              NULL);
-  }
-  mrg_queue_draw (o->mrg, NULL);
-}
-#endif
 
 static void discard_cb (MrgEvent *event, void *data1, void *data2)
 {
