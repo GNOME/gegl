@@ -400,8 +400,6 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   hack_state = &o;
   on_viewer_motion (NULL, &o, NULL);
 
-  if (o.ops)
-    o.active = gegl_node_get_producer (o.sink, "input", NULL);
 
   switch (renderer)
   {
@@ -416,8 +414,15 @@ int mrg_ui_main (int argc, char **argv, char **ops)
       break;
   }
 
-  if (o.active)
+  if (o.ops)
+  {
+    o.active = gegl_node_get_producer (o.sink, "input", NULL);
     o.show_graph = 1;
+  }
+  else
+  {
+    o.active = gegl_node_get_producer (o.sink, "input", NULL);
+  }
 
   mrg_main (mrg);
   has_quit = 1;
@@ -462,12 +467,24 @@ static void on_viewer_motion (MrgEvent *e, void *data1, void *data2)
   }
 }
 
+static int node_select_hack = 0;
+static void node_press (MrgEvent *e, void *data1, void *data2)
+{
+  State *o = data2;
+  GeglNode *new_active = data1;
 
+  o->active = new_active;
+  mrg_event_stop_propagate (e);
+  node_select_hack = 1;
+
+  mrg_queue_draw (e->mrg, NULL);
+}
 
 static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
 {
   State *o = data1;
-  if (e->type == MRG_CLICK)
+
+  if (e->type == MRG_DRAG_RELEASE && node_select_hack == 0)
   {
     float x = (e->x + o->u) / o->scale;
     float y = (e->y + o->v) / o->scale;
@@ -492,8 +509,9 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
     o->u -= (e->delta_x );
     o->v -= (e->delta_y );
     mrg_queue_draw (e->mrg, NULL);
+    mrg_event_stop_propagate (e);
   }
-  mrg_event_stop_propagate (e);
+  node_select_hack = 0;
   drag_preview (e);
 }
 
@@ -936,16 +954,6 @@ static void draw_gegl_crop (State *o, Mrg *mrg, cairo_t *cr, GeglNode *node)
 }
 #endif
 #if DEBUG_OP_LIST
-
-static void node_press (MrgEvent *e, void *data1, void *data2)
-{
-  State *o = data2;
-  GeglNode *new_active = data1;
-
-  o->active = new_active;
-  
-  mrg_queue_draw (e->mrg, NULL);
-}
 
 static void node_remove (MrgEvent *e, void *data1, void *data2)
 {
@@ -1744,7 +1752,7 @@ static void ui_canvas_handling (Mrg *mrg, State *o)
   {
     case TOOL_PAN:
       cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
-      mrg_listen (mrg, MRG_DRAG|MRG_CLICK, on_pan_drag, o, NULL);
+      mrg_listen (mrg, MRG_DRAG, on_pan_drag, o, NULL);
       mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
       mrg_listen (mrg, MRG_SCROLL, scroll_cb, o, NULL);
       cairo_new_path (mrg_cr (mrg));
@@ -1764,16 +1772,6 @@ static void ui_canvas_handling (Mrg *mrg, State *o)
   }
 }
 
-
-static void node_press (MrgEvent *e, void *data1, void *data2)
-{
-  State *o = data2;
-  GeglNode *new_active = data1;
-
-  o->active = new_active;
-  
-  mrg_queue_draw (e->mrg, NULL);
-}
 
 static void node_remove (MrgEvent *e, void *data1, void *data2)
 {
@@ -2084,7 +2082,7 @@ static void node_down (MrgEvent *event, void *data1, void *data2)
   if (o->active == NULL)
     return;
   ref = gegl_node_get_producer (o->active, "input", NULL);
-  if (ref && ref != o->source)
+  if (ref) // && ref != o->source)
     o->active = ref;
   mrg_queue_draw (event->mrg, NULL);
 }

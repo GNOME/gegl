@@ -142,7 +142,7 @@ gegl_processor_init (GeglProcessor *processor)
   processor->context          = NULL;
   processor->queued_region    = NULL;
   processor->dirty_rectangles = NULL;
-  processor->chunk_size       = 128 * 128;
+  //processor->chunk_size       = 128 * 128;
 }
 
 static void
@@ -428,7 +428,7 @@ static gboolean
 render_rectangle (GeglProcessor *processor)
 {
   gboolean    buffered;
-  const gint  max_area = processor->chunk_size * (1<<processor->level) * (1<<processor->level);
+  const gint  max_area = processor->chunk_size * (1<<processor->level) * (1<<processor->level) * gegl_config_threads();
   GeglCache  *cache    = NULL;
   const Babl *format   = NULL;
 
