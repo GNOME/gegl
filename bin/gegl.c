@@ -106,7 +106,12 @@ main (gint    argc,
   gchar       *path_root = NULL;
 
 #if HAVE_MRG
-  g_setenv ("GEGL_MIPMAP_RENDERING", "1", TRUE);
+  const gchar *renderer = g_getenv ("GEGL_RENDERER");
+  if (renderer && ( !strcmp (renderer, "blit-mipmap") ||
+                    !strcmp (renderer, "mipmap")))
+    g_setenv ("GEGL_MIPMAP_RENDERING", "1", TRUE);
+
+
 #endif
 
   g_object_set (gegl_config (),

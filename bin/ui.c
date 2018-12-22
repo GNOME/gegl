@@ -66,6 +66,16 @@ void mrg_gegl_buffer_blit (Mrg *mrg,
 
 static int audio_started = 0;
 
+enum {
+  GEGL_RENDERER_BLIT = 0,
+  GEGL_RENDERER_BLIT_MIPMAP,
+  GEGL_RENDERER_THREAD,
+  GEGL_RENDERER_IDLE,
+  //GEGL_RENDERER_IDLE_MIPMAP,
+  //GEGL_RENDERER_THREAD_MIPMAP,
+};
+static int renderer = GEGL_RENDERER_BLIT;
+
 /*  this structure contains the full application state, and is what
  *  re-renderings of the UI is directly based on.
  */
@@ -84,6 +94,13 @@ struct _State {
   GeglNode   *save;
   GeglNode   *active;
   GeglNode   *rotate;
+  GThread    *thread;
+
+  GeglNode      *processor_node; /* the node we have a processor for */
+  GeglProcessor *processor;
+  GeglBuffer    *processor_buffer;
+  int            renderer_state;
+  int            renderer_dirty;
   int         rev;
   float       u, v;
   float       scale;
@@ -96,6 +113,7 @@ struct _State {
   float       slide_pause;
   int         slide_enabled;
   int         slide_timeout;
+
   GeglNode   *gegl_decode;
   GeglNode   *decode_load;
   GeglNode   *decode_store;
@@ -275,10 +293,77 @@ static void end_audio (void)
 {
 }
 
+static gboolean renderer_task (gpointer data)
+{
+  State *o = data;
+  static gdouble progress = 0.0;
+  void *old_processor = o->processor;
+  GeglBuffer *old_buffer = o->processor_buffer;
+  switch (o->renderer_state)
+  {
+    case 0:
+      if (o->renderer_dirty > 0)
+      {
+      o->renderer_dirty = 0; // do it early - permitting async reset
+      if (o->processor_node != o->sink)
+      {
+        o->processor = gegl_node_new_processor (o->sink, NULL);
+        o->processor_buffer = g_object_ref (gegl_processor_get_buffer (o->processor));
+        if (old_buffer)
+          g_object_unref (old_buffer);
+        if (old_processor)
+          g_object_unref (old_processor);
+
+        gegl_processor_set_rectangle (o->processor, NULL);
+      }
+      o->renderer_state = 1;
+      }
+      //break; // fallthrough
+    case 1:
+
+       if (gegl_processor_work (o->processor, &progress))
+         o->renderer_state = 1;
+       else
+         o->renderer_state = 2;
+      break;
+    case 2:
+      o->renderer_state = 0;
+      break;
+  }
+  return TRUE;
+}
+
+static int has_quit = 0;
+static gpointer renderer_thread (gpointer data)
+{
+  State *o = data;
+  while (!has_quit)
+  {
+    int state = o->renderer_state;
+    renderer_task (data);
+    if (state == 2 && o->renderer_dirty == 0)
+      g_usleep (40000);
+  }
+  return 0;
+}
+
+
+
 int mrg_ui_main (int argc, char **argv, char **ops)
 {
   Mrg *mrg = mrg_new (1024, 768, NULL);
+  const char *renderer_env = g_getenv ("GEGL_RENDERER");
+
   State o = {NULL,};
+
+  if (renderer_env)
+  {
+    if (!strcmp (renderer_env, "blit")) renderer = GEGL_RENDERER_BLIT;
+    if (!strcmp (renderer_env, "blit-mipmap")) renderer = GEGL_RENDERER_BLIT_MIPMAP;
+    if (!strcmp (renderer_env, "mipmap")) renderer = GEGL_RENDERER_BLIT_MIPMAP;
+    if (!strcmp (renderer_env, "thread")) renderer = GEGL_RENDERER_THREAD;
+    if (!strcmp (renderer_env, "idle")) renderer = GEGL_RENDERER_IDLE;
+  }
 
   mrg_set_title (mrg, "GEGL");
 /* we want to see the speed gotten if the fastest babl conversions we have were more accurate */
@@ -311,9 +396,32 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   if (o.ops)
     o.active = gegl_node_get_producer (o.sink, "input", NULL);
 
-  mrg_main (mrg);
+  o.renderer_dirty = 1;
 
-  g_object_unref (o.gegl);
+
+  switch (renderer)
+  {
+    case GEGL_RENDERER_THREAD:
+      o.thread = g_thread_new ("renderer", renderer_thread, &o);
+      break;
+    case GEGL_RENDERER_IDLE:
+      g_idle_add (renderer_task, &o);
+      break;
+    case GEGL_RENDERER_BLIT:
+    case GEGL_RENDERER_BLIT_MIPMAP:
+      break;
+  }
+
+
+  mrg_main (mrg);
+  has_quit = 1;
+  if (renderer == GEGL_RENDERER_THREAD)
+    g_thread_join (o.thread);
+
+
+  g_clear_object (&o.gegl);
+  g_clear_object (&o.processor);
+  g_clear_object (&o.processor_buffer);
   g_clear_object (&o.buffer);
   gegl_exit ();
 
@@ -999,14 +1107,34 @@ static void gegl_ui (Mrg *mrg, void *data)
 {
   State *o = data;
 
-
-  mrg_gegl_blit (mrg,
-                 0, 0,
-                 mrg_width (mrg), mrg_height (mrg),
-                 o->sink,
-                 o->u, o->v,
-                 o->scale,
-                 o->render_quality);
+  switch (renderer)
+  {
+     case GEGL_RENDERER_BLIT:
+     case GEGL_RENDERER_BLIT_MIPMAP:
+       mrg_gegl_blit (mrg,
+                      0, 0,
+                      mrg_width (mrg), mrg_height (mrg),
+                      o->sink,
+                      o->u, o->v,
+                      o->scale,
+                      o->render_quality);
+     break;
+     case GEGL_RENDERER_THREAD:
+     case GEGL_RENDERER_IDLE:
+       if (o->processor_buffer)
+       {
+         GeglBuffer *buffer = g_object_ref (o->processor_buffer);
+         mrg_gegl_buffer_blit (mrg,
+                               0, 0,
+                               mrg_width (mrg), mrg_height (mrg),
+                               buffer,
+                               o->u, o->v,
+                               o->scale,
+                               o->render_quality);
+                               g_object_unref (buffer);
+       }
+       break;
+  }
 
   if (g_str_has_suffix (o->path, ".gif") ||
       g_str_has_suffix (o->path, ".GIF"))
