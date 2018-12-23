@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-12-04 01:01+0000\n"
-"PO-Revision-Date: 2018-12-09 12:19+0100\n"
+"POT-Creation-Date: 2018-12-17 11:40+0000\n"
+"PO-Revision-Date: 2018-12-23 13:38+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -320,31 +320,36 @@ msgstr "Percepcyjnie odwrócone mnożenie, jeśli alfa"
 msgid "add-alpha"
 msgstr "dodaj-alfę"
 
-#: gegl/gegl-init.c:212
+#: gegl/gegl-init.c:214
 msgid "Where GEGL stores its swap"
 msgstr "Gdzie biblioteka GEGL przechowuje obszar wymiany"
 
-#: gegl/gegl-init.c:217
+#: gegl/gegl-init.c:219
+msgid "Compression algorithm used for data stored in the swap"
+msgstr ""
+"Algorytm kompresji używany dla danych przechowywanych w obszarze wymiany"
+
+#: gegl/gegl-init.c:224
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Ile pamięci (w przybliżeniu) do użycia do pamięci tymczasowej obrazów"
 
-#: gegl/gegl-init.c:222
+#: gegl/gegl-init.c:229
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Domyślny rozmiar kafla w GeglBuffer"
 
-#: gegl/gegl-init.c:227
+#: gegl/gegl-init.c:234
 msgid "The count of pixels to compute simultaneously"
 msgstr "Liczba pikseli do jednoczesnego obliczania"
 
-#: gegl/gegl-init.c:232
+#: gegl/gegl-init.c:239
 msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
 msgstr "Jakość wyświetlania, wartość między 0,0 (szybkie) a 1,0 (standardowe)"
 
-#: gegl/gegl-init.c:237
+#: gegl/gegl-init.c:244
 msgid "The number of concurrent processing threads to use"
 msgstr "Liczba jednocześnie używanych wątków przetwarzania"
 
-#: gegl/gegl-init.c:242
+#: gegl/gegl-init.c:249
 msgid "Disable OpenCL"
 msgstr "Wyłącza OpenCL"
 
@@ -550,7 +555,7 @@ msgstr ""
 "Mocno zniekształca kolory obrazu przez zastosowanie funkcji "
 "trygonometrycznych na wartości mapy kolorów."
 
-#: operations/common/bilateral-filter.c:26 operations/common/dropshadow.c:37
+#: operations/common/bilateral-filter.c:26 operations/common/dropshadow.c:39
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 #: operations/workshop/domain-transform.c:28
@@ -847,7 +852,7 @@ msgid "Render a checkerboard pattern"
 msgstr "Renderuj wzór szachownicy"
 
 #: operations/common/color.c:24 operations/common/color.c:92
-#: operations/common/color-overlay.c:26 operations/common/dropshadow.c:43
+#: operations/common/color-overlay.c:26 operations/common/dropshadow.c:46
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
 #: operations/common/rectangle.c:48 operations/common/vignette.c:34
 #: operations/common-gpl3+/color-to-alpha.c:29
@@ -1595,7 +1600,7 @@ msgstr "X"
 msgid "Horizontal shadow offset"
 msgstr "Poziome przesunięcie cienia"
 
-#: operations/common/dropshadow.c:31 operations/common/layer.c:41
+#: operations/common/dropshadow.c:32 operations/common/layer.c:41
 #: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
@@ -1607,29 +1612,29 @@ msgstr "Poziome przesunięcie cienia"
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:32
+#: operations/common/dropshadow.c:33
 msgid "Vertical shadow offset"
 msgstr "Pionowe przesunięcie cienia"
 
 #. TRANSLATORS: the string 'black' should not be translated
-#: operations/common/dropshadow.c:45
+#: operations/common/dropshadow.c:48
 msgid "The shadow's color (defaults to 'black')"
 msgstr "Kolor cienia (domyślnie „black” — czarny)"
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:50 operations/common/layer.c:33
+#: operations/common/dropshadow.c:53 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:282
 #: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Krycie"
 
-#: operations/common/dropshadow.c:113
+#: operations/common/dropshadow.c:117
 msgid "Dropshadow"
 msgstr "Cień"
 
-#: operations/common/dropshadow.c:115
+#: operations/common/dropshadow.c:119
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Tworzy efekt cienia na buforze wejściowym"
 
@@ -1834,7 +1839,7 @@ msgstr "Czy kadrować obszar wyjściowy do obszaru wejściowego"
 msgid "Gaussian Blur"
 msgstr "Rozmycie Gaussa"
 
-#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1393
+#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1390
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -1856,7 +1861,7 @@ msgstr "Ułożenie"
 msgid "The orientation of the blur - hor/ver"
 msgstr "Orientacja rozmycia — pionowa/pozioma"
 
-#: operations/common/gblur-1d.c:1390
+#: operations/common/gblur-1d.c:1387
 msgid "1D Gaussian-blur"
 msgstr "Jednowymiarowe rozmycie Gaussa"
 
@@ -2756,11 +2761,11 @@ msgstr ""
 "proporcje mieszania, odczytywane jako ilość dodatkowego, 0=wejście 0,5=pół "
 "1,0=dodatkowe"
 
-#: operations/common/mix.c:91
+#: operations/common/mix.c:112
 msgid "Mix"
 msgstr "Mieszanie"
 
-#: operations/common/mix.c:94
+#: operations/common/mix.c:115
 msgid "do a lerp, linear interpolation (lerp) between input and aux"
 msgstr "wykonaj interpolację liniową „lerp” między wejściem a dodatkowym"
 
@@ -4554,7 +4559,7 @@ msgid "Mode of displacement"
 msgstr "Tryb przesunięcia"
 
 #: operations/common-gpl3+/displace.c:38 operations/external/npd.c:47
-#: operations/transform/transform-core.c:226 operations/workshop/ditto.c:27
+#: operations/transform/transform-core.c:233 operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Próbka"
 
@@ -4696,7 +4701,7 @@ msgstr "Wykrywanie krawędzi laplace"
 msgid "High-resolution edge detection"
 msgstr "Wykrywanie krawędzi wysokiej rozdzielczości"
 
-#: operations/common-gpl3+/emboss.c:26 operations/common-gpl3+/emboss.c:271
+#: operations/common-gpl3+/emboss.c:26 operations/common-gpl3+/emboss.c:280
 msgid "Emboss"
 msgstr "Wytłocz"
 
@@ -4724,7 +4729,7 @@ msgstr "Kąt wysokości (w stopniach)"
 msgid "Filter width"
 msgstr "Szerokość filtru"
 
-#: operations/common-gpl3+/emboss.c:275
+#: operations/common-gpl3+/emboss.c:284
 msgid "Simulates an image created by embossing"
 msgstr "Symuluje obraz utworzony przez wytłaczanie"
 
@@ -6852,7 +6857,7 @@ msgstr "Model zachowywania"
 msgid "When TRUE the model will not be freed"
 msgstr "Kiedy wynosi „true”, to model nie będzie zwalniany"
 
-#: operations/external/npd.c:50 operations/transform/transform-core.c:227
+#: operations/external/npd.c:50 operations/transform/transform-core.c:234
 #: operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Wewnętrznie używana próbka"
@@ -7240,11 +7245,11 @@ msgstr ""
 "liczba zmiennoprzecinkowa -1 oznacza automatycznie, 0 oznacza liczby "
 "całkowite, 1 oznacza liczby zmiennoprzecinkowe"
 
-#: operations/external/tiff-save.c:707
+#: operations/external/tiff-save.c:728
 msgid "TIFF File Saver"
 msgstr "Zapisywanie plików TIFF"
 
-#: operations/external/tiff-save.c:709
+#: operations/external/tiff-save.c:730
 msgid "TIFF image saver using libtiff"
 msgstr "Zapisywanie obrazów TIFF za pomocą biblioteki libtiff"
 
@@ -7737,27 +7742,27 @@ msgstr "Ciąg przekształcenia składni przekształceń SVG"
 msgid "Do a transformation using SVG syntax transformation."
 msgstr "Wykonaj przekształcenie za pomocą składni przekształceń SVG."
 
-#: operations/transform/transform-core.c:202
+#: operations/transform/transform-core.c:209
 msgid "Origin-x"
 msgstr "Początek układu współrzędnych na osi X"
 
-#: operations/transform/transform-core.c:203
+#: operations/transform/transform-core.c:210
 msgid "X coordinate of origin"
 msgstr "Współrzędna początku układu współrzędnych na osi X"
 
-#: operations/transform/transform-core.c:210
+#: operations/transform/transform-core.c:217
 msgid "Origin-y"
 msgstr "Początek układu współrzędnych na osi Y"
 
-#: operations/transform/transform-core.c:211
+#: operations/transform/transform-core.c:218
 msgid "Y coordinate of origin"
 msgstr "Współrzędna początku układu współrzędnych na osi Y"
 
-#: operations/transform/transform-core.c:218
+#: operations/transform/transform-core.c:225
 msgid "Near-z"
 msgstr "Blisko osi Z"
 
-#: operations/transform/transform-core.c:219
+#: operations/transform/transform-core.c:226
 msgid "Z coordinate of the near clipping plane"
 msgstr "Współrzędna na osi Z bliskiej płaszczyzny przycinania"
 
