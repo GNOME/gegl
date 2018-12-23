@@ -470,8 +470,12 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
 
           if (fish)
             {
-              int skip = 0, rows = MIN(height - bufy, tile_height - offsety);
-              rows = MIN(abyss_y_total - bufy, rows);
+              int bskip, skip = 0;
+              int rows = MIN(height - bufy, tile_height - offsety);
+
+              bskip = (buffer_y + bufy + rows) - abyss_y_total;
+              bskip = CLAMP (bskip, 0, rows);
+              rows -= bskip;
 
 /*
 XXX XXX XXX
