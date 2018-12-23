@@ -313,8 +313,11 @@ static gboolean renderer_task (gpointer data)
           g_object_unref (old_buffer);
         if (old_processor)
           g_object_unref (old_processor);
-
-        gegl_processor_set_rectangle (o->processor, NULL);
+      }
+      {
+        GeglRectangle rect = {o->u / o->scale, o->v / o->scale, mrg_width (o->mrg) / o->scale,
+                                          mrg_height (o->mrg) / o->scale};
+        gegl_processor_set_rectangle (o->processor, &rect);
       }
       o->renderer_state = 1;
       }
@@ -322,9 +325,15 @@ static gboolean renderer_task (gpointer data)
     case 1:
 
        if (gegl_processor_work (o->processor, &progress))
-         o->renderer_state = 1;
+       {
+         if (o->renderer_state)
+           o->renderer_state = 1;
+       }
        else
-         o->renderer_state = 2;
+       {
+         if (o->renderer_state)
+           o->renderer_state = 2;
+       }
       break;
     case 2:
       switch (renderer)
@@ -507,6 +516,7 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
   {
     o->u -= (e->delta_x );
     o->v -= (e->delta_y );
+    o->renderer_state = 0;
     mrg_queue_draw (e->mrg, NULL);
     mrg_event_stop_propagate (e);
   }
@@ -3305,6 +3315,7 @@ static void zoom_1_cb (MrgEvent *event, void *data1, void *data2)
   o->scale = 1.0;
   o->u = x * o->scale - mrg_width(o->mrg)/2;
   o->v = y * o->scale - mrg_height(o->mrg)/2;
+  o->renderer_state = 0;
   mrg_queue_draw (o->mrg, NULL);
 }
 
@@ -3315,6 +3326,8 @@ static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
   o->scale *= factor;
   o->u = x * o->scale - screen_cx;
   o->v = y * o->scale - screen_cy;
+
+  o->renderer_state = 0;
   mrg_queue_draw (o->mrg, NULL);
 }
 
