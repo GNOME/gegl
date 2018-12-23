@@ -116,7 +116,6 @@ struct _State {
   GeglNode   *gegl;
   GeglNode   *sink;
   GeglNode   *source;
-  GeglNode   *load;
   GeglNode   *save;
   GeglNode   *active;
   GeglNode   *rotate;
@@ -2054,6 +2053,7 @@ static void update_string (const char *new_text, void *data)
   strcpy (str, new_text);
 }
 
+#if 0
 static void edit_op (MrgEvent *event, void *data1, void *data2)
 {
   State *o = data1;
@@ -2061,7 +2061,7 @@ static void edit_op (MrgEvent *event, void *data1, void *data2)
   o->new_opname[0]=0;
   mrg_set_cursor_pos (event->mrg, 0);
 }
-
+#endif
 
 static void node_up (MrgEvent *event, void *data1, void *data2)
 {
@@ -2599,14 +2599,14 @@ static void gegl_ui (Mrg *mrg, void *data)
    {
      int frames = 0;
      int frame_delay = 0;
-     gegl_node_get (o->load, "frames", &frames, "frame-delay", &frame_delay, NULL);
+     gegl_node_get (o->source, "frames", &frames, "frame-delay", &frame_delay, NULL);
      if (o->prev_ms + frame_delay  < mrg_ms (mrg))
      {
        o->frame_no++;
        fprintf (stderr, "\r%i/%i", o->frame_no, frames);   /* */
        if (o->frame_no >= frames)
          o->frame_no = 0;
-       gegl_node_set (o->load, "frame", o->frame_no, NULL);
+       gegl_node_set (o->source, "frame", o->frame_no, NULL);
        o->prev_ms = mrg_ms (mrg);
     }
        mrg_queue_draw (o->mrg, NULL);
@@ -2615,11 +2615,11 @@ static void gegl_ui (Mrg *mrg, void *data)
    {
      int frames = 0;
      o->frame_no++;
-     gegl_node_get (o->load, "frames", &frames, NULL);
+     gegl_node_get (o->source, "frames", &frames, NULL);
      fprintf (stderr, "\r%i/%i", o->frame_no, frames);   /* */
      if (o->frame_no >= frames)
        o->frame_no = 0;
-     gegl_node_set (o->load, "frame", o->frame_no, NULL);
+     gegl_node_set (o->source, "frame", o->frame_no, NULL);
      mrg_queue_draw (o->mrg, NULL);
    }
 
@@ -2627,7 +2627,7 @@ static void gegl_ui (Mrg *mrg, void *data)
   {
     GeglAudioFragment *audio = NULL;
     gdouble fps;
-    gegl_node_get (o->load, "audio", &audio, "frame-rate", &fps, NULL);
+    gegl_node_get (o->source, "audio", &audio, "frame-rate", &fps, NULL);
     if (audio)
     {
        int sample_count = gegl_audio_fragment_get_sample_count (audio);
@@ -2859,10 +2859,8 @@ static void load_path (State *o)
     o->sink = gegl_node_new_child (o->gegl,
                        "operation", "gegl:nop", NULL);
     o->source = gegl_node_new_child (o->gegl,
-                       "operation", "gegl:nop", NULL);
-    o->load = gegl_node_new_child (o->gegl,
          "operation", "gegl:gif-load", "path", path, "frame", o->frame_no, NULL);
-    gegl_node_link_many (o->load, o->source, o->sink, NULL);
+    gegl_node_link_many (o->source, o->sink, NULL);
   }
   else if (gegl_str_has_video_suffix (path))
   {
@@ -2871,10 +2869,8 @@ static void load_path (State *o)
     o->sink = gegl_node_new_child (o->gegl,
                        "operation", "gegl:nop", NULL);
     o->source = gegl_node_new_child (o->gegl,
-                       "operation", "gegl:nop", NULL);
-    o->load = gegl_node_new_child (o->gegl,
          "operation", "gegl:ff-load", "path", path, "frame", o->frame_no, NULL);
-    gegl_node_link_many (o->load, o->source, o->sink, NULL);
+    gegl_node_link_many (o->source, o->sink, NULL);
   }
   else
   {
@@ -2921,18 +2917,16 @@ static void load_path (State *o)
       o->gegl = gegl_node_new ();
       o->sink = gegl_node_new_child (o->gegl,
                          "operation", "gegl:nop", NULL);
-      o->source = gegl_node_new_child (o->gegl,
-                         "operation", "gegl:nop", NULL);
       load_into_buffer (o, path);
-      o->load = gegl_node_new_child (o->gegl,
+      o->source = gegl_node_new_child (o->gegl,
                                      "operation", "gegl:buffer-source",
                                      NULL);
       o->save = gegl_node_new_child (o->gegl,
                                      "operation", "gegl:save",
                                      "path", o->save_path,
                                      NULL);
-    gegl_node_link_many (o->load, o->source, o->sink, NULL);
-    gegl_node_set (o->load, "buffer", o->buffer, NULL);
+    gegl_node_link_many (o->source, o->sink, NULL);
+    gegl_node_set (o->source, "buffer", o->buffer, NULL);
   }
   }
   {
@@ -3422,7 +3416,6 @@ static void save_cb (MrgEvent *event, void *data1, void *data2)
     free (containing_path);
   }
   gegl_node_remove_child (o->gegl, load);
-  gegl_node_link_many (o->load, o->source, NULL);
 
   g_file_set_contents (path, serialized, -1, NULL);
   g_free (serialized);
