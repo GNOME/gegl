@@ -109,9 +109,9 @@ prepare (GeglOperation *operation)
   op_area = GEGL_OPERATION_AREA_FILTER (operation);
   o       = GEGL_PROPERTIES (operation);
 
-  op_area->left   = o->size_x + align_offset(o->offset_x, o->size_x);
+  op_area->left   =
   op_area->right  = o->size_x;
-  op_area->top    = o->size_y + align_offset(o->offset_y, o->size_y);
+  op_area->top    =
   op_area->bottom = o->size_y;
 
   gegl_operation_set_format (operation, "input",
@@ -397,17 +397,17 @@ pixelize (gfloat              *input,
 
         gegl_rectangle_intersect (&rect, whole_region, &rect);
 
-        if (rect.width < 1 || rect.height < 1)
-          continue;
-
         rect2.x = rect.x - extended_roi->x;
         rect2.y = rect.y - extended_roi->y;
         rect2.width  = rect.width;
         rect2.height = rect.height;
 
-        mean_rectangle (input, &rect2, extended_roi->width, color);
-
         gegl_rectangle_intersect (&rect, roi, &rect);
+
+        if (rect.width < 1 || rect.height < 1)
+          continue;
+
+        mean_rectangle (input, &rect2, extended_roi->width, color);
 
         rect2.x = rect.x - roi->x;
         rect2.y = rect.y - roi->y;
@@ -612,8 +612,8 @@ process (GeglOperation       *operation,
     {
       gfloat  background_color[4];
       gfloat *input_buf  = g_new (gfloat,
-                                  (CHUNK_SIZE + o->size_x * 2 + align_offset(o->offset_x, o->size_x)) *
-                                  (CHUNK_SIZE + o->size_y * 2 + align_offset(o->offset_y, o->size_y)) * 4);
+                                  (CHUNK_SIZE + o->size_x * 2) *
+                                  (CHUNK_SIZE + o->size_y * 2) * 4);
       gfloat *output_buf = g_new (gfloat, SQR (CHUNK_SIZE) * 4);
       gint    i, j;
 
