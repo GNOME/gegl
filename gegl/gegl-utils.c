@@ -24,7 +24,6 @@
 #include "gegl.h"
 #include "gegl-types-internal.h"
 #include "gegl-utils.h"
-#include "gegl-types-internal.h"
 
 
 void
