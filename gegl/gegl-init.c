@@ -32,12 +32,9 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
 #ifdef G_OS_WIN32
 #include <process.h>
-#endif
-
-#ifdef G_OS_WIN32
-
 #include <windows.h>
 
 static HMODULE hLibGeglModule = NULL;
