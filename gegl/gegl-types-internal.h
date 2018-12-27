@@ -21,6 +21,7 @@
 #define __GEGL_TYPES_INTERNAL_H__
 
 #include <babl/babl.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
