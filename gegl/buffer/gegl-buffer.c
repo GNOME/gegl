@@ -28,11 +28,6 @@
 #include <unistd.h>
 #endif
 
-#ifdef G_OS_WIN32
-#include <process.h>
-#define getpid() _getpid()
-#endif
-
 #include <glib-object.h>
 #include <glib/gstdio.h>
 
