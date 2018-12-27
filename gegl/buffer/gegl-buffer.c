@@ -23,6 +23,9 @@
 #include <errno.h>
 #include <stdlib.h>
 
+#include <glib-object.h>
+#include <glib/gstdio.h>
+
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -32,9 +35,6 @@
 #include <process.h>
 #define getpid() _getpid()
 #endif
-
-#include <glib-object.h>
-#include <glib/gstdio.h>
 
 #include "gegl-debug.h"
 #include "gegl-buffer.h"
