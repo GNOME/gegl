@@ -23,6 +23,7 @@
 //G_BEGIN_DECLS
 
 #include <babl/babl.h>
+#include <glib-object.h>
 
 /* the code in babl for looking up models, formats and types is quick -
    but when formats end up being used as consts for comparisons in the core of
