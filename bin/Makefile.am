@@ -32,13 +32,22 @@ AM_LDFLAGS =  \
 
 bin_PROGRAMS = gegl
 
+BUILT_SOURCES=argvs-commands.inc
+
+CLEANFILES=argvs-commands.inc
+
 gegl_SOURCES =			\
+	argvs.c			\
+	argvs.h			\
 	gegl.c			\
 	gegl-options.c		\
 	gegl-options.h		\
 	gegl-path-smooth.c	\
 	gegl-path-smooth.h
 
+argvs-commands.inc: gegl.c ui.c argvs.c Makefile
+	@echo " GEN" $@
+	@$(top_srcdir)/tools/argvs_extract.sh *.c > argvs-commands.inc
 
 if HAVE_MRG
 if HAVE_GEXIV2

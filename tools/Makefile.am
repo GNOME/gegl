@@ -1,6 +1,7 @@
 #SUBDIRS = testsuite
 
 EXTRA_DIST = \
+	argvs_extract.sh \
 	xml_insert.sh \
     gen-loader.sh \
 	gobj2dot.rb

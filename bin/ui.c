@@ -36,15 +36,16 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <mrg.h>
+#include <mrg-string.h>
 #include <gegl.h>
 #include <gexiv2/gexiv2.h>
 #include <gegl-paramspecs.h>
 #include <gegl-operation.h>
 #include <gegl-audio-fragment.h>
+#include "argvs.h"
 
 /* set this to 1 to print the active gegl chain
  */
-// #define DEBUG_OP_LIST  1
 
 void mrg_gegl_blit (Mrg *mrg,
                     float x0, float y0,
@@ -86,7 +87,32 @@ static GeglNode *gegl_node_get_consumer_no (GeglNode *node,
   return consumer;
 }
 
+int use_ui = 0;
 
+#define printf(foo...) \
+   do{ MrgString *str = mrg_string_new_printf (foo);\
+       if (use_ui) {\
+       MrgString *line = mrg_string_new ("");\
+       for (char *p= str->str; *p; p++) { \
+         if (*p == '\n') { \
+           mrg_list_prepend (&scrollback, strdup (line->str));\
+           mrg_string_set (line, "");\
+         } else { \
+           mrg_string_append_byte (line, *p);\
+         } \
+       } \
+       if (line->str[0]) \
+         mrg_list_prepend (&scrollback, strdup (line->str));\
+       mrg_string_free (line, 1);\
+       }\
+       else \
+       { fprintf (stdout, "%s", str->str);\
+       }\
+       mrg_string_free (str, 1);\
+   }while(0)
+
+MrgList *scrollback = NULL; /* scrollback buffer of free() able strings
+                               with latest prepended */
 
 //static int audio_start = 0; /* which sample no is at the start of our circular buffer */
 
@@ -118,7 +144,6 @@ struct _State {
   GeglNode   *source;
   GeglNode   *save;
   GeglNode   *active;
-  GeglNode   *rotate;
   GThread    *thread;
 
   GeglNode      *processor_node; /* the node we have a processor for */
@@ -126,27 +151,27 @@ struct _State {
   GeglBuffer    *processor_buffer;
   int            renderer_state;
   int            editing_op_name;
-  char        new_opname[1024];
-  int         rev;
-  float       u, v;
-  float       scale;
-  int         show_graph;
-  int         show_controls;
-  float       render_quality;
-  float       preview_quality;
-  int         controls_timeout;
-  char      **ops; // the operations part of the commandline, if any
-  float       slide_pause;
-  int         slide_enabled;
-  int         slide_timeout;
+  char           new_opname[1024];
+  int            rev;
+  float          u, v;
+  float          scale;
+  int            show_graph;
+  int            show_controls;
+  float          render_quality;
+  float          preview_quality;
+  int            controls_timeout;
+  char         **ops; // the operations part of the commandline, if any
+  float          slide_pause;
+  int            slide_enabled;
+  int            slide_timeout;
 
-  GeglNode   *gegl_decode;
-  GeglNode   *decode_load;
-  GeglNode   *decode_store;
-  int         is_video;
-  int         frame_no;
-  int         prev_frame_played;
-  double      prev_ms;
+  GeglNode      *gegl_decode;
+  GeglNode      *decode_load;
+  GeglNode      *decode_store;
+  int            is_video;
+  int            frame_no;
+  int            prev_frame_played;
+  double         prev_ms;
 };
 
 static char *suffix = "-gegl";
@@ -194,25 +219,6 @@ static void drag_preview              (MrgEvent *e);
 static void load_into_buffer          (State *o, const char *path);
 static void zoom_to_fit               (State *o);
 static void center                    (State *o);
-static void zoom_to_fit_buffer        (State *o);
-static void go_next_cb                (MrgEvent *event, void *data1, void *data2);
-static void go_prev_cb                (MrgEvent *event, void *data1, void *data2);
-static void go_parent_cb              (MrgEvent *event, void *data1, void *data2);
-static void zoom_fit_cb               (MrgEvent *e, void *data1, void *data2);
-static void pan_left_cb               (MrgEvent *event, void *data1, void *data2);
-static void pan_right_cb              (MrgEvent *event, void *data1, void *data2);
-static void pan_down_cb               (MrgEvent *event, void *data1, void *data2);
-static void pan_up_cb                 (MrgEvent *event, void *data1, void *data2);
-static void preview_more_cb           (MrgEvent *event, void *data1, void *data2);
-static void preview_less_cb           (MrgEvent *event, void *data1, void *data2);
-static void zoom_1_cb                 (MrgEvent *event, void *data1, void *data2);
-static void zoom_in_cb                (MrgEvent *event, void *data1, void *data2);
-static void zoom_out_cb               (MrgEvent *event, void *data1, void *data2);
-static void toggle_actions_cb         (MrgEvent *event, void *data1, void *data2);
-static void toggle_fullscreen_cb      (MrgEvent *event, void *data1, void *data2);
-static void discard_cb                (MrgEvent *event, void *data1, void *data2);
-static void save_cb                   (MrgEvent *event, void *data1, void *data2);
-static void toggle_show_controls_cb   (MrgEvent *event, void *data1, void *data2);
 static void gegl_ui                   (Mrg *mrg, void *data);
 int         mrg_ui_main               (int argc, char **argv, char **ops);
 void        gegl_meta_set             (const char *path, const char *meta_data);
@@ -540,12 +546,13 @@ static void on_paint_drag (MrgEvent *e, void *data1, void *data2)
     default: break;
     case MRG_DRAG_PRESS:
       o->active = add_output (o, o->active, "gegl:over");
-      o->active = add_aux (o, o->active, "gegl:path");
+      o->active = add_aux (o, o->active, "gegl:vector-stroke");
 
       path = gegl_path_new ();
       gegl_path_append (path, 'M', x, y);
-      gegl_node_set (o->active, "d", path, "stroke", gegl_color_new("blue"),
-  "stroke-width", 42.0, "stroke-hardness", 0.000000001, "fill-opacity", 0, NULL);
+      gegl_path_append (path, 'L', x, y);
+      gegl_node_set (o->active, "d", path, "color", gegl_color_new("blue"),
+                     "width", 142.0, NULL);
       break;
     case MRG_DRAG_MOTION:
       gegl_path_append (path, 'L', x, y);
@@ -728,792 +735,22 @@ static void unset_edited_prop (MrgEvent *e, void *data1, void *data2)
   mrg_queue_draw (e->mrg, NULL);
 }
 
-
-#if 0
-static void draw_gegl_generic (State *state, Mrg *mrg, cairo_t *cr, GeglNode *node)
-{
-  const gchar* op_name = gegl_node_get_operation (node);
-  mrg_set_edge_left (mrg, mrg_width (mrg) * 0.1);
-  mrg_set_edge_top  (mrg, mrg_height (mrg) * 0.1);
-  mrg_set_font_size (mrg, mrg_height (mrg) * 0.07);
-  mrg_set_style (mrg, "color:white; background-color: rgba(0,0,0,0.5)");
-
-  cairo_save (cr);
-  mrg_printf (mrg, "%s\n", op_name);
-  {
-    guint n_props;
-    GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
-
-    if (pspecs)
-    {
-      int tot_pos = 0;
-      int pos_no = 0;
-
-      for (gint i = 0; i < n_props; i++)
-      {
-        if (g_type_is_a (pspecs[i]->value_type, G_TYPE_DOUBLE) ||
-            g_type_is_a (pspecs[i]->value_type, G_TYPE_INT) ||
-            g_type_is_a (pspecs[i]->value_type, G_TYPE_BOOLEAN))
-          tot_pos ++;
-        else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_STRING))
-          tot_pos +=3;
-      }
-
-      for (gint i = 0; i < n_props; i++)
-      {
-        mrg_set_xy (mrg, mrg_em(mrg),
-                    mrg_height (mrg) - mrg_em (mrg) * ((tot_pos-pos_no)));
-
-        if (g_type_is_a (pspecs[i]->value_type, G_TYPE_DOUBLE))
-        {
-          float xpos;
-          GeglParamSpecDouble *geglspec = (void*)pspecs[i];
-          gdouble value;
-          gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-          cairo_rectangle (cr, 0,
-             mrg_height (mrg) - mrg_em (mrg) * ((tot_pos-pos_no+1)),
-             mrg_width (mrg), mrg_em(mrg));
-          cairo_set_source_rgba (cr, 0,0,0, 0.5);
-
-          mrg_listen (mrg, MRG_DRAG, prop_double_drag_cb, node,(void*)pspecs[i]);
-
-          cairo_fill (cr);
-          xpos = (value - geglspec->ui_minimum) / (geglspec->ui_maximum - geglspec->ui_minimum);
-          cairo_rectangle (cr, xpos * mrg_width(mrg) - mrg_em(mrg)/4,
-              mrg_height (mrg) - mrg_em (mrg) * ((tot_pos-pos_no+1)),
-              mrg_em(mrg)/2, mrg_em(mrg));
-          cairo_set_source_rgba (cr, 1,1,1, 0.5);
-          cairo_fill (cr);
-
-          mrg_printf (mrg, "%s:%f\n", pspecs[i]->name, value);
-          pos_no ++;
-        }
-        else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_INT))
-        {
-          float xpos;
-          GeglParamSpecInt *geglspec = (void*)pspecs[i];
-          gint value;
-          gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-          cairo_rectangle (cr, 0,
-             mrg_height (mrg) - mrg_em (mrg) * ((tot_pos-pos_no+1)),
-             mrg_width (mrg), mrg_em(mrg));
-          cairo_set_source_rgba (cr, 0,0,0, 0.5);
-
-          mrg_listen (mrg, MRG_DRAG, prop_int_drag_cb, node,(void*)pspecs[i]);
-
-          cairo_fill (cr);
-          xpos = (value - geglspec->ui_minimum) / (1.0 + geglspec->ui_maximum - geglspec->ui_minimum);
-          cairo_rectangle (cr, xpos * mrg_width(mrg) - mrg_em(mrg)/4,
-              mrg_height (mrg) - mrg_em (mrg) * ((tot_pos-pos_no+1)),
-              mrg_em(mrg)/2, mrg_em(mrg));
-          cairo_set_source_rgba (cr, 1,1,1, 0.5);
-          cairo_fill (cr);
-
-          mrg_printf (mrg, "%s:%i\n", pspecs[i]->name, value);
-          pos_no ++;
-        }
-        else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_STRING))
-        {
-          char *value = NULL;
-          gegl_node_get (node, pspecs[i]->name, &value, NULL);
-          pos_no +=3;
-
-          if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
-          {
-            mrg_printf (mrg, "%s:", pspecs[i]->name);
-            mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
-            mrg_edit_start (mrg, update_prop, node);
-            mrg_printf (mrg, "%s\n", value);
-            mrg_edit_end (mrg);
-            mrg_text_listen_done (mrg);
-          }
-          else
-          {
-            mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-            mrg_printf (mrg, "%s:%s\n", pspecs[i]->name, value);
-            mrg_text_listen_done (mrg);
-          }
-
-          if (value)
-            g_free (value);
-        }
-        else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_BOOLEAN))
-        {
-          gboolean value = FALSE;
-          gegl_node_get (node, pspecs[i]->name, &value, NULL);
-          pos_no ++;
-          mrg_printf (mrg, "%s:%i\n", pspecs[i]->name, value);
-        }
-      }
-      g_free (pspecs);
-    }
-  }
-
-  cairo_restore (cr);
-  mrg_set_style (mrg, "color:yellow; background-color: transparent");
-}
-#endif
-#if 0
-
-static void crop_drag_ul (MrgEvent *e, void *data1, void *data2)
-{
-  GeglNode *node = data1;
-  double x,y,width,height;
-  double x0, y0, x1, y1;
-  gegl_node_get (node, "x", &x, "y", &y, "width", &width, "height", &height, NULL);
-  x0 = x; y0 = y; x1 = x0 + width; y1 = y + height;
-
-  if (e->type == MRG_DRAG_MOTION)
-  {
-    x0 += e->delta_x;
-    y0 += e->delta_y;
-
-    x=x0;
-    y=y0;
-    width = x1 - x0;
-    height = y1 - y0;
-    gegl_node_set (node, "x", x, "y", y, "width", width, "height", height, NULL);
-
-    mrg_queue_draw (e->mrg, NULL);
-  }
-
-  drag_preview (e);
-}
-
-static void crop_drag_lr (MrgEvent *e, void *data1, void *data2)
-{
-  GeglNode *node = data1;
-  double x,y,width,height;
-  double x0, y0, x1, y1;
-  gegl_node_get (node, "x", &x, "y", &y, "width", &width, "height", &height, NULL);
-  x0 = x; y0 = y; x1 = x0 + width; y1 = y + height;
-
-  if (e->type == MRG_DRAG_MOTION)
-  {
-    x1 += e->delta_x;
-    y1 += e->delta_y;
-
-    x=x0;
-    y=y0;
-    width = x1 - x0;
-    height = y1 - y0;
-    gegl_node_set (node, "x", x, "y", y, "width", width, "height", height, NULL);
-
-    mrg_queue_draw (e->mrg, NULL);
-  }
-
-  drag_preview (e);
-}
-
-static void crop_drag_rotate (MrgEvent *e, void *data1, void *data2)
+  int cmd_dir_pgdn (COMMAND_ARGS);
+int cmd_dir_pgdn (COMMAND_ARGS) /* "dir-pgdn", 0, "", ""*/
 {
   State *o = hack_state;
-  double degrees;
-  gegl_node_get (o->rotate, "degrees", &degrees, NULL);
-
-  if (e->type == MRG_DRAG_MOTION)
-  {
-    degrees += e->delta_x / 100.0;
-
-    gegl_node_set (o->rotate, "degrees", degrees, NULL);
-
-    mrg_queue_draw (e->mrg, NULL);
-  }
-
-  drag_preview (e);
-}
-
-static void draw_gegl_crop (State *o, Mrg *mrg, cairo_t *cr, GeglNode *node)
-{
-  const gchar* op_name = gegl_node_get_operation (node);
-  float dim = mrg_height (mrg) * 0.1 / o->scale;
-  double x,y,width,height;
-  double x0, y0, x1, y1;
-
-  mrg_set_edge_left (mrg, mrg_width (mrg) * 0.1);
-  mrg_set_edge_top  (mrg, mrg_height (mrg) * 0.1);
-  mrg_set_font_size (mrg, mrg_height (mrg) * 0.07);
-  mrg_set_style (mrg, "color:white; background-color: transparent");
-
-  cairo_save (cr);
-  mrg_printf (mrg, "%s\n", op_name);
-
-  cairo_translate (cr, -o->u, -o->v);
-  cairo_scale (cr, o->scale, o->scale);
-
-  gegl_node_get (node, "x", &x, "y", &y, "width", &width, "height", &height, NULL);
-  x0 = x; y0 = y; x1 = x0 + width; y1 = y + height;
-
-  cairo_rectangle (cr, x0, y0, dim, dim);
-  mrg_listen (mrg, MRG_DRAG, crop_drag_ul, node, NULL);
-  contrasty_stroke (cr);
-
-  cairo_rectangle (cr, x1-dim, y1-dim, dim, dim);
-  mrg_listen (mrg, MRG_DRAG, crop_drag_lr, node, NULL);
-  contrasty_stroke (cr);
-
-  cairo_rectangle (cr, x0+dim, y0+dim, width-dim-dim, height-dim-dim);
-  mrg_listen (mrg, MRG_DRAG, crop_drag_rotate, node, NULL);
-  cairo_new_path (cr);
-
-  cairo_restore (cr);
-  mrg_set_style (mrg, "color:yellow; background-color: transparent");
-}
-#endif
-#if DEBUG_OP_LIST
-
-static void node_remove (MrgEvent *e, void *data1, void *data2)
-{
-  State *o = data1;
-  GeglNode *node = o->active;
-  GeglNode *new_active;
-  GeglNode *next, *prev;
-
-  const gchar *consumer_name = NULL;
-
-  prev = gegl_node_get_producer (node, "input", NULL);
-  next = gegl_node_get_consumer_no (node, "output", &consumer_name, 0);
-
-  if (next && prev)
-    gegl_node_connect_to (prev, "output", next, consumer_name);
-
-  gegl_node_remove_child (o->gegl, node);
-  new_active  = prev?prev:next;
-
-  o->active = new_active;
-  mrg_queue_draw (e->mrg, NULL);
-}
-
-static void node_add_aux_below (MrgEvent *e, void *data1, void *data2)
-{
-  State *o = data1;
-  GeglNode *ref = o->active;
-  GeglNode *producer = gegl_node_get_producer (o->active, "aux", NULL);
-
-  if (!gegl_node_has_pad (ref, "aux"))
-    return;
-
-  o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
-
-  if (producer)
-  {
-    gegl_node_connect_to (producer, "output", o->active, "input");
-  }
-  gegl_node_connect_to (o->active, "output", ref, "aux");
-
-  o->editing_op_name = 1;
-  mrg_set_cursor_pos (e->mrg, 0);
-  o->new_opname[0]=0;
-  fprintf (stderr, "add aux\n");
-  mrg_queue_draw (e->mrg, NULL);
-}
-
-static void node_add_below (MrgEvent *e, void *data1, void *data2)
-{
-  State *o = data1;
-  GeglNode *ref = o->active;
-  GeglNode *producer = gegl_node_get_producer (o->active, "input", NULL);
-  if (!gegl_node_has_pad (ref, "input"))
-    return;
-
-  o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
-
-  if (producer)
-  {
-    gegl_node_connect_to (producer, "output", o->active, "input");
-  }
-  gegl_node_connect_to (o->active, "output", ref, "input");
-
-  o->editing_op_name = 1;
-  mrg_set_cursor_pos (e->mrg, 0);
-  o->new_opname[0]=0;
-  fprintf (stderr, "add input\n");
-  mrg_queue_draw (e->mrg, NULL);
-}
-
-
-static GeglNode *add_aux (State *o, GeglNode *active, const char *optype)
-{
-  GeglNode *ref = active;
-  GeglNode *ret = NULL;
-  GeglNode *producer;
-  if (!gegl_node_has_pad (ref, "aux"))
-    return NULL;
-  ret = gegl_node_new_child (o->gegl, "operation", optype, NULL);
-  producer = gegl_node_get_producer (ref, "aux", NULL);
-  if (producer)
-  {
-    gegl_node_link_many (producer, ret, NULL);
-  }
-  gegl_node_connect_to (ret, "output", ref, "aux");
-  return ret;
-}
-
-static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
-{
-  GeglNode *ref = active;
-  GeglNode *ret = NULL;
-  const char *consumer_name = NULL;
-  GeglNode *consumer = gegl_node_get_consumer_no (ref, "output", &consumer_name, 0);
-  if (!gegl_node_has_pad (ref, "output"))
-    return NULL;
-
-  if (consumer)
-  {
-    ret = gegl_node_new_child (o->gegl, "operation", optype, NULL);
-    gegl_node_link_many (ref, ret, NULL);
-    gegl_node_connect_to (ret, "output", consumer, consumer_name);
-  }
-  return ret;
-}
-
-
-static void node_add_above (MrgEvent *e, void *data1, void *data2)
-{
-  State *o = data1;
-  GeglNode *ref = o->active;
-  const char *consumer_name = NULL;
-  GeglNode *consumer = gegl_node_get_consumer_no (o->active, "output", &consumer_name, 0);
-  if (!gegl_node_has_pad (ref, "output"))
-    return;
-
-  if (consumer)
-  {
-  o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
-
-  gegl_node_link_many (ref,
-                       o->active,
-                       NULL);
-
-  gegl_node_connect_to (o->active, "output", consumer, consumer_name);
-
-    o->editing_op_name = 1;
-    mrg_set_cursor_pos (e->mrg, 0);
-    o->new_opname[0]=0;
-  }
-
-  mrg_queue_draw (e->mrg, NULL);
-}
-
-#define INDENT_STR "   "
-
-static void list_node_props (State *o, GeglNode *node, int indent)
-{
-  Mrg *mrg = o->mrg;
-  guint n_props;
-  int no = 0;
-  //cairo_t *cr = mrg_cr (mrg);
-  float x = mrg_x (mrg) + mrg_em (mrg) * 1;
-  float y = mrg_y (mrg);
-  const char *op_name = gegl_node_get_operation (node);
-  GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
-
-  x = mrg_em (mrg) * 12;
-
-  if (pspecs)
-  {
-    for (gint i = 0; i < n_props; i++)
-    {
-      mrg_start (mrg, ".propval", NULL);//
-      mrg_set_style (mrg, "color:white; background-color: rgba(0,0,0,0.75)");
-      mrg_set_font_size (mrg, mrg_height (mrg) * 0.022);
-      mrg_set_edge_left (mrg, x + no * mrg_em (mrg) * 7);
-      mrg_set_xy (mrg, x + no * mrg_em (mrg) * 7, y - mrg_em (mrg) * .5);
-
-      if (g_type_is_a (pspecs[i]->value_type, G_TYPE_DOUBLE))
-      {
-        //float xpos;
-        //GeglParamSpecDouble *geglspec = (void*)pspecs[i];
-        gdouble value;
-        gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-
-        if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
-        {
-          mrg_printf (mrg, "%s\n", pspecs[i]->name);
-          mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_edit_start (mrg, update_prop_double, node);
-          mrg_printf (mrg, "%.3f", value);
-          mrg_edit_end (mrg);
-          mrg_printf (mrg, "\n");
-          mrg_text_listen_done (mrg);
-        }
-        else
-        {
-          mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_printf (mrg, "%s\n%.3f\n", pspecs[i]->name, value);
-          mrg_text_listen_done (mrg);
-        }
-
-        no++;
-      }
-      else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_INT))
-      {
-        //float xpos;
-        //GeglParamSpecInt *geglspec = (void*)pspecs[i];
-        gint value;
-        gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-        //mrg_printf (mrg, "%s\n%i\n", pspecs[i]->name, value);
-
-        if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
-        {
-          mrg_printf (mrg, "%s\n", pspecs[i]->name);
-          mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_edit_start (mrg, update_prop_int, node);
-          mrg_printf (mrg, "%i", value);
-          mrg_edit_end (mrg);
-          mrg_printf (mrg, "\n");
-          mrg_text_listen_done (mrg);
-        }
-        else
-        {
-          mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_printf (mrg, "%s\n%i\n", pspecs[i]->name, value);
-          mrg_text_listen_done (mrg);
-        }
-        no++;
-      }
-      else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_STRING) ||
-               g_type_is_a (pspecs[i]->value_type, GEGL_TYPE_PARAM_FILE_PATH))
-      {
-        char *value = NULL;
-        gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-        if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
-        {
-          mrg_printf (mrg, "%s\n", pspecs[i]->name);
-          mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_edit_start (mrg, update_prop, node);
-          mrg_printf (mrg, "%s", value);
-          mrg_edit_end (mrg);
-          mrg_text_listen_done (mrg);
-          mrg_printf (mrg, "\n");
-        }
-        else
-        {
-          mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_printf (mrg, "%s\n%s\n", pspecs[i]->name, value);
-          mrg_text_listen_done (mrg);
-        }
-
-        if (value)
-          g_free (value);
-        no++;
-      }
-      else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_BOOLEAN))
-      {
-        gboolean value = FALSE;
-        gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-        mrg_text_listen (mrg, MRG_CLICK, prop_toggle_boolean, node, (void*)pspecs[i]->name);
-        mrg_printf (mrg, "%s\n%s\n", pspecs[i]->name, value?"true":"false");
-        mrg_text_listen_done (mrg);
-        no++;
-      }
-      else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_ENUM))
-      {
-        GEnumClass *eclass = g_type_class_peek (pspecs[i]->value_type);
-        GEnumValue *evalue;
-        gint value;
-
-        gegl_node_get (node, pspecs[i]->name, &value, NULL);
-        evalue  = g_enum_get_value (eclass, value);
-        mrg_printf (mrg, "%s:\n%s\n", pspecs[i]->name, evalue->value_nick);
-        no++;
-      }
-      else
-      {
-        mrg_printf (mrg, "%s:\n", pspecs[i]->name);
-        no++;
-      }
-
-
-      mrg_end (mrg);
-    }
-    g_free (pspecs);
-  }
-
-  mrg_set_xy (mrg, x, y);
-}
-
-static void update_string (const char *new_text, void *data)
-{
-  char *str = data;
-  strcpy (str, new_text);
-}
-
-static void edit_op (MrgEvent *event, void *data1, void *data2)
-{
-  State *o = data1;
-  o->editing_op_name = 1;
-  o->new_opname[0]=0;
-  mrg_set_cursor_pos (event->mrg, 0);
-}
-
-
-static void node_up (MrgEvent *event, void *data1, void *data2)
-{
-  State *o = data1;
-  GeglNode *ref;
-  if (o->active == NULL)
-    return;
-  ref = gegl_node_get_consumer_no (o->active, "output", NULL, 0);
-  if (ref && ref != o->sink)
-    o->active = ref;
-  mrg_queue_draw (event->mrg, NULL);
-}
-
-static void node_down (MrgEvent *event, void *data1, void *data2)
-{
-  State *o = data1;
-  GeglNode *ref;
-  if (o->active == NULL)
-    return;
-  ref = gegl_node_get_producer (o->active, "input", NULL);
-  if (ref && ref != o->source)
-    o->active = ref;
-  mrg_queue_draw (event->mrg, NULL);
-}
-
-static void node_right (MrgEvent *event, void *data1, void *data2)
-{
-  State *o = data1;
-  GeglNode *ref;
-  if (o->active == NULL)
-    return;
-  ref = gegl_node_get_producer (o->active, "aux", NULL);
-  if (ref && ref != o->source)
-    o->active = ref;
-  mrg_queue_draw (event->mrg, NULL);
-}
-
-static void set_op (MrgEvent *event, void *data1, void *data2)
-{
-  State *o = data1;
-
-  {
-    if (strchr (o->new_opname, ':'))
-    {
-      gegl_node_set (o->active, "operation", o->new_opname, NULL);
-    }
-    else
-    {
-      char temp[1024];
-      g_snprintf (temp, 1023, "gegl:%s", o->new_opname);
-      gegl_node_set (o->active, "operation", temp, NULL);
-
-    }
-  }
-
-  o->new_opname[0]=0;
-  o->editing_op_name=0;
-  mrg_event_stop_propagate (event);
-  mrg_queue_draw (o->mrg, NULL);
-}
-static void run_command (MrgEvent *event, void *data1, void *data2);
-
-static void list_ops (State *o, GeglNode *iter, int indent)
-{
-  Mrg *mrg = o->mrg;
-  
-  while (iter && iter != o->source)
-   {
-     char *opname = NULL;
-
-
-     g_object_get (iter, "operation", &opname, NULL);
-
-     if (iter == o->active)
-     {
-       mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);padding-right:.5em;");
-
-       for (int i = 0; i < indent; i ++)
-         mrg_printf (mrg, INDENT_STR);
-       mrg_text_listen (mrg, MRG_CLICK, node_add_above, o, o);
-       mrg_printf (mrg, "+    ");
-       mrg_text_listen_done (mrg);
-       mrg_text_listen (mrg, MRG_CLICK, run_command, o, "remove");
-       mrg_printf (mrg, " X ");
-       mrg_text_listen_done (mrg);
-
-       mrg_end (mrg);
-       mrg_printf (mrg, "\n");
-       mrg_start_with_style (mrg, ".item", NULL, "color:white;background-color: rgba(0,0,0,0.5);padding-right:.5em;");
-     }
-     else
-     {
-       mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);padding-right:.5em;");
-     }
-     for (int i = 0; i < indent; i ++)
-       mrg_printf (mrg, INDENT_STR);
-
-     if (iter != o->active)
-     {
-       mrg_text_listen (mrg, MRG_CLICK, node_press, iter, o);
-     }
-
-     if (o->active == iter && o->editing_op_name)
-     {
-       mrg_edit_start (mrg, update_string, &o->new_opname[0]);
-       mrg_printf (mrg, "%s", o->new_opname);
-       mrg_edit_end (mrg);
-       mrg_add_binding (mrg, "return", NULL, NULL, set_op, o);
-     }
-     else
-     {
-       mrg_printf (mrg, "%s", opname);
-     }
-
-
-     if (iter != o->active)
-     {
-       mrg_text_listen_done (mrg);
-     }
-     mrg_end (mrg);
-
-     if(0){
-       const Babl *format = gegl_operation_get_format (gegl_node_get_gegl_operation (iter), "output");
-       if (format)
-       {
-#if 0
-       BablModelFlag flags = babl_get_model_flags (format);
-       const Babl *type = babl_format_get_type (format, 0);
-
-       mrg_set_xy (mrg, mrg_em (mrg) * 15, mrg_y (mrg));
-
-       if (flags & BABL_MODEL_FLAG_GRAY)
-         mrg_printf (mrg, "Y");
-       else if (flags & BABL_MODEL_FLAG_RGB)
-         mrg_printf (mrg, "RGB");
-       else if (flags & BABL_MODEL_FLAG_CMYK)
-         mrg_printf (mrg, "CMYK");
-
-       if ((flags & BABL_MODEL_FLAG_ALPHA) &&
-           (flags & BABL_MODEL_FLAG_PREMULTIPLIED))
-         mrg_printf (mrg, " AA");
-       else if ((flags & BABL_MODEL_FLAG_ALPHA))
-         mrg_printf (mrg, " A");
-       mrg_printf (mrg, "%s\n", babl_get_name (type));
-#endif
-       mrg_printf (mrg, " %s", babl_format_get_encoding (format));
-
-       }
-
-     }
-
-     g_free (opname);
-
-     if (iter == o->active)
-       list_node_props (o, iter, indent + 1);
-
-     mrg_printf (mrg, "\n");
-
-     if (iter == o->active && gegl_node_has_pad (iter, "aux"))
-     {
-       mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);");
-       for (int i = 0; i < indent + 1; i ++)
-         mrg_printf (mrg, INDENT_STR);
-       mrg_text_listen (mrg, MRG_CLICK, node_add_aux_below, o, o);
-       mrg_printf (mrg, "+\n");
-       mrg_text_listen_done (mrg);
-       mrg_end (mrg);
-     }
-
-     if (gegl_node_get_producer (iter, "aux", NULL))
-     {
-
-     {
-       GeglNode *producer = gegl_node_get_producer (iter, "aux", NULL);
-       GeglNode *producers_consumer;
-
-       producers_consumer = gegl_node_get_consumer_no (producer, "output", NULL, 0);
-
-       if (producers_consumer == iter)
-         {
-           list_ops (o, gegl_node_get_producer (iter, "aux", NULL), indent + 1);
-         }
-        else
-        {
-          if (producer)
-          {
-            for (int i = 0; i < indent + 1; i ++)
-              mrg_printf (mrg, INDENT_STR);
-            mrg_printf (mrg, "[clone]\n");
-          }
-        }
-     }
-
-
-
-
-     }
-     if (iter == o->active && gegl_node_has_pad (iter, "input"))
-     {
-       mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);");
-       for (int i = 0; i < indent; i ++)
-         mrg_printf (mrg, INDENT_STR);
-       mrg_text_listen (mrg, MRG_CLICK, node_add_below, o, o);
-       mrg_printf (mrg, "+  \n");
-       mrg_text_listen_done (mrg);
-       mrg_end (mrg);
-     }
-
-     {
-       GeglNode *producer = gegl_node_get_producer (iter, "input", NULL);
-       GeglNode *producers_consumer;
-
-       producers_consumer = gegl_node_get_consumer_no (producer, "output", NULL, 0);
-
-       if (producers_consumer == iter)
-         iter = producer;
-        else
-        {
-          if (producer)
-          {
-            for (int i = 0; i < indent; i ++)
-              mrg_printf (mrg, INDENT_STR);
-            mrg_printf (mrg, "[clone]\n");
-          }
-          iter = NULL;
-        }
-     }
-   }
-}
-
-static void ui_debug_op_chain (State *o)
-{
-  Mrg *mrg = o->mrg;
-  GeglNode *iter;
-  mrg_set_edge_top  (mrg, mrg_height (mrg) * 0.2);
-  mrg_set_font_size (mrg, mrg_height (mrg) * 0.03);
-  mrg_set_style (mrg, "color:white; background-color: rgba(0,0,0,0.5)");
-
-  iter = o->sink;
-
-  /* skip nop-node */
-  iter = gegl_node_get_producer (iter, "input", NULL);
-
-  list_ops (o, iter, 1);
-}
-#endif
-
-static void dir_pgdn_cb (MrgEvent *event, void *data1, void *data2)
-{
-  State *o = data1;
   o->u -= mrg_width (o->mrg) * 0.6;
   mrg_queue_draw (o->mrg, NULL);
-  mrg_event_stop_propagate (event);
+  return 0;
 }
 
-static void dir_pgup_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_dir_pgup (COMMAND_ARGS);
+int cmd_dir_pgup (COMMAND_ARGS) /* "dir-pgup", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   o->u += mrg_width (o->mrg) * 0.6;
   mrg_queue_draw (o->mrg, NULL);
-  mrg_event_stop_propagate (event);
+  return 0;
 }
 
 static void entry_pressed (MrgEvent *event, void *data1, void *data2)
@@ -1524,6 +761,8 @@ static void entry_pressed (MrgEvent *event, void *data1, void *data2)
   load_path (o);
   mrg_queue_draw (event->mrg, NULL);
 }
+
+static void run_command (MrgEvent *event, void *data1, void *data2);
 
 static void ui_dir_viewer (State *o)
 {
@@ -1600,7 +839,7 @@ static void ui_dir_viewer (State *o)
   else
     cairo_new_path (cr);
   cairo_rectangle (cr, 0.0, 0.8, 0.2, 0.2);
-  mrg_listen (mrg, MRG_PRESS, dir_pgup_cb, o, NULL);
+  mrg_listen (mrg, MRG_PRESS, run_command, "dir-pgup", NULL);
 
   cairo_new_path (cr);
 
@@ -1614,18 +853,18 @@ static void ui_dir_viewer (State *o)
   else
     cairo_new_path (cr);
   cairo_rectangle (cr, 0.8, 0.8, 0.2, 0.2);
-  mrg_listen (mrg, MRG_PRESS, dir_pgdn_cb, o, NULL);
+  mrg_listen (mrg, MRG_PRESS, run_command, "dir-pgdn", NULL);
   cairo_new_path (cr);
 
-  mrg_add_binding (mrg, "left", NULL, NULL, dir_pgup_cb, o);
-  mrg_add_binding (mrg, "right", NULL, NULL, dir_pgdn_cb, o);
+  mrg_add_binding (mrg, "left", NULL, NULL, run_command, "dir-pgup");
+  mrg_add_binding (mrg, "right", NULL, NULL, run_command, "dir-pgndn");
 }
 
 static int slide_cb (Mrg *mrg, void *data)
 {
   State *o = data;
   o->slide_timeout = 0;
-  go_next (data);
+  argvs_eval ("go-next");
   return 0;
 }
 
@@ -1653,8 +892,7 @@ static void ui_viewer (State *o)
   else
     cairo_new_path (cr);
   cairo_rectangle (cr, 0.0, 0.0, 0.2, 0.2);
-  mrg_listen (mrg, MRG_PRESS, go_parent_cb, o, NULL);
-
+  mrg_listen (mrg, MRG_PRESS, run_command, "go-parent", NULL);
 
   cairo_new_path (cr);
   cairo_move_to (cr, 0.2, 0.8);
@@ -1666,7 +904,7 @@ static void ui_viewer (State *o)
   else
     cairo_new_path (cr);
   cairo_rectangle (cr, 0.0, 0.8, 0.2, 0.2);
-  mrg_listen (mrg, MRG_PRESS, go_prev_cb, o, NULL);
+  mrg_listen (mrg, MRG_PRESS, run_command, "go-prev", NULL);
   cairo_new_path (cr);
 
   cairo_move_to (cr, 0.8, 0.8);
@@ -1679,7 +917,7 @@ static void ui_viewer (State *o)
   else
     cairo_new_path (cr);
   cairo_rectangle (cr, 0.8, 0.8, 0.2, 0.2);
-  mrg_listen (mrg, MRG_PRESS, go_next_cb, o, NULL);
+  mrg_listen (mrg, MRG_PRESS, run_command, "go-next", NULL);
   cairo_new_path (cr);
 
   cairo_arc (cr, 0.9, 0.1, 0.1, 0.0, G_PI * 2);
@@ -1689,22 +927,22 @@ static void ui_viewer (State *o)
   else
     cairo_new_path (cr);
   cairo_rectangle (cr, 0.8, 0.0, 0.2, 0.2);
-  mrg_listen (mrg, MRG_PRESS, toggle_actions_cb, o, NULL);
+  mrg_listen (mrg, MRG_PRESS, run_command, "toggle-graph", NULL);
   cairo_new_path (cr);
 
 
-  mrg_add_binding (mrg, "left", NULL, NULL,  pan_left_cb, o);
-  mrg_add_binding (mrg, "right", NULL, NULL, pan_right_cb, o);
-  mrg_add_binding (mrg, "up", NULL, NULL,    pan_up_cb, o);
-  mrg_add_binding (mrg, "down", NULL, NULL,  pan_down_cb, o);
+  mrg_add_binding (mrg, "left", NULL, NULL,  run_command, "pan-left");
+  mrg_add_binding (mrg, "right", NULL, NULL, run_command, "pan-right");
+  mrg_add_binding (mrg, "up", NULL, NULL,    run_command, "pan-up");
+  mrg_add_binding (mrg, "down", NULL, NULL,  run_command, "pan-down");
 
   if (!edited_prop && !o->editing_op_name)
   {
-    mrg_add_binding (mrg, "control-m", NULL, NULL,     zoom_fit_cb, o);
-    mrg_add_binding (mrg, "control-delete", NULL, NULL,     discard_cb, o);
-    mrg_add_binding (mrg, "space", NULL, NULL,     go_next_cb , o);
-    mrg_add_binding (mrg, "n", NULL, NULL,         go_next_cb, o);
-    mrg_add_binding (mrg, "p", NULL, NULL,         go_prev_cb, o);
+    mrg_add_binding (mrg, "control-m", NULL, NULL,       run_command, "zoom-fit");
+    mrg_add_binding (mrg, "control-delete", NULL, NULL,  run_command, "discard");
+    mrg_add_binding (mrg, "space", NULL, NULL,           run_command, "go-next");
+    mrg_add_binding (mrg, "n", NULL, NULL,               run_command, "go-next");
+    mrg_add_binding (mrg, "p", NULL, NULL,               run_command, "go-prev");
   }
 
   if (o->slide_enabled && o->slide_timeout == 0)
@@ -1714,21 +952,25 @@ static void ui_viewer (State *o)
   }
 }
 
-static void toggle_show_controls_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_toggle_controls (COMMAND_ARGS);
+int cmd_toggle_controls (COMMAND_ARGS) /* "toggle-controls", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   o->show_controls = !o->show_controls;
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
-static void toggle_slideshow_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_toggle_slideshow (COMMAND_ARGS);
+int cmd_toggle_slideshow (COMMAND_ARGS) /* "toggle-slideshow", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   o->slide_enabled = !o->slide_enabled;
   if (o->slide_timeout)
       mrg_remove_idle (o->mrg, o->slide_timeout);
   o->slide_timeout = 0;
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
 static int deferred_redraw_action (Mrg *mrg, void *data)
@@ -1781,7 +1023,6 @@ static void ui_canvas_handling (Mrg *mrg, State *o)
   }
 }
 
-
 static void node_remove (MrgEvent *e, void *data1, void *data2)
 {
   State *o = data1;
@@ -1801,17 +1042,18 @@ static void node_remove (MrgEvent *e, void *data1, void *data2)
   new_active  = prev?prev:next;
 
   o->active = new_active;
-  mrg_queue_draw (e->mrg, NULL);
+  mrg_queue_draw (o->mrg, NULL);
 }
 
-static void node_add_aux_below (MrgEvent *e, void *data1, void *data2)
+  int cmd_node_add_aux(COMMAND_ARGS);
+int cmd_node_add_aux (COMMAND_ARGS) /* "node-add-aux", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   GeglNode *ref = o->active;
   GeglNode *producer = gegl_node_get_producer (o->active, "aux", NULL);
 
   if (!gegl_node_has_pad (ref, "aux"))
-    return;
+    return -1;
 
   o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
 
@@ -1822,20 +1064,21 @@ static void node_add_aux_below (MrgEvent *e, void *data1, void *data2)
   gegl_node_connect_to (o->active, "output", ref, "aux");
 
   o->editing_op_name = 1;
-  mrg_set_cursor_pos (e->mrg, 0);
+  mrg_set_cursor_pos (o->mrg, 0);
   o->new_opname[0]=0;
   fprintf (stderr, "add aux\n");
-  mrg_queue_draw (e->mrg, NULL);
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
-
-static void node_add_below (MrgEvent *e, void *data1, void *data2)
+  int cmd_node_add_input (COMMAND_ARGS);
+int cmd_node_add_input (COMMAND_ARGS) /* "node-add-input", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   GeglNode *ref = o->active;
   GeglNode *producer = gegl_node_get_producer (o->active, "input", NULL);
   if (!gegl_node_has_pad (ref, "input"))
-    return;
+    return -1;
 
   o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
 
@@ -1846,12 +1089,12 @@ static void node_add_below (MrgEvent *e, void *data1, void *data2)
   gegl_node_connect_to (o->active, "output", ref, "input");
 
   o->editing_op_name = 1;
-  mrg_set_cursor_pos (e->mrg, 0);
+  mrg_set_cursor_pos (o->mrg, 0);
   o->new_opname[0]=0;
   fprintf (stderr, "add input\n");
-  mrg_queue_draw (e->mrg, NULL);
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
-
 
 static GeglNode *add_aux (State *o, GeglNode *active, const char *optype)
 {
@@ -1888,31 +1131,28 @@ static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
   return ret;
 }
 
-static void node_add_above (MrgEvent *e, void *data1, void *data2)
+  int cmd_node_add_output(COMMAND_ARGS);
+int cmd_node_add_output (COMMAND_ARGS) /* "node-add-output", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   GeglNode *ref = o->active;
   const char *consumer_name = NULL;
   GeglNode *consumer = gegl_node_get_consumer_no (o->active, "output", &consumer_name, 0);
   if (!gegl_node_has_pad (ref, "output"))
-    return;
+    return -1;
 
   if (consumer)
   {
-  o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
-
-  gegl_node_link_many (ref,
-                       o->active,
-                       NULL);
-
-  gegl_node_connect_to (o->active, "output", consumer, consumer_name);
-
+    o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
+    gegl_node_link_many (ref, o->active, NULL);
+    gegl_node_connect_to (o->active, "output", consumer, consumer_name);
     o->editing_op_name = 1;
-    mrg_set_cursor_pos (e->mrg, 0);
+    mrg_set_cursor_pos (o->mrg, 0);
     o->new_opname[0]=0;
   }
 
-  mrg_queue_draw (e->mrg, NULL);
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
 #define INDENT_STR "   "
@@ -2073,41 +1313,49 @@ static void edit_op (MrgEvent *event, void *data1, void *data2)
 }
 #endif
 
-static void node_up (MrgEvent *event, void *data1, void *data2)
+  int cmd_activate_output(COMMAND_ARGS);
+int cmd_activate_output (COMMAND_ARGS) /* "activate-output", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   GeglNode *ref;
   if (o->active == NULL)
-    return;
+    return -1;
   ref = gegl_node_get_consumer_no (o->active, "output", NULL, 0);
   if (ref && ref != o->sink)
     o->active = ref;
-  mrg_queue_draw (event->mrg, NULL);
+  mrg_queue_draw (o->mrg, NULL);
+
+  return 0;
 }
 
-static void node_down (MrgEvent *event, void *data1, void *data2)
+  int cmd_activate_input(COMMAND_ARGS);
+int cmd_activate_input (COMMAND_ARGS) /* "activate-input", 0, "", "Activates node connected on input pad of active node."*/
 {
-  State *o = data1;
+  State *o = hack_state;
   GeglNode *ref;
   if (o->active == NULL)
-    return;
+    return -1;
   ref = gegl_node_get_producer (o->active, "input", NULL);
-  if (ref) // && ref != o->source)
+  if (ref && ref != o->source)
     o->active = ref;
-  mrg_queue_draw (event->mrg, NULL);
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
-static void node_right (MrgEvent *event, void *data1, void *data2)
+  int cmd_activate_aux(COMMAND_ARGS);
+int cmd_activate_aux (COMMAND_ARGS) /* "activate-aux", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   GeglNode *ref;
   if (o->active == NULL)
-    return;
+    return -1;
   ref = gegl_node_get_producer (o->active, "aux", NULL);
   if (ref && ref != o->source)
     o->active = ref;
-  mrg_queue_draw (event->mrg, NULL);
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
+
 
 static void set_op (MrgEvent *event, void *data1, void *data2)
 {
@@ -2133,7 +1381,6 @@ static void set_op (MrgEvent *event, void *data1, void *data2)
   mrg_queue_draw (o->mrg, NULL);
 }
 
-static void run_command (MrgEvent *event, void *data1, void *data2);
 
 static void list_ops (State *o, GeglNode *iter, int indent)
 {
@@ -2152,10 +1399,11 @@ static void list_ops (State *o, GeglNode *iter, int indent)
 
        for (int i = 0; i < indent; i ++)
          mrg_printf (mrg, INDENT_STR);
-       mrg_text_listen (mrg, MRG_CLICK, node_add_above, o, o);
+       mrg_text_listen (mrg, MRG_CLICK, run_command, "node-add-output", NULL);
        mrg_printf (mrg, "+    ");
        mrg_text_listen_done (mrg);
-       mrg_text_listen (mrg, MRG_CLICK, run_command, o, "remove");
+       //mrg_text_listen (mrg, MRG_CLICK, run_command, o, "remove");
+       mrg_text_listen (mrg, MRG_CLICK, run_command, "remove", NULL);
        mrg_printf (mrg, " X ");
        mrg_text_listen_done (mrg);
 
@@ -2237,7 +1485,7 @@ static void list_ops (State *o, GeglNode *iter, int indent)
        mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);");
        for (int i = 0; i < indent + 1; i ++)
          mrg_printf (mrg, INDENT_STR);
-       mrg_text_listen (mrg, MRG_CLICK, node_add_aux_below, o, o);
+       mrg_text_listen (mrg, MRG_CLICK, NULL, "run-command", "node-add-aux");
        mrg_printf (mrg, "+\n");
        mrg_text_listen_done (mrg);
        mrg_end (mrg);
@@ -2277,7 +1525,7 @@ static void list_ops (State *o, GeglNode *iter, int indent)
        mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);");
        for (int i = 0; i < indent; i ++)
          mrg_printf (mrg, INDENT_STR);
-       mrg_text_listen (mrg, MRG_CLICK, node_add_below, o, o);
+       mrg_text_listen (mrg, MRG_CLICK, run_command, "node-add-input", NULL);
        mrg_printf (mrg, "+  \n");
        mrg_text_listen_done (mrg);
        mrg_end (mrg);
@@ -2330,12 +1578,15 @@ static void update_commandline (const char *new_commandline, void *data)
   strcpy (commandline, new_commandline);
 }
 
-static void run_command (MrgEvent *event, void *data1, void *data2)
+static void run_command (MrgEvent *event, void *data1, void *data_2)
 {
-  State *o = data1;
+  State *o = hack_state; //data1;
   Mrg *mrg = event->mrg;
-  const char *commandline = data2;
+  const char *commandline = data1;
 
+  mrg_event_stop_propagate (event);
+
+  /* XXX : only do this for argv[0] */
   if (strchr (commandline, '='))
   {
     GType target_type = 0;
@@ -2509,56 +1760,75 @@ static void run_command (MrgEvent *event, void *data1, void *data2)
   }
   else
   {
-    if (g_str_equal  (commandline, "remove"))
+    char temp_op_name[1024];
+    if (strchr (commandline, ':'))
     {
-      node_remove (event, data1, data2);
+      snprintf (temp_op_name, 1023, "%s", commandline);
     }
-    else if (g_str_equal  (commandline, "pick"))
+    else
     {
-      tool = TOOL_PICK;
+      snprintf (temp_op_name, 1023, "gegl:%s", commandline);
     }
-    else if (g_str_equal  (commandline, "pan"))
+    if (gegl_has_operation (temp_op_name))
     {
-      tool = TOOL_PAN;
+        argvs_eval ("node-add-output");
+        gegl_node_set (o->active, "operation", temp_op_name, NULL);
     }
-    else if (g_str_equal  (commandline, "paint"))
+    else
     {
-      tool = TOOL_PAINT;
-    }
-    else if (g_str_equal  (commandline, "move"))
-    {
-      tool = TOOL_MOVE;
-    }
-    else if (g_str_equal  (commandline, "q"))
-    {
-      mrg_quit (mrg);
-    } else if (g_str_equal (commandline, "n"))
-    {
-      ////
-    } else
-    {
-      node_add_above (event, data1, data2);
-      if (strchr (commandline, ':'))
+      if (g_str_equal  (commandline, "q"))
       {
-        gegl_node_set (o->active, "operation", commandline, NULL);
-      }
-      else
+        mrg_quit (mrg);
+      } else if (g_str_equal (commandline, "n"))
       {
-        char temp[1024];
-        g_snprintf (temp, 1023, "gegl:%s", commandline);
-        gegl_node_set (o->active, "operation", temp, NULL);
+        ////
+      } else
+      {
+        argvs_eval (commandline);
       }
-      o->editing_op_name=0;
     }
+    o->editing_op_name=0;
   }
+}
 
+
+  int cmd_remove (COMMAND_ARGS);
+int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
+{
+  node_remove (NULL, hack_state, NULL);
+  return 0;
+}
+
+  int cmd_move (COMMAND_ARGS);
+int cmd_move (COMMAND_ARGS) /* "move", 0, "", "changes to move tool"*/
+{
+  tool = TOOL_MOVE;
+  return 0;
+}
+  int cmd_paint (COMMAND_ARGS);
+int cmd_paint (COMMAND_ARGS) /* "paint", 0, "", "changes to paint tool"*/
+{
+  tool = TOOL_PAINT;
+  return 0;
+}
+  int cmd_pick (COMMAND_ARGS);
+int cmd_pick (COMMAND_ARGS) /* "pick", 0, "", "changes to pick tool"*/
+{
+  tool = TOOL_PICK;
+  return 0;
+}
+  int cmd_pan (COMMAND_ARGS);
+int cmd_pan (COMMAND_ARGS) /* "pan", 0, "", "changes to pan tool"*/
+{
+  tool = TOOL_PICK;
+  return 0;
 }
 
 static void commandline_run (MrgEvent *event, void *data1, void *data2)
 {
   State *o = data1;
   if (commandline[0])
-    run_command (event, data1, commandline);
+    run_command (event, commandline, NULL);
   else
     {
       o->show_graph = !o->show_graph;
@@ -2698,46 +1968,41 @@ static void gegl_ui (Mrg *mrg, void *data)
       ui_dir_viewer (o);
     }
 
-    mrg_add_binding (mrg, "escape", NULL, NULL, go_parent_cb, o);
-    mrg_add_binding (mrg, "return", NULL, NULL, toggle_actions_cb, o);
+    mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "go-parent");
+    mrg_add_binding (mrg, "return", NULL, NULL, run_command, "toggle-graph");
   }
 
-  mrg_add_binding (mrg, "control-q", NULL, NULL, mrg_quit_cb, o);
-  mrg_add_binding (mrg, "F11", NULL, NULL,       toggle_fullscreen_cb, o);
+  mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "q");
+  mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle-fullscreen");
 
   if (!edited_prop && !o->editing_op_name)
   {
-    //mrg_add_binding (mrg, "return", NULL, NULL, edit_op, o);
-    mrg_add_binding (mrg, "up", NULL, NULL, node_up, o);
-    mrg_add_binding (mrg, "down", NULL, NULL, node_down, o);
-    mrg_add_binding (mrg, "right", NULL, NULL, node_right, o);
-
-
-    mrg_add_binding (mrg, "control-o", NULL, NULL, node_add_above, o);
-    mrg_add_binding (mrg, "control-i", NULL, NULL, node_add_below, o);
-    mrg_add_binding (mrg, "control-a", NULL, NULL, node_add_aux_below, o);
-    mrg_add_binding (mrg, "control-x", NULL, NULL, node_remove, o);
-
+    mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "activate-output");
+    mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "activate-input");
+    mrg_add_binding (mrg, "right", NULL, NULL,     run_command, "activate-aux");
+    mrg_add_binding (mrg, "control-o", NULL, NULL, run_command, "node-add-output");
+    mrg_add_binding (mrg, "control-i", NULL, NULL, run_command, "node-add-input");
+    mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "node-add-aux");
+    mrg_add_binding (mrg, "control-x", NULL, NULL, run_command, "remove");
   }
 
   if (!edited_prop && !o->editing_op_name)
   {
-    mrg_add_binding (mrg, "tab", NULL, NULL,       toggle_show_controls_cb, o);
-    //mrg_add_binding (mrg, "q", NULL, NULL,         mrg_quit_cb, o);
-    mrg_add_binding (mrg, "control-f", NULL, NULL,  toggle_fullscreen_cb, o);
-    if(1)mrg_add_binding (mrg, "control-a", NULL, NULL,   toggle_slideshow_cb, o);
-    mrg_add_binding (mrg, "control-r", NULL, NULL,     preview_less_cb, o);
-    mrg_add_binding (mrg, "control-t", NULL, NULL,     preview_more_cb, o);
+    mrg_add_binding (mrg, "tab", NULL, NULL, run_command, "toggle-controls");
+    mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle-fullscreen");
+    if(1)mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "toggle-slideshow");
+    mrg_add_binding (mrg, "control-r", NULL, NULL, run_command, "preview-less");
+    mrg_add_binding (mrg, "control-t", NULL, NULL, run_command, "preview-more");
 
-    mrg_add_binding (mrg, "control-n", NULL, NULL, go_next_cb, o);
-    mrg_add_binding (mrg, "control-p", NULL, NULL, go_prev_cb, o);
+    mrg_add_binding (mrg, "control-n", NULL, NULL, run_command, "go-next");
+    mrg_add_binding (mrg, "control-p", NULL, NULL, run_command, "go-prev");
 
     if (commandline[0]==0)
     {
-      mrg_add_binding (mrg, "+", NULL, NULL,     zoom_in_cb, o);
-      mrg_add_binding (mrg, "=", NULL, NULL,     zoom_in_cb, o);
-      mrg_add_binding (mrg, "-", NULL, NULL,     zoom_out_cb, o);
-      mrg_add_binding (mrg, "1", NULL, NULL,     zoom_1_cb, o);
+      mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom-in");
+      mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom-out");
+      mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom-out");
+      mrg_add_binding (mrg, "1", NULL, NULL, run_command, "zoom-1");
     }
   }
 
@@ -2752,13 +2017,8 @@ static void gegl_ui (Mrg *mrg, void *data)
     mrg_end (mrg);
     mrg_add_binding (mrg, "return", NULL, NULL, commandline_run, o);
 
-
-    //mrg_add_binding (mrg, "up", NULL, NULL, node_up, o);
-    //mrg_add_binding (mrg, "down", NULL, NULL, node_down, o);
     if (commandline[0]==0)
-      mrg_add_binding (mrg, "right", NULL, NULL, node_right, o);
-
-
+      mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate-aux");
   }
 
 }
@@ -3021,34 +2281,37 @@ static void go_prev (State *o)
   }
 }
 
-static void go_next_cb (MrgEvent *event, void *data1, void *data2)
+ int cmd_go_next (COMMAND_ARGS);
+int cmd_go_next (COMMAND_ARGS) /* "go-next", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   if (o->rev)
-    save_cb (event, data1, data2);
-  go_next (data1);
+    argvs_eval ("save");
+  go_next (o);
   o->active = NULL;
-  mrg_event_stop_propagate (event);
+  return 0;
 }
 
-static void go_parent_cb (MrgEvent *event, void *data1, void *data2)
+ int cmd_go_parent (COMMAND_ARGS);
+int cmd_go_parent (COMMAND_ARGS) /* "go-parent", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   if (o->rev)
-    save_cb (event, data1, data2);
-  go_parent (data1);
+    argvs_eval ("save");
+  go_parent (o);
   o->active = NULL;
-  mrg_event_stop_propagate (event);
+  return 0;
 }
 
-static void go_prev_cb (MrgEvent *event, void *data1, void *data2)
+ int cmd_go_prev (COMMAND_ARGS);
+int cmd_go_prev (COMMAND_ARGS) /* "go-prev", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   if (o->rev)
-    save_cb (event, data1, data2);
-  go_prev (data1);
+    argvs_eval ("save");
+  go_prev (o);
   o->active = NULL;
-  mrg_event_stop_propagate (event);
+  return 0;
 }
 
 static void drag_preview (MrgEvent *e)
@@ -3219,8 +2482,10 @@ static void center (State *o)
   mrg_queue_draw (mrg, NULL);
 }
 
-static inline void zoom_to_fit_buffer (State *o)
+  int cmd_zoom_fit_buffer (COMMAND_ARGS);
+int cmd_zoom_fit_buffer (COMMAND_ARGS) /* "zoom-fit-buffer", 0, "", ""*/
 {
+  State *o = hack_state;
   Mrg *mrg = o->mrg;
   GeglRectangle rect = *gegl_buffer_get_extent (o->buffer);
   float scale, scale2;
@@ -3236,52 +2501,61 @@ static inline void zoom_to_fit_buffer (State *o)
   o->u += rect.x * o->scale;
   o->v += rect.y * o->scale;
 
-
   mrg_queue_draw (mrg, NULL);
-}
-
-static void zoom_fit_cb (MrgEvent *e, void *data1, void *data2)
-{
-  zoom_to_fit (data1);
-}
-
-
-static int deferred_zoom_to_fit (Mrg *mrg, void *data)
-{
-  zoom_to_fit (data);
   return 0;
 }
 
-static void pan_left_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_zoom_fit (COMMAND_ARGS);
+int cmd_zoom_fit (COMMAND_ARGS) /* "zoom-fit", 0, "", ""*/
 {
-  State *o = data1;
-  float amount = mrg_width (event->mrg) * 0.1;
+  zoom_to_fit (hack_state);
+  return 0;
+}
+
+static int deferred_zoom_to_fit (Mrg *mrg, void *data)
+{
+  argvs_eval ("zoom-fit");
+  return 0;
+}
+
+  int cmd_pan_left (COMMAND_ARGS);
+int cmd_pan_left (COMMAND_ARGS) /* "pan-left", 0, "", ""*/
+{
+  State *o = hack_state;
+  float amount = mrg_width (o->mrg) * 0.1;
   o->u = o->u - amount;
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
-static void pan_right_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_pan_right (COMMAND_ARGS);
+int cmd_pan_right (COMMAND_ARGS) /* "pan-right", 0, "", ""*/
 {
-  State *o = data1;
-  float amount = mrg_width (event->mrg) * 0.1;
+  State *o = hack_state;
+  float amount = mrg_width (o->mrg) * 0.1;
   o->u = o->u + amount;
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
-static void pan_down_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_pan_down (COMMAND_ARGS);
+int cmd_pan_down (COMMAND_ARGS) /* "pan-down", 0, "", ""*/
 {
-  State *o = data1;
-  float amount = mrg_width (event->mrg) * 0.1;
+  State *o = hack_state;
+  float amount = mrg_width (o->mrg) * 0.1;
   o->v = o->v + amount;
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
-static void pan_up_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_pan_up (COMMAND_ARGS);
+int cmd_pan_up (COMMAND_ARGS) /* "pan-up", 0, "", ""*/
 {
-  State *o = data1;
-  float amount = mrg_width (event->mrg) * 0.1;
+  State *o = hack_state;
+  float amount = mrg_width (o->mrg) * 0.1;
   o->v = o->v - amount;
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
 static void get_coords (State *o, float screen_x, float screen_y, float *gegl_x, float *gegl_y)
@@ -3291,25 +2565,30 @@ static void get_coords (State *o, float screen_x, float screen_y, float *gegl_x,
   *gegl_y = (o->v + screen_y) / scale;
 }
 
-static void preview_more_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_preview_more(COMMAND_ARGS);
+int cmd_preview_more (COMMAND_ARGS) /* "preview-more", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   o->render_quality *= 2;
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
-static void preview_less_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_preview_less(COMMAND_ARGS);
+int cmd_preview_less (COMMAND_ARGS) /* "preview-less", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   o->render_quality /= 2;
   if (o->render_quality <= 1.0)
     o->render_quality = 1.0;
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
-static void zoom_1_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_zoom_1 (COMMAND_ARGS);
+int cmd_zoom_1 (COMMAND_ARGS) /* "zoom-1", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   float x, y;
   get_coords (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, &x, &y);
   o->scale = 1.0;
@@ -3317,6 +2596,7 @@ static void zoom_1_cb (MrgEvent *event, void *data1, void *data2)
   o->v = y * o->scale - mrg_height(o->mrg)/2;
   o->renderer_state = 0;
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
 static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
@@ -3331,17 +2611,22 @@ static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
   mrg_queue_draw (o->mrg, NULL);
 }
 
-static void zoom_in_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_zoom_in (COMMAND_ARGS);
+int cmd_zoom_in (COMMAND_ARGS) /* "zoom-in", 0, "", ""*/
 {
-  State *o = data1;
-  zoom_at (data1, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, 1.1);
+  State *o = hack_state;
+  zoom_at (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, 1.1);
+  return 0;
 }
 
-static void zoom_out_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_zoom_out (COMMAND_ARGS);
+int cmd_zoom_out (COMMAND_ARGS) /* "zoom-out", 0, "", ""*/
 {
-  State *o = data1;
-  zoom_at (data1, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, 1.0/1.1);
+  State *o = hack_state;
+  zoom_at (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, 1.0/1.1);
+  return 0;
 }
+
 
 static void scroll_cb (MrgEvent *event, void *data1, void *data2)
 {
@@ -3358,32 +2643,35 @@ static void scroll_cb (MrgEvent *event, void *data1, void *data2)
   }
 }
 
-static void toggle_actions_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_toggle_graph (COMMAND_ARGS);
+int cmd_toggle_graph (COMMAND_ARGS) /* "toggle-graph", 0, "", ""*/
 {
-  State *o = data1;
+  State *o = hack_state;
   o->show_graph = !o->show_graph;
-  fprintf (stderr, "!\n");
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
-static void toggle_fullscreen_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_toggle_fulllscreen (COMMAND_ARGS);
+int cmd_toggle_fulllscreen (COMMAND_ARGS) /* "toggle-fulllscreen", 0, "", ""*/
 {
-  State *o = data1;
-  mrg_set_fullscreen (event->mrg, !mrg_is_fullscreen (event->mrg));
-  mrg_event_stop_propagate (event);
-  mrg_add_timeout (event->mrg, 250, deferred_zoom_to_fit, o);
+  State *o = hack_state;
+  mrg_set_fullscreen (o->mrg, !mrg_is_fullscreen (o->mrg));
+  mrg_add_timeout (o->mrg, 250, deferred_zoom_to_fit, o);
+  return 0;
 }
 
-static void discard_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_discard (COMMAND_ARGS);
+int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to a .discard subfolder"*/
 {
-  State *o = data1;
+  State *o = hack_state;
   char *old_path = strdup (o->path);
   char *tmp;
   char *lastslash;
-  go_next_cb (event, data1, data2);
+  argvs_eval ("go-next");
   if (!strcmp (old_path, o->path))
    {
-     go_prev_cb (event, data1, data2);
+     argvs_eval ("go-prev");
    }
   tmp = strdup (old_path);
   lastslash  = strrchr (tmp, '/');
@@ -3405,12 +2693,14 @@ static void discard_cb (MrgEvent *event, void *data1, void *data2)
   }
   free (tmp);
   free (old_path);
+  return 0;
 }
 
-static void save_cb (MrgEvent *event, void *data1, void *data2)
+  int cmd_save (COMMAND_ARGS);
+int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
 {
   GeglNode *load;
-  State *o = data1;
+  State *o = hack_state;
   gchar *path;
   char *serialized;
 
@@ -3431,8 +2721,10 @@ static void save_cb (MrgEvent *event, void *data1, void *data2)
   gegl_node_remove_child (o->gegl, load);
 
   g_file_set_contents (path, serialized, -1, NULL);
+  fprintf (stderr, "%s\n", serialized);
   g_free (serialized);
   o->rev = 0;
+  return 0;
 }
 
 #if 0
