@@ -74,11 +74,6 @@ static gboolean   gegl_tile_handler_cache_has_tile   (GeglTileHandlerCache     *
                                                       gint                      x,
                                                       gint                      y,
                                                       gint                      z);
-void              gegl_tile_handler_cache_insert     (GeglTileHandlerCache     *cache,
-                                                      GeglTile                 *tile,
-                                                      gint                      x,
-                                                      gint                      y,
-                                                      gint                      z);
 static void       gegl_tile_handler_cache_void       (GeglTileHandlerCache     *cache,
                                                       gint                      x,
                                                       gint                      y,
