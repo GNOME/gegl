@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-12-19 19:01+0100\n"
-"PO-Revision-Date: 2018-12-19 19:02+0100\n"
+"POT-Creation-Date: 2018-12-30 20:37+0100\n"
+"PO-Revision-Date: 2018-12-30 20:37+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -25,17 +25,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: ../bin/gegl.c:174
+#: ../bin/gegl.c:179
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "Impossibile leggere il file: %s"
 
-#: ../bin/gegl.c:223
+#: ../bin/gegl.c:228
 #, c-format
 msgid "Invalid graph, abort.\n"
 msgstr "Grafo non valido, interrotto.\n"
 
-#: ../bin/gegl.c:386 ../bin/gegl-options.c:135
+#: ../bin/gegl.c:391 ../bin/gegl-options.c:135
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Modalità GeglOption sconosciuta: %d"
@@ -5985,7 +5985,7 @@ msgstr "Valore mediano a picchi"
 
 #: ../operations/common-gpl3+/value-propagate.c:32
 msgid "Color to peaks"
-msgstr "Colore a picchi"
+msgstr "Da colore ai picchi"
 
 #: ../operations/common-gpl3+/value-propagate.c:33
 msgid "Only color"
