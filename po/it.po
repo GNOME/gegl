@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2018-12-30 20:37+0100\n"
-"PO-Revision-Date: 2018-12-30 20:37+0100\n"
+"PO-Revision-Date: 2018-12-31 00:54+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -6126,7 +6126,7 @@ msgstr "Se la funzione aggiunge il risultato all'immagine originale."
 
 #: ../operations/common-gpl3+/video-degradation.c:61
 msgid "Rotated"
-msgstr "Rotato"
+msgstr "Ruotato"
 
 #: ../operations/common-gpl3+/video-degradation.c:62
 msgid "Whether to rotate the RGB pattern by ninety degrees."
