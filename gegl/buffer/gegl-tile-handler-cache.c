@@ -547,6 +547,8 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 
   target_size -= target_size * ratio;
 
+  g_mutex_unlock (&mutex);
+
   while ((guintptr) g_atomic_pointer_get (&cache_total) > target_size)
     {
       CacheItem *last_writable;
@@ -563,6 +565,8 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
           if (cache)
             g_rec_mutex_unlock (&cache->tile_storage->mutex);
 
+          g_mutex_lock (&mutex);
+
           do
             {
               cache = gegl_tile_handler_cache_find_oldest_cache (cache);
@@ -577,6 +581,8 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
                   * skip the cache if it fails.
                   */
                  ! g_rec_mutex_trylock (&cache->tile_storage->mutex));
+
+          g_mutex_unlock (&mutex);
 
           if (! cache)
             break;
@@ -641,6 +647,8 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 
   if (cache)
     g_rec_mutex_unlock (&cache->tile_storage->mutex);
+
+  g_mutex_lock (&mutex);
 
   last_time = g_get_monotonic_time ();
 
