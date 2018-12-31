@@ -260,95 +260,101 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
         {
           queue_stalls++;
 
-          while (params                        &&
-                 params->operation == OP_WRITE &&
-                 queued_cost > queued_max)
+          while (queued_cost > queued_max)
             {
-              if (params->tile               &&
-                  params->block->compression &&
-                  ! params->compressing)
+              params = g_queue_peek_tail (queue);
+
+              while (params                        &&
+                     params->operation == OP_WRITE &&
+                     queued_cost > queued_max)
                 {
-                  SwapBlock             *block;
-                  GeglTile              *tile;
-                  const GeglCompression *compression;
-                  const Babl            *format;
-                  gint                   tile_size;
-                  gint                   bpp;
-                  gpointer               compressed;
-                  gint                   max_compressed_size;
-                  gint                   compressed_size;
-                  gboolean               success;
-
-                  block       = params->block;
-                  tile        = gegl_tile_ref (params->tile);
-                  compression = block->compression;
-                  format      = params->format;
-                  tile_size   = params->size;
-
-                  gegl_tile_backend_swap_block_ref (block, tile_size);
-
-                  params->compressing = TRUE;
-
-                  g_mutex_unlock (&queue_mutex);
-
-                  bpp = babl_format_get_bytes_per_pixel (format);
-
-                  max_compressed_size = tile_size * COMPRESSION_MAX_RATIO;
-                  compressed          = g_malloc (max_compressed_size);
-
-                  success = gegl_compression_compress (
-                    compression, format,
-                    gegl_tile_get_data (tile), tile_size / bpp,
-                    compressed, &compressed_size, max_compressed_size);
-
-                  g_mutex_lock (&queue_mutex);
-
-                  params = NULL;
-
-                  if (block->link)
+                  if (params->tile               &&
+                      params->block->compression &&
+                      ! params->compressing)
                     {
-                      params = block->link->data;
+                      SwapBlock             *block;
+                      GeglTile              *tile;
+                      const GeglCompression *compression;
+                      const Babl            *format;
+                      gint                   tile_size;
+                      gint                   bpp;
+                      gpointer               compressed;
+                      gint                   max_compressed_size;
+                      gint                   compressed_size;
+                      gboolean               success;
 
-                      if (params->tile != tile)
+                      block       = params->block;
+                      tile        = gegl_tile_ref (params->tile);
+                      compression = block->compression;
+                      format      = params->format;
+                      tile_size   = params->size;
+
+                      gegl_tile_backend_swap_block_ref (block, tile_size);
+
+                      params->compressing = TRUE;
+
+                      g_mutex_unlock (&queue_mutex);
+
+                      bpp = babl_format_get_bytes_per_pixel (format);
+
+                      max_compressed_size = tile_size * COMPRESSION_MAX_RATIO;
+                      compressed          = g_malloc (max_compressed_size);
+
+                      success = gegl_compression_compress (
+                        compression, format,
+                        gegl_tile_get_data (tile), tile_size / bpp,
+                        compressed, &compressed_size, max_compressed_size);
+
+                      g_mutex_lock (&queue_mutex);
+
+                      params = NULL;
+
+                      if (block->link)
+                        {
+                          params = block->link->data;
+
+                          if (params->tile != tile)
+                            params = NULL;
+                        }
+
+                      if (success && params)
+                        {
+                          gegl_tile_backend_swap_free_data (params);
+
+                          params->compressed      = compressed;
+                          params->compressed_size = compressed_size;
+
+                          queued_total += params->compressed_size;
+                          queued_cost  += params->compressed_size;
+                        }
+                      else
+                        {
+                          if (params)
+                            params->block->compression = NULL;
+
+                          g_free (compressed);
+                        }
+
+                      gegl_tile_backend_swap_block_unref (block,
+                                                          tile_size, FALSE);
+
+                      gegl_tile_unref (tile);
+                    }
+
+                  if (params)
+                    {
+                      GList *link = g_list_previous (params->block->link);
+
+                      if (link)
+                        params = link->data;
+                      else
                         params = NULL;
                     }
-
-                  if (success && params)
-                    {
-                      gegl_tile_backend_swap_free_data (params);
-
-                      params->compressed      = compressed;
-                      params->compressed_size = compressed_size;
-
-                      queued_total += params->compressed_size;
-                      queued_cost  += params->compressed_size;
-                    }
-                  else
-                    {
-                      if (params)
-                        params->block->compression = NULL;
-
-                      g_free (compressed);
-                    }
-
-                  gegl_tile_backend_swap_block_unref (block, tile_size, FALSE);
-
-                  gegl_tile_unref (tile);
                 }
 
-              if (params)
-                {
-                  GList *link = g_list_previous (params->block->link);
-
-                  if (link)
-                    params = link->data;
-                  else
-                    params = NULL;
-                }
+              if (queued_cost > queued_max)
+                g_cond_wait (&push_cond, &queue_mutex);
             }
-
-          while (queued_cost > queued_max)
-            g_cond_wait (&push_cond, &queue_mutex);
         }
     }
 }
