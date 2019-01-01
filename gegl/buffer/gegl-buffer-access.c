@@ -426,6 +426,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
           gint      lskip, rskip, pixels, row;
           guchar   *bp, *tile_base, *tp;
           GeglTile *tile;
+          gboolean  whole_tile;
 
           bp = buf + bufy * buf_stride + bufx * bpx_size;
 
@@ -436,8 +437,6 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
 
           index_x = gegl_tile_indice (tiledx, tile_width);
           index_y = gegl_tile_indice (tiledy, tile_height);
-
-          tile = gegl_buffer_get_tile (buffer, index_x, index_y, level);
 
           lskip = (buffer_abyss_x) - (buffer_x + bufx);
           /* gap between left side of tile, and abyss */
@@ -453,6 +452,21 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
           if (rskip > pixels)
             rskip = pixels;
 
+          pixels -= lskip;
+          pixels -= rskip;
+
+          whole_tile = pixels == tile_width && bufy >= buffer_abyss_y &&
+                       MIN (MIN (height - bufy, tile_height - offsety),
+                            abyss_y_total - bufy) == tile_height;
+
+          g_rec_mutex_lock (&buffer->tile_storage->mutex);
+
+          tile = gegl_tile_handler_get_tile ((GeglTileHandler *) buffer,
+                                             index_x, index_y, level,
+                                             ! whole_tile);
+
+          g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+
           if (!tile)
             {
               g_warning ("didn't get tile, trying to continue");
@@ -464,9 +478,6 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
 
           tile_base = gegl_tile_get_data (tile);
           tp        = ((guchar *) tile_base) + (offsety * tile_width + offsetx) * px_size;
-
-          pixels -= lskip;
-          pixels -= rskip;
 
           if (fish)
             {
