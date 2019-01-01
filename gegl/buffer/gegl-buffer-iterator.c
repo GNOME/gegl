@@ -31,6 +31,7 @@
 #include "gegl-buffer-iterator.h"
 #include "gegl-buffer-iterator-private.h"
 #include "gegl-buffer-private.h"
+#include "gegl-tile-storage.h"
 
 typedef enum {
   GeglIteratorState_Start,
@@ -361,17 +362,25 @@ get_tile (GeglBufferIterator *iter,
       int tile_x = gegl_tile_indice (iter->items[index].roi.x + shift_x, tile_width);
       int tile_y = gegl_tile_indice (iter->items[index].roi.y + shift_y, tile_height);
 
-      sub->current_tile = gegl_buffer_get_tile (buf, tile_x, tile_y, sub->level);
+      sub->real_roi.x = (tile_x * tile_width)  - shift_x;
+      sub->real_roi.y = (tile_y * tile_height) - shift_y;
+      sub->real_roi.width  = tile_width;
+      sub->real_roi.height = tile_height;
+
+      g_rec_mutex_lock (&buf->tile_storage->mutex);
+
+      sub->current_tile = gegl_tile_handler_get_tile (
+        (GeglTileHandler *) buf,
+        tile_x, tile_y, sub->level,
+        (sub->access_mode & GEGL_ACCESS_READWRITE) != GEGL_ACCESS_WRITE ||
+        ! gegl_rectangle_contains (&sub->full_rect, &sub->real_roi));
+
+      g_rec_mutex_unlock (&buf->tile_storage->mutex);
 
       if (sub->access_mode & GEGL_ACCESS_WRITE)
         gegl_tile_lock (sub->current_tile);
       else
         gegl_tile_read_lock (sub->current_tile);
-
-      sub->real_roi.x = (tile_x * tile_width)  - shift_x;
-      sub->real_roi.y = (tile_y * tile_height) - shift_y;
-      sub->real_roi.width  = tile_width;
-      sub->real_roi.height = tile_height;
 
       sub->current_tile_mode = GeglIteratorTileMode_DirectTile;
     }
@@ -509,7 +518,16 @@ prepare_iteration (GeglBufferIterator *iter)
               (buf->extent.width  == buf->tile_width) &&
               (buf->extent.height == buf->tile_height))
             {
-              sub->linear_tile = gegl_buffer_get_tile (sub->buffer, 0, 0, 0);
+              g_rec_mutex_lock (&buf->tile_storage->mutex);
+
+              sub->linear_tile = gegl_tile_handler_get_tile (
+                (GeglTileHandler *) buf,
+                0, 0, 0,
+                (sub->access_mode & GEGL_ACCESS_READWRITE) !=
+                GEGL_ACCESS_WRITE ||
+                ! gegl_rectangle_contains (&sub->full_rect, &buf->extent));
+
+              g_rec_mutex_unlock (&buf->tile_storage->mutex);
 
               if (sub->access_mode & GEGL_ACCESS_WRITE)
                 gegl_tile_lock (sub->linear_tile);
