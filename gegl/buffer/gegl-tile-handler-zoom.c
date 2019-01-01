@@ -235,6 +235,11 @@ get_tile (GeglTileSource *gegl_tile_source,
     if (! tile)
       tile = gegl_tile_handler_create_tile (GEGL_TILE_HANDLER (zoom), x, y, z);
 
+    /* restore the original damage mask, so that fully-damaged tiles aren't
+     * copied during uncloning.
+     */
+    tile->damage = damage;
+
     gegl_tile_lock (tile);
 
     for (i = 0; i < 2; i++)
@@ -276,6 +281,7 @@ get_tile (GeglTileSource *gegl_tile_source,
                 }
             }
         }
+
     gegl_tile_unlock (tile);
   }
 
