@@ -42,6 +42,8 @@
 #include "gegl-buffer-config.h"
 #include "gegl-buffer-private.h"
 #include "gegl-rectangle.h"
+#include "gegl-tile-handler-cache.h"
+#include "gegl-tile-handler-private.h"
 #include "gegl-tile-storage.h"
 #include "gegl-tile-backend-file.h"
 #include "gegl-tile-backend-swap.h"
@@ -690,6 +692,9 @@ gegl_buffer_constructor (GType                  type,
     }
 
   buffer->tile_storage = gegl_buffer_tile_storage (buffer);
+
+  _gegl_tile_handler_set_tile_storage (handler, buffer->tile_storage);
+  _gegl_tile_handler_set_cache (handler, buffer->tile_storage->cache);
 
   /* intialize the soft format to be equivalent to the actual
    * format, unless the soft format was copied from a source buffer

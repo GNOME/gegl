@@ -66,10 +66,6 @@ static gpointer   gegl_tile_handler_cache_command    (GeglTileSource           *
                                                       gint                      y,
                                                       gint                      z,
                                                       gpointer                  data);
-static GeglTile * gegl_tile_handler_cache_get_tile   (GeglTileHandlerCache     *cache,
-                                                      gint                      x,
-                                                      gint                      y,
-                                                      gint                      z);
 static gboolean   gegl_tile_handler_cache_has_tile   (GeglTileHandlerCache     *cache,
                                                       gint                      x,
                                                       gint                      y,
@@ -463,7 +459,7 @@ cache_lookup (GeglTileHandlerCache *cache,
 
 /* returns the requested Tile if it is in the cache, NULL otherwize.
  */
-static GeglTile *
+GeglTile *
 gegl_tile_handler_cache_get_tile (GeglTileHandlerCache *cache,
                                   gint                  x,
                                   gint                  y,

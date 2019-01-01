@@ -203,6 +203,60 @@ gegl_tile_handler_create_tile (GeglTileHandler *handler,
   return tile;
 }
 
+static GeglTile *
+gegl_tile_handler_get_tile_internal (GeglTileHandler *handler,
+                                     GeglTileSource  *source,
+                                     gint             x,
+                                     gint             y,
+                                     gint             z,
+                                     gboolean         preserve_data)
+{
+  GeglTile *tile = NULL;
+
+  if (preserve_data && source)
+    {
+      tile = gegl_tile_source_command (source, GEGL_TILE_GET, x, y, z, NULL);
+    }
+  else if (handler->priv->cache)
+    {
+      tile = gegl_tile_handler_cache_get_tile (handler->priv->cache, x, y, z);
+
+      if (tile)
+        tile->damage = ~(guint64) 0;
+    }
+
+  if (! tile)
+    tile = gegl_tile_handler_create_tile (handler, x, y, z);
+
+  return tile;
+}
+
+GeglTile *
+gegl_tile_handler_get_tile (GeglTileHandler *handler,
+                            gint             x,
+                            gint             y,
+                            gint             z,
+                            gboolean         preserve_data)
+{
+  return gegl_tile_handler_get_tile_internal (handler,
+                                              GEGL_TILE_SOURCE (handler),
+                                              x, y, z,
+                                              preserve_data);
+}
+
+GeglTile *
+gegl_tile_handler_get_source_tile (GeglTileHandler *handler,
+                                   gint             x,
+                                   gint             y,
+                                   gint             z,
+                                   gboolean         preserve_data)
+{
+  return gegl_tile_handler_get_tile_internal (handler,
+                                              handler->source,
+                                              x, y, z,
+                                              preserve_data);
+}
+
 GeglTile *
 gegl_tile_handler_dup_tile (GeglTileHandler *handler,
                             GeglTile        *tile,

@@ -84,6 +84,49 @@ GeglTile * gegl_tile_handler_create_tile (GeglTileHandler *handler,
                                           gint             z);
 
 /**
+ * gegl_tile_handler_get_tile: (skip)
+ * @handler: a #GeglTileHandler
+ * @x: The tile space x coordinate for the tile
+ * @y: The tile space y coordinate for the tile
+ * @z: The tile space z coordinate for the tile
+ * @preserve_data: whether existing tile data should be preserved
+ *
+ * Fetches the tile at the given coordinates from @handler.  If the tile
+ * doesn't exist, creates a new tile associated with this tile handler.
+ *
+ * If @preserve_data is FALSE, the tile contents are unspecified.
+ *
+ * Return value: the tile
+ */
+GeglTile * gegl_tile_handler_get_tile (GeglTileHandler *handler,
+                                       gint             x,
+                                       gint             y,
+                                       gint             z,
+                                       gboolean         preserve_data);
+
+/**
+ * gegl_tile_handler_get_source_tile: (skip)
+ * @handler: a #GeglTileHandler
+ * @x: The tile space x coordinate for the tile
+ * @y: The tile space y coordinate for the tile
+ * @z: The tile space z coordinate for the tile
+ * @preserve_data: whether existing tile data should be preserved
+ *
+ * Fetches the tile at the given coordinates from @handler source.  If the tile
+ * doesn't exist, or if @handler doesn't have a source, creates a new tile
+ * associated with this tile handler.
+ *
+ * If @preserve_data is FALSE, the tile contents are unspecified.
+ *
+ * Return value: the tile
+ */
+GeglTile * gegl_tile_handler_get_source_tile (GeglTileHandler *handler,
+                                              gint             x,
+                                              gint             y,
+                                              gint             z,
+                                              gboolean         preserve_data);
+
+/**
  * gegl_tile_handler_dup_tile: (skip)
  * @handler: a #GeglTileHandler
  * @tile: the #GeglTile to copy
