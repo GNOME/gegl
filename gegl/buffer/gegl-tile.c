@@ -205,7 +205,30 @@ gegl_tile_unclone (GeglTile *tile)
       /* the tile data is shared with other tiles,
        * create a local copy
        */
-      if (tile->is_zero_tile)
+
+      if (! ~tile->damage)
+        {
+          /* if the tile is fully damaged, we only need to allocate a new
+           * buffer, but we don't have to copy the old one.
+           */
+
+          tile->is_zero_tile = FALSE;
+
+          if (g_atomic_int_dec_and_test (gegl_tile_n_clones (tile)))
+            {
+              /* someone else uncloned the tile in the meantime, and we're now
+               * the last copy; bail.
+               */
+              *gegl_tile_n_clones (tile)        = 1;
+              *gegl_tile_n_cached_clones (tile) = cached;
+
+              goto end;
+            }
+
+          tile->n_clones = gegl_malloc (INLINE_N_ELEMENTS_DATA_OFFSET +
+                                        tile->size);
+        }
+      else if (tile->is_zero_tile)
         {
           tile->is_zero_tile = FALSE;
 
