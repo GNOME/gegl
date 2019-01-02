@@ -599,6 +599,13 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
           if (tile->ref_count > 1)
             continue;
 
+          /* if we need to maintain the tile's data-pointer identity we can't
+           * remove it from the cache, since the storage might copy the data
+           * and throw the tile away.
+           */
+          if (tile->keep_identity)
+            continue;
+
           /* a set of cloned tiles is only counted once toward the total cache
            * size, so the entire set has to be removed from the cache in order
            * to reclaim the memory of a single tile.  in other words, in a set

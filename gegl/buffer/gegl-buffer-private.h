@@ -164,6 +164,9 @@ struct _GeglTile
                                       * therefore can never be owned by a
                                       * single mutable tile)
                                       */
+  guint            keep_identity:1;  /* maintain data pointer identity, rather
+                                      * than data content only
+                                      */
 
   gint             clone_state; /* tile clone/unclone state & spinlock */
   gint            *n_clones;    /* an array of two atomic counters, shared

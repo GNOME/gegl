@@ -129,29 +129,45 @@ gegl_tile_new_bare (void)
 GeglTile *
 gegl_tile_dup (GeglTile *src)
 {
-  GeglTile *tile = gegl_tile_new_bare_internal ();
+  GeglTile *tile;
 
   g_warn_if_fail (src->lock_count == 0);
   g_warn_if_fail (! src->damage);
 
-  src->clone_state     = CLONE_STATE_CLONED;
+  if (! src->keep_identity)
+    {
+      src->clone_state          = CLONE_STATE_CLONED;
 
-  tile->data           = src->data;
-  tile->size           = src->size;
-  tile->is_zero_tile   = src->is_zero_tile;
-  tile->is_global_tile = src->is_global_tile;
-  tile->clone_state    = CLONE_STATE_CLONED;
-  tile->n_clones       = src->n_clones;
+      tile                      = gegl_tile_new_bare_internal ();
 
-  /* mark the tile as dirty, since, even though the in-memory tile data is
+      tile->data                = src->data;
+      tile->size                = src->size;
+      tile->is_zero_tile        = src->is_zero_tile;
+      tile->is_global_tile      = src->is_global_tile;
+      tile->clone_state         = CLONE_STATE_CLONED;
+      tile->n_clones            = src->n_clones;
+
+      tile->destroy_notify      = src->destroy_notify;
+      tile->destroy_notify_data = src->destroy_notify_data;
+
+      g_atomic_int_inc (gegl_tile_n_clones (tile));
+    }
+  else
+    {
+      /* we can't clone the source tile if we need to keep its data-pointer
+       * identity, since we have no way of uncloning it without changing its
+       * data pointer.
+       */
+
+      tile = gegl_tile_new (src->size);
+
+      memcpy (tile->data, src->data, src->size);
+    }
+
+  /* mark the tile as dirty, since, even though the in-memory tile data may be
    * shared with the source tile, the stored tile data is separate.
    */
   tile->rev++;
-
-  tile->destroy_notify      = src->destroy_notify;
-  tile->destroy_notify_data = src->destroy_notify_data;
-
-  g_atomic_int_inc (gegl_tile_n_clones (tile));
 
   return tile;
 }
