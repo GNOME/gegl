@@ -37,7 +37,7 @@ property_double (amplitude, _("Amplitude"), 25.0)
     description(_("Amplitude of the ripple"))
     value_range (0.0, 1000.0)
 
-property_double (period, _("Period"), 200.0)
+property_double (period, _("Period"), 100.0)
     description(_("Period (wavelength) of the ripple"))
     value_range (0.1, 1000.0)
 
