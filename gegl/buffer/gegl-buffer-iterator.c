@@ -61,6 +61,7 @@ typedef struct _SubIterState {
   gint                 row_stride;
   GeglRectangle        real_roi;
   gint                 level;
+  gboolean             can_discard_data;
   /* Direct data members */
   GeglTile            *current_tile;
   /* Indirect data members */
@@ -147,17 +148,19 @@ _gegl_buffer_iterator_add (GeglBufferIterator  *iter,
 
   if (priv->state != GeglIteratorState_Invalid)
     {
-      sub->buffer       = buf;
-      sub->full_rect    = *roi;
+      sub->buffer           = buf;
+      sub->full_rect        = *roi;
 
-      sub->access_mode  = access_mode;
-      sub->abyss_policy = abyss_policy;
-      sub->current_tile = NULL;
-      sub->real_data    = NULL;
-      sub->linear_tile  = NULL;
-      sub->format       = format;
-      sub->format_bpp   = babl_format_get_bytes_per_pixel (format);
-      sub->level        = level;
+      sub->access_mode      = access_mode;
+      sub->abyss_policy     = abyss_policy;
+      sub->current_tile     = NULL;
+      sub->real_data        = NULL;
+      sub->linear_tile      = NULL;
+      sub->format           = format;
+      sub->format_bpp       = babl_format_get_bytes_per_pixel (format);
+      sub->level            = level;
+      sub->can_discard_data = (access_mode & GEGL_ACCESS_READWRITE) ==
+                              GEGL_ACCESS_WRITE;
 
       if (index > 0)
         {
@@ -372,8 +375,8 @@ get_tile (GeglBufferIterator *iter,
       sub->current_tile = gegl_tile_handler_get_tile (
         (GeglTileHandler *) buf,
         tile_x, tile_y, sub->level,
-        (sub->access_mode & GEGL_ACCESS_READWRITE) != GEGL_ACCESS_WRITE ||
-        ! gegl_rectangle_contains (&sub->full_rect, &sub->real_roi));
+        ! (sub->can_discard_data &&
+           gegl_rectangle_contains (&sub->full_rect, &sub->real_roi)));
 
       g_rec_mutex_unlock (&buf->tile_storage->mutex);
 
@@ -499,9 +502,36 @@ prepare_iteration (GeglBufferIterator *iter)
       gint          index = access_order[i];
       SubIterState *sub   = &priv->sub_iter[index];
       GeglBuffer   *buf   = sub->buffer;
+      gint          current_offset_x;
+      gint          current_offset_y;
+      gint          j;
 
-      gint current_offset_x = buf->shift_x + priv->sub_iter[index].full_rect.x;
-      gint current_offset_y = buf->shift_y + priv->sub_iter[index].full_rect.y;
+      current_offset_x = buf->shift_x + sub->full_rect.x;
+      current_offset_y = buf->shift_y + sub->full_rect.y;
+
+      /* Avoid discarding tile data through a write-only sub-iterator, if
+       * another sub-iterator reads the same tile during the same iteration
+       */
+      for (j = i + 1; sub->can_discard_data && j < priv->num_buffers; j++)
+        {
+          gint          index2 = access_order[j];
+          SubIterState *sub2   = &priv->sub_iter[index2];
+          GeglBuffer   *buf2   = sub2->buffer;
+          gint          current_offset2_x;
+          gint          current_offset2_y;
+
+          current_offset2_x = buf2->shift_x + sub2->full_rect.x;
+          current_offset2_y = buf2->shift_y + sub2->full_rect.y;
+
+          if (sub2->level        == sub->level        &&
+              buf2->tile_storage == buf->tile_storage &&
+              current_offset2_x  == current_offset_x  &&
+              current_offset2_y  == current_offset_y  &&
+              sub2->access_mode & GEGL_ACCESS_READ)
+            {
+              sub->can_discard_data = FALSE;
+            }
+        }
 
       /* Format converison needed */
       if (gegl_buffer_get_format (sub->buffer) != sub->format)
@@ -523,9 +553,8 @@ prepare_iteration (GeglBufferIterator *iter)
               sub->linear_tile = gegl_tile_handler_get_tile (
                 (GeglTileHandler *) buf,
                 0, 0, 0,
-                (sub->access_mode & GEGL_ACCESS_READWRITE) !=
-                GEGL_ACCESS_WRITE ||
-                ! gegl_rectangle_contains (&sub->full_rect, &buf->extent));
+                ! (sub->can_discard_data &&
+                   gegl_rectangle_contains (&sub->full_rect, &buf->extent)));
 
               g_rec_mutex_unlock (&buf->tile_storage->mutex);
 
