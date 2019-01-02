@@ -106,6 +106,7 @@ gegl_buffer_linear_new_from_data (const gpointer       data,
   tile->y = 0;
   tile->z = 0;
   tile->rev = tile->stored_rev + 1;
+  tile->keep_identity = TRUE;
   gegl_tile_set_data_full (tile,
                            (gpointer) data,
                            bpp * rowstride * extent->height,
