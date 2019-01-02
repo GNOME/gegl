@@ -57,6 +57,7 @@ typedef struct _SubIterState {
   GeglAbyssPolicy      abyss_policy;
   const Babl          *format;
   gint                 format_bpp;
+  gint                 alias;
   GeglIteratorTileMode current_tile_mode;
   gint                 row_stride;
   GeglRectangle        real_roi;
@@ -161,6 +162,7 @@ _gegl_buffer_iterator_add (GeglBufferIterator  *iter,
       sub->level            = level;
       sub->can_discard_data = (access_mode & GEGL_ACCESS_READWRITE) ==
                               GEGL_ACCESS_WRITE;
+      sub->alias            = -1;
 
       if (index > 0)
         {
@@ -506,13 +508,20 @@ prepare_iteration (GeglBufferIterator *iter)
       gint          current_offset_y;
       gint          j;
 
+      gegl_buffer_lock (sub->buffer);
+
+      if (sub->alias >= 0)
+        continue;
+
       current_offset_x = buf->shift_x + sub->full_rect.x;
       current_offset_y = buf->shift_y + sub->full_rect.y;
 
       /* Avoid discarding tile data through a write-only sub-iterator, if
-       * another sub-iterator reads the same tile during the same iteration
+       * another sub-iterator reads the same tile during the same iteration.
+       * If the two sub-iterators are compatible, make the second sub-iterator
+       * an alias for the first, combining their access mode.
        */
-      for (j = i + 1; sub->can_discard_data && j < priv->num_buffers; j++)
+      for (j = i + 1; j < priv->num_buffers; j++)
         {
           gint          index2 = access_order[j];
           SubIterState *sub2   = &priv->sub_iter[index2];
@@ -520,16 +529,30 @@ prepare_iteration (GeglBufferIterator *iter)
           gint          current_offset2_x;
           gint          current_offset2_y;
 
+          if (sub2->alias >= 0)
+            continue;
+
           current_offset2_x = buf2->shift_x + sub2->full_rect.x;
           current_offset2_y = buf2->shift_y + sub2->full_rect.y;
 
           if (sub2->level        == sub->level        &&
               buf2->tile_storage == buf->tile_storage &&
               current_offset2_x  == current_offset_x  &&
-              current_offset2_y  == current_offset_y  &&
-              sub2->access_mode & GEGL_ACCESS_READ)
+              current_offset2_y  == current_offset_y)
             {
-              sub->can_discard_data = FALSE;
+              if (sub2->access_mode & GEGL_ACCESS_READ)
+                sub->can_discard_data = FALSE;
+
+              if (sub2->format == sub->format                    &&
+                  gegl_rectangle_contains (&sub->buffer->abyss,
+                                           &sub->full_rect)      &&
+                  gegl_rectangle_contains (&sub2->buffer->abyss,
+                                           &sub2->full_rect))
+                {
+                  sub->access_mode |= sub2->access_mode;
+
+                  sub2->alias = index;
+                }
             }
         }
 
@@ -566,8 +589,6 @@ prepare_iteration (GeglBufferIterator *iter)
           else
             sub->access_mode |= GEGL_ITERATOR_INCOMPATIBLE;
         }
-
-      gegl_buffer_lock (sub->buffer);
     }
 }
 
@@ -581,16 +602,30 @@ load_rects (GeglBufferIterator *iter)
 
   for (i = 0; i < priv->num_buffers; i++)
     {
-      gint index = access_order[i];
+      gint          index = access_order[i];
+      SubIterState *sub   = &priv->sub_iter[index];
 
-      if (needs_indirect_read (iter, index))
-        get_indirect (iter, index);
-      else
-        get_tile (iter, index);
-
-      if ((next_state != GeglIteratorState_InRows) && needs_rows (iter, index))
+      if (sub->alias < 0)
         {
-          next_state = GeglIteratorState_InRows;
+          if (needs_indirect_read (iter, index))
+            get_indirect (iter, index);
+          else
+            get_tile (iter, index);
+
+          if ((next_state != GeglIteratorState_InRows) &&
+              needs_rows (iter, index))
+            {
+              next_state = GeglIteratorState_InRows;
+            }
+        }
+      else
+        {
+          SubIterState *sub_alias = &priv->sub_iter[sub->alias];
+
+          sub->row_stride = sub_alias->row_stride;
+          sub->real_roi   = sub_alias->real_roi;
+
+          iter->items[index].data = iter->items[sub->alias].data;
         }
     }
 
@@ -635,32 +670,35 @@ _gegl_buffer_iterator_stop (GeglBufferIterator *iter)
           gint          index = access_order[i];
           SubIterState *sub   = &priv->sub_iter[index];
 
-          if (sub->current_tile_mode != GeglIteratorTileMode_Empty)
-            release_tile (iter, index);
-
-          if (sub->linear_tile)
+          if (sub->alias < 0)
             {
-              if (sub->access_mode & GEGL_ACCESS_WRITE)
-                gegl_tile_unlock_no_void (sub->linear_tile);
-              else
-                gegl_tile_read_unlock (sub->linear_tile);
-              gegl_tile_unref (sub->linear_tile);
-            }
+              if (sub->current_tile_mode != GeglIteratorTileMode_Empty)
+                release_tile (iter, index);
 
-          if (sub->level == 0                      &&
-              sub->access_mode & GEGL_ACCESS_WRITE &&
-              ! (sub->access_mode & GEGL_ITERATOR_INCOMPATIBLE))
-            {
-              GeglRectangle damage_rect;
+              if (sub->linear_tile)
+                {
+                  if (sub->access_mode & GEGL_ACCESS_WRITE)
+                    gegl_tile_unlock_no_void (sub->linear_tile);
+                  else
+                    gegl_tile_read_unlock (sub->linear_tile);
+                  gegl_tile_unref (sub->linear_tile);
+                }
 
-              damage_rect.x      = sub->full_rect.x + sub->buffer->shift_x;
-              damage_rect.y      = sub->full_rect.y + sub->buffer->shift_y;
-              damage_rect.width  = sub->full_rect.width;
-              damage_rect.height = sub->full_rect.height;
+              if (sub->level == 0                      &&
+                  sub->access_mode & GEGL_ACCESS_WRITE &&
+                  ! (sub->access_mode & GEGL_ITERATOR_INCOMPATIBLE))
+                {
+                  GeglRectangle damage_rect;
 
-              gegl_tile_handler_damage_rect (
-                GEGL_TILE_HANDLER (sub->buffer->tile_storage),
-                &damage_rect);
+                  damage_rect.x      = sub->full_rect.x + sub->buffer->shift_x;
+                  damage_rect.y      = sub->full_rect.y + sub->buffer->shift_y;
+                  damage_rect.width  = sub->full_rect.width;
+                  damage_rect.height = sub->full_rect.height;
+
+                  gegl_tile_handler_damage_rect (
+                    GEGL_TILE_HANDLER (sub->buffer->tile_storage),
+                    &damage_rect);
+                }
             }
 
           gegl_buffer_unlock (sub->buffer);
@@ -804,9 +842,11 @@ gegl_buffer_iterator_next (GeglBufferIterator *iter)
 
       for (i = priv->num_buffers - 1; i >= 0; i--)
         {
-          gint index = access_order[i];
+          gint          index = access_order[i];
+          SubIterState *sub   = &priv->sub_iter[index];
 
-          release_tile (iter, index);
+          if (sub->alias < 0)
+            release_tile (iter, index);
         }
 
       if (increment_rects (iter) == FALSE)
