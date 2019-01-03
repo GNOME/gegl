@@ -323,6 +323,10 @@ gegl_tile_handler_cache_find_oldest_cache (GeglTileHandlerCache *prev_cache)
       if (! time)
         continue;
 
+      /* the cache is being disconnected */
+      if (! cache->link.data)
+        continue;
+
       if (time == stamp)
         {
           oldest_cache = cache;
@@ -623,6 +627,10 @@ gegl_tile_handler_cache_trim (GeglTileHandlerCache *cache)
 
           break;
         }
+
+      /* the cache is being disconnected */
+      if (! cache->link.data)
+        link = NULL;
 
       if (! link)
         continue;
@@ -947,11 +955,15 @@ gegl_tile_handler_cache_disconnect (GeglTileHandlerCache *cache)
   /* leave the global cache queue */
   if (cache->link.data)
     {
+      cache->link.data = NULL;
+
+      g_rec_mutex_lock (&cache->tile_storage->mutex);
+
       g_mutex_lock (&mutex);
       g_queue_unlink (&cache_queue, &cache->link);
       g_mutex_unlock (&mutex);
 
-      cache->link.data = NULL;
+      g_rec_mutex_unlock (&cache->tile_storage->mutex);
     }
 }
 
