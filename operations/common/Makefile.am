@@ -56,6 +56,7 @@ gegl_common_la_SOURCES =\
 	image-compare.c \
 	image-gradient.c \
 	introspect.c \
+	invert-common.h \
 	invert-gamma.c \
 	invert-linear.c \
 	layer.c \

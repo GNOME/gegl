@@ -32,37 +32,8 @@
 
 #include "gegl-op.h"
 
-static void
-prepare (GeglOperation *operation)
-{
-  const Babl *space = gegl_operation_get_source_space (operation, "input");
-  gegl_operation_set_format (operation, "input", babl_format_with_space ("R'G'B'A float", space));
-  gegl_operation_set_format (operation, "output", babl_format_with_space ("R'G'B'A float", space));
-}
-
-static gboolean
-process (GeglOperation       *op,
-         void                *in_buf,
-         void                *out_buf,
-         glong                samples,
-         const GeglRectangle *roi,
-         gint                 level)
-{
-  gfloat *in  = in_buf;
-  gfloat *out = out_buf;
-
-  while (samples--)
-    {
-      out[0] = 1.0 - in[0];
-      out[1] = 1.0 - in[1];
-      out[2] = 1.0 - in[2];
-      out[3] = in[3];
-
-      in += 4;
-      out+= 4;
-    }
-  return TRUE;
-}
+#define INVERT_GAMMA "'"
+#include "invert-common.h"
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
