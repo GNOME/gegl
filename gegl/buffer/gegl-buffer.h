@@ -736,6 +736,7 @@ gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglRectangle *rect);
 #include "gegl-buffer-iterator.h"
 #include "gegl-rectangle.h"
 #include "gegl-memory.h"
+#include "gegl-scratch.h"
 
 
 GType gegl_buffer_get_type  (void) G_GNUC_CONST;

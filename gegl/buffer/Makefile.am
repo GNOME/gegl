@@ -53,6 +53,7 @@ libbuffer_la_SOURCES = \
     gegl-sampler-nearest.c	\
     gegl-sampler-nohalo.c       \
     gegl-sampler-lohalo.c       \
+    gegl-scratch.c		\
     gegl-tile.c			\
     gegl-tile-source.c		\
     gegl-tile-storage.c		\
@@ -90,6 +91,8 @@ libbuffer_la_SOURCES = \
     gegl-sampler-nearest.h	\
     gegl-sampler-nohalo.h       \
     gegl-sampler-lohalo.h       \
+    gegl-scratch.h		\
+    gegl-scratch-private.h	\
     gegl-tile.h			\
     gegl-tile-source.h		\
     gegl-tile-storage.h		\
