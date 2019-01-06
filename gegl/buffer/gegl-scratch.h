@@ -56,7 +56,7 @@ void       gegl_scratch_free   (gpointer ptr);
 
 
 #define _GEGL_SCRATCH_MUL(x, y) \
-  (G_LIKELY ((y) == 0 || (x) <= G_MAXSIZE / (y)) ? (x) * (y) : G_MAXSIZE)
+  (G_LIKELY ((y) <= G_MAXSIZE / (x)) ? (x) * (y) : G_MAXSIZE)
 
 /**
  * gegl_scratch_new: (skip)
