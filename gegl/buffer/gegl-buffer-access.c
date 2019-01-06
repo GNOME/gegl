@@ -1649,7 +1649,7 @@ gegl_buffer_read_at_level (GeglBuffer          *buffer,
     {
       if (!buf)
         {
-          gpointer scratch = gegl_malloc (bpp * roi->width * roi->height);
+          gpointer scratch = gegl_scratch_alloc (bpp * roi->width * roi->height);
 
           gegl_buffer_iterate_read_dispatch (buffer, roi, scratch, roi->width * bpp, format, 0, repeat_mode);
 
@@ -1679,7 +1679,7 @@ gegl_buffer_read_at_level (GeglBuffer          *buffer,
           gint scratch_stride = next_roi.width * bpp;
           gpointer scratch_a;
           gpointer scratch_b;
-          scratch = gegl_malloc (bpp * next_roi.width * next_roi.height);
+          scratch = gegl_scratch_alloc (bpp * next_roi.width * next_roi.height);
 
           if (next_roi.width > next_roi.height)
             {
@@ -1718,7 +1718,7 @@ gegl_buffer_read_at_level (GeglBuffer          *buffer,
                               next_roi.width * bpp,
                               buf,
                               rowstride);
-          gegl_free (scratch);
+          gegl_scratch_free (scratch);
           return NULL;
         }
       else
@@ -2160,7 +2160,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
         interpolation = GEGL_BUFFER_FILTER_BILINEAR;
     }
 
-    sample_buf = g_malloc (allocated);
+    sample_buf = gegl_scratch_alloc (allocated);
 
     while (rect2.width > 0 && rect2.height > 0)
     {
@@ -2318,7 +2318,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
     }
 
-    g_free (sample_buf);
+    gegl_scratch_free (sample_buf);
   }
 }
 
@@ -2826,7 +2826,7 @@ gegl_buffer_set_pattern (GeglBuffer          *buffer,
 
   /* XXX: Bad taste, the pattern needs to be small enough.
    * See Bug 712814 for an alternative malloc-free implementation */
-  pattern_data = gegl_malloc (extended_data_extent.width *
+  pattern_data = gegl_scratch_alloc (extended_data_extent.width *
                                      extended_data_extent.height *
                                      bpp);
 
@@ -2873,7 +2873,7 @@ gegl_buffer_set_pattern (GeglBuffer          *buffer,
                          pattern_data, rowstride);
       }
 
-  gegl_free (pattern_data);
+  gegl_scratch_free (pattern_data);
 }
 
 typedef struct
