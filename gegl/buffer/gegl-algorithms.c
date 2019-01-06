@@ -83,8 +83,8 @@ gegl_downscale_2x2_generic (const Babl *format,
   }
   else
   {
-    in_tmp = gegl_malloc (src_height * in_tmp_rowstride);
-    out_tmp = gegl_malloc (dst_height * out_tmp_rowstride);
+    in_tmp = gegl_scratch_alloc (src_height * in_tmp_rowstride);
+    out_tmp = gegl_scratch_alloc (dst_height * out_tmp_rowstride);
     do_free = 1;
   }
 
@@ -102,8 +102,8 @@ gegl_downscale_2x2_generic (const Babl *format,
 
   if (do_free)
    {
-     gegl_free (in_tmp);
-     gegl_free (out_tmp);
+     gegl_scratch_free (out_tmp);
+     gegl_scratch_free (in_tmp);
    }
 }
 
@@ -1038,8 +1038,8 @@ gegl_resample_boxfilter_generic (guchar       *dest_buf,
   }
   else
   {
-    in_tmp  = gegl_malloc (src_rect->height * in_tmp_rowstride);
-    out_tmp = gegl_malloc (dst_rect->height * out_tmp_rowstride);
+    in_tmp  = gegl_scratch_alloc (src_rect->height * in_tmp_rowstride);
+    out_tmp = gegl_scratch_alloc (dst_rect->height * out_tmp_rowstride);
     do_free = 1;
   }
 
@@ -1058,8 +1058,8 @@ gegl_resample_boxfilter_generic (guchar       *dest_buf,
 
   if (do_free)
     {
-      gegl_free (in_tmp);
-      gegl_free (out_tmp);
+      gegl_scratch_free (out_tmp);
+      gegl_scratch_free (in_tmp);
     }
 }
 
@@ -1148,8 +1148,8 @@ gegl_resample_bilinear_generic (guchar              *dest_buf,
   }
   else
   {
-    in_tmp  = gegl_malloc (src_rect->height * in_tmp_rowstride);
-    out_tmp = gegl_malloc (dst_rect->height * out_tmp_rowstride);
+    in_tmp  = gegl_scratch_alloc (src_rect->height * in_tmp_rowstride);
+    out_tmp = gegl_scratch_alloc (dst_rect->height * out_tmp_rowstride);
     do_free = 1;
   }
 
@@ -1168,8 +1168,8 @@ gegl_resample_bilinear_generic (guchar              *dest_buf,
 
   if (do_free)
     {
-      gegl_free (in_tmp);
-      gegl_free (out_tmp);
+      gegl_scratch_free (out_tmp);
+      gegl_scratch_free (in_tmp);
     }
 }
 
