@@ -60,7 +60,9 @@ gegl_calloc (gsize size,
 void
 gegl_free (gpointer buf)
 {
-  g_assert (buf);
+  if (! buf)
+    return;
+
   g_free ((gchar*)buf - *((guint8*)buf -1));
 }
 

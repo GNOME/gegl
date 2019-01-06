@@ -39,7 +39,7 @@ gpointer   gegl_malloc         (gsize         n_bytes) G_GNUC_MALLOC;
  * gegl_free: (skip)
  * @mem: the memory to free.
  *
- * Frees the memory pointed to by @mem, if @mem is NULL it will warn and abort.
+ * Frees the memory pointed to by @mem. If @mem is NULL, does nothing.
  */
 void       gegl_free           (gpointer      mem);
 
