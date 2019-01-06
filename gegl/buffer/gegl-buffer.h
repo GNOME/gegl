@@ -719,69 +719,6 @@ glong gegl_buffer_signal_connect (GeglBuffer *buffer,
                                   gpointer    data);
 
 
-
-/***
- * Aligned memory:
- *
- * GEGL provides functions to allocate and free buffers that are guaranteed to
- * be on 16 byte aligned memory addresses.
- */
-
-/**
- * gegl_malloc: (skip)
- * @n_bytes: the number of bytes to allocte.
- *
- * Allocates @n_bytes of memory. If n_bytes is 0 it returns NULL.
- *
- * Returns a pointer to the allocated memory.
- */
-gpointer gegl_malloc                  (gsize    n_bytes) G_GNUC_MALLOC;
-
-/**
- * gegl_free: (skip)
- * @mem: the memory to free.
- *
- * Frees the memory pointed to by @mem, if @mem is NULL it will warn and abort.
- */
-void     gegl_free                    (gpointer mem);
-
-/**
- * gegl_calloc: (skip)
- * @size: size of items to allocate
- * @n_memb: number of members
- *
- * allocated 0'd memory.
- */
-gpointer gegl_calloc (gsize size, int n_memb) G_GNUC_MALLOC;
-
-/**
- * gegl_memeq_zero: (skip)
- * @ptr: pointer to the memory block
- * @size: block size
- *
- * Checks if all the bytes of the memory block @ptr, of size @size,
- * are equal to zero.
- *
- * Returns: TRUE if all the bytes are equal to zero.
- */
-gboolean gegl_memeq_zero (gconstpointer ptr,
-                          gsize         size);
-
-/**
- * gegl_memset_pattern: (skip)
- * @dst_ptr: pointer to copy to
- * @src_ptr: pointer to copy from
- * @pattern_size: the length of @src_ptr
- * @count: number of copies
- *
- * Fill @dst_ptr with @count copies of the bytes in @src_ptr.
- */
-void gegl_memset_pattern              (void *       dst_ptr,
-                                              const void * src_ptr,
-                                              gint         pattern_size,
-                                              gint         count);
-
-
 /**
  * gegl_buffer_flush_ext:
  * @buffer: a GeglBuffer
@@ -796,8 +733,9 @@ void gegl_memset_pattern              (void *       dst_ptr,
 void
 gegl_buffer_flush_ext (GeglBuffer *buffer, const GeglRectangle *rect);
 
-#include <gegl-buffer-iterator.h>
-#include <gegl-rectangle.h>
+#include "gegl-buffer-iterator.h"
+#include "gegl-rectangle.h"
+#include "gegl-memory.h"
 
 
 GType gegl_buffer_get_type  (void) G_GNUC_CONST;

@@ -46,6 +46,7 @@ libbuffer_la_SOURCES = \
     gegl-compression-nop.c	\
     gegl-compression-rle.c	\
     gegl-compression-zlib.c	\
+    gegl-memory.c		\
     gegl-sampler.c		\
     gegl-sampler-cubic.c	\
     gegl-sampler-linear.c	\
@@ -81,6 +82,8 @@ libbuffer_la_SOURCES = \
     gegl-compression-nop.h	\
     gegl-compression-rle.h	\
     gegl-compression-zlib.h	\
+    gegl-memory.h		\
+    gegl-memory-private.h	\
     gegl-sampler.h		\
     gegl-sampler-cubic.h	\
     gegl-sampler-linear.h	\
