@@ -96,13 +96,17 @@ get_access_order (GeglBufferIterator *iter)
 static inline GeglBufferIterator *
 _gegl_buffer_iterator_empty_new (gint max_slots)
 {
-  GeglBufferIterator *iter = g_malloc0 (sizeof (GeglBufferIterator) +
-                                         max_slots * sizeof (GeglBufferIteratorItem) +
-                                         sizeof (GeglBufferIteratorPriv) +
-                                         max_slots * sizeof (SubIterState) +
-                                         max_slots * sizeof (gint));
-  iter->priv      = (void*)(((char*)iter) + sizeof (GeglBufferIterator) +
-                                         max_slots * sizeof (GeglBufferIteratorItem));
+  GeglBufferIterator *iter = gegl_scratch_alloc0 (
+    sizeof (GeglBufferIterator)                 +
+    max_slots * sizeof (GeglBufferIteratorItem) +
+    sizeof (GeglBufferIteratorPriv)             +
+    max_slots * sizeof (SubIterState)           +
+    max_slots * sizeof (gint));
+
+  iter->priv = (GeglBufferIteratorPriv *) (
+    ((guint8 *) iter)           +
+    sizeof (GeglBufferIterator) +
+    max_slots * sizeof (GeglBufferIteratorItem));
 
   iter->priv->max_slots = max_slots;
 
@@ -243,7 +247,7 @@ release_tile (GeglBufferIterator *iter,
                                               GEGL_AUTO_ROWSTRIDE);
         }
 
-      gegl_free (sub->real_data);
+      gegl_scratch_free (sub->real_data);
       sub->real_data = NULL;
       iter->items[index].data = NULL;
 
@@ -408,7 +412,9 @@ get_indirect (GeglBufferIterator *iter,
   GeglBufferIteratorPriv *priv = iter->priv;
   SubIterState           *sub  = &priv->sub_iter[index];
 
-  sub->real_data = gegl_malloc (sub->format_bpp * sub->real_roi.width * sub->real_roi.height);
+  sub->real_data = gegl_scratch_alloc (sub->format_bpp     *
+                                       sub->real_roi.width *
+                                       sub->real_roi.height);
 
   if (sub->access_mode & GEGL_ACCESS_READ)
     {
@@ -711,7 +717,7 @@ _gegl_buffer_iterator_stop (GeglBufferIterator *iter)
         }
     }
 
-  g_free (iter);
+  gegl_scratch_free (iter);
 }
 
 void
