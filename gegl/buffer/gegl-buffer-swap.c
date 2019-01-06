@@ -16,7 +16,10 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <string.h>
+
+#include <glib/gstdio.h>
 
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H
@@ -30,8 +33,6 @@
 #else
 #include <signal.h>
 #endif
-
-#include <glib/gstdio.h>
 
 #include "gegl-buffer-config.h"
 #include "gegl-buffer-swap.h"
