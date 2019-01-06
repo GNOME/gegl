@@ -1354,8 +1354,8 @@ gegl_resample_nearest (guchar              *dst,
 
 static inline guint32 _gegl_trunc_u32(guint64 value)
 {
-  if ((guint64) value > ((1l<<32)-1))
-   return (1l<<32)-1;
+  if ((guint64) value > G_MAXUINT32)
+    return G_MAXUINT32;
   return value;
 }
 
