@@ -25,17 +25,41 @@ extern Mrg *mrg;
 extern MrgList *scrollback;
 extern int use_ui;
 
+
 #define printf(foo...) \
    do{ MrgString *str = mrg_string_new_printf (foo);\
-       if (use_ui) \
-       mrg_list_prepend (&scrollback, mrg_string_dissolve (str));\
-       else \
-       {\
-       fprintf (stdout, "%s", str->str);\
-       mrg_string_free (str, 1);\
+       if (use_ui) {\
+       MrgString *line = mrg_string_new (scrollback?scrollback->data:"");\
+       for (char *p= str->str; *p; p++) { \
+         if (*p == '\n') { \
+           char *old = scrollback ? scrollback->data : NULL;\
+           if (old)\
+           {\
+             mrg_list_remove (&scrollback, old);\
+           }\
+           mrg_list_prepend (&scrollback, strdup (line->str));\
+           mrg_list_prepend (&scrollback, strdup (""));\
+           mrg_string_set (line, "");\
+         } else { \
+           char *old = scrollback ? scrollback->data : NULL;\
+           mrg_string_append_byte (line, *p);\
+           if (old)\
+           {\
+             mrg_list_remove (&scrollback, old);\
+           }\
+           mrg_list_prepend (&scrollback, strdup (line->str));\
+         } \
+       } \
+       mrg_string_free (line, 1);\
        }\
+       else \
+       { fprintf (stdout, "%s", str->str);\
+       }\
+       mrg_string_free (str, 1);\
    }while(0)
 #endif
+
+
 
 typedef struct _CmdIterator CmdIterator;
 typedef struct _CmdEntry CmdEntry;
