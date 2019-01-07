@@ -37,6 +37,20 @@ property_object (buffer, _("Buffer location"), GEGL_TYPE_BUFFER)
 #include "opencl/gegl-cl.h"
 #include "gegl-buffer-cl-iterator.h"
 
+typedef struct
+{
+  GeglBuffer *input;
+  GeglBuffer *output;
+} ThreadData;
+
+static void
+thread_process (const GeglRectangle *area,
+                ThreadData          *data)
+{
+  gegl_buffer_copy (data->input,  area, GEGL_ABYSS_NONE,
+                    data->output, area);
+}
+
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
@@ -105,13 +119,29 @@ process (GeglOperation       *operation,
                 }
             }
 
-          if (cl_err || err)
-            gegl_buffer_copy (input, result, GEGL_ABYSS_NONE,
-                              output, result);
+          if (! (cl_err || err))
+            return TRUE;
+        }
+
+      if (in_format == out_format)
+        {
+          gegl_buffer_copy (input,  result, GEGL_ABYSS_NONE,
+                            output, result);
         }
       else
-        gegl_buffer_copy (input, result, GEGL_ABYSS_NONE,
-                          output, result);
+        {
+          ThreadData data;
+
+          data.input  = input;
+          data.output = output;
+
+          gegl_parallel_distribute_area (
+            result,
+            gegl_operation_get_pixels_per_thread (operation),
+            GEGL_SPLIT_STRATEGY_AUTO,
+            (GeglParallelDistributeAreaFunc) thread_process,
+            &data);
+        }
     }
 
   return TRUE;
