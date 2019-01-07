@@ -14,6 +14,7 @@ void argvs_add   (int (*fun)(COMMAND_ARGS),
 int argvs_eval   (const char *cmdline); /* this evals one command,
                                            no newlines or semicolons are taken into account. */
 int argvs_source (const char *path);
+int argvs_command_exist (const char *command);
 void argvs_register (void);
 
 #endif

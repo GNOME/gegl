@@ -466,6 +466,18 @@ int cmd_argvs (COMMAND_ARGS) /* "argvs", 0, "<script | -c <command> >", "the min
   return 0;
 }
 
+int argvs_command_exist (const char *string)
+{
+  CmdIterator *ci = cmd_iterator_new (NULL);
+  CmdEntry *command;
+  int found = 0;
+
+  while ((command = cmd_iterator_next (ci)))
+    if (!strcmp (command->name, string))
+      found = 1;
+  return found;
+}
+
 int cmd_aa_help (COMMAND_ARGS) /* "?", 0, "[command]", "get's help about a coloritto command" */
 {
   if (argv[1])

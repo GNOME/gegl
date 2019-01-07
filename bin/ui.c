@@ -446,6 +446,11 @@ static gboolean renderer_task (gpointer data)
   return TRUE;
 }
 
+static gboolean renderer_idle (Mrg *mrg, gpointer data)
+{
+  return renderer_task (data);
+}
+
 static int has_quit = 0;
 static gpointer renderer_thread (gpointer data)
 {
@@ -455,8 +460,6 @@ static gpointer renderer_thread (gpointer data)
   }
   return 0;
 }
-
-
 
 int mrg_ui_main (int argc, char **argv, char **ops)
 {
@@ -468,11 +471,13 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   if (renderer_env)
   {
     if (!strcmp (renderer_env, "blit")) renderer = GEGL_RENDERER_BLIT;
-    if (!strcmp (renderer_env, "blit-mipmap")) renderer = GEGL_RENDERER_BLIT_MIPMAP;
-    if (!strcmp (renderer_env, "mipmap")) renderer = GEGL_RENDERER_BLIT_MIPMAP;
-    if (!strcmp (renderer_env, "thread")) renderer = GEGL_RENDERER_THREAD;
-    if (!strcmp (renderer_env, "idle")) renderer = GEGL_RENDERER_IDLE;
-  }
+    else if (!strcmp (renderer_env, "blit-mipmap")) renderer = GEGL_RENDERER_BLIT_MIPMAP;
+    else if (!strcmp (renderer_env, "mipmap")) renderer = GEGL_RENDERER_BLIT_MIPMAP;
+    else if (!strcmp (renderer_env, "thread")) renderer = GEGL_RENDERER_THREAD;
+    else if (!strcmp (renderer_env, "idle")) renderer = GEGL_RENDERER_IDLE;
+    else renderer = GEGL_RENDERER_IDLE;
+  } else
+    renderer = GEGL_RENDERER_IDLE;
 
   mrg_set_title (mrg, "GEGL");
 /* we want to see the speed gotten if the fastest babl conversions we have were more accurate */
@@ -509,7 +514,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
       o.thread = g_thread_new ("renderer", renderer_thread, &o);
       break;
     case GEGL_RENDERER_IDLE:
-      g_idle_add (renderer_task, &o);
+      mrg_add_idle (mrg, renderer_idle, &o);
       break;
     case GEGL_RENDERER_BLIT:
     case GEGL_RENDERER_BLIT_MIPMAP:
@@ -1675,21 +1680,43 @@ static void update_commandline (const char *new_commandline, void *data)
   strcpy (commandline, new_commandline);
 }
 
-static void run_command (MrgEvent *event, void *data1, void *data_2)
+static void
+run_command (MrgEvent *event, void *data1, void *data_2)
 {
   State *o = hack_state; //data1;
-  Mrg *mrg = event->mrg;
   const char *commandline = data1;
 
+  gchar **argv = NULL;
+  gint    argc = 0;
+  g_shell_parse_argv (commandline, &argc, &argv, NULL);
+
+  /* the commandline has two modes, operation/property mode and argvs command running mode
+   * the mode is determined by the first arguement on a passed line if the first word matches
+   * an existing argvs command, commandline running mode is used, otherwise operation/property
+   * mode is used.
+   */
+
+  printf ("%s\n", commandline);
   mrg_event_stop_propagate (event);
 
-  /* XXX : only do this for argv[0] */
-  if (strchr (commandline, '='))
+  if (argvs_command_exist (argv[0]))
+  {
+    argvs_eval (commandline);
+  }
+  else
+  {
+    char **arg = argv;
+
+    while (*arg)
+    {
+
+
+  if (strchr (*arg, '='))
   {
     GType target_type = 0;
     GParamSpec *pspec = NULL;
     GParamSpec **pspecs = NULL;
-    char *key = g_strdup (commandline);
+    char *key = g_strdup (*arg);
     char *value = strchr (key, '=') + 1;
     unsigned int n_props = 0;
     value[-1]='\0';
@@ -1851,20 +1878,20 @@ static void run_command (MrgEvent *event, void *data1, void *data_2)
     }
     else
     {
-       fprintf (stderr, "wanted to set %s to %s\n", key, value);
+       printf ("failed to set %s to %s\n", key, value);
     }
     g_free (key);
   }
   else
   {
     char temp_op_name[1024];
-    if (strchr (commandline, ':'))
+    if (strchr (*arg, ':'))
     {
-      snprintf (temp_op_name, 1023, "%s", commandline);
+      snprintf (temp_op_name, 1023, "%s", *arg);
     }
     else
     {
-      snprintf (temp_op_name, 1023, "gegl:%s", commandline);
+      snprintf (temp_op_name, 1023, "gegl:%s", *arg);
     }
     if (gegl_has_operation (temp_op_name))
     {
@@ -1873,21 +1900,23 @@ static void run_command (MrgEvent *event, void *data1, void *data_2)
     }
     else
     {
-      if (g_str_equal  (commandline, "q"))
-      {
-        mrg_quit (mrg);
-      } else if (g_str_equal (commandline, "n"))
-      {
-        ////
-      } else
-      {
-        argvs_eval (commandline);
-      }
+      printf ("uhandled %s\n", *arg);
     }
     o->editing_op_name=0;
   }
+   arg++;
+  }
+  }
+
+  g_strfreev (argv);
 }
 
+  int cmd_quit (COMMAND_ARGS);
+int cmd_quit (COMMAND_ARGS) /* "q", 0, "", "quit"*/
+{
+  mrg_quit (hack_state->mrg);
+  return 0;
+}
 
   int cmd_remove (COMMAND_ARGS);
 int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
@@ -2032,7 +2061,7 @@ static void ui_commandline (Mrg *mrg, void *data)
   mrg_edit_end (mrg);
   row++;
 
-  mrg_set_xy (mrg, em, h * 0.5);
+  mrg_set_xy (mrg, em, h * 0.75);
 
   {
     MrgList *lines = NULL;
@@ -2631,7 +2660,7 @@ static void load_into_buffer (State *o, const char *path)
   else
     {
       GeglRectangle extent = {0,0,1,1}; /* segfaults with NULL / 0,0,0,0*/
-      o->buffer = gegl_buffer_new (&extent, babl_format("RaGaBaA float"));
+      o->buffer = gegl_buffer_new (&extent, babl_format("RGBA float"));
     }
 }
 
@@ -2729,8 +2758,6 @@ static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
   mrg_queue_draw (o->mrg, NULL);
 }
 
-
-
   int cmd_pan (COMMAND_ARGS);
 int cmd_pan (COMMAND_ARGS) /* "pan", 2, "<rel-x> <rel-y>", "pans viewport"*/
 {
@@ -2747,7 +2774,11 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
 {
   State *o = hack_state;
 
-  if (!argv[1]) return -1;
+  if (!argv[1])
+  {
+    printf ("current scale factor: %2.3f\n", o->scale);
+    return 0;
+  }
   if (!strcmp(argv[1], "fit"))
   {
     zoom_to_fit (o);
@@ -2777,7 +2808,6 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
     o->scale = g_strtod(argv[1], NULL);
     o->u = x * o->scale - mrg_width(o->mrg)/2;
     o->v = y * o->scale - mrg_height(o->mrg)/2;
-    printf ("uhandled argument to zoom %s\n", argv[1]);
   }
   return 0;
 }
