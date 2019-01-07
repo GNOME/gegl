@@ -1405,59 +1405,36 @@ static void edit_op (MrgEvent *event, void *data1, void *data2)
 }
 #endif
 
-  int cmd_activate_output(COMMAND_ARGS);
-int cmd_activate_output (COMMAND_ARGS) /* "activate-output", 0, "", ""*/
+  int cmd_activate (COMMAND_ARGS);
+int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux>", ""*/
 {
   State *o = hack_state;
   GeglNode *ref;
-  if (o->active == NULL)
-    return -1;
-  ref = gegl_node_get_consumer_no (o->active, "output", NULL, 0);
-  if (ref && ref != o->sink)
-    o->active = ref;
-  mrg_queue_draw (o->mrg, NULL);
 
-  return 0;
-}
-
-  int cmd_activate_input(COMMAND_ARGS);
-int cmd_activate_input (COMMAND_ARGS) /* "activate-input", 0, "", "Activates node connected on input pad of active node."*/
-{
-  State *o = hack_state;
-  GeglNode *ref;
-  if (o->active == NULL)
-    return -1;
-  ref = gegl_node_get_producer (o->active, "input", NULL);
-  if (ref) //&& ref != o->source)
-    o->active = ref;
-  mrg_queue_draw (o->mrg, NULL);
-  return 0;
-}
-
-  int cmd_activate_aux(COMMAND_ARGS);
-int cmd_activate_aux (COMMAND_ARGS) /* "activate-aux", 0, "", ""*/
-{
-  State *o = hack_state;
-  GeglNode *ref;
   if (o->active == NULL)
     return -1;
 
-  if (!gegl_node_has_pad (o->active, "aux"))
-    return -2;
-
-  ref = gegl_node_get_producer (o->active, "aux", NULL);
-
-  if (!ref)
+  if (!strcmp (argv[1], "input"))
   {
-    ref = add_aux (o, o->active, "gegl:nop");
+    ref = gegl_node_get_producer (o->active, "input", NULL);
+  }
+  else if (!strcmp (argv[1], "aux"))
+  {
+    ref = gegl_node_get_producer (o->active, "aux", NULL);
+    if (!ref)
+      ref = add_aux (o, o->active, "gegl:nop");
+  }
+  else if (!strcmp (argv[1], "output"))
+  {
+    ref = gegl_node_get_consumer_no (o->active, "output", NULL, 0);
+    if (ref == o->sink)
+      ref = NULL;
   }
 
-  if (ref && ref != o->source)
+  if (ref)
     o->active = ref;
   mrg_queue_draw (o->mrg, NULL);
-  return 0;
 }
-
 
 static void set_op (MrgEvent *event, void *data1, void *data2)
 {
@@ -2174,9 +2151,9 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   if (!edited_prop && !o->editing_op_name)
   {
-    mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "activate-output");
-    mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "activate-input");
-    mrg_add_binding (mrg, "right", NULL, NULL,     run_command, "activate-aux");
+    mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "activate output");
+    mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "activate input");
+    mrg_add_binding (mrg, "right", NULL, NULL,     run_command, "activate aux");
     mrg_add_binding (mrg, "control-o", NULL, NULL, run_command, "node-add-output");
     mrg_add_binding (mrg, "control-i", NULL, NULL, run_command, "node-add-input");
     mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "node-add-aux");
@@ -2206,7 +2183,7 @@ static void gegl_ui (Mrg *mrg, void *data)
     ui_commandline (mrg, o);
 
     if (commandline[0]==0)
-      mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate-aux");
+      mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate aux");
   }
 
 }
@@ -2899,6 +2876,42 @@ static int set_setting (Setting *setting, const char *value)
     break;
   }
   return 0;
+}
+
+
+  int cmd_info (COMMAND_ARGS);
+int cmd_info (COMMAND_ARGS) /* "info", 0, "", "dump information about active node"*/
+{
+  State *o = hack_state;
+  GeglNode *node = o->active;
+  GeglOperation *operation;
+
+  if (!node)
+  {
+    printf ("no active node\n");
+    return 0;
+  }
+  operation = gegl_node_get_gegl_operation (node);
+  printf ("operation: %s   %p\n", gegl_node_get_operation (node), node);
+  if (gegl_node_has_pad (node, "input"))
+  {
+    const Babl *fmt = gegl_operation_get_format (operation, "input");
+    printf ("input pixfmt: %s\n", fmt?babl_get_name (fmt):"");
+  }
+  if (gegl_node_has_pad (node, "aux"))
+  {
+    const Babl *fmt = gegl_operation_get_format (operation, "aux");
+    printf ("aux pixfmt: %s\n", fmt?babl_get_name (fmt):"");
+  }
+  if (gegl_node_has_pad (node, "output"))
+  {
+    const Babl *fmt = gegl_operation_get_format (operation, "output");
+    printf ("output pixfmt: %s\n", fmt?babl_get_name (fmt):"");
+  }
+
+
+  printf ("%s\n", o->active);
+  mrg_queue_draw (o->mrg, NULL);
 }
 
   int cmd_set (COMMAND_ARGS);
