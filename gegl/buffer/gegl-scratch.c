@@ -79,9 +79,10 @@ static void                 gegl_scratch_block_free   (GeglScratchBlock   *block
 
 /*  local variables  */
 
-GPrivate                 gegl_scratch_context =
-  G_PRIVATE_INIT ((GDestroyNotify) gegl_scratch_context_free);
-static volatile guintptr gegl_scratch_total;
+static GPrivate                 gegl_scratch_context = G_PRIVATE_INIT (
+  (GDestroyNotify) gegl_scratch_context_free);
+static const GeglScratchContext void_context;
+static volatile guintptr        gegl_scratch_total;
 
 
 /*  private functions  */
@@ -153,7 +154,8 @@ gegl_scratch_alloc (gsize size)
 
   if (G_UNLIKELY (size > GEGL_SCRATCH_MAX_BLOCK_SIZE))
     {
-      block = gegl_scratch_block_new (NULL, size);
+      block = gegl_scratch_block_new ((GeglScratchContext *) &void_context,
+                                      size);
 
       return block->data;
     }
