@@ -903,6 +903,10 @@ static void ui_dir_viewer (State *o)
 
         mrg_image (mrg, x + (dim-wdim)/2, y + (dim-hdim)/2, wdim, hdim, 1.0, thumbpath, NULL, NULL);
       }
+      else
+      {
+        fprintf (stderr, "for %s wanted %s\n", path, thumbpath);
+      }
       g_free (thumbpath);
 
       mrg_set_xy (mrg, x, y + dim - mrg_em(mrg));
@@ -985,7 +989,7 @@ static void ui_viewer (State *o)
   else
     cairo_new_path (cr);
   cairo_rectangle (cr, 0.0, 0.0, 0.2, 0.2);
-  mrg_listen (mrg, MRG_PRESS, run_command, "go-parent", NULL);
+  mrg_listen (mrg, MRG_PRESS, run_command, "parent", NULL);
 
   cairo_new_path (cr);
   cairo_move_to (cr, 0.2, 0.8);
@@ -1554,8 +1558,8 @@ static void list_ops (State *o, GeglNode *iter, int indent)
 
      g_free (opname);
 
-     if (iter == o->active)
-       list_node_props (o, iter, indent + 1);
+     //if (iter == o->active)
+     //  list_node_props (o, iter, indent + 1);
 
      mrg_printf (mrg, "\n");
 
@@ -2174,7 +2178,7 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
       mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom out");
       mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom out");
-      mrg_add_binding (mrg, "1", NULL, NULL, run_command, "zoom-1");
+      mrg_add_binding (mrg, "1", NULL, NULL, run_command, "zoom 1.0");
     }
   }
 
@@ -2802,21 +2806,6 @@ static void get_coords (State *o, float screen_x, float screen_y, float *gegl_x,
   *gegl_y = (o->v + screen_y) / scale;
 }
 
-  int cmd_zoom_1 (COMMAND_ARGS);
-int cmd_zoom_1 (COMMAND_ARGS) /* "zoom-1", 0, "", ""*/
-{
-  State *o = hack_state;
-  float x, y;
-  get_coords (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, &x, &y);
-  o->scale = 1.0;
-  o->u = x * o->scale - mrg_width(o->mrg)/2;
-  o->v = y * o->scale - mrg_height(o->mrg)/2;
-  o->renderer_state = 0;
-  mrg_queue_draw (o->mrg, NULL);
-  return 0;
-}
-
-
 static void scroll_cb (MrgEvent *event, void *data1, void *data2)
 {
   switch (event->scroll_direction)
@@ -2885,6 +2874,7 @@ int cmd_info (COMMAND_ARGS) /* "info", 0, "", "dump information about active nod
   State *o = hack_state;
   GeglNode *node = o->active;
   GeglOperation *operation;
+  GeglRectangle extent;
 
   if (!node)
   {
@@ -2908,6 +2898,8 @@ int cmd_info (COMMAND_ARGS) /* "info", 0, "", "dump information about active nod
     const Babl *fmt = gegl_operation_get_format (operation, "output");
     printf ("output pixfmt: %s\n", fmt?babl_get_name (fmt):"");
   }
+  extent = gegl_node_get_bounding_box (node);
+  printf ("bounds: %i %i  %ix%i\n", extent.x, extent.y, extent.width, extent.height);
 
 
   printf ("%s\n", o->active);
