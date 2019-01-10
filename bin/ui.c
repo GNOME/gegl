@@ -722,7 +722,7 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
         gegl_node_get (o->active, "x", &x, "y", &y, NULL);
         x += e->delta_x / o->scale;
         y += e->delta_y / o->scale;
-        gegl_node_set (o->active, "x", x, "y", y, NULL);
+        gegl_node_set (o->active, "x", floor(x), "y", floor(y), NULL);
       }
       break;
     case MRG_DRAG_RELEASE:
@@ -1434,10 +1434,13 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux>", ""*/
     if (ref == o->sink)
       ref = NULL;
   }
+  else
+    ref = NULL;
 
   if (ref)
     o->active = ref;
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
 static void set_op (MrgEvent *event, void *data1, void *data2)
@@ -1478,8 +1481,8 @@ static void list_ops (State *o, GeglNode *iter, int indent)
 
      if (iter == o->active)
      {
+#if 0
        mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);padding-right:.5em;");
-
        for (int i = 0; i < indent; i ++)
          mrg_printf (mrg, INDENT_STR);
        mrg_text_listen (mrg, MRG_CLICK, run_command, "node-add-output", NULL);
@@ -1492,6 +1495,7 @@ static void list_ops (State *o, GeglNode *iter, int indent)
 
        mrg_end (mrg);
        mrg_printf (mrg, "\n");
+#endif
        mrg_start_with_style (mrg, ".item", NULL, "color:white;background-color: rgba(0,0,0,0.5);padding-right:.5em;");
      }
      else
@@ -1558,11 +1562,10 @@ static void list_ops (State *o, GeglNode *iter, int indent)
 
      g_free (opname);
 
-     //if (iter == o->active)
-     //  list_node_props (o, iter, indent + 1);
 
      mrg_printf (mrg, "\n");
 
+#if 0
      if (iter == o->active && gegl_node_has_pad (iter, "aux"))
      {
        mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);");
@@ -1573,6 +1576,7 @@ static void list_ops (State *o, GeglNode *iter, int indent)
        mrg_text_listen_done (mrg);
        mrg_end (mrg);
      }
+#endif
 
      if (gegl_node_get_producer (iter, "aux", NULL))
      {
@@ -1603,6 +1607,7 @@ static void list_ops (State *o, GeglNode *iter, int indent)
 
 
      }
+#if 0
      if (iter == o->active && gegl_node_has_pad (iter, "input"))
      {
        mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);");
@@ -1613,6 +1618,7 @@ static void list_ops (State *o, GeglNode *iter, int indent)
        mrg_text_listen_done (mrg);
        mrg_end (mrg);
      }
+#endif
 
      {
        GeglNode *producer = gegl_node_get_producer (iter, "input", NULL);
@@ -1650,6 +1656,9 @@ static void ui_debug_op_chain (State *o)
   iter = gegl_node_get_producer (iter, "input", NULL);
 
   list_ops (o, iter, 1);
+  mrg_set_xy (mrg, mrg_width(mrg), mrg_em (mrg) * 2);
+  if (o->active)
+    list_node_props (o, o->active, 1);
 }
 
 
@@ -1657,8 +1666,9 @@ static char commandline[1024] = "";
 
 static void update_commandline (const char *new_commandline, void *data)
 {
-  //State *o = data;
+  State *o = data;
   strcpy (commandline, new_commandline);
+  mrg_queue_draw (o->mrg, NULL);
 }
 
 static void
@@ -1859,7 +1869,26 @@ run_command (MrgEvent *event, void *data1, void *data_2)
     }
     else
     {
-       printf ("failed to set %s to %s\n", key, value);
+       if (!strcmp (key, "op"))
+       {
+         char temp_op_name[1024];
+         if (strchr (*arg, ':'))
+         {
+           snprintf (temp_op_name, 1023, "%s", value);
+         }
+         else
+         {
+           snprintf (temp_op_name, 1023, "gegl:%s", value);
+         }
+         if (gegl_has_operation (temp_op_name))
+           gegl_node_set (o->active, "operation", temp_op_name, NULL);
+         else
+           printf ("failed to set %s to %s\n", key, value);
+       }
+       else
+       {
+         printf ("failed to set %s to %s\n", key, value);
+       }
     }
     g_free (key);
   }
@@ -2182,7 +2211,7 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
   }
 
-  if (!edited_prop && !o->editing_op_name)
+  if (!edited_prop && !o->editing_op_name && o->show_graph)
   {
     ui_commandline (mrg, o);
 
@@ -2511,6 +2540,7 @@ int cmd_next (COMMAND_ARGS) /* "next", 0, "", "next sibling element in current c
     argvs_eval ("save");
   go_next (o);
   o->active = NULL;
+  o->active = gegl_node_get_producer (o->sink, "input", NULL);
   return 0;
 }
 
@@ -2533,6 +2563,7 @@ int cmd_prev (COMMAND_ARGS) /* "prev", 0, "", "previous sibling element in curre
     argvs_eval ("save");
   go_prev (o);
   o->active = NULL;
+  o->active = gegl_node_get_producer (o->sink, "input", NULL);
   return 0;
 }
 
@@ -2904,6 +2935,7 @@ int cmd_info (COMMAND_ARGS) /* "info", 0, "", "dump information about active nod
 
   printf ("%s\n", o->active);
   mrg_queue_draw (o->mrg, NULL);
+  return 0;
 }
 
   int cmd_set (COMMAND_ARGS);

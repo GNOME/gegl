@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <math.h>
 #include <mrg.h>
 #include <gegl.h>
 #include <gexiv2/gexiv2.h>
@@ -138,7 +139,7 @@ foo++;
   cairo_rectangle (cr, x0, y0, width, height);
 
   cairo_clip (cr);
-  cairo_translate (cr, x0 * fake_factor, y0 * fake_factor);
+  cairo_translate (cr, floorf (x0 * fake_factor), floorf (y0 * fake_factor));
   cairo_pattern_set_filter (cairo_get_source (cr), CAIRO_FILTER_NEAREST);
   cairo_set_source_surface (cr, surface, 0, 0);
 
@@ -224,7 +225,7 @@ foo++;
   cairo_rectangle (cr, x0, y0, width, height);
 
   cairo_clip (cr);
-  cairo_translate (cr, x0 * fake_factor, y0 * fake_factor);
+  cairo_translate (cr, floorf (x0 * fake_factor), floorf (y0 * fake_factor));
   cairo_pattern_set_filter (cairo_get_source (cr), CAIRO_FILTER_NEAREST);
   cairo_set_source_surface (cr, surface, 0, 0);
 
