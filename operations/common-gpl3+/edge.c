@@ -266,7 +266,11 @@ process (GeglOperation       *operation,
   GeglRectangle rect;
   gint x, y, ix, iy, b, idx;
 
-  rect = gegl_operation_get_required_for_output (operation, "input", roi);
+  rect = *roi;
+  rect.x -= 1;
+  rect.y -= 1;
+  rect.width  += 2;
+  rect.height += 2;
 
   src_buff = g_new (gfloat, rect.width * rect.height * components);
   dst_buff = g_new0 (gfloat, roi->width * roi->height * components);
