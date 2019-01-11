@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright (C) 2015, 2018 Øyvind Kolås pippin@gimp.org
+ * Copyright (C) 2015, 2018, 2019 Øyvind Kolås pippin@gimp.org
  */
 
 /* The code in this file is an image viewer/editor written using microraptor
@@ -49,6 +49,7 @@ const char *css =
 "";
 
 
+void mrg_gegl_dirty (void);
 
 
 #include <ctype.h>
@@ -59,6 +60,7 @@ const char *css =
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <math.h>
 #include <mrg.h>
 #include <mrg-string.h>
 #include <gegl.h>
@@ -112,6 +114,8 @@ static GeglNode *gegl_node_get_consumer_no (GeglNode *node,
 }
 
 int use_ui = 1;
+
+int renderer_dirty = 0;
 
 #define printf(foo...) \
    do{ MrgString *str = mrg_string_new_printf (foo);\
@@ -289,6 +293,11 @@ gchar *get_thumb_path (const char *path)
   {
     g_free (ret);
     ret = g_strdup_printf ("%s/.cache/thumbnails/normal/%s.png", g_get_home_dir(), hex);
+    if (access (ret, F_OK) == -1)
+    {
+      g_free (ret);
+      ret = g_strdup_printf ("%s/.cache/thumbnails/large/%s.png", g_get_home_dir(), hex);
+    }
   }
   g_free (uri);
   g_free (hex);
@@ -297,10 +306,10 @@ gchar *get_thumb_path (const char *path)
 
 
 static void load_path (State *o);
+static void go_next   (State *o);
+static void go_prev   (State *o);
+static void go_parent (State *o);
 
-static void go_next (State *o);
-static void go_prev (State *o);
-static void go_parent                 (State *o);
 static void get_coords                (State *o, float  screen_x, float screen_y,
                                                  float *gegl_x,   float *gegl_y);
 static void drag_preview              (MrgEvent *e);
@@ -310,7 +319,7 @@ static void center                    (State *o);
 static void gegl_ui                   (Mrg *mrg, void *data);
 int         mrg_ui_main               (int argc, char **argv, char **ops);
 void        gegl_meta_set             (const char *path, const char *meta_data);
-char *      gegl_meta_get             (const char *path); 
+char *      gegl_meta_get             (const char *path);
 static void on_viewer_motion          (MrgEvent *e, void *data1, void *data2);
 int         gegl_str_has_image_suffix (char *path);
 int         gegl_str_has_video_suffix (char *path);
@@ -375,7 +384,8 @@ static void populate_path_list (State *o)
   free (namelist);
 }
 
-static State *hack_state = NULL;  // XXX: this shoudl be factored away
+static State *hack_state = NULL;  // XXX: for now we have to rely on
+                                  //      global state to make events/scripting work
 
 char **ops = NULL;
 
@@ -389,6 +399,44 @@ static void end_audio (void)
 {
 }
 
+MrgList *thumb_queue = NULL;
+typedef struct ThumbQueueItem
+{
+  char *path;
+  char *thumbpath;
+} ThumbQueueItem;
+
+
+static char *sh_esc (const char *input)
+{
+  MrgString *str = mrg_string_new ("");
+  for (const char *s = input; *s; s++)
+  {
+    switch (*s)
+    {
+      case ' ':
+        mrg_string_append_byte (str, '\\');
+        mrg_string_append_byte (str, ' ');
+        break;
+      default:
+        mrg_string_append_byte (str, *s);
+        break;
+    }
+  }
+  return mrg_string_dissolve (str);
+}
+
+static void generate_thumb (const char *path,
+                            const char *thumbpath)
+{
+  char *esc_path = sh_esc (path);
+  char *command = g_strdup_printf ("gegl %s -- scale-size-keepaspect x=256 y=256 convert-space name=sRGB png-save bitdepth=8 path=%s", esc_path, thumbpath);
+  system (command);
+  free (esc_path);
+  //fprintf (stderr, "generate thumb %s\n", path);
+}
+
+
 static gboolean renderer_task (gpointer data)
 {
   State *o = data;
@@ -398,7 +446,9 @@ static gboolean renderer_task (gpointer data)
   switch (o->renderer_state)
   {
     case 0:
+      if (renderer_dirty)
       {
+        renderer_dirty = 0;
       if (o->processor_node != o->sink)
       {
         o->processor = gegl_node_new_processor (o->sink, NULL);
@@ -407,16 +457,21 @@ static gboolean renderer_task (gpointer data)
           g_object_unref (old_buffer);
         if (old_processor)
           g_object_unref (old_processor);
-      }
-      {
+      if(1){
         GeglRectangle rect = {o->u / o->scale, o->v / o->scale, mrg_width (o->mrg) / o->scale,
                                           mrg_height (o->mrg) / o->scale};
         gegl_processor_set_rectangle (o->processor, &rect);
       }
-      o->renderer_state = 1;
       }
+        o->renderer_state = 1;
+
+      }
+      else
+        g_usleep (4000);
       break; // fallthrough
     case 1:
+
+
 
        if (gegl_processor_work (o->processor, &progress))
        {
@@ -426,10 +481,11 @@ static gboolean renderer_task (gpointer data)
        else
        {
          if (o->renderer_state)
-           o->renderer_state = 2;
+           o->renderer_state = 3;
        }
       break;
-    case 2:
+    case 3:
+      mrg_gegl_dirty ();
       switch (renderer)
       {
         case GEGL_RENDERER_IDLE:
@@ -437,9 +493,25 @@ static gboolean renderer_task (gpointer data)
           break;
         case GEGL_RENDERER_THREAD:
           mrg_queue_draw (o->mrg, NULL);
-          g_usleep (40000);
+          g_usleep (4000);
           break;
       }
+      o->renderer_state = 0;
+      if (thumb_queue)
+        {
+          o->renderer_state = 4;
+        }
+      break;
+    case 4:
+      {
+        ThumbQueueItem *item = thumb_queue->data;
+
+        generate_thumb (item->path, item->thumbpath);
+        mrg_list_remove (&thumb_queue, item);
+        free (item->path);
+        free (item->thumbpath);
+      }
+
       o->renderer_state = 0;
       break;
   }
@@ -654,6 +726,7 @@ static void on_paint_drag (MrgEvent *e, void *data1, void *data2)
       o->active = gegl_node_get_consumer_no (o->active, "output", NULL, 0);
       break;
   }
+  renderer_dirty++;
   mrg_queue_draw (e->mrg, NULL);
   mrg_event_stop_propagate (e);
   //drag_preview (e);
@@ -722,12 +795,13 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
         gegl_node_get (o->active, "x", &x, "y", &y, NULL);
         x += e->delta_x / o->scale;
         y += e->delta_y / o->scale;
-        gegl_node_set (o->active, "x", floor(x), "y", floor(y), NULL);
+        gegl_node_set (o->active, "x", floorf(x), "y", floorf(y), NULL);
       }
       break;
     case MRG_DRAG_RELEASE:
       break;
   }
+  renderer_dirty++;
   mrg_queue_draw (e->mrg, NULL);
   mrg_event_stop_propagate (e);
 }
@@ -777,6 +851,7 @@ static void update_prop (const char *new_string, void *node_p)
 {
   GeglNode *node = node_p;
   gegl_node_set (node, edited_prop, new_string, NULL);
+  renderer_dirty++;
 }
 
 
@@ -785,6 +860,7 @@ static void update_prop_double (const char *new_string, void *node_p)
   GeglNode *node = node_p;
   gdouble value = g_strtod (new_string, NULL);
   gegl_node_set (node, edited_prop, value, NULL);
+  renderer_dirty++;
 }
 
 static void update_prop_int (const char *new_string, void *node_p)
@@ -792,6 +868,7 @@ static void update_prop_int (const char *new_string, void *node_p)
   GeglNode *node = node_p;
   gint value = g_strtod (new_string, NULL);
   gegl_node_set (node, edited_prop, value, NULL);
+  renderer_dirty++;
 }
 
 
@@ -803,6 +880,7 @@ static void prop_toggle_boolean (MrgEvent *e, void *data1, void *data2)
   gegl_node_get (node, propname, &value, NULL);
   value = value ? FALSE : TRUE;
   gegl_node_set (node, propname, value, NULL);
+  renderer_dirty++;
 
 }
 
@@ -857,6 +935,23 @@ static void entry_pressed (MrgEvent *event, void *data1, void *data2)
 
 static void run_command (MrgEvent *event, void *data1, void *data2);
 
+
+static void queue_thumb (const char *path, const char *thumbpath)
+{
+  ThumbQueueItem *item;
+  for (MrgList *l = thumb_queue; l; l=l->next)
+  {
+    item = l->data;
+    if (!strcmp (item->thumbpath, thumbpath))
+      return;
+  }
+  item = calloc (sizeof (ThumbQueueItem), 1);
+  item->path = strdup (path);
+  item->thumbpath = strdup (thumbpath);
+  mrg_list_append (&thumb_queue, item);
+  fprintf (stderr, "for %s wanted %s\n", path, thumbpath);
+}
+
 static void ui_dir_viewer (State *o)
 {
   Mrg *mrg = o->mrg;
@@ -905,25 +1000,31 @@ static void ui_dir_viewer (State *o)
       }
       else
       {
-        fprintf (stderr, "for %s wanted %s\n", path, thumbpath);
+         queue_thumb (path, thumbpath);
       }
       g_free (thumbpath);
 
       mrg_set_xy (mrg, x, y + dim - mrg_em(mrg));
+
+//      fprintf (stderr, "%s\n", lastslash+1);
       mrg_printf (mrg, "%s\n", lastslash+1);
       cairo_new_path (mrg_cr(mrg));
       cairo_rectangle (mrg_cr(mrg), x, y, dim, dim);
+      cairo_set_source_rgb (mrg_cr(mrg), 1, 0,0);
+      cairo_stroke_preserve (mrg_cr(mrg));
       mrg_listen_full (mrg, MRG_CLICK, entry_pressed, o, path, NULL, NULL);
       cairo_new_path (mrg_cr(mrg));
 
-      y += dim;
-      if (y+dim > mrg_height (mrg))
+      x += dim;
+      if (x+dim > mrg_width (mrg))
       {
-        y = 0;
-        x += dim;
+        x = 0;
+        y += dim;
       }
   }
   cairo_restore (cr);
+#if 0
+  cairo_save (cr);
 
   cairo_scale (cr, mrg_width(mrg), mrg_height(mrg));
   cairo_new_path (cr);
@@ -952,9 +1053,11 @@ static void ui_dir_viewer (State *o)
   cairo_rectangle (cr, 0.8, 0.8, 0.2, 0.2);
   mrg_listen (mrg, MRG_PRESS, run_command, "dir-pgdn", NULL);
   cairo_new_path (cr);
+  cairo_restore (cr);
 
   mrg_add_binding (mrg, "left", NULL, NULL, run_command, "dir-pgup");
-  mrg_add_binding (mrg, "right", NULL, NULL, run_command, "dir-pgndn");
+  mrg_add_binding (mrg, "right", NULL, NULL, run_command, "dir-pgdn");
+#endif
 }
 
 static int slide_cb (Mrg *mrg, void *data)
@@ -1139,6 +1242,7 @@ static void node_remove (MrgEvent *e, void *data1, void *data2)
 
   o->active = new_active;
   mrg_queue_draw (o->mrg, NULL);
+  renderer_dirty++;
 }
 
   int cmd_node_add_aux(COMMAND_ARGS);
@@ -1163,6 +1267,7 @@ int cmd_node_add_aux (COMMAND_ARGS) /* "node-add-aux", 0, "", ""*/
   mrg_set_cursor_pos (o->mrg, 0);
   o->new_opname[0]=0;
   fprintf (stderr, "add aux\n");
+  renderer_dirty++;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
@@ -1188,6 +1293,7 @@ int cmd_node_add_input (COMMAND_ARGS) /* "node-add-input", 0, "", ""*/
   mrg_set_cursor_pos (o->mrg, 0);
   o->new_opname[0]=0;
   fprintf (stderr, "add input\n");
+  renderer_dirty++;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
@@ -1206,6 +1312,7 @@ static GeglNode *add_aux (State *o, GeglNode *active, const char *optype)
     gegl_node_link_many (producer, ret, NULL);
   }
   gegl_node_connect_to (ret, "output", ref, "aux");
+  renderer_dirty++;
   return ret;
 }
 
@@ -1224,6 +1331,7 @@ static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
     gegl_node_link_many (ref, ret, NULL);
     gegl_node_connect_to (ret, "output", consumer, consumer_name);
   }
+  renderer_dirty++;
   return ret;
 }
 
@@ -1687,8 +1795,9 @@ run_command (MrgEvent *event, void *data1, void *data_2)
    * mode is used.
    */
 
-  printf ("%s\n", commandline);
-  mrg_event_stop_propagate (event);
+  //printf ("%s\n", commandline);
+  if (event)
+    mrg_event_stop_propagate (event);
 
   if (argvs_command_exist (argv[0]))
   {
@@ -1916,6 +2025,7 @@ run_command (MrgEvent *event, void *data1, void *data_2)
   }
    arg++;
   }
+    renderer_dirty++;
   }
 
   g_strfreev (argv);
@@ -1956,7 +2066,7 @@ int cmd_pick (COMMAND_ARGS) /* "pick", 0, "", "changes to pick tool"*/
   int cmd_tpan (COMMAND_ARGS);
 int cmd_tpan (COMMAND_ARGS) /* "tpan", 0, "", "changes to pan tool"*/
 {
-  tool = TOOL_PICK;
+  tool = TOOL_PAN;
   return 0;
 }
 
@@ -1995,8 +2105,9 @@ static void iterate_frame (State *o)
          o->frame_no = 0;
        gegl_node_set (o->source, "frame", o->frame_no, NULL);
        o->prev_ms = mrg_ms (mrg);
+       renderer_dirty++;
     }
-       mrg_queue_draw (o->mrg, NULL);
+    mrg_queue_draw (o->mrg, NULL);
    }
   else if (o->is_video)
    {
@@ -2007,6 +2118,7 @@ static void iterate_frame (State *o)
      if (o->frame_no >= frames)
        o->frame_no = 0;
      gegl_node_set (o->source, "frame", o->frame_no, NULL);
+     renderer_dirty++;
      mrg_queue_draw (o->mrg, NULL);
     {
       GeglAudioFragment *audio = NULL;
@@ -2325,9 +2437,6 @@ static void load_path (State *o)
   }
   path  = o->path;
 
-  fprintf (stderr, "%i %i\n", is_gegl_path(o->path), is_gegl_path(o->save_path));
-  fprintf (stderr, "%s %s\n", o->path, o->save_path);
-
   if (access (o->save_path, F_OK) != -1)
   {
     /* XXX : fix this in the fuse layer of zn! XXX XXX XXX XXX */
@@ -2353,11 +2462,13 @@ static void load_path (State *o)
                        "operation", "gegl:nop", NULL);
     o->source = gegl_node_new_child (o->gegl,
          "operation", "gegl:gif-load", "path", path, "frame", o->frame_no, NULL);
+    o->playing = 1;
     gegl_node_link_many (o->source, o->sink, NULL);
   }
   else if (gegl_str_has_video_suffix (path))
   {
     o->is_video = 1;
+    o->playing = 1;
     o->gegl = gegl_node_new ();
     o->sink = gegl_node_new_child (o->gegl,
                        "operation", "gegl:nop", NULL);
@@ -2392,6 +2503,7 @@ static void load_path (State *o)
           {
              o->source = gegl_node_new_child (o->gegl,
              "operation", "gegl:gif-load", "path", path, "frame", o->frame_no, NULL);
+             o->playing = 1;
              gegl_node_link_many (o->source, prev, NULL);
           }
           else
@@ -2447,8 +2559,7 @@ static void load_path (State *o)
         zoom_to_fit (o);
     }
   }
-  
-  o->playing = o->is_video;
+
   if (o->ops)
   {
     GeglNode *ret_sink = NULL;
@@ -2476,7 +2587,7 @@ static void load_path (State *o)
   if (o->processor)
       g_object_unref (o->processor);
   o->processor = gegl_node_new_processor (o->sink, NULL);
-
+  renderer_dirty++;
   mrg_queue_draw (o->mrg, NULL);
 }
 

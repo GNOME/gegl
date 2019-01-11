@@ -63,6 +63,21 @@ void mrg_gegl_blit (Mrg *mrg,
                     float scale,
                     float preview_multiplier);
 
+static float cached_x0 = 0;
+static float cached_y0 = 0;
+static float cached_width = 0;
+static float cached_height = 0;
+static float cached_u = 0;
+static float cached_v = 0;
+static float cached_scale = 0;
+static float cached_prev_mul = 0;
+static int   cached_dirty = 0;
+static cairo_surface_t *cached_surface = NULL;
+
+void mrg_gegl_dirty (void)
+{
+  cached_dirty++;
+}
 
 void mrg_gegl_buffer_blit (Mrg *mrg,
                            float x0, float y0,
@@ -94,6 +109,35 @@ void mrg_gegl_buffer_blit (Mrg *mrg,
   if (height == -1)
     height = bounds.height * width / bounds.width;
 
+  if (cached_x0 == x0 &&
+      cached_y0 == y0 &&
+      cached_width == width &&
+      cached_height == height &&
+      cached_u == u &&
+      cached_v == v &&
+      cached_scale == scale &&
+      cached_prev_mul == preview_multiplier &&
+      cached_dirty == 0)
+  {
+    width /= fake_factor;
+    height /= fake_factor;
+    u /= fake_factor;
+    v /= fake_factor;
+
+    surface = cached_surface;
+  }
+  else
+  {
+    cached_x0 = x0;
+    cached_y0 = y0;
+    cached_width = width;
+    cached_height = height;
+    cached_u = u;
+    cached_v = v;
+    cached_scale = scale;
+    cached_prev_mul = preview_multiplier;
+    cached_dirty = 0;
+
   width /= fake_factor;
   height /= fake_factor;
   u /= fake_factor;
@@ -121,15 +165,19 @@ foo++;
       if (icc_data)
          space = babl_space_from_icc ((char*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, NULL);
       fmt = babl_format_with_space ("cairo-RGB24", space);
-      fmt = babl_format_with_space ("cairo-RGB24", NULL);
+    //  fmt = babl_format_with_space ("cairo-RGB24", NULL);
     }
     gegl_buffer_get (buffer, &roi, scale / fake_factor, fmt, buf, width * 4,
          GEGL_ABYSS_NONE);
-  surface = cairo_image_surface_create_for_data (buf, CAIRO_FORMAT_RGB24, width, height, width * 4);
+    surface = cairo_image_surface_create_for_data (buf, CAIRO_FORMAT_RGB24, width, height, width * 4);
   }
 
+    cairo_surface_set_device_scale (surface, 1.0/fake_factor, 1.0/fake_factor);
+    if (cached_surface)
+      cairo_surface_destroy (cached_surface);
+    cached_surface = surface;
+  }
   cairo_save (cr);
-  cairo_surface_set_device_scale (surface, 1.0/fake_factor, 1.0/fake_factor);
 
   width *= fake_factor;
   height *= fake_factor;
@@ -145,7 +193,8 @@ foo++;
 
   cairo_set_operator (cr, CAIRO_OPERATOR_SOURCE);
   cairo_paint (cr);
-  cairo_surface_destroy (surface);
+
+  //cairo_surface_destroy (surface);
   cairo_restore (cr);
 }
 
