@@ -42,26 +42,11 @@
 #include <gegl-paramspecs.h>
 #include <SDL.h>
 #include <gegl-audio-fragment.h>
+#include "mrg-gegl.h"
 
 static unsigned char *copy_buf = NULL;
 static int copy_buf_len = 0;
 
-void mrg_gegl_buffer_blit (Mrg *mrg,
-                           float x0, float y0,
-                           float width, float height,
-                           GeglBuffer *buffer,
-                           float u, float v,
-                           float scale,
-                           float preview_multiplier);
-
-
-void mrg_gegl_blit (Mrg *mrg,
-                    float x0, float y0,
-                    float width, float height,
-                    GeglNode *node,
-                    float u, float v,
-                    float scale,
-                    float preview_multiplier);
 
 static float cached_x0 = 0;
 static float cached_y0 = 0;
@@ -85,7 +70,8 @@ void mrg_gegl_buffer_blit (Mrg *mrg,
                            GeglBuffer *buffer,
                            float u, float v,
                            float scale,
-                           float preview_multiplier)
+                           float preview_multiplier,
+                           int   color_manage_display)
 {
   float fake_factor = preview_multiplier;
   GeglRectangle bounds;
@@ -151,21 +137,30 @@ void mrg_gegl_buffer_blit (Mrg *mrg,
     copy_buf = malloc (copy_buf_len);
   }
   {
-    static int foo = 0;
     unsigned char *buf = copy_buf;
     GeglRectangle roi = {u, v, width, height};
-    static const Babl *fmt = NULL;
+    const Babl *fmt = NULL;
+    static const Babl *fmt_icc = NULL;
+    static const Babl *fmt_srgb = NULL;
 
-foo++;
-    if (!fmt)
+    if (color_manage_display)
     {
-      int icc_length = 0;
-      unsigned const char *icc_data = mrg_get_profile (mrg, &icc_length);
-      const Babl *space = NULL;
-      if (icc_data)
-         space = babl_space_from_icc ((char*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, NULL);
-      fmt = babl_format_with_space ("cairo-RGB24", space);
-    //  fmt = babl_format_with_space ("cairo-RGB24", NULL);
+      if (!fmt_icc)
+      {
+        int icc_length = 0;
+        unsigned const char *icc_data = mrg_get_profile (mrg, &icc_length);
+        const Babl *space = NULL;
+        if (icc_data)
+          space = babl_space_from_icc ((char*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, NULL);
+        fmt_icc = babl_format_with_space ("cairo-RGB24", space);
+      }
+      fmt = fmt_icc;
+    }
+    else
+    {
+      if (!fmt_srgb)
+        fmt_srgb = babl_format_with_space ("cairo-RGB24", NULL);
+      fmt = fmt_srgb;
     }
     gegl_buffer_get (buffer, &roi, scale / fake_factor, fmt, buf, width * 4,
          GEGL_ABYSS_NONE);
@@ -206,7 +201,8 @@ void mrg_gegl_blit (Mrg *mrg,
                     GeglNode *node,
                     float u, float v,
                     float scale,
-                    float preview_multiplier)
+                    float preview_multiplier,
+                    int color_manage_display)
 {
   float fake_factor = preview_multiplier;
   GeglRectangle bounds;
@@ -243,21 +239,33 @@ void mrg_gegl_blit (Mrg *mrg,
     copy_buf = malloc (copy_buf_len);
   }
   {
-    static int foo = 0;
     unsigned char *buf = copy_buf;
     GeglRectangle roi = {u, v, width, height};
-    static const Babl *fmt = NULL;
+    const Babl *fmt = NULL;
+    static const Babl *fmt_icc = NULL;
+    static const Babl *fmt_srgb = NULL;
 
-foo++;
-    if (!fmt)
+    if (color_manage_display)
     {
-      int icc_length = 0;
-      unsigned const char *icc_data = mrg_get_profile (mrg, &icc_length);
-      const Babl *space = NULL;
-      if (icc_data)
-         space = babl_space_from_icc ((char*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, NULL);
-      fmt = babl_format_with_space ("cairo-RGB24", space);
+      if (!fmt_icc)
+      {
+        int icc_length = 0;
+        unsigned const char *icc_data = mrg_get_profile (mrg, &icc_length);
+        const Babl *space = NULL;
+        if (icc_data)
+          space = babl_space_from_icc ((char*)icc_data, icc_length, BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, NULL);
+        fmt_icc = babl_format_with_space ("cairo-RGB24", space);
+      }
+      fmt = fmt_icc;
     }
+    else
+    {
+      if (!fmt_srgb)
+        fmt_srgb = babl_format_with_space ("cairo-RGB24", NULL);
+      fmt = fmt_srgb;
+    }
+
+
     gegl_node_blit (node, scale / fake_factor, &roi, fmt, buf, width * 4,
          GEGL_BLIT_DEFAULT);
   surface = cairo_image_surface_create_for_data (buf, CAIRO_FORMAT_RGB24, width, height, width * 4);

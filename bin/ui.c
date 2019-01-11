@@ -68,26 +68,11 @@ void mrg_gegl_dirty (void);
 #include <gegl-paramspecs.h>
 #include <gegl-operation.h>
 #include <gegl-audio-fragment.h>
+#include "mrg-gegl.h"
 #include "argvs.h"
 
 /* set this to 1 to print the active gegl chain
  */
-
-void mrg_gegl_blit (Mrg *mrg,
-                    float x0, float y0,
-                    float width, float height,
-                    GeglNode *node,
-                    float u, float v,
-                    float scale,
-                    float preview_multiplier);
-
-void mrg_gegl_buffer_blit (Mrg *mrg,
-                           float x0, float y0,
-                           float width, float height,
-                           GeglBuffer *buffer,
-                           float u, float v,
-                           float scale,
-                           float preview_multiplier);
 
 static GeglNode *gegl_node_get_consumer_no (GeglNode *node,
                                             const char *output_pad,
@@ -217,6 +202,7 @@ struct _State {
   GeglNode      *decode_load;
   GeglNode      *decode_store;
   int            playing;
+  int            color_manage_display;
 
   int            is_video;
   int            prev_frame_played;
@@ -260,6 +246,7 @@ Setting settings[]=
   INT_PROP(show_controls, "show image viewer controls (maybe merge with show-graph and give better name)"),
   INT_PROP(slide_enabled, "slide show going"),
   INT_PROP_RO(is_video, ""),
+  INT_PROP(color_manage_display, "perform ICC color management and convert output to display ICC profile instead of passing out sRGB, passing out sRGB is faster."),
   INT_PROP(playing, "wheter we are playing or not set to 0 for pause 1 for playing"),
 
   INT_PROP(frame_no, "current frame number in video/animation")
@@ -2149,8 +2136,8 @@ static void iterate_frame (State *o)
          mrg_pcm_queue (mrg, (void*)&temp_buf[0], sample_count);
          }
 
-         while (mrg_pcm_get_queued (mrg) > sample_count)
-            g_usleep (50);
+         while (mrg_pcm_get_queued (mrg) > sample_count * 3)
+            g_usleep (10);
 
          o->prev_frame_played = o->frame_no;
          deferred_redraw (mrg, NULL);
@@ -2233,7 +2220,8 @@ static void gegl_ui (Mrg *mrg, void *data)
                       o->sink,
                       o->u, o->v,
                       o->scale,
-                      o->render_quality);
+                      o->render_quality,
+                      o->color_manage_display);
      break;
      case GEGL_RENDERER_THREAD:
      case GEGL_RENDERER_IDLE:
@@ -2246,7 +2234,8 @@ static void gegl_ui (Mrg *mrg, void *data)
                                buffer,
                                o->u, o->v,
                                o->scale,
-                               o->render_quality);
+                               o->render_quality,
+                               o->color_manage_display);
          g_object_unref (buffer);
        }
        break;
