@@ -149,9 +149,6 @@ gegl_scratch_alloc (gsize size)
   GeglScratchContext *context;
   GeglScratchBlock   *block;
 
-  if (G_UNLIKELY (! size))
-    return NULL;
-
   if (G_UNLIKELY (size > GEGL_SCRATCH_MAX_BLOCK_SIZE))
     {
       block = gegl_scratch_block_new ((GeglScratchContext *) &void_context,
@@ -189,9 +186,6 @@ gegl_scratch_alloc0 (gsize size)
 {
   gpointer ptr;
 
-  if (G_UNLIKELY (! size))
-    return NULL;
-
   ptr = gegl_scratch_alloc (size);
 
   memset (ptr, 0, size);
@@ -204,9 +198,6 @@ gegl_scratch_free (gpointer ptr)
 {
   GeglScratchContext *context;
   GeglScratchBlock   *block;
-
-  if (G_UNLIKELY (! ptr))
-    return;
 
   context = g_private_get (&gegl_scratch_context);
   block   = (GeglScratchBlock *) ((guint8 *) ptr -

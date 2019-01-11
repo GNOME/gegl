@@ -25,7 +25,6 @@
  * @size: the number of bytes to allocte.
  *
  * Allocates @size bytes of scratch memory.
- * If @size is 0 it returns NULL.
  *
  * Returns a pointer to the allocated memory.
  */
@@ -36,7 +35,6 @@ gpointer   gegl_scratch_alloc  (gsize    size) G_GNUC_MALLOC;
  * @size: the number of bytes to allocte.
  *
  * Allocates @size bytes of scratch memory, initialized to zero.
- * If @size is 0 it returns NULL.
  *
  * Returns a pointer to the allocated memory.
  */
@@ -47,7 +45,6 @@ gpointer   gegl_scratch_alloc0 (gsize    size) G_GNUC_MALLOC;
  * @ptr: the memory to free.
  *
  * Frees the memory pointed to by @ptr.
- * If @ptr is NULL, does nothing.
  *
  * The memory must have been allocated using one of the scratch-memory
  * allocation functions.
@@ -65,7 +62,6 @@ void       gegl_scratch_free   (gpointer ptr);
  *
  * Allocates @n elements of type @type using scratch memory.
  * The returned pointer is cast to a pointer to the given type.
- * If @n is 0 it returns %NULL.
  * Care is taken to avoid overflow when calculating the size of
  * the allocated block.
  *
@@ -88,7 +84,6 @@ void       gegl_scratch_free   (gpointer ptr);
  * Allocates @n elements of type @type using scratch memory,
  * initialized to 0.
  * The returned pointer is cast to a pointer to the given type.
- * If @n is 0 it returns %NULL.
  * Care is taken to avoid overflow when calculating the size of
  * the allocated block.
  *
