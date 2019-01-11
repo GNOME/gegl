@@ -218,7 +218,7 @@ gboolean
 gegl_rectangle_is_empty (const GeglRectangle *r)
 {
   g_return_val_if_fail (r != NULL, FALSE);
-  return r->width == 0 && r->height == 0;
+  return r->width == 0 || r->height == 0;
 }
 
 GeglRectangle *
