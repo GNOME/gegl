@@ -551,7 +551,8 @@ gegl_create_chain_argv (char      **ops,
                                 gegl_node_set (iter[level], key, absolute_path, NULL);
                                 free (absolute_path);
                               }
-                            gegl_node_set (iter[level], key, value, NULL);
+                            else
+                              gegl_node_set (iter[level], key, value, NULL);
                           }
                       }
                     else if (g_type_is_a (target_type, G_TYPE_STRING))
