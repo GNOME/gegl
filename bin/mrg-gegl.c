@@ -47,7 +47,6 @@
 static unsigned char *copy_buf = NULL;
 static int copy_buf_len = 0;
 
-
 static float cached_x0 = 0;
 static float cached_y0 = 0;
 static float cached_width = 0;

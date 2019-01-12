@@ -89,7 +89,8 @@ static GeglNode *gegl_node_get_consumer_no (GeglNode *node,
   count = gegl_node_get_consumers (node, "output", &nodes, &consumer_names);
   if (count > no){
      /* XXX : look into inverting list in get_consumers */
-     consumer = nodes[count-no-1];
+     //consumer = nodes[count-no-1];
+     consumer = nodes[no];
      if (consumer_pad)
        *consumer_pad = g_intern_string (consumer_names[count-no-1]);
   }
@@ -1222,7 +1223,11 @@ static void node_remove (MrgEvent *e, void *data1, void *data2)
   next = gegl_node_get_consumer_no (node, "output", &consumer_name, 0);
 
   if (next && prev)
-    gegl_node_connect_to (prev, "output", next, consumer_name);
+    {
+      gegl_node_disconnect (node, "output");
+      gegl_node_disconnect (node, "input");
+      gegl_node_connect_to (prev, "output", next, consumer_name);
+    }
 
   gegl_node_remove_child (o->gegl, node);
   new_active  = prev?prev:next;
@@ -1715,6 +1720,9 @@ static void list_ops (State *o, GeglNode *iter, int indent)
      }
 #endif
 
+     if (0)
+       iter = gegl_node_get_producer (iter, "input", NULL);
+      else
      {
        GeglNode *producer = gegl_node_get_producer (iter, "input", NULL);
        GeglNode *producers_consumer;
@@ -2133,11 +2141,12 @@ static void iterate_frame (State *o)
            temp_buf[i*2] = audio->data[0][i] * 32767.0 * 0.46;
            temp_buf[i*2+1] = audio->data[1][i] * 32767.0 * 0.46;
          }
+
          mrg_pcm_queue (mrg, (void*)&temp_buf[0], sample_count);
+         while (mrg_pcm_get_queued (mrg) > sample_count / 2)
+            g_usleep (50);
          }
 
-         while (mrg_pcm_get_queued (mrg) > sample_count * 3)
-            g_usleep (10);
 
          o->prev_frame_played = o->frame_no;
          deferred_redraw (mrg, NULL);
@@ -2153,6 +2162,7 @@ static void ui_commandline (Mrg *mrg, void *data)
   State *o = data;
   float em = mrg_em (mrg);
   float h = mrg_height (mrg);
+  float w = mrg_width (mrg);
   cairo_t *cr = mrg_cr (mrg);
   int row = 1;
   cairo_save (cr);
@@ -2170,7 +2180,8 @@ static void ui_commandline (Mrg *mrg, void *data)
   mrg_edit_end (mrg);
   row++;
 
-  mrg_set_xy (mrg, em, h * 0.75);
+  mrg_set_edge_left (mrg, w * 0.5);
+  mrg_set_xy (mrg, w * 0.5, h * 0.2);
 
   {
     MrgList *lines = NULL;
