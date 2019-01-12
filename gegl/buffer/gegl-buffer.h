@@ -718,6 +718,28 @@ glong gegl_buffer_signal_connect (GeglBuffer *buffer,
                                   GCallback   c_handler,
                                   gpointer    data);
 
+/**
+ * gegl_buffer_freeze_changed:
+ * @buffer: a GeglBuffer
+ *
+ * Blocks emission of the "changed" signal for @buffer.
+ *
+ * While the signal is blocked, changes to @buffer are accumulated, and will
+ * be emitted once the signal is unblocked, using gegl_buffer_thaw_changed().
+ */
+void gegl_buffer_freeze_changed (GeglBuffer *buffer);
+
+/**
+ * gegl_buffer_thaw_changed:
+ * @buffer: a GeglBuffer
+ *
+ * Unblocks emission of the "changed" signal for @buffer.
+ *
+ * Once all calls to gegl_buffer_freeze_changed() are matched by corresponding
+ * calls to gegl_buffer_freeze_changed(), all accumulated changes are emitted.
+ */
+void gegl_buffer_thaw_changed (GeglBuffer *buffer);
+
 
 /**
  * gegl_buffer_flush_ext:

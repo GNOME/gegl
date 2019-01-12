@@ -1178,16 +1178,29 @@ gegl_buffer_emit_changed_signal (GeglBuffer          *buffer,
                                  const GeglRectangle *rect)
 {
   if (buffer->changed_signal_connections)
-  {
-    GeglRectangle copy;
+    {
+      GeglRectangle copy;
 
-    if (rect == NULL)
-      copy = *gegl_buffer_get_extent (buffer);
-    else
-      copy = *rect;
+      if (rect == NULL)
+        copy = *gegl_buffer_get_extent (buffer);
+      else
+        copy = *rect;
 
-    g_signal_emit (buffer, gegl_buffer_signals[CHANGED], 0, &copy, NULL);
-  }
+      if (buffer->changed_signal_freeze_count == 0)
+        {
+          g_signal_emit (buffer, gegl_buffer_signals[CHANGED], 0, &copy, NULL);
+        }
+      else
+        {
+          g_rec_mutex_lock (&buffer->tile_storage->mutex);
+
+          gegl_rectangle_bounding_box (&buffer->changed_signal_accumulator,
+                                       &buffer->changed_signal_accumulator,
+                                       &copy);
+
+          g_rec_mutex_unlock (&buffer->tile_storage->mutex);
+        }
+    }
 }
 
 glong gegl_buffer_signal_connect (GeglBuffer *buffer,
@@ -1197,6 +1210,34 @@ glong gegl_buffer_signal_connect (GeglBuffer *buffer,
 {
   buffer->changed_signal_connections++;
   return g_signal_connect(buffer, detailed_signal, c_handler, data);
+}
+
+void
+gegl_buffer_freeze_changed (GeglBuffer *buffer)
+{
+  g_return_if_fail (GEGL_IS_BUFFER (buffer));
+
+  if (buffer->changed_signal_freeze_count++ == 0)
+    {
+      buffer->changed_signal_accumulator.x      = 0;
+      buffer->changed_signal_accumulator.y      = 0;
+      buffer->changed_signal_accumulator.width  = 0;
+      buffer->changed_signal_accumulator.height = 0;
+    }
+}
+
+void
+gegl_buffer_thaw_changed (GeglBuffer *buffer)
+{
+  g_return_if_fail (GEGL_IS_BUFFER (buffer));
+  g_return_if_fail (buffer->changed_signal_freeze_count > 0);
+
+  if (--buffer->changed_signal_freeze_count == 0 &&
+      ! gegl_rectangle_is_empty (&buffer->changed_signal_accumulator))
+    {
+      gegl_buffer_emit_changed_signal (buffer,
+                                       &buffer->changed_signal_accumulator);
+    }
 }
 
 GeglTile *
