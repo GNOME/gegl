@@ -66,6 +66,8 @@ struct _GeglBuffer
 
   gint              changed_signal_connections; /* to avoid firing changed signals
                                                    with no listeners */
+  gint              changed_signal_freeze_count;
+  GeglRectangle     changed_signal_accumulator;
 
   GeglTileBackend  *backend;
 };
