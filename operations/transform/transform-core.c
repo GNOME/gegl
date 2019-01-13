@@ -831,7 +831,7 @@ gegl_transform_detect (GeglOperation *operation,
       gegl_matrix3_is_identity (&inverse))
     return gegl_operation_detect (source, x, y);
 
-  gegl_transform_create_matrix (transform, &inverse);
+  gegl_transform_create_composite_matrix (transform, &inverse);
   gegl_matrix3_invert (&inverse);
 
   /*
