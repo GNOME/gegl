@@ -47,7 +47,8 @@ enum
   PROP_THREADS,
   PROP_USE_OPENCL,
   PROP_QUEUE_SIZE,
-  PROP_APPLICATION_LICENSE
+  PROP_APPLICATION_LICENSE,
+  PROP_MIPMAP_RENDERING
 };
 
 gint _gegl_threads = 1;
@@ -106,6 +107,10 @@ gegl_config_get_property (GObject    *gobject,
         g_value_set_string (value, config->application_license);
         break;
 
+      case PROP_MIPMAP_RENDERING:
+        g_value_set_boolean (value, config->mipmap_rendering);
+        break;
+
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (gobject, property_id, pspec);
         break;
@@ -150,6 +155,9 @@ gegl_config_set_property (GObject      *gobject,
         return;
       case PROP_USE_OPENCL:
         config->use_opencl = g_value_get_boolean (value);
+        break;
+      case PROP_MIPMAP_RENDERING:
+        config->mipmap_rendering = g_value_get_boolean (value);
         break;
       case PROP_QUEUE_SIZE:
         config->queue_size = g_value_get_int (value);
@@ -249,6 +257,14 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                      _gegl_threads,
                                                      G_PARAM_READWRITE |
                                                      G_PARAM_CONSTRUCT));
+
+  g_object_class_install_property (gobject_class, PROP_MIPMAP_RENDERING,
+                                   g_param_spec_boolean ("mipmap-rendering",
+                                                         "mipmap rendering",
+                                                         "Enable code paths for mipmap preview rendering, uses approximations for 50% 25% etc zoom factors to reduce processing.",
+                                                         FALSE,
+                                                         G_PARAM_READWRITE |
+                                                         G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class, PROP_USE_OPENCL,
                                    g_param_spec_boolean ("use-opencl",

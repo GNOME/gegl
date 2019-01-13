@@ -1118,10 +1118,7 @@ gegl_node_blit_buffer (GeglNode            *self,
 
 static inline gboolean gegl_mipmap_rendering_enabled (void)
 {
-  static int enabled = -1;
-  if (enabled == -1)
-    enabled = g_getenv("GEGL_MIPMAP_RENDERING")!=NULL;
-  return enabled;
+  return gegl_config()->mipmap_rendering;
 }
 
 void

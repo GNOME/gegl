@@ -44,6 +44,7 @@ struct _GeglConfig
   gint     tile_height;
   gboolean use_opencl;
   gint     queue_size;
+  gboolean mipmap_rendering;
   gchar   *application_license;
 };
 

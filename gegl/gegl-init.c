@@ -269,6 +269,18 @@ gegl_get_option_group (void)
 
 static void gegl_config_parse_env (GeglConfig *config)
 {
+  if (g_getenv ("GEGL_MIPMAP_RENDERING"))
+    {
+      const gchar *value = g_getenv ("GEGL_MIPMAP_RENDERING");
+      if (!strcmp (value, "1")||
+          !strcmp (value, "true")||
+          !strcmp (value, "yes"))
+        g_object_set (config, "mipmap-rendering", TRUE, NULL);
+      else
+        g_object_set (config, "mipmap-rendering", TRUE, NULL);
+    }
+
+
   if (g_getenv ("GEGL_QUALITY"))
     {
       const gchar *quality = g_getenv ("GEGL_QUALITY");
