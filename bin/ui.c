@@ -702,16 +702,27 @@ static void node_press (MrgEvent *e, void *data1, void *data2)
   mrg_queue_draw (e->mrg, NULL);
 }
 
+static float zoom_pinch_x0 = 0;
+static float zoom_pinch_y0 = 0;
+static float zoom_pinch_x1 = 0;
+static float zoom_pinch_y1 = 0;
+static float zoom_pinch_x0_start = 0;
+static float zoom_pinch_y0_start = 0;
+static float zoom_pinch_x1_start = 0;
+static float zoom_pinch_y1_start = 0;
+static int zoom_pinch = 0;
+static float orig_zoom = 1.0;
+
 static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
 {
   State *o = data1;
-
   if (e->type == MRG_DRAG_RELEASE && node_select_hack == 0)
   {
     float x = (e->x + o->u) / o->scale;
     float y = (e->y + o->v) / o->scale;
     GeglNode *picked = NULL;
     picked = gegl_node_detect (o->sink, x, y);
+    zoom_pinch = 0;
     if (picked)
     {
       const char *picked_op = gegl_node_get_operation (picked);
@@ -726,10 +737,46 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
 
       o->active = picked;
     }
+  } else if (e->type == MRG_DRAG_PRESS)
+  {
+    if (e->device_no == 5)
+    {
+      zoom_pinch_x1 = e->x;
+      zoom_pinch_y1 = e->y;
+      zoom_pinch_x1_start = zoom_pinch_x1;
+      zoom_pinch_y1_start = zoom_pinch_y1;
+      zoom_pinch_x0_start = zoom_pinch_x0;
+      zoom_pinch_y0_start = zoom_pinch_y0;
+      zoom_pinch = 1;
+      orig_zoom = o->scale;
+    }
   } else if (e->type == MRG_DRAG_MOTION)
   {
-    o->u -= (e->delta_x );
-    o->v -= (e->delta_y );
+    if (e->device_no == 1 || e->device_no == 4)
+    {
+
+      o->u -= (e->delta_x );
+      o->v -= (e->delta_y );
+
+      zoom_pinch_x0 = e->x;
+      zoom_pinch_y0 = e->y;
+    }
+    if (e->device_no == 5)
+    {
+      zoom_pinch_x1 = e->x;
+      zoom_pinch_y1 = e->y;
+    }
+    if (zoom_pinch)
+    {
+      float orig_dist = hypotf ( zoom_pinch_x0_start - zoom_pinch_x1_start,
+                                 zoom_pinch_y0_start - zoom_pinch_y1_start);
+      float dist = hypotf ( zoom_pinch_x0 - zoom_pinch_x1,
+                                 zoom_pinch_y0 - zoom_pinch_y1);
+      char command[50];
+      sprintf (command, "zoom %f", orig_zoom * dist / orig_dist);
+      argvs_eval (command);
+    }
+
     o->renderer_state = 0;
     mrg_queue_draw (e->mrg, NULL);
     mrg_event_stop_propagate (e);
