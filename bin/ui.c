@@ -553,6 +553,8 @@ static gboolean renderer_task (gpointer data)
         generate_thumb (thumb_queue->data);
         if (thumb_queue && thumb_queue->next)
           generate_thumb (thumb_queue->next->data);
+        if (thumb_queue && thumb_queue->next && thumb_queue->next->next)
+          generate_thumb (thumb_queue->next->next->data);
       }
 
       o->renderer_state = 0;
@@ -1051,7 +1053,7 @@ static void ui_dir_viewer (State *o)
   GList *iter;
   float x = 0;
   float y = 0;
-  float dim = mrg_height (mrg) * 0.10;
+  float dim = mrg_height (mrg) * 0.15;
 
   cairo_rectangle (cr, 0,0, mrg_width(mrg), mrg_height(mrg));
   mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
@@ -2433,11 +2435,6 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   ui_canvas_handling (mrg, o);
 
-  if (o->show_graph)
-  {
-    ui_debug_op_chain (o);
-  }
-  else
   {
     struct stat stat_buf;
 
@@ -2448,7 +2445,10 @@ static void gegl_ui (Mrg *mrg, void *data)
     lstat (o->path, &stat_buf);
     if (S_ISREG (stat_buf.st_mode))
     {
-      ui_viewer (o);
+      if (o->show_graph)
+        ui_debug_op_chain (o);
+      else
+        ui_viewer (o);
 
     }
     else if (S_ISDIR (stat_buf.st_mode))
