@@ -363,7 +363,21 @@ static void populate_path_list (State *o)
         }
       }
     }
+    else if (namelist[i]->d_name[0] != '.')
+    {
+      gchar *fpath = g_strdup_printf ("%s/%s", path, namelist[i]->d_name);
+      lstat (fpath, &stat_buf);
+      if (S_ISDIR (stat_buf.st_mode))
+      {
+         o->paths = g_list_append (o->paths, fpath);
+      }
+      else
+        g_free (fpath);
+    }
   }
+
+
+  // XXX should free namelist[0..n]
   free (namelist);
 }
 
@@ -386,10 +400,23 @@ MrgList *thumb_queue = NULL;
 typedef struct ThumbQueueItem
 {
   char *path;
+  char *tempthumbpath;
   char *thumbpath;
+  GPid  pid;
 } ThumbQueueItem;
 
+static void thumb_queue_item_free (ThumbQueueItem *item)
+{
+  if (item->path)
+    g_free (item->path);
+  if (item->thumbpath)
+    g_free (item->thumbpath);
+  if (item->tempthumbpath)
+    g_free (item->tempthumbpath);
+  g_free (item);
+}
 
+#if 0
 static char *sh_esc (const char *input)
 {
   MrgString *str = mrg_string_new ("");
@@ -408,15 +435,44 @@ static char *sh_esc (const char *input)
   }
   return mrg_string_dissolve (str);
 }
+#endif
 
-static void generate_thumb (const char *path,
-                            const char *thumbpath)
+static void generate_thumb (ThumbQueueItem *item)
 {
-  char *esc_path = sh_esc (path);
-  char *command = g_strdup_printf ("gegl %s -- scale-size-keepaspect x=256 y=256 convert-space name=sRGB png-save bitdepth=8 path=%s", esc_path, thumbpath);
-  system (command);
-  free (esc_path);
-  //fprintf (stderr, "generate thumb %s\n", path);
+  GPid child_pid = -1;
+  GError *error = NULL;
+  char  *savepath=g_strdup_printf ("path=%s", item->tempthumbpath);
+  char  *path2=g_strdup (item->path);
+  char *argv[]={"/usr/local/bin/gegl",
+     path2, "--",
+     "scale-size-keepaspect", "x=256", "y=256",
+     "convert-format", "format=RGBA float",
+     "convert-space", "name=sRGB",
+     "png-save", "bitdepth=8", savepath,
+     NULL};
+
+  if (item->pid)
+  {
+    if (kill(item->pid, 0) != 0)
+    {
+      mrg_list_remove (&thumb_queue, item);
+      rename (item->tempthumbpath, item->thumbpath);
+      fprintf (stderr, "bingo\n");
+      thumb_queue_item_free (item);
+      mrg_queue_draw (hack_state->mrg, NULL);
+    }
+    goto cleanup;
+  }
+
+  g_spawn_async (NULL, &argv[0], NULL, G_SPAWN_SEARCH_PATH_FROM_ENVP,  NULL, NULL, &child_pid, &error);
+  fprintf (stderr, "spawned %i %s %s %s\n", (int) child_pid, item->path, item->thumbpath, item->tempthumbpath);
+  if (error)
+    fprintf (stderr, "%s\n", error->message);
+
+  item->pid = child_pid;
+cleanup:
+  g_free (path2);
+  g_free (savepath);
 }
 
 
@@ -450,6 +506,11 @@ static gboolean renderer_task (gpointer data)
 
       }
       else
+        if (thumb_queue)
+        {
+          o->renderer_state = 4;
+        }
+      else
         g_usleep (4000);
       break; // fallthrough
     case 1:
@@ -480,19 +541,18 @@ static gboolean renderer_task (gpointer data)
           break;
       }
       o->renderer_state = 0;
-      if (thumb_queue)
+      if (0 && thumb_queue)
         {
           o->renderer_state = 4;
         }
       break;
     case 4:
-      {
-        ThumbQueueItem *item = thumb_queue->data;
 
-        generate_thumb (item->path, item->thumbpath);
-        mrg_list_remove (&thumb_queue, item);
-        free (item->path);
-        free (item->thumbpath);
+      if (thumb_queue)
+      {
+        generate_thumb (thumb_queue->data);
+        if (thumb_queue && thumb_queue->next)
+          generate_thumb (thumb_queue->next->data);
       }
 
       o->renderer_state = 0;
@@ -919,7 +979,6 @@ static void entry_pressed (MrgEvent *event, void *data1, void *data2)
 
 static void run_command (MrgEvent *event, void *data1, void *data2);
 
-
 static void queue_thumb (const char *path, const char *thumbpath)
 {
   ThumbQueueItem *item;
@@ -929,11 +988,13 @@ static void queue_thumb (const char *path, const char *thumbpath)
     if (!strcmp (item->thumbpath, thumbpath))
       return;
   }
-  item = calloc (sizeof (ThumbQueueItem), 1);
-  item->path = strdup (path);
-  item->thumbpath = strdup (thumbpath);
+  item = g_malloc0 (sizeof (ThumbQueueItem));
+  fprintf (stderr, "%s\n", path);
+  item->path = g_strdup (path);
+  item->thumbpath = g_strdup (thumbpath);
+  item->tempthumbpath = g_strdup (item->thumbpath);
+  item->tempthumbpath[strlen(item->tempthumbpath)-8]='_';
   mrg_list_append (&thumb_queue, item);
-  fprintf (stderr, "for %s wanted %s\n", path, thumbpath);
 }
 
 static void ui_dir_viewer (State *o)
@@ -943,7 +1004,7 @@ static void ui_dir_viewer (State *o)
   GList *iter;
   float x = 0;
   float y = 0;
-  float dim = mrg_height (mrg) * 0.25;
+  float dim = mrg_height (mrg) * 0.10;
 
   cairo_rectangle (cr, 0,0, mrg_width(mrg), mrg_height(mrg));
   mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
@@ -980,7 +1041,10 @@ static void ui_dir_viewer (State *o)
         else
           wdim = dim * (1.0 * w / h);
 
+        if (w!=0 && h!=0)
         mrg_image (mrg, x + (dim-wdim)/2, y + (dim-hdim)/2, wdim, hdim, 1.0, thumbpath, NULL, NULL);
+        else
+         queue_thumb (path, thumbpath);
       }
       else
       {
@@ -1355,8 +1419,8 @@ static void list_node_props (State *o, GeglNode *node, int indent)
   guint n_props;
   int no = 0;
   //cairo_t *cr = mrg_cr (mrg);
-  float x = mrg_x (mrg) + mrg_em (mrg) * 1;
-  float y = mrg_y (mrg);
+  //float x = mrg_x (mrg) + mrg_em (mrg) * 1;
+  //float y = mrg_y (mrg);
   const char *op_name = gegl_node_get_operation (node);
   GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
 
@@ -2463,6 +2527,15 @@ static void load_path (State *o)
 {
   char *path;
   char *meta;
+
+  while (thumb_queue)
+  {
+    ThumbQueueItem *item = thumb_queue->data;
+    mrg_list_remove (&thumb_queue, item);
+    thumb_queue_item_free (item);
+  }
+
+
   populate_path_list (o);
 
   if (o->src_path)
