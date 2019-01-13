@@ -482,6 +482,11 @@ static gboolean renderer_task (gpointer data)
   static gdouble progress = 0.0;
   void *old_processor = o->processor;
   GeglBuffer *old_buffer = o->processor_buffer;
+
+  if (renderer == GEGL_RENDERER_BLIT||
+      renderer == GEGL_RENDERER_BLIT_MIPMAP)
+    o->renderer_state = 4;
+
   switch (o->renderer_state)
   {
     case 0:
@@ -1004,6 +1009,38 @@ int cmd_dir_pgdn (COMMAND_ARGS) /* "dir-pgdn", 0, "", ""*/
 {
   State *o = hack_state;
   o->u -= mrg_width (o->mrg) * 0.6;
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
+}
+
+
+  int cmd_mipmap (COMMAND_ARGS);
+int cmd_mipmap (COMMAND_ARGS) /* "mipmap", -1, "", ""*/
+{
+  gboolean curval;
+  State *o = hack_state;
+  if (argv[1])
+  {
+    if (!strcmp (argv[1], "on")||
+        !strcmp (argv[1], "true")||
+        !strcmp (argv[1], "1"))
+    {
+      g_object_set (gegl_config(), "mipmap-rendering", TRUE, NULL);
+      renderer = GEGL_RENDERER_BLIT_MIPMAP;
+    }
+    else
+    {
+      g_object_set (gegl_config(), "mipmap-rendering", FALSE, NULL);
+      renderer = GEGL_RENDERER_IDLE;
+    }
+  }
+  else
+  {
+    //printf ("mipmap rendering is %s\n", curval?"on":"off");
+  }
+  g_object_get (gegl_config(), "mipmap-rendering", &curval, NULL);
+  printf ("mipmap rendering is %s\n", curval?"on":"off");
+  renderer_dirty ++;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
@@ -2630,7 +2667,7 @@ static void load_path (State *o)
   o->u = 0;
   o->v = 0;
   o->is_video = 0;
-  o->frame_no = 0;
+  o->frame_no = -1;
   o->prev_frame_played = 0;
 
   if (g_str_has_suffix (path, ".gif"))
