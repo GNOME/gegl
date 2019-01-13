@@ -28,24 +28,19 @@
 #if HAVE_MRG
 
 const char *css =
+"div.properties { color: blue; }\n"
+"div.property   { color: white; margin-top: -1em; }\n"
+"div.propname { color: white; background: rgba(0,0,0,0.75);  }\n"
+"div.propvalue { color: yellow; background: rgba(0,0,0,0.75); }\n"
+
+
 "a { color: yellow; text-decoration: none;  }\n"
-"div.colorinfo { font-size: 1.0em; color: white; }\n"
-"div.colorspaceinfo {  }\n"
-"div.colorname { margin-bottom: 0.5em; margin-top: 1.0em; }\n"
-"div.colorspacename { font-weight:bold; float:left; clear: left; width: 5em; height: 1.0em; }\n"
-"div.colortriplet {  }\n"
-"div.palitem { float:left;width:6em;height:6em; }\n"
 
-"span.palitemlabel { color: white; }\n"
-"span.bright { color: black; }\n"
 
-"div.append { background-color:transparent; }\n"
 "div.shell { font-size: 0.8em; background-color:rgba(0,0,0,0.5);color:white; }\n"
 "div.shellline { font-size: 0.8em; background-color:rgba(0,0,0,0.5);color:white; }\n"
 "div.prompt { color:#7aa; display: inline; }\n"
 "div.commandline { color:white; display: inline; }\n"
-"div.palettetoolbar {height: 3em;color:white}\n"
-"div.palettetool {border: 2px solid green; }\n"
 "";
 
 
@@ -869,6 +864,7 @@ static void prop_toggle_boolean (MrgEvent *e, void *data1, void *data2)
   value = value ? FALSE : TRUE;
   gegl_node_set (node, propname, value, NULL);
   renderer_dirty++;
+  mrg_event_stop_propagate (e);
 
 }
 
@@ -1364,17 +1360,19 @@ static void list_node_props (State *o, GeglNode *node, int indent)
   const char *op_name = gegl_node_get_operation (node);
   GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
 
-  x = mrg_em (mrg) * 12;
+
+  mrg_set_edge_left (mrg, mrg_em (mrg) * 15);
+
+  mrg_set_font_size (mrg, mrg_height (mrg) * 0.022);
+  mrg_start (mrg, "div.properties", NULL);
 
   if (pspecs)
   {
     for (gint i = 0; i < n_props; i++)
     {
-      mrg_start (mrg, ".propval", NULL);//
-      mrg_set_style (mrg, "color:white; background-color: rgba(0,0,0,0.75)");
-      mrg_set_font_size (mrg, mrg_height (mrg) * 0.022);
-      mrg_set_edge_left (mrg, x + no * mrg_em (mrg) * 7);
-      mrg_set_xy (mrg, x + no * mrg_em (mrg) * 7, y - mrg_em (mrg) * .5);
+      mrg_start (mrg, "div.property", NULL);//
+      mrg_start (mrg, "div.propname", NULL);//
+      //mrg_set_xy (mrg, x + no * mrg_em (mrg) * 7, y - mrg_em (mrg) * .5);
 
       if (g_type_is_a (pspecs[i]->value_type, G_TYPE_DOUBLE))
       {
@@ -1386,18 +1384,24 @@ static void list_node_props (State *o, GeglNode *node, int indent)
 
         if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
         {
-          mrg_printf (mrg, "%s\n", pspecs[i]->name);
+          mrg_printf (mrg, "%s", pspecs[i]->name);
+          mrg_end (mrg);
+          mrg_start (mrg, "div.propvalue", NULL);//
           mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
           mrg_edit_start (mrg, update_prop_double, node);
           mrg_printf (mrg, "%.3f", value);
           mrg_edit_end (mrg);
-          mrg_printf (mrg, "\n");
+          mrg_end (mrg);
           mrg_text_listen_done (mrg);
         }
         else
         {
           mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_printf (mrg, "%s\n%.3f\n", pspecs[i]->name, value);
+          mrg_printf (mrg, "%s", pspecs[i]->name);
+          mrg_end (mrg);
+          mrg_start (mrg, "div.propvalue", NULL);//
+          mrg_printf (mrg, "%.3f", value);
+          mrg_end (mrg);
           mrg_text_listen_done (mrg);
         }
 
@@ -1414,18 +1418,24 @@ static void list_node_props (State *o, GeglNode *node, int indent)
 
         if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
         {
-          mrg_printf (mrg, "%s\n", pspecs[i]->name);
+          mrg_printf (mrg, "%s", pspecs[i]->name);
+          mrg_end (mrg);
+          mrg_start (mrg, "div.propvalue", NULL);//
           mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
           mrg_edit_start (mrg, update_prop_int, node);
           mrg_printf (mrg, "%i", value);
           mrg_edit_end (mrg);
-          mrg_printf (mrg, "\n");
+          mrg_end (mrg);
           mrg_text_listen_done (mrg);
         }
         else
         {
           mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_printf (mrg, "%s\n%i\n", pspecs[i]->name, value);
+          mrg_printf (mrg, "%s", pspecs[i]->name);
+          mrg_end (mrg);
+          mrg_start (mrg, "div.propvalue", NULL);//
+          mrg_printf (mrg, "%i", value);
+          mrg_end (mrg);
           mrg_text_listen_done (mrg);
         }
         no++;
@@ -1438,18 +1448,58 @@ static void list_node_props (State *o, GeglNode *node, int indent)
 
         if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
         {
-          mrg_printf (mrg, "%s\n", pspecs[i]->name);
+          mrg_printf (mrg, "%s", pspecs[i]->name);
+          mrg_end (mrg);
+          mrg_start (mrg, "div.propvalue", NULL);//
           mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
           mrg_edit_start (mrg, update_prop, node);
           mrg_printf (mrg, "%s", value);
           mrg_edit_end (mrg);
           mrg_text_listen_done (mrg);
-          mrg_printf (mrg, "\n");
+          mrg_end (mrg);
         }
         else
         {
           mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_printf (mrg, "%s\n%s\n", pspecs[i]->name, value);
+          mrg_printf (mrg, "%s", pspecs[i]->name);
+          mrg_end (mrg);
+          mrg_start (mrg, "div.propvalue", NULL);//
+          mrg_printf (mrg, "%s\n", value);
+          mrg_end (mrg);
+          mrg_text_listen_done (mrg);
+        }
+
+        if (value)
+          g_free (value);
+        no++;
+      }
+      else if (g_type_is_a (pspecs[i]->value_type, GEGL_TYPE_COLOR))
+      {
+        GeglColor *color;
+        char *value = NULL;
+        gegl_node_get (node, pspecs[i]->name, &color, NULL);
+        g_object_get (color, "string", &value, NULL);
+
+        if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
+        {
+          mrg_printf (mrg, "%s", pspecs[i]->name);
+          mrg_end (mrg);
+          mrg_start (mrg, "div.propvalue", NULL);//
+          mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
+          mrg_edit_start (mrg, update_prop, node);
+          mrg_printf (mrg, "%s", value);
+          mrg_edit_end (mrg);
+          mrg_text_listen_done (mrg);
+          mrg_end (mrg);
+        }
+        else
+        {
+          mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
+          mrg_printf (mrg, "%s", pspecs[i]->name);
+          mrg_end (mrg);
+          mrg_start (mrg, "div.propvalue", NULL);//
+          mrg_printf (mrg, "%s", value);
+          mrg_end (mrg);
           mrg_text_listen_done (mrg);
         }
 
@@ -1463,7 +1513,11 @@ static void list_node_props (State *o, GeglNode *node, int indent)
         gegl_node_get (node, pspecs[i]->name, &value, NULL);
 
         mrg_text_listen (mrg, MRG_CLICK, prop_toggle_boolean, node, (void*)pspecs[i]->name);
-        mrg_printf (mrg, "%s\n%s\n", pspecs[i]->name, value?"true":"false");
+        mrg_printf (mrg, "%s", pspecs[i]->name);
+        mrg_end (mrg);
+        mrg_start (mrg, "div.propvalue", NULL);//
+        mrg_printf (mrg, "%s", value?"true":"false");
+        mrg_end (mrg);
         mrg_text_listen_done (mrg);
         no++;
       }
@@ -1475,22 +1529,26 @@ static void list_node_props (State *o, GeglNode *node, int indent)
 
         gegl_node_get (node, pspecs[i]->name, &value, NULL);
         evalue  = g_enum_get_value (eclass, value);
-        mrg_printf (mrg, "%s:\n%s\n", pspecs[i]->name, evalue->value_nick);
+        mrg_printf (mrg, "%s:", pspecs[i]->name);
+        mrg_end (mrg);
+        mrg_start (mrg, "div.propvalue", NULL);//
+        mrg_printf (mrg, "%s", evalue->value_nick);
+        mrg_end (mrg);
         no++;
       }
       else
       {
-        mrg_printf (mrg, "%s:\n", pspecs[i]->name);
+        mrg_printf (mrg, "%s", pspecs[i]->name);
+        mrg_end (mrg);
         no++;
       }
-
 
       mrg_end (mrg);
     }
     g_free (pspecs);
   }
 
-  mrg_set_xy (mrg, x, y);
+  mrg_end (mrg);
 }
 
 static void update_string (const char *new_text, void *data)
