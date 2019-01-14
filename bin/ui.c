@@ -826,6 +826,27 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
 static int hack_cols = 5;
 static float hack_dim = 5;
 
+static void update_grid_dim (State *o)
+{
+  hack_dim = mrg_height (o->mrg) * 0.33 * o->dir_scale;
+  hack_cols = mrg_width (o->mrg) / hack_dim;
+}
+
+static void center_active_entry (State *o)
+{
+  int row;
+  float pos;
+  update_grid_dim (o);
+
+  row = (o->entry_no+1) / hack_cols;
+  pos = row * hack_dim;
+
+  if (pos > o->v + mrg_height (o->mrg) - hack_dim ||
+      pos < o->v)
+    o->v = hack_dim * (row) - mrg_height (o->mrg)/2 + hack_dim;
+}
+
+
 static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
 {
   State *o = data1;
@@ -871,11 +892,7 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
       //argvs_eval (command);
       o->dir_scale = orig_zoom * dist / orig_dist;
 
-
-      hack_dim = mrg_height (o->mrg) * 0.33 * o->dir_scale;
-      hack_cols = mrg_width (o->mrg) / hack_dim;
-
-      o->v = hack_dim * (o->entry_no / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
+      center_active_entry (o);
     }
 
     o->renderer_state = 0;
@@ -1253,12 +1270,32 @@ static void ui_dir_viewer (State *o)
       }
       else
       {
+    struct stat thumb_stat_buf;
+    struct stat suffixed_stat_buf;
 
       gchar *p2 = suffix_path (path);
       gchar *thumbpath = get_thumb_path (p2);
-
-      if (access (thumbpath, F_OK) == -1)
+      /* we compute the thumbpath as the hash of the suffixed path, even for gegl
+         documents - for gegl documents this is slightly inaccurate.
+       */
+      if (access (thumbpath, F_OK) == 0)
       {
+        int suffix_exist = 0;
+        lstat (thumbpath, &thumb_stat_buf);
+        if (lstat (p2, &suffixed_stat_buf) == 0)
+          suffix_exist = 1;
+
+        if ((suffix_exist && (suffixed_stat_buf.st_mtime >
+                              thumb_stat_buf.st_mtime)) ||
+                             (stat_buf.st_mtime >
+                             thumb_stat_buf.st_mtime))
+        {
+          //fprintf (stderr, "should get rid of thumb for%s\n", p2);
+          unlink (thumbpath);
+          mrg_forget_image (mrg, thumbpath);
+        }
+
+#if 0
         g_free (thumbpath);
         thumbpath = get_thumb_path (path);
         if (access (thumbpath, F_OK) == -1)
@@ -1266,6 +1303,7 @@ static void ui_dir_viewer (State *o)
           g_free (thumbpath);
           thumbpath = get_thumb_path (p2);
         }
+#endif
       }
       free (p2);
 
@@ -2702,8 +2740,6 @@ static void gegl_ui (Mrg *mrg, void *data)
     else if (S_ISDIR (stat_buf.st_mode))
     {
       ui_dir_viewer (o);
-      mrg_add_binding (mrg, "home", NULL, NULL, run_command, "dir first");
-      mrg_add_binding (mrg, "end", NULL, NULL, run_command, "dir last");
       mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "dir right");
       mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "dir left");
       mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "parent");
@@ -2734,10 +2770,7 @@ static void gegl_ui (Mrg *mrg, void *data)
   {
     mrg_add_binding (mrg, "tab", NULL, NULL, run_command, "toggle-controls");
     mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle-fullscreen");
-    if(1)mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "toggle-slideshow");
-
-    mrg_add_binding (mrg, "control-n", NULL, NULL, run_command, "next");
-    mrg_add_binding (mrg, "control-p", NULL, NULL, run_command, "prev");
+    mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "toggle-slideshow");
 
     if (commandline[0]==0)
     {
@@ -2764,6 +2797,9 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "right", NULL, NULL, run_command, "dir right");
       mrg_add_binding (mrg, "up", NULL, NULL, run_command, "dir up");
       mrg_add_binding (mrg, "down", NULL, NULL, run_command, "dir down");
+
+      mrg_add_binding (mrg, "home", NULL, NULL, run_command, "dir first");
+      mrg_add_binding (mrg, "end", NULL, NULL, run_command, "dir last");
 
       mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "dir right");
       mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "dir left");
@@ -3089,7 +3125,8 @@ static void go_parent (State *o)
     if (entry_no)
     {
       o->entry_no = entry_no;
-      o->v = hack_dim * ((entry_no+1) / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
+
+      center_active_entry (o);
     }
     mrg_queue_draw (o->mrg, NULL);
   }
@@ -3441,14 +3478,8 @@ int cmd_dir (COMMAND_ARGS); /* "dir", -1, "<up|left|right|down|first|last>", ""*
   if (o->entry_no >= (int)g_list_length (o->paths))
     o->entry_no = g_list_length (o->paths)-1;
 
-  {
-    int row = (o->entry_no+1) / hack_cols;
-    float pos = row * hack_dim;
 
-    if (pos > o->v + mrg_height (o->mrg) - hack_dim ||
-        pos < o->v)
-      o->v = hack_dim * (row) - mrg_height (o->mrg)/2 + hack_dim;
-  }
+  center_active_entry (o);
 
   mrg_queue_draw (o->mrg, NULL);
   return 0;
@@ -3493,19 +3524,8 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
 
       if (o->dir_scale > 1.7) o->dir_scale = 1.7;
       if (o->dir_scale < 0.05) o->dir_scale = 0.05;
-  //    o->v = hack_dim * ((o->entry_no+1) / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
 
-  hack_dim = mrg_height (o->mrg) * 0.33 * o->dir_scale;
-  hack_cols = mrg_width (o->mrg) / hack_dim;
-
-  {
-    int row = (o->entry_no+1) / hack_cols;
-    float pos = row * hack_dim;
-
-    if (pos > o->v + mrg_height (o->mrg) - hack_dim ||
-        pos < o->v)
-      o->v = hack_dim * (row) - mrg_height (o->mrg)/2 + hack_dim;
-  }
+      center_active_entry (o);
 
       mrg_queue_draw (o->mrg, NULL);
       return 0;
