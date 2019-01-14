@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2018-12-30 20:37+0100\n"
-"PO-Revision-Date: 2018-12-31 00:54+0100\n"
+"PO-Revision-Date: 2019-01-14 07:56+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -3100,7 +3100,7 @@ msgstr "Casualizzazione (%)"
 #: ../operations/common/noise-hurl.c:34 ../operations/common/noise-pick.c:35
 #: ../operations/common-gpl3+/noise-slur.c:37
 msgid "Repeat"
-msgstr "Repeti"
+msgstr "Ripeti"
 
 #: ../operations/common/noise-hurl.c:245
 msgid "Randomly Shuffle Pixels"
