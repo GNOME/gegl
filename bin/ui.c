@@ -29,7 +29,7 @@
 
 const char *css =
 "div.properties { color: blue; }\n"
-"div.property   { color: white; margin-top: -1em; }\n"
+"div.property   { color: white; margin-top: -.5em; }\n"
 "div.propname { color: white; background: rgba(0,0,0,0.75);  }\n"
 "div.propvalue { color: yellow; background: rgba(0,0,0,0.75); }\n"
 
@@ -169,7 +169,7 @@ struct _State {
   GeglNode      *source;
   GeglNode      *save;
   GeglNode      *active;
-  GThread       *thread;
+  GThread       *renderer_thread; /* only used when GEGL_RENDERER=thread is set in environment */
 
   int            image_no;
   int            is_dir;  // is current in dir mode
@@ -457,6 +457,7 @@ static char *sh_esc (const char *input)
 }
 #endif
 
+
 static void generate_thumb (ThumbQueueItem *item)
 {
   GPid child_pid = -1;
@@ -656,7 +657,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   switch (renderer)
   {
     case GEGL_RENDERER_THREAD:
-      o.thread = g_thread_new ("renderer", renderer_thread, &o);
+      o.renderer_thread = g_thread_new ("renderer", renderer_thread, &o);
       break;
     case GEGL_RENDERER_IDLE:
       mrg_add_idle (mrg, renderer_idle, &o);
@@ -679,7 +680,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   mrg_main (mrg);
   has_quit = 1;
   if (renderer == GEGL_RENDERER_THREAD)
-    g_thread_join (o.thread);
+    g_thread_join (o.renderer_thread);
 
 
   g_clear_object (&o.gegl);
@@ -842,7 +843,7 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
   {
     if (e->device_no == 1 || e->device_no == 4)
     {
-      o->u -= (e->delta_x ); // dragged but ignored
+      //o->u -= (e->delta_x ); // dragged but ignored
       o->v -= (e->delta_y );
 
       zoom_pinch_x0 = e->x;
@@ -850,9 +851,6 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
     }
     if (e->device_no == 5)
     {
-      o->u -= (e->delta_x ); // dragged but ignored
-      o->v -= (e->delta_y );
-
       zoom_pinch_x1 = e->x;
       zoom_pinch_y1 = e->y;
     }
@@ -866,6 +864,11 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
       //sprintf (command, "zoom %f", orig_zoom * dist / orig_dist);
       //argvs_eval (command);
       o->dir_scale = orig_zoom * dist / orig_dist;
+
+
+      hack_dim = mrg_height (o->mrg) * 0.33 * o->dir_scale;
+      hack_cols = mrg_width (o->mrg) / hack_dim;
+
       o->v = hack_dim * (o->image_no / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
     }
 
@@ -1190,7 +1193,7 @@ static void ui_dir_viewer (State *o)
   Mrg *mrg = o->mrg;
   cairo_t *cr = mrg_cr (mrg);
   GList *iter;
-  float dim = mrg_height (mrg) * 0.2 * o->dir_scale;
+  float dim = mrg_height (mrg) * 0.33 * o->dir_scale;
   int   no = 0;
   int   cols = mrg_width (mrg) / dim;
   hack_cols = cols;
@@ -1230,6 +1233,7 @@ static void ui_dir_viewer (State *o)
       char *lastslash = strrchr (path, '/');
       float x = dim * (no%cols);
       float y = dim * (no/cols);
+      int is_dir = 0;
 
       if (y < -dim || y > mrg_height (mrg) + o->v)
         continue;
@@ -1239,7 +1243,7 @@ static void ui_dir_viewer (State *o)
 
       if (S_ISDIR (stat_buf.st_mode))
       {
-
+        is_dir = 1;
       }
       else
       {
@@ -1283,8 +1287,11 @@ static void ui_dir_viewer (State *o)
 
 
       }
-      mrg_set_xy (mrg, x, y + dim - mrg_em(mrg));
-      mrg_printf (mrg, "%s\n", lastslash+1);
+      if (no == o->image_no + 1 || is_dir)
+      {
+        mrg_set_xy (mrg, x, y + dim - mrg_em(mrg));
+        mrg_printf (mrg, "%s\n", lastslash+1);
+      }
       cairo_new_path (mrg_cr(mrg));
       cairo_rectangle (mrg_cr(mrg), x, y, dim, dim);
       if (no == o->image_no + 1)
@@ -1300,39 +1307,6 @@ static void ui_dir_viewer (State *o)
       cairo_new_path (mrg_cr(mrg));
   }
   cairo_restore (cr);
-#if 0
-  cairo_save (cr);
-
-  cairo_scale (cr, mrg_width(mrg), mrg_height(mrg));
-  cairo_new_path (cr);
-  cairo_move_to (cr, 0.2, 0.8);
-  cairo_line_to (cr, 0.2, 1.0);
-  cairo_line_to (cr, 0.0, 0.9);
-  cairo_close_path (cr);
-  if (o->show_controls)
-    contrasty_stroke (cr);
-  else
-    cairo_new_path (cr);
-  cairo_rectangle (cr, 0.0, 0.8, 0.2, 0.2);
-  mrg_listen (mrg, MRG_PRESS, run_command, "dir-pgup", NULL);
-
-  cairo_new_path (cr);
-
-  cairo_move_to (cr, 0.8, 0.8);
-  cairo_line_to (cr, 0.8, 1.0);
-  cairo_line_to (cr, 1.0, 0.9);
-  cairo_close_path (cr);
-
-  if (o->show_controls)
-    contrasty_stroke (cr);
-  else
-    cairo_new_path (cr);
-  cairo_rectangle (cr, 0.8, 0.8, 0.2, 0.2);
-  mrg_listen (mrg, MRG_PRESS, run_command, "dir-pgdn", NULL);
-  cairo_new_path (cr);
-  cairo_restore (cr);
-
-#endif
 
   mrg_add_binding (mrg, "left", NULL, NULL, run_command, "dir left");
   mrg_add_binding (mrg, "right", NULL, NULL, run_command, "dir right");
@@ -1664,9 +1638,16 @@ static void list_node_props (State *o, GeglNode *node, int indent)
   //cairo_t *cr = mrg_cr (mrg);
   //float x = mrg_x (mrg) + mrg_em (mrg) * 1;
   //float y = mrg_y (mrg);
-  const char *op_name = gegl_node_get_operation (node);
-  GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
+  const char *op_name;
+  GParamSpec **pspecs;
 
+  if (!node)
+    return;
+
+  op_name = gegl_node_get_operation (node);
+  if (!op_name)
+    return;
+  pspecs = gegl_operation_list_properties (op_name, &n_props);
 
   mrg_set_edge_left (mrg, mrg_em (mrg) * 15);
 
@@ -2439,9 +2420,16 @@ static void commandline_run (MrgEvent *event, void *data1, void *data2)
     {
       if (o->is_dir)
       {
-         g_free (o->path);
-         o->path = g_strdup (g_list_nth_data (o->paths, o->image_no));
-        load_path (o);
+        if (o->image_no == -1)
+        {
+          go_parent (o);
+        }
+        else
+        {
+          g_free (o->path);
+          o->path = g_strdup (g_list_nth_data (o->paths, o->image_no));
+          load_path (o);
+        }
       }
       else
       {
@@ -2667,12 +2655,16 @@ static void gegl_ui (Mrg *mrg, void *data)
       else
         ui_viewer (o);
 
+      mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "next");
       mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "next");
+      mrg_add_binding (mrg, "page-up", NULL, NULL,  run_command, "prev");
       mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "prev");
     }
     else if (S_ISDIR (stat_buf.st_mode))
     {
       ui_dir_viewer (o);
+      mrg_add_binding (mrg, "home", NULL, NULL, run_command, "dir first");
+      mrg_add_binding (mrg, "end", NULL, NULL, run_command, "dir last");
       mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "dir right");
       mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "dir left");
     }
@@ -2865,6 +2857,7 @@ static void load_path (State *o)
   o->gegl = NULL;
   o->sink = NULL;
   o->source = NULL;
+  o->image_no = -1;
   o->scale = 1.0;
   if (o->dir_scale <= 0.001)
     o->dir_scale = 1.0;
@@ -3121,6 +3114,22 @@ int cmd_prev (COMMAND_ARGS) /* "prev", 0, "", "previous sibling element in curre
   return 0;
 }
 
+ int cmd_load (COMMAND_ARGS);
+int cmd_load (COMMAND_ARGS) /* "load", 1, "<path>", "load a path/image - can be relative to current pereived folder "*/
+{
+  State *o = hack_state;
+  
+  if (o->path)
+    g_free (o->path);
+  o->path = g_strdup (argv[1]);
+
+  load_path (o);
+
+  o->active = gegl_node_get_producer (o->sink, "input", NULL);
+  return 0;
+}
+
+
 static void drag_preview (MrgEvent *e)
 {
   State *o = hack_state;
@@ -3336,7 +3345,7 @@ int cmd_pan (COMMAND_ARGS) /* "pan", 2, "<rel-x> <rel-y>", "pans viewport"*/
 }
 
 
-int cmd_dir (COMMAND_ARGS); /* "dir", -1, "<up|left|right|down>", ""*/
+int cmd_dir (COMMAND_ARGS); /* "dir", -1, "<up|left|right|down|first|last>", ""*/
   int cmd_dir (COMMAND_ARGS)
 {
   State *o = hack_state;
@@ -3346,7 +3355,15 @@ int cmd_dir (COMMAND_ARGS); /* "dir", -1, "<up|left|right|down>", ""*/
     printf ("current item: %i\n", o->image_no);
     return 0;
   }
-  if (!strcmp(argv[1], "right"))
+  if (!strcmp(argv[1], "first"))
+  {
+    o->image_no = -1;
+  }
+  else if (!strcmp(argv[1], "last"))
+  {
+    o->image_no = g_list_length (o->paths)-1;
+  }
+  else if (!strcmp(argv[1], "right"))
   {
     o->image_no++;
   }
@@ -3418,6 +3435,22 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
         if (o->dir_scale < 0.0001 || o->dir_scale > 200.0)
           o->dir_scale = 1;
       }
+  //    o->v = hack_dim * ((o->image_no+1) / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
+
+  hack_dim = mrg_height (o->mrg) * 0.33 * o->dir_scale;
+  hack_cols = mrg_width (o->mrg) / hack_dim;
+
+  {
+    int row = (o->image_no+1) / hack_cols;
+    float pos = row * hack_dim;
+
+    if (pos > o->v + mrg_height (o->mrg) - hack_dim ||
+        pos < o->v)
+      o->v = hack_dim * (row) - mrg_height (o->mrg)/2 + hack_dim;
+  }
+
+
+
       mrg_queue_draw (o->mrg, NULL);
       return 0;
   }
