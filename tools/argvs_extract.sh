@@ -11,5 +11,5 @@ cat $* | grep COMMAND_ARGS | grep ^int | sort | \
 # create a function that registers all items found
 echo "void argvs_register(void) {" 
 cat $* | grep COMMAND_ARGS | grep ^int | sort | \
-  sed -e 's/^int */ argvs_add (/ ' -e 's#(COMMAND_ARGS) */\*#, #' -e 's#\*/$#);#'
+  sed -e 's/^int */ argvs_add (/ ' -e 's#(COMMAND_ARGS). */\*#, #' -e 's#\*/$#);#'
 echo "};"
