@@ -170,8 +170,8 @@ struct _State {
   GeglNode      *save;
   GeglNode      *active;
   GThread       *renderer_thread; /* only used when GEGL_RENDERER=thread is set in environment */
+  int            entry_no; /* used in dir-view, and set by go_parent */
 
-  int            image_no;
   int            is_dir;  // is current in dir mode
 
   GeglNode      *processor_node; /* the node we have a processor for */
@@ -869,7 +869,7 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
       hack_dim = mrg_height (o->mrg) * 0.33 * o->dir_scale;
       hack_cols = mrg_width (o->mrg) / hack_dim;
 
-      o->v = hack_dim * (o->image_no / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
+      o->v = hack_dim * (o->entry_no / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
     }
 
     o->renderer_state = 0;
@@ -1151,7 +1151,7 @@ cmd_dir_pgup (COMMAND_ARGS)
 static void entry_select (MrgEvent *event, void *data1, void *data2)
 {
   State *o = data1;
-  o->image_no = GPOINTER_TO_INT (data2);
+  o->entry_no = GPOINTER_TO_INT (data2);
   mrg_queue_draw (event->mrg, NULL);
 }
 
@@ -1214,7 +1214,7 @@ static void ui_dir_viewer (State *o)
     mrg_printf (mrg, "..\n");
     cairo_new_path (mrg_cr(mrg));
     cairo_rectangle (mrg_cr(mrg), x, y, dim, dim);
-    if (no == o->image_no + 1)
+    if (no == o->entry_no + 1)
       cairo_set_source_rgb (mrg_cr(mrg), 1, 1,0);
     else
       cairo_set_source_rgb (mrg_cr(mrg), 0, 0,0);
@@ -1287,20 +1287,20 @@ static void ui_dir_viewer (State *o)
 
 
       }
-      if (no == o->image_no + 1 || is_dir)
+      if (no == o->entry_no + 1 || is_dir)
       {
         mrg_set_xy (mrg, x, y + dim - mrg_em(mrg));
         mrg_printf (mrg, "%s\n", lastslash+1);
       }
       cairo_new_path (mrg_cr(mrg));
       cairo_rectangle (mrg_cr(mrg), x, y, dim, dim);
-      if (no == o->image_no + 1)
+      if (no == o->entry_no + 1)
         cairo_set_source_rgb (mrg_cr(mrg), 1, 1,0);
       else
         cairo_set_source_rgb (mrg_cr(mrg), 0, 0,0);
       cairo_set_line_width (mrg_cr(mrg), 4);
       cairo_stroke_preserve (mrg_cr(mrg));
-      if (no == o->image_no + 1)
+      if (no == o->entry_no + 1)
         mrg_listen_full (mrg, MRG_CLICK, entry_load, o, path, NULL, NULL);
       else
         mrg_listen_full (mrg, MRG_CLICK, entry_select, o, GINT_TO_POINTER(no-1), NULL, NULL);
@@ -2420,14 +2420,14 @@ static void commandline_run (MrgEvent *event, void *data1, void *data2)
     {
       if (o->is_dir)
       {
-        if (o->image_no == -1)
+        if (o->entry_no == -1)
         {
           go_parent (o);
         }
         else
         {
           g_free (o->path);
-          o->path = g_strdup (g_list_nth_data (o->paths, o->image_no));
+          o->path = g_strdup (g_list_nth_data (o->paths, o->entry_no));
           load_path (o);
         }
       }
@@ -2857,7 +2857,7 @@ static void load_path (State *o)
   o->gegl = NULL;
   o->sink = NULL;
   o->source = NULL;
-  o->image_no = -1;
+  o->entry_no = -1;
   o->scale = 1.0;
   if (o->dir_scale <= 0.001)
     o->dir_scale = 1.0;
@@ -3033,7 +3033,7 @@ static void go_parent (State *o)
 
     if (entry_no)
     {
-      o->image_no = entry_no;
+      o->entry_no = entry_no;
       o->v = hack_dim * ((entry_no+1) / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
     }
     mrg_queue_draw (o->mrg, NULL);
@@ -3352,42 +3352,42 @@ int cmd_dir (COMMAND_ARGS); /* "dir", -1, "<up|left|right|down|first|last>", ""*
 
   if (!argv[1])
   {
-    printf ("current item: %i\n", o->image_no);
+    printf ("current item: %i\n", o->entry_no);
     return 0;
   }
   if (!strcmp(argv[1], "first"))
   {
-    o->image_no = -1;
+    o->entry_no = -1;
   }
   else if (!strcmp(argv[1], "last"))
   {
-    o->image_no = g_list_length (o->paths)-1;
+    o->entry_no = g_list_length (o->paths)-1;
   }
   else if (!strcmp(argv[1], "right"))
   {
-    o->image_no++;
+    o->entry_no++;
   }
   else if (!strcmp(argv[1], "left"))
   {
-    o->image_no--;
+    o->entry_no--;
   }
   else if (!strcmp(argv[1], "up"))
   {
-    o->image_no-= hack_cols;
+    o->entry_no-= hack_cols;
   }
   else if (!strcmp(argv[1], "down"))
   {
-    o->image_no+= hack_cols;
+    o->entry_no+= hack_cols;
   }
 
-  if (o->image_no < -1)
-    o->image_no = -1;
+  if (o->entry_no < -1)
+    o->entry_no = -1;
 
-  if (o->image_no >= (int)g_list_length (o->paths))
-    o->image_no = g_list_length (o->paths)-1;
+  if (o->entry_no >= (int)g_list_length (o->paths))
+    o->entry_no = g_list_length (o->paths)-1;
 
   {
-    int row = (o->image_no+1) / hack_cols;
+    int row = (o->entry_no+1) / hack_cols;
     float pos = row * hack_dim;
 
     if (pos > o->v + mrg_height (o->mrg) - hack_dim ||
@@ -3435,13 +3435,13 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
         if (o->dir_scale < 0.0001 || o->dir_scale > 200.0)
           o->dir_scale = 1;
       }
-  //    o->v = hack_dim * ((o->image_no+1) / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
+  //    o->v = hack_dim * ((o->entry_no+1) / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
 
   hack_dim = mrg_height (o->mrg) * 0.33 * o->dir_scale;
   hack_cols = mrg_width (o->mrg) / hack_dim;
 
   {
-    int row = (o->image_no+1) / hack_cols;
+    int row = (o->entry_no+1) / hack_cols;
     float pos = row * hack_dim;
 
     if (pos > o->v + mrg_height (o->mrg) - hack_dim ||
