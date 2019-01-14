@@ -1862,7 +1862,11 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux>", ""*/
   GeglNode *ref;
 
   if (o->active == NULL)
-    return -1;
+  {
+    o->active = gegl_node_get_producer (o->sink, "input", NULL);
+    if (!o->active)
+      return -1;
+  }
 
   if (!strcmp (argv[1], "input"))
   {
@@ -2429,6 +2433,7 @@ static void commandline_run (MrgEvent *event, void *data1, void *data2)
           g_free (o->path);
           o->path = g_strdup (g_list_nth_data (o->paths, o->entry_no));
           load_path (o);
+
         }
       }
       else
@@ -2642,6 +2647,12 @@ static void gegl_ui (Mrg *mrg, void *data)
     mrg_printf (mrg, "%s\n", o->path);
   }
 
+
+  if (o->is_dir)
+    dir_touch_handling (mrg, o);
+  else
+    canvas_touch_handling (mrg, o);
+
   cairo_save (mrg_cr (mrg));
   {
     if (edited_prop)
@@ -2651,14 +2662,22 @@ static void gegl_ui (Mrg *mrg, void *data)
     if (S_ISREG (stat_buf.st_mode))
     {
       if (o->show_graph)
-        ui_debug_op_chain (o);
+        {
+          ui_debug_op_chain (o);
+          mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "toggle-graph");
+        }
       else
-        ui_viewer (o);
+        {
+          ui_viewer (o);
+          mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "parent");
+        }
 
       mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "next");
       mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "next");
       mrg_add_binding (mrg, "page-up", NULL, NULL,  run_command, "prev");
       mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "prev");
+
+
     }
     else if (S_ISDIR (stat_buf.st_mode))
     {
@@ -2667,18 +2686,15 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "end", NULL, NULL, run_command, "dir last");
       mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "dir right");
       mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "dir left");
+      mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "parent");
     }
 
-    mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "parent");
+
     mrg_add_binding (mrg, "return", NULL, NULL, run_command, "toggle-graph");
   }
   cairo_restore (mrg_cr (mrg));
   cairo_new_path (mrg_cr (mrg));
 
-  if (o->is_dir)
-    dir_touch_handling (mrg, o);
-  else
-    canvas_touch_handling (mrg, o);
 
   mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "q");
   mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle-fullscreen");
@@ -2712,24 +2728,33 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
   }
 
-  if (!edited_prop && !o->editing_op_name && o->show_graph)
+  if (!edited_prop && !o->editing_op_name)
   {
     ui_commandline (mrg, o);
-
- 
   }
-    if (commandline[0]==0)
+  if (commandline[0]==0)
+  {
+    /* cursor keys and some more keys are used for commandline entry if there already
+       is contents, this frees up some bindings/individual keys for direct binding as
+       they would not start a valid command anyways. */
+
+    if (o->is_dir)
     {
-      if (o->is_dir)
-      {
-        mrg_add_binding (mrg, "left", NULL, NULL, run_command, "dir left");
-        mrg_add_binding (mrg, "right", NULL, NULL, run_command, "dir right");
-        mrg_add_binding (mrg, "up", NULL, NULL, run_command, "dir up");
-        mrg_add_binding (mrg, "down", NULL, NULL, run_command, "dir down");
-      }
-      else
+      mrg_add_binding (mrg, "left", NULL, NULL, run_command, "dir left");
+      mrg_add_binding (mrg, "right", NULL, NULL, run_command, "dir right");
+      mrg_add_binding (mrg, "up", NULL, NULL, run_command, "dir up");
+      mrg_add_binding (mrg, "down", NULL, NULL, run_command, "dir down");
+    }
+    else
+    {
       mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate aux");
     }
+    mrg_add_binding (mrg, "1", NULL, NULL, run_command, "star 1");
+    mrg_add_binding (mrg, "2", NULL, NULL, run_command, "star 2");
+    mrg_add_binding (mrg, "3", NULL, NULL, run_command, "star 3");
+    mrg_add_binding (mrg, "4", NULL, NULL, run_command, "star 4");
+    mrg_add_binding (mrg, "5", NULL, NULL, run_command, "star 5");
+  }
 
 }
 
@@ -2999,6 +3024,10 @@ static void load_path (State *o)
   }
   if (o->processor)
       g_object_unref (o->processor);
+
+  if (o->sink)
+    o->active = gegl_node_get_producer (o->sink, "input", NULL);
+
   o->processor = gegl_node_new_processor (o->sink, NULL);
   renderer_dirty++;
   mrg_queue_draw (o->mrg, NULL);
@@ -3435,6 +3464,9 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
         if (o->dir_scale < 0.0001 || o->dir_scale > 200.0)
           o->dir_scale = 1;
       }
+
+      if (o->dir_scale > 1.7) o->dir_scale = 1.7;
+      if (o->dir_scale < 0.05) o->dir_scale = 0.05;
   //    o->v = hack_dim * ((o->entry_no+1) / hack_cols) - mrg_height (o->mrg)/2 + hack_dim;
 
   hack_dim = mrg_height (o->mrg) * 0.33 * o->dir_scale;
@@ -3448,8 +3480,6 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
         pos < o->v)
       o->v = hack_dim * (row) - mrg_height (o->mrg)/2 + hack_dim;
   }
-
-
 
       mrg_queue_draw (o->mrg, NULL);
       return 0;
@@ -3657,6 +3687,8 @@ int cmd_toggle_graph (COMMAND_ARGS) /* "toggle-graph", 0, "", ""*/
 {
   State *o = hack_state;
   o->show_graph = !o->show_graph;
+  if (o->sink)
+    o->active = gegl_node_get_producer (o->sink, "input", NULL);
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
