@@ -162,13 +162,20 @@ struct _State {
                             the file that is written to on save. This differs depending
                             on type of input file.
                           */
-  GList         *paths;
+  GList         *paths;  /* list of full paths to entries in collection/path/containing path,
+                            XXX: could be replaced with URIs  */
+
+
   GeglBuffer    *buffer;
   GeglNode      *gegl;
-  GeglNode      *sink;
-  GeglNode      *source;
-  GeglNode      *save;
-  GeglNode      *active;
+  GeglNode      *source;  /* a file-loader or another swapped in buffer provider that is the
+                             image data source for the loaded image.  */
+  GeglNode      *save;    /* node rigged up for saving file XXX: might be bitrotted */
+
+  GeglNode      *sink;    /* the sink which we're rendering content and graph from */
+  GeglNode      *active;  /* the node being actively inspected  */
+
+
   GThread       *renderer_thread; /* only used when GEGL_RENDERER=thread is set in environment */
   int            entry_no; /* used in dir-view, and set by go_parent */
 
@@ -210,6 +217,10 @@ struct _State {
   double         prev_ms;
 };
 
+static State *global_state = NULL;  // XXX: for now we  rely on
+                                    //      global state to make events/scripting work
+                                    //      refactoring this away would be nice, but
+                                    //      not a problem to have in a lua port of the same
 
 typedef struct Setting {
   char *name;
@@ -399,8 +410,6 @@ static void populate_path_list (State *o)
   free (namelist);
 }
 
-static State *hack_state = NULL;  // XXX: for now we have to rely on
-                                  //      global state to make events/scripting work
 
 char **ops = NULL;
 
@@ -481,7 +490,7 @@ static void generate_thumb (ThumbQueueItem *item)
       fprintf (stderr, "bingo %i %s %s\n", (int) item->pid, item->path, item->thumbpath);
       mrg_list_remove (&thumb_queue, item);
       thumb_queue_item_free (item);
-      mrg_queue_draw (hack_state->mrg, NULL);
+      mrg_queue_draw (global_state->mrg, NULL);
     }
     goto cleanup;
   }
@@ -541,9 +550,6 @@ static gboolean renderer_task (gpointer data)
         g_usleep (4000);
       break; // fallthrough
     case 1:
-
-
-
        if (gegl_processor_work (o->processor, &progress))
        {
          if (o->renderer_state)
@@ -650,7 +656,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
 
   load_path (&o);
   mrg_set_ui (mrg, gegl_ui, &o);
-  hack_state = &o;
+  global_state = &o;
   on_viewer_motion (NULL, &o, NULL);
 
 
@@ -1097,7 +1103,7 @@ int cmd_dir_pgdn (COMMAND_ARGS);/* "dir-pgdn", 0, "", ""*/
 int
 cmd_dir_pgdn (COMMAND_ARGS)
 {
-  State *o = hack_state;
+  State *o = global_state;
   o->u -= mrg_width (o->mrg) * 0.6;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
@@ -1110,7 +1116,7 @@ int
 cmd_mipmap (COMMAND_ARGS)
 {
   gboolean curval;
-  State *o = hack_state;
+  State *o = global_state;
   if (argv[1])
   {
     if (!strcmp (argv[1], "on")||
@@ -1142,7 +1148,7 @@ int cmd_dir_pgup (COMMAND_ARGS); /* "dir-pgup", 0, "", ""*/
 int
 cmd_dir_pgup (COMMAND_ARGS)
 {
-  State *o = hack_state;
+  State *o = global_state;
   o->u += mrg_width (o->mrg) * 0.6;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
@@ -1408,7 +1414,7 @@ static void ui_viewer (State *o)
   int cmd_toggle_controls (COMMAND_ARGS);
 int cmd_toggle_controls (COMMAND_ARGS) /* "toggle-controls", 0, "", ""*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   o->show_controls = !o->show_controls;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
@@ -1417,7 +1423,7 @@ int cmd_toggle_controls (COMMAND_ARGS) /* "toggle-controls", 0, "", ""*/
   int cmd_toggle_slideshow (COMMAND_ARGS);
 int cmd_toggle_slideshow (COMMAND_ARGS) /* "toggle-slideshow", 0, "", ""*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   o->slide_enabled = !o->slide_enabled;
   if (o->slide_timeout)
       mrg_remove_idle (o->mrg, o->slide_timeout);
@@ -1487,37 +1493,11 @@ static void canvas_touch_handling (Mrg *mrg, State *o)
   }
 }
 
-static void node_remove (MrgEvent *e, void *data1, void *data2)
-{
-  State *o = data1;
-  GeglNode *node = o->active;
-  GeglNode *new_active;
-  GeglNode *next, *prev;
-
-  const gchar *consumer_name = NULL;
-
-  prev = gegl_node_get_producer (node, "input", NULL);
-  next = gegl_node_get_consumer_no (node, "output", &consumer_name, 0);
-
-  if (next && prev)
-    {
-      gegl_node_disconnect (node, "output");
-      gegl_node_disconnect (node, "input");
-      gegl_node_connect_to (prev, "output", next, consumer_name);
-    }
-
-  gegl_node_remove_child (o->gegl, node);
-  new_active  = prev?prev:next;
-
-  o->active = new_active;
-  mrg_queue_draw (o->mrg, NULL);
-  renderer_dirty++;
-}
 
   int cmd_node_add_aux(COMMAND_ARGS);
 int cmd_node_add_aux (COMMAND_ARGS) /* "node-add-aux", 0, "", ""*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   GeglNode *ref = o->active;
   GeglNode *producer = gegl_node_get_producer (o->active, "aux", NULL);
 
@@ -1544,7 +1524,7 @@ int cmd_node_add_aux (COMMAND_ARGS) /* "node-add-aux", 0, "", ""*/
   int cmd_node_add_input (COMMAND_ARGS);
 int cmd_node_add_input (COMMAND_ARGS) /* "node-add-input", 0, "", ""*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   GeglNode *ref = o->active;
   GeglNode *producer = gegl_node_get_producer (o->active, "input", NULL);
   if (!gegl_node_has_pad (ref, "input"))
@@ -1607,7 +1587,7 @@ static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
   int cmd_node_add_output(COMMAND_ARGS);
 int cmd_node_add_output (COMMAND_ARGS) /* "node-add-output", 0, "", ""*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   GeglNode *ref = o->active;
   const char *consumer_name = NULL;
   GeglNode *consumer = gegl_node_get_consumer_no (o->active, "output", &consumer_name, 0);
@@ -1858,7 +1838,7 @@ static void edit_op (MrgEvent *event, void *data1, void *data2)
   int cmd_activate (COMMAND_ARGS);
 int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux>", ""*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   GeglNode *ref;
 
   if (o->active == NULL)
@@ -2127,7 +2107,7 @@ static void update_commandline (const char *new_commandline, void *data)
 static void
 run_command (MrgEvent *event, void *data1, void *data_2)
 {
-  State *o = hack_state; //data1;
+  State *o = global_state; //data1;
   const char *commandline = data1;
 
   gchar **argv = NULL;
@@ -2379,14 +2359,36 @@ run_command (MrgEvent *event, void *data1, void *data_2)
   int cmd_quit (COMMAND_ARGS);
 int cmd_quit (COMMAND_ARGS) /* "q", 0, "", "quit"*/
 {
-  mrg_quit (hack_state->mrg);
+  mrg_quit (global_state->mrg);
   return 0;
 }
 
   int cmd_remove (COMMAND_ARGS);
 int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
 {
-  node_remove (NULL, hack_state, NULL);
+  State *o = global_state;
+  GeglNode *node = o->active;
+  GeglNode *new_active;
+  GeglNode *next, *prev;
+
+  const gchar *consumer_name = NULL;
+
+  prev = gegl_node_get_producer (node, "input", NULL);
+  next = gegl_node_get_consumer_no (node, "output", &consumer_name, 0);
+
+  if (next && prev)
+    {
+      gegl_node_disconnect (node, "output");
+      gegl_node_disconnect (node, "input");
+      gegl_node_connect_to (prev, "output", next, consumer_name);
+    }
+
+  gegl_node_remove_child (o->gegl, node);
+  new_active  = prev?prev:next;
+
+  o->active = new_active;
+  mrg_queue_draw (o->mrg, NULL);
+  renderer_dirty++;
   return 0;
 }
 
@@ -3111,7 +3113,7 @@ int cmd_clear (COMMAND_ARGS) /* "clear", 0, "", ""*/
  int cmd_next (COMMAND_ARGS);
 int cmd_next (COMMAND_ARGS) /* "next", 0, "", "next sibling element in current collection/folder"*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   if (o->rev)
     argvs_eval ("save");
   go_next (o);
@@ -3123,7 +3125,7 @@ int cmd_next (COMMAND_ARGS) /* "next", 0, "", "next sibling element in current c
  int cmd_parent (COMMAND_ARGS);
 int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (switches to folder mode)"*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   if (o->rev)
     argvs_eval ("save");
   go_parent (o);
@@ -3134,7 +3136,7 @@ int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (swit
  int cmd_prev (COMMAND_ARGS);
 int cmd_prev (COMMAND_ARGS) /* "prev", 0, "", "previous sibling element in current collection/folder"*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   if (o->rev)
     argvs_eval ("save");
   go_prev (o);
@@ -3146,7 +3148,7 @@ int cmd_prev (COMMAND_ARGS) /* "prev", 0, "", "previous sibling element in curre
  int cmd_load (COMMAND_ARGS);
 int cmd_load (COMMAND_ARGS) /* "load", 1, "<path>", "load a path/image - can be relative to current pereived folder "*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   
   if (o->path)
     g_free (o->path);
@@ -3161,7 +3163,7 @@ int cmd_load (COMMAND_ARGS) /* "load", 1, "<path>", "load a path/image - can be 
 
 static void drag_preview (MrgEvent *e)
 {
-  State *o = hack_state;
+  State *o = global_state;
   static float old_factor = 1;
   switch (e->type)
   {
@@ -3330,7 +3332,7 @@ static void center (State *o)
   int cmd_zoom_fit_buffer (COMMAND_ARGS);
 int cmd_zoom_fit_buffer (COMMAND_ARGS) /* "zoom-fit-buffer", 0, "", ""*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   Mrg *mrg = o->mrg;
   GeglRectangle rect = *gegl_buffer_get_extent (o->buffer);
   float scale, scale2;
@@ -3365,7 +3367,7 @@ static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
   int cmd_pan (COMMAND_ARGS);
 int cmd_pan (COMMAND_ARGS) /* "pan", 2, "<rel-x> <rel-y>", "pans viewport"*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   float amount_u = mrg_width (o->mrg)  * g_strtod (argv[1], NULL);
   float amount_v = mrg_height (o->mrg) * g_strtod (argv[2], NULL);
   o->u += amount_u;
@@ -3377,7 +3379,7 @@ int cmd_pan (COMMAND_ARGS) /* "pan", 2, "<rel-x> <rel-y>", "pans viewport"*/
 int cmd_dir (COMMAND_ARGS); /* "dir", -1, "<up|left|right|down|first|last>", ""*/
   int cmd_dir (COMMAND_ARGS)
 {
-  State *o = hack_state;
+  State *o = global_state;
 
   if (!argv[1])
   {
@@ -3432,7 +3434,7 @@ int cmd_dir (COMMAND_ARGS); /* "dir", -1, "<up|left|right|down|first|last>", ""*
   int cmd_zoom (COMMAND_ARGS);
 int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>", "Changes zoom level, asbolsute or relative, around middle of screen."*/
 {
-  State *o = hack_state;
+  State *o = global_state;
 
   if (!argv[1])
   {
@@ -3551,7 +3553,7 @@ static void scroll_cb (MrgEvent *event, void *data1, void *data2)
 
 static void print_setting (Setting *setting)
 {
-  State *o = hack_state;
+  State *o = global_state;
   switch (setting->type)
   {
     case 0:
@@ -3574,7 +3576,7 @@ static void print_setting (Setting *setting)
 
 static int set_setting (Setting *setting, const char *value)
 {
-  State *o = hack_state;
+  State *o = global_state;
   if (setting->read_only)
     return -1;
   switch (setting->type)
@@ -3598,7 +3600,7 @@ int cmd_info (COMMAND_ARGS); /* "info", 0, "", "dump information about active no
 int
 cmd_info (COMMAND_ARGS)
 {
-  State *o = hack_state;
+  State *o = global_state;
   GeglNode *node = o->active;
   GeglOperation *operation;
   GeglRectangle extent;
@@ -3685,7 +3687,7 @@ cmd_set (COMMAND_ARGS)
   int cmd_toggle_graph (COMMAND_ARGS);
 int cmd_toggle_graph (COMMAND_ARGS) /* "toggle-graph", 0, "", ""*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   o->show_graph = !o->show_graph;
   if (o->sink)
     o->active = gegl_node_get_producer (o->sink, "input", NULL);
@@ -3694,9 +3696,9 @@ int cmd_toggle_graph (COMMAND_ARGS) /* "toggle-graph", 0, "", ""*/
 }
 
   int cmd_toggle_fulllscreen (COMMAND_ARGS);
-int cmd_toggle_fulllscreen (COMMAND_ARGS) /* "toggle-fulllscreen", 0, "", ""*/
+int cmd_toggle_fulllscreen (COMMAND_ARGS) /* "toggle-fullscreen", 0, "", ""*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   mrg_set_fullscreen (o->mrg, !mrg_is_fullscreen (o->mrg));
   mrg_add_timeout (o->mrg, 250, deferred_zoom_to_fit, o);
   return 0;
@@ -3705,7 +3707,7 @@ int cmd_toggle_fulllscreen (COMMAND_ARGS) /* "toggle-fulllscreen", 0, "", ""*/
   int cmd_discard (COMMAND_ARGS);
 int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to a .discard subfolder"*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   char *old_path = strdup (o->path);
   char *tmp;
   char *lastslash;
@@ -3744,7 +3746,7 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
   int cmd_save (COMMAND_ARGS);
 int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
 {
-  State *o = hack_state;
+  State *o = global_state;
   char *serialized;
 
   {
