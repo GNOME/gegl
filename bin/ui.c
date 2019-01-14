@@ -1255,15 +1255,19 @@ static void ui_dir_viewer (State *o)
       {
 
       gchar *p2 = suffix_path (path);
-
       gchar *thumbpath = get_thumb_path (p2);
-      free (p2);
 
       if (access (thumbpath, F_OK) == -1)
       {
         g_free (thumbpath);
         thumbpath = get_thumb_path (path);
+        if (access (thumbpath, F_OK) == -1)
+        {
+          g_free (thumbpath);
+          thumbpath = get_thumb_path (p2);
+        }
       }
+      free (p2);
 
       if (
          access (thumbpath, F_OK) == 0 && //XXX: query image should suffice
@@ -1401,7 +1405,6 @@ static void ui_viewer (State *o)
   {
     mrg_add_binding (mrg, "control-m", NULL, NULL,       run_command, "zoom fit");
     mrg_add_binding (mrg, "control-delete", NULL, NULL,  run_command, "discard");
-    mrg_add_binding (mrg, "space", NULL, NULL,           run_command, "next");
   }
 
   if (o->slide_enabled && o->slide_timeout == 0)
@@ -1456,13 +1459,28 @@ enum {
 
 static int tool = TOOL_PAN;
 
+static void dir_scroll_cb (MrgEvent *event, void *data1, void *data2)
+{
+  switch (event->scroll_direction)
+  {
+     case MRG_SCROLL_DIRECTION_DOWN:
+       argvs_eval ("zoom out");
+       break;
+     case MRG_SCROLL_DIRECTION_UP:
+       argvs_eval ("zoom in");
+       break;
+     default:
+       break;
+  }
+}
+
 static void dir_touch_handling (Mrg *mrg, State *o)
 {
   cairo_new_path (mrg_cr (mrg));
   cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
   mrg_listen (mrg, MRG_DRAG, on_dir_drag, o, NULL);
   mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
-  //mrg_listen (mrg, MRG_SCROLL, scroll_cb, o, NULL);
+  mrg_listen (mrg, MRG_SCROLL, dir_scroll_cb, o, NULL);
   cairo_new_path (mrg_cr (mrg));
 }
 
@@ -2746,10 +2764,16 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "right", NULL, NULL, run_command, "dir right");
       mrg_add_binding (mrg, "up", NULL, NULL, run_command, "dir up");
       mrg_add_binding (mrg, "down", NULL, NULL, run_command, "dir down");
+
+      mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "dir right");
+      mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "dir left");
+
     }
     else
     {
       mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate aux");
+      mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
+      mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
     }
     mrg_add_binding (mrg, "1", NULL, NULL, run_command, "star 1");
     mrg_add_binding (mrg, "2", NULL, NULL, run_command, "star 2");
@@ -3532,6 +3556,8 @@ static void get_coords (State *o, float screen_x, float screen_y, float *gegl_x,
   *gegl_x = (o->u + screen_x) / scale;
   *gegl_y = (o->v + screen_y) / scale;
 }
+
+
 
 static void scroll_cb (MrgEvent *event, void *data1, void *data2)
 {
