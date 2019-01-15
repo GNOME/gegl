@@ -189,6 +189,7 @@ struct _State {
   char           new_opname[1024];
   int            rev;
 
+  int            concurrent_thumbnailers;
 
   float          u, v;
   float          scale;
@@ -258,6 +259,7 @@ Setting settings[]=
   INT_PROP(show_controls, "show image viewer controls (maybe merge with show-graph and give better name)"),
   INT_PROP(slide_enabled, "slide show going"),
   INT_PROP_RO(is_video, ""),
+  INT_PROP_RO(concurrent_thumbnailers, ""),
   INT_PROP(color_manage_display, "perform ICC color management and convert output to display ICC profile instead of passing out sRGB, passing out sRGB is faster."),
   INT_PROP(playing, "wheter we are playing or not set to 0 for pause 1 for playing"),
 
@@ -487,7 +489,6 @@ static void generate_thumb (ThumbQueueItem *item)
     if (kill(item->pid, 0) != 0)
     {
       rename (item->tempthumbpath, item->thumbpath);
-      fprintf (stderr, "bingo %i %s %s\n", (int) item->pid, item->path, item->thumbpath);
       mrg_list_remove (&thumb_queue, item);
       thumb_queue_item_free (item);
       mrg_queue_draw (global_state->mrg, NULL);
@@ -496,7 +497,7 @@ static void generate_thumb (ThumbQueueItem *item)
   }
 
   g_spawn_async (NULL, &argv[0], NULL, G_SPAWN_SEARCH_PATH_FROM_ENVP,  NULL, NULL, &child_pid, &error);
-  fprintf (stderr, "spawned %i %s %s %s\n", (int) child_pid, item->path, item->thumbpath, item->tempthumbpath);
+  //fprintf (stderr, "spawned %i %s %s %s\n", (int) child_pid, item->path, item->thumbpath, item->tempthumbpath);
   if (error)
     fprintf (stderr, "%s\n", error->message);
 
@@ -583,13 +584,12 @@ static gboolean renderer_task (gpointer data)
 
       if (thumb_queue)
       {
-        generate_thumb (thumb_queue->data);
-        if (thumb_queue && thumb_queue->next)
+        if (o->concurrent_thumbnailers >= 1)
+          generate_thumb (thumb_queue->data);
+        if (o->concurrent_thumbnailers >=2 && thumb_queue && thumb_queue->next)
           generate_thumb (thumb_queue->next->data);
-#if 0
-        if (thumb_queue && thumb_queue->next && thumb_queue->next->next)
+        if (o->concurrent_thumbnailers >=3 && thumb_queue && thumb_queue->next && thumb_queue->next->next)
           generate_thumb (thumb_queue->next->next->data);
-#endif
       }
 
       o->renderer_state = 0;
@@ -645,6 +645,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   o.preview_quality = 2.0;
   o.slide_pause     = 5.0;
   o.slide_enabled   = 0;
+  o.concurrent_thumbnailers = 2;
 
   if (access (argv[1], F_OK) != -1)
     o.path = realpath (argv[1], NULL);
@@ -1202,7 +1203,6 @@ static void queue_thumb (const char *path, const char *thumbpath)
       return;
   }
   item = g_malloc0 (sizeof (ThumbQueueItem));
-  fprintf (stderr, "%s\n", path);
   item->path = g_strdup (path);
   item->thumbpath = g_strdup (thumbpath);
   item->tempthumbpath = g_strdup (item->thumbpath);
@@ -1233,8 +1233,8 @@ static void ui_dir_viewer (State *o)
   {
     float x = dim * (no%cols);
     float y = dim * (no/cols);
-    mrg_set_xy (mrg, x, y + dim - mrg_em(mrg));
-    mrg_printf (mrg, "..\n");
+    mrg_set_xy (mrg, x, y + dim - mrg_em(mrg) * 2);
+    mrg_printf (mrg, "parent\nfolder");
     cairo_new_path (mrg_cr(mrg));
     cairo_rectangle (mrg_cr(mrg), x, y, dim, dim);
     if (no == o->entry_no + 1)
@@ -3523,7 +3523,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
       }
 
       if (o->dir_scale > 1.7) o->dir_scale = 1.7;
-      if (o->dir_scale < 0.05) o->dir_scale = 0.05;
+      if (o->dir_scale < 0.1) o->dir_scale = 0.1;
 
       center_active_entry (o);
 
@@ -3754,9 +3754,13 @@ int cmd_toggle_fulllscreen (COMMAND_ARGS) /* "toggle-fullscreen", 0, "", ""*/
 int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to a .discard subfolder"*/
 {
   State *o = global_state;
-  char *old_path = strdup (o->path);
+  char *old_path;
   char *tmp;
   char *lastslash;
+  if (o->is_dir)
+    return -1;
+
+  old_path = strdup (o->path);
   argvs_eval ("next");
   if (!strcmp (old_path, o->path))
    {
