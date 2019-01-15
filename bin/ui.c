@@ -33,6 +33,8 @@ const char *css =
 "div.propname { color: white; background: rgba(0,0,0,0.75);  }\n"
 "div.propvalue { color: yellow; background: rgba(0,0,0,0.75); }\n"
 
+"dl.bindings   { color:white; position:absolute;left:1em;top:50%;background-color: rgba(0,0,0,0.7);width: 140%; height:45%; font-size: 0.9em; padding-left: 1em; padding-top:1em;}\n"
+"dt.binding   { color:white; }\n"
 
 "a { color: yellow; text-decoration: none;  }\n"
 
@@ -181,6 +183,8 @@ struct _State {
 
   int            is_dir;  // is current in dir mode
 
+  int            show_bindings;
+
   GeglNode      *processor_node; /* the node we have a processor for */
   GeglProcessor *processor;
   GeglBuffer    *processor_buffer;
@@ -252,18 +256,18 @@ Setting settings[]=
 
   FLOAT_PROP(u, "horizontal coordinate of top-left in display/scaled by scale factor coordinates"),
   FLOAT_PROP(v, "vertical coordinate of top-left in display/scaled by scale factor coordinates"),
-  FLOAT_PROP(scale, "display scale factor"),
   FLOAT_PROP(render_quality, "1.0 = normal 2.0 = render at 2.0 zoom factor 4.0 render at 25%"),
   FLOAT_PROP(preview_quality, "preview quality for use during some interactions, same scale as render-quality"),
   INT_PROP(show_graph, "show the graph (and commandline)"),
   INT_PROP(show_controls, "show image viewer controls (maybe merge with show-graph and give better name)"),
   INT_PROP(slide_enabled, "slide show going"),
   INT_PROP_RO(is_video, ""),
-  INT_PROP_RO(concurrent_thumbnailers, ""),
   INT_PROP(color_manage_display, "perform ICC color management and convert output to display ICC profile instead of passing out sRGB, passing out sRGB is faster."),
   INT_PROP(playing, "wheter we are playing or not set to 0 for pause 1 for playing"),
-
-  INT_PROP(frame_no, "current frame number in video/animation")
+  INT_PROP(concurrent_thumbnailers, "number of child processes spawned at the same time doing thumbnailing"),
+  INT_PROP(frame_no, "current frame number in video/animation"),
+  FLOAT_PROP(scale, "display scale factor"),
+  INT_PROP(show_bindings, "show currently valid keybindings"),
 
 };
 
@@ -468,6 +472,11 @@ static char *sh_esc (const char *input)
 }
 #endif
 
+static void generate_thumb_self (ThumbQueueItem *item)
+{
+  fprintf (stderr, "dunno what to do now for %s\n", item->path);
+
+}
 
 static void generate_thumb (ThumbQueueItem *item)
 {
@@ -584,12 +593,27 @@ static gboolean renderer_task (gpointer data)
 
       if (thumb_queue)
       {
-        if (o->concurrent_thumbnailers >= 1)
-          generate_thumb (thumb_queue->data);
-        if (o->concurrent_thumbnailers >=2 && thumb_queue && thumb_queue->next)
-          generate_thumb (thumb_queue->next->data);
-        if (o->concurrent_thumbnailers >=3 && thumb_queue && thumb_queue->next && thumb_queue->next->next)
-          generate_thumb (thumb_queue->next->next->data);
+        if (o->concurrent_thumbnailers == 0)
+        {
+           if (o->is_dir)
+           {
+             generate_thumb_self (thumb_queue->data);
+           }
+           else
+           {
+             fprintf (stderr, "ooof\n");
+           }
+        }
+        else
+        {
+
+          if (o->concurrent_thumbnailers >= 1)
+            generate_thumb (thumb_queue->data);
+          if (o->concurrent_thumbnailers >=2 && thumb_queue && thumb_queue->next)
+            generate_thumb (thumb_queue->next->data);
+          if (o->concurrent_thumbnailers >=3 && thumb_queue && thumb_queue->next && thumb_queue->next->next)
+            generate_thumb (thumb_queue->next->next->data);
+        }
       }
 
       o->renderer_state = 0;
@@ -645,7 +669,8 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   o.preview_quality = 2.0;
   o.slide_pause     = 5.0;
   o.slide_enabled   = 0;
-  o.concurrent_thumbnailers = 2;
+  o.concurrent_thumbnailers = 0;
+  o.show_bindings   = 0;
 
   if (access (argv[1], F_OK) != -1)
     o.path = realpath (argv[1], NULL);
@@ -936,6 +961,7 @@ static void on_paint_drag (MrgEvent *e, void *data1, void *data2)
       break;
   }
   renderer_dirty++;
+  o->rev++;
   mrg_queue_draw (e->mrg, NULL);
   mrg_event_stop_propagate (e);
   //drag_preview (e);
@@ -1011,6 +1037,7 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
       break;
   }
   renderer_dirty++;
+  o->rev++;
   mrg_queue_draw (e->mrg, NULL);
   mrg_event_stop_propagate (e);
 }
@@ -1061,6 +1088,7 @@ static void update_prop (const char *new_string, void *node_p)
   GeglNode *node = node_p;
   gegl_node_set (node, edited_prop, new_string, NULL);
   renderer_dirty++;
+  global_state->rev++;
 }
 
 
@@ -1070,6 +1098,7 @@ static void update_prop_double (const char *new_string, void *node_p)
   gdouble value = g_strtod (new_string, NULL);
   gegl_node_set (node, edited_prop, value, NULL);
   renderer_dirty++;
+  global_state->rev++;
 }
 
 static void update_prop_int (const char *new_string, void *node_p)
@@ -1078,6 +1107,7 @@ static void update_prop_int (const char *new_string, void *node_p)
   gint value = g_strtod (new_string, NULL);
   gegl_node_set (node, edited_prop, value, NULL);
   renderer_dirty++;
+  global_state->rev++;
 }
 
 
@@ -1090,8 +1120,8 @@ static void prop_toggle_boolean (MrgEvent *e, void *data1, void *data2)
   value = value ? FALSE : TRUE;
   gegl_node_set (node, propname, value, NULL);
   renderer_dirty++;
+  global_state->rev++;
   mrg_event_stop_propagate (e);
-
 }
 
 
@@ -1157,6 +1187,7 @@ cmd_mipmap (COMMAND_ARGS)
   g_object_get (gegl_config(), "mipmap-rendering", &curval, NULL);
   printf ("mipmap rendering is %s\n", curval?"on":"off");
   renderer_dirty ++;
+  o->rev++;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
@@ -1429,7 +1460,7 @@ static void ui_viewer (State *o)
   else
     cairo_new_path (cr);
   cairo_rectangle (cr, 0.8, 0.0, 0.2, 0.2);
-  mrg_listen (mrg, MRG_PRESS, run_command, "toggle-graph", NULL);
+  mrg_listen (mrg, MRG_PRESS, run_command, "toggle editing", NULL);
   cairo_new_path (cr);
 
 #if 0
@@ -1442,7 +1473,6 @@ static void ui_viewer (State *o)
   if (!edited_prop && !o->editing_op_name)
   {
     mrg_add_binding (mrg, "control-m", NULL, NULL,       run_command, "zoom fit");
-    mrg_add_binding (mrg, "control-delete", NULL, NULL,  run_command, "discard");
   }
 
   if (o->slide_enabled && o->slide_timeout == 0)
@@ -1450,27 +1480,6 @@ static void ui_viewer (State *o)
     o->slide_timeout =
        mrg_add_timeout (o->mrg, o->slide_pause * 1000, slide_cb, o);
   }
-}
-
-  int cmd_toggle_controls (COMMAND_ARGS);
-int cmd_toggle_controls (COMMAND_ARGS) /* "toggle-controls", 0, "", ""*/
-{
-  State *o = global_state;
-  o->show_controls = !o->show_controls;
-  mrg_queue_draw (o->mrg, NULL);
-  return 0;
-}
-
-  int cmd_toggle_slideshow (COMMAND_ARGS);
-int cmd_toggle_slideshow (COMMAND_ARGS) /* "toggle-slideshow", 0, "", ""*/
-{
-  State *o = global_state;
-  o->slide_enabled = !o->slide_enabled;
-  if (o->slide_timeout)
-      mrg_remove_idle (o->mrg, o->slide_timeout);
-  o->slide_timeout = 0;
-  mrg_queue_draw (o->mrg, NULL);
-  return 0;
 }
 
 static int deferred_redraw_action (Mrg *mrg, void *data)
@@ -1573,6 +1582,7 @@ int cmd_node_add_aux (COMMAND_ARGS) /* "node-add-aux", 0, "", ""*/
   o->new_opname[0]=0;
   fprintf (stderr, "add aux\n");
   renderer_dirty++;
+  o->rev++;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
@@ -1599,6 +1609,7 @@ int cmd_node_add_input (COMMAND_ARGS) /* "node-add-input", 0, "", ""*/
   o->new_opname[0]=0;
   fprintf (stderr, "add input\n");
   renderer_dirty++;
+  o->rev++;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
@@ -1618,6 +1629,7 @@ static GeglNode *add_aux (State *o, GeglNode *active, const char *optype)
   }
   gegl_node_connect_to (ret, "output", ref, "aux");
   renderer_dirty++;
+  o->rev++;
   return ret;
 }
 
@@ -1637,6 +1649,7 @@ static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
     gegl_node_connect_to (ret, "output", consumer, consumer_name);
   }
   renderer_dirty++;
+  o->rev++;
   return ret;
 }
 
@@ -2407,6 +2420,7 @@ run_command (MrgEvent *event, void *data1, void *data_2)
    arg++;
   }
     renderer_dirty++;
+    o->rev++;
   }
 
   g_strfreev (argv);
@@ -2445,6 +2459,7 @@ int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
   o->active = new_active;
   mrg_queue_draw (o->mrg, NULL);
   renderer_dirty++;
+  o->rev++;
   return 0;
 }
 
@@ -2580,6 +2595,60 @@ static void iterate_frame (State *o)
       }
     }
   }
+}
+
+
+static void ui_show_bindings (Mrg *mrg, void *data)
+{
+  State *o = data;
+  float em = mrg_em (mrg);
+  float h = mrg_height (mrg);
+  float w = mrg_width (mrg);
+  float x = em;
+  int col = 0;
+  MrgBinding *bindings = mrg_get_bindings (mrg);
+  cairo_t *cr = mrg_cr (mrg);
+
+  mrg_start (mrg, "dl.bindings", NULL);
+  mrg_set_xy (mrg, x, h/2+em *2);
+
+  for (int i = 0; bindings[i].cb; i++)
+  {
+    MrgBinding *b = &bindings[i];
+
+    int redefined = 0;
+    for (int j = i+1; bindings[j].cb; j++)
+      if (!strcmp (bindings[j].nick, bindings[i].nick))
+        redefined ++;
+    if (redefined)
+      continue;  /* we only print the last registered, and handled registration */
+
+    mrg_start (mrg, "dt.binding", NULL);mrg_printf(mrg,"%s", b->nick);mrg_end (mrg);
+#if 0
+    if (b->command)
+    {
+      mrg_start (mrg, "d.binding-command", NULL);mrg_printf(mrg,"%s", b->command);mrg_end (mrg);
+    }
+#endif
+    if (b->cb == run_command)
+    {
+      mrg_start (mrg, "dd.binding", NULL);mrg_printf(mrg,"%s", b->cb_data);mrg_end (mrg);
+    }
+    if (b->label)
+    {
+      mrg_start (mrg, "dd.binding", NULL);mrg_printf(mrg,"%s", b->label);mrg_end (mrg);
+    }
+
+    if (mrg_y (mrg) > h - em * 4)
+    {
+      col++;
+      mrg_set_edge_left (mrg, col * (20 * mrg_em(mrg)));
+      //mrg_set_edge_top (mrg, 0);
+      mrg_set_xy (mrg, col * (15 * em), h/2+em * 2);
+    }
+
+  }
+  mrg_end (mrg);
 }
 
 static void ui_commandline (Mrg *mrg, void *data)
@@ -2722,7 +2791,7 @@ static void gegl_ui (Mrg *mrg, void *data)
       if (o->show_graph)
         {
           ui_debug_op_chain (o);
-          mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "toggle-graph");
+          mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "toggle editing");
         }
       else
         {
@@ -2746,31 +2815,36 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
 
 
-    mrg_add_binding (mrg, "return", NULL, NULL, run_command, "toggle-graph");
+    mrg_add_binding (mrg, "return", NULL, NULL, run_command, "toggle editing");
   }
   cairo_restore (mrg_cr (mrg));
   cairo_new_path (mrg_cr (mrg));
 
 
   mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "q");
-  mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle-fullscreen");
+  mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle fullscreen");
 
-  if (!edited_prop && !o->editing_op_name)
+  if (!edited_prop && !o->editing_op_name && ! o->is_dir)
   {
-    mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "activate output");
-    mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "activate input");
-    mrg_add_binding (mrg, "right", NULL, NULL,     run_command, "activate aux");
+    if (o->active && gegl_node_has_pad (o->active, "output"))
+      mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "activate output");
+    if (o->active && gegl_node_has_pad (o->active, "input"))
+      mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "activate input");
+
+    if (o->active && gegl_node_has_pad (o->active, "aux"))
+      mrg_add_binding (mrg, "right", NULL, NULL,     run_command, "activate aux");
+
     mrg_add_binding (mrg, "control-o", NULL, NULL, run_command, "node-add-output");
     mrg_add_binding (mrg, "control-i", NULL, NULL, run_command, "node-add-input");
     mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "node-add-aux");
     mrg_add_binding (mrg, "control-x", NULL, NULL, run_command, "remove");
+    mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "toggle slideshow");
   }
 
   if (!edited_prop && !o->editing_op_name)
   {
-    mrg_add_binding (mrg, "tab", NULL, NULL, run_command, "toggle-controls");
-    mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle-fullscreen");
-    mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "toggle-slideshow");
+    mrg_add_binding (mrg, "tab", NULL, NULL, run_command, "toggle controls");
+    mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle fullscreen");
 
     if (commandline[0]==0)
     {
@@ -2780,6 +2854,7 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "1", NULL, NULL, run_command, "zoom 1.0");
     }
   }
+
 
   if (!edited_prop && !o->editing_op_name)
   {
@@ -2807,15 +2882,26 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
     else
     {
-      mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate aux");
+      if (o->active && gegl_node_has_pad (o->active, "aux"))
+        mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate aux");
       mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
-      mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
+      //mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
     }
     mrg_add_binding (mrg, "1", NULL, NULL, run_command, "star 1");
     mrg_add_binding (mrg, "2", NULL, NULL, run_command, "star 2");
     mrg_add_binding (mrg, "3", NULL, NULL, run_command, "star 3");
     mrg_add_binding (mrg, "4", NULL, NULL, run_command, "star 4");
     mrg_add_binding (mrg, "5", NULL, NULL, run_command, "star 5");
+  }
+
+  mrg_add_binding (mrg, "F1", NULL, NULL, run_command, "toggle cheatsheet");
+  mrg_add_binding (mrg, "control-h", NULL, NULL, run_command, "toggle cheatsheet");
+
+  mrg_add_binding (mrg, "control-delete", NULL, NULL,  run_command, "discard");
+
+  if (o->show_bindings)
+  {
+     ui_show_bindings (mrg, o);
   }
 
 }
@@ -2888,9 +2974,18 @@ static void contrasty_stroke (cairo_t *cr)
   cairo_stroke (cr);
 }
 
+static void load_path_inner (State *o,
+                             const char *path)
+{
+
+}
+
+
+
+
 static void load_path (State *o)
 {
-  char *path;
+  char *path = o->path;
   char *meta;
 
   while (thumb_queue)
@@ -2900,15 +2995,15 @@ static void load_path (State *o)
     thumb_queue_item_free (item);
   }
 
-
   populate_path_list (o);
+  o->playing = 0;
+
+  load_path_inner (o, o->path);
 
   if (o->src_path)
     free (o->src_path);
 
-  o->playing = 0;
-
-  if (is_gegl_path (o->path))
+  if (is_gegl_path (path))
   {
     if (o->save_path)
       free (o->save_path);
@@ -2931,7 +3026,6 @@ static void load_path (State *o)
       o->src_path = strdup (o->path);
     }
   }
-  path  = o->path;
 
   if (access (o->save_path, F_OK) != -1)
   {
@@ -3081,17 +3175,16 @@ static void load_path (State *o)
       gegl_node_process (ret_sink);
       exit(0);
     }
-
-    zoom_to_fit (o);
   }
+
   if (o->processor)
       g_object_unref (o->processor);
+  o->processor = gegl_node_new_processor (o->sink, NULL);
+  renderer_dirty++;
 
   if (o->sink)
     o->active = gegl_node_get_producer (o->sink, "input", NULL);
-
-  o->processor = gegl_node_new_processor (o->sink, NULL);
-  renderer_dirty++;
+  zoom_to_fit (o);
   mrg_queue_draw (o->mrg, NULL);
 }
 
@@ -3729,26 +3822,55 @@ cmd_set (COMMAND_ARGS)
   return 0;
 }
 
-
-  int cmd_toggle_graph (COMMAND_ARGS);
-int cmd_toggle_graph (COMMAND_ARGS) /* "toggle-graph", 0, "", ""*/
+int cmd_toggle (COMMAND_ARGS); /* "toggle", 1, "<editing|fullscreen|cheatsheet|mipmap|controls|slideshow>", ""*/
+int
+cmd_toggle (COMMAND_ARGS)
 {
   State *o = global_state;
-  o->show_graph = !o->show_graph;
-  if (o->sink)
-    o->active = gegl_node_get_producer (o->sink, "input", NULL);
+  if (!strcmp(argv[1], "editing"))
+  {
+    o->show_graph = !o->show_graph;
+    if (o->sink)
+      o->active = gegl_node_get_producer (o->sink, "input", NULL);
+  }
+  else if (!strcmp(argv[1], "fullscreen"))
+  {
+    mrg_set_fullscreen (o->mrg, !mrg_is_fullscreen (o->mrg));
+    mrg_add_timeout (o->mrg, 250, deferred_zoom_to_fit, o);
+  }
+  else if (!strcmp(argv[1], "cheatsheet"))
+  {
+    o->show_bindings = !o->show_bindings;
+  }
+  else if (!strcmp(argv[1], "mipmap"))
+  {
+    gboolean curval;
+    g_object_get (gegl_config(), "mipmap-rendering", &curval, NULL);
+    if (curval == FALSE) {
+      g_object_set (gegl_config(), "mipmap-rendering", TRUE, NULL);
+      renderer = GEGL_RENDERER_BLIT_MIPMAP;
+    }
+    else
+    {
+      g_object_set (gegl_config(), "mipmap-rendering", FALSE, NULL);
+      renderer = GEGL_RENDERER_IDLE;
+    }
+  }
+  else if (!strcmp(argv[1], "controls"))
+  {
+    o->show_controls = !o->show_controls;
+  }
+  else if (!strcmp(argv[1], "slideshow"))
+  {
+    o->slide_enabled = !o->slide_enabled;
+    if (o->slide_timeout)
+      mrg_remove_idle (o->mrg, o->slide_timeout);
+    o->slide_timeout = 0;
+  }
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
 
-  int cmd_toggle_fulllscreen (COMMAND_ARGS);
-int cmd_toggle_fulllscreen (COMMAND_ARGS) /* "toggle-fullscreen", 0, "", ""*/
-{
-  State *o = global_state;
-  mrg_set_fullscreen (o->mrg, !mrg_is_fullscreen (o->mrg));
-  mrg_add_timeout (o->mrg, 250, deferred_zoom_to_fit, o);
-  return 0;
-}
 
   int cmd_discard (COMMAND_ARGS);
 int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to a .discard subfolder"*/
@@ -3757,15 +3879,21 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
   char *old_path;
   char *tmp;
   char *lastslash;
+  char *path = o->path;
   if (o->is_dir)
-    return -1;
+  {
+    path = g_list_nth_data (o->paths, o->entry_no);
+  }
 
-  old_path = strdup (o->path);
+  old_path = strdup (path);
+  if (!o->is_dir)
+  {
   argvs_eval ("next");
   if (!strcmp (old_path, o->path))
    {
      argvs_eval ("prev");
    }
+  }
   tmp = strdup (old_path);
   lastslash  = strrchr (tmp, '/');
   if (lastslash)
@@ -3777,7 +3905,7 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
     else
       lastslash[0] = '\0';
 
-    // XXX : replace with proper code
+    // XXX : replace with proper code, also discard thumb?
 
     sprintf (command, "mkdir %s/.discard > /dev/null 2>&1", tmp);
     system (command);
@@ -3790,6 +3918,7 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
   }
   free (tmp);
   free (old_path);
+  mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
 
