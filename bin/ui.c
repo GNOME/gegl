@@ -33,14 +33,15 @@ const char *css =
 "div.propname { color: white; background: rgba(0,0,0,0.75);  }\n"
 "div.propvalue { color: yellow; background: rgba(0,0,0,0.75); }\n"
 
-"dl.bindings   { color:white; position:absolute;left:1em;top:50%;background-color: rgba(0,0,0,0.7);width: 140%; height:45%; font-size: 0.9em; padding-left: 1em; padding-top:1em;}\n"
+"dl.bindings   { font-size: 1.8vh; color:white; position:absolute;left:1em;top:0%;background-color: rgba(0,0,0,0.7); width: 100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
 "dt.binding   { color:white; }\n"
 
 "a { color: yellow; text-decoration: none;  }\n"
 
 
-"div.shell { font-size: 0.8em; background-color:rgba(0,0,0,0.5);color:white; }\n"
-"div.shellline { font-size: 0.8em; background-color:rgba(0,0,0,0.5);color:white; }\n"
+"div.shell{  color:white; position:fixed;left:0em;top:50%;background-color: rgba(0,0,0,0.35); width:100vh; height: 40%; font-size:1.8vh; padding-left: 1em; padding-top:1em;}\n"
+//"div.shell { font-size: 0.8em; background-color:rgba(0,0,0,0.5);color:white; }\n"
+"div.shellline { background-color:rgba(0,0,0,0.0);color:white; }\n"
 "div.prompt { color:#7aa; display: inline; }\n"
 "div.commandline { color:white; display: inline; }\n"
 "";
@@ -179,7 +180,7 @@ struct _State {
 
 
   GThread       *renderer_thread; /* only used when GEGL_RENDERER=thread is set in environment */
-  int            entry_no; /* used in dir-view, and set by go_parent */
+  int            entry_no; /* used in collection-view, and set by go_parent */
 
   int            is_dir;  // is current in dir mode
 
@@ -472,9 +473,28 @@ static char *sh_esc (const char *input)
 }
 #endif
 
+
+static void load_path_inner (State *o, char *path);
+
+static void run_command (MrgEvent *event_or_null, void *commandline, void *ignored);
+
 static void generate_thumb_self (ThumbQueueItem *item)
 {
-  fprintf (stderr, "dunno what to do now for %s\n", item->path);
+  State *o = global_state;
+  load_path_inner (o, item->path);
+
+  run_command (NULL, "convert-space name=sRGB", NULL);
+  run_command (NULL, "convert-format format=\"R'G'B' float\"", NULL);
+  run_command (NULL, "scale-size-keepaspect x=256 y=0 sampler=cubic", NULL);
+
+  gegl_node_link_many (o->sink, o->save, NULL);
+  gegl_node_set (o->save, "path", item->thumbpath, NULL);
+  gegl_node_process (o->save);
+  mrg_list_remove (&thumb_queue, item);
+  thumb_queue_item_free (item);
+  mrg_queue_draw (global_state->mrg, NULL);
+
+  //fprintf (stderr, "dunno what to do now for %s\n", item->path);
 
 }
 
@@ -593,27 +613,36 @@ static gboolean renderer_task (gpointer data)
 
       if (thumb_queue)
       {
-        if (o->concurrent_thumbnailers == 0)
+
         {
+          int thumbnailers = o->concurrent_thumbnailers;
+          if (thumbnailers < 0) thumbnailers = -thumbnailers;
+
+          if (thumbnailers >= 1)
+            generate_thumb (thumb_queue->data);
+          if (thumbnailers >=2 && thumb_queue && thumb_queue->next)
+            generate_thumb (thumb_queue->next->data);
+          if (thumbnailers >=3 && thumb_queue && thumb_queue->next && thumb_queue->next->next)
+            generate_thumb (thumb_queue->next->next->data);
+        }
+
+
+        if (o->concurrent_thumbnailers <= 0)
+        {
+
            if (o->is_dir)
            {
-             generate_thumb_self (thumb_queue->data);
+             MrgList *item = thumb_queue;
+             while (item && ((ThumbQueueItem*)(item->data))->pid == 0) item = item->next;
+             if (item)
+               generate_thumb_self (item->data);
            }
            else
            {
              fprintf (stderr, "ooof\n");
            }
         }
-        else
-        {
 
-          if (o->concurrent_thumbnailers >= 1)
-            generate_thumb (thumb_queue->data);
-          if (o->concurrent_thumbnailers >=2 && thumb_queue && thumb_queue->next)
-            generate_thumb (thumb_queue->next->data);
-          if (o->concurrent_thumbnailers >=3 && thumb_queue && thumb_queue->next && thumb_queue->next->next)
-            generate_thumb (thumb_queue->next->next->data);
-        }
       }
 
       o->renderer_state = 0;
@@ -669,7 +698,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   o.preview_quality = 2.0;
   o.slide_pause     = 5.0;
   o.slide_enabled   = 0;
-  o.concurrent_thumbnailers = 0;
+  o.concurrent_thumbnailers = -1;
   o.show_bindings   = 0;
 
   if (access (argv[1], F_OK) != -1)
@@ -685,7 +714,6 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   global_state = &o;
   on_viewer_motion (NULL, &o, NULL);
 
-
   switch (renderer)
   {
     case GEGL_RENDERER_THREAD:
@@ -699,14 +727,11 @@ int mrg_ui_main (int argc, char **argv, char **ops)
       break;
   }
 
+  o.active = gegl_node_get_producer (o.sink, "input", NULL);
+
   if (o.ops)
   {
-    o.active = gegl_node_get_producer (o.sink, "input", NULL);
     o.show_graph = 1;
-  }
-  else
-  {
-    o.active = gegl_node_get_producer (o.sink, "input", NULL);
   }
 
   mrg_main (mrg);
@@ -1146,18 +1171,6 @@ static void unset_edited_prop (MrgEvent *e, void *data1, void *data2)
   mrg_queue_draw (e->mrg, NULL);
 }
 
-int cmd_dir_pgdn (COMMAND_ARGS);/* "dir-pgdn", 0, "", ""*/
-
-int
-cmd_dir_pgdn (COMMAND_ARGS)
-{
-  State *o = global_state;
-  o->u -= mrg_width (o->mrg) * 0.6;
-  mrg_queue_draw (o->mrg, NULL);
-  return 0;
-}
-
-
 int cmd_mipmap (COMMAND_ARGS);/* "mipmap", -1, "", ""*/
 
 int
@@ -1192,17 +1205,6 @@ cmd_mipmap (COMMAND_ARGS)
   return 0;
 }
 
-int cmd_dir_pgup (COMMAND_ARGS); /* "dir-pgup", 0, "", ""*/
-
-int
-cmd_dir_pgup (COMMAND_ARGS)
-{
-  State *o = global_state;
-  o->u += mrg_width (o->mrg) * 0.6;
-  mrg_queue_draw (o->mrg, NULL);
-  return 0;
-}
-
 static void entry_select (MrgEvent *event, void *data1, void *data2)
 {
   State *o = data1;
@@ -1220,7 +1222,6 @@ static void entry_load (MrgEvent *event, void *data1, void *data2)
 }
 
 
-static void run_command (MrgEvent *event, void *data1, void *data2);
 
 static void queue_thumb (const char *path, const char *thumbpath)
 {
@@ -1387,10 +1388,10 @@ static void ui_dir_viewer (State *o)
   }
   cairo_restore (cr);
 
-  mrg_add_binding (mrg, "left", NULL, NULL, run_command, "dir left");
-  mrg_add_binding (mrg, "right", NULL, NULL, run_command, "dir right");
-  mrg_add_binding (mrg, "up", NULL, NULL, run_command, "dir up");
-  mrg_add_binding (mrg, "down", NULL, NULL, run_command, "dir down");
+  mrg_add_binding (mrg, "left", NULL, NULL, run_command, "collection left");
+  mrg_add_binding (mrg, "right", NULL, NULL, run_command, "collection right");
+  mrg_add_binding (mrg, "up", NULL, NULL, run_command, "collection up");
+  mrg_add_binding (mrg, "down", NULL, NULL, run_command, "collection down");
 }
 
 static int slide_cb (Mrg *mrg, void *data)
@@ -1470,10 +1471,6 @@ static void ui_viewer (State *o)
   mrg_add_binding (mrg, "down", NULL, NULL,  run_command, "pan 0 0.1");
 #endif
 
-  if (!edited_prop && !o->editing_op_name)
-  {
-    mrg_add_binding (mrg, "control-m", NULL, NULL,       run_command, "zoom fit");
-  }
 
   if (o->slide_enabled && o->slide_timeout == 0)
   {
@@ -1932,6 +1929,14 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux>", ""*/
     ref = gegl_node_get_consumer_no (o->active, "output", NULL, 0);
     if (ref == o->sink)
       ref = NULL;
+  }
+  else if (!strcmp (argv[1], "first"))
+  {
+    ref = gegl_node_get_producer (o->sink, "input", NULL);
+  }
+  else if (!strcmp (argv[1], "last"))
+  {
+    ref = o->source;
   }
   else
     ref = NULL;
@@ -2427,7 +2432,7 @@ run_command (MrgEvent *event, void *data1, void *data_2)
 }
 
   int cmd_quit (COMMAND_ARGS);
-int cmd_quit (COMMAND_ARGS) /* "q", 0, "", "quit"*/
+int cmd_quit (COMMAND_ARGS) /* "quit", 0, "", "quit"*/
 {
   mrg_quit (global_state->mrg);
   return 0;
@@ -2600,17 +2605,14 @@ static void iterate_frame (State *o)
 
 static void ui_show_bindings (Mrg *mrg, void *data)
 {
-  State *o = data;
   float em = mrg_em (mrg);
   float h = mrg_height (mrg);
-  float w = mrg_width (mrg);
   float x = em;
   int col = 0;
   MrgBinding *bindings = mrg_get_bindings (mrg);
-  cairo_t *cr = mrg_cr (mrg);
 
   mrg_start (mrg, "dl.bindings", NULL);
-  mrg_set_xy (mrg, x, h/2+em *2);
+  mrg_set_xy (mrg, x, em * 2);//h/2+em *2);
 
   for (int i = 0; bindings[i].cb; i++)
   {
@@ -2639,12 +2641,12 @@ static void ui_show_bindings (Mrg *mrg, void *data)
       mrg_start (mrg, "dd.binding", NULL);mrg_printf(mrg,"%s", b->label);mrg_end (mrg);
     }
 
-    if (mrg_y (mrg) > h - em * 4)
+    if (mrg_y (mrg) > h/2 - em * 4)
     {
       col++;
       mrg_set_edge_left (mrg, col * (20 * mrg_em(mrg)));
       //mrg_set_edge_top (mrg, 0);
-      mrg_set_xy (mrg, col * (15 * em), h/2+em * 2);
+      mrg_set_xy (mrg, col * (15 * em), em * 2);
     }
 
   }
@@ -2656,13 +2658,14 @@ static void ui_commandline (Mrg *mrg, void *data)
   State *o = data;
   float em = mrg_em (mrg);
   float h = mrg_height (mrg);
-  float w = mrg_width (mrg);
+  //float w = mrg_width (mrg);
   cairo_t *cr = mrg_cr (mrg);
   int row = 1;
   cairo_save (cr);
-  mrg_set_xy (mrg, em, h - em * 1.2 * row);
+  if (scrollback)
   mrg_start (mrg, "div.shell", NULL);
-  mrg_set_edge_left (mrg, em);
+  //mrg_set_edge_left (mrg, em);
+  mrg_set_xy (mrg, em, h - em * 1);
   mrg_start (mrg, "div.prompt", NULL);
   mrg_printf (mrg, "> ");
   mrg_end (mrg);
@@ -2674,8 +2677,8 @@ static void ui_commandline (Mrg *mrg, void *data)
   mrg_edit_end (mrg);
   row++;
 
-  mrg_set_edge_left (mrg, w * 0.5);
-  mrg_set_xy (mrg, w * 0.5, h * 0.2);
+  //mrg_set_edge_left (mrg, w * 0.5);
+  mrg_set_xy (mrg, em, h * 0.5);
 
   {
     MrgList *lines = NULL;
@@ -2703,6 +2706,7 @@ static void ui_commandline (Mrg *mrg, void *data)
     mrg_list_free (&lines);
 
   }
+  if (scrollback)
   mrg_end (mrg);
 
   mrg_add_binding (mrg, "return", NULL, NULL, commandline_run, o);
@@ -2809,37 +2813,34 @@ static void gegl_ui (Mrg *mrg, void *data)
     else if (S_ISDIR (stat_buf.st_mode))
     {
       ui_dir_viewer (o);
-      mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "dir right");
-      mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "dir left");
+      mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "collection right");
+      mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "collection left");
       mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "parent");
     }
-
-
-    mrg_add_binding (mrg, "return", NULL, NULL, run_command, "toggle editing");
   }
   cairo_restore (mrg_cr (mrg));
   cairo_new_path (mrg_cr (mrg));
 
 
-  mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "q");
+  mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "quit");
   mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle fullscreen");
 
   if (!edited_prop && !o->editing_op_name && ! o->is_dir)
   {
-    if (o->active && gegl_node_has_pad (o->active, "output"))
-      mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "activate output");
-    if (o->active && gegl_node_has_pad (o->active, "input"))
-      mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "activate input");
 
-    if (o->active && gegl_node_has_pad (o->active, "aux"))
-      mrg_add_binding (mrg, "right", NULL, NULL,     run_command, "activate aux");
+//    if (o->active && gegl_node_has_pad (o->active, "aux"))
+//      mrg_add_binding (mrg, "right", NULL, NULL,     run_command, "activate aux");
 
     mrg_add_binding (mrg, "control-o", NULL, NULL, run_command, "node-add-output");
     mrg_add_binding (mrg, "control-i", NULL, NULL, run_command, "node-add-input");
     mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "node-add-aux");
-    mrg_add_binding (mrg, "control-x", NULL, NULL, run_command, "remove");
+
+    if (o->active != o->source)
+      mrg_add_binding (mrg, "control-x", NULL, NULL, run_command, "remove");
+
     mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "toggle slideshow");
   }
+  mrg_add_binding (mrg, "control-l", NULL, NULL, run_command, "clear");
 
   if (!edited_prop && !o->editing_op_name)
   {
@@ -2855,7 +2856,6 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
   }
 
-
   if (!edited_prop && !o->editing_op_name)
   {
     ui_commandline (mrg, o);
@@ -2868,20 +2868,22 @@ static void gegl_ui (Mrg *mrg, void *data)
 
     if (o->is_dir)
     {
-      mrg_add_binding (mrg, "left", NULL, NULL, run_command, "dir left");
-      mrg_add_binding (mrg, "right", NULL, NULL, run_command, "dir right");
-      mrg_add_binding (mrg, "up", NULL, NULL, run_command, "dir up");
-      mrg_add_binding (mrg, "down", NULL, NULL, run_command, "dir down");
+      mrg_add_binding (mrg, "left", NULL, NULL, run_command, "collection left");
+      mrg_add_binding (mrg, "right", NULL, NULL, run_command, "collection right");
+      mrg_add_binding (mrg, "up", NULL, NULL, run_command, "collection up");
+      mrg_add_binding (mrg, "down", NULL, NULL, run_command, "collection down");
 
-      mrg_add_binding (mrg, "home", NULL, NULL, run_command, "dir first");
-      mrg_add_binding (mrg, "end", NULL, NULL, run_command, "dir last");
+      mrg_add_binding (mrg, "home", NULL, NULL, run_command, "collection first");
+      mrg_add_binding (mrg, "end", NULL, NULL, run_command, "collection last");
 
-      mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "dir right");
-      mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "dir left");
+      mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "collection right");
+      mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "collection left");
 
     }
     else
     {
+      mrg_add_binding (mrg, "home", NULL, NULL, run_command, "activate first");
+      mrg_add_binding (mrg, "end", NULL, NULL, run_command, "activate last");
       if (o->active && gegl_node_has_pad (o->active, "aux"))
         mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate aux");
       mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
@@ -2892,6 +2894,20 @@ static void gegl_ui (Mrg *mrg, void *data)
     mrg_add_binding (mrg, "3", NULL, NULL, run_command, "star 3");
     mrg_add_binding (mrg, "4", NULL, NULL, run_command, "star 4");
     mrg_add_binding (mrg, "5", NULL, NULL, run_command, "star 5");
+  }
+  if (o->is_dir)
+  {
+  }
+  else
+  {
+    mrg_add_binding (mrg, "control-t", NULL, NULL, run_command, "zoom fit");
+    mrg_add_binding (mrg, "control-m", NULL, NULL, run_command, "toggle mipmap");
+    mrg_add_binding (mrg, "control-y", NULL, NULL, run_command, "toggle colormanage-display");
+
+    if (o->active && gegl_node_has_pad (o->active, "output"))
+      mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "activate output");
+    if (o->active && gegl_node_has_pad (o->active, "input"))
+      mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "activate input");
   }
 
   mrg_add_binding (mrg, "F1", NULL, NULL, run_command, "toggle cheatsheet");
@@ -2975,31 +2991,9 @@ static void contrasty_stroke (cairo_t *cr)
 }
 
 static void load_path_inner (State *o,
-                             const char *path)
+                             char *path)
 {
-
-}
-
-
-
-
-static void load_path (State *o)
-{
-  char *path = o->path;
   char *meta;
-
-  while (thumb_queue)
-  {
-    ThumbQueueItem *item = thumb_queue->data;
-    mrg_list_remove (&thumb_queue, item);
-    thumb_queue_item_free (item);
-  }
-
-  populate_path_list (o);
-  o->playing = 0;
-
-  load_path_inner (o, o->path);
-
   if (o->src_path)
     free (o->src_path);
 
@@ -3007,23 +3001,23 @@ static void load_path (State *o)
   {
     if (o->save_path)
       free (o->save_path);
-    o->save_path = o->path;
-    o->path = unsuffix_path (o->save_path); // or maybe decode first line?
-    o->src_path = strdup (o->path);
+    o->save_path = path;
+    path = unsuffix_path (o->save_path); // or maybe decode first line?
+    o->src_path = strdup (path);
   }
   else
   {
     if (o->save_path)
       free (o->save_path);
-    if (g_str_has_suffix (o->path, ".gegl"))
+    if (g_str_has_suffix (path, ".gegl"))
     {
       //fprintf (stderr, "oooo\n");
-      o->save_path = strdup (o->path);
+      o->save_path = strdup (path);
     }
     else
     {
-      o->save_path = suffix_path (o->path);
-      o->src_path = strdup (o->path);
+      o->save_path = suffix_path (path);
+      o->src_path = strdup (path);
     }
   }
 
@@ -3038,13 +3032,9 @@ static void load_path (State *o)
   o->gegl = NULL;
   o->sink = NULL;
   o->source = NULL;
-  o->entry_no = -1;
-  o->scale = 1.0;
   if (o->dir_scale <= 0.001)
     o->dir_scale = 1.0;
   o->rev = 0;
-  o->u = 0;
-  o->v = 0;
   o->is_video = 0;
   o->frame_no = -1;
   o->prev_frame_played = 0;
@@ -3079,7 +3069,7 @@ static void load_path (State *o)
     {
       GeglNode *iter;
       GeglNode *prev = NULL;
-      char *containing_path = get_path_parent (o->path);
+      char *containing_path = get_path_parent (path);
       o->gegl = gegl_node_new_from_serialized (meta, containing_path);
       free (containing_path);
       o->sink = o->gegl;
@@ -3142,24 +3132,13 @@ static void load_path (State *o)
     gegl_node_set (o->source, "buffer", o->buffer, NULL);
   }
   }
-  {
-    struct stat stat_buf;
-    lstat (o->path, &stat_buf);
-    if (S_ISREG (stat_buf.st_mode))
-    {
-      if (o->is_video)
-        center (o);
-      else
-        zoom_to_fit (o);
-    }
-  }
 
   if (o->ops)
   {
     GeglNode *ret_sink = NULL;
     GError *error = (void*)(&ret_sink);
 
-    char *containing_path = get_path_parent (o->path);
+    char *containing_path = get_path_parent (path);
     gegl_create_chain_argv (o->ops,
                     gegl_node_get_producer (o->sink, "input", NULL),
                     o->sink, 0, gegl_node_get_bounding_box (o->sink).height,
@@ -3177,13 +3156,49 @@ static void load_path (State *o)
     }
   }
 
+  if (o->sink)
+    o->active = gegl_node_get_producer (o->sink, "input", NULL);
   if (o->processor)
       g_object_unref (o->processor);
   o->processor = gegl_node_new_processor (o->sink, NULL);
   renderer_dirty++;
 
-  if (o->sink)
-    o->active = gegl_node_get_producer (o->sink, "input", NULL);
+}
+
+
+
+
+static void load_path (State *o)
+{
+  while (thumb_queue)
+  {
+    ThumbQueueItem *item = thumb_queue->data;
+    mrg_list_remove (&thumb_queue, item);
+    thumb_queue_item_free (item);
+  }
+
+  populate_path_list (o);
+  o->playing = 0;
+
+  load_path_inner (o, o->path);
+
+  {
+    struct stat stat_buf;
+    lstat (o->path, &stat_buf);
+    if (S_ISREG (stat_buf.st_mode))
+    {
+      if (o->is_video)
+        center (o);
+      else
+        zoom_to_fit (o);
+    }
+  }
+
+  o->entry_no = -1;
+  o->scale = 1.0;
+  o->u = 0;
+  o->v = 0;
+
   zoom_to_fit (o);
   mrg_queue_draw (o->mrg, NULL);
 }
@@ -3530,8 +3545,8 @@ int cmd_pan (COMMAND_ARGS) /* "pan", 2, "<rel-x> <rel-y>", "pans viewport"*/
 }
 
 
-int cmd_dir (COMMAND_ARGS); /* "dir", -1, "<up|left|right|down|first|last>", ""*/
-  int cmd_dir (COMMAND_ARGS)
+int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|first|last>", ""*/
+  int cmd_collection (COMMAND_ARGS)
 {
   State *o = global_state;
 
@@ -3842,6 +3857,12 @@ cmd_toggle (COMMAND_ARGS)
   {
     o->show_bindings = !o->show_bindings;
   }
+  else if (!strcmp(argv[1], "colormanage-display"))
+  {
+    o->color_manage_display = !o->color_manage_display;
+    printf ("%s colormanagement of display\n", o->color_manage_display?"enabled":"disabled");
+    mrg_gegl_dirty ();
+  }
   else if (!strcmp(argv[1], "mipmap"))
   {
     gboolean curval;
@@ -3849,11 +3870,13 @@ cmd_toggle (COMMAND_ARGS)
     if (curval == FALSE) {
       g_object_set (gegl_config(), "mipmap-rendering", TRUE, NULL);
       renderer = GEGL_RENDERER_BLIT_MIPMAP;
+      printf ("enabled mipmap rendering\n");
     }
     else
     {
       g_object_set (gegl_config(), "mipmap-rendering", FALSE, NULL);
       renderer = GEGL_RENDERER_IDLE;
+      printf ("disabled mipmap rendering\n");
     }
   }
   else if (!strcmp(argv[1], "controls"))
