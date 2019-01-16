@@ -10,6 +10,8 @@
  * advacned behavior.
  */
 
+#include "config.h"
+
 #include <stdio.h>
 
 #include <stdlib.h>
@@ -17,7 +19,11 @@
 #include <unistd.h>
 #include "argvs.h"
 
+#if HAVE_MRG
 #define MRG_PRINTF 1
+#endif
+
+
 #ifdef MRG_PRINTF
 #include <mrg.h>
 #include <mrg-string.h>
