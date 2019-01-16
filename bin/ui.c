@@ -3587,29 +3587,6 @@ static void center (State *o)
   mrg_queue_draw (mrg, NULL);
 }
 
-  int cmd_zoom_fit_buffer (COMMAND_ARGS);
-int cmd_zoom_fit_buffer (COMMAND_ARGS) /* "zoom-fit-buffer", 0, "", ""*/
-{
-  State *o = global_state;
-  Mrg *mrg = o->mrg;
-  GeglRectangle rect = *gegl_buffer_get_extent (o->buffer);
-  float scale, scale2;
-
-  scale = 1.0 * mrg_width (mrg) / rect.width;
-  scale2 = 1.0 * mrg_height (mrg) / rect.height;
-
-  if (scale2 < scale) scale = scale2;
-
-  o->scale = scale;
-  o->u = -(mrg_width (mrg) - rect.width * o->scale) / 2;
-  o->v = -(mrg_height (mrg) - rect.height * o->scale) / 2;
-  o->u += rect.x * o->scale;
-  o->v += rect.y * o->scale;
-
-  mrg_queue_draw (mrg, NULL);
-  return 0;
-}
-
 static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
 {
   float x, y;
