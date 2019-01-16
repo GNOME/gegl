@@ -992,7 +992,7 @@ static void on_paint_drag (MrgEvent *e, void *data1, void *data2)
       gegl_path_append (path, 'M', x, y);
       gegl_path_append (path, 'L', x, y);
       gegl_node_set (o->active, "d", path, "color", gegl_color_new("blue"),
-                     "width", 142.0, NULL);
+                     "width", 16.0 / o->scale, NULL);
       break;
     case MRG_DRAG_MOTION:
       gegl_path_append (path, 'L', x, y);
