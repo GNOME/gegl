@@ -28,9 +28,9 @@
 #if HAVE_MRG
 
 const char *css =
-"div.properties { color: blue; }\n"
+"div.properties { color: blue; position: absolute; top: 1em; left: 22em; }\n"
 "div.property   { color: white; margin-top: -.5em; }\n"
-"div.propname { color: white; background: rgba(0,0,0,0.75);  }\n"
+"div.propname { color: white; background: rgba(0,0,0,0.25);  }\n"
 "div.propvalue { color: yellow; background: rgba(0,0,0,0.75); }\n"
 
 "dl.bindings   { font-size: 1.8vh; color:white; position:absolute;left:1em;top:0%;background-color: rgba(0,0,0,0.7); width: 100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
@@ -221,6 +221,8 @@ struct _State {
   int            is_video;
   int            prev_frame_played;
   double         prev_ms;
+
+  GHashTable    *ui_consumer;
 };
 
 static State *global_state = NULL;  // XXX: for now we  rely on
@@ -696,6 +698,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   o.slide_enabled   = 0;
   o.concurrent_thumbnailers = 2;
   o.show_bindings   = 0;
+  o.ui_consumer = g_hash_table_new (g_direct_hash, g_direct_equal);
 
   if (access (argv[1], F_OK) != -1)
     o.path = realpath (argv[1], NULL);
@@ -1684,9 +1687,6 @@ static void list_node_props (State *o, GeglNode *node, int indent)
   Mrg *mrg = o->mrg;
   guint n_props;
   int no = 0;
-  //cairo_t *cr = mrg_cr (mrg);
-  //float x = mrg_x (mrg) + mrg_em (mrg) * 1;
-  //float y = mrg_y (mrg);
   const char *op_name;
   GParamSpec **pspecs;
 
@@ -1698,9 +1698,6 @@ static void list_node_props (State *o, GeglNode *node, int indent)
     return;
   pspecs = gegl_operation_list_properties (op_name, &n_props);
 
-  mrg_set_edge_left (mrg, mrg_em (mrg) * 15);
-
-  mrg_set_font_size (mrg, mrg_height (mrg) * 0.022);
   mrg_start (mrg, "div.properties", NULL);
 
   if (pspecs)
@@ -1894,15 +1891,15 @@ static void update_string (const char *new_text, void *data)
   strcpy (str, new_text);
 }
 
-#if 0
-static void edit_op (MrgEvent *event, void *data1, void *data2)
+  int cmd_edit_opname (COMMAND_ARGS);
+int cmd_edit_opname (COMMAND_ARGS) /* "edit-opname", 0, "", "permits changing the current op by typing in a replacement name."*/
 {
-  State *o = data1;
+  State *o = global_state;
   o->editing_op_name = 1;
   o->new_opname[0]=0;
-  mrg_set_cursor_pos (event->mrg, 0);
+  mrg_set_cursor_pos (o->mrg, 0);
+  return 0;
 }
-#endif
 
   int cmd_activate (COMMAND_ARGS);
 int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux>", ""*/
@@ -1974,6 +1971,11 @@ static void set_op (MrgEvent *event, void *data1, void *data2)
   mrg_queue_draw (o->mrg, NULL);
 }
 
+static void update_ui_consumers (State *o)
+{
+  g_hash_table_remove_all (o->ui_consumer);
+}
+
 
 static void list_ops (State *o, GeglNode *iter, int indent)
 {
@@ -1992,7 +1994,7 @@ static void list_ops (State *o, GeglNode *iter, int indent)
        mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);padding-right:.5em;");
        for (int i = 0; i < indent; i ++)
          mrg_printf (mrg, INDENT_STR);
-       mrg_text_listen (mrg, MRG_CLICK, run_command, "node-add-output", NULL);
+       mrg_text_listen (mrg, MRG_CLICK, run_command, "node-add output", NULL);
        mrg_printf (mrg, "+    ");
        mrg_text_listen_done (mrg);
        //mrg_text_listen (mrg, MRG_CLICK, run_command, o, "remove");
@@ -2023,7 +2025,6 @@ static void list_ops (State *o, GeglNode *iter, int indent)
        mrg_printf (mrg, "%s", o->new_opname);
        mrg_edit_end (mrg);
        mrg_add_binding (mrg, "return", NULL, NULL, set_op, o);
-
      }
      else
      {
@@ -2078,7 +2079,7 @@ static void list_ops (State *o, GeglNode *iter, int indent)
        mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);");
        for (int i = 0; i < indent + 1; i ++)
          mrg_printf (mrg, INDENT_STR);
-       mrg_text_listen (mrg, MRG_CLICK, NULL, "run-command", "node-add-aux");
+       mrg_text_listen (mrg, MRG_CLICK, NULL, "run-command", "node-add aux");
        mrg_printf (mrg, "+\n");
        mrg_text_listen_done (mrg);
        mrg_end (mrg);
@@ -2157,9 +2158,10 @@ static void ui_debug_op_chain (State *o)
   Mrg *mrg = o->mrg;
   GeglNode *iter;
   mrg_start         (mrg, "div.editor", NULL);
-  mrg_set_edge_top  (mrg, mrg_height (mrg) * 0.2);
   mrg_set_font_size (mrg, mrg_height (mrg) * 0.03);
-  mrg_set_style (mrg, "color:white; background-color: rgba(0,0,0,0.5)");
+  mrg_set_style (mrg, "color:white; background-color: rgba(0,0,0,0.4)");
+
+  update_ui_consumers (o);
 
   iter = o->sink;
 
@@ -2167,10 +2169,16 @@ static void ui_debug_op_chain (State *o)
   iter = gegl_node_get_producer (iter, "input", NULL);
 
   list_ops (o, iter, 1);
-  mrg_set_xy (mrg, mrg_width(mrg), mrg_em (mrg) * 2);
-  if (o->active)
-    list_node_props (o, o->active, 1);
   mrg_end (mrg);
+
+  if (o->active)
+  {
+    mrg_set_xy (mrg, mrg_width (mrg), 0);
+    mrg_start         (mrg, "div.props", NULL);
+    //mrg_set_style (mrg, "color:white; background-color: rgba(0,0,0,0.4)");
+    list_node_props (o, o->active, 1);
+    mrg_end (mrg);
+  }
 }
 
 
@@ -2418,7 +2426,7 @@ run_command (MrgEvent *event, void *data1, void *data_2)
     }
     if (gegl_has_operation (temp_op_name))
     {
-        argvs_eval ("node-add-output");
+        argvs_eval ("node-add output");
         gegl_node_set (o->active, "operation", temp_op_name, NULL);
     }
     else
@@ -2692,7 +2700,6 @@ static void ui_show_bindings (Mrg *mrg, void *data)
     {
       col++;
       mrg_set_edge_left (mrg, col * (20 * mrg_em(mrg)));
-      //mrg_set_edge_top (mrg, 0);
       mrg_set_xy (mrg, col * (15 * em), em * 2);
     }
 
