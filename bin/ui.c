@@ -504,7 +504,7 @@ static void generate_thumb (ThumbQueueItem *item)
   GError *error = NULL;
   char  *savepath=g_strdup_printf ("path=%s", item->tempthumbpath);
   char  *path2=g_strdup (item->path);
-  char *argv[]={"/usr/local/bin/gegl",
+  char *argv[]={"gegl",
      path2, "--",
      "convert-space", "name=sRGB",
      "convert-format", "format=R'G'B' float",
@@ -525,7 +525,7 @@ static void generate_thumb (ThumbQueueItem *item)
     goto cleanup;
   }
 
-  g_spawn_async (NULL, &argv[0], NULL, G_SPAWN_SEARCH_PATH_FROM_ENVP,  NULL, NULL, &child_pid, &error);
+  g_spawn_async (NULL, &argv[0], NULL, G_SPAWN_SEARCH_PATH|G_SPAWN_SEARCH_PATH_FROM_ENVP,  NULL, NULL, &child_pid, &error);
   //fprintf (stderr, "spawned %i %s %s %s\n", (int) child_pid, item->path, item->thumbpath, item->tempthumbpath);
   if (error)
     fprintf (stderr, "%s\n", error->message);
@@ -1206,6 +1206,7 @@ cmd_todo (COMMAND_ARGS)
   printf ("polyline/bezier on screen editing\n");
   printf ("star/comment storage\n");
   printf ("dir actions: rename, discard\n");
+  return 0;
 }
 
 
