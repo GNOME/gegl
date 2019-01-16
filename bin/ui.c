@@ -493,9 +493,6 @@ static void generate_thumb_self (ThumbQueueItem *item)
   mrg_list_remove (&thumb_queue, item);
   thumb_queue_item_free (item);
   mrg_queue_draw (global_state->mrg, NULL);
-
-  //fprintf (stderr, "dunno what to do now for %s\n", item->path);
-
 }
 
 static void generate_thumb (ThumbQueueItem *item)
@@ -564,7 +561,7 @@ static gboolean renderer_task (gpointer data)
           g_object_unref (old_processor);
       if(1){
         GeglRectangle rect = {o->u / o->scale, o->v / o->scale, mrg_width (o->mrg) / o->scale,
-                                          mrg_height (o->mrg) / o->scale};
+                              mrg_height (o->mrg) / o->scale};
         gegl_processor_set_rectangle (o->processor, &rect);
       }
       }
@@ -604,10 +601,6 @@ static gboolean renderer_task (gpointer data)
           break;
       }
       o->renderer_state = 0;
-      if (0 && thumb_queue)
-        {
-          o->renderer_state = 4;
-        }
       break;
     case 4:
 
@@ -685,8 +678,6 @@ int mrg_ui_main (int argc, char **argv, char **ops)
     renderer = GEGL_RENDERER_IDLE;
 
   mrg_set_title (mrg, "GEGL");
-/* we want to see the speed gotten if the fastest babl conversions we have were more accurate */
-  //g_setenv ("BABL_TOLERANCE", "0.1", TRUE);
 
   o.ops = ops;
 
@@ -728,8 +719,6 @@ int mrg_ui_main (int argc, char **argv, char **ops)
       break;
   }
 
-  o.active = gegl_node_get_producer (o.sink, "input", NULL);
-
   if (o.ops)
   {
     o.show_graph = 1;
@@ -755,7 +744,7 @@ static int hide_controls_cb (Mrg *mrg, void *data)
 {
   State *o = data;
   o->controls_timeout = 0;
-  o->show_controls = 0;
+  o->show_controls    = 0;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
@@ -791,20 +780,13 @@ static void node_press (MrgEvent *e, void *data1, void *data2)
   mrg_queue_draw (e->mrg, NULL);
 }
 
-static float zoom_pinch_x0 = 0;
-static float zoom_pinch_y0 = 0;
-static float zoom_pinch_x1 = 0;
-static float zoom_pinch_y1 = 0;
-static float zoom_pinch_x0_start = 0;
-static float zoom_pinch_y0_start = 0;
-static float zoom_pinch_x1_start = 0;
-static float zoom_pinch_y1_start = 0;
-
-static int zoom_pinch = 0;
-static float orig_zoom = 1.0;
 
 static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
 {
+  static float zoom_pinch_coord[4][2] = {0,};
+  static int   zoom_pinch = 0;
+  static float orig_zoom = 1.0;
+
   State *o = data1;
   on_viewer_motion (e, data1, data2);
   if (e->type == MRG_DRAG_RELEASE && node_select_hack == 0)
@@ -813,7 +795,6 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
     float y = (e->y + o->v) / o->scale;
     GeglNode *picked = NULL;
     picked = gegl_node_detect (o->sink, x, y);
-    zoom_pinch = 0;
     if (picked)
     {
       const char *picked_op = gegl_node_get_operation (picked);
@@ -828,49 +809,54 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
 
       o->active = picked;
     }
+
+    zoom_pinch = 0;
   } else if (e->type == MRG_DRAG_PRESS)
   {
-    if (e->device_no == 5)
+    if (e->device_no == 5) /* first occurence of device_no=5, which is seond finger */
     {
-      zoom_pinch_x1 = e->x;
-      zoom_pinch_y1 = e->y;
-      zoom_pinch_x1_start = zoom_pinch_x1;
-      zoom_pinch_y1_start = zoom_pinch_y1;
-      zoom_pinch_x0_start = zoom_pinch_x0;
-      zoom_pinch_y0_start = zoom_pinch_y0;
+      zoom_pinch_coord[1][0] = e->x;
+      zoom_pinch_coord[1][1] = e->y;
+
+      zoom_pinch_coord[2][0] = zoom_pinch_coord[0][0];
+      zoom_pinch_coord[2][1] = zoom_pinch_coord[0][1];
+      zoom_pinch_coord[3][0] = zoom_pinch_coord[1][0];
+      zoom_pinch_coord[3][1] = zoom_pinch_coord[1][1];
+
       zoom_pinch = 1;
       orig_zoom = o->scale;
     }
   } else if (e->type == MRG_DRAG_MOTION)
   {
-    if (e->device_no == 1 || e->device_no == 4)
+    if (e->device_no == 1 || e->device_no == 4) /* 1 is mouse pointer 4 is first finger */
     {
-
-      zoom_pinch_x0 = e->x;
-      zoom_pinch_y0 = e->y;
+      zoom_pinch_coord[0][0] = e->x;
+      zoom_pinch_coord[0][1] = e->y;
     }
     if (e->device_no == 5)
     {
-      zoom_pinch_x1 = e->x;
-      zoom_pinch_y1 = e->y;
+      zoom_pinch_coord[1][0] = e->x;
+      zoom_pinch_coord[1][1] = e->y;
     }
 
     if (zoom_pinch)
     {
-      float orig_dist = hypotf ( zoom_pinch_x0_start - zoom_pinch_x1_start,
-                                 zoom_pinch_y0_start - zoom_pinch_y1_start);
-      float dist = hypotf (zoom_pinch_x0 - zoom_pinch_x1,
-                           zoom_pinch_y0 - zoom_pinch_y1);
+      float orig_dist = hypotf ( zoom_pinch_coord[2][0]- zoom_pinch_coord[3][0],
+                                 zoom_pinch_coord[2][1]- zoom_pinch_coord[3][1]);
+      float dist = hypotf (zoom_pinch_coord[0][0] - zoom_pinch_coord[1][0],
+                           zoom_pinch_coord[0][1] - zoom_pinch_coord[1][1]);
     {
       float x, y;
-      float screen_cx = (zoom_pinch_x0 + zoom_pinch_x1)/2;
-      float screen_cy = (zoom_pinch_y0 + zoom_pinch_y1)/2;
+      float screen_cx = (zoom_pinch_coord[0][0] + zoom_pinch_coord[1][0])/2;
+      float screen_cy = (zoom_pinch_coord[0][1] + zoom_pinch_coord[1][1])/2;
+      /* do the zoom-pinch over the average touch position */
       get_coords (o, screen_cx, screen_cy, &x, &y);
       o->scale = orig_zoom * dist / orig_dist;
       o->u = x * o->scale - screen_cx;
       o->v = y * o->scale - screen_cy;
-      o->u -= (e->delta_x )/2;
-      o->v -= (e->delta_y )/2;
+
+      o->u -= (e->delta_x )/2; /* doing half contribution of motion per finger */
+      o->v -= (e->delta_y )/2; /* is simple and roughly right */
     }
 
     }
@@ -917,6 +903,10 @@ static void center_active_entry (State *o)
 
 static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
 {
+  static float zoom_pinch_coord[4][2] = {0,};
+  static int   zoom_pinch = 0;
+  static float orig_zoom = 1.0;
+
   State *o = data1;
   if (e->type == MRG_DRAG_RELEASE)
   {
@@ -925,39 +915,38 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
   {
     if (e->device_no == 5)
     {
-      zoom_pinch_x1 = e->x;
-      zoom_pinch_y1 = e->y;
-      zoom_pinch_x1_start = zoom_pinch_x1;
-      zoom_pinch_y1_start = zoom_pinch_y1;
-      zoom_pinch_x0_start = zoom_pinch_x0;
-      zoom_pinch_y0_start = zoom_pinch_y0;
+      zoom_pinch_coord[1][0] = e->x;
+      zoom_pinch_coord[1][1] = e->y;
+
+      zoom_pinch_coord[2][0] = zoom_pinch_coord[0][0];
+      zoom_pinch_coord[2][1] = zoom_pinch_coord[0][1];
+      zoom_pinch_coord[3][0] = zoom_pinch_coord[1][0];
+      zoom_pinch_coord[3][1] = zoom_pinch_coord[1][1];
+
       zoom_pinch = 1;
+
+
       orig_zoom = o->dir_scale;
     }
   } else if (e->type == MRG_DRAG_MOTION)
   {
-    if (e->device_no == 1 || e->device_no == 4)
+    if (e->device_no == 1 || e->device_no == 4) /* 1 is mouse pointer 4 is first finger */
     {
-      //o->u -= (e->delta_x ); // dragged but ignored
-      o->v -= (e->delta_y );
-
-      zoom_pinch_x0 = e->x;
-      zoom_pinch_y0 = e->y;
+      zoom_pinch_coord[0][0] = e->x;
+      zoom_pinch_coord[0][1] = e->y;
     }
     if (e->device_no == 5)
     {
-      zoom_pinch_x1 = e->x;
-      zoom_pinch_y1 = e->y;
+      zoom_pinch_coord[1][0] = e->x;
+      zoom_pinch_coord[1][1] = e->y;
     }
+
     if (zoom_pinch)
     {
-      float orig_dist = hypotf ( zoom_pinch_x0_start - zoom_pinch_x1_start,
-                                 zoom_pinch_y0_start - zoom_pinch_y1_start);
-      float dist = hypotf ( zoom_pinch_x0 - zoom_pinch_x1,
-                                 zoom_pinch_y0 - zoom_pinch_y1);
-      //char command[50];
-      //sprintf (command, "zoom %f", orig_zoom * dist / orig_dist);
-      //argvs_eval (command);
+      float orig_dist = hypotf ( zoom_pinch_coord[2][0]- zoom_pinch_coord[3][0],
+                                 zoom_pinch_coord[2][1]- zoom_pinch_coord[3][1]);
+      float dist = hypotf (zoom_pinch_coord[0][0] - zoom_pinch_coord[1][0],
+                           zoom_pinch_coord[0][1] - zoom_pinch_coord[1][1]);
       o->dir_scale = orig_zoom * dist / orig_dist;
 
       center_active_entry (o);
