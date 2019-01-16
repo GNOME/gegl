@@ -1202,9 +1202,10 @@ cmd_todo (COMMAND_ARGS)
   printf ("int/double slider\n");
   printf ("enum selection\n");
   printf ("units in commandline\n");
-  printf ("animation of properties\n");
   printf ("crop mode\n");
   printf ("polyline/bezier on screen editing\n");
+  printf ("rewrite in lua\n");
+  printf ("animation of properties\n");
   printf ("star/comment storage\n");
   printf ("dir actions: rename, discard\n");
   return 0;
@@ -3362,8 +3363,9 @@ static void go_prev (State *o)
   }
 }
 
- int cmd_clear (COMMAND_ARGS);
-int cmd_clear (COMMAND_ARGS) /* "clear", 0, "", ""*/
+int cmd_clear (COMMAND_ARGS); /* "clear", 0, "", "clears the scrollback and triggers as rerender"*/
+int
+cmd_clear (COMMAND_ARGS)
 {
   while (scrollback)
   {
@@ -3371,6 +3373,8 @@ int cmd_clear (COMMAND_ARGS) /* "clear", 0, "", ""*/
     mrg_list_remove (&scrollback, data);
     free (data);
   }
+  populate_path_list (global_state);
+  renderer_dirty ++; // also force a rerender as a side effect, sometimes useful
   mrg_queue_draw (global_state->mrg, NULL);
   return 0;
 }
