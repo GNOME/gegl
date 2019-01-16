@@ -399,7 +399,7 @@ static void populate_path_list (State *o)
           char *tmp = unsuffix_path (fpath);
           g_free (fpath);
           fpath = g_strdup (tmp);
-          free (tmp);
+          g_free (tmp);
         }
 
         if (!g_list_find_custom (o->paths, fpath, (void*)g_strcmp0))
@@ -698,7 +698,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   o.preview_quality = 2.0;
   o.slide_pause     = 5.0;
   o.slide_enabled   = 0;
-  o.concurrent_thumbnailers = -1;
+  o.concurrent_thumbnailers = 2;
   o.show_bindings   = 0;
 
   if (access (argv[1], F_OK) != -1)
@@ -798,6 +798,7 @@ static float zoom_pinch_x0_start = 0;
 static float zoom_pinch_y0_start = 0;
 static float zoom_pinch_x1_start = 0;
 static float zoom_pinch_y1_start = 0;
+
 static int zoom_pinch = 0;
 static float orig_zoom = 1.0;
 
@@ -844,9 +845,6 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
     if (e->device_no == 1 || e->device_no == 4)
     {
 
-      o->u -= (e->delta_x );
-      o->v -= (e->delta_y );
-
       zoom_pinch_x0 = e->x;
       zoom_pinch_y0 = e->y;
     }
@@ -855,15 +853,33 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
       zoom_pinch_x1 = e->x;
       zoom_pinch_y1 = e->y;
     }
+
     if (zoom_pinch)
     {
       float orig_dist = hypotf ( zoom_pinch_x0_start - zoom_pinch_x1_start,
                                  zoom_pinch_y0_start - zoom_pinch_y1_start);
-      float dist = hypotf ( zoom_pinch_x0 - zoom_pinch_x1,
-                                 zoom_pinch_y0 - zoom_pinch_y1);
-      char command[50];
-      sprintf (command, "zoom %f", orig_zoom * dist / orig_dist);
-      argvs_eval (command);
+      float dist = hypotf (zoom_pinch_x0 - zoom_pinch_x1,
+                           zoom_pinch_y0 - zoom_pinch_y1);
+    {
+      float x, y;
+      float screen_cx = (zoom_pinch_x0 + zoom_pinch_x1)/2;
+      float screen_cy = (zoom_pinch_y0 + zoom_pinch_y1)/2;
+      get_coords (o, screen_cx, screen_cy, &x, &y);
+      o->scale = orig_zoom * dist / orig_dist;
+      o->u = x * o->scale - screen_cx;
+      o->v = y * o->scale - screen_cy;
+      o->u -= (e->delta_x )/2;
+      o->v -= (e->delta_y )/2;
+    }
+
+    }
+    else
+    {
+      if (e->device_no == 1 || e->device_no == 4)
+      {
+        o->u -= (e->delta_x );
+        o->v -= (e->delta_y );
+      }
     }
 
     o->renderer_state = 0;
@@ -879,7 +895,7 @@ static float hack_dim = 5;
 
 static void update_grid_dim (State *o)
 {
-  hack_dim = mrg_height (o->mrg) * 0.33 * o->dir_scale;
+  hack_dim = mrg_height (o->mrg) * 0.2 * o->dir_scale;
   hack_cols = mrg_width (o->mrg) / hack_dim;
 }
 
@@ -1215,8 +1231,8 @@ static void entry_select (MrgEvent *event, void *data1, void *data2)
 static void entry_load (MrgEvent *event, void *data1, void *data2)
 {
   State *o = data1;
-  free (o->path);
-  o->path = strdup (data2);
+  g_free (o->path);
+  o->path = g_strdup (data2);
   load_path (o);
   mrg_queue_draw (event->mrg, NULL);
 }
@@ -1248,11 +1264,12 @@ static void ui_dir_viewer (State *o)
   Mrg *mrg = o->mrg;
   cairo_t *cr = mrg_cr (mrg);
   GList *iter;
-  float dim = mrg_height (mrg) * 0.33 * o->dir_scale;
+  float dim;
+  int   cols;
   int   no = 0;
-  int   cols = mrg_width (mrg) / dim;
-  hack_cols = cols;
-  hack_dim = dim;
+  update_grid_dim (o);
+  cols = hack_cols;
+  dim = hack_dim;
 
   cairo_rectangle (cr, 0,0, mrg_width(mrg), mrg_height(mrg));
   mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
@@ -1337,7 +1354,7 @@ static void ui_dir_viewer (State *o)
         }
 #endif
       }
-      free (p2);
+      g_free (p2);
 
       if (
          access (thumbpath, F_OK) == 0 && //XXX: query image should suffice
@@ -2169,7 +2186,7 @@ static void ui_debug_op_chain (State *o)
 }
 
 
-static char commandline[1024] = "";
+static char commandline[1024] = {0,};
 
 static void update_commandline (const char *new_commandline, void *data)
 {
@@ -2850,7 +2867,7 @@ static void gegl_ui (Mrg *mrg, void *data)
     if (commandline[0]==0)
     {
       mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
-      mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom out");
+      mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom in");
       mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom out");
       mrg_add_binding (mrg, "1", NULL, NULL, run_command, "zoom 1.0");
     }
@@ -2882,18 +2899,20 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
     else
     {
-      mrg_add_binding (mrg, "home", NULL, NULL, run_command, "activate first");
-      mrg_add_binding (mrg, "end", NULL, NULL, run_command, "activate last");
+      mrg_add_binding (mrg, "home",     NULL, NULL, run_command, "activate first");
+      mrg_add_binding (mrg, "end",      NULL, NULL, run_command, "activate last");
       if (o->active && gegl_node_has_pad (o->active, "aux"))
         mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate aux");
       mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
       //mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
     }
+#if 0
     mrg_add_binding (mrg, "1", NULL, NULL, run_command, "star 1");
     mrg_add_binding (mrg, "2", NULL, NULL, run_command, "star 2");
     mrg_add_binding (mrg, "3", NULL, NULL, run_command, "star 3");
     mrg_add_binding (mrg, "4", NULL, NULL, run_command, "star 4");
     mrg_add_binding (mrg, "5", NULL, NULL, run_command, "star 5");
+#endif
   }
   if (o->is_dir)
   {
@@ -2926,7 +2945,7 @@ static void gegl_ui (Mrg *mrg, void *data)
 
 static char *get_path_parent (const char *path)
 {
-  char *ret = strdup (path);
+  char *ret = g_strdup (path);
   char *lastslash = strrchr (ret, '/');
   if (lastslash)
   {
@@ -2943,7 +2962,7 @@ static char *suffix_path (const char *path)
   char *ret;
   if (!path)
     return NULL;
-  ret  = malloc (strlen (path) + strlen (suffix) + 3);
+  ret  = g_malloc (strlen (path) + strlen (suffix) + 3);
   strcpy (ret, path);
   sprintf (ret, "%s%s", path, ".gegl");
   return ret;
@@ -2955,7 +2974,7 @@ static char *unsuffix_path (const char *path)
 
   if (!path)
     return NULL;
-  ret = malloc (strlen (path) + 4);
+  ret = g_malloc (strlen (path) + 4);
   strcpy (ret, path);
   last_dot = strrchr (ret, '.');
   *last_dot = '\0';
@@ -2970,7 +2989,7 @@ static int is_gegl_path (const char *path)
     char *unsuffixed = unsuffix_path (path);
     if (access (unsuffixed, F_OK) != -1)
       ret = 1;
-    free (unsuffixed);
+    g_free (unsuffixed);
   }
   return ret;
 }
@@ -2995,29 +3014,29 @@ static void load_path_inner (State *o,
 {
   char *meta;
   if (o->src_path)
-    free (o->src_path);
+    g_free (o->src_path);
 
   if (is_gegl_path (path))
   {
     if (o->save_path)
-      free (o->save_path);
+      g_free (o->save_path);
     o->save_path = path;
     path = unsuffix_path (o->save_path); // or maybe decode first line?
-    o->src_path = strdup (path);
+    o->src_path = g_strdup (path);
   }
   else
   {
     if (o->save_path)
-      free (o->save_path);
+      g_free (o->save_path);
     if (g_str_has_suffix (path, ".gegl"))
     {
       //fprintf (stderr, "oooo\n");
-      o->save_path = strdup (path);
+      o->save_path = g_strdup (path);
     }
     else
     {
       o->save_path = suffix_path (path);
-      o->src_path = strdup (path);
+      o->src_path = g_strdup (path);
     }
   }
 
@@ -3071,7 +3090,7 @@ static void load_path_inner (State *o,
       GeglNode *prev = NULL;
       char *containing_path = get_path_parent (path);
       o->gegl = gegl_node_new_from_serialized (meta, containing_path);
-      free (containing_path);
+      g_free (containing_path);
       o->sink = o->gegl;
       o->source = NULL;
 
@@ -3099,8 +3118,8 @@ static void load_path_inner (State *o,
             gegl_node_link_many (o->source, prev, NULL);
           }
           if (o->src_path)
-            free (o->src_path);
-          o->src_path = strdup (path);
+            g_free (o->src_path);
+          o->src_path = g_strdup (path);
 
           o->save = gegl_node_new_child (o->gegl, "operation", "gegl:save",
                                               "path", o->save_path,
@@ -3119,8 +3138,8 @@ static void load_path_inner (State *o,
                          "operation", "gegl:nop", NULL);
       load_into_buffer (o, path);
       if (o->src_path)
-        free (o->src_path);
-      o->src_path = strdup (path);
+        g_free (o->src_path);
+      o->src_path = g_strdup (path);
       o->source = gegl_node_new_child (o->gegl,
                                      "operation", "gegl:buffer-source",
                                      NULL);
@@ -3144,7 +3163,7 @@ static void load_path_inner (State *o,
                     o->sink, 0, gegl_node_get_bounding_box (o->sink).height,
                     containing_path,
                     &error);
-    free (containing_path);
+    g_free (containing_path);
     if (error)
     {
       fprintf (stderr, "Error: %s\n", error->message);
@@ -3247,8 +3266,8 @@ static void go_next (State *o)
 
   if (curr && curr->next)
   {
-    free (o->path);
-    o->path = strdup (curr->next->data);
+    g_free (o->path);
+    o->path = g_strdup (curr->next->data);
     load_path (o);
     mrg_queue_draw (o->mrg, NULL);
   }
@@ -3260,8 +3279,8 @@ static void go_prev (State *o)
 
   if (curr && curr->prev)
   {
-    free (o->path);
-    o->path = strdup (curr->prev->data);
+    g_free (o->path);
+    o->path = g_strdup (curr->prev->data);
     load_path (o);
     mrg_queue_draw (o->mrg, NULL);
   }
@@ -3276,6 +3295,7 @@ int cmd_clear (COMMAND_ARGS) /* "clear", 0, "", ""*/
     mrg_list_remove (&scrollback, data);
     free (data);
   }
+  mrg_queue_draw (global_state->mrg, NULL);
   return 0;
 }
 
@@ -3593,6 +3613,43 @@ int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|fir
   return 0;
 }
 
+  int cmd_cd (COMMAND_ARGS);
+int cmd_cd (COMMAND_ARGS) /* "cd", 1, "<target>", "convenience wrapper making some common commandline navigation commands work"*/
+{
+  State *o = global_state;
+  if (!strcmp (argv[1], ".."))
+  {
+    argvs_eval ("parent");
+  }
+  else if (argv[1][0] == '/')
+  {
+    if (o->path)
+      g_free (o->path);
+    o->path = g_strdup (argv[1]);
+    if (o->path[strlen(o->path)-1]=='/')
+      o->path[strlen(o->path)-1]='\0';
+    load_path (o);
+  }
+  else
+  {
+    char *new_path = g_strdup_printf ("%s/%s", o->path, argv[1]);
+    char *rp = realpath (new_path, NULL);
+
+    if (access (rp, F_OK) == 0)
+    {
+      if (o->path)
+        g_free (o->path);
+      o->path = g_strdup (rp);
+      if (o->path[strlen(o->path)-1]=='/')
+        o->path[strlen(o->path)-1]='\0';
+      load_path (o);
+    }
+    free (rp);
+    g_free (new_path);
+  }
+  return 0;
+}
+
 
   int cmd_zoom (COMMAND_ARGS);
 int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>", "Changes zoom level, asbolsute or relative, around middle of screen."*/
@@ -3609,7 +3666,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
   {
      if (!strcmp(argv[1], "in"))
      {
-       float zoom_factor = 0.2;
+       float zoom_factor = 0.25;
        if (argv[2])
          zoom_factor = g_strtod (argv[2], NULL);
        zoom_factor += 1.0;
@@ -3617,7 +3674,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
       }
       else if (!strcmp(argv[1], "out"))
       {
-        float zoom_factor = 0.2;
+        float zoom_factor = 0.25;
         if (argv[2])
           zoom_factor = g_strtod (argv[2], NULL);
         zoom_factor += 1.0;
@@ -3630,7 +3687,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
           o->dir_scale = 1;
       }
 
-      if (o->dir_scale > 1.7) o->dir_scale = 1.7;
+      if (o->dir_scale > 2.2) o->dir_scale = 2.2;
       if (o->dir_scale < 0.1) o->dir_scale = 0.1;
 
       center_active_entry (o);
@@ -3742,7 +3799,7 @@ static int set_setting (Setting *setting, const char *value)
         (*(float*)(((char *)o) + setting->offset)) = g_strtod (value, NULL);
     break;
     case 2:
-        memcpy ((((char *)o) + setting->offset), strdup(value), sizeof (void*));
+        memcpy ((((char *)o) + setting->offset), g_strdup (value), sizeof (void*));
     break;
   }
   return 0;
@@ -3908,7 +3965,7 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
     path = g_list_nth_data (o->paths, o->entry_no);
   }
 
-  old_path = strdup (path);
+  old_path = g_strdup (path);
   if (!o->is_dir)
   {
   argvs_eval ("next");
@@ -3917,7 +3974,7 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
      argvs_eval ("prev");
    }
   }
-  tmp = strdup (old_path);
+  tmp = g_strdup (old_path);
   lastslash  = strrchr (tmp, '/');
   if (lastslash)
   {
@@ -3936,11 +3993,11 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
     system (command);
     sprintf (command, "mv %s %s/.discard > /dev/null 2>&1", suffixed, tmp);
     system (command);
-    free (suffixed);
+    g_free (suffixed);
     populate_path_list (o);
   }
-  free (tmp);
-  free (old_path);
+  g_free (tmp);
+  g_free (old_path);
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
@@ -3956,7 +4013,7 @@ int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
     serialized = gegl_serialize (o->source,
                    gegl_node_get_producer (o->sink, "input", NULL),
  containing_path, GEGL_SERIALIZE_TRIM_DEFAULTS|GEGL_SERIALIZE_VERSION|GEGL_SERIALIZE_INDENT);
-    free (containing_path);
+    g_free (containing_path);
   }
 
   {
