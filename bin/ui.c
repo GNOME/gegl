@@ -199,7 +199,7 @@ struct _State {
   float          u, v;
   float          scale;
   float          dir_scale;
-  float          render_quality;
+  float          render_quality; /* default (and in code swapped for preview_quality during preview rendering, this is the canonical read location for the value)  */
   float          preview_quality;
 
   int            show_graph;
@@ -695,7 +695,8 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   o.mrg             = mrg;
   o.scale           = 1.0;
   o.render_quality  = 1.0;
-  o.preview_quality = 2.0;
+  o.preview_quality = 1.0;
+  //o.preview_quality = 2.0;
   o.slide_pause     = 5.0;
   o.slide_enabled   = 0;
   o.concurrent_thumbnailers = 2;
@@ -1026,6 +1027,7 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
       const char *picked_op = gegl_node_get_operation (picked);
       if (g_str_equal (picked_op, "gegl:png-load")||
           g_str_equal (picked_op, "gegl:jpg-load")||
+          g_str_equal (picked_op, "gegl:gif-load")||
           g_str_equal (picked_op, "gegl:tiff-load"))
       {
         GeglNode *parent = gegl_node_get_parent (picked);
@@ -1194,7 +1196,6 @@ int
 cmd_todo (COMMAND_ARGS)
 {
   printf ("commandline improvements, scrolling, autohide.\n");
-  printf ("swap node up/down (raise/lower)\n");
   printf ("op selection\n");
   printf ("interpret GUM\n");
   printf ("better int/double edit\n");
@@ -2509,6 +2510,48 @@ int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
   return 0;
 }
 
+int cmd_swap (COMMAND_ARGS);/* "swap", 1, "<input|output>", "swaps position with other node, allows doing the equivalent of raise lower and other local reordering of nodes."*/
+
+int
+cmd_swap (COMMAND_ARGS)
+{
+  State *o = global_state;
+  GeglNode *node = o->active;
+  GeglNode *next, *prev;
+
+  const gchar *consumer_name = NULL;
+  const gchar *next_consumer_name = NULL;
+  prev = gegl_node_get_producer (node, "input", NULL);
+  next = gegl_node_get_consumer_no (node, "output", &consumer_name, 0);
+
+  if (next && prev)
+    {
+
+      if (!strcmp (argv[1], "output") && next != o->sink)
+      {
+        GeglNode *next_next = gegl_node_get_consumer_no (next, "output", &next_consumer_name, 0);
+
+        gegl_node_link_many (prev, next, node, next_next, NULL);
+      }
+      else if (!strcmp (argv[1], "input") && prev != o->source)
+      {
+        GeglNode *prev_prev = gegl_node_get_producer (prev, "input", NULL);
+
+        gegl_node_link_many (prev_prev, node, prev, next, NULL);
+      }
+
+    }
+
+  mrg_queue_draw (o->mrg, NULL);
+  renderer_dirty++;
+  o->rev++;
+  return 0;
+}
+
+
+
+
+
   int cmd_move (COMMAND_ARGS);
 int cmd_move (COMMAND_ARGS) /* "move", 0, "", "changes to move tool"*/
 {
@@ -2951,6 +2994,15 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "activate output");
     if (o->active && gegl_node_has_pad (o->active, "input"))
       mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "activate input");
+
+    if (o->active && gegl_node_has_pad (o->active, "input") &&
+                     gegl_node_has_pad (o->active, "output"))
+    {
+      mrg_add_binding (mrg, "control-up", NULL, NULL, run_command, "swap output");
+      mrg_add_binding (mrg, "control-down", NULL, NULL, run_command, "swap input");
+    }
+
+
   }
 
   mrg_add_binding (mrg, "F1", NULL, NULL, run_command, "toggle cheatsheet");
