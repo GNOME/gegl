@@ -2028,7 +2028,10 @@ static void list_ops (State *o, GeglNode *iter, int indent)
      }
      else
      {
-       mrg_printf (mrg, "%s", opname);
+       if (g_str_has_prefix (opname, "gegl:"))
+         mrg_printf (mrg, "%s", opname+5);
+       else
+         mrg_printf (mrg, "%s", opname);
      }
 
 
