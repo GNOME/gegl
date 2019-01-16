@@ -3743,6 +3743,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
     o->scale = g_strtod(argv[1], NULL);
     o->u = x * o->scale - mrg_width(o->mrg)/2;
     o->v = y * o->scale - mrg_height(o->mrg)/2;
+    mrg_queue_draw (o->mrg, NULL);
   }
   return 0;
 }
