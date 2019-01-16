@@ -39,7 +39,7 @@ const char *css =
 "a { color: yellow; text-decoration: none;  }\n"
 
 
-"div.shell{  color:white; position:fixed;left:0em;top:50%;background-color: rgba(0,0,0,0.35); width:100vh; height: 40%; font-size:1.8vh; padding-left: 1em; padding-top:1em;}\n"
+"div.shell{  color:white; position:fixed;left:0em;top:50%;background-color: rgba(0,0,0,0.35); width:100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
 //"div.shell { font-size: 0.8em; background-color:rgba(0,0,0,0.5);color:white; }\n"
 "div.shellline { background-color:rgba(0,0,0,0.0);color:white; }\n"
 "div.prompt { color:#7aa; display: inline; }\n"
@@ -1187,6 +1187,28 @@ static void unset_edited_prop (MrgEvent *e, void *data1, void *data2)
   mrg_queue_draw (e->mrg, NULL);
 }
 
+
+int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
+
+int
+cmd_todo (COMMAND_ARGS)
+{
+  printf ("commandline improvements, scrolling, autohide.\n");
+  printf ("swap node up/down (raise/lower)\n");
+  printf ("op selection\n");
+  printf ("interpret GUM\n");
+  printf ("better int/double edit\n");
+  printf ("int/double slider\n");
+  printf ("enum selection\n");
+  printf ("units in commandline\n");
+  printf ("animation of properties\n");
+  printf ("crop mode\n");
+  printf ("polyline/bezier on screen editing\n");
+  printf ("star/comment storage\n");
+  printf ("dir actions: rename, discard\n");
+}
+
+
 int cmd_mipmap (COMMAND_ARGS);/* "mipmap", -1, "", ""*/
 
 int
@@ -1487,7 +1509,6 @@ static void ui_viewer (State *o)
   mrg_add_binding (mrg, "up", NULL, NULL,    run_command, "pan 0 -0.1");
   mrg_add_binding (mrg, "down", NULL, NULL,  run_command, "pan 0 0.1");
 #endif
-
 
   if (o->slide_enabled && o->slide_timeout == 0)
   {
@@ -2170,6 +2191,7 @@ static void ui_debug_op_chain (State *o)
 {
   Mrg *mrg = o->mrg;
   GeglNode *iter;
+  mrg_start         (mrg, "div.editor", NULL);
   mrg_set_edge_top  (mrg, mrg_height (mrg) * 0.2);
   mrg_set_font_size (mrg, mrg_height (mrg) * 0.03);
   mrg_set_style (mrg, "color:white; background-color: rgba(0,0,0,0.5)");
@@ -2183,6 +2205,7 @@ static void ui_debug_op_chain (State *o)
   mrg_set_xy (mrg, mrg_width(mrg), mrg_em (mrg) * 2);
   if (o->active)
     list_node_props (o, o->active, 1);
+  mrg_end (mrg);
 }
 
 
