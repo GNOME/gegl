@@ -417,8 +417,7 @@ static void populate_path_list (State *o)
   free (namelist);
 }
 
-
-char **ops = NULL;
+char **ops = NULL;  /* initialized by the non-ui main() before ours get called */
 
 static void open_audio (Mrg *mrg, int frequency)
 {
@@ -521,9 +520,14 @@ static void generate_thumb (ThumbQueueItem *item)
     }
     goto cleanup;
   }
+  /* spawning new gegl processes takes up a lot of time, perhaps passing multiple files
+     in one go, or having a way of appending requests to existing processes would be good..
 
+     perhaps doing simple downscales with no filters should be done with a faster tool?
+     for thumbnail generation the mipmap downscale is already a very high quality result-
+     that perhaps should be used instead of an actual scale op?
+   */
   g_spawn_async (NULL, &argv[0], NULL, G_SPAWN_SEARCH_PATH|G_SPAWN_SEARCH_PATH_FROM_ENVP,  NULL, NULL, &child_pid, &error);
-  //fprintf (stderr, "spawned %i %s %s %s\n", (int) child_pid, item->path, item->thumbpath, item->tempthumbpath);
   if (error)
     fprintf (stderr, "%s\n", error->message);
 
@@ -1291,8 +1295,7 @@ static void ui_dir_viewer (State *o)
 
   mrg_set_edge_right (mrg, 4095);
   cairo_save (cr);
-  cairo_translate (cr, 0, -o->v);//o->v);
-
+  cairo_translate (cr, 0, -o->v);
   {
     float x = dim * (no%cols);
     float y = dim * (no/cols);
@@ -1353,20 +1356,10 @@ static void ui_dir_viewer (State *o)
                              (stat_buf.st_mtime >
                              thumb_stat_buf.st_mtime))
         {
-          //fprintf (stderr, "should get rid of thumb for%s\n", p2);
           unlink (thumbpath);
           mrg_forget_image (mrg, thumbpath);
         }
 
-#if 0
-        g_free (thumbpath);
-        thumbpath = get_thumb_path (path);
-        if (access (thumbpath, F_OK) == -1)
-        {
-          g_free (thumbpath);
-          thumbpath = get_thumb_path (p2);
-        }
-#endif
       }
       g_free (p2);
 
@@ -1390,7 +1383,6 @@ static void ui_dir_viewer (State *o)
          if (access (thumbpath, F_OK) != 0) // only queue if does not exist,
                                             // mrg/stb_image seem to suffer on some of our pngs
          {
-           //fprintf (stderr, "queuing %s %s\n", path, thumbpath);
            queue_thumb (path, thumbpath);
          }
       }
@@ -1440,11 +1432,6 @@ static void ui_viewer (State *o)
   Mrg *mrg = o->mrg;
   cairo_t *cr = mrg_cr (mrg);
   cairo_rectangle (cr, 0,0, mrg_width(mrg), mrg_height(mrg));
-#if 0
-  mrg_listen (mrg, MRG_DRAG, on_pan_drag, o, NULL);
-  mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
-  mrg_listen (mrg, MRG_SCROLL, scroll_cb, o, NULL);
-#endif
 
   cairo_scale (cr, mrg_width(mrg), mrg_height(mrg));
   cairo_new_path (cr);
@@ -1495,12 +1482,6 @@ static void ui_viewer (State *o)
   mrg_listen (mrg, MRG_PRESS, run_command, "toggle editing", NULL);
   cairo_new_path (cr);
 
-#if 0
-  mrg_add_binding (mrg, "left", NULL, NULL,  run_command, "pan -0.1 0");
-  mrg_add_binding (mrg, "right", NULL, NULL, run_command, "pan 0.1 0");
-  mrg_add_binding (mrg, "up", NULL, NULL,    run_command, "pan 0 -0.1");
-  mrg_add_binding (mrg, "down", NULL, NULL,  run_command, "pan 0 0.1");
-#endif
 
   if (o->slide_enabled && o->slide_timeout == 0)
   {
@@ -1585,62 +1566,6 @@ static void canvas_touch_handling (Mrg *mrg, State *o)
   }
 }
 
-
-  int cmd_node_add_aux(COMMAND_ARGS);
-int cmd_node_add_aux (COMMAND_ARGS) /* "node-add-aux", 0, "", ""*/
-{
-  State *o = global_state;
-  GeglNode *ref = o->active;
-  GeglNode *producer = gegl_node_get_producer (o->active, "aux", NULL);
-
-  if (!gegl_node_has_pad (ref, "aux"))
-    return -1;
-
-  o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
-
-  if (producer)
-  {
-    gegl_node_connect_to (producer, "output", o->active, "input");
-  }
-  gegl_node_connect_to (o->active, "output", ref, "aux");
-
-  o->editing_op_name = 1;
-  mrg_set_cursor_pos (o->mrg, 0);
-  o->new_opname[0]=0;
-  fprintf (stderr, "add aux\n");
-  renderer_dirty++;
-  o->rev++;
-  mrg_queue_draw (o->mrg, NULL);
-  return 0;
-}
-
-  int cmd_node_add_input (COMMAND_ARGS);
-int cmd_node_add_input (COMMAND_ARGS) /* "node-add-input", 0, "", ""*/
-{
-  State *o = global_state;
-  GeglNode *ref = o->active;
-  GeglNode *producer = gegl_node_get_producer (o->active, "input", NULL);
-  if (!gegl_node_has_pad (ref, "input"))
-    return -1;
-
-  o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
-
-  if (producer)
-  {
-    gegl_node_connect_to (producer, "output", o->active, "input");
-  }
-  gegl_node_connect_to (o->active, "output", ref, "input");
-
-  o->editing_op_name = 1;
-  mrg_set_cursor_pos (o->mrg, 0);
-  o->new_opname[0]=0;
-  fprintf (stderr, "add input\n");
-  renderer_dirty++;
-  o->rev++;
-  mrg_queue_draw (o->mrg, NULL);
-  return 0;
-}
-
 static GeglNode *add_aux (State *o, GeglNode *active, const char *optype)
 {
   GeglNode *ref = active;
@@ -1680,29 +1605,77 @@ static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
   return ret;
 }
 
-  int cmd_node_add_output(COMMAND_ARGS);
-int cmd_node_add_output (COMMAND_ARGS) /* "node-add-output", 0, "", ""*/
+int cmd_node_add (COMMAND_ARGS);/* "node-add", 1, "<input|output|aux>", "add a neighboring node and permit entering its name, for use in touch ui."*/
+int
+cmd_node_add (COMMAND_ARGS)
 {
   State *o = global_state;
-  GeglNode *ref = o->active;
-  const char *consumer_name = NULL;
-  GeglNode *consumer = gegl_node_get_consumer_no (o->active, "output", &consumer_name, 0);
-  if (!gegl_node_has_pad (ref, "output"))
-    return -1;
-
-  if (consumer)
+  if (!strcmp(argv[1], "input"))
   {
+    State *o = global_state;
+    GeglNode *ref = o->active;
+    GeglNode *producer = gegl_node_get_producer (o->active, "input", NULL);
+    if (!gegl_node_has_pad (ref, "input"))
+      return -1;
+
     o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
-    gegl_node_link_many (ref, o->active, NULL);
-    gegl_node_connect_to (o->active, "output", consumer, consumer_name);
+
+    if (producer)
+    {
+      gegl_node_connect_to (producer, "output", o->active, "input");
+    }
+    gegl_node_connect_to (o->active, "output", ref, "input");
+
     o->editing_op_name = 1;
     mrg_set_cursor_pos (o->mrg, 0);
     o->new_opname[0]=0;
   }
+  else if (!strcmp(argv[1], "aux"))
+  {
+    GeglNode *ref = o->active;
+    GeglNode *producer = gegl_node_get_producer (o->active, "aux", NULL);
 
+    if (!gegl_node_has_pad (ref, "aux"))
+      return -1;
+
+    o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
+
+    if (producer)
+    {
+      gegl_node_connect_to (producer, "output", o->active, "input");
+    }
+    gegl_node_connect_to (o->active, "output", ref, "aux");
+
+    o->editing_op_name = 1;
+    mrg_set_cursor_pos (o->mrg, 0);
+    o->new_opname[0]=0;
+  }
+  else if (!strcmp(argv[1], "output"))
+  {
+    GeglNode *ref = o->active;
+    const char *consumer_name = NULL;
+    GeglNode *consumer = gegl_node_get_consumer_no (o->active, "output", &consumer_name, 0);
+    if (!gegl_node_has_pad (ref, "output"))
+      return -1;
+
+    if (consumer)
+    {
+      o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
+      gegl_node_link_many (ref, o->active, NULL);
+      gegl_node_connect_to (o->active, "output", consumer, consumer_name);
+      o->editing_op_name = 1;
+      mrg_set_cursor_pos (o->mrg, 0);
+      o->new_opname[0]=0;
+    }
+  }
+  renderer_dirty++;
+  o->rev++;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
+
+
+
 
 #define INDENT_STR "   "
 
@@ -2147,7 +2120,7 @@ static void list_ops (State *o, GeglNode *iter, int indent)
        mrg_start_with_style (mrg, ".item", NULL, "color:rgb(197,197,197);background-color: rgba(0,0,0,0.5);");
        for (int i = 0; i < indent; i ++)
          mrg_printf (mrg, INDENT_STR);
-       mrg_text_listen (mrg, MRG_CLICK, run_command, "node-add-input", NULL);
+       mrg_text_listen (mrg, MRG_CLICK, run_command, "node-add input", NULL);
        mrg_printf (mrg, "+  \n");
        mrg_text_listen_done (mrg);
        mrg_end (mrg);
@@ -2703,7 +2676,7 @@ static void ui_show_bindings (Mrg *mrg, void *data)
 #if 0
     if (b->command)
     {
-      mrg_start (mrg, "d.binding-command", NULL);mrg_printf(mrg,"%s", b->command);mrg_end (mrg);
+      mrg_start (mrg, "dd.binding", NULL);mrg_printf(mrg,"%s", b->command);mrg_end (mrg);
     }
 #endif
     if (b->cb == run_command)
@@ -2738,7 +2711,6 @@ static void ui_commandline (Mrg *mrg, void *data)
   cairo_save (cr);
   if (scrollback)
   mrg_start (mrg, "div.shell", NULL);
-  //mrg_set_edge_left (mrg, em);
   mrg_set_xy (mrg, em, h - em * 1);
   mrg_start (mrg, "div.prompt", NULL);
   mrg_printf (mrg, "> ");
@@ -2751,7 +2723,6 @@ static void ui_commandline (Mrg *mrg, void *data)
   mrg_edit_end (mrg);
   row++;
 
-  //mrg_set_edge_left (mrg, w * 0.5);
   mrg_set_xy (mrg, em, h * 0.5);
 
   {
@@ -2901,18 +2872,19 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   if (!edited_prop && !o->editing_op_name && ! o->is_dir)
   {
-
-//    if (o->active && gegl_node_has_pad (o->active, "aux"))
-//      mrg_add_binding (mrg, "right", NULL, NULL,     run_command, "activate aux");
-
-    mrg_add_binding (mrg, "control-o", NULL, NULL, run_command, "node-add-output");
-    mrg_add_binding (mrg, "control-i", NULL, NULL, run_command, "node-add-input");
-    mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "node-add-aux");
+#if 0
+    if (o->active && gegl_node_has_pad (o->active, "output"))
+      mrg_add_binding (mrg, "control-o", NULL, NULL, run_command, "node-add output");
+    if (o->active && gegl_node_has_pad (o->active, "input"))
+      mrg_add_binding (mrg, "control-i", NULL, NULL, run_command, "node-add input");
+    if (o->active && gegl_node_has_pad (o->active, "aux"))
+      mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "node-add aux");
+#endif
 
     if (o->active != o->source)
       mrg_add_binding (mrg, "control-x", NULL, NULL, run_command, "remove");
 
-    mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "toggle slideshow");
+    mrg_add_binding (mrg, "control-s", NULL, NULL, run_command, "toggle slideshow");
   }
   mrg_add_binding (mrg, "control-l", NULL, NULL, run_command, "clear");
 
