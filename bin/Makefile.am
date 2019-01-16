@@ -4,6 +4,7 @@ endif
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
+	-I$(top_srcdir)/bin \
 	-I$(top_builddir)/bin \
 	-I$(top_builddir)/gegl \
 	-I$(top_srcdir)/gegl \

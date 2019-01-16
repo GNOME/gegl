@@ -122,7 +122,18 @@ argvs_cleanup (void)
     argvs_free (e);
 }
 
+#if HAVE_MRG
 #include "argvs-commands.inc"
+#else
+int cmd_echo_on (COMMAND_ARGS);
+int cmd_source (COMMAND_ARGS);
+int cmd_argvs (COMMAND_ARGS);
+int cmd_aa_help (COMMAND_ARGS);
+
+/* dummy to keep things working even without argvs when no ui is built */
+void argvs_register(void) {
+}
+#endif
 /* cmds.inc is supposed to be created by your build system by using the
  * following shell-script to run with your .c files as argument for
  * collecting command definitions.
