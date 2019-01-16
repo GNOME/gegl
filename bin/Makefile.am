@@ -4,6 +4,7 @@ endif
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
+	-I$(top_builddir)/bin \
 	-I$(top_builddir)/gegl \
 	-I$(top_srcdir)/gegl \
 	-I$(top_builddir)/gegl/buffer \
@@ -47,7 +48,7 @@ gegl_SOURCES =			\
 
 argvs-commands.inc: gegl.c ui.c argvs.c Makefile
 	@echo " GEN" $@
-	@$(top_srcdir)/tools/argvs_extract.sh $(top_srcdir)/bin/*.c > argvs-commands.inc
+	@$(top_srcdir)/tools/argvs_extract.sh $(top_srcdir)/bin/*.c > $(top_builddir)/bin/argvs-commands.inc
 
 if HAVE_MRG
 if HAVE_GEXIV2
