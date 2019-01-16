@@ -125,7 +125,6 @@ argvs_cleanup (void)
 #if HAVE_MRG
 #include "argvs-commands.inc"
 #else
-  int cmd_echo_on (COMMAND_ARGS);
   int cmd_source (COMMAND_ARGS);
   int cmd_argvs (COMMAND_ARGS);
   int cmd_aa_help (COMMAND_ARGS);
@@ -361,12 +360,6 @@ void update_prompt (void)
   {
     snprintf (prompt, 59, "> ");
   }
-}
-
-int cmd_echo_on (COMMAND_ARGS) /* "echo_on", 0, "", "enables command echoing udring sourcing" */
-{
-  echo_on = 1;
-  return 0;
 }
 
 int argvs_source (const char *path)
