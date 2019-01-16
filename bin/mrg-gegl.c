@@ -132,7 +132,11 @@ void mrg_gegl_buffer_blit (Mrg *mrg,
   {
     if (copy_buf)
       free (copy_buf);
-    copy_buf_len = width * height * 4;
+
+    /* we over-allocate ones scanline, otherwise we sometimes get
+       crashes.
+     */
+    copy_buf_len = width * (height+1) * 4;
     copy_buf = malloc (copy_buf_len);
   }
   {
@@ -234,7 +238,12 @@ void mrg_gegl_blit (Mrg *mrg,
   {
     if (copy_buf)
       free (copy_buf);
-    copy_buf_len = width * height * 4;
+
+    /* XXX: same overallocation as in other code-path, overallocating a fixed
+            amount might also be a sufficient workaround until the underlying
+            issue is resolved.
+     */
+    copy_buf_len = width * (height+1) * 4;
     copy_buf = malloc (copy_buf_len);
   }
   {
