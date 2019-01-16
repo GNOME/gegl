@@ -125,10 +125,10 @@ argvs_cleanup (void)
 #if HAVE_MRG
 #include "argvs-commands.inc"
 #else
-int cmd_echo_on (COMMAND_ARGS);
-int cmd_source (COMMAND_ARGS);
-int cmd_argvs (COMMAND_ARGS);
-int cmd_aa_help (COMMAND_ARGS);
+  int cmd_echo_on (COMMAND_ARGS);
+  int cmd_source (COMMAND_ARGS);
+  int cmd_argvs (COMMAND_ARGS);
+  int cmd_aa_help (COMMAND_ARGS);
 
 /* dummy to keep things working even without argvs when no ui is built */
 void argvs_register(void) {
