@@ -47,7 +47,7 @@ gegl_SOURCES =			\
 
 argvs-commands.inc: gegl.c ui.c argvs.c Makefile
 	@echo " GEN" $@
-	@$(top_srcdir)/tools/argvs_extract.sh *.c > argvs-commands.inc
+	@$(top_srcdir)/tools/argvs_extract.sh $(top_srcdir)/bin/*.c > argvs-commands.inc
 
 if HAVE_MRG
 if HAVE_GEXIV2
