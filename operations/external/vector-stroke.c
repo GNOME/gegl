@@ -68,8 +68,8 @@ static void path_changed (GeglPath *path,
 
   rect.x -= o->width/2;
   rect.y -= o->width/2;
-  rect.width += o->width;
-  rect.height += o->width;
+  rect.width += o->width * 1.5;
+  rect.height += o->width * 1.5;
 
   gegl_operation_invalidate (userdata, &rect, FALSE);
 };
@@ -101,7 +101,7 @@ const Babl *color_format = gegl_color_get_format (o->color);
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
 {
-  GeglProperties    *o       = GEGL_PROPERTIES (operation);
+  GeglProperties    *o = GEGL_PROPERTIES (operation);
   GeglRectangle  defined = { 0, 0, 512, 512 };
   GeglRectangle *in_rect;
   gdouble        x0, x1, y0, y1;
@@ -111,8 +111,8 @@ get_bounding_box (GeglOperation *operation)
   gegl_path_get_bounds (o->d, &x0, &x1, &y0, &y1);
   defined.x      = x0 - o->width/2;
   defined.y      = y0 - o->width/2;
-  defined.width  = x1 - x0 + o->width;
-  defined.height = y1 - y0 + o->width;
+  defined.width  = x1 - x0 + o->width * 1.5;
+  defined.height = y1 - y0 + o->width * 1.5;
 
   if (in_rect)
     {
@@ -306,7 +306,6 @@ static GeglNode *detect (GeglOperation *operation,
   cr = cairo_create (surface);
   gegl_path_cairo_play (o->d, cr);
   cairo_set_line_width (cr, o->width);
-
 
   if (o->width > 0.1 && o->opacity > 0.0001)
     result = cairo_in_stroke (cr, x, y);
