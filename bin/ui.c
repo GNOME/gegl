@@ -210,6 +210,8 @@ struct _State {
 
   int            show_bindings;
 
+  GeglNode      *reference_node;
+
   GeglNode      *processor_node; /* the node we have a processor for */
   GeglProcessor *processor;
   GeglBuffer    *processor_buffer;
@@ -1254,6 +1256,33 @@ cmd_todo (COMMAND_ARGS)
   printf ("animation of properties\n");
   printf ("star/comment storage\n");
   printf ("dir actions: rename, discard\n");
+  return 0;
+}
+
+int cmd_reference (COMMAND_ARGS);/* "reference", -1, "", ""*/
+int
+cmd_reference (COMMAND_ARGS)
+{
+  State *o = global_state;
+  o->reference_node = o->active;
+  return 0;
+}
+
+int cmd_dereference (COMMAND_ARGS);/* "dereference", -1, "", ""*/
+int
+cmd_dereference (COMMAND_ARGS)
+{
+  State *o = global_state;
+  switch (o->pad_active)
+  {
+    case 0:
+    case 2:
+      gegl_node_link_many (o->reference_node, o->active, NULL);
+      break;
+    case 1:
+      gegl_node_link_many (o->reference_node, o->active, NULL);
+      break;
+  }
   return 0;
 }
 
@@ -3071,8 +3100,8 @@ static void ui_commandline (Mrg *mrg, void *data)
     mrg_edit_start (mrg, update_commandline, o);
     mrg_printf (mrg, "%s", commandline);
     mrg_edit_end (mrg);
-    mrg_end (mrg);
   mrg_edit_end (mrg);
+    mrg_end (mrg);
   row++;
 
   //mrg_set_xy (mrg, em, h * 0.5);
@@ -3236,6 +3265,11 @@ static void gegl_ui (Mrg *mrg, void *data)
 
     if (o->active != o->source)
       mrg_add_binding (mrg, "control-x", NULL, NULL, run_command, "remove");
+
+    if (o->active != o->source)
+      mrg_add_binding (mrg, "control-c", NULL, NULL, run_command, "reference");
+
+    mrg_add_binding (mrg, "control-v", NULL, NULL, run_command, "dereference");
 
     mrg_add_binding (mrg, "control-s", NULL, NULL, run_command, "toggle slideshow");
   }
