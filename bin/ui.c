@@ -28,12 +28,12 @@
 #if HAVE_MRG
 
 const char *css =
-"div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 1em; left: 40%; width:60%; background-color:rgba(1,0,0,0.5);}\n"
+"div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 3em; left: 40%; width:25%; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
 "div.propname { color: white;}\n"
 "div.propvalue { color: yellow;}\n"
 
-"dl.bindings   { font-size: 1.8vh; color:white; position:absolute;left:1em;top:0%;background-color: rgba(0,0,0,0.7); width: 100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
+"dl.bindings   { font-size: 1.8vh; color:white; position:absolute;left:1em;top:60%;background-color: rgba(0,0,0,0.7); width: 100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
 "dt.binding   { color:white; }\n"
 
 "div.graph {position:absolute; top: 0; left: 0; width:30%; height:50%; color:white; }\n"
@@ -46,8 +46,7 @@ const char *css =
 "a { color: yellow; text-decoration: none;  }\n"
 
 
-"div.shell{  color:white; position:fixed;left:0em;top:50%;background-color: rgba(0,0,0,0.35); width:100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
-//"div.shell { font-size: 0.8em; background-color:rgba(0,0,0,0.5);color:white; }\n"
+"div.shell{ color:white; position:fixed;left:0em;background-color: rgba(0,0,0,0.75); left:40%; width:60%;  padding-left: 1em; padding-top:1em;padding-bottom:1em;}\n"
 "div.shellline { background-color:rgba(0,0,0,0.0);color:white; }\n"
 "div.prompt { color:#7aa; display: inline; }\n"
 "div.commandline { color:white; display: inline; }\n"
@@ -1243,15 +1242,14 @@ int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
 int
 cmd_todo (COMMAND_ARGS)
 {
-  printf ("commandline improvements, scrolling, autohide.\n");
   printf ("op selection\n");
-  printf ("interpret GUM\n");
+  printf ("enum selection\n");
   printf ("better int/double edit\n");
   printf ("int/double slider\n");
-  printf ("enum selection\n");
   printf ("units in commandline\n");
   printf ("crop mode\n");
   printf ("polyline/bezier on screen editing\n");
+  printf ("interpret GUM\n");
   printf ("rewrite in lua\n");
   printf ("animation of properties\n");
   printf ("star/comment storage\n");
@@ -1348,9 +1346,9 @@ static void ui_dir_viewer (State *o)
   mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
   cairo_new_path (cr);
 
-  mrg_set_edge_right (mrg, 4095);
+//  mrg_set_edge_right (mrg, 4095);
   cairo_save (cr);
-  cairo_translate (cr, 0, -o->v);
+  cairo_translate (cr, 0, -(int)o->v);
   {
     float x = dim * (no%cols);
     float y = dim * (no/cols);
@@ -1752,6 +1750,17 @@ static void list_node_props (State *o, GeglNode *node, int indent)
 
   mrg_start (mrg, "div.properties", NULL);
 
+
+
+  mrg_start (mrg, "div.property", NULL);
+  mrg_start (mrg, "div.propname", NULL);
+  mrg_printf (mrg, "operation");
+  mrg_end (mrg);
+  mrg_start (mrg, "div.propvalue", NULL);
+  mrg_printf (mrg, "%s", op_name);
+  mrg_end (mrg);
+  mrg_end (mrg);
+
   if (pspecs)
   {
     for (gint i = 0; i < n_props; i++)
@@ -1990,11 +1999,14 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
     if (!ref)
     {
       ref = o->active;
-      o->pad_active = 1;
+      if (gegl_node_has_pad (o->active, "aux"))
+        o->pad_active = 1;
+      else if (gegl_node_has_pad (o->active, "input"))
+        o->pad_active = 0;
     }
     else
     {
-      o->pad_active = 2;
+        o->pad_active = 2;
     }
   }
   else if (!strcmp (argv[1], "output"))
@@ -2016,9 +2028,13 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
     GeglNode *iter = o->active;
     int skips = 0;
 
-    if (o->pad_active == 1)
+    if (o->pad_active == 0)
     {
       o->pad_active = 2;
+    }
+    else if (o->pad_active == 1)
+    {
+      o->pad_active = 0;
     }
     else
     {
@@ -2192,7 +2208,7 @@ queue_edge (GeglNode *target, int in_slot_no, int indent, int line_no, GeglNode 
 static float compute_node_x (Mrg *mrg, int indent, int line_no)
 {
   float em = mrg_em (mrg);
-  return (1 + 4 * indent) * em;
+  return (0 + 4 * indent) * em;
 }
 static float compute_node_y (Mrg *mrg, int indent, int line_no)
 {
@@ -2246,9 +2262,11 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
     if (yd < mrg_height (mrg) * 0.25 ||
         yd > mrg_height (mrg) * 0.8)
     {
-      float blend_factor = 0.15;
+      float blend_factor = 0.20;
+      float new_scroll = (y - mrg_height(mrg)/2);
+
       o->graph_scroll = (1.0-blend_factor) * o->graph_scroll +
-                             blend_factor * (y - mrg_height(mrg)/2);
+                             blend_factor *  new_scroll;
       mrg_queue_draw (mrg, NULL);
     }
   }
@@ -2458,7 +2476,7 @@ static void ui_debug_op_chain (State *o)
   int no = 0;
 
   mrg_start         (mrg, "div.graph", NULL);
-  cairo_translate (mrg_cr (mrg), 0.0, -o->graph_scroll);
+  cairo_translate (mrg_cr (mrg), mrg_width(mrg) * 0.7, -o->graph_scroll);
 
   update_ui_consumers (o);
 
@@ -2472,7 +2490,7 @@ static void ui_debug_op_chain (State *o)
 
   mrg_end (mrg);
 
-  if (o->active)
+  if (o->active && !scrollback)
   {
     //mrg_set_xy (mrg, mrg_width (mrg), 0);
     mrg_start         (mrg, "div.props", NULL);
@@ -2872,7 +2890,14 @@ static void commandline_run (MrgEvent *event, void *data1, void *data2)
 {
   State *o = data1;
   if (commandline[0])
+  {
+    argvs_eval ("clear");
     run_command (event, commandline, NULL);
+  }
+  else if (scrollback)
+  {
+    argvs_eval ("clear");
+  }
   else
     {
       if (o->is_dir)
@@ -3036,9 +3061,9 @@ static void ui_commandline (Mrg *mrg, void *data)
   cairo_t *cr = mrg_cr (mrg);
   int row = 1;
   cairo_save (cr);
-  if (scrollback)
+  if (scrollback || 1)
   mrg_start (mrg, "div.shell", NULL);
-  mrg_set_xy (mrg, em, h - em * 1);
+  //mrg_set_xy (mrg, em, h - em * 1);
   mrg_start (mrg, "div.prompt", NULL);
   mrg_printf (mrg, "> ");
   mrg_end (mrg);
@@ -3050,13 +3075,14 @@ static void ui_commandline (Mrg *mrg, void *data)
   mrg_edit_end (mrg);
   row++;
 
-  mrg_set_xy (mrg, em, h * 0.5);
+  //mrg_set_xy (mrg, em, h * 0.5);
 
-  {
+  if(scrollback){
     MrgList *lines = NULL;
     for (MrgList *l = scrollback; l; l = l->next)
       mrg_list_prepend (&lines, l->data);
 
+    mrg_printf (mrg, "\n");
     for (MrgList *l = lines; l; l = l->next)
     {
       mrg_start (mrg, "div.shellline", NULL);
@@ -3078,7 +3104,7 @@ static void ui_commandline (Mrg *mrg, void *data)
     mrg_list_free (&lines);
 
   }
-  if (scrollback)
+  if (scrollback || 1)
   mrg_end (mrg);
 
   mrg_add_binding (mrg, "return", NULL, NULL, commandline_run, o);
@@ -3260,7 +3286,7 @@ static void gegl_ui (Mrg *mrg, void *data)
 
       if (o->active && gegl_node_has_pad (o->active, "output"))
         mrg_add_binding (mrg, "left", NULL, NULL,        run_command, "activate output-skip");
-      if (o->active && gegl_node_has_pad (o->active, "aux"))
+      if (o->active) // && gegl_node_has_pad (o->active, "aux"))
         mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate aux");
       mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
       //mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
