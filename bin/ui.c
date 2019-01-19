@@ -1985,8 +1985,14 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
   {
     ref = gegl_node_get_producer (o->active, "aux", NULL);
     if (!ref)
-      ref = add_aux (o, o->active, "gegl:nop");
-    o->pad_active = 2;
+    {
+      ref = o->active;
+      o->pad_active = 1;
+    }
+    else
+    {
+      o->pad_active = 2;
+    }
   }
   else if (!strcmp (argv[1], "output"))
   {
@@ -2006,6 +2012,14 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
   {
     GeglNode *iter = o->active;
     int skips = 0;
+
+    if (o->pad_active == 1)
+    {
+      o->pad_active = 2;
+    }
+    else
+    {
+
     if (o->pad_active != 2)
     {
       o->pad_active = 2;
@@ -2027,12 +2041,14 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
         }
     }
 
-    if (skips == 0)
+    //if (skips == 0)
     {
-      GeglNode *attempt = gegl_node_get_ui_consumer (o->active, "output", NULL);
+      GeglNode *attempt = gegl_node_get_ui_consumer (ref, "output", NULL);
       if (attempt && attempt != o->sink)
         ref = attempt;
     }
+
+   }
   }
   else if (!strcmp (argv[1], "append"))
   {
@@ -2693,8 +2709,28 @@ run_command (MrgEvent *event, void *data1, void *data_2)
     }
     if (gegl_has_operation (temp_op_name))
     {
-        argvs_eval ("node-add output");
-        gegl_node_set (o->active, "operation", temp_op_name, NULL);
+        switch (o->pad_active)
+        {
+          case 0:
+            argvs_eval ("node-add input");
+            gegl_node_set (o->active, "operation", temp_op_name, NULL);
+            if (!gegl_node_has_pad (o->active, "input"))
+              o->pad_active = 2;
+          break;
+          case 1:
+            argvs_eval ("node-add aux");
+            gegl_node_set (o->active, "operation", temp_op_name, NULL);
+            if (gegl_node_has_pad (o->active, "input"))
+              o->pad_active = 0;
+            else
+              o->pad_active = 2;
+          break;
+          case 2:
+            argvs_eval ("node-add output");
+            gegl_node_set (o->active, "operation", temp_op_name, NULL);
+            o->pad_active = 2;
+          break;
+        }
     }
     else
     {
@@ -2735,6 +2771,12 @@ int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
       gegl_node_connect_to (prev, "output", next, consumer_name);
       gegl_node_remove_child (o->gegl, node);
       o->active = prev;
+    }
+  else if (next)
+    {
+      gegl_node_disconnect (next, consumer_name);
+      gegl_node_remove_child (o->gegl, node);
+      o->active = next;
     }
 
   mrg_queue_draw (o->mrg, NULL);
@@ -3647,7 +3689,7 @@ int cmd_prev (COMMAND_ARGS) /* "prev", 0, "", "previous sibling element in curre
 }
 
  int cmd_load (COMMAND_ARGS);
-int cmd_load (COMMAND_ARGS) /* "load", 1, "<path>", "load a path/image - can be relative to current pereived folder "*/
+int cmd_load (COMMAND_ARGS) /* "load-path", 1, "<path>", "load a path/image - can be relative to current pereived folder "*/
 {
   State *o = global_state;
   
