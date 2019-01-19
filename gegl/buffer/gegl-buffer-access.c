@@ -2936,7 +2936,8 @@ gegl_buffer_set_color_from_pixel_rect (GeglBuffer            *dst,
   GeglBufferIterator *i;
 
   i = gegl_buffer_iterator_new (dst, dst_rect, 0, dst->soft_format,
-                                GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 1);
+                                GEGL_ACCESS_WRITE,
+                                GEGL_ABYSS_NONE | GEGL_ITERATOR_NO_NOTIFY, 1);
   while (gegl_buffer_iterator_next (i))
     {
       gegl_memset_pattern (i->items[0].data,
