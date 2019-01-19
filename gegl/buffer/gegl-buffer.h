@@ -312,7 +312,7 @@ void            gegl_buffer_set               (GeglBuffer          *buffer,
 void
 gegl_buffer_set_color_from_pixel (GeglBuffer          *buffer,
                                   const GeglRectangle *rect,
-                                  const guchar        *pixel,
+                                  gconstpointer        pixel,
                                   const Babl          *pixel_format);
 
 

@@ -2949,7 +2949,7 @@ gegl_buffer_set_color_from_pixel_rect (GeglBuffer            *dst,
 void
 gegl_buffer_set_color_from_pixel (GeglBuffer          *dst,
                                   const GeglRectangle *dst_rect,
-                                  const uint8_t       *pixel,
+                                  gconstpointer        pixel,
                                   const Babl          *pixel_format)
 {
   SetColorFromPixelData data = {};
