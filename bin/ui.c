@@ -227,6 +227,8 @@ struct _State {
   float          render_quality; /* default (and in code swapped for preview_quality during preview rendering, this is the canonical read location for the value)  */
   float          preview_quality;
 
+  int            graph_scroll;
+
   int            show_graph;
   int            show_controls;
   int            controls_timeout;
@@ -296,6 +298,7 @@ Setting settings[]=
   INT_PROP(frame_no, "current frame number in video/animation"),
   FLOAT_PROP(scale, "display scale factor"),
   INT_PROP(show_bindings, "show currently valid keybindings"),
+  INT_PROP(graph_scroll, "vertical scroll offset of graph"),
 
 };
 
@@ -2236,6 +2239,20 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
   float x = compute_node_x (mrg, indent, line_no);
   float y = compute_node_y (mrg, indent, line_no);
 
+  if (active){
+    double xd=x, yd=y;
+    cairo_user_to_device (mrg_cr(mrg), &xd, &yd);
+
+    if (yd < mrg_height (mrg) * 0.25 ||
+        yd > mrg_height (mrg) * 0.8)
+    {
+      float blend_factor = 0.15;
+      o->graph_scroll = (1.0-blend_factor) * o->graph_scroll +
+                             blend_factor * (y - mrg_height(mrg)/2);
+      mrg_queue_draw (mrg, NULL);
+    }
+  }
+
   /* queue up     */
 
   if (gegl_node_has_pad (node, "input") &&
@@ -2441,6 +2458,7 @@ static void ui_debug_op_chain (State *o)
   int no = 0;
 
   mrg_start         (mrg, "div.graph", NULL);
+  cairo_translate (mrg_cr (mrg), 0.0, -o->graph_scroll);
 
   update_ui_consumers (o);
 
