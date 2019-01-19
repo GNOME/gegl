@@ -1949,7 +1949,7 @@ static void activate_sink_producer (State *o)
 }
 
   int cmd_activate (COMMAND_ARGS);
-int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux>", ""*/
+int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|source|output-skip>", ""*/
 {
   State *o = global_state;
   GeglNode *ref;
@@ -1991,13 +1991,45 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux>", ""*/
       o->pad_active = 2;
     }
   }
-  else if (!strcmp (argv[1], "first"))
+  else if (!strcmp (argv[1], "output-skip"))
+  {
+    GeglNode *iter = o->active;
+    int skips = 0;
+    if (o->pad_active != 2)
+    {
+      o->pad_active = 2;
+    }
+
+    while (iter)
+    {
+      const char *consumer_pad = NULL;
+      GeglNode *attempt = gegl_node_get_ui_consumer (iter, "output", &consumer_pad);
+      if (!strcmp (consumer_pad, "input") && attempt != o->sink)
+        {
+          iter = attempt;
+          skips ++;
+        }
+      else
+        {
+          ref = iter;
+          iter = NULL;
+        }
+    }
+
+    if (skips == 0)
+    {
+      GeglNode *attempt = gegl_node_get_ui_consumer (o->active, "output", NULL);
+      if (attempt && attempt != o->sink)
+        ref = attempt;
+    }
+  }
+  else if (!strcmp (argv[1], "append"))
   {
     ref = gegl_node_get_producer (o->sink, "input", NULL);
     o->pad_active = 2;
     //activate_sink_producer (o);
   }
-  else if (!strcmp (argv[1], "last"))
+  else if (!strcmp (argv[1], "source"))
   {
     ref = o->source;
     o->pad_active = 2;
@@ -3152,8 +3184,11 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
     else
     {
-      mrg_add_binding (mrg, "home",     NULL, NULL, run_command, "activate first");
-      mrg_add_binding (mrg, "end",      NULL, NULL, run_command, "activate last");
+      mrg_add_binding (mrg, "home",     NULL, NULL, run_command, "activate append");
+      mrg_add_binding (mrg, "end",      NULL, NULL, run_command, "activate source");
+
+      if (o->active && gegl_node_has_pad (o->active, "output"))
+        mrg_add_binding (mrg, "left", NULL, NULL,        run_command, "activate output-skip");
       if (o->active && gegl_node_has_pad (o->active, "aux"))
         mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate aux");
       mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
@@ -3175,6 +3210,7 @@ static void gegl_ui (Mrg *mrg, void *data)
     mrg_add_binding (mrg, "control-t", NULL, NULL, run_command, "zoom fit");
     mrg_add_binding (mrg, "control-m", NULL, NULL, run_command, "toggle mipmap");
     mrg_add_binding (mrg, "control-y", NULL, NULL, run_command, "toggle colormanage-display");
+
 
     if (o->active && gegl_node_has_pad (o->active, "output"))
       mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "activate output");
