@@ -84,6 +84,17 @@ static GeglNode *gegl_node_get_ui_consumer (GeglNode    *node,
                                             const char  *output_pad,
                                             const char **consumer_pad);
 
+static GeglNode *gegl_node_get_ui_producer (GeglNode    *node,
+                                            const char  *input_pad,
+                                            char **output_pad)
+{
+  GeglNode *producer = gegl_node_get_producer (node, input_pad, output_pad);
+  if (producer && node == gegl_node_get_ui_consumer (producer, "output", NULL))
+    return producer;
+  return NULL;
+}
+
+
 static GeglNode *gegl_node_get_consumer_no (GeglNode *node,
                                             const char *output_pad,
                                             const char **consumer_pad,
@@ -1964,7 +1975,7 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
 
   if (!strcmp (argv[1], "input"))
   {
-    ref = gegl_node_get_producer (o->active, "input", NULL);
+    ref = gegl_node_get_ui_producer (o->active, "input", NULL);
     if (ref == NULL)
       o->pad_active = 0;
     else
@@ -2205,7 +2216,7 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
   char *opname = NULL;
   GList *to_remove = NULL;
   Mrg *mrg = o->mrg;
-  float em;
+  //float em;
   float x = compute_node_x (mrg, indent, line_no);
   float y = compute_node_y (mrg, indent, line_no);
 
@@ -2233,7 +2244,7 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
     sprintf (style, "color:%s;left:%f;top:%f;%s", active?"yellow":"white", x, y, active?"":"border-color:#ccc;");
     mrg_start_with_style (mrg, "div.node", NULL, style);
   }
-  em = mrg_em (mrg);
+  //em = mrg_em (mrg);
 
 //  if (!active)
 //  {
