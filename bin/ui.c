@@ -28,7 +28,7 @@
 #if HAVE_MRG
 
 const char *css =
-"div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 3em; left: 40%; width:25%; background-color:rgba(1,0,0,0.75);}\n"
+"div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 3em; left: 0%; width:65%; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
 "div.propname { color: white;}\n"
 "div.propvalue { color: yellow;}\n"
@@ -46,10 +46,12 @@ const char *css =
 "a { color: yellow; text-decoration: none;  }\n"
 
 
-"div.shell{ color:white; position:fixed;left:0em;background-color: rgba(0,0,0,0.75); left:40%; width:60%;  padding-left: 1em; padding-top:1em;padding-bottom:1em;}\n"
+"div.shell{ color:white; position:fixed;left:0em;background-color: rgba(0,0,0,0.75); left:0%; width:100%;  padding-left: 1em; padding-top:1em;padding-bottom:1em;}\n"
 "div.shellline { background-color:rgba(0,0,0,0.0);color:white; }\n"
 "div.prompt { color:#7aa; display: inline; }\n"
-"div.commandline { color:white; display: inline; }\n"
+"div.commandline { color:white; display: inline;  }\n"
+"span.completion{ color: rgba(255,255,255,0.7); padding-right: 2em; }\n"
+"span.completion-selected{ color: rgba(255,255,0,1.0); padding-right: 2em; }\n"
 "";
 
 
@@ -2531,11 +2533,37 @@ static void ui_debug_op_chain (State *o)
 
 
 static char commandline[1024] = {0,};
+static int completion_no = -1;
+
+static GList *commandline_get_completions (GeglNode *node,
+                                           const char *commandline);
 
 static void update_commandline (const char *new_commandline, void *data)
 {
   State *o = data;
-  strcpy (commandline, new_commandline);
+  if (completion_no>=0)
+  {
+    char *appended = g_strdup (&new_commandline[strlen(commandline)]);
+    GList *completions = commandline_get_completions (o->active,
+                                                      commandline);
+
+    const char *completion = g_list_nth_data (completions, completion_no);
+    strcat (commandline, completion);
+    strcat (commandline, appended);
+    fprintf (stderr, "appended [%s]\n", appended);
+    g_free (appended);
+    mrg_set_cursor_pos (o->mrg, strlen (commandline));
+    while (completions)
+    {
+      g_free (completions->data);
+      completions = g_list_remove (completions, completions->data);
+    }
+  }
+  else
+  {
+    strcpy (commandline, new_commandline);
+  }
+  completion_no = -1;
   mrg_queue_draw (o->mrg, NULL);
 }
 
@@ -2920,6 +2948,21 @@ static void commandline_run (MrgEvent *event, void *data1, void *data2)
   State *o = data1;
   if (commandline[0])
   {
+    if (completion_no>=0)
+     {
+       GList *completions = commandline_get_completions (o->active,
+                                                    commandline);
+       const char *completion = g_list_nth_data (completions, completion_no);
+         strcat (commandline, completion);
+       strcat (commandline, " ");
+       mrg_set_cursor_pos (event->mrg, strlen (commandline));
+       while (completions)
+       {
+         g_free (completions->data);
+         completions = g_list_remove (completions, completions->data);
+       }
+     }
+
     argvs_eval ("clear");
     run_command (event, commandline, NULL);
   }
@@ -3041,7 +3084,7 @@ static void ui_show_bindings (Mrg *mrg, void *data)
   MrgBinding *bindings = mrg_get_bindings (mrg);
 
   mrg_start (mrg, "dl.bindings", NULL);
-  mrg_set_xy (mrg, x, em * 2);//h/2+em *2);
+  mrg_set_xy (mrg, x, h * .6 + em);
 
   for (int i = 0; bindings[i].cb; i++)
   {
@@ -3070,16 +3113,271 @@ static void ui_show_bindings (Mrg *mrg, void *data)
       mrg_start (mrg, "dd.binding", NULL);mrg_printf(mrg,"%s", b->label);mrg_end (mrg);
     }
 
-    if (mrg_y (mrg) > h/2 - em * 4)
+    if (mrg_y (mrg) > h - em)
     {
       col++;
       mrg_set_edge_left (mrg, col * (20 * mrg_em(mrg)));
-      mrg_set_xy (mrg, col * (15 * em), em * 2);
+      mrg_set_xy (mrg, col * (15 * em), h * .6 + em);
     }
 
   }
   mrg_end (mrg);
 }
+
+static GList *commandline_get_completions (GeglNode *node,
+                                           const char *commandline)
+{
+  const gchar *op_name = node?gegl_node_get_operation (node):"nop";
+  const char *last = NULL;
+  char *key = NULL;
+  const char *value = "";
+  GList *completions = NULL;
+  int count = 0;
+  int bail = 8;
+  if (commandline[0]=='\0')
+  {
+    return NULL;
+  }
+
+  last = strrchr (commandline, ' ');
+  if (last) last ++;
+  else last = commandline;
+
+  if (strchr (last, '='))
+  {
+    key = g_strdup (last);
+    value = strchr (key, '=') + 1;
+    *strchr (key, '=') = 0;
+  }
+
+  /* walk arguments backwards and look for an op-set  */
+  {
+    char *tmp = g_strdup (commandline);
+    char *fragment;
+    char ** operations = operations;
+    char *found_op = NULL;
+    gint i;
+    guint n_operations;
+    /* the last fragment is what we're completing */
+    operations = gegl_list_operations (&n_operations);
+
+    fragment = strrchr (tmp, ' ');
+    if (!fragment)
+      fragment = tmp;
+    else
+      {
+        *fragment='\0';
+        fragment++;
+      }
+
+    while (fragment && !found_op)
+    {
+      char prefixed_by_gegl[512];
+      sprintf (prefixed_by_gegl, "gegl:%s", fragment);
+
+      if (!strchr (fragment, '='))
+      {
+      for (i = 0; i < n_operations && !found_op; i++)
+        if (!strcmp (operations[i], fragment) ||
+            !strcmp (operations[i], prefixed_by_gegl))
+          {
+            found_op = operations[i];
+          }
+      }
+
+      if (fragment == tmp)
+        fragment = NULL;
+      else
+        {
+      fragment = strrchr (tmp, ' ');
+      if (!fragment)
+        fragment = tmp;
+      else
+        {
+          *fragment='\0';
+          fragment++;
+        }
+        }
+    }
+    if (found_op)
+    {
+      op_name = found_op;
+    }
+
+    g_free (operations);
+  }
+
+
+  if (key)   /* an = is already part of last bit.. this changes our behavior */
+  {
+      guint n_props;
+      gint i;
+      GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
+      GParamSpec *pspec = NULL;
+      for (i = 0; i < n_props; i++)
+      {
+        if (!strcmp (pspecs[i]->name, key))
+          pspec = pspecs[i];
+      }
+      g_free (pspecs);
+
+      if (pspec && g_type_is_a (pspec->value_type, G_TYPE_ENUM))
+      {
+        GEnumClass *eclass = g_type_class_peek (pspec->value_type);
+        for (i = eclass->minimum; i<= eclass->maximum; i++)
+        {
+          GEnumValue *evalue = &eclass->values[i];
+          if (g_str_has_prefix (evalue->value_nick, value))
+          {
+            char *result = g_strdup_printf ("%s", evalue->value_nick + strlen (value));
+            completions = g_list_prepend (completions, result);
+            count ++;
+          }
+        }
+      }
+  }
+  else
+  {
+    {
+      guint n_props;
+      gint i;
+      GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
+      for (i = 0; i < n_props && count < bail; i++)
+      {
+        if (g_str_has_prefix (pspecs[i]->name, last))
+        {
+          char *result = g_strdup_printf ("%s=", pspecs[i]->name + strlen (last));
+          completions = g_list_prepend (completions, result);
+          count ++;
+        }
+      }
+
+      g_free (pspecs);
+    }
+
+   {
+    char prefixed_by_gegl[512];
+    char ** operations = operations;
+    gint i;
+    guint n_operations;
+    /* the last fragment is what we're completing */
+    operations = gegl_list_operations (&n_operations);
+    for (i = 0; i < n_operations && count < bail; i++)
+    {
+      if (g_str_has_prefix (operations[i], last))
+      {
+        completions = g_list_prepend (completions, g_strdup (operations[i] + strlen (last)));
+        count ++;
+      }
+    }
+    sprintf (prefixed_by_gegl, "gegl:%s", last);
+
+    for (i = 0; i < n_operations && count < bail; i++)
+    {
+      if (g_str_has_prefix (operations[i], prefixed_by_gegl))
+      {
+        completions = g_list_prepend (completions, g_strdup (operations[i] + strlen (prefixed_by_gegl)));
+        count ++;
+      }
+    }
+
+
+    g_free (operations);
+   }
+
+
+
+  }
+
+  if (key)
+    g_free (key);
+
+  return g_list_reverse (completions);
+}
+
+
+static void expand_completion (MrgEvent *event, void *data1, void *data2)
+{
+  State *o = global_state;
+  char common_prefix[512]="";
+
+  GList *completions = commandline_get_completions (o->active,
+                                                    commandline);
+
+  if (data1 && !strcmp (data1, "tab") &&
+      completions && g_list_length (completions)!=1)
+  {
+    GList *iter;
+    const char *completion;
+    int common_found = 0;
+    int mismatch = 0;
+
+    while (!mismatch)
+    {
+      completion = completions->data;
+      common_prefix[common_found]=completion[common_found];
+
+    for (iter=completions;iter && !mismatch; iter=iter->next)
+    {
+      completion = iter->data;
+      if (completion[common_found] != common_prefix[common_found])
+        mismatch++;
+    }
+    if (!mismatch)
+      common_found++;
+    }
+
+    if (common_found > 0)
+    {
+      strncat (commandline, completions->data, common_found);
+      mrg_set_cursor_pos (event->mrg, strlen (commandline));
+      completion_no = -1;
+      goto cleanup;
+    }
+
+  }
+
+  if (g_list_length (completions)==1)
+  {
+    const char *completion = completions->data;
+    strcat (commandline, completion);
+    mrg_set_cursor_pos (event->mrg, strlen (commandline));
+  }
+#if 0
+  else if (data1 && !strcmp (data1, "space"))
+   {
+     const char *completion = g_list_nth_data (completions, completion_no);
+     if (completion_no>=0)
+       strcat (commandline, completion);
+     strcat (commandline, " ");
+     completion_no = -1;
+     mrg_set_cursor_pos (event->mrg, strlen (commandline));
+   }
+#endif
+  else
+   {
+     if (data1 && !strcmp (data1, "rtab"))
+       completion_no--;
+     else
+       completion_no++;
+
+     if (completion_no >= g_list_length (completions))
+       completion_no = -1;
+     if (completion_no < 0)
+       completion_no = 0;
+
+   cleanup:
+
+     while (completions)
+     {
+       g_free (completions->data);
+       completions = g_list_remove (completions, completions->data);
+     }
+   }
+  mrg_queue_draw (event->mrg, NULL);
+  mrg_event_stop_propagate (event);
+}
+
 
 static void ui_commandline (Mrg *mrg, void *data)
 {
@@ -3101,6 +3399,43 @@ static void ui_commandline (Mrg *mrg, void *data)
     mrg_printf (mrg, "%s", commandline);
     mrg_edit_end (mrg);
   mrg_edit_end (mrg);
+    {
+      GList *completions = commandline_get_completions (o->active, commandline);
+      if (completions)
+      {
+        GList *iter = completions;
+        int no = 0;
+        const char *last = strrchr (commandline, ' ');
+        if (!last) last = commandline;
+
+        mrg_start (mrg, no==completion_no?"span.completion-selected":"span.completion", NULL);
+        mrg_printf (mrg, "%s", iter->data);
+        mrg_end (mrg);
+        iter = iter->next;
+        no++;
+
+        while (iter)
+        {
+          mrg_start (mrg, no==completion_no?"span.completion-selected":"span.completion", NULL);
+          mrg_printf (mrg, "%s%s", last, iter->data);
+          mrg_end (mrg);
+          iter = iter->next;
+          no++;
+        }
+
+        mrg_add_binding (mrg, "tab", NULL, NULL, expand_completion, "tab");
+        mrg_add_binding (mrg, "shift-tab", NULL, NULL, expand_completion, "rtab");
+
+        //if (completion_no>=0)
+        //  mrg_add_binding (mrg, "space", NULL, NULL, expand_completion, "space");
+      }
+      while (completions)
+      {
+        char *completion = completions->data;
+        completions = g_list_remove (completions, completion);
+        g_free (completion);
+      }
+    }
     mrg_end (mrg);
   row++;
 
