@@ -599,8 +599,13 @@ gegl_cl_init_load_device_info (cl_platform_id   platform,
         {
           platform = platforms[platform_idx];
           err = gegl_clGetDeviceIDs (platform, requested_device_type, 1, &device, NULL);
-          if (err == CL_SUCCESS)
+          if (err == CL_SUCCESS) {
+            cl_bool tmp_image_support = FALSE;
+            err = gegl_clGetDeviceInfo (device, CL_DEVICE_IMAGE_SUPPORT, sizeof(cl_bool), &tmp_image_support, NULL);
+            if (err == CL_SUCCESS && tmp_image_support == FALSE)
+              continue;
             break;
+          }
         }
 
       g_free (platforms);
