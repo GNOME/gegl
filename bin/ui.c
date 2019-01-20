@@ -95,6 +95,12 @@ static GeglNode *gegl_node_get_ui_producer (GeglNode    *node,
   return NULL;
 }
 
+enum {
+  PAD_INPUT = 0,
+  PAD_AUX = 1,
+  PAD_OUTPUT = 2,
+};
+
 
 static GeglNode *gegl_node_get_consumer_no (GeglNode *node,
                                             const char *output_pad,
@@ -1022,6 +1028,7 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
 
 static GeglNode *add_output (State *o, GeglNode *active, const char *optype);
 static GeglNode *add_aux (State *o, GeglNode *active, const char *optype);
+static GeglNode *add_input (State *o, GeglNode *active, const char *optype);
 
 GeglPath *path = NULL;
 
@@ -1246,10 +1253,10 @@ int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
 int
 cmd_todo (COMMAND_ARGS)
 {
-  printf ("op selection\n");
-  printf ("enum selection\n");
-  printf ("better int/double edit\n");
-  printf ("int/double slider\n");
+  printf ("propeditor:op\n");
+  printf ("propeditor:int/double\n");
+  printf ("propeditor:enum\n");
+  printf ("propeditor:string\n");
   printf ("units in commandline\n");
   printf ("crop mode\n");
   printf ("polyline/bezier on screen editing\n");
@@ -1279,11 +1286,11 @@ cmd_dereference (COMMAND_ARGS)
   if (o->reference_node)
   switch (o->pad_active)
   {
-    case 0:
-    case 2:
+    case PAD_INPUT:
+    case PAD_OUTPUT:
       gegl_node_link_many (o->reference_node, o->active, NULL);
       break;
-    case 1:
+    case PAD_AUX:
       gegl_node_connect_to (o->reference_node, "output", o->active, "aux");
       break;
   }
@@ -1675,6 +1682,25 @@ static GeglNode *add_aux (State *o, GeglNode *active, const char *optype)
   return ret;
 }
 
+static GeglNode *add_input (State *o, GeglNode *active, const char *optype)
+{
+  GeglNode *ref = active;
+  GeglNode *ret = NULL;
+  GeglNode *producer;
+  if (!gegl_node_has_pad (ref, "input"))
+    return NULL;
+  ret = gegl_node_new_child (o->gegl, "operation", optype, NULL);
+  producer = gegl_node_get_producer (ref, "input", NULL);
+  if (producer)
+  {
+    gegl_node_link_many (producer, ret, NULL);
+  }
+  gegl_node_connect_to (ret, "output", ref, "input");
+  renderer_dirty++;
+  o->rev++;
+  return ret;
+}
+
 static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
 {
   GeglNode *ref = active;
@@ -2005,7 +2031,7 @@ static void activate_sink_producer (State *o)
     o->active = gegl_node_get_producer (o->sink, "input", NULL);
   else
     o->active = NULL;
-  o->pad_active = 2;
+  o->pad_active = PAD_OUTPUT;
 }
 
   int cmd_graph_cursor (COMMAND_ARGS);
@@ -2026,73 +2052,73 @@ int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|s
   {
     switch (o->pad_active)
     {
-       case 1:
+       case PAD_AUX:
         ref = gegl_node_get_ui_producer (o->active, "aux", NULL);
         if (ref == NULL)
-          o->pad_active = 0;
+          o->pad_active = PAD_INPUT;
         else
-          o->pad_active = 2;
+          o->pad_active = PAD_OUTPUT;
         break;
 
-       case 0:
+       case PAD_INPUT:
         ref = gegl_node_get_producer (o->active, "input", NULL);
         if (ref == NULL)
-          o->pad_active = 0;
+          o->pad_active = PAD_INPUT;
         else
-          o->pad_active = 2;
+          o->pad_active = PAD_OUTPUT;
 
 
        break;
-       case 2:
+       case PAD_OUTPUT:
         ref = gegl_node_get_ui_producer (o->active, "input", NULL);
         if (ref == NULL)
-          o->pad_active = 0;
+          o->pad_active = PAD_INPUT;
         else
-          o->pad_active = 2;
+          o->pad_active = PAD_OUTPUT;
        break;
 
     }
   }
   else if (!strcmp (argv[1], "right"))
   {
-    if (o->pad_active == 1)
+    if (o->pad_active == PAD_AUX)
     {
       ref = gegl_node_get_producer (o->active, "aux", NULL);
       if (!ref)
       {
         ref = o->active;
         if (gegl_node_has_pad (o->active, "aux"))
-          o->pad_active = 1;
+          o->pad_active = PAD_AUX;
         else if (gegl_node_has_pad (o->active, "input"))
-          o->pad_active = 0;
+          o->pad_active = PAD_INPUT;
     }
     else
     {
-        o->pad_active = 2;
+        o->pad_active = PAD_OUTPUT;
     }
     }
     else
     {
       if (gegl_node_has_pad (o->active, "aux"))
-        o->pad_active = 1;
+        o->pad_active = PAD_AUX;
       else if (gegl_node_has_pad (o->active, "input"))
-        o->pad_active = 0;
+        o->pad_active = PAD_INPUT;
       else
-        o->pad_active = 2;
+        o->pad_active = PAD_OUTPUT;
     }
   }
   else if (!strcmp (argv[1], "up"))
   {
-    if (o->pad_active != 2)
+    if (o->pad_active != PAD_OUTPUT)
     {
-      o->pad_active = 2;
+      o->pad_active = PAD_OUTPUT;
     }
     else
     {
       ref = gegl_node_get_ui_consumer (o->active, "output", NULL);
       if (ref == o->sink)
         ref = NULL;
-      o->pad_active = 2;
+      o->pad_active = PAD_OUTPUT;
     }
   }
   else if (!strcmp (argv[1], "left"))
@@ -2100,20 +2126,20 @@ int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|s
     GeglNode *iter = o->active;
     int skips = 0;
 
-    if (o->pad_active == 0)
+    if (o->pad_active == PAD_INPUT)
     {
-      o->pad_active = 2;
+      o->pad_active = PAD_OUTPUT;
     }
-    else if (o->pad_active == 1)
+    else if (o->pad_active == PAD_AUX)
     {
-      o->pad_active = 0;
+      o->pad_active = PAD_INPUT;
     }
     else
     {
 
-    if (o->pad_active != 2)
+    if (o->pad_active != PAD_OUTPUT)
     {
-      o->pad_active = 2;
+      o->pad_active = PAD_OUTPUT;
     }
 
     while (iter)
@@ -2144,12 +2170,12 @@ int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|s
   else if (!strcmp (argv[1], "append"))
   {
     ref = gegl_node_get_producer (o->sink, "input", NULL);
-    o->pad_active = 2;
+    o->pad_active = PAD_OUTPUT;
   }
   else if (!strcmp (argv[1], "source"))
   {
     ref = o->source;
-    o->pad_active = 2;
+    o->pad_active = PAD_OUTPUT;
   }
   else
     ref = NULL;
@@ -2249,6 +2275,83 @@ static GeglNode *gegl_node_get_ui_consumer (GeglNode *node, const char *output_p
 
   return ret;
 }
+
+static void on_node_drag (MrgEvent *e, void *data1, void *data2)
+{
+  State *o = data1;
+  static float dist = 0;
+  static float angle = 0;
+
+  switch (e->type)
+  {
+    case MRG_DRAG_PRESS:
+      dist = angle = 0.0;
+      break;
+    case MRG_DRAG_RELEASE:
+      if (angle < -120 || angle > 120) // upwards
+      {
+         if (dist > 50)
+           o->active = add_output (o, o->active, "gegl:nop");
+      }
+      else if (angle < 15 && angle > -45) // down / slightly left
+      {
+         if (dist > 50)
+           o->active = add_input (o, o->active, "gegl:nop");
+      }
+      else if (angle > 15 && angle <60) // right/down
+      {
+         if (dist > 50)
+           o->active = add_aux (o, o->active, "gegl:nop");
+      }
+      else if (angle < -45 && angle > -110) // left
+      {
+         if (dist > 70)
+         {
+           o->pad_active = 2;
+           argvs_eval ("remove");
+         }
+      }
+      break;
+    case MRG_DRAG_MOTION:
+      dist = hypot (e->start_x -e->x, e->start_y - e->y);
+      angle = atan2(e->x - e->start_x, e->y - e->start_y) * 180.0 / M_PI;
+
+      if (angle < -120 || angle > 120) // upwards
+      {
+         if (dist > 5)
+           o->pad_active = PAD_OUTPUT;
+      }
+      else if (angle < 15 && angle > -45) // down / slightly left
+      {
+         if (dist > 5)
+           o->pad_active = PAD_INPUT;
+      }
+      else if (angle > 15 && angle <60) // right/down
+      {
+         if (dist > 5)
+           o->pad_active = PAD_AUX;
+      }
+      else if (angle < -45 && angle > -110) // left
+      {
+         if (dist > 70)
+           o->pad_active = -1; // makes dot vanish
+         else
+           o->pad_active = 2;
+      }
+      else
+      {
+           //o->pad_active = PAD_OUTPUT;
+      }
+
+
+      fprintf (stderr, "aa dist: %f  angle: %f \n", dist, angle);
+      break;
+    default:
+      break;
+  }
+  mrg_event_stop_propagate (e);
+}
+
 
 typedef struct DrawEdge {
   GeglNode *target;
@@ -2393,15 +2496,17 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
 //    mrg_text_listen_done (mrg);
 //  }
 
-  if(!active){
+   {
     MrgStyle *style = mrg_style (mrg);
     cairo_rectangle (mrg_cr (mrg), style->left, style->top,
                                    style->width + style->padding_left + style->padding_right,
                                    style->height + style->padding_top + style->padding_bottom);
 
-    //cairo_set_source_rgba (mrg_cr (mrg), 0, 1, 0, 1.0);
-    //cairo_fill_preserve (mrg_cr (mrg));
-    mrg_listen (mrg, MRG_CLICK, node_press, node, o);
+
+    if(active)
+      mrg_listen (mrg, MRG_DRAG, on_node_drag, o, node);
+    else
+      mrg_listen (mrg, MRG_CLICK, node_press, node, o);
   }
 
   mrg_end (mrg);
@@ -2415,7 +2520,7 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
                     compute_pad_y (mrg, indent, line_no, 0), 0.3*mrg_em (mrg), 0, G_PI * 2);
       cairo_set_source_rgb (cr, 1.0,1.0,1.0);
       cairo_set_line_width (cr, 1.0f);
-      if (active && o->pad_active == 0)
+      if (active && o->pad_active == PAD_INPUT)
       {
         cairo_fill (cr);
       }
@@ -2434,7 +2539,7 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
       cairo_set_source_rgb (cr, 1.0,1.0,1.0);
       cairo_set_line_width (cr, 1.0f);
 
-      if (active && o->pad_active == 1)
+      if (active && o->pad_active == PAD_AUX)
       {
         cairo_fill (cr);
       }
@@ -2452,7 +2557,7 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
                     compute_pad_y (mrg, indent, line_no, 2), 0.3*mrg_em (mrg), 0, G_PI * 2);
       cairo_set_source_rgb (cr, 1.0,1.0,1.0);
       cairo_set_line_width (cr, 1.0f);
-      if (active && o->pad_active == 2)
+      if (active && o->pad_active == PAD_OUTPUT)
       {
         cairo_fill (cr);
       }
@@ -2848,20 +2953,20 @@ run_command (MrgEvent *event, void *data1, void *data_2)
             argvs_eval ("node-add input");
             gegl_node_set (o->active, "operation", temp_op_name, NULL);
             if (!gegl_node_has_pad (o->active, "input"))
-              o->pad_active = 2;
+              o->pad_active = PAD_OUTPUT;
           break;
           case 1:
             argvs_eval ("node-add aux");
             gegl_node_set (o->active, "operation", temp_op_name, NULL);
             if (gegl_node_has_pad (o->active, "input"))
-              o->pad_active = 0;
+              o->pad_active = PAD_INPUT;
             else
-              o->pad_active = 2;
+              o->pad_active = PAD_OUTPUT;
           break;
           case 2:
             argvs_eval ("node-add output");
             gegl_node_set (o->active, "operation", temp_op_name, NULL);
-            o->pad_active = 2;
+            o->pad_active = PAD_OUTPUT;
           break;
         }
     }
@@ -2896,20 +3001,22 @@ int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
 
   const gchar *consumer_name = NULL;
 
+  if (o->active == o->source)
+    return -1;
 
   switch (o->pad_active)
   {
-    case 0:
+    case PAD_INPUT:
       prev = gegl_node_get_producer (node, "input", NULL);
       if (gegl_node_get_ui_consumer (prev, "output", NULL) != node)
         gegl_node_disconnect (node, "input");
       break;
-    case 1:
+    case PAD_AUX:
       prev = gegl_node_get_producer (node, "aux", NULL);
       if (gegl_node_get_ui_consumer (prev, "output", NULL) != node)
         gegl_node_disconnect (node, "aux");
       break;
-    case 2:
+    case PAD_OUTPUT:
       prev = gegl_node_get_producer (node, "input", NULL);
       next = gegl_node_get_ui_consumer (node, "output", &consumer_name);
 
