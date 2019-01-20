@@ -821,6 +821,7 @@ static void node_press (MrgEvent *e, void *data1, void *data2)
   GeglNode *new_active = data1;
 
   o->active = new_active;
+  o->pad_active = PAD_OUTPUT;
   mrg_event_stop_propagate (e);
   node_select_hack = 1;
 
@@ -2019,7 +2020,7 @@ static void list_node_props (State *o, GeglNode *node, int indent)
             mrg_start (mrg, "span.propvalue-enum", NULL);//
 
           mrg_text_listen (mrg, MRG_CLICK,
-             prop_set_enum, GINT_TO_POINTER(evalue2->value), g_intern_string ((void*)pspecs[i]->name));
+             prop_set_enum, GINT_TO_POINTER(evalue2->value), (void*)g_intern_string ((void*)pspecs[i]->name));
           mrg_printf (mrg, "%s ", evalue2->value_nick);
           mrg_text_listen_done (mrg);
           mrg_end (mrg);
