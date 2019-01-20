@@ -2005,8 +2005,8 @@ static void activate_sink_producer (State *o)
   o->pad_active = 2;
 }
 
-  int cmd_activate (COMMAND_ARGS);
-int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|source|output-skip>", ""*/
+  int cmd_graph_cursor (COMMAND_ARGS);
+int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|source|append>", "position the graph cursor"*/
 {
   State *o = global_state;
   GeglNode *ref;
@@ -2019,7 +2019,7 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
   }
   ref = o->active;
 
-  if (!strcmp (argv[1], "input"))
+  if (!strcmp (argv[1], "down"))
   {
     switch (o->pad_active)
     {
@@ -2042,7 +2042,7 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
 
     }
   }
-  else if (!strcmp (argv[1], "aux"))
+  else if (!strcmp (argv[1], "right"))
   {
     if (o->pad_active == 1)
     {
@@ -2070,7 +2070,7 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
         o->pad_active = 2;
     }
   }
-  else if (!strcmp (argv[1], "output"))
+  else if (!strcmp (argv[1], "up"))
   {
     if (o->pad_active != 2)
     {
@@ -2084,7 +2084,7 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
       o->pad_active = 2;
     }
   }
-  else if (!strcmp (argv[1], "output-skip"))
+  else if (!strcmp (argv[1], "left"))
   {
     GeglNode *iter = o->active;
     int skips = 0;
@@ -2134,7 +2134,6 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
   {
     ref = gegl_node_get_producer (o->sink, "input", NULL);
     o->pad_active = 2;
-    //activate_sink_producer (o);
   }
   else if (!strcmp (argv[1], "source"))
   {
@@ -3697,13 +3696,13 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
     else
     {
-      mrg_add_binding (mrg, "home",     NULL, NULL, run_command, "activate append");
-      mrg_add_binding (mrg, "end",      NULL, NULL, run_command, "activate source");
+      mrg_add_binding (mrg, "home",     NULL, NULL, run_command, "graph-cursor append");
+      mrg_add_binding (mrg, "end",      NULL, NULL, run_command, "graph-cursor source");
 
       if (o->active && gegl_node_has_pad (o->active, "output"))
-        mrg_add_binding (mrg, "left", NULL, NULL,        run_command, "activate output-skip");
+        mrg_add_binding (mrg, "left", NULL, NULL,        run_command, "graph-cursor left");
       if (o->active) // && gegl_node_has_pad (o->active, "aux"))
-        mrg_add_binding (mrg, "right", NULL, NULL, run_command, "activate aux");
+        mrg_add_binding (mrg, "right", NULL, NULL, run_command, "graph-cursor right");
       mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
       //mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
     }
@@ -3726,9 +3725,9 @@ static void gegl_ui (Mrg *mrg, void *data)
 
 
     if (o->active && gegl_node_has_pad (o->active, "output"))
-      mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "activate output");
+      mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "graph-cursor up");
     if (o->active && gegl_node_has_pad (o->active, "input"))
-      mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "activate input");
+      mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "graph-cursor down");
 
     if (o->active && gegl_node_has_pad (o->active, "input") &&
                      gegl_node_has_pad (o->active, "output"))
