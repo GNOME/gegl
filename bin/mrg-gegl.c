@@ -40,7 +40,6 @@
 #include <gegl.h>
 #include <gexiv2/gexiv2.h>
 #include <gegl-paramspecs.h>
-#include <SDL.h>
 #include <gegl-audio-fragment.h>
 #include "mrg-gegl.h"
 
