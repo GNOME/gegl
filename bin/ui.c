@@ -2021,25 +2021,52 @@ int cmd_activate (COMMAND_ARGS) /* "activate", 1, "<input|output|aux|append|sour
 
   if (!strcmp (argv[1], "input"))
   {
-    ref = gegl_node_get_ui_producer (o->active, "input", NULL);
-    if (ref == NULL)
-      o->pad_active = 0;
-    else
-      o->pad_active = 2;
+    switch (o->pad_active)
+    {
+       case 1:
+        ref = gegl_node_get_ui_producer (o->active, "aux", NULL);
+        if (ref == NULL)
+          o->pad_active = 0;
+        else
+          o->pad_active = 2;
+        break;
+
+       case 0:
+       case 2:
+        ref = gegl_node_get_ui_producer (o->active, "input", NULL);
+        if (ref == NULL)
+          o->pad_active = 0;
+        else
+          o->pad_active = 2;
+       break;
+
+    }
   }
   else if (!strcmp (argv[1], "aux"))
   {
-    ref = gegl_node_get_producer (o->active, "aux", NULL);
-    if (!ref)
+    if (o->pad_active == 1)
     {
-      ref = o->active;
+      ref = gegl_node_get_producer (o->active, "aux", NULL);
+      if (!ref)
+      {
+        ref = o->active;
+        if (gegl_node_has_pad (o->active, "aux"))
+          o->pad_active = 1;
+        else if (gegl_node_has_pad (o->active, "input"))
+          o->pad_active = 0;
+    }
+    else
+    {
+        o->pad_active = 2;
+    }
+    }
+    else
+    {
       if (gegl_node_has_pad (o->active, "aux"))
         o->pad_active = 1;
       else if (gegl_node_has_pad (o->active, "input"))
         o->pad_active = 0;
-    }
-    else
-    {
+      else
         o->pad_active = 2;
     }
   }
