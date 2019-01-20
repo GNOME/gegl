@@ -1287,6 +1287,9 @@ cmd_dereference (COMMAND_ARGS)
       gegl_node_connect_to (o->reference_node, "output", o->active, "aux");
       break;
   }
+
+  renderer_dirty++;
+  o->rev++;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
@@ -2006,7 +2009,7 @@ static void activate_sink_producer (State *o)
 }
 
   int cmd_graph_cursor (COMMAND_ARGS);
-int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|source|append>", "position the graph cursor"*/
+int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|source|append>", "position the graph cursor, this navigates both pads and nodes simultanously."*/
 {
   State *o = global_state;
   GeglNode *ref;
@@ -2032,6 +2035,14 @@ int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|s
         break;
 
        case 0:
+        ref = gegl_node_get_producer (o->active, "input", NULL);
+        if (ref == NULL)
+          o->pad_active = 0;
+        else
+          o->pad_active = 2;
+
+
+       break;
        case 2:
         ref = gegl_node_get_ui_producer (o->active, "input", NULL);
         if (ref == NULL)
