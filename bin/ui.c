@@ -50,7 +50,7 @@ const char *css =
 "div.shellline { background-color:rgba(0,0,0,0.0);color:white; }\n"
 "div.prompt { color:#7aa; display: inline; }\n"
 "div.commandline { color:white; display: inline;  }\n"
-"span.completion{ color: rgba(255,255,255,0.7); padding-right: 2em; }\n"
+"span.completion{ color: rgba(255,255,255,0.7); padding-right: 1em; }\n"
 "span.completion-selected{ color: rgba(255,255,0,1.0); padding-right: 2em; }\n"
 "";
 
