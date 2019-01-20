@@ -1275,6 +1275,8 @@ int
 cmd_dereference (COMMAND_ARGS)
 {
   State *o = global_state;
+
+  if (o->reference_node)
   switch (o->pad_active)
   {
     case 0:
@@ -1282,9 +1284,10 @@ cmd_dereference (COMMAND_ARGS)
       gegl_node_link_many (o->reference_node, o->active, NULL);
       break;
     case 1:
-      gegl_node_link_many (o->reference_node, o->active, NULL);
+      gegl_node_connect_to (o->reference_node, "output", o->active, "aux");
       break;
   }
+  mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
 
