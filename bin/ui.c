@@ -32,6 +32,8 @@ const char *css =
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
 "div.propname { color: white;}\n"
 "div.propvalue { color: yellow;}\n"
+"span.propvalue-enum { color: gray; padding-right: 2em; }\n"
+"span.propvalue-enum-selected{ color: yellow; padding-right: 2em;}\n"
 
 "dl.bindings   { font-size: 1.8vh; color:white; position:absolute;left:1em;top:60%;background-color: rgba(0,0,0,0.7); width: 100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
 "dt.binding   { color:white; }\n"
@@ -1253,9 +1255,9 @@ int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
 int
 cmd_todo (COMMAND_ARGS)
 {
+  printf ("scrolling graph\n");
   printf ("propeditor:op\n");
   printf ("propeditor:int/double\n");
-  printf ("propeditor:enum\n");
   printf ("propeditor:string\n");
   printf ("units in commandline\n");
   printf ("crop mode\n");
@@ -1791,6 +1793,22 @@ cmd_node_add (COMMAND_ARGS)
 }
 
 
+static void prop_set_enum (MrgEvent *event, void *data1, void *data2)
+{
+  State *o = global_state;
+  int value = GPOINTER_TO_INT (data1);
+  const char *prop_name = data2;
+
+  fprintf (stderr, "%p %s %i\n", o->active, prop_name, value);
+
+  gegl_node_set (o->active, prop_name, value, NULL);
+
+  renderer_dirty++;
+  o->rev++;
+
+  mrg_event_stop_propagate (event);
+  mrg_queue_draw (o->mrg, NULL);
+}
 
 
 #define INDENT_STR "   "
@@ -1982,15 +2000,32 @@ static void list_node_props (State *o, GeglNode *node, int indent)
       else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_ENUM))
       {
         GEnumClass *eclass = g_type_class_peek (pspecs[i]->value_type);
-        GEnumValue *evalue;
         gint value;
 
         gegl_node_get (node, pspecs[i]->name, &value, NULL);
-        evalue  = g_enum_get_value (eclass, value);
+
         mrg_printf (mrg, "%s:", pspecs[i]->name);
         mrg_end (mrg);
+
         mrg_start (mrg, "div.propvalue", NULL);//
-        mrg_printf (mrg, "%s", evalue->value_nick);
+        for (int j = eclass->minimum; j<= eclass->maximum; j++)
+        {
+          GEnumValue *evalue2 = &eclass->values[j];
+
+
+          if (evalue2->value == value)
+            mrg_start (mrg, "span.propvalue-enum-selected", NULL);//
+          else
+            mrg_start (mrg, "span.propvalue-enum", NULL);//
+
+          mrg_text_listen (mrg, MRG_CLICK,
+             prop_set_enum, GINT_TO_POINTER(evalue2->value), g_intern_string ((void*)pspecs[i]->name));
+          mrg_printf (mrg, "%s ", evalue2->value_nick);
+          mrg_text_listen_done (mrg);
+          mrg_end (mrg);
+        }
+
+        //mrg_printf (mrg, "%s", evalue->value_nick);
         mrg_end (mrg);
         no++;
       }
