@@ -2885,22 +2885,39 @@ int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
   GeglNode *next, *prev;
 
   const gchar *consumer_name = NULL;
-  prev = gegl_node_get_producer (node, "input", NULL);
-  next = gegl_node_get_ui_consumer (node, "output", &consumer_name);
 
-  if (next && prev)
-    {
-      gegl_node_disconnect (node, "input");
-      gegl_node_connect_to (prev, "output", next, consumer_name);
-      gegl_node_remove_child (o->gegl, node);
-      o->active = prev;
-    }
-  else if (next)
-    {
-      gegl_node_disconnect (next, consumer_name);
-      gegl_node_remove_child (o->gegl, node);
-      o->active = next;
-    }
+
+  switch (o->pad_active)
+  {
+    case 0:
+      prev = gegl_node_get_producer (node, "input", NULL);
+      if (gegl_node_get_ui_consumer (prev, "output", NULL) != node)
+        gegl_node_disconnect (node, "input");
+      break;
+    case 1:
+      prev = gegl_node_get_producer (node, "aux", NULL);
+      if (gegl_node_get_ui_consumer (prev, "output", NULL) != node)
+        gegl_node_disconnect (node, "aux");
+      break;
+    case 2:
+      prev = gegl_node_get_producer (node, "input", NULL);
+      next = gegl_node_get_ui_consumer (node, "output", &consumer_name);
+
+      if (next && prev)
+      {
+        gegl_node_disconnect (node, "input");
+        gegl_node_connect_to (prev, "output", next, consumer_name);
+        gegl_node_remove_child (o->gegl, node);
+        o->active = prev;
+      }
+      else if (next)
+      {
+        gegl_node_disconnect (next, consumer_name);
+        gegl_node_remove_child (o->gegl, node);
+        o->active = next;
+      }
+    break;
+  }
 
   mrg_queue_draw (o->mrg, NULL);
   renderer_dirty++;
