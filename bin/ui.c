@@ -41,7 +41,7 @@ const char *css =
 "div.graph {position:absolute; top: 0; left: 0; width:30%; height:50%; color:white; }\n"
 
 
-"div.node {border: 1px solid white; position: absolute; background-color: rgba(0,0,0,0.75); color:white; padding-left:1em;padding-right:1em;height:2em;width:8em;padding-top:1em;}\n"
+"div.node {border: 1px solid white; position: absolute; background-color: rgba(0,0,0,0.75); color:white; padding-left:1em;padding-right:1em;height:1em;width:8em;padding-top:0.25em;}\n"
 
 
 "div.props {}\n"
@@ -2780,7 +2780,7 @@ static float compute_node_x (Mrg *mrg, int indent, int line_no)
 static float compute_node_y (Mrg *mrg, int indent, int line_no)
 {
   float em = mrg_em (mrg);
-  return (4 + line_no * 3.5) * em;
+  return (4 + line_no * 2.0) * em;
 }
 
 static float compute_pad_x (Mrg *mrg, int indent, int line_no, int pad_no)
@@ -2805,9 +2805,9 @@ static float compute_pad_y (Mrg *mrg, int indent, int line_no, int pad_no)
   {
     case 0: // in
     case 1: // aux
-      return compute_node_y (mrg, indent, line_no) + 2.5 * em;
+      return compute_node_y (mrg, indent, line_no) + 1.5 * em;
     case 2: // out
-      return compute_node_y (mrg, indent, line_no) + 0.5 * em;
+      return compute_node_y (mrg, indent, line_no) + 0.0 * em;
   }
   return 0;
 }
@@ -2891,10 +2891,12 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
 
    {
     MrgStyle *style = mrg_style (mrg);
-    cairo_rectangle (mrg_cr (mrg), style->left, style->top,
+    float em = mrg_em (mrg);
+    cairo_rectangle (mrg_cr (mrg), style->left, style->top - 0.5 * em,
                                    style->width + style->padding_left + style->padding_right,
-                                   style->height + style->padding_top + style->padding_bottom);
+                                   style->height + style->padding_top + style->padding_bottom + 1 * em);
 
+    //cairo_fill_preserve (mrg_cr (mrg));
 
     if(active)
       mrg_listen (mrg, MRG_DRAG, on_node_drag, o, node);
@@ -2973,12 +2975,12 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
                          compute_pad_y (mrg, indent, line_no, 2));
       cairo_line_to (cr, compute_pad_x (mrg, edge->indent, edge->line_no, edge->in_slot_no),
                          compute_pad_y (mrg, edge->indent, edge->line_no, edge->in_slot_no));
-      cairo_set_line_width (cr, 1.75f);
+      cairo_set_line_width (cr, 3.75f);
       cairo_set_line_cap (cr, CAIRO_LINE_CAP_ROUND);
       cairo_set_source_rgba (cr, .0,.0,.0,.5);
       cairo_stroke_preserve (cr);
 
-      cairo_set_line_width (cr, 1.0f);
+      cairo_set_line_width (cr, 3.0f);
       cairo_set_source_rgba (cr, 1.0,1.0,1,0.5);
       cairo_stroke (cr);
 
