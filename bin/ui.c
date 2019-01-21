@@ -28,7 +28,7 @@
 #if HAVE_MRG
 
 const char *css =
-"div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 3em; left: 0%; width:65%; background-color:rgba(1,0,0,0.75);}\n"
+"div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 3em; left: 0%; width:15em; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
 "div.propname { color: white;}\n"
 "div.propvalue { color: yellow;}\n"
@@ -3435,9 +3435,8 @@ cmd_swap (COMMAND_ARGS)
   prev = gegl_node_get_ui_producer (node, "input", NULL);
   consumer_name = g_intern_string (consumer_name?consumer_name:"");
 
-  if (next && prev)
+  if (1)//next && prev)
     {
-
       if (!strcmp (argv[1], "output") && next != o->sink)
       {
         const char *next_next_consumer = NULL;
@@ -3445,12 +3444,17 @@ cmd_swap (COMMAND_ARGS)
 
         if (next_next && g_str_equal (consumer_name, "input"))
         {
-          gegl_node_link_many (prev, next, node, NULL);
           gegl_node_disconnect (next_next, next_next_consumer);
+          gegl_node_disconnect (node, "input");
+          gegl_node_disconnect (next, "input");
+          if (prev)
+            gegl_node_link_many (prev, next, node, NULL);
+          else
+            gegl_node_link_many (next, node, NULL);
           gegl_node_connect_to (node, "output", next_next, next_next_consumer);
         }
       }
-      else if (!strcmp (argv[1], "input") && prev != o->source)
+      else if (prev && !strcmp (argv[1], "input") && prev != o->source)
       {
         GeglNode *prev_prev = gegl_node_get_ui_producer (prev, "input", NULL);
 
@@ -3458,7 +3462,16 @@ cmd_swap (COMMAND_ARGS)
         {
           gegl_node_link_many (prev_prev, node, prev, NULL);
           gegl_node_connect_to (prev, "output", next, consumer_name);
-
+        }
+        else
+        {
+          if (gegl_node_has_pad (prev, "input"))
+          {
+            gegl_node_disconnect (next, consumer_name);
+            gegl_node_disconnect (node, "input");
+            gegl_node_link_many (node, prev, NULL);
+            gegl_node_connect_to (prev, "output", next, consumer_name);
+          }
         }
       }
 
