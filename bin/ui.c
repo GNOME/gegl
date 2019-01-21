@@ -1273,6 +1273,7 @@ cmd_todo (COMMAND_ARGS)
   printf ("units in commandline\n");
   printf ("crop mode\n");
   printf ("polyline/bezier on screen editing\n");
+  printf ("display/setting of id\n");
   printf ("interpret GUM\n");
   printf ("rewrite in lua\n");
   printf ("animation of properties\n");
@@ -1977,6 +1978,19 @@ static void list_node_props (State *o, GeglNode *node, int indent)
   mrg_end (mrg);
   mrg_end (mrg);
   mrg_text_listen_done (mrg);
+
+  mrg_start (mrg, "div.property", NULL);
+  mrg_start (mrg, "div.propname", NULL);
+  mrg_printf (mrg, "id");
+  mrg_end (mrg);
+  mrg_start (mrg, "div.propvalue", NULL);
+  {
+    const char *id = g_object_get_data (G_OBJECT (node), "refname");
+    if (!id) id = "";
+    mrg_printf (mrg, "%s", id);
+  }
+  mrg_end (mrg);
+  mrg_end (mrg);
 
   if (pspecs)
   {
@@ -3290,7 +3304,16 @@ run_command (MrgEvent *event, void *data1, void *data_2)
     }
     else
     {
-       if (!strcmp (key, "op"))
+       if (!strcmp (key, "id"))
+       {
+         if (o->active)
+         {
+           /* XXX : ensure this is a unique id */
+           g_object_set_data (G_OBJECT (o->active), "refname",
+                              (void*)g_intern_string (value));
+         }
+       }
+       else if (!strcmp (key, "op"))
        {
          char temp_op_name[1024];
          if (strchr (*arg, ':'))
