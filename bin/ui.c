@@ -64,7 +64,7 @@ const char *css =
 "div.prompt { color:#7aa; display: inline; }\n"
 "div.commandline { color:white; display: inline;  }\n"
 "span.completion{ color: rgba(255,255,255,0.7); padding-right: 1em; }\n"
-"span.completion-selected{ color: rgba(255,255,0,1.0); padding-right: 2em; }\n"
+"span.completion-selected{ color: rgba(255,255,0,1.0); padding-right: 1em; }\n"
 "";
 
 
@@ -3088,7 +3088,6 @@ static void update_commandline (const char *new_commandline, void *data)
     const char *completion = g_list_nth_data (completions, completion_no);
     strcat (commandline, completion);
     strcat (commandline, appended);
-    fprintf (stderr, "appended [%s]\n", appended);
     g_free (appended);
     mrg_set_cursor_pos (o->mrg, strlen (commandline));
     while (completions)
@@ -3956,8 +3955,8 @@ static void expand_completion (MrgEvent *event, void *data1, void *data2)
 
      if (completion_no >= g_list_length (completions))
        completion_no = -1;
-     if (completion_no < 0)
-       completion_no = 0;
+     if (completion_no < -1)
+       completion_no = -1;
 
    cleanup:
 
@@ -3992,6 +3991,8 @@ static void ui_commandline (Mrg *mrg, void *data)
     mrg_printf (mrg, "%s", commandline);
     mrg_edit_end (mrg);
   mrg_edit_end (mrg);
+
+    if (mrg_get_cursor_pos (mrg) == mrg_utf8_strlen (commandline))
     {
       GList *completions = commandline_get_completions (o->active, commandline);
       if (completions)
@@ -4261,6 +4262,7 @@ static void gegl_ui (Mrg *mrg, void *data)
     mrg_add_binding (mrg, "5", NULL, NULL, run_command, "star 5");
 #endif
   }
+
   if (o->is_dir)
   {
   }
