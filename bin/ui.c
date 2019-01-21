@@ -1948,12 +1948,254 @@ static GList *gegl_operations (void)
   return operations;
 }
 
+static void draw_key (State *o, Mrg *mrg, const char *key)
+{
+  mrg_start (mrg, "div.propname", NULL);
+  mrg_printf (mrg, "%s", key);
+  mrg_end (mrg);
+}
+
+static void draw_value (State *o, Mrg *mrg, const char *value)
+{
+  mrg_start (mrg, "div.propvalue", NULL);
+  mrg_printf (mrg, "%s", value);
+  mrg_end (mrg);
+}
+
+static void draw_key_value (State *o, Mrg *mrg, const char *key, const char *value)
+{
+  mrg_start (mrg, "div.property", NULL);
+  draw_key (o, mrg, key);
+  draw_value (o, mrg, value);
+  mrg_end (mrg);
+}
+
+static void
+draw_property_enum (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+{
+    GEnumClass *eclass = g_type_class_peek (pspec->value_type);
+    gint value;
+
+    mrg_start (mrg, "div.property", NULL);//
+
+    gegl_node_get (node, pspec->name, &value, NULL);
+
+    draw_key (o, mrg, pspec->name);
+
+    mrg_start (mrg, "div.propvalue", NULL);//
+    for (int j = eclass->minimum; j<= eclass->maximum; j++)
+    {
+      GEnumValue *evalue2 = &eclass->values[j];
+
+
+      if (evalue2->value == value)
+        mrg_start (mrg, "span.propvalue-enum-selected", NULL);//
+      else
+        mrg_start (mrg, "span.propvalue-enum", NULL);//
+
+      mrg_text_listen (mrg, MRG_CLICK,
+         prop_set_enum, GINT_TO_POINTER(evalue2->value), (void*)g_intern_string ((void*)pspec->name));
+      mrg_printf (mrg, "%s ", evalue2->value_nick);
+      mrg_text_listen_done (mrg);
+      mrg_end (mrg);
+    }
+
+    //mrg_printf (mrg, "%s", evalue->value_nick);
+    mrg_end (mrg);
+    mrg_end (mrg);
+}
+
+static void
+draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+{
+  //GeglParamSpecInt *geglspec = (void*)pspecs[i];
+  gint value;
+  mrg_start (mrg, "div.property", NULL);//
+  gegl_node_get (node, pspec->name, &value, NULL);
+
+  //mrg_printf (mrg, "%s\n%i\n", pspecs[i]->name, value);
+
+  if (edited_prop && !strcmp (edited_prop, pspec->name))
+  {
+    draw_key (o, mrg, pspec->name);
+
+    mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
+    mrg_edit_start (mrg, update_prop_int, node);
+
+    mrg_printf_xml (mrg, "<div class='propvalue'>%i</div>", value);
+
+    mrg_edit_end (mrg);
+    mrg_text_listen_done (mrg);
+  }
+  else
+  {
+    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspec->name);
+    draw_key (o, mrg, pspec->name);
+    mrg_printf_xml (mrg, "<div class='propvalue'>%i</div>", value);
+    mrg_text_listen_done (mrg);
+  }
+  mrg_end (mrg);
+}
+
+static void
+draw_property_boolean (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+{
+  gboolean value = FALSE;
+  mrg_start (mrg, "div.property", NULL);
+  gegl_node_get (node, pspec->name, &value, NULL);
+
+  mrg_text_listen (mrg, MRG_CLICK, prop_toggle_boolean, node, (void*)pspec->name);
+
+  draw_key (o, mrg, pspec->name);
+  draw_value (o, mrg, value?"true":"false");
+
+  mrg_text_listen_done (mrg);
+  mrg_end (mrg);
+}
+
+static void
+draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+{
+  //GeglParamSpecDouble *geglspec = (void*)pspecs[i];
+  gdouble value;
+  mrg_start (mrg, "div.property", NULL);//
+  gegl_node_get (node, pspec->name, &value, NULL);
+
+
+  if (edited_prop && !strcmp (edited_prop, pspec->name))
+  {
+    draw_key (o, mrg, pspec->name);
+    mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
+    mrg_edit_start (mrg, update_prop_double, node);
+
+    mrg_printf_xml (mrg, "<div class='propvalue'>%.3f</div>", value);
+
+    mrg_edit_end (mrg);
+    mrg_text_listen_done (mrg);
+  }
+  else
+  {
+    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspec->name);
+    draw_key (o, mrg, pspec->name);
+
+    mrg_printf_xml (mrg, "<div class='propvalue'>%.3f</div>", value);
+
+    mrg_text_listen_done (mrg);
+  }
+  mrg_end (mrg);
+}
+
+static void
+draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+{
+  GeglColor *color;
+  char *value = NULL;
+  mrg_start (mrg, "div.property", NULL);//
+  gegl_node_get (node, pspec->name, &color, NULL);
+  g_object_get (color, "string", &value, NULL);
+
+  if (edited_prop && !strcmp (edited_prop, pspec->name))
+  {
+    draw_key (o, mrg, pspec->name);
+    mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
+    mrg_edit_start (mrg, update_prop, node);
+
+    draw_value (o, mrg, value);
+
+    mrg_edit_end (mrg);
+
+    mrg_text_listen_done (mrg);
+  }
+  else
+  {
+    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspec->name);
+    draw_key (o, mrg, pspec->name);
+    draw_value (o, mrg, value);
+    mrg_text_listen_done (mrg);
+  }
+
+  if (value)
+    g_free (value);
+  mrg_end (mrg);
+}
+
+static void
+draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+{
+  char *value = NULL;
+  mrg_start (mrg, "div.property", NULL);//
+  gegl_node_get (node, pspec->name, &value, NULL);
+
+  if (edited_prop && !strcmp (edited_prop, pspec->name))
+  {
+    draw_key (o, mrg, pspec->name);
+
+    mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
+    mrg_edit_start (mrg, update_prop, node);
+    draw_value (o, mrg, value);
+
+    mrg_text_listen_done (mrg);
+    mrg_end (mrg);
+  }
+  else
+  {
+    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspec->name);
+    draw_key (o, mrg, pspec->name);
+    draw_value (o, mrg, value);
+
+    mrg_text_listen_done (mrg);
+  }
+
+  if (value)
+    g_free (value);
+  mrg_end (mrg);
+}
+
+static void
+draw_property (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+{
+
+  if (g_type_is_a (pspec->value_type, G_TYPE_DOUBLE))
+  {
+    draw_property_double (o, mrg, node, pspec);
+  }
+  else if (g_type_is_a (pspec->value_type, G_TYPE_INT))
+  {
+    draw_property_int (o, mrg, node, pspec);
+  }
+  else if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
+           g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
+  {
+    draw_property_string (o, mrg, node, pspec);
+  }
+  else if (g_type_is_a (pspec->value_type, GEGL_TYPE_COLOR))
+  {
+    draw_property_color (o, mrg, node, pspec);
+  }
+  else if (g_type_is_a (pspec->value_type, G_TYPE_BOOLEAN))
+  {
+    draw_property_boolean (o, mrg, node, pspec);
+  }
+  else if (g_type_is_a (pspec->value_type, G_TYPE_ENUM))
+  {
+    draw_property_enum (o, mrg, node, pspec);
+  }
+  else
+  {
+    mrg_start (mrg, "div.property", NULL);//
+    draw_key (o, mrg, pspec->name);
+    mrg_end (mrg);
+  }
+
+}
+
+
+
 static void list_node_props (State *o, GeglNode *node, int indent)
 {
   static int operation_selector = 0;
   Mrg *mrg = o->mrg;
   guint n_props;
-  int no = 0;
   const char *op_name;
   GParamSpec **pspecs;
 
@@ -1968,224 +2210,22 @@ static void list_node_props (State *o, GeglNode *node, int indent)
   mrg_start (mrg, "div.properties", NULL);
 
   mrg_text_listen (mrg, MRG_CLICK, set_int, &operation_selector, GINT_TO_POINTER(1));
-  mrg_start (mrg, "div.property", NULL);
-  mrg_start (mrg, "div.propname", NULL);
-  mrg_printf (mrg, "operation");
-  mrg_end (mrg);
-  mrg_start (mrg, "div.propvalue", NULL);
-  mrg_printf (mrg, "%s", op_name);
-  mrg_end (mrg);
-  mrg_end (mrg);
+  draw_key_value (o, mrg, "operation", op_name);
   mrg_text_listen_done (mrg);
 
-  mrg_start (mrg, "div.property", NULL);
-  mrg_start (mrg, "div.propname", NULL);
-  mrg_printf (mrg, "id");
-  mrg_end (mrg);
-  mrg_start (mrg, "div.propvalue", NULL);
   {
     const char *id = g_object_get_data (G_OBJECT (node), "refname");
-    if (!id) id = "";
-    mrg_printf (mrg, "%s", id);
+    if (id)
+    {
+      draw_key_value (o, mrg, "id", id);
+    }
   }
-  mrg_end (mrg);
-  mrg_end (mrg);
 
   if (pspecs)
   {
     for (gint i = 0; i < n_props; i++)
     {
-      mrg_start (mrg, "div.property", NULL);//
-      mrg_start (mrg, "div.propname", NULL);//
-      //mrg_set_xy (mrg, x + no * mrg_em (mrg) * 7, y - mrg_em (mrg) * .5);
-
-      if (g_type_is_a (pspecs[i]->value_type, G_TYPE_DOUBLE))
-      {
-        //float xpos;
-        //GeglParamSpecDouble *geglspec = (void*)pspecs[i];
-        gdouble value;
-        gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-
-        if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
-        {
-          mrg_printf (mrg, "%s", pspecs[i]->name);
-          mrg_end (mrg);
-          mrg_start (mrg, "div.propvalue", NULL);//
-          mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_edit_start (mrg, update_prop_double, node);
-          mrg_printf (mrg, "%.3f", value);
-          mrg_edit_end (mrg);
-          mrg_end (mrg);
-          mrg_text_listen_done (mrg);
-        }
-        else
-        {
-          mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_printf (mrg, "%s", pspecs[i]->name);
-          mrg_end (mrg);
-          mrg_start (mrg, "div.propvalue", NULL);//
-          mrg_printf (mrg, "%.3f", value);
-          mrg_end (mrg);
-          mrg_text_listen_done (mrg);
-        }
-
-        no++;
-      }
-      else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_INT))
-      {
-        //float xpos;
-        //GeglParamSpecInt *geglspec = (void*)pspecs[i];
-        gint value;
-        gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-        //mrg_printf (mrg, "%s\n%i\n", pspecs[i]->name, value);
-
-        if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
-        {
-          mrg_printf (mrg, "%s", pspecs[i]->name);
-          mrg_end (mrg);
-          mrg_start (mrg, "div.propvalue", NULL);//
-          mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_edit_start (mrg, update_prop_int, node);
-          mrg_printf (mrg, "%i", value);
-          mrg_edit_end (mrg);
-          mrg_end (mrg);
-          mrg_text_listen_done (mrg);
-        }
-        else
-        {
-          mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_printf (mrg, "%s", pspecs[i]->name);
-          mrg_end (mrg);
-          mrg_start (mrg, "div.propvalue", NULL);//
-          mrg_printf (mrg, "%i", value);
-          mrg_end (mrg);
-          mrg_text_listen_done (mrg);
-        }
-        no++;
-      }
-      else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_STRING) ||
-               g_type_is_a (pspecs[i]->value_type, GEGL_TYPE_PARAM_FILE_PATH))
-      {
-        char *value = NULL;
-        gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-        if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
-        {
-          mrg_printf (mrg, "%s", pspecs[i]->name);
-          mrg_end (mrg);
-          mrg_start (mrg, "div.propvalue", NULL);//
-          mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_edit_start (mrg, update_prop, node);
-          mrg_printf (mrg, "%s", value);
-          mrg_edit_end (mrg);
-          mrg_text_listen_done (mrg);
-          mrg_end (mrg);
-        }
-        else
-        {
-          mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_printf (mrg, "%s", pspecs[i]->name);
-          mrg_end (mrg);
-          mrg_start (mrg, "div.propvalue", NULL);//
-          mrg_printf (mrg, "%s\n", value);
-          mrg_end (mrg);
-          mrg_text_listen_done (mrg);
-        }
-
-        if (value)
-          g_free (value);
-        no++;
-      }
-      else if (g_type_is_a (pspecs[i]->value_type, GEGL_TYPE_COLOR))
-      {
-        GeglColor *color;
-        char *value = NULL;
-        gegl_node_get (node, pspecs[i]->name, &color, NULL);
-        g_object_get (color, "string", &value, NULL);
-
-        if (edited_prop && !strcmp (edited_prop, pspecs[i]->name))
-        {
-          mrg_printf (mrg, "%s", pspecs[i]->name);
-          mrg_end (mrg);
-          mrg_start (mrg, "div.propvalue", NULL);//
-          mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_edit_start (mrg, update_prop, node);
-          mrg_printf (mrg, "%s", value);
-          mrg_edit_end (mrg);
-          mrg_text_listen_done (mrg);
-          mrg_end (mrg);
-        }
-        else
-        {
-          mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspecs[i]->name);
-          mrg_printf (mrg, "%s", pspecs[i]->name);
-          mrg_end (mrg);
-          mrg_start (mrg, "div.propvalue", NULL);//
-          mrg_printf (mrg, "%s", value);
-          mrg_end (mrg);
-          mrg_text_listen_done (mrg);
-        }
-
-        if (value)
-          g_free (value);
-        no++;
-      }
-      else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_BOOLEAN))
-      {
-        gboolean value = FALSE;
-        gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-        mrg_text_listen (mrg, MRG_CLICK, prop_toggle_boolean, node, (void*)pspecs[i]->name);
-        mrg_printf (mrg, "%s", pspecs[i]->name);
-        mrg_end (mrg);
-        mrg_start (mrg, "div.propvalue", NULL);//
-        mrg_printf (mrg, "%s", value?"true":"false");
-        mrg_end (mrg);
-        mrg_text_listen_done (mrg);
-        no++;
-      }
-      else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_ENUM))
-      {
-        GEnumClass *eclass = g_type_class_peek (pspecs[i]->value_type);
-        gint value;
-
-        gegl_node_get (node, pspecs[i]->name, &value, NULL);
-
-        mrg_printf (mrg, "%s:", pspecs[i]->name);
-        mrg_end (mrg);
-
-        mrg_start (mrg, "div.propvalue", NULL);//
-        for (int j = eclass->minimum; j<= eclass->maximum; j++)
-        {
-          GEnumValue *evalue2 = &eclass->values[j];
-
-
-          if (evalue2->value == value)
-            mrg_start (mrg, "span.propvalue-enum-selected", NULL);//
-          else
-            mrg_start (mrg, "span.propvalue-enum", NULL);//
-
-          mrg_text_listen (mrg, MRG_CLICK,
-             prop_set_enum, GINT_TO_POINTER(evalue2->value), (void*)g_intern_string ((void*)pspecs[i]->name));
-          mrg_printf (mrg, "%s ", evalue2->value_nick);
-          mrg_text_listen_done (mrg);
-          mrg_end (mrg);
-        }
-
-        //mrg_printf (mrg, "%s", evalue->value_nick);
-        mrg_end (mrg);
-        no++;
-      }
-      else
-      {
-        mrg_printf (mrg, "%s", pspecs[i]->name);
-        mrg_end (mrg);
-        no++;
-      }
-
-      mrg_end (mrg);
+      draw_property (o, mrg, node, pspecs[i]);
     }
     g_free (pspecs);
   }
@@ -2669,11 +2709,27 @@ static GeglNode *gegl_node_get_ui_consumer (GeglNode *node, const char *output_p
   return ret;
 }
 
+static GeglNode *node_pad_drag_node = NULL;
+static int node_pad_drag = -1;
+static float node_pad_drag_x = 0;
+static float node_pad_drag_y = 0;
+
 static void on_node_drag (MrgEvent *e, void *data1, void *data2)
 {
   State *o = data1;
+  GeglNode *node = data2;
+
+  static float dist_jitter   = 6;
+  static float dist_add_node = 50;
+  static float dist_remove   = 70;
+  static float dist_connect_pad  = 80;
+
   static float dist = 0;
   static float angle = 0;
+
+  switch (node_pad_drag)
+  {
+    case -1:
 
   switch (e->type)
   {
@@ -2683,22 +2739,22 @@ static void on_node_drag (MrgEvent *e, void *data1, void *data2)
     case MRG_DRAG_RELEASE:
       if (angle < -120 || angle > 120) // upwards
       {
-         if (dist > 50)
+         if (dist > dist_add_node)
            o->active = add_output (o, o->active, "gegl:nop");
       }
       else if (angle < 15 && angle > -45) // down / slightly left
       {
-         if (dist > 50)
+         if (dist > dist_add_node)
            o->active = add_input (o, o->active, "gegl:nop");
       }
       else if (angle > 15 && angle <60) // right/down
       {
-         if (dist > 50)
+         if (dist > dist_add_node)
            o->active = add_aux (o, o->active, "gegl:nop");
       }
       else if (angle < -45 && angle > -110) // left
       {
-         if (dist > 70)
+         if (dist > dist_remove)
          {
            o->pad_active = PAD_OUTPUT; // restore the output pad
            argvs_eval ("remove");
@@ -2711,17 +2767,22 @@ static void on_node_drag (MrgEvent *e, void *data1, void *data2)
 
       if (angle < -120 || angle > 120) // upwards
       {
-         if (dist > 5)
+         if (dist > dist_jitter)
            o->pad_active = PAD_OUTPUT;
       }
       else if (angle < 15 && angle > -45) // down / slightly left
       {
-         if (dist > 5)
+         if (dist > dist_jitter)
            o->pad_active = PAD_INPUT;
+         if (dist > 100) // XXX  all these dist comparisons need to be parametric
+         {
+           node_pad_drag = PAD_INPUT;
+           node_pad_drag_node = node;
+         }
       }
       else if (angle > 15 && angle <60) // right/down
       {
-         if (dist > 5)
+         if (dist > dist_jitter)
            o->pad_active = PAD_AUX;
       }
       else if (angle < -45 && angle > -110) // left
@@ -2741,11 +2802,36 @@ static void on_node_drag (MrgEvent *e, void *data1, void *data2)
     default:
       break;
   }
+  break;
+    case PAD_INPUT:
+      switch (e->type)
+       {
+         case MRG_DRAG_PRESS:
+           node_pad_drag_x = e->x;
+           node_pad_drag_y = e->y;
+           break;
+         case MRG_DRAG_RELEASE:
+           node_pad_drag = -1;
+           o->pad_active = PAD_OUTPUT;
+           break;
+         case MRG_DRAG_MOTION:
+           node_pad_drag_x = e->x;
+           node_pad_drag_y = e->y;
+           break;
+         default:
+           break;
+       }
+      break;
+  }
   mrg_event_stop_propagate (e);
 }
 
 
 typedef struct DrawEdge {
+  int       has_alpha;
+  int       color_components;
+  int       bit_depth;
+
   GeglNode *target;
   int       in_slot_no;  /* 0=input 1=aux */
   int       indent;
@@ -2766,6 +2852,43 @@ queue_edge (GeglNode *target, int in_slot_no, int indent, int line_no, GeglNode 
   edge->indent = indent;
   edge->line_no = line_no;
   edge->source = source;
+
+  {
+    GeglOperation *operation = gegl_node_get_gegl_operation (source);
+    const Babl *output_format = gegl_operation_get_format (operation, "output");
+
+    if (!output_format && gegl_node_is_graph (source))
+    {
+      output_format = gegl_operation_get_format (gegl_node_get_gegl_operation(gegl_node_get_output_proxy (source, "output")), "output");
+    }
+
+    if (output_format)
+      {
+        const Babl *type = babl_format_get_type (output_format, 0);
+        BablModelFlag flags = babl_get_model_flags (output_format);
+        if ((flags & BABL_MODEL_FLAG_ALPHA) != 0)
+          edge->has_alpha = 1;
+        if ((flags & BABL_MODEL_FLAG_RGB) != 0)
+          edge->color_components = 3;
+        if ((flags & BABL_MODEL_FLAG_GRAY) != 0)
+          edge->color_components = 1;
+        if ((flags & BABL_MODEL_FLAG_CMYK) != 0)
+          edge->color_components = 4;
+
+        if (type == babl_type ("double"))
+          edge->bit_depth=16;
+        else if (type == babl_type ("float"))
+          edge->bit_depth=8;
+        else if (type == babl_type ("half"))
+          edge->bit_depth=4;
+        else if (type == babl_type ("u16"))
+          edge->bit_depth=3;
+        else if (type == babl_type ("u8"))
+          edge->bit_depth=2;
+        else
+          edge->bit_depth=1;
+      }
+  }
 
   edge_queue = g_list_prepend (edge_queue, edge);
 }
@@ -2966,19 +3089,47 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
     DrawEdge *edge = i->data;
     if (edge->source == node)
     {
+      float width = 3.0f;
+      float padding = 0.75f;
+      float rgb[4] = {.9,.9,.9, 1.0};
+
       cairo_t *cr = mrg_cr (mrg);
+
       cairo_new_path (cr);
       cairo_move_to (cr, compute_pad_x (mrg, indent, line_no, 2),
                          compute_pad_y (mrg, indent, line_no, 2));
       cairo_line_to (cr, compute_pad_x (mrg, edge->indent, edge->line_no, edge->in_slot_no),
                          compute_pad_y (mrg, edge->indent, edge->line_no, edge->in_slot_no));
-      cairo_set_line_width (cr, 3.75f);
+      width = edge->bit_depth;
+      switch (edge->color_components)
+      {
+        case 1:
+           rgb[0] = .6;
+           rgb[1] = .6;
+           rgb[2] = .6;
+           break;
+        case 3:
+           rgb[0] = 1;
+           rgb[1] = 0;
+           rgb[2] = 0;
+           break;
+        case 4:
+           rgb[0] = 0;
+           rgb[1] = 1;
+           rgb[2] = 1;
+           break;
+      }
+      if (edge->has_alpha)
+        rgb[3]=0.5;
+
+
+      cairo_set_line_width (cr, width + padding);
       cairo_set_line_cap (cr, CAIRO_LINE_CAP_ROUND);
       cairo_set_source_rgba (cr, .0,.0,.0,.5);
       cairo_stroke_preserve (cr);
 
-      cairo_set_line_width (cr, 3.0f);
-      cairo_set_source_rgba (cr, 1.0,1.0,1,0.5);
+      cairo_set_line_width (cr, width);
+      cairo_set_source_rgba (cr, rgb[0], rgb[1], rgb[2], rgb[3]);
       cairo_stroke (cr);
 
       to_remove = g_list_prepend (to_remove, edge);
