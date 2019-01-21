@@ -3530,6 +3530,7 @@ static void commandline_run (MrgEvent *event, void *data1, void *data2)
          g_free (completions->data);
          completions = g_list_remove (completions, completions->data);
        }
+       completion_no = -1;
      }
 
     argvs_eval ("clear");
