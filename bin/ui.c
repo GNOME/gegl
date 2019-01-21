@@ -3156,14 +3156,27 @@ static GeglNode *node_find_by_id (State *o, GeglNode *iter, const char *needle_i
   return NULL;
 }
 
+  int cmd_find_id (COMMAND_ARGS);
+int cmd_find_id (COMMAND_ARGS) /* "/", 1, "<id-to-jump-to>", "set focus on node with given id"*/
+{
+  State *o = global_state;
+  GeglNode *found = node_find_by_id (o, o->sink, argv[1]);
 
+  if (found)
+    o->active = found;
+  else
+    printf ("no node with id %s found", argv[1]);
 
+  mrg_queue_draw (o->mrg, NULL);
+
+  return 0;
+}
 
 
 static void
 run_command (MrgEvent *event, void *data1, void *data_2)
 {
-  State *o = global_state; //data1;
+  State *o = global_state;
   const char *commandline = data1;
 
   gchar **argv = NULL;
