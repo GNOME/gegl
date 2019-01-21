@@ -48,6 +48,17 @@ const char *css =
 "a { color: yellow; text-decoration: none;  }\n"
 
 
+"div.operation-selector { font-size: 3vh; color: green; border: 1px solid red; padding-left:1em; padding-bottom: 1em; position: absolute; top: 4em; left: 2%; width:90%; background-color:rgba(1,0,0,0.0);height: 90%;}\n"
+"div.operation-selector-close { color: red; }\n"
+"div.operation-selector-op { background: black; color: white; display: inline; padding-right: 1em; }\n"
+"div.operation-selector-op-active { background: black; color: yellow; display: inline; padding-right: 1em; }\n"
+"div.operation-selector-categories {}\n"
+"div.operation-selector-operations {}\n"
+"div.operation-selector-category { background: black; color: gray; display: inline; padding-right: 1em; }\n"
+"div.operation-selector-category-active { background: black; color: yellow; display: inline; padding-right: 1em; }\n"
+"div.operation-selector-operation { background: black; color: white; }\n"
+
+
 "div.shell{ color:white; position:fixed;left:0em;background-color: rgba(0,0,0,0.75); left:0%; width:100%;  padding-left: 1em; padding-top:1em;padding-bottom:1em;}\n"
 "div.shellline { background-color:rgba(0,0,0,0.0);color:white; }\n"
 "div.prompt { color:#7aa; display: inline; }\n"
@@ -1257,7 +1268,6 @@ int
 cmd_todo (COMMAND_ARGS)
 {
   printf ("scrolling graph\n");
-  printf ("propeditor:op\n");
   printf ("propeditor:int/double\n");
   printf ("propeditor:string\n");
   printf ("units in commandline\n");
@@ -1811,11 +1821,136 @@ static void prop_set_enum (MrgEvent *event, void *data1, void *data2)
   mrg_queue_draw (o->mrg, NULL);
 }
 
+static void set_int (MrgEvent *event, void *data1, void *data2)
+{
+  int *intptr = data1;
+  int value = GPOINTER_TO_INT(data2);
+  *intptr = value;
+  mrg_event_stop_propagate (event);
+  mrg_queue_draw (event->mrg, NULL);
+}
+
+static void set_string (MrgEvent *event, void *data1, void *data2)
+{
+  char **charptr = data1;
+  char *value = data2;
+  *charptr = value;
+  mrg_event_stop_propagate (event);
+  mrg_queue_draw (event->mrg, NULL);
+}
+
+static void set_string_b (MrgEvent *event, void *data1, void *data2)
+{
+  char *value = data2;
+  char command[1024];
+  sprintf (command, "op=%s", value);
+  run_command (NULL, command, NULL);
+
+
+  set_string (event, data1, data2);
+}
+
+static int strsort (const void *a, const void *b)
+{
+  return strcmp(a,b);
+}
 
 #define INDENT_STR "   "
 
+static GList *
+gegl_operations_build (GList *list, GType type)
+{
+  GeglOperationClass *klass;
+  GType *ops;
+  guint  children;
+  gint   no;
+
+  if (!type)
+    return list;
+
+  klass = g_type_class_ref (type);
+  if (klass->name != NULL)
+    list = g_list_prepend (list, klass);
+
+  ops = g_type_children (type, &children);
+
+  for (no=0; no<children; no++)
+    {
+      list = gegl_operations_build (list, ops[no]);
+    }
+  if (ops)
+    g_free (ops);
+  return list;
+}
+
+static gint compare_operation_names (gconstpointer a,
+                                     gconstpointer b)
+{
+  const GeglOperationClass *klassA, *klassB;
+
+  klassA = a;
+  klassB = b;
+
+  return strcmp (klassA->name, klassB->name);
+}
+
+static GList *categories = NULL;
+
+static GList *gegl_operations (void)
+{
+  static GList *operations = NULL;
+  if (!operations)
+    {
+      GHashTable *categories_ht = NULL;
+      operations = gegl_operations_build (NULL, GEGL_TYPE_OPERATION);
+      operations = g_list_sort (operations, compare_operation_names);
+
+      categories_ht = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, NULL);
+
+    for (GList *iter=operations;iter;iter = g_list_next (iter))
+    {
+      GeglOperationClass *klass = iter->data;
+      const char *categoris = gegl_operation_class_get_key (klass, "categories");
+#if 0
+      g_hash_table_insert (categories_ht, (void*)g_intern_string (
+        g_type_name (g_type_parent(G_OBJECT_CLASS_TYPE(klass)))
+                              ), (void*)0xff);
+#endif
+     if (categoris)
+      {
+        const gchar *ptr = categoris;
+
+        while (ptr && *ptr)
+          {
+            gchar category[64]="";
+            gint i=0;
+            while (*ptr && *ptr!=':' && i<63)
+              {
+                category[i++]=*(ptr++);
+                category[i]='\0';
+              }
+            if (*ptr==':')
+              ptr++;
+            {
+              g_hash_table_insert (categories_ht, (void*)g_intern_string (category), (void*)0xff);
+            }
+          }
+      }
+    }
+
+    {
+      GList *temp = g_hash_table_get_keys (categories_ht);
+      for (GList *iter = temp; iter; iter = iter->next)
+        categories = g_list_insert_sorted (categories, iter->data, strsort);
+    }
+    g_hash_table_destroy (categories_ht);
+   }
+  return operations;
+}
+
 static void list_node_props (State *o, GeglNode *node, int indent)
 {
+  static int operation_selector = 0;
   Mrg *mrg = o->mrg;
   guint n_props;
   int no = 0;
@@ -1832,8 +1967,7 @@ static void list_node_props (State *o, GeglNode *node, int indent)
 
   mrg_start (mrg, "div.properties", NULL);
 
-
-
+  mrg_text_listen (mrg, MRG_CLICK, set_int, &operation_selector, GINT_TO_POINTER(1));
   mrg_start (mrg, "div.property", NULL);
   mrg_start (mrg, "div.propname", NULL);
   mrg_printf (mrg, "operation");
@@ -1842,6 +1976,7 @@ static void list_node_props (State *o, GeglNode *node, int indent)
   mrg_printf (mrg, "%s", op_name);
   mrg_end (mrg);
   mrg_end (mrg);
+  mrg_text_listen_done (mrg);
 
   if (pspecs)
   {
@@ -2043,6 +2178,215 @@ static void list_node_props (State *o, GeglNode *node, int indent)
   }
 
   mrg_end (mrg);
+  if (operation_selector)
+  {
+     static char *active_category = NULL;
+     static char *active_operation = NULL;
+
+     {
+       static char *prev_category = NULL;
+       if (prev_category != active_category)
+         active_operation = NULL;
+
+       prev_category = active_category;
+     }
+
+     mrg_start (mrg, "div.operation-selector", NULL);
+
+     mrg_start (mrg, "div.operation-selector-close", NULL);
+     mrg_text_listen (mrg, MRG_CLICK, set_int, &operation_selector, GINT_TO_POINTER(0));
+     mrg_print (mrg, "[ X ]\n");
+     mrg_text_listen_done (mrg);
+     mrg_end (mrg);
+
+    if(0){
+    char ** operations = operations;
+    gint i;
+    guint n_operations;
+    /* the last fragment is what we're completing */
+    operations = gegl_list_operations (&n_operations);
+
+    for (i = 0; i < n_operations; i++)
+      {
+        mrg_start (mrg, "div.operation-selector-op", NULL);
+        mrg_printf (mrg, "%s", operations[i]);
+        mrg_end (mrg);
+      }
+
+     g_free (operations);
+    }
+    {
+      mrg_start (mrg, "div.operation-selector-categories", NULL);
+      for (GList *iter = categories; iter; iter = iter->next)
+      {
+        if (iter->data == active_category)
+          mrg_start (mrg, "div.operation-selector-category-active", NULL);
+        else
+          mrg_start (mrg, "div.operation-selector-category", NULL);
+        mrg_text_listen (mrg, MRG_CLICK, set_string, &active_category, iter->data);
+        mrg_printf (mrg, "%s", iter->data);
+        mrg_end (mrg);
+      }
+      mrg_end (mrg);
+    }
+
+    mrg_start (mrg, "div.operation-selector-operations", NULL);
+    for (GList *iter=gegl_operations();iter;iter = g_list_next (iter))
+    {
+      GeglOperationClass *klass = iter->data;
+      const char *categoris = gegl_operation_class_get_key (klass, "categories");
+      const char *name = gegl_operation_class_get_key (klass, "name");
+
+      if (active_category == NULL && categoris == NULL)
+      {
+        mrg_start (mrg, "div.operation-selector-op", NULL);
+        mrg_printf (mrg, "%s", name);
+        mrg_end (mrg);
+      }
+
+      if (active_category && categoris && strstr (categoris, active_category))
+      {
+        if (active_operation == g_intern_string (name))
+          mrg_start (mrg, "div.operation-selector-op-active", NULL);
+        else
+          mrg_start (mrg, "div.operation-selector-op", NULL);
+        {
+          const char *displayed_name = name;
+          if (g_str_has_prefix (name, "gegl:"))
+            displayed_name = name + strlen ("gegl:");
+        mrg_text_listen (mrg, MRG_CLICK, set_string_b, &active_operation, (void*)g_intern_string (name));
+        mrg_printf (mrg, "%s", displayed_name);
+        }
+        mrg_text_listen_done (mrg);
+        mrg_end (mrg);
+      }
+    }
+    mrg_end (mrg);
+
+    if (active_operation)
+    {
+      GList *iter;
+      for (iter=gegl_operations();iter;iter = g_list_next (iter))
+      {
+        GeglOperationClass *klass = iter->data;
+        const char *name = gegl_operation_class_get_key (klass, "name");
+        name = g_intern_string (name);
+        if (name == active_operation)
+          break;
+      }
+
+      if (iter){
+        GeglOperationClass *klass = iter->data;
+        const char *name = gegl_operation_class_get_key (klass, "name");
+        const char *description = gegl_operation_class_get_key (klass, "description");
+
+        mrg_start (mrg, "div", NULL);
+        mrg_end (mrg);
+        mrg_start (mrg, "div.operation-selector-operation", NULL);
+        mrg_printf (mrg, "%s", name);
+        mrg_end (mrg);
+
+        mrg_start (mrg, "div.operation-selector-operation", NULL);
+        mrg_printf (mrg, "%s", description);
+        mrg_end (mrg);
+
+#if 0
+       {
+         GParamSpec **self;
+         GParamSpec **parent;
+         guint n_self;
+         guint n_parent;
+         gint prop_no;
+         
+         self = g_object_class_list_properties (
+            G_OBJECT_CLASS(klass), //G_OBJECT_CLASS (g_type_class_ref (type)),
+            &n_self);
+          parent = g_object_class_list_properties (
+            /*G_OBJECT_CLASS (g_type_class_peek_parent (g_type_class_ref (type))),*/
+            G_OBJECT_CLASS (g_type_class_ref (GEGL_TYPE_OPERATION)),
+            &n_parent);
+
+  for (prop_no=0;prop_no<n_self;prop_no++)
+    {
+      gint parent_no;
+      gboolean found=FALSE;
+      for (parent_no=0;parent_no<n_parent;parent_no++)
+        if (self[prop_no]==parent[parent_no])
+          found=TRUE;
+      /* only print properties if we are an addition compared to
+       * GeglOperation
+       */
+      if (!found)
+        {
+          const gchar *type_name;
+          mrg_printf_xml (mrg, "<div style='margin-top:0.5em;'><div style='padding-left:0.1em;border-left:0.3em solid black;margin-left:-0.35em;'>%s</div>\n",
+             g_param_spec_get_nick (self[prop_no]));
+
+
+          if (g_param_spec_get_blurb (self[prop_no]) &&
+              g_param_spec_get_blurb (self[prop_no])[0]!='\0')
+          {
+            mrg_printf_xml (mrg, "<div>%s</div>", g_param_spec_get_blurb (self[prop_no]));
+          }
+
+          mrg_printf_xml (mrg, "<b>name:&nbsp;</b>%s\n<b>type:&nbsp;</b>", g_param_spec_get_name (self[prop_no]));
+
+          type_name = g_type_name (G_OBJECT_TYPE (self[prop_no]));
+          if(strstr (type_name, "Param"))
+          {
+            type_name = strstr (type_name, "Param");
+            type_name+=5;
+          }
+          {
+            for (const char *p = type_name; *p; p++)
+              mrg_printf (mrg, "%c", g_ascii_tolower (*p));
+          }
+       }
+     }
+        if (klass->opencl_support)
+          mrg_printf_xml (mrg, "<div style='color:white'>OpenCL</div>\n");
+        if (klass->compat_name)
+          mrg_printf_xml (mrg, "<div style='color:white'>alias: %s</div>\n", klass->compat_name);
+      {
+        guint nkeys;
+        gchar **keys = gegl_operation_list_keys (name, &nkeys);
+
+        if (keys)
+          {
+            for (gint i = 0; keys[i]; i++)
+              {
+                const gchar *value = gegl_operation_get_key (name, keys[i]);
+
+                if (g_str_equal (keys[i], "categories") ||
+                    g_str_equal (keys[i], "cl-source") ||
+                    g_str_equal (keys[i], "name") ||
+                    g_str_equal (keys[i], "source") ||
+                    g_str_equal (keys[i], "reference-composition") ||
+                    g_str_equal (keys[i], "reference-hash") ||
+                    g_str_equal (keys[i], "title") ||
+                    g_str_equal (keys[i], "description"))
+                  continue;
+
+                mrg_printf_xml (mrg, "<b>%s:</b>&nbsp;", keys[i]);
+                mrg_printf (mrg, value);
+                mrg_printf_xml (mrg, "<br/>\n");
+              }
+            g_free (keys);
+          }
+      }
+
+
+
+   }
+#endif
+
+      }
+
+    }
+
+
+     mrg_end (mrg);
+  }
 }
 
 static void update_string (const char *new_text, void *data)
@@ -2343,7 +2687,7 @@ static void on_node_drag (MrgEvent *e, void *data1, void *data2)
       {
          if (dist > 70)
          {
-           o->pad_active = 2;
+           o->pad_active = PAD_OUTPUT; // restore the output pad
            argvs_eval ("remove");
          }
       }
@@ -2372,15 +2716,14 @@ static void on_node_drag (MrgEvent *e, void *data1, void *data2)
          if (dist > 70)
            o->pad_active = -1; // makes dot vanish
          else
-           o->pad_active = 2;
+           o->pad_active = PAD_OUTPUT;
       }
       else
       {
            //o->pad_active = PAD_OUTPUT;
       }
 
-
-      fprintf (stderr, "aa dist: %f  angle: %f \n", dist, angle);
+      //fprintf (stderr, "aa dist: %f  angle: %f \n", dist, angle);
       break;
     default:
       break;
@@ -3086,24 +3429,37 @@ cmd_swap (COMMAND_ARGS)
   State *o = global_state;
   GeglNode *node = o->active;
   GeglNode *next, *prev;
+  const char *consumer_name = NULL;
 
-  next = gegl_node_get_ui_consumer (node, "output", NULL);
-  prev = gegl_node_get_producer (node, "input", NULL);
+  next = gegl_node_get_ui_consumer (node, "output", &consumer_name);
+  prev = gegl_node_get_ui_producer (node, "input", NULL);
+  consumer_name = g_intern_string (consumer_name?consumer_name:"");
 
   if (next && prev)
     {
 
       if (!strcmp (argv[1], "output") && next != o->sink)
       {
-        GeglNode *next_next = gegl_node_get_ui_consumer (next, "output", NULL);
+        const char *next_next_consumer = NULL;
+        GeglNode *next_next = gegl_node_get_ui_consumer (next, "output", &next_next_consumer);
 
-        gegl_node_link_many (prev, next, node, next_next, NULL);
+        if (next_next && g_str_equal (consumer_name, "input"))
+        {
+          gegl_node_link_many (prev, next, node, NULL);
+          gegl_node_disconnect (next_next, next_next_consumer);
+          gegl_node_connect_to (node, "output", next_next, next_next_consumer);
+        }
       }
       else if (!strcmp (argv[1], "input") && prev != o->source)
       {
-        GeglNode *prev_prev = gegl_node_get_producer (prev, "input", NULL);
+        GeglNode *prev_prev = gegl_node_get_ui_producer (prev, "input", NULL);
 
-        gegl_node_link_many (prev_prev, node, prev, next, NULL);
+        if (prev_prev)
+        {
+          gegl_node_link_many (prev_prev, node, prev, NULL);
+          gegl_node_connect_to (prev, "output", next, consumer_name);
+
+        }
       }
 
     }
