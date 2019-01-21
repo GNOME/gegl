@@ -1225,7 +1225,6 @@ static void update_prop_int (const char *new_string, void *node_p)
   global_state->rev++;
 }
 
-
 static void prop_toggle_boolean (MrgEvent *e, void *data1, void *data2)
 {
   GeglNode *node = data1;
@@ -2896,8 +2895,6 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
                                    style->width + style->padding_left + style->padding_right,
                                    style->height + style->padding_top + style->padding_bottom + 1 * em);
 
-    //cairo_fill_preserve (mrg_cr (mrg));
-
     if(active)
       mrg_listen (mrg, MRG_DRAG, on_node_drag, o, node);
     else
@@ -3040,6 +3037,11 @@ static void list_ops (State *o, GeglNode *iter, int indent, int *no)
    }
 }
 
+
+
+
+
+
 static void ui_debug_op_chain (State *o)
 {
   Mrg *mrg = o->mrg;
@@ -3105,6 +3107,58 @@ static void update_commandline (const char *new_commandline, void *data)
   completion_no = -1;
   mrg_queue_draw (o->mrg, NULL);
 }
+
+/* finds id in iterable subtree from iter
+ */
+static GeglNode *node_find_by_id (State *o, GeglNode *iter, const char *needle_id)
+{
+  needle_id = g_intern_string (needle_id);
+  while (iter)
+   {
+     const char *id = g_object_get_data (G_OBJECT (iter), "refname");
+     if (id == needle_id)
+       return iter;
+
+     if (gegl_node_get_producer (iter, "aux", NULL))
+     {
+
+     {
+       GeglNode *producer = gegl_node_get_producer (iter, "aux", NULL);
+       GeglNode *producers_consumer;
+       const char *consumer_name = NULL;
+
+       producers_consumer = gegl_node_get_ui_consumer (producer, "output", &consumer_name);
+
+       if (producers_consumer == iter && !strcmp (consumer_name, "aux"))
+         {
+           GeglNode *ret = node_find_by_id (o, gegl_node_get_producer (iter, "aux", NULL), needle_id);
+           if (ret)
+             return ret;
+         }
+     }
+
+     }
+
+     {
+       GeglNode *producer = gegl_node_get_producer (iter, "input", NULL);
+       GeglNode *producers_consumer;
+
+       producers_consumer = gegl_node_get_ui_consumer (producer, "output", NULL);
+
+       if (producers_consumer == iter)
+         iter = producer;
+        else
+        {
+          iter = NULL;
+        }
+     }
+   }
+  return NULL;
+}
+
+
+
+
 
 static void
 run_command (MrgEvent *event, void *data1, void *data_2)
@@ -3309,10 +3363,33 @@ run_command (MrgEvent *event, void *data1, void *data_2)
        {
          if (o->active)
          {
-           /* XXX : ensure this is a unique id */
-           g_object_set_data (G_OBJECT (o->active), "refname",
-                              (void*)g_intern_string (value));
+           GeglNode *existing = node_find_by_id (o, o->sink, value);
+
+           if (existing)
+             printf ("a node with id %s already exists\n", value);
+           else
+             g_object_set_data (G_OBJECT (o->active), "refname",
+                                (void*)g_intern_string (value));
          }
+       }
+       else if (!strcmp (key, "ref"))
+       {
+          GeglNode *ref_node = node_find_by_id (o, o->sink, value);
+          if (ref_node)
+          {
+            switch (o->pad_active)
+            {
+              case PAD_INPUT:
+              case PAD_OUTPUT:
+                gegl_node_link_many (ref_node, o->active, NULL);
+                break;
+              case PAD_AUX:
+                gegl_node_connect_to (ref_node, "output", o->active, "aux");
+                break;
+            }
+          }
+          else
+            printf ("no node with id=%s found\n", value);
        }
        else if (!strcmp (key, "op"))
        {
