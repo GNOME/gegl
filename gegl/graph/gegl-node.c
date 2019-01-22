@@ -829,6 +829,14 @@ gegl_node_has_source (GeglNode *self,
 }
 
 gboolean
+gegl_node_is_graph (GeglNode *node)
+{
+  g_return_val_if_fail (node, FALSE);
+  g_return_val_if_fail (GEGL_IS_NODE (node), FALSE);
+  return node->is_graph;
+}
+
+gboolean
 gegl_node_connect_from (GeglNode    *sink,
                         const gchar *sink_pad_name,
                         GeglNode    *source,

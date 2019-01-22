@@ -691,6 +691,7 @@ gboolean       gegl_node_get_passthrough (GeglNode      *node);
 void           gegl_node_set_passthrough (GeglNode      *node,
                                           gboolean       passthrough);
 
+gboolean        gegl_node_is_graph       (GeglNode *node);
 
 void       gegl_node_progress (GeglNode *node, gdouble progress, gchar *message);
 
