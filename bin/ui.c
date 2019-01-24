@@ -38,11 +38,11 @@ const char *css =
 "dl.bindings   { font-size: 1.8vh; color:white; position:absolute;left:1em;top:60%;background-color: rgba(0,0,0,0.7); width: 100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
 "dt.binding   { color:white; }\n"
 
-"div.graph {position:absolute; top: 0; left: 0; width:30%; height:50%; color:white; }\n"
+"div.graph {position:absolute; top: 0; left: 0; color:white; }\n"
 
 
-"div.node {border: 1px solid white; position: absolute; background-color: rgba(0,0,0,0.75); color:white; padding-left:1em;padding-right:1em;height:1em;width:8em;padding-top:0.25em;}\n"
-
+"div.node, div.node-active {border: 1px solid gray; color:#000; position: absolute; background-color: rgba(255,255,255,0.75); padding-left:1em;padding-right:1em;height:1em;width:8em;padding-top:0.25em;}\n"
+"div.node-active { color: #000; background-color: rgba(255,255,255,1.0); text-decoration: underline; }\n"
 
 "div.props {}\n"
 "a { color: yellow; text-decoration: none;  }\n"
@@ -66,6 +66,18 @@ const char *css =
 "span.completion{ color: rgba(255,255,255,0.7); padding-right: 1em; }\n"
 "span.completion-selected{ color: rgba(255,255,0,1.0); padding-right: 1em; }\n"
 "";
+
+
+/* these are define here to be near the CSS */
+
+#define active_pad_color          1.0, 1.0, 1.0, 1.0
+#define active_pad_stroke_color   1.0, 0.0, 0.0, 1.0
+
+#define pad_color                 0.0, 0.0, 0.0, 0.25
+#define pad_stroke_color          1.0, 1.0, 1.0, 1.0
+#define pad_radius                0.25
+#define active_pad_radius         0.5
+
 
 
 void mrg_gegl_dirty (void);
@@ -249,9 +261,11 @@ struct _State {
   float          render_quality; /* default (and in code swapped for preview_quality during preview rendering, this is the canonical read location for the value)  */
   float          preview_quality;
 
-  int            graph_scroll;
-
+  float          graph_pan_x;
+  float          graph_pan_y;
   int            show_graph;
+  float          graph_scale;
+
   int            show_controls;
   int            controls_timeout;
   int            frame_no;
@@ -320,7 +334,9 @@ Setting settings[]=
   INT_PROP(frame_no, "current frame number in video/animation"),
   FLOAT_PROP(scale, "display scale factor"),
   INT_PROP(show_bindings, "show currently valid keybindings"),
-  INT_PROP(graph_scroll, "vertical scroll offset of graph"),
+  FLOAT_PROP(graph_pan_x, "vertical scroll offset of graph"),
+  FLOAT_PROP(graph_pan_y, "horizontal scroll offset of graph"),
+  FLOAT_PROP(graph_scale, "graph scale factor"),
 
 };
 
@@ -742,6 +758,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   o.gegl            = gegl_node_new (); // so that we have an object to unref
   o.mrg             = mrg;
   o.scale           = 1.0;
+  o.graph_scale     = 1.0;
   o.render_quality  = 1.0;
   o.preview_quality = 1.0;
   //o.preview_quality = 2.0;
@@ -826,18 +843,6 @@ static void on_viewer_motion (MrgEvent *e, void *data1, void *data2)
 }
 
 static int node_select_hack = 0;
-static void node_press (MrgEvent *e, void *data1, void *data2)
-{
-  State *o = data2;
-  GeglNode *new_active = data1;
-
-  o->active = new_active;
-  o->pad_active = PAD_OUTPUT;
-  mrg_event_stop_propagate (e);
-  node_select_hack = 1;
-
-  mrg_queue_draw (e->mrg, NULL);
-}
 
 
 static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
@@ -1159,23 +1164,6 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
 
 #if 0
 
-static void prop_double_drag_cb (MrgEvent *e, void *data1, void *data2)
-{
-  GeglNode *node = data1;
-  GParamSpec *pspec = data2;
-  GeglParamSpecDouble *gspec = data2;
-  gdouble value = 0.0;
-  float range = gspec->ui_maximum - gspec->ui_minimum;
-
-  value = e->x / mrg_width (e->mrg);
-  value = value * range + gspec->ui_minimum;
-  gegl_node_set (node, pspec->name, value, NULL);
-
-  drag_preview (e);
-  mrg_event_stop_propagate (e);
-
-  mrg_queue_draw (e->mrg, NULL);
-}
 
 static void prop_int_drag_cb (MrgEvent *e, void *data1, void *data2)
 {
@@ -1207,15 +1195,6 @@ static void update_prop (const char *new_string, void *node_p)
 }
 
 
-static void update_prop_double (const char *new_string, void *node_p)
-{
-  GeglNode *node = node_p;
-  gdouble value = g_strtod (new_string, NULL);
-  gegl_node_set (node, edited_prop, value, NULL);
-  renderer_dirty++;
-  global_state->rev++;
-}
-
 static void update_prop_int (const char *new_string, void *node_p)
 {
   GeglNode *node = node_p;
@@ -1223,19 +1202,6 @@ static void update_prop_int (const char *new_string, void *node_p)
   gegl_node_set (node, edited_prop, value, NULL);
   renderer_dirty++;
   global_state->rev++;
-}
-
-static void prop_toggle_boolean (MrgEvent *e, void *data1, void *data2)
-{
-  GeglNode *node = data1;
-  const char *propname = data2;
-  gboolean value;
-  gegl_node_get (node, propname, &value, NULL);
-  value = value ? FALSE : TRUE;
-  gegl_node_set (node, propname, value, NULL);
-  renderer_dirty++;
-  global_state->rev++;
-  mrg_event_stop_propagate (e);
 }
 
 
@@ -1266,8 +1232,8 @@ int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
 int
 cmd_todo (COMMAND_ARGS)
 {
-  printf ("scrolling graph\n");
-  printf ("propeditor:int/double\n");
+  printf ("propeditor:int\n");
+  printf ("propeditor:color\n");
   printf ("propeditor:string\n");
   printf ("units in commandline\n");
   printf ("crop mode\n");
@@ -2005,6 +1971,9 @@ draw_property_enum (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
     mrg_end (mrg);
 }
 
+/***************************************************************************/
+
+#if 1
 static void
 draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
@@ -2036,6 +2005,24 @@ draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
   }
   mrg_end (mrg);
 }
+#else
+
+#endif
+
+/***************************************************************************/
+
+static void on_toggle_boolean (MrgEvent *e, void *data1, void *data2)
+{
+  GeglNode *node = data1;
+  const char *propname = data2;
+  gboolean value;
+  gegl_node_get (node, propname, &value, NULL);
+  value = value ? FALSE : TRUE;
+  gegl_node_set (node, propname, value, NULL);
+  renderer_dirty++;
+  global_state->rev++;
+  mrg_event_stop_propagate (e);
+}
 
 static void
 draw_property_boolean (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
@@ -2044,7 +2031,7 @@ draw_property_boolean (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *psp
   mrg_start (mrg, "div.property", NULL);
   gegl_node_get (node, pspec->name, &value, NULL);
 
-  mrg_text_listen (mrg, MRG_CLICK, prop_toggle_boolean, node, (void*)pspec->name);
+  mrg_text_listen (mrg, MRG_CLICK, on_toggle_boolean, node, (void*)pspec->name);
 
   draw_key (o, mrg, pspec->name);
   draw_value (o, mrg, value?"true":"false");
@@ -2053,35 +2040,109 @@ draw_property_boolean (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *psp
   mrg_end (mrg);
 }
 
+/***************************************************************************/
+
+typedef struct PropDoubleDragData {
+  GeglNode   *node;
+  const GParamSpec *pspec;
+  float       width;
+  float       height;
+  float       x;
+  float       y;
+
+  double      ui_min;
+  double      ui_max;
+  double      min;
+  double      max;
+  double      ui_gamma;
+
+  gdouble     value;
+} PropDoubleDragData;
+
+static void on_prop_double_drag (MrgEvent *e, void *data1, void *data2)
+{
+  PropDoubleDragData *drag_data = data1;
+  State *o = data2;
+
+  gdouble value, rel_pos;
+
+  rel_pos = (e->x - drag_data->x) / drag_data->width;
+  rel_pos = pow(rel_pos, drag_data->ui_gamma);
+  value = rel_pos * (drag_data->ui_max-drag_data->ui_min) + drag_data->ui_min;
+
+  gegl_node_set (drag_data->node, drag_data->pspec->name, value, NULL);
+
+  renderer_dirty++;
+  o->rev++;
+
+  mrg_event_stop_propagate (e);
+  mrg_queue_draw (e->mrg, NULL);
+}
+
 static void
 draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
-  //GeglParamSpecDouble *geglspec = (void*)pspecs[i];
-  gdouble value;
+  cairo_t*cr = mrg_cr (mrg);
+
+  MrgStyle *style;
+  PropDoubleDragData *drag_data = g_malloc0 (sizeof (PropDoubleDragData));
   mrg_start (mrg, "div.property", NULL);//
-  gegl_node_get (node, pspec->name, &value, NULL);
+  gegl_node_get (node, pspec->name, &drag_data->value, NULL);
+  style = mrg_style (mrg);
 
+  drag_data->node  = node;
+  drag_data->pspec = pspec;
+  drag_data->x = mrg_x (mrg);
+  drag_data->y = mrg_y (mrg);
 
-  if (edited_prop && !strcmp (edited_prop, pspec->name))
+  drag_data->width = style->width;
+  drag_data->height = mrg_em (mrg) * 2;
+
+  draw_key (o, mrg, pspec->name);
+  mrg_printf_xml (mrg, "<div class='propvalue'>%.3f</div>", drag_data->value);
+
+  cairo_new_path (cr);
+  cairo_rectangle (cr, drag_data->x, drag_data->y, drag_data->width, drag_data->height);
+  mrg_listen_full (mrg, MRG_DRAG, on_prop_double_drag, drag_data, o, (void*)g_free, NULL);
+
+  cairo_set_source_rgba (cr,1,1,1, .5);
+  cairo_set_line_width (cr, 2);
+  cairo_stroke (cr);
+
+  drag_data->min = G_PARAM_SPEC_DOUBLE (drag_data->pspec)->minimum;
+  drag_data->ui_min = drag_data->min;
+  drag_data->max = G_PARAM_SPEC_DOUBLE (drag_data->pspec)->maximum;
+  drag_data->ui_max = drag_data->max;
+
+  if (GEGL_IS_PARAM_SPEC_DOUBLE (drag_data->pspec))
   {
-    draw_key (o, mrg, pspec->name);
-    mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
-    mrg_edit_start (mrg, update_prop_double, node);
+    GeglParamSpecDouble *gspec = (void*)drag_data->pspec;
+    drag_data->ui_min   = gspec->ui_minimum;
+    drag_data->ui_max   = gspec->ui_maximum;
+    drag_data->ui_gamma = gspec->ui_gamma;
 
-    mrg_printf_xml (mrg, "<div class='propvalue'>%.3f</div>", value);
-
-    mrg_edit_end (mrg);
-    mrg_text_listen_done (mrg);
+    if (drag_data->value > drag_data->ui_max)
+      drag_data->ui_max = drag_data->value;
+    if (drag_data->value < drag_data->ui_min)
+      drag_data->ui_min = drag_data->value;
   }
   else
   {
-    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspec->name);
-    draw_key (o, mrg, pspec->name);
-
-    mrg_printf_xml (mrg, "<div class='propvalue'>%.3f</div>", value);
-
-    mrg_text_listen_done (mrg);
+    drag_data->ui_gamma = 1.0;
   }
+
+  cairo_rectangle (cr,
+   drag_data->x,
+   drag_data->y,
+   pow((drag_data->value-drag_data->ui_min) /
+                      (drag_data->ui_max-drag_data->ui_min), 1.0/drag_data->ui_gamma)* drag_data->width,
+   drag_data->height);
+
+  cairo_fill (cr);
+
+
+  mrg_set_xy (mrg, drag_data->x, drag_data->y + drag_data->height);
+
   mrg_end (mrg);
 }
 
@@ -2701,7 +2762,7 @@ static GeglNode *gegl_node_get_ui_consumer (GeglNode *node, const char *output_p
     count = gegl_node_get_consumers (node, output_pad, &nodes, &consumer_names);
     for (i = 0; i < count; i++)
       if (ret == nodes[i])
-        *consumer_pad = consumer_names[i];
+        *consumer_pad = g_intern_string (consumer_names[i]);
     g_free (nodes);
     g_free (consumer_names);
   }
@@ -2710,19 +2771,144 @@ static GeglNode *gegl_node_get_ui_consumer (GeglNode *node, const char *output_p
 }
 
 static GeglNode *node_pad_drag_node = NULL;
+static GeglNode *node_pad_drag_candidate = NULL;
 static int node_pad_drag = -1;
 static float node_pad_drag_x = 0;
 static float node_pad_drag_y = 0;
+static float node_pad_drag_x_start = 0;
+static float node_pad_drag_y_start = 0;
 
-static void on_node_drag (MrgEvent *e, void *data1, void *data2)
+
+#if 0
+static void node_press (MrgEvent *e,
+                        void *data1,
+                        void *data2)
+{
+  State *o = data2;
+  GeglNode *new_active = data1;
+
+  o->active = new_active;
+  o->pad_active = PAD_OUTPUT;
+  mrg_event_stop_propagate (e);
+  node_select_hack = 1;
+
+  mrg_queue_draw (e->mrg, NULL);
+}
+#endif
+
+static void on_graph_drag (MrgEvent *e, void *data1, void *data2)
+{
+  static float pinch_coord[4][2] = {0,};
+  static int   pinch = 0;
+  static float orig_zoom = 1.0;
+
+  State *o = data1;
+  GeglNode *node = data2;
+
+  //on_viewer_motion (e, data1, data2);
+  if (e->type == MRG_DRAG_RELEASE)
+  {
+    //float x = (e->x + o->u) / o->scale;
+    //float y = (e->y + o->v) / o->scale;
+    //GeglNode *picked = NULL;
+
+    if(node && hypotf (e->device_x - e->start_x, e->device_y - e->start_y) < 10)
+    {
+      o->active = node;
+      o->pad_active = PAD_OUTPUT;
+    }
+
+    node_select_hack = 0;
+    pinch = 0;
+  } else if (e->type == MRG_DRAG_PRESS)
+  {
+    node_select_hack = 1;
+
+
+    if (e->device_no == 5) /* 5 is second finger/touch point */
+    {
+      pinch_coord[1][0] = e->device_x;
+      pinch_coord[1][1] = e->device_y;
+      pinch_coord[2][0] = pinch_coord[0][0];
+      pinch_coord[2][1] = pinch_coord[0][1];
+      pinch_coord[3][0] = pinch_coord[1][0];
+      pinch_coord[3][1] = pinch_coord[1][1];
+      pinch = 1;
+
+
+      orig_zoom = o->graph_scale;
+    }
+    else if (e->device_no == 1 || e->device_no == 4) /* 1 is mouse pointer 4 is first finger */
+    {
+      pinch_coord[0][0] = e->device_x;
+      pinch_coord[0][1] = e->device_y;
+    }
+  } else if (e->type == MRG_DRAG_MOTION)
+  {
+    if (e->device_no == 1 || e->device_no == 4) /* 1 is mouse pointer 4 is first finger */
+    {
+      pinch_coord[0][0] = e->device_x;
+      pinch_coord[0][1] = e->device_y;
+    }
+    if (e->device_no == 5)
+    {
+      pinch_coord[1][0] = e->device_x;
+      pinch_coord[1][1] = e->device_y;
+    }
+
+    if (pinch)
+    {
+      float orig_dist = hypotf ( pinch_coord[2][0]- pinch_coord[3][0],
+                                 pinch_coord[2][1]- pinch_coord[3][1]);
+      float dist = hypotf (pinch_coord[0][0] - pinch_coord[1][0],
+                           pinch_coord[0][1] - pinch_coord[1][1]);
+    {
+      float x, y;
+      float screen_cx = (pinch_coord[0][0] + pinch_coord[1][0])/2;
+      float screen_cy = (pinch_coord[0][1] + pinch_coord[1][1])/2;
+      //get_coords_graph (o, screen_cx, screen_cy, &x, &y);
+
+      x = (o->graph_pan_x + screen_cx) / o->graph_scale;
+      y = (o->graph_pan_y + screen_cy) / o->graph_scale;
+
+      o->graph_scale = orig_zoom * (dist / orig_dist);
+
+      o->graph_pan_x = x * o->graph_scale - screen_cx;
+      o->graph_pan_y = y * o->graph_scale - screen_cy;
+
+      o->graph_pan_x -= (e->delta_x * o->graph_scale )/2; /* doing half contribution of motion per finger */
+      o->graph_pan_y -= (e->delta_y * o->graph_scale )/2; /* is simple and roughly right */
+    }
+
+    }
+    else
+    {
+      if (e->device_no == 1 || e->device_no == 4)
+      {
+        o->graph_pan_x -= (e->delta_x * o->graph_scale);
+        o->graph_pan_y -= (e->delta_y * o->graph_scale);
+      }
+    }
+
+    //o->renderer_state = 0;
+    mrg_queue_draw (e->mrg, NULL);
+  }
+  mrg_event_stop_propagate (e);
+  node_select_hack = 0;
+  drag_preview (e);
+}
+
+static void on_active_node_drag (MrgEvent *e, void *data1, void *data2, int is_aux)
 {
   State *o = data1;
   GeglNode *node = data2;
 
-  static float dist_jitter   = 6;
-  static float dist_add_node = 50;
-  static float dist_remove   = 70;
-  static float dist_connect_pad  = 80;
+  float em = mrg_em (o->mrg);
+
+  float dist_jitter   = em;
+  float dist_add_node = em*2;
+  float dist_remove   = em*3;
+  float dist_connect_pad  = em*4;
 
   static float dist = 0;
   static float angle = 0;
@@ -2735,6 +2921,7 @@ static void on_node_drag (MrgEvent *e, void *data1, void *data2)
   {
     case MRG_DRAG_PRESS:
       dist = angle = 0.0;
+      node_pad_drag_candidate = NULL;
       break;
     case MRG_DRAG_RELEASE:
       if (angle < -120 || angle > 120) // upwards
@@ -2742,15 +2929,18 @@ static void on_node_drag (MrgEvent *e, void *data1, void *data2)
          if (dist > dist_add_node)
            o->active = add_output (o, o->active, "gegl:nop");
       }
-      else if (angle < 15 && angle > -45) // down / slightly left
+      else if (angle < 60 && angle > -45) // down
       {
-         if (dist > dist_add_node)
-           o->active = add_input (o, o->active, "gegl:nop");
-      }
-      else if (angle > 15 && angle <60) // right/down
-      {
-         if (dist > dist_add_node)
-           o->active = add_aux (o, o->active, "gegl:nop");
+         if (is_aux)
+         {
+           if (dist > dist_add_node)
+             o->active = add_aux (o, o->active, "gegl:nop");
+         }
+         else
+         {
+           if (dist > dist_add_node)
+             o->active = add_input (o, o->active, "gegl:nop");
+         }
       }
       else if (angle < -45 && angle > -110) // left
       {
@@ -2770,24 +2960,33 @@ static void on_node_drag (MrgEvent *e, void *data1, void *data2)
          if (dist > dist_jitter)
            o->pad_active = PAD_OUTPUT;
       }
-      else if (angle < 15 && angle > -45) // down / slightly left
+      else if (angle < 60 && angle > -45) // down
       {
-         if (dist > dist_jitter)
-           o->pad_active = PAD_INPUT;
-         if (dist > 100) // XXX  all these dist comparisons need to be parametric
+         if (is_aux)
          {
-           node_pad_drag = PAD_INPUT;
-           node_pad_drag_node = node;
+           if (dist > dist_jitter)
+             o->pad_active = PAD_AUX;
+
+           if (dist > dist_connect_pad)
+           {
+             node_pad_drag = PAD_AUX;
+             node_pad_drag_node = node;
+           }
          }
-      }
-      else if (angle > 15 && angle <60) // right/down
-      {
-         if (dist > dist_jitter)
-           o->pad_active = PAD_AUX;
+         else
+         {
+           if (dist > dist_jitter)
+             o->pad_active = PAD_INPUT;
+           if (dist > dist_connect_pad)
+           {
+             node_pad_drag = PAD_INPUT;
+             node_pad_drag_node = node;
+           }
+         }
       }
       else if (angle < -45 && angle > -110) // left
       {
-         if (dist > 70)
+         if (dist > dist_remove)
            o->pad_active = -1; // makes dot vanish
          else
            o->pad_active = PAD_OUTPUT;
@@ -2812,7 +3011,44 @@ static void on_node_drag (MrgEvent *e, void *data1, void *data2)
            break;
          case MRG_DRAG_RELEASE:
            node_pad_drag = -1;
+
+           if (node_pad_drag_candidate)
+           {
+              gegl_node_connect_to (node_pad_drag_candidate, "output", node_pad_drag_node, "input");
+              o->rev ++;
+              renderer_dirty = 1;
+           }
            o->pad_active = PAD_OUTPUT;
+           node_pad_drag_candidate = NULL;
+
+           break;
+         case MRG_DRAG_MOTION:
+           node_pad_drag_x = e->x;
+           node_pad_drag_y = e->y;
+           break;
+         default:
+           break;
+       }
+      break;
+    case PAD_AUX:
+      switch (e->type)
+       {
+         case MRG_DRAG_PRESS:
+           node_pad_drag_x = e->x;
+           node_pad_drag_y = e->y;
+           break;
+         case MRG_DRAG_RELEASE:
+           node_pad_drag = -1;
+
+           if (node_pad_drag_candidate)
+           {
+              gegl_node_connect_to (node_pad_drag_candidate, "output", node_pad_drag_node, "aux");
+              o->rev ++;
+              renderer_dirty = 1;
+           }
+           o->pad_active = PAD_OUTPUT;
+           node_pad_drag_candidate = NULL;
+
            break;
          case MRG_DRAG_MOTION:
            node_pad_drag_x = e->x;
@@ -2824,8 +3060,19 @@ static void on_node_drag (MrgEvent *e, void *data1, void *data2)
       break;
   }
   mrg_event_stop_propagate (e);
+  mrg_queue_draw (e->mrg, NULL);
 }
 
+
+static void on_active_node_drag_input (MrgEvent *e, void *data1, void *data2)
+{
+  on_active_node_drag (e, data1, data2, 0);
+}
+
+static void on_active_node_drag_aux (MrgEvent *e, void *data1, void *data2)
+{
+  on_active_node_drag (e, data1, data2, 1);
+}
 
 typedef struct DrawEdge {
   int       has_alpha;
@@ -2940,7 +3187,7 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
   char *opname = NULL;
   GList *to_remove = NULL;
   Mrg *mrg = o->mrg;
-  //float em;
+  cairo_t *cr = mrg_cr (mrg);
   float x = compute_node_x (mrg, indent, line_no);
   float y = compute_node_y (mrg, indent, line_no);
 
@@ -2952,9 +3199,9 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
         yd > mrg_height (mrg) * 0.8)
     {
       float blend_factor = 0.20;
-      float new_scroll = (y - mrg_height(mrg)/2);
+      float new_scroll = ( (y*o->graph_scale) - mrg_height(mrg)/2);
 
-      o->graph_scroll = (1.0-blend_factor) * o->graph_scroll +
+      o->graph_pan_y = (1.0-blend_factor) * o->graph_pan_y +
                              blend_factor *  new_scroll;
       mrg_queue_draw (mrg, NULL);
     }
@@ -2981,7 +3228,10 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
   g_object_get (node, "operation", &opname, NULL);
   {
     char style[1024];
-    sprintf (style, "color:%s;left:%f;top:%f;%s", active?"yellow":"white", x, y, active?"":"border-color:#ccc;");
+    sprintf (style, "left:%f;top:%f;", x, y);
+    if (active)
+    mrg_start_with_style (mrg, "div.node-active", NULL, style);
+    else
     mrg_start_with_style (mrg, "div.node", NULL, style);
   }
   //em = mrg_em (mrg);
@@ -3013,75 +3263,39 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
 
    {
     MrgStyle *style = mrg_style (mrg);
-    float em = mrg_em (mrg);
-    cairo_rectangle (mrg_cr (mrg), style->left, style->top - 0.5 * em,
-                                   style->width + style->padding_left + style->padding_right,
-                                   style->height + style->padding_top + style->padding_bottom + 1 * em);
+    float x = style->left;
+    float y = style->top - 0.5 * mrg_em (mrg);
+    float width = style->width + style->padding_left + style->padding_right;
+    float height = style->height + style->padding_top + style->padding_bottom + 1 * mrg_em (mrg);
+
+    cairo_rectangle (mrg_cr (mrg), x, y, width, height);
+
+    if (node_pad_drag >= 0 && cairo_in_fill (mrg_cr (mrg), node_pad_drag_x, node_pad_drag_y) &&
+        node != node_pad_drag_node)
+    {
+       mrg_set_style (mrg, "border: 4px solid yellow;");
+       node_pad_drag_candidate = node;
+    }
 
     if(active)
-      mrg_listen (mrg, MRG_DRAG, on_node_drag, o, node);
+    {
+      cairo_new_path (mrg_cr (mrg));
+      cairo_rectangle (mrg_cr (mrg), x, y, width/2, height);
+      mrg_listen (mrg, MRG_DRAG, on_active_node_drag_input, o, node);
+
+      cairo_new_path (mrg_cr (mrg));
+      cairo_rectangle (mrg_cr (mrg), x + width/2, y, width/2, height);
+      mrg_listen (mrg, MRG_DRAG, on_active_node_drag_aux, o, node);
+    }
     else
-      mrg_listen (mrg, MRG_CLICK, node_press, node, o);
+      mrg_listen (mrg, MRG_DRAG, on_graph_drag, o, node);
+    cairo_new_path (mrg_cr (mrg));
+
   }
 
   mrg_end (mrg);
   g_free (opname);
 
-  if (gegl_node_has_pad (node, "input"))
-  {
-      cairo_t *cr = mrg_cr (mrg);
-      cairo_new_path (cr);
-      cairo_arc (cr, compute_pad_x (mrg, indent, line_no, 0),
-                    compute_pad_y (mrg, indent, line_no, 0), 0.3*mrg_em (mrg), 0, G_PI * 2);
-      cairo_set_source_rgb (cr, 1.0,1.0,1.0);
-      cairo_set_line_width (cr, 1.0f);
-      if (active && o->pad_active == PAD_INPUT)
-      {
-        cairo_fill (cr);
-      }
-      else
-      {
-      cairo_new_path (cr);
-        cairo_stroke (cr);
-      }
-  }
-  if (gegl_node_has_pad (node, "aux"))
-  {
-      cairo_t *cr = mrg_cr (mrg);
-      cairo_new_path (cr);
-      cairo_arc (cr, compute_pad_x (mrg, indent, line_no, 1),
-                    compute_pad_y (mrg, indent, line_no, 1), 0.3*mrg_em (mrg), 0, G_PI * 2);
-      cairo_set_source_rgb (cr, 1.0,1.0,1.0);
-      cairo_set_line_width (cr, 1.0f);
-
-      if (active && o->pad_active == PAD_AUX)
-      {
-        cairo_fill (cr);
-      }
-      else
-      {
-      cairo_new_path (cr);
-        cairo_stroke (cr);
-      }
-  }
-  if (gegl_node_has_pad (node, "output"))
-  {
-      cairo_t *cr = mrg_cr (mrg);
-      cairo_new_path (cr);
-      cairo_arc (cr, compute_pad_x (mrg, indent, line_no, 2),
-                    compute_pad_y (mrg, indent, line_no, 2), 0.3*mrg_em (mrg), 0, G_PI * 2);
-      cairo_set_source_rgb (cr, 1.0,1.0,1.0);
-      cairo_set_line_width (cr, 1.0f);
-      if (active && o->pad_active == PAD_OUTPUT)
-      {
-        cairo_fill (cr);
-      }
-      else
-      {
-      cairo_new_path (cr);
-        cairo_stroke (cr);
-      }
-  }
 
 
   for (GList *i = edge_queue; i; i = i->next)
@@ -3133,13 +3347,47 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
       cairo_stroke (cr);
 
       to_remove = g_list_prepend (to_remove, edge);
+
     }
   }
+
   while (to_remove)
   {
     DrawEdge *edge = to_remove->data;
     edge_queue = g_list_remove (edge_queue, edge);
     to_remove = g_list_remove (to_remove, edge);
+  }
+
+  if (node_pad_drag_node == node)
+  {
+    node_pad_drag_x_start =
+       compute_pad_x (mrg, indent, line_no, node_pad_drag);
+    node_pad_drag_y_start =
+       compute_pad_y (mrg, indent, line_no, node_pad_drag);
+  }
+
+  for (int pad_no = PAD_INPUT; pad_no <= PAD_OUTPUT; pad_no++)
+  {
+    const char *pad_names[3]={"input", "aux", "output"};
+
+    if (gegl_node_has_pad (node, pad_names[pad_no]))
+    {
+      gboolean is_active = active && o->pad_active == pad_no;
+
+      cairo_new_path (cr);
+      cairo_arc (cr, compute_pad_x (mrg, indent, line_no, pad_no),
+                     compute_pad_y (mrg, indent, line_no, pad_no),
+                     (is_active?active_pad_radius:pad_radius)*mrg_em (mrg),
+                     0, G_PI * 2);
+
+      cairo_set_line_width (cr, 1.0f);
+      if (is_active) cairo_set_source_rgba (cr, active_pad_color);
+      else           cairo_set_source_rgba (cr, pad_color);
+      cairo_fill_preserve (cr);
+      if (is_active) cairo_set_source_rgba (cr, active_pad_stroke_color);
+      else           cairo_set_source_rgba (cr, pad_stroke_color);
+      cairo_stroke (cr);
+    }
   }
 
 }
@@ -3190,9 +3438,6 @@ static void list_ops (State *o, GeglNode *iter, int indent, int *no)
 
 
 
-
-
-
 static void ui_debug_op_chain (State *o)
 {
   Mrg *mrg = o->mrg;
@@ -3200,7 +3445,9 @@ static void ui_debug_op_chain (State *o)
   int no = 0;
 
   mrg_start         (mrg, "div.graph", NULL);
-  cairo_translate (mrg_cr (mrg), mrg_width(mrg) * 0.7, -o->graph_scroll);
+
+  cairo_translate (mrg_cr (mrg), - o->graph_pan_x, -o->graph_pan_y);
+  cairo_scale (mrg_cr (mrg), o->graph_scale, o->graph_scale);
 
   update_ui_consumers (o);
 
@@ -3211,17 +3458,34 @@ static void ui_debug_op_chain (State *o)
 
   list_ops (o, iter, 0, &no);
 
+  if (node_pad_drag >= 0)
+  {
+    cairo_t *cr = mrg_cr (mrg);
+    cairo_new_path (cr);
+    cairo_move_to (cr, node_pad_drag_x_start,
+                          node_pad_drag_y_start);
+    cairo_line_to (cr, node_pad_drag_x,
+                          node_pad_drag_y);
+
+    cairo_set_line_width (cr, 3 + .75);
+    cairo_set_line_cap (cr, CAIRO_LINE_CAP_ROUND);
+    cairo_set_source_rgba (cr, .0,.0,.0,.5);
+    cairo_stroke_preserve (cr);
+
+    cairo_set_line_width (cr, 3);
+    cairo_set_source_rgba (cr, 1, 0, 0, 1.0);
+    cairo_stroke (cr);
+  }
 
   mrg_end (mrg);
 
   if (o->active && !scrollback)
   {
-    //mrg_set_xy (mrg, mrg_width (mrg), 0);
     mrg_start         (mrg, "div.props", NULL);
-    //mrg_set_style (mrg, "color:white; background-color: rgba(0,0,0,0.4)");
     list_node_props (o, o->active, 1);
     mrg_end (mrg);
   }
+
 }
 
 
@@ -3963,9 +4227,13 @@ static GList *commandline_get_completions (GeglNode *node,
                                            const char *commandline)
 {
   const gchar *op_name = node?gegl_node_get_operation (node):"nop";
-  const char *last = NULL;
-  char *key = NULL;
+  const char *last = NULL;  /* the string/piece being completed */
+
+  char *key = NULL;         /* if what is being completed is a key/value pair */
   const char *value = "";
+
+  char *prev = NULL;
+
   GList *completions = NULL;
   int count = 0;
   int bail = 8;
@@ -3975,8 +4243,24 @@ static GList *commandline_get_completions (GeglNode *node,
   }
 
   last = strrchr (commandline, ' ');
-  if (last) last ++;
-  else last = commandline;
+  if (last)
+  {
+    const char *plast;
+    *(char*)last = '\0';
+    plast = strrchr (commandline, ' ');
+    if (plast)
+      {
+        prev = g_strdup (plast);
+      }
+    else
+      prev = g_strdup (commandline);
+    *(char*)last = ' ';
+    last ++;
+  }
+  else
+  {
+    last = commandline;
+  }
 
   if (strchr (last, '='))
   {
@@ -4126,6 +4410,8 @@ static GList *commandline_get_completions (GeglNode *node,
 
   if (key)
     g_free (key);
+  if (prev)
+    g_free (prev);
 
   return g_list_reverse (completions);
 }
@@ -5324,8 +5610,6 @@ static void get_coords (State *o, float screen_x, float screen_y, float *gegl_x,
   *gegl_x = (o->u + screen_x) / scale;
   *gegl_y = (o->v + screen_y) / scale;
 }
-
-
 
 static void scroll_cb (MrgEvent *event, void *data1, void *data2)
 {
