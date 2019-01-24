@@ -33,7 +33,7 @@ property_double (contrast, _("Contrast"), 0.1)
     value_range (0.0, 1.0)
 
 property_double (saturation, _("Saturation"), 0.8)
-    description (("Global color saturation factor"))
+    description (_("Global color saturation factor"))
     value_range (0.0, 2.0)
 
 property_double (detail, _("Detail"), 1.0)
