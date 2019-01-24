@@ -855,6 +855,89 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
   on_viewer_motion (e, data1, data2);
   if (e->type == MRG_DRAG_RELEASE && node_select_hack == 0)
   {
+    zoom_pinch = 0;
+  } else if (e->type == MRG_DRAG_PRESS)
+  {
+    if (e->device_no == 5) /* first occurence of device_no=5, which is seond finger */
+    {
+      zoom_pinch_coord[1][0] = e->x;
+      zoom_pinch_coord[1][1] = e->y;
+
+      zoom_pinch_coord[2][0] = zoom_pinch_coord[0][0];
+      zoom_pinch_coord[2][1] = zoom_pinch_coord[0][1];
+      zoom_pinch_coord[3][0] = zoom_pinch_coord[1][0];
+      zoom_pinch_coord[3][1] = zoom_pinch_coord[1][1];
+
+      zoom_pinch = 1;
+      orig_zoom = o->scale;
+    }
+    else if (e->device_no == 1 || e->device_no == 4) /* 1 is mouse pointer 4 is first finger */
+    {
+      zoom_pinch_coord[0][0] = e->x;
+      zoom_pinch_coord[0][1] = e->y;
+    }
+  } else if (e->type == MRG_DRAG_MOTION)
+  {
+    if (e->device_no == 1 || e->device_no == 4) /* 1 is mouse pointer 4 is first finger */
+    {
+      zoom_pinch_coord[0][0] = e->x;
+      zoom_pinch_coord[0][1] = e->y;
+    }
+    if (e->device_no == 5)
+    {
+      zoom_pinch_coord[1][0] = e->x;
+      zoom_pinch_coord[1][1] = e->y;
+    }
+
+    if (zoom_pinch)
+    {
+      float orig_dist = hypotf ( zoom_pinch_coord[2][0]- zoom_pinch_coord[3][0],
+                                 zoom_pinch_coord[2][1]- zoom_pinch_coord[3][1]);
+      float dist = hypotf (zoom_pinch_coord[0][0] - zoom_pinch_coord[1][0],
+                           zoom_pinch_coord[0][1] - zoom_pinch_coord[1][1]);
+    {
+      float x, y;
+      float screen_cx = (zoom_pinch_coord[0][0] + zoom_pinch_coord[1][0])/2;
+      float screen_cy = (zoom_pinch_coord[0][1] + zoom_pinch_coord[1][1])/2;
+      /* do the zoom-pinch over the average touch position */
+      get_coords (o, screen_cx, screen_cy, &x, &y);
+      o->scale = orig_zoom * dist / orig_dist;
+      o->u = x * o->scale - screen_cx;
+      o->v = y * o->scale - screen_cy;
+
+      o->u -= (e->delta_x )/2; /* doing half contribution of motion per finger */
+      o->v -= (e->delta_y )/2; /* is simple and roughly right */
+    }
+
+    }
+    else
+    {
+      if (e->device_no == 1 || e->device_no == 4)
+      {
+        o->u -= (e->delta_x );
+        o->v -= (e->delta_y );
+      }
+    }
+
+    o->renderer_state = 0;
+    mrg_queue_draw (e->mrg, NULL);
+    mrg_event_stop_propagate (e);
+  }
+  node_select_hack = 0;
+  drag_preview (e);
+}
+
+
+static void on_pick_drag (MrgEvent *e, void *data1, void *data2)
+{
+  static float zoom_pinch_coord[4][2] = {0,};
+  static int   zoom_pinch = 0;
+  static float orig_zoom = 1.0;
+
+  State *o = data1;
+  on_viewer_motion (e, data1, data2);
+  if (e->type == MRG_DRAG_RELEASE && node_select_hack == 0)
+  {
     float x = (e->x + o->u) / o->scale;
     float y = (e->y + o->v) / o->scale;
     GeglNode *picked = NULL;
@@ -945,6 +1028,7 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
   node_select_hack = 0;
   drag_preview (e);
 }
+
 
 static int hack_cols = 5;
 static float hack_dim = 5;
@@ -1619,6 +1703,13 @@ static void canvas_touch_handling (Mrg *mrg, State *o)
   cairo_new_path (mrg_cr (mrg));
   switch (tool)
   {
+    case TOOL_PICK:
+      cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
+      mrg_listen (mrg, MRG_DRAG, on_pick_drag, o, NULL);
+      mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
+      mrg_listen (mrg, MRG_SCROLL, scroll_cb, o, NULL);
+      cairo_new_path (mrg_cr (mrg));
+      break;
     case TOOL_PAN:
       cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
       mrg_listen (mrg, MRG_DRAG, on_pan_drag, o, NULL);
@@ -2864,6 +2955,37 @@ static void node_press (MrgEvent *e,
 }
 #endif
 
+
+static void on_graph_scroll (MrgEvent *event, void *data1, void *data2)
+{
+  State *o = data1;
+
+  float x, y;
+  float screen_cx = event->device_x;
+  float screen_cy = event->device_y;
+
+  x = (o->graph_pan_x + screen_cx) / o->graph_scale;
+  y = (o->graph_pan_y + screen_cy) / o->graph_scale;
+
+  switch (event->scroll_direction)
+  {
+     case MRG_SCROLL_DIRECTION_UP:
+       o->graph_scale *= 1.1;
+       break;
+     case MRG_SCROLL_DIRECTION_DOWN:
+       o->graph_scale /= 1.1;
+       break;
+     default:
+       break;
+  }
+
+  o->graph_pan_x = x * o->graph_scale - screen_cx;
+  o->graph_pan_y = y * o->graph_scale - screen_cy;
+
+  mrg_event_stop_propagate (event);
+  mrg_queue_draw (event->mrg, NULL);
+}
+
 static void on_graph_drag (MrgEvent *e, void *data1, void *data2)
 {
   static float pinch_coord[4][2] = {0,};
@@ -3352,20 +3474,26 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
         cairo_new_path (mrg_cr (mrg));
         cairo_rectangle (mrg_cr (mrg), x, y, width/2, height);
         mrg_listen (mrg, MRG_DRAG, on_active_node_drag_input, o, node);
+        mrg_listen (mrg, MRG_SCROLL, on_graph_scroll, o, node);
 
         cairo_new_path (mrg_cr (mrg));
         cairo_rectangle (mrg_cr (mrg), x + width/2, y, width/2, height);
         mrg_listen (mrg, MRG_DRAG, on_active_node_drag_aux, o, node);
+        mrg_listen (mrg, MRG_SCROLL, on_graph_scroll, o, node);
       }
       else
       {
         cairo_new_path (mrg_cr (mrg));
         cairo_rectangle (mrg_cr (mrg), x, y, width, height);
         mrg_listen (mrg, MRG_DRAG, on_active_node_drag_input, o, node);
+        mrg_listen (mrg, MRG_SCROLL, on_graph_scroll, o, node);
       }
     }
     else
+    {
       mrg_listen (mrg, MRG_DRAG, on_graph_drag, o, node);
+      mrg_listen (mrg, MRG_SCROLL, on_graph_scroll, o, node);
+    }
     cairo_new_path (mrg_cr (mrg));
 
   }
@@ -4089,10 +4217,6 @@ cmd_swap (COMMAND_ARGS)
   return 0;
 }
 
-
-
-
-
   int cmd_move (COMMAND_ARGS);
 int cmd_move (COMMAND_ARGS) /* "move", 0, "", "changes to move tool"*/
 {
@@ -4111,8 +4235,8 @@ int cmd_pick (COMMAND_ARGS) /* "pick", 0, "", "changes to pick tool"*/
   tool = TOOL_PICK;
   return 0;
 }
-  int cmd_tpan (COMMAND_ARGS);
-int cmd_tpan (COMMAND_ARGS) /* "tpan", 0, "", "changes to pan tool"*/
+  int cmd_pan (COMMAND_ARGS);
+int cmd_pan (COMMAND_ARGS) /* "pan", 0, "", "changes to pan tool"*/
 {
   tool = TOOL_PAN;
   return 0;
@@ -5494,18 +5618,6 @@ static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
   o->renderer_state = 0;
   mrg_queue_draw (o->mrg, NULL);
 }
-
-  int cmd_pan (COMMAND_ARGS);
-int cmd_pan (COMMAND_ARGS) /* "pan", 2, "<rel-x> <rel-y>", "pans viewport"*/
-{
-  State *o = global_state;
-  float amount_u = mrg_width (o->mrg)  * g_strtod (argv[1], NULL);
-  float amount_v = mrg_height (o->mrg) * g_strtod (argv[2], NULL);
-  o->u += amount_u;
-  o->v += amount_v;
-  return 0;
-}
-
 
 int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|first|last>", ""*/
   int cmd_collection (COMMAND_ARGS)
