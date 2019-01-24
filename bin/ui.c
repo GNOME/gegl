@@ -28,12 +28,12 @@
 #if HAVE_MRG
 
 const char *css =
-"div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 3em; left: 0%; width:15em; background-color:rgba(1,0,0,0.75);}\n"
+"div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 3em; left: 15em; width:25em; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
 "div.propname { color: white;}\n"
 "div.propvalue { color: yellow;}\n"
-"span.propvalue-enum { color: gray; padding-right: 2em; }\n"
-"span.propvalue-enum-selected{ color: yellow; padding-right: 2em;}\n"
+"span.propvalue-enum { color: gray; padding-right: 2em; display: box-inline; }\n"
+"span.propvalue-enum-selected{ color: yellow; padding-right: 2em; display: box-inline; }\n"
 
 "dl.bindings   { font-size: 1.8vh; color:white; position:absolute;left:1em;top:60%;background-color: rgba(0,0,0,0.7); width: 100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
 "dt.binding   { color:white; }\n"
@@ -1154,6 +1154,18 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
       }
       break;
     case MRG_DRAG_RELEASE:
+      {
+        GeglNode *iter = o->active;
+        GeglNode *last = iter;
+
+        const gchar *input_pad = NULL;
+        while (iter)
+        {
+          iter = gegl_node_get_ui_producer (iter, "input", NULL);
+          if (iter) last = iter;
+        }
+        o->active = last;
+      }
       break;
   }
   renderer_dirty++;
@@ -1195,16 +1207,6 @@ static void update_prop (const char *new_string, void *node_p)
 }
 
 
-static void update_prop_int (const char *new_string, void *node_p)
-{
-  GeglNode *node = node_p;
-  gint value = g_strtod (new_string, NULL);
-  gegl_node_set (node, edited_prop, value, NULL);
-  renderer_dirty++;
-  global_state->rev++;
-}
-
-
 static void set_edited_prop (MrgEvent *e, void *data1, void *data2)
 {
   if (edited_prop)
@@ -1232,7 +1234,6 @@ int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
 int
 cmd_todo (COMMAND_ARGS)
 {
-  printf ("propeditor:int\n");
   printf ("propeditor:color\n");
   printf ("propeditor:string\n");
   printf ("units in commandline\n");
@@ -1973,41 +1974,112 @@ draw_property_enum (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 
 /***************************************************************************/
 
-#if 1
+
+typedef struct PropIntDragData {
+  GeglNode   *node;
+  const GParamSpec *pspec;
+  float       width;
+  float       height;
+  float       x;
+  float       y;
+
+  double      ui_min;
+  double      ui_max;
+  int         min;
+  int         max;
+  double      ui_gamma;
+
+  int         value;
+} PropIntDragData;
+
+static void on_prop_int_drag (MrgEvent *e, void *data1, void *data2)
+{
+  PropIntDragData *drag_data = data1;
+  State *o = data2;
+
+  gdouble rel_pos;
+  gint    value;
+
+  rel_pos = (e->x - drag_data->x) / drag_data->width;
+  rel_pos = pow(rel_pos, drag_data->ui_gamma);
+  value = rel_pos * (drag_data->ui_max-drag_data->ui_min) + drag_data->ui_min;
+
+  gegl_node_set (drag_data->node, drag_data->pspec->name, value, NULL);
+
+  renderer_dirty++;
+  o->rev++;
+
+  mrg_event_stop_propagate (e);
+  mrg_queue_draw (e->mrg, NULL);
+}
+
 static void
 draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
-  //GeglParamSpecInt *geglspec = (void*)pspecs[i];
-  gint value;
+  cairo_t*cr = mrg_cr (mrg);
+
+  MrgStyle *style;
+  PropIntDragData *drag_data = g_malloc0 (sizeof (PropIntDragData));
   mrg_start (mrg, "div.property", NULL);//
-  gegl_node_get (node, pspec->name, &value, NULL);
+  gegl_node_get (node, pspec->name, &drag_data->value, NULL);
+  style = mrg_style (mrg);
 
-  //mrg_printf (mrg, "%s\n%i\n", pspecs[i]->name, value);
+  drag_data->node  = node;
+  drag_data->pspec = pspec;
+  drag_data->x = mrg_x (mrg);
+  drag_data->y = mrg_y (mrg);
 
-  if (edited_prop && !strcmp (edited_prop, pspec->name))
+  drag_data->width = style->width;
+  drag_data->height = mrg_em (mrg) * 2;
+
+  draw_key (o, mrg, pspec->name);
+  mrg_printf_xml (mrg, "<div class='propvalue'>%i</div>", drag_data->value);
+
+  cairo_new_path (cr);
+  cairo_rectangle (cr, drag_data->x, drag_data->y, drag_data->width, drag_data->height);
+  mrg_listen_full (mrg, MRG_DRAG, on_prop_int_drag, drag_data, o, (void*)g_free, NULL);
+
+  cairo_set_source_rgba (cr,1,1,1, .5);
+  cairo_set_line_width (cr, 2);
+  cairo_stroke (cr);
+
+  drag_data->min = G_PARAM_SPEC_INT (drag_data->pspec)->minimum;
+  drag_data->ui_min = drag_data->min;
+  drag_data->max = G_PARAM_SPEC_INT (drag_data->pspec)->maximum;
+  drag_data->ui_max = drag_data->max;
+
+  if (GEGL_IS_PARAM_SPEC_INT (drag_data->pspec))
   {
-    draw_key (o, mrg, pspec->name);
+    GeglParamSpecInt *gspec = (void*)drag_data->pspec;
+    drag_data->ui_min   = gspec->ui_minimum;
+    drag_data->ui_max   = gspec->ui_maximum;
+    drag_data->ui_gamma = gspec->ui_gamma;
 
-    mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
-    mrg_edit_start (mrg, update_prop_int, node);
-
-    mrg_printf_xml (mrg, "<div class='propvalue'>%i</div>", value);
-
-    mrg_edit_end (mrg);
-    mrg_text_listen_done (mrg);
+    if (drag_data->value > drag_data->ui_max)
+      drag_data->ui_max = drag_data->value;
+    if (drag_data->value < drag_data->ui_min)
+      drag_data->ui_min = drag_data->value;
   }
   else
   {
-    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspec->name);
-    draw_key (o, mrg, pspec->name);
-    mrg_printf_xml (mrg, "<div class='propvalue'>%i</div>", value);
-    mrg_text_listen_done (mrg);
+    drag_data->ui_gamma = 1.0;
   }
+
+  fprintf (stderr, "%i %i %f %f\n", drag_data->min, drag_data->max, drag_data->ui_min, drag_data->ui_max);
+
+  cairo_rectangle (cr,
+   drag_data->x,
+   drag_data->y,
+   pow((drag_data->value-drag_data->ui_min) /
+                      (drag_data->ui_max-drag_data->ui_min), 1.0/drag_data->ui_gamma)* drag_data->width,
+   drag_data->height);
+
+  cairo_fill (cr);
+
+  mrg_set_xy (mrg, drag_data->x, drag_data->y + drag_data->height);
+
   mrg_end (mrg);
 }
-#else
-
-#endif
 
 /***************************************************************************/
 
@@ -2145,6 +2217,8 @@ draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
 
   mrg_end (mrg);
 }
+
+/***************************************************************************/
 
 static void
 draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
@@ -3144,12 +3218,12 @@ queue_edge (GeglNode *target, int in_slot_no, int indent, int line_no, GeglNode 
 static float compute_node_x (Mrg *mrg, int indent, int line_no)
 {
   float em = mrg_em (mrg);
-  return (0 + 4 * indent) * em;
+  return (0.5 + 4 * indent) * em;
 }
 static float compute_node_y (Mrg *mrg, int indent, int line_no)
 {
   float em = mrg_em (mrg);
-  return (4 + line_no * 2.0) * em;
+  return (0 + line_no * 2.0) * em;
 }
 
 static float compute_pad_x (Mrg *mrg, int indent, int line_no, int pad_no)
