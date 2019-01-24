@@ -5764,6 +5764,9 @@ cmd_info (COMMAND_ARGS)
   }
   operation = gegl_node_get_gegl_operation (node);
   printf ("operation: %s   %p\n", gegl_node_get_operation (node), node);
+  extent = gegl_node_get_bounding_box (node);
+  printf ("bounds: %i %i  %ix%i\n", extent.x, extent.y, extent.width, extent.height);
+
   if (gegl_node_has_pad (node, "input"))
   {
     const Babl *fmt = gegl_operation_get_format (operation, "input");
@@ -5779,11 +5782,8 @@ cmd_info (COMMAND_ARGS)
     const Babl *fmt = gegl_operation_get_format (operation, "output");
     printf ("output pixfmt: %s\n", fmt?babl_get_name (fmt):"");
   }
-  extent = gegl_node_get_bounding_box (node);
-  printf ("bounds: %i %i  %ix%i\n", extent.x, extent.y, extent.width, extent.height);
 
 
-  printf ("%s\n", o->active);
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
