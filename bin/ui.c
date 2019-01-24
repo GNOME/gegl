@@ -1157,8 +1157,6 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
       {
         GeglNode *iter = o->active;
         GeglNode *last = iter;
-
-        const gchar *input_pad = NULL;
         while (iter)
         {
           iter = gegl_node_get_ui_producer (iter, "input", NULL);
@@ -1777,8 +1775,6 @@ static void prop_set_enum (MrgEvent *event, void *data1, void *data2)
   int value = GPOINTER_TO_INT (data1);
   const char *prop_name = data2;
 
-  fprintf (stderr, "%p %s %i\n", o->active, prop_name, value);
-
   gegl_node_set (o->active, prop_name, value, NULL);
 
   renderer_dirty++;
@@ -2064,8 +2060,6 @@ draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
   {
     drag_data->ui_gamma = 1.0;
   }
-
-  fprintf (stderr, "%i %i %f %f\n", drag_data->min, drag_data->max, drag_data->ui_min, drag_data->ui_max);
 
   cairo_rectangle (cr,
    drag_data->x,
@@ -3353,13 +3347,22 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
 
     if(active)
     {
-      cairo_new_path (mrg_cr (mrg));
-      cairo_rectangle (mrg_cr (mrg), x, y, width/2, height);
-      mrg_listen (mrg, MRG_DRAG, on_active_node_drag_input, o, node);
+      if (gegl_node_has_pad (node, "aux"))
+      {
+        cairo_new_path (mrg_cr (mrg));
+        cairo_rectangle (mrg_cr (mrg), x, y, width/2, height);
+        mrg_listen (mrg, MRG_DRAG, on_active_node_drag_input, o, node);
 
-      cairo_new_path (mrg_cr (mrg));
-      cairo_rectangle (mrg_cr (mrg), x + width/2, y, width/2, height);
-      mrg_listen (mrg, MRG_DRAG, on_active_node_drag_aux, o, node);
+        cairo_new_path (mrg_cr (mrg));
+        cairo_rectangle (mrg_cr (mrg), x + width/2, y, width/2, height);
+        mrg_listen (mrg, MRG_DRAG, on_active_node_drag_aux, o, node);
+      }
+      else
+      {
+        cairo_new_path (mrg_cr (mrg));
+        cairo_rectangle (mrg_cr (mrg), x, y, width, height);
+        mrg_listen (mrg, MRG_DRAG, on_active_node_drag_input, o, node);
+      }
     }
     else
       mrg_listen (mrg, MRG_DRAG, on_graph_drag, o, node);
@@ -4185,7 +4188,6 @@ static void iterate_frame (State *o)
      if (o->prev_ms + frame_delay  < mrg_ms (mrg))
      {
        o->frame_no++;
-       fprintf (stderr, "\r%i/%i", o->frame_no, frames);   /* */
        if (o->frame_no >= frames)
          o->frame_no = 0;
        gegl_node_set (o->source, "frame", o->frame_no, NULL);
@@ -4199,7 +4201,6 @@ static void iterate_frame (State *o)
      int frames = 0;
      o->frame_no++;
      gegl_node_get (o->source, "frames", &frames, NULL);
-     fprintf (stderr, "\r%i/%i", o->frame_no, frames);   /* */
      if (o->frame_no >= frames)
        o->frame_no = 0;
      gegl_node_set (o->source, "frame", o->frame_no, NULL);
@@ -4993,7 +4994,6 @@ static void load_path_inner (State *o,
       g_free (o->save_path);
     if (g_str_has_suffix (path, ".gegl"))
     {
-      //fprintf (stderr, "oooo\n");
       o->save_path = g_strdup (path);
     }
     else
