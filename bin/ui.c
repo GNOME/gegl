@@ -237,7 +237,7 @@ struct _State {
   int            pad_active; /* 0=input 1=aux 2=output (default)*/
 
   GThread       *renderer_thread; /* only used when GEGL_RENDERER=thread is set in environment */
-  int            entry_no; /* used in collection-view, and set by go_parent */
+  int            entry_no; /* used in collection-view, and set by "parent" */
 
   int            is_dir;  // is current in dir mode
 
@@ -388,9 +388,6 @@ gchar *get_thumb_path (const char *path)
 
 
 static void load_path (State *o);
-static void go_next   (State *o);
-static void go_prev   (State *o);
-static void go_parent (State *o);
 
 static void get_coords                (State *o, float  screen_x, float screen_y,
                                                  float *gegl_x,   float *gegl_y);
@@ -4340,7 +4337,7 @@ static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
       {
         if (o->entry_no == -1)
         {
-          go_parent (o);
+          argvs_eval ("parent");
         }
         else
         {
@@ -5460,70 +5457,6 @@ static void load_path (State *o)
   mrg_queue_draw (o->mrg, NULL);
 }
 
-static void go_parent (State *o)
-{
-  char *prev_path = g_strdup (o->path);
-  char *lastslash = strrchr (o->path, '/');
-    int entry_no = 0;
-
-  if (lastslash)
-  {
-    if (lastslash == o->path)
-      lastslash[1] = '\0';
-    else
-      lastslash[0] = '\0';
-
-    load_path (o);
-
-    {
-      int no = 0;
-      for (GList *i = o->paths; i; i=i->next, no++)
-      {
-        if (!strcmp (i->data, prev_path))
-        {
-          entry_no = no;
-          break;
-        }
-      }
-    }
-
-    if (entry_no)
-    {
-      o->entry_no = entry_no;
-
-      center_active_entry (o);
-    }
-    mrg_queue_draw (o->mrg, NULL);
-  }
-  g_free (prev_path);
-}
-
-static void go_next (State *o)
-{
-  GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
-
-  if (curr && curr->next)
-  {
-    g_free (o->path);
-    o->path = g_strdup (curr->next->data);
-    load_path (o);
-    mrg_queue_draw (o->mrg, NULL);
-  }
-}
-
-static void go_prev (State *o)
-{
-  GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
-
-  if (curr && curr->prev)
-  {
-    g_free (o->path);
-    o->path = g_strdup (curr->prev->data);
-    load_path (o);
-    mrg_queue_draw (o->mrg, NULL);
-  }
-}
-
 int cmd_propeditor (COMMAND_ARGS); /* "prop-editor", 1, "<subcommand>", "used for property editing keybindings"*/
 int
 cmd_propeditor (COMMAND_ARGS)
@@ -5708,9 +5641,17 @@ cmd_clear (COMMAND_ARGS)
 int cmd_next (COMMAND_ARGS) /* "next", 0, "", "next sibling element in current collection/folder"*/
 {
   State *o = global_state;
+  GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
   if (o->rev)
     argvs_eval ("save");
-  go_next (o);
+
+  if (curr && curr->next)
+  {
+    g_free (o->path);
+    o->path = g_strdup (curr->next->data);
+    load_path (o);
+    mrg_queue_draw (o->mrg, NULL);
+  }
 
   activate_sink_producer (o);
 
@@ -5721,9 +5662,43 @@ int cmd_next (COMMAND_ARGS) /* "next", 0, "", "next sibling element in current c
 int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (switches to folder mode)"*/
 {
   State *o = global_state;
+  char *prev_path = g_strdup (o->path);
+  char *lastslash = strrchr (o->path, '/');
+  int entry_no = 0;
+
   if (o->rev)
     argvs_eval ("save");
-  go_parent (o);
+
+  if (lastslash)
+  {
+    if (lastslash == o->path)
+      lastslash[1] = '\0';
+    else
+      lastslash[0] = '\0';
+
+    load_path (o);
+
+    {
+      int no = 0;
+      for (GList *i = o->paths; i; i=i->next, no++)
+      {
+        if (!strcmp (i->data, prev_path))
+        {
+          entry_no = no;
+          break;
+        }
+      }
+    }
+
+    if (entry_no)
+    {
+      o->entry_no = entry_no;
+
+      center_active_entry (o);
+    }
+    mrg_queue_draw (o->mrg, NULL);
+  }
+  g_free (prev_path);
   o->active = NULL;
   return 0;
 }
@@ -5732,9 +5707,18 @@ int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (swit
 int cmd_prev (COMMAND_ARGS) /* "prev", 0, "", "previous sibling element in current collection/folder"*/
 {
   State *o = global_state;
+  GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
   if (o->rev)
     argvs_eval ("save");
-  go_prev (o);
+
+  if (curr && curr->prev)
+  {
+    g_free (o->path);
+    o->path = g_strdup (curr->prev->data);
+    load_path (o);
+    mrg_queue_draw (o->mrg, NULL);
+  }
+
   activate_sink_producer (o);
   return 0;
 }
