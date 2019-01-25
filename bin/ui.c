@@ -270,6 +270,8 @@ struct _State {
   int            controls_timeout;
   int            frame_no;
 
+  const char    *property_focus; // interned string of property name, or "operation" or "id"
+
   char         **ops; // the operations part of the commandline, if any
   float          slide_pause;
   int            slide_enabled;
@@ -2372,8 +2374,29 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
 }
 
 static void
+draw_property_focus_box (State *o, Mrg *mrg)
+{
+  cairo_t *cr = mrg_cr (mrg);
+  cairo_save (cr);
+  cairo_new_path (cr);
+  cairo_move_to (cr, mrg_x (mrg), mrg_y (mrg));
+  cairo_rel_line_to (cr, mrg_style (mrg)->width, 0);
+  cairo_rel_line_to (cr, -mrg_style (mrg)->width - mrg_em(mrg) * .25, 0);
+  cairo_rel_line_to (cr, 0, mrg_em (mrg));
+  cairo_set_source_rgb (cr, 1,1,1);
+  cairo_stroke (cr);
+  cairo_restore (cr);
+}
+
+static void
 draw_property (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
+  gboolean focused_property = g_intern_string (pspec->name) == o->property_focus;
+
+  if (focused_property)
+  {
+    draw_property_focus_box (o, mrg);
+  }
 
   if (g_type_is_a (pspec->value_type, G_TYPE_DOUBLE))
   {
@@ -2429,6 +2452,9 @@ static void list_node_props (State *o, GeglNode *node, int indent)
 
   mrg_start (mrg, "div.properties", NULL);
 
+  if (o->property_focus == g_intern_string ("operation"))
+    draw_property_focus_box (o, mrg);
+
   mrg_text_listen (mrg, MRG_CLICK, set_int, &operation_selector, GINT_TO_POINTER(1));
   draw_key_value (o, mrg, "operation", op_name);
   mrg_text_listen_done (mrg);
@@ -2437,6 +2463,8 @@ static void list_node_props (State *o, GeglNode *node, int indent)
     const char *id = g_object_get_data (G_OBJECT (node), "refname");
     if (id)
     {
+      if (o->property_focus == g_intern_string ("id"))
+        draw_property_focus_box (o, mrg);
       draw_key_value (o, mrg, "id", id);
     }
   }
@@ -2830,8 +2858,10 @@ int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|s
     ref = o->source;
     o->pad_active = PAD_OUTPUT;
   }
-  else
+  else {
+    printf ("unkown graph cursor sub command %s\n", argv[1]);
     ref = NULL;
+  }
 
   if (ref)
     o->active = ref;
@@ -3797,10 +3827,14 @@ static void
 run_command (MrgEvent *event, void *data1, void *data_2)
 {
   State *o = global_state;
-  const char *commandline = data1;
+  char *commandline = data1;
 
   gchar **argv = NULL;
   gint    argc = 0;
+
+  while (commandline && commandline[strlen(commandline)-1]==' ')
+    commandline[strlen(commandline)-1]='\0';
+
   g_shell_parse_argv (commandline, &argc, &argv, NULL);
 
   /* the commandline has two modes, operation/property mode and argvs command running mode
@@ -4525,86 +4559,96 @@ static GList *commandline_get_completions (GeglNode *node,
     g_free (operations);
   }
 
-
-  if (key)   /* an = is already part of last bit.. this changes our behavior */
+  if (prev && !strcmp (prev, "set"))
   {
-      guint n_props;
-      gint i;
-      GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
-      GParamSpec *pspec = NULL;
-      for (i = 0; i < n_props; i++)
-      {
-        if (!strcmp (pspecs[i]->name, key))
-          pspec = pspecs[i];
-      }
-      g_free (pspecs);
+    for (int i = 0; i < sizeof(settings)/sizeof(settings[0]); i++)
+    {
+       if (g_str_has_prefix (settings[i].name, last))
+       {
+         char *result = g_strdup_printf ("%s ", settings[i].name + strlen (last));
+         completions = g_list_prepend (completions, result);
+         count ++;
+       }
+    }
+  }
+  else
+  {
 
-      if (pspec && g_type_is_a (pspec->value_type, G_TYPE_ENUM))
-      {
-        GEnumClass *eclass = g_type_class_peek (pspec->value_type);
-        for (i = eclass->minimum; i<= eclass->maximum; i++)
+    if (key)   /* an = is already part of last bit.. this changes our behavior */
+    {
+        guint n_props;
+        gint i;
+        GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
+        GParamSpec *pspec = NULL;
+        for (i = 0; i < n_props; i++)
         {
-          GEnumValue *evalue = &eclass->values[i];
-          if (g_str_has_prefix (evalue->value_nick, value))
+          if (!strcmp (pspecs[i]->name, key))
+            pspec = pspecs[i];
+        }
+        g_free (pspecs);
+
+        if (pspec && g_type_is_a (pspec->value_type, G_TYPE_ENUM))
+        {
+          GEnumClass *eclass = g_type_class_peek (pspec->value_type);
+          for (i = eclass->minimum; i<= eclass->maximum; i++)
           {
-            char *result = g_strdup_printf ("%s", evalue->value_nick + strlen (value));
+            GEnumValue *evalue = &eclass->values[i];
+            if (g_str_has_prefix (evalue->value_nick, value))
+            {
+              char *result = g_strdup_printf ("%s", evalue->value_nick + strlen (value));
+              completions = g_list_prepend (completions, result);
+              count ++;
+            }
+          }
+        }
+    }
+    else
+    {
+      {
+        guint n_props;
+        gint i;
+        GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
+        for (i = 0; i < n_props && count < bail; i++)
+        {
+          if (g_str_has_prefix (pspecs[i]->name, last))
+          {
+            char *result = g_strdup_printf ("%s=", pspecs[i]->name + strlen (last));
             completions = g_list_prepend (completions, result);
             count ++;
           }
         }
+        g_free (pspecs);
       }
-  }
-  else
-  {
-    {
-      guint n_props;
+
+     {
+      char prefixed_by_gegl[512];
+      char ** operations = operations;
       gint i;
-      GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
-      for (i = 0; i < n_props && count < bail; i++)
+      guint n_operations;
+      /* the last fragment is what we're completing */
+      operations = gegl_list_operations (&n_operations);
+      for (i = 0; i < n_operations && count < bail; i++)
       {
-        if (g_str_has_prefix (pspecs[i]->name, last))
+        if (g_str_has_prefix (operations[i], last))
         {
-          char *result = g_strdup_printf ("%s=", pspecs[i]->name + strlen (last));
-          completions = g_list_prepend (completions, result);
+          completions = g_list_prepend (completions, g_strdup (operations[i] + strlen (last)));
+          count ++;
+        }
+      }
+      sprintf (prefixed_by_gegl, "gegl:%s", last);
+
+      for (i = 0; i < n_operations && count < bail; i++)
+      {
+        if (g_str_has_prefix (operations[i], prefixed_by_gegl))
+        {
+          completions = g_list_prepend (completions, g_strdup (operations[i] + strlen (prefixed_by_gegl)));
           count ++;
         }
       }
 
-      g_free (pspecs);
+      g_free (operations);
+     }
     }
-
-   {
-    char prefixed_by_gegl[512];
-    char ** operations = operations;
-    gint i;
-    guint n_operations;
-    /* the last fragment is what we're completing */
-    operations = gegl_list_operations (&n_operations);
-    for (i = 0; i < n_operations && count < bail; i++)
-    {
-      if (g_str_has_prefix (operations[i], last))
-      {
-        completions = g_list_prepend (completions, g_strdup (operations[i] + strlen (last)));
-        count ++;
-      }
-    }
-    sprintf (prefixed_by_gegl, "gegl:%s", last);
-
-    for (i = 0; i < n_operations && count < bail; i++)
-    {
-      if (g_str_has_prefix (operations[i], prefixed_by_gegl))
-      {
-        completions = g_list_prepend (completions, g_strdup (operations[i] + strlen (prefixed_by_gegl)));
-        count ++;
-      }
-    }
-
-
-    g_free (operations);
-   }
-
-
-
   }
 
   if (key)
@@ -4797,6 +4841,58 @@ static void ui_commandline (Mrg *mrg, void *data)
   cairo_restore (cr);
 }
 
+static void vector_op_ui (State *o, GeglNode *node)
+{
+  Mrg *mrg = o->mrg;
+  GeglPath *path;
+  cairo_t  *cr = mrg_cr (mrg);
+  double linewidth = 2.0f;
+  double linewidth_shadow = 2.5f;
+  double foo ;
+
+  cairo_device_to_user_distance (cr, &linewidth, &foo);
+  cairo_device_to_user_distance (cr, &linewidth_shadow, &foo);
+
+  return;
+
+  gegl_node_get (node, "d", &path, NULL);
+
+
+  cairo_move_to (cr, 0, 0);
+  cairo_line_to (cr, 1100,1100);
+
+  cairo_set_source_rgba (cr, 0,0,0, .5);
+  cairo_set_line_width (cr, linewidth_shadow);
+  cairo_set_source_rgba (cr, 1,0,0, 1.0);
+  cairo_stroke (cr);
+}
+
+
+
+
+static int per_op_canvas_ui (State *o)
+{
+  Mrg *mrg = o->mrg;
+  cairo_t  *cr = mrg_cr (mrg);
+
+  const char *opname;
+  if (!o->active)
+    return -1;
+
+  cairo_save (cr);
+  cairo_translate (cr, -o->u, -o->v);
+  cairo_scale (cr, o->scale, o->scale);
+
+  opname = gegl_node_get_operation (o->active);
+  if (!strcmp (opname, "gegl:vector-stroke"))
+  {
+    vector_op_ui (o, o->active);
+  }
+
+  cairo_restore (cr);
+
+  return 0;
+}
 
 static void gegl_ui (Mrg *mrg, void *data)
 {
@@ -4878,6 +4974,9 @@ static void gegl_ui (Mrg *mrg, void *data)
     {
       if (o->show_graph)
         {
+          per_op_canvas_ui (o);
+
+
           ui_debug_op_chain (o);
           mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "toggle editing");
         }
@@ -4909,7 +5008,7 @@ static void gegl_ui (Mrg *mrg, void *data)
   mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "quit");
   mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle fullscreen");
 
-  if (!edited_prop && !o->editing_op_name && ! o->is_dir)
+  if (!edited_prop && !o->editing_op_name && ! o->is_dir && o->property_focus == NULL)
   {
 #if 0
     if (o->active && gegl_node_has_pad (o->active, "output"))
@@ -4972,14 +5071,29 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
     else
     {
-      mrg_add_binding (mrg, "home",     NULL, NULL, run_command, "graph-cursor append");
-      mrg_add_binding (mrg, "end",      NULL, NULL, run_command, "graph-cursor source");
+      mrg_add_binding (mrg, "tab",   NULL, NULL, run_command, "prop-editor focus");
 
-      if (o->active && gegl_node_has_pad (o->active, "output"))
-        mrg_add_binding (mrg, "left", NULL, NULL,        run_command, "graph-cursor left");
-      if (o->active) // && gegl_node_has_pad (o->active, "aux"))
-        mrg_add_binding (mrg, "right", NULL, NULL, run_command, "graph-cursor right");
-      mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
+      if (o->property_focus)
+      {
+          //mrg_add_binding (mrg, "return", NULL, NULL,   run_command, "prop-editor return");
+          mrg_add_binding (mrg, "left", NULL, NULL,       run_command, "prop-editor space");
+          mrg_add_binding (mrg, "left", NULL, NULL,       run_command, "prop-editor left");
+          mrg_add_binding (mrg, "right", NULL, NULL,      run_command, "prop-editor right");
+          mrg_add_binding (mrg, "shift-left", NULL, NULL, run_command, "prop-editor shift-left");
+          mrg_add_binding (mrg, "shift-right", NULL, NULL,run_command, "prop-editor shift-right");
+
+      }
+      else
+      {
+        mrg_add_binding (mrg, "home",  NULL, NULL, run_command, "graph-cursor append");
+        mrg_add_binding (mrg, "end",   NULL, NULL, run_command, "graph-cursor source");
+
+        if (o->active && gegl_node_has_pad (o->active, "output"))
+          mrg_add_binding (mrg, "left", NULL, NULL,        run_command, "graph-cursor left");
+        if (o->active) // && gegl_node_has_pad (o->active, "aux"))
+          mrg_add_binding (mrg, "right", NULL, NULL, run_command, "graph-cursor right");
+        mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
+      }
       //mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
     }
 #if 0
@@ -5000,11 +5114,19 @@ static void gegl_ui (Mrg *mrg, void *data)
     mrg_add_binding (mrg, "control-m", NULL, NULL, run_command, "toggle mipmap");
     mrg_add_binding (mrg, "control-y", NULL, NULL, run_command, "toggle colormanage-display");
 
+    if (o->property_focus)
+    {
+      mrg_add_binding (mrg, "up", NULL, NULL,   run_command, "prop-editor up");
+      mrg_add_binding (mrg, "down", NULL, NULL, run_command, "prop-editor down");
 
-    if (o->active && gegl_node_has_pad (o->active, "output"))
-      mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "graph-cursor up");
-    if (o->active && gegl_node_has_pad (o->active, "input"))
-      mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "graph-cursor down");
+    }
+    else
+    {
+      if (o->active && gegl_node_has_pad (o->active, "output"))
+        mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "graph-cursor up");
+      if (o->active && gegl_node_has_pad (o->active, "input"))
+        mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "graph-cursor down");
+    }
 
     if (o->active && gegl_node_has_pad (o->active, "input") &&
                      gegl_node_has_pad (o->active, "output"))
@@ -5371,6 +5493,166 @@ static void go_prev (State *o)
     mrg_queue_draw (o->mrg, NULL);
   }
 }
+
+int cmd_propeditor (COMMAND_ARGS); /* "prop-editor", 1, "<subcommand>", "used for property editing keybindings"*/
+int
+cmd_propeditor (COMMAND_ARGS)
+{
+  State *o = global_state;
+  GParamSpec *pspec = o->property_focus?gegl_node_find_property (o->active, o->property_focus):NULL;
+
+
+  if (!strcmp (argv[1], "left") ||
+      !strcmp (argv[1], "shift-left"))
+  {
+    if (!pspec)
+      return 0;
+    if (g_type_is_a (pspec->value_type, G_TYPE_DOUBLE))
+    {
+      double value;
+      double step = 1.0;
+      if (GEGL_IS_PARAM_SPEC_DOUBLE (pspec))
+      {
+        if (!strcmp (argv[1], "shift-left"))
+          step = GEGL_PARAM_SPEC_DOUBLE (pspec)->ui_step_big;
+        else
+          step = GEGL_PARAM_SPEC_DOUBLE (pspec)->ui_step_small;
+      }
+
+      gegl_node_get (o->active, o->property_focus, &value, NULL);
+      value -= step;
+      gegl_node_set (o->active, o->property_focus, value, NULL);
+    }
+    else if (g_type_is_a (pspec->value_type, G_TYPE_INT) ||
+             g_type_is_a (pspec->value_type, G_TYPE_ENUM))
+    {
+      int value;
+      gegl_node_get (o->active, o->property_focus, &value, NULL);
+      value -= 1;
+      gegl_node_set (o->active, o->property_focus, value, NULL);
+    }
+    else if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
+             g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
+    {
+    }
+    else if (g_type_is_a (pspec->value_type, GEGL_TYPE_COLOR))
+    {
+    }
+    else if (g_type_is_a (pspec->value_type, G_TYPE_BOOLEAN))
+    {
+      gboolean value;
+      gegl_node_get (o->active, o->property_focus, &value, NULL);
+      value = !value;
+      gegl_node_set (o->active, o->property_focus, value, NULL);
+    }
+    else
+    {
+    }
+
+    o->rev++;
+    renderer_dirty++;
+  }
+  else if (!strcmp (argv[1], "right")||
+           !strcmp (argv[1], "shift-right"))
+  {
+    if (!pspec)
+      return 0;
+    if (g_type_is_a (pspec->value_type, G_TYPE_DOUBLE))
+    {
+      double value;
+      double step = 1.0;
+      if (GEGL_IS_PARAM_SPEC_DOUBLE (pspec))
+      {
+        if (!strcmp (argv[1], "shift-right"))
+          step = GEGL_PARAM_SPEC_DOUBLE (pspec)->ui_step_big;
+        else
+          step = GEGL_PARAM_SPEC_DOUBLE (pspec)->ui_step_small;
+      }
+      gegl_node_get (o->active, o->property_focus, &value, NULL);
+      value += step;
+      gegl_node_set (o->active, o->property_focus, value, NULL);
+    }
+    else if (g_type_is_a (pspec->value_type, G_TYPE_INT) ||
+             g_type_is_a (pspec->value_type, G_TYPE_ENUM))
+    {
+      int value;
+      gegl_node_get (o->active, o->property_focus, &value, NULL);
+      value += 1;
+      gegl_node_set (o->active, o->property_focus, value, NULL);
+    }
+    else if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
+             g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
+    {
+    }
+    else if (g_type_is_a (pspec->value_type, GEGL_TYPE_COLOR))
+    {
+    }
+    else if (g_type_is_a (pspec->value_type, G_TYPE_BOOLEAN))
+    {
+      gboolean value;
+      gegl_node_get (o->active, o->property_focus, &value, NULL);
+      value = !value;
+      gegl_node_set (o->active, o->property_focus, value, NULL);
+    }
+    else
+    {
+    }
+
+    o->rev++;
+    renderer_dirty++;
+  }
+  else if (!strcmp (argv[1], "focus"))
+  {
+    if (o->property_focus)
+    {
+      o->property_focus = NULL;
+    }
+    else
+    {
+      o->property_focus = g_intern_string ("operation");
+    }
+  }
+  else if (!strcmp (argv[1], "down"))
+  {
+    GParamSpec **pspecs = NULL;
+    unsigned int n_props = 0;
+    int i, next = -1;
+    pspecs = gegl_operation_list_properties (gegl_node_get_operation (o->active), &n_props);
+    for (i = 0; i < n_props; i++)
+      if (g_intern_string (pspecs[i]->name) == o->property_focus)
+      {
+        next = i; break;
+      }
+    next++;
+    if (next < n_props)
+      o->property_focus = g_intern_string (pspecs[next]->name);
+
+    g_free (pspecs);
+  }
+  else if (!strcmp (argv[1], "up"))
+  {
+    GParamSpec **pspecs = NULL;
+    unsigned int n_props = 0;
+    int i, next = -1;
+    pspecs = gegl_operation_list_properties (gegl_node_get_operation (o->active), &n_props);
+    for (i = 0; i < n_props; i++)
+      if (g_intern_string (pspecs[i]->name) == o->property_focus)
+      {
+        next = i; break;
+      }
+    next--;
+    if (next >= 0)
+      o->property_focus = g_intern_string (pspecs[next]->name);
+    else
+      o->property_focus = g_intern_string ("operation");
+
+    g_free (pspecs);
+  }
+
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
+}
+
 
 int cmd_clear (COMMAND_ARGS); /* "clear", 0, "", "clears the scrollback and triggers as rerender"*/
 int
@@ -5987,6 +6269,7 @@ cmd_toggle (COMMAND_ARGS)
       renderer = GEGL_RENDERER_IDLE;
       printf ("disabled mipmap rendering\n");
     }
+    renderer_dirty++;
   }
   else if (!strcmp(argv[1], "controls"))
   {
