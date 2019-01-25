@@ -2341,10 +2341,14 @@ draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec
   mrg_end (mrg);
 }
 
+/**************************************************************************/
+
 static void
 draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
   char *value = NULL;
+  float x, y;
+  float x_final, y_final;
   mrg_start (mrg, "div.property", NULL);//
   gegl_node_get (node, pspec->name, &value, NULL);
 
@@ -2354,28 +2358,50 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
 
     mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
     mrg_edit_start (mrg, update_prop, node);
+    x = mrg_x (mrg);
+    y = mrg_y (mrg);
     draw_value (o, mrg, value);
 
     mrg_text_listen_done (mrg);
-    mrg_end (mrg);
+    x_final = mrg_x (mrg);
+    y_final = mrg_y (mrg);
   }
   else
   {
     mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspec->name);
     draw_key (o, mrg, pspec->name);
-    draw_value (o, mrg, value);
+    mrg_start_with_style (mrg, "div.propvalue", NULL, "color:transparent;");
+    x = mrg_x (mrg);
+    y = mrg_y (mrg);
+    mrg_printf (mrg, "%s", value);
+    mrg_end (mrg);
+
+    x_final = mrg_x (mrg);
+    y_final = mrg_y (mrg);
 
     mrg_text_listen_done (mrg);
   }
 
+  mrg_end (mrg);
+
+  /*  XXX : hack redrawing the string property, in-case of multi-line and triggering
+   *        the mrg background overdraw bug
+   */
+  mrg_set_xy (mrg, x, y);
+  mrg_set_style (mrg, "color:yellow");
+  mrg_printf (mrg, "%s", value);
+  mrg_set_xy (mrg, x_final, y_final);
+
   if (value)
     g_free (value);
-  mrg_end (mrg);
 }
+
+/**************************************************************************/
 
 static void
 draw_property_focus_box (State *o, Mrg *mrg)
 {
+  /* an overlining with slight curve hack - for now - should make use of CSS  */
   cairo_t *cr = mrg_cr (mrg);
   cairo_save (cr);
   cairo_new_path (cr);
