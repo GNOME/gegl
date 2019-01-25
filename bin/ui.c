@@ -342,8 +342,22 @@ Setting settings[]=
 
 };
 
-static char *suffix = "-gegl";
 
+static void queue_draw (State *o)
+{
+  o->renderer_state = 0;
+  renderer_dirty++;
+    mrg_gegl_dirty ();
+  mrg_queue_draw (o->mrg, NULL);
+}
+
+static void rev_inc (State *o)
+{
+  o->rev++;
+  queue_draw (o);
+}
+
+static char *suffix = "-gegl";
 
 void   gegl_meta_set (const char *path, const char *meta_data);
 char * gegl_meta_get (const char *path);
@@ -919,7 +933,7 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
     }
 
     o->renderer_state = 0;
-    mrg_queue_draw (e->mrg, NULL);
+    queue_draw (o);
     mrg_event_stop_propagate (e);
   }
   node_select_hack = 0;
@@ -1162,9 +1176,7 @@ static void on_paint_drag (MrgEvent *e, void *data1, void *data2)
       o->active = gegl_node_get_ui_consumer (o->active, "output", NULL);
       break;
   }
-  renderer_dirty++;
-  o->rev++;
-  mrg_queue_draw (e->mrg, NULL);
+  rev_inc (o);
   mrg_event_stop_propagate (e);
   //drag_preview (e);
 }
@@ -1249,9 +1261,7 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
       }
       break;
   }
-  renderer_dirty++;
-  o->rev++;
-  mrg_queue_draw (e->mrg, NULL);
+  rev_inc (o);
   mrg_event_stop_propagate (e);
 }
 
@@ -1283,8 +1293,7 @@ static void update_prop (const char *new_string, void *node_p)
 {
   GeglNode *node = node_p;
   gegl_node_set (node, edited_prop, new_string, NULL);
-  renderer_dirty++;
-  global_state->rev++;
+  rev_inc (global_state);
 }
 
 
@@ -1356,9 +1365,7 @@ cmd_dereference (COMMAND_ARGS)
       break;
   }
 
-  renderer_dirty++;
-  o->rev++;
-  mrg_queue_draw (o->mrg, NULL);
+  rev_inc (o);
   return 0;
 }
 
@@ -1391,9 +1398,7 @@ cmd_mipmap (COMMAND_ARGS)
   }
   g_object_get (gegl_config(), "mipmap-rendering", &curval, NULL);
   printf ("mipmap rendering is %s\n", curval?"on":"off");
-  renderer_dirty ++;
-  o->rev++;
-  mrg_queue_draw (o->mrg, NULL);
+  rev_inc (o);
   return 0;
 }
 
@@ -1745,8 +1750,7 @@ static GeglNode *add_aux (State *o, GeglNode *active, const char *optype)
     gegl_node_link_many (producer, ret, NULL);
   }
   gegl_node_connect_to (ret, "output", ref, "aux");
-  renderer_dirty++;
-  o->rev++;
+  rev_inc (o);
   return ret;
 }
 
@@ -1764,8 +1768,7 @@ static GeglNode *add_input (State *o, GeglNode *active, const char *optype)
     gegl_node_link_many (producer, ret, NULL);
   }
   gegl_node_connect_to (ret, "output", ref, "input");
-  renderer_dirty++;
-  o->rev++;
+  rev_inc (o);
   return ret;
 }
 
@@ -1784,8 +1787,7 @@ static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
     gegl_node_link_many (ref, ret, NULL);
     gegl_node_connect_to (ret, "output", consumer, consumer_name);
   }
-  renderer_dirty++;
-  o->rev++;
+  rev_inc (o);
   return ret;
 }
 
@@ -1852,9 +1854,7 @@ cmd_node_add (COMMAND_ARGS)
       o->new_opname[0]=0;
     }
   }
-  renderer_dirty++;
-  o->rev++;
-  mrg_queue_draw (o->mrg, NULL);
+  rev_inc (o);
   return 0;
 }
 
@@ -1867,11 +1867,8 @@ static void prop_set_enum (MrgEvent *event, void *data1, void *data2)
 
   gegl_node_set (o->active, prop_name, value, NULL);
 
-  renderer_dirty++;
-  o->rev++;
-
+  rev_inc (o);
   mrg_event_stop_propagate (event);
-  mrg_queue_draw (o->mrg, NULL);
 }
 
 static void set_int (MrgEvent *event, void *data1, void *data2)
@@ -2092,11 +2089,8 @@ static void on_prop_int_drag (MrgEvent *e, void *data1, void *data2)
 
   gegl_node_set (drag_data->node, drag_data->pspec->name, value, NULL);
 
-  renderer_dirty++;
-  o->rev++;
-
   mrg_event_stop_propagate (e);
-  mrg_queue_draw (e->mrg, NULL);
+  rev_inc (o);
 }
 
 static void
@@ -2175,8 +2169,7 @@ static void on_toggle_boolean (MrgEvent *e, void *data1, void *data2)
   gegl_node_get (node, propname, &value, NULL);
   value = value ? FALSE : TRUE;
   gegl_node_set (node, propname, value, NULL);
-  renderer_dirty++;
-  global_state->rev++;
+  rev_inc (global_state);
   mrg_event_stop_propagate (e);
 }
 
@@ -2228,11 +2221,8 @@ static void on_prop_double_drag (MrgEvent *e, void *data1, void *data2)
 
   gegl_node_set (drag_data->node, drag_data->pspec->name, value, NULL);
 
-  renderer_dirty++;
-  o->rev++;
-
   mrg_event_stop_propagate (e);
-  mrg_queue_draw (e->mrg, NULL);
+  rev_inc (o);
 }
 
 static void
@@ -3258,8 +3248,7 @@ static void on_active_node_drag (MrgEvent *e, void *data1, void *data2, int is_a
            if (node_pad_drag_candidate)
            {
               gegl_node_connect_to (node_pad_drag_candidate, "output", node_pad_drag_node, "input");
-              o->rev ++;
-              renderer_dirty = 1;
+              rev_inc (o);
            }
            o->pad_active = PAD_OUTPUT;
            node_pad_drag_candidate = NULL;
@@ -3286,8 +3275,7 @@ static void on_active_node_drag (MrgEvent *e, void *data1, void *data2, int is_a
            if (node_pad_drag_candidate)
            {
               gegl_node_connect_to (node_pad_drag_candidate, "output", node_pad_drag_node, "aux");
-              o->rev ++;
-              renderer_dirty = 1;
+              rev_inc (o);
            }
            o->pad_active = PAD_OUTPUT;
            node_pad_drag_candidate = NULL;
@@ -4148,8 +4136,7 @@ run_command (MrgEvent *event, void *data1, void *data_2)
   }
    arg++;
   }
-    renderer_dirty++;
-    o->rev++;
+    rev_inc (o);
   }
 
   g_strfreev (argv);
@@ -4206,9 +4193,7 @@ int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
     break;
   }
 
-  mrg_queue_draw (o->mrg, NULL);
-  renderer_dirty++;
-  o->rev++;
+  rev_inc (o);
   return 0;
 }
 
@@ -4268,9 +4253,7 @@ cmd_swap (COMMAND_ARGS)
 
     }
 
-  mrg_queue_draw (o->mrg, NULL);
-  renderer_dirty++;
-  o->rev++;
+  rev_inc (o);
   return 0;
 }
 
@@ -4344,7 +4327,6 @@ static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
           g_free (o->path);
           o->path = g_strdup (g_list_nth_data (o->paths, o->entry_no));
           load_path (o);
-
         }
       }
       else
@@ -4377,7 +4359,7 @@ static void iterate_frame (State *o)
          o->frame_no = 0;
        gegl_node_set (o->source, "frame", o->frame_no, NULL);
        o->prev_ms = mrg_ms (mrg);
-       renderer_dirty++;
+       queue_draw (o);
     }
     mrg_queue_draw (o->mrg, NULL);
    }
@@ -4389,7 +4371,7 @@ static void iterate_frame (State *o)
      if (o->frame_no >= frames)
        o->frame_no = 0;
      gegl_node_set (o->source, "frame", o->frame_no, NULL);
-     renderer_dirty++;
+     queue_draw (o);
      mrg_queue_draw (o->mrg, NULL);
     {
       GeglAudioFragment *audio = NULL;
@@ -5417,8 +5399,8 @@ static void load_path_inner (State *o,
   if (o->processor)
       g_object_unref (o->processor);
   o->processor = gegl_node_new_processor (o->sink, NULL);
-  renderer_dirty++;
 
+  queue_draw (o);
 }
 
 
@@ -5512,8 +5494,7 @@ cmd_propeditor (COMMAND_ARGS)
     {
     }
 
-    o->rev++;
-    renderer_dirty++;
+    rev_inc (o);
   }
   else if (!strcmp (argv[1], "right")||
            !strcmp (argv[1], "shift-right"))
@@ -5561,8 +5542,7 @@ cmd_propeditor (COMMAND_ARGS)
     {
     }
 
-    o->rev++;
-    renderer_dirty++;
+    rev_inc (o);
   }
   else if (!strcmp (argv[1], "focus"))
   {
@@ -5632,8 +5612,7 @@ cmd_clear (COMMAND_ARGS)
     free (data);
   }
   populate_path_list (global_state);
-  renderer_dirty ++; // also force a rerender as a side effect, sometimes useful
-  mrg_queue_draw (global_state->mrg, NULL);
+  queue_draw (global_state);
   return 0;
 }
 
@@ -5915,8 +5894,7 @@ static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
   o->u = x * o->scale - screen_cx;
   o->v = y * o->scale - screen_cy;
 
-  o->renderer_state = 0;
-  mrg_queue_draw (o->mrg, NULL);
+  queue_draw (o);
 }
 
 int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|first|last>", ""*/
@@ -6270,7 +6248,7 @@ cmd_toggle (COMMAND_ARGS)
   {
     o->color_manage_display = !o->color_manage_display;
     printf ("%s colormanagement of display\n", o->color_manage_display?"enabled":"disabled");
-    mrg_gegl_dirty ();
+    //mrg_gegl_dirty ();
   }
   else if (!strcmp(argv[1], "mipmap"))
   {
@@ -6287,7 +6265,6 @@ cmd_toggle (COMMAND_ARGS)
       renderer = GEGL_RENDERER_IDLE;
       printf ("disabled mipmap rendering\n");
     }
-    renderer_dirty++;
   }
   else if (!strcmp(argv[1], "controls"))
   {
@@ -6300,7 +6277,7 @@ cmd_toggle (COMMAND_ARGS)
       mrg_remove_idle (o->mrg, o->slide_timeout);
     o->slide_timeout = 0;
   }
-  mrg_queue_draw (o->mrg, NULL);
+  queue_draw (o);
   return 0;
 }
 
@@ -6421,9 +6398,7 @@ cmd_node_defaults (COMMAND_ARGS)
   if (o->active)
     gegl_node_defaults (o->active);
 
-  renderer_dirty++;
-  o->rev++;
-  mrg_queue_draw (o->mrg, NULL);
+  rev_inc (o);
   return 0;
 }
 
