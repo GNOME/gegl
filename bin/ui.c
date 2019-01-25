@@ -1565,9 +1565,9 @@ static void ui_dir_viewer (State *o)
       cairo_set_line_width (mrg_cr(mrg), 4);
       cairo_stroke_preserve (mrg_cr(mrg));
       if (no == o->entry_no + 1)
-        mrg_listen_full (mrg, MRG_CLICK, entry_load, o, path, NULL, NULL);
+        mrg_listen_full (mrg, MRG_TAP, entry_load, o, path, NULL, NULL);
       else
-        mrg_listen_full (mrg, MRG_CLICK, entry_select, o, GINT_TO_POINTER(no-1), NULL, NULL);
+        mrg_listen_full (mrg, MRG_TAP, entry_select, o, GINT_TO_POINTER(no-1), NULL, NULL);
       cairo_new_path (mrg_cr(mrg));
   }
   cairo_restore (cr);
@@ -3415,8 +3415,8 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
     double xd=x, yd=y;
     cairo_user_to_device (mrg_cr(mrg), &xd, &yd);
 
-    if (yd < mrg_height (mrg) * 0.25 ||
-        yd > mrg_height (mrg) * 0.8)
+    if (yd < mrg_height (mrg) * 0.15 ||
+        yd > mrg_height (mrg) * 0.85)
     {
       float blend_factor = 0.20;
       float new_scroll = ( (y*o->graph_scale) - mrg_height(mrg)/2);
@@ -4276,7 +4276,7 @@ int cmd_pan (COMMAND_ARGS) /* "pan", 0, "", "changes to pan tool"*/
   return 0;
 }
 
-static void commandline_run (MrgEvent *event, void *data1, void *data2)
+static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
 {
   State *o = data1;
   if (commandline[0])
@@ -4284,7 +4284,7 @@ static void commandline_run (MrgEvent *event, void *data1, void *data2)
     if (completion_no>=0)
      {
        GList *completions = commandline_get_completions (o->active,
-                                                    commandline);
+                                                         commandline);
        const char *completion = g_list_nth_data (completions, completion_no);
          strcat (commandline, completion);
        strcat (commandline, " ");
@@ -4303,6 +4303,10 @@ static void commandline_run (MrgEvent *event, void *data1, void *data2)
   else if (scrollback)
   {
     argvs_eval ("clear");
+  }
+  else if (o->property_focus)
+  {
+    argvs_eval ("prop-editor return");
   }
   else
     {
@@ -4837,7 +4841,7 @@ static void ui_commandline (Mrg *mrg, void *data)
   if (scrollback || 1)
   mrg_end (mrg);
 
-  mrg_add_binding (mrg, "return", NULL, NULL, commandline_run, o);
+  mrg_add_binding (mrg, "return", NULL, NULL, do_commandline_run, o);
   cairo_restore (cr);
 }
 
@@ -5648,6 +5652,10 @@ cmd_propeditor (COMMAND_ARGS)
 
     g_free (pspecs);
   }
+  else if (!strcmp (argv[1], "return"))
+  {
+    fprintf (stderr, "propeditor return");
+  }
 
   mrg_queue_draw (o->mrg, NULL);
   return 0;
@@ -6362,8 +6370,7 @@ int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
   return 0;
 }
 
-#if 0
-void gegl_node_defaults (GeglNode *node)
+static void gegl_node_defaults (GeglNode *node)
 {
   const gchar* op_name = gegl_node_get_operation (node);
   {
@@ -6393,7 +6400,23 @@ void gegl_node_defaults (GeglNode *node)
     }
   }
 }
-#endif
+
+int cmd_node_defaults (COMMAND_ARGS); /* "node-defaults", -1, "", "reset properties to default values"*/
+
+int
+cmd_node_defaults (COMMAND_ARGS)
+{
+  State *o = global_state;
+
+  if (o->active)
+    gegl_node_defaults (o->active);
+
+  renderer_dirty++;
+  o->rev++;
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
+}
+
 
 /* loads the source image corresponding to o->path into o->buffer and
  * creates live gegl pipeline, or nops.. rigs up o->save_path to be
