@@ -1319,88 +1319,6 @@ static void unset_edited_prop (MrgEvent *e, void *data1, void *data2)
 }
 
 
-int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
-
-int
-cmd_todo (COMMAND_ARGS)
-{
-  printf ("propeditor:color\n");
-  printf ("propeditor:string\n");
-  printf ("units in commandline\n");
-  printf ("crop mode\n");
-  printf ("polyline/bezier on screen editing\n");
-  printf ("display/setting of id\n");
-  printf ("interpret GUM\n");
-  printf ("rewrite in lua\n");
-  printf ("animation of properties\n");
-  printf ("star/comment storage\n");
-  printf ("dir actions: rename, discard\n");
-  return 0;
-}
-
-int cmd_reference (COMMAND_ARGS);/* "reference", -1, "", ""*/
-int
-cmd_reference (COMMAND_ARGS)
-{
-  State *o = global_state;
-  o->reference_node = o->active;
-  return 0;
-}
-
-int cmd_dereference (COMMAND_ARGS);/* "dereference", -1, "", ""*/
-int
-cmd_dereference (COMMAND_ARGS)
-{
-  State *o = global_state;
-
-  if (o->reference_node)
-  switch (o->pad_active)
-  {
-    case PAD_INPUT:
-    case PAD_OUTPUT:
-      gegl_node_link_many (o->reference_node, o->active, NULL);
-      break;
-    case PAD_AUX:
-      gegl_node_connect_to (o->reference_node, "output", o->active, "aux");
-      break;
-  }
-
-  rev_inc (o);
-  return 0;
-}
-
-
-int cmd_mipmap (COMMAND_ARGS);/* "mipmap", -1, "", ""*/
-
-int
-cmd_mipmap (COMMAND_ARGS)
-{
-  gboolean curval;
-  State *o = global_state;
-  if (argv[1])
-  {
-    if (!strcmp (argv[1], "on")||
-        !strcmp (argv[1], "true")||
-        !strcmp (argv[1], "1"))
-    {
-      g_object_set (gegl_config(), "mipmap-rendering", TRUE, NULL);
-      renderer = GEGL_RENDERER_BLIT_MIPMAP;
-    }
-    else
-    {
-      g_object_set (gegl_config(), "mipmap-rendering", FALSE, NULL);
-      renderer = GEGL_RENDERER_IDLE;
-    }
-  }
-  else
-  {
-    //printf ("mipmap rendering is %s\n", curval?"on":"off");
-  }
-  g_object_get (gegl_config(), "mipmap-rendering", &curval, NULL);
-  printf ("mipmap rendering is %s\n", curval?"on":"off");
-  rev_inc (o);
-  return 0;
-}
 
 static void entry_select (MrgEvent *event, void *data1, void *data2)
 {
@@ -1789,73 +1707,6 @@ static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
   }
   rev_inc (o);
   return ret;
-}
-
-int cmd_node_add (COMMAND_ARGS);/* "node-add", 1, "<input|output|aux>", "add a neighboring node and permit entering its name, for use in touch ui."*/
-int
-cmd_node_add (COMMAND_ARGS)
-{
-  State *o = global_state;
-  if (!strcmp(argv[1], "input"))
-  {
-    State *o = global_state;
-    GeglNode *ref = o->active;
-    GeglNode *producer = gegl_node_get_producer (o->active, "input", NULL);
-    if (!gegl_node_has_pad (ref, "input"))
-      return -1;
-
-    o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
-
-    if (producer)
-    {
-      gegl_node_connect_to (producer, "output", o->active, "input");
-    }
-    gegl_node_connect_to (o->active, "output", ref, "input");
-
-    o->editing_op_name = 1;
-    mrg_set_cursor_pos (o->mrg, 0);
-    o->new_opname[0]=0;
-  }
-  else if (!strcmp(argv[1], "aux"))
-  {
-    GeglNode *ref = o->active;
-    GeglNode *producer = gegl_node_get_producer (o->active, "aux", NULL);
-
-    if (!gegl_node_has_pad (ref, "aux"))
-      return -1;
-
-    o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
-
-    if (producer)
-    {
-      gegl_node_connect_to (producer, "output", o->active, "input");
-    }
-    gegl_node_connect_to (o->active, "output", ref, "aux");
-
-    o->editing_op_name = 1;
-    mrg_set_cursor_pos (o->mrg, 0);
-    o->new_opname[0]=0;
-  }
-  else if (!strcmp(argv[1], "output"))
-  {
-    GeglNode *ref = o->active;
-    const char *consumer_name = NULL;
-    GeglNode *consumer = gegl_node_get_ui_consumer (o->active, "output", &consumer_name);
-    if (!gegl_node_has_pad (ref, "output"))
-      return -1;
-
-    if (consumer)
-    {
-      o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
-      gegl_node_link_many (ref, o->active, NULL);
-      gegl_node_connect_to (o->active, "output", consumer, consumer_name);
-      o->editing_op_name = 1;
-      mrg_set_cursor_pos (o->mrg, 0);
-      o->new_opname[0]=0;
-    }
-  }
-  rev_inc (o);
-  return 0;
 }
 
 
@@ -2709,16 +2560,6 @@ static void update_string (const char *new_text, void *data)
   strcpy (str, new_text);
 }
 
-  int cmd_edit_opname (COMMAND_ARGS);
-int cmd_edit_opname (COMMAND_ARGS) /* "edit-opname", 0, "", "permits changing the current op by typing in a replacement name."*/
-{
-  State *o = global_state;
-  o->editing_op_name = 1;
-  o->new_opname[0]=0;
-  mrg_set_cursor_pos (o->mrg, 0);
-  return 0;
-}
-
 static void activate_sink_producer (State *o)
 {
   if (o->sink)
@@ -2728,159 +2569,6 @@ static void activate_sink_producer (State *o)
   o->pad_active = PAD_OUTPUT;
 }
 
-  int cmd_graph_cursor (COMMAND_ARGS);
-int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|source|append>", "position the graph cursor, this navigates both pads and nodes simultanously."*/
-{
-  State *o = global_state;
-  GeglNode *ref;
-
-  if (o->active == NULL)
-  {
-    activate_sink_producer (o);
-    if (!o->active)
-      return -1;
-  }
-  ref = o->active;
-
-  if (!strcmp (argv[1], "down"))
-  {
-    switch (o->pad_active)
-    {
-       case PAD_AUX:
-        ref = gegl_node_get_ui_producer (o->active, "aux", NULL);
-        if (ref == NULL)
-          o->pad_active = PAD_INPUT;
-        else
-          o->pad_active = PAD_OUTPUT;
-        break;
-
-       case PAD_INPUT:
-        ref = gegl_node_get_producer (o->active, "input", NULL);
-        if (ref == NULL)
-          o->pad_active = PAD_INPUT;
-        else
-          o->pad_active = PAD_OUTPUT;
-
-
-       break;
-       case PAD_OUTPUT:
-        ref = gegl_node_get_ui_producer (o->active, "input", NULL);
-        if (ref == NULL)
-          o->pad_active = PAD_INPUT;
-        else
-          o->pad_active = PAD_OUTPUT;
-       break;
-
-    }
-  }
-  else if (!strcmp (argv[1], "right"))
-  {
-    if (o->pad_active == PAD_AUX)
-    {
-      ref = gegl_node_get_producer (o->active, "aux", NULL);
-      if (!ref)
-      {
-        ref = o->active;
-        if (gegl_node_has_pad (o->active, "aux"))
-          o->pad_active = PAD_AUX;
-        else if (gegl_node_has_pad (o->active, "input"))
-          o->pad_active = PAD_INPUT;
-    }
-    else
-    {
-        o->pad_active = PAD_OUTPUT;
-    }
-    }
-    else
-    {
-      if (gegl_node_has_pad (o->active, "aux"))
-        o->pad_active = PAD_AUX;
-      else if (gegl_node_has_pad (o->active, "input"))
-        o->pad_active = PAD_INPUT;
-      else
-        o->pad_active = PAD_OUTPUT;
-    }
-  }
-  else if (!strcmp (argv[1], "up"))
-  {
-    if (o->pad_active != PAD_OUTPUT)
-    {
-      o->pad_active = PAD_OUTPUT;
-    }
-    else
-    {
-      ref = gegl_node_get_ui_consumer (o->active, "output", NULL);
-      if (ref == o->sink)
-        ref = NULL;
-      o->pad_active = PAD_OUTPUT;
-    }
-  }
-  else if (!strcmp (argv[1], "left"))
-  {
-    GeglNode *iter = o->active;
-    int skips = 0;
-
-    if (o->pad_active == PAD_INPUT)
-    {
-      o->pad_active = PAD_OUTPUT;
-    }
-    else if (o->pad_active == PAD_AUX)
-    {
-      o->pad_active = PAD_INPUT;
-    }
-    else
-    {
-
-    if (o->pad_active != PAD_OUTPUT)
-    {
-      o->pad_active = PAD_OUTPUT;
-    }
-
-    while (iter)
-    {
-      const char *consumer_pad = NULL;
-      GeglNode *attempt = gegl_node_get_ui_consumer (iter, "output", &consumer_pad);
-      if (!strcmp (consumer_pad, "input") && attempt != o->sink)
-        {
-          iter = attempt;
-          skips ++;
-        }
-      else
-        {
-          ref = iter;
-          iter = NULL;
-        }
-    }
-
-    //if (skips == 0)
-    {
-      GeglNode *attempt = gegl_node_get_ui_consumer (ref, "output", NULL);
-      if (attempt && attempt != o->sink)
-        ref = attempt;
-    }
-
-   }
-  }
-  else if (!strcmp (argv[1], "append"))
-  {
-    ref = gegl_node_get_producer (o->sink, "input", NULL);
-    o->pad_active = PAD_OUTPUT;
-  }
-  else if (!strcmp (argv[1], "source"))
-  {
-    ref = o->source;
-    o->pad_active = PAD_OUTPUT;
-  }
-  else {
-    printf ("unkown graph cursor sub command %s\n", argv[1]);
-    ref = NULL;
-  }
-
-  if (ref)
-    o->active = ref;
-  mrg_queue_draw (o->mrg, NULL);
-  return 0;
-}
 
 static void set_op (MrgEvent *event, void *data1, void *data2)
 {
@@ -3731,14 +3419,12 @@ static void ui_debug_op_chain (State *o)
     list_node_props (o, o->active, 1);
     mrg_end (mrg);
   }
-
 }
 
-
 static char commandline[1024] = {0,};
-static int completion_no = -1;
+static int  completion_no = -1;
 
-static GList *commandline_get_completions (GeglNode *node,
+static GList *commandline_get_completions (GeglNode   *node,
                                            const char *commandline);
 
 static void update_commandline (const char *new_commandline, void *data)
@@ -3771,7 +3457,8 @@ static void update_commandline (const char *new_commandline, void *data)
 
 /* finds id in iterable subtree from iter
  */
-static GeglNode *node_find_by_id (State *o, GeglNode *iter, const char *needle_id)
+static GeglNode *node_find_by_id (State *o, GeglNode *iter,
+                                  const char *needle_id)
 {
   needle_id = g_intern_string (needle_id);
   while (iter)
@@ -3788,11 +3475,13 @@ static GeglNode *node_find_by_id (State *o, GeglNode *iter, const char *needle_i
        GeglNode *producers_consumer;
        const char *consumer_name = NULL;
 
-       producers_consumer = gegl_node_get_ui_consumer (producer, "output", &consumer_name);
+       producers_consumer = gegl_node_get_ui_consumer (
+                                           producer, "output", &consumer_name);
 
        if (producers_consumer == iter && !strcmp (consumer_name, "aux"))
          {
-           GeglNode *ret = node_find_by_id (o, gegl_node_get_producer (iter, "aux", NULL), needle_id);
+           GeglNode *ret = node_find_by_id (o,
+                        gegl_node_get_producer (iter, "aux", NULL), needle_id);
            if (ret)
              return ret;
          }
@@ -3817,21 +3506,6 @@ static GeglNode *node_find_by_id (State *o, GeglNode *iter, const char *needle_i
   return NULL;
 }
 
-  int cmd_find_id (COMMAND_ARGS);
-int cmd_find_id (COMMAND_ARGS) /* "/", 1, "<id-to-jump-to>", "set focus on node with given id"*/
-{
-  State *o = global_state;
-  GeglNode *found = node_find_by_id (o, o->sink, argv[1]);
-
-  if (found)
-    o->active = found;
-  else
-    printf ("no node with id %s found", argv[1]);
-
-  mrg_queue_draw (o->mrg, NULL);
-
-  return 0;
-}
 
 
 static void
@@ -3848,10 +3522,10 @@ run_command (MrgEvent *event, void *data1, void *data_2)
 
   g_shell_parse_argv (commandline, &argc, &argv, NULL);
 
-  /* the commandline has two modes, operation/property mode and argvs command running mode
-   * the mode is determined by the first arguement on a passed line if the first word matches
-   * an existing argvs command, commandline running mode is used, otherwise operation/property
-   * mode is used.
+  /* the commandline has two modes, operation/property mode and argvs command
+   * running mode the mode is determined by the first arguement on a passed line
+   * if the first word matches an existing argvs command, commandline running
+   * mode is used, otherwise operation/property mode is used.
    */
 
   //printf ("%s\n", commandline);
@@ -4142,145 +3816,6 @@ run_command (MrgEvent *event, void *data1, void *data_2)
   g_strfreev (argv);
 }
 
-  int cmd_quit (COMMAND_ARGS);
-int cmd_quit (COMMAND_ARGS) /* "quit", 0, "", "quit"*/
-{
-  mrg_quit (global_state->mrg);
-  return 0;
-}
-
-  int cmd_remove (COMMAND_ARGS);
-int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
-{
-  State *o = global_state;
-  GeglNode *node = o->active;
-  GeglNode *next, *prev;
-
-  const gchar *consumer_name = NULL;
-
-  if (o->active == o->source)
-    return -1;
-
-  switch (o->pad_active)
-  {
-    case PAD_INPUT:
-      prev = gegl_node_get_producer (node, "input", NULL);
-      if (gegl_node_get_ui_consumer (prev, "output", NULL) != node)
-        gegl_node_disconnect (node, "input");
-      break;
-    case PAD_AUX:
-      prev = gegl_node_get_producer (node, "aux", NULL);
-      if (gegl_node_get_ui_consumer (prev, "output", NULL) != node)
-        gegl_node_disconnect (node, "aux");
-      break;
-    case PAD_OUTPUT:
-      prev = gegl_node_get_producer (node, "input", NULL);
-      next = gegl_node_get_ui_consumer (node, "output", &consumer_name);
-
-      if (next && prev)
-      {
-        gegl_node_disconnect (node, "input");
-        gegl_node_connect_to (prev, "output", next, consumer_name);
-        gegl_node_remove_child (o->gegl, node);
-        o->active = prev;
-      }
-      else if (next)
-      {
-        gegl_node_disconnect (next, consumer_name);
-        gegl_node_remove_child (o->gegl, node);
-        o->active = next;
-      }
-    break;
-  }
-
-  rev_inc (o);
-  return 0;
-}
-
-int cmd_swap (COMMAND_ARGS);/* "swap", 1, "<input|output>", "swaps position with other node, allows doing the equivalent of raise lower and other local reordering of nodes."*/
-
-int
-cmd_swap (COMMAND_ARGS)
-{
-  State *o = global_state;
-  GeglNode *node = o->active;
-  GeglNode *next, *prev;
-  const char *consumer_name = NULL;
-
-  next = gegl_node_get_ui_consumer (node, "output", &consumer_name);
-  prev = gegl_node_get_ui_producer (node, "input", NULL);
-  consumer_name = g_intern_string (consumer_name?consumer_name:"");
-
-  if (1)//next && prev)
-    {
-      if (!strcmp (argv[1], "output") && next != o->sink)
-      {
-        const char *next_next_consumer = NULL;
-        GeglNode *next_next = gegl_node_get_ui_consumer (next, "output", &next_next_consumer);
-
-        if (next_next && g_str_equal (consumer_name, "input"))
-        {
-          gegl_node_disconnect (next_next, next_next_consumer);
-          gegl_node_disconnect (node, "input");
-          gegl_node_disconnect (next, "input");
-          if (prev)
-            gegl_node_link_many (prev, next, node, NULL);
-          else
-            gegl_node_link_many (next, node, NULL);
-          gegl_node_connect_to (node, "output", next_next, next_next_consumer);
-        }
-      }
-      else if (prev && !strcmp (argv[1], "input") && prev != o->source)
-      {
-        GeglNode *prev_prev = gegl_node_get_ui_producer (prev, "input", NULL);
-
-        if (prev_prev)
-        {
-          gegl_node_link_many (prev_prev, node, prev, NULL);
-          gegl_node_connect_to (prev, "output", next, consumer_name);
-        }
-        else
-        {
-          if (gegl_node_has_pad (prev, "input"))
-          {
-            gegl_node_disconnect (next, consumer_name);
-            gegl_node_disconnect (node, "input");
-            gegl_node_link_many (node, prev, NULL);
-            gegl_node_connect_to (prev, "output", next, consumer_name);
-          }
-        }
-      }
-
-    }
-
-  rev_inc (o);
-  return 0;
-}
-
-  int cmd_move (COMMAND_ARGS);
-int cmd_move (COMMAND_ARGS) /* "move", 0, "", "changes to move tool"*/
-{
-  tool = TOOL_MOVE;
-  return 0;
-}
-  int cmd_paint (COMMAND_ARGS);
-int cmd_paint (COMMAND_ARGS) /* "paint", 0, "", "changes to paint tool"*/
-{
-  tool = TOOL_PAINT;
-  return 0;
-}
-  int cmd_pick (COMMAND_ARGS);
-int cmd_pick (COMMAND_ARGS) /* "pick", 0, "", "changes to pick tool"*/
-{
-  tool = TOOL_PICK;
-  return 0;
-}
-  int cmd_pan (COMMAND_ARGS);
-int cmd_pan (COMMAND_ARGS) /* "pan", 0, "", "changes to pan tool"*/
-{
-  tool = TOOL_PAN;
-  return 0;
-}
 
 static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
 {
@@ -5439,6 +4974,757 @@ static void load_path (State *o)
   mrg_queue_draw (o->mrg, NULL);
 }
 
+
+
+static void drag_preview (MrgEvent *e)
+{
+  State *o = global_state;
+  static float old_factor = 1;
+  switch (e->type)
+  {
+    case MRG_DRAG_PRESS:
+      old_factor = o->render_quality;
+      if (o->render_quality < o->preview_quality)
+        o->render_quality = o->preview_quality;
+      break;
+    case MRG_DRAG_RELEASE:
+      o->render_quality = old_factor;
+      mrg_queue_draw (e->mrg, NULL);
+      break;
+    default:
+    break;
+  }
+}
+
+static void load_into_buffer (State *o, const char *path)
+{
+  GeglNode *gegl, *load, *sink;
+  struct stat stat_buf;
+
+  if (o->buffer)
+  {
+    g_object_unref (o->buffer);
+    o->buffer = NULL;
+  }
+
+  lstat (path, &stat_buf);
+  if (S_ISREG (stat_buf.st_mode))
+  {
+
+
+  gegl = gegl_node_new ();
+  load = gegl_node_new_child (gegl, "operation", "gegl:load",
+                                    "path", path,
+                                    NULL);
+  sink = gegl_node_new_child (gegl, "operation", "gegl:buffer-sink",
+                                    "buffer", &(o->buffer),
+                                    NULL);
+  gegl_node_link_many (load, sink, NULL);
+  gegl_node_process (sink);
+  g_object_unref (gegl);
+
+  {
+    GExiv2Orientation orientation = path_get_orientation (path);
+    gboolean hflip = FALSE;
+    gboolean vflip = FALSE;
+    double degrees = 0.0;
+    switch (orientation)
+    {
+      case GEXIV2_ORIENTATION_UNSPECIFIED:
+      case GEXIV2_ORIENTATION_NORMAL:
+        break;
+      case GEXIV2_ORIENTATION_HFLIP: hflip=TRUE; break;
+      case GEXIV2_ORIENTATION_VFLIP: vflip=TRUE; break;
+      case GEXIV2_ORIENTATION_ROT_90: degrees = 90.0; break;
+      case GEXIV2_ORIENTATION_ROT_90_HFLIP: degrees = 90.0; hflip=TRUE; break;
+      case GEXIV2_ORIENTATION_ROT_90_VFLIP: degrees = 90.0; vflip=TRUE; break;
+      case GEXIV2_ORIENTATION_ROT_180: degrees = 180.0; break;
+      case GEXIV2_ORIENTATION_ROT_270: degrees = 270.0; break;
+    }
+
+    if (degrees != 0.0 || vflip || hflip)
+     {
+       /* XXX: deal with vflip/hflip */
+       GeglBuffer *new_buffer = NULL;
+       GeglNode *rotate;
+       gegl = gegl_node_new ();
+       load = gegl_node_new_child (gegl, "operation", "gegl:buffer-source",
+                                   "buffer", o->buffer,
+                                   NULL);
+       sink = gegl_node_new_child (gegl, "operation", "gegl:buffer-sink",
+                                   "buffer", &(new_buffer),
+                                   NULL);
+       rotate = gegl_node_new_child (gegl, "operation", "gegl:rotate",
+                                   "degrees", -degrees,
+                                   "sampler", GEGL_SAMPLER_NEAREST,
+                                   NULL);
+       gegl_node_link_many (load, rotate, sink, NULL);
+       gegl_node_process (sink);
+       g_object_unref (gegl);
+       g_object_unref (o->buffer);
+       o->buffer = new_buffer;
+     }
+  }
+
+#if 0 /* hack to see if having the data in some formats already is faster */
+  {
+  GeglBuffer *tempbuf;
+  tempbuf = gegl_buffer_new (gegl_buffer_get_extent (o->buffer),
+                                         babl_format ("RGBA float"));
+
+  gegl_buffer_copy (o->buffer, NULL, GEGL_ABYSS_NONE, tempbuf, NULL);
+  g_object_unref (o->buffer);
+  o->buffer = tempbuf;
+  }
+#endif
+    }
+  else
+    {
+      GeglRectangle extent = {0,0,1,1}; /* segfaults with NULL / 0,0,0,0*/
+      o->buffer = gegl_buffer_new (&extent, babl_format("RGBA float"));
+    }
+}
+
+#if 0
+static GeglNode *locate_node (State *o, const char *op_name)
+{
+  GeglNode *iter = o->sink;
+  while (iter)
+   {
+     char *opname = NULL;
+     g_object_get (iter, "operation", &opname, NULL);
+     if (!strcmp (opname, op_name))
+       return iter;
+     g_free (opname);
+     iter = gegl_node_get_producer (iter, "input", NULL);
+   }
+  return NULL;
+}
+#endif
+
+static void zoom_to_fit (State *o)
+{
+  Mrg *mrg = o->mrg;
+  GeglRectangle rect = gegl_node_get_bounding_box (o->sink);
+  float scale, scale2;
+
+  if (rect.width == 0 || rect.height == 0)
+  {
+    o->scale = 1.0;
+    o->u = 0.0;
+    o->v = 0.0;
+    return;
+  }
+
+  scale = 1.0 * mrg_width (mrg) / rect.width;
+  scale2 = 1.0 * mrg_height (mrg) / rect.height;
+
+  if (scale2 < scale) scale = scale2;
+
+  o->scale = scale;
+
+  o->u = -(mrg_width (mrg) - rect.width * o->scale) / 2;
+  o->v = -(mrg_height (mrg) - rect.height * o->scale) / 2;
+  o->u += rect.x * o->scale;
+  o->v += rect.y * o->scale;
+
+  mrg_queue_draw (mrg, NULL);
+}
+static void center (State *o)
+{
+  Mrg *mrg = o->mrg;
+  GeglRectangle rect = gegl_node_get_bounding_box (o->sink);
+  o->scale = 1.0;
+
+  o->u = -(mrg_width (mrg) - rect.width * o->scale) / 2;
+  o->v = -(mrg_height (mrg) - rect.height * o->scale) / 2;
+  o->u += rect.x * o->scale;
+  o->v += rect.y * o->scale;
+
+  mrg_queue_draw (mrg, NULL);
+}
+
+static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
+{
+  float x, y;
+  get_coords (o, screen_cx, screen_cy, &x, &y);
+  o->scale *= factor;
+  o->u = x * o->scale - screen_cx;
+  o->v = y * o->scale - screen_cy;
+
+  queue_draw (o);
+}
+
+
+static int deferred_zoom_to_fit (Mrg *mrg, void *data)
+{
+  argvs_eval ("zoom fit");
+  return 0;
+}
+
+static void get_coords (State *o, float screen_x, float screen_y, float *gegl_x, float *gegl_y)
+{
+  float scale = o->scale;
+  *gegl_x = (o->u + screen_x) / scale;
+  *gegl_y = (o->v + screen_y) / scale;
+}
+
+static void scroll_cb (MrgEvent *event, void *data1, void *data2)
+{
+  switch (event->scroll_direction)
+  {
+     case MRG_SCROLL_DIRECTION_DOWN:
+       /* XXX : passing floating point values string formatted is awkard in C,
+                so we use the utility function instead - this could be two extra
+                relative coordinate args to the zoom command */
+       zoom_at (data1, event->device_x, event->device_y, 1.0/1.05);
+       break;
+     case MRG_SCROLL_DIRECTION_UP:
+       zoom_at (data1, event->device_x, event->device_y, 1.05);
+       break;
+     default:
+       break;
+  }
+}
+
+static void print_setting (Setting *setting)
+{
+  State *o = global_state;
+  switch (setting->type)
+  {
+    case 0:
+      printf ("%s %i%s\n  %s\n", setting->name,
+        (*(int*)(((char *)o) + setting->offset)), setting->read_only?"  (RO)":"", setting->description);
+    break;
+    case 1:
+      printf ("%s %f%s\n  %s\n", setting->name,
+        (*(float*)(((char *)o) + setting->offset)), setting->read_only?" (RO)":"", setting->description);
+     break;
+    case 2:
+      {
+        char *value = NULL;
+        memcpy (&value, (((char *)o) + setting->offset), sizeof (void*));
+        printf ("%s %s%s\n  %s\n", setting->name, value, setting->read_only?" (RO)":"", setting->description);
+      }
+    break;
+  }
+}
+
+static int set_setting (Setting *setting, const char *value)
+{
+  State *o = global_state;
+  if (setting->read_only)
+    return -1;
+  switch (setting->type)
+  {
+    case 0:
+        (*(int*)(((char *)o) + setting->offset)) = atoi (value);
+    break;
+    case 1:
+        (*(float*)(((char *)o) + setting->offset)) = g_strtod (value, NULL);
+    break;
+    case 2:
+        memcpy ((((char *)o) + setting->offset), g_strdup (value), sizeof (void*));
+    break;
+  }
+  return 0;
+}
+
+
+
+/* loads the source image corresponding to o->path into o->buffer and
+ * creates live gegl pipeline, or nops.. rigs up o->save_path to be
+ * the location where default saves ends up.
+ */
+void
+gegl_meta_set (const char *path,
+               const char *meta_data)
+{
+  GError *error = NULL;
+  GExiv2Metadata *e2m = gexiv2_metadata_new ();
+  gexiv2_metadata_open_path (e2m, path, &error);
+  if (error)
+  {
+    g_warning ("%s", error->message);
+  }
+  else
+  {
+    if (gexiv2_metadata_has_tag (e2m, "Xmp.xmp.GEGL"))
+      gexiv2_metadata_clear_tag (e2m, "Xmp.xmp.GEGL");
+
+    gexiv2_metadata_set_tag_string (e2m, "Xmp.xmp.GEGL", meta_data);
+    gexiv2_metadata_save_file (e2m, path, &error);
+    if (error)
+      g_warning ("%s", error->message);
+  }
+  g_object_unref (e2m);
+}
+
+char *
+gegl_meta_get (const char *path)
+{
+  gchar  *ret   = NULL;
+  GError *error = NULL;
+  GExiv2Metadata *e2m = gexiv2_metadata_new ();
+  gexiv2_metadata_open_path (e2m, path, &error);
+  if (!error)
+    ret = gexiv2_metadata_get_tag_string (e2m, "Xmp.xmp.GEGL");
+  /*else
+    g_warning ("%s", error->message);*/
+  g_object_unref (e2m);
+  return ret;
+}
+
+GExiv2Orientation path_get_orientation (const char *path)
+{
+  GExiv2Orientation ret = 0;
+  GError *error = NULL;
+  GExiv2Metadata *e2m = gexiv2_metadata_new ();
+  gexiv2_metadata_open_path (e2m, path, &error);
+  if (!error)
+    ret = gexiv2_metadata_get_orientation (e2m);
+  /*else
+    g_warning ("%s", error->message);*/
+  g_object_unref (e2m);
+  return ret;
+}
+
+
+// defcom
+
+  int cmd_save (COMMAND_ARGS);
+int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
+{
+  State *o = global_state;
+  char *serialized;
+
+  {
+    char *containing_path = get_path_parent (o->save_path);
+    serialized = gegl_serialize (o->source,
+                   gegl_node_get_producer (o->sink, "input", NULL),
+ containing_path, GEGL_SERIALIZE_TRIM_DEFAULTS|GEGL_SERIALIZE_VERSION|GEGL_SERIALIZE_INDENT);
+    g_free (containing_path);
+  }
+
+  {
+    char *prepended = g_strdup_printf ("gegl:load path=%s\n%s", basename(o->src_path), serialized);
+    g_file_set_contents (o->save_path, prepended, -1, NULL);
+    g_free (prepended);
+  }
+
+  g_free (serialized);
+  o->rev = 0;
+  return 0;
+}
+
+static void gegl_node_defaults (GeglNode *node)
+{
+  const gchar* op_name = gegl_node_get_operation (node);
+  {
+    guint n_props;
+    GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
+    if (pspecs)
+    {
+      for (gint i = 0; i < n_props; i++)
+      {
+        if (g_type_is_a (pspecs[i]->value_type, G_TYPE_DOUBLE))
+        {
+          GParamSpecDouble    *pspec = (void*)pspecs[i];
+          gegl_node_set (node, pspecs[i]->name, pspec->default_value, NULL);
+        }
+        else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_INT))
+        {
+          GParamSpecInt *pspec = (void*)pspecs[i];
+          gegl_node_set (node, pspecs[i]->name, pspec->default_value, NULL);
+        }
+        else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_STRING))
+        {
+          GParamSpecString *pspec = (void*)pspecs[i];
+          gegl_node_set (node, pspecs[i]->name, pspec->default_value, NULL);
+        }
+      }
+      g_free (pspecs);
+    }
+  }
+}
+
+
+int cmd_node_defaults (COMMAND_ARGS); /* "node-defaults", -1, "", "reset properties to default values"*/
+
+int
+cmd_node_defaults (COMMAND_ARGS)
+{
+  State *o = global_state;
+
+  if (o->active)
+    gegl_node_defaults (o->active);
+
+  rev_inc (o);
+  return 0;
+}
+
+
+
+int cmd_info (COMMAND_ARGS); /* "info", 0, "", "dump information about active node"*/
+
+int
+cmd_info (COMMAND_ARGS)
+{
+  State *o = global_state;
+  GeglNode *node = o->active;
+  GeglOperation *operation;
+  GeglRectangle extent;
+
+  if (!node)
+  {
+    printf ("no active node\n");
+    return 0;
+  }
+  operation = gegl_node_get_gegl_operation (node);
+  printf ("operation: %s   %p\n", gegl_node_get_operation (node), node);
+  extent = gegl_node_get_bounding_box (node);
+  printf ("bounds: %i %i  %ix%i\n", extent.x, extent.y, extent.width, extent.height);
+
+  if (gegl_node_has_pad (node, "input"))
+  {
+    const Babl *fmt = gegl_operation_get_format (operation, "input");
+    printf ("input pixfmt: %s\n", fmt?babl_get_name (fmt):"");
+  }
+  if (gegl_node_has_pad (node, "aux"))
+  {
+    const Babl *fmt = gegl_operation_get_format (operation, "aux");
+    printf ("aux pixfmt: %s\n", fmt?babl_get_name (fmt):"");
+  }
+  if (gegl_node_has_pad (node, "output"))
+  {
+    const Babl *fmt = gegl_operation_get_format (operation, "output");
+    printf ("output pixfmt: %s\n", fmt?babl_get_name (fmt):"");
+  }
+
+
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
+}
+
+int cmd_set (COMMAND_ARGS); /* "set", -1, "<setting> | <setting> <new value>| empty", "query/set various settings"*/
+int
+cmd_set (COMMAND_ARGS)
+{
+  char *key = NULL;
+  char *value = NULL;
+  int n_settings = sizeof (settings)/sizeof(settings[0]);
+
+  if (argv[1])
+  {
+    key = argv[1];
+    if (argv[2])
+      value = argv[2];
+  }
+  else
+  {
+    for (int i = 0; i < n_settings; i++)
+    {
+      print_setting (&settings[i]);
+    }
+    return 0;
+  }
+
+  if (value)
+  {
+    for (int i = 0; i < n_settings; i++)
+    {
+      if (!strcmp (key, settings[i].name))
+      {
+        return set_setting (&settings[i], value);
+      }
+    }
+  }
+  else
+  {
+    for (int i = 0; i < n_settings; i++)
+    {
+      if (!strcmp (key, settings[i].name))
+      {
+        print_setting (&settings[i]);
+        break;
+      }
+    }
+  }
+  return 0;
+}
+
+int cmd_toggle (COMMAND_ARGS); /* "toggle", 1, "<editing|fullscreen|cheatsheet|mipmap|controls|slideshow>", ""*/
+int
+cmd_toggle (COMMAND_ARGS)
+{
+  State *o = global_state;
+  if (!strcmp(argv[1], "editing"))
+  {
+    o->show_graph = !o->show_graph;
+    activate_sink_producer (o);
+  }
+  else if (!strcmp(argv[1], "fullscreen"))
+  {
+    mrg_set_fullscreen (o->mrg, !mrg_is_fullscreen (o->mrg));
+    mrg_add_timeout (o->mrg, 250, deferred_zoom_to_fit, o);
+  }
+  else if (!strcmp(argv[1], "cheatsheet"))
+  {
+    o->show_bindings = !o->show_bindings;
+  }
+  else if (!strcmp(argv[1], "colormanage-display"))
+  {
+    o->color_manage_display = !o->color_manage_display;
+    printf ("%s colormanagement of display\n", o->color_manage_display?"enabled":"disabled");
+    //mrg_gegl_dirty ();
+  }
+  else if (!strcmp(argv[1], "mipmap"))
+  {
+    gboolean curval;
+    g_object_get (gegl_config(), "mipmap-rendering", &curval, NULL);
+    if (curval == FALSE) {
+      g_object_set (gegl_config(), "mipmap-rendering", TRUE, NULL);
+      renderer = GEGL_RENDERER_BLIT_MIPMAP;
+      printf ("enabled mipmap rendering\n");
+    }
+    else
+    {
+      g_object_set (gegl_config(), "mipmap-rendering", FALSE, NULL);
+      renderer = GEGL_RENDERER_IDLE;
+      printf ("disabled mipmap rendering\n");
+    }
+  }
+  else if (!strcmp(argv[1], "controls"))
+  {
+    o->show_controls = !o->show_controls;
+  }
+  else if (!strcmp(argv[1], "slideshow"))
+  {
+    o->slide_enabled = !o->slide_enabled;
+    if (o->slide_timeout)
+      mrg_remove_idle (o->mrg, o->slide_timeout);
+    o->slide_timeout = 0;
+  }
+  queue_draw (o);
+  return 0;
+}
+
+  int cmd_discard (COMMAND_ARGS);
+int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to a .discard subfolder"*/
+{
+  State *o = global_state;
+  char *old_path;
+  char *tmp;
+  char *lastslash;
+  char *path = o->path;
+  if (o->is_dir)
+  {
+    path = g_list_nth_data (o->paths, o->entry_no);
+  }
+
+  old_path = g_strdup (path);
+  if (!o->is_dir)
+  {
+  argvs_eval ("next");
+  if (!strcmp (old_path, o->path))
+   {
+     argvs_eval ("prev");
+   }
+  }
+  tmp = g_strdup (old_path);
+  lastslash  = strrchr (tmp, '/');
+  if (lastslash)
+  {
+    char command[2048];
+    char *suffixed = suffix_path (old_path);
+    if (lastslash == tmp)
+      lastslash[1] = '\0';
+    else
+      lastslash[0] = '\0';
+
+    // XXX : replace with proper code, also discard thumb?
+
+    sprintf (command, "mkdir %s/.discard > /dev/null 2>&1", tmp);
+    system (command);
+    sprintf (command, "mv %s %s/.discard > /dev/null 2>&1", old_path, tmp);
+    system (command);
+    sprintf (command, "mv %s %s/.discard > /dev/null 2>&1", suffixed, tmp);
+    system (command);
+    g_free (suffixed);
+    populate_path_list (o);
+  }
+  g_free (tmp);
+  g_free (old_path);
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
+}
+
+int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|first|last>", ""*/
+  int cmd_collection (COMMAND_ARGS)
+{
+  State *o = global_state;
+
+  if (!argv[1])
+  {
+    printf ("current item: %i\n", o->entry_no);
+    return 0;
+  }
+  if (!strcmp(argv[1], "first"))
+  {
+    o->entry_no = -1;
+  }
+  else if (!strcmp(argv[1], "last"))
+  {
+    o->entry_no = g_list_length (o->paths)-1;
+  }
+  else if (!strcmp(argv[1], "right"))
+  {
+    o->entry_no++;
+  }
+  else if (!strcmp(argv[1], "left"))
+  {
+    o->entry_no--;
+  }
+  else if (!strcmp(argv[1], "up"))
+  {
+    o->entry_no-= hack_cols;
+  }
+  else if (!strcmp(argv[1], "down"))
+  {
+    o->entry_no+= hack_cols;
+  }
+
+  if (o->entry_no < -1)
+    o->entry_no = -1;
+
+  if (o->entry_no >= (int)g_list_length (o->paths))
+    o->entry_no = g_list_length (o->paths)-1;
+
+
+  center_active_entry (o);
+
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
+}
+
+  int cmd_cd (COMMAND_ARGS);
+int cmd_cd (COMMAND_ARGS) /* "cd", 1, "<target>", "convenience wrapper making some common commandline navigation commands work"*/
+{
+  State *o = global_state;
+  if (!strcmp (argv[1], ".."))
+  {
+    argvs_eval ("parent");
+  }
+  else if (argv[1][0] == '/')
+  {
+    if (o->path)
+      g_free (o->path);
+    o->path = g_strdup (argv[1]);
+    if (o->path[strlen(o->path)-1]=='/')
+      o->path[strlen(o->path)-1]='\0';
+    load_path (o);
+  }
+  else
+  {
+    char *new_path = g_strdup_printf ("%s/%s", o->path, argv[1]);
+    char *rp = realpath (new_path, NULL);
+
+    if (access (rp, F_OK) == 0)
+    {
+      if (o->path)
+        g_free (o->path);
+      o->path = g_strdup (rp);
+      if (o->path[strlen(o->path)-1]=='/')
+        o->path[strlen(o->path)-1]='\0';
+      load_path (o);
+    }
+    free (rp);
+    g_free (new_path);
+  }
+  return 0;
+}
+
+
+  int cmd_zoom (COMMAND_ARGS);
+int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>", "Changes zoom level, asbolsute or relative, around middle of screen."*/
+{
+  State *o = global_state;
+
+  if (!argv[1])
+  {
+    printf ("current scale factor: %2.3f\n", o->is_dir?o->dir_scale:o->scale);
+    return 0;
+  }
+
+  if (o->is_dir)
+  {
+     if (!strcmp(argv[1], "in"))
+     {
+       float zoom_factor = 0.25;
+       if (argv[2])
+         zoom_factor = g_strtod (argv[2], NULL);
+       zoom_factor += 1.0;
+       o->dir_scale *= zoom_factor;
+      }
+      else if (!strcmp(argv[1], "out"))
+      {
+        float zoom_factor = 0.25;
+        if (argv[2])
+          zoom_factor = g_strtod (argv[2], NULL);
+        zoom_factor += 1.0;
+        o->dir_scale /= zoom_factor;
+      }
+      else
+      {
+        o->dir_scale = g_strtod(argv[1], NULL);
+        if (o->dir_scale < 0.0001 || o->dir_scale > 200.0)
+          o->dir_scale = 1;
+      }
+
+      if (o->dir_scale > 2.2) o->dir_scale = 2.2;
+      if (o->dir_scale < 0.1) o->dir_scale = 0.1;
+
+      center_active_entry (o);
+
+      mrg_queue_draw (o->mrg, NULL);
+      return 0;
+  }
+
+  if (!strcmp(argv[1], "fit"))
+  {
+    zoom_to_fit (o);
+  }
+  else if (!strcmp(argv[1], "in"))
+  {
+    float zoom_factor = 0.1;
+    if (argv[2])
+      zoom_factor = g_strtod (argv[2], NULL);
+    zoom_factor += 1.0;
+
+    zoom_at (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, zoom_factor);
+  }
+  else if (!strcmp(argv[1], "out"))
+  {
+    float zoom_factor = 0.1;
+    if (argv[2])
+      zoom_factor = g_strtod (argv[2], NULL);
+    zoom_factor += 1.0;
+
+    zoom_at (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, 1.0f/zoom_factor);
+  }
+  else
+  {
+    float x, y;
+    get_coords (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, &x, &y);
+    o->scale = g_strtod(argv[1], NULL);
+    o->u = x * o->scale - mrg_width(o->mrg)/2;
+    o->v = y * o->scale - mrg_height(o->mrg)/2;
+    mrg_queue_draw (o->mrg, NULL);
+  }
+  return 0;
+}
+
+
 int cmd_propeditor (COMMAND_ARGS); /* "prop-editor", 1, "<subcommand>", "used for property editing keybindings"*/
 int
 cmd_propeditor (COMMAND_ARGS)
@@ -5717,747 +6003,480 @@ int cmd_load (COMMAND_ARGS) /* "load-path", 1, "<path>", "load a path/image - ca
   return 0;
 }
 
-
-static void drag_preview (MrgEvent *e)
+  int cmd_quit (COMMAND_ARGS);
+int cmd_quit (COMMAND_ARGS) /* "quit", 0, "", "quit"*/
 {
-  State *o = global_state;
-  static float old_factor = 1;
-  switch (e->type)
-  {
-    case MRG_DRAG_PRESS:
-      old_factor = o->render_quality;
-      if (o->render_quality < o->preview_quality)
-        o->render_quality = o->preview_quality;
-      break;
-    case MRG_DRAG_RELEASE:
-      o->render_quality = old_factor;
-      mrg_queue_draw (e->mrg, NULL);
-      break;
-    default:
-    break;
-  }
-}
-
-static void load_into_buffer (State *o, const char *path)
-{
-  GeglNode *gegl, *load, *sink;
-  struct stat stat_buf;
-
-  if (o->buffer)
-  {
-    g_object_unref (o->buffer);
-    o->buffer = NULL;
-  }
-
-  lstat (path, &stat_buf);
-  if (S_ISREG (stat_buf.st_mode))
-  {
-
-
-  gegl = gegl_node_new ();
-  load = gegl_node_new_child (gegl, "operation", "gegl:load",
-                                    "path", path,
-                                    NULL);
-  sink = gegl_node_new_child (gegl, "operation", "gegl:buffer-sink",
-                                    "buffer", &(o->buffer),
-                                    NULL);
-  gegl_node_link_many (load, sink, NULL);
-  gegl_node_process (sink);
-  g_object_unref (gegl);
-
-  {
-    GExiv2Orientation orientation = path_get_orientation (path);
-    gboolean hflip = FALSE;
-    gboolean vflip = FALSE;
-    double degrees = 0.0;
-    switch (orientation)
-    {
-      case GEXIV2_ORIENTATION_UNSPECIFIED:
-      case GEXIV2_ORIENTATION_NORMAL:
-        break;
-      case GEXIV2_ORIENTATION_HFLIP: hflip=TRUE; break;
-      case GEXIV2_ORIENTATION_VFLIP: vflip=TRUE; break;
-      case GEXIV2_ORIENTATION_ROT_90: degrees = 90.0; break;
-      case GEXIV2_ORIENTATION_ROT_90_HFLIP: degrees = 90.0; hflip=TRUE; break;
-      case GEXIV2_ORIENTATION_ROT_90_VFLIP: degrees = 90.0; vflip=TRUE; break;
-      case GEXIV2_ORIENTATION_ROT_180: degrees = 180.0; break;
-      case GEXIV2_ORIENTATION_ROT_270: degrees = 270.0; break;
-    }
-
-    if (degrees != 0.0 || vflip || hflip)
-     {
-       /* XXX: deal with vflip/hflip */
-       GeglBuffer *new_buffer = NULL;
-       GeglNode *rotate;
-       gegl = gegl_node_new ();
-       load = gegl_node_new_child (gegl, "operation", "gegl:buffer-source",
-                                   "buffer", o->buffer,
-                                   NULL);
-       sink = gegl_node_new_child (gegl, "operation", "gegl:buffer-sink",
-                                   "buffer", &(new_buffer),
-                                   NULL);
-       rotate = gegl_node_new_child (gegl, "operation", "gegl:rotate",
-                                   "degrees", -degrees,
-                                   "sampler", GEGL_SAMPLER_NEAREST,
-                                   NULL);
-       gegl_node_link_many (load, rotate, sink, NULL);
-       gegl_node_process (sink);
-       g_object_unref (gegl);
-       g_object_unref (o->buffer);
-       o->buffer = new_buffer;
-     }
-  }
-
-#if 0 /* hack to see if having the data in some formats already is faster */
-  {
-  GeglBuffer *tempbuf;
-  tempbuf = gegl_buffer_new (gegl_buffer_get_extent (o->buffer),
-                                         babl_format ("RGBA float"));
-
-  gegl_buffer_copy (o->buffer, NULL, GEGL_ABYSS_NONE, tempbuf, NULL);
-  g_object_unref (o->buffer);
-  o->buffer = tempbuf;
-  }
-#endif
-    }
-  else
-    {
-      GeglRectangle extent = {0,0,1,1}; /* segfaults with NULL / 0,0,0,0*/
-      o->buffer = gegl_buffer_new (&extent, babl_format("RGBA float"));
-    }
-}
-
-#if 0
-static GeglNode *locate_node (State *o, const char *op_name)
-{
-  GeglNode *iter = o->sink;
-  while (iter)
-   {
-     char *opname = NULL;
-     g_object_get (iter, "operation", &opname, NULL);
-     if (!strcmp (opname, op_name))
-       return iter;
-     g_free (opname);
-     iter = gegl_node_get_producer (iter, "input", NULL);
-   }
-  return NULL;
-}
-#endif
-
-static void zoom_to_fit (State *o)
-{
-  Mrg *mrg = o->mrg;
-  GeglRectangle rect = gegl_node_get_bounding_box (o->sink);
-  float scale, scale2;
-
-  if (rect.width == 0 || rect.height == 0)
-  {
-    o->scale = 1.0;
-    o->u = 0.0;
-    o->v = 0.0;
-    return;
-  }
-
-  scale = 1.0 * mrg_width (mrg) / rect.width;
-  scale2 = 1.0 * mrg_height (mrg) / rect.height;
-
-  if (scale2 < scale) scale = scale2;
-
-  o->scale = scale;
-
-  o->u = -(mrg_width (mrg) - rect.width * o->scale) / 2;
-  o->v = -(mrg_height (mrg) - rect.height * o->scale) / 2;
-  o->u += rect.x * o->scale;
-  o->v += rect.y * o->scale;
-
-  mrg_queue_draw (mrg, NULL);
-}
-static void center (State *o)
-{
-  Mrg *mrg = o->mrg;
-  GeglRectangle rect = gegl_node_get_bounding_box (o->sink);
-  o->scale = 1.0;
-
-  o->u = -(mrg_width (mrg) - rect.width * o->scale) / 2;
-  o->v = -(mrg_height (mrg) - rect.height * o->scale) / 2;
-  o->u += rect.x * o->scale;
-  o->v += rect.y * o->scale;
-
-  mrg_queue_draw (mrg, NULL);
-}
-
-static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
-{
-  float x, y;
-  get_coords (o, screen_cx, screen_cy, &x, &y);
-  o->scale *= factor;
-  o->u = x * o->scale - screen_cx;
-  o->v = y * o->scale - screen_cy;
-
-  queue_draw (o);
-}
-
-int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|first|last>", ""*/
-  int cmd_collection (COMMAND_ARGS)
-{
-  State *o = global_state;
-
-  if (!argv[1])
-  {
-    printf ("current item: %i\n", o->entry_no);
-    return 0;
-  }
-  if (!strcmp(argv[1], "first"))
-  {
-    o->entry_no = -1;
-  }
-  else if (!strcmp(argv[1], "last"))
-  {
-    o->entry_no = g_list_length (o->paths)-1;
-  }
-  else if (!strcmp(argv[1], "right"))
-  {
-    o->entry_no++;
-  }
-  else if (!strcmp(argv[1], "left"))
-  {
-    o->entry_no--;
-  }
-  else if (!strcmp(argv[1], "up"))
-  {
-    o->entry_no-= hack_cols;
-  }
-  else if (!strcmp(argv[1], "down"))
-  {
-    o->entry_no+= hack_cols;
-  }
-
-  if (o->entry_no < -1)
-    o->entry_no = -1;
-
-  if (o->entry_no >= (int)g_list_length (o->paths))
-    o->entry_no = g_list_length (o->paths)-1;
-
-
-  center_active_entry (o);
-
-  mrg_queue_draw (o->mrg, NULL);
+  mrg_quit (global_state->mrg);
   return 0;
 }
 
-  int cmd_cd (COMMAND_ARGS);
-int cmd_cd (COMMAND_ARGS) /* "cd", 1, "<target>", "convenience wrapper making some common commandline navigation commands work"*/
-{
-  State *o = global_state;
-  if (!strcmp (argv[1], ".."))
-  {
-    argvs_eval ("parent");
-  }
-  else if (argv[1][0] == '/')
-  {
-    if (o->path)
-      g_free (o->path);
-    o->path = g_strdup (argv[1]);
-    if (o->path[strlen(o->path)-1]=='/')
-      o->path[strlen(o->path)-1]='\0';
-    load_path (o);
-  }
-  else
-  {
-    char *new_path = g_strdup_printf ("%s/%s", o->path, argv[1]);
-    char *rp = realpath (new_path, NULL);
-
-    if (access (rp, F_OK) == 0)
-    {
-      if (o->path)
-        g_free (o->path);
-      o->path = g_strdup (rp);
-      if (o->path[strlen(o->path)-1]=='/')
-        o->path[strlen(o->path)-1]='\0';
-      load_path (o);
-    }
-    free (rp);
-    g_free (new_path);
-  }
-  return 0;
-}
-
-
-  int cmd_zoom (COMMAND_ARGS);
-int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>", "Changes zoom level, asbolsute or relative, around middle of screen."*/
-{
-  State *o = global_state;
-
-  if (!argv[1])
-  {
-    printf ("current scale factor: %2.3f\n", o->is_dir?o->dir_scale:o->scale);
-    return 0;
-  }
-
-  if (o->is_dir)
-  {
-     if (!strcmp(argv[1], "in"))
-     {
-       float zoom_factor = 0.25;
-       if (argv[2])
-         zoom_factor = g_strtod (argv[2], NULL);
-       zoom_factor += 1.0;
-       o->dir_scale *= zoom_factor;
-      }
-      else if (!strcmp(argv[1], "out"))
-      {
-        float zoom_factor = 0.25;
-        if (argv[2])
-          zoom_factor = g_strtod (argv[2], NULL);
-        zoom_factor += 1.0;
-        o->dir_scale /= zoom_factor;
-      }
-      else
-      {
-        o->dir_scale = g_strtod(argv[1], NULL);
-        if (o->dir_scale < 0.0001 || o->dir_scale > 200.0)
-          o->dir_scale = 1;
-      }
-
-      if (o->dir_scale > 2.2) o->dir_scale = 2.2;
-      if (o->dir_scale < 0.1) o->dir_scale = 0.1;
-
-      center_active_entry (o);
-
-      mrg_queue_draw (o->mrg, NULL);
-      return 0;
-  }
-
-  if (!strcmp(argv[1], "fit"))
-  {
-    zoom_to_fit (o);
-  }
-  else if (!strcmp(argv[1], "in"))
-  {
-    float zoom_factor = 0.1;
-    if (argv[2])
-      zoom_factor = g_strtod (argv[2], NULL);
-    zoom_factor += 1.0;
-
-    zoom_at (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, zoom_factor);
-  }
-  else if (!strcmp(argv[1], "out"))
-  {
-    float zoom_factor = 0.1;
-    if (argv[2])
-      zoom_factor = g_strtod (argv[2], NULL);
-    zoom_factor += 1.0;
-
-    zoom_at (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, 1.0f/zoom_factor);
-  }
-  else
-  {
-    float x, y;
-    get_coords (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, &x, &y);
-    o->scale = g_strtod(argv[1], NULL);
-    o->u = x * o->scale - mrg_width(o->mrg)/2;
-    o->v = y * o->scale - mrg_height(o->mrg)/2;
-    mrg_queue_draw (o->mrg, NULL);
-  }
-  return 0;
-}
-
-static int deferred_zoom_to_fit (Mrg *mrg, void *data)
-{
-  argvs_eval ("zoom fit");
-  return 0;
-}
-
-static void get_coords (State *o, float screen_x, float screen_y, float *gegl_x, float *gegl_y)
-{
-  float scale = o->scale;
-  *gegl_x = (o->u + screen_x) / scale;
-  *gegl_y = (o->v + screen_y) / scale;
-}
-
-static void scroll_cb (MrgEvent *event, void *data1, void *data2)
-{
-  switch (event->scroll_direction)
-  {
-     case MRG_SCROLL_DIRECTION_DOWN:
-       /* XXX : passing floating point values string formatted is awkard in C,
-                so we use the utility function instead - this could be two extra
-                relative coordinate args to the zoom command */
-       zoom_at (data1, event->device_x, event->device_y, 1.0/1.05);
-       break;
-     case MRG_SCROLL_DIRECTION_UP:
-       zoom_at (data1, event->device_x, event->device_y, 1.05);
-       break;
-     default:
-       break;
-  }
-}
-
-static void print_setting (Setting *setting)
-{
-  State *o = global_state;
-  switch (setting->type)
-  {
-    case 0:
-      printf ("%s %i%s\n  %s\n", setting->name,
-        (*(int*)(((char *)o) + setting->offset)), setting->read_only?"  (RO)":"", setting->description);
-    break;
-    case 1:
-      printf ("%s %f%s\n  %s\n", setting->name,
-        (*(float*)(((char *)o) + setting->offset)), setting->read_only?" (RO)":"", setting->description);
-     break;
-    case 2:
-      {
-        char *value = NULL;
-        memcpy (&value, (((char *)o) + setting->offset), sizeof (void*));
-        printf ("%s %s%s\n  %s\n", setting->name, value, setting->read_only?" (RO)":"", setting->description);
-      }
-    break;
-  }
-}
-
-static int set_setting (Setting *setting, const char *value)
-{
-  State *o = global_state;
-  if (setting->read_only)
-    return -1;
-  switch (setting->type)
-  {
-    case 0:
-        (*(int*)(((char *)o) + setting->offset)) = atoi (value);
-    break;
-    case 1:
-        (*(float*)(((char *)o) + setting->offset)) = g_strtod (value, NULL);
-    break;
-    case 2:
-        memcpy ((((char *)o) + setting->offset), g_strdup (value), sizeof (void*));
-    break;
-  }
-  return 0;
-}
-
-
-int cmd_info (COMMAND_ARGS); /* "info", 0, "", "dump information about active node"*/
-
-int
-cmd_info (COMMAND_ARGS)
+  int cmd_remove (COMMAND_ARGS);
+int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
 {
   State *o = global_state;
   GeglNode *node = o->active;
-  GeglOperation *operation;
-  GeglRectangle extent;
+  GeglNode *next, *prev;
 
-  if (!node)
-  {
-    printf ("no active node\n");
-    return 0;
-  }
-  operation = gegl_node_get_gegl_operation (node);
-  printf ("operation: %s   %p\n", gegl_node_get_operation (node), node);
-  extent = gegl_node_get_bounding_box (node);
-  printf ("bounds: %i %i  %ix%i\n", extent.x, extent.y, extent.width, extent.height);
+  const gchar *consumer_name = NULL;
 
-  if (gegl_node_has_pad (node, "input"))
+  if (o->active == o->source)
+    return -1;
+
+  switch (o->pad_active)
   {
-    const Babl *fmt = gegl_operation_get_format (operation, "input");
-    printf ("input pixfmt: %s\n", fmt?babl_get_name (fmt):"");
-  }
-  if (gegl_node_has_pad (node, "aux"))
-  {
-    const Babl *fmt = gegl_operation_get_format (operation, "aux");
-    printf ("aux pixfmt: %s\n", fmt?babl_get_name (fmt):"");
-  }
-  if (gegl_node_has_pad (node, "output"))
-  {
-    const Babl *fmt = gegl_operation_get_format (operation, "output");
-    printf ("output pixfmt: %s\n", fmt?babl_get_name (fmt):"");
+    case PAD_INPUT:
+      prev = gegl_node_get_producer (node, "input", NULL);
+      if (gegl_node_get_ui_consumer (prev, "output", NULL) != node)
+        gegl_node_disconnect (node, "input");
+      break;
+    case PAD_AUX:
+      prev = gegl_node_get_producer (node, "aux", NULL);
+      if (gegl_node_get_ui_consumer (prev, "output", NULL) != node)
+        gegl_node_disconnect (node, "aux");
+      break;
+    case PAD_OUTPUT:
+      prev = gegl_node_get_producer (node, "input", NULL);
+      next = gegl_node_get_ui_consumer (node, "output", &consumer_name);
+
+      if (next && prev)
+      {
+        gegl_node_disconnect (node, "input");
+        gegl_node_connect_to (prev, "output", next, consumer_name);
+        gegl_node_remove_child (o->gegl, node);
+        o->active = prev;
+      }
+      else if (next)
+      {
+        gegl_node_disconnect (next, consumer_name);
+        gegl_node_remove_child (o->gegl, node);
+        o->active = next;
+      }
+    break;
   }
 
-
-  mrg_queue_draw (o->mrg, NULL);
+  rev_inc (o);
   return 0;
 }
 
-int cmd_set (COMMAND_ARGS); /* "set", -1, "<setting> | <setting> <new value>| empty", "query/set various settings"*/
+int cmd_swap (COMMAND_ARGS);/* "swap", 1, "<input|output>", "swaps position with other node, allows doing the equivalent of raise lower and other local reordering of nodes."*/
+
 int
-cmd_set (COMMAND_ARGS)
-{
-  char *key = NULL;
-  char *value = NULL;
-  int n_settings = sizeof (settings)/sizeof(settings[0]);
-
-  if (argv[1])
-  {
-    key = argv[1];
-    if (argv[2])
-      value = argv[2];
-  }
-  else
-  {
-    for (int i = 0; i < n_settings; i++)
-    {
-      print_setting (&settings[i]);
-    }
-    return 0;
-  }
-
-  if (value)
-  {
-    for (int i = 0; i < n_settings; i++)
-    {
-      if (!strcmp (key, settings[i].name))
-      {
-        return set_setting (&settings[i], value);
-      }
-    }
-  }
-  else
-  {
-    for (int i = 0; i < n_settings; i++)
-    {
-      if (!strcmp (key, settings[i].name))
-      {
-        print_setting (&settings[i]);
-        break;
-      }
-    }
-  }
-  return 0;
-}
-
-int cmd_toggle (COMMAND_ARGS); /* "toggle", 1, "<editing|fullscreen|cheatsheet|mipmap|controls|slideshow>", ""*/
-int
-cmd_toggle (COMMAND_ARGS)
+cmd_swap (COMMAND_ARGS)
 {
   State *o = global_state;
-  if (!strcmp(argv[1], "editing"))
+  GeglNode *node = o->active;
+  GeglNode *next, *prev;
+  const char *consumer_name = NULL;
+
+  next = gegl_node_get_ui_consumer (node, "output", &consumer_name);
+  prev = gegl_node_get_ui_producer (node, "input", NULL);
+  consumer_name = g_intern_string (consumer_name?consumer_name:"");
+
+  if (1)//next && prev)
+    {
+      if (!strcmp (argv[1], "output") && next != o->sink)
+      {
+        const char *next_next_consumer = NULL;
+        GeglNode *next_next = gegl_node_get_ui_consumer (next, "output", &next_next_consumer);
+
+        if (next_next && g_str_equal (consumer_name, "input"))
+        {
+          gegl_node_disconnect (next_next, next_next_consumer);
+          gegl_node_disconnect (node, "input");
+          gegl_node_disconnect (next, "input");
+          if (prev)
+            gegl_node_link_many (prev, next, node, NULL);
+          else
+            gegl_node_link_many (next, node, NULL);
+          gegl_node_connect_to (node, "output", next_next, next_next_consumer);
+        }
+      }
+      else if (prev && !strcmp (argv[1], "input") && prev != o->source)
+      {
+        GeglNode *prev_prev = gegl_node_get_ui_producer (prev, "input", NULL);
+
+        if (prev_prev)
+        {
+          gegl_node_link_many (prev_prev, node, prev, NULL);
+          gegl_node_connect_to (prev, "output", next, consumer_name);
+        }
+        else
+        {
+          if (gegl_node_has_pad (prev, "input"))
+          {
+            gegl_node_disconnect (next, consumer_name);
+            gegl_node_disconnect (node, "input");
+            gegl_node_link_many (node, prev, NULL);
+            gegl_node_connect_to (prev, "output", next, consumer_name);
+          }
+        }
+      }
+
+    }
+
+  rev_inc (o);
+  return 0;
+}
+
+  int cmd_move (COMMAND_ARGS);
+int cmd_move (COMMAND_ARGS) /* "move", 0, "", "changes to move tool"*/
+{
+  tool = TOOL_MOVE;
+  return 0;
+}
+  int cmd_paint (COMMAND_ARGS);
+int cmd_paint (COMMAND_ARGS) /* "paint", 0, "", "changes to paint tool"*/
+{
+  tool = TOOL_PAINT;
+  return 0;
+}
+  int cmd_pick (COMMAND_ARGS);
+int cmd_pick (COMMAND_ARGS) /* "pick", 0, "", "changes to pick tool"*/
+{
+  tool = TOOL_PICK;
+  return 0;
+}
+  int cmd_pan (COMMAND_ARGS);
+int cmd_pan (COMMAND_ARGS) /* "pan", 0, "", "changes to pan tool"*/
+{
+  tool = TOOL_PAN;
+  return 0;
+}
+
+  int cmd_find_id (COMMAND_ARGS);
+int cmd_find_id (COMMAND_ARGS) /* "/", 1, "<id-to-jump-to>", "set focus on node with given id"*/
+{
+  State *o = global_state;
+  GeglNode *found = node_find_by_id (o, o->sink, argv[1]);
+
+  if (found)
+    o->active = found;
+  else
+    printf ("no node with id %s found", argv[1]);
+
+  mrg_queue_draw (o->mrg, NULL);
+
+  return 0;
+}
+
+  int cmd_edit_opname (COMMAND_ARGS);
+int cmd_edit_opname (COMMAND_ARGS) /* "edit-opname", 0, "", "permits changing the current op by typing in a replacement name."*/
+{
+  State *o = global_state;
+  o->editing_op_name = 1;
+  o->new_opname[0]=0;
+  mrg_set_cursor_pos (o->mrg, 0);
+  return 0;
+}
+
+
+  int cmd_graph_cursor (COMMAND_ARGS);
+int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|source|append>", "position the graph cursor, this navigates both pads and nodes simultanously."*/
+{
+  State *o = global_state;
+  GeglNode *ref;
+
+  if (o->active == NULL)
   {
-    o->show_graph = !o->show_graph;
     activate_sink_producer (o);
+    if (!o->active)
+      return -1;
   }
-  else if (!strcmp(argv[1], "fullscreen"))
+  ref = o->active;
+
+  if (!strcmp (argv[1], "down"))
   {
-    mrg_set_fullscreen (o->mrg, !mrg_is_fullscreen (o->mrg));
-    mrg_add_timeout (o->mrg, 250, deferred_zoom_to_fit, o);
+    switch (o->pad_active)
+    {
+       case PAD_AUX:
+        ref = gegl_node_get_ui_producer (o->active, "aux", NULL);
+        if (ref == NULL)
+          o->pad_active = PAD_INPUT;
+        else
+          o->pad_active = PAD_OUTPUT;
+        break;
+
+       case PAD_INPUT:
+        ref = gegl_node_get_producer (o->active, "input", NULL);
+        if (ref == NULL)
+          o->pad_active = PAD_INPUT;
+        else
+          o->pad_active = PAD_OUTPUT;
+
+
+       break;
+       case PAD_OUTPUT:
+        ref = gegl_node_get_ui_producer (o->active, "input", NULL);
+        if (ref == NULL)
+          o->pad_active = PAD_INPUT;
+        else
+          o->pad_active = PAD_OUTPUT;
+       break;
+
+    }
   }
-  else if (!strcmp(argv[1], "cheatsheet"))
+  else if (!strcmp (argv[1], "right"))
   {
-    o->show_bindings = !o->show_bindings;
-  }
-  else if (!strcmp(argv[1], "colormanage-display"))
-  {
-    o->color_manage_display = !o->color_manage_display;
-    printf ("%s colormanagement of display\n", o->color_manage_display?"enabled":"disabled");
-    //mrg_gegl_dirty ();
-  }
-  else if (!strcmp(argv[1], "mipmap"))
-  {
-    gboolean curval;
-    g_object_get (gegl_config(), "mipmap-rendering", &curval, NULL);
-    if (curval == FALSE) {
-      g_object_set (gegl_config(), "mipmap-rendering", TRUE, NULL);
-      renderer = GEGL_RENDERER_BLIT_MIPMAP;
-      printf ("enabled mipmap rendering\n");
+    if (o->pad_active == PAD_AUX)
+    {
+      ref = gegl_node_get_producer (o->active, "aux", NULL);
+      if (!ref)
+      {
+        ref = o->active;
+        if (gegl_node_has_pad (o->active, "aux"))
+          o->pad_active = PAD_AUX;
+        else if (gegl_node_has_pad (o->active, "input"))
+          o->pad_active = PAD_INPUT;
     }
     else
     {
-      g_object_set (gegl_config(), "mipmap-rendering", FALSE, NULL);
-      renderer = GEGL_RENDERER_IDLE;
-      printf ("disabled mipmap rendering\n");
+        o->pad_active = PAD_OUTPUT;
+    }
+    }
+    else
+    {
+      if (gegl_node_has_pad (o->active, "aux"))
+        o->pad_active = PAD_AUX;
+      else if (gegl_node_has_pad (o->active, "input"))
+        o->pad_active = PAD_INPUT;
+      else
+        o->pad_active = PAD_OUTPUT;
     }
   }
-  else if (!strcmp(argv[1], "controls"))
+  else if (!strcmp (argv[1], "up"))
   {
-    o->show_controls = !o->show_controls;
+    if (o->pad_active != PAD_OUTPUT)
+    {
+      o->pad_active = PAD_OUTPUT;
+    }
+    else
+    {
+      ref = gegl_node_get_ui_consumer (o->active, "output", NULL);
+      if (ref == o->sink)
+        ref = NULL;
+      o->pad_active = PAD_OUTPUT;
+    }
   }
-  else if (!strcmp(argv[1], "slideshow"))
+  else if (!strcmp (argv[1], "left"))
   {
-    o->slide_enabled = !o->slide_enabled;
-    if (o->slide_timeout)
-      mrg_remove_idle (o->mrg, o->slide_timeout);
-    o->slide_timeout = 0;
-  }
-  queue_draw (o);
-  return 0;
-}
+    GeglNode *iter = o->active;
+    int skips = 0;
 
+    if (o->pad_active == PAD_INPUT)
+    {
+      o->pad_active = PAD_OUTPUT;
+    }
+    else if (o->pad_active == PAD_AUX)
+    {
+      o->pad_active = PAD_INPUT;
+    }
+    else
+    {
 
-  int cmd_discard (COMMAND_ARGS);
-int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to a .discard subfolder"*/
-{
-  State *o = global_state;
-  char *old_path;
-  char *tmp;
-  char *lastslash;
-  char *path = o->path;
-  if (o->is_dir)
-  {
-    path = g_list_nth_data (o->paths, o->entry_no);
-  }
+    if (o->pad_active != PAD_OUTPUT)
+    {
+      o->pad_active = PAD_OUTPUT;
+    }
 
-  old_path = g_strdup (path);
-  if (!o->is_dir)
-  {
-  argvs_eval ("next");
-  if (!strcmp (old_path, o->path))
-   {
-     argvs_eval ("prev");
+    while (iter)
+    {
+      const char *consumer_pad = NULL;
+      GeglNode *attempt = gegl_node_get_ui_consumer (iter, "output", &consumer_pad);
+      if (!strcmp (consumer_pad, "input") && attempt != o->sink)
+        {
+          iter = attempt;
+          skips ++;
+        }
+      else
+        {
+          ref = iter;
+          iter = NULL;
+        }
+    }
+
+    //if (skips == 0)
+    {
+      GeglNode *attempt = gegl_node_get_ui_consumer (ref, "output", NULL);
+      if (attempt && attempt != o->sink)
+        ref = attempt;
+    }
+
    }
   }
-  tmp = g_strdup (old_path);
-  lastslash  = strrchr (tmp, '/');
-  if (lastslash)
+  else if (!strcmp (argv[1], "append"))
   {
-    char command[2048];
-    char *suffixed = suffix_path (old_path);
-    if (lastslash == tmp)
-      lastslash[1] = '\0';
-    else
-      lastslash[0] = '\0';
-
-    // XXX : replace with proper code, also discard thumb?
-
-    sprintf (command, "mkdir %s/.discard > /dev/null 2>&1", tmp);
-    system (command);
-    sprintf (command, "mv %s %s/.discard > /dev/null 2>&1", old_path, tmp);
-    system (command);
-    sprintf (command, "mv %s %s/.discard > /dev/null 2>&1", suffixed, tmp);
-    system (command);
-    g_free (suffixed);
-    populate_path_list (o);
+    ref = gegl_node_get_producer (o->sink, "input", NULL);
+    o->pad_active = PAD_OUTPUT;
   }
-  g_free (tmp);
-  g_free (old_path);
+  else if (!strcmp (argv[1], "source"))
+  {
+    ref = o->source;
+    o->pad_active = PAD_OUTPUT;
+  }
+  else {
+    printf ("unkown graph cursor sub command %s\n", argv[1]);
+    ref = NULL;
+  }
+
+  if (ref)
+    o->active = ref;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
 
-  int cmd_save (COMMAND_ARGS);
-int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
+
+int cmd_reference (COMMAND_ARGS);/* "reference", -1, "", ""*/
+int
+cmd_reference (COMMAND_ARGS)
 {
   State *o = global_state;
-  char *serialized;
-
-  {
-    char *containing_path = get_path_parent (o->save_path);
-    serialized = gegl_serialize (o->source,
-                   gegl_node_get_producer (o->sink, "input", NULL),
- containing_path, GEGL_SERIALIZE_TRIM_DEFAULTS|GEGL_SERIALIZE_VERSION|GEGL_SERIALIZE_INDENT);
-    g_free (containing_path);
-  }
-
-  {
-    char *prepended = g_strdup_printf ("gegl:load path=%s\n%s", basename(o->src_path), serialized);
-    g_file_set_contents (o->save_path, prepended, -1, NULL);
-    g_free (prepended);
-  }
-
-  g_free (serialized);
-  o->rev = 0;
+  o->reference_node = o->active;
   return 0;
 }
 
-static void gegl_node_defaults (GeglNode *node)
-{
-  const gchar* op_name = gegl_node_get_operation (node);
-  {
-    guint n_props;
-    GParamSpec **pspecs = gegl_operation_list_properties (op_name, &n_props);
-    if (pspecs)
-    {
-      for (gint i = 0; i < n_props; i++)
-      {
-        if (g_type_is_a (pspecs[i]->value_type, G_TYPE_DOUBLE))
-        {
-          GParamSpecDouble    *pspec = (void*)pspecs[i];
-          gegl_node_set (node, pspecs[i]->name, pspec->default_value, NULL);
-        }
-        else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_INT))
-        {
-          GParamSpecInt *pspec = (void*)pspecs[i];
-          gegl_node_set (node, pspecs[i]->name, pspec->default_value, NULL);
-        }
-        else if (g_type_is_a (pspecs[i]->value_type, G_TYPE_STRING))
-        {
-          GParamSpecString *pspec = (void*)pspecs[i];
-          gegl_node_set (node, pspecs[i]->name, pspec->default_value, NULL);
-        }
-      }
-      g_free (pspecs);
-    }
-  }
-}
-
-int cmd_node_defaults (COMMAND_ARGS); /* "node-defaults", -1, "", "reset properties to default values"*/
-
+int cmd_dereference (COMMAND_ARGS);/* "dereference", -1, "", ""*/
 int
-cmd_node_defaults (COMMAND_ARGS)
+cmd_dereference (COMMAND_ARGS)
 {
   State *o = global_state;
 
-  if (o->active)
-    gegl_node_defaults (o->active);
+  if (o->reference_node)
+  switch (o->pad_active)
+  {
+    case PAD_INPUT:
+    case PAD_OUTPUT:
+      gegl_node_link_many (o->reference_node, o->active, NULL);
+      break;
+    case PAD_AUX:
+      gegl_node_connect_to (o->reference_node, "output", o->active, "aux");
+      break;
+  }
 
   rev_inc (o);
   return 0;
 }
 
 
-/* loads the source image corresponding to o->path into o->buffer and
- * creates live gegl pipeline, or nops.. rigs up o->save_path to be
- * the location where default saves ends up.
- */
-void
-gegl_meta_set (const char *path,
-               const char *meta_data)
+int cmd_mipmap (COMMAND_ARGS);/* "mipmap", -1, "", ""*/
+
+int
+cmd_mipmap (COMMAND_ARGS)
 {
-  GError *error = NULL;
-  GExiv2Metadata *e2m = gexiv2_metadata_new ();
-  gexiv2_metadata_open_path (e2m, path, &error);
-  if (error)
+  gboolean curval;
+  State *o = global_state;
+  if (argv[1])
   {
-    g_warning ("%s", error->message);
+    if (!strcmp (argv[1], "on")||
+        !strcmp (argv[1], "true")||
+        !strcmp (argv[1], "1"))
+    {
+      g_object_set (gegl_config(), "mipmap-rendering", TRUE, NULL);
+      renderer = GEGL_RENDERER_BLIT_MIPMAP;
+    }
+    else
+    {
+      g_object_set (gegl_config(), "mipmap-rendering", FALSE, NULL);
+      renderer = GEGL_RENDERER_IDLE;
+    }
   }
   else
   {
-    if (gexiv2_metadata_has_tag (e2m, "Xmp.xmp.GEGL"))
-      gexiv2_metadata_clear_tag (e2m, "Xmp.xmp.GEGL");
-
-    gexiv2_metadata_set_tag_string (e2m, "Xmp.xmp.GEGL", meta_data);
-    gexiv2_metadata_save_file (e2m, path, &error);
-    if (error)
-      g_warning ("%s", error->message);
+    //printf ("mipmap rendering is %s\n", curval?"on":"off");
   }
-  g_object_unref (e2m);
+  g_object_get (gegl_config(), "mipmap-rendering", &curval, NULL);
+  printf ("mipmap rendering is %s\n", curval?"on":"off");
+  rev_inc (o);
+  return 0;
 }
 
-char *
-gegl_meta_get (const char *path)
+int cmd_node_add (COMMAND_ARGS);/* "node-add", 1, "<input|output|aux>", "add a neighboring node and permit entering its name, for use in touch ui."*/
+int
+cmd_node_add (COMMAND_ARGS)
 {
-  gchar  *ret   = NULL;
-  GError *error = NULL;
-  GExiv2Metadata *e2m = gexiv2_metadata_new ();
-  gexiv2_metadata_open_path (e2m, path, &error);
-  if (!error)
-    ret = gexiv2_metadata_get_tag_string (e2m, "Xmp.xmp.GEGL");
-  /*else
-    g_warning ("%s", error->message);*/
-  g_object_unref (e2m);
-  return ret;
+  State *o = global_state;
+  if (!strcmp(argv[1], "input"))
+  {
+    State *o = global_state;
+    GeglNode *ref = o->active;
+    GeglNode *producer = gegl_node_get_producer (o->active, "input", NULL);
+    if (!gegl_node_has_pad (ref, "input"))
+      return -1;
+
+    o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
+
+    if (producer)
+    {
+      gegl_node_connect_to (producer, "output", o->active, "input");
+    }
+    gegl_node_connect_to (o->active, "output", ref, "input");
+
+    o->editing_op_name = 1;
+    mrg_set_cursor_pos (o->mrg, 0);
+    o->new_opname[0]=0;
+  }
+  else if (!strcmp(argv[1], "aux"))
+  {
+    GeglNode *ref = o->active;
+    GeglNode *producer = gegl_node_get_producer (o->active, "aux", NULL);
+
+    if (!gegl_node_has_pad (ref, "aux"))
+      return -1;
+
+    o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
+
+    if (producer)
+    {
+      gegl_node_connect_to (producer, "output", o->active, "input");
+    }
+    gegl_node_connect_to (o->active, "output", ref, "aux");
+
+    o->editing_op_name = 1;
+    mrg_set_cursor_pos (o->mrg, 0);
+    o->new_opname[0]=0;
+  }
+  else if (!strcmp(argv[1], "output"))
+  {
+    GeglNode *ref = o->active;
+    const char *consumer_name = NULL;
+    GeglNode *consumer = gegl_node_get_ui_consumer (o->active, "output", &consumer_name);
+    if (!gegl_node_has_pad (ref, "output"))
+      return -1;
+
+    if (consumer)
+    {
+      o->active = gegl_node_new_child (o->gegl, "operation", "gegl:nop", NULL);
+      gegl_node_link_many (ref, o->active, NULL);
+      gegl_node_connect_to (o->active, "output", consumer, consumer_name);
+      o->editing_op_name = 1;
+      mrg_set_cursor_pos (o->mrg, 0);
+      o->new_opname[0]=0;
+    }
+  }
+  rev_inc (o);
+  return 0;
 }
 
-GExiv2Orientation path_get_orientation (const char *path)
+int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
+int
+cmd_todo (COMMAND_ARGS)
 {
-  GExiv2Orientation ret = 0;
-  GError *error = NULL;
-  GExiv2Metadata *e2m = gexiv2_metadata_new ();
-  gexiv2_metadata_open_path (e2m, path, &error);
-  if (!error)
-    ret = gexiv2_metadata_get_orientation (e2m);
-  /*else
-    g_warning ("%s", error->message);*/
-  g_object_unref (e2m);
-  return ret;
+  printf ("propeditor:color\n");
+  printf ("propeditor:string\n");
+  printf ("make axis constrained vertical drag up/down adjust linear small increments on double\n");
+  printf ("keep track of \"orphaned\" nodes as free-floating new columns\n");
+  printf ("units in commandline\n");
+  printf ("crop ui\n");
+  printf ("polyline/bezier on canvas display/editing\n");
+  printf ("interpret GUM\n");
+  printf ("mipmap scaling based serial thumbnailer\n");
+  printf ("loadable lua modules\n");
+  printf ("rewrite of core in lua?\n");
+  printf ("animation curves for properties\n");
+  printf ("star/comment/title storage\n");
+  printf ("dir actions: rename, discard\n");
+  printf ("setting of id in ui?\n");
+  return 0;
 }
+
 
 #endif
