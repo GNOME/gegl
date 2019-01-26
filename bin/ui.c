@@ -816,9 +816,24 @@ cmd_thumb (COMMAND_ARGS)
                   NULL);
   gegl_node_link_many (source, saver, NULL);
 
-  gegl_node_blit (o->sink, o->scale, GEGL_RECTANGLE(0,0,256,256),
-                  babl_format("R'G'B' u8"),
-                  thumbdata, 256*3, GEGL_BLIT_DEFAULT);
+  {
+    GeglRectangle rect = gegl_node_get_bounding_box (o->sink);
+    float scale, scale2;
+    float width = 256, height = 256;
+
+    scale = 1.0 * width / rect.width;
+    scale2 = 1.0 * height / rect.height;
+
+    if (scale2 < scale) scale = scale2;
+
+    gegl_node_blit (o->sink, scale,
+                    GEGL_RECTANGLE(rect.x * scale - (256-rect.width*scale)/2,
+                                   rect.y * scale - (256-rect.height*scale)/2,
+                                   256,
+                                   256),
+                    babl_format("R'G'B' u8"),
+                    thumbdata, 256*3, GEGL_BLIT_DEFAULT);
+  }
   gegl_node_process (saver);
   g_free (thumbpath);
   g_object_unref (gegl);
@@ -1544,14 +1559,10 @@ static void draw_grid (Mrg *mrg, float x, float y, float w, float h)
 {
   cairo_t *cr = mrg_cr (mrg);
   cairo_new_path (cr);
-  w*=5;
-  h*=5;
-  x*=5;
-  y*=5;
-  cairo_rectangle (cr, 0.05 *w + x, 0.05 * h + y, 0.05 * w, 0.05 * h);
-  cairo_rectangle (cr, 0.15 *w + x, 0.05 * h + y, 0.05 * w, 0.05 * h);
-  cairo_rectangle (cr, 0.05 *w + x, 0.15 * h + y, 0.05 * w, 0.05 * h);
-  cairo_rectangle (cr, 0.15 *w + x, 0.15 * h + y, 0.05 * w, 0.05 * h);
+  cairo_rectangle (cr, 0.00 *w + x, 0.00 * h + y, 0.33 * w, 0.33 * h);
+  cairo_rectangle (cr, 0.66 *w + x, 0.00 * h + y, 0.33 * w, 0.33 * h);
+  cairo_rectangle (cr, 0.00 *w + x, 0.66 * h + y, 0.33 * w, 0.33 * h);
+  cairo_rectangle (cr, 0.66 *w + x, 0.66 * h + y, 0.33 * w, 0.33 * h);
 }
 
 static void draw_back (Mrg *mrg, float x, float y, float w, float h)
@@ -1590,32 +1601,48 @@ static void ui_viewer (State *o)
   cairo_save (cr);
   cairo_rectangle (cr, 0,0, width, height);
 
-  draw_grid (mrg, 0, 0, height * 0.2, height * 0.2);
+  draw_grid (mrg, height * 0.1/3, height * 0.1/3, height * 0.12, height * 0.12);
   if (o->show_controls)
     contrasty_stroke (cr);
   else
     cairo_new_path (cr);
   cairo_rectangle (cr, 0, 0, height * 0.2, height * 0.2);
+  if (o->show_controls)
+  {
+    cairo_set_source_rgba (cr, 1,1,1,.1);
+    cairo_fill_preserve (cr);
+  }
   mrg_listen (mrg, MRG_PRESS, run_command, "parent", NULL);
 
-  draw_back (mrg, 0, height * .8, height * .2, height *.2);
+  draw_back (mrg, height * .1 / 3, height * .5, height * .1, height *.1);
   cairo_close_path (cr);
   if (o->show_controls)
     contrasty_stroke (cr);
   else
     cairo_new_path (cr);
-  cairo_rectangle (cr, 0, height * .8, height * .2, height *.2);
-  mrg_listen (mrg, MRG_PRESS, run_command, "prev", NULL);
+  cairo_rectangle (cr, 0, height * .3, height * .2, height *.7);
+  if (o->show_controls)
+  {
+    cairo_set_source_rgba (cr, 1,1,1,.1);
+    cairo_fill_preserve (cr);
+  }
+  mrg_listen (mrg, MRG_TAP, run_command, "prev", NULL);
   cairo_new_path (cr);
 
-  draw_forward (mrg, width - height * .2, height * .8, height * .2, height *.2);
+  draw_forward (mrg, width - height * .15, height * .5, height * .1, height *.1);
   cairo_close_path (cr);
   if (o->show_controls)
     contrasty_stroke (cr);
   else
     cairo_new_path (cr);
-  cairo_rectangle (cr, width - height * .2, height * .8, height * .2, height *.2);
-  mrg_listen (mrg, MRG_PRESS, run_command, "next", NULL);
+  cairo_rectangle (cr, width - height * .2, height * .3, height * .2, height *.7);
+
+  if (o->show_controls)
+  {
+    cairo_set_source_rgba (cr, 1,1,1,.1);
+    cairo_fill_preserve (cr);
+  }
+  mrg_listen (mrg, MRG_TAP, run_command, "next", NULL);
   draw_edit (mrg, width - height * .2, height * .0, height * .2, height *.2);
 
   if (o->show_controls)
@@ -1623,6 +1650,11 @@ static void ui_viewer (State *o)
   else
     cairo_new_path (cr);
   cairo_rectangle (cr, width - height * .2, height * .0, height * .2, height *.2);
+  if (o->show_controls)
+  {
+    cairo_set_source_rgba (cr, 1,1,1,.1);
+    cairo_fill_preserve (cr);
+  }
   mrg_listen (mrg, MRG_PRESS, run_command, "toggle editing", NULL);
   cairo_new_path (cr);
 
