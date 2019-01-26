@@ -391,7 +391,6 @@ gchar *get_thumb_path (const char *path)
   gchar *ret;
   gchar *uri = g_strdup_printf ("file://%s", path);
   gchar *hex = g_compute_checksum_for_string (G_CHECKSUM_MD5, uri, -1);
-  fprintf (stderr, "[%s]\n", path);
   int i;
   for (i = 0; hex[i]; i++)
     hex[i] = tolower (hex[i]);
@@ -516,9 +515,7 @@ MrgList *thumb_queue = NULL;
 typedef struct ThumbQueueItem
 {
   char *path;
-  char *tempthumbpath;
   char *thumbpath;
-  GPid  pid;
 } ThumbQueueItem;
 
 static void thumb_queue_item_free (ThumbQueueItem *item)
@@ -527,10 +524,6 @@ static void thumb_queue_item_free (ThumbQueueItem *item)
     g_free (item->path);
   if (item->thumbpath)
     g_free (item->thumbpath);
-  if (item->tempthumbpath)
-    g_free (item->tempthumbpath);
-  if (item->pid)
-    kill (item->pid, 9);
   g_free (item);
 }
 
@@ -559,68 +552,6 @@ static char *sh_esc (const char *input)
 static void load_path_inner (State *o, char *path);
 
 static void run_command (MrgEvent *event_or_null, void *commandline, void *ignored);
-
-static void generate_thumb_self (ThumbQueueItem *item)
-{
-  State *o = global_state;
-  load_path_inner (o, item->path);
-
-  run_command (NULL, "convert-space name=sRGB", NULL);
-  run_command (NULL, "convert-format format=\"R'G'B' float\"", NULL);
-  run_command (NULL, "scale-size-keepaspect x=256 y=0 sampler=cubic", NULL);
-
-  gegl_node_link_many (o->sink, o->save, NULL);
-  gegl_node_set (o->save, "path", item->thumbpath, NULL);
-  gegl_node_process (o->save);
-  mrg_list_remove (&thumb_queue, item);
-  thumb_queue_item_free (item);
-  mrg_queue_draw (global_state->mrg, NULL);
-}
-
-static void generate_thumb (ThumbQueueItem *item)
-{
-  GPid child_pid = -1;
-  GError *error = NULL;
-  char  *savepath=g_strdup_printf ("path=%s", item->tempthumbpath);
-  char  *path2=g_strdup (item->path);
-  char *argv[]={"gegl",
-     path2, "--",
-     "convert-space", "name=sRGB",
-     "convert-format", "format=R'G'B' float",
-     "scale-size-keepaspect", "x=256", "y=0", "sampler=cubic",
-     "cache",
-     "jpg-save", savepath,
-     NULL};
-
-  if (item->pid)
-  {
-    if (kill(item->pid, 0) != 0)
-    {
-      rename (item->tempthumbpath, item->thumbpath);
-      mrg_list_remove (&thumb_queue, item);
-      thumb_queue_item_free (item);
-      mrg_queue_draw (global_state->mrg, NULL);
-    }
-    goto cleanup;
-  }
-  /* spawning new gegl processes takes up a lot of time, perhaps passing
- * multiple files
-     in one go, or having a way of appending requests to existing processes
-would be good..
-
-     perhaps doing simple downscales with no filters should be done with a
-faster tool?  for thumbnail generation the mipmap downscale is already a very
-high quality result- that perhaps should be used instead of an actual scale op?
-   */
-  g_spawn_async (NULL, &argv[0], NULL, G_SPAWN_SEARCH_PATH|G_SPAWN_SEARCH_PATH_FROM_ENVP,  NULL, NULL, &child_pid, &error);
-  if (error)
-    fprintf (stderr, "%s\n", error->message);
-
-  item->pid = child_pid;
-cleanup:
-  g_free (path2);
-  g_free (savepath);
-}
 
 
 static gboolean renderer_task (gpointer data)
@@ -695,35 +626,47 @@ static gboolean renderer_task (gpointer data)
 
       if (thumb_queue)
       {
-        {
-          int thumbnailers = o->concurrent_thumbnailers;
-          if (thumbnailers < 0) thumbnailers = -thumbnailers;
+        static GPid thumbnailer_pid = 0;
+#define THUMB_BATCH_SIZE    16
+        char *argv[THUMB_BATCH_SIZE]={"gegl","--thumbgen", NULL};
+        int count = 2;
+        MrgList *to_remove = NULL;
 
-          if (thumbnailers >= 1)
-            generate_thumb (thumb_queue->data);
-          if (thumbnailers >=2 && thumb_queue && thumb_queue->next)
-            generate_thumb (thumb_queue->next->data);
-          if (thumbnailers >=3 && thumb_queue && thumb_queue->next && thumb_queue->next->next)
-            generate_thumb (thumb_queue->next->next->data);
+        for (MrgList *iter = thumb_queue;
+             iter && count < THUMB_BATCH_SIZE-2;
+             iter=iter->next)
+        {
+          ThumbQueueItem *item = iter->data;
+          if (access (item->thumbpath, F_OK) != 0)
+          {
+            argv[count++] = item->path;
+            argv[count] = NULL;
+          }
+          else
+          {
+            mrg_list_prepend (&to_remove, item);
+            mrg_forget_image (o->mrg, item->thumbpath);
+            mrg_queue_draw (o->mrg, NULL);
+          }
+        }
+        for (MrgList *iter = to_remove; iter; iter=iter->next)
+        {
+          ThumbQueueItem *item = iter->data;
+          mrg_list_remove (&thumb_queue, item);
+          thumb_queue_item_free (item);
         }
 
-
-        if (o->concurrent_thumbnailers <= 0)
+        if (thumbnailer_pid == 0 ||
+            kill(thumbnailer_pid, 0) == -1)
         {
-
-           if (o->is_dir)
-           {
-             MrgList *item = thumb_queue;
-             while (item && ((ThumbQueueItem*)(item->data))->pid == 0) item = item->next;
-             if (item)
-               generate_thumb_self (item->data);
-           }
-           else
-           {
-             fprintf (stderr, "ooof\n");
-           }
+          GError *error = NULL;
+          g_spawn_async (NULL, &argv[0], NULL,
+              G_SPAWN_SEARCH_PATH|G_SPAWN_SEARCH_PATH_FROM_ENVP,
+              NULL, NULL, &thumbnailer_pid, &error);
+          if (error)
+            g_warning (error->message);
         }
-
+        g_usleep (1000);
       }
 
       o->renderer_state = 0;
@@ -876,7 +819,6 @@ cmd_thumb (COMMAND_ARGS)
   gegl_node_blit (o->sink, o->scale, GEGL_RECTANGLE(0,0,256,256),
                   babl_format("R'G'B' u8"),
                   thumbdata, 256*3, GEGL_BLIT_DEFAULT);
-  fprintf (stderr, "%s %s\n", o->path, thumbpath);
   gegl_node_process (saver);
   g_free (thumbpath);
   g_object_unref (gegl);
@@ -902,7 +844,6 @@ int thumbgen_main (int argc, char **argv)
       g_free (o->path);
     o->path = g_strdup (*arg);
     load_path (o);
-    fprintf (stderr, "%s\n", *arg);
     argvs_eval ("thumb");
   }
 
@@ -1438,8 +1379,6 @@ static void queue_thumb (const char *path, const char *thumbpath)
   item = g_malloc0 (sizeof (ThumbQueueItem));
   item->path = g_strdup (path);
   item->thumbpath = g_strdup (thumbpath);
-  item->tempthumbpath = g_strdup (item->thumbpath);
-  item->tempthumbpath[strlen(item->tempthumbpath)-8]='_';
   mrg_list_append (&thumb_queue, item);
 }
 
@@ -5120,6 +5059,10 @@ static void load_into_buffer (State *o, const char *path)
     gboolean hflip = FALSE;
     gboolean vflip = FALSE;
     double degrees = 0.0;
+    float tx = 0, ty= 0;
+    int width = gegl_buffer_get_extent (o->buffer)->width;
+    int height = gegl_buffer_get_extent (o->buffer)->height;
+
     switch (orientation)
     {
       case GEXIV2_ORIENTATION_UNSPECIFIED:
@@ -5127,18 +5070,19 @@ static void load_into_buffer (State *o, const char *path)
         break;
       case GEXIV2_ORIENTATION_HFLIP: hflip=TRUE; break;
       case GEXIV2_ORIENTATION_VFLIP: vflip=TRUE; break;
-      case GEXIV2_ORIENTATION_ROT_90: degrees = 90.0; break;
-      case GEXIV2_ORIENTATION_ROT_90_HFLIP: degrees = 90.0; hflip=TRUE; break;
-      case GEXIV2_ORIENTATION_ROT_90_VFLIP: degrees = 90.0; vflip=TRUE; break;
-      case GEXIV2_ORIENTATION_ROT_180: degrees = 180.0; break;
-      case GEXIV2_ORIENTATION_ROT_270: degrees = 270.0; break;
+      case GEXIV2_ORIENTATION_ROT_90: degrees = 90.0; tx=height; break;
+      case GEXIV2_ORIENTATION_ROT_90_HFLIP: degrees = 90.0; hflip=TRUE; tx=height; break;
+      case GEXIV2_ORIENTATION_ROT_90_VFLIP: degrees = 90.0; vflip=TRUE; tx=height; break;
+      case GEXIV2_ORIENTATION_ROT_180: degrees = 180.0; tx=width;ty=height;break;
+      case GEXIV2_ORIENTATION_ROT_270: degrees = 270.0; ty=width;  break;
     }
 
     if (degrees != 0.0 || vflip || hflip)
      {
        /* XXX: deal with vflip/hflip */
        GeglBuffer *new_buffer = NULL;
-       GeglNode *rotate;
+       GeglNode *rotate, *translate;
+
        gegl = gegl_node_new ();
        load = gegl_node_new_child (gegl, "operation", "gegl:buffer-source",
                                    "buffer", o->buffer,
@@ -5150,7 +5094,12 @@ static void load_into_buffer (State *o, const char *path)
                                    "degrees", -degrees,
                                    "sampler", GEGL_SAMPLER_NEAREST,
                                    NULL);
-       gegl_node_link_many (load, rotate, sink, NULL);
+       translate = gegl_node_new_child (gegl, "operation", "gegl:translate",
+                                   "sampler", GEGL_SAMPLER_NEAREST,
+                                   "x", tx,
+                                   "y", ty,
+                                   NULL);
+       gegl_node_link_many (load, rotate, translate, sink, NULL);
        gegl_node_process (sink);
        g_object_unref (gegl);
        g_object_unref (o->buffer);
