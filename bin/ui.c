@@ -391,6 +391,7 @@ gchar *get_thumb_path (const char *path)
   gchar *ret;
   gchar *uri = g_strdup_printf ("file://%s", path);
   gchar *hex = g_compute_checksum_for_string (G_CHECKSUM_MD5, uri, -1);
+  fprintf (stderr, "[%s]\n", path);
   int i;
   for (i = 0; hex[i]; i++)
     hex[i] = tolower (hex[i]);
@@ -602,12 +603,14 @@ static void generate_thumb (ThumbQueueItem *item)
     }
     goto cleanup;
   }
-  /* spawning new gegl processes takes up a lot of time, perhaps passing multiple files
-     in one go, or having a way of appending requests to existing processes would be good..
+  /* spawning new gegl processes takes up a lot of time, perhaps passing
+ * multiple files
+     in one go, or having a way of appending requests to existing processes
+would be good..
 
-     perhaps doing simple downscales with no filters should be done with a faster tool?
-     for thumbnail generation the mipmap downscale is already a very high quality result-
-     that perhaps should be used instead of an actual scale op?
+     perhaps doing simple downscales with no filters should be done with a
+faster tool?  for thumbnail generation the mipmap downscale is already a very
+high quality result- that perhaps should be used instead of an actual scale op?
    */
   g_spawn_async (NULL, &argv[0], NULL, G_SPAWN_SEARCH_PATH|G_SPAWN_SEARCH_PATH_FROM_ENVP,  NULL, NULL, &child_pid, &error);
   if (error)
@@ -692,7 +695,6 @@ static gboolean renderer_task (gpointer data)
 
       if (thumb_queue)
       {
-
         {
           int thumbnailers = o->concurrent_thumbnailers;
           if (thumbnailers < 0) thumbnailers = -thumbnailers;
@@ -745,12 +747,19 @@ static gpointer renderer_thread (gpointer data)
   return 0;
 }
 
-int mrg_ui_main (int argc, char **argv, char **ops)
+static void init_state (State *o)
 {
-  Mrg *mrg = mrg_new (1024, 768, NULL);
   const char *renderer_env = g_getenv ("GEGL_RENDERER");
-
-  State o = {NULL,};
+  o->scale           = 1.0;
+  o->graph_scale     = 1.0;
+  o->render_quality  = 1.0;
+  o->preview_quality = 1.0;
+  //o->preview_quality = 2.0;
+  o->slide_pause     = 5.0;
+  o->slide_enabled   = 0;
+  o->concurrent_thumbnailers = 2;
+  o->show_bindings   = 0;
+  o->ui_consumer = g_hash_table_new (g_direct_hash, g_direct_equal);
 
   if (renderer_env)
   {
@@ -763,69 +772,145 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   } else
     renderer = GEGL_RENDERER_IDLE;
 
+  o->gegl = gegl_node_new ();
+}
+
+static void cleanup_state (State *o)
+{
+  g_clear_object (&o->gegl);
+  g_clear_object (&o->processor);
+  g_clear_object (&o->processor_buffer);
+  g_clear_object (&o->buffer);
+}
+
+int mrg_ui_main (int argc, char **argv, char **ops)
+{
+  Mrg *mrg = mrg_new (1024, 768, NULL);
+  static State state = {NULL,};
+  State *o = &state;
+  global_state = o;
+
+
   mrg_set_title (mrg, "GEGL");
 
-  o.ops = ops;
-
   gegl_init (&argc, &argv);
-  o.gegl            = gegl_node_new (); // so that we have an object to unref
-  o.mrg             = mrg;
-  o.scale           = 1.0;
-  o.graph_scale     = 1.0;
-  o.render_quality  = 1.0;
-  o.preview_quality = 1.0;
-  //o.preview_quality = 2.0;
-  o.slide_pause     = 5.0;
-  o.slide_enabled   = 0;
-  o.concurrent_thumbnailers = 2;
-  o.show_bindings   = 0;
-  o.ui_consumer = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+  init_state (o);
+
+  o->ops = ops;
+  o->mrg  = mrg;
 
   if (access (argv[1], F_OK) != -1)
-    o.path = realpath (argv[1], NULL);
+    o->path = realpath (argv[1], NULL);
   else
     {
       printf ("usage: %s <full-path-to-image>\n", argv[0]);
       return -1;
     }
 
-  load_path (&o);
-  mrg_set_ui (mrg, gegl_ui, &o);
-  global_state = &o;
-  on_viewer_motion (NULL, &o, NULL);
+  load_path (o);
+  mrg_set_ui (mrg, gegl_ui, o);
+  on_viewer_motion (NULL, o, NULL);
 
   switch (renderer)
   {
     case GEGL_RENDERER_THREAD:
-      o.renderer_thread = g_thread_new ("renderer", renderer_thread, &o);
+      o->renderer_thread = g_thread_new ("renderer", renderer_thread, &o);
       break;
     case GEGL_RENDERER_IDLE:
-      mrg_add_idle (mrg, renderer_idle, &o);
+      mrg_add_idle (mrg, renderer_idle, o);
       break;
     case GEGL_RENDERER_BLIT:
     case GEGL_RENDERER_BLIT_MIPMAP:
       break;
   }
 
-  if (o.ops)
+  if (o->ops)
   {
-    o.show_graph = 1;
+    o->show_graph = 1;
   }
 
   mrg_main (mrg);
   has_quit = 1;
   if (renderer == GEGL_RENDERER_THREAD)
-    g_thread_join (o.renderer_thread);
+    g_thread_join (o->renderer_thread);
 
+  cleanup_state (o);
 
-  g_clear_object (&o.gegl);
-  g_clear_object (&o.processor);
-  g_clear_object (&o.processor_buffer);
-  g_clear_object (&o.buffer);
   gegl_exit ();
 
   end_audio ();
   return 0;
+}
+
+int cmd_thumb (COMMAND_ARGS); /* "thumb", 0, "<>", "generate thumbnail for active image"*/
+int
+cmd_thumb (COMMAND_ARGS)
+{
+  State *o = global_state;
+  gchar *thumbdata;
+  GeglBuffer *buffer;
+  GeglNode *gegl;
+  GeglNode *saver;
+  GeglNode *source;
+  gchar *thumbpath;
+
+  thumbpath = get_thumb_path (o->save_path);
+
+  gegl = gegl_node_new ();
+  thumbdata = g_malloc0 (256 * 256 * 4);
+  buffer = gegl_buffer_linear_new_from_data (thumbdata,
+               babl_format ("R'G'B' u8"),
+               GEGL_RECTANGLE(0,0,256,256),
+               256 * 3, NULL, NULL);
+  saver = gegl_node_new_child (gegl,
+                  "operation", "gegl:jpg-save",
+                  "path", thumbpath,
+                  NULL);
+  source = gegl_node_new_child (gegl,
+                  "operation", "gegl:buffer-source",
+                  "buffer", buffer,
+                  NULL);
+  gegl_node_link_many (source, saver, NULL);
+
+  gegl_node_blit (o->sink, o->scale, GEGL_RECTANGLE(0,0,256,256),
+                  babl_format("R'G'B' u8"),
+                  thumbdata, 256*3, GEGL_BLIT_DEFAULT);
+  fprintf (stderr, "%s %s\n", o->path, thumbpath);
+  gegl_node_process (saver);
+  g_free (thumbpath);
+  g_object_unref (gegl);
+  g_object_unref (buffer);
+  g_free (thumbdata);
+  return 0;
+}
+
+int thumbgen_main (int argc, char **argv);
+
+int thumbgen_main (int argc, char **argv)
+{
+  static State state = {NULL,};
+  State *o = &state;
+  global_state = o;
+  gegl_init (&argc, &argv);
+
+  init_state (o);
+
+  for (char **arg = &argv[2]; *arg; arg++)
+  {
+    if (o->path)
+      g_free (o->path);
+    o->path = g_strdup (*arg);
+    load_path (o);
+    fprintf (stderr, "%s\n", *arg);
+    argvs_eval ("thumb");
+  }
+
+  cleanup_state (o);
+
+  gegl_exit ();
+
+ exit (0);
 }
 
 static int hide_controls_cb (Mrg *mrg, void *data)
@@ -856,7 +941,6 @@ static void on_viewer_motion (MrgEvent *e, void *data1, void *data2)
 }
 
 static int node_select_hack = 0;
-
 
 static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
 {
@@ -1168,9 +1252,11 @@ static void on_paint_drag (MrgEvent *e, void *data1, void *data2)
       gegl_path_append (path, 'L', x, y);
       gegl_node_set (o->active, "d", path, "color", gegl_color_new("blue"),
                      "width", 16.0 / o->scale, NULL);
+      rev_inc (o);
       break;
     case MRG_DRAG_MOTION:
       gegl_path_append (path, 'L', x, y);
+      //rev_inc (o); XXX : maybe enable if it doesnt interfere with painting
       break;
     case MRG_DRAG_RELEASE:
       o->active = gegl_node_get_ui_consumer (o->active, "output", NULL);
@@ -1668,7 +1754,6 @@ static GeglNode *add_aux (State *o, GeglNode *active, const char *optype)
     gegl_node_link_many (producer, ret, NULL);
   }
   gegl_node_connect_to (ret, "output", ref, "aux");
-  rev_inc (o);
   return ret;
 }
 
@@ -1686,7 +1771,6 @@ static GeglNode *add_input (State *o, GeglNode *active, const char *optype)
     gegl_node_link_many (producer, ret, NULL);
   }
   gegl_node_connect_to (ret, "output", ref, "input");
-  rev_inc (o);
   return ret;
 }
 
@@ -1705,7 +1789,6 @@ static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
     gegl_node_link_many (ref, ret, NULL);
     gegl_node_connect_to (ret, "output", consumer, consumer_name);
   }
-  rev_inc (o);
   return ret;
 }
 
@@ -2848,19 +2931,28 @@ static void on_active_node_drag (MrgEvent *e, void *data1, void *data2, int is_a
       if (angle < -120 || angle > 120) // upwards
       {
          if (dist > dist_add_node)
+         {
            o->active = add_output (o, o->active, "gegl:nop");
+           rev_inc(o);
+         }
       }
       else if (angle < 60 && angle > -45) // down
       {
          if (is_aux)
          {
            if (dist > dist_add_node)
+           {
              o->active = add_aux (o, o->active, "gegl:nop");
+             rev_inc(o);
+           }
          }
          else
          {
            if (dist > dist_add_node)
-             o->active = add_input (o, o->active, "gegl:nop");
+           {
+              o->active = add_input (o, o->active, "gegl:nop");
+           }
+           rev_inc(o);
          }
       }
       else if (angle < -45 && angle > -110) // left
@@ -5107,6 +5199,7 @@ static void zoom_to_fit (State *o)
   Mrg *mrg = o->mrg;
   GeglRectangle rect = gegl_node_get_bounding_box (o->sink);
   float scale, scale2;
+  float width = 256, height = 256;
 
   if (rect.width == 0 || rect.height == 0)
   {
@@ -5116,15 +5209,21 @@ static void zoom_to_fit (State *o)
     return;
   }
 
-  scale = 1.0 * mrg_width (mrg) / rect.width;
-  scale2 = 1.0 * mrg_height (mrg) / rect.height;
+  if (mrg)
+  {
+    width = mrg_width (mrg);
+    height = mrg_height (mrg);
+  }
+
+  scale = 1.0 * width / rect.width;
+  scale2 = 1.0 * height / rect.height;
 
   if (scale2 < scale) scale = scale2;
 
   o->scale = scale;
 
-  o->u = -(mrg_width (mrg) - rect.width * o->scale) / 2;
-  o->v = -(mrg_height (mrg) - rect.height * o->scale) / 2;
+  o->u = -(width - rect.width * o->scale) / 2;
+  o->v = -(height - rect.height * o->scale) / 2;
   o->u += rect.x * o->scale;
   o->v += rect.y * o->scale;
 
@@ -6448,11 +6547,11 @@ cmd_node_add (COMMAND_ARGS)
       gegl_node_link_many (ref, o->active, NULL);
       gegl_node_connect_to (o->active, "output", consumer, consumer_name);
       o->editing_op_name = 1;
-      mrg_set_cursor_pos (o->mrg, 0);
+      if (o->mrg) mrg_set_cursor_pos (o->mrg, 0);
       o->new_opname[0]=0;
     }
   }
-  rev_inc (o);
+  if (o->mrg) rev_inc (o);
   return 0;
 }
 

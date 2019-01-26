@@ -243,6 +243,14 @@ gegl_options_previous_file (GeglOptions *o)
   return FALSE;
 }
 
+#ifdef HAVE_MRG
+int thumbgen_main (int argc, char **argv);
+#else
+static int thumbgen_main (int argc, char **argv)
+{
+ return -222;
+}
+#endif
 
 static GeglOptions *
 parse_args (int    argc,
@@ -264,8 +272,10 @@ parse_args (int    argc,
             o->mode = GEGL_RUN_MODE_HELP;
             usage (argv[0]);
         }
-
-        else if (match ("--list-all")) {
+        else if (match ("--thumbgen")) {
+            thumbgen_main (argc, argv);
+            exit (0);
+        } else if (match ("--list-all")) {
             guint   n_operations;
             gint    i;
             gchar **operations;
