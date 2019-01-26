@@ -627,7 +627,7 @@ static gboolean renderer_task (gpointer data)
       if (thumb_queue)
       {
         static GPid thumbnailer_pid = 0;
-#define THUMB_BATCH_SIZE    16
+#define THUMB_BATCH_SIZE    32
         char *argv[THUMB_BATCH_SIZE]={"gegl","--thumbgen", NULL};
         int count = 2;
         MrgList *to_remove = NULL;
@@ -1438,6 +1438,11 @@ static void ui_dir_viewer (State *o)
 
       if (S_ISDIR (stat_buf.st_mode))
       {
+        float wdim = 96;
+        float hdim = 96;
+        mrg_image (mrg, x + (dim-wdim)/2, y + (dim-hdim)/2,
+                     wdim, hdim, 1.0, "/usr/share/icons/HighContrast/256x256/places/folder.png", NULL, NULL);
+
         is_dir = 1;
       }
       else
@@ -1447,8 +1452,10 @@ static void ui_dir_viewer (State *o)
 
       gchar *p2 = suffix_path (path);
       gchar *thumbpath = get_thumb_path (p2);
-      /* we compute the thumbpath as the hash of the suffixed path, even for gegl
-         documents - for gegl documents this is slightly inaccurate.
+
+      /* we compute the thumbpath as the hash of the suffixed path, even for
+ * gegl
+         documents - for gegl documents this is slightly inaccurate but consistent.
        */
       if (access (thumbpath, F_OK) == 0)
       {
@@ -1533,58 +1540,89 @@ static int slide_cb (Mrg *mrg, void *data)
 
 static void scroll_cb (MrgEvent *event, void *data1, void *data2);
 
+static void draw_grid (Mrg *mrg, float x, float y, float w, float h)
+{
+  cairo_t *cr = mrg_cr (mrg);
+  cairo_new_path (cr);
+  w*=5;
+  h*=5;
+  x*=5;
+  y*=5;
+  cairo_rectangle (cr, 0.05 *w + x, 0.05 * h + y, 0.05 * w, 0.05 * h);
+  cairo_rectangle (cr, 0.15 *w + x, 0.05 * h + y, 0.05 * w, 0.05 * h);
+  cairo_rectangle (cr, 0.05 *w + x, 0.15 * h + y, 0.05 * w, 0.05 * h);
+  cairo_rectangle (cr, 0.15 *w + x, 0.15 * h + y, 0.05 * w, 0.05 * h);
+}
+
+static void draw_back (Mrg *mrg, float x, float y, float w, float h)
+{
+  cairo_t *cr = mrg_cr (mrg);
+  cairo_new_path (cr);
+  cairo_new_path (cr);
+  cairo_move_to (cr, x+0.9*w, y+0.1*h);
+  cairo_line_to (cr, x+0.9*w, y+0.9*h);
+  cairo_line_to (cr, x+0.1*w, y+0.5*h);
+}
+
+static void draw_forward (Mrg *mrg, float x, float y, float w, float h)
+{
+  cairo_t *cr = mrg_cr (mrg);
+  cairo_new_path (cr);
+  cairo_move_to (cr, x+0.1*w, y+0.1*h);
+  cairo_line_to (cr, x+0.1*w, y+0.9*h);
+  cairo_line_to (cr, x+0.9*w, y+0.5*h);
+
+}
+
+static void draw_edit (Mrg *mrg, float x, float y, float w, float h)
+{
+  cairo_t *cr = mrg_cr (mrg);
+  cairo_new_path (cr);
+  cairo_arc (cr, x+0.5*w, y+0.5*h, h * .4, 0.0, G_PI * 2);
+}
+
 static void ui_viewer (State *o)
 {
   Mrg *mrg = o->mrg;
+  float width = mrg_width(mrg);
+  float height = mrg_height(mrg);
   cairo_t *cr = mrg_cr (mrg);
-  cairo_rectangle (cr, 0,0, mrg_width(mrg), mrg_height(mrg));
+  cairo_save (cr);
+  cairo_rectangle (cr, 0,0, width, height);
 
-  cairo_scale (cr, mrg_width(mrg), mrg_height(mrg));
-  cairo_new_path (cr);
-  cairo_rectangle (cr, 0.05, 0.05, 0.05, 0.05);
-  cairo_rectangle (cr, 0.15, 0.05, 0.05, 0.05);
-  cairo_rectangle (cr, 0.05, 0.15, 0.05, 0.05);
-  cairo_rectangle (cr, 0.15, 0.15, 0.05, 0.05);
+  draw_grid (mrg, 0, 0, height * 0.2, height * 0.2);
   if (o->show_controls)
     contrasty_stroke (cr);
   else
     cairo_new_path (cr);
-  cairo_rectangle (cr, 0.0, 0.0, 0.2, 0.2);
+  cairo_rectangle (cr, 0, 0, height * 0.2, height * 0.2);
   mrg_listen (mrg, MRG_PRESS, run_command, "parent", NULL);
 
-  cairo_new_path (cr);
-  cairo_move_to (cr, 0.2, 0.8);
-  cairo_line_to (cr, 0.2, 1.0);
-  cairo_line_to (cr, 0.0, 0.9);
+  draw_back (mrg, 0, height * .8, height * .2, height *.2);
   cairo_close_path (cr);
   if (o->show_controls)
     contrasty_stroke (cr);
   else
     cairo_new_path (cr);
-  cairo_rectangle (cr, 0.0, 0.8, 0.2, 0.2);
+  cairo_rectangle (cr, 0, height * .8, height * .2, height *.2);
   mrg_listen (mrg, MRG_PRESS, run_command, "prev", NULL);
   cairo_new_path (cr);
 
-  cairo_move_to (cr, 0.8, 0.8);
-  cairo_line_to (cr, 0.8, 1.0);
-  cairo_line_to (cr, 1.0, 0.9);
+  draw_forward (mrg, width - height * .2, height * .8, height * .2, height *.2);
   cairo_close_path (cr);
-
   if (o->show_controls)
     contrasty_stroke (cr);
   else
     cairo_new_path (cr);
-  cairo_rectangle (cr, 0.8, 0.8, 0.2, 0.2);
+  cairo_rectangle (cr, width - height * .2, height * .8, height * .2, height *.2);
   mrg_listen (mrg, MRG_PRESS, run_command, "next", NULL);
-  cairo_new_path (cr);
-
-  cairo_arc (cr, 0.9, 0.1, 0.1, 0.0, G_PI * 2);
+  draw_edit (mrg, width - height * .2, height * .0, height * .2, height *.2);
 
   if (o->show_controls)
     contrasty_stroke (cr);
   else
     cairo_new_path (cr);
-  cairo_rectangle (cr, 0.8, 0.0, 0.2, 0.2);
+  cairo_rectangle (cr, width - height * .2, height * .0, height * .2, height *.2);
   mrg_listen (mrg, MRG_PRESS, run_command, "toggle editing", NULL);
   cairo_new_path (cr);
 
@@ -1594,6 +1632,7 @@ static void ui_viewer (State *o)
     o->slide_timeout =
        mrg_add_timeout (o->mrg, o->slide_pause * 1000, slide_cb, o);
   }
+ cairo_restore (cr);
 }
 
 static int deferred_redraw_action (Mrg *mrg, void *data)
@@ -1739,6 +1778,7 @@ static void prop_set_enum (MrgEvent *event, void *data1, void *data2)
   const char *prop_name = data2;
 
   gegl_node_set (o->active, prop_name, value, NULL);
+  o->property_focus = g_intern_string (prop_name);
 
   rev_inc (o);
   mrg_event_stop_propagate (event);
@@ -1962,6 +2002,7 @@ static void on_prop_int_drag (MrgEvent *e, void *data1, void *data2)
 
   gegl_node_set (drag_data->node, drag_data->pspec->name, value, NULL);
 
+  o->property_focus = g_intern_string (drag_data->pspec->name);
   mrg_event_stop_propagate (e);
   rev_inc (o);
 }
@@ -2042,6 +2083,7 @@ static void on_toggle_boolean (MrgEvent *e, void *data1, void *data2)
   gegl_node_get (node, propname, &value, NULL);
   value = value ? FALSE : TRUE;
   gegl_node_set (node, propname, value, NULL);
+  global_state->property_focus = g_intern_string (propname);
   rev_inc (global_state);
   mrg_event_stop_propagate (e);
 }
@@ -2091,6 +2133,8 @@ static void on_prop_double_drag (MrgEvent *e, void *data1, void *data2)
   rel_pos = (e->x - drag_data->x) / drag_data->width;
   rel_pos = pow(rel_pos, drag_data->ui_gamma);
   value = rel_pos * (drag_data->ui_max-drag_data->ui_min) + drag_data->ui_min;
+
+  o->property_focus = g_intern_string (drag_data->pspec->name);
 
   gegl_node_set (drag_data->node, drag_data->pspec->name, value, NULL);
 
@@ -2215,6 +2259,7 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
   if (edited_prop && !strcmp (edited_prop, pspec->name))
   {
     draw_key (o, mrg, pspec->name);
+    fprintf (stderr, "!!!!\n");
 
     mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
     mrg_edit_start (mrg, update_prop, node);
@@ -3184,12 +3229,6 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
     else
     mrg_start_with_style (mrg, "div.node", NULL, style);
   }
-  //em = mrg_em (mrg);
-
-//  if (!active)
-//  {
-//    mrg_text_listen (mrg, MRG_CLICK, node_press, node, o);
-//  }
 
   if (active && o->editing_op_name)
   {
@@ -3205,11 +3244,6 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
     else
       mrg_printf (mrg, "%s", opname);
   }
-
-//  if (!active)
-//  {
-//    mrg_text_listen_done (mrg);
-//  }
 
    {
     MrgStyle *style = mrg_style (mrg);
@@ -3260,7 +3294,6 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
 
   mrg_end (mrg);
   g_free (opname);
-
 
 
   for (GList *i = edge_queue; i; i = i->next)
@@ -5361,6 +5394,7 @@ int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
   }
 
   g_free (serialized);
+  argvs_eval ("thumb");
   o->rev = 0;
   return 0;
 }
@@ -6508,19 +6542,19 @@ int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
 int
 cmd_todo (COMMAND_ARGS)
 {
-  printf ("propeditor:color\n");
   printf ("propeditor:string\n");
+  printf ("propeditor:color\n");
   printf ("make axis constrained vertical drag up/down adjust linear small increments on double\n");
-  printf ("keep track of \"orphaned\" nodes as free-floating new columns\n");
-  printf ("units in commandline\n");
   printf ("crop ui\n");
+  printf ("units in commandline\n");
   printf ("polyline/bezier on canvas display/editing\n");
   printf ("interpret GUM\n");
-  printf ("mipmap scaling based serial thumbnailer\n");
+  printf ("star/comment/title storage\n");
   printf ("loadable lua modules\n");
   printf ("rewrite of core in lua?\n");
+  printf ("keep track of \"orphaned\" nodes as free-floating new columns\n");
+  printf ("video/audio playback time controls\n");
   printf ("animation curves for properties\n");
-  printf ("star/comment/title storage\n");
   printf ("dir actions: rename, discard\n");
   printf ("setting of id in ui?\n");
   return 0;
