@@ -282,6 +282,37 @@ static char *string_chop_head (char *orig) /* return pointer to reset after arg 
   return NULL;
 }
 
+
+int argvs_eval_argv (char **cargv, int cargc);
+int argvs_eval_argv (char **cargv, int cargc)
+{
+  CmdIterator *ci = cmd_iterator_new (NULL);
+  CmdEntry *command;
+  int ret = -1;
+
+  if (cargc <= 0)
+  {
+    for (char **arg = cargv; *arg; arg++, cargc++);
+  }
+
+  while ((command = cmd_iterator_next (ci)))
+    if (!strcmp (cargv[0], command->name))
+      {
+        if (command->req_args > cargc - 1)
+          {
+            printf ("command '%s' needs %i args, %i given\n",
+                command->name, command->req_args, cargc - 1);
+          }
+        else
+          ret = command->fun (cargc, cargv, NULL);
+        if (ret)
+          printf ("%s returned: %i\n", command->name, ret);
+        cmd_iterator_stop (ci);
+        break;
+      }
+  return ret;
+}
+
 int argvs_eval (const char *cmdline)
 {
   char *cargv[32];
@@ -331,10 +362,6 @@ int argvs_eval (const char *cmdline)
 b:
         if (cargv[0][0] && !found)
           {
-            //XXX: somehow pipe this back into the ui
-            //fprintf (stdout, "unknown command '%s'\n", cargv[0]);
-            //fflush (NULL);
-            //sleep (1);
             printf ("unknown command '%s' use ? for a list of registered commands\n", cargv[0]);
           }
       }
