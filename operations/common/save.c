@@ -61,9 +61,9 @@ gegl_save_set_saver (GeglOperation *operation)
   const gchar *extension, *handler;
 
   /* If prepare has already been invoked, bail out early */
-  if (self->cached_path && !strcmp (o->path, self->cached_path))
+  if (self->cached_path && o->path && !strcmp (o->path, self->cached_path))
       return;
-  if (*o->path == '\0')
+  if (o->path == NULL || *o->path == '\0')
     return;
   g_free (self->cached_path);
 
