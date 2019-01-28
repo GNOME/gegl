@@ -1651,6 +1651,9 @@ gegl_transform_process (GeglOperation        *operation,
     }
   else
     {
+      gboolean is_cmyk =
+       ((babl_get_model_flags (gegl_operation_get_format (operation, "output"))
+           & BABL_MODEL_FLAG_CMYK) != 0);
       /*
        * For other cases, do a proper resampling
        */
@@ -1661,7 +1664,10 @@ gegl_transform_process (GeglOperation        *operation,
                     const GeglRectangle *roi,
                     gint                 level) = transform_generic;
 
-      if (gegl_matrix3_is_affine (&matrix))
+      /* XXX; why does the affine code path mangle CMYK colors when
+              the generic one does not?
+       */
+      if (gegl_matrix3_is_affine (&matrix) && !is_cmyk)
         func = transform_affine;
 
       if (transform->sampler == GEGL_SAMPLER_NEAREST)
