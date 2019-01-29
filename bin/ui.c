@@ -4489,7 +4489,7 @@ static void ui_show_bindings (Mrg *mrg, void *data)
   MrgBinding *bindings = mrg_get_bindings (mrg);
 
   mrg_start (mrg, "dl.bindings", NULL);
-  mrg_set_xy (mrg, x, h * .6 + em);
+  mrg_set_xy (mrg, x, h * .6 + em * 1.5);
 
   for (int i = 0; bindings[i].cb; i++)
   {
@@ -4518,11 +4518,11 @@ static void ui_show_bindings (Mrg *mrg, void *data)
       mrg_start (mrg, "dd.binding", NULL);mrg_printf(mrg,"%s", b->cb_data);mrg_end (mrg);
     }
 
-    if (mrg_y (mrg) > h - em)
+    if (mrg_y (mrg) > h - em * 1.5)
     {
       col++;
       mrg_set_edge_left (mrg, col * (20 * mrg_em(mrg)));
-      mrg_set_xy (mrg, col * (15 * em), h * .6 + em);
+      mrg_set_xy (mrg, col * (15 * em), h * .6 + em * 1.5);
     }
 
   }
@@ -4910,7 +4910,20 @@ static void ui_commandline (Mrg *mrg, void *data)
   if (scrollback || 1)
   mrg_end (mrg);
 
-  mrg_add_binding (mrg, "return", NULL, "run commandline", do_commandline_run, o);
+  {
+    const char *label = "run commandline";
+  if (commandline[0]==0)
+  {
+    if (o->is_dir)   label = "show entry";
+    else
+    {
+    if (o->show_graph)  label = "stop editing";
+    else                label = "show editing graph";
+    }
+  }
+    mrg_add_binding (mrg, "return", NULL, label, do_commandline_run, o);
+  }
+
   cairo_restore (cr);
 }
 
@@ -5046,13 +5059,10 @@ static void gegl_ui (Mrg *mrg, void *data)
           per_op_canvas_ui (o);
 
           ui_debug_op_chain (o);
-          mrg_add_binding (mrg, "escape", NULL, "stop editing", run_command, "toggle editing");
         }
       else
         {
           ui_viewer (o);
-          mrg_add_binding (mrg, "escape", NULL, "collection view", run_command, "parent");
-
         }
 
       mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "next");
@@ -5063,7 +5073,6 @@ static void gegl_ui (Mrg *mrg, void *data)
     else if (S_ISDIR (stat_buf.st_mode))
     {
       ui_dir_viewer (o);
-      mrg_add_binding (mrg, "escape", NULL, "collection view", run_command, "parent");
       mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "collection right");
       mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "collection left");
     }
@@ -5096,20 +5105,13 @@ static void gegl_ui (Mrg *mrg, void *data)
 
     mrg_add_binding (mrg, "control-s", NULL, NULL, run_command, "toggle slideshow");
   }
-  mrg_add_binding (mrg, "control-l", NULL, NULL, run_command, "clear");
+  mrg_add_binding (mrg, "control-l", NULL, "clear/redraw", run_command, "clear");
 
   if (!text_editor_active (o))
   {
     mrg_add_binding (mrg, "tab", NULL, NULL, run_command, "toggle controls");
     mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle fullscreen");
 
-    if (commandline[0]==0)
-    {
-      mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
-      mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom in");
-      mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom out");
-      mrg_add_binding (mrg, "1", NULL, NULL, run_command, "zoom 1.0");
-    }
 
     ui_commandline (mrg, o);
   }
@@ -5140,10 +5142,10 @@ static void gegl_ui (Mrg *mrg, void *data)
     else if (o->show_graph)
     {
 
-      mrg_add_binding (mrg, "tab",   NULL, NULL, run_command, "prop-editor focus");
 
       if (o->property_focus)
       {
+          mrg_add_binding (mrg, "tab",   NULL, "focus graph", run_command, "prop-editor focus");
           //mrg_add_binding (mrg, "return", NULL, NULL,   run_command, "prop-editor return");
           mrg_add_binding (mrg, "left", NULL, NULL,       run_command, "prop-editor space");
           mrg_add_binding (mrg, "left", NULL, NULL,       run_command, "prop-editor left");
@@ -5154,6 +5156,7 @@ static void gegl_ui (Mrg *mrg, void *data)
       }
       else
       {
+        mrg_add_binding (mrg, "tab",   NULL, "focus properties", run_command, "prop-editor focus");
         mrg_add_binding (mrg, "home",  NULL, NULL, run_command, "graph-cursor append");
         mrg_add_binding (mrg, "end",   NULL, NULL, run_command, "graph-cursor source");
 
@@ -5184,15 +5187,31 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   if (o->is_dir)
   {
+    if (commandline[0]==0)
+    {
+      mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
+      mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom in");
+      mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom out");
+    }
+    mrg_add_binding (mrg, "escape", NULL, "parent folder", run_command, "parent");
   }
   else
   {
-    mrg_add_binding (mrg, "control-t", NULL, NULL, run_command, "zoom fit");
+    if (commandline[0]==0)
+    {
+      mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
+      mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom in");
+      mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom out");
+      mrg_add_binding (mrg, "0", NULL, "pixel for pixel", run_command, "zoom 1.0");
+      mrg_add_binding (mrg, "9", NULL, NULL, run_command, "zoom fit");
+    }
+
     mrg_add_binding (mrg, "control-m", NULL, NULL, run_command, "toggle mipmap");
     mrg_add_binding (mrg, "control-y", NULL, NULL, run_command, "toggle colormanage-display");
 
     if (o->show_graph && !text_editor_active (o))
     {
+          mrg_add_binding (mrg, "escape", NULL, "stop editing", run_command, "toggle editing");
     if (o->property_focus)
     {
       mrg_add_binding (mrg, "up", NULL, NULL,   run_command, "prop-editor up");
@@ -5210,9 +5229,13 @@ static void gegl_ui (Mrg *mrg, void *data)
     if (o->active && gegl_node_has_pad (o->active, "input") &&
                      gegl_node_has_pad (o->active, "output"))
     {
-      mrg_add_binding (mrg, "control-up", NULL, NULL, run_command, "swap output");
-      mrg_add_binding (mrg, "control-down", NULL, NULL, run_command, "swap input");
+      mrg_add_binding (mrg, "control-up", NULL, "swap active with node above", run_command, "swap output");
+      mrg_add_binding (mrg, "control-down", NULL, "swap active with node below", run_command, "swap input");
     }
+    }
+    else
+    {
+      mrg_add_binding (mrg, "escape", NULL, "collection view", run_command, "parent");
     }
 
 
