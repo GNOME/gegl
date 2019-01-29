@@ -224,9 +224,6 @@ struct _State {
                             XXX: could be replaced with URIs, and each
                             element should perhaps contain more internal info
                             like stars, tags etc.  */
-
-
-
   GeglBuffer    *buffer;
   GeglNode      *gegl;
   GeglNode      *source;  /* a file-loader or another swapped in buffer provider that is the
@@ -252,8 +249,12 @@ struct _State {
   GeglBuffer    *processor_buffer;
   int            renderer_state;
   int            editing_op_name;
-  char           new_opname[1024];
+  char           editing_buf[1024];
   int            rev;
+
+  const char    *property_focus; // interned string of property name, or "operation" or "id"
+  int            editing_property;
+
 
   float          u, v;
   float          scale;
@@ -277,7 +278,6 @@ struct _State {
   int            controls_timeout;
   int            frame_no;
 
-  const char    *property_focus; // interned string of property name, or "operation" or "id"
 
   char         **ops; // the operations part of the commandline, if any
   float          slide_pause;
@@ -296,6 +296,12 @@ struct _State {
 
   GHashTable    *ui_consumer;
 };
+
+static gboolean text_editor_active (State *o)
+{
+  return o->editing_op_name ||
+         o->editing_property;
+}
 
 static State *global_state = NULL;  // XXX: for now we  rely on
                                     //      global state to make events/scripting work
@@ -1409,32 +1415,64 @@ static void prop_int_drag_cb (MrgEvent *e, void *data1, void *data2)
 
 static gchar *edited_prop = NULL;
 
-static void update_prop (const char *new_string, void *node_p)
+static void update_editing_buf (const char *new_string, void *node_p)
 {
-  GeglNode *node = node_p;
-  gegl_node_set (node, edited_prop, new_string, NULL);
-  rev_inc (global_state);
+  //GeglNode *node = node_p;
+  //gegl_node_set (node, edited_prop, new_string, NULL);
+  //rev_inc (global_state);
+  global_state->editing_buf[0]=0;
+  strcpy (global_state->editing_buf, new_string);
+  fprintf (stderr, "[%s]\n", new_string);
 }
 
 
 static void set_edited_prop (MrgEvent *e, void *data1, void *data2)
 {
-  if (edited_prop)
-    g_free (edited_prop);
-  edited_prop = g_strdup (data2);
-  mrg_event_stop_propagate (e);
+  State *o = global_state;
+  o->property_focus = g_intern_string (data2);
+  o->editing_property = 1;
 
+  strcpy (o->editing_buf, data1);
+
+  mrg_event_stop_propagate (e);
   mrg_set_cursor_pos (e->mrg, 0);
   mrg_queue_draw (e->mrg, NULL);
 }
 
 static void unset_edited_prop (MrgEvent *e, void *data1, void *data2)
 {
-  if (edited_prop)
-    g_free (edited_prop);
-  edited_prop = NULL;
-  mrg_event_stop_propagate (e);
+  State *o = global_state;
+  if ((e->type == MRG_RELEASE) ||
+      (e->type == MRG_MOTION))
+  {
+    mrg_event_stop_propagate (e);
+    return;
+  }
 
+  {
+    GParamSpec *pspec = gegl_node_find_property (o->active, o->property_focus);
+    if (pspec)
+    {
+      if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
+          g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
+      {
+        gegl_node_set (o->active, o->property_focus, o->editing_buf, NULL);
+      }
+      else if (g_type_is_a (pspec->value_type, GEGL_TYPE_COLOR))
+      {
+        char buf[2048];
+        sprintf (buf, "%s='%s'",  o->property_focus, o->editing_buf);
+        run_command (NULL, buf, NULL);
+      }
+
+    }
+    rev_inc (o);
+  }
+
+
+  o->editing_property = 0;
+  mrg_event_stop_propagate (e);
+  mrg_set_cursor_pos (e->mrg, 0);
   mrg_queue_draw (e->mrg, NULL);
 }
 
@@ -2542,13 +2580,13 @@ draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec
   gegl_node_get (node, pspec->name, &color, NULL);
   g_object_get (color, "string", &value, NULL);
 
-  if (edited_prop && !strcmp (edited_prop, pspec->name))
+  if (o->editing_property && o->property_focus == pspec->name)
   {
     draw_key (o, mrg, pspec->name);
     mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
-    mrg_edit_start (mrg, update_prop, node);
+    mrg_edit_start (mrg, update_editing_buf, node);
 
-    draw_value (o, mrg, value);
+    draw_value (o, mrg, o->editing_buf);
 
     mrg_edit_end (mrg);
 
@@ -2556,7 +2594,7 @@ draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec
   }
   else
   {
-    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspec->name);
+    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, (void*)g_intern_string(value), (void*)pspec->name);
     draw_key (o, mrg, pspec->name);
     draw_value (o, mrg, value);
     mrg_text_listen_done (mrg);
@@ -2578,24 +2616,23 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
   mrg_start (mrg, "div.property", NULL);//
   gegl_node_get (node, pspec->name, &value, NULL);
 
-  if (edited_prop && !strcmp (edited_prop, pspec->name))
+  if (o->editing_property && (o->property_focus == g_intern_string (pspec->name)))
   {
     draw_key (o, mrg, pspec->name);
-    fprintf (stderr, "!!!!\n");
 
     mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
-    mrg_edit_start (mrg, update_prop, node);
     x = mrg_x (mrg);
     y = mrg_y (mrg);
-    draw_value (o, mrg, value);
+    draw_value (o, mrg, o->editing_buf);
 
-    mrg_text_listen_done (mrg);
     x_final = mrg_x (mrg);
     y_final = mrg_y (mrg);
+    mrg_text_listen_done (mrg);
   }
   else
   {
-    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, node, (void*)pspec->name);
+    /* XXX this string interning is a leak */
+    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, (void*)g_intern_string(value), (void*)pspec->name);
     draw_key (o, mrg, pspec->name);
     mrg_start_with_style (mrg, "div.propvalue", NULL, "color:transparent;");
     x = mrg_x (mrg);
@@ -2616,8 +2653,29 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
    */
   mrg_set_xy (mrg, x, y);
   mrg_set_style (mrg, "color:yellow");
-  mrg_printf (mrg, "%s", value);
+
+  if (o->editing_property && (o->property_focus == g_intern_string (pspec->name)))
+  {
+    mrg_edit_start (mrg, update_editing_buf, node);
+    x = mrg_x (mrg);
+    y = mrg_y (mrg);
+    draw_value (o, mrg, o->editing_buf);
+    mrg_edit_end (mrg);
+  }
+  else
+  {
+    mrg_printf (mrg, "%s", value);
+  }
+
+
+
+
+
+
+
   mrg_set_xy (mrg, x_final, y_final);
+
+
 
   if (value)
     g_free (value);
@@ -2964,20 +3022,20 @@ static void set_op (MrgEvent *event, void *data1, void *data2)
   State *o = data1;
 
   {
-    if (strchr (o->new_opname, ':'))
+    if (strchr (o->editing_buf, ':'))
     {
-      gegl_node_set (o->active, "operation", o->new_opname, NULL);
+      gegl_node_set (o->active, "operation", o->editing_buf, NULL);
     }
     else
     {
       char temp[1024];
-      g_snprintf (temp, 1023, "gegl:%s", o->new_opname);
+      g_snprintf (temp, 1023, "gegl:%s", o->editing_buf);
       gegl_node_set (o->active, "operation", temp, NULL);
 
     }
   }
 
-  o->new_opname[0]=0;
+  o->editing_buf[0]=0;
   o->editing_op_name=0;
   mrg_event_stop_propagate (event);
   mrg_queue_draw (o->mrg, NULL);
@@ -3638,8 +3696,8 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
 
   if (active && o->editing_op_name)
   {
-    mrg_edit_start (mrg, update_string, &o->new_opname[0]);
-    mrg_printf (mrg, "%s", o->new_opname);
+    mrg_edit_start (mrg, update_string, &o->editing_buf[0]);
+    mrg_printf (mrg, "%s", o->editing_buf);
     mrg_edit_end (mrg);
     mrg_add_binding (mrg, "return", NULL, NULL, set_op, o);
   }
@@ -5022,7 +5080,7 @@ static void gegl_ui (Mrg *mrg, void *data)
   mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "quit");
   mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle fullscreen");
 
-  if (!edited_prop && !o->editing_op_name && ! o->is_dir && o->property_focus == NULL)
+  if (!text_editor_active(o) && ! o->is_dir && o->property_focus == NULL)
   {
 #if 0
     if (o->active && gegl_node_has_pad (o->active, "output"))
@@ -5045,7 +5103,7 @@ static void gegl_ui (Mrg *mrg, void *data)
   }
   mrg_add_binding (mrg, "control-l", NULL, NULL, run_command, "clear");
 
-  if (!edited_prop && !o->editing_op_name)
+  if (!text_editor_active (o))
   {
     mrg_add_binding (mrg, "tab", NULL, NULL, run_command, "toggle controls");
     mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle fullscreen");
@@ -5057,13 +5115,11 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom out");
       mrg_add_binding (mrg, "1", NULL, NULL, run_command, "zoom 1.0");
     }
-  }
 
-  if (!edited_prop && !o->editing_op_name)
-  {
     ui_commandline (mrg, o);
   }
-  if (commandline[0]==0)
+
+  if (commandline[0]==0 && !text_editor_active(o))
   {
     /* cursor keys and some more keys are used for commandline entry if there already
        is contents, this frees up some bindings/individual keys for direct binding as
@@ -5131,6 +5187,8 @@ static void gegl_ui (Mrg *mrg, void *data)
     mrg_add_binding (mrg, "control-m", NULL, NULL, run_command, "toggle mipmap");
     mrg_add_binding (mrg, "control-y", NULL, NULL, run_command, "toggle colormanage-display");
 
+    if (!text_editor_active (o))
+    {
     if (o->property_focus)
     {
       mrg_add_binding (mrg, "up", NULL, NULL,   run_command, "prop-editor up");
@@ -5151,6 +5209,7 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "control-up", NULL, NULL, run_command, "swap output");
       mrg_add_binding (mrg, "control-down", NULL, NULL, run_command, "swap input");
     }
+    }
 
 
   }
@@ -5163,6 +5222,15 @@ static void gegl_ui (Mrg *mrg, void *data)
   if (o->show_bindings)
   {
      ui_show_bindings (mrg, o);
+  }
+
+  if (o->editing_property)
+  {
+    cairo_new_path (mrg_cr (mrg));
+    cairo_rectangle (mrg_cr (mrg), -1, 0, mrg_width (mrg)+2, mrg_height (mrg));
+    mrg_listen (mrg, MRG_POINTER|MRG_DRAG|MRG_TAPS, unset_edited_prop, NULL, NULL);
+    mrg_add_binding (mrg, "escape", NULL, NULL,  unset_edited_prop, NULL);
+    cairo_new_path (mrg_cr (mrg));
   }
 
 }
@@ -6371,7 +6439,28 @@ cmd_propeditor (COMMAND_ARGS)
   }
   else if (!strcmp (argv[1], "return"))
   {
-    fprintf (stderr, "propeditor return");
+    char *value = NULL;
+    GParamSpec *pspec = gegl_node_find_property (o->active, o->property_focus);
+    if (pspec)
+    {
+      if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
+          g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
+      {
+        gegl_node_get (o->active, o->property_focus, &value, NULL);
+      }
+      else if (g_type_is_a (pspec->value_type, GEGL_TYPE_COLOR))
+      {
+        GeglColor *color;
+        gegl_node_get (o->active, pspec->name, &color, NULL);
+        g_object_get (color, "string", &value, NULL);
+      }
+    }
+    if (value)
+    {
+      o->editing_property = 1;
+      strcpy (o->editing_buf, value);
+      g_free (value);
+    }
   }
 
   mrg_queue_draw (o->mrg, NULL);
@@ -6656,7 +6745,7 @@ int cmd_edit_opname (COMMAND_ARGS) /* "edit-opname", 0, "", "permits changing th
 {
   State *o = global_state;
   o->editing_op_name = 1;
-  o->new_opname[0]=0;
+  o->editing_buf[0]=0;
   mrg_set_cursor_pos (o->mrg, 0);
   return 0;
 }
@@ -6904,7 +6993,7 @@ cmd_node_add (COMMAND_ARGS)
 
     o->editing_op_name = 1;
     mrg_set_cursor_pos (o->mrg, 0);
-    o->new_opname[0]=0;
+    o->editing_buf[0]=0;
   }
   else if (!strcmp(argv[1], "aux"))
   {
@@ -6924,7 +7013,7 @@ cmd_node_add (COMMAND_ARGS)
 
     o->editing_op_name = 1;
     mrg_set_cursor_pos (o->mrg, 0);
-    o->new_opname[0]=0;
+    o->editing_buf[0]=0;
   }
   else if (!strcmp(argv[1], "output"))
   {
@@ -6941,7 +7030,7 @@ cmd_node_add (COMMAND_ARGS)
       gegl_node_connect_to (o->active, "output", consumer, consumer_name);
       o->editing_op_name = 1;
       if (o->mrg) mrg_set_cursor_pos (o->mrg, 0);
-      o->new_opname[0]=0;
+      o->editing_buf[0]=0;
     }
   }
   if (o->mrg) rev_inc (o);
@@ -6949,27 +7038,6 @@ cmd_node_add (COMMAND_ARGS)
 }
 
 int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
-int
-cmd_todo (COMMAND_ARGS)
-{
-  printf ("propeditor:string\n");
-  printf ("propeditor:color\n");
-  printf ("make axis constrained vertical drag up/down adjust linear small increments on double\n");
-  printf ("crop ui\n");
-  printf ("units in commandline\n");
-  printf ("polyline/bezier on canvas display/editing\n");
-  printf ("interpret GUM\n");
-  printf ("star/comment/title storage\n");
-  printf ("loadable lua modules\n");
-  printf ("rewrite of core in lua?\n");
-  printf ("keep track of \"orphaned\" nodes as free-floating new columns\n");
-  printf ("video/audio playback time controls\n");
-  printf ("animation curves for properties\n");
-  printf ("dir actions: rename, discard\n");
-  printf ("setting of id in ui?\n");
-  return 0;
-}
-
 int cmd_about (COMMAND_ARGS);/* "about", -1, "", ""*/
 int
 cmd_about (COMMAND_ARGS)
@@ -6990,9 +7058,36 @@ cmd_about (COMMAND_ARGS)
 "happens on demand by starting a second instance with a batch of paths - or\n"
 "when leaving a modified image for to view/edit another."
 "\n"
-"File types supported are: jpg, png, tif, exr, gif, mp4, avi, mpg and more\n"
+"File types supported are: gegl, jpg, svg, png, tif, exr, gif, mp4, avi, mpg.\n"
 "video and gif files are opened looping.\n"
+"Source files are left intact, modifications are stored in a corresponding .gegl file\n"
+"next to the sources. .gegl documents without a corresponding document when\n"
+"the name is stripped are treated as separate documents, .gegl files may\n"
+"contain references to multiple source images - but starting out with a photo\n"
+"is the most common use case\n"
 "\n");
+  return 0;
+}
+
+int
+cmd_todo (COMMAND_ARGS)
+{
+  printf ("propeditor:string\n");
+  printf ("propeditor:color\n");
+  printf ("make axis constrained vertical drag up/down adjust linear small increments on double\n");
+  printf ("crop ui\n");
+  printf ("tab-completion for cd command\n");
+  printf ("units in commandline\n");
+  printf ("polyline/bezier on canvas display/editing\n");
+  printf ("interpret GUM\n");
+  printf ("star/comment/title storage\n");
+  printf ("loadable lua modules\n");
+  printf ("rewrite of core in lua?\n");
+  printf ("keep track of \"orphaned\" nodes as free-floating new columns\n");
+  printf ("video/audio playback time controls\n");
+  printf ("animation curves for properties\n");
+  printf ("dir actions: rename, discard\n");
+  printf ("setting of id in ui?\n");
   return 0;
 }
 
