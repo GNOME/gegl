@@ -434,11 +434,11 @@ gegl_color_get_string (GeglColor *color)
     gfloat cmyka[5];
     gchar buf [5][G_ASCII_DTOSTR_BUF_SIZE];
     gegl_color_get_pixel (color, babl_format ("CMYKA float"), cmyka);
-    g_ascii_formatd (buf[0], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", cmyka[0]*100);
-    g_ascii_formatd (buf[1], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", cmyka[1]*100);
-    g_ascii_formatd (buf[2], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", cmyka[2]*100);
-    g_ascii_formatd (buf[3], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", cmyka[3]*100);
-    g_ascii_formatd (buf[4], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", cmyka[3]);
+    g_ascii_formatd (buf[0], G_ASCII_DTOSTR_BUF_SIZE, "%1.1f", cmyka[0]*100);
+    g_ascii_formatd (buf[1], G_ASCII_DTOSTR_BUF_SIZE, "%1.1f", cmyka[1]*100);
+    g_ascii_formatd (buf[2], G_ASCII_DTOSTR_BUF_SIZE, "%1.1f", cmyka[2]*100);
+    g_ascii_formatd (buf[3], G_ASCII_DTOSTR_BUF_SIZE, "%1.1f", cmyka[3]*100);
+    g_ascii_formatd (buf[4], G_ASCII_DTOSTR_BUF_SIZE, "%1.1f", cmyka[3]);
     if (cmyka[4] == 1.0)
     {
       return g_strdup_printf ("cmyk(%s, %s, %s, %s)", buf[0], buf[1], buf[2], buf[3]);
