@@ -258,6 +258,9 @@ struct _State {
 
   float          u, v;
   float          scale;
+
+  int            is_fit;
+
   float          dir_scale;
   float          render_quality; /* default (and in code swapped for preview_quality during preview rendering, this is the canonical read location for the value)  */
   float          preview_quality;
@@ -998,6 +1001,7 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
 
       o->u -= (e->delta_x )/2; /* doing half contribution of motion per finger */
       o->v -= (e->delta_y )/2; /* is simple and roughly right */
+      o->is_fit = 0;
     }
 
     }
@@ -1100,6 +1104,7 @@ static void on_pick_drag (MrgEvent *e, void *data1, void *data2)
 
       o->u -= (e->delta_x )/2; /* doing half contribution of motion per finger */
       o->v -= (e->delta_y )/2; /* is simple and roughly right */
+      o->is_fit = 0;
     }
 
     }
@@ -2658,10 +2663,7 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
     draw_value (o, mrg, o->editing_buf);
     mrg_edit_end (mrg);
 
-    if (multiline)
-    {
-    }
-    else /* assume to not be multiline */
+    if (!multiline)
       mrg_add_binding (mrg, "return", NULL, NULL, unset_edited_prop, o);
   }
   else
@@ -5047,6 +5049,7 @@ static void gegl_ui (Mrg *mrg, void *data)
         {
           ui_viewer (o);
           mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "parent");
+
         }
 
       mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "next");
@@ -5133,8 +5136,9 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "collection left");
 
     }
-    else
+    else if (o->show_graph)
     {
+
       mrg_add_binding (mrg, "tab",   NULL, NULL, run_command, "prop-editor focus");
 
       if (o->property_focus)
@@ -5159,6 +5163,14 @@ static void gegl_ui (Mrg *mrg, void *data)
         mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
       }
       //mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
+    }
+    else
+    {
+      if (o->is_fit)
+       {
+         mrg_add_binding (mrg, "right", NULL, NULL, run_command, "next");
+         mrg_add_binding (mrg, "left", NULL, NULL,  run_command, "prev");
+       }
     }
 #if 0
     mrg_add_binding (mrg, "1", NULL, NULL, run_command, "star 1");
@@ -5678,6 +5690,9 @@ static void zoom_to_fit (State *o)
   o->u += rect.x * o->scale;
   o->v += rect.y * o->scale;
 
+
+  o->is_fit = 1;
+
   mrg_queue_draw (mrg, NULL);
 }
 static void center (State *o)
@@ -5690,6 +5705,7 @@ static void center (State *o)
   o->v = -(mrg_height (mrg) - rect.height * o->scale) / 2;
   o->u += rect.x * o->scale;
   o->v += rect.y * o->scale;
+  o->is_fit = 0;
 
   mrg_queue_draw (mrg, NULL);
 }
@@ -5701,6 +5717,7 @@ static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
   o->scale *= factor;
   o->u = x * o->scale - screen_cx;
   o->v = y * o->scale - screen_cy;
+  o->is_fit = 0;
 
   queue_draw (o);
 }
@@ -6244,6 +6261,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
   if (!strcmp(argv[1], "fit"))
   {
     zoom_to_fit (o);
+    return 0; // to keep fit state
   }
   else if (!strcmp(argv[1], "in"))
   {
@@ -6272,6 +6290,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
     o->v = y * o->scale - mrg_height(o->mrg)/2;
     mrg_queue_draw (o->mrg, NULL);
   }
+  o->is_fit = 0;
   return 0;
 }
 
