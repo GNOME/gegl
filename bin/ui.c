@@ -5010,6 +5010,21 @@ static void gegl_ui (Mrg *mrg, void *data)
   else
   {
     o->is_dir = 0;
+
+    { /* keep zoomed fit on resize */
+      static int prev_width = 0;
+      static int prev_height = 0;
+      int width = mrg_width (mrg);
+      int height = mrg_height (mrg);
+
+      if (o->is_fit && prev_width &&
+          (width != prev_width || height != prev_height))
+      {
+        argvs_eval ("zoom fit");
+      }
+      prev_width = width;
+      prev_height = height;
+    }
   }
 
   if (o->is_dir)
