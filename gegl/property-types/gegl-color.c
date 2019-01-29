@@ -452,18 +452,18 @@ gegl_color_get_string (GeglColor *color)
   if (rgba[3] == 1.0)
     {
       gchar buf [3][G_ASCII_DTOSTR_BUF_SIZE];
-      g_ascii_formatd (buf[0], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[0]);
-      g_ascii_formatd (buf[1], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[1]);
-      g_ascii_formatd (buf[2], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[2]);
+      g_ascii_formatd (buf[0], G_ASCII_DTOSTR_BUF_SIZE, "%1.3f", rgba[0]);
+      g_ascii_formatd (buf[1], G_ASCII_DTOSTR_BUF_SIZE, "%1.3f", rgba[1]);
+      g_ascii_formatd (buf[2], G_ASCII_DTOSTR_BUF_SIZE, "%1.3f", rgba[2]);
       return g_strdup_printf ("rgb(%s, %s, %s)", buf[0], buf[1], buf[2]);
     }
   else
     {
       gchar buf [4][G_ASCII_DTOSTR_BUF_SIZE];
-      g_ascii_formatd (buf[0], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[0]);
-      g_ascii_formatd (buf[1], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[1]);
-      g_ascii_formatd (buf[2], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[2]);
-      g_ascii_formatd (buf[3], G_ASCII_DTOSTR_BUF_SIZE, "%1.4f", rgba[3]);
+      g_ascii_formatd (buf[0], G_ASCII_DTOSTR_BUF_SIZE, "%1.3f", rgba[0]);
+      g_ascii_formatd (buf[1], G_ASCII_DTOSTR_BUF_SIZE, "%1.3f", rgba[1]);
+      g_ascii_formatd (buf[2], G_ASCII_DTOSTR_BUF_SIZE, "%1.3f", rgba[2]);
+      g_ascii_formatd (buf[3], G_ASCII_DTOSTR_BUF_SIZE, "%1.3f", rgba[3]);
       return g_strdup_printf ("rgba(%s, %s, %s, %s)", buf[0], buf[1], buf[2], buf[3]);
     }
 }
