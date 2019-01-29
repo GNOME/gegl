@@ -1511,10 +1511,10 @@ static void ui_dir_viewer (State *o)
 
     cairo_rectangle (mrg_cr (mrg), x, y, dim, dim);
     if (no == o->entry_no + 1)
+    {
       cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,.5);
-    else
-      cairo_set_source_rgba (mrg_cr (mrg), 1,1,1,.0);
-    cairo_fill_preserve (mrg_cr (mrg));
+      cairo_fill_preserve (mrg_cr (mrg));
+    }
     mrg_listen_full (mrg, MRG_CLICK, run_command, "parent", NULL, NULL, NULL);
 
     mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
@@ -1550,11 +1550,10 @@ static void ui_dir_viewer (State *o)
 
         cairo_rectangle (mrg_cr (mrg), x, y, dim, dim);
         if (no == o->entry_no + 1)
+        {
           cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,.5);
-        else
-          cairo_set_source_rgba (mrg_cr (mrg), 1,1,1,.0);
-        cairo_fill (mrg_cr (mrg));
-
+          cairo_fill (mrg_cr (mrg));
+        }
 
         mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
         wdim * (1.0-padding*2), hdim *(1.0-padding*2), 1.0,
@@ -1607,11 +1606,13 @@ static void ui_dir_viewer (State *o)
         cairo_rectangle (mrg_cr (mrg), x, y, wdim, hdim);
 
         if (no == o->entry_no + 1)
+        {
           cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,1.0);
-        else
-          cairo_set_source_rgba (mrg_cr (mrg), 1,1,1,.0);
+          cairo_fill_preserve (mrg_cr (mrg));
+        }
+
         mrg_listen (mrg, MRG_TAP, entry_load, o, (void*)g_intern_string (iter->data));
-        cairo_fill (mrg_cr (mrg));
+        cairo_new_path (mrg_cr (mrg));
 
         if (w!=0 && h!=0)
           mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
