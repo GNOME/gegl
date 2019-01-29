@@ -283,6 +283,7 @@ struct _State {
   float          slide_pause;
   int            slide_enabled;
   int            slide_timeout;
+  char          *paint_color;    // XXX : should be a GeglColor
 
   GeglNode      *gegl_decode;
   GeglNode      *decode_load;
@@ -713,6 +714,7 @@ static void init_state (State *o)
   o->preview_quality = 1.0;
   //o->preview_quality = 2.0;
   o->slide_pause     = 5.0;
+  o->paint_color     = g_strdup ("white");
   o->slide_enabled   = 0;
   o->show_bindings   = 0;
   o->ui_consumer = g_hash_table_new (g_direct_hash, g_direct_equal);
@@ -1253,7 +1255,7 @@ static void on_paint_drag (MrgEvent *e, void *data1, void *data2)
       path = gegl_path_new ();
       gegl_path_append (path, 'M', x, y);
       gegl_path_append (path, 'L', x, y);
-      gegl_node_set (o->active, "d", path, "color", gegl_color_new("blue"),
+      gegl_node_set (o->active, "d", path, "color", gegl_color_new(o->paint_color),
                      "width", 16.0 / o->scale, NULL);
       rev_inc (o);
       break;
@@ -1411,19 +1413,6 @@ static void prop_int_drag_cb (MrgEvent *e, void *data1, void *data2)
   mrg_queue_draw (e->mrg, NULL);
 }
 #endif
-
-
-static gchar *edited_prop = NULL;
-
-static void update_editing_buf (const char *new_string, void *node_p)
-{
-  //GeglNode *node = node_p;
-  //gegl_node_set (node, edited_prop, new_string, NULL);
-  //rev_inc (global_state);
-  global_state->editing_buf[0]=0;
-  strcpy (global_state->editing_buf, new_string);
-  fprintf (stderr, "[%s]\n", new_string);
-}
 
 
 static void set_edited_prop (MrgEvent *e, void *data1, void *data2)
@@ -2571,6 +2560,12 @@ draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
 
 /***************************************************************************/
 
+static void update_string (const char *new_text, void *data)
+{
+  char *str = data;
+  strcpy (str, new_text);
+}
+
 static void
 draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
@@ -2584,12 +2579,12 @@ draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec
   {
     draw_key (o, mrg, pspec->name);
     mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
-    mrg_edit_start (mrg, update_editing_buf, node);
+    mrg_edit_start (mrg, update_string, &o->editing_buf[0]);
 
     draw_value (o, mrg, o->editing_buf);
 
     mrg_edit_end (mrg);
-
+    mrg_add_binding (mrg, "return", NULL, NULL, unset_edited_prop, o);
     mrg_text_listen_done (mrg);
   }
   else
@@ -2656,7 +2651,7 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
 
   if (o->editing_property && (o->property_focus == g_intern_string (pspec->name)))
   {
-    mrg_edit_start (mrg, update_editing_buf, node);
+    mrg_edit_start (mrg, update_string, &o->editing_buf[0]);
     x = mrg_x (mrg);
     y = mrg_y (mrg);
     draw_value (o, mrg, o->editing_buf);
@@ -2999,12 +2994,6 @@ static void list_node_props (State *o, GeglNode *node, int indent)
 
      mrg_end (mrg);
   }
-}
-
-static void update_string (const char *new_text, void *data)
-{
-  char *str = data;
-  strcpy (str, new_text);
 }
 
 static void activate_sink_producer (State *o)
@@ -5038,16 +5027,11 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   cairo_save (mrg_cr (mrg));
   {
-    if (edited_prop)
-      g_free (edited_prop);
-    edited_prop = NULL;
-
     if (S_ISREG (stat_buf.st_mode))
     {
       if (o->show_graph)
         {
           per_op_canvas_ui (o);
-
 
           ui_debug_op_chain (o);
           mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "toggle editing");
