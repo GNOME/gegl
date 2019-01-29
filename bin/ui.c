@@ -2651,11 +2651,18 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
 
   if (o->editing_property && (o->property_focus == g_intern_string (pspec->name)))
   {
+    const char *multiline = gegl_operation_get_property_key (gegl_node_get_operation(o->active), pspec->name, "multiline");
     mrg_edit_start (mrg, update_string, &o->editing_buf[0]);
     x = mrg_x (mrg);
     y = mrg_y (mrg);
     draw_value (o, mrg, o->editing_buf);
     mrg_edit_end (mrg);
+
+    if (multiline)
+    {
+    }
+    else /* assume to not be multiline */
+      mrg_add_binding (mrg, "return", NULL, NULL, unset_edited_prop, o);
   }
   else
   {
