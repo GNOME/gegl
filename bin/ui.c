@@ -292,7 +292,7 @@ struct _State {
   GeglNode      *decode_load;
   GeglNode      *decode_store;
   int            playing;
-  int            color_manage_display;
+  int            color_managed_display;
 
   int            is_video;
   int            prev_frame_played;
@@ -335,7 +335,7 @@ typedef struct Setting {
 
 Setting settings[]=
 {
-  INT_PROP(color_manage_display, "perform ICC color management and convert output to display ICC profile instead of passing out sRGB, passing out sRGB is faster."),
+  INT_PROP(color_managed_display, "perform ICC color management and convert output to display ICC profile instead of passing out sRGB, passing out sRGB is faster."),
   INT_PROP(frame_no, "current frame number in video/animation"),
   INT_PROP_RO(is_video, ""),
   STRING_PROP_RO(path, "path of current document"),
@@ -4825,7 +4825,16 @@ static void ui_commandline (Mrg *mrg, void *data)
   cairo_t *cr = mrg_cr (mrg);
   int row = 1;
   cairo_save (cr);
-  if (scrollback || 1)
+  if (scrollback == NULL && commandline[0]==0)
+  {
+    mrg_set_xy (mrg, 0,h*2);
+    mrg_edit_start (mrg, update_commandline, o);
+    mrg_printf (mrg, "%s", commandline);
+    mrg_edit_end (mrg);
+    goto jump;
+  }
+
+
   mrg_start (mrg, "div.shell", NULL);
   //mrg_set_xy (mrg, em, h - em * 1);
   mrg_start (mrg, "div.prompt", NULL);
@@ -4910,6 +4919,7 @@ static void ui_commandline (Mrg *mrg, void *data)
   if (scrollback || 1)
   mrg_end (mrg);
 
+jump:
   {
     const char *label = "run commandline";
   if (commandline[0]==0)
@@ -4917,8 +4927,13 @@ static void ui_commandline (Mrg *mrg, void *data)
     if (o->is_dir)   label = "show entry";
     else
     {
-    if (o->show_graph)  label = "stop editing";
-    else                label = "show editing graph";
+      if (o->show_graph){
+        if (o->property_focus)
+          label = "change property";
+        else
+          label = "stop editing";
+      }
+      else label = "show editing graph";
     }
   }
     mrg_add_binding (mrg, "return", NULL, label, do_commandline_run, o);
@@ -5014,7 +5029,7 @@ static void gegl_ui (Mrg *mrg, void *data)
                       o->u, o->v,
                       o->scale,
                       o->render_quality,
-                      o->color_manage_display);
+                      o->color_managed_display);
      break;
      case GEGL_RENDERER_THREAD:
      case GEGL_RENDERER_IDLE:
@@ -5028,7 +5043,7 @@ static void gegl_ui (Mrg *mrg, void *data)
                                o->u, o->v,
                                o->scale,
                                o->render_quality,
-                               o->color_manage_display);
+                               o->color_managed_display);
          g_object_unref (buffer);
        }
        break;
@@ -5067,14 +5082,10 @@ static void gegl_ui (Mrg *mrg, void *data)
 
       mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "next");
       mrg_add_binding (mrg, "page-up", NULL, NULL,  run_command, "prev");
-      mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "next");
-      mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "prev");
     }
     else if (S_ISDIR (stat_buf.st_mode))
     {
       ui_dir_viewer (o);
-      mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "collection right");
-      mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "collection left");
     }
   }
   cairo_restore (mrg_cr (mrg));
@@ -5095,13 +5106,6 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "node-add aux");
 #endif
 
-    if (o->active != o->source)
-      mrg_add_binding (mrg, "control-x", NULL, NULL, run_command, "remove");
-
-    if (o->active != o->source)
-      mrg_add_binding (mrg, "control-c", NULL, NULL, run_command, "reference");
-
-    mrg_add_binding (mrg, "control-v", NULL, NULL, run_command, "dereference");
 
     mrg_add_binding (mrg, "control-s", NULL, NULL, run_command, "toggle slideshow");
   }
@@ -5156,7 +5160,19 @@ static void gegl_ui (Mrg *mrg, void *data)
       }
       else
       {
+
+
+
         mrg_add_binding (mrg, "tab",   NULL, "focus properties", run_command, "prop-editor focus");
+
+        if (o->active != o->source)
+          mrg_add_binding (mrg, "control-x", NULL, NULL, run_command, "remove");
+
+        if (o->active != o->source)
+          mrg_add_binding (mrg, "control-c", NULL, NULL, run_command, "reference");
+
+        mrg_add_binding (mrg, "control-v", NULL, NULL, run_command, "dereference");
+
         mrg_add_binding (mrg, "home",  NULL, NULL, run_command, "graph-cursor append");
         mrg_add_binding (mrg, "end",   NULL, NULL, run_command, "graph-cursor source");
 
@@ -5187,6 +5203,9 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   if (o->is_dir)
   {
+    mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "collection right");
+    mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "collection left");
+
     if (commandline[0]==0)
     {
       mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
@@ -5197,6 +5216,9 @@ static void gegl_ui (Mrg *mrg, void *data)
   }
   else
   {
+    mrg_add_binding (mrg, "alt-right", NULL, "next image", run_command, "next");
+    mrg_add_binding (mrg, "alt-left", NULL, "previous image",  run_command, "prev");
+
     if (commandline[0]==0)
     {
       mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
@@ -5207,7 +5229,7 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
 
     mrg_add_binding (mrg, "control-m", NULL, NULL, run_command, "toggle mipmap");
-    mrg_add_binding (mrg, "control-y", NULL, NULL, run_command, "toggle colormanage-display");
+    mrg_add_binding (mrg, "control-y", NULL, NULL, run_command, "toggle colormanaged-display");
 
     if (o->show_graph && !text_editor_active (o))
     {
@@ -5224,7 +5246,6 @@ static void gegl_ui (Mrg *mrg, void *data)
         mrg_add_binding (mrg, "up", NULL, NULL,        run_command, "graph-cursor up");
       if (o->active && gegl_node_has_pad (o->active, "input"))
         mrg_add_binding (mrg, "down", NULL, NULL,      run_command, "graph-cursor down");
-    }
 
     if (o->active && gegl_node_has_pad (o->active, "input") &&
                      gegl_node_has_pad (o->active, "output"))
@@ -5233,17 +5254,13 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "control-down", NULL, "swap active with node below", run_command, "swap input");
     }
     }
-    else
-    {
-      mrg_add_binding (mrg, "escape", NULL, "collection view", run_command, "parent");
     }
 
-
+    mrg_add_binding (mrg, "escape", NULL, "collection view", run_command, "parent");
   }
 
   mrg_add_binding (mrg, "F1", NULL, NULL, run_command, "toggle cheatsheet");
   mrg_add_binding (mrg, "control-h", NULL, NULL, run_command, "toggle cheatsheet");
-
   mrg_add_binding (mrg, "control-delete", NULL, NULL,  run_command, "discard");
 
   if (o->show_bindings)
@@ -6064,10 +6081,10 @@ cmd_toggle (COMMAND_ARGS)
   {
     o->show_bindings = !o->show_bindings;
   }
-  else if (!strcmp(argv[1], "colormanage-display"))
+  else if (!strcmp(argv[1], "colormanaged-display"))
   {
-    o->color_manage_display = !o->color_manage_display;
-    printf ("%s colormanagement of display\n", o->color_manage_display?"enabled":"disabled");
+    o->color_managed_display = !o->color_managed_display;
+    printf ("%s colormanagement of display\n", o->color_managed_display?"enabled":"disabled");
     //mrg_gegl_dirty ();
   }
   else if (!strcmp(argv[1], "mipmap"))
@@ -6477,8 +6494,15 @@ cmd_propeditor (COMMAND_ARGS)
     GParamSpec *pspec = gegl_node_find_property (o->active, o->property_focus);
     if (pspec)
     {
-      if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
-          g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
+      if (g_type_is_a (pspec->value_type, G_TYPE_BOOLEAN))
+      {
+        gboolean value;
+        gegl_node_get (o->active, o->property_focus, &value, NULL);
+        value = !value;
+        gegl_node_set (o->active, o->property_focus, value, NULL);
+      }
+      else if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
+               g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
       {
         gegl_node_get (o->active, o->property_focus, &value, NULL);
       }
