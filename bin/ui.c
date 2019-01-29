@@ -221,7 +221,9 @@ struct _State {
                             on type of input file.
                           */
   GList         *paths;  /* list of full paths to entries in collection/path/containing path,
-                            XXX: could be replaced with URIs  */
+                            XXX: could be replaced with URIs, and each
+                            element should perhaps contain more internal info
+                            like stars, tags etc.  */
 
 
 
@@ -323,7 +325,11 @@ typedef struct Setting {
 
 Setting settings[]=
 {
+  INT_PROP(color_manage_display, "perform ICC color management and convert output to display ICC profile instead of passing out sRGB, passing out sRGB is faster."),
+  INT_PROP(frame_no, "current frame number in video/animation"),
+  INT_PROP_RO(is_video, ""),
   STRING_PROP_RO(path, "path of current document"),
+  INT_PROP(playing, "wheter we are playing or not set to 0 for pause 1 for playing"),
   STRING_PROP_RO(save_path, "save path, might be different from path if current path is an immutable source image itself"),
   STRING_PROP_RO(src_path, "source path the immutable source image currently being edited"),
 
@@ -331,16 +337,13 @@ Setting settings[]=
 //  FLOAT_PROP(v, "vertical coordinate of top-left in display/scaled by scale factor coordinates"),
 //  FLOAT_PROP(render_quality, "1.0 = normal 2.0 = render at 2.0 zoom factor 4.0 render at 25%"),
 //  FLOAT_PROP(preview_quality, "preview quality for use during some interactions, same scale as render-quality"),
+  FLOAT_PROP(scale, "display scale factor"),
+  INT_PROP(show_bindings, "show currently valid keybindings"),
   INT_PROP(show_graph, "show the graph (and commandline)"),
   INT_PROP(show_thumbbar, "show the thumbbar"),
   INT_PROP(show_controls, "show image viewer controls (maybe merge with show-graph and give better name)"),
   INT_PROP(slide_enabled, "slide show going"),
-  INT_PROP_RO(is_video, ""),
-  INT_PROP(color_manage_display, "perform ICC color management and convert output to display ICC profile instead of passing out sRGB, passing out sRGB is faster."),
-  INT_PROP(playing, "wheter we are playing or not set to 0 for pause 1 for playing"),
-  INT_PROP(frame_no, "current frame number in video/animation"),
-  FLOAT_PROP(scale, "display scale factor"),
-  INT_PROP(show_bindings, "show currently valid keybindings"),
+  FLOAT_PROP(slide_pause, "display scale factor"),
 
 };
 
@@ -629,7 +632,7 @@ static gboolean renderer_task (gpointer data)
       if (thumb_queue)
       {
         static GPid thumbnailer_pid = 0;
-#define THUMB_BATCH_SIZE    10
+#define THUMB_BATCH_SIZE    32
         char *argv[THUMB_BATCH_SIZE]={"gegl","--thumbgen", NULL};
         int count = 2;
         MrgList *to_remove = NULL;
@@ -1202,6 +1205,14 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
        }
     }
 
+    {
+      int count = g_list_length (o->paths);
+      if (o->v < 0)
+        o->v = 0;
+      if (o->v > count/hack_cols * hack_dim - mrg_height(e->mrg)/2)
+        o->v = count/hack_cols * hack_dim - mrg_height(e->mrg)/2;
+    }
+
     o->renderer_state = 0;
     mrg_queue_draw (e->mrg, NULL);
     mrg_event_stop_propagate (e);
@@ -1337,9 +1348,46 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
   mrg_event_stop_propagate (e);
 }
 
+
+static int dir_scroll_dragged = 0;
+static void on_dir_scroll_drag (MrgEvent *e, void *data1, void *data2)
+{
+  State *o = data1;
+  switch (e->type)
+  {
+    default: break;
+    case MRG_DRAG_PRESS:
+      dir_scroll_dragged = 1;
+      break;
+    case MRG_DRAG_RELEASE:
+      dir_scroll_dragged = 0;
+      break;
+    case MRG_DRAG_MOTION:
+      {
+        int count = g_list_length (o->paths);
+        float height = mrg_height (e->mrg);
 #if 0
+        y = height * ( o->v / (count/hack_cols * hack_dim) )
 
+        y = height * ( o->v / (count/hack_cols * hack_dim) )
+        y/height = ( o->v / (count/hack_cols * hack_dim) )
+        y/height * (count/hack_cols * hack_dim) = o->v;
+#endif
 
+        o->v += e->delta_y /height * (count/hack_cols * hack_dim);
+
+        if (o->v < 0)
+          o->v = 0;
+        if (o->v > count/hack_cols * hack_dim - height/2)
+          o->v = count/hack_cols * hack_dim - height/2;
+      }
+      break;
+  }
+
+  mrg_event_stop_propagate (e);
+}
+
+#if 0
 static void prop_int_drag_cb (MrgEvent *e, void *data1, void *data2)
 {
   GeglNode *node = data1;
@@ -1441,31 +1489,41 @@ static void ui_dir_viewer (State *o)
   float dim;
   int   cols;
   int   no = 0;
+  int   count;
+  float padding = 0.025;
+  float em = mrg_em (mrg);
   update_grid_dim (o);
   cols = hack_cols;
   dim = hack_dim;
 
-  cairo_rectangle (cr, 0,0, mrg_width(mrg), mrg_height(mrg));
-  mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
-  cairo_new_path (cr);
+  count = g_list_length (o->paths);
+
 
   cairo_save (cr);
   cairo_translate (cr, 0, -(int)o->v);
   {
     float x = dim * (no%cols);
     float y = dim * (no/cols);
+    float wdim = dim * .6;
+    float hdim = dim * .6;
+
+    cairo_new_path (mrg_cr(mrg));
+
+    cairo_rectangle (mrg_cr (mrg), x, y, dim, dim);
+    if (no == o->entry_no + 1)
+      cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,.5);
+    else
+      cairo_set_source_rgba (mrg_cr (mrg), 1,1,1,.0);
+    cairo_fill_preserve (mrg_cr (mrg));
+    mrg_listen_full (mrg, MRG_CLICK, run_command, "parent", NULL, NULL, NULL);
+
+    mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
+        wdim * (1.0-padding*2), hdim *(1.0-padding*2), 1.0,
+         "/usr/share/icons/HighContrast/256x256/actions/go-up.png", NULL, NULL);
+
+    cairo_new_path (mrg_cr(mrg));
     mrg_set_xy (mrg, x, y + dim - mrg_em(mrg) * 2);
     mrg_printf (mrg, "parent\nfolder");
-    cairo_new_path (mrg_cr(mrg));
-    cairo_rectangle (mrg_cr(mrg), x, y, dim, dim);
-    if (no == o->entry_no + 1)
-      cairo_set_source_rgb (mrg_cr(mrg), 1, 1,0);
-    else
-      cairo_set_source_rgb (mrg_cr(mrg), 0, 0,0);
-    cairo_set_line_width (mrg_cr(mrg), 4);
-    cairo_stroke_preserve (mrg_cr(mrg));
-    mrg_listen_full (mrg, MRG_CLICK, run_command, "parent", NULL, NULL, NULL);
-    cairo_new_path (mrg_cr(mrg));
     no++;
   }
 
@@ -1479,7 +1537,7 @@ static void ui_dir_viewer (State *o)
       float y = dim * (no/cols);
       int is_dir = 0;
 
-      if (y < -dim + o->v || y > mrg_height (mrg) + o->v)
+      if (y < -dim * 4 + o->v || y > mrg_height (mrg) + dim * 1.5 + o->v)
         continue;
 
       lstat (path, &stat_buf);
@@ -1487,10 +1545,20 @@ static void ui_dir_viewer (State *o)
 
       if (S_ISDIR (stat_buf.st_mode))
       {
-        float wdim = 96;
-        float hdim = 96;
-        mrg_image (mrg, x + (dim-wdim)/2, y + (dim-hdim)/2,
-                     wdim, hdim, 1.0, "/usr/share/icons/HighContrast/256x256/places/folder.png", NULL, NULL);
+        float wdim = dim * .6;
+        float hdim = dim * .6;
+
+        cairo_rectangle (mrg_cr (mrg), x, y, dim, dim);
+        if (no == o->entry_no + 1)
+          cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,.5);
+        else
+          cairo_set_source_rgba (mrg_cr (mrg), 1,1,1,.0);
+        cairo_fill (mrg_cr (mrg));
+
+
+        mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
+        wdim * (1.0-padding*2), hdim *(1.0-padding*2), 1.0,
+         "/usr/share/icons/HighContrast/256x256/places/folder.png", NULL, NULL);
 
         is_dir = 1;
       }
@@ -1503,8 +1571,7 @@ static void ui_dir_viewer (State *o)
       gchar *thumbpath = get_thumb_path (p2);
 
       /* we compute the thumbpath as the hash of the suffixed path, even for
- * gegl
-         documents - for gegl documents this is slightly inaccurate but consistent.
+ * gegl documents - for gegl documents this is slightly inaccurate but consistent.
        */
       if (access (thumbpath, F_OK) == 0)
       {
@@ -1531,14 +1598,26 @@ static void ui_dir_viewer (State *o)
       {
         float wdim = dim;
         float hdim = dim;
+
         if (w > h)
           hdim = dim / (1.0 * w / h);
         else
           wdim = dim * (1.0 * w / h);
 
+        cairo_rectangle (mrg_cr (mrg), x, y, wdim, hdim);
+
+        if (no == o->entry_no + 1)
+          cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,1.0);
+        else
+          cairo_set_source_rgba (mrg_cr (mrg), 1,1,1,.0);
+        mrg_listen (mrg, MRG_TAP, entry_load, o, (void*)g_intern_string (iter->data));
+        cairo_fill (mrg_cr (mrg));
+
         if (w!=0 && h!=0)
-          mrg_image (mrg, x + (dim-wdim)/2, y + (dim-hdim)/2,
-                     wdim, hdim, 1.0, thumbpath, NULL, NULL);
+          mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
+        wdim * (1.0-padding*2), hdim *(1.0-padding*2), 1.0, thumbpath, NULL, NULL);
+
+
       }
       else
       {
@@ -1559,19 +1638,40 @@ static void ui_dir_viewer (State *o)
       }
       cairo_new_path (mrg_cr(mrg));
       cairo_rectangle (mrg_cr(mrg), x, y, dim, dim);
+#if 0
       if (no == o->entry_no + 1)
         cairo_set_source_rgb (mrg_cr(mrg), 1, 1,0);
       else
         cairo_set_source_rgb (mrg_cr(mrg), 0, 0,0);
       cairo_set_line_width (mrg_cr(mrg), 4);
       cairo_stroke_preserve (mrg_cr(mrg));
+#endif
       if (no == o->entry_no + 1)
         mrg_listen_full (mrg, MRG_TAP, entry_load, o, path, NULL, NULL);
       else
         mrg_listen_full (mrg, MRG_TAP, entry_select, o, GINT_TO_POINTER(no-1), NULL, NULL);
       cairo_new_path (mrg_cr(mrg));
   }
+
   cairo_restore (cr);
+
+  {
+      float height = mrg_height(mrg) * ( mrg_height (mrg) / (count/cols * dim) );
+    float yoffset = 0;
+    if (height < 4 * em)
+    {
+      yoffset = (4 * em - height)/2;
+      height = 4 * em;
+    }
+  cairo_rectangle (cr,
+                   mrg_width(mrg) - 4 * em,
+                   mrg_height(mrg) * ( o->v / (count/cols * dim) ) - yoffset,
+                   4 * em,
+                   height);
+  }
+  cairo_set_source_rgba (cr, 1,1,1, dir_scroll_dragged?.3:.2);
+  mrg_listen (mrg, MRG_DRAG, on_dir_scroll_drag, o, NULL);
+  cairo_fill (cr);
 
   mrg_add_binding (mrg, "left", NULL, NULL, run_command, "collection left");
   mrg_add_binding (mrg, "right", NULL, NULL, run_command, "collection right");
@@ -1627,11 +1727,6 @@ static void draw_edit (Mrg *mrg, float x, float y, float w, float h)
 }
 static void on_thumbbar_drag (MrgEvent *e, void *data1, void *data2);
 
-
-static void on_thumbbar_visible (MrgEvent *event, void *data1, void *data2)
-{
-}
-
 static void on_thumbbar_scroll (MrgEvent *event, void *data1, void *data2)
 {
   State *o = data1;
@@ -1670,20 +1765,17 @@ static void draw_thumb_bar (State *o)
 
   if (o->show_thumbbar > 1)
   {
-     opacity = o->thumbbar_opacity * (1.0 - 0.09) + 0.09 * 1.0;
+     opacity = o->thumbbar_opacity * (1.0 - 0.14) + 0.14 * 1.0;
      if (opacity < 0.99)
        mrg_queue_draw (o->mrg, NULL);
   }
   else
   {
-     opacity = o->thumbbar_opacity * (1.0 - 0.09) + 0.09 * 0.05;
-     if (opacity > 0.06)
+     opacity = o->thumbbar_opacity * (1.0 - 0.07) + 0.07 * 0.00;
+     if (opacity > 0.02)
        mrg_queue_draw (o->mrg, NULL);
   }
   o->thumbbar_opacity = opacity;
-
-  //cairo_translate (mrg_cr (mrg), - o->thumbbar_pan_x, -o->thumbbar_pan_y);
-  //cairo_scale (mrg_cr (mrg), o->thumbbar_scale, o->thumbbar_scale);
 
   cairo_rectangle (cr, 0, height-dim, width, dim);
   mrg_listen (mrg, MRG_DRAG, on_thumbbar_drag, o, NULL);
@@ -1693,7 +1785,7 @@ static void draw_thumb_bar (State *o)
   mrg_listen (mrg, MRG_SCROLL, on_thumbbar_motion, o, NULL);
   cairo_new_path (cr);
 
-  if (curr && opacity > 0.06)
+  if (curr && opacity > 0.01)
   {
     GList *iter = curr;
     float x = mrg_width(mrg)/2-dim/2 - o->thumbbar_pan_x;
@@ -4983,6 +5075,9 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "up", NULL, NULL, run_command, "collection up");
       mrg_add_binding (mrg, "down", NULL, NULL, run_command, "collection down");
 
+      mrg_add_binding (mrg, "page-up", NULL, NULL, run_command, "collection page-up");
+      mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "collection page-down");
+
       mrg_add_binding (mrg, "home", NULL, NULL, run_command, "collection first");
       mrg_add_binding (mrg, "end", NULL, NULL, run_command, "collection last");
 
@@ -6871,6 +6966,32 @@ cmd_todo (COMMAND_ARGS)
   printf ("animation curves for properties\n");
   printf ("dir actions: rename, discard\n");
   printf ("setting of id in ui?\n");
+  return 0;
+}
+
+int cmd_about (COMMAND_ARGS);/* "about", -1, "", ""*/
+int
+cmd_about (COMMAND_ARGS)
+{
+  printf (
+"This is an integrated image browser, viewer and editor using GEGL.\n"
+"It is a testbed for studying and improving GEGL in operation in isolation, \n"
+"It uses micro-raptor GUI to provide interactivity and CSS layout and\n"
+"styling on top of cairo for the user interface. For the graph editor\n"
+"GEGLs native data representation is used as the scene-graph.\n"
+"\n"
+"The internal commandline is a fallback for easy development, and the\n"
+"basis that event dispatch for pointer/touch events and keybindings\n"
+"are dispatched.\n"
+"\n"
+"Thumbnails are stored in ~/.cache/gegl-0.6/thumbnails as 256x256jpg\n"
+"files, the thumbnails kept up to date reflecting any edits, thumbnailing\n"
+"happens on demand by starting a second instance with a batch of paths - or\n"
+"when leaving a modified image for to view/edit another."
+"\n"
+"File types supported are: jpg, png, tif, exr, gif, mp4, avi, mpg and more\n"
+"video and gif files are opened looping.\n"
+"\n");
   return 0;
 }
 

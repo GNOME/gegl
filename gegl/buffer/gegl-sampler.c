@@ -193,7 +193,7 @@ gegl_sampler_prepare (GeglSampler *self)
     klass->prepare (self);
 
   {
-    const Babl *model = babl_format_get_model (gegl_buffer_get_format (self->buffer));
+    const Babl *model = babl_format_get_model (self->format);
 
     if (babl_model_is (model, "Y")||
         babl_model_is (model, "Y'")||
@@ -546,7 +546,9 @@ gegl_buffer_sampler_new_at_level (GeglBuffer      *buffer,
   GType        desired_type;
 
   if (format == NULL)
+  {
     format = gegl_babl_rgbA_linear_float ();
+  }
 
   desired_type = gegl_sampler_gtype_from_enum (sampler_type);
 
