@@ -2664,7 +2664,10 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
     mrg_edit_end (mrg);
 
     if (!multiline)
-      mrg_add_binding (mrg, "return", NULL, NULL, unset_edited_prop, o);
+    {
+      mrg_add_binding (mrg, "return", NULL, "complete editing", unset_edited_prop, o);
+      // XXX : permit escape to cancel returning to default
+    }
   }
   else
   {
@@ -3697,7 +3700,7 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
     mrg_edit_start (mrg, update_string, &o->editing_buf[0]);
     mrg_printf (mrg, "%s", o->editing_buf);
     mrg_edit_end (mrg);
-    mrg_add_binding (mrg, "return", NULL, NULL, set_op, o);
+    mrg_add_binding (mrg, "return", NULL, "set operation", set_op, o);
   }
   else
   {
@@ -4506,13 +4509,13 @@ static void ui_show_bindings (Mrg *mrg, void *data)
       mrg_start (mrg, "dd.binding", NULL);mrg_printf(mrg,"%s", b->command);mrg_end (mrg);
     }
 #endif
-    if (b->cb == run_command)
-    {
-      mrg_start (mrg, "dd.binding", NULL);mrg_printf(mrg,"%s", b->cb_data);mrg_end (mrg);
-    }
     if (b->label)
     {
       mrg_start (mrg, "dd.binding", NULL);mrg_printf(mrg,"%s", b->label);mrg_end (mrg);
+    }
+    else if (b->cb == run_command)
+    {
+      mrg_start (mrg, "dd.binding", NULL);mrg_printf(mrg,"%s", b->cb_data);mrg_end (mrg);
     }
 
     if (mrg_y (mrg) > h - em)
@@ -4859,8 +4862,8 @@ static void ui_commandline (Mrg *mrg, void *data)
           no++;
         }
 
-        mrg_add_binding (mrg, "tab", NULL, NULL, expand_completion, "tab");
-        mrg_add_binding (mrg, "shift-tab", NULL, NULL, expand_completion, "rtab");
+        mrg_add_binding (mrg, "tab", NULL, "next completion", expand_completion, "tab");
+        mrg_add_binding (mrg, "shift-tab", NULL, "previous completion", expand_completion, "rtab");
 
         //if (completion_no>=0)
         //  mrg_add_binding (mrg, "space", NULL, NULL, expand_completion, "space");
@@ -4907,7 +4910,7 @@ static void ui_commandline (Mrg *mrg, void *data)
   if (scrollback || 1)
   mrg_end (mrg);
 
-  mrg_add_binding (mrg, "return", NULL, NULL, do_commandline_run, o);
+  mrg_add_binding (mrg, "return", NULL, "run commandline", do_commandline_run, o);
   cairo_restore (cr);
 }
 
@@ -5043,28 +5046,26 @@ static void gegl_ui (Mrg *mrg, void *data)
           per_op_canvas_ui (o);
 
           ui_debug_op_chain (o);
-          mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "toggle editing");
+          mrg_add_binding (mrg, "escape", NULL, "stop editing", run_command, "toggle editing");
         }
       else
         {
           ui_viewer (o);
-          mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "parent");
+          mrg_add_binding (mrg, "escape", NULL, "collection view", run_command, "parent");
 
         }
 
       mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "next");
-      mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "next");
       mrg_add_binding (mrg, "page-up", NULL, NULL,  run_command, "prev");
+      mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "next");
       mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "prev");
-
-
     }
     else if (S_ISDIR (stat_buf.st_mode))
     {
       ui_dir_viewer (o);
+      mrg_add_binding (mrg, "escape", NULL, "collection view", run_command, "parent");
       mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "collection right");
       mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "collection left");
-      mrg_add_binding (mrg, "escape", NULL, NULL, run_command, "parent");
     }
   }
   cairo_restore (mrg_cr (mrg));
@@ -5160,7 +5161,7 @@ static void gegl_ui (Mrg *mrg, void *data)
           mrg_add_binding (mrg, "left", NULL, NULL,        run_command, "graph-cursor left");
         if (o->active) // && gegl_node_has_pad (o->active, "aux"))
           mrg_add_binding (mrg, "right", NULL, NULL, run_command, "graph-cursor right");
-        mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "next");
+        mrg_add_binding (mrg, "space", NULL, "next image",   run_command, "next");
       }
       //mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
     }
@@ -5168,8 +5169,8 @@ static void gegl_ui (Mrg *mrg, void *data)
     {
       if (o->is_fit)
        {
-         mrg_add_binding (mrg, "right", NULL, NULL, run_command, "next");
-         mrg_add_binding (mrg, "left", NULL, NULL,  run_command, "prev");
+         mrg_add_binding (mrg, "right", NULL, "next image", run_command, "next");
+         mrg_add_binding (mrg, "left", NULL, "previous image",  run_command, "prev");
        }
     }
 #if 0
@@ -5190,7 +5191,7 @@ static void gegl_ui (Mrg *mrg, void *data)
     mrg_add_binding (mrg, "control-m", NULL, NULL, run_command, "toggle mipmap");
     mrg_add_binding (mrg, "control-y", NULL, NULL, run_command, "toggle colormanage-display");
 
-    if (!text_editor_active (o))
+    if (o->show_graph && !text_editor_active (o))
     {
     if (o->property_focus)
     {
