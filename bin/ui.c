@@ -31,7 +31,7 @@ const char *css =
 "div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 3em; left: 15em; width:25em; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
 "div.propname { color: white;}\n"
-"div.propvalue { color: yellow;}\n"
+"div.propvalue { color: yellow;background: transparent;}\n"
 "span.propvalue-enum { color: gray; padding-right: 2em; display: box-inline; }\n"
 "span.propvalue-enum-selected{ color: yellow; padding-right: 2em; display: box-inline; }\n"
 
@@ -1423,11 +1423,71 @@ static void prop_int_drag_cb (MrgEvent *e, void *data1, void *data2)
 static void set_edited_prop (MrgEvent *e, void *data1, void *data2)
 {
   State *o = global_state;
+  GParamSpec *pspec;
   o->property_focus = g_intern_string (data2);
-  o->editing_property = 1;
+  o->editing_property = 0;
 
-  strcpy (o->editing_buf, data1);
+  pspec = gegl_node_find_property (o->active, o->property_focus);
 
+  o->editing_buf[0]=0;
+
+  if (pspec)
+  {
+      if (g_type_is_a (pspec->value_type, G_TYPE_DOUBLE))
+      {
+        double value;
+        gegl_node_get (o->active, o->property_focus, &value, NULL);
+        snprintf (o->editing_buf, sizeof (o->editing_buf), "%.3f", value);
+        o->editing_property = 1;
+      }
+      else if (g_type_is_a (pspec->value_type, G_TYPE_INT))
+      {
+        int value;
+        gegl_node_get (o->active, o->property_focus, &value, NULL);
+        snprintf (o->editing_buf, sizeof (o->editing_buf), "%i", value);
+        o->editing_property = 1;
+      }
+      else if (g_type_is_a (pspec->value_type, G_TYPE_BOOLEAN))
+      {
+        gboolean value;
+        gegl_node_get (o->active, o->property_focus, &value, NULL);
+        value = !value;
+        gegl_node_set (o->active, o->property_focus, value, NULL);
+        o->editing_property = 0;
+      }
+      else if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
+               g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
+      {
+        char *value;
+        gegl_node_get (o->active, o->property_focus, &value, NULL);
+        snprintf (o->editing_buf, sizeof (o->editing_buf), "%s", value);
+        g_free (value);
+        o->editing_property = 1;
+      }
+      else if (g_type_is_a (pspec->value_type, GEGL_TYPE_COLOR))
+      {
+        char *value;
+        GeglColor *color;
+        gegl_node_get (o->active, o->property_focus, &color, NULL);
+        g_object_get (color, "string", &value, NULL);
+        snprintf (o->editing_buf, sizeof (o->editing_buf), "%s", value);
+        o->editing_property = 1;
+      }
+  }
+
+  if (e)
+    mrg_event_stop_propagate (e);
+
+  mrg_set_cursor_pos (o->mrg, 0);
+  mrg_queue_draw (o->mrg, NULL);
+}
+
+static void cancel_edited_prop (MrgEvent *e, void *data1, void *data2)
+{
+  State *o = global_state;
+
+  o->editing_property = 0;
+  o->editing_buf[0]=0;
   mrg_event_stop_propagate (e);
   mrg_set_cursor_pos (e->mrg, 0);
   mrg_queue_draw (e->mrg, NULL);
@@ -1447,8 +1507,16 @@ static void unset_edited_prop (MrgEvent *e, void *data1, void *data2)
     GParamSpec *pspec = gegl_node_find_property (o->active, o->property_focus);
     if (pspec)
     {
-      if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
-          g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
+      if (g_type_is_a (pspec->value_type, G_TYPE_DOUBLE))
+      {
+        gegl_node_set (o->active, o->property_focus, strtod (o->editing_buf, NULL), NULL);
+      }
+      else if (g_type_is_a (pspec->value_type, G_TYPE_INT))
+      {
+        gegl_node_set (o->active, o->property_focus, atoi (o->editing_buf), NULL);
+      }
+      else if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
+               g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
       {
         gegl_node_set (o->active, o->property_focus, o->editing_buf, NULL);
       }
@@ -1458,16 +1526,11 @@ static void unset_edited_prop (MrgEvent *e, void *data1, void *data2)
         sprintf (buf, "%s='%s'",  o->property_focus, o->editing_buf);
         run_command (NULL, buf, NULL);
       }
-
     }
     rev_inc (o);
   }
 
-
-  o->editing_property = 0;
-  mrg_event_stop_propagate (e);
-  mrg_set_cursor_pos (e->mrg, 0);
-  mrg_queue_draw (e->mrg, NULL);
+  cancel_edited_prop (e, NULL, NULL);
 }
 
 
@@ -2361,6 +2424,12 @@ static void on_prop_int_drag (MrgEvent *e, void *data1, void *data2)
   rev_inc (o);
 }
 
+static void update_string (const char *new_text, void *data)
+{
+  char *str = data;
+  strcpy (str, new_text);
+}
+
 static void
 draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
@@ -2368,6 +2437,7 @@ draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 
   MrgStyle *style;
   PropIntDragData *drag_data = g_malloc0 (sizeof (PropIntDragData));
+
   mrg_start (mrg, "div.property", NULL);//
   gegl_node_get (node, pspec->name, &drag_data->value, NULL);
   style = mrg_style (mrg);
@@ -2380,16 +2450,7 @@ draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
   drag_data->width = style->width;
   drag_data->height = mrg_em (mrg) * 2;
 
-  draw_key (o, mrg, pspec->name);
-  mrg_printf_xml (mrg, "<div class='propvalue'>%i</div>", drag_data->value);
 
-  cairo_new_path (cr);
-  cairo_rectangle (cr, drag_data->x, drag_data->y, drag_data->width, drag_data->height);
-  mrg_listen_full (mrg, MRG_DRAG, on_prop_int_drag, drag_data, o, (void*)g_free, NULL);
-
-  cairo_set_source_rgba (cr,1,1,1, .5);
-  cairo_set_line_width (cr, 2);
-  cairo_stroke (cr);
 
   drag_data->min = G_PARAM_SPEC_INT (drag_data->pspec)->minimum;
   drag_data->ui_min = drag_data->min;
@@ -2413,14 +2474,46 @@ draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
     drag_data->ui_gamma = 1.0;
   }
 
+
+  cairo_new_path (cr);
+  cairo_rectangle (cr, drag_data->x, drag_data->y, drag_data->width, drag_data->height);
+  mrg_listen_full (mrg, MRG_DRAG, on_prop_int_drag, drag_data, o, (void*)g_free, NULL);
+  cairo_new_path (cr);
+
+  {
+    char *value = g_strdup_printf ("%i", drag_data->value);
+    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, NULL, (void*)pspec->name);
+    draw_key (o, mrg, pspec->name);
+    if (o->editing_property && o->property_focus == pspec->name)
+    {
+      mrg_edit_start (mrg, update_string, &o->editing_buf[0]);
+      mrg_printf_xml (mrg, "<div class='propvalue'>%s</div>", o->editing_buf);
+      mrg_edit_end (mrg);
+      mrg_add_binding (mrg, "return", NULL, "confirm edit", unset_edited_prop, o);
+      mrg_add_binding (mrg, "escape", NULL, "cancel property editing", cancel_edited_prop, o);
+    }
+    else
+    {
+      mrg_printf_xml (mrg, "<div class='propvalue'>%s</div>", value);
+    }
+    mrg_text_listen_done (mrg);
+    g_free (value);
+  }
+
   cairo_rectangle (cr,
    drag_data->x,
    drag_data->y,
    pow((drag_data->value-drag_data->ui_min) /
                       (drag_data->ui_max-drag_data->ui_min), 1.0/drag_data->ui_gamma)* drag_data->width,
    drag_data->height);
-
+  cairo_set_source_rgba (cr,1,1,1, .5);
   cairo_fill (cr);
+
+  cairo_new_path (cr);
+  cairo_rectangle (cr, drag_data->x, drag_data->y, drag_data->width, drag_data->height);
+  cairo_set_source_rgba (cr,1,1,1, .5);
+  cairo_set_line_width (cr, 2);
+  cairo_stroke (cr);
 
   mrg_set_xy (mrg, drag_data->x, drag_data->y + drag_data->height);
 
@@ -2496,6 +2589,7 @@ static void on_prop_double_drag (MrgEvent *e, void *data1, void *data2)
   rev_inc (o);
 }
 
+
 static void
 draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
@@ -2503,6 +2597,7 @@ draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
 
   MrgStyle *style;
   PropDoubleDragData *drag_data = g_malloc0 (sizeof (PropDoubleDragData));
+
   mrg_start (mrg, "div.property", NULL);//
   gegl_node_get (node, pspec->name, &drag_data->value, NULL);
   style = mrg_style (mrg);
@@ -2515,16 +2610,7 @@ draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
   drag_data->width = style->width;
   drag_data->height = mrg_em (mrg) * 2;
 
-  draw_key (o, mrg, pspec->name);
-  mrg_printf_xml (mrg, "<div class='propvalue'>%.3f</div>", drag_data->value);
 
-  cairo_new_path (cr);
-  cairo_rectangle (cr, drag_data->x, drag_data->y, drag_data->width, drag_data->height);
-  mrg_listen_full (mrg, MRG_DRAG, on_prop_double_drag, drag_data, o, (void*)g_free, NULL);
-
-  cairo_set_source_rgba (cr,1,1,1, .5);
-  cairo_set_line_width (cr, 2);
-  cairo_stroke (cr);
 
   drag_data->min = G_PARAM_SPEC_DOUBLE (drag_data->pspec)->minimum;
   drag_data->ui_min = drag_data->min;
@@ -2548,15 +2634,46 @@ draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
     drag_data->ui_gamma = 1.0;
   }
 
+
+  cairo_new_path (cr);
+  cairo_rectangle (cr, drag_data->x, drag_data->y, drag_data->width, drag_data->height);
+  mrg_listen_full (mrg, MRG_DRAG, on_prop_double_drag, drag_data, o, (void*)g_free, NULL);
+  cairo_new_path (cr);
+
+  {
+    char *value = g_strdup_printf ("%.3f", drag_data->value);
+    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, NULL, (void*)pspec->name);
+    draw_key (o, mrg, pspec->name);
+    if (o->editing_property && o->property_focus == pspec->name)
+    {
+      mrg_edit_start (mrg, update_string, &o->editing_buf[0]);
+      mrg_printf_xml (mrg, "<div class='propvalue'>%s</div>", o->editing_buf);
+      mrg_edit_end (mrg);
+      mrg_add_binding (mrg, "return", NULL, "confirm edit", unset_edited_prop, o);
+      mrg_add_binding (mrg, "escape", NULL, "cancel property editing", cancel_edited_prop, o);
+    }
+    else
+    {
+      mrg_printf_xml (mrg, "<div class='propvalue'>%s</div>", value);
+    }
+    mrg_text_listen_done (mrg);
+    g_free (value);
+  }
+
   cairo_rectangle (cr,
    drag_data->x,
    drag_data->y,
    pow((drag_data->value-drag_data->ui_min) /
                       (drag_data->ui_max-drag_data->ui_min), 1.0/drag_data->ui_gamma)* drag_data->width,
    drag_data->height);
-
+  cairo_set_source_rgba (cr,1,1,1, .5);
   cairo_fill (cr);
 
+  cairo_new_path (cr);
+  cairo_rectangle (cr, drag_data->x, drag_data->y, drag_data->width, drag_data->height);
+  cairo_set_source_rgba (cr,1,1,1, .5);
+  cairo_set_line_width (cr, 2);
+  cairo_stroke (cr);
 
   mrg_set_xy (mrg, drag_data->x, drag_data->y + drag_data->height);
 
@@ -2565,11 +2682,6 @@ draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
 
 /***************************************************************************/
 
-static void update_string (const char *new_text, void *data)
-{
-  char *str = data;
-  strcpy (str, new_text);
-}
 
 static void
 draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
@@ -2589,12 +2701,13 @@ draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec
     draw_value (o, mrg, o->editing_buf);
 
     mrg_edit_end (mrg);
-    mrg_add_binding (mrg, "return", NULL, NULL, unset_edited_prop, o);
+    mrg_add_binding (mrg, "return", NULL, "confirm editing", unset_edited_prop, o);
+    mrg_add_binding (mrg, "escape", NULL, "cancel property editing", cancel_edited_prop, o);
     mrg_text_listen_done (mrg);
   }
   else
   {
-    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, (void*)g_intern_string(value), (void*)pspec->name);
+    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, NULL, (void*)pspec->name);
     draw_key (o, mrg, pspec->name);
     draw_value (o, mrg, value);
     mrg_text_listen_done (mrg);
@@ -2619,20 +2732,15 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
   if (o->editing_property && (o->property_focus == g_intern_string (pspec->name)))
   {
     draw_key (o, mrg, pspec->name);
-
-    mrg_text_listen (mrg, MRG_CLICK, unset_edited_prop, node, (void*)pspec->name);
     x = mrg_x (mrg);
     y = mrg_y (mrg);
     draw_value (o, mrg, o->editing_buf);
-
     x_final = mrg_x (mrg);
     y_final = mrg_y (mrg);
-    mrg_text_listen_done (mrg);
   }
   else
   {
-    /* XXX this string interning is a leak */
-    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, (void*)g_intern_string(value), (void*)pspec->name);
+    mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, NULL, (void*)pspec->name);
     draw_key (o, mrg, pspec->name);
     mrg_start_with_style (mrg, "div.propvalue", NULL, "color:transparent;");
     x = mrg_x (mrg);
@@ -2666,7 +2774,7 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
     if (!multiline)
     {
       mrg_add_binding (mrg, "return", NULL, "complete editing", unset_edited_prop, o);
-      // XXX : permit escape to cancel returning to default
+      mrg_add_binding (mrg, "escape", NULL, "cancel property editing", cancel_edited_prop, o);
     }
   }
   else
@@ -6505,35 +6613,7 @@ cmd_propeditor (COMMAND_ARGS)
   }
   else if (!strcmp (argv[1], "return"))
   {
-    char *value = NULL;
-    GParamSpec *pspec = gegl_node_find_property (o->active, o->property_focus);
-    if (pspec)
-    {
-      if (g_type_is_a (pspec->value_type, G_TYPE_BOOLEAN))
-      {
-        gboolean value;
-        gegl_node_get (o->active, o->property_focus, &value, NULL);
-        value = !value;
-        gegl_node_set (o->active, o->property_focus, value, NULL);
-      }
-      else if (g_type_is_a (pspec->value_type, G_TYPE_STRING) ||
-               g_type_is_a (pspec->value_type, GEGL_TYPE_PARAM_FILE_PATH))
-      {
-        gegl_node_get (o->active, o->property_focus, &value, NULL);
-      }
-      else if (g_type_is_a (pspec->value_type, GEGL_TYPE_COLOR))
-      {
-        GeglColor *color;
-        gegl_node_get (o->active, pspec->name, &color, NULL);
-        g_object_get (color, "string", &value, NULL);
-      }
-    }
-    if (value)
-    {
-      o->editing_property = 1;
-      strcpy (o->editing_buf, value);
-      g_free (value);
-    }
+    set_edited_prop (NULL, NULL, (void*)o->property_focus);
   }
 
   mrg_queue_draw (o->mrg, NULL);
@@ -7145,8 +7225,7 @@ cmd_about (COMMAND_ARGS)
 int
 cmd_todo (COMMAND_ARGS)
 {
-  printf ("propeditor:string\n");
-  printf ("propeditor:color\n");
+  printf ("visual color picker\n");
   printf ("make axis constrained vertical drag up/down adjust linear small increments on double\n");
   printf ("crop ui\n");
   printf ("tab-completion for cd command\n");
