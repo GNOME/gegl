@@ -839,6 +839,15 @@ cmd_thumb (COMMAND_ARGS)
     float scale, scale2;
     float width = 256, height = 256;
 
+    if (rect.width > 1000000 ||
+        rect.height > 1000000)
+    {
+       rect.x=0;
+       rect.y=0;
+       rect.width=1024;
+       rect.height=1024;
+    }
+
     scale = 1.0 * width / rect.width;
     scale2 = 1.0 * height / rect.height;
 
@@ -5836,6 +5845,15 @@ static void zoom_to_fit (State *o)
     return;
   }
 
+  if (rect.width >  1000000 ||
+      rect.height > 1000000)
+  {
+     rect.x=0;
+     rect.y=0;
+     rect.width=1024;
+     rect.height=1024;
+  }
+
   if (mrg)
   {
     width = mrg_width (mrg);
@@ -5854,16 +5872,17 @@ static void zoom_to_fit (State *o)
   o->u += rect.x * o->scale;
   o->v += rect.y * o->scale;
 
-
   o->is_fit = 1;
 
-  mrg_queue_draw (mrg, NULL);
+  if (mrg)
+    mrg_queue_draw (mrg, NULL);
 }
 static void center (State *o)
 {
   Mrg *mrg = o->mrg;
   GeglRectangle rect = gegl_node_get_bounding_box (o->sink);
   o->scale = 1.0;
+
 
   o->u = -(mrg_width (mrg) - rect.width * o->scale) / 2;
   o->v = -(mrg_height (mrg) - rect.height * o->scale) / 2;
@@ -7190,7 +7209,6 @@ cmd_node_add (COMMAND_ARGS)
   return 0;
 }
 
-int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
 int cmd_about (COMMAND_ARGS);/* "about", -1, "", ""*/
 int
 cmd_about (COMMAND_ARGS)
@@ -7222,6 +7240,7 @@ cmd_about (COMMAND_ARGS)
   return 0;
 }
 
+int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
 int
 cmd_todo (COMMAND_ARGS)
 {
