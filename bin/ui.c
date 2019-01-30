@@ -4559,6 +4559,8 @@ static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
       else
       {
         o->show_graph = !o->show_graph;
+        if (o->is_fit)
+          zoom_to_fit (o);
       }
     }
 
@@ -5907,6 +5909,12 @@ static void zoom_to_fit (State *o)
   {
     width = mrg_width (mrg);
     height = mrg_height (mrg);
+
+    o->graph_pan_x = -(width - height * font_size_scale * 22);
+    if (o->show_graph)
+    {
+      width = width - height * font_size_scale * 22;
+    }
   }
 
   scale = 1.0 * width / rect.width;
@@ -5921,7 +5929,6 @@ static void zoom_to_fit (State *o)
   o->u += rect.x * o->scale;
   o->v += rect.y * o->scale;
 
-  o->graph_pan_x = -(width - height * font_size_scale * 22);
 
   o->is_fit = 1;
 
@@ -6263,6 +6270,8 @@ cmd_toggle (COMMAND_ARGS)
   if (!strcmp(argv[1], "editing"))
   {
     o->show_graph = !o->show_graph;
+    if (o->is_fit)
+      zoom_to_fit (o);
     activate_sink_producer (o);
   }
   else if (!strcmp(argv[1], "fullscreen"))
