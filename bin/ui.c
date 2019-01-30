@@ -27,8 +27,10 @@
 
 #if HAVE_MRG
 
+#define font_size_scale  0.020
+
 const char *css =
-"div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 3em; left: 15em; width:25em; background-color:rgba(1,0,0,0.75);}\n"
+"div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
 "div.propname { color: white;}\n"
 "div.propvalue { color: yellow;background: transparent;}\n"
@@ -38,8 +40,10 @@ const char *css =
 "dl.bindings   { font-size: 1.8vh; color:white; position:absolute;left:1em;top:60%;background-color: rgba(0,0,0,0.7); width: 100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
 "dt.binding   { color:white; }\n"
 
-"div.graph {position:absolute; top: 0; left: 0; color:white; }\n"
+"div.graph, div.properties, div.scrollback{ font-size: 2.0vh; }\n"
+"div.commandline-shell { font-size: 4.0vh; }\n"
 
+"div.graph {position:absolute; top: 0; left: 0; color:white; }\n"
 
 "div.node, div.node-active {border: 1px solid gray; color:#000; position: absolute; background-color: rgba(255,255,255,0.75); padding-left:1em;padding-right:1em;height:1em;width:8em;padding-top:0.25em;}\n"
 "div.node-active { color: #000; background-color: rgba(255,255,255,1.0); text-decoration: underline; }\n"
@@ -48,7 +52,7 @@ const char *css =
 "a { color: yellow; text-decoration: none;  }\n"
 
 
-"div.operation-selector { font-size: 3vh; color: green; border: 1px solid red; padding-left:1em; padding-bottom: 1em; position: absolute; top: 4em; left: 2%; width:90%; background-color:rgba(1,0,0,0.0);height: 90%;}\n"
+"div.operation-selector { font-size: 3vh; color: green; border: 1px solid red; padding-left:1em; padding-bottom: 1em; position: absolute; top: 4em; left: 2%; width:70%; background-color:rgba(1,0,0,0.0);height: 90%;}\n"
 "div.operation-selector-close { color: red; }\n"
 "div.operation-selector-op { background: black; color: white; display: inline; padding-right: 1em; }\n"
 "div.operation-selector-op-active { background: black; color: yellow; display: inline; padding-right: 1em; }\n"
@@ -59,8 +63,12 @@ const char *css =
 "div.operation-selector-operation { background: black; color: white; }\n"
 
 
-"div.shell{ color:white; position:fixed;left:0em;background-color: rgba(0,0,0,0.75); left:0%; width:100%;  padding-left: 1em; padding-top:1em;padding-bottom:1em;}\n"
-"div.shellline { background-color:rgba(0,0,0,0.0);color:white; }\n"
+"div.scrollback{ color:white; position:fixed;left:0em;background-color: rgba(0,0,0,0.75); left:0%; width:100%;  padding-left: 1em; padding-top:1em;padding-bottom:1em;}\n"
+"div.scrollline { background-color:rgba(0,0,0,0.0);color:white; }\n"
+
+
+"div.commandline-shell{ color:white; position:fixed;background-color: rgba(0,0,0,0.75); top: 0%; left:0em; width:100%;  padding-left: .5em; padding-top:.5em;padding-bottom:.5em;}\n"
+
 "div.prompt { color:#7aa; display: inline; }\n"
 "div.commandline { color:white; display: inline;  }\n"
 "span.completion{ color: rgba(255,255,255,0.7); padding-right: 1em; }\n"
@@ -2867,7 +2875,7 @@ draw_property (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 
 }
 
-
+static float properties_height = 100;
 
 static void list_node_props (State *o, GeglNode *node, int indent)
 {
@@ -2912,6 +2920,7 @@ static void list_node_props (State *o, GeglNode *node, int indent)
     }
     g_free (pspecs);
   }
+  properties_height = mrg_y (mrg) + mrg_em (mrg);
 
   mrg_end (mrg);
   if (operation_selector)
@@ -3772,15 +3781,31 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
     double xd=x, yd=y;
     cairo_user_to_device (mrg_cr(mrg), &xd, &yd);
 
-    if (yd < mrg_height (mrg) * 0.15 ||
-        yd > mrg_height (mrg) * 0.85)
+    if (-o->graph_pan_x > mrg_width(mrg) - mrg_height (mrg) * font_size_scale * 25)
     {
-      float blend_factor = 0.20;
-      float new_scroll = ( (y*o->graph_scale) - mrg_height(mrg)/2);
+      if (yd < properties_height ||
+          yd > mrg_height (mrg) - mrg_em (mrg) * 12)
+      {
+        float blend_factor = 0.20;
+        float new_scroll = ( (y*o->graph_scale) - properties_height - 12 * mrg_em (mrg));
 
-      o->graph_pan_y = (1.0-blend_factor) * o->graph_pan_y +
+        o->graph_pan_y = (1.0-blend_factor) * o->graph_pan_y +
                              blend_factor *  new_scroll;
-      mrg_queue_draw (mrg, NULL);
+        mrg_queue_draw (mrg, NULL);
+      }
+    }
+    else
+    {
+      if (yd < mrg_em(mrg) * 3 ||
+          yd > mrg_height (mrg) - mrg_em (mrg) * 3)
+      {
+        float blend_factor = 0.20;
+        float new_scroll = ( (y*o->graph_scale) - 3 * mrg_em (mrg));
+
+        o->graph_pan_y = (1.0-blend_factor) * o->graph_pan_y +
+                              blend_factor *  new_scroll;
+        mrg_queue_draw (mrg, NULL);
+      }
     }
   }
 
@@ -4064,6 +4089,27 @@ static void ui_debug_op_chain (State *o)
     mrg_start         (mrg, "div.props", NULL);
     list_node_props (o, o->active, 1);
     mrg_end (mrg);
+  }
+
+
+  {
+    cairo_t *cr = mrg_cr (mrg);
+    float width = mrg_width (mrg);
+    float height = mrg_height (mrg);
+    draw_edit (mrg, width - height * .15, height * .0, height * .15, height *.15);
+
+    if (o->show_controls)
+      contrasty_stroke (cr);
+    else
+      cairo_new_path (cr);
+    cairo_rectangle (cr, width - height * .15, height * .0, height * .15, height *.15);
+    if (o->show_controls && 0)
+    {
+      cairo_set_source_rgba (cr, 1,1,1,.1);
+      cairo_fill_preserve (cr);
+    }
+    mrg_listen (mrg, MRG_PRESS, run_command, "toggle editing", NULL);
+    cairo_new_path (cr);
   }
 }
 
@@ -4940,8 +4986,8 @@ static void ui_commandline (Mrg *mrg, void *data)
   float h = mrg_height (mrg);
   //float w = mrg_width (mrg);
   cairo_t *cr = mrg_cr (mrg);
-  int row = 1;
   cairo_save (cr);
+
   if (scrollback == NULL && commandline[0]==0)
   {
     mrg_set_xy (mrg, 0,h*2);
@@ -4952,8 +4998,40 @@ static void ui_commandline (Mrg *mrg, void *data)
   }
 
 
-  mrg_start (mrg, "div.shell", NULL);
-  //mrg_set_xy (mrg, em, h - em * 1);
+  if(scrollback){
+    mrg_start (mrg, "div.scrollback", NULL);
+    MrgList *lines = NULL;
+    for (MrgList *l = scrollback; l; l = l->next)
+      mrg_list_prepend (&lines, l->data);
+
+    mrg_printf (mrg, "\n");
+    for (MrgList *l = lines; l; l = l->next)
+    {
+      mrg_start (mrg, "div.scrollline", NULL);
+      mrg_printf (mrg, "%s", l->data);
+      mrg_end (mrg);
+    }
+    {
+      if (mrg_y (mrg) > h - em * 1.2 * 1)
+      {
+        char *data;
+        mrg_list_reverse (&scrollback);
+        data = scrollback->data;
+        mrg_list_remove (&scrollback, data);
+        mrg_list_reverse (&scrollback);
+        free (data);
+        mrg_queue_draw (mrg, NULL);
+      }
+    }
+    mrg_list_free (&lines);
+
+    mrg_end (mrg);
+  }
+
+
+  if (commandline[0])
+  {
+  mrg_start (mrg, "div.commandline-shell", NULL);
   mrg_start (mrg, "div.prompt", NULL);
   mrg_printf (mrg, "> ");
   mrg_end (mrg);
@@ -4962,6 +5040,9 @@ static void ui_commandline (Mrg *mrg, void *data)
     mrg_printf (mrg, "%s", commandline);
     mrg_edit_end (mrg);
   mrg_edit_end (mrg);
+  mrg_end (mrg);
+
+  //mrg_set_xy (mrg, em, h - em * 1);
 
     if (mrg_get_cursor_pos (mrg) == mrg_utf8_strlen (commandline))
     {
@@ -5002,39 +5083,7 @@ static void ui_commandline (Mrg *mrg, void *data)
       }
     }
     mrg_end (mrg);
-  row++;
-
-  //mrg_set_xy (mrg, em, h * 0.5);
-
-  if(scrollback){
-    MrgList *lines = NULL;
-    for (MrgList *l = scrollback; l; l = l->next)
-      mrg_list_prepend (&lines, l->data);
-
-    mrg_printf (mrg, "\n");
-    for (MrgList *l = lines; l; l = l->next)
-    {
-      mrg_start (mrg, "div.shellline", NULL);
-      mrg_printf (mrg, "%s", l->data);
-      mrg_end (mrg);
-    }
-    {
-      if (mrg_y (mrg) > h - em * 1.2 * 1)
-      {
-        char *data;
-        mrg_list_reverse (&scrollback);
-        data = scrollback->data;
-        mrg_list_remove (&scrollback, data);
-        mrg_list_reverse (&scrollback);
-        free (data);
-        mrg_queue_draw (mrg, NULL);
-      }
-    }
-    mrg_list_free (&lines);
-
   }
-  if (scrollback || 1)
-  mrg_end (mrg);
 
 jump:
   {
@@ -5872,6 +5921,8 @@ static void zoom_to_fit (State *o)
   o->u += rect.x * o->scale;
   o->v += rect.y * o->scale;
 
+  o->graph_pan_x = -(width - height * font_size_scale * 22);
+
   o->is_fit = 1;
 
   if (mrg)
@@ -6409,9 +6460,9 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
 
   if (o->is_dir)
   {
+     float zoom_factor = 0.05;
      if (!strcmp(argv[1], "in"))
      {
-       float zoom_factor = 0.25;
        if (argv[2])
          zoom_factor = g_strtod (argv[2], NULL);
        zoom_factor += 1.0;
@@ -6419,7 +6470,6 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
       }
       else if (!strcmp(argv[1], "out"))
       {
-        float zoom_factor = 0.25;
         if (argv[2])
           zoom_factor = g_strtod (argv[2], NULL);
         zoom_factor += 1.0;
