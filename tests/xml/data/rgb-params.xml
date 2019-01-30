@@ -25,7 +25,7 @@
       </node>
       <node operation='gegl:color'>
           <params>
-            <param name='value'>rgb(0.0000, 5.0000, 1.0000)</param>
+            <param name='value'>rgb(0.000, 5.000, 1.000)</param>
             <param name='format'></param>
           </params>
       </node>
@@ -41,7 +41,7 @@
   </node>
   <node operation='gegl:color'>
       <params>
-        <param name='value'>rgb(0.0000, 5.0000, 1.0000)</param>
+        <param name='value'>rgb(0.000, 5.000, 1.000)</param>
         <param name='format'></param>
       </params>
   </node>
