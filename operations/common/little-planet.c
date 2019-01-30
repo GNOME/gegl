@@ -40,7 +40,7 @@ property_double (spin, _("Spin"), 0.0)
   ui_meta       ("direction", "cw")
 
 property_double (zoom, _("Zoom"), 100.0)
-  description   (("Zoom level"))
+  description   (_("Zoom level"))
   value_range   (0.01, 1000.0)
 
 property_int    (width, _("Width"), -1)
