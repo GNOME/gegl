@@ -954,8 +954,6 @@ static void on_thumbbar_motion (MrgEvent *e, void *data1, void *data2)
   }
 }
 
-static int node_select_hack = 0;
-
 static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
 {
   static float zoom_pinch_coord[4][2] = {0,};
@@ -964,7 +962,7 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
 
   State *o = data1;
   on_viewer_motion (e, data1, data2);
-  if (e->type == MRG_DRAG_RELEASE && node_select_hack == 0)
+  if (e->type == MRG_DRAG_RELEASE)
   {
     zoom_pinch = 0;
   } else if (e->type == MRG_DRAG_PRESS)
@@ -1035,7 +1033,6 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
     queue_draw (o);
     mrg_event_stop_propagate (e);
   }
-  node_select_hack = 0;
   drag_preview (e);
 }
 
@@ -1048,7 +1045,7 @@ static void on_pick_drag (MrgEvent *e, void *data1, void *data2)
 
   State *o = data1;
   on_viewer_motion (e, data1, data2);
-  if (e->type == MRG_DRAG_RELEASE && node_select_hack == 0)
+  if (e->type == MRG_DRAG_RELEASE)
   {
     float x = (e->x + o->u) / o->scale;
     float y = (e->y + o->v) / o->scale;
@@ -1138,7 +1135,6 @@ static void on_pick_drag (MrgEvent *e, void *data1, void *data2)
     mrg_queue_draw (e->mrg, NULL);
     mrg_event_stop_propagate (e);
   }
-  node_select_hack = 0;
   drag_preview (e);
 }
 
@@ -3254,7 +3250,6 @@ static void node_press (MrgEvent *e,
   o->active = new_active;
   o->pad_active = PAD_OUTPUT;
   mrg_event_stop_propagate (e);
-  node_select_hack = 1;
 
   mrg_queue_draw (e->mrg, NULL);
 }
@@ -3313,11 +3308,9 @@ static void on_graph_drag (MrgEvent *e, void *data1, void *data2)
       o->pad_active = PAD_OUTPUT;
     }
 
-    node_select_hack = 0;
     pinch = 0;
   } else if (e->type == MRG_DRAG_PRESS)
   {
-    node_select_hack = 1;
 
 
     if (e->device_no == 5) /* 5 is second finger/touch point */
@@ -3389,7 +3382,6 @@ static void on_graph_drag (MrgEvent *e, void *data1, void *data2)
     mrg_queue_draw (e->mrg, NULL);
   }
   mrg_event_stop_propagate (e);
-  node_select_hack = 0;
   drag_preview (e);
 }
 
@@ -5001,8 +4993,8 @@ static void ui_commandline (Mrg *mrg, void *data)
 
 
   if(scrollback){
-    mrg_start (mrg, "div.scrollback", NULL);
     MrgList *lines = NULL;
+    mrg_start (mrg, "div.scrollback", NULL);
     for (MrgList *l = scrollback; l; l = l->next)
       mrg_list_prepend (&lines, l->data);
 
@@ -5438,8 +5430,10 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
     }
     }
-
-    mrg_add_binding (mrg, "escape", NULL, "collection view", run_command, "parent");
+    else
+    {
+      mrg_add_binding (mrg, "escape", NULL, "collection view", run_command, "parent");
+    }
   }
 
   mrg_add_binding (mrg, "F1", NULL, NULL, run_command, "toggle cheatsheet");
@@ -6270,6 +6264,7 @@ cmd_toggle (COMMAND_ARGS)
   if (!strcmp(argv[1], "editing"))
   {
     o->show_graph = !o->show_graph;
+    o->property_focus = NULL;
     if (o->is_fit)
       zoom_to_fit (o);
     activate_sink_producer (o);
