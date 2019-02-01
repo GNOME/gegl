@@ -2497,6 +2497,7 @@ draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
     char *value = g_strdup_printf ("%i", drag_data->value);
     mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, NULL, (void*)pspec->name);
     draw_key (o, mrg, pspec->name);
+    mrg_text_listen_done (mrg);
     if (o->editing_property && o->property_focus == pspec->name)
     {
       mrg_edit_start (mrg, update_string, &o->editing_buf[0]);
@@ -2509,7 +2510,6 @@ draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
     {
       mrg_printf_xml (mrg, "<div class='propvalue'>%s</div>", value);
     }
-    mrg_text_listen_done (mrg);
     g_free (value);
   }
 
@@ -2623,8 +2623,6 @@ draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
   drag_data->width = style->width;
   drag_data->height = mrg_em (mrg) * 2;
 
-
-
   drag_data->min = G_PARAM_SPEC_DOUBLE (drag_data->pspec)->minimum;
   drag_data->ui_min = drag_data->min;
   drag_data->max = G_PARAM_SPEC_DOUBLE (drag_data->pspec)->maximum;
@@ -2657,6 +2655,7 @@ draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
     char *value = g_strdup_printf ("%.3f", drag_data->value);
     mrg_text_listen (mrg, MRG_CLICK, set_edited_prop, NULL, (void*)pspec->name);
     draw_key (o, mrg, pspec->name);
+    mrg_text_listen_done (mrg);
     if (o->editing_property && o->property_focus == pspec->name)
     {
       mrg_edit_start (mrg, update_string, &o->editing_buf[0]);
@@ -2669,7 +2668,6 @@ draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
     {
       mrg_printf_xml (mrg, "<div class='propvalue'>%s</div>", value);
     }
-    mrg_text_listen_done (mrg);
     g_free (value);
   }
 
