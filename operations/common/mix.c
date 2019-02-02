@@ -23,7 +23,7 @@
 #ifdef GEGL_PROPERTIES
 
 property_double (ratio, _("Ratio"), 0.5)
-    description (_("mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"))
+    description (_("Mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"))
 
 #else
 
@@ -112,7 +112,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Mix"),
     "reference-hash", "20c678baa5b1f5c72692ab9dce6a5951",
     "description",
-          _("do a lerp, linear interpolation (lerp) between input and aux"),
+          _("Do a lerp, linear interpolation (lerp) between input and aux"),
     NULL);
 }
 
