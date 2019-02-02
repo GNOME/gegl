@@ -78,9 +78,10 @@ process (GeglOperation       *operation,
   GeglProperties *o = GEGL_PROPERTIES (operation);
   gfloat         *out_pixel = out_buf;
   gfloat          color1[4], color2[4], length, dx, dy;
+  gfloat factor = 1.0/(1 << level);
 
-  dx = o->end_x - o->start_x;
-  dy = o->end_y - o->start_y;
+  dx = (o->end_x - o->start_x) * factor;
+  dy = (o->end_y - o->start_y) * factor;
 
   length = dx * dx + dy * dy;
 
@@ -102,7 +103,7 @@ process (GeglOperation       *operation,
           for (x = roi->x; x < roi->x + roi->width; ++x)
             {
               gint c;
-              gfloat v = vec0 * (x - o->start_x) + vec1 * (y - o->start_y);
+              gfloat v = vec0 * (x - o->start_x * factor) + vec1 * (y - o->start_y * factor);
 
               if (v > 1.0f - GEGL_FLOAT_EPSILON)
                 v = 1.0f;
