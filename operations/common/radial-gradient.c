@@ -73,7 +73,8 @@ process (GeglOperation       *operation,
   gfloat         *out_pixel = out_buf;
   gfloat         color1[4];
   gfloat         color2[4];
-  gfloat         length = dist (o->start_x, o->start_y, o->end_x, o->end_y);
+  gfloat         factor = 1.0 / (1<<level);
+  gfloat         length = dist (o->start_x, o->start_y, o->end_x, o->end_y) * factor;
 
   gegl_color_get_pixel (o->start_color, babl_format ("R'G'B'A float"), color1);
   gegl_color_get_pixel (o->end_color, babl_format ("R'G'B'A float"), color2);
@@ -90,7 +91,7 @@ process (GeglOperation       *operation,
           for (x = roi->x; x < roi->x + roi->width; ++x)
             {
               gint c;
-              gfloat v = dist (x, y, o->start_x, o->start_y) / length;
+              gfloat v = dist (x/factor, y/factor, o->start_x*factor, o->start_y*factor) / length;
 
               if (v > 1.0f - GEGL_FLOAT_EPSILON)
                 v = 1.0f;
