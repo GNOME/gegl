@@ -64,7 +64,7 @@ property_double (twist, _("Black and green angle"), 75.0)
                  value_range (-180.0, 180.0)
                  ui_meta ("unit", "degree")
                  ui_meta ("direction", "ccw")
-                 description (_("angle offset for patterns"))
+                 description (_("Angle offset for patterns"))
                  ui_meta ("label", "[color-model {white-on-black,"
                                    "              black-on-white} : bw-label,"
                                    " color-model {rgb}            : rgb-label,"

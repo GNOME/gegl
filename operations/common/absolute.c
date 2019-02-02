@@ -80,7 +80,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "compat-name", "gegl:abs",
     "categories" , "color",
     "description",
-       _("makes each linear RGB component be the absolute of its value, fabs(input_value)"),
+       _("Makes each linear RGB component be the absolute of its value, fabs(input_value)"),
     NULL);
 }
 
