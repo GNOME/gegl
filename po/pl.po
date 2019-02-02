@@ -1,19 +1,19 @@
 # Polish translation for gegl.
-# Copyright © 1999-2018 the gegl authors.
+# Copyright © 1999-2019 the gegl authors.
 # This file is distributed under the same license as the gegl package.
 # Paweł Dziekoński, 1999-2000.
 # Bartosz Kosiorek <gang65@poczta.onet.pl>, 2005-2011.
 # Piotr Zaryk <pzaryk@aviary.pl>, 2008.
 # Robert Gomulka <carramba@epf.pl>, 2008.
-# Piotr Drąg <piotrdrag@gmail.com>, 2011-2018.
-# Aviary.pl <community-poland@mozilla.org>, 2011-2018.
+# Piotr Drąg <piotrdrag@gmail.com>, 2011-2019.
+# Aviary.pl <community-poland@mozilla.org>, 2011-2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-12-17 11:40+0000\n"
-"PO-Revision-Date: 2018-12-23 13:38+0100\n"
+"POT-Creation-Date: 2019-02-01 16:16+0000\n"
+"PO-Revision-Date: 2019-02-02 13:03+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -23,16 +23,16 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: bin/gegl.c:174
+#: bin/gegl.c:179
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "Nie można odczytać pliku: %s"
 
-#: bin/gegl.c:223
+#: bin/gegl.c:228
 msgid "Invalid graph, abort.\n"
 msgstr "Nieprawidłowy wykres, przerywanie.\n"
 
-#: bin/gegl.c:386 bin/gegl-options.c:135
+#: bin/gegl.c:391 bin/gegl-options.c:135
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Nieznany tryb GeglOption: %d"
@@ -154,11 +154,11 @@ msgstr ""
 "\tpozostałe: %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:332
+#: bin/gegl-options.c:342
 msgid "Properties:"
 msgstr "Właściwości:"
 
-#: bin/gegl-options.c:442
+#: bin/gegl-options.c:452
 #, c-format
 msgid ""
 "\n"
@@ -172,6 +172,11 @@ msgstr ""
 "nieznany parametr „%s”, wyświetlanie pomocy zamiast tego\n"
 "\n"
 "\n"
+
+#: bin/ui.c:4305 gegl/gegl-serialize.c:522
+#, c-format
+msgid "BablFormat \"%s\" does not exist."
+msgstr "BablFormat „%s” nie istnieje."
 
 #: gegl/buffer/gegl-buffer-enums.c:32 gegl/gegl-enums.c:33
 #: operations/common/gaussian-blur.c:31 operations/common/gblur-1d.c:32
@@ -373,12 +378,7 @@ msgstr "%s nie ma właściwości %s."
 msgid "%s has no %s property, properties: "
 msgstr "%s nie ma właściwości %s, właściwości: "
 
-#: gegl/gegl-serialize.c:522
-#, c-format
-msgid "BablFormat \"%s\" does not exist."
-msgstr "BablFormat „%s” nie istnieje."
-
-#: gegl/gegl-serialize.c:662
+#: gegl/gegl-serialize.c:663
 #, c-format
 msgid "No such op '%s'"
 msgstr "Nie ma działania „%s”"
@@ -793,7 +793,8 @@ msgid "Vertical width of cells pixels"
 msgstr "Pionowa szerokość pikseli komórek"
 
 #: operations/common/checkerboard.c:42 operations/common/grid.c:38
-#: operations/common/mirrors.c:46 operations/common-gpl3+/bump-map.c:62
+#: operations/common/mirrors.c:46 operations/common/pixelize.c:52
+#: operations/common-gpl3+/bump-map.c:62
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -805,7 +806,8 @@ msgstr ""
 "Poziome przesunięcie (od początku układu współrzędnych) dla początku siatki"
 
 #: operations/common/checkerboard.c:48 operations/common/grid.c:44
-#: operations/common/mirrors.c:52 operations/common-gpl3+/bump-map.c:68
+#: operations/common/mirrors.c:52 operations/common/pixelize.c:59
+#: operations/common-gpl3+/bump-map.c:68
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -2112,11 +2114,11 @@ msgstr "Węzeł"
 msgid "GEGL graph visualizer."
 msgstr "Wizualizacja wykresów GEGL."
 
-#: operations/common/invert-gamma.c:81
+#: operations/common/invert-gamma.c:52
 msgid "Invert in Perceptual space"
 msgstr "Odwróć w przestrzeni percepcyjnej"
 
-#: operations/common/invert-gamma.c:85
+#: operations/common/invert-gamma.c:56
 msgid ""
 "Invert the components (except alpha) perceptually, the result is the "
 "corresponding \"negative\" image."
@@ -2124,13 +2126,13 @@ msgstr ""
 "Odwróć składowe (bez alfy) percepcyjnie, wynikiem jest odpowiedni „negatyw” "
 "obrazu."
 
-#: operations/common/invert-linear.c:74 operations/common-gpl3+/bump-map.c:45
+#: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
 #: operations/workshop/voronoi-diagram.cc:32
 msgid "Invert"
 msgstr "Odwracanie"
 
-#: operations/common/invert-linear.c:79
+#: operations/common/invert-linear.c:59
 msgid ""
 "Invert the components (except alpha) in linear light, the result is the "
 "corresponding \"negative\" image."
@@ -2312,6 +2314,11 @@ msgstr "Kąt obrotu wokół osi kamery"
 #: operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
 msgstr "Powiększenie"
+
+#: operations/common/little-planet.c:43
+#: operations/common/panorama-projection.c:43
+msgid "Zoom level"
+msgstr "Poziom powiększenia"
 
 #: operations/common/little-planet.c:47
 #: operations/common/panorama-projection.c:47
@@ -3239,38 +3246,46 @@ msgstr "Wysokość bloku"
 msgid "Height of blocks in pixels"
 msgstr "Wysokość bloków w pikselach"
 
-#: operations/common/pixelize.c:52
+#: operations/common/pixelize.c:53
+msgid "Horizontal offset of blocks in pixels"
+msgstr "Poziome przesunięcie bloków w pikselach"
+
+#: operations/common/pixelize.c:60
+msgid "Vertical offset of blocks in pixels"
+msgstr "Pionowe przesunięcie bloków w pikselach"
+
+#: operations/common/pixelize.c:66
 msgid "Size ratio X"
 msgstr "Proporcje rozmiaru na osi X"
 
-#: operations/common/pixelize.c:53
+#: operations/common/pixelize.c:67
 msgid "Horizontal size ratio of a pixel inside each block"
 msgstr "Poziome proporcje rozmiaru piksela wewnątrz każdego bloku"
 
-#: operations/common/pixelize.c:57
+#: operations/common/pixelize.c:71
 msgid "Size ratio Y"
 msgstr "Proporcje rozmiaru na osi Y"
 
-#: operations/common/pixelize.c:58
+#: operations/common/pixelize.c:72
 msgid "Vertical size ratio of a pixel inside each block"
 msgstr "Pionowe proporcje rozmiaru piksela wewnątrz każdego bloku"
 
-#: operations/common/pixelize.c:62 operations/common-gpl3+/apply-lens.c:44
+#: operations/common/pixelize.c:76 operations/common-gpl3+/apply-lens.c:44
 #: operations/common-gpl3+/cubism.c:39
 #: operations/common-gpl3+/lens-distortion.c:57
 #: operations/common-gpl3+/tile-paper.c:75
 msgid "Background color"
 msgstr "Kolor tła"
 
-#: operations/common/pixelize.c:63
+#: operations/common/pixelize.c:77
 msgid "Color used to fill the background"
 msgstr "Kolor używany do wypełnienia tła"
 
-#: operations/common/pixelize.c:663
+#: operations/common/pixelize.c:693
 msgid "Pixelize"
 msgstr "Pikselizuj"
 
-#: operations/common/pixelize.c:665
+#: operations/common/pixelize.c:695
 msgid "Simplify image into an array of solid-colored rectangles"
 msgstr "Uprość obraz na macierz jednokolorowych prostokątów"
 
@@ -3911,11 +3926,11 @@ msgstr "Kolor nadpikseli"
 msgid "How to fill superpixels"
 msgstr "Jak wypełniać nadpiksele"
 
-#: operations/common/waterpixels.c:514
+#: operations/common/waterpixels.c:515
 msgid "Waterpixels"
 msgstr "Piksele wody"
 
-#: operations/common/waterpixels.c:517
+#: operations/common/waterpixels.c:518
 msgid "Superpixels based on the watershed transformation"
 msgstr "Nadpiksele na podstawie przekształcenia działu wodnego"
 
@@ -3982,11 +3997,11 @@ msgid "A pre-existing GeglBuffer to write incoming buffer data to."
 msgstr ""
 "Już istniejący GeglBuffer, co którego zapisać przychodzące dane bufora."
 
-#: operations/common/write-buffer.c:146
+#: operations/common/write-buffer.c:176
 msgid "Write Buffer"
 msgstr "Zapisz bufor"
 
-#: operations/common/write-buffer.c:148
+#: operations/common/write-buffer.c:178
 msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr ""
 "Zapisz dane wejściowe do istniejącej powierzchni docelowej buforu biblioteki "
@@ -4685,11 +4700,11 @@ msgstr "Zachowanie krawędzi"
 msgid "Edge detection behavior"
 msgstr "Zachowanie wykrywania krawędzi"
 
-#: operations/common-gpl3+/edge.c:363
+#: operations/common-gpl3+/edge.c:367
 msgid "Edge Detection"
 msgstr "Wykrywanie krawędzi"
 
-#: operations/common-gpl3+/edge.c:367
+#: operations/common-gpl3+/edge.c:371
 msgid "Several simple methods for detecting edges"
 msgstr "Kilka prostych metod wykrywania krawędzi"
 
@@ -7328,11 +7343,11 @@ msgstr ""
 "Nieprzezroczystość pociągnięcia, uwaga, nie zachowuje się jak pliki SVG, "
 "ponieważ pociągnięcie jest obecnie wykonywane za pomocą aerografu."
 
-#: operations/external/vector-stroke.c:356
+#: operations/external/vector-stroke.c:355
 msgid "Vector Stroke"
 msgstr "Pociągnięcie wektorowe"
 
-#: operations/external/vector-stroke.c:360
+#: operations/external/vector-stroke.c:359
 msgid "Renders a vector stroke"
 msgstr "Rysuje pociągnięcie wektorowe"
 
