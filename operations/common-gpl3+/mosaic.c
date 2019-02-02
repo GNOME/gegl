@@ -55,7 +55,7 @@ property_double (tile_neatness, _("Tile neatness"), 0.65)
     value_range (0.0, 1.0)
 
 property_double (color_variation, _("Tile color variation"), 0.2)
-    description (("Magnitude of random color variations"))
+    description (_("Magnitude of random color variations"))
     value_range (0.0, 1.0)
 
 property_boolean (color_averaging, _("Color averaging"), TRUE)
@@ -78,7 +78,7 @@ property_color (joints_color, _("Joints color"), "black")
 property_color (light_color, _("Light color"), "white")
 
 property_double (light_dir, _("Light direction"), 135.0)
-    description (("Direction of light-source (in degrees)"))
+    description (_("Direction of light-source (in degrees)"))
     value_range (0.0, 360.0)
     ui_meta     ("unit", "degree")
     ui_meta     ("direction", "ccw")

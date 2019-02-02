@@ -23,7 +23,7 @@
 
 property_color (value, _("Color"), "black")
     /* TRANSLATORS: the string 'black' should not be translated */
-    description (("The color to render (defaults to 'black')"))
+    description (_("The color to render (defaults to 'black')"))
     ui_meta     ("role", "color-primary")
 
 property_format (format, _("Babl Format"), 666)
