@@ -52,7 +52,7 @@ property_double (proportion, _("Proportion"), 1.0)
     value_range (0.0, 1.0)
 
 property_double (squeeze, _("Squeeze"), 0.0)
-    description (("Aspect ratio to use, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, "
+    description (_("Aspect ratio to use, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, "
               "-1.0 = 1:inf 1.0 = inf:1, this is applied after "
               "proportion is taken into account, to directly use "
               "squeeze factor as proportions, set proportion to 0.0."))

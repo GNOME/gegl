@@ -73,7 +73,7 @@ property_enum (background_type, _("Background type"),
   description (_("Background type"))
 
 property_color (bg_color, _("Background color"), "rgba(0.0, 0.0, 0.0, 1.0)")
-  description (("The tiles' background color"))
+  description (_("The tiles' background color"))
   ui_meta     ("role", "color-primary")
   ui_meta     ("visible", "background-type {color}")
 
