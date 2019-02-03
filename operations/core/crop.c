@@ -46,12 +46,26 @@ property_boolean (reset_origin, _("Reset origin"), FALSE)
 
 #else
 
-#define GEGL_OP_FILTER
+#define GEGL_OP_COMPOSER
 #define GEGL_OP_NAME     crop
 #define GEGL_OP_C_SOURCE crop.c
 
 #include "gegl-op.h"
 #include <math.h>
+
+static void
+update_from_aux (GeglOperation *operation)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  GeglRectangle *aux_rect = gegl_operation_source_get_bounding_box (operation, "aux");
+  if (aux_rect)
+  {
+    o->x = aux_rect->x;
+    o->y = aux_rect->y;
+    o->width = aux_rect->width;
+    o->height = aux_rect->height;
+  }
+}
 
 static void
 gegl_crop_prepare (GeglOperation *operation)
@@ -60,6 +74,8 @@ gegl_crop_prepare (GeglOperation *operation)
 
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
+
+  update_from_aux (operation);
 }
 
 static GeglNode *
@@ -70,6 +86,7 @@ gegl_crop_detect (GeglOperation *operation,
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglNode   *input_node;
 
+  update_from_aux (operation);
   input_node = gegl_operation_get_source_node (operation, "input");
 
   if (input_node)
@@ -87,6 +104,8 @@ gegl_crop_get_bounding_box (GeglOperation *operation)
   GeglProperties      *o = GEGL_PROPERTIES (operation);
   GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation, "input");
   GeglRectangle  result  = { 0, 0, 0, 0 };
+
+  update_from_aux (operation);
 
   if (!in_rect)
     return result;
@@ -112,6 +131,7 @@ gegl_crop_get_invalidated_by_change (GeglOperation       *operation,
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglRectangle   result;
+  update_from_aux (operation);
 
   result.x      = o->x;
   result.y      = o->y;
@@ -130,6 +150,7 @@ gegl_crop_get_required_for_output (GeglOperation       *operation,
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglRectangle   result;
+  update_from_aux (operation);
 
   result.x      = o->x;
   result.y      = o->y;
@@ -224,7 +245,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",        "gegl:crop",
       "categories",  "core",
       "title",       _("Crop"),
-      "description", _("Crop a buffer"),
+      "description", _("Crops a buffer, if the aux pad is connected the bounding box of the node connected is used."),
       "reference-hash", "6f9f160434a4e9484d334c29122e5682",
       "reference-composition", composition,
       NULL);
