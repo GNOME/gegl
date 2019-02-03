@@ -1,4 +1,75 @@
+GEGL-0.4.14 2019-03-xx
+----------------------
+
+Core
+~~~~
+
+New Scratch allocator for short lived buffers.
+
+Removed unneeded copies for some variants in GeglNode and GeglProcessor.
+
+Add gegl_babl_variant API for getting variations on an existin pixel-format/encoding.
+
+
+GeglBuffer
+~~~~~~~~~~
+
+Compression of tile data
+
+Handle dynamically changing swap dir.
+
+Improvements to mipmap damage propagation.
+
+Fixes to threading race conditions.
+
+Low-level tile handling more adapted to buffers creating from existing linear data.
+
+New iterator API is now the default, GEGL_BUFFER_ITERATOR2_API is no longer needed.
+
+CMYK and grayscale specific code paths in samplers.
+
+CMYK handling of scaled blits.
+
+New default tile-cache size, 50% of RAM.
+
+Initialize the first OpenCL device with IMAGE support.
+
+Added gegl_parallell_ from gimp_parallell_ API to distribute processing
+for multiple cores.
+
+Operations
+~~~~~~~~~~
+
+Input-format specific processing for performance in watershed-transform and
+invert ops.  CMYK handling in jpg-load/save, tiff-load/save, gaussian-blur,
+opacity, most composing and blending operations, text, vector-stroke, path, and
+transform operations.
+
+Improved or fixed mipmap preview rendering of emboss, linear-gradient and radial-gradient.
+
+Better ui range/defaults for: distor/waves and dropshadow.
+
+gaussian-blur: fix mistake in implementation of IIR Young blur 1d, which caused
+non circular halos.
+
+new ops in workshop: voroni diagram, Grey Color Removal, spyrograph.
+
+
+UI
+~~
+
+Improvements to image browsing and view modes, thumbnailing and start of work
+integrating a commandline, keyboard and touch driven graph editor.
+
+
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+........
+
+
 GEGL-0.4.12 2018-10-23
+----------------------
 
 GeglBuffer
 ~~~~~~~~~~
