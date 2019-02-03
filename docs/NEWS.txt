@@ -65,7 +65,8 @@ integrating a commandline, keyboard and touch driven graph editor.
 Contributors to this release:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-........
+TBD
+
 
 
 GEGL-0.4.12 2018-10-23
