@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-12-17 11:40+0000\n"
-"PO-Revision-Date: 2019-01-20 12:11+0100\n"
+"POT-Creation-Date: 2019-02-03 01:03+0000\n"
+"PO-Revision-Date: 2019-02-05 21:32+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -18,18 +18,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.1\n"
 
-#: bin/gegl.c:174
+#: bin/gegl.c:179
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "Kan inte läsa fil: %s"
 
-#: bin/gegl.c:223
+#: bin/gegl.c:228
 msgid "Invalid graph, abort.\n"
 msgstr "Ogiltig graf, avslutar.\n"
 
-#: bin/gegl.c:386 bin/gegl-options.c:135
+#: bin/gegl.c:391 bin/gegl-options.c:135
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Okänt GeglOption-läge: %d"
@@ -153,11 +153,11 @@ msgstr ""
 "\tresten:   %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:332
+#: bin/gegl-options.c:342
 msgid "Properties:"
 msgstr "Egenskaper:"
 
-#: bin/gegl-options.c:442
+#: bin/gegl-options.c:452
 #, c-format
 msgid ""
 "\n"
@@ -171,6 +171,11 @@ msgstr ""
 "okänt argument ”%s”, visar hjälpen istället\n"
 "\n"
 "\n"
+
+#: bin/ui.c:4303 gegl/gegl-serialize.c:522
+#, c-format
+msgid "BablFormat \"%s\" does not exist."
+msgstr "BablFormat ”%s” existerar ej."
 
 #: gegl/buffer/gegl-buffer-enums.c:32 gegl/gegl-enums.c:33
 #: operations/common/gaussian-blur.c:31 operations/common/gblur-1d.c:32
@@ -373,12 +378,7 @@ msgstr "%s har ingen egenskap %s."
 msgid "%s has no %s property, properties: "
 msgstr "%s har ingen egenskap %s, egenskaper: "
 
-#: gegl/gegl-serialize.c:522
-#, c-format
-msgid "BablFormat \"%s\" does not exist."
-msgstr "BablFormat ”%s” existerar ej."
-
-#: gegl/gegl-serialize.c:662
+#: gegl/gegl-serialize.c:663
 #, c-format
 msgid "No such op '%s'"
 msgstr "Ingen sådan åtg ”%s”"
@@ -655,11 +655,11 @@ msgstr "Ljusstyrkeskontrast"
 #, c-format
 msgid ""
 "Changes the light level and contrast. This operation operates in linear "
-"light, 'contrast' is a scale factor around 50%% gray, and 'brightness' a "
+"light, 'contrast' is a scale factor around 50% gray, and 'brightness' a "
 "constant offset to apply after contrast scaling."
 msgstr ""
 "Ändrar ljusnivån och kontrasten. Denna åtgärd arbetar med linjärt ljus, "
-"”kontrast” är en skalfaktor runt 50%% grått och ”ljushet” är ett konstant "
+"”kontrast” är en skalfaktor runt 50% grått och ”ljushet” är ett konstant "
 "tillägg som tillämpas efter kontrastskalning."
 
 #: operations/common/buffer-sink.c:25 operations/common/write-buffer.c:25
@@ -793,7 +793,8 @@ msgid "Vertical width of cells pixels"
 msgstr "Vertikal bredd av cellers bildpunkter"
 
 #: operations/common/checkerboard.c:42 operations/common/grid.c:38
-#: operations/common/mirrors.c:46 operations/common-gpl3+/bump-map.c:62
+#: operations/common/mirrors.c:46 operations/common/pixelize.c:52
+#: operations/common-gpl3+/bump-map.c:62
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -804,7 +805,8 @@ msgid "Horizontal offset (from origin) for start of grid"
 msgstr "Horisontell position (från origo) för början av rutnät"
 
 #: operations/common/checkerboard.c:48 operations/common/grid.c:44
-#: operations/common/mirrors.c:52 operations/common-gpl3+/bump-map.c:68
+#: operations/common/mirrors.c:52 operations/common/pixelize.c:59
+#: operations/common-gpl3+/bump-map.c:68
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -2104,11 +2106,11 @@ msgstr "Nod"
 msgid "GEGL graph visualizer."
 msgstr "Visualiserare för GEGL-graf."
 
-#: operations/common/invert-gamma.c:81
+#: operations/common/invert-gamma.c:52
 msgid "Invert in Perceptual space"
 msgstr "Invertera i perceptuell rymd"
 
-#: operations/common/invert-gamma.c:85
+#: operations/common/invert-gamma.c:56
 msgid ""
 "Invert the components (except alpha) perceptually, the result is the "
 "corresponding \"negative\" image."
@@ -2116,13 +2118,13 @@ msgstr ""
 "Invertera komponenterna (förutom alfa) perceptuellt, resultatet är "
 "motsvarande ”negativ”-bild."
 
-#: operations/common/invert-linear.c:74 operations/common-gpl3+/bump-map.c:45
+#: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
 #: operations/workshop/voronoi-diagram.cc:32
 msgid "Invert"
 msgstr "Invertera"
 
-#: operations/common/invert-linear.c:79
+#: operations/common/invert-linear.c:59
 msgid ""
 "Invert the components (except alpha) in linear light, the result is the "
 "corresponding \"negative\" image."
@@ -2260,11 +2262,11 @@ msgstr "Avslutningsfärg"
 msgid "The color at (x2, y2)"
 msgstr "Färgen på position (x2, y2)"
 
-#: operations/common/linear-gradient.c:139
+#: operations/common/linear-gradient.c:140
 msgid "Linear Gradient"
 msgstr "Linjär gradient"
 
-#: operations/common/linear-gradient.c:143
+#: operations/common/linear-gradient.c:144
 msgid "Linear gradient renderer"
 msgstr "Renderare för linjär gradient"
 
@@ -2304,6 +2306,11 @@ msgstr "Rotationsvinkel runt kameraaxel"
 #: operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
 msgstr "Zoom"
+
+#: operations/common/little-planet.c:43
+#: operations/common/panorama-projection.c:43
+msgid "Zoom level"
+msgstr "Zoomnivå"
 
 #: operations/common/little-planet.c:47
 #: operations/common/panorama-projection.c:47
@@ -3225,38 +3232,46 @@ msgstr "Blockhöjd"
 msgid "Height of blocks in pixels"
 msgstr "Höjd för block i bildpunkter"
 
-#: operations/common/pixelize.c:52
+#: operations/common/pixelize.c:53
+msgid "Horizontal offset of blocks in pixels"
+msgstr "Horisontell position för block i bildpunkter"
+
+#: operations/common/pixelize.c:60
+msgid "Vertical offset of blocks in pixels"
+msgstr "Vertikal position för block i bildpunkter"
+
+#: operations/common/pixelize.c:66
 msgid "Size ratio X"
 msgstr "Storleksförhållande X"
 
-#: operations/common/pixelize.c:53
+#: operations/common/pixelize.c:67
 msgid "Horizontal size ratio of a pixel inside each block"
 msgstr "Horisontellt storleksförhållande för en bildpunkt inuti varje block"
 
-#: operations/common/pixelize.c:57
+#: operations/common/pixelize.c:71
 msgid "Size ratio Y"
 msgstr "Storleksförhållande Y"
 
-#: operations/common/pixelize.c:58
+#: operations/common/pixelize.c:72
 msgid "Vertical size ratio of a pixel inside each block"
 msgstr "Vertikalt storleksförhållande för en bildpunkt inuti varje block"
 
-#: operations/common/pixelize.c:62 operations/common-gpl3+/apply-lens.c:44
+#: operations/common/pixelize.c:76 operations/common-gpl3+/apply-lens.c:44
 #: operations/common-gpl3+/cubism.c:39
 #: operations/common-gpl3+/lens-distortion.c:57
 #: operations/common-gpl3+/tile-paper.c:75
 msgid "Background color"
 msgstr "Bakgrundsfärg"
 
-#: operations/common/pixelize.c:63
+#: operations/common/pixelize.c:77
 msgid "Color used to fill the background"
 msgstr "Färg som används för att fylla bakgrunden"
 
-#: operations/common/pixelize.c:663
+#: operations/common/pixelize.c:693
 msgid "Pixelize"
 msgstr "Pixelera"
 
-#: operations/common/pixelize.c:665
+#: operations/common/pixelize.c:695
 msgid "Simplify image into an array of solid-colored rectangles"
 msgstr "Förenkla bilder till ett rutnät av enfärgade rektanglar"
 
@@ -3272,11 +3287,11 @@ msgstr "Posterisera"
 msgid "Reduces the number of levels in each color component of the image."
 msgstr "Reducera antal nivåer av varje färgkomponent i bilden."
 
-#: operations/common/radial-gradient.c:126
+#: operations/common/radial-gradient.c:127
 msgid "Radial Gradient"
 msgstr "Radiell gradient"
 
-#: operations/common/radial-gradient.c:129
+#: operations/common/radial-gradient.c:130
 msgid "Radial gradient renderer"
 msgstr "Renderare för radiella gradienter"
 
@@ -3899,11 +3914,11 @@ msgstr "Superbildpunkters färg"
 msgid "How to fill superpixels"
 msgstr "Hur superbildpunkter fylls i"
 
-#: operations/common/waterpixels.c:514
+#: operations/common/waterpixels.c:515
 msgid "Waterpixels"
 msgstr "Vattenbildpunkter"
 
-#: operations/common/waterpixels.c:517
+#: operations/common/waterpixels.c:518
 msgid "Superpixels based on the watershed transformation"
 msgstr "Superbildpunkter baserade på vattendelningstransformen"
 
@@ -3971,11 +3986,11 @@ msgid "A pre-existing GeglBuffer to write incoming buffer data to."
 msgstr ""
 "En redan existerande GeglBuffer att skriva inkommande buffertdata till."
 
-#: operations/common/write-buffer.c:146
+#: operations/common/write-buffer.c:176
 msgid "Write Buffer"
 msgstr "Skriv buffert"
 
-#: operations/common/write-buffer.c:148
+#: operations/common/write-buffer.c:178
 msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr "Skriv indata till en existerande destinationsyta i en GEGL-buffert."
 
@@ -4671,11 +4686,11 @@ msgstr "Kantbeteende"
 msgid "Edge detection behavior"
 msgstr "Kantdetekteringsbeteende"
 
-#: operations/common-gpl3+/edge.c:363
+#: operations/common-gpl3+/edge.c:367
 msgid "Edge Detection"
 msgstr "Kantdetektering"
 
-#: operations/common-gpl3+/edge.c:367
+#: operations/common-gpl3+/edge.c:371
 msgid "Several simple methods for detecting edges"
 msgstr "Flera enkla metoder för att detektera kanter"
 
@@ -6282,13 +6297,17 @@ msgstr ""
 msgid "Reset origin"
 msgstr "Återställ origo"
 
-#: operations/core/crop.c:226
+#: operations/core/crop.c:247
 msgid "Crop"
 msgstr "Beskär"
 
-#: operations/core/crop.c:227
-msgid "Crop a buffer"
-msgstr "Beskär en buffert"
+#: operations/core/crop.c:248
+msgid ""
+"Crops a buffer, if the aux pad is connected the bounding box of the node "
+"connected is used."
+msgstr ""
+"Beskär en buffert, om tillsatskontakten är ansluten används "
+"begränsningsramen för den anslutna noden."
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/png-load.c:29
@@ -7318,11 +7337,11 @@ msgstr ""
 "Opacitet för streck, notera att den inte beter sig som SVG eftersom streck "
 "för tillfället görs med ett färgspruteverktyg."
 
-#: operations/external/vector-stroke.c:356
+#: operations/external/vector-stroke.c:355
 msgid "Vector Stroke"
 msgstr "Vektorstreck"
 
-#: operations/external/vector-stroke.c:360
+#: operations/external/vector-stroke.c:359
 msgid "Renders a vector stroke"
 msgstr "Renderar ett vektorstreck"
 
@@ -8600,6 +8619,9 @@ msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr ""
 "Målar varje bildpunkt som inte är ett frö med färgen hos närmaste "
 "fröbildpunkt."
+
+#~ msgid "Crop a buffer"
+#~ msgstr "Beskär en buffert"
 
 #~ msgid "Labels propagation by watershed transformation"
 #~ msgstr "Etiketterar spridning efter vattendelningstransformation"
