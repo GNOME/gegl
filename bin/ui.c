@@ -268,7 +268,7 @@ struct _State {
   float          scale;
 
   int            is_fit;
-
+  int            show_bounding_box;
   float          dir_scale;
   float          render_quality; /* default (and in code swapped for preview_quality during preview rendering, this is the canonical read location for the value)  */
   float          preview_quality;
@@ -359,6 +359,7 @@ Setting settings[]=
   INT_PROP(show_bindings, "show currently valid keybindings"),
   INT_PROP(show_graph, "show the graph (and commandline)"),
   INT_PROP(show_thumbbar, "show the thumbbar"),
+  INT_PROP(show_bounding_box, "show bounding box of active node"),
   INT_PROP(show_controls, "show image viewer controls (maybe merge with show-graph and give better name)"),
   INT_PROP(slide_enabled, "slide show going"),
   FLOAT_PROP(slide_pause, "display scale factor"),
@@ -716,18 +717,19 @@ static gpointer renderer_thread (gpointer data)
 static void init_state (State *o)
 {
   const char *renderer_env = g_getenv ("GEGL_RENDERER");
-  o->scale           = 1.0;
-  o->graph_scale     = 1.0;
-  o->thumbbar_scale  = 1.0;
-  o->thumbbar_opacity = 1.0;
-  o->show_thumbbar = 1.0;
-  o->render_quality  = 1.0;
-  o->preview_quality = 1.0;
+  o->scale             = 1.0;
+  o->graph_scale       = 1.0;
+  o->thumbbar_scale    = 1.0;
+  o->thumbbar_opacity  = 1.0;
+  o->show_thumbbar     = 1.0;
+  o->show_bounding_box = 1;
+  o->render_quality    = 1.0;
+  o->preview_quality   = 1.0;
   //o->preview_quality = 2.0;
-  o->slide_pause     = 5.0;
-  o->paint_color     = g_strdup ("white");
-  o->slide_enabled   = 0;
-  o->show_bindings   = 0;
+  o->slide_pause       = 5.0;
+  o->paint_color       = g_strdup ("white");
+  o->slide_enabled     = 0;
+  o->show_bindings     = 0;
   o->ui_consumer = g_hash_table_new (g_direct_hash, g_direct_equal);
 
   if (renderer_env)
@@ -4033,7 +4035,7 @@ static void list_ops (State *o, GeglNode *iter, int indent, int *no)
 
 
 
-static void ui_debug_op_chain (State *o)
+static void draw_graph (State *o)
 {
   Mrg *mrg = o->mrg;
   GeglNode *iter;
@@ -5076,6 +5078,13 @@ static void ui_commandline (Mrg *mrg, void *data)
     }
     mrg_end (mrg);
   }
+ else
+  {
+    mrg_set_xy (mrg, 0,h*2);
+    mrg_edit_start (mrg, update_commandline, o);
+    mrg_printf (mrg, "%s", commandline);
+    mrg_edit_end (mrg);
+  }
 
 jump:
   {
@@ -5151,6 +5160,80 @@ static int per_op_canvas_ui (State *o)
   cairo_restore (cr);
 
   return 0;
+}
+
+static cairo_matrix_t node_get_relative_transform (GeglNode *node_view,
+                                                   GeglNode *source)
+{
+  cairo_matrix_t ret;
+  GeglNode *iter = source;
+  GSList *list = NULL;
+
+  cairo_matrix_init_identity (&ret);
+
+  while (iter && iter != node_view)
+  {
+    const char *op = gegl_node_get_operation (iter);
+
+    if (!strcmp (op, "gegl:translate") ||
+        !strcmp (op, "gegl:scale-ratio") ||
+        !strcmp (op, "gegl:rotate"))
+    {
+      list = g_slist_prepend (list, iter);
+    }
+
+    iter = gegl_node_get_consumer_no (iter, "output", NULL, 0);
+  }
+
+  while (list)
+  {
+    const char *op;
+    iter = list->data;
+    op  = gegl_node_get_operation (iter);
+
+    if (!strcmp (op, "gegl:translate"))
+    {
+      gdouble x, y;
+      gegl_node_get (iter, "x", &x, "y", &y, NULL);
+      cairo_matrix_translate (&ret, x, y);
+    }
+    else if (!strcmp (op, "gegl:rotate"))
+    {
+      gdouble degrees;
+      gegl_node_get (iter, "degrees", &degrees, NULL);
+      cairo_matrix_rotate (&ret, -degrees / 360.0 * M_PI * 2);
+    }
+    else if (!strcmp (op, "gegl:scale-ratio"))
+    {
+      gdouble x, y;
+      gegl_node_get (iter, "x", &x, "y", &y, NULL);
+      cairo_matrix_scale (&ret, x, y);
+    }
+    list = g_slist_remove (list, iter);
+  }
+
+  return ret;
+}
+
+static void draw_bounding_box (State *o)
+{
+  Mrg *mrg = o->mrg;
+  cairo_t *cr = mrg_cr (mrg);
+  GeglRectangle rect = gegl_node_get_bounding_box (o->active);
+  cairo_matrix_t mat;
+
+  cairo_save (cr);
+  cairo_translate (cr, -o->u, -o->v);
+  cairo_scale (cr, o->scale, o->scale);
+
+  mat = node_get_relative_transform (o->sink, gegl_node_get_consumer_no (o->active, "output", NULL, 0));
+
+  cairo_transform (cr, &mat);
+
+  cairo_rectangle (cr, rect.x, rect.y, rect.width, rect.height);
+  contrasty_stroke (cr);
+
+  cairo_restore (cr);
 }
 
 static void gegl_ui (Mrg *mrg, void *data)
@@ -5246,7 +5329,10 @@ static void gegl_ui (Mrg *mrg, void *data)
         {
           per_op_canvas_ui (o);
 
-          ui_debug_op_chain (o);
+          if (o->active && o->show_bounding_box)
+            draw_bounding_box (o);
+
+          draw_graph (o);
         }
       else
         {
@@ -5284,7 +5370,7 @@ static void gegl_ui (Mrg *mrg, void *data)
   }
   mrg_add_binding (mrg, "control-l", NULL, "clear/redraw", run_command, "clear");
 
-  if (!text_editor_active (o))
+  if (!text_editor_active (o) && !o->property_focus)
   {
     mrg_add_binding (mrg, "tab", NULL, NULL, run_command, "toggle controls");
     mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle fullscreen");
@@ -7311,6 +7397,8 @@ cmd_todo (COMMAND_ARGS)
   printf ("animation curves for properties\n");
   printf ("dir actions: rename, discard\n");
   printf ("setting of id in ui?\n");
+  printf ("context/pie/tool menu/slab\n");
+
   return 0;
 }
 
