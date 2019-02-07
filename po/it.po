@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-12-30 20:37+0100\n"
-"PO-Revision-Date: 2019-01-14 07:56+0100\n"
+"POT-Creation-Date: 2019-02-07 01:47+0100\n"
+"PO-Revision-Date: 2019-02-07 01:50+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -162,11 +162,11 @@ msgstr ""
 "\trest:      %s\n"
 "\t\n"
 
-#: ../bin/gegl-options.c:332
+#: ../bin/gegl-options.c:342
 msgid "Properties:"
 msgstr "Proprietà:"
 
-#: ../bin/gegl-options.c:442
+#: ../bin/gegl-options.c:452
 #, c-format
 msgid ""
 "\n"
@@ -180,6 +180,11 @@ msgstr ""
 "il parametro sconosciuto \"%s\" fornisce invece l'aiuto\n"
 "\n"
 "\n"
+
+#: ../bin/ui.c:4305 ../gegl/gegl-serialize.c:522
+#, c-format
+msgid "BablFormat \"%s\" does not exist."
+msgstr "Il formato Babl \"%s\" non esiste."
 
 #: ../gegl/buffer/gegl-buffer-enums.c:32 ../gegl/gegl-enums.c:33
 #: ../operations/common/gaussian-blur.c:31 ../operations/common/gblur-1d.c:32
@@ -381,12 +386,7 @@ msgstr "%s non ha la proprietà %s."
 msgid "%s has no %s property, properties: "
 msgstr "%s non ha la proprietà %s, proprietà: "
 
-#: ../gegl/gegl-serialize.c:522
-#, c-format
-msgid "BablFormat \"%s\" does not exist."
-msgstr "Il formato Babl \"%s\" non esiste."
-
-#: ../gegl/gegl-serialize.c:662
+#: ../gegl/gegl-serialize.c:663
 #, c-format
 msgid "No such op '%s'"
 msgstr "Non c'è nessun op '%s'"
@@ -664,16 +664,15 @@ msgid "Brightness Contrast"
 msgstr "Contrasto luminosità"
 
 #: ../operations/common/brightness-contrast.c:162
-#, c-format
 msgid ""
 "Changes the light level and contrast. This operation operates in linear "
-"light, 'contrast' is a scale factor around 50%% gray, and 'brightness' a "
+"light, 'contrast' is a scale factor around 50% gray, and 'brightness' a "
 "constant offset to apply after contrast scaling."
 msgstr ""
 "Cambia i livelli di luce e di contrasto. Questa operazione funziona in luce "
-"lineare, il \"contrasto\" è un fattore di scala attorno al 50%% di grigio, "
+"lineare, il \"contrasto\" è un fattore di scala attorno al 50% di grigio, "
 "mentre la \"luminosità\" è uno scostamento costante da applicare dopo aver "
-"effettuato la scala di contrasto."
+"effettuato la scalatura di contrasto."
 
 #: ../operations/common/buffer-sink.c:25 ../operations/common/write-buffer.c:25
 msgid "Buffer location"
@@ -817,7 +816,8 @@ msgid "Vertical width of cells pixels"
 msgstr "Ampiezza verticale dei pixel delle celle"
 
 #: ../operations/common/checkerboard.c:42 ../operations/common/grid.c:38
-#: ../operations/common/mirrors.c:46 ../operations/common-gpl3+/bump-map.c:62
+#: ../operations/common/mirrors.c:46 ../operations/common/pixelize.c:52
+#: ../operations/common-gpl3+/bump-map.c:62
 #: ../operations/seamless-clone/seamless-clone.c:26
 #: ../operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -828,7 +828,8 @@ msgid "Horizontal offset (from origin) for start of grid"
 msgstr "Scostamento orizzontale (dall'origine) per la griglia di partenza"
 
 #: ../operations/common/checkerboard.c:48 ../operations/common/grid.c:44
-#: ../operations/common/mirrors.c:52 ../operations/common-gpl3+/bump-map.c:68
+#: ../operations/common/mirrors.c:52 ../operations/common/pixelize.c:59
+#: ../operations/common-gpl3+/bump-map.c:68
 #: ../operations/seamless-clone/seamless-clone.c:32
 #: ../operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -2166,11 +2167,11 @@ msgstr "Nodo"
 msgid "GEGL graph visualizer."
 msgstr "Visualizzatore grafo GEGL."
 
-#: ../operations/common/invert-gamma.c:81
+#: ../operations/common/invert-gamma.c:52
 msgid "Invert in Perceptual space"
 msgstr "Inverti nello spazio percettivo"
 
-#: ../operations/common/invert-gamma.c:85
+#: ../operations/common/invert-gamma.c:56
 msgid ""
 "Invert the components (except alpha) perceptually, the result is the "
 "corresponding \"negative\" image."
@@ -2178,14 +2179,14 @@ msgstr ""
 "Inverte le componenti (eccetto alfa) percettivamente, il risultato è "
 "l'immagine corrispondente \"negativa\"."
 
-#: ../operations/common/invert-linear.c:74
+#: ../operations/common/invert-linear.c:54
 #: ../operations/common-gpl3+/bump-map.c:45
 #: ../operations/workshop/connected-components.c:28
 #: ../operations/workshop/voronoi-diagram.cc:32
 msgid "Invert"
 msgstr "Inverte"
 
-#: ../operations/common/invert-linear.c:79
+#: ../operations/common/invert-linear.c:59
 msgid ""
 "Invert the components (except alpha) in linear light, the result is the "
 "corresponding \"negative\" image."
@@ -2323,11 +2324,11 @@ msgstr "Colore di fine"
 msgid "The color at (x2, y2)"
 msgstr "Il colore a (x2, y2)"
 
-#: ../operations/common/linear-gradient.c:139
+#: ../operations/common/linear-gradient.c:140
 msgid "Linear Gradient"
 msgstr "Gradiente lineare"
 
-#: ../operations/common/linear-gradient.c:143
+#: ../operations/common/linear-gradient.c:144
 msgid "Linear gradient renderer"
 msgstr "Renderizzatore di gradiente lineare"
 
@@ -2367,6 +2368,11 @@ msgstr "Rotazione angolo attorno all'asse dell'obiettivo"
 #: ../operations/common-gpl3+/lens-distortion.c:41
 msgid "Zoom"
 msgstr "Zoom"
+
+#: ../operations/common/little-planet.c:43
+#: ../operations/common/panorama-projection.c:43
+msgid "Zoom level"
+msgstr "Livello di zoom"
 
 #: ../operations/common/little-planet.c:47
 #: ../operations/common/panorama-projection.c:47
@@ -3303,23 +3309,31 @@ msgstr "Altezza blocco"
 msgid "Height of blocks in pixels"
 msgstr "Altezza del blocco in pixel"
 
-#: ../operations/common/pixelize.c:52
+#: ../operations/common/pixelize.c:53
+msgid "Horizontal offset of blocks in pixels"
+msgstr "Scostamento orizzontale dei blocchi in pixel"
+
+#: ../operations/common/pixelize.c:60
+msgid "Vertical offset of blocks in pixels"
+msgstr "Scostamento verticale dei blocchi in pixel"
+
+#: ../operations/common/pixelize.c:66
 msgid "Size ratio X"
 msgstr "Rapporto dimensione X"
 
-#: ../operations/common/pixelize.c:53
+#: ../operations/common/pixelize.c:67
 msgid "Horizontal size ratio of a pixel inside each block"
 msgstr "Rapporto dimensione orizzontale di un pixel dentro ogni blocco"
 
-#: ../operations/common/pixelize.c:57
+#: ../operations/common/pixelize.c:71
 msgid "Size ratio Y"
 msgstr "Rapporto dimensione Y"
 
-#: ../operations/common/pixelize.c:58
+#: ../operations/common/pixelize.c:72
 msgid "Vertical size ratio of a pixel inside each block"
 msgstr "Rapporto dimensione verticale di un pixel dentro ogni blocco"
 
-#: ../operations/common/pixelize.c:62
+#: ../operations/common/pixelize.c:76
 #: ../operations/common-gpl3+/apply-lens.c:44
 #: ../operations/common-gpl3+/cubism.c:39
 #: ../operations/common-gpl3+/lens-distortion.c:57
@@ -3327,15 +3341,15 @@ msgstr "Rapporto dimensione verticale di un pixel dentro ogni blocco"
 msgid "Background color"
 msgstr "Colore di sfondo"
 
-#: ../operations/common/pixelize.c:63
+#: ../operations/common/pixelize.c:77
 msgid "Color used to fill the background"
 msgstr "Colore usato per riempire lo sfondo"
 
-#: ../operations/common/pixelize.c:663
+#: ../operations/common/pixelize.c:693
 msgid "Pixelize"
 msgstr "Effetto pixel"
 
-#: ../operations/common/pixelize.c:665
+#: ../operations/common/pixelize.c:695
 msgid "Simplify image into an array of solid-colored rectangles"
 msgstr "Semplifica un'immagine in un insieme di riquadri di colore pieno"
 
@@ -3352,11 +3366,11 @@ msgid "Reduces the number of levels in each color component of the image."
 msgstr ""
 "Riduce il numero di livelli in ogni componente di colore dell'immagine."
 
-#: ../operations/common/radial-gradient.c:126
+#: ../operations/common/radial-gradient.c:127
 msgid "Radial Gradient"
 msgstr "Gradiente radiale"
 
-#: ../operations/common/radial-gradient.c:129
+#: ../operations/common/radial-gradient.c:130
 msgid "Radial gradient renderer"
 msgstr "Renderizzatore di gradiente radiale"
 
@@ -3989,11 +4003,11 @@ msgstr "Colore superpixel"
 msgid "How to fill superpixels"
 msgstr "Come riempire i superpixel"
 
-#: ../operations/common/waterpixels.c:514
+#: ../operations/common/waterpixels.c:515
 msgid "Waterpixels"
 msgstr "Pixelacque"
 
-#: ../operations/common/waterpixels.c:517
+#: ../operations/common/waterpixels.c:518
 msgid "Superpixels based on the watershed transformation"
 msgstr "I superpixel basati sulla trasformazione spartiacque"
 
@@ -4061,11 +4075,11 @@ msgstr "fonde due immagini usando i valori alfa come pesi"
 msgid "A pre-existing GeglBuffer to write incoming buffer data to."
 msgstr "Un pre-esistente GeglBuffer su cui scrivere i dati in ingresso."
 
-#: ../operations/common/write-buffer.c:146
+#: ../operations/common/write-buffer.c:176
 msgid "Write Buffer"
 msgstr "Buffer di scrittura"
 
-#: ../operations/common/write-buffer.c:148
+#: ../operations/common/write-buffer.c:178
 msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr ""
 "Scrive i dati di ingresso in un preesistente buffer superficie di "
@@ -4774,11 +4788,11 @@ msgstr "Comportamento bordo"
 msgid "Edge detection behavior"
 msgstr "Comportamento rilevamento bordi"
 
-#: ../operations/common-gpl3+/edge.c:363
+#: ../operations/common-gpl3+/edge.c:367
 msgid "Edge Detection"
 msgstr "Rilevamento bordi"
 
-#: ../operations/common-gpl3+/edge.c:367
+#: ../operations/common-gpl3+/edge.c:371
 msgid "Several simple methods for detecting edges"
 msgstr "Diversi sempici metodi per il rilevamento dei bordi"
 
@@ -6004,19 +6018,28 @@ msgid "Mode of value propagation"
 msgstr "Modalità di propagazione valore"
 
 #: ../operations/common-gpl3+/value-propagate.c:43
-#: ../operations/common-gpl3+/value-propagate.c:44
 msgid "Lower threshold"
 msgstr "Soglia bassa"
 
+#: ../operations/common-gpl3+/value-propagate.c:44
+msgid "The minimum difference in value at which to propagate a pixel"
+msgstr "La minima differenza in valore alla quale propagare un pixel"
+
 #: ../operations/common-gpl3+/value-propagate.c:47
-#: ../operations/common-gpl3+/value-propagate.c:48
-#: ../operations/common-gpl3+/value-propagate.c:52
 msgid "Upper threshold"
 msgstr "Soglia alta"
+
+#: ../operations/common-gpl3+/value-propagate.c:48
+msgid "The maximum difference in value at which to propagate a pixel"
+msgstr "Massima differenza in valore alla quale propagare un pixel"
 
 #: ../operations/common-gpl3+/value-propagate.c:51
 msgid "Propagating rate"
 msgstr "Ritmo di propagazione"
+
+#: ../operations/common-gpl3+/value-propagate.c:52
+msgid "The strength with which to propagate a pixel to its neighbors"
+msgstr "La forza con la quale propagare un pixel ai suoi vicini"
 
 #: ../operations/common-gpl3+/value-propagate.c:56
 msgid "Color to use for the \"Only color\" and \"Color to peaks\" modes"
@@ -6055,14 +6078,20 @@ msgid "Propagate to bottom"
 msgstr "Propaga verso il fondo"
 
 #: ../operations/common-gpl3+/value-propagate.c:73
-#: ../operations/common-gpl3+/value-propagate.c:74
 msgid "Propagating value channel"
 msgstr "Propagazione del canale valore"
 
+#: ../operations/common-gpl3+/value-propagate.c:74
+msgid "Whether to propagate a pixel's color"
+msgstr "Se propagare il colore di un pixel"
+
 #: ../operations/common-gpl3+/value-propagate.c:76
-#: ../operations/common-gpl3+/value-propagate.c:77
 msgid "Propagating alpha channel"
 msgstr "Propagazione del canale alfa"
+
+#: ../operations/common-gpl3+/value-propagate.c:77
+msgid "Whether to propagate a pixel's opacity"
+msgstr "Se propagare l'opacità di un pixel"
 
 #: ../operations/common-gpl3+/value-propagate.c:642
 msgid "Value Propagate"
@@ -6391,13 +6420,17 @@ msgstr ""
 msgid "Reset origin"
 msgstr "Reimposta origine"
 
-#: ../operations/core/crop.c:226
+#: ../operations/core/crop.c:247
 msgid "Crop"
 msgstr "Ritaglia"
 
-#: ../operations/core/crop.c:227
-msgid "Crop a buffer"
-msgstr "Ritaglia un buffer"
+#: ../operations/core/crop.c:248
+msgid ""
+"Crops a buffer, if the aux pad is connected the bounding box of the node "
+"connected is used."
+msgstr ""
+"Ritaglia un buffer, se il blocco ausiliario è connesso, viene usato il "
+"riquadro esterno del nodo connesso."
 
 #: ../operations/core/load.c:30 ../operations/external/jp2-load.c:27
 #: ../operations/external/jpg-load.c:26 ../operations/external/png-load.c:29
@@ -7438,11 +7471,11 @@ msgstr ""
 "L'opacità del tratto, si noti, non si comporta come l'SVG dato che, al "
 "momento, la delineatura viene effettuata tramite lo strumento aerografo."
 
-#: ../operations/external/vector-stroke.c:356
+#: ../operations/external/vector-stroke.c:355
 msgid "Vector Stroke"
 msgstr "Delinea vettore"
 
-#: ../operations/external/vector-stroke.c:360
+#: ../operations/external/vector-stroke.c:359
 msgid "Renders a vector stroke"
 msgstr "Ottiene la delineatura di un vettoriale"
 
