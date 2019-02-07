@@ -41,15 +41,15 @@ property_enum (mode, _("Mode"),
   description (_("Mode of value propagation"))
 
 property_double (lower_threshold, _("Lower threshold"), 0.0)
-    description (_("Lower threshold"))
+    description (_("The minimum difference in value at which to propagate a pixel"))
     value_range (0.0, 1.0)
 
 property_double (upper_threshold, _("Upper threshold"), 1.0)
-    description (_("Upper threshold"))
+    description (_("The maximum difference in value at which to propagate a pixel"))
     value_range (0.0, 1.0)
 
 property_double (rate, _("Propagating rate"), 1.0)
-    description (_("Upper threshold"))
+    description (_("The strength with which to propagate a pixel to its neighbors"))
     value_range (0.0, 1.0)
 
 property_color   (color, _("Color"), "blue")
@@ -71,10 +71,10 @@ property_boolean (bottom, _("To bottom"), TRUE)
      description (_("Propagate to bottom"))
 
 property_boolean (value, _("Propagating value channel"), TRUE)
-     description (_("Propagating value channel"))
+     description (_("Whether to propagate a pixel's color"))
 
 property_boolean (alpha, _("Propagating alpha channel"), TRUE)
-     description (_("Propagating alpha channel"))
+     description (_("Whether to propagate a pixel's opacity"))
      ui_meta     ("sensitive", "! mode {color-peak}")
 
 #else
