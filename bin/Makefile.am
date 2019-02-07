@@ -32,6 +32,12 @@ AM_LDFLAGS =  \
 	$(DEP_LIBS) $(BABL_LIBS) $(PNG_LIBS) $(LIBSPIRO) $(MATH_LIB) \
         $(MRG_LIBS) $(GEXIV2_LIBS)
 
+if HAVE_LUA
+AM_LDFLAGS += $(LUA_LIBS)
+AM_CFLAGS  += $(LUA_CFLAGS)
+endif
+
+
 bin_PROGRAMS = gegl
 
 BUILT_SOURCES=argvs-commands.inc

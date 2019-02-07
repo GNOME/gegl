@@ -1026,12 +1026,18 @@ AC_ARG_WITH(lua, [  --without-lua           build without Lua support])
 
 have_lua="no"
 if test "x$with_lua" != "xno"; then
-PKG_CHECK_MODULES(LUA, lua >= lua_required_version,
-  have_lua="yes",
+PKG_CHECK_MODULES(LUA, luajit >= 2.0.4,
+  have_lua="yes"
+  AC_DEFINE(HAVE_LUA, 1, [Define to 1 if lua is available])
+  ,
   [PKG_CHECK_MODULES(LUA, lua5.1 >= lua_required_version,
-     have_lua="yes",
-     [PKG_CHECK_MODULES(LUA, luajit >= 2.0.4,
-      have_lua="yes",
+     have_lua="yes"
+     AC_DEFINE(HAVE_LUA, 1, [Define to 1 if lua is available])
+     ,
+     [PKG_CHECK_MODULES(LUA, lua >= lua_required_version,
+      have_lua="yes"
+      AC_DEFINE(HAVE_LUA, 1, [Define to 1 if lua is available])
+      ,
       have_lua="no  (usable lua not found)")])])
 fi
 

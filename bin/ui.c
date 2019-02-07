@@ -90,6 +90,13 @@ const char *css =
 
 void mrg_gegl_dirty (void);
 
+#ifdef HAVE_LUA
+
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+
+#endif
 
 #include <ctype.h>
 #include <string.h>
@@ -109,6 +116,8 @@ void mrg_gegl_dirty (void);
 #include <gegl-audio-fragment.h>
 #include "mrg-gegl.h"
 #include "argvs.h"
+
+
 
 /* gets the node which is the direct consumer, and not a clone.
  *
@@ -307,6 +316,9 @@ struct _State {
   double         prev_ms;
 
   GHashTable    *ui_consumer;
+#ifdef HAVE_LUA
+  lua_State     *L;
+#endif
 };
 
 static gboolean text_editor_active (State *o)
@@ -319,6 +331,12 @@ static State *global_state = NULL;  // XXX: for now we  rely on
                                     //      global state to make events/scripting work
                                     //      refactoring this away would be nice, but
                                     //      not a problem to have in a lua port of the same
+
+State *app_state(void);
+State *app_state(void)
+{
+  return global_state;
+}
 
 typedef struct Setting {
   char *name;
@@ -744,6 +762,12 @@ static void init_state (State *o)
     renderer = GEGL_RENDERER_IDLE;
 
   o->gegl = gegl_node_new ();
+
+#ifdef HAVE_LUA
+  //o->L = luaL_newstate ();
+  //luaL_openlibs(o->L);
+#endif
+
 }
 
 static void cleanup_state (State *o)
@@ -5350,6 +5374,32 @@ static void gegl_ui (Mrg *mrg, void *data)
   cairo_restore (mrg_cr (mrg));
   cairo_new_path (mrg_cr (mrg));
 
+#ifdef HAVE_LUA
+  {
+    static void *mycdata = NULL;
+    int status, result;
+    o->L = luaL_newstate ();
+    luaL_openlibs(o->L);
+
+    lua_pushlightuserdata(o->L, &mycdata);
+    lua_setglobal(o->L, "__TEMP_USERDATA__");
+
+    status = luaL_loadfile(o->L, "hello.lua");
+    if (status)
+    {
+      fprintf(stderr, "Couldn't load file: %s\n", lua_tostring(o->L, -1));
+    }
+    else
+    {
+      result = lua_pcall(o->L, 0, LUA_MULTRET, 0);
+      if (result){
+        fprintf (stderr, "lua exec problem %s\n", lua_tostring(o->L, -1));
+      }
+    }
+    lua_close(o->L);
+  }
+#endif
+
 
   mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "quit");
   mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle fullscreen");
@@ -7402,5 +7452,10 @@ cmd_todo (COMMAND_ARGS)
   return 0;
 }
 
+
+void cdataToPointer(void *cdata, void **pointer);
+void cdataToPointer(void *cdata, void **pointer) {
+    *pointer = cdata;
+}
 
 #endif
