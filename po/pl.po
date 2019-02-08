@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-02-01 16:16+0000\n"
-"PO-Revision-Date: 2019-02-02 13:03+0100\n"
+"POT-Creation-Date: 2019-02-07 00:30+0000\n"
+"PO-Revision-Date: 2019-02-08 20:22+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -650,14 +650,14 @@ msgid "Brightness Contrast"
 msgstr "Jasność i kontrast"
 
 #: operations/common/brightness-contrast.c:162
-#, c-format
+#, no-c-format
 msgid ""
 "Changes the light level and contrast. This operation operates in linear "
-"light, 'contrast' is a scale factor around 50%% gray, and 'brightness' a "
+"light, 'contrast' is a scale factor around 50% gray, and 'brightness' a "
 "constant offset to apply after contrast scaling."
 msgstr ""
 "Zmienia poziom jasności i kontrast. To działanie używa światła liniowego, "
-"„kontrast” jest współczynnikiem skalowania o 50%% szarości, a „jasność” jest "
+"„kontrast” jest współczynnikiem skalowania o 50% szarości, a „jasność” jest "
 "przesunięciem stałej do zastosowania po skalowaniu kontrastu."
 
 #: operations/common/buffer-sink.c:25 operations/common/write-buffer.c:25
@@ -2270,11 +2270,11 @@ msgstr "Kolor końcowy"
 msgid "The color at (x2, y2)"
 msgstr "Kolor w (X2, Y2)"
 
-#: operations/common/linear-gradient.c:139
+#: operations/common/linear-gradient.c:140
 msgid "Linear Gradient"
 msgstr "Liniowy gradient"
 
-#: operations/common/linear-gradient.c:143
+#: operations/common/linear-gradient.c:144
 msgid "Linear gradient renderer"
 msgstr "Liniowe renderowanie gradientów"
 
@@ -3301,11 +3301,11 @@ msgstr "Zredukuj kolory"
 msgid "Reduces the number of levels in each color component of the image."
 msgstr "Zmniejsza liczbę poziomów w każdej składowej koloru obrazu."
 
-#: operations/common/radial-gradient.c:126
+#: operations/common/radial-gradient.c:127
 msgid "Radial Gradient"
 msgstr "Promienisty gradient"
 
-#: operations/common/radial-gradient.c:129
+#: operations/common/radial-gradient.c:130
 msgid "Radial gradient renderer"
 msgstr "Rysowanie gradientów promienistych"
 
@@ -5920,19 +5920,28 @@ msgid "Mode of value propagation"
 msgstr "Tryb rozprowadzania wartości"
 
 #: operations/common-gpl3+/value-propagate.c:43
-#: operations/common-gpl3+/value-propagate.c:44
 msgid "Lower threshold"
 msgstr "Dolny próg"
 
+#: operations/common-gpl3+/value-propagate.c:44
+msgid "The minimum difference in value at which to propagate a pixel"
+msgstr "Minimalna różnica wartości, przy której rozprowadzić piksel"
+
 #: operations/common-gpl3+/value-propagate.c:47
-#: operations/common-gpl3+/value-propagate.c:48
-#: operations/common-gpl3+/value-propagate.c:52
 msgid "Upper threshold"
 msgstr "Górny próg"
+
+#: operations/common-gpl3+/value-propagate.c:48
+msgid "The maximum difference in value at which to propagate a pixel"
+msgstr "Maksymalna różnica wartości, przy której rozprowadzić piksel"
 
 #: operations/common-gpl3+/value-propagate.c:51
 msgid "Propagating rate"
 msgstr "Częstotliwość rozprowadzania"
+
+#: operations/common-gpl3+/value-propagate.c:52
+msgid "The strength with which to propagate a pixel to its neighbors"
+msgstr "Siła, z jaką rozprowadzać piksel do jego sąsiadów"
 
 #: operations/common-gpl3+/value-propagate.c:56
 msgid "Color to use for the \"Only color\" and \"Color to peaks\" modes"
@@ -5971,14 +5980,20 @@ msgid "Propagate to bottom"
 msgstr "Rozprowadzanie do dolnej"
 
 #: operations/common-gpl3+/value-propagate.c:73
-#: operations/common-gpl3+/value-propagate.c:74
 msgid "Propagating value channel"
 msgstr "Rozprowadzanie kanału wartości"
 
+#: operations/common-gpl3+/value-propagate.c:74
+msgid "Whether to propagate a pixel's color"
+msgstr "Czy rozprowadzać kolor piksela"
+
 #: operations/common-gpl3+/value-propagate.c:76
-#: operations/common-gpl3+/value-propagate.c:77
 msgid "Propagating alpha channel"
 msgstr "Rozprowadzanie kanału alfa"
+
+#: operations/common-gpl3+/value-propagate.c:77
+msgid "Whether to propagate a pixel's opacity"
+msgstr "Czy rozprowadzać nieprzezroczystość piksela"
 
 #: operations/common-gpl3+/value-propagate.c:642
 msgid "Value Propagate"
@@ -6306,13 +6321,17 @@ msgstr ""
 msgid "Reset origin"
 msgstr "Przywrócenie pochodzenia"
 
-#: operations/core/crop.c:226
+#: operations/core/crop.c:247
 msgid "Crop"
 msgstr "Kadruj"
 
-#: operations/core/crop.c:227
-msgid "Crop a buffer"
-msgstr "Kadruj bufor"
+#: operations/core/crop.c:248
+msgid ""
+"Crops a buffer, if the aux pad is connected the bounding box of the node "
+"connected is used."
+msgstr ""
+"Kadruje bufor, jeśli dodatkowy blok jest połączony, to używany jest "
+"prostopadłościan graniczny połączonego węzła."
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/png-load.c:29
