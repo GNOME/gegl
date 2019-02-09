@@ -117,6 +117,168 @@ void mrg_gegl_dirty (void);
 #include "mrg-gegl.h"
 #include "argvs.h"
 
+#include "ui.h"
+
+G_DEFINE_TYPE (GeState, ge_state, G_TYPE_OBJECT)
+
+enum
+{
+    PROP_0,
+    PROP_SOURCE,
+    PROP_ACTIVE,
+    PROP_SINK,
+    N_PROPERTIES
+};
+
+static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
+
+enum {
+  GEGL_RENDERER_BLIT = 0,
+  GEGL_RENDERER_BLIT_MIPMAP,
+  GEGL_RENDERER_THREAD,
+  GEGL_RENDERER_IDLE,
+  //GEGL_RENDERER_IDLE_MIPMAP,
+  //GEGL_RENDERER_THREAD_MIPMAP,
+};
+
+
+static int renderer = GEGL_RENDERER_BLIT;
+static void
+ge_state_init (GeState *o)
+{
+  const char *renderer_env = g_getenv ("GEGL_RENDERER");
+  o->scale             = 1.0;
+  o->graph_scale       = 1.0;
+  o->thumbbar_scale    = 1.0;
+  o->thumbbar_opacity  = 1.0;
+  o->show_thumbbar     = 1.0;
+  o->show_bounding_box = 1;
+  o->render_quality    = 1.0;
+  o->preview_quality   = 1.0;
+  //o->preview_quality = 2.0;
+  o->slide_pause       = 5.0;
+  o->paint_color       = g_strdup ("white");
+  o->slide_enabled     = 0;
+  o->show_bindings     = 0;
+  o->ui_consumer = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+  if (renderer_env)
+  {
+    if (!strcmp (renderer_env, "blit")) renderer = GEGL_RENDERER_BLIT;
+    else if (!strcmp (renderer_env, "blit-mipmap")) renderer = GEGL_RENDERER_BLIT_MIPMAP;
+    else if (!strcmp (renderer_env, "mipmap")) renderer = GEGL_RENDERER_BLIT_MIPMAP;
+    else if (!strcmp (renderer_env, "thread")) renderer = GEGL_RENDERER_THREAD;
+    else if (!strcmp (renderer_env, "idle")) renderer = GEGL_RENDERER_IDLE;
+    else renderer = GEGL_RENDERER_IDLE;
+  } else
+    renderer = GEGL_RENDERER_IDLE;
+
+  o->gegl = gegl_node_new ();
+}
+
+static void
+ge_state_set_property (GObject      *object,
+                          guint         property_id,
+                          const GValue *value,
+                          GParamSpec   *pspec)
+{
+    GeState *state = GE_STATE (object);
+
+    switch (property_id) {
+    case PROP_SOURCE:
+        g_set_object (&state->source, g_value_get_object (value));
+        break;
+    case PROP_SINK:
+        g_set_object (&state->sink, g_value_get_object (value));
+        break;
+    case PROP_ACTIVE:
+        g_set_object (&state->active, g_value_get_object (value));
+        break;
+
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        break;
+    }
+}
+
+static void
+ge_state_get_property (GObject    *object,
+                          guint       property_id,
+                          GValue     *value,
+                          GParamSpec *pspec)
+{
+    GeState *state = GE_STATE (object);
+
+    switch (property_id) {
+    case PROP_SOURCE:
+        g_value_set_object (value, state->source);
+        break;
+    case PROP_ACTIVE:
+        g_value_set_object (value, state->active);
+        break;
+    case PROP_SINK:
+        g_value_set_object (value, state->sink);
+        break;
+
+    default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        break;
+    }
+}
+
+#ifdef HAVE_LUA
+static lua_State *L = NULL;
+#endif
+
+static void
+ge_state_finalize (GObject *object)
+{
+    GeState *o = GE_STATE (object);
+
+#ifdef HAVE_LUA
+    if(L)lua_close(L);
+#endif
+
+    g_clear_object (&o->gegl);
+    g_clear_object (&o->processor);
+    g_clear_object (&o->processor_buffer);
+    g_clear_object (&o->buffer);
+
+
+    G_OBJECT_CLASS (ge_state_parent_class)->finalize (object);
+}
+
+static void
+ge_state_class_init (GeStateClass *klass)
+{
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+    object_class->set_property = ge_state_set_property;
+    object_class->get_property = ge_state_get_property;
+    object_class->finalize = ge_state_finalize;
+
+    obj_properties[PROP_SOURCE] =
+        g_param_spec_object ("source", "Source", "Source node in processing chain",
+                             GEGL_TYPE_NODE,
+                             G_PARAM_READWRITE);
+    obj_properties[PROP_SINK] =
+        g_param_spec_object ("sink", "Sink", "Sink node in processing chain",
+                             GEGL_TYPE_NODE,
+                             G_PARAM_READWRITE);
+    obj_properties[PROP_ACTIVE] =
+        g_param_spec_object ("active", "Active", "Active node",
+                             GEGL_TYPE_NODE,
+                             G_PARAM_READWRITE);
+
+    g_object_class_install_properties (object_class,
+                                       N_PROPERTIES,
+                                       obj_properties);
+}
+
+GeState *ge_state_new (void)
+{
+  return g_object_new (GE_STATE_TYPE, NULL);
+}
 
 
 /* gets the node which is the direct consumer, and not a clone.
@@ -212,128 +374,20 @@ MrgList *scrollback = NULL; /* scrollback buffer of free() able strings
 
 static int audio_started = 0;
 
-enum {
-  GEGL_RENDERER_BLIT = 0,
-  GEGL_RENDERER_BLIT_MIPMAP,
-  GEGL_RENDERER_THREAD,
-  GEGL_RENDERER_IDLE,
-  //GEGL_RENDERER_IDLE_MIPMAP,
-  //GEGL_RENDERER_THREAD_MIPMAP,
-};
-static int renderer = GEGL_RENDERER_BLIT;
 
-/*  this structure contains the full application state, and is what
- *  re-renderings of the UI is directly based on.
- */
-typedef struct _State State;
-struct _State {
-  void      (*ui) (Mrg *mrg, void *state);
-  Mrg        *mrg;
-  char       *path;      /* path of edited file or open folder  */
-
-  char       *src_path; /* path to (immutable) source image. */
-
-  char       *save_path; /* the exported .gegl file, or .png with embedded .gegl file,
-                            the file that is written to on save. This differs depending
-                            on type of input file.
-                          */
-  GList         *paths;  /* list of full paths to entries in collection/path/containing path,
-                            XXX: could be replaced with URIs, and each
-                            element should perhaps contain more internal info
-                            like stars, tags etc.  */
-  GeglBuffer    *buffer;
-  GeglNode      *gegl;
-  GeglNode      *source;  /* a file-loader or another swapped in buffer provider that is the
-                             image data source for the loaded image.  */
-  GeglNode      *save;    /* node rigged up for saving file XXX: might be bitrotted */
-
-  GeglNode      *sink;    /* the sink which we're rendering content and graph from */
-  GeglNode      *active;  /* the node being actively inspected  */
-
-  int            pad_active; /* 0=input 1=aux 2=output (default)*/
-
-  GThread       *renderer_thread; /* only used when GEGL_RENDERER=thread is set in environment */
-  int            entry_no; /* used in collection-view, and set by "parent" */
-
-  int            is_dir;  // is current in dir mode
-
-  int            show_bindings;
-
-  GeglNode      *reference_node;
-
-  GeglNode      *processor_node; /* the node we have a processor for */
-  GeglProcessor *processor;
-  GeglBuffer    *processor_buffer;
-  int            renderer_state;
-  int            editing_op_name;
-  char           editing_buf[1024];
-  int            rev;
-
-  const char    *property_focus; // interned string of property name, or "operation" or "id"
-  int            editing_property;
-
-
-  float          u, v;
-  float          scale;
-
-  int            is_fit;
-  int            show_bounding_box;
-  float          dir_scale;
-  float          render_quality; /* default (and in code swapped for preview_quality during preview rendering, this is the canonical read location for the value)  */
-  float          preview_quality;
-
-  float          graph_pan_x;
-  float          graph_pan_y;
-  int            show_graph;
-  float          graph_scale;
-
-  float          thumbbar_pan_x;
-  float          thumbbar_pan_y;
-  int            show_thumbbar;
-  float          thumbbar_scale;
-  float          thumbbar_opacity;
-  int            thumbbar_timeout;
-
-  int            show_controls;
-  int            controls_timeout;
-  int            frame_no;
-
-
-  char         **ops; // the operations part of the commandline, if any
-  float          slide_pause;
-  int            slide_enabled;
-  int            slide_timeout;
-  char          *paint_color;    // XXX : should be a GeglColor
-
-  GeglNode      *gegl_decode;
-  GeglNode      *decode_load;
-  GeglNode      *decode_store;
-  int            playing;
-  int            color_managed_display;
-
-  int            is_video;
-  int            prev_frame_played;
-  double         prev_ms;
-
-  GHashTable    *ui_consumer;
-#ifdef HAVE_LUA
-  lua_State     *L;
-#endif
-};
-
-static gboolean text_editor_active (State *o)
+static gboolean text_editor_active (GeState *o)
 {
   return o->editing_op_name ||
          o->editing_property;
 }
 
-static State *global_state = NULL;  // XXX: for now we  rely on
+static GeState *global_state = NULL;  // XXX: for now we  rely on
                                     //      global state to make events/scripting work
                                     //      refactoring this away would be nice, but
                                     //      not a problem to have in a lua port of the same
 
-State *app_state(void);
-State *app_state(void)
+GeState *app_state(void);
+GeState *app_state(void)
 {
   return global_state;
 }
@@ -347,17 +401,17 @@ typedef struct Setting {
 } Setting;
 
 #define FLOAT_PROP(name, description) \
-  {#name, description, offsetof (State, name), 1, 0}
+  {#name, description, offsetof (GeState, name), 1, 0}
 #define INT_PROP(name, description) \
-  {#name, description, offsetof (State, name), 0, 0}
+  {#name, description, offsetof (GeState, name), 0, 0}
 #define STRING_PROP(name, description) \
-  {#name, description, offsetof (State, name), 2, 0}
+  {#name, description, offsetof (GeState, name), 2, 0}
 #define FLOAT_PROP_RO(name, description) \
-  {#name, description, offsetof (State, name), 1, 1}
+  {#name, description, offsetof (GeState, name), 1, 1}
 #define INT_PROP_RO(name, description) \
-  {#name, description, offsetof (State, name), 0, 1}
+  {#name, description, offsetof (GeState, name), 0, 1}
 #define STRING_PROP_RO(name, description) \
-  {#name, description, offsetof (State, name), 2, 1}
+  {#name, description, offsetof (GeState, name), 2, 1}
 
 Setting settings[]=
 {
@@ -385,7 +439,7 @@ Setting settings[]=
 };
 
 
-static void queue_draw (State *o)
+static void queue_draw (GeState *o)
 {
   o->renderer_state = 0;
   renderer_dirty++;
@@ -393,7 +447,7 @@ static void queue_draw (State *o)
   mrg_queue_draw (o->mrg, NULL);
 }
 
-static void rev_inc (State *o)
+static void rev_inc (GeState *o)
 {
   o->rev++;
   queue_draw (o);
@@ -443,14 +497,14 @@ gchar *get_thumb_path (const char *path)
 }
 
 
-static void load_path (State *o);
+static void load_path (GeState *o);
 
-static void get_coords                (State *o, float  screen_x, float screen_y,
+static void get_coords                (GeState *o, float  screen_x, float screen_y,
                                                  float *gegl_x,   float *gegl_y);
 static void drag_preview              (MrgEvent *e);
-static void load_into_buffer          (State *o, const char *path);
-static void zoom_to_fit               (State *o);
-static void center                    (State *o);
+static void load_into_buffer          (GeState *o, const char *path);
+static void zoom_to_fit               (GeState *o);
+static void center                    (GeState *o);
 static void gegl_ui                   (Mrg *mrg, void *data);
 int         mrg_ui_main               (int argc, char **argv, char **ops);
 void        gegl_meta_set             (const char *path, const char *meta_data);
@@ -465,7 +519,7 @@ static int str_has_visual_suffix (char *path)
 }
 
 
-static void populate_path_list (State *o)
+static void populate_path_list (GeState *o)
 {
   struct dirent **namelist;
   int i;
@@ -591,14 +645,14 @@ static char *sh_esc (const char *input)
 #endif
 
 
-static void load_path_inner (State *o, char *path);
+static void load_path_inner (GeState *o, char *path);
 
 static void run_command (MrgEvent *event_or_null, void *commandline, void *ignored);
 
 
 static gboolean renderer_task (gpointer data)
 {
-  State *o = data;
+  GeState *o = data;
   static gdouble progress = 0.0;
   void *old_processor = o->processor;
   GeglBuffer *old_buffer = o->processor_buffer;
@@ -732,65 +786,22 @@ static gpointer renderer_thread (gpointer data)
   return 0;
 }
 
-static void init_state (State *o)
-{
-  const char *renderer_env = g_getenv ("GEGL_RENDERER");
-  o->scale             = 1.0;
-  o->graph_scale       = 1.0;
-  o->thumbbar_scale    = 1.0;
-  o->thumbbar_opacity  = 1.0;
-  o->show_thumbbar     = 1.0;
-  o->show_bounding_box = 1;
-  o->render_quality    = 1.0;
-  o->preview_quality   = 1.0;
-  //o->preview_quality = 2.0;
-  o->slide_pause       = 5.0;
-  o->paint_color       = g_strdup ("white");
-  o->slide_enabled     = 0;
-  o->show_bindings     = 0;
-  o->ui_consumer = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-  if (renderer_env)
-  {
-    if (!strcmp (renderer_env, "blit")) renderer = GEGL_RENDERER_BLIT;
-    else if (!strcmp (renderer_env, "blit-mipmap")) renderer = GEGL_RENDERER_BLIT_MIPMAP;
-    else if (!strcmp (renderer_env, "mipmap")) renderer = GEGL_RENDERER_BLIT_MIPMAP;
-    else if (!strcmp (renderer_env, "thread")) renderer = GEGL_RENDERER_THREAD;
-    else if (!strcmp (renderer_env, "idle")) renderer = GEGL_RENDERER_IDLE;
-    else renderer = GEGL_RENDERER_IDLE;
-  } else
-    renderer = GEGL_RENDERER_IDLE;
 
-  o->gegl = gegl_node_new ();
 
-#ifdef HAVE_LUA
-  //o->L = luaL_newstate ();
-  //luaL_openlibs(o->L);
-#endif
 
-}
-
-static void cleanup_state (State *o)
-{
-  g_clear_object (&o->gegl);
-  g_clear_object (&o->processor);
-  g_clear_object (&o->processor_buffer);
-  g_clear_object (&o->buffer);
-}
 
 int mrg_ui_main (int argc, char **argv, char **ops)
 {
   Mrg *mrg = mrg_new (1024, 768, NULL);
-  static State state = {NULL,};
-  State *o = &state;
-  global_state = o;
+  GeState *o;
 
   mrg_set_image_cache_mb (mrg, 1024);
   mrg_set_title (mrg, "GEGL");
 
   gegl_init (&argc, &argv);
 
-  init_state (o);
+  global_state = o = ge_state_new ();
 
   o->ops = ops;
   o->mrg  = mrg;
@@ -802,6 +813,22 @@ int mrg_ui_main (int argc, char **argv, char **ops)
       printf ("usage: %s <full-path-to-image>\n", argv[0]);
       return -1;
     }
+
+
+#ifdef HAVE_LUA
+  {
+    int status, result;
+    L = luaL_newstate ();
+    luaL_openlibs(L);
+
+    lua_pushlightuserdata (L, o);
+    lua_setglobal(L, "STATE");
+
+    status = luaL_loadfile(L, "init.lua");
+    result = lua_pcall(L, 0, LUA_MULTRET, 0);
+    if (result | status);
+  }
+#endif
 
   load_path (o);
   mrg_set_ui (mrg, gegl_ui, o);
@@ -830,7 +857,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   if (renderer == GEGL_RENDERER_THREAD)
     g_thread_join (o->renderer_thread);
 
-  cleanup_state (o);
+  g_object_unref (o);
 
   gegl_exit ();
 
@@ -842,7 +869,7 @@ int cmd_thumb (COMMAND_ARGS); /* "thumb", 0, "<>", "generate thumbnail for activ
 int
 cmd_thumb (COMMAND_ARGS)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   gchar *thumbdata;
   GeglBuffer *buffer;
   GeglNode *gegl;
@@ -907,12 +934,10 @@ int thumbgen_main (int argc, char **argv);
 
 int thumbgen_main (int argc, char **argv)
 {
-  static State state = {NULL,};
-  State *o = &state;
-  global_state = o;
+  GeState *o;
   gegl_init (&argc, &argv);
 
-  init_state (o);
+  o = global_state = ge_state_new ();
 
   for (char **arg = &argv[2]; *arg; arg++)
   {
@@ -923,7 +948,7 @@ int thumbgen_main (int argc, char **argv)
     argvs_eval ("thumb");
   }
 
-  cleanup_state (o);
+  g_object_unref (o);
 
   gegl_exit ();
 
@@ -932,7 +957,7 @@ int thumbgen_main (int argc, char **argv)
 
 static int hide_controls_cb (Mrg *mrg, void *data)
 {
-  State *o = data;
+  GeState *o = data;
   o->controls_timeout = 0;
   o->show_controls    = 0;
   mrg_queue_draw (o->mrg, NULL);
@@ -941,7 +966,7 @@ static int hide_controls_cb (Mrg *mrg, void *data)
 
 static int fade_thumbbar_cb (Mrg *mrg, void *data)
 {
-  State *o = data;
+  GeState *o = data;
   o->show_thumbbar = 1;
   mrg_queue_draw (o->mrg, NULL);
   return 0;
@@ -949,7 +974,7 @@ static int fade_thumbbar_cb (Mrg *mrg, void *data)
 
 static void on_viewer_motion (MrgEvent *e, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
   {
     if (!o->show_controls)
     {
@@ -967,7 +992,7 @@ static void on_viewer_motion (MrgEvent *e, void *data1, void *data2)
 
 static void on_thumbbar_motion (MrgEvent *e, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
   on_viewer_motion (e, data1, NULL);
   {
     o->show_thumbbar = 2;
@@ -986,7 +1011,7 @@ static void on_pan_drag (MrgEvent *e, void *data1, void *data2)
   static int   zoom_pinch = 0;
   static float orig_zoom = 1.0;
 
-  State *o = data1;
+  GeState *o = data1;
   on_viewer_motion (e, data1, data2);
   if (e->type == MRG_DRAG_RELEASE)
   {
@@ -1069,7 +1094,7 @@ static void on_pick_drag (MrgEvent *e, void *data1, void *data2)
   static int   zoom_pinch = 0;
   static float orig_zoom = 1.0;
 
-  State *o = data1;
+  GeState *o = data1;
   on_viewer_motion (e, data1, data2);
   if (e->type == MRG_DRAG_RELEASE)
   {
@@ -1168,13 +1193,13 @@ static void on_pick_drag (MrgEvent *e, void *data1, void *data2)
 static int hack_cols = 5;
 static float hack_dim = 5;
 
-static void update_grid_dim (State *o)
+static void update_grid_dim (GeState *o)
 {
   hack_dim = mrg_height (o->mrg) * 0.2 * o->dir_scale;
   hack_cols = mrg_width (o->mrg) / hack_dim;
 }
 
-static void center_active_entry (State *o)
+static void center_active_entry (GeState *o)
 {
   int row;
   float pos;
@@ -1195,7 +1220,7 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
   static int   zoom_pinch = 0;
   static float orig_zoom = 1.0;
 
-  State *o = data1;
+  GeState *o = data1;
   if (e->type == MRG_DRAG_RELEASE)
   {
     zoom_pinch = 0;
@@ -1275,15 +1300,15 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
 
 
 
-static GeglNode *add_output (State *o, GeglNode *active, const char *optype);
-static GeglNode *add_aux (State *o, GeglNode *active, const char *optype);
-static GeglNode *add_input (State *o, GeglNode *active, const char *optype);
+static GeglNode *add_output (GeState *o, GeglNode *active, const char *optype);
+static GeglNode *add_aux (GeState *o, GeglNode *active, const char *optype);
+static GeglNode *add_input (GeState *o, GeglNode *active, const char *optype);
 
 GeglPath *path = NULL;
 
 static void on_paint_drag (MrgEvent *e, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
   float x = (e->x + o->u) / o->scale;
   float y = (e->y + o->v) / o->scale;
 
@@ -1319,7 +1344,7 @@ static void on_paint_drag (MrgEvent *e, void *data1, void *data2)
 
 static void on_move_drag (MrgEvent *e, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
   switch (e->type)
   {
     default: break;
@@ -1404,7 +1429,7 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
 static int dir_scroll_dragged = 0;
 static void on_dir_scroll_drag (MrgEvent *e, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
   switch (e->type)
   {
     default: break;
@@ -1461,7 +1486,7 @@ static void prop_int_drag_cb (MrgEvent *e, void *data1, void *data2)
 
 static void set_edited_prop (MrgEvent *e, void *data1, void *data2)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   GParamSpec *pspec;
   o->property_focus = g_intern_string (data2);
   o->editing_property = 0;
@@ -1523,7 +1548,7 @@ static void set_edited_prop (MrgEvent *e, void *data1, void *data2)
 
 static void cancel_edited_prop (MrgEvent *e, void *data1, void *data2)
 {
-  State *o = global_state;
+  GeState *o = global_state;
 
   o->editing_property = 0;
   o->editing_buf[0]=0;
@@ -1534,7 +1559,7 @@ static void cancel_edited_prop (MrgEvent *e, void *data1, void *data2)
 
 static void unset_edited_prop (MrgEvent *e, void *data1, void *data2)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   if ((e->type == MRG_RELEASE) ||
       (e->type == MRG_MOTION))
   {
@@ -1576,14 +1601,14 @@ static void unset_edited_prop (MrgEvent *e, void *data1, void *data2)
 
 static void entry_select (MrgEvent *event, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
   o->entry_no = GPOINTER_TO_INT (data2);
   mrg_queue_draw (event->mrg, NULL);
 }
 
 static void entry_load (MrgEvent *event, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
 
   if (o->rev)
     argvs_eval ("save");
@@ -1615,7 +1640,7 @@ static void queue_thumb (const char *path, const char *thumbpath)
 }
 
 
-static void ui_dir_viewer (State *o)
+static void ui_dir_viewer (GeState *o)
 {
   Mrg *mrg = o->mrg;
   cairo_t *cr = mrg_cr (mrg);
@@ -1816,7 +1841,7 @@ static void ui_dir_viewer (State *o)
 
 static int slide_cb (Mrg *mrg, void *data)
 {
-  State *o = data;
+  GeState *o = data;
   o->slide_timeout = 0;
   argvs_eval ("next");
   return 0;
@@ -1864,7 +1889,7 @@ static void on_thumbbar_drag (MrgEvent *e, void *data1, void *data2);
 
 static void on_thumbbar_scroll (MrgEvent *event, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
   on_viewer_motion (event, data1, NULL);
   switch (event->scroll_direction)
   {
@@ -1885,7 +1910,7 @@ static void on_thumbbar_scroll (MrgEvent *event, void *data1, void *data2)
   mrg_event_stop_propagate (event);
 }
 
-static void draw_thumb_bar (State *o)
+static void draw_thumb_bar (GeState *o)
 {
   Mrg *mrg = o->mrg;
   float width = mrg_width(mrg);
@@ -2012,7 +2037,7 @@ static void draw_thumb_bar (State *o)
   cairo_restore (cr);
 }
 
-static void ui_viewer (State *o)
+static void ui_viewer (GeState *o)
 {
   Mrg *mrg = o->mrg;
   float width = mrg_width(mrg);
@@ -2130,7 +2155,7 @@ static void dir_scroll_cb (MrgEvent *event, void *data1, void *data2)
 
 
 
-static void dir_touch_handling (Mrg *mrg, State *o)
+static void dir_touch_handling (Mrg *mrg, GeState *o)
 {
   cairo_new_path (mrg_cr (mrg));
   cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
@@ -2140,7 +2165,7 @@ static void dir_touch_handling (Mrg *mrg, State *o)
   cairo_new_path (mrg_cr (mrg));
 }
 
-static void canvas_touch_handling (Mrg *mrg, State *o)
+static void canvas_touch_handling (Mrg *mrg, GeState *o)
 {
   cairo_new_path (mrg_cr (mrg));
   switch (tool)
@@ -2174,7 +2199,7 @@ static void canvas_touch_handling (Mrg *mrg, State *o)
   }
 }
 
-static GeglNode *add_aux (State *o, GeglNode *active, const char *optype)
+static GeglNode *add_aux (GeState *o, GeglNode *active, const char *optype)
 {
   GeglNode *ref = active;
   GeglNode *ret = NULL;
@@ -2191,7 +2216,7 @@ static GeglNode *add_aux (State *o, GeglNode *active, const char *optype)
   return ret;
 }
 
-static GeglNode *add_input (State *o, GeglNode *active, const char *optype)
+static GeglNode *add_input (GeState *o, GeglNode *active, const char *optype)
 {
   GeglNode *ref = active;
   GeglNode *ret = NULL;
@@ -2208,7 +2233,7 @@ static GeglNode *add_input (State *o, GeglNode *active, const char *optype)
   return ret;
 }
 
-static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
+static GeglNode *add_output (GeState *o, GeglNode *active, const char *optype)
 {
   GeglNode *ref = active;
   GeglNode *ret = NULL;
@@ -2229,7 +2254,7 @@ static GeglNode *add_output (State *o, GeglNode *active, const char *optype)
 
 static void prop_set_enum (MrgEvent *event, void *data1, void *data2)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   int value = GPOINTER_TO_INT (data1);
   const char *prop_name = data2;
 
@@ -2367,21 +2392,21 @@ static GList *gegl_operations (void)
   return operations;
 }
 
-static void draw_key (State *o, Mrg *mrg, const char *key)
+static void draw_key (GeState *o, Mrg *mrg, const char *key)
 {
   mrg_start (mrg, "div.propname", NULL);
   mrg_printf (mrg, "%s", key);
   mrg_end (mrg);
 }
 
-static void draw_value (State *o, Mrg *mrg, const char *value)
+static void draw_value (GeState *o, Mrg *mrg, const char *value)
 {
   mrg_start (mrg, "div.propvalue", NULL);
   mrg_printf (mrg, "%s", value);
   mrg_end (mrg);
 }
 
-static void draw_key_value (State *o, Mrg *mrg, const char *key, const char *value)
+static void draw_key_value (GeState *o, Mrg *mrg, const char *key, const char *value)
 {
   mrg_start (mrg, "div.property", NULL);
   draw_key (o, mrg, key);
@@ -2390,7 +2415,7 @@ static void draw_key_value (State *o, Mrg *mrg, const char *key, const char *val
 }
 
 static void
-draw_property_enum (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+draw_property_enum (GeState *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
     GEnumClass *eclass = g_type_class_peek (pspec->value_type);
     gint value;
@@ -2447,7 +2472,7 @@ typedef struct PropIntDragData {
 static void on_prop_int_drag (MrgEvent *e, void *data1, void *data2)
 {
   PropIntDragData *drag_data = data1;
-  State *o = data2;
+  GeState *o = data2;
 
   gdouble rel_pos;
   gint    value;
@@ -2470,7 +2495,7 @@ static void update_string (const char *new_text, void *data)
 }
 
 static void
-draw_property_int (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+draw_property_int (GeState *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
   cairo_t*cr = mrg_cr (mrg);
 
@@ -2575,7 +2600,7 @@ static void on_toggle_boolean (MrgEvent *e, void *data1, void *data2)
 }
 
 static void
-draw_property_boolean (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+draw_property_boolean (GeState *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
   gboolean value = FALSE;
   mrg_start (mrg, "div.property", NULL);
@@ -2612,7 +2637,7 @@ typedef struct PropDoubleDragData {
 static void on_prop_double_drag (MrgEvent *e, void *data1, void *data2)
 {
   PropDoubleDragData *drag_data = data1;
-  State *o = data2;
+  GeState *o = data2;
 
   gdouble value, rel_pos;
 
@@ -2630,7 +2655,7 @@ static void on_prop_double_drag (MrgEvent *e, void *data1, void *data2)
 
 
 static void
-draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+draw_property_double (GeState *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
   cairo_t*cr = mrg_cr (mrg);
 
@@ -2721,7 +2746,7 @@ draw_property_double (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
 
 
 static void
-draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+draw_property_color (GeState *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
   GeglColor *color;
   char *value = NULL;
@@ -2758,7 +2783,7 @@ draw_property_color (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec
 /**************************************************************************/
 
 static void
-draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+draw_property_string (GeState *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
   char *value = NULL;
   float x, y;
@@ -2836,7 +2861,7 @@ draw_property_string (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspe
 /**************************************************************************/
 
 static void
-draw_property_focus_box (State *o, Mrg *mrg)
+draw_property_focus_box (GeState *o, Mrg *mrg)
 {
   /* an overlining with slight curve hack - for now - should make use of CSS  */
   cairo_t *cr = mrg_cr (mrg);
@@ -2852,7 +2877,7 @@ draw_property_focus_box (State *o, Mrg *mrg)
 }
 
 static void
-draw_property (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
+draw_property (GeState *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 {
   gboolean focused_property = g_intern_string (pspec->name) == o->property_focus;
 
@@ -2897,7 +2922,7 @@ draw_property (State *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
 
 static float properties_height = 100;
 
-static void list_node_props (State *o, GeglNode *node, int indent)
+static void list_node_props (GeState *o, GeglNode *node, int indent)
 {
   static int operation_selector = 0;
   Mrg *mrg = o->mrg;
@@ -3154,7 +3179,7 @@ static void list_node_props (State *o, GeglNode *node, int indent)
   }
 }
 
-static void activate_sink_producer (State *o)
+static void activate_sink_producer (GeState *o)
 {
   if (o->sink)
     o->active = gegl_node_get_producer (o->sink, "input", NULL);
@@ -3166,7 +3191,7 @@ static void activate_sink_producer (State *o)
 
 static void set_op (MrgEvent *event, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
 
   {
     if (strchr (o->editing_buf, ':'))
@@ -3189,7 +3214,7 @@ static void set_op (MrgEvent *event, void *data1, void *data2)
 }
 
 
-static void update_ui_consumers_list (State *o, GeglNode *iter)
+static void update_ui_consumers_list (GeState *o, GeglNode *iter)
 {
   GList *queue = NULL;
   GeglNode *prev = NULL;
@@ -3220,7 +3245,7 @@ static void update_ui_consumers_list (State *o, GeglNode *iter)
 }
 
 
-static void update_ui_consumers (State *o)
+static void update_ui_consumers (GeState *o)
 {
   g_hash_table_remove_all (o->ui_consumer);
 
@@ -3268,7 +3293,7 @@ static void node_press (MrgEvent *e,
                         void *data1,
                         void *data2)
 {
-  State *o = data2;
+  GeState *o = data2;
   GeglNode *new_active = data1;
 
   o->active = new_active;
@@ -3282,7 +3307,7 @@ static void node_press (MrgEvent *e,
 
 static void on_graph_scroll (MrgEvent *event, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
 
   float x, y;
   float screen_cx = event->device_x;
@@ -3316,7 +3341,7 @@ static void on_graph_drag (MrgEvent *e, void *data1, void *data2)
   static int   pinch = 0;
   static float orig_zoom = 1.0;
 
-  State *o = data1;
+  GeState *o = data1;
   GeglNode *node = data2;
 
   //on_viewer_motion (e, data1, data2);
@@ -3416,7 +3441,7 @@ static void on_thumbbar_drag (MrgEvent *e, void *data1, void *data2)
   static int   pinch = 0;
   static float orig_zoom = 1.0;
 
-  State *o = data1;
+  GeState *o = data1;
   //GeglNode *node = data2;
 
   on_viewer_motion (e, data1, data2);
@@ -3495,7 +3520,7 @@ static void on_thumbbar_drag (MrgEvent *e, void *data1, void *data2)
 
 static void on_active_node_drag (MrgEvent *e, void *data1, void *data2, int is_aux)
 {
-  State *o = data1;
+  GeState *o = data1;
   GeglNode *node = data2;
 
   float em = mrg_em (o->mrg);
@@ -3784,7 +3809,7 @@ static float compute_pad_y (Mrg *mrg, int indent, int line_no, int pad_no)
 }
 
 static void
-draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
+draw_node (GeState *o, int indent, int line_no, GeglNode *node, gboolean active)
 {
   char *opname = NULL;
   GList *to_remove = NULL;
@@ -4013,7 +4038,7 @@ draw_node (State *o, int indent, int line_no, GeglNode *node, gboolean active)
 
 }
 
-static void list_ops (State *o, GeglNode *iter, int indent, int *no)
+static void list_ops (GeState *o, GeglNode *iter, int indent, int *no)
 {
   while (iter)
    {
@@ -4059,7 +4084,7 @@ static void list_ops (State *o, GeglNode *iter, int indent, int *no)
 
 
 
-static void draw_graph (State *o)
+static void draw_graph (GeState *o)
 {
   Mrg *mrg = o->mrg;
   GeglNode *iter;
@@ -4137,7 +4162,7 @@ static GList *commandline_get_completions (GeglNode   *node,
 
 static void update_commandline (const char *new_commandline, void *data)
 {
-  State *o = data;
+  GeState *o = data;
   if (completion_no>=0)
   {
     char *appended = g_strdup (&new_commandline[strlen(commandline)]);
@@ -4165,7 +4190,7 @@ static void update_commandline (const char *new_commandline, void *data)
 
 /* finds id in iterable subtree from iter
  */
-static GeglNode *node_find_by_id (State *o, GeglNode *iter,
+static GeglNode *node_find_by_id (GeState *o, GeglNode *iter,
                                   const char *needle_id)
 {
   needle_id = g_intern_string (needle_id);
@@ -4219,7 +4244,7 @@ static GeglNode *node_find_by_id (State *o, GeglNode *iter,
 static void
 run_command (MrgEvent *event, void *data1, void *data_2)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   char *commandline = data1;
 
   gchar **argv = NULL;
@@ -4527,7 +4552,7 @@ run_command (MrgEvent *event, void *data1, void *data_2)
 
 static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
 {
-  State *o = data1;
+  GeState *o = data1;
   if (commandline[0])
   {
     if (completion_no>=0)
@@ -4587,7 +4612,7 @@ static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
   mrg_event_stop_propagate (event);
 }
 
-static void iterate_frame (State *o)
+static void iterate_frame (GeState *o)
 {
   Mrg *mrg = o->mrg;
 
@@ -4916,7 +4941,7 @@ static GList *commandline_get_completions (GeglNode *node,
 
 static void expand_completion (MrgEvent *event, void *data1, void *data2)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   char common_prefix[512]="";
 
   GList *completions = commandline_get_completions (o->active,
@@ -4999,7 +5024,7 @@ static void expand_completion (MrgEvent *event, void *data1, void *data2)
 
 static void ui_commandline (Mrg *mrg, void *data)
 {
-  State *o = data;
+  GeState *o = data;
   float em = mrg_em (mrg);
   float h = mrg_height (mrg);
   //float w = mrg_width (mrg);
@@ -5133,7 +5158,7 @@ jump:
   cairo_restore (cr);
 }
 
-static void vector_op_ui (State *o, GeglNode *node)
+static void vector_op_ui (GeState *o, GeglNode *node)
 {
   Mrg *mrg = o->mrg;
   GeglPath *path;
@@ -5162,7 +5187,7 @@ static void vector_op_ui (State *o, GeglNode *node)
 
 
 
-static int per_op_canvas_ui (State *o)
+static int per_op_canvas_ui (GeState *o)
 {
   Mrg *mrg = o->mrg;
   cairo_t  *cr = mrg_cr (mrg);
@@ -5239,7 +5264,38 @@ static cairo_matrix_t node_get_relative_transform (GeglNode *node_view,
   return ret;
 }
 
-static void draw_bounding_box (State *o)
+
+static void run_lua_file (const char *path)
+{
+#ifdef HAVE_LUA
+  int status, result;
+  status = luaL_loadstring(L,
+"local foo = GObject.Object(STATE)\n"
+"active = foo.active\n"
+"sink = foo.sink\n"
+"source = foo.source\n");
+  result = lua_pcall(L, 0, LUA_MULTRET, 0);
+
+  status = luaL_loadfile(L, "hello.lua");
+  if (status)
+  {
+    fprintf(stderr, "Couldn't load file: %s\n", lua_tostring(L, -1));
+  }
+  else
+  {
+    result = lua_pcall(L, 0, LUA_MULTRET, 0);
+    if (result){
+      fprintf (stderr, "lua exec problem %s\n", lua_tostring(L, -1));
+    }
+  }
+
+  /* reset active if it has changed with new loadstring */
+
+#endif
+}
+
+
+static void draw_bounding_box (GeState *o)
 {
   Mrg *mrg = o->mrg;
   cairo_t *cr = mrg_cr (mrg);
@@ -5260,9 +5316,11 @@ static void draw_bounding_box (State *o)
   cairo_restore (cr);
 }
 
+
+
 static void gegl_ui (Mrg *mrg, void *data)
 {
-  State *o = data;
+  GeState *o = data;
   struct stat stat_buf;
 
   mrg_stylesheet_add (mrg, css, NULL, 0, NULL);
@@ -5374,32 +5432,7 @@ static void gegl_ui (Mrg *mrg, void *data)
   cairo_restore (mrg_cr (mrg));
   cairo_new_path (mrg_cr (mrg));
 
-#ifdef HAVE_LUA
-  {
-    static void *mycdata = NULL;
-    int status, result;
-    o->L = luaL_newstate ();
-    luaL_openlibs(o->L);
-
-    lua_pushlightuserdata(o->L, &mycdata);
-    lua_setglobal(o->L, "__TEMP_USERDATA__");
-
-    status = luaL_loadfile(o->L, "hello.lua");
-    if (status)
-    {
-      fprintf(stderr, "Couldn't load file: %s\n", lua_tostring(o->L, -1));
-    }
-    else
-    {
-      result = lua_pcall(o->L, 0, LUA_MULTRET, 0);
-      if (result){
-        fprintf (stderr, "lua exec problem %s\n", lua_tostring(o->L, -1));
-      }
-    }
-    lua_close(o->L);
-  }
-#endif
-
+  run_lua_file ("hello.lua");
 
   mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "quit");
   mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle fullscreen");
@@ -5659,7 +5692,7 @@ static void contrasty_stroke (cairo_t *cr)
 }
 
 
-static void load_path_inner (State *o,
+static void load_path_inner (GeState *o,
                              char *path)
 {
   char *meta;
@@ -5836,7 +5869,7 @@ static void load_path_inner (State *o,
 }
 
 
-static void load_path (State *o)
+static void load_path (GeState *o)
 {
   while (thumb_queue)
   {
@@ -5875,7 +5908,7 @@ static void load_path (State *o)
 
 static void drag_preview (MrgEvent *e)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   static float old_factor = 1;
   switch (e->type)
   {
@@ -5893,7 +5926,7 @@ static void drag_preview (MrgEvent *e)
   }
 }
 
-static void load_into_buffer (State *o, const char *path)
+static void load_into_buffer (GeState *o, const char *path)
 {
   GeglNode *gegl, *load, *sink;
   struct stat stat_buf;
@@ -5993,7 +6026,7 @@ static void load_into_buffer (State *o, const char *path)
 }
 
 #if 0
-static GeglNode *locate_node (State *o, const char *op_name)
+static GeglNode *locate_node (GeState *o, const char *op_name)
 {
   GeglNode *iter = o->sink;
   while (iter)
@@ -6009,7 +6042,7 @@ static GeglNode *locate_node (State *o, const char *op_name)
 }
 #endif
 
-static void zoom_to_fit (State *o)
+static void zoom_to_fit (GeState *o)
 {
   Mrg *mrg = o->mrg;
   GeglRectangle rect = gegl_node_get_bounding_box (o->sink);
@@ -6063,7 +6096,7 @@ static void zoom_to_fit (State *o)
   if (mrg)
     mrg_queue_draw (mrg, NULL);
 }
-static void center (State *o)
+static void center (GeState *o)
 {
   Mrg *mrg = o->mrg;
   GeglRectangle rect = gegl_node_get_bounding_box (o->sink);
@@ -6079,7 +6112,7 @@ static void center (State *o)
   mrg_queue_draw (mrg, NULL);
 }
 
-static void zoom_at (State *o, float screen_cx, float screen_cy, float factor)
+static void zoom_at (GeState *o, float screen_cx, float screen_cy, float factor)
 {
   float x, y;
   get_coords (o, screen_cx, screen_cy, &x, &y);
@@ -6098,7 +6131,7 @@ static int deferred_zoom_to_fit (Mrg *mrg, void *data)
   return 0;
 }
 
-static void get_coords (State *o, float screen_x, float screen_y, float *gegl_x, float *gegl_y)
+static void get_coords (GeState *o, float screen_x, float screen_y, float *gegl_x, float *gegl_y)
 {
   float scale = o->scale;
   *gegl_x = (o->u + screen_x) / scale;
@@ -6125,7 +6158,7 @@ static void scroll_cb (MrgEvent *event, void *data1, void *data2)
 
 static void print_setting (Setting *setting)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   switch (setting->type)
   {
     case 0:
@@ -6148,7 +6181,7 @@ static void print_setting (Setting *setting)
 
 static int set_setting (Setting *setting, const char *value)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   if (setting->read_only)
     return -1;
   switch (setting->type)
@@ -6231,7 +6264,7 @@ GExiv2Orientation path_get_orientation (const char *path)
   int cmd_save (COMMAND_ARGS);
 int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   char *serialized;
 
   {
@@ -6291,7 +6324,7 @@ int cmd_node_defaults (COMMAND_ARGS); /* "node-defaults", -1, "", "reset propert
 int
 cmd_node_defaults (COMMAND_ARGS)
 {
-  State *o = global_state;
+  GeState *o = global_state;
 
   if (o->active)
     gegl_node_defaults (o->active);
@@ -6307,7 +6340,7 @@ int cmd_info (COMMAND_ARGS); /* "info", 0, "", "dump information about active no
 int
 cmd_info (COMMAND_ARGS)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   GeglNode *node = o->active;
   GeglOperation *operation;
   GeglRectangle extent;
@@ -6394,7 +6427,7 @@ int cmd_toggle (COMMAND_ARGS); /* "toggle", 1, "<editing|fullscreen|cheatsheet|m
 int
 cmd_toggle (COMMAND_ARGS)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   if (!strcmp(argv[1], "editing"))
   {
     o->show_graph = !o->show_graph;
@@ -6452,7 +6485,7 @@ cmd_toggle (COMMAND_ARGS)
   int cmd_discard (COMMAND_ARGS);
 int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to a .discard subfolder"*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   char *old_path;
   char *tmp;
   char *lastslash;
@@ -6502,7 +6535,7 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
 int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|first|last>", ""*/
   int cmd_collection (COMMAND_ARGS)
 {
-  State *o = global_state;
+  GeState *o = global_state;
 
   if (!argv[1])
   {
@@ -6550,7 +6583,7 @@ int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|fir
   int cmd_cd (COMMAND_ARGS);
 int cmd_cd (COMMAND_ARGS) /* "cd", 1, "<target>", "convenience wrapper making some common commandline navigation commands work"*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   if (!strcmp (argv[1], ".."))
   {
     argvs_eval ("parent");
@@ -6588,7 +6621,7 @@ int cmd_cd (COMMAND_ARGS) /* "cd", 1, "<target>", "convenience wrapper making so
   int cmd_zoom (COMMAND_ARGS);
 int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>", "Changes zoom level, asbolsute or relative, around middle of screen."*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
 
   if (!argv[1])
   {
@@ -6670,7 +6703,7 @@ int cmd_propeditor (COMMAND_ARGS); /* "prop-editor", 1, "<subcommand>", "used fo
 int
 cmd_propeditor (COMMAND_ARGS)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   GParamSpec *pspec = o->property_focus?gegl_node_find_property (o->active, o->property_focus):NULL;
 
 
@@ -6846,7 +6879,7 @@ cmd_clear (COMMAND_ARGS)
  int cmd_next (COMMAND_ARGS);
 int cmd_next (COMMAND_ARGS) /* "next", 0, "", "next sibling element in current collection/folder"*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
   if (o->rev)
     argvs_eval ("save");
@@ -6867,7 +6900,7 @@ int cmd_next (COMMAND_ARGS) /* "next", 0, "", "next sibling element in current c
  int cmd_parent (COMMAND_ARGS);
 int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (switches to folder mode)"*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   char *prev_path = g_strdup (o->path);
   char *lastslash = strrchr (o->path, '/');
   int entry_no = 0;
@@ -6912,7 +6945,7 @@ int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (swit
  int cmd_prev (COMMAND_ARGS);
 int cmd_prev (COMMAND_ARGS) /* "prev", 0, "", "previous sibling element in current collection/folder"*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
   if (o->rev)
     argvs_eval ("save");
@@ -6932,7 +6965,7 @@ int cmd_prev (COMMAND_ARGS) /* "prev", 0, "", "previous sibling element in curre
  int cmd_load (COMMAND_ARGS);
 int cmd_load (COMMAND_ARGS) /* "load-path", 1, "<path>", "load a path/image - can be relative to current pereived folder "*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   
   if (o->path)
     g_free (o->path);
@@ -6954,7 +6987,7 @@ int cmd_quit (COMMAND_ARGS) /* "quit", 0, "", "quit"*/
   int cmd_remove (COMMAND_ARGS);
 int cmd_remove (COMMAND_ARGS) /* "remove", 0, "", "removes active node"*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   GeglNode *node = o->active;
   GeglNode *next, *prev;
 
@@ -7004,7 +7037,7 @@ int cmd_swap (COMMAND_ARGS);/* "swap", 1, "<input|output>", "swaps position with
 int
 cmd_swap (COMMAND_ARGS)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   GeglNode *node = o->active;
   GeglNode *next, *prev;
   const char *consumer_name = NULL;
@@ -7087,7 +7120,7 @@ int cmd_pan (COMMAND_ARGS) /* "pan", 0, "", "changes to pan tool"*/
   int cmd_find_id (COMMAND_ARGS);
 int cmd_find_id (COMMAND_ARGS) /* "/", 1, "<id-to-jump-to>", "set focus on node with given id"*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   GeglNode *found = node_find_by_id (o, o->sink, argv[1]);
 
   if (found)
@@ -7103,7 +7136,7 @@ int cmd_find_id (COMMAND_ARGS) /* "/", 1, "<id-to-jump-to>", "set focus on node 
   int cmd_edit_opname (COMMAND_ARGS);
 int cmd_edit_opname (COMMAND_ARGS) /* "edit-opname", 0, "", "permits changing the current op by typing in a replacement name."*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   o->editing_op_name = 1;
   o->editing_buf[0]=0;
   mrg_set_cursor_pos (o->mrg, 0);
@@ -7114,7 +7147,7 @@ int cmd_edit_opname (COMMAND_ARGS) /* "edit-opname", 0, "", "permits changing th
   int cmd_graph_cursor (COMMAND_ARGS);
 int cmd_graph_cursor (COMMAND_ARGS) /* "graph-cursor", 1, "<left|right|up|down|source|append>", "position the graph cursor, this navigates both pads and nodes simultanously."*/
 {
-  State *o = global_state;
+  GeState *o = global_state;
   GeglNode *ref;
 
   if (o->active == NULL)
@@ -7270,7 +7303,7 @@ int cmd_reference (COMMAND_ARGS);/* "reference", -1, "", ""*/
 int
 cmd_reference (COMMAND_ARGS)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   o->reference_node = o->active;
   return 0;
 }
@@ -7279,7 +7312,7 @@ int cmd_dereference (COMMAND_ARGS);/* "dereference", -1, "", ""*/
 int
 cmd_dereference (COMMAND_ARGS)
 {
-  State *o = global_state;
+  GeState *o = global_state;
 
   if (o->reference_node)
   switch (o->pad_active)
@@ -7304,7 +7337,7 @@ int
 cmd_mipmap (COMMAND_ARGS)
 {
   gboolean curval;
-  State *o = global_state;
+  GeState *o = global_state;
   if (argv[1])
   {
     if (!strcmp (argv[1], "on")||
@@ -7334,10 +7367,10 @@ int cmd_node_add (COMMAND_ARGS);/* "node-add", 1, "<input|output|aux>", "add a n
 int
 cmd_node_add (COMMAND_ARGS)
 {
-  State *o = global_state;
+  GeState *o = global_state;
   if (!strcmp(argv[1], "input"))
   {
-    State *o = global_state;
+    GeState *o = global_state;
     GeglNode *ref = o->active;
     GeglNode *producer = gegl_node_get_producer (o->active, "input", NULL);
     if (!gegl_node_has_pad (ref, "input"))
@@ -7452,10 +7485,5 @@ cmd_todo (COMMAND_ARGS)
   return 0;
 }
 
-
-void cdataToPointer(void *cdata, void **pointer);
-void cdataToPointer(void *cdata, void **pointer) {
-    *pointer = cdata;
-}
 
 #endif

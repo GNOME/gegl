@@ -59,7 +59,7 @@ argvs-commands.inc: gegl.c ui.c argvs.c Makefile
 
 if HAVE_MRG
 if HAVE_GEXIV2
-gegl_SOURCES += ui.c mrg-gegl.c mrg-gegl.h
+gegl_SOURCES += ui.c ui.h mrg-gegl.c mrg-gegl.h
 AM_CFLAGS += $(SDL_CFLAGS)
 AM_LDFLAGS += $(SDL_LIBS)
 endif
