@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2019-02-11 21:01+0100\n"
-"PO-Revision-Date: 2019-02-11 21:02+0100\n"
+"PO-Revision-Date: 2019-02-11 21:03+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -664,7 +664,6 @@ msgid "Brightness Contrast"
 msgstr "Contrasto luminosità"
 
 #: ../operations/common/brightness-contrast.c:162
-#, c-format
 msgid ""
 "Changes the light level and contrast. This operation operates in linear "
 "light, 'contrast' is a scale factor around 50% gray, and 'brightness' a "
