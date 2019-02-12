@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2019-02-12 17:21+0100\n"
-"PO-Revision-Date: 2019-02-11 21:03+0100\n"
+"PO-Revision-Date: 2019-02-12 17:27+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -4676,7 +4676,7 @@ msgstr "Moltiplicatore di spostamento per la direzione radiale X"
 
 #: ../operations/common-gpl3+/displace.c:56
 msgid "Horizontal displacement"
-msgstr "Disposizione orizzontale"
+msgstr "Spostamento orizzontale"
 
 #: ../operations/common-gpl3+/displace.c:57
 #: ../operations/common-gpl3+/whirl-pinch.c:42
