@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-02-11 21:01+0100\n"
+"POT-Creation-Date: 2019-02-12 17:21+0100\n"
 "PO-Revision-Date: 2019-02-11 21:03+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
@@ -4646,7 +4646,7 @@ msgstr "Genera motivi di diffrazione"
 
 #: ../operations/common-gpl3+/displace.c:29
 msgid "Cartesian"
-msgstr "Cartesiano"
+msgstr "Cartesiana"
 
 #: ../operations/common-gpl3+/displace.c:30
 msgid "Polar"
