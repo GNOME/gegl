@@ -5050,6 +5050,16 @@ static void expand_completion (MrgEvent *event, void *data1, void *data2)
   mrg_event_stop_propagate (event);
 }
 
+static void cmd_unhandled (MrgEvent *event, void *data1, void *data2)
+{
+  if (mrg_utf8_strlen (event->string) != 1)
+    return;
+
+  strcpy (commandline, event->string);
+  mrg_event_stop_propagate (event);
+  mrg_set_cursor_pos (event->mrg, 1);
+  mrg_queue_draw (event->mrg, NULL);
+}
 
 static void ui_commandline (Mrg *mrg, void *data)
 {
@@ -5062,10 +5072,15 @@ static void ui_commandline (Mrg *mrg, void *data)
 
   if (scrollback == NULL && commandline[0]==0)
   {
+#if 0
     mrg_set_xy (mrg, 0,h*2);
     mrg_edit_start (mrg, update_commandline, o);
     mrg_printf (mrg, "%s", commandline);
     mrg_edit_end (mrg);
+#else
+    mrg_add_binding (mrg, "unhandled", NULL, "start entering commandline", cmd_unhandled, NULL);
+#endif
+    /* XXX - a custom listener only for permitted start commandline keys */
     goto jump;
   }
 
@@ -5569,16 +5584,8 @@ static void gegl_ui (Mrg *mrg, void *data)
   }
   mrg_add_binding (mrg, "control-l", NULL, "clear/redraw", run_command, "clear");
 
-  if (!text_editor_active (o) && !o->property_focus)
-  {
-    mrg_add_binding (mrg, "tab", NULL, NULL, run_command, "toggle controls");
-    mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle fullscreen");
 
-
-    ui_commandline (mrg, o);
-  }
-
-  if (commandline[0]==0 && !text_editor_active(o))
+  if (!text_editor_active(o))
   {
     /* cursor keys and some more keys are used for commandline entry if there already
        is contents, this frees up some bindings/individual keys for direct binding as
@@ -5597,8 +5604,11 @@ static void gegl_ui (Mrg *mrg, void *data)
       mrg_add_binding (mrg, "home", NULL, NULL, run_command, "collection first");
       mrg_add_binding (mrg, "end", NULL, NULL, run_command, "collection last");
 
-      mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "collection right");
-      mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "collection left");
+      if (commandline[0] == 0)
+      {
+        mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "collection right");
+        mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "collection left");
+      }
 
     }
     else if (o->show_graph)
@@ -5638,7 +5648,9 @@ static void gegl_ui (Mrg *mrg, void *data)
           mrg_add_binding (mrg, "left", NULL, NULL,        run_command, "graph-cursor left");
         if (o->active) // && gegl_node_has_pad (o->active, "aux"))
           mrg_add_binding (mrg, "right", NULL, NULL, run_command, "graph-cursor right");
-        mrg_add_binding (mrg, "space", NULL, "next image",   run_command, "next");
+
+        if (!o->show_graph)
+          mrg_add_binding (mrg, "space", NULL, "next image",   run_command, "next");
       }
       //mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
     }
@@ -5723,10 +5735,6 @@ static void gegl_ui (Mrg *mrg, void *data)
   mrg_add_binding (mrg, "control-h", NULL, NULL, run_command, "toggle cheatsheet");
   mrg_add_binding (mrg, "control-delete", NULL, NULL,  run_command, "discard");
 
-  if (o->show_bindings)
-  {
-     ui_show_bindings (mrg, o);
-  }
 
   if (o->editing_property)
   {
@@ -5735,6 +5743,23 @@ static void gegl_ui (Mrg *mrg, void *data)
     mrg_listen (mrg, MRG_POINTER|MRG_DRAG|MRG_TAPS, unset_edited_prop, NULL, NULL);
     mrg_add_binding (mrg, "escape", NULL, NULL,  unset_edited_prop, NULL);
     cairo_new_path (mrg_cr (mrg));
+  }
+
+
+  mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle fullscreen");
+  if (!text_editor_active (o))// && !o->property_focus)
+  {
+    //mrg_add_binding (mrg, "tab", NULL, NULL, run_command, "toggle controls");
+    ui_commandline (mrg, o);
+  }
+  else
+  {
+
+  }
+
+  if (o->show_bindings)
+  {
+     ui_show_bindings (mrg, o);
   }
 
 }
