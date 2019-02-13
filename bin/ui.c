@@ -787,14 +787,29 @@ static gpointer renderer_thread (gpointer data)
 }
 
 
+static char *binary_relative_data_dir = NULL;
 
-
-
+static char *
+resolve_lua_file (const char *basename);
 
 int mrg_ui_main (int argc, char **argv, char **ops)
 {
   Mrg *mrg = mrg_new (1024, 768, NULL);
   GeState *o;
+
+  {
+    char *lastslash;
+    char *tmp = g_strdup (realpath (argv[0], NULL));
+    if (tmp)
+    {
+      lastslash = strrchr (tmp, '/');
+      *lastslash = 0;
+      if (strstr (tmp, "/.libs"))
+        *strstr (tmp, "/.libs") = 0;
+      binary_relative_data_dir = g_strdup_printf ("%s/lua", tmp);
+      g_free (tmp);
+    }
+  }
 
   mrg_set_image_cache_mb (mrg, 1024);
   mrg_set_title (mrg, "GEGL");
@@ -818,15 +833,29 @@ int mrg_ui_main (int argc, char **argv, char **ops)
 #ifdef HAVE_LUA
   {
     int status, result;
+    char *init_path = resolve_lua_file ("init.lua");
     L = luaL_newstate ();
     luaL_openlibs(L);
 
     lua_pushlightuserdata (L, o);
     lua_setglobal(L, "STATE");
 
-    status = luaL_loadfile(L, "init.lua");
-    result = lua_pcall(L, 0, LUA_MULTRET, 0);
-    if (result | status);
+    if (init_path)
+    {
+      status = luaL_loadfile(L, init_path);
+      if (status)
+      {
+        fprintf(stderr, "Couldn't load file: %s\n", lua_tostring(L, -1));
+      }
+      else
+      {
+        result = lua_pcall(L, 0, LUA_MULTRET, 0);
+        if (result){
+          fprintf (stderr, "lua exec problem %s\n", lua_tostring(L, -1));
+        }
+      }
+      g_free (init_path);
+    }
   }
 #endif
 
@@ -5185,28 +5214,54 @@ static void vector_op_ui (GeState *o, GeglNode *node)
 }
 
 
+static cairo_matrix_t node_get_relative_transform (GeglNode *node_view,
+                                                   GeglNode *source);
 
+static gboolean run_lua_file (const char *basename);
 
 static int per_op_canvas_ui (GeState *o)
 {
   Mrg *mrg = o->mrg;
   cairo_t  *cr = mrg_cr (mrg);
+  cairo_matrix_t mat;
 
   const char *opname;
+  char *luaname;
   if (!o->active)
     return -1;
 
   cairo_save (cr);
   cairo_translate (cr, -o->u, -o->v);
   cairo_scale (cr, o->scale, o->scale);
+  mat = node_get_relative_transform (o->sink, gegl_node_get_consumer_no (o->active, "output", NULL, 0));
+
+  cairo_transform (cr, &mat);
 
   opname = gegl_node_get_operation (o->active);
+  luaname = g_strdup_printf ("%s.lua", opname);
+
+  for (int i = 0; luaname[i]; i++)
+  {
+    if (luaname[i] == ':'||
+        luaname[i] == ' ')
+     luaname[i] = '_';
+  }
+
+if (0)
+{
   if (!strcmp (opname, "gegl:vector-stroke"))
   {
     vector_op_ui (o, o->active);
   }
+}
+
+  {
+    run_lua_file (luaname);
+  }
 
   cairo_restore (cr);
+
+  g_free (luaname);
 
   return 0;
 }
@@ -5264,11 +5319,66 @@ static cairo_matrix_t node_get_relative_transform (GeglNode *node_view,
   return ret;
 }
 
+/* given a basename return fully qualified path, searching through
+ * posisble locations, return NULL if not found.
+ */
 
-static void run_lua_file (const char *path)
+static char *
+resolve_lua_file2 (const char *basepath, gboolean add_gegl, const char *basename)
 {
+  char *path;
+  int add_slash = TRUE;
+  if (basepath[strlen(basepath)-1]=='/')
+    add_slash = FALSE;
+
+  if (add_gegl)
+    path = g_strdup_printf ("%s%sgegl-0.4/lua/%s", basepath, add_slash?"/":"", basename);
+  else
+    path = g_strdup_printf ("%s%s%s", basepath, add_slash?"/":"", basename);
+
+  if (g_file_test (path, G_FILE_TEST_IS_REGULAR))
+    return path;
+  g_free (path);
+  return NULL;
+}
+
+static char *
+resolve_lua_file (const char *basename)
+{
+  char *ret = NULL;
+
+  const char * const *data_dirs = g_get_system_data_dirs();
+  int i;
+
+  if (!ret)
+    ret = resolve_lua_file2 ("/tmp", FALSE, basename);
+
+  if (!ret && binary_relative_data_dir)
+    ret = resolve_lua_file2 (binary_relative_data_dir, FALSE, basename);
+
+  if (!ret)
+    ret = resolve_lua_file2 (g_get_user_data_dir(), TRUE, basename);
+
+  for (i = 0; !ret && data_dirs[i]; i++)
+    ret = resolve_lua_file2 (data_dirs[i], TRUE, basename);
+
+  return ret;
+}
+
+
+static gboolean run_lua_file (const char *basename)
+{
+  gboolean ret = FALSE;
 #ifdef HAVE_LUA
+  char *path = resolve_lua_file (basename);
   int status, result;
+
+  if (!path)
+  {
+    //fprintf (stderr, "tried running non existing lua file %s\n", basename);
+    return FALSE;
+  }
+
   status = luaL_loadstring(L,
 "local foo = GObject.Object(STATE)\n"
 "active = foo.active\n"
@@ -5276,22 +5386,28 @@ static void run_lua_file (const char *path)
 "source = foo.source\n");
   result = lua_pcall(L, 0, LUA_MULTRET, 0);
 
-  status = luaL_loadfile(L, "hello.lua");
+  status = luaL_loadfile(L, path);
   if (status)
   {
     fprintf(stderr, "Couldn't load file: %s\n", lua_tostring(L, -1));
+    ret = FALSE;
   }
   else
   {
     result = lua_pcall(L, 0, LUA_MULTRET, 0);
     if (result){
       fprintf (stderr, "lua exec problem %s\n", lua_tostring(L, -1));
+      ret = FALSE;
+    } else
+    {
+      ret = TRUE;
     }
   }
 
-  /* reset active if it has changed with new loadstring */
-
+  /* reset active if it has changed */
+  g_free (path);
 #endif
+  return ret;
 }
 
 
@@ -5432,7 +5548,7 @@ static void gegl_ui (Mrg *mrg, void *data)
   cairo_restore (mrg_cr (mrg));
   cairo_new_path (mrg_cr (mrg));
 
-  run_lua_file ("hello.lua");
+  //run_lua_file ("hello.lua");
 
   mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "quit");
   mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle fullscreen");
