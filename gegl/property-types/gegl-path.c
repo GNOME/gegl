@@ -786,6 +786,15 @@ gegl_path_remove_node (GeglPath *vector,
 }
 
 void
+gegl_path_dirty (GeglPath *path)
+{
+  GeglPathPrivate *priv = GEGL_PATH_GET_PRIVATE (path);
+  priv->flat_path_clean = FALSE;
+  priv->length_clean = FALSE;
+  gegl_path_emit_changed (path, NULL);
+}
+
+void
 gegl_path_parse_string (GeglPath    *vector,
                         const gchar *path)
 {
@@ -846,11 +855,7 @@ gegl_path_parse_string (GeglPath    *vector,
         p++;
     }
 
-  priv->flat_path_clean = FALSE;
-  priv->length_clean = FALSE;
-  {
-   gegl_path_emit_changed (vector, NULL);
-  }
+  gegl_path_dirty (vector);
 }
 
 void

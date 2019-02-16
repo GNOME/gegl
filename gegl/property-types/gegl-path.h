@@ -523,6 +523,18 @@ void           gegl_path_point_lerp    (GeglPathPoint *dest,
 gdouble        gegl_path_point_dist    (GeglPathPoint *a,
                                         GeglPathPoint *b);
 
+
+/**
+ * gegl_path_dirty:
+ * @path: a #GeglPath
+ *
+ * Marks the path as dirty and issues an invalidation for the path rendering,
+ * use this if modifying the values of a GeglPathPoint inline.
+ */
+void
+gegl_path_dirty (GeglPath *path);
+
+
 G_END_DECLS
 
 #endif /* __GEGL_PATH_H__ */
