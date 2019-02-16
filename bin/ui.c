@@ -443,7 +443,7 @@ static void queue_draw (GeState *o)
 {
   o->renderer_state = 0;
   renderer_dirty++;
-    mrg_gegl_dirty ();
+  mrg_gegl_dirty ();
   mrg_queue_draw (o->mrg, NULL);
 }
 
@@ -3208,6 +3208,26 @@ static void list_node_props (GeState *o, GeglNode *node, int indent)
   }
 }
 
+/* invalidate_signal:
+ * @node: The node that was invalidated.
+ * @rect: The area that changed.
+ * @SDL_Surface: Our user_data param, the window we will write to.
+ *
+ * Whenever the output of the graph changes this function will copy the new data
+ * to the sdl window.
+ */
+static void
+invalidate_signal (GeglNode *node, GeglRectangle *rect, void *userdata)
+{
+  GeState *o = userdata;
+  queue_draw (o); // XXX : should queue only rect with mrg as well,
+                  //       and only blit subrect in mrg-gegl integration for image
+
+  // we could increment the revision, thought for .gif and video files
+  // that increment would be invalid due to invalidations during playback
+}
+
+
 static void activate_sink_producer (GeState *o)
 {
   if (o->sink)
@@ -3215,6 +3235,9 @@ static void activate_sink_producer (GeState *o)
   else
     o->active = NULL;
   o->pad_active = PAD_OUTPUT;
+
+  g_signal_connect (o->sink, "invalidated",
+                    G_CALLBACK (invalidate_signal), o);
 }
 
 
@@ -4658,7 +4681,7 @@ static void iterate_frame (GeState *o)
          o->frame_no = 0;
        gegl_node_set (o->source, "frame", o->frame_no, NULL);
        o->prev_ms = mrg_ms (mrg);
-       queue_draw (o);
+       //queue_draw (o);
     }
     mrg_queue_draw (o->mrg, NULL);
    }
@@ -4670,7 +4693,7 @@ static void iterate_frame (GeState *o)
      if (o->frame_no >= frames)
        o->frame_no = 0;
      gegl_node_set (o->source, "frame", o->frame_no, NULL);
-     queue_draw (o);
+     //queue_draw (o);
      mrg_queue_draw (o->mrg, NULL);
     {
       GeglAudioFragment *audio = NULL;
@@ -5831,7 +5854,6 @@ static void contrasty_stroke (cairo_t *cr)
   cairo_set_line_width (cr, y1);
   cairo_stroke (cr);
 }
-
 
 static void load_path_inner (GeState *o,
                              char *path)
