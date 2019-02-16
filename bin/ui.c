@@ -5421,6 +5421,10 @@ static gboolean run_lua_file (const char *basename)
 "local foo = GObject.Object(STATE)\n"
 "active = foo.active\n"
 "sink = foo.sink\n"
+"cr = mrg:cr()\n"
+"dim = mrg:height() * 0.1;\n"
+"dim, dimy = cr:device_to_user_distance(dim, dim)\n"
+
 "source = foo.source\n");
   result = lua_pcall(L, 0, LUA_MULTRET, 0);
 

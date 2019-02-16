@@ -2,6 +2,8 @@ if OS_WIN32
 no_undefined = -no-undefined
 endif
 
+SUBDIRS=lua
+
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/bin \

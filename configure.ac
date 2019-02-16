@@ -551,6 +551,11 @@ PKG_CHECK_MODULES(DEP,
 DEP_CFLAGS=`$PKG_CONFIG --cflags $GLIB_PACKAGES gthread-2.0`
 DEP_LIBS=`$PKG_CONFIG --libs $GLIB_PACKAGES gthread-2.0`
 
+
+gegldatadir="$datadir/$PACKAGE-$GEGL_API_VERSION"
+
+AC_SUBST(gegldatadir)
+
 ######################
 # gettext i18n support
 ######################
@@ -1313,6 +1318,7 @@ dnl bin/node-editors/Makefile
 AC_CONFIG_FILES([
 Makefile
 bin/Makefile
+bin/lua/Makefile
 gcut/Makefile
 gegl/Makefile
 gegl/gegl-version.h
