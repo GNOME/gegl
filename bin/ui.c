@@ -2197,35 +2197,30 @@ static void dir_touch_handling (Mrg *mrg, GeState *o)
 static void canvas_touch_handling (Mrg *mrg, GeState *o)
 {
   cairo_new_path (mrg_cr (mrg));
+  cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
   switch (tool)
   {
-    case TOOL_PICK:
-      cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
-      mrg_listen (mrg, MRG_DRAG, on_pick_drag, o, NULL);
-      mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
-      mrg_listen (mrg, MRG_SCROLL, scroll_cb, o, NULL);
-      cairo_new_path (mrg_cr (mrg));
-      break;
     case TOOL_PAN:
-      cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
+    default:
       mrg_listen (mrg, MRG_DRAG, on_pan_drag, o, NULL);
       mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
       mrg_listen (mrg, MRG_SCROLL, scroll_cb, o, NULL);
-      cairo_new_path (mrg_cr (mrg));
+      break;
+    case TOOL_PICK:
+      mrg_listen (mrg, MRG_DRAG, on_pick_drag, o, NULL);
+      mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
+      mrg_listen (mrg, MRG_SCROLL, scroll_cb, o, NULL);
       break;
     case TOOL_PAINT:
-      cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
       mrg_listen (mrg, MRG_DRAG, on_paint_drag, o, NULL);
       mrg_listen (mrg, MRG_SCROLL, scroll_cb, o, NULL);
-      cairo_new_path (mrg_cr (mrg));
       break;
     case TOOL_MOVE:
-      cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
       mrg_listen (mrg, MRG_DRAG, on_move_drag, o, NULL);
       mrg_listen (mrg, MRG_SCROLL, scroll_cb, o, NULL);
-      cairo_new_path (mrg_cr (mrg));
       break;
   }
+  cairo_new_path (mrg_cr (mrg));
 }
 
 static GeglNode *add_aux (GeState *o, GeglNode *active, const char *optype)
@@ -5555,11 +5550,8 @@ static void gegl_ui (Mrg *mrg, void *data)
     mrg_printf (mrg, "%s\n", o->path);
   }
 
+  {
 
-  if (o->is_dir)
-    dir_touch_handling (mrg, o);
-  else
-    canvas_touch_handling (mrg, o);
 
   cairo_save (mrg_cr (mrg));
   {
@@ -5576,7 +5568,17 @@ static void gegl_ui (Mrg *mrg, void *data)
         }
       else
         {
-          ui_viewer (o);
+
+#if HAVE_LUA
+  if (run_lua_file ("viewer.lua"))
+  {
+  }
+  else
+#endif
+  {
+    canvas_touch_handling (mrg, o);
+    ui_viewer (o);
+  }
         }
 
       mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "next");
@@ -5584,13 +5586,21 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
     else if (S_ISDIR (stat_buf.st_mode))
     {
-      ui_dir_viewer (o);
+#if HAVE_LUA
+  if (run_lua_file ("collection.lua"))
+  {
+  }
+  else
+#endif
+  {
+    dir_touch_handling (mrg, o);
+    ui_dir_viewer (o);
+  }
     }
   }
   cairo_restore (mrg_cr (mrg));
+  }
   cairo_new_path (mrg_cr (mrg));
-
-  //run_lua_file ("hello.lua");
 
   mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "quit");
   mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle fullscreen");
