@@ -7660,15 +7660,12 @@ int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
 int
 cmd_todo (COMMAND_ARGS)
 {
+  printf ("tab-completion for cd command\n");
   printf ("visual color picker\n");
   printf ("make axis constrained vertical drag up/down adjust linear small increments on double\n");
-  printf ("crop ui\n");
-  printf ("tab-completion for cd command\n");
   printf ("units in commandline\n");
-  printf ("polyline/bezier on canvas display/editing\n");
   printf ("interpret GUM\n");
   printf ("star/comment/title storage\n");
-  printf ("loadable lua modules\n");
   printf ("rewrite of core in lua?\n");
   printf ("keep track of \"orphaned\" nodes as free-floating new columns\n");
   printf ("video/audio playback time controls\n");

@@ -1,0 +1,1 @@
+gegl_vector-stroke.lua
