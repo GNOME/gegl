@@ -471,10 +471,14 @@ prepare (GeglOperation *operation)
 
   params = (VPParamsType *) o->user_data;
 
-  params->offset_left   = o->left   ? -1 : 0;
-  params->offset_top    = o->top    ? -1 : 0;
-  params->offset_right  = o->right  ?  1 : 0;
-  params->offset_bottom = o->bottom ?  1 : 0;
+  /* The op's directional paramaters are used in terms of which direction to
+   * propagate _to_, but offset is used for what neighbors a pixel may
+   * propagate _from_. Therefore, directions are reversed between the two.
+   */
+  params->offset_left   = o->right  ? -1 : 0;
+  params->offset_top    = o->bottom ? -1 : 0;
+  params->offset_right  = o->left   ?  1 : 0;
+  params->offset_bottom = o->top    ?  1 : 0;
 
   area->left = area->right = area->top = area->bottom = 1;
 
