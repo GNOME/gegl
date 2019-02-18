@@ -5859,6 +5859,20 @@ static void contrasty_stroke (cairo_t *cr)
   cairo_stroke (cr);
 }
 
+static gboolean is_xml_fragment (const char *data)
+{
+  int i;
+  for (i = 0; data && data[i]; i++)
+    switch (data[i])
+    {
+      case ' ':case '\t':case '\n':case '\r': break;
+      case '<': return TRUE;
+      default: return FALSE;
+    }
+  return FALSE;
+}
+
+
 static void load_path_inner (GeState *o,
                              char *path)
 {
@@ -5881,6 +5895,15 @@ static void load_path_inner (GeState *o,
     if (g_str_has_suffix (path, ".gegl"))
     {
       o->save_path = g_strdup (path);
+    }
+    else if (g_str_has_suffix (path, ".xml"))
+    {
+#if 1
+      o->save_path = g_strdup_printf ("%sl", path);
+      strcpy (strstr(o->save_path, ".xml"), ".gegl");
+#else
+      o->save_path = g_strdup_printf ("%s.gegl", path);
+#endif
     }
     else
     {
@@ -5908,6 +5931,7 @@ static void load_path_inner (GeState *o,
   o->prev_frame_played = 0;
   o->thumbbar_pan_x = 0;
 
+  fprintf (stderr, "{%s %s\n", o->path, o->save_path);
   if (g_str_has_suffix (path, ".gif"))
   {
     o->gegl = gegl_node_new ();
@@ -5932,15 +5956,19 @@ static void load_path_inner (GeState *o,
   else
   {
     meta = NULL;
-    if (is_gegl_path (path) || g_str_has_suffix (path, ".gegl"))
+    if (is_gegl_path (path) || g_str_has_suffix (path, ".gegl") || g_str_has_suffix (path, ".xml"))
       g_file_get_contents (path, &meta, NULL, NULL);
+
     if (meta)
     {
       GeglNode *iter;
       GeglNode *prev = NULL;
       char *containing_path = get_path_parent (path);
 
-      o->gegl = gegl_node_new_from_serialized (meta, containing_path);
+      if (is_xml_fragment (meta))
+        o->gegl = gegl_node_new_from_xml (meta, containing_path);
+      else
+        o->gegl = gegl_node_new_from_serialized (meta, containing_path);
       g_free (containing_path);
       o->sink = o->gegl;
       o->source = NULL;
