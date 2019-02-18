@@ -1668,8 +1668,36 @@ static void queue_thumb (const char *path, const char *thumbpath)
   mrg_list_append (&thumb_queue, item);
 }
 
+static void dir_scroll_cb (MrgEvent *event, void *data1, void *data2)
+{
+  switch (event->scroll_direction)
+  {
+     case MRG_SCROLL_DIRECTION_DOWN:
+       argvs_eval ("zoom out");
+       break;
+     case MRG_SCROLL_DIRECTION_UP:
+       argvs_eval ("zoom in");
+       break;
+     default:
+       break;
+  }
+}
 
-static void ui_dir_viewer (GeState *o)
+static char commandline[1024] = {0,};
+static int  completion_no = -1;
+
+static void dir_touch_handling (Mrg *mrg, GeState *o)
+{
+  cairo_new_path (mrg_cr (mrg));
+  cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
+  mrg_listen (mrg, MRG_DRAG, on_dir_drag, o, NULL);
+  mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
+  mrg_listen (mrg, MRG_SCROLL, dir_scroll_cb, o, NULL);
+  cairo_new_path (mrg_cr (mrg));
+}
+
+
+static void ui_collection (GeState *o)
 {
   Mrg *mrg = o->mrg;
   cairo_t *cr = mrg_cr (mrg);
@@ -1680,6 +1708,9 @@ static void ui_dir_viewer (GeState *o)
   int   count;
   float padding = 0.025;
   float em = mrg_em (mrg);
+
+  dir_touch_handling (mrg, o);
+
   update_grid_dim (o);
   cols = hack_cols;
   dim = hack_dim;
@@ -1866,6 +1897,30 @@ static void ui_dir_viewer (GeState *o)
   mrg_add_binding (mrg, "right", NULL, NULL, run_command, "collection right");
   mrg_add_binding (mrg, "up", NULL, NULL, run_command, "collection up");
   mrg_add_binding (mrg, "down", NULL, NULL, run_command, "collection down");
+
+  mrg_add_binding (mrg, "page-up", NULL, NULL, run_command, "collection page-up");
+  mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "collection page-down");
+
+  mrg_add_binding (mrg, "home", NULL, NULL, run_command, "collection first");
+  mrg_add_binding (mrg, "end", NULL, NULL, run_command, "collection last");
+
+  if (commandline[0] == 0)
+  {
+    mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "collection right");
+    mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "collection left");
+  }
+
+  mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "collection right");
+  mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "collection left");
+
+  if (commandline[0]==0)
+  {
+    mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
+    mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom in");
+    mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom out");
+  }
+  mrg_add_binding (mrg, "escape", NULL, "parent folder", run_command, "parent");
+  mrg_add_binding (mrg, "control-delete", NULL, NULL,  run_command, "discard");
 }
 
 static int slide_cb (Mrg *mrg, void *data)
@@ -2141,6 +2196,36 @@ static void ui_viewer (GeState *o)
        mrg_add_timeout (o->mrg, o->slide_pause * 1000, slide_cb, o);
   }
  cairo_restore (cr);
+
+ mrg_add_binding (mrg, "control-s", NULL, NULL, run_command, "toggle slideshow");
+
+ if (o->is_fit)
+  {
+    mrg_add_binding (mrg, "right", NULL, "next image", run_command, "next");
+    mrg_add_binding (mrg, "left", NULL, "previous image",  run_command, "prev");
+  }
+
+ mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "next");
+ mrg_add_binding (mrg, "page-up", NULL, NULL,  run_command, "prev");
+
+ mrg_add_binding (mrg, "alt-right", NULL, "next image", run_command, "next");
+ mrg_add_binding (mrg, "alt-left", NULL, "previous image",  run_command, "prev");
+
+ if (commandline[0]==0)
+ {
+   mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
+   mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom in");
+   mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom out");
+   mrg_add_binding (mrg, "0", NULL, "pixel for pixel", run_command, "zoom 1.0");
+   mrg_add_binding (mrg, "9", NULL, NULL, run_command, "zoom fit");
+ }
+
+ mrg_add_binding (mrg, "control-m", NULL, NULL, run_command, "toggle mipmap");
+ mrg_add_binding (mrg, "control-y", NULL, NULL, run_command, "toggle colormanaged-display");
+
+
+  mrg_add_binding (mrg, "control-delete", NULL, NULL,  run_command, "discard");
+
 }
 
 static int deferred_redraw_action (Mrg *mrg, void *data)
@@ -2167,32 +2252,7 @@ enum {
 
 static int tool = TOOL_PAN;
 
-static void dir_scroll_cb (MrgEvent *event, void *data1, void *data2)
-{
-  switch (event->scroll_direction)
-  {
-     case MRG_SCROLL_DIRECTION_DOWN:
-       argvs_eval ("zoom out");
-       break;
-     case MRG_SCROLL_DIRECTION_UP:
-       argvs_eval ("zoom in");
-       break;
-     default:
-       break;
-  }
-}
 
-
-
-static void dir_touch_handling (Mrg *mrg, GeState *o)
-{
-  cairo_new_path (mrg_cr (mrg));
-  cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
-  mrg_listen (mrg, MRG_DRAG, on_dir_drag, o, NULL);
-  mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
-  mrg_listen (mrg, MRG_SCROLL, dir_scroll_cb, o, NULL);
-  cairo_new_path (mrg_cr (mrg));
-}
 
 static void canvas_touch_handling (Mrg *mrg, GeState *o)
 {
@@ -4201,8 +4261,6 @@ static void draw_graph (GeState *o)
   }
 }
 
-static char commandline[1024] = {0,};
-static int  completion_no = -1;
 
 static GList *commandline_get_completions (GeglNode   *node,
                                            const char *commandline);
@@ -5412,6 +5470,8 @@ static gboolean run_lua_file (const char *basename)
     return FALSE;
   }
 
+// should set
+
   status = luaL_loadstring(L,
 "local foo = GObject.Object(STATE)\n"
 "active = foo.active\n"
@@ -5419,6 +5479,7 @@ static gboolean run_lua_file (const char *basename)
 "cr = mrg:cr()\n"
 "dim = mrg:height() * 0.1;\n"
 "dim, dimy = cr:device_to_user_distance(dim, dim)\n"
+"centerx, centery = cr:device_to_user_coordinate(mrg:width()/2, mrg:height()/2)\n"
 
 "source = foo.source\n");
   result = lua_pcall(L, 0, LUA_MULTRET, 0);
@@ -5559,6 +5620,7 @@ static void gegl_ui (Mrg *mrg, void *data)
     {
       if (o->show_graph)
         {
+          canvas_touch_handling (mrg, o);
           per_op_canvas_ui (o);
 
           if (o->active && o->show_bounding_box)
@@ -5581,8 +5643,6 @@ static void gegl_ui (Mrg *mrg, void *data)
   }
         }
 
-      mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "next");
-      mrg_add_binding (mrg, "page-up", NULL, NULL,  run_command, "prev");
     }
     else if (S_ISDIR (stat_buf.st_mode))
     {
@@ -5593,8 +5653,7 @@ static void gegl_ui (Mrg *mrg, void *data)
   else
 #endif
   {
-    dir_touch_handling (mrg, o);
-    ui_dir_viewer (o);
+    ui_collection (o);
   }
     }
   }
@@ -5604,22 +5663,11 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "quit");
   mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle fullscreen");
-
-  if (!text_editor_active(o) && ! o->is_dir && o->property_focus == NULL)
-  {
-#if 0
-    if (o->active && gegl_node_has_pad (o->active, "output"))
-      mrg_add_binding (mrg, "control-o", NULL, NULL, run_command, "node-add output");
-    if (o->active && gegl_node_has_pad (o->active, "input"))
-      mrg_add_binding (mrg, "control-i", NULL, NULL, run_command, "node-add input");
-    if (o->active && gegl_node_has_pad (o->active, "aux"))
-      mrg_add_binding (mrg, "control-a", NULL, NULL, run_command, "node-add aux");
-#endif
-
-
-    mrg_add_binding (mrg, "control-s", NULL, NULL, run_command, "toggle slideshow");
-  }
+  mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle fullscreen");
   mrg_add_binding (mrg, "control-l", NULL, "clear/redraw", run_command, "clear");
+  mrg_add_binding (mrg, "F1", NULL, NULL, run_command, "toggle cheatsheet");
+  mrg_add_binding (mrg, "control-h", NULL, NULL, run_command, "toggle cheatsheet");
+
 
 
   if (!text_editor_active(o))
@@ -5628,30 +5676,8 @@ static void gegl_ui (Mrg *mrg, void *data)
        is contents, this frees up some bindings/individual keys for direct binding as
        they would not start a valid command anyways. */
 
-    if (o->is_dir)
+    if (!o->is_dir && o->show_graph)
     {
-      mrg_add_binding (mrg, "left", NULL, NULL, run_command, "collection left");
-      mrg_add_binding (mrg, "right", NULL, NULL, run_command, "collection right");
-      mrg_add_binding (mrg, "up", NULL, NULL, run_command, "collection up");
-      mrg_add_binding (mrg, "down", NULL, NULL, run_command, "collection down");
-
-      mrg_add_binding (mrg, "page-up", NULL, NULL, run_command, "collection page-up");
-      mrg_add_binding (mrg, "page-down", NULL, NULL, run_command, "collection page-down");
-
-      mrg_add_binding (mrg, "home", NULL, NULL, run_command, "collection first");
-      mrg_add_binding (mrg, "end", NULL, NULL, run_command, "collection last");
-
-      if (commandline[0] == 0)
-      {
-        mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "collection right");
-        mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "collection left");
-      }
-
-    }
-    else if (o->show_graph)
-    {
-
-
       if (o->property_focus)
       {
           mrg_add_binding (mrg, "tab",   NULL, "focus graph", run_command, "prop-editor focus");
@@ -5665,9 +5691,6 @@ static void gegl_ui (Mrg *mrg, void *data)
       }
       else
       {
-
-
-
         mrg_add_binding (mrg, "tab",   NULL, "focus properties", run_command, "prop-editor focus");
 
         if (o->active != o->source)
@@ -5686,57 +5709,14 @@ static void gegl_ui (Mrg *mrg, void *data)
         if (o->active) // && gegl_node_has_pad (o->active, "aux"))
           mrg_add_binding (mrg, "right", NULL, NULL, run_command, "graph-cursor right");
 
-        if (!o->show_graph)
-          mrg_add_binding (mrg, "space", NULL, "next image",   run_command, "next");
+      //  if (!o->show_graph)
+      //    mrg_add_binding (mrg, "space", NULL, "next image",   run_command, "next");
       }
       //mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "prev");
     }
-    else
-    {
-      if (o->is_fit)
-       {
-         mrg_add_binding (mrg, "right", NULL, "next image", run_command, "next");
-         mrg_add_binding (mrg, "left", NULL, "previous image",  run_command, "prev");
-       }
-    }
-#if 0
-    mrg_add_binding (mrg, "1", NULL, NULL, run_command, "star 1");
-    mrg_add_binding (mrg, "2", NULL, NULL, run_command, "star 2");
-    mrg_add_binding (mrg, "3", NULL, NULL, run_command, "star 3");
-    mrg_add_binding (mrg, "4", NULL, NULL, run_command, "star 4");
-    mrg_add_binding (mrg, "5", NULL, NULL, run_command, "star 5");
-#endif
   }
 
-  if (o->is_dir)
   {
-    mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "collection right");
-    mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "collection left");
-
-    if (commandline[0]==0)
-    {
-      mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
-      mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom in");
-      mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom out");
-    }
-    mrg_add_binding (mrg, "escape", NULL, "parent folder", run_command, "parent");
-  }
-  else
-  {
-    mrg_add_binding (mrg, "alt-right", NULL, "next image", run_command, "next");
-    mrg_add_binding (mrg, "alt-left", NULL, "previous image",  run_command, "prev");
-
-    if (commandline[0]==0)
-    {
-      mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
-      mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom in");
-      mrg_add_binding (mrg, "-", NULL, NULL, run_command, "zoom out");
-      mrg_add_binding (mrg, "0", NULL, "pixel for pixel", run_command, "zoom 1.0");
-      mrg_add_binding (mrg, "9", NULL, NULL, run_command, "zoom fit");
-    }
-
-    mrg_add_binding (mrg, "control-m", NULL, NULL, run_command, "toggle mipmap");
-    mrg_add_binding (mrg, "control-y", NULL, NULL, run_command, "toggle colormanaged-display");
 
     if (o->show_graph && !text_editor_active (o))
     {
@@ -5768,9 +5748,6 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
   }
 
-  mrg_add_binding (mrg, "F1", NULL, NULL, run_command, "toggle cheatsheet");
-  mrg_add_binding (mrg, "control-h", NULL, NULL, run_command, "toggle cheatsheet");
-  mrg_add_binding (mrg, "control-delete", NULL, NULL,  run_command, "discard");
 
 
   if (o->editing_property)
@@ -5782,8 +5759,6 @@ static void gegl_ui (Mrg *mrg, void *data)
     cairo_new_path (mrg_cr (mrg));
   }
 
-
-  mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle fullscreen");
   if (!text_editor_active (o))// && !o->property_focus)
   {
     //mrg_add_binding (mrg, "tab", NULL, NULL, run_command, "toggle controls");
@@ -5888,7 +5863,10 @@ static void load_path_inner (GeState *o,
 {
   char *meta;
   if (o->src_path)
+  {
     g_free (o->src_path);
+    o->src_path = NULL;
+  }
 
   if (is_gegl_path (path))
   {
@@ -5908,7 +5886,7 @@ static void load_path_inner (GeState *o,
     }
     else if (g_str_has_suffix (path, ".xml"))
     {
-#if 1
+#if 0
       o->save_path = g_strdup_printf ("%sl", path);
       strcpy (strstr(o->save_path, ".xml"), ".gegl");
 #else
@@ -6480,10 +6458,15 @@ int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
     g_free (containing_path);
   }
 
+  if (o->src_path)
   {
     char *prepended = g_strdup_printf ("gegl:load path=%s\n%s", basename(o->src_path), serialized);
     g_file_set_contents (o->save_path, prepended, -1, NULL);
     g_free (prepended);
+  }
+  else
+  {
+    g_file_set_contents (o->save_path, serialized, -1, NULL);
   }
 
   g_free (serialized);
