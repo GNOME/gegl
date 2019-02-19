@@ -59,6 +59,7 @@ struct State {
   int          renderer_state;
   int          editing_op_name;
   char         editing_buf[1024];
+  char         commandline[1024];
   int          rev;
 
   const char  *property_focus; // interned string of property name, or "operation" or "id"
@@ -110,6 +111,7 @@ struct State {
   GHashTable  *ui_consumer;
 };
 
+float hypotf (float a, float b);
 struct State *app_state(void);
 int argvs_eval (const char *str);
 ]]

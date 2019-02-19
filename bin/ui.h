@@ -71,6 +71,7 @@ struct _GeState {
   int            renderer_state;
   int            editing_op_name;
   char           editing_buf[1024];
+  char           commandline[1024];
   int            rev;
 
   const char    *property_focus; // interned string of property name, or "operation" or "id"

@@ -1683,7 +1683,7 @@ static void dir_scroll_cb (MrgEvent *event, void *data1, void *data2)
   }
 }
 
-static char commandline[1024] = {0,};
+//static char commandline[1024] = {0,};
 static int  completion_no = -1;
 
 static void dir_touch_handling (Mrg *mrg, GeState *o)
@@ -1904,7 +1904,7 @@ static void ui_collection (GeState *o)
   mrg_add_binding (mrg, "home", NULL, NULL, run_command, "collection first");
   mrg_add_binding (mrg, "end", NULL, NULL, run_command, "collection last");
 
-  if (commandline[0] == 0)
+  if (o->commandline[0] == 0)
   {
     mrg_add_binding (mrg, "space", NULL, NULL,   run_command, "collection right");
     mrg_add_binding (mrg, "backspace", NULL, NULL,  run_command, "collection left");
@@ -1913,7 +1913,7 @@ static void ui_collection (GeState *o)
   mrg_add_binding (mrg, "alt-right", NULL, NULL, run_command, "collection right");
   mrg_add_binding (mrg, "alt-left", NULL, NULL,  run_command, "collection left");
 
-  if (commandline[0]==0)
+  if (o->commandline[0]==0)
   {
     mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
     mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom in");
@@ -2211,7 +2211,7 @@ static void ui_viewer (GeState *o)
  mrg_add_binding (mrg, "alt-right", NULL, "next image", run_command, "next");
  mrg_add_binding (mrg, "alt-left", NULL, "previous image",  run_command, "prev");
 
- if (commandline[0]==0)
+ if (o->commandline[0]==0)
  {
    mrg_add_binding (mrg, "+", NULL, NULL, run_command, "zoom in");
    mrg_add_binding (mrg, "=", NULL, NULL, run_command, "zoom in");
@@ -4270,15 +4270,15 @@ static void update_commandline (const char *new_commandline, void *data)
   GeState *o = data;
   if (completion_no>=0)
   {
-    char *appended = g_strdup (&new_commandline[strlen(commandline)]);
+    char *appended = g_strdup (&new_commandline[strlen(o->commandline)]);
     GList *completions = commandline_get_completions (o->active,
-                                                      commandline);
+                                                      o->commandline);
 
     const char *completion = g_list_nth_data (completions, completion_no);
-    strcat (commandline, completion);
-    strcat (commandline, appended);
+    strcat (o->commandline, completion);
+    strcat (o->commandline, appended);
     g_free (appended);
-    mrg_set_cursor_pos (o->mrg, strlen (commandline));
+    mrg_set_cursor_pos (o->mrg, strlen (o->commandline));
     while (completions)
     {
       g_free (completions->data);
@@ -4287,7 +4287,7 @@ static void update_commandline (const char *new_commandline, void *data)
   }
   else
   {
-    strcpy (commandline, new_commandline);
+    strcpy (o->commandline, new_commandline);
   }
   completion_no = -1;
   mrg_queue_draw (o->mrg, NULL);
@@ -4658,16 +4658,16 @@ run_command (MrgEvent *event, void *data1, void *data_2)
 static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
 {
   GeState *o = data1;
-  if (commandline[0])
+  if (o->commandline[0])
   {
     if (completion_no>=0)
      {
        GList *completions = commandline_get_completions (o->active,
-                                                         commandline);
+                                                         o->commandline);
        const char *completion = g_list_nth_data (completions, completion_no);
-         strcat (commandline, completion);
-       strcat (commandline, " ");
-       mrg_set_cursor_pos (event->mrg, strlen (commandline));
+         strcat (o->commandline, completion);
+       strcat (o->commandline, " ");
+       mrg_set_cursor_pos (event->mrg, strlen (o->commandline));
        while (completions)
        {
          g_free (completions->data);
@@ -4677,7 +4677,7 @@ static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
      }
 
     argvs_eval ("clear");
-    run_command (event, commandline, NULL);
+    run_command (event, o->commandline, NULL);
   }
   else if (scrollback)
   {
@@ -4710,7 +4710,7 @@ static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
       }
     }
 
-  commandline[0]=0;
+  o->commandline[0]=0;
   mrg_set_cursor_pos (event->mrg, 0);
   mrg_queue_draw (o->mrg, NULL);
 
@@ -5050,7 +5050,7 @@ static void expand_completion (MrgEvent *event, void *data1, void *data2)
   char common_prefix[512]="";
 
   GList *completions = commandline_get_completions (o->active,
-                                                    commandline);
+                                                    o->commandline);
 
   if (data1 && !strcmp (data1, "tab") &&
       completions && g_list_length (completions)!=1)
@@ -5077,8 +5077,8 @@ static void expand_completion (MrgEvent *event, void *data1, void *data2)
 
     if (common_found > 0)
     {
-      strncat (commandline, completions->data, common_found);
-      mrg_set_cursor_pos (event->mrg, strlen (commandline));
+      strncat (o->commandline, completions->data, common_found);
+      mrg_set_cursor_pos (event->mrg, strlen (o->commandline));
       completion_no = -1;
       goto cleanup;
     }
@@ -5088,8 +5088,8 @@ static void expand_completion (MrgEvent *event, void *data1, void *data2)
   if (g_list_length (completions)==1)
   {
     const char *completion = completions->data;
-    strcat (commandline, completion);
-    mrg_set_cursor_pos (event->mrg, strlen (commandline));
+    strcat (o->commandline, completion);
+    mrg_set_cursor_pos (event->mrg, strlen (o->commandline));
   }
 #if 0
   else if (data1 && !strcmp (data1, "space"))
@@ -5128,10 +5128,11 @@ static void expand_completion (MrgEvent *event, void *data1, void *data2)
 
 static void cmd_unhandled (MrgEvent *event, void *data1, void *data2)
 {
+  GeState *o = global_state;
   if (mrg_utf8_strlen (event->string) != 1)
     return;
 
-  strcpy (commandline, event->string);
+  strcpy (o->commandline, event->string);
   mrg_event_stop_propagate (event);
   mrg_set_cursor_pos (event->mrg, 1);
   mrg_queue_draw (event->mrg, NULL);
@@ -5146,7 +5147,7 @@ static void ui_commandline (Mrg *mrg, void *data)
   cairo_t *cr = mrg_cr (mrg);
   cairo_save (cr);
 
-  if (scrollback == NULL && commandline[0]==0)
+  if (scrollback == NULL && o->commandline[0]==0)
   {
 #if 0
     mrg_set_xy (mrg, 0,h*2);
@@ -5192,7 +5193,7 @@ static void ui_commandline (Mrg *mrg, void *data)
   }
 
 
-  if (commandline[0])
+  if (o->commandline[0])
   {
   mrg_start (mrg, "div.commandline-shell", NULL);
   mrg_start (mrg, "div.prompt", NULL);
@@ -5200,22 +5201,22 @@ static void ui_commandline (Mrg *mrg, void *data)
   mrg_end (mrg);
   mrg_start (mrg, "div.commandline", NULL);
     mrg_edit_start (mrg, update_commandline, o);
-    mrg_printf (mrg, "%s", commandline);
+    mrg_printf (mrg, "%s", o->commandline);
     mrg_edit_end (mrg);
   mrg_edit_end (mrg);
   mrg_end (mrg);
 
   //mrg_set_xy (mrg, em, h - em * 1);
 
-    if (mrg_get_cursor_pos (mrg) == mrg_utf8_strlen (commandline))
+    if (mrg_get_cursor_pos (mrg) == mrg_utf8_strlen (o->commandline))
     {
-      GList *completions = commandline_get_completions (o->active, commandline);
+      GList *completions = commandline_get_completions (o->active, o->commandline);
       if (completions)
       {
         GList *iter = completions;
         int no = 0;
-        const char *last = strrchr (commandline, ' ');
-        if (!last) last = commandline;
+        const char *last = strrchr (o->commandline, ' ');
+        if (!last) last = o->commandline;
 
         mrg_start (mrg, no==completion_no?"span.completion-selected":"span.completion", NULL);
         mrg_printf (mrg, "%s", iter->data);
@@ -5251,27 +5252,34 @@ static void ui_commandline (Mrg *mrg, void *data)
   {
     mrg_set_xy (mrg, 0,h*2);
     mrg_edit_start (mrg, update_commandline, o);
-    mrg_printf (mrg, "%s", commandline);
+    mrg_printf (mrg, "%s", o->commandline);
     mrg_edit_end (mrg);
   }
 
 jump:
   {
     const char *label = "run commandline";
-  if (commandline[0]==0)
-  {
-    if (o->is_dir)   label = "show entry";
-    else
+    if (o->commandline[0]==0)
     {
-      if (o->show_graph){
-        if (o->property_focus)
-          label = "change property";
-        else
-          label = "stop editing";
+      if (o->is_dir)
+      {
+        label = "show entry";
       }
-      else label = "show editing graph";
+      else
+      {
+        if (o->show_graph)
+        {
+          if (o->property_focus)
+            label = "change property";
+          else
+            label = "stop editing";
+        }
+        else
+        {
+          label = "show editing graph";
+        }
+      }
     }
-  }
     mrg_add_binding (mrg, "return", NULL, label, do_commandline_run, o);
   }
 
@@ -7653,6 +7661,8 @@ int cmd_todo (COMMAND_ARGS);/* "todo", -1, "", ""*/
 int
 cmd_todo (COMMAND_ARGS)
 {
+  printf ("store timed and named revisions of documents\n");
+  printf ("export panel, with named, scaled and cropped settings previously used for this image and others.\n");
   printf ("tab-completion for cd command\n");
   printf ("visual color picker\n");
   printf ("make axis constrained vertical drag up/down adjust linear small increments on double\n");
