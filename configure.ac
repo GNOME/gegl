@@ -24,6 +24,7 @@ m4_define([gegl_interface_age], [0])
 m4_define([gegl_binary_age],
           [m4_eval(100 * gegl_minor_version + gegl_micro_version)])
 
+  mrg_add_binding (mrg, "return", NULL, label, do_commandline_run, o);
 m4_define([gegl_api_version], [gegl_major_version.gegl_minor_version])
 
 m4_define([stability_version_number],
@@ -53,6 +54,7 @@ m4_define([lua_required_version], [5.1.0])
 m4_define([openexr_required_version], [1.6.1])
 m4_define([libraw_required_version], [0.15.4])
 m4_define([pango_required_version], [1.38.0])
+m4_define([popplerglib_required_version], [0.71.0])
 m4_define([zlib_required_version], [1.2.0])
 m4_define([png_required_version], [1.6.0])
 m4_define([sdl_required_version], [1.2.0])
@@ -723,6 +725,25 @@ AM_CONDITIONAL(HAVE_CAIRO, test "$have_cairo" = "yes")
 
 AC_SUBST(CAIRO_CFLAGS) 
 AC_SUBST(CAIRO_LIBS) 
+
+##############
+# poppler-glib
+##############
+
+AC_ARG_WITH(popplerglib, [  --without-popplerglib       build without poppler support])
+
+
+have_popplerglib="no"
+if test "x$with_popplerglib" != "xno"; then
+  PKG_CHECK_MODULES(POPPLERGLIB, poppler-glib >= popplerglib_required_version,
+    have_popplerglib="yes",
+    have_popplerglib="no  (usable popplerglib not found)")
+fi
+
+AM_CONDITIONAL(HAVE_POPPLERGLIB, test "x$have_popplerglib" = "xyes")
+
+AC_SUBST(POPPLERGLIB_CFLAGS)
+AC_SUBST(POPPLERGLIB_LIBS)
 
 
 ########################
@@ -1410,6 +1431,7 @@ Optional dependencies:
   Cairo:           $have_cairo
   Pango:           $have_pango
   pangocairo:      $have_pangocairo
+  poppler-glib:    $have_popplerglib
   GDKPixbuf:       $have_gdk_pixbuf
   JPEG:            $jpeg_ok
   zlib:            $have_zlib

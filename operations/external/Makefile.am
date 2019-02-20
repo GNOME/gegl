@@ -187,5 +187,13 @@ npd_la_CFLAGS = $(AM_CFLAGS) $(NPD_CFLAGS) $(CAIRO_CFLAGS)
 npd_la_LIBADD = $(op_libs) $(NPD_LIBS) $(CAIRO_LIBS)
 endif
 
+if HAVE_POPPLERGLIB
+ops += pdf-load.la
+pdf_load_la_SOURCES = pdf-load.c
+pdf_load_la_LIBADD = $(op_libs) $(POPPLERGLIB_LIBS)
+pdf_load_la_CFLAGS = $(AM_CFLAGS) $(POPPLERGLIB_CFLAGS)
+
+endif
+
 opdir = $(libdir)/gegl-@GEGL_API_VERSION@
 op_LTLIBRARIES = $(ops)

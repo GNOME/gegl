@@ -260,6 +260,7 @@ operations/workshop/external/lens-correct.c
 operations/workshop/external/line-profile.c
 operations/workshop/external/spyrograph.c
 operations/workshop/external/v4l2.c
+operations/workshop/external/pdf-load.c
 operations/workshop/generated/average.c
 operations/workshop/generated/blend-reflect.c
 operations/workshop/generated/negation.c
