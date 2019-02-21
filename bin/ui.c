@@ -173,6 +173,7 @@ ge_state_init (GeState *o)
   } else
     renderer = GEGL_RENDERER_IDLE;
 
+  o->renderer_state    = 0;
   o->gegl = gegl_node_new ();
 }
 
@@ -866,7 +867,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   switch (renderer)
   {
     case GEGL_RENDERER_THREAD:
-      o->renderer_thread = g_thread_new ("renderer", renderer_thread, &o);
+      o->renderer_thread = g_thread_new ("renderer", renderer_thread, o);
       break;
     case GEGL_RENDERER_IDLE:
       mrg_add_idle (mrg, renderer_idle, o);
@@ -5609,6 +5610,8 @@ static void gegl_ui (Mrg *mrg, void *data)
                                o->render_quality,
                                o->color_managed_display);
          g_object_unref (buffer);
+       } else {
+         fprintf (stderr, "lacking buffer\n");
        }
        break;
   }
