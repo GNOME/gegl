@@ -357,7 +357,6 @@ gegl_op_class_init (GeglOpClass *klass)
 
   operation_class->attach = attach;
   operation_class->detect = detect;
-  operation_class->no_cache = TRUE;
 
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:load",

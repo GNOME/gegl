@@ -374,7 +374,6 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
 
   operation_class->prepare        = prepare;
-  operation_class->no_cache       = TRUE;
   operation_class->opencl_support = TRUE;
 
   point_filter_class->process    = process;

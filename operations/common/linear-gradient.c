@@ -133,7 +133,6 @@ gegl_op_class_init (GeglOpClass *klass)
   point_render_class->process = process;
   operation_class->get_bounding_box = get_bounding_box;
   operation_class->prepare = prepare;
-  operation_class->no_cache = TRUE;
 
   gegl_operation_class_set_keys (operation_class,
     "name",               "gegl:linear-gradient",

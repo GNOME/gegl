@@ -102,9 +102,8 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
 
-  operation_class->prepare  = prepare;
-  operation_class->process  = process;
-  operation_class->no_cache = FALSE;
+  operation_class->prepare = prepare;
+  operation_class->process = process;
 
   gegl_operation_class_set_keys (operation_class,
     "name",       "gegl:cast-format",

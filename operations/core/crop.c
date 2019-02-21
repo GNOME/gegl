@@ -250,7 +250,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "reference-composition", composition,
       NULL);
 
-  operation_class->no_cache = TRUE;
+  operation_class->cache_policy = GEGL_CACHE_POLICY_NEVER;
 }
 
 #endif

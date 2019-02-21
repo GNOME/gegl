@@ -143,10 +143,10 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
-  operation_class->prepare  = prepare;
-  operation_class->no_cache = TRUE;
-  operation_class->threaded = FALSE;
-  filter_class->process     = process;
+  operation_class->prepare      = prepare;
+  operation_class->cache_policy = GEGL_CACHE_POLICY_NEVER;
+  operation_class->threaded     = FALSE;
+  filter_class->process         = process;
 
   gegl_operation_class_set_keys (operation_class,
     "name",           "gegl:copy-buffer",

@@ -133,7 +133,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "description", _("Use an on-disk GeglBuffer as data source."),
     NULL);
 
-  operation_class->no_cache = TRUE;
+  operation_class->cache_policy = GEGL_CACHE_POLICY_NEVER;
 }
 
 #endif

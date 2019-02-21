@@ -77,7 +77,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class    = GEGL_OPERATION_CLASS (klass);
   point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
 
-  operation_class->no_cache      = FALSE;
+  operation_class->cache_policy  = GEGL_CACHE_POLICY_ALWAYS;
   operation_class->want_in_place = FALSE;
   operation_class->threaded      = FALSE;
   operation_class->prepare       = prepare;

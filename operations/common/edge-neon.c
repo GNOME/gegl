@@ -546,7 +546,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->opencl_support          = 0;
   operation_class->threaded                = 0; //Due to IIR Implementation (smear-carry), we require single-process, linear operation.
   operation_class->want_in_place           = 0; //IIR Causes buffer build-up.
-  operation_class->no_cache                = 1; //IIR Causes buffer build-up.
+  operation_class->cache_policy            = GEGL_CACHE_POLICY_NEVER; //IIR Causes buffer build-up.
 
   gegl_operation_class_set_keys (operation_class,
     "name",       "gegl:edge-neon",
