@@ -182,7 +182,6 @@ gegl_operation_point_composer3_class_init (GeglOperationPointComposer3Class *kla
   composer_class->process = gegl_operation_point_composer3_process;
   operation_class->process = gegl_operation_composer3_process;
   operation_class->prepare = prepare;
-  operation_class->no_cache =TRUE;
   operation_class->want_in_place = TRUE;
   operation_class->threaded = TRUE;
 }

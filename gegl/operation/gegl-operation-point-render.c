@@ -58,7 +58,6 @@ gegl_operation_point_render_class_init (GeglOperationPointRenderClass *klass)
   operation_class->prepare = prepare;
 
   operation_class->detect = detect;
-  operation_class->no_cache = FALSE;
   operation_class->threaded = TRUE;
 }
 
