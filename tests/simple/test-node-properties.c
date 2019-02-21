@@ -26,14 +26,14 @@
 
 int main(int argc, char *argv[])
 {
-  int           result = SUCCESS;
-  GeglNode     *graph  = NULL;
-  GeglNode     *node   = NULL;
-  GeglColor    *color  = NULL;
-  double        x      = -5;
-  double        y      = -5;
-  char         *name   = NULL;
-  gboolean      cache  = TRUE;
+  int              result       = SUCCESS;
+  GeglNode        *graph        = NULL;
+  GeglNode        *node         = NULL;
+  GeglColor       *color        = NULL;
+  double           x            = -5;
+  double           y            = -5;
+  char            *name         = NULL;
+  GeglCachePolicy  cache_policy = GEGL_CACHE_POLICY_AUTO;
 
   /* Init */
   gegl_init (&argc, &argv);
@@ -146,39 +146,39 @@ int main(int argc, char *argv[])
   gegl_node_set (node,
                  "operation", "gegl:translate",
                  "name", "Brian",
-                 "dont-cache", FALSE,
+                 "cache-policy", GEGL_CACHE_POLICY_ALWAYS,
                  NULL);
   
   gegl_node_get (node,
                  "name", &name,
-                 "dont-cache", &cache,
+                 "cache-policy", &cache_policy,
                  NULL);
 
   if (!(!strcmp (name, "Brian") &&
-        cache == FALSE))
+        cache_policy == GEGL_CACHE_POLICY_ALWAYS))
     {
       result = FAILURE;
       printf ("name:  %s\n", name);
-      printf ("cache: %d\n", cache); 
+      printf ("cache-policy: %d\n", cache_policy); 
       goto abort;
     }
 
   gegl_node_set (node,
-                 "dont-cache", TRUE,
+                 "cache-policy", GEGL_CACHE_POLICY_NEVER,
                  "name", "Steve",
                  NULL);
 
   gegl_node_get (node,
                  "name", &name,
-                 "dont-cache", &cache,
+                 "cache-policy", &cache_policy,
                  NULL);
 
   if (!(!strcmp (name, "Steve") &&
-        cache == TRUE))
+        cache_policy == GEGL_CACHE_POLICY_NEVER))
     {
       result = FAILURE;
       printf ("name: %s\n", name);
-      printf ("cache: %d\n", cache);
+      printf ("cache-policy: %d\n", cache_policy);
       goto abort;
     }
 

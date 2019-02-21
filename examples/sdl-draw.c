@@ -84,7 +84,7 @@ init_main_context (SDL_Surface *main_window, MainContext *context)
   GeglColor  *color2 = gegl_color_new ("rgb(0.6, 0.6, 0.6)");
   GeglBuffer *paint_buffer = gegl_buffer_new (GEGL_RECTANGLE (0, 0, 0, 0), babl_format ("RGBA float"));
 
-  g_object_set (ptn, "dont-cache", TRUE, NULL);
+  g_object_set (ptn, "cache-policy", GEGL_CACHE_POLICY_NEVER, NULL);
 
   /* Our graph represents a single drawing layer over a fixed background */
   background_node = gegl_node_new_child (ptn,

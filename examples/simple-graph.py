@@ -9,7 +9,7 @@ if __name__ == '__main__':
   ptn = Gegl.Node()
   
   # Disable caching on all child nodes
-  ptn.set_property("dont-cache", True)
+  ptn.set_property("cache-policy", Gegl.CachePolicy.NEVER)
   
   # Create our background buffer. A gegl:color node would
   # make more sense, we just use a buffer here as an example.
