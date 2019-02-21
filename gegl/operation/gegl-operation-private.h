@@ -19,7 +19,7 @@
 #ifndef __GEGL_OPERATION_PRIVATE_H__
 #define __GEGL_OPERATION_PRIVATE_H__
 
-G_BEING_DECLS
+G_BEGIN_DECLS
 
 
 gboolean   gegl_operation_use_cache (GeglOperation *operation);
