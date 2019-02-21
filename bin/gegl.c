@@ -408,6 +408,8 @@ int gegl_str_has_image_suffix (char *path)
          g_str_has_suffix (path, ".png") ||
          g_str_has_suffix (path, ".xml") ||
          g_str_has_suffix (path, ".svg") ||
+         g_str_has_suffix (path, ".pdf") ||
+         g_str_has_suffix (path, ".PDF") ||
          g_str_has_suffix (path, ".SVG") ||
          g_str_has_suffix (path, ".JPG") ||
          g_str_has_suffix (path, ".PNG") ||

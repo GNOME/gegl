@@ -974,6 +974,10 @@ int thumbgen_main (int argc, char **argv)
       g_free (o->path);
     o->path = g_strdup (*arg);
     load_path (o);
+
+    if (!strcmp (gegl_node_get_operation (o->source), "gegl:pdf-load"))
+        gegl_node_set (o->source, "ppi", 72/2.0, NULL);
+
     argvs_eval ("thumb");
   }
 
@@ -5927,8 +5931,17 @@ static void load_path_inner (GeState *o,
   o->prev_frame_played = 0;
   o->thumbbar_pan_x = 0;
 
-  fprintf (stderr, "{%s %s\n", o->path, o->save_path);
-  if (g_str_has_suffix (path, ".gif"))
+  if (g_str_has_suffix (path, ".pdf") ||
+      g_str_has_suffix (path, ".PDF"))
+  {
+    o->gegl = gegl_node_new ();
+    o->sink = gegl_node_new_child (o->gegl,
+                       "operation", "gegl:nop", NULL);
+    o->source = gegl_node_new_child (o->gegl,
+         "operation", "gegl:pdf-load", "path", path, NULL);
+    gegl_node_link_many (o->source, o->sink, NULL);
+  }
+  else if (g_str_has_suffix (path, ".gif"))
   {
     o->gegl = gegl_node_new ();
     o->sink = gegl_node_new_child (o->gegl,

@@ -9,8 +9,6 @@ local path = active:get_property("d").value
 --print ('a:' .. a.type)
 
 
-
-
 local no = 0
 
 path:foreach_flat( function(el)
@@ -62,12 +60,20 @@ path:foreach( function(el)
     cr:arc(x, y, dim/15, 0, 3.1415 * 2)
     mrg:listen(Mrg.DRAG, function(ev)
       if ev.type == Mrg.DRAG_MOTION then
-        local x = el.point[coord_no].x
-        local y = el.point[coord_no].y
-        x = x + ev.delta_x
-        y = y + ev.delta_y
-        el.point[coord_no].x = x
-        el.point[coord_no].y = y
+
+        if coord_no == 3 then
+          el.point[3].x = el.point[3].x + ev.delta_x
+          el.point[3].y = el.point[3].y + ev.delta_y
+
+          el.point[2].x = el.point[2].x + ev.delta_x
+          el.point[2].y = el.point[2].y + ev.delta_y
+
+          -- todo also drag part of previous if it indeed is a curve
+        else
+          el.point[coord_no].x = el.point[coord_no].x + ev.delta_x
+          el.point[coord_no].y = el.point[coord_no].y + ev.delta_y
+        end
+
         path:dirty()
         ev:stop_propagate();
       end
@@ -86,12 +92,9 @@ path:foreach( function(el)
     cr:arc(x, y, dim/15, 0, 3.1415 * 2)
     mrg:listen(Mrg.DRAG, function(ev)
       if ev.type == Mrg.DRAG_MOTION then
-        local x = el.point[coord_no].x
-        local y = el.point[coord_no].y
-        x = x + ev.delta_x
-        y = y + ev.delta_y
-        el.point[coord_no].x = x
-        el.point[coord_no].y = y
+        el.point[coord_no].x = el.point[coord_no].x + ev.delta_x
+        el.point[coord_no].y = el.point[coord_no].y + ev.delta_y
+
         path:dirty()
         ev:stop_propagate();
       end
