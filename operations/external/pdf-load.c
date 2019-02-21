@@ -24,7 +24,7 @@
 property_file_path (path, _("Path"), "")
      description (_("file to load"))
 
-property_file_path (uri, _("URI"), "")
+property_uri (uri, _("URI"), "")
      description (_("uri of file to load"))
 
 property_int  (page,  _("Page"),  1)
@@ -35,10 +35,13 @@ property_int  (pages,  _("Pages"),  1)
      description (_("Total pages, provided as a visual read-only property"))
      value_range (1, 10000)
 
-property_double (ppi,  _("PPI"),  300.0)
+property_double (ppi,  _("PPI"),  200.0)
      description (_("Point/pixels per inch"))
      ui_range (72.0, 1000.0)
      value_range (10.0, 2400.0)
+
+property_string (password,  _("Password"), "")
+     description (_("Password to use for decryption of PDF, or blank for none"))
 
 #else
 
@@ -91,6 +94,8 @@ prepare (GeglOperation *operation)
   if (p->path == NULL || strcmp (p->path, o->path) ||
       p->uri  == NULL || strcmp (p->uri, o->uri))
   {
+    const char *password = o->password[0]?o->password:NULL;
+
     if (p->path)
       g_free (p->path);
     if (p->uri)
@@ -102,12 +107,12 @@ prepare (GeglOperation *operation)
 
     if (p->uri[0])
     {
-      p->document = poppler_document_new_from_file (p->uri, NULL, NULL);
+      p->document = poppler_document_new_from_file (p->uri, password, NULL);
     }
     else
     {
-      char *uri = g_strdup_printf ("file://%s", p->path);
-      p->document = poppler_document_new_from_file (uri, NULL, NULL);
+      char *uri = g_strdup_printf ("file://%s", p->path); // XXX :use better API
+      p->document = poppler_document_new_from_file (uri, password, NULL);
       g_free (uri);
     }
     p->page = NULL;
