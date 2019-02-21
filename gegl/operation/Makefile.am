@@ -55,6 +55,7 @@ liboperation_sources = \
 	gegl-operation-point-composer3.c	\
 	gegl-operation-point-filter.c		\
 	gegl-operation-point-render.c		\
+	gegl-operation-private.h		\
 	gegl-operation-property-keys.c \
 	gegl-operation-sink.c			\
 	gegl-operation-source.c			\

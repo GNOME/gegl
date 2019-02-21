@@ -42,6 +42,7 @@
 #include "graph/gegl-node-output-visitable.h"
 
 #include "operation/gegl-operation.h"
+#include "operation/gegl-operation-private.h"
 #include "operation/gegl-operations.h"
 #include "operation/gegl-operation-meta.h"
 
@@ -54,6 +55,7 @@ enum
   PROP_OPERATION,
   PROP_NAME,
   PROP_DONT_CACHE,
+  PROP_CACHE_POLICY,
   PROP_USE_OPENCL,
   PROP_PASSTHROUGH
 };
@@ -155,10 +157,20 @@ gegl_node_class_init (GeglNodeClass *klass)
   g_object_class_install_property (gobject_class, PROP_DONT_CACHE,
                                    g_param_spec_boolean ("dont-cache",
                                                          "Do not cache",
-                                                        "Do not cache the result of this operation, the property is inherited by children created from a node.",
+                                                        "Do not cache the result of this operation, the property is inherited by children created from a node."
+                                                        " (Deprecated for \"cache-policy\".)",
                                                         FALSE,
                                                         G_PARAM_CONSTRUCT |
                                                         G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class, PROP_CACHE_POLICY,
+                                   g_param_spec_enum ("cache-policy",
+                                                      "Cache Policy",
+                                                      "Cache policy for this node, the property is inherited by children created from a node.",
+                                                      GEGL_TYPE_CACHE_POLICY,
+                                                      GEGL_CACHE_POLICY_AUTO,
+                                                      G_PARAM_CONSTRUCT |
+                                                      G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_USE_OPENCL,
                                    g_param_spec_boolean ("use-opencl",
@@ -300,6 +312,10 @@ gegl_node_local_set_property (GObject      *gobject,
         node->dont_cache = g_value_get_boolean (value);
         break;
 
+      case PROP_CACHE_POLICY:
+        node->cache_policy = g_value_get_enum (value);
+        break;
+
       case PROP_PASSTHROUGH:
         node->passthrough = g_value_get_boolean (value);
         break;
@@ -348,6 +364,10 @@ gegl_node_local_get_property (GObject    *gobject,
 
       case PROP_DONT_CACHE:
         g_value_set_boolean (value, node->dont_cache);
+        break;
+
+      case PROP_CACHE_POLICY:
+        g_value_set_enum (value, node->cache_policy);
         break;
 
       case PROP_PASSTHROUGH:
@@ -1975,6 +1995,31 @@ gegl_node_emit_computed (GeglNode *node,
   g_signal_emit (node, gegl_node_signals[COMPUTED], 0, rect, NULL, NULL);
 }
 
+gboolean
+gegl_node_use_cache (GeglNode *node)
+{
+  g_return_val_if_fail (GEGL_IS_NODE (node), FALSE);
+
+  switch (node->cache_policy)
+    {
+    case GEGL_CACHE_POLICY_AUTO:
+      if (node->dont_cache)
+        return FALSE;
+      else if (node->operation)
+        return gegl_operation_use_cache (node->operation);
+      else
+        return FALSE;
+
+    case GEGL_CACHE_POLICY_NEVER:
+      return FALSE;
+
+    case GEGL_CACHE_POLICY_ALWAYS:
+      return TRUE;
+    }
+
+  g_return_val_if_reached (FALSE);
+}
+
 GeglCache *
 gegl_node_get_cache (GeglNode *node)
 {
@@ -2089,8 +2134,9 @@ gegl_node_add_child (GeglNode *self,
   self->is_graph      = TRUE;
   child->priv->parent = self;
 
-  child->dont_cache = self->dont_cache;
-  child->use_opencl = self->use_opencl;
+  child->dont_cache   = self->dont_cache;
+  child->cache_policy = self->cache_policy;
+  child->use_opencl   = self->use_opencl;
 
   return child;
 }
@@ -2199,8 +2245,9 @@ gegl_node_create_child (GeglNode    *self,
   ret = gegl_node_new_child (self, "operation", operation, NULL);
   if (ret && self)
     {
-      ret->dont_cache = self->dont_cache;
-      ret->use_opencl = self->use_opencl;
+      ret->dont_cache   = self->dont_cache;
+      ret->cache_policy = self->cache_policy;
+      ret->use_opencl   = self->use_opencl;
     }
   return ret;
 }

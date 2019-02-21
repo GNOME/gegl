@@ -77,8 +77,13 @@ struct _GeglNode
    */
   GeglVisitable  *output_visitable;
 
-  /* Whether result is cached or not, inherited by children */
+  /* Whether result is cached or not, inherited by children
+   * (deprecated for "cache_policy")
+   */
   gboolean        dont_cache;
+
+  /* Cache policy for the current node, inherited by children */
+  GeglCachePolicy cache_policy;
 
   gboolean        use_opencl;
 
@@ -126,6 +131,7 @@ const gchar * gegl_node_get_debug_name      (GeglNode      *node);
 void          gegl_node_insert_before       (GeglNode      *self,
                                              GeglNode      *to_be_inserted);
 
+gboolean      gegl_node_use_cache           (GeglNode      *node);
 GeglCache   * gegl_node_get_cache           (GeglNode      *node);
 void          gegl_node_invalidated         (GeglNode      *node,
                                              const GeglRectangle *rect,

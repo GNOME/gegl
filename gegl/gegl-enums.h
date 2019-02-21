@@ -100,6 +100,17 @@ GType gegl_babl_variant_get_type (void) G_GNUC_CONST;
 
 #define GEGL_TYPE_BABL_VARIANT (gegl_babl_variant_get_type ())
 
+
+typedef enum {
+  GEGL_CACHE_POLICY_AUTO,
+  GEGL_CACHE_POLICY_NEVER,
+  GEGL_CACHE_POLICY_ALWAYS
+} GeglCachePolicy;
+
+GType gegl_cache_policy_get_type (void) G_GNUC_CONST;
+
+#define GEGL_TYPE_CACHE_POLICY (gegl_cache_policy_get_type ())
+
 G_END_DECLS
 
 #endif /* __GEGL_ENUMS_H__ */

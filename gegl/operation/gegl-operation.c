@@ -26,6 +26,7 @@
 #include "gegl-config.h"
 #include "gegl-types-internal.h"
 #include "gegl-operation.h"
+#include "gegl-operation-private.h"
 #include "gegl-operation-context.h"
 #include "gegl-operations-util.h"
 #include "graph/gegl-node-private.h"
@@ -89,6 +90,7 @@ gegl_operation_class_init (GeglOperationClass *klass)
   klass->prepare                   = NULL;
   klass->no_cache                  = FALSE;
   klass->threaded                  = FALSE;
+  klass->cache_policy              = GEGL_CACHE_POLICY_AUTO;
   klass->get_bounding_box          = get_bounding_box;
   klass->get_invalidated_by_change = get_invalidated_by_change;
   klass->get_required_for_output   = get_required_for_output;
@@ -873,4 +875,24 @@ gegl_operation_get_source_space (GeglOperation *operation, const char *in_pad)
   if (source_format)
     return babl_format_get_space (source_format);
   return NULL;
+}
+
+gboolean
+gegl_operation_use_cache (GeglOperation *operation)
+{
+  GeglOperationClass *klass = GEGL_OPERATION_GET_CLASS (operation);
+
+  switch (klass->cache_policy)
+    {
+    case GEGL_CACHE_POLICY_AUTO:
+      return ! klass->no_cache && klass->get_cached_region != NULL;
+
+    case GEGL_CACHE_POLICY_NEVER:
+      return FALSE;
+
+    case GEGL_CACHE_POLICY_ALWAYS:
+      return TRUE;
+    }
+
+  g_return_val_if_reached (FALSE);
 }

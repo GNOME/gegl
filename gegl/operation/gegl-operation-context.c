@@ -340,8 +340,7 @@ gegl_operation_context_get_target (GeglOperationContext *context,
       else
         output = gegl_buffer_new (GEGL_RECTANGLE (0, 0, 0, 0), format);
     }
-  else if (node->dont_cache == FALSE &&
-      ! GEGL_OPERATION_CLASS (G_OBJECT_GET_CLASS (operation))->no_cache)
+  else if (gegl_node_use_cache (node))
     {
       GeglBuffer    *cache;
       cache = GEGL_BUFFER (gegl_node_get_cache (node));

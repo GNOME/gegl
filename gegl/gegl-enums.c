@@ -138,3 +138,29 @@ gegl_babl_variant_get_type (void)
 
   return etype;
 }
+
+GType
+gegl_cache_policy_get_type (void)
+{
+  static GType etype = 0;
+
+  if (etype == 0)
+    {
+      static GEnumValue values[] = {
+        { GEGL_CACHE_POLICY_AUTO, N_("Auto"), "auto" },
+        { GEGL_CACHE_POLICY_NEVER, N_("Never"), "never" },
+        { GEGL_CACHE_POLICY_ALWAYS, N_("Always"), "always" },
+        { 0, NULL, NULL }
+      };
+      gint i;
+
+      for (i = 0; i < G_N_ELEMENTS (values); i++)
+        if (values[i].value_name)
+          values[i].value_name =
+            dgettext (GETTEXT_PACKAGE, values[i].value_name);
+
+      etype = g_enum_register_static ("GeglCachePolicy", values);
+    }
+
+  return etype;
+}

@@ -76,7 +76,8 @@ struct _GeglOperationClass
                                   gegl_operation_class_set_key(s) */
   GHashTable     *keys;        /* hashtable used for storing meta-data about an op */
 
-  guint           no_cache      :1;  /* do not create a cache for this operation */
+  guint           no_cache      :1;  /* do not create a cache for this operation
+                                        (deprecated for "cache_policy") */
   guint           opencl_support:1;
   guint           want_in_place:1; /* if possible to use for in-place
                                       processing, making output buffer =
@@ -87,7 +88,8 @@ struct _GeglOperationClass
                                   to accelerate rendering; this allows opting in/out
                                   in the sub-classes of these.
                                 */
-  guint64         bit_pad:60;
+  guint           cache_policy:2; /* cache policy for this operation */
+  guint64         bit_pad:58;
 
   /* attach this operation with a GeglNode, override this if you are creating a
    * GeglGraph, it is already defined for Filters/Sources/Composers.
