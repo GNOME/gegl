@@ -111,9 +111,11 @@ prepare (GeglOperation *operation)
     }
     else
     {
-      char *uri = g_strdup_printf ("file://%s", p->path); // XXX :use better API
+      GFile *file = g_file_new_for_path (p->path);
+      char *uri = g_file_get_uri (file);
       p->document = poppler_document_new_from_file (uri, password, NULL);
       g_free (uri);
+      g_object_unref (file);
     }
     p->page = NULL;
     p->page_no = -1;
