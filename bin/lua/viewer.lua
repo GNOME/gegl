@@ -133,6 +133,20 @@ function draw_back(x,y,w,h)
   cr:line_to (x+0.1*w, y+0.5*h);
 end
 
+function draw_up (x,y,w,h)
+  cr:new_path ();
+  cr:move_to (x+0.1*w, y+0.9*h);
+  cr:line_to (x+0.5*w, y+0.1*h);
+  cr:line_to (x+0.9*w, y+0.9*h);
+end
+
+function draw_down (x,y,w,h)
+  cr:new_path ();
+  cr:move_to (x+0.1*w, y+0.1*h);
+  cr:line_to (x+0.5*w, y+0.9*h);
+  cr:line_to (x+0.9*w, y+0.1*h);
+end
+
 function draw_forward(x,y,w,h)
   cr:new_path ();
   cr:move_to (x+0.1*w, y+0.1*h);
@@ -143,7 +157,7 @@ end
 function draw_pause (x,y,w,h)
   local margin = w * .1
   local bar = w * .3
-  local gap = w * .15
+  local gap = w * .16
   cr:new_path ();
   cr:rectangle (x + margin, y, bar, h)
   cr:rectangle (x + margin + bar + gap, y, bar, h)
@@ -304,16 +318,78 @@ if o.is_video ~= 0 then
   end)
   cr:new_path()
 
+  
+
+
+
+
+end
+
+local path = GObject.Object(STATE).path
+local source = GObject.Object(STATE).source
+
+function pdf_next_page()
+  local pages = source:get_property('pages').value
+  local page = source:get_property('page').value
+  source:set_property('page', GObject.Value(GObject.Type.INT, page + 1))
+end
+
+function pdf_prev_page()
+  local pages = source:get_property('pages').value
+  local page = source:get_property('page').value
+  source:set_property('page', GObject.Value(GObject.Type.INT, page - 1))
+end
+
+mrg:add_binding("page-up", NULL, "previous image",
+  function() ffi.C.argvs_eval ("prev") end)
+
+mrg:add_binding("page-down", NULL, "next image",
+  function() ffi.C.argvs_eval ("next") end)
+
+if path:find(".pdf$") or path:find('.PDF$') then
+  local pages = source:get_property('pages').value
+  local page = source:get_property('page').value
+
+  mrg:set_style("background:transparent;color:white")
+  mrg:set_xy(width - height * .12, height - height * .15)
+  if o.show_controls ~= 0 then
+    mrg:print(' ' .. page .. '/' .. pages)
+  end
+
+  draw_up (width - height * .12, height * .71, height * .1, height *.1);
+  cr:close_path ();
+  mrg:listen(Mrg.PRESS, function(event)
+    pdf_prev_page()
+    event:stop_propagate()
+  end)
+  if o.show_controls ~= 0 then
+    contrasty_stroke ()
+  else
+    cr:new_path()
+  end
+
+  draw_down (width - height * .12, height * .87, height * .1, height *.1);
+  cr:close_path ();
+  mrg:listen(Mrg.PRESS, function(event)
+    pdf_next_page()
+    event:stop_propagate()
+  end)
+  if o.show_controls ~= 0 then
+    contrasty_stroke ()
+  else
+    cr:new_path()
+  end
+
+  -- override default page-up / page-down bindings
+  mrg:add_binding("page-up", NULL, "previous page",
+    function(e) pdf_prev_page() e:stop_propagate() end)
+
+  mrg:add_binding("page-down", NULL, "next page",
+    function(e) pdf_next_page() e:stop_propagate() end)
+
 end
 
 
-
-
-mrg:add_binding("page-up", NULL, "previous image",
-  function() ffi.C.argvs_val ("prev") end)
-
-mrg:add_binding("page-down", NULL, "next image",
-  function() ffi.C.argvs_val ("next") end)
 
 mrg:add_binding("alt-right", NULL, "next image",
   function() ffi.C.argvs_val ("next") end)

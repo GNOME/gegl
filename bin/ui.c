@@ -127,6 +127,7 @@ enum
     PROP_SOURCE,
     PROP_ACTIVE,
     PROP_SINK,
+    PROP_PATH,
     N_PROPERTIES
 };
 
@@ -220,6 +221,9 @@ ge_state_get_property (GObject    *object,
     case PROP_SINK:
         g_value_set_object (value, state->sink);
         break;
+    case PROP_PATH:
+        g_value_set_string (value, state->path);
+        break;
 
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -270,6 +274,10 @@ ge_state_class_init (GeStateClass *klass)
         g_param_spec_object ("active", "Active", "Active node",
                              GEGL_TYPE_NODE,
                              G_PARAM_READWRITE);
+    obj_properties[PROP_PATH] =
+        g_param_spec_string ("path", "Path", "Path of active image",
+                             NULL,
+                             G_PARAM_READABLE);
 
     g_object_class_install_properties (object_class,
                                        N_PROPERTIES,
