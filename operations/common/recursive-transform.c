@@ -95,6 +95,10 @@ update_graph (GeglOperation *operation)
     {
       for (j = MAX_TRANSFORMS - 1; j >= 0; j--)
         {
+          g_object_set (iters[i].over_nodes[j],
+                        "cache-policy", GEGL_CACHE_POLICY_AUTO,
+                        NULL);
+
           gegl_node_disconnect (iters[i].over_nodes[j],    "input");
           gegl_node_disconnect (iters[i].over_nodes[j],    "aux");
         }
@@ -276,6 +280,13 @@ update_graph (GeglOperation *operation)
               gegl_node_connect_to (source_node,                           "output",
                                     iters[i].over_nodes[n_transforms - 1], ! o->paste_below ? "aux" :
                                                                                               "input");
+
+              if (i > 0)
+                {
+                  g_object_set (iters[i].over_nodes[n_transforms - 1],
+                                "cache-policy", GEGL_CACHE_POLICY_ALWAYS,
+                                NULL);
+                }
             }
 
           if (i >= o->first_iteration)
