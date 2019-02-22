@@ -417,7 +417,6 @@ typedef struct Setting {
 Setting settings[]=
 {
   INT_PROP(color_managed_display, "perform ICC color management and convert output to display ICC profile instead of passing out sRGB, passing out sRGB is faster."),
-  INT_PROP(frame_no, "current frame number in video/animation"),
   INT_PROP_RO(is_video, ""),
   STRING_PROP_RO(path, "path of current document"),
   INT_PROP(playing, "wheter we are playing or not set to 0 for pause 1 for playing"),
@@ -4734,10 +4733,13 @@ static void iterate_frame (GeState *o)
      gegl_node_get (o->source, "frames", &frames, "frame-delay", &frame_delay, NULL);
      if (o->prev_ms + frame_delay  < mrg_ms (mrg))
      {
-       o->frame_no++;
-       if (o->frame_no >= frames)
-         o->frame_no = 0;
-       gegl_node_set (o->source, "frame", o->frame_no, NULL);
+       int frame_no;
+       gegl_node_get (o->source, "frame", &frame_no, NULL);
+
+       frame_no++;
+       if (frame_no >= frames)
+         frame_no = 0;
+       gegl_node_set (o->source, "frame", frame_no, NULL);
        o->prev_ms = mrg_ms (mrg);
        //queue_draw (o);
     }
@@ -4746,11 +4748,13 @@ static void iterate_frame (GeState *o)
   else if (o->is_video)
    {
      int frames = 0;
-     o->frame_no++;
+     int frame_no;
+     gegl_node_get (o->source, "frame", &frame_no, NULL);
+     frame_no++;
      gegl_node_get (o->source, "frames", &frames, NULL);
-     if (o->frame_no >= frames)
-       o->frame_no = 0;
-     gegl_node_set (o->source, "frame", o->frame_no, NULL);
+     if (frame_no >= frames)
+       frame_no = 0;
+     gegl_node_set (o->source, "frame", frame_no, NULL);
      //queue_draw (o);
      mrg_queue_draw (o->mrg, NULL);
     {
@@ -4786,7 +4790,7 @@ static void iterate_frame (GeState *o)
          }
 
 
-         o->prev_frame_played = o->frame_no;
+         o->prev_frame_played = frame_no;
          deferred_redraw (mrg, NULL);
        }
        g_object_unref (audio);
@@ -5930,7 +5934,6 @@ static void load_path_inner (GeState *o,
     o->dir_scale = 1.0;
   o->rev = 0;
   o->is_video = 0;
-  o->frame_no = -1;
   o->prev_frame_played = 0;
   o->thumbbar_pan_x = 0;
 
@@ -5950,7 +5953,7 @@ static void load_path_inner (GeState *o,
     o->sink = gegl_node_new_child (o->gegl,
                        "operation", "gegl:nop", NULL);
     o->source = gegl_node_new_child (o->gegl,
-         "operation", "gegl:gif-load", "path", path, "frame", o->frame_no, NULL);
+         "operation", "gegl:gif-load", "path", path, NULL);
     o->playing = 1;
     gegl_node_link_many (o->source, o->sink, NULL);
   }
@@ -5962,7 +5965,7 @@ static void load_path_inner (GeState *o,
     o->sink = gegl_node_new_child (o->gegl,
                        "operation", "gegl:nop", NULL);
     o->source = gegl_node_new_child (o->gegl,
-         "operation", "gegl:ff-load", "path", path, "frame", o->frame_no, NULL);
+         "operation", "gegl:ff-load", "path", path, NULL);
     gegl_node_link_many (o->source, o->sink, NULL);
   }
   else
@@ -5996,7 +5999,7 @@ static void load_path_inner (GeState *o,
           if (g_str_has_suffix (path, ".gif"))
           {
              o->source = gegl_node_new_child (o->gegl,
-             "operation", "gegl:gif-load", "path", path, "frame", o->frame_no, NULL);
+             "operation", "gegl:gif-load", "path", path, NULL);
              o->playing = 1;
              gegl_node_link_many (o->source, prev, NULL);
           }
@@ -6663,6 +6666,20 @@ cmd_toggle (COMMAND_ARGS)
     printf ("%s colormanagement of display\n", o->color_managed_display?"enabled":"disabled");
     //mrg_gegl_dirty ();
   }
+  else if (!strcmp(argv[1], "opencl"))
+  {
+    gboolean curval;
+    g_object_get (gegl_config(), "use-opencl", &curval, NULL);
+    if (curval == FALSE) {
+      g_object_set (gegl_config(), "use-opencl", TRUE, NULL);
+      printf ("enabled opencl\n");
+    }
+    else
+    {
+      g_object_set (gegl_config(), "use-opencl", FALSE, NULL);
+      printf ("disabled opencl\n");
+    }
+  }
   else if (!strcmp(argv[1], "mipmap"))
   {
     gboolean curval;
@@ -6675,7 +6692,7 @@ cmd_toggle (COMMAND_ARGS)
     else
     {
       g_object_set (gegl_config(), "mipmap-rendering", FALSE, NULL);
-      renderer = GEGL_RENDERER_IDLE;
+      renderer = GEGL_RENDERER_IDLE; // XXX : becomes wrong if thred was original
       printf ("disabled mipmap rendering\n");
     }
   }

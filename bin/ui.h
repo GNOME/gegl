@@ -101,7 +101,6 @@ struct _GeState {
 
   int            show_controls;
   int            controls_timeout;
-  int            frame_no;
 
 
   char         **ops; // the operations part of the commandline, if any
