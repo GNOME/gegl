@@ -23,6 +23,8 @@
 
 #include "gegl-matrix.h"
 
+#define EPSILON 1e-6
+
 #if 0
 static void gegl_matrix3_debug (GeglMatrix3 *matrix)
 {
@@ -77,7 +79,7 @@ gegl_matrix3_equal (GeglMatrix3 *matrix1,
 
   for (y = 0; y < 3; y++)
     for (x = 0; x < 3; x++)
-      if (matrix1->coeff [y][x] != matrix2->coeff [y][x])
+      if (fabs (matrix1->coeff [y][x] - matrix2->coeff [y][x]) > EPSILON)
         return FALSE;
   return TRUE;
 }
