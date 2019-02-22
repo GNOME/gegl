@@ -107,6 +107,16 @@ gboolean   gegl_matrix3_is_scale        (GeglMatrix3 *matrix);
 gboolean   gegl_matrix3_is_translate    (GeglMatrix3 *matrix);
 
 /**
+ * gegl_matrix3_is_affine:
+ * @matrix: a #GeglMatrix3
+ *
+ * Check if a matrix only does an affine transformation.
+ *
+ * Returns TRUE if the matrix only does an affine transformation.
+ */
+gboolean   gegl_matrix3_is_affine       (GeglMatrix3 *matrix);
+
+/**
  * gegl_matrix3_copy_into:
  * @dst: a #GeglMatrix3
  * @src: a #GeglMatrix3

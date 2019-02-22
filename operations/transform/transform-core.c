@@ -98,7 +98,6 @@ static GeglNode     *gegl_transform_detect                       (GeglOperation 
                                                                   gint                  x,
                                                                   gint                  y);
 
-static gboolean      gegl_matrix3_is_affine                      (GeglMatrix3          *matrix);
 static gboolean      gegl_transform_matrix3_allow_fast_translate (GeglMatrix3          *matrix);
 static void          gegl_transform_create_composite_matrix      (OpTransform          *transform,
                                                                   GeglMatrix3          *matrix);
@@ -1555,18 +1554,6 @@ static inline gboolean is_zero (const gdouble f)
   return (((gdouble) f)*((gdouble) f)
           <=
           GEGL_TRANSFORM_CORE_EPSILON*GEGL_TRANSFORM_CORE_EPSILON);
-}
-
-static inline gboolean is_one (const gdouble f)
-{
-  return (is_zero (f-(gdouble) 1.0));
-}
-
-static gboolean gegl_matrix3_is_affine (GeglMatrix3 *matrix)
-{
-  return (is_zero (matrix->coeff [2][0]) &&
-          is_zero (matrix->coeff [2][1]) &&
-          is_one  (matrix->coeff [2][2]));
 }
 
 static gboolean

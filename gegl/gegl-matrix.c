@@ -111,6 +111,14 @@ gegl_matrix3_is_translate (GeglMatrix3 *matrix)
   return gegl_matrix3_is_identity (&copy);
 }
 
+gboolean
+gegl_matrix3_is_affine (GeglMatrix3 *matrix)
+{
+  return fabs (matrix->coeff[2][0])       <= EPSILON &&
+         fabs (matrix->coeff[2][1])       <= EPSILON &&
+         fabs (matrix->coeff[2][2] - 1.0) <= EPSILON;
+}
+
 void
 gegl_matrix3_copy_into (GeglMatrix3 *dst,
                         GeglMatrix3 *src)
