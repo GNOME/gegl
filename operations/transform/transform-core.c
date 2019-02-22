@@ -159,9 +159,13 @@ gegl_transform_prepare (GeglOperation *operation)
   if (gegl_transform_is_intermediate_node (transform) ||
       gegl_transform_matrix3_allow_fast_translate (&matrix) ||
       (gegl_matrix3_is_translate (&matrix) &&
-       transform->sampler == GEGL_SAMPLER_NEAREST) ||
-      (transform->sampler == GEGL_SAMPLER_NEAREST))
+       transform->sampler == GEGL_SAMPLER_NEAREST))
     {
+    }
+  else if (transform->sampler == GEGL_SAMPLER_NEAREST)
+    {
+      if (source_format && ! babl_format_has_alpha (source_format))
+        format = gegl_babl_variant (source_format, GEGL_BABL_VARIANT_ALPHA);
     }
   else
     {
