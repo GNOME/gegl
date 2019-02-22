@@ -1,17 +1,35 @@
 -- mrg ui for image viewer mode of gegl ui
 
 -- todo : implement thumb-bar of previous/next image
---        timeout for showing of controls
 
 
 cr:new_path()
 cr:rectangle(0,0,mrg:width(),mrg:height())
 
-if zoom_pinch_coord == nil then
-  zoom_pinch_coord = {{},{},{},{}}
+function controls_keepalive()
+  o.show_controls = 1
+  hide_controls_id = mrg:add_timeout(2000, function()
+    hide_controls_id = nil
+    o.show_controls = 0
+    mrg:queue_draw(nil)
+    return 0
+  end)
 end
 
+mrg:listen(Mrg.MOTION, function(event)
+  if hide_controls_id ~= nil then
+     mrg:remove_idle (hide_controls_id)
+  end
+  controls_keepalive()
+end)
+
 mrg:listen(Mrg.DRAG, function(event)
+
+  if zoom_pinch_coord == nil then
+    zoom_pinch_coord = {{},{},{},{}}
+  end
+  controls_keepalive()
+
   if event.type == Mrg.DRAG_PRESS then
 
     if event.device_no == 5 then -- 5 = second finger
@@ -70,12 +88,6 @@ mrg:listen(Mrg.DRAG, function(event)
 end)
 
 
-
-
-mrg:listen(Mrg.MOTION, function(event)
-  o.show_controls = 1
-  end)
-
 mrg:listen(Mrg.SCROLL, function(event)
   local factor = 1.05
   local x = (o.u + event.device_x) / o.scale
@@ -93,6 +105,17 @@ mrg:listen(Mrg.SCROLL, function(event)
   mrg:queue_draw(nil)
 end
 )
+
+if o.is_video ~= 0 then
+  mrg:listen(Mrg.PRESS, function(event)
+    if o.playing ~= 0 then
+      o.playing = 0
+    else
+      o.playing = 1
+    end
+  end)
+end
+
 
 function draw_grid(x,y,w,h)
   cr:new_path()
@@ -116,6 +139,16 @@ function draw_forward(x,y,w,h)
   cr:line_to (x+0.1*w, y+0.9*h);
   cr:line_to (x+0.9*w, y+0.5*h);
 end
+
+function draw_pause (x,y,w,h)
+  local margin = w * .1
+  local bar = w * .3
+  local gap = w * .15
+  cr:new_path ();
+  cr:rectangle (x + margin, y, bar, h)
+  cr:rectangle (x + margin + bar + gap, y, bar, h)
+end
+
 
 function draw_edit(x,y,w,h)
   cr:new_path ();
@@ -161,7 +194,11 @@ if o.show_controls ~= 0 then
   cr:fill_preserve ();
 end
 
-mrg:listen(Mrg.PRESS, function(event) ffi.C.argvs_eval('parent') end)
+mrg:listen(Mrg.PRESS,
+  function(event)
+    ffi.C.argvs_eval('parent')
+    event:stop_propagate()
+  end)
 
 draw_back (height * .1 / 4, height * .5, height * .1, height *.1);
 cr:close_path ();
@@ -179,7 +216,12 @@ if o.show_controls ~= 0 then
   cr:fill_preserve ();
 end
 
-mrg:listen(Mrg.PRESS, function(event) ffi.C.argvs_eval('prev') end)
+mrg:listen(Mrg.PRESS,
+  function(event)
+    ffi.C.argvs_eval('prev')
+    event:stop_propagate()
+  end)
+
 cr:new_path ();
 
 draw_forward (width - height * .12, height * .5, height * .1, height *.1);
@@ -198,8 +240,11 @@ if o.show_controls ~= 0 then
   cr:fill_preserve ();
 end
 
-mrg:listen(Mrg.PRESS, function(event) ffi.C.argvs_eval('next') end)
-
+mrg:listen(Mrg.PRESS,
+  function(event)
+    ffi.C.argvs_eval('next')
+    event:stop_propagate()
+  end)
 
 draw_edit (width - height * .15, height * .0, height * .15, height *.15);
 if o.show_controls ~= 0 then
@@ -213,8 +258,55 @@ if o.show_controls ~= 0 then
  cr:set_source_rgba (1,1,1,.1);
  cr:fill_preserve ();
 end
-mrg:listen(Mrg.PRESS, function(event) ffi.C.argvs_eval('toggle editing') end)
+
+mrg:listen(Mrg.PRESS,
+  function(event)
+    ffi.C.argvs_eval('toggle editing')
+    event:stop_propagate()
+  end)
+
 cr:new_path ();
+
+if o.is_video ~= 0 then
+
+  local source = GObject.Object(STATE).source
+  local frame = source:get_property('frame').value
+  local frames = source:get_property('frames').value
+  if o.show_controls ~= 0 then
+    cr:set_line_width(2)
+    cr:new_path()
+    cr:move_to(height * .15, height * .95);
+    cr:line_to(width - height * .15, height * .95);
+    cr:set_source_rgba(1,1,1,1)
+
+    cr:stroke()
+    cr:move_to(height * .15 + frame * (width - height * .3)  / frames, height * 0.975)
+    cr:rel_line_to(0, -0.05 * height)
+    cr:stroke()
+
+    if o.playing ~= 0 then
+      draw_pause(0.17 * height, height * .86, height/20, height/20)
+    else
+      draw_forward(0.17 *height, height * .86, height/20, height/20)
+    end
+
+    cr:set_source_rgba(1,1,1,.5)
+    cr:fill()
+  end
+
+  cr:rectangle(height * .1 , height * .9, width - height * .2, height *.1)
+  mrg:listen(Mrg.DRAG, function(event)
+    source:set_property('frame',
+       GObject.Value(GObject.Type.INT,
+        (event.x - width *.05) / (width * .95) * frames
+    ))
+    event:stop_propagate()
+  end)
+  cr:new_path()
+
+end
+
+
 
 
 mrg:add_binding("page-up", NULL, "previous image",
