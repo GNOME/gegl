@@ -127,10 +127,10 @@ function touch_point(x, y)
 end
 
 function contrasty_stroke()
-  local x0 = 6.0
-  local y0 = 6.0;
-  local x1 = 4.0
-  local y1 = 4.0;
+  local x0 = 3.0
+  local y0 = 3.0;
+  local x1 = 2.0
+  local y1 = 2.0;
 
   x0, y0 = cr:device_to_user_distance (x0, y0)
   x1, y1 = cr:device_to_user_distance (x1, y1)
