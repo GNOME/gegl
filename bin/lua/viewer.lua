@@ -169,21 +169,6 @@ function draw_edit(x,y,w,h)
   cr:arc (x+0.5*w, y+0.5*h, h * .4, 0.0, 3.1415 * 2);
 end
 
-function contrasty_stroke()
-  local x0 = 6.0
-  local y0 = 6.0;
-  local x1 = 4.0
-  local y1 = 4.0;
-
-  x0, y0 = cr:device_to_user_distance (x0, y0)
-  x1, y1 = cr:device_to_user_distance (x1, y1)
-  cr:set_source_rgba (0,0,0,0.5);
-  cr:set_line_width (y0);
-  cr:stroke_preserve ()
-  cr:set_source_rgba (1,1,1,0.5);
-  cr:set_line_width (y1);
-  cr:stroke ();
-end
 
 -- ui_viewer
 

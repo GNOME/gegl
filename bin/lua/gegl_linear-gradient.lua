@@ -1,10 +1,10 @@
 
 local start_x = active:get_property("start-x").value
 local start_y = active:get_property("start-y").value
+local end_x = active:get_property("end-x").value
+local end_y = active:get_property("end-y").value
 
-cr:new_path()
-cr:arc(start_x, start_y, dim/2, 0, 3.1415 * 2)
-
+touch_point(start_x, start_y)
 mrg:listen(Mrg.DRAG, function(ev)
   if ev.type == Mrg.DRAG_MOTION then
     local start_x = active:get_property("start-x").value
@@ -16,13 +16,8 @@ mrg:listen(Mrg.DRAG, function(ev)
     ev:stop_propagate();
   end
 end)
-cr:set_source_rgba(1,0,0,0.5)
-cr:fill()
 
-local end_x = active:get_property("end-x").value
-local end_y = active:get_property("end-y").value
-
-cr:arc(end_x, end_y, dim/2, 0, 3.1415 * 2)
+touch_point(end_x, end_y)
 mrg:listen(Mrg.DRAG, function(ev)
   if ev.type == Mrg.DRAG_MOTION then
     local end_x = active:get_property("end-x").value
@@ -34,6 +29,5 @@ mrg:listen(Mrg.DRAG, function(ev)
     ev:stop_propagate();
   end
 end)
-cr:set_source_rgba(1,0,0,0.5)
-cr:fill()
+cr:new_path()
 
