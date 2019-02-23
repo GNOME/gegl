@@ -7706,6 +7706,8 @@ cmd_todo (COMMAND_ARGS)
   printf ("export panel, with named, scaled and cropped settings previously used for this image and others.\n");
   printf ("tab-completion for cd command\n");
   printf ("visual color picker\n");
+  printf ("more per-op lua uis\n");
+  printf ("histogram for threshold/levels/curve uis\n");
   printf ("make axis constrained vertical drag up/down adjust linear small increments on double\n");
   printf ("units in commandline\n");
   printf ("interpret GUM\n");
