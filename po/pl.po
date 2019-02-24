@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-02-07 00:30+0000\n"
-"PO-Revision-Date: 2019-02-08 20:22+0100\n"
+"POT-Creation-Date: 2019-02-21 18:06+0000\n"
+"PO-Revision-Date: 2019-02-24 17:45+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -173,7 +173,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui.c:4305 gegl/gegl-serialize.c:522
+#: bin/ui.c:4464 gegl/gegl-serialize.c:522
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat „%s” nie istnieje."
@@ -324,6 +324,19 @@ msgstr "Percepcyjnie odwrócone mnożenie, jeśli alfa"
 #: gegl/gegl-enums.c:126
 msgid "add-alpha"
 msgstr "dodaj-alfę"
+
+#: gegl/gegl-enums.c:150 operations/common/gaussian-blur.c:25
+#: operations/common/gblur-1d.c:39
+msgid "Auto"
+msgstr "Autom."
+
+#: gegl/gegl-enums.c:151
+msgid "Never"
+msgstr "Nigdy"
+
+#: gegl/gegl-enums.c:152
+msgid "Always"
+msgstr "Zawsze"
 
 #: gegl/gegl-init.c:214
 msgid "Where GEGL stores its swap"
@@ -649,7 +662,7 @@ msgstr "O ile zwiększyć jasność"
 msgid "Brightness Contrast"
 msgstr "Jasność i kontrast"
 
-#: operations/common/brightness-contrast.c:162
+#: operations/common/brightness-contrast.c:164
 #, no-c-format
 msgid ""
 "Changes the light level and contrast. This operation operates in linear "
@@ -851,7 +864,7 @@ msgstr "Szachownica"
 
 #: operations/common/checkerboard.c:351
 msgid "Render a checkerboard pattern"
-msgstr "Renderuj wzór szachownicy"
+msgstr "Narysuj wzór szachownicy"
 
 #: operations/common/color.c:24 operations/common/color.c:92
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:46
@@ -1776,10 +1789,6 @@ msgstr ""
 "Fattala w artykule z konferencji SIGGRAPH 2002 pt. „Gradient Domain High "
 "Dynamic Range Compression”."
 
-#: operations/common/gaussian-blur.c:25 operations/common/gblur-1d.c:39
-msgid "Auto"
-msgstr "Autom."
-
 #: operations/common/gaussian-blur.c:26 operations/common/gblur-1d.c:40
 msgid "FIR"
 msgstr "FIR"
@@ -2270,11 +2279,11 @@ msgstr "Kolor końcowy"
 msgid "The color at (x2, y2)"
 msgstr "Kolor w (X2, Y2)"
 
-#: operations/common/linear-gradient.c:140
+#: operations/common/linear-gradient.c:139
 msgid "Linear Gradient"
 msgstr "Liniowy gradient"
 
-#: operations/common/linear-gradient.c:144
+#: operations/common/linear-gradient.c:143
 msgid "Linear gradient renderer"
 msgstr "Liniowe renderowanie gradientów"
 
@@ -2479,7 +2488,7 @@ msgstr "Tworzy efekt długiego cienia"
 msgid "Path of file to load."
 msgstr "Ścieżka pliku do wczytania."
 
-#: operations/common/magick-load.c:145
+#: operations/common/magick-load.c:144
 msgid "Image Magick wrapper using the png op."
 msgstr "Wrapper programu Image Magick używający działania png."
 
@@ -3058,11 +3067,11 @@ msgstr "Całkowicie losuj ułamek pikseli"
 msgid "Z offset"
 msgstr "Przesunięcie Z"
 
-#: operations/common/noise-perlin.c:111
+#: operations/common/noise-perlin.c:109
 msgid "Perlin Noise"
 msgstr "Szum Perlina"
 
-#: operations/common/noise-perlin.c:115
+#: operations/common/noise-perlin.c:113
 msgid "Perlin noise generator"
 msgstr "Generator szumu Perlina"
 
@@ -3301,11 +3310,11 @@ msgstr "Zredukuj kolory"
 msgid "Reduces the number of levels in each color component of the image."
 msgstr "Zmniejsza liczbę poziomów w każdej składowej koloru obrazu."
 
-#: operations/common/radial-gradient.c:127
+#: operations/common/radial-gradient.c:126
 msgid "Radial Gradient"
 msgstr "Promienisty gradient"
 
-#: operations/common/radial-gradient.c:130
+#: operations/common/radial-gradient.c:129
 msgid "Radial gradient renderer"
 msgstr "Rysowanie gradientów promienistych"
 
@@ -3882,11 +3891,11 @@ msgstr "Ściśnij"
 msgid "Rotation"
 msgstr "Obrót"
 
-#: operations/common/vignette.c:385
+#: operations/common/vignette.c:384
 msgid "Vignette"
 msgstr "Winieta"
 
-#: operations/common/vignette.c:389
+#: operations/common/vignette.c:388
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -4574,7 +4583,7 @@ msgid "Mode of displacement"
 msgstr "Tryb przesunięcia"
 
 #: operations/common-gpl3+/displace.c:38 operations/external/npd.c:47
-#: operations/transform/transform-core.c:233 operations/workshop/ditto.c:27
+#: operations/transform/transform-core.c:232 operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Próbka"
 
@@ -4917,7 +4926,7 @@ msgid ""
 "Rendering of multiple different fractal systems, with configurable coloring "
 "options."
 msgstr ""
-"Renderowanie wielu różnych fraktali, z konfigurowalnymi opcjami kolorowania."
+"Rysowanie wielu różnych fraktali, z konfigurowalnymi opcjami kolorowania."
 
 #: operations/common-gpl3+/fractal-trace.c:35
 msgid "X1 value, position"
@@ -5244,7 +5253,7 @@ msgstr ""
 
 #: operations/common-gpl3+/motion-blur-circular.c:53
 msgid "Rotation blur angle. A large angle may take some time to render"
-msgstr "Kąt rozmycia obrotu. Duży kąt może zająć więcej czasu do wyświetlania"
+msgstr "Kąt rozmycia obrotu. Duży kąt może zająć więcej czasu do wyświetlenia"
 
 #: operations/common-gpl3+/motion-blur-circular.c:422
 msgid "Circular Motion Blur"
@@ -5995,11 +6004,11 @@ msgstr "Rozprowadzanie kanału alfa"
 msgid "Whether to propagate a pixel's opacity"
 msgstr "Czy rozprowadzać nieprzezroczystość piksela"
 
-#: operations/common-gpl3+/value-propagate.c:642
+#: operations/common-gpl3+/value-propagate.c:646
 msgid "Value Propagate"
 msgstr "Rozprowadzanie wartości"
 
-#: operations/common-gpl3+/value-propagate.c:646
+#: operations/common-gpl3+/value-propagate.c:650
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
@@ -6222,11 +6231,11 @@ msgstr "Format biblioteki babl wejścia"
 msgid "Output format"
 msgstr "Format wyjściowy"
 
-#: operations/core/cast-format.c:111
+#: operations/core/cast-format.c:110
 msgid "Cast Format"
 msgstr "Format rzutu"
 
-#: operations/core/cast-format.c:113
+#: operations/core/cast-format.c:112
 msgid ""
 "Cast the data between input_format and output_format, both formats must have "
 "the same bpp"
@@ -6251,7 +6260,8 @@ msgid "pointer to a const * Babl space"
 msgstr "wskaźnik do przestrzeni const * Babl"
 
 #: operations/core/cast-space.c:29 operations/core/convert-space.c:29
-#: operations/external/v4l.c:26 operations/workshop/external/v4l2.c:24
+#: operations/external/pdf-load.c:24 operations/external/v4l.c:26
+#: operations/workshop/external/v4l2.c:24
 msgid "Path"
 msgstr "Ścieżka"
 
@@ -6259,11 +6269,11 @@ msgstr "Ścieżka"
 msgid "File system path to ICC matrix profile to load"
 msgstr "Ścieżka systemu plików do wczytywanego profilu macierzy ICC"
 
-#: operations/core/cast-space.c:129
+#: operations/core/cast-space.c:128
 msgid "Cast color space"
 msgstr "Przestrzeń kolorów rzutu"
 
-#: operations/core/cast-space.c:131
+#: operations/core/cast-space.c:130
 msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
@@ -6293,11 +6303,11 @@ msgstr ""
 "uzyskać odniesienia w serializacjach/interfejsie użytkownika, które są "
 "czytelniejsze dla ludzi."
 
-#: operations/core/convert-format.c:100
+#: operations/core/convert-format.c:99
 msgid "Convert Format"
 msgstr "Konwertuj format"
 
-#: operations/core/convert-format.c:102
+#: operations/core/convert-format.c:101
 msgid "Convert the data to the specified format"
 msgstr "Konwertuj dane do podanego formatu"
 
@@ -6334,9 +6344,10 @@ msgstr ""
 "prostopadłościan graniczny połączonego węzła."
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
-#: operations/external/jpg-load.c:26 operations/external/png-load.c:29
-#: operations/external/ppm-load.c:27 operations/external/svg-load.c:27
-#: operations/external/tiff-load.c:26 operations/external/webp-load.c:27
+#: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
+#: operations/external/png-load.c:29 operations/external/ppm-load.c:27
+#: operations/external/svg-load.c:27 operations/external/tiff-load.c:26
+#: operations/external/webp-load.c:27
 msgid "URI"
 msgstr "Adres URI"
 
@@ -6344,7 +6355,7 @@ msgstr "Adres URI"
 msgid "URI of file to load."
 msgstr "Adres URI pliku do wczytania."
 
-#: operations/core/load.c:367
+#: operations/core/load.c:366
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -6891,7 +6902,7 @@ msgstr "Model zachowywania"
 msgid "When TRUE the model will not be freed"
 msgstr "Kiedy wynosi „true”, to model nie będzie zwalniany"
 
-#: operations/external/npd.c:50 operations/transform/transform-core.c:234
+#: operations/external/npd.c:50 operations/transform/transform-core.c:233
 #: operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Wewnętrznie używana próbka"
@@ -6985,6 +6996,54 @@ msgstr "Narysuj ścieżkę"
 #: operations/external/path.c:589
 msgid "Renders a brush stroke"
 msgstr "Rysuje pociągnięcie pędzla"
+
+#: operations/external/pdf-load.c:25
+msgid "file to load"
+msgstr "wczytywany plik"
+
+#: operations/external/pdf-load.c:28
+msgid "uri of file to load"
+msgstr "adres URI wczytywanego pliku"
+
+#: operations/external/pdf-load.c:30
+msgid "Page"
+msgstr "Strona"
+
+#: operations/external/pdf-load.c:31
+msgid "Page to render"
+msgstr "Renderowana strona"
+
+#: operations/external/pdf-load.c:34
+msgid "Pages"
+msgstr "Strony"
+
+#: operations/external/pdf-load.c:35
+msgid "Total pages, provided as a visual read-only property"
+msgstr "Razem stron, dostarczanych jako wizualna właściwość tylko do odczytu"
+
+#: operations/external/pdf-load.c:38
+msgid "PPI"
+msgstr "PPI"
+
+#: operations/external/pdf-load.c:39
+msgid "Point/pixels per inch"
+msgstr "Punkty/piksele na cal"
+
+#: operations/external/pdf-load.c:43
+msgid "Password"
+msgstr "Hasło"
+
+#: operations/external/pdf-load.c:44
+msgid "Password to use for decryption of PDF, or blank for none"
+msgstr "Hasło używane do odszyfrowania pliku PDF, puste jeśli nie ma"
+
+#: operations/external/pdf-load.c:242
+msgid "pdf loader"
+msgstr "wczytywanie plików PDF"
+
+#: operations/external/pdf-load.c:244
+msgid "PDF page decoder"
+msgstr "Dekodowanie stron plików PDF"
 
 #: operations/external/pixbuf.c:26
 msgid "Pixbuf"
@@ -7776,27 +7835,27 @@ msgstr "Ciąg przekształcenia składni przekształceń SVG"
 msgid "Do a transformation using SVG syntax transformation."
 msgstr "Wykonaj przekształcenie za pomocą składni przekształceń SVG."
 
-#: operations/transform/transform-core.c:209
+#: operations/transform/transform-core.c:208
 msgid "Origin-x"
 msgstr "Początek układu współrzędnych na osi X"
 
-#: operations/transform/transform-core.c:210
+#: operations/transform/transform-core.c:209
 msgid "X coordinate of origin"
 msgstr "Współrzędna początku układu współrzędnych na osi X"
 
-#: operations/transform/transform-core.c:217
+#: operations/transform/transform-core.c:216
 msgid "Origin-y"
 msgstr "Początek układu współrzędnych na osi Y"
 
-#: operations/transform/transform-core.c:218
+#: operations/transform/transform-core.c:217
 msgid "Y coordinate of origin"
 msgstr "Współrzędna początku układu współrzędnych na osi Y"
 
-#: operations/transform/transform-core.c:225
+#: operations/transform/transform-core.c:224
 msgid "Near-z"
 msgstr "Blisko osi Z"
 
-#: operations/transform/transform-core.c:226
+#: operations/transform/transform-core.c:225
 msgid "Z coordinate of the near clipping plane"
 msgstr "Współrzędna na osi Z bliskiej płaszczyzny przycinania"
 
