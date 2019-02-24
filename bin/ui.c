@@ -6556,7 +6556,6 @@ static void load_into_buffer (GeState *o, const char *path)
 #else
     {
        GeglBuffer *orig = o->buffer;
-        fprintf (stderr, "%i\n", orientation);
        o->buffer = photos_gegl_buffer_apply_orientation (orig, orientation);
        g_object_unref (orig);
     }
