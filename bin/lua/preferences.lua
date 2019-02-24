@@ -70,13 +70,13 @@ mrg:print("\n")
 mrg:set_style("font-size: 3vh");
 
 mrg:print("threads: " .. Gegl.config().threads .. "\n")
-mrg:print("queue-size: " .. Gegl.config().queue_size.. "\n")
-mrg:print("application-license: " .. Gegl.config().application_license.. "\n")
-mrg:print("swap: " .. Gegl.config().swap .. "\n")
-mrg:print("swap-compression: " .. Gegl.config().swap_compression .. "\n")
 mrg:print("tile-size: " .. Gegl.config().tile_width .. 'x' .. Gegl.config().tile_height .."\n")
 mrg:print("tile-cache-size: " .. (Gegl.config().tile_cache_size / 1024 / 1024) .. 'mb\n')
+mrg:print("swap-compression: " .. Gegl.config().swap_compression .. "\n")
+mrg:print("swap: " .. Gegl.config().swap .. "\n")
+mrg:print("max file backend write queue-size: " .. (Gegl.config().queue_size / 1024/1024 ) .. "mb\n")
 mrg:print("chunk-size: " .. (Gegl.config().chunk_size / 1024 / 1024) .. 'mb\n')
+mrg:print("application-license: " .. Gegl.config().application_license.. "\n")
 
 
 

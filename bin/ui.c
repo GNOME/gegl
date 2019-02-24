@@ -5701,7 +5701,7 @@ static void gegl_ui (Mrg *mrg, void *data)
   else
 #endif
   {
-    mrg_printf ("non-lua preferences NYI\n");
+    mrg_printf (mrg, "non-lua preferences NYI\n");
     canvas_touch_handling (mrg, o);
     //ui_viewer (o);
   }
