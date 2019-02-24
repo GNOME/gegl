@@ -436,6 +436,7 @@ Setting settings[]=
 //  FLOAT_PROP(render_quality, "1.0 = normal 2.0 = render at 2.0 zoom factor 4.0 render at 25%"),
 //  FLOAT_PROP(preview_quality, "preview quality for use during some interactions, same scale as render-quality"),
   FLOAT_PROP(scale, "display scale factor"),
+  INT_PROP(show_preferences, "show preferences"),
   INT_PROP(show_bindings, "show currently valid keybindings"),
   INT_PROP(show_graph, "show the graph (and commandline)"),
   INT_PROP(show_thumbbar, "show the thumbbar"),
@@ -4907,7 +4908,7 @@ static GList *commandline_get_completions (GeglNode *node,
   {
     char *tmp = g_strdup (commandline);
     char *fragment;
-    char ** operations = operations;
+    char ** operations;
     char *found_op = NULL;
     gint i;
     guint n_operations;
@@ -5023,7 +5024,7 @@ static GList *commandline_get_completions (GeglNode *node,
 
      {
       char prefixed_by_gegl[512];
-      char ** operations = operations;
+      char ** operations;
       gint i;
       guint n_operations;
       /* the last fragment is what we're completing */
@@ -5691,6 +5692,23 @@ static void gegl_ui (Mrg *mrg, void *data)
   }
   cairo_new_path (mrg_cr (mrg));
 
+  if (o->show_preferences)
+  {
+#if HAVE_LUA
+  if (run_lua_file ("preferences.lua"))
+  {
+  }
+  else
+#endif
+  {
+    mrg_printf ("non-lua preferences NYI\n");
+    canvas_touch_handling (mrg, o);
+    //ui_viewer (o);
+  }
+  }
+
+
+  mrg_add_binding (mrg, "control-p", NULL, NULL, run_command, "toggle preferences");
   mrg_add_binding (mrg, "control-q", NULL, NULL, run_command, "quit");
   mrg_add_binding (mrg, "F11", NULL, NULL,       run_command, "toggle fullscreen");
   mrg_add_binding (mrg, "control-f", NULL, NULL,  run_command, "toggle fullscreen");
@@ -7006,11 +7024,15 @@ cmd_toggle (COMMAND_ARGS)
   {
     o->show_bindings = !o->show_bindings;
   }
+  else if (!strcmp(argv[1], "preferences"))
+  {
+    o->show_preferences = !o->show_preferences;
+  }
   else if (!strcmp(argv[1], "colormanaged-display"))
   {
     o->color_managed_display = !o->color_managed_display;
     printf ("%s colormanagement of display\n", o->color_managed_display?"enabled":"disabled");
-    //mrg_gegl_dirty ();
+    mrg_gegl_dirty ();
   }
   else if (!strcmp(argv[1], "opencl"))
   {

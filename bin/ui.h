@@ -76,7 +76,7 @@ struct _GeState {
 
   const char    *property_focus; // interned string of property name, or "operation" or "id"
   int            editing_property;
-
+  int            show_preferences;
 
   float          u, v;
   float          scale;
