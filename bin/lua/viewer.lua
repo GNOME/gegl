@@ -377,19 +377,19 @@ end
 
 
 mrg:add_binding("alt-right", NULL, "next image",
-  function() ffi.C.argvs_val ("next") end)
+  function() ffi.C.argvs_eval ("next") end)
 
 mrg:add_binding("alt-left", NULL, "rev image",
-  function() ffi.C.argvs_val ("prev") end)
+  function() ffi.C.argvs_eval ("prev") end)
 
 mrg:add_binding("control-s", NULL, "toggle slideshow",
-  function() ffi.C.argvs_val ("toggle slideshow") end)
+  function() ffi.C.argvs_eval ("toggle slideshow") end)
 
 mrg:add_binding("control-m", NULL, "toggle mipmap",
-  function() ffi.C.argvs_val ("toggle mipmap") end)
+  function() ffi.C.argvs_eval ("toggle mipmap") end)
 
 mrg:add_binding("control-y", NULL, "toggle display profile",
-  function() ffi.C.argvs_val ("toggle colormanaged-display") end)
+  function() ffi.C.argvs_eval ("toggle colormanaged-display") end)
 
 mrg:add_binding("control-delete", NULL, "discard",
-  function() ffi.C.argvs_val ("discard") end)
+  function() ffi.C.argvs_eval ("discard") end)
