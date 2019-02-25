@@ -56,19 +56,13 @@ gegl_color_op_get_bounding_box (GeglOperation *operation)
 
 static gboolean
 gegl_color_op_process (GeglOperation       *operation,
-                       void                *out_buf,
-                       glong                n_pixels,
+                       GeglBuffer          *output,
                        const GeglRectangle *roi,
                        gint                 level)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  const Babl *out_format = gegl_operation_get_format (operation, "output");
-  gint        pixel_size = babl_format_get_bytes_per_pixel (out_format);
-  void       *out_color  = alloca(pixel_size);
 
-  gegl_color_get_pixel (o->value, out_format, out_color);
-
-  gegl_memset_pattern (out_buf, out_color, pixel_size, n_pixels);
+  gegl_buffer_set_color (output, roi, o->value);
 
   return TRUE;
 }
@@ -77,15 +71,16 @@ gegl_color_op_process (GeglOperation       *operation,
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GeglOperationClass            *operation_class;
-  GeglOperationPointRenderClass *point_render_class;
+  GeglOperationClass       *operation_class;
+  GeglOperationSourceClass *source_class;
 
-  operation_class    = GEGL_OPERATION_CLASS (klass);
-  point_render_class = GEGL_OPERATION_POINT_RENDER_CLASS (klass);
+  operation_class = GEGL_OPERATION_CLASS (klass);
+  source_class    = GEGL_OPERATION_SOURCE_CLASS (klass);
 
-  point_render_class->process       = gegl_color_op_process;
+  source_class->process             = gegl_color_op_process;
   operation_class->get_bounding_box = gegl_color_op_get_bounding_box;
   operation_class->prepare          = gegl_color_op_prepare;
+  operation_class->threaded         = FALSE;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:color",
