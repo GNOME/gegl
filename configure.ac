@@ -1048,29 +1048,21 @@ AM_CONDITIONAL(HAVE_GRAPHVIZ, test "$have_graphviz" = "yes")
 # Check for Lua
 ###############
 
-AC_ARG_WITH(lua, [  --without-lua           build without Lua support])
+AC_ARG_WITH(lua, [  --without-lua           build without Luajit support])
 
 have_lua="no"
 if test "x$with_lua" != "xno"; then
 PKG_CHECK_MODULES(LUA, luajit >= 2.0.4,
   have_lua="yes"
-  AC_DEFINE(HAVE_LUA, 1, [Define to 1 if lua is available])
+  AC_DEFINE(HAVE_LUA, 1, [Define to 1 if luajit is available])
   ,
-  [PKG_CHECK_MODULES(LUA, lua5.1 >= lua_required_version,
-     have_lua="yes"
-     AC_DEFINE(HAVE_LUA, 1, [Define to 1 if lua is available])
-     ,
-     [PKG_CHECK_MODULES(LUA, lua >= lua_required_version,
-      have_lua="yes"
-      AC_DEFINE(HAVE_LUA, 1, [Define to 1 if lua is available])
-      ,
-      have_lua="no  (usable lua not found)")])])
+  have_lua="no  (usable luajit not found)")
 fi
 
 AM_CONDITIONAL(HAVE_LUA, test "$have_lua" = "yes")
 
-AC_SUBST(LUA_CFLAGS) 
-AC_SUBST(LUA_LIBS) 
+AC_SUBST(LUA_CFLAGS)
+AC_SUBST(LUA_LIBS)
 
 
 ####################################
