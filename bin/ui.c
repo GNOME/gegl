@@ -843,11 +843,34 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   {
     int status, result;
     char *init_path = resolve_lua_file ("init.lua");
+    const char * const *data_dirs = g_get_system_data_dirs ();
+
     L = luaL_newstate ();
     luaL_openlibs(L);
 
+    /* expose o as a global light user data for luajit ffi interactions */
     lua_pushlightuserdata (L, o);
     lua_setglobal(L, "STATE");
+
+    /* set up package path to permit using mrg, mmm and cairo ffi bindings
+       we ship with, making it easier to get all dependencies sorted.
+     */
+    status = luaL_loadstring(L, "package.path = package.path .. ';./lua/?.lua'\n"
+);
+    result = lua_pcall(L, 0, LUA_MULTRET, 0);
+    if (result){
+      fprintf (stderr, "lua exec problem %s\n", lua_tostring(L, -1));
+    }
+
+    for (int i = 0; data_dirs[i]; i++)
+    {
+      char *script = g_strdup_printf ("package.path = package.path .. ';%s/gegl-0.4/lua/?.lua'\n", data_dirs[i]);
+      status = luaL_loadstring(L, script);
+      result = lua_pcall(L, 0, LUA_MULTRET, 0);
+      if (result){
+        fprintf (stderr, "lua exec problem %s\n", lua_tostring(L, -1));
+      }
+    }
 
     if (init_path)
     {
