@@ -22,6 +22,8 @@
 #include <babl/babl.h>
 #include <stdio.h>
 
+#include "gegl-buffer-private.h"
+
 G_BEGIN_DECLS
 
 #define GEGL_TYPE_SAMPLER            (gegl_sampler_get_type ())
@@ -30,17 +32,6 @@ G_BEGIN_DECLS
 #define GEGL_IS_SAMPLER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEGL_TYPE_SAMPLER))
 #define GEGL_IS_SAMPLER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GEGL_TYPE_SAMPLER))
 #define GEGL_SAMPLER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GEGL_TYPE_SAMPLER, GeglSamplerClass))
-
-/* empirically derived bound on limit, derived using fractal trace offsetting the mandelbrot to
- * make it converge on infinity in loop mode.
- */
-#define GEGL_BUFFER_MAX_COORDINATE 2000000000.0
-#define GEGL_BUFFER_VALID_COORDINATE(v) \
-         ((v)*(v) < GEGL_BUFFER_MAX_COORDINATE * GEGL_BUFFER_MAX_COORDINATE)
-#if 0
-         /* the above is equivalent to the following, but presumably faster */
-         ((v)>-GEGL_BUFFER_MAX_COORDINATE && (v)< GEGL_BUFFER_MAX_COORDINATE)
-#endif
 
 
 /*
@@ -73,6 +64,7 @@ typedef struct _GeglSamplerClass GeglSamplerClass;
 typedef struct GeglSamplerLevel
 {
   GeglRectangle  context_rect;
+  GeglRectangle  abyss_rect;
   gpointer       sampler_buffer;
   GeglRectangle  sampler_rectangle;
   gint           last_x;
@@ -206,6 +198,24 @@ gegl_sampler_get_ptr (GeglSampler    *sampler,
   guchar *buffer_ptr;
 
   GeglSamplerLevel *level = &sampler->level[0];
+
+  if (repeat_mode != GEGL_ABYSS_LOOP)
+    {
+      x = CLAMP (x, level->abyss_rect.x,
+                    level->abyss_rect.x + level->abyss_rect.width  - 1);
+      y = CLAMP (y, level->abyss_rect.y,
+                    level->abyss_rect.y + level->abyss_rect.height - 1);
+    }
+  else
+    {
+      x = sampler->buffer->abyss.x +
+          GEGL_REMAINDER (x - sampler->buffer->abyss.x,
+                          sampler->buffer->abyss.width);
+      y = sampler->buffer->abyss.y +
+          GEGL_REMAINDER (y - sampler->buffer->abyss.y,
+                          sampler->buffer->abyss.height);
+    }
+
   if ((x + level->context_rect.x < level->sampler_rectangle.x)      ||
       (y + level->context_rect.y < level->sampler_rectangle.y)      ||
       (x + level->context_rect.x + level->context_rect.width >
@@ -336,29 +346,25 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
 
               uv_samples_inv = u_samples_inv * v_samples_inv;
 
-              if (GEGL_BUFFER_VALID_COORDINATE(x0) &&
-                  GEGL_BUFFER_VALID_COORDINATE(y0))
+              for (v = 0; v < v_samples; v++)
                 {
-                  for (v = 0; v < v_samples; v++)
+                  gdouble x = x0;
+                  gdouble y = y0;
+
+                  for (u = 0; u < u_samples; u++)
                     {
-                      gdouble x = x0;
-                      gdouble y = y0;
+                      int c;
+                      gfloat input[channels];
+                      self->interpolate (self, x, y, input, repeat_mode);
+                      for (c = 0; c < channels; c++)
+                        result[c] += input[c];
 
-                      for (u = 0; u < u_samples; u++)
-                        {
-                          int c;
-                          gfloat input[channels];
-                          self->interpolate (self, x, y, input, repeat_mode);
-                          for (c = 0; c < channels; c++)
-                            result[c] += input[c];
-
-                          x += u_dx;
-                          y += u_dy;
-                        }
-
-                      x0 += v_dx;
-                      y0 += v_dy;
+                      x += u_dx;
+                      y += u_dy;
                     }
+
+                  x0 += v_dx;
+                  y0 += v_dy;
                 }
             }
 

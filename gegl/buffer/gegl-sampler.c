@@ -147,6 +147,20 @@ constructed (GObject *self)
 
   sampler->get         = klass->get;
   sampler->interpolate = klass->interpolate;
+
+  if (sampler->buffer)
+    {
+      GeglSamplerLevel *level = &sampler->level[0];
+
+      level->abyss_rect = sampler->buffer->abyss;
+
+      level->abyss_rect.x      -= level->context_rect.x +
+                                  level->context_rect.width;
+      level->abyss_rect.y      -= level->context_rect.y +
+                                  level->context_rect.height;
+      level->abyss_rect.width  += level->context_rect.width  + 1;
+      level->abyss_rect.height += level->context_rect.height + 1;
+    }
 }
 
 void
