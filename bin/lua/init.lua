@@ -16,7 +16,7 @@ typedef void* GeglProcessor;
 typedef void* GThread;
 typedef void* GHashTable;
 
-struct State {
+struct _GeState {
   int64_t   pad_for_gobject[3];
 
   void      (*ui) (Mrg *mrg, void *state);
@@ -111,14 +111,27 @@ struct State {
   GHashTable  *ui_consumer;
 };
 
+typedef struct _GeState GeState;
+
+const char *ge_state_get_path (GeState *state, int no);
+int         ge_state_get_n_paths (GeState *state);
+
 float hypotf (float a, float b);
-struct State *app_state(void);
+GeState *app_state(void);
 int argvs_eval (const char *str);
+
 ]]
 
 o = ffi.C.app_state()
 mrg = o.mrg
 
+ffi.metatype('GeState', {__index = {
+   get_path = function(...) local ret = ffi.C.ge_state_get_path(...)
+                              if ret ~= nil then return ffi.string(ret) end
+                              return nil
+                            end;
+   get_n_paths = function(...) return ffi.C.get_state_get_n_paths(...) end;
+ }})
 
 function touch_point(x, y)
   cr:new_path()

@@ -423,6 +423,7 @@ int gegl_str_has_image_suffix (char *path)
          g_str_has_suffix (path, ".JPEG") ||
          g_str_has_suffix (path, ".CR2") ||
          g_str_has_suffix (path, ".cr2") ||
+         g_str_has_suffix (path, ".lui") ||
          g_str_has_suffix (path, ".exr");
 }
 

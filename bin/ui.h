@@ -29,6 +29,7 @@ typedef struct _GeStateClass         GeStateClass;
  *
  */
 
+
 struct _GeState {
   GObject   parent;
   void      (*ui) (Mrg *mrg, void *state);
@@ -128,7 +129,8 @@ struct _GeStateClass {
 
 GType        ge_state_get_type    (void) G_GNUC_CONST;
 GeState*     ge_state_new         (void);
-void         ge_state_greet       (GeState *state);
 
+const char *ge_state_get_path (GeState *state, int no);
+int         ge_state_get_n_paths (GeState *state);
 
 #endif

@@ -5327,33 +5327,6 @@ jump:
   cairo_restore (cr);
 }
 
-static void vector_op_ui (GeState *o, GeglNode *node)
-{
-  Mrg *mrg = o->mrg;
-  GeglPath *path;
-  cairo_t  *cr = mrg_cr (mrg);
-  double linewidth = 2.0f;
-  double linewidth_shadow = 2.5f;
-  double foo ;
-
-  cairo_device_to_user_distance (cr, &linewidth, &foo);
-  cairo_device_to_user_distance (cr, &linewidth_shadow, &foo);
-
-  return;
-
-  gegl_node_get (node, "d", &path, NULL);
-
-
-  cairo_move_to (cr, 0, 0);
-  cairo_line_to (cr, 1100,1100);
-
-  cairo_set_source_rgba (cr, 0,0,0, .5);
-  cairo_set_line_width (cr, linewidth_shadow);
-  cairo_set_source_rgba (cr, 1,0,0, 1.0);
-  cairo_stroke (cr);
-}
-
-
 static cairo_matrix_t node_get_relative_transform (GeglNode *node_view,
                                                    GeglNode *source);
 
@@ -5387,17 +5360,7 @@ static int per_op_canvas_ui (GeState *o)
      luaname[i] = '_';
   }
 
-if (0)
-{
-  if (!strcmp (opname, "gegl:vector-stroke"))
-  {
-    vector_op_ui (o, o->active);
-  }
-}
-
-  {
-    run_lua_file (luaname);
-  }
+  run_lua_file (luaname);
 
   cairo_restore (cr);
 
@@ -5684,6 +5647,35 @@ static void gegl_ui (Mrg *mrg, void *data)
         }
       else
         {
+
+  if (g_str_has_suffix (o->path, ".lui"))
+  {
+  int result;
+  int status = luaL_loadfile(L, o->path);
+  if (status)
+  {
+    fprintf(stderr, "Couldn't load file: %s\n", lua_tostring(L, -1));
+  }
+  else
+  {
+    result = lua_pcall(L, 0, LUA_MULTRET, 0);
+    if (result){
+      fprintf (stderr, "lua exec problem %s\n", lua_tostring(L, -1));
+    } else
+    {
+    }
+  }
+  }
+
+
+
+
+
+
+
+
+
+
 
 #if HAVE_LUA
   if (run_lua_file ("viewer.lua"))
@@ -5997,6 +5989,15 @@ static void load_path_inner (GeState *o,
                        "operation", "gegl:nop", NULL);
     o->source = gegl_node_new_child (o->gegl,
          "operation", "gegl:pdf-load", "path", path, NULL);
+    gegl_node_link_many (o->source, o->sink, NULL);
+  }
+  else if (g_str_has_suffix (path, ".lui"))
+  {
+    o->gegl = gegl_node_new ();
+    o->sink = gegl_node_new_child (o->gegl,
+                       "operation", "gegl:nop", NULL);
+    o->source = gegl_node_new_child (o->gegl,
+         "operation", "gegl:rectangle", "color", gegl_color_new ("black"), "width", 1024.0, "height", 768.0, NULL);
     gegl_node_link_many (o->source, o->sink, NULL);
   }
   else if (g_str_has_suffix (path, ".gif"))
@@ -8106,5 +8107,13 @@ cmd_todo (COMMAND_ARGS)
   return 0;
 }
 
+const char *ge_state_get_path (GeState *state, int no)
+{
+  return g_list_nth_data (state->paths, no);
+}
 
+int ge_state_get_n_paths (GeState *state)
+{
+  return g_list_length (state->paths);
+}
 #endif
