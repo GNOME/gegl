@@ -57,6 +57,8 @@ value-propagate.
 gaussian-blur: fix mistake in implementation of IIR Young blur 1d, which caused
 non circular halos.
 
+New operation: pdf-load with build dependency on poppler-glib
+
 Added offset properties to pixelize filter.
 
 new ops in workshop: voroni diagram, Grey Color Removal, spyrograph.
