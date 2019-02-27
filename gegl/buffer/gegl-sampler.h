@@ -56,6 +56,18 @@ G_BEGIN_DECLS
 #define GEGL_SAMPLER_MAXIMUM_HEIGHT 64
 #define GEGL_SAMPLER_MAXIMUM_WIDTH (GEGL_SAMPLER_MAXIMUM_HEIGHT)
 
+/* samplers that use the generic box-filter algorithm should provide an
+ * interpolate() function, which should be similar to their get() function,
+ * except that it always performs point sampling (and therefore doesn't take a
+ * scale matrix), and should return its result using the sampler's
+ * interpolation format, rather than its output format.
+ */
+typedef void (* GeglSamplerInterpolateFun) (GeglSampler     *self,
+                                            gdouble          x,
+                                            gdouble          y,
+                                            gfloat          *output,
+                                            GeglAbyssPolicy  repeat_mode);
+
 typedef struct _GeglSamplerClass GeglSamplerClass;
 
 typedef struct GeglSamplerLevel
@@ -71,29 +83,32 @@ typedef struct GeglSamplerLevel
 
 struct _GeglSampler
 {
-  GObject            parent_instance;
-  GeglSamplerGetFun  get;
+  GObject                    parent_instance;
+
+  GeglSamplerGetFun          get;
+  GeglSamplerInterpolateFun  interpolate;
 
   /*< private >*/
-  GeglBuffer        *buffer;
-  gint               lvel;
-  const Babl        *format;
-  const Babl        *interpolate_format;
-  const Babl        *fish;
-  gint               interpolate_bpp;
-  gint               interpolate_components;
+  GeglBuffer                *buffer;
+  gint                       lvel;
+  const Babl                *format;
+  const Babl                *interpolate_format;
+  const Babl                *fish;
+  gint                       interpolate_bpp;
+  gint                       interpolate_components;
 
-  GeglSamplerLevel   level[GEGL_SAMPLER_MIPMAP_LEVELS];
+  GeglSamplerLevel           level[GEGL_SAMPLER_MIPMAP_LEVELS];
 };
 
 struct _GeglSamplerClass
 {
   GObjectClass  parent_class;
 
-  void (* prepare)   (GeglSampler     *self);
-  GeglSamplerGetFun   get;
-  void  (*set_buffer) (GeglSampler     *self,
-                       GeglBuffer      *buffer);
+  void                      (* prepare)    (GeglSampler *self);
+  GeglSamplerGetFun            get;
+  GeglSamplerInterpolateFun    interpolate;
+  void                      (* set_buffer) (GeglSampler *self,
+                                            GeglBuffer  *buffer);
 };
 
 GType gegl_sampler_get_type    (void) G_GNUC_CONST;
@@ -286,7 +301,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                     {
                       int c;
                       gfloat input[4];
-                      self->get (self, x, y, NULL, input, repeat_mode);
+                      self->interpolate (self, x, y, input, repeat_mode);
                       for (c = 0; c < 4; c++)
                         result[c] += input[c];
 
@@ -333,7 +348,7 @@ _gegl_sampler_box_get (GeglSampler*    restrict  self,
                         {
                           int c;
                           gfloat input[channels];
-                          self->get (self, x, y, NULL, input, repeat_mode);
+                          self->interpolate (self, x, y, input, repeat_mode);
                           for (c = 0; c < channels; c++)
                             result[c] += input[c];
 

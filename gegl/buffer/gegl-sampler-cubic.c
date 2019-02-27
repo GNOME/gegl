@@ -35,24 +35,29 @@ enum
   PROP_LAST
 };
 
-static void gegl_sampler_cubic_finalize (      GObject         *gobject);
-static void gegl_sampler_cubic_get      (      GeglSampler     *sampler,
-                                         const gdouble          absolute_x,
-                                         const gdouble          absolute_y,
-                                               GeglBufferMatrix2*scale,
-                                               void            *output,
-                                               GeglAbyssPolicy  repeat_mode);
-static void get_property                (      GObject         *gobject,
-                                               guint            prop_id,
-                                               GValue          *value,
-                                               GParamSpec      *pspec);
-static void set_property                (      GObject         *gobject,
-                                               guint            prop_id,
-                                         const GValue          *value,
-                                               GParamSpec      *pspec);
-static inline gfloat cubicKernel        (const gfloat           x,
-                                         const gfloat           b,
-                                         const gfloat           c);
+static void            gegl_sampler_cubic_finalize    (      GObject               *gobject);
+static inline void     gegl_sampler_cubic_interpolate (      GeglSampler* restrict  self,
+                                                        const gdouble               absolute_x,
+                                                        const gdouble               absolute_y,
+                                                              gfloat*     restrict  output,
+                                                              GeglAbyssPolicy       repeat_mode);
+static void            gegl_sampler_cubic_get         (      GeglSampler* restrict  self,
+                                                       const gdouble                absolute_x,
+                                                       const gdouble                absolute_y,
+                                                             GeglBufferMatrix2*     scale,
+                                                             void*        restrict  output,
+                                                             GeglAbyssPolicy        repeat_mode);
+static void            get_property                   (      GObject               *gobject,
+                                                             guint                  prop_id,
+                                                             GValue                *value,
+                                                             GParamSpec            *pspec);
+static void            set_property                   (      GObject               *gobject,
+                                                             guint                  prop_id,
+                                                       const GValue                *value,
+                                                             GParamSpec            *pspec);
+static inline gfloat   cubicKernel                    (const gfloat                 x,
+                                                       const gfloat                 b,
+                                                       const gfloat                 c);
 
 
 G_DEFINE_TYPE (GeglSamplerCubic, gegl_sampler_cubic, GEGL_TYPE_SAMPLER)
@@ -67,7 +72,8 @@ gegl_sampler_cubic_class_init (GeglSamplerCubicClass *klass)
   object_class->get_property = get_property;
   object_class->finalize     = gegl_sampler_cubic_finalize;
 
-  sampler_class->get     = gegl_sampler_cubic_get;
+  sampler_class->get         = gegl_sampler_cubic_get;
+  sampler_class->interpolate = gegl_sampler_cubic_interpolate;
 
   g_object_class_install_property ( object_class, PROP_B,
     g_param_spec_double ("b",
@@ -152,7 +158,76 @@ gegl_sampler_cubic_init (GeglSamplerCubic *self)
     }
 }
 
-void
+static inline void
+gegl_sampler_cubic_interpolate (      GeglSampler     *self,
+                                const gdouble          absolute_x,
+                                const gdouble          absolute_y,
+                                      gfloat          *output,
+                                      GeglAbyssPolicy  repeat_mode)
+{
+  GeglSamplerCubic *cubic      = (GeglSamplerCubic*)(self);
+  gint              components = self->interpolate_components;
+  gfloat            cubic_b    = cubic->b;
+  gfloat            cubic_c    = cubic->c;
+  gfloat           *sampler_bptr;
+  gfloat            factor_i[4];
+  gint              c;
+  gint              i;
+  gint              j;
+
+  /*
+   * The "-1/2"s are there because we want the index of the pixel
+   * center to the left and top of the location, and with GIMP's
+   * convention the top left of the top left pixel is located at
+   * (0,0), and its center is at (1/2,1/2), so that anything less than
+   * 1/2 needs to go negative. Another way to look at this is that we
+   * are converting from a coordinate system in which the origin is at
+   * the top left corner of the pixel with index (0,0), to a
+   * coordinate system in which the origin is at the center of the
+   * same pixel.
+   */
+  const double iabsolute_x = (double) absolute_x - 0.5;
+  const double iabsolute_y = (double) absolute_y - 0.5;
+
+  const gint ix = floorf (iabsolute_x);
+  const gint iy = floorf (iabsolute_y);
+
+  /*
+   * x is the x-coordinate of the sampling point relative to the
+   * position of the center of the top left pixel. Similarly for
+   * y. Range of values: [0,1].
+   */
+  const gfloat x = iabsolute_x - ix;
+  const gfloat y = iabsolute_y - iy;
+
+  sampler_bptr = gegl_sampler_get_ptr (self, ix, iy, repeat_mode) -
+                 (GEGL_SAMPLER_MAXIMUM_WIDTH + 1) * components;
+
+  for (c = 0; c < components; c++)
+    output[c] = 0.0f;
+
+  for (i = 0; i < 4; i++)
+    factor_i[i] = cubicKernel (x - (i - 1), cubic_b, cubic_c);
+
+  for (j = 0; j < 4; j++)
+    {
+      gfloat factor_j = cubicKernel (y - (j - 1), cubic_b, cubic_c);
+
+      for (i = 0; i < 4; i++)
+        {
+          const gfloat factor = factor_j * factor_i[i];
+
+          for (c = 0; c < components; c++)
+            output[c] += factor * sampler_bptr[c];
+
+          sampler_bptr += components;
+        }
+
+      sampler_bptr += (GEGL_SAMPLER_MAXIMUM_WIDTH - 4) * components;
+    }
+}
+
+static void
 gegl_sampler_cubic_get (      GeglSampler       *self,
                         const gdouble            absolute_x,
                         const gdouble            absolute_y,
@@ -163,69 +238,12 @@ gegl_sampler_cubic_get (      GeglSampler       *self,
   if (! _gegl_sampler_box_get (self, absolute_x, absolute_y, scale,
                                output, repeat_mode, 5))
   {
-    GeglSamplerCubic *cubic      = (GeglSamplerCubic*)(self);
-    gint              components = self->interpolate_components;
-    gfloat            cubic_b    = cubic->b;
-    gfloat            cubic_c    = cubic->c;
-    gfloat           *sampler_bptr;
-    gfloat            factor_i[4];
-    gfloat            newval[components];
-    gint              c;
-    gint              i;
-    gint              j;
+    gfloat result[5];
 
-    /*
-     * The "-1/2"s are there because we want the index of the pixel
-     * center to the left and top of the location, and with GIMP's
-     * convention the top left of the top left pixel is located at
-     * (0,0), and its center is at (1/2,1/2), so that anything less than
-     * 1/2 needs to go negative. Another way to look at this is that we
-     * are converting from a coordinate system in which the origin is at
-     * the top left corner of the pixel with index (0,0), to a
-     * coordinate system in which the origin is at the center of the
-     * same pixel.
-     */
-    const double iabsolute_x = (double) absolute_x - 0.5;
-    const double iabsolute_y = (double) absolute_y - 0.5;
+    gegl_sampler_cubic_interpolate (self, absolute_x, absolute_y, result,
+                                    repeat_mode);
 
-    const gint ix = floorf (iabsolute_x);
-    const gint iy = floorf (iabsolute_y);
-
-    /*
-     * x is the x-coordinate of the sampling point relative to the
-     * position of the center of the top left pixel. Similarly for
-     * y. Range of values: [0,1].
-     */
-    const gfloat x = iabsolute_x - ix;
-    const gfloat y = iabsolute_y - iy;
-
-    sampler_bptr = gegl_sampler_get_ptr (self, ix, iy, repeat_mode) -
-                   (GEGL_SAMPLER_MAXIMUM_WIDTH + 1) * components;
-
-    for (c = 0; c < components; c++)
-      newval[c] = 0.0f;
-
-    for (i = 0; i < 4; i++)
-      factor_i[i] = cubicKernel (x - (i - 1), cubic_b, cubic_c);
-
-    for (j = 0; j < 4; j++)
-      {
-        gfloat factor_j = cubicKernel (y - (j - 1), cubic_b, cubic_c);
-
-        for (i = 0; i < 4; i++)
-          {
-            const gfloat factor = factor_j * factor_i[i];
-
-            for (c = 0; c < components; c++)
-              newval[c] += factor * sampler_bptr[c];
-
-            sampler_bptr += components;
-          }
-
-        sampler_bptr += (GEGL_SAMPLER_MAXIMUM_WIDTH - 4) * components;
-      }
-
-    babl_process (self->fish, newval, output, 1);
+    babl_process (self->fish, result, output, 1);
   }
 }
 

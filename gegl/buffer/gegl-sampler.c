@@ -86,9 +86,10 @@ gegl_sampler_class_init (GeglSamplerClass *klass)
   object_class->dispose  = dispose;
   object_class->constructed  = constructed;
 
-  klass->prepare    = NULL;
-  klass->get        = NULL;
-  klass->set_buffer = set_buffer;
+  klass->prepare     = NULL;
+  klass->get         = NULL;
+  klass->interpolate = NULL;
+  klass->set_buffer  = set_buffer;
 
   object_class->set_property = set_property;
   object_class->get_property = get_property;
@@ -143,7 +144,9 @@ constructed (GObject *self)
 {
   GeglSampler *sampler = (void*)(self);
   GeglSamplerClass *klass = GEGL_SAMPLER_GET_CLASS (sampler);
-  sampler->get = klass->get;
+
+  sampler->get         = klass->get;
+  sampler->interpolate = klass->interpolate;
 }
 
 void
