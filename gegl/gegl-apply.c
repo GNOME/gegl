@@ -114,7 +114,7 @@ gegl_node_set_props (GeglNode *node,
 
 
 void
-gegl_apply_op (GeglBuffer *buffer,
+gegl_apply_op (GeglBuffer  *buffer,
                const gchar *first_property_name,
                ...)
 {
@@ -179,9 +179,10 @@ gegl_apply_op_valist (GeglBuffer  *buffer,
   g_object_unref (buffer);
 }
 
-GeglBuffer *gegl_filter_op_valist (GeglBuffer    *buffer,
-                                   const gchar   *first_property_name,
-                                   va_list        var_args)
+GeglBuffer *
+gegl_filter_op_valist (GeglBuffer  *buffer,
+                       const gchar *first_property_name,
+                       va_list      var_args)
 {
   GeglBuffer  *tempbuf = NULL;
   GeglNode    *node;
@@ -223,9 +224,10 @@ GeglBuffer *gegl_filter_op_valist (GeglBuffer    *buffer,
   return tempbuf;
 }
 
-GeglBuffer *gegl_filter_op     (GeglBuffer    *buffer,
-                                const gchar   *first_property_name,
-                                ...)
+GeglBuffer *
+gegl_filter_op (GeglBuffer  *buffer,
+                const gchar *first_property_name,
+                ...)
 {
   GeglBuffer *ret;
   va_list var_args;
@@ -241,8 +243,8 @@ GeglBuffer *gegl_filter_op     (GeglBuffer    *buffer,
 
 
 void
-gegl_render_op (GeglBuffer *source_buffer,
-                GeglBuffer *target_buffer,
+gegl_render_op (GeglBuffer  *source_buffer,
+                GeglBuffer  *target_buffer,
                 const gchar *first_property_name,
                 ...)
 {

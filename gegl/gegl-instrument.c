@@ -22,7 +22,9 @@
 #include "gegl-instrument.h"
 
 long babl_ticks (void);
-long gegl_ticks (void)
+
+long 
+gegl_ticks (void)
 {
   return babl_ticks ();
 }
@@ -42,7 +44,8 @@ gboolean gegl_instrument_enabled = FALSE;
 
 static Timing *root = NULL;
 
-static Timing *iter_next (Timing *iter)
+static Timing *
+iter_next (Timing *iter)
 {
   if (iter->children)
     {
@@ -64,7 +67,8 @@ static Timing *iter_next (Timing *iter)
   return iter;
 }
 
-static gint timing_depth (Timing *timing)
+static gint 
+timing_depth (Timing *timing)
 {
   Timing *iter = timing;
   gint    ret  = 0;
@@ -79,8 +83,9 @@ static gint timing_depth (Timing *timing)
   return ret;
 }
 
-static Timing *timing_find (Timing      *root,
-                            const gchar *name)
+static Timing *
+timing_find (Timing      *root,
+             const gchar *name)
 {
   Timing *iter = root;
 
@@ -137,7 +142,8 @@ real_gegl_instrument (const gchar *parent_name,
 }
 
 
-static glong timing_child_sum (Timing *timing)
+static glong 
+timing_child_sum (Timing *timing)
 {
   Timing *iter = timing->children;
   glong   sum  = 0;
@@ -151,7 +157,8 @@ static glong timing_child_sum (Timing *timing)
   return sum;
 }
 
-static glong timing_other (Timing *timing)
+static glong 
+timing_other (Timing *timing)
 {
   if (timing->children)
     return timing->usecs - timing_child_sum (timing);
@@ -213,7 +220,9 @@ static gchar *eight[] = {
 };
 
 static GString *
-bar (GString *string, gint width, gfloat value)
+bar (GString *string, 
+     gint     width, 
+     gfloat   value)
 {
   gboolean utf8 = TRUE;
   gint     i;

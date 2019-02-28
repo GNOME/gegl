@@ -26,7 +26,8 @@
 #define EPSILON 1e-6
 
 #if 0
-static void gegl_matrix3_debug (GeglMatrix3 *matrix)
+static void 
+gegl_matrix3_debug (GeglMatrix3 *matrix)
 {
   if (matrix)
     {
