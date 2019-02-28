@@ -267,7 +267,8 @@ gegl_get_option_group (void)
   return group;
 }
 
-static void gegl_config_parse_env (GeglConfig *config)
+static void 
+gegl_config_parse_env (GeglConfig *config)
 {
   if (g_getenv ("GEGL_MIPMAP_RENDERING"))
     {
@@ -362,7 +363,8 @@ static void gegl_config_parse_env (GeglConfig *config)
     }
 }
 
-GeglConfig *gegl_config (void)
+GeglConfig *
+gegl_config (void)
 {
   if (!config)
     config = g_object_new (GEGL_TYPE_CONFIG, NULL);
@@ -370,7 +372,8 @@ GeglConfig *gegl_config (void)
   return config;
 }
 
-GeglStats *gegl_stats (void)
+GeglStats *
+gegl_stats (void)
 {
   if (! stats)
     stats = g_object_new (GEGL_TYPE_STATS, NULL);
@@ -378,12 +381,14 @@ GeglStats *gegl_stats (void)
   return stats;
 }
 
-void gegl_reset_stats (void)
+void 
+gegl_reset_stats (void)
 {
   gegl_stats_reset (gegl_stats ());
 }
 
-void gegl_temp_buffer_free (void);
+void 
+gegl_temp_buffer_free (void);
 
 void
 gegl_exit (void)

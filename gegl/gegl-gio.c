@@ -40,7 +40,9 @@
  * Note: currently private API
  */
 static gchar **
-datauri_parse_header(const gchar *uri, gchar **raw_data_out, gint *header_items_no_out)
+datauri_parse_header(const gchar *uri, 
+                     gchar      **raw_data_out, 
+                     gint        *header_items_no_out)
 {
   // Determine data format
   const gchar * header_end = g_strstr_len (uri, -1, ",");
@@ -122,7 +124,10 @@ gegl_gio_uri_is_datauri(const gchar *uri)
  * Note: currently private API
  */
 GInputStream *
-gegl_gio_open_input_stream(const gchar *uri, const gchar *path, GFile **out_file, GError **err)
+gegl_gio_open_input_stream(const gchar *uri, 
+                           const gchar *path, 
+                           GFile      **out_file, 
+                           GError     **err)
 {
   GFile *infile = NULL;
   GInputStream *fis = NULL;
@@ -179,7 +184,10 @@ gegl_gio_open_input_stream(const gchar *uri, const gchar *path, GFile **out_file
  * Note: currently private API.
  */
 GOutputStream *
-gegl_gio_open_output_stream(const gchar *uri, const gchar *path, GFile **out_file, GError **err)
+gegl_gio_open_output_stream(const gchar *uri, 
+                            const gchar *path, 
+                            GFile      **out_file, 
+                            GError     **err)
 {
   GOutputStream *stream = NULL;
   const gboolean close = FALSE;

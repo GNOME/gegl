@@ -745,8 +745,11 @@ gegl_create_chain (const char *str, GeglNode *op_start, GeglNode *op_end,
 
 /* TODO: serialize keyframed properties */
 static gchar *
-gegl_serialize2 (GeglNode *start, GeglNode *end, const char *basepath,
-                 GHashTable *ht, GeglSerializeFlag flags)
+gegl_serialize2 (GeglNode         *start, 
+                 GeglNode         *end, 
+                 const char       *basepath,
+                 GHashTable       *ht, 
+                 GeglSerializeFlag flags)
 {
   char *ret = NULL;
   gboolean trim_defaults = flags & GEGL_SERIALIZE_TRIM_DEFAULTS;

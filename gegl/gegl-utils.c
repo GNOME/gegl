@@ -43,7 +43,8 @@ gegl_buffer_set_color (GeglBuffer          *dst,
 }
 
 
-static const Babl *gegl_babl_format_linear_float (const Babl *format)
+static const Babl *
+gegl_babl_format_linear_float (const Babl *format)
 {
   const Babl *space = babl_format_get_space (format);
   const Babl *model = NULL;
@@ -100,7 +101,8 @@ static const Babl *gegl_babl_format_linear_float (const Babl *format)
   return format;
 }
 
-static const Babl *gegl_babl_format_perceptual_float (const Babl *format)
+static const Babl *
+gegl_babl_format_perceptual_float (const Babl *format)
 {
   const Babl *space = babl_format_get_space (format);
   const Babl *model = NULL;
@@ -157,7 +159,8 @@ static const Babl *gegl_babl_format_perceptual_float (const Babl *format)
   return format;
 }
 
-static const Babl *gegl_babl_format_nonlinear_float (const Babl *format)
+static const Babl *
+gegl_babl_format_nonlinear_float (const Babl *format)
 {
   const Babl *space = babl_format_get_space (format);
   const Babl *model = NULL;
@@ -214,7 +217,8 @@ static const Babl *gegl_babl_format_nonlinear_float (const Babl *format)
   return format;
 }
 
-static const Babl *gegl_babl_format_premultiplied_linear_float (const Babl *format)
+static const Babl *
+gegl_babl_format_premultiplied_linear_float (const Babl *format)
 {
   const Babl *space = babl_format_get_space (format);
   const Babl *model = NULL;
@@ -266,7 +270,8 @@ static const Babl *gegl_babl_format_premultiplied_linear_float (const Babl *form
   return format;
 }
 
-static const Babl *gegl_babl_format_premultiplied_perceptual_float (const Babl *format)
+static const Babl *
+gegl_babl_format_premultiplied_perceptual_float (const Babl *format)
 {
   const Babl *space = babl_format_get_space (format);
   const Babl *model = NULL;
@@ -318,7 +323,8 @@ static const Babl *gegl_babl_format_premultiplied_perceptual_float (const Babl *
   return format;
 }
 
-static const Babl *gegl_babl_format_float (const Babl *format)
+static const Babl *
+gegl_babl_format_float (const Babl *format)
 {
   const Babl *space;
   const char *encoding;
@@ -341,7 +347,8 @@ static const Babl *gegl_babl_format_float (const Babl *format)
   return format;
 }
 
-static const Babl *gegl_babl_format_alpha (const Babl *format)
+static const Babl *
+gegl_babl_format_alpha (const Babl *format)
 {
   const Babl *model = babl_format_get_model (format);
   BablModelFlag model_flags = babl_get_model_flags (model);
@@ -401,7 +408,8 @@ static const Babl *gegl_babl_format_alpha (const Babl *format)
 }
 
 
-static const Babl *gegl_babl_format_float_premultiplied_linear_if_alpha (const Babl *format)
+static const Babl *
+gegl_babl_format_float_premultiplied_linear_if_alpha (const Babl *format)
 {
   if (!format)
     return NULL;
@@ -410,7 +418,8 @@ static const Babl *gegl_babl_format_float_premultiplied_linear_if_alpha (const B
   return gegl_babl_format_float (format);
 }
 
-static const Babl *gegl_babl_format_float_premultiplied_perceptual_if_alpha (const Babl *format)
+static const Babl *
+gegl_babl_format_float_premultiplied_perceptual_if_alpha (const Babl *format)
 {
   if (!format)
     return NULL;
@@ -419,7 +428,8 @@ static const Babl *gegl_babl_format_float_premultiplied_perceptual_if_alpha (con
   return gegl_babl_format_float (format);
 }
 
-const Babl *gegl_babl_variant (const Babl *format, GeglBablVariant variant)
+const Babl *
+gegl_babl_variant (const Babl *format, GeglBablVariant variant)
 {
   if (!format)
     return NULL;

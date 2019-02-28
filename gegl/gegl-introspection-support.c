@@ -61,7 +61,9 @@ gegl_format_get_name (GValue *value)
 }
 
 gdouble *
-gegl_color_get_components (GeglColor *color, GValue *value, gint *components_length)
+gegl_color_get_components (GeglColor *color,
+                           GValue    *value,
+                           gint      *components_length)
 {
   Babl *format;
 
@@ -142,7 +144,10 @@ gegl_color_get_components (GeglColor *color, GValue *value, gint *components_len
 }
 
 void
-gegl_color_set_components (GeglColor *color, GValue *value, gdouble *components, gint components_length)
+gegl_color_set_components (GeglColor *color,
+                           GValue    *value,
+                           gdouble   *components,
+                           gint       components_length)
 {
   Babl *format;
 

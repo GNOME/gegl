@@ -64,9 +64,10 @@ struct _ParseData
 /* Search a paired attribute name/value arrays for an entry with a specific
  * name, return the value or null if not found.
  */
-static const gchar *name2val (const gchar **attribute_names,
-                              const gchar **attribute_values,
-                              const gchar  *name)
+static const gchar *
+name2val (const gchar **attribute_names,
+          const gchar **attribute_values,
+          const gchar  *name)
 {
   while (*attribute_names)
     {
@@ -81,10 +82,11 @@ static const gchar *name2val (const gchar **attribute_names,
   return NULL;
 }
 
-static void param_set (ParseData   *pd,
-                       GeglNode    *new,
-                       const gchar *param_name,
-                       const gchar *param_value)
+static void 
+param_set (ParseData   *pd,
+           GeglNode    *new,
+           const gchar *param_name,
+           const gchar *param_value)
 {
   if (!strcmp (param_name, "name"))
     {
@@ -286,12 +288,13 @@ set_clone_prop_as_well:
     }                                                                   \
 }
 
-static void start_element (GMarkupParseContext *context,
-                           const gchar         *element_name,
-                           const gchar        **attribute_names,
-                           const gchar        **attribute_values,
-                           gpointer             user_data,
-                           GError             **error)
+static void 
+start_element (GMarkupParseContext *context,
+               const gchar         *element_name,
+               const gchar        **attribute_names,
+               const gchar        **attribute_values,
+               gpointer             user_data,
+               GError             **error)
 {
   const gchar **a  = attribute_names;
   const gchar **v  = attribute_values;
@@ -443,11 +446,12 @@ static void start_element (GMarkupParseContext *context,
     }
 }
 
-static void text (GMarkupParseContext *context,
-                  const gchar         *text,
-                  gsize                text_len,
-                  gpointer             user_data,
-                  GError             **error)
+static void 
+text (GMarkupParseContext *context,
+      const gchar         *text,
+      gsize                text_len,
+      gpointer             user_data,
+      GError             **error)
 {
   ParseData *pd = user_data;
 
@@ -458,10 +462,11 @@ static void text (GMarkupParseContext *context,
 }
 
 /* Called for close tags </foo> */
-static void end_element (GMarkupParseContext *context,
-                         const gchar         *element_name,
-                         gpointer             user_data,
-                         GError             **error)
+static void 
+end_element (GMarkupParseContext *context,
+             const gchar         *element_name,
+             gpointer             user_data,
+             GError             **error)
 {
   ParseData *pd = user_data;
 
@@ -526,9 +531,10 @@ static void end_element (GMarkupParseContext *context,
 /* Called on error, including one set by other
  * methods in the vtable. The GError should not be freed.
  */
-static void error (GMarkupParseContext *context,
-                   GError              *error,
-                   gpointer             user_data)
+static void 
+error (GMarkupParseContext *context,
+       GError              *error,
+       gpointer             user_data)
 {
   gint  line_number;
   gint  char_number;
@@ -546,8 +552,9 @@ static GMarkupParser parser = {
   error
 };
 
-static void each_ref (gpointer value,
-                      gpointer user_data)
+static void 
+each_ref (gpointer value,
+          gpointer user_data)
 {
   ParseData *pd        = user_data;
   GeglNode  *dest_node = value;
@@ -560,8 +567,9 @@ static void each_ref (gpointer value,
   gegl_node_connect_from (dest_node, "input", source_node, "output");
 }
 
-GeglNode *gegl_node_new_from_xml (const gchar *xmldata,
-                                  const gchar *path_root)
+GeglNode *
+gegl_node_new_from_xml (const gchar *xmldata,
+                        const gchar *path_root)
 {
   ParseData            pd   = { 0, };
   GMarkupParseContext *context;
