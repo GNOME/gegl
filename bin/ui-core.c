@@ -1,3 +1,6 @@
+/* The code in this file is the core of a image-viewer/editor in progress
+ */
+
 /* This file is part of GEGL editor -- an mrg frontend for GEGL
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,9 +19,6 @@
  * Copyright (C) 2015, 2018, 2019 Øyvind Kolås pippin@gimp.org
  */
 
-/* The code in this file is an image viewer/editor written using microraptor
- * gui and GEGL. It renders the UI directly from GEGLs data structures.
- */
 
 #define _BSD_SOURCE
 #define _DEFAULT_SOURCE
@@ -390,10 +390,10 @@ static gboolean text_editor_active (GeState *o)
          o->editing_property;
 }
 
-static GeState *global_state = NULL;  // XXX: for now we  rely on
-                                    //      global state to make events/scripting work
-                                    //      refactoring this away would be nice, but
-                                    //      not a problem to have in a lua port of the same
+GeState *global_state = NULL;  // XXX: for now we  rely on
+                               //      global state to make events/scripting work
+                               //      refactoring this away would be nice, but
+                               //      not a problem to have in a lua port of the same
 
 GeState *app_state(void);
 GeState *app_state(void)
@@ -1226,115 +1226,6 @@ static void on_pick_drag (MrgEvent *e, void *data1, void *data2)
 }
 
 
-static int hack_cols = 5;
-static float hack_dim = 5;
-
-static void update_grid_dim (GeState *o)
-{
-  hack_dim = mrg_height (o->mrg) * 0.2 * o->dir_scale;
-  hack_cols = mrg_width (o->mrg) / hack_dim;
-}
-
-static void center_active_entry (GeState *o)
-{
-  int row;
-  float pos;
-  update_grid_dim (o);
-
-  row = (o->entry_no+1) / hack_cols;
-  pos = row * hack_dim;
-
-  if (pos > o->v + mrg_height (o->mrg) - hack_dim ||
-      pos < o->v)
-    o->v = hack_dim * (row) - mrg_height (o->mrg)/2 + hack_dim;
-}
-
-
-static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
-{
-  static float zoom_pinch_coord[4][2] = {0,};
-  static int   zoom_pinch = 0;
-  static float orig_zoom = 1.0;
-
-  GeState *o = data1;
-  if (e->type == MRG_DRAG_RELEASE)
-  {
-    zoom_pinch = 0;
-    mrg_queue_draw (e->mrg, NULL);
-  } else if (e->type == MRG_DRAG_PRESS)
-  {
-    if (e->device_no == 5)
-    {
-      zoom_pinch_coord[1][0] = e->x;
-      zoom_pinch_coord[1][1] = e->y;
-
-      zoom_pinch_coord[2][0] = zoom_pinch_coord[0][0];
-      zoom_pinch_coord[2][1] = zoom_pinch_coord[0][1];
-      zoom_pinch_coord[3][0] = zoom_pinch_coord[1][0];
-      zoom_pinch_coord[3][1] = zoom_pinch_coord[1][1];
-
-      zoom_pinch = 1;
-
-
-      orig_zoom = o->dir_scale;
-    }
-    else if (e->device_no == 1 || e->device_no == 4) /* 1 is mouse pointer 4 is first finger */
-    {
-      zoom_pinch_coord[0][0] = e->x;
-      zoom_pinch_coord[0][1] = e->y;
-    }
-  } else if (e->type == MRG_DRAG_MOTION)
-  {
-    if (e->device_no == 1 || e->device_no == 4) /* 1 is mouse pointer 4 is first finger */
-    {
-      zoom_pinch_coord[0][0] = e->x;
-      zoom_pinch_coord[0][1] = e->y;
-    }
-    if (e->device_no == 5)
-    {
-      zoom_pinch_coord[1][0] = e->x;
-      zoom_pinch_coord[1][1] = e->y;
-    }
-
-    if (zoom_pinch)
-    {
-      float orig_dist = hypotf ( zoom_pinch_coord[2][0]- zoom_pinch_coord[3][0],
-                                 zoom_pinch_coord[2][1]- zoom_pinch_coord[3][1]);
-      float dist = hypotf (zoom_pinch_coord[0][0] - zoom_pinch_coord[1][0],
-                           zoom_pinch_coord[0][1] - zoom_pinch_coord[1][1]);
-      o->dir_scale = orig_zoom * dist / orig_dist;
-      if (o->dir_scale > 2) o->dir_scale = 2;
-
-      center_active_entry (o);
-      o->u -= (e->delta_x )/2; /* doing half contribution of motion per finger */
-      o->v -= (e->delta_y )/2; /* is simple and roughly right */
-    }
-    else
-    {
-       if (e->device_no == 1 || e->device_no == 4)
-       {
-         o->u -= (e->delta_x );
-         o->v -= (e->delta_y );
-       }
-    }
-
-    {
-      int count = g_list_length (o->paths);
-      if (o->v < 0)
-        o->v = 0;
-      if (o->v > count/hack_cols * hack_dim - mrg_height(e->mrg)/2)
-        o->v = count/hack_cols * hack_dim - mrg_height(e->mrg)/2;
-    }
-
-    o->renderer_state = 0;
-    mrg_queue_draw (e->mrg, NULL);
-    mrg_event_stop_propagate (e);
-  }
-  drag_preview (e);
-}
-
-
-
 
 static GeglNode *add_output (GeState *o, GeglNode *active, const char *optype);
 static GeglNode *add_aux (GeState *o, GeglNode *active, const char *optype);
@@ -1461,44 +1352,6 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
   mrg_event_stop_propagate (e);
 }
 
-
-static int dir_scroll_dragged = 0;
-static void on_dir_scroll_drag (MrgEvent *e, void *data1, void *data2)
-{
-  GeState *o = data1;
-  switch (e->type)
-  {
-    default: break;
-    case MRG_DRAG_PRESS:
-      dir_scroll_dragged = 1;
-      break;
-    case MRG_DRAG_RELEASE:
-      dir_scroll_dragged = 0;
-      break;
-    case MRG_DRAG_MOTION:
-      {
-        int count = g_list_length (o->paths);
-        float height = mrg_height (e->mrg);
-#if 0
-        y = height * ( o->v / (count/hack_cols * hack_dim) )
-
-        y = height * ( o->v / (count/hack_cols * hack_dim) )
-        y/height = ( o->v / (count/hack_cols * hack_dim) )
-        y/height * (count/hack_cols * hack_dim) = o->v;
-#endif
-
-        o->v += e->delta_y /height * (count/hack_cols * hack_dim);
-
-        if (o->v < 0)
-          o->v = 0;
-        if (o->v > count/hack_cols * hack_dim - height/2)
-          o->v = count/hack_cols * hack_dim - height/2;
-      }
-      break;
-  }
-
-  mrg_event_stop_propagate (e);
-}
 
 #if 0
 static void prop_int_drag_cb (MrgEvent *e, void *data1, void *data2)
@@ -1635,28 +1488,6 @@ static void unset_edited_prop (MrgEvent *e, void *data1, void *data2)
 
 
 
-static void entry_select (MrgEvent *event, void *data1, void *data2)
-{
-  GeState *o = data1;
-  o->entry_no = GPOINTER_TO_INT (data2);
-  mrg_queue_draw (event->mrg, NULL);
-}
-
-static void entry_load (MrgEvent *event, void *data1, void *data2)
-{
-  GeState *o = data1;
-
-  if (o->rev)
-    argvs_eval ("save");
-
-  g_free (o->path);
-  o->path = g_strdup (data2);
-  ui_load_path (o);
-  mrg_event_stop_propagate (event);
-  mrg_queue_draw (event->mrg, NULL);
-}
-
-
 
 static void queue_thumb (const char *path, const char *thumbpath)
 {
@@ -1682,260 +1513,10 @@ void ui_queue_thumb (const char *path)
   g_free (thumb_path);
 }
 
-static void dir_scroll_cb (MrgEvent *event, void *data1, void *data2)
-{
-  switch (event->scroll_direction)
-  {
-     case MRG_SCROLL_DIRECTION_DOWN:
-       argvs_eval ("zoom out");
-       break;
-     case MRG_SCROLL_DIRECTION_UP:
-       argvs_eval ("zoom in");
-       break;
-     default:
-       break;
-  }
-}
 
 //static char commandline[1024] = {0,};
 static int  completion_no = -1;
 
-static void dir_touch_handling (Mrg *mrg, GeState *o)
-{
-  cairo_new_path (mrg_cr (mrg));
-  cairo_rectangle (mrg_cr (mrg), 0,0, mrg_width(mrg), mrg_height(mrg));
-  mrg_listen (mrg, MRG_DRAG, on_dir_drag, o, NULL);
-  mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
-  mrg_listen (mrg, MRG_SCROLL, dir_scroll_cb, o, NULL);
-  cairo_new_path (mrg_cr (mrg));
-}
-
-
-void ui_collection (GeState *o)
-{
-  Mrg *mrg = o->mrg;
-  cairo_t *cr = mrg_cr (mrg);
-  GList *iter;
-  float dim;
-  int   cols;
-  int   no = 0;
-  int   count;
-  float padding = 0.025;
-  float em = mrg_em (mrg);
-
-  dir_touch_handling (mrg, o);
-
-  update_grid_dim (o);
-  cols = hack_cols;
-  dim = hack_dim;
-
-  count = g_list_length (o->paths);
-
-
-  cairo_save (cr);
-  cairo_translate (cr, 0, -(int)o->v);
-  {
-    float x = dim * (no%cols);
-    float y = dim * (no/cols);
-    float wdim = dim * .6;
-    float hdim = dim * .6;
-
-    cairo_new_path (mrg_cr(mrg));
-
-    cairo_rectangle (mrg_cr (mrg), x, y, dim, dim);
-    if (no == o->entry_no + 1)
-    {
-      cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,.5);
-      cairo_fill_preserve (mrg_cr (mrg));
-    }
-    mrg_listen_full (mrg, MRG_CLICK, ui_run_command, "parent", NULL, NULL, NULL);
-
-    mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
-        wdim * (1.0-padding*2), hdim *(1.0-padding*2), 1.0,
-         "/usr/share/icons/HighContrast/256x256/actions/go-up.png", NULL, NULL);
-
-    cairo_new_path (mrg_cr(mrg));
-    mrg_set_xy (mrg, x, y + dim - mrg_em(mrg) * 2);
-    mrg_printf (mrg, "parent\nfolder");
-    no++;
-  }
-
-  for (iter = o->paths; iter; iter=iter->next, no++)
-  {
-    struct stat stat_buf;
-      int w, h;
-      gchar *path = iter->data;
-      char *lastslash = strrchr (path, '/');
-      float x = dim * (no%cols);
-      float y = dim * (no/cols);
-      int is_dir = 0;
-
-      if (y < -dim * 4 + o->v || y > mrg_height (mrg) + dim * 1.5 + o->v)
-        continue;
-
-      lstat (path, &stat_buf);
-
-
-      if (S_ISDIR (stat_buf.st_mode))
-      {
-        float wdim = dim * .6;
-        float hdim = dim * .6;
-
-        cairo_rectangle (mrg_cr (mrg), x, y, dim, dim);
-        if (no == o->entry_no + 1)
-        {
-          cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,.5);
-          cairo_fill (mrg_cr (mrg));
-        }
-
-        mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
-        wdim * (1.0-padding*2), hdim *(1.0-padding*2), 1.0,
-         "/usr/share/icons/HighContrast/256x256/places/folder.png", NULL, NULL);
-
-        is_dir = 1;
-      }
-      else
-      {
-    struct stat thumb_stat_buf;
-    struct stat suffixed_stat_buf;
-
-      gchar *p2 = ui_suffix_path (path);
-      gchar *thumbpath = ui_get_thumb_path (p2);
-
-      /* we compute the thumbpath as the hash of the suffixed path, even for
- * gegl documents - for gegl documents this is slightly inaccurate but consistent.
-       */
-      if (access (thumbpath, F_OK) == 0)
-      {
-        int suffix_exist = 0;
-        lstat (thumbpath, &thumb_stat_buf);
-        if (lstat (p2, &suffixed_stat_buf) == 0)
-          suffix_exist = 1;
-
-        if ((suffix_exist && (suffixed_stat_buf.st_mtime >
-                              thumb_stat_buf.st_mtime)) ||
-                             (stat_buf.st_mtime >
-                             thumb_stat_buf.st_mtime))
-        {
-          unlink (thumbpath);
-          mrg_forget_image (mrg, thumbpath);
-        }
-
-      }
-      g_free (p2);
-
-      if (
-         access (thumbpath, F_OK) == 0 && //XXX: query image should suffice
-         mrg_query_image (mrg, thumbpath, &w, &h))
-      {
-        float wdim = dim;
-        float hdim = dim;
-
-        if (w > h)
-          hdim = dim / (1.0 * w / h);
-        else
-          wdim = dim * (1.0 * w / h);
-
-        cairo_rectangle (mrg_cr (mrg), x, y, wdim, hdim);
-
-        if (no == o->entry_no + 1)
-        {
-          cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,1.0);
-          cairo_fill_preserve (mrg_cr (mrg));
-        }
-
-        mrg_listen (mrg, MRG_TAP, entry_load, o, (void*)g_intern_string (iter->data));
-        cairo_new_path (mrg_cr (mrg));
-
-        if (w!=0 && h!=0)
-          mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
-        wdim * (1.0-padding*2), hdim *(1.0-padding*2), 1.0, thumbpath, NULL, NULL);
-
-
-      }
-      else
-      {
-         if (access (thumbpath, F_OK) != 0) // only queue if does not exist,
-                                            // mrg/stb_image seem to suffer on some of our pngs
-         {
-           queue_thumb (path, thumbpath);
-         }
-      }
-      g_free (thumbpath);
-
-
-      }
-      if (no == o->entry_no + 1 || is_dir)
-      {
-        mrg_set_xy (mrg, x, y + dim - mrg_em(mrg));
-        mrg_printf (mrg, "%s\n", lastslash+1);
-      }
-      cairo_new_path (mrg_cr(mrg));
-      cairo_rectangle (mrg_cr(mrg), x, y, dim, dim);
-#if 0
-      if (no == o->entry_no + 1)
-        cairo_set_source_rgb (mrg_cr(mrg), 1, 1,0);
-      else
-        cairo_set_source_rgb (mrg_cr(mrg), 0, 0,0);
-      cairo_set_line_width (mrg_cr(mrg), 4);
-      cairo_stroke_preserve (mrg_cr(mrg));
-#endif
-      if (no == o->entry_no + 1)
-        mrg_listen_full (mrg, MRG_TAP, entry_load, o, path, NULL, NULL);
-      else
-        mrg_listen_full (mrg, MRG_TAP, entry_select, o, GINT_TO_POINTER(no-1), NULL, NULL);
-      cairo_new_path (mrg_cr(mrg));
-  }
-
-  cairo_restore (cr);
-
-  {
-      float height = mrg_height(mrg) * ( mrg_height (mrg) / (count/cols * dim) );
-    float yoffset = 0;
-    if (height < 4 * em)
-    {
-      yoffset = (4 * em - height)/2;
-      height = 4 * em;
-    }
-  cairo_rectangle (cr,
-                   mrg_width(mrg) - 4 * em,
-                   mrg_height(mrg) * ( o->v / (count/cols * dim) ) - yoffset,
-                   4 * em,
-                   height);
-  }
-  cairo_set_source_rgba (cr, 1,1,1, dir_scroll_dragged?.3:.2);
-  mrg_listen (mrg, MRG_DRAG, on_dir_scroll_drag, o, NULL);
-  cairo_fill (cr);
-
-  mrg_add_binding (mrg, "left", NULL, NULL, ui_run_command, "collection left");
-  mrg_add_binding (mrg, "right", NULL, NULL, ui_run_command, "collection right");
-  mrg_add_binding (mrg, "up", NULL, NULL, ui_run_command, "collection up");
-  mrg_add_binding (mrg, "down", NULL, NULL, ui_run_command, "collection down");
-
-  mrg_add_binding (mrg, "page-up", NULL, NULL, ui_run_command, "collection page-up");
-  mrg_add_binding (mrg, "page-down", NULL, NULL, ui_run_command, "collection page-down");
-
-  mrg_add_binding (mrg, "home", NULL, NULL, ui_run_command, "collection first");
-  mrg_add_binding (mrg, "end", NULL, NULL, ui_run_command, "collection last");
-
-  if (o->commandline[0] == 0)
-  {
-    mrg_add_binding (mrg, "space", NULL, NULL,   ui_run_command, "collection right");
-    mrg_add_binding (mrg, "backspace", NULL, NULL,  ui_run_command, "collection left");
-  }
-
-  mrg_add_binding (mrg, "alt-right", NULL, NULL, ui_run_command, "collection right");
-  mrg_add_binding (mrg, "alt-left", NULL, NULL,  ui_run_command, "collection left");
-
-  if (o->commandline[0]==0)
-  {
-    mrg_add_binding (mrg, "+", NULL, NULL, ui_run_command, "zoom in");
-    mrg_add_binding (mrg, "=", NULL, NULL, ui_run_command, "zoom in");
-    mrg_add_binding (mrg, "-", NULL, NULL, ui_run_command, "zoom out");
-  }
-  mrg_add_binding (mrg, "escape", NULL, "parent folder", ui_run_command, "parent");
-  mrg_add_binding (mrg, "control-delete", NULL, NULL,  ui_run_command, "discard");
-}
 
 static void scroll_cb (MrgEvent *event, void *data1, void *data2);
 
@@ -6752,54 +6333,6 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
   return 0;
 }
 
-int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|first|last>", ""*/
-  int cmd_collection (COMMAND_ARGS)
-{
-  GeState *o = global_state;
-
-  if (!argv[1])
-  {
-    printf ("current item: %i\n", o->entry_no);
-    return 0;
-  }
-  if (!strcmp(argv[1], "first"))
-  {
-    o->entry_no = -1;
-  }
-  else if (!strcmp(argv[1], "last"))
-  {
-    o->entry_no = g_list_length (o->paths)-1;
-  }
-  else if (!strcmp(argv[1], "right"))
-  {
-    o->entry_no++;
-  }
-  else if (!strcmp(argv[1], "left"))
-  {
-    o->entry_no--;
-  }
-  else if (!strcmp(argv[1], "up"))
-  {
-    o->entry_no-= hack_cols;
-  }
-  else if (!strcmp(argv[1], "down"))
-  {
-    o->entry_no+= hack_cols;
-  }
-
-  if (o->entry_no < -1)
-    o->entry_no = -1;
-
-  if (o->entry_no >= (int)g_list_length (o->paths))
-    o->entry_no = g_list_length (o->paths)-1;
-
-
-  center_active_entry (o);
-
-  mrg_queue_draw (o->mrg, NULL);
-  return 0;
-}
-
   int cmd_cd (COMMAND_ARGS);
 int cmd_cd (COMMAND_ARGS) /* "cd", 1, "<target>", "convenience wrapper making some common commandline navigation commands work"*/
 {
@@ -6876,7 +6409,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
       if (o->dir_scale > 2.2) o->dir_scale = 2.2;
       if (o->dir_scale < 0.1) o->dir_scale = 0.1;
 
-      center_active_entry (o);
+      ui_center_active_entry (o);
 
       mrg_queue_draw (o->mrg, NULL);
       return 0;
@@ -7153,7 +6686,7 @@ int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (swit
     {
       o->entry_no = entry_no;
 
-      center_active_entry (o);
+      ui_center_active_entry (o);
     }
     mrg_queue_draw (o->mrg, NULL);
   }

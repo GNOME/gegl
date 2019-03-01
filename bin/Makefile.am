@@ -55,13 +55,13 @@ gegl_SOURCES =			\
 	gegl-path-smooth.c	\
 	gegl-path-smooth.h
 
-argvs-commands.inc: gegl.c ui.c argvs.c Makefile
+argvs-commands.inc: gegl.c ui-core.c ui-viewer.c ui-collection.c argvs.c Makefile
 	@echo " GEN" $@
 	@$(top_srcdir)/tools/argvs_extract.sh $(top_srcdir)/bin/*.c > $(top_builddir)/bin/argvs-commands.inc
 
 if HAVE_MRG
 if HAVE_GEXIV2
-gegl_SOURCES += ui.c ui.h ui-viewer.c mrg-gegl.c mrg-gegl.h
+gegl_SOURCES += ui-core.c ui.h ui-viewer.c ui-collection.c mrg-gegl.c mrg-gegl.h
 AM_CFLAGS += $(SDL_CFLAGS)
 AM_LDFLAGS += $(SDL_LIBS)
 endif
