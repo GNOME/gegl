@@ -2,7 +2,9 @@
 # Please keep this file sorted alphabetically.
 bin/gegl.c
 bin/gegl-options.c
-bin/ui.c
+bin/ui-core.c
+bin/ui-viewer.c
+bin/ui-collection.c
 gegl/buffer/gegl-buffer-enums.c
 gegl/gegl-enums.c
 gegl/gegl-init.c
