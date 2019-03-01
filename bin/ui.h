@@ -133,4 +133,17 @@ GeState*     ge_state_new         (void);
 const char *ge_state_get_path (GeState *state, int no);
 int         ge_state_get_n_paths (GeState *state);
 
+void   ui_viewer        (GeState *o);
+void   ui_collection    (GeState *o);
+char  *ui_suffix_path   (const char *path);
+char  *ui_unsuffix_path (const char *path);
+
+int    ui_hide_controls_cb (Mrg *mrg, void *data);
+gchar *ui_get_thumb_path   (const char *path);
+void   ui_queue_thumb      (const char *path);
+void   ui_load_path        (GeState *o);
+void   ui_contrasty_stroke (cairo_t *cr);
+
+void ui_run_command (MrgEvent *event_or_null, void *commandline, void *ignored);
+
 #endif

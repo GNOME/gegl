@@ -121,6 +121,16 @@ float hypotf (float a, float b);
 GeState *app_state(void);
 int argvs_eval (const char *str);
 
+char  *ui_suffix_path   (const char *path);
+char  *ui_unsuffix_path (const char *path);
+
+int    ui_hide_controls_cb (Mrg *mrg, void *data);
+char  *ui_get_thumb_path   (const char *path);
+void   ui_queue_thumb      (const char *path);
+void   ui_load_path        (GeState *o);
+void   ui_contrasty_stroke (cairo_t *cr);
+
+
 ]]
 
 o = ffi.C.app_state()
