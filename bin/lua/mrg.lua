@@ -148,6 +148,8 @@ MrgImage *mrg_query_image (Mrg *mrg, const char *path,
                            int *width,
                            int *height);
 
+void mrg_forget_image (Mrg *mrg, const char *path);
+
 /* built in http / local file URI fetcher, this is the callback interface
  * that needs to be implemented for mrg_xml_render if external resources (css
  * files / png images) are to be retrieved and rendered.
@@ -784,6 +786,7 @@ ffi.metatype('Mrg', {__index = {
     return rw[0], rh[0]
   end,
   image            = function (...) C.mrg_image(...) end,
+  forget_image     = function (...) C.mrg_forget_image(...) end,
   render_pdf       = function (...) C.mrg_render_pdf(...) end,
   render_svg       = function (...) C.mrg_render_svg(...) end,
   is_printing      = function (...) return C.mrg_is_printing (...) end,

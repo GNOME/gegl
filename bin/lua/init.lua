@@ -2,6 +2,7 @@
 ffi = require('ffi')
 lgi = require 'lgi'
 
+os      = require 'os'
 GLib    = lgi.GLib
 GObject = lgi.GObject
 Mrg     = require('mrg')
