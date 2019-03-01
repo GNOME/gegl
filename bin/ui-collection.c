@@ -46,6 +46,24 @@ static void update_grid_dim (GeState *o)
   hack_cols = mrg_width (o->mrg) / hack_dim;
 }
 
+static void draw_left_triangle (Mrg *mrg, float x, float y, float w, float h)
+{
+  cairo_t *cr = mrg_cr (mrg);
+  cairo_new_path (cr);
+  cairo_new_path (cr);
+  cairo_move_to (cr, x+0.9*w, y+0.1*h);
+  cairo_line_to (cr, x+0.9*w, y+0.9*h);
+  cairo_line_to (cr, x+0.1*w, y+0.5*h);
+}
+
+static void draw_folder (Mrg *mrg, float x, float y, float w, float h)
+{
+  cairo_t *cr = mrg_cr (mrg);
+  cairo_new_path (cr);
+  cairo_rectangle (cr, 0.00 *w + x, 0.00 * h + y, 0.33 * w, 0.10 * h);
+  cairo_rectangle (cr, 0.00 *w + x, 0.10 * h + y, 0.66 * w, 0.66 * h);
+}
+
 
 static void on_viewer_motion (MrgEvent *e, void *data1, void *data2)
 {
@@ -273,9 +291,15 @@ void ui_collection (GeState *o)
     }
     mrg_listen_full (mrg, MRG_CLICK, ui_run_command, "parent", NULL, NULL, NULL);
 
+    draw_left_triangle (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
+      wdim * (1.0-padding*2), hdim *(1.0-padding*2));
+      cairo_set_source_rgba (mrg_cr (mrg), 1,1,1,.5);
+      cairo_fill (mrg_cr (mrg));
+#if 0
     mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
         wdim * (1.0-padding*2), hdim *(1.0-padding*2), 1.0,
          "/usr/share/icons/HighContrast/256x256/actions/go-up.png", NULL, NULL);
+#endif
 
     cairo_new_path (mrg_cr(mrg));
     mrg_set_xy (mrg, x, y + dim - mrg_em(mrg) * 2);
@@ -311,9 +335,15 @@ void ui_collection (GeState *o)
           cairo_fill (mrg_cr (mrg));
         }
 
+        draw_folder (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
+          wdim * (1.0-padding*2), hdim *(1.0-padding*2));
+        cairo_set_source_rgba (mrg_cr (mrg), 1,1,1,.5);
+        cairo_fill (mrg_cr (mrg));
+#if 0
         mrg_image (mrg, x + (dim-wdim)/2 + dim * padding, y + (dim-hdim)/2 + dim * padding,
         wdim * (1.0-padding*2), hdim *(1.0-padding*2), 1.0,
          "/usr/share/icons/HighContrast/256x256/places/folder.png", NULL, NULL);
+#endif
 
         is_dir = 1;
       }

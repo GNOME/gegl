@@ -1,4 +1,4 @@
-GEGL-0.4.14 2019-03-xx
+GEGL-0.4.14 2019-03-01
 ----------------------
 
 Core
@@ -74,8 +74,9 @@ graph/property editor has been added, and migration/extension to lua has begun
 for parts of the code.
 
 WARNING: many parts of the UI is of exploratory proof of concept/alpha quality
-but released since it is part of the GEGL repository and useful development
-tools both for creating and testing new GEGL operations as well as GEGL itself.
+but are released since the code is part of the GEGL repository and important
+development tools both for creating and testing new GEGL operations as well as
+GEGL itself.
 
 Some screenshots showing some the process towards the state and capabilties of
 the UI in this release can be seen at https://www.patreon.com/posts/24123574
@@ -111,6 +112,16 @@ Alan Mortensen, Alexandre Prokoudine, Anders Jonsson, Andre Klapper, Debarshi
 Ray, elad, Ell, Jehan, Marco Ciampa, Michael Natterer, Øyvind Kolås, Piotr
 Drąg, Richard B. Kreckel, Rodrigo Lledó, sabri ünal, thetoastcaper, Thomas
 Manni and woob.
+
+This release depends on the new features of babl-0.1.62 which has the following
+change summary for the last release:
+
+Continuous integration with gitlab.
+Initial CMYK spaces with lcms2 based ICC support, much room for optimization.
+Improved custom space support for palette formats.
+scRGB space, works like sRGB but always with linear TRCs.
+Model introspection API permitting low overhead checks whether a format/model
+is RGB, CMYK type of alpha and similar.
 
 
 GEGL-0.4.12 2018-10-23
