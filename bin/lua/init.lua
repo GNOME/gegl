@@ -153,16 +153,16 @@ end
 
 function contrasty_stroke()
   local x0 = 3.0
-  local y0 = 3.0;
+  local y0 = 3.0
   local x1 = 2.0
-  local y1 = 2.0;
+  local y1 = 2.0
 
   x0, y0 = cr:device_to_user_distance (x0, y0)
   x1, y1 = cr:device_to_user_distance (x1, y1)
-  cr:set_source_rgba (0,0,0,0.5);
-  cr:set_line_width (y0);
+  cr:set_source_rgba (0,0,0,0.5)
+  cr:set_line_width (y0)
   cr:stroke_preserve ()
-  cr:set_source_rgba (1,1,1,0.5);
-  cr:set_line_width (y1);
-  cr:stroke ();
+  cr:set_source_rgba (1,1,1,0.5)
+  cr:set_line_width (y1)
+  cr:stroke ()
 end
