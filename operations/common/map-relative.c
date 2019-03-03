@@ -31,8 +31,6 @@ property_enum (abyss_policy, _("Abyss policy"),
                GeglAbyssPolicy, gegl_abyss_policy,
                GEGL_ABYSS_NONE)
 
-property_boolean (box_filter, _("Box filter"), FALSE)
-
 #else
 
 #define GEGL_OP_COMPOSER
