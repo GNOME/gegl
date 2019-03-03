@@ -40,6 +40,8 @@ get_required_for_output (GeglOperation       *operation,
                          const gchar         *input_pad,
                          const GeglRectangle *region)
 {
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
   if (! strcmp (input_pad, "input"))
     {
       return *gegl_operation_source_get_bounding_box (operation, "input");
@@ -48,10 +50,13 @@ get_required_for_output (GeglOperation       *operation,
     {
       GeglRectangle rect = *region;
 
-      rect.x      -= 1;
-      rect.y      -= 1;
-      rect.width  += 2;
-      rect.height += 2;
+      if (o->sampler_type != GEGL_SAMPLER_NEAREST)
+        {
+          rect.x      -= 1;
+          rect.y      -= 1;
+          rect.width  += 2;
+          rect.height += 2;
+        }
 
       return rect;
     }
@@ -62,6 +67,8 @@ get_invalidated_by_change (GeglOperation       *operation,
                            const gchar         *input_pad,
                            const GeglRectangle *region)
 {
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+
   if (! strcmp (input_pad, "input"))
     {
       return gegl_operation_get_bounding_box (operation);
@@ -70,10 +77,13 @@ get_invalidated_by_change (GeglOperation       *operation,
     {
       GeglRectangle rect = *region;
 
-      rect.x      -= 1;
-      rect.y      -= 1;
-      rect.width  += 2;
-      rect.height += 2;
+      if (o->sampler_type != GEGL_SAMPLER_NEAREST)
+        {
+          rect.x      -= 1;
+          rect.y      -= 1;
+          rect.width  += 2;
+          rect.height += 2;
+        }
 
       return rect;
     }
