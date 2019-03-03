@@ -2,6 +2,10 @@
 
 -- todo : implement thumb-bar of previous/next image
 
+local path = GObject.Object(STATE).path
+local source = GObject.Object(STATE).source
+
+mrg:set_title(ffi.string(o.path))
 
 cr:new_path()
 cr:rectangle(0,0,mrg:width(),mrg:height())
@@ -22,6 +26,8 @@ mrg:listen(Mrg.MOTION, function(event)
   end
   controls_keepalive()
 end)
+
+if not path:find(".lui$") then
 
 mrg:listen(Mrg.DRAG, function(event)
 
@@ -86,7 +92,7 @@ mrg:listen(Mrg.DRAG, function(event)
   end
   event:stop_propagate()
 end)
-
+end
 
 mrg:listen(Mrg.SCROLL, function(event)
   local factor = 1.05
@@ -310,8 +316,6 @@ if o.is_video ~= 0 then
 
 end
 
-local path = GObject.Object(STATE).path
-local source = GObject.Object(STATE).source
 
 function pdf_next_page()
   local pages = source:get_property('pages').value
@@ -373,7 +377,6 @@ if path:find(".pdf$") or path:find('.PDF$') then
     function(e) pdf_next_page() e:stop_propagate() end)
 
 end
-
 
 
 mrg:add_binding("alt-right", NULL, "next image",
