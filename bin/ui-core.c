@@ -763,7 +763,7 @@ static gboolean renderer_task (gpointer data)
               G_SPAWN_SEARCH_PATH|G_SPAWN_SEARCH_PATH_FROM_ENVP,
               NULL, NULL, &thumbnailer_pid, &error);
           if (error)
-            g_warning (error->message);
+            g_warning ("%s", error->message);
         }
         g_usleep (1000);
       }
@@ -4830,6 +4830,7 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   if (g_str_has_suffix (o->path, ".lui"))
   {
+#if HAVE_LUA
   int result;
   int status = luaL_loadfile(L, o->path);
   if (status)
@@ -4845,17 +4846,8 @@ static void gegl_ui (Mrg *mrg, void *data)
     {
     }
   }
+#endif
   }
-
-
-
-
-
-
-
-
-
-
 
 #if HAVE_LUA
   if (run_lua_file ("viewer.lua"))
