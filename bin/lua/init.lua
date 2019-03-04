@@ -166,3 +166,12 @@ function contrasty_stroke()
   cr:set_line_width (y1)
   cr:stroke ()
 end
+
+function html(xhtml)
+  mrg:xml_render(nil, function(event, link)
+           ffi.C.argvs_eval(link)
+  end,
+  NULL, xhtml)
+end
+
+
