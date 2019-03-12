@@ -243,8 +243,8 @@ export_jpg (GeglOperation               *operation,
 
   src_x = result->x;
   src_y = result->y;
-  width = result->width - result->x;
-  height = result->height - result->y;
+  width = result->width;
+  height = result->height;
 
   cinfo.image_width = width;
   cinfo.image_height = height;
