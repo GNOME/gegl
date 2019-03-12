@@ -344,9 +344,9 @@ save_contiguous(GeglOperation *operation,
           gegl_buffer_get(input, &tile, 1.0, format, buffer,
                           GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-          for (row = y; row < y + tile_height; row++)
+          for (row = 0; row < tile_height; row++)
             {
-              guchar *tile_row = buffer + (bytes_per_row * (row - y));
+              guchar *tile_row = buffer + (bytes_per_row * row);
               gint written;
 
               written = TIFFWriteScanline(p->tiff, tile_row, row, 0);
