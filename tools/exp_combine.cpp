@@ -8,8 +8,7 @@
 
 #include <iostream>
 
-#include <exiv2/image.hpp>
-#include <exiv2/exif.hpp>
+#include <gexiv2/gexiv2.h>
 
 using namespace std;
 
@@ -54,35 +53,32 @@ die:
 static gfloat
 expcombine_get_file_ev (const gchar *path)
 {
-  /* Open the file and read in the metadata */
-  Exiv2::Image::AutoPtr image;
-  try 
-    {
-      image = Exiv2::ImageFactory::open (path);
-      image->readMetadata ();
-    }
-  catch (Exiv2::Error ex)
-    {
-      g_print ("Error: unable to read metadata from path: '%s'\n", path);
-      exit (EXIT_FAILURE);
-    }
-
-  Exiv2::ExifData &exifData = image->exifData ();
-  if (exifData.empty ())
-      return NAN;
-
-  /* Calculate the APEX brightness / EV */
+  GError *error = NULL;
+  GExiv2Metadata *e2m = gexiv2_metadata_new ();
   gfloat time, aperture, gain = 1.0f;
 
-  time     = exifData["Exif.Photo.ExposureTime"].value().toFloat();
-  aperture = exifData["Exif.Photo.FNumber"     ].value().toFloat();
+  gexiv2_metadata_open_path (e2m, path, &error);
+  if (error)
+  {
+    g_warning ("%s", error->message);
+    exit (EXIT_FAILURE);
+  }
+
+  /* Calculate the APEX brightness / EV */
+
+  {
+    gint nom, den;
+    gexiv2_metadata_get_exposure_time (e2m, &nom, &den);
+    time = nom * 1.0f / den;
+  }
+  aperture = gexiv2_metadata_get_fnumber (e2m);
 
   /* iso */
-  try
+  if (gexiv2_metadata_has_tag (e2m, "Exif.Image.ISOSpeedRatings"))
     {
-      gain = exifData["Exif.Photo.ISOSpeedRatings"].value().toLong() / 100.0f;
+      gain = gexiv2_metadata_get_iso_speed (e2m) / 100.0f;
     }
-  catch (Exiv2::Error ex)
+  else
     {
       // Assume ISO is set at 100. It's reasonably likely that the ISO is the
       // same across all images anyway, and for our purposes the relative

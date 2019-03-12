@@ -38,9 +38,9 @@ noinst_PROGRAMS = introspect operation_reference detect_opencl gegl-tester opera
 gegl_tester_SOURCES = \
 	gegl-tester.c
 
-if HAVE_EXIV2
+if HAVE_GEXIV2
 noinst_PROGRAMS     += exp_combine 
 exp_combine_SOURCES  = exp_combine.cpp
-exp_combine_LDADD    = $(EXIV2_LIBS) 
-exp_combine_CXXFLAGS = $(AM_CFLAGS) $(EXIV2_CFLAGS)
+exp_combine_LDADD    = $(GEXIV2_LIBS) 
+exp_combine_CXXFLAGS = $(AM_CFLAGS) $(GEXIV2_CFLAGS)
 endif
