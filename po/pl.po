@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-02-21 18:06+0000\n"
-"PO-Revision-Date: 2019-02-24 17:45+0100\n"
+"POT-Creation-Date: 2019-03-13 11:03+0000\n"
+"PO-Revision-Date: 2019-03-13 18:19+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -173,7 +173,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui.c:4464 gegl/gegl-serialize.c:522
+#: bin/ui-core.c:3675 gegl/gegl-serialize.c:522
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat „%s” nie istnieje."
@@ -423,10 +423,10 @@ msgstr "Bezwzględne"
 
 #: operations/common/absolute.c:83
 msgid ""
-"makes each linear RGB component be the absolute of its value, "
+"Makes each linear RGB component be the absolute of its value, "
 "fabs(input_value)"
 msgstr ""
-"ustawia każdą składową liniowego RGB na bezwzględną swojej wartości, "
+"Ustawia każdą składową liniowego RGB na bezwzględną swojej wartości, "
 "fabs(wartość_wejściowa)"
 
 #: operations/common/alien-map.c:29 operations/common/newsprint.c:35
@@ -866,7 +866,7 @@ msgstr "Szachownica"
 msgid "Render a checkerboard pattern"
 msgstr "Narysuj wzór szachownicy"
 
-#: operations/common/color.c:24 operations/common/color.c:92
+#: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:46
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
 #: operations/common/rectangle.c:48 operations/common/vignette.c:34
@@ -878,7 +878,12 @@ msgstr "Narysuj wzór szachownicy"
 msgid "Color"
 msgstr "Kolor"
 
-#: operations/common/color.c:96
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/color.c:26
+msgid "The color to render (defaults to 'black')"
+msgstr "Rysowany kolor (domyślnie „black” — czarny)"
+
+#: operations/common/color.c:91
 msgid ""
 "Generates a buffer entirely filled with the specified color, use gegl:crop "
 "to get smaller dimensions."
@@ -1758,7 +1763,7 @@ msgstr "Beta"
 msgid "Strength of local detail enhancement"
 msgstr "Siła lokalnego uwydatniania szczegółów"
 
-#: operations/common/fattal02.c:42
+#: operations/common/fattal02.c:42 operations/common/mantiuk06.c:36
 msgid "Global color saturation factor"
 msgstr "Globalny współczynnik nasycenia kolorów"
 
@@ -2543,15 +2548,11 @@ msgstr ""
 "współczynnik skalowania przemieszczenia, wskazuje wielkość przemieszczenia "
 "przestrzennego, do którego odnosi się względna wartość mapowania 1,0."
 
-#: operations/common/map-relative.c:34
-msgid "Box filter"
-msgstr "Filtr prostopadłościenny"
-
-#: operations/common/map-relative.c:82
+#: operations/common/map-relative.c:80
 msgid "Map Relative"
 msgstr "Mapowanie względne"
 
-#: operations/common/map-relative.c:85
+#: operations/common/map-relative.c:83
 msgid ""
 "sample input with an auxiliary buffer that contain relative source "
 "coordinates"
@@ -2772,9 +2773,9 @@ msgid "Ratio"
 msgstr "Proporcje"
 
 #: operations/common/mix.c:26
-msgid "mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
+msgid "Mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
 msgstr ""
-"proporcje mieszania, odczytywane jako ilość dodatkowego, 0=wejście 0,5=pół "
+"Proporcje mieszania, odczytywane jako ilość dodatkowego, 0=wejście 0,5=pół "
 "1,0=dodatkowe"
 
 #: operations/common/mix.c:112
@@ -2782,8 +2783,8 @@ msgid "Mix"
 msgstr "Mieszanie"
 
 #: operations/common/mix.c:115
-msgid "do a lerp, linear interpolation (lerp) between input and aux"
-msgstr "wykonaj interpolację liniową „lerp” między wejściem a dodatkowym"
+msgid "Do a lerp, linear interpolation (lerp) between input and aux"
+msgstr "Wykonaj interpolację liniową „lerp” między wejściem a dodatkowym"
 
 #: operations/common/mono-mixer.c:26 operations/common-gpl3+/channel-mixer.c:31
 msgid "Preserve luminosity"
@@ -2923,8 +2924,8 @@ msgid "Black and green angle"
 msgstr "Kąt czarny i zielony"
 
 #: operations/common/newsprint.c:67
-msgid "angle offset for patterns"
-msgstr "przesunięcie kąta dla deseni"
+msgid "Angle offset for patterns"
+msgstr "Przesunięcie kąta dla deseni"
 
 #: operations/common/newsprint.c:73
 msgid "Green angle"
@@ -3401,11 +3402,11 @@ msgstr "Wklej przekształcone obrazy pod nimi"
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Matematyczna metoda rekonstrukcji wartości pikseli"
 
-#: operations/common/recursive-transform.c:386
+#: operations/common/recursive-transform.c:397
 msgid "Recursive Transform"
 msgstr "Przekształcenie rekurencyjne"
 
-#: operations/common/recursive-transform.c:388
+#: operations/common/recursive-transform.c:399
 msgid "Apply a transformation recursively."
 msgstr "Zastosuj przekształcenie rekurencyjnie."
 
@@ -3883,6 +3884,16 @@ msgstr "Jak blisko proporcji obrazu"
 #: operations/common/vignette.c:54
 msgid "Squeeze"
 msgstr "Ściśnij"
+
+#: operations/common/vignette.c:55
+msgid ""
+"Aspect ratio to use, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf 1.0 = "
+"inf:1, this is applied after proportion is taken into account, to directly "
+"use squeeze factor as proportions, set proportion to 0.0."
+msgstr ""
+"Używane proporcje obrazu, -0,5 = 1∶2, 0,0 = 1∶1, 0,5 = 2∶1, -1,0 = 1∶inf 1,0 "
+"= inf∶1, zastosowywane po uwzględnieniu proporcji, aby bezpośrednio użyć "
+"współczynnika ściśnięcia jako proporcji, należy je ustawić na 0,0."
 
 #: operations/common/vignette.c:71 operations/common-gpl3+/spiral.c:64
 #: operations/workshop/bayer-matrix.c:51
@@ -4425,6 +4436,10 @@ msgstr "Nasycenie kafla"
 msgid "Expand tiles by this amount"
 msgstr "Rozszerz kafle o tę ilość"
 
+#: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:76
+msgid "The tiles' background color"
+msgstr "Kolor tła kafli"
+
 #: operations/common-gpl3+/cubism.c:619
 msgid "Cubism"
 msgstr "Kubizm"
@@ -4583,7 +4598,7 @@ msgid "Mode of displacement"
 msgstr "Tryb przesunięcia"
 
 #: operations/common-gpl3+/displace.c:38 operations/external/npd.c:47
-#: operations/transform/transform-core.c:232 operations/workshop/ditto.c:27
+#: operations/transform/transform-core.c:235 operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Próbka"
 
@@ -5185,6 +5200,10 @@ msgstr "Odchylenie od doskonale uformowanych kafli"
 msgid "Tile color variation"
 msgstr "Zróżnicowanie kolorów kafla"
 
+#: operations/common-gpl3+/mosaic.c:58
+msgid "Magnitude of random color variations"
+msgstr "Wielkość losowych zróżnicowań kolorów"
+
 #: operations/common-gpl3+/mosaic.c:61
 msgid "Color averaging"
 msgstr "Uśrednianie kolorów"
@@ -5228,6 +5247,10 @@ msgstr "Kolor światła"
 #: operations/common-gpl3+/mosaic.c:80
 msgid "Light direction"
 msgstr "Kierunek światła"
+
+#: operations/common-gpl3+/mosaic.c:81
+msgid "Direction of light-source (in degrees)"
+msgstr "Kierunek źródła światła (w stopniach)"
 
 #: operations/common-gpl3+/mosaic.c:86
 msgid "Antialiasing"
@@ -6902,7 +6925,7 @@ msgstr "Model zachowywania"
 msgid "When TRUE the model will not be freed"
 msgstr "Kiedy wynosi „true”, to model nie będzie zwalniany"
 
-#: operations/external/npd.c:50 operations/transform/transform-core.c:233
+#: operations/external/npd.c:50 operations/transform/transform-core.c:236
 #: operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Wewnętrznie używana próbka"
@@ -7835,27 +7858,27 @@ msgstr "Ciąg przekształcenia składni przekształceń SVG"
 msgid "Do a transformation using SVG syntax transformation."
 msgstr "Wykonaj przekształcenie za pomocą składni przekształceń SVG."
 
-#: operations/transform/transform-core.c:208
+#: operations/transform/transform-core.c:211
 msgid "Origin-x"
 msgstr "Początek układu współrzędnych na osi X"
 
-#: operations/transform/transform-core.c:209
+#: operations/transform/transform-core.c:212
 msgid "X coordinate of origin"
 msgstr "Współrzędna początku układu współrzędnych na osi X"
 
-#: operations/transform/transform-core.c:216
+#: operations/transform/transform-core.c:219
 msgid "Origin-y"
 msgstr "Początek układu współrzędnych na osi Y"
 
-#: operations/transform/transform-core.c:217
+#: operations/transform/transform-core.c:220
 msgid "Y coordinate of origin"
 msgstr "Współrzędna początku układu współrzędnych na osi Y"
 
-#: operations/transform/transform-core.c:224
+#: operations/transform/transform-core.c:227
 msgid "Near-z"
 msgstr "Blisko osi Z"
 
-#: operations/transform/transform-core.c:225
+#: operations/transform/transform-core.c:228
 msgid "Z coordinate of the near clipping plane"
 msgstr "Współrzędna na osi Z bliskiej płaszczyzny przycinania"
 
