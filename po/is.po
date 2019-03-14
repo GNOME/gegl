@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2019-03-03 18:31+0000\n"
-"PO-Revision-Date: 2019-03-13 11:49+0000\n"
+"PO-Revision-Date: 2019-03-14 08:53+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
 "Language: is\n"
@@ -137,7 +137,7 @@ msgstr "Ekkert"
 #: gegl/buffer/gegl-buffer-enums.c:33 operations/common/gaussian-blur.c:32
 #: operations/common/gblur-1d.c:33 operations/common/median-blur.c:35
 msgid "Clamp"
-msgstr ""
+msgstr "Festa"
 
 #: gegl/buffer/gegl-buffer-enums.c:34
 msgid "Loop"
@@ -190,11 +190,11 @@ msgstr "Lítill ljósbaugur"
 
 #: gegl/gegl-enums.c:34
 msgid "Floyd-Steinberg"
-msgstr ""
+msgstr "Floyd-Steinberg"
 
 #: gegl/gegl-enums.c:35
 msgid "Bayer"
-msgstr ""
+msgstr "Bayer"
 
 #: gegl/gegl-enums.c:36 operations/common/waterpixels.c:35
 msgid "Random"
@@ -222,7 +222,7 @@ msgstr ""
 
 #: gegl/gegl-enums.c:66
 msgid "Euclidean"
-msgstr ""
+msgstr "Evklíðskt"
 
 #: gegl/gegl-enums.c:67
 msgid "Manhattan"
@@ -230,7 +230,7 @@ msgstr "Manhattan"
 
 #: gegl/gegl-enums.c:68
 msgid "Chebyshev"
-msgstr ""
+msgstr "Chebyshev"
 
 #: gegl/gegl-enums.c:93 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/common/spherize.c:26
@@ -290,7 +290,7 @@ msgstr "Ávallt"
 
 #: gegl/gegl-init.c:214
 msgid "Where GEGL stores its swap"
-msgstr ""
+msgstr "Þar sem GEGL geymir diskminnið (swap)"
 
 #: gegl/gegl-init.c:219
 msgid "Compression algorithm used for data stored in the swap"
@@ -386,15 +386,15 @@ msgstr "HSL"
 
 #: operations/common/alien-map.c:33
 msgid "Color model"
-msgstr "Litaskali"
+msgstr "Litakerfi"
 
 #: operations/common/alien-map.c:36
 msgid "What color model used for the transformation"
-msgstr ""
+msgstr "Hvaða litakerfi er notað fyrir ummyndunina"
 
 #: operations/common/alien-map.c:38
 msgid "Component 1 frequency"
-msgstr ""
+msgstr "Litþáttur 1 tíðni"
 
 #: operations/common/alien-map.c:43
 #: operations/common-gpl3+/diffraction-patterns.c:30
@@ -408,7 +408,7 @@ msgstr "Tíðni litblæs"
 
 #: operations/common/alien-map.c:46
 msgid "Component 2 frequency"
-msgstr ""
+msgstr "Litþáttur 2 tíðni"
 
 #: operations/common/alien-map.c:51
 #: operations/common-gpl3+/diffraction-patterns.c:34
@@ -422,7 +422,7 @@ msgstr "Tíðni litmettunar"
 
 #: operations/common/alien-map.c:54
 msgid "Component 3 frequency"
-msgstr ""
+msgstr "Litþáttur 3 tíðni"
 
 #: operations/common/alien-map.c:59
 #: operations/common-gpl3+/diffraction-patterns.c:38
@@ -436,7 +436,7 @@ msgstr "Tíðni ljósleika"
 
 #: operations/common/alien-map.c:62
 msgid "Component 1 phase shift"
-msgstr ""
+msgstr "Litþáttur 1 fasaskipti"
 
 #: operations/common/alien-map.c:68
 #| msgid "Phase shift"
@@ -450,7 +450,7 @@ msgstr "Fasaskipti litblæs"
 
 #: operations/common/alien-map.c:71
 msgid "Component 2 phase shift"
-msgstr ""
+msgstr "Litþáttur 2 fasaskipti"
 
 #: operations/common/alien-map.c:77
 #| msgid "Phase shift"
@@ -464,7 +464,7 @@ msgstr "Fasaskipti litmettunar"
 
 #: operations/common/alien-map.c:80
 msgid "Component 3 phase shift"
-msgstr ""
+msgstr "Litþáttur 3 fasaskipti"
 
 #: operations/common/alien-map.c:86
 #| msgid "Phase shift"
@@ -478,39 +478,39 @@ msgstr "Fasaskipti ljósleika"
 
 #: operations/common/alien-map.c:89
 msgid "Keep component 1"
-msgstr ""
+msgstr "Halda litþætti 1"
 
 #: operations/common/alien-map.c:92
 msgid "Keep red component"
-msgstr ""
+msgstr "Halda rauðum litþætti"
 
 #: operations/common/alien-map.c:93
 msgid "Keep hue component"
-msgstr ""
+msgstr "Halda litþætti litblæs"
 
 #: operations/common/alien-map.c:95
 msgid "Keep component 2"
-msgstr ""
+msgstr "Halda litþætti 2"
 
 #: operations/common/alien-map.c:98
 msgid "Keep green component"
-msgstr ""
+msgstr "Halda grænum litþætti"
 
 #: operations/common/alien-map.c:99
 msgid "Keep saturation component"
-msgstr ""
+msgstr "Halda litþætti litmettunar"
 
 #: operations/common/alien-map.c:101
 msgid "Keep component 3"
-msgstr ""
+msgstr "Halda litþætti 3"
 
 #: operations/common/alien-map.c:104
 msgid "Keep blue component"
-msgstr ""
+msgstr "Halda bláum litþætti"
 
 #: operations/common/alien-map.c:105
 msgid "Keep lightness component"
-msgstr ""
+msgstr "Halda litþætti ljósleika"
 
 #: operations/common/alien-map.c:261
 msgid "Alien Map"
@@ -679,7 +679,7 @@ msgstr ""
 #: operations/common/recursive-transform.c:36 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
 msgid "Iterations"
-msgstr "Ítranir"
+msgstr "Ítrekanir"
 
 #: operations/common/c2g.c:43
 msgid ""
@@ -689,7 +689,7 @@ msgstr ""
 
 #: operations/common/c2g.c:48 operations/common/stress.c:44
 msgid "Enhance Shadows"
-msgstr ""
+msgstr "Bæta skugga"
 
 #: operations/common/c2g.c:49
 msgid "When enabled details in shadows are boosted at the expense of noise"
@@ -915,7 +915,7 @@ msgstr ""
 
 #: operations/common/color-rotate.c:66
 msgid "Gray threshold"
-msgstr "Gray threshold"
+msgstr "Grátónalitmörk"
 
 #: operations/common/color-rotate.c:67
 msgid "Colors with a saturation less than this will treated as gray"
@@ -923,7 +923,7 @@ msgstr ""
 
 #: operations/common/color-rotate.c:71
 msgid "Gray mode"
-msgstr "Gray mode"
+msgstr "Grátónahamur"
 
 #: operations/common/color-rotate.c:74
 msgid ""
@@ -975,7 +975,7 @@ msgstr ""
 
 #: operations/common/color-temperature.c:33
 msgid "Intended temperature"
-msgstr ""
+msgstr "Ætlað hitastig"
 
 #: operations/common/color-temperature.c:34
 msgid "Corrected estimation of the temperature of the light source in Kelvin."
@@ -1128,76 +1128,76 @@ msgstr "HSV-litgildi"
 
 #: operations/common/component-extract.c:31
 msgid "HSL Saturation"
-msgstr ""
+msgstr "HSL-litmettun"
 
 #: operations/common/component-extract.c:32
 msgid "HSL Lightness"
-msgstr ""
+msgstr "HSL-ljósleiki"
 
 #: operations/common/component-extract.c:33
 msgid "CMYK Cyan"
-msgstr ""
+msgstr "CMYK-blágrænt"
 
 #: operations/common/component-extract.c:34
 msgid "CMYK Magenta"
-msgstr ""
+msgstr "CMYK-blárautt"
 
 #: operations/common/component-extract.c:35
 msgid "CMYK Yellow"
-msgstr ""
+msgstr "CMYK-gult"
 
 #: operations/common/component-extract.c:36
 msgid "CMYK Key"
-msgstr ""
+msgstr "CMYK-svertulykill"
 
 #: operations/common/component-extract.c:37
 msgid "Y'CbCr Y'"
-msgstr ""
+msgstr "Y'CbCr Y'"
 
 #: operations/common/component-extract.c:38
 msgid "Y'CbCr Cb"
-msgstr ""
+msgstr "Y'CbCr Cb"
 
 #: operations/common/component-extract.c:39
 msgid "Y'CbCr Cr"
-msgstr ""
+msgstr "Y'CbCr Cr"
 
 #: operations/common/component-extract.c:40
 msgid "LAB L"
-msgstr ""
+msgstr "LAB L"
 
 #: operations/common/component-extract.c:41
 msgid "LAB A"
-msgstr ""
+msgstr "LAB A"
 
 #: operations/common/component-extract.c:42
 msgid "LAB B"
-msgstr ""
+msgstr "LAB B"
 
 #: operations/common/component-extract.c:43
 msgid "LCH C(ab)"
-msgstr ""
+msgstr "LCH C(ab)"
 
 #: operations/common/component-extract.c:44
 msgid "LCH H(ab)"
-msgstr ""
+msgstr "LCH H(ab)"
 
 #: operations/common/component-extract.c:45 operations/common/fattal02.c:33
 #: operations/common/noise-perlin.c:25 operations/common/noise-rgb.c:52
 msgid "Alpha"
-msgstr "Alfa"
+msgstr "Alfa-gegnsæi"
 
 #: operations/common/component-extract.c:48
 msgid "Component"
-msgstr "Íhlutur"
+msgstr "Litþáttur"
 
 #: operations/common/component-extract.c:51
 msgid "Component to extract"
-msgstr ""
+msgstr "Litþáttur sem á að ná í"
 
 #: operations/common/component-extract.c:53
 msgid "Invert component"
-msgstr ""
+msgstr "Umhverfa litþætti"
 
 #: operations/common/component-extract.c:54
 msgid "Invert the extracted component"
@@ -1214,11 +1214,11 @@ msgstr ""
 
 #: operations/common/component-extract.c:260
 msgid "Extract Component"
-msgstr "Afþjappa einingar (component)"
+msgstr "Ná í litþátt (component)"
 
 #: operations/common/component-extract.c:263
 msgid "Extract a color model component"
-msgstr ""
+msgstr "Ná í litþátt úr litakerfi"
 
 #: operations/common/contrast-curve.c:25
 msgid "Sample points"
@@ -2471,7 +2471,7 @@ msgstr ""
 
 #: operations/common/mean-curvature-blur.c:25
 msgid "Controls the number of iterations"
-msgstr ""
+msgstr "Stýrir fjölda ítrekana"
 
 #: operations/common/mean-curvature-blur.c:246
 msgid "Mean Curvature Blur"
@@ -3225,15 +3225,14 @@ msgstr ""
 
 #: operations/common/recursive-transform.c:32
 #: operations/common/recursive-transform.c:33
-#, fuzzy
 #| msgid "Iterations"
 msgid "First iteration"
-msgstr "Ítranir"
+msgstr "Fyrsta ítrekun"
 
 #: operations/common/recursive-transform.c:37 operations/common/slic.c:39
 #| msgid "Number of colors"
 msgid "Number of iterations"
-msgstr "Fjöldi endurtekninga"
+msgstr "Fjöldi ítrekana"
 
 #: operations/common/recursive-transform.c:40
 #| msgid "From Color"
@@ -3408,7 +3407,7 @@ msgstr "Klasastærð"
 
 #: operations/common/slic.c:457
 msgid "Simple Linear Iterative Clustering"
-msgstr "Einföld línuleg endurtekin klösun"
+msgstr "Einföld línuleg ítrekuð klösun"
 
 #: operations/common/slic.c:460
 msgid "Superpixels based on k-means clustering"
@@ -6076,10 +6075,9 @@ msgid "File system path to ICC matrix profile to load"
 msgstr ""
 
 #: operations/core/cast-space.c:128
-#, fuzzy
 #| msgid "Color Enhance"
 msgid "Cast color space"
-msgstr "Bæta liti"
+msgstr "Varpa litarýmd"
 
 #: operations/core/cast-space.c:130
 msgid ""
@@ -6170,10 +6168,9 @@ msgid "path of file to write to."
 msgstr ""
 
 #: operations/external/exr-save.cc:27
-#, fuzzy
 #| msgid "Tile size"
 msgid "tile size to use."
-msgstr "Reitastærð"
+msgstr "flísastærð sem á að nota."
 
 #: operations/external/ff-load.c:30
 msgid "Path of video file to load"
@@ -6437,7 +6434,7 @@ msgstr "Get ekki umbreytt mynd í sRGB litarýmd "
 #, c-format
 #| msgid "Unsupported JPEG 2000 file with depth %d in '%s'"
 msgid "Unsupported non-RGB JPEG 2000 file with %d components"
-msgstr "Óstudd ekki-RGB JPEG 2000 skrá með %d einingum"
+msgstr "Óstudd ekki-RGB JPEG 2000 skrá með %d litþáttum"
 
 #: operations/external/jp2-load.c:169
 #, c-format
@@ -6657,7 +6654,7 @@ msgstr "Stífleiki"
 
 #: operations/external/npd.c:32
 msgid "The number of deformation iterations"
-msgstr ""
+msgstr "Hámarksfjöldi ítrekana við aflögun"
 
 #: operations/external/npd.c:34
 msgid "ASAP Deformation"
@@ -7029,9 +7026,8 @@ msgid "Font family (utf8)"
 msgstr "Leturtegund (utf8)"
 
 #: operations/external/text.c:33
-#, fuzzy
 msgid "Font size in pixels."
-msgstr "Stærð leturs í my_nddílum"
+msgstr "Stærð leturs í mynddílum."
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/external/text.c:39
@@ -7715,10 +7711,9 @@ msgid "Bayer Matrix"
 msgstr ""
 
 #: operations/workshop/bayer-matrix.c:329
-#, fuzzy
 #| msgid "Create a checkerboard pattern"
 msgid "Generate a Bayer matrix pattern"
-msgstr "Búa til köflótta reiti"
+msgstr "Búa til Bayer-fylkismynstur"
 
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
@@ -8309,10 +8304,9 @@ msgid "Number of samples along each axis per pixel"
 msgstr ""
 
 #: operations/workshop/linear-sinusoid.c:299
-#, fuzzy
 #| msgid "Sinusoidal"
 msgid "Linear Sinusoid"
-msgstr "Sinusoidal"
+msgstr "Línulegt sínusfall"
 
 #: operations/workshop/linear-sinusoid.c:304
 #, fuzzy
@@ -8330,19 +8324,18 @@ msgstr ""
 
 #: operations/workshop/segment-kmeans.c:27
 #: operations/workshop/segment-kmeans.c:28
-#, fuzzy
 #| msgid "Number of colors"
 msgid "Number of clusters"
-msgstr "Fjöldi lita"
+msgstr "Fjöldi klasa"
 
 #: operations/workshop/segment-kmeans.c:32
 #| msgid "Iterations"
 msgid "Max. Iterations"
-msgstr "Hám. ítranir"
+msgstr "Hám. ítrekanir"
 
 #: operations/workshop/segment-kmeans.c:33
 msgid "Maximum number of iterations"
-msgstr ""
+msgstr "Hámarksfjöldi ítrekana"
 
 #: operations/workshop/segment-kmeans.c:392
 msgid "K-means Segmentation"
