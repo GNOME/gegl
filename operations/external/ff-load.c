@@ -165,12 +165,6 @@ static void
 init (GeglProperties *o)
 {
   Priv       *p = (Priv*)o->user_data;
-  static gint av_inited = 0;
-  if (av_inited == 0)
-    {
-      av_register_all ();
-      av_inited = 1;
-    }
 
   if (p == NULL)
     {
@@ -243,7 +237,7 @@ decode_audio (GeglOperation *operation,
             while (samples_left)
             {
                int sample_count = samples_left;
-               int channels = MIN(p->audio_stream->codec->channels, GEGL_MAX_AUDIO_CHANNELS);
+               int channels = MIN(p->audio_stream->codecpar->channels, GEGL_MAX_AUDIO_CHANNELS);
                GeglAudioFragment *af = gegl_audio_fragment_new (o->audio_sample_rate, channels,
                           AV_CH_LAYOUT_STEREO, samples_left);
 //);
@@ -456,13 +450,13 @@ prepare (GeglOperation *operation)
 
       for (i = 0; i< p->video_fcontext->nb_streams; i++)
         {
-          AVCodecContext *c = p->video_fcontext->streams[i]->codec;
-          if (c->codec_type == AVMEDIA_TYPE_VIDEO)
+          AVCodecParameters *codecpar = p->video_fcontext->streams[i]->codecpar;
+          if (codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
             {
               p->video_stream = p->video_fcontext->streams[i];
               p->video_index = i;
             }
-          if (c->codec_type == AVMEDIA_TYPE_AUDIO)
+          if (codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
             {
               p->audio_stream = p->audio_fcontext->streams[i];
               p->audio_index = i;
@@ -471,7 +465,7 @@ prepare (GeglOperation *operation)
 
       if (p->video_stream)
         {
-          p->video_codec = avcodec_find_decoder (p->video_stream->codec->codec_id);
+          p->video_codec = avcodec_find_decoder (p->video_stream->codecpar->codec_id);
           if (p->video_codec == NULL)
             g_warning ("video codec not found");
           p->video_stream->codec->err_recognition = AV_EF_IGNORE_ERR |
@@ -489,7 +483,7 @@ prepare (GeglOperation *operation)
 
       if (p->audio_stream)
         {
-          p->audio_codec = avcodec_find_decoder (p->audio_stream->codec->codec_id);
+          p->audio_codec = avcodec_find_decoder (p->audio_stream->codecpar->codec_id);
           if (p->audio_codec == NULL)
             g_warning ("audio codec not found");
           else if (avcodec_open2 (p->audio_stream->codec, p->audio_codec, NULL) < 0)
@@ -498,15 +492,15 @@ prepare (GeglOperation *operation)
             }
           else
             {
-              o->audio_sample_rate = p->audio_stream->codec->sample_rate;
-              o->audio_channels = MIN(p->audio_stream->codec->channels, GEGL_MAX_AUDIO_CHANNELS);
+              o->audio_sample_rate = p->audio_stream->codecpar->sample_rate;
+              o->audio_channels = MIN(p->audio_stream->codecpar->channels, GEGL_MAX_AUDIO_CHANNELS);
             }
         }
 
       if (p->video_stream)
         {
-          p->width = p->video_stream->codec->width;
-          p->height = p->video_stream->codec->height;
+          p->width = p->video_stream->codecpar->width;
+          p->height = p->video_stream->codecpar->height;
         }
       p->lavc_frame = av_frame_alloc ();
 
@@ -556,8 +550,8 @@ prepare (GeglOperation *operation)
             p->codec_delay = 1;
           else if (!strcmp (o->video_codec, "h264"))
             {
-               if (strstr (p->video_fcontext->filename, ".mp4") ||
-                   strstr (p->video_fcontext->filename, ".MP4"))
+               if (strstr (p->loadedfilename, ".mp4") ||
+                   strstr (p->loadedfilename, ".MP4"))
  /* XXX: too hacky, isn't there an avformat thing to use?,
  or perhaps we can measure this when decoding the first frame.
  */
@@ -707,12 +701,12 @@ process (GeglOperation       *operation,
         if (p->audio_stream)
         {
           int sample_count;
-          gegl_audio_fragment_set_sample_rate (o->audio, p->audio_stream->codec->sample_rate);
+          gegl_audio_fragment_set_sample_rate (o->audio, p->audio_stream->codecpar->sample_rate);
           gegl_audio_fragment_set_channels    (o->audio, 2);
           gegl_audio_fragment_set_channel_layout    (o->audio, GEGL_CH_LAYOUT_STEREO);
 
           samples_per_frame (o->frame,
-               o->frame_rate, p->audio_stream->codec->sample_rate,
+               o->frame_rate, p->audio_stream->codecpar->sample_rate,
                &sample_count,
                &sample_start);
 
