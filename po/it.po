@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2019-03-11 22:04+0100\n"
-"PO-Revision-Date: 2019-03-13 11:19+0100\n"
+"PO-Revision-Date: 2019-03-21 09:56+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -3022,7 +3022,7 @@ msgstr "Il seme casuale per la funzione di disturbo"
 
 #: operations/common/noise-cell.c:432
 msgid "Cell Noise"
-msgstr "Disturbo cellula"
+msgstr "Disturbo cellule"
 
 #: operations/common/noise-cell.c:436
 msgid "Generates a cellular texture."
@@ -5643,11 +5643,11 @@ msgstr "Fattore di complessità"
 
 #: operations/common-gpl3+/sinus.c:52
 msgid "Force tiling"
-msgstr "Forza la piastrellatura"
+msgstr "Forza l'affiancabilità"
 
 #: operations/common-gpl3+/sinus.c:53
 msgid "If set, the pattern generated will tile"
-msgstr "Se impostata, il motivo generato verrà piastrellato"
+msgstr "Se impostata, il motivo generato sarà affiancabile"
 
 #: operations/common-gpl3+/sinus.c:55
 msgid "Distorted"
