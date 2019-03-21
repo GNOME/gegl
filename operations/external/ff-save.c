@@ -303,7 +303,7 @@ add_audio_stream (GeglProperties *o, AVFormatContext * oc, int codec_id)
 }
 #endif
 
-static void
+static gboolean
 open_audio (GeglProperties *o, AVFormatContext * oc, AVStream * st)
 {
   AVCodecContext *c;
@@ -317,7 +317,7 @@ open_audio (GeglProperties *o, AVFormatContext * oc, AVStream * st)
   if (!codec)
     {
       fprintf (stderr, "codec not found\n");
-      exit (1);
+      return FALSE;
     }
   c->bit_rate = o->audio_bit_rate * 1000;
   c->sample_fmt = codec->sample_fmts ? codec->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
@@ -356,8 +356,10 @@ open_audio (GeglProperties *o, AVFormatContext * oc, AVStream * st)
   if (avcodec_open2 (c, codec, NULL) < 0)
     {
       fprintf (stderr, "could not open codec\n");
-      exit (1);
+      return FALSE;
     }
+
+  return TRUE;
 }
 
 static AVFrame *alloc_audio_frame(enum AVSampleFormat sample_fmt,
@@ -665,13 +667,14 @@ alloc_picture (int pix_fmt, int width, int height)
   return picture;
 }
 
-static void
+static gboolean
 open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
 {
   Priv           *p = (Priv*)o->user_data;
   AVCodec  *codec;
   AVCodecContext *c;
   AVDictionary *codec_options = {0};
+  int           ret;
 
   c = st->codec;
 
@@ -680,7 +683,7 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
   if (!codec)
     {
       fprintf (stderr, "codec not found\n");
-      exit (1);
+      return FALSE;
     }
 
   if (codec->pix_fmts){
@@ -699,10 +702,10 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
 #endif
 
   /* open the codec */
-  if (avcodec_open2 (c, codec, &codec_options) < 0)
+  if ((ret = avcodec_open2 (c, codec, &codec_options)) < 0)
     {
-      fprintf (stderr, "could not open codec\n");
-      exit (1);
+      fprintf (stderr, "could not open codec: %s\n", av_err2str (ret));
+      return FALSE;
     }
 
   p->video_outbuf = NULL;
@@ -720,7 +723,7 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
   if (!p->picture)
     {
       fprintf (stderr, "Could not allocate picture\n");
-      exit (1);
+      return FALSE;
     }
 
   /* if the output format is not YUV420P, then a temporary YUV420P
@@ -733,9 +736,11 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
       if (!p->tmp_picture)
         {
           fprintf (stderr, "Could not allocate temporary picture\n");
-          exit (1);
+          return FALSE;
         }
     }
+
+  return TRUE;
 }
 
 static void
@@ -965,11 +970,11 @@ tfile (GeglProperties *o)
     }
 
 
-  if (p->video_st)
-    open_video (o, p->oc, p->video_st);
+  if (p->video_st && ! open_video (o, p->oc, p->video_st))
+    return -1;
 
-  if (p->audio_st)
-    open_audio (o, p->oc, p->audio_st);
+  if (p->audio_st && ! open_audio (o, p->oc, p->audio_st))
+    return -1;
 
   av_dump_format (p->oc, 0, o->path, 1);
 
@@ -1035,18 +1040,22 @@ process (GeglOperation       *operation,
 
   if (!p->file_inited)
     {
-      tfile (o);
-      p->file_inited = 1;
+      if (tfile (o) == 0)
+        p->file_inited = 1;
     }
 
-  write_video_frame (o, p->oc, p->video_st);
-  if (p->audio_st)
-  {
-    write_audio_frame (o, p->oc, p->audio_st);
-    //flush_audio (o);
-  }
+  if (p->file_inited)
+    {
+      write_video_frame (o, p->oc, p->video_st);
+      if (p->audio_st)
+        {
+          write_audio_frame (o, p->oc, p->audio_st);
+          //flush_audio (o);
+        }
 
-  return  TRUE;
+      return  TRUE;
+    }
+  return FALSE;
 }
 
 
@@ -1083,15 +1092,19 @@ finalize (GObject *object)
   if (o->user_data)
     {
       Priv *p = (Priv*)o->user_data;
-      flush_audio (o);
-      flush_video (o);
 
-      av_write_trailer (p->oc);
+      if (p->file_inited)
+        {
+          flush_audio (o);
+          flush_video (o);
 
-      if (p->video_st)
-        close_video (p, p->oc, p->video_st);
-      if (p->audio_st)
-        close_audio (p, p->oc, p->audio_st);
+          av_write_trailer (p->oc);
+
+          if (p->video_st)
+            close_video (p, p->oc, p->video_st);
+          if (p->audio_st)
+            close_audio (p, p->oc, p->audio_st);
+        }
 
       avio_closep (&p->oc->pb);
       avformat_free_context (p->oc);
