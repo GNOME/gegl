@@ -3996,9 +3996,14 @@ static void iterate_frame (GeState *o)
            temp_buf[i*2+1] = audio->data[1][i] * 32767.0 * 0.46;
          }
 
-         mrg_pcm_queue (mrg, (void*)&temp_buf[0], sample_count);
-         while (mrg_pcm_get_queued (mrg) > sample_count / 2)
-            g_usleep (50);
+           mrg_pcm_queue (mrg, (void*)&temp_buf[0], sample_count);
+
+           /* after queing our currently decoded audio frame, we
+              wait until the pcm buffer is nearly ready to play
+              back our content
+            */
+           while (mrg_pcm_get_queued_length (mrg) > (1.0/fps) * 1.25  )
+              g_usleep (100);
          }
 
 
@@ -4798,10 +4803,6 @@ static void gegl_ui (Mrg *mrg, void *data)
        break;
   }
 
-  if (o->playing)
-  {
-    iterate_frame (o);
-  }
 
   if (o->show_controls && 0)
   {
@@ -5007,6 +5008,15 @@ static void gegl_ui (Mrg *mrg, void *data)
   if (o->show_bindings)
   {
      ui_show_bindings (mrg, o);
+  }
+
+  /* iterate frame, and queue pcm last - since this might cause
+     waiting with presenting the video frame until the pcm data
+     of the frame is about to be played
+   */
+  if (o->playing)
+  {
+    iterate_frame (o);
   }
 
 }
