@@ -11,6 +11,7 @@ void mrg_gegl_buffer_blit (Mrg *mrg,
                            float u, float v,
                            float scale,
                            float preview_multiplier,
+                           int   nearest_neighbor,
                            int   color_manage);
 
 
@@ -21,6 +22,7 @@ void mrg_gegl_blit (Mrg *mrg,
                     float u, float v,
                     float scale,
                     float preview_multiplier,
+                    int   nearest_neighbor,
                     int   color_manage);
 
 

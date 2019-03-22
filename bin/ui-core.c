@@ -443,6 +443,7 @@ Setting settings[]=
   INT_PROP(show_bounding_box, "show bounding box of active node"),
   INT_PROP(show_controls, "show image viewer controls (maybe merge with show-graph and give better name)"),
   INT_PROP(slide_enabled, "slide show going"),
+  INT_PROP(nearest_neighbor, "nearest neighbor"),
   FLOAT_PROP(slide_pause, "display scale factor"),
 
 };
@@ -4781,6 +4782,7 @@ static void gegl_ui (Mrg *mrg, void *data)
                       o->u, o->v,
                       o->scale,
                       o->render_quality,
+                      o->nearest_neighbor,
                       o->color_managed_display);
      break;
      case GEGL_RENDERER_THREAD:
@@ -4795,6 +4797,7 @@ static void gegl_ui (Mrg *mrg, void *data)
                                o->u, o->v,
                                o->scale,
                                o->render_quality,
+                               o->nearest_neighbor,
                                o->color_managed_display);
          g_object_unref (buffer);
        } else {

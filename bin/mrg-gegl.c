@@ -69,6 +69,7 @@ void mrg_gegl_buffer_blit (Mrg *mrg,
                            float u, float v,
                            float scale,
                            float preview_multiplier,
+                           int   nearest_neighbor,
                            int   color_manage_display)
 {
   float fake_factor = preview_multiplier;
@@ -165,7 +166,7 @@ void mrg_gegl_buffer_blit (Mrg *mrg,
       fmt = fmt_srgb;
     }
     gegl_buffer_get (buffer, &roi, scale / fake_factor, fmt, buf, width * 4,
-         GEGL_ABYSS_NONE);
+         GEGL_ABYSS_NONE | (nearest_neighbor?GEGL_BUFFER_FILTER_NEAREST:0));
     surface = cairo_image_surface_create_for_data (buf, CAIRO_FORMAT_RGB24, width, height, width * 4);
   }
 
@@ -204,6 +205,7 @@ void mrg_gegl_blit (Mrg *mrg,
                     float u, float v,
                     float scale,
                     float preview_multiplier,
+                    int nearest_neighbor,
                     int color_manage_display)
 {
   float fake_factor = preview_multiplier;
@@ -272,9 +274,8 @@ void mrg_gegl_blit (Mrg *mrg,
       fmt = fmt_srgb;
     }
 
-
     gegl_node_blit (node, scale / fake_factor, &roi, fmt, buf, width * 4,
-         GEGL_BLIT_DEFAULT);
+         GEGL_BLIT_DEFAULT | (nearest_neighbor?GEGL_BUFFER_FILTER_NEAREST:0));
   surface = cairo_image_surface_create_for_data (buf, CAIRO_FORMAT_RGB24, width, height, width * 4);
   }
 

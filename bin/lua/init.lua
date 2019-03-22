@@ -74,6 +74,7 @@ struct _GeState {
   int          is_fit;
   int          show_bounding_box;
   float        dir_scale;
+  int          nearest_neighbor;
   float        render_quality; /* default (and in code swapped for preview_quality during preview rendering, this is the canonical read location for the value)  */
   float        preview_quality;
 
