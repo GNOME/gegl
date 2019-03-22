@@ -91,6 +91,9 @@ struct _GeglNode
 
   gint            passthrough;
 
+  gboolean        success;
+  GError         *error;
+
   /*< private >*/
   GeglNodePrivate *priv;
 };

@@ -239,6 +239,8 @@ gegl_node_init (GeglNode *self)
   self->is_graph         = FALSE;
   self->cache            = NULL;
   self->output_visitable = gegl_node_output_visitable_new (self);
+  self->success          = FALSE;
+  self->error            = NULL;
   g_mutex_init (&self->mutex);
 
 }
@@ -288,6 +290,7 @@ gegl_node_finalize (GObject *gobject)
   g_clear_object (&self->output_visitable);
   g_free (self->priv->name);
   g_free (self->priv->debug_name);
+  g_clear_error (&self->error);
 
   g_mutex_clear (&self->mutex);
 
@@ -1848,6 +1851,24 @@ gegl_node_process (GeglNode *self) /* XXX: add level argument?  */
 
   while (gegl_processor_work (processor, NULL)) ;
   g_object_unref (processor);
+}
+
+gboolean
+gegl_node_process_success (GeglNode  *self,
+                           GError   **error)
+{
+  GeglNode *real_node;
+
+  /* If @self is a graph, the error will be set on its output proxy. */
+  if (GEGL_IS_OPERATION (self->operation))
+    real_node = self;
+  else
+    real_node = gegl_node_get_output_proxy (self, "output");
+
+  if (error && ! real_node->success && real_node->error)
+    *error = g_error_copy (real_node->error);
+
+  return real_node->success;
 }
 
 GeglNode *

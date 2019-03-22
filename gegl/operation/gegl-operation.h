@@ -133,6 +133,9 @@ struct _GeglOperationClass
   /* Compute the rectangular region output roi for the specified output_pad.
    * For operations that are sinks (have no output pads), roi is the rectangle
    * to consume and the output_pad argument is to be ignored.
+   * If the processing may fail and return FALSE, your implementation should
+   * call gegl_operation_set_error() before returning FALSE (if you don't, GEGL
+   * will only be able to report a generic error).
    */
   gboolean      (*process)                   (GeglOperation        *operation,
                                               GeglOperationContext *context,
@@ -194,6 +197,21 @@ gboolean        gegl_operation_process       (GeglOperation *operation,
                                               const gchar          *output_pad,
                                               const GeglRectangle  *roi,
                                               gint                  level);
+/**
+ * gegl_operation_set_error:
+ * @operation: the #GeglOperation.
+ * @error: a #GError.
+ *
+ * Document the error encountered by an operation.
+ * This should typically be used in GeglOperation subclasses when they return
+ * #FALSE in their implementation of process(). You should not set an error
+ * while returning TRUE.
+ * Note that @error is propagated to the caller and therefore no longer valid
+ * after this call. In particular you should not try to free it (if you wish to
+ * reuse the variable, just set it to NULL).
+ */
+void            gegl_operation_set_error     (GeglOperation *operation,
+                                              GError        *error);
 
 /* create a pad for a specified property for this operation, this method is
  * to be called from the attach method of operations, most operations do not
