@@ -79,11 +79,12 @@ gegl_operation_temporal_get_frame (GeglOperation *op,
   return buffer;
 }
 
-static gboolean gegl_operation_temporal_process (GeglOperation       *self,
-                                                 GeglBuffer          *input,
-                                                 GeglBuffer          *output,
-                                                 const GeglRectangle *result,
-                                                 gint                 level)
+static gboolean gegl_operation_temporal_process2 (GeglOperation       *self,
+                                                  GeglBuffer          *input,
+                                                  GeglBuffer          *output,
+                                                  const GeglRectangle *result,
+                                                  gint                 level,
+                                                  GError             **error)
 {
   GeglOperationTemporal *temporal = GEGL_OPERATION_TEMPORAL (self);
   GeglOperationTemporalPrivate *priv = temporal->priv;
@@ -105,7 +106,9 @@ static gboolean gegl_operation_temporal_process (GeglOperation       *self,
      priv->next_to_write=0;
   }
 
- if (temporal_class->process)
+ if (temporal_class->process2)
+   return temporal_class->process2 (self, input, output, result, level, error);
+ else
    return temporal_class->process (self, input, output, result, level);
  return FALSE;
 }
@@ -125,7 +128,7 @@ gegl_operation_temporal_class_init (GeglOperationTemporalClass *klass)
   GeglOperationFilterClass *operation_filter_class = GEGL_OPERATION_FILTER_CLASS (klass);
 
   operation_class->prepare = gegl_operation_temporal_prepare;
-  operation_filter_class->process = gegl_operation_temporal_process;
+  operation_filter_class->process2 = gegl_operation_temporal_process2;
 }
 
 static void

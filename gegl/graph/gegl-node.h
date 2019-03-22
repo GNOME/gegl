@@ -342,6 +342,22 @@ void          gegl_node_blit_buffer      (GeglNode            *node,
  */
 void          gegl_node_process          (GeglNode      *sink_node);
 
+/**
+ * gegl_node_process_success:
+ * @node: a #GeglNode.
+ * @error: (out): an optional error string.
+ *
+ * Returns: TRUE is the last call to gegl_node_process(), gegl_node_blit() or
+ * gegl_node_blit_buffer() on @node was a success, FALSE otherwise.
+ *
+ * This will also return the success from a call to gegl_processor_work() if
+ * you use the node given to gegl_node_new_processor().
+ *
+ * In case of failure and if @error was not NULL, a copy of the error string
+ * will be allocated.
+ */
+gboolean      gegl_node_process_success  (GeglNode      *node,
+                                          GError       **error);
 
 /***
  * Reparenting:

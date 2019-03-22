@@ -41,14 +41,22 @@ struct _GeglOperationComposer3Class
 {
   GeglOperationClass parent_class;
 
-  gboolean (* process) (GeglOperation       *self,
-                        GeglBuffer          *input,
-                        GeglBuffer          *aux,
-                        GeglBuffer          *aux2,
-                        GeglBuffer          *output,
-                        const GeglRectangle *result,
-                        gint                 level);
-  gpointer              pad[4];
+  gboolean (* process)  (GeglOperation       *self,
+                         GeglBuffer          *input,
+                         GeglBuffer          *aux,
+                         GeglBuffer          *aux2,
+                         GeglBuffer          *output,
+                         const GeglRectangle *result,
+                         gint                 level);
+  gboolean (* process2) (GeglOperation       *self,
+                         GeglBuffer          *input,
+                         GeglBuffer          *aux,
+                         GeglBuffer          *aux2,
+                         GeglBuffer          *output,
+                         const GeglRectangle *result,
+                         gint                 level,
+                         GError             **error);
+  gpointer               pad[4];
 };
 
 GType gegl_operation_composer3_get_type (void) G_GNUC_CONST;

@@ -785,20 +785,20 @@ gegl_processor_work (GeglProcessor *processor,
       *progress = 1.0;
     }
 
+  more_work = FALSE;
   if (processor->context)
     {
       /* the actual writing to the destination */
-      gegl_operation_process (processor->real_node->operation,
-                              processor->context,
-                              "output"  /* ignored output_pad */,
-                              &processor->context->result_rect, processor->context->level);
+      more_work = gegl_operation_process (processor->real_node->operation,
+                                          processor->context,
+                                          "output"  /* ignored output_pad */,
+                                          &processor->context->result_rect, processor->context->level);
+      processor->real_node->success = more_work;
       gegl_operation_context_destroy (processor->context);
       processor->context = NULL;
-
-      return TRUE;
     }
 
-  return FALSE;
+  return more_work;
 }
 
 GeglProcessor *

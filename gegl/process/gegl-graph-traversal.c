@@ -396,6 +396,7 @@ gegl_graph_get_shared_empty (GeglGraphTraversal *path)
 /**
  * gegl_graph_process:
  * @path: The traversal path
+ * @error: an optional #GError.
  *
  * Process the prepared request. This will return the
  * resulting buffer from the final node, or NULL if
@@ -404,18 +405,22 @@ gegl_graph_get_shared_empty (GeglGraphTraversal *path)
  * If gegl_graph_prepare_request has not been called
  * the behavior of this function is undefined.
  *
- * Return value: (transfer full): The result of the graph, or NULL if
- * there is no output pad.
+ * Return value: (transfer full): The result of the graph, or #NULL either if
+ * there is no output pad or if an error was encountered. If @error is not
+ * #NULL, it will be set in case of error.
+
  */
 GeglBuffer *
-gegl_graph_process (GeglGraphTraversal *path,
-                    gint                level)
+gegl_graph_process (GeglGraphTraversal  *path,
+                    gint                 level,
+                    GError             **error)
 {
   GList *list_iter = NULL;
   GeglBuffer *result = NULL;
   GeglOperationContext *context = NULL;
   GeglOperationContext *last_context = NULL;
   GeglBuffer *operation_result = NULL;
+  gboolean    success = TRUE;
 
   for (list_iter = g_queue_peek_head_link (&path->path);
        list_iter;
@@ -467,7 +472,16 @@ gegl_graph_process (GeglGraphTraversal *path,
               /* note: this hard-coding of "output" makes some more custom
                * graph topologies harder than necessary.
                */
-              gegl_operation_process (operation, context, "output", &context->need_rect, context->level);
+              if (! gegl_operation_process (operation, context, "output", &context->need_rect, context->level))
+                {
+                  /* Propagate the error to the calling node, because this is
+                   * where we will look when checking for errors.
+                   */
+                  g_propagate_error (error, operation->node->error);
+                  operation->node->error = NULL;
+                  success = FALSE;
+                  break;
+                }
               operation_result = GEGL_BUFFER (gegl_operation_context_get_object (context, "output"));
 
               if (operation_result && operation_result == (GeglBuffer *)operation->node->cache)
@@ -507,10 +521,13 @@ gegl_graph_process (GeglGraphTraversal *path,
     }
   if (last_context)
     {
-      if (operation_result)
-        result = g_object_ref (operation_result);
-      else if (gegl_node_has_pad (last_context->operation->node, "output"))
-        result = g_object_ref (gegl_graph_get_shared_empty (path));
+      if (success)
+        {
+          if (operation_result)
+            result = g_object_ref (operation_result);
+          else if (gegl_node_has_pad (last_context->operation->node, "output"))
+            result = g_object_ref (gegl_graph_get_shared_empty (path));
+        }
       gegl_operation_context_purge (last_context);
     }
 

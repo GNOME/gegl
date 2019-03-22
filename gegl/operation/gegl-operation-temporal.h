@@ -48,12 +48,18 @@ typedef struct _GeglOperationTemporalClass GeglOperationTemporalClass;
 struct _GeglOperationTemporalClass
 {
   GeglOperationFilterClass parent_class;
-  gboolean (* process) (GeglOperation       *self,
-                        GeglBuffer          *input,
-                        GeglBuffer          *output,
-                        const GeglRectangle *roi,
-                        gint                 level);
-  gpointer              pad[4];
+  gboolean (* process)  (GeglOperation       *self,
+                         GeglBuffer          *input,
+                         GeglBuffer          *output,
+                         const GeglRectangle *roi,
+                         gint                 level);
+  gboolean (* process2) (GeglOperation       *self,
+                         GeglBuffer          *input,
+                         GeglBuffer          *output,
+                         const GeglRectangle *roi,
+                         gint                 level,
+                         GError             **error);
+  gpointer               pad[4];
 };
 
 GType gegl_operation_temporal_get_type (void) G_GNUC_CONST;

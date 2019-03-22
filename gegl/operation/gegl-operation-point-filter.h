@@ -50,15 +50,22 @@ struct _GeglOperationPointFilterClass
 {
   GeglOperationFilterClass parent_class;
 
-  gboolean (* process) (GeglOperation      *self,    /* for parameters    */
-                        void               *in_buf,  /* input buffer      */
-                        void               *out_buf, /* output buffer     */
-                        glong               samples, /* number of samples */
-                        const GeglRectangle *roi,    /* rectangle out_buf spans
-                                                        in in buffer, see the
-                                                        checkerboard op for
-                                                        semantics */
-                        gint                 level);
+  gboolean (* process)    (GeglOperation       *self,    /* for parameters    */
+                           void                *in_buf,  /* input buffer      */
+                           void                *out_buf, /* output buffer     */
+                           glong                samples, /* number of samples */
+                           const GeglRectangle *roi,    /* rectangle out_buf spans
+                                                           in in buffer, see the
+                                                           checkerboard op for
+                                                           semantics */
+                           gint                 level);
+  gboolean (* process2)   (GeglOperation       *self,
+                           void                *in_buf,
+                           void                *out_buf,
+                           glong                samples,
+                           const GeglRectangle *roi,
+                           gint                 level,
+                           GError             **error);
   gboolean (* cl_process) (GeglOperation       *self,
                            cl_mem               in_tex,
                            cl_mem               out_tex,

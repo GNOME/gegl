@@ -50,13 +50,21 @@ struct _GeglOperationPointComposerClass
 {
   GeglOperationComposerClass parent_class;
 
-  gboolean (* process) (GeglOperation       *self,      /* for parameters      */
-                        void                *in,
-                        void                *aux,
-                        void                *out,
-                        glong                samples, /* number of samples   */
-                        const GeglRectangle *roi,     /* rectangular region in output buffer */
-                        gint                 level);
+  gboolean (* process)    (GeglOperation       *self,      /* for parameters      */
+                           void                *in,
+                           void                *aux,
+                           void                *out,
+                           glong                samples, /* number of samples   */
+                           const GeglRectangle *roi,     /* rectangular region in output buffer */
+                           gint                 level);
+  gboolean (* process2)   (GeglOperation       *self,
+                           void                *in,
+                           void                *aux,
+                           void                *out,
+                           glong                samples,
+                           const GeglRectangle *roi,
+                           gint                 level,
+                           GError             **error);
 
   gboolean (* cl_process) (GeglOperation       *self,
                            cl_mem               in_tex,

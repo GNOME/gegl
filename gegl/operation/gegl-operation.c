@@ -20,6 +20,7 @@
 #include "config.h"
 
 #include <glib-object.h>
+#include <glib/gi18n-lib.h>
 #include <string.h>
 
 #include "gegl.h"
@@ -146,20 +147,31 @@ gegl_operation_process (GeglOperation        *operation,
                         const GeglRectangle  *result,
                         gint                  level)
 {
-  GeglOperationClass  *klass;
+  GeglOperationClass *klass;
+  gboolean            success = TRUE;
 
   g_return_val_if_fail (GEGL_IS_OPERATION (operation), FALSE);
 
   klass = GEGL_OPERATION_GET_CLASS (operation);
 
+  operation->node->success = TRUE;
+  g_clear_error (&operation->node->error);
+
   if (!strcmp (output_pad, "output") &&
       (result->width == 0 || result->height == 0))
     {
       GeglBuffer *output = gegl_buffer_new (NULL, NULL);
-      g_warning ("%s Eeek: processing 0px rectangle", G_STRLOC);
+
+      operation->node->error = g_error_new (g_quark_from_static_string ("gegl"),
+                                            0, _("Operation %s failed: %s"),
+                                            gegl_operation_get_name (operation),
+                                            _("processing 0px rectangle."));
+      operation->node->success = FALSE;
+
       /* when this case is hit.. we've done something bad.. */
       gegl_operation_context_take_object (context, "output", G_OBJECT (output));
-      return TRUE;
+
+      return FALSE;
     }
 
   if (operation->node->passthrough)
@@ -169,9 +181,22 @@ gegl_operation_process (GeglOperation        *operation,
     return TRUE;
   }
 
-  g_return_val_if_fail (klass->process, FALSE);
+  g_return_val_if_fail (klass->process || klass->process2, FALSE);
 
-  return klass->process (operation, context, output_pad, result, level);
+  if (klass->process2)
+    success = klass->process2 (operation, context, output_pad, result, level,
+                               &operation->node->error);
+  else
+    success = klass->process (operation, context, output_pad, result, level);
+
+  operation->node->success = success;
+  if (! success && operation->node->error == NULL)
+    operation->node->error = g_error_new (g_quark_from_static_string ("gegl"),
+                                          0, _("Operation %s failed: %s"),
+                                          gegl_operation_get_name (operation),
+                                          _("unknown error."));
+
+  return success;
 }
 
 /* Calls an extending class' get_bound_box method if defined otherwise

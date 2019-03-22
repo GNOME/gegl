@@ -26,11 +26,12 @@
 #include "gegl-operation-context.h"
 #include "gegl-types-internal.h"
 
-static gboolean gegl_operation_point_render_process
+static gboolean gegl_operation_point_render_process2
                               (GeglOperation       *operation,
                                GeglBuffer          *output,
                                const GeglRectangle *result,
-                               gint                 level);
+                               gint                 level,
+                               GError             **error);
 
 G_DEFINE_TYPE (GeglOperationPointRender, gegl_operation_point_render, GEGL_TYPE_OPERATION_SOURCE)
 
@@ -54,7 +55,7 @@ gegl_operation_point_render_class_init (GeglOperationPointRenderClass *klass)
   GeglOperationSourceClass *source_class    = GEGL_OPERATION_SOURCE_CLASS (klass);
   GeglOperationClass       *operation_class = GEGL_OPERATION_CLASS (klass);
 
-  source_class->process    = gegl_operation_point_render_process;
+  source_class->process2    = gegl_operation_point_render_process2;
   operation_class->prepare = prepare;
 
   operation_class->detect = detect;
@@ -68,10 +69,11 @@ gegl_operation_point_render_init (GeglOperationPointRender *self)
 
 
 static gboolean
-gegl_operation_point_render_process (GeglOperation       *operation,
-                                     GeglBuffer          *output,
-                                     const GeglRectangle *result,
-                                     gint                 level)
+gegl_operation_point_render_process2 (GeglOperation       *operation,
+                                      GeglBuffer          *output,
+                                      const GeglRectangle *result,
+                                      gint                 level,
+                                      GError             **error)
 {
   const Babl *out_format;
   GeglOperationPointRenderClass *point_render_class;
@@ -102,7 +104,15 @@ gegl_operation_point_render_process (GeglOperation       *operation,
                                                         GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE, 2);
 
       while (gegl_buffer_iterator_next (i))
-          point_render_class->process (operation, i->items[0].data, i->length, &i->items[0].roi, level);
+        {
+          if (point_render_class->process2)
+            point_render_class->process2 (operation, i->items[0].data,
+                                          i->length, &i->items[0].roi,
+                                          level, error);
+          else
+            point_render_class->process (operation, i->items[0].data,
+                                         i->length, &i->items[0].roi, level);
+        }
     }
 
   return TRUE;

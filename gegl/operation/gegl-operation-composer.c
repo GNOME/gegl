@@ -26,11 +26,12 @@
 #include "gegl-operation-context.h"
 #include "gegl-config.h"
 
-static gboolean gegl_operation_composer_process (GeglOperation       *operation,
+static gboolean gegl_operation_composer_process2 (GeglOperation       *operation,
                               GeglOperationContext     *context,
                               const gchar         *output_prop,
                               const GeglRectangle *result,
-                              gint                 level);
+                              gint                 level,
+                              GError             **error);
 static void     attach       (GeglOperation       *operation);
 static GeglNode*detect       (GeglOperation       *operation,
                               gint                 x,
@@ -50,7 +51,7 @@ gegl_operation_composer_class_init (GeglOperationComposerClass * klass)
 {
   GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
 
-  operation_class->process = gegl_operation_composer_process;
+  operation_class->process2 = gegl_operation_composer_process2;
   operation_class->threaded = TRUE;
   operation_class->attach = attach;
   operation_class->detect = detect;
@@ -108,6 +109,7 @@ typedef struct ThreadData
   const GeglRectangle        *roi;
   gint                        level;
   gboolean                    success;
+  GError                    **error;
 } ThreadData;
 
 static void
@@ -115,6 +117,7 @@ thread_process (const GeglRectangle *area,
                 ThreadData          *data)
 {
   GeglBuffer *input;
+  gboolean    success = TRUE;
 
   if (area->x == data->roi->x && area->y == data->roi->y)
     {
@@ -126,20 +129,27 @@ thread_process (const GeglRectangle *area,
                                                            "input", area);
     }
 
-  if (!data->klass->process (data->operation,
-                             input, data->aux, data->output,
-                             area, data->level))
+  if (data->klass->process2)
+    success = data->klass->process2 (data->operation,
+                                     input, data->aux, data->output,
+                                     area, data->level, data->error);
+  else
+    success = data->klass->process (data->operation,
+                                    input, data->aux, data->output,
+                                    area, data->level);
+  if (! success)
     data->success = FALSE;
 
   g_object_unref (input);
 }
 
 static gboolean
-gegl_operation_composer_process (GeglOperation        *operation,
-                                 GeglOperationContext *context,
-                                 const gchar          *output_prop,
-                                 const GeglRectangle  *result,
-                                 gint                  level)
+gegl_operation_composer_process2 (GeglOperation        *operation,
+                                  GeglOperationContext *context,
+                                  const gchar          *output_prop,
+                                  const GeglRectangle  *result,
+                                  gint                  level,
+                                  GError              **error)
 {
   GeglOperationComposerClass *klass   = GEGL_OPERATION_COMPOSER_GET_CLASS (operation);
   GeglBuffer                 *input;
@@ -179,6 +189,7 @@ gegl_operation_composer_process (GeglOperation        *operation,
         data.roi = result;
         data.level = level;
         data.success = TRUE;
+        data.error = error;
 
         gegl_parallel_distribute_area (
           result,
@@ -191,7 +202,12 @@ gegl_operation_composer_process (GeglOperation        *operation,
       }
       else
       {
-        success = klass->process (operation, input, aux, output, result, level);
+        if (klass->process2)
+          success = klass->process2 (operation, input, aux, output,
+                                     result, level, error);
+        else
+          success = klass->process (operation, input, aux, output,
+                                    result, level);
       }
 
       g_clear_object (&input);

@@ -113,6 +113,8 @@ gegl_eval_manager_apply (GeglEvalManager     *self,
   g_return_val_if_fail (GEGL_IS_EVAL_MANAGER (self), NULL);
   g_return_val_if_fail (GEGL_IS_NODE (self->node), NULL);
 
+  g_clear_error (&self->node->error);
+
   if (level >= GEGL_CACHE_VALID_MIPMAPS)
     level = GEGL_CACHE_VALID_MIPMAPS-1;
 
@@ -125,7 +127,7 @@ gegl_eval_manager_apply (GeglEvalManager     *self,
   GEGL_INSTRUMENT_END ("gegl", "prepare-request");
 
   GEGL_INSTRUMENT_START();
-  object = gegl_graph_process (self->traversal, level);
+  object = gegl_graph_process (self->traversal, level, &self->node->error);
   GEGL_INSTRUMENT_END ("gegl", "process");
 
   return object;

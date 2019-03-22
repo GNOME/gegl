@@ -133,12 +133,25 @@ struct _GeglOperationClass
   /* Compute the rectangular region output roi for the specified output_pad.
    * For operations that are sinks (have no output pads), roi is the rectangle
    * to consume and the output_pad argument is to be ignored.
+   * If the processing may fail and return FALSE, you should implement
+   * process2() instead.
    */
   gboolean      (*process)                   (GeglOperation        *operation,
                                               GeglOperationContext *context,
                                               const gchar          *output_pad,
                                               const GeglRectangle  *roi,
                                               gint                  level);
+
+  /* Same as process() but allows to report an error. Operations should
+   * implement process2() rather than process() unless the operation always
+   * succeed. If both virtual methods are implemented, process() is ignored.
+   */
+  gboolean      (*process2)                  (GeglOperation        *operation,
+                                              GeglOperationContext *context,
+                                              const gchar          *output_pad,
+                                              const GeglRectangle  *roi,
+                                              gint                  level,
+                                              GError              **error);
 
   /* The node providing data for a specific location within the operations
    * output. The node is responsible for delegating blame to one of it's

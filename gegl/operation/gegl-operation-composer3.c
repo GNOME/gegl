@@ -26,12 +26,13 @@
 #include "gegl-operation-context.h"
 #include "gegl-config.h"
 
-static gboolean gegl_operation_composer3_process
+static gboolean gegl_operation_composer3_process2
 (GeglOperation        *operation,
  GeglOperationContext *context,
  const gchar          *output_prop,
  const GeglRectangle  *result,
- gint                  level);
+ gint                  level,
+ GError             **error);
 static void     attach       (GeglOperation        *operation);
 static GeglNode*detect       (GeglOperation        *operation,
     gint                  x,
@@ -51,7 +52,7 @@ gegl_operation_composer3_class_init (GeglOperationComposer3Class * klass)
 {
   GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
 
-  operation_class->process = gegl_operation_composer3_process;
+  operation_class->process2 = gegl_operation_composer3_process2;
   operation_class->attach = attach;
   operation_class->detect = detect;
   operation_class->get_bounding_box = get_bounding_box;
@@ -118,6 +119,7 @@ typedef struct ThreadData
   const GeglRectangle         *roi;
   gint                         level;
   gboolean                     success;
+  GError                     **error;
 } ThreadData;
 
 static void
@@ -125,6 +127,7 @@ thread_process (const GeglRectangle *area,
                 ThreadData          *data)
 {
   GeglBuffer *input;
+  gboolean    success = TRUE;
 
   if (area->x == data->roi->x && area->y == data->roi->y)
     {
@@ -136,21 +139,29 @@ thread_process (const GeglRectangle *area,
                                                            "input", area);
     }
 
-  if (!data->klass->process (data->operation,
-                             input, data->aux, data->aux2, 
-                             data->output, area, data->level))
+  if (data->klass->process2)
+    success = data->klass->process2 (data->operation,
+                                     input, data->aux, data->aux2,
+                                     data->output, area, data->level,
+                                     data->error);
+  else
+    success = data->klass->process (data->operation,
+                                    input, data->aux, data->aux2,
+                                    data->output, area, data->level);
+  if (! success)
     data->success = FALSE;
 
   g_object_unref (input);
 }
 
 
-  static gboolean
-gegl_operation_composer3_process (GeglOperation        *operation,
-    GeglOperationContext *context,
-    const gchar          *output_prop,
-    const GeglRectangle  *result,
-    gint                  level)
+static gboolean
+gegl_operation_composer3_process2 (GeglOperation        *operation,
+                                   GeglOperationContext *context,
+                                   const gchar          *output_prop,
+                                   const GeglRectangle  *result,
+                                   gint                  level,
+                                   GError              **error)
 {
   GeglOperationComposer3Class *klass   = GEGL_OPERATION_COMPOSER3_GET_CLASS (operation);
   GeglBuffer                  *input;
@@ -201,6 +212,7 @@ gegl_operation_composer3_process (GeglOperation        *operation,
         data.roi = result;
         data.level = level;
         data.success = TRUE;
+        data.error = error;
 
         gegl_parallel_distribute_area (
           result,
@@ -208,12 +220,15 @@ gegl_operation_composer3_process (GeglOperation        *operation,
           GEGL_SPLIT_STRATEGY_AUTO,
           (GeglParallelDistributeAreaFunc) thread_process,
           &data);
-        
+
         success = data.success;
       }
       else
       {
-        success = klass->process (operation, input, aux, aux2, output, result, level);
+        if (klass->process2)
+          success = klass->process2 (operation, input, aux, aux2, output, result, level, error);
+        else
+          success = klass->process (operation, input, aux, aux2, output, result, level);
       }
 
       g_clear_object (&input);

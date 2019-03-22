@@ -50,6 +50,12 @@ struct _GeglOperationFilterClass
                                             GeglBuffer           *output,
                                             const GeglRectangle  *roi,
                                             gint                  level);
+  gboolean          (* process2)           (GeglOperation        *self,
+                                            GeglBuffer           *input,
+                                            GeglBuffer           *output,
+                                            const GeglRectangle  *roi,
+                                            gint                  level,
+                                            GError              **error);
 
   /* How to split the area for multithreaded processing.  Should be irrelevant
    * for most ops.

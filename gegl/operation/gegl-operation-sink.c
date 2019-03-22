@@ -26,11 +26,12 @@
 #include "gegl-operation-sink.h"
 #include "gegl-operation-context.h"
 
-static gboolean      gegl_operation_sink_process                 (GeglOperation        *operation,
+static gboolean      gegl_operation_sink_process2                (GeglOperation        *operation,
                                                                   GeglOperationContext *context,
                                                                   const gchar          *output_prop,
                                                                   const GeglRectangle  *result,
-                                                                  gint                  level);
+                                                                  gint                  level,
+                                                                  GError              **error);
 static void          gegl_operation_sink_attach                  (GeglOperation        *operation);
 static GeglRectangle gegl_operation_sink_get_bounding_box        (GeglOperation        *self);
 static GeglRectangle gegl_operation_sink_get_required_for_output (GeglOperation        *operation,
@@ -48,7 +49,7 @@ gegl_operation_sink_class_init (GeglOperationSinkClass * klass)
 
   klass->needs_full = FALSE;
 
-  operation_class->process                 = gegl_operation_sink_process;
+  operation_class->process2                = gegl_operation_sink_process2;
   operation_class->attach                  = gegl_operation_sink_attach;
   operation_class->get_bounding_box        = gegl_operation_sink_get_bounding_box;
   operation_class->get_required_for_output = gegl_operation_sink_get_required_for_output;
@@ -76,25 +77,35 @@ gegl_operation_sink_attach (GeglOperation *self)
 }
 
 static gboolean
-gegl_operation_sink_process (GeglOperation        *operation,
-                             GeglOperationContext *context,
-                             const gchar          *output_prop,
-                             const GeglRectangle  *result,
-                             gint                  level)
+gegl_operation_sink_process2 (GeglOperation         *operation,
+                              GeglOperationContext  *context,
+                              const gchar           *output_prop,
+                              const GeglRectangle   *result,
+                              gint                   level,
+                              GError               **error)
 {
   GeglOperationSinkClass *klass;
   GeglBuffer             *input;
   gboolean                success = FALSE;
 
-  klass               = GEGL_OPERATION_SINK_GET_CLASS (operation);
+  klass = GEGL_OPERATION_SINK_GET_CLASS (operation);
 
-  g_assert (klass->process);
+  g_assert (klass->process || klass->process2);
 
   input = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
   if (input)
     {
-      success = klass->process (operation, input, result, level);
+      if (klass->process2)
+        success = klass->process2 (operation, input, result, level, error);
+      else
+        success = klass->process (operation, input, result, level);
+
       g_object_unref (input);
+    }
+  else if (error)
+    {
+      *error = g_error_new (g_quark_from_static_string ("gegl"),
+                            0, "Sink operation has no input");
     }
 
   return success;

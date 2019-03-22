@@ -26,12 +26,13 @@
 #include "gegl-operation-context.h"
 #include "gegl-config.h"
 
-static gboolean gegl_operation_source_process
+static gboolean gegl_operation_source_process2
                              (GeglOperation        *operation,
                               GeglOperationContext *context,
                               const gchar          *output_prop,
                               const GeglRectangle  *result,
-                              gint                  level);
+                              gint                  level,
+                              GError              **error);
 static void     attach       (GeglOperation *operation);
 
 
@@ -49,8 +50,8 @@ gegl_operation_source_class_init (GeglOperationSourceClass * klass)
 {
   GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
 
-  operation_class->process = gegl_operation_source_process;
-  operation_class->attach  = attach;
+  operation_class->process2 = gegl_operation_source_process2;
+  operation_class->attach   = attach;
 
   operation_class->get_bounding_box  = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
@@ -84,23 +85,32 @@ typedef struct ThreadData
   GeglBuffer               *output;
   gint                      level;
   gboolean                  success;
+  GError                  **error;
 } ThreadData;
 
 static void
 thread_process (const GeglRectangle *area,
                 ThreadData          *data)
 {
-  if (!data->klass->process (data->operation,
-                       data->output, area, data->level))
+  gboolean success = TRUE;
+
+  if (data->klass->process2)
+    success = data->klass->process2 (data->operation,
+                                     data->output, area, data->level, data->error);
+  else
+    success = data->klass->process (data->operation,
+                                    data->output, area, data->level);
+  if (! success)
     data->success = FALSE;
 }
 
 static gboolean
-gegl_operation_source_process (GeglOperation        *operation,
-                               GeglOperationContext *context,
-                               const gchar          *output_prop,
-                               const GeglRectangle  *result,
-                               gint                  level)
+gegl_operation_source_process2 (GeglOperation        *operation,
+                                GeglOperationContext *context,
+                                const gchar          *output_prop,
+                                const GeglRectangle  *result,
+                                gint                  level,
+                                GError              **error)
 {
   GeglOperationSourceClass *klass = GEGL_OPERATION_SOURCE_GET_CLASS (operation);
   GeglBuffer               *output;
@@ -112,7 +122,7 @@ gegl_operation_source_process (GeglOperation        *operation,
       return FALSE;
     }
 
-  g_assert (klass->process);
+  g_assert (klass->process || klass->process2);
   output = gegl_operation_context_get_target (context, "output");
 
   if (gegl_operation_use_threading (operation, result))
@@ -124,6 +134,7 @@ gegl_operation_source_process (GeglOperation        *operation,
     data.output = output;
     data.level = level;
     data.success = TRUE;
+    data.error = error;
 
     gegl_parallel_distribute_area (
       result,
@@ -136,7 +147,10 @@ gegl_operation_source_process (GeglOperation        *operation,
   }
   else
   {
-    success = klass->process (operation, output, result, level);
+    if (klass->process2)
+      success = klass->process2 (operation, output, result, level, error);
+    else
+      success = klass->process (operation, output, result, level);
   }
 
   return success;

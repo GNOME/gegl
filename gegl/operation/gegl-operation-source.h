@@ -44,13 +44,18 @@ struct _GeglOperationSource
 typedef struct _GeglOperationSourceClass GeglOperationSourceClass;
 struct _GeglOperationSourceClass
 {
-  GeglOperationClass    parent_class;
+  GeglOperationClass     parent_class;
 
-  gboolean (* process) (GeglOperation       *self,
-                        GeglBuffer          *output,
-                        const GeglRectangle *roi,
-                        gint                 level);
-  gpointer              pad[4];
+  gboolean (* process)  (GeglOperation       *self,
+                         GeglBuffer          *output,
+                         const GeglRectangle *roi,
+                         gint                 level);
+  gboolean (* process2) (GeglOperation       *self,
+                         GeglBuffer          *output,
+                         const GeglRectangle *roi,
+                         gint                 level,
+                         GError             **error);
+  gpointer               pad[4];
 };
 
 GType gegl_operation_source_get_type (void) G_GNUC_CONST;
