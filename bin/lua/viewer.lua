@@ -303,7 +303,7 @@ if o.is_video ~= 0 then
   mrg:listen(Mrg.DRAG, function(event)
     source:set_property('frame',
        GObject.Value(GObject.Type.INT,
-        (event.x - width *.05) / (width * .95) * frames
+        (event.x - height *.15) / (width - height * .3) * frames
     ))
     event:stop_propagate()
   end)
