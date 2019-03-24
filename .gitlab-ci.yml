@@ -1,5 +1,5 @@
 stages:
-  - babl
+  - dependencies
   - gegl
 
 variables:
@@ -13,7 +13,7 @@ cache:
 image: archlinux/base:latest
 
 .babl-base:
-  stage: babl
+  stage: dependencies
   artifacts:
     paths:
     - $BABL_DIR
@@ -58,6 +58,30 @@ babl-min-meson:
     - meson -Dprefix="$BABL_PREFIX" _build
     - ninja -C _build
     - ninja -C _build install
+
+intel-ocl-runtime:
+  stage: dependencies
+  artifacts:
+    paths:
+    - ./*.pkg.tar.xz
+  variables:
+    GIT_DEPTH: "1"
+  before_script:
+    - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache git base-devel
+  script:
+    - 'echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers'
+    - git clone https://aur.archlinux.org/ncurses5-compat-libs.git
+    - cd ncurses5-compat-libs
+    - chown nobody -R .
+    - sudo -u nobody makepkg -s --skippgpcheck --noconfirm
+    - pacman -U --noconfirm ./*.pkg.tar.xz
+    - mv ./*.pkg.tar.xz ../
+    - cd ..
+    - git clone https://aur.archlinux.org/intel-opencl-runtime.git
+    - cd intel-opencl-runtime
+    - chown nobody -R .
+    - sudo -u nobody makepkg -s --noconfirm
+    - mv ./*.pkg.tar.xz ../
 
 .build-gegl:
   stage: gegl
@@ -137,3 +161,20 @@ build-all-min-meson:
   extends: .build-all
   dependencies:
     - babl-min-meson
+
+opencl-build-all-git-meson:
+  extends: .build-all
+  allow_failure: true
+  variables:
+    GEGL_USE_OPENCL: "cpu"
+  script:
+   - pacman --noconfirm -U ./*.pkg.tar.xz
+   - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache ocl-icd
+   - mkdir _build
+   - cd _build
+   - PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig ../autogen.sh $CONFIG_OPTIONS
+   - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH" make
+   - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH" make check
+  dependencies:
+    - babl-git-meson
+    - intel-ocl-runtime
