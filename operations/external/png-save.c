@@ -259,7 +259,8 @@ process (GeglOperation       *operation,
   if (png == NULL || info == NULL)
     {
       status = FALSE;
-      g_warning ("failed to initialize PNG writer");
+      gegl_operation_set_error (operation, g_error_new (g_quark_from_static_string ("gegl"),
+                                                        0, "failed to initialize PNG writer"));
       goto cleanup;
     }
 
@@ -267,7 +268,7 @@ process (GeglOperation       *operation,
   if (stream == NULL)
     {
       status = FALSE;
-      g_warning ("%s", error->message);
+      gegl_operation_set_error (operation, error);
       goto cleanup;
     }
 
@@ -276,7 +277,8 @@ process (GeglOperation       *operation,
   if (export_png (operation, input, result, png, info, o->compression, o->bitdepth))
     {
       status = FALSE;
-      g_warning("could not export PNG file");
+      gegl_operation_set_error (operation, g_error_new (g_quark_from_static_string ("gegl"),
+                                                        0, "could not export PNG file"));
       goto cleanup;
     }
 
