@@ -173,7 +173,8 @@ gegl_graph_get_bounding_box (GeglGraphTraversal *path)
  * Prepare all nodes, initializing their output formats and have rects.
  */
 void
-gegl_graph_prepare (GeglGraphTraversal *path)
+gegl_graph_prepare (GeglGraphTraversal  *path,
+                    GError             **error)
 {
   GList *list_iter = NULL;
 
@@ -189,6 +190,14 @@ gegl_graph_prepare (GeglGraphTraversal *path)
 
     gegl_operation_prepare (operation);
     node->have_rect = gegl_operation_get_bounding_box (operation);
+    if (operation->node->error && error && operation->node->error != *error)
+      {
+        g_clear_error (error);
+        g_propagate_error (error, operation->node->error);
+        operation->node->error = NULL;
+        g_mutex_unlock (&node->mutex);
+        break;
+      }
     node->valid_have_rect = TRUE;
 
     if (node->cache)

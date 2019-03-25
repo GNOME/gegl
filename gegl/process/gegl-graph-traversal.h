@@ -25,7 +25,8 @@ void                gegl_graph_rebuild          (GeglGraphTraversal  *path,
                                                  GeglNode            *node);
 void                gegl_graph_free             (GeglGraphTraversal  *path);
 
-void                gegl_graph_prepare          (GeglGraphTraversal  *path);
+void                gegl_graph_prepare          (GeglGraphTraversal  *path,
+                                                 GError             **error);
 void                gegl_graph_prepare_request  (GeglGraphTraversal  *path,
                                                  const GeglRectangle *roi,
                                                  gint                 level);

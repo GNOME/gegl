@@ -42,7 +42,7 @@ gegl_graph_dump_outputs (GeglNode *node)
   GeglGraphTraversal *path      = gegl_graph_build (node);
   GList              *list_iter = NULL;
 
-  gegl_graph_prepare (path);
+  gegl_graph_prepare (path, NULL);
 
   for (list_iter = g_queue_peek_head_link (&path->path);
        list_iter;
@@ -77,7 +77,7 @@ gegl_graph_dump_request (GeglNode            *node,
   GeglGraphTraversal *path      = gegl_graph_build (node);
   GList              *list_iter = NULL;
 
-  gegl_graph_prepare (path);
+  gegl_graph_prepare (path, NULL);
   gegl_graph_prepare_request (path, roi, 0);
 
   for (list_iter = g_queue_peek_head_link (&path->path);
