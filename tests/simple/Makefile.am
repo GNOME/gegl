@@ -14,6 +14,7 @@ noinst_PROGRAMS =			\
 	test-convert-format		\
 	test-color-op			\
 	test-empty-tile			\
+	test-errors			\
 	test-format-sensing		\
 	test-gegl-rectangle		\
 	test-gegl-color		    \
