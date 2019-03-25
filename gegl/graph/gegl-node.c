@@ -1847,9 +1847,18 @@ gegl_node_process (GeglNode *self) /* XXX: add level argument?  */
 
   g_return_if_fail (GEGL_IS_NODE (self));
 
+  g_clear_error (&self->error);
   processor = gegl_node_new_processor (self, NULL);
 
-  while (gegl_processor_work (processor, NULL)) ;
+  if (self->error)
+    /* Do not process the graph if we have an error already (this may be an
+     * error while running get_bounding_box() virtual method of an operation
+     * in particular).
+     */
+    self->success = FALSE;
+  else
+    while (gegl_processor_work (processor, NULL)) ;
+
   g_object_unref (processor);
 }
 
@@ -1864,6 +1873,8 @@ gegl_node_process_success (GeglNode  *self,
     real_node = self;
   else
     real_node = gegl_node_get_output_proxy (self, "output");
+
+  g_return_val_if_fail (real_node, FALSE);
 
   if (error && ! real_node->success && real_node->error)
     *error = g_error_copy (real_node->error);

@@ -202,7 +202,9 @@ gegl_operation_set_error (GeglOperation *operation,
                           GError        *error)
 {
   g_clear_error (&operation->node->error);
-  g_propagate_error (&operation->node->error, error);
+  if (error)
+    g_propagate_prefixed_error (&operation->node->error, error,
+                                "[%s] ", gegl_operation_get_name (operation));
 }
 
 /* Calls an extending class' get_bound_box method if defined otherwise
