@@ -195,6 +195,65 @@ load_zero_blit (void)
   return success;
 }
 
+/* Trying to save a mp4 video with impossible dimensions. */
+static gboolean
+save_invalid_mp4 (void)
+{
+  GeglNode  *graph;
+  GeglNode  *color;
+  GeglNode  *crop;
+  GeglNode  *save;
+  GeglColor *red;
+  GError    *error   = NULL;
+  gchar     *path;
+  gboolean   success = FALSE;
+  gint       fd;
+
+  red = gegl_color_new ("rgb(1.0, 0.0, 0.0)");
+
+  /* Create a new empty file. */
+  fd = g_file_open_tmp ("XXXXXX.mp4", &path, NULL);
+  close (fd);
+
+  /* Try to save. */
+  graph = gegl_node_new ();
+  color = gegl_node_new_child (graph,
+                               "operation", "gegl:color",
+                               "value",     red,
+                               NULL);
+  crop = gegl_node_new_child (graph,
+                              "operation", "gegl:crop",
+                              "width", 101.0,
+                              "height", 101.0,
+                              NULL);
+  save = gegl_node_new_child (graph,
+                              "operation", "gegl:ff-save",
+                              "path",      path,
+                              NULL);
+  gegl_node_link_many (color, crop, save, NULL);
+
+  gegl_node_process (save);
+  if (! gegl_node_process_success (save, &error))
+    {
+      /* Expected error: [libx264 @ 0x1e94680] width not divisible by 2 (101x101)
+       * libx264 does not allow odd dimensions for MP4 format and therefore the
+       * export to video should fail.
+       */
+      success = (error &&
+                 error->domain == g_quark_from_static_string ("gegl:ff-save") &&
+                 error->code == 0);
+    }
+
+  g_object_unref (graph);
+  g_clear_error (&error);
+
+  /* Delete the temp file. */
+  g_unlink (path);
+  g_free (path);
+
+  return success;
+}
+
 int
 main (int argc, char **argv)
 {
@@ -206,7 +265,10 @@ main (int argc, char **argv)
                 "use-opencl", FALSE,
                 NULL);
 
-  if (save_denied () && load_denied () && load_zero_blit ())
+  if (save_denied ()    &&
+      load_denied ()    &&
+      load_zero_blit () &&
+      save_invalid_mp4 ())
     success = 0;
   else
     success = -1;
