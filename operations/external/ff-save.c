@@ -24,6 +24,21 @@
 
 /* #define USE_FINE_GRAINED_FFMPEG 1 */
 
+#define SET_ERROR(error,alt_string) { if (error) \
+        { \
+          if (ffmpeg_error) \
+            { \
+              *error = g_error_new_literal (g_quark_from_static_string ("gegl:ff-save"), \
+                                            0, ffmpeg_error); \
+              g_clear_pointer (&ffmpeg_error, g_free); \
+            } \
+          else \
+            { \
+              *error = g_error_new (g_quark_from_static_string ("gegl:ff-save"), \
+                                    0, alt_string); \
+            } \
+        } }
+
 #ifdef GEGL_PROPERTIES
 
 property_string (path, _("File"), "/tmp/fnord.ogv")
@@ -95,6 +110,12 @@ property_int (me_subpel_quality, _("me-subpel-quality"), 0)
 # define AV_CODEC_CAP_INTRA_ONLY	CODEC_CAP_INTRA_ONLY
 #endif
 
+/* Last ffmpeg error. I declare it as static because ffmpeg callback doesn't
+ * allow third party data. So this is the only way I see to pass the error
+ * information even though quite ugly.
+ */
+static gchar *ffmpeg_error = NULL;
+
 typedef struct
 {
   gdouble    frame;
@@ -140,6 +161,21 @@ typedef struct
 
   int       file_inited;
 } Priv;
+
+static void
+ff_save_log_callback (void       *avcl,
+                      int         level,
+                      const char *fmt,
+                      va_list     vl)
+{
+  char line[1024];
+  int  print_prefix = 1;
+
+  av_log_format_line (avcl, level, fmt, vl, line, 1024, &print_prefix);
+
+  g_clear_pointer (&ffmpeg_error, g_free);
+  ffmpeg_error = g_strdup (line);
+}
 
 static void
 clear_audio_track (GeglProperties *o)
@@ -261,19 +297,20 @@ init (GeglProperties *o)
   av_log_set_level (AV_LOG_WARNING);
 }
 
-static void close_video       (Priv            *p,
-                               AVFormatContext *oc,
-                               AVStream        *st);
-void        close_audio       (Priv            *p,
-                               AVFormatContext *oc,
-                               AVStream        *st);
-static int  tfile             (GeglProperties  *o);
-static void write_video_frame (GeglProperties  *o,
-                               AVFormatContext *oc,
-                               AVStream        *st);
-static void write_audio_frame (GeglProperties      *o,
-                               AVFormatContext *oc,
-                               AVStream        *st);
+static void close_video       (Priv             *p,
+                               AVFormatContext  *oc,
+                               AVStream         *st);
+void        close_audio       (Priv             *p,
+                               AVFormatContext  *oc,
+                               AVStream         *st);
+static int  tfile             (GeglProperties   *o,
+                               GError          **error);
+static void write_video_frame (GeglProperties   *o,
+                               AVFormatContext  *oc,
+                               AVStream         *st);
+static void write_audio_frame (GeglProperties   *o,
+                               AVFormatContext  *oc,
+                               AVStream         *st);
 
 #define STREAM_FRAME_RATE 25    /* 25 images/s */
 
@@ -304,58 +341,67 @@ add_audio_stream (GeglProperties *o, AVFormatContext * oc, int codec_id)
 #endif
 
 static gboolean
-open_audio (GeglProperties *o, AVFormatContext * oc, AVStream * st)
+open_audio (GeglProperties   *o,
+            AVFormatContext  *oc,
+            AVStream         *st,
+            GError          **error)
 {
   AVCodecContext *c;
-  AVCodec  *codec;
-  int i;
+  AVCodec        *codec;
+  int             ret;
+  int             i;
 
   c = st->codec;
 
   /* find the audio encoder */
+  av_log_set_callback (ff_save_log_callback);
   codec = avcodec_find_encoder (c->codec_id);
-  if (!codec)
+  av_log_set_callback (av_log_default_callback);
+  if (! codec)
     {
-      fprintf (stderr, "codec not found\n");
+      SET_ERROR (error, "codec not found");
       return FALSE;
     }
   c->bit_rate = o->audio_bit_rate * 1000;
   c->sample_fmt = codec->sample_fmts ? codec->sample_fmts[0] : AV_SAMPLE_FMT_FLTP;
 
   if (o->audio_sample_rate == -1)
-  {
-    if (o->audio)
     {
-      if (gegl_audio_fragment_get_sample_rate (o->audio) == 0)
-      {
-        gegl_audio_fragment_set_sample_rate (o->audio, 48000); // XXX: should skip adding audiostream instead
-      }
-      o->audio_sample_rate = gegl_audio_fragment_get_sample_rate (o->audio);
+      if (o->audio)
+        {
+          if (gegl_audio_fragment_get_sample_rate (o->audio) == 0)
+            {
+              gegl_audio_fragment_set_sample_rate (o->audio, 48000); // XXX: should skip adding audiostream instead
+            }
+          o->audio_sample_rate = gegl_audio_fragment_get_sample_rate (o->audio);
+        }
     }
-  }
   c->sample_rate = o->audio_sample_rate;
   c->channel_layout = AV_CH_LAYOUT_STEREO;
   c->channels = 2;
 
 
   if (codec->supported_samplerates)
-  {
-    c->sample_rate = codec->supported_samplerates[0];
-    for (i = 0; codec->supported_samplerates[i]; i++)
     {
-      if (codec->supported_samplerates[i] == o->audio_sample_rate)
-         c->sample_rate = o->audio_sample_rate;
+      c->sample_rate = codec->supported_samplerates[0];
+      for (i = 0; codec->supported_samplerates[i]; i++)
+        {
+          if (codec->supported_samplerates[i] == o->audio_sample_rate)
+            c->sample_rate = o->audio_sample_rate;
+        }
     }
-  }
   //st->time_base = (AVRational){1, c->sample_rate};
   st->time_base = (AVRational){1, o->audio_sample_rate};
 
   c->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL; // ffmpeg AAC is not quite stable yet
 
   /* open it */
-  if (avcodec_open2 (c, codec, NULL) < 0)
+  av_log_set_callback (ff_save_log_callback);
+  ret = avcodec_open2 (c, codec, NULL);
+  av_log_set_callback (av_log_default_callback);
+  if (ret < 0)
     {
-      fprintf (stderr, "could not open codec\n");
+      SET_ERROR (error, "could not open codec");
       return FALSE;
     }
 
@@ -647,19 +693,30 @@ add_video_stream (GeglProperties *o, AVFormatContext * oc, int codec_id)
 
 
 static AVFrame *
-alloc_picture (int pix_fmt, int width, int height)
+alloc_picture (int      pix_fmt,
+               int      width,
+               int      height,
+               GError **error)
 {
   AVFrame  *picture;
   uint8_t  *picture_buf;
   int       size;
 
+  av_log_set_callback (ff_save_log_callback);
   picture = av_frame_alloc ();
-  if (!picture)
-    return NULL;
+  av_log_set_callback (av_log_default_callback);
+  if (! picture)
+    {
+      SET_ERROR (error, "Could not allocate picture");
+      return NULL;
+    }
   size = avpicture_get_size (pix_fmt, width + 1, height + 1);
   picture_buf = malloc (size);
-  if (!picture_buf)
+  if (! picture_buf)
     {
+      if (error)
+        *error = g_error_new (g_quark_from_static_string ("gegl:ff-save"),
+                              0, "Could not allocate picture");
       av_free (picture);
       return NULL;
     }
@@ -668,7 +725,10 @@ alloc_picture (int pix_fmt, int width, int height)
 }
 
 static gboolean
-open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
+open_video (GeglProperties   *o,
+            AVFormatContext  *oc,
+            AVStream         *st,
+            GError          **error)
 {
   Priv           *p = (Priv*)o->user_data;
   AVCodec  *codec;
@@ -679,10 +739,12 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
   c = st->codec;
 
   /* find the video encoder */
+  av_log_set_callback (ff_save_log_callback);
   codec = avcodec_find_encoder (c->codec_id);
-  if (!codec)
+  av_log_set_callback (av_log_default_callback);
+  if (! codec)
     {
-      fprintf (stderr, "codec not found\n");
+      SET_ERROR (error, "codec not found");
       return FALSE;
     }
 
@@ -702,9 +764,12 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
 #endif
 
   /* open the codec */
-  if ((ret = avcodec_open2 (c, codec, &codec_options)) < 0)
+  av_log_set_callback (ff_save_log_callback);
+  ret = avcodec_open2 (c, codec, &codec_options);
+  av_log_set_callback (av_log_default_callback);
+  if (ret < 0)
     {
-      fprintf (stderr, "could not open codec: %s\n", av_err2str (ret));
+      SET_ERROR (error, "could not open codec");
       return FALSE;
     }
 
@@ -719,12 +784,9 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
     }
 
   /* allocate the encoded raw picture */
-  p->picture = alloc_picture (c->pix_fmt, c->width, c->height);
-  if (!p->picture)
-    {
-      fprintf (stderr, "Could not allocate picture\n");
-      return FALSE;
-    }
+  p->picture = alloc_picture (c->pix_fmt, c->width, c->height, error);
+  if (! p->picture)
+    return FALSE;
 
   /* if the output format is not YUV420P, then a temporary YUV420P
      picture is needed too. It is then converted to the required
@@ -732,12 +794,9 @@ open_video (GeglProperties *o, AVFormatContext * oc, AVStream * st)
   p->tmp_picture = NULL;
   if (c->pix_fmt != AV_PIX_FMT_RGB24)
     {
-      p->tmp_picture = alloc_picture (AV_PIX_FMT_RGB24, c->width, c->height);
-      if (!p->tmp_picture)
-        {
-          fprintf (stderr, "Could not allocate temporary picture\n");
-          return FALSE;
-        }
+      p->tmp_picture = alloc_picture (AV_PIX_FMT_RGB24, c->width, c->height, error);
+      if (! p->tmp_picture)
+        return FALSE;
     }
 
   return TRUE;
@@ -897,9 +956,11 @@ write_video_frame (GeglProperties *o,
 }
 
 static int
-tfile (GeglProperties *o)
+tfile (GeglProperties  *o,
+       GError         **error)
 {
   Priv *p = (Priv*)o->user_data;
+  int   ret;
 
   if (strcmp (o->container_format, "auto"))
     p->fmt = av_guess_format (o->container_format, o->path, NULL);
@@ -913,10 +974,12 @@ tfile (GeglProperties *o)
                "");
       p->fmt = av_guess_format ("mpeg", NULL, NULL);
     }
+  av_log_set_callback (ff_save_log_callback);
   p->oc = avformat_alloc_context ();
-  if (!p->oc)
+  av_log_set_callback (av_log_default_callback);
+  if (! p->oc)
     {
-      fprintf (stderr, "memory error\n%s", "");
+      SET_ERROR (error, "Memory error");
       return -1;
     }
 
@@ -928,37 +991,37 @@ tfile (GeglProperties *o)
   p->audio_st = NULL;
 
   if (strcmp (o->video_codec, "auto"))
-  {
-    AVCodec *codec = avcodec_find_encoder_by_name (o->video_codec);
-    p->fmt->video_codec = AV_CODEC_ID_NONE;
-    if (codec)
-      p->fmt->video_codec = codec->id;
-    else
-      {
-        fprintf (stderr, "didn't find video encoder \"%s\"\navailable codecs: ", o->video_codec);
-        while ((codec = av_codec_next (codec)))
-          if (av_codec_is_encoder (codec) &&
-              avcodec_get_type (codec->id) == AVMEDIA_TYPE_VIDEO)
-          fprintf (stderr, "%s ", codec->name);
-        fprintf (stderr, "\n");
-      }
-  }
+    {
+      AVCodec *codec = avcodec_find_encoder_by_name (o->video_codec);
+      p->fmt->video_codec = AV_CODEC_ID_NONE;
+      if (codec)
+        p->fmt->video_codec = codec->id;
+      else
+        {
+          fprintf (stderr, "didn't find video encoder \"%s\"\navailable codecs: ", o->video_codec);
+          while ((codec = av_codec_next (codec)))
+            if (av_codec_is_encoder (codec) &&
+                avcodec_get_type (codec->id) == AVMEDIA_TYPE_VIDEO)
+              fprintf (stderr, "%s ", codec->name);
+          fprintf (stderr, "\n");
+        }
+    }
   if (strcmp (o->audio_codec, "auto"))
-  {
-    AVCodec *codec = avcodec_find_encoder_by_name (o->audio_codec);
-    p->fmt->audio_codec = AV_CODEC_ID_NONE;
-    if (codec)
-      p->fmt->audio_codec = codec->id;
-    else
-      {
-        fprintf (stderr, "didn't find audio encoder \"%s\"\navailable codecs: ", o->audio_codec);
-        while ((codec = av_codec_next (codec)))
-          if (av_codec_is_encoder (codec) &&
-              avcodec_get_type (codec->id) == AVMEDIA_TYPE_AUDIO)
-                fprintf (stderr, "%s ", codec->name);
-        fprintf (stderr, "\n");
-      }
-  }
+    {
+      AVCodec *codec = avcodec_find_encoder_by_name (o->audio_codec);
+      p->fmt->audio_codec = AV_CODEC_ID_NONE;
+      if (codec)
+        p->fmt->audio_codec = codec->id;
+      else
+        {
+          fprintf (stderr, "didn't find audio encoder \"%s\"\navailable codecs: ", o->audio_codec);
+          while ((codec = av_codec_next (codec)))
+            if (av_codec_is_encoder (codec) &&
+                avcodec_get_type (codec->id) == AVMEDIA_TYPE_AUDIO)
+              fprintf (stderr, "%s ", codec->name);
+          fprintf (stderr, "\n");
+        }
+    }
 
   if (p->fmt->video_codec != AV_CODEC_ID_NONE)
     {
@@ -970,10 +1033,10 @@ tfile (GeglProperties *o)
     }
 
 
-  if (p->video_st && ! open_video (o, p->oc, p->video_st))
+  if (p->video_st && ! open_video (o, p->oc, p->video_st, error))
     return -1;
 
-  if (p->audio_st && ! open_audio (o, p->oc, p->audio_st))
+  if (p->audio_st && ! open_audio (o, p->oc, p->audio_st, error))
     return -1;
 
   av_dump_format (p->oc, 0, o->path, 1);
@@ -984,11 +1047,19 @@ tfile (GeglProperties *o)
       return -1;
     }
 
-  if (avformat_write_header (p->oc, NULL) < 0)
-  {
-    fprintf (stderr, "'%s' error writing header\n", o->path);
-    return -1;
-  }
+  av_log_set_callback (ff_save_log_callback);
+  ret = avformat_write_header (p->oc, NULL);
+  av_log_set_callback (av_log_default_callback);
+  if (ret < 0)
+    {
+      gchar *errstr = g_strdup_printf ("'%s' error writing header\n", o->path);
+
+      SET_ERROR (error, errstr);
+      g_free (errstr);
+
+      return -1;
+    }
+
   return 0;
 }
 
@@ -1025,8 +1096,9 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglProperties *o = GEGL_PROPERTIES (operation);
-  Priv *p = (Priv*)o->user_data;
+  GeglProperties *o     = GEGL_PROPERTIES (operation);
+  Priv           *p     = (Priv*)o->user_data;
+  GError         *error = NULL;
 
   g_assert (input);
 
@@ -1040,7 +1112,7 @@ process (GeglOperation       *operation,
 
   if (!p->file_inited)
     {
-      if (tfile (o) == 0)
+      if (tfile (o, &error) == 0)
         p->file_inited = 1;
     }
 
@@ -1053,8 +1125,12 @@ process (GeglOperation       *operation,
           //flush_audio (o);
         }
 
-      return  TRUE;
+      return TRUE;
     }
+
+  if (error)
+    gegl_operation_set_error (operation, error);
+
   return FALSE;
 }
 
