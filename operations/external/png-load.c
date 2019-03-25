@@ -39,13 +39,6 @@ property_uri (uri, _("URI"), "")
 #include <png.h>
 
 
-#define WARN_IF_ERROR(gerror) \
-do { \
-    if (gerror) { \
-      g_warning("gegl:png-load %s", gerror->message); \
-    } \
-} while(0)
-
 typedef enum {
   LOAD_PNG_TOO_SHORT,
   LOAD_PNG_WRONG_HEADER
@@ -477,33 +470,49 @@ static gint query_png (GInputStream *stream,
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
 {
-  GeglProperties   *o = GEGL_PROPERTIES (operation);
-  GeglRectangle result = {0,0,0,0};
-  gint          width, height;
-  gint          status;
-  const Babl *  format;
-  GError *err = NULL;
-  GFile *infile = NULL;
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  GeglRectangle   result = {0,0,0,0};
+  gint            width, height;
+  gint            status;
+  const Babl     *format;
+  GError         *err    = NULL;
+  GFile          *infile = NULL;
+  GInputStream   *stream;
 
-  GInputStream *stream = gegl_gio_open_input_stream(o->uri, o->path, &infile, &err);
-  WARN_IF_ERROR(err);
-  if (!stream) return result;
-  status = query_png(stream, &width, &height, &format, &err);
-  WARN_IF_ERROR(err);
-  g_input_stream_close(stream, NULL, NULL);
-
-  if (status)
+  stream = gegl_gio_open_input_stream (o->uri, o->path, &infile, &err);
+  if (stream)
     {
-      width = 0;
-      height = 0;
+      status = query_png (stream, &width, &height, &format, &err);
+      g_input_stream_close (stream, NULL, NULL);
+    }
+
+  if (stream && ! err)
+    {
+      if (status)
+        {
+          width = 0;
+          height = 0;
+        }
+    }
+  else
+    {
+      g_prefix_error (&err, "failed to read file '%s': ", o->path);
+      gegl_operation_set_error (operation, err);
+
+      g_clear_object (&infile);
+      if (stream)
+        g_object_unref (stream);
+
+      return result;
     }
 
   gegl_operation_set_format (operation, "output", format);
   result.width  = width;
-  result.height  = height;
+  result.height = height;
 
-  g_clear_object(&infile);
-  g_object_unref(stream);
+  g_clear_object (&infile);
+  g_object_unref (stream);
+
   return result;
 }
 
@@ -514,28 +523,41 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  gint        problem;
-  gint        width, height;
-  Babl        *format = NULL;
-  GError *err = NULL;
-  GFile *infile = NULL;
-  GInputStream *stream = gegl_gio_open_input_stream(o->uri, o->path, &infile, &err);
-  WARN_IF_ERROR(err);
-  problem = gegl_buffer_import_png (output, stream, 0, 0,
-                                    &width, &height, format, &err);
-  WARN_IF_ERROR(err);
-  g_input_stream_close(stream, NULL, NULL);
+  gint            width, height;
+  Babl           *format  = NULL;
+  GError         *err     = NULL;
+  GFile          *infile  = NULL;
+  gint            problem = 0;
+  GInputStream   *stream;
+
+  stream = gegl_gio_open_input_stream (o->uri, o->path, &infile, &err);
+  if (stream)
+    {
+      problem = gegl_buffer_import_png (output, stream, 0, 0,
+                                        &width, &height, format, &err);
+      if (err)
+        gegl_operation_set_error (operation, err);
+      g_input_stream_close (stream, NULL, NULL);
+    }
 
   if (problem)
     {
-      g_object_unref(infile);
-      g_object_unref(stream);
-      g_warning ("%s failed to open file %s for reading.",
-                 G_OBJECT_TYPE_NAME (operation), o->path);
+      if (err)
+        g_prefix_error (&err, "failed to read file '%s': ", o->path);
+      else
+        err = g_error_new (g_quark_from_static_string ("gegl"),
+                           0, "failed to read file '%s'.", o->path);
+      gegl_operation_set_error (operation, err);
+
+      g_object_unref (infile);
+      g_object_unref (stream);
+
       return FALSE;
     }
-  g_clear_object(&infile);
-  g_object_unref(stream);
+
+  g_clear_object (&infile);
+  g_object_unref (stream);
+
   return TRUE;
 }
 

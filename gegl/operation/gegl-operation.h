@@ -204,8 +204,10 @@ gboolean        gegl_operation_process       (GeglOperation *operation,
  *
  * Document the error encountered by an operation.
  * This should typically be used in GeglOperation subclasses when they return
- * #FALSE in their implementation of process(). You should not set an error
- * while returning TRUE.
+ * #FALSE in their implementation of process() virtual method. You should not
+ * set an error while returning TRUE.
+ * You can also call gegl_operation_set_error() within get_bounding_box()
+ * virtual method if a fatal error occured at this early point.
  * Note that @error is propagated to the caller and therefore no longer valid
  * after this call. In particular you should not try to free it (if you wish to
  * reuse the variable, just set it to NULL).

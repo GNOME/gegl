@@ -90,7 +90,7 @@ gegl_eval_manager_prepare (GeglEvalManager *self)
       else
         gegl_graph_rebuild (self->traversal, self->node);
 
-      gegl_graph_prepare (self->traversal);
+      gegl_graph_prepare (self->traversal, &self->node->error);
 
       self->state = READY;
     }
@@ -108,7 +108,7 @@ gegl_eval_manager_apply (GeglEvalManager     *self,
                          const GeglRectangle *roi,
                          gint                 level)
 {
-  GeglBuffer  *object;
+  GeglBuffer  *object = NULL;
 
   g_return_val_if_fail (GEGL_IS_EVAL_MANAGER (self), NULL);
   g_return_val_if_fail (GEGL_IS_NODE (self->node), NULL);
@@ -122,13 +122,19 @@ gegl_eval_manager_apply (GeglEvalManager     *self,
   gegl_eval_manager_prepare (self);
   GEGL_INSTRUMENT_END ("gegl", "prepare-graph");
 
-  GEGL_INSTRUMENT_START();
-  gegl_graph_prepare_request (self->traversal, roi, level);
-  GEGL_INSTRUMENT_END ("gegl", "prepare-request");
+  if (! self->node->error)
+    {
+      GEGL_INSTRUMENT_START();
+      gegl_graph_prepare_request (self->traversal, roi, level);
+      GEGL_INSTRUMENT_END ("gegl", "prepare-request");
+    }
 
-  GEGL_INSTRUMENT_START();
-  object = gegl_graph_process (self->traversal, level, &self->node->error);
-  GEGL_INSTRUMENT_END ("gegl", "process");
+  if (! self->node->error)
+    {
+      GEGL_INSTRUMENT_START();
+      object = gegl_graph_process (self->traversal, level, &self->node->error);
+      GEGL_INSTRUMENT_END ("gegl", "process");
+    }
 
   return object;
 }

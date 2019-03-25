@@ -86,6 +86,115 @@ save_denied (void)
   return success;
 }
 
+/* Trying to load a non-readable file with gegl_node_process(). */
+static gboolean
+load_denied (void)
+{
+  GeglNode   *graph;
+  GeglNode   *source;
+  GeglNode   *sink;
+  GeglBuffer *buffer  = NULL;
+  GError     *error   = NULL;
+  gchar      *path;
+  gboolean    success = FALSE;
+  gint        fd;
+
+  /* Create a new empty file. It is not a valid image but we don't care as we
+   * are going to make it non-readable anyway.
+   */
+  fd = g_file_open_tmp (NULL, &path, NULL);
+  close (fd);
+  g_chmod (path, 0);
+
+  /* Try to load it in a buffer. */
+  graph = gegl_node_new ();
+  source = gegl_node_new_child (graph,
+                                "operation", "gegl:png-load",
+                                "path",      path,
+                                NULL);
+  sink = gegl_node_new_child (graph,
+                              "operation", "gegl:buffer-sink",
+                              "buffer",    &buffer,
+                              NULL);
+  gegl_node_link (source, sink);
+
+  gegl_node_process (sink);
+  if (! gegl_node_process_success (sink, &error))
+    {
+      /* Expected error is "Error opening file “/tmp/.ZBD4YZ”: Permission denied" */
+      success = (error                       &&
+                 error->domain == G_IO_ERROR &&
+                 error->code == G_IO_ERROR_PERMISSION_DENIED);
+    }
+
+  g_object_unref (graph);
+  g_clear_error (&error);
+  if (buffer)
+    g_object_unref (buffer);
+
+  /* Delete the temp file. */
+  g_unlink (path);
+  g_free (path);
+
+  return success;
+}
+
+/* Trying to load an empty file (i.e. not valid PNG) with
+ * gegl_node_blit_buffer(). */
+static gboolean
+load_zero_blit (void)
+{
+  GeglNode   *graph;
+  GeglNode   *source;
+  GeglNode   *scale;
+  GeglBuffer *buffer  = NULL;
+  GError     *error   = NULL;
+  gchar      *path;
+  gboolean    success = FALSE;
+  gint        fd;
+
+  /* Create a new empty file. It is not a valid PNG image. */
+  fd = g_file_open_tmp (NULL, &path, NULL);
+  close (fd);
+
+  /* Try to load it in a buffer. */
+  graph = gegl_node_new ();
+  source = gegl_node_new_child (graph,
+                                "operation", "gegl:png-load",
+                                "path",      path,
+                                NULL);
+  scale = gegl_node_new_child (graph,
+                               "operation", "gegl:scale-ratio",
+                               "x",    2.0,
+                               "y",    2.0,
+                               NULL);
+  gegl_node_link (source, scale);
+  gegl_node_blit_buffer (scale,
+                         buffer,
+                         NULL,
+                         0,
+                         GEGL_ABYSS_NONE);
+
+  if (! gegl_node_process_success (scale, &error))
+    {
+      /* Expected error: "too short for a png file, only 0 bytes." */
+      success = (error &&
+                 error->domain == g_quark_from_static_string ("gegl:load-png-error-quark") &&
+                 error->code == 0);
+    }
+
+  g_object_unref (graph);
+  g_clear_error (&error);
+  if (buffer)
+    g_object_unref (buffer);
+
+  /* Delete the temp file. */
+  g_unlink (path);
+  g_free (path);
+
+  return success;
+}
+
 int
 main (int argc, char **argv)
 {
@@ -97,7 +206,7 @@ main (int argc, char **argv)
                 "use-opencl", FALSE,
                 NULL);
 
-  if (save_denied ())
+  if (save_denied () && load_denied () && load_zero_blit ())
     success = 0;
   else
     success = -1;
