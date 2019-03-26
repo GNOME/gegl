@@ -22,6 +22,24 @@
 
 #include "gegl.h"
 
+#define SUCCESS  0
+#define FAILURE -1
+
+#define RUN_TEST(test_name) \
+{ \
+  if (test_name()) \
+    { \
+      printf ("" #test_name " ... PASS\n"); \
+      tests_passed++; \
+    } \
+  else \
+    { \
+      printf ("" #test_name " ... FAIL\n"); \
+      tests_failed++; \
+    } \
+  tests_run++; \
+}
+
 static gboolean save_denied    (void);
 static gboolean load_denied    (void);
 static gboolean load_zero_blit (void);
@@ -126,6 +144,17 @@ load_denied (void)
                  error->domain == G_IO_ERROR &&
                  error->code == G_IO_ERROR_PERMISSION_DENIED);
     }
+  if (! success)
+    {
+      fprintf (stderr,
+               "- %s: Expected error message (domain: %d - code: %d): Error opening file “/some/tmp/path”: Permission denied\n",
+               G_STRFUNC, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED);
+      if (error)
+        fprintf (stderr, "- %s: Actual error message (domain: %d - code: %d): %s\n",
+                 G_STRFUNC, error->domain, error->code, error->message);
+      else
+        fprintf (stderr, "- %s: No error message!\n", G_STRFUNC);
+    }
 
   g_object_unref (graph);
   g_clear_error (&error);
@@ -181,6 +210,17 @@ load_zero_blit (void)
       success = (error &&
                  error->domain == g_quark_from_static_string ("gegl:load-png-error-quark") &&
                  error->code == 0);
+    }
+  if (! success)
+    {
+      fprintf (stderr,
+               "- %s: Expected error message (domain: %d - code: %d): too short for a png file, only 0 bytes.\n",
+               G_STRFUNC, g_quark_from_static_string ("egl:load-png-error-quark"), 0);
+      if (error)
+        fprintf (stderr, "- %s: Actual error message (domain: %d - code: %d): %s\n",
+                 G_STRFUNC, error->domain, error->code, error->message);
+      else
+        fprintf (stderr, "- %s: No error message!\n", G_STRFUNC);
     }
 
   g_object_unref (graph);
@@ -243,6 +283,17 @@ save_invalid_mp4 (void)
                  error->domain == g_quark_from_static_string ("gegl:ff-save") &&
                  error->code == 0);
     }
+  if (! success)
+    {
+      fprintf (stderr,
+               "- %s: Expected error message (domain: %d - code: %d): [libx264 @ 0x0123456] width not divisible by 2 (101x101)\n",
+               G_STRFUNC, g_quark_from_static_string ("gegl:ff-save"), 0);
+      if (error)
+        fprintf (stderr, "- %s: Actual error message (domain: %d - code: %d): %s\n",
+                 G_STRFUNC, error->domain, error->code, error->message);
+      else
+        fprintf (stderr, "- %s: No error message!\n", G_STRFUNC);
+    }
 
   g_object_unref (graph);
   g_clear_error (&error);
@@ -257,7 +308,9 @@ save_invalid_mp4 (void)
 int
 main (int argc, char **argv)
 {
-  int success;
+  gint tests_run    = 0;
+  gint tests_passed = 0;
+  gint tests_failed = 0;
 
   gegl_init (0, NULL);
   g_object_set (G_OBJECT (gegl_config()),
@@ -265,15 +318,14 @@ main (int argc, char **argv)
                 "use-opencl", FALSE,
                 NULL);
 
-  if (save_denied ()    &&
-      load_denied ()    &&
-      load_zero_blit () &&
-      save_invalid_mp4 ())
-    success = 0;
-  else
-    success = -1;
+  RUN_TEST (save_denied);
+  RUN_TEST (load_denied);
+  RUN_TEST (load_zero_blit);
+  RUN_TEST (save_invalid_mp4);
 
   gegl_exit ();
 
-  return success;
+  if (tests_passed == tests_run)
+    return SUCCESS;
+  return FAILURE;
 }
