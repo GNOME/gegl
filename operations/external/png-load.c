@@ -44,7 +44,7 @@ typedef enum {
   LOAD_PNG_WRONG_HEADER
 } LoadPngErrors;
 
-static GQuark error_quark(void)
+static GQuark error_quark (void)
 {
   return g_quark_from_static_string ("gegl:load-png-error-quark");
 }
@@ -64,19 +64,33 @@ read_fn(png_structp png_ptr, png_bytep buffer, png_size_t length)
 }
 
 static void
-error_fn(png_structp png_ptr, png_const_charp msg)
+error_fn (png_structp     png_ptr,
+          png_const_charp msg)
 {
-  g_printerr("LIBPNG ERROR: %s", msg);
+  png_voidp  error_ptr = png_get_error_ptr (png_ptr);
+  GError   **error     = (GError **) error_ptr;
+
+  g_return_if_fail (error);
+
+  *error = g_error_new (error_quark (), 0, msg);
+
+  /* Without this longjmp(), the default error function of libpng is also
+   * called after ours. Also libpng docs requests that this function does not
+   * return and the default error function also ends like this.
+   * We are jumping to the corresponding setjmp() call on same pointer.
+   */
+  png_longjmp (png_ptr, 1);
 }
 
 static gboolean
-check_valid_png_header(GInputStream *stream, GError **err)
+check_valid_png_header (GInputStream  *stream,
+                        GError       **err)
 {
   const size_t hdr_size=8;
   gssize hdr_read_size;
   unsigned char header[hdr_size];
 
-  hdr_read_size = g_input_stream_read(G_INPUT_STREAM(stream), header, hdr_size, NULL, err);
+  hdr_read_size = g_input_stream_read (G_INPUT_STREAM(stream), header, hdr_size, NULL, err);
   if (hdr_read_size == -1)
     {
       // err should be set by _read()
@@ -84,9 +98,9 @@ check_valid_png_header(GInputStream *stream, GError **err)
     }
   else if (hdr_read_size < hdr_size)
     {
-      g_set_error(err, error_quark(), LOAD_PNG_TOO_SHORT,
-                 "too short for a png file, only %lu bytes.",
-                 (unsigned long)hdr_read_size);
+      g_set_error (err, error_quark(), LOAD_PNG_TOO_SHORT,
+                   "too short for a png file, only %lu bytes.",
+                   (unsigned long) hdr_read_size);
 
       return FALSE;
     }
@@ -98,7 +112,7 @@ check_valid_png_header(GInputStream *stream, GError **err)
 
   if (png_sig_cmp (header, 0, hdr_size))
     {
-      g_set_error(err, error_quark(), LOAD_PNG_WRONG_HEADER, "wrong png header");
+      g_set_error (err, error_quark(), LOAD_PNG_WRONG_HEADER, "wrong png header");
       return FALSE;
     }
   return TRUE;
@@ -206,14 +220,14 @@ gegl_png_space (png_structp load_png_ptr,
 }
 
 static gint
-gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
-                        GInputStream *stream,
-                        gint         dest_x,
-                        gint         dest_y,
-                        gint        *ret_width,
-                        gint        *ret_height,
-                        const Babl  *format, // can be NULL
-                        GError **err)
+gegl_buffer_import_png (GeglBuffer    *gegl_buffer,
+                        GInputStream  *stream,
+                        gint           dest_x,
+                        gint           dest_y,
+                        gint          *ret_width,
+                        gint          *ret_height,
+                        const Babl    *format, // can be NULL
+                        GError       **err)
 {
   gint           width;
   gint           bit_depth;
@@ -233,20 +247,19 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
 
   g_return_val_if_fail(stream, -1);
 
-  if (!check_valid_png_header(stream, err))
+  if (! check_valid_png_header (stream, err))
     {
       return -1;
     }
 
-  load_png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, NULL, error_fn, NULL);
-
-  if (!load_png_ptr)
+  load_png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, err, error_fn, NULL);
+  if (! load_png_ptr)
     {
       return -1;
     }
 
   load_info_ptr = png_create_info_struct (load_png_ptr);
-  if (!load_info_ptr)
+  if (! load_info_ptr)
     {
       png_destroy_read_struct (&load_png_ptr, &load_info_ptr, NULL);
       return -1;
@@ -389,11 +402,12 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
 
 
 
-static gint query_png (GInputStream *stream,
-                       gint        *width,
-                       gint        *height,
-                       const Babl  **format,
-                       GError **err)
+static gint
+query_png (GInputStream *stream,
+           gint        *width,
+           gint        *height,
+           const Babl  **format,
+           GError      **err)
 {
   png_uint_32   w;
   png_uint_32   h;
@@ -404,13 +418,13 @@ static gint query_png (GInputStream *stream,
   png_bytep  *row_p = NULL;
   g_return_val_if_fail(stream, -1);
 
-  if (!check_valid_png_header(stream, err))
+  if (! check_valid_png_header (stream, err))
     {
       return -1;
     }
 
-  load_png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, NULL, error_fn, NULL);
-  if (!load_png_ptr)
+  load_png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, err, error_fn, NULL);
+  if (! load_png_ptr)
     {
       return -1;
     }
@@ -424,15 +438,14 @@ static gint query_png (GInputStream *stream,
   png_set_benign_errors (load_png_ptr, TRUE);
   png_set_option (load_png_ptr, PNG_SKIP_sRGB_CHECK_PROFILE, PNG_OPTION_ON);
 
-
   if (setjmp (png_jmpbuf (load_png_ptr)))
     {
-     png_destroy_read_struct (&load_png_ptr, &load_info_ptr, NULL);
-     g_free (row_p);
+      png_destroy_read_struct (&load_png_ptr, &load_info_ptr, NULL);
+      g_free (row_p);
       return -1;
     }
 
-  png_set_read_fn(load_png_ptr, stream, read_fn);
+  png_set_read_fn (load_png_ptr, stream, read_fn);
   png_set_sig_bytes (load_png_ptr, 8); // we already read header
   png_read_info (load_png_ptr, load_info_ptr);
   {
@@ -496,7 +509,11 @@ get_bounding_box (GeglOperation *operation)
     }
   else
     {
-      g_prefix_error (&err, "failed to read file '%s': ", o->path);
+      if (err)
+        g_prefix_error (&err, "failed to read file '%s': ", o->path);
+      else
+        err = g_error_new (error_quark (),
+                           0, "failed to read file '%s'.", o->path);
       gegl_operation_set_error (operation, err);
 
       g_clear_object (&infile);
@@ -545,7 +562,7 @@ process (GeglOperation       *operation,
       if (err)
         g_prefix_error (&err, "failed to read file '%s': ", o->path);
       else
-        err = g_error_new (g_quark_from_static_string ("gegl"),
+        err = g_error_new (error_quark (),
                            0, "failed to read file '%s'.", o->path);
       gegl_operation_set_error (operation, err);
 

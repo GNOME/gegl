@@ -42,6 +42,11 @@ property_int (bitdepth, _("Bitdepth"), 16)
 #include <gegl-gio-private.h>
 #include <png.h>
 
+static GQuark error_quark (void)
+{
+  return g_quark_from_static_string ("gegl:save-png-error-quark");
+}
+
 static void
 write_fn(png_structp png_ptr, png_bytep buffer, png_size_t length)
 {
@@ -70,9 +75,22 @@ flush_fn(png_structp png_ptr)
 }
 
 static void
-error_fn(png_structp png_ptr, png_const_charp msg)
+error_fn (png_structp     png_ptr,
+          png_const_charp msg)
 {
-  g_printerr("LIBPNG ERROR: %s", msg);
+  png_voidp  error_ptr = png_get_error_ptr(png_ptr);
+  GError   **error     = (GError **) error_ptr;
+
+  g_return_if_fail (error);
+
+  *error = g_error_new (error_quark (), 0, msg);
+
+  /* Without this longjmp(), the default error function of libpng is also
+   * called after ours. Also libpng docs requests that this function does not
+   * return and the default error function also ends like this.
+   * We are jumping to the corresponding setjmp() call on same pointer.
+   */
+  png_longjmp (png_ptr, 1);
 }
 
 static gint
@@ -253,14 +271,13 @@ process (GeglOperation       *operation,
   gboolean status = TRUE;
   GError *error = NULL;
 
-  png = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, error_fn, NULL);
+  png = png_create_write_struct (PNG_LIBPNG_VER_STRING, &error, error_fn, NULL);
   if (png != NULL)
     info = png_create_info_struct (png);
   if (png == NULL || info == NULL)
     {
       status = FALSE;
-      gegl_operation_set_error (operation, g_error_new (g_quark_from_static_string ("gegl"),
-                                                        0, "failed to initialize PNG writer"));
+      gegl_operation_set_error (operation, error);
       goto cleanup;
     }
 
@@ -277,7 +294,7 @@ process (GeglOperation       *operation,
   if (export_png (operation, input, result, png, info, o->compression, o->bitdepth))
     {
       status = FALSE;
-      gegl_operation_set_error (operation, g_error_new (g_quark_from_static_string ("gegl"),
+      gegl_operation_set_error (operation, g_error_new (error_quark (),
                                                         0, "could not export PNG file"));
       goto cleanup;
     }
