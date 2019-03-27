@@ -24,13 +24,20 @@
 
 #define SUCCESS  0
 #define FAILURE -1
+#define SKIP     77
 
 #define RUN_TEST(test_name) \
 { \
-  if (test_name()) \
+  gint retval = test_name (); \
+  if (retval == SUCCESS) \
     { \
       printf ("" #test_name " ... PASS\n"); \
       tests_passed++; \
+    } \
+  else if (retval == SKIP) \
+    { \
+      printf ("" #test_name " ... SKIP\n"); \
+      tests_skipped++; \
     } \
   else \
     { \
@@ -40,12 +47,26 @@
   tests_run++; \
 }
 
-static gboolean save_denied    (void);
-static gboolean load_denied    (void);
-static gboolean load_zero_blit (void);
+#define MORE_INFO(expected_message, expected_domain, expected_code) \
+  if (status != SUCCESS) \
+    { \
+      fprintf (stderr, \
+               "- %s: Expected error (domain: %d - code: %d): %s\n", \
+               G_STRFUNC, expected_domain, expected_code, expected_message); \
+      if (error) \
+        fprintf (stderr, "- %s: Actual error (domain: %d - code: %d): %s\n", \
+                 G_STRFUNC, error->domain, error->code, error->message); \
+      else \
+        fprintf (stderr, "- %s: No error message!\n", G_STRFUNC); \
+    }
+
+static gboolean save_denied      (void);
+static gboolean load_incomplete  (void);
+static gboolean load_zero_blit   (void);
+static gboolean save_invalid_mp4 (void);
 
 /* Trying to save in a non-writable file with gegl_node_process(). */
-static gboolean
+static gint
 save_denied (void)
 {
   GeglNode  *graph;
@@ -53,9 +74,9 @@ save_denied (void)
   GeglNode  *crop;
   GeglNode  *save;
   GeglColor *red;
-  GError    *error   = NULL;
+  GError    *error  = NULL;
   gchar     *path;
-  gboolean   success = FALSE;
+  gint       status = FAILURE;
   gint       fd;
 
   red = gegl_color_new ("rgb(1.0, 0.0, 0.0)");
@@ -63,7 +84,14 @@ save_denied (void)
   /* Create a new empty file and forbid writing. */
   fd = g_file_open_tmp (NULL, &path, NULL);
   close (fd);
-  g_chmod (path, S_IRUSR);
+  if (g_chmod (path, S_IRUSR) == -1)
+    /* We cannot change file permission, thus the test cannot be done. */
+    return SKIP;
+  if (g_access (path, W_OK) == 0)
+    /* It seems even if the chmod succeeds, on some systems, we may still have
+     * write access. Check and skip if we do.
+     */
+    return SKIP;
 
   /* Try to save. */
   graph = gegl_node_new ();
@@ -85,14 +113,15 @@ save_denied (void)
   gegl_node_process (save);
   if (! gegl_node_process_success (save, &error))
     {
-      /* Expected error is "Error opening file “/tmp/.ZBD4YZ”: Permission denied"
-       * We test against error domain and code programmatically (no i18n
-       * issue, or string change problems, etc.
+      /* We test against error domain and code programmatically (no i18n
+       * issue, string change problems, etc.).
        */
-      success = (error                       &&
-                 error->domain == G_IO_ERROR &&
-                 error->code == G_IO_ERROR_PERMISSION_DENIED);
+      if (error                       &&
+          error->domain == G_IO_ERROR &&
+          error->code == G_IO_ERROR_PERMISSION_DENIED)
+        status = SUCCESS;
     }
+  MORE_INFO ("Error opening file “/some/tmp/path”: Permission denied", G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED);
 
   g_object_unref (graph);
   g_clear_error (&error);
@@ -101,28 +130,28 @@ save_denied (void)
   g_unlink (path);
   g_free (path);
 
-  return success;
+  return status;
 }
 
 /* Trying to load a non-readable file with gegl_node_process(). */
-static gboolean
-load_denied (void)
+static gint
+load_incomplete (void)
 {
   GeglNode   *graph;
   GeglNode   *source;
   GeglNode   *sink;
-  GeglBuffer *buffer  = NULL;
-  GError     *error   = NULL;
+  GeglBuffer *buffer = NULL;
+  GError     *error  = NULL;
   gchar      *path;
-  gboolean    success = FALSE;
+  gint        status = FAILURE;
   gint        fd;
 
-  /* Create a new empty file. It is not a valid image but we don't care as we
-   * are going to make it non-readable anyway.
+  /* Create a file with only the PNG header.
+   * It is not a valid PNG image.
    */
   fd = g_file_open_tmp (NULL, &path, NULL);
+  write (fd, "\x89\x50\x4e\x47\xd\xa\x1a\xa", 8);
   close (fd);
-  g_chmod (path, 0);
 
   /* Try to load it in a buffer. */
   graph = gegl_node_new ();
@@ -139,22 +168,13 @@ load_denied (void)
   gegl_node_process (sink);
   if (! gegl_node_process_success (sink, &error))
     {
-      /* Expected error is "Error opening file “/tmp/.ZBD4YZ”: Permission denied" */
-      success = (error                       &&
-                 error->domain == G_IO_ERROR &&
-                 error->code == G_IO_ERROR_PERMISSION_DENIED);
+      if (error                                                &&
+          error->domain == g_quark_from_static_string ("gegl:load-png-error-quark") &&
+          error->code == 0)
+        status = SUCCESS;
     }
-  if (! success)
-    {
-      fprintf (stderr,
-               "- %s: Expected error message (domain: %d - code: %d): Error opening file “/some/tmp/path”: Permission denied\n",
-               G_STRFUNC, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED);
-      if (error)
-        fprintf (stderr, "- %s: Actual error message (domain: %d - code: %d): %s\n",
-                 G_STRFUNC, error->domain, error->code, error->message);
-      else
-        fprintf (stderr, "- %s: No error message!\n", G_STRFUNC);
-    }
+  MORE_INFO ("[gegl:png-load] failed to read file '/some/tmp/path': [86][7F][00][00]: invalid chunk type",
+             g_quark_from_static_string ("gegl:load-png-error-quark"), 0);
 
   g_object_unref (graph);
   g_clear_error (&error);
@@ -165,21 +185,21 @@ load_denied (void)
   g_unlink (path);
   g_free (path);
 
-  return success;
+  return status;
 }
 
 /* Trying to load an empty file (i.e. not valid PNG) with
  * gegl_node_blit_buffer(). */
-static gboolean
+static gint
 load_zero_blit (void)
 {
   GeglNode   *graph;
   GeglNode   *source;
   GeglNode   *scale;
-  GeglBuffer *buffer  = NULL;
-  GError     *error   = NULL;
+  GeglBuffer *buffer = NULL;
+  GError     *error  = NULL;
   gchar      *path;
-  gboolean    success = FALSE;
+  gint        status = FAILURE;
   gint        fd;
 
   /* Create a new empty file. It is not a valid PNG image. */
@@ -206,22 +226,12 @@ load_zero_blit (void)
 
   if (! gegl_node_process_success (scale, &error))
     {
-      /* Expected error: "too short for a png file, only 0 bytes." */
-      success = (error &&
-                 error->domain == g_quark_from_static_string ("gegl:load-png-error-quark") &&
-                 error->code == 0);
+      if (error &&
+          error->domain == g_quark_from_static_string ("gegl:load-png-error-quark") &&
+          error->code == 0)
+        status = SUCCESS;
     }
-  if (! success)
-    {
-      fprintf (stderr,
-               "- %s: Expected error message (domain: %d - code: %d): too short for a png file, only 0 bytes.\n",
-               G_STRFUNC, g_quark_from_static_string ("egl:load-png-error-quark"), 0);
-      if (error)
-        fprintf (stderr, "- %s: Actual error message (domain: %d - code: %d): %s\n",
-                 G_STRFUNC, error->domain, error->code, error->message);
-      else
-        fprintf (stderr, "- %s: No error message!\n", G_STRFUNC);
-    }
+  MORE_INFO ("too short for a png file, only 0 bytes.", g_quark_from_static_string ("gegl:load-png-error-quark"), 0);
 
   g_object_unref (graph);
   g_clear_error (&error);
@@ -232,11 +242,11 @@ load_zero_blit (void)
   g_unlink (path);
   g_free (path);
 
-  return success;
+  return status;
 }
 
 /* Trying to save a mp4 video with impossible dimensions. */
-static gboolean
+static gint
 save_invalid_mp4 (void)
 {
   GeglNode  *graph;
@@ -244,9 +254,9 @@ save_invalid_mp4 (void)
   GeglNode  *crop;
   GeglNode  *save;
   GeglColor *red;
-  GError    *error   = NULL;
+  GError    *error  = NULL;
   gchar     *path;
-  gboolean   success = FALSE;
+  gint       status = FAILURE;
   gint       fd;
 
   red = gegl_color_new ("rgb(1.0, 0.0, 0.0)");
@@ -279,21 +289,12 @@ save_invalid_mp4 (void)
        * libx264 does not allow odd dimensions for MP4 format and therefore the
        * export to video should fail.
        */
-      success = (error &&
-                 error->domain == g_quark_from_static_string ("gegl:ff-save") &&
-                 error->code == 0);
+      if (error &&
+          error->domain == g_quark_from_static_string ("gegl:ff-save") &&
+          error->code == 0)
+        status = SUCCESS;
     }
-  if (! success)
-    {
-      fprintf (stderr,
-               "- %s: Expected error message (domain: %d - code: %d): [libx264 @ 0x0123456] width not divisible by 2 (101x101)\n",
-               G_STRFUNC, g_quark_from_static_string ("gegl:ff-save"), 0);
-      if (error)
-        fprintf (stderr, "- %s: Actual error message (domain: %d - code: %d): %s\n",
-                 G_STRFUNC, error->domain, error->code, error->message);
-      else
-        fprintf (stderr, "- %s: No error message!\n", G_STRFUNC);
-    }
+  MORE_INFO ("[libx264 @ 0x0123456] width not divisible by 2 (101x101)", g_quark_from_static_string ("gegl:ff-save"), 0);
 
   g_object_unref (graph);
   g_clear_error (&error);
@@ -302,15 +303,16 @@ save_invalid_mp4 (void)
   g_unlink (path);
   g_free (path);
 
-  return success;
+  return status;
 }
 
 int
 main (int argc, char **argv)
 {
-  gint tests_run    = 0;
-  gint tests_passed = 0;
-  gint tests_failed = 0;
+  gint tests_run     = 0;
+  gint tests_passed  = 0;
+  gint tests_failed  = 0;
+  gint tests_skipped = 0;
 
   gegl_init (0, NULL);
   g_object_set (G_OBJECT (gegl_config()),
@@ -319,13 +321,16 @@ main (int argc, char **argv)
                 NULL);
 
   RUN_TEST (save_denied);
-  RUN_TEST (load_denied);
+  RUN_TEST (load_incomplete);
   RUN_TEST (load_zero_blit);
   RUN_TEST (save_invalid_mp4);
 
   gegl_exit ();
 
-  if (tests_passed == tests_run)
+  if (tests_failed > 0)
+    return FAILURE;
+  else if (tests_passed > 0)
     return SUCCESS;
-  return FAILURE;
+  else
+    return SKIP;
 }
