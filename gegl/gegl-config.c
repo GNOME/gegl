@@ -19,9 +19,6 @@
 #include "config.h"
 
 #include <string.h>
-#ifdef G_OS_WIN32
-#include <windows.h>
-#endif
 
 #include <glib-object.h>
 #include <glib/gprintf.h>
@@ -35,6 +32,10 @@
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
+#ifdef G_OS_WIN32
+#include <windows.h>
 #endif
 
 G_DEFINE_TYPE (GeglConfig, gegl_config, G_TYPE_OBJECT)
