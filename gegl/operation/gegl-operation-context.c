@@ -390,7 +390,8 @@ gegl_operation_context_get_output_maybe_in_place (GeglOperation *operation,
   GeglOperationClass *klass = GEGL_OPERATION_GET_CLASS (operation);
   GeglBuffer *output;
 
-  if (klass->want_in_place && 
+  if (klass->want_in_place                    &&
+      ! gegl_node_use_cache (operation->node) &&
       gegl_can_do_inplace_processing (operation, input, roi))
     {
       output = g_object_ref (input);
