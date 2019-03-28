@@ -26,7 +26,7 @@
       description (_("NULL or a GeglBuffer containing cached rendering results, this is a special buffer where gegl_buffer_list_valid_rectangles returns the part of the cache that is valid."))
 #else
 
-#define GEGL_OP_POINT_FILTER
+#define GEGL_OP_FILTER
 #define GEGL_OP_NAME     cache
 #define GEGL_OP_C_SOURCE cache.c
 
@@ -45,11 +45,11 @@ prepare (GeglOperation *operation)
 }
 
 static gboolean
-filter_process (GeglOperation       *operation,
-                GeglBuffer          *input,
-                GeglBuffer          *output,
-                const GeglRectangle *roi,
-                gint                 level)
+process (GeglOperation       *operation,
+         GeglBuffer          *input,
+         GeglBuffer          *output,
+         const GeglRectangle *roi,
+         gint                 level)
 {
   GeglProperties *o  = GEGL_PROPERTIES (operation);
 
@@ -66,47 +66,19 @@ filter_process (GeglOperation       *operation,
   return TRUE;
 }
 
-static gboolean
-process (GeglOperation       *operation,
-         void                *in_buf,
-         void                *out_buf,
-         glong                n_pixels,
-         const GeglRectangle *roi,
-         gint                 level)
-{
-  GeglProperties *o  = GEGL_PROPERTIES (operation);
-  const Babl *format = gegl_operation_get_format (operation, "input");
-
-  memcpy (out_buf, in_buf, n_pixels * babl_format_get_bytes_per_pixel (format));
-
-  if (o->cache != (void *) operation->node->cache)
-    {
-      g_clear_object (&o->cache);
-
-      if (operation->node->cache)
-        o->cache = g_object_ref ((GObject *) operation->node->cache);
-    }
-
-  return TRUE;
-}
-
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GeglOperationClass            *operation_class;
-  GeglOperationFilterClass      *filter_class;
-  GeglOperationPointFilterClass *point_filter_class;
+  GeglOperationClass       *operation_class;
+  GeglOperationFilterClass *filter_class;
 
-  operation_class    = GEGL_OPERATION_CLASS (klass);
-  filter_class       = GEGL_OPERATION_FILTER_CLASS (klass);
-  point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
+  operation_class = GEGL_OPERATION_CLASS (klass);
+  filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   operation_class->cache_policy  = GEGL_CACHE_POLICY_ALWAYS;
-  operation_class->want_in_place = FALSE;
   operation_class->threaded      = FALSE;
   operation_class->prepare       = prepare;
-  filter_class->process          = filter_process;
-  point_filter_class->process    = process;
+  filter_class->process          = process;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:cache",
