@@ -45,6 +45,28 @@ prepare (GeglOperation *operation)
 }
 
 static gboolean
+filter_process (GeglOperation       *operation,
+                GeglBuffer          *input,
+                GeglBuffer          *output,
+                const GeglRectangle *roi,
+                gint                 level)
+{
+  GeglProperties *o  = GEGL_PROPERTIES (operation);
+
+  gegl_buffer_copy (input, roi, GEGL_ABYSS_NONE, output, roi);
+
+  if (o->cache != (void *) operation->node->cache)
+    {
+      g_clear_object (&o->cache);
+
+      if (operation->node->cache)
+        o->cache = g_object_ref ((GObject *) operation->node->cache);
+    }
+
+  return TRUE;
+}
+
+static gboolean
 process (GeglOperation       *operation,
          void                *in_buf,
          void                *out_buf,
@@ -72,15 +94,18 @@ static void
 gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass            *operation_class;
+  GeglOperationFilterClass      *filter_class;
   GeglOperationPointFilterClass *point_filter_class;
 
   operation_class    = GEGL_OPERATION_CLASS (klass);
+  filter_class       = GEGL_OPERATION_FILTER_CLASS (klass);
   point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
 
   operation_class->cache_policy  = GEGL_CACHE_POLICY_ALWAYS;
   operation_class->want_in_place = FALSE;
   operation_class->threaded      = FALSE;
   operation_class->prepare       = prepare;
+  filter_class->process          = filter_process;
   point_filter_class->process    = process;
 
   gegl_operation_class_set_keys (operation_class,
