@@ -30,6 +30,7 @@
 #define font_size_scale  0.020
 
 const char *css =
+"div.lui { font-size: 2.0vh; color: white; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.0);}\n"
 "div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
 "div.propname { color: white;}\n"
@@ -383,11 +384,13 @@ MrgList *scrollback = NULL; /* scrollback buffer of free() able strings
 
 static int audio_started = 0;
 
+  static char *lui_contents = NULL;
 
 static gboolean text_editor_active (GeState *o)
 {
   return o->editing_op_name ||
-         o->editing_property;
+         o->editing_property ||
+         (lui_contents && o->show_graph);
 }
 
 GeState *global_state = NULL;  // XXX: for now we  rely on
@@ -1877,6 +1880,13 @@ static void update_string (const char *new_text, void *data)
 {
   char *str = data;
   strcpy (str, new_text);
+}
+
+static void update_string2 (const char *new_text, void *data)
+{
+  char **str = data;
+  g_free (*str);
+  *str = g_strdup (new_text);
 }
 
 static void
@@ -4821,13 +4831,57 @@ static void gegl_ui (Mrg *mrg, void *data)
     {
       if (o->show_graph)
         {
-          canvas_touch_handling (mrg, o);
-          per_op_canvas_ui (o);
+          if (!g_str_has_suffix (o->path, ".lui"))
+          {
+            canvas_touch_handling (mrg, o);
+            per_op_canvas_ui (o);
 
           if (o->active && o->show_bounding_box)
             draw_bounding_box (o);
+          }
 
-          draw_graph (o);
+          if (g_str_has_suffix (o->path, ".lui"))
+          {
+#if HAVE_LUA
+            gsize length = 0;
+            int result;
+
+            if (lui_contents == NULL)
+              g_file_get_contents (o->path, &lui_contents, &length, NULL);
+
+
+            if (lui_contents)
+            {
+              int status = luaL_loadstring(L, lui_contents);
+              if (status)
+              {
+                fprintf(stderr, "Couldn't load file: %s\n", lua_tostring(L, -1));
+              }
+              else
+              {
+                result = lua_pcall(L, 0, LUA_MULTRET, 0);
+                if (result){
+                  fprintf (stderr, "lua exec problem %s\n", lua_tostring(L, -1));
+                } else
+                {
+                }
+              }
+              mrg_start (mrg, "div.lui", NULL);
+
+              mrg_edit_start (mrg, update_string2, &lui_contents);
+              mrg_print (mrg, lui_contents);
+              mrg_edit_end (mrg);
+              mrg_end (mrg);
+            }
+#endif
+          }
+          else
+          {
+            draw_graph (o);
+            if (lui_contents)
+              g_free (lui_contents);
+            lui_contents = NULL;
+          }
         }
       else
         {
@@ -4836,7 +4890,11 @@ static void gegl_ui (Mrg *mrg, void *data)
   {
 #if HAVE_LUA
   int result;
-  int status = luaL_loadfile(L, o->path);
+  int status;
+  if (lui_contents)
+    status = luaL_loadstring(L, lui_contents);
+  else
+    status = luaL_loadfile(L, o->path);
   if (status)
   {
     fprintf(stderr, "Couldn't load file: %s\n", lua_tostring(L, -1));
@@ -4943,10 +5001,13 @@ static void gegl_ui (Mrg *mrg, void *data)
         mrg_add_binding (mrg, "home",  NULL, NULL, ui_run_command, "graph-cursor append");
         mrg_add_binding (mrg, "end",   NULL, NULL, ui_run_command, "graph-cursor source");
 
+        if (lui_contents == NULL)
+        {
         if (o->active && gegl_node_has_pad (o->active, "output"))
           mrg_add_binding (mrg, "left", NULL, NULL,        ui_run_command, "graph-cursor left");
         if (o->active) // && gegl_node_has_pad (o->active, "aux"))
           mrg_add_binding (mrg, "right", NULL, NULL, ui_run_command, "graph-cursor right");
+        }
 
       //  if (!o->show_graph)
       //    mrg_add_binding (mrg, "space", NULL, "next image",   ui_run_command, "next");
@@ -4959,7 +5020,7 @@ static void gegl_ui (Mrg *mrg, void *data)
 
     if (o->show_graph && !text_editor_active (o))
     {
-          mrg_add_binding (mrg, "escape", NULL, "stop editing", ui_run_command, "toggle editing");
+        mrg_add_binding (mrg, "escape", NULL, "stop editing", ui_run_command, "toggle editing");
     if (o->property_focus)
     {
       mrg_add_binding (mrg, "up", NULL, NULL,   ui_run_command, "prop-editor up");
@@ -4983,7 +5044,10 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
     else
     {
-      mrg_add_binding (mrg, "escape", NULL, "collection view", ui_run_command, "parent");
+      if (o->show_graph && lui_contents)
+        mrg_add_binding (mrg, "escape", NULL, "stop editing", ui_run_command, "toggle editing");
+      else
+        mrg_add_binding (mrg, "escape", NULL, "collection view", ui_run_command, "parent");
     }
   }
 
@@ -5105,13 +5169,23 @@ static gboolean is_xml_fragment (const char *data)
   return FALSE;
 }
 
-
 static void load_path_inner (GeState *o,
                              char *path)
 {
   char *meta;
   if (o->src_path)
   {
+    if (lui_contents)
+    {
+      /* we always overwrite, this gives an instant apply user experience
+         at the cost of risking leaving in a bad state if crashing at the worst
+         possible time.
+       */
+      g_file_set_contents (o->src_path, lui_contents, -1, NULL);
+      g_free (lui_contents);
+      lui_contents = NULL;
+    }
+
     g_free (o->src_path);
     o->src_path = NULL;
   }
