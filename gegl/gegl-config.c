@@ -223,7 +223,7 @@ gegl_config_class_init (GeglConfigClass *klass)
     long mem_total = default_tile_cache_size;
     long mem_min = 512 << 20; // 512mb
     long mem_available = mem_min;
-#ifdef G_OS_WIN32
+
 #ifdef G_OS_WIN32
 # if defined(_MSC_VER) && (_MSC_VER <= 1200)
   MEMORYSTATUS memory_status;
@@ -244,7 +244,6 @@ gegl_config_class_init (GeglConfigClass *klass)
     mem_available = memory_status.ullAvailPhys;
   }
 # endif
-#endif
 
 #else
     mem_total = sysconf (_SC_PHYS_PAGES) * sysconf (_SC_PAGESIZE);
