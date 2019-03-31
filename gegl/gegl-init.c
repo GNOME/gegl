@@ -339,16 +339,19 @@ gegl_config_parse_env (GeglConfig *config)
       const char *opencl_env = g_getenv ("GEGL_USE_OPENCL");
 
       if (g_ascii_strcasecmp (opencl_env, "yes") == 0)
-        ;
+        g_object_set (config, "use-opencl", TRUE, NULL);
       else if (g_ascii_strcasecmp (opencl_env, "no") == 0)
         gegl_cl_hard_disable ();
-      else if (g_ascii_strcasecmp (opencl_env, "cpu") == 0)
+      else if (g_ascii_strcasecmp (opencl_env, "cpu") == 0) {
         gegl_cl_set_default_device_type (CL_DEVICE_TYPE_CPU);
-      else if (g_ascii_strcasecmp (opencl_env, "gpu") == 0)
+        g_object_set (config, "use-opencl", TRUE, NULL);
+      } else if (g_ascii_strcasecmp (opencl_env, "gpu") == 0) {
         gegl_cl_set_default_device_type (CL_DEVICE_TYPE_GPU);
-      else if (g_ascii_strcasecmp (opencl_env, "accelerator") == 0)
+        g_object_set (config, "use-opencl", TRUE, NULL);
+      } else if (g_ascii_strcasecmp (opencl_env, "accelerator") == 0) {
         gegl_cl_set_default_device_type (CL_DEVICE_TYPE_ACCELERATOR);
-      else
+        g_object_set (config, "use-opencl", TRUE, NULL);
+      } else
         g_warning ("Unknown value for GEGL_USE_OPENCL: %s", opencl_env);
     }
 
