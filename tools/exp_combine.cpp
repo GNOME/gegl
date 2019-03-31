@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <cerrno>
 #include <cmath>
-
+#include <string.h>
 #include <iostream>
 
 #include <gexiv2/gexiv2.h>
