@@ -1,7 +1,7 @@
 # Italian translation for the gegl package.
 # Copyright (C) 2012 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gegl package.
-# Marco Ciampa <ciampix@posteo.net>, 2012-2018.
+# Marco Ciampa <ciampix@posteo.net>, 2012-2019.
 #
 # Elenco termini adottati per uniformità:
 #
@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-03-11 22:04+0100\n"
-"PO-Revision-Date: 2019-03-21 09:56+0100\n"
+"POT-Creation-Date: 2019-04-01 13:09+0200\n"
+"PO-Revision-Date: 2019-04-01 13:05+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -180,7 +180,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:3675 gegl/gegl-serialize.c:522
+#: bin/ui-core.c:3686 gegl/gegl-serialize.c:522
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "Il formato Babl \"%s\" non esiste."
@@ -429,10 +429,10 @@ msgstr "Assoluta"
 
 #: operations/common/absolute.c:83
 msgid ""
-"makes each linear RGB component be the absolute of its value, "
+"Makes each linear RGB component be the absolute of its value, "
 "fabs(input_value)"
 msgstr ""
-"rende ogni componente RGB lineare il suo valore assoluto, "
+"Rende ogni componente RGB lineare il suo valore assoluto, "
 "fabs(valore_in_ingresso)"
 
 #: operations/common/alien-map.c:29 operations/common/newsprint.c:35
@@ -887,6 +887,11 @@ msgstr "Disegna un motivo a scacchiera"
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
 msgid "Color"
 msgstr "Colore"
+
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/color.c:26
+msgid "The color to render (defaults to 'black')"
+msgstr "Il colore da renderizzare (predefinito è \"nero\")"
 
 #: operations/common/color.c:91
 msgid ""
@@ -1775,7 +1780,7 @@ msgstr "Beta"
 msgid "Strength of local detail enhancement"
 msgstr "Forza del miglioramento del dettaglio locale"
 
-#: operations/common/fattal02.c:42
+#: operations/common/fattal02.c:42 operations/common/mantiuk06.c:36
 msgid "Global color saturation factor"
 msgstr "Fattore globale di saturazione del colore"
 
@@ -2786,9 +2791,9 @@ msgid "Ratio"
 msgstr "Rapporto"
 
 #: operations/common/mix.c:26
-msgid "mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
+msgid "Mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
 msgstr ""
-"rapporto di mescolatura, letto come quantità dell'ausiliare, 0=ingresso "
+"Rapporto di mescolatura, letto come quantità dell'ausiliare, 0=ingresso "
 "0.5=mezzo 1.0=ausiliare"
 
 #: operations/common/mix.c:112
@@ -2796,8 +2801,8 @@ msgid "Mix"
 msgstr "Mix"
 
 #: operations/common/mix.c:115
-msgid "do a lerp, linear interpolation (lerp) between input and aux"
-msgstr "esegue una lerp, interpolazione lineare (lerp) tra ingresso e aux"
+msgid "Do a lerp, linear interpolation (lerp) between input and aux"
+msgstr "Esegue una lerp, interpolazione lineare (lerp) tra ingresso e aux"
 
 #: operations/common/mono-mixer.c:26 operations/common-gpl3+/channel-mixer.c:31
 msgid "Preserve luminosity"
@@ -2937,7 +2942,7 @@ msgid "Black and green angle"
 msgstr "Angolo del nero e del verde"
 
 #: operations/common/newsprint.c:67
-msgid "angle offset for patterns"
+msgid "Angle offset for patterns"
 msgstr "Scostamento angolo per i motivi"
 
 #: operations/common/newsprint.c:73
@@ -3908,6 +3913,17 @@ msgstr "Quanto si è vicini alle proporzioni dell'immagine"
 msgid "Squeeze"
 msgstr "Spremi"
 
+#: operations/common/vignette.c:55
+msgid ""
+"Aspect ratio to use, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf 1.0 = "
+"inf:1, this is applied after proportion is taken into account, to directly "
+"use squeeze factor as proportions, set proportion to 0.0."
+msgstr ""
+"Rapporto dimensioni da usare, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf "
+"1.0 = inf:1, viene applicato dopo aver preso in considerazione la "
+"proporzione; per usare direttamente il fattore di schiacciamento come "
+"proporzione, impostare le proporzioni a 0.0."
+
 #: operations/common/vignette.c:71 operations/common-gpl3+/spiral.c:64
 #: operations/workshop/bayer-matrix.c:51
 #: operations/workshop/external/spyrograph.c:69
@@ -4447,6 +4463,10 @@ msgstr "Saturazione della mattonella"
 #: operations/common-gpl3+/cubism.c:36
 msgid "Expand tiles by this amount"
 msgstr "Espande le piastrelle di questo quantitativo"
+
+#: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:76
+msgid "The tiles' background color"
+msgstr "Il colore di sfondo delle piastrelle"
 
 #: operations/common-gpl3+/cubism.c:619
 msgid "Cubism"
@@ -5209,6 +5229,10 @@ msgstr "Deviazione da piastrelle perfettamente formate"
 msgid "Tile color variation"
 msgstr "Variazione colore della piastrella"
 
+#: operations/common-gpl3+/mosaic.c:58
+msgid "Magnitude of random color variations"
+msgstr "Ampiezza variazioni casuali di colore"
+
 #: operations/common-gpl3+/mosaic.c:61
 msgid "Color averaging"
 msgstr "Media colore"
@@ -5252,6 +5276,10 @@ msgstr "Colore luce"
 #: operations/common-gpl3+/mosaic.c:80
 msgid "Light direction"
 msgstr "Direzione luce"
+
+#: operations/common-gpl3+/mosaic.c:81
+msgid "Direction of light-source (in degrees)"
+msgstr "Direzione della sorgente di luce (in gradi)"
 
 #: operations/common-gpl3+/mosaic.c:86
 msgid "Antialiasing"
@@ -6222,7 +6250,7 @@ msgstr "Alti valori aumentano la magnitudo dell'effetto"
 msgid "Wind-like bleed effect"
 msgstr "Un effetto vento"
 
-#: operations/core/cache.c:25 operations/core/cache.c:88
+#: operations/core/cache.c:25 operations/core/cache.c:85
 msgid "Cache"
 msgstr "Cache"
 
@@ -6236,7 +6264,7 @@ msgstr ""
 "questo è un buffer speciale dove gegl_buffer_list_valid_rectangles "
 "restituisce la parte valida della cache."
 
-#: operations/core/cache.c:90
+#: operations/core/cache.c:87
 msgid ""
 "An explicit caching node, caches results and should provide faster "
 "recomputation if what is cached by it is expensive but isn't changing."
@@ -6454,11 +6482,11 @@ msgstr "audio-codec"
 msgid "audio"
 msgstr "audio"
 
-#: operations/external/ff-load.c:802
+#: operations/external/ff-load.c:796
 msgid "FFmpeg Frame Loader"
 msgstr "Caricatore quadro FFmpeg"
 
-#: operations/external/ff-load.c:804
+#: operations/external/ff-load.c:798
 msgid "FFmpeg video frame importer."
 msgstr "Importatore quadri video FFmpeg."
 
@@ -6603,11 +6631,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1122
+#: operations/external/ff-save.c:1135
 msgid "FFmpeg Frame Saver"
 msgstr "Salvatore quadro FFmpeg"
 
-#: operations/external/ff-save.c:1124
+#: operations/external/ff-save.c:1137
 msgid "FFmpeg video output sink"
 msgstr "Ricezione uscita video FFmpeg"
 
