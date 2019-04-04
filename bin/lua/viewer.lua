@@ -308,12 +308,6 @@ if o.is_video ~= 0 then
     event:stop_propagate()
   end)
   cr:new_path()
-
-  
-
-
-
-
 end
 
 
@@ -396,3 +390,5 @@ mrg:add_binding("control-y", NULL, "toggle display profile",
 
 mrg:add_binding("control-delete", NULL, "discard",
   function() ffi.C.argvs_eval ("discard") end)
+
+cr:restore()
