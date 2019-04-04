@@ -130,23 +130,15 @@ gegl_sampler_cubic_init (GeglSamplerCubic *self)
   self->type = g_strdup("cubic");
   if (strcmp (self->type, "cubic"))
     {
-      /*
-       * The following values are actually not the correct ones for
-       * cubic B-spline smoothing. The correct values are b=1 and c=0.
-       */
       /* cubic B-spline */
-      self->b = 0.0;
-      self->c = 0.5;
+      self->b = 1.0;
+      self->c = 0.0;
     }
   else if (strcmp (self->type, "catmullrom"))
     {
-      /*
-       * The following values are actually not the correct ones for
-       * Catmull-Rom. The correct values are b=0 and c=0.5.
-       */
       /* Catmull-Rom spline */
-      self->b = 1.0;
-      self->c = 0.0;
+      self->b = 0.0;
+      self->c = 0.5;
     }
   else if (strcmp (self->type, "formula"))
     {
@@ -282,12 +274,14 @@ set_property (GObject      *object,
     {
       case PROP_B:
         self->b = g_value_get_double (value);
+        gegl_sampler_cubic_init (self);
         break;
 
       case PROP_TYPE:
         if (self->type)
           g_free (self->type);
         self->type = g_value_dup_string (value);
+        gegl_sampler_cubic_init (self);
         break;
 
       default:
