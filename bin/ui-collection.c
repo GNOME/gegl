@@ -93,6 +93,10 @@ static void entry_load (MrgEvent *event, void *data1, void *data2)
   g_free (o->path);
   o->path = g_strdup (data2);
   ui_load_path (o);
+
+  //
+
+
   mrg_event_stop_propagate (event);
   mrg_queue_draw (event->mrg, NULL);
 }
@@ -172,8 +176,9 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
        }
     }
 
+    /* auto-center */
     {
-      int count = g_list_length (o->paths);
+      int count = g_list_length (o->paths) + g_list_length (o->index);
       if (o->v < 0)
         o->v = 0;
       if (o->v > count/hack_cols * hack_dim - mrg_height(e->mrg)/2)
@@ -228,7 +233,7 @@ static void on_dir_scroll_drag (MrgEvent *e, void *data1, void *data2)
       break;
     case MRG_DRAG_MOTION:
       {
-        int count = g_list_length (o->paths);
+        int count = g_list_length (o->paths) + g_list_length (o->index);
         float height = mrg_height (e->mrg);
 #if 0
         y = height * ( o->v / (count/hack_cols * hack_dim) )
@@ -256,7 +261,6 @@ void ui_collection (GeState *o)
 {
   Mrg *mrg = o->mrg;
   cairo_t *cr = mrg_cr (mrg);
-  GList *iter;
   float dim;
   int   cols;
   int   no = 0;
@@ -269,8 +273,7 @@ void ui_collection (GeState *o)
   cols = hack_cols;
   dim = hack_dim;
 
-  count = g_list_length (o->paths);
-
+  count = g_list_length (o->paths) + g_list_length (o->index);
 
   cairo_save (cr);
   cairo_translate (cr, 0, -(int)o->v);
@@ -306,18 +309,23 @@ void ui_collection (GeState *o)
     no++;
   }
 
-  for (iter = o->paths; iter; iter=iter->next, no++)
+  for (int idx = 0; idx < count; idx ++, no++)
   {
+    char *basename = meta_get_child (o, o->path, idx);
     struct stat stat_buf;
       int w, h;
-      gchar *path = iter->data;
+      gchar *path = g_strdup_printf ("%s/%s", o->path, basename);
       char *lastslash = strrchr (path, '/');
       float x = dim * (no%cols);
       float y = dim * (no/cols);
       int is_dir = 0;
+      g_free (basename);
 
       if (y < -dim * 4 + o->v || y > mrg_height (mrg) + dim * 1.5 + o->v)
+      {
+        g_free (path);
         continue;
+      }
 
       lstat (path, &stat_buf);
 
@@ -394,7 +402,7 @@ void ui_collection (GeState *o)
           cairo_fill_preserve (mrg_cr (mrg));
         }
 
-        mrg_listen (mrg, MRG_TAP, entry_load, o, (void*)g_intern_string (iter->data));
+        mrg_listen (mrg, MRG_TAP, entry_load, o, (void*)g_intern_string (path));
         cairo_new_path (mrg_cr (mrg));
 
         if (w!=0 && h!=0)
@@ -430,10 +438,11 @@ void ui_collection (GeState *o)
       cairo_stroke_preserve (mrg_cr(mrg));
 #endif
       if (no == o->entry_no + 1)
-        mrg_listen_full (mrg, MRG_TAP, entry_load, o, path, NULL, NULL);
+        mrg_listen_full (mrg, MRG_TAP, entry_load, o, (void*)g_intern_string (path), NULL, NULL);
       else
         mrg_listen_full (mrg, MRG_TAP, entry_select, o, GINT_TO_POINTER(no-1), NULL, NULL);
       cairo_new_path (mrg_cr(mrg));
+      g_free (path);
   }
 
   cairo_restore (cr);
@@ -503,7 +512,7 @@ int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|fir
   }
   else if (!strcmp(argv[1], "last"))
   {
-    o->entry_no = g_list_length (o->paths)-1;
+    o->entry_no = g_list_length (o->paths) + g_list_length (o->index)-1;
   }
   else if (!strcmp(argv[1], "right"))
   {
@@ -525,9 +534,8 @@ int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|fir
   if (o->entry_no < -1)
     o->entry_no = -1;
 
-  if (o->entry_no >= (int)g_list_length (o->paths))
-    o->entry_no = g_list_length (o->paths)-1;
-
+  if (o->entry_no >= (int)(g_list_length (o->paths) + g_list_length (o->index)))
+    o->entry_no = g_list_length (o->paths) + g_list_length (o->index)-1;
 
   ui_center_active_entry (o);
 
@@ -549,5 +557,3 @@ void ui_center_active_entry (GeState *o)
       pos < o->v)
     o->v = hack_dim * (row) - mrg_height (o->mrg)/2 + hack_dim;
 }
-
-

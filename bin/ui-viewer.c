@@ -38,17 +38,18 @@
 static void entry_load (MrgEvent *event, void *data1, void *data2)
 {
   GeState *o = data1;
-
+  char *newpath;
   if (o->rev)
     argvs_eval ("save");
 
+  o->entry_no = GPOINTER_TO_INT(data2);
+  newpath = meta_child_no_path (o, NULL, o->entry_no);
   g_free (o->path);
-  o->path = g_strdup (data2);
+  o->path = newpath;
   ui_load_path (o);
   mrg_event_stop_propagate (event);
   mrg_queue_draw (event->mrg, NULL);
 }
-
 
 static void on_viewer_motion (MrgEvent *e, void *data1, void *data2)
 {
@@ -246,13 +247,32 @@ static void on_thumbbar_scroll (MrgEvent *event, void *data1, void *data2)
   mrg_event_stop_propagate (event);
 }
 
+char *meta_child_no_path (GeState *o, const char *path, int child_no)
+{
+  char *basename = meta_get_child (o, path, child_no);
+  char *ret;
+  if (o->is_dir)
+    ret = g_strdup_printf ("%s/%s", o->path, basename);
+  else
+    {
+      char *dirname = g_path_get_dirname (o->path);
+      ret = g_strdup_printf ("%s/%s", dirname, basename);
+      g_free (dirname);
+    }
+  g_free (basename);
+  return ret;
+}
+
 static void draw_thumb_bar (GeState *o)
 {
   Mrg *mrg = o->mrg;
   float width = mrg_width(mrg);
   float height = mrg_height(mrg);
   cairo_t *cr = mrg_cr (mrg);
-  GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
+
+  //fprintf (stderr, "... %i ...\n", o->entry_no);
+
+  //GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
   float dim = height * 0.15 * o->thumbbar_scale;
   float padding = .025;
   float opacity;
@@ -281,15 +301,18 @@ static void draw_thumb_bar (GeState *o)
   mrg_listen (mrg, MRG_SCROLL, on_thumbbar_motion, o, NULL);
   cairo_new_path (cr);
 
-  if (curr && opacity > 0.01)
+  if (opacity > 0.01)
   {
-    GList *iter = curr;
+    //GList *iter = curr;
     float x = mrg_width(mrg)/2-dim/2 - o->thumbbar_pan_x;
+    int entry_no = o->entry_no;
+    int entries = g_list_length (o->index) + g_list_length (o->paths);
 
-
-    for (iter = curr; iter && x < width; iter = iter->next)
+    //for (iter = curr; iter && x < width; iter = iter->next)
+    while (x < width && entry_no < entries)
     {
-      char *path = ui_suffix_path (iter->data);
+      char *upath = meta_child_no_path (o, NULL, entry_no);
+      char *path = ui_suffix_path (upath);
       char *thumbpath = ui_get_thumb_path (path);
       int w, h;
 
@@ -305,11 +328,11 @@ static void draw_thumb_bar (GeState *o)
         if (w!=0 && h!=0)
         {
           cairo_rectangle (mrg_cr (mrg), x, height-dim, wdim, hdim);
-          if (iter == curr)
+          if (entry_no == o->entry_no)
           cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,.7 * opacity);
           else
           cairo_set_source_rgba (mrg_cr (mrg), 1,1,1,.1 * opacity);
-          mrg_listen (mrg, MRG_TAP, entry_load, o, (void*)g_intern_string (iter->data));
+          mrg_listen (mrg, MRG_TAP, entry_load, o, GINT_TO_POINTER(entry_no));
           cairo_fill (mrg_cr (mrg));
           mrg_image (mrg, x + dim * padding, height-dim*(1.0-padding),
                      wdim * (1.0-padding*2), hdim *(1.0-padding*2), opacity, thumbpath, NULL, NULL);
@@ -320,20 +343,23 @@ static void draw_thumb_bar (GeState *o)
          if (access (thumbpath, F_OK) != 0) // only queue if does not exist,
                                             // mrg/stb_image seem to suffer on some of our pngs
          {
-           ui_queue_thumb (iter->data);
+           ui_queue_thumb (upath);
          }
       }
       x += dim;
       g_free (thumbpath);
       g_free (path);
+      g_free (upath);
+      entry_no ++;
     }
     x = mrg_width(mrg)/2-dim/2 - o->thumbbar_pan_x;
     dim = height * 0.15 * o->thumbbar_scale;
     x -= dim;
-
-    for (iter = curr->prev; iter && x > -dim; iter = iter->prev)
+    entry_no = o->entry_no-1;
+    while (x > -dim && entry_no >= 0)
     {
-      char *path = ui_suffix_path (iter->data);
+      char *upath = meta_child_no_path (o, NULL, entry_no);
+      char *path = ui_suffix_path (upath);
       char *thumbpath = ui_get_thumb_path (path);
       int w, h;
 
@@ -345,11 +371,15 @@ static void draw_thumb_bar (GeState *o)
         float wdim = dim, hdim = dim;
         if (w > h) hdim = dim / (1.0 * w / h);
         else       wdim = dim * (1.0 * w / h);
+
         if (w!=0 && h!=0)
         {
           cairo_rectangle (mrg_cr (mrg), x, height-dim, wdim, hdim);
+          if (entry_no == o->entry_no)
+          cairo_set_source_rgba (mrg_cr (mrg), 1,1,0,.7 * opacity);
+          else
           cairo_set_source_rgba (mrg_cr (mrg), 1,1,1,.1 * opacity);
-          mrg_listen (mrg, MRG_TAP, entry_load, o, (void*)g_intern_string (iter->data));
+          mrg_listen (mrg, MRG_TAP, entry_load, o, GINT_TO_POINTER(entry_no));
           cairo_fill (mrg_cr (mrg));
           mrg_image (mrg, x + dim * padding, height-dim*(1.0-padding),
                      wdim * (1.0-padding*2), hdim *(1.0-padding*2), opacity, thumbpath, NULL, NULL);
@@ -360,12 +390,14 @@ static void draw_thumb_bar (GeState *o)
          if (access (thumbpath, F_OK) != 0) // only queue if does not exist,
                                             // mrg/stb_image seem to suffer on some of our pngs
          {
-           ui_queue_thumb (iter->data);
+           ui_queue_thumb (upath);
          }
       }
       x -= dim;
       g_free (thumbpath);
       g_free (path);
+      g_free (upath);
+      entry_no --;
     }
 
   }

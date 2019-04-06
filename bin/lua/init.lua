@@ -30,6 +30,8 @@ struct _GeState {
                             the file that is written to on save. This differs depending
                             on type of input file.
                           */
+  GList       *index;
+  int          index_dirty;
   GList       *paths;  /* list of full paths to entries in collection/path/containing path,
                           XXX: could be replaced with URIs, and each
                           element should perhaps contain more internal info

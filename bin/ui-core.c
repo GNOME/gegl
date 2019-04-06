@@ -502,6 +502,28 @@ gchar *ui_get_thumb_path (const char *path)
   return ret;
 }
 
+gchar *ui_get_metadata_path (const char *path);
+gchar *
+ui_get_metadata_path (const char *path)
+{
+  gchar *ret;
+  gchar *basename = g_path_get_basename (path);
+  gchar *dirname = g_path_get_dirname (path);
+  ret = g_strdup_printf ("%s/.gegl/%s/metadata", dirname, basename);
+  g_free (basename);
+  g_free (dirname);
+  return ret;
+}
+
+gchar *ui_get_index_path (const char *path);
+gchar *
+ui_get_index_path (const char *path)
+{
+  gchar *ret;
+  ret = g_strdup_printf ("%s/.gegl/index", path);
+  return ret;
+}
+
 
 
 static void get_coords                (GeState *o, float  screen_x, float screen_y,
@@ -523,6 +545,9 @@ static int str_has_visual_suffix (char *path)
   return gegl_str_has_image_suffix (path) || gegl_str_has_video_suffix (path);
 }
 
+static int
+index_contains (GeState *state,
+                const char *name);
 
 static void populate_path_list (GeState *o)
 {
@@ -554,7 +579,7 @@ static void populate_path_list (GeState *o)
 
   for (i = 0; i < n; i++)
   {
-    if (namelist[i]->d_name[0] != '.')
+    if (namelist[i]->d_name[0] != '.' && !index_contains (o, namelist[i]->d_name))
     {
       gchar *fpath = g_strdup_printf ("%s/%s", path, namelist[i]->d_name);
       lstat (fpath, &stat_buf);
@@ -570,6 +595,7 @@ static void populate_path_list (GeState *o)
   for (i = 0; i < n; i++)
   {
     if (namelist[i]->d_name[0] != '.' &&
+        !index_contains (o, namelist[i]->d_name) &&
         str_has_visual_suffix (namelist[i]->d_name))
     {
       gchar *fpath = g_strdup_printf ("%s/%s", path, namelist[i]->d_name);
@@ -649,6 +675,10 @@ static char *sh_esc (const char *input)
 }
 #endif
 
+static void
+load_index (GeState *state, const char *path);
+static void
+store_index (GeState *state, const char *path);
 
 static void load_path_inner (GeState *o, char *path);
 
@@ -790,8 +820,10 @@ static gpointer renderer_thread (gpointer data)
 
 static char *binary_relative_data_dir = NULL;
 
+#ifdef HAVE_LUA
 static char *
 resolve_lua_file (const char *basename);
+#endif
 
 int mrg_ui_main (int argc, char **argv, char **ops)
 {
@@ -883,6 +915,28 @@ int mrg_ui_main (int argc, char **argv, char **ops)
 #endif
 
   ui_load_path (o);
+  
+  {
+    int no = 0;
+    char *basename = g_path_get_basename (o->path);
+    o->entry_no = 0;
+    for (GList *iter = o->index; iter && !o->entry_no; iter = iter->next, no++)
+    {
+      IndexItem *item = iter->data;
+      if (!strcmp (item->name, basename))
+        o->entry_no = no;
+    }
+    for (GList *iter = o->paths; iter && !o->entry_no; iter = iter->next, no++)
+    {
+      if (!strcmp (iter->data, o->path))
+        o->entry_no = no;
+    }
+    g_free (basename);
+
+
+  }
+
+
   mrg_set_ui (mrg, gegl_ui, o);
   on_viewer_motion (NULL, o, NULL);
 
@@ -933,7 +987,7 @@ cmd_thumb (COMMAND_ARGS)
   /* protect against some possible repeated requests to generate the same thumb
    */
   if (g_file_test (thumbpath, G_FILE_TEST_EXISTS))
-    return -1;
+    return 0;
 
   {
     char *dirname = g_path_get_dirname (thumbpath);
@@ -1891,12 +1945,14 @@ static void update_string (const char *new_text, void *data)
   strcpy (str, new_text);
 }
 
+#ifdef HAVE_LUA
 static void update_string2 (const char *new_text, void *data)
 {
   char **str = data;
   g_free (*str);
   *str = g_strdup (new_text);
 }
+#endif
 
 static void
 draw_property_int (GeState *o, Mrg *mrg, GeglNode *node, const GParamSpec *pspec)
@@ -3926,9 +3982,14 @@ static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
         }
         else
         {
-          g_free (o->path);
-          o->path = g_strdup (g_list_nth_data (o->paths, o->entry_no));
+	  char *basedir = o->path;
+          char *basename = meta_get_child (o, basedir, o->entry_no);
+          o->path = g_strdup_printf ("%s/%s", basedir, basename);
+          g_free (basedir);
+          g_free (basename);
           ui_load_path (o);
+          if (g_file_test (o->path, G_FILE_TEST_IS_DIR))
+            o->entry_no = 0;
         }
       }
       else
@@ -4623,7 +4684,7 @@ static cairo_matrix_t node_get_relative_transform (GeglNode *node_view,
 /* given a basename return fully qualified path, searching through
  * posisble locations, return NULL if not found.
  */
-
+#ifdef HAVE_LUA
 static char *
 resolve_lua_file2 (const char *basepath, gboolean add_gegl, const char *basename)
 {
@@ -4642,7 +4703,8 @@ resolve_lua_file2 (const char *basepath, gboolean add_gegl, const char *basename
   g_free (path);
   return NULL;
 }
-
+#endif
+#ifdef HAVE_LUA 
 static char *
 resolve_lua_file (const char *basename)
 {
@@ -4665,6 +4727,7 @@ resolve_lua_file (const char *basename)
 
   return ret;
 }
+#endif
 
 
 static gboolean run_lua_file (const char *basename)
@@ -5175,6 +5238,13 @@ static void load_path_inner (GeState *o,
                              char *path)
 {
   char *meta;
+  if (o->save_path)
+  {
+    if (o->index_dirty)
+      store_index (o, o->save_path);
+  }
+
+
   if (o->src_path)
   {
     if (lui_contents)
@@ -5223,6 +5293,7 @@ static void load_path_inner (GeState *o,
       o->src_path = g_strdup (path);
     }
   }
+  load_index (o, o->path);
 
   if (access (o->save_path, F_OK) != -1)
   {
@@ -5402,10 +5473,10 @@ void ui_load_path (GeState *o)
     thumb_queue_item_free (item);
   }
 
-  populate_path_list (o);
   o->playing = 0;
 
   load_path_inner (o, o->path);
+  populate_path_list (o);
 
   {
     struct stat stat_buf;
@@ -5417,9 +5488,12 @@ void ui_load_path (GeState *o)
       else
         zoom_to_fit (o);
     }
+    //if (S_ISDIR (stat_buf.st_mode))
+    //{
+    //  o->entry_no = -1;
+    //}
   }
 
-  o->entry_no = -1;
   o->scale = 1.0;
   o->u = 0;
   o->v = 0;
@@ -6371,19 +6445,26 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
   char *old_path;
   char *tmp;
   char *lastslash;
-  char *path = o->path;
   if (o->is_dir)
   {
-    path = g_list_nth_data (o->paths, o->entry_no);
+    char *basedir = o->path;
+    char *basename = meta_get_child (o, basedir, o->entry_no);
+    g_free (o->path);
+    old_path = g_strdup_printf ("%s/%s", basedir, basename);
+    g_free (basename);
   }
+  else
+  old_path = g_strdup (o->path);
 
-  old_path = g_strdup (path);
   if (!o->is_dir)
   {
-  argvs_eval ("next");
-  if (!strcmp (old_path, o->path))
+  if (o->entry_no == g_list_length (o->index) + g_list_length(o->paths)-1)
    {
      argvs_eval ("prev");
+   }
+  else
+   {
+     argvs_eval ("next");
    }
   }
   tmp = g_strdup (old_path);
@@ -6714,20 +6795,23 @@ cmd_clear (COMMAND_ARGS)
 int cmd_next (COMMAND_ARGS) /* "next", 0, "", "next sibling element in current collection/folder"*/
 {
   GeState *o = global_state;
-  GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
   if (o->rev)
     argvs_eval ("save");
 
-  if (curr && curr->next)
+  if (o->entry_no >= (int)(g_list_length(o->index)+g_list_length(o->paths))-1)
+    return 0;
+  o->entry_no ++;
+    //o->entry_no = 0;
+
   {
+    char *new_path = meta_child_no_path (o, NULL, o->entry_no);
     g_free (o->path);
-    o->path = g_strdup (curr->next->data);
+    o->path = new_path;
     ui_load_path (o);
     mrg_queue_draw (o->mrg, NULL);
   }
 
   activate_sink_producer (o);
-
   return 0;
 }
 
@@ -6736,6 +6820,7 @@ int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (swit
 {
   GeState *o = global_state;
   char *prev_path = g_strdup (o->path);
+  char *prev_basename = g_path_get_basename (o->path);
   char *lastslash = strrchr (o->path, '/');
   int entry_no = 0;
 
@@ -6750,17 +6835,29 @@ int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (swit
       lastslash[0] = '\0';
 
     ui_load_path (o);
-
+    if (g_file_test (prev_path, G_FILE_TEST_IS_DIR))
     {
       int no = 0;
+      for (GList *i = o->index; i; i=i->next, no++)
+      {
+        IndexItem *item = i->data;
+        if (!strcmp (item->name, prev_basename))
+        {
+          entry_no = no;
+          goto yep;
+        }
+      }
       for (GList *i = o->paths; i; i=i->next, no++)
       {
         if (!strcmp (i->data, prev_path))
         {
           entry_no = no;
-          break;
+          goto yep;
         }
       }
+
+      yep:
+        do{}while(0);
     }
 
     if (entry_no)
@@ -6772,6 +6869,7 @@ int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (swit
     mrg_queue_draw (o->mrg, NULL);
   }
   g_free (prev_path);
+  g_free (prev_basename);
   o->active = NULL;
   return 0;
 }
@@ -6780,14 +6878,17 @@ int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (swit
 int cmd_prev (COMMAND_ARGS) /* "prev", 0, "", "previous sibling element in current collection/folder"*/
 {
   GeState *o = global_state;
-  GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
+  //GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
   if (o->rev)
     argvs_eval ("save");
 
-  if (curr && curr->prev)
+  if (o->entry_no>0)
+    o->entry_no--;
+
   {
+    char *new_path = meta_child_no_path (o, NULL, o->entry_no);
     g_free (o->path);
-    o->path = g_strdup (curr->prev->data);
+    o->path = new_path;
     ui_load_path (o);
     mrg_queue_draw (o->mrg, NULL);
   }
@@ -7329,4 +7430,668 @@ int ge_state_get_n_paths (GeState *state)
 {
   return g_list_length (state->paths);
 }
+
+void
+meta_set_key (GeState *state,const char *path, const char *key, const char *value)
+{
+  gchar *metadata_path = ui_get_metadata_path (path);
+  gchar *contents = NULL;
+  char *alloc_value = NULL;
+  if (strchr (value, '\n'))
+  {
+    const char *src;
+    char *dst = alloc_value;
+    alloc_value = g_malloc (strlen (value) * 2 + 1);
+    for (src = value; *src; src++)
+    {
+      if (*src == '\n')
+      {
+        *dst = '\\';
+        dst++;
+        *dst = 'n';
+        dst++;
+      }
+      else
+      {
+        *dst = *src;
+        dst++;
+      }
+    }
+    *dst = 0;
+    value = alloc_value;
+  }
+
+  g_file_get_contents (metadata_path, &contents, NULL, NULL);
+  if (contents)
+  {
+    char *line = contents;
+
+    while (*line)
+    {
+      if (0==memcmp (line, key, strlen (key)) &&
+          line[strlen(key)]=='=')
+      {
+        char *start = &line[strlen(key)+1];
+        char *end = start;
+
+        for (end = start; *end != '\n' && *end != '\0'; end++);
+        if (*end == 0)
+        {
+          *line = 0;
+        }
+        else
+        {
+          memmove (line, end + 1, strlen (end));
+        }
+        goto prepped;
+      }
+
+        while (*line && *line != '\n')
+        {
+          line++;
+        }
+        if (*line == '\n')
+          line++;
+      }
+
+    prepped:
+    {
+      char *str = g_strdup_printf ("%s%s=%s\n", contents, key, value);
+      g_file_set_contents (metadata_path, str, -1, NULL);
+      g_free (str);
+    }
+
+    g_free (contents);
+  }
+  else
+  {
+    char *str = g_strdup_printf ("%s=%s\n", key, value);
+    char *dirname = g_path_get_dirname (metadata_path);
+    g_mkdir_with_parents (dirname, 0777);
+    g_free (dirname);
+
+
+    fprintf (stderr, "%s!%s!!!\n\n", metadata_path, str);
+    g_file_set_contents (metadata_path, str, -1, NULL);
+    g_free (str);
+  }
+
+  g_free (metadata_path);
+  if (alloc_value)
+    g_free (alloc_value);
+}
+
+static IndexItem *
+index_item_new (void)
+{
+  return g_malloc0 (sizeof (IndexItem));
+}
+
+static void
+index_item_destroy (IndexItem *item)
+{
+  g_free (item->name);
+  for (int i = 0; i < INDEX_MAX_ATTRIBUTES; i++)
+  {
+    if (item->attribute[i])
+      g_free (item->attribute[i]);
+    if (item->detail[i])
+      g_free (item->detail[i]);
+  }
+}
+
+static void
+store_index (GeState *state, const char *path)
+{
+  GString *str;
+
+  struct stat stat_buf;
+  char *dirname;
+  char *index_path = NULL;
+  lstat (path, &stat_buf);
+  if (S_ISREG (stat_buf.st_mode))
+  {
+    dirname = g_path_get_dirname (path);
+  }
+  else if (S_ISDIR (stat_buf.st_mode))
+  {
+    dirname = g_strdup (path);
+  }
+  else
+  {
+    return;
+  }
+  str = g_string_new ("");
+  index_path = ui_get_index_path (dirname);
+
+  for (GList *iter = state->index; iter; iter=iter->next)
+  {
+    IndexItem *item = iter->data;
+    g_string_append_printf (str, "%s\n", item->name);
+    for (int i = 0; i < INDEX_MAX_ATTRIBUTES; i++)
+    {
+      if (item->attribute[i])
+      {
+        g_string_append_printf (str, "\t%s\n", item->attribute[i]);
+        if (item->detail[i])
+        {
+          g_string_append_printf (str, "\t\t%s\n", item->detail[i]);
+        }
+      }
+    }
+  }
+  g_file_set_contents (index_path, str->str, -1, NULL);
+
+  g_free (dirname);
+  g_free (index_path);
+  g_string_free (str, TRUE);
+}
+
+static void
+load_index (GeState *state, const char *path)
+{
+  /* if path is not a folder load its parent */
+  struct stat stat_buf;
+  char *index_path = NULL;
+  gchar *contents = NULL;
+  gchar *dirname = NULL;
+
+  while (state->index)
+  {
+    index_item_destroy (state->index->data);
+    state->index = g_list_remove (state->index, state->index->data);
+  }
+
+  lstat (path, &stat_buf);
+  if (S_ISREG (stat_buf.st_mode))
+  {
+    dirname = g_path_get_dirname (path);
+  }
+  else if (S_ISDIR (stat_buf.st_mode))
+  {
+    dirname = g_strdup (path);
+  }
+  else
+  {
+    return;
+  }
+  index_path = ui_get_index_path (dirname);
+
+  g_file_get_contents (index_path, &contents, NULL, NULL);
+  if (contents)
+  {
+    char *line = contents;
+
+    int   child_no = -1;
+    char *name = NULL;
+    char *attribute = NULL;
+    char *detail = NULL;
+    while (*line)
+    {
+      char *nextline = line;
+      /* skip to next line */
+      while (*nextline && *nextline != '\n')
+        nextline++;
+      if (*nextline == '\n')
+        nextline++;
+
+      if (line[0] != '\t') /* name */
+      {
+         char *end;
+         name = line;
+         for (end = name; *end && *end != '\n'; end++);
+         *end = 0;
+         child_no ++;
+         meta_insert_child (state, dirname, child_no, name);
+      }
+      else /* key or value*/
+      {
+        if (line[1] != '\t') /* attribute */
+        {
+          char *end;
+          attribute = &line[1];
+          for (end = attribute; *end && *end != '\n'; end++);
+          *end = 0;
+        }
+        else /* detail */
+        {
+          char *end;
+          detail = &line[2];
+          for (end = detail; *end && *end != '\n'; end++);
+          *end = 0;
+          meta_set_attribute (state, dirname, child_no, attribute, detail);
+        }
+      }
+      line = nextline;
+    }
+    g_free (contents);
+  }
+  g_free (dirname);
+  if (index_path)
+    g_free (index_path);
+  state->index_dirty = 0;
+}
+
+
+
+const char *
+meta_get_key (GeState *state, const char *path, const char *key)
+{
+  const char *ret = NULL;
+  gchar *metadata_path = ui_get_metadata_path (path);
+  gchar *contents = NULL;
+  g_file_get_contents (metadata_path, &contents, NULL, NULL);
+  if (contents)
+  {
+    char *line = contents;
+    while (*line)
+    {
+
+      if (0==memcmp (line, key, strlen (key)) &&
+        line[strlen(key)]=='=')
+      {
+        char *start = &line[strlen(key)+1];
+        char *end = start;
+        for (end = start; *end != '\n' && *end != '\0'; end++);
+        *end = 0;
+
+        for (char *p = start; *p && p != end && *p != '\n'; p++)
+        {
+          if (p[0] == '\\' && p[1]=='n')
+          {
+            p[0] = '\n';
+            memmove (line, end + 1, strlen (end));
+          }
+        }
+
+        ret = g_intern_string (start);
+
+        g_free (contents);
+        return ret;
+      }
+
+      while (*line && *line != '\n')
+      {
+        line++;
+      }
+      if (*line == '\n')
+        line++;
+    }
+    g_free (contents);
+  }
+  return NULL;
+}
+
+
+void
+meta_insert_child (GeState *state,const char *path,
+                   int         value_no,
+                   const char *child_name)
+{
+  IndexItem *item = index_item_new ();
+  item->name = g_strdup (child_name);
+  state->index = g_list_insert (state->index, item, value_no);
+  state->index_dirty ++;
+}
+
+int
+meta_remove_child (GeState *state,const char *path,
+                   int         value_no, /* or -1 to remove first match
+                                            or -2 to remove all matching child_name,
+                                            or specific number >=0 to remove specific */
+                   const char *child_name)
+{
+  int no;
+  int ret = -1;
+  GList *iter;
+
+  again:
+  for (iter = state->index, no=0; iter;iter=iter->next, no++)
+  {
+    IndexItem *item = iter->data;
+    if (child_name)
+    {
+      if (!strcmp (child_name, item->name))
+      {
+        if (value_no == -1)
+        {
+          state->index = g_list_remove (state->index, item);
+          index_item_destroy (item);
+          state->index_dirty++;
+          return no;
+        }
+        else if (value_no == -2)
+        {
+          state->index = g_list_remove (state->index, item);
+          index_item_destroy (item);
+          ret = no;
+          state->index_dirty++;
+          goto again;
+        }
+        else if (value_no == no)
+        {
+          state->index = g_list_remove (state->index, item);
+          index_item_destroy (item);
+          state->index_dirty++;
+          return no;
+        }
+        else
+        {
+          g_assert (0);
+        }
+      }
+    }
+    else
+    {
+      g_assert (value_no>=0);
+      if (value_no == no)
+      {
+        state->index = g_list_remove (state->index, item);
+        index_item_destroy (item);
+        return no;
+      }
+    }
+  }
+
+  return ret;
+}
+
+void
+meta_replace_child (GeState *state,const char *path,
+                    int         old_value_no, /* or -1 for first matching old_child_name */
+                    const char *old_child_name, /* NULL to use >=0 old_value_no or a string */
+                    const char *new_child_name)
+{
+  int old_val_no = meta_remove_child (state, path, old_value_no, old_child_name);
+  meta_insert_child (state, path, old_val_no, new_child_name);
+}
+
+void
+meta_swap_children (GeState *state,const char *path,
+                    int         value_no1, /* -1 to use only name */
+                    const char *child_name1,  /* or NULL to use no1 (which cannot be -1) */
+                    int         value_no2,
+                    const char *child_name2)
+{
+  fprintf (stderr, "%s NYI\n", __FUNCTION__);
+}
+
+void
+meta_set_attribute (GeState    *state,
+                    const char *path,
+                    int         value_no,
+                    // also have child name
+                    const char *attribute,
+                    const char *detail)
+{
+  GList *iter;
+  int no;
+  fprintf (stderr, "----%s %i %s %s\n", path, value_no, attribute, detail);
+  for (iter = state->index, no = 0; iter; iter=iter->next, no++)
+  {
+    IndexItem *item = iter->data;
+    if (no == value_no)
+    {
+      for (int ano = 0; ano < INDEX_MAX_ATTRIBUTES; ano++)
+      {
+        if (item->attribute[ano] && !strcmp (item->attribute[ano], attribute))
+        {
+          if (item->detail[ano])
+          {
+            g_free (item->detail[ano]);
+            item->detail[ano] = NULL;
+          }
+          if (detail)
+          {
+            item->detail[ano] = g_strdup (detail);
+          }
+          state->index_dirty ++;
+          return;
+        }
+      }
+
+      for (int ano = 0; ano < INDEX_MAX_ATTRIBUTES; ano++)
+      {
+        if (item->attribute[ano] == NULL)
+        {
+          if (item->detail[ano])
+          {
+            g_free (item->detail[ano]);
+            item->detail[ano] = NULL;
+          }
+          if (detail)
+          {
+            item->detail[ano] = g_strdup (detail);
+          }
+          item->attribute[ano] = g_strdup (attribute);
+          state->index_dirty ++;
+          return;
+        }
+      }
+    }
+  }
+}
+
+const char *
+meta_get_attribute (GeState    *state,
+                    const char *path,
+                    int         value_no,
+                    const char *attribute)
+{
+  GList *iter;
+  int no;
+  for (iter = state->index, no = 0; iter; iter=iter->next, no++)
+  {
+    IndexItem *item = iter->data;
+    if (no == value_no)
+    {
+      for (int ano = 0; ano < INDEX_MAX_ATTRIBUTES; ano++)
+      {
+        if (item->attribute[ano] && !strcmp (item->attribute[ano], attribute))
+        {
+          return item->detail[ano];
+        }
+      }
+    }
+  }
+
+  /* XXX; fall back to loading key/value ? */
+
+  return NULL;
+}
+
+int
+meta_has_attribute (GeState    *state,
+                    const char *path,
+                    int         value_no,
+                    const char *attribute)
+{
+  GList *iter;
+  int no;
+  for (iter = state->index, no = 0; iter; iter=iter->next, no++)
+  {
+    IndexItem *item = iter->data;
+    if (no == value_no)
+    {
+      for (int ano = 0; ano < INDEX_MAX_ATTRIBUTES; ano++)
+      {
+        if (item->attribute[ano] && !strcmp (item->attribute[ano], attribute))
+        {
+          return 1;
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+void
+meta_unset_attribute (GeState    *state,
+                      const char *path,
+                      int         value_no,
+                      const char *attribute)
+{
+  GList *iter;
+  int no;
+  for (iter = state->index, no = 0; iter; iter=iter->next, no++)
+  {
+    IndexItem *item = iter->data;
+    if (no == value_no)
+    {
+      for (int ano = 0; ano < INDEX_MAX_ATTRIBUTES; ano++)
+      {
+        if (item->attribute[ano] && !strcmp (item->attribute[ano], attribute))
+        {
+          g_free (item->attribute[ano]);
+          item->attribute[ano] = NULL;
+          if (item->detail[ano])
+            g_free (item->detail[ano]);
+          item->detail[ano] = NULL;
+          state->index_dirty ++;
+        }
+      }
+    }
+  }
+}
+
+#if 1
+static int
+index_contains (GeState *state,
+                const char *name)
+{
+  for (GList *iter = state->index; iter; iter = iter->next)
+  {
+    IndexItem *item = iter->data;
+    if (!strcmp (item->name, name))
+      return 1;
+  }
+  return 0;
+}
+#endif
+
+char *
+meta_get_child (GeState    *state,
+                const char *path,
+                int         child_no)
+{
+  int items = g_list_length (state->index);
+  GList *iter;
+  int no = 0;
+  if (child_no >= 0 && child_no < items) {
+    IndexItem *item = g_list_nth_data (state->index, child_no);
+    return g_strdup (item->name);
+  }
+  no = items;
+  for (iter = state->paths; iter; iter=iter->next)
+  {
+    char *basename = g_path_get_basename (iter->data);
+//    if (!index_contains (state, basename))
+    {
+      if (no == child_no)
+      {
+        return basename;
+      }
+      no++;
+    }
+    g_free (basename);
+  }
+  return NULL;
+}
+
+/* integer/float abstraction for path key/values */
+
+void
+meta_set_key_int (GeState    *state,
+                  const char *path,
+                  const char *key,
+                  int         value)
+{
+  char *buf = g_strdup_printf ("%i", value);
+  meta_set_key (state, path, key, buf);
+  g_free (buf);
+}
+
+int
+meta_get_key_int (GeState    *state,
+                  const char *path,
+                  const char *key)
+{
+  const char *value = meta_get_key (state, path, key);
+  if (!value)
+    return -999999;
+  return atoi (value);
+}
+
+int
+meta_get_attribute_int (GeState    *state,
+                        const char *path,
+                        int         value_no,
+                        const char *attribute)
+{
+  const char *value = meta_get_attribute (state, path, value_no, attribute);
+  if (!value)
+    return -999999;
+  return atoi (value);
+}
+
+float
+meta_get_attribute_float (GeState    *state,
+                          const char *path,
+                          int         value_no,
+                          const char *attribute)
+{
+  const char *value = meta_get_attribute (state, path, value_no, attribute);
+  if (!value)
+    return -999999.99999;
+  return g_ascii_strtod (value, NULL);
+}
+
+void
+meta_set_key_float (GeState    *state,
+                    const char *path,
+                    const char *key,
+                    float       value)
+{
+  char buf[G_ASCII_DTOSTR_BUF_SIZE];
+  g_ascii_dtostr (buf, G_ASCII_DTOSTR_BUF_SIZE, value);
+  meta_set_key (state, path, key, buf);
+}
+
+void
+meta_set_attribute_float (GeState    *state,
+                          const char *path,
+                          int         value_no,
+                          // also have child name
+                          const char *attribute,
+                          float       detail)
+{
+  char buf[G_ASCII_DTOSTR_BUF_SIZE];
+  g_ascii_dtostr (buf, G_ASCII_DTOSTR_BUF_SIZE, detail);
+  meta_set_attribute (state, path, value_no, attribute, buf);
+}
+
+void
+meta_set_attribute_int (GeState    *state,
+                        const char *path,
+                        int         value_no,
+                        // also have child name
+                        const char *attribute,
+                        int         detail)
+{
+  char buf[G_ASCII_DTOSTR_BUF_SIZE];
+  sprintf (buf, "%d", detail);
+  meta_set_attribute (state, path, value_no, attribute, buf);
+}
+
+float
+meta_get_key_float (GeState    *state,
+                    const char *path,
+                    const char *key)
+{
+  const char *value = meta_get_key (state, path, key);
+  if (!value)
+    return -999999.99999;
+  return g_ascii_strtod (value, NULL);
+}
+
 #endif

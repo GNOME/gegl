@@ -29,6 +29,19 @@ typedef struct _GeStateClass         GeStateClass;
  *
  */
 
+typedef struct _IndexItem IndexItem;
+
+#define INDEX_MAX_ATTRIBUTES  8
+
+struct _IndexItem {
+  char *name;
+  char *attribute[INDEX_MAX_ATTRIBUTES];
+  char *detail[INDEX_MAX_ATTRIBUTES];
+
+  /* we could cache item meta data for reading here */
+  //char *key[INDEX_MAX_ATTRIBUTES];
+  //char *value[INDEX_MAX_ATTRIBUTES];
+};
 
 struct _GeState {
   GObject   parent;
@@ -42,6 +55,8 @@ struct _GeState {
                             the file that is written to on save. This differs depending
                             on type of input file.
                           */
+  GList         *index;  /* dictates manual order and attribute/details for entries */
+  int            index_dirty;
   GList         *paths;  /* list of full paths to entries in collection/path/containing path,
                             XXX: could be replaced with URIs, and each
                             element should perhaps contain more internal info
@@ -130,32 +145,125 @@ struct _GeStateClass {
   GObjectClass parent;
 };
 
-GType        ge_state_get_type    (void) G_GNUC_CONST;
-GeState*     ge_state_new         (void);
+GType       ge_state_get_type      (void) G_GNUC_CONST;
+GeState*    ge_state_new           (void);
+const char *ge_state_get_path      (GeState *state, int no);
+int         ge_state_get_n_paths   (GeState *state);
+void        ui_load_path           (GeState *o);
+void        ui_center_active_entry (GeState *o);
 
-const char *ge_state_get_path (GeState *state, int no);
-int         ge_state_get_n_paths (GeState *state);
-void   ui_load_path        (GeState *o);
-void ui_center_active_entry (GeState *o);
 
 
-void        path_set_key (const char *path, const char *key, const char *value);
-const char *path_get_key (const char *path, const char *key);
+
+void        meta_set_key (GeState    *state,
+                          const char *path,
+                          const char *key,
+                          const char *value);
+
+const char *meta_get_key (GeState    *state, const char *path, const char *key);
+
+void        meta_set_key_int (GeState    *state, const char *path, const char *key, int value);
+int         meta_get_key_int (GeState    *state, const char *path, const char *key); 
+void        meta_set_key_float (GeState *state, const char *path, const char *key, float value);
+float       meta_get_key_float (GeState *state, const char *path, const char *key);
+
+int
+meta_get_attribute_int (GeState    *state,
+                        const char *path,
+                        int         child_no,
+                        // also have child name
+                        const char *attribute);
+
+float
+meta_get_attribute_float (GeState    *state,
+                          const char *path,
+                          int         child_no,
+                          // also have child name
+                          const char *attribute);
+
+void
+meta_set_attribute_float (GeState    *state,
+                          const char *path,
+                          int         child_no,
+                          // also have child name
+                          const char *attribute,
+                          float       detail);
+
+void
+meta_set_attribute_int (GeState    *state,
+                        const char *path,
+                        int         child_no,
+                        // also have child name
+                        const char *attribute,
+                        int         detail);
 
 /* --- the display order is overrides, then dirlist.. this
  *     should be configurable
  *
- * the display order should be a second list of 
+ * the display order should be a second list of
  */
 
+void
+meta_set_attribute (GeState    *state,
+                    const char *path,
+                    int         child_no,
+                    const char *attribute,
+                    const char *detail);
+const char *
+meta_get_attribute (GeState    *state,
+                    const char *path,
+                    int         child_no,
+                    const char *attribute);
+int
+meta_has_attribute (GeState    *state,
+                    const char *path,
+                    int         child_no,
+                    const char *attribute);
+void
+meta_unset_attribute (GeState    *state,
+                      const char *path,
+                      int         child_no,
+                      const char *attribute);
 
+/* for now - not supporting multivalue on attribute/details  */
 
+char *
+meta_get_child (GeState    *state,
+                const char *path,
+                int         child_no);
 
+void
+meta_insert_child (GeState    *state,
+                   const char *path,
+                   int         child_no,
+                   const char *child_name);
+int
+meta_remove_child (GeState    *state,
+                   const char *path,
+                   int         child_no,
+                   const char *child_name);
 
-void   ui_viewer        (GeState *o);
-void   ui_collection    (GeState *o);
-char  *ui_suffix_path   (const char *path);
-char  *ui_unsuffix_path (const char *path);
+void
+meta_replace_child (GeState    *state,
+                    const char *path,
+                    int         old_child_no,
+                    const char *old_child_name,
+                    const char *new_child_name);
+
+void
+meta_swap_children (GeState    *state,
+                    const char *path,
+                    int         child_no1,
+                    const char *child_name1,
+                    int         child_no2,
+                    const char *child_name2);
+
+char *meta_child_no_path (GeState *o, const char *path, int child_no);
+
+void   ui_viewer           (GeState *o);
+void   ui_collection       (GeState *o);
+char  *ui_suffix_path      (const char *path);
+char  *ui_unsuffix_path    (const char *path);
 
 int    ui_hide_controls_cb (Mrg *mrg, void *data);
 gchar *ui_get_thumb_path   (const char *path);
