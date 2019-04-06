@@ -139,6 +139,19 @@ void   ui_load_path        (GeState *o);
 void ui_center_active_entry (GeState *o);
 
 
+void        path_set_key (const char *path, const char *key, const char *value);
+const char *path_get_key (const char *path, const char *key);
+
+/* --- the display order is overrides, then dirlist.. this
+ *     should be configurable
+ *
+ * the display order should be a second list of 
+ */
+
+
+
+
+
 void   ui_viewer        (GeState *o);
 void   ui_collection    (GeState *o);
 char  *ui_suffix_path   (const char *path);

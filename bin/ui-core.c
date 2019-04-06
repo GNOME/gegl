@@ -474,7 +474,7 @@ GExiv2Orientation path_get_orientation (const char *path);
 
 static int is_gegl_path (const char *path);
 
-
+#if 0
 static char *thumb_folder (void)
 {
   static char *path = NULL;
@@ -490,18 +490,15 @@ static char *thumb_folder (void)
   }
   return path;
 }
-
+#endif
 gchar *ui_get_thumb_path (const char *path)
 {
   gchar *ret;
-  gchar *uri = g_strdup_printf ("file://%s", path);
-  gchar *hex = g_compute_checksum_for_string (G_CHECKSUM_MD5, uri, -1);
-  int i;
-  for (i = 0; hex[i]; i++)
-    hex[i] = tolower (hex[i]);
-  ret = g_strdup_printf ("%s/%s.jpg", thumb_folder(), hex);
-  g_free (uri);
-  g_free (hex);
+  gchar *basename = g_path_get_basename (path);
+  gchar *dirname = g_path_get_dirname (path);
+  ret = g_strdup_printf ("%s/.gegl/%s/thumb.jpg", dirname, basename);
+  g_free (basename);
+  g_free (dirname);
   return ret;
 }
 
@@ -730,44 +727,41 @@ static gboolean renderer_task (gpointer data)
       if (thumb_queue)
       {
         static GPid thumbnailer_pid = 0;
-#define THUMB_BATCH_SIZE    32
+#define THUMB_BATCH_SIZE    16
         char *argv[THUMB_BATCH_SIZE]={"gegl","--thumbgen", NULL};
         int count = 2;
-        MrgList *to_remove = NULL;
-
-        for (MrgList *iter = thumb_queue;
-             iter && count < THUMB_BATCH_SIZE-3;
-             iter=iter->next)
-        {
-          ThumbQueueItem *item = iter->data;
-          if (access (item->thumbpath, F_OK) != 0)
-          {
-            argv[count++] = item->path;
-            argv[count] = NULL;
-          }
-          else
-          {
-            mrg_list_prepend (&to_remove, item);
-            mrg_forget_image (o->mrg, item->thumbpath);
-            mrg_queue_draw (o->mrg, NULL);
-          }
-        }
-        for (MrgList *iter = to_remove; iter; iter=iter->next)
-        {
-          ThumbQueueItem *item = iter->data;
-          mrg_list_remove (&thumb_queue, item);
-          thumb_queue_item_free (item);
-        }
 
         if (thumbnailer_pid == 0 ||
             kill(thumbnailer_pid, 0) == -1)
         {
+        for (MrgList *iter = thumb_queue; iter && count < THUMB_BATCH_SIZE-2; iter=iter->next)
+        {
+          ThumbQueueItem *item = iter->data;
+          if (access (item->thumbpath, F_OK) == -1)
+          {
+            argv[count++] = item->path;
+            argv[count] = NULL;
+          }
+        }
+         {
           GError *error = NULL;
           g_spawn_async (NULL, &argv[0], NULL,
               G_SPAWN_SEARCH_PATH|G_SPAWN_SEARCH_PATH_FROM_ENVP,
               NULL, NULL, &thumbnailer_pid, &error);
           if (error)
             g_warning ("%s", error->message);
+#if 0
+          else
+            fprintf (stderr, "spawned %i items first is %s\n", count-2, argv[2]);
+#endif
+          }
+
+          while (thumb_queue)
+          {
+            ThumbQueueItem *item = thumb_queue->data;
+            mrg_list_remove (&thumb_queue, item);
+            thumb_queue_item_free (item);
+          }
         }
         g_usleep (1000);
       }
@@ -835,7 +829,6 @@ int mrg_ui_main (int argc, char **argv, char **ops)
       printf ("usage: %s <full-path-to-image>\n", argv[0]);
       return -1;
     }
-
 
 #ifdef HAVE_LUA
   {
@@ -937,6 +930,16 @@ cmd_thumb (COMMAND_ARGS)
   gchar *thumbpath;
 
   thumbpath = ui_get_thumb_path (o->save_path);
+  /* protect against some possible repeated requests to generate the same thumb
+   */
+  if (g_file_test (thumbpath, G_FILE_TEST_EXISTS))
+    return -1;
+
+  {
+    char *dirname = g_path_get_dirname (thumbpath);
+    g_mkdir_with_parents (dirname, 0777);
+    g_free (dirname);
+  }
 
   gegl = gegl_node_new ();
   thumbdata = g_malloc0 (256 * 256 * 4);
@@ -986,6 +989,8 @@ cmd_thumb (COMMAND_ARGS)
   g_object_unref (gegl);
   g_object_unref (buffer);
   g_free (thumbdata);
+  fflush (NULL);
+  sync ();
   return 0;
 }
 
@@ -998,6 +1003,7 @@ int thumbgen_main (int argc, char **argv)
 
   o = global_state = ge_state_new ();
 
+
   for (char **arg = &argv[2]; *arg; arg++)
   {
     if (o->path)
@@ -1007,7 +1013,6 @@ int thumbgen_main (int argc, char **argv)
 
     if (!strcmp (gegl_node_get_operation (o->source), "gegl:pdf-load"))
         gegl_node_set (o->source, "ppi", 72/2.0, NULL);
-
     argvs_eval ("thumb");
   }
 
@@ -1500,9 +1505,13 @@ static void queue_thumb (const char *path, const char *thumbpath)
   {
     item = l->data;
     if (!strcmp (item->path, path))
+    {
       return;
+    }
     if (!strcmp (item->thumbpath, thumbpath))
+    {
       return;
+    }
   }
   item = g_malloc0 (sizeof (ThumbQueueItem));
   item->path = g_strdup (path);
@@ -2239,15 +2248,7 @@ draw_property_string (GeState *o, Mrg *mrg, GeglNode *node, const GParamSpec *ps
     mrg_printf (mrg, "%s", value);
   }
 
-
-
-
-
-
-
   mrg_set_xy (mrg, x_final, y_final);
-
-
 
   if (value)
     g_free (value);
@@ -2338,7 +2339,8 @@ static void list_node_props (GeState *o, GeglNode *node, int indent)
   if (o->property_focus == g_intern_string ("operation"))
     draw_property_focus_box (o, mrg);
 
-  mrg_text_listen (mrg, MRG_CLICK, set_int, &operation_selector, GINT_TO_POINTER(1));
+  mrg_text_listen (mrg, MRG_CLICK, set_int, &operation_selector,
+                   GINT_TO_POINTER(1));
   draw_key_value (o, mrg, "operation", op_name);
   mrg_text_listen_done (mrg);
 
@@ -4635,7 +4637,7 @@ resolve_lua_file2 (const char *basepath, gboolean add_gegl, const char *basename
   else
     path = g_strdup_printf ("%s%s%s", basepath, add_slash?"/":"", basename);
 
-  if (g_file_test (path, G_FILE_TEST_IS_REGULAR))
+  if (g_file_test (path, G_FILE_TEST_EXISTS))
     return path;
   g_free (path);
   return NULL;
@@ -5134,7 +5136,7 @@ static int is_gegl_path (const char *path)
   if (g_str_has_suffix (path, ".gegl"))
   {
     char *unsuffixed = ui_unsuffix_path (path);
-    if (access (unsuffixed, F_OK) != -1)
+    if (g_file_test (unsuffixed, G_FILE_TEST_EXISTS))
       ret = 1;
     g_free (unsuffixed);
   }

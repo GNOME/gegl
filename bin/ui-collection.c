@@ -263,7 +263,6 @@ void ui_collection (GeState *o)
   int   count;
   float padding = 0.025;
   float em = mrg_em (mrg);
-
   dir_touch_handling (mrg, o);
 
   update_grid_dim (o);
@@ -358,22 +357,20 @@ void ui_collection (GeState *o)
       /* we compute the thumbpath as the hash of the suffixed path, even for
  * gegl documents - for gegl documents this is slightly inaccurate but consistent.
        */
-      if (access (thumbpath, F_OK) == 0)
+      if (g_file_test (thumbpath, G_FILE_TEST_IS_REGULAR))
       {
         int suffix_exist = 0;
         lstat (thumbpath, &thumb_stat_buf);
         if (lstat (p2, &suffixed_stat_buf) == 0)
           suffix_exist = 1;
 
-        if ((suffix_exist && (suffixed_stat_buf.st_mtime >
-                              thumb_stat_buf.st_mtime)) ||
-                             (stat_buf.st_mtime >
-                             thumb_stat_buf.st_mtime))
+        if ((suffix_exist &&
+                (suffixed_stat_buf.st_mtime > thumb_stat_buf.st_mtime)) ||
+             (stat_buf.st_mtime > thumb_stat_buf.st_mtime))
         {
           unlink (thumbpath);
           mrg_forget_image (mrg, thumbpath);
         }
-
       }
       g_free (p2);
 
@@ -408,8 +405,7 @@ void ui_collection (GeState *o)
       }
       else
       {
-         if (access (thumbpath, F_OK) != 0) // only queue if does not exist,
-                                            // mrg/stb_image seem to suffer on some of our pngs
+         if (!g_file_test (thumbpath, G_FILE_TEST_IS_REGULAR))
          {
            ui_queue_thumb (path);
          }
