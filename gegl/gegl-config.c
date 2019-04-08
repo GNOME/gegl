@@ -244,7 +244,34 @@ gegl_config_class_init (GeglConfigClass *klass)
     mem_available = memory_status.ullAvailPhys;
   }
 # endif
+#elif defined(__APPLE__)
+    /* get total memory from the HW_MEMSIZE */
+    int64_t usermem;
+    size_t len = sizeof usermem;
+    static int mib[2] = { CTL_HW, HW_MEMSIZE };
 
+    if (sysctl (mib, 2, &usermem, &len, NULL, 0) == 0) {
+      mem_total = usermem;
+    }
+    /* and available mem from host_statistics64 */
+    vm_size_t              page_size = sysconf (_SC_PAGESIZE);
+    mach_port_t            host = mach_host_self ();
+    vm_statistics64_data_t vm_stat;
+    kern_return_t	         kret;
+    unsigned int           count = HOST_VM_INFO64_COUNT;
+
+    kret = host_statistics64 (host, HOST_VM_INFO64, (host_info64_t)&vm_stat, &count);
+
+    if (kret == KERN_SUCCESS)
+    {
+      mem_available = (long) (vm_stat.free_count + vm_stat.active_count
+                              + vm_stat.inactive_count
+# ifdef MAC_OS_X_VERSION_10_9
+                              + vm_stat.compressor_page_count
+# endif
+                             ) * page_size;
+      mach_port_deallocate (mach_task_self (), host);
+    }
 #else
     mem_total = sysconf (_SC_PHYS_PAGES) * sysconf (_SC_PAGESIZE);
     mem_available = sysconf (_SC_AVPHYS_PAGES) * sysconf (_SC_PAGESIZE);
