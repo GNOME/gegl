@@ -38,6 +38,12 @@
 #include <windows.h>
 #endif
 
+#ifdef __APPLE__
+#include <mach/mach.h>
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 G_DEFINE_TYPE (GeglConfig, gegl_config, G_TYPE_OBJECT)
 
 static GObjectClass * parent_class = NULL;
