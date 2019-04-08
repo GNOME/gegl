@@ -270,7 +270,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                               + vm_stat.compressor_page_count
 # endif
                              ) * page_size;
-      mach_port_deallocate(mach_task_self(), host);
+      mach_port_deallocate (mach_task_self (), host);
     }
 #else
     mem_total = sysconf (_SC_PHYS_PAGES) * sysconf (_SC_PAGESIZE);
