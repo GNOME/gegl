@@ -30,7 +30,7 @@
 #define font_size_scale  0.020
 
 const char *css =
-"div.collstars {color: yellow; background: transparent;};"
+"div.collstars {color: yellow; font-size: 1.2em; background: transparent;};"
 "div.lui { font-size: 2.0vh; color: white; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.0);}\n"
 "div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
@@ -163,6 +163,7 @@ ge_state_init (GeState *o)
   o->paint_color       = g_strdup ("white");
   o->slide_enabled     = 0;
   o->show_bindings     = 0;
+  o->sort_order        = SORT_ORDER_CUSTOM | SORT_ORDER_AZ;
   o->ui_consumer = g_hash_table_new (g_direct_hash, g_direct_equal);
 
   if (renderer_env)
@@ -555,6 +556,58 @@ static int
 index_contains (GeState *state,
                 const char *name);
 
+
+static int order_az (gconstpointer a, gconstpointer b)
+{
+  const char *apath = a;
+  const char *bpath = b;
+
+  const char *abasename = strrchr (apath, '/');
+  const char *bbasename = strrchr (bpath, '/');
+
+  if (abasename) abasename++;
+  else return 0;
+  if (bbasename) bbasename++;
+  else return 0;
+
+  return strcmp (bbasename, abasename);
+}
+
+static int order_stars (gconstpointer a, gconstpointer b, void *data)
+{
+  GeState *state = data;
+  const char *apath = a;
+  const char *bpath = b;
+
+  return meta_get_key_int (state, bpath, "stars") -
+         meta_get_key_int (state, apath, "stars");
+}
+
+static int order_mtime (gconstpointer a, gconstpointer b)
+{
+  struct stat stat_a;
+  struct stat stat_b;
+  lstat (a, &stat_a);
+  lstat (b, &stat_b);
+  return stat_a.st_mtime - stat_b.st_mtime;
+}
+
+static int order_exif_time (gconstpointer a, gconstpointer b)
+{
+  /* XXX - NYI, need to figure out how to fish the right data out with gexiv2 */
+  struct stat stat_a;
+  struct stat stat_b;
+  lstat (a, &stat_a);
+  lstat (b, &stat_b);
+  return stat_a.st_mtime - stat_b.st_mtime;
+}
+
+/*
+ *  the path list need repopulation when the folder changes (we do it on all document changes to
+ *  get updates). It also needs changing when the sort order changes.
+ *
+ */
+
 static void populate_path_list (GeState *o)
 {
   struct dirent **namelist;
@@ -570,6 +623,8 @@ static void populate_path_list (GeState *o)
     }
 
   lstat (o->path, &stat_buf);
+
+  /* chop off basename if path is to a regular file */
   if (S_ISREG (stat_buf.st_mode))
   {
     char *lastslash = strrchr (path, '/');
@@ -583,6 +638,7 @@ static void populate_path_list (GeState *o)
   }
   n = scandir (path, &namelist, NULL, alphasort);
 
+  /* first list folders */
   for (i = 0; i < n; i++)
   {
     if (namelist[i]->d_name[0] != '.' && !index_contains (o, namelist[i]->d_name))
@@ -598,34 +654,49 @@ static void populate_path_list (GeState *o)
     }
   }
 
-  for (i = 0; i < n; i++)
+  /* then list files
+   */
   {
-    if (namelist[i]->d_name[0] != '.' &&
-        !index_contains (o, namelist[i]->d_name) &&
-        str_has_visual_suffix (namelist[i]->d_name))
+  GList *temp = NULL;
+
+  for (i = 0; i < n; i++)
     {
-      gchar *fpath = g_strdup_printf ("%s/%s", path, namelist[i]->d_name);
-
-      lstat (fpath, &stat_buf);
-      if (S_ISREG (stat_buf.st_mode))
+      if (namelist[i]->d_name[0] != '.' &&
+          !index_contains (o, namelist[i]->d_name) &&
+          str_has_visual_suffix (namelist[i]->d_name))
       {
-        if (is_gegl_path (fpath))
-        {
-          char *tmp = ui_unsuffix_path (fpath);
-          g_free (fpath);
-          fpath = g_strdup (tmp);
-          g_free (tmp);
-        }
+        gchar *fpath = g_strdup_printf ("%s/%s", path, namelist[i]->d_name);
 
-        if (!g_list_find_custom (o->paths, fpath, (void*)g_strcmp0))
+        lstat (fpath, &stat_buf);
+        if (S_ISREG (stat_buf.st_mode))
         {
-          o->paths = g_list_append (o->paths, fpath);
+          if (is_gegl_path (fpath))
+          {
+            char *tmp = ui_unsuffix_path (fpath);
+            g_free (fpath);
+            fpath = g_strdup (tmp);
+            g_free (tmp);
+          }
+
+          if (!g_list_find_custom (o->paths, fpath, (void*)g_strcmp0))
+          {
+            if (o->sort_order & SORT_ORDER_AZ)
+              temp = g_list_insert_sorted (temp, fpath, order_az);
+            else if (o->sort_order & SORT_ORDER_MTIME)
+              temp = g_list_insert_sorted (temp, fpath, order_mtime);
+            else if (o->sort_order & SORT_ORDER_EXIF_TIME)
+              temp = g_list_insert_sorted (temp, fpath, order_exif_time);
+            else if (o->sort_order & SORT_ORDER_STARS)
+              temp = g_list_insert_sorted_with_data (temp, fpath, order_stars, o);
+          }
+          else
+            g_free (fpath);
         }
-        else
-          g_free (fpath);
       }
     }
+    o->paths = g_list_concat (o->paths, temp);
   }
+
 
   for (int i = 0; i < n;i++)
     free(namelist[i]);
@@ -6573,6 +6644,54 @@ int cmd_cd (COMMAND_ARGS) /* "cd", 1, "<target>", "convenience wrapper making so
     free (rp);
     g_free (new_path);
   }
+  return 0;
+}
+
+
+  int cmd_order (COMMAND_ARGS);
+int cmd_order (COMMAND_ARGS) /* "order", -1, "<az|time|exif-time|stars>", "Sets sort order."*/
+{
+  GeState *o = global_state;
+
+  if (!argv[1])
+  {
+    printf ("current sort order: %i\n", o->sort_order);
+    return 0;
+  }
+
+  {
+  int was_custom = o->sort_order & SORT_ORDER_CUSTOM;
+    if (!strcmp (argv[1], "az"))
+    {
+      o->sort_order = SORT_ORDER_AZ;
+    }
+    else if (!strcmp (argv[1], "stars"))
+    {
+      o->sort_order = SORT_ORDER_STARS;
+    }
+    else if (!strcmp (argv[1], "time"))
+    {
+      o->sort_order = SORT_ORDER_MTIME;
+    }
+    else if (!strcmp (argv[1], "exif-time"))
+    {
+      o->sort_order = SORT_ORDER_EXIF_TIME;
+    }
+    else if (!strcmp (argv[1], "custom"))
+    {
+      o->sort_order = SORT_ORDER_CUSTOM;
+    }
+    else
+    {
+      printf ("unknown sort order %s\n", argv[1]);
+    }
+    if (was_custom)
+      o->sort_order &= SORT_ORDER_CUSTOM;
+
+  }
+
+  populate_path_list (o);
+
   return 0;
 }
 

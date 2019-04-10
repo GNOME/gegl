@@ -431,8 +431,24 @@ void ui_collection (GeState *o)
           if (stars >= 0)
           {
             mrg_start (mrg, "div.collstars", NULL);
-            mrg_set_xy (mrg, x, y + mrg_em(mrg) * 1.5);
+            mrg_set_xy (mrg, x + mrg_em (mrg) * .2, y + mrg_em(mrg) * 1.5);
             for (int i = 0; i < stars; i ++)
+            {
+              mrg_printf (mrg, "★", lastslash+1);
+            }
+            mrg_set_style (mrg, "color:gray;");
+            for (int i = stars; i < 5; i ++)
+            {
+              mrg_printf (mrg, "★", lastslash+1);
+            }
+            mrg_end (mrg);
+          }
+          else if (!is_dir)
+          {
+            mrg_start (mrg, "div.collstars", NULL);
+            mrg_set_xy (mrg, x + mrg_em (mrg) * .2, y + mrg_em(mrg) * 1.5);
+            mrg_set_style (mrg, "color:gray;");
+            for (int i = 0; i < 5; i ++)
             {
               mrg_printf (mrg, "★", lastslash+1);
             }

@@ -17,6 +17,16 @@ typedef void* GeglProcessor;
 typedef void* GThread;
 typedef void* GHashTable;
 
+enum _SortOrder
+{
+  SORT_ORDER_AZ         = 1,
+  SORT_ORDER_MTIME      = 2,
+  SORT_ORDER_EXIF_TIME  = 4,
+  SORT_ORDER_STARS      = 8,
+  SORT_ORDER_CUSTOM     = 512, /* gets or'ed with - other selection */
+};
+typedef enum _SortOrder SortOrder;
+
 struct _GeState {
   int64_t   pad_for_gobject[3];
 
@@ -79,6 +89,7 @@ struct _GeState {
   int          nearest_neighbor;
   float        render_quality; /* default (and in code swapped for preview_quality during preview rendering, this is the canonical read location for the value)  */
   float        preview_quality;
+  SortOrder    sort_order;
 
   float        graph_pan_x;
   float        graph_pan_y;

@@ -43,6 +43,18 @@ struct _IndexItem {
   //char *value[INDEX_MAX_ATTRIBUTES];
 };
 
+typedef enum _SortOrder SortOrder;
+
+enum _SortOrder
+{
+  SORT_ORDER_AZ         = 1,
+  SORT_ORDER_MTIME      = 2,
+  SORT_ORDER_EXIF_TIME  = 4,
+  SORT_ORDER_STARS      = 8,
+  SORT_ORDER_CUSTOM     = 512, /* gets or'ed with - other selection */
+};
+
+
 struct _GeState {
   GObject   parent;
   void      (*ui) (Mrg *mrg, void *state);
@@ -105,6 +117,7 @@ struct _GeState {
 
   float          render_quality; /* default (and in code swapped for preview_quality during preview rendering, this is the canonical read location for the value)  */
   float          preview_quality;
+  SortOrder      sort_order;
 
   float          graph_pan_x;
   float          graph_pan_y;
