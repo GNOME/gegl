@@ -16,7 +16,6 @@ TESTS = \
   affine-with-negative.xml        \
   alien-map.xml                   \
   apply-lens.xml                  \
-  apply-lens2.xml                 \
   apply-lens3.xml                 \
   bump-map.xml                    \
   checkerboard.xml                \
