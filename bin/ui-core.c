@@ -31,6 +31,7 @@
 
 const char *css =
 "div.collstars {color: yellow; font-size: 1.2em; background: transparent;};"
+"div.viewerstars {color: yellow; font-size: 3.8vh; background: transparent;};"
 "div.lui { font-size: 2.0vh; color: white; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.0);}\n"
 "div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"

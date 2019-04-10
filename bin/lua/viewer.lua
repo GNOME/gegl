@@ -297,6 +297,9 @@ if o.is_video ~= 0 then
 
     cr:set_source_rgba(1,1,1,.5)
     cr:fill()
+
+
+
   end
 
   cr:rectangle(height * .1 , height * .9, width - height * .2, height *.1)
@@ -370,6 +373,9 @@ if path:find(".pdf$") or path:find('.PDF$') then
   mrg:add_binding("page-down", NULL, "next page",
     function(e) pdf_next_page() e:stop_propagate() end)
 
+
+
+
 end
 
 
@@ -406,11 +412,35 @@ if o.commandline[0] == 0 then
     function() ffi.C.argvs_eval ("star 0") end)
 end
 
-local stars = o:get_key_int(o.path, "stars")
+if o.show_controls ~= 0 then
 
-if stars >= 0 then
-  mrg:print('' .. stars)
+  local stars = o:get_key_int(o.path, "stars")
+
+  if stars < 0 then stars = 0 end
+
+  --if stars >= 0 then
+  if true then
+    mrg:start('div.viewerstars')
+    mrg:set_xy(mrg:height()*.15 + 2,mrg:em())
+    for i=1,stars do
+      mrg:text_listen(Mrg.PRESS, function(e)
+          ffi.C.argvs_eval('star ' .. i)
+          print('star ' .. i)
+      end)
+      mrg:print('★')
+      mrg:text_listen_done()
+    end
+    mrg:set_style('color:gray;')
+    for i=stars+1,5 do
+      mrg:text_listen(Mrg.PRESS, function(e)
+          ffi.C.argvs_eval('star ' .. i)
+          print('star ' .. i)
+      end)
+      mrg:print('★')
+      mrg:text_listen_done()
+    end
+    mrg:close()
+  end
 end
-
 
 cr:restore()
