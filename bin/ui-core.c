@@ -30,6 +30,7 @@
 #define font_size_scale  0.020
 
 const char *css =
+"div.collstars {color: yellow; background: transparent;};"
 "div.lui { font-size: 2.0vh; color: white; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.0);}\n"
 "div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
@@ -290,6 +291,11 @@ GeState *ge_state_new (void)
   return g_object_new (GE_STATE_TYPE, NULL);
 }
 
+int ui_items_count (GeState *o)
+{
+  return g_list_length (o->index) +
+         g_list_length (o->paths);
+}
 
 /* gets the node which is the direct consumer, and not a clone.
  *
@@ -6438,6 +6444,44 @@ cmd_toggle (COMMAND_ARGS)
   return 0;
 }
 
+  int cmd_star (COMMAND_ARGS);
+int cmd_star (COMMAND_ARGS) /* "star", -1, "", "query or set number of stars"*/
+{
+  GeState *o = global_state;
+  char *path = NULL;
+  if (o->is_dir)
+  {
+    path = meta_child_no_path (o, NULL, o->entry_no);
+    if (g_file_test (path, G_FILE_TEST_IS_DIR))
+    {
+      g_free (path);
+      return -1;
+    }
+  }
+  else
+  {
+    path = g_strdup (o->path);
+  }
+
+  if (argv[1])
+  {
+    meta_set_key_int (o, path, "stars", atoi(argv[1]));
+  }
+  else
+  {
+    int stars = meta_get_key_int (o, path, "stars");
+    if (stars >= 0)
+      printf ("%s has %i stars\n", path, stars);
+    else
+      printf ("stars have not been set on %s\n", path);
+  }
+  g_free (path);
+  mrg_queue_draw (o->mrg, NULL);
+
+  return 0;
+}
+
+
   int cmd_discard (COMMAND_ARGS);
 int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to a .discard subfolder"*/
 {
@@ -6458,7 +6502,7 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
 
   if (!o->is_dir)
   {
-  if (o->entry_no == g_list_length (o->index) + g_list_length(o->paths)-1)
+  if (o->entry_no == ui_items_count (o) - 1)
    {
      argvs_eval ("prev");
    }
@@ -6798,7 +6842,7 @@ int cmd_next (COMMAND_ARGS) /* "next", 0, "", "next sibling element in current c
   if (o->rev)
     argvs_eval ("save");
 
-  if (o->entry_no >= (int)(g_list_length(o->index)+g_list_length(o->paths))-1)
+  if (o->entry_no >= ui_items_count (o) -1)
     return 0;
   o->entry_no ++;
     //o->entry_no = 0;
@@ -7419,16 +7463,6 @@ cmd_todo (COMMAND_ARGS)
   printf ("context/pie/tool menu/slab\n");
 
   return 0;
-}
-
-const char *ge_state_get_path (GeState *state, int no)
-{
-  return g_list_nth_data (state->paths, no);
-}
-
-int ge_state_get_n_paths (GeState *state)
-{
-  return g_list_length (state->paths);
 }
 
 void

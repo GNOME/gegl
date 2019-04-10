@@ -117,9 +117,6 @@ struct _GeState {
 
 typedef struct _GeState GeState;
 
-const char *ge_state_get_path (GeState *state, int no);
-int         ge_state_get_n_paths (GeState *state);
-
 float hypotf (float a, float b);
 GeState *app_state(void);
 int argvs_eval (const char *str);
@@ -134,17 +131,121 @@ void   ui_load_path        (GeState *o);
 void   ui_contrasty_stroke (cairo_t *cr);
 
 
+
+void        meta_set_key (GeState    *state,
+                          const char *path,
+                          const char *key,
+                          const char *value);
+
+const char *meta_get_key (GeState    *state, const char *path, const char *key);
+
+void        meta_set_key_int (GeState    *state, const char *path, const char *key, int value);
+int         meta_get_key_int (GeState    *state, const char *path, const char *key); 
+void        meta_set_key_float (GeState *state, const char *path, const char *key, float value);
+float       meta_get_key_float (GeState *state, const char *path, const char *key);
+
+int
+meta_get_attribute_int (GeState    *state,
+                        const char *path,
+                        int         child_no,
+                        // also have child name
+                        const char *attribute);
+
+float
+meta_get_attribute_float (GeState    *state,
+                          const char *path,
+                          int         child_no,
+                          // also have child name
+                          const char *attribute);
+
+void
+meta_set_attribute_float (GeState    *state,
+                          const char *path,
+                          int         child_no,
+                          // also have child name
+                          const char *attribute,
+                          float       detail);
+
+void
+meta_set_attribute_int (GeState    *state,
+                        const char *path,
+                        int         child_no,
+                        // also have child name
+                        const char *attribute,
+                        int         detail);
+
+/* --- the display order is overrides, then dirlist.. this
+ *     should be configurable
+ *
+ * the display order should be a second list of
+ */
+
+void
+meta_set_attribute (GeState    *state,
+                    const char *path,
+                    int         child_no,
+                    const char *attribute,
+                    const char *detail);
+const char *
+meta_get_attribute (GeState    *state,
+                    const char *path,
+                    int         child_no,
+                    const char *attribute);
+int
+meta_has_attribute (GeState    *state,
+                    const char *path,
+                    int         child_no,
+                    const char *attribute);
+void
+meta_unset_attribute (GeState    *state,
+                      const char *path,
+                      int         child_no,
+                      const char *attribute);
+
+/* for now - not supporting multivalue on attribute/details  */
+
+char *
+meta_get_child (GeState    *state,
+                const char *path,
+                int         child_no);
+
+void
+meta_insert_child (GeState    *state,
+                   const char *path,
+                   int         child_no,
+                   const char *child_name);
+int
+meta_remove_child (GeState    *state,
+                   const char *path,
+                   int         child_no,
+                   const char *child_name);
+
+void
+meta_replace_child (GeState    *state,
+                    const char *path,
+                    int         old_child_no,
+                    const char *old_child_name,
+                    const char *new_child_name);
+
+void
+meta_swap_children (GeState    *state,
+                    const char *path,
+                    int         child_no1,
+                    const char *child_name1,
+                    int         child_no2,
+                    const char *child_name2);
+
+char *meta_child_no_path (GeState *o, const char *path, int child_no);
+
+
 ]]
 
 o = ffi.C.app_state()
 mrg = o.mrg
 
 ffi.metatype('GeState', {__index = {
-   get_path = function(...) local ret = ffi.C.ge_state_get_path(...)
-                              if ret ~= nil then return ffi.string(ret) end
-                              return nil
-                            end;
-   get_n_paths = function(...) return ffi.C.get_state_get_n_paths(...) end;
+   get_key_int = function(...) return ffi.C.meta_get_key_int(...) end;
+   --get_n_paths = function(...) return ffi.C.get_state_get_n_paths(...) end;
  }})
 
 function touch_point(x, y)

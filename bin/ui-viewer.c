@@ -501,8 +501,14 @@ void ui_viewer (GeState *o)
    mrg_add_binding (mrg, "+", NULL, NULL, ui_run_command, "zoom in");
    mrg_add_binding (mrg, "=", NULL, NULL, ui_run_command, "zoom in");
    mrg_add_binding (mrg, "-", NULL, NULL, ui_run_command, "zoom out");
-   mrg_add_binding (mrg, "0", NULL, "pixel for pixel", ui_run_command, "zoom 1.0");
+   mrg_add_binding (mrg, "8", NULL, "pixel for pixel", ui_run_command, "zoom 1.0");
    mrg_add_binding (mrg, "9", NULL, NULL, ui_run_command, "zoom fit");
+   mrg_add_binding (mrg, "0", NULL, NULL, ui_run_command, "star 0");
+   mrg_add_binding (mrg, "1", NULL, NULL, ui_run_command, "star 1");
+   mrg_add_binding (mrg, "2", NULL, NULL, ui_run_command, "star 2");
+   mrg_add_binding (mrg, "3", NULL, NULL, ui_run_command, "star 3");
+   mrg_add_binding (mrg, "4", NULL, NULL, ui_run_command, "star 4");
+   mrg_add_binding (mrg, "5", NULL, NULL, ui_run_command, "star 5");
  }
 
  mrg_add_binding (mrg, "control-m", NULL, NULL, ui_run_command, "toggle mipmap");

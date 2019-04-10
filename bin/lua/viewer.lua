@@ -391,4 +391,26 @@ mrg:add_binding("control-y", NULL, "toggle display profile",
 mrg:add_binding("control-delete", NULL, "discard",
   function() ffi.C.argvs_eval ("discard") end)
 
+if o.commandline[0] == 0 then
+  mrg:add_binding("1", NULL, "give one star",
+    function() ffi.C.argvs_eval ("star 1") end)
+  mrg:add_binding("2", NULL, "give two stars",
+    function() ffi.C.argvs_eval ("star 2") end)
+  mrg:add_binding("3", NULL, "give three stars",
+    function() ffi.C.argvs_eval ("star 3") end)
+  mrg:add_binding("4", NULL, "give four stars",
+    function() ffi.C.argvs_eval ("star 4") end)
+  mrg:add_binding("5", NULL, "give five stars",
+    function() ffi.C.argvs_eval ("star 5") end)
+  mrg:add_binding("0", NULL, "give no stars",
+    function() ffi.C.argvs_eval ("star 0") end)
+end
+
+local stars = o:get_key_int(o.path, "stars")
+
+if stars >= 0 then
+  mrg:print('' .. stars)
+end
+
+
 cr:restore()

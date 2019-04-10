@@ -178,7 +178,7 @@ static void on_dir_drag (MrgEvent *e, void *data1, void *data2)
 
     /* auto-center */
     {
-      int count = g_list_length (o->paths) + g_list_length (o->index);
+      int count = ui_items_count (o);
       if (o->v < 0)
         o->v = 0;
       if (o->v > count/hack_cols * hack_dim - mrg_height(e->mrg)/2)
@@ -233,7 +233,7 @@ static void on_dir_scroll_drag (MrgEvent *e, void *data1, void *data2)
       break;
     case MRG_DRAG_MOTION:
       {
-        int count = g_list_length (o->paths) + g_list_length (o->index);
+        int count = ui_items_count (o);
         float height = mrg_height (e->mrg);
 #if 0
         y = height * ( o->v / (count/hack_cols * hack_dim) )
@@ -273,7 +273,7 @@ void ui_collection (GeState *o)
   cols = hack_cols;
   dim = hack_dim;
 
-  count = g_list_length (o->paths) + g_list_length (o->index);
+  count = ui_items_count (o);
 
   cairo_save (cr);
   cairo_translate (cr, 0, -(int)o->v);
@@ -426,6 +426,19 @@ void ui_collection (GeState *o)
       {
         mrg_set_xy (mrg, x, y + dim - mrg_em(mrg));
         mrg_printf (mrg, "%s\n", lastslash+1);
+        {
+          int stars = meta_get_key_int (o, path, "stars");
+          if (stars >= 0)
+          {
+            mrg_start (mrg, "div.collstars", NULL);
+            mrg_set_xy (mrg, x, y + mrg_em(mrg) * 1.5);
+            for (int i = 0; i < stars; i ++)
+            {
+              mrg_printf (mrg, "★", lastslash+1);
+            }
+            mrg_end (mrg);
+          }
+        }
       }
       cairo_new_path (mrg_cr(mrg));
       cairo_rectangle (mrg_cr(mrg), x, y, dim, dim);
@@ -490,6 +503,14 @@ void ui_collection (GeState *o)
     mrg_add_binding (mrg, "+", NULL, NULL, ui_run_command, "zoom in");
     mrg_add_binding (mrg, "=", NULL, NULL, ui_run_command, "zoom in");
     mrg_add_binding (mrg, "-", NULL, NULL, ui_run_command, "zoom out");
+
+
+    mrg_add_binding (mrg, "0", NULL, NULL, ui_run_command, "star 0");
+    mrg_add_binding (mrg, "1", NULL, NULL, ui_run_command, "star 1");
+    mrg_add_binding (mrg, "2", NULL, NULL, ui_run_command, "star 2");
+    mrg_add_binding (mrg, "3", NULL, NULL, ui_run_command, "star 3");
+    mrg_add_binding (mrg, "4", NULL, NULL, ui_run_command, "star 4");
+    mrg_add_binding (mrg, "5", NULL, NULL, ui_run_command, "star 5");
   }
   mrg_add_binding (mrg, "escape", NULL, "parent folder", ui_run_command, "parent");
   mrg_add_binding (mrg, "control-delete", NULL, NULL,  ui_run_command, "discard");
@@ -512,7 +533,7 @@ int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|fir
   }
   else if (!strcmp(argv[1], "last"))
   {
-    o->entry_no = g_list_length (o->paths) + g_list_length (o->index)-1;
+    o->entry_no = ui_items_count (o)-1;
   }
   else if (!strcmp(argv[1], "right"))
   {
@@ -534,8 +555,8 @@ int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|fir
   if (o->entry_no < -1)
     o->entry_no = -1;
 
-  if (o->entry_no >= (int)(g_list_length (o->paths) + g_list_length (o->index)))
-    o->entry_no = g_list_length (o->paths) + g_list_length (o->index)-1;
+  if (o->entry_no >= ui_items_count (o))
+    o->entry_no = ui_items_count (o)-1;
 
   ui_center_active_entry (o);
 

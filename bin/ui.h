@@ -153,7 +153,7 @@ void        ui_load_path           (GeState *o);
 void        ui_center_active_entry (GeState *o);
 
 
-
+int         ui_items_count         (GeState *o);
 
 void        meta_set_key (GeState    *state,
                           const char *path,
@@ -163,7 +163,7 @@ void        meta_set_key (GeState    *state,
 const char *meta_get_key (GeState    *state, const char *path, const char *key);
 
 void        meta_set_key_int (GeState    *state, const char *path, const char *key, int value);
-int         meta_get_key_int (GeState    *state, const char *path, const char *key); 
+int         meta_get_key_int (GeState    *state, const char *path, const char *key);
 void        meta_set_key_float (GeState *state, const char *path, const char *key, float value);
 float       meta_get_key_float (GeState *state, const char *path, const char *key);
 
