@@ -137,7 +137,7 @@ prepare (GeglOperation *operation)
       #undef DISPATCH_MODEL
     }
 
-  if (! format)
+  if (! format || gegl_operation_use_opencl (operation))
     {
       o->user_data = PROCESS_FUNC (rgba, float);
 
