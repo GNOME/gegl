@@ -1071,7 +1071,16 @@ gegl_tile_cache_destroy (void)
   g_signal_handlers_disconnect_by_func (gegl_buffer_config(),
                                         gegl_buffer_config_tile_cache_size_notify,
                                         NULL);
-
   g_warn_if_fail (g_queue_is_empty (&cache_queue));
-  g_queue_clear (&cache_queue);
+
+
+  if (g_queue_is_empty (&cache_queue))
+    {
+      g_queue_clear (&cache_queue);
+    }
+  else
+    {
+     /* we leak portions of the GQueue data structure when it is not empty,
+        permitting leaked tiles to still be unreffed correctly */
+    }
 }
