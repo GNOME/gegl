@@ -30,8 +30,8 @@
 #define font_size_scale  0.020
 
 const char *css =
-"div.collstars {color: yellow; font-size: 1.2em; background: transparent;};"
-"div.viewerstars {color: yellow; font-size: 3.8vh; background: transparent;};"
+"div.collstars {color: yellow; font-size: 1.3em; background: transparent;};"
+"div.viewerstars {color: yellow; font-size: 5vh; background: transparent;};"
 "div.lui { font-size: 2.0vh; color: white; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.0);}\n"
 "div.properties { color: blue; padding-left:1em; padding-bottom: 1em; position: absolute; top: 0; right: 1em; width:20em; background-color:rgba(1,0,0,0.75);}\n"
 "div.property   { color: white; margin-top: -.5em; background:transparent;}\n"
@@ -571,7 +571,7 @@ static int order_az (gconstpointer a, gconstpointer b)
   if (bbasename) bbasename++;
   else return 0;
 
-  return strcmp (bbasename, abasename);
+  return strcmp (abasename, bbasename);
 }
 
 static int order_stars (gconstpointer a, gconstpointer b, void *data)
@@ -595,12 +595,39 @@ static int order_mtime (gconstpointer a, gconstpointer b)
 
 static int order_exif_time (gconstpointer a, gconstpointer b)
 {
-  /* XXX - NYI, need to figure out how to fish the right data out with gexiv2 */
-  struct stat stat_a;
-  struct stat stat_b;
-  lstat (a, &stat_a);
-  lstat (b, &stat_b);
-  return stat_a.st_mtime - stat_b.st_mtime;
+  /* XXX : reading out and parsing the exif data twice for each comparison
+           is a too severe bottleneck - the data to compare needs to exist
+           in the list before sorting
+   */
+  GError *error = NULL;
+  int ret;
+  GExiv2Metadata *e2m_a = gexiv2_metadata_new ();
+  GExiv2Metadata *e2m_b = gexiv2_metadata_new ();
+  char *val_a, *val_b;
+
+  gexiv2_metadata_open_path (e2m_a, a, &error);
+  gexiv2_metadata_open_path (e2m_b, b, &error);
+
+  val_a = gexiv2_metadata_get_tag_string (e2m_a, "Exif.Photo.DateTimeOriginal");
+  val_b = gexiv2_metadata_get_tag_string (e2m_b, "Exif.Photo.DateTimeOriginal");
+  if (val_a && val_b)
+    ret = strcmp (val_a, val_b);
+  else if (val_a)
+    ret = 1;
+  else if (val_b)
+    ret = -1;
+  else
+    ret = 0;
+
+  if (val_a)
+    g_free (val_a);
+  if (val_b)
+    g_free (val_b);
+
+  g_object_unref (e2m_a);
+  g_object_unref (e2m_b);
+
+  return ret;
 }
 
 /*
@@ -7028,8 +7055,8 @@ int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (swit
     {
       o->entry_no = entry_no;
 
-      ui_center_active_entry (o);
     }
+    ui_center_active_entry (o);
     mrg_queue_draw (o->mrg, NULL);
   }
   g_free (prev_path);
