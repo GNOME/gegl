@@ -14,14 +14,15 @@ typedef gboolean (* ProcessFunc) (GeglOperation       *op,
   INVERT_CAT (process_, INVERT_CAT (model_suffix, INVERT_CAT (_, type_suffix)))
 
 static gboolean
-process_int (ProcessFunc          func,
-             guint32              mask,
-             GeglOperation       *op,
+process_int (GeglOperation       *op,
              void                *in_buf,
              void                *out_buf,
              glong                samples,
              const GeglRectangle *roi,
-             gint                 level)
+             gint                 level,
+             guint32              mask,
+             gint                 bpp,
+             ProcessFunc          func)
 {
   const guint8  *in  = in_buf;
   guint8        *out = out_buf;
@@ -33,6 +34,8 @@ process_int (ProcessFunc          func,
     {
       return func (op, in_buf, out_buf, samples, roi, level);
     }
+
+  samples *= bpp;
 
   while (samples && (guintptr) in % 4)
     {
@@ -195,7 +198,7 @@ PROCESS_FUNC (PROCESS_MODEL_SUFFIX, u8) (GeglOperation       *op,
                                          const GeglRectangle *roi,
                                          gint                 level)
 {
-  return process_int (PROCESS_FUNC (PROCESS_MODEL_SUFFIX, u8_),
+  return process_int (op, in_buf, out_buf, samples, roi, level,
                       #if ! PROCESS_HAS_ALPHA
                         0xffffffff,
                       #elif PROCESS_N_COMPONENTS == 1
@@ -203,9 +206,8 @@ PROCESS_FUNC (PROCESS_MODEL_SUFFIX, u8) (GeglOperation       *op,
                       #elif PROCESS_N_COMPONENTS == 3
                         0x00ffffff,
                       #endif
-                      op, in_buf, out_buf,
-                      (PROCESS_N_COMPONENTS + PROCESS_HAS_ALPHA) * samples,
-                      roi, level);
+                      PROCESS_N_COMPONENTS + PROCESS_HAS_ALPHA,
+                      PROCESS_FUNC (PROCESS_MODEL_SUFFIX, u8_));
 }
 
 #define PROCESS_TYPE_SUFFIX u16
