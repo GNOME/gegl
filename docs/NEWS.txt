@@ -1,3 +1,75 @@
+GEGL-0.4.15
+-----------
+
+Build
+~~~~~
+
+Added continuous integration tests for gitlab.
+
+Core
+~~~~
+
+Platform specific build fixes for both win32 and OSX.
+
+Avoid in-place processing for cached nodes.
+
+Indentation consitency improvements.
+
+Permit more detailed specifying/overriding of OpenCL device through the
+GEGL_USE_OPENCL environment variable.
+
+Buffer
+~~~~~~
+
+Swapped behavior of cubic interpolation from cubic to mithcell coefficients,
+leading to crisper results in all uses of the cubic sampler.
+
+Permit tiles to be unreffed after GEGL shut-down without crash, which is
+likely when using bindings to dynamic languages.
+
+Use malloc_trim when compiled with glibc to possibly decrease the resident size
+of progress when buffers are destroyed.
+
+Operations
+~~~~~~~~~~
+
+Smaller required/invalided ROI for map-absolute/relative when
+using nearest neighbor.
+
+tiff-save and jpg-save fixed dimensions when buffer saved has non-zero origin
+
+Added missing descriptions of properties for cubism, mosaic, tile-paper, color,
+mantiuk06 and vignette operations.
+
+ff-load fix some of the deprecation warnings.
+
+ff-save avoid crashing if audio or video codec fails to initialize.
+
+cache, parent class changed - it is no longer a point operations, also speed up
+processing and permit copy on write handling of tiles.
+
+opaciy and invert - force RGBA pixelformat for OpenCL; fix crash for 8bpc
+buffers.
+
+Tools
+~~~~~
+
+Drop direct dependency on exiv2 - we now only transiently depend on it through
+the gexiv2 abstraction.
+
+User interface
+~~~~~~~~~~~~~~
+
+Set window title, permit interaction with opened .lui documents, fixed playback
+of audio for opened videos - it now works; if the video is decoding, scaling
+and display is fast enough to leave spare cycles.
+
+Support for nearest neighbor scaling of imagry; aiding video playback without
+dropping audio frames.
+
+Support for custom collection order and per-file key-value metadata.
+
+
 GEGL-0.4.14 2019-03-01
 ----------------------
 
