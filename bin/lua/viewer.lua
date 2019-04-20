@@ -326,6 +326,16 @@ function pdf_prev_page()
   source:set_property('page', GObject.Value(GObject.Type.INT, page - 1))
 end
 
+function draw_thumb_bar()
+  local cr=mrg:cr()
+  cr:set_source_rgba(1,1,1,.1)
+  cr:rectangle(0, mrg:height()*0.8, mrg:width(), mrg:height()*0.2)
+  mrg:listen(Mrg.MOTION, function(e)
+    print('a') end)
+  cr:fill()
+  mrg:print("thumbbar")
+end
+
 mrg:add_binding("page-up", NULL, "previous image",
   function() ffi.C.argvs_eval ("prev") end)
 
@@ -373,11 +383,9 @@ if path:find(".pdf$") or path:find('.PDF$') then
   mrg:add_binding("page-down", NULL, "next page",
     function(e) pdf_next_page() e:stop_propagate() end)
 
-
-
-
 end
 
+draw_thumb_bar()
 
 mrg:add_binding("alt-right", NULL, "next image",
   function() ffi.C.argvs_eval ("next") end)
@@ -425,7 +433,7 @@ if o.show_controls ~= 0 then
     for i=1,stars do
       mrg:text_listen(Mrg.PRESS, function(e)
           ffi.C.argvs_eval('star ' .. i)
-          print('star ' .. i)
+          e:stop_propagate()
       end)
       mrg:print('★')
       mrg:text_listen_done()
@@ -434,7 +442,7 @@ if o.show_controls ~= 0 then
     for i=stars+1,5 do
       mrg:text_listen(Mrg.PRESS, function(e)
           ffi.C.argvs_eval('star ' .. i)
-          print('star ' .. i)
+          e:stop_propagate()
       end)
       mrg:print('★')
       mrg:text_listen_done()

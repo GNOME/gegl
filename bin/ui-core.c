@@ -725,7 +725,6 @@ static void populate_path_list (GeState *o)
     o->paths = g_list_concat (o->paths, temp);
   }
 
-
   for (int i = 0; i < n;i++)
     free(namelist[i]);
   free (namelist);

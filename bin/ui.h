@@ -31,7 +31,7 @@ typedef struct _GeStateClass         GeStateClass;
 
 typedef struct _IndexItem IndexItem;
 
-#define INDEX_MAX_ATTRIBUTES  8
+#define INDEX_MAX_ATTRIBUTES  16
 
 struct _IndexItem {
   char *name;
