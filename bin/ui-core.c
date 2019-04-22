@@ -4654,10 +4654,17 @@ static void ui_commandline (Mrg *mrg, void *data)
   }
  else
   {
-    mrg_set_xy (mrg, 0,h*2);
-    mrg_edit_start (mrg, update_commandline, o);
-    mrg_printf (mrg, "%s", o->commandline);
-    mrg_edit_end (mrg);
+    if (o->commandline[0])
+    {
+      mrg_set_xy (mrg, 0,h*2);
+      mrg_edit_start (mrg, update_commandline, o);
+      mrg_printf (mrg, "%s", o->commandline);
+      mrg_edit_end (mrg);
+    }
+    else
+    {
+      mrg_add_binding (mrg, "unhandled", NULL, "start entering commandline", cmd_unhandled, NULL);
+    }
   }
 
 jump:
@@ -7995,6 +8002,7 @@ meta_swap_children (GeState *state,const char *path,
 {
   fprintf (stderr, "%s NYI\n", __FUNCTION__);
 }
+
 
 void
 meta_set_attribute (GeState    *state,
