@@ -285,7 +285,9 @@ void   ui_queue_thumb      (const char *path);
 void   ui_contrasty_stroke (cairo_t *cr);
 
 void ui_run_command (MrgEvent *event_or_null, void *commandline, void *ignored);
+char *get_item_dir (GeState *o);
 
 GeState *global_state;
+void populate_path_list (GeState *o);
 
 #endif

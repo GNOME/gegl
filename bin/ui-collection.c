@@ -494,6 +494,9 @@ void ui_collection (GeState *o)
   mrg_listen (mrg, MRG_DRAG, on_dir_scroll_drag, o, NULL);
   cairo_fill (cr);
 
+  mrg_add_binding (mrg, "control-left", NULL, NULL, ui_run_command, "colswap prev");
+  mrg_add_binding (mrg, "control-right", NULL, NULL, ui_run_command, "colswap next");
+
   mrg_add_binding (mrg, "left", NULL, NULL, ui_run_command, "collection left");
   mrg_add_binding (mrg, "right", NULL, NULL, ui_run_command, "collection right");
   mrg_add_binding (mrg, "up", NULL, NULL, ui_run_command, "collection up");
@@ -579,6 +582,43 @@ int cmd_collection (COMMAND_ARGS); /* "collection", -1, "<up|left|right|down|fir
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
+
+
+int cmd_colswap (COMMAND_ARGS); /* "colswap", 1, "<prev|next>", "swap with previous or next collection item "*/
+int
+cmd_colswap (COMMAND_ARGS)
+{
+  GeState *o = global_state;
+  if (!strcmp (argv[1], "prev"))
+  {
+    if (o->entry_no <= 0)
+      return 0;
+    else
+    {
+      char *dirname = get_item_dir (o);
+      meta_swap_children (o, dirname, o->entry_no-1, NULL, o->entry_no, NULL);
+      g_free (dirname);
+      o->entry_no--;
+    }
+  }
+  else if (!strcmp (argv[1], "next"))
+  {
+    if (o->entry_no + 1>= g_list_length (o->index))
+      return 0;
+    else
+    {
+      char *dirname = get_item_dir (o);
+      meta_swap_children (o, dirname, o->entry_no, NULL, o->entry_no+1, NULL);
+      g_free (dirname);
+      o->entry_no++;
+    }
+  }
+  populate_path_list (o);
+
+  mrg_queue_draw (o->mrg, NULL);
+  return 0;
+}
+
 
 
 void ui_center_active_entry (GeState *o)

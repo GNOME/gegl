@@ -636,7 +636,9 @@ static int order_exif_time (gconstpointer a, gconstpointer b)
  *
  */
 
-static void populate_path_list (GeState *o)
+
+
+void populate_path_list (GeState *o)
 {
   struct dirent **namelist;
   int i;
@@ -5349,10 +5351,17 @@ static void load_path_inner (GeState *o,
                              char *path)
 {
   char *meta;
-  if (o->save_path)
+
+  if (o->index_dirty)
   {
-    if (o->index_dirty)
-      store_index (o, o->save_path);
+    char *foo = g_strdup (o->save_path);
+  /*
+   * this might have to be derived from the mangled saved path
+   */
+    if (!strcmp (".gegl", foo + strlen (foo)-strlen(".gegl")))
+      foo[strlen(foo)-strlen(".gegl")]=0;
+    store_index (o, foo);
+    g_free (foo);
   }
 
 
@@ -6549,10 +6558,8 @@ cmd_toggle (COMMAND_ARGS)
   return 0;
 }
 
-  int cmd_star (COMMAND_ARGS);
-int cmd_star (COMMAND_ARGS) /* "star", -1, "", "query or set number of stars"*/
+static char *get_item_path (GeState *o)
 {
-  GeState *o = global_state;
   char *path = NULL;
   if (o->is_dir)
   {
@@ -6560,13 +6567,38 @@ int cmd_star (COMMAND_ARGS) /* "star", -1, "", "query or set number of stars"*/
     if (g_file_test (path, G_FILE_TEST_IS_DIR))
     {
       g_free (path);
-      return -1;
+      path = NULL;
     }
   }
   else
   {
     path = g_strdup (o->path);
   }
+  return path;
+}
+
+char *get_item_dir (GeState *o)
+{
+  char *path = NULL;
+  if (o->is_dir)
+  {
+    path = g_strdup (o->path);
+  }
+  else
+  {
+    path = g_path_get_dirname (o->path);
+  }
+  return path;
+}
+
+
+  int cmd_star (COMMAND_ARGS);
+int cmd_star (COMMAND_ARGS) /* "star", -1, "", "query or set number of stars"*/
+{
+  GeState *o = global_state;
+  char *path = get_item_path (o);
+  if (!path)
+    return -1;
 
   if (argv[1])
   {
@@ -7735,6 +7767,7 @@ store_index (GeState *state, const char *path)
   struct stat stat_buf;
   char *dirname;
   char *index_path = NULL;
+  fprintf (stderr, "!%s %s\n", path, state->path);
   lstat (path, &stat_buf);
   if (S_ISREG (stat_buf.st_mode))
   {
@@ -7993,14 +8026,59 @@ meta_replace_child (GeState *state,const char *path,
   meta_insert_child (state, path, old_val_no, new_child_name);
 }
 
+static
+void turn_paths_into_index (GeState *o)
+{
+  //fprintf (stderr, "turn paths into index\n");
+  while (o->paths)
+   {
+      char *basename = g_path_get_basename (o->paths->data);
+      meta_insert_child (o, o->path, -1, basename);
+      g_free (basename);
+      g_free (o->paths->data);
+      o->paths = g_list_remove (o->paths, o->paths->data);
+   }
+
+}
+
+
+
+
 void
-meta_swap_children (GeState *state,const char *path,
+meta_swap_children (GeState *o,const char *path,
                     int         value_no1, /* -1 to use only name */
                     const char *child_name1,  /* or NULL to use no1 (which cannot be -1) */
                     int         value_no2,
                     const char *child_name2)
 {
-  fprintf (stderr, "%s NYI\n", __FUNCTION__);
+  GList *iter_A, *iter_B;
+  /* XXX only works with ascening ordered value_no1 and value_no2 arguments for now */
+  int index_len = g_list_length (o->index);
+  if (value_no1 >= index_len)
+  {
+    turn_paths_into_index (o);
+    index_len = g_list_length (o->index);
+  }
+  if (value_no2 >= index_len)
+  {
+    turn_paths_into_index (o);
+    index_len = g_list_length (o->index);
+  }
+
+
+  iter_A =  g_list_nth (o->index, value_no1);
+  iter_B =  g_list_nth (o->index, value_no2);
+
+  o->index = g_list_remove_link (o->index, iter_A);
+  o->index = g_list_remove_link (o->index, iter_B);
+
+  o->index = g_list_insert (o->index, iter_B->data, value_no1);
+  o->index = g_list_insert (o->index, iter_A->data, value_no2);
+
+  g_list_free (iter_A);
+  g_list_free (iter_B);
+
+  o->index_dirty ++;
 }
 
 
