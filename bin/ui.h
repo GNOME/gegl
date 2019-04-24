@@ -175,12 +175,19 @@ void        meta_set_key (GeState    *state,
                           const char *key,
                           const char *value);
 
+void        meta_unset_key (GeState    *state,
+                            const char *path,
+                            const char *key);
+
 const char *meta_get_key (GeState    *state, const char *path, const char *key);
 
 void        meta_set_key_int (GeState    *state, const char *path, const char *key, int value);
 int         meta_get_key_int (GeState    *state, const char *path, const char *key);
 void        meta_set_key_float (GeState *state, const char *path, const char *key, float value);
 float       meta_get_key_float (GeState *state, const char *path, const char *key);
+
+char      **meta_list_keys (GeState *state, const char *path);
+char      **meta_list_attributes (GeState *state, const char *path, int item_no);
 
 int
 meta_get_attribute_int (GeState    *state,
@@ -218,6 +225,8 @@ meta_set_attribute_int (GeState    *state,
  * the display order should be a second list of
  */
 
+/* passing NULL for detail unsets the attribute
+ */
 void
 meta_set_attribute (GeState    *state,
                     const char *path,
@@ -234,11 +243,6 @@ meta_has_attribute (GeState    *state,
                     const char *path,
                     int         child_no,
                     const char *attribute);
-void
-meta_unset_attribute (GeState    *state,
-                      const char *path,
-                      int         child_no,
-                      const char *attribute);
 
 /* for now - not supporting multivalue on attribute/details  */
 
