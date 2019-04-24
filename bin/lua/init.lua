@@ -36,7 +36,7 @@ struct _GeState {
 
   char       *src_path; /* path to (immutable) source image. */
 
-  char       *save_path; /* the exported .gegl file, or .png with embedded .gegl file,
+  char       *composition_path; /* the exported .gegl file, or .png with embedded .gegl file,
                             the file that is written to on save. This differs depending
                             on type of input file.
                           */

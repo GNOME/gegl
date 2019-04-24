@@ -439,7 +439,7 @@ Setting settings[]=
   INT_PROP_RO(is_video, ""),
   STRING_PROP_RO(path, "path of current document"),
   INT_PROP(playing, "wheter we are playing or not set to 0 for pause 1 for playing"),
-  STRING_PROP_RO(save_path, "save path, might be different from path if current path is an immutable source image itself"),
+  STRING_PROP_RO(chain_path, "chain path will be different from path if current path is an immutable source image itself or same as path if it is a gegl chain directly"),
   STRING_PROP_RO(src_path, "source path the immutable source image currently being edited"),
 
 //  FLOAT_PROP(u, "horizontal coordinate of top-left in display/scaled by scale factor coordinates"),
@@ -474,7 +474,7 @@ static void rev_inc (GeState *o)
   queue_draw (o);
 }
 
-static char *suffix = "-gegl";
+//static char *suffix = "-gegl";
 
 void   gegl_meta_set (const char *path, const char *meta_data);
 char * gegl_meta_get (const char *path);
@@ -700,6 +700,7 @@ void populate_path_list (GeState *o)
         lstat (fpath, &stat_buf);
         if (S_ISREG (stat_buf.st_mode))
         {
+#if 0
           if (is_gegl_path (fpath))
           {
             char *tmp = ui_unsuffix_path (fpath);
@@ -707,6 +708,7 @@ void populate_path_list (GeState *o)
             fpath = g_strdup (tmp);
             g_free (tmp);
           }
+#endif
 
           if (!g_list_find_custom (o->paths, fpath, (void*)g_strcmp0))
           {
@@ -1089,7 +1091,7 @@ cmd_thumb (COMMAND_ARGS)
   GeglNode *source;
   gchar *thumbpath;
 
-  thumbpath = ui_get_thumb_path (o->save_path);
+  thumbpath = ui_get_thumb_path (o->path);
   /* protect against some possible repeated requests to generate the same thumb
    */
   if (g_file_test (thumbpath, G_FILE_TEST_EXISTS))
@@ -5285,30 +5287,23 @@ static char *get_path_parent (const char *path)
 char *ui_suffix_path (const char *path)
 {
   char *ret;
-  if (!path)
-    return NULL;
-  ret  = g_malloc (strlen (path) + strlen (suffix) + 3);
-  strcpy (ret, path);
-  sprintf (ret, "%s%s", path, ".gegl");
-  return ret;
-}
-
-char *ui_unsuffix_path (const char *path)
-{
-  char *ret = NULL, *last_dot;
+  char *dirname;
+  char *basename;
 
   if (!path)
     return NULL;
-  ret = g_malloc (strlen (path) + 4);
-  strcpy (ret, path);
-  last_dot = strrchr (ret, '.');
-  *last_dot = '\0';
+  dirname = g_path_get_dirname (path);
+  basename = g_path_get_basename (path);
+  ret  = g_strdup_printf ("%s/.gegl/%s/chain.gegl", dirname, basename);
+  g_free (dirname);
+  g_free (basename);
   return ret;
 }
 
 static int is_gegl_path (const char *path)
 {
   int ret = 0;
+#if 0
   if (g_str_has_suffix (path, ".gegl"))
   {
     char *unsuffixed = ui_unsuffix_path (path);
@@ -5316,6 +5311,7 @@ static int is_gegl_path (const char *path)
       ret = 1;
     g_free (unsuffixed);
   }
+#endif
   return ret;
 }
 
@@ -5352,18 +5348,13 @@ static void load_path_inner (GeState *o,
 {
   char *meta;
 
-  if (o->index_dirty)
+  if (o->index_dirty && o->loaded_path)
   {
-    char *foo = g_strdup (o->save_path);
-  /*
-   * this might have to be derived from the mangled saved path
-   */
-    if (!strcmp (".gegl", foo + strlen (foo)-strlen(".gegl")))
-      foo[strlen(foo)-strlen(".gegl")]=0;
-    store_index (o, foo);
-    g_free (foo);
+    store_index (o, o->loaded_path);
   }
-
+  if (o->loaded_path)
+    g_free (o->loaded_path);
+  o->loaded_path = g_strdup (path);
 
   if (o->src_path)
   {
@@ -5382,44 +5373,46 @@ static void load_path_inner (GeState *o,
     o->src_path = NULL;
   }
 
+#if 0
   if (is_gegl_path (path))
   {
-    if (o->save_path)
-      g_free (o->save_path);
-    o->save_path = path;
-    path = ui_unsuffix_path (o->save_path); // or maybe decode first line?
+    if (o->chain_path)
+      g_free (o->chain_path);
+    o->chain_path = path;
+    path = ui_unsuffix_path (o->chain_path); // or maybe decode first line?
     o->src_path = g_strdup (path);
   }
   else
+#endif
   {
-    if (o->save_path)
-      g_free (o->save_path);
+    if (o->chain_path)
+      g_free (o->chain_path);
     if (g_str_has_suffix (path, ".gegl"))
     {
-      o->save_path = g_strdup (path);
+      o->chain_path = g_strdup (path);
     }
     else if (g_str_has_suffix (path, ".xml"))
     {
 #if 0
-      o->save_path = g_strdup_printf ("%sl", path);
-      strcpy (strstr(o->save_path, ".xml"), ".gegl");
+      o->chain_path = g_strdup_printf ("%sl", path);
+      strcpy (strstr(o->chain_path, ".xml"), ".gegl");
 #else
-      o->save_path = g_strdup_printf ("%s.gegl", path);
+      o->chain_path = g_strdup_printf ("%s.gegl", path);
 #endif
     }
     else
     {
-      o->save_path = ui_suffix_path (path);
+      o->chain_path = ui_suffix_path (path);
       o->src_path = g_strdup (path);
     }
   }
   load_index (o, o->path);
 
-  if (access (o->save_path, F_OK) != -1)
+  if (access (o->chain_path, F_OK) != -1)
   {
     /* XXX : fix this in the fuse layer of zn! XXX XXX XXX XXX */
-    if (!strstr (o->save_path, ".zn.fs"))
-      path = o->save_path;
+    if (!strstr (o->chain_path, ".zn.fs"))
+      path = o->chain_path;
   }
 
   g_object_unref (o->gegl);
@@ -5483,7 +5476,17 @@ static void load_path_inner (GeState *o,
     {
       GeglNode *iter;
       GeglNode *prev = NULL;
-      char *containing_path = get_path_parent (path);
+      char *containing_path = g_path_get_dirname (path);
+
+      if (strstr (path, "/chain.gegl"))
+      {
+        char *foo = containing_path;
+        containing_path = g_path_get_dirname (foo);
+        g_free (foo);
+        foo = containing_path;
+        containing_path = g_path_get_dirname (foo);
+        g_free (foo);
+      }
 
       if (is_xml_fragment (meta))
         o->gegl = gegl_node_new_from_xml (meta, containing_path);
@@ -5521,7 +5524,7 @@ static void load_path_inner (GeState *o,
           o->src_path = g_strdup (path);
 
           o->save = gegl_node_new_child (o->gegl, "operation", "gegl:save",
-                                              "path", o->save_path,
+                                              "path", o->chain_path,
                                               NULL);
           g_free (path);
           break;
@@ -5544,7 +5547,7 @@ static void load_path_inner (GeState *o,
                                      NULL);
       o->save = gegl_node_new_child (o->gegl,
                                      "operation", "gegl:save",
-                                     "path", o->save_path,
+                                     "path", o->chain_path,
                                      NULL);
     gegl_node_link_many (o->source, o->sink, NULL);
     gegl_node_set (o->source, "buffer", o->buffer, NULL);
@@ -5557,6 +5560,8 @@ static void load_path_inner (GeState *o,
     GError *error = (void*)(&ret_sink);
 
     char *containing_path = get_path_parent (path);
+
+
     gegl_create_chain_argv (o->ops,
                     gegl_node_get_producer (o->sink, "input", NULL),
                     o->sink, 0, gegl_node_get_bounding_box (o->sink).height,
@@ -6255,7 +6260,7 @@ static int set_setting (Setting *setting, const char *value)
 
 
 /* loads the source image corresponding to o->path into o->buffer and
- * creates live gegl pipeline, or nops.. rigs up o->save_path to be
+ * creates live gegl pipeline, or nops.. rigs up o->chain_path to be
  * the location where default saves ends up.
  */
 void
@@ -6321,7 +6326,7 @@ int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
   char *serialized;
 
   {
-    char *containing_path = get_path_parent (o->save_path);
+    char *containing_path = get_path_parent (o->chain_path);
     serialized = gegl_serialize (o->source,
                    gegl_node_get_producer (o->sink, "input", NULL),
  containing_path, GEGL_SERIALIZE_TRIM_DEFAULTS|GEGL_SERIALIZE_VERSION|GEGL_SERIALIZE_INDENT);
@@ -6331,12 +6336,12 @@ int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
   if (o->src_path)
   {
     char *prepended = g_strdup_printf ("gegl:load path=%s\n%s", basename(o->src_path), serialized);
-    g_file_set_contents (o->save_path, prepended, -1, NULL);
+    g_file_set_contents (o->chain_path, prepended, -1, NULL);
     g_free (prepended);
   }
   else
   {
-    g_file_set_contents (o->save_path, serialized, -1, NULL);
+    g_file_set_contents (o->chain_path, serialized, -1, NULL);
   }
 
   g_free (serialized);

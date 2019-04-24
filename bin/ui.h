@@ -63,13 +63,11 @@ struct _GeState {
 
   char       *src_path; /* path to (immutable) source image. */
 
-  char       *save_path; /* the exported .gegl file, or .png with embedded .gegl file,
-                            the file that is written to on save. This differs depending
-                            on type of input file.
-                          */
-  GList         *index;  /* dictates manual order and attribute/details for entries */
-  int            index_dirty;
-  GList         *paths;  /* list of full paths to entries in collection/path/containing path,
+  char       *chain_path; /* .gegl/basename/chain - unless the src_path
+                                   itself directl is a gegl comp  */
+  GList      *index;  /* dictates manual order and attribute/details for entries */
+  int         index_dirty; /* when non 0 we save upon leaving the folder */
+  GList      *paths;  /* list of full paths to entries in collection/path/containing path,
                             XXX: could be replaced with URIs, and each
                             element should perhaps contain more internal info
                             like stars, tags etc.  */
@@ -152,6 +150,10 @@ struct _GeState {
   double         prev_ms;
 
   GHashTable    *ui_consumer;
+
+  char          *loaded_path; /* used to persist the currently loaded path
+                                 for use on triggers when leaving/replacing it  */
+
 };
 
 struct _GeStateClass {

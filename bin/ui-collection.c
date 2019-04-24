@@ -360,7 +360,7 @@ void ui_collection (GeState *o)
     struct stat suffixed_stat_buf;
 
       gchar *p2 = ui_suffix_path (path);
-      gchar *thumbpath = ui_get_thumb_path (p2);
+      gchar *thumbpath = ui_get_thumb_path (path);
 
       /* we compute the thumbpath as the hash of the suffixed path, even for
  * gegl documents - for gegl documents this is slightly inaccurate but consistent.

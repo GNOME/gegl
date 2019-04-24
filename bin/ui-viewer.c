@@ -313,7 +313,7 @@ static void draw_thumb_bar (GeState *o)
     {
       char *upath = meta_child_no_path (o, NULL, entry_no);
       char *path = ui_suffix_path (upath);
-      char *thumbpath = ui_get_thumb_path (path);
+      char *thumbpath = ui_get_thumb_path (upath);
       int w, h;
 
       if (
@@ -360,7 +360,7 @@ static void draw_thumb_bar (GeState *o)
     {
       char *upath = meta_child_no_path (o, NULL, entry_no);
       char *path = ui_suffix_path (upath);
-      char *thumbpath = ui_get_thumb_path (path);
+      char *thumbpath = ui_get_thumb_path (upath);
       int w, h;
 
       if (
