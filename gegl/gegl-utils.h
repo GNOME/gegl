@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2003 Calvin Williamson
+ * Copyright 2003-2018 GEGL contributors.
  */
 
 
@@ -90,6 +90,19 @@ gchar *gegl_serialize  (GeglNode         *start,
  */
 GeglNode *gegl_node_new_from_serialized (const gchar *chaindata,
                                          const gchar *path_root);
+
+
+
+/**
+ * gegl_update_anim_time:
+ * @node: a a GeglNode
+ * @output_pad: the output pad to render, pass "output" here most of the time.
+ * @time: the time to set the properties which have keyfraes attached to
+ */
+
+void gegl_update_anim_time (GeglNode   *node,
+                            const char *output_pad,
+                            double      time);
 
 
 /**

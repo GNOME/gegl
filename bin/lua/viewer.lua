@@ -393,8 +393,8 @@ mrg:add_binding("alt-right", NULL, "next image",
 mrg:add_binding("alt-left", NULL, "rev image",
   function() ffi.C.argvs_eval ("prev") end)
 
-mrg:add_binding("control-s", NULL, "toggle slideshow",
-  function() ffi.C.argvs_eval ("toggle slideshow") end)
+mrg:add_binding("control-s", NULL, "toggle playing",
+  function() ffi.C.argvs_eval ("toggle playing") end)
 
 mrg:add_binding("control-m", NULL, "toggle mipmap",
   function() ffi.C.argvs_eval ("toggle mipmap") end)
@@ -452,3 +452,7 @@ if o.show_controls ~= 0 then
 end
 
 cr:restore()
+
+if o.playing ~= 0 then
+  print 'o'
+end

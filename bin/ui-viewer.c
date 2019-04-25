@@ -78,7 +78,6 @@ static int fade_thumbbar_cb (Mrg *mrg, void *data)
   return 0;
 }
 
-
 static void on_thumbbar_motion (MrgEvent *e, void *data1, void *data2)
 {
   GeState *o = data1;
@@ -92,15 +91,6 @@ static void on_thumbbar_motion (MrgEvent *e, void *data1, void *data2)
     }
     o->thumbbar_timeout = mrg_add_timeout (o->mrg, 4000, fade_thumbbar_cb, o);
   }
-}
-
-
-static int slide_cb (Mrg *mrg, void *data)
-{
-  GeState *o = data;
-  o->slide_timeout = 0;
-  argvs_eval ("next");
-  return 0;
 }
 
 static void draw_edit (Mrg *mrg, float x, float y, float w, float h)
@@ -475,11 +465,6 @@ void ui_viewer (GeState *o)
   if (o->show_thumbbar)
     draw_thumb_bar (o);
 
-  if (o->slide_enabled && o->slide_timeout == 0)
-  {
-    o->slide_timeout =
-       mrg_add_timeout (o->mrg, o->slide_pause * 1000, slide_cb, o);
-  }
  cairo_restore (cr);
 
  mrg_add_binding (mrg, "control-s", NULL, NULL, ui_run_command, "toggle slideshow");

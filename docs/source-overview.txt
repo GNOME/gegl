@@ -54,6 +54,8 @@ Source overview
   │                    the corresponding sourcetree with correct documentation
   │                    etc.
   │
-  ├──bin               gegl binary, for processing XML compositions to png files.
+  ├──bin               gegl binary, a commandline too for running chains of
+  │                    operations as well as a media browser and manipulation
+  │                    ui written with cairo/microraptor gui.
   │
   └──tools             some small utilities to help the build.

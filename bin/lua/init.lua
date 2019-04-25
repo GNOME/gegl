@@ -117,6 +117,8 @@ struct _GeState {
   GeglNode    *decode_load;
   GeglNode    *decode_store;
   int          playing;
+  double       pos;
+  double       duration;
   int          color_managed_display;
 
   int          is_video;

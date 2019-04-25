@@ -162,7 +162,6 @@ ge_state_init (GeState *o)
   //o->preview_quality = 2.0;
   o->slide_pause       = 5.0;
   o->paint_color       = g_strdup ("white");
-  o->slide_enabled     = 0;
   o->show_bindings     = 0;
   o->sort_order        = SORT_ORDER_CUSTOM | SORT_ORDER_AZ;
   o->ui_consumer = g_hash_table_new (g_direct_hash, g_direct_equal);
@@ -453,10 +452,10 @@ Setting settings[]=
   INT_PROP(show_thumbbar, "show the thumbbar"),
   INT_PROP(show_bounding_box, "show bounding box of active node"),
   INT_PROP(show_controls, "show image viewer controls (maybe merge with show-graph and give better name)"),
-  INT_PROP(slide_enabled, "slide show going"),
   INT_PROP(nearest_neighbor, "nearest neighbor"),
   FLOAT_PROP(slide_pause, "display scale factor"),
-
+  FLOAT_PROP(pos, "clip time position"),
+  FLOAT_PROP(duration, "clip duration, computed on load of clip"),
 };
 
 
@@ -1077,6 +1076,15 @@ int mrg_ui_main (int argc, char **argv, char **ops)
 
   end_audio ();
   return 0;
+}
+
+int cmd_apos (COMMAND_ARGS); /* "apos", 1, "<>", "set the animation time"*/
+int
+cmd_apos (COMMAND_ARGS)
+{
+  GeState *o = global_state;
+  gegl_update_anim_time (o->sink, "output", g_strtod (argv[1], NULL));
+  return 0; 
 }
 
 int cmd_thumb (COMMAND_ARGS); /* "thumb", 0, "<>", "generate thumbnail for active image"*/
@@ -4168,6 +4176,9 @@ static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
 static void iterate_frame (GeState *o)
 {
   Mrg *mrg = o->mrg;
+  static uint32_t prev_ms = 0;
+  if (prev_ms == 0)
+    prev_ms = mrg_ms (mrg);
 
   if (g_str_has_suffix (o->src_path, ".gif") ||
       g_str_has_suffix (o->src_path, ".GIF"))
@@ -4246,6 +4257,44 @@ static void iterate_frame (GeState *o)
       }
     }
   }
+
+  {
+    static uint32_t frame_accum = 0;
+    uint32_t ms = mrg_ms (mrg);
+    uint32_t delta = ms - prev_ms;
+
+    if (delta < 500) /* filter out any big pauses - ok for slideshow but
+                        make realtime video playback more wrong, with buffering
+                        that already is bad on clip change */
+    {
+      o->pos +=  delta/1000.0;
+
+
+    if (frame_accum > 1000 / 25) // 25fps
+      {
+        gegl_update_anim_time (o->sink, "output", o->pos); 
+        frame_accum = 0;
+      }
+   frame_accum += delta;
+
+    }
+
+    if (o->pos > o->duration)
+    {
+       argvs_eval ("next");
+    }
+    else
+    {
+       fprintf (stderr, "%.3f/%.3f %f%%\n", o->pos, o->duration, 100.0*(o->pos/o->duration ));
+    }
+
+
+    mrg_queue_draw (mrg, NULL);
+
+    prev_ms = ms;
+  }
+
+
 }
 
 
@@ -5472,6 +5521,12 @@ static void load_path_inner (GeState *o,
   if (o->dir_scale <= 0.001)
     o->dir_scale = 1.0;
   o->rev = 0;
+
+  o->duration = meta_get_attribute_float (o, NULL, o->entry_no, "duration");
+  if (o->duration < 0)
+    o->duration = o->slide_pause;
+
+  o->pos = 0.0;
   o->is_video = 0;
   o->prev_frame_played = 0;
   o->thumbbar_pan_x = 0;
@@ -5542,7 +5597,10 @@ static void load_path_inner (GeState *o,
       if (is_xml_fragment (meta))
         o->gegl = gegl_node_new_from_xml (meta, containing_path);
       else
-        o->gegl = gegl_node_new_from_serialized (meta, containing_path);
+        {
+          o->gegl = gegl_node_new_from_serialized (meta, containing_path);
+          gegl_update_anim_time (o->gegl, "output", 0.0);
+        }
       g_free (containing_path);
       o->sink = o->gegl;
       o->source = NULL;
@@ -5615,7 +5673,7 @@ static void load_path_inner (GeState *o,
 
     gegl_create_chain_argv (o->ops,
                     gegl_node_get_producer (o->sink, "input", NULL),
-                    o->sink, 0, gegl_node_get_bounding_box (o->sink).height,
+                    o->sink, 2.1, gegl_node_get_bounding_box (o->sink).height,
                     containing_path,
                     &error);
     g_free (containing_path);
@@ -5649,7 +5707,7 @@ void ui_load_path (GeState *o)
     thumb_queue_item_free (item);
   }
 
-  o->playing = 0;
+  //o->playing = 0;
 
   load_path_inner (o, o->path);
   populate_path_list (o);
@@ -6460,11 +6518,19 @@ cmd_info (COMMAND_ARGS)
   GeglOperation *operation;
   GeglRectangle extent;
 
-  if (o->is_dir)
   {
-    char *path = get_item_path (o);
+    char *path;
     char **attributes = NULL;
     char **keys = NULL;
+
+     if (o->is_dir)
+     {
+       path = get_item_path (o);
+     }
+     else
+     {
+       path = g_strdup (o->path);
+     }
     if (!path)
       return -1;
 
@@ -6486,8 +6552,6 @@ cmd_info (COMMAND_ARGS)
     printf ("\n");
 
     g_free (path);
-
-    return 0;
   }
 
   if (!node)
@@ -6568,7 +6632,7 @@ cmd_set (COMMAND_ARGS)
   return 0;
 }
 
-int cmd_toggle (COMMAND_ARGS); /* "toggle", 1, "<editing|fullscreen|cheatsheet|mipmap|controls|slideshow>", ""*/
+int cmd_toggle (COMMAND_ARGS); /* "toggle", 1, "<editing|fullscreen|cheatsheet|mipmap|controls|playing>", ""*/
 int
 cmd_toggle (COMMAND_ARGS)
 {
@@ -6634,12 +6698,9 @@ cmd_toggle (COMMAND_ARGS)
   {
     o->show_controls = !o->show_controls;
   }
-  else if (!strcmp(argv[1], "slideshow"))
+  else if (!strcmp(argv[1], "playing"))
   {
-    o->slide_enabled = !o->slide_enabled;
-    if (o->slide_timeout)
-      mrg_remove_idle (o->mrg, o->slide_timeout);
-    o->slide_timeout = 0;
+    o->playing = !o->playing;
   }
   queue_draw (o);
   return 0;
@@ -7121,6 +7182,7 @@ int cmd_parent (COMMAND_ARGS) /* "parent", 0, "", "enter parent collection (swit
   char *lastslash = strrchr (o->path, '/');
   int entry_no = 0;
 
+  o->playing = 0;
   if (o->rev)
     argvs_eval ("save");
 
