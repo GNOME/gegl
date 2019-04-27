@@ -84,33 +84,24 @@ static void each_knot_rel (const GeglPathItem *path_node,
 
 
 void
-gegl_update_anim_time (GeglNode   *node,
-                       const char *output_pad,
-                       gdouble     time)
+gegl_node_set_time (GeglNode   *node,
+                    gdouble     time)
 {
   GeglNode *iter = NULL;
   if (!node)
     return;
-  /* call recursively with producers? */
-  /* brute-force existance of animation quarks set on all relevant properties
- * */
+
   if (gegl_node_has_pad (node, "input"))
   {
-    gchar *pad_name = NULL;
-    iter = gegl_node_get_producer (node, "input", &pad_name);
-    if (iter && pad_name)
-      gegl_update_anim_time (iter, pad_name, time);
-    if (pad_name)
-      g_free (pad_name);
+    iter = gegl_node_get_producer (node, "input", NULL);
+    if (iter)
+      gegl_node_set_time (iter, time);
   }
   if (gegl_node_has_pad (node, "aux"))
   {
-    gchar *pad_name = NULL;
-    iter = gegl_node_get_producer (node, "aux", &pad_name);
-    if (iter && pad_name)
-      gegl_update_anim_time (iter, pad_name, time);
-    if (pad_name)
-      g_free (pad_name);
+    iter = gegl_node_get_producer (node, "aux", NULL);
+    if (iter)
+      gegl_node_set_time (iter, time);
   }
 
   {

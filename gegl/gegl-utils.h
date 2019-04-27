@@ -94,15 +94,16 @@ GeglNode *gegl_node_new_from_serialized (const gchar *chaindata,
 
 
 /**
- * gegl_update_anim_time:
+ * gegl_node_set_time:
  * @node: a a GeglNode
- * @output_pad: the output pad to render, pass "output" here most of the time.
  * @time: the time to set the properties which have keyfraes attached to
+ *
+ * Sets the right value in animated properties of this node and all its
+ * dependendcies to be the specified time position.
  */
 
-void gegl_update_anim_time (GeglNode   *node,
-                            const char *output_pad,
-                            double      time);
+void gegl_node_set_time (GeglNode   *node,
+                         double      time);
 
 
 /**

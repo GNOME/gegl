@@ -1039,10 +1039,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
         o->entry_no = no;
     }
     g_free (basename);
-
-
   }
-
 
   mrg_set_ui (mrg, gegl_ui, o);
   on_viewer_motion (NULL, o, NULL);
@@ -1083,8 +1080,9 @@ int
 cmd_apos (COMMAND_ARGS)
 {
   GeState *o = global_state;
-  gegl_update_anim_time (o->sink, "output", g_strtod (argv[1], NULL));
-  return 0; 
+  o->pos = g_strtod (argv[1], NULL);
+  gegl_node_set_time (o->sink, o->pos);
+  return 0;
 }
 
 int cmd_thumb (COMMAND_ARGS); /* "thumb", 0, "<>", "generate thumbnail for active image"*/
@@ -4272,7 +4270,7 @@ static void iterate_frame (GeState *o)
 
     if (frame_accum > 1000 / 25) // 25fps
       {
-        gegl_update_anim_time (o->sink, "output", o->pos); 
+        gegl_node_set_time (o->sink, o->pos);
         frame_accum = 0;
       }
    frame_accum += delta;
@@ -5599,7 +5597,7 @@ static void load_path_inner (GeState *o,
       else
         {
           o->gegl = gegl_node_new_from_serialized (meta, containing_path);
-          gegl_update_anim_time (o->gegl, "output", 0.0);
+          gegl_node_set_time (o->gegl, 0.0);
         }
       g_free (containing_path);
       o->sink = o->gegl;
