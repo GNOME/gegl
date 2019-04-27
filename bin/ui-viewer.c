@@ -43,7 +43,7 @@ static void entry_load (MrgEvent *event, void *data1, void *data2)
     argvs_eval ("save");
 
   o->entry_no = GPOINTER_TO_INT(data2);
-  newpath = meta_child_no_path (o, NULL, o->entry_no);
+  newpath = get_item_path_no (o, o->entry_no);
   g_free (o->path);
   o->path = newpath;
   ui_load_path (o);
@@ -237,22 +237,6 @@ static void on_thumbbar_scroll (MrgEvent *event, void *data1, void *data2)
   mrg_event_stop_propagate (event);
 }
 
-char *meta_child_no_path (GeState *o, const char *path, int child_no)
-{
-  char *basename = meta_get_child (o, path, child_no);
-  char *ret;
-  if (o->is_dir)
-    ret = g_strdup_printf ("%s/%s", o->path, basename);
-  else
-    {
-      char *dirname = g_path_get_dirname (o->path);
-      ret = g_strdup_printf ("%s/%s", dirname, basename);
-      g_free (dirname);
-    }
-  g_free (basename);
-  return ret;
-}
-
 static void draw_thumb_bar (GeState *o)
 {
   Mrg *mrg = o->mrg;
@@ -301,7 +285,7 @@ static void draw_thumb_bar (GeState *o)
     //for (iter = curr; iter && x < width; iter = iter->next)
     while (x < width && entry_no < entries)
     {
-      char *upath = meta_child_no_path (o, NULL, entry_no);
+      char *upath = get_item_path_no (o, entry_no);
       char *path = ui_suffix_path (upath);
       char *thumbpath = ui_get_thumb_path (upath);
       int w, h;
@@ -348,7 +332,7 @@ static void draw_thumb_bar (GeState *o)
     entry_no = o->entry_no-1;
     while (x > -dim && entry_no >= 0)
     {
-      char *upath = meta_child_no_path (o, NULL, entry_no);
+      char *upath = get_item_path_no (o, entry_no);
       char *path = ui_suffix_path (upath);
       char *thumbpath = ui_get_thumb_path (upath);
       int w, h;

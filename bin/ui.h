@@ -282,7 +282,7 @@ meta_swap_children (GeState    *state,
                     int         child_no2,
                     const char *child_name2);
 
-char *meta_child_no_path (GeState *o, const char *path, int child_no);
+char *get_item_path_no (GeState *o, int child_no);
 
 void   ui_viewer           (GeState *o);
 void   ui_collection       (GeState *o);

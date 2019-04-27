@@ -3747,12 +3747,33 @@ static GeglNode *node_find_by_id (GeState *o, GeglNode *iter,
   return NULL;
 }
 
+char *get_item_path_no (GeState *o, int child_no)
+{
+  char *ret;
+  if (o->is_dir)
+    {
+      char *basename = meta_get_child (o, o->path, child_no);
+      ret = g_strdup_printf ("%s/%s", o->path, basename);
+      g_free (basename);
+    }
+  else
+    {
+      char *dirname = g_path_get_dirname (o->path);
+      char *basename = meta_get_child (o, dirname, child_no);
+      ret = g_strdup_printf ("%s/%s", dirname, basename);
+      g_free (dirname);
+      g_free (basename);
+    }
+  return ret;
+}
+
+
 char *get_item_path (GeState *o)
 {
   char *path = NULL;
   if (o->is_dir)
   {
-    path = meta_child_no_path (o, NULL, o->entry_no);
+    path = get_item_path_no (o, o->entry_no);
     if (g_file_test (path, G_FILE_TEST_IS_DIR))
     {
       g_free (path);
@@ -3788,20 +3809,23 @@ int get_item_no (GeState *o)
   else
   {
     int no = 0;
-    char *basename = g_path_get_basename (o->path);
-    o->entry_no = 0;
-    for (GList *iter = o->index; iter && !o->entry_no; iter = iter->next, no++)
+    if (o->entry_no <= 0)
     {
-      IndexItem *item = iter->data;
-      if (!strcmp (item->name, basename))
-        o->entry_no = no;
+      char *basename = g_path_get_basename (o->path);
+      o->entry_no = 0;
+      for (GList *iter = o->index; iter && !o->entry_no; iter = iter->next, no++)
+      {
+        IndexItem *item = iter->data;
+        if (!strcmp (item->name, basename))
+          o->entry_no = no;
+      }
+      for (GList *iter = o->paths; iter && !o->entry_no; iter = iter->next, no++)
+      {
+        if (!strcmp (iter->data, o->path))
+          o->entry_no = no;
+      }
+      g_free (basename);
     }
-    for (GList *iter = o->paths; iter && !o->entry_no; iter = iter->next, no++)
-    {
-      if (!strcmp (iter->data, o->path))
-        o->entry_no = no;
-    }
-    g_free (basename);
   }
   return o->entry_no;
 }
@@ -7188,7 +7212,7 @@ int cmd_next (COMMAND_ARGS) /* "next", 0, "", "next sibling element in current c
     //o->entry_no = 0;
 
   {
-    char *new_path = meta_child_no_path (o, NULL, o->entry_no);
+    char *new_path = get_item_path_no (o, o->entry_no);
     g_free (o->path);
     o->path = new_path;
     ui_load_path (o);
@@ -7271,7 +7295,7 @@ int cmd_prev (COMMAND_ARGS) /* "prev", 0, "", "previous sibling element in curre
     o->entry_no--;
 
   {
-    char *new_path = meta_child_no_path (o, NULL, o->entry_no);
+    char *new_path = get_item_path_no (o, o->entry_no);
     g_free (o->path);
     o->path = new_path;
     ui_load_path (o);
