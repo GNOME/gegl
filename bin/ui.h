@@ -59,7 +59,10 @@ struct _GeState {
   GObject   parent;
   void      (*ui) (Mrg *mrg, void *state);
   Mrg        *mrg;
+
   char       *path;      /* path of edited file or open folder  */
+
+
 
   char       *src_path; /* path to (immutable) source image. */
 
@@ -294,6 +297,8 @@ void   ui_contrasty_stroke (cairo_t *cr);
 
 void ui_run_command (MrgEvent *event_or_null, void *commandline, void *ignored);
 char *get_item_dir (GeState *o);
+int get_item_no (GeState *o);
+char *get_item_path (GeState *o);
 
 GeState *global_state;
 void populate_path_list (GeState *o);

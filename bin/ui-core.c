@@ -437,6 +437,8 @@ Setting settings[]=
   INT_PROP(color_managed_display, "perform ICC color management and convert output to display ICC profile instead of passing out sRGB, passing out sRGB is faster."),
   INT_PROP_RO(is_video, ""),
   STRING_PROP_RO(path, "path of current document"),
+  STRING_PROP_RO(src_path, "path of current document"),
+  STRING_PROP_RO(chain_path, "path of current document"),
   INT_PROP(playing, "wheter we are playing or not set to 0 for pause 1 for playing"),
   STRING_PROP_RO(chain_path, "chain path will be different from path if current path is an immutable source image itself or same as path if it is a gegl chain directly"),
   STRING_PROP_RO(src_path, "source path the immutable source image currently being edited"),
@@ -3745,7 +3747,7 @@ static GeglNode *node_find_by_id (GeState *o, GeglNode *iter,
   return NULL;
 }
 
-static char *get_item_path (GeState *o)
+char *get_item_path (GeState *o)
 {
   char *path = NULL;
   if (o->is_dir)
@@ -3762,6 +3764,46 @@ static char *get_item_path (GeState *o)
     path = g_strdup (o->path);
   }
   return path;
+}
+
+char *get_item_dir (GeState *o)
+{
+  char *path = NULL;
+  if (o->is_dir)
+  {
+    path = g_strdup (o->path);
+  }
+  else
+  {
+    path = g_path_get_dirname (o->path);
+  }
+  return path;
+}
+
+int get_item_no (GeState *o)
+{
+  if (o->is_dir)
+  {
+  }
+  else
+  {
+    int no = 0;
+    char *basename = g_path_get_basename (o->path);
+    o->entry_no = 0;
+    for (GList *iter = o->index; iter && !o->entry_no; iter = iter->next, no++)
+    {
+      IndexItem *item = iter->data;
+      if (!strcmp (item->name, basename))
+        o->entry_no = no;
+    }
+    for (GList *iter = o->paths; iter && !o->entry_no; iter = iter->next, no++)
+    {
+      if (!strcmp (iter->data, o->path))
+        o->entry_no = no;
+    }
+    g_free (basename);
+  }
+  return o->entry_no;
 }
 
 
@@ -6704,20 +6746,6 @@ cmd_toggle (COMMAND_ARGS)
   return 0;
 }
 
-char *get_item_dir (GeState *o)
-{
-  char *path = NULL;
-  if (o->is_dir)
-  {
-    path = g_strdup (o->path);
-  }
-  else
-  {
-    path = g_path_get_dirname (o->path);
-  }
-  return path;
-}
-
 
   int cmd_star (COMMAND_ARGS);
 int cmd_star (COMMAND_ARGS) /* "star", -1, "", "query or set number of stars"*/
@@ -6745,69 +6773,60 @@ int cmd_star (COMMAND_ARGS) /* "star", -1, "", "query or set number of stars"*/
   return 0;
 }
 
+static void
+index_item_destroy (IndexItem *item);
 
   int cmd_discard (COMMAND_ARGS);
 int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to a .discard subfolder"*/
 {
   GeState *o = global_state;
-  char *old_path;
-  char *basename;
-  char *tmp;
-  char *lastslash;
-  if (o->is_dir)
-  {
-    char *basedir = o->path;
-    char *basename = meta_get_child (o, basedir, o->entry_no);
-    old_path = g_strdup_printf ("%s/%s", basedir, basename);
-    g_free (basename);
-  }
-  else
-  old_path = g_strdup (o->path);
+
+  char *path = get_item_path (o);
+  char *folder = get_item_dir (o);
+  int   entry_no = get_item_no (o);
+  char *basename = g_path_get_basename (path);
 
   if (!o->is_dir)
   {
-  if (o->entry_no == ui_items_count (o) - 1)
-   {
-     argvs_eval ("prev");
-   }
-  else
-   {
-     argvs_eval ("next");
-   }
+    if (o->entry_no == ui_items_count (o) - 1)
+    {
+      argvs_eval ("prev");
+    }
+    else
+    {
+      argvs_eval ("next");
+    }
   }
-  tmp = g_strdup (old_path);
-  lastslash  = strrchr (tmp, '/');
-  if (lastslash)
   {
     char command[4096];
-    char *suffixed = ui_suffix_path (old_path);
-    basename = g_path_get_basename (old_path);
-    if (lastslash == tmp)
-      lastslash[1] = '\0';
-    else
-      lastslash[0] = '\0';
 
-    /* XXX : todo this should be real code and not pseudo-shell code */
-    sprintf (command, "mkdir %s/.discard > /dev/null 2>&1", tmp);
+    sprintf (command, "mkdir %s/.discard > /dev/null 2>&1", folder);
     system (command);
-    sprintf (command, "mv %s %s/.discard > /dev/null 2>&1", old_path, tmp);
+    sprintf (command, "mv %s %s/.discard > /dev/null 2>&1", path, folder);
     system (command);
-    sprintf (command, "rm %s/.gegl/%s/thumb.jpg > /dev/null 2>&1", tmp, basename);
+    sprintf (command, "rm %s/.gegl/%s/thumb.jpg > /dev/null 2>&1", folder, basename);
     system (command);
-    sprintf (command, "mv %s/.gegl/%s/chain.gegl %s/.discard/%s.gegl > /dev/null 2>&1", tmp, basename, tmp, basename);
+    sprintf (command, "mv %s/.gegl/%s/chain.gegl %s/.discard/%s.gegl > /dev/null 2>&1", folder, basename, folder, basename);
     system (command);
 
-    sprintf (command, "mv %s/.gegl/%s/metadata %s/.discard/%s.meta > /dev/null 2>&1", tmp, basename, tmp, basename);
+    sprintf (command, "mv %s/.gegl/%s/metadata %s/.discard/%s.meta > /dev/null 2>&1", folder, basename, folder, basename);
     system (command);
-    sprintf (command, "rmdir %s/.gegl/%s", tmp, basename);
+    sprintf (command, "rmdir %s/.gegl/%s", folder, basename);
     system (command);
 
-    g_free (suffixed);
-    g_free (basename);
     populate_path_list (o);
   }
-  g_free (tmp);
-  g_free (old_path);
+  if (entry_no < g_list_length (o->index))
+  {
+    IndexItem *item = g_list_nth_data (o->index, entry_no);
+    o->index = g_list_remove (o->index, item);
+    index_item_destroy (item);
+    o->index_dirty++;
+  }
+
+  g_free (folder);
+  g_free (path);
+  g_free (basename);
   mrg_queue_draw (o->mrg, NULL);
   return 0;
 }
