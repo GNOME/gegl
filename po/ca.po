@@ -176,7 +176,7 @@ msgstr ""
 #: bin/ui-core.c:3675 gegl/gegl-serialize.c:522
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
-msgstr "El BablFormat \"%s\" no existeix."
+msgstr "El BablFormat «%s» no existeix."
 
 #: gegl/buffer/gegl-buffer-enums.c:32 gegl/gegl-enums.c:33
 #: operations/common/gaussian-blur.c:31 operations/common/gblur-1d.c:32
@@ -383,7 +383,7 @@ msgstr "camí de dades no gestionat %s:%s\n"
 #: gegl/gegl-serialize.c:392
 #, c-format
 msgid "op '%s' not found, partial matches: "
-msgstr "no s'ha trobat l'op  '%s' , coincidències parcials:"
+msgstr "no s'ha trobat l'op «%s», coincidències parcials:"
 
 #: gegl/gegl-serialize.c:421
 #, c-format
@@ -398,7 +398,7 @@ msgstr "%s no té la propietat %s, propietats:"
 #: gegl/gegl-serialize.c:663
 #, c-format
 msgid "No such op '%s'"
-msgstr "No existeix cap op '%s'"
+msgstr "No existeix cap op «%s»"
 
 #: gegl/module/geglmodule.c:340
 msgid "Module error"
@@ -2406,7 +2406,7 @@ msgstr "Planeta petit"
 #: operations/common/little-planet.c:498
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
-"Realitza una transformació estereogràfica/planeta petit d'una imatge  "
+"Realitza una transformació estereogràfica/planeta petit d'una imatge "
 "equirectangular."
 
 #: operations/common/long-shadow.c:27
@@ -3141,7 +3141,7 @@ msgstr "RGB lineal"
 
 #: operations/common/noise-rgb.c:34
 msgid "Operate on linearized RGB color data"
-msgstr "Opera  en les dades de color RGB linealitzat"
+msgstr "Opera en les dades de color RGB linealitzat"
 
 #: operations/common/noise-rgb.c:36
 msgid "Gaussian distribution"
@@ -3250,7 +3250,7 @@ msgid ""
 "input image. (2:1 ratio containing 360x180 degree panorama)."
 msgstr ""
 "Feu una renderització d'una visualització prèvia de panoràmiques o la seva "
-"inversa per a una imatge d’entrada equirectangular. (Relació  2:1 amb "
+"inversa per a una imatge d’entrada equirectangular. (Relació 2:1 amb "
 "panoràmiques de 360x180 graus)."
 
 #: operations/common/pixelize.c:28
@@ -3408,7 +3408,7 @@ msgstr "Esvaeix l'opacitat"
 
 #: operations/common/recursive-transform.c:45
 msgid "Amount by which to scale the opacity of each transformed image"
-msgstr "Quantitat amb la qual s'escala la opacitat de cada imatge transformada"
+msgstr "Quantitat amb la qual s'escala l'opacitat de cada imatge transformada"
 
 #: operations/common/recursive-transform.c:49
 msgid "Paste below"
@@ -3859,7 +3859,7 @@ msgid ""
 "sharpening originally used in darkrooms."
 msgstr ""
 "Perfila la imatge, afegint diferència a la imatge difuminada, una tècnica "
-"per fer-la nítida,  originalment s'utilitza en cambres fosques."
+"per fer-la nítida, originalment s'utilitza en cambres fosques."
 
 #: operations/common/value-invert.c:149
 msgid "Value Invert"
@@ -5235,7 +5235,7 @@ msgstr "Desviació de les tessel·les perfectament formades"
 
 #: operations/common-gpl3+/mosaic.c:57
 msgid "Tile color variation"
-msgstr "Variació de color de la  tessel·la"
+msgstr "Variació de color de la tessel·la"
 
 #: operations/common-gpl3+/mosaic.c:58
 msgid "Magnitude of random color variations"
@@ -5247,11 +5247,11 @@ msgstr "Mitjana de color"
 
 #: operations/common-gpl3+/mosaic.c:62
 msgid "Tile color based on average of subsumed pixels"
-msgstr "El color de la  tessel·la es basa en la mitjana dels píxels subsumats"
+msgstr "El color de la tessel·la es basa en la mitjana dels píxels subsumats"
 
 #: operations/common-gpl3+/mosaic.c:64
 msgid "Rough tile surface"
-msgstr "Superfície de la  tessel·la rugosa"
+msgstr "Superfície de la tessel·la rugosa"
 
 #: operations/common-gpl3+/mosaic.c:65
 msgid "Surface characteristics"
@@ -5851,7 +5851,7 @@ msgid ""
 "Position of the light source which lightens the canvas: Top-right, Top-left, "
 "Bottom-left or Bottom-right"
 msgstr ""
-"Posició de la font de la llum que il·lumina el llenç:  superior dreta, "
+"Posició de la font de la llum que il·lumina el llenç: superior dreta, "
 "superior esquerra, inferior dreta o inferior esquerra"
 
 #: operations/common-gpl3+/texturize-canvas.c:45
@@ -6016,7 +6016,7 @@ msgstr "Velocitat de propagació"
 
 #: operations/common-gpl3+/value-propagate.c:52
 msgid "The strength with which to propagate a pixel to its neighbors"
-msgstr "La intensitat amb la qual propaguen un píxels cap als seus veins"
+msgstr "La intensitat amb la qual es propaga un píxel cap als seus veïns"
 
 #: operations/common-gpl3+/value-propagate.c:56
 msgid "Color to use for the \"Only color\" and \"Color to peaks\" modes"
@@ -6068,7 +6068,7 @@ msgstr "Propagar el canal alfa"
 
 #: operations/common-gpl3+/value-propagate.c:77
 msgid "Whether to propagate a pixel's opacity"
-msgstr "Si s'ha de propagar la opacitat dels píxels"
+msgstr "Si s'ha de propagar l'opacitat dels píxels"
 
 #: operations/common-gpl3+/value-propagate.c:646
 msgid "Value Propagate"
@@ -6428,7 +6428,7 @@ msgid ""
 "conversion using Image Magick's convert."
 msgstr ""
 "Carregador de fitxers multi-usos, que utilitza altres gestors nadius, i "
-"utilitza com a últim recurs la conversió  amb l'Image Magick."
+"utilitza com a últim recurs la conversió amb l'Image Magick."
 
 #: operations/core/nop.c:81
 msgid "No Operation"
@@ -6676,7 +6676,7 @@ msgstr "retard-fotograma"
 
 #: operations/external/gif-load.c:41
 msgid "Delay in ms for last decoded frame"
-msgstr "Retard en ms per al darrer fotograma decodificat"
+msgstr "Retard en ms per al darrer fotograma descodificat"
 
 #: operations/external/gif-load.c:239
 msgid "GIF File Loader"
@@ -6684,7 +6684,7 @@ msgstr "Carregador de fitxers GIF"
 
 #: operations/external/gif-load.c:241
 msgid "GIF image loader."
-msgstr "Carregador d'imatges GIF"
+msgstr "Carregador d'imatges GIF."
 
 #: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
 #: operations/external/tiff-load.c:27 operations/external/webp-load.c:28
@@ -7110,7 +7110,7 @@ msgstr "Contrasenya"
 
 #: operations/external/pdf-load.c:44
 msgid "Password to use for decryption of PDF, or blank for none"
-msgstr "Contrasenya a usar en la descripció del PDF, o blanc per a ninguna"
+msgstr "Contrasenya a usar en la descripció del PDF, o blanc per a cap"
 
 #: operations/external/pdf-load.c:242
 msgid "pdf loader"
@@ -7989,7 +7989,7 @@ msgstr ""
 "transformació ACES RRT (Reference Rendering Transform). En alimentar les "
 "imatges d’una escena en aquest op, el resultat és adequat per mostrar la "
 "transformació referida a sRGB o la visualització de la sortida utilitzant "
-"perfils de matriu ICC regulars com  ODT. Tingueu en compte que  actualment "
+"perfils de matriu ICC regulars com ODT. Tingueu en compte que actualment "
 "es tracta d’una aproximació de lluminositat sols per l’ACES RRT; sense "
 "desaturació de reflexos i ombres ni modificacions de tons vermells."
 
@@ -8122,7 +8122,7 @@ msgstr "Pas índex"
 
 #: operations/workshop/connected-components.c:42
 msgid "Normalize output to the range [base,base + step]"
-msgstr "Normalitza la sortida a un rang  [base,base + pas]"
+msgstr "Normalitza la sortida a un rang [base,base + pas]"
 
 #: operations/workshop/connected-components.c:284
 msgid "Connected Components"
@@ -8501,7 +8501,7 @@ msgstr "Coordenada Y del centre del patró"
 
 #: operations/workshop/external/spyrograph.c:64
 msgid "Radius of fixed gear"
-msgstr "Radi del engranatge fix"
+msgstr "Radi de l'engranatge fix"
 
 #: operations/workshop/external/spyrograph.c:70
 msgid "Pattern rotation"
@@ -8712,7 +8712,7 @@ msgstr ""
 "Carregador d'imatges RAW (en cru), embolcalla la dcraw amb conductes, "
 "proporciona la graella Bayer en brut com a escala de grisos. Si el format "
 "del fitxer és .rawbayer utilitzarà aquest carregador en comptes del "
-"carregador normal de la  dcraw. Si el format del fitxer és .rawbayerS girarà "
+"carregador normal de la dcraw. Si el format del fitxer és .rawbayerS girarà "
 "els números de 16 bits retornats (sembla que el carregador PNM és defectuós)"
 
 #: operations/workshop/segment-kmeans.c:27
@@ -8742,7 +8742,7 @@ msgstr "To de la selecció centrada"
 
 #: operations/workshop/selective-hue-saturation.c:27
 msgid "Center of Hue selection interval  "
-msgstr "Centre de l'interval de selecció del to "
+msgstr "Centre de l'interval de selecció del to  "
 
 #: operations/workshop/selective-hue-saturation.c:30
 msgid "Hue selection width"
@@ -8750,7 +8750,7 @@ msgstr "Amplada de selecció del to"
 
 #: operations/workshop/selective-hue-saturation.c:31
 msgid "Width of Hue selection interval  "
-msgstr "Amplada de l'interval de selecció del to "
+msgstr "Amplada de l'interval de selecció del to  "
 
 #: operations/workshop/selective-hue-saturation.c:39
 msgid "Saturation adjustment"
