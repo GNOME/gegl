@@ -244,9 +244,6 @@ static void draw_thumb_bar (GeState *o)
   float height = mrg_height(mrg);
   cairo_t *cr = mrg_cr (mrg);
 
-  //fprintf (stderr, "... %i ...\n", o->entry_no);
-
-  //GList *curr = g_list_find_custom (o->paths, o->path, (void*)g_strcmp0);
   float dim = height * 0.15 * o->thumbbar_scale;
   float padding = .025;
   float opacity;
@@ -277,12 +274,10 @@ static void draw_thumb_bar (GeState *o)
 
   if (opacity > 0.01)
   {
-    //GList *iter = curr;
     float x = mrg_width(mrg)/2-dim/2 - o->thumbbar_pan_x;
     int entry_no = o->entry_no;
     int entries = g_list_length (o->index) + g_list_length (o->paths);
 
-    //for (iter = curr; iter && x < width; iter = iter->next)
     while (x < width && entry_no < entries)
     {
       char *upath = get_item_path_no (o, entry_no);
@@ -362,7 +357,6 @@ static void draw_thumb_bar (GeState *o)
       else
       {
          if (access (thumbpath, F_OK) != 0) // only queue if does not exist,
-                                            // mrg/stb_image seem to suffer on some of our pngs
          {
            ui_queue_thumb (upath);
          }
@@ -373,12 +367,9 @@ static void draw_thumb_bar (GeState *o)
       g_free (upath);
       entry_no --;
     }
-
   }
-
   cairo_restore (cr);
 }
-
 
 void ui_viewer (GeState *o)
 {
@@ -480,9 +471,7 @@ void ui_viewer (GeState *o)
    mrg_add_binding (mrg, "5", NULL, NULL, ui_run_command, "star 5");
  }
 
- mrg_add_binding (mrg, "control-m", NULL, NULL, ui_run_command, "toggle mipmap");
- mrg_add_binding (mrg, "control-y", NULL, NULL, ui_run_command, "toggle colormanaged-display");
-
-
+  mrg_add_binding (mrg, "control-m", NULL, NULL, ui_run_command, "toggle mipmap");
+  mrg_add_binding (mrg, "control-y", NULL, NULL, ui_run_command, "toggle colormanaged-display");
   mrg_add_binding (mrg, "control-delete", NULL, NULL,  ui_run_command, "discard");
 }
