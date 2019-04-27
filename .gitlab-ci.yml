@@ -21,12 +21,14 @@ image: archlinux/base:latest
     GIT_DEPTH: "5"
   before_script:
     - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache git base-devel meson lcms2
-    - git clone https://gitlab.gnome.org/GNOME/babl.git _babl
+    - git clone --depth=$GIT_DEPTH https://gitlab.gnome.org/GNOME/babl.git _babl
     - cd _babl
     - mkdir _build
 
 babl-git-autotools:
   extends: .babl-base
+  variables:
+    GIT_STRATEGY: none
   script:
     - cd _build
     - ../autogen.sh --prefix="$BABL_PREFIX"
@@ -35,6 +37,8 @@ babl-git-autotools:
 
 babl-git-meson:
   extends: .babl-base
+  variables:
+    GIT_STRATEGY: none
   script:
     - meson -Dprefix="$BABL_PREFIX" _build
     - ninja -C _build
@@ -44,7 +48,8 @@ babl-min-autotools:
   extends: .babl-base
   script:
     - grep babl_required_version ../configure.ac | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
-    - git checkout "BABL_`cat .babl_min_version`"
+    - git fetch --no-tags origin "refs/tags/BABL_`cat .babl_min_version`:refs/tags/MIN_VERSION"
+    - git checkout MIN_VERSION
     - cd _build
     - ../autogen.sh --prefix="$BABL_PREFIX"
     - make
@@ -54,7 +59,8 @@ babl-min-meson:
   extends: .babl-base
   script:
     - grep babl_required_version ../configure.ac | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
-    - git checkout "BABL_`cat .babl_min_version`"
+    - git fetch --no-tags origin "refs/tags/BABL_`cat .babl_min_version`:refs/tags/MIN_VERSION"
+    - git checkout MIN_VERSION
     - meson -Dprefix="$BABL_PREFIX" _build
     - ninja -C _build
     - ninja -C _build install
@@ -65,19 +71,19 @@ intel-ocl-runtime:
     paths:
     - ./*.pkg.tar.xz
   variables:
-    GIT_DEPTH: "1"
+    GIT_STRATEGY: none
   before_script:
     - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache git base-devel
   script:
     - 'echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers'
-    - git clone https://aur.archlinux.org/ncurses5-compat-libs.git
+    - git clone --depth=1 https://aur.archlinux.org/ncurses5-compat-libs.git
     - cd ncurses5-compat-libs
     - chown nobody -R .
     - sudo -u nobody makepkg -s --skippgpcheck --noconfirm
     - pacman -U --noconfirm ./*.pkg.tar.xz
     - mv ./*.pkg.tar.xz ../
     - cd ..
-    - git clone https://aur.archlinux.org/intel-opencl-runtime.git
+    - git clone --depth=1 https://aur.archlinux.org/intel-opencl-runtime.git
     - cd intel-opencl-runtime
     - chown nobody -R .
     - sudo -u nobody makepkg -s --noconfirm
