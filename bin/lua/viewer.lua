@@ -314,6 +314,41 @@ if o.is_video ~= 0 then
 end
 
 
+if 0 ~= 0 then -- hack for testing animation scrubbing
+
+  local frame = o.pos;
+  local frames = o.duration;
+
+  local source = GObject.Object(STATE).sink
+
+  if o.show_controls ~= 0 then
+    cr:set_line_width(2)
+    cr:new_path()
+    cr:move_to(height * .15, height * .95);
+    cr:line_to(width - height * .15, height * .95);
+    cr:set_source_rgba(1,1,1,1)
+
+    cr:stroke()
+    cr:move_to(height * .15 + frame * (width - height * .3)  / frames, height * 0.975)
+    cr:rel_line_to(0, -0.05 * height)
+    cr:stroke()
+
+    cr:set_source_rgba(1,1,1,.5)
+    cr:fill()
+
+
+  end
+
+  cr:rectangle(height * .1 , height * .9, width - height * .2, height *.1)
+  mrg:listen(Mrg.DRAG, function(event)
+      o.pos = (event.x - height *.15) / (width - height * .3) * frames
+      sink:set_time(o.pos)
+      event:stop_propagate()
+  end)
+  cr:new_path()
+end
+
+
 function pdf_next_page()
   local pages = source:get_property('pages').value
   local page = source:get_property('page').value
@@ -331,7 +366,7 @@ function draw_thumb_bar()
   cr:set_source_rgba(1,1,1,.1)
   cr:rectangle(0, mrg:height()*0.8, mrg:width(), mrg:height()*0.2)
   mrg:listen(Mrg.MOTION, function(e)
-    print('a') end)
+    end)
   cr:fill()
   mrg:print("thumbbar")
 end

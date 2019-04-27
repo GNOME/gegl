@@ -730,7 +730,7 @@ void populate_path_list (GeState *o)
 
   for (int i = 0; i < n;i++)
     free(namelist[i]);
-  free (namelist);
+//  free (namelist);
 }
 
 char **ops = NULL;  /* initialized by the non-ui main() before ours get called */
@@ -6751,13 +6751,13 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
 {
   GeState *o = global_state;
   char *old_path;
+  char *basename;
   char *tmp;
   char *lastslash;
   if (o->is_dir)
   {
     char *basedir = o->path;
     char *basename = meta_get_child (o, basedir, o->entry_no);
-    g_free (o->path);
     old_path = g_strdup_printf ("%s/%s", basedir, basename);
     g_free (basename);
   }
@@ -6779,22 +6779,31 @@ int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to 
   lastslash  = strrchr (tmp, '/');
   if (lastslash)
   {
-    char command[2048];
+    char command[4096];
     char *suffixed = ui_suffix_path (old_path);
+    basename = g_path_get_basename (old_path);
     if (lastslash == tmp)
       lastslash[1] = '\0';
     else
       lastslash[0] = '\0';
 
-    // XXX : replace with proper code, also discard thumb?
-
+    /* XXX : todo this should be real code and not pseudo-shell code */
     sprintf (command, "mkdir %s/.discard > /dev/null 2>&1", tmp);
     system (command);
     sprintf (command, "mv %s %s/.discard > /dev/null 2>&1", old_path, tmp);
     system (command);
-    sprintf (command, "mv %s %s/.discard > /dev/null 2>&1", suffixed, tmp);
+    sprintf (command, "rm %s/.gegl/%s/thumb.jpg > /dev/null 2>&1", tmp, basename);
     system (command);
+    sprintf (command, "mv %s/.gegl/%s/chain.gegl %s/.discard/%s.gegl > /dev/null 2>&1", tmp, basename, tmp, basename);
+    system (command);
+
+    sprintf (command, "mv %s/.gegl/%s/metadata %s/.discard/%s.meta > /dev/null 2>&1", tmp, basename, tmp, basename);
+    system (command);
+    sprintf (command, "rmdir %s/.gegl/%s", tmp, basename);
+    system (command);
+
     g_free (suffixed);
+    g_free (basename);
     populate_path_list (o);
   }
   g_free (tmp);
