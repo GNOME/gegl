@@ -207,6 +207,7 @@ cl_process (GeglOperation       *op,
   cl_int cl_err = 0;
   int kernel;
   gfloat value;
+  const Babl *fmt;
 
   if (!cl_data)
     {
@@ -215,9 +216,10 @@ cl_process (GeglOperation       *op,
     }
   if (!cl_data) return TRUE;
 
+  fmt = gegl_operation_get_format(op, "input");
   value = GEGL_PROPERTIES (op)->value;
 
-  kernel = (GEGL_PROPERTIES (op)->user_data == NULL)? 0 : 1;
+  kernel = ((babl_get_model_flags(fmt) & BABL_MODEL_FLAG_PREMULTIPLIED) == 0)? 1 : 0;
 
   cl_err = gegl_clSetKernelArg(cl_data->kernel[kernel], 0, sizeof(cl_mem),   (void*)&in_tex);
   CL_CHECK;
