@@ -282,7 +282,6 @@ meta_swap_children (GeState    *state,
                     int         child_no2,
                     const char *child_name2);
 
-char *get_item_path_no (GeState *o, int child_no);
 
 void   ui_viewer           (GeState *o);
 void   ui_collection       (GeState *o);
@@ -296,11 +295,15 @@ void   ui_queue_thumb      (const char *path);
 void   ui_contrasty_stroke (cairo_t *cr);
 
 void ui_run_command (MrgEvent *event_or_null, void *commandline, void *ignored);
-char *get_item_dir (GeState *o);
-int get_item_no (GeState *o);
-char *get_item_path (GeState *o);
+
+
+char *get_item_dir     (GeState *o);  /* current dir */
+int   get_item_no      (GeState *o);  /* current no */
+char *get_item_path    (GeState *o);  /* currently selected path */
+char *get_item_path_no (GeState *o, int child_no);
 
 GeState *global_state;
+
 void populate_path_list (GeState *o);
 
 #endif

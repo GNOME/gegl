@@ -248,8 +248,16 @@ meta_swap_children (GeState    *state,
                     int         child_no2,
                     const char *child_name2);
 
-char *meta_child_no_path (GeState *o, const char *path, int child_no);
 
+int         ui_items_count         (GeState *o);
+
+
+char *get_item_dir     (GeState *o);  /* current dir */
+int   get_item_no      (GeState *o);  /* current no */
+char *get_item_path    (GeState *o);  /* currently selected path */
+char *get_item_path_no (GeState *o, int child_no);
+
+void g_free (void *data);
 
 ]]
 
@@ -258,7 +266,10 @@ mrg = o.mrg
 
 ffi.metatype('GeState', {__index = {
    get_key_int = function(...) return ffi.C.meta_get_key_int(...) end;
-   --get_n_paths = function(...) return ffi.C.get_state_get_n_paths(...) end;
+   items_count = function(...) return ffi.C.ui_items_count(...) end;
+   item_no = function(...) return ffi.C.get_item_no(...) end;
+   item_path = function(...) new = ffi.C.get_item_path(...); local ret = ffi.string(new) ; ffi.C.g_free(new); return ret; end;
+   item_path_no = function(...) new = ffi.C.get_item_path_no(...); local ret = ffi.string(new) ; ffi.C.g_free(new); return ret; end;
  }})
 
 function touch_point(x, y)

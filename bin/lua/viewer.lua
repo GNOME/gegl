@@ -314,7 +314,7 @@ if o.is_video ~= 0 then
 end
 
 
-if 0 ~= 0 then -- hack for testing animation scrubbing
+if 1 ~= 0 then
 
   local frame = o.pos;
   local frames = o.duration;
@@ -366,9 +366,9 @@ function draw_thumb_bar()
   cr:set_source_rgba(1,1,1,.1)
   cr:rectangle(0, mrg:height()*0.8, mrg:width(), mrg:height()*0.2)
   mrg:listen(Mrg.MOTION, function(e)
-    end)
+    print('a') end)
   cr:fill()
-  mrg:print("thumbbar")
+  mrg:print("thumbbar" .. o:item_no() .. '' .. o:item_path())
 end
 
 mrg:add_binding("page-up", NULL, "previous image",
