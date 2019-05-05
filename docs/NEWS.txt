@@ -32,8 +32,13 @@ likely when using bindings to dynamic languages.
 Use malloc_trim when compiled with glibc to possibly decrease the resident size
 of progress when buffers are destroyed.
 
+Improved deadlock prevention in gegl_buffer_copy() when using copy on write.
+
 Operations
 ~~~~~~~~~~
+
+Use indirect buffer inputs on main thread during multi-processed processing for
+point-filters/composers and tranform base classes.
 
 Smaller required/invalided ROI for map-absolute/relative when
 using nearest neighbor.
