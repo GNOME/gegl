@@ -2465,7 +2465,7 @@ gegl_buffer_copy (GeglBuffer          *src,
              */
             fast_copy = (src->tile_storage->n_user_handlers == 0);
 
-            if (src < dst)
+            if (src->tile_storage < dst->tile_storage)
               {
                 g_rec_mutex_lock (&src->tile_storage->mutex);
                 g_rec_mutex_lock (&dst->tile_storage->mutex);
