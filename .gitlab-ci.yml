@@ -164,7 +164,6 @@ build-all-min-meson:
 
 opencl-build-all-git-meson:
   extends: .build-all
-  allow_failure: true
   variables:
     GEGL_USE_OPENCL: "cpu"
   script:
