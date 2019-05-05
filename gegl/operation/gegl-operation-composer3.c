@@ -126,7 +126,7 @@ thread_process (const GeglRectangle *area,
 {
   GeglBuffer *input;
 
-  if (area->x == data->roi->x && area->y == data->roi->y)
+  if (gegl_rectangle_equal (area, data->roi))
     {
       input = g_object_ref (data->input);
     }
