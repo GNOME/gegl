@@ -745,6 +745,30 @@ gegl_tile_handler_cache_copy (GeglTileHandlerCache     *cache,
 
       success = TRUE;
     }
+  /* otherwise, if we don't have the tile, remove the corresponding tile from
+   * the destination cache, so that, if the backend copies the tile to the
+   * destination backend below, the destination cache doesn't hold an outdated
+   * tile.  we do this *before* letting the backend copy the tile, since the
+   * backend might insert the copied tile to the destination cache as well, as
+   * is the case for GeglTileBackendBuffer.
+   */
+  else
+    {
+      GeglTileHandlerCache *dst_cache;
+
+      if (params->dst_buffer)
+        dst_cache = params->dst_buffer->tile_storage->cache;
+      else
+        dst_cache = cache;
+
+      if (dst_cache)
+        {
+          gegl_tile_handler_cache_remove (dst_cache,
+                                          params->dst_x,
+                                          params->dst_y,
+                                          params->dst_z);
+        }
+    }
 
   /* then, if we don't have the tile, or if the tile is stored, iow, if the
    * tile might exist in the backend in an up-to-date state ...
@@ -758,33 +782,11 @@ gegl_tile_handler_cache_copy (GeglTileHandlerCache     *cache,
                                             GEGL_TILE_COPY, x, y, z,
                                             (gpointer) params))
         {
-          /* if the backend copied the tile, we can either mark the copied tile
-           * as stored, or, if we didn't have the tile, void any existing tile
-           * in the destination cache.
+          /* if the backend copied the tile, we can mark the copied tile, if
+           * exists, as stored.
            */
-
           if (dst_tile)
-            {
-              gegl_tile_mark_as_stored (dst_tile);
-            }
-          else
-            {
-              GeglTileHandlerCache *dst_cache;
-
-              if (params->dst_buffer)
-                dst_cache = params->dst_buffer->tile_storage->cache;
-              else
-                dst_cache = cache;
-
-              if (dst_cache)
-                {
-                  gegl_tile_handler_cache_void (dst_cache,
-                                                params->dst_x,
-                                                params->dst_y,
-                                                params->dst_z,
-                                                ~(guint64) 0);
-                }
-            }
+            gegl_tile_mark_as_stored (dst_tile);
 
           success = TRUE;
         }
