@@ -45,19 +45,7 @@ prepare (GeglOperation *self)
 {
   const Babl *space = gegl_operation_get_source_space (self, "input");
   const Babl *fmt = gegl_operation_get_source_format (self, "input");
-  GeglProperties *o = GEGL_PROPERTIES (self);
 
-  if (gegl_operation_use_opencl (self))
-    {
-      if (babl_get_model_flags (fmt) & BABL_MODEL_FLAG_PREMULTIPLIED)
-        fmt = babl_format_with_space ("RaGaBaA float", space);
-      else
-        {
-          fmt = babl_format_with_space ("RGBA float", space);
-          o->user_data = o;
-        }
-    }
-  else
   fmt = gegl_babl_variant (fmt, GEGL_BABL_VARIANT_ALPHA);
 
   gegl_operation_set_format (self, "input", fmt);
