@@ -1,10 +1,22 @@
-GEGL-0.4.15
------------
+GEGL-0.4.16 2019-05-07
+----------------------
 
-Build
-~~~~~
+Buffer
+~~~~~~
 
-Added continuous integration tests for gitlab.
+Swapped behavior of cubic interpolation from cubic to mithcell coefficients,
+leading to crisper results in all uses of the cubic sampler.
+
+Use a custom allocator for tile data which aligns data and groups allocations
+in blocks - improving performance on windows by keeping more slack allocation
+memory in-process. On linux the opposite was needed and is achieved by using
+the GNU extension malloc_trim which permits forcing invokation of the glibc
+malloc/free allocators garbage collection function.
+
+Permit tiles to be unreffed after GEGL shut-down without crash, which is
+likely when using bindings to dynamic languages.
+
+Improved deadlock prevention in gegl_buffer_copy() when using copy on write.
 
 Core
 ~~~~
@@ -20,19 +32,11 @@ GEGL_USE_OPENCL environment variable.
 
 New call gegl_update_anim_time for applying the animation curves of properties.
 
-Buffer
-~~~~~~
+Build
+~~~~~
 
-Swapped behavior of cubic interpolation from cubic to mithcell coefficients,
-leading to crisper results in all uses of the cubic sampler.
+Added gitlab continuous integration.
 
-Permit tiles to be unreffed after GEGL shut-down without crash, which is
-likely when using bindings to dynamic languages.
-
-Use malloc_trim when compiled with glibc to possibly decrease the resident size
-of progress when buffers are destroyed.
-
-Improved deadlock prevention in gegl_buffer_copy() when using copy on write.
 
 Operations
 ~~~~~~~~~~
@@ -55,8 +59,8 @@ ff-save avoid crashing if audio or video codec fails to initialize.
 cache, parent class changed - it is no longer a point operations, also speed up
 processing and permit copy on write handling of tiles.
 
-opaciy and invert - force RGBA pixelformat for OpenCL; fix crash for 8bpc
-buffers.
+opacity and invert - crash for 8bpc buffers, reimplemented logic for
+(non-)associated alpha OpenCL kernel selection.
 
 Tools
 ~~~~~
@@ -76,7 +80,16 @@ and display is fast enough to leave spare cycles.
 Support for nearest neighbor scaling of imagry; aiding video playback without
 dropping audio frames.
 
-Support for custom collection order and per-file key-value metadata.
+Custom collection order and per-file key-value metadata.
+
+
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alex Samorukov, Brian Stafford, Carles Ferrando Garcia, Dimitris Spingos,
+Edward E, Ell, Jan Vesely, Jehan, Jordi Mas, lumingzh, Marco Ciampa, Martin
+Srebotnjak, Massimo Valentini, Nuno Ferreira, Øyvind Kolås, Piotr Drąg, sabri
+ünal and Sveinn í Felli.
 
 
 GEGL-0.4.14 2019-03-01
