@@ -53,10 +53,6 @@
 #include <execinfo.h>
 #endif
 
-#ifdef __GLIBC__
-#include <malloc.h>
-#endif
-
 
 G_DEFINE_TYPE (GeglBuffer, gegl_buffer, GEGL_TYPE_TILE_HANDLER)
 
@@ -412,11 +408,6 @@ gegl_buffer_finalize (GObject *object)
   g_free (GEGL_BUFFER (object)->path);
   g_atomic_int_inc (&de_allocated_buffers);
   G_OBJECT_CLASS (parent_class)->finalize (object);
-
-
-#ifdef __GLIBC__
-  malloc_trim (1024 * 1024);
-#endif
 }
 
 

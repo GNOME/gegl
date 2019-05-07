@@ -24,6 +24,7 @@
 #include "gegl-types-internal.h"
 #include "buffer/gegl-buffer-types.h"
 #include "buffer/gegl-scratch-private.h"
+#include "buffer/gegl-tile-alloc.h"
 #include "buffer/gegl-tile-handler-cache.h"
 #include "buffer/gegl-tile-backend-swap.h"
 #include "buffer/gegl-tile-handler-zoom.h"
@@ -50,6 +51,7 @@ enum
   PROP_SWAP_WRITING,
   PROP_SWAP_WRITE_TOTAL,
   PROP_ZOOM_TOTAL,
+  PROP_TILE_ALLOC_TOTAL,
   PROP_SCRATCH_TOTAL
 };
 
@@ -199,6 +201,13 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                         0, G_MAXUINT64, 0,
                                                         G_PARAM_READABLE));
 
+  g_object_class_install_property (object_class, PROP_TILE_ALLOC_TOTAL,
+                                   g_param_spec_uint64 ("tile-alloc-total",
+                                                        "Tile allocator total",
+                                                        "Total size of tile-allocator memory",
+                                                        0, G_MAXUINT64, 0,
+                                                        G_PARAM_READABLE));
+
   g_object_class_install_property (object_class, PROP_SCRATCH_TOTAL,
                                    g_param_spec_uint64 ("scratch-total",
                                                         "Scratch total",
@@ -300,6 +309,10 @@ gegl_stats_get_property (GObject    *object,
 
       case PROP_ZOOM_TOTAL:
         g_value_set_uint64 (value, gegl_tile_handler_zoom_get_total ());
+        break;
+
+      case PROP_TILE_ALLOC_TOTAL:
+        g_value_set_uint64 (value, gegl_tile_alloc_get_total ());
         break;
 
       case PROP_SCRATCH_TOTAL:

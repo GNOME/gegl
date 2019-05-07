@@ -55,6 +55,7 @@ libbuffer_la_SOURCES = \
     gegl-sampler-lohalo.c       \
     gegl-scratch.c		\
     gegl-tile.c			\
+    gegl-tile-alloc.c		\
     gegl-tile-source.c		\
     gegl-tile-storage.c		\
     gegl-tile-backend.c		\
@@ -94,6 +95,7 @@ libbuffer_la_SOURCES = \
     gegl-scratch.h		\
     gegl-scratch-private.h	\
     gegl-tile.h			\
+    gegl-tile-alloc.h		\
     gegl-tile-source.h		\
     gegl-tile-storage.h		\
     gegl-tile-backend.h		\

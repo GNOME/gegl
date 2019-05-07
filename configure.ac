@@ -1283,6 +1283,13 @@ AC_CHECK_FUNC(rint, AC_DEFINE(HAVE_RINT, 1,
                               [Define to 1 if you have the rint function.]), [ 
                   AC_CHECK_LIB(m, rint, [AC_DEFINE(HAVE_RINT)])])
 
+#check for malloc_trim()
+AC_CHECK_HEADER([malloc.h],
+  [AC_CHECK_FUNCS(malloc_trim)])
+
+#check for __builtin_clz()
+AX_GCC_BUILTIN(__builtin_clz)
+
 
 #######################
 # Enable extra warnings
