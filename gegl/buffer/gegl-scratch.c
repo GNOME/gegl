@@ -27,36 +27,23 @@
 #include "gegl-scratch-private.h"
 
 
-#define GEGL_SCRATCH_ALIGNMENT         GEGL_ALIGNMENT
 #define GEGL_SCRATCH_MAX_BLOCK_SIZE    (1 << 20)
-#define GEGL_SCRATCH_BLOCK_DATA_OFFSET ((sizeof (GeglScratchBlockHeader) + \
-                                         (GEGL_SCRATCH_ALIGNMENT - 1))   / \
-                                        GEGL_SCRATCH_ALIGNMENT           * \
-                                        GEGL_SCRATCH_ALIGNMENT)
+#define GEGL_SCRATCH_BLOCK_DATA_OFFSET GEGL_ALIGN (sizeof (GeglScratchBlock))
 
 
-G_STATIC_ASSERT (GEGL_SCRATCH_ALIGNMENT <= G_MAXUINT8);
+G_STATIC_ASSERT (GEGL_ALIGNMENT <= G_MAXUINT8);
 
 
 /*  private types  */
 
-typedef struct _GeglScratchBlockHeader GeglScratchBlockHeader;
-typedef struct _GeglScratchBlock       GeglScratchBlock;
-typedef struct _GeglScratchContext     GeglScratchContext;
+typedef struct _GeglScratchBlock   GeglScratchBlock;
+typedef struct _GeglScratchContext GeglScratchContext;
 
-struct _GeglScratchBlockHeader
+struct _GeglScratchBlock
 {
   GeglScratchContext *context;
   gsize               size;
   guint8              offset;
-};
-
-struct _GeglScratchBlock
-{
-  GeglScratchBlockHeader header;
-  guint8                 padding[GEGL_SCRATCH_BLOCK_DATA_OFFSET -
-                                 sizeof (GeglScratchBlockHeader)];
-  guint8                 data[];
 };
 
 struct _GeglScratchContext
@@ -69,12 +56,15 @@ struct _GeglScratchContext
 
 /*  local function prototypes  */
 
-static GeglScratchContext * gegl_scratch_context_new  (void);
-static void                 gegl_scratch_context_free (GeglScratchContext *context);
+static GeglScratchContext      * gegl_scratch_context_new     (void);
+static void                      gegl_scratch_context_free    (GeglScratchContext *context);
 
-static GeglScratchBlock   * gegl_scratch_block_new    (GeglScratchContext *context,
-                                                       gsize               size);
-static void                 gegl_scratch_block_free   (GeglScratchBlock   *block);
+static GeglScratchBlock        * gegl_scratch_block_new       (GeglScratchContext *context,
+                                                               gsize               size);
+static void                      gegl_scratch_block_free      (GeglScratchBlock   *block);
+
+static inline gpointer           gegl_scratch_block_to_data   (GeglScratchBlock   *block);
+static inline GeglScratchBlock * gegl_scratch_block_from_data (gpointer            data);
 
 
 /*  local variables  */
@@ -115,19 +105,17 @@ gegl_scratch_block_new (GeglScratchContext *context,
 
   g_atomic_pointer_add (&gegl_scratch_total, +size);
 
-  block = g_malloc ((GEGL_SCRATCH_ALIGNMENT - 1) +
-                    sizeof (GeglScratchBlock)    +
+  block = g_malloc ((GEGL_ALIGNMENT - 1)           +
+                    GEGL_SCRATCH_BLOCK_DATA_OFFSET +
                     size);
 
-  offset  = GEGL_SCRATCH_ALIGNMENT -
-            ((guintptr) block) % GEGL_SCRATCH_ALIGNMENT;
-  offset %= GEGL_SCRATCH_ALIGNMENT;
+  offset = GEGL_ALIGN ((guintptr) block) - (guintptr) block;
 
   block = (GeglScratchBlock *) ((guint8 *) block + offset);
 
-  block->header.context = context;
-  block->header.size    = size;
-  block->header.offset  = offset;
+  block->context = context;
+  block->size    = size;
+  block->offset  = offset;
 
   return block;
 }
@@ -135,9 +123,22 @@ gegl_scratch_block_new (GeglScratchContext *context,
 void
 gegl_scratch_block_free (GeglScratchBlock *block)
 {
-  g_atomic_pointer_add (&gegl_scratch_total, -block->header.size);
+  g_atomic_pointer_add (&gegl_scratch_total, -block->size);
 
-  g_free ((guint8 *) block - block->header.offset);
+  g_free ((guint8 *) block - block->offset);
+}
+
+static inline gpointer
+gegl_scratch_block_to_data (GeglScratchBlock *block)
+{
+  return (guint8 *) block + GEGL_SCRATCH_BLOCK_DATA_OFFSET;
+}
+
+static inline GeglScratchBlock *
+gegl_scratch_block_from_data (gpointer data)
+{
+  return (GeglScratchBlock *) ((guint8 *) data -
+                               GEGL_SCRATCH_BLOCK_DATA_OFFSET);
 }
 
 
@@ -154,7 +155,7 @@ gegl_scratch_alloc (gsize size)
       block = gegl_scratch_block_new ((GeglScratchContext *) &void_context,
                                       size);
 
-      return block->data;
+      return gegl_scratch_block_to_data (block);
     }
 
   context = g_private_get (&gegl_scratch_context);
@@ -170,15 +171,15 @@ gegl_scratch_alloc (gsize size)
     {
       block = context->blocks[--context->n_available_blocks];
 
-      if (G_LIKELY (size <= block->header.size))
-        return block->data;
+      if (G_LIKELY (size <= block->size))
+        return gegl_scratch_block_to_data (block);
 
       gegl_scratch_block_free (block);
     }
 
   block = gegl_scratch_block_new (context, size);
 
-  return block->data;
+  return gegl_scratch_block_to_data (block);
 }
 
 gpointer
@@ -200,10 +201,9 @@ gegl_scratch_free (gpointer ptr)
   GeglScratchBlock   *block;
 
   context = g_private_get (&gegl_scratch_context);
-  block   = (GeglScratchBlock *) ((guint8 *) ptr -
-                                  GEGL_SCRATCH_BLOCK_DATA_OFFSET);
+  block   = gegl_scratch_block_from_data (ptr);
 
-  if (G_UNLIKELY (block->header.context != context))
+  if (G_UNLIKELY (block->context != context))
     {
       gegl_scratch_block_free (block);
 
