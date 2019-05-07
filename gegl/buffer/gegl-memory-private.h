@@ -18,7 +18,11 @@
 #define __GEGL_MEMORY_PRIVATE_H__
 
 
-#define GEGL_ALIGN 16
+#define GEGL_ALIGNMENT 16
+#define GEGL_ALIGN(n)             \
+  (((n) + (GEGL_ALIGNMENT - 1)) / \
+   GEGL_ALIGNMENT               * \
+   GEGL_ALIGNMENT)
 
 
 #endif  /* __GEGL_MEMORY_PRIVATE_H__ */

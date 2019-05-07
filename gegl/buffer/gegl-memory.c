@@ -24,7 +24,7 @@
 #include "gegl-memory-private.h"
 
 
-G_STATIC_ASSERT (GEGL_ALIGN <= G_MAXUINT8);
+G_STATIC_ASSERT (GEGL_ALIGNMENT <= G_MAXUINT8);
 
 
 /*  public functions  */
@@ -39,8 +39,8 @@ gegl_malloc (gsize size)
   gchar *ret;
   gint   offset;
 
-  mem    = g_malloc (size + GEGL_ALIGN);
-  offset = GEGL_ALIGN - GPOINTER_TO_UINT(mem) % GEGL_ALIGN;
+  mem    = g_malloc (size + GEGL_ALIGNMENT);
+  offset = GEGL_ALIGNMENT - GPOINTER_TO_UINT(mem) % GEGL_ALIGNMENT;
   ret    = (gpointer)(mem + offset);
 
   /* store the offset to the real malloc one byte in front of this malloc */

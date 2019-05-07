@@ -27,7 +27,7 @@
 #include "gegl-scratch-private.h"
 
 
-#define GEGL_SCRATCH_ALIGNMENT         GEGL_ALIGN
+#define GEGL_SCRATCH_ALIGNMENT         GEGL_ALIGNMENT
 #define GEGL_SCRATCH_MAX_BLOCK_SIZE    (1 << 20)
 #define GEGL_SCRATCH_BLOCK_DATA_OFFSET ((sizeof (GeglScratchBlockHeader) + \
                                          (GEGL_SCRATCH_ALIGNMENT - 1))   / \
