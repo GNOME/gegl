@@ -28,15 +28,14 @@
 
 #include "gegl-buffer.h"
 #include "gegl-tile.h"
+#include "gegl-tile-alloc.h"
 #include "gegl-buffer-private.h"
 #include "gegl-tile-storage.h"
 
-/* the offset at which the tile data begins, when it shares the same buffer as
- * n_clones.  use 16 bytes, which is the alignment we use for gegl_malloc(), so
- * that the tile data is similarly aligned.
+/* the offset of the n_clones array, relative to the tile data, when it shares
+ * the same buffer as the data.
  */
-#define INLINE_N_ELEMENTS_DATA_OFFSET 16
-G_STATIC_ASSERT (INLINE_N_ELEMENTS_DATA_OFFSET >= 2 * sizeof (gint));
+#define INLINE_N_CLONES_OFFSET (2 * sizeof (gint))
 
 enum
 {
@@ -51,8 +50,7 @@ GeglTile *gegl_tile_ref (GeglTile *tile)
   return tile;
 }
 
-static int free_n_clones_directly;
-static int free_data_directly;
+static const gint free_data_directly;
 
 void gegl_tile_unref (GeglTile *tile)
 {
@@ -67,26 +65,20 @@ void gegl_tile_unref (GeglTile *tile)
 
   if (g_atomic_int_dec_and_test (gegl_tile_n_clones (tile)))
     { /* no clones */
-      if (tile->destroy_notify == (void*)&free_n_clones_directly)
+      if (tile->destroy_notify == (gpointer) &free_data_directly)
         {
-          /* tile->n_clones and tile->data share the same buffer,
-           * with tile->n_clones at the front, so free the buffer
-           * through it.
+          /* tile->data and tile->n_clones share the same buffer,
+           * which is freed through tile->data.
            */
-          gegl_free (tile->n_clones);
+          gegl_tile_free (tile->data);
         }
       else
         {
-          /* tile->n_clones and tile->data are unrelated, so free them
+          /* tile->data and tile->n_clones are unrelated, so free them
            * separately.
            */
-          if (tile->data)
-            {
-              if (tile->destroy_notify == (void*)&free_data_directly)
-                gegl_free (tile->data);
-              else if (tile->destroy_notify)
-                tile->destroy_notify (tile->destroy_notify_data);
-            }
+          if (tile->data && tile->destroy_notify)
+            tile->destroy_notify (tile->destroy_notify_data);
 
           g_slice_free1 (2 * sizeof (gint), tile->n_clones);
         }
@@ -120,7 +112,7 @@ gegl_tile_new_bare (void)
   *gegl_tile_n_clones (tile)        = 1;
   *gegl_tile_n_cached_clones (tile) = 0;
 
-  tile->destroy_notify = (void*)&free_data_directly;
+  tile->destroy_notify      = NULL;
   tile->destroy_notify_data = NULL;
 
   return tile;
@@ -177,15 +169,18 @@ gegl_tile_new (gint size)
 {
   GeglTile *tile = gegl_tile_new_bare_internal ();
 
-  /* allocate a single buffer for both tile->n_clones and tile->data */
-  tile->n_clones                    = gegl_malloc (INLINE_N_ELEMENTS_DATA_OFFSET + size);
+  tile->data = gegl_tile_alloc (size);
+  tile->size = size;
+
+  /* gegl_tile_alloc() guarantees that there's enough room for the n_clones
+   * array in front of the data buffer.
+   */
+  tile->n_clones                    = (gint *) (tile->data -
+                                                INLINE_N_CLONES_OFFSET);
   *gegl_tile_n_clones (tile)        = 1;
   *gegl_tile_n_cached_clones (tile) = 0;
 
-  tile->data      = (guchar *) tile->n_clones + INLINE_N_ELEMENTS_DATA_OFFSET;
-  tile->size      = size;
-
-  tile->destroy_notify = (void*)&free_n_clones_directly;
+  tile->destroy_notify      = (gpointer) &free_data_directly;
   tile->destroy_notify_data = NULL;
 
   return tile;
@@ -241,8 +236,7 @@ gegl_tile_unclone (GeglTile *tile)
               goto end;
             }
 
-          tile->n_clones = gegl_malloc (INLINE_N_ELEMENTS_DATA_OFFSET +
-                                        tile->size);
+          tile->data = gegl_tile_alloc (tile->size);
         }
       else if (tile->is_zero_tile)
         {
@@ -258,40 +252,36 @@ gegl_tile_unclone (GeglTile *tile)
 
               goto end;
             }
-          // XXX : should not use aligned calloc
-          tile->n_clones     = gegl_calloc (INLINE_N_ELEMENTS_DATA_OFFSET +
-                                            tile->size, 1);
+
+          tile->data = gegl_tile_alloc0 (tile->size);
         }
       else
         {
           guchar *buf;
 
-          buf = gegl_malloc (INLINE_N_ELEMENTS_DATA_OFFSET + tile->size);
-          memcpy (buf + INLINE_N_ELEMENTS_DATA_OFFSET, tile->data, tile->size);
+          buf = gegl_tile_alloc (tile->size);
+          memcpy (buf, tile->data, tile->size);
 
           if (g_atomic_int_dec_and_test (gegl_tile_n_clones (tile)))
             {
               /* someone else uncloned the tile in the meantime, and we're now
                * the last copy; bail.
                */
-              gegl_free (buf);
+              gegl_tile_free (buf);
               *gegl_tile_n_clones (tile)        = 1;
               *gegl_tile_n_cached_clones (tile) = cached;
 
               goto end;
             }
 
-          tile->n_clones = (gint *) buf;
+          tile->data = buf;
         }
 
+      tile->n_clones = (gint *) (tile->data - INLINE_N_CLONES_OFFSET);
       *gegl_tile_n_clones (tile)        = 1;
       *gegl_tile_n_cached_clones (tile) = cached;
 
-      g_atomic_pointer_set (&tile->data,
-                            (guchar *) tile->n_clones +
-                            INLINE_N_ELEMENTS_DATA_OFFSET);
-
-      tile->destroy_notify      = (void*)&free_n_clones_directly;
+      tile->destroy_notify      = (gpointer) &free_data_directly;
       tile->destroy_notify_data = NULL;
 
 end:
