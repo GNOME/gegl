@@ -36,6 +36,8 @@
 #include "gegl-buffer-private.h"
 #include "gegl-buffer-swap.h"
 #include "gegl-compression.h"
+#include "gegl-scratch.h"
+#include "gegl-tile-alloc.h"
 #include "gegl-tile-backend.h"
 #include "gegl-tile-backend-swap.h"
 #include "gegl-debug.h"
@@ -298,7 +300,7 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
                       bpp = babl_format_get_bytes_per_pixel (format);
 
                       max_compressed_size = tile_size * COMPRESSION_MAX_RATIO;
-                      compressed          = g_malloc (max_compressed_size);
+                      compressed          = gegl_tile_alloc (tile_size);
 
                       success = gegl_compression_compress (
                         compression, format,
@@ -332,7 +334,7 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
                           if (params)
                             params->block->compression = NULL;
 
-                          g_free (compressed);
+                          gegl_tile_free (compressed);
                         }
 
                       gegl_tile_backend_swap_block_unref (block,
@@ -542,7 +544,7 @@ gegl_tile_backend_swap_free_data (ThreadParams *params)
         {
           queued_total -= params->compressed_size;
 
-          g_free (params->compressed);
+          gegl_tile_free (params->compressed);
           params->compressed = NULL;
         }
 
@@ -799,7 +801,7 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
   gegl_tile_mark_as_stored (tile);
 
   if (entry->block->compression)
-    data = g_malloc (entry->block->size);
+    data = gegl_scratch_alloc (entry->block->size);
   else
     data = dest;
 
@@ -836,7 +838,7 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
           g_mutex_unlock (&read_mutex);
 
           if (entry->block->compression)
-            g_free (data);
+            gegl_scratch_free (data);
 
           g_message ("unable to read tile data from swap: "
                      "%s (%d/%d bytes read) %s",
@@ -864,7 +866,7 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
           g_warning ("failed to decompress tile");
         }
 
-      g_free (data);
+      gegl_scratch_free (data);
     }
 
   GEGL_NOTE(GEGL_DEBUG_TILE_BACKEND, "read entry %i, %i, %i from %i", entry->x, entry->y, entry->z, (gint)offset);
