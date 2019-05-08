@@ -704,7 +704,6 @@ process (GeglOperation       *operation,
           gegl_audio_fragment_set_sample_rate (o->audio, p->audio_stream->codecpar->sample_rate);
           gegl_audio_fragment_set_channels    (o->audio, 2);
           gegl_audio_fragment_set_channel_layout    (o->audio, GEGL_CH_LAYOUT_STEREO);
-
           samples_per_frame (o->frame,
                o->frame_rate, p->audio_stream->codecpar->sample_rate,
                &sample_count,
@@ -712,7 +711,18 @@ process (GeglOperation       *operation,
 
           gegl_audio_fragment_set_sample_count (o->audio, sample_count);
 
-          decode_audio (operation, p->prevpts, p->prevpts + 5.0);
+          if (p->video_stream != NULL)
+          {
+            /* if we got video stream
+               request audio to be decoded between prevpts and 5s into future*/
+            decode_audio (operation, p->prevpts, p->prevpts + 5.0);
+
+          }
+          else
+          {
+            decode_audio (operation, o->frame / o->frame_rate, o->frame / o->frame_rate + 5);
+          }
+
           {
             int i;
             for (i = 0; i < sample_count; i++)
