@@ -61,6 +61,7 @@ gegl_babl_format_linear_float (const Babl *format)
   else if (babl_model_is (model, "YA") ||
            babl_model_is (model, "Y'A") ||
            babl_model_is (model, "Y~A") ||
+           babl_model_is (model, "Y~aA") ||
            babl_model_is (model, "YaA") ||
            babl_model_is (model, "Y'aA"))
   {
@@ -119,6 +120,7 @@ gegl_babl_format_perceptual_float (const Babl *format)
   else if (babl_model_is (model, "YA") ||
            babl_model_is (model, "Y'A") ||
            babl_model_is (model, "Y~A") ||
+           babl_model_is (model, "Y~aA") ||
            babl_model_is (model, "YaA") ||
            babl_model_is (model, "Y'aA"))
   {
@@ -177,6 +179,7 @@ gegl_babl_format_nonlinear_float (const Babl *format)
   else if (babl_model_is (model, "YA") ||
            babl_model_is (model, "Y'A") ||
            babl_model_is (model, "Y~A") ||
+           babl_model_is (model, "Y~aA") ||
            babl_model_is (model, "YaA") ||
            babl_model_is (model, "Y'aA"))
   {
@@ -232,6 +235,7 @@ gegl_babl_format_premultiplied_linear_float (const Babl *format)
       babl_model_is (model, "YA") ||
       babl_model_is (model, "Y'A") ||
       babl_model_is (model, "Y~A") ||
+      babl_model_is (model, "Y~aA") ||
       babl_model_is (model, "YaA") ||
       babl_model_is (model, "Y'aA"))
   {
@@ -285,6 +289,7 @@ gegl_babl_format_premultiplied_perceptual_float (const Babl *format)
       babl_model_is (model, "YA") ||
       babl_model_is (model, "Y'A") ||
       babl_model_is (model, "Y~A") ||
+      babl_model_is (model, "Y~aA") ||
       babl_model_is (model, "YaA") ||
       babl_model_is (model, "Y'aA"))
   {
