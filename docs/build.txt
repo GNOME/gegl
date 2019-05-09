@@ -9,11 +9,11 @@ The latest development snapshot, and eventually stable versions of GEGL are
 available at http://download.gimp.org/pub/gegl/[].
 
 The current code under development can be
-http://git.gnome.org/cgit/gegl/tree[browsed online] and cloned from
+https://gitlab.gnome.org/GNOME/gegl[browsed online] and cloned from
 GNOME git using:
 
- $ git clone git://git.gnome.org/babl
- $ git clone git://git.gnome.org/gegl
+ $ git clone https://gitlab.gnome.org/gnome/babl.git/
+ $ git clone https://gitlab.gnome.org/gnome/gegl.git/
 
 Dependencies
 ~~~~~~~~~~~~
