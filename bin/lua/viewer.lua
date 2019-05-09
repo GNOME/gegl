@@ -440,8 +440,6 @@ mrg:add_binding("alt-right", NULL, "next image",
 mrg:add_binding("alt-left", NULL, "rev image",
   function() ffi.C.argvs_eval ("prev") end)
 
-mrg:add_binding("space", NULL, "toggle playing",
-  function() ffi.C.argvs_eval ("toggle playing") end)
 
 mrg:add_binding("control-m", NULL, "toggle mipmap",
   function() ffi.C.argvs_eval ("toggle mipmap") end)
@@ -453,6 +451,9 @@ mrg:add_binding("control-delete", NULL, "discard",
   function() ffi.C.argvs_eval ("discard") end)
 
 if o.commandline[0] == 0 then
+  mrg:add_binding("space", NULL, "toggle playing",
+    function() ffi.C.argvs_eval ("toggle playing") end)
+
   mrg:add_binding("1", NULL, "give one star",
     function() ffi.C.argvs_eval ("star 1") end)
   mrg:add_binding("2", NULL, "give two stars",

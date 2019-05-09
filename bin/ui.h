@@ -146,6 +146,7 @@ struct _GeState {
   GeglNode      *decode_load;
   GeglNode      *decode_store;
   int            playing;
+  int            loop_current;
   double         pos;
   double         duration;
   double         start;

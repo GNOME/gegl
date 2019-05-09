@@ -440,6 +440,7 @@ Setting settings[]=
   STRING_PROP_RO(src_path, "path of current document"),
   STRING_PROP_RO(chain_path, "path of current document"),
   INT_PROP(playing, "wheter we are playing or not set to 0 for pause 1 for playing"),
+  INT_PROP(loop_current, "wheter we are looping current instead of going to next"),
   STRING_PROP_RO(chain_path, "chain path will be different from path if current path is an immutable source image itself or same as path if it is a gegl chain directly"),
   STRING_PROP_RO(src_path, "source path the immutable source image currently being edited"),
 
@@ -1085,13 +1086,25 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   return 0;
 }
 
-int cmd_apos (COMMAND_ARGS); /* "apos", 1, "<>", "set the animation time"*/
+int cmd_apos (COMMAND_ARGS); /* "apos", 1, "<>", "set the animation time, this is time relative to clip, meaning 0.0 is first frame of clips timeline."*/
 int
 cmd_apos (COMMAND_ARGS)
 {
   GeState *o = global_state;
   o->pos = g_strtod (argv[1], NULL);
   gegl_node_set_time (o->sink, o->pos + o->start);
+
+  if (o->is_video)
+  {
+    double fps = 0.0;
+    gint frames = 0;
+    gint frame = 0;
+    gegl_node_get (o->source, "frame-rate", &fps, "frames", &frames, NULL);
+
+    frame = (o->pos + o->start) * fps;
+    gegl_node_set (o->source, "frame", frame, NULL);
+  }
+
   return 0;
 }
 
@@ -4352,7 +4365,12 @@ static void iterate_frame (GeState *o)
 
     if (o->pos > o->duration)
     {
-       argvs_eval ("next");
+       if (o->loop_current)
+         {
+           argvs_eval ("apos 0");
+         }
+       else
+         argvs_eval ("next");
     }
     else
     {
@@ -5595,7 +5613,7 @@ static void load_path_inner (GeState *o,
 
   o->start = o->end = 0.0;
   o->duration = -1;
-  //if (o->duration < 0)
+  if (o->duration < 0)
   {
     double start = meta_get_attribute_float (o, NULL, o->entry_no, "start");
     double end   = meta_get_attribute_float (o, NULL, o->entry_no, "end");
@@ -5667,6 +5685,20 @@ static void load_path_inner (GeState *o,
         o->duration = frames / fps;
     }
 
+
+    if (o->duration > 0)
+    {
+      double fps = 0.0;
+      gint frames = 0;
+      gint frame = 0;
+      gegl_node_process (o->source);
+      gegl_node_get (o->source, "frame-rate", &fps, "frames", &frames, NULL);
+
+      frame = o->start * fps;
+      gegl_node_set (o->source, "frame", frame, NULL);
+    }
+
+
   }
   else
   {
@@ -5697,6 +5729,7 @@ static void load_path_inner (GeState *o,
         {
           o->gegl = gegl_node_new_from_serialized (meta, containing_path);
           gegl_node_set_time (o->gegl, o->start);
+
         }
       g_free (containing_path);
       o->sink = o->gegl;
