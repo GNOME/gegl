@@ -1065,11 +1065,17 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   }
 
   mrg_main (mrg);
-
-
   has_quit = 1;
   if (renderer == GEGL_RENDERER_THREAD)
     g_thread_join (o->renderer_thread);
+
+#ifdef HAVE_LUA
+  /* manually run lua garbage collection before tearing down GEGL */
+  if(L)
+  {
+    lua_gc(L, LUA_GCCOLLECT, 0);
+  }
+#endif
 
   g_object_unref (o);
 
