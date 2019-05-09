@@ -1065,6 +1065,8 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   }
 
   mrg_main (mrg);
+
+
   has_quit = 1;
   if (renderer == GEGL_RENDERER_THREAD)
     g_thread_join (o->renderer_thread);
@@ -1083,7 +1085,7 @@ cmd_apos (COMMAND_ARGS)
 {
   GeState *o = global_state;
   o->pos = g_strtod (argv[1], NULL);
-  gegl_node_set_time (o->sink, o->pos);
+  gegl_node_set_time (o->sink, o->pos + o->start);
   return 0;
 }
 
@@ -4334,13 +4336,12 @@ static void iterate_frame (GeState *o)
       o->pos +=  delta/1000.0;
 
 
-    if (frame_accum > 1000 / 25) // 25fps
+      if (frame_accum > 1000 / 25) // 25fps
       {
-        gegl_node_set_time (o->sink, o->pos);
+        gegl_node_set_time (o->sink, o->pos + o->start);
         frame_accum = 0;
       }
-   frame_accum += delta;
-
+      frame_accum += delta;
     }
 
     if (o->pos > o->duration)
@@ -4349,7 +4350,7 @@ static void iterate_frame (GeState *o)
     }
     else
     {
-       fprintf (stderr, "%.3f/%.3f %f%%\n", o->pos, o->duration, 100.0*(o->pos/o->duration ));
+       //fprintf (stderr, "%.3f/%.3f %.3f %f%%\n", o->pos, o->duration, o->end, 100.0*(o->pos/o->duration ));
     }
 
 
@@ -5586,11 +5587,26 @@ static void load_path_inner (GeState *o,
     o->dir_scale = 1.0;
   o->rev = 0;
 
-  o->duration = meta_get_attribute_float (o, NULL, o->entry_no, "duration");
+  o->start = o->end = 0.0;
+  o->duration = -1;
+  //if (o->duration < 0)
+  {
+    double start = meta_get_attribute_float (o, NULL, o->entry_no, "start");
+    double end   = meta_get_attribute_float (o, NULL, o->entry_no, "end");
+    if (start >= 0 && end >= 0)
+    {
+      o->start = start;
+      o->end = end;
+      o->duration = o->end - o->start;
+    }
+  }
   if (o->duration < 0)
-    o->duration = o->slide_pause;
+  {
+    o->duration = meta_get_attribute_float (o, NULL, o->entry_no, "duration");
+    o->end = o->duration;
+  }
+  //if (o->duration < 0)
 
-  o->pos = 0.0;
   o->is_video = 0;
   o->prev_frame_played = 0;
   o->thumbbar_pan_x = 0;
@@ -5634,6 +5650,17 @@ static void load_path_inner (GeState *o,
     o->source = gegl_node_new_child (o->gegl,
          "operation", "gegl:ff-load", "path", path, NULL);
     gegl_node_link_many (o->source, o->sink, NULL);
+
+    if (o->duration < 0)
+    {
+      double fps = 0.0;
+      gint frames = 0;
+      gegl_node_process (o->source);
+      gegl_node_get (o->source, "frame-rate", &fps, "frames", &frames, NULL);
+      if (fps > 0.0 && frames > 0)
+        o->duration = frames / fps;
+    }
+
   }
   else
   {
@@ -5663,7 +5690,7 @@ static void load_path_inner (GeState *o,
       else
         {
           o->gegl = gegl_node_new_from_serialized (meta, containing_path);
-          gegl_node_set_time (o->gegl, 0.0);
+          gegl_node_set_time (o->gegl, o->start);
         }
       g_free (containing_path);
       o->sink = o->gegl;
@@ -5727,13 +5754,18 @@ static void load_path_inner (GeState *o,
   }
   }
 
+  if (o->duration < 0)
+  {
+    o->duration = o->slide_pause;
+    o->end = o->duration;
+  }
+
   if (o->ops)
   {
     GeglNode *ret_sink = NULL;
     GError *error = (void*)(&ret_sink);
 
     char *containing_path = get_path_parent (path);
-
 
     gegl_create_chain_argv (o->ops,
                     gegl_node_get_producer (o->sink, "input", NULL),
@@ -5751,6 +5783,7 @@ static void load_path_inner (GeState *o,
       exit(0);
     }
   }
+  o->pos = 0.0;
 
   activate_sink_producer (o);
 

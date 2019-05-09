@@ -341,8 +341,19 @@ if 1 ~= 0 then
 
   cr:rectangle(height * .1 , height * .9, width - height * .2, height *.1)
   mrg:listen(Mrg.DRAG, function(event)
+
       o.pos = (event.x - height *.15) / (width - height * .3) * frames
-      sink:set_time(o.pos)
+
+      sink:set_time(o.pos + o.start)
+      if o.is_video ~= 0 then
+         source = GObject.Object(STATE).source
+         local frames = source:get_property('frames').value
+         local pos = (event.x - height *.15) / (width - height * .3)
+    source:set_property('frame',
+       GObject.Value(GObject.Type.INT,
+            math.floor(pos * frames)
+    ))
+      end
       event:stop_propagate()
   end)
   cr:new_path()
@@ -366,7 +377,8 @@ function draw_thumb_bar()
   cr:set_source_rgba(1,1,1,.1)
   cr:rectangle(0, mrg:height()*0.8, mrg:width(), mrg:height()*0.2)
   mrg:listen(Mrg.MOTION, function(e)
-    print('a') end)
+   -- print('a')
+  end)
   cr:fill()
   mrg:print("thumbbar" .. o:item_no() .. '' .. o:item_path())
 end
@@ -428,7 +440,7 @@ mrg:add_binding("alt-right", NULL, "next image",
 mrg:add_binding("alt-left", NULL, "rev image",
   function() ffi.C.argvs_eval ("prev") end)
 
-mrg:add_binding("control-s", NULL, "toggle playing",
+mrg:add_binding("space", NULL, "toggle playing",
   function() ffi.C.argvs_eval ("toggle playing") end)
 
 mrg:add_binding("control-m", NULL, "toggle mipmap",
@@ -488,6 +500,6 @@ end
 
 cr:restore()
 
-if o.playing ~= 0 then
-  print 'o'
-end
+--if o.playing ~= 0 then
+ --  print 'o'
+--end

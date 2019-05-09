@@ -148,6 +148,8 @@ struct _GeState {
   int            playing;
   double         pos;
   double         duration;
+  double         start;
+  double         end;
   int            color_managed_display;
 
   int            is_video;
