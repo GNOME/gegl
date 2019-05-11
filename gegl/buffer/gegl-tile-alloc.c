@@ -112,8 +112,8 @@ gegl_tile_log2i (guint n)
 static gint
 gegl_tile_log2i (guint n)
 {
-  guint result = 0;
-  gint  i;
+  gint result = 0;
+  gint i;
 
   for (i = 8 * sizeof (guint) / 2; i; i /= 2)
     {
@@ -143,7 +143,7 @@ gegl_tile_block_new (GeglTileBlock * volatile *block_ptr,
   gsize            buffer_size;
   gint             i;
 
-  buffer_size = GEGL_ALIGNMENT + GEGL_ALIGN (size);
+  buffer_size = GEGL_TILE_BUFFER_DATA_OFFSET + GEGL_ALIGN (size);
 
   block_size  = floor (gegl_buffer_config ()->tile_cache_size *
                        GEGL_TILE_BLOCK_SIZE_RATIO);
@@ -374,9 +374,9 @@ gegl_tile_free (gpointer ptr)
     }
   else
     {
-      GeglTileBuffer **next = gegl_tile_buffer_to_data (buffer);
+      GeglTileBuffer **next_buffer = gegl_tile_buffer_to_data (buffer);
 
-      *next = block->head;
+      *next_buffer = block->head;
 
       if (! block->head)
         {
