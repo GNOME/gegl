@@ -25,7 +25,8 @@ G_BEGIN_DECLS
 typedef enum GeglSerializeFlag {
   GEGL_SERIALIZE_TRIM_DEFAULTS = (1<<0),
   GEGL_SERIALIZE_VERSION       = (1<<1),
-  GEGL_SERIALIZE_INDENT        = (1<<2)
+  GEGL_SERIALIZE_INDENT        = (1<<2),
+  GEGL_SERIALIZE_BAKE_ANIM     = (1<<3),
 } GeglSerializeFlag;
 
 /**

@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "property-types/gegl-paramspecs.h"
+#include "property-types/gegl-audio-fragment.h"
 
 #ifdef G_OS_WIN32
 #include <direct.h>
@@ -860,6 +861,7 @@ gegl_serialize2 (GeglNode         *start,
 {
   char *ret = NULL;
   gboolean trim_defaults = flags & GEGL_SERIALIZE_TRIM_DEFAULTS;
+  gboolean bake_anim = flags & GEGL_SERIALIZE_BAKE_ANIM;
   GeglNode *iter;
 
   GString *str = g_string_new ("");
@@ -955,7 +957,8 @@ gegl_serialize2 (GeglNode         *start,
                 anim_quark = g_quark_from_string (tmpbuf);
                 sprintf (tmpbuf, "%s-rel", property_name);
                 rel_quark = g_quark_from_string (tmpbuf);
-                anim_path = g_object_get_qdata (G_OBJECT (iter), anim_quark);
+                if (!bake_anim)
+                  anim_path = g_object_get_qdata (G_OBJECT (iter), anim_quark);
                 rel_orig = g_object_get_qdata (G_OBJECT (iter), rel_quark);
 
                 if (property_type == G_TYPE_FLOAT)
@@ -1166,6 +1169,10 @@ gegl_serialize2 (GeglNode         *start,
                                             value);
                         printed = TRUE;
                       }
+                  }
+                else if (property_type == GEGL_TYPE_AUDIO_FRAGMENT)
+                  {
+                    /* ignore */
                   }
                 else
                   {

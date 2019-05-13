@@ -114,7 +114,7 @@ GeglBufferTile * gegl_tile_entry_new (gint x,
 
 /* intializing the header causes the format to be written out
  * as well as a hidden comment after the zero terminated format
- * with additional human readable information about the header.
+ * with additional human readable version of information from the header.
  */
 void gegl_buffer_header_init (GeglBufferHeader *header,
                               gint              tile_width,
