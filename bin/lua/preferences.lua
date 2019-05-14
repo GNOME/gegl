@@ -9,6 +9,24 @@ mrg:set_style("font-size: 6vh");
 
 
 mrg:text_listen(Mrg.PRESS, function(ev)
+  if o.nearest_neighbor ~= 0 then
+    o.nearest_neighbor = 0
+  else
+    o.nearest_neighbor = 1
+  end
+  ev:stop_propagate()
+end)
+mrg:print("nearest neighbour")
+if o.nearest_neighbor ~= 0 then
+  mrg:print(" yes")
+else
+  mrg:print(" no")
+end
+mrg:print("\n")
+mrg:text_listen_done ()
+
+
+mrg:text_listen(Mrg.PRESS, function(ev)
   if Gegl.config().mipmap_rendering then
     Gegl.config().mipmap_rendering = false
   else
