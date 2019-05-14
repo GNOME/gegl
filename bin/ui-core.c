@@ -5515,6 +5515,11 @@ static void gegl_ui (Mrg *mrg, void *data)
           mrg_add_binding (mrg, "shift-left", NULL, NULL, ui_run_command, "prop-editor shift-left");
           mrg_add_binding (mrg, "shift-right", NULL, NULL,ui_run_command, "prop-editor shift-right");
 
+
+          mrg_add_binding (mrg, "`", NULL, NULL,ui_run_command, "keyframe toggle");
+          mrg_add_binding (mrg, "control-k", NULL, NULL,ui_run_command, "keyframe toggle");
+
+
       }
       else
       {
@@ -7001,6 +7006,168 @@ cmd_toggle (COMMAND_ARGS)
     o->loop_current = !o->loop_current;
   }
   queue_draw (o);
+  return 0;
+}
+
+  int cmd_keyframe (COMMAND_ARGS);
+int cmd_keyframe (COMMAND_ARGS) /* "keyframe", 1, "<set|unset|toggle|clear>", "manipulate keyframe"*/
+{
+  GeState *o = global_state;
+  GQuark anim_quark;
+  GeglPath *path;
+  GeglPathItem path_item;
+  char tmpbuf[1024];
+  gdouble clip_pos = o->pos + o->start;
+
+  sprintf (tmpbuf, "%s-anim", o->property_focus);
+  anim_quark = g_quark_from_string (tmpbuf);
+  path = g_object_get_qdata (G_OBJECT (o->active), anim_quark);
+
+  if (!strcmp (argv[1], "set"))
+  {
+    gdouble value;
+    gegl_node_get (o->active, o->property_focus, &value, NULL);
+    if (!path)
+    {
+      path = gegl_path_new ();
+      g_object_set_qdata (G_OBJECT (o->active), anim_quark, path);
+    }
+
+    {
+      int nodes = gegl_path_get_n_nodes (path);
+      int i;
+      int done = 0;
+      GeglPathItem new_item;
+      new_item.type = 'L';
+      new_item.point[0].x = clip_pos;
+      new_item.point[0].y = value;
+
+      for (i = 0; i < nodes && !done; i ++)
+      {
+        GeglPathItem iter_item;
+        gegl_path_get_node (path, i, &iter_item);
+
+        if (fabs (iter_item.point[0].x - clip_pos) < 1.0/30.0)
+        {
+          gegl_path_replace_node (path, i, &new_item);
+          done = 1;
+        }
+        else if (iter_item.point[0].x > clip_pos)
+        {
+          gegl_path_insert_node (path, i-1, &new_item);
+          done = 1;
+        }
+      }
+      if (!done)
+        gegl_path_insert_node (path, -1, &new_item);
+    }
+  }
+  else if (!strcmp (argv[1], "unset"))
+  {
+    if (path)
+    {
+      int nodes = gegl_path_get_n_nodes (path);
+      int i;
+      int done = 0;
+
+      for (i = 0; i < nodes && !done; i ++)
+      {
+        GeglPathItem iter_item;
+        gegl_path_get_node (path, i, &iter_item);
+
+        if (fabs (iter_item.point[0].x - clip_pos) < 1.0/30.0)
+        {
+          int nodes;
+          gegl_path_remove_node (path, i);
+          done = 1;
+
+          nodes = gegl_path_get_n_nodes (path);
+          if (nodes == 0)
+          {
+            g_clear_object (&path);
+            g_object_set_qdata (G_OBJECT (o->active), anim_quark, path);
+          }
+        }
+      }
+    }
+  }
+  else if (!strcmp (argv[1], "toggle"))
+  {
+    /* if no keyframe value for frame or if value is different than configured value, set
+       if value is same as value, unset (and reinterpolate) */
+
+    gdouble value;
+    gegl_node_get (o->active, o->property_focus, &value, NULL);
+    if (!path)
+    {
+      path = gegl_path_new ();
+      g_object_set_qdata (G_OBJECT (o->active), anim_quark, path);
+    }
+
+    {
+      int nodes = gegl_path_get_n_nodes (path);
+      int i;
+      int done = 0;
+      GeglPathItem new_item;
+      new_item.type = 'L';
+      new_item.point[0].x = clip_pos;
+      new_item.point[0].y = value;
+
+      for (i = 0; i < nodes && !done; i ++)
+      {
+        GeglPathItem iter_item;
+        gegl_path_get_node (path, i, &iter_item);
+
+        if (fabs (iter_item.point[0].x - clip_pos) < 1.0/30.0)
+        {
+          if (fabs (iter_item.point[0].y - value) < 0.001)
+          {
+            int nodes;
+            gegl_path_remove_node (path, i);
+            nodes = gegl_path_get_n_nodes (path);
+            if (nodes == 0)
+            {
+              g_clear_object (&path);
+              g_object_set_qdata (G_OBJECT (o->active), anim_quark, path);
+            }
+
+          }
+          else
+          {
+            gegl_path_replace_node (path, i, &new_item);
+          }
+          done = 1;
+        }
+        else if (iter_item.point[0].x > clip_pos)
+        {
+          gegl_path_insert_node (path, i-1, &new_item);
+          done = 1;
+        }
+      }
+      if (!done)
+        gegl_path_insert_node (path, -1, &new_item);
+    }
+
+  }
+  else if (!strcmp (argv[1], "clear"))
+  {
+    g_clear_object (&path);
+    g_object_set_qdata (G_OBJECT (o->active), anim_quark, path);
+  }
+  else if (!strcmp (argv[1], "list"))
+  {
+    if (path)
+    {
+      int nodes = gegl_path_get_n_nodes (path);
+      int i;
+      for (i = 0; i < nodes; i ++)
+      {
+        gegl_path_get_node (path, i, &path_item);
+        printf ("%f %f\n", path_item.point[0].x,
+                           path_item.point[0].y);
+      }
+    }
+  }
   return 0;
 }
 
