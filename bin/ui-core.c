@@ -4512,7 +4512,7 @@ static void iterate_frame (GeState *o)
      int frames = 0;
      int frame_delay = 0;
      gegl_node_get (o->source, "frames", &frames, "frame-delay", &frame_delay, NULL);
-     if (o->prev_ms + frame_delay  < mrg_ms (mrg))
+     if (prev_ms + frame_delay < mrg_ms (mrg))
      {
        int frame_no;
        gegl_node_get (o->source, "frame", &frame_no, NULL);
@@ -4521,8 +4521,7 @@ static void iterate_frame (GeState *o)
        if (frame_no >= frames)
          frame_no = 0;
        gegl_node_set (o->source, "frame", frame_no, NULL);
-       o->prev_ms = mrg_ms (mrg);
-       //queue_draw (o);
+       prev_ms = mrg_ms (mrg);
     }
     mrg_queue_draw (o->mrg, NULL);
    }
@@ -4538,6 +4537,12 @@ static void iterate_frame (GeState *o)
     {
       if (frame_accum > 1000 / o->fps)
       {
+        /*
+         *  this mechanism makes us iterate time-line ahead in increments
+         *  according to fps in real-time when able to keep up, and otherwise
+         *  slowing down increments accordingly while pretending to have
+         *  been realtime
+         */
         set_clip_position (o, o->pos + 1.0 / o->fps);
         frame_accum = frame_accum-1000/o->fps;
       }

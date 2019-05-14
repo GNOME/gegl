@@ -265,6 +265,7 @@ char *get_item_path    (GeState *o);  /* currently selected path */
 char *get_item_path_no (GeState *o, int child_no);
 
 void g_free (void *data);
+void set_clip_position (GeState *o, double position);
 
 ]]
 
@@ -272,6 +273,7 @@ o = ffi.C.app_state()
 mrg = o.mrg
 
 ffi.metatype('GeState', {__index = {
+   set_clip_position = function(...) return ffi.C.set_clip_position(...) end;
    get_key_int = function(...) return ffi.C.meta_get_key_int(...) end;
    items_count = function(...) return ffi.C.ui_items_count(...) end;
    item_no = function(...) return ffi.C.get_item_no(...) end;

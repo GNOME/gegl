@@ -341,19 +341,22 @@ if 1 ~= 0 then
 
   cr:rectangle(height * .1 , height * .9, width - height * .2, height *.1)
   mrg:listen(Mrg.DRAG, function(event)
+      o:set_clip_position((event.x - height *.15) / (width - height * .3) * frames)
+    -- the following commented out lua is deprecated by above, the below
+    -- lua does not do the correct time to fps quantization that set_clip_position does
 
-      o.pos = (event.x - height *.15) / (width - height * .3) * frames
+    --o.pos = (event.x - height *.15) / (width - height * .3) * frames
 
-      sink:set_time(o.pos + o.start)
-      if o.is_video ~= 0 then
-         source = GObject.Object(STATE).source
-         local frames = source:get_property('frames').value
-         local pos = (event.x - height *.15) / (width - height * .3)
-    source:set_property('frame',
-       GObject.Value(GObject.Type.INT,
-            math.floor(pos * frames)
-    ))
-      end
+    --sink:set_time(o.pos + o.start)
+    --if o.is_video ~= 0 then
+    --  source = GObject.Object(STATE).source
+    --   local frames = source:get_property('frames').value
+    --   local pos = (event.x - height *.15) / (width - height * .3)
+    --source:set_property('frame',
+    --   GObject.Value(GObject.Type.INT,
+    --        math.floor(pos * frames)
+    --))
+    --end
       event:stop_propagate()
   end)
   cr:new_path()
