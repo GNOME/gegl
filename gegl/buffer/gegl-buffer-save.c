@@ -89,7 +89,7 @@ static gsize write_block (SaveInfo        *info,
          info->in_holding->next = 0;
 
        ret = write (info->o, info->in_holding, info->in_holding->length);
-	   if (ret == -1)
+       if (ret == -1)
          ret = 0;
        info->offset += ret;
        g_assert (allocated_pos == info->offset);
@@ -177,13 +177,19 @@ gegl_buffer_header_init (GeglBufferHeader *header,
     gchar buf[64] = { 0, };
 
     g_snprintf (buf, 64, "%s%c\n%i×%i %ibpp\n%ix%i\n\n\n\n\n\n\n\n\n",
-          babl_get_name (format), 0,
+          babl_format_get_encoding (format), 0,
           header->tile_width,
           header->tile_height,
           header->bytes_per_pixel,
           (gint)header->width,
           (gint)header->height);
     memcpy ((header->description), buf, 64);
+
+
+    if (strcmp (babl_get_name (format), babl_format_get_encoding (format)))
+    {
+      g_warning ("storing a geglbuffer with non sRGB space, we should store the space in a separate ICC block.");
+    }
   }
 }
 
@@ -310,7 +316,7 @@ gegl_buffer_save (GeglBuffer          *buffer,
   /* save the header */
   {
     ssize_t ret = write (info->o, &info->header, sizeof (GeglBufferHeader));
-	if (ret != -1)
+    if (ret != -1)
       info->offset += ret;
   }
   g_assert (info->offset == info->header.next);
@@ -353,7 +359,7 @@ gegl_buffer_save (GeglBuffer          *buffer,
         g_assert (info->offset == entry->offset);
         {
           ssize_t ret = write (info->o, data, info->tile_size);
-	      if (ret != -1)
+          if (ret != -1)
             info->offset += ret;
         }
         gegl_tile_unref (tile);
