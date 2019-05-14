@@ -456,6 +456,7 @@ Setting settings[]=
   INT_PROP(show_bounding_box, "show bounding box of active node"),
   INT_PROP(show_controls, "show image viewer controls (maybe merge with show-graph and give better name)"),
   INT_PROP(nearest_neighbor, "nearest neighbor"),
+  INT_PROP(frame_cache, "store all rendered frames on disk uncompressed for fast scrubbing"),
   FLOAT_PROP(slide_pause, "display scale factor"),
   FLOAT_PROP(pos, "clip time position"),
   FLOAT_PROP(duration, "clip duration, computed on load of clip"),
@@ -792,7 +793,8 @@ store_index (GeState *state, const char *path);
 
 static void load_path_inner (GeState *o, char *path);
 
-
+gchar *pos_hash (GeState *o);
+static int has_quit = 0;
 
 static gboolean renderer_task (gpointer data)
 {
@@ -800,25 +802,35 @@ static gboolean renderer_task (gpointer data)
   static gdouble progress = 0.0;
   void *old_processor = o->processor;
   GeglBuffer *old_buffer = o->processor_buffer;
+  static char *hash = NULL;
 
-  if (renderer == GEGL_RENDERER_BLIT||
-      renderer == GEGL_RENDERER_BLIT_MIPMAP)
-    o->renderer_state = 4;
+  static GeglAudioFragment *cached_audio = NULL;
 
   switch (o->renderer_state)
   {
     case 0:
+      if (renderer == GEGL_RENDERER_BLIT||
+          renderer == GEGL_RENDERER_BLIT_MIPMAP)
+      {
+         o->renderer_state = 4;
+         break;
+      }
+
       if (renderer_dirty)
       {
         renderer_dirty = 0;
+        if (o->cached_buffer)
+        {
+          g_object_unref (o->cached_buffer);
+          o->cached_buffer = NULL;
+        }
       if (o->processor_node != o->sink)
       {
         o->processor = gegl_node_new_processor (o->sink, NULL);
         o->processor_buffer = g_object_ref (gegl_processor_get_buffer (o->processor));
-        if (old_buffer)
-          g_object_unref (old_buffer);
-        if (old_processor)
-          g_object_unref (old_processor);
+        g_clear_object (&old_buffer);
+        g_clear_object (&old_processor);
+
       if(1){
         GeglRectangle rect = {o->u / o->scale, o->v / o->scale, mrg_width (o->mrg) / o->scale,
                               mrg_height (o->mrg) / o->scale};
@@ -826,28 +838,116 @@ static gboolean renderer_task (gpointer data)
       }
       }
         o->renderer_state = 1;
+        if (hash)
+          g_free (hash);
+        hash = pos_hash (o);
 
+        g_clear_object (&cached_audio);
+
+        //if (o->frame_cache)
+        {
+          char path[1024];
+          sprintf (path, "/tmp/gegl/%s", hash);
+          if (g_file_test (path, G_FILE_TEST_EXISTS))
+          {
+            if (o->cached_buffer)
+              g_object_unref (o->cached_buffer);
+            o->cached_buffer = gegl_buffer_open (path); /* maybe load is faster? */
+            fprintf (stderr, "!");
+            o->renderer_state = 3;
+          }
+          sprintf (path, "/tmp/gegl/%s.pcm", hash);
+          if (g_file_test (path, G_FILE_TEST_EXISTS))
+          {
+             char *contents = NULL;
+             g_file_get_contents (path, &contents, NULL, NULL);
+             if (contents)
+             {
+               gchar *p;
+               GString *word = g_string_new ("");
+               int element_no = 0;
+               int channels = 2;
+               int max_samples = 2000;
+               cached_audio = gegl_audio_fragment_new (44100, 2, 0, 44100);
+               for (p = contents; p==contents || p[-1] != '\0'; p++)
+               {
+                 switch (p[0])
+                 {
+                   case '\0':case ' ':
+                   if (word->len > 0)
+                    {
+                      switch (element_no++)
+                      {
+                        case 0:
+                          gegl_audio_fragment_set_sample_rate (cached_audio, g_strtod (word->str, NULL));
+                          break;
+                        case 1:
+                          channels = g_strtod (word->str, NULL);
+                          gegl_audio_fragment_set_channels (cached_audio, channels);
+                          break;
+                        case 2:
+                          gegl_audio_fragment_set_channel_layout (cached_audio, g_strtod (word->str, NULL));
+                          break;
+                        case 3:
+                          gegl_audio_fragment_set_sample_count (cached_audio, g_strtod (word->str, NULL));
+                          break;
+                        default:
+                          {
+                            int sample_no = element_no - 4;
+                            int channel_no = sample_no % channels;
+                            sample_no/=2;
+                            if (sample_no < max_samples)
+                            cached_audio->data[channel_no][sample_no] = g_strtod (word->str, NULL);
+                          }
+                          break;
+                      }
+                    }
+
+        g_string_assign (word, "");
+        break;
+        default:
+        g_string_append_c (word, p[0]);
+        break;
+      }
+    }
+    g_string_free (word, TRUE);
+
+
+               g_free (contents);
+             }
+          }
+
+        }
       }
       else
         if (thumb_queue)
         {
           o->renderer_state = 4;
+          break;
         }
       else
         g_usleep (4000);
-      break; // fallthrough
+      //break; // fallthrough
     case 1:
-       if (gegl_processor_work (o->processor, &progress))
-       {
-         if (o->renderer_state)
-           o->renderer_state = 1;
-       }
-       else
+       if (o->cached_buffer)
        {
          if (o->renderer_state)
            o->renderer_state = 3;
        }
-      break;
+       else
+       {
+         if (gegl_processor_work (o->processor, &progress))
+         {
+           if (o->renderer_state)
+             o->renderer_state = 1;
+          }
+          else
+          {
+            if (o->renderer_state)
+              o->renderer_state = 3;
+          }
+       }
+       break;
     case 3:
       mrg_gegl_dirty ();
       switch (renderer)
@@ -860,7 +960,12 @@ static gboolean renderer_task (gpointer data)
           g_usleep (4000);
           break;
       }
-      o->renderer_state = 0;
+
+
+      if ((o->frame_cache && !o->cached_buffer) || o->is_video )
+        o->renderer_state = 5;
+      else
+        o->renderer_state = 0;
       break;
     case 4:
 
@@ -908,7 +1013,103 @@ static gboolean renderer_task (gpointer data)
 
       o->renderer_state = 0;
       break;
+
+
+  case 5:
+  if (o->frame_cache && !o->cached_buffer) // store cached render of frame
+  {
+    char path[1024];
+    sprintf (path, "/tmp/gegl/%s", hash);
+    if (!g_file_test (path, G_FILE_TEST_EXISTS))
+      {
+        gegl_buffer_save (o->processor_buffer, path, NULL);
+      }
+    else
+      {
+        fprintf (stderr, "odd cache resave\n");
+      }
+
+
+
   }
+    if (o->is_video)
+    {
+      GeglAudioFragment *audio = NULL;
+      if (cached_audio)
+      {
+        audio = cached_audio;
+        g_object_ref (cached_audio);
+      }
+      else
+      {
+        gegl_node_get (o->source, "audio", &audio, NULL);
+      }
+      if (audio)
+      {
+       int sample_count = gegl_audio_fragment_get_sample_count (audio);
+       if (sample_count > 0)
+       {
+         int i;
+         if (!audio_started)
+         {
+           open_audio (o->mrg, gegl_audio_fragment_get_sample_rate (audio));
+           audio_started = 1;
+         }
+         {
+         uint16_t temp_buf[sample_count * 2];
+         for (i = 0; i < sample_count; i++)
+         {
+           temp_buf[i*2] = audio->data[0][i] * 32767.0 * 0.46;
+           temp_buf[i*2+1] = audio->data[1][i] * 32767.0 * 0.46;
+         }
+         mrg_pcm_queue (o->mrg, (void*)&temp_buf[0], sample_count);
+
+           /* after queing our currently decoded audio frame, we
+              wait until the pcm buffer is nearly ready to play
+              back our content
+            */
+           while (mrg_pcm_get_queued_length (o->mrg) > (1.0/o->fps) * 1.25  )
+              g_usleep (100);
+          }
+
+       }
+       if (audio != cached_audio && o->frame_cache) {
+    int i, c;
+    GString *str = g_string_new ("");
+    int sample_count = gegl_audio_fragment_get_sample_count (audio);
+    int channels = gegl_audio_fragment_get_channels (audio);
+    char path[1024];
+    sprintf (path, "/tmp/gegl/%s.pcm", hash);
+
+    g_string_append_printf (str, "%i %i %i %i",
+                            gegl_audio_fragment_get_sample_rate (audio),
+                            gegl_audio_fragment_get_channels (audio),
+                            gegl_audio_fragment_get_channel_layout (audio),
+                            gegl_audio_fragment_get_sample_count (audio));
+
+       for (i = 0; i < sample_count; i++)
+         for (c = 0; c < channels; c++)
+            g_string_append_printf (str, " %0.5f", audio->data[c][i]);
+
+       g_file_set_contents (path, str->str, -1, NULL);
+       g_string_free (str, TRUE);
+
+       }
+
+       g_object_unref (audio);
+      }
+    }
+    o->renderer_state = 0;
+    break;
+  }
+
+  if (has_quit)
+  {
+    if (hash)
+      g_free (hash);
+     hash = NULL;
+  }
+
   return TRUE;
 }
 
@@ -917,7 +1118,6 @@ static gboolean renderer_idle (Mrg *mrg, gpointer data)
   return renderer_task (data);
 }
 
-static int has_quit = 0;
 static gpointer renderer_thread (gpointer data)
 {
   while (!has_quit)
@@ -1086,25 +1286,28 @@ int mrg_ui_main (int argc, char **argv, char **ops)
   return 0;
 }
 
+static void set_clip_position (GeState *o, double position)
+{
+  position = ceilf(position * o->fps) / o->fps; // quantize position
+
+  o->pos = position;
+  gegl_node_set_time (o->sink, o->pos + o->start);
+
+  if (o->is_video)
+  {
+    gint frame = 0;
+
+    frame = ceilf ((o->pos + o->start) * o->fps);
+    gegl_node_set (o->source, "frame", frame, NULL);
+  }
+}
+
 int cmd_apos (COMMAND_ARGS); /* "apos", 1, "<>", "set the animation time, this is time relative to clip, meaning 0.0 is first frame of clips timeline."*/
 int
 cmd_apos (COMMAND_ARGS)
 {
   GeState *o = global_state;
-  o->pos = g_strtod (argv[1], NULL);
-  gegl_node_set_time (o->sink, o->pos + o->start);
-
-  if (o->is_video)
-  {
-    double fps = 0.0;
-    gint frames = 0;
-    gint frame = 0;
-    gegl_node_get (o->source, "frame-rate", &fps, "frames", &frames, NULL);
-
-    frame = (o->pos + o->start) * fps;
-    gegl_node_set (o->source, "frame", frame, NULL);
-  }
-
+  set_clip_position (o, g_strtod (argv[1], NULL));
   return 0;
 }
 
@@ -1738,7 +1941,7 @@ static int deferred_redraw_action (Mrg *mrg, void *data)
   return 0;
 }
 
-static void deferred_redraw (Mrg *mrg, MrgRectangle *rect)
+static inline void deferred_redraw (Mrg *mrg, MrgRectangle *rect)
 {
   MrgRectangle r; /* copy in call stack of dereference rectangle if pointer
                      is passed in */
@@ -4258,6 +4461,26 @@ static void do_commandline_run (MrgEvent *event, void *data1, void *data2)
   mrg_event_stop_propagate (event);
 }
 
+gchar *pos_hash (GeState *o)
+{
+  GChecksum *hash;
+  char *ret;
+  gchar *frame_recipe;
+  frame_recipe = gegl_serialize (NULL, o->sink, NULL, GEGL_SERIALIZE_BAKE_ANIM);
+  hash = g_checksum_new (G_CHECKSUM_MD5);
+  g_checksum_update (hash, (void*)frame_recipe, -1);
+  g_checksum_update (hash, (void*)o->src_path, -1); /*
+     we add this in to make the identical source-buffer based recipies hash to different results
+     for now this hack doesn't matter since the frame_recipe is unused
+     would be better to rely only on hash of recipe and have recipe be complete thus using real gegl:load
+   */
+  ret = g_strdup (g_checksum_get_string(hash));
+  g_checksum_free (hash);
+  fprintf (stderr, "{%s}\n\n", frame_recipe);
+  g_free (frame_recipe);
+  return ret;
+}
+
 static void iterate_frame (GeState *o)
 {
   Mrg *mrg = o->mrg;
@@ -4285,64 +4508,7 @@ static void iterate_frame (GeState *o)
     }
     mrg_queue_draw (o->mrg, NULL);
    }
-  else if (o->is_video)
-   {
-     int frames = 0;
-     int frame_no;
-     gegl_node_get (o->source, "frame", &frame_no, NULL);
-     frame_no++;
-     gegl_node_get (o->source, "frames", &frames, NULL);
-     if (frame_no >= frames)
-       frame_no = 0;
-     gegl_node_set (o->source, "frame", frame_no, NULL);
-     //queue_draw (o);
-     mrg_queue_draw (o->mrg, NULL);
-    {
-      GeglAudioFragment *audio = NULL;
-      gdouble fps;
-      /* XXX:
-           this currently goes wrong with threaded rendering, since we miss audio frames
-           from the renderer thread, moving this to the render thread would solve that.
-       */
-      gegl_node_get (o->source, "audio", &audio, "frame-rate", &fps, NULL);
-      if (audio)
-      {
-       int sample_count = gegl_audio_fragment_get_sample_count (audio);
-       if (sample_count > 0)
-       {
-         int i;
-         if (!audio_started)
-         {
-           open_audio (mrg, gegl_audio_fragment_get_sample_rate (audio));
-           audio_started = 1;
-         }
-         {
-         uint16_t temp_buf[sample_count * 2];
-         for (i = 0; i < sample_count; i++)
-         {
-           temp_buf[i*2] = audio->data[0][i] * 32767.0 * 0.46;
-           temp_buf[i*2+1] = audio->data[1][i] * 32767.0 * 0.46;
-         }
-
-           mrg_pcm_queue (mrg, (void*)&temp_buf[0], sample_count);
-
-           /* after queing our currently decoded audio frame, we
-              wait until the pcm buffer is nearly ready to play
-              back our content
-            */
-           while (mrg_pcm_get_queued_length (mrg) > (1.0/fps) * 1.25  )
-              g_usleep (100);
-         }
-
-
-         o->prev_frame_played = frame_no;
-         deferred_redraw (mrg, NULL);
-       }
-       g_object_unref (audio);
-      }
-    }
-  }
-
+  else
   {
     static uint32_t frame_accum = 0;
     uint32_t ms = mrg_ms (mrg);
@@ -4352,13 +4518,10 @@ static void iterate_frame (GeState *o)
                         make realtime video playback more wrong, with buffering
                         that already is bad on clip change */
     {
-      o->pos +=  delta/1000.0;
-
-
-      if (frame_accum > 1000 / 25) // 25fps
+      if (frame_accum > 1000 / o->fps)
       {
-        gegl_node_set_time (o->sink, o->pos + o->start);
-        frame_accum = 0;
+        set_clip_position (o, o->pos + 1.0 / o->fps);
+        frame_accum = frame_accum-1000/o->fps;
       }
       frame_accum += delta;
     }
@@ -4374,18 +4537,12 @@ static void iterate_frame (GeState *o)
     }
     else
     {
-       //fprintf (stderr, "%.3f/%.3f %.3f %f%%\n", o->pos, o->duration, o->end, 100.0*(o->pos/o->duration ));
     }
-
-
-    mrg_queue_draw (mrg, NULL);
-
     prev_ms = ms;
+
+  mrg_queue_draw (mrg, NULL);
   }
-
-
 }
-
 
 static void ui_show_bindings (Mrg *mrg, void *data)
 {
@@ -5007,7 +5164,7 @@ resolve_lua_file2 (const char *basepath, gboolean add_gegl, const char *basename
   return NULL;
 }
 #endif
-#ifdef HAVE_LUA 
+#ifdef HAVE_LUA
 static char *
 resolve_lua_file (const char *basename)
 {
@@ -5167,7 +5324,12 @@ static void gegl_ui (Mrg *mrg, void *data)
      case GEGL_RENDERER_IDLE:
        if (o->processor_buffer)
        {
-         GeglBuffer *buffer = g_object_ref (o->processor_buffer);
+         GeglBuffer *buffer;
+
+         if (o->cached_buffer)
+           buffer = g_object_ref (o->cached_buffer);
+         else
+           buffer = g_object_ref (o->processor_buffer);
          mrg_gegl_buffer_blit (mrg,
                                0, 0,
                                mrg_width (mrg), mrg_height (mrg),
@@ -5610,6 +5772,7 @@ static void load_path_inner (GeState *o,
   if (o->dir_scale <= 0.001)
     o->dir_scale = 1.0;
   o->rev = 0;
+  o->fps = 40.0;
 
   o->start = o->end = 0.0;
   o->duration = -1;
@@ -5666,6 +5829,8 @@ static void load_path_inner (GeState *o,
   }
   else if (gegl_str_has_video_suffix (path))
   {
+    gint frames = 0;
+    double fps = 0.0;
     o->is_video = 1;
     o->playing = 1;
     o->gegl = gegl_node_new ();
@@ -5675,12 +5840,13 @@ static void load_path_inner (GeState *o,
          "operation", "gegl:ff-load", "path", path, NULL);
     gegl_node_link_many (o->source, o->sink, NULL);
 
+    gegl_node_process (o->source);
+
+    gegl_node_get (o->source, "frame-rate", &fps, "frames", &frames, NULL);
+    o->fps = fps;
+
     if (o->duration < 0)
     {
-      double fps = 0.0;
-      gint frames = 0;
-      gegl_node_process (o->source);
-      gegl_node_get (o->source, "frame-rate", &fps, "frames", &frames, NULL);
       if (fps > 0.0 && frames > 0)
         o->duration = frames / fps;
     }
@@ -5688,16 +5854,11 @@ static void load_path_inner (GeState *o,
 
     if (o->duration > 0)
     {
-      double fps = 0.0;
-      gint frames = 0;
       gint frame = 0;
-      gegl_node_process (o->source);
-      gegl_node_get (o->source, "frame-rate", &fps, "frames", &frames, NULL);
 
       frame = o->start * fps;
       gegl_node_set (o->source, "frame", frame, NULL);
     }
-
 
   }
   else
@@ -6244,9 +6405,6 @@ static void load_into_buffer (GeState *o, const char *path)
   gegl_node_link_many (load, sink, NULL);
   gegl_node_process (sink);
   g_object_unref (gegl);
-
-
-
 
   {
     GExiv2Orientation orientation = path_get_orientation (path);
@@ -6837,6 +6995,10 @@ cmd_toggle (COMMAND_ARGS)
   else if (!strcmp(argv[1], "playing"))
   {
     o->playing = !o->playing;
+  }
+  else if (!strcmp(argv[1], "loop-current"))
+  {
+    o->loop_current = !o->loop_current;
   }
   queue_draw (o);
   return 0;

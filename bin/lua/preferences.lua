@@ -26,6 +26,9 @@ mrg:print("\n")
 mrg:text_listen_done ()
 
 
+
+
+
 mrg:text_listen(Mrg.PRESS, function(ev)
   if Gegl.config().mipmap_rendering then
     Gegl.config().mipmap_rendering = false
@@ -85,6 +88,25 @@ end
 mrg:text_listen_done ()
 mrg:print("\n")
 
+
+mrg:text_listen(Mrg.PRESS, function(ev)
+  if o.frame_cache ~= 0 then
+    o.frame_cache = 0
+  else
+    o.frame_cache = 1
+  end
+  ev:stop_propagate()
+end)
+mrg:print("frame caching")
+if o.frame_cache ~= 0 then
+  mrg:print(" yes")
+else
+  mrg:print(" no")
+end
+mrg:print("\n")
+mrg:text_listen_done ()
+
+
 mrg:set_style("font-size: 3vh");
 
 mrg:print("threads: " .. Gegl.config().threads .. "\n")
@@ -95,6 +117,7 @@ mrg:print("swap: " .. Gegl.config().swap .. "\n")
 mrg:print("max file backend write queue-size: " .. (Gegl.config().queue_size / 1024/1024 ) .. "mb\n")
 mrg:print("chunk-size: " .. (Gegl.config().chunk_size / 1024 / 1024) .. 'mb\n')
 mrg:print("application-license: " .. Gegl.config().application_license.. "\n")
+
 
 
 

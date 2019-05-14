@@ -97,6 +97,10 @@ struct _GeState {
   GeglNode      *processor_node; /* the node we have a processor for */
   GeglProcessor *processor;
   GeglBuffer    *processor_buffer;
+
+  GeglBuffer    *cached_buffer;
+  int            frame_cache; /* turns on a violent caching regime caching all completed renders */
+
   int            renderer_state;
   int            editing_op_name;
   char           editing_buf[1024];
@@ -109,6 +113,7 @@ struct _GeState {
 
   float          u, v;
   float          scale;
+  float          fps;
 
   int            is_fit;
   int            show_bounding_box;
