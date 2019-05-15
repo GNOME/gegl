@@ -869,9 +869,19 @@ static gboolean renderer_task (gpointer data)
         //if (o->frame_cache)
         /* we always check for cache - this makes the cache kick-in when turned off but cached entries are valid */
         {
-          char path[1024];
+          char *path = NULL;
           hash = pos_hash (o);
-          sprintf (path, "/tmp/gegl/%s.pcm", hash);
+          {
+            char *dir = get_item_dir (o);
+
+            path = g_strdup_printf ("%s/.gegl/frame_cache", dir);
+            g_mkdir_with_parents (path, 0777);
+            g_free (path);
+
+            path = g_strdup_printf ("%s/.gegl/frame_cache/%s.pcm", dir, hash);
+            g_free (dir);
+          }
+
           if (g_file_test (path, G_FILE_TEST_EXISTS))
           {
              char *contents = NULL;
@@ -928,16 +938,25 @@ static gboolean renderer_task (gpointer data)
                g_free (contents);
              }
           }
-          sprintf (path, "/tmp/gegl/%s", hash);
+          g_free (path);
+
+          {
+            char *dir = get_item_dir (o);
+            path = g_strdup_printf ("%s/.gegl/frame_cache/%s", dir, hash);
+            g_free (dir);
+          }
+
           if (g_file_test (path, G_FILE_TEST_EXISTS))
           {
             if (o->cached_buffer)
               g_object_unref (o->cached_buffer);
             o->cached_buffer = gegl_buffer_open (path);
-                                     /* maybe load is faster? */
             o->renderer_state = TASK_RENDER_DONE;
             renderer_task (o);
           }
+          g_free (path);
+
+          /* other loaders, like jpg, png, exr could be added here */
         }
       }
       else
@@ -1057,8 +1076,11 @@ static gboolean renderer_task (gpointer data)
   case TASK_PCM_FRAME_CACHE:
   if (o->frame_cache && !o->cached_buffer) // store cached render of frame
   {
-    char path[1024];
-    sprintf (path, "/tmp/gegl/%s", hash);
+    char *path = NULL;
+    char *dir = get_item_dir (o);
+    path = g_strdup_printf ("%s/.gegl/frame_cache/%s", dir, hash);
+    g_free (dir);
+
     if (!g_file_test (path, G_FILE_TEST_EXISTS))
       {
         gegl_buffer_save (o->processor_buffer, path, NULL);
@@ -1067,9 +1089,7 @@ static gboolean renderer_task (gpointer data)
       {
         fprintf (stderr, "odd cache resave\n");
       }
-
-
-
+    g_free (path);
   }
     if (o->is_video)
     {
@@ -1118,8 +1138,10 @@ static gboolean renderer_task (gpointer data)
          GString *str = g_string_new ("");
          int sample_count = gegl_audio_fragment_get_sample_count (audio);
          int channels = gegl_audio_fragment_get_channels (audio);
-         char path[1024];
-         sprintf (path, "/tmp/gegl/%s.pcm", hash);
+         char *path = NULL;
+         char *dir = get_item_dir (o);
+         path = g_strdup_printf ("%s/.gegl/frame_cache/%s.png", dir, hash);
+         g_free (dir);
     
          g_string_append_printf (str, "%i %i %i %i",
                                  gegl_audio_fragment_get_sample_rate (audio),
@@ -1133,6 +1155,7 @@ static gboolean renderer_task (gpointer data)
     
          g_file_set_contents (path, str->str, -1, NULL);
          g_string_free (str, TRUE);
+         g_free (path);
        }
        g_object_unref (audio);
       }
