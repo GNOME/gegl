@@ -814,6 +814,120 @@ static gchar *pos_hash (GeState *o)
 }
 
 static int has_quit = 0;
+static GeglAudioFragment *cached_audio = NULL;
+
+/* returns 1 if frame was loaded from cache */
+static int frame_cache_check (GeState *o, const char *hash)
+{
+  char *path = NULL;
+  int ret = 0;
+  hash = pos_hash (o);
+  {
+    char *dir = get_item_dir (o);
+
+    path = g_strdup_printf ("%s/.gegl/frame_cache", dir);
+    g_mkdir_with_parents (path, 0777);
+    g_free (path);
+
+    path = g_strdup_printf ("%s/.gegl/frame_cache/%s.pcm", dir, hash);
+    g_free (dir);
+  }
+
+  if (g_file_test (path, G_FILE_TEST_EXISTS))
+  {
+     char *contents = NULL;
+     g_file_get_contents (path, &contents, NULL, NULL);
+     if (contents)
+     {
+       gchar *p;
+       GString *word = g_string_new ("");
+       int element_no = 0;
+       int channels = 2;
+       int max_samples = 2000;
+       cached_audio = gegl_audio_fragment_new (44100, 2, 0, 44100);
+       for (p = contents; p==contents || p[-1] != '\0'; p++)
+       {
+         switch (p[0])
+         {
+           case '\0':case ' ':
+           if (word->len > 0)
+             {
+               switch (element_no++)
+               {
+                 case 0:
+                   gegl_audio_fragment_set_sample_rate (cached_audio, g_strtod (word->str, NULL));
+                   break;
+                 case 1:
+                   channels = g_strtod (word->str, NULL);
+                   gegl_audio_fragment_set_channels (cached_audio, channels);
+                   break;
+                 case 2:
+                   gegl_audio_fragment_set_channel_layout (cached_audio, g_strtod (word->str, NULL));
+                   break;
+                 case 3:
+                   gegl_audio_fragment_set_sample_count (cached_audio, g_strtod (word->str, NULL));
+                   break;
+                 default:
+                   {
+                     int sample_no = element_no - 4;
+                     int channel_no = sample_no % channels;
+                     sample_no/=2;
+                     if (sample_no < max_samples)
+                     cached_audio->data[channel_no][sample_no] = g_strtod (word->str, NULL);
+                   }
+                   break;
+               }
+             }
+             g_string_assign (word, "");
+             break;
+           default:
+             g_string_append_c (word, p[0]);
+             break;
+         }
+       }
+       g_string_free (word, TRUE);
+       g_free (contents);
+     }
+  }
+  g_free (path);
+
+  {
+    char *dir = get_item_dir (o);
+    path = g_strdup_printf ("%s/.gegl/frame_cache/%s", dir, hash);
+    g_free (dir);
+  }
+
+  if (g_file_test (path, G_FILE_TEST_EXISTS))
+  {
+    if (o->cached_buffer)
+      g_object_unref (o->cached_buffer);
+    o->cached_buffer = gegl_buffer_open (path);
+    ret = 1;
+  }
+  g_free (path);
+
+  /* other loaders, like jpg, png, exr could be added here */
+  return ret;
+}
+
+static void frame_cache_store (GeState *o, const char *hash)
+{
+    char *path = NULL;
+    char *dir = get_item_dir (o);
+    path = g_strdup_printf ("%s/.gegl/frame_cache/%s", dir, hash);
+    g_free (dir);
+
+    if (!g_file_test (path, G_FILE_TEST_EXISTS))
+      {
+        gegl_buffer_save (o->processor_buffer, path, NULL);
+      }
+    else
+      {
+        fprintf (stderr, "odd cache resave\n");
+      }
+    g_free (path);
+}
+
 
 static gboolean renderer_task (gpointer data)
 {
@@ -823,7 +937,6 @@ static gboolean renderer_task (gpointer data)
   GeglBuffer *old_buffer = o->processor_buffer;
   static char *hash = NULL;
 
-  static GeglAudioFragment *cached_audio = NULL;
 
 #define TASK_BASE                0
 #define TASK_RENDER              1
@@ -846,19 +959,20 @@ static gboolean renderer_task (gpointer data)
         renderer_dirty = 0;
 
         g_clear_object (&o->cached_buffer);
-      if (o->processor_node != o->sink)
-      {
-        o->processor = gegl_node_new_processor (o->sink, NULL);
-        o->processor_buffer = g_object_ref (gegl_processor_get_buffer (o->processor));
-        g_clear_object (&old_buffer);
-        g_clear_object (&old_processor);
+        if (o->processor_node != o->sink)
+        {
+          o->processor = gegl_node_new_processor (o->sink, NULL);
+          o->processor_buffer = g_object_ref (gegl_processor_get_buffer (o->processor));
+          g_clear_object (&old_buffer);
+          g_clear_object (&old_processor);
 
-      if(1){
-        GeglRectangle rect = {o->u / o->scale, o->v / o->scale, mrg_width (o->mrg) / o->scale,
-                              mrg_height (o->mrg) / o->scale};
-        gegl_processor_set_rectangle (o->processor, &rect);
-      }
-      }
+          if(1)
+          {
+            GeglRectangle rect = {o->u / o->scale, o->v / o->scale, mrg_width (o->mrg) / o->scale,
+                          mrg_height (o->mrg) / o->scale};
+            gegl_processor_set_rectangle (o->processor, &rect);
+          }
+        }
         o->renderer_state = TASK_RENDER;
         if (hash)
           g_free (hash);
@@ -868,95 +982,11 @@ static gboolean renderer_task (gpointer data)
 
         //if (o->frame_cache)
         /* we always check for cache - this makes the cache kick-in when turned off but cached entries are valid */
+
+        if (frame_cache_check (o, hash))
         {
-          char *path = NULL;
-          hash = pos_hash (o);
-          {
-            char *dir = get_item_dir (o);
-
-            path = g_strdup_printf ("%s/.gegl/frame_cache", dir);
-            g_mkdir_with_parents (path, 0777);
-            g_free (path);
-
-            path = g_strdup_printf ("%s/.gegl/frame_cache/%s.pcm", dir, hash);
-            g_free (dir);
-          }
-
-          if (g_file_test (path, G_FILE_TEST_EXISTS))
-          {
-             char *contents = NULL;
-             g_file_get_contents (path, &contents, NULL, NULL);
-             if (contents)
-             {
-               gchar *p;
-               GString *word = g_string_new ("");
-               int element_no = 0;
-               int channels = 2;
-               int max_samples = 2000;
-               cached_audio = gegl_audio_fragment_new (44100, 2, 0, 44100);
-               for (p = contents; p==contents || p[-1] != '\0'; p++)
-               {
-                 switch (p[0])
-                 {
-                   case '\0':case ' ':
-                   if (word->len > 0)
-                     {
-                       switch (element_no++)
-                       {
-                         case 0:
-                           gegl_audio_fragment_set_sample_rate (cached_audio, g_strtod (word->str, NULL));
-                           break;
-                         case 1:
-                           channels = g_strtod (word->str, NULL);
-                           gegl_audio_fragment_set_channels (cached_audio, channels);
-                           break;
-                         case 2:
-                           gegl_audio_fragment_set_channel_layout (cached_audio, g_strtod (word->str, NULL));
-                           break;
-                         case 3:
-                           gegl_audio_fragment_set_sample_count (cached_audio, g_strtod (word->str, NULL));
-                           break;
-                         default:
-                           {
-                             int sample_no = element_no - 4;
-                             int channel_no = sample_no % channels;
-                             sample_no/=2;
-                             if (sample_no < max_samples)
-                             cached_audio->data[channel_no][sample_no] = g_strtod (word->str, NULL);
-                           }
-                           break;
-                       }
-                     }
-                     g_string_assign (word, "");
-                     break;
-                   default:
-                     g_string_append_c (word, p[0]);
-                     break;
-                 }
-               }
-               g_string_free (word, TRUE);
-               g_free (contents);
-             }
-          }
-          g_free (path);
-
-          {
-            char *dir = get_item_dir (o);
-            path = g_strdup_printf ("%s/.gegl/frame_cache/%s", dir, hash);
-            g_free (dir);
-          }
-
-          if (g_file_test (path, G_FILE_TEST_EXISTS))
-          {
-            if (o->cached_buffer)
-              g_object_unref (o->cached_buffer);
-            o->cached_buffer = gegl_buffer_open (path);
-            o->renderer_state = TASK_RENDER_DONE;
-            renderer_task (o);
-          }
-          g_free (path);
-
-          /* other loaders, like jpg, png, exr could be added here */
+          o->renderer_state = TASK_RENDER_DONE;
+          renderer_task (o);
         }
       }
       else
@@ -972,10 +1002,8 @@ static gboolean renderer_task (gpointer data)
         }
       }
 
-
       if (o->renderer_state == TASK_RENDER)
         renderer_task (o); /* recursively invoke next state in same iteration of task */
-
 
       break;
     case TASK_RENDER:
@@ -1074,23 +1102,11 @@ static gboolean renderer_task (gpointer data)
 
 
   case TASK_PCM_FRAME_CACHE:
-  if (o->frame_cache && !o->cached_buffer) // store cached render of frame
-  {
-    char *path = NULL;
-    char *dir = get_item_dir (o);
-    path = g_strdup_printf ("%s/.gegl/frame_cache/%s", dir, hash);
-    g_free (dir);
+    if (o->frame_cache && !o->cached_buffer) // store cached render of frame
+    {
+      frame_cache_store (o, hash);
+    }
 
-    if (!g_file_test (path, G_FILE_TEST_EXISTS))
-      {
-        gegl_buffer_save (o->processor_buffer, path, NULL);
-      }
-    else
-      {
-        fprintf (stderr, "odd cache resave\n");
-      }
-    g_free (path);
-  }
     if (o->is_video)
     {
       GeglAudioFragment *audio = NULL;
