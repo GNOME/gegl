@@ -93,6 +93,7 @@ typedef enum
   ARCH_X86_VENDOR_RISE,
   ARCH_X86_VENDOR_UMC,
   ARCH_X86_VENDOR_SIS,
+  ARCH_X86_VENDOR_HYGON,
   ARCH_X86_VENDOR_UNKNOWN    = 0xff
 } X86Vendor;
 
@@ -181,6 +182,8 @@ arch_get_vendor (void)
 #ifdef ARCH_X86_64
   if (strcmp (id, "AuthenticAMD") == 0)
     return ARCH_X86_VENDOR_AMD;
+  else if (strcmp (id, "HygonGenuine") == 0)
+    return ARCH_X86_VENDOR_HYGON;
   else if (strcmp (id, "GenuineIntel") == 0)
     return ARCH_X86_VENDOR_INTEL;
 #else
@@ -188,6 +191,8 @@ arch_get_vendor (void)
     return ARCH_X86_VENDOR_INTEL;
   else if (strcmp (id, "AuthenticAMD") == 0)
     return ARCH_X86_VENDOR_AMD;
+  else if (strcmp (id, "HygonGenuine") == 0)
+    return ARCH_X86_VENDOR_HYGON;
   else if (strcmp (id, "CentaurHauls") == 0)
     return ARCH_X86_VENDOR_CENTAUR;
   else if (strcmp (id, "CyrixInstead") == 0)
@@ -380,6 +385,7 @@ arch_accel (void)
       break;
 
     case ARCH_X86_VENDOR_AMD:
+    case ARCH_X86_VENDOR_HYGON:
       caps = arch_accel_amd ();
       break;
 
