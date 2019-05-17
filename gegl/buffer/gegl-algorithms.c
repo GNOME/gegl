@@ -150,6 +150,7 @@ gegl_boxfilter_u8_nl (guchar              *dest_buf,
                       const GeglRectangle *src_rect,
                       const gint           s_rowstride,
                       const gdouble        scale,
+                      const Babl          *format,
                       const gint           bpp,
                       const gint           d_rowstride)
 {
@@ -312,6 +313,7 @@ gegl_boxfilter_u8_nl_alpha (guchar              *dest_buf,
                             const GeglRectangle *src_rect,
                             const gint           s_rowstride,
                             const gdouble        scale,
+                            const Babl          *format,
                             const gint           bpp,
                             const gint           d_rowstride)
 {
@@ -1013,6 +1015,7 @@ gegl_resample_boxfilter_generic (guchar       *dest_buf,
                                  gint  s_rowstride,
                                  gdouble scale,
                                  const Babl *format,
+                                 gint bpp,
                                  gint d_rowstride)
 {
   const Babl *tmp_format = babl_format_with_space ("RGBA float", format);
@@ -1044,7 +1047,7 @@ gegl_resample_boxfilter_generic (guchar       *dest_buf,
                      src_rect->width, src_rect->height);
 
   gegl_resample_boxfilter_float (out_tmp, in_tmp, dst_rect, src_rect,
-                                 in_tmp_rowstride, scale, tmp_bpp, out_tmp_rowstride);
+                                 in_tmp_rowstride, scale, tmp_format, tmp_bpp, out_tmp_rowstride);
 
   babl_process_rows (to_fish,
                      out_tmp,  out_tmp_rowstride,
@@ -1067,51 +1070,53 @@ void gegl_resample_boxfilter (guchar              *dest_buf,
                               const Babl          *format,
                               gint                 d_rowstride)
 {
+  void (*func) (guchar *dest_buf,
+                const guchar        *source_buf,
+                const GeglRectangle *dst_rect,
+                const GeglRectangle *src_rect,
+                gint                 s_rowstride,
+                gdouble              scale,
+                const Babl          *format,
+                gint                 bpp,
+                gint                 d_rowstride) = gegl_resample_boxfilter_generic;
+
+
   const Babl *model     = babl_format_get_model (format);
   const Babl *comp_type  = babl_format_get_type (format, 0);
   const gint bpp = babl_format_get_bytes_per_pixel (format);
   BablModelFlag model_flags = babl_get_model_flags (model);
+
+  if (func);
 
   if ((model_flags & BABL_MODEL_FLAG_LINEAR)||
       (model_flags & BABL_MODEL_FLAG_CMYK))
   {
 
     if (comp_type == gegl_babl_float())
-      gegl_resample_boxfilter_float (dest_buf, source_buf, dst_rect, src_rect,
-                                     s_rowstride, scale, bpp, d_rowstride);
+      func = gegl_resample_boxfilter_float;
     else if (comp_type == gegl_babl_u8())
-      gegl_resample_boxfilter_u8 (dest_buf, source_buf, dst_rect, src_rect,
-                                  s_rowstride, scale, bpp, d_rowstride);
+      func = gegl_resample_boxfilter_u8;
     else if (comp_type == gegl_babl_u16())
-      gegl_resample_boxfilter_u16 (dest_buf, source_buf, dst_rect, src_rect,
-                                   s_rowstride, scale, bpp, d_rowstride);
+      func = gegl_resample_boxfilter_u16;
     else if (comp_type == gegl_babl_u32())
-      gegl_resample_boxfilter_u32 (dest_buf, source_buf, dst_rect, src_rect,
-                                   s_rowstride, scale, bpp, d_rowstride);
+      func = gegl_resample_boxfilter_u32;
     else if (comp_type == gegl_babl_double())
-      gegl_resample_boxfilter_double (dest_buf, source_buf, dst_rect, src_rect,
-                                      s_rowstride, scale, bpp, d_rowstride);
-    else
-      gegl_resample_boxfilter_generic (dest_buf, source_buf, dst_rect, src_rect,
-                                       s_rowstride, scale, format, d_rowstride);
+      func = gegl_resample_boxfilter_double;
     }
   else
     {
       if (comp_type == gegl_babl_u8())
         {
           if (babl_format_has_alpha (format))
-            gegl_boxfilter_u8_nl_alpha (dest_buf, source_buf, dst_rect, src_rect,
-                                        s_rowstride, scale, bpp, d_rowstride);
+            func = gegl_boxfilter_u8_nl_alpha;
           else
-            gegl_boxfilter_u8_nl (dest_buf, source_buf, dst_rect, src_rect,
-                                  s_rowstride, scale, bpp, d_rowstride);
-        }
-      else
-        {
-          gegl_resample_boxfilter_generic (dest_buf, source_buf, dst_rect, src_rect,
-                                           s_rowstride, scale, format, d_rowstride);
+            func = gegl_boxfilter_u8_nl;
         }
     }
+
+  func (dest_buf, source_buf, dst_rect, src_rect,
+        s_rowstride, scale, format, bpp, d_rowstride);
+
 }
 
 static void

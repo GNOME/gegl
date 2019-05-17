@@ -5,6 +5,7 @@ BOXFILTER_FUNCNAME (guchar                    *dest_buf,
                     const GeglRectangle *src_rect,
                     const gint                 s_rowstride,
                     const gdouble              scale,
+                    const Babl                *format,
                     const gint                 bpp,
                     const gint                 d_rowstride)
 {
