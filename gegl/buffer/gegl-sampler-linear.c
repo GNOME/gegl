@@ -101,8 +101,8 @@ gegl_sampler_linear_interpolate (      GeglSampler       *self,
   const float iabsolute_x = (float) absolute_x - 0.5;
   const float iabsolute_y = (float) absolute_y - 0.5;
 
-  const gint ix = floorf (iabsolute_x);
-  const gint iy = floorf (iabsolute_y);
+  const gint ix = int_floorf (iabsolute_x);
+  const gint iy = int_floorf (iabsolute_y);
 
   /*
    * Point the data tile pointer to the first channel of the top_left

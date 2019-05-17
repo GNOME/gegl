@@ -211,7 +211,7 @@ gegl_sampler_nearest_get (      GeglSampler*    restrict  sampler,
                                 GeglAbyssPolicy           repeat_mode)
 {
   gegl_sampler_get_pixel (sampler,
-           floorf(absolute_x), floorf(absolute_y),
+           int_floorf(absolute_x), int_floorf(absolute_y),
            output, repeat_mode);
 }
 

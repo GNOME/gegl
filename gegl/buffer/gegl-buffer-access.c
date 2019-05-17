@@ -1992,10 +1992,10 @@ _gegl_get_required_for_scale (const GeglRectangle *roi,
     return *roi;
   else
     {
-      gint x1 = floorf (roi->x / scale + GEGL_SCALE_EPSILON);
-      gint x2 = ceilf ((roi->x + roi->width) / scale - GEGL_SCALE_EPSILON);
-      gint y1 = floorf (roi->y / scale + GEGL_SCALE_EPSILON);
-      gint y2 = ceilf ((roi->y + roi->height) / scale - GEGL_SCALE_EPSILON);
+      gint x1 = int_floorf (roi->x / scale + GEGL_SCALE_EPSILON);
+      gint x2 = int_ceilf ((roi->x + roi->width) / scale - GEGL_SCALE_EPSILON);
+      gint y1 = int_floorf (roi->y / scale + GEGL_SCALE_EPSILON);
+      gint y2 = int_ceilf ((roi->y + roi->height) / scale - GEGL_SCALE_EPSILON);
 
       gint pad = (1.0 / scale > 1.0) ? ceilf (1.0 / scale) : 1;
 
@@ -2098,8 +2098,8 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
     float   scale_orig        = scale;
     gint    level             = 0;
     void   *sample_buf;
-    gint    x1 = floorf (rect->x / scale_orig + GEGL_SCALE_EPSILON);
-    gint    x2 = ceilf ((rect->x + rect->width) / scale_orig - GEGL_SCALE_EPSILON);
+    gint    x1 = int_floorf (rect->x / scale_orig + GEGL_SCALE_EPSILON);
+    gint    x2 = int_ceilf ((rect->x + rect->width) / scale_orig - GEGL_SCALE_EPSILON);
     int     max_bytes_per_row = ((rect->width+1) * bpp * 2);
     int     allocated         = 0;
     gint interpolation = (flags & GEGL_BUFFER_FILTER_ALL);
@@ -2118,8 +2118,8 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
       {
         GeglRectangle rect0;
 
-        rect0.x      = floorf (rect->x / scale_orig + GEGL_SCALE_EPSILON);
-        rect0.y      = floorf (rect->y / scale_orig + GEGL_SCALE_EPSILON);
+        rect0.x      = int_floorf (rect->x / scale_orig + GEGL_SCALE_EPSILON);
+        rect0.y      = int_floorf (rect->y / scale_orig + GEGL_SCALE_EPSILON);
         rect0.width  = ceilf ((rect->x + rect->width) / scale_orig -
                               GEGL_SCALE_EPSILON) -
                        rect0.x;
@@ -2170,8 +2170,8 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
     {
       GeglRectangle sample_rect;
       gint    buf_width, buf_height;
-      gint    y1 = floorf (rect2.y / scale_orig + GEGL_SCALE_EPSILON);
-      gint    y2 = ceilf ((rect2.y + rect2.height) / scale_orig - GEGL_SCALE_EPSILON);
+      gint    y1 = int_floorf (rect2.y / scale_orig + GEGL_SCALE_EPSILON);
+      gint    y2 = int_ceilf ((rect2.y + rect2.height) / scale_orig - GEGL_SCALE_EPSILON);
       scale = scale_orig;
 
       while (scale <= 0.5)

@@ -1845,28 +1845,28 @@ gegl_sampler_nohalo_get (      GeglSampler*    restrict  self,
           const gint out_left_0 =
             NOHALO_MAX
             (
-              (gint) ceilf  ( (double) ( x_0 - bounding_box_half_width  ) )
+              (gint) int_ceilf  ( (float) ( x_0 - bounding_box_half_width  ) )
               ,
               -NOHALO_OFFSET_0
             );
           const gint out_rite_0 =
             NOHALO_MIN
             (
-              (gint) floorf ( (double) ( x_0 + bounding_box_half_width  ) )
+              (gint) int_floorf ( (float) ( x_0 + bounding_box_half_width  ) )
               ,
               NOHALO_OFFSET_0
             );
           const gint out_top_0 =
             NOHALO_MAX
             (
-              (gint) ceilf  ( (double) ( y_0 - bounding_box_half_height ) )
+              (gint) int_ceilf  ( (float) ( y_0 - bounding_box_half_height ) )
               ,
               -NOHALO_OFFSET_0
             );
           const gint out_bot_0 =
             NOHALO_MIN
             (
-              (gint) floorf ( (double) ( y_0 + bounding_box_half_height ) )
+              (gint) int_floorf ( (float) ( y_0 + bounding_box_half_height ) )
               ,
               NOHALO_OFFSET_0
             );

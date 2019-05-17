@@ -215,6 +215,7 @@ void gegl_resample_nearest (guchar              *dst,
 
 GeglDownscale2x2Fun gegl_downscale_2x2_get_fun (const Babl *format);
 
+
 G_END_DECLS
 
 #endif /* __GEGL_ALGORITHMS_H__ */

@@ -921,28 +921,28 @@ gegl_sampler_lohalo_get (      GeglSampler*    restrict  self,
         const gint out_left_0 =
           LOHALO_MAX
           (
-            (gint) ceilf  ( (double) ( x_0 - bounding_box_half_width  ) )
+            (gint) int_ceilf  ( (float) ( x_0 - bounding_box_half_width  ) )
             ,
             -LOHALO_OFFSET_0
           );
         const gint out_rite_0 =
           LOHALO_MIN
           (
-            (gint) floorf ( (double) ( x_0 + bounding_box_half_width  ) )
+            (gint) int_floorf ( (float) ( x_0 + bounding_box_half_width  ) )
             ,
             LOHALO_OFFSET_0
           );
         const gint out_top_0 =
           LOHALO_MAX
           (
-            (gint) ceilf  ( (double) ( y_0 - bounding_box_half_height ) )
+            (gint) int_ceilf  ( (float) ( y_0 - bounding_box_half_height ) )
             ,
             -LOHALO_OFFSET_0
           );
         const gint out_bot_0 =
           LOHALO_MIN
           (
-            (gint) floorf ( (double) ( y_0 + bounding_box_half_height ) )
+            (gint) int_floorf ( (float) ( y_0 + bounding_box_half_height ) )
             ,
             LOHALO_OFFSET_0
           );

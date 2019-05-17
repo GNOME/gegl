@@ -179,7 +179,7 @@ gegl_sampler_get (GeglSampler       *self,
   if (self->lvel)
   {
     double factor = 1.0 / (1 << self->lvel);
-    GeglRectangle rect={floorf (x * factor), floorf (y * factor),1,1};
+    GeglRectangle rect={int_floorf (x * factor), int_floorf (y * factor),1,1};
     gegl_buffer_get (self->buffer, &rect, factor, self->format, output, GEGL_AUTO_ROWSTRIDE, repeat_mode);
     return;
   }

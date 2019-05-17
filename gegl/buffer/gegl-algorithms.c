@@ -141,11 +141,6 @@ void _gegl_init_u8_lut (void)
   lut_inited = 1;
 }
 
-static inline int int_floorf (float x)
-{
-  int i = (int)x; /* truncate */
-  return i - ( i > x ); /* convert trunc to floor */
-}
 
 
 static void
@@ -1247,14 +1242,14 @@ gegl_resample_nearest (guchar              *dst,
   for (x = 0; x < dst_rect->width; x++)
   {
     const gfloat sx = (dst_rect->x + .5 + x) / scale - src_rect->x;
-    jj[x] = int_floorf (sx + GEGL_SCALE_EPSILON) * bpp;
+    jj[x] = int_floorf (sx ) * bpp;
   }
 
 #define IMPL(...) do{ \
   for (y = 0; y < dst_rect->height; y++)\
     {\
       const gfloat sy = (dst_rect->y + .5 + y) / scale - src_rect->y;\
-      const gint   ii = int_floorf (sy + GEGL_SCALE_EPSILON);\
+      const gint   ii = int_floorf (sy);\
       gint *ijj = &jj[0];\
       guchar *d = &dst[y*dst_stride];\
       const guchar *s = &src[ii * src_stride];\

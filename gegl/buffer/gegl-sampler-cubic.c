@@ -181,8 +181,8 @@ gegl_sampler_cubic_interpolate (      GeglSampler     *self,
   const double iabsolute_x = (double) absolute_x - 0.5;
   const double iabsolute_y = (double) absolute_y - 0.5;
 
-  const gint ix = floorf (iabsolute_x);
-  const gint iy = floorf (iabsolute_y);
+  const gint ix = int_floorf (iabsolute_x);
+  const gint iy = int_floorf (iabsolute_y);
 
   /*
    * x is the x-coordinate of the sampling point relative to the

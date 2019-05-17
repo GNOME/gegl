@@ -69,6 +69,17 @@ GEGL_CACHED_BABL(format, yA_linear_float, "YaA float")
   #define GEGL_ALLOCA_THRESHOLD  (1024*1024/2)
 #endif
 
+static inline int int_floorf (float x)
+{
+  int i = (int)x;       /* truncate */
+  return i - ( i > x ); /* convert trunc to floor */
+}
+
+static inline int int_ceilf (float x)
+{
+  return -int_floorf(-(x));
+}
+
 //G_END_DECLS
 
 #endif /* __GEGL_BUFFER_FORMATS_H__ */
