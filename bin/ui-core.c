@@ -813,6 +813,71 @@ static gchar *pos_hash (GeState *o)
   return ret;
 }
 
+/* .ppm, .exr, .tif, .jpg, .png, .geglbuffer
+ *
+ */
+//static char *frame_ext = ".png";
+//static char *frame_ext = ".jpg";
+//static char *frame_ext = ".exr";
+//static char *frame_ext = ".tif";
+//static char *frame_ext = ".ppm";
+static char *frame_ext = ".geglbuffer";
+
+static GeglBuffer *_gegl_buffer_load (const char *path)
+{
+  GeglBuffer *buffer = NULL;
+  GeglNode *gegl, *load, *sink;
+  if (!strcmp (frame_ext, ".geglbuffer"))
+  {
+    buffer = gegl_buffer_load (path);
+  }
+  else
+  {
+    gegl = gegl_node_new ();
+    load = gegl_node_new_child (gegl, "operation", "gegl:load",
+                                      "path", path,
+                                      NULL);
+    sink = gegl_node_new_child (gegl, "operation", "gegl:buffer-sink",
+                                      "buffer", &buffer,
+                                      NULL);
+    gegl_node_link_many (load, sink, NULL);
+    gegl_node_process (sink);
+    g_object_unref (gegl);
+  }
+  return buffer;
+}
+
+static void _gegl_buffer_save (GeglBuffer *buffer,
+                               const char *path)
+{
+  if (!strcmp (frame_ext, ".geglbuffer"))
+  {
+    gegl_buffer_save (buffer, path, NULL);
+  }
+  else
+  {
+    GeglNode *gegl, *load, *sink;
+    gegl = gegl_node_new ();
+    load = gegl_node_new_child (gegl, "operation", "gegl:buffer-source",
+                                      "buffer", buffer,
+                                      NULL);
+    if (!strcmp (frame_ext, ".png"))
+      sink = gegl_node_new_child (gegl, "operation", "gegl:png-save",
+                                        "compression", 2,
+                                        "bitdepth", 8,
+                                        "path", path,
+                                        NULL);
+    else
+      sink = gegl_node_new_child (gegl, "operation", "gegl:save",
+                                        "path", path,
+                                        NULL);
+    gegl_node_link_many (load, sink, NULL);
+    gegl_node_process (sink);
+    g_object_unref (gegl);
+  }
+}
+
+
 static int has_quit = 0;
 static GeglAudioFragment *cached_audio = NULL;
 
@@ -893,7 +958,7 @@ static int frame_cache_check (GeState *o, const char *hash)
 
   {
     char *dir = get_item_dir (o);
-    path = g_strdup_printf ("%s/.gegl/frame_cache/%s", dir, hash);
+    path = g_strdup_printf ("%s/.gegl/frame_cache/%s%s", dir, hash, frame_ext);
     g_free (dir);
   }
 
@@ -901,7 +966,8 @@ static int frame_cache_check (GeState *o, const char *hash)
   {
     if (o->cached_buffer)
       g_object_unref (o->cached_buffer);
-    o->cached_buffer = gegl_buffer_open (path);
+    //o->cached_buffer = gegl_buffer_open (path);
+    o->cached_buffer = _gegl_buffer_load (path);
     ret = 1;
   }
   g_free (path);
@@ -914,12 +980,13 @@ static void frame_cache_store (GeState *o, const char *hash)
 {
     char *path = NULL;
     char *dir = get_item_dir (o);
-    path = g_strdup_printf ("%s/.gegl/frame_cache/%s", dir, hash);
+    path = g_strdup_printf ("%s/.gegl/frame_cache/%s%s", dir, hash, frame_ext);
     g_free (dir);
 
     if (!g_file_test (path, G_FILE_TEST_EXISTS))
       {
-        gegl_buffer_save (o->processor_buffer, path, NULL);
+        //gegl_buffer_save (o->processor_buffer, path, NULL);
+        _gegl_buffer_save (o->processor_buffer, path);
       }
     else
       {
@@ -928,6 +995,7 @@ static void frame_cache_store (GeState *o, const char *hash)
     g_free (path);
 }
 
+static uint32_t prev_complete_ms = 0;
 
 static gboolean renderer_task (gpointer data)
 {
@@ -936,13 +1004,17 @@ static gboolean renderer_task (gpointer data)
   void *old_processor = o->processor;
   GeglBuffer *old_buffer = o->processor_buffer;
   static char *hash = NULL;
-
+  static guint32 render_start = 0;
 
 #define TASK_BASE                0
 #define TASK_RENDER              1
 #define TASK_RENDER_DONE         2
 #define TASK_THUMB               3
 #define TASK_PCM_FRAME_CACHE     4
+
+  if (prev_complete_ms == 0)
+    prev_complete_ms = mrg_ms (o->mrg);
+
 
   switch (o->renderer_state)
   {
@@ -957,6 +1029,7 @@ static gboolean renderer_task (gpointer data)
       if (renderer_dirty)
       {
         renderer_dirty = 0;
+        render_start = mrg_ms (o->mrg);
 
         g_clear_object (&o->cached_buffer);
         if (o->processor_node != o->sink)
@@ -982,7 +1055,7 @@ static gboolean renderer_task (gpointer data)
 
         //if (o->frame_cache)
         /* we always check for cache - this makes the cache kick-in when turned off but cached entries are valid */
-
+        hash = pos_hash (o);
         if (frame_cache_check (o, hash))
         {
           o->renderer_state = TASK_RENDER_DONE;
@@ -997,7 +1070,7 @@ static gboolean renderer_task (gpointer data)
         }
       else
         {
-          g_usleep (4000);
+          g_usleep (500);
           o->renderer_state = TASK_BASE;
         }
       }
@@ -1034,6 +1107,19 @@ static gboolean renderer_task (gpointer data)
        break;
     case TASK_RENDER_DONE:
       mrg_gegl_dirty ();
+      {
+        guint32 ms = mrg_ms (o->mrg);
+        float fps = 1.0/((ms-prev_complete_ms)/1000.0);
+        static float avgfps = 0.0;
+        float dt = 0.9;
+        avgfps = avgfps * dt + fps * (1.0-dt);
+
+        fprintf (stderr, "frame delta: %ims %.3ffps render time:%ims  \r", ms-prev_complete_ms,
+            avgfps, ms-render_start);
+        prev_complete_ms = ms;
+      }
+
+
       switch (renderer)
       {
         case GEGL_RENDERER_IDLE:
@@ -1041,7 +1127,7 @@ static gboolean renderer_task (gpointer data)
           break;
         case GEGL_RENDERER_THREAD:
           mrg_queue_draw (o->mrg, NULL);
-          g_usleep (4000);
+          g_usleep (500);
           break;
       }
 
@@ -1094,7 +1180,7 @@ static gboolean renderer_task (gpointer data)
             thumb_queue_item_free (item);
           }
         }
-        g_usleep (1000);
+        g_usleep (500);
       }
 
       o->renderer_state = TASK_BASE;
@@ -1143,8 +1229,8 @@ static gboolean renderer_task (gpointer data)
               wait until the pcm buffer is nearly ready to play
               back our content
             */
-           while (mrg_pcm_get_queued_length (o->mrg) > (1.0/o->fps) * 1.25  )
-              g_usleep (100);
+           while (mrg_pcm_get_queued_length (o->mrg) > (1.0/o->fps) * 1.5  )
+              g_usleep (10);
           }
 
        }
@@ -1156,7 +1242,7 @@ static gboolean renderer_task (gpointer data)
          int channels = gegl_audio_fragment_get_channels (audio);
          char *path = NULL;
          char *dir = get_item_dir (o);
-         path = g_strdup_printf ("%s/.gegl/frame_cache/%s.png", dir, hash);
+         path = g_strdup_printf ("%s/.gegl/frame_cache/%s.pcm", dir, hash);
          g_free (dir);
     
          g_string_append_printf (str, "%i %i %i %i",
@@ -5368,6 +5454,12 @@ static void gegl_ui (Mrg *mrg, void *data)
     cairo_paint (mrg_cr (mrg));
   }
   else
+  {
+    int nearest = 0;
+    if (o->playing != 0 ||
+        o->nearest_neighbor)
+      nearest = 1;
+
   switch (renderer)
   {
      case GEGL_RENDERER_BLIT:
@@ -5379,7 +5471,7 @@ static void gegl_ui (Mrg *mrg, void *data)
                       o->u, o->v,
                       o->scale,
                       o->render_quality,
-                      o->nearest_neighbor,
+                      nearest,
                       o->color_managed_display);
      break;
      case GEGL_RENDERER_THREAD:
@@ -5392,6 +5484,7 @@ static void gegl_ui (Mrg *mrg, void *data)
            buffer = g_object_ref (o->cached_buffer);
          else
            buffer = g_object_ref (o->processor_buffer);
+
          mrg_gegl_buffer_blit (mrg,
                                0, 0,
                                mrg_width (mrg), mrg_height (mrg),
@@ -5399,13 +5492,16 @@ static void gegl_ui (Mrg *mrg, void *data)
                                o->u, o->v,
                                o->scale,
                                o->render_quality,
-                               o->nearest_neighbor,
+                               nearest,
                                o->color_managed_display);
+
+
          g_object_unref (buffer);
        } else {
          fprintf (stderr, "lacking buffer\n");
        }
        break;
+  }
   }
 
 
@@ -5674,10 +5770,6 @@ static void gegl_ui (Mrg *mrg, void *data)
      ui_show_bindings (mrg, o);
   }
 
-  /* iterate frame, and queue pcm last - since this might cause
-     waiting with presenting the video frame until the pcm data
-     of the frame is about to be played
-   */
   if (o->playing)
   {
     iterate_frame (o);
@@ -5910,7 +6002,10 @@ static void load_path_inner (GeState *o,
 
     gegl_node_process (o->source);
 
+    {
+
     gegl_node_get (o->source, "frame-rate", &fps, "frames", &frames, NULL);
+    }
     o->fps = fps;
 
     if (o->duration < 0)
@@ -6444,7 +6539,6 @@ photos_gegl_buffer_apply_orientation (GeglBuffer *buffer_original, Orientation o
  out:
   return ret_val;
 }
-
 
 
 static void load_into_buffer (GeState *o, const char *path)

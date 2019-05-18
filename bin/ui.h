@@ -54,7 +54,6 @@ enum _SortOrder
   SORT_ORDER_CUSTOM     = 512, /* gets or'ed with - other selection */
 };
 
-
 struct _GeState {
   GObject   parent;
   void      (*ui) (Mrg *mrg, void *state);
