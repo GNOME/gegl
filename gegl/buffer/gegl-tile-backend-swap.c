@@ -120,6 +120,8 @@ static SwapGap *   gegl_tile_backend_swap_gap_new                (gint64        
                                                                   gint64                    end);
 static gint64      gegl_tile_backend_swap_find_offset            (gint                      block_size);
 static void        gegl_tile_backend_swap_free_block             (SwapBlock                *block);
+static gint        gegl_tile_backend_swap_get_data_size          (ThreadParams             *params);
+static gint        gegl_tile_backend_swap_get_data_cost          (ThreadParams             *params);
 static void        gegl_tile_backend_swap_free_data              (ThreadParams             *params);
 static void        gegl_tile_backend_swap_write                  (ThreadParams             *params);
 static void        gegl_tile_backend_swap_destroy                (ThreadParams             *params);
@@ -248,12 +250,8 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
 
   if (params->tile || params->compressed)
     {
-      if (params->tile)
-        queued_total += params->size;
-      else
-        queued_total += params->compressed_size;
-
-      queued_cost += params->compressed_size;
+      queued_total += gegl_tile_backend_swap_get_data_size (params);
+      queued_cost  += gegl_tile_backend_swap_get_data_cost (params);
 
       if (params->tile)
         params->block->compression = compression;
@@ -270,7 +268,10 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
                      params->operation == OP_WRITE &&
                      queued_cost > queued_max)
                 {
+                  gint cost = gegl_tile_backend_swap_get_data_cost (params);
+
                   if (params->tile               &&
+                      cost >= params->size       &&
                       params->block->compression &&
                       ! params->compressing)
                     {
@@ -326,8 +327,10 @@ gegl_tile_backend_swap_push_queue (ThreadParams *params,
                           params->compressed      = compressed;
                           params->compressed_size = compressed_size;
 
-                          queued_total += params->compressed_size;
-                          queued_cost  += params->compressed_size;
+                          queued_total +=
+                            gegl_tile_backend_swap_get_data_size (params);
+                          queued_cost  +=
+                            gegl_tile_backend_swap_get_data_cost (params);
                         }
                       else
                         {
@@ -528,33 +531,47 @@ gegl_tile_backend_swap_free_block (SwapBlock *block)
   total -= end - start;
 }
 
+static gint
+gegl_tile_backend_swap_get_data_size (ThreadParams *params)
+{
+  if (params->tile)
+    return params->size;
+  else
+    return params->compressed_size;
+}
+
+static gint
+gegl_tile_backend_swap_get_data_cost (ThreadParams *params)
+{
+  if (params->tile)
+    return params->compressed_size;
+  else
+    return params->size;
+}
+
 static void
 gegl_tile_backend_swap_free_data (ThreadParams *params)
 {
   if (params->tile || params->compressed)
     {
+      gint cost = gegl_tile_backend_swap_get_data_cost (params);
+
+      queued_total -= gegl_tile_backend_swap_get_data_size (params);
+      queued_cost  -= cost;
+
       if (params->tile)
         {
-          queued_total -= params->size;
-
           gegl_tile_unref (params->tile);
           params->tile = NULL;
         }
       else
         {
-          queued_total -= params->compressed_size;
-
           gegl_tile_free (params->compressed);
           params->compressed = NULL;
         }
 
-      queued_cost -= params->compressed_size;
-
-      if (queued_cost <= queued_max &&
-          queued_cost + params->compressed_size > queued_max)
-        {
-          g_cond_broadcast (&push_cond);
-        }
+      if (queued_cost <= queued_max && queued_cost + cost > queued_max)
+        g_cond_broadcast (&push_cond);
     }
 }
 
