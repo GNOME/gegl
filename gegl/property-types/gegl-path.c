@@ -577,9 +577,16 @@ gegl_path_get_bounds (GeglPath *self,
                       gdouble  *min_y,
                       gdouble  *max_y)
 {
+  gdouble dummy;
   GeglPathPrivate *priv;
   GeglPathList    *iter;
   gboolean         first_point = TRUE;
+
+  /* protecting against NULL arguments */
+  if (!min_x) min_x = &dummy;
+  if (!max_x) max_x = &dummy;
+  if (!min_y) min_y = &dummy;
+  if (!max_y) max_y = &dummy;
 
   *min_x = 0.0;
   *min_y = 0.0;
