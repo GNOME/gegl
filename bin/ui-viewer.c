@@ -371,6 +371,57 @@ static void draw_thumb_bar (GeState *o)
   cairo_restore (cr);
 }
 
+static void on_timeline_drag (MrgEvent *e, void *data1, void *data2)
+{
+  //static float pinch_coord[4][2] = {0,};
+  //static int   pinch = 0;
+  //static float orig_zoom = 1.0;
+  GeState *o = data1;
+  //float pos = o->pos;
+  float end = o->duration;
+
+
+  on_viewer_motion (e, data1, data2);
+
+  if (e->type == MRG_DRAG_RELEASE)
+  {
+    //pinch = 0;
+  } else if (e->type == MRG_DRAG_PRESS)
+  {
+  } else if (e->type == MRG_DRAG_MOTION)
+  {
+  }
+  
+  set_clip_position (o, e->x / mrg_width (o->mrg) * end);
+
+  mrg_event_stop_propagate (e);
+}
+
+static void draw_timeline (GeState *o)
+{
+  Mrg *mrg = o->mrg;
+  float width = mrg_width(mrg);
+  float height = mrg_height(mrg);
+  cairo_t *cr = mrg_cr (mrg);
+  float pos = o->pos;
+  float end = o->duration;
+  
+  cairo_save (cr);
+  cairo_set_line_width (cr, 2);
+  cairo_new_path (cr);
+  cairo_rectangle (cr, 0, height * .9, width, height * .1);
+  cairo_set_source_rgba (cr, 1,1,1,.5);
+  mrg_listen (mrg, MRG_DRAG, on_timeline_drag, o, NULL);
+
+  cairo_fill (cr);
+
+  cairo_set_source_rgba (cr, 1,0,0,1);
+  cairo_rectangle (cr, width * pos/end, height * .9, 2, height * .1);
+  cairo_fill (cr);
+
+  cairo_restore (cr);
+}
+
 void ui_viewer (GeState *o)
 {
   Mrg *mrg = o->mrg;
@@ -439,6 +490,12 @@ void ui_viewer (GeState *o)
 
   if (o->show_thumbbar)
     draw_thumb_bar (o);
+
+  if (o->is_video && o->show_controls)
+  {
+    draw_timeline (o);
+  }
+
 
  cairo_restore (cr);
 

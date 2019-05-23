@@ -54,12 +54,18 @@ static float cached_u = 0;
 static float cached_v = 0;
 static float cached_scale = 0;
 static float cached_prev_mul = 0;
+static int   cached_nearest = 0;
 static int   cached_dirty = 0;
 static cairo_surface_t *cached_surface = NULL;
 
-void mrg_gegl_dirty (void)
+void mrg_gegl_dirty (Mrg *mrg)
 {
   cached_dirty++;
+}
+
+int mrg_gegl_got_nearest (void)
+{
+  return cached_nearest;
 }
 
 void mrg_gegl_buffer_blit (Mrg *mrg,
@@ -120,6 +126,7 @@ void mrg_gegl_buffer_blit (Mrg *mrg,
     cached_u = u;
     cached_v = v;
     cached_scale = scale;
+    cached_nearest = nearest_neighbor;
     cached_prev_mul = preview_multiplier;
     cached_dirty = 0;
 

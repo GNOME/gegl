@@ -90,9 +90,6 @@ const char *css =
 #define active_pad_radius         0.5
 
 
-
-void mrg_gegl_dirty (void);
-
 #ifdef HAVE_LUA
 
 #include <lua.h>
@@ -458,7 +455,7 @@ Setting settings[]=
   INT_PROP(nearest_neighbor, "nearest neighbor"),
   INT_PROP(frame_cache, "store all rendered frames on disk uncompressed for fast scrubbing"),
   FLOAT_PROP(slide_pause, "display scale factor"),
-  FLOAT_PROP(pos, "clip time position"),
+  FLOAT_PROP(pos, "clip time position, set with apos"),
   FLOAT_PROP(duration, "clip duration, computed on load of clip"),
 };
 
@@ -467,7 +464,7 @@ static void queue_draw (GeState *o)
 {
   o->renderer_state = 0;
   renderer_dirty++;
-  mrg_gegl_dirty ();
+  mrg_gegl_dirty (o->mrg);
   mrg_queue_draw (o->mrg, NULL);
 }
 
@@ -997,6 +994,9 @@ static void frame_cache_store (GeState *o, const char *hash)
 
 static uint32_t prev_complete_ms = 0;
 
+static int last_ms = 0;
+// when set, is the mrg_ms time of last queued render
+
 static gboolean renderer_task (gpointer data)
 {
   GeState *o = data;
@@ -1073,6 +1073,16 @@ static gboolean renderer_task (gpointer data)
           g_usleep (500);
           o->renderer_state = TASK_BASE;
         }
+
+        /* if it has been more than 1/3s since a queued
+           redraw - and the currently cached cairo_surface of the GeglBuffer is
+           using nearest neighbor, queue a redraw. */
+        if (mrg_ms (o->mrg) - last_ms > 333 && last_ms > 0 && mrg_gegl_got_nearest())
+        {
+          last_ms = 0;
+          mrg_gegl_dirty (o->mrg);
+          mrg_queue_draw (o->mrg, NULL);
+        }
       }
 
       if (o->renderer_state == TASK_RENDER)
@@ -1106,7 +1116,7 @@ static gboolean renderer_task (gpointer data)
        }
        break;
     case TASK_RENDER_DONE:
-      mrg_gegl_dirty ();
+      mrg_gegl_dirty (o->mrg);
       {
         guint32 ms = mrg_ms (o->mrg);
         float fps = 1.0/((ms-prev_complete_ms)/1000.0);
@@ -1114,7 +1124,7 @@ static gboolean renderer_task (gpointer data)
         float dt = 0.9;
         avgfps = avgfps * dt + fps * (1.0-dt);
 
-        fprintf (stderr, "frame delta: %ims %.3ffps render time:%ims  \r", ms-prev_complete_ms,
+        if(0)fprintf (stderr, "frame delta: %ims %.3ffps render time:%ims  \r", ms-prev_complete_ms,
             avgfps, ms-render_start);
         prev_complete_ms = ms;
       }
@@ -1465,7 +1475,7 @@ void set_clip_position (GeState *o, double position)
   }
 }
 
-int cmd_apos (COMMAND_ARGS); /* "apos", 1, "<>", "set the animation time, this is time relative to clip, meaning 0.0 is first frame of clips timeline."*/
+int cmd_apos (COMMAND_ARGS); /* "apos", 1, "<>", "set the animation time, this is time relative to clip, meaning 0.0 is first frame of clips timeline (negative frames will be used for fade-in, to keep timings the same), set position is quantized according to frame rate."*/
 int
 cmd_apos (COMMAND_ARGS)
 {
@@ -1899,6 +1909,10 @@ static void on_move_drag (MrgEvent *e, void *data1, void *data2)
         x += e->delta_x / o->scale;
         y += e->delta_y / o->scale;
         gegl_node_set (o->active, "x", floorf(x), "y", floorf(y), NULL);
+
+        /* toggle animation of x and y off and back on with new value */
+        /* need api to manipulation animation by key instead of only current key */
+
       }
       break;
     case MRG_DRAG_RELEASE:
@@ -5415,11 +5429,120 @@ static void draw_bounding_box (GeState *o)
 }
 
 
+static void on_editor_timeline_drag (MrgEvent *e, void *data1, void *data2)
+{
+  GeState *o = data1;
+  float end = o->duration;
+
+  on_viewer_motion (e, data1, data2);
+
+  if (e->type == MRG_DRAG_RELEASE)
+  {
+  } else if (e->type == MRG_DRAG_PRESS)
+  {
+  } else if (e->type == MRG_DRAG_MOTION)
+  {
+  }
+
+  set_clip_position (o, e->x / mrg_width (o->mrg) * end);
+
+  mrg_event_stop_propagate (e);
+}
+
+static void draw_editor_timeline (GeState *o)
+{
+  Mrg *mrg = o->mrg;
+  float width = mrg_width(mrg);
+  float height = mrg_height(mrg);
+  cairo_t *cr = mrg_cr (mrg);
+  float pos = o->pos;
+  float end = o->duration;
+
+  cairo_save (cr);
+  cairo_set_line_width (cr, 2);
+  cairo_new_path (cr);
+  cairo_rectangle (cr, 0, height * .9, width, height * .1);
+  cairo_set_source_rgba (cr, 1,1,1,.5);
+  mrg_listen (mrg, MRG_DRAG, on_editor_timeline_drag, o, NULL);
+
+  cairo_fill (cr);
+
+  cairo_set_source_rgba (cr, 1,0,0,1);
+  cairo_rectangle (cr, width * pos/end, height * .9, 2, height * .1);
+  cairo_fill (cr);
+
+  /* go through all nodes */
+  /* go through properties of node */
+  {
+    /* go through keys of property
+     *
+     */
+    GQuark anim_quark;
+    GeglPath *path;
+    GeglPathItem path_item;
+    char tmpbuf[1024];
+    gdouble min_y, max_y;
+
+    sprintf (tmpbuf, "%s-anim", o->property_focus);
+    anim_quark = g_quark_from_string (tmpbuf);
+    path = g_object_get_qdata (G_OBJECT (o->active), anim_quark);
+    cairo_set_source_rgba (cr, 0,1,0,1);
+
+    if (path)
+    {
+      int nodes = gegl_path_get_n_nodes (path);
+      int i;
+      gegl_path_get_bounds (path, NULL, NULL, &min_y,  &max_y);
+
+      for (i = 0; i < nodes; i ++)
+      {
+        gegl_path_get_node (path, i, &path_item);
+        {
+          float x = ((path_item.point[0].x - o->start) / o->duration) * mrg_width (o->mrg) ;
+          float y = (path_item.point[0].y - min_y) / (max_y - min_y) * height * .1 + height *.9;
+          if (i == 0)
+          {
+            cairo_move_to (cr, x, y);
+          }
+          else
+          {
+            cairo_line_to (cr, x, y);
+          }
+        }
+      }
+      cairo_stroke (cr);
+      for (i = 0; i < nodes; i ++)
+      {
+        gegl_path_get_node (path, i, &path_item);
+        {
+          float x = ((path_item.point[0].x - o->start) / o->duration) * mrg_width (o->mrg) ;
+          float y = (path_item.point[0].y - min_y) / (max_y - min_y) * height * .1 + height *.9;
+          cairo_arc (cr, x, y, mrg_em (mrg) * 0.5, 0, 2 * M_PI);
+          cairo_fill (cr);
+        }
+      }
+    }
+  }
+
+  cairo_restore (cr);
+}
+
 
 static void gegl_ui (Mrg *mrg, void *data)
 {
   GeState *o = data;
   struct stat stat_buf;
+  int full_quality_render = 0;
+
+  if (last_ms == 0)
+  {
+    full_quality_render = 1;
+    last_ms = -1;
+  }
+  else
+  {
+    last_ms = mrg_ms (mrg);
+  }
 
   mrg_stylesheet_add (mrg, css, NULL, 0, NULL);
 
@@ -5455,9 +5578,12 @@ static void gegl_ui (Mrg *mrg, void *data)
   }
   else
   {
-    int nearest = 0;
-    if (o->playing != 0 ||
-        o->nearest_neighbor)
+    int nearest = 1;
+    if (full_quality_render)
+    {
+      nearest = 0;
+    }
+    if (o->nearest_neighbor)
       nearest = 1;
 
   switch (renderer)
@@ -5570,6 +5696,9 @@ static void gegl_ui (Mrg *mrg, void *data)
               g_free (lui_contents);
             lui_contents = NULL;
           }
+
+          draw_editor_timeline (o);
+
         }
       else
         {
@@ -7118,7 +7247,7 @@ cmd_toggle (COMMAND_ARGS)
   {
     o->color_managed_display = !o->color_managed_display;
     printf ("%s colormanagement of display\n", o->color_managed_display?"enabled":"disabled");
-    mrg_gegl_dirty ();
+    mrg_gegl_dirty (o->mrg);
   }
   else if (!strcmp(argv[1], "opencl"))
   {
@@ -7325,6 +7454,9 @@ int cmd_keyframe (COMMAND_ARGS) /* "keyframe", 1, "<set|unset|toggle|clear>", "m
       }
     }
   }
+
+  mrg_queue_draw (o->mrg, NULL);
+
   return 0;
 }
 

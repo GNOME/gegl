@@ -26,6 +26,7 @@ void mrg_gegl_blit (Mrg *mrg,
                     int   color_manage);
 
 
-void mrg_gegl_dirty (void);
+void mrg_gegl_dirty (Mrg *mrg);
+int mrg_gegl_got_nearest (void);
 
 #endif
