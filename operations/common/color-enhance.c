@@ -146,12 +146,6 @@ process (GeglOperation       *operation,
 
   gegl_operation_progress (operation, 0.5, "");
 
-  gi = gegl_buffer_iterator_new (input, result, 0, format,
-                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
-
-  gegl_buffer_iterator_add (gi, output, result, 0, format,
-                            GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
-
   delta = max - min;
 
   if (! delta)
@@ -160,6 +154,13 @@ process (GeglOperation       *operation,
                         output, NULL);
       return TRUE;
     }
+
+  gi = gegl_buffer_iterator_new (input, result, 0, format,
+                                 GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
+
+  gegl_buffer_iterator_add (gi, output, result, 0, format,
+                            GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE);
+
 
   if (has_alpha)
     {
