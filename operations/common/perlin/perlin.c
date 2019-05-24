@@ -14,7 +14,6 @@ static int p[B + B + 2];
 static double g3[B + B + 2][3];
 static double g2[B + B + 2][2];
 static double g1[B + B + 2];
-static int start = 1;
 
 double
 noise1 (double arg)
@@ -23,11 +22,6 @@ noise1 (double arg)
   double    rx0, rx1, sx, t, u, v, vec[1];
 
   vec[0] = arg;
-  if (start)
-    {
-      start = 0;
-      perlin_init ();
-    }
 
   setup (0, bx0, bx1, rx0, rx1);
 
@@ -44,12 +38,6 @@ noise2 (double vec[2])
   int       bx0, bx1, by0, by1, b00, b10, b01, b11;
   double    rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
   int       i, j;
-
-  if (start)
-    {
-      start = 0;
-      perlin_init ();
-    }
 
   setup (0, bx0, bx1, rx0, rx1);
   setup (1, by0, by1, ry0, ry1);
@@ -86,12 +74,6 @@ noise3 (double vec[3])
   int       bx0, bx1, by0, by1, bz0, bz1, b00, b10, b01, b11;
   double    rx0, rx1, ry0, ry1, rz0, rz1, *q, sy, sz, a, b, c, d, t, u, v;
   int       i, j;
-
-  if (start)
-    {
-      start = 0;
-      perlin_init ();
-    }
 
   setup (0, bx0, bx1, rx0, rx1);
   setup (1, by0, by1, ry0, ry1);
@@ -165,6 +147,10 @@ void
 perlin_init (void)
 {
   int       i, j, k;
+  static int initialized = 0;
+  if (initialized)
+    return;
+  /* this is racy - but we call it once when creating our perlin noise op */
 
   g_random_set_seed (1234567890);
 
@@ -198,6 +184,7 @@ perlin_init (void)
       for (j = 0; j < 3; j++)
         g3[B + i][j] = g3[i][j];
     }
+  initialized = 1;
 }
 
 /* --- My harmonic summing functions - PDB --------------------------*/

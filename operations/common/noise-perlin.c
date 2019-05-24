@@ -97,6 +97,8 @@ gegl_op_class_init (GeglOpClass *klass)
   GeglOperationClass            *operation_class;
   GeglOperationPointRenderClass *point_render_class;
 
+  perlin_init ();
+
   operation_class = GEGL_OPERATION_CLASS (klass);
   point_render_class = GEGL_OPERATION_POINT_RENDER_CLASS (klass);
 
