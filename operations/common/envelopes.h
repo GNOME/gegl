@@ -20,20 +20,19 @@
 static gfloat   lut_cos[ANGLE_PRIME];
 static gfloat   lut_sin[ANGLE_PRIME];
 static gfloat   radiuses[RADIUS_PRIME];
-static gdouble  luts_computed = 0.0;
+static gint     luts_computed = 0;
 static gint     angle_no=0;
 static gint     radius_no=0;
 
-static void compute_luts(gdouble rgamma)
+static void compute_luts(gint rgamma)
 {
   gint i;
   GRand *rand;
   gfloat golden_angle = G_PI * (3-sqrt(5.0)); /* http://en.wikipedia.org/wiki/Golden_angle */
   gfloat angle = 0.0;
 
-  if (luts_computed==rgamma)
+  if (g_atomic_int_get (&luts_computed)==rgamma)
     return;
-  luts_computed = rgamma;
   rand = g_rand_new();
 
   for (i=0;i<ANGLE_PRIME;i++)
@@ -48,6 +47,7 @@ static void compute_luts(gdouble rgamma)
     }
 
   g_rand_free(rand);
+  g_atomic_int_set (&luts_computed, rgamma);
 
 }
 
