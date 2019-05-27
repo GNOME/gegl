@@ -141,6 +141,7 @@ gegl_tile_block_new (GeglTileBlock * volatile *block_ptr,
   GeglTileBuffer **next_buffer;
   gsize            block_size;
   gsize            buffer_size;
+  gint             n_blocks;
   gint             i;
 
   buffer_size = GEGL_TILE_BUFFER_DATA_OFFSET + GEGL_ALIGN (size);
@@ -180,15 +181,12 @@ gegl_tile_block_new (GeglTileBlock * volatile *block_ptr,
       *next_buffer = buffer;
     }
 
-  gegl_tile_n_blocks++;
+  n_blocks = g_atomic_int_add (&gegl_tile_n_blocks, +1) + 1;
 
-  if (gegl_tile_n_blocks % GEGL_TILE_BLOCKS_PER_TRIM == 0)
-    {
-      gegl_tile_max_n_blocks = MAX (gegl_tile_max_n_blocks,
-                                    gegl_tile_n_blocks);
-    }
+  if (n_blocks % GEGL_TILE_BLOCKS_PER_TRIM == 0)
+    gegl_tile_max_n_blocks = MAX (gegl_tile_max_n_blocks, n_blocks);
 
-  gegl_tile_alloc_total += block->size;
+  g_atomic_pointer_add (&gegl_tile_alloc_total, +block->size);
 
   return block;
 }
@@ -198,6 +196,7 @@ gegl_tile_block_free (GeglTileBlock  *block,
                       GeglTileBlock **head_block)
 {
   guintptr block_size = block->size;
+  gint     n_blocks;
 
   if (block->prev)
     block->prev->next = block->next;
@@ -209,15 +208,16 @@ gegl_tile_block_free (GeglTileBlock  *block,
 
   gegl_free (block);
 
-  gegl_tile_n_blocks--;
+  n_blocks = g_atomic_int_add (&gegl_tile_n_blocks, -1) - 1;
 
-  gegl_tile_alloc_total -= block_size;
+  g_atomic_pointer_add (&gegl_tile_alloc_total, -block_size);
 
 #ifdef HAVE_MALLOC_TRIM
-  if (gegl_tile_max_n_blocks - gegl_tile_n_blocks ==
-      GEGL_TILE_BLOCKS_PER_TRIM)
+  if (gegl_tile_max_n_blocks - n_blocks >= GEGL_TILE_BLOCKS_PER_TRIM)
     {
-      gegl_tile_max_n_blocks = gegl_tile_n_blocks;
+      gegl_tile_max_n_blocks = (n_blocks + (GEGL_TILE_BLOCKS_PER_TRIM - 1)) /
+                               GEGL_TILE_BLOCKS_PER_TRIM                    *
+                               GEGL_TILE_BLOCKS_PER_TRIM;
 
       malloc_trim (block_size);
     }
