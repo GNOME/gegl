@@ -826,7 +826,7 @@ static GeglBuffer *_gegl_buffer_load (const char *path)
   GeglNode *gegl, *load, *sink;
   if (!strcmp (frame_ext, ".geglbuffer"))
   {
-    buffer = gegl_buffer_load (path);
+    buffer = gegl_buffer_open (path);
   }
   else
   {
@@ -1015,7 +1015,6 @@ static gboolean renderer_task (gpointer data)
   if (prev_complete_ms == 0)
     prev_complete_ms = mrg_ms (o->mrg);
 
-
   switch (o->renderer_state)
   {
     case TASK_BASE:
@@ -1064,15 +1063,6 @@ static gboolean renderer_task (gpointer data)
       }
       else
       {
-        if (thumb_queue)
-        {
-          o->renderer_state = TASK_THUMB;
-        }
-      else
-        {
-          g_usleep (500);
-          o->renderer_state = TASK_BASE;
-        }
 
         /* if it has been more than 1/3s since a queued
            redraw - and the currently cached cairo_surface of the GeglBuffer is
@@ -1082,6 +1072,16 @@ static gboolean renderer_task (gpointer data)
           last_ms = 0;
           mrg_gegl_dirty (o->mrg);
           mrg_queue_draw (o->mrg, NULL);
+        }
+
+        if (thumb_queue)
+        {
+          o->renderer_state = TASK_THUMB;
+        }
+      else
+        {
+          g_usleep (500);
+          o->renderer_state = TASK_BASE;
         }
       }
 

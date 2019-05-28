@@ -432,6 +432,8 @@ int gegl_str_has_video_suffix (char *path)
   return g_str_has_suffix (path, ".avi") ||
          g_str_has_suffix (path, ".AVI") ||
          g_str_has_suffix (path, ".mp4") ||
+         g_str_has_suffix (path, ".mov") ||
+         g_str_has_suffix (path, ".MOV") ||
          g_str_has_suffix (path, ".dv") ||
          g_str_has_suffix (path, ".DV") ||
          g_str_has_suffix (path, ".mp3") ||
