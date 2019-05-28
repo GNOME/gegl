@@ -1370,7 +1370,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
 
     for (int i = 0; data_dirs[i]; i++)
     {
-      char *script = g_strdup_printf ("package.path = package.path .. ';%s/gegl-0.4/lua/?.lua'\n", data_dirs[i]);
+      char *script = g_strdup_printf ("package.path = package.path .. ';%s%sgegl-0.4/lua/?.lua'\n", data_dirs[i], data_dirs[i][strlen(data_dirs[i])-1]=='/'?"":"/");
       status = luaL_loadstring(L, script);
       result = lua_pcall(L, 0, LUA_MULTRET, 0);
       if (result){
@@ -5302,6 +5302,8 @@ static cairo_matrix_t node_get_relative_transform (GeglNode *node_view,
 
   return ret;
 }
+
+
 
 /* given a basename return fully qualified path, searching through
  * posisble locations, return NULL if not found.
