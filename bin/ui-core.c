@@ -7491,6 +7491,18 @@ int cmd_star (COMMAND_ARGS) /* "star", -1, "", "query or set number of stars"*/
 static void
 index_item_destroy (IndexItem *item);
 
+  int cmd_system (COMMAND_ARGS);
+int cmd_system (COMMAND_ARGS) /* "system", -1, "", "systemes passed commandline"*/
+{
+  GError *error = NULL;
+  static GPid pid = 0;
+  g_spawn_async (NULL, &argv[1], NULL,
+                 G_SPAWN_SEARCH_PATH|G_SPAWN_SEARCH_PATH_FROM_ENVP,
+                 NULL, NULL, &pid, &error);
+  return 0;
+}
+
+
   int cmd_discard (COMMAND_ARGS);
 int cmd_discard (COMMAND_ARGS) /* "discard", 0, "", "moves the current image to a .discard subfolder"*/
 {
