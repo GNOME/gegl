@@ -383,7 +383,7 @@ function draw_thumb_bar()
    -- print('a')
   end)
   cr:fill()
-  mrg:print("thumbbar" .. o:item_no() .. '' .. o:item_path())
+  -- mrg:print("thumbbar" .. o:item_no() .. '' .. o:item_path())
 end
 
 mrg:add_binding("page-up", NULL, "previous image",
