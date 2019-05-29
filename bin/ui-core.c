@@ -1341,8 +1341,7 @@ int mrg_ui_main (int argc, char **argv, char **ops)
     o->path = realpath (argv[1], NULL);
   else
     {
-      printf ("usage: %s <full-path-to-image>\n", argv[0]);
-      return -1;
+      o->path = g_strdup (g_get_home_dir ());
     }
 
 #ifdef HAVE_LUA

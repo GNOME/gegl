@@ -209,7 +209,6 @@ main (gint    argc,
         }
     }
 
-
   if (o->mode == GEGL_RUN_MODE_DISPLAY)
     {
 #if HAVE_MRG

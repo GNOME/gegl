@@ -259,11 +259,15 @@ parse_args (int    argc,
     GeglOptions *o;
     char **curr;
 
+    o = opts_new ();
     if (argc==1) {
-        usage (argv[0]);
+#ifdef HAVE_MRG
+      o->mode = GEGL_RUN_MODE_DISPLAY;
+#else
+      usage (argv[0]);
+#endif
     }
 
-    o = opts_new ();
     curr = argv+1;
 
     while (*curr && !o->rest) {
