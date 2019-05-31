@@ -2407,6 +2407,52 @@ gegl_buffer_copy (GeglBuffer          *src,
   dest_rect_r.height = src_rect->height;
   dst_rect = &dest_rect_r;
 
+  if (! gegl_rectangle_intersect (NULL, src_rect, &src->abyss))
+    {
+      switch (repeat_mode)
+        {
+        case GEGL_ABYSS_CLAMP:
+        case GEGL_ABYSS_LOOP:
+          if (! gegl_rectangle_is_empty (&src->abyss))
+            break;
+
+          /* fall through */
+
+        case GEGL_ABYSS_NONE:
+          {
+            const gfloat color[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+
+            gegl_buffer_set_color_from_pixel (dst, dst_rect, color,
+                                              gegl_babl_rgba_linear_float ());
+
+            return;
+          }
+
+        case GEGL_ABYSS_BLACK:
+          {
+            const gfloat color[4] = {0.0f, 0.0f, 0.0f, 1.0f};
+
+            gegl_buffer_set_color_from_pixel (dst, dst_rect, color,
+                                              gegl_babl_rgba_linear_float ());
+
+            return;
+          }
+
+        case GEGL_ABYSS_WHITE:
+          {
+            const gfloat color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+            gegl_buffer_set_color_from_pixel (dst, dst_rect, color,
+                                              gegl_babl_rgba_linear_float ());
+
+            return;
+          }
+
+        default:
+          break;
+        }
+    }
+
   if (src->soft_format == dst->soft_format &&
       src_rect->width >= src->tile_width &&
       src_rect->height >= src->tile_height &&
