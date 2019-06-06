@@ -110,8 +110,11 @@ process (GeglOperation        *op,
 
 static GeglRectangle get_bounding_box (GeglOperation *self)
 {
+  GeglRectangle ret={0,0,1,1};
   GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (self, "input");
-  return *in_rect;
+  if (in_rect)
+    ret = *in_rect;
+  return ret;
 }
 
 
