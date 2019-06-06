@@ -182,10 +182,12 @@ print_key_value (const gchar *key,
   gchar      *token;
 
   token = strtok (val, " \t\n\r");
-  current_val_len = strlen (token);
-  fprintf (stdout, "%-*s %s", padding, key, token);
+  if (token)
+  {
+    current_val_len = strlen (token);
+    fprintf (stdout, "%-*s %s", padding, key, token);
 
-  while ((token = strtok (NULL, " \t\n\r")))
+    while ((token = strtok (NULL, " \t\n\r")))
     {
       if (current_val_len + strlen (token) > max_value_length)
         {
@@ -200,6 +202,7 @@ print_key_value (const gchar *key,
     }
 
   fprintf (stdout, "\n");
+  }
   g_free (val);
 }
 
