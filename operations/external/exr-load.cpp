@@ -559,10 +559,19 @@ query_exr (const gchar *path,
  (NULL, c2.white[0], c2.white[1], c2.red[0], c2.red[1], c2.green[0], c2.green[1], c2.blue[0], c2.blue[1], babl_trc ("sRGB"), babl_trc ("sRGB"), babl_trc ("sRGB"), BABL_SPACE_FLAG_EQUALIZE);
       }
 
+      if (ch.findChannel ("A"))
+        {
+          format_flags |= COLOR_ALPHA;
+        }
+
+
       if (ch.findChannel ("R") || ch.findChannel ("G") || ch.findChannel ("B"))
         {
-          strcpy (format_string, "RGB");
-          format_flags = COLOR_RGB;
+          if (format_flags & COLOR_ALPHA)
+            strcpy (format_string, "RaGaBa");
+          else
+            strcpy (format_string, "RGB");
+          format_flags |= COLOR_RGB;
 
           if ((chan = ch.findChannel ("R")))
             pt = chan->type;
@@ -574,15 +583,21 @@ query_exr (const gchar *path,
       else if (ch.findChannel ("Y") &&
                (ch.findChannel("RY") || ch.findChannel("BY")))
         {
-          strcpy (format_string, "RGB");
-          format_flags = COLOR_Y | COLOR_C;
+          if (format_flags & COLOR_ALPHA)
+            strcpy (format_string, "RaGaBa");
+          else
+            strcpy (format_string, "RGB");
+          format_flags |= COLOR_Y | COLOR_C;
 
           pt = ch.findChannel ("Y")->type;
         }
       else if (ch.findChannel ("Y"))
         {
-          strcpy (format_string, "Y");
-          format_flags = COLOR_Y;
+          if (format_flags & COLOR_ALPHA)
+            strcpy (format_string, "Ya");
+          else
+            strcpy (format_string, "Y");
+          format_flags |= COLOR_Y;
           pt = ch.findChannel ("Y")->type;
         }
       else
@@ -591,11 +606,8 @@ query_exr (const gchar *path,
           return FALSE;
         }
 
-      if (ch.findChannel ("A"))
-        {
-          strcat (format_string, "A");
-          format_flags |= COLOR_ALPHA;
-        }
+      if (format_flags & COLOR_ALPHA)
+        strcat (format_string, "A");
 
       switch (pt)
         {

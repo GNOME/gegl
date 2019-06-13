@@ -243,16 +243,16 @@ gegl_exr_save_process (GeglOperation       *operation,
    */
   const Babl *original_format = gegl_buffer_get_format (input);
   const Babl *original_space = babl_format_get_space (original_format);
-  unsigned depth = babl_format_get_n_components (original_format);
+  unsigned n_components = babl_format_get_n_components (original_format);
 
-  switch (depth)
+  switch (n_components)
     {
-      case 1: output_format = "Y float";    break;
-      case 2: output_format = "YA float";   break;
-      case 3: output_format = "RGB float";  break;
-      case 4: output_format = "RGBA float"; break;
+      case 1: output_format = "Y float";       break;
+      case 2: output_format = "YaA float";     break;
+      case 3: output_format = "RGB float";     break;
+      case 4: output_format = "RaGaBaA float"; break;
       default:
-        g_warning ("exr-save: cannot write exr with depth %d.", depth);
+        g_warning ("exr-save: cannot write exr with n_components %d.", n_components);
         return FALSE;
         break;
     }
@@ -262,11 +262,11 @@ gegl_exr_save_process (GeglOperation       *operation,
    * can set the origin.
    */
   float *pixels
-    = (float *) g_malloc (rect->width * rect->height * depth * sizeof *pixels);
+    = (float *) g_malloc (rect->width * rect->height * n_components * sizeof *pixels);
   if (pixels == 0)
     {
       g_warning ("exr-save: could allocate %d*%d*%d pixels.",
-        rect->width, rect->height, depth);
+        rect->width, rect->height, n_components);
       return FALSE;
     }
 
@@ -277,7 +277,7 @@ gegl_exr_save_process (GeglOperation       *operation,
   try
     {
       exr_save_process (pixels, original_space, rect->width, rect->height,
-                        depth, tile_size, filename);
+                        n_components, tile_size, filename);
       status = TRUE;
     }
   catch (std::exception &e)
