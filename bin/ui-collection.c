@@ -208,6 +208,57 @@ static void dir_scroll_cb (MrgEvent *event, void *data1, void *data2)
   }
 }
 
+static void
+copy_one_file (const char *file_path,
+               const char *dest_dir)
+{
+  GError *error = NULL;
+  GFile *src = g_file_new_for_uri (file_path);
+  GFile *dstp = g_file_new_for_path (dest_dir);
+  GFile *dst = g_file_get_child (dstp, g_file_get_basename (src));
+  g_file_copy (src, dst, G_FILE_COPY_OVERWRITE , NULL, NULL, NULL, &error);
+  if (error)
+  {
+    g_warning ("file copy failed %s to %s %s\n",
+               file_path, dest_dir, error->message);
+  }
+  g_object_unref (src);
+  g_object_unref (dstp);
+  g_object_unref (dst);
+}
+
+static void dir_drop_cb (MrgEvent *event, void *data1, void *data2)
+{
+  MrgString *str = mrg_string_new ("");
+  GeState *o = global_state;
+  const char *p;
+
+  for (p = event->string; *p; p++)
+  {
+    switch (*p)
+    {
+      case '\r':
+      case '\n':
+        if (str->str[0])
+        {
+          copy_one_file (str->str, get_item_dir (o));
+          mrg_string_set (str, "");
+        }
+      break;
+      default:
+        mrg_string_append_unichar (str, *p);
+      break;
+    }
+  }
+  if (str->str[0])
+  {
+    copy_one_file (str->str, get_item_dir (o));
+  }
+  mrg_string_free (str, TRUE);
+
+  populate_path_list (o);
+}
+
 static void dir_touch_handling (Mrg *mrg, GeState *o)
 {
   cairo_new_path (mrg_cr (mrg));
@@ -215,6 +266,8 @@ static void dir_touch_handling (Mrg *mrg, GeState *o)
   mrg_listen (mrg, MRG_DRAG, on_dir_drag, o, NULL);
   mrg_listen (mrg, MRG_MOTION, on_viewer_motion, o, NULL);
   mrg_listen (mrg, MRG_SCROLL, dir_scroll_cb, o, NULL);
+
+  mrg_listen (mrg, MRG_DROP, dir_drop_cb, o, NULL);
   cairo_new_path (mrg_cr (mrg));
 }
 
