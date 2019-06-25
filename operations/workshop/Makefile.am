@@ -11,6 +11,7 @@ LIBS = $(op_libs)
 ops = \
 	bayer-matrix.la \
 	bilateral-filter-fast.la \
+	boxblur-1d.la \
 	connected-components.la \
 	demosaic-bimedian.la \
 	demosaic-simple.la \
