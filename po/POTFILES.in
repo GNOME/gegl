@@ -253,6 +253,8 @@ operations/transform/translate.c
 operations/workshop/aces-rrt.c
 operations/workshop/bayer-matrix.c
 operations/workshop/bilateral-filter-fast.c
+operations/workshop/boxblur-1d.c
+operations/workshop/boxblur.c
 operations/workshop/connected-components.c
 operations/workshop/demosaic-bimedian.c
 operations/workshop/demosaic-simple.c
