@@ -10,6 +10,7 @@
 /test-bcontrast-megachunk
 /test-bcontrast-minichunk
 /test-blur
+/test-compression
 /test-gegl-buffer-access
 /test-passthrough
 /test-rotate
