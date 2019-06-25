@@ -36,3 +36,6 @@
 /test-node-passthrough
 /test-serialize
 /test-buffer-sharing
+/test-buffer-iterator-aliasing
+/test-buffer-unaligned-access
+/test-compression
