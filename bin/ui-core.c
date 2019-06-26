@@ -1474,6 +1474,14 @@ void set_clip_position (GeState *o, double position)
   }
 }
 
+int cmd_lued (COMMAND_ARGS); /* "lued", 0, "<>", "" */
+int
+cmd_lued (COMMAND_ARGS)
+{
+  system ("gnome-terminal -e 'vim /home/pippin/src/gegl/bin/lua/'");
+  return 0;
+}
+
 int cmd_apos (COMMAND_ARGS); /* "apos", 1, "<>", "set the animation time, this is time relative to clip, meaning 0.0 is first frame of clips timeline (negative frames will be used for fade-in, to keep timings the same), set position is quantized according to frame rate."*/
 int
 cmd_apos (COMMAND_ARGS)

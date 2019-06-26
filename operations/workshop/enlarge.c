@@ -210,8 +210,8 @@ get_bounding_box (GeglOperation *operation)
     result = *res;
   result.x = 0;
   result.y = 0;
-  result.width  *= o->scale;
-  result.height *= o->scale;
+  result.width  = ceilf (result.width * o->scale);
+  result.height = ceilf (result.height * o->scale);
 
   return result;
 }

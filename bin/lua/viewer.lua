@@ -435,7 +435,7 @@ if path:find(".pdf$") or path:find('.PDF$') then
 
 end
 
-draw_thumb_bar()
+--draw_thumb_bar()
 
 mrg:add_binding("alt-right", NULL, "next image",
   function() ffi.C.argvs_eval ("next") end)

@@ -79,7 +79,7 @@ typedef struct
 #define PIXDUST_REL_DIGEST  0
 #define NEIGHBORHOOD        23
 #define PIXDUST_ORDERED     0
-#define MAX_DIR             1
+#define MAX_DIR             4
 
 //#define ONLY_DIR            1
 
