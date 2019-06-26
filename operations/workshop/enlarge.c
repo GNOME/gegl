@@ -26,7 +26,7 @@
 
 /* most of these should go away - here for ease of algorithm experimentation */
 
-property_int (seek_distance, "seek radius", 128)
+property_int (seek_distance, "seek radius", 32)
   value_range (4, 512)
 
 property_int (max_k, "max k", 4)
@@ -115,8 +115,8 @@ static void remove_checker (GeglBuffer  *out,
       }
       else
       {
-        if ( ((x%2==1) && (y%2==1)) ||
-             ((x%2==0) && (y%2==0)))
+        if ( ((x%2==1) && (y%2==0)) ||
+             ((x%2==0) && (y%2==1)))
         {
           data[3]=0.0;
         }
@@ -247,6 +247,8 @@ process (GeglOperation       *operation,
   remove_checker (output, 0);
   improve (duster, input, output, o->scale);
   remove_checker (output, 1);
+  improve (duster, input, output, o->scale);
+  remove_checker (output, 0);
   improve (duster, input, output, o->scale);
   //improve (duster, input, output, o->scale);
   pixel_duster_destroy (duster);

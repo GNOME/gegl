@@ -26,7 +26,7 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int (seek_distance, "seek radius", 128)
+property_int (seek_distance, "seek radius", 256)
   value_range (4, 512)
 
 property_int (min_neigh, "min neigh", 3)

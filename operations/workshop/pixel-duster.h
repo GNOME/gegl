@@ -620,7 +620,7 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
   gint y = offset / 65536;
   float score;
 
-#if 0
+#if 1
 #define pow2(a)   ((a)*(a))
   if ( duster->seek_radius > 1 &&
        pow2 (probe->target_x - x * duster->scale_x) +
