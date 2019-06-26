@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include "config.h"
 #include <glib/gi18n-lib.h>
+#include <math.h>
 
 #ifdef GEGL_PROPERTIES
 
@@ -79,11 +80,60 @@ static void scaled_copy (PixelDuster *duster,
       {
         float rgba[4];
         GeglRectangle r = {x, y, 1, 1};
-        gegl_sampler_get (duster->in_sampler_f, x / scale, y / scale, NULL,
+        gegl_sampler_get (duster->in_sampler_f, x / scale+0.5, y / scale+0.5, NULL,
                           &rgba[0], 0);
         gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
       }
 }
+
+static void remove_checker (GeglBuffer  *out,
+                            int          phase)
+{
+  GeglRectangle rect;
+  const Babl *format = babl_format ("RGBA float");
+  GeglBufferIterator *iterator;
+  rect = *gegl_buffer_get_extent (out);
+  iterator  = gegl_buffer_iterator_new (out, &rect, 0, format, GEGL_BUFFER_READWRITE, GEGL_ABYSS_NONE, 1);
+  while (gegl_buffer_iterator_next (iterator))
+  {
+    int x = iterator->items[0].roi.x;
+    int y = iterator->items[0].roi.y;
+    gfloat *data = iterator->items[0].data;
+
+    int i;
+    for (i = 0; i < iterator->length; i++)
+    {
+
+      if (phase == 0)
+      {
+
+        if ( ((x%2==0) && (y%2==0)) ||
+             ((x%2==1) && (y%2==1)))
+        {
+          data[3]=0.0;
+        }
+      }
+      else
+      {
+        if ( ((x%2==1) && (y%2==1)) ||
+             ((x%2==0) && (y%2==0)))
+        {
+          data[3]=0.0;
+        }
+
+      }
+      data += 4;
+
+      x++;
+      if (x >= iterator->items[0].roi.x + iterator->items[0].roi.width)
+      {
+        x = iterator->items[0].roi.x;
+        y++;
+      }
+    }
+  }
+}
+
 
 static void improve (PixelDuster *duster,
                      GeglBuffer *in,
@@ -133,7 +183,7 @@ static void improve (PixelDuster *duster,
             }
 
           if (rgba[3] <= 0.01)
-            fprintf (stderr, "eek %i,%i %f %f %f %f\n", probe->source_x[MAX_K/2], probe->source_y[MAX_K/2], rgba[0], rgba[1], rgba[2], rgba[3]);
+            fprintf (stderr, "eek %f,%f %f %f %f %f\n", probe->source_x[MAX_K/2], probe->source_y[MAX_K/2], rgba[0], rgba[1], rgba[2], rgba[3]);
 
           gegl_buffer_set (duster->output, GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1), 0, format, &rgba[0], 0);
 #else
@@ -193,8 +243,12 @@ process (GeglOperation       *operation,
                               NULL);
   scaled_copy (duster, input, output, o->scale);
   seed_db (duster);
+
+  remove_checker (output, 0);
   improve (duster, input, output, o->scale);
+  remove_checker (output, 1);
   improve (duster, input, output, o->scale);
+  //improve (duster, input, output, o->scale);
   pixel_duster_destroy (duster);
 
   return TRUE;

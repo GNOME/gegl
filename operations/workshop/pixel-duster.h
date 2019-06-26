@@ -75,10 +75,10 @@ typedef struct
 } PixelDuster;
 
 
-#define MAX_K               2
+#define MAX_K               1
 #define PIXDUST_REL_DIGEST  0
-#define NEIGHBORHOOD        23
-#define PIXDUST_ORDERED     0
+#define NEIGHBORHOOD        123
+#define PIXDUST_ORDERED     1
 #define MAX_DIR             4
 
 //#define ONLY_DIR            1
@@ -86,15 +86,15 @@ typedef struct
 typedef struct Probe {
   int     target_x;
   int     target_y;
-  /* the only real datamembers are above should be float*/
 
   int     age;
   int     k;
   float   score;
-  int     k_score[MAX_K];
+  float   k_score[MAX_K];
   /* should store sampled coordinates instead */
-  int     source_x[MAX_K];
-  int     source_y[MAX_K];
+  /* the only real datamembers are below and should be float*/
+  float   source_x[MAX_K];
+  float   source_y[MAX_K];
   guchar *hay[MAX_K];
 } Probe;
 
@@ -550,7 +550,6 @@ static int site_subset (guchar *site)
   return a;
 }
 
-
 static void site_subset2 (guchar *site, gint *min, gint *max)
 {
   int v[3] = {(site[4  + 1]/4), (site[8  + 1]/4), (site[12 + 1]/4)};
@@ -700,8 +699,6 @@ static int probe_improve (PixelDuster *duster,
   void *ptr[3] = {duster, probe, &needle[0]};
   float old_score = probe->score;
   static const Babl *format = NULL;
-  int    set_start[3];
-  int    set_end[3];
 
   if (!format)
     format = babl_format ("RGBA float");
@@ -866,8 +863,9 @@ static inline void pixel_duster_fill (PixelDuster *duster)
           }
           for (gint c = 0; c < 4; c++)
             rgba[c] = sum_rgba[c] / probe->k;
+
           if (rgba[3] <= 0.01)
-            fprintf (stderr, "eek %i,%i %f %f %f %f\n", probe->source_x[MAX_K/2], probe->source_y[MAX_K/2], rgba[0], rgba[1], rgba[2], rgba[3]);
+            fprintf (stderr, "eek %f,%f %f %f %f %f\n", probe->source_x[MAX_K/2], probe->source_y[MAX_K/2], rgba[0], rgba[1], rgba[2], rgba[3]);
           gegl_buffer_set (duster->output, GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1), 0, format, &rgba[0], 0);
          }
       }
