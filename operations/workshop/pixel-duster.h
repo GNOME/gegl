@@ -81,6 +81,10 @@ typedef struct
 #define PIXDUST_ORDERED     1
 #define MAX_DIR             4
 
+// safe to leave always on since only really used when epplies
+#define PIXDUST_DIR_INVARIANT 1
+
+
 //#define ONLY_DIR            1
 
 typedef struct Probe {
@@ -305,7 +309,6 @@ static void extract_site (PixelDuster *duster, GeglBuffer *input, double x, doub
     format = babl_format ("R'G'B'A u8");
   }
 
-#define PIXDUST_DIR_INVARIANT 1
 #if PIXDUST_DIR_INVARIANT==1
   /* figure out which of the up/down/left/right pixels are brightest,
      using premultiplied alpha - do punish blank spots  */
@@ -542,41 +545,6 @@ spread_relative (PixelDuster *duster, Probe *probe, int dx, int dy)
 }
 #endif
 
-static int site_subset (guchar *site)
-{
-  int a = (site[4  + 1]/16) +
-          (site[8  + 1]/16) * 16 +
-          (site[12 + 1]/16) * 16 * 16;
-  return a;
-}
-
-static void site_subset2 (guchar *site, gint *min, gint *max)
-{
-  int v[3] = {(site[4  + 1]/4), (site[8  + 1]/4), (site[12 + 1]/4)};
-  for (int i = 0; i < 3; i ++)
-  {
-    if (site[(4 + 4 *i)+3] == 0)
-    {
-       min[i] = 0;
-       max[i] = 15;
-    }
-    else
-    {
-      switch (v[i] % 4)
-      {
-        case 0: min[i] = v[i]/4-1; max[i] = v[i]/4;
-                if (min[i] < 0)  min[i] = 0;
-        break;
-        case 1: min[i] = v[i]/4; max[i] = v[i]/4;  break;
-        case 2: min[i] = v[i]/4; max[i] = v[i]/4;  break;
-        case 3: min[i] = v[i]/4; max[i] = v[i]/4+1;
-          if (max[i] > 15) max[i] = 15;
-        break;
-      }
-    }
-  }
-}
-
 static void inline compare_needle_exact (gpointer key, gpointer value, gpointer data)
 {
   void **ptr = data;
@@ -612,7 +580,6 @@ static guchar *ensure_hay (PixelDuster *duster, int x, int y, int subset)
       extract_site (duster, duster->input, x, y, 1.0, hay);
       if (subset < 0)
       {
-        subset = site_subset (hay);
         if (hay[3] == 0)
         {
           g_free (hay);

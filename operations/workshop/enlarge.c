@@ -333,9 +333,9 @@ gegl_op_class_init (GeglOpClass *klass)
 
   gegl_operation_class_set_keys (operation_class,
       "name",        "gegl:enlarge",
-      "title",       "Smart enlarge",
+      "title",       "Smart resize",
       "categories",  "heal",
-      "description", "Enlarges an images based on pixel contents",
+      "description", "scales an image with cubic, remove half in a checker board, guesses blank pixels, removes other checkerboard half and guesses blank pixels again.",
       NULL);
 }
 
