@@ -21,21 +21,24 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
+//retire propes after given set of completed re-runs
+
+
 #ifdef GEGL_PROPERTIES
 
 property_int (seek_distance, "seek radius", 128)
   value_range (4, 512)
 
-property_int (min_neigh, "min neigh", 2)
-  value_range (1, 10)
+property_int (min_neigh, "min neigh", 3)
+  value_range (3, 10)
 
-property_int (min_iter, "min iter", 4)
+property_int (min_iter, "min iter", 20)
   value_range (1, 512)
 
-property_double (chance_try, "try chance", 0.88)
+property_double (chance_try, "try chance", 0.5)
   value_range (0.0, 1.0)
 
-property_double (chance_retry, "retry chance", 0.5)
+property_double (chance_retry, "retry chance", 0.6)
   value_range (0.0, 1.0)
 
 #else
@@ -79,7 +82,7 @@ process (GeglOperation       *operation,
   GeglProperties *o      = GEGL_PROPERTIES (operation);
   GeglRectangle in_rect = *gegl_buffer_get_extent (input);
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
-  PixelDuster    *duster = pixel_duster_new (input, output, &in_rect, &out_rect,
+  PixelDuster    *duster = pixel_duster_new (input, input, output, &in_rect, &out_rect,
                                              o->seek_distance,
                                              1,
                                              o->min_neigh,
@@ -125,9 +128,10 @@ operation_process (GeglOperation        *operation,
     gegl_operation_source_get_bounding_box (operation, "input");
 
   operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+fprintf (stderr, "a\n");
 
   // XXX: hack to force nop, many people are enabling as many things as possible when configuring gegl not realising that they shouldn't enable the workshop
-  if (TRUE || (in_rect && gegl_rectangle_is_infinite_plane (in_rect)))
+  if ((in_rect && gegl_rectangle_is_infinite_plane (in_rect)))
     {
       gpointer in = gegl_operation_context_get_object (context, "input");
       gegl_operation_context_take_object (context, "output",
@@ -160,7 +164,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",        "gegl:alpha-inpaint",
       "title",       "Heal transparent",
       "categories",  "heal",
-      "description", "Replaces fully transparent pixels with good candidate pixels found in the neighbourhood of the hole",
+      "description", "Replaces fully transparent pixels with good candidate pixels found in the whole image",
       NULL);
 }
 

@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2018 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2018, 2019 Øyvind Kolås <pippin@gimp.org>
  *
  */
 
@@ -112,7 +112,7 @@ static void improve (PixelDuster *duster,
       {
         Probe *probe;
         probe = add_probe (duster, x, y);
-        if (probe_improve (duster, probe) == 0)
+        if (probes_improve (duster) == 0)
         {
 #if PIXDUST_REL_DIGEST==0
           gfloat rgba[4*MAX_K];
@@ -166,6 +166,9 @@ static void improve (PixelDuster *duster,
    fprintf (stderr, "\n");
 }
 
+// rgba  x y scale score
+//
+
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
@@ -177,16 +180,20 @@ process (GeglOperation       *operation,
   GeglRectangle in_rect = *gegl_buffer_get_extent (input);
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
   PixelDuster    *duster;
-  duster  = pixel_duster_new (input, output,
+  duster  = pixel_duster_new (input, input, output,
                               &in_rect, &out_rect,
                               o->seek_distance,
                               o->max_k,
-                              1, 1, 1.0, 0.3,
+                              1, // min neighbors
+                              1, // min iterations
+                              0.8, // try chance
+                              0.2, // re-try chance
                               o->scale,
                               o->scale,
                               NULL);
   scaled_copy (duster, input, output, o->scale);
   seed_db (duster);
+  improve (duster, input, output, o->scale);
   improve (duster, input, output, o->scale);
   pixel_duster_destroy (duster);
 
