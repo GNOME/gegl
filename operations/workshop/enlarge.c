@@ -140,7 +140,6 @@ static void remove_checker (GeglBuffer  *out,
   }
 }
 
-
 static void improve (PixelDuster *duster,
                      GeglBuffer *in,
                      GeglBuffer *out,
@@ -241,9 +240,9 @@ process (GeglOperation       *operation,
                               o->seek_distance,
                               o->max_k,
                               1, // min neighbors
-                              20, // min iterations
-                              0.25, // try chance
-                              0.5, // re-try chance
+                              100, // min iterations
+                              1.0, // try chance
+                              0.8, // re-try chance
                               o->scale,
                               o->scale,
                               NULL);
@@ -254,12 +253,14 @@ process (GeglOperation       *operation,
   seed_db (duster);
   pixel_duster_add_probes_for_transparent (duster);
   pixel_duster_fill (duster);
+#if 0
   //improve (duster, input, output, o->scale);
   remove_checker (output, 1);
   pixel_duster_add_probes_for_transparent (duster);
   pixel_duster_fill (duster);
+#endif
 
-#if 1
+#if 0
   remove_checker (output, 0);
   pixel_duster_add_probes_for_transparent (duster);
   pixel_duster_fill (duster);

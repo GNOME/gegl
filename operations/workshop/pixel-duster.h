@@ -66,6 +66,7 @@ typedef struct
   int            seek_radius;
   int            minimum_neighbors;
   int            minimum_iterations;
+  int            max_age;
   float          try_chance;
   float          retry_chance;
   float          scale_x;
@@ -178,7 +179,7 @@ static void init_order(PixelDuster *duster)
         {
           duster->order[i][0] = y;
           duster->order[i][1] = x;
-          duster->order[i][2] = sqrt(1.0 / sqrt (POW2(x)+POW2(y)));
+          duster->order[i][2] = pow (1.0 / (POW2(x)+POW2(y)), 0.8);
         }
       }
 }
@@ -254,6 +255,7 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
   ret->max_y = 0;
   ret->min_x = 10000;
   ret->min_y = 10000;
+  ret->max_age = 5;
 
   if (max_k < 1) max_k = 1;
   if (max_k > MAX_K) max_k = MAX_K;
@@ -712,6 +714,7 @@ static int probe_improve (PixelDuster *duster,
                           Probe       *probe)
 {
   gfloat needle[4 * NEIGHBORHOOD + 8];
+
   gint  dst_x  = probe->target_x;
   gint  dst_y  = probe->target_y;
   void *ptr[3] = {duster, probe, &needle[0]};
@@ -722,37 +725,14 @@ static int probe_improve (PixelDuster *duster,
     format = babl_format ("RGBA float");
 
   extract_site (duster, duster->output, dst_x, dst_y, 1.0, &needle[0]);
-  //site_subset2 (&needle[0], set_start, set_end);
   g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
-#if 0
-  if (set_end[0] == set_start[0] &&
-      set_end[1] == set_start[1] &&
-      set_end[2] == set_start[2])
-  {
-    int subset = set_start[0] + set_start[1] * 16 + set_start[2] * 16 * 16;
-    g_hash_table_foreach (duster->ht[subset], compare_needle, ptr);
-  }
-  else
-  {
-    int i[3];
-    for (i[0]=0;i[0]<3;i[0]++)
-    if (set_start[i[0]] < 0)
-      set_start[i[0]] = 0;
-    for (i[0]=0;i[0]<3;i[0]++)
-    if (set_end[i[0]] > 15)
-      set_end[i[0]] = 15;
+  extract_site (duster, duster->output, dst_x, dst_y, 1.2, &needle[0]);
+  g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
+  extract_site (duster, duster->output, dst_x, dst_y, 0.83, &needle[0]);
+  g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
-    for (i[0] = set_start[0]; i[0] <= set_end[0]; i[0]++)
-    for (i[1] = set_start[1]; i[1] <= set_end[1]; i[1]++)
-    for (i[2] = set_start[2]; i[2] <= set_end[2]; i[2]++)
-    {
-      int subset = i[0] + i[1] * 16 + i[2] * 16 * 16;
-      g_hash_table_foreach (duster->ht[subset], compare_needle, ptr);
-    }
-  }
-#endif
   probe->age++;
 
 #if 0
@@ -763,7 +743,7 @@ static int probe_improve (PixelDuster *duster,
   spread_relative (duster, probe,  0, 1);
 #endif
 
-  if (probe->age > 5)
+  if (probe->age > duster->max_age)
     {
       g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
     }
@@ -922,12 +902,19 @@ static void seed_db (PixelDuster *duster)
     fprintf (stderr, "ing");
     for (gint y = duster->min_y - duster->seek_radius;
               y < duster->max_y + duster->seek_radius; y++)
+    {
       for (gint x = duster->min_x - duster->seek_radius;
                 x < duster->max_x + duster->seek_radius; x++)
       {
         ensure_hay (duster, x, y, -1);
       }
-    fprintf (stderr, "\rdb seeded\n");
+      if (y % 13 == 0)
+      {
+      fprintf (stderr, "\rdb seeding %s (%.2f%%)", y%4==0?"-":y%4==1?"/":y%4==2?"\\":"|",
+     (y - duster->min_y + duster->seek_radius) * 100.0 / (duster->seek_radius * 2 + duster->max_y-duster->min_y));
+      }
+    }
+    fprintf (stderr, "\rdb seeded                   \n");
   }
   else
   {

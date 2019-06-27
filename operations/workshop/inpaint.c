@@ -32,13 +32,13 @@ property_int (seek_distance, "seek radius", 30)
 property_int (min_neigh, "min neigh", 4)
   value_range (1, 10)
 
-property_int (min_iter, "min iter", 15)
+property_int (min_iter, "min iter", 100)
   value_range (1, 512)
 
-property_double (chance_try, "try chance", 0.9)
+property_double (chance_try, "try chance", 1.0)
   value_range (0.0, 1.0)
 
-property_double (chance_retry, "retry chance", 1.0)
+property_double (chance_retry, "retry chance", 0.75)
   value_range (0.0, 1.0)
 
 #else
