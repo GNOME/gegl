@@ -26,7 +26,7 @@
 
 /* most of these should go away - here for ease of algorithm experimentation */
 
-property_int (seek_distance, "seek radius", 32)
+property_int (seek_distance, "seek radius", 332)
   value_range (4, 512)
 
 property_int (max_k, "max k", 4)
@@ -110,6 +110,9 @@ static void remove_checker (GeglBuffer  *out,
         if ( ((x%2==0) && (y%2==0)) ||
              ((x%2==1) && (y%2==1)))
         {
+          data[0]=0.0;
+          data[1]=0.0;
+          data[2]=0.0;
           data[3]=0.0;
         }
       }
@@ -118,6 +121,9 @@ static void remove_checker (GeglBuffer  *out,
         if ( ((x%2==1) && (y%2==0)) ||
              ((x%2==0) && (y%2==1)))
         {
+          data[0]=0.0;
+          data[1]=0.0;
+          data[2]=0.0;
           data[3]=0.0;
         }
 
@@ -235,23 +241,30 @@ process (GeglOperation       *operation,
                               o->seek_distance,
                               o->max_k,
                               1, // min neighbors
-                              1, // min iterations
-                              0.8, // try chance
-                              0.2, // re-try chance
+                              20, // min iterations
+                              0.25, // try chance
+                              0.5, // re-try chance
                               o->scale,
                               o->scale,
                               NULL);
   scaled_copy (duster, input, output, o->scale);
-  seed_db (duster);
 
   remove_checker (output, 0);
-  improve (duster, input, output, o->scale);
-  remove_checker (output, 1);
-  improve (duster, input, output, o->scale);
-  remove_checker (output, 0);
-  improve (duster, input, output, o->scale);
+
+  seed_db (duster);
+  pixel_duster_add_probes_for_transparent (duster);
+  pixel_duster_fill (duster);
   //improve (duster, input, output, o->scale);
+  remove_checker (output, 1);
+  pixel_duster_add_probes_for_transparent (duster);
+  pixel_duster_fill (duster);
+
+#if 1
+  remove_checker (output, 0);
+  pixel_duster_add_probes_for_transparent (duster);
+  pixel_duster_fill (duster);
   pixel_duster_destroy (duster);
+#endif
 
   return TRUE;
 }
