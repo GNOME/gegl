@@ -29,7 +29,7 @@
 property_int (seek_distance, "seek radius", 332)
   value_range (4, 512)
 
-property_int (max_k, "max k", 4)
+property_int (max_k, "max k", 1)
   value_range (1, 4)
 
 property_double (scale, "scale", 2.0)

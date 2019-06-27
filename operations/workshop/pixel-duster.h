@@ -85,9 +85,16 @@ typedef struct
 } PixelDuster;
 
 
-#define MAX_K               1
-#define NEIGHBORHOOD        36
-#define PIXDUST_ORDERED     0
+#define MAX_K               4
+
+#define RINGS               3
+#define RAYS                16
+#define GAP                 1.1
+#define RINGGAMMA           1.45
+#define TWIST               0.03
+
+#define NEIGHBORHOOD        (RINGS*RAYS+1)
+
 #define MAX_DIR             4
 
 // safe to leave always on since only really used when epplies
@@ -128,49 +135,27 @@ typedef struct Probe {
 
 static void init_order(PixelDuster *duster)
 {
-  int i, x, y;
-#if PIXDUST_ORDERED
-  int order_2d[][15]={
-                 {  0,  0,  0,  0,  0,142,111,112,126,128,  0,  0,  0,  0,  0},
-                 {  0,  0,  0,  0,124,110, 86, 87, 88,113,129,143,  0,  0,  0},
-                 {  0,  0,  0,125,109, 85, 58, 59, 60, 89, 90,114,  0,  0,  0},
-                 {  0,  0,  0,108, 78, 57, 38, 39, 40, 61, 79,115,130,  0,  0},
-                 {  0,  0,107, 84, 76, 37, 26, 21, 27, 41, 62, 91,116,  0,  0},
-                 {  0,153,106, 77, 56, 25, 17,  9, 13, 28, 42, 62, 92,152,  0},
-                 {  0,149,105, 55, 36, 16,  8,  1,  5, 18, 29, 43, 63,150,  0},
-                 {  0,145, 75, 54, 24, 12,  4,  0,  2, 10, 22, 44, 64,147,  0},
-                 {  0,146,104, 53, 35, 20,  7,  3,  6, 14, 30, 45, 65,148,  0},
-                 {  0,154,103, 74, 52, 34, 15, 11, 19, 31, 46, 66, 93,152,  0},
-                 {  0,156,102, 83, 73, 51, 33, 23, 32, 47, 67, 80,117,158,  0},
-                 {  0,  0,123,101, 82, 72, 50, 49, 48, 68, 81, 94,131,159,  0},
-                 {  0,  0,  0,122,100, 99, 71, 70, 69, 95,118,132,140,  0,  0},
-                 {  0,  0,  0,  0,121,120, 98, 97, 96,119,133,139,  0,  0,  0},
-                 {  0,  0,  0,  0,144,138,136,134,135,137,141,  0,  0,  0,  0},
-               };
-#else
-  int order_2d[][15]={
-                 {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 26,  0,  0,  0,  0},
-                 {  0,  0,  0,  0,  0,  0,  0, 35,  0,  0,  0,  0,  0,  0,  0},
-                 {  0,  0,  0,  0,  0,  0,  0,  0,  0, 30,  0,  0,  0,  0,  0},
-                 {  0,  0,  0,  0, 31, 21,  0, 34, 22,  0,  0,  0,  0,  0,  0},
-                 {  0,  0,  0,  0,  0,  0, 17,  0,  0,  0, 18,  0,  0,  0,  0},
-                 {  0,  0,  0, 25,  0,  0,  0,  9,  0, 13,  0,  0,  0,  0,  0},
-                 {  0,  0,  0,  0, 28, 16,  8,  1,  5,  0,  0,  0,  0,  0,  0},
-                 {  0,  0,  0,  0,  0,  0,  4,  0,  2, 10,  0,  0,  0,  0,  0},
-                 {  0,  0, 32,  0,  0, 12,  7,  3,  6,  0,  0,  0,  0,  0,  0},
-                 {  0,  0,  0,  0, 24,  0,  0, 11,  0,  0, 23,  0,  0,  0,  0},
-                 {  0,  0,  0,  0,  0,  0, 15,  0, 29, 14,  0,  0,  0,  0,  0},
-                 {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                 {  0,  0,  0, 27,  0, 20,  0,  0, 19,  0,  0,  0,  0,  0,  0},
-                 {  0,  0,  0,  0,  0,  0, 36,  0,  0,  0, 33,  0,  0,  0,  0},
-                 {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-               };
-#endif
+  int i;
 
   duster->order[0][0] = 0;
   duster->order[0][1] = 0;
   duster->order[0][2] = 1.0;
+  i = 1;
+{
 
+  for (float angleno = 0; angleno < RAYS; angleno++)
+  for (int circleno = 0; circleno < RINGS; circleno++)
+  {
+    float mag = pow(GAP * (circleno + 1), RINGGAMMA);
+    float x = cosf ((angleno / RAYS + TWIST*circleno) * M_PI * 2) * mag;
+    float y = sinf ((angleno / RAYS + TWIST*circleno) * M_PI * 2) * mag;
+    duster->order[i][0] = x;
+    duster->order[i][1] = y;
+    duster->order[i][2] = powf (1.0 / (POW2(x)+POW2(y)), 0.8);
+    i++;
+  }
+}
+#if 0
   for (i = 1; i < 159; i++)
   for (y = -7; y <= 7; y ++)
     for (x = -7; x <= 7; x ++)
@@ -182,6 +167,7 @@ static void init_order(PixelDuster *duster)
           duster->order[i][2] = pow (1.0 / (POW2(x)+POW2(y)), 0.8);
         }
       }
+#endif
 }
 
 static void duster_idx_to_x_y (PixelDuster *duster, int index, int dir, int *x, int *y)
@@ -785,7 +771,7 @@ static inline void pixel_duster_add_probes_for_transparent (PixelDuster *duster)
     float *out_pix = i->items[0].data;
     while (n_pixels--)
     {
-      if (out_pix[3] <= 0.001 /* ||
+      if (out_pix[3] < 1.0f /* ||
           (out_pix[0] <= 0.1 &&
            out_pix[1] <= 0.1 &&
            out_pix[2] <= 0.1) */)
