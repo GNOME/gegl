@@ -60,6 +60,10 @@ typedef struct
   float          scale_x;
   float          scale_y;
 
+  float          ring_gap;
+  float          ring_gamma;
+  float          ring_twist;
+
   GHashTable    *ht[1];
 
   GHashTable    *probes_ht;
@@ -75,13 +79,10 @@ typedef struct
 
 #define MAX_K                   4
 
-#define RINGS                   4
-#define RAYS                    6
+#define RINGS                   4   // increments works up to 7-8 with no adver
+#define RAYS                    12  // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
-#define GAP                     1.2
-#define RINGGAMMA               1.1
-#define TWIST                   0.0
 
 typedef struct Probe {
   int     target_x;
@@ -126,9 +127,9 @@ static void init_order(PixelDuster *duster)
   for (int circleno = 0; circleno < RINGS; circleno++)
   for (float angleno = 0; angleno < RAYS; angleno++)
   {
-    float mag = pow(GAP * (circleno + 1), RINGGAMMA);
-    float x = cosf ((angleno / RAYS + TWIST*circleno) * M_PI * 2) * mag;
-    float y = sinf ((angleno / RAYS + TWIST*circleno) * M_PI * 2) * mag;
+    float mag = pow(duster->ring_gap * (circleno + 1), duster->ring_gamma);
+    float x = cosf ((angleno / RAYS + duster->ring_twist*circleno) * M_PI * 2) * mag;
+    float y = sinf ((angleno / RAYS + duster->ring_twist*circleno) * M_PI * 2) * mag;
     duster->order[i][0] = x;
     duster->order[i][1] = y;
     duster->order[i][2] = powf (1.0 / (POW2(x)+POW2(y)), 1.0);
@@ -171,6 +172,9 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
                                        float       scale_x,
                                        float       scale_y,
                                        int         improvement_iterations,
+                                       float       ring_gap,
+                                       float       ring_gamma,
+                                       float       ring_twist,
                                        GeglOperation *op)
 {
   PixelDuster *ret = g_malloc0 (sizeof (PixelDuster));
@@ -188,6 +192,9 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
   ret->min_x = 10000;
   ret->min_y = 10000;
   ret->max_age = improvement_iterations;
+  ret->ring_gap = ring_gap;
+  ret->ring_gamma = ring_gamma;
+  ret->ring_twist = ring_twist;
 
   if (max_k < 1) max_k = 1;
   if (max_k > MAX_K) max_k = MAX_K;

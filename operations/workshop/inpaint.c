@@ -26,7 +26,7 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int (seek_distance, "seek radius", 32)
+property_int (seek_distance, "seek radius", 30)
   value_range (4, 512)
 
 property_int (min_neigh, "min neigh", 4)
@@ -40,6 +40,14 @@ property_int (improvement_iters, "improvement iters", 1)
 
 property_double (chance_try, "try chance", 0.8)
   value_range (0.0, 1.0)
+
+property_double (ring_gap,    "ring gap", 1.2)
+  value_range (0.0, 4.0)
+property_double (ring_gamma, "ring gamma", 1.0)
+  value_range (0.0, 4.0)
+property_double (ring_twist, "ring twist", 0.1)
+  value_range (0.0, 1.0)
+
 
 property_double (chance_retry, "retry chance", 1)
   value_range (0.0, 1.0)
@@ -87,14 +95,17 @@ process (GeglOperation       *operation,
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
   PixelDuster    *duster = pixel_duster_new (input, input, output, &in_rect, &out_rect,
                                              o->seek_distance,
-                                             1,
+                                             1, // max_k
                                              o->min_neigh,
                                              o->min_iter,
                                              o->chance_try,
                                              o->chance_retry,
-                                             1.0,
-                                             1.0,
+                                             1.0, // scale_x
+                                             1.0, // scale_y
                                              o->improvement_iters,
+                                             o->ring_gap,
+                                             o->ring_gamma,
+                                             o->ring_twist,
                                              operation);
   gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);
   pixel_duster_add_probes_for_transparent (duster);
