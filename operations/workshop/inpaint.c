@@ -35,6 +35,9 @@ property_int (min_neigh, "min neigh", 4)
 property_int (min_iter, "min iter", 100)
   value_range (1, 512)
 
+property_int (improvement_iters, "improvement iters", 1)
+  value_range (1, 30)
+
 property_double (chance_try, "try chance", 0.8)
   value_range (0.0, 1.0)
 
@@ -84,13 +87,14 @@ process (GeglOperation       *operation,
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
   PixelDuster    *duster = pixel_duster_new (input, input, output, &in_rect, &out_rect,
                                              o->seek_distance,
-                                             3,
+                                             1,
                                              o->min_neigh,
                                              o->min_iter,
                                              o->chance_try,
                                              o->chance_retry,
                                              1.0,
                                              1.0,
+                                             o->improvement_iters,
                                              operation);
   gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);
   pixel_duster_add_probes_for_transparent (duster);

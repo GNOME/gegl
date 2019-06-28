@@ -24,7 +24,6 @@
 
 /*
     todo:
-         exclude identicals - when it is obvious
 
          threading
            create list of hashtables and to hashtable list per thread
@@ -33,14 +32,6 @@
 
          replace hashtables with just lists - and include coords in element - perhaps with count..
          for identical entries - thus not losing accurate median computation capabilitiy..
-         do median instead of mean for matched pixel components
-
-         complete code using relative to center pixel instead of center pixel -
-         thus permitting a wider range of neighborhoods to produce valid data - thus
-         will be good at least for superresolution
-
-         add more symmetries mirroring each doubling data - add full rotation
-         invariance
  */
 #include <math.h>
 
@@ -82,15 +73,15 @@ typedef struct
 } PixelDuster;
 
 
-#define MAX_K               4
+#define MAX_K                   4
 
-#define RINGS                   3
-#define IMPROVEMENT_ITERATIONS  3
-#define RAYS                    12
-#define GAP                     1.3
-#define RINGGAMMA               1.2
-#define TWIST                   0.0
+#define RINGS                   4
+#define RAYS                    6
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
+
+#define GAP                     1.2
+#define RINGGAMMA               1.1
+#define TWIST                   0.0
 
 typedef struct Probe {
   int     target_x;
@@ -179,6 +170,7 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
                                        float       retry_chance,
                                        float       scale_x,
                                        float       scale_y,
+                                       int         improvement_iterations,
                                        GeglOperation *op)
 {
   PixelDuster *ret = g_malloc0 (sizeof (PixelDuster));
@@ -195,7 +187,7 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
   ret->max_y = 0;
   ret->min_x = 10000;
   ret->min_y = 10000;
-  ret->max_age = IMPROVEMENT_ITERATIONS;
+  ret->max_age = improvement_iterations;
 
   if (max_k < 1) max_k = 1;
   if (max_k > MAX_K) max_k = MAX_K;
@@ -316,7 +308,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
 
       for (int ray = 0; ray < RAYS; ray ++)
       {
-        int swapped_ray = ray + warmest_ray_energy;
+        int swapped_ray = ray + warmest_ray;
         if (swapped_ray >= RAYS) swapped_ray -= RAYS;
 
         for (int circle = 0; circle < RINGS; circle++)
@@ -524,7 +516,7 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
   gint y = offset / 65536;
   float score;
 
-#if 0
+#if 1
 #define pow2(a)   ((a)*(a))
   if ( duster->seek_radius > 1 &&
        pow2 (probe->target_x / duster->scale_x - x) +
@@ -584,10 +576,10 @@ static int probe_improve (PixelDuster *duster,
   extract_site (duster, duster->output, dst_x, dst_y, 1.0, &needle[0]);
   g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
-  extract_site (duster, duster->output, dst_x, dst_y, 1.5, &needle[0]);
+  extract_site (duster, duster->output, dst_x, dst_y, 1.1, &needle[0]);
   g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
-  extract_site (duster, duster->output, dst_x, dst_y, 0.666, &needle[0]);
+  extract_site (duster, duster->output, dst_x, dst_y, 0.9, &needle[0]);
   g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
 
