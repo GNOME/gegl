@@ -26,19 +26,19 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int (seek_distance, "seek radius", 30)
+property_int (seek_distance, "seek radius", 32)
   value_range (4, 512)
 
-property_int (min_neigh, "min neigh", 2)
+property_int (min_neigh, "min neigh", 4)
   value_range (1, 10)
 
 property_int (min_iter, "min iter", 100)
   value_range (1, 512)
 
-property_double (chance_try, "try chance", 0.5)
+property_double (chance_try, "try chance", 0.8)
   value_range (0.0, 1.0)
 
-property_double (chance_retry, "retry chance", 0.4)
+property_double (chance_retry, "retry chance", 1)
   value_range (0.0, 1.0)
 
 #else
@@ -84,7 +84,7 @@ process (GeglOperation       *operation,
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
   PixelDuster    *duster = pixel_duster_new (input, input, output, &in_rect, &out_rect,
                                              o->seek_distance,
-                                             1,
+                                             3,
                                              o->min_neigh,
                                              o->min_iter,
                                              o->chance_try,
@@ -93,9 +93,7 @@ process (GeglOperation       *operation,
                                              1.0,
                                              operation);
   gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);
-  fprintf (stderr, "adding transparent probes");
   pixel_duster_add_probes_for_transparent (duster);
-  fprintf (stderr, "\n");
 
   seed_db (duster);
   pixel_duster_fill (duster);
@@ -129,9 +127,7 @@ operation_process (GeglOperation        *operation,
     gegl_operation_source_get_bounding_box (operation, "input");
 
   operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
-fprintf (stderr, "a\n");
 
-  // XXX: hack to force nop, many people are enabling as many things as possible when configuring gegl not realising that they shouldn't enable the workshop
   if ((in_rect && gegl_rectangle_is_infinite_plane (in_rect)))
     {
       gpointer in = gegl_operation_context_get_object (context, "input");
