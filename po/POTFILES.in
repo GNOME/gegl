@@ -278,4 +278,5 @@ operations/workshop/integral-image.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
+operations/workshop/saturation-hue-constant.c
 operations/workshop/voronoi-diagram.cc
