@@ -11,9 +11,10 @@ op_LTLIBRARIES = \
 	gegl-common-gpl3.la 
 
 gegl_common_gpl3_la_SOURCES =\
-    	module.c \
+	module.c \
 	antialias.c \
 	apply-lens.c \
+	bayer-matrix.c \
 	bump-map.c \
 	cartoon.c \
 	channel-mixer.c \
@@ -33,6 +34,7 @@ gegl_common_gpl3_la_SOURCES =\
 	illusion.c \
 	lens-distortion.c \
 	lens-flare.c \
+	linear-sinusoid.c \
 	maze.c \
 	mosaic.c \
 	motion-blur-circular.c \

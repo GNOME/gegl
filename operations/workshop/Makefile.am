@@ -9,7 +9,6 @@ AM_CPPFLAGS += -I$(srcdir)
 LIBS = $(op_libs)
 
 ops = \
-	bayer-matrix.la \
 	bilateral-filter-fast.la \
 	boxblur.la \
 	boxblur-1d.la \
@@ -25,7 +24,6 @@ ops = \
 	aces-rrt.la \
 	inpaint.la \
 	integral-image.la \
-	linear-sinusoid.la \
 	rawbayer-load.la  \
 	segment-kmeans.la \
 	selective-hue-saturation.la

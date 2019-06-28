@@ -123,6 +123,7 @@ operations/common-cxx/distance-transform.cc
 operations/common-cxx/warp.cc
 operations/common-gpl3+/antialias.c
 operations/common-gpl3+/apply-lens.c
+operations/common-gpl3+/bayer-matrix.c
 operations/common-gpl3+/bump-map.c
 operations/common-gpl3+/cartoon.c
 operations/common-gpl3+/channel-mixer.c
@@ -142,6 +143,7 @@ operations/common-gpl3+/gaussian-blur-selective.c
 operations/common-gpl3+/illusion.c
 operations/common-gpl3+/lens-distortion.c
 operations/common-gpl3+/lens-flare.c
+operations/common-gpl3+/linear-sinusoid.c
 operations/common-gpl3+/maze.c
 operations/common-gpl3+/mosaic.c
 operations/common-gpl3+/motion-blur-circular.c
@@ -251,7 +253,6 @@ operations/transform/transform.c
 operations/transform/transform-core.c
 operations/transform/translate.c
 operations/workshop/aces-rrt.c
-operations/workshop/bayer-matrix.c
 operations/workshop/bilateral-filter-fast.c
 operations/workshop/boxblur-1d.c
 operations/workshop/boxblur.c
@@ -274,7 +275,6 @@ operations/workshop/generated/subtractive.c
 operations/workshop/gradient-map.c
 operations/workshop/hstack.c
 operations/workshop/integral-image.c
-operations/workshop/linear-sinusoid.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
