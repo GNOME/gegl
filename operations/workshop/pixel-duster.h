@@ -88,20 +88,12 @@ typedef struct
 #define MAX_K               4
 
 #define RINGS               3
-#define RAYS                16
-#define GAP                 1.1
-#define RINGGAMMA           1.45
-#define TWIST               0.03
-
+#define IMPROVEMENT_ITERATIONS 2
+#define RAYS                12
+#define GAP                 1.3
+#define RINGGAMMA           1.2
+#define TWIST               0.0
 #define NEIGHBORHOOD        (RINGS*RAYS+1)
-
-#define MAX_DIR             4
-
-// safe to leave always on since only really used when epplies
-#define PIXDUST_DIR_INVARIANT 1
-
-
-//#define ONLY_DIR            1
 
 typedef struct Probe {
   int     target_x;
@@ -143,15 +135,15 @@ static void init_order(PixelDuster *duster)
   i = 1;
 {
 
-  for (float angleno = 0; angleno < RAYS; angleno++)
   for (int circleno = 0; circleno < RINGS; circleno++)
+  for (float angleno = 0; angleno < RAYS; angleno++)
   {
     float mag = pow(GAP * (circleno + 1), RINGGAMMA);
     float x = cosf ((angleno / RAYS + TWIST*circleno) * M_PI * 2) * mag;
     float y = sinf ((angleno / RAYS + TWIST*circleno) * M_PI * 2) * mag;
     duster->order[i][0] = x;
     duster->order[i][1] = y;
-    duster->order[i][2] = powf (1.0 / (POW2(x)+POW2(y)), 0.8);
+    duster->order[i][2] = powf (1.0 / (POW2(x)+POW2(y)), 1.0);
     i++;
   }
 }
@@ -170,45 +162,10 @@ static void init_order(PixelDuster *duster)
 #endif
 }
 
-static void duster_idx_to_x_y (PixelDuster *duster, int index, int dir, int *x, int *y)
+static void duster_idx_to_x_y (PixelDuster *duster, int index, int *x, int *y)
 {
-  switch (dir)
-  {
-    default:
-    case 0: /* right */
-      *x =  -duster->order[index][0];
-      *y =  -duster->order[index][1];
-      break;
-    case 1: /* left */
-      *x =  duster->order[index][0];
-      *y =  duster->order[index][1];
-      break;
-    case 2: /* down */
-      *x =  -duster->order[index][1];
-      *y =  -duster->order[index][0];
-      break;
-    case 3: /* up */
-      *x =  duster->order[index][1];
-      *y =  duster->order[index][0];
-      break;
-
-    case 4: /* right */
-      *x =  -duster->order[index][0];
-      *y =   duster->order[index][1];
-      break;
-    case 5: /* left */
-      *x =  duster->order[index][0];
-      *y =  -duster->order[index][1];
-      break;
-    case 6: /* down */
-      *x =  -duster->order[index][1];
-      *y =  duster->order[index][0];
-      break;
-    case 7: /* up */
-      *x =  duster->order[index][1];
-      *y =  -duster->order[index][0];
-      break;
-  }
+  *x =  duster->order[index][0];
+  *y =  duster->order[index][1];
 }
 
 
@@ -241,7 +198,7 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
   ret->max_y = 0;
   ret->min_x = 10000;
   ret->min_y = 10000;
-  ret->max_age = 5;
+  ret->max_age = IMPROVEMENT_ITERATIONS;
 
   if (max_k < 1) max_k = 1;
   if (max_k > MAX_K) max_k = MAX_K;
@@ -316,9 +273,6 @@ void gegl_sampler_prepare (GeglSampler *sampler);
 static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, double y, float scale, gfloat *dst)
 {
   static const Babl *format = NULL;
-  guchar lum[8];
-  int bdir, maxlum;
-  //uint64_t hist3dmask=0;
 
   GeglSampler *sampler_yu8;
   GeglSampler *sampler_f;
@@ -333,75 +287,62 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
   else if (buffer == duster->reference)
   {
     sampler_yu8 = duster->ref_sampler_yu8;
-    sampler_f = duster->ref_sampler_f;
+    sampler_f   = duster->ref_sampler_f;
   }
   else if (buffer == duster->input)
   {
     sampler_yu8 = duster->in_sampler_yu8;
-    sampler_f = duster->in_sampler_f;
+    sampler_f   = duster->in_sampler_f;
   }
 
   if (!format){
     format = babl_format ("RGBA float");
   }
 
-#if PIXDUST_DIR_INVARIANT==1
-  /* figure out which of the up/down/left/right pixels are brightest,
-     using premultiplied alpha - do punish blank spots  */
-
-  gegl_sampler_get (sampler_yu8, x + 1 *scale, y + 0, NULL, &lum[0], 0);
-  gegl_sampler_get (sampler_yu8, x - 1 *scale, y + 0, NULL, &lum[2], 0);
-  gegl_sampler_get (sampler_yu8, x + 0, y + 1 * scale, NULL, &lum[4], 0);
-  gegl_sampler_get (sampler_yu8, x + 0, y - 1 * scale, NULL, &lum[6], 0);
-
- bdir = 0;
-
- maxlum = lum[0*2];
- for (int i = 1; i < MIN(4,MAX_DIR); i++)
-   if (lum[i*2] > maxlum)
-     {
-       bdir = i;
-       maxlum = lum[i*2];
-     }
-
- if (MAX_DIR > 4)
- {
-   switch (bdir)
-   {
-     case 0: if (lum[4] > lum[6]) bdir += 4; break;
-     case 1: if (lum[6] > lum[4]) bdir += 4; break;
-     case 2: if (lum[0] > lum[2]) bdir += 4; break;
-     case 3: if (lum[2] > lum[0]) bdir += 4; break;
-   }
- }
-
-#ifdef ONLY_DIR
-  bdir = ONLY_DIR;
-#endif
-#endif
-
 #if 1
   for (int i = 0; i <= NEIGHBORHOOD; i++)
   {
     int dx, dy;
-    duster_idx_to_x_y (duster, i, bdir, &dx, &dy);
+    duster_idx_to_x_y (duster, i, &dx, &dy);
     gegl_sampler_get (sampler_f, x + dx * scale, y + dy * scale, NULL, &dst[i*4], 0);
-#if 0
-    {
-      int hist_r = dst[i*4+0]/80;
-      int hist_g = dst[i*4+1]/80;
-      int hist_b = dst[i*4+2]/80;
-      int hist_bit = hist_r * 4 * 4 + hist_g * 4 + hist_b;
-      hist3dmask |= (1 << hist_bit);
-    }
-#endif
   }
- dst[0] = bdir;
-#if 0
- *((uint64_t*)(&dst[4*NEIGHBORHOOD])) = hist3dmask;
-#endif
-#endif
 
+  {
+    int warmest_ray = 0;
+    float warmest_ray_energy = 0;
+    gfloat tmp[4 * NEIGHBORHOOD + 8];
+
+    for (int ray = 0; ray < RAYS; ray ++)
+    {
+      float energy = 0.0;
+      for (int circle = 0; circle < RINGS; circle++)
+        for (int c = 0; c < 3; c++)
+          energy += dst[ ( circle * RAYS  + ray )*4 + c];
+      if (energy > warmest_ray_energy)
+      {
+        warmest_ray = ray;
+        warmest_ray_energy = energy;
+      }
+    }
+
+    if (warmest_ray)
+    {
+      for (int i = 0; i <= NEIGHBORHOOD*4; i++)
+        tmp[i] = dst[i];
+
+      for (int ray = 0; ray < RAYS; ray ++)
+      {
+        int swapped_ray = ray + warmest_ray_energy;
+        if (swapped_ray >= RAYS) swapped_ray -= RAYS;
+
+        for (int circle = 0; circle < RINGS; circle++)
+        for (int c = 0; c < 4; c++)
+          dst[ ( circle * RAYS  + ray )*4 + c] =
+          tmp[ ( circle * RAYS  + swapped_ray )*4 + c];
+       }
+    }
+  }
+#endif
 }
 
 static inline int u8_rgb_diff (guchar *a, guchar *b)
@@ -430,33 +371,16 @@ score_site (PixelDuster *duster,
     return INITIAL_SCORE;
   }
 
-#if 0
+  for (i = 0; i < NEIGHBORHOOD && score < bail; i++)
   {
-    uint64_t *needle_hist = (void*)&needle[NEIGHBORHOOD * 4];
-    uint64_t *hay_hist    = (void*)&hay[NEIGHBORHOOD * 4];
-    uint64_t  diff_hist = *needle_hist ^ *hay_hist;
-    int missing = 0;
-  for (i = 0; i < 64; i ++)
-  {
-    if ((diff_hist & (1 << i)) &&
-        (*needle_hist & ( 1 <<i)))
-      missing ++;
-    //else if ( *needle_hist & (i<<i)) missing ++;
-  }
-    if (missing > 23)
-      return INITIAL_SCORE;
-  }
-#endif
-
-  for (i = 1; i < NEIGHBORHOOD && score < bail; i++)
-  {
-    if (needle[i*4 + 3]>0.001 && hay[i*4 + 3]>0.001)
+    if (needle[i*4 + 3]<1.0 && hay[i*4 + 3]>0.001)
     {
       score += f_rgb_diff (&needle[i*4 + 0], &hay[i*4 + 0]) * duster->order[i][2];
     }
     else
     {
-      score += 10;//256;// * duster->order[i][2];
+      /* transparent hay or needle - give bad score */
+      score += 5;
     }
   }
   return score;
@@ -707,6 +631,12 @@ static int probe_improve (PixelDuster *duster,
   float old_score = probe->score;
   static const Babl *format = NULL;
 
+  if (probe->age > duster->max_age)
+    {
+      g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
+      return -1;
+    }
+
   if (!format)
     format = babl_format ("RGBA float");
 
@@ -721,18 +651,6 @@ static int probe_improve (PixelDuster *duster,
 
   probe->age++;
 
-#if 0
-  spread_relative (duster, probe, -1, -1);
-  spread_relative (duster, probe, -1, 0);
-  spread_relative (duster, probe,  0, -1);
-  spread_relative (duster, probe,  1, 0);
-  spread_relative (duster, probe,  0, 1);
-#endif
-
-  if (probe->age > duster->max_age)
-    {
-      g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
-    }
   if (probe->score == old_score)
     return -1;
 
@@ -830,8 +748,8 @@ static inline void pixel_duster_fill (PixelDuster *duster)
               probe_neighbors (duster, duster->output, probe, duster->minimum_neighbors) >=
               duster->minimum_neighbors)
       {
-        //if(try_replace)
-        //  probe->score = INITIAL_SCORE;
+        if(try_replace)
+          probe->score = INITIAL_SCORE;
 
         if (probe_improve (duster, probe) == 0)
         {

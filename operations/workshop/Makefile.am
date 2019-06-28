@@ -20,7 +20,6 @@ ops = \
 	gradient-map.la \
 	gcr.la \
 	hstack.la \
-	enlarge.la \
 	aces-rrt.la \
 	inpaint.la \
 	integral-image.la \

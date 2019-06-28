@@ -101,6 +101,7 @@ gegl_common_la_SOURCES =\
 	remap.c \
 	rgb-clip.c \
 	saturation.c \
+	saturation2.c \
 	save.c \
 	sepia.c \
 	slic.c \
