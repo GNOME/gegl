@@ -60,16 +60,19 @@ process (GeglOperation       *operation,
   glong i;
   float scale = o->scale;
   float rscale = 1.0f - o->scale;
-  double red_luminance, green_luminance, blue_luminance;
+  double luminance[3];
+  float luminance_f[3];
 
   babl_space_get_rgb_luminance (space,
-    &red_luminance, &green_luminance, &blue_luminance);
+    &luminance[0], &luminance[1], &luminance[2]);
+  for (int c = 0; c < 3; c ++)
+    luminance_f[c] = luminance[c];
 
   for (i = 0; i < n_pixels; i++)
     {
-      gfloat desaturated = (in[0] * red_luminance +
-                            in[1] * green_luminance +
-                            in[2] * green_luminance) * rscale;
+      gfloat desaturated = (in[0] * luminance_f[0] +
+                            in[1] * luminance_f[1] +
+                            in[2] * luminance_f[2]) * rscale;
       for (int c = 0; c < 3; c ++)
         out[c] = desaturated + in[c] * scale;
       out[3] = in[3];
