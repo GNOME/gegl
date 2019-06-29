@@ -79,8 +79,8 @@ typedef struct
 
 #define MAX_K                   4
 
-#define RINGS                   3   // increments works up to 7-8 with no adver
-#define RAYS                    8   // good values for testing 6 8 10 12 16
+#define RINGS                   4   // increments works up to 7-8 with no adver
+#define RAYS                    12   // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
 

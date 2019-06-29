@@ -30,7 +30,7 @@ property_int (seek_distance, "seek radius", 30)
   value_range (4, 512)
 
 property_int (min_neigh, "min neigh", 2)
-  value_range (1, 10)
+  value_range (1, 4)
 
 property_int (min_iter, "min iter", 100)
   value_range (1, 512)
