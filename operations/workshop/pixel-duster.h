@@ -89,7 +89,7 @@ typedef struct
 #define N_SCALE_NEEDLES         1
 
 
-#define BATCH_PROBES 64     // batch this many probes to process concurently
+//#define BATCH_PROBES 64     // batch this many probes to process concurently
                             // it is slightly faster than doing a full ht
                             // iteration per probe on single core
 
@@ -99,12 +99,12 @@ struct _Probe {
   float   needles[N_SCALE_NEEDLES][4 * NEIGHBORHOOD ];
   int     target_x;
   int     target_y;
-  int     neighbors;
+  int     target_neighbors;
   int     age;
   int     k;
   float   score;
   float   old_score;
-  Probe  *n1;
+  Probe  *neighbors[4];
   float   k_score[MAX_K];
   float   source_x[MAX_K];
   float   source_y[MAX_K];
@@ -414,7 +414,7 @@ static int
 probe_neighbors (PixelDuster *duster, GeglBuffer *output, Probe *probe, int min)
 {
   int found = 0;
-  found = probe->neighbors;
+  found = probe->target_neighbors;
 
   ret_if_good
 
@@ -437,7 +437,7 @@ probe_neighbors (PixelDuster *duster, GeglBuffer *output, Probe *probe, int min)
   if (probe_rel_is_set (duster, output, probe, -1, 1)) found ++;
 
 ret:
-  probe->neighbors = found;
+  probe->target_neighbors = found;
   return found;
 }
 
@@ -477,6 +477,38 @@ probe_prep (PixelDuster *duster,
   if (N_SCALE_NEEDLES > 6)
     extract_site (duster, duster->output, dst_x, dst_y, 1.5, &probe->needles[6][0]);
   probe->old_score = probe->score;
+
+  {
+  int neighbours = 0;
+  for (GList *p= g_hash_table_get_values (duster->probes_ht); p; p= p->next)
+  {
+    Probe *oprobe = p->data;
+    if (oprobe != probe)
+    {
+      if ( (probe->target_x == oprobe->target_x - 1) &&
+           (probe->target_y == oprobe->target_y))
+        probe->neighbors[neighbours++] = oprobe;
+      if ( (probe->target_x == oprobe->target_x + 1) &&
+           (probe->target_y == oprobe->target_y))
+        probe->neighbors[neighbours++] = oprobe;
+      if ( (probe->target_x == oprobe->target_x) &&
+           (probe->target_y == oprobe->target_y - 1))
+        probe->neighbors[neighbours++] = oprobe;
+      if ( (probe->target_x == oprobe->target_x) &&
+           (probe->target_y == oprobe->target_y + 1))
+        probe->neighbors[neighbours++] = oprobe;
+    }
+  }
+    for (;neighbours < 4; neighbours++)
+      probe->neighbors[neighbours] = NULL;
+  }
+
+
+  if (probe->score == INITIAL_SCORE)
+  {
+    
+  }
+
 }
 
 static void probe_compare_hay (PixelDuster *duster,
@@ -502,32 +534,30 @@ static void probe_compare_hay (PixelDuster *duster,
     }
   else
     {
-
-  for (int n = 0; n < N_SCALE_NEEDLES; n++)
-  {
-  score = score_site (duster, &probe->needles[n][0], hay, probe->score);
-
-  if (score < probe->score)
-    {
-      int j;
-      for (j = duster->max_k-1; j >= 1; j --)
+      for (int n = 0; n < N_SCALE_NEEDLES; n++)
       {
-        probe->source_x[j] = probe->source_x[j-1];
-        probe->source_y[j] = probe->source_y[j-1];
-        probe->hay[j] = probe->hay[j-1];
-        probe->k_score[j] = probe->k_score[j-1];
-      }
-      probe->k++;
-      if (probe->k > duster->max_k)
-        probe->k = duster->max_k;
-      probe->source_x[0] = x;
-      probe->source_y[0] = y;
-      probe->hay[0] = hay;
-      probe->score = probe->k_score[0] = score;
-    }
-  }
+        score = score_site (duster, &probe->needles[n][0], hay, probe->score);
 
-  }
+        if (score < probe->score)
+        {
+          int j;
+          for (j = duster->max_k-1; j >= 1; j --)
+          {
+            probe->source_x[j] = probe->source_x[j-1];
+            probe->source_y[j] = probe->source_y[j-1];
+            probe->hay[j] = probe->hay[j-1];
+            probe->k_score[j] = probe->k_score[j-1];
+          }
+          probe->k++;
+          if (probe->k > duster->max_k)
+            probe->k = duster->max_k;
+          probe->source_x[0] = x;
+          probe->source_y[0] = y;
+          probe->hay[0] = hay;
+          probe->score = probe->k_score[0] = score;
+        }
+      }
+    }
 }
 
 static void compare_needle (gpointer key, gpointer value, gpointer data)
@@ -628,9 +658,9 @@ static inline void compare_probes (gpointer key, gpointer value, gpointer data)
 }
 
 
-static int probes_improve (PixelDuster *duster,
-                           Probe       **probes,
-                           int           n_probes)
+static inline int probes_improve (PixelDuster *duster,
+                                  Probe       **probes,
+                                  int           n_probes)
 {
 #ifdef BATCH_PROBES
   void *ptr[3] = {duster, probes, GINT_TO_POINTER (n_probes)};
