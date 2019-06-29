@@ -79,8 +79,8 @@ typedef struct
 
 #define MAX_K                   4
 
-#define RINGS                   4   // increments works up to 7-8 with no adver
-#define RAYS                    12  // good values for testing 6 8 10 12 16
+#define RINGS                   3   // increments works up to 7-8 with no adver
+#define RAYS                    8   // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
 
@@ -580,14 +580,14 @@ static int probe_improve (PixelDuster *duster,
   if (!format)
     format = babl_format ("RGBA float");
 
-  extract_site (duster, duster->output, dst_x, dst_y, 1.0, &needle[0]);
-  g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
+  //extract_site (duster, duster->output, dst_x, dst_y, 1.0, &needle[0]);
+  //g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
   extract_site (duster, duster->output, dst_x, dst_y, 1.1, &needle[0]);
   g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
-  extract_site (duster, duster->output, dst_x, dst_y, 0.9, &needle[0]);
-  g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
+  //extract_site (duster, duster->output, dst_x, dst_y, 0.9, &needle[0]);
+  //g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
 
   probe->age++;

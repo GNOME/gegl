@@ -29,28 +29,28 @@
 property_int (seek_distance, "seek radius", 30)
   value_range (4, 512)
 
-property_int (min_neigh, "min neigh", 4)
+property_int (min_neigh, "min neigh", 2)
   value_range (1, 10)
 
 property_int (min_iter, "min iter", 100)
   value_range (1, 512)
 
-property_int (improvement_iters, "improvement iters", 1)
+property_int (improvement_iters, "improvement iters", 4)
   value_range (1, 30)
 
-property_double (chance_try, "try chance", 0.8)
+property_double (chance_try, "try chance", 0.5)
+  value_range (0.0, 1.0)
+property_double (chance_retry, "retry chance", 0.8)
   value_range (0.0, 1.0)
 
-property_double (ring_gap,    "ring gap", 1.2)
+property_double (ring_gap,    "ring gap", 1.5)
   value_range (0.0, 4.0)
-property_double (ring_gamma, "ring gamma", 1.0)
+property_double (ring_gamma, "ring gamma", 1.2)
   value_range (0.0, 4.0)
-property_double (ring_twist, "ring twist", 0.1)
+property_double (ring_twist, "ring twist", 0.040)
   value_range (0.0, 1.0)
 
 
-property_double (chance_retry, "retry chance", 1)
-  value_range (0.0, 1.0)
 
 #else
 
