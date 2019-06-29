@@ -64,6 +64,9 @@ typedef struct
   float          ring_gamma;
   float          ring_twist;
 
+  float          metric_dist_powk;
+  float          metric_empty_score;
+
   GHashTable    *ht[1];
 
   GHashTable    *probes_ht;
@@ -134,7 +137,7 @@ static void init_order(PixelDuster *duster)
     float y = sinf ((angleno / RAYS + duster->ring_twist*circleno) * M_PI * 2) * mag;
     duster->order[i][0] = x;
     duster->order[i][1] = y;
-    duster->order[i][2] = powf (1.0 / (POW2(x)+POW2(y)), 1.0);
+    duster->order[i][2] = powf (1.0 / (POW2(x)+POW2(y)), duster->metric_dist_powk);
     i++;
   }
 }
@@ -164,6 +167,8 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
                                        float       ring_gap,
                                        float       ring_gamma,
                                        float       ring_twist,
+                                       float       metric_dist_powk,
+                                       float       metric_empty_score,
                                        GeglOperation *op)
 {
   PixelDuster *ret = g_malloc0 (sizeof (PixelDuster));
@@ -192,6 +197,8 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
   ret->out_rect = *out_rect;
   ret->scale_x  = scale_x;
   ret->scale_y  = scale_y;
+  ret->metric_dist_powk = metric_dist_powk;
+  ret->metric_empty_score = metric_empty_score;
 
   ret->in_sampler_f = gegl_buffer_sampler_new (input,
                                                babl_format ("RGBA float"),
@@ -346,8 +353,7 @@ score_site (PixelDuster *duster,
     }
     else
     {
-      /* transparent hay or needle - give bad score */
-      score += 5;
+      score += duster->metric_empty_score * duster->order[i][2];
     }
   }
   return score;
@@ -564,7 +570,6 @@ static int probe_improve (PixelDuster *duster,
   if (!format)
     format = babl_format ("RGBA float");
 
-
   extract_site (duster, duster->output, dst_x, dst_y, 1.0, &probe->needles[0][0]);
   if (N_SCALE_NEEDLES > 1)
     extract_site (duster, duster->output, dst_x, dst_y, 0.9, &probe->needles[1][0]);
@@ -592,6 +597,7 @@ static int probe_improve (PixelDuster *duster,
   return 0;
 }
 
+#if 0
 static inline int probes_improve (PixelDuster *duster)
 {
   int ret = -1;
@@ -605,7 +611,7 @@ static inline int probes_improve (PixelDuster *duster)
   }
   return ret;
 }
-
+#endif
 
 static inline void pixel_duster_add_probes_for_transparent (PixelDuster *duster)
 {
@@ -672,9 +678,13 @@ static inline void pixel_duster_fill (PixelDuster *duster)
       try_replace = ((rand()%100)/100.0) < duster->retry_chance;
     }
     total ++;
+
+#if 0 // can be useful for enlarge ? then needs scale factor
     if ((probe->source_x[0] == probe->target_x &&
-        probe->source_y[0] == probe->target_y))
+         probe->source_y[0] == probe->target_y))
       try_replace = 0;
+#endif
+
 
     if (probe->score == INITIAL_SCORE || try_replace)
     {
