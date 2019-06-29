@@ -83,8 +83,11 @@ typedef struct
 #define RAYS                    12   // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
+#define N_SCALE_NEEDLES         1
 
 typedef struct Probe {
+  float   needles[N_SCALE_NEEDLES][4 * NEIGHBORHOOD ];
+
   int     target_x;
   int     target_y;
   int     neighbors;
@@ -117,7 +120,6 @@ typedef struct Probe {
 static void init_order(PixelDuster *duster)
 {
   int i;
-
   duster->order[0][0] = 0;
   duster->order[0][1] = 0;
   duster->order[0][2] = 1.0;
@@ -136,19 +138,6 @@ static void init_order(PixelDuster *duster)
     i++;
   }
 }
-#if 0
-  for (i = 1; i < 159; i++)
-  for (y = -7; y <= 7; y ++)
-    for (x = -7; x <= 7; x ++)
-      {
-        if (order_2d[y+7][x+7] == i)
-        {
-          duster->order[i][0] = y;
-          duster->order[i][1] = x;
-          duster->order[i][2] = pow (1.0 / (POW2(x)+POW2(y)), 0.8);
-        }
-      }
-#endif
 }
 
 static void duster_idx_to_x_y (PixelDuster *duster, int index, int *x, int *y)
@@ -237,17 +226,12 @@ static void pixel_duster_destroy (PixelDuster *duster)
   pixel_duster_remove_probes (duster);
   for (int i = 0; i < 1; i++)
   {
-#if 0
-    if (g_hash_table_size (duster->ht[i]))
-      fprintf (stderr, "%i:%i ", i, g_hash_table_size (duster->ht[i]));
-#endif
     g_hash_table_destroy (duster->ht[i]);
   }
-  fprintf (stderr, "\n");
 
   g_object_unref (duster->ref_sampler_f);
-
   g_object_unref (duster->in_sampler_f);
+  g_object_unref (duster->out_sampler_f);
 
   g_free (duster);
 }
@@ -283,7 +267,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
   }
 
 #if 1
-  for (int i = 0; i <= NEIGHBORHOOD; i++)
+  for (int i = 0; i < NEIGHBORHOOD; i++)
   {
     int dx, dy;
     duster_idx_to_x_y (duster, i, &dx, &dy);
@@ -293,7 +277,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
   {
     int warmest_ray = 0;
     float warmest_ray_energy = 0;
-    gfloat tmp[4 * NEIGHBORHOOD + 8];
+    gfloat tmp[4 * NEIGHBORHOOD];
 
     for (int ray = 0; ray < RAYS; ray ++)
     {
@@ -316,7 +300,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
       for (int ray = 0; ray < RAYS; ray ++)
       {
         int swapped_ray = ray + warmest_ray;
-        if (swapped_ray >= RAYS) swapped_ray -= RAYS;
+        while (swapped_ray >= RAYS) swapped_ray -= RAYS;
 
         for (int circle = 0; circle < RINGS; circle++)
         for (int c = 0; c < 4; c++)
@@ -479,7 +463,7 @@ static gfloat *ensure_hay (PixelDuster *duster, int x, int y, int subset)
 
   if (!hay)
     {
-      hay = g_malloc ((4 * NEIGHBORHOOD + 8) * 4);
+      hay = g_malloc ((4 * NEIGHBORHOOD) * 4);
       extract_site (duster, duster->reference, x, y, 1.0, hay);
       if (subset < 0)
       {
@@ -516,7 +500,6 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
   void **ptr = data;
   PixelDuster *duster = ptr[0];
   Probe       *probe  = ptr[1];
-  gfloat      *needle = ptr[2];
   gfloat      *hay    = value;
   gint         offset = GPOINTER_TO_INT (key);
   gint x = offset % 65536;
@@ -538,7 +521,9 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
    return;
 #endif
 
-  score = score_site (duster, &needle[0], hay, probe->score);
+  for (int n = 0; n < N_SCALE_NEEDLES; n++)
+  {
+  score = score_site (duster, &probe->needles[n][0], hay, probe->score);
 
   if (score < probe->score)
     {
@@ -558,20 +543,19 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
       probe->hay[0] = hay;
       probe->score = probe->k_score[0] = score;
     }
+  }
 }
 
 static int probe_improve (PixelDuster *duster,
                           Probe       *probe)
 {
-  gfloat needle[4 * NEIGHBORHOOD + 8];
-
   gint  dst_x  = probe->target_x;
   gint  dst_y  = probe->target_y;
-  void *ptr[3] = {duster, probe, &needle[0]};
+  void *ptr[2] = {duster, probe};
   float old_score = probe->score;
   static const Babl *format = NULL;
 
-  if (probe->age > duster->max_age)
+  if (probe->age >= duster->max_age)
     {
       g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
       return -1;
@@ -580,14 +564,24 @@ static int probe_improve (PixelDuster *duster,
   if (!format)
     format = babl_format ("RGBA float");
 
-  //extract_site (duster, duster->output, dst_x, dst_y, 1.0, &needle[0]);
-  //g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
-  extract_site (duster, duster->output, dst_x, dst_y, 1.1, &needle[0]);
+  extract_site (duster, duster->output, dst_x, dst_y, 1.0, &probe->needles[0][0]);
+  if (N_SCALE_NEEDLES > 1)
+    extract_site (duster, duster->output, dst_x, dst_y, 0.9, &probe->needles[1][0]);
+  if (N_SCALE_NEEDLES > 2)
+    extract_site (duster, duster->output, dst_x, dst_y, 1.1, &probe->needles[2][0]);
+  if (N_SCALE_NEEDLES > 3)
+    extract_site (duster, duster->output, dst_x, dst_y, 0.8, &probe->needles[3][0]);
+  if (N_SCALE_NEEDLES > 4)
+    extract_site (duster, duster->output, dst_x, dst_y, 1.2, &probe->needles[4][0]);
+  if (N_SCALE_NEEDLES > 5)
+    extract_site (duster, duster->output, dst_x, dst_y, 0.66, &probe->needles[5][0]);
+  if (N_SCALE_NEEDLES > 6)
+    extract_site (duster, duster->output, dst_x, dst_y, 1.5, &probe->needles[6][0]);
+
+
   g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
-  //extract_site (duster, duster->output, dst_x, dst_y, 0.9, &needle[0]);
-  //g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
 
   probe->age++;
