@@ -60,8 +60,8 @@ property_double (metric_dist_powk, "metric dist powk", 1.35)
   ui_steps    (0.1, 1.0)
 
 property_double (metric_empty_score, "metric empty score", 0.25)
-  value_range (0.0, 100.0)
-  ui_steps    (0.25, 1.0)
+  value_range (0.1, 100.0)
+  ui_steps    (0.1, 0.1)
 
 #else
 

@@ -82,28 +82,34 @@ typedef struct
 
 #define MAX_K                   4
 
-#define RINGS                   4   // increments works up to 7-8 with no adver
+#define RINGS                   3   // increments works up to 7-8 with no adver
 #define RAYS                    12   // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
 #define N_SCALE_NEEDLES         1
 
-typedef struct Probe {
-  float   needles[N_SCALE_NEEDLES][4 * NEIGHBORHOOD ];
 
+#define BATCH_PROBES 64     // batch this many probes to process concurently
+                            // it is slightly faster than doing a full ht
+                            // iteration per probe on single core
+
+typedef struct _Probe Probe;
+
+struct _Probe {
+  float   needles[N_SCALE_NEEDLES][4 * NEIGHBORHOOD ];
   int     target_x;
   int     target_y;
   int     neighbors;
   int     age;
   int     k;
   float   score;
+  float   old_score;
+  Probe  *n1;
   float   k_score[MAX_K];
-  /* should store sampled coordinates instead */
-  /* the only real datamembers are below and should be float*/
   float   source_x[MAX_K];
   float   source_y[MAX_K];
   gfloat *hay[MAX_K];
-} Probe;
+};
 
 /* used for hash-table keys */
 #define xy2offset(x,y)   GINT_TO_POINTER(((y) * 65536 + (x)))
@@ -301,7 +307,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
 
     if (warmest_ray)
     {
-      for (int i = 0; i <= NEIGHBORHOOD*4; i++)
+      for (int i = 0; i < NEIGHBORHOOD*4; i++)
         tmp[i] = dst[i];
 
       for (int ray = 0; ray < RAYS; ray ++)
@@ -340,14 +346,14 @@ score_site (PixelDuster *duster,
   float score = 0;
   /* bail early with really bad score - the target site doesnt have opacity */
 
-  if (hay[3] < 0.001)
+  if (hay[3] < 0.001f)
   {
     return INITIAL_SCORE;
   }
 
-  for (i = 0; i < NEIGHBORHOOD && score < bail; i++)
+  for (i = 1; i < NEIGHBORHOOD && score < bail; i++)
   {
-    if (needle[i*4 + 3]<1.0 && hay[i*4 + 3]>0.001)
+    if (needle[i*4 + 3]<1.0f && hay[i*4 + 3]>0.001f)
     {
       score += f_rgb_diff (&needle[i*4 + 0], &hay[i*4 + 0]) * duster->order[i][2];
     }
@@ -356,7 +362,7 @@ score_site (PixelDuster *duster,
       score += duster->metric_empty_score * duster->order[i][2];
     }
   }
-  return score;
+  return sqrtf (score);
 }
 
 static Probe *
@@ -403,7 +409,6 @@ probe_rel_is_set (PixelDuster *duster, GeglBuffer *output, Probe *probe, int rel
 }
 
 #define ret_if_good     if (found >=min) goto ret;
-  
 
 static int
 probe_neighbors (PixelDuster *duster, GeglBuffer *output, Probe *probe, int min)
@@ -436,96 +441,67 @@ ret:
   return found;
 }
 
-#if 0
-static void inline compare_needle_exact (gpointer key, gpointer value, gpointer data)
-{
-  void **ptr = data;
-  //PixelDuster *duster = ptr[0];
-  gfloat *new_hay;
-  gfloat *val_hay;
-  gint   *found_count = ptr[2];
-  if (*found_count)
-    return;
-
-  new_hay = ptr[1];
-  val_hay = value;
-
-  for (int i = 4; i < 4 * NEIGHBORHOOD; i++)
-    {
-      int diff = ((int)(new_hay[i])) - ((int)(val_hay[i]));
-      if ( (diff <= -2) || (diff >= 2))
-        return;
-    }
- (*found_count)++;
-}
-#endif
-
-static gfloat *ensure_hay (PixelDuster *duster, int x, int y, int subset)
+static gfloat *ensure_hay (PixelDuster *duster, int x, int y)
 {
   gfloat *hay = NULL;
 
-  if (subset >= 0)
-    hay = g_hash_table_lookup (duster->ht[subset], xy2offset(x, y));
+  hay = g_hash_table_lookup (duster->ht[0], xy2offset(x, y));
 
   if (!hay)
     {
       hay = g_malloc ((4 * NEIGHBORHOOD) * 4);
       extract_site (duster, duster->reference, x, y, 1.0, hay);
-      if (subset < 0)
-      {
-        if (hay[3] == 0)
-        {
-          g_free (hay);
-          return NULL;
-        }
-      }
-      subset = 0;
-      {
-#if 0
-        gint found_count = 0;
-        void *ptr[3] = {duster, &hay[0], &found_count};
-        g_hash_table_foreach (duster->ht[subset], compare_needle_exact, ptr);
-        if (found_count)
-          {
-            g_free (hay);
-          }
-        else
-#endif
-          {
-            g_hash_table_insert (duster->ht[subset], xy2offset(x, y), hay);
-          }
-      }
+      g_hash_table_insert (duster->ht[0], xy2offset(x, y), hay);
     }
 
   return hay;
 }
 
-/* XXX : replace with compare_needles */
-static void compare_needle (gpointer key, gpointer value, gpointer data)
+static inline void
+probe_prep (PixelDuster *duster,
+            Probe *probe)
 {
-  void **ptr = data;
-  PixelDuster *duster = ptr[0];
-  Probe       *probe  = ptr[1];
-  gfloat      *hay    = value;
-  gint         offset = GPOINTER_TO_INT (key);
-  gint x = offset % 65536;
-  gint y = offset / 65536;
+  gint  dst_x  = probe->target_x;
+  gint  dst_y  = probe->target_y;
+  extract_site (duster, duster->output, dst_x, dst_y, 1.0, &probe->needles[0][0]);
+  if (N_SCALE_NEEDLES > 1)
+    extract_site (duster, duster->output, dst_x, dst_y, 0.9, &probe->needles[1][0]);
+  if (N_SCALE_NEEDLES > 2)
+    extract_site (duster, duster->output, dst_x, dst_y, 1.1, &probe->needles[2][0]);
+  if (N_SCALE_NEEDLES > 3)
+    extract_site (duster, duster->output, dst_x, dst_y, 0.8, &probe->needles[3][0]);
+  if (N_SCALE_NEEDLES > 4)
+    extract_site (duster, duster->output, dst_x, dst_y, 1.2, &probe->needles[4][0]);
+  if (N_SCALE_NEEDLES > 5)
+    extract_site (duster, duster->output, dst_x, dst_y, 0.66, &probe->needles[5][0]);
+  if (N_SCALE_NEEDLES > 6)
+    extract_site (duster, duster->output, dst_x, dst_y, 1.5, &probe->needles[6][0]);
+  probe->old_score = probe->score;
+}
+
+static void probe_compare_hay (PixelDuster *duster,
+                               Probe *probe,
+                               gfloat *hay,
+                               gint x, gint y)
+{
+
   float score;
 
-#if 1
 #define pow2(a)   ((a)*(a))
+
   if ( duster->seek_radius > 1 &&
        pow2 (probe->target_x / duster->scale_x - x) +
        pow2 (probe->target_y / duster->scale_y - y) >
        pow2 (duster->seek_radius))
-    return;
-#endif
-
 #if 0
   if (duster->scale_x == 1.0 && x == probe->target_x &&
 -     duster->scale_y == 1.0 && y == probe->target_y )
    return;
 #endif
+    {
+    }
+  else
+    {
 
   for (int n = 0; n < N_SCALE_NEEDLES; n++)
   {
@@ -550,68 +526,145 @@ static void compare_needle (gpointer key, gpointer value, gpointer data)
       probe->score = probe->k_score[0] = score;
     }
   }
+
+  }
+}
+
+static void compare_needle (gpointer key, gpointer value, gpointer data)
+{
+  void **ptr = data;
+  PixelDuster *duster = ptr[0];
+  Probe       *probe  = ptr[1];
+  gfloat      *hay    = value;
+  gint         offset = GPOINTER_TO_INT (key);
+  gint x = offset % 65536;
+  gint y = offset / 65536;
+
+  probe_compare_hay (duster, probe, hay, x, y);
+}
+
+static void
+probe_post_search (PixelDuster *duster, Probe *probe)
+{
+  static const Babl *format = NULL;
+  if (!format)
+    format = babl_format ("RGBA float");
+  probe->age++;
+
+  if (probe->score != probe->old_score)
+  {
+    gfloat sum_rgba[4]={0.0,0.0,0.0,0.0};
+    gfloat rgba[4];
+
+    if (probe->k>1)
+    {
+      for (gint i = 0; i < probe->k; i++)
+      {
+        gegl_sampler_get (duster->in_sampler_f,
+                          probe->source_x[i], probe->source_y[i],
+                          NULL, &rgba[0], 0);
+        for (gint c = 0; c < 4; c++)
+          sum_rgba[c] += rgba[c];
+      }
+      for (gint c = 0; c < 4; c++)
+        rgba[c] = sum_rgba[c] / probe->k;
+    }
+    else
+    {
+      gegl_sampler_get (duster->in_sampler_f,
+                        probe->source_x[0], probe->source_y[0], NULL,
+                        &rgba[0], 0);
+    }
+
+    gegl_buffer_set (duster->output,
+                     GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1),
+                     0, format, &rgba[0], 0);
+  }
 }
 
 static int probe_improve (PixelDuster *duster,
                           Probe       *probe)
 {
-  gint  dst_x  = probe->target_x;
-  gint  dst_y  = probe->target_y;
   void *ptr[2] = {duster, probe};
-  float old_score = probe->score;
   static const Babl *format = NULL;
 
   if (probe->age >= duster->max_age)
     {
-      g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
+      g_hash_table_remove (duster->probes_ht,
+                           xy2offset(probe->target_x, probe->target_y));
       return -1;
     }
 
   if (!format)
     format = babl_format ("RGBA float");
 
-  extract_site (duster, duster->output, dst_x, dst_y, 1.0, &probe->needles[0][0]);
-  if (N_SCALE_NEEDLES > 1)
-    extract_site (duster, duster->output, dst_x, dst_y, 0.9, &probe->needles[1][0]);
-  if (N_SCALE_NEEDLES > 2)
-    extract_site (duster, duster->output, dst_x, dst_y, 1.1, &probe->needles[2][0]);
-  if (N_SCALE_NEEDLES > 3)
-    extract_site (duster, duster->output, dst_x, dst_y, 0.8, &probe->needles[3][0]);
-  if (N_SCALE_NEEDLES > 4)
-    extract_site (duster, duster->output, dst_x, dst_y, 1.2, &probe->needles[4][0]);
-  if (N_SCALE_NEEDLES > 5)
-    extract_site (duster, duster->output, dst_x, dst_y, 0.66, &probe->needles[5][0]);
-  if (N_SCALE_NEEDLES > 6)
-    extract_site (duster, duster->output, dst_x, dst_y, 1.5, &probe->needles[6][0]);
-
+  probe_prep (duster, probe);
 
   g_hash_table_foreach (duster->ht[0], compare_needle, ptr);
 
-
-
-  probe->age++;
-
-  if (probe->score == old_score)
-    return -1;
+  probe_post_search (duster, probe);
 
   return 0;
 }
 
-#if 0
-static inline int probes_improve (PixelDuster *duster)
+static inline void compare_probes (gpointer key, gpointer value, gpointer data)
 {
-  int ret = -1;
+  void **ptr = data;
+  PixelDuster *duster = ptr[0];
+  Probe      **probes  = ptr[1];
+  int          n_probes = GPOINTER_TO_INT (ptr[2]);
+  gfloat      *hay    = value;
+  gint         offset = GPOINTER_TO_INT (key);
+  gint x = offset % 65536;
+  gint y = offset / 65536;
 
-  for (GList *p= g_hash_table_get_values (duster->probes_ht); p; p= p->next)
+  for (int p = 0; p < n_probes; p++)
+  if (probes[p])
   {
-    Probe *probe = p->data;
-    probe_improve (duster, probe);
-    if (ret == 0)
-      ret = 0;
+    Probe *probe = probes[p];
+    if (probe)
+      probe_compare_hay (duster, probe, hay, x, y);
   }
-  return ret;
 }
+
+
+static int probes_improve (PixelDuster *duster,
+                           Probe       **probes,
+                           int           n_probes)
+{
+#ifdef BATCH_PROBES
+  void *ptr[3] = {duster, probes, GINT_TO_POINTER (n_probes)};
+
+  for (int i = 0; i < n_probes; i++)
+  {
+    Probe *probe = probes[i];
+
+    if (probe->age >= duster->max_age)
+    {
+      g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
+      probes[i] = NULL;
+    }
+    else
+    {
+      probe_prep (duster, probe);
+   }
+  }
+  g_hash_table_foreach (duster->ht[0], compare_probes, ptr);
+
+  for (int i = 0; i < n_probes; i++)
+  {
+    if (probes[i])
+      probe_post_search (duster, probes[i]);
+  }
+#else
+  for (int i = 0; i < n_probes; i++)
+  {
+    if (probes[i])
+      probe_improve (duster, probes[i]);
+  }
 #endif
+  return 0;
+}
 
 static inline void pixel_duster_add_probes_for_transparent (PixelDuster *duster)
 {
@@ -653,16 +706,22 @@ static inline void pixel_duster_add_probes_for_transparent (PixelDuster *duster)
 
 static inline void pixel_duster_fill (PixelDuster *duster)
 {
-  const Babl *format = babl_format ("RGBA float");
   gint missing = 1;
   gint total = 0;
   gint runs = 0;
 
   while (  ((missing >0) /* && (missing != old_missing) */) ||
            (runs < duster->minimum_iterations))
-  { runs++;
+  {
+#ifdef BATCH_PROBES
+    Probe *probes[BATCH_PROBES];
+    int n_probes = 0;
+#endif
+
+    runs++;
     total = 0;
     missing = 0;
+
   for (GList *p= g_hash_table_get_values (duster->probes_ht); p; p= p->next)
   {
     Probe *probe = p->data;
@@ -685,46 +744,36 @@ static inline void pixel_duster_fill (PixelDuster *duster)
       try_replace = 0;
 #endif
 
-
     if (probe->score == INITIAL_SCORE || try_replace)
     {
-
       if ((rand()%100)/100.0 < duster->try_chance &&
               probe_neighbors (duster, duster->output, probe, duster->minimum_neighbors) >=
               duster->minimum_neighbors)
       {
-        if (probe_improve (duster, probe) == 0)
-        {
-          gfloat sum_rgba[4]={0.0,0.0,0.0,0.0};
-          gfloat rgba[4];
-
-          if (probe->k>1)
-          {
-            for (gint i = 0; i < probe->k; i++)
-            {
-              gegl_sampler_get (duster->in_sampler_f, probe->source_x[i], probe->source_y[i],
-                                NULL, &rgba[0], 0);
-              for (gint c = 0; c < 4; c++)
-                sum_rgba[c] += rgba[c];
-            }
-            for (gint c = 0; c < 4; c++)
-              rgba[c] = sum_rgba[c] / probe->k;
-          }
-          else
-          {
-            gegl_sampler_get (duster->in_sampler_f, probe->source_x[0], probe->source_y[0], NULL, &rgba[0], 0);
-          }
-
-          gegl_buffer_set (duster->output, GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1), 0, format, &rgba[0], 0);
-         }
+#ifdef BATCH_PROBES
+        probes[n_probes++] = probe;
+#else
+        probe_improve (duster, probe);
+#endif
       }
     }
+#ifdef BATCH_PROBES
+    if (n_probes>=BATCH_PROBES)
+    {
+      probes_improve (duster, probes, n_probes);
+      n_probes = 0;
+    }
+#endif
   }
+#ifdef BATCH_PROBES
+  if (n_probes)
+    probes_improve (duster, probes, n_probes);
+#endif
+
   if (duster->op)
-    gegl_operation_progress (duster->op, (total-missing) * 1.0 / total,
+    gegl_operation_progress (duster->op, 0.2 + (total-missing) * 0.8 / total,
                              "finding suitable pixels");
 #if 1
-
 
   fprintf (stderr, "\r%i/%i %2.2f run#:%i  ", total-missing, total, (total-missing) * 100.0 / total, runs);
 #endif
@@ -747,10 +796,19 @@ static void seed_db (PixelDuster *duster)
       for (gint x = duster->min_x - duster->seek_radius;
                 x < duster->max_x + duster->seek_radius; x++)
       {
-        ensure_hay (duster, x, y, -1);
+        ensure_hay (duster, x, y);
       }
+
+
       if (y % 13 == 0)
       {
+  if (duster->op)
+    gegl_operation_progress (duster->op,
+
+     (y - duster->min_y + duster->seek_radius) * 0.2 / (duster->seek_radius * 2 + duster->max_y-duster->min_y),
+                             "generating neighborhood db");
+
+
       fprintf (stderr, "\rdb seeding %s (%.2f%%)", y%4==0?"-":y%4==1?"/":y%4==2?"\\":"|",
      (y - duster->min_y + duster->seek_radius) * 100.0 / (duster->seek_radius * 2 + duster->max_y-duster->min_y));
       }
@@ -763,9 +821,8 @@ static void seed_db (PixelDuster *duster)
     for (gint y = 0; y < duster->in_rect.height; y++)
     for (gint x = 0; x < duster->in_rect.width; x++)
       {
-        ensure_hay (duster, x, y, -1);
+        ensure_hay (duster, x, y);
       }
     fprintf (stderr, "ed\n");
   }
-
 }
