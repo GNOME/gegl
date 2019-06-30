@@ -30,7 +30,7 @@ property_double (scale, "Scale", 1.0)
 
 #define GEGL_OP_POINT_FILTER
 #define GEGL_OP_NAME     saturation_hue_constant2
-#define GEGL_OP_C_SOURCE saturation-foo.c
+#define GEGL_OP_C_SOURCE saturation-yuv.c
 
 #include "gegl-op.h"
 
