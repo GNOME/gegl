@@ -60,8 +60,8 @@ process (GeglOperation       *operation,
   glong i;
   float scale = o->scale;
 
-#define CIE_u_origin     0.209167f
-#define CIE_v_origin     0.488098f
+#define CIE_u_origin     (4/19.0f)
+#define CIE_v_origin     (9/19.0f)
 
   for (i = 0; i < n_pixels; i++)
     {
