@@ -30,7 +30,7 @@ property_double (scale, "Scale", 1.0)
 
 #define GEGL_OP_POINT_FILTER
 #define GEGL_OP_NAME     saturation_hue_constant2
-#define GEGL_OP_C_SOURCE saturation-yuv.c
+#define GEGL_OP_C_SOURCE saturation-foo.c
 
 #include "gegl-op.h"
 
@@ -62,9 +62,9 @@ process (GeglOperation       *operation,
   for (i = 0; i < n_pixels; i++)
     {
       out[0] = in[0];
-      out[1] = in[1] * scale;
-      out[2] = in[2] * scale;
-      out[3] = in[3] * scale;
+      out[1] = (in[1]) * scale;
+      out[2] = (in[2]) * scale;
+      out[3] = in[3];
 
       in += 4;
       out += 4;
