@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2019 Øyvind Kolås
+ * Copyright 2019 Øyvind Kolås, Elle Stone
  */
 
 #include "config.h"
@@ -29,7 +29,7 @@ property_double (scale, "Scale", 1.0)
 #else
 
 #define GEGL_OP_POINT_FILTER
-#define GEGL_OP_NAME     saturation_hue_constant2
+#define GEGL_OP_NAME     saturation_yuv
 #define GEGL_OP_C_SOURCE saturation-yuv.c
 
 #include "gegl-op.h"
@@ -45,6 +45,7 @@ static void prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", format);
 }
 
+
 static gboolean
 process (GeglOperation       *operation,
          void                *in_buf,
@@ -59,11 +60,14 @@ process (GeglOperation       *operation,
   glong i;
   float scale = o->scale;
 
+#define CIE_u_origin     0.209167f
+#define CIE_v_origin     0.488098f
+
   for (i = 0; i < n_pixels; i++)
     {
       out[0] = in[0];
-      out[1] = (in[1]) * scale;
-      out[2] = (in[2]) * scale;
+      out[1] = (in[1] - CIE_u_origin) * scale + CIE_u_origin;
+      out[2] = (in[2] - CIE_v_origin) * scale + CIE_v_origin;
       out[3] = in[3];
 
       in += 4;
@@ -86,8 +90,8 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class->process = process;
 
   gegl_operation_class_set_keys (operation_class,
-    "name"       , "gegl:saturation-foo",
-    "title",       "Saturation with attempt at constant hue",
+    "name"       , "gegl:saturation-yuv",
+    "title",       "Saturation change saturation in CIE Yuv",
     "categories" , "color",
     "description", "Changes the saturation",
     NULL);
