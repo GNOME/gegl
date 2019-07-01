@@ -35,7 +35,7 @@ property_int (min_neigh, "min neigh", 4)
 property_int (min_iter, "min iter", 100)
   value_range (1, 512)
 
-property_int (improvement_iters, "improvement iters", 1)
+property_int (improvement_iters, "improvement iters", 3)
   value_range (1, 30)
 
 property_double (chance_try, "try chance", 0.75)
@@ -59,9 +59,9 @@ property_double (metric_dist_powk, "metric dist powk", 1.35)
   value_range (0.0, 10.0)
   ui_steps    (0.1, 1.0)
 
-property_double (metric_empty_score, "metric empty score", 0.25)
-  value_range (0.1, 100.0)
-  ui_steps    (0.1, 0.1)
+property_double (metric_empty_score, "metric empty score", 0.05)
+  value_range (0.01, 100.0)
+  ui_steps    (0.05, 0.1)
 
 #else
 

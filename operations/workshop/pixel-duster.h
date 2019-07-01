@@ -353,12 +353,14 @@ score_site (PixelDuster *duster,
 
   for (i = 1; i < NEIGHBORHOOD && score < bail; i++)
   {
-    if (needle[i*4 + 3]<1.0f && hay[i*4 + 3]>0.001f)
+
+    if (needle[i*4 + 3]>0.01 && hay[i*4 + 3]>0.001f)
     {
       score += f_rgb_diff (&needle[i*4 + 0], &hay[i*4 + 0]) * duster->order[i][2];
     }
     else
     {
+      /* both empty in needle and empty in hay get a similar badness score */
       score += duster->metric_empty_score * duster->order[i][2];
     }
   }
