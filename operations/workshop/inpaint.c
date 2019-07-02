@@ -41,7 +41,7 @@ property_int (max_iter, "max iter", 2000)
 property_int (improvement_iters, "improvement iters", 3)
   value_range (0, 30)
 
-property_double (chance_try, "try chance", 0.5)
+property_double (chance_try, "try chance", 0.66)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
 property_double (chance_retry, "retry chance", 1.0)
@@ -55,7 +55,7 @@ property_double (ring_gap,    "ring gap", 1.3)
 property_double (ring_gamma, "ring gamma", 1.4)
   value_range (0.0, 4.0)
   ui_steps    (0.1, 0.2)
-property_double (ring_twist, "ring twist", 0.10)
+property_double (ring_twist, "ring twist", 0.033)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.2)
 
@@ -79,7 +79,11 @@ property_double (metric_dist_powk, "metric dist powk", 2.0)
   value_range (0.0, 10.0)
   ui_steps    (0.1, 1.0)
 
-property_double (metric_empty_score, "metric empty score", 0.07)
+property_double (metric_empty_hay_score, "metric empty hay score", 0.100)
+  value_range (0.01, 100.0)
+  ui_steps    (0.05, 0.1)
+
+property_double (metric_empty_needle_score, "metric empty needle score", 0.033)
   value_range (0.01, 100.0)
   ui_steps    (0.05, 0.1)
 
@@ -149,7 +153,8 @@ process (GeglOperation       *operation,
                                              o->ring_gamma,
                                              o->ring_twist,
                                              o->metric_dist_powk,
-                                             o->metric_empty_score,
+                                             o->metric_empty_hay_score,
+                                             o->metric_empty_needle_score,
                                              o->metric_cohesion/1000.0,
                                              operation);
   gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);

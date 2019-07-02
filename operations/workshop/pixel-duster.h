@@ -69,7 +69,8 @@ typedef struct
   float          ring_twist;
 
   float          metric_dist_powk;
-  float          metric_empty_score;
+  float          metric_empty_hay_score;
+  float          metric_empty_needle_score;
   float          metric_cohesion;
 
   GHashTable    *ht[1];
@@ -190,7 +191,8 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
                                        float       ring_gamma,
                                        float       ring_twist,
                                        float       metric_dist_powk,
-                                       float       metric_empty_score,
+                                       float       metric_empty_hay_score,
+                                       float       metric_empty_needle_score,
                                        float       metric_cohesion,
 
                                        GeglOperation *op)
@@ -227,7 +229,8 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
   ret->scale_x  = scale_x;
   ret->scale_y  = scale_y;
   ret->metric_dist_powk = metric_dist_powk;
-  ret->metric_empty_score = metric_empty_score;
+  ret->metric_empty_hay_score = metric_empty_hay_score;
+  ret->metric_empty_needle_score = metric_empty_needle_score;
   ret->metric_cohesion = metric_cohesion;
 
   ret->in_sampler_f = gegl_buffer_sampler_new (input,
@@ -380,15 +383,26 @@ score_site (PixelDuster *duster,
 
   for (i = 1; i < NEIGHBORHOOD && score < bail; i++)
   {
-
-    if (needle[i*4 + 3]>0.01 && hay[i*4 + 3]>0.001f)
+    if (needle[i*4 + 3]>0.001f)
     {
-      score += f_rgb_diff (&needle[i*4 + 0], &hay[i*4 + 0]) * duster->order[i][2];
+      if (hay[i*4 + 3]>0.001f)
+      {
+        score += f_rgb_diff (&needle[i*4 + 0], &hay[i*4 + 0]) * duster->order[i][2];
+      }
+      else
+      {
+        score += duster->metric_empty_hay_score * duster->order[i][2];
+      }
     }
     else
     {
+      score += duster->metric_empty_needle_score * duster->order[i][2];
+    }
+
+
+
+    {
       /* both empty in needle and empty in hay get a similar badness score */
-      score += duster->metric_empty_score * duster->order[i][2];
     }
   }
 
