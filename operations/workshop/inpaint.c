@@ -41,8 +41,8 @@ property_int (max_iter, "max iter", 2000)
 
 property_int (improvement_iters, "improvement iters", 2)
 
-property_int (k, "k", 1)
-  value_range (1, 5)
+property_int (k, "k", 3)
+  value_range (1, 8)
 
 property_double (chance_try, "try chance", 0.33)
   value_range (0.0, 1.0)

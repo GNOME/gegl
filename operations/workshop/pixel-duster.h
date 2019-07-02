@@ -86,7 +86,7 @@ typedef struct
 } PixelDuster;
 
 
-#define MAX_K                   4
+#define MAX_K                   8
 
 #define RINGS                   3   // increments works up to 7-8 with no adver
 #define RAYS                    12 // good values for testing 6 8 10 12 16
@@ -318,9 +318,16 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
     for (int ray = 0; ray < RAYS; ray ++)
     {
       float energy = 0.0;
+      int count = 0;
       for (int circle = 0; circle < RINGS; circle++)
-        for (int c = 0; c < 3; c++)
-          energy += dst[ ( circle * RAYS  + ray )*4 + c];
+        if (dst[ ( circle * RAYS  + ray )*4 + 3] > 0.01)
+        {
+          for (int c = 0; c < 3; c++)
+            energy += dst[ ( circle * RAYS  + ray )*4 + c];
+          count ++;
+        }
+      if (count)
+        energy/=count;
       if (energy > warmest_ray_energy)
       {
         warmest_ray = ray;
