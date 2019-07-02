@@ -92,7 +92,7 @@ typedef struct
 #define RAYS                    12 // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
-#define N_SCALE_NEEDLES         3
+#define N_SCALE_NEEDLES         1
 
 
 typedef struct _Probe Probe;
@@ -377,7 +377,7 @@ score_site (PixelDuster *duster,
     return INITIAL_SCORE;
   }
 
-  for (i = 1; i < NEIGHBORHOOD && score < bail; i++)
+  for (i = 1; i < NEIGHBORHOOD /* && score < bail */; i++)
   {
     if (needle[i*4 + 3]>0.001f)
     {
@@ -394,8 +394,6 @@ score_site (PixelDuster *duster,
     {
       score += duster->metric_empty_needle_score * duster->order[i][2];
     }
-
-
 
     {
       /* both empty in needle and empty in hay get a similar badness score */
@@ -415,7 +413,6 @@ score_site (PixelDuster *duster,
     }
     sum_x /= count;
     sum_y /= count;
-
 
     score += (POW2(sum_x - probe->source_x[0]) +
              POW2(sum_y - probe->source_y[0])) * duster->metric_cohesion;
