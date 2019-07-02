@@ -54,6 +54,7 @@ typedef struct
   int            seek_radius;
   int            minimum_neighbors;
   int            minimum_iterations;
+  int            maximum_iterations;
   int            max_age;
   float          try_chance;
   float          retry_chance;
@@ -61,11 +62,15 @@ typedef struct
   float          scale_y;
 
   float          ring_gap;
+  float          ring_gaps[8];
+
+
   float          ring_gamma;
   float          ring_twist;
 
   float          metric_dist_powk;
   float          metric_empty_score;
+  float          metric_cohesion;
 
   GHashTable    *ht[1];
 
@@ -83,10 +88,10 @@ typedef struct
 #define MAX_K                   4
 
 #define RINGS                   3   // increments works up to 7-8 with no adver
-#define RAYS                    12   // good values for testing 6 8 10 12 16
+#define RAYS                    12 // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
-#define N_SCALE_NEEDLES         1
+#define N_SCALE_NEEDLES         3
 
 
 //#define BATCH_PROBES 64     // batch this many probes to process concurently
@@ -104,7 +109,7 @@ struct _Probe {
   int     k;
   float   score;
   float   old_score;
-  Probe  *neighbors[4];
+  Probe  *neighbors[8]; // first the 4 connected, then the rest of 8 connected
   float   k_score[MAX_K];
   float   source_x[MAX_K];
   float   source_y[MAX_K];
@@ -135,12 +140,18 @@ static void init_order(PixelDuster *duster)
   i = 1;
 {
 
-  for (int circleno = 0; circleno < RINGS; circleno++)
+  for (int circleno = 1; circleno < RINGS; circleno++)
   for (float angleno = 0; angleno < RAYS; angleno++)
   {
-    float mag = pow(duster->ring_gap * (circleno + 1), duster->ring_gamma);
-    float x = cosf ((angleno / RAYS + duster->ring_twist*circleno) * M_PI * 2) * mag;
-    float y = sinf ((angleno / RAYS + duster->ring_twist*circleno) * M_PI * 2) * mag;
+    float mag;
+    float x, y;
+    if (duster->ring_gaps[circleno] > 0.0)
+      mag = duster->ring_gaps[circleno];
+    else 
+      mag = pow(duster->ring_gap * (circleno + 1), duster->ring_gamma);
+
+    x = cosf ((angleno / RAYS + duster->ring_twist*circleno) * M_PI * 2) * mag;
+    y = sinf ((angleno / RAYS + duster->ring_twist*circleno) * M_PI * 2) * mag;
     duster->order[i][0] = x;
     duster->order[i][1] = y;
     duster->order[i][2] = powf (1.0 / (POW2(x)+POW2(y)), duster->metric_dist_powk);
@@ -165,16 +176,23 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
                                        int         max_k,
                                        int         minimum_neighbors,
                                        int         minimum_iterations,
+                                       int         maximum_iterations,
                                        float       try_chance,
                                        float       retry_chance,
                                        float       scale_x,
                                        float       scale_y,
                                        int         improvement_iterations,
                                        float       ring_gap,
+                                       float       ring_gap1,
+                                       float       ring_gap2,
+                                       float       ring_gap3,
+                                       float       ring_gap4,
                                        float       ring_gamma,
                                        float       ring_twist,
                                        float       metric_dist_powk,
                                        float       metric_empty_score,
+                                       float       metric_cohesion,
+
                                        GeglOperation *op)
 {
   PixelDuster *ret = g_malloc0 (sizeof (PixelDuster));
@@ -184,9 +202,14 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
   ret->seek_radius = seek_radius;
   ret->minimum_neighbors  = minimum_neighbors;
   ret->minimum_iterations = minimum_iterations;
+  ret->maximum_iterations = maximum_iterations;
   ret->try_chance   = try_chance;
   ret->retry_chance = retry_chance;
   ret->op = op;
+  ret->ring_gaps[1] = ring_gap1;
+  ret->ring_gaps[2] = ring_gap2;
+  ret->ring_gaps[3] = ring_gap3;
+  ret->ring_gaps[4] = ring_gap4;
   ret->max_x = 0;
   ret->max_y = 0;
   ret->min_x = 10000;
@@ -205,6 +228,7 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
   ret->scale_y  = scale_y;
   ret->metric_dist_powk = metric_dist_powk;
   ret->metric_empty_score = metric_empty_score;
+  ret->metric_cohesion = metric_cohesion;
 
   ret->in_sampler_f = gegl_buffer_sampler_new (input,
                                                babl_format ("RGBA float"),
@@ -338,6 +362,9 @@ static inline float f_rgb_diff (float *a, float *b)
 
 static float inline
 score_site (PixelDuster *duster,
+            Probe       *probe,
+            int          x,
+            int          y,
             gfloat      *needle,
             gfloat      *hay,
             float        bail)
@@ -364,7 +391,28 @@ score_site (PixelDuster *duster,
       score += duster->metric_empty_score * duster->order[i][2];
     }
   }
-  return sqrtf (score);
+
+  {
+    float sum_x = probe->source_x[0];
+    float sum_y = probe->source_y[0];
+    int count = 1;
+    for (int i = 0; i < 8; i++)
+    if (probe->neighbors[i])
+    {
+      sum_x += probe->neighbors[i]->source_x[0];
+      sum_y += probe->neighbors[i]->source_y[0];
+      count++;
+    }
+    sum_x /= count;
+    sum_y /= count;
+
+
+    score += (POW2(sum_x - probe->source_x[0]) +
+             POW2(sum_y - probe->source_y[0])) * duster->metric_cohesion;
+
+  }
+  score = sqrtf (score);
+  return score;
 }
 
 static Probe *
@@ -499,9 +547,21 @@ probe_prep (PixelDuster *duster,
       if ( (probe->target_x == oprobe->target_x) &&
            (probe->target_y == oprobe->target_y + 1))
         probe->neighbors[neighbours++] = oprobe;
+      if ( (probe->target_x == oprobe->target_x + 1) &&
+           (probe->target_y == oprobe->target_y + 1))
+        probe->neighbors[neighbours++] = oprobe;
+      if ( (probe->target_x == oprobe->target_x + 1) &&
+           (probe->target_y == oprobe->target_y - 1))
+        probe->neighbors[neighbours++] = oprobe;
+      if ( (probe->target_x == oprobe->target_x - 1) &&
+           (probe->target_y == oprobe->target_y + 1))
+        probe->neighbors[neighbours++] = oprobe;
+      if ( (probe->target_x == oprobe->target_x - 1) &&
+           (probe->target_y == oprobe->target_y - 1))
+        probe->neighbors[neighbours++] = oprobe;
     }
   }
-    for (;neighbours < 4; neighbours++)
+    for (;neighbours < 8; neighbours++)
       probe->neighbors[neighbours] = NULL;
   }
 
@@ -538,7 +598,7 @@ static void probe_compare_hay (PixelDuster *duster,
     {
       for (int n = 0; n < N_SCALE_NEEDLES; n++)
       {
-        score = score_site (duster, &probe->needles[n][0], hay, probe->score);
+        score = score_site (duster, probe, x, y, &probe->needles[n][0], hay, probe->score);
 
         if (score < probe->score)
         {
@@ -559,6 +619,12 @@ static void probe_compare_hay (PixelDuster *duster,
           probe->score = probe->k_score[0] = score;
         }
       }
+
+       /* XXX : incorporate distance to average destination of 4 connected
+                neighborhoods source coordinates.. */
+      {
+      }
+
     }
 }
 
@@ -742,8 +808,9 @@ static inline void pixel_duster_fill (PixelDuster *duster)
   gint total = 0;
   gint runs = 0;
 
-  while (  ((missing >0) /* && (missing != old_missing) */) ||
-           (runs < duster->minimum_iterations))
+  while (  (((missing >0) /* && (missing != old_missing) */) ||
+           (runs < duster->minimum_iterations)) &&
+           runs < duster->maximum_iterations)
   {
 #ifdef BATCH_PROBES
     Probe *probes[BATCH_PROBES];

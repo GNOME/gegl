@@ -29,39 +29,65 @@
 property_int (seek_distance, "seek radius", 30)
   value_range (4, 512)
 
-property_int (min_neigh, "min neigh", 4)
-  value_range (1, 4)
+property_int (min_neigh, "min neigh", 3)
+  value_range (0, 4)
 
 property_int (min_iter, "min iter", 100)
   value_range (1, 512)
 
+property_int (max_iter, "max iter", 2000)
+  value_range (1, 40000)
+
 property_int (improvement_iters, "improvement iters", 3)
-  value_range (1, 30)
+  value_range (0, 30)
 
-property_double (chance_try, "try chance", 0.75)
+property_double (chance_try, "try chance", 0.5)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
-property_double (chance_retry, "retry chance", 0.8)
+property_double (chance_retry, "retry chance", 1.0)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
 
-property_double (ring_gap,    "ring gap", 1.25)
+property_double (ring_gap,    "ring gap", 1.3)
+  value_range (0.0, 8.0)
+  ui_steps    (0.1, 0.2)
+
+property_double (ring_gamma, "ring gamma", 1.4)
   value_range (0.0, 4.0)
   ui_steps    (0.1, 0.2)
-property_double (ring_gamma, "ring gamma", 1.2)
-  value_range (0.0, 4.0)
-  ui_steps    (0.1, 0.2)
-property_double (ring_twist, "ring twist", 0.040)
+property_double (ring_twist, "ring twist", 0.10)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.2)
 
-property_double (metric_dist_powk, "metric dist powk", 1.35)
+property_double (ring_gap1,    "ring gap1", 1.5)
+  value_range (0.0, 8.0)
+  ui_steps    (0.25, 0.25)
+
+property_double (ring_gap2,    "ring gap2", 2.5)
+  value_range (0.0, 8.0)
+  ui_steps    (0.25, 0.25)
+
+property_double (ring_gap3,    "ring gap3", 3.5)
+  value_range (0.0, 8.0)
+  ui_steps    (0.25, 0.25)
+
+property_double (ring_gap4,    "ring gap4", 4.5)
+  value_range (0.0, 8.0)
+  ui_steps    (0.25, 0.25)
+
+property_double (metric_dist_powk, "metric dist powk", 2.0)
   value_range (0.0, 10.0)
   ui_steps    (0.1, 1.0)
 
-property_double (metric_empty_score, "metric empty score", 0.05)
+property_double (metric_empty_score, "metric empty score", 0.07)
   value_range (0.01, 100.0)
   ui_steps    (0.05, 0.1)
+
+property_double (metric_cohesion, "metric cohesion", 0.005)
+  value_range (0.0, 10.0)
+  ui_steps    (0.2, 0.2)
+
+
 
 #else
 
@@ -109,16 +135,22 @@ process (GeglOperation       *operation,
                                              1, // max_k
                                              o->min_neigh,
                                              o->min_iter,
+                                             o->max_iter,
                                              o->chance_try,
                                              o->chance_retry,
                                              1.0, // scale_x
                                              1.0, // scale_y
                                              o->improvement_iters,
                                              o->ring_gap,
+                                             o->ring_gap1,
+                                             o->ring_gap2,
+                                             o->ring_gap3,
+                                             o->ring_gap4,
                                              o->ring_gamma,
                                              o->ring_twist,
                                              o->metric_dist_powk,
                                              o->metric_empty_score,
+                                             o->metric_cohesion/1000.0,
                                              operation);
   gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);
   pixel_duster_add_probes_for_transparent (duster);
