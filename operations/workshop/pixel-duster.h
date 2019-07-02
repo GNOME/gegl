@@ -95,10 +95,6 @@ typedef struct
 #define N_SCALE_NEEDLES         3
 
 
-//#define BATCH_PROBES 64     // batch this many probes to process concurently
-                            // it is slightly faster than doing a full ht
-                            // iteration per probe on single core
-
 typedef struct _Probe Probe;
 
 struct _Probe {
@@ -744,37 +740,11 @@ static inline int probes_improve (PixelDuster *duster,
                                   Probe       **probes,
                                   int           n_probes)
 {
-#ifdef BATCH_PROBES
-  void *ptr[3] = {duster, probes, GINT_TO_POINTER (n_probes)};
-
-  for (int i = 0; i < n_probes; i++)
-  {
-    Probe *probe = probes[i];
-
-    if (probe->age >= duster->max_age)
-    {
-      g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
-      probes[i] = NULL;
-    }
-    else
-    {
-      probe_prep (duster, probe);
-   }
-  }
-  g_hash_table_foreach (duster->ht[0], compare_probes, ptr);
-
-  for (int i = 0; i < n_probes; i++)
-  {
-    if (probes[i])
-      probe_post_search (duster, probes[i]);
-  }
-#else
   for (int i = 0; i < n_probes; i++)
   {
     if (probes[i])
       probe_improve (duster, probes[i]);
   }
-#endif
   return 0;
 }
 
@@ -826,10 +796,6 @@ static inline void pixel_duster_fill (PixelDuster *duster)
            (runs < duster->minimum_iterations)) &&
            runs < duster->maximum_iterations)
   {
-#ifdef BATCH_PROBES
-    Probe *probes[BATCH_PROBES];
-    int n_probes = 0;
-#endif
 
     runs++;
     total = 0;
@@ -863,25 +829,10 @@ static inline void pixel_duster_fill (PixelDuster *duster)
               probe_neighbors (duster, duster->output, probe, duster->minimum_neighbors) >=
               duster->minimum_neighbors)
       {
-#ifdef BATCH_PROBES
-        probes[n_probes++] = probe;
-#else
         probe_improve (duster, probe);
-#endif
       }
     }
-#ifdef BATCH_PROBES
-    if (n_probes>=BATCH_PROBES)
-    {
-      probes_improve (duster, probes, n_probes);
-      n_probes = 0;
-    }
-#endif
   }
-#ifdef BATCH_PROBES
-  if (n_probes)
-    probes_improve (duster, probes, n_probes);
-#endif
 
   if (duster->op)
     gegl_operation_progress (duster->op, 0.2 + (total-missing) * 0.8 / total,
