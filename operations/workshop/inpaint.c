@@ -27,7 +27,7 @@
 #ifdef GEGL_PROPERTIES
 
 
-property_int (seek_distance, "seek radius", 5)
+property_int (seek_distance, "seek radius", 11)
   value_range (1, 512)
 
 property_int (min_iter, "min iter", 100)
@@ -36,12 +36,12 @@ property_int (min_iter, "min iter", 100)
 property_int (max_iter, "max iter", 2000)
   value_range (1, 40000)
 
-property_int (improvement_iters, "improvement iters", 3)
+property_int (improvement_iters, "improvement iters", 4)
 
 property_double (chance_try, "try chance", 0.33)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
-property_double (chance_retry, "retry chance", 1.0)
+property_double (chance_retry, "retry chance", 0.8)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
 
@@ -65,19 +65,19 @@ property_double (ring_gap4,    "ring gap4", 5.5)
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (metric_dist_powk, "metric dist powk", 1.5)
+property_double (metric_dist_powk, "metric dist powk", 2.0)
   value_range (0.0, 10.0)
   ui_steps    (0.1, 1.0)
 
-property_double (metric_empty_hay_score, "metric empty hay score", 0.5)
+property_double (metric_empty_hay_score, "metric empty hay score", 0.11)
   value_range (0.01, 100.0)
   ui_steps    (0.05, 0.1)
 
-property_double (metric_empty_needle_score, "metric empty needle score", 0.033)
+property_double (metric_empty_needle_score, "metric empty needle score", 0.2)
   value_range (0.01, 100.0)
   ui_steps    (0.05, 0.1)
 
-property_double (metric_cohesion, "metric cohesion", 0.004)
+property_double (metric_cohesion, "metric cohesion", 0.01)
   value_range (0.0, 10.0)
   ui_steps    (0.2, 0.2)
 
@@ -202,7 +202,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->get_cached_region       = get_cached_region;
   operation_class->opencl_support          = FALSE;
-  operation_class->threaded                = TRUE;
+  operation_class->threaded                = FALSE;
 
   gegl_operation_class_set_keys (operation_class,
       "name",        "gegl:alpha-inpaint",

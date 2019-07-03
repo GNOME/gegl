@@ -80,7 +80,7 @@ typedef struct
 
 
 #define RINGS                   4   // increments works up to 7-8 with no adver
-#define RAYS                    12 // good values for testing 6 8 10 12 16
+#define RAYS                    6  // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
 #define N_SCALE_NEEDLES         3
@@ -617,14 +617,18 @@ static int probe_improve (PixelDuster *duster,
   probe_prep (duster, probe, needles);
 
   {
-    float iter_start_x = probe->source_x;
-    float iter_start_y = probe->source_y;
-  for (int dx = -duster->seek_radius; dx < duster->seek_radius; dx++)
-    for (int dy = -duster->seek_radius; dy < duster->seek_radius; dy++)
+    float mag = duster->seek_radius;
+    for (int i = 0; i < 32; i++)
+    {
+      int dx = g_random_int_range (-mag, mag);
+      int dy = g_random_int_range (-mag, mag);
+      mag *= 0.8; // reduce seek radius for each iteration
+      if (mag < 3)
+        mag = 3;
       if (!(dx == 0 && dy == 0))
       {
-        int test_x = iter_start_x + dx;
-        int test_y = iter_start_y + dy;
+        int test_x = probe->source_x + dx;
+        int test_y = probe->source_y + dy;
         float *hay = ensure_hay (duster, test_x, test_y);
         float score = probe_score (duster, probe, needles, test_x, test_y, hay, probe->score);
         if (score < probe->score)
@@ -634,11 +638,10 @@ static int probe_improve (PixelDuster *duster,
           probe->source_x = test_x;
           probe->source_y = test_y;
           probe->score = score;
-          //probe_update_target (duster, probe);
         }
       }
+    }
   }
-
 
   probe_post_search (duster, probe);
 
