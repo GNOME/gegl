@@ -107,7 +107,6 @@ struct _Probe {
   float   score;
   float   old_score;
   Probe  *neighbors[8]; // first the 4 connected, then the rest of 8 connected
-  float   k_score[MAX_K];
   float   source_x[MAX_K];
   float   source_y[MAX_K];
   gfloat *hay[MAX_K];
@@ -446,7 +445,6 @@ add_probe (PixelDuster *duster, int target_x, int target_y)
   probe->target_y = target_y;
   probe->source_x[0] = target_x / duster->scale_x;
   probe->source_y[0] = target_y / duster->scale_y;
-  probe->k_score[0]   = INITIAL_SCORE;
   probe->k = 0;
   probe->score   = INITIAL_SCORE;
   g_hash_table_insert (duster->probes_ht,
@@ -471,6 +469,21 @@ probe_rel_is_set (PixelDuster *duster, GeglBuffer *output, Probe *probe, int rel
   return 0;
 #endif
 }
+
+static inline void probe_push (PixelDuster *duster, Probe *probe)
+{
+  int j; 
+  for (j = duster->max_k-1; j >= 1; j --)
+  { 
+    probe->source_x[j] = probe->source_x[j-1];
+    probe->source_y[j] = probe->source_y[j-1];
+    probe->hay[j] = probe->hay[j-1];
+  }
+  probe->k++;
+  if (probe->k > duster->max_k)
+    probe->k = duster->max_k;
+}
+
 
 #define ret_if_good     if (found >=min) goto ret;
 
@@ -616,21 +629,11 @@ static void probe_compare_hay (PixelDuster *duster,
 
         if (score < probe->score)
         {
-          int j;
-          for (j = duster->max_k-1; j >= 1; j --)
-          {
-            probe->source_x[j] = probe->source_x[j-1];
-            probe->source_y[j] = probe->source_y[j-1];
-            probe->hay[j] = probe->hay[j-1];
-            probe->k_score[j] = probe->k_score[j-1];
-          }
-          probe->k++;
-          if (probe->k > duster->max_k)
-            probe->k = duster->max_k;
+          probe_push (duster, probe);
           probe->source_x[0] = x;
           probe->source_y[0] = y;
           probe->hay[0] = hay;
-          probe->score = probe->k_score[0] = score;
+          probe->score = score;
         }
       }
 
