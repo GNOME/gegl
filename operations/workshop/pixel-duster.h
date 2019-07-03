@@ -51,20 +51,14 @@ typedef struct
   GeglSampler   *ref_sampler_f;
   GeglSampler   *out_sampler_f;
   int            seek_radius;
-  int            minimum_neighbors;
   int            minimum_iterations;
   int            maximum_iterations;
   int            max_age;
   float          try_chance;
   float          retry_chance;
-  float          scale_x;
-  float          scale_y;
 
-  float          ring_gap;
   float          ring_gaps[8];
 
-
-  float          ring_gamma;
   float          ring_twist;
 
   float          metric_dist_powk;
@@ -85,7 +79,7 @@ typedef struct
 } PixelDuster;
 
 
-#define RINGS                   3   // increments works up to 7-8 with no adver
+#define RINGS                   4   // increments works up to 7-8 with no adver
 #define RAYS                    12 // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
@@ -103,7 +97,6 @@ struct _Probe {
   int     target_x;
   int     target_y;
   Probe  *neighbors[8];     // cached from coords and iterating all
-  int     target_neighbors; // cached computation
   int     age;              // not really needed
   float   old_score;        // should be on stack
   float   score;
@@ -138,12 +131,8 @@ static void init_order(PixelDuster *duster)
   for (int circleno = 1; circleno < RINGS; circleno++)
   for (float angleno = 0; angleno < RAYS; angleno++)
   {
-    float mag;
+    float mag = duster->ring_gaps[circleno];
     float x, y;
-    if (duster->ring_gaps[circleno] > 0.0)
-      mag = duster->ring_gaps[circleno];
-    else 
-      mag = pow(duster->ring_gap * (circleno + 1), duster->ring_gamma);
 
     x = cosf ((angleno / RAYS + duster->ring_twist*circleno) * M_PI * 2) * mag;
     y = sinf ((angleno / RAYS + duster->ring_twist*circleno) * M_PI * 2) * mag;
@@ -155,7 +144,7 @@ static void init_order(PixelDuster *duster)
 }
 }
 
-static void duster_idx_to_x_y (PixelDuster *duster, int index, int *x, int *y)
+static void duster_idx_to_x_y (PixelDuster *duster, int index, float *x, float *y)
 {
   *x =  duster->order[index][0];
   *y =  duster->order[index][1];
@@ -168,20 +157,15 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
                                        const GeglRectangle *in_rect,
                                        const GeglRectangle *out_rect,
                                        int         seek_radius,
-                                       int         minimum_neighbors,
                                        int         minimum_iterations,
                                        int         maximum_iterations,
                                        float       try_chance,
                                        float       retry_chance,
-                                       float       scale_x,
-                                       float       scale_y,
                                        int         improvement_iterations,
-                                       float       ring_gap,
                                        float       ring_gap1,
                                        float       ring_gap2,
                                        float       ring_gap3,
                                        float       ring_gap4,
-                                       float       ring_gamma,
                                        float       ring_twist,
                                        float       metric_dist_powk,
                                        float       metric_empty_hay_score,
@@ -195,7 +179,6 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
   ret->input       = input;
   ret->output      = output;
   ret->seek_radius = seek_radius;
-  ret->minimum_neighbors  = minimum_neighbors;
   ret->minimum_iterations = minimum_iterations;
   ret->maximum_iterations = maximum_iterations;
   ret->try_chance   = try_chance;
@@ -210,14 +193,10 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
   ret->min_x = 10000;
   ret->min_y = 10000;
   ret->max_age = improvement_iterations;
-  ret->ring_gap = ring_gap;
-  ret->ring_gamma = ring_gamma;
   ret->ring_twist = ring_twist;
 
   ret->in_rect  = *in_rect;
   ret->out_rect = *out_rect;
-  ret->scale_x  = scale_x;
-  ret->scale_y  = scale_y;
   ret->metric_dist_powk = metric_dist_powk;
   ret->metric_empty_hay_score = metric_empty_hay_score;
   ret->metric_empty_needle_score = metric_empty_needle_score;
@@ -296,7 +275,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
 
   for (int i = 0; i < NEIGHBORHOOD; i++)
   {
-    int dx, dy;
+    float dx, dy;
     duster_idx_to_x_y (duster, i, &dx, &dy);
     gegl_sampler_get (sampler_f, x + dx * scale, y + dy * scale, NULL, &dst[i*4], 0);
   }
@@ -436,69 +415,18 @@ add_probe (PixelDuster *duster, int target_x, int target_y)
 
   probe->target_x = target_x;
   probe->target_y = target_y;
-  probe->source_x = target_x / duster->scale_x;
-  probe->source_y = target_y / duster->scale_y;
+  probe->source_x = target_x;
+  probe->source_y = target_y;
   probe->score   = INITIAL_SCORE;
   g_hash_table_insert (duster->probes_ht,
                        xy2offset(target_x, target_y), probe);
   return probe;
 }
 
-static int
-probe_rel_is_set (PixelDuster *duster, GeglBuffer *output, Probe *probe, int rel_x, int rel_y)
-{
-#if 1
-  static const Babl *format = NULL;
-  guchar pix[4];
-  if (!format) format = babl_format ("R'G'B'A u8");
-  gegl_buffer_sample (output, probe->target_x + rel_x, probe->target_y + rel_y, NULL, &pix[0], format, GEGL_SAMPLER_NEAREST, 0);
-  return pix[3] > 5;
-#else
-  Probe *neighbor_probe = g_hash_table_lookup (duster->probes_ht,
-        xy2offset(probe->target_x + rel_x, probe->target_y + rel_y));
-  if (!neighbor_probe || neighbor_probe->age)
-    return 1;
-  return 0;
-#endif
-}
-
 static inline void probe_push (PixelDuster *duster, Probe *probe)
 {
 }
 
-
-#define ret_if_good     if (found >=min) goto ret;
-
-static int
-probe_neighbors (PixelDuster *duster, GeglBuffer *output, Probe *probe, int min)
-{
-  int found = 0;
-  found = probe->target_neighbors;
-
-  ret_if_good
-
-  found = 0;
-
-  if (probe_rel_is_set (duster, output, probe, -1, 0)) found ++;
-  ret_if_good
-  if (probe_rel_is_set (duster, output, probe,  1, 0)) found ++;
-  ret_if_good
-  if (probe_rel_is_set (duster, output, probe,  0, 1)) found ++;
-  ret_if_good
-  if (probe_rel_is_set (duster, output, probe,  0, -1)) found ++;
-  ret_if_good
-  if (probe_rel_is_set (duster, output, probe,  1, 1)) found ++;
-  ret_if_good
-  if (probe_rel_is_set (duster, output, probe, -1,-1)) found ++;
-  ret_if_good
-  if (probe_rel_is_set (duster, output, probe,  1,-1)) found ++;
-  ret_if_good
-  if (probe_rel_is_set (duster, output, probe, -1, 1)) found ++;
-
-ret:
-  probe->target_neighbors = found;
-  return found;
-}
 
 static gfloat *ensure_hay (PixelDuster *duster, int x, int y)
 {
@@ -806,9 +734,7 @@ static inline void pixel_duster_fill (PixelDuster *duster)
 
     if (probe->score == INITIAL_SCORE || try_replace)
     {
-      if ((rand()%100)/100.0 < duster->try_chance &&
-              probe_neighbors (duster, duster->output, probe, duster->minimum_neighbors) >=
-              duster->minimum_neighbors)
+      if ((rand()%100)/100.0 < duster->try_chance)
       {
         probe_improve (duster, probe);
       }
@@ -816,9 +742,9 @@ static inline void pixel_duster_fill (PixelDuster *duster)
   }
 
   if (duster->op)
-    gegl_operation_progress (duster->op, 0.2 + (total-missing) * 0.8 / total,
+    gegl_operation_progress (duster->op, (total-missing) * 1.0 / total,
                              "finding suitable pixels");
-#if 1
+#if 0
 
   fprintf (stderr, "\r%i/%i %2.2f run#:%i  ", total-missing, total, (total-missing) * 100.0 / total, runs);
 #endif

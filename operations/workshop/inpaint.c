@@ -30,16 +30,13 @@
 property_int (seek_distance, "seek radius", 5)
   value_range (1, 512)
 
-property_int (min_neigh, "min neigh", 3)
-  value_range (0, 4)
-
 property_int (min_iter, "min iter", 100)
   value_range (1, 512)
 
 property_int (max_iter, "max iter", 2000)
   value_range (1, 40000)
 
-property_int (improvement_iters, "improvement iters", 2)
+property_int (improvement_iters, "improvement iters", 3)
 
 property_double (chance_try, "try chance", 0.33)
   value_range (0.0, 1.0)
@@ -48,34 +45,27 @@ property_double (chance_retry, "retry chance", 1.0)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
 
-property_double (ring_gap,    "ring gap", 1.3)
-  value_range (0.0, 8.0)
-  ui_steps    (0.1, 0.2)
-
-property_double (ring_gamma, "ring gamma", 1.4)
-  value_range (0.0, 4.0)
-  ui_steps    (0.1, 0.2)
 property_double (ring_twist, "ring twist", 0.0)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.2)
 
-property_double (ring_gap1,    "ring gap1", 1.2)
-  value_range (0.0, 8.0)
+property_double (ring_gap1,    "ring gap1", 1.3)
+  value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
 property_double (ring_gap2,    "ring gap2", 2.5)
-  value_range (0.0, 8.0)
+  value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap3,    "ring gap3", 3.5)
-  value_range (0.0, 8.0)
+property_double (ring_gap3,    "ring gap3", 3.7)
+  value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap4,    "ring gap4", 4.5)
-  value_range (0.0, 8.0)
+property_double (ring_gap4,    "ring gap4", 5.5)
+  value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (metric_dist_powk, "metric dist powk", 2.0)
+property_double (metric_dist_powk, "metric dist powk", 1.5)
   value_range (0.0, 10.0)
   ui_steps    (0.1, 1.0)
 
@@ -90,11 +80,6 @@ property_double (metric_empty_needle_score, "metric empty needle score", 0.033)
 property_double (metric_cohesion, "metric cohesion", 0.004)
   value_range (0.0, 10.0)
   ui_steps    (0.2, 0.2)
-
-property_double (scale, "enlarge as well as inpaint 1.0 does nothing", 1.0)
-  value_range (0.0, 10.0)
-  ui_steps    (0.5, 0.5)
-
 
 #else
 
@@ -126,30 +111,6 @@ prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", format);
 }
 
-static void scaled_copy (PixelDuster *duster,
-                         GeglBuffer *in,
-                         GeglBuffer *out,
-                         gfloat      scale)
-{
-  GeglRectangle rect;
-  const Babl *format = babl_format ("RGBA float");
-  gint x, y;
-
-  rect = *gegl_buffer_get_extent (in);
-  for (y = 0; y < rect.height; y++)
-    for (x = 0; x < rect.width; x++)
-      {
-        float rgba[4];
-        gegl_sampler_get (duster->in_sampler_f, x, y, NULL,
-                          &rgba[0], 0);
-        {
-          GeglRectangle r = {x * scale, y * scale, 1, 1};
-          gegl_buffer_set (out, &r, 0, format, &rgba[0], 0);
-        }
-      }
-}
-
-
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
@@ -162,20 +123,15 @@ process (GeglOperation       *operation,
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
   PixelDuster    *duster = pixel_duster_new (input, input, output, &in_rect, &out_rect,
                                              o->seek_distance,
-                                             o->min_neigh,
                                              o->min_iter,
                                              o->max_iter,
                                              o->chance_try,
                                              o->chance_retry,
-                                             o->scale, // scale_x
-                                             o->scale, // scale_y
                                              o->improvement_iters,
-                                             o->ring_gap,
                                              o->ring_gap1,
                                              o->ring_gap2,
                                              o->ring_gap3,
                                              o->ring_gap4,
-                                             o->ring_gamma,
                                              o->ring_twist,
                                              o->metric_dist_powk,
                                              o->metric_empty_hay_score,
@@ -183,10 +139,7 @@ process (GeglOperation       *operation,
                                              o->metric_cohesion/1000.0,
                                              operation);
 
-  if (o->scale > 0.9999 && o->scale < 1.0001)
-    gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);
-  else
-    scaled_copy (duster, input, output, o->scale);
+  gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);
 
   pixel_duster_add_probes_for_transparent (duster);
 
@@ -234,23 +187,6 @@ operation_process (GeglOperation        *operation,
                                    gegl_operation_context_get_level (context));
 }
 
-static GeglRectangle
-get_bounding_box (GeglOperation *operation)
-{
-  GeglProperties *o      = GEGL_PROPERTIES (operation);
-  GeglRectangle *res = gegl_operation_source_get_bounding_box (operation, "input");
-  GeglRectangle result = {0,0,100,100};
-  if (res)
-    result = *res;
-  result.x = 0;
-  result.y = 0;
-  result.width  *= o->scale;
-  result.height *= o->scale;
-
-  return result;
-}
-
-
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
@@ -263,11 +199,10 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class->process                    = process;
   operation_class->prepare                 = prepare;
   operation_class->process                 = operation_process;
-  operation_class->get_bounding_box        = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->get_cached_region       = get_cached_region;
   operation_class->opencl_support          = FALSE;
-  operation_class->threaded                = FALSE;
+  operation_class->threaded                = TRUE;
 
   gegl_operation_class_set_keys (operation_class,
       "name",        "gegl:alpha-inpaint",
