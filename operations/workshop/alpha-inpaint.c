@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2018 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2018, 2019 Øyvind Kolås <pippin@gimp.org>
  *
  */
 
@@ -21,76 +21,132 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
-//retire more props after given set of completed re-runs
 
 #ifdef GEGL_PROPERTIES
 
-property_int (seek_distance, "seek radius", 11)
+property_int (seek_distance, "seek radius", 8)
+  description ("Maximum distance in neighborhood we look for better candidates per improvement.")
   value_range (1, 512)
 
-property_int (min_iter, "min iter", 100)
+property_int (min_iter, "min runs", 100)
+  description ("Ensuring that we get results even with low retry chance")
   value_range (1, 512)
 
-property_int (max_iter, "max iter", 200)
+property_int (max_iter, "max runs", 200)
+  description ("Mostly a saftey valve, so that we terminate")
   value_range (1, 40000)
 
-property_int (improvement_iters, "improvement iters", 4)
-  value_range (1, 40)
+property_int (iterations, "iterations per round per probe", 64)
+  description ("number of improvement iterations, after initial search - that each probe gets.")
+  value_range (1, 1000)
+
+property_int (improvement_iters, "improvement rounds", 4)
+  description ("number of improvement iterations, after initial search - that each probe gets.")
+  value_range (1, 1000)
 
 property_double (chance_try, "try chance", 0.33)
+  description ("The chance that a candidate pixel probe will start being filled in")
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
 property_double (chance_retry, "retry chance", 0.8)
+  description ("The chance that a pixel probe gets an improvement in an iteration")
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
 
 property_double (metric_dist_powk, "metric dist powk", 2.0)
+  description ("influences the lack of importance of further away pixels")
   value_range (0.0, 10.0)
   ui_steps    (0.1, 1.0)
 
 property_double (metric_empty_hay_score, "metric empty hay score", 0.11)
+  description ("score given to pixels that are empty, in the search neighborhood of pixel, this being at default or higher value sometimes discourages some of the good very nearby matches")
   value_range (0.01, 100.0)
   ui_steps    (0.05, 0.1)
 
 property_double (metric_empty_needle_score, "metric empty needle score", 0.2)
+  description ("the score given in the metric to an empty spot")
   value_range (0.01, 100.0)
   ui_steps    (0.05, 0.1)
 
 property_double (metric_cohesion, "metric cohesion", 0.01)
+  description ("influences the importance of probe spatial proximity")
   value_range (0.0, 10.0)
   ui_steps    (0.2, 0.2)
 
 property_double (ring_twist, "ring twist", 0.0)
+  description ("incremental twist per circle, in radians")
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.2)
 
 property_double (ring_gap1,    "ring gap1", 1.3)
+  description ("radius, in pixels of nearest to pixel circle of neighborhood metric")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
 property_double (ring_gap2,    "ring gap2", 2.5)
+  description ("radius, in pixels of second nearest to pixel circle")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
 property_double (ring_gap3,    "ring gap3", 3.7)
+  description ("radius, in pixels of third pixel circle")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap4,    "ring gap4", 5.5)
+property_double (ring_gap4, "ring gap4", 5.5)
+  description ("radius, in pixels of fourth pixel circle (not always in use)")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
 
 #else
 
-/* configuration, more rings and more rays mean higher memory consumption
-   for hay and lower performance
+
+/* content aware pixel-neighborhood filler
+ *
+ * For performance it now works by creating probes for candidate pixels for
+ * infilling and iteratively searching with a shrinking neighborhood for better
+ * matching pixels - using a random spray araound the best result found; by
+ * starting in the neighborhood to be filled in we are likely to find a good
+ * match for a hole in a texture.
+ *
+ * The quality of a match is determined by the squared color difference, scaled
+ * by distance to center of sampling. Combined with a cohesion factor that
+ * gives weight to probes that are sampling from near the same location.
  */
+
 #define RINGS                   3   // increments works up to 7-8 with no adver
 #define RAYS                   12  // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
-#define N_SCALE_NEEDLES         3
+
+/* The pattern of the sampling neighborhood is RAYS of samples radiating out
+ * from the sample point forming a set of concentric circles. We sample this
+ * pattern once per pixel using cubic sampler. The circles of rays are rotated
+ * after sampling so that the ray with the most energy is stored first - this
+ * is how we achieve orientation invariance.
+ */
 #define DIRECTION_INVARIANT // comment out to make search be direction dependent
+
+#define N_SCALE_NEEDLES         3
+
+/* Before comparing with a candidate extracted hay-feature, we prepare
+ * ourselves with N_SCALE_NEEDLES independent scaled versions of the
+ * destination pixel neighborhood. This scale invariance further multiplying
+ * the various permutations of variants of a neighborhood that we match to 12*3
+ * = 36 times.
+ */
+
+#define GET_INSPIRED_BY_NEIGHBORS
+
+/* Before looking for matches in our own neighborhood we look if any good match
+ * in the 8 nearest neighboring probes, neighboring pixels. This selection
+ * criteria helps aid texture building when this remains the best match.
+ */
+
+
+#define MAX_PROBES 30000
+
+
 
 
 
@@ -216,7 +272,6 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
                                        GeglBuffer *output,
                                        const GeglRectangle *in_rect,
                                        const GeglRectangle *out_rect,
-                                       int         seek_radius,
                                        int         minimum_iterations,
                                        int         maximum_iterations,
                                        float       try_chance,
@@ -425,21 +480,19 @@ score_site (PixelDuster *duster,
 
   for (i = 1; i < NEIGHBORHOOD && score < bail; i++)
   {
-    if (needle[i*4 + 3]>0.001f)
+    float color_diff = 0;
+    if (needle[i*4 + 3]<1.0f)
     {
       if (hay[i*4 + 3]>0.001f)
-      {
-        score += f_rgb_diff (&needle[i*4 + 0], &hay[i*4 + 0]) * duster->order[i][2];
-      }
+        color_diff = f_rgb_diff (&needle[i*4 + 0], &hay[i*4 + 0]);
       else
-      {
-        score += duster->metric_empty_hay_score * duster->order[i][2];
-      }
+        color_diff = duster->metric_empty_hay_score;
     }
     else
     {
-      score += duster->metric_empty_needle_score * duster->order[i][2];
+      color_diff = duster->metric_empty_needle_score;
     }
+    score += color_diff * duster->order[i][2];
   }
 
   return score;
@@ -467,11 +520,6 @@ add_probe (PixelDuster *duster, int target_x, int target_y)
                        xy2offset(target_x, target_y), probe);
   return probe;
 }
-
-static inline void probe_push (PixelDuster *duster, Probe *probe)
-{
-}
-
 
 static gfloat *ensure_hay (PixelDuster *duster, int x, int y)
 {
@@ -559,7 +607,7 @@ probe_prep (PixelDuster *duster,
       neighbors[neighbours] = NULL;
   }
 
-
+#ifdef GET_INSPIRED_BY_NEIGHBORS
     for (int i = 0; i < 4; i++)
     {
       if (neighbors[i])
@@ -581,7 +629,6 @@ probe_prep (PixelDuster *duster,
           float score = probe_score (duster, probe, neighbors, needles, test_x, test_y, hay, probe->score);
           if (score <= probe->score)
           {
-            probe_push (duster, probe);
             probe->source_x = test_x;
             probe->source_y = test_y;
             probe->score = score;
@@ -589,6 +636,7 @@ probe_prep (PixelDuster *duster,
         }
       }
     }
+#endif
 }
 
 
@@ -625,9 +673,8 @@ static int probe_improve (PixelDuster *duster,
                           Probe       *probe)
 {
   Probe *neighbors[8]={NULL,};
-  float old_score = probe->score;
   needles_t needles;
-  //void *ptr[2] = {duster, probe};
+  float old_score = probe->score;
 
   if (probe->age >= duster->max_age)
     {
@@ -640,7 +687,7 @@ static int probe_improve (PixelDuster *duster,
 
   {
     float mag = duster->o->seek_distance;
-    for (int i = 0; i < 32; i++)
+    for (int i = 0; i < duster->o->iterations; i++)
     {
       int dx = g_random_int_range (-mag, mag);
       int dy = g_random_int_range (-mag, mag);
@@ -655,8 +702,6 @@ static int probe_improve (PixelDuster *duster,
         float score = probe_score (duster, probe, neighbors, needles, test_x, test_y, hay, probe->score);
         if (score < probe->score)
         {
-          probe_push (duster, probe);
-
           probe->source_x = test_x;
           probe->source_y = test_y;
           probe->score = score;
@@ -674,7 +719,7 @@ static int probe_improve (PixelDuster *duster,
     gegl_sampler_get (duster->in_sampler_f,
                       probe->source_x, probe->source_y, NULL,
                       &rgba[0], 0);
-
+    rgba[3] = 1.0;
     gegl_buffer_set (duster->output,
                      GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1),
                      0, duster->format, &rgba[0], 0);
@@ -683,42 +728,6 @@ static int probe_improve (PixelDuster *duster,
   return 0;
 }
 
-static inline void pixel_duster_add_probes_for_transparent (PixelDuster *duster)
-{
-  GeglBufferIterator *i = gegl_buffer_iterator_new (duster->output,
-                                                    &duster->out_rect,
-                                                    0,
-                                                    duster->format,
-                                                    GEGL_ACCESS_WRITE,
-                                                    GEGL_ABYSS_NONE, 1);
-  while (gegl_buffer_iterator_next (i))
-  {
-    gint x = i->items[0].roi.x;
-    gint y = i->items[0].roi.y;
-    gint n_pixels  = i->items[0].roi.width * i->items[0].roi.height;
-    float *out_pix = i->items[0].data;
-    while (n_pixels--)
-    {
-      if (out_pix[3] < 1.0f /* ||
-          (out_pix[0] <= 0.1 &&
-           out_pix[1] <= 0.1 &&
-           out_pix[2] <= 0.1) */)
-      {
-        /* we process all - also partially transparent pixels, making the op work well in conjuction with a small hard eraser brush. And improvement could be to re-composite partially transparent pixels back on top as a final step, making the alpha values continuously rather than binary meaningful.
-         */
-        add_probe (duster, x, y);
-      }
-      out_pix += 4;
-
-      x++;
-      if (x >= i->items[0].roi.x + i->items[0].roi.width)
-      {
-        x = i->items[0].roi.x;
-        y++;
-      }
-    }
-  }
-}
 
 static inline void pixel_duster_fill (PixelDuster *duster)
 {
@@ -751,12 +760,6 @@ static inline void pixel_duster_fill (PixelDuster *duster)
     }
     total ++;
 
-#if 0 // can be useful for enlarge ? then needs scale factor
-    if ((probe->source_x[0] == probe->target_x &&
-         probe->source_y[0] == probe->target_y))
-      try_replace = 0;
-#endif
-
     if (probe->score == INITIAL_SCORE || try_replace)
     {
       if ((rand()%100)/100.0 < duster->try_chance)
@@ -774,7 +777,7 @@ static inline void pixel_duster_fill (PixelDuster *duster)
   fprintf (stderr, "\r%i/%i %2.2f run#:%i  ", total-missing, total, (total-missing) * 100.0 / total, runs);
 #endif
   }
-#if 1
+#if 0
   fprintf (stderr, "\n");
 #endif
 }
@@ -811,7 +814,6 @@ process (GeglOperation       *operation,
   GeglRectangle in_rect = *gegl_buffer_get_extent (input);
   GeglRectangle out_rect = *gegl_buffer_get_extent (output);
   PixelDuster    *duster = pixel_duster_new (input, input, output, &in_rect, &out_rect,
-                                             o->seek_distance,
                                              o->min_iter,
                                              o->max_iter,
                                              o->chance_try,
@@ -828,11 +830,105 @@ process (GeglOperation       *operation,
                                              o->metric_cohesion/1000.0,
                                              operation);
 
-  gegl_buffer_copy (input, NULL, GEGL_ABYSS_NONE, output, NULL);
 
-  pixel_duster_add_probes_for_transparent (duster);
+{
+  GeglBufferIterator *i = gegl_buffer_iterator_new (duster->input,
+                                                    &duster->out_rect,
+                                                    0,
+                                                    duster->format,
+                                                    GEGL_ACCESS_READ,
+                                                    GEGL_ABYSS_NONE, 2);
+  gegl_buffer_iterator_add (i, duster->output,
+                                     &duster->out_rect,
+                                     0,
+                                     duster->format,
+                                     GEGL_ACCESS_WRITE,
+                                     GEGL_ABYSS_NONE);
+  {
+    int probes = 0;
+  while (gegl_buffer_iterator_next (i))
+  {
+    gint x = i->items[0].roi.x;
+    gint y = i->items[0].roi.y;
+    gint n_pixels  = i->items[0].roi.width * i->items[0].roi.height;
+    float *in_pix = i->items[0].data;
+    float *out_pix = i->items[1].data;
+    while (n_pixels--)
+    {
+      if (in_pix[3] < 1.0f /* ||
+          (out_pix[0] <= 0.1 &&
+           out_pix[1] <= 0.1 &&
+           out_pix[2] <= 0.1) */)
+      {
+        if (probes ++ < MAX_PROBES)
+          add_probe (duster, x, y);
+      }
+      out_pix[0] = in_pix[0];
+      out_pix[1] = in_pix[1];
+      out_pix[2] = in_pix[2];
+      out_pix[3] = in_pix[3];
+      out_pix += 4;
+      in_pix += 4;
+
+      x++;
+      if (x >= i->items[0].roi.x + i->items[0].roi.width)
+      {
+        x = i->items[0].roi.x;
+        y++;
+      }
+    }
+  }
+  }
+}
 
   pixel_duster_fill (duster);
+
+{
+  GeglBufferIterator *i = gegl_buffer_iterator_new (duster->input,
+                                                    &duster->out_rect,
+                                                    0,
+                                                    duster->format,
+                                                    GEGL_ACCESS_READ,
+                                                    GEGL_ABYSS_NONE, 2);
+  gegl_buffer_iterator_add (i, duster->output,
+                                     &duster->out_rect,
+                                     0,
+                                     duster->format,
+                                     GEGL_ACCESS_READWRITE,
+                                     GEGL_ABYSS_NONE);
+  {
+  while (gegl_buffer_iterator_next (i))
+  {
+    gint x = i->items[0].roi.x;
+    gint y = i->items[0].roi.y;
+    gint n_pixels  = i->items[0].roi.width * i->items[0].roi.height;
+    float *in_pix = i->items[0].data;
+    float *out_pix = i->items[1].data;
+    while (n_pixels--)
+    {
+      float alpha = in_pix[3];
+      if (in_pix[3] < 1.0f)
+      {
+        out_pix[0] = (in_pix[0] * alpha) + out_pix[0] * (1.0 - alpha);
+        out_pix[1] = (in_pix[1] * alpha) + out_pix[1] * (1.0 - alpha);
+        out_pix[2] = (in_pix[2] * alpha) + out_pix[2] * (1.0 - alpha);
+        out_pix[3] = out_pix[3];
+      }
+      out_pix += 4;
+      in_pix += 4;
+
+      x++;
+      if (x >= i->items[0].roi.x + i->items[0].roi.width)
+      {
+        x = i->items[0].roi.x;
+        y++;
+      }
+    }
+  }
+  }
+}
+
+
   pixel_duster_destroy (duster);
 
   return TRUE;
@@ -897,7 +993,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",        "gegl:alpha-inpaint",
       "title",       "Heal transparent",
       "categories",  "heal",
-      "description", "Replaces fully transparent pixels with good candidate pixels found in the whole image",
+      "description", "Replaces transparent pixels with good candidate pixels found in the neighborhood of the missing pixel.",
       NULL);
 }
 
