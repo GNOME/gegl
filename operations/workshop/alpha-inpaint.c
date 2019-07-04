@@ -23,7 +23,6 @@
 
 //retire more props after given set of completed re-runs
 
-
 #ifdef GEGL_PROPERTIES
 
 property_int (seek_distance, "seek radius", 11)
@@ -32,7 +31,7 @@ property_int (seek_distance, "seek radius", 11)
 property_int (min_iter, "min iter", 100)
   value_range (1, 512)
 
-property_int (max_iter, "max iter", 2000)
+property_int (max_iter, "max iter", 200)
   value_range (1, 40000)
 
 property_int (improvement_iters, "improvement iters", 4)
@@ -43,6 +42,22 @@ property_double (chance_try, "try chance", 0.33)
 property_double (chance_retry, "retry chance", 0.8)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
+
+property_double (metric_dist_powk, "metric dist powk", 2.0)
+  value_range (0.0, 10.0)
+  ui_steps    (0.1, 1.0)
+
+property_double (metric_empty_hay_score, "metric empty hay score", 0.11)
+  value_range (0.01, 100.0)
+  ui_steps    (0.05, 0.1)
+
+property_double (metric_empty_needle_score, "metric empty needle score", 0.2)
+  value_range (0.01, 100.0)
+  ui_steps    (0.05, 0.1)
+
+property_double (metric_cohesion, "metric cohesion", 0.01)
+  value_range (0.0, 10.0)
+  ui_steps    (0.2, 0.2)
 
 property_double (ring_twist, "ring twist", 0.0)
   value_range (0.0, 1.0)
@@ -64,21 +79,6 @@ property_double (ring_gap4,    "ring gap4", 5.5)
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (metric_dist_powk, "metric dist powk", 2.0)
-  value_range (0.0, 10.0)
-  ui_steps    (0.1, 1.0)
-
-property_double (metric_empty_hay_score, "metric empty hay score", 0.11)
-  value_range (0.01, 100.0)
-  ui_steps    (0.05, 0.1)
-
-property_double (metric_empty_needle_score, "metric empty needle score", 0.2)
-  value_range (0.01, 100.0)
-  ui_steps    (0.05, 0.1)
-
-property_double (metric_cohesion, "metric cohesion", 0.01)
-  value_range (0.0, 10.0)
-  ui_steps    (0.2, 0.2)
 
 #else
 
@@ -153,9 +153,7 @@ typedef float   needles_t[N_SCALE_NEEDLES][4 * NEIGHBORHOOD ];// should be on st
 struct _Probe {
   int     target_x;
   int     target_y;
-  Probe  *neighbors[8];     // cached from coords and iterating all
   int     age;              // not really needed
-  float   old_score;        // should be on stack
   float   score;
   int     source_x;
   int     source_y;
@@ -392,6 +390,7 @@ static inline float f_rgb_diff (float *a, float *b)
 static float inline
 score_site (PixelDuster *duster,
             Probe       *probe,
+            Probe      **neighbors,
             int          x,
             int          y,
             gfloat      *needle,
@@ -435,10 +434,10 @@ score_site (PixelDuster *duster,
     float sum_y = probe->source_y;
     int count = 1;
     for (int i = 0; i < 8; i++)
-    if (probe->neighbors[i])
+    if (neighbors[i])
     {
-      sum_x += probe->neighbors[i]->source_x;
-      sum_y += probe->neighbors[i]->source_y;
+      sum_x += neighbors[i]->source_x;
+      sum_y += neighbors[i]->source_y;
       count++;
     }
     sum_x /= count;
@@ -500,6 +499,7 @@ static gfloat *ensure_hay (PixelDuster *duster, int x, int y)
 static float
 probe_score (PixelDuster *duster,
              Probe       *probe,
+             Probe      **neighbors,
              needles_t    needles,
              int          x,
              int          y,
@@ -508,7 +508,8 @@ probe_score (PixelDuster *duster,
 
 static inline void
 probe_prep (PixelDuster *duster,
-            Probe *probe,
+            Probe       *probe,
+            Probe      **neighbors,
             needles_t    needles)
 {
   gint  dst_x  = probe->target_x;
@@ -526,7 +527,6 @@ probe_prep (PixelDuster *duster,
     extract_site (duster, duster->output, dst_x, dst_y, 2.0,&needles[5][0]);
   if (N_SCALE_NEEDLES > 6)
     extract_site (duster, duster->output, dst_x, dst_y, 0.5, &needles[6][0]);
-  probe->old_score = probe->score;
 
   {
   int neighbours = 0;
@@ -537,40 +537,40 @@ probe_prep (PixelDuster *duster,
     {
       if ( (probe->target_x == oprobe->target_x - 1) &&
            (probe->target_y == oprobe->target_y))
-        probe->neighbors[neighbours++] = oprobe;
+        neighbors[neighbours++] = oprobe;
       if ( (probe->target_x == oprobe->target_x + 1) &&
            (probe->target_y == oprobe->target_y))
-        probe->neighbors[neighbours++] = oprobe;
+        neighbors[neighbours++] = oprobe;
       if ( (probe->target_x == oprobe->target_x) &&
            (probe->target_y == oprobe->target_y - 1))
-        probe->neighbors[neighbours++] = oprobe;
+        neighbors[neighbours++] = oprobe;
       if ( (probe->target_x == oprobe->target_x) &&
            (probe->target_y == oprobe->target_y + 1))
-        probe->neighbors[neighbours++] = oprobe;
+        neighbors[neighbours++] = oprobe;
       if ( (probe->target_x == oprobe->target_x + 1) &&
            (probe->target_y == oprobe->target_y + 1))
-        probe->neighbors[neighbours++] = oprobe;
+        neighbors[neighbours++] = oprobe;
       if ( (probe->target_x == oprobe->target_x + 1) &&
            (probe->target_y == oprobe->target_y - 1))
-        probe->neighbors[neighbours++] = oprobe;
+        neighbors[neighbours++] = oprobe;
       if ( (probe->target_x == oprobe->target_x - 1) &&
            (probe->target_y == oprobe->target_y + 1))
-        probe->neighbors[neighbours++] = oprobe;
+        neighbors[neighbours++] = oprobe;
       if ( (probe->target_x == oprobe->target_x - 1) &&
            (probe->target_y == oprobe->target_y - 1))
-        probe->neighbors[neighbours++] = oprobe;
+        neighbors[neighbours++] = oprobe;
     }
   }
     for (;neighbours < 8; neighbours++)
-      probe->neighbors[neighbours] = NULL;
+      neighbors[neighbours] = NULL;
   }
 
 
     if(1)for (int i = 0; i < 4; i++)
     {
-      if (probe->neighbors[i])
+      if (neighbors[i])
       {
-        Probe *oprobe = probe->neighbors[i];
+        Probe *oprobe = neighbors[i];
         int coords[8][2]={{-1,0},
                           {1,0},
                           {0,1},
@@ -584,7 +584,7 @@ probe_prep (PixelDuster *duster,
           float test_x = oprobe->source_x + coords[c][0];
           float test_y = oprobe->source_y + coords[c][1];
           float *hay = ensure_hay (duster, test_x, test_y);
-          float score = probe_score (duster, probe, needles, test_x, test_y, hay, probe->score);
+          float score = probe_score (duster, probe, neighbors, needles, test_x, test_y, hay, probe->score);
           if (score <= probe->score)
           {
             probe_push (duster, probe);
@@ -598,29 +598,12 @@ probe_prep (PixelDuster *duster,
     }
 }
 
-static void
-probe_post_search (PixelDuster *duster, Probe *probe)
-{
-  probe->age++;
-
-  if (probe->score != probe->old_score)
-  {
-    gfloat rgba[4];
-
-    gegl_sampler_get (duster->in_sampler_f,
-                      probe->source_x, probe->source_y, NULL,
-                      &rgba[0], 0);
-
-    gegl_buffer_set (duster->output,
-                     GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1),
-                     0, duster->format, &rgba[0], 0);
-  }
-}
 
 
 static float
 probe_score (PixelDuster *duster,
              Probe       *probe,
+             Probe      **neighbors,
              needles_t    needles,
              int          x,
              int          y,
@@ -637,7 +620,7 @@ probe_score (PixelDuster *duster,
 
   for (int n = 0; n < N_SCALE_NEEDLES; n++)
   {
-    float score = score_site (duster, probe, x, y, &needles[n][0], hay, bail);
+    float score = score_site (duster, probe, neighbors, x, y, &needles[n][0], hay, bail);
     if (score < best_score)
       best_score = score;
   }
@@ -649,6 +632,8 @@ probe_score (PixelDuster *duster,
 static int probe_improve (PixelDuster *duster,
                           Probe       *probe)
 {
+  Probe *neighbors[8]={NULL,};
+  float old_score = probe->score;
   needles_t needles;
   //void *ptr[2] = {duster, probe};
 
@@ -659,7 +644,7 @@ static int probe_improve (PixelDuster *duster,
       return -1;
     }
 
-  probe_prep (duster, probe, needles);
+  probe_prep (duster, probe, neighbors, needles);
 
   {
     float mag = duster->seek_radius;
@@ -675,7 +660,7 @@ static int probe_improve (PixelDuster *duster,
         int test_x = probe->source_x + dx;
         int test_y = probe->source_y + dy;
         float *hay = ensure_hay (duster, test_x, test_y);
-        float score = probe_score (duster, probe, needles, test_x, test_y, hay, probe->score);
+        float score = probe_score (duster, probe, neighbors, needles, test_x, test_y, hay, probe->score);
         if (score < probe->score)
         {
           probe_push (duster, probe);
@@ -688,20 +673,21 @@ static int probe_improve (PixelDuster *duster,
     }
   }
 
-  probe_post_search (duster, probe);
+  probe->age++;
 
-  return 0;
-}
-
-static inline int probes_improve (PixelDuster *duster,
-                                  Probe       **probes,
-                                  int           n_probes)
-{
-  for (int i = 0; i < n_probes; i++)
+  if (probe->score != old_score)
   {
-    if (probes[i])
-      probe_improve (duster, probes[i]);
+    gfloat rgba[4];
+
+    gegl_sampler_get (duster->in_sampler_f,
+                      probe->source_x, probe->source_y, NULL,
+                      &rgba[0], 0);
+
+    gegl_buffer_set (duster->output,
+                     GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1),
+                     0, duster->format, &rgba[0], 0);
   }
+
   return 0;
 }
 
