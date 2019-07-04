@@ -23,8 +23,8 @@
 #ifdef GEGL_PROPERTIES
 
 enum_start (gegl_saturation_type)
-  enum_value (GEGL_SATURATION_TYPE_CIE_LAB, "CIE-Lab", N_("CIE Lab / Lch"))
-  enum_value (GEGL_SATURATION_TYPE_NATIVE,  "linear",  N_("linear data, RGB"))
+  enum_value (GEGL_SATURATION_TYPE_NATIVE,  "linear",  N_("Linear data, RGB"))
+  enum_value (GEGL_SATURATION_TYPE_CIE_LAB, "CIE-Lab", N_("CIE Lab/Lch"))
   /* will also work on CMYK in the future */
   enum_value (GEGL_SATURATION_TYPE_CIE_YUV, "CIE-Yuv", N_("CIE Yuv"))
 enum_end (GeglSaturationType)
@@ -37,7 +37,7 @@ property_double (scale, _("Scale"), 1.0)
 property_enum (colorspace, _("Color Space"),
     description(_("Which color space to do interpolation in."))
     GeglSaturationType, gegl_saturation_type,
-    GEGL_SATURATION_TYPE_NATIVE)
+    GEGL_SATURATION_TYPE_CIE_LAB)
 
 #else
 
