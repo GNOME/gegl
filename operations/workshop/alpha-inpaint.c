@@ -35,6 +35,7 @@ property_int (max_iter, "max iter", 200)
   value_range (1, 40000)
 
 property_int (improvement_iters, "improvement iters", 4)
+  value_range (1, 40)
 
 property_double (chance_try, "try chance", 0.33)
   value_range (0.0, 1.0)
@@ -81,6 +82,17 @@ property_double (ring_gap4,    "ring gap4", 5.5)
 
 
 #else
+
+/* configuration, more rings and more rays mean higher memory consumption
+   for hay and lower performance
+ */
+#define RINGS                   4   // increments works up to 7-8 with no adver
+#define RAYS                    6  // good values for testing 6 8 10 12 16
+#define NEIGHBORHOOD            (RINGS*RAYS+1)
+#define N_SCALE_NEEDLES         3
+#define DIRECTION_INVARIANT // comment out to make search be direction dependent
+
+
 
 #define GEGL_OP_FILTER
 #define GEGL_OP_NAME      alpha_inpaint
@@ -136,13 +148,6 @@ typedef struct
 } PixelDuster;
 
 
-#define RINGS                   4   // increments works up to 7-8 with no adver
-#define RAYS                    6  // good values for testing 6 8 10 12 16
-#define NEIGHBORHOOD            (RINGS*RAYS+1)
-
-#define N_SCALE_NEEDLES         3
-
-#define DIRECTION_INVARIANT // uncomment to make search be direction dependent
 
 typedef struct _Probe Probe;
 
@@ -376,12 +381,6 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
 #endif
 }
 
-static inline int u8_rgb_diff (guchar *a, guchar *b)
-{
-  return POW2(a[0]-b[0]) * 2 + POW2(a[1]-b[1]) * 3 + POW2(a[2]-b[2]);
-}
-
-
 static inline float f_rgb_diff (float *a, float *b)
 {
   return POW2(a[0]-b[0]) + POW2(a[1]-b[1]) + POW2(a[2]-b[2]);
@@ -406,29 +405,6 @@ score_site (PixelDuster *duster,
     return INITIAL_SCORE;
   }
 
-  for (i = 1; i < NEIGHBORHOOD /* && score < bail */; i++)
-  {
-    if (needle[i*4 + 3]>0.001f)
-    {
-      if (hay[i*4 + 3]>0.001f)
-      {
-        score += f_rgb_diff (&needle[i*4 + 0], &hay[i*4 + 0]) * duster->order[i][2];
-      }
-      else
-      {
-        score += duster->metric_empty_hay_score * duster->order[i][2];
-      }
-    }
-    else
-    {
-      score += duster->metric_empty_needle_score * duster->order[i][2];
-    }
-
-    {
-      /* both empty in needle and empty in hay get a similar badness score */
-    }
-  }
-
   {
     float sum_x = probe->source_x;
     float sum_y = probe->source_y;
@@ -445,9 +421,27 @@ score_site (PixelDuster *duster,
 
     score += (POW2(sum_x - probe->source_x) +
              POW2(sum_y - probe->source_y)) * duster->metric_cohesion;
-
   }
-  score = sqrtf (score);
+
+  for (i = 1; i < NEIGHBORHOOD && score < bail; i++)
+  {
+    if (needle[i*4 + 3]>0.001f)
+    {
+      if (hay[i*4 + 3]>0.001f)
+      {
+        score += f_rgb_diff (&needle[i*4 + 0], &hay[i*4 + 0]) * duster->order[i][2];
+      }
+      else
+      {
+        score += duster->metric_empty_hay_score * duster->order[i][2];
+      }
+    }
+    else
+    {
+      score += duster->metric_empty_needle_score * duster->order[i][2];
+    }
+  }
+
   return score;
 }
 
@@ -566,7 +560,7 @@ probe_prep (PixelDuster *duster,
   }
 
 
-    if(1)for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
     {
       if (neighbors[i])
       {
@@ -591,13 +585,11 @@ probe_prep (PixelDuster *duster,
             probe->source_x = test_x;
             probe->source_y = test_y;
             probe->score = score;
-            //probe_update_target (duster, probe);
           }
         }
       }
     }
 }
-
 
 
 static float
