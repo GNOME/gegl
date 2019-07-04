@@ -21,7 +21,7 @@ ops = \
 	gcr.la \
 	hstack.la \
 	aces-rrt.la \
-	inpaint.la \
+	alpha-inpaint.la \
 	integral-image.la \
 	rawbayer-load.la  \
 	segment-kmeans.la \
