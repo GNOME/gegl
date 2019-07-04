@@ -86,8 +86,8 @@ property_double (ring_gap4,    "ring gap4", 5.5)
 /* configuration, more rings and more rays mean higher memory consumption
    for hay and lower performance
  */
-#define RINGS                   4   // increments works up to 7-8 with no adver
-#define RAYS                    6  // good values for testing 6 8 10 12 16
+#define RINGS                   3   // increments works up to 7-8 with no adver
+#define RAYS                   12  // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 #define N_SCALE_NEEDLES         3
 #define DIRECTION_INVARIANT // comment out to make search be direction dependent
@@ -110,6 +110,7 @@ property_double (ring_gap4,    "ring gap4", 5.5)
 typedef struct
 {
   GeglOperation *op;
+  GeglProperties *o;
   GeglBuffer    *reference;
   GeglBuffer    *input;
   GeglBuffer    *output;
@@ -119,7 +120,6 @@ typedef struct
   GeglSampler   *ref_sampler_f;
   GeglSampler   *out_sampler_f;
   const Babl    *format; /* RGBA float in right space */
-  int            seek_radius;
   int            minimum_iterations;
   int            maximum_iterations;
   int            max_age;
@@ -235,10 +235,10 @@ static PixelDuster * pixel_duster_new (GeglBuffer *reference,
                                        GeglOperation *op)
 {
   PixelDuster *ret = g_malloc0 (sizeof (PixelDuster));
+  ret->o = GEGL_PROPERTIES (op);
   ret->reference   = reference;
   ret->input       = input;
   ret->output      = output;
-  ret->seek_radius = seek_radius;
   ret->minimum_iterations = minimum_iterations;
   ret->maximum_iterations = maximum_iterations;
   ret->try_chance   = try_chance;
@@ -639,7 +639,7 @@ static int probe_improve (PixelDuster *duster,
   probe_prep (duster, probe, neighbors, needles);
 
   {
-    float mag = duster->seek_radius;
+    float mag = duster->o->seek_distance;
     for (int i = 0; i < 32; i++)
     {
       int dx = g_random_int_range (-mag, mag);
