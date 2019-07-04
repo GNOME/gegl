@@ -34,8 +34,8 @@ property_double (scale, _("Scale"), 1.0)
     value_range (0.0, 10.0)
     ui_range (0.0, 2.0)
 
-property_enum (colorspace, _("Color Space"),
-    description(_("Which color space to do interpolation in."))
+property_enum (colorspace, _("Interpolation Color Space"),
+    description(_("Set at Linear data if uncertain, the CIE based spaces might introduce hue shifts."))
     GeglSaturationType, gegl_saturation_type,
     GEGL_SATURATION_TYPE_CIE_LAB)
 
