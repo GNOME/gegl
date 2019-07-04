@@ -25,8 +25,6 @@ ops = \
 	integral-image.la \
 	rawbayer-load.la  \
 	segment-kmeans.la \
-	saturation-hue-constant.la \
-	saturation-yuv.la \
 	selective-hue-saturation.la
 
 if HAVE_CXX14
