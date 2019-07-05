@@ -584,7 +584,6 @@ probe_prep (PixelDuster *duster,
                       {0,8},
                       {0,-8}
     };
-    int neighbours = 0;
     for (int c = 0; c < 16; c++)
     {
        void *off = xy2offset(probe->target_x + coords[c][0],
@@ -819,20 +818,21 @@ static inline void pixel_duster_fill (PixelDuster *duster)
 
   g_list_free (values);
 
+
   //if (duster->op)
   //  gegl_operation_progress (duster->op, (total-missing) * 1.0 / total,
   //                           "finding suitable pixels");
+  {
+     double progress = (max_probes-missing ) * 1.0 /     max_probes;
   if (duster->op)
-    gegl_operation_progress (duster->op,
-       (max_probes - total) * 1.0 /     max_probes,
-                             "finding suitable pixels");
+    gegl_operation_progress (duster->op, progress, "finding suitable pixels");
 #if 1
 
-  fprintf (stderr, "\r%i/%i %2.2f run#:%i  ", total-missing, total,
-       (max_probes - total) * 1.0 /     max_probes,
- runs);
+  fprintf (stderr, "\r%i/%i %2.2f%% run#:%i  ", total-missing, total, 100 * progress, runs);
+  }
 #endif
   }
+
   if (duster->op)
     gegl_operation_progress (duster->op, 1.0, "done");
 #if 0
