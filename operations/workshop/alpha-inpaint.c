@@ -103,6 +103,8 @@ property_double (ring_gap4, "ring gap4", 5.5)
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
+property_boolean (direction_invariant, "direction invariant", TRUE)
+  description ("wheter we normalize feature vector to start with highest energy ray")
 
 #else
 
@@ -130,7 +132,6 @@ property_double (ring_gap4, "ring gap4", 5.5)
  * after sampling so that the ray with the most energy is stored first - this
  * is how we achieve orientation invariance.
  */
-#define DIRECTION_INVARIANT // comment out to make search be direction dependent
 
 #define N_SCALE_NEEDLES         3
 
@@ -365,7 +366,7 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
     gegl_sampler_get (sampler_f, x + dx * scale, y + dy * scale, NULL, &dst[i*4], 0);
   }
 
-#ifdef DIRECTION_INVARIANT
+  if (duster->o->direction_invariant)
   {
     int warmest_ray = 0;
     float warmest_ray_energy = 0;
@@ -408,7 +409,6 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
        }
     }
   }
-#endif
 }
 
 static inline float f_rgb_diff (float *a, float *b)
