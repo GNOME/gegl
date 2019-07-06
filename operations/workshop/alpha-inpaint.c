@@ -37,6 +37,10 @@ property_int (min_iter, "min runs", 100)
   description ("Ensuring that we get results even with low retry chance")
   value_range (1, 512)
 
+property_int (min_neighbors, "min neighbors", 3)
+  description ("minimum neighbors that must be set before we consider setting")
+  value_range (0, 4)
+
 property_int (max_iter, "max runs", 200)
   description ("Mostly a saftey valve, so that we terminate")
   value_range (1, 40000)
@@ -337,6 +341,59 @@ static void pixel_duster_destroy (PixelDuster *duster)
 }
 
 
+static int
+probe_rel_is_set (PixelDuster *duster, GeglBuffer *output, Probe *probe, int rel_x, int rel_y)
+{
+#if 1
+  static const Babl *format = NULL;
+  guchar pix[4];
+  if (!format) format = babl_format ("R'G'B'A u8");
+  gegl_buffer_sample (output, probe->target_x + rel_x, probe->target_y + rel_y, NULL, &pix[0], format, GEGL_SAMPLER_NEAREST, 0);
+  return pix[3] > 5;
+#else
+  Probe *neighbor_probe = g_hash_table_lookup (duster->probes_ht,
+        xy2offset(probe->target_x + rel_x, probe->target_y + rel_y));
+  if (!neighbor_probe || neighbor_probe->age)
+    return 1;
+  return 0;
+#endif
+}
+
+#define ret_if_good     if (found >=min) goto ret;
+
+static int
+probe_neighbors (PixelDuster *duster, GeglBuffer *output, Probe *probe, int min)
+{
+  int found = 0;
+  //found = probe->neighbors;
+
+  ret_if_good
+
+  found = 0;
+
+  if (probe_rel_is_set (duster, output, probe, -1, 0)) found ++;
+  ret_if_good
+  if (probe_rel_is_set (duster, output, probe,  1, 0)) found ++;
+  ret_if_good
+  if (probe_rel_is_set (duster, output, probe,  0, 1)) found ++;
+  ret_if_good
+  if (probe_rel_is_set (duster, output, probe,  0, -1)) found ++;
+  ret_if_good
+  if (probe_rel_is_set (duster, output, probe,  1, 1)) found ++;
+  ret_if_good
+  if (probe_rel_is_set (duster, output, probe, -1,-1)) found ++;
+  ret_if_good
+  if (probe_rel_is_set (duster, output, probe,  1,-1)) found ++;
+  ret_if_good
+  if (probe_rel_is_set (duster, output, probe, -1, 1)) found ++;
+
+ret:
+  //probe->neighbors = found;
+  return found;
+}
+
+
+
 void gegl_sampler_prepare (GeglSampler *sampler);
 
 /*  extend with scale factor/matrix
@@ -344,7 +401,7 @@ void gegl_sampler_prepare (GeglSampler *sampler);
  */
 static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, double y, float scale, gfloat *dst)
 {
-  GeglSampler *sampler_f;
+  GeglSampler *sampler_f = duster->out_sampler_f;
   if (buffer == duster->output)
   {
     sampler_f = duster->out_sampler_f;
@@ -810,8 +867,12 @@ static inline void pixel_duster_fill (PixelDuster *duster)
     {
       if ((rand()%100)/100.0 < o->chance_try)
       {
-        probe_improve (duster, probe);
-        pixel_duster_trim (duster);
+        if (probe->score != INITIAL_SCORE ||
+            (probe_neighbors (duster, duster->output, probe, o->min_neighbors) >= o->min_neighbors))
+        {
+          probe_improve (duster, probe);
+          pixel_duster_trim (duster);
+        }
       }
     }
   }
