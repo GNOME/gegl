@@ -38,11 +38,13 @@
 #ifdef GEGL_PROPERTIES
 
 property_double (center_x, _("Center X"), 0.5)
+    value_range (-10.0, 10.0)
     ui_range    (0.0, 1.0)
     ui_meta     ("unit", "relative-coordinate")
     ui_meta     ("axis", "x")
 
 property_double (center_y, _("Center Y"), 0.5)
+    value_range (-10.0, 10.0)
     ui_range    (0.0, 1.0)
     ui_meta     ("unit", "relative-coordinate")
     ui_meta     ("axis", "y")
