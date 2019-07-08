@@ -18,6 +18,8 @@
 
 #include "config.h"
 
+#include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 
 #include <glib-object.h>
@@ -40,6 +42,9 @@
 
 #ifdef __APPLE__
 #include <mach/mach.h>
+#endif
+
+#if defined(__APPLE__) || defined(__FreeBSD__)
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
@@ -277,6 +282,38 @@ gegl_config_class_init (GeglConfigClass *klass)
 # endif
                              ) * page_size;
       mach_port_deallocate (mach_task_self (), host);
+    }
+#elif defined(__FreeBSD__)
+    bool ok = true;
+
+    unsigned long physmem;
+    ok = ok && sysctl ((int[2]){ CTL_HW, HW_PHYSMEM }, 2, &physmem,
+                       &(size_t){ sizeof physmem }, NULL, 0) == 0;
+    if (ok)
+      mem_total = physmem;
+
+    uint32_t active_count;
+    uint32_t wired_count;
+    ok = ok && sysctlbyname ("vm.stats.vm.v_active_count", &active_count,
+                             &(size_t){ sizeof active_count }, NULL, 0) == 0;
+    ok = ok && sysctlbyname ("vm.stats.vm.v_wire_count", &wired_count,
+                             &(size_t){ sizeof wired_count }, NULL, 0) == 0;
+
+    if (ok) {
+      uint32_t laundry_count;
+      uint64_t zfs_arc_size;
+      if (sysctlbyname ("vm.stats.vm.v_laundry_count", &laundry_count,
+                        &(size_t){ sizeof laundry_count }, NULL, 0) != 0)
+        laundry_count = 0;
+      if (sysctlbyname ("kstat.zfs.misc.arcstats.size", &zfs_arc_size,
+                        &(size_t){ sizeof zfs_arc_size }, NULL, 0) != 0)
+        zfs_arc_size = 0;
+
+      int page_size = getpagesize ();
+      mem_available = physmem - (uint64_t) active_count * page_size
+                              - (uint64_t) wired_count * page_size
+                              - (uint64_t) laundry_count * page_size
+                              + zfs_arc_size;
     }
 #else
     mem_total = sysconf (_SC_PHYS_PAGES) * sysconf (_SC_PAGESIZE);
