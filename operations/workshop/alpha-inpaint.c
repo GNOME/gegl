@@ -25,11 +25,11 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_int (seek_distance, "seek radius", 9)
+property_int (seek_distance, "seek radius", 16)
   description ("Maximum distance in neighborhood we look for better candidates per improvement.")
   value_range (1, 512)
 
-property_double (seek_reduction, "seek reduction", 0.9)
+property_double (seek_reduction, "seek reduction", 0.8)
   description ("factor seek distance is shortened, until we're about 2px short per iteration, 1.0 means no reduction")
   value_range (0.0, 1.0)
 
@@ -45,11 +45,11 @@ property_int (max_iter, "max runs", 200)
   description ("Mostly a saftey valve, so that we terminate")
   value_range (1, 40000)
 
-property_int (iterations, "iterations per round per probe", 10)
+property_int (iterations, "iterations per round per probe", 8)
   description ("number of improvement iterations, after initial search - that each probe gets.")
   value_range (1, 1000)
 
-property_int (rounds, "rounds", 32)
+property_int (rounds, "rounds", 64)
   description ("number of improvement iterations, after initial search - that each probe gets.")
   value_range (1, 1000)
 
@@ -87,22 +87,22 @@ property_double (ring_twist, "ring twist", 0.0)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.2)
 
-property_double (ring_gap1,    "ring gap1", 1.3)
+property_double (ring_gap1,    "ring gap1", 1.0)
   description ("radius, in pixels of nearest to pixel circle of neighborhood metric")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap2,    "ring gap2", 2.5)
+property_double (ring_gap2,    "ring gap2", 2.0)
   description ("radius, in pixels of second nearest to pixel circle")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap3,    "ring gap3", 3.7)
+property_double (ring_gap3,    "ring gap3", 3.0)
   description ("radius, in pixels of third pixel circle")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap4, "ring gap4", 5.5)
+property_double (ring_gap4, "ring gap4", 4.5)
   description ("radius, in pixels of fourth pixel circle (not always in use)")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
@@ -433,13 +433,30 @@ static void extract_site (PixelDuster *duster, GeglBuffer *buffer, double x, dou
     {
       float energy = 0.0;
       int count = 0;
+      int anti_ray = ray + RAYS/2;
+      if (anti_ray >= RAYS)
+        anti_ray -= RAYS;
+
       for (int circle = 0; circle < RINGS; circle++)
+      {
         if (dst[ ( circle * RAYS  + ray )*4 + 3] > 0.01)
         {
           for (int c = 0; c < 3; c++)
             energy += dst[ ( circle * RAYS  + ray )*4 + c];
           count ++;
         }
+      }
+
+      for (int circle = 0; circle < RINGS; circle++)
+      {
+        if (dst[ ( circle * RAYS  + anti_ray )*4 + 3] > 0.01)
+        {
+          for (int c = 0; c < 3; c++)
+            energy -= dst[ ( circle * RAYS  + anti_ray )*4 + c];
+          count ++;
+        }
+      }
+
       if (count)
         energy/=count;
       if (energy > warmest_ray_energy)
