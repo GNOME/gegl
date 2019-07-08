@@ -23,7 +23,7 @@
 #ifdef GEGL_PROPERTIES
 
 enum_start (gegl_saturation_type)
-  enum_value (GEGL_SATURATION_TYPE_NATIVE,  "Native",  N_("RGB, or CMYK if in CMYK mode and desaturating"))
+  enum_value (GEGL_SATURATION_TYPE_NATIVE,  "Native",  N_("Native"))
   enum_value (GEGL_SATURATION_TYPE_CIE_LAB, "CIE-Lab", N_("CIE Lab/Lch"))
   enum_value (GEGL_SATURATION_TYPE_CIE_YUV, "CIE-Yuv", N_("CIE Yuv"))
 enum_end (GeglSaturationType)
@@ -263,8 +263,7 @@ process_cmyk_alpha (GeglOperation       *operation,
 
 static void prepare (GeglOperation *operation)
 {
-  const Babl *input_model;
-  const Babl *input_format;
+  const Babl *input_format = NULL;
   const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *format;
@@ -281,15 +280,21 @@ static void prepare (GeglOperation *operation)
         if (input_format)
           {
             model_flags = babl_get_model_flags (input_format);
+            if (model_flags & BABL_MODEL_FLAG_CMYK && o->scale < 1.0)
+            {
             /* we only use the CMYK code path when desaturating, it provides
                the expected result, and retains the separation - wheras for
                increasing saturation - to achieve expected behavior we need
                to fall back to RGBA to achieve the desired result. */
-            if (model_flags & BABL_MODEL_FLAG_CMYK && o->scale < 1.0)
-            {
               format = babl_format_with_space ("CMYKA float", space);
               o->user_data = process_cmyk_alpha;
             }
+            else if (model_flags & BABL_MODEL_FLAG_CIE)
+            {
+              format = babl_format_with_space ("CIE Lab alpha float", space);
+              o->user_data = process_lab_alpha;
+            }
+            /* otherwise we use the RGB default */
           }
       break;
     case GEGL_SATURATION_TYPE_CIE_YUV:
@@ -299,6 +304,7 @@ static void prepare (GeglOperation *operation)
     case GEGL_SATURATION_TYPE_CIE_LAB:
       {
         const Babl *lch_model;
+        const Babl *input_model;
 
         if (input_format == NULL)
           {
