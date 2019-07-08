@@ -228,6 +228,7 @@ static void prepare (GeglOperation *operation)
 
   switch (o->colorspace)
   {
+    default:
     case GEGL_SATURATION_TYPE_NATIVE:
       format = babl_format_with_space ("RGBA float", space);
       o->user_data = process_rgb_alpha;
