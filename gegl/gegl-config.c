@@ -230,10 +230,10 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                      G_PARAM_READWRITE));
 
   {
-    long default_tile_cache_size = 1024l * 1024 * 1024;
-    long mem_total = default_tile_cache_size;
-    long mem_min = 512 << 20; // 512mb
-    long mem_available = mem_min;
+    uint64_t default_tile_cache_size = 1024l * 1024 * 1024;
+    uint64_t mem_total = default_tile_cache_size;
+    uint64_t mem_min = 512 << 20; // 512mb
+    uint64_t mem_available = mem_min;
 
 #ifdef G_OS_WIN32
 # if defined(_MSC_VER) && (_MSC_VER <= 1200)
