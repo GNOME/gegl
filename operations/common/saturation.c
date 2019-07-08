@@ -23,9 +23,8 @@
 #ifdef GEGL_PROPERTIES
 
 enum_start (gegl_saturation_type)
-  enum_value (GEGL_SATURATION_TYPE_NATIVE,  "linear",  N_("Linear data, RGB"))
+  enum_value (GEGL_SATURATION_TYPE_NATIVE,  "Native",  N_("RGB, or CMYK if in CMYK mode and desaturating"))
   enum_value (GEGL_SATURATION_TYPE_CIE_LAB, "CIE-Lab", N_("CIE Lab/Lch"))
-  /* will also work on CMYK in the future */
   enum_value (GEGL_SATURATION_TYPE_CIE_YUV, "CIE-Yuv", N_("CIE Yuv"))
 enum_end (GeglSaturationType)
 
@@ -35,7 +34,7 @@ property_double (scale, _("Scale"), 1.0)
     ui_range (0.0, 2.0)
 
 property_enum (colorspace, _("Interpolation Color Space"),
-    description(_("Set at Linear data if uncertain, the CIE based spaces might introduce hue shifts."))
+    description(_("Set at Native if uncertain, the CIE based spaces might introduce hue shifts."))
     GeglSaturationType, gegl_saturation_type,
     GEGL_SATURATION_TYPE_CIE_LAB)
 
@@ -219,19 +218,79 @@ process_rgb_alpha (GeglOperation       *operation,
     }
 }
 
+#include <stdio.h>
+
+static void
+process_cmyk_alpha (GeglOperation       *operation,
+                    void                *in_buf,
+                    void                *out_buf,
+                    glong                n_pixels,
+                    const GeglRectangle *roi,
+                    gint                 level)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  const Babl *space = gegl_operation_get_source_space (operation, "input");
+  const Babl *in_format = gegl_operation_get_format (operation, "input");
+  gfloat *in = in_buf;
+  gfloat *out = out_buf;
+  glong i;
+  float scale = o->scale;
+  float rscale = 1.0f - o->scale;
+  const Babl *fish1 = babl_fish (in_format, babl_format_with_space ("YA float", space));
+  const Babl *fish2 = babl_fish (babl_format_with_space ("YA float", space),
+                                 babl_format_with_space ("CMYKA float", space));
+  float *grayA = gegl_malloc (n_pixels * 2 * sizeof (float));
+  float *cmykA = gegl_malloc (n_pixels * 5 * sizeof (float));
+  gfloat *desaturated = cmykA;
+
+  babl_process (fish1, in, grayA, n_pixels);
+  babl_process (fish2, grayA, cmykA, n_pixels);
+  gegl_free (grayA);
+
+  for (i = 0; i < n_pixels; i++)
+    {
+      for (int c = 0; c < 4; c ++)
+        out[c] = desaturated[c] * rscale + in[c] * scale;
+      out[4] = in[4];
+
+      in += 5;
+      out += 5;
+      desaturated += 5;
+    }
+  gegl_free (cmykA);
+}
+
 
 static void prepare (GeglOperation *operation)
 {
+  const Babl *input_model;
+  const Babl *input_format;
   const Babl *space = gegl_operation_get_source_space (operation, "input");
   GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *format;
+  BablModelFlag model_flags;
+
+  input_format = gegl_operation_get_source_format (operation, "input");
 
   switch (o->colorspace)
   {
     default:
     case GEGL_SATURATION_TYPE_NATIVE:
-      format = babl_format_with_space ("RGBA float", space);
-      o->user_data = process_rgb_alpha;
+        format = babl_format_with_space ("RGBA float", space);
+        o->user_data = process_rgb_alpha;
+        if (input_format)
+          {
+            model_flags = babl_get_model_flags (input_format);
+            /* we only use the CMYK code path when desaturating, it provides
+               the expected result, and retains the separation - wheras for
+               increasing saturation - to achieve expected behavior we need
+               to fall back to RGBA to achieve the desired result. */
+            if (model_flags & BABL_MODEL_FLAG_CMYK && o->scale < 1.0)
+            {
+              format = babl_format_with_space ("CMYKA float", space);
+              o->user_data = process_cmyk_alpha;
+            }
+          }
       break;
     case GEGL_SATURATION_TYPE_CIE_YUV:
       format = babl_format_with_space ("CIE Yuv alpha float", space);
@@ -239,11 +298,8 @@ static void prepare (GeglOperation *operation)
       break;
     case GEGL_SATURATION_TYPE_CIE_LAB:
       {
-        const Babl *input_format;
-        const Babl *input_model;
         const Babl *lch_model;
 
-        input_format = gegl_operation_get_source_format (operation, "input");
         if (input_format == NULL)
           {
             format = babl_format_with_space ("CIE Lab alpha float", space);
