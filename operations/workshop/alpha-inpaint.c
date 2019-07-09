@@ -29,11 +29,11 @@ property_int (seek_distance, "seek radius", 16)
   description ("Maximum distance in neighborhood we look for better candidates per improvement.")
   value_range (1, 512)
 
-property_double (seek_reduction, "seek reduction", 0.8)
+property_double (seek_reduction, "seek reduction", 0.75)
   description ("factor seek distance is shortened, until we're about 2px short per iteration, 1.0 means no reduction")
   value_range (0.0, 1.0)
 
-property_int (min_iter, "min runs", 100)
+property_int (min_iter, "min rounds", 20)
   description ("Ensuring that we get results even with low retry chance")
   value_range (1, 512)
 
@@ -41,43 +41,43 @@ property_int (min_neighbors, "min neighbors", 3)
   description ("minimum neighbors that must be set before we consider setting")
   value_range (0, 4)
 
-property_int (max_iter, "max runs", 200)
+property_int (max_iter, "max rounds", 600)
   description ("Mostly a saftey valve, so that we terminate")
   value_range (1, 40000)
 
-property_int (iterations, "iterations per round per probe", 8)
+property_int (iterations, "iterations per round per probe", 16)
   description ("number of improvement iterations, after initial search - that each probe gets.")
   value_range (1, 1000)
 
 property_int (rounds, "rounds", 64)
   description ("number of improvement iterations, after initial search - that each probe gets.")
-  value_range (1, 1000)
+  value_range (0, 1000)
 
 property_double (chance_try, "try probability", 0.25)
   description ("The chance that a candidate pixel probe will start being filled in")
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
-property_double (chance_retry, "retry probability", 0.8)
+property_double (chance_retry, "retry probability", 0.5)
   description ("The chance that a pixel probe gets an improvement in an iteration")
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
 
-property_double (metric_dist_powk, "metric dist powk", 2.0)
-  description ("influences the lack of importance of further away pixels")
+property_double (metric_dist_powk, "metric dist powk", 1.5)
+  description ("influences the (lack of) importance of further away pixels")
   value_range (0.0, 10.0)
   ui_steps    (0.1, 1.0)
 
-property_double (metric_empty_hay_score, "metric empty hay score", 0.44)
+property_double (metric_empty_hay_score, "metric empty hay score", 0.42)
   description ("score given to pixels that are empty, in the search neighborhood of pixel, this being at default or higher value sometimes discourages some of the good very nearby matches")
-  value_range (0.01, 100.0)
+  value_range (0.001, 100.0)
   ui_steps    (0.05, 0.1)
 
 property_double (metric_empty_needle_score, "metric empty needle score", 0.2)
   description ("the score given in the metric to an empty spot")
-  value_range (0.01, 100.0)
+  value_range (0.001, 100.0)
   ui_steps    (0.05, 0.1)
 
-property_double (metric_cohesion, "metric cohesion", 0.01)
+property_double (metric_cohesion, "metric cohesion", 0.10)
   description ("influences the importance of probe spatial proximity")
   value_range (0.0, 100.0)
   ui_steps    (0.2, 0.2)
@@ -87,28 +87,32 @@ property_double (ring_twist, "ring twist", 0.0)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.2)
 
-property_double (ring_gap1,    "ring gap1", 1.0)
+property_double (ring_gap1,    "ring gap1", 1.1)
   description ("radius, in pixels of nearest to pixel circle of neighborhood metric")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap2,    "ring gap2", 2.0)
+property_double (ring_gap2,    "ring gap2", 1.75)
   description ("radius, in pixels of second nearest to pixel circle")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap3,    "ring gap3", 3.0)
+property_double (ring_gap3,    "ring gap3", 2.9)
   description ("radius, in pixels of third pixel circle")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap4, "ring gap4", 4.5)
+property_double (ring_gap4, "ring gap4", 4.6)
   description ("radius, in pixels of fourth pixel circle (not always in use)")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
 property_boolean (direction_invariant, "direction invariant", TRUE)
   description ("wheter we normalize feature vector to start with highest energy ray")
+
+property_int (muses, "neighbors to get inspired by", 4)
+  description ("pick neighbor of neighbors as starting point if good, 4connected 8conntected or 12/16 with longer teleport")
+  value_range (0, 16)
 
 #else
 
@@ -127,7 +131,7 @@ property_boolean (direction_invariant, "direction invariant", TRUE)
  */
 
 #define RINGS                   3   // increments works up to 7-8 with no adver
-#define RAYS                   12  // good values for testing 6 8 10 12 16
+#define RAYS                    12 // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
 /* The pattern of the sampling neighborhood is RAYS of samples radiating out
@@ -137,7 +141,7 @@ property_boolean (direction_invariant, "direction invariant", TRUE)
  * is how we achieve orientation invariance.
  */
 
-#define N_SCALE_NEEDLES         3
+#define N_SCALE_NEEDLES         5
 
 /* Before comparing with a candidate extracted hay-feature, we prepare
  * ourselves with N_SCALE_NEEDLES independent scaled versions of the
@@ -146,7 +150,6 @@ property_boolean (direction_invariant, "direction invariant", TRUE)
  * = 36 times.
  */
 
-#define GET_INSPIRED_BY_NEIGHBORS
 
 /* Before looking for matches in our own neighborhood we look if any good match
  * in the 8 nearest neighboring probes, neighboring pixels. This selection
@@ -245,7 +248,7 @@ static void init_order(PixelDuster *duster)
   duster->order[0][2] = 1.0;
   i = 1;
 
-  for (int circleno = 1; circleno < RINGS; circleno++)
+  for (int circleno = 1; circleno <= RINGS; circleno++)
     for (float angleno = 0; angleno < RAYS; angleno++)
     {
       float mag = duster->ring_gaps[circleno];
@@ -615,30 +618,9 @@ probe_score (PixelDuster *duster,
              gfloat      *hay,
              float        bail);
 
-static inline void
-probe_prep (PixelDuster *duster,
-            Probe       *probe,
-            Probe      **neighbors,
-            needles_t    needles)
-{
-  gint  dst_x  = probe->target_x;
-  gint  dst_y  = probe->target_y;
-  extract_site (duster, duster->output, dst_x, dst_y, 1.0, &needles[0][0]);
-  if (N_SCALE_NEEDLES > 1)
-    extract_site (duster, duster->output, dst_x, dst_y, 0.82, &needles[1][0]);
-  if (N_SCALE_NEEDLES > 2)
-    extract_site (duster, duster->output, dst_x, dst_y, 1.2, &needles[2][0]);
-  if (N_SCALE_NEEDLES > 3)
-    extract_site (duster, duster->output, dst_x, dst_y, 0.66, &needles[3][0]);
-  if (N_SCALE_NEEDLES > 4)
-    extract_site (duster, duster->output, dst_x, dst_y, 1.5, &needles[4][0]);
-  if (N_SCALE_NEEDLES > 5)
-    extract_site (duster, duster->output, dst_x, dst_y, 2.0,&needles[5][0]);
-  if (N_SCALE_NEEDLES > 6)
-    extract_site (duster, duster->output, dst_x, dst_y, 0.5, &needles[6][0]);
 
-  {
-    int coords[16][2]={{-1,0}, // 4 connected
+static const int coords[16][2]={
+                      {-1,0}, // 4 connected
                       {1,0},
                       {0,1},
                       {0,-1},
@@ -658,50 +640,61 @@ probe_prep (PixelDuster *duster,
                       {0,8},
                       {0,-8}
     };
+
+static inline void
+probe_prep (PixelDuster *duster,
+            Probe       *probe,
+            Probe      **neighbors,
+            needles_t    needles)
+{
+  gint  dst_x  = probe->target_x;
+  gint  dst_y  = probe->target_y;
+  extract_site (duster, duster->output, dst_x, dst_y, 1.0, &needles[0][0]);
+  if (N_SCALE_NEEDLES > 1)
+    extract_site (duster, duster->output, dst_x, dst_y, 0.8333, &needles[1][0]);
+  if (N_SCALE_NEEDLES > 2)
+    extract_site (duster, duster->output, dst_x, dst_y, 1.2, &needles[2][0]);
+  if (N_SCALE_NEEDLES > 3)
+    extract_site (duster, duster->output, dst_x, dst_y, 0.7, &needles[3][0]);
+  if (N_SCALE_NEEDLES > 4)
+    extract_site (duster, duster->output, dst_x, dst_y, 1.4, &needles[4][0]);
+  if (N_SCALE_NEEDLES > 5)
+    extract_site (duster, duster->output, dst_x, dst_y, 0.66667,&needles[5][0]);
+  if (N_SCALE_NEEDLES > 6)
+    extract_site (duster, duster->output, dst_x, dst_y, 1.5, &needles[6][0]);
+
+  /* find neighbors */
+  {
     for (int c = 0; c < 16; c++)
     {
        void *off = xy2offset(probe->target_x + coords[c][0],
                              probe->target_y + coords[c][1]);
        Probe *oprobe = g_hash_table_lookup (duster->probes_ht, off);
-
        if (oprobe)
          neighbors[c] = oprobe;
     }
   }
 
-#ifdef GET_INSPIRED_BY_NEIGHBORS
-    for (int i = 0; i < 12; i++)
+  for (int i = 0; i < duster->o->muses; i++)
+  {
+    if (neighbors[i])
     {
-      if (neighbors[i])
+      Probe *oprobe = neighbors[i];
+      for (int c = 0; c < 8; c++)
       {
-        Probe *oprobe = neighbors[i];
-        int coords[8][2]={{-1,0},
-                          {1,0},
-                          {0,1},
-                          {0,-1},
-
-                          {-1,-1},
-                          {1,1},
-                          {-1,1},
-                          {1,-1} 
-
-};
-        for (int c = 0; c < 8; c++)
+        float test_x = oprobe->source_x + coords[c][0];
+        float test_y = oprobe->source_y + coords[c][1];
+        float *hay = ensure_hay (duster, test_x, test_y);
+        float score = probe_score (duster, probe, neighbors, needles, test_x, test_y, hay, probe->score);
+        if (score < probe->score)
         {
-          float test_x = oprobe->source_x + coords[c][0];
-          float test_y = oprobe->source_y + coords[c][1];
-          float *hay = ensure_hay (duster, test_x, test_y);
-          float score = probe_score (duster, probe, neighbors, needles, test_x, test_y, hay, probe->score);
-          if (score <= probe->score)
-          {
-            probe->source_x = test_x;
-            probe->source_y = test_y;
-            probe->score = score;
-          }
+          probe->source_x = test_x;
+          probe->source_y = test_y;
+          probe->score = score;
         }
       }
     }
-#endif
+  }
 }
 
 
@@ -734,8 +727,8 @@ probe_score (PixelDuster *duster,
 }
 
 
-static int probe_improve (PixelDuster *duster,
-                          Probe       *probe)
+static void probe_improve (PixelDuster *duster,
+                           Probe       *probe)
 {
   Probe *neighbors[16]={NULL,};
   GeglProperties *o = duster->o;
@@ -744,9 +737,8 @@ static int probe_improve (PixelDuster *duster,
 
   if (probe->age >= o->rounds)
     {
-      g_hash_table_remove (duster->probes_ht,
-                           xy2offset(probe->target_x, probe->target_y));
-      return -1;
+      //g_hash_table_remove (duster->probes_ht, xy2offset(probe->target_x, probe->target_y));
+      return;
     }
 
   probe_prep (duster, probe, neighbors, needles);
@@ -793,8 +785,6 @@ static int probe_improve (PixelDuster *duster,
                      GEGL_RECTANGLE(probe->target_x, probe->target_y, 1, 1),
                      0, duster->format, &rgba[0], 0);
   }
-
-  return 0;
 }
 
 #define MAX_HAY_SIZE     (1024*1024*1024) // 1gb of hay - max
@@ -897,18 +887,15 @@ static inline void pixel_duster_fill (PixelDuster *duster)
   g_list_free (values);
 
 
-  //if (duster->op)
-  //  gegl_operation_progress (duster->op, (total-missing) * 1.0 / total,
-  //                           "finding suitable pixels");
   {
      double progress = (max_probes-missing ) * 1.0 /     max_probes;
   if (duster->op)
     gegl_operation_progress (duster->op, progress, "finding suitable pixels");
-#if 1
+#if 0
 
   fprintf (stderr, "\r%i/%i %2.2f%% run#:%i  ", total-missing, total, 100 * progress, runs);
-  }
 #endif
+  }
   }
 
   if (duster->op)
