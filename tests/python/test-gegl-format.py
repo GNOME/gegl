@@ -36,8 +36,8 @@ class TestGeglFormat(unittest.TestCase):
 
     def test_buffer(self):
       if gi.__version__ in ("3.14.0"):
-        print "SKIPPED! This test is known to be broken in gi version 3.14.0"
-        print "https://bugzilla.gnome.org/show_bug.cgi?id=741291"
+        print("SKIPPED! This test is known to be broken in gi version 3.14.0")
+        print("https://bugzilla.gnome.org/show_bug.cgi?id=741291")
         # This gi version is known to be broken.
         # buf_float.get_property("format") returns an integer,
         # not gobject pointer to the format as it should
