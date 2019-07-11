@@ -190,8 +190,31 @@ gegl_node_set_time (GeglNode   *node,
 }
 
 
+static char *
+gegl_migrate_saturation_0_0_to_1_0 (const char  *input)
+{
+  //params_add_entry (params, "colorspace=CIE-lab");
+  //return TRUE;
+  return g_strdup (input);
+}
+
+
+
+
+gboolean
+gegl_migrate_api (GeglNode    *node,
+                  const char  *operation,
+                  char       **params)
+{
+  // if there is no opi entry, nothing to migrate
+  // if we find opi key.. look for valid migration
+
+  return TRUE;
+}
+
+
 void
-gegl_create_chain_argv (char      **ops,
+gegl_create_chain_argv (char      **argv,
                         GeglNode   *start,
                         GeglNode   *proxy,
                         double      time,
@@ -201,7 +224,7 @@ gegl_create_chain_argv (char      **ops,
 {
   GeglNode   *iter[10] = {start, NULL};
   GeglNode   *new = NULL;
-  gchar     **arg = ops;
+  gchar     **arg = argv;
   int level = 0;
   char       *level_op[10];
   char       *level_pad[10];
@@ -212,6 +235,8 @@ gegl_create_chain_argv (char      **ops,
   GeglPath   *path = NULL;
   GString    *string = NULL;
   GeglNode **ret_sinkp = NULL;
+  char      *op_args[64]={NULL, };
+  int        n_op_args = 0;
 
   if (error && *error)
   {
@@ -225,7 +250,6 @@ gegl_create_chain_argv (char      **ops,
   level_op[level] = *arg;
 
   ht = g_hash_table_new (g_str_hash, g_str_equal);
-
 
 
   while (*arg)
@@ -388,6 +412,7 @@ gegl_create_chain_argv (char      **ops,
                   {
                     /* should check for incompatibility rather than difference
                      */
+                    fprintf (stderr, "{%s}", value);
                     if (!g_str_equal (value,
                                       gegl_operation_get_op_version (level_op[
                                                                        level])))
@@ -851,12 +876,11 @@ gegl_create_chain (const char *str, GeglNode *op_start, GeglNode *op_end,
     }
 }
 
-/* TODO: serialize keyframed properties */
 static gchar *
-gegl_serialize2 (GeglNode         *start, 
-                 GeglNode         *end, 
+gegl_serialize2 (GeglNode         *start,
+                 GeglNode         *end,
                  const char       *basepath,
-                 GHashTable       *ht, 
+                 GHashTable       *ht,
                  GeglSerializeFlag flags)
 {
   char *ret = NULL;
@@ -937,6 +961,7 @@ gegl_serialize2 (GeglNode         *start,
             gint i;
             guint n_properties;
             GParamSpec **properties;
+            gboolean printed = FALSE;
 
             properties = gegl_operation_list_properties (gegl_node_get_operation (
                                                            iter),
@@ -950,7 +975,6 @@ gegl_serialize2 (GeglNode         *start,
                   properties[i]);
                 char tmpbuf[1024];
                 GeglPath *anim_path = NULL;
-                gboolean printed = FALSE;
                 char *rel_orig = NULL;
                 GQuark anim_quark, rel_quark;
                 sprintf (tmpbuf, "%s-anim", property_name);
@@ -1180,21 +1204,21 @@ gegl_serialize2 (GeglNode         *start,
                       "%s: serialization of %s properties not implemented",
                       property_name, g_type_name (property_type));
                   }
+              }
 
-                if (printed && (flags & GEGL_SERIALIZE_INDENT))
+              if (printed && (flags & GEGL_SERIALIZE_INDENT))
                   g_string_append_printf (s2, "\n");
 
-                {
-                  GeglNode *aux = gegl_node_get_producer (iter, "aux", NULL);
-                  if (aux)
-                    {
-                      char *str = gegl_serialize2 (NULL, aux, basepath, ht,
-                                                   flags);
-                      g_string_append_printf (s2, " aux=[ %s ]%s", str,
+              {
+                GeglNode *aux = gegl_node_get_producer (iter, "aux", NULL);
+                if (aux)
+                  {
+                    char *str = gegl_serialize2 (NULL, aux, basepath, ht,
+                                                 flags);
+                    g_string_append_printf (s2, " aux=[ %s ]%s", str,
                             (flags& GEGL_SERIALIZE_INDENT)?"\n":" ");
-                      g_free (str);
-                    }
-                }
+                    g_free (str);
+                  }
               }
           }
 

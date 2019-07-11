@@ -36,7 +36,7 @@ property_double (scale, _("Scale"), 1.0)
 property_enum (colorspace, _("Interpolation Color Space"),
     description(_("Set at Native if uncertain, the CIE based spaces might introduce hue shifts."))
     GeglSaturationType, gegl_saturation_type,
-    GEGL_SATURATION_TYPE_CIE_LAB)
+    GEGL_SATURATION_TYPE_NATIVE)
 
 #else
 
@@ -380,6 +380,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:saturation",
+    "opi",         "1:0",
     "title",       _("Saturation"),
     "reference-hash", "584bfe714947a573f10399965c8b45b0",
     "categories" , "color",

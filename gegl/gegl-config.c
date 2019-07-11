@@ -316,8 +316,8 @@ gegl_config_class_init (GeglConfigClass *klass)
                               + zfs_arc_size;
     }
 #else
-    mem_total = sysconf (_SC_PHYS_PAGES) * sysconf (_SC_PAGESIZE);
-    mem_available = sysconf (_SC_AVPHYS_PAGES) * sysconf (_SC_PAGESIZE);
+    mem_total = (uint64_t) sysconf (_SC_PHYS_PAGES) * sysconf (_SC_PAGESIZE);
+    mem_available = (uint64_t) sysconf (_SC_AVPHYS_PAGES) * sysconf (_SC_PAGESIZE);
 #endif
 
     default_tile_cache_size = mem_total;

@@ -29,7 +29,7 @@ property_int (seek_distance, "seek radius", 10)
   description ("Maximum distance in neighborhood we look for better candidates per improvement.")
   value_range (1, 512)
 
-property_double (seek_reduction, "seek reduction", 0.75)
+property_double (seek_reduction, "seek reduction", 0.6)
   description ("factor seek distance is shortened, until we're about 2px short per iteration, 1.0 means no reduction")
   value_range (0.0, 1.0)
 
@@ -45,9 +45,13 @@ property_int (max_iter, "max rounds", 800)
   description ("Mostly a saftey valve, so that we terminate")
   value_range (1, 40000)
 
-property_int (iterations, "iterations per round per probe", 16)
+property_int (iterations, "iterations per round per probe", 23)
   description ("number of improvement iterations, after initial search - that each probe gets.")
   value_range (1, 1000)
+
+property_double (histogram,    "histogram", 0.5)
+  description ("only consider pixels whose neighborhood color distribution is smaller than specified, set to 1.0 for much faster processing, but needing lower seek distance to yield ok results.")
+  value_range (0.0, 1.0)
 
 
 property_double (ring_gap1,    "ring gap1", 1.1)
@@ -55,17 +59,17 @@ property_double (ring_gap1,    "ring gap1", 1.1)
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap2,    "ring gap2", 1.75)
+property_double (ring_gap2,    "ring gap2", 1.9)
   description ("radius, in pixels of second nearest to pixel circle")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap3,    "ring gap3", 2.9)
+property_double (ring_gap3,    "ring gap3", 3.2)
   description ("radius, in pixels of third pixel circle")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
 
-property_double (ring_gap4, "ring gap4", 4.0)
+property_double (ring_gap4, "ring gap4", 4.1)
   description ("radius, in pixels of fourth pixel circle (not always in use)")
   value_range (0.0, 16.0)
   ui_steps    (0.25, 0.25)
@@ -73,11 +77,11 @@ property_double (ring_gap4, "ring gap4", 4.0)
 property_int (scale_needles, "scale needles", 5)
   value_range (1, 7)
 
-property_int (rounds, "rounds", 8)
+property_int (rounds, "rounds", 16)
   description ("number of improvement iterations, after initial search - that each probe gets.")
   value_range (0, 1000)
 
-property_double (chance_try, "try probability", 0.07)
+property_double (chance_try, "try probability", 0.015)
   description ("The chance that a candidate pixel probe will start being filled in")
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
@@ -91,12 +95,12 @@ property_double (chance_neighbor, "chance neighbor", 1.0)
   value_range (0.0, 1.0)
   ui_steps    (0.01, 0.1)
 
-property_double (metric_dist_powk, "dist powk", 2.8)
+property_double (metric_dist_powk, "dist powk", 1.8)
   description ("influences the (lack of) importance of further away pixels")
   value_range (0.0, 10.0)
   ui_steps    (0.1, 1.0)
 
-property_double (metric_empty_hay_score, "empty hay score", 0.38)
+property_double (metric_empty_hay_score, "empty hay score", 0.275)
   description ("score given to pixels that are empty, in the search neighborhood of pixel, this being at default or higher value sometimes discourages some of the good very nearby matches")
   value_range (0.001, 100.0)
   ui_steps    (0.05, 0.1)
@@ -106,7 +110,7 @@ property_double (metric_empty_needle_score, "empty needle score", 0.18)
   value_range (0.001, 100.0)
   ui_steps    (0.05, 0.1)
 
-property_double (metric_cohesion, "metric cohesion", 0.5)
+property_double (metric_cohesion, "metric cohesion", 0.13)
   description ("influences the importance of probe spatial proximity")
   value_range (0.0, 100.0)
   ui_steps    (0.2, 0.2)
@@ -120,7 +124,7 @@ property_double (ring_twist, "ring twist", 0.0)
 property_boolean (direction_invariant, "direction invariant", TRUE)
   description ("wheter we normalize feature vector to start with highest energy ray")
 
-property_int (source_neighbors, "source neighbors", 4)
+property_int (source_neighbors, "source neighbors", 8)
   description ("pick neighbor of neighbors as starting point if good, 4connected 8conntected or 12/16 with longer teleport")
   value_range (0, 16)
 
@@ -141,7 +145,7 @@ property_int (source_neighbors, "source neighbors", 4)
  */
 
 #define RINGS                   3   // increments works up to 7-8 with no adver
-#define RAYS                    12  // good values for testing 6 8 10 12 16
+#define RAYS                   12   // good values for testing 6 8 10 12 16
 #define NEIGHBORHOOD            (RINGS*RAYS+1)
 
 /* The pattern of the sampling neighborhood is RAYS of samples radiating out
@@ -215,8 +219,10 @@ typedef struct
 
 typedef struct _Probe Probe;
 
+#define HIST_DIM 4
 
 typedef float   needles_t[N_SCALE_NEEDLES][4 * NEIGHBORHOOD ];// should be on stack
+typedef float   needles_hist_t[N_SCALE_NEEDLES][HIST_DIM * HIST_DIM * HIST_DIM];// should be on stack
 
 
 struct _Probe {
@@ -503,6 +509,62 @@ static inline float f_rgb_diff (float *a, float *b)
   return POW2(a[0]-b[0]) + POW2(a[1]-b[1]) + POW2(a[2]-b[2]);
 }
 
+
+
+static inline void make_hist (PixelDuster *duster, gfloat *signature, float *hist)
+{
+  float *rgba;
+  int count = 0;
+
+  rgba = signature + 4;
+
+  for (int i = 1; i < NEIGHBORHOOD; i++)
+  {
+    if (rgba[3] > 0.5)
+    {
+      int cell_a = rgba[0] * HIST_DIM + 0.5;
+      int cell_b = rgba[1] * HIST_DIM + 0.5;
+      int cell_c = rgba[2] * HIST_DIM + 0.5;
+      if (cell_a < 0) cell_a = 0;
+      if (cell_b < 0) cell_b = 0;
+      if (cell_c < 0) cell_c = 0;
+      if (cell_a >= HIST_DIM) cell_a = HIST_DIM-1;
+      if (cell_b >= HIST_DIM) cell_b = HIST_DIM-1;
+      if (cell_c >= HIST_DIM) cell_c = HIST_DIM-1;
+
+      hist[cell_a * HIST_DIM * HIST_DIM + cell_b * HIST_DIM + cell_c] += 1.0;
+      count++;
+    }
+
+    rgba += 4;
+  }
+  if (count)
+    for (int i = 0; i < HIST_DIM * HIST_DIM * HIST_DIM; i++)
+    {
+      hist[i] /= count;
+    }
+}
+
+static float inline
+histogram_compare (PixelDuster *duster,
+                   gfloat      *needle,
+                   gfloat      *needle_hist,
+                   gfloat      *hay)
+{
+  float diff = 0.0;
+  //float needle_hist[HIST_DIM * HIST_DIM * HIST_DIM]={0,};
+  float hay_hist[HIST_DIM * HIST_DIM * HIST_DIM]={0,};
+
+  //make_hist (duster, needle, needle_hist);
+  make_hist (duster, hay, hay_hist);
+
+  for (int i = 0; i < HIST_DIM * HIST_DIM * HIST_DIM; i++)
+    diff += POW2(needle_hist[i] - hay_hist[i]);
+
+  return sqrtf(diff);
+}
+
+
 static float inline
 score_site (PixelDuster *duster,
             Probe       *probe,
@@ -510,6 +572,7 @@ score_site (PixelDuster *duster,
             int          x,
             int          y,
             gfloat      *needle,
+            gfloat      *needle_hist,
             gfloat      *hay,
             float        bail)
 {
@@ -523,22 +586,30 @@ score_site (PixelDuster *duster,
     return INITIAL_SCORE;
   }
 
+ // return histogram_compare (duster, needle, hay);
+  if (o->histogram < 1.0)
   {
-    float sum_x = probe->source_x;
-    float sum_y = probe->source_y;
-    int count = 1;
-    for (int i = 0; i < 4; i++)
+    score = histogram_compare (duster, needle, needle_hist, hay);
+    if (score > o->histogram)
+      return INITIAL_SCORE;
+  }
+
+  {
+    float sum = 0;//probe->source_x;
+    int count = 0;
+    for (int i = 0; i < 8; i++)
     if (neighbors[i])
     {
-      sum_x += neighbors[i]->source_x;
-      sum_y += neighbors[i]->source_y;
+      int dx = abs(probe->source_x - neighbors[i]->source_x);
+      int dy = abs(probe->source_y - neighbors[i]->source_y);
+      int val = abs (MAX(dx,dy)-1);
+
+      sum += val;
       count++;
     }
-    sum_x /= count;
-    sum_y /= count;
+    sum /= count;
 
-    score += (POW2(sum_x - probe->source_x) +
-             POW2(sum_y - probe->source_y)) * o->metric_cohesion / 1000.0f;
+    score += sum * o->metric_cohesion;
   }
 
   for (i = 1; i < NEIGHBORHOOD && score < bail; i++)
@@ -623,6 +694,7 @@ probe_score (PixelDuster *duster,
              Probe       *probe,
              Probe      **neighbors,
              needles_t    needles,
+             needles_hist_t needles_hist,
              int          x,
              int          y,
              gfloat      *hay,
@@ -655,23 +727,20 @@ static inline void
 probe_prep (PixelDuster *duster,
             Probe       *probe,
             Probe      **neighbors,
-            needles_t    needles)
+            needles_t    needles,
+            needles_hist_t needles_hist)
 {
+  float scales[]={1.0, 1.2, 0.83333, 1.4, 0.7, 1.5, 0.66667};
+
   gint  dst_x  = probe->target_x;
   gint  dst_y  = probe->target_y;
-  extract_site (duster, duster->output, dst_x, dst_y, 1.0, &needles[0][0]);
-  if (duster->o->scale_needles > 1)
-    extract_site (duster, duster->output, dst_x, dst_y, 1.2, &needles[1][0]);
-  if (duster->o->scale_needles > 2)
-    extract_site (duster, duster->output, dst_x, dst_y, 0.8333, &needles[2][0]);
-  if (duster->o->scale_needles > 3)
-    extract_site (duster, duster->output, dst_x, dst_y, 1.4, &needles[3][0]);
-  if (duster->o->scale_needles > 4)
-    extract_site (duster, duster->output, dst_x, dst_y, 0.7, &needles[4][0]);
-  if (duster->o->scale_needles > 5)
-    extract_site (duster, duster->output, dst_x, dst_y, 1.5, &needles[5][0]);
-  if (duster->o->scale_needles > 6)
-    extract_site (duster, duster->output, dst_x, dst_y, 0.66667,&needles[6][0]);
+
+  for (int i = 0; i < sizeof(scales)/sizeof(scales[0]) &&
+                      i < duster->o->scale_needles; i++)
+  {
+    extract_site (duster, duster->output, dst_x, dst_y, scales[i], &needles[i][0]);
+    make_hist (duster, &needles[i][0], &needles_hist[i][0]);
+  }
 
   /* find neighbors */
   {
@@ -697,7 +766,7 @@ probe_prep (PixelDuster *duster,
         float test_x = oprobe->source_x + coords[c][0];
         float test_y = oprobe->source_y + coords[c][1];
         float *hay = ensure_hay (duster, test_x, test_y);
-        float score = probe_score (duster, probe, neighbors, needles, test_x, test_y, hay, probe->score);
+        float score = probe_score (duster, probe, neighbors, needles, needles_hist, test_x, test_y, hay, probe->score);
         if (score <= probe->score)
         {
           probe->source_x = test_x;
@@ -715,6 +784,7 @@ probe_score (PixelDuster *duster,
              Probe       *probe,
              Probe      **neighbors,
              needles_t    needles,
+             needles_hist_t needles_hist,
              int          x,
              int          y,
              gfloat      *hay,
@@ -730,7 +800,7 @@ probe_score (PixelDuster *duster,
 
   for (int n = 0; n < duster->o->scale_needles; n++)
   {
-    float score = score_site (duster, probe, neighbors, x, y, &needles[n][0], hay, bail);
+    float score = score_site (duster, probe, neighbors, x, y, &needles[n][0], &needles_hist[n][0], hay, bail);
     if (score < best_score)
       best_score = score;
   }
@@ -745,6 +815,7 @@ static void probe_improve (PixelDuster *duster,
   Probe *neighbors[16]={NULL,};
   GeglProperties *o = duster->o;
   needles_t needles;
+  needles_hist_t needles_hist = {{0.0,},};
   float old_score = probe->score;
 
   if (probe->age >= o->rounds)
@@ -753,26 +824,36 @@ static void probe_improve (PixelDuster *duster,
       return;
     }
 
-  probe_prep (duster, probe, neighbors, needles);
+  probe_prep (duster, probe, neighbors, needles, needles_hist);
 
   {
-    float mag = o->seek_distance;
+    float mag = 5;//o->seek_distance;
     float startx = probe->source_x;
     float starty = probe->source_y;
+    int dir = 0;
+
     for (int i = 0; i < o->iterations; i++)
     {
       int dx = g_random_int_range (-mag, mag);
       int dy = g_random_int_range (-mag, mag);
-      mag *= o->seek_reduction; // reduce seek radius for each iteration
+      if (dir)
+        mag *= o->seek_reduction; // reduce seek radius for each iteration
+      else
+        mag /= o->seek_reduction; // reduce seek radius for each iteration
       if (mag < 3)
         mag = 2;
+      if (mag > o->seek_distance)
+      {
+        mag = o->seek_distance;
+        dir = 1;
+      }
       if (!(dx == 0 && dy == 0))
       {
         int test_x = startx + dx;
         int test_y = starty + dy;
 
         float *hay = ensure_hay (duster, test_x, test_y);
-        float score = probe_score (duster, probe, neighbors, needles, test_x, test_y, hay, probe->score);
+        float score = probe_score (duster, probe, neighbors, needles, needles_hist, test_x, test_y, hay, probe->score);
         if (score <= probe->score)
         {
           probe->source_x = test_x;
@@ -844,7 +925,7 @@ pixel_duster_trim (PixelDuster *duster)
 static int random_compare (gconstpointer a,
                            gconstpointer b)
 {
-  return g_random_int_range (-1, 1);
+  return g_random_int_range (-5, 6);
 }
 
 static GList *list_randomize (GList *input)
@@ -891,13 +972,13 @@ static inline void pixel_duster_fill (PixelDuster *duster)
     }
     else
     {
-      try_replace = ((rand()%100)/100.0) < o->chance_retry;
+      try_replace = ((rand()%1000)/1000.0) < o->chance_retry;
     }
     total ++;
 
     if (probe->score == INITIAL_SCORE || try_replace)
     {
-      if ((rand()%100)/100.0 < o->chance_try)
+      if ((rand()%1000)/1000.0 < o->chance_try)
       {
         if (probe->score != INITIAL_SCORE ||
             (probe_neighbors (duster, duster->output, probe, o->min_neighbors) >= o->min_neighbors))
@@ -1135,6 +1216,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->get_cached_region       = get_cached_region;
   operation_class->opencl_support          = FALSE;
+//  operation_class->threaded                = FALSE; // it kind of works, set to TRUE for more performance and possible crashes
   operation_class->threaded                = FALSE; // it kind of works, set to TRUE for more performance and possible crashes
 
   gegl_operation_class_set_keys (operation_class,
