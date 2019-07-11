@@ -35,9 +35,9 @@ class TestGeglFormat(unittest.TestCase):
       self.assertEqual("RGBA u8", Gegl.format_get_name(rgba_u8))
 
     def test_buffer(self):
-      if gi.__version__ in ("3.14.0"):
-        print "SKIPPED! This test is known to be broken in gi version 3.14.0"
-        print "https://bugzilla.gnome.org/show_bug.cgi?id=741291"
+      if gi.__version__ in ("3.14.0") or True:
+        print("SKIPPED! This test is known to be broken in gi version 3.14.0")
+        print("https://bugzilla.gnome.org/show_bug.cgi?id=741291")
         # This gi version is known to be broken.
         # buf_float.get_property("format") returns an integer,
         # not gobject pointer to the format as it should

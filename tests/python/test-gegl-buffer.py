@@ -41,19 +41,19 @@ class TestGeglBuffer(unittest.TestCase):
       # Test buffer_get
       buffer_data = buf.get(buf.get_extent(), 1.0, "RGBA u8", Gegl.AbyssPolicy.NONE)
       self.assertEqual(len(buffer_data), 64)
-      self.assertEqual(buffer_data[:4], "\x00\x00\x00\x00")
+      self.assertEqual(buffer_data[:4], b"\x00\x00\x00\x00")
 
       # Check that we get the fresh data after the buffer is changed
       c = Gegl.Color.new("#000F")
       buf.set_color(buf.get_extent(), c)
       buffer_data = buf.get(buf.get_extent(), 1.0, "RGBA u8", Gegl.AbyssPolicy.NONE)
       self.assertEqual(len(buffer_data), 64)
-      self.assertEqual(buffer_data[:4], "\x00\x00\x00\xFF")
+      self.assertEqual(buffer_data[:4], b"\x00\x00\x00\xFF")
 
       # Check that format works
       buffer_data = buf.get(buf.get_extent(), 1.0, "RGBA u16", Gegl.AbyssPolicy.NONE)
       self.assertEqual(len(buffer_data), 128)
-      self.assertEqual(buffer_data[:8], "\x00\x00\x00\x00\x00\x00\xFF\xFF")
+      self.assertEqual(buffer_data[:8], b"\x00\x00\x00\x00\x00\x00\xFF\xFF")
 
       # Invalid rect
       buffer_data = buf.get(Gegl.Rectangle.new(0, 0, 0, 0), 1.0, "RGBA u8", Gegl.AbyssPolicy.NONE)
@@ -68,10 +68,10 @@ class TestGeglBuffer(unittest.TestCase):
       self.assertEqual(len(buffer_data), 64 * 4)
 
       # Set data
-      buf.set(Gegl.Rectangle.new(0,0,1,1), "RGB u8", "\xFF\xFF\xFF")
+      buf.set(Gegl.Rectangle.new(0,0,1,1), "RGB u8", b"\xFF\xFF\xFF")
       buffer_data = buf.get(Gegl.Rectangle.new(0,0,2,1), 1.0, "RGBA u8", Gegl.AbyssPolicy.NONE)
       self.assertEqual(len(buffer_data), 8)
-      self.assertEqual(buffer_data, "\xFF\xFF\xFF\xFF\x00\x00\x00\xFF")
+      self.assertEqual(buffer_data, b"\xFF\xFF\xFF\xFF\x00\x00\x00\xFF")
 
 
 if __name__ == '__main__':
