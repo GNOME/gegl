@@ -31,7 +31,7 @@ seamlessclone_lib = library('gegl-sc-' + api_version,
 
 install_headers(
   seamlessclone_headers,
-  subdir: join_paths(lib_name, 'sc')
+  subdir: api_name / 'sc'
 )
 
 
@@ -41,19 +41,15 @@ pkgconfig.generate(
   description: 'Seamless Cloning Library Based on GEGL',
   version: meson.project_version(),
   requires: [
-    'babl',
+    gobject,
+    gmodule,
+    gio,
+    json_glib,
+
+    babl,
+    poly2tri_c.type_name() == 'internal' ? [] : poly2tri_c,
     'gegl-' + api_version,
-    'gio-2.0',
-    'gio-unix-2.0',
-    'gmodule-2.0',
-    'gobject-2.0',
-    'json-glib-1.0',
-    'poly2tri-c',
   ],
-  libraries: [
-    seamlessclone_lib
-  ],
-  subdirs: [
-    join_paths(lib_name, 'sc'),
-  ],
+  libraries: seamlessclone_lib,
+  subdirs: api_name / 'sc',
 )

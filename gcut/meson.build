@@ -1,20 +1,17 @@
-default_edl = custom_target('default.edl.inc',
-  input : 'default.edl',
-  output: 'default.edl.inc',
-  command: [
-    'sed', '', # 's_\\_\\\\_g;s_\r_a_;s_"_\\"_g;s_^_"_;s_$$_\\n"_',
-    '@INPUT@',
-  ],
-  capture: true
-)
 
-gcut_sources = [
+gcut_sources = files(
   'clip.c',
   'gcut-util.c',
   'gcut.c',
   'iconographer.c',
-  default_edl,
-]
+)
+
+gcut_sources += custom_target('default.edl.inc',
+  input : 'default.edl',
+  output: 'default.edl.inc',
+  command: [ find_program('make_includable.sh'), '@INPUT@', ],
+  capture: true,
+)
 
 gcut_deps = [
   babl,
@@ -23,20 +20,20 @@ gcut_deps = [
   math,
 ]
 
-if get_option('with-libpng')
-  gcut_deps += [ libpng, ]
+if libpng.found()
+  gcut_deps += libpng
 endif
 
-if get_option('with-gexiv2')
-  gcut_deps += [ gexiv2, ]
+if gexiv2.found()
+  gcut_deps += gexiv2
 endif
 
-if get_option('with-mrg') and get_option('with-sdl')
-  gcut_sources += [
+if mrg.found() and sdl1.found()
+  gcut_sources += files(
     'gcut-ui.c',
     'renderer.c',
-  ]
-  gcut_deps += [ sdl1, ]
+  )
+  gcut_deps += [ mrg, sdl1 ]
 endif
 
 

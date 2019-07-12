@@ -1,4 +1,4 @@
-gegl_npd_sources = [
+gegl_npd_sources = files(
   'deformation.c',
   'graphics.c',
   'lattice_cut.c',
@@ -6,9 +6,9 @@ gegl_npd_sources = [
   'npd_debug.c',
   'npd_gegl.c',
   'npd_math.c',
-]
+)
 
-gegl_npd_headers = [
+gegl_npd_headers = files(
   'deformation.h',
   'graphics.h',
   'lattice_cut.h',
@@ -17,24 +17,23 @@ gegl_npd_headers = [
   'npd_gegl.h',
   'npd_math.h',
   'npd.h',
-]
+)
 
 gegl_npd_lib = library(meson.project_name() + '-npd-' + api_version,
   gegl_npd_sources,
   dependencies: [ glib, babl, math, ],
-  include_directories: [ geglInclude, ],
+  include_directories: geglInclude,
   link_with: [
     gegl_lib,
   ],
   install: true,
 )
+
 libnpd = declare_dependency(
-  # dependencies:, other dependencies needed to use this dependency
-  # version:, the version of this dependency, such as 1.2.3
   include_directories: include_directories('..'),
   link_with: gegl_npd_lib,
 )
 
 install_headers(gegl_npd_headers,
-  subdir: join_paths(lib_name, 'npd'),
+  subdir: api_name / 'npd',
 )

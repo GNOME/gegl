@@ -9,13 +9,13 @@ testnames = [
 ]
 
 foreach testname : testnames
-  test('mipmap_' + testname.underscorify(),
+  test(testname.underscorify(),
     find_program(testname + '.sh'),
     env: [
       'ABS_TOP_BUILDDIR=' + meson.build_root(),
       'ABS_TOP_SRCDIR='   + meson.source_root(),
       'GEGL_SWAP=RAM',
-      'GEGL_PATH='+ join_paths(meson.build_root(), 'operations'),
+      'GEGL_PATH=' + meson.build_root() / 'operations',
     ],
     suite: 'mipmap',
   )

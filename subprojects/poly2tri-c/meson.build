@@ -25,11 +25,7 @@ libpoly2tri_c = static_library('poly2tri-c',
 
 
 poly2tri_c = declare_dependency(
-  compile_args: [],
-  dependencies: [],
   include_directories: [ rootInclude, ],
-  link_args: [],
   link_with: [ libpoly2tri_c, ],
-  sources: [],
   version: meson.project_version(),
 )

@@ -51,11 +51,11 @@ opencl_sources = [
 
 cltostring = find_program('cltostring.py')
 
-opencl_headers = []
+opencl_headers = files()
 foreach source : opencl_sources
   opencl_headers += custom_target(source + '.h',
-    input : [ source, ],
-    output: [ source +'.h', ],
+    input : source,
+    output: source +'.h',
     command: [ cltostring, '@INPUT@', '@OUTPUT@' ],
   )
 endforeach
