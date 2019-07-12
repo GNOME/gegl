@@ -1,4 +1,4 @@
-gegl_generated_sources = [
+gegl_generated_sources = files(
   'add.c',
   'clear.c',
   'color-burn.c',
@@ -26,18 +26,14 @@ gegl_generated_sources = [
   'src.c',
   'subtract.c',
   'xor.c',
-]
+)
 
-module_c = custom_target('module_generated_gpl3.c',
-  input : [ gegl_generated_sources ],
-  output: [ 'module_generated_gpl3.c' ],
-  command: [
-    gen_loader,
-    '@INPUT@',
-  ],
+gegl_generated_sources += custom_target('module_generated_gpl3.c',
+  input : gegl_generated_sources,
+  output: 'module_generated_gpl3.c',
+  command: [ gen_loader, '@INPUT@', ],
   capture: true
 )
-gegl_generated_sources += module_c
 
 gegl_generated = shared_library('gegl-generated',
   gegl_generated_sources,
@@ -56,5 +52,5 @@ gegl_generated = shared_library('gegl-generated',
   ],
   name_prefix: '',
   install: true,
-  install_dir: join_paths(get_option('libdir'), lib_name),
+  install_dir: get_option('libdir') / api_name,
 )

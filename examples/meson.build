@@ -1,33 +1,36 @@
 
 examples = [
-  [ '2geglbuffer',          [ ] ],
-  [ 'frame-counter',        [ ] ],
-  [ 'gegl-convert',         [ ] ],
-  [ 'gegl-slicer',          [ ] ],
-  [ 'geglbuffer-add-image', [ ] ],
-  [ 'geglbuffer-clock',     [ ] ],
-  [ 'hello-world',          [ ] ],
-  [ 'video-invert',         [ ] ],
+  { 'name': '2geglbuffer', },
+  { 'name': 'frame-counter', },
+  { 'name': 'gegl-convert', },
+  { 'name': 'gegl-slicer', },
+  { 'name': 'geglbuffer-add-image', },
+  { 'name': 'geglbuffer-clock', },
+  { 'name': 'hello-world', },
+  { 'name': 'video-invert', },
 ]
 
-if get_option('with-sdl1')
-  examples += [
-    [ 'sdl-draw',           [ sdl1, math, ] ],
-  ]
+if sdl1.found()
+  examples += {
+    'name': 'sdl-draw',
+    'deps': [ sdl1, math, ]
+  }
 endif
-if get_option('with-gexiv2')
-  examples += [
-    [ 'gegl-video',         [ gexiv2, ] ],
-  ]
+if gexiv2.found()
+  examples += {
+    'name': 'gegl-video',
+    'deps': [ gexiv2, ]
+  }
 endif
 
 
 foreach example : examples
-  example_name = example[0]
-  example_deps = example[1]
+  example_name = example.get('name')
+  example_srcs = example.get('srcs', example_name + '.c')
+  example_deps = example.get('deps', [])
 
   exe = executable(example_name,
-    example_name + '.c',
+    example_srcs,
     include_directories: [ geglInclude, ],
     dependencies: [
       babl,
@@ -39,6 +42,7 @@ foreach example : examples
     install: false,
   )
 
+  # Fore use as tests for ff-load-save
   if example_name == 'gegl-video'
     gegl_video_example = exe
   endif

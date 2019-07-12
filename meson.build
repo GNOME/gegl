@@ -1,70 +1,67 @@
-project('gegl', ['c', 'cpp'],
+project('gegl',
+  'c', 'cpp',
   license: 'GPL3+',
-  version: '0.3.23',
-  meson_version: '>=0.40.0',
+  version: '0.4.17',
+  meson_version: '>=0.50.0',
   default_options: [
-    'sysconfdir=/etc',
-    'localstatedir=/var',
-    'sharedstatedir=/var/lib'
+    'c_std=gnu11',
+    'cpp_std=gnu++17',
   ],
-  # http://bugzilla.gnome.org/enter_bug.cgi?product=GEGL
 )
 
 # Making releases on the stable branch:
-#   GEGL_MICRO_VERSION += 1;
-#   GEGL_INTERFACE_AGE += 1;
-#   GEGL_BINARY_AGE += 1;
+#   micro_version += 1;
+#   interface_age += 1;
+#   binary_age += 1;
 # if any functions have been added,
-#    set GEGL_INTERFACE_AGE to 0.
+#    set interface_age to 0.
 # if backwards compatibility has been broken,
-#    set GEGL_BINARY_AGE _and_ GEGL_INTERFACE_AGE to 0.
+#    set binary_age _and_ interface_age to 0.
 
 pkgconfig = import('pkgconfig')
 i18n      = import('i18n')
 gnome     = import('gnome')
 python    = import('python3').find_python()
 
-cc        = meson.get_compiler('c')
-prefix    = get_option('prefix')
-buildtype = get_option('buildtype')
-conf      = configuration_data()
+cc  = meson.get_compiler('c')
+config= configuration_data()
 
 ################################################################################
-# Projects infos
+# Project infos
 
 version = meson.project_version()
 array_version = version.split('.')
 major_version = array_version[0].to_int()
 minor_version = array_version[1].to_int()
 micro_version = array_version[2].to_int()
-interface_age = 1
-
-binary_age = 100 * minor_version + micro_version
-lt_current = binary_age - interface_age
 
 api_version = '@0@.@1@'.format(major_version, minor_version)
-so_version  = '@0@.@1@.@2@'.format(0, lt_current, interface_age)
-lib_name    = meson.project_name() + '-' + api_version
-gettext_package = lib_name
+api_name    = meson.project_name() + '-' + api_version
+gettext_package = api_name
 
 stability_version_number = (major_version != 0 ? minor_version : micro_version)
 stable = (stability_version_number % 2 == 0)
 
-conf.set10('GEGL_UNSTABLE', not stable)
+config.set        ('GEGL_MAJOR_VERSION',  '@0@'.format(major_version))
+config.set        ('GEGL_MINOR_VERSION',  '@0@'.format(minor_version))
+config.set        ('GEGL_MICRO_VERSION',  '@0@'.format(micro_version))
+config.set        ('GEGL_UNSTABLE',       not stable)
 
-conf.set       ('GEGL_MAJOR_VERSION',     '@0@'.format(major_version))
-conf.set       ('GEGL_MINOR_VERSION',     '@0@'.format(minor_version))
-conf.set       ('GEGL_MICRO_VERSION',     '@0@'.format(micro_version))
-conf.set_quoted('GEGL_LIBRARY',           '@0@'.format(lib_name))
-conf.set_quoted('GETTEXT_PACKAGE',        '@0@'.format(gettext_package))
+config.set_quoted ('GEGL_LIBRARY',        '@0@'.format(api_name))
+config.set_quoted ('GETTEXT_PACKAGE',     '@0@'.format(gettext_package))
+
+# Libtool versionning
+interface_age = 1
+
+binary_age = 100 * minor_version + micro_version
+lt_current = binary_age - interface_age
+so_version  = '@0@.@1@.@2@'.format(0, lt_current, interface_age)
 
 ################################################################################
 # Host system detection
 
 host_os = host_machine.system()
-message('Host os: ' + host_os)
-
-os_win32  = host_os.contains('mingw')
+os_win32  = host_os.contains('mingw') or host_os.contains('windows')
 os_android= host_os.contains('android')
 os_osx    = host_os.contains('darwin')
 
@@ -74,31 +71,33 @@ endif
 
 
 host_cpu = host_machine.cpu()
-message('Architecture: ' + host_cpu)
-
 if   host_cpu.startswith('i') and host_cpu.endswith('86')
   have_x86 = true
-  conf.set10('ARCH_X86',    true)
+  config.set10('ARCH_X86',    true)
 elif host_cpu == 'x86_64'
   have_x86 = true
-  conf.set10('ARCH_X86',    true)
-  conf.set10('ARCH_X86_64', true)
+  config.set10('ARCH_X86',    true)
+  config.set10('ARCH_X86_64', true)
 elif host_cpu == 'ppc' or host_cpu == 'powerpc'
   have_ppc = true
-  conf.set10('ARCH_PPC',    true)
+  config.set10('ARCH_PPC',    true)
 elif host_cpu == 'ppc64' or host_cpu == 'powerpc64'
   have_ppc = true
-  conf.set10('ARCH_PPC',    true)
-  conf.set10('ARCH_PPC64',  true)
+  config.set10('ARCH_PPC',    true)
+  config.set10('ARCH_PPC64',  true)
 else
   error('Unknown host architecture')
 endif
 
+# Should be filled with c_arguments, is checked before use.
+c_arguments = [
+  '-DHAVE_CONFIG_H',
+]
 
 ################################################################################
 # Extra warnings
 
-extra_warnings_list = [
+c_arguments += [
   '-Wdeclaration-after-statement',
   '-Winit-self',
   '-Wmissing-declarations',
@@ -106,48 +105,33 @@ extra_warnings_list = [
   '-Wold-style-definition',
   '-Wpointer-arith',
 ]
-extra_warnings = []
-foreach warning : extra_warnings_list
-  if cc.has_argument(warning)
-    extra_warnings += warning
-  endif
-endforeach
-
 
 ################################################################################
 # Check for compiler CPU extensions
 
-if cc.has_argument     ('-mfpmath=sse')
-  add_project_arguments('-mfpmath=sse', language: 'c')
-endif
+c_arguments += [
+  '-mfpmath=sse',
+]
 
-if cc.has_argument     ('-mmmx') and get_option('enable-mmx')
-  add_project_arguments('-mmmx', language: 'c')
-endif
+optionnal_arguments = [
+  'mmx',
+  'sse',
+  'sse2',
+  'sse4.1',
+  'f16c',
+]
 
-if cc.has_argument     ('-msse') and get_option('enable-sse')
-  add_project_arguments('-msse', language: 'c')
-endif
+foreach arg : optionnal_arguments
+  if get_option('enable-@0@'.format(arg.underscorify()))
+    c_arguments += '-m@0@'.format(arg)
+  endif
+endforeach
 
-if cc.has_argument     ('-msse2') and get_option('enable-sse2')
-  add_project_arguments('-msse2', language: 'c')
-endif
-
-if cc.has_argument     ('-msse4.1') and get_option('enable-sse4_1')
-  add_project_arguments('-msse4.1', language: 'c')
-endif
-
-if cc.has_argument     ('-mf16c') and get_option('enable-f16c')
-  add_project_arguments('-mf16c', language: 'c')
-endif
-
-conf.set('HAVE_UNISTD_H', cc.has_header('unistd.h'))
-
+add_project_arguments(cc.get_supported_arguments(c_arguments), language: 'c')
 
 ################################################################################
 # Utilities
 
-env         = find_program('env')
 bash        = find_program('bash')
 
 asciidoc    = find_program('asciidoc',      required: false)
@@ -158,182 +142,171 @@ rsvg_convert= find_program('rsvg-convert',  required: false)
 ruby        = find_program('ruby',          required: false)
 w3m         = find_program('w3m',           required: false)
 
+graphviz    = find_program('dot',           required: get_option('graphviz'))
+
 ################################################################################
-# Dependencies
+# Required Dependencies
 
-math  = cc.find_library('m',       required: false)
-thread= cc.find_library('pthread', required: false)
-log   = cc.find_library('log',     required: false)
-dl    = cc.find_library('dl',      required: false)
+config.set('HAVE_UNISTD_H',   cc.has_header('unistd.h'))
+config.set('HAVE_EXECINFO_H', cc.has_header('execinfo.h'))
+config.set('HAVE_FSYNC',      cc.has_function('fsync'))
 
-babl          = dependency('babl',            version: '>=0.1.38')
+math    = cc.find_library('m', required: false)
+thread  = dependency('threads')
 
-glib          = dependency('glib-2.0',        version: '>=2.44.0')
-gobject       = dependency('gobject-2.0',     version: '>=2.44.0')
-gmodule       = dependency('gmodule-2.0',     version: '>=2.44.0')
-gthread       = dependency('gthread-2.0',     version: '>=2.44.0')
-gio_specific  = os_win32 ? 'gio-windows-2.0' : 'gio-unix-2.0'
-gio           = [
-                dependency('gio-2.0',         version: '>=2.44.0'),
-                dependency(gio_specific,      version: '>=2.44.0'),
-              ]
-json_glib     = dependency('json-glib-1.0',   version: '>=1.2.6')
+babl      = dependency('babl',        version: '>=0.1.66')
+glib      = dependency('glib-2.0',    version: '>=2.44.0')
+gobject   = dependency('gobject-2.0', version: '>=2.44.0')
+gmodule   = dependency('gmodule-2.0', version: '>=2.44.0')
+gthread   = dependency('gthread-2.0', version: '>=2.44.0')
+gio_os    = os_win32 ? 'gio-windows-2.0' : 'gio-unix-2.0'
+gio       = [
+            dependency('gio-2.0',     version: '>=2.44.0'),
+            dependency(gio_os,        version: '>=2.44.0'),
+]
+json_glib = dependency('json-glib-1.0', version: '>=1.2.6')
 
-if get_option('with-cairo')
-  cairo       = dependency('cairo',           version: '>=1.12.2')
-endif
-if get_option('with-exiv2')
-  exiv2       = dependency('exiv2',           version: '>=0.25')
-endif
-if get_option('with-gdk-pixbuf')
-  gdk_pixbuf  = dependency('gdk-pixbuf-2.0',  version: '>=2.32.0')
-endif
-if get_option('with-gexiv2')
-  gexiv2      = dependency('gexiv2',          version: '>=0.0.0')
-endif
-conf.set10('HAVE_GEXIV2', get_option('with-gexiv2'))
-if get_option('with-graphviz')
-  dot         = find_program('dot')
-endif
-if get_option('with-jasper')
-  jasper      = dependency('jasper',          version: '>=1.900.1')
-endif
-if get_option('with-lcms')
-  lcms        = dependency('lcms2',           version: '>=2.8')
-endif
-if get_option('with-lensfun')
-  lensfun     = dependency('lensfun',         version: '>=0.2.5')
-endif
-if get_option('with-libav')
-  avlibs = [
-    dependency('libavcodec',                  version: '>=55.48.100'),
-    dependency('libavformat',                 version: '>=1.32.0'),
-    dependency('libavutil',                   version: '>=1.32.0'),
-    dependency('libswscale',                  version: '>=2.8.0'),
-  ]
-endif
-if get_option('with-libjpeg')
-  libjpeg     = dependency('libjpeg',         version: '>=1.0.0')
-endif
-if get_option('with-libpng')
-  libpng      = dependency('libpng',          version: '>=0.2.5')
-endif
-if get_option('with-libraw')
-  libraw      = dependency('libraw',          version: '>=0.15.4')
-endif
-if get_option('with-librsvg')
-  librsvg     = dependency('librsvg-2.0',     version: '>=2.40.6')
-endif
-if get_option('with-libspiro')
-  libspiro    = dependency('libspiro',        version: '>=0.5.0')
-endif
-if get_option('with-libtiff')
-  libtiff     = dependency('libtiff-4',       version: '>=4.0.0')
-endif
-if get_option('with-libv4l')
-  libv4l1     = dependency('libv4l1',         version: '>=1.0.1')
-endif
-if get_option('with-libv4l2')
-  libv4l2     = dependency('libv4l2',         version: '>=1.0.1')
-endif
-if get_option('with-lua')
-  lua         = dependency('lua',             version: '>=5.1.0')
-endif
-if get_option('with-mrg')
-  mrg         = dependency('mrg',             version: '>=0.0.0')
-endif
-conf.set10('HAVE_MRG', get_option('with-mrg'))
-if get_option('with-openexr')
-  openexr     = dependency('OpenEXR',         version: '>=1.6.1')
-endif
-if get_option('with-pango')
-  pango       = dependency('pango',           version: '>=1.38.0')
-endif
-if get_option('with-pangocairo')
-  pangocairo  = dependency('pangocairo',      version: '>=1.38.0')
-endif
-if get_option('with-pygobject')
-  pygobject3  = dependency('pygobject-3.0',   version: '>=3.2.0')
-  gobj_introsp= dependency('gobject-introspection-1.0', version: '>=1.32.0')
-endif
-if get_option('with-sdl1')
-  sdl1        = dependency('sdl',             version: '>=1.2.0')
-endif
-have_umfpack = false
-have_suitesparse_umfpack = false
-if get_option('with-umfpack')
-  if cc.has_header('umfpack.h')#, 'UMFPACK_H')
-    have_umfpack = true
-  elif cc.has_header_symbol('suitesparse/umfpack.h', 'umfpack_dl_solve')
-    have_suitesparse_umfpack = true
-  else
-    error('UmfPack dependency not found.')
-  endif
-  libumfpack = cc.find_library('umfpack')
-endif
-conf.set('HAVE_UMFPACK_H', have_umfpack)
-conf.set('HAVE_SUITESPARSE_UMFPACK_H', have_suitesparse_umfpack)
-if get_option('with-vala')
-  vapigen     = dependency('vapigen',         version: '>=0.20.0')
-endif
-if get_option('with-webp')
-  libwebp     = dependency('libwebp',         version: '>=0.5.0')
-endif
+# Required libraries eventually provided in subprojects/ subdir
 
-# Required library eventually provided in subprojects/ subdir
-poly2tri_c  = dependency('poly2tri-c',        version: '>=0.0.0',
+poly2tri_c= dependency('poly2tri-c',  version: '>=0.0.0',
   fallback: [ 'poly2tri-c', 'poly2tri_c' ],
+  required: false,
 )
-p2tc_status = 'true (internal)'
-
-conf.set('HAVE_FSYNC',      cc.has_function('fsync'))
-conf.set('HAVE_EXECINFO_H', cc.has_header('execinfo.h'))
-# HAVE_ALTIVEC_SYSCTL
-# HAVE_OPENMP
-
 
 ################################################################################
-# Autogenerate files
+# Optionnal Dependencies
 
-configure_file(
-  output: 'config.h',
-  configuration: conf
+gdk_pixbuf= dependency('gdk-pixbuf-2.0', version:'>=2.32.0',
+  required: get_option('gdk-pixbuf')
+)
+pango     = dependency('pango',       version: '>=1.38.0',
+  required: get_option('pango')
+)
+pangocairo= dependency('pangocairo',  version: '>=1.38.0',
+  required: get_option('pangocairo')
+)
+cairo     = dependency('cairo',       version: '>=1.12.2',
+  required: get_option('cairo')
+)
+exiv2     = dependency('exiv2',       version: '>=0.25',
+  required: get_option('exiv2')
+)
+gexiv2    = dependency('gexiv2',      version: '>=0.0.0',
+  required: get_option('gexiv2')
+)
+config.set('HAVE_GEXIV2', gexiv2.found())
+
+jasper    = dependency('jasper',      version: '>=1.900.1',
+  required: get_option('jasper')
+)
+lcms      = dependency('lcms2',       version: '>=2.8',
+  required: get_option('lcms')
+)
+lensfun   = dependency('lensfun',     version: '>=0.2.5',
+  required: get_option('lensfun')
+)
+libjpeg   = dependency('libjpeg',     version: '>=1.0.0',
+  required: get_option('libjpeg')
+)
+libpng    = dependency('libpng',      version: '>=1.6.0',
+  required: get_option('libpng')
+)
+libraw    = dependency('libraw',      version: '>=0.15.4',
+  required: get_option('libraw')
+)
+librsvg   = dependency('librsvg-2.0', version: '>=2.40.6',
+  required: get_option('librsvg')
+)
+libspiro  = dependency('libspiro',    version: '>=0.5.0',
+  required: get_option('libspiro')
+)
+libtiff   = dependency('libtiff-4',   version: '>=4.0.0',
+  required: get_option('libtiff')
+)
+libv4l1   = dependency('libv4l1',     version: '>=1.0.1',
+  required: get_option('libv4l')
+)
+libv4l2   = dependency('libv4l2',     version: '>=1.0.1',
+  required: get_option('libv4l2')
+)
+lua       = dependency('lua',         version: '>=5.1.0',
+  required: get_option('lua')
+)
+mrg       = dependency('mrg',         version: '>=0.0.0',
+  required: get_option('mrg')
+)
+config.set('HAVE_MRG', mrg.found())
+
+openexr   = dependency('OpenEXR',     version: '>=1.6.1',
+  required: get_option('openexr')
+)
+sdl1      = dependency('sdl',         version: '>=1.2.0',
+  required: get_option('sdl1')
 )
 
-pkgconfig.generate(filebase: 'gegl-' + api_version,
-  name: 'GEGL',
-  description: 'Generic Graphics Library',
-  version: meson.project_version(),
-  libraries: [
-    '-L${libdir}',
-    '-l' + lib_name,
-    '-l' + meson.project_name() + '-npd-' + api_version,
-  ],
-  libraries_private: [
-    '-lm', '-lpthread',
-  ],
-  requires: [
-    'babl',
-    'gio-2.0',
-    'gio-unix-2.0',
-    'gmodule-2.0',
-    'gobject-2.0',
-    'json-glib-1.0',
-  ],
-  subdirs: [
-    lib_name,
-  ],
-  variables: [
-    'pluginsdir=' + join_paths(get_option('libdir'), lib_name),
-  ],
+vapigen   = dependency('vapigen',     version:'>=0.20.0',
+  required: get_option('vapigen')
 )
+libwebp   = dependency('libwebp',     version:'>=0.5.0',
+  required: get_option('webp')
+)
+
+pygobject3  = dependency('pygobject-3.0', version: '>=3.2.0',
+  required: get_option('pygobject')
+)
+gobj_introsp = dependency('gobject-introspection-1.0', version: '>=1.32.0',
+  required: get_option('pygobject')
+)
+pygobject_found = pygobject3.found() and gobj_introsp.found()
+
+libavcodec  = dependency('libavcodec',   version: '>=55.69.100',
+  required: get_option('libav')
+)
+libavformat = dependency('libavformat',  version: '>=55.48.100',
+  required: get_option('libav')
+)
+libavutil   = dependency('libavutil',    version: '>=55.92.100',
+  required: get_option('libav')
+)
+libswscale  = dependency('libswscale',   version: '>=2.6.100',
+  required: get_option('libav')
+)
+avlibs_found = (
+  libavcodec.found() and
+  libavformat.found() and
+  libavutil.found() and
+  libswscale.found()
+)
+avlibs = avlibs_found ? [ libavcodec, libavformat, libavutil, libswscale ] : []
+
+libumfpack = cc.find_library('umfpack', required: get_option('umfpack'))
+if libumfpack.found()
+  have_umfpack = cc.has_header('umfpack.h')
+  have_ss_umfpack = cc.has_header_symbol(
+    'suitesparse/umfpack.h',
+    'umfpack_dl_solve'
+  )
+
+  if not (have_umfpack or have_ss_umfpack)
+    if get_option('umfpack').auto()
+      libumfpack = dependency('', required: false)
+    else
+      error('UmfPack library found but not headers.')
+    endif
+  endif
+  config.set('HAVE_UMFPACK_H', have_umfpack)
+  config.set('HAVE_SUITESPARSE_UMFPACK_H', have_ss_umfpack)
+endif
 
 ################################################################################
 # Subdirs
 
-rootInclude = include_directories('.')
+configure_file(
+  output: 'config.h',
+  configuration: config
+)
 
-# version_script = join_paths(meson.current_source_dir(), 'gegl.map')
+rootInclude = include_directories('.')
 
 subdir('libs/rgbe')
 subdir('opencl')
@@ -348,74 +321,83 @@ subdir('examples')
 subdir('tests')
 subdir('perf')
 subdir('po')
-if get_option('with-docs')
+if get_option('docs')
   subdir('docs')
 endif
 
 if w3m.found()
   custom_target('README',
-    input : [ join_paths('docs', 'index.html'), ] ,
-    output: [ 'README' ] ,
-    command: [
-      w3m,
-      '-cols', '72',
-      '-dump',
-      '@INPUT@',
-    ],
+    input : 'docs/index.html',
+    output: 'README',
+    command: [ w3m, '-cols', '72', '-dump', '@INPUT@' ],
     capture: true,
   )
   custom_target('NEWS',
-    input : [ join_paths('docs', 'NEWS.html'), ] ,
-    output: [ 'NEWS' ] ,
-    command: [
-      w3m,
-      '-cols', '72',
-      '-dump',
-      '@INPUT@',
-    ],
+    input : 'docs/NEWS.html',
+    output: 'NEWS',
+    command: [ w3m, '-cols', '72', '-dump', '@INPUT@' ],
     capture: true,
   )
 endif
+
+pkgconfig.generate(filebase: 'gegl-' + api_version,
+  name: 'GEGL',
+  description: 'Generic Graphics Library',
+  version: meson.project_version(),
+  variables: 'pluginsdir=' + '${prefix}' / get_option('libdir') / api_name,
+  requires: [
+    gobject,
+    gmodule,
+    gio,
+    json_glib,
+
+    babl,
+  ],
+  libraries: gegl_lib,
+  subdirs: api_name,
+)
 
 
 message('\n'.join(['',
 'Building GEGL with prefix=@0@'.format(get_option('prefix')),
 '',
 'Optional features:',
-'  GEGL docs:       @0@'.format(get_option('with-docs')),
-'  Build workshop:  @0@'.format(get_option('with-workshop')),
+'  GEGL docs:       @0@'.format(get_option('docs')),
+'  Build workshop:  @0@'.format(get_option('workshop')),
 '  Build website:   @0@'.format(asciidoc.found()),
-'  SIMD:            sse:@0@ mmx:@1@ sse2:@2@'
-.format(get_option('enable-sse'), get_option('enable-mmx'), get_option('enable-sse2')),
-'  Vala support:    @0@'.format(get_option('with-vala')),
+'  SIMD:            sse:@0@ mmx:@1@ sse2:@2@'.format(
+  get_option('enable-sse'),
+  get_option('enable-mmx'),
+  get_option('enable-sse2')
+),
+'  Vala support:    @0@'.format(vapigen.found()),
 '',
 'Optional dependencies:',
 '  asciidoc:        @0@'.format(asciidoc.found()),
 '  enscript:        @0@'.format(enscript.found()),
-'  mrg:             @0@'.format(get_option('with-mrg')),
+'  mrg:             @0@'.format(mrg.found()),
 '  Ruby:            @0@'.format(ruby.found()),
-'  Lua:             @0@'.format(get_option('with-lua')),
-'  Cairo:           @0@'.format(get_option('with-cairo')),
-'  Pango:           @0@'.format(get_option('with-pango')),
-'  pangocairo:      @0@'.format(get_option('with-pangocairo')),
-'  GDKPixbuf:       @0@'.format(get_option('with-gdk-pixbuf')),
-'  JPEG:            @0@'.format(get_option('with-libjpeg')),
-'  PNG:             @0@'.format(get_option('with-libpng')),
-'  OpenEXR:         @0@'.format(get_option('with-openexr')),
-'  rsvg:            @0@'.format(get_option('with-librsvg')),
-'  SDL:             @0@'.format(get_option('with-sdl1')),
-'  libraw:          @0@'.format(get_option('with-libraw')),
-'  Jasper:          @0@'.format(get_option('with-jasper')),
-'  graphviz:        @0@'.format(get_option('with-graphviz')),
-'  av libs:         @0@'.format(get_option('with-libav')),
-'  V4L:             @0@'.format(get_option('with-libv4l')),
-'  V4L2:            @0@'.format(get_option('with-libv4l2')),
-'  spiro:           @0@'.format(get_option('with-libspiro')),
-'  EXIV:            @0@'.format(get_option('with-exiv2')),
-'  gexiv2:          @0@'.format(get_option('with-gexiv2')),
-'  umfpack:         @0@'.format(get_option('with-umfpack')),
-'  TIFF             @0@'.format(get_option('with-libtiff')),
-'  webp:            @0@'.format(get_option('with-webp')),
-'  poly2tri-c:      @0@'.format(p2tc_status),
-
+'  Lua:             @0@'.format(lua.found()),
+'  Cairo:           @0@'.format(cairo.found()),
+'  Pango:           @0@'.format(pango.found()),
+'  pangocairo:      @0@'.format(pangocairo.found()),
+'  GDKPixbuf:       @0@'.format(gdk_pixbuf.found()),
+'  JPEG:            @0@'.format(libjpeg.found()),
+'  PNG:             @0@'.format(libpng.found()),
+'  OpenEXR:         @0@'.format(openexr.found()),
+'  rsvg:            @0@'.format(librsvg.found()),
+'  SDL:             @0@'.format(sdl1.found()),
+'  libraw:          @0@'.format(libraw.found()),
+'  Jasper:          @0@'.format(jasper.found()),
+'  graphviz:        @0@'.format(graphviz.found()),
+'  av libs:         @0@'.format(avlibs_found),
+'  V4L:             @0@'.format(libv4l1.found()),
+'  V4L2:            @0@'.format(libv4l2.found()),
+'  spiro:           @0@'.format(libspiro.found()),
+'  EXIV:            @0@'.format(exiv2.found()),
+'  gexiv2:          @0@'.format(gexiv2.found()),
+'  umfpack:         @0@'.format(libumfpack.found()),
+'  TIFF             @0@'.format(libtiff.found()),
+'  webp:            @0@'.format(libwebp.found()),
+'  poly2tri-c:      @0@ (@1@)'.format(poly2tri_c.found(),poly2tri_c.type_name()),
 '']))

@@ -1,4 +1,4 @@
-gegl_operation_sources = files(
+gegl_sources += files(
   'gegl-extension-handler.c',
   'gegl-operation-area-filter.c',
   'gegl-operation-composer.c',
@@ -43,14 +43,5 @@ gegl_operation_headers = files(
 )
 
 install_headers(gegl_operation_headers,
-  subdir: join_paths(lib_name, 'operation'),
-)
-
-gegl_operation_lib = static_library('gegl_operation',
-  gegl_operation_sources,
-  include_directories: [ rootInclude, geglInclude, ],
-  dependencies: [
-    babl,
-    glib,
-  ],
+  subdir: api_name / 'operation',
 )

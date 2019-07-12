@@ -1,8 +1,7 @@
-compositions_tests = [
+compositions_tests = files(
   'affine-with-negative.xml',
   'alien-map.xml',
   'apply-lens.xml',
-  'apply-lens2.xml',
   'apply-lens3.xml',
   'bump-map.xml',
   'checkerboard.xml',
@@ -45,11 +44,11 @@ compositions_tests = [
   'supernova.xml',
   'transform.xml',
   'weighted-blend.xml',
-]
+)
 #run-matting-global.xml.sh
 #run-matting-global-big.xml.sh
 
-compositions_tests_without_opencl = [
+compositions_tests_without_opencl = files(
   'color-reduction.xml',
   'jpg-load-datauri.xml',
   'pnm-ascii-load.xml',
@@ -60,13 +59,13 @@ compositions_tests_without_opencl = [
   'stretch-contrast-hsv.xml',
   'tiff-load.xml',
   'tile.xml',
-]
+)
 
 
-if get_option('with-jasper')
+if jasper.found()
   compositions_tests_without_opencl += 'jp2-load.xml'
 endif
-if get_option('with-umfpack')
+if libumfpack.found()
  # compositions_tests += 'matting-levin.xml'
 endif
 

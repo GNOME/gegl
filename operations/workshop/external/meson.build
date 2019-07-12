@@ -1,5 +1,5 @@
 
-if get_option('with-lua')
+if lua.found()
   shared_library('gluas',
     'gluas.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
@@ -15,11 +15,11 @@ if get_option('with-lua')
     ],
     name_prefix: '',
     install: true,
-    install_dir: join_paths(get_option('libdir'), lib_name),
+    install_dir: get_option('libdir') / api_name,
   )
 endif
 
-if get_option('with-lensfun')
+if lensfun.found()
   shared_library('lens-correct',
     'lens-correct.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
@@ -35,11 +35,11 @@ if get_option('with-lensfun')
     ],
     name_prefix: '',
     install: true,
-    install_dir: join_paths(get_option('libdir'), lib_name),
+    install_dir: get_option('libdir') / api_name,
   )
 endif
 
-if get_option('with-cairo')
+if cairo.found()
   shared_library('line-profile',
     'line-profile.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
@@ -55,11 +55,11 @@ if get_option('with-cairo')
     ],
     name_prefix: '',
     install: true,
-    install_dir: join_paths(get_option('libdir'), lib_name),
+    install_dir: get_option('libdir') / api_name,
   )
 endif
 
-if get_option('with-libv4l2')
+if libv4l2.found()
   shared_library('v4l2',
     'v4l2.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
@@ -75,6 +75,6 @@ if get_option('with-libv4l2')
     ],
     name_prefix: '',
     install: true,
-    install_dir: join_paths(get_option('libdir'), lib_name),
+    install_dir: get_option('libdir') / api_name,
   )
 endif

@@ -23,11 +23,11 @@ test_list = [
 
 opencl_test = find_program('opencl_test.sh')
 foreach test_name: test_list
-  xml_file = join_paths(meson.current_source_dir(), test_name + '.xml')
+  xml_file = meson.current_source_dir() / test_name + '.xml'
   out_dir  = meson.current_build_dir()
   out_name = test_name + '.png'
 
-  test('opencl_' + test_name,
+  test(test_name,
     opencl_test,
     env: [
       'ABS_BUILDDIR='+ out_dir,
@@ -36,7 +36,7 @@ foreach test_name: test_list
       'XML_FILE='+ xml_file,
       'OUT_FILE='+ out_name,
       'GEGL_SWAP=RAM',
-      'GEGL_PATH='+ join_paths(meson.build_root(), 'operations'),
+      'GEGL_PATH='+ meson.build_root() / 'operations',
     ],
     suite: 'opencl',
   )

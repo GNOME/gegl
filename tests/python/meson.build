@@ -7,15 +7,15 @@ testnames = [
   'gegl',
 ]
 
-if python.found() and get_option('with-pygobject')
+if python.found() and pygobject_found
   foreach testname : testnames
     testfile = 'test-' + testname + '.py'
-    test('python_' + testname,
+    test(testname,
       find_program(testfile),
       env: [
-        'LD_LIBRARY_PATH=' + join_paths(meson.build_root(), 'gegl:$LD_LIBRARY_PATH'),
-        'GI_TYPELIB_PATH=' + join_paths(meson.build_root(), 'gegl:$GI_TYPELIB_PATH'),
-        'GEGL_PATH='+ join_paths(meson.build_root(), 'operations'),
+        'LD_LIBRARY_PATH=' + meson.build_root() / 'gegl' + ':$LD_LIBRARY_PATH',
+        'GI_TYPELIB_PATH=' + meson.build_root() / 'gegl' + ':$GI_TYPELIB_PATH',
+        'GEGL_PATH='+ meson.build_root() / 'operations',
         'GEGL_SWAP=RAM',
       ],
       suite: 'python',

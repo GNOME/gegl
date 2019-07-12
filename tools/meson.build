@@ -64,12 +64,12 @@ operations_html = executable(
   install: false,
 )
 
-if get_option('with-exiv2')
+if gexiv2.found()
   exp_combine = executable(
     'exp_combine',
     'exp_combine.cpp',
     include_directories: [ rootInclude, geglInclude, ],
-    dependencies: [ tools_deps, exiv2, ],
+    dependencies: [ tools_deps, gexiv2, ],
     link_with: [ gegl_lib, ],
     c_args: [ tools_c_args ],
     install: false,
