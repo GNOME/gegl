@@ -1,5 +1,5 @@
 
-gegl_core_sources = [
+gegl_core_sources = files(
   'cache.c',
   'cast-format.c',
   'clone.c',
@@ -8,19 +8,14 @@ gegl_core_sources = [
   'json.c',
   'load.c',
   'nop.c',
-]
-
-module_c = custom_target('module_core.c',
-  input : [ gegl_core_sources ],
-  output: [ 'module_core.c' ],
-  command: [
-    gen_loader,
-    '@INPUT@',
-  ],
-  capture: true
 )
 
-gegl_core_sources += module_c
+gegl_core_sources += custom_target('module_core.c',
+  input : gegl_core_sources,
+  output: 'module_core.c',
+  command: [ gen_loader, '@INPUT@', ],
+  capture: true
+)
 
 gegl_core = shared_library('gegl-core',
   gegl_core_sources,
@@ -40,5 +35,5 @@ gegl_core = shared_library('gegl-core',
   ],
   name_prefix: '',
   install: true,
-  install_dir: join_paths(get_option('libdir'), lib_name),
+  install_dir: get_option('libdir') / api_name,
 )

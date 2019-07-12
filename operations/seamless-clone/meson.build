@@ -6,7 +6,7 @@ seamless_clone_libs = [
 
 foreach lib : seamless_clone_libs
   shared_library(lib,
-    lib + '.c',
+    files(lib + '.c'),
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
       babl,
@@ -21,6 +21,6 @@ foreach lib : seamless_clone_libs
     ],
     name_prefix: '',
     install: true,
-    install_dir: join_paths(get_option('libdir'), lib_name),
+    install_dir: get_option('libdir') / api_name,
   )
 endforeach

@@ -1,8 +1,11 @@
-gegl_sources = [
+subdir('lua')
+
+gegl_sources = files(
   'gegl-options.c',
   'gegl-path-smooth.c',
   'gegl.c',
-]
+)
+
 gegl_deps = [
   babl,
   glib,
@@ -10,17 +13,17 @@ gegl_deps = [
   math,
 ]
 
-if get_option('with-libpng')
+if libpng.found()
   gegl_deps += [ libpng, ]
 endif
 
-if get_option('with-mrg') and get_option('with-gexiv2') and get_option('with-sdl')
-  gegl_sources += [ 'mrg-gegl.c', 'ui.c', ]
+if mrg.found() and gexiv2.found() and sdl1.found()
+  gegl_sources += files('mrg-gegl.c', 'ui.c')
   gegl_deps += [ mrg, gexiv2, sdl1, ]
 endif
 
-if get_option('with-libspiro')
-  gegl_sources += [ 'gegl-path-spiro.c', ]
+if libspiro.found()
+  gegl_sources += files('gegl-path-spiro.c')
   gegl_deps += [ libspiro, ]
 endif
 

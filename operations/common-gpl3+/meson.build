@@ -1,4 +1,4 @@
-gegl_common_sources = [
+gegl_common_sources = files(
   'antialias.c',
   'apply-lens.c',
   'bump-map.c',
@@ -32,6 +32,8 @@ gegl_common_sources = [
   'polar-coordinates.c',
   'red-eye-removal.c',
   'ripple.c',
+  'shadows-highlights-correction.c',
+  'shadows-highlights.c',
   'shift.c',
   'sinus.c',
   'softglow.c',
@@ -45,9 +47,9 @@ gegl_common_sources = [
   'waves.c',
   'whirl-pinch.c',
   'wind.c',
-]
+)
 
-module_c = custom_target('module_common_gpl3.c',
+gegl_common_sources += custom_target('module_common_gpl3.c',
   input : [ gegl_common_sources ],
   output: [ 'module_common_gpl3.c' ],
   command: [
@@ -56,8 +58,6 @@ module_c = custom_target('module_common_gpl3.c',
   ],
   capture: true
 )
-
-gegl_common_sources += module_c
 
 gegl_common = shared_library('gegl-common-gpl3',
   [ gegl_common_sources, opencl_headers, ],
@@ -76,5 +76,5 @@ gegl_common = shared_library('gegl-common-gpl3',
   ],
   name_prefix: '',
   install: true,
-  install_dir: join_paths(get_option('libdir'), lib_name),
+  install_dir: get_option('libdir') / api_name,
 )

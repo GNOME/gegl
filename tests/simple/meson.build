@@ -45,13 +45,13 @@ foreach testname : testnames
     ],
     install: false,
   )
-  test('simple_' + testname,
+  test(testname,
     test_exe,
     env: [
       'ABS_TOP_BUILDDIR=' + meson.build_root(),
       'ABS_TOP_SRCDIR='   + meson.source_root(),
       'GEGL_SWAP=RAM',
-      'GEGL_PATH='+ join_paths(meson.build_root(), 'operations'),
+      'GEGL_PATH='+ meson.build_root() / 'operations',
     ],
     suite: 'simple',
   )

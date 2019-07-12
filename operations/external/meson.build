@@ -1,132 +1,114 @@
-# List of [ name, sources, dependencies, ]
+
 operations = [
-  [   'ppm-load',     [ 'ppm-load.c', ],    [ ], ],
-  [   'ppm-save',     [ 'ppm-save.c', ],    [ ], ],
-
-  [   'npy-save',     [ 'npy-save.c', ],    [ ], ],
-
-  [   'rgbe-load',    [ 'rgbe-load.c', ],   [ librgbe ], ],
-  [   'rgbe-save',    [ 'rgbe-save.c', ],   [ librgbe ], ],
+  { 'name': 'ppm-load' },
+  { 'name': 'ppm-save' },
+  { 'name': 'npy-save' },
+  { 'name': 'rgbe-load', 'deps': librgbe },
+  { 'name': 'rgbe-save', 'deps': librgbe },
 ]
 
 
-if get_option('with-pangocairo')
+if pangocairo.found()
+  operations += { 'name': 'text', 'deps': pangocairo }
+endif
+
+if cairo.found()
   operations += [
-    [ 'text',         [ 'text.c', ],        [ pangocairo ], ],
+    { 'name': 'path',           'deps': cairo },
+    { 'name': 'vector-fill',    'deps': cairo },
+    { 'name': 'vector-stroke',  'deps': cairo },
+    { 'name': 'npd',            'deps': [ cairo, libnpd ] },
   ]
 endif
 
-if get_option('with-cairo')
+if libpng.found()
   operations += [
-    [ 'path',         [ 'path.c', ],        [ cairo ], ],
-    [ 'vector-fill',  [ 'vector-fill.c', ], [ cairo ], ],
-    [ 'vector-stroke',[ 'vector-stroke.c',],[ cairo ], ],
-    [ 'npd',          [ 'npd.c', ],         [ cairo, libnpd ], ],
+    { 'name': 'png-load', 'deps': libpng },
+    { 'name': 'png-save', 'deps': libpng },
   ]
 endif
 
-if get_option('with-libpng')
+if libjpeg.found()
   operations += [
-    [ 'png-load',     [ 'png-load.c', ],    [ libpng ], ],
-    [ 'png-save',     [ 'png-save.c', ],    [ libpng ], ],
+    { 'name': 'jpg-load', 'deps': libjpeg },
+    { 'name': 'jpg-save', 'deps': libjpeg },
   ]
 endif
 
-if get_option('with-libjpeg')
+if cairo.found() and librsvg.found()
   operations += [
-    [ 'jpg-load',     [ 'jpg-load.c', ],    [ libjpeg ], ],
-    [ 'jpg-save',     [ 'jpg-save.c', ],    [ libjpeg ], ],
+    { 'name': 'svg-load', 'deps': [ librsvg, cairo ], },
   ]
 endif
 
-if get_option('with-cairo') and get_option('with-librsvg')
+if gdk_pixbuf.found()
   operations += [
-    [ 'svg-load',     [ 'svg-load.c', ],    [ librsvg, cairo ], ],
+    { 'name': 'pixbuf-load',  'srcs': 'pixbuf.c',      'deps': gdk_pixbuf },
+    { 'name': 'pixbuf-save',  'srcs': 'save-pixbuf.c', 'deps': gdk_pixbuf },
   ]
 endif
 
-if get_option('with-gdk-pixbuf')
+if openexr.found()
   operations += [
-    [ 'pixbuf-load',  [ 'pixbuf.c',      ], [ gdk_pixbuf ], ],
-    [ 'pixbuf-save',  [ 'save-pixbuf.c', ], [ gdk_pixbuf ], ],
+    { 'name': 'exr-load',   'srcs': 'exr-load.cpp', 'deps': openexr },
+    { 'name': 'exr-save',   'srcs': 'exr-save.cc',  'deps': openexr },
   ]
 endif
 
-if get_option('with-openexr')
+if sdl1.found()
+  operations += { 'name': 'sdl-display', 'deps': sdl1 }
+endif
+
+if libraw.found()
+  operations += { 'name': 'raw-load', 'deps': libraw }
+endif
+
+if libv4l1.found()
+  operations += { 'name': 'v4l', 'deps': [ libv4l1, thread ], }
+endif
+
+if jasper.found()
+  operations += { 'name': 'jp2-load', 'deps': jasper }
+endif
+
+if avlibs_found
   operations += [
-    [ 'exr-load',     [ 'exr-load.cpp', ],  [ openexr ], ],
-    [ 'exr-save',     [ 'exr-save.cc',  ],  [ openexr ], ],
+    { 'name': 'ff-load', 'deps': avlibs },
+    { 'name': 'ff-save', 'deps': avlibs },
   ]
 endif
 
-if get_option('with-sdl1')
+if libumfpack.found()
+  operations += {
+    'name': 'matting-levin',
+    'srcs': [ 'matting-levin.c', 'matting-levin-cblas.c', ],
+    'deps': libumfpack
+  }
+endif
+
+if lcms.found()
+  operations += { 'name': 'lcms-from-profile', 'deps': lcms }
+endif
+
+if libtiff.found()
   operations += [
-    [ 'sdl-display',  [ 'sdl-display.c', ], [ sdl1 ], ],
+    { 'name': 'tiff-load', 'deps': libtiff },
+    { 'name': 'tiff-save', 'deps': libtiff },
   ]
 endif
 
-if get_option('with-libraw')
+if libwebp.found()
   operations += [
-    [ 'raw-load',     [ 'raw-load.c', ],    [ libraw ], ],
-  ]
-endif
-
-if get_option('with-libv4l')
-  operations += [
-    [ 'v4l',          [ 'v4l.c', ],         [ libv4l1, thread ], ],
-  ]
-endif
-
-if get_option('with-jasper')
-  operations += [
-    [ 'jp2-load',     [ 'jp2-load.c', ],    [ jasper ], ],
-  ]
-endif
-
-if get_option('with-libav')
-  operations += [
-    [ 'ff-load',      [ 'ff-load.c', ],     [ avlibs ], ],
-    [ 'ff-save',      [ 'ff-save.c', ],     [ avlibs ], ],
-  ]
-endif
-
-if get_option('with-umfpack')
-  operations += [
-    [ 'matting-levin',
-      [ 'matting-levin.c', 'matting-levin-cblas.c', ],
-      [ libumfpack ],
-    ],
-  ]
-endif
-
-if get_option('with-lcms')
-  operations += [
-    [ 'lcms-from-profile',
-      [ 'lcms-from-profile.c', ],
-      [ lcms ],
-    ],
-  ]
-endif
-
-if get_option('with-libtiff')
-  operations += [
-    [ 'tiff-load',    [ 'tiff-load.c', ],   [ libtiff ], ],
-    [ 'tiff-save',    [ 'tiff-save.c', ],   [ libtiff ], ],
-  ]
-endif
-
-if get_option('with-webp')
-  operations += [
-    [ 'webp-load',    [ 'webp-load.c', ],   [ libwebp ], ],
-    [ 'webp-save',    [ 'webp-save.c', ],   [ libwebp ], ],
+    { 'name': 'webp-load', 'deps': libwebp },
+    { 'name': 'webp-save', 'deps': libwebp },
   ]
 endif
 
 
 foreach operation : operations
-  libname = operation[0]
-  libsrcs = operation[1]
-  libdeps = operation[2]
+  libname = operation.get('name')
+  libsrcs = operation.get('srcs', libname + '.c')
+  libdeps = operation.get('deps', [])
 
   shared_library(libname,
     libsrcs,
@@ -135,6 +117,6 @@ foreach operation : operations
     link_with: [ gegl_lib, ],
     name_prefix: '',
     install: true,
-    install_dir: join_paths(get_option('libdir'), lib_name)
+    install_dir: get_option('libdir') / api_name,
   )
 endforeach
