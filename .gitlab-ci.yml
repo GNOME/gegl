@@ -5,10 +5,13 @@ stages:
 variables:
   BABL_DIR: "_babl_install"
   BABL_PREFIX: "$CI_PROJECT_DIR/$BABL_DIR"
+  CCACHE_BASEDIR: "${PWD}"
+  CCACHE_DIR: "${PWD}/ccache"
 
 cache:
   paths:
   - _pacman_cache
+  - ccache
 
 image: archlinux/base:latest
 
@@ -20,10 +23,10 @@ image: archlinux/base:latest
   variables:
     GIT_DEPTH: "5"
   before_script:
-    - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache git base-devel meson lcms2
+    - pacman -Syu --noconfirm --needed --cachedir "${PWD}/_pacman_cache"
+      git base-devel ccache meson lcms2
     - git clone --depth=$GIT_DEPTH https://gitlab.gnome.org/GNOME/babl.git _babl
     - cd _babl
-    - mkdir _build
 
 babl-git-meson:
   extends: .babl-base
@@ -37,7 +40,7 @@ babl-git-meson:
 babl-min-meson:
   extends: .babl-base
   script:
-    - grep babl_required_version ../configure.ac | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
+    - grep "'babl'" ../meson.build | grep -o '[0-9\.]*' | sed 's|\.|_|g' > .babl_min_version
     - git fetch --no-tags origin "refs/tags/BABL_`cat .babl_min_version`:refs/tags/MIN_VERSION"
     - git checkout MIN_VERSION
     - meson -Dprefix="$BABL_PREFIX" _build
@@ -49,8 +52,9 @@ babl-min-meson:
   variables:
     GIT_DEPTH: "15"
   before_script:
-    - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache
-        base-devel
+    - pacman -Syu --noconfirm --needed --cachedir "${PWD}/_pacman_cache"
+        base-devel ccache meson
+        gobject-introspection
         ffmpeg
         graphviz
         jasper
@@ -67,11 +71,12 @@ babl-min-meson:
         sdl2
         suitesparse
   script:
-   - mkdir _build
-   - cd _build
-   - PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig ../autogen.sh $CONFIG_OPTIONS
-   - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH" make
-   - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH" make check
+    - PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig
+      meson -Dprefix="$BABL_PREFIX" _build
+    - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
+      ninja -C _build
+    - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
+      ninja -C _build install
 
 .build-default:
   extends: .build-gegl
@@ -81,7 +86,7 @@ babl-min-meson:
 .build-all:
   extends: .build-gegl
   variables:
-    CONFIG_OPTIONS: "--enable-debug --enable-mmx --enable-sse --enable-profile --enable-docs"
+    CONFIG_OPTIONS: "-Denable-mmx=true -Denable-sse=true --auto-features=enabled"
 
 build-default-git-meson:
   extends: .build-default
