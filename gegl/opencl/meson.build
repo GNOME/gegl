@@ -1,8 +1,10 @@
-gegl_opencl_sources = files(
-  'gegl-cl.c',
-  'gegl-cl-init.c',
+gegl_sources += files(
+  'gegl-buffer-cl-cache.c',
+  'gegl-buffer-cl-iterator.c',
   'gegl-cl-color.c',
+  'gegl-cl-init.c',
   'gegl-cl-random.c',
+  'gegl-cl.c',
 )
 
 gegl_opencl_headers = files(
@@ -21,14 +23,5 @@ gegl_opencl_headers = files(
 )
 
 install_headers(gegl_opencl_headers,
-  subdir: join_paths(lib_name, 'opencl')
-)
-
-gegl_opencl_lib = static_library('gegl_opencl',
-  [ gegl_opencl_sources, opencl_headers, ],
-  include_directories: [ rootInclude, geglInclude, ],
-  dependencies: [
-    babl,
-    glib,
-  ],
+  subdir: api_name / 'opencl'
 )

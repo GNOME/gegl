@@ -1,4 +1,5 @@
-gegl_common_sources = [
+gegl_common_sources = files(
+  'absolute.c',
   'alien-map.c',
   'bilateral-filter.c',
   'box-blur.c',
@@ -8,6 +9,7 @@ gegl_common_sources = [
   'c2g.c',
   'checkerboard.c',
   'color-enhance.c',
+  'color-overlay.c',
   'color-rotate.c',
   'color-temperature.c',
   'color-warp.c',
@@ -18,7 +20,6 @@ gegl_common_sources = [
   'copy-buffer.c',
   'difference-of-gaussians.c',
   'display.c',
-  'distance-transform.c',
   'dither.c',
   'dropshadow.c',
   'edge-neon.c',
@@ -35,6 +36,7 @@ gegl_common_sources = [
   'grid.c',
   'high-pass.c',
   'hue-chroma.c',
+  'icc-save.c',
   'image-compare.c',
   'image-gradient.c',
   'introspect.c',
@@ -43,12 +45,15 @@ gegl_common_sources = [
   'layer.c',
   'levels.c',
   'linear-gradient.c',
+  'little-planet.c',
+  'long-shadow.c',
   'magick-load.c',
   'mantiuk06.c',
   'map-absolute.c',
   'map-relative.c',
   'matting-global.c',
   'mblur.c',
+  'mean-curvature-blur.c',
   'median-blur.c',
   'mirrors.c',
   'mix.c',
@@ -73,6 +78,7 @@ gegl_common_sources = [
   'posterize.c',
   'radial-gradient.c',
   'rectangle.c',
+  'recursive-transform.c',
   'reinhard05.c',
   'remap.c',
   'rgb-clip.c',
@@ -81,6 +87,7 @@ gegl_common_sources = [
   'sepia.c',
   'slic.c',
   'snn-mean.c',
+  'spherize.c',
   'stress.c',
   'stretch-contrast-hsv.c',
   'stretch-contrast.c',
@@ -95,16 +102,15 @@ gegl_common_sources = [
   'unsharp-mask.c',
   'value-invert.c',
   'vignette.c',
-  'warp.c',
   'waterpixels.c',
   'watershed-transform.c',
   'wavelet-blur-1d.c',
   'wavelet-blur.c',
   'weighted-blend.c',
   'write-buffer.c',
-]
+)
 
-module_c = custom_target('module_common.c',
+gegl_common_sources += custom_target('module_common.c',
   input : [ gegl_common_sources ],
   output: [ 'module_common.c' ],
   command: [
@@ -114,10 +120,9 @@ module_c = custom_target('module_common.c',
   capture: true
 )
 
-gegl_common_sources += module_c
-
 gegl_common = shared_library('gegl-common',
-  [ gegl_common_sources, opencl_headers, ],
+  gegl_common_sources,
+  opencl_headers,
   include_directories: [ rootInclude, geglInclude, ],
   dependencies: [
     babl,
@@ -133,5 +138,5 @@ gegl_common = shared_library('gegl-common',
   ],
   name_prefix: '',
   install: true,
-  install_dir: join_paths(get_option('libdir'), lib_name),
+  install_dir: get_option('libdir') / api_name,
 )

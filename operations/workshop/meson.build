@@ -2,26 +2,32 @@ subdir('external')
 subdir('generated')
 
 libraries = [
-  'bayer-matrix',
-  'bilateral-filter-fast',
-  'color-to-alpha-plus',
-  'demosaic-bimedian',
-  'demosaic-simple',
-  'ditto',
-  'gradient-map',
-  'hstack',
-  'integral-image',
-  'linear-sinusoid',
-  'rawbayer-load',
-  'segment-kmeans',
-  'shadows-highlights-correction',
-  'shadows-highlights',
-  'spherize',
+  { 'name': 'aces-rrt', },
+  { 'name': 'alpha-inpaint', },
+  { 'name': 'bilateral-filter-fast', },
+  { 'name': 'boxblur-1d', },
+  { 'name': 'boxblur', },
+  { 'name': 'connected-components', },
+  { 'name': 'demosaic-bimedian', },
+  { 'name': 'demosaic-simple', },
+  { 'name': 'ditto', },
+  { 'name': 'domain-transform', },
+  { 'name': 'gcr', },
+  { 'name': 'gradient-map', },
+  { 'name': 'hstack', },
+  { 'name': 'integral-image', },
+  { 'name': 'rawbayer-load', },
+  { 'name': 'segment-kmeans', },
+  { 'name': 'selective-hue-saturation', },
+  { 'name': 'voronoi-diagram', 'srcs': 'voronoi-diagram.cc', },
 ]
 
 foreach lib : libraries
-  shared_library(lib,
-    [ lib + '.c', opencl_headers, ],
+  libname = lib.get('name')
+  libsrcs = lib.get('srcs', libname + '.c')
+  shared_library(libname,
+    libsrcs,
+    opencl_headers,
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
       babl,
@@ -35,6 +41,6 @@ foreach lib : libraries
     ],
     name_prefix: '',
     install: true,
-    install_dir: join_paths(get_option('libdir'), lib_name),
+    install_dir: get_option('libdir') / api_name,
   )
 endforeach

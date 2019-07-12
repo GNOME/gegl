@@ -1,4 +1,4 @@
-gegl_transformops_sources = [
+gegl_transformops_sources = files(
   'module.c',
   'reflect.c',
   'rotate-on-center.c',
@@ -6,11 +6,12 @@ gegl_transformops_sources = [
   'scale-ratio.c',
   'scale-size-keepaspect.c',
   'scale-size.c',
+  'scale.c',
   'shear.c',
   'transform-core.c',
   'transform.c',
   'translate.c',
-]
+)
 
 gegl_transformops = shared_library('transformops',
   gegl_transformops_sources,
@@ -26,5 +27,5 @@ gegl_transformops = shared_library('transformops',
   ],
   name_prefix: '',
   install: true,
-  install_dir: join_paths(get_option('libdir'), lib_name),
+  install_dir: get_option('libdir') / api_name,
 )

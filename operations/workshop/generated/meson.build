@@ -22,6 +22,6 @@ foreach lib : libraries
     ],
     name_prefix: '',
     install: true,
-    install_dir: join_paths(get_option('libdir'), lib_name),
+    install_dir: get_option('libdir') / api_name,
   )
 endforeach
