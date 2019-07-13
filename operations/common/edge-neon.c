@@ -47,9 +47,9 @@
 
 property_double (radius, _("Radius"), 5.0)
    description (_("Radius of effect (in pixels)"))
-   value_range (1, 1500.0)
+   value_range (0.0, 1500.0)
    ui_gamma    (2.0)
-   ui_range    (1, 50.0)
+   ui_range    (0.0, 50.0)
    ui_meta     ("unit", "pixel-distance")
 
 
