@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 1997 Spencer Kimball
+ * Copyright 2001 Spencer Kimball, Bit Specialists, Inc.
  * Copyright 2012 Maxime Nicco <maxime.nicco@gmail.com>
  */
 
