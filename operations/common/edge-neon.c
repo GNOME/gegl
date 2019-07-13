@@ -14,7 +14,8 @@
  *
  *
  * Neon filter for GIMP for BIPS
- * Original by Spencer Kimball
+ * Original by Spencer Kimball, Bit Specialists, Inc.
+ *
  * Port to GEGL Copyright 2017 Peter O'Regan <peteroregan@gmail.com>
  *
  * This filter works in a manner similar to the "edge"
@@ -93,7 +94,8 @@ static void      combine_to_gradient (gfloat           *dest,
 
 
 
-static void neon_prepare (GeglOperation *operation)
+static void
+neon_prepare (GeglOperation *operation)
 {
   const Babl *space = gegl_operation_get_source_space (operation, "input");
   const Babl *format = babl_format_with_space ("R'G'B'A float", space);
@@ -104,11 +106,11 @@ static void neon_prepare (GeglOperation *operation)
 
 
 static gboolean
-neon_process (GeglOperation     *op,
-         GeglBuffer             *in_buf,
-         GeglBuffer             *out_buf,
-         const GeglRectangle    *roi,
-         gint                   level)
+neon_process (GeglOperation       *op,
+              GeglBuffer          *in_buf,
+              GeglBuffer          *out_buf,
+              const GeglRectangle *roi,
+              gint                level)
 {
     // Used later for traversal
     GeglRectangle cur_roi;
@@ -342,7 +344,6 @@ combine_to_gradient (gfloat *dest,
 
   for (b = 0; b < bend; b++)
     {
-
       /* scale result */
       h = *src2++;
       v = *dest;
@@ -465,26 +466,12 @@ neon_get_bounding_box (GeglOperation *self)
 
 static GeglRectangle
 neon_get_required_for_output (GeglOperation        *operation,
-                         const gchar         *input_pad,
-                         const GeglRectangle *roi)
+                              const gchar         *input_pad,
+                              const GeglRectangle *roi)
 {
-
   GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
 
   /* Don't request an infinite plane */
-  if (gegl_rectangle_is_infinite_plane (&result))
-    return *roi;
-
-  return result;
-}
-
-
-static GeglRectangle
-neon_get_cached_region (GeglOperation        *operation,
-                                  const GeglRectangle *roi)
-{
-  GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
-
   if (gegl_rectangle_is_infinite_plane (&result))
     return *roi;
 
@@ -526,7 +513,6 @@ operation_process (GeglOperation        *operation,
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-
   GeglOperationClass       *operation_class;
   GeglOperationFilterClass *filter_class;
 
@@ -542,7 +528,6 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->process                 = operation_process;
   operation_class->get_bounding_box        = neon_get_bounding_box;
   operation_class->get_required_for_output = neon_get_required_for_output;
-  operation_class->get_cached_region       = neon_get_cached_region;
   operation_class->opencl_support          = 0;
   operation_class->threaded                = 0; //Due to IIR Implementation (smear-carry), we require single-process, linear operation.
   operation_class->want_in_place           = 0; //IIR Causes buffer build-up.
@@ -556,8 +541,6 @@ gegl_op_class_init (GeglOpClass *klass)
     "description",
         _("Performs edge detection using a Gaussian derivative method"),
         NULL);
-
-
 
   /*
   gchar                    *composition = "<?xml version='1.0' encoding='UTF-8'?>"
