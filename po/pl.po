@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-07-04 17:58+0000\n"
-"PO-Revision-Date: 2019-07-07 13:05+0200\n"
+"POT-Creation-Date: 2019-07-08 11:52+0000\n"
+"PO-Revision-Date: 2019-07-14 16:12+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -1025,7 +1025,7 @@ msgstr "Wartość barwy dla powyższych ustawień szarości"
 
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
 #: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:320
+#: operations/common/saturation.c:383
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
@@ -2175,7 +2175,7 @@ msgstr "Pionowe położenie w pikselach"
 
 #: operations/common/layer.c:46 operations/common/noise-cell.c:36
 #: operations/common/noise-perlin.c:27 operations/common/noise-simplex.c:31
-#: operations/common/saturation.c:32
+#: operations/common/saturation.c:31
 #: operations/workshop/external/lens-correct.c:50
 msgid "Scale"
 msgstr "Skalowanie"
@@ -2719,7 +2719,7 @@ msgstr "Współrzędna osi X środka lustra"
 #: operations/common/mirrors.c:63 operations/common/vignette.c:66
 #: operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:46
-#: operations/common-gpl3+/motion-blur-zoom.c:45
+#: operations/common-gpl3+/motion-blur-zoom.c:46
 #: operations/common-gpl3+/supernova.c:39 operations/common-gpl3+/waves.c:31
 msgid "Center Y"
 msgstr "Środek na osi Y"
@@ -3492,35 +3492,33 @@ msgid "Keep RGB pixels values inside a specific range"
 msgstr "Utrzymywanie wartości pikseli RGB w podanym zakresie"
 
 #: operations/common/saturation.c:26
-msgid "Linear data, RGB"
-msgstr "Dane liniowe, RGB"
+msgid "Native"
+msgstr "Natywne"
 
 #: operations/common/saturation.c:27
 msgid "CIE Lab/Lch"
 msgstr "Lab/Lch CIE"
 
-#. will also work on CMYK in the future
-#: operations/common/saturation.c:29
+#: operations/common/saturation.c:28
 msgid "CIE Yuv"
 msgstr "Yuv CIE"
 
-#: operations/common/saturation.c:33
+#: operations/common/saturation.c:32
 msgid "Scale, strength of effect"
 msgstr "Skaluj, siła efektu"
 
-#: operations/common/saturation.c:37
+#: operations/common/saturation.c:36
 msgid "Interpolation Color Space"
 msgstr "Przestrzeń kolorów interpolacji"
 
-#: operations/common/saturation.c:38
+#: operations/common/saturation.c:37
 msgid ""
-"Set at Linear data if uncertain, the CIE based spaces might introduce hue "
-"shifts."
+"Set at Native if uncertain, the CIE based spaces might introduce hue shifts."
 msgstr ""
-"W razie niepewności należy ustawić na dane liniowe, przestrzenie na "
-"podstawie CIE mogą powodować przesunięcia barwy."
+"W razie niepewności należy ustawić na „Natywne”, przestrzenie na podstawie "
+"CIE mogą powodować przesunięcia barwy."
 
-#: operations/common/saturation.c:323
+#: operations/common/saturation.c:386
 msgid "Changes the saturation"
 msgstr "Zmienia nasycenie"
 
@@ -5489,15 +5487,15 @@ msgstr "Odśrodkowe rozmycie ruchu"
 msgid "Circular motion blur"
 msgstr "Odśrodkowe rozmycie ruchu"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:50
+#: operations/common-gpl3+/motion-blur-zoom.c:52
 msgid "Blurring factor"
 msgstr "Współczynnik rozmycia"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:243
+#: operations/common-gpl3+/motion-blur-zoom.c:245
 msgid "Zooming Motion Blur"
 msgstr "Rozmycie ruchu przybliżania"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:248
+#: operations/common-gpl3+/motion-blur-zoom.c:250
 msgid "Zoom motion blur"
 msgstr "Rozmycie ruchu przybliżania"
 
