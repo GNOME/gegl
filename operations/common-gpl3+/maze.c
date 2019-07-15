@@ -1,11 +1,4 @@
-/* mazegen code from rec.games.programmer's maze-faq:
- * * maz.c - generate a maze
- * *
- * * algorithm posted to rec.games.programmer by jallen@ic.sunysb.edu
- * * program cleaned and reorganized by mzraly@ldbvax.dnet.lotus.com
- * *
- * * don't make people pay for this, or I'll jump up and down and
- * * yell and scream and embarrass you in front of your friends...
+/* This file is an image processing operation for GEGL
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +12,15 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * mazegen code from rec.games.programmer's maze-faq:
+ * * maz.c - generate a maze
+ * *
+ * * algorithm posted to rec.games.programmer by jallen@ic.sunysb.edu
+ * * program cleaned and reorganized by mzraly@ldbvax.dnet.lotus.com
+ * *
+ * * don't make people pay for this, or I'll jump up and down and
+ * * yell and scream and embarrass you in front of your friends...
  *
  * Contains code originaly from GIMP 'maze' Plugin by
  * Kevin Turner <acapnotic@users.sourceforge.net>
