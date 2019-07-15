@@ -116,10 +116,10 @@ static int    offset = 1;
 
 static void
 depth_first (gint    pos,
-	     guchar *maz,
-	     gint    x,
-	     gint    y,
-	     gint    rnd)
+             guchar *maz,
+             gint    x,
+             gint    y,
+             gint    rnd)
 {
   gchar d, i;
   gint  c = 0;
@@ -168,7 +168,7 @@ depth_first (gint    pos,
         default:
           g_warning ("maze: mazegen: Going in unknown direction.\n"
                      "i: %d, d: %d, seed: %d, mw: %d, mh: %d, mult: %d, offset: %d\n",
-		     i, d, rnd, x, y, multiple, offset);
+         i, d, rnd, x, y, multiple, offset);
           break;
         }
 
@@ -179,10 +179,10 @@ depth_first (gint    pos,
 
 static void
 depth_first_tileable (gint    pos,
-		      guchar *maz,
-		      gint    x,
-		      gint    y,
-		      gint    rnd)
+                      guchar *maz,
+                      gint    x,
+                      gint    y,
+                      gint    rnd)
 {
   gchar d, i;
   gint  c = 0;
@@ -193,12 +193,12 @@ depth_first_tileable (gint    pos,
 
   /* If there is a wall two rows above us, bit 1 is 1. */
   while ((d= (maz[CELL_UP_TILEABLE(pos)] ? 0 : 1)
-	  /* If there is a wall two rows below us, bit 2 is 1. */
-	  | (maz[CELL_DOWN_TILEABLE(pos)] ? 0 : 2)
-	  /* If there is a wall two columns to the right, bit 3 is 1. */
-	  | (maz[CELL_RIGHT_TILEABLE(pos)] ? 0 : 4)
-	  /* If there is a wall two colums to the left, bit 4 is 1.  */
-	  | (maz[CELL_LEFT_TILEABLE(pos)] ? 0 : 8)))
+          /* If there is a wall two rows below us, bit 2 is 1. */
+          | (maz[CELL_DOWN_TILEABLE(pos)] ? 0 : 2)
+          /* If there is a wall two columns to the right, bit 3 is 1. */
+          | (maz[CELL_RIGHT_TILEABLE(pos)] ? 0 : 4)
+          /* If there is a wall two colums to the left, bit 4 is 1.  */
+          | (maz[CELL_LEFT_TILEABLE(pos)] ? 0 : 8)))
     {
       do
         {
@@ -208,37 +208,37 @@ depth_first_tileable (gint    pos,
             {
               i = 99;
               break;
-	    }
-	}
+            }
+        }
       while (!(d & (1 << i)));
 
       switch (i)
         {
-	case 0:
+        case 0:
           maz[WALL_UP_TILEABLE (pos)] = IN;
           npos = CELL_UP_TILEABLE (pos);
           break;
-	case 1:
+        case 1:
           maz[WALL_DOWN_TILEABLE (pos)] = IN;
           npos = CELL_DOWN_TILEABLE (pos);
           break;
-	case 2:
+        case 2:
           maz[WALL_RIGHT_TILEABLE (pos)] = IN;
           npos = CELL_RIGHT_TILEABLE (pos);
           break;
-	case 3:
+        case 3:
           maz[WALL_LEFT_TILEABLE (pos)] = IN;
           npos = CELL_LEFT_TILEABLE (pos);
           break;
-	case 99:
+        case 99:
           return;
           break;
-	default:
+        default:
           g_warning ("maze: mazegen_tileable: Going in unknown direction.\n"
                      "i: %d, d: %d, seed: %d, mw: %d, mh: %d, mult: %d, offset: %d\n",
                      i, d, rnd, x, y, multiple, offset);
           break;
-	}
+        }
 
       depth_first_tileable (npos, maz, x, y, rnd);
     }
@@ -432,7 +432,7 @@ static void
 prim_tileable (guchar *maz,
                guint   x,
                guint   y,
-	       gint     seed)
+               gint    seed)
 {
   GSList *front_cells = NULL;
   guint   current, pos;
@@ -619,97 +619,96 @@ process (GeglOperation       *operation,
       gr = g_rand_new ();
 
       if (o->tileable)
-	{
-	  /* Tileable mazes must be even. */
-	  mw -= (mw & 1);
-	  mh -= (mh & 1);
-	}
+        {
+          /* Tileable mazes must be even. */
+          mw -= (mw & 1);
+          mh -= (mh & 1);
+        }
       else
-	{
-	  mw -= !(mw & 1); /* Normal mazes doesn't work with even-sized mazes. */
-	  mh -= !(mh & 1); /* Note I don't warn the user about this... */
-	}
+        {
+          mw -= !(mw & 1); /* Normal mazes doesn't work with even-sized mazes. */
+          mh -= !(mh & 1); /* Note I don't warn the user about this... */
+        }
 
       /* starting offset */
       offset_x = (in_extent->width  - (mw * tile.width))  / 2.0f;
       offset_y = (in_extent->height - (mh * tile.height)) / 2.0f;
 
       switch (o->algorithm_type)
-	{
-	case GEGL_MAZE_ALGORITHM_DEPTH_FIRST:
-	  if (o->tileable)
-	    {
-	      depth_first_tileable (0, maz, mw, mh, o->seed);
-	    }
-	  else
-	    {
-	      depth_first (mw+1, maz, mw, mh, o->seed);
-	    }
-	  break;
-
-	case GEGL_MAZE_ALGORITHM_PRIM:
-	  if (o->tileable)
-	    {
-	      prim_tileable (maz, mw, mh, o->seed);
-	    }
-	  else
-	    {
-	      prim (mw+1, maz, mw, mh, o->seed);
-	    }
+        {
+        case GEGL_MAZE_ALGORITHM_DEPTH_FIRST:
+          if (o->tileable)
+            {
+              depth_first_tileable (0, maz, mw, mh, o->seed);
+            }
+          else
+            {
+              depth_first (mw+1, maz, mw, mh, o->seed);
+            }
           break;
-	}
+
+        case GEGL_MAZE_ALGORITHM_PRIM:
+          if (o->tileable)
+            {
+              prim_tileable (maz, mw, mh, o->seed);
+            }
+          else
+            {
+              prim (mw+1, maz, mw, mh, o->seed);
+            }
+          break;
+        }
 
       /* start drawing */
       tile.x = 0;
       tile.y = 0;
       gegl_buffer_set_color (output, &tile,
-			     (maz[0]) ? o->fg_color : o->bg_color);
+           (maz[0]) ? o->fg_color : o->bg_color);
 
       /* first row */
       for (tile.y = 0, tile.x = offset_x, j = 0;
-	   tile.x < in_extent->width;
-	   j++, tile.x += tile.width)
-	{
-	  gegl_buffer_set_color (output, &tile,
-				 (maz[j]) ? o->fg_color : o->bg_color);
-	}
+           tile.x < in_extent->width;
+           j++, tile.x += tile.width)
+        {
+          gegl_buffer_set_color (output, &tile,
+               (maz[j]) ? o->fg_color : o->bg_color);
+        }
 
       /* first column  */
       for (tile.x = 0, tile.y = offset_y, i = 0;
-	   tile.y < in_extent->height;
-	   i += mw, tile.y += tile.width)
-	{
-	  gegl_buffer_set_color (output, &tile,
-				 (maz[i]) ? o->fg_color : o->bg_color);
-	}
+           tile.y < in_extent->height;
+           i += mw, tile.y += tile.width)
+        {
+          gegl_buffer_set_color (output, &tile,
+               (maz[i]) ? o->fg_color : o->bg_color);
+        }
 
       /* Everything else */
-      for(tile.y = offset_y, i = 0;
-	  tile.y < in_extent->height;
-	  i += mw, tile.y += tile.height)
-	{
-	  for (tile.x = offset_x, j = 0;
-	       tile.x < in_extent->width;
-	       j++, tile.x += tile.width)
-	    {
-	      gegl_buffer_set_color (output, &tile,
-				     (maz[j+i]) ? o->fg_color : o->bg_color);
-	    }
-	}
+      for (tile.y = offset_y, i = 0;
+           tile.y < in_extent->height;
+           i += mw, tile.y += tile.height)
+        {
+          for (tile.x = offset_x, j = 0;
+               tile.x < in_extent->width;
+               j++, tile.x += tile.width)
+            {
+              gegl_buffer_set_color (output, &tile,
+                   (maz[j+i]) ? o->fg_color : o->bg_color);
+            }
+        }
 
       if (! o->tileable)
-	{
+        {
           /* last row */
-	  for (tile.y = in_extent->height-tile.height, tile.x = offset_x;
-	       tile.x < in_extent->width;
-	       tile.x += tile.width)
-	    {
-	      gegl_buffer_set_color (output, &tile, o->bg_color);
-	    }
-	}
+          for (tile.y = in_extent->height-tile.height, tile.x = offset_x;
+               tile.x < in_extent->width;
+               tile.x += tile.width)
+            {
+              gegl_buffer_set_color (output, &tile, o->bg_color);
+            }
+        }
 
       g_rand_free (gr);
-
       g_free (maz);
     }
 
@@ -729,14 +728,14 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class->process     = process;
 
   gegl_operation_class_set_keys (operation_class,
-				 "name",               "gegl:maze",
-				 "title",               _("Maze"),
-				 "categories",         "render",
-                                 "license",            "GPL3+",
-				 "position-dependent", "true",
-                                 "reference-hash", "55b885c5f05548b63d7d21b498715f14",
-				 "description",        _("Draw a labyrinth"),
-				 NULL);
+   "name",               "gegl:maze",
+   "title",              _("Maze"),
+   "categories",         "render",
+   "license",            "GPL3+",
+   "position-dependent", "true",
+   "reference-hash",     "55b885c5f05548b63d7d21b498715f14",
+   "description",        _("Draw a labyrinth"),
+   NULL);
 }
 
 #endif
