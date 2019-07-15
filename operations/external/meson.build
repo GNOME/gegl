@@ -5,6 +5,7 @@ operations = [
   { 'name': 'npy-save' },
   { 'name': 'rgbe-load', 'deps': librgbe },
   { 'name': 'rgbe-save', 'deps': librgbe },
+  { 'name': 'gif-load',  'deps': libnsgif },
 ]
 
 
