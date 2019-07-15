@@ -49,10 +49,9 @@ property_int (frame_delay, _("frame-delay"), 100)
 #include <gegl-op.h>
 #include <gegl-gio-private.h>
 
-/* since libnsgif is nice and simple we directly embed it in the .so  */
-#include "libs/libnsgif/libnsgif.h"
-#include "libs/libnsgif/libnsgif.c"
-#include "libs/libnsgif/lzw.c"
+#include <assert.h>
+
+#include "libnsgif.h"
 
 #define IO_BUFFER_SIZE 4096
 

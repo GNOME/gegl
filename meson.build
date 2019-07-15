@@ -173,6 +173,10 @@ poly2tri_c= dependency('poly2tri-c',  version: '>=0.0.0',
   required: false,
 )
 
+libnsgif = dependency('libnsgif',
+  fallback: [ 'libnsgif', 'libnsgif' ],
+)
+
 ################################################################################
 # Optionnal Dependencies
 
