@@ -1949,6 +1949,7 @@ gegl_buffer_set (GeglBuffer          *buffer,
                  gint                 rowstride)
 {
   g_return_if_fail (GEGL_IS_BUFFER (buffer));
+  g_return_if_fail (src);
   if (format == NULL)
     format = buffer->soft_format;
 
@@ -2348,6 +2349,7 @@ gegl_buffer_get (GeglBuffer          *buffer,
                  GeglAbyssPolicy      repeat_mode)
 {
   g_return_if_fail (GEGL_IS_BUFFER (buffer));
+  g_return_if_fail (dest_buf);
   gegl_buffer_lock (buffer);
   _gegl_buffer_get_unlocked (buffer, scale, rect, format, dest_buf, rowstride, repeat_mode);
   gegl_buffer_unlock (buffer);
