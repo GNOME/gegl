@@ -74,7 +74,7 @@ property_color  (bg_color, _("Background Color"), "white")
 
 #else
 
-#define GEGL_OP_AREA_FILTER
+#define GEGL_OP_FILTER
 #define GEGL_OP_NAME     maze
 #define GEGL_OP_C_SOURCE maze.c
 
@@ -581,6 +581,32 @@ prim_tileable (guchar *maz,
   g_slist_free (front_cells);
 }
 
+static void
+prepare (GeglOperation *operation)
+{
+  const Babl *space  = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("RGBA float", space);
+
+  gegl_operation_set_format (operation, "input", format);
+  gegl_operation_set_format (operation, "output", format);
+}
+
+static GeglRectangle
+get_cached_region (GeglOperation       *operation,
+                   const GeglRectangle *roi)
+{
+  GeglRectangle  result = *roi;
+  GeglRectangle *in_rect;
+
+  in_rect = gegl_operation_source_get_bounding_box (operation, "input");
+  if (in_rect)
+    {
+      result = *in_rect;
+    }
+
+  return result;
+}
+
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
@@ -724,8 +750,10 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
-  operation_class->threaded = FALSE;
-  filter_class->process     = process;
+  operation_class->get_cached_region = get_cached_region;
+  operation_class->prepare           = prepare;
+  operation_class->threaded          = FALSE;
+  filter_class->process              = process;
 
   gegl_operation_class_set_keys (operation_class,
    "name",               "gegl:maze",
