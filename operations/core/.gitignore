@@ -1,8 +1,0 @@
-/Makefile
-/Makefile.in
-/*.so
-/*.la
-/*.lo
-/.deps
-/.libs
-/module.c
