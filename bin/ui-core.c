@@ -25,7 +25,7 @@
 
 #include "config.h"
 
-#if HAVE_MRG
+#ifdef HAVE_MRG
 
 #define font_size_scale  0.020
 

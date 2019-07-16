@@ -105,7 +105,7 @@ main (gint    argc,
   GError      *err       = NULL;
   gchar       *path_root = NULL;
 
-#if HAVE_MRG
+#ifdef HAVE_MRG
   const gchar *renderer = g_getenv ("GEGL_RENDERER");
   if (renderer && ( !strcmp (renderer, "blit-mipmap") ||
                     !strcmp (renderer, "mipmap")))
@@ -116,7 +116,7 @@ main (gint    argc,
 
   g_object_set (gegl_config (),
                 "application-license", "GPL3",
-#if HAVE_MRG
+#ifdef HAVE_MRG
                 "use-opencl", FALSE,
 #endif
                 NULL);
@@ -211,7 +211,7 @@ main (gint    argc,
 
   if (o->mode == GEGL_RUN_MODE_DISPLAY)
     {
-#if HAVE_MRG
+#ifdef HAVE_MRG
       mrg_ui_main (argc, argv, o->rest);
       return 0;
 #endif
