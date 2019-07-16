@@ -18,7 +18,21 @@ if libpng.found()
 endif
 
 if mrg.found() and gexiv2.found() and sdl1.found()
-  gegl_sources += files('mrg-gegl.c', 'ui.c')
+  gegl_sources += files(
+    'argvs.c',
+    'mrg-gegl.c',
+    'ui-collection.c',
+    'ui-core.c',
+    'ui-viewer.c',
+  )
+
+  gegl_sources += custom_target('argvs-commands.inc',
+    input : gegl_sources,
+    output: 'argvs-commands.inc',
+    command: [ argvs_extract, '@INPUT@' ],
+    capture: true,
+  )
+
   gegl_deps += [ mrg, gexiv2, sdl1, ]
 endif
 

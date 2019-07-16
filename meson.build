@@ -5,7 +5,7 @@ project('gegl',
   meson_version: '>=0.50.0',
   default_options: [
     'c_std=gnu11',
-    'cpp_std=gnu++17',
+    'cpp_std=gnu++14',
   ],
 )
 
@@ -311,6 +311,8 @@ configure_file(
 )
 
 rootInclude = include_directories('.')
+
+argvs_extract = find_program('tools/argvs_extract.sh')
 
 subdir('libs/rgbe')
 subdir('opencl')
