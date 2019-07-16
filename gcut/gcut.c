@@ -9,7 +9,7 @@
 #include <libgen.h>
 #include <gegl-audio-fragment.h>
 
-#if HAVE_GEXIV2
+#ifdef HAVE_GEXIV2
 #include <gexiv2/gexiv2.h>
 #endif
 
@@ -1380,7 +1380,7 @@ int main (int argc, char **argv)
     g_ascii_dtostr (fstr, sizeof(fstr), duration);
     sprintf (str, "%s 0.0s %ss\n", edl_path, fstr);
     {
-      char * path = realpath (edl_path, NULL); 
+      char * path = realpath (edl_path, NULL);
       char * rpath = g_strdup_printf ("%s.edl", path);
       char * parent = g_strdup (rpath);
       strrchr(parent, '/')[1]='\0';
