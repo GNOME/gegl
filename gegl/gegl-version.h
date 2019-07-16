@@ -19,24 +19,6 @@
 #ifndef __GEGL_VERSION_H__
 #define __GEGL_VERSION_H__
 
-
-/***
- * GEGL version information:
- *
- * These macros tell the version of GEGL you are compiling against.
- * GEGL's version number consists of three parts: major, minor and
- * micro.
- *
- * ---Code sample:
- * #define GEGL_MAJOR_VERSION @GEGL_MAJOR_VERSION@
- * #define GEGL_MINOR_VERSION @GEGL_MINOR_VERSION@
- * #define GEGL_MICRO_VERSION @GEGL_MICRO_VERSION@
- */
-
-#define GEGL_MAJOR_VERSION @GEGL_MAJOR_VERSION@
-#define GEGL_MINOR_VERSION @GEGL_MINOR_VERSION@
-#define GEGL_MICRO_VERSION @GEGL_MICRO_VERSION@
-
 /**
  * gegl_get_version:
  * @major: (out caller-allocates): a pointer to a int where the major version number will be stored
