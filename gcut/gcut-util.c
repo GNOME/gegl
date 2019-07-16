@@ -2,7 +2,7 @@
 #include <gegl.h>
 #include <gegl-audio-fragment.h>
 #include "gcut.h"
-#if HAVE_GEXIV2
+#ifdef HAVE_GEXIV2
 #include <gexiv2/gexiv2.h>
 #endif
 
@@ -35,7 +35,7 @@ void
 gegl_meta_set_audio (const char        *path,
                      GeglAudioFragment *audio)
 {
-#if HAVE_GEXIV2
+#ifdef HAVE_GEXIV2
   GError *error = NULL;
   GExiv2Metadata *e2m = gexiv2_metadata_new ();
   gexiv2_metadata_open_path (e2m, path, &error);
@@ -76,7 +76,7 @@ void
 gegl_meta_get_audio (const char        *path,
                      GeglAudioFragment *audio)
 {
-#if HAVE_GEXIV2
+#ifdef HAVE_GEXIV2
   GError *error = NULL;
   GExiv2Metadata *e2m = gexiv2_metadata_new ();
   gexiv2_metadata_open_path (e2m, path, &error);
@@ -138,4 +138,3 @@ gegl_meta_get_audio (const char        *path,
   g_object_unref (e2m);
 #endif
 }
-
