@@ -19,7 +19,7 @@
 #include <unistd.h>
 #include "argvs.h"
 
-#if HAVE_MRG
+#ifdef HAVE_MRG
 #define MRG_PRINTF 1
 #endif
 
@@ -122,7 +122,7 @@ argvs_cleanup (void)
     argvs_free (e);
 }
 
-#if HAVE_MRG
+#ifdef HAVE_MRG
 #include "argvs-commands.inc"
 #else
   int cmd_source (COMMAND_ARGS);
