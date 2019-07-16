@@ -64,6 +64,6 @@ TEST ()
   g_object_unref (buffer2);
   g_object_unref (buffer);
 
+  g_free (temp);
   test_end ();
-
 }

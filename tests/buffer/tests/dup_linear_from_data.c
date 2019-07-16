@@ -22,5 +22,7 @@ TEST ()
   print_buffer (buffer);
   g_object_unref (buffer);
   g_object_unref (buffer2);
+
+  g_free (buf);
   test_end ();
 }

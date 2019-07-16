@@ -17,5 +17,6 @@ TEST ()
                                              NULL   /* destroy_notify_data */);
   print_buffer (buffer);
   g_object_unref (buffer);
+  g_free (buf);
   test_end ();
 }

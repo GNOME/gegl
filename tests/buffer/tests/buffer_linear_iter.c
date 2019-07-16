@@ -41,5 +41,7 @@ TEST ()
   print_buffer (buffer);
   g_object_unref (buffer2);
   g_object_unref (buffer);
+  g_free (buf1);
+  g_free (buf2);
   test_end ();
 }

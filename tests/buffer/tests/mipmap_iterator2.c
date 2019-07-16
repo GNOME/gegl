@@ -29,9 +29,10 @@ TEST ()
 
   print_buffer (buffer);
 
-  test_end ();
 
+  g_free (temp);
   g_object_unref (buffer);
   g_object_unref (buffer2);
 
+  test_end ();
 }

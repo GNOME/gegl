@@ -3,7 +3,7 @@ TEST ()
   GeglBuffer    *buffer, *buffer2;
   GeglRectangle  bound = {0, 0, 20, 20};
   GeglRectangle  dest = {10, 10, 5, 5};
-  const gchar *blank = g_malloc0 (100000);
+  gchar *blank = g_malloc0 (100000);
   test_start ();
 
   buffer = gegl_buffer_new (&bound, babl_format ("Y float"));
@@ -22,5 +22,7 @@ TEST ()
 
   g_object_unref (buffer);
   g_object_unref (buffer2);
+
+  g_free (blank);
   test_end ();
 }

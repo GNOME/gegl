@@ -44,6 +44,7 @@ TEST ()
             }
 
           g_object_unref (buffer2);
+          g_free (buf2);
         }
     }
 
