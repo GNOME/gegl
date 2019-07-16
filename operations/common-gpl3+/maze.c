@@ -622,9 +622,8 @@ process (GeglOperation       *operation,
   gint            mh;
   gint            i;
   gint            j;
-  gfloat          offset_x;
-  gfloat          offset_y;
-
+  gint            offset_x;
+  gint            offset_y;
 
   in_extent = gegl_operation_source_get_bounding_box (operation, "input");
 
@@ -638,10 +637,6 @@ process (GeglOperation       *operation,
 
   if (mh > 2 && mw > 2)
     {
-      /* allocate memory for maze and set to zero */
-
-      maz = (guchar *) g_new0 (guchar, mw * mh);
-
       gr = g_rand_new ();
 
       if (o->tileable)
@@ -656,9 +651,12 @@ process (GeglOperation       *operation,
           mh -= !(mh & 1); /* Note I don't warn the user about this... */
         }
 
-      /* starting offset */
-      offset_x = (in_extent->width  - (mw * tile.width))  / 2.0f;
-      offset_y = (in_extent->height - (mh * tile.height)) / 2.0f;
+      /* allocate memory for maze and set to zero */
+
+      maz = (guchar *) g_new0 (guchar, mw * mh);
+
+      offset_x = (in_extent->width - (mw * tile.width)) / 2;
+      offset_y = (in_extent->height - (mh * tile.height)) / 2;
 
       switch (o->algorithm_type)
         {
@@ -686,51 +684,103 @@ process (GeglOperation       *operation,
         }
 
       /* start drawing */
-      tile.x = 0;
-      tile.y = 0;
-      gegl_buffer_set_color (output, &tile,
-           (maz[0]) ? o->fg_color : o->bg_color);
 
-      /* first row */
-      for (tile.y = 0, tile.x = offset_x, j = 0;
-           tile.x < in_extent->width;
-           j++, tile.x += tile.width)
-        {
-          gegl_buffer_set_color (output, &tile,
-               (maz[j]) ? o->fg_color : o->bg_color);
-        }
+      /* fill the walls of the maze area */
 
-      /* first column  */
-      for (tile.x = 0, tile.y = offset_y, i = 0;
-           tile.y < in_extent->height;
-           i += mw, tile.y += tile.width)
+      for (j = 0; j < mh; j++)
         {
-          gegl_buffer_set_color (output, &tile,
-               (maz[i]) ? o->fg_color : o->bg_color);
-        }
-
-      /* Everything else */
-      for (tile.y = offset_y, i = 0;
-           tile.y < in_extent->height;
-           i += mw, tile.y += tile.height)
-        {
-          for (tile.x = offset_x, j = 0;
-               tile.x < in_extent->width;
-               j++, tile.x += tile.width)
+          for (i = 0; i < mw; i++)
             {
-              gegl_buffer_set_color (output, &tile,
-                   (maz[j+i]) ? o->fg_color : o->bg_color);
+              if (maz[i + j * mw])
+                {
+                  tile.x = offset_x + i * tile.width;
+                  tile.y = offset_y + j * tile.height;
+                  gegl_buffer_set_color (output, &tile, o->fg_color);
+                }
             }
         }
 
-      if (! o->tileable)
+      /* if tileable, gaps around the maze have to be filled by extending the
+       * maze sides
+       */
+
+      if (o->tileable)
         {
-          /* last row */
-          for (tile.y = in_extent->height-tile.height, tile.x = offset_x;
-               tile.x < in_extent->width;
-               tile.x += tile.width)
+          gint right_gap  = in_extent->width - mw * o->x - offset_x;
+          gint bottom_gap = in_extent->height - mh * o->y - offset_y;
+
+          /* copy sides of the maze into the corresponding gaps */
+
+          if (offset_y)
             {
-              gegl_buffer_set_color (output, &tile, o->bg_color);
+              GeglRectangle src = {offset_x, offset_y, mw * o->x, offset_y};
+              GeglRectangle dst = {offset_x, 0, mw * o->x, offset_y};
+
+              gegl_buffer_copy (output, &src, GEGL_ABYSS_NONE, output, &dst);
+            }
+
+          if (bottom_gap)
+            {
+              GeglRectangle src = {offset_x, offset_y + (mh - 1) * o->y, mw * o->x, bottom_gap};
+              GeglRectangle dst = {offset_x, offset_y + mh * o->y, mw * o->x, bottom_gap};
+
+              gegl_buffer_copy (output, &src, GEGL_ABYSS_NONE, output, &dst);
+            }
+
+          if (offset_x)
+            {
+              GeglRectangle src = {offset_x, offset_y, offset_x, mh * o->y};
+              GeglRectangle dst = {0, offset_y, offset_x, mh * o->y};
+
+              gegl_buffer_copy (output, &src, GEGL_ABYSS_NONE, output, &dst);
+            }
+
+          if (right_gap)
+            {
+              GeglRectangle src = {offset_x + (mw - 1) * o->x, offset_y, right_gap, mh * o->y};
+              GeglRectangle dst = {offset_x + mw * o->x, offset_y, right_gap, mh * o->y};
+
+              gegl_buffer_copy (output, &src, GEGL_ABYSS_NONE, output, &dst);
+            }
+
+          /* finally fill the corners of the gaps area if corners of the maze
+           * are walls
+           */
+
+          if (maz[0])
+            {
+              tile.x = 0;
+              tile.y = 0;
+              tile.width  = offset_x;
+              tile.height = offset_y;
+              gegl_buffer_set_color (output, &tile, o->fg_color);
+            }
+
+          if (maz[mw - 1])
+            {
+              tile.x = offset_x + mw * o->x;
+              tile.y = 0;
+              tile.width  = right_gap;
+              tile.height = offset_y;
+              gegl_buffer_set_color (output, &tile, o->fg_color);
+            }
+
+          if (maz[mw * (mh - 1)])
+            {
+              tile.x = 0;
+              tile.y = offset_y + mh * o->y;
+              tile.width  = offset_x;
+              tile.height = bottom_gap;
+              gegl_buffer_set_color (output, &tile, o->fg_color);
+            }
+
+          if (maz[mw * mh - 1])
+            {
+              tile.x = offset_x + mw * o->x;;
+              tile.y = offset_y + mh * o->y;
+              tile.width  = right_gap;
+              tile.height = bottom_gap;
+              gegl_buffer_set_color (output, &tile, o->fg_color);
             }
         }
 
