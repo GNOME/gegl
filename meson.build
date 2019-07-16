@@ -5,7 +5,7 @@ project('gegl',
   meson_version: '>=0.50.0',
   default_options: [
     'c_std=gnu11',
-    'cpp_std=gnu++17',
+    'cpp_std=gnu++14',
   ],
 )
 
@@ -239,7 +239,7 @@ lua       = dependency('lua',         version: '>=5.1.0',
 mrg       = dependency('mrg',         version: '>=0.0.0',
   required: get_option('mrg')
 )
-config.set('HAVE_MRG', mrg.found())
+config.set10('HAVE_MRG', mrg.found())
 
 openexr   = dependency('OpenEXR',     version: '>=1.6.1',
   required: get_option('openexr')
@@ -311,6 +311,8 @@ configure_file(
 )
 
 rootInclude = include_directories('.')
+
+argvs_extract = find_program('tools/argvs_extract.sh')
 
 subdir('libs/rgbe')
 subdir('opencl')
