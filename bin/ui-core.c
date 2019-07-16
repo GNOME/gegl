@@ -43,7 +43,7 @@ const char *css =
 "dl.bindings   { font-size: 1.8vh; color:white; position:absolute;left:1em;top:60%;background-color: rgba(0,0,0,0.7); width: 100%; height: 40%; padding-left: 1em; padding-top:1em;}\n"
 "dt.binding   { color:white; }\n"
 
-"div.graph, div.properties, div.scrollback{ font-size: 2.0vh; }\n"
+"div.graph, div.properties, div.scrollback{ font-size: 1.8vh; }\n"
 "div.commandline-shell { font-size: 4.0vh; }\n"
 
 "div.graph {position:absolute; top: 0; left: 0; color:white; }\n"
@@ -1577,7 +1577,6 @@ int thumbgen_main (int argc, char **argv)
 
   o = global_state = ge_state_new ();
 
-
   for (char **arg = &argv[2]; *arg; arg++)
   {
     if (o->path)
@@ -1585,7 +1584,8 @@ int thumbgen_main (int argc, char **argv)
     o->path = g_strdup (*arg);
     ui_load_path (o);
 
-    if (!strcmp (gegl_node_get_operation (o->source), "gegl:pdf-load"))
+    if (o->source &&
+        !strcmp (gegl_node_get_operation (o->source), "gegl:pdf-load"))
         gegl_node_set (o->source, "ppi", 72/2.0, NULL);
     argvs_eval ("thumb");
   }
