@@ -4813,7 +4813,7 @@ static GList *commandline_get_completions (GeglNode *node,
     char *tmp = g_strdup (commandline);
     char *fragment;
     char ** operations;
-    char *found_op = NULL;
+    const char *found_op = NULL;
     gint i;
     guint n_operations;
     /* the last fragment is what we're completing */
@@ -4839,7 +4839,7 @@ static GList *commandline_get_completions (GeglNode *node,
         if (!strcmp (operations[i], fragment) ||
             !strcmp (operations[i], prefixed_by_gegl))
           {
-            found_op = operations[i];
+            found_op = g_intern_string (operations[i]);
           }
       }
 
