@@ -110,12 +110,12 @@ if get_option('introspection')
     ],
     install: true,
   )
-endif
 
-if vapigen.found()
-   gnome.generate_vapi(api_name,
-     metadata_dirs: '.',
-     sources: gegl_gir[0],
-     install: true,
-   )
+  if vapigen.found()
+     gnome.generate_vapi(api_name,
+       metadata_dirs: '.',
+       sources: gegl_gir[0],
+       install: true,
+     )
+  endif
 endif
