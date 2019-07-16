@@ -25,7 +25,7 @@
 
 #include "config.h"
 
-#if HAVE_MRG
+#ifdef HAVE_MRG
 
 #include <ctype.h>
 #include <string.h>
