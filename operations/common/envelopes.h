@@ -37,9 +37,9 @@ static void compute_luts(gint rgamma)
 
   for (i=0;i<ANGLE_PRIME;i++)
     {
-      angle += golden_angle;
       lut_cos[i] = cos(angle);
       lut_sin[i] = sin(angle);
+      angle += golden_angle;
     }
   for (i=0;i<RADIUS_PRIME;i++)
     {
@@ -80,8 +80,9 @@ sample_min_max (GeglBuffer  *buffer,
   for (i=0; i<samples; i++)
     {
       gint u, v;
-      gint angle;
       gfloat rmag;
+      gint angle;
+      gint rad_no;
       gint max_retries = samples;
 
 retry:                      /* if we've sampled outside the valid image
@@ -90,13 +91,18 @@ retry:                      /* if we've sampled outside the valid image
                                or extending with an abyss policy
                              */
       angle = angle_no++;
-      rmag = radiuses[radius_no++] * radius;
+      rad_no = radius_no ++;
 
       if (angle_no>=ANGLE_PRIME)
         angle_no=0;
+      if (angle>=ANGLE_PRIME)
+        angle=0;
       if (radius_no>=RADIUS_PRIME)
         radius_no=0;
+      if (rad_no>=RADIUS_PRIME)
+        rad_no=0;
 
+      rmag = radiuses[rad_no] * radius;
       u = x + rmag * lut_cos[angle];
       v = y + rmag * lut_sin[angle];
 
