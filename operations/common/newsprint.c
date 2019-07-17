@@ -40,9 +40,6 @@ property_enum (color_model, _("Color Model"),
               GeglNewsprintColorModel, gegl_newsprint_color_model, GEGL_NEWSPRINT_COLOR_MODEL_BLACK_ON_WHITE)
               description (_("How many inks to use just black, rg, rgb (additive), or cmyk"))
 
-property_double (period, _("Period"), 12.0)
-                 value_range (0.0, 200.0)
-                 description (_("The number of pixels across one repetition of a base pattern at base resolution."))
 
 property_enum (pattern2, _("Red and cyan pattern"),
                GeglNewsprintPattern, gegl_newsprint_pattern, GEGL_NEWSPRINT_PATTERN_LINE)
@@ -52,6 +49,15 @@ property_enum (pattern2, _("Red and cyan pattern"),
                                  " color-model {cmyk} : cmyk-label]")
                ui_meta ("rgb-label",  _("Red pattern"))
                ui_meta ("cmyk-label", _("Cyan pattern"))
+
+property_double (period2, _("Red and cyan period"), 12.0)
+                 value_range (0.0, 200.0)
+                 description (_("The number of pixels across one repetition of a base pattern at base resolution."))
+                 ui_meta ("visible", "color-model {rgb, cmyk}")
+                 ui_meta ("label", "[color-model {rgb}  : rgb-label,"
+                                   " color-model {cmyk} : cmyk-label]")
+                 ui_meta ("rgb-label",  _("Red period"))
+                 ui_meta ("cmyk-label", _("Cyan period"))
 
 property_double (twist2, _("Red and cyan angle"), 15.0)
                  value_range (-180.0, 180.0)
@@ -72,6 +78,15 @@ property_enum (pattern3, _("Green and magenta pattern"),
                ui_meta ("rgb-label",  _("Green pattern"))
                ui_meta ("cmyk-label", _("Magenta pattern"))
 
+property_double (period3, _("Green and magenta period"), 12.0)
+                 value_range (0.0, 200.0)
+                 description (_("The number of pixels across one repetition of a base pattern at base resolution."))
+                 ui_meta ("visible", "color-model {rgb, cmyk}")
+                 ui_meta ("label", "[color-model {rgb}  : rgb-label,"
+                                   " color-model {cmyk} : cmyk-label]")
+                 ui_meta ("rgb-label",  _("Green period"))
+                 ui_meta ("cmyk-label", _("Magenta period"))
+
 property_double (twist3, _("Green and magenta angle"), 45.0)
                  value_range (-180.0, 180.0)
                  ui_meta ("unit", "degree")
@@ -90,6 +105,15 @@ property_enum (pattern4, _("Blue and Yellow pattern"),
                                  " color-model {cmyk} : cmyk-label]")
                ui_meta ("rgb-label",  _("Blue pattern"))
                ui_meta ("cmyk-label", _("Yellow pattern"))
+
+property_double (period4, _("Blue and Yellow period"), 12.0)
+                 value_range (0.0, 200.0)
+                 description (_("The number of pixels across one repetition of a base pattern at base resolution."))
+                 ui_meta ("visible", "color-model {rgb, cmyk}")
+                 ui_meta ("label", "[color-model {rgb}  : rgb-label,"
+                                   " color-model {cmyk} : cmyk-label]")
+                 ui_meta ("rgb-label",  _("Blue period"))
+                 ui_meta ("cmyk-label", _("Yellow period"))
 
 property_double (twist4, _("Blue and Yellow angle"), 0.0)
                  value_range (-180.0, 180.0)
@@ -111,6 +135,17 @@ property_enum (pattern, _("Black pattern"),
                ui_meta ("bw-label",   _("Pattern"))
                ui_meta ("cmyk-label", _("Black pattern"))
 
+
+property_double (period, _("Black period"), 12.0)
+                 value_range (0.0, 200.0)
+                 description (_("The number of pixels across one repetition of a base pattern at base resolution."))
+                 description (_("Angle offset for patterns"))
+                 ui_meta ("visible", "color-model {white-on-black, black-on-white, cmyk}")
+                 ui_meta ("label", "[color-model {white-on-black,"
+                                   "              black-on-white} : bw-label,"
+                                   " color-model {cmyk}           : cmyk-label]")
+                 ui_meta ("bw-label",   _("Period"))
+                 ui_meta ("cmyk-label", _("Black period"))
 
 property_double (twist, _("Black angle"), 75.0)
                  value_range (-180.0, 180.0)
@@ -408,7 +443,7 @@ process (GeglOperation       *operation,
            out_pixel[0] = spachrotyze (x, y,
                                        in_pixel[0], pinch, angle,
                                        o->pattern2,
-                                       o->period / (1.0*(1<<level)),
+                                       o->period2 / (1.0*(1<<level)),
                                        o->turbulence,
                                        blocksize,
                                        o->angleboost,
@@ -418,7 +453,7 @@ process (GeglOperation       *operation,
            out_pixel[1] = spachrotyze (x, y,
                                        in_pixel[1], pinch, angle,
                                        o->pattern3,
-                                       o->period / (1.0*(1<<level)),
+                                       o->period3 / (1.0*(1<<level)),
                                        o->turbulence,
                                        blocksize,
                                        o->angleboost,
@@ -428,7 +463,7 @@ process (GeglOperation       *operation,
            out_pixel[2] = spachrotyze (x, y,
                                    in_pixel[2], pinch, angle,
                                    o->pattern4,
-                                   o->period / (1.0*(1<<level)),
+                                   o->period4 / (1.0*(1<<level)),
                                    o->turbulence,
                                    blocksize,
                                    o->angleboost,
@@ -473,7 +508,7 @@ process (GeglOperation       *operation,
            c = spachrotyze (x, y,
                             c, pinch, angle,
                             o->pattern2,
-                            o->period / (1.0*(1<<level)),
+                            o->period2 / (1.0*(1<<level)),
                             o->turbulence,
                             blocksize,
                             o->angleboost,
@@ -483,7 +518,7 @@ process (GeglOperation       *operation,
            m = spachrotyze (x, y,
                             m, pinch, angle,
                             o->pattern3,
-                            o->period / (1.0*(1<<level)),
+                            o->period3 / (1.0*(1<<level)),
                             o->turbulence,
                             blocksize,
                             o->angleboost,
@@ -493,7 +528,7 @@ process (GeglOperation       *operation,
            iy = spachrotyze (x, y,
                              iy, pinch, angle,
                              o->pattern4,
-                             o->period / (1.0*(1<<level)),
+                             o->period4 / (1.0*(1<<level)),
                              o->turbulence,
                              blocksize,
                              o->angleboost,
