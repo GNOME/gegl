@@ -98,12 +98,12 @@ c_arguments = [
 # Extra warnings
 
 c_arguments += [
-  '-Wdeclaration-after-statement',
   '-Winit-self',
   '-Wmissing-declarations',
   '-Wmissing-prototypes',
   '-Wold-style-definition',
   '-Wpointer-arith',
+  '-Wno-deprecated-declarations',
 ]
 
 ################################################################################
