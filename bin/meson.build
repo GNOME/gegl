@@ -17,7 +17,7 @@ if libpng.found()
   gegl_deps += [ libpng, ]
 endif
 
-if mrg.found() and gexiv2.found() and sdl1.found()
+if mrg.found() and gexiv2.found()
   gegl_sources += files(
     'argvs.c',
     'mrg-gegl.c',
