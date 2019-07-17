@@ -115,133 +115,118 @@ static int    multiple = 57;  /* Must be a prime number */
 static int    offset = 1;
 
 static void
-depth_first (gint    pos,
+depth_first (gint    position,
              guchar *maz,
-             gint    x,
-             gint    y,
-             gint    rnd)
+             gint    w,
+             gint    h)
 {
-  gchar d, i;
-  gint  c = 0;
-  gint  j = 1;
+  GArray *stack = g_array_new (FALSE, FALSE, sizeof (gint));
 
-  maz[pos] = IN;
+  maz[position] = IN;
+  g_array_append_val (stack, position);
 
-  /* If there is a wall two rows above us, bit 1 is 1. */
-  while ((d= (pos <= (x * 2) ? 0 : (maz[pos - x - x ] ? 0 : 1))
-          /* If there is a wall two rows below us, bit 2 is 1. */
-          | (pos >= x * (y - 2) ? 0 : (maz[pos + x + x] ? 0 : 2))
-          /* If there is a wall two columns to the right, bit 3 is 1. */
-          | (pos % x == x - 2 ? 0 : (maz[pos + 2] ? 0 : 4))
-          /* If there is a wall two colums to the left, bit 4 is 1.  */
-          | ((pos % x == 1 ) ? 0 : (maz[pos-2] ? 0 : 8))))
+  while (stack->len)
     {
-      do
-        {
-          rnd = (rnd * multiple + offset);
-          i = 3 & (rnd / d);
-          if (++c > 100)
-            {
-              i = 99;
-              break;
-            }
-        }
-      while (!(d & (1 << i)));
+      gint  directions[4] = {0, };
+      gint  n_direction = 0;
+      gint  last = stack->len - 1;
+      gint  pos  = g_array_index (stack, gint, last);
 
-      switch (i)
-        {
-        case 0:
-          j = -x;
-          break;
-        case 1:
-          j = x;
-          break;
-        case 2:
-          j = 1;
-          break;
-        case 3:
-          j = -1;
-          break;
-        case 99:
-          return;
-          break;
-        default:
-          g_warning ("maze: mazegen: Going in unknown direction.\n"
-                     "i: %d, d: %d, seed: %d, mw: %d, mh: %d, mult: %d, offset: %d\n",
-         i, d, rnd, x, y, multiple, offset);
-          break;
-        }
+      /* If there is a wall two rows above us */
+      if (! (pos <= (w * 2)) && ! maz[pos - w - w ])
+        directions[n_direction++] = -w;
 
-      maz[pos + j] = IN;
-      depth_first (pos + 2 * j, maz, x, y, rnd);
+      /* If there is a wall two rows below us */
+      if (pos < w * (h - 2) && ! maz[pos + w + w])
+        directions[n_direction++] = w;
+
+      /* If there is a wall two columns to the right */
+      if (! (pos % w == w - 2) && ! maz[pos + 2])
+        directions[n_direction++] = 1;
+
+      /* If there is a wall two colums to the left */
+      if (! (pos % w == 1) && ! maz[pos - 2])
+        directions[n_direction++] = -1;
+
+      if (n_direction)
+        {
+          gint j       = directions[g_rand_int_range (gr, 0, n_direction)];
+          gint new_pos = pos + 2 * j;
+          maz[pos + j] = IN;
+          maz[new_pos] = IN;
+          g_array_append_val (stack, new_pos);
+        }
+      else
+        {
+          g_array_remove_index_fast (stack, last);
+        }
     }
+
+  g_array_free (stack, TRUE);
 }
 
 static void
-depth_first_tileable (gint    pos,
+depth_first_tileable (gint    position,
                       guchar *maz,
                       gint    x,
-                      gint    y,
-                      gint    rnd)
+                      gint    y)
 {
-  gchar d, i;
-  gint  c = 0;
-  gint  npos = 2;
+  GArray *stack = g_array_new (FALSE, FALSE, sizeof (gint));
 
-  /* Punch a hole here...  */
-  maz[pos] = IN;
+  maz[position] = IN;
+  g_array_append_val (stack, position);
 
-  /* If there is a wall two rows above us, bit 1 is 1. */
-  while ((d= (maz[CELL_UP_TILEABLE(pos)] ? 0 : 1)
-          /* If there is a wall two rows below us, bit 2 is 1. */
-          | (maz[CELL_DOWN_TILEABLE(pos)] ? 0 : 2)
-          /* If there is a wall two columns to the right, bit 3 is 1. */
-          | (maz[CELL_RIGHT_TILEABLE(pos)] ? 0 : 4)
-          /* If there is a wall two colums to the left, bit 4 is 1.  */
-          | (maz[CELL_LEFT_TILEABLE(pos)] ? 0 : 8)))
+  while (stack->len)
     {
-      do
-        {
-          rnd = (rnd * multiple + offset);
-          i = 3 & (rnd / d);
-          if (++c > 100)
-            {
-              i = 99;
-              break;
-            }
-        }
-      while (!(d & (1 << i)));
+      gint  walls[4] = {0, };
+      gint  cells[4] = {0, };
+      gint  n_direction = 0;
+      gint  last = stack->len - 1;
+      gint  pos  = g_array_index (stack, gint, last);
 
-      switch (i)
+      /* If there is a wall two rows above us */
+      if (! maz[CELL_UP_TILEABLE(pos)])
         {
-        case 0:
-          maz[WALL_UP_TILEABLE (pos)] = IN;
-          npos = CELL_UP_TILEABLE (pos);
-          break;
-        case 1:
-          maz[WALL_DOWN_TILEABLE (pos)] = IN;
-          npos = CELL_DOWN_TILEABLE (pos);
-          break;
-        case 2:
-          maz[WALL_RIGHT_TILEABLE (pos)] = IN;
-          npos = CELL_RIGHT_TILEABLE (pos);
-          break;
-        case 3:
-          maz[WALL_LEFT_TILEABLE (pos)] = IN;
-          npos = CELL_LEFT_TILEABLE (pos);
-          break;
-        case 99:
-          return;
-          break;
-        default:
-          g_warning ("maze: mazegen_tileable: Going in unknown direction.\n"
-                     "i: %d, d: %d, seed: %d, mw: %d, mh: %d, mult: %d, offset: %d\n",
-                     i, d, rnd, x, y, multiple, offset);
-          break;
+          walls[n_direction]   = WALL_UP_TILEABLE (pos);
+          cells[n_direction++] = CELL_UP_TILEABLE (pos);
         }
 
-      depth_first_tileable (npos, maz, x, y, rnd);
+      /* If there is a wall two rows below us */
+      if (! maz[CELL_DOWN_TILEABLE(pos)])
+        {
+          walls[n_direction]   = WALL_DOWN_TILEABLE (pos);
+          cells[n_direction++] = CELL_DOWN_TILEABLE (pos);
+        }
+
+      /* If there is a wall two columns to the right */
+      if (! maz[CELL_RIGHT_TILEABLE(pos)])
+        {
+          walls[n_direction]   = WALL_RIGHT_TILEABLE (pos);
+          cells[n_direction++] = CELL_RIGHT_TILEABLE (pos);
+        }
+
+      /* If there is a wall two colums to the left */
+      if (! maz[CELL_LEFT_TILEABLE(pos)])
+        {
+          walls[n_direction]   = WALL_LEFT_TILEABLE (pos);
+          cells[n_direction++] = CELL_LEFT_TILEABLE (pos);
+        }
+
+      if (n_direction)
+        {
+          gint n        = g_rand_int_range (gr, 0, n_direction);
+          gint new_pos  = cells[n];
+          maz[walls[n]] = IN;
+          maz[new_pos]  = IN;
+          g_array_append_val (stack, new_pos);
+        }
+      else
+        {
+          g_array_remove_index_fast (stack, last);
+        }
     }
+
+  g_array_free (stack, TRUE);
 }
 
 static void
@@ -637,7 +622,7 @@ process (GeglOperation       *operation,
 
   if (mh > 2 && mw > 2)
     {
-      gr = g_rand_new ();
+      gr = g_rand_new_with_seed (o->seed);
 
       if (o->tileable)
         {
@@ -663,11 +648,11 @@ process (GeglOperation       *operation,
         case GEGL_MAZE_ALGORITHM_DEPTH_FIRST:
           if (o->tileable)
             {
-              depth_first_tileable (0, maz, mw, mh, o->seed);
+              depth_first_tileable (0, maz, mw, mh);
             }
           else
             {
-              depth_first (mw+1, maz, mw, mh, o->seed);
+              depth_first (mw+1, maz, mw, mh);
             }
           break;
 
