@@ -647,6 +647,7 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
 
   point_filter_class->process = process;
+  operation_class->threaded = TRUE;
 #if 0
   point_filter_class->cl_process = cl_process;
   operation_class->opencl_support = TRUE;
