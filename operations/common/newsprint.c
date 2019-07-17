@@ -159,6 +159,11 @@ property_double (twist, _("Black angle"), 75.0)
                  ui_meta ("bw-label",   _("Angle"))
                  ui_meta ("cmyk-label", _("Black angle"))
 
+property_double (black_pullout, _("Black pullout"), 1.0)
+                 value_range (0.0, 1.0)
+                 description (_("How much of common gray to pull out of CMY"))
+                 ui_meta ("visible", "color-model {cmyk}")
+
 property_int    (aa_samples, _("Anti-alias oversampling factor"), 16)
                  value_range (1, 128)
                  description (_("Number of samples that are averaged for antialiasing the result."))
@@ -492,7 +497,7 @@ process (GeglOperation       *operation,
            if (m < k) k = m;
            if (y < k) k = y;
 
-           k = k * 0.40; /* black pull out */
+           k = k * o->black_pullout; /* black pull out */
 
            if (k < 1.0)
            {
