@@ -34,7 +34,7 @@ if enscript.found()
       input : input_file,
       output: output_file,
       command: [
-        enscript,
+        enscript, '-q',
         '--highlight',
         '--color',
         '--language', 'html',
