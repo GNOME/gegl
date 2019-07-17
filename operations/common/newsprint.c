@@ -26,7 +26,7 @@ enum_start (gegl_newsprint_pattern)
   enum_value (GEGL_NEWSPRINT_PATTERN_CIRCLE,   "circle",   N_("Circle"))
   enum_value (GEGL_NEWSPRINT_PATTERN_DIAMOND,  "diamond",  N_("Diamond"))
   enum_value (GEGL_NEWSPRINT_PATTERN_PSCIRCLE, "pssquare", N_("PSSquare (or Euclidian) dot"))
-  enum_value (GEGL_NEWSPRINT_PATTERN_CROSS,    "cross",    N_("Orthogonal Lines"))
+  enum_value (GEGL_NEWSPRINT_PATTERN_CROSS,    "cross",    N_("Crossing Lines"))
 enum_end (GeglNewsprintPattern)
 
 enum_start (gegl_newsprint_color_model)
