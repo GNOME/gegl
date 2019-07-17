@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2017 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2017,2019 Øyvind Kolås <pippin@gimp.org>
  */
 
 #include "config.h"
@@ -40,13 +40,93 @@ property_enum (color_model, _("Color Model"),
               GeglNewsprintColorModel, gegl_newsprint_color_model, GEGL_NEWSPRINT_COLOR_MODEL_BLACK_ON_WHITE)
               description (_("How many inks to use just black, rg, rgb (additive), or cmyk"))
 
-property_enum (pattern, _("Pattern"),
-              GeglNewsprintPattern, gegl_newsprint_pattern, GEGL_NEWSPRINT_PATTERN_LINE)
-              description (_("Halftoning/dot pattern to use"))
-
 property_double (period, _("Period"), 12.0)
                  value_range (0.0, 200.0)
                  description (_("The number of pixels across one repetition of a base pattern at base resolution."))
+
+property_enum (pattern2, _("Red and cyan pattern"),
+               GeglNewsprintPattern, gegl_newsprint_pattern, GEGL_NEWSPRINT_PATTERN_LINE)
+               description (_("Halftoning/dot pattern to use"))
+               ui_meta ("visible", "color-model {rgb, cmyk}")
+               ui_meta ("label", "[color-model {rgb}  : rgb-label,"
+                                 " color-model {cmyk} : cmyk-label]")
+               ui_meta ("rgb-label",  _("Red pattern"))
+               ui_meta ("cmyk-label", _("Cyan pattern"))
+
+property_double (twist2, _("Red and cyan angle"), 15.0)
+                 value_range (-180.0, 180.0)
+                 ui_meta ("unit", "degree")
+                 ui_meta ("direction", "ccw")
+                 ui_meta ("visible", "color-model {rgb, cmyk}")
+                 ui_meta ("label", "[color-model {rgb}  : rgb-label,"
+                                   " color-model {cmyk} : cmyk-label]")
+                 ui_meta ("rgb-label",  _("Red angle"))
+                 ui_meta ("cmyk-label", _("Cyan angle"))
+
+property_enum (pattern3, _("Green and magenta pattern"),
+               GeglNewsprintPattern, gegl_newsprint_pattern, GEGL_NEWSPRINT_PATTERN_LINE)
+               description (_("Halftoning/dot pattern to use"))
+               ui_meta ("visible", "color-model {rgb, cmyk}")
+               ui_meta ("label", "[color-model {rgb}  : rgb-label,"
+                                 " color-model {cmyk} : cmyk-label]")
+               ui_meta ("rgb-label",  _("Green pattern"))
+               ui_meta ("cmyk-label", _("Magenta pattern"))
+
+property_double (twist3, _("Green and magenta angle"), 45.0)
+                 value_range (-180.0, 180.0)
+                 ui_meta ("unit", "degree")
+                 ui_meta ("direction", "ccw")
+                 ui_meta ("visible", "color-model {rgb, cmyk}")
+                 ui_meta ("label", "[color-model {rgb}  : rgb-label,"
+                                   " color-model {cmyk} : cmyk-label]")
+                 ui_meta ("rgb-label",  _("Green angle"))
+                 ui_meta ("cmyk-label", _("Magenta angle"))
+
+property_enum (pattern4, _("Blue and Yellow pattern"),
+               GeglNewsprintPattern, gegl_newsprint_pattern, GEGL_NEWSPRINT_PATTERN_LINE)
+               description (_("Halftoning/dot pattern to use"))
+               ui_meta ("visible", "color-model {rgb, cmyk}")
+               ui_meta ("label", "[color-model {rgb}  : rgb-label,"
+                                 " color-model {cmyk} : cmyk-label]")
+               ui_meta ("rgb-label",  _("Blue pattern"))
+               ui_meta ("cmyk-label", _("Yellow pattern"))
+
+property_double (twist4, _("Blue and Yellow angle"), 0.0)
+                 value_range (-180.0, 180.0)
+                 ui_meta ("unit", "degree")
+                 ui_meta ("direction", "ccw")
+                 ui_meta ("visible", "color-model {rgb, cmyk}")
+                 ui_meta ("label", "[color-model {rgb}  : rgb-label,"
+                                   " color-model {cmyk} : cmyk-label]")
+                 ui_meta ("rgb-label",  _("Blue angle"))
+                 ui_meta ("cmyk-label", _("Yellow angle"))
+
+property_enum (pattern, _("Black pattern"),
+               GeglNewsprintPattern, gegl_newsprint_pattern, GEGL_NEWSPRINT_PATTERN_LINE)
+               description (_("Halftoning/dot pattern to use"))
+               ui_meta ("visible", "color-model {white-on-black, black-on-white, cmyk}")
+               ui_meta ("label", "[color-model {white-on-black,"
+                                 "              black-on-white} : bw-label,"
+                                 " color-model {cmyk}           : cmyk-label]")
+               ui_meta ("bw-label",   _("Pattern"))
+               ui_meta ("cmyk-label", _("Black pattern"))
+
+
+property_double (twist, _("Black angle"), 75.0)
+                 value_range (-180.0, 180.0)
+                 ui_meta ("unit", "degree")
+                 ui_meta ("direction", "ccw")
+                 description (_("Angle offset for patterns"))
+                 ui_meta ("visible", "color-model {white-on-black, black-on-white, cmyk}")
+                 ui_meta ("label", "[color-model {white-on-black,"
+                                   "              black-on-white} : bw-label,"
+                                   " color-model {cmyk}           : cmyk-label]")
+                 ui_meta ("bw-label",   _("Angle"))
+                 ui_meta ("cmyk-label", _("Black angle"))
+
+property_int    (aa_samples, _("Anti-alias oversampling factor"), 16)
+                 value_range (1, 128)
+                 description (_("Number of samples that are averaged for antialiasing the result."))
 
 property_double (turbulence, _("Turbulence"), 0.0)
                  value_range (0.0, 1.0)  // rename to wave-pinch or period-pinch?
@@ -60,44 +140,6 @@ property_double (angleboost, _("Angle Boost"), 0.0)
                  value_range (0.0, 4.0)
                  description (_("Multiplication factor for desired rotation of the local space for texture, the way this is computed makes it weak for desaturated colors and possibly stronger where there is color."))
 
-property_double (twist, _("Black and green angle"), 75.0)
-                 value_range (-180.0, 180.0)
-                 ui_meta ("unit", "degree")
-                 ui_meta ("direction", "ccw")
-                 description (_("Angle offset for patterns"))
-                 ui_meta ("label", "[color-model {white-on-black,"
-                                   "              black-on-white} : bw-label,"
-                                   " color-model {rgb}            : rgb-label,"
-                                   " color-model {cmyk}           : cmyk-label]")
-                 ui_meta ("bw-label",   _("Angle"))
-                 ui_meta ("rgb-label",  _("Green angle"))
-                 ui_meta ("cmyk-label", _("Black angle"))
-
-property_double (twist2, _("Red and cyan angle"), 15.0)
-                 value_range (-180.0, 180.0)
-                 ui_meta ("unit", "degree")
-                 ui_meta ("direction", "ccw")
-                 ui_meta ("visible", "color-model {rgb, cmyk}")
-                 ui_meta ("label", "[color-model {rgb}  : rgb-label,"
-                                   " color-model {cmyk} : cmyk-label]")
-                 ui_meta ("rgb-label",  _("Red angle"))
-                 ui_meta ("cmyk-label", _("Cyan angle"))
-
-property_double (twist3, _("Blue and magenta angle"), 45.0)
-                 value_range (-180.0, 180.0)
-                 ui_meta ("unit", "degree")
-                 ui_meta ("direction", "ccw")
-                 ui_meta ("visible", "color-model {rgb, cmyk}")
-                 ui_meta ("label", "[color-model {rgb}  : rgb-label,"
-                                   " color-model {cmyk} : cmyk-label]")
-                 ui_meta ("rgb-label",  _("Blue angle"))
-                 ui_meta ("cmyk-label", _("Magenta angle"))
-
-property_double (twist4, _("Yellow angle"), 0.0)
-                 value_range (-180.0, 180.0)
-                 ui_meta ("unit", "degree")
-                 ui_meta ("direction", "ccw")
-                 ui_meta ("visible", "color-model {cmyk}")
 
 #else
 
@@ -109,12 +151,29 @@ property_double (twist4, _("Yellow angle"), 0.0)
 
 #include <math.h>
 
-static inline float dmodf(float x, float y)
+
+static inline float int_fabsf(float x)
+{
+  union {float f; uint32_t i;} u = {x};
+  u.i &= 0x7fffffff;
+  return u.f;
+}
+#define fabsf int_fabsf
+
+static inline int int_floorf (float x)
+{
+  int i = (int)x;       /* truncate */
+  return i - ( i > x ); /* convert trunc to floor */
+}
+
+#define floorf int_floorf
+
+static inline float int_fmodf(float x, float y)
 {
   return x - y * floorf(x/y);
 }
 
-#define fmodf dmodf
+#define fmodf int_fmodf
 
 /* for details and more liberal licensing of the following function, see
    https://pippin.gimp.org/spachrotyzer/ */
@@ -131,46 +190,46 @@ float spachrotyze (
     float turbulence,
     float blocksize,
     float angleboost,
-    float twist)
+    float twist,
+    int   max_aa_samples)
 {
-  int max_aa_samples = 16;
-  float acc = 0.0;
+  float acc = 0.0f;
 
-  float angle  = 3.1415 / 2- ((hue * angleboost) + twist);
+  float angle  = 3.1415f / 2.f - ((hue * angleboost) + twist);
 
-  float width  = (period * (1.0 - turbulence) +
+  float width  = (period * (1.0f - turbulence) +
                  (period * offset) * turbulence);
 
   float vec0 = cosf (angle);
   float vec1 = sinf (angle);
 
-  float xi = 0.5;
-  float yi = 0.2;
+  float xi = 0.5f;
+  float yi = 0.2f;
   int count = 0;
   int in = 0;
-  float old_acc = 0.0;
+  float old_acc = 0.0f;
 
-  x += period * 2;
-  y += period * 2;
+  x += period * 2.f;
+  y += period * 2.f;
 
   for (int i = 0; i < max_aa_samples ; i++)
   {
-    xi = fmodf (xi + 0.618033988749854, 1.0);
-    yi = fmodf (yi + (0.618033988749854/1.61235), 1.0);
+    xi = fmodf (xi + 0.618033988749854f, 1.0f);
+    yi = fmodf (yi + (0.618033988749854f/1.61235f), 1.0f);
 
     old_acc = acc;
     {
-      float u = fmodf (x + xi - 0.5 * width, blocksize * width);
-      float v = fmodf (y + yi - 0.5 * width, blocksize * width);
+      float u = fmodf (x + xi - 0.5f * width, blocksize * width);
+      float v = fmodf (y + yi - 0.5f * width, blocksize * width);
 
       float w = vec0 * u + vec1 * v;
       float q = vec1 * u - vec0 * v;
 
       float wperiod = fmodf (w, width);
-      float wphase  = (wperiod / width) * 2.0 - 1.0;
+      float wphase  = (wperiod / width) * 2.0f - 1.0f;
 
       float qperiod = fmodf (q, width);
-      float qphase  = (qperiod / width) * 2.0 - 1.0;
+      float qphase  = (qperiod / width) * 2.0f - 1.0f;
 
       if (pattern == 0)       /* line */
       {
@@ -180,12 +239,12 @@ float spachrotyze (
       else if (pattern == 1) /* dot */
       {
         if (qphase * qphase + wphase * wphase <
-          part_white * part_white * 2.0)
+          part_white * part_white * 2.0f)
           in ++;
       }
       else if (pattern == 2) /* diamond */
       {
-        if ((fabsf(wphase) + fabsf(qphase))/2.0 < part_white )
+        if ((fabsf (wphase) + fabsf (qphase))/2.0f < part_white )
           in++;
       }
       else if (pattern == 3) /* dot-to-diamond-to-dot */
@@ -194,36 +253,35 @@ float spachrotyze (
           float ay = fabsf (qphase ) ;
           float v = 0.0;
 
-          if  (ax + ay > 1.0)
+          if  (ax + ay > 1.0f)
           {
-            ay = 1.0 - ay;
-            ax = 1.0 - ax;
-            v = 2.0 - sqrtf (ay * ay + ax * ax);
+            ay = 1.0f - ay;
+            ax = 1.0f - ax;
+            v = 2.0f - hypotf (ax, ay);
           }
           else
           {
-            v = sqrtf (ay * ay + ax * ax);
+            v = hypotf (ax, ay);
           }
-          v/=2.0;
+          v/=2.0f;
           if (v < part_white)
             in++;
       }
       else if (pattern == 4) /* cross */
       {
-        float part_white2 = powf (part_white, 2.0);
+        float part_white2 = part_white * part_white;
         if (fabsf (wphase) < part_white2 ||
             fabsf (qphase) < part_white2)
           in++;
       }
       count ++;
 
-      acc = in * 1.0/ count;
+      acc = in * 1.0f / count;
       if (i > 3 &&
-          fabs (acc - old_acc) < 0.23)
+          fabsf (acc - old_acc) < 0.23f)
         break;
       old_acc = acc;
     }
-
   }
   return acc;
 }
@@ -289,8 +347,8 @@ process (GeglOperation       *operation,
        while (n_pixels--)
          {
            float luminance  = in_pixel[1];
-           float chroma     = fabs(in_pixel[0]-in_pixel[1]);
-           float angle      = fabs(in_pixel[2]-in_pixel[1]);
+           float chroma     = fabsf (in_pixel[0]-in_pixel[1]);
+           float angle      = fabsf (in_pixel[2]-in_pixel[1]);
 
            float gray = spachrotyze (x, y,
                                     luminance, chroma, angle,
@@ -299,7 +357,8 @@ process (GeglOperation       *operation,
                                     o->turbulence,
                                     blocksize,
                                     o->angleboost,
-                                    degrees_to_radians (o->twist));
+                                    degrees_to_radians (o->twist),
+                                    o->aa_samples);
 
            for (int c = 0; c < 3; c++)
              out_pixel[c] = gray;
@@ -316,8 +375,8 @@ process (GeglOperation       *operation,
        while (n_pixels--)
          {
            float luminance  = in_pixel[1];
-           float chroma     = fabs(in_pixel[0]-in_pixel[1]);
-           float angle      = fabs(in_pixel[2]-in_pixel[1]);
+           float chroma     = fabsf (in_pixel[0]-in_pixel[1]);
+           float angle      = fabsf (in_pixel[2]-in_pixel[1]);
 
            float gray = 1.0-spachrotyze (x, y,
                                     1.0-luminance, chroma, angle,
@@ -326,7 +385,8 @@ process (GeglOperation       *operation,
                                     o->turbulence,
                                     blocksize,
                                     o->angleboost,
-                                    degrees_to_radians (o->twist));
+                                    degrees_to_radians (o->twist),
+                                    o->aa_samples);
 
            for (int c = 0; c < 3; c++)
              out_pixel[c] = gray;
@@ -342,35 +402,38 @@ process (GeglOperation       *operation,
     case GEGL_NEWSPRINT_COLOR_MODEL_RGB:
        while (n_pixels--)
          {
-           float pinch = fabs(in_pixel[0]-in_pixel[1]);
-           float angle = fabs(in_pixel[2]-in_pixel[1]);
+           float pinch = fabsf (in_pixel[0]-in_pixel[1]);
+           float angle = fabsf (in_pixel[2]-in_pixel[1]);
 
            out_pixel[0] = spachrotyze (x, y,
                                        in_pixel[0], pinch, angle,
-                                       o->pattern,
+                                       o->pattern2,
                                        o->period / (1.0*(1<<level)),
                                        o->turbulence,
                                        blocksize,
                                        o->angleboost,
-                                       degrees_to_radians (o->twist2));
+                                       degrees_to_radians (o->twist2),
+                                       o->aa_samples);
 
            out_pixel[1] = spachrotyze (x, y,
                                        in_pixel[1], pinch, angle,
-                                       o->pattern,
+                                       o->pattern3,
                                        o->period / (1.0*(1<<level)),
                                        o->turbulence,
                                        blocksize,
                                        o->angleboost,
-                                       degrees_to_radians (o->twist));
+                                       degrees_to_radians (o->twist3),
+                                       o->aa_samples);
 
            out_pixel[2] = spachrotyze (x, y,
                                    in_pixel[2], pinch, angle,
-                                   o->pattern,
+                                   o->pattern4,
                                    o->period / (1.0*(1<<level)),
                                    o->turbulence,
                                    blocksize,
                                    o->angleboost,
-                                   degrees_to_radians (o->twist3));
+                                   degrees_to_radians (o->twist4),
+                                   o->aa_samples);
            out_pixel[3] = 1.0;
 
            out_pixel += 4;
@@ -383,8 +446,8 @@ process (GeglOperation       *operation,
     case GEGL_NEWSPRINT_COLOR_MODEL_CMYK:
        while (n_pixels--)
          {
-           float pinch = fabs(in_pixel[0]-in_pixel[1]);
-           float angle = fabs(in_pixel[2]-in_pixel[1]);
+           float pinch = fabsf (in_pixel[0]-in_pixel[1]);
+           float angle = fabsf (in_pixel[2]-in_pixel[1]);
            float c = 1.0  - in_pixel[0];
            float m = 1.0  - in_pixel[1];
            float iy = 1.0 - in_pixel[2];
@@ -409,30 +472,33 @@ process (GeglOperation       *operation,
 
            c = spachrotyze (x, y,
                             c, pinch, angle,
-                            o->pattern,
+                            o->pattern2,
                             o->period / (1.0*(1<<level)),
                             o->turbulence,
                             blocksize,
                             o->angleboost,
-                            degrees_to_radians (o->twist2));
+                            degrees_to_radians (o->twist2),
+                            o->aa_samples);
 
            m = spachrotyze (x, y,
                             m, pinch, angle,
-                            o->pattern,
+                            o->pattern3,
                             o->period / (1.0*(1<<level)),
                             o->turbulence,
                             blocksize,
                             o->angleboost,
-                            degrees_to_radians (o->twist3));
+                            degrees_to_radians (o->twist3),
+                            o->aa_samples);
 
            iy = spachrotyze (x, y,
                              iy, pinch, angle,
-                             o->pattern,
+                             o->pattern4,
                              o->period / (1.0*(1<<level)),
                              o->turbulence,
                              blocksize,
                              o->angleboost,
-                             degrees_to_radians (o->twist4));
+                             degrees_to_radians (o->twist4),
+                             o->aa_samples);
 
            k = spachrotyze (x, y,
                             k, pinch, angle,
@@ -441,7 +507,8 @@ process (GeglOperation       *operation,
                             o->turbulence,
                             blocksize,
                             o->angleboost,
-                            degrees_to_radians (o->twist));
+                            degrees_to_radians (o->twist),
+                            o->aa_samples);
 
            if (k < 1.0) {
              c = c * (1.0 - k) + k;
