@@ -59,7 +59,7 @@ property_double (period2, _("Red and cyan period"), 12.0)
                  ui_meta ("rgb-label",  _("Red period"))
                  ui_meta ("cmyk-label", _("Cyan period"))
 
-property_double (twist2, _("Red and cyan angle"), 15.0)
+property_double (angle2, _("Red and cyan angle"), 15.0)
                  value_range (-180.0, 180.0)
                  ui_meta ("unit", "degree")
                  ui_meta ("direction", "ccw")
@@ -87,7 +87,7 @@ property_double (period3, _("Green and magenta period"), 12.0)
                  ui_meta ("rgb-label",  _("Green period"))
                  ui_meta ("cmyk-label", _("Magenta period"))
 
-property_double (twist3, _("Green and magenta angle"), 45.0)
+property_double (angle3, _("Green and magenta angle"), 45.0)
                  value_range (-180.0, 180.0)
                  ui_meta ("unit", "degree")
                  ui_meta ("direction", "ccw")
@@ -115,7 +115,7 @@ property_double (period4, _("Blue and Yellow period"), 12.0)
                  ui_meta ("rgb-label",  _("Blue period"))
                  ui_meta ("cmyk-label", _("Yellow period"))
 
-property_double (twist4, _("Blue and Yellow angle"), 0.0)
+property_double (angle4, _("Blue and Yellow angle"), 0.0)
                  value_range (-180.0, 180.0)
                  ui_meta ("unit", "degree")
                  ui_meta ("direction", "ccw")
@@ -147,7 +147,7 @@ property_double (period, _("Black period"), 12.0)
                  ui_meta ("bw-label",   _("Period"))
                  ui_meta ("cmyk-label", _("Black period"))
 
-property_double (twist, _("Black angle"), 75.0)
+property_double (angle, _("Black angle"), 75.0)
                  value_range (-180.0, 180.0)
                  ui_meta ("unit", "degree")
                  ui_meta ("direction", "ccw")
@@ -230,18 +230,18 @@ float spachrotyze (
     float turbulence,
     float blocksize,
     float angleboost,
-    float twist,
+    float angle,
     int   max_aa_samples)
 {
   float acc = 0.0f;
 
-  float angle  = 3.1415f / 2.f - ((hue * angleboost) + twist);
+  float twist = 3.1415f / 2.f - ((hue * angleboost) + angle);
 
   float width  = (period * (1.0f - turbulence) +
                  (period * offset) * turbulence);
 
-  float vec0 = cosf (angle);
-  float vec1 = sinf (angle);
+  float vec0 = cosf (twist);
+  float vec1 = sinf (twist);
 
   float xi = 0.5f;
   float yi = 0.2f;
@@ -397,7 +397,7 @@ process (GeglOperation       *operation,
                                     o->turbulence,
                                     blocksize,
                                     o->angleboost,
-                                    degrees_to_radians (o->twist),
+                                    degrees_to_radians (o->angle),
                                     o->aa_samples);
 
            for (int c = 0; c < 3; c++)
@@ -425,7 +425,7 @@ process (GeglOperation       *operation,
                                     o->turbulence,
                                     blocksize,
                                     o->angleboost,
-                                    degrees_to_radians (o->twist),
+                                    degrees_to_radians (o->angle),
                                     o->aa_samples);
 
            for (int c = 0; c < 3; c++)
@@ -452,7 +452,7 @@ process (GeglOperation       *operation,
                                        o->turbulence,
                                        blocksize,
                                        o->angleboost,
-                                       degrees_to_radians (o->twist2),
+                                       degrees_to_radians (o->angle2),
                                        o->aa_samples);
 
            out_pixel[1] = spachrotyze (x, y,
@@ -462,7 +462,7 @@ process (GeglOperation       *operation,
                                        o->turbulence,
                                        blocksize,
                                        o->angleboost,
-                                       degrees_to_radians (o->twist3),
+                                       degrees_to_radians (o->angle3),
                                        o->aa_samples);
 
            out_pixel[2] = spachrotyze (x, y,
@@ -472,7 +472,7 @@ process (GeglOperation       *operation,
                                    o->turbulence,
                                    blocksize,
                                    o->angleboost,
-                                   degrees_to_radians (o->twist4),
+                                   degrees_to_radians (o->angle4),
                                    o->aa_samples);
            out_pixel[3] = 1.0;
 
@@ -517,7 +517,7 @@ process (GeglOperation       *operation,
                             o->turbulence,
                             blocksize,
                             o->angleboost,
-                            degrees_to_radians (o->twist2),
+                            degrees_to_radians (o->angle2),
                             o->aa_samples);
 
            m = spachrotyze (x, y,
@@ -527,7 +527,7 @@ process (GeglOperation       *operation,
                             o->turbulence,
                             blocksize,
                             o->angleboost,
-                            degrees_to_radians (o->twist3),
+                            degrees_to_radians (o->angle3),
                             o->aa_samples);
 
            iy = spachrotyze (x, y,
@@ -537,7 +537,7 @@ process (GeglOperation       *operation,
                              o->turbulence,
                              blocksize,
                              o->angleboost,
-                             degrees_to_radians (o->twist4),
+                             degrees_to_radians (o->angle4),
                              o->aa_samples);
 
            k = spachrotyze (x, y,
@@ -547,7 +547,7 @@ process (GeglOperation       *operation,
                             o->turbulence,
                             blocksize,
                             o->angleboost,
-                            degrees_to_radians (o->twist),
+                            degrees_to_radians (o->angle),
                             o->aa_samples);
 
            if (k < 1.0) {
@@ -621,7 +621,7 @@ cl_process (GeglOperation       *op,
   CL_CHECK;
   cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 6, sizeof(cl_float), (void*)&o->angleboost);
   CL_CHECK;
-  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 7, sizeof(cl_float), (void*)&o->twist);
+  cl_err = gegl_clSetKernelArg(cl_data->kernel[0], 7, sizeof(cl_float), (void*)&o->angle);
   CL_CHECK;
 
   cl_err = gegl_clEnqueueNDRangeKernel(gegl_cl_get_command_queue (),
