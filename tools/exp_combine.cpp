@@ -108,6 +108,7 @@ main (int    argc,
                                   NULL);
 
   for (cursor = ARG_PATH_0; cursor < argc; ++cursor)
+  for (cursor = ARG_PATH_0; cursor < unsigned(argc); ++cursor)
     {
       const gchar *input_path;
       gchar        ev_string[G_ASCII_DTOSTR_BUF_SIZE + 1];
@@ -143,7 +144,7 @@ main (int    argc,
                       "%s%u",
                       COMBINER_INPUT_PREFIX,
                       cursor - ARG_PATH_0);
-      if (err < 1 || err >= G_N_ELEMENTS (combiner_pad))
+      if (err < 1 || unsigned(err) >= G_N_ELEMENTS (combiner_pad))
         {
           g_warning ("Unable to construct input pad name for exposure %u\n",
                      cursor);
@@ -158,7 +159,7 @@ main (int    argc,
 
 
   /* We should not have skipped past the last element of the arguments */
-  g_return_val_if_fail (cursor == argc, EXIT_FAILURE);
+  g_return_val_if_fail (cursor == unsigned(argc), EXIT_FAILURE);
   sink     = gegl_node_new_child (gegl,
                                   "operation", "gegl:save",
                                   "path", argv[ARG_OUTPUT],
