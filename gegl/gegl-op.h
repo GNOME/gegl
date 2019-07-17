@@ -320,7 +320,7 @@ static GType enum_name ## _get_type (void)               \
     };                                                            \
     if (gegl_op_gettext_package)                                  \
       {                                                           \
-        gint i;                                                   \
+        guint i;                                                   \
         for (i = 0; i < G_N_ELEMENTS (values); i++)               \
           if (values[i].value_name)                               \
             values[i].value_name =                                \
