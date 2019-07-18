@@ -443,33 +443,27 @@ process (GeglOperation       *operation,
   GeglProperties  *o = GEGL_PROPERTIES (operation);
   gfloat range_factor;
 
-  if (o->edge_preservation != 1.0f)
-    {
-      if (o->edge_preservation != 0.0)
-        range_factor = (1.0 / o->edge_preservation) - 1.0f;
-      else
-        range_factor = G_MAXFLOAT;
-  
-      /* Buffer is ready for domain transform */
-      domain_transform (operation,
-                        result->width,
-                        result->height,
-                        4,
-                        o->spatial_factor,
-                        range_factor,
-                        o->n_iterations,
-                        input,
-                        output);
-    }
+  if (o->edge_preservation != 0.0)
+    range_factor = (1.0 / o->edge_preservation) - 1.0f;
   else
-    {
-      gegl_buffer_copy (input, result, GEGL_ABYSS_NONE, output, result);
-    }
+    range_factor = G_MAXFLOAT;
+
+  /* Buffer is ready for domain transform */
+  domain_transform (operation,
+                    result->width,
+                    result->height,
+                    4,
+                    o->spatial_factor,
+                    range_factor,
+                    o->n_iterations,
+                    input,
+                    output);
 
   return TRUE;
 }
 
 /* Pass-through when trying to perform a reduction on an infinite plane
+ * or when edge preservation is one.
  */
 static gboolean
 operation_process (GeglOperation        *operation,
@@ -478,6 +472,7 @@ operation_process (GeglOperation        *operation,
                    const GeglRectangle  *result,
                    gint                  level)
 {
+  GeglProperties      *o = GEGL_PROPERTIES (operation);
   GeglOperationClass  *operation_class;
 
   const GeglRectangle *in_rect =
@@ -485,7 +480,8 @@ operation_process (GeglOperation        *operation,
 
   operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
 
-  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+  if ((in_rect && gegl_rectangle_is_infinite_plane (in_rect)) ||
+       o->edge_preservation == 1.0)
     {
       gpointer in = gegl_operation_context_get_object (context, "input");
       gegl_operation_context_take_object (context, "output",
