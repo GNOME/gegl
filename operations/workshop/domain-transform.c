@@ -42,16 +42,17 @@ property_double (edge_preservation, _("Edge preservation"),  0.8)
 #include "gegl-op.h"
 #include <math.h>
 
-// This should be 768, since we have 2^8 possible options for each channel.
-// Since domain transform is given by:
-// 1 + (s_s / s_r) * (diff_channel_R + diff_channel_G + diff_channel_B)
-// We will have 3 * 2^8 different possibilities for the transform of each pixel.
-// 3 * 2^8 = 768
+/* This should be 768, since we have 2^8 possible options for each channel.
+ * Since domain transform is given by:
+ * 1 + (s_s / s_r) * (diff_channel_R + diff_channel_G + diff_channel_B)
+ * We will have 3 * 2^8 different possibilities for the transform of each pixel.
+ * 3 * 2^8 = 768
+ */
 #define RF_TABLE_SIZE 768
 #define SQRT3 1.7320508075f
 #define SQRT2 1.4142135623f
 #define BLOCK_STRIDE 1
-#define REPORT_PROGRESS_TIME 0.5  // time to report gegl_operation_progress
+#define REPORT_PROGRESS_TIME 0.5  /* time to report gegl_operation_progress */
 
 static gint16
 absolute (gint16 x)
@@ -117,11 +118,13 @@ domain_transform (GeglOperation *operation,
 
   report_progress(operation, 0.0, timer);
 
-  // Pre-calculate RF table
+  /* Pre-calculate RF table */
   for (i = 0; i < num_iterations; ++i)
     {
-      // calculating RF feedback coefficient 'a' from desired variance
-      // 'a' will change each iteration while the domain transform will remain constant
+      /* calculating RF feedback coefficient 'a' from desired variance
+       * 'a' will change each iteration while the domain transform will
+       * remain constant
+       */
       current_standard_deviation = spatial_factor * SQRT3 * (powf(2.0f, (gfloat)(num_iterations - (i + 1))) / sqrtf(powf(4.0f, (gfloat)num_iterations) - 1));
       a = expf(-SQRT2 / current_standard_deviation);
   
@@ -129,10 +132,10 @@ domain_transform (GeglOperation *operation,
         rf_table[i][j] = powf(a, 1.0f + (spatial_factor / range_factor) * ((gfloat)j / 255.0f));
     }
 
-  // Filter Iterations
+  /* Filter Iterations */
   for (n = 0; n < num_iterations; ++n)
     {
-      // Horizontal Pass
+      /* Horizontal Pass */
       for (i = 0; i < image_height; i += BLOCK_STRIDE)
         {
           real_stride = (i + BLOCK_STRIDE > image_height) ? image_height - i : BLOCK_STRIDE;
@@ -144,7 +147,7 @@ domain_transform (GeglOperation *operation,
     
           gegl_buffer_get (input, &current_rectangle, 1.0, babl_format ("R'G'B' u8"), image_buffer, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
     
-          // Domain Transform
+          /* Domain Transform */
           for (j = 0; j < current_rectangle.height; ++j)
             {
               last_pixel_r = ((guint8*)image_buffer)[j * current_rectangle.width * 3];
@@ -159,11 +162,13 @@ domain_transform (GeglOperation *operation,
         
                   sum_channels_difference = absolute(current_pixel_r - last_pixel_r) + absolute(current_pixel_g - last_pixel_g) + absolute(current_pixel_b - last_pixel_b);
         
-                  // @NOTE: 'd' should be 1.0f + s_s / s_r * sum_diff
-                  // However, we will store just sum_diff.
-                  // 1.0f + s_s / s_r will be calculated later when calculating the RF table.
-                  // This is done this way because the sum_diff is perfect to be used as the index of the RF table.
-                  // d = 1.0f + (vdt_information->spatial_factor / vdt_information->range_factor) * sum_channels_difference;
+                  /* @NOTE: 'd' should be 1.0f + s_s / s_r * sum_diff
+                   * However, we will store just sum_diff.
+                   * 1.0f + s_s / s_r will be calculated later when calculating
+                   * the RF table. This is done this way because the sum_diff is
+                   * perfect to be used as the index of the RF table.
+                   * d = 1.0f + (vdt_information->spatial_factor / vdt_information->range_factor) * sum_channels_difference;
+                   */
                   transforms_buffer[j * current_rectangle.width + k] = sum_channels_difference;
         
                   last_pixel_r = current_pixel_r;
@@ -177,7 +182,7 @@ domain_transform (GeglOperation *operation,
           else
             gegl_buffer_get (output, &current_rectangle, 1.0, babl_format ("R'G'B'A float"), image_buffer, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
     
-          // Horizontal Filter (Left-Right)
+          /* Horizontal Filter (Left-Right) */
           for (j = 0; j < current_rectangle.height; ++j)
             {
               last_pixel_r_f = image_buffer[j * current_rectangle.width * image_channels];
@@ -207,7 +212,7 @@ domain_transform (GeglOperation *operation,
                 }
             }
     
-          // Horizontal Filter (Right-Left)
+          /* Horizontal Filter (Right-Left) */
           for (j = 0; j < current_rectangle.height; ++j)
             {
               last_pixel_r_f = image_buffer[j * current_rectangle.width * image_channels + (current_rectangle.width - 1) * image_channels];
@@ -243,7 +248,7 @@ domain_transform (GeglOperation *operation,
   
       report_progress(operation, (2.0 * n + 1.0) / (2.0 * num_iterations), timer);
   
-      // Vertical Pass
+      /* Vertical Pass */
       for (i = 0; i < image_width; i += BLOCK_STRIDE)
         {
           real_stride = (i + BLOCK_STRIDE > image_width) ? image_width - i : BLOCK_STRIDE;
@@ -255,7 +260,7 @@ domain_transform (GeglOperation *operation,
     
           gegl_buffer_get (input, &current_rectangle, 1.0, babl_format ("R'G'B' u8"), image_buffer, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
     
-          // Domain Transform
+          /* Domain Transform */
           for (j = 0; j < current_rectangle.width; ++j)
             {
               last_pixel_r = ((guint8*)image_buffer)[j * 3];
@@ -270,11 +275,13 @@ domain_transform (GeglOperation *operation,
         
                   sum_channels_difference = absolute(current_pixel_r - last_pixel_r) + absolute(current_pixel_g - last_pixel_g) + absolute(current_pixel_b - last_pixel_b);
         
-                  // @NOTE: 'd' should be 1.0f + s_s / s_r * sum_diff
-                  // However, we will store just sum_diff.
-                  // 1.0f + s_s / s_r will be calculated later when calculating the RF table.
-                  // This is done this way because the sum_diff is perfect to be used as the index of the RF table.
-                  // d = 1.0f + (vdt_information->spatial_factor / vdt_information->range_factor) * sum_channels_difference;
+                  /* @NOTE: 'd' should be 1.0f + s_s / s_r * sum_diff
+                   * However, we will store just sum_diff.
+                   * 1.0f + s_s / s_r will be calculated later when calculating
+                   * the RF table. This is done this way because the sum_diff is
+                   * perfect to be used as the index of the RF table.
+                   * d = 1.0f + (vdt_information->spatial_factor / vdt_information->range_factor) * sum_channels_difference;
+                   */
                   transforms_buffer[k * current_rectangle.width + j] = sum_channels_difference;
         
                   last_pixel_r = current_pixel_r;
@@ -285,7 +292,7 @@ domain_transform (GeglOperation *operation,
     
           gegl_buffer_get (output, &current_rectangle, 1.0, babl_format ("R'G'B'A float"), image_buffer, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
     
-          // Vertical Filter (Top-Down)
+          /* Vertical Filter (Top-Down) */
           for (j = 0; j < current_rectangle.width; ++j)
             {
               last_pixel_r_f = image_buffer[j * image_channels];
@@ -315,7 +322,7 @@ domain_transform (GeglOperation *operation,
                 }
             }
     
-          // Vertical Filter (Bottom-Up)
+          /* Vertical Filter (Bottom-Up) */
           for (j = 0; j < current_rectangle.width; ++j)
             {
               last_pixel_r_f = image_buffer[(current_rectangle.height - 1) * current_rectangle.width * image_channels + j * image_channels];
@@ -423,7 +430,7 @@ process (GeglOperation       *operation,
       else
         range_factor = G_MAXFLOAT;
   
-      // Buffer is ready for domain transform
+      /* Buffer is ready for domain transform */
       domain_transform(operation,
         image_width,
         image_height,
@@ -466,8 +473,8 @@ operation_process (GeglOperation        *operation,
     }
 
   /* chain up, which will create the needed buffers for our actual
-  * process function
-  */
+   * process function
+   */
   return operation_class->process (operation, context, output_prop, result,
     gegl_operation_context_get_level (context));
 }
