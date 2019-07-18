@@ -95,6 +95,9 @@ domain_transform (GeglOperation  *operation,
                   GeglBuffer     *input,
                   GeglBuffer     *output)
 {
+  const Babl *space    = gegl_operation_get_source_space (operation, "input");
+  const Babl *formatu8 = babl_format_with_space ("R'G'B' u8", space);
+  const Babl *format   = babl_format_with_space ("R'G'B'A float", space);
   gfloat  **rf_table;
   guint16  *transforms_buffer;
   gfloat   *buffer;
@@ -159,8 +162,8 @@ domain_transform (GeglOperation  *operation,
           rect.width = width;
           rect.height = real_stride;
     
-          gegl_buffer_get (input, &rect, 1.0, babl_format ("R'G'B' u8"),
-                           buffer, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
+          gegl_buffer_get (input, &rect, 1.0, formatu8, buffer,
+                           GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
     
           /* Domain Transform */
           for (j = 0; j < rect.height; ++j)
@@ -196,11 +199,11 @@ domain_transform (GeglOperation  *operation,
             }
     
           if (n == 0)
-            gegl_buffer_get (input, &rect, 1.0, babl_format ("R'G'B'A float"),
-                             buffer, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
+            gegl_buffer_get (input, &rect, 1.0, format, buffer,
+                             GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
           else
-            gegl_buffer_get (output, &rect, 1.0, babl_format ("R'G'B'A float"),
-                             buffer, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
+            gegl_buffer_get (output, &rect, 1.0, format, buffer,
+                             GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
     
           /* Horizontal Filter (Left-Right) */
           for (j = 0; j < rect.height; ++j)
@@ -263,8 +266,8 @@ domain_transform (GeglOperation  *operation,
                 }
             }
     
-          gegl_buffer_set (output, &rect, 0, babl_format ("R'G'B'A float"),
-                           buffer, GEGL_AUTO_ROWSTRIDE);
+          gegl_buffer_set (output, &rect, 0, format, buffer,
+                           GEGL_AUTO_ROWSTRIDE);
         }
   
       report_progress (operation, (2.0 * n + 1.0) / (2.0 * n_iterations), timer);
@@ -279,8 +282,8 @@ domain_transform (GeglOperation  *operation,
           rect.width = real_stride;
           rect.height = height;
     
-          gegl_buffer_get (input, &rect, 1.0, babl_format ("R'G'B' u8"),
-                           buffer, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
+          gegl_buffer_get (input, &rect, 1.0, formatu8, buffer,
+                           GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
     
           /* Domain Transform */
           for (j = 0; j < rect.width; ++j)
@@ -315,8 +318,8 @@ domain_transform (GeglOperation  *operation,
                 }
             }
     
-          gegl_buffer_get (output, &rect, 1.0, babl_format ("R'G'B'A float"),
-                           buffer, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
+          gegl_buffer_get (output, &rect, 1.0, format, buffer,
+                           GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
     
           /* Vertical Filter (Top-Down) */
           for (j = 0; j < rect.width; ++j)
@@ -379,8 +382,8 @@ domain_transform (GeglOperation  *operation,
                 }
             }
     
-          gegl_buffer_set (output, &rect, 0, babl_format ("R'G'B'A float"),
-                           buffer, GEGL_AUTO_ROWSTRIDE);
+          gegl_buffer_set (output, &rect, 0, format, buffer,
+                           GEGL_AUTO_ROWSTRIDE);
         }
   
       report_progress (operation, (2.0 * n + 2.0) / (2.0 * n_iterations), timer);
@@ -401,8 +404,11 @@ domain_transform (GeglOperation  *operation,
 static void
 prepare (GeglOperation *operation)
 {
-  gegl_operation_set_format (operation, "input", babl_format ("R'G'B'A float"));
-  gegl_operation_set_format (operation, "output", babl_format ("R'G'B'A float"));
+  const Babl *space  = gegl_operation_get_source_space (operation, "input");
+  const Babl *format = babl_format_with_space ("R'G'B'A float", space);
+
+  gegl_operation_set_format (operation, "input", format);
+  gegl_operation_set_format (operation, "output", format);
 }
 
 static GeglRectangle
