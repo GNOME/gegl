@@ -206,59 +206,78 @@ process (GeglOperation       *operation,
   gint n_components  = babl_format_get_n_components (format);
   GeglRectangle src_rect;
   GeglRectangle dst_rect;
+  GeglRectangle scaled_roi;
   gfloat       *src_buf;
   gfloat       *dst_buf;
+  gfloat        factor = 1.0f / (1 << level);
+  gint          scaled_radius = o->radius * factor;
+
+  scaled_roi = *roi;
+
+  if (level)
+    {
+      scaled_roi.x      *= factor;
+      scaled_roi.y      *= factor;
+      scaled_roi.width  *= factor;
+      scaled_roi.height *= factor;
+    }
 
   if (o->orientation == GEGL_ORIENTATION_HORIZONTAL)
     {
-      src_rect.x      = roi->x - o->radius;
-      src_rect.width  = roi->width + 2 * o->radius;
+      src_rect.x      = scaled_roi.x - scaled_radius;
+      src_rect.width  = scaled_roi.width + 2 * scaled_radius;
       src_rect.height = 1;
       
-      dst_rect.x      = roi->x;
-      dst_rect.width  = roi->width;
+      dst_rect.x      = scaled_roi.x;
+      dst_rect.width  = scaled_roi.width;
       dst_rect.height = 1; 
-      
+
       src_buf = g_new (gfloat, src_rect.width * n_components);
 
-      for (src_rect.y = roi->y; src_rect.y < roi->y + roi->height; src_rect.y++)
+      for (src_rect.y = scaled_roi.y;
+           src_rect.y < scaled_roi.y + scaled_roi.height;
+           src_rect.y++)
         {
           dst_rect.y = src_rect.y;
           dst_buf = g_new0 (gfloat, dst_rect.width * n_components);
 
-          gegl_buffer_get (input, &src_rect, 1.0, format, src_buf,
+          gegl_buffer_get (input, &src_rect, factor, format, src_buf,
                            GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
 
-          box_blur_1d (src_buf, dst_buf, dst_rect.width, o->radius, n_components);
+          box_blur_1d (src_buf, dst_buf, dst_rect.width, scaled_radius,
+                       n_components);
 
-          gegl_buffer_set (output, &dst_rect, 0, format, dst_buf,
+          gegl_buffer_set (output, &dst_rect, level, format, dst_buf,
                            GEGL_AUTO_ROWSTRIDE);
           g_free (dst_buf);
         }
     }
   else
     {
-      src_rect.y      = roi->y - o->radius;
+      src_rect.y      = scaled_roi.y - scaled_radius;
       src_rect.width  = 1;
-      src_rect.height = roi->height + 2 * o->radius;
+      src_rect.height = scaled_roi.height + 2 * scaled_radius;
       
-      dst_rect.y      = roi->y;
+      dst_rect.y      = scaled_roi.y;
       dst_rect.width  = 1;
-      dst_rect.height = roi->height;
-      
+      dst_rect.height = scaled_roi.height;
+
       src_buf = g_new  (gfloat, src_rect.height * n_components);
 
-      for (src_rect.x = roi->x; src_rect.x < roi->x + roi->width; src_rect.x++)
+      for (src_rect.x = scaled_roi.x;
+           src_rect.x < scaled_roi.x + scaled_roi.width;
+           src_rect.x++)
         {
           dst_rect.x = src_rect.x;
           dst_buf = g_new0 (gfloat, dst_rect.height * n_components);
 
-          gegl_buffer_get (input, &src_rect, 1.0, format, src_buf,
+          gegl_buffer_get (input, &src_rect, factor, format, src_buf,
                            GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
 
-          box_blur_1d (src_buf, dst_buf, dst_rect.height, o->radius, n_components);
+          box_blur_1d (src_buf, dst_buf, dst_rect.height, scaled_radius,
+                       n_components);
 
-          gegl_buffer_set (output, &dst_rect, 0, format, dst_buf,
+          gegl_buffer_set (output, &dst_rect, level, format, dst_buf,
                            GEGL_AUTO_ROWSTRIDE);
           g_free (dst_buf);
         }
