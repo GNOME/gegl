@@ -89,12 +89,16 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass               *operation_class;
   GeglOperationPointComposer3Class *point_composer3_class;
+  GeglOperationComposer3Class *composer3_class;
 
   operation_class       = GEGL_OPERATION_CLASS (klass);
   point_composer3_class = GEGL_OPERATION_POINT_COMPOSER3_CLASS (klass);
+  composer3_class = GEGL_OPERATION_COMPOSER3_CLASS (klass);
   operation_class->prepare = prepare;
 
   point_composer3_class->process = process;
+  composer3_class->aux_label = _("Minimum Envelope");
+  composer3_class->aux2_label = _("Maximum Envelope");
 
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:remap",
