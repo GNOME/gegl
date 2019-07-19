@@ -17,6 +17,7 @@
  * Copyright 1996 Torsten Martinsen
  * Copyright 2007 Daniel Richard G.
  * Copyright 2011 Hans Lo <hansshulo@gmail.com>
+ * Copyright 2019 Øyvind Kolås
  */
 
 #include "config.h"
@@ -25,12 +26,13 @@
 #ifdef GEGL_PROPERTIES
 
 property_int    (mask_radius, _("Mask Radius"), 4)
-    description (_("Radius of circle around pixel"))
+    description (_("Radius of circle around pixel, can also be scaled per pixel by a buffer on the aux pad."))
     value_range (1, 100)
     ui_range (1, 25)
     ui_meta     ("unit", "pixel-distance")
 
 property_int    (exponent, _("Exponent"), 8)
+    description (_("Exponent for processing; controls smoothness - can be scaled per pixel with a buffer on the aux2 pad."))
     value_range (1, 20)
 
 property_int (intensities, _("Number of intensities"), 128)
@@ -42,7 +44,7 @@ property_boolean (use_inten, _("Intensity Mode"), TRUE)
 
 #else
 
-#define GEGL_OP_AREA_FILTER
+#define GEGL_OP_COMPOSER3
 #define GEGL_OP_NAME     oilify
 #define GEGL_OP_C_SOURCE oilify.c
 
@@ -263,22 +265,28 @@ oilify_pixel (gint           x,
 static void
 prepare (GeglOperation *operation)
 {
-  GeglProperties          *o;
-  GeglOperationAreaFilter *op_area;
   const Babl              *space = gegl_operation_get_source_space (operation, "input");
-
-  op_area = GEGL_OPERATION_AREA_FILTER (operation);
-  o       = GEGL_PROPERTIES (operation);
-
-  op_area->left   =
-  op_area->right  =
-  op_area->top    =
-  op_area->bottom = o->mask_radius;
 
   gegl_operation_set_format (operation, "input",
                              babl_format_with_space ("RGBA float", space));
   gegl_operation_set_format (operation, "output",
                              babl_format_with_space ("RGBA float", space));
+}
+
+static GeglRectangle
+get_required_for_output (GeglOperation        *operation,
+                         const gchar         *input_pad,
+                         const GeglRectangle *region)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  GeglRectangle rect = *region;
+
+  rect.x -= o->mask_radius;
+  rect.y -= o->mask_radius;
+  rect.width  += o->mask_radius * 2;
+  rect.height += o->mask_radius * 2;
+
+  return rect;
 }
 
 #include "opencl/gegl-cl.h"
@@ -387,13 +395,14 @@ cl_process (GeglOperation       *operation,
 static gboolean
 process (GeglOperation       *operation,
          GeglBuffer          *input,
+         GeglBuffer          *aux,
+         GeglBuffer          *aux2,
          GeglBuffer          *output,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglProperties *o                = GEGL_PROPERTIES (operation);
-  GeglOperationAreaFilter *op_area = GEGL_OPERATION_AREA_FILTER (operation);
-  const Babl *format               = gegl_operation_get_format (operation, "output");
+  GeglProperties *o                    = GEGL_PROPERTIES (operation);
+  const Babl *format                   = gegl_operation_get_format (operation, "output");
 
   gint x = o->mask_radius; /* initial x                   */
   gint y = o->mask_radius; /*           and y coordinates */
@@ -401,27 +410,48 @@ process (GeglOperation       *operation,
   gfloat *dst_buf;
   gfloat *inten_buf;
   gfloat *out_pixel;
+  gfloat *mask_radius_pixel = NULL;
+  gfloat *exponent_pixel = NULL;
+  gfloat *mask_radius_buf = NULL;
+  gfloat *exponent_buf = NULL;
   gint n_pixels = result->width * result->height;
   GeglRectangle src_rect;
   gint total_pixels;
 
-  if (gegl_operation_use_opencl (operation))
+  /* the opencl implementation doesn't (yet) support the parameter buffers */
+  if (aux == NULL &&
+      aux2 == NULL &&
+      gegl_operation_use_opencl (operation))
     if (cl_process (operation, input, output, result))
       return TRUE;
-
-  src_rect.x      = result->x - op_area->left;
-  src_rect.width  = result->width + op_area->left + op_area->right;
-  src_rect.y      = result->y - op_area->top;
-  src_rect.height = result->height + op_area->top + op_area->bottom;
+  src_rect         = *result;
+  src_rect.x      -= o->mask_radius;
+  src_rect.y      -= o->mask_radius;
+  src_rect.width  += o->mask_radius*2;
+  src_rect.height += o->mask_radius*2;
 
   total_pixels = src_rect.width * src_rect.height;
 
   src_buf = gegl_malloc (4 * total_pixels * sizeof (gfloat));
   dst_buf = gegl_malloc (4 * n_pixels * sizeof (gfloat));
+
   if (o->use_inten)
     inten_buf = gegl_malloc (total_pixels * sizeof (gfloat));
   else
     inten_buf = NULL;
+
+  if (aux)
+  {
+    mask_radius_buf = mask_radius_pixel = gegl_malloc (n_pixels * sizeof (gfloat));
+    gegl_buffer_get (aux, result, 1.0, babl_format_with_space ("Y float", format),
+                     mask_radius_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
+  }
+  if (aux2)
+  {
+    exponent_buf = exponent_pixel = gegl_malloc (n_pixels * sizeof (gfloat));
+    gegl_buffer_get (aux2, result, 1.0, babl_format_with_space ("Y float", format),
+                     exponent_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
+  }
 
   gegl_buffer_get (input, &src_rect, 1.0, format,
                    src_buf, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_CLAMP);
@@ -434,12 +464,26 @@ process (GeglOperation       *operation,
 
   while (n_pixels--)
     {
+      float mask_radius = o->mask_radius;
+      float exponent    = o->exponent;
+
+      if (exponent_pixel)
+      {
+        exponent *= CLAMP(*exponent_pixel, 0.0, 1.0);
+        exponent_pixel++;
+      }
+      if (mask_radius_pixel)
+      {
+        mask_radius *= CLAMP(*mask_radius_pixel, 0.0, 1.0);
+        mask_radius_pixel++;
+      }
+
       if (inten_buf)
-        oilify_pixel_inten (x, y, o->mask_radius, o->exponent, o->intensities,
-                   src_rect.width, src_buf, inten_buf, out_pixel);
+        oilify_pixel_inten (x, y, mask_radius, exponent, o->intensities,
+                            src_rect.width, src_buf, inten_buf, out_pixel);
       else
-        oilify_pixel (x, y, o->mask_radius, o->exponent, o->intensities,
-                   src_rect.width, src_buf, out_pixel);
+        oilify_pixel (x, y, mask_radius, exponent, o->intensities,
+                      src_rect.width, src_buf, out_pixel);
       out_pixel += 4;
 
       /* update x and y coordinates */
@@ -451,7 +495,6 @@ process (GeglOperation       *operation,
         }
     }
 
-
   gegl_buffer_set (output, result, 0,
                    babl_format_with_space ("RGBA float", format),
                    dst_buf, GEGL_AUTO_ROWSTRIDE);
@@ -459,6 +502,10 @@ process (GeglOperation       *operation,
   gegl_free (dst_buf);
   if (inten_buf)
     gegl_free (inten_buf);
+  if (mask_radius_buf)
+    gegl_free (mask_radius_buf);
+  if (exponent_buf)
+    gegl_free (exponent_buf);
 
   return  TRUE;
 }
@@ -466,13 +513,14 @@ process (GeglOperation       *operation,
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GeglOperationClass       *operation_class;
-  GeglOperationFilterClass *filter_class;
+  GeglOperationClass          *operation_class;
+  GeglOperationComposer3Class *composer3_class;
 
   operation_class = GEGL_OPERATION_CLASS (klass);
-  filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
+  composer3_class = GEGL_OPERATION_COMPOSER3_CLASS (klass);
 
-  filter_class->process    = process;
+  composer3_class->process    = process;
+  operation_class->get_required_for_output = get_required_for_output;
   operation_class->prepare = prepare;
   operation_class->threaded = FALSE;
 
