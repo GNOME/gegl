@@ -32,20 +32,42 @@ G_STATIC_ASSERT (GEGL_ALIGNMENT <= G_MAXUINT8);
 /* utility call that makes sure allocations are 16 byte aligned.
  * making RGBA float buffers have aligned access for pixels.
  */
+static inline gpointer
+gegl_malloc_align (gchar *mem)
+{
+  gchar *ret;
+  gint   offset;
+
+  offset = GEGL_ALIGNMENT - GPOINTER_TO_UINT (mem) % GEGL_ALIGNMENT;
+  ret    = (gpointer) (mem + offset);
+
+  /* store the offset to the real malloc one byte in front of this malloc */
+  *(guint8 *) (ret - 1) = offset;
+
+  return (gpointer) ret;
+}
+
 gpointer
 gegl_malloc (gsize size)
 {
   gchar *mem;
-  gchar *ret;
-  gint   offset;
 
-  mem    = g_malloc (size + GEGL_ALIGNMENT);
-  offset = GEGL_ALIGNMENT - GPOINTER_TO_UINT(mem) % GEGL_ALIGNMENT;
-  ret    = (gpointer)(mem + offset);
+  mem = g_malloc (size + GEGL_ALIGNMENT);
 
-  /* store the offset to the real malloc one byte in front of this malloc */
-  *(guint8*)(ret-1)=offset;
-  return (gpointer) ret;
+  return gegl_malloc_align (mem);
+}
+
+gpointer
+gegl_try_malloc (gsize size)
+{
+  gchar *mem;
+
+  mem = g_try_malloc (size + GEGL_ALIGNMENT);
+
+  if (! mem)
+    return NULL;
+
+  return gegl_malloc_align (mem);
 }
 
 gpointer

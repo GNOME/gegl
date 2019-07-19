@@ -29,11 +29,22 @@
  * gegl_malloc: (skip)
  * @n_bytes: the number of bytes to allocte.
  *
- * Allocates @n_bytes of memory. If n_bytes is 0 it returns NULL.
+ * Allocates @n_bytes of memory. If @n_bytes is 0, returns NULL.
  *
  * Returns a pointer to the allocated memory.
  */
 gpointer   gegl_malloc         (gsize         n_bytes) G_GNUC_MALLOC;
+
+/**
+ * gegl_try_malloc: (skip)
+ * @n_bytes: the number of bytes to allocte.
+ *
+ * Allocates @n_bytes of memory. If allocation fails, or if @n_bytes is 0,
+ * returns %NULL.
+ *
+ * Returns a pointer to the allocated memory, or NULL.
+ */
+gpointer   gegl_try_malloc     (gsize         n_bytes) G_GNUC_MALLOC;
 
 /**
  * gegl_free: (skip)
