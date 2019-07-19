@@ -25,6 +25,7 @@
 #include "gegl-operation-composer.h"
 #include "gegl-operation-context.h"
 #include "gegl-config.h"
+#include <glib/gi18n-lib.h>
 
 static gboolean gegl_operation_composer_process (GeglOperation       *operation,
                               GeglOperationContext     *context,
@@ -67,6 +68,7 @@ static void
 attach (GeglOperation *self)
 {
   GeglOperation *operation = GEGL_OPERATION (self);
+  GeglOperationComposerClass *klass = GEGL_OPERATION_COMPOSER_GET_CLASS (operation);
   GParamSpec    *pspec;
 
   pspec = g_param_spec_object ("output",
@@ -88,13 +90,14 @@ attach (GeglOperation *self)
   g_param_spec_sink (pspec);
 
   pspec = g_param_spec_object ("aux",
-                               "Aux",
-                               "Auxiliary image buffer input pad.",
-                               GEGL_TYPE_BUFFER,
-                               G_PARAM_READWRITE |
-                               GEGL_PARAM_PAD_INPUT);
+      klass->aux_label?klass->aux_label:"Aux",
+      klass->aux_description?klass->aux_description:_("Auxiliary image buffer input pad."),
+      GEGL_TYPE_BUFFER,
+      G_PARAM_READWRITE |
+      GEGL_PARAM_PAD_INPUT);
   gegl_operation_create_pad (operation, pspec);
   g_param_spec_sink (pspec);
+
 }
 
 typedef struct ThreadData

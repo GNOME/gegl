@@ -25,6 +25,8 @@
 #include "gegl-operation-composer3.h"
 #include "gegl-operation-context.h"
 #include "gegl-config.h"
+#include <glib/gi18n-lib.h>
+
 
 static gboolean gegl_operation_composer3_process
 (GeglOperation        *operation,
@@ -46,7 +48,7 @@ G_DEFINE_TYPE (GeglOperationComposer3, gegl_operation_composer3,
     GEGL_TYPE_OPERATION)
 
 
-  static void
+static void
 gegl_operation_composer3_class_init (GeglOperationComposer3Class * klass)
 {
   GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
@@ -58,20 +60,21 @@ gegl_operation_composer3_class_init (GeglOperationComposer3Class * klass)
   operation_class->get_required_for_output = get_required_for_output;
 }
 
-  static void
+static void
 gegl_operation_composer3_init (GeglOperationComposer3 *self)
 {
 }
 
-  static void
+static void
 attach (GeglOperation *self)
 {
   GeglOperation *operation = GEGL_OPERATION (self);
+  GeglOperationComposer3Class *klass   = GEGL_OPERATION_COMPOSER3_GET_CLASS (operation);
   GParamSpec    *pspec;
 
   pspec = g_param_spec_object ("output",
       "Output",
-      "Output pad for generated image buffer.",
+      _("Output pad for generated image buffer."),
       GEGL_TYPE_BUFFER,
       G_PARAM_READABLE |
       GEGL_PARAM_PAD_OUTPUT);
@@ -80,7 +83,7 @@ attach (GeglOperation *self)
 
   pspec = g_param_spec_object ("input",
       "Input",
-      "Input pad, for image buffer input.",
+      _("Input pad, for image buffer input."),
       GEGL_TYPE_BUFFER,
       G_PARAM_READWRITE |
       GEGL_PARAM_PAD_INPUT);
@@ -88,8 +91,8 @@ attach (GeglOperation *self)
   g_param_spec_sink (pspec);
 
   pspec = g_param_spec_object ("aux",
-      "Aux",
-      "Auxiliary image buffer input pad.",
+      klass->aux_label?klass->aux_label:"Aux",
+      klass->aux_description?klass->aux_description:_("Auxiliary image buffer input pad."),
       GEGL_TYPE_BUFFER,
       G_PARAM_READWRITE |
       GEGL_PARAM_PAD_INPUT);
@@ -97,8 +100,8 @@ attach (GeglOperation *self)
   g_param_spec_sink (pspec);
 
   pspec = g_param_spec_object ("aux2",
-      "Aux2",
-      "Second auxiliary image buffer input pad.",
+      klass->aux2_label?klass->aux2_label:"Aux2",
+      klass->aux2_description?klass->aux2_description:_("Second auxiliary image buffer input pad."),
       GEGL_TYPE_BUFFER,
       G_PARAM_READWRITE |
       GEGL_PARAM_PAD_INPUT);
@@ -208,7 +211,7 @@ gegl_operation_composer3_process (GeglOperation        *operation,
           GEGL_SPLIT_STRATEGY_AUTO,
           (GeglParallelDistributeAreaFunc) thread_process,
           &data);
-        
+
         success = data.success;
       }
       else

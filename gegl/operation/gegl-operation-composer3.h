@@ -48,7 +48,10 @@ struct _GeglOperationComposer3Class
                         GeglBuffer          *output,
                         const GeglRectangle *result,
                         gint                 level);
-  gpointer              pad[4];
+  const char           *aux_label;
+  const char           *aux_description;
+  const char           *aux2_label;
+  const char           *aux2_description;
 };
 
 GType gegl_operation_composer3_get_type (void) G_GNUC_CONST;
