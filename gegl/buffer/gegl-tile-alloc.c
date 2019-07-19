@@ -153,7 +153,10 @@ gegl_tile_block_new (GeglTileBlock * volatile *block_ptr,
   if (block_size <= buffer_size)
     return NULL;
 
-  block = gegl_malloc (GEGL_TILE_BLOCK_BUFFER_OFFSET + block_size);
+  block = gegl_try_malloc (GEGL_TILE_BLOCK_BUFFER_OFFSET + block_size);
+
+  if (! block)
+    return NULL;
 
   block->block_ptr   = block_ptr;
   block->size        = GEGL_TILE_BLOCK_BUFFER_OFFSET + block_size;
