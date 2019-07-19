@@ -41,6 +41,7 @@
 
 #define GEGL_TILE_BLOCK_BUFFER_OFFSET GEGL_ALIGN (sizeof (GeglTileBlock))
 #define GEGL_TILE_BLOCK_SIZE_RATIO    0.01
+#define GEGL_TILE_BLOCK_MAX_BUFFERS   1024
 #define GEGL_TILE_BLOCKS_PER_TRIM     10
 #define GEGL_TILE_SENTINEL_BLOCK      ((GeglTileBlock *) ~(guintptr) 0)
 
@@ -141,6 +142,7 @@ gegl_tile_block_new (GeglTileBlock * volatile *block_ptr,
   GeglTileBuffer **next_buffer;
   gsize            block_size;
   gsize            buffer_size;
+  gsize            n_buffers;
   gint             n_blocks;
   gint             i;
 
@@ -150,8 +152,13 @@ gegl_tile_block_new (GeglTileBlock * volatile *block_ptr,
                        GEGL_TILE_BLOCK_SIZE_RATIO);
   block_size -= block_size % buffer_size;
 
-  if (block_size <= buffer_size)
+  n_buffers = block_size / buffer_size;
+  n_buffers = MIN (n_buffers, GEGL_TILE_BLOCK_MAX_BUFFERS);
+
+  if (n_buffers <= 1)
     return NULL;
+
+  block_size = n_buffers * buffer_size;
 
   block = gegl_try_malloc (GEGL_TILE_BLOCK_BUFFER_OFFSET + block_size);
 
@@ -170,7 +177,7 @@ gegl_tile_block_new (GeglTileBlock * volatile *block_ptr,
 
   buffer = block->head;
 
-  for (i = block_size / buffer_size; i; i--)
+  for (i = n_buffers; i; i--)
     {
       buffer->block = block;
 
