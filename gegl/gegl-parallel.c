@@ -19,6 +19,7 @@
 #include "config.h"
 
 #include <math.h>
+#include <stdlib.h>
 
 #include <glib.h>
 
@@ -28,7 +29,8 @@
 #include "gegl-parallel-private.h"
 
 
-#define GEGL_PARALLEL_DISTRIBUTE_MAX_THREADS GEGL_MAX_THREADS
+#define GEGL_PARALLEL_DISTRIBUTE_MAX_THREADS           GEGL_MAX_THREADS
+#define GEGL_PARALLEL_DISTRIBUTE_THREAD_TIME_N_SAMPLES 10
 
 
 typedef struct
@@ -60,9 +62,7 @@ static void          gegl_parallel_set_n_threads                    (gint       
 
 static void          gegl_parallel_distribute_set_n_threads         (gint                          n_threads);
 static gpointer      gegl_parallel_distribute_thread_func           (GeglParallelDistributeThread *thread);
-
-static inline gint   gegl_parallel_distribute_get_optimal_n_threads (gdouble                       n_elements,
-                                                                     gdouble                       thread_cost);
+static void          gegl_parallel_distribute_update_thread_time    (void);
 
 
 /*  local variables  */
@@ -74,6 +74,8 @@ static GMutex                       gegl_parallel_distribute_completion_mutex;
 static GCond                        gegl_parallel_distribute_completion_cond;
 static volatile gint                gegl_parallel_distribute_completion_counter;
 static volatile gint                gegl_parallel_distribute_busy;
+
+static gdouble                      gegl_parallel_distribute_thread_time;
 
 
 /*  public functions  */
@@ -98,6 +100,46 @@ gegl_parallel_cleanup (void)
 
   /* stop all threads */
   gegl_parallel_set_n_threads (0, /* finish_tasks = */ FALSE);
+}
+
+gdouble
+gegl_parallel_distribute_get_thread_time (void)
+{
+  return gegl_parallel_distribute_thread_time;
+}
+
+/* calculates the optimal number of threads, n_threads, to process n_elements
+ * elements, assuming the cost of processing the elements is proportional to
+ * the number of elements to be processed by each thread, and assuming that
+ * each thread additionally incurs a fixed cost of thread_cost, relative to the
+ * cost of processing a single element.
+ *
+ * in other words, the assumption is that the total cost of processing the
+ * elements is proportional to:
+ *
+ *   n_elements / n_threads + thread_cost * n_threads
+ */
+inline gint
+gegl_parallel_distribute_get_optimal_n_threads (gdouble n_elements,
+                                                gdouble thread_cost)
+{
+  gint n_threads;
+
+  if (n_elements > 0 && thread_cost > 0.0)
+    {
+      gdouble n = n_elements;
+      gdouble c = thread_cost;
+
+      n_threads = floor ((c + sqrt (c * (c + 4.0 * n))) / (2.0 * c));
+      n_threads = CLAMP (n_threads, 1, gegl_parallel_distribute_n_threads);
+    }
+  else
+    {
+      n_threads = n_elements;
+      n_threads = CLAMP (n_threads, 0, gegl_parallel_distribute_n_threads);
+    }
+
+  return n_threads;
 }
 
 void
@@ -393,6 +435,8 @@ gegl_parallel_distribute_set_n_threads (gint n_threads)
   gegl_parallel_distribute_n_threads = n_threads;
 
   g_atomic_int_set (&gegl_parallel_distribute_busy, 0);
+
+  gegl_parallel_distribute_update_thread_time ();
 }
 
 static gpointer
@@ -432,36 +476,70 @@ gegl_parallel_distribute_thread_func (GeglParallelDistributeThread *thread)
   return NULL;
 }
 
-/* calculates the optimal number of threads, n_threads, to process n_elements
- * elements, assuming the cost of processing the elements is proportional to
- * the number of elements to be processed by each thread, and assuming that
- * each thread additionally incurs a fixed cost of thread_cost, relative to the
- * cost of processing a single element.
- *
- * in other words, the assumption is that the total cost of processing the
- * elements is proportional to:
- *
- *   n_elements / n_threads + thread_cost * n_threads
- */
-static inline gint
-gegl_parallel_distribute_get_optimal_n_threads (gdouble n_elements,
-                                                gdouble thread_cost)
+static void
+gegl_parallel_distribute_update_thread_time_func (gint  i,
+                                                  gint  n,
+                                                  gint *n_threads)
 {
-  gint n_threads;
+  if (i == 0)
+    *n_threads = n;
+}
 
-  if (n_elements > 0 && thread_cost > 0.0)
+static gint
+gegl_parallel_distribute_update_thread_time_compare (gconstpointer x,
+                                                     gconstpointer y)
+{
+  return (*(const gdouble *) x > *(const gdouble *) y) -
+         (*(const gdouble *) x < *(const gdouble *) y);
+}
+
+static void
+gegl_parallel_distribute_update_thread_time (void)
+{
+  gint64 samples[GEGL_PARALLEL_DISTRIBUTE_THREAD_TIME_N_SAMPLES];
+  gint   i;
+
+  if (gegl_parallel_distribute_n_threads <= 1)
     {
-      gdouble n = n_elements;
-      gdouble c = thread_cost;
+      gegl_parallel_distribute_thread_time = 0.0;
 
-      n_threads = floor ((c + sqrt (c * (c + 4.0 * n))) / (2.0 * c));
-      n_threads = CLAMP (n_threads, 1, gegl_parallel_distribute_n_threads);
+      return;
     }
-  else
+
+  for (i = 0; i < GEGL_PARALLEL_DISTRIBUTE_THREAD_TIME_N_SAMPLES; i++)
     {
-      n_threads = n_elements;
-      n_threads = CLAMP (n_threads, 0, gegl_parallel_distribute_n_threads);
+      gint   n_threads = 0;
+      gint64 t         = 0;
+
+      while (n_threads != gegl_parallel_distribute_n_threads)
+        {
+          /* to estimate the extra processing time incurred by additional
+           * threads, we simply distribute a NOP function across all threads,
+           * and measure how long it takes.  this measures the impact of
+           * synchronizing work distribution itself, but leaves out the effects
+           * of contention when performing actual work, making this a lower
+           * bound.
+           */
+          t = g_get_monotonic_time ();
+
+          gegl_parallel_distribute (
+            -1,
+            (GeglParallelDistributeFunc)
+              gegl_parallel_distribute_update_thread_time_func,
+            &n_threads);
+
+          t = g_get_monotonic_time () - t;
+        }
+
+      samples[i] = t;
     }
 
-  return n_threads;
+  qsort (samples,
+         GEGL_PARALLEL_DISTRIBUTE_THREAD_TIME_N_SAMPLES, sizeof (gint64),
+         gegl_parallel_distribute_update_thread_time_compare);
+
+  gegl_parallel_distribute_thread_time =
+    (gdouble) samples[GEGL_PARALLEL_DISTRIBUTE_THREAD_TIME_N_SAMPLES / 2] /
+    G_TIME_SPAN_SECOND                                                    /
+    (gegl_parallel_distribute_n_threads - 1);
 }

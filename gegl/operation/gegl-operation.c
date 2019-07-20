@@ -25,6 +25,7 @@
 #include "gegl.h"
 #include "gegl-config.h"
 #include "gegl-types-internal.h"
+#include "gegl-parallel-private.h"
 #include "gegl-operation.h"
 #include "gegl-operation-private.h"
 #include "gegl-operation-context.h"
@@ -34,18 +35,34 @@
 #include "graph/gegl-pad.h"
 #include "gegl-operations.h"
 
-static void         attach                    (GeglOperation       *self);
 
-static GeglRectangle get_bounding_box          (GeglOperation       *self);
-static GeglRectangle get_invalidated_by_change (GeglOperation       *self,
-                                                const gchar         *input_pad,
-                                                const GeglRectangle *input_region);
-static GeglRectangle get_required_for_output   (GeglOperation       *self,
-                                                const gchar         *input_pad,
-                                                const GeglRectangle *region);
+#define GEGL_OPERATION_MIN_PIXELS_PER_PIXEL_TIME_UPDATE ( 32 *  32)
+#define GEGL_OPERATION_DEFAULT_PIXELS_PER_THREAD        ( 64 *  64)
+#define GEGL_OPERATION_MAX_PIXELS_PER_THREAD            (128 * 128)
 
 
-G_DEFINE_TYPE (GeglOperation, gegl_operation, G_TYPE_OBJECT)
+struct _GeglOperationPrivate
+{
+  gdouble pixel_time;
+};
+
+
+static void            attach                           (GeglOperation       *self);
+
+static GeglRectangle   get_bounding_box                 (GeglOperation       *self);
+static GeglRectangle   get_invalidated_by_change        (GeglOperation       *self,
+                                                         const gchar         *input_pad,
+                                                         const GeglRectangle *input_region);
+static GeglRectangle   get_required_for_output          (GeglOperation       *self,
+                                                         const gchar         *input_pad,
+                                                         const GeglRectangle *region);
+
+static void            gegl_operation_update_pixel_time (GeglOperation       *self,
+                                                         const GeglRectangle *roi,
+                                                         gdouble              t);
+
+
+G_DEFINE_TYPE_WITH_PRIVATE (GeglOperation, gegl_operation, G_TYPE_OBJECT)
 
 
 static void
@@ -72,6 +89,9 @@ gegl_operation_class_init (GeglOperationClass *klass)
 static void
 gegl_operation_init (GeglOperation *self)
 {
+  GeglOperationPrivate *priv = gegl_operation_get_instance_private (self);
+
+  priv->pixel_time = -1.0;
 }
 
 /**
@@ -111,9 +131,14 @@ gegl_operation_process (GeglOperation        *operation,
                         const GeglRectangle  *result,
                         gint                  level)
 {
-  GeglOperationClass  *klass;
+  GeglOperationClass *klass;
+  gint64              t;
+  gint64              n_pixels;
+  gboolean            update_pixel_time;
+  gboolean            success;
 
   g_return_val_if_fail (GEGL_IS_OPERATION (operation), FALSE);
+  g_return_val_if_fail (result != NULL, FALSE);
 
   klass = GEGL_OPERATION_GET_CLASS (operation);
 
@@ -136,8 +161,27 @@ gegl_operation_process (GeglOperation        *operation,
 
   g_return_val_if_fail (klass->process, FALSE);
 
-  return klass->process (operation, context, output_pad, result, level);
+  n_pixels = (gint64) result->width * (gint64) result->height;
+
+  update_pixel_time = n_pixels >=
+                      GEGL_OPERATION_MIN_PIXELS_PER_PIXEL_TIME_UPDATE;
+
+  if (update_pixel_time)
+    t = g_get_monotonic_time ();
+
+  success = klass->process (operation, context, output_pad, result, level);
+
+  if (success && update_pixel_time)
+    {
+      t = g_get_monotonic_time () - t;
+
+      gegl_operation_update_pixel_time (operation, result,
+                                        (gdouble) t / G_TIME_SPAN_SECOND);
+    }
+
+  return success;
 }
+
 
 /* Calls an extending class' get_bound_box method if defined otherwise
  * just returns a zero-initialised bounding box
@@ -827,8 +871,43 @@ gegl_operation_use_threading (GeglOperation *operation,
 gdouble
 gegl_operation_get_pixels_per_thread (GeglOperation *operation)
 {
-  /* FIXME: too arbitrary? */
-  return 64 * 64;
+  GeglOperationPrivate *priv = gegl_operation_get_instance_private (operation);
+
+  if (priv->pixel_time < 0.0)
+    return GEGL_OPERATION_DEFAULT_PIXELS_PER_THREAD;
+  else if (priv->pixel_time == 0.0)
+    return GEGL_OPERATION_MAX_PIXELS_PER_THREAD;
+
+  return MIN (gegl_parallel_distribute_get_thread_time () / priv->pixel_time,
+              GEGL_OPERATION_MAX_PIXELS_PER_THREAD);
+}
+
+static void
+gegl_operation_update_pixel_time (GeglOperation       *self,
+                                  const GeglRectangle *roi,
+                                  gdouble              t)
+{
+  GeglOperationPrivate *priv      = gegl_operation_get_instance_private (self);
+  gdouble               n_pixels;
+  gint                  n_threads = 1;
+
+  n_pixels = (gdouble) roi->width * (gdouble) roi->height;
+
+  if (gegl_operation_use_threading (self, roi))
+    {
+      /* we're assuming the entire processing cost was distributed over the
+       * optimal number of threads, as per the op's thread cost, which might
+       * not always be the case, but should generally be about right.
+       */
+      n_threads = gegl_parallel_distribute_get_optimal_n_threads (
+        n_pixels,
+        gegl_operation_get_pixels_per_thread (self));
+    }
+
+  priv->pixel_time = (t - (n_threads - 1)                              *
+                          gegl_parallel_distribute_get_thread_time ()) *
+                     n_threads / n_pixels;
+  priv->pixel_time = MAX (priv->pixel_time, 0.0);
 }
 
 static guchar *gegl_temp_alloc[GEGL_MAX_THREADS * 4]={NULL,};

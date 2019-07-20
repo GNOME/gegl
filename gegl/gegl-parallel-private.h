@@ -23,8 +23,13 @@
 G_BEGIN_DECLS
 
 
-void   gegl_parallel_init    (void);
-void   gegl_parallel_cleanup (void);
+void      gegl_parallel_init                             (void);
+void      gegl_parallel_cleanup                          (void);
+
+gdouble   gegl_parallel_distribute_get_thread_time       (void);
+
+gint      gegl_parallel_distribute_get_optimal_n_threads (gdouble n_elements,
+                                                          gdouble thread_cost);
 
 
 G_END_DECLS

@@ -34,7 +34,8 @@ G_BEGIN_DECLS
 #define GEGL_OPERATION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GEGL_TYPE_OPERATION, GeglOperationClass))
 /* The rest is in gegl-types.h */
 
-typedef struct _GeglOperationClass GeglOperationClass;
+typedef struct _GeglOperationClass   GeglOperationClass;
+typedef struct _GeglOperationPrivate GeglOperationPrivate;
 
 struct _GeglOperation
 {
