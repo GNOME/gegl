@@ -44,36 +44,8 @@ static GeglRectangle get_required_for_output   (GeglOperation       *self,
                                                 const gchar         *input_pad,
                                                 const GeglRectangle *region);
 
-static void gegl_operation_class_init     (GeglOperationClass *klass);
-static void gegl_operation_base_init      (GeglOperationClass *klass);
-static void gegl_operation_init           (GeglOperation      *self);
 
-GType
-gegl_operation_get_type (void)
-{
-  static GType type = 0;
-
-  if (! type)
-    {
-      const GTypeInfo info =
-      {
-        sizeof (GeglOperationClass),
-        (GBaseInitFunc)      gegl_operation_base_init,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc)     gegl_operation_class_init,
-        NULL,           /* class_finalize */
-        NULL,           /* class_data */
-        sizeof (GeglOperation),
-        0,              /* n_preallocs */
-        (GInstanceInitFunc) gegl_operation_init,
-      };
-
-      type = g_type_register_static (G_TYPE_OBJECT,
-                                     "GeglOperation",
-                                     &info, 0);
-    }
-  return type;
-}
+G_DEFINE_TYPE (GeglOperation, gegl_operation, G_TYPE_OBJECT)
 
 
 static void
@@ -95,13 +67,6 @@ gegl_operation_class_init (GeglOperationClass *klass)
   klass->get_invalidated_by_change = get_invalidated_by_change;
   klass->get_required_for_output   = get_required_for_output;
   klass->cl_data                   = NULL;
-}
-
-static void
-gegl_operation_base_init (GeglOperationClass *klass)
-{
-  /* XXX: leaked for now, should replace G_DEFINE_TYPE with the expanded one */
-  klass->keys = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 }
 
 static void
@@ -658,12 +623,13 @@ gchar **
 gegl_operation_list_keys (const gchar *operation_name,
                           guint       *n_keys)
 {
-  GType         type;
-  GObjectClass *klass;
-  GList        *list, *l;
-  gchar       **ret;
-  int count;
-  int i;
+  GType                type;
+  GeglOperationClass  *klass;
+  GList               *list, *l;
+  gchar              **ret;
+  int                  count;
+  int                  i;
+  g_return_val_if_fail (operation_name != NULL, NULL);
   type = gegl_operation_gtype_from_name (operation_name);
   if (!type)
     {
@@ -671,10 +637,22 @@ gegl_operation_list_keys (const gchar *operation_name,
         *n_keys = 0;
       return NULL;
     }
-  klass  = g_type_class_ref (type);
-  count = g_hash_table_size (GEGL_OPERATION_CLASS (klass)->keys);
+  klass = g_type_class_ref (type);
+  if (! GEGL_IS_OPERATION_CLASS (klass))
+    {
+      g_type_class_unref (klass);
+
+      g_return_val_if_fail (GEGL_IS_OPERATION_CLASS (klass), NULL);
+    }
+  if (! klass->keys)
+    {
+      if (n_keys)
+        *n_keys = 0;
+      return NULL;
+    }
+  count = g_hash_table_size (klass->keys);
   ret = g_malloc0 (sizeof (gpointer) * (count + 1));
-  list = g_hash_table_get_keys (GEGL_OPERATION_CLASS (klass)->keys);
+  list = g_hash_table_get_keys (klass->keys);
   for (i = 0, l = list; l; l = l->next, i++)
     {
       ret[i] = l->data;
@@ -693,11 +671,19 @@ gegl_operation_class_set_key (GeglOperationClass *klass,
 {
   gchar *key_value_dup;
 
+  g_return_if_fail (GEGL_IS_OPERATION_CLASS (klass));
   g_return_if_fail (key_name != NULL);
 
   if (!key_value)
     {
-      g_hash_table_remove (klass->keys, key_name);
+      if (klass->keys)
+        {
+          g_hash_table_remove (klass->keys, key_name);
+
+          if (g_hash_table_size (klass->keys) == 0)
+            g_clear_pointer (&klass->keys, g_hash_table_unref);
+        }
+
       return;
     }
 
@@ -714,6 +700,13 @@ gegl_operation_class_set_key (GeglOperationClass *klass,
       gegl_operation_class_register_name (klass, key_value, TRUE);
     }
 
+  if (! klass->keys)
+    {
+      /* XXX: leaked for now */
+      klass->keys = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                           g_free, g_free);
+    }
+
   g_hash_table_insert (klass->keys, g_strdup (key_name),
                        (void*)key_value_dup);
 }
@@ -724,6 +717,8 @@ gegl_operation_class_set_keys (GeglOperationClass *klass,
                                 ...)
 {
   va_list var_args;
+
+  g_return_if_fail (GEGL_IS_OPERATION_CLASS (klass));
 
   va_start (var_args, key_name);
   while (key_name)
@@ -753,12 +748,16 @@ gegl_operation_set_key (const gchar *operation_name,
 }
 
 const gchar *
-gegl_operation_class_get_key (GeglOperationClass *operation_class,
+gegl_operation_class_get_key (GeglOperationClass *klass,
                               const gchar        *key_name)
 {
-  const gchar  *ret = NULL;
-  ret = g_hash_table_lookup (GEGL_OPERATION_CLASS (operation_class)->keys, key_name);
-  return ret;
+  g_return_val_if_fail (GEGL_IS_OPERATION_CLASS (klass), NULL);
+  g_return_val_if_fail (key_name != NULL, NULL);
+
+  if (! klass->keys)
+    return NULL;
+
+  return g_hash_table_lookup (klass->keys, key_name);
 }
 
 const gchar *
