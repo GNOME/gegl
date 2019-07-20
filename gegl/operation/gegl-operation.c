@@ -744,11 +744,18 @@ gegl_operation_class_set_key (GeglOperationClass *klass,
       gegl_operation_class_register_name (klass, key_value, TRUE);
     }
 
-  if (! klass->keys)
+  if (! klass->keys ||
+      /* avoid inheriting an existing hash table from the parent class */
+      g_hash_table_lookup (klass->keys, "operation-class") != klass)
     {
       /* XXX: leaked for now */
       klass->keys = g_hash_table_new_full (g_str_hash, g_str_equal,
                                            g_free, g_free);
+
+      /* ... so we don't actually have to worry about these values being
+       * freed ...
+       */
+      g_hash_table_insert (klass->keys, "operation-class", klass);
     }
 
   g_hash_table_insert (klass->keys, g_strdup (key_name),
