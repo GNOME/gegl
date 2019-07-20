@@ -54,8 +54,7 @@ enum
   PROP_ZOOM_TOTAL,
   PROP_TILE_ALLOC_TOTAL,
   PROP_SCRATCH_TOTAL,
-  PROP_ACTIVE_THREADS,
-  PROP_MALLOC_N
+  PROP_ACTIVE_THREADS
 };
 
 
@@ -224,13 +223,6 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                      "Number of active worker threads",
                                                      0, G_MAXINT, 0,
                                                      G_PARAM_READABLE));
-
-  g_object_class_install_property (object_class, PROP_MALLOC_N,
-                                   g_param_spec_int ("malloc-n",
-                                                     "Malloc n",
-                                                     "Number of buffers currently allocated using gegl_malloc()",
-                                                     0, G_MAXINT, 0,
-                                                     G_PARAM_READABLE));
 }
 
 static void
@@ -338,14 +330,6 @@ gegl_stats_get_property (GObject    *object,
 
       case PROP_ACTIVE_THREADS:
         g_value_set_int (value, gegl_parallel_get_n_active_worker_threads ());
-        break;
-
-      case PROP_MALLOC_N:
-        {
-          extern volatile gint gegl_malloc_n;
-
-          g_value_set_int (value, gegl_malloc_n);
-        }
         break;
 
       default:
