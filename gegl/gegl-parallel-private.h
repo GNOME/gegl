@@ -32,6 +32,11 @@ gint      gegl_parallel_distribute_get_optimal_n_threads (gdouble n_elements,
                                                           gdouble thread_cost);
 
 
+/*  stats  */
+
+gint      gegl_parallel_get_n_active_worker_threads      (void);
+
+
 G_END_DECLS
 
 

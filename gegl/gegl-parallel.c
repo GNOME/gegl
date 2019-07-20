@@ -359,6 +359,16 @@ gegl_parallel_distribute_area (const GeglRectangle            *area,
 }
 
 
+/*  public functions (stats)  */
+
+
+gint
+gegl_parallel_get_n_active_worker_threads (void)
+{
+  return gegl_parallel_distribute_completion_counter;
+}
+
+
 /*  private functions  */
 
 
