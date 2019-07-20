@@ -264,7 +264,6 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   object_class->finalize                   = finalize;
-  operation_class->threaded                = FALSE;
   operation_class->prepare                 = prepare;
   operation_class->get_required_for_output = get_required_for_output;
   filter_class->process                    = process;
