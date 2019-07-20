@@ -54,9 +54,6 @@ property_int (iterations, _("Iterations"), 10)
   exit(1);\
   }
 
-// Shortcut for doing things in all three channels
-#define COLOR(expr) {int c; for (c = 0; c < 3; c++) { expr; }}
-
 /* We don't use the babl_format_get_n_components function for these values,
  * as literal constants can be used for stack allocation of array sizes. They
  * are double checked in matting_process.
@@ -73,9 +70,13 @@ static void
 matting_prepare (GeglOperation *operation)
 {
   const Babl *space = gegl_operation_get_source_space (operation, "input");
-  gegl_operation_set_format (operation, "input",  babl_format_with_space (FORMAT_INPUT, space));
-  gegl_operation_set_format (operation, "aux",    babl_format_with_space (FORMAT_AUX, space));
-  gegl_operation_set_format (operation, "output", babl_format_with_space (FORMAT_OUTPUT, space));
+  const Babl *in_format  = babl_format_with_space (FORMAT_INPUT, space);
+  const Babl *aux_format = babl_format_with_space (FORMAT_AUX, space);
+  const Babl *out_format = babl_format_with_space (FORMAT_OUTPUT, space);
+
+  gegl_operation_set_format (operation, "input",  in_format);
+  gegl_operation_set_format (operation, "aux",    aux_format);
+  gegl_operation_set_format (operation, "output", out_format);
 }
 
 static GeglRectangle
@@ -115,20 +116,30 @@ typedef struct {
 } ColorSample;
 
 #define SQUARE(x) ((x)*(x))
-static inline float get_alpha (Color F, Color B, Color I)
+
+static inline gfloat
+get_alpha (Color F,
+           Color B,
+           Color I)
 {
-  int c;
-  float result = 0;
-  float div = 0;
+  gint c;
+  gfloat result = 0.f;
+  gfloat div = 0.f;
+
   for (c = 0; c < 3; c++)
     {
       result += (I[c] - B[c]) * (F[c] - B[c]);
       div += SQUARE(F[c] - B[c]);
     }
+
   return min(max(result / div, 0), 1);
 }
 
-static inline float get_color_cost (Color F, Color B, Color I, float alpha)
+static inline float
+get_color_cost (Color F,
+                Color B,
+                Color I,
+                float alpha)
 {
   int c;
   float result = 0;
@@ -142,21 +153,31 @@ static inline float get_color_cost (Color F, Color B, Color I, float alpha)
   return sqrt(result) * 255;
 }
 
-static inline int get_distance_squared(ColorSample s, int x, int y)
+static inline int
+get_distance_squared (ColorSample s,
+                      int         x,
+                      int         y)
 {
   return SQUARE(s.pos.x - x) + SQUARE(s.pos.y - y);
 }
 
-static inline float get_distance (ColorSample s, int x, int y)
+static inline float
+get_distance (ColorSample s,
+              int         x,
+              int         y)
 {
   // TODO(rggjan): Remove sqrt to get faster code?
-  return sqrt(get_distance_squared(s, x, y));
+  return sqrt (get_distance_squared (s, x, y));
 }
 
 
-static inline float get_distance_cost (ColorSample s, int x, int y, float *best_distance)
+static inline float
+get_distance_cost (ColorSample s,
+                   int         x,
+                   int         y,
+                   float      *best_distance)
 {
-  float new_distance = get_distance(s, x, y);
+  float new_distance = get_distance (s, x, y);
 
   if (new_distance < *best_distance)
     *best_distance = new_distance;
@@ -164,23 +185,40 @@ static inline float get_distance_cost (ColorSample s, int x, int y, float *best_
   return new_distance / *best_distance;
 }
 
-static inline float get_cost (ColorSample foreground, ColorSample background, Color I, int x, int y, float *best_fg_distance, float *best_bg_distance)
+static inline float
+get_cost (ColorSample fg,
+          ColorSample bg,
+          Color       I,
+          int         x,
+          int         y,
+          float      *best_fg_distance,
+          float      *best_bg_distance)
 {
-  float cost = get_color_cost(foreground.color, background.color, I,
-                              get_alpha(foreground.color, background.color, I));
-  cost += get_distance_cost(foreground, x, y, best_fg_distance);
-  cost += get_distance_cost(background, x, y, best_bg_distance);
+  float cost = get_color_cost (fg.color, bg.color, I,
+                               get_alpha (fg.color, bg.color, I));
+  cost += get_distance_cost (fg, x, y, best_fg_distance);
+  cost += get_distance_cost (bg, x, y, best_bg_distance);
   return cost;
 }
 
-static inline void do_propagate(GArray *foreground_samples, GArray *background_samples, gfloat *input, BufferRecord *buffer, guchar *trimap, int x, int y, int w, int h) {
+static inline void
+do_propagate (GArray        *fg_samples,
+              GArray        *bg_samples,
+              gfloat        *input,
+              BufferRecord  *buffer,
+              guchar        *trimap,
+              int            x,
+              int            y,
+              int            w,
+              int            h)
+{
   int index_orig = y * w + x;
   int index_new;
 
   if (!(trimap[index_orig] == 0 || trimap[index_orig] == 255))
     {
-      int xdiff, ydiff;
-      float best_cost = FLT_MAX;
+      int    xdiff, ydiff;
+      float  best_cost        = FLT_MAX;
       float *best_fg_distance = &buffer[index_orig].fg_distance;
       float *best_bg_distance = &buffer[index_orig].bg_distance;
 
@@ -197,15 +235,16 @@ static inline void do_propagate(GArray *foreground_samples, GArray *background_s
 
               index_new = (y + ydiff) * w + (x + xdiff);
 
-              if (!(trimap[index_new] == 0 || trimap[index_new] == 255))
+              if (! (trimap[index_new] == 0 || trimap[index_new] == 255))
                 {
                   int fi = buffer[index_new].fg_index;
                   int bi = buffer[index_new].bg_index;
 
-                  ColorSample foreground = g_array_index(foreground_samples, ColorSample, fi);
-                  ColorSample background = g_array_index(background_samples, ColorSample, bi);
+                  ColorSample fg = g_array_index (fg_samples, ColorSample, fi);
+                  ColorSample bg = g_array_index (bg_samples, ColorSample, bi);
 
-                  float cost = get_cost(foreground, background, &input[index_orig * 3], x, y, best_fg_distance, best_bg_distance);
+                  float cost = get_cost (fg, bg, &input[index_orig * 3], x, y,
+                                         best_fg_distance, best_bg_distance);
                   if (cost < best_cost)
                     {
                       buffer[index_orig].fg_index = fi;
@@ -218,9 +257,17 @@ static inline void do_propagate(GArray *foreground_samples, GArray *background_s
     }
 }
 
-static inline void do_random_search(GArray *foreground_samples, GArray *background_samples, gfloat *input, BufferRecord *buffer, int x, int y, int w) {
-  int dist_f = foreground_samples->len;
-  int dist_b = background_samples->len;
+static inline void
+do_random_search (GArray        *fg_samples,
+                  GArray        *bg_samples,
+                  gfloat        *input,
+                  BufferRecord  *buffer,
+                  int            x,
+                  int            y,
+                  int            w)
+{
+  int dist_f = fg_samples->len;
+  int dist_b = bg_samples->len;
   int index = y * w + x;
 
   int best_fi = buffer[index].fg_index;
@@ -233,31 +280,34 @@ static inline void do_random_search(GArray *foreground_samples, GArray *backgrou
   float *best_fg_distance = &buffer[index].fg_distance;
   float *best_bg_distance = &buffer[index].bg_distance;
 
-  ColorSample foreground = g_array_index(foreground_samples, ColorSample, best_fi);
-  ColorSample background = g_array_index(background_samples, ColorSample, best_bi);
+  ColorSample fg = g_array_index (fg_samples, ColorSample, best_fi);
+  ColorSample bg = g_array_index (bg_samples, ColorSample, best_bi);
 
   // Get cost
-  float best_cost = get_cost(foreground, background, &input[index * 3], x, y, best_fg_distance, best_bg_distance);
+  float best_cost = get_cost (fg, bg, &input[index * 3], x, y,
+                              best_fg_distance, best_bg_distance);
 
   while (dist_f > 0 || dist_b > 0)
     {
       // Get new indices to check
-      int fl = foreground_samples->len;
-      int bl = background_samples->len;
+      int fl = fg_samples->len;
+      int bl = bg_samples->len;
       int fi = (start_fi + (rand () % (dist_f * 2 + 1)) + fl - dist_f) % fl;
       int bi = (start_bi + (rand () % (dist_b * 2 + 1)) + bl - dist_b) % bl;
 
-      ColorSample foreground = g_array_index(foreground_samples, ColorSample, fi);
-      ColorSample background = g_array_index(background_samples, ColorSample, bi);
+      ColorSample fg = g_array_index (fg_samples, ColorSample, fi);
+      ColorSample bg = g_array_index (bg_samples, ColorSample, bi);
 
-      float cost = get_cost(foreground, background, &input[index * 3], x, y, best_fg_distance, best_bg_distance);
+      float cost = get_cost (fg, bg, &input[index * 3], x, y,
+                             best_fg_distance, best_bg_distance);
 
       if (cost < best_cost)
         {
           best_cost = cost;
-          best_fi = fi;
-          best_bi = bi;
+          best_fi   = fi;
+          best_bi   = bi;
         }
+
       dist_f /= 2;
       dist_b /= 2;
     }
@@ -267,10 +317,11 @@ static inline void do_random_search(GArray *foreground_samples, GArray *backgrou
 }
 
 // Compare color intensities
-static gint color_compare(gconstpointer p1, gconstpointer p2)
+static gint
+color_compare (gconstpointer p1, gconstpointer p2)
 {
-  ColorSample *s1 = (ColorSample*) p1;
-  ColorSample *s2 = (ColorSample*) p2;
+  ColorSample *s1 = (ColorSample *) p1;
+  ColorSample *s2 = (ColorSample *) p2;
 
   float sum1 = s1->color[0] + s1->color[1] + s1->color[2];
   float sum2 = s2->color[0] + s2->color[1] + s2->color[2];
@@ -286,28 +337,23 @@ matting_process (GeglOperation       *operation,
                  const GeglRectangle *result,
                  int                  level)
 {
-  const Babl *space = babl_format_get_space (gegl_operation_get_format (operation, "output"));
-  const GeglProperties   *o       = GEGL_PROPERTIES (operation);
-  gfloat                 *input   = NULL;
-  guchar                 *trimap  = NULL;
-  gfloat                 *output  = NULL;
-  BufferRecord           *buffer  = NULL;
+  const GeglProperties *o = GEGL_PROPERTIES (operation);
+  const Babl *space      = gegl_operation_get_source_space (operation, "input");
+  const Babl *in_format  = babl_format_with_space (FORMAT_INPUT, space);
+  const Babl *aux_format = babl_format_with_space (FORMAT_AUX, space);
+  const Babl *out_format = babl_format_with_space (FORMAT_OUTPUT, space);
 
-  gboolean          success = FALSE;
-  int               w, h, i, x, y, xdiff, ydiff, neighbour_mask;
+  gfloat        *input   = NULL;
+  guchar        *trimap  = NULL;
+  gfloat        *output  = NULL;
+  BufferRecord  *buffer  = NULL;
 
-  GArray           *foreground_samples, *background_samples;
-  GArray           *unknown_positions;
+  gboolean       success = FALSE;
+  int            w, h, i, x, y, xdiff, ydiff, neighbour_mask;
 
-  g_return_val_if_fail (babl_format_get_n_components (babl_format_with_space (FORMAT_INPUT, space)) == COMPONENTS_INPUT,  FALSE);
-  g_return_val_if_fail (babl_format_get_n_components (babl_format_with_space (FORMAT_AUX, space)) == COMPONENTS_AUX,    FALSE);
-  g_return_val_if_fail (babl_format_get_n_components (babl_format_with_space (FORMAT_OUTPUT, space)) == COMPONENTS_OUTPUT, FALSE);
-
-  g_return_val_if_fail (operation,  FALSE);
-  g_return_val_if_fail (input_buf,  FALSE);
-  g_return_val_if_fail (aux_buf,    FALSE);
-  g_return_val_if_fail (output_buf, FALSE);
-  g_return_val_if_fail (result,     FALSE);
+  GArray        *fg_samples;
+  GArray        *bg_samples;
+  GArray        *unknown_positions;
 
   w = result->width;
   h = result->height;
@@ -317,12 +363,15 @@ matting_process (GeglOperation       *operation,
   output = g_new0 (gfloat, w * h * COMPONENTS_OUTPUT);
   buffer = g_new0 (BufferRecord, w * h);
 
-  gegl_buffer_get (input_buf, result, 1.0, babl_format_with_space (FORMAT_INPUT, space), input, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
-  gegl_buffer_get (  aux_buf, result, 1.0, babl_format_with_space (FORMAT_AUX, space),  trimap, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+  gegl_buffer_get (input_buf, result, 1.0, in_format, input,
+                   GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-  foreground_samples = g_array_new(FALSE, FALSE, sizeof(ColorSample));
-  background_samples = g_array_new(FALSE, FALSE, sizeof(ColorSample));
-  unknown_positions = g_array_new(FALSE, FALSE, sizeof(Position));
+  gegl_buffer_get (aux_buf, result, 1.0, aux_format, trimap,
+                   GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+
+  fg_samples = g_array_new (FALSE, FALSE, sizeof (ColorSample));
+  bg_samples = g_array_new (FALSE, FALSE, sizeof (ColorSample));
+  unknown_positions  = g_array_new (FALSE, FALSE, sizeof (Position));
 
   // Get mask
   for (y = 0; y < h; y++)
@@ -349,17 +398,19 @@ matting_process (GeglOperation       *operation,
                       ColorSample s;
                       s.pos.x = x;
                       s.pos.y = y;
-                      COLOR(s.color[c] = input[index*3 + c]);
+                      s.color[0] = input[index * 3];
+                      s.color[1] = input[index * 3 + 1];
+                      s.color[2] = input[index * 3 + 2];
 
                       if (mask == 255)
                         {
-                          g_array_append_val(foreground_samples, s);
+                          g_array_append_val (fg_samples, s);
                           buffer[index].fg_distance = 0;
                           buffer[index].bg_distance = FLT_MAX;
                         }
                       else
                         {
-                          g_array_append_val(background_samples, s);
+                          g_array_append_val (bg_samples, s);
                           buffer[index].fg_distance = 0;
                           buffer[index].bg_distance = FLT_MAX;
                         }
@@ -374,8 +425,7 @@ matting_process (GeglOperation       *operation,
     }
 
   /* If we have no information to work with, there is nothing to process. */
-  if (foreground_samples->len == 0 ||
-      background_samples->len == 0)
+  if (fg_samples->len == 0 || bg_samples->len == 0)
     {
       success = FALSE;
       goto cleanup;
@@ -393,17 +443,17 @@ matting_process (GeglOperation       *operation,
               Position p;
               p.x = x;
               p.y = y;
-              g_array_append_val(unknown_positions, p);
+              g_array_append_val (unknown_positions, p);
               buffer[index].fg_distance = FLT_MAX;
               buffer[index].bg_distance = FLT_MAX;
-              buffer[index].fg_index = rand() % foreground_samples->len;
-              buffer[index].bg_index = rand() % background_samples->len;
+              buffer[index].fg_index = rand() % fg_samples->len;
+              buffer[index].bg_index = rand() % bg_samples->len;
             }
         }
     }
 
-  g_array_sort(foreground_samples, color_compare);
-  g_array_sort(background_samples, color_compare);
+  g_array_sort (fg_samples, color_compare);
+  g_array_sort (bg_samples, color_compare);
 
   // Do real iterations
   for (i = 0; i < o->iterations; i++)
@@ -414,14 +464,14 @@ matting_process (GeglOperation       *operation,
 
       for (j=0; j<unknown_positions->len; j++)
         {
-          Position p = g_array_index(unknown_positions, Position, j);
-          do_random_search(foreground_samples, background_samples, input, buffer, p.x, p.y, w);
+          Position p = g_array_index (unknown_positions, Position, j);
+          do_random_search (fg_samples, bg_samples, input, buffer, p.x, p.y, w);
         }
 
       for (j=0; j<unknown_positions->len; j++)
         {
-          Position p = g_array_index(unknown_positions, Position, j);
-          do_propagate(foreground_samples, background_samples, input, buffer, trimap, p.x, p.y, w, h);
+          Position p = g_array_index (unknown_positions, Position, j);
+          do_propagate (fg_samples, bg_samples, input, buffer, trimap, p.x, p.y, w, h);
         }
     }
 
@@ -445,18 +495,18 @@ matting_process (GeglOperation       *operation,
             }
           else
             {
-              ColorSample background, foreground;
-              foreground = g_array_index(foreground_samples, ColorSample, buffer[index].fg_index);
-              background = g_array_index(background_samples, ColorSample, buffer[index].bg_index);
+              ColorSample fg;
+              ColorSample bg;
+              fg = g_array_index (fg_samples, ColorSample, buffer[index].fg_index);
+              bg = g_array_index (bg_samples, ColorSample, buffer[index].bg_index);
 
-              output[index] = get_alpha(foreground.color, background.color, &input[index * 3]);
-
+              output[index] = get_alpha (fg.color, bg.color, &input[index * 3]);
             }
         }
     }
 
   // Save to buffer
-  gegl_buffer_set (output_buf, result, 0, babl_format_with_space (FORMAT_OUTPUT, space), output,
+  gegl_buffer_set (output_buf, result, 0, out_format, output,
                    GEGL_AUTO_ROWSTRIDE);
   success = TRUE;
 
@@ -465,22 +515,23 @@ cleanup:
   g_free (trimap);
   g_free (output);
   g_free (buffer);
-  g_array_free (foreground_samples, TRUE);
-  g_array_free (background_samples, TRUE);
+  g_array_free (fg_samples, TRUE);
+  g_array_free (bg_samples, TRUE);
   g_array_free (unknown_positions, TRUE);
 
   return success;
 }
 
-static void gegl_op_class_init (GeglOpClass *klass)
+static void
+gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass         *operation_class;
   GeglOperationComposerClass *composer_class;
 
   composer_class  = GEGL_OPERATION_COMPOSER_CLASS (klass);
-  composer_class->process = matting_process;
-
   operation_class = GEGL_OPERATION_CLASS (klass);
+
+  composer_class->process                  = matting_process;
   operation_class->prepare                 = matting_prepare;
   operation_class->get_required_for_output = matting_get_required_for_output;
   operation_class->get_cached_region       = matting_get_cached_region;
@@ -496,4 +547,5 @@ static void gegl_op_class_init (GeglOpClass *klass)
      "for the tri-map. Everything else will be treated as unknown and filled in."),
     NULL);
 }
+
 #endif
