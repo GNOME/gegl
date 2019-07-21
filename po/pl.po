@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-07-08 11:52+0000\n"
-"PO-Revision-Date: 2019-07-14 16:12+0200\n"
+"POT-Creation-Date: 2019-07-20 12:03+0000\n"
+"PO-Revision-Date: 2019-07-21 14:08+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -173,7 +173,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4381 gegl/gegl-serialize.c:630
+#: bin/ui-core.c:4381 gegl/gegl-serialize.c:655
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat „%s” nie istnieje."
@@ -371,27 +371,27 @@ msgstr "Liczba jednocześnie używanych wątków przetwarzania"
 msgid "Disable OpenCL"
 msgstr "Wyłącza OpenCL"
 
-#: gegl/gegl-serialize.c:270
+#: gegl/gegl-serialize.c:294
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "nieobsługiwane dane ścieżki %s:%s\n"
 
-#: gegl/gegl-serialize.c:500
+#: gegl/gegl-serialize.c:525
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "nie odnaleziono działania „%s”, częściowo pasują: "
 
-#: gegl/gegl-serialize.c:529
+#: gegl/gegl-serialize.c:554
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s nie ma właściwości %s."
 
-#: gegl/gegl-serialize.c:535
+#: gegl/gegl-serialize.c:560
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s nie ma właściwości %s, właściwości: "
 
-#: gegl/gegl-serialize.c:771
+#: gegl/gegl-serialize.c:796
 #, c-format
 msgid "No such op '%s'"
 msgstr "Nie ma działania „%s”"
@@ -416,6 +416,23 @@ msgstr "Nie wczytano"
 #, c-format
 msgid "Module '%s' load error: %s"
 msgstr "Błąd podczas wczytywania modułu „%s”: %s"
+
+#: gegl/operation/gegl-operation-composer3.c:77
+msgid "Output pad for generated image buffer."
+msgstr "Blok wyjściowy dla tworzonego bufora obrazu."
+
+#: gegl/operation/gegl-operation-composer3.c:86
+msgid "Input pad, for image buffer input."
+msgstr "Blok wejściowy dla wyjścia bufora obrazu."
+
+#: gegl/operation/gegl-operation-composer3.c:95
+#: gegl/operation/gegl-operation-composer.c:94
+msgid "Auxiliary image buffer input pad."
+msgstr "Dodatkowy blok wejściowy bufora obrazu."
+
+#: gegl/operation/gegl-operation-composer3.c:104
+msgid "Second auxiliary image buffer input pad."
+msgstr "Drugi dodatkowy blok wejściowy bufora obrazu."
 
 #: operations/common/absolute.c:79
 msgid "Absolute"
@@ -571,7 +588,7 @@ msgstr ""
 #: operations/common/bilateral-filter.c:26 operations/common/dropshadow.c:39
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
-#: operations/workshop/domain-transform.c:28
+#: operations/workshop/domain-transform.c:29
 msgid "Blur radius"
 msgstr "Promień rozmycia"
 
@@ -584,7 +601,7 @@ msgstr ""
 "promień*2+1)."
 
 #: operations/common/bilateral-filter.c:32
-#: operations/workshop/domain-transform.c:32
+#: operations/workshop/domain-transform.c:34
 msgid "Edge preservation"
 msgstr "Zachowywanie krawędzi"
 
@@ -606,7 +623,7 @@ msgstr ""
 "ważony także przez różnicę kolorów z pierwotnego środkowego piksela. "
 
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
-#: operations/common/edge-neon.c:47 operations/common/median-blur.c:43
+#: operations/common/edge-neon.c:48 operations/common/median-blur.c:43
 #: operations/common/snn-mean.c:26 operations/common/stress.c:27
 #: operations/common/unsharp-mask.c:24 operations/common/vignette.c:38
 #: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
@@ -773,7 +790,7 @@ msgstr ""
 #: operations/common/little-planet.c:46
 #: operations/common/panorama-projection.c:46 operations/common/rectangle.c:36
 #: operations/common-gpl3+/diffraction-patterns.c:78
-#: operations/common-gpl3+/maze.c:40 operations/common-gpl3+/noise-solid.c:64
+#: operations/common-gpl3+/maze.c:42 operations/common-gpl3+/noise-solid.c:64
 #: operations/common-gpl3+/plasma.c:54 operations/common-gpl3+/sinus.c:76
 #: operations/common-gpl3+/spiral.c:86 operations/core/crop.c:35
 #: operations/external/svg-load.c:30 operations/external/text.c:61
@@ -784,7 +801,7 @@ msgid "Width"
 msgstr "Szerokość"
 
 #: operations/common/checkerboard.c:27 operations/common/grid.c:25
-#: operations/common-gpl3+/maze.c:41
+#: operations/common-gpl3+/maze.c:43
 msgid "Horizontal width of cells pixels"
 msgstr "Pozioma szerokość pikseli komórek"
 
@@ -792,7 +809,7 @@ msgstr "Pozioma szerokość pikseli komórek"
 #: operations/common/little-planet.c:52
 #: operations/common/panorama-projection.c:52 operations/common/rectangle.c:42
 #: operations/common-gpl3+/diffraction-patterns.c:86
-#: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:48
+#: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:50
 #: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:62
 #: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:94
 #: operations/core/crop.c:40 operations/external/svg-load.c:32
@@ -803,7 +820,7 @@ msgid "Height"
 msgstr "Wysokość"
 
 #: operations/common/checkerboard.c:35 operations/common/grid.c:32
-#: operations/common-gpl3+/maze.c:49
+#: operations/common-gpl3+/maze.c:51
 msgid "Vertical width of cells pixels"
 msgstr "Pionowa szerokość pikseli komórek"
 
@@ -1025,7 +1042,7 @@ msgstr "Wartość barwy dla powyższych ustawień szarości"
 
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
 #: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:383
+#: operations/common/saturation.c:384
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
@@ -1582,7 +1599,7 @@ msgstr "Używana metoda mieszania"
 #: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
 #: operations/common/noise-rgb.c:55 operations/common/noise-simplex.c:39
 #: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
-#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:89
+#: operations/common-gpl3+/maze.c:65 operations/common-gpl3+/mosaic.c:89
 #: operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
@@ -1660,23 +1677,23 @@ msgstr "Cień"
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Tworzy efekt cienia na buforze wejściowym"
 
-#: operations/common/edge-neon.c:48
+#: operations/common/edge-neon.c:49
 msgid "Radius of effect (in pixels)"
 msgstr "Promień efektu (w pikselach)"
 
-#: operations/common/edge-neon.c:55
+#: operations/common/edge-neon.c:56
 msgid "Intensity"
 msgstr "Intensywność"
 
-#: operations/common/edge-neon.c:56
+#: operations/common/edge-neon.c:57
 msgid "Strength of Effect"
 msgstr "Siła efektu"
 
-#: operations/common/edge-neon.c:553
+#: operations/common/edge-neon.c:538
 msgid "Neon Edge Detection"
 msgstr "Neonowe wykrywanie krawędzi"
 
-#: operations/common/edge-neon.c:557
+#: operations/common/edge-neon.c:542
 msgid "Performs edge detection using a Gaussian derivative method"
 msgstr "Wykonuje wykrywanie krawędzi za pomocą metody pochodnej Gaussa"
 
@@ -2435,7 +2452,7 @@ msgstr "Styl cienia"
 
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:33
-#: operations/common/newsprint.c:72
+#: operations/common/newsprint.c:159
 #: operations/common-gpl3+/linear-sinusoid.c:66
 #: operations/common-gpl3+/motion-blur-circular.c:52
 #: operations/common-gpl3+/ripple.c:45
@@ -2843,8 +2860,8 @@ msgid "PSSquare (or Euclidian) dot"
 msgstr "Punkt kwadratowy (lub euklidesowy)"
 
 #: operations/common/newsprint.c:29
-msgid "Orthogonal Lines"
-msgstr "Linie prostokątne"
+msgid "Crossing Lines"
+msgstr "Krzyżujące się linie"
 
 #: operations/common/newsprint.c:33
 msgid "White on Black"
@@ -2866,21 +2883,29 @@ msgstr "Model kolorów"
 msgid "How many inks to use just black, rg, rgb (additive), or cmyk"
 msgstr "Ile atramentów stosować, tylko czerń, RG, RGB (addytywne) lub CMYK"
 
-#: operations/common/newsprint.c:43
-#: operations/common-gpl3+/video-degradation.c:53
-msgid "Pattern"
-msgstr "Deseń"
+#: operations/common/newsprint.c:44
+msgid "Red and cyan pattern"
+msgstr "Czerwony i niebieskozielony deseń"
 
-#: operations/common/newsprint.c:45
+#: operations/common/newsprint.c:46 operations/common/newsprint.c:74
+#: operations/common/newsprint.c:102 operations/common/newsprint.c:130
 msgid "Halftoning/dot pattern to use"
 msgstr "Używany deseń rastra/punktu"
 
-#: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:38
-#: operations/common-gpl3+/waves.c:40
-msgid "Period"
-msgstr "Okres"
+#: operations/common/newsprint.c:50
+msgid "Red pattern"
+msgstr "Czerwony deseń"
 
-#: operations/common/newsprint.c:49
+#: operations/common/newsprint.c:51
+msgid "Cyan pattern"
+msgstr "Niebieskozielony deseń"
+
+#: operations/common/newsprint.c:53
+msgid "Red and cyan period"
+msgstr "Czerwony i niebieskozielony okres"
+
+#: operations/common/newsprint.c:55 operations/common/newsprint.c:83
+#: operations/common/newsprint.c:111 operations/common/newsprint.c:141
 msgid ""
 "The number of pixels across one repetition of a base pattern at base "
 "resolution."
@@ -2888,20 +2913,154 @@ msgstr ""
 "Liczba pikseli wzdłuż jednego powtórzenia podstawowego desenia w podstawowej "
 "rozdzielczości."
 
-#: operations/common/newsprint.c:51 operations/common-gpl3+/plasma.c:36
+#: operations/common/newsprint.c:59
+msgid "Red period"
+msgstr "Czerwony deseń"
+
+#: operations/common/newsprint.c:60
+msgid "Cyan period"
+msgstr "Niebieskozielony okres"
+
+#: operations/common/newsprint.c:62
+msgid "Red and cyan angle"
+msgstr "Czerwony i niebieskozielony kąt"
+
+#: operations/common/newsprint.c:69
+msgid "Red angle"
+msgstr "Czerwony kąt"
+
+#: operations/common/newsprint.c:70
+msgid "Cyan angle"
+msgstr "Niebieskozielony kąt"
+
+#: operations/common/newsprint.c:72
+msgid "Green and magenta pattern"
+msgstr "Zielony i purpurowy deseń"
+
+#: operations/common/newsprint.c:78
+msgid "Green pattern"
+msgstr "Zielony deseń"
+
+#: operations/common/newsprint.c:79
+msgid "Magenta pattern"
+msgstr "Purpurowy deseń"
+
+#: operations/common/newsprint.c:81
+msgid "Green and magenta period"
+msgstr "Zielony i purpurowy okres"
+
+#: operations/common/newsprint.c:87
+msgid "Green period"
+msgstr "Zielony okres"
+
+#: operations/common/newsprint.c:88
+msgid "Magenta period"
+msgstr "Purpurowy okres"
+
+#: operations/common/newsprint.c:90
+msgid "Green and magenta angle"
+msgstr "Zielony i purpurowy kąt"
+
+#: operations/common/newsprint.c:97
+msgid "Green angle"
+msgstr "Zielony kąt"
+
+#: operations/common/newsprint.c:98
+msgid "Magenta angle"
+msgstr "Purpurowy kąt"
+
+#: operations/common/newsprint.c:100
+msgid "Blue and Yellow pattern"
+msgstr "Niebieski i zielony deseń"
+
+#: operations/common/newsprint.c:106
+msgid "Blue pattern"
+msgstr "Niebieski deseń"
+
+#: operations/common/newsprint.c:107
+msgid "Yellow pattern"
+msgstr "Żółty deseń"
+
+#: operations/common/newsprint.c:109
+msgid "Blue and Yellow period"
+msgstr "Niebieski i żółty okres"
+
+#: operations/common/newsprint.c:115
+msgid "Blue period"
+msgstr "Niebieski okres"
+
+#: operations/common/newsprint.c:116
+msgid "Yellow period"
+msgstr "Żółty okres"
+
+#: operations/common/newsprint.c:118
+msgid "Blue and Yellow angle"
+msgstr "Niebieski i żółty kąt"
+
+#: operations/common/newsprint.c:125
+msgid "Blue angle"
+msgstr "Niebieski kąt"
+
+#: operations/common/newsprint.c:126
+msgid "Yellow angle"
+msgstr "Żółty kąt"
+
+#: operations/common/newsprint.c:128 operations/common/newsprint.c:136
+msgid "Black pattern"
+msgstr "Czarny deseń"
+
+#: operations/common/newsprint.c:135
+#: operations/common-gpl3+/video-degradation.c:53
+msgid "Pattern"
+msgstr "Deseń"
+
+#: operations/common/newsprint.c:139 operations/common/newsprint.c:148
+msgid "Black period"
+msgstr "Czarny okres"
+
+#: operations/common/newsprint.c:142 operations/common/newsprint.c:154
+msgid "Angle offset for patterns"
+msgstr "Przesunięcie kąta dla deseni"
+
+#: operations/common/newsprint.c:147 operations/common-gpl3+/ripple.c:38
+#: operations/common-gpl3+/waves.c:40
+msgid "Period"
+msgstr "Okres"
+
+#: operations/common/newsprint.c:150 operations/common/newsprint.c:160
+msgid "Black angle"
+msgstr "Czarny kąt"
+
+#: operations/common/newsprint.c:162
+msgid "Black pullout"
+msgstr "Wycofanie czerni"
+
+#: operations/common/newsprint.c:164
+msgid "How much of common gray to pull out of CMY"
+msgstr "Jak dużo wspólnej szarości wycofać z CMY"
+
+#: operations/common/newsprint.c:167
+msgid "Anti-alias oversampling factor"
+msgstr "Współczynnik nadpróbkowania wygładzania"
+
+#: operations/common/newsprint.c:169
+msgid "Number of samples that are averaged for antialiasing the result."
+msgstr "Liczba próbek uśrednianych do wygładzenia wyniku."
+
+#: operations/common/newsprint.c:171 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
 msgstr "Turbulencje"
 
 #. rename to wave-pinch or period-pinch?
-#: operations/common/newsprint.c:53
+#: operations/common/newsprint.c:173
 msgid "Color saturation dependent compression of period"
 msgstr "Kompresja okresu zależna od nasycenia koloru"
 
-#: operations/common/newsprint.c:55
+#: operations/common/newsprint.c:175
 msgid "Blocksize"
 msgstr "Rozmiar bloku"
 
-#: operations/common/newsprint.c:57
+#: operations/common/newsprint.c:177
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
@@ -2909,11 +3068,11 @@ msgstr ""
 "Liczba okresów na kafel, to kafelkowanie unika anomalii "
 "wysokoczęstotliwościowych powodowanych przez wzmocnienie kąta"
 
-#: operations/common/newsprint.c:59
+#: operations/common/newsprint.c:179
 msgid "Angle Boost"
 msgstr "Wzmocnienie kąta"
 
-#: operations/common/newsprint.c:61
+#: operations/common/newsprint.c:181
 msgid ""
 "Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
@@ -2923,55 +3082,11 @@ msgstr ""
 "sposób obliczania sprawia, że odbarwione kolory są słabe, a miejsca "
 "z kolorami mogą być mocniejsze."
 
-#: operations/common/newsprint.c:63
-msgid "Black and green angle"
-msgstr "Kąt czarny i zielony"
-
-#: operations/common/newsprint.c:67
-msgid "Angle offset for patterns"
-msgstr "Przesunięcie kąta dla deseni"
-
-#: operations/common/newsprint.c:73
-msgid "Green angle"
-msgstr "Kąt zielony"
-
-#: operations/common/newsprint.c:74
-msgid "Black angle"
-msgstr "Kąt czarny"
-
-#: operations/common/newsprint.c:76
-msgid "Red and cyan angle"
-msgstr "Kąt czerwony i niebieskozielony"
-
-#: operations/common/newsprint.c:83
-msgid "Red angle"
-msgstr "Kąt czerwony"
-
-#: operations/common/newsprint.c:84
-msgid "Cyan angle"
-msgstr "Kąt niebieskozielony"
-
-#: operations/common/newsprint.c:86
-msgid "Blue and magenta angle"
-msgstr "Kąt niebieski i purpurowy"
-
-#: operations/common/newsprint.c:93
-msgid "Blue angle"
-msgstr "Kąt niebieski"
-
-#: operations/common/newsprint.c:94
-msgid "Magenta angle"
-msgstr "Kąt purpurowy"
-
-#: operations/common/newsprint.c:96
-msgid "Yellow angle"
-msgstr "Kąt żółty"
-
-#: operations/common/newsprint.c:550
+#: operations/common/newsprint.c:658
 msgid "Newsprint"
 msgstr "Papier gazetowy"
 
-#: operations/common/newsprint.c:554
+#: operations/common/newsprint.c:662
 msgid "Digital halftoning with optional modulations. "
 msgstr "Cyfrowy raster z opcjonalnymi modulacjami. "
 
@@ -3450,11 +3565,19 @@ msgstr ""
 "wyciągnięty z prostych obserwacji psychologicznych, tworzący luminancję "
 "w zakresie 0,0-1,0"
 
+#: operations/common/remap.c:100
+msgid "Minimum Envelope"
+msgstr "Minimalna obwiednia"
+
 #: operations/common/remap.c:101
+msgid "Maximum Envelope"
+msgstr "Maksymalna obwiednia"
+
+#: operations/common/remap.c:105
 msgid "Remap"
 msgstr "Zmień zakres"
 
-#: operations/common/remap.c:103
+#: operations/common/remap.c:107
 msgid "stretch components of pixels individually based on luminance envelopes"
 msgstr ""
 "rozciągnij oddzielnie składowe pikseli na podstawie obwiedni luminancji"
@@ -3518,7 +3641,7 @@ msgstr ""
 "W razie niepewności należy ustawić na „Natywne”, przestrzenie na podstawie "
 "CIE mogą powodować przesunięcia barwy."
 
-#: operations/common/saturation.c:386
+#: operations/common/saturation.c:387
 msgid "Changes the saturation"
 msgstr "Zmienia nasycenie"
 
@@ -4250,7 +4373,7 @@ msgstr "Przesunięcie wartości"
 
 #: operations/common-gpl3+/bayer-matrix.c:69
 #: operations/common-gpl3+/linear-sinusoid.c:77
-#: operations/common-gpl3+/oilify.c:33 operations/common-gpl3+/sinus.c:72
+#: operations/common-gpl3+/oilify.c:34 operations/common-gpl3+/sinus.c:72
 msgid "Exponent"
 msgstr "Wykładnik potęgi"
 
@@ -4349,11 +4472,15 @@ msgstr "Poziom, który powinien reprezentować pełną przezroczystość"
 msgid "Ambient lighting factor"
 msgstr "Współczynnik otaczającego oświetlenia"
 
-#: operations/common-gpl3+/bump-map.c:456
+#: operations/common-gpl3+/bump-map.c:452
+msgid "Height Map"
+msgstr "Mapa wysokości"
+
+#: operations/common-gpl3+/bump-map.c:457
 msgid "Bump Map"
 msgstr "Mapa wypukłości"
 
-#: operations/common-gpl3+/bump-map.c:458
+#: operations/common-gpl3+/bump-map.c:459
 msgid ""
 "This plug-in uses the algorithm described by John Schlag, \"Fast Embossing "
 "Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). It "
@@ -5312,48 +5439,48 @@ msgstr "Sinusoid liniowy"
 msgid "Generate a linear sinusoid pattern"
 msgstr "Utwórz liniowy deseń sinusoidy"
 
-#: operations/common-gpl3+/maze.c:36
+#: operations/common-gpl3+/maze.c:38
 msgid "Depth first"
 msgstr "Najpierw głębia"
 
-#: operations/common-gpl3+/maze.c:37
+#: operations/common-gpl3+/maze.c:39
 msgid "Prim's algorithm"
 msgstr "Algorytm Prima"
 
-#: operations/common-gpl3+/maze.c:56
+#: operations/common-gpl3+/maze.c:58
 msgid "Algorithm type"
 msgstr "Typ algorytmu"
 
-#: operations/common-gpl3+/maze.c:59
+#: operations/common-gpl3+/maze.c:61
 msgid "Maze algorithm type"
 msgstr "Typ algorytmu labiryntu"
 
-#: operations/common-gpl3+/maze.c:61 operations/common-gpl3+/noise-solid.c:56
+#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/noise-solid.c:56
 #: operations/common-gpl3+/ripple.c:61
 msgid "Tileable"
 msgstr "Kafelkowalność"
 
-#: operations/common-gpl3+/maze.c:65
+#: operations/common-gpl3+/maze.c:67
 msgid "Foreground Color"
 msgstr "Kolor pierwszego planu"
 
-#: operations/common-gpl3+/maze.c:66
+#: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
 msgstr "Kolor pierwszego planu"
 
-#: operations/common-gpl3+/maze.c:69
+#: operations/common-gpl3+/maze.c:71
 msgid "Background Color"
 msgstr "Kolor tła"
 
-#: operations/common-gpl3+/maze.c:70
+#: operations/common-gpl3+/maze.c:72
 msgid "The background color"
 msgstr "Kolor tła"
 
-#: operations/common-gpl3+/maze.c:731
+#: operations/common-gpl3+/maze.c:795
 msgid "Maze"
 msgstr "Labirynt"
 
-#: operations/common-gpl3+/maze.c:736
+#: operations/common-gpl3+/maze.c:800
 msgid "Draw a labyrinth"
 msgstr "Narysuj labirynt"
 
@@ -5547,35 +5674,71 @@ msgstr "Jednolity szum"
 msgid "Create a random cloud-like texture"
 msgstr "Utwórz losową teksturę podobną do chmury"
 
-#: operations/common-gpl3+/oilify.c:27 operations/common-gpl3+/photocopy.c:26
+#: operations/common-gpl3+/oilify.c:28 operations/common-gpl3+/photocopy.c:26
 msgid "Mask Radius"
 msgstr "Promień maski"
 
-#: operations/common-gpl3+/oilify.c:28
-msgid "Radius of circle around pixel"
-msgstr "Promień okręgu wokół piksela"
+#: operations/common-gpl3+/oilify.c:29
+msgid ""
+"Radius of circle around pixel, can also be scaled per pixel by a buffer on "
+"the aux pad."
+msgstr ""
+"Promień okręgu wokół piksela, może być także skalowany na każdy piksel przez "
+"bufor na dodatkowym bloku."
 
-#: operations/common-gpl3+/oilify.c:36
+#: operations/common-gpl3+/oilify.c:35
+msgid ""
+"Exponent for processing; controls smoothness - can be scaled per pixel with "
+"a buffer on the aux2 pad."
+msgstr ""
+"Wykładnik do przetworzenia. Steruje gładkością — może być skalowany na każdy "
+"piksel za pomocą bufora na drugim dodatkowym bloku."
+
+#: operations/common-gpl3+/oilify.c:38
 msgid "Number of intensities"
 msgstr "Liczba intensywności"
 
-#: operations/common-gpl3+/oilify.c:37
+#: operations/common-gpl3+/oilify.c:39
 msgid "Histogram size"
 msgstr "Rozmiar histogramu"
 
-#: operations/common-gpl3+/oilify.c:40
+#: operations/common-gpl3+/oilify.c:42
 msgid "Intensity Mode"
 msgstr "Tryb intensywności"
 
-#: operations/common-gpl3+/oilify.c:41
+#: operations/common-gpl3+/oilify.c:43
 msgid "Use pixel luminance values"
 msgstr "Użyj wartości luminancji pikseli"
 
-#: operations/common-gpl3+/oilify.c:482
+#: operations/common-gpl3+/oilify.c:523
+msgid "Mask radius buffer"
+msgstr "Bufor promienia maski"
+
+#: operations/common-gpl3+/oilify.c:524
+msgid ""
+"Per pixel buffer for modulating the mask radius, expecting a scaling factor "
+"in range 0.0-1.0"
+msgstr ""
+"Bufor na każdy piksel do modulowania promienia maski, oczekuje współczynnika "
+"skalowania w zakresie 0,0-1,0"
+
+#: operations/common-gpl3+/oilify.c:525
+msgid "Exponent buffer"
+msgstr "Bufor wykładnika"
+
+#: operations/common-gpl3+/oilify.c:526
+msgid ""
+"Per pixel buffer for modulating the exponent parameter, expecting a scaling "
+"factor in range 0.0-1.0"
+msgstr ""
+"Bufor na każdy piksel do modulowania parametru współczynnika, oczekuje "
+"współczynnika skalowania w zakresie 0,0-1,0"
+
+#: operations/common-gpl3+/oilify.c:535
 msgid "Oilify"
 msgstr "Farba olejna"
 
-#: operations/common-gpl3+/oilify.c:485
+#: operations/common-gpl3+/oilify.c:538
 msgid "Emulate an oil painting"
 msgstr "Emuluj obraz olejny"
 
@@ -8126,11 +8289,11 @@ msgstr ""
 msgid "Radius of row pixel region, (size will be radius*2+1)"
 msgstr "Promień obszaru pikseli rzędu (rozmiar będzie wynosił promień*2+1)"
 
-#: operations/workshop/boxblur-1d.c:319
+#: operations/workshop/boxblur-1d.c:338
 msgid "1D Box Blur"
 msgstr "Jednowymiarowe rozmycie prostopadłościenne"
 
-#: operations/workshop/boxblur-1d.c:320
+#: operations/workshop/boxblur-1d.c:339
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
 msgstr "Rozmycie wynikające z uśredniania kolorów sąsiedniego rzędu."
 
@@ -8231,12 +8394,12 @@ msgid ""
 msgstr ""
 "Liczba iteracji filtrowania. Wartość między 2 a 4 jest zwykle wystarczająca."
 
-#: operations/workshop/domain-transform.c:29
+#: operations/workshop/domain-transform.c:30
 msgid "Spatial standard deviation of the blur kernel, measured in pixels."
 msgstr ""
 "Przestrzenne odchylenie standardowe jądra rozmycia, mierzone w pikselach."
 
-#: operations/workshop/domain-transform.c:33
+#: operations/workshop/domain-transform.c:35
 msgid ""
 "Amount of edge preservation. This quantity is inversely proportional to the "
 "range standard deviation of the blur kernel."
@@ -8244,11 +8407,11 @@ msgstr ""
 "Ilość zachowywania krawędzi. Ta wielkość jest odwrotnie proporcjonalna do "
 "odchylenia standardowego zakresu jądra rozmycia."
 
-#: operations/workshop/domain-transform.c:499
+#: operations/workshop/domain-transform.c:529
 msgid "Smooth by Domain Transform"
 msgstr "Wygładzenie przez przekształcenie domeny"
 
-#: operations/workshop/domain-transform.c:501
+#: operations/workshop/domain-transform.c:531
 msgid ""
 "An edge-preserving smoothing filter implemented with the Domain Transform "
 "recursive technique. Similar to a bilateral filter, but faster to compute."
