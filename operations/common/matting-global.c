@@ -335,11 +335,70 @@ color_compare (gconstpointer p1, gconstpointer p2)
   return ((sum1 > sum2) - (sum2 > sum1));
 }
 
+static void
+fill_result (GeglBuffer   *output,
+             const Babl   *format,
+             guchar       *trimap,
+             gfloat       *input,
+             BufferRecord *buffer,
+             GArray       *fg_samples,
+             GArray       *bg_samples)
+{
+  GeglBufferIterator  *iter;
+
+  iter = gegl_buffer_iterator_new (output, NULL, 0, format, GEGL_ACCESS_WRITE,
+                                   GEGL_ABYSS_NONE, 1);
+
+  while (gegl_buffer_iterator_next (iter))
+    {
+      gfloat  *out = iter->items[0].data;
+      gint     x   = iter->items[0].roi.x;
+      gint     y   = iter->items[0].roi.y;
+      glong    n_pixels = iter->length;
+
+      while (n_pixels--)
+        {
+          gint index = x + y * gegl_buffer_get_width (output);
+
+          if (trimap[index] == 0 || trimap[index] == 255)
+            {
+
+              if (trimap[index] == 0)
+                {
+                  *out = 0.f;
+                }
+              else if (trimap[index] == 255)
+                {
+                  *out = 1.f;
+                }
+            }
+          else
+            {
+              ColorSample fg;
+              ColorSample bg;
+              fg = g_array_index (fg_samples, ColorSample, buffer[index].fg_index);
+              bg = g_array_index (bg_samples, ColorSample, buffer[index].bg_index);
+
+              *out = get_alpha (fg.color, bg.color, &input[index * 3]);
+            }
+
+          out++;
+          x++;
+
+          if (x >= iter->items[0].roi.x + iter->items[0].roi.width)
+            {
+              x = iter->items[0].roi.x;
+              y++;
+            }
+        }
+    }
+}
+
 static gboolean
 matting_process (GeglOperation       *operation,
                  GeglBuffer          *input_buf,
                  GeglBuffer          *aux_buf,
-                 GeglBuffer          *output_buf,
+                 GeglBuffer          *output,
                  const GeglRectangle *result,
                  int                  level)
 {
@@ -351,7 +410,6 @@ matting_process (GeglOperation       *operation,
 
   gfloat        *input   = NULL;
   guchar        *trimap  = NULL;
-  gfloat        *output  = NULL;
   BufferRecord  *buffer  = NULL;
 
   gboolean       success = FALSE;
@@ -368,7 +426,6 @@ matting_process (GeglOperation       *operation,
 
   input  = g_new (gfloat, w * h * COMPONENTS_INPUT);
   trimap = g_new (guchar, w * h * COMPONENTS_AUX);
-  output = g_new0 (gfloat, w * h * COMPONENTS_OUTPUT);
   buffer = g_new0 (BufferRecord, w * h);
 
   gegl_buffer_get (input_buf, result, 1.0, in_format, input,
@@ -485,45 +542,13 @@ matting_process (GeglOperation       *operation,
         }
     }
 
-  // Fill results in
-  for (y = 0; y < h; y++)
-    {
-      for (x = 0; x < w; x++)
-        {
-          int index = y * w + x;
-          if (trimap[index] == 0 || trimap[index] == 255)
-            {
+  fill_result (output, out_format, trimap, input, buffer, fg_samples, bg_samples);
 
-              if (trimap[index] == 0)
-                {
-                  output[index] = 0;
-                }
-              else if (trimap[index] == 255)
-                {
-                  output[index] = 1;
-                }
-            }
-          else
-            {
-              ColorSample fg;
-              ColorSample bg;
-              fg = g_array_index (fg_samples, ColorSample, buffer[index].fg_index);
-              bg = g_array_index (bg_samples, ColorSample, buffer[index].bg_index);
-
-              output[index] = get_alpha (fg.color, bg.color, &input[index * 3]);
-            }
-        }
-    }
-
-  // Save to buffer
-  gegl_buffer_set (output_buf, result, 0, out_format, output,
-                   GEGL_AUTO_ROWSTRIDE);
   success = TRUE;
 
 cleanup:
   g_free (input);
   g_free (trimap);
-  g_free (output);
   g_free (buffer);
   g_array_free (fg_samples, TRUE);
   g_array_free (bg_samples, TRUE);
