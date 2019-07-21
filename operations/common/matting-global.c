@@ -101,8 +101,8 @@ matting_get_cached_region (GeglOperation * operation,
 typedef struct {
  gfloat fg_distance;
  gfloat bg_distance;
- gint   fg_index;
- gint   bg_index;
+ guint  fg_index;
+ guint  bg_index;
 } BufferRecord;
 
 typedef float Color[3];
@@ -239,8 +239,8 @@ do_propagate (GArray        *fg_samples,
 
               if (! (trimap[index_new] == 0 || trimap[index_new] == 255))
                 {
-                  int fi = buffer[index_new].fg_index;
-                  int bi = buffer[index_new].bg_index;
+                  guint fi = buffer[index_new].fg_index;
+                  guint bi = buffer[index_new].bg_index;
 
                   ColorSample fg = g_array_index (fg_samples, ColorSample, fi);
                   ColorSample bg = g_array_index (bg_samples, ColorSample, bi);
@@ -269,15 +269,18 @@ do_random_search (GArray        *fg_samples,
                   int            w,
                   GeglRandom    *gr)
 {
-  int dist_f = fg_samples->len;
-  int dist_b = bg_samples->len;
+  guint dist_f = fg_samples->len;
+  guint dist_b = bg_samples->len;
+  guint fl     = fg_samples->len;
+  guint bl     = bg_samples->len;
+
   int index = y * w + x;
 
-  int best_fi = buffer[index].fg_index;
-  int best_bi = buffer[index].bg_index;
+  guint best_fi = buffer[index].fg_index;
+  guint best_bi = buffer[index].bg_index;
 
-  int start_fi = best_fi;
-  int start_bi = best_bi;
+  guint start_fi = best_fi;
+  guint start_bi = best_bi;
 
   // Get current best result
   float *best_fg_distance = &buffer[index].fg_distance;
@@ -293,12 +296,10 @@ do_random_search (GArray        *fg_samples,
   while (dist_f > 0 || dist_b > 0)
     {
       // Get new indices to check
-      gint fgi = gegl_random_int (gr, x, y, 0, 0);
-      gint bgi = gegl_random_int (gr, x, y, 0, 1);
-      gint fl  = fg_samples->len;
-      gint bl  = bg_samples->len;
-      gint fi  = (start_fi + (fgi % (dist_f * 2 + 1)) + fl - dist_f) % fl;
-      gint bi  = (start_bi + (bgi % (dist_b * 2 + 1)) + bl - dist_b) % bl;
+      guint fgi = gegl_random_int (gr, x, y, 0, 0);
+      guint bgi = gegl_random_int (gr, x, y, 0, 1);
+      guint fi  = (start_fi + (fgi % (dist_f * 2 + 1)) + fl - dist_f) % fl;
+      guint bi  = (start_bi + (bgi % (dist_b * 2 + 1)) + bl - dist_b) % bl;
 
       ColorSample fg = g_array_index (fg_samples, ColorSample, fi);
       ColorSample bg = g_array_index (bg_samples, ColorSample, bi);
@@ -448,8 +449,8 @@ matting_process (GeglOperation       *operation,
           if (trimap[index] != 0 && trimap[index] != 255)
             {
               Position p;
-              gint     fgi = gegl_random_int (gr, x, y, 0, 0);
-              gint     bgi = gegl_random_int (gr, x, y, 0, 1);
+              guint fgi = gegl_random_int (gr, x, y, 0, 0);
+              guint bgi = gegl_random_int (gr, x, y, 0, 1);
               p.x = x;
               p.y = y;
               g_array_append_val (unknown_positions, p);
@@ -467,7 +468,7 @@ matting_process (GeglOperation       *operation,
   // Do real iterations
   for (i = 0; i < o->iterations; i++)
     {
-      unsigned j;
+      guint j;
 
       GEGL_NOTE (GEGL_DEBUG_PROCESS, "Iteration %i", i);
 
