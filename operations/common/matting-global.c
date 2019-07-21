@@ -26,6 +26,8 @@ property_int (iterations, _("Iterations"), 10)
     value_range (1, 10000)
     ui_range (1, 200)
 
+property_seed (seed, _("Random seed"), rand)
+
 #else
 
 #define GEGL_OP_COMPOSER
@@ -264,7 +266,8 @@ do_random_search (GArray        *fg_samples,
                   BufferRecord  *buffer,
                   int            x,
                   int            y,
-                  int            w)
+                  int            w,
+                  GeglRandom    *gr)
 {
   int dist_f = fg_samples->len;
   int dist_b = bg_samples->len;
@@ -290,10 +293,12 @@ do_random_search (GArray        *fg_samples,
   while (dist_f > 0 || dist_b > 0)
     {
       // Get new indices to check
-      int fl = fg_samples->len;
-      int bl = bg_samples->len;
-      int fi = (start_fi + (rand () % (dist_f * 2 + 1)) + fl - dist_f) % fl;
-      int bi = (start_bi + (rand () % (dist_b * 2 + 1)) + bl - dist_b) % bl;
+      gint fgi = gegl_random_int (gr, x, y, 0, 0);
+      gint bgi = gegl_random_int (gr, x, y, 0, 1);
+      gint fl  = fg_samples->len;
+      gint bl  = bg_samples->len;
+      gint fi  = (start_fi + (fgi % (dist_f * 2 + 1)) + fl - dist_f) % fl;
+      gint bi  = (start_bi + (bgi % (dist_b * 2 + 1)) + bl - dist_b) % bl;
 
       ColorSample fg = g_array_index (fg_samples, ColorSample, fi);
       ColorSample bg = g_array_index (bg_samples, ColorSample, bi);
@@ -349,11 +354,13 @@ matting_process (GeglOperation       *operation,
   BufferRecord  *buffer  = NULL;
 
   gboolean       success = FALSE;
+  GeglRandom    *gr      = gegl_random_new_with_seed (o->seed);
   int            w, h, i, x, y, xdiff, ydiff, neighbour_mask;
 
   GArray        *fg_samples;
   GArray        *bg_samples;
   GArray        *unknown_positions;
+
 
   w = result->width;
   h = result->height;
@@ -441,13 +448,15 @@ matting_process (GeglOperation       *operation,
           if (trimap[index] != 0 && trimap[index] != 255)
             {
               Position p;
+              gint     fgi = gegl_random_int (gr, x, y, 0, 0);
+              gint     bgi = gegl_random_int (gr, x, y, 0, 1);
               p.x = x;
               p.y = y;
               g_array_append_val (unknown_positions, p);
               buffer[index].fg_distance = FLT_MAX;
               buffer[index].bg_distance = FLT_MAX;
-              buffer[index].fg_index = rand() % fg_samples->len;
-              buffer[index].bg_index = rand() % bg_samples->len;
+              buffer[index].fg_index = fgi % fg_samples->len;
+              buffer[index].bg_index = bgi % bg_samples->len;
             }
         }
     }
@@ -465,7 +474,7 @@ matting_process (GeglOperation       *operation,
       for (j=0; j<unknown_positions->len; j++)
         {
           Position p = g_array_index (unknown_positions, Position, j);
-          do_random_search (fg_samples, bg_samples, input, buffer, p.x, p.y, w);
+          do_random_search (fg_samples, bg_samples, input, buffer, p.x, p.y, w, gr);
         }
 
       for (j=0; j<unknown_positions->len; j++)
@@ -518,6 +527,7 @@ cleanup:
   g_array_free (fg_samples, TRUE);
   g_array_free (bg_samples, TRUE);
   g_array_free (unknown_positions, TRUE);
+  gegl_random_free (gr);
 
   return success;
 }
