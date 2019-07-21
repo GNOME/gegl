@@ -499,8 +499,8 @@ static gint
 gegl_parallel_distribute_update_thread_time_compare (gconstpointer x,
                                                      gconstpointer y)
 {
-  return (*(const gdouble *) x > *(const gdouble *) y) -
-         (*(const gdouble *) x < *(const gdouble *) y);
+  return (*(const gint64 *) x > *(const gint64 *) y) -
+         (*(const gint64 *) x < *(const gint64 *) y);
 }
 
 static void
