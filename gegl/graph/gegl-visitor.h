@@ -14,7 +14,7 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2003 Calvin Williamson
- *           2917 Ell
+ *           2017 Ell
  */
 
 #ifndef __GEGL_VISITOR_H__
