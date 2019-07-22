@@ -37,6 +37,7 @@ gegl_common_la_SOURCES =\
 	copy-buffer.c \
 	difference-of-gaussians.c \
 	display.c \
+	domain-transform.c \
 	dropshadow.c \
 	edge-neon.c \
 	edge-sobel.c \

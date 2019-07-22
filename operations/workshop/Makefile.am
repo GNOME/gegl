@@ -16,7 +16,6 @@ ops = \
 	demosaic-bimedian.la \
 	demosaic-simple.la \
 	ditto.la \
-	domain-transform.la \
 	gradient-map.la \
 	gcr.la \
 	hstack.la \
