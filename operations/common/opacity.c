@@ -169,7 +169,7 @@ process (GeglOperation       *op,
   const Babl *format = gegl_operation_get_format (op, "output");
   int components = babl_format_get_n_components (format);
 
-  if (babl_get_model_flags (format) & BABL_MODEL_FLAG_PREMULTIPLIED)
+  if (babl_get_model_flags (format) & BABL_MODEL_FLAG_ASSOCIATED)
     process_premultiplied_float (op, in_buf, aux_buf, out_buf, samples, roi, level, components);
   else
     process_with_alpha_float (op, in_buf, aux_buf, out_buf, samples, roi, level, components);
@@ -207,7 +207,7 @@ cl_process (GeglOperation       *op,
   fmt = gegl_operation_get_format(op, "input");
   value = GEGL_PROPERTIES (op)->value;
 
-  kernel = ((babl_get_model_flags(fmt) & BABL_MODEL_FLAG_PREMULTIPLIED) == 0)? 1 : 0;
+  kernel = ((babl_get_model_flags(fmt) & BABL_MODEL_FLAG_ASSOCIATED) == 0)? 1 : 0;
 
   cl_err = gegl_clSetKernelArg(cl_data->kernel[kernel], 0, sizeof(cl_mem),   (void*)&in_tex);
   CL_CHECK;
