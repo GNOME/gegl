@@ -1320,7 +1320,6 @@ AC_CONFIG_FILES([
 Makefile
 bin/Makefile
 bin/lua/Makefile
-gcut/Makefile
 gegl/Makefile
 gegl/gegl-version.h
 gegl/buffer/Makefile

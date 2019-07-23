@@ -10,7 +10,6 @@ SUBDIRS=\
 	libs/npd \
 	seamless-clone \
 	bin \
-	gcut \
 	tools \
 	operations \
 	examples \

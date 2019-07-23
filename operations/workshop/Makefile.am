@@ -22,6 +22,7 @@ ops = \
 	aces-rrt.la \
 	alpha-inpaint.la \
 	integral-image.la \
+	munker-tartan.la \
 	rawbayer-load.la  \
 	segment-kmeans.la \
 	selective-hue-saturation.la

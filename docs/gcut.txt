@@ -4,6 +4,11 @@ gcut
 GEGL video editing system
 -------------------------
 
+NOTE : gcut has been removed from the GEGL source tree, many parts of the
+UI code that used to be part of gcut are now part of the Mrg (and lua) based
+UI that the gegl binary can be optionally compiled with.
+
+
 gcut is a video editing engine for link:http://gegl.org/[GEGL]. It permits
 re-arranging bits of video with clean cuts and crossfades, as well as applying
 filtering chains to individual clips or as global filters on top of the edited

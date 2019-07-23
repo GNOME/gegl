@@ -78,14 +78,14 @@ process (GeglOperation       *op,
       }
 #endif
 
-      out[0]=C;
-      out[1]=M;
-      out[2]=Y;
-      out[3]=K;
-      out[4]=in[4];
+      out[0] = C;
+      out[1] = M;
+      out[2] = Y;
+      out[3] = K;
+      out[4] = in[4];
 
-      in += 5;
-      out+= 5;
+      in  += 5;
+      out += 5;
     }
   return TRUE;
 }
@@ -112,7 +112,7 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class->process = process;
 
   gegl_operation_class_set_keys (operation_class,
-    "name"        , "gegl:gcr",
+    "name"        , "gegl:gray-component-replacement",
     "categories"  , "color",
     "title"       , "Gray Component Replacement",
     "description" , "Reduces total ink-coverage by transferring color from CMY to K component",
