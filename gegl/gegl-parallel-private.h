@@ -34,6 +34,7 @@ gint      gegl_parallel_distribute_get_optimal_n_threads (gdouble n_elements,
 
 /*  stats  */
 
+gint      gegl_parallel_get_n_assigned_worker_threads    (void);
 gint      gegl_parallel_get_n_active_worker_threads      (void);
 
 

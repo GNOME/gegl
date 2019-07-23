@@ -74,6 +74,7 @@ static GMutex                       gegl_parallel_distribute_completion_mutex;
 static GCond                        gegl_parallel_distribute_completion_cond;
 static volatile gint                gegl_parallel_distribute_completion_counter;
 static volatile gint                gegl_parallel_distribute_busy;
+static gint                         gegl_parallel_distribute_n_assigned_threads;
 
 static gdouble                      gegl_parallel_distribute_thread_time;
 
@@ -173,6 +174,8 @@ gegl_parallel_distribute (gint                       max_n,
   task.func      = func;
   task.user_data = user_data;
 
+  gegl_parallel_distribute_n_assigned_threads = task.n - 1;
+
   g_atomic_int_set (&gegl_parallel_distribute_completion_counter, task.n - 1);
 
   for (i = 0; i < task.n - 1; i++)
@@ -204,6 +207,8 @@ gegl_parallel_distribute (gint                       max_n,
 
       g_mutex_unlock (&gegl_parallel_distribute_completion_mutex);
     }
+
+  gegl_parallel_distribute_n_assigned_threads = 0;
 
   g_atomic_int_set (&gegl_parallel_distribute_busy, 0);
 }
@@ -361,6 +366,12 @@ gegl_parallel_distribute_area (const GeglRectangle            *area,
 
 /*  public functions (stats)  */
 
+
+gint
+gegl_parallel_get_n_assigned_worker_threads (void)
+{
+  return gegl_parallel_distribute_n_assigned_threads;
+}
 
 gint
 gegl_parallel_get_n_active_worker_threads (void)

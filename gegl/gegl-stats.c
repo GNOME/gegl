@@ -54,6 +54,7 @@ enum
   PROP_ZOOM_TOTAL,
   PROP_TILE_ALLOC_TOTAL,
   PROP_SCRATCH_TOTAL,
+  PROP_ASSIGNED_THREADS,
   PROP_ACTIVE_THREADS
 };
 
@@ -217,6 +218,13 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                         0, G_MAXUINT64, 0,
                                                         G_PARAM_READABLE));
 
+  g_object_class_install_property (object_class, PROP_ASSIGNED_THREADS,
+                                   g_param_spec_int ("assigned-threads",
+                                                     "Assigned threads",
+                                                     "Number of assigned worker threads",
+                                                     0, G_MAXINT, 0,
+                                                     G_PARAM_READABLE));
+
   g_object_class_install_property (object_class, PROP_ACTIVE_THREADS,
                                    g_param_spec_int ("active-threads",
                                                      "Active threads",
@@ -326,6 +334,10 @@ gegl_stats_get_property (GObject    *object,
 
       case PROP_SCRATCH_TOTAL:
         g_value_set_uint64 (value, gegl_scratch_get_total ());
+        break;
+
+      case PROP_ASSIGNED_THREADS:
+        g_value_set_int (value, gegl_parallel_get_n_assigned_worker_threads ());
         break;
 
       case PROP_ACTIVE_THREADS:
