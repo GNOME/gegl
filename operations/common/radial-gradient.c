@@ -97,7 +97,7 @@ process (GeglOperation       *operation,
                 v = 1.0f;
 
               for (c = 0; c < 4; c++)
-                out_pixel[c] = color1[c] * v + color2[c] * (1.0f - v);
+                out_pixel[c] = color2[c] * v + color1[c] * (1.0f - v);
 
               out_pixel += 4;
             }
