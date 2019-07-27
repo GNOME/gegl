@@ -3817,7 +3817,7 @@ msgstr "Repeteix infinitament la imatge d'entrada."
 
 #: operations/common/tile-seamless.c:168
 msgid "Make Seamlessly tileable"
-msgstr "Fa un enrajolable perfecte"
+msgstr "Fa un enrajolat perfecte"
 
 #: operations/common/tile-seamless.c:172
 msgid ""
@@ -5167,7 +5167,7 @@ msgstr "Tipus d'algorisme de malla"
 #: operations/common-gpl3+/maze.c:61 operations/common-gpl3+/noise-solid.c:56
 #: operations/common-gpl3+/ripple.c:61
 msgid "Tileable"
-msgstr "Enrajolable"
+msgstr "Enrajolat"
 
 #: operations/common-gpl3+/maze.c:65
 msgid "Foreground Color"
@@ -5367,7 +5367,7 @@ msgstr "Nivell de detall"
 
 #: operations/common-gpl3+/noise-solid.c:57
 msgid "Create a tileable output"
-msgstr "Crea una entrada enrajolable"
+msgstr "Crea una sortida enrajolada"
 
 #: operations/common-gpl3+/noise-solid.c:59
 msgid "Turbulent"
