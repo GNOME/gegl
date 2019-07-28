@@ -6664,7 +6664,7 @@ msgstr "Fotograma"
 
 #: operations/external/gif-load.c:37
 msgid "frame number to decode"
-msgstr "Número de fotograma a decodificar"
+msgstr "Número de fotograma a descodificar"
 
 #: operations/external/gif-load.c:39
 msgid "Number of frames in gif animation"
@@ -7118,7 +7118,7 @@ msgstr "Carregador de fitxers PDF"
 
 #: operations/external/pdf-load.c:244
 msgid "PDF page decoder"
-msgstr "Decodificador de pàgines PDF"
+msgstr "Descodificador de pàgines PDF"
 
 #: operations/external/pixbuf.c:26
 msgid "Pixbuf"
@@ -7817,7 +7817,7 @@ msgid ""
 "Reflect an image about a line, whose direction is specified by the vector "
 "that is defined by the x and y properties. "
 msgstr ""
-"Reflecteix una imatge respecte una línia, la direcció de la qual és "
+"Reflecteix una imatge respecte a una línia, la direcció de la qual és "
 "especificada pel vector definit per les propietats x i y. "
 
 #: operations/transform/rotate.c:25 operations/transform/rotate-on-center.c:27
@@ -7991,7 +7991,7 @@ msgstr ""
 "transformació referida a sRGB o la visualització de la sortida utilitzant "
 "perfils de matriu ICC regulars com ODT. Tingueu en compte que actualment "
 "es tracta d’una aproximació de lluminositat sols per l’ACES RRT; sense "
-"desaturació de reflexos i ombres ni modificacions de tons vermells."
+"dessaturació de reflexos i ombres ni modificacions de tons vermells."
 
 #: operations/workshop/bayer-matrix.c:26
 msgid "Subdivisions"
@@ -8696,11 +8696,11 @@ msgstr "Nombre de mostres al llarg de cada eix per píxel"
 
 #: operations/workshop/linear-sinusoid.c:299
 msgid "Linear Sinusoid"
-msgstr "Sinusoïdal lineal"
+msgstr "Sinusoidal lineal"
 
 #: operations/workshop/linear-sinusoid.c:304
 msgid "Generate a linear sinusoid pattern"
-msgstr "Genera una textura sinusoïdal lineal"
+msgstr "Genera una textura sinusoidal lineal"
 
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
