@@ -25,16 +25,6 @@ image: archlinux/base:latest
     - cd _babl
     - mkdir _build
 
-babl-git-autotools:
-  extends: .babl-base
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - cd _build
-    - ../autogen.sh --prefix="$BABL_PREFIX"
-    - make
-    - make install
-
 babl-git-meson:
   extends: .babl-base
   variables:
@@ -43,17 +33,6 @@ babl-git-meson:
     - meson -Dprefix="$BABL_PREFIX" _build
     - ninja -C _build
     - ninja -C _build install
-
-babl-min-autotools:
-  extends: .babl-base
-  script:
-    - grep babl_required_version ../configure.ac | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
-    - git fetch --no-tags origin "refs/tags/BABL_`cat .babl_min_version`:refs/tags/MIN_VERSION"
-    - git checkout MIN_VERSION
-    - cd _build
-    - ../autogen.sh --prefix="$BABL_PREFIX"
-    - make
-    - make install
 
 babl-min-meson:
   extends: .babl-base
@@ -104,40 +83,20 @@ babl-min-meson:
   variables:
     CONFIG_OPTIONS: "--enable-debug --enable-mmx --enable-sse --enable-profile --enable-docs"
 
-build-default-git-autotools:
-  extends: .build-default
-  dependencies:
-    - babl-git-autotools
-
 build-default-git-meson:
   extends: .build-default
   dependencies:
     - babl-git-meson
-
-build-default-min-autotools:
-  extends: .build-default
-  dependencies:
-    - babl-min-autotools
 
 build-default-min-meson:
   extends: .build-default
   dependencies:
     - babl-min-meson
 
-build-all-git-autotools:
-  extends: .build-all
-  dependencies:
-    - babl-git-autotools
-
 build-all-git-meson:
   extends: .build-all
   dependencies:
     - babl-git-meson
-
-build-all-min-autotools:
-  extends: .build-all
-  dependencies:
-    - babl-min-autotools
 
 build-all-min-meson:
   extends: .build-all
