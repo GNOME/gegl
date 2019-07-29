@@ -109,7 +109,7 @@ void         gegl_color_get_rgba               (GeglColor   *color,
  * @blue: blue value
  * @alpha: alpha value
  *
- * Retrieves the current set color as linear light non premultipled RGBA data
+ * Set color as linear light non premultipled RGBA data
  */
 void         gegl_color_set_rgba               (GeglColor   *color,
                                                 gdouble      red,
