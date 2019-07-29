@@ -21,6 +21,7 @@
 #include <string.h>
 #include <glib-object.h>
 #include "gegl-buffer.h"
+#include "gegl-buffer-private.h"
 #include "gegl-rectangle.h"
 
 GeglRectangle *
@@ -50,6 +51,102 @@ gegl_rectangle_set (GeglRectangle *r,
   r->y      = y;
   r->width  = w;
   r->height = h;
+}
+
+gboolean
+gegl_rectangle_align (GeglRectangle          *dest,
+                      const GeglRectangle    *rectangle,
+                      const GeglRectangle    *tile,
+                      GeglRectangleAlignment  alignment)
+{
+  gint x1, x2;
+  gint y1, y2;
+
+  x1 = rectangle->x - tile->x;
+  x2 = x1 + rectangle->width;
+
+  y1 = rectangle->y - tile->y;
+  y2 = y1 + rectangle->height;
+
+  switch (alignment)
+    {
+    case GEGL_RECTANGLE_ALIGNMENT_SUBSET:
+      if (x1 > 0) x1 += tile->width  - 1;
+      if (x2 < 0) x2 -= tile->width  - 1;
+
+      if (y1 > 0) y1 += tile->height - 1;
+      if (y2 < 0) y2 -= tile->height - 1;
+
+      break;
+
+    case GEGL_RECTANGLE_ALIGNMENT_SUPERSET:
+      if (x1 < 0) x1 -= tile->width  - 1;
+      if (x2 > 0) x2 += tile->width  - 1;
+
+      if (y1 < 0) y1 -= tile->height - 1;
+      if (y2 > 0) y2 += tile->height - 1;
+
+      break;
+
+    case GEGL_RECTANGLE_ALIGNMENT_NEAREST:
+      if (x1 > 0) x1 += tile->width  / 2;
+      else        x1 -= tile->width  / 2;
+      if (x2 > 0) x2 += tile->width  / 2;
+      else        x2 -= tile->width  / 2;
+
+      if (y1 > 0) y1 += tile->height / 2;
+      else        y1 -= tile->height / 2;
+      if (y2 > 0) y2 += tile->height / 2;
+      else        y2 -= tile->height / 2;
+
+      break;
+    }
+
+  if (tile->width)
+    {
+      x1 = x1 / tile->width  * tile->width;
+      x2 = x2 / tile->width  * tile->width;
+    }
+  if (tile->height)
+    {
+      y1 = y1 / tile->height * tile->height;
+      y2 = y2 / tile->height * tile->height;
+    }
+
+  if (x1 > x2 && y1 > y2)
+    {
+      if (dest)
+        {
+          gegl_rectangle_set (dest,
+                              tile->x + x1,
+                              tile->y + y1,
+                              x2 - x1,
+                              y2 - y1);
+        }
+
+      return TRUE;
+    }
+  else
+    {
+      if (dest)
+        gegl_rectangle_set (dest, 0, 0, 0, 0);
+
+      return FALSE;
+    }
+}
+
+gboolean
+gegl_rectangle_align_to_buffer (GeglRectangle          *dest,
+                                const GeglRectangle    *rectangle,
+                                GeglBuffer             *buffer,
+                                GeglRectangleAlignment  alignment)
+{
+  return gegl_rectangle_align (dest, rectangle,
+                               GEGL_RECTANGLE (buffer->shift_x,
+                                               buffer->shift_y,
+                                               buffer->tile_width,
+                                               buffer->tile_height),
+                               alignment);
 }
 
 void

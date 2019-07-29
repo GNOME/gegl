@@ -157,6 +157,57 @@ void        gegl_rectangle_copy          (GeglRectangle       *destination,
                                           const GeglRectangle *source);
 
 /**
+ * gegl_rectangle_align:
+ * @destination: a #GeglRectangle
+ * @rectangle: a #GeglRectangle
+ * @tile: a #GeglRectangle
+ * @alignment: a #GeglRectangleAlignment value
+ *
+ * Aligns @rectangle to a regular tile grid, of which @tile is a representative
+ * tile, and stores the result in @destination.
+ *
+ * @alignment can be one of:
+ *
+ *   GEGL_RECTANGLE_ALIGNMENT_SUBSET:  Calculate the biggest aligned rectangle
+ *   contained in @rectangle.
+ *
+ *   GEGL_RECTANGLE_ALIGNMENT_SUPERSET:  Calculate the smallest aligned
+ *   rectangle containing @rectangle.
+ *
+ *   GEGL_RECTANGLE_ALIGNMENT_NEAREST:  Calculate the nearest aligned rectangle
+ *   to @rectangle.
+ *
+ * @destination may point to the same object as @rectangle or @tile.
+ *
+ * Returns TRUE if the result is not empty.
+ */
+gboolean    gegl_rectangle_align         (GeglRectangle          *destination,
+                                          const GeglRectangle    *rectangle,
+                                          const GeglRectangle    *tile,
+                                          GeglRectangleAlignment  alignment);
+
+/**
+ * gegl_rectangle_align_to_buffer:
+ * @destination: a #GeglRectangle
+ * @rectangle: a #GeglRectangle
+ * @buffer: a #GeglBuffer
+ * @alignment: a #GeglRectangleAlignment value
+ *
+ * Aligns @rectangle to the tile grid of @buffer, and stores the result in
+ * @destination.
+ *
+ * @alignment has the same meaning as for gegl_rectangle_align().
+ *
+ * @destination may point to the same object as @rectangle.
+ *
+ * Returns TRUE if the result is not empty.
+ */
+gboolean  gegl_rectangle_align_to_buffer (GeglRectangle          *destination,
+                                          const GeglRectangle    *rectangle,
+                                          GeglBuffer             *buffer,
+                                          GeglRectangleAlignment  alignment);
+
+/**
  * gegl_rectangle_bounding_box:
  * @destination: a #GeglRectangle
  * @source1: a #GeglRectangle

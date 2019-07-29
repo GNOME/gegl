@@ -105,3 +105,29 @@ gegl_sampler_type_get_type (void)
 
   return etype;
 }
+
+GType
+gegl_rectangle_alignment_get_type (void)
+{
+  static GType etype = 0;
+
+  if (etype == 0)
+    {
+      static GEnumValue values[] = {
+        { GEGL_RECTANGLE_ALIGNMENT_SUBSET,   N_("Subset"),   "subset"   },
+        { GEGL_RECTANGLE_ALIGNMENT_SUPERSET, N_("Superset"), "superset" },
+        { GEGL_RECTANGLE_ALIGNMENT_NEAREST,  N_("Nesrest"),  "nesrest"  },
+        { 0, NULL, NULL }
+      };
+      gint i;
+
+      for (i = 0; i < G_N_ELEMENTS (values); i++)
+        if (values[i].value_name)
+          values[i].value_name =
+            dgettext (GETTEXT_PACKAGE, values[i].value_name);
+
+      etype = g_enum_register_static ("GeglRectangleAlignment", values);
+    }
+
+  return etype;
+}
