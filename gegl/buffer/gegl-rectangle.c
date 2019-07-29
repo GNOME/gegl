@@ -243,12 +243,14 @@ gegl_rectangle_subtract_bounding_box (GeglRectangle       *dest,
 
   if (mx1 < mx2 && my1 < my2)
     {
-      gegl_rectangle_set (dest, mx1, my1, mx2 - mx1, my2 - my1);
+      if (dest)
+        gegl_rectangle_set (dest, mx1, my1, mx2 - mx1, my2 - my1);
       return TRUE;
     }
   else
     {
-      gegl_rectangle_set (dest, 0, 0, 0, 0);
+      if (dest)
+        gegl_rectangle_set (dest, 0, 0, 0, 0);
       return FALSE;
     }
 }
