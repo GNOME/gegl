@@ -242,6 +242,23 @@ gboolean    gegl_rectangle_intersect     (GeglRectangle       *dest,
 
 /**
  * gegl_rectangle_subtract_bounding_box:
+ * @destination: an array of 4 #GeglRectangle elements
+ * @minuend: a #GeglRectangle
+ * @subtrahend: a #GeglRectangle
+ *
+ * Subtracts @subtrahend from @minuend, and stores the resulting rectangles in
+ * @destination.  Between 0 and 4 disjoint rectangles may be produced.
+ *
+ * @destination may contain @minuend or @subtrahend.
+ *
+ * Returns the number of resulting rectangles.
+ */
+gint        gegl_rectangle_subtract      (GeglRectangle        destination[4],
+                                          const GeglRectangle *minuend,
+                                          const GeglRectangle *subtrahend);
+
+/**
+ * gegl_rectangle_subtract_bounding_box:
  * @destination: a #GeglRectangle
  * @minuend: a #GeglRectangle
  * @subtrahend: a #GeglRectangle
