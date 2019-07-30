@@ -152,6 +152,9 @@ void       gegl_tile_handler_damage_tile (GeglTileHandler     *handler,
 void       gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
                                           const GeglRectangle *rect);
 
+void       gegl_tile_handler_lock        (GeglTileHandler *handler);
+void       gegl_tile_handler_unlock      (GeglTileHandler *handler);
+
 G_END_DECLS
 
 #endif

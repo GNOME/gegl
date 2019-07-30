@@ -446,3 +446,21 @@ gegl_tile_handler_damage_rect (GeglTileHandler     *handler,
 
   g_rec_mutex_unlock (&handler->priv->tile_storage->mutex);
 }
+
+void
+gegl_tile_handler_lock (GeglTileHandler *handler)
+{
+  g_return_if_fail (GEGL_IS_TILE_HANDLER (handler));
+
+  if (handler->priv->tile_storage)
+    g_rec_mutex_lock (&handler->priv->tile_storage->mutex);
+}
+
+void
+gegl_tile_handler_unlock (GeglTileHandler *handler)
+{
+  g_return_if_fail (GEGL_IS_TILE_HANDLER (handler));
+
+  if (handler->priv->tile_storage)
+    g_rec_mutex_unlock (&handler->priv->tile_storage->mutex);
+}
