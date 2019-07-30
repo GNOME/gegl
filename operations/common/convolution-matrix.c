@@ -592,14 +592,6 @@ get_bounding_box (GeglOperation *operation)
   return *in_rect;
 }
 
-static GeglRectangle
-get_required_for_output (GeglOperation       *operation,
-                         const gchar         *input_pad,
-                         const GeglRectangle *roi)
-{
-  return get_bounding_box (operation);
-}
-
 static GeglAbyssPolicy
 get_abyss_policy (GeglOperation *operation,
                   const gchar   *input_pad)
@@ -624,7 +616,6 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class->process                    = process;
   operation_class->prepare                 = prepare;
   operation_class->get_bounding_box        = get_bounding_box;
-  operation_class->get_required_for_output = get_required_for_output;
 
   gegl_operation_class_set_keys (operation_class,
     "categories",  "generic",
