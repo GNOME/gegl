@@ -88,10 +88,22 @@ static GeglRectangle
 get_cached_region (GeglOperation       *operation,
                    const GeglRectangle *roi)
 {
-  GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
-  return result;
+  const GeglRectangle *in_rect =
+      gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (! in_rect || gegl_rectangle_is_infinite_plane (in_rect))
+    return *roi;
+
+  return *in_rect;
 }
 
+static GeglRectangle
+get_required_for_output (GeglOperation       *operation,
+                         const gchar         *input_pad,
+                         const GeglRectangle *roi)
+{
+  return get_cached_region (operation, roi);
+}
 
 /* Meijster helper functions for euclidean distance transform */
 gfloat
@@ -290,7 +302,6 @@ binary_dt_1st_pass (GeglOperation *operation,
     });
 }
 
-
 /**
  * Process the gegl filter
  * @param operation the given Gegl operation
@@ -399,6 +410,31 @@ process (GeglOperation       *operation,
   return TRUE;
 }
 
+static gboolean
+operation_process (GeglOperation        *operation,
+                   GeglOperationContext *context,
+                   const gchar          *output_prop,
+                   const GeglRectangle  *result,
+                   gint                  level)
+{
+  GeglOperationClass  *operation_class;
+
+  const GeglRectangle *in_rect =
+    gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+    {
+      gpointer in = gegl_operation_context_get_object (context, "input");
+      gegl_operation_context_take_object (context, "output",
+                                          G_OBJECT(g_object_ref (in)));
+      return TRUE;
+    }
+
+  operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+
+  return operation_class->process (operation, context, output_prop, result,
+                                   gegl_operation_context_get_level (context));
+}
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
@@ -427,10 +463,12 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
-  operation_class->threaded          = FALSE;
-  operation_class->prepare           = prepare;
-  operation_class->get_cached_region = get_cached_region;
-  filter_class->process              = process;
+  operation_class->threaded                = FALSE;
+  operation_class->prepare                 = prepare;
+  operation_class->process                 = operation_process;
+  operation_class->get_cached_region       = get_cached_region;
+  operation_class->get_required_for_output = get_required_for_output;
+  filter_class->process                    = process;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:distance-transform",
