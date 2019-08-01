@@ -316,6 +316,21 @@ gegl_rectangle_subtract_bounding_box (GeglRectangle       *dest,
     }
 }
 
+gint
+gegl_rectangle_xor (GeglRectangle       *dest,
+                    const GeglRectangle *src1,
+                    const GeglRectangle *src2)
+{
+  GeglRectangle rect1 = *src1;
+  GeglRectangle rect2 = *src2;
+  gint          n;
+
+  n  = gegl_rectangle_subtract (dest,     &rect1, &rect2);
+  n += gegl_rectangle_subtract (dest + n, &rect2, &rect1);
+
+  return n;
+}
+
 void
 gegl_rectangle_copy (GeglRectangle       *to,
                      const GeglRectangle *from)

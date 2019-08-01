@@ -276,6 +276,24 @@ gboolean
                                           const GeglRectangle *subtrahend);
 
 /**
+ * gegl_rectangle_xor:
+ * @destination: an array of 4 #GeglRectangle elements
+ * @source1: a #GeglRectangle
+ * @source2: a #GeglRectangle
+ *
+ * Computes the symmetric difference of the rectangles @source1 and @source2,
+ * and stores the resulting rectangles in @destination.  Between 0 and 4
+ * disjoint rectangles may be produced.
+ *
+ * @destination may contain @rectangle1 or @rectangle2.
+ *
+ * Returns the number of resulting rectangles.
+ */
+gint        gegl_rectangle_xor           (GeglRectangle       *destination,
+                                          const GeglRectangle *source1,
+                                          const GeglRectangle *source2);
+
+/**
  * gegl_rectangle_contains:
  * @parent: a #GeglRectangle
  * @child: a #GeglRectangle
