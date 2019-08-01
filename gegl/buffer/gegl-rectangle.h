@@ -289,7 +289,7 @@ gboolean
  *
  * Returns the number of resulting rectangles.
  */
-gint        gegl_rectangle_xor           (GeglRectangle       *destination,
+gint        gegl_rectangle_xor           (GeglRectangle        destination[4],
                                           const GeglRectangle *source1,
                                           const GeglRectangle *source2);
 

@@ -317,7 +317,7 @@ gegl_rectangle_subtract_bounding_box (GeglRectangle       *dest,
 }
 
 gint
-gegl_rectangle_xor (GeglRectangle       *dest,
+gegl_rectangle_xor (GeglRectangle        dest[4],
                     const GeglRectangle *src1,
                     const GeglRectangle *src2)
 {
