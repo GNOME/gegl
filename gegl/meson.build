@@ -16,6 +16,11 @@ gegl_cflags = [
   '-DGEGL_LOCALEDIR="@0@"'.format(get_option('localedir')),
 ]
 
+gegl_version_h = configure_file(input:         'gegl-version.h.in',
+                                output:        'gegl-version.h',
+                                configuration: config
+)
+
 gegl_introspectable_headers = files(
   'gegl.h',
   'gegl-apply.h',
@@ -28,8 +33,7 @@ gegl_introspectable_headers = files(
   'gegl-random.h',
   'gegl-types.h',
   'gegl-utils.h',
-  'gegl-version.h',
-)
+) + [ gegl_version_h ]
 
 gegl_headers = files(
   'gegl-cpuaccel.h',
