@@ -147,9 +147,10 @@ graphviz    = find_program('dot',           required: get_option('graphviz'))
 ################################################################################
 # Required Dependencies
 
-config.set('HAVE_UNISTD_H',   cc.has_header('unistd.h'))
-config.set('HAVE_EXECINFO_H', cc.has_header('execinfo.h'))
-config.set('HAVE_FSYNC',      cc.has_function('fsync'))
+config.set('HAVE_UNISTD_H',    cc.has_header('unistd.h'))
+config.set('HAVE_EXECINFO_H',  cc.has_header('execinfo.h'))
+config.set('HAVE_FSYNC',       cc.has_function('fsync'))
+config.set('HAVE_MALLOC_TRIM', cc.has_function('malloc_trim'))
 
 math    = cc.find_library('m', required: false)
 thread  = dependency('threads')
