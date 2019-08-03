@@ -359,7 +359,7 @@ pkgconfig.generate(filebase: 'gegl-' + api_version,
 
     babl,
   ],
-  libraries: gegl_lib,
+  libraries: [ gegl_lib, gegl_npd_lib],
   subdirs: api_name,
 )
 
