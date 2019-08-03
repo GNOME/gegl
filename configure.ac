@@ -56,7 +56,7 @@ m4_define([pango_required_version], [1.38.0])
 m4_define([popplerglib_required_version], [0.71.0])
 m4_define([zlib_required_version], [1.2.0])
 m4_define([png_required_version], [1.6.0])
-m4_define([sdl_required_version], [1.2.0])
+m4_define([sdl_required_version], [2.0.0])
 m4_define([libtiff_required_version], [4.0.0])
 m4_define([webp_required_version], [0.5.0])
 m4_define([poly2tri-c_required_version], [0.0.0])
@@ -956,7 +956,7 @@ AC_ARG_WITH(sdl, [  --without-sdl           build without SDL support])
 
 have_sdl="no"
 if test "x$with_sdl" != "xno"; then
-  AC_PATH_PROG(SDL_CONFIG, sdl-config, no)
+  AC_PATH_PROG(SDL_CONFIG, sdl2-config, no)
   if test "$SDL_CONFIG" = "no"; then
     have_sdl="no  (SDL library not found)"
     AC_MSG_RESULT([*** Check for SDL library failed.])

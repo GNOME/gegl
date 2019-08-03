@@ -36,7 +36,10 @@ property_string (icon_title, _("Icon title"), "icon_title")
 #include <SDL.h>
 
 typedef struct {
-  SDL_Surface *screen;
+  SDL_Window   *window;
+  SDL_Renderer *renderer;
+  SDL_Texture  *texture;
+  SDL_Surface  *screen;
   gint         width;
   gint         height;
 } SDLState;
@@ -56,7 +59,6 @@ init_sdl (void)
           return;
         }
       atexit (SDL_Quit);
-      SDL_EnableUNICODE (1);
     }
 }
 
@@ -94,14 +96,44 @@ process (GeglOperation       *operation,
   if (!handle)
     handle = g_timeout_add (500, idle, NULL);
 
-  if (!state->screen ||
+  if (!state->window ||
        state->width  != result->width ||
        state->height != result->height)
     {
-      state->screen = SDL_SetVideoMode (result->width, result->height, 32, SDL_SWSURFACE);
+
+      if (state->window)
+        {
+          SDL_SetWindowSize (state->window,
+                  result->width, result->height);
+        }
+        else
+        {
+          if (SDL_CreateWindowAndRenderer (result->width,
+                  result->height, 0,
+                  &state->window, &state->renderer))
+            {
+              fprintf (stderr, "Unable to create window: %s\n",
+                       SDL_GetError ());
+              return -1;
+            }
+        }
+
+      SDL_FreeSurface (state->screen);
+      state->screen = SDL_CreateRGBSurfaceWithFormat (0,
+              result->width, result->height, 32, SDL_PIXELFORMAT_RGBA32);
       if (!state->screen)
         {
-          fprintf (stderr, "Unable to set SDL mode: %s\n",
+          fprintf (stderr, "Unable to create surface: %s\n",
+                   SDL_GetError ());
+          return -1;
+        }
+
+      if (state->texture)
+        SDL_DestroyTexture (state->texture);
+      state->texture = SDL_CreateTextureFromSurface (state->renderer, state->screen);
+      if (!state->texture)
+        {
+          fprintf (stderr, "Unable to create texture: %s\n",
                    SDL_GetError ());
           return -1;
         }
@@ -128,11 +160,12 @@ process (GeglOperation       *operation,
        state->screen->pixels, GEGL_AUTO_ROWSTRIDE,
        GEGL_ABYSS_NONE);
 
-  SDL_UpdateRect (state->screen, 0, 0, 0, 0);
-  SDL_WM_SetCaption (o->window_title, o->icon_title);
+  SDL_UpdateTexture (state->texture, NULL, state->screen->pixels, state->screen->pitch);
 
-  state->width = result->width ;
-  state->height = result->height;
+  SDL_RenderClear (state->renderer);
+  SDL_RenderCopy (state->renderer, state->texture, NULL, NULL);
+  SDL_RenderPresent (state->renderer);
+  SDL_SetWindowTitle (state->window, o->window_title);
 
   return  TRUE;
 }
