@@ -232,7 +232,7 @@ libv4l1   = dependency('libv4l1',     version: '>=1.0.1',
 libv4l2   = dependency('libv4l2',     version: '>=1.0.1',
   required: get_option('libv4l2')
 )
-lua       = dependency('lua',         version: '>=5.1.0',
+lua       = dependency('luajit',      version: '>=2.0.4',
   required: get_option('lua')
 )
 mrg       = dependency('mrg',         version: '>=0.0.0',
@@ -383,7 +383,7 @@ message('\n'.join(['',
 '  enscript:        @0@'.format(enscript.found()),
 '  mrg:             @0@'.format(mrg.found()),
 '  Ruby:            @0@'.format(ruby.found()),
-'  Lua:             @0@'.format(lua.found()),
+'  Luajit:          @0@'.format(lua.found()),
 '  Cairo:           @0@'.format(cairo.found()),
 '  Pango:           @0@'.format(pango.found()),
 '  pangocairo:      @0@'.format(pangocairo.found()),
