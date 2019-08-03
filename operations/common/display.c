@@ -60,6 +60,7 @@ set_display_handler (GeglOperation *operation)
   GeglOp   *self = GEGL_OP (operation);
   const gchar *known_handlers[] = {"gegl-gtk3:display", 
                                    "gegl-gtk2:display",
+                                   "gegl:sdl2-display",
                                    "gegl:sdl-display"};
   char *handler = NULL;
   gchar **operations = NULL;
