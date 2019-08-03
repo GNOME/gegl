@@ -81,6 +81,12 @@ exr_save_la_LIBADD = $(op_libs) $(OPENEXR_LIBS)
 exr_save_la_CXXFLAGS = $(AM_CFLAGS) $(OPENEXR_CFLAGS)
 endif
 
+if HAVE_SDL2
+ops += sdl2-display.la
+sdl2_display_la_LIBADD = $(op_libs) $(SDL2_LIBS)
+sdl2_display_la_CFLAGS = $(AM_CFLAGS) $(SDL2_CFLAGS)
+endif
+
 if HAVE_SDL
 ops += sdl-display.la
 sdl_display_la_LIBADD = $(op_libs) $(SDL_LIBS)
