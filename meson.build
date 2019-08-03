@@ -142,8 +142,6 @@ rsvg_convert= find_program('rsvg-convert',  required: false)
 ruby        = find_program('ruby',          required: false)
 w3m         = find_program('w3m',           required: false)
 
-graphviz    = find_program('dot',           required: get_option('graphviz'))
-
 ################################################################################
 # Required Dependencies
 
@@ -364,6 +362,8 @@ pkgconfig.generate(filebase: 'gegl-' + api_version,
 )
 
 
+
+
 message('\n'.join(['',
 'Building GEGL with prefix=@0@'.format(get_option('prefix')),
 '',
@@ -395,7 +395,6 @@ message('\n'.join(['',
 '  SDL:             @0@'.format(sdl1.found()),
 '  libraw:          @0@'.format(libraw.found()),
 '  Jasper:          @0@'.format(jasper.found()),
-'  graphviz:        @0@'.format(graphviz.found()),
 '  av libs:         @0@'.format(avlibs_found),
 '  V4L:             @0@'.format(libv4l1.found()),
 '  V4L2:            @0@'.format(libv4l2.found()),
