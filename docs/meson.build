@@ -199,3 +199,28 @@ install_data(gtkdoc_images,
 #     ])
 #   ],
 # )
+
+
+docpath = join_paths(get_option('datadir'), 'gtk-doc', 'html')
+
+glib_prefix = dependency('glib-2.0').get_pkgconfig_variable('prefix')
+glib_docpath = join_paths(glib_prefix, 'share', 'gtk-doc', 'html')
+
+
+gnome.gtkdoc('gegl',
+             dependencies : gegl_lib,
+             main_xml : meson.project_name() + '-docs.xml',
+#             gobject_typesfile : meson.project_name() + '.types',
+  src_dir: [
+    join_paths(meson.source_root(), 'gegl'),
+    join_paths(meson.build_root(), 'gegl'),
+  ],
+
+  fixxref_args: [
+    '--html-dir=@0@'.format(docpath),
+    '--extra-dir=@0@'.format(glib_docpath),
+  ],
+  install : false,
+
+#             ignore_headers : ignore_headers,
+            )
