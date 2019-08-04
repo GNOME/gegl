@@ -50,12 +50,11 @@ geglbuffer_add_image_SOURCES = geglbuffer-add-image.c
 geglbuffer_clock_SOURCES = geglbuffer-clock.c
 hello_world_SOURCES = hello-world.c
 
-if HAVE_SDL
+if HAVE_SDL2
 noinst_PROGRAMS += sdl-draw
 sdl_draw_SOURCES = sdl-draw.c
-sdl_draw_LDADD = $(SDL_LIBS)
-sdl_draw_CFLAGS = $(AM_CFLAGS) $(SDL_CFLAGS)
-
+sdl_draw_LDADD = $(SDL2_LIBS)
+sdl_draw_CFLAGS = $(AM_CFLAGS) $(SDL2_CFLAGS)
 endif
 
 if HAVE_GEXIV2
