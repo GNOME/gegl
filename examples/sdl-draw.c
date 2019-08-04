@@ -5,7 +5,10 @@
 
 typedef struct
 {
-  SDL_Surface *main_window;
+  SDL_Window   *window;
+  SDL_Renderer *renderer;
+  SDL_Surface  *surface;
+  SDL_Texture  *texture;
   GeglBuffer *paint_buffer;
   GeglNode   *graph;
   GeglNode   *output_node;
@@ -15,8 +18,8 @@ typedef struct
   int last_y;
 } MainContext;
 
-int run_main_loop (SDL_Surface *main_window, MainContext *context);
-void init_main_context (SDL_Surface *main_window, MainContext *context);
+int run_main_loop (MainContext *context);
+void init_main_context (MainContext *context);
 void destroy_main_context (MainContext *context);
 void draw_circle (GeglBuffer *buffer, int x, int y, float r);
 
@@ -25,7 +28,6 @@ const Babl *sdl_format = NULL;
 int main(int argc, char *argv[])
 {
   int retval;
-  SDL_Surface *main_window;
   MainContext context = {0, };
 
   if((retval = SDL_Init (SDL_INIT_VIDEO | SDL_INIT_TIMER)) > 0)
@@ -34,12 +36,28 @@ int main(int argc, char *argv[])
       return retval;
     }
 
-  main_window = SDL_SetVideoMode (640, 480, 24, SDL_SWSURFACE);
-
-  if (!main_window)
+  if (SDL_CreateWindowAndRenderer (640, 480, 0,
+              &context.window, &context.renderer))
     {
       printf("SDL failed to create a window\n");
       SDL_Quit();
+      return 1;
+    }
+
+  context.surface = SDL_CreateRGBSurfaceWithFormat (0,
+              640, 480, 24, SDL_PIXELFORMAT_RGB24);
+  if (!context.surface)
+    {
+      fprintf (stderr, "Unable to create surface: %s\n",
+               SDL_GetError ());
+      return 1;
+    }
+
+  context.texture = SDL_CreateTextureFromSurface (context.renderer, context.surface);
+  if (!context.surface)
+    {
+      fprintf (stderr, "Unable to create texture: %s\n",
+               SDL_GetError ());
       return 1;
     }
 
@@ -56,9 +74,9 @@ int main(int argc, char *argv[])
                                 babl_component ("R'"),
                                 NULL);
 
-  init_main_context (main_window, &context);
+  init_main_context (&context);
 
-  run_main_loop (main_window, &context);
+  run_main_loop (&context);
 
   destroy_main_context (&context);
 
@@ -69,13 +87,12 @@ int main(int argc, char *argv[])
 }
 
 /* init_main_context:
- * @main_window: The output window.
  * @context: The context.
  *
  * Initialize the main context object that will hold our graph.
  */
 void
-init_main_context (SDL_Surface *main_window, MainContext *context)
+init_main_context (MainContext *context)
 {
   GeglNode   *ptn = gegl_node_new ();
   GeglNode   *background_node, *over, *buffer_src;
@@ -111,7 +128,6 @@ init_main_context (SDL_Surface *main_window, MainContext *context)
   context->output_node  = over;
   context->paint_buffer = paint_buffer;
 
-  context->main_window = main_window;
 }
 
 /* destroy_main_context:
@@ -125,6 +141,9 @@ destroy_main_context (MainContext *context)
   g_object_unref (context->graph);
   g_object_unref (context->paint_buffer);
 
+  SDL_FreeSurface (context->surface);
+  SDL_DestroyTexture (context->texture);
+  SDL_DestroyRenderer (context->renderer);
 
   context->graph = NULL;
   context->output_node  = NULL;
@@ -140,28 +159,29 @@ destroy_main_context (MainContext *context)
  * to the sdl window.
  */
 static void
-invalidate_signal (GeglNode *node, GeglRectangle *rect, SDL_Surface *main_window)
+invalidate_signal (GeglNode *node, GeglRectangle *rect, MainContext *context)
 {
-  GeglRectangle output_rect = {0, 0, main_window->w, main_window->h};
+  SDL_Surface *surface = context->surface;
+  GeglRectangle output_rect = {0, 0, surface->w, surface->h};
   guchar *blit_origin = NULL;
-
-  SDL_LockSurface (main_window);
 
   gegl_rectangle_intersect (&output_rect, &output_rect, rect);
 
-  blit_origin = (guchar *)main_window->pixels + (output_rect.x * 3 + output_rect.y * main_window->pitch);
+  blit_origin = (guchar *)surface->pixels + (output_rect.x * surface->format->BytesPerPixel + output_rect.y * surface->pitch);
 
   gegl_node_blit (node,
                   1.0,
                   &output_rect,
                   sdl_format,
                   blit_origin,
-                  main_window->pitch,
+                  surface->pitch,
                   0);
 
-  SDL_UnlockSurface (main_window);
+  SDL_UpdateTexture (context->texture, NULL, surface->pixels, surface->pitch);
 
-  SDL_UpdateRect (main_window, output_rect.x, output_rect.y, output_rect.width, output_rect.height);
+  SDL_RenderClear (context->renderer);
+  SDL_RenderCopy (context->renderer, context->texture, NULL, NULL);
+  SDL_RenderPresent (context->renderer);
 }
 
 /* draw_circle:
@@ -247,31 +267,22 @@ draw_circle (GeglBuffer *buffer, int x, int y, float r)
 }
 
 int
-run_main_loop (SDL_Surface *main_window,
-               MainContext *context)
+run_main_loop (MainContext *context)
   {
-    gegl_buffer_set_extent (context->paint_buffer, GEGL_RECTANGLE (0, 0, main_window->w, main_window->h));
+    SDL_Surface *surface = context->surface;
+    GeglRectangle initial_rect = {0, 0, surface->w, surface->h};
 
-    SDL_LockSurface (main_window);
+    gegl_buffer_set_extent (context->paint_buffer, GEGL_RECTANGLE (0, 0, surface->w, surface->h));
 
-    gegl_node_blit (context->output_node,
-                    1.0,
-                    GEGL_RECTANGLE (0, 0, main_window->w, main_window->h),
-                    sdl_format,
-                    main_window->pixels,
-                    main_window->pitch,
-                    0);
+    /* initial buffers update */
+    invalidate_signal (context->output_node, &initial_rect, context);
 
-    SDL_UnlockSurface (main_window);
-
-    SDL_UpdateRect (main_window, 0, 0, 0, 0);
-
-    /* This signal will trigger to update main_window when the output node's
+    /* This signal will trigger to update the surface when the output node's
      * contents change. Updating instantly is very inefficient but is good
      * enough for this example.
      */
     g_signal_connect (context->output_node, "invalidated",
-                      G_CALLBACK (invalidate_signal), main_window);
+                      G_CALLBACK (invalidate_signal), context);
 
     while(1)
       {
