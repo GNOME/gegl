@@ -459,7 +459,7 @@ process (GeglOperation       *operation,
   horizontal_effect = (o->direction == GEGL_WIND_DIRECTION_LEFT ||
                        o->direction == GEGL_WIND_DIRECTION_RIGHT);
 
-  need_reverse = (o->direction == GEGL_WIND_DIRECTION_RIGHT ||
+  need_reverse = (o->direction == GEGL_WIND_DIRECTION_LEFT ||
                   o->direction == GEGL_WIND_DIRECTION_TOP);
 
   if (horizontal_effect)
