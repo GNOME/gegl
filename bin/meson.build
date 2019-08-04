@@ -17,7 +17,7 @@ if libpng.found()
   gegl_deps += [ libpng, ]
 endif
 
-if mrg.found() and gexiv2.found()
+if mrg.found() and gexiv2.found() and lua.found()
   gegl_sources += files(
     'argvs.c',
     'mrg-gegl.c',
@@ -33,7 +33,7 @@ if mrg.found() and gexiv2.found()
     capture: true,
   )
 
-  gegl_deps += [ mrg, gexiv2, sdl1, ]
+  gegl_deps += [ mrg, gexiv2, sdl1, lua]
 endif
 
 if libspiro.found()
