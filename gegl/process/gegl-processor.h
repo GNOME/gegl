@@ -85,6 +85,8 @@ gboolean       gegl_processor_work          (GeglProcessor *processor,
  * Returns the (cache) buffer the processor is rendering into, another way of
  * getting to the same pixel data is calling gegl_node_blit with flags
  * indicating that we want caching and accept dirty data.
+ *
+ * Return value: (transfer full): the #GeglBuffer rendered into.
  */
 
 GeglBuffer *gegl_processor_get_buffer (GeglProcessor *processor);
