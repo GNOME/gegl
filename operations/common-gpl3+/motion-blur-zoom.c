@@ -77,7 +77,7 @@ prepare (GeglOperation *operation)
 
   whole_region = gegl_operation_source_get_bounding_box (operation, "input");
 
-  if (whole_region != NULL)
+  if (whole_region && ! gegl_rectangle_is_infinite_plane (whole_region))
     {
      gdouble center_x, center_y;
 
@@ -228,6 +228,32 @@ process (GeglOperation       *operation,
   return  TRUE;
 }
 
+static gboolean
+operation_process (GeglOperation        *operation,
+                   GeglOperationContext *context,
+                   const gchar          *output_prop,
+                   const GeglRectangle  *result,
+                   gint                  level)
+{
+  GeglOperationClass  *operation_class;
+
+  const GeglRectangle *in_rect =
+    gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+    {
+      gpointer in = gegl_operation_context_get_object (context, "input");
+      gegl_operation_context_take_object (context, "output",
+                                          g_object_ref (G_OBJECT (in)));
+      return TRUE;
+    }
+
+  operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+
+  return operation_class->process (operation, context, output_prop, result,
+                                   gegl_operation_context_get_level (context));
+}
+
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
@@ -238,6 +264,7 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
 
   operation_class->prepare = prepare;
+  operation_class->process = operation_process;
   filter_class->process    = process;
 
   gegl_operation_class_set_keys (operation_class,
