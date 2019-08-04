@@ -57,6 +57,7 @@ m4_define([popplerglib_required_version], [0.71.0])
 m4_define([zlib_required_version], [1.2.0])
 m4_define([png_required_version], [1.6.0])
 m4_define([sdl_required_version], [1.2.0])
+m4_define([sdl2_required_version], [2.0.5])
 m4_define([libtiff_required_version], [4.0.0])
 m4_define([webp_required_version], [0.5.0])
 m4_define([poly2tri-c_required_version], [0.0.0])
@@ -948,14 +949,36 @@ AC_SUBST(OPENEXR_CFLAGS)
 AC_SUBST(OPENEXR_LIBS) 
 
 
-###############
-# Check for SDL
-###############
+######################
+# Check for SDL2 / SDL
+######################
 
+AC_ARG_WITH(sdl, [  --without-sdl2          build without SDL2 support])
 AC_ARG_WITH(sdl, [  --without-sdl           build without SDL support])
 
+have_sdl2="no"
+if test "x$with_sdl2" != "xno"; then
+  AC_PATH_PROG(SDL2_CONFIG, sdl2-config, no)
+  if test "$SDL2_CONFIG" = "no"; then
+    have_sdl2="no  (SDL2 library not found)"
+    AC_MSG_RESULT([*** Check for SDL2 library failed.])
+  else
+    have_sdl2="yes"
+    SDL2_CFLAGS=`$SDL2_CONFIG --cflags`
+    SDL2_LIBS=`$SDL2_CONFIG --libs`
+  fi
+fi
+
+AM_CONDITIONAL(HAVE_SDL2, test "$have_sdl2" = "yes")
+
+AC_SUBST(SDL2_CFLAGS)
+AC_SUBST(SDL2_LIBS)
+
 have_sdl="no"
-if test "x$with_sdl" != "xno"; then
+if test "$have_sdl2" = "yes"; then
+  AC_MSG_NOTICE([Skipping SDL check (SDL2 and SDL are exclusive)])
+  have_sdl="no (skipped)"
+elif test "x$with_sdl" != "xno"; then
   AC_PATH_PROG(SDL_CONFIG, sdl-config, no)
   if test "$SDL_CONFIG" = "no"; then
     have_sdl="no  (SDL library not found)"
@@ -968,7 +991,7 @@ if test "x$with_sdl" != "xno"; then
 fi
 
 AM_CONDITIONAL(HAVE_SDL, test "$have_sdl" = "yes")
- 
+
 AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 
@@ -1417,6 +1440,7 @@ Optional dependencies:
   PNG:             $have_libpng
   OpenEXR:         $have_openexr
   rsvg:            $have_librsvg
+  SDL2:            $have_sdl2
   SDL:             $have_sdl
   libraw:          $have_libraw
   Jasper:          $have_jasper
