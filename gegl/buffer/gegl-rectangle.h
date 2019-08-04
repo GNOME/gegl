@@ -241,7 +241,7 @@ gboolean    gegl_rectangle_intersect     (GeglRectangle       *dest,
                                           const GeglRectangle *src2);
 
 /**
- * gegl_rectangle_subtract_bounding_box:
+ * gegl_rectangle_subtract:
  * @destination: an array of 4 #GeglRectangle elements
  * @minuend: a #GeglRectangle
  * @subtrahend: a #GeglRectangle
