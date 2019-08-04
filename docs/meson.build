@@ -46,9 +46,6 @@ if enscript.found()
     )
   endforeach
 
-
-
-
   html_files += enscript_files
   # gtkdoc_files += enscript_files
 endif
@@ -64,11 +61,12 @@ html_files += custom_target('class-hierarchy.html',
     'GEGL_PATH='+ meson.build_root() / 'operations',
     introspect,
   ],
+  build_by_default : true,
   capture: true,
 )
 
 if asciidoc.found()
-  txt_files = files(
+asciidoc_files = files(
     'abyss_policy.txt',
     'build.txt',
     'commandline.txt',
@@ -84,7 +82,7 @@ if asciidoc.found()
     'operation-api.txt',
     'source-overview.txt',
   )
-  txt_files += [
+asciidoc_files += [
     configure_file(
       input : 'copyright.txt.in',
       output: 'copyright.txt',
@@ -102,33 +100,23 @@ if asciidoc.found()
     ),
   ]
 
-  asciidoc_gen = generator(asciidoc,
-    arguments: [
+
+foreach file: asciidoc_files
+  rendered_file = custom_target('@0@.html'.format(file).underscorify(),
+    output: '@BASENAME@.html',
+    input: file,
+    build_by_default : true,
+    command: [ asciidoc,
       '--unsafe',
       '-o', '@OUTPUT@',
-      '-a', 'stylesheet=@0@'.format(meson.current_source_dir() / 'gegl.css'),
+      '-a', 'stylesheet="@0@"'.format(join_paths(meson.source_root(), 'gegl.css')),
       '-a', 'quirks!',
-      '@INPUT@'
+      '@INPUT@',
     ],
-    output: '@BASENAME@.html',
   )
-
-  html_files += asciidoc_gen.process(txt_files)
-endif
+endforeach
 
 
-if ruby.found()
-  inheritance_dot = custom_target('inheritance.dot',
-    output: 'inheritance.dot',
-    command: [ gobj2dot, meson.source_root() ],
-    capture: true,
-    build_always_stale: true,
-  )
-  html_files += custom_target('inheritance.png',
-    input :  inheritance_dot,
-    output: 'inheritance.png',
-    command: [ graphviz, '-Tpng', '@INPUT@', '-o', '@OUTPUT@' ],
-  )
 endif
 
 
@@ -210,7 +198,6 @@ glib_docpath = join_paths(glib_prefix, 'share', 'gtk-doc', 'html')
 gnome.gtkdoc('gegl',
              dependencies : gegl_lib,
              main_xml : meson.project_name() + '-docs.xml',
-#             gobject_typesfile : meson.project_name() + '.types',
   src_dir: [
     join_paths(meson.source_root(), 'gegl'),
     join_paths(meson.build_root(), 'gegl'),
@@ -220,7 +207,5 @@ gnome.gtkdoc('gegl',
     '--html-dir=@0@'.format(docpath),
     '--extra-dir=@0@'.format(glib_docpath),
   ],
-  install : false,
-
-#             ignore_headers : ignore_headers,
-            )
+#  install : false,
+)

@@ -32,6 +32,7 @@
     <title>Graph</title>
     <xi:include href="xml/gegl-node.xml" />
     <xi:include href="xml/gegl-pad.xml" />
+    <xi:include href="xml/gegl-connection.xml" />
     <xi:include href="xml/gegl-processor.xml" />
   </chapter>
 
@@ -60,6 +61,7 @@
 
   <chapter id="Misc">
     <title>Misc</title>
+    <xi:include href="xml/gegl-types.xml" />
     <xi:include href="xml/gegl-init.xml" />
     <xi:include href="xml/gegl-lookup.xml" />
     <xi:include href="xml/gegl-apply.xml" />

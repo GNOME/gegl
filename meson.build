@@ -235,6 +235,7 @@ libv4l2   = dependency('libv4l2',     version: '>=1.0.1',
 lua       = dependency('luajit',      version: '>=2.0.4',
   required: get_option('lua')
 )
+config.set('HAVE_LUA', lua.found())
 mrg       = dependency('mrg',         version: '>=0.0.0',
   required: get_option('mrg')
 )
@@ -329,20 +330,20 @@ if get_option('docs')
   subdir('docs')
 endif
 
-if w3m.found()
-  custom_target('README',
-    input : 'docs/index.html',
-    output: 'README',
-    command: [ w3m, '-cols', '72', '-dump', '@INPUT@' ],
-    capture: true,
-  )
-  custom_target('NEWS',
-    input : 'docs/NEWS.html',
-    output: 'NEWS',
-    command: [ w3m, '-cols', '72', '-dump', '@INPUT@' ],
-    capture: true,
-  )
-endif
+#if w3m.found()
+#  custom_target('README',
+#    input : 'docs/index.html',
+#    output: 'README',
+#    command: [ w3m, '-cols', '72', '-dump', '@INPUT@' ],
+#    capture: true,
+#  )
+#  custom_target('NEWS',
+#    input : 'docs/NEWS.html',
+#    output: 'NEWS',
+#    command: [ w3m, '-cols', '72', '-dump', '@INPUT@' ],
+#    capture: true,
+#  )
+#endif
 
 pkgconfig.generate(filebase: 'gegl-' + api_version,
   name: 'GEGL',

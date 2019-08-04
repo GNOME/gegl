@@ -5,7 +5,7 @@ option('enable-sse4_1', type: 'boolean', value: true, description: 'enable SSE4.
 option('enable-f16c',   type: 'boolean', value: true, description: 'enable hardware half-float support')
 option('docs',          type: 'boolean', value: 'true')
 option('workshop',      type: 'boolean', value: 'true')
-option('introspection', type: 'boolean', value: 'false')
+option('introspection', type: 'boolean', value: 'true')
 
 option('exiv2',         type: 'feature', value: 'auto')
 option('gdk-pixbuf',    type: 'feature', value: 'auto')

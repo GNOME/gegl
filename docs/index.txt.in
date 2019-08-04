@@ -7,10 +7,14 @@ GEGL
 
 image::images/GEGL.png[GEGL]
 
+
 *GEGL* (Generic Graphics Library) is a data flow based image processing
 framework, providing floating point processing and non-destructive image
-processing capabilities to link:http://www.gimp.org/[GNU Image Manipulation Program] and other projects (link:http://www.imgflo.org/[imgflo], link:https://wiki.gnome.org/Apps/Photos[GNOME Photos], link:gcut.html[gcut],
-link:https://github.com/the-grid/iconographer[iconographer], ...)
+processing capabilities to link:http://www.gimp.org/[GNU Image Manipulation
+Program] and other projects (link:http://www.imgflo.org/[imgflo],
+link:https://wiki.gnome.org/Apps/Photos[GNOME Photos],
+link:https://github.com/the-grid/iconographer[iconographer], ...) as well as an
+internal lua based UI frontend.
 
 With GEGL you chain together processing link:operations/index.html[operations]
 to represent the desired image processing pipeline. GEGL provides operations
@@ -18,6 +22,11 @@ for link:operations/GeglOperationSource.html[image loading] and
 link:operations/GeglOperationSink.html[storing], link:operations/color.html[color adjustments], link:operations/artistic.html[GIMPs artistic] filters and more
 forms of link:features.html[image processing] GEGL can also be used from the
 link:commandline.html[commandline].
+
+For programming with GEGL, either adding new operations or using it from
+applications the link:html/index.html[API Reference] is useful, the API
+of GEGL is available through GObject Introspection, but only the lua
+binding has seen much testing.
 
 The primary repository for the GEGL source code
 link:http://git.gnome.org/browse/gegl/[in GNOME git], and at GIMPs download
