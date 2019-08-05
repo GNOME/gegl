@@ -267,7 +267,7 @@ set_rectangle_noalloc (GeglBuffer      *output,
       gegl_color_get_pixel (color, format, col);
 
       gi = gegl_buffer_iterator_new (output, rect, 0, format,
-                                     GEGL_ACCESS_WRITE, GEGL_ABYSS_CLAMP, 1);
+                                     GEGL_ACCESS_READWRITE, GEGL_ABYSS_CLAMP, 1);
 
       while (gegl_buffer_iterator_next (gi))
         {
