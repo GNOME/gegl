@@ -101,7 +101,8 @@ gegl_tile_backend_buffer_class_init (GeglTileBackendBufferClass *klass)
                                    g_param_spec_object ("buffer", NULL, NULL,
                                                         GEGL_TYPE_BUFFER,
                                                         G_PARAM_READWRITE |
-                                                        G_PARAM_CONSTRUCT_ONLY));
+                                                        G_PARAM_CONSTRUCT_ONLY |
+                                                        G_PARAM_STATIC_STRINGS));
 }
 
 static void
