@@ -780,90 +780,107 @@ gegl_buffer_class_init (GeglBufferClass *class)
   g_object_class_install_property (gobject_class, PROP_PX_SIZE,
                                    g_param_spec_int ("px-size", "pixel-size", "size of a single pixel in bytes.",
                                                      0, G_MAXINT, 0,
-                                                     G_PARAM_READABLE));
+                                                     G_PARAM_READABLE |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_PIXELS,
                                    g_param_spec_int ("pixels", "pixels", "total amount of pixels in image (width x height)",
                                                      0, G_MAXINT, 0,
-                                                     G_PARAM_READABLE));
+                                                     G_PARAM_READABLE |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_WIDTH,
                                    g_param_spec_int ("width", "width", "pixel width of buffer",
                                                      -1, G_MAXINT, -1,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+                                                     G_PARAM_CONSTRUCT |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_HEIGHT,
                                    g_param_spec_int ("height", "height", "pixel height of buffer",
                                                      -1, G_MAXINT, -1,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+                                                     G_PARAM_CONSTRUCT |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_X,
                                    g_param_spec_int ("x", "x", "local origin's offset relative to source origin",
                                                      G_MININT / 2, G_MAXINT / 2, 0,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+                                                     G_PARAM_CONSTRUCT |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_Y,
                                    g_param_spec_int ("y", "y", "local origin's offset relative to source origin",
                                                      G_MININT / 2, G_MAXINT / 2, 0,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+                                                     G_PARAM_CONSTRUCT |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_ABYSS_WIDTH,
                                    g_param_spec_int ("abyss-width", "abyss-width", "pixel width of abyss",
                                                      -1, G_MAXINT, 0,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+                                                     G_PARAM_CONSTRUCT_ONLY |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_ABYSS_HEIGHT,
                                    g_param_spec_int ("abyss-height", "abyss-height", "pixel height of abyss",
                                                      -1, G_MAXINT, 0,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+                                                     G_PARAM_CONSTRUCT_ONLY |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_ABYSS_X,
                                    g_param_spec_int ("abyss-x", "abyss-x", "",
                                                      G_MININT / 2, G_MAXINT / 2, 0,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+                                                     G_PARAM_CONSTRUCT_ONLY |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_ABYSS_Y,
                                    g_param_spec_int ("abyss-y", "abyss-y", "",
                                                      G_MININT / 2, G_MAXINT / 2, 0,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+                                                     G_PARAM_CONSTRUCT_ONLY |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_SHIFT_X,
                                    g_param_spec_int ("shift-x", "shift-x", "",
                                                      G_MININT / 2, G_MAXINT / 2, 0,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+                                                     G_PARAM_CONSTRUCT_ONLY |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_SHIFT_Y,
                                    g_param_spec_int ("shift-y", "shift-y", "",
                                                      G_MININT / 2, G_MAXINT / 2, 0,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+                                                     G_PARAM_CONSTRUCT_ONLY |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_FORMAT,
                                    g_param_spec_pointer ("format", "format", "babl format",
                                                          G_PARAM_READWRITE |
-                                                         G_PARAM_CONSTRUCT));
+                                                         G_PARAM_CONSTRUCT |
+                                                         G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_BACKEND,
                                    g_param_spec_object ("backend", "backend", "A custom tile-backend instance to use",
                                                         GEGL_TYPE_TILE_BACKEND,
                                                         G_PARAM_READWRITE |
-                                                        G_PARAM_CONSTRUCT_ONLY));
+                                                        G_PARAM_CONSTRUCT_ONLY |
+                                                        G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_TILE_HEIGHT,
                                    g_param_spec_int ("tile-height", "tile-height", "height of a tile",
                                                      -1, G_MAXINT, gegl_buffer_config()->tile_height,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+                                                     G_PARAM_CONSTRUCT_ONLY |
+                                                     G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_TILE_WIDTH,
                                    g_param_spec_int ("tile-width", "tile-width", "width of a tile",
                                                      -1, G_MAXINT, gegl_buffer_config()->tile_width,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+                                                     G_PARAM_CONSTRUCT_ONLY |
+                                                     G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_PATH,
                                    g_param_spec_string ("path", "Path",
                                                         "URI to where the buffer is stored",
                                                         NULL,
                                                         G_PARAM_READWRITE |
-                                                        G_PARAM_CONSTRUCT_ONLY));
+                                                        G_PARAM_CONSTRUCT_ONLY |
+                                                        G_PARAM_STATIC_STRINGS));
 
   gegl_buffer_signals[CHANGED] =
     g_signal_new ("changed",
