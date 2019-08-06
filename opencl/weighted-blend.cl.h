@@ -26,6 +26,6 @@ static const char* weighted_blend_cl_source =
 "                                                                              \n"
 "  out_v.xyz = in_weight * in_v.xyz + aux_weight * aux_v.xyz;                  \n"
 "  out_v.w = total_alpha;                                                      \n"
-"  out[gid] = out_v;                                                           \n"
+"  out[gid] = out_v * ((in_v.w + aux_v.w) > 0.f);                              \n"
 "}                                                                             \n"
 ;
