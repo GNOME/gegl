@@ -1281,7 +1281,8 @@ gegl_tile_backend_file_class_init (GeglTileBackendFileClass *klass)
                                                         "The base path for this backing file for a buffer",
                                                         NULL,
                                                         G_PARAM_CONSTRUCT_ONLY |
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE |
+                                                        G_PARAM_STATIC_STRINGS));
 }
 
 static void

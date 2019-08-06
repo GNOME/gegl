@@ -220,14 +220,16 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                      "Tile width",
                                                      "default tile width for created buffers.",
                                                      0, G_MAXINT, 128,
-                                                     G_PARAM_READWRITE));
+                                                     G_PARAM_READWRITE |
+                                                     G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_TILE_HEIGHT,
                                    g_param_spec_int ("tile-height",
                                                      "Tile height",
                                                      "default tile height for created buffers.",
                                                      0, G_MAXINT, 128,
-                                                     G_PARAM_READWRITE));
+                                                     G_PARAM_READWRITE |
+                                                     G_PARAM_STATIC_STRINGS));
 
   {
     uint64_t default_tile_cache_size = 1024l * 1024 * 1024;
@@ -333,7 +335,8 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                         "Tile Cache size",
                                                         "size of tile cache in bytes",
                                                         0, G_MAXUINT64, default_tile_cache_size,
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE |
+                                                        G_PARAM_STATIC_STRINGS));
   }
 
   g_object_class_install_property (gobject_class, PROP_CHUNK_SIZE,
@@ -342,6 +345,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                      "the number of pixels processed simultaneously by GEGL.",
                                                      1, G_MAXINT, 1024 * 1024,
                                                      G_PARAM_READWRITE |
+                                                     G_PARAM_STATIC_STRINGS |
                                                      G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class, PROP_QUALITY,
@@ -350,6 +354,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                         "quality/speed trade off 1.0 = full quality, 0.0 = full speed",
                                                         0.0, 1.0, 1.0,
                                                         G_PARAM_READWRITE |
+                                                        G_PARAM_STATIC_STRINGS |
                                                         G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class, PROP_SWAP,
@@ -357,14 +362,16 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                         "Swap",
                                                         "where gegl stores it's swap files",
                                                         NULL,
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE |
+                                                        G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_SWAP_COMPRESSION,
                                    g_param_spec_string ("swap-compression",
                                                         "Swap compression",
                                                         "compression algorithm used for data stored in the swap",
                                                         NULL,
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE |
+                                                        G_PARAM_STATIC_STRINGS));
 
   _gegl_threads = g_get_num_processors ();
   _gegl_threads = MIN (_gegl_threads, GEGL_MAX_THREADS);
@@ -375,6 +382,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                      0, GEGL_MAX_THREADS,
                                                      _gegl_threads,
                                                      G_PARAM_READWRITE |
+                                                     G_PARAM_STATIC_STRINGS |
                                                      G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class, PROP_MIPMAP_RENDERING,
@@ -383,6 +391,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                          "Enable code paths for mipmap preview rendering, uses approximations for 50% 25% etc zoom factors to reduce processing.",
                                                          FALSE,
                                                          G_PARAM_READWRITE |
+                                                         G_PARAM_STATIC_STRINGS |
                                                          G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class, PROP_USE_OPENCL,
@@ -391,6 +400,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                          "Try to use OpenCL",
                                                          FALSE,
                                                          G_PARAM_READWRITE |
+                                                         G_PARAM_STATIC_STRINGS |
                                                          G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class, PROP_QUEUE_SIZE,
@@ -398,7 +408,8 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                      "Queue size",
                                                      "Maximum size of a file backend's writer thread queue (in bytes)",
                                                      2, G_MAXINT, 50 * 1024 *1024,
-                                                     G_PARAM_READWRITE));
+                                                     G_PARAM_READWRITE |
+                                                     G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_APPLICATION_LICENSE,
                                    g_param_spec_string ("application-license",
@@ -406,6 +417,7 @@ gegl_config_class_init (GeglConfigClass *klass)
                                                         "A list of additional licenses to allow for operations",
                                                         "",
                                                         G_PARAM_READWRITE |
+                                                        G_PARAM_STATIC_STRINGS |
                                                         G_PARAM_CONSTRUCT));
 }
 

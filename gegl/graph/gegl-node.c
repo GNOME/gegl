@@ -144,6 +144,7 @@ gegl_node_class_init (GeglNodeClass *klass)
                                                         "The associated GeglOperation instance",
                                                         GEGL_TYPE_OPERATION,
                                                         G_PARAM_READWRITE |
+                                                        G_PARAM_STATIC_STRINGS |
                                                         G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class, PROP_OP_CLASS,
@@ -152,6 +153,7 @@ gegl_node_class_init (GeglNodeClass *klass)
                                                         "The type of associated GeglOperation",
                                                         "",
                                                         G_PARAM_CONSTRUCT |
+                                                        G_PARAM_STATIC_STRINGS |
                                                         G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_DONT_CACHE,
@@ -161,6 +163,7 @@ gegl_node_class_init (GeglNodeClass *klass)
                                                         " (Deprecated for \"cache-policy\".)",
                                                         FALSE,
                                                         G_PARAM_CONSTRUCT |
+                                                        G_PARAM_STATIC_STRINGS |
                                                         G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_CACHE_POLICY,
@@ -170,6 +173,7 @@ gegl_node_class_init (GeglNodeClass *klass)
                                                       GEGL_TYPE_CACHE_POLICY,
                                                       GEGL_CACHE_POLICY_AUTO,
                                                       G_PARAM_CONSTRUCT |
+                                                      G_PARAM_STATIC_STRINGS |
                                                       G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_USE_OPENCL,
@@ -178,6 +182,7 @@ gegl_node_class_init (GeglNodeClass *klass)
                                                          "Use the OpenCL version of this operation if available, this property is inherited by children created from a node.",
                                                          TRUE,
                                                          G_PARAM_CONSTRUCT |
+                                                         G_PARAM_STATIC_STRINGS |
                                                          G_PARAM_READWRITE));
 
 
@@ -187,6 +192,7 @@ gegl_node_class_init (GeglNodeClass *klass)
                                                         "The name of the node",
                                                         "",
                                                         G_PARAM_CONSTRUCT |
+                                                        G_PARAM_STATIC_STRINGS |
                                                         G_PARAM_READWRITE));
 
   g_object_class_install_property (gobject_class, PROP_PASSTHROUGH,
@@ -195,6 +201,7 @@ gegl_node_class_init (GeglNodeClass *klass)
                                                         "Act as a nop, passing input unmodifed through to ouput.",
                                                         FALSE,
                                                         G_PARAM_CONSTRUCT |
+                                                        G_PARAM_STATIC_STRINGS |
                                                         G_PARAM_READWRITE));
 
   gegl_node_signals[INVALIDATED] =
