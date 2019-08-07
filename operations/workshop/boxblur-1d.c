@@ -43,6 +43,127 @@ property_enum (orientation, _("Orientation"),
 
 #include "gegl-op.h"
 
+#include "opencl/gegl-cl.h"
+#include "gegl-buffer-cl-iterator.h"
+
+#include "opencl/boxblur-1d.cl.h"
+
+static GeglClRunData *cl_data = NULL;
+
+
+static gboolean
+cl_boxblur (cl_mem                 in_tex,
+            cl_mem                 out_tex,
+            const GeglRectangle   *roi,
+            gint                   radius,
+            GeglOrientation        orientation)
+{
+  cl_int cl_err = 0;
+  size_t global_ws[2];
+  gint   kernel_num;
+
+  if (!cl_data)
+    {
+      const char *kernel_name[] = {"box_blur_hor", "box_blur_ver", NULL};
+      cl_data = gegl_cl_compile_and_build (boxblur_1d_cl_source, kernel_name);
+    }
+
+  if (!cl_data)
+    return TRUE;
+
+  if (orientation == GEGL_ORIENTATION_VERTICAL)
+    kernel_num = 1;
+  else
+    kernel_num = 0;
+
+  global_ws[0] = roi->width;
+  global_ws[1] = roi->height;
+
+  cl_err = gegl_cl_set_kernel_args (cl_data->kernel[kernel_num],
+                                    sizeof(cl_mem), (void*)&in_tex,
+                                    sizeof(cl_mem), (void*)&out_tex,
+                                    sizeof(cl_int), (void*)&radius,
+                                    NULL);
+  CL_CHECK;
+
+  cl_err = gegl_clEnqueueNDRangeKernel (gegl_cl_get_command_queue (),
+                                        cl_data->kernel[kernel_num], 2,
+                                        NULL, global_ws, NULL,
+                                        0, NULL, NULL);
+  CL_CHECK;
+
+  cl_err = gegl_clFinish (gegl_cl_get_command_queue ());
+  CL_CHECK;
+
+  return FALSE;
+
+error:
+  return TRUE;
+}
+
+static gboolean
+cl_process (GeglBuffer            *input,
+            GeglBuffer            *output,
+            const GeglRectangle   *result,
+            const Babl            *format,
+            gint                   radius,
+            GeglOrientation        orientation)
+{
+  gboolean              err = FALSE;
+  cl_int                cl_err = 0;
+  GeglBufferClIterator *i;
+  gint                  read;
+  gint                  left, right, top, bottom;
+
+  if (orientation == GEGL_ORIENTATION_HORIZONTAL)
+    {
+      right = left = radius;
+      top = bottom = 0;
+    }
+  else
+    {
+      right = left = 0;
+      top = bottom = radius;
+    }
+
+  i = gegl_buffer_cl_iterator_new (output,
+                                   result,
+                                   format,
+                                   GEGL_CL_BUFFER_WRITE);
+
+  read = gegl_buffer_cl_iterator_add_2 (i,
+                                        input,
+                                        result,
+                                        format,
+                                        GEGL_CL_BUFFER_READ,
+                                        left, right,
+                                        top, bottom,
+                                        GEGL_ABYSS_CLAMP);
+  CL_CHECK;
+
+  while (gegl_buffer_cl_iterator_next (i, &err) && !err)
+    {
+      err = cl_boxblur(i->tex[read],
+                       i->tex[0],
+                       &i->roi[0],
+                       radius,
+                       orientation);
+
+      if (err)
+        {
+          gegl_buffer_cl_iterator_stop (i);
+          break;
+        }
+    }
+
+  CL_CHECK;
+
+  return !err;
+
+error:
+  return FALSE;
+}
+
 static void
 prepare (GeglOperation *operation)
 {
@@ -222,6 +343,13 @@ process (GeglOperation       *operation,
       scaled_roi.height *= factor;
     }
 
+  if (gegl_operation_use_opencl (operation) &&
+          format == babl_format ("RaGaBaA float"))
+    {
+      return cl_process (input, output, &scaled_roi, format,
+                         o->radius, o->orientation);
+    }
+
   if (o->orientation == GEGL_ORIENTATION_HORIZONTAL)
     {
       src_rect.x      = scaled_roi.x - scaled_radius;
@@ -328,7 +456,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   operation_class->get_bounding_box  = get_bounding_box;
   operation_class->get_cached_region = get_cached_region;
-  operation_class->opencl_support    = FALSE;
+  operation_class->opencl_support    = TRUE;
   operation_class->prepare           = prepare;
   operation_class->process           = operation_process;
 
