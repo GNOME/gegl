@@ -116,7 +116,7 @@ gegl_rectangle_alignment_get_type (void)
       static GEnumValue values[] = {
         { GEGL_RECTANGLE_ALIGNMENT_SUBSET,   N_("Subset"),   "subset"   },
         { GEGL_RECTANGLE_ALIGNMENT_SUPERSET, N_("Superset"), "superset" },
-        { GEGL_RECTANGLE_ALIGNMENT_NEAREST,  N_("Nesrest"),  "nesrest"  },
+        { GEGL_RECTANGLE_ALIGNMENT_NEAREST,  N_("Nearest"),  "nearest"  },
         { 0, NULL, NULL }
       };
       gint i;
