@@ -85,63 +85,63 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                         "Tile Cache total size",
                                                         "Total size of tile cache in bytes",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_TILE_CACHE_TOTAL_MAX,
                                    g_param_spec_uint64 ("tile-cache-total-max",
                                                         "Tile Cache maximal total size",
                                                         "Maximal total size of tile cache throughout the session in bytes",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_TILE_CACHE_TOTAL_UNCOMPRESSED,
                                    g_param_spec_uint64 ("tile-cache-total-uncompressed",
                                                         "Tile Cache total uncompressed size",
                                                         "Total size of tile cache if no compression was employed in bytes",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_TILE_CACHE_HITS,
                                    g_param_spec_int ("tile-cache-hits",
                                                      "Tile Cache hits",
                                                      "Number of tile cache hits",
                                                      0, G_MAXINT, 0,
-                                                     G_PARAM_READABLE));
+                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_TILE_CACHE_MISSES,
                                    g_param_spec_int ("tile-cache-misses",
                                                      "Tile Cache misses",
                                                      "Number of tile cache misses",
                                                      0, G_MAXINT, 0,
-                                                     G_PARAM_READABLE));
+                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_SWAP_TOTAL,
                                    g_param_spec_uint64 ("swap-total",
                                                         "Swap total size",
                                                         "Total size of the data in the swap",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_SWAP_TOTAL_UNCOMPRESSED,
                                    g_param_spec_uint64 ("swap-total-uncompressed",
                                                         "Swap total uncompressed size",
                                                         "Total size of if the data in the swap if no compression was employed in bytes",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_SWAP_FILE_SIZE,
                                    g_param_spec_uint64 ("swap-file-size",
                                                         "Swap file size",
                                                         "Size of the swap file",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_SWAP_BUSY,
                                    g_param_spec_boolean ("swap-busy",
                                                          "Swap busy",
                                                          "Whether there is work queued for the swap",
                                                          FALSE,
-                                                         G_PARAM_READABLE));
+                                                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 
   g_object_class_install_property (object_class, PROP_SWAP_QUEUED_TOTAL,
@@ -149,7 +149,7 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                         "Swap total queued size",
                                                         "Total size of the data queued for writing to the swap",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 
   g_object_class_install_property (object_class, PROP_SWAP_QUEUE_FULL,
@@ -157,7 +157,7 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                          "Swap queue full",
                                                          "Whether the swap queue is full",
                                                          FALSE,
-                                                         G_PARAM_READABLE));
+                                                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_SWAP_QUEUE_STALLS,
                                    g_param_spec_int ("swap-queue-stalls",
@@ -165,14 +165,14 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                      "Number of times writing to the swap has been stalled, "
                                                      "due to a full queue",
                                                      0, G_MAXINT, 0,
-                                                     G_PARAM_READABLE));
+                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_SWAP_READING,
                                    g_param_spec_boolean ("swap-reading",
                                                          "Swap reading",
                                                          "Whether data is being read from the swap",
                                                          FALSE,
-                                                         G_PARAM_READABLE));
+                                                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 
   g_object_class_install_property (object_class, PROP_SWAP_READ_TOTAL,
@@ -180,14 +180,14 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                         "Swap read total",
                                                         "Total amount of data read from the swap",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_SWAP_WRITING,
                                    g_param_spec_boolean ("swap-writing",
                                                          "Swap writing",
                                                          "Whether data is being written to the swap",
                                                          FALSE,
-                                                         G_PARAM_READABLE));
+                                                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
 
   g_object_class_install_property (object_class, PROP_SWAP_WRITE_TOTAL,
@@ -195,42 +195,42 @@ gegl_stats_class_init (GeglStatsClass *klass)
                                                         "Swap write total",
                                                         "Total amount of data written to the swap",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_ZOOM_TOTAL,
                                    g_param_spec_uint64 ("zoom-total",
                                                         "Zoom total",
                                                         "Total size of data processed by the zoom tile handler",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_TILE_ALLOC_TOTAL,
                                    g_param_spec_uint64 ("tile-alloc-total",
                                                         "Tile allocator total",
                                                         "Total size of tile-allocator memory",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_SCRATCH_TOTAL,
                                    g_param_spec_uint64 ("scratch-total",
                                                         "Scratch total",
                                                         "Total size of scratch memory",
                                                         0, G_MAXUINT64, 0,
-                                                        G_PARAM_READABLE));
+                                                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_ASSIGNED_THREADS,
                                    g_param_spec_int ("assigned-threads",
                                                      "Assigned threads",
                                                      "Number of assigned worker threads",
                                                      0, G_MAXINT, 0,
-                                                     G_PARAM_READABLE));
+                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (object_class, PROP_ACTIVE_THREADS,
                                    g_param_spec_int ("active-threads",
                                                      "Active threads",
                                                      "Number of active worker threads",
                                                      0, G_MAXINT, 0,
-                                                     G_PARAM_READABLE));
+                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 }
 
 static void

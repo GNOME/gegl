@@ -82,7 +82,9 @@ gegl_sampler_cubic_class_init (GeglSamplerCubicClass *klass)
                          0.0,
                          1.0,
                          1.0,
-                         G_PARAM_CONSTRUCT | G_PARAM_READWRITE));
+                         G_PARAM_CONSTRUCT |
+                         G_PARAM_STATIC_STRINGS |
+                         G_PARAM_READWRITE));
 
   g_object_class_install_property ( object_class, PROP_C,
     g_param_spec_double ("c",
@@ -91,14 +93,18 @@ gegl_sampler_cubic_class_init (GeglSamplerCubicClass *klass)
                          0.0,
                          1.0,
                          0.0,
-                         G_PARAM_CONSTRUCT | G_PARAM_READWRITE));
+                         G_PARAM_CONSTRUCT |
+                         G_PARAM_STATIC_STRINGS |
+                         G_PARAM_READWRITE));
 
   g_object_class_install_property ( object_class, PROP_TYPE,
     g_param_spec_string ("type",
                          "type",
                          "B-spline type (cubic | catmullrom | formula) 2c+b=1",
                          "cubic",
-                         G_PARAM_CONSTRUCT | G_PARAM_READWRITE));
+                         G_PARAM_CONSTRUCT |
+                         G_PARAM_STATIC_STRINGS |
+                         G_PARAM_READWRITE));
 }
 
 static void

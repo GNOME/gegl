@@ -231,33 +231,39 @@ gegl_tile_backend_class_init (GeglTileBackendClass *klass)
                                                      "Tile width in pixels",
                                                      0, G_MAXINT, 0,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+                                                     G_PARAM_CONSTRUCT_ONLY |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_TILE_HEIGHT,
                                    g_param_spec_int ("tile-height", "tile-height",
                                                      "Tile height in pixels",
                                                      0, G_MAXINT, 0,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT_ONLY));
+                                                     G_PARAM_CONSTRUCT_ONLY |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_TILE_SIZE,
                                    g_param_spec_int ("tile-size", "tile-size",
                                                      "Size of the tiles linear buffer in bytes",
                                                      0, G_MAXINT, 0,
-                                                     G_PARAM_READABLE));
+                                                     G_PARAM_READABLE |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_PX_SIZE,
                                    g_param_spec_int ("px-size", "px-size",
                                                      "Size of a single pixel in bytes",
                                                      0, G_MAXINT, 0,
-                                                     G_PARAM_READABLE));
+                                                     G_PARAM_READABLE |
+                                                     G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_FORMAT,
                                    g_param_spec_pointer ("format", "format",
                                                          "babl format",
                                                          G_PARAM_READWRITE |
-                                                         G_PARAM_CONSTRUCT_ONLY));
+                                                         G_PARAM_CONSTRUCT_ONLY |
+                                                         G_PARAM_STATIC_STRINGS));
   g_object_class_install_property (gobject_class, PROP_FLUSH_ON_DESTROY,
                                    g_param_spec_boolean ("flush-on-destroy", "flush-on-destroy",
                                                          "Cache tiles will be flushed before the backend is destroyed",
                                                          TRUE,
-                                                         G_PARAM_READWRITE));
+                                                         G_PARAM_READWRITE |
+                                                         G_PARAM_STATIC_STRINGS));
 }
 
 static void
