@@ -20,7 +20,7 @@ image: archlinux/base:latest
   variables:
     GIT_DEPTH: "5"
   before_script:
-    - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache git base-devel meson lcms2
+    - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache git base-devel meson lcms2 gobject-introspection
     - git clone --depth=$GIT_DEPTH https://gitlab.gnome.org/GNOME/babl.git _babl
     - cd _babl
     - mkdir _build
@@ -52,6 +52,7 @@ babl-min-meson:
     - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache
         base-devel
         ffmpeg
+        gobject-introspection
         graphviz
         jasper
         json-glib
