@@ -361,22 +361,24 @@ get_cached_region (GeglOperation       *operation,
                    const GeglRectangle *roi)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  GeglRectangle  *boundary;
-  GeglRectangle   result;
+  GeglRectangle   result = *roi;
 
-  boundary = gegl_operation_source_get_bounding_box (operation, "input");
-  result   = *roi;
+  const GeglRectangle  *in_rect =
+      gegl_operation_source_get_bounding_box (operation, "input");
 
-  if (o->direction == GEGL_WIND_DIRECTION_LEFT ||
-      o->direction == GEGL_WIND_DIRECTION_RIGHT)
+  if (in_rect && ! gegl_rectangle_is_infinite_plane (in_rect))
     {
-      result.x     = boundary->x;
-      result.width = boundary->width;
-    }
-  else
-    {
-      result.y      = boundary->y;
-      result.height = boundary->height;
+      if (o->direction == GEGL_WIND_DIRECTION_LEFT ||
+          o->direction == GEGL_WIND_DIRECTION_RIGHT)
+        {
+          result.x     = in_rect->x;
+          result.width = in_rect->width;
+        }
+      else
+        {
+          result.y      = in_rect->y;
+          result.height = in_rect->height;
+        }
     }
 
   return result;
@@ -388,29 +390,31 @@ get_required_for_output (GeglOperation       *operation,
                          const GeglRectangle *roi)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  GeglRectangle  *boundary;
-  GeglRectangle   result;
+  GeglRectangle   result = *roi;
 
-  boundary = gegl_operation_source_get_bounding_box (operation, "input");
-  result   = *roi;
+  const GeglRectangle  *in_rect =
+      gegl_operation_source_get_bounding_box (operation, "input");
 
-  if (o->direction == GEGL_WIND_DIRECTION_TOP)
+  if (in_rect && ! gegl_rectangle_is_infinite_plane (in_rect))
     {
-      result.height = boundary->height - roi->y;
-    }
-  else if (o->direction == GEGL_WIND_DIRECTION_BOTTOM)
-    {
-      result.y      = boundary->y;
-      result.height = boundary->height - roi->y + roi->height;
-    }
-  else if (o->direction == GEGL_WIND_DIRECTION_RIGHT)
-    {
-      result.x     = boundary->x;
-      result.width = boundary->width - roi->x + roi->width;
-    }
-  else
-    {
-      result.width = boundary->width - roi->x;
+      if (o->direction == GEGL_WIND_DIRECTION_TOP)
+        {
+          result.height = in_rect->height - roi->y;
+        }
+      else if (o->direction == GEGL_WIND_DIRECTION_BOTTOM)
+        {
+          result.y      = in_rect->y;
+          result.height = in_rect->height - roi->y + roi->height;
+        }
+      else if (o->direction == GEGL_WIND_DIRECTION_RIGHT)
+        {
+          result.x     = in_rect->x;
+          result.width = in_rect->width - roi->x + roi->width;
+        }
+      else
+        {
+          result.width = in_rect->width - roi->x;
+        }
     }
 
   return result;
@@ -455,7 +459,7 @@ process (GeglOperation       *operation,
   horizontal_effect = (o->direction == GEGL_WIND_DIRECTION_LEFT ||
                        o->direction == GEGL_WIND_DIRECTION_RIGHT);
 
-  need_reverse = (o->direction == GEGL_WIND_DIRECTION_RIGHT ||
+  need_reverse = (o->direction == GEGL_WIND_DIRECTION_LEFT ||
                   o->direction == GEGL_WIND_DIRECTION_TOP);
 
   if (horizontal_effect)
@@ -539,6 +543,31 @@ process (GeglOperation       *operation,
   return TRUE;
 }
 
+static gboolean
+operation_process (GeglOperation        *operation,
+                   GeglOperationContext *context,
+                   const gchar          *output_prop,
+                   const GeglRectangle  *result,
+                   gint                  level)
+{
+  GeglOperationClass  *operation_class;
+
+  const GeglRectangle *in_rect =
+    gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+    {
+      gpointer in = gegl_operation_context_get_object (context, "input");
+      gegl_operation_context_take_object (context, "output",
+                                          g_object_ref (G_OBJECT (in)));
+      return TRUE;
+    }
+
+  operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+
+  return operation_class->process (operation, context, output_prop, result,
+                                   gegl_operation_context_get_level (context));
+}
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
@@ -552,6 +581,7 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class->process                    = process;
   filter_class->get_split_strategy         = get_split_strategy;
   operation_class->prepare                 = prepare;
+  operation_class->process                 = operation_process;
   operation_class->get_cached_region       = get_cached_region;
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->opencl_support          = FALSE;
@@ -561,7 +591,7 @@ gegl_op_class_init (GeglOpClass *klass)
      "title",          _("Wind"),
      "categories",     "distort",
      "license",        "GPL3+",
-     "reference-hash", "1b549c20efb978e187357eb1e7dbace7",
+     "reference-hash", "0991d44188947d2c355062ce1d522f6e",
      "description",    _("Wind-like bleed effect"),
      NULL);
 }

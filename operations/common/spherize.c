@@ -79,6 +79,9 @@ is_nop (GeglOperation *operation)
 
   in_rect = gegl_operation_source_get_bounding_box (operation, "input");
 
+  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+    return TRUE;
+
   switch (o->mode)
     {
     case GEGL_SPHERIZE_MODE_RADIAL:

@@ -304,7 +304,16 @@ get_required_for_output (GeglOperation       *operation,
                          const gchar         *input_pad,
                          const GeglRectangle *region)
 {
-  GeglRectangle result = *gegl_operation_source_get_bounding_box (operation, "input");
+  GeglRectangle result = *region;
+
+  const GeglRectangle *in_rect =
+      gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (in_rect && ! gegl_rectangle_is_infinite_plane (in_rect))
+    {
+      result = *in_rect;
+    }
+
   return result;
 }
 
@@ -464,6 +473,32 @@ process (GeglOperation       *operation,
   return TRUE;
 }
 
+static gboolean
+operation_process (GeglOperation        *operation,
+                   GeglOperationContext *context,
+                   const gchar          *output_prop,
+                   const GeglRectangle  *result,
+                   gint                  level)
+{
+  GeglOperationClass  *operation_class;
+
+  const GeglRectangle *in_rect =
+    gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+    {
+      gpointer in = gegl_operation_context_get_object (context, "input");
+      gegl_operation_context_take_object (context, "output",
+                                          g_object_ref (G_OBJECT (in)));
+      return TRUE;
+    }
+
+  operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+
+  return operation_class->process (operation, context, output_prop, result,
+                                   gegl_operation_context_get_level (context));
+}
+
 static gchar *composition = "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
     "<node operation='gegl:stereographic-projection' width='200' height='200'/>"
@@ -482,10 +517,11 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class  = GEGL_OPERATION_FILTER_CLASS (klass);
 
-  filter_class->process = process;
-  operation_class->prepare = prepare;
-  operation_class->threaded = TRUE;
-  operation_class->get_bounding_box = get_bounding_box;
+  filter_class->process                    = process;
+  operation_class->prepare                 = prepare;
+  operation_class->process                 = operation_process;
+  operation_class->threaded                = TRUE;
+  operation_class->get_bounding_box        = get_bounding_box;
   operation_class->get_required_for_output = get_required_for_output;
 
   gegl_operation_class_set_keys (operation_class,

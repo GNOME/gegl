@@ -61,17 +61,15 @@ get_required_for_output (GeglOperation       *operation,
                          const gchar         *input_pad,
                          const GeglRectangle *roi)
 {
-  GeglRectangle *rect = gegl_operation_source_get_bounding_box (operation, input_pad);
+  const GeglRectangle *in_rect =
+      gegl_operation_source_get_bounding_box (operation, input_pad);
 
-  if (rect)
+  if (in_rect && ! gegl_rectangle_is_infinite_plane (in_rect))
     {
-      return *rect;
+      return *in_rect;
     }
-  else
-    {
-      GeglRectangle empty = {0,};
-      return empty;
-    }
+
+  return *roi;
 }
 
 static GeglRectangle
@@ -96,6 +94,32 @@ process (GeglOperation       *operation,
                            o->offset_y);
 
   return TRUE;
+}
+
+static gboolean
+operation_process (GeglOperation        *operation,
+                   GeglOperationContext *context,
+                   const gchar          *output_prop,
+                   const GeglRectangle  *result,
+                   gint                  level)
+{
+  GeglOperationClass  *operation_class;
+
+  const GeglRectangle *in_rect =
+    gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+    {
+      gpointer in = gegl_operation_context_get_object (context, "input");
+      gegl_operation_context_take_object (context, "output",
+                                          g_object_ref (G_OBJECT (in)));
+      return TRUE;
+    }
+
+  operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+
+  return operation_class->process (operation, context, output_prop, result,
+                                   gegl_operation_context_get_level (context));
 }
 
 static void
@@ -124,6 +148,7 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class     = GEGL_OPERATION_FILTER_CLASS (klass);
 
   filter_class->process                      = process;
+  operation_class->process                   = operation_process;
   operation_class->prepare                   = prepare;
   operation_class->get_bounding_box          = get_bounding_box;
   operation_class->get_required_for_output   = get_required_for_output;

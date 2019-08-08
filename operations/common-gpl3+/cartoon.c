@@ -166,24 +166,26 @@ get_required_for_output (GeglOperation       *operation,
                          const gchar         *input_pad,
                          const GeglRectangle *output_roi)
 {
-  GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation, input_pad);
+  const GeglRectangle *in_rect =
+      gegl_operation_source_get_bounding_box (operation, input_pad);
 
-  if (in_rect)
+  if (in_rect && ! gegl_rectangle_is_infinite_plane (in_rect))
     return *in_rect;
   else
-    return (GeglRectangle){0, 0, 0, 0};
+    return *output_roi;
 }
 
 static GeglRectangle
 get_cached_region (GeglOperation       *operation,
                    const GeglRectangle *output_roi)
 {
-  GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation, "input");
+  const GeglRectangle *in_rect =
+      gegl_operation_source_get_bounding_box (operation, "input");
 
-  if (in_rect)
+  if (in_rect && ! gegl_rectangle_is_infinite_plane (in_rect))
     return *in_rect;
   else
-    return (GeglRectangle){0, 0, 0, 0};
+    return *output_roi;
 }
 
 static gboolean
@@ -273,6 +275,32 @@ process (GeglOperation       *operation,
   return TRUE;
 }
 
+static gboolean
+operation_process (GeglOperation        *operation,
+                   GeglOperationContext *context,
+                   const gchar          *output_prop,
+                   const GeglRectangle  *result,
+                   gint                  level)
+{
+  GeglOperationClass  *operation_class;
+
+  const GeglRectangle *in_rect =
+    gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+    {
+      gpointer in = gegl_operation_context_get_object (context, "input");
+      gegl_operation_context_take_object (context, "output",
+                                          g_object_ref (G_OBJECT (in)));
+      return TRUE;
+    }
+
+  operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+
+  return operation_class->process (operation, context, output_prop, result,
+                                   gegl_operation_context_get_level (context));
+}
+
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
@@ -285,6 +313,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->get_cached_region       = get_cached_region;
   operation_class->threaded                = FALSE;
   operation_class->get_required_for_output = get_required_for_output;
+  operation_class->process                 = operation_process;
 
   filter_class->process = process;
 

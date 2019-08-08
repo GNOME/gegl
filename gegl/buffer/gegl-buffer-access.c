@@ -2386,7 +2386,8 @@ gegl_buffer_copy (GeglBuffer          *src,
                   GeglBuffer          *dst,
                   const GeglRectangle *dst_rect)
 {
-  GeglRectangle dest_rect_r;
+  GeglRectangle real_src_rect;
+  GeglRectangle real_dst_rect;
 
   g_return_if_fail (GEGL_IS_BUFFER (src));
   g_return_if_fail (GEGL_IS_BUFFER (dst));
@@ -2404,10 +2405,19 @@ gegl_buffer_copy (GeglBuffer          *src,
       dst_rect = src_rect;
     }
 
-  dest_rect_r = *dst_rect;
-  dest_rect_r.width = src_rect->width;
-  dest_rect_r.height = src_rect->height;
-  dst_rect = &dest_rect_r;
+  real_dst_rect        = *dst_rect;
+  real_dst_rect.width  = src_rect->width;
+  real_dst_rect.height = src_rect->height;
+
+  if (! gegl_rectangle_intersect (&real_dst_rect, &real_dst_rect, &dst->abyss))
+    return;
+
+  real_src_rect    = real_dst_rect;
+  real_src_rect.x += src_rect->x - dst_rect->x;
+  real_src_rect.y += src_rect->y - dst_rect->y;
+
+  src_rect = &real_src_rect;
+  dst_rect = &real_dst_rect;
 
   if (! gegl_rectangle_intersect (NULL, src_rect, &src->abyss))
     {
@@ -2467,8 +2477,13 @@ gegl_buffer_copy (GeglBuffer          *src,
       gint tile_width  = dst->tile_width;
       gint tile_height = dst->tile_height;
 
-      GeglRectangle cow_rect = *dst_rect;
+      GeglRectangle cow_rect;
       gint          rem;
+
+      gegl_rectangle_intersect (&cow_rect, src_rect, &src->abyss);
+
+      cow_rect.x += dst_rect->x - src_rect->x;
+      cow_rect.y += dst_rect->y - src_rect->y;
 
       /* adjust origin to match the start of tile alignment */
       rem = (cow_rect.x + dst->shift_x) % tile_width;

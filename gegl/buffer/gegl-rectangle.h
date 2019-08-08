@@ -157,6 +157,57 @@ void        gegl_rectangle_copy          (GeglRectangle       *destination,
                                           const GeglRectangle *source);
 
 /**
+ * gegl_rectangle_align:
+ * @destination: a #GeglRectangle
+ * @rectangle: a #GeglRectangle
+ * @tile: a #GeglRectangle
+ * @alignment: a #GeglRectangleAlignment value
+ *
+ * Aligns @rectangle to a regular tile grid, of which @tile is a representative
+ * tile, and stores the result in @destination.
+ *
+ * @alignment can be one of:
+ *
+ *   GEGL_RECTANGLE_ALIGNMENT_SUBSET:  Calculate the biggest aligned rectangle
+ *   contained in @rectangle.
+ *
+ *   GEGL_RECTANGLE_ALIGNMENT_SUPERSET:  Calculate the smallest aligned
+ *   rectangle containing @rectangle.
+ *
+ *   GEGL_RECTANGLE_ALIGNMENT_NEAREST:  Calculate the nearest aligned rectangle
+ *   to @rectangle.
+ *
+ * @destination may point to the same object as @rectangle or @tile.
+ *
+ * Returns TRUE if the result is not empty.
+ */
+gboolean    gegl_rectangle_align         (GeglRectangle          *destination,
+                                          const GeglRectangle    *rectangle,
+                                          const GeglRectangle    *tile,
+                                          GeglRectangleAlignment  alignment);
+
+/**
+ * gegl_rectangle_align_to_buffer:
+ * @destination: a #GeglRectangle
+ * @rectangle: a #GeglRectangle
+ * @buffer: a #GeglBuffer
+ * @alignment: a #GeglRectangleAlignment value
+ *
+ * Aligns @rectangle to the tile grid of @buffer, and stores the result in
+ * @destination.
+ *
+ * @alignment has the same meaning as for gegl_rectangle_align().
+ *
+ * @destination may point to the same object as @rectangle.
+ *
+ * Returns TRUE if the result is not empty.
+ */
+gboolean  gegl_rectangle_align_to_buffer (GeglRectangle          *destination,
+                                          const GeglRectangle    *rectangle,
+                                          GeglBuffer             *buffer,
+                                          GeglRectangleAlignment  alignment);
+
+/**
  * gegl_rectangle_bounding_box:
  * @destination: a #GeglRectangle
  * @source1: a #GeglRectangle
@@ -190,6 +241,23 @@ gboolean    gegl_rectangle_intersect     (GeglRectangle       *dest,
                                           const GeglRectangle *src2);
 
 /**
+ * gegl_rectangle_subtract:
+ * @destination: an array of 4 #GeglRectangle elements
+ * @minuend: a #GeglRectangle
+ * @subtrahend: a #GeglRectangle
+ *
+ * Subtracts @subtrahend from @minuend, and stores the resulting rectangles in
+ * @destination.  Between 0 and 4 disjoint rectangles may be produced.
+ *
+ * @destination may contain @minuend or @subtrahend.
+ *
+ * Returns the number of resulting rectangles.
+ */
+gint        gegl_rectangle_subtract      (GeglRectangle        destination[4],
+                                          const GeglRectangle *minuend,
+                                          const GeglRectangle *subtrahend);
+
+/**
  * gegl_rectangle_subtract_bounding_box:
  * @destination: a #GeglRectangle
  * @minuend: a #GeglRectangle
@@ -206,6 +274,24 @@ gboolean
     gegl_rectangle_subtract_bounding_box (GeglRectangle       *destination,
                                           const GeglRectangle *minuend,
                                           const GeglRectangle *subtrahend);
+
+/**
+ * gegl_rectangle_xor:
+ * @destination: an array of 4 #GeglRectangle elements
+ * @source1: a #GeglRectangle
+ * @source2: a #GeglRectangle
+ *
+ * Computes the symmetric difference of the rectangles @source1 and @source2,
+ * and stores the resulting rectangles in @destination.  Between 0 and 4
+ * disjoint rectangles may be produced.
+ *
+ * @destination may contain @rectangle1 or @rectangle2.
+ *
+ * Returns the number of resulting rectangles.
+ */
+gint        gegl_rectangle_xor           (GeglRectangle        destination[4],
+                                          const GeglRectangle *source1,
+                                          const GeglRectangle *source2);
 
 /**
  * gegl_rectangle_contains:

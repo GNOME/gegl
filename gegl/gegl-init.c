@@ -233,7 +233,7 @@ static const GOptionEntry cmd_entries[]=
     {
      "gegl-quality", 0, 0,
      G_OPTION_ARG_STRING, &cmd_gegl_quality,
-     N_("The quality of rendering a value between 0.0(fast) and 1.0(reference)"), "<quality>"
+     N_("The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"), "<quality>"
     },
     {
      "gegl-threads", 0, 0,

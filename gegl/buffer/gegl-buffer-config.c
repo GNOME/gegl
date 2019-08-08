@@ -147,7 +147,8 @@ gegl_buffer_config_class_init (GeglBufferConfigClass *klass)
                                                      "default tile width for created buffers.",
                                                      0, G_MAXINT, 128,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+                                                     G_PARAM_CONSTRUCT |
+                                                     G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_TILE_HEIGHT,
                                    g_param_spec_int ("tile-height",
@@ -155,7 +156,8 @@ gegl_buffer_config_class_init (GeglBufferConfigClass *klass)
                                                      "default tile height for created buffers.",
                                                      0, G_MAXINT, 128,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+                                                     G_PARAM_CONSTRUCT |
+                                                     G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_TILE_CACHE_SIZE,
                                    g_param_spec_uint64 ("tile-cache-size",
@@ -163,7 +165,8 @@ gegl_buffer_config_class_init (GeglBufferConfigClass *klass)
                                                         "size of tile cache in bytes",
                                                         0, G_MAXUINT64, 512 * 1024 * 1024,
                                                         G_PARAM_READWRITE |
-                                                        G_PARAM_CONSTRUCT));
+                                                        G_PARAM_CONSTRUCT |
+                                                        G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_SWAP,
                                    g_param_spec_string ("swap",
@@ -171,7 +174,8 @@ gegl_buffer_config_class_init (GeglBufferConfigClass *klass)
                                                         "where gegl stores it's swap files",
                                                         NULL,
                                                         G_PARAM_READWRITE |
-                                                        G_PARAM_CONSTRUCT));
+                                                        G_PARAM_CONSTRUCT |
+                                                        G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_SWAP_COMPRESSION,
                                    g_param_spec_string ("swap-compression",
@@ -179,7 +183,8 @@ gegl_buffer_config_class_init (GeglBufferConfigClass *klass)
                                                         "compression algorithm used for data stored in the swap",
                                                         "fast",
                                                         G_PARAM_READWRITE |
-                                                        G_PARAM_CONSTRUCT));
+                                                        G_PARAM_CONSTRUCT |
+                                                        G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_QUEUE_SIZE,
                                    g_param_spec_int ("queue-size",
@@ -187,7 +192,8 @@ gegl_buffer_config_class_init (GeglBufferConfigClass *klass)
                                                      "Maximum size of a file backend's writer thread queue (in bytes)",
                                                      2, G_MAXINT, 50 * 1024 *1024,
                                                      G_PARAM_READWRITE |
-                                                     G_PARAM_CONSTRUCT));
+                                                     G_PARAM_CONSTRUCT |
+                                                     G_PARAM_STATIC_STRINGS));
 }
 
 static void

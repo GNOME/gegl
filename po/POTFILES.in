@@ -22,6 +22,7 @@ operations/common/buffer-source.c
 operations/common/c2g.c
 operations/common/checkerboard.c
 operations/common/color.c
+operations/common/color-assimilation-grid.c
 operations/common/color-enhance.c
 operations/common/color-overlay.c
 operations/common/color-rotate.c

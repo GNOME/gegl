@@ -265,19 +265,19 @@ ge_state_class_init (GeStateClass *klass)
     obj_properties[PROP_SOURCE] =
         g_param_spec_object ("source", "Source", "Source node in processing chain",
                              GEGL_TYPE_NODE,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     obj_properties[PROP_SINK] =
         g_param_spec_object ("sink", "Sink", "Sink node in processing chain",
                              GEGL_TYPE_NODE,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     obj_properties[PROP_ACTIVE] =
         g_param_spec_object ("active", "Active", "Active node",
                              GEGL_TYPE_NODE,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     obj_properties[PROP_PATH] =
         g_param_spec_string ("path", "Path", "Path of active image",
                              NULL,
-                             G_PARAM_READABLE);
+                             G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class,
                                        N_PROPERTIES,

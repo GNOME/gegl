@@ -104,7 +104,8 @@ gegl_audio_fragment_class_init (GeglAudioFragmentClass *klass)
                                                         "String",
                                                         "A String representation of the GeglAudioFragment",
                                                         "",
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE |
+                                                        G_PARAM_STATIC_STRINGS));
 }
 
 static void

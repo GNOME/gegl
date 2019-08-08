@@ -24,22 +24,11 @@ image: archlinux/base:latest
     GIT_DEPTH: "5"
   before_script:
     - pacman -Syu --noconfirm --needed --cachedir "${PWD}/_pacman_cache"
-      git base-devel ccache meson lcms2
+      git base-devel ccache meson lcms2 gobject-introspection
     - git clone --depth=$GIT_DEPTH https://gitlab.gnome.org/GNOME/babl.git _babl
     - cd _babl
 
-babl-git-autotools:
-  extends: .babl-base
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - mkdir _build
-    - cd _build
-    - ../autogen.sh --prefix="$BABL_PREFIX"
-    - make
-    - make install
-
-babl-git-meson:
+babl-git:
   extends: .babl-base
   variables:
     GIT_STRATEGY: none
@@ -48,19 +37,7 @@ babl-git-meson:
     - ninja -C _build
     - ninja -C _build install
 
-babl-min-autotools:
-  extends: .babl-base
-  script:
-    - grep "'babl'" ../meson.build | grep -o '[0-9\.]*' | sed 's|\.|_|g' > .babl_min_version
-    - git fetch --no-tags origin "refs/tags/BABL_`cat .babl_min_version`:refs/tags/MIN_VERSION"
-    - git checkout MIN_VERSION
-    - mkdir _build
-    - cd _build
-    - ../autogen.sh --prefix="$BABL_PREFIX"
-    - make
-    - make install
-
-babl-min-meson:
+babl-min:
   extends: .babl-base
   script:
     - grep "'babl'" ../meson.build | grep -o '[0-9\.]*' | sed 's|\.|_|g' > .babl_min_version
@@ -79,6 +56,7 @@ babl-min-meson:
         base-devel ccache meson
         gobject-introspection
         ffmpeg
+        gobject-introspection
         graphviz
         jasper
         json-glib
@@ -111,42 +89,22 @@ babl-min-meson:
   variables:
     CONFIG_OPTIONS: "-Denable-mmx=true -Denable-sse=true --auto-features=enabled"
 
-build-default-git-autotools:
+build-default-git:
   extends: .build-default
   dependencies:
-    - babl-git-autotools
+    - babl-git
 
-build-default-git-meson:
+build-default-min:
   extends: .build-default
   dependencies:
-    - babl-git-meson
+    - babl-min
 
-build-default-min-autotools:
-  extends: .build-default
-  dependencies:
-    - babl-min-autotools
-
-build-default-min-meson:
-  extends: .build-default
-  dependencies:
-    - babl-min-meson
-
-build-all-git-autotools:
+build-all-git:
   extends: .build-all
   dependencies:
-    - babl-git-autotools
+    - babl-git
 
-build-all-git-meson:
+build-all-min:
   extends: .build-all
   dependencies:
-    - babl-git-meson
-
-build-all-min-autotools:
-  extends: .build-all
-  dependencies:
-    - babl-min-autotools
-
-build-all-min-meson:
-  extends: .build-all
-  dependencies:
-    - babl-min-meson
+    - babl-min

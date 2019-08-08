@@ -1547,25 +1547,26 @@ mantiuk06_prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", babl_format_with_space (OUTPUT_FORMAT, space));
 }
 
+static GeglRectangle
+mantiuk06_get_cached_region (GeglOperation        *operation,
+                              const GeglRectangle *roi)
+{
+  const GeglRectangle  *in_rect =
+      gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (in_rect && ! gegl_rectangle_is_infinite_plane (in_rect))
+    return *in_rect;
+
+  return *roi;
+}
 
 static GeglRectangle
 mantiuk06_get_required_for_output (GeglOperation        *operation,
                                     const gchar         *input_pad,
                                     const GeglRectangle *roi)
 {
-  GeglRectangle result = *gegl_operation_source_get_bounding_box (operation,
-                                                                  "input");
-  return result;
+  return mantiuk06_get_cached_region (operation, roi);
 }
-
-
-static GeglRectangle
-mantiuk06_get_cached_region (GeglOperation        *operation,
-                              const GeglRectangle *roi)
-{
-  return *gegl_operation_source_get_bounding_box (operation, "input");
-}
-
 
 static gboolean
 mantiuk06_process (GeglOperation       *operation,
@@ -1607,9 +1608,32 @@ mantiuk06_process (GeglOperation       *operation,
   return TRUE;
 }
 
+static gboolean
+mantiuk06_operation_process (GeglOperation        *operation,
+                             GeglOperationContext *context,
+                             const gchar          *output_prop,
+                             const GeglRectangle  *result,
+                             gint                  level)
+{
+  GeglOperationClass  *operation_class;
 
-/*
- */
+  const GeglRectangle *in_rect =
+    gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+    {
+      gpointer in = gegl_operation_context_get_object (context, "input");
+      gegl_operation_context_take_object (context, "output",
+                                          g_object_ref (G_OBJECT (in)));
+      return TRUE;
+    }
+
+  operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+
+  return operation_class->process (operation, context, output_prop, result,
+                                   gegl_operation_context_get_level (context));
+}
+
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
@@ -1622,6 +1646,7 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class->process = mantiuk06_process;
 
   operation_class->prepare                 = mantiuk06_prepare;
+  operation_class->process                 = mantiuk06_operation_process;
   operation_class->get_required_for_output = mantiuk06_get_required_for_output;
   operation_class->get_cached_region       = mantiuk06_get_cached_region;
   operation_class->threaded                = FALSE;

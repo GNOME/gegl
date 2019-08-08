@@ -87,6 +87,16 @@ GType gegl_sampler_type_get_type (void) G_GNUC_CONST;
 
 #define GEGL_TYPE_SAMPLER_TYPE (gegl_sampler_type_get_type ())
 
+typedef enum {
+  GEGL_RECTANGLE_ALIGNMENT_SUBSET,
+  GEGL_RECTANGLE_ALIGNMENT_SUPERSET,
+  GEGL_RECTANGLE_ALIGNMENT_NEAREST
+} GeglRectangleAlignment;
+
+GType gegl_rectangle_alignment_get_type (void) G_GNUC_CONST;
+
+#define GEGL_TYPE_RECTANGLE_ALIGNMENT (gegl_rectangle_alignment_get_type ())
+
 G_END_DECLS
 
 #endif /* __GEGL_ENUMS_H__ */

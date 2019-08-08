@@ -519,28 +519,29 @@ process_standard (GeglBuffer          *input,
 }
 
 static GeglRectangle
-get_required_for_output (GeglOperation       *self,
-                         const gchar         *input_pad,
-                         const GeglRectangle *roi)
-{
-  GeglProperties *o = GEGL_PROPERTIES (self);
-
-  if (o->dither_method == GEGL_DITHER_FLOYD_STEINBERG)
-    return *gegl_operation_source_get_bounding_box (self, "input");
-  else
-    return *roi;
-}
-
-static GeglRectangle
 get_cached_region (GeglOperation       *self,
                    const GeglRectangle *roi)
 {
   GeglProperties *o = GEGL_PROPERTIES (self);
 
   if (o->dither_method == GEGL_DITHER_FLOYD_STEINBERG)
-    return *gegl_operation_source_get_bounding_box (self, "input");
-  else
-    return *roi;
+    {
+      const GeglRectangle *in_rect =
+          gegl_operation_source_get_bounding_box (self, "input");
+
+      if (in_rect && ! gegl_rectangle_is_infinite_plane (in_rect))
+        return *in_rect;
+    }
+
+  return *roi;
+}
+
+static GeglRectangle
+get_required_for_output (GeglOperation       *self,
+                         const gchar         *input_pad,
+                         const GeglRectangle *roi)
+{
+  return get_cached_region (self, roi);
 }
 
 static gboolean
@@ -580,25 +581,38 @@ operation_process (GeglOperation        *operation,
 
   if (o->dither_method == GEGL_DITHER_FLOYD_STEINBERG)
     {
-      GeglOperationFilterClass *klass;
-      GeglBuffer  *input;
-      GeglBuffer  *output;
+      const GeglRectangle *in_rect =
+        gegl_operation_source_get_bounding_box (operation, "input");
 
-      if (strcmp (output_prop, "output"))
+      if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
         {
-          g_warning ("requested processing of %s pad on a filter", output_prop);
-          return FALSE;
+          gpointer in = gegl_operation_context_get_object (context, "input");
+          gegl_operation_context_take_object (context, "output",
+                                          g_object_ref (G_OBJECT (in)));
+          return TRUE;
         }
+      else
+        {
+          GeglOperationFilterClass *klass;
+          GeglBuffer  *input;
+          GeglBuffer  *output;
 
-      input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
-      output = gegl_operation_context_get_output_maybe_in_place (operation,
-                                                                 context,
-                                                                 input,
-                                                                 result);
-      klass = GEGL_OPERATION_FILTER_GET_CLASS (operation);
-      success = klass->process (operation, input, output, result, level);
+          if (strcmp (output_prop, "output"))
+            {
+              g_warning ("requested processing of %s pad on a filter", output_prop);
+              return FALSE;
+            }
 
-      g_clear_object (&input);
+          input  = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
+          output = gegl_operation_context_get_output_maybe_in_place (operation,
+                                                                     context,
+                                                                     input,
+                                                                     result);
+          klass = GEGL_OPERATION_FILTER_GET_CLASS (operation);
+          success = klass->process (operation, input, output, result, level);
+
+          g_clear_object (&input);
+        }
     }
   else
     {

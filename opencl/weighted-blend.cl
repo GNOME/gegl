@@ -25,5 +25,5 @@ __kernel void cl_weighted_blend(__global const float4 *in,
 
   out_v.xyz = in_weight * in_v.xyz + aux_weight * aux_v.xyz;
   out_v.w = total_alpha;
-  out[gid] = out_v;
+  out[gid] = out_v * ((in_v.w + aux_v.w) > 0.f);
 }

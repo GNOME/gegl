@@ -108,20 +108,23 @@ gegl_processor_class_init (GeglProcessorClass *klass)
                                                         "The GeglNode to process (will saturate the provider's cache if the provided node is a sink node)",
                                                         GEGL_TYPE_NODE,
                                                         G_PARAM_WRITABLE |
+                                                        G_PARAM_STATIC_STRINGS |
                                                         G_PARAM_CONSTRUCT));
 
   g_object_class_install_property (gobject_class, PROP_RECTANGLE,
                                    g_param_spec_pointer ("rectangle",
                                                          "rectangle",
                                                          "The rectangle of the region to process.",
-                                                         G_PARAM_READWRITE));
+                                                         G_PARAM_READWRITE |
+                                                         G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_PROGRESS,
                                    g_param_spec_double ("progress",
                                                         "progress",
                                                         "query progress; 0.0 is not started, 1.0 is done.",
                                                         0.0, 1.0, 0.0,
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE |
+                                                        G_PARAM_STATIC_STRINGS));
 
   g_object_class_install_property (gobject_class, PROP_CHUNK_SIZE,
                                    g_param_spec_int ("chunksize",
@@ -129,6 +132,7 @@ gegl_processor_class_init (GeglProcessorClass *klass)
                                                      "Size of chunks being rendered (larger chunks need more memory to do the processing).",
                                                      1, 4096 * 4096, gegl_config()->chunk_size,
                                                      G_PARAM_READWRITE |
+                                                     G_PARAM_STATIC_STRINGS |
                                                      G_PARAM_CONSTRUCT_ONLY));
 }
 

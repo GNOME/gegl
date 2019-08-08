@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-07-20 12:03+0000\n"
-"PO-Revision-Date: 2019-07-21 14:08+0200\n"
+"POT-Creation-Date: 2019-07-29 20:19+0000\n"
+"PO-Revision-Date: 2019-08-04 15:29+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -173,7 +173,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4381 gegl/gegl-serialize.c:655
+#: bin/ui-core.c:4381 gegl/gegl-serialize.c:657
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat „%s” nie istnieje."
@@ -238,6 +238,18 @@ msgstr "NoHalo"
 #: gegl/buffer/gegl-buffer-enums.c:93
 msgid "LoHalo"
 msgstr "LoHalo"
+
+#: gegl/buffer/gegl-buffer-enums.c:117
+msgid "Subset"
+msgstr "Podzbiór"
+
+#: gegl/buffer/gegl-buffer-enums.c:118
+msgid "Superset"
+msgstr "Nadzbiór"
+
+#: gegl/buffer/gegl-buffer-enums.c:119
+msgid "Nesrest"
+msgstr "Najbliższy"
 
 #: gegl/gegl-enums.c:34
 msgid "Floyd-Steinberg"
@@ -371,27 +383,27 @@ msgstr "Liczba jednocześnie używanych wątków przetwarzania"
 msgid "Disable OpenCL"
 msgstr "Wyłącza OpenCL"
 
-#: gegl/gegl-serialize.c:294
+#: gegl/gegl-serialize.c:296
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "nieobsługiwane dane ścieżki %s:%s\n"
 
-#: gegl/gegl-serialize.c:525
+#: gegl/gegl-serialize.c:527
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "nie odnaleziono działania „%s”, częściowo pasują: "
 
-#: gegl/gegl-serialize.c:554
+#: gegl/gegl-serialize.c:556
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s nie ma właściwości %s."
 
-#: gegl/gegl-serialize.c:560
+#: gegl/gegl-serialize.c:562
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s nie ma właściwości %s, właściwości: "
 
-#: gegl/gegl-serialize.c:796
+#: gegl/gegl-serialize.c:793
 #, c-format
 msgid "No such op '%s'"
 msgstr "Nie ma działania „%s”"
@@ -585,10 +597,10 @@ msgstr ""
 "Mocno zniekształca kolory obrazu przez zastosowanie funkcji "
 "trygonometrycznych na wartości mapy kolorów."
 
-#: operations/common/bilateral-filter.c:26 operations/common/dropshadow.c:39
+#: operations/common/bilateral-filter.c:26
+#: operations/common/domain-transform.c:29 operations/common/dropshadow.c:39
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
-#: operations/workshop/domain-transform.c:29
 msgid "Blur radius"
 msgstr "Promień rozmycia"
 
@@ -601,7 +613,7 @@ msgstr ""
 "promień*2+1)."
 
 #: operations/common/bilateral-filter.c:32
-#: operations/workshop/domain-transform.c:34
+#: operations/common/domain-transform.c:34
 msgid "Edge preservation"
 msgstr "Zachowywanie krawędzi"
 
@@ -910,6 +922,49 @@ msgstr ""
 "Tworzy bufor całkowicie wypełniony podanym kolorem, należy użyć działania "
 "„gegl:crop”, aby osiągnąć mniejsze wymiary."
 
+#: operations/common/color-assimilation-grid.c:25
+msgid "Grid size"
+msgstr "Rozmiar siatki"
+
+#: operations/common/color-assimilation-grid.c:31
+#: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
+#: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
+#: operations/common/saturation.c:384
+#: operations/external/lcms-from-profile.c:35
+#: operations/workshop/selective-hue-saturation.c:38
+msgid "Saturation"
+msgstr "Nasycenie"
+
+#. FIXME: With a large angle, we lose AreaFilter's flavours
+#: operations/common/color-assimilation-grid.c:35
+#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:33
+#: operations/common/newsprint.c:159
+#: operations/common-gpl3+/linear-sinusoid.c:66
+#: operations/common-gpl3+/motion-blur-circular.c:52
+#: operations/common-gpl3+/ripple.c:45
+msgid "Angle"
+msgstr "Kąt"
+
+#: operations/common/color-assimilation-grid.c:40
+msgid "Line thickness"
+msgstr "Grubość linii"
+
+#: operations/common/color-assimilation-grid.c:164
+msgid "Color Assimilation Grid)"
+msgstr "Siatka asymilacji kolorów"
+
+#: operations/common/color-assimilation-grid.c:166
+msgid ""
+"Turn image grayscale and overlay an oversaturated grid - through color "
+"assimilation happening in the human visual system, for some grid scales this "
+"produces the illusion that the grayscale grid cells themselves also have "
+"color."
+msgstr ""
+"Przekształca obraz na odcienie szarości i nakłada na niego przesyconą siatkę "
+"— dzięki asymilacji kolorów w ludzkim systemie wzrokowym w przypadku "
+"niektórych skali siatek tworzy to iluzję, w której komórki siatki będące "
+"w odcieniach szarości wydają się być kolorowe."
+
 #: operations/common/color-enhance.c:277
 msgid "Color Enhance"
 msgstr "Uwydatnianie koloru"
@@ -1039,14 +1094,6 @@ msgstr "Barwa"
 #: operations/common/color-rotate.c:80
 msgid "Hue value for above gray settings"
 msgstr "Wartość barwy dla powyższych ustawień szarości"
-
-#: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
-#: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:384
-#: operations/external/lcms-from-profile.c:35
-#: operations/workshop/selective-hue-saturation.c:38
-msgid "Saturation"
-msgstr "Nasycenie"
 
 #: operations/common/color-rotate.c:85
 msgid "Saturation value for above gray settings"
@@ -1594,13 +1641,13 @@ msgstr "Metoda mieszania"
 msgid "The dithering method to use"
 msgstr "Używana metoda mieszania"
 
-#: operations/common/dither.c:51 operations/common/noise-cell.c:55
-#: operations/common/noise-cie-lch.c:38 operations/common/noise-hsv.c:40
-#: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
-#: operations/common/noise-rgb.c:55 operations/common/noise-simplex.c:39
-#: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
-#: operations/common-gpl3+/maze.c:65 operations/common-gpl3+/mosaic.c:89
-#: operations/common-gpl3+/noise-slur.c:40
+#: operations/common/dither.c:51 operations/common/matting-global.c:29
+#: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
+#: operations/common/noise-hsv.c:40 operations/common/noise-hurl.c:37
+#: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
+#: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
+#: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
+#: operations/common-gpl3+/mosaic.c:89 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
 #: operations/common-gpl3+/supernova.c:64
@@ -1622,6 +1669,43 @@ msgstr ""
 "Zmniejsz liczbę kolorów w obrazie przez zmniejszenie poziomów na kanał "
 "(kolorów i alfy). Można podać różne metody mieszania, aby przeciwdziałać "
 "pasmowaniu spowodowanemu przez kwantyzację."
+
+#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
+#: operations/external/webp-save.c:28
+msgid "Quality"
+msgstr "Jakość"
+
+#: operations/common/domain-transform.c:25
+msgid ""
+"Number of filtering iterations. A value between 2 and 4 is usually enough."
+msgstr ""
+"Liczba iteracji filtrowania. Wartość między 2 a 4 jest zwykle wystarczająca."
+
+#: operations/common/domain-transform.c:30
+msgid "Spatial standard deviation of the blur kernel, measured in pixels."
+msgstr ""
+"Przestrzenne odchylenie standardowe jądra rozmycia, mierzone w pikselach."
+
+#: operations/common/domain-transform.c:35
+msgid ""
+"Amount of edge preservation. This quantity is inversely proportional to the "
+"range standard deviation of the blur kernel."
+msgstr ""
+"Ilość zachowywania krawędzi. Ta wielkość jest odwrotnie proporcjonalna do "
+"odchylenia standardowego zakresu jądra rozmycia."
+
+#: operations/common/domain-transform.c:529
+msgid "Smooth by Domain Transform"
+msgstr "Wygładzenie przez przekształcenie domeny"
+
+#: operations/common/domain-transform.c:531
+msgid ""
+"An edge-preserving smoothing filter implemented with the Domain Transform "
+"recursive technique. Similar to a bilateral filter, but faster to compute."
+msgstr ""
+"Filtr wygładzania zachowujący krawędzie zaimplementowany za pomocą "
+"rekurencyjnej techniki przekształcenia domeny. Podobny do filtru "
+"dwustronnego, ale szybszy do obliczenia."
 
 #: operations/common/dropshadow.c:25 operations/common/layer.c:36
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
@@ -2450,15 +2534,6 @@ msgstr "Styl"
 msgid "Shadow style"
 msgstr "Styl cienia"
 
-#. FIXME: With a large angle, we lose AreaFilter's flavours
-#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:33
-#: operations/common/newsprint.c:159
-#: operations/common-gpl3+/linear-sinusoid.c:66
-#: operations/common-gpl3+/motion-blur-circular.c:52
-#: operations/common-gpl3+/ripple.c:45
-msgid "Angle"
-msgstr "Kąt"
-
 #: operations/common/long-shadow.c:50
 msgid "Shadow angle"
 msgstr "Kąt cienia"
@@ -2581,11 +2656,11 @@ msgstr ""
 "wejściowa próbka z pomocniczym buforem zawierającym względne współrzędne "
 "źródła"
 
-#: operations/common/matting-global.c:491
+#: operations/common/matting-global.c:579
 msgid "Matting Global"
 msgstr "Mierzwienie globalne"
 
-#: operations/common/matting-global.c:493
+#: operations/common/matting-global.c:581
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -3939,11 +4014,11 @@ msgstr "Kafel"
 msgid "Infinitely repeats the input image."
 msgstr "Powtarza obraz wejściowy w nieskończoność."
 
-#: operations/common/tile-seamless.c:168
+#: operations/common/tile-seamless.c:213
 msgid "Make Seamlessly tileable"
 msgstr "Kafelkowanie bezszwowe"
 
-#: operations/common/tile-seamless.c:172
+#: operations/common/tile-seamless.c:217
 msgid ""
 "Make the input buffer seamlessly tileable. The algorithm is not content-"
 "aware, so the result may need post-processing."
@@ -4292,11 +4367,11 @@ msgstr "Pozostawienie pierwotnego otoczenia"
 msgid "Keep image unchanged, where not affected by the lens."
 msgstr "Bez zmienienia obrazu w miejscach bez soczewki."
 
-#: operations/common-gpl3+/apply-lens.c:274
+#: operations/common-gpl3+/apply-lens.c:273
 msgid "Apply Lens"
 msgstr "Zastosuj soczewki"
 
-#: operations/common-gpl3+/apply-lens.c:278
+#: operations/common-gpl3+/apply-lens.c:277
 msgid ""
 "Simulates the optical distortion caused by having an elliptical lens over "
 "the image"
@@ -7072,11 +7147,6 @@ msgstr "Wczytywanie obrazów JPEG za pomocą biblioteki libjpeg"
 msgid "Target path and filename, use '-' for stdout"
 msgstr "Docelowa ścieżka i nazwa pliku, „-” oznacza standardowe wyjście"
 
-#: operations/external/jpg-save.c:28 operations/external/webp-save.c:28
-#: operations/workshop/domain-transform.c:24
-msgid "Quality"
-msgstr "Jakość"
-
 #: operations/external/jpg-save.c:29
 msgid "JPEG compression quality (between 1 and 100)"
 msgstr "Jakość kompresji JPEG (między 1 a 100)"
@@ -8387,38 +8457,6 @@ msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Testuj działanie, aby wykonać odwzorowanie 1∶1 wejścia do wyjścia podczas "
 "próbkowania"
-
-#: operations/workshop/domain-transform.c:25
-msgid ""
-"Number of filtering iterations. A value between 2 and 4 is usually enough."
-msgstr ""
-"Liczba iteracji filtrowania. Wartość między 2 a 4 jest zwykle wystarczająca."
-
-#: operations/workshop/domain-transform.c:30
-msgid "Spatial standard deviation of the blur kernel, measured in pixels."
-msgstr ""
-"Przestrzenne odchylenie standardowe jądra rozmycia, mierzone w pikselach."
-
-#: operations/workshop/domain-transform.c:35
-msgid ""
-"Amount of edge preservation. This quantity is inversely proportional to the "
-"range standard deviation of the blur kernel."
-msgstr ""
-"Ilość zachowywania krawędzi. Ta wielkość jest odwrotnie proporcjonalna do "
-"odchylenia standardowego zakresu jądra rozmycia."
-
-#: operations/workshop/domain-transform.c:529
-msgid "Smooth by Domain Transform"
-msgstr "Wygładzenie przez przekształcenie domeny"
-
-#: operations/workshop/domain-transform.c:531
-msgid ""
-"An edge-preserving smoothing filter implemented with the Domain Transform "
-"recursive technique. Similar to a bilateral filter, but faster to compute."
-msgstr ""
-"Filtr wygładzania zachowujący krawędzie zaimplementowany za pomocą "
-"rekurencyjnej techniki przekształcenia domeny. Podobny do filtru "
-"dwustronnego, ale szybszy do obliczenia."
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"

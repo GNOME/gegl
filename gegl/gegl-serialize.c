@@ -190,6 +190,7 @@ gegl_node_set_time (GeglNode   *node,
 }
 
 
+#if 0
 static char *
 gegl_migrate_saturation_0_0_to_1_0 (const char  *input)
 {
@@ -211,7 +212,7 @@ gegl_migrate_api (GeglNode    *node,
 
   return TRUE;
 }
-
+#endif
 
 void
 gegl_create_chain_argv (char      **argv,
@@ -235,8 +236,10 @@ gegl_create_chain_argv (char      **argv,
   GeglPath   *path = NULL;
   GString    *string = NULL;
   GeglNode **ret_sinkp = NULL;
+#if 0
   char      *op_args[64]={NULL, };
   int        n_op_args = 0;
+#endif
 
   if (error && *error)
   {
@@ -250,7 +253,6 @@ gegl_create_chain_argv (char      **argv,
   level_op[level] = *arg;
 
   ht = g_hash_table_new (g_str_hash, g_str_equal);
-
 
   while (*arg)
     {
@@ -703,29 +705,24 @@ gegl_create_chain_argv (char      **argv,
                           }
                         else
                           {
-                            /* warn, but try to get a valid nick out of the
-                               old-style value
-                             * name
-                             */
-                            gchar *nick;
-                            gchar *c;
-                            g_printerr (
-                              "gegl (param_set %s): enum %s has no value '%s'\n",
-                              key,
-                              g_type_name (target_type),
-                              value);
-                            nick = g_strdup (value);
-                            for (c = nick; *c; c++)
+                            if (error)
+                            {
+                              GString *str = g_string_new ("");
+
+                              g_string_append_printf (str,
+                              "unhandled enum value: %s\n", value);
+
+                              g_string_append_printf (str, "accepted values:");
+                              for (int i = 0; i < eclass->n_values; i++)
                               {
-                                *c = g_ascii_tolower (*c);
-                                if (*c == ' ')
-                                  *c = '-';
+                                g_string_append_printf (str, " %s", eclass->values[i].value_nick);
                               }
-                            evalue = g_enum_get_value_by_nick (eclass, nick);
-                            if (evalue)
-                              gegl_node_set (iter[level], key, evalue->value,
-                                             NULL);
-                            g_free (nick);
+
+
+                              *error = g_error_new_literal (
+                                  g_quark_from_static_string ( "gegl"), 0, str->str);
+                              g_string_free (str, TRUE);
+                            }
                           }
                       }
                     else

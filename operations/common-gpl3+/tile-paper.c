@@ -391,6 +391,19 @@ process (GeglOperation       *operation,
   return  TRUE;
 }
 
+static GeglRectangle
+get_cached_region (GeglOperation       *operation,
+                   const GeglRectangle *roi)
+{
+  const GeglRectangle *in_rect =
+      gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (! in_rect || gegl_rectangle_is_infinite_plane (in_rect))
+    return *roi;
+
+  return *in_rect;
+}
+
 /* Compute the input rectangle required to compute the specified
  * region of interest (roi).
  */
@@ -399,14 +412,33 @@ get_required_for_output (GeglOperation       *operation,
                          const gchar         *input_pad,
                          const GeglRectangle *roi)
 {
-  return gegl_operation_get_bounding_box (operation);
+  return get_cached_region (operation, roi);
 }
 
-static GeglRectangle
-get_cached_region (GeglOperation       *operation,
-                   const GeglRectangle *roi)
+static gboolean
+operation_process (GeglOperation        *operation,
+                   GeglOperationContext *context,
+                   const gchar          *output_prop,
+                   const GeglRectangle  *result,
+                   gint                  level)
 {
-  return gegl_operation_get_bounding_box (operation);
+  GeglOperationClass  *operation_class;
+
+  const GeglRectangle *in_rect =
+    gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (in_rect && gegl_rectangle_is_infinite_plane (in_rect))
+    {
+      gpointer in = gegl_operation_context_get_object (context, "input");
+      gegl_operation_context_take_object (context, "output",
+                                          g_object_ref (G_OBJECT (in)));
+      return TRUE;
+    }
+
+  operation_class = GEGL_OPERATION_CLASS (gegl_op_parent_class);
+
+  return operation_class->process (operation, context, output_prop, result,
+                                   gegl_operation_context_get_level (context));
 }
 
 static void
@@ -421,6 +453,7 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->threaded                = FALSE;
   operation_class->get_required_for_output = get_required_for_output;
   operation_class->get_cached_region       = get_cached_region;
+  operation_class->process                 = operation_process;
 
   filter_class->process                    = process;
 

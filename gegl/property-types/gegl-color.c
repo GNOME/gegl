@@ -127,7 +127,8 @@ gegl_color_class_init (GeglColorClass *klass)
                                                         "String",
                                                         "A String representation of the GeglColor",
                                                         "",
-                                                        G_PARAM_READWRITE));
+                                                        G_PARAM_READWRITE |
+                                                        G_PARAM_STATIC_STRINGS));
 }
 
 static gboolean
