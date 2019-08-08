@@ -8,6 +8,7 @@ gegl_common_sources = files(
   'buffer-source.c',
   'c2g.c',
   'checkerboard.c',
+  'color-assimilation-grid.c',
   'color-enhance.c',
   'color-overlay.c',
   'color-rotate.c',
