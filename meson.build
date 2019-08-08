@@ -155,7 +155,7 @@ config.set('HAVE_MALLOC_TRIM', cc.has_function('malloc_trim'))
 math    = cc.find_library('m', required: false)
 thread  = dependency('threads')
 
-babl      = dependency('babl',        version: '>=0.1.66')
+babl      = dependency('babl',        version: '>=0.1.70')
 glib      = dependency('glib-2.0',    version: '>=2.44.0')
 gobject   = dependency('gobject-2.0', version: '>=2.44.0')
 gmodule   = dependency('gmodule-2.0', version: '>=2.44.0')
