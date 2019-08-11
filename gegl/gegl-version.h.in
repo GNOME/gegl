@@ -26,16 +26,14 @@
  * These macros tell the version of GEGL you are compiling against.
  * GEGL's version number consists of three parts: major, minor and
  * micro.
- *
- * ---Code sample:
- * #define GEGL_MAJOR_VERSION @GEGL_MAJOR_VERSION@
- * #define GEGL_MINOR_VERSION @GEGL_MINOR_VERSION@
- * #define GEGL_MICRO_VERSION @GEGL_MICRO_VERSION@
  */
 
+#ifndef GEGL_MAJOR_VERSION
 #define GEGL_MAJOR_VERSION @GEGL_MAJOR_VERSION@
 #define GEGL_MINOR_VERSION @GEGL_MINOR_VERSION@
 #define GEGL_MICRO_VERSION @GEGL_MICRO_VERSION@
+#endif
+
 
 /**
  * gegl_get_version:
