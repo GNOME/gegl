@@ -67,6 +67,7 @@ babl-min-meson:
         python
         sdl2
         suitesparse
+        vala
   script:
    - mkdir _build
    - cd _build
