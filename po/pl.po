@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-07-29 20:19+0000\n"
-"PO-Revision-Date: 2019-08-04 15:29+0200\n"
+"POT-Creation-Date: 2019-08-07 14:26+0000\n"
+"PO-Revision-Date: 2019-08-11 14:44+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -216,7 +216,7 @@ msgstr "Zapis"
 msgid "Read/Write"
 msgstr "Odczyt/zapis"
 
-#: gegl/buffer/gegl-buffer-enums.c:89
+#: gegl/buffer/gegl-buffer-enums.c:89 gegl/buffer/gegl-buffer-enums.c:119
 msgid "Nearest"
 msgstr "Najbliższy"
 
@@ -246,10 +246,6 @@ msgstr "Podzbiór"
 #: gegl/buffer/gegl-buffer-enums.c:118
 msgid "Superset"
 msgstr "Nadzbiór"
-
-#: gegl/buffer/gegl-buffer-enums.c:119
-msgid "Nesrest"
-msgstr "Najbliższy"
 
 #: gegl/gegl-enums.c:34
 msgid "Floyd-Steinberg"
@@ -372,7 +368,8 @@ msgid "The count of pixels to compute simultaneously"
 msgstr "Liczba pikseli do jednoczesnego obliczania"
 
 #: gegl/gegl-init.c:236
-msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
+msgid ""
+"The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Jakość wyświetlania, wartość między 0,0 (szybkie) a 1,0 (standardowe)"
 
 #: gegl/gegl-init.c:241
@@ -950,7 +947,7 @@ msgid "Line thickness"
 msgstr "Grubość linii"
 
 #: operations/common/color-assimilation-grid.c:164
-msgid "Color Assimilation Grid)"
+msgid "Color Assimilation Grid"
 msgstr "Siatka asymilacji kolorów"
 
 #: operations/common/color-assimilation-grid.c:166
@@ -1538,11 +1535,11 @@ msgstr "Ważenie alfa"
 msgid "Border"
 msgstr "Krawędź"
 
-#: operations/common/convolution-matrix.c:633
+#: operations/common/convolution-matrix.c:624
 msgid "Convolution Matrix"
 msgstr "Zniekształcenie macierzowe"
 
-#: operations/common/convolution-matrix.c:634
+#: operations/common/convolution-matrix.c:625
 msgid "Apply a generic 5x5 convolution matrix"
 msgstr "Zastosowuje ogólne zniekształcenie macierzowe 5×5"
 
@@ -1656,11 +1653,11 @@ msgstr "Używana metoda mieszania"
 msgid "Random seed"
 msgstr "Ziarno losowości"
 
-#: operations/common/dither.c:649
+#: operations/common/dither.c:663
 msgid "Dither"
 msgstr "Mieszaj kolory"
 
-#: operations/common/dither.c:652
+#: operations/common/dither.c:666
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
@@ -1878,11 +1875,11 @@ msgstr "Szum"
 msgid "Gradient threshold for lowering detail enhancement"
 msgstr "Próg gradientu do zmniejszania uwydatniania szczegółów"
 
-#: operations/common/fattal02.c:1333
+#: operations/common/fattal02.c:1358
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Mapowanie odcieni Fattala i innych 2002"
 
-#: operations/common/fattal02.c:1337
+#: operations/common/fattal02.c:1362
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -2484,11 +2481,11 @@ msgstr ""
 "do utworzenia widoku i sześciennej lub lepszej do odwrotnego przekształcenia "
 "z powrotem na panoramę."
 
-#: operations/common/little-planet.c:494
+#: operations/common/little-planet.c:530
 msgid "Little Planet"
 msgstr "Mała planeta"
 
-#: operations/common/little-planet.c:498
+#: operations/common/little-planet.c:534
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
 "Wykonaj przekształcenie stereograficzne/małej planety obrazu walcowego "
@@ -2574,11 +2571,11 @@ msgstr "Ułożenie"
 msgid "Output composition"
 msgstr "Ułożenie wyjściowe"
 
-#: operations/common/long-shadow.c:1665
+#: operations/common/long-shadow.c:1692
 msgid "Long Shadow"
 msgstr "Długi cień"
 
-#: operations/common/long-shadow.c:1669
+#: operations/common/long-shadow.c:1696
 msgid "Creates a long-shadow effect"
 msgstr "Tworzy efekt długiego cienia"
 
@@ -2605,11 +2602,11 @@ msgstr "Szczegół"
 msgid "Level of emphasis on image gradient details"
 msgstr "Poziom podkreślenia szczegółów gradientu obrazu"
 
-#: operations/common/mantiuk06.c:1631
+#: operations/common/mantiuk06.c:1656
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Mapowanie odcieni Mantiuka 2006"
 
-#: operations/common/mantiuk06.c:1635
+#: operations/common/mantiuk06.c:1660
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -2856,11 +2853,11 @@ msgstr "Zawijaj wejście"
 msgid "Fill full output area"
 msgstr "Wypełnij pełny obszar wyjściowy"
 
-#: operations/common/mirrors.c:436
+#: operations/common/mirrors.c:467
 msgid "Kaleidoscopic Mirroring"
 msgstr "Odzwierciedlanie kalejdoskopowe"
 
-#: operations/common/mirrors.c:440
+#: operations/common/mirrors.c:471
 msgid "Create a kaleidoscope like effect."
 msgstr "Utwórz efekt podobny do kalejdoskopu."
 
@@ -3413,11 +3410,11 @@ msgstr ""
 "Działanie Portera-Duffa na (znane także jako zwykły tryb, i „src-over”) (d = "
 "cA + cB * (1 - aA))"
 
-#: operations/common/panorama-projection.c:507
+#: operations/common/panorama-projection.c:540
 msgid "Panorama Projection"
 msgstr "Rzut panoramy"
 
-#: operations/common/panorama-projection.c:512
+#: operations/common/panorama-projection.c:545
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
@@ -3624,11 +3621,11 @@ msgstr "Adaptacja światła"
 msgid "Adaptation to light variation across the image"
 msgstr "Adaptacja do zmiany światła na całym obrazie"
 
-#: operations/common/reinhard05.c:276
+#: operations/common/reinhard05.c:303
 msgid "Reinhard 2005 Tone Mapping"
 msgstr "Mapowanie odcieni Reinharda 2005"
 
-#: operations/common/reinhard05.c:280
+#: operations/common/reinhard05.c:307
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This is an efficient global operator derived from "
@@ -3847,11 +3844,11 @@ msgstr ""
 "Współczynnik skalowania przemieszczenia (ujemne wartości odnoszą się do "
 "odwrotnego przemieszczenia)"
 
-#: operations/common/spherize.c:318
+#: operations/common/spherize.c:321
 msgid "Spherize"
 msgstr "Utwórz kulę"
 
-#: operations/common/spherize.c:321
+#: operations/common/spherize.c:324
 msgid "Wrap image around a spherical cap"
 msgstr "Zawiń obraz wokół kuli"
 
@@ -4006,11 +4003,11 @@ msgstr "Poziome przesunięcie"
 msgid "Vertical offset"
 msgstr "Pionowe przesunięcie"
 
-#: operations/common/tile.c:134
+#: operations/common/tile.c:159
 msgid "Tile"
 msgstr "Kafel"
 
-#: operations/common/tile.c:140
+#: operations/common/tile.c:165
 msgid "Infinitely repeats the input image."
 msgstr "Powtarza obraz wejściowy w nieskończoność."
 
@@ -4171,11 +4168,11 @@ msgstr "Kolor nadpikseli"
 msgid "How to fill superpixels"
 msgstr "Jak wypełniać nadpiksele"
 
-#: operations/common/waterpixels.c:515
+#: operations/common/waterpixels.c:543
 msgid "Waterpixels"
 msgstr "Piksele wody"
 
-#: operations/common/waterpixels.c:518
+#: operations/common/waterpixels.c:546
 msgid "Superpixels based on the watershed transformation"
 msgstr "Nadpiksele na podstawie przekształcenia działu wodnego"
 
@@ -4282,11 +4279,11 @@ msgstr "Liczba obliczeń dla uśredniania odcieni szarości"
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normalizacja wyjścia do zakresu 0,0 do 1,0."
 
-#: operations/common-cxx/distance-transform.cc:437
+#: operations/common-cxx/distance-transform.cc:475
 msgid "Distance Transform"
 msgstr "Przekształcenie odległości"
 
-#: operations/common-cxx/distance-transform.cc:440
+#: operations/common-cxx/distance-transform.cc:478
 msgid "Calculate a distance transform"
 msgstr "Oblicz przekształcenie odległości"
 
@@ -4367,11 +4364,11 @@ msgstr "Pozostawienie pierwotnego otoczenia"
 msgid "Keep image unchanged, where not affected by the lens."
 msgstr "Bez zmienienia obrazu w miejscach bez soczewki."
 
-#: operations/common-gpl3+/apply-lens.c:273
+#: operations/common-gpl3+/apply-lens.c:302
 msgid "Apply Lens"
 msgstr "Zastosuj soczewki"
 
-#: operations/common-gpl3+/apply-lens.c:277
+#: operations/common-gpl3+/apply-lens.c:306
 msgid ""
 "Simulates the optical distortion caused by having an elliptical lens over "
 "the image"
@@ -4575,11 +4572,11 @@ msgstr "Promień maski"
 msgid "Percent black"
 msgstr "Procent czerni"
 
-#: operations/common-gpl3+/cartoon.c:294
+#: operations/common-gpl3+/cartoon.c:323
 msgid "Cartoon"
 msgstr "Film rysunkowy"
 
-#: operations/common-gpl3+/cartoon.c:297
+#: operations/common-gpl3+/cartoon.c:326
 msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing "
 "subsequently shaded with color. This is achieved by enhancing edges and "
@@ -4775,11 +4772,11 @@ msgstr "Rozszerz kafle o tę ilość"
 msgid "The tiles' background color"
 msgstr "Kolor tła kafli"
 
-#: operations/common-gpl3+/cubism.c:619
+#: operations/common-gpl3+/cubism.c:650
 msgid "Cubism"
 msgstr "Kubizm"
 
-#: operations/common-gpl3+/cubism.c:624
+#: operations/common-gpl3+/cubism.c:655
 msgid ""
 "Convert the image into randomly rotated square blobs, somehow resembling a "
 "cubist painting style"
@@ -5322,11 +5319,11 @@ msgstr "Jak radzić sobie z pikselami spoza bufora wejściowego"
 msgid "Unsupported fractal type"
 msgstr "Nieobsługiwany typ fraktala"
 
-#: operations/common-gpl3+/fractal-trace.c:240
+#: operations/common-gpl3+/fractal-trace.c:273
 msgid "Fractal Trace"
 msgstr "Śledzenie fraktala"
 
-#: operations/common-gpl3+/fractal-trace.c:245
+#: operations/common-gpl3+/fractal-trace.c:278
 msgid "Transform the image with the fractals"
 msgstr "Zniekształć obraz za pomocą fraktali"
 
@@ -5551,11 +5548,11 @@ msgstr "Kolor tła"
 msgid "The background color"
 msgstr "Kolor tła"
 
-#: operations/common-gpl3+/maze.c:795
+#: operations/common-gpl3+/maze.c:823
 msgid "Maze"
 msgstr "Labirynt"
 
-#: operations/common-gpl3+/maze.c:800
+#: operations/common-gpl3+/maze.c:828
 msgid "Draw a labyrinth"
 msgstr "Narysuj labirynt"
 
@@ -5681,11 +5678,11 @@ msgstr ""
 msgid "Rotation blur angle. A large angle may take some time to render"
 msgstr "Kąt rozmycia obrotu. Duży kąt może zająć więcej czasu do wyświetlenia"
 
-#: operations/common-gpl3+/motion-blur-circular.c:422
+#: operations/common-gpl3+/motion-blur-circular.c:449
 msgid "Circular Motion Blur"
 msgstr "Odśrodkowe rozmycie ruchu"
 
-#: operations/common-gpl3+/motion-blur-circular.c:427
+#: operations/common-gpl3+/motion-blur-circular.c:454
 msgid "Circular motion blur"
 msgstr "Odśrodkowe rozmycie ruchu"
 
@@ -5693,11 +5690,11 @@ msgstr "Odśrodkowe rozmycie ruchu"
 msgid "Blurring factor"
 msgstr "Współczynnik rozmycia"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:245
+#: operations/common-gpl3+/motion-blur-zoom.c:272
 msgid "Zooming Motion Blur"
 msgstr "Rozmycie ruchu przybliżania"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:250
+#: operations/common-gpl3+/motion-blur-zoom.c:277
 msgid "Zoom motion blur"
 msgstr "Rozmycie ruchu przybliżania"
 
@@ -5902,11 +5899,11 @@ msgstr "Wybierz środek"
 msgid "Let origin point to be the middle one"
 msgstr "Początek układu współrzędnych ma być środkowy"
 
-#: operations/common-gpl3+/polar-coordinates.c:412
+#: operations/common-gpl3+/polar-coordinates.c:447
 msgid "Polar Coordinates"
 msgstr "Współrzędne polarne"
 
-#: operations/common-gpl3+/polar-coordinates.c:417
+#: operations/common-gpl3+/polar-coordinates.c:452
 msgid "Convert image to or from polar coordinates"
 msgstr "Konwertuj obraz do lub ze współrzędnych bieguna"
 
@@ -6331,11 +6328,11 @@ msgstr "Wyśrodkowanie kafli"
 msgid "Background type"
 msgstr "Typ tła"
 
-#: operations/common-gpl3+/tile-paper.c:429
+#: operations/common-gpl3+/tile-paper.c:462
 msgid "Paper Tile"
 msgstr "Kawałki papieru"
 
-#: operations/common-gpl3+/tile-paper.c:434
+#: operations/common-gpl3+/tile-paper.c:467
 msgid "Cut image into paper tiles, and slide them"
 msgstr "Wycina obraz na kawałki papieru i przesuwa je"
 
@@ -6571,15 +6568,15 @@ msgstr ""
 "Promień (1,0 oznacza największy okrąg pasujący do obrazu, a 2,0 oznacza "
 "promień do samych rogów obrazu)"
 
-#: operations/common-gpl3+/whirl-pinch.c:262
+#: operations/common-gpl3+/whirl-pinch.c:294
 msgid "Whirl Pinch"
 msgstr "Skręć i zaciśnij"
 
-#: operations/common-gpl3+/whirl-pinch.c:267
+#: operations/common-gpl3+/whirl-pinch.c:299
 msgid "Distort an image by whirling and pinching"
 msgstr "Zniekształć obraz przez skręcanie i ściskanie"
 
-#: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:561
+#: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:591
 msgid "Wind"
 msgstr "Wiatr"
 
@@ -6635,7 +6632,7 @@ msgstr "Wyższe wartości ograniczają efekt do mniejszych obszarów obrazu"
 msgid "Higher values increase the magnitude of the effect"
 msgstr "Wyższe wartości zwiększają wielkość efektu"
 
-#: operations/common-gpl3+/wind.c:565
+#: operations/common-gpl3+/wind.c:595
 msgid "Wind-like bleed effect"
 msgstr "Efekt farbowania podobny do wiatru"
 
@@ -8359,11 +8356,11 @@ msgstr ""
 msgid "Radius of row pixel region, (size will be radius*2+1)"
 msgstr "Promień obszaru pikseli rzędu (rozmiar będzie wynosił promień*2+1)"
 
-#: operations/workshop/boxblur-1d.c:338
+#: operations/workshop/boxblur-1d.c:466
 msgid "1D Box Blur"
 msgstr "Jednowymiarowe rozmycie prostopadłościenne"
 
-#: operations/workshop/boxblur-1d.c:339
+#: operations/workshop/boxblur-1d.c:467
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
 msgstr "Rozmycie wynikające z uśredniania kolorów sąsiedniego rzędu."
 
