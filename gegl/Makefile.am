@@ -166,7 +166,7 @@ CLEANFILES += $(gir_DATA) $(typelib_DATA)
 
 if HAVE_VALA
 gegl-@GEGL_API_VERSION@.vapi: Gegl-@GEGL_API_VERSION@.gir
-	$(VAPIGEN) --library=gegl-@GEGL_API_VERSION@ --metadatadir=./ Gegl-@GEGL_API_VERSION@.gir
+	$(VAPIGEN) --girdir=$(girdir) --library=gegl-@GEGL_API_VERSION@ --metadatadir=./ Gegl-@GEGL_API_VERSION@.gir
 
 vapidir=$(datadir)/vala/vapi
 vapi_DATA = \
