@@ -75,9 +75,12 @@ babl-min-meson:
   script:
    - mkdir _build
    - cd _build
-   - XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share" PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig ../autogen.sh $CONFIG_OPTIONS
-   - XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share" LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH" make
-   - XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share" LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH" make check
+   - export XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share"
+   - export PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig
+   - export LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
+   - ../autogen.sh $CONFIG_OPTIONS
+   - make
+   - make check
 
 .build-default:
   extends: .build-gegl
