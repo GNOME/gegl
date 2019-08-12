@@ -206,6 +206,7 @@ operations/external/raw-load.c
 operations/external/rgbe-load.c
 operations/external/rgbe-save.c
 operations/external/save-pixbuf.c
+operations/external/sdl2-display.c
 operations/external/sdl-display.c
 operations/external/svg-load.c
 operations/external/text.c
