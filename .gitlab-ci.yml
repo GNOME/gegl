@@ -78,6 +78,7 @@ babl-min-meson:
    - export XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share"
    - export PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig
    - export LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
+   - echo $XDG_DATA_DIRS
    - ../autogen.sh $CONFIG_OPTIONS
    - make
    - make check
