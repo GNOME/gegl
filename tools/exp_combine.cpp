@@ -1,5 +1,5 @@
 
-#include <gegl.h> 
+#include <gegl.h>
 
 #include <cstdlib>
 #include <cstdio>
@@ -107,7 +107,7 @@ main (int    argc,
                                   "operation", "gegl:exp-combine",
                                   NULL);
 
-  for (cursor = ARG_PATH_0; cursor < argc; ++cursor)
+  for (cursor = ARG_PATH_0; cursor < unsigned(argc); ++cursor)
   for (cursor = ARG_PATH_0; cursor < unsigned(argc); ++cursor)
     {
       const gchar *input_path;
