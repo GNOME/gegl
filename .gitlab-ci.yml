@@ -38,9 +38,7 @@ babl-min-meson:
   extends: .babl-base
   script:
     - grep babl_required_version ../configure.ac | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
-    - if [ x$(( `cut .babl_min_version -f 3 -d _` % 2)) == x1 ] ;then echo master > .babl_min_version ; fi
-    - git fetch --no-tags origin "refs/tags/BABL_`cat .babl_min_version`:refs/tags/MIN_VERSION"
-    - git checkout MIN_VERSION
+    - if [ x$(( `cut .babl_min_version -f 3 -d _` % 2)) == x1 ] ; then git fetch --no-tags ; git checout master  ; else  ; git fetch --no-tags origin "refs/tags/BABL_`cat .babl_min_version`:refs/tags/MIN_VERSION" ; git checkout MIN_VERSION ; fi
     - meson -Dprefix="$BABL_PREFIX" _build
     - ninja -C _build
     - ninja -C _build install
