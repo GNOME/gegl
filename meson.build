@@ -134,12 +134,11 @@ add_project_arguments(cc.get_supported_arguments(c_arguments), language: 'c')
 
 bash        = find_program('bash')
 
+perl        = find_program('perl5', 'perl', required: false)
 asciidoc    = find_program('asciidoc',      required: false)
 enscript    = find_program('enscript',      required: false)
-perl        = find_program('perl5', 'perl', required: false)
 rsvg_convert= find_program('rsvg-convert',  required: false)
 ruby        = find_program('ruby',          required: false)
-w3m         = find_program('w3m',           required: false)
 
 ################################################################################
 # Required Dependencies
@@ -332,20 +331,6 @@ if get_option('docs')
   subdir('docs')
 endif
 
-#if w3m.found()
-#  custom_target('README',
-#    input : 'docs/index.html',
-#    output: 'README',
-#    command: [ w3m, '-cols', '72', '-dump', '@INPUT@' ],
-#    capture: true,
-#  )
-#  custom_target('NEWS',
-#    input : 'docs/NEWS.html',
-#    output: 'NEWS',
-#    command: [ w3m, '-cols', '72', '-dump', '@INPUT@' ],
-#    capture: true,
-#  )
-#endif
 
 pkgconfig.generate(filebase: 'gegl-' + api_version,
   name: 'GEGL',
@@ -376,7 +361,6 @@ message('\n'.join(['',
 'Optional features:',
 '  GEGL docs:       @0@'.format(get_option('docs')),
 '  Build workshop:  @0@'.format(get_option('workshop')),
-'  Build website:   @0@'.format(asciidoc.found()),
 '  SIMD:            sse:@0@ mmx:@1@ sse2:@2@'.format(
   get_option('enable-sse'),
   get_option('enable-mmx'),
