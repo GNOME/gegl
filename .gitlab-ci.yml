@@ -138,23 +138,17 @@ babl-min:
     CONFIG_OPTIONS: "-Dworkshop=true -Ddocs=true -Dintrospection=true"
 
 
-
-build-all-min:
-  extends: .build-all
-  dependencies:
-    - babl-min
-
-build-default-meson-min:
+meson-default-min-babl:
   extends: .build-meson-default
   dependencies:
     - babl-min
 
-build-all-meson-master:
+meson-all-master-babl:
   extends: .build-meson-all
   dependencies:
     - babl-master
 
-build-all-meson-min:
-  extends: .build-meson-all
+autotools-all-min-babl:
+  extends: .build-all
   dependencies:
     - babl-min
