@@ -5665,7 +5665,7 @@ static void gegl_ui (Mrg *mrg, void *data)
 
           if (g_str_has_suffix (o->path, ".lui"))
           {
-#if HAVE_LUA
+#ifdef HAVE_LUA
             gsize length = 0;
             int result;
 
@@ -5714,7 +5714,7 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   if (g_str_has_suffix (o->path, ".lui"))
   {
-#if HAVE_LUA
+#ifdef HAVE_LUA
   int result;
   int status;
   if (lui_contents)
@@ -5737,7 +5737,7 @@ static void gegl_ui (Mrg *mrg, void *data)
 #endif
   }
 
-#if HAVE_LUA
+#ifdef HAVE_LUA
   if (run_lua_file ("viewer.lua"))
   {
   }
@@ -5752,7 +5752,7 @@ static void gegl_ui (Mrg *mrg, void *data)
     }
     else if (S_ISDIR (stat_buf.st_mode))
     {
-#if HAVE_LUA
+#ifdef HAVE_LUA
   if (run_lua_file ("collection.lua"))
   {
   }
@@ -5769,7 +5769,7 @@ static void gegl_ui (Mrg *mrg, void *data)
 
   if (o->show_preferences)
   {
-#if HAVE_LUA
+#ifdef HAVE_LUA
   if (run_lua_file ("preferences.lua"))
   {
   }
@@ -7038,7 +7038,7 @@ int cmd_save (COMMAND_ARGS) /* "save", 0, "", ""*/
 
   if (o->src_path)
   {
-    char *prepended = g_strdup_printf ("gegl:load path=%s\n%s", basename(o->src_path), serialized);
+    char *prepended = g_strdup_printf ("gegl:load path=%s\n%s", g_basename(o->src_path), serialized);
     g_file_set_contents (o->chain_path, prepended, -1, NULL);
     g_free (prepended);
   }
