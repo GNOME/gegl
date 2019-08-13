@@ -25,7 +25,7 @@ image: archlinux/base:latest
     - cd _babl
     - mkdir _build
 
-babl-git-meson:
+babl-master:
   extends: .babl-base
   variables:
     GIT_STRATEGY: none
@@ -34,7 +34,7 @@ babl-git-meson:
     - ninja -C _build
     - ninja -C _build install
 
-babl-min-meson:
+babl-min:
   extends: .babl-base
   script:
     - grep babl_required_version ../configure.ac | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
@@ -92,22 +92,94 @@ babl-min-meson:
   variables:
     CONFIG_OPTIONS: "--enable-debug --enable-mmx --enable-sse --enable-profile --enable-docs"
 
-build-default-git-meson:
+.build-meson-gegl:
+  stage: gegl
+  variables:
+    GIT_DEPTH: "15"
+  before_script:
+    - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache
+        base-devel ccache meson
+        ffmpeg
+        gobject-introspection
+        gobject-introspection-runtime
+        graphviz
+        jasper
+        json-glib
+        lcms2
+        libgexiv2
+        libraw
+        librsvg
+        libspiro
+        libtiff
+        luajit
+        openexr
+        python
+        sdl2
+        suitesparse
+        vala
+  script:
+   - mkdir _build
+   - cd _build
+   - export XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share:/usr/local/share/:/usr/share/"
+   - export PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig
+   - export LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
+   - meson -Dprefix="$BABL_PREFIX" $CONFIG_OPTIONS _build
+   - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
+     ninja -C _build
+   - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
+     ninja -C _build install
+
+.build-meson-default:
+  extends: .build-meson-gegl
+  variables:
+    CONFIG_OPTIONS: ""
+
+.build-meson-all:
+  extends: .build-meson-gegl
+  variables:
+    CONFIG_OPTIONS: "-Dworkshop=true -Ddocs=true -Dintrospection=true"
+
+
+
+
+
+build-default-git:
   extends: .build-default
   dependencies:
-    - babl-git-meson
+    - babl-master
 
-build-default-min-meson:
+build-default-min:
   extends: .build-default
   dependencies:
-    - babl-min-meson
+    - babl-min
 
-build-all-git-meson:
+build-all-git:
   extends: .build-all
   dependencies:
-    - babl-git-meson
+    - babl-master
 
-build-all-min-meson:
+build-all-min:
   extends: .build-all
   dependencies:
-    - babl-min-meson
+    - babl-min
+
+
+build-default-meson-git:
+  extends: .build-meson-default
+  dependencies:
+    - babl-master
+
+build-default-meson-min:
+  extends: .build-meson-default
+  dependencies:
+    - babl-min
+
+build-all-meson-git:
+  extends: .build-meson-all
+  dependencies:
+    - babl-master
+
+build-all-meson-min:
+  extends: .build-meson-all
+  dependencies:
+    - babl-min
