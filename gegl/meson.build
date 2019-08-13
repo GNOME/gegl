@@ -103,6 +103,7 @@ introspection_sources = gegl_introspectable_headers + files(
 
 
 if get_option('introspection')
+
   gegl_gir = gnome.generate_gir(gegl_lib,
     sources: introspection_sources,
     nsversion: api_version,
@@ -111,10 +112,6 @@ if get_option('introspection')
     symbol_prefix: 'gegl',
     header: 'gegl.h',
     includes: [ 'GLib-2.0', 'GObject-2.0', 'Babl-0.1' ],
-    include_directories: [
-      rootInclude,
-      geglInclude,
-    ],
     install: true,
   )
 
