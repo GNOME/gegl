@@ -118,8 +118,6 @@ babl-min:
         suitesparse
         vala
   script:
-   - mkdir _build
-   - cd _build
    - export XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share:/usr/local/share/:/usr/share/"
    - export PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig
    - export LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
@@ -141,40 +139,17 @@ babl-min:
 
 
 
-
-
-build-default-git:
-  extends: .build-default
-  dependencies:
-    - babl-master
-
-build-default-min:
-  extends: .build-default
-  dependencies:
-    - babl-min
-
-build-all-git:
-  extends: .build-all
-  dependencies:
-    - babl-master
-
 build-all-min:
   extends: .build-all
   dependencies:
     - babl-min
-
-
-build-default-meson-git:
-  extends: .build-meson-default
-  dependencies:
-    - babl-master
 
 build-default-meson-min:
   extends: .build-meson-default
   dependencies:
     - babl-min
 
-build-all-meson-git:
+build-all-meson-master:
   extends: .build-meson-all
   dependencies:
     - babl-master
