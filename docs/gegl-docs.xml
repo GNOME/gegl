@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+               "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" [
+<!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+<!ENTITY version SYSTEM "version.xml">
+<!ENTITY pi "&#960;">
+<!ENTITY solidus "&#8260;">
+]>
+<book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
+  <bookinfo>
+    <title>GEGL Reference Manual</title>
+    <releaseinfo>
+      This document is for the GEGL library
+    </releaseinfo>
+  </bookinfo>
+
+  <part id="gegl">
+    <title>GEGL Overview</title>
+    <!-- <xi:include href="overview.xml"/> -->
+  </part>
+
+  <chapter id="GeglBuffer">
+    <title>GeglBuffer</title>
+    <xi:include href="xml/gegl-buffer.xml" />
+    <xi:include href="xml/gegl-buffer-iterator.xml" />
+    <xi:include href="xml/gegl-buffer-enums.xml" />
+    <xi:include href="xml/gegl-buffer-backend.xml" />
+    <xi:include href="xml/gegl-buffer-matrix2.xml" />
+  </chapter>
+
+  <chapter id="Graph">
+    <title>Graph</title>
+    <xi:include href="xml/gegl-node.xml" />
+    <xi:include href="xml/gegl-pad.xml" />
+    <xi:include href="xml/gegl-connection.xml" />
+    <xi:include href="xml/gegl-processor.xml" />
+  </chapter>
+
+  <chapter id="Operations">
+    <title>Operations</title>
+    <xi:include href="xml/gegl-operation.xml" />
+    <xi:include href="xml/gegl-operations.xml" />
+    <xi:include href="xml/gegl-operations-util.xml" />
+    <xi:include href="xml/gegl-operation-area-filter.xml" />
+    <xi:include href="xml/gegl-operation-filter.xml" />
+    <xi:include href="xml/gegl-operation-composer.xml" />
+    <xi:include href="xml/gegl-operation-composer3.xml" />
+    <xi:include href="xml/gegl-operation-sink.xml" />
+    <xi:include href="xml/gegl-operation-source.xml" />
+    <xi:include href="xml/gegl-operation-point-filter.xml" />
+    <xi:include href="xml/gegl-operation-point-render.xml" />
+    <xi:include href="xml/gegl-operation-point-composer.xml" />
+    <xi:include href="xml/gegl-operation-point-composer3.xml" />
+    <xi:include href="xml/gegl-operation-handlers.xml" />
+    <xi:include href="xml/gegl-operation-meta.xml" />
+    <xi:include href="xml/gegl-operation-meta-json.xml" />
+    <xi:include href="xml/gegl-operation-temporal.xml" />
+    <xi:include href="xml/gegl-operation-property-keys.xml" />
+    <xi:include href="xml/gegl-op.xml" />
+  </chapter>
+
+  <chapter id="Misc">
+    <title>Misc</title>
+    <xi:include href="xml/gegl-types.xml" />
+    <xi:include href="xml/gegl-init.xml" />
+    <xi:include href="xml/gegl-lookup.xml" />
+    <xi:include href="xml/gegl-apply.xml" />
+    <xi:include href="xml/gegl-matrix.xml" />
+    <xi:include href="xml/gegl-memory.xml" />
+    <xi:include href="xml/gegl-audio-fragment.xml" />
+    <xi:include href="xml/gegl-path.xml" />
+    <xi:include href="xml/gegl-color.xml" />
+    <xi:include href="xml/gegl-rectangle.xml" />
+    <xi:include href="xml/gegl-scratch.xml" />
+    <xi:include href="xml/gegl-utils.xml" />
+    <xi:include href="xml/gegl-version.xml" />
+    <xi:include href="xml/gegl-debug.xml" />
+  </chapter>
+
+</book>
