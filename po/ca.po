@@ -340,12 +340,12 @@ msgstr "Sempre"
 
 #: gegl/gegl-init.c:214
 msgid "Where GEGL stores its swap"
-msgstr "On la GEGL emmagatzema la seva memòria intermèdia"
+msgstr "On la GEGL emmagatzema la seva memòria d'intercanvi"
 
 #: gegl/gegl-init.c:219
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
-"Algoritme de compressió usat per emmagatzemar dades a la memòria intermedia "
+"Algoritme de compressió usat per emmagatzemar dades a la memòria d'intercanvi"
 
 #: gegl/gegl-init.c:224
 msgid "How much memory to (approximately) use for caching imagery"
@@ -3475,7 +3475,7 @@ msgstr "Reassigna"
 msgid "stretch components of pixels individually based on luminance envelopes"
 msgstr ""
 "Estira els components dels píxels de manera individual, a partir "
-"d'embolcalls de luminància."
+"d'embolcalls de luminància"
 
 #: operations/common/rgb-clip.c:25 operations/common/rgb-clip.c:26
 msgid "Clip low pixel values"
@@ -3530,7 +3530,7 @@ msgid ""
 "Multipurpose file saver, that uses other native save handlers depending on "
 "extension, use the format specific save ops to specify additional parameters."
 msgstr ""
-"Desador de fitxers multi-usos, que utilitza altres gestors nadius depenent "
+"Desador de fitxers polivalent, que utilitza altres gestors nadius depenent "
 "de l'extensió, utilitza el format específic ops per especificar paràmetres "
 "addicionals."
 
@@ -5713,7 +5713,7 @@ msgstr "Sinus"
 
 #: operations/common-gpl3+/sinus.c:322
 msgid "Generate complex sinusoidal textures"
-msgstr "Genera textures sinusoïdals complexes"
+msgstr "Genera textures sinusoidals complexes"
 
 #: operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
@@ -6427,7 +6427,7 @@ msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
 msgstr ""
-"Carregador de fitxers multi-usos, que utilitza altres gestors nadius, i "
+"Carregador de fitxers polivalent, que utilitza altres gestors nadius, i "
 "utilitza com a últim recurs la conversió amb l'Image Magick."
 
 #: operations/core/nop.c:81
@@ -7213,7 +7213,7 @@ msgstr "Afegeix RGB compatible"
 
 #: operations/external/raw-load.c:31
 msgid "Wide gamut RGB"
-msgstr "Gama ampla RGB"
+msgstr "Gamma ampla RGB"
 
 #: operations/external/raw-load.c:32
 msgid "ProPhoto RGB"
@@ -8568,7 +8568,7 @@ msgstr ""
 #: operations/workshop/generated/subtractive.c:111
 msgid "Image blending operation 'subtractive' (<tt>c = cA+cB-1.0</tt>)"
 msgstr ""
-"Operació de combinació de la imatge «substractiu» (<tt>c = cA+cB-1.0</tt>)"
+"Operació de combinació de la imatge «subtractiva» (<tt>c = cA+cB-1.0</tt>)"
 
 #: operations/workshop/gradient-map.c:27
 msgid "Stop 1"
