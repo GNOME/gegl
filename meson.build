@@ -149,6 +149,7 @@ config.set('HAVE_FSYNC',       cc.has_function('fsync'))
 config.set('HAVE_MALLOC_TRIM', cc.has_function('malloc_trim'))
 
 math    = cc.find_library('m', required: false)
+libdl   = cc.find_library('dl', required : false)
 thread  = dependency('threads')
 
 babl      = dependency('babl',        version: '>=0.1.71')
