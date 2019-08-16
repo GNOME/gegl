@@ -58,7 +58,6 @@ babl-min:
         ffmpeg
         gobject-introspection
         gobject-introspection-runtime
-        graphviz
         jasper
         json-glib
         lcms2
