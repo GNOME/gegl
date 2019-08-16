@@ -354,7 +354,6 @@ pkgconfig.generate(filebase: 'gegl-' + api_version,
 )
 
 
-meson.add_dist_script('dist-script.sh')
 
 message('\n'.join(['',
 'Building GEGL with prefix=@0@'.format(get_option('prefix')),
