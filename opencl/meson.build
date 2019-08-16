@@ -56,6 +56,6 @@ foreach source : opencl_sources
   opencl_headers += custom_target(source + '.h',
     input : source,
     output: source +'.h',
-    command: [ python, cltostring, '@INPUT@', '@OUTPUT@' ],
+    command: [ cltostring, '@INPUT@', '@OUTPUT@' ],
   )
 endforeach

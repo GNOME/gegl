@@ -73,7 +73,7 @@ run_compositions = find_program('run-compositions.py')
 
 if false
 test('compositions_with_opencl',
-  [ python, run_compositions ],
+  run_compositions,
   args: [
     '--build-dir='+ meson.build_root(),
     '--src-dir='  + meson.source_root(),
