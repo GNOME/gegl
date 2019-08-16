@@ -37,7 +37,7 @@ babl-master:
 babl-min:
   extends: .babl-base
   script:
-    - grep babl_required_version ../configure.ac | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
+    - grep babl ../meson.build | grep version | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
     - if [ x$(( $(cut .babl_min_version -f 3 -d _) % 2)) = x1 ] ; then touch .use_master ; fi
     - test -e .use_master && git fetch
     - test -e .use_master && git checkout master
@@ -47,52 +47,8 @@ babl-min:
     - ninja -C _build
     - ninja -C _build install
 
+
 .build-gegl:
-  stage: gegl
-  variables:
-    GIT_DEPTH: "15"
-  before_script:
-    - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache
-        base-devel
-        ffmpeg
-        gobject-introspection
-        gobject-introspection-runtime
-        graphviz
-        jasper
-        json-glib
-        lcms2
-        libgexiv2
-        libraw
-        librsvg
-        libspiro
-        libtiff
-        luajit
-        openexr
-        python
-        sdl2
-        suitesparse
-        vala
-  script:
-   - mkdir _build
-   - cd _build
-   - export XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share:/usr/local/share/:/usr/share/"
-   - export PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig
-   - export LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
-   - ../autogen.sh $CONFIG_OPTIONS
-   - make
-   - make check
-
-.build-default:
-  extends: .build-gegl
-  variables:
-    CONFIG_OPTIONS: ""
-
-.build-all:
-  extends: .build-gegl
-  variables:
-    CONFIG_OPTIONS: "--enable-debug --enable-mmx --enable-sse --enable-profile --enable-docs"
-
-.build-meson-gegl:
   stage: gegl
   variables:
     GIT_DEPTH: "15"
@@ -127,28 +83,22 @@ babl-min:
    - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
      ninja -C _build install
 
-.build-meson-default:
-  extends: .build-meson-gegl
+.build-default:
+  extends: .build-gegl
   variables:
     CONFIG_OPTIONS: ""
 
-.build-meson-all:
-  extends: .build-meson-gegl
+.build-all:
+  extends: .build-gegl
   variables:
     CONFIG_OPTIONS: "-Dworkshop=true -Ddocs=true -Dintrospection=true"
 
-
-meson-default-min-babl:
-  extends: .build-meson-default
+default-min-babl:
+  extends: .build-default
   dependencies:
     - babl-min
 
-meson-all-master-babl:
-  extends: .build-meson-all
-  dependencies:
-    - babl-master
-
-autotools-all-min-babl:
+fullconfig-master-babl:
   extends: .build-all
   dependencies:
-    - babl-min
+    - babl-master
