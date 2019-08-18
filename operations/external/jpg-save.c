@@ -37,6 +37,7 @@ property_boolean (optimize, _("Optimize"), TRUE)
   description (_("Use optimized huffman tables"))
 property_boolean (progressive, _("Progressive"), TRUE)
   description (_("Create progressive JPEG images"))
+
 property_boolean (grayscale, _("Grayscale"), FALSE)
   description (_("Create a grayscale (monochrome) image"))
 
@@ -240,11 +241,15 @@ export_jpg (GeglOperation               *operation,
   const Babl *fmt = gegl_buffer_get_format (input);
   const Babl *space = babl_format_get_space (fmt);
   gint     cmyk = babl_space_is_cmyk (space);
+  gint     gray = babl_space_is_gray (space);
 
   src_x = result->x;
   src_y = result->y;
   width = result->width;
   height = result->height;
+
+  if (gray)
+    grayscale = 1;
 
   cinfo.image_width = width;
   cinfo.image_height = height;
@@ -297,6 +302,8 @@ export_jpg (GeglOperation               *operation,
     int icc_len;
     const char *icc_profile;
     icc_profile = babl_space_get_icc (space, &icc_len);
+    /* XXX : we should write a grayscale profile - possible created from the
+             RGB - if the incoming space has a non-grayscale ICC profile */
     if (icc_profile)
       write_icc_profile (&cinfo, (void*)icc_profile, icc_len);
   }
