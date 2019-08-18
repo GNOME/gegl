@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-08-07 14:26+0000\n"
-"PO-Revision-Date: 2019-08-11 14:44+0200\n"
+"POT-Creation-Date: 2019-08-12 20:34+0000\n"
+"PO-Revision-Date: 2019-08-18 15:55+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -1582,19 +1582,21 @@ msgstr ""
 "Wykrywanie krawędzi ze sterowaniem ich grubością na podstawie różnicy dwóch "
 "rozmyć Gaussa"
 
-#: operations/common/display.c:23 operations/external/sdl-display.c:25
+#: operations/common/display.c:23 operations/external/sdl2-display.c:28
+#: operations/external/sdl-display.c:25
 msgid "Window title"
 msgstr "Tytuł okna"
 
-#: operations/common/display.c:24 operations/external/sdl-display.c:26
+#: operations/common/display.c:24 operations/external/sdl2-display.c:29
+#: operations/external/sdl-display.c:26
 msgid "Title to be given to output window"
 msgstr "Tytuł nadany oknu wyjściowemu"
 
-#: operations/common/display.c:141
+#: operations/common/display.c:142
 msgid "Display"
 msgstr "Wyświetl"
 
-#: operations/common/display.c:143
+#: operations/common/display.c:144
 msgid "Display the input buffer in a window."
 msgstr "Wyświetl bufor wejściowy w oknie."
 
@@ -7620,6 +7622,18 @@ msgstr "Zapisz w GdkPixbuf"
 #: operations/external/save-pixbuf.c:113
 msgid "Store image in a GdkPixbuf."
 msgstr "Zapisz obraz w GdkPixbuf."
+
+#: operations/external/sdl2-display.c:202
+msgid "SDL2 Display"
+msgstr "Ekran SDL2"
+
+#: operations/external/sdl2-display.c:205
+msgid ""
+"Displays the input buffer in an SDL2 window (restricted to one display op/"
+"process, due to SDL2 implementation issues)."
+msgstr ""
+"Wyświetla bufor wejściowy w oknie biblioteki SDL2 (ograniczone do jednego "
+"działania ekranu na proces z powodu problemów implementacji biblioteki SDL2)."
 
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
