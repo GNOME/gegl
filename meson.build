@@ -21,7 +21,7 @@ project('gegl',
 pkgconfig = import('pkgconfig')
 i18n      = import('i18n')
 gnome     = import('gnome')
-python    = import('python3').find_python()
+python    = import('python').find_installation()
 
 cc  = meson.get_compiler('c')
 config= configuration_data()
