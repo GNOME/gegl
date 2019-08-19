@@ -11,7 +11,8 @@ if python.found() and pygobject_found
   foreach testname : testnames
     testfile = 'test-' + testname + '.py'
     test(testname,
-      find_program(testfile),
+      python,
+      args: files(testfile),
       env: [
         'LD_LIBRARY_PATH=' + meson.build_root() / 'gegl' + ':$LD_LIBRARY_PATH',
         'GI_TYPELIB_PATH=' + meson.build_root() / 'gegl' + ':$GI_TYPELIB_PATH',
