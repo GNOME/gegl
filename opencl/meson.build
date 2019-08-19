@@ -49,13 +49,13 @@ opencl_sources = [
   'weighted-blend.cl',
 ]
 
-cltostring = find_program('cltostring.py')
+cltostring = files('cltostring.py')
 
 opencl_headers = files()
 foreach source : opencl_sources
   opencl_headers += custom_target(source + '.h',
     input : source,
     output: source +'.h',
-    command: [ cltostring, '@INPUT@', '@OUTPUT@' ],
+    command: [ python, cltostring, '@INPUT@', '@OUTPUT@' ],
   )
 endforeach
