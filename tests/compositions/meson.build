@@ -69,12 +69,13 @@ if libumfpack.found()
  # compositions_tests += 'matting-levin.xml'
 endif
 
-run_compositions = find_program('run-compositions.py')
+run_compositions = files('run-compositions.py')
 
 if false
 test('compositions_with_opencl',
-  run_compositions,
+  python,
   args: [
+    run_compositions,
     '--build-dir='+ meson.build_root(),
     '--src-dir='  + meson.source_root(),
     '--xml-dir='  + meson.current_source_dir(),
@@ -87,8 +88,9 @@ test('compositions_with_opencl',
 endif
 
 test('compositions_without_opencl',
-  run_compositions,
+  python,
   args: [
+    run_compositions,
     '--build-dir='+ meson.build_root(),
     '--src-dir='  + meson.source_root(),
     '--xml-dir='  + meson.current_source_dir(),
