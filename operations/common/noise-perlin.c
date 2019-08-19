@@ -49,13 +49,6 @@ prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", babl_format ("Y float"));
 }
 
-static GeglRectangle
-get_bounding_box (GeglOperation *operation)
-{
-  GeglRectangle result = {-10000000, -10000000, 20000000, 20000000};
-  return result;
-}
-
 static gboolean
 process (GeglOperation       *operation,
          void                *out_buf,
@@ -90,6 +83,13 @@ process (GeglOperation       *operation,
     }
   return  TRUE;
 }
+
+static GeglRectangle
+get_bounding_box (GeglOperation *operation)
+{
+  return gegl_rectangle_infinite_plane ();
+}
+
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
