@@ -6,6 +6,7 @@ opencl_sources = [
   'box-blur.cl',
   'box-max.cl',
   'box-min.cl',
+  'boxblur-1d.cl',
   'brightness-contrast.cl',
   'c2g.cl',
   'checkerboard.cl',
