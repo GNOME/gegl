@@ -95,6 +95,11 @@ main (gint    argc,
     g_print ("raster md5s differ: %s vs %s\n", md5A, md5B);
   }
 
+  if( access( argv[2], F_OK ) != 0 ) {
+    g_print ("missing output image, failing\n");
+    return ERROR_PIXELS_DIFFERENT;
+  }
+
   gegl = gegl_node_new ();
   imgA = gegl_node_new_child (gegl,
                               "operation", "gegl:load",
