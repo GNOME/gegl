@@ -24,6 +24,7 @@ gnome     = import('gnome')
 python    = import('python').find_installation()
 
 cc  = meson.get_compiler('c')
+cxx = meson.get_compiler('cpp')
 config= configuration_data()
 
 ################################################################################
@@ -56,6 +57,10 @@ interface_age = 1
 binary_age = 100 * minor_version + micro_version
 lt_current = binary_age - interface_age
 so_version  = '@0@.@1@.@2@'.format(0, lt_current, interface_age)
+
+
+config.set_quoted ('LIBDIR', get_option('prefix') / get_option('libdir'))
+config.set_quoted ('GEGL_LOCALEDIR', get_option('localedir'))
 
 ################################################################################
 # Host system detection
@@ -100,10 +105,16 @@ c_arguments = [
 c_arguments += [
   '-Winit-self',
   '-Wmissing-declarations',
-  '-Wmissing-prototypes',
-  '-Wold-style-definition',
   '-Wpointer-arith',
   '-Wno-deprecated-declarations',
+]
+
+c_only_arguments = [
+  '-Wmissing-prototypes',
+  '-Wold-style-definition',
+]
+cpp_only_arguments = [
+
 ]
 
 ################################################################################
@@ -127,7 +138,12 @@ foreach arg : optionnal_arguments
   endif
 endforeach
 
-add_project_arguments(cc.get_supported_arguments(c_arguments), language: 'c')
+add_project_arguments(cc.get_supported_arguments(c_arguments + c_only_arguments),
+  language: 'c'
+)
+add_project_arguments(cxx.get_supported_arguments(c_arguments + cpp_only_arguments),
+  language: 'cpp'
+)
 
 ################################################################################
 # Utilities
@@ -235,6 +251,7 @@ lua       = dependency('luajit',      version: '>=2.0.4',
   required: get_option('lua')
 )
 config.set('HAVE_LUA', lua.found())
+
 mrg       = dependency('mrg',         version: '>=0.0.0',
   required: get_option('mrg')
 )

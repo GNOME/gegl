@@ -6,7 +6,7 @@ tools_deps = [
 ]
 
 tools_c_args = [
-  '-DTOP_SRCDIR="' + meson.source_root() + '"',
+  '-DTOP_SRCDIR="@0@"'.format(meson.source_root()),
 ]
 
 detect_opencl = executable(

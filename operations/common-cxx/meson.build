@@ -5,8 +5,8 @@ gegl_common_cxx_sources = files(
 )
 
 gegl_common_cxx_sources += custom_target('module_common_gpl3.c',
-  input : [ gegl_common_cxx_sources ],
-  output: [ 'module_common_gpl3.c' ],
+  input : gegl_common_cxx_sources,
+  output: 'module_common_gpl3.c',
   command: [
     gen_loader,
     '@INPUT@',

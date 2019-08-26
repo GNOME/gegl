@@ -11,9 +11,7 @@ geglInclude = include_directories(
 )
 
 gegl_cflags = [
-  '-DLIBDIR="@0@"'.format(get_option('prefix') / get_option('libdir')),
   '-DG_LOG_DOMAIN="@0@"'.format('GEGL'),
-  '-DGEGL_LOCALEDIR="@0@"'.format(get_option('localedir')),
 ]
 
 gegl_version_h = configure_file(
@@ -74,9 +72,7 @@ subdir('operation')
 subdir('process')
 subdir('property-types')
 
-gegl_headers += gegl_introspectable_headers
-
-install_headers(gegl_headers,
+install_headers(gegl_headers + gegl_introspectable_headers,
   subdir: api_name
 )
 
@@ -90,19 +86,18 @@ gegl_lib = library(api_name,
     math,
     gmodule,
   ],
-  c_args: [ gegl_cflags, ],
+  c_args: gegl_cflags,
   install: true,
   version: so_version,
 )
 
 
-introspection_sources = gegl_introspectable_headers + files(
-  'gegl-introspection-support.h',
-  'opencl' / 'gegl-cl-introspection-support.h',
-)
-
-
 if get_option('introspection')
+
+  introspection_sources = gegl_introspectable_headers + files(
+    'gegl-introspection-support.h',
+    'opencl' / 'gegl-cl-introspection-support.h',
+  )
 
   gegl_gir = gnome.generate_gir(gegl_lib,
     sources: introspection_sources,

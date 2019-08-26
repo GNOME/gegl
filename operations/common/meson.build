@@ -113,8 +113,8 @@ gegl_common_sources = files(
 )
 
 gegl_common_sources += custom_target('module_common.c',
-  input : [ gegl_common_sources ],
-  output: [ 'module_common.c' ],
+  input : gegl_common_sources,
+  output: 'module_common.c',
   command: [
     gen_loader,
     '@INPUT@',

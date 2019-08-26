@@ -63,7 +63,7 @@ foreach file: asciidoc_files
     command: [ asciidoc,
       '--unsafe',
       '-o', '@OUTPUT@',
-      '-a', 'stylesheet="@0@"'.format(join_paths(meson.source_root(), 'gegl.css')),
+      '-a', 'stylesheet="@0@"'.format(meson.source_root() / 'gegl.css'),
       '-a', 'quirks!',
       '@INPUT@',
     ],
@@ -93,7 +93,7 @@ install_data(gtkdoc_files,
   install_dir: gnome.gtkdoc_html_dir('gegl')
 )
 install_data(gtkdoc_images,
-  install_dir: join_paths (gnome.gtkdoc_html_dir('gegl') , 'images')
+  install_dir: gnome.gtkdoc_html_dir('gegl') / 'images',
 )
 
 
@@ -104,18 +104,18 @@ configure_file(input: 'images/GEGL.png',
 )
 
 
-docpath = join_paths(get_option('datadir'), 'gtk-doc', 'html')
+docpath = get_option('datadir') / 'gtk-doc' / 'html'
 
 glib_prefix = dependency('glib-2.0').get_pkgconfig_variable('prefix')
-glib_docpath = join_paths(glib_prefix, 'share', 'gtk-doc', 'html')
+glib_docpath = glib_prefix / 'share' / 'gtk-doc' / 'html'
 
 
 gnome.gtkdoc('gegl',
              dependencies : gegl_lib,
              main_xml : meson.project_name() + '-docs.xml',
   src_dir: [
-    join_paths(meson.source_root(), 'gegl'),
-    join_paths(meson.build_root(), 'gegl'),
+    meson.source_root() / 'gegl',
+    meson.build_root() / 'gegl',
   ],
 
   fixxref_args: [
@@ -126,9 +126,7 @@ gnome.gtkdoc('gegl',
 )
 
 
- doc_operations_examples_dir = join_paths(
-   meson.current_build_dir(), 'ophtml',
- )
+ doc_operations_examples_dir = meson.current_build_dir() / 'ophtml'
  exclusion_pattern = '|'.join([
    'alpha-inpaint',
    'box-blur', 'box-percentile', 'buffer-cache', 'buffer-source',
@@ -158,19 +156,19 @@ gnome.gtkdoc('gegl',
      ' '.join([
      'mkdir', '-p', doc_operations_examples_dir,
      '&&',
-     'cd', join_paths(meson.current_build_dir(), 'ophtml'),
+     'cd', meson.current_build_dir() / 'ophtml',
      '&&',
-     'GEGL_PATH=' + join_paths(meson.build_root(), 'operations'),
+     'GEGL_PATH=' + meson.build_root() / 'operations',
      operations_html.full_path(),
      '&&',
      'echo', 'Generating example images',
      '&&',
      'BABL_TOLERANCE=0.0',
      'GEGL_SWAP=RAM',
-     'GEGL_PATH=' + join_paths(meson.build_root(), 'operations'),
+     'GEGL_PATH=' + meson.build_root() / 'operations',
      gegl_tester.full_path(),
      '--all', '-o',  doc_operations_examples_dir,
-     '-d', join_paths(meson.current_source_dir(), 'images'),
+     '-d', meson.current_source_dir() / 'images',
      '-e', '"' + exclusion_pattern + '"', '||', 'true', '&&', 'touch', '../gallery-stamp'
      ])
    ],
