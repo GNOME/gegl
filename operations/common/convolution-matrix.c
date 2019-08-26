@@ -212,6 +212,13 @@ normalize_div_off (gfloat  matrix[MAX_MATRIX_SIZE][MAX_MATRIX_SIZE],
   return valid;
 }
 
+static gint inline
+matrix_center_offset (const GeglRectangle *extended,
+                      gint                 matrix_size)
+{
+  return (extended->width + 1) * (matrix_size / 2);
+}
+
 static void inline
 convolve_pixel_componentwise (GeglProperties       *o,
                 gfloat               *src_buf,
@@ -256,6 +263,7 @@ convolve_pixel_componentwise (GeglProperties       *o,
         }
       else
         {
+          s_offset += 4 * matrix_center_offset (extended, matrix_size);
           dst_buf[d_offset + i] = src_buf[s_offset + i];
         }
     }
@@ -406,6 +414,7 @@ convolve_pixel_alpha_weight_componentwise (GeglProperties       *o,
         }
       else
         {
+          s_offset += 4 * matrix_center_offset (extended, matrix_size);
           sum = src_buf[s_offset + i];
         }
       dst_buf[d_offset + i] = sum;
@@ -442,6 +451,7 @@ convolve_pixel_alpha_weight_componentwise (GeglProperties       *o,
         }
       else
         {
+          s_offset += 4 * matrix_center_offset (extended, matrix_size);
           sum = src_buf[s_offset + i];
         }
       dst_buf[d_offset + i] = sum;
