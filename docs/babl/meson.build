@@ -5,7 +5,7 @@ location= 'public_html/babl'
 scptarget = host + ':' + location + '/'
 
 
-xml_insert = find_program(join_paths('tools', 'xml_insert.sh'))
+xml_insert = find_program('tools' / 'xml_insert.sh')
 
 index_static_html = configure_file(
   input : 'index-static.html.in',
@@ -20,12 +20,12 @@ babl_css = configure_file(
 )
 
 index_html_tmp_env = [
-  'BABL_PATH='+ join_paths(meson.build_root(), 'extensions'),
+  'BABL_PATH='+ meson.build_root() / 'extensions',
 ]
 
 index_html_tmp = custom_target('index.html.tmp',
-  input : [ babl_html_dump, ],
-  output: [ 'index.html.tmp', ],
+  input : babl_html_dump,
+  output: 'index.html.tmp',
   command: [
     env_bin,
     index_html_tmp_env,
@@ -38,9 +38,9 @@ index_html = custom_target('index.html',
   input : [
     index_static_html,
     index_html_tmp,
-    join_paths(meson.source_root(), 'AUTHORS'),
-    join_paths(meson.source_root(), 'TODO'),
-    join_paths(meson.source_root(), 'NEWS'),
+    meson.source_root() / 'AUTHORS',
+    meson.source_root() / 'TODO',
+    meson.source_root() / 'NEWS',
   ],
   output: [ 'index.html', ],
   command: [
