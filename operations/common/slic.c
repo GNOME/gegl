@@ -167,7 +167,7 @@ assign_labels (GeglBuffer     *labels,
   GeglBufferIterator *iter;
   GArray  *clusters_index;
 
-  clusters_index = g_array_sized_new (FALSE, FALSE, sizeof (gint), 9);
+  clusters_index = g_array_sized_new (FALSE, FALSE, sizeof (guint), 9);
 
   iter = gegl_buffer_iterator_new (input, NULL, 0, format,
                                    GEGL_ACCESS_READ, GEGL_ABYSS_NONE, 2);
@@ -182,7 +182,8 @@ assign_labels (GeglBuffer     *labels,
       gfloat  *pixel = iter->items[0].data;
       guint32 *label = iter->items[1].data;
       glong    n_pixels = iter->length;
-      gint     x, y, i;
+      gint     x, y;
+      guint    i;
 
       x = roi->x;
       y = roi->y;
@@ -214,12 +215,12 @@ assign_labels (GeglBuffer     *labels,
           /* find the nearest cluster */
 
           gfloat  min_distance = G_MAXFLOAT;
-          gint    best_cluster = *label;
+          guint   best_cluster = 0;
 
           for (i = 0; i < clusters_index->len ; i++)
             {
               gfloat distance;
-              gint index = g_array_index (clusters_index, gint, i);
+              guint index = g_array_index (clusters_index, guint, i);
               Cluster *tmp = &g_array_index (clusters, Cluster, index);
 
               if (x < tmp->search_window.x ||
@@ -244,8 +245,6 @@ assign_labels (GeglBuffer     *labels,
           c->sum[3] += (gfloat) x;
           c->sum[4] += (gfloat) y;
           c->n_pixels++;
-
-          g_assert (best_cluster != -1);
 
           *label = best_cluster;
 
