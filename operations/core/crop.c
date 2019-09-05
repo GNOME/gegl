@@ -189,7 +189,10 @@ gegl_crop_process (GeglOperation        *operation,
       gegl_rectangle_intersect (&extent,
                                 &extent, gegl_buffer_get_extent (input));
 
-      output = gegl_buffer_create_sub_buffer (input, &extent);
+      if (gegl_rectangle_equal (&extent, gegl_buffer_get_extent (input)))
+        output = g_object_ref (input);
+      else
+        output = gegl_buffer_create_sub_buffer (input, &extent);
 
       /* propagate forked state, meaning that in-place processing is not possible
        * due to shared nature of underlying data

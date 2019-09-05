@@ -48,7 +48,10 @@ process (GeglOperation       *operation,
     {
       GeglBuffer **output = o->buffer;
 
-      *output = gegl_buffer_create_sub_buffer (input, result);
+      if (gegl_rectangle_equal (result, gegl_buffer_get_extent (input)))
+        *output = g_object_ref (input);
+      else
+        *output = gegl_buffer_create_sub_buffer (input, result);
     }
   else if (o->buffer != NULL &&
            o->format != NULL)

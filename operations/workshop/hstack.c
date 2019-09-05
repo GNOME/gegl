@@ -117,8 +117,15 @@ process (GeglOperation       *operation,
    * include both input buffers
    */
 
-  temp_in = gegl_buffer_create_sub_buffer (input, result);
-  temp_aux = gegl_buffer_create_sub_buffer (aux, result);
+  if (gegl_rectangle_equal (result, gegl_buffer_get_extent (input)))
+    temp_in = g_object_ref (input);
+  else
+    temp_in = gegl_buffer_create_sub_buffer (input, result);
+
+  if (gegl_rectangle_equal (result, gegl_buffer_get_extent (aux)))
+    temp_aux = g_object_ref (aux);
+  else
+    temp_aux = gegl_buffer_create_sub_buffer (aux, result);
 
     {
       gfloat *buf  = g_new0 (gfloat, result->width * result->height * 4);
