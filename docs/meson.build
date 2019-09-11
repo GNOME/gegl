@@ -64,7 +64,7 @@ foreach file: asciidoc_files
     command: [ asciidoc,
       '--unsafe',
       '-o', '@OUTPUT@',
-      '-a', 'stylesheet="@0@"'.format(join_paths(meson.source_root(), 'gegl.css')),
+      '-a', 'stylesheet=@0@'.format(join_paths(meson.source_root(), 'docs', 'gegl.css')),
       '-a', 'quirks!',
       '@INPUT@',
     ],
