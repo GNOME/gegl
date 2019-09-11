@@ -1,6 +1,6 @@
 
 if lua.found()
-  shared_library('gluas',
+  gegl_operations += shared_library('gluas',
     'gluas.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
@@ -20,7 +20,7 @@ if lua.found()
 endif
 
 if lensfun.found()
-  shared_library('lens-correct',
+  gegl_operations += shared_library('lens-correct',
     'lens-correct.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
@@ -40,7 +40,7 @@ if lensfun.found()
 endif
 
 if cairo.found()
-  shared_library('line-profile',
+  gegl_operations += shared_library('line-profile',
     'line-profile.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [
@@ -60,7 +60,7 @@ if cairo.found()
 endif
 
 if libv4l2.found()
-  shared_library('v4l2',
+  gegl_operations += shared_library('v4l2',
     'v4l2.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [

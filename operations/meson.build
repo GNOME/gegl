@@ -1,3 +1,5 @@
+gegl_operations = []
+
 subdir('common-gpl3+')
 subdir('common-cxx')
 subdir('common')

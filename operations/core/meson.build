@@ -37,3 +37,5 @@ gegl_core = shared_library('gegl-core',
   install: true,
   install_dir: get_option('libdir') / api_name,
 )
+
+gegl_operations += gegl_core

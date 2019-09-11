@@ -15,6 +15,7 @@ html_files += custom_target('class-hierarchy.html',
     'GEGL_PATH='+ meson.build_root() / 'operations',
     introspect,
   ],
+  depends: gegl_operations,
   build_by_default : true,
   capture: true,
 )
@@ -174,6 +175,7 @@ gnome.gtkdoc('gegl',
      '-e', '"' + exclusion_pattern + '"', '||', 'true', '&&', 'touch', '../gallery-stamp'
      ])
    ],
+   depends: gegl_operations,
  )
 
 meson.add_install_script('install-docs.sh')

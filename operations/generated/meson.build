@@ -54,3 +54,5 @@ gegl_generated = shared_library('gegl-generated',
   install: true,
   install_dir: get_option('libdir') / api_name,
 )
+
+gegl_operations += gegl_generated

@@ -29,3 +29,5 @@ gegl_transformops = shared_library('transformops',
   install: true,
   install_dir: get_option('libdir') / api_name,
 )
+
+gegl_operations += gegl_transformops

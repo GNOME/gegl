@@ -80,3 +80,5 @@ gegl_common_gpl3 = shared_library('gegl-common-gpl3',
   install: true,
   install_dir: get_option('libdir') / api_name,
 )
+
+gegl_operations += gegl_common_gpl3
