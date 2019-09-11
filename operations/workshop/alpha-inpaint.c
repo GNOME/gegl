@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include "config.h"
 #include <glib/gi18n-lib.h>
-#include <malloc.h>
+//#include <malloc.h>
 
 
 #ifdef GEGL_PROPERTIES
