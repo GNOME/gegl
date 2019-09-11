@@ -24,7 +24,7 @@ libraries = [
 foreach lib : libraries
   libname = lib.get('name')
   libsrcs = lib.get('srcs', libname + '.c')
-  shared_library(libname,
+  gegl_operations += shared_library(libname,
     libsrcs,
     opencl_headers,
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
