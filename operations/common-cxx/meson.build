@@ -32,3 +32,5 @@ gegl_common_cxx = shared_library('gegl-common-cxx',
   install: true,
   install_dir: get_option('libdir') / api_name,
 )
+
+gegl_operations += gegl_common_cxx

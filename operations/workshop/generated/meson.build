@@ -9,7 +9,7 @@ libraries = [
 ]
 
 foreach lib : libraries
-  shared_library(lib,
+  gegl_operations += shared_library(lib,
     lib + '.c',
     include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
     dependencies: [

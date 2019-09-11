@@ -115,7 +115,7 @@ foreach operation : operations
   libsrcs = operation.get('srcs', libname + '.c')
   libdeps = operation.get('deps', [])
 
-  shared_library(libname,
+  gegl_operations += shared_library(libname,
     libsrcs,
     dependencies: [ babl, gio, glib, gobject, math, libdeps, ],
     include_directories: [ rootInclude, geglInclude, ],

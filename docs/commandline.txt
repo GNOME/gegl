@@ -19,5 +19,5 @@ The following is the usage information of the gegl binary, this documentation
 might not be complete.
 
 -------
-sys::[bash -c '../bin/gegl -h 2>&1']
+sys::[bash -c './bin/gegl -h 2>&1']
 -------
