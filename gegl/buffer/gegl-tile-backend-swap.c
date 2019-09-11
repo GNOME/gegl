@@ -424,11 +424,11 @@ static gint
 gegl_tile_backend_swap_gap_search_func (const SwapGap     *gap,
                                         SwapGapSearchData *search_data)
 {
-  if (gap->start <= search_data->offset)
+  if (gap->end <= search_data->offset)
     {
       search_data->gap = (SwapGap *) gap;
 
-      return gap->start < search_data->offset;
+      return gap->end < search_data->offset;
     }
   else
     {
