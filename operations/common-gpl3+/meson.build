@@ -1,4 +1,4 @@
-gegl_common_sources = files(
+gegl_common_gpl3_sources = files(
   'antialias.c',
   'apply-lens.c',
   'bayer-matrix.c',
@@ -51,8 +51,8 @@ gegl_common_sources = files(
   'wind.c',
 )
 
-gegl_common_sources += custom_target('module_common_gpl3.c',
-  input : [ gegl_common_sources ],
+gegl_common_gpl3_sources += custom_target('module_common_gpl3.c',
+  input : [ gegl_common_gpl3_sources ],
   output: [ 'module_common_gpl3.c' ],
   command: [
     gen_loader,
@@ -61,8 +61,8 @@ gegl_common_sources += custom_target('module_common_gpl3.c',
   capture: true
 )
 
-gegl_common = shared_library('gegl-common-gpl3',
-  [ gegl_common_sources, opencl_headers, ],
+gegl_common_gpl3 = shared_library('gegl-common-gpl3',
+  [ gegl_common_gpl3_sources, opencl_headers, ],
   include_directories: [ rootInclude, geglInclude, ],
   dependencies: [
     babl,
