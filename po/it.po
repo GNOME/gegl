@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-12 13:50+0200\n"
-"PO-Revision-Date: 2019-09-12 13:38+0200\n"
+"PO-Revision-Date: 2019-09-13 10:11+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -3176,12 +3176,10 @@ msgid "Black angle"
 msgstr "Angolo del nero"
 
 #: ../operations/common/newsprint.c:162
-#, fuzzy
 msgid "Black pullout"
 msgstr "Estrazione del nero"
 
 #: ../operations/common/newsprint.c:164
-#, fuzzy
 msgid "How much of common gray to pull out of CMY"
 msgstr "Quanto grigio comune da estrarre dal CMY"
 
@@ -4644,9 +4642,8 @@ msgid "Ambient lighting factor"
 msgstr "Fattore di illuminazione ambiente"
 
 #: ../operations/common-gpl3+/bump-map.c:452
-#, fuzzy
 msgid "Height Map"
-msgstr "Altezza"
+msgstr "Mappa altezza"
 
 #: ../operations/common-gpl3+/bump-map.c:457
 msgid "Bump Map"
@@ -7746,18 +7743,14 @@ msgid "Store image in a GdkPixbuf."
 msgstr "Salva l'immagine in un GdkPixbuf."
 
 #: ../operations/external/sdl2-display.c:202
-#, fuzzy
 msgid "SDL2 Display"
-msgstr "Schermo SDL"
+msgstr "Schermo SDL2"
 
 #: ../operations/external/sdl2-display.c:205
-#, fuzzy
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
-msgstr ""
-"Mostra il buffer in ingresso in una finestra SDL (limitata ad un solo "
-"processo di visualizzazione, a causa di problemi implementativi di SDL)."
+msgstr "Mostra il buffer in ingresso in una finestra SDL2 (limitata ad un solo processo di visualizzazione, a causa di problemi implementativi di SDL2)."
 
 #: ../operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -8497,20 +8490,16 @@ msgstr ""
 "scatola invece di uno sfocamento gaussiano."
 
 #: ../operations/workshop/boxblur-1d.c:28
-#, fuzzy
 msgid "Radius of row pixel region, (size will be radius*2+1)"
-msgstr "Raggio della regione di pixel (la dimensione sarà raggio*2+1)."
+msgstr "Raggio della regione del pixel della riga (la dimensione sarà raggio*2+1)."
 
 #: ../operations/workshop/boxblur-1d.c:466
 msgid "1D Box Blur"
 msgstr "Sfocatura scatola 1D"
 
 #: ../operations/workshop/boxblur-1d.c:467
-#, fuzzy
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
-msgstr ""
-"La sfocatura risultante dalla media dei colori di un quadrato di punti "
-"vicini."
+msgstr "La sfocatura risultante dalla media dei colori vicini ad una riga."
 
 #: ../operations/workshop/boxblur.c:77
 msgid "BoxBlur"
