@@ -37,7 +37,7 @@
 #define SUCCESS  0
 #define FAILURE -1
 
-#define TIMEOUT (3 * G_TIME_SPAN_SECOND)
+#define TIMEOUT (60 * G_TIME_SPAN_SECOND)
 
 static GMutex            mutex;
 static GCond             cond;
