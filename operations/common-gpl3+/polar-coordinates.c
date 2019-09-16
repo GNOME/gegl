@@ -40,13 +40,13 @@ property_double (angle, _("Offset angle"), 0.0)
   ui_meta       ("unit", "degree")
   ui_meta       ("direction", "ccw")
 
-property_boolean (bw, _("Map backwards"), FALSE)
+property_boolean (bw, _("Map _backwards"), FALSE)
   description    (_("Start from the right instead of the left"))
 
-property_boolean (top, _("Map from top"), TRUE)
+property_boolean (top, _("Map _from top"), TRUE)
   description    (_("Put the top row in the middle and the bottom row on the outside"))
 
-property_boolean (polar, _("To polar"), TRUE)
+property_boolean (polar, _("_To polar"), TRUE)
   description    (_("Map the image to a circle"))
 
 property_int  (pole_x, _("X"), 0)
@@ -63,7 +63,7 @@ property_int  (pole_y, _("Y"), 0)
   ui_meta     ("axis", "y")
   ui_meta     ("sensitive", "$pole-x.sensitive")
 
-property_boolean (middle, _("Choose middle"), TRUE)
+property_boolean (middle, _("Choose _middle"), TRUE)
   description (_("Let origin point to be the middle one"))
   ui_meta     ("sensitive", "polar")
 

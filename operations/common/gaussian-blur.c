@@ -59,7 +59,7 @@ property_enum (abyss_policy, _("Abyss policy"), GeglGaussianBlurPolicy,
                gegl_gaussian_blur_policy, GEGL_GAUSSIAN_BLUR_ABYSS_CLAMP)
    description (_("How image edges are handled"))
 
-property_boolean (clip_extent, _("Clip to the input extent"), TRUE)
+property_boolean (clip_extent, _("C_lip to the input extent"), TRUE)
    description (_("Should the output extent be clipped to the input extent"))
 
 #else

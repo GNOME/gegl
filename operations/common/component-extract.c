@@ -50,10 +50,10 @@ property_enum (component, _("Component"),
                GEGL_COMPONENT_EXTRACT_RGB_RED)
   description (_("Component to extract"))
 
-property_boolean (invert, _("Invert component"), FALSE)
+property_boolean (invert, _("_Invert component"), FALSE)
      description (_("Invert the extracted component"))
 
-property_boolean (linear, _("Linear output"), FALSE)
+property_boolean (linear, _("_Linear output"), FALSE)
      description (_("Use linear output instead of gamma corrected"))
 
 #else

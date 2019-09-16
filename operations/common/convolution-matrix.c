@@ -56,13 +56,13 @@ property_double (offset, _("Offset"), 0.0)
     value_range (-1.0, 1.0)
     ui_meta     ("sensitive", "! normalize")
 
-property_boolean (red,   _("Red channel"),   TRUE)
-property_boolean (green, _("Green channel"), TRUE)
-property_boolean (blue,  _("Blue channel"),  TRUE)
-property_boolean (alpha, _("Alpha channel"), TRUE)
+property_boolean (red,   _("R_ed channel"),   TRUE)
+property_boolean (green, _("_Green channel"), TRUE)
+property_boolean (blue,  _("_Blue channel"),  TRUE)
+property_boolean (alpha, _("_Alpha channel"), TRUE)
 
-property_boolean (normalize,    _("Normalize"),       TRUE)
-property_boolean (alpha_weight, _("Alpha-weighting"), TRUE)
+property_boolean (normalize,    _("_Normalize"),       TRUE)
+property_boolean (alpha_weight, _("Alpha-_weighting"), TRUE)
 
 property_enum (border, _("Border"),
                GeglAbyssPolicy, gegl_abyss_policy,

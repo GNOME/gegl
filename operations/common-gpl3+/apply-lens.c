@@ -38,7 +38,7 @@ property_double (refraction_index, _("Lens refraction index"), 1.7)
   ui_range    (1.0, 10.0)
   ui_gamma    (3.0)
 
-property_boolean (keep_surroundings, _("Keep original surroundings"), FALSE)
+property_boolean (keep_surroundings, _("_Keep original surroundings"), FALSE)
   description(_("Keep image unchanged, where not affected by the lens."))
 
 property_color (background_color, _("Background color"), "none")

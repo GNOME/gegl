@@ -22,10 +22,10 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_boolean (keep_colors, _("Keep colors"), TRUE)
+property_boolean (keep_colors, _("_Keep colors"), TRUE)
     description(_("Impact each channel with the same amount"))
 
-property_boolean (perceptual, _("Non-linear components"), FALSE)
+property_boolean (perceptual, _("_Non-linear components"), FALSE)
     description(_("When set operate on gamma corrected values instead of linear RGB - acting like the old normalize filter in GIMP"))
 
 #else

@@ -60,7 +60,7 @@ property_enum (algorithm_type, _("Algorithm type"),
                GEGL_MAZE_ALGORITHM_DEPTH_FIRST)
   description (_("Maze algorithm type"))
 
-property_boolean (tileable, _("Tileable"), FALSE)
+property_boolean (tileable, _("_Tileable"), FALSE)
 
 property_seed (seed, _("Random seed"), rand)
 

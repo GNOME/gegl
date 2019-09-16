@@ -81,9 +81,9 @@ property_double (output_scale, _("Expand"), 1.0)
     description (_("Scale factor to make rendering size bigger"))
     value_range (0.0, 100.0)
 
-property_boolean (clip, _("Clip result to input size"), TRUE)
+property_boolean (clip, _("C_lip result to input size"), TRUE)
 
-property_boolean (warp, _("Wrap input"), TRUE)
+property_boolean (warp, _("_Wrap input"), TRUE)
     description (_("Fill full output area"))
 
 

@@ -56,7 +56,7 @@ property_double (move_rate, _("Move rate"), 25.0)
   ui_range    (1.0, 100.0)
   ui_meta     ("unit", "percent")
 
-property_boolean (wrap_around, _("Wrap around"), FALSE)
+property_boolean (wrap_around, _("_Wrap around"), FALSE)
   description (_("Wrap the fractional tiles"))
 
 property_enum (fractional_type, _("Fractional type"),
@@ -64,7 +64,7 @@ property_enum (fractional_type, _("Fractional type"),
                GEGL_FRACTIONAL_TYPE_FORCE)
   description (_("Fractional Type"))
 
-property_boolean (centering, _("Centering"), TRUE)
+property_boolean (centering, _("C_entering"), TRUE)
   description (_("Centering of the tiles"))
 
 property_enum (background_type, _("Background type"),

@@ -28,7 +28,7 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_boolean (preserve_luminosity, _("Preserve luminosity"), FALSE)
+property_boolean (preserve_luminosity, _("Preserve _luminosity"), FALSE)
 
 /* Red channel */
 property_double (rr_gain, _("Red in Red channel"), 1.0)
