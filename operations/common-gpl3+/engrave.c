@@ -33,7 +33,7 @@ property_int (row_height, _("Height"), 10)
     value_range (2, 16)
     ui_range    (2, 16)
 
-property_boolean (limit, _("Limit line width"), FALSE)
+property_boolean (limit, _("_Limit line width"), FALSE)
     description (_("Limit line width"))
 
 #else

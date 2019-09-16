@@ -49,7 +49,7 @@ property_int     (iterations, _("Iterations"), 1)
     description  (_("The number of noise octaves."))
     value_range  (1, 20)
 
-property_boolean (palettize, _("Palettize"), FALSE)
+property_boolean (palettize, _("P_alettize"), FALSE)
     description  (_("Fill each cell with a random color"))
 
 property_seed    (seed, _("Random seed"), rand)

@@ -46,7 +46,7 @@ property_double  (fade_opacity, _("Fade opacity"), 1.0)
                     "each transformed image"))
     value_range  (0.0, 1.0)
 
-property_boolean (paste_below, _("Paste below"), FALSE)
+property_boolean (paste_below, _("Paste _below"), FALSE)
     description  (_("Paste transformed images below each other"))
 
 property_enum    (sampler_type, _("Resampling method"),

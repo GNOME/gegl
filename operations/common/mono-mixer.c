@@ -23,7 +23,7 @@
 
 
 #ifdef GEGL_PROPERTIES
-property_boolean (preserve_luminosity, _("Preserve luminosity"), FALSE)
+property_boolean (preserve_luminosity, _("Preserve _luminosity"), FALSE)
 
 property_double (red, _("Red Channel Multiplier"), 0.333)
     value_range (-5.0, 5.0)

@@ -27,7 +27,7 @@ property_color (value, _("Color"), "transparent")
     description (_("The color to paint over the input"))
     ui_meta     ("role", "color-primary")
 
-property_boolean (srgb, _("sRGB"), FALSE)
+property_boolean (srgb, _("sR_GB"), FALSE)
     description (_("Use sRGB gamma instead of linear"))
 
 #else

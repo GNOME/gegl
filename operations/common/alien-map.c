@@ -89,19 +89,19 @@ property_double  (cpn_3_phaseshift, _("Component 3 phase shift"), 0)
 property_boolean (cpn_1_keep, _("Keep component 1"), FALSE)
   ui_meta     ("label", "[color-model {rgb} : rgb-label,"
                         " color-model {hsl} : hsl-label]")
-  ui_meta     ("rgb-label", _("Keep red component"))
+  ui_meta     ("rgb-label", _("_Keep red component"))
   ui_meta     ("hsl-label", _("Keep hue component"))
 
 property_boolean (cpn_2_keep, _("Keep component 2"), FALSE)
   ui_meta     ("label", "[color-model {rgb} : rgb-label,"
                         " color-model {hsl} : hsl-label]")
-  ui_meta     ("rgb-label", _("Keep green component"))
+  ui_meta     ("rgb-label", _("Keep _green component"))
   ui_meta     ("hsl-label", _("Keep saturation component"))
 
 property_boolean (cpn_3_keep, _("Keep component 3"), FALSE)
   ui_meta     ("label", "[color-model {rgb} : rgb-label,"
                         " color-model {hsl} : hsl-label]")
-  ui_meta     ("rgb-label", _("Keep blue component"))
+  ui_meta     ("rgb-label", _("Keep _blue component"))
   ui_meta     ("hsl-label", _("Keep lightness component"))
 
 #else

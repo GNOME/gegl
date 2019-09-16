@@ -75,7 +75,7 @@ property_double (amount_y, _("Y displacement"), 0.0)
     ui_meta     ("cartesian-description", _("Displacement multiplier for the vertical direction"))
     ui_meta     ("polar-description", _("Displacement multiplier for the angular offset"))
 
-property_boolean (center, _("Center displacement"), FALSE)
+property_boolean (center, _("Center _displacement"), FALSE)
     description (_("Center the displacement around a specified point"))
 
 property_double (center_x, _("Center X"), 0.5)

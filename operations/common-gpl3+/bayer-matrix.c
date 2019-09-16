@@ -53,7 +53,7 @@ property_enum (rotation, _("Rotation"),
                GEGL_BAYER_MATRIX_ROTATION_0)
   description (_("Pattern rotation angle"))
 
-property_boolean (reflect, _("Reflect"), FALSE)
+property_boolean (reflect, _("R_eflect"), FALSE)
   description(_("Reflect the pattern horizontally"))
 
 property_double (amplitude, _("Amplitude"), 0.0)

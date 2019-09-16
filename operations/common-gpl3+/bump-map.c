@@ -39,13 +39,13 @@ property_enum (type, _("Type"), GeglBumpMapType, gegl_bump_map_type,
                GEGL_BUMP_MAP_TYPE_LINEAR)
   description (_("Type of map"))
 
-property_boolean (compensate, _("Compensate"), TRUE)
+property_boolean (compensate, _("Co_mpensate"), TRUE)
   description (_("Compensate for darkening"))
 
-property_boolean (invert, _("Invert"), FALSE)
+property_boolean (invert, _("_Invert"), FALSE)
   description (_("Invert bumpmap"))
 
-property_boolean (tiled, _("Tiled"), FALSE)
+property_boolean (tiled, _("_Tiled"), FALSE)
   description (_("Tiled bumpmap"))
 
 property_double  (azimuth, _("Azimuth"), 135.0)

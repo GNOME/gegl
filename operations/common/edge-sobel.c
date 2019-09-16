@@ -24,11 +24,11 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_boolean (horizontal,  _("Horizontal"), TRUE)
+property_boolean (horizontal,  _("Hori_zontal"), TRUE)
 
-property_boolean (vertical,  _("Vertical"), TRUE)
+property_boolean (vertical,  _("Ver_tical"), TRUE)
 
-property_boolean (keep_sign,  _("Keep Sign"), TRUE)
+property_boolean (keep_sign,  _("_Keep Sign"), TRUE)
      description (_("Keep negative values in result; when off, the absolute value of the result is used instead."))
 
 #else
