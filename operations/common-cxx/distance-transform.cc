@@ -43,7 +43,7 @@ property_int    (averaging, _("Grayscale Averaging"), 0)
     ui_range    (0, 256)
     ui_gamma    (1.5)
 
-property_boolean (normalize, _("Normalize"), TRUE)
+property_boolean (normalize, _("_Normalize"), TRUE)
   description(_("Normalize output to range 0.0 to 1.0."))
 
 #else

@@ -58,7 +58,7 @@ property_enum (abyss_policy, _("Abyss policy"),
                GEGL_ABYSS_NONE)
     description (_("How image edges are handled"))
 
-property_boolean (tileable, _("Tileable"), FALSE)
+property_boolean (tileable, _("_Tileable"), FALSE)
     description(_("Retain tilebility"))
 
 #else

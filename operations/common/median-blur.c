@@ -57,7 +57,7 @@ property_enum (abyss_policy, _("Abyss policy"), GeglMedianBlurAbyssPolicy,
                gegl_median_blur_abyss_policy, GEGL_MEDIAN_BLUR_ABYSS_CLAMP)
   description (_("How image edges are handled"))
 
-property_boolean (high_precision, _("High precision"), FALSE)
+property_boolean (high_precision, _("Hi_gh precision"), FALSE)
   description (_("Avoid clipping and quantization (slower)"))
 
 #else

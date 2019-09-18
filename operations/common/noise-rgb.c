@@ -25,15 +25,15 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_boolean (correlated, _("Correlated noise"), FALSE)
+property_boolean (correlated, _("Correlated _noise"), FALSE)
 
-property_boolean (independent, _("Independent RGB"), TRUE)
+property_boolean (independent, _("_Independent RGB"), TRUE)
    description (_("Control amount of noise for each RGB channel separately"))
 
-property_boolean (linear, _("Linear RGB"), TRUE)
+property_boolean (linear, _("_Linear RGB"), TRUE)
    description (_("Operate on linearized RGB color data"))
 
-property_boolean (gaussian, _("Gaussian distribution"), TRUE)
+property_boolean (gaussian, _("_Gaussian distribution"), TRUE)
    description (_("Use a gaussian noise distribution, when unticked a linear noise distribution is used instead"))
 
 property_double (red, _("Red"), 0.20)

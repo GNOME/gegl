@@ -25,7 +25,7 @@ property_double (scale, _("Effect strength"), 1.0)
     description(_("Strength of the sepia effect"))
     value_range (0.0, 1.0)
 
-property_boolean (srgb, _("sRGB"), TRUE)
+property_boolean (srgb, _("sR_GB"), TRUE)
     description (_("Use sRGB gamma instead of linear"))
 
 #else

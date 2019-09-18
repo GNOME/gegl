@@ -51,7 +51,7 @@ property_enum (sampler_type, _("Resampling method"),
     GeglSamplerType, gegl_sampler_type, GEGL_SAMPLER_CUBIC)
     description(_("Mathematical method for reconstructing pixel values"))
 
-property_boolean (clamp, _("Clamp deformation"), FALSE)
+property_boolean (clamp, _("Clamp _deformation"), FALSE)
     description(_("Limit deformation in the image area."))
 
 #else

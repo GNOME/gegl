@@ -58,13 +58,13 @@ property_double (color_variation, _("Tile color variation"), 0.2)
     description (_("Magnitude of random color variations"))
     value_range (0.0, 1.0)
 
-property_boolean (color_averaging, _("Color averaging"), TRUE)
+property_boolean (color_averaging, _("Co_lor averaging"), TRUE)
     description (_("Tile color based on average of subsumed pixels"))
 
-property_boolean (tile_surface, _("Rough tile surface"), FALSE)
+property_boolean (tile_surface, _("Rough _tile surface"), FALSE)
     description (_("Surface characteristics"))
 
-property_boolean (tile_allow_split, _("Allow splitting tiles"), TRUE)
+property_boolean (tile_allow_split, _("Allo_w splitting tiles"), TRUE)
     description (_("Allows splitting tiles at hard edges"))
 
 property_double (tile_spacing, _("Tile spacing"), 1.0)
@@ -83,7 +83,7 @@ property_double (light_dir, _("Light direction"), 135.0)
     ui_meta     ("unit", "degree")
     ui_meta     ("direction", "ccw")
 
-property_boolean (antialiasing, _("Antialiasing"), TRUE)
+property_boolean (antialiasing, _("_Antialiasing"), TRUE)
     description  (_("Enables smoother tile output"))
 
 property_seed (seed, _("Random seed"), rand)

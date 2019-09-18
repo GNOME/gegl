@@ -53,10 +53,10 @@ property_int    (detail, _("Detail"), 1)
     ui_range    (0, 15)
     value_range (0, 15)
 
-property_boolean (tileable, _("Tileable"), FALSE)
+property_boolean (tileable, _("_Tileable"), FALSE)
     description  (_("Create a tileable output"))
 
-property_boolean (turbulent, _("Turbulent"), FALSE)
+property_boolean (turbulent, _("T_urbulent"), FALSE)
     description  (_("Make a turbulent noise"))
 
 property_seed (seed, _("Random seed"), rand)

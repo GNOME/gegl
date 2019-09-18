@@ -45,7 +45,7 @@ property_int (iterations, _("Iterations"), 10)
   value_range (1, 1000)
   ui_range (1, 30)
 
-property_boolean (enhance_shadows, _("Enhance Shadows"), FALSE)
+property_boolean (enhance_shadows, _("_Enhance Shadows"), FALSE)
     description(_("When enabled details in shadows are boosted at the expense of noise"))
 
 /*

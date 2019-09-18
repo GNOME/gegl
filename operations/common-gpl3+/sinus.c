@@ -49,10 +49,10 @@ property_double (complexity, _("Complexity"), 1.0)
 
 property_seed (seed, _("Random seed"), rand)
 
-property_boolean (tiling, _("Force tiling"), TRUE)
+property_boolean (tiling, _("_Force tiling"), TRUE)
     description (_("If set, the pattern generated will tile"))
 
-property_boolean (perturbation, _("Distorted"), TRUE)
+property_boolean (perturbation, _("_Distorted"), TRUE)
     description (_("If set, the pattern will be a little more distorted"))
 
 property_color  (color1, _("Color 1"), "yellow")

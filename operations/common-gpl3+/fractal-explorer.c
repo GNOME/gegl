@@ -108,14 +108,14 @@ property_enum (bluemode, _("Blue application mode"),
     GeglFractalExplorerMode, gegl_fractal_explorer_mode,
     GEGL_FRACTAL_EXPLORER_MODE_SIN)
 
-property_boolean (redinvert  , _("Red inversion")  , FALSE)
-property_boolean (greeninvert, _("Green inversion"), FALSE)
-property_boolean (blueinvert , _("Blue inversion") , FALSE)
+property_boolean (redinvert  , _("Red _inversion")  , FALSE)
+property_boolean (greeninvert, _("_Green inversion"), FALSE)
+property_boolean (blueinvert , _("_Blue inversion") , FALSE)
 
 property_int    (ncolors, _("Number of colors"), 256)
     value_range (2, MAXNCOLORS)
 
-property_boolean (useloglog, _("Loglog smoothing"), FALSE)
+property_boolean (useloglog, _("_Loglog smoothing"), FALSE)
 
 #else
 

@@ -55,10 +55,10 @@ property_enum (pattern, _("Pattern"), GeglVideoDegradationType,
                GEGL_VIDEO_DEGRADATION_TYPE_STRIPED)
   description (_("Type of RGB pattern to use"))
 
-property_boolean (additive, _("Additive"), TRUE)
+property_boolean (additive, _("_Additive"), TRUE)
   description(_("Whether the function adds the result to the original image."))
 
-property_boolean (rotated, _("Rotated"), FALSE)
+property_boolean (rotated, _("Ro_tated"), FALSE)
   description(_("Whether to rotate the RGB pattern by ninety degrees."))
 
 #else

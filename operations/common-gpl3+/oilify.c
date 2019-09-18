@@ -39,7 +39,7 @@ property_int (intensities, _("Number of intensities"), 128)
     description(_("Histogram size"))
     value_range (8, 256)
 
-property_boolean (use_inten, _("Intensity Mode"), TRUE)
+property_boolean (use_inten, _("_Intensity Mode"), TRUE)
     description(_("Use pixel luminance values"))
 
 #else

@@ -58,22 +58,22 @@ property_color   (color, _("Color"), "blue")
      ui_meta     ("visible", "mode {color-peak, color}")
      ui_meta     ("description", "''")
 
-property_boolean (top, _("To top"), TRUE)
+property_boolean (top, _("To _top"), TRUE)
      description (_("Propagate to top"))
 
-property_boolean (left, _("To left"), TRUE)
+property_boolean (left, _("To _left"), TRUE)
      description (_("Propagate to left"))
 
-property_boolean (right, _("To right"), TRUE)
+property_boolean (right, _("To r_ight"), TRUE)
      description (_("Propagate to right"))
 
-property_boolean (bottom, _("To bottom"), TRUE)
+property_boolean (bottom, _("To _bottom"), TRUE)
      description (_("Propagate to bottom"))
 
-property_boolean (value, _("Propagating value channel"), TRUE)
+property_boolean (value, _("Propagating val_ue channel"), TRUE)
      description (_("Whether to propagate a pixel's color"))
 
-property_boolean (alpha, _("Propagating alpha channel"), TRUE)
+property_boolean (alpha, _("Propagating _alpha channel"), TRUE)
      description (_("Whether to propagate a pixel's opacity"))
      ui_meta     ("sensitive", "! mode {color-peak}")
 
