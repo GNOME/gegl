@@ -30,7 +30,7 @@ enum_end (GeglNormalMapComponent)
 property_double (scale, _("Scale"), 10.0)
   description (_("The amount by which to scale the height values"))
   value_range (0.0, G_MAXDOUBLE)
-  ui_range    (0.0, 100.0)
+  ui_range    (0.0, 255.0)
 
 property_enum (x_component, _("X Component"),
                GeglNormalMapComponent, gegl_normal_map_component,
@@ -47,6 +47,9 @@ property_boolean (flip_x, _("Flip X"), FALSE)
 
 property_boolean (flip_y, _("Flip Y"), FALSE)
   description (_("Flip the Y coordinates"))
+
+property_boolean (full_z, _("Full Z Range"), FALSE)
+  description (_("Use the full [0,1] range to encode the Z coordinates"))
 
 property_boolean (tileable, _("Tileable"), FALSE)
   description (_("Generate a tileable map"))
@@ -84,8 +87,8 @@ prepare (GeglOperation *operation)
 static GeglRectangle
 get_bounding_box (GeglOperation *operation)
 {
-  GeglRectangle  result = { 0, 0, 0, 0 };
   GeglRectangle *in_rect;
+  GeglRectangle  result = {};
 
   in_rect = gegl_operation_source_get_bounding_box (operation, "input");
 
@@ -116,8 +119,10 @@ process (GeglOperation       *operation,
   const Babl         *out_format   = gegl_operation_get_format (operation, "output");
   GeglAbyssPolicy     abyss_policy = get_abyss_policy (operation, NULL);
   gfloat              scale        = o->scale / 2.0;
-  gfloat              x_sign       = (o->flip_x ? -0.5 : +0.5);
-  gfloat              y_sign       = (o->flip_y ? -0.5 : +0.5);
+  gfloat              x_scale      = (o->flip_x ? -0.5 : +0.5);
+  gfloat              y_scale      = (o->flip_y ? -0.5 : +0.5);
+  gfloat              z_scale      = (o->full_z ? +1.0 : +0.5);
+  gfloat              z_base       = (o->full_z ?  0.0 :  0.5);
   gint                x_component  = o->x_component;
   gint                y_component  = o->y_component;
   gint                z_component  = 2;
@@ -179,7 +184,7 @@ process (GeglOperation       *operation,
               gfloat b;
               gfloat nx;
               gfloat ny;
-              gfloat s;
+              gfloat nz;
 
               if (x > 0)
                 l = in[-2];
@@ -202,16 +207,16 @@ process (GeglOperation       *operation,
                 b = bottom[2 * x];
 
               nx = scale * (l - r);
-              ny = scale * (b - t);
+              ny = scale * (t - b);
 
-              s = 1.0f / sqrtf (nx * nx + ny * ny + 1.0f);
+              nz = 1.0f / sqrtf (nx * nx + ny * ny + 1.0f);
 
-              nx *= x_sign * s;
-              ny *= y_sign * s;
+              nx *= nz;
+              ny *= nz;
 
-              out[x_component] = 0.5f + nx;
-              out[y_component] = 0.5f + ny;
-              out[z_component] = 1.0f;
+              out[x_component] = 0.5f   + x_scale * nx;
+              out[y_component] = 0.5f   + y_scale * ny;
+              out[z_component] = z_base + z_scale * nz;
               out[3]           = in[1];
 
               in  += 2;
@@ -246,4 +251,5 @@ gegl_op_class_init (GeglOpClass *klass)
     "description", _("Generate a normal map from a height map"),
     NULL);
 }
+
 #endif
