@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-08-12 20:34+0000\n"
-"PO-Revision-Date: 2019-08-18 15:55+0200\n"
+"POT-Creation-Date: 2019-09-19 14:09+0000\n"
+"PO-Revision-Date: 2019-09-21 13:12+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -720,11 +720,11 @@ msgstr ""
 "Format biblioteki babl wyjściowego GeglBuffer, NULL spowoduje użycie "
 "wejściowego formatu bufora"
 
-#: operations/common/buffer-sink.c:83
+#: operations/common/buffer-sink.c:86
 msgid "Buffer Sink"
 msgstr "Wyjście buforu"
 
-#: operations/common/buffer-sink.c:85
+#: operations/common/buffer-sink.c:88
 msgid "Create a new GEGL buffer to write the resulting rendering."
 msgstr "Utwórz nowy bufor GEGL do zapisania wyniku renderowania."
 
@@ -1535,11 +1535,11 @@ msgstr "Ważenie alfa"
 msgid "Border"
 msgstr "Krawędź"
 
-#: operations/common/convolution-matrix.c:624
+#: operations/common/convolution-matrix.c:634
 msgid "Convolution Matrix"
 msgstr "Zniekształcenie macierzowe"
 
-#: operations/common/convolution-matrix.c:625
+#: operations/common/convolution-matrix.c:635
 msgid "Apply a generic 5x5 convolution matrix"
 msgstr "Zastosowuje ogólne zniekształcenie macierzowe 5×5"
 
@@ -2277,6 +2277,7 @@ msgstr "Pionowe położenie w pikselach"
 #: operations/common/noise-perlin.c:27 operations/common/noise-simplex.c:31
 #: operations/common/saturation.c:31
 #: operations/workshop/external/lens-correct.c:50
+#: operations/workshop/normal-map.c:30
 msgid "Scale"
 msgstr "Skalowanie"
 
@@ -2677,11 +2678,11 @@ msgstr "Wilgoć"
 msgid "The value represents the contribution of the past to the new frame."
 msgstr "Wartość reprezentują udział przeszłych klatek w nowej klatce."
 
-#: operations/common/mblur.c:145
+#: operations/common/mblur.c:148
 msgid "Temporal blur"
 msgstr "Rozmycie tymczasowe"
 
-#: operations/common/mblur.c:147
+#: operations/common/mblur.c:150
 msgid ""
 "Accumulating motion blur using a kalman filter, for use with video sequences "
 "of frames."
@@ -3328,15 +3329,15 @@ msgstr ""
 "Użyj dystrybucji szumu Gaussa, niezaznaczone powoduje użycie liniowej "
 "dystrybucji szumu"
 
-#: operations/common/noise-rgb.c:39
+#: operations/common/noise-rgb.c:39 operations/workshop/normal-map.c:25
 msgid "Red"
 msgstr "Czerwony"
 
-#: operations/common/noise-rgb.c:44
+#: operations/common/noise-rgb.c:44 operations/workshop/normal-map.c:26
 msgid "Green"
 msgstr "Zielony"
 
-#: operations/common/noise-rgb.c:48
+#: operations/common/noise-rgb.c:48 operations/workshop/normal-map.c:27
 msgid "Blue"
 msgstr "Niebieski"
 
@@ -3768,11 +3769,11 @@ msgstr "Zwartość"
 msgid "Cluster size"
 msgstr "Rozmiar klastra"
 
-#: operations/common/slic.c:457
+#: operations/common/slic.c:456
 msgid "Simple Linear Iterative Clustering"
 msgstr "SLIC"
 
-#: operations/common/slic.c:460
+#: operations/common/slic.c:459
 msgid "Superpixels based on k-means clustering"
 msgstr "Nadpiksele na podstawie klastrów k-średnich"
 
@@ -5530,7 +5531,7 @@ msgid "Maze algorithm type"
 msgstr "Typ algorytmu labiryntu"
 
 #: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:61
+#: operations/common-gpl3+/ripple.c:61 operations/workshop/normal-map.c:54
 msgid "Tileable"
 msgstr "Kafelkowalność"
 
@@ -6773,11 +6774,11 @@ msgstr ""
 msgid "Reset origin"
 msgstr "Przywrócenie pochodzenia"
 
-#: operations/core/crop.c:247
+#: operations/core/crop.c:250
 msgid "Crop"
 msgstr "Kadruj"
 
-#: operations/core/crop.c:248
+#: operations/core/crop.c:251
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
 "connected is used."
@@ -7174,19 +7175,19 @@ msgstr "Przyrostowy"
 msgid "Create progressive JPEG images"
 msgstr "Przyrostowe obrazy JPEG"
 
-#: operations/external/jpg-save.c:40
+#: operations/external/jpg-save.c:41
 msgid "Grayscale"
 msgstr "Odcienie szarości"
 
-#: operations/external/jpg-save.c:41
+#: operations/external/jpg-save.c:42
 msgid "Create a grayscale (monochrome) image"
 msgstr "Obraz w odcieniach szarości (monochromatyczny)"
 
-#: operations/external/jpg-save.c:413
+#: operations/external/jpg-save.c:420
 msgid "JPEG File Saver"
 msgstr "Zapisywanie plików JPEG"
 
-#: operations/external/jpg-save.c:415
+#: operations/external/jpg-save.c:422
 msgid "JPEG image saver, using libjpeg"
 msgstr "Zapisywanie obrazów JPEG za pomocą biblioteki libjpeg"
 
@@ -8862,7 +8863,7 @@ msgstr "Mapa gradientu"
 msgid "Applies a color gradient."
 msgstr "Zastosowuje gradient koloru."
 
-#: operations/workshop/hstack.c:179
+#: operations/workshop/hstack.c:186
 msgid ""
 "Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right of "
 "\"input\")"
@@ -8885,6 +8886,62 @@ msgstr "Obraz liczby całkowitej"
 #: operations/workshop/integral-image.c:254
 msgid "Compute integral and squared integral image"
 msgstr "Oblicz obraz całkowity i całkowity do drugiej potęgi"
+
+#: operations/workshop/normal-map.c:31
+msgid "The amount by which to scale the height values"
+msgstr "O ile skalować wartości wysokości"
+
+#: operations/workshop/normal-map.c:35
+msgid "X Component"
+msgstr "Składowa na osi X"
+
+#: operations/workshop/normal-map.c:38
+msgid "The component used for the X coordinates"
+msgstr "Składowa używana jako współrzędne na osi X"
+
+#: operations/workshop/normal-map.c:40
+msgid "Y Component"
+msgstr "Składowa na osi Y"
+
+#: operations/workshop/normal-map.c:43
+msgid "The component used for the Y coordinates"
+msgstr "Składowa używana jako współrzędne na osi Y"
+
+#: operations/workshop/normal-map.c:45
+msgid "Flip X"
+msgstr "Odwrócenie osi X"
+
+#: operations/workshop/normal-map.c:46
+msgid "Flip the X coordinates"
+msgstr "Odwrócenie współrzędnych na osi X"
+
+#: operations/workshop/normal-map.c:48
+msgid "Flip Y"
+msgstr "Odwrócenie osi Y"
+
+#: operations/workshop/normal-map.c:49
+msgid "Flip the Y coordinates"
+msgstr "Odwrócenie współrzędnych na osi Y"
+
+#: operations/workshop/normal-map.c:51
+msgid "Full Z Range"
+msgstr "Pełny zakres na osi Z"
+
+#: operations/workshop/normal-map.c:52
+msgid "Use the full [0,1] range to encode the Z coordinates"
+msgstr "Użyj pełnego zakresu [0,1] do zakodowania współrzędnych na osi Z"
+
+#: operations/workshop/normal-map.c:55
+msgid "Generate a tileable map"
+msgstr "Utwórz kafelkowaną mapę"
+
+#: operations/workshop/normal-map.c:249
+msgid "Normal Map"
+msgstr "Zwykła mapa"
+
+#: operations/workshop/normal-map.c:251
+msgid "Generate a normal map from a height map"
+msgstr "Utwórz zwykłą mapę z mapy wysokości"
 
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
