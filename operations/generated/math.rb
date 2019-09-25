@@ -29,7 +29,7 @@ a = [
       ['subtract',  'result = input - value', 0.0, '964b3d0b0afea081c157fe0251600ba3'],
       ['multiply',  'result = input * value', 1.0, 'c80bb8504f405bb0a5ce2be4fad6af69'],
       ['divide',    'result = value==0.0f?0.0f:input/value', 1.0, 'c3bd84f8a6b2c03a239f3f832597592c'],
-      ['gamma',     'result = powf (input, value)', 1.0, '2687ab0395fe31ccc25e2901a43a9c03'],
+      ['gamma',     'result = (input >= 0.0f ? powf (input, value) : -powf (-input, value))', 1.0, '2687ab0395fe31ccc25e2901a43a9c03'],
 #     ['threshold', 'result = c>=value?1.0f:0.0f', 0.5],
 #     ['invert',    'result = 1.0-c']
     ]

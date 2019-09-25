@@ -83,7 +83,7 @@ process (GeglOperation       *op,
             {
               gfloat result;
               gfloat input=in[j];
-              result = powf (input, value);
+              result = (input >= 0.0f ? powf (input, value) : -powf (-input, value));
               out[j]=result;
             }
           if (alpha)
@@ -103,7 +103,7 @@ process (GeglOperation       *op,
               gfloat input =in[j];
               gfloat result;
               value=aux[j];
-              result = powf (input, value);
+              result = (input >= 0.0f ? powf (input, value) : -powf (-input, value));
               out[j]=result;
             }
           if (alpha)
@@ -135,7 +135,7 @@ gegl_op_class_init (GeglOpClass *klass)
   "categories"  , "compositors:math",
   "reference-hash"  , "2687ab0395fe31ccc25e2901a43a9c03",
   "description" ,
-       _("Math operation gamma, performs the operation per pixel, using either the constant provided in 'value' or the corresponding pixel from the buffer on aux as operands. The result is the evaluation of the expression result = powf (input, value)"),
+       _("Math operation gamma, performs the operation per pixel, using either the constant provided in 'value' or the corresponding pixel from the buffer on aux as operands. The result is the evaluation of the expression result = (input >= 0.0f ? powf (input, value) : -powf (-input, value))"),
        NULL);
 }
 #endif
