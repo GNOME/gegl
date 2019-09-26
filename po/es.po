@@ -6,23 +6,23 @@
 #
 # Yolanda Alvarez Perez <yolandaa.alvarez.perez@gmail.com>, 2016.
 # Rodrigo <rodhos92@gmail.com>, 2018, 2019.
-# Rodrigo Lledó <rodhos92@gmail.com>, 2019.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2012-2019.
+# Rodrigo Lledó <rodhos92@gmail.com>, 2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-09-23 07:18+0000\n"
-"PO-Revision-Date: 2019-09-24 14:52+0200\n"
-"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
-"Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
-"Language: es_ES\n"
+"POT-Creation-Date: 2019-09-25 11:19+0000\n"
+"PO-Revision-Date: 2019-09-26 13:41+0200\n"
+"Last-Translator: Rodrigo Lledó <rodhos92@gmail.com>\n"
+"Language-Team: Español <gnome-es-list@gnome.org>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 3.34.0\n"
+"X-Generator: Gtranslator 3.32.0\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -663,7 +663,7 @@ msgstr ""
 
 #: operations/common/box-blur.c:405
 msgid "Box Blur"
-msgstr "Desenfoque de caja"
+msgstr "Desenfoque de rectángulo"
 
 #: operations/common/box-blur.c:407 operations/workshop/boxblur.c:78
 msgid "Blur resulting from averaging the colors of a square neighbourhood."
@@ -3728,28 +3728,30 @@ msgstr "Mantener los valores de los píxeles RGB dentro de un rango específico"
 msgid "Native"
 msgstr "Nativo"
 
+# espacio de color
 #: operations/common/saturation.c:27
 msgid "CIE Lab/Lch"
-msgstr ""
+msgstr "CIE Lab/Lch"
 
 #: operations/common/saturation.c:28
 msgid "CIE Yuv"
-msgstr ""
+msgstr "CIE Yuv"
 
 #: operations/common/saturation.c:32
 msgid "Scale, strength of effect"
 msgstr "Escala, fuerza del efecto"
 
 #: operations/common/saturation.c:36
-#, fuzzy
 #| msgid "Convert color space"
 msgid "Interpolation Color Space"
-msgstr "Convertir espacio de color"
+msgstr "Espacio de color de interpolación"
 
 #: operations/common/saturation.c:37
 msgid ""
 "Set at Native if uncertain, the CIE based spaces might introduce hue shifts."
 msgstr ""
+"Establecido en Nativo si no está seguro, los espacios basados en CIE pueden "
+"introducir desplazamientos de tono."
 
 #: operations/common/saturation.c:387
 msgid "Changes the saturation"
@@ -5832,12 +5834,16 @@ msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
 "the aux pad."
 msgstr ""
+"El radio del círculo alrededor del píxel, también se puede escalar por píxel "
+"mediante un búfer en el relleno aux."
 
 #: operations/common-gpl3+/oilify.c:35
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
 msgstr ""
+"Exponente para procesamiento. Controla la suavidad: se puede escalar por "
+"píxel con un búfer en el relleno aux2."
 
 #: operations/common-gpl3+/oilify.c:38
 msgid "Number of intensities"
@@ -5856,28 +5862,30 @@ msgid "Use pixel luminance values"
 msgstr "Usar valores de luminancia de píxeles"
 
 #: operations/common-gpl3+/oilify.c:523
-#, fuzzy
 #| msgid "Mask radius"
 msgid "Mask radius buffer"
-msgstr "Radio de la máscara"
+msgstr "Búfer del radio de la máscara"
 
 #: operations/common-gpl3+/oilify.c:524
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
 msgstr ""
+"Búfer por píxel para modular el radio de la máscara, que espera un factor de "
+"escala en el rango 0,0 a 1,0"
 
 #: operations/common-gpl3+/oilify.c:525
-#, fuzzy
 #| msgid "Exponent"
 msgid "Exponent buffer"
-msgstr "Exponente"
+msgstr "Búfer del exponente"
 
 #: operations/common-gpl3+/oilify.c:526
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
 msgstr ""
+"Búfer por píxel para modular el parámetro del exponente, que espera un "
+"factor de escala en el rango 0,0 a 1,0"
 
 #: operations/common-gpl3+/oilify.c:535
 msgid "Oilify"
@@ -7540,6 +7548,7 @@ msgstr "Páginas"
 #: operations/external/pdf-load.c:35
 msgid "Total pages, provided as a visual read-only property"
 msgstr ""
+"Páginas totales, proporcionadas como una propiedad visual de solo lectura"
 
 #: operations/external/pdf-load.c:38
 msgid "PPI"
@@ -7713,13 +7722,11 @@ msgid "Store image in a GdkPixbuf."
 msgstr "Guardar la imagen en un GdkPixbuf."
 
 #: operations/external/sdl2-display.c:202
-#, fuzzy
 #| msgid "SDL Display"
 msgid "SDL2 Display"
-msgstr "Pantalla SDL"
+msgstr "Pantalla SDL2"
 
 #: operations/external/sdl2-display.c:205
-#, fuzzy
 #| msgid ""
 #| "Displays the input buffer in an SDL window (restricted to one display op/"
 #| "process, due to SDL implementation issues)."
@@ -7727,9 +7734,9 @@ msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
 msgstr ""
-"Presenta el búfer de entrada en una ventana SDL (restringido a una "
+"Presenta el búfer de entrada en una ventana SDL2 (restringido a una "
 "presentación por operador o proceso, debido a cuestiones de implementación "
-"de SDL)."
+"de SDL2)."
 
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -8096,16 +8103,21 @@ msgstr ""
 
 # powf means power function?
 #: operations/generated/gamma.c:138
+#| msgid ""
+#| "Math operation gamma, performs the operation per pixel, using either the "
+#| "constant provided in 'value' or the corresponding pixel from the buffer "
+#| "on aux as operands. The result is the evaluation of the expression result "
+#| "= powf (input, value)"
 msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
-"powf (input, value)"
+"(input >= 0.0f ? powf (input, value) : -powf (-input, value))"
 msgstr ""
 "La operación matemática gamma, realiza la operación por píxel, usando la "
 "constante proporcionada en «valor» o el píxel correspondiente del búfer en "
 "aux como operandos. El resultado es la evaluación de la expresión: resultado "
-"= powf (entrada, valor)"
+"= (entrada >= 0.0f ? powf (entrada, valor) : -powf (-entrada, valor))"
 
 #: operations/generated/hard-light.c:188
 msgid ""
@@ -8477,31 +8489,25 @@ msgstr ""
 "lugar de un desenfoque gaussiano."
 
 #: operations/workshop/boxblur-1d.c:28
-#, fuzzy
 #| msgid "Radius of square pixel region, (width and height will be radius*2+1)"
 msgid "Radius of row pixel region, (size will be radius*2+1)"
-msgstr ""
-"Radio de la región cuadrada de píxeles (la anchura y la altura serán "
-"radio*2+1)."
+msgstr "Radio de la región de píxeles en fila, (el tamaño será radio*2+1)"
 
 #: operations/workshop/boxblur-1d.c:466
-#, fuzzy
 #| msgid "Box Blur"
 msgid "1D Box Blur"
-msgstr "Desenfoque de caja"
+msgstr "Desenfoque de rectángulo 1D"
 
 #: operations/workshop/boxblur-1d.c:467
-#, fuzzy
 #| msgid "Blur resulting from averaging the colors of a square neighbourhood."
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
 msgstr ""
-"Desenfoque resultante de la media de los colores de un entorno cuadrado."
+"Desenfoque resultante de la media de los colores en un entorno de fila."
 
 #: operations/workshop/boxblur.c:77
-#, fuzzy
 #| msgid "Box Blur"
 msgid "BoxBlur"
-msgstr "Desenfoque de caja"
+msgstr "Desenfoque de rectángulo"
 
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
@@ -9022,65 +9028,59 @@ msgid "X Component"
 msgstr "Componente X"
 
 #: operations/workshop/normal-map.c:38
-#, fuzzy
 #| msgid "Origin point for the polar coordinates"
 msgid "The component used for the X coordinates"
-msgstr "Punto de origen para las coordenadas polares"
+msgstr "El componente usado para la coordenada X"
 
 #: operations/workshop/normal-map.c:40
 msgid "Y Component"
 msgstr "Componente Y"
 
 #: operations/workshop/normal-map.c:43
-#, fuzzy
 #| msgid "Origin point for the polar coordinates"
 msgid "The component used for the Y coordinates"
-msgstr "Punto de origen para las coordenadas polares"
+msgstr "El componente usado para la coordenada Y"
 
 #: operations/workshop/normal-map.c:45
 msgid "Flip X"
-msgstr ""
+msgstr "Voltear X"
 
 #: operations/workshop/normal-map.c:46
-#, fuzzy
 #| msgid "Start x coordinate"
 msgid "Flip the X coordinates"
-msgstr "Coordenada X inicial"
+msgstr "Voltear la coordenada X"
 
 #: operations/workshop/normal-map.c:48
 msgid "Flip Y"
-msgstr ""
+msgstr "Voltear Y"
 
 #: operations/workshop/normal-map.c:49
-#, fuzzy
 #| msgid "Start x coordinate"
 msgid "Flip the Y coordinates"
-msgstr "Coordenada X inicial"
+msgstr "Voltear la coordenada Y"
 
 #: operations/workshop/normal-map.c:51
 msgid "Full Z Range"
-msgstr ""
+msgstr "Rango Z completo"
 
 #: operations/workshop/normal-map.c:52
 msgid "Use the full [0,1] range to encode the Z coordinates"
-msgstr ""
+msgstr "Usar el rango [0,1] completo para codificar la coordenada Z"
 
 # mosaicable
 #: operations/workshop/normal-map.c:55
-#, fuzzy
 #| msgid "Create a tileable output"
 msgid "Generate a tileable map"
-msgstr "Crear una salida que pueda tener forma de mosaico"
+msgstr "Generar un mapa que pueda tener forma de mosaico"
 
 #: operations/workshop/normal-map.c:249
-#, fuzzy
 #| msgid "Normalize"
 msgid "Normal Map"
-msgstr "Normalizar"
+msgstr "Mapa normal"
 
 #: operations/workshop/normal-map.c:251
 msgid "Generate a normal map from a height map"
-msgstr ""
+msgstr "Generar un mapa normal a partir de un mapa de altura"
 
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
