@@ -107,29 +107,6 @@ c_arguments += [
 ]
 
 ################################################################################
-# Check for compiler CPU extensions
-
-c_arguments += [
-  '-mfpmath=sse',
-]
-
-optionnal_arguments = [
-  'mmx',
-  'sse',
-  'sse2',
-  'sse4.1',
-  'f16c',
-]
-
-foreach arg : optionnal_arguments
-  if get_option('enable-@0@'.format(arg.underscorify()))
-    c_arguments += '-m@0@'.format(arg)
-  endif
-endforeach
-
-add_project_arguments(cc.get_supported_arguments(c_arguments), language: 'c')
-
-################################################################################
 # Utilities
 
 bash        = find_program('bash')
@@ -361,11 +338,6 @@ message('\n'.join(['',
 'Optional features:',
 '  GEGL docs:       @0@'.format(get_option('docs')),
 '  Build workshop:  @0@'.format(get_option('workshop')),
-'  SIMD:            sse:@0@ mmx:@1@ sse2:@2@'.format(
-  get_option('enable-sse'),
-  get_option('enable-mmx'),
-  get_option('enable-sse2')
-),
 '  Vala support:    @0@'.format(vapigen.found()),
 '',
 'Optional dependencies:',
