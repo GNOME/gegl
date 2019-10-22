@@ -1949,11 +1949,16 @@ gegl_buffer_set (GeglBuffer          *buffer,
                  gint                 rowstride)
 {
   g_return_if_fail (GEGL_IS_BUFFER (buffer));
-  g_return_if_fail (src);
+
+  if (gegl_rectangle_is_empty (rect ? rect : &buffer->extent))
+    return;
+
+  g_return_if_fail (src != NULL);
+
   if (format == NULL)
     format = buffer->soft_format;
 
-  if (rect && (rect->width == 1))
+  if (rect && rect->width == 1)
     {
       if (rect->height == 1)
         {
