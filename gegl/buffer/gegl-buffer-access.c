@@ -1960,7 +1960,7 @@ gegl_buffer_set (GeglBuffer          *buffer,
 
   if (rect && rect->width == 1)
     {
-      if (rect->height == 1)
+      if (level == 0 && rect->height == 1)
         {
           _gegl_buffer_set_pixel (buffer, rect->x, rect->y,
                                   format, src,
