@@ -2030,17 +2030,23 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
   g_return_if_fail (scale > 0.0f);
 
+  if (! rect && GEGL_FLOAT_EQUAL (scale, 1.0))
+    rect = &buffer->extent;
 
-  if (format == NULL)
+  g_return_if_fail (rect != NULL);
+
+  if (gegl_rectangle_is_empty (rect))
+    return;
+
+  g_return_if_fail (dest_buf != NULL);
+
+  if (! format)
     format = buffer->soft_format;
 
   if (gegl_buffer_ext_flush)
-    {
-      gegl_buffer_ext_flush (buffer, rect);
-    }
+    gegl_buffer_ext_flush (buffer, rect);
 
   if (scale == 1.0 &&
-      rect &&
       rect->width == 1)
   {
     if (rect->height == 1)
@@ -2071,19 +2077,6 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
     return;
   }
 
-  if (!rect && GEGL_FLOAT_EQUAL (scale, 1.0))
-    {
-      gegl_buffer_iterate_read_dispatch (buffer, &buffer->extent, dest_buf,
-                                         rowstride, format, 0, repeat_mode);
-      return;
-    }
-
-  g_return_if_fail (rect);
-  if (rect->width == 0 ||
-      rect->height == 0)
-    {
-      return;
-    }
   if (GEGL_FLOAT_EQUAL (scale, 1.0))
     {
       gegl_buffer_iterate_read_dispatch (buffer, rect, dest_buf, rowstride,
@@ -2349,7 +2342,6 @@ gegl_buffer_get (GeglBuffer          *buffer,
                  GeglAbyssPolicy      repeat_mode)
 {
   g_return_if_fail (GEGL_IS_BUFFER (buffer));
-  g_return_if_fail (dest_buf);
   gegl_buffer_lock (buffer);
   _gegl_buffer_get_unlocked (buffer, scale, rect, format, dest_buf, rowstride, repeat_mode);
   gegl_buffer_unlock (buffer);
