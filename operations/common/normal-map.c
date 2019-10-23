@@ -245,10 +245,11 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->get_bounding_box = get_bounding_box;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:normal-map",
-    "title",       _("Normal Map"),
-    "categories",  "map",
-    "description", _("Generate a normal map from a height map"),
+    "name",           "gegl:normal-map",
+    "title",          _("Normal Map"),
+    "categories",     "misc",
+    "reference-hash", "5f6052195f03b52185942a2c1fecd98d",
+    "description",    _("Generate a normal map from a height map"),
     NULL);
 }
 

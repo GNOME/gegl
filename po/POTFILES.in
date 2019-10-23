@@ -85,6 +85,7 @@ operations/common/noise-reduction.c
 operations/common/noise-rgb.c
 operations/common/noise-simplex.c
 operations/common/noise-spread.c
+operations/common/normal-map.c
 operations/common/opacity.c
 operations/common/open-buffer.c
 operations/common/over.c
@@ -279,7 +280,6 @@ operations/workshop/generated/subtractive.c
 operations/workshop/gradient-map.c
 operations/workshop/hstack.c
 operations/workshop/integral-image.c
-operations/workshop/normal-map.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c

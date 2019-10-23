@@ -72,6 +72,7 @@ gegl_common_sources = files(
   'noise-rgb.c',
   'noise-simplex.c',
   'noise-spread.c',
+  'normal-map.c',
   'opacity.c',
   'open-buffer.c',
   'over.c',

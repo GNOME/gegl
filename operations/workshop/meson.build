@@ -15,7 +15,6 @@ libraries = [
   { 'name': 'gradient-map', },
   { 'name': 'hstack', },
   { 'name': 'integral-image', },
-  { 'name': 'normal-map', },
   { 'name': 'rawbayer-load', },
   { 'name': 'segment-kmeans', },
   { 'name': 'selective-hue-saturation', },
