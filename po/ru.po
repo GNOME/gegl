@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: GEGL 0.4.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-24 12:05+0300\n"
-"PO-Revision-Date: 2019-10-24 12:37+0300\n"
+"PO-Revision-Date: 2019-10-24 13:03+0300\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: русский <gnome-cyr@lists.gnome.org>\n"
 "Language: ru\n"
@@ -3373,7 +3373,7 @@ msgstr "Нормировка"
 
 #: ../operations/common/normal-map.c:252
 msgid "Generate a normal map from a height map"
-msgstr ""
+msgstr "Создать карту нормалей из карты высот"
 
 #: ../operations/common/opacity.c:26
 msgid ""
@@ -3457,9 +3457,8 @@ msgid "Vertical offset of blocks in pixels"
 msgstr "Высота блока в пикселах"
 
 #: ../operations/common/pixelize.c:66
-#, fuzzy
 msgid "Size ratio X"
-msgstr "Коэффициент размера"
+msgstr "Коэффициент размера по X"
 
 #: ../operations/common/pixelize.c:67
 #, fuzzy
@@ -3467,9 +3466,8 @@ msgid "Horizontal size ratio of a pixel inside each block"
 msgstr "Коэффициент размера точки внутри каждого блока"
 
 #: ../operations/common/pixelize.c:71
-#, fuzzy
 msgid "Size ratio Y"
-msgstr "Коэффициент размера"
+msgstr "Коэффициент размера по Y"
 
 #: ../operations/common/pixelize.c:72
 #, fuzzy
@@ -3753,7 +3751,7 @@ msgstr "Размер областей"
 
 #: ../operations/common/slic.c:29
 msgid "Size of a region side"
-msgstr ""
+msgstr "Размер стороны области"
 
 #: ../operations/common/slic.c:33
 msgid "Compactness"
@@ -5493,7 +5491,7 @@ msgstr "Линейная синусоида"
 
 #: ../operations/common-gpl3+/linear-sinusoid.c:304
 msgid "Generate a linear sinusoid pattern"
-msgstr ""
+msgstr "Создать линейный синусоидный узор"
 
 #: ../operations/common-gpl3+/maze.c:38
 msgid "Depth first"
@@ -6065,13 +6063,12 @@ msgid "Power used to stretch the blend"
 msgstr ""
 
 #: ../operations/common-gpl3+/sinus.c:317
-#, fuzzy
 msgid "Sinus"
-msgstr "Синусоидная"
+msgstr "Синус"
 
 #: ../operations/common-gpl3+/sinus.c:322
 msgid "Generate complex sinusoidal textures"
-msgstr ""
+msgstr "Создать сложные синусоидные текстуры"
 
 #: ../operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
@@ -8130,9 +8127,8 @@ msgid "Vertical scale factor"
 msgstr "Коэффициент масштабирования по вертикали"
 
 #: ../operations/transform/scale-ratio.c:74
-#, fuzzy
 msgid "Scale ratio"
-msgstr "Коэффициент размера"
+msgstr "Коэффициент масштаба"
 
 #: ../operations/transform/scale-ratio.c:78
 msgid "Scales the buffer according to a ratio."
@@ -8149,9 +8145,8 @@ msgid "Vertical size"
 msgstr "Размер по вертикали"
 
 #: ../operations/transform/scale-size.c:84
-#, fuzzy
 msgid "Scale size"
-msgstr "Размер плиток"
+msgstr "Размер масштаба"
 
 #: ../operations/transform/scale-size.c:87
 msgid "Scales the buffer according to a size."
@@ -8290,9 +8285,8 @@ msgid "BoxBlur"
 msgstr "Блочное размывание"
 
 #: ../operations/workshop/connected-components.c:25
-#, fuzzy
 msgid "Separator"
-msgstr "Цветоделение"
+msgstr "Разделитель"
 
 #: ../operations/workshop/connected-components.c:26
 msgid "Component separator color"
@@ -8399,7 +8393,7 @@ msgstr ""
 
 #: ../operations/workshop/external/gluas.c:1008
 msgid "gluas"
-msgstr ""
+msgstr "gluas"
 
 #: ../operations/workshop/external/gluas.c:1010
 msgid ""
@@ -8462,7 +8456,7 @@ msgstr "Центр объектива по Y"
 
 #: ../operations/workshop/external/lens-correct.c:51
 msgid "Scale of the image"
-msgstr ""
+msgstr "Масштаб изображения"
 
 #: ../operations/workshop/external/lens-correct.c:54
 msgid "Autocorrect d values"
@@ -8663,7 +8657,7 @@ msgstr "Угол вращения узора"
 
 #: ../operations/workshop/external/spyrograph.c:612
 msgid "Render Spyrograph"
-msgstr ""
+msgstr "Нарисовать спирограф"
 
 #: ../operations/workshop/external/spyrograph.c:616
 #, fuzzy
@@ -8747,7 +8741,7 @@ msgstr "Опорная точка 5 "
 
 #: ../operations/workshop/gradient-map.c:241
 msgid "Gradient Map"
-msgstr ""
+msgstr "Карта градиента"
 
 #: ../operations/workshop/gradient-map.c:244
 msgid "Applies a color gradient."
