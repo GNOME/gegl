@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GEGL 0.4.10\n"
-"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-08-07 17:30+0300\n"
-"PO-Revision-Date: 2019-08-07 20:15+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-24 12:05+0300\n"
+"PO-Revision-Date: 2019-10-24 12:37+0300\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: русский <gnome-cyr@lists.gnome.org>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-"X-Generator: Gtranslator 3.31.90\n"
+"X-Generator: Gtranslator 3.33.90\n"
 
 #: ../bin/gegl.c:179
 #, c-format
@@ -665,12 +665,12 @@ msgid ""
 msgstr ""
 "Формат babl для GeglBuffer с выводом, NULL означает формат буфера ввода"
 
-#: ../operations/common/buffer-sink.c:83
+#: ../operations/common/buffer-sink.c:86
 #, fuzzy
 msgid "Buffer Sink"
 msgstr "Расположение буфера"
 
-#: ../operations/common/buffer-sink.c:85
+#: ../operations/common/buffer-sink.c:88
 msgid "Create a new GEGL buffer to write the resulting rendering."
 msgstr "Создать новый буфер GEGL для записи конечной визуализации"
 
@@ -1476,11 +1476,11 @@ msgstr ""
 msgid "Border"
 msgstr "Край"
 
-#: ../operations/common/convolution-matrix.c:624
+#: ../operations/common/convolution-matrix.c:634
 msgid "Convolution Matrix"
 msgstr "Матрица свёртки"
 
-#: ../operations/common/convolution-matrix.c:625
+#: ../operations/common/convolution-matrix.c:635
 msgid "Apply a generic 5x5 convolution matrix"
 msgstr "Применить матрицу свёртки размером 5×5"
 
@@ -1519,19 +1519,21 @@ msgid ""
 "two gaussian blurs"
 msgstr ""
 
-#: ../operations/common/display.c:23 ../operations/external/sdl-display.c:25
+#: ../operations/common/display.c:23 ../operations/external/sdl2-display.c:28
+#: ../operations/external/sdl-display.c:25
 msgid "Window title"
 msgstr "Заголовок окна"
 
-#: ../operations/common/display.c:24 ../operations/external/sdl-display.c:26
+#: ../operations/common/display.c:24 ../operations/external/sdl2-display.c:29
+#: ../operations/external/sdl-display.c:26
 msgid "Title to be given to output window"
 msgstr ""
 
-#: ../operations/common/display.c:141
+#: ../operations/common/display.c:142
 msgid "Display"
 msgstr ""
 
-#: ../operations/common/display.c:143
+#: ../operations/common/display.c:144
 msgid "Display the input buffer in a window."
 msgstr ""
 
@@ -2204,7 +2206,8 @@ msgstr "Положение по вертикали"
 
 #: ../operations/common/layer.c:46 ../operations/common/noise-cell.c:36
 #: ../operations/common/noise-perlin.c:27
-#: ../operations/common/noise-simplex.c:31 ../operations/common/saturation.c:31
+#: ../operations/common/noise-simplex.c:31 ../operations/common/normal-map.c:30
+#: ../operations/common/saturation.c:31
 #: ../operations/workshop/external/lens-correct.c:50
 msgid "Scale"
 msgstr "Масштаб"
@@ -2588,11 +2591,11 @@ msgstr ""
 msgid "The value represents the contribution of the past to the new frame."
 msgstr ""
 
-#: ../operations/common/mblur.c:145
+#: ../operations/common/mblur.c:148
 msgid "Temporal blur"
 msgstr ""
 
-#: ../operations/common/mblur.c:147
+#: ../operations/common/mblur.c:150
 msgid ""
 "Accumulating motion blur using a kalman filter, for use with video sequences "
 "of frames."
@@ -3259,15 +3262,15 @@ msgid ""
 "is used instead"
 msgstr ""
 
-#: ../operations/common/noise-rgb.c:39
+#: ../operations/common/noise-rgb.c:39 ../operations/common/normal-map.c:25
 msgid "Red"
 msgstr "Красный"
 
-#: ../operations/common/noise-rgb.c:44
+#: ../operations/common/noise-rgb.c:44 ../operations/common/normal-map.c:26
 msgid "Green"
 msgstr "Зелёный"
 
-#: ../operations/common/noise-rgb.c:48
+#: ../operations/common/noise-rgb.c:48 ../operations/common/normal-map.c:27
 msgid "Blue"
 msgstr "Синий"
 
@@ -3303,6 +3306,74 @@ msgstr ""
 #: ../operations/common/noise-spread.c:162
 msgid "Move pixels around randomly"
 msgstr "Случайное перемещение пикселей вокруг"
+
+#: ../operations/common/normal-map.c:31
+msgid "The amount by which to scale the height values"
+msgstr ""
+
+#: ../operations/common/normal-map.c:35
+msgid "X Component"
+msgstr "Компонент по X"
+
+#: ../operations/common/normal-map.c:38
+#, fuzzy
+msgid "The component used for the X coordinates"
+msgstr "Точка отсчёта для полярных координат"
+
+#: ../operations/common/normal-map.c:40
+msgid "Y Component"
+msgstr "Компонент по Y"
+
+#: ../operations/common/normal-map.c:43
+#, fuzzy
+msgid "The component used for the Y coordinates"
+msgstr "Точка отсчёта для полярных координат"
+
+#: ../operations/common/normal-map.c:45
+msgid "Flip X"
+msgstr "Перевернуть по X"
+
+#: ../operations/common/normal-map.c:46
+#, fuzzy
+msgid "Flip the X coordinates"
+msgstr "Координата X начала"
+
+#: ../operations/common/normal-map.c:48
+msgid "Flip Y"
+msgstr "Перевернуть по Y"
+
+#: ../operations/common/normal-map.c:49
+#, fuzzy
+msgid "Flip the Y coordinates"
+msgstr "Координата X начала"
+
+#: ../operations/common/normal-map.c:51
+msgid "Full Z Range"
+msgstr "Полный диапазон по Z"
+
+#: ../operations/common/normal-map.c:52
+msgid "Use the full [0,1] range to encode the Z coordinates"
+msgstr ""
+
+#: ../operations/common/normal-map.c:54 ../operations/common-gpl3+/maze.c:63
+#: ../operations/common-gpl3+/noise-solid.c:56
+#: ../operations/common-gpl3+/ripple.c:61
+msgid "Tileable"
+msgstr "Подходит для укладки плиткой"
+
+#: ../operations/common/normal-map.c:55
+#, fuzzy
+msgid "Generate a tileable map"
+msgstr "Сгенерировать узор фильтра Байера"
+
+#: ../operations/common/normal-map.c:249
+#, fuzzy
+msgid "Normal Map"
+msgstr "Нормировка"
+
+#: ../operations/common/normal-map.c:252
+msgid "Generate a normal map from a height map"
+msgstr ""
 
 #: ../operations/common/opacity.c:26
 msgid ""
@@ -3692,11 +3763,11 @@ msgstr "Компактность"
 msgid "Cluster size"
 msgstr "Размер кластера"
 
-#: ../operations/common/slic.c:457
+#: ../operations/common/slic.c:456
 msgid "Simple Linear Iterative Clustering"
 msgstr ""
 
-#: ../operations/common/slic.c:460
+#: ../operations/common/slic.c:459
 msgid "Superpixels based on k-means clustering"
 msgstr ""
 
@@ -5440,12 +5511,6 @@ msgstr "Тип алгоритма"
 msgid "Maze algorithm type"
 msgstr "Алгоритм построения лабиринта"
 
-#: ../operations/common-gpl3+/maze.c:63
-#: ../operations/common-gpl3+/noise-solid.c:56
-#: ../operations/common-gpl3+/ripple.c:61
-msgid "Tileable"
-msgstr "Подходит для укладки плиткой"
-
 #: ../operations/common-gpl3+/maze.c:67
 msgid "Foreground Color"
 msgstr "Цвет переднего плана"
@@ -6667,11 +6732,11 @@ msgstr ""
 msgid "Reset origin"
 msgstr ""
 
-#: ../operations/core/crop.c:247
+#: ../operations/core/crop.c:250
 msgid "Crop"
 msgstr ""
 
-#: ../operations/core/crop.c:248
+#: ../operations/core/crop.c:251
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
 "connected is used."
@@ -7067,19 +7132,19 @@ msgstr ""
 msgid "Create progressive JPEG images"
 msgstr ""
 
-#: ../operations/external/jpg-save.c:40
+#: ../operations/external/jpg-save.c:41
 msgid "Grayscale"
 msgstr "Градации серого"
 
-#: ../operations/external/jpg-save.c:41
+#: ../operations/external/jpg-save.c:42
 msgid "Create a grayscale (monochrome) image"
 msgstr "Создать изображение в градациях серого"
 
-#: ../operations/external/jpg-save.c:413
+#: ../operations/external/jpg-save.c:420
 msgid "JPEG File Saver"
 msgstr "Сохранение изображений JPEG"
 
-#: ../operations/external/jpg-save.c:415
+#: ../operations/external/jpg-save.c:422
 msgid "JPEG image saver, using libjpeg"
 msgstr "Сохранение изображений JPEG посредством libjpeg"
 
@@ -7525,6 +7590,17 @@ msgstr ""
 msgid "Store image in a GdkPixbuf."
 msgstr ""
 
+#: ../operations/external/sdl2-display.c:202
+#, fuzzy
+msgid "SDL2 Display"
+msgstr "Смещение"
+
+#: ../operations/external/sdl2-display.c:205
+msgid ""
+"Displays the input buffer in an SDL2 window (restricted to one display op/"
+"process, due to SDL2 implementation issues)."
+msgstr ""
+
 #: ../operations/external/sdl-display.c:27
 msgid "Icon title"
 msgstr ""
@@ -7859,7 +7935,7 @@ msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
-"powf (input, value)"
+"(input >= 0.0f ? powf (input, value) : -powf (-input, value))"
 msgstr ""
 
 #: ../operations/generated/hard-light.c:188
@@ -8677,7 +8753,7 @@ msgstr ""
 msgid "Applies a color gradient."
 msgstr "Применить цветной градиент"
 
-#: ../operations/workshop/hstack.c:179
+#: ../operations/workshop/hstack.c:186
 msgid ""
 "Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right of "
 "\"input\")"
