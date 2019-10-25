@@ -102,6 +102,9 @@ cflags_common += [
   '-DHAVE_CONFIG_H',
 ]
 
+if buildtype == 'debugoptimized' or buildtype == 'release'
+  cflags_common += ['-Ofast']
+endif
 
 cflags_common += [
   '-Winit-self',
