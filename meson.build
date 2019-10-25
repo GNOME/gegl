@@ -23,8 +23,10 @@ i18n      = import('i18n')
 gnome     = import('gnome')
 python    = import('python').find_installation()
 
-cc  = meson.get_compiler('c')
-config= configuration_data()
+cc        = meson.get_compiler('c')
+cpp       = meson.get_compiler('cpp')
+buildtype = get_option('buildtype')
+config    = configuration_data()
 
 ################################################################################
 # Project infos
@@ -89,22 +91,34 @@ else
   error('Unknown host architecture')
 endif
 
-# Should be filled with c_arguments, is checked before use.
-c_arguments = [
+################################################################################
+# Compiler arguments
+
+cflags_common = []
+cflags_c      = []
+cflags_cpp    = []
+
+cflags_common += [
   '-DHAVE_CONFIG_H',
 ]
 
-################################################################################
-# Extra warnings
 
-c_arguments += [
+cflags_common += [
   '-Winit-self',
   '-Wmissing-declarations',
-  '-Wmissing-prototypes',
-  '-Wold-style-definition',
   '-Wpointer-arith',
   '-Wno-deprecated-declarations',
 ]
+cflags_c = [
+  '-Wmissing-prototypes',
+  '-Wold-style-definition',
+]
+
+cflags_c   = cflags_common + cflags_c
+cflags_cpp = cflags_common + cflags_cpp
+
+add_project_arguments(cc.get_supported_arguments(cflags_c), language: 'c')
+add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
 
 ################################################################################
 # Utilities
