@@ -134,7 +134,7 @@ gio_source_skip(j_decompress_ptr cinfo, long num_bytes)
         const gssize skipped = g_input_stream_skip(self->stream, bytes_to_skip, NULL, &err);
         if (err)
           {
-            g_printerr("%s: skipped=%ld, err=%s\n", __PRETTY_FUNCTION__, skipped, err->message);
+            g_printerr("%s: skipped=%d, err=%s\n", __PRETTY_FUNCTION__, skipped, err->message);
             g_error_free(err);
           }
         src->bytes_in_buffer = 0;
