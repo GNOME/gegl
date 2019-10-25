@@ -6,6 +6,7 @@ project('gegl',
   default_options: [
     'c_std=gnu11',
     'cpp_std=gnu++14',
+    'buildtype=debugoptimized',
   ],
 )
 
