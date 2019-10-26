@@ -1,4 +1,4 @@
-if gexiv2.found()
+if avlibs_found and gexiv2.found()
 
   test('ff-load-save',
     find_program('tests_ff_load_save.sh'),
