@@ -1,3 +1,128 @@
+GEGL-0.4.18 2019-10-27
+----------------------
+
+Build
+~~~~~
+
+Drop autotools, GEGL is now using meson, most things are working again now -
+documentation/website build is a work in progress, many issues have been
+fixed, more a sure to surface with this first meson only release following the
+babl one.
+
+Core
+~~~~
+
+Support ui labels and descriptions for aux pads of ops.
+Guard against uint32_t overflows in memory computations, improved memory
+usage stat on FreeBSD.
+Added support for hygon dhyana architecture.
+Added gegl_try_malloc and use it to allocate storage for tiles.
+gegl-stats gained active- and assigned-threads members.
+
+
+Buffer
+~~~~~~
+
+New API for aligning to regular tile grid, gegl_rectangle_align[_to_buffer]
+added gegl_rectangle_xor
+gegl_buffer_create_sub_bufer now always returns a new object.
+Improved tile compression, more accurate accounting and avoidiance when it is
+determinetal.
+gegl_buffer_save : store BablSpace
+take into consideration concurrent use of different tile sizes in
+gegl_tile_alloc
+Fast path for gegl_buffer_copy is entirely in abyss.
+Improved api misuse handling in gegl_buffer_set|get
+Improved consistency of results when doing COW of abyss.
+Improved Gobject Intospection annotations.
+Use a binary tree for tile swap, improving tile removal speed.
+Avoid gegl_buffer_set avoid set_pixel fast path if level>0
+
+
+Operations
+~~~~~~~~~~
+
+Dynamic computation of per-operation thread cost, making GEGL fully use available cores on more operations.
+
+new operations:
+  bayer-matrix, linear-sinusoid, color-assimilation-grid, normal-map.
+new operations in workshop:
+  boxblur, alpha-inpaint
+
+pass-through for infinite planes for:
+  apply-lens, polar-coordinates, whirl-pinch, convolution-matrix, maze,
+  cartoon, waterpixels, tile, distance-transform, spherize, tile-paper, dither,
+  mantiuk06, reinhard05, fattal02, fractal-trace, motion-blur-zoom,
+  motion-blur-circular, wind, little-planet, mirrors, cubism and long-shdow.
+improved property ranges/meta-data or copyright for:
+  motion-blur-zoom, edge-neon, cartoon, photocopy, softglow, oilify, bump-map, remap,
+
+convolution:
+  fix source-buffer offsets of filtered-out components,
+  avoiding excessive shifting.
+jpg-save:
+  force grayscale if incoming buffer is grayscale
+sdl-display:
+  port to SDL2
+gamma:
+  handle negative input values
+apply-lens;
+  enable auto threading
+matting-global:
+  disable auto threading, allocate less temporay memory.
+maze:
+  reimplemented without recursion
+newsprint:
+  added black pullout and per colorant pattern and period parameters, enable threading.
+saturation:
+  add a colormodel property which permits operating in RGB instead
+of CIE Lab, enabling hue preserving saturation changes.
+exr-load/exr-save:
+  only use associated alpha with EXR files
+ff-load:
+  fix audio track decoding for pure audio files
+c2g:
+  fixed initialization data race and out of bounds array access when threaded.
+color-enhance:
+  fixed a buffer leak
+perlin-noise:
+  fix initialization race
+domain-transform:
+  faster nop for edge-preservation=1.0, support BablSpace
+oilify:
+  support specifying mask-radius with aux buffer
+linear-gradient, readial-gradient:
+  use colors in correct order.
+pixelize:
+  avoid potential glitches
+weighted-blend:
+  harmonize opencl implementation with C
+edge-neon:
+  performane improvements
+
+GEGL UI
+~~~~~~~
+
+gcut video editor ui has been removed, all its functionality is latent in
+the new media browser/manipulator/viewer UI.
+
+Permit start/end times for playlist items, enabling use of folder as EDL.
+Add ability loop currently shown media element.
+Nearest neighbor decoding; for realtime playback of HD video content.
+Frame-cache for rendered video frames (with associated PCM data)
+Drag and drop from file-managers to collection view.
+
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Abderrahim Kitouni, Alexandre Prokoudine, Asier Sarasua Garmendia, Bruce
+Cowan, Debarshi Ray, Dimitris Spingos, Ell, fanjinke, Félix Piédallu,
+Jan Vesely, Jordi Mas, Marco Ciampa, Martin Srebotnjak, Michael Natterer,
+Michael Schumacher, Niels De Graef, Øyvind Kolås, Pawan Chitrakar,
+Piotr Drąg, Rodrigo Lledó, Sabri Ünal, Schwan Carl, Shlomi Fish, Stefan Brüns,
+Thomas Manni and Ting-Wei Lan.
+
+
 GEGL-0.4.16 2019-05-07
 ----------------------
 
