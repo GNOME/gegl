@@ -89,7 +89,7 @@ elif host_cpu == 'ppc64' or host_cpu == 'powerpc64'
   config.set10('ARCH_PPC',    true)
   config.set10('ARCH_PPC64',  true)
 else
-  error('Unknown host architecture')
+  warning('Unknown host architecture')
 endif
 
 ################################################################################
