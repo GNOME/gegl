@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl gegl-0-2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2018-12-17 11:40+0000\n"
-"PO-Revision-Date: 2019-02-24 18:58+0100\n"
+"POT-Creation-Date: 2019-09-25 11:19+0000\n"
+"PO-Revision-Date: 2019-10-26 15:54+0200\n"
 "Last-Translator: Alan Mortensen <alanmortensen.am@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -30,16 +30,16 @@ msgstr ""
 "X-Language: da_DK\n"
 "X-Source-Language: C\n"
 
-#: bin/gegl.c:174
+#: bin/gegl.c:179
 #, c-format
 msgid "Unable to read file: %s"
 msgstr "Kan ikke læse filen: %s"
 
-#: bin/gegl.c:223
+#: bin/gegl.c:227
 msgid "Invalid graph, abort.\n"
 msgstr "Ugyldig graf, afbryd.\n"
 
-#: bin/gegl.c:386 bin/gegl-options.c:135
+#: bin/gegl.c:390 bin/gegl-options.c:135
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Ukendt GeglOption-tilstand: %d"
@@ -100,7 +100,8 @@ msgstr ""
 "\n"
 "     --dot           udskriv en graphviz-grafbeskrivelse\n"
 "\n"
-"     -o, --output    send genereret billede til den navngivne fil, hvis type\n"
+"     -o, --output    send genereret billede til den navngivne fil, hvis "
+"type\n"
 "                     bestemmes af filendelsen.\n"
 "\n"
 "     -p              forøg forskellige elementers billedtællere, når\n"
@@ -163,11 +164,11 @@ msgstr ""
 "\trest:     %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:332
+#: bin/gegl-options.c:349
 msgid "Properties:"
 msgstr "Egenskaber:"
 
-#: bin/gegl-options.c:442
+#: bin/gegl-options.c:459
 #, c-format
 msgid ""
 "\n"
@@ -181,6 +182,11 @@ msgstr ""
 "argumentet \"%s\" er ukendt; giver dig hjælp i stedet\n"
 "\n"
 "\n"
+
+#: bin/ui-core.c:4381 gegl/gegl-serialize.c:657
+#, c-format
+msgid "BablFormat \"%s\" does not exist."
+msgstr "BablFormat \"%s\" findes ikke."
 
 #: gegl/buffer/gegl-buffer-enums.c:32 gegl/gegl-enums.c:33
 #: operations/common/gaussian-blur.c:31 operations/common/gblur-1d.c:32
@@ -221,7 +227,7 @@ msgstr "Skriv"
 msgid "Read/Write"
 msgstr "Læs/skriv"
 
-#: gegl/buffer/gegl-buffer-enums.c:89
+#: gegl/buffer/gegl-buffer-enums.c:89 gegl/buffer/gegl-buffer-enums.c:119
 msgid "Nearest"
 msgstr "Nærmeste"
 
@@ -243,6 +249,15 @@ msgstr "IngenHalo"
 #: gegl/buffer/gegl-buffer-enums.c:93
 msgid "LoHalo"
 msgstr "LidtHalo"
+
+#: gegl/buffer/gegl-buffer-enums.c:117
+msgid "Subset"
+msgstr "Delmængde"
+
+# Jeg kan ikke finde en officiel dansk betegnelse
+#: gegl/buffer/gegl-buffer-enums.c:118
+msgid "Superset"
+msgstr "Supermængde"
 
 #: gegl/gegl-enums.c:34
 msgid "Floyd-Steinberg"
@@ -304,7 +319,7 @@ msgstr "Flydende"
 
 #: gegl/gegl-enums.c:120
 msgid "Non-linear"
-msgstr "Ikke-lineær"
+msgstr "Ikkelineær"
 
 #: gegl/gegl-enums.c:121 operations/external/lcms-from-profile.c:31
 msgid "Perceptual"
@@ -331,68 +346,78 @@ msgstr "Perceptuel-præmultipliceret-hvis-alfa"
 msgid "add-alpha"
 msgstr "tilføj-alfa"
 
-#: gegl/gegl-init.c:214
+#: gegl/gegl-enums.c:150 operations/common/gaussian-blur.c:25
+#: operations/common/gblur-1d.c:39
+msgid "Auto"
+msgstr "Automatisk"
+
+#: gegl/gegl-enums.c:151
+msgid "Never"
+msgstr "Aldrig"
+
+#: gegl/gegl-enums.c:152
+msgid "Always"
+msgstr "Altid"
+
+#: gegl/gegl-init.c:211
 msgid "Where GEGL stores its swap"
 msgstr "Hvor GEGL gemmer sin swap"
 
-#: gegl/gegl-init.c:219
+#: gegl/gegl-init.c:216
 msgid "Compression algorithm used for data stored in the swap"
 msgstr "Komprimeringsalgoritme brugt på data gemt på swap"
 
-#: gegl/gegl-init.c:224
+#: gegl/gegl-init.c:221
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Hvor meget hukommelse der (ca.) skal bruges til cache til billeder"
 
 # Der er tale om data i swap: https://docs.gimp.org/en/gimp-using-setup-tile-cache.html
-#: gegl/gegl-init.c:229
+#: gegl/gegl-init.c:226
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Standardstørrelse på databidder i GeglBuffers"
 
-#: gegl/gegl-init.c:234
+#: gegl/gegl-init.c:231
 msgid "The count of pixels to compute simultaneously"
 msgstr "Antal pixels der skal beregnes samtidigt"
 
-#: gegl/gegl-init.c:239
-msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
+#: gegl/gegl-init.c:236
+msgid ""
+"The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
-"Tegnekvaliteten angivet som en værdi mellem 0,0 (hurtig) og 1,0 (reference)"
+"Gengivelseskvaliteten angivet som en værdi mellem 0,0 (hurtig) og 1,0 "
+"(reference)"
 
-#: gegl/gegl-init.c:244
+#: gegl/gegl-init.c:241
 msgid "The number of concurrent processing threads to use"
 msgstr "Antallet af samtidige beregningstråde der skal bruges"
 
-#: gegl/gegl-init.c:249
+#: gegl/gegl-init.c:246
 msgid "Disable OpenCL"
 msgstr "Deaktivér OpenCL"
 
 # eller skulle det være "kurve"?
-#: gegl/gegl-serialize.c:162
+#: gegl/gegl-serialize.c:296
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "stidata %s ikke håndteret:%s\n"
 
 # Formoder op = operation. For at skelne det fra ordet "op" bruges "op."
-#: gegl/gegl-serialize.c:392
+#: gegl/gegl-serialize.c:527
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "op. \"%s\" ikke fundet. Delvise match: "
 
-#: gegl/gegl-serialize.c:421
+#: gegl/gegl-serialize.c:556
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s har ikke nogen %s-egenskab."
 
-#: gegl/gegl-serialize.c:427
+#: gegl/gegl-serialize.c:562
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s har ikke nogen %s-egenskab. Egenskaber: "
 
-#: gegl/gegl-serialize.c:522
-#, c-format
-msgid "BablFormat \"%s\" does not exist."
-msgstr "BablFormat \"%s\" findes ikke."
-
-#: gegl/gegl-serialize.c:662
+#: gegl/gegl-serialize.c:793
 #, c-format
 msgid "No such op '%s'"
 msgstr "Ingen operation \"%s\""
@@ -418,16 +443,34 @@ msgstr "Ikke indlæst"
 msgid "Module '%s' load error: %s"
 msgstr "Indlæsningsfejl for modulet \"%s\": %s"
 
+# http://gegl.org/operation-api.html
+#: gegl/operation/gegl-operation-composer3.c:77
+msgid "Output pad for generated image buffer."
+msgstr "Outputpad til den genererede billedbuffer."
+
+#: gegl/operation/gegl-operation-composer3.c:86
+msgid "Input pad, for image buffer input."
+msgstr "Inputpad, til billedbufferinput."
+
+#: gegl/operation/gegl-operation-composer3.c:95
+#: gegl/operation/gegl-operation-composer.c:94
+msgid "Auxiliary image buffer input pad."
+msgstr "Inputpad til hjælpebilledbuffer."
+
+#: gegl/operation/gegl-operation-composer3.c:104
+msgid "Second auxiliary image buffer input pad."
+msgstr "Inputpad til den anden hjælpebilledbuffer."
+
 #: operations/common/absolute.c:79
 msgid "Absolute"
 msgstr "Numerisk"
 
 #: operations/common/absolute.c:83
 msgid ""
-"makes each linear RGB component be the absolute of its value, "
+"Makes each linear RGB component be the absolute of its value, "
 "fabs(input_value)"
 msgstr ""
-"tager den numeriske værdi af hver lineær RGB-komponent, fabs(input_værdi)"
+"Sætter hver lineær RGB-komponent til dens numeriske værdi, fabs(input_værdi)"
 
 #: operations/common/alien-map.c:29 operations/common/newsprint.c:35
 msgid "RGB"
@@ -569,10 +612,10 @@ msgstr ""
 "Forvrænger billedets farver ved at afbilde farveværdierne gennem "
 "trigonometriske funktioner."
 
-#: operations/common/bilateral-filter.c:26 operations/common/dropshadow.c:39
+#: operations/common/bilateral-filter.c:26
+#: operations/common/domain-transform.c:29 operations/common/dropshadow.c:39
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
-#: operations/workshop/domain-transform.c:28
 msgid "Blur radius"
 msgstr "Sløringsradius"
 
@@ -580,10 +623,11 @@ msgstr "Sløringsradius"
 #: operations/common-gpl3+/gaussian-blur-selective.c:30
 #: operations/workshop/bilateral-filter-fast.c:44
 msgid "Radius of square pixel region, (width and height will be radius*2+1)."
-msgstr "Radius af kvadratisk pixelområde (højde og bredde vil være radius*2+1)."
+msgstr ""
+"Radius af kvadratisk pixelområde (højde og bredde vil være radius*2+1)."
 
 #: operations/common/bilateral-filter.c:32
-#: operations/workshop/domain-transform.c:32
+#: operations/common/domain-transform.c:34
 msgid "Edge preservation"
 msgstr "Kantbevarelse"
 
@@ -597,26 +641,29 @@ msgstr "Bilateralt filter"
 
 #: operations/common/bilateral-filter.c:299
 msgid ""
-"Like a gaussian blur; but where the contribution for each neighbourhood pixel "
-"is also weighted by the color difference with the original center pixel. "
+"Like a gaussian blur; but where the contribution for each neighbourhood "
+"pixel is also weighted by the color difference with the original center "
+"pixel. "
 msgstr ""
 "Som gaussisk sløring, men hvor bidraget fra hver nærliggende pixel også "
 "vægtes med farveforskellen til den oprindelige centrumspixel."
 
 #: operations/common/box-blur.c:25 operations/common/c2g.c:28
-#: operations/common/edge-neon.c:47 operations/common/median-blur.c:43
+#: operations/common/edge-neon.c:48 operations/common/median-blur.c:43
 #: operations/common/snn-mean.c:26 operations/common/stress.c:27
 #: operations/common/unsharp-mask.c:24 operations/common/vignette.c:38
 #: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
 #: operations/common-gpl3+/whirl-pinch.c:46
-#: operations/external/matting-levin.c:29
+#: operations/external/matting-levin.c:29 operations/workshop/boxblur-1d.c:27
+#: operations/workshop/boxblur.c:24
 #: operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "Radius"
 
 #: operations/common/box-blur.c:26 operations/common/snn-mean.c:27
+#: operations/workshop/boxblur.c:25
 msgid "Radius of square pixel region, (width and height will be radius*2+1)"
 msgstr "Radius af kvadratisk pixelområde (højde og bredde vil være radius*2+1)"
 
@@ -624,7 +671,7 @@ msgstr "Radius af kvadratisk pixelområde (højde og bredde vil være radius*2+1
 msgid "Box Blur"
 msgstr "Kassesløring"
 
-#: operations/common/box-blur.c:407
+#: operations/common/box-blur.c:407 operations/workshop/boxblur.c:78
 msgid "Blur resulting from averaging the colors of a square neighbourhood."
 msgstr ""
 "Sløring opnået ved at tage gennemsnittet af farverne i et nærliggende "
@@ -662,11 +709,11 @@ msgstr "Lysstyrkeændring: > 0 lysere, < 0 mørkere"
 msgid "Brightness Contrast"
 msgstr "Lysstyrke/kontrast"
 
-#: operations/common/brightness-contrast.c:162
-#, c-format
+#: operations/common/brightness-contrast.c:164
+#, no-c-format
 msgid ""
 "Changes the light level and contrast. This operation operates in linear "
-"light, 'contrast' is a scale factor around 50%% gray, and 'brightness' a "
+"light, 'contrast' is a scale factor around 50% gray, and 'brightness' a "
 "constant offset to apply after contrast scaling."
 msgstr ""
 "Ændrer lysstyrken og kontrasten. Operationen virker i lineært lys, \"kontrast"
@@ -689,14 +736,15 @@ msgstr "babl-format"
 msgid ""
 "The babl format of the output GeglBuffer, NULL to use input buffer format"
 msgstr ""
-"Babl-formatet af GeglBufferens output. NULL for at bruge inputbufferens format"
+"Babl-formatet af GeglBufferens output. NULL for at bruge inputbufferens "
+"format"
 
 # MicroSoft
-#: operations/common/buffer-sink.c:83
+#: operations/common/buffer-sink.c:86
 msgid "Buffer Sink"
 msgstr "Buffermodtager"
 
-#: operations/common/buffer-sink.c:85
+#: operations/common/buffer-sink.c:88
 msgid "Create a new GEGL buffer to write the resulting rendering."
 msgstr "Opretter en ny GEGL-buffer, hvortil output skrives."
 
@@ -754,14 +802,15 @@ msgstr "Forbedr skygger"
 
 #: operations/common/c2g.c:49
 msgid "When enabled details in shadows are boosted at the expense of noise"
-msgstr "Når aktiveret fremhæves detaljer i skyggerne på bekostning af mere støj"
+msgstr ""
+"Når aktiveret fremhæves detaljer i skyggerne på bekostning af mere støj"
 
 # STRESS: Spatio Temporal Retinex(-like) Envelope with Stochastic Sampling - er også navnet på en GEGL-operation
 # Envelope: Indhyldningskurve
 #: operations/common/c2g.c:461
 msgid ""
-"Color to grayscale conversion, uses envelopes formed with the STRESS approach "
-"to perform local color-difference preserving grayscale generation."
+"Color to grayscale conversion, uses envelopes formed with the STRESS "
+"approach to perform local color-difference preserving grayscale generation."
 msgstr ""
 "Bruger indhyldningskurver dannet med STRESS-tilgangen til lokal "
 "farveforskelsbevarende gråtonefrembringelse."
@@ -770,7 +819,7 @@ msgstr ""
 #: operations/common/little-planet.c:46
 #: operations/common/panorama-projection.c:46 operations/common/rectangle.c:36
 #: operations/common-gpl3+/diffraction-patterns.c:78
-#: operations/common-gpl3+/maze.c:40 operations/common-gpl3+/noise-solid.c:64
+#: operations/common-gpl3+/maze.c:42 operations/common-gpl3+/noise-solid.c:64
 #: operations/common-gpl3+/plasma.c:54 operations/common-gpl3+/sinus.c:76
 #: operations/common-gpl3+/spiral.c:86 operations/core/crop.c:35
 #: operations/external/svg-load.c:30 operations/external/text.c:61
@@ -782,7 +831,7 @@ msgstr "Bredde"
 
 # Horizontal er overflødig
 #: operations/common/checkerboard.c:27 operations/common/grid.c:25
-#: operations/common-gpl3+/maze.c:41
+#: operations/common-gpl3+/maze.c:43
 msgid "Horizontal width of cells pixels"
 msgstr "Celles bredde i pixels"
 
@@ -790,7 +839,7 @@ msgstr "Celles bredde i pixels"
 #: operations/common/little-planet.c:52
 #: operations/common/panorama-projection.c:52 operations/common/rectangle.c:42
 #: operations/common-gpl3+/diffraction-patterns.c:86
-#: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:48
+#: operations/common-gpl3+/engrave.c:31 operations/common-gpl3+/maze.c:50
 #: operations/common-gpl3+/noise-solid.c:72 operations/common-gpl3+/plasma.c:62
 #: operations/common-gpl3+/sinus.c:84 operations/common-gpl3+/spiral.c:94
 #: operations/core/crop.c:40 operations/external/svg-load.c:32
@@ -802,12 +851,13 @@ msgstr "Højde"
 
 # Vertical er overflødig
 #: operations/common/checkerboard.c:35 operations/common/grid.c:32
-#: operations/common-gpl3+/maze.c:49
+#: operations/common-gpl3+/maze.c:51
 msgid "Vertical width of cells pixels"
 msgstr "Celles højde i pixels"
 
 #: operations/common/checkerboard.c:42 operations/common/grid.c:38
-#: operations/common/mirrors.c:46 operations/common-gpl3+/bump-map.c:62
+#: operations/common/mirrors.c:46 operations/common/pixelize.c:52
+#: operations/common-gpl3+/bump-map.c:62
 #: operations/seamless-clone/seamless-clone.c:26
 #: operations/seamless-clone/seamless-clone-compose.c:25
 msgid "Offset X"
@@ -818,7 +868,8 @@ msgid "Horizontal offset (from origin) for start of grid"
 msgstr "Vandret forskydning (fra begyndelsespunktet) af gitterets begyndelse"
 
 #: operations/common/checkerboard.c:48 operations/common/grid.c:44
-#: operations/common/mirrors.c:52 operations/common-gpl3+/bump-map.c:68
+#: operations/common/mirrors.c:52 operations/common/pixelize.c:59
+#: operations/common-gpl3+/bump-map.c:68
 #: operations/seamless-clone/seamless-clone.c:32
 #: operations/seamless-clone/seamless-clone-compose.c:31
 msgid "Offset Y"
@@ -863,7 +914,7 @@ msgstr "Skakbræt"
 msgid "Render a checkerboard pattern"
 msgstr "Gengiver et skakbrætmønster"
 
-#: operations/common/color.c:24 operations/common/color.c:92
+#: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:46
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
 #: operations/common/rectangle.c:48 operations/common/vignette.c:34
@@ -875,25 +926,74 @@ msgstr "Gengiver et skakbrætmønster"
 msgid "Color"
 msgstr "Farve"
 
-#: operations/common/color.c:96
+#. TRANSLATORS: the string 'black' should not be translated
+#: operations/common/color.c:26
+msgid "The color to render (defaults to 'black')"
+msgstr "Farven som skal gengives (som standard sort)"
+
+#: operations/common/color.c:91
 msgid ""
-"Generates a buffer entirely filled with the specified color, use gegl:crop to "
-"get smaller dimensions."
+"Generates a buffer entirely filled with the specified color, use gegl:crop "
+"to get smaller dimensions."
 msgstr ""
 "Opretter en buffer fyldt med den angivne farve. Brug gegl:crop til at få "
 "mindre størrelser."
 
-#: operations/common/color-enhance.c:276
+#: operations/common/color-assimilation-grid.c:25
+msgid "Grid size"
+msgstr "Gitterstørrelse"
+
+#: operations/common/color-assimilation-grid.c:31
+#: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
+#: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
+#: operations/common/saturation.c:384
+#: operations/external/lcms-from-profile.c:35
+#: operations/workshop/selective-hue-saturation.c:38
+msgid "Saturation"
+msgstr "Mætning"
+
+#. FIXME: With a large angle, we lose AreaFilter's flavours
+#: operations/common/color-assimilation-grid.c:35
+#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:33
+#: operations/common/newsprint.c:159
+#: operations/common-gpl3+/linear-sinusoid.c:66
+#: operations/common-gpl3+/motion-blur-circular.c:52
+#: operations/common-gpl3+/ripple.c:45
+msgid "Angle"
+msgstr "Vinkel"
+
+#: operations/common/color-assimilation-grid.c:40
+msgid "Line thickness"
+msgstr "Linjetykkelse"
+
+# https://gitlab.gnome.org/GNOME/gegl/commit/5048642f967dcd920c4d681d00badce268b19d53
+# https://en.wikipedia.org/wiki/Bezold_effect
+#: operations/common/color-assimilation-grid.c:164
+msgid "Color Assimilation Grid"
+msgstr "Farveassimilationsgitter"
+
+#: operations/common/color-assimilation-grid.c:166
+msgid ""
+"Turn image grayscale and overlay an oversaturated grid - through color "
+"assimilation happening in the human visual system, for some grid scales this "
+"produces the illusion that the grayscale grid cells themselves also have "
+"color."
+msgstr ""
+"Laver billedet til gråtoner og overlejrer et overmættet gitter. For nogle "
+"gitterstørrelser giver dette en illusion af, at gråtonegittercellerne selv "
+"er farvede pga. farveassimilation, som sker i synssystemet."
+
+#: operations/common/color-enhance.c:277
 msgid "Color Enhance"
 msgstr "Farveforbedring"
 
-#: operations/common/color-enhance.c:280
+#: operations/common/color-enhance.c:281
 msgid ""
 "Stretch color chroma to cover maximum possible range, keeping hue and "
 "lightness untouched."
 msgstr ""
-"Strækker farvestyrken, så den dækker det størst mulige område, mens farvetone "
-"og lyshed bevares."
+"Strækker farvestyrken, så den dækker det størst mulige område, mens "
+"farvetone og lyshed bevares."
 
 #: operations/common/color-overlay.c:27
 msgid "The color to paint over the input"
@@ -994,8 +1094,8 @@ msgstr "Tilstand for grå"
 
 #: operations/common/color-rotate.c:74
 msgid ""
-"Treat as this: Gray colors from above source range will be treated as if they "
-"had this hue and saturation\n"
+"Treat as this: Gray colors from above source range will be treated as if "
+"they had this hue and saturation\n"
 "Change to this: Change gray colors to this hue and saturation"
 msgstr ""
 "Behandl som denne: Gråtoner i kildeområdet ovenfor behandles som om de havde "
@@ -1013,13 +1113,6 @@ msgstr "Farvetone"
 #: operations/common/color-rotate.c:80
 msgid "Hue value for above gray settings"
 msgstr "Farvetone for indstillingerne for grå ovenfor"
-
-#: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
-#: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:224 operations/external/lcms-from-profile.c:35
-#: operations/workshop/selective-hue-saturation.c:38
-msgid "Saturation"
-msgstr "Mætning"
 
 #: operations/common/color-rotate.c:85
 msgid "Saturation value for above gray settings"
@@ -1040,7 +1133,8 @@ msgstr "Oprindelig temperatur"
 #: operations/common/color-temperature.c:28
 msgid ""
 "Estimated temperature of the light source in Kelvin the image was taken with."
-msgstr "Anslået temperatur (i Kelvin) på lyskilden som billedet blev taget med."
+msgstr ""
+"Anslået temperatur (i Kelvin) på lyskilden som billedet blev taget med."
 
 #: operations/common/color-temperature.c:33
 msgid "Intended temperature"
@@ -1172,12 +1266,13 @@ msgstr "Farvefordrejning"
 
 #: operations/common/color-warp.c:314
 msgid ""
-"Warps the colors of an image between colors with weighted distortion factors, "
-"color pairs which are black to black get ignored when constructing the "
-"mapping."
+"Warps the colors of an image between colors with weighted distortion "
+"factors, color pairs which are black to black get ignored when constructing "
+"the mapping."
 msgstr ""
-"Fordrejer et billedes farver mellem farver med vægtede forvrængningsfaktorer. "
-"Farvepar, som er sort til sort, ignoreres, når afbildningen oprettes."
+"Fordrejer et billedes farver mellem farver med vægtede "
+"forvrængningsfaktorer. Farvepar, som er sort til sort, ignoreres, når "
+"afbildningen oprettes."
 
 #: operations/common/component-extract.c:25
 msgid "RGB Red"
@@ -1428,8 +1523,8 @@ msgid "Divisor"
 msgstr "Divisor"
 
 #: operations/common/convolution-matrix.c:55
-#: operations/workshop/bayer-matrix.c:64
-#: operations/workshop/linear-sinusoid.c:72
+#: operations/common-gpl3+/bayer-matrix.c:64
+#: operations/common-gpl3+/linear-sinusoid.c:72
 msgid "Offset"
 msgstr "Forskydning"
 
@@ -1463,11 +1558,11 @@ msgstr "Alfavægtning"
 msgid "Border"
 msgstr "Kant"
 
-#: operations/common/convolution-matrix.c:633
+#: operations/common/convolution-matrix.c:634
 msgid "Convolution Matrix"
 msgstr "Foldningsmatrix"
 
-#: operations/common/convolution-matrix.c:634
+#: operations/common/convolution-matrix.c:635
 msgid "Apply a generic 5x5 convolution matrix"
 msgstr "Anvender en generisk 5×5 foldningsmatrix"
 
@@ -1503,25 +1598,27 @@ msgstr "Forskel mellem Gauss-funktioner"
 
 #: operations/common/difference-of-gaussians.c:89
 msgid ""
-"Edge detection with control of edge thickness, based on the difference of two "
-"gaussian blurs"
+"Edge detection with control of edge thickness, based on the difference of "
+"two gaussian blurs"
 msgstr ""
-"Kantgenkendelse med kontrol over kanttykkelse baseret på forskellen mellem to "
-"gaussiske sløringer"
+"Kantgenkendelse med kontrol over kanttykkelse baseret på forskellen mellem "
+"to gaussiske sløringer"
 
-#: operations/common/display.c:23 operations/external/sdl-display.c:25
+#: operations/common/display.c:23 operations/external/sdl2-display.c:28
+#: operations/external/sdl-display.c:25
 msgid "Window title"
 msgstr "Vinduestitel"
 
-#: operations/common/display.c:24 operations/external/sdl-display.c:26
+#: operations/common/display.c:24 operations/external/sdl2-display.c:29
+#: operations/external/sdl-display.c:26
 msgid "Title to be given to output window"
 msgstr "Outputvinduets titel"
 
-#: operations/common/display.c:141
+#: operations/common/display.c:142
 msgid "Display"
 msgstr "Visning"
 
-#: operations/common/display.c:143
+#: operations/common/display.c:144
 msgid "Display the input buffer in a window."
 msgstr "Viser inputbufferen i et vindue."
 
@@ -1565,13 +1662,13 @@ msgstr "Metode til rastersimulering"
 msgid "The dithering method to use"
 msgstr "Den metode som anvendes til rastersimulering"
 
-#: operations/common/dither.c:51 operations/common/noise-cell.c:55
-#: operations/common/noise-cie-lch.c:38 operations/common/noise-hsv.c:40
-#: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
-#: operations/common/noise-rgb.c:55 operations/common/noise-simplex.c:39
-#: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
-#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/mosaic.c:89
-#: operations/common-gpl3+/noise-slur.c:40
+#: operations/common/dither.c:51 operations/common/matting-global.c:29
+#: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
+#: operations/common/noise-hsv.c:40 operations/common/noise-hurl.c:37
+#: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
+#: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
+#: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
+#: operations/common-gpl3+/mosaic.c:89 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
 #: operations/common-gpl3+/supernova.c:64
@@ -1580,11 +1677,11 @@ msgstr "Den metode som anvendes til rastersimulering"
 msgid "Random seed"
 msgstr "Basistal for tilfældighedsgenerator"
 
-#: operations/common/dither.c:649
+#: operations/common/dither.c:663
 msgid "Dither"
 msgstr "Rastersimulering"
 
-#: operations/common/dither.c:652
+#: operations/common/dither.c:666
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
@@ -1593,6 +1690,41 @@ msgstr ""
 "Reducerer antallet af farver i billedet ved at reducere antallet af niveauer "
 "pr. kanal (farver og alfa). Forskellige metoder til rastersimulering kan "
 "angives for at modvirke striber, som skyldes kvantisering."
+
+#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
+#: operations/external/webp-save.c:28
+msgid "Quality"
+msgstr "Kvalitet"
+
+#: operations/common/domain-transform.c:25
+msgid ""
+"Number of filtering iterations. A value between 2 and 4 is usually enough."
+msgstr ""
+"Antal filtreringsgentagelser. En værdi mellem 2 og 4 plejer at være nok."
+
+#: operations/common/domain-transform.c:30
+msgid "Spatial standard deviation of the blur kernel, measured in pixels."
+msgstr "Sløringskernens rumlige standardafvigelse målt i pixels."
+
+#: operations/common/domain-transform.c:35
+msgid ""
+"Amount of edge preservation. This quantity is inversely proportional to the "
+"range standard deviation of the blur kernel."
+msgstr ""
+"Graden af kantbevarelse. Denne størrelse er omvendt proportional med "
+"områdets standardafvigelse af sløringskernen."
+
+#: operations/common/domain-transform.c:529
+msgid "Smooth by Domain Transform"
+msgstr "Udglat med domænetransformering"
+
+#: operations/common/domain-transform.c:531
+msgid ""
+"An edge-preserving smoothing filter implemented with the Domain Transform "
+"recursive technique. Similar to a bilateral filter, but faster to compute."
+msgstr ""
+"Et kantbevarende udglatningsfilter implementeret med den rekursive teknik "
+"domænetransformering. Lig et bilateralt filter, men hurtigere at beregne."
 
 #: operations/common/dropshadow.c:25 operations/common/layer.c:36
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
@@ -1635,7 +1767,7 @@ msgstr "Skyggens farve (som standard sort)"
 #. * for example)
 #.
 #: operations/common/dropshadow.c:53 operations/common/layer.c:33
-#: operations/common/opacity.c:25 operations/common/opacity.c:282
+#: operations/common/opacity.c:25 operations/common/opacity.c:283
 #: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Uigennemsigtighed"
@@ -1649,23 +1781,23 @@ msgstr "Slagskygge"
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Laver en slagskyggeeffekt på inbutbufferen"
 
-#: operations/common/edge-neon.c:48
+#: operations/common/edge-neon.c:49
 msgid "Radius of effect (in pixels)"
 msgstr "Effektradius (i pixels)"
 
-#: operations/common/edge-neon.c:55
+#: operations/common/edge-neon.c:56
 msgid "Intensity"
 msgstr "Intensitet"
 
-#: operations/common/edge-neon.c:56
+#: operations/common/edge-neon.c:57
 msgid "Strength of Effect"
 msgstr "Størrelse af effekten"
 
-#: operations/common/edge-neon.c:553
+#: operations/common/edge-neon.c:538
 msgid "Neon Edge Detection"
 msgstr "Neon-kantgenkendelse"
 
-#: operations/common/edge-neon.c:557
+#: operations/common/edge-neon.c:542
 msgid "Performs edge detection using a Gaussian derivative method"
 msgstr "Udfører kantgenkendelse ved brug af en gaussisk afledt-metode"
 
@@ -1675,8 +1807,8 @@ msgstr "Bevar fortegn"
 
 #: operations/common/edge-sobel.c:32
 msgid ""
-"Keep negative values in result; when off, the absolute value of the result is "
-"used instead."
+"Keep negative values in result; when off, the absolute value of the result "
+"is used instead."
 msgstr ""
 "Bevar negative værdier i resultatet. Hvis den ikke er markeret, bruges "
 "resultatets absolutte værdi i stedet."
@@ -1722,8 +1854,8 @@ msgstr "Kombinér eksponeringer"
 #: operations/common/exp-combine.c:1274
 msgid "Combine multiple scene exposures into one high dynamic range image."
 msgstr ""
-"Kombinerer flere eksponeringer af den samme scene til et billede med et stort "
-"kontrastomfang (HDR)."
+"Kombinerer flere eksponeringer af den samme scene til et billede med en stor "
+"dynamisk rækkevidde (HDR)."
 
 #: operations/common/exposure.c:26
 msgid "Black level"
@@ -1757,7 +1889,7 @@ msgstr "Beta"
 msgid "Strength of local detail enhancement"
 msgstr "Størrelsen af lokal forbedring af detaljer"
 
-#: operations/common/fattal02.c:42
+#: operations/common/fattal02.c:42 operations/common/mantiuk06.c:36
 msgid "Global color saturation factor"
 msgstr "Global faktor for mætning af farver"
 
@@ -1770,14 +1902,14 @@ msgid "Gradient threshold for lowering detail enhancement"
 msgstr "Gradienttærskel for mindskelse af detaljeforbedring"
 
 # Det danske wikipedia-opslag har også Tone mapping
-#: operations/common/fattal02.c:1333
+#: operations/common/fattal02.c:1358
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Fattal m.fl. 2002 Tone Mapping"
 
-#: operations/common/fattal02.c:1337
+#: operations/common/fattal02.c:1362
 msgid ""
-"Adapt an image, which may have a high dynamic range, for presentation using a "
-"low dynamic range. This operator attenuates the magnitudes of local image "
+"Adapt an image, which may have a high dynamic range, for presentation using "
+"a low dynamic range. This operator attenuates the magnitudes of local image "
 "gradients, producing luminance within the range 0.0-1.0. This tonemapping "
 "approach was originally presented by Raanan Fattal, in the 2002 SIGGRAPH "
 "paper: Gradient Domain High Dynamic Range Compression."
@@ -1788,10 +1920,6 @@ msgstr ""
 "\"tone mapping\", blev oprindeligt præsenteret af Fattal, Lischinski og "
 "Werman ved konferencen SIGGRAPH 2002: Gradient Domain High Dynamic Range "
 "Compression (http://www.cs.huji.ac.il/~danix/hdr/)."
-
-#: operations/common/gaussian-blur.c:25 operations/common/gblur-1d.c:39
-msgid "Auto"
-msgstr "Automatisk"
 
 #: operations/common/gaussian-blur.c:26 operations/common/gblur-1d.c:40
 msgid "FIR"
@@ -1867,11 +1995,12 @@ msgid "Size"
 msgstr "Størrelse"
 
 #: operations/common/gblur-1d.c:50 operations/common/wavelet-blur-1d.c:36
-#: operations/common-gpl3+/deinterlace.c:40
+#: operations/common-gpl3+/deinterlace.c:40 operations/workshop/boxblur-1d.c:33
 msgid "Orientation"
 msgstr "Retning"
 
 #: operations/common/gblur-1d.c:53 operations/common/wavelet-blur-1d.c:39
+#: operations/workshop/boxblur-1d.c:36
 msgid "The orientation of the blur - hor/ver"
 msgstr "Sløringens retning — vand/lod"
 
@@ -2118,7 +2247,8 @@ msgstr "Billedfarveovergang"
 #: operations/common/image-gradient.c:228
 msgid "Compute gradient magnitude and/or direction by central differencies"
 msgstr ""
-"Beregner farveovergangens størrelse og/eller retning ud fra centrale forskelle"
+"Beregner farveovergangens størrelse og/eller retning ud fra centrale "
+"forskelle"
 
 #: operations/common/introspect.c:26
 msgid "Node"
@@ -2128,11 +2258,11 @@ msgstr "Knude"
 msgid "GEGL graph visualizer."
 msgstr "GEGL-grafvisualisering."
 
-#: operations/common/invert-gamma.c:81
+#: operations/common/invert-gamma.c:52
 msgid "Invert in Perceptual space"
 msgstr "Invertér i det perceptuelle rum"
 
-#: operations/common/invert-gamma.c:85
+#: operations/common/invert-gamma.c:56
 msgid ""
 "Invert the components (except alpha) perceptually, the result is the "
 "corresponding \"negative\" image."
@@ -2140,13 +2270,13 @@ msgstr ""
 "Inverterer komponenterne (undtagen alfa) perceptuelt. Resultatet er det "
 "tilsvarende \"negativ\"."
 
-#: operations/common/invert-linear.c:74 operations/common-gpl3+/bump-map.c:45
+#: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
 #: operations/workshop/voronoi-diagram.cc:32
 msgid "Invert"
 msgstr "Invertér"
 
-#: operations/common/invert-linear.c:79
+#: operations/common/invert-linear.c:59
 msgid ""
 "Invert the components (except alpha) in linear light, the result is the "
 "corresponding \"negative\" image."
@@ -2172,8 +2302,9 @@ msgstr "Lodret placering i pixels"
 
 #: operations/common/layer.c:46 operations/common/noise-cell.c:36
 #: operations/common/noise-perlin.c:27 operations/common/noise-simplex.c:31
-#: operations/common/saturation.c:24
+#: operations/common/saturation.c:31
 #: operations/workshop/external/lens-correct.c:50
+#: operations/workshop/normal-map.c:30
 msgid "Scale"
 msgstr "Skalering"
 
@@ -2239,41 +2370,49 @@ msgstr "Niveauer"
 msgid "Remaps the intensity range of the image"
 msgstr "Ændrer billedets intensitetsområde"
 
-#: operations/common/linear-gradient.c:25 operations/common/radial-gradient.c:25
+#: operations/common/linear-gradient.c:25
+#: operations/common/radial-gradient.c:25
 #: operations/common-gpl3+/fractal-trace.c:34
 #: operations/workshop/external/line-profile.c:28
 msgid "X1"
 msgstr "x1"
 
-#: operations/common/linear-gradient.c:29 operations/common/radial-gradient.c:26
+#: operations/common/linear-gradient.c:29
+#: operations/common/radial-gradient.c:26
 #: operations/common-gpl3+/fractal-trace.c:42
 #: operations/workshop/external/line-profile.c:35
 msgid "Y1"
 msgstr "y1"
 
-#: operations/common/linear-gradient.c:33 operations/common/radial-gradient.c:27
+#: operations/common/linear-gradient.c:33
+#: operations/common/radial-gradient.c:27
 #: operations/common-gpl3+/fractal-trace.c:38
 msgid "X2"
 msgstr "x2"
 
-#: operations/common/linear-gradient.c:37 operations/common/radial-gradient.c:28
+#: operations/common/linear-gradient.c:37
+#: operations/common/radial-gradient.c:28
 #: operations/common-gpl3+/fractal-trace.c:46
 msgid "Y2"
 msgstr "y2"
 
-#: operations/common/linear-gradient.c:41 operations/common/radial-gradient.c:29
+#: operations/common/linear-gradient.c:41
+#: operations/common/radial-gradient.c:29
 msgid "Start Color"
 msgstr "Begyndelsesfarve"
 
-#: operations/common/linear-gradient.c:42 operations/common/radial-gradient.c:30
+#: operations/common/linear-gradient.c:42
+#: operations/common/radial-gradient.c:30
 msgid "The color at (x1, y1)"
 msgstr "Farven ved (x1, y1)"
 
-#: operations/common/linear-gradient.c:45 operations/common/radial-gradient.c:31
+#: operations/common/linear-gradient.c:45
+#: operations/common/radial-gradient.c:31
 msgid "End Color"
 msgstr "Slutfarve"
 
-#: operations/common/linear-gradient.c:46 operations/common/radial-gradient.c:32
+#: operations/common/linear-gradient.c:46
+#: operations/common/radial-gradient.c:32
 msgid "The color at (x2, y2)"
 msgstr "Farven ved (x2, y2)"
 
@@ -2322,6 +2461,11 @@ msgstr "Drejevinkel omkring kameraets akse"
 msgid "Zoom"
 msgstr "Zoom"
 
+#: operations/common/little-planet.c:43
+#: operations/common/panorama-projection.c:43
+msgid "Zoom level"
+msgstr "Zoomniveau"
+
 #: operations/common/little-planet.c:47
 #: operations/common/panorama-projection.c:47
 msgid "output/rendering width in pixels, -1 for input width"
@@ -2362,16 +2506,16 @@ msgid ""
 "retouching panoramas, use nearest to generate the view and cubic or better "
 "for the inverse transform back to panorama."
 msgstr ""
-"Metode der skal bruges til genberegning af billedet. Opnå gode resultater med "
-"dobbelt genberegning ved retouchering af panoramaer, bruges nærmeste for at "
-"lave visningen og kubisk eller bedre til den omvendte transformering tilbage "
-"til panoramaet."
+"Metode der skal bruges til genberegning af billedet. Opnå gode resultater "
+"med dobbelt genberegning ved retouchering af panoramaer, bruges nærmeste for "
+"at lave visningen og kubisk eller bedre til den omvendte transformering "
+"tilbage til panoramaet."
 
-#: operations/common/little-planet.c:494
+#: operations/common/little-planet.c:530
 msgid "Little Planet"
 msgstr "Lille planet"
 
-#: operations/common/little-planet.c:498
+#: operations/common/little-planet.c:534
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
 "Laver en stereografisk/lille planet-transformering af et ækvirektangulært "
@@ -2417,14 +2561,6 @@ msgstr "Stil"
 msgid "Shadow style"
 msgstr "Skyggestil"
 
-#. FIXME: With a large angle, we lose AreaFilter's flavours
-#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:33
-#: operations/common/newsprint.c:72
-#: operations/common-gpl3+/motion-blur-circular.c:52
-#: operations/common-gpl3+/ripple.c:45 operations/workshop/linear-sinusoid.c:66
-msgid "Angle"
-msgstr "Vinkel"
-
 #: operations/common/long-shadow.c:50
 msgid "Shadow angle"
 msgstr "Skyggevinkel"
@@ -2465,11 +2601,11 @@ msgstr "Sammensætning"
 msgid "Output composition"
 msgstr "Sammensætning af output"
 
-#: operations/common/long-shadow.c:1665
+#: operations/common/long-shadow.c:1692
 msgid "Long Shadow"
 msgstr "Lang skygge"
 
-#: operations/common/long-shadow.c:1669
+#: operations/common/long-shadow.c:1696
 msgid "Creates a long-shadow effect"
 msgstr "Laver en lang skyggeeffekt"
 
@@ -2480,7 +2616,7 @@ msgstr "Laver en lang skyggeeffekt"
 msgid "Path of file to load."
 msgstr "Sti til filen der skal indlæses."
 
-#: operations/common/magick-load.c:145
+#: operations/common/magick-load.c:144
 msgid "Image Magick wrapper using the png op."
 msgstr "Image Magick-wrapper som bruger png-operationen."
 
@@ -2496,19 +2632,19 @@ msgstr "Detaljer"
 msgid "Level of emphasis on image gradient details"
 msgstr "Niveau af vægt på detaljer i billedets farveovergange"
 
-#: operations/common/mantiuk06.c:1631
+#: operations/common/mantiuk06.c:1656
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Mantiuk 2006 Tone Mapping"
 
-#: operations/common/mantiuk06.c:1635
+#: operations/common/mantiuk06.c:1660
 msgid ""
-"Adapt an image, which may have a high dynamic range, for presentation using a "
-"low dynamic range. This operator constrains contrasts across multiple spatial "
-"frequencies, producing luminance within the range 0.0-1.0"
+"Adapt an image, which may have a high dynamic range, for presentation using "
+"a low dynamic range. This operator constrains contrasts across multiple "
+"spatial frequencies, producing luminance within the range 0.0-1.0"
 msgstr ""
-"Tilpasser et billede, som kan have et stort kontrastomfang, til visning med "
-"et lille dynamisk område. Denne operation begrænser kontrasten over mange "
-"rumlige frekvenser og giver lysstyrke i området 0–1."
+"Tilpasser et billede, som kan have en stor dynamisk rækkevidde, til visning "
+"med en lille dynamisk rækkevidde. Denne operation begrænser kontrasten over "
+"mange rumlige frekvenser og giver lysstyrke i området 0–1."
 
 #: operations/common/map-absolute.c:61
 msgid "Map Absolute"
@@ -2517,7 +2653,8 @@ msgstr "Absolut afbildning"
 # Denne og de følgende er hjælpetekster, som plejer at begynde med stort
 #: operations/common/map-absolute.c:64
 msgid ""
-"sample input with an auxiliary buffer that contain absolute source coordinates"
+"sample input with an auxiliary buffer that contain absolute source "
+"coordinates"
 msgstr ""
 "Genberegner input med en hjælpebuffer, som indeholder absolutte "
 "kildekoordinater"
@@ -2534,27 +2671,24 @@ msgstr ""
 "Skaleringsfaktor for forskydning. Indikerer hvor stor rumlig forskydning en "
 "relativ afbildningsværdi på 1 svarer til."
 
-#: operations/common/map-relative.c:34
-msgid "Box filter"
-msgstr "Kassefilter"
-
-#: operations/common/map-relative.c:82
+#: operations/common/map-relative.c:80
 msgid "Map Relative"
 msgstr "Relativ afbildning"
 
-#: operations/common/map-relative.c:85
+#: operations/common/map-relative.c:83
 msgid ""
-"sample input with an auxiliary buffer that contain relative source coordinates"
+"sample input with an auxiliary buffer that contain relative source "
+"coordinates"
 msgstr ""
 "Genberegner input med en hjælpebuffer, som indeholder relative "
 "kildekoordinater"
 
-#: operations/common/matting-global.c:491
+#: operations/common/matting-global.c:579
 msgid "Matting Global"
 msgstr "Global mattering"
 
 # http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.60.1177&rep=rep1&type=pdf
-#: operations/common/matting-global.c:493
+#: operations/common/matting-global.c:581
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -2574,16 +2708,17 @@ msgid "The value represents the contribution of the past to the new frame."
 msgstr ""
 "Værdien repræsenterer bidraget fra foregående stillbilleder til det nye."
 
-#: operations/common/mblur.c:145
+#: operations/common/mblur.c:148
 msgid "Temporal blur"
 msgstr "Tidslig sløring"
 
-#: operations/common/mblur.c:147
+#: operations/common/mblur.c:150
 msgid ""
 "Accumulating motion blur using a kalman filter, for use with video sequences "
 "of frames."
 msgstr ""
-"Akkumuleret bevægelsessløring med brug af et Kalman-filter til videosekvenser."
+"Akkumuleret bevægelsessløring med brug af et Kalman-filter til "
+"videosekvenser."
 
 #: operations/common/mean-curvature-blur.c:25
 msgid "Controls the number of iterations"
@@ -2705,7 +2840,7 @@ msgstr "x-akseforholdet for spejlingscenteret"
 #: operations/common/mirrors.c:63 operations/common/vignette.c:66
 #: operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:46
-#: operations/common-gpl3+/motion-blur-zoom.c:45
+#: operations/common-gpl3+/motion-blur-zoom.c:46
 #: operations/common-gpl3+/supernova.c:39 operations/common-gpl3+/waves.c:31
 msgid "Center Y"
 msgstr "y-centrum"
@@ -2750,11 +2885,11 @@ msgstr "Fold input"
 msgid "Fill full output area"
 msgstr "Udfyld hele outputområdet"
 
-#: operations/common/mirrors.c:436
+#: operations/common/mirrors.c:467
 msgid "Kaleidoscopic Mirroring"
 msgstr "Kalejdoskopisk spejling"
 
-#: operations/common/mirrors.c:440
+#: operations/common/mirrors.c:471
 msgid "Create a kaleidoscope like effect."
 msgstr "Laver en kalejdoskop-lignende effekt."
 
@@ -2763,7 +2898,7 @@ msgid "Ratio"
 msgstr "Forhold"
 
 #: operations/common/mix.c:26
-msgid "mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
+msgid "Mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
 msgstr "Blandingsforhold. Læses som mængden af aux: 0=input, 0,5=halv, 1=aux"
 
 #: operations/common/mix.c:112
@@ -2771,7 +2906,7 @@ msgid "Mix"
 msgstr "Blanding"
 
 #: operations/common/mix.c:115
-msgid "do a lerp, linear interpolation (lerp) between input and aux"
+msgid "Do a lerp, linear interpolation (lerp) between input and aux"
 msgstr "Laver en lineær interpolation mellem input og aux"
 
 #: operations/common/mono-mixer.c:26 operations/common-gpl3+/channel-mixer.c:31
@@ -2827,8 +2962,8 @@ msgid "PSSquare (or Euclidian) dot"
 msgstr "PS-kvadrat (eller euklidisk) prik"
 
 #: operations/common/newsprint.c:29
-msgid "Orthogonal Lines"
-msgstr "Ortogonale linjer"
+msgid "Crossing Lines"
+msgstr "Krydsende linjer"
 
 #: operations/common/newsprint.c:33
 msgid "White on Black"
@@ -2849,23 +2984,32 @@ msgstr "Farvemodel"
 #: operations/common/newsprint.c:41
 msgid "How many inks to use just black, rg, rgb (additive), or cmyk"
 msgstr ""
-"Hvor mange farver blæk der skal bruges: kun sort, rg, rgb (additiv) eller cmyk"
+"Hvor mange farver blæk der skal bruges: kun sort, rg, rgb (additiv) eller "
+"cmyk"
 
-#: operations/common/newsprint.c:43
-#: operations/common-gpl3+/video-degradation.c:53
-msgid "Pattern"
-msgstr "Mønster"
+#: operations/common/newsprint.c:44
+msgid "Red and cyan pattern"
+msgstr "Rødt og cyanblåt mønster"
 
-#: operations/common/newsprint.c:45
+#: operations/common/newsprint.c:46 operations/common/newsprint.c:74
+#: operations/common/newsprint.c:102 operations/common/newsprint.c:130
 msgid "Halftoning/dot pattern to use"
 msgstr "Halvtone-/prikmønster der skal bruges"
 
-#: operations/common/newsprint.c:47 operations/common-gpl3+/ripple.c:38
-#: operations/common-gpl3+/waves.c:40
-msgid "Period"
-msgstr "Periode"
+#: operations/common/newsprint.c:50
+msgid "Red pattern"
+msgstr "Rødt mønster"
 
-#: operations/common/newsprint.c:49
+#: operations/common/newsprint.c:51
+msgid "Cyan pattern"
+msgstr "Cyanblåt mønster"
+
+#: operations/common/newsprint.c:53
+msgid "Red and cyan period"
+msgstr "Rød og cyanblå periode"
+
+#: operations/common/newsprint.c:55 operations/common/newsprint.c:83
+#: operations/common/newsprint.c:111 operations/common/newsprint.c:141
 msgid ""
 "The number of pixels across one repetition of a base pattern at base "
 "resolution."
@@ -2873,32 +3017,169 @@ msgstr ""
 "Antal pixels i én gentagelse af et basismønster ved den grundliggende "
 "opløsning."
 
-#: operations/common/newsprint.c:51 operations/common-gpl3+/plasma.c:36
+#: operations/common/newsprint.c:59
+msgid "Red period"
+msgstr "Rød periode"
+
+#: operations/common/newsprint.c:60
+#| msgid "X Period"
+msgid "Cyan period"
+msgstr "Cyanblå periode"
+
+#: operations/common/newsprint.c:62
+msgid "Red and cyan angle"
+msgstr "Rød og cyanblå vinkel"
+
+#: operations/common/newsprint.c:69
+msgid "Red angle"
+msgstr "Rød vinkel"
+
+#: operations/common/newsprint.c:70
+msgid "Cyan angle"
+msgstr "Cyanblå vinkel"
+
+#: operations/common/newsprint.c:72
+msgid "Green and magenta pattern"
+msgstr "Grønt og magenta mønster"
+
+#: operations/common/newsprint.c:78
+msgid "Green pattern"
+msgstr "Grønt mønster"
+
+#: operations/common/newsprint.c:79
+msgid "Magenta pattern"
+msgstr "Magenta mønster"
+
+#: operations/common/newsprint.c:81
+msgid "Green and magenta period"
+msgstr "Grøn og magenta periode"
+
+#: operations/common/newsprint.c:87
+#| msgid "Green inversion"
+msgid "Green period"
+msgstr "Grøn periode"
+
+#: operations/common/newsprint.c:88
+#| msgid "Magenta angle"
+msgid "Magenta period"
+msgstr "Magenta periode"
+
+#: operations/common/newsprint.c:90
+msgid "Green and magenta angle"
+msgstr "Grøn og magenta vinkel"
+
+#: operations/common/newsprint.c:97
+msgid "Green angle"
+msgstr "Grøn vinkel"
+
+#: operations/common/newsprint.c:98
+msgid "Magenta angle"
+msgstr "Magenta vinkel"
+
+#: operations/common/newsprint.c:100
+msgid "Blue and Yellow pattern"
+msgstr "Blåt og gult mønster"
+
+#: operations/common/newsprint.c:106
+msgid "Blue pattern"
+msgstr "Blåt mønster"
+
+#: operations/common/newsprint.c:107
+msgid "Yellow pattern"
+msgstr "Gult mønster"
+
+#: operations/common/newsprint.c:109
+msgid "Blue and Yellow period"
+msgstr "Blå og gul periode"
+
+#: operations/common/newsprint.c:115
+msgid "Blue period"
+msgstr "Blå periode"
+
+#: operations/common/newsprint.c:116
+msgid "Yellow period"
+msgstr "Gul periode"
+
+#: operations/common/newsprint.c:118
+msgid "Blue and Yellow angle"
+msgstr "Blå og gul vinkel"
+
+#: operations/common/newsprint.c:125
+msgid "Blue angle"
+msgstr "Blå vinkel"
+
+#: operations/common/newsprint.c:126
+msgid "Yellow angle"
+msgstr "Gul vinkel"
+
+#: operations/common/newsprint.c:128 operations/common/newsprint.c:136
+msgid "Black pattern"
+msgstr "Sort mønster"
+
+#: operations/common/newsprint.c:135
+#: operations/common-gpl3+/video-degradation.c:53
+msgid "Pattern"
+msgstr "Mønster"
+
+#: operations/common/newsprint.c:139 operations/common/newsprint.c:148
+msgid "Black period"
+msgstr "Sort periode"
+
+#: operations/common/newsprint.c:142 operations/common/newsprint.c:154
+msgid "Angle offset for patterns"
+msgstr "Vinkelforskydning for mønstre"
+
+#: operations/common/newsprint.c:147 operations/common-gpl3+/ripple.c:38
+#: operations/common-gpl3+/waves.c:40
+msgid "Period"
+msgstr "Periode"
+
+#: operations/common/newsprint.c:150 operations/common/newsprint.c:160
+msgid "Black angle"
+msgstr "Sort vinkel"
+
+#: operations/common/newsprint.c:162
+msgid "Black pullout"
+msgstr "Sort udtrækning"
+
+#: operations/common/newsprint.c:164
+msgid "How much of common gray to pull out of CMY"
+msgstr "Hvor meget fælles gråt der skal trækkes ud af CMY"
+
+#: operations/common/newsprint.c:167
+msgid "Anti-alias oversampling factor"
+msgstr "Oversamplingsfaktor for udjævning"
+
+#: operations/common/newsprint.c:169
+msgid "Number of samples that are averaged for antialiasing the result."
+msgstr "Antallet af prøver, der midles over, til udjævning af resultatet."
+
+#: operations/common/newsprint.c:171 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
 msgstr "Turbulens"
 
 #. rename to wave-pinch or period-pinch?
-#: operations/common/newsprint.c:53
+#: operations/common/newsprint.c:173
 msgid "Color saturation dependent compression of period"
 msgstr "Farvemætningsafhængig komprimering af perioden"
 
-#: operations/common/newsprint.c:55
+#: operations/common/newsprint.c:175
 msgid "Blocksize"
 msgstr "Blokstørrelse"
 
-#: operations/common/newsprint.c:57
+#: operations/common/newsprint.c:177
 msgid ""
 "Number of periods per tile, this tiling avoids high frequency anomaly that "
 "angle boost causes"
 msgstr ""
-"Antal perioder pr. databid. Denne opdeling i databidder undgår en anomali for "
-"høje frekvenser forårsaget af vinkelboost"
+"Antal perioder pr. databid. Denne opdeling i databidder undgår en anomali "
+"for høje frekvenser forårsaget af vinkelboost"
 
-#: operations/common/newsprint.c:59
+#: operations/common/newsprint.c:179
 msgid "Angle Boost"
 msgstr "Vinkelboost"
 
-#: operations/common/newsprint.c:61
+#: operations/common/newsprint.c:181
 msgid ""
 "Multiplication factor for desired rotation of the local space for texture, "
 "the way this is computed makes it weak for desaturated colors and possibly "
@@ -2908,55 +3189,11 @@ msgstr ""
 "Måden, det beregnes på, gør effekten svag for farver med lille mætning og "
 "muligvis stærkere, hvor der er farve."
 
-#: operations/common/newsprint.c:63
-msgid "Black and green angle"
-msgstr "Sort og grøn vinkel"
-
-#: operations/common/newsprint.c:67
-msgid "angle offset for patterns"
-msgstr "Vinkelforskydning for mønstre"
-
-#: operations/common/newsprint.c:73
-msgid "Green angle"
-msgstr "Grøn vinkel"
-
-#: operations/common/newsprint.c:74
-msgid "Black angle"
-msgstr "Sort vinkel"
-
-#: operations/common/newsprint.c:76
-msgid "Red and cyan angle"
-msgstr "Rød og cyan vinkel"
-
-#: operations/common/newsprint.c:83
-msgid "Red angle"
-msgstr "Rød vinkel"
-
-#: operations/common/newsprint.c:84
-msgid "Cyan angle"
-msgstr "Cyan vinkel"
-
-#: operations/common/newsprint.c:86
-msgid "Blue and magenta angle"
-msgstr "Blå og magenta vinkel"
-
-#: operations/common/newsprint.c:93
-msgid "Blue angle"
-msgstr "Blå vinkel"
-
-#: operations/common/newsprint.c:94
-msgid "Magenta angle"
-msgstr "Magenta vinkel"
-
-#: operations/common/newsprint.c:96
-msgid "Yellow angle"
-msgstr "Gul vinkel"
-
-#: operations/common/newsprint.c:550
+#: operations/common/newsprint.c:658
 msgid "Newsprint"
 msgstr "Avistryk"
 
-#: operations/common/newsprint.c:554
+#: operations/common/newsprint.c:662
 msgid "Digital halftoning with optional modulations. "
 msgstr "Digitale halvtoner med mulighed for modulering. "
 
@@ -3124,18 +3361,18 @@ msgid ""
 "Use a gaussian noise distribution, when unticked a linear noise distribution "
 "is used instead"
 msgstr ""
-"Brug en gaussisk fordeling af støjen. Hvis den er umarkeret, bruges en lineær "
-"fordeling af støjen i stedet"
+"Brug en gaussisk fordeling af støjen. Hvis den er umarkeret, bruges en "
+"lineær fordeling af støjen i stedet"
 
-#: operations/common/noise-rgb.c:39
+#: operations/common/noise-rgb.c:39 operations/workshop/normal-map.c:25
 msgid "Red"
 msgstr "Rød"
 
-#: operations/common/noise-rgb.c:44
+#: operations/common/noise-rgb.c:44 operations/workshop/normal-map.c:26
 msgid "Green"
 msgstr "Grøn"
 
-#: operations/common/noise-rgb.c:48
+#: operations/common/noise-rgb.c:48 operations/workshop/normal-map.c:27
 msgid "Blue"
 msgstr "Blå"
 
@@ -3179,7 +3416,7 @@ msgstr ""
 "Global uigennemsigtighedsværdi som altid anvendes oven på den valgfrie "
 "hjælpeinputbuffer."
 
-#: operations/common/opacity.c:285
+#: operations/common/opacity.c:286
 msgid ""
 "Weights the opacity of the input both the value of the aux input and the "
 "global value property."
@@ -3212,11 +3449,11 @@ msgstr ""
 "Porter–Duff-operationen over (også kendt som normaltilstand eller src-over) "
 "(d = cA + cB × (1 − aA))"
 
-#: operations/common/panorama-projection.c:507
+#: operations/common/panorama-projection.c:540
 msgid "Panorama Projection"
 msgstr "Panoramaprojektion"
 
-#: operations/common/panorama-projection.c:512
+#: operations/common/panorama-projection.c:545
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
@@ -3249,40 +3486,48 @@ msgstr "Blokhøjde"
 msgid "Height of blocks in pixels"
 msgstr "Højden af blokke (i pixels)"
 
-#: operations/common/pixelize.c:52
+#: operations/common/pixelize.c:53
+msgid "Horizontal offset of blocks in pixels"
+msgstr "Vandret blokforskydning i pixels"
+
+#: operations/common/pixelize.c:60
+msgid "Vertical offset of blocks in pixels"
+msgstr "Loddret blokforskydning i pixels"
+
+#: operations/common/pixelize.c:66
 msgid "Size ratio X"
 msgstr "Størrelsesforhold x"
 
-#: operations/common/pixelize.c:53
+#: operations/common/pixelize.c:67
 msgid "Horizontal size ratio of a pixel inside each block"
 msgstr "Vandret størrelsesforhold af en pixel inde i hver blok"
 
-#: operations/common/pixelize.c:57
+#: operations/common/pixelize.c:71
 msgid "Size ratio Y"
 msgstr "Størrelsesforhold y"
 
-#: operations/common/pixelize.c:58
+#: operations/common/pixelize.c:72
 msgid "Vertical size ratio of a pixel inside each block"
 msgstr "Lodret størrelsesforhold af en pixel inde i hver blok"
 
-#: operations/common/pixelize.c:62 operations/common-gpl3+/apply-lens.c:44
+#: operations/common/pixelize.c:76 operations/common-gpl3+/apply-lens.c:44
 #: operations/common-gpl3+/cubism.c:39
 #: operations/common-gpl3+/lens-distortion.c:57
 #: operations/common-gpl3+/tile-paper.c:75
 msgid "Background color"
 msgstr "Baggrundsfarve"
 
-#: operations/common/pixelize.c:63
+#: operations/common/pixelize.c:77
 msgid "Color used to fill the background"
 msgstr "Farve brugt til at udfylde baggrunden"
 
-#: operations/common/pixelize.c:663
+#: operations/common/pixelize.c:693
 msgid "Pixelize"
 msgstr "Pixelér"
 
 # Den engelske beskrivelse er helt hen i vejret!
 # De geometriske former er: rund, diamant, kvadrat (og ikke rektangler)
-#: operations/common/pixelize.c:665
+#: operations/common/pixelize.c:695
 msgid "Simplify image into an array of solid-colored rectangles"
 msgstr "Reducerer billedet til en samling af små ensfarvede geometriske former"
 
@@ -3366,8 +3611,8 @@ msgstr "Udtoningsfarve"
 msgid ""
 "Color to fade transformed images towards, with a rate depending on its alpha"
 msgstr ""
-"Farve som transformerede billeder skal udtones hen imod; hastigheden afhænger "
-"af alfa"
+"Farve som transformerede billeder skal udtones hen imod; hastigheden "
+"afhænger af alfa"
 
 #: operations/common/recursive-transform.c:44
 msgid "Fade opacity"
@@ -3391,11 +3636,11 @@ msgstr "Indsæt transformerede billeder under hinanden"
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Matematisk metode til at rekonstruere pixelværdier"
 
-#: operations/common/recursive-transform.c:386
+#: operations/common/recursive-transform.c:397
 msgid "Recursive Transform"
 msgstr "Rekursiv transformering"
 
-#: operations/common/recursive-transform.c:388
+#: operations/common/recursive-transform.c:399
 msgid "Apply a transformation recursively."
 msgstr "Anvend en transformation rekursivt."
 
@@ -3419,26 +3664,34 @@ msgstr "Lystilpasning"
 msgid "Adaptation to light variation across the image"
 msgstr "Tilpasning til lysvariation i billedet"
 
-#: operations/common/reinhard05.c:276
+#: operations/common/reinhard05.c:303
 msgid "Reinhard 2005 Tone Mapping"
 msgstr "Reinhard 2005 Tone Mapping"
 
-#: operations/common/reinhard05.c:280
+#: operations/common/reinhard05.c:307
 msgid ""
-"Adapt an image, which may have a high dynamic range, for presentation using a "
-"low dynamic range. This is an efficient global operator derived from simple "
-"physiological observations, producing luminance within the range 0.0-1.0"
+"Adapt an image, which may have a high dynamic range, for presentation using "
+"a low dynamic range. This is an efficient global operator derived from "
+"simple physiological observations, producing luminance within the range "
+"0.0-1.0"
 msgstr ""
-"Tilpasser et billede, som kan have et stort kontrastomfang (HDR), til "
-"præsentation ved et lavere kontrastomfang. Dette er en effektiv global "
-"operation afledt af fysiologiske observationer, som giver lysstyrke i området "
-"0–1"
+"Tilpasser et billede, som kan have en stor dynamisk rækkevidde, til visning "
+"med en lille dynamisk rækkevidde. Dette er en effektiv global operation "
+"afledt af fysiologiske observationer, som giver lysstyrke i området 0–1"
+
+#: operations/common/remap.c:100
+msgid "Minimum Envelope"
+msgstr "Mindste indhyldningskurve"
 
 #: operations/common/remap.c:101
+msgid "Maximum Envelope"
+msgstr "Største indhyldningskurve"
+
+#: operations/common/remap.c:105
 msgid "Remap"
 msgstr "Genafbildning"
 
-#: operations/common/remap.c:103
+#: operations/common/remap.c:107
 msgid "stretch components of pixels individually based on luminance envelopes"
 msgstr ""
 "Strækker individuelt pixels' komponenter baseret på "
@@ -3476,12 +3729,35 @@ msgstr "Klip RGB"
 msgid "Keep RGB pixels values inside a specific range"
 msgstr "Holder RGB-pixelværdier inden for et angivet område"
 
+#: operations/common/saturation.c:26
+msgid "Native"
+msgstr "Oprindelig"
+
+#: operations/common/saturation.c:27
+msgid "CIE Lab/Lch"
+msgstr "CIE Lab/Lch"
+
+#: operations/common/saturation.c:28
+msgid "CIE Yuv"
+msgstr "CIE Yuv"
+
 # Skyderen har titlen "Scale", så det er overflødigt her
-#: operations/common/saturation.c:25
+#: operations/common/saturation.c:32
 msgid "Scale, strength of effect"
 msgstr "Størrelse af effekten"
 
-#: operations/common/saturation.c:227
+#: operations/common/saturation.c:36
+msgid "Interpolation Color Space"
+msgstr "Interpolationsfarverum"
+
+#: operations/common/saturation.c:37
+msgid ""
+"Set at Native if uncertain, the CIE based spaces might introduce hue shifts."
+msgstr ""
+"Sæt til Oprindelig, hvis du er usikker. De CIE-baserede rum kan inducere "
+"farveskift."
+
+#: operations/common/saturation.c:387
 msgid "Changes the saturation"
 msgstr "Ændrer mætningen"
 
@@ -3534,12 +3810,12 @@ msgstr "Kompakthed"
 msgid "Cluster size"
 msgstr "Klyngestørrelse"
 
-#: operations/common/slic.c:457
+#: operations/common/slic.c:456
 msgid "Simple Linear Iterative Clustering"
 msgstr "Simpel lineær iterativ klyngedannelse"
 
 # Wikipedia på en række sprog har k-means
-#: operations/common/slic.c:460
+#: operations/common/slic.c:459
 msgid "Superpixels based on k-means clustering"
 msgstr "Superpixels baseret på k-means-klyngedannelse"
 
@@ -3561,8 +3837,8 @@ msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbours"
 msgstr ""
-"Støjreducerende, kantbevarende sløringsfilter baseret på symmetriske nærmeste "
-"naboer"
+"Støjreducerende, kantbevarende sløringsfilter baseret på symmetriske "
+"nærmeste naboer"
 
 #: operations/common/spherize.c:25
 msgid "Radial"
@@ -3615,11 +3891,11 @@ msgstr ""
 "Skaleringsfaktor for forskydning (negative værdier svarer til en invers "
 "forskydning)"
 
-#: operations/common/spherize.c:318
+#: operations/common/spherize.c:321
 msgid "Spherize"
 msgstr "Sfærisk effekt"
 
-#: operations/common/spherize.c:321
+#: operations/common/spherize.c:324
 msgid "Wrap image around a spherical cap"
 msgstr "Folder billedet omkring en kuglekalot"
 
@@ -3651,7 +3927,8 @@ msgstr ""
 # Lader det være uoversat - så kan folk google det.
 #: operations/common/stress.c:268 operations/common/stress.c:272
 msgid "Spatio Temporal Retinex-like Envelope with Stochastic Sampling"
-msgstr "STRESS (Spatio Temporal Retinex-like Envelope with Stochastic Sampling)"
+msgstr ""
+"STRESS (Spatio Temporal Retinex-like Envelope with Stochastic Sampling)"
 
 #: operations/common/stretch-contrast.c:25
 msgid "Keep colors"
@@ -3663,14 +3940,14 @@ msgstr "Påvirk hver kanal i samme grad"
 
 #: operations/common/stretch-contrast.c:28
 msgid "Non-linear components"
-msgstr "Ikke-lineære komponenter"
+msgstr "Ikkelineære komponenter"
 
 #: operations/common/stretch-contrast.c:29
 msgid ""
 "When set operate on gamma corrected values instead of linear RGB - acting "
 "like the old normalize filter in GIMP"
 msgstr ""
-"Hvis angivet, vil operationen blive udført på den gamma-korrigerede værdier i "
+"Hvis angivet, vil operationen blive udført på de gamma-korrigerede værdier i "
 "stedet for lineær RGB; virker som det gamle normaliseringsfilter i GIMP."
 
 #: operations/common/stretch-contrast.c:583
@@ -3679,9 +3956,9 @@ msgstr "Stræk kontrast"
 
 #: operations/common/stretch-contrast.c:586
 msgid ""
-"Scales the components of the buffer to be in the 0.0-1.0 range. This improves "
-"images that make poor use of the available contrast (little contrast, very "
-"dark, or very bright images)."
+"Scales the components of the buffer to be in the 0.0-1.0 range. This "
+"improves images that make poor use of the available contrast (little "
+"contrast, very dark, or very bright images)."
 msgstr ""
 "Skalerer bufferens komponenter til at være 0–1. Forbedrer billeder, som "
 "udnytter den tilgængelige kontrast dårligt (billeder med lav kontrast eller "
@@ -3694,10 +3971,10 @@ msgstr "Stræk HSV-kontrast"
 # Autostretch findes ikke. De må mene Stretch Contrast
 #: operations/common/stretch-contrast-hsv.c:256
 msgid ""
-"Scales the components of the buffer to be in the 0.0-1.0 range. This improves "
-"images that make poor use of the available contrast (little contrast, very "
-"dark, or very bright images). This version differs from Contrast Autostretch "
-"in that it works in HSV space, and preserves hue."
+"Scales the components of the buffer to be in the 0.0-1.0 range. This "
+"improves images that make poor use of the available contrast (little "
+"contrast, very dark, or very bright images). This version differs from "
+"Contrast Autostretch in that it works in HSV space, and preserves hue."
 msgstr ""
 "Skalerer bufferens komponenter til at være 0–1. Forbedrer billeder, som "
 "udnytter den tilgængelige kontrast dårligt (billeder med lav kontrast eller "
@@ -3756,7 +4033,8 @@ msgstr "Tærskel"
 
 #: operations/common/threshold.c:28
 msgid ""
-"Scalar threshold level (overridden if an auxiliary input buffer is provided.)."
+"Scalar threshold level (overridden if an auxiliary input buffer is "
+"provided.)."
 msgstr ""
 "Skalartærskelniveau (tilsidesættes hvis en hjælpeinputbuffer er til stede)."
 
@@ -3767,8 +4045,8 @@ msgid ""
 "Thresholds the image to white/black based on either the global value set in "
 "the value property, or per pixel from the aux input."
 msgstr ""
-"Konverterer billedet til sort/hvid baseret på enten den globale værdi angivet "
-"her eller pr. pixel fra hjælpeinput."
+"Konverterer billedet til sort/hvid baseret på enten den globale værdi "
+"angivet her eller pixelvis fra hjælpeinput."
 
 #: operations/common/tile.c:24
 msgid "Horizontal offset"
@@ -3778,20 +4056,20 @@ msgstr "Vandret forskydning"
 msgid "Vertical offset"
 msgstr "Lodret forskydning"
 
-#: operations/common/tile.c:134
+#: operations/common/tile.c:159
 msgid "Tile"
 msgstr "Flise"
 
-#: operations/common/tile.c:140
+#: operations/common/tile.c:165
 msgid "Infinitely repeats the input image."
 msgstr "Gentager inputbilledet i det uendelige."
 
 # Brudstykker er fra Gimp
-#: operations/common/tile-seamless.c:168
+#: operations/common/tile-seamless.c:213
 msgid "Make Seamlessly tileable"
 msgstr "Gør brudstykkerne sømløse"
 
-#: operations/common/tile-seamless.c:172
+#: operations/common/tile-seamless.c:217
 msgid ""
 "Make the input buffer seamlessly tileable. The algorithm is not content-"
 "aware, so the result may need post-processing."
@@ -3842,7 +4120,8 @@ msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
 msgstr ""
-"Inverterer valøren. Lyse områder bliver mørke og omvendt, mens farven bevares."
+"Inverterer valøren. Lyse områder bliver mørke og omvendt, mens farven "
+"bevares."
 
 #: operations/common/vignette.c:30
 msgid "Vignette shape"
@@ -3854,8 +4133,8 @@ msgid ""
 "Defaults to 'black', you can use transparency here to erase portions of an "
 "image"
 msgstr ""
-"Som standard \"sort\". Du kan bruge gennemsigtighed her for at slette dele af "
-"et billede."
+"Som standard \"black\". Du kan bruge gennemsigtighed her for at slette dele "
+"af et billede."
 
 #: operations/common/vignette.c:39
 msgid "How far out vignetting goes as portion of half image diagonal"
@@ -3888,19 +4167,30 @@ msgstr "Hvor tæt vi er på billedets højde-breddeforhold"
 msgid "Squeeze"
 msgstr "Sammentrykning"
 
-#: operations/common/vignette.c:71 operations/common-gpl3+/spiral.c:64
-#: operations/workshop/bayer-matrix.c:51
+#: operations/common/vignette.c:55
+msgid ""
+"Aspect ratio to use, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf 1.0 = "
+"inf:1, this is applied after proportion is taken into account, to directly "
+"use squeeze factor as proportions, set proportion to 0.0."
+msgstr ""
+"Højde-breddeforhold der skal bruges: -0,5 = 1:2, 0,0 = 1:1, 0,5 = 2:1, -1,0 "
+"= 1:inf, 1,0 = inf:1. Denne anvendes, efter størrelsesforholdet er taget i "
+"betragtning. For at bruge sammentrykningsfaktoren som størrelsesforhold "
+"direkte sættes størrelsesforholdet til 0."
+
+#: operations/common/vignette.c:71 operations/common-gpl3+/bayer-matrix.c:51
+#: operations/common-gpl3+/linear-sinusoid.c:96
+#: operations/common-gpl3+/spiral.c:64
 #: operations/workshop/external/spyrograph.c:69
-#: operations/workshop/linear-sinusoid.c:96
 msgid "Rotation"
 msgstr "Rotation"
 
-#: operations/common/vignette.c:385
+#: operations/common/vignette.c:384
 msgid "Vignette"
 msgstr "Vignettering"
 
 # Relaterer ikke kun til filmfotografi, så jeg har skrevet det om.
-#: operations/common/vignette.c:389
+#: operations/common/vignette.c:388
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -3939,11 +4229,11 @@ msgstr "Farve af superpixels"
 msgid "How to fill superpixels"
 msgstr "Hvordan superpixels skal udfyldes"
 
-#: operations/common/waterpixels.c:514
+#: operations/common/waterpixels.c:543
 msgid "Waterpixels"
 msgstr "Vandpixels"
 
-#: operations/common/waterpixels.c:517
+#: operations/common/waterpixels.c:546
 msgid "Superpixels based on the watershed transformation"
 msgstr "Superpixels baseret på vandskelstransformeringen"
 
@@ -4013,11 +4303,11 @@ msgstr ""
 "En GeglBuffer, som allerede eksisterer, som indgående bufferdata kan skrives "
 "til."
 
-#: operations/common/write-buffer.c:146
+#: operations/common/write-buffer.c:176
 msgid "Write Buffer"
 msgstr "Skrivebuffer"
 
-#: operations/common/write-buffer.c:148
+#: operations/common/write-buffer.c:178
 msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr ""
 "Skriver inputdata til en eksisterende GEGL-buffers destinationsoverflade."
@@ -4052,11 +4342,11 @@ msgstr "Antal beregninger til gennemsnit af gråtoner"
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normalisér output til området 0—1."
 
-#: operations/common-cxx/distance-transform.cc:437
+#: operations/common-cxx/distance-transform.cc:475
 msgid "Distance Transform"
 msgstr "Afstandstransformering"
 
-#: operations/common-cxx/distance-transform.cc:440
+#: operations/common-cxx/distance-transform.cc:478
 msgid "Calculate a distance transform"
 msgstr "Beregner en afstandstransformering"
 
@@ -4139,16 +4429,125 @@ msgid "Keep image unchanged, where not affected by the lens."
 msgstr "Bevar billedet uforandret, hvor det ikke er påvirket af linsen."
 
 # Linseeffekt lyder bedre end anvend linse
-#: operations/common-gpl3+/apply-lens.c:274
+#: operations/common-gpl3+/apply-lens.c:302
 msgid "Apply Lens"
 msgstr "Linseeffekt"
 
 # over the image er overflødig
-#: operations/common-gpl3+/apply-lens.c:278
+#: operations/common-gpl3+/apply-lens.c:306
 msgid ""
-"Simulates the optical distortion caused by having an elliptical lens over the "
-"image"
-msgstr "Efterligner den optiske forvrængning, som svarer til en elliptisk linse"
+"Simulates the optical distortion caused by having an elliptical lens over "
+"the image"
+msgstr ""
+"Efterligner den optiske forvrængning, som svarer til en elliptisk linse"
+
+#: operations/common-gpl3+/bayer-matrix.c:26
+msgid "Subdivisions"
+msgstr "Underinddelinger"
+
+#: operations/common-gpl3+/bayer-matrix.c:27
+msgid "Number of subdivisions"
+msgstr "Antal underinddelinger"
+
+#: operations/common-gpl3+/bayer-matrix.c:30 operations/common-gpl3+/sinus.c:32
+msgid "X Scale"
+msgstr "x-skala"
+
+#: operations/common-gpl3+/bayer-matrix.c:31
+msgid "Horizontal pattern scale"
+msgstr "Vandret mønsterskala"
+
+#: operations/common-gpl3+/bayer-matrix.c:37 operations/common-gpl3+/sinus.c:39
+msgid "Y Scale"
+msgstr "y-skala"
+
+#: operations/common-gpl3+/bayer-matrix.c:38
+msgid "Vertical pattern scale"
+msgstr "Lodret mønsterskala"
+
+#: operations/common-gpl3+/bayer-matrix.c:45
+msgid "0°"
+msgstr "0°"
+
+#: operations/common-gpl3+/bayer-matrix.c:46
+msgid "90°"
+msgstr "90°"
+
+#: operations/common-gpl3+/bayer-matrix.c:47
+msgid "180°"
+msgstr "180°"
+
+#: operations/common-gpl3+/bayer-matrix.c:48
+msgid "270°"
+msgstr "270°"
+
+#: operations/common-gpl3+/bayer-matrix.c:54
+#: operations/common-gpl3+/linear-sinusoid.c:97
+msgid "Pattern rotation angle"
+msgstr "Mønsterets rotationsvinkel"
+
+# Navnet på handlingen - lyder bedre som navneord
+#: operations/common-gpl3+/bayer-matrix.c:56 operations/transform/reflect.c:84
+msgid "Reflect"
+msgstr "Spejling"
+
+#: operations/common-gpl3+/bayer-matrix.c:57
+msgid "Reflect the pattern horizontally"
+msgstr "Spejl mønsteret vandret"
+
+#: operations/common-gpl3+/bayer-matrix.c:59
+#: operations/common-gpl3+/ripple.c:34 operations/common-gpl3+/waves.c:36
+msgid "Amplitude"
+msgstr "Amplitude"
+
+#: operations/common-gpl3+/bayer-matrix.c:60
+msgid "Pattern amplitude (logarithmic scale)"
+msgstr "Mønsteramplitude (logaritmisk skala)"
+
+#: operations/common-gpl3+/bayer-matrix.c:65
+#: operations/common-gpl3+/linear-sinusoid.c:73
+msgid "Value offset"
+msgstr "Forskydning af værdi"
+
+#: operations/common-gpl3+/bayer-matrix.c:69
+#: operations/common-gpl3+/linear-sinusoid.c:77
+#: operations/common-gpl3+/oilify.c:34 operations/common-gpl3+/sinus.c:72
+msgid "Exponent"
+msgstr "Eksponent"
+
+#: operations/common-gpl3+/bayer-matrix.c:70
+#: operations/common-gpl3+/linear-sinusoid.c:78
+msgid "Value exponent (logarithmic scale)"
+msgstr "Værdiens eksponent (logaritmisk skala)"
+
+#: operations/common-gpl3+/bayer-matrix.c:74
+#: operations/common-gpl3+/linear-sinusoid.c:82
+msgid "X Offset"
+msgstr "x-forskydning"
+
+# Det kunne også være af i stedet for langs. Operationerne er desværre ikke dokumenterede
+#: operations/common-gpl3+/bayer-matrix.c:75
+#: operations/common-gpl3+/linear-sinusoid.c:83
+msgid "Offset for X axis"
+msgstr "Forskydning langs x-aksen"
+
+#: operations/common-gpl3+/bayer-matrix.c:81
+#: operations/common-gpl3+/linear-sinusoid.c:89
+msgid "Y Offset"
+msgstr "y-forskydning"
+
+#: operations/common-gpl3+/bayer-matrix.c:82
+#: operations/common-gpl3+/linear-sinusoid.c:90
+msgid "Offset for Y axis"
+msgstr "Forskydning langs y-aksen"
+
+#: operations/common-gpl3+/bayer-matrix.c:324
+msgid "Bayer Matrix"
+msgstr "Bayer-matrix"
+
+#: operations/common-gpl3+/bayer-matrix.c:329
+msgid "Generate a Bayer matrix pattern"
+msgstr "Genererer et Bayer-matrixmønster"
 
 #: operations/common-gpl3+/bump-map.c:34
 msgid "Spherical"
@@ -4177,7 +4576,7 @@ msgstr "Kompensér for mørkfarvning"
 
 #: operations/common-gpl3+/bump-map.c:46
 msgid "Invert bumpmap"
-msgstr "Invertér buleafbildning"
+msgstr "Invertér ujævnhedsafbildning"
 
 #: operations/common-gpl3+/bump-map.c:48
 msgid "Tiled"
@@ -4185,7 +4584,7 @@ msgstr "Fliselagt"
 
 #: operations/common-gpl3+/bump-map.c:49
 msgid "Tiled bumpmap"
-msgstr "Fliselagt buleafbildning"
+msgstr "Fliselagt ujævnhedsafbildning"
 
 #: operations/common-gpl3+/bump-map.c:51 operations/common-gpl3+/emboss.c:34
 msgid "Azimuth"
@@ -4213,11 +4612,16 @@ msgstr "Niveauet som fuld gennemsigtighed skal repræsentere"
 msgid "Ambient lighting factor"
 msgstr "Omgivende lysfaktor"
 
-#: operations/common-gpl3+/bump-map.c:456
-msgid "Bump Map"
-msgstr "Buleafbildning"
+#: operations/common-gpl3+/bump-map.c:452
+msgid "Height Map"
+msgstr "Højdekort"
 
-#: operations/common-gpl3+/bump-map.c:458
+# Så det hedder det samme som i GIMP
+#: operations/common-gpl3+/bump-map.c:457
+msgid "Bump Map"
+msgstr "Ujævnhedsafbildning"
+
+#: operations/common-gpl3+/bump-map.c:459
 msgid ""
 "This plug-in uses the algorithm described by John Schlag, \"Fast Embossing "
 "Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). It "
@@ -4226,8 +4630,8 @@ msgid ""
 msgstr ""
 "Dette udvidelsesmodul bruger algoritmen beskrevet af John Schlag, \"Fast "
 "Embossing Effects on Raster Image Data\" i Graphics GEMS IV (ISBN "
-"0-12-336155-9). Det tager en buffer, som anvendes som en buleafbildning på en "
-"anden buffer for at lave en flot reliefeffekt."
+"0-12-336155-9). Det tager en buffer, som anvendes som en ujævnhedsafbildning "
+"på en anden buffer for at lave en flot reliefeffekt."
 
 #: operations/common-gpl3+/cartoon.c:28
 msgid "Mask radius"
@@ -4237,11 +4641,11 @@ msgstr "Maskeradius"
 msgid "Percent black"
 msgstr "Procent sort"
 
-#: operations/common-gpl3+/cartoon.c:294
+#: operations/common-gpl3+/cartoon.c:323
 msgid "Cartoon"
 msgstr "Tegneserie"
 
-#: operations/common-gpl3+/cartoon.c:297
+#: operations/common-gpl3+/cartoon.c:326
 msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing "
 "subsequently shaded with color. This is achieved by enhancing edges and "
@@ -4331,7 +4735,8 @@ msgid "Channel Mixer"
 msgstr "Kanalmikser"
 
 #: operations/common-gpl3+/channel-mixer.c:270
-msgid "Remix colors; by defining relative contributions from source components."
+msgid ""
+"Remix colors; by defining relative contributions from source components."
 msgstr "Blander farver med angivelse af relative bidrag fra kildekomponenter."
 
 #: operations/common-gpl3+/color-exchange.c:31
@@ -4431,11 +4836,15 @@ msgstr "Flisemætning"
 msgid "Expand tiles by this amount"
 msgstr "Udvid fliser med denne mængde"
 
-#: operations/common-gpl3+/cubism.c:619
+#: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:76
+msgid "The tiles' background color"
+msgstr "Flisens baggrundsfarve"
+
+#: operations/common-gpl3+/cubism.c:650
 msgid "Cubism"
 msgstr "Kubisme"
 
-#: operations/common-gpl3+/cubism.c:624
+#: operations/common-gpl3+/cubism.c:655
 msgid ""
 "Convert the image into randomly rotated square blobs, somehow resembling a "
 "cubist painting style"
@@ -4589,7 +4998,7 @@ msgid "Mode of displacement"
 msgstr "Tilstand for forskydning"
 
 #: operations/common-gpl3+/displace.c:38 operations/external/npd.c:47
-#: operations/transform/transform-core.c:233 operations/workshop/ditto.c:27
+#: operations/transform/transform-core.c:235 operations/workshop/ditto.c:27
 msgid "Sampler"
 msgstr "Sampler"
 
@@ -4719,11 +5128,11 @@ msgstr "Kantopførsel"
 msgid "Edge detection behavior"
 msgstr "Kantgenkendelsens opførsel"
 
-#: operations/common-gpl3+/edge.c:363
+#: operations/common-gpl3+/edge.c:367
 msgid "Edge Detection"
 msgstr "Kantgenkendelse"
 
-#: operations/common-gpl3+/edge.c:367
+#: operations/common-gpl3+/edge.c:371
 msgid "Several simple methods for detecting edges"
 msgstr "Adskillige simple metoder til kantgenkendelse"
 
@@ -4741,7 +5150,7 @@ msgstr "Relief"
 
 #: operations/common-gpl3+/emboss.c:27
 msgid "Bumpmap (preserve original colors)"
-msgstr "Buleafbildning (bevar oprindelige farver)"
+msgstr "Ujævnhedsafbildning (bevar oprindelige farver)"
 
 #: operations/common-gpl3+/emboss.c:30
 msgid "Emboss Type"
@@ -4989,11 +5398,11 @@ msgid "Unsupported fractal type"
 msgstr "Fraktaltypen understøttes ikke"
 
 # Gimp
-#: operations/common-gpl3+/fractal-trace.c:240
+#: operations/common-gpl3+/fractal-trace.c:273
 msgid "Fractal Trace"
 msgstr "Fraktaltransformering"
 
-#: operations/common-gpl3+/fractal-trace.c:245
+#: operations/common-gpl3+/fractal-trace.c:278
 msgid "Transform the image with the fractals"
 msgstr "Transformerer billedet med fraktaler"
 
@@ -5115,49 +5524,118 @@ msgstr "Linseoverstråling"
 msgid "Adds a lens flare effect."
 msgstr "Tilfører linseoverstråling til billedet."
 
-#: operations/common-gpl3+/maze.c:36
+#: operations/common-gpl3+/linear-sinusoid.c:26
+msgid "X Period"
+msgstr "x-periode"
+
+#: operations/common-gpl3+/linear-sinusoid.c:27
+msgid "Period for X axis"
+msgstr "Periode for x-aksen"
+
+#: operations/common-gpl3+/linear-sinusoid.c:33
+msgid "Y Period"
+msgstr "y-periode"
+
+#: operations/common-gpl3+/linear-sinusoid.c:34
+msgid "Period for Y axis"
+msgstr "Periode for y-aksen"
+
+#: operations/common-gpl3+/linear-sinusoid.c:40
+msgid "X Amplitude"
+msgstr "x-amplitude"
+
+#: operations/common-gpl3+/linear-sinusoid.c:41
+msgid "Amplitude for X axis (logarithmic scale)"
+msgstr "Amplitude for x-aksen (logaritmisk skala)"
+
+#: operations/common-gpl3+/linear-sinusoid.c:46
+msgid "Y Amplitude"
+msgstr "y-amplitude"
+
+#: operations/common-gpl3+/linear-sinusoid.c:47
+msgid "Amplitude for Y axis (logarithmic scale)"
+msgstr "Amplitude for y-aksen (logaritmisk skala)"
+
+#: operations/common-gpl3+/linear-sinusoid.c:52
+msgid "X Phase"
+msgstr "x-fase"
+
+#: operations/common-gpl3+/linear-sinusoid.c:53
+msgid "Phase for X axis"
+msgstr "Fase for x-aksen"
+
+#: operations/common-gpl3+/linear-sinusoid.c:59
+msgid "Y Phase"
+msgstr "y-fase"
+
+#: operations/common-gpl3+/linear-sinusoid.c:60
+msgid "Phase for Y axis"
+msgstr "Fase for y-aksen"
+
+# Det er ikke klart, hvad dette egentlig er
+#: operations/common-gpl3+/linear-sinusoid.c:67
+msgid "Axis separation angle"
+msgstr "Adskillelsesvinkel mellem akser"
+
+#: operations/common-gpl3+/linear-sinusoid.c:102
+msgid "Supersampling"
+msgstr "Supersampling"
+
+#: operations/common-gpl3+/linear-sinusoid.c:103
+msgid "Number of samples along each axis per pixel"
+msgstr "Antal prøver pr. pixel langs hver akse"
+
+#: operations/common-gpl3+/linear-sinusoid.c:299
+msgid "Linear Sinusoid"
+msgstr "Lineær bølge"
+
+#: operations/common-gpl3+/linear-sinusoid.c:304
+msgid "Generate a linear sinusoid pattern"
+msgstr "Laver et lineært bølgemønster"
+
+#: operations/common-gpl3+/maze.c:38
 msgid "Depth first"
 msgstr "Dybde først"
 
-#: operations/common-gpl3+/maze.c:37
+#: operations/common-gpl3+/maze.c:39
 msgid "Prim's algorithm"
 msgstr "Prims algoritme"
 
-#: operations/common-gpl3+/maze.c:56
+#: operations/common-gpl3+/maze.c:58
 msgid "Algorithm type"
 msgstr "Algoritmetype"
 
-#: operations/common-gpl3+/maze.c:59
+#: operations/common-gpl3+/maze.c:61
 msgid "Maze algorithm type"
 msgstr "Typen af labyrintalgoritme"
 
 # Boolesk
-#: operations/common-gpl3+/maze.c:61 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:61
+#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/noise-solid.c:56
+#: operations/common-gpl3+/ripple.c:61 operations/workshop/normal-map.c:54
 msgid "Tileable"
 msgstr "Fliselagt"
 
-#: operations/common-gpl3+/maze.c:65
+#: operations/common-gpl3+/maze.c:67
 msgid "Foreground Color"
 msgstr "Forgrundsfarve"
 
-#: operations/common-gpl3+/maze.c:66
+#: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
 msgstr "Forgrundsfarven"
 
-#: operations/common-gpl3+/maze.c:69
+#: operations/common-gpl3+/maze.c:71
 msgid "Background Color"
 msgstr "Baggrundsfarve"
 
-#: operations/common-gpl3+/maze.c:70
+#: operations/common-gpl3+/maze.c:72
 msgid "The background color"
 msgstr "Baggrundsfarven"
 
-#: operations/common-gpl3+/maze.c:731
+#: operations/common-gpl3+/maze.c:823
 msgid "Maze"
 msgstr "Labyrint"
 
-#: operations/common-gpl3+/maze.c:736
+#: operations/common-gpl3+/maze.c:828
 msgid "Draw a labyrinth"
 msgstr "Tegner en labyrint"
 
@@ -5206,6 +5684,10 @@ msgstr "Afvigelse fra perfekt udformede mosaikstykker"
 msgid "Tile color variation"
 msgstr "Farvevariation"
 
+#: operations/common-gpl3+/mosaic.c:58
+msgid "Magnitude of random color variations"
+msgstr "Størrelsen på tilfældige farvevariationer"
+
 #: operations/common-gpl3+/mosaic.c:61
 msgid "Color averaging"
 msgstr "Farvemidling"
@@ -5250,6 +5732,10 @@ msgstr "Lysets farve"
 msgid "Light direction"
 msgstr "Lysets retning"
 
+#: operations/common-gpl3+/mosaic.c:81
+msgid "Direction of light-source (in degrees)"
+msgstr "Lyskildens retning (i grader)"
+
 #: operations/common-gpl3+/mosaic.c:86
 msgid "Antialiasing"
 msgstr "Udjævning"
@@ -5275,23 +5761,23 @@ msgstr ""
 msgid "Rotation blur angle. A large angle may take some time to render"
 msgstr "Rotationssløringsvinkel. En stor vinkel kan tage noget tid at gengive"
 
-#: operations/common-gpl3+/motion-blur-circular.c:422
+#: operations/common-gpl3+/motion-blur-circular.c:449
 msgid "Circular Motion Blur"
 msgstr "Cirkulær bevægelsessløring"
 
-#: operations/common-gpl3+/motion-blur-circular.c:427
+#: operations/common-gpl3+/motion-blur-circular.c:454
 msgid "Circular motion blur"
 msgstr "Cirkulær bevægelsessløring"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:50
+#: operations/common-gpl3+/motion-blur-zoom.c:52
 msgid "Blurring factor"
 msgstr "Sløringsfaktor"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:243
+#: operations/common-gpl3+/motion-blur-zoom.c:272
 msgid "Zooming Motion Blur"
 msgstr "Zoombevægelsessløring"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:248
+#: operations/common-gpl3+/motion-blur-zoom.c:277
 msgid "Zoom motion blur"
 msgstr "Zoombevægelsessløring"
 
@@ -5343,41 +5829,71 @@ msgstr "Uigennemsigtig støj"
 msgid "Create a random cloud-like texture"
 msgstr "Laver en tilfældig, skylignende struktur"
 
-#: operations/common-gpl3+/oilify.c:27 operations/common-gpl3+/photocopy.c:26
+#: operations/common-gpl3+/oilify.c:28 operations/common-gpl3+/photocopy.c:26
 msgid "Mask Radius"
 msgstr "Maskeradius"
 
-#: operations/common-gpl3+/oilify.c:28
-msgid "Radius of circle around pixel"
-msgstr "Cirkelradius omkring pixel"
+#: operations/common-gpl3+/oilify.c:29
+msgid ""
+"Radius of circle around pixel, can also be scaled per pixel by a buffer on "
+"the aux pad."
+msgstr ""
+"Radius af cirkel omkring pixel. Kan også skaleres pr. pixel med en buffer på "
+"\"aux pad\"."
 
-#: operations/common-gpl3+/oilify.c:33 operations/common-gpl3+/sinus.c:72
-#: operations/workshop/bayer-matrix.c:69
-#: operations/workshop/linear-sinusoid.c:77
-msgid "Exponent"
-msgstr "Eksponent"
+#: operations/common-gpl3+/oilify.c:35
+msgid ""
+"Exponent for processing; controls smoothness - can be scaled per pixel with "
+"a buffer on the aux2 pad."
+msgstr ""
+"Eksponent til behandling. Styrer glatheden; kan skaleres pr. pixel med en "
+"buffer på \"aux2 pad\"."
 
-#: operations/common-gpl3+/oilify.c:36
+#: operations/common-gpl3+/oilify.c:38
 msgid "Number of intensities"
 msgstr "Antal intensiteter"
 
-#: operations/common-gpl3+/oilify.c:37
+#: operations/common-gpl3+/oilify.c:39
 msgid "Histogram size"
 msgstr "Histogramstørrelse"
 
-#: operations/common-gpl3+/oilify.c:40
+#: operations/common-gpl3+/oilify.c:42
 msgid "Intensity Mode"
 msgstr "Intensitetstilstand"
 
-#: operations/common-gpl3+/oilify.c:41
+#: operations/common-gpl3+/oilify.c:43
 msgid "Use pixel luminance values"
 msgstr "Brug pixels' lysstyrkeværdier"
 
-#: operations/common-gpl3+/oilify.c:482
+#: operations/common-gpl3+/oilify.c:523
+msgid "Mask radius buffer"
+msgstr "Maskeradiusbuffer"
+
+#: operations/common-gpl3+/oilify.c:524
+msgid ""
+"Per pixel buffer for modulating the mask radius, expecting a scaling factor "
+"in range 0.0-1.0"
+msgstr ""
+"Pixelvis buffer til modulering af maskeradius. Skaleringsfaktoren skal være "
+"0 til 1."
+
+#: operations/common-gpl3+/oilify.c:525
+msgid "Exponent buffer"
+msgstr "Eksponentbuffer"
+
+#: operations/common-gpl3+/oilify.c:526
+msgid ""
+"Per pixel buffer for modulating the exponent parameter, expecting a scaling "
+"factor in range 0.0-1.0"
+msgstr ""
+"Pixelvis buffer til modulering af eksponenten. Skaleringsfaktoren skal være "
+"0 til 1."
+
+#: operations/common-gpl3+/oilify.c:535
 msgid "Oilify"
 msgstr "Oliemaleri"
 
-#: operations/common-gpl3+/oilify.c:485
+#: operations/common-gpl3+/oilify.c:538
 msgid "Emulate an oil painting"
 msgstr "Efterligner et oliemaleri"
 
@@ -5466,11 +5982,11 @@ msgstr "Vælg midtpunkt"
 msgid "Let origin point to be the middle one"
 msgstr "Lad begyndelsespunktet være midtpunktet"
 
-#: operations/common-gpl3+/polar-coordinates.c:412
+#: operations/common-gpl3+/polar-coordinates.c:447
 msgid "Polar Coordinates"
 msgstr "Polære koordinater"
 
-#: operations/common-gpl3+/polar-coordinates.c:417
+#: operations/common-gpl3+/polar-coordinates.c:452
 msgid "Convert image to or from polar coordinates"
 msgstr "Konverterer billedet til og fra polære koordinater"
 
@@ -5493,11 +6009,6 @@ msgstr "Trekant"
 #: operations/common-gpl3+/ripple.c:31
 msgid "Sawtooth"
 msgstr "Savtakker"
-
-#: operations/common-gpl3+/ripple.c:34 operations/common-gpl3+/waves.c:36
-#: operations/workshop/bayer-matrix.c:59
-msgid "Amplitude"
-msgstr "Amplitude"
 
 #: operations/common-gpl3+/ripple.c:42 operations/common-gpl3+/waves.c:44
 msgid "Phase shift"
@@ -5612,17 +6123,9 @@ msgstr "Flytningsretning"
 msgid "Shift each row or column of pixels by a random amount"
 msgstr "Flytter hver pixel i en række eller søjle en tilfældig distance"
 
-#: operations/common-gpl3+/sinus.c:32 operations/workshop/bayer-matrix.c:30
-msgid "X Scale"
-msgstr "x-skala"
-
 #: operations/common-gpl3+/sinus.c:33
 msgid "Scale value for x axis"
 msgstr "Skaleringsfaktor for x-aksen"
-
-#: operations/common-gpl3+/sinus.c:39 operations/workshop/bayer-matrix.c:37
-msgid "Y Scale"
-msgstr "y-skala"
 
 #: operations/common-gpl3+/sinus.c:40
 msgid "Scale value for y axis"
@@ -5757,11 +6260,13 @@ msgstr "y-koordinat for supernovaens centrum"
 msgid "Radius of supernova"
 msgstr "Supernovaens radius"
 
-#: operations/common-gpl3+/supernova.c:51 operations/common-gpl3+/supernova.c:52
+#: operations/common-gpl3+/supernova.c:51
+#: operations/common-gpl3+/supernova.c:52
 msgid "Number of spokes"
 msgstr "Antal stråler"
 
-#: operations/common-gpl3+/supernova.c:56 operations/common-gpl3+/supernova.c:57
+#: operations/common-gpl3+/supernova.c:56
+#: operations/common-gpl3+/supernova.c:57
 msgid "Random hue"
 msgstr "Tilfældig farvetone"
 
@@ -5816,7 +6321,8 @@ msgid ""
 "Apparent depth of the rendered canvas effect; from 1 (very flat) to 50 (very "
 "deep)"
 msgstr ""
-"Tilsyneladende dybde af lærredseffekten; fra 1 (meget flad) til 50 (meget dyb)"
+"Tilsyneladende dybde af lærredseffekten; fra 1 (meget flad) til 50 (meget "
+"dyb)"
 
 #: operations/common-gpl3+/texturize-canvas.c:4380
 msgid "Texturize Canvas"
@@ -5913,11 +6419,11 @@ msgstr "Centrering af papirstykkerne"
 msgid "Background type"
 msgstr "Baggrundstype"
 
-#: operations/common-gpl3+/tile-paper.c:429
+#: operations/common-gpl3+/tile-paper.c:462
 msgid "Paper Tile"
 msgstr "Papirstykke"
 
-#: operations/common-gpl3+/tile-paper.c:434
+#: operations/common-gpl3+/tile-paper.c:467
 msgid "Cut image into paper tiles, and slide them"
 msgstr "Klipper billedet i stykker og forskyder dem"
 
@@ -5954,20 +6460,29 @@ msgid "Mode of value propagation"
 msgstr "Tilstand for valørudbredelse"
 
 #: operations/common-gpl3+/value-propagate.c:43
-#: operations/common-gpl3+/value-propagate.c:44
 msgid "Lower threshold"
 msgstr "Nedre tærskel"
 
+#: operations/common-gpl3+/value-propagate.c:44
+msgid "The minimum difference in value at which to propagate a pixel"
+msgstr "Den mindste valørforskel som medfører udbredelse af en pixel"
+
 #: operations/common-gpl3+/value-propagate.c:47
-#: operations/common-gpl3+/value-propagate.c:48
-#: operations/common-gpl3+/value-propagate.c:52
 msgid "Upper threshold"
 msgstr "Øvre tærskel"
+
+#: operations/common-gpl3+/value-propagate.c:48
+msgid "The maximum difference in value at which to propagate a pixel"
+msgstr "Den største valørforskel som medfører udbredelse af en pixel"
 
 # Hastighed giver ikke mening her
 #: operations/common-gpl3+/value-propagate.c:51
 msgid "Propagating rate"
 msgstr "Udbredelsesgrad"
+
+#: operations/common-gpl3+/value-propagate.c:52
+msgid "The strength with which to propagate a pixel to its neighbors"
+msgstr "Styrken hvormed en pixel udbredes til dens naboer"
 
 #: operations/common-gpl3+/value-propagate.c:56
 msgid "Color to use for the \"Only color\" and \"Color to peaks\" modes"
@@ -6007,26 +6522,32 @@ msgstr "Udbred mod bunden"
 
 # Af typen boolesk så der er nok tale om et spørgsmål
 #: operations/common-gpl3+/value-propagate.c:73
-#: operations/common-gpl3+/value-propagate.c:74
 msgid "Propagating value channel"
 msgstr "Udbred valørkanalen"
 
+#: operations/common-gpl3+/value-propagate.c:74
+msgid "Whether to propagate a pixel's color"
+msgstr "Hvorvidt en pixels farve skal udbredes"
+
 #: operations/common-gpl3+/value-propagate.c:76
-#: operations/common-gpl3+/value-propagate.c:77
 msgid "Propagating alpha channel"
 msgstr "Udbred alfakanalen"
 
-#: operations/common-gpl3+/value-propagate.c:642
+#: operations/common-gpl3+/value-propagate.c:77
+msgid "Whether to propagate a pixel's opacity"
+msgstr "Hvorvidt en pixels uigennemsigtighed skal udbredes"
+
+#: operations/common-gpl3+/value-propagate.c:646
 msgid "Value Propagate"
 msgstr "Valørudbredelse"
 
-#: operations/common-gpl3+/value-propagate.c:646
+#: operations/common-gpl3+/value-propagate.c:650
 msgid ""
-"Propagate certain values to neighboring pixels. Erode and dilate any color or "
-"opacity."
+"Propagate certain values to neighboring pixels. Erode and dilate any color "
+"or opacity."
 msgstr ""
-"Udbred visse valører til omkringliggende pixels. Erodér og udvid enhver farve "
-"eller uigennemsigtighed."
+"Udbred visse valører til omkringliggende pixels. Erodér og udvid enhver "
+"farve eller uigennemsigtighed."
 
 #: operations/common-gpl3+/video-degradation.c:34
 msgid "Staggered"
@@ -6093,8 +6614,8 @@ msgid ""
 "This function simulates the degradation of being on an old low-dotpitch RGB "
 "video monitor."
 msgstr ""
-"Denne funktion simulerer forvrængningen, som kan opstå på en gammel RGB-skærm "
-"med en lav tæthed af billedpunkter."
+"Denne funktion simulerer forvrængningen, som kan opstå på en gammel RGB-"
+"skærm med en lav tæthed af billedpunkter."
 
 # Amplitude er mere præcis, men mange kender måske ikke begrebet
 #: operations/common-gpl3+/waves.c:37
@@ -6141,15 +6662,15 @@ msgstr ""
 "Radius (1,0 er den største cirkel, som passer i billedet, og 2,0 går helt ud "
 "i hjørnerne)"
 
-#: operations/common-gpl3+/whirl-pinch.c:262
+#: operations/common-gpl3+/whirl-pinch.c:294
 msgid "Whirl Pinch"
 msgstr "Hvirvel og sammenknibning"
 
-#: operations/common-gpl3+/whirl-pinch.c:267
+#: operations/common-gpl3+/whirl-pinch.c:299
 msgid "Distort an image by whirling and pinching"
 msgstr "Forvrænger billedet med hvirvler og sammenknibning"
 
-#: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:561
+#: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:591
 msgid "Wind"
 msgstr "Vind"
 
@@ -6206,11 +6727,11 @@ msgstr "Større værdier begrænser effekten til færre områder i billedet"
 msgid "Higher values increase the magnitude of the effect"
 msgstr "Større værdier forøger størrelsen på effekten"
 
-#: operations/common-gpl3+/wind.c:565
+#: operations/common-gpl3+/wind.c:595
 msgid "Wind-like bleed effect"
 msgstr "Efterligner farver, der løber ud på grund af vinden"
 
-#: operations/core/cache.c:25 operations/core/cache.c:88
+#: operations/core/cache.c:25 operations/core/cache.c:85
 msgid "Cache"
 msgstr "Cache"
 
@@ -6225,7 +6746,7 @@ msgstr ""
 "Dette er en særlig buffer, hvor gegl_buffer_list_valid_rectangles returnerer "
 "den del af cachen, som er gyldig."
 
-#: operations/core/cache.c:90
+#: operations/core/cache.c:87
 msgid ""
 "An explicit caching node, caches results and should provide faster "
 "recomputation if what is cached by it is expensive but isn't changing."
@@ -6246,12 +6767,12 @@ msgstr "Babl-format af inputtet"
 msgid "Output format"
 msgstr "Outputformat"
 
-#: operations/core/cast-format.c:111
+#: operations/core/cast-format.c:110
 msgid "Cast Format"
 msgstr "Omfortolk format"
 
 # Cast er vel efterhånden ok på dansk efter ChromeCast kom frem
-#: operations/core/cast-format.c:113
+#: operations/core/cast-format.c:112
 msgid ""
 "Cast the data between input_format and output_format, both formats must have "
 "the same bpp"
@@ -6277,7 +6798,8 @@ msgid "pointer to a const * Babl space"
 msgstr "pointer til en const * Babl-rum"
 
 #: operations/core/cast-space.c:29 operations/core/convert-space.c:29
-#: operations/external/v4l.c:26 operations/workshop/external/v4l2.c:24
+#: operations/external/pdf-load.c:24 operations/external/v4l.c:26
+#: operations/workshop/external/v4l2.c:24
 msgid "Path"
 msgstr "Sti"
 
@@ -6285,15 +6807,15 @@ msgstr "Sti"
 msgid "File system path to ICC matrix profile to load"
 msgstr "Filsystemsti til den ICC-matrixprofil der skal indlæses"
 
-#: operations/core/cast-space.c:129
+#: operations/core/cast-space.c:128
 msgid "Cast color space"
 msgstr "Skift farverum"
 
 # Giver ikke mening på engelsk uden punktum.
-#: operations/core/cast-space.c:131
+#: operations/core/cast-space.c:130
 msgid ""
-"Override the specified color space setting a pointer to a format override the "
-"string property and setting an aux pad overrides both. "
+"Override the specified color space setting a pointer to a format override "
+"the string property and setting an aux pad overrides both. "
 msgstr ""
 "Tilsidesætter det angivne farverum. Indstilles en markør til et format "
 "tilsidesættes strengegenskaben, og indstilles en “aux pad” tilsidesættes "
@@ -6313,17 +6835,17 @@ msgstr "Klon"
 
 #: operations/core/clone.c:111
 msgid ""
-"Clone a buffer, this is the same as gegl:nop but can get special treatment to "
-"get more human readable references in serializations/UI."
+"Clone a buffer, this is the same as gegl:nop but can get special treatment "
+"to get more human readable references in serializations/UI."
 msgstr ""
 "Kloner en buffer. Det samme som gegl:nop, men kan behandle referencer i "
 "serializations/UI, så de bliver mere læselige for mennesker."
 
-#: operations/core/convert-format.c:100
+#: operations/core/convert-format.c:99
 msgid "Convert Format"
 msgstr "Konvertér format"
 
-#: operations/core/convert-format.c:102
+#: operations/core/convert-format.c:101
 msgid "Convert the data to the specified format"
 msgstr "Konverterer data til det angivne format"
 
@@ -6334,9 +6856,9 @@ msgstr "Konvertér farverum"
 #: operations/core/convert-space.c:106
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
-"with, and the ICC profile potentially embedded for external color management, "
-"setting a pointer to a format override the string property and setting an aux "
-"pad overrides both. "
+"with, and the ICC profile potentially embedded for external color "
+"management, setting a pointer to a format override the string property and "
+"setting an aux pad overrides both. "
 msgstr ""
 "Angiver farverum, som efterfølgende babl-formater i “pipeline” oprettes med, "
 "og ICC-profilen som potentielt indlejres til ekstern farvehåndtering. "
@@ -6347,18 +6869,23 @@ msgstr ""
 msgid "Reset origin"
 msgstr "Nulstil begyndelse"
 
-#: operations/core/crop.c:226
+#: operations/core/crop.c:250
 msgid "Crop"
 msgstr "Beskær"
 
-#: operations/core/crop.c:227
-msgid "Crop a buffer"
-msgstr "Beskærer en buffer"
+#: operations/core/crop.c:251
+msgid ""
+"Crops a buffer, if the aux pad is connected the bounding box of the node "
+"connected is used."
+msgstr ""
+"Beskærer en buffer. Er \"aux pad\" tilsluttet, bruges den tilsluttede knudes "
+"afgrænsningsramme."
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
-#: operations/external/jpg-load.c:26 operations/external/png-load.c:29
-#: operations/external/ppm-load.c:27 operations/external/svg-load.c:27
-#: operations/external/tiff-load.c:26 operations/external/webp-load.c:27
+#: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
+#: operations/external/png-load.c:29 operations/external/ppm-load.c:27
+#: operations/external/svg-load.c:27 operations/external/tiff-load.c:26
+#: operations/external/webp-load.c:27
 msgid "URI"
 msgstr "URI"
 
@@ -6366,7 +6893,7 @@ msgstr "URI"
 msgid "URI of file to load."
 msgstr "URI til fil som skal indlæses."
 
-#: operations/core/load.c:367
+#: operations/core/load.c:366
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -6405,7 +6932,8 @@ msgstr "Stillbilleder"
 
 #: operations/external/ff-load.c:37
 msgid ""
-"Number of frames in video, updates at least when first frame has been decoded."
+"Number of frames in video, updates at least when first frame has been "
+"decoded."
 msgstr ""
 "Antal stillbilleder i videoen. Opdateres med garanti, når det første billede "
 "er blevet afkodet."
@@ -6439,11 +6967,11 @@ msgstr "Lydcodec"
 msgid "audio"
 msgstr "Lyd"
 
-#: operations/external/ff-load.c:802
+#: operations/external/ff-load.c:806
 msgid "FFmpeg Frame Loader"
 msgstr "FFmpeg-stillbilledindlæser"
 
-#: operations/external/ff-load.c:804
+#: operations/external/ff-load.c:808
 msgid "FFmpeg video frame importer."
 msgstr "FFmpeg-videostillbilledindlæser."
 
@@ -6590,11 +7118,11 @@ msgstr "i-quant-offset"
 msgid "me-subpel-quality"
 msgstr "me-subpel-quality"
 
-#: operations/external/ff-save.c:1122
+#: operations/external/ff-save.c:1135
 msgid "FFmpeg Frame Saver"
 msgstr "FFmpeg-stillbilledskriver"
 
-#: operations/external/ff-save.c:1124
+#: operations/external/ff-save.c:1137
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg — datamodtager af videooutput"
 
@@ -6719,11 +7247,6 @@ msgstr "Indlæsning af JPEG 2000-billeder med brug af libjpeg"
 msgid "Target path and filename, use '-' for stdout"
 msgstr "Målsti og filnavn. Brug \"-\"  for standardoutput."
 
-#: operations/external/jpg-save.c:28 operations/external/webp-save.c:28
-#: operations/workshop/domain-transform.c:24
-msgid "Quality"
-msgstr "Kvalitet"
-
 #: operations/external/jpg-save.c:29
 msgid "JPEG compression quality (between 1 and 100)"
 msgstr "JPEG-komprimeringskvalitet (mellem 1 og 100)"
@@ -6752,19 +7275,19 @@ msgstr "Progressiv"
 msgid "Create progressive JPEG images"
 msgstr "Opret progressive JPEG-billeder"
 
-#: operations/external/jpg-save.c:40
+#: operations/external/jpg-save.c:41
 msgid "Grayscale"
 msgstr "Gråtoner"
 
-#: operations/external/jpg-save.c:41
+#: operations/external/jpg-save.c:42
 msgid "Create a grayscale (monochrome) image"
 msgstr "Opret et billede i gråtoner (monokrom)"
 
-#: operations/external/jpg-save.c:413
+#: operations/external/jpg-save.c:420
 msgid "JPEG File Saver"
 msgstr "JPEG-filskriver"
 
-#: operations/external/jpg-save.c:415
+#: operations/external/jpg-save.c:422
 msgid "JPEG image saver, using libjpeg"
 msgstr "Gem JPEG-billeder med brug af libjpeg"
 
@@ -6917,7 +7440,7 @@ msgstr "Bevar model"
 msgid "When TRUE the model will not be freed"
 msgstr "Når SAND vil modellen ikke blive frigivet"
 
-#: operations/external/npd.c:50 operations/transform/transform-core.c:234
+#: operations/external/npd.c:50 operations/transform/transform-core.c:236
 #: operations/workshop/ditto.c:29
 msgid "Sampler used internally"
 msgstr "Sampler brugt internt"
@@ -7014,6 +7537,54 @@ msgstr "Gengiv kurve"
 #: operations/external/path.c:589
 msgid "Renders a brush stroke"
 msgstr "Gengiver et penselstrøg"
+
+#: operations/external/pdf-load.c:25
+msgid "file to load"
+msgstr "fil som skal indlæses"
+
+#: operations/external/pdf-load.c:28
+msgid "uri of file to load"
+msgstr "URI til filen som skal indlæses"
+
+#: operations/external/pdf-load.c:30
+msgid "Page"
+msgstr "Side"
+
+#: operations/external/pdf-load.c:31
+msgid "Page to render"
+msgstr "Side der skal gengives"
+
+#: operations/external/pdf-load.c:34
+msgid "Pages"
+msgstr "Sider"
+
+#: operations/external/pdf-load.c:35
+msgid "Total pages, provided as a visual read-only property"
+msgstr "Totalt antal sider. En visuel, skrivebeskyttet egenskab"
+
+#: operations/external/pdf-load.c:38
+msgid "PPI"
+msgstr "PPI"
+
+#: operations/external/pdf-load.c:39
+msgid "Point/pixels per inch"
+msgstr "Punkter/pixels pr. inch"
+
+#: operations/external/pdf-load.c:43
+msgid "Password"
+msgstr "Adgangskode"
+
+#: operations/external/pdf-load.c:44
+msgid "Password to use for decryption of PDF, or blank for none"
+msgstr "Adgangskode der bruges til dekryptering af PDF (tom for ingen kode)"
+
+#: operations/external/pdf-load.c:242
+msgid "pdf loader"
+msgstr "pdf-indlæser"
+
+#: operations/external/pdf-load.c:244
+msgid "PDF page decoder"
+msgstr "PDF-sideafkoder"
 
 #: operations/external/pixbuf.c:26
 msgid "Pixbuf"
@@ -7157,6 +7728,18 @@ msgstr "Gem i GdkPixbuf"
 msgid "Store image in a GdkPixbuf."
 msgstr "Gemmer billedet i en GdkPixbuf."
 
+#: operations/external/sdl2-display.c:202
+msgid "SDL2 Display"
+msgstr "SDL2-visning"
+
+#: operations/external/sdl2-display.c:205
+msgid ""
+"Displays the input buffer in an SDL2 window (restricted to one display op/"
+"process, due to SDL2 implementation issues)."
+msgstr ""
+"Viser inputbufferen i et SDL2-vindue (begrænset til en visningsoperation pr. "
+"proces pga. problemer med implementeringen af SDL2)."
+
 # Sprøgsmålet er, om det ikke skulle være ikonnavn (se næste)
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -7231,8 +7814,8 @@ msgid ""
 "Sets the width in pixels at which long lines will wrap. Use -1 for no "
 "wrapping."
 msgstr ""
-"Angiver bredden i pixels ved hvilken, lange linjer vil blive ombrudt. Brug -1 "
-"for ingen ombrydning."
+"Angiver bredden i pixels ved hvilken, lange linjer vil blive ombrudt. Brug "
+"-1 for ingen ombrydning."
 
 #: operations/external/text.c:46
 msgid "Wrap height"
@@ -7295,9 +7878,9 @@ msgid "TIFF image loader using libtiff"
 msgstr "Indlæsning af TIFF-billeder med brug af libtiff"
 
 #: operations/external/tiff-save.c:28
-#| msgid "8 and 16 are the currently accepted values."
 msgid "-1, 8, 16, 32 and 64 are the currently accepted values, -1 means auto"
-msgstr "-1, 8, 16, 32 og 64 er nuværende gyldige værdier, -1 betyder automatisk"
+msgstr ""
+"-1, 8, 16, 32 og 64 er nuværende gyldige værdier, -1 betyder automatisk"
 
 #: operations/external/tiff-save.c:30
 msgid "use floating point"
@@ -7345,7 +7928,8 @@ msgstr "Video4Linux-stillbilledkilde"
 # MS har billedfangere
 #: operations/external/v4l.c:333
 msgid "Video4Linux input, webcams framegrabbers and similar devices."
-msgstr "Video4Linux-input: webkameraer, stillbilledfangere og lignende enheder."
+msgstr ""
+"Video4Linux-input: webkameraer, stillbilledfangere og lignende enheder."
 
 #: operations/external/vector-fill.c:27
 msgid "Color of paint to use for filling."
@@ -7393,11 +7977,11 @@ msgstr ""
 "Uigennemsigtighed af strøget. Opfører sig ikke som SVG, da optegningen pt. "
 "foregår med airbrushværktøjet."
 
-#: operations/external/vector-stroke.c:356
+#: operations/external/vector-stroke.c:355
 msgid "Vector Stroke"
 msgstr "Vektoroptegning"
 
-#: operations/external/vector-stroke.c:360
+#: operations/external/vector-stroke.c:359
 msgid "Renders a vector stroke"
 msgstr "Gengiver en vektoroptegning"
 
@@ -7435,7 +8019,7 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input + value"
 msgstr ""
-"Aritmetisk addition. Udfører operationen pr. pixel med brug af enten "
+"Aritmetisk addition. Udfører operationen pixelvis med brug af enten "
 "konstanten i \"Værdi\" eller den tilsvarende pixel fra bufferen på aux som "
 "operand. Resultatet er beregningen af udtrykket resultat = input + værdi"
 
@@ -7447,9 +8031,9 @@ msgstr "Porter–Duff-operationen clear (d = 0.0f)"
 
 #: operations/generated/color-burn.c:188
 msgid ""
-"SVG blend operation color-burn (<code>if cA * aB + cB * aA <= aA * aB: d = cA "
-"* (1 - aB) + cB * (1 - aA) otherwise: d = (cA == 0 ? 1 : (aA * (cA * aB + cB "
-"* aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
+"SVG blend operation color-burn (<code>if cA * aB + cB * aA <= aA * aB: d = "
+"cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == 0 ? 1 : (aA * (cA * aB + "
+"cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
 msgstr ""
 "SVG-blandingsoperationen \"color-burn\"  (<code>hvis cA * aB + cB * aA <= aA "
 "* aB: d = cA * (1 - aB) + cB * (1 - aA) ellers: d = (cA == 0 ? 1 : (aA * (cA "
@@ -7462,16 +8046,17 @@ msgid ""
 "aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
 "SVG-blandingsoperationen \"color-dodge\" (<code>hvis cA * aB + cB * aA >= aA "
-"* aB: d = aA * aB + cA * (1 - aB) + cB * (1 - aA) ellers: d = (cA == aA ? 1 : "
-"cB * aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
+"* aB: d = aA * aB + cA * (1 - aB) + cB * (1 - aA) ellers: d = (cA == aA ? "
+"1 : cB * aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)</"
+"code>)"
 
 #: operations/generated/darken.c:184
 msgid ""
 "SVG blend operation darken (<code>d = MIN (cA * aB, cB * aA) + cA * (1 - aB) "
 "+ cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"darken\"  (<code>d = MIN (cA * aB, cB * aA) + cA * "
-"(1 - aB) + cB * (1 - aA)</code>)"
+"SVG-blandingsoperationen \"darken\"  (<code>d = MIN (cA * aB, cB * aA) + cA "
+"* (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/difference.c:184
 msgid ""
@@ -7488,7 +8073,7 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "value==0.0f?0.0f:input/value"
 msgstr ""
-"Aritmetisk division. Udfører operationen pr. pixel med brug af enten "
+"Aritmetisk division. Udfører operationen pixelvis med brug af enten "
 "konstanten i \"Værdi\" eller den tilsvarende pixel fra bufferen på aux som "
 "operand. Resultatet er beregningen af udtrykket resultat = værdi==0.0f?0.0f:"
 "input/værdi"
@@ -7518,37 +8103,38 @@ msgid ""
 "SVG blend operation exclusion (<code>d = (cA * aB + cB * aA - 2 * cA * cB) + "
 "cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"exclusion\" (<code>d = (cA * aB + cB * aA - 2 * cA "
-"* cB) + cA * (1 - aB) + cB * (1 - aA)</code>)"
+"SVG-blandingsoperationen \"exclusion\" (<code>d = (cA * aB + cB * aA - 2 * "
+"cA * cB) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/gamma.c:138
 msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
-"aux as operands. The result is the evaluation of the expression result = powf "
-"(input, value)"
+"aux as operands. The result is the evaluation of the expression result = "
+"(input >= 0.0f ? powf (input, value) : -powf (-input, value))"
 msgstr ""
-"Potensfunktion (gamma). Udfører operationen pr. pixel med brug af enten "
+"Potensfunktion (gamma). Udfører operationen pixelvis med brug af enten "
 "konstanten i \"Værdi\" eller den tilsvarende pixel fra bufferen på aux som "
-"operand. Resultatet er beregningen af udtrykket resultat = powf(input, værdi)"
+"operand. Resultatet er beregningen af udtrykket resultat = (input >= 0,0f ? "
+"powf (input, værdi) : -powf (-input, værdi))"
 
 #: operations/generated/hard-light.c:188
 msgid ""
 "SVG blend operation hard-light (<code>if 2 * cA < aA: d = 2 * cA * cB + cA * "
-"(1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) + "
-"cA * (1 - aB) + cB * (1 - aA)</code>)"
+"(1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) "
+"+ cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"hard-light\" (<code>hvis 2 * cA < aA: d = 2 * cA * "
-"cB + cA * (1 - aB) + cB * (1 - aA) ellers: d = aA * aB - 2 * (aB - cB) * (aA "
-"- cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
+"SVG-blandingsoperationen \"hard-light\" (<code>hvis 2 * cA < aA: d = 2 * cA "
+"* cB + cA * (1 - aB) + cB * (1 - aA) ellers: d = aA * aB - 2 * (aB - cB) * "
+"(aA - cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/lighten.c:184
 msgid ""
-"SVG blend operation lighten (<code>d = MAX (cA * aB, cB * aA) + cA * (1 - aB) "
-"+ cB * (1 - aA)</code>)"
+"SVG blend operation lighten (<code>d = MAX (cA * aB, cB * aA) + cA * (1 - "
+"aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"lighten\" (<code>d = MAX (cA * aB, cB * aA) + cA * "
-"(1 - aB) + cB * (1 - aA)</code>)"
+"SVG-blandingsoperationen \"lighten\" (<code>d = MAX (cA * aB, cB * aA) + cA "
+"* (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/multiply.c:138
 msgid ""
@@ -7557,19 +8143,19 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input * value"
 msgstr ""
-"Aritmetisk multiplikation. Udfører operationen pr. pixel med brug af enten "
+"Aritmetisk multiplikation. Udfører operationen pixelvis med brug af enten "
 "konstanten i \"Værdi\" eller den tilsvarende pixel fra bufferen på aux som "
 "operand. Resultatet er beregningen af udtrykket resultat = input × værdi"
 
 #: operations/generated/overlay.c:188
 msgid ""
 "SVG blend operation overlay (<code>if 2 * cB > aB: d = 2 * cA * cB + cA * (1 "
-"- aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) + cA "
-"* (1 - aB) + cB * (1 - aA)</code>)"
+"- aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) + "
+"cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"overlay\" (<code>hvis 2 * cB > aB: d = 2 * cA * cB "
-"+ cA * (1 - aB) + cB * (1 - aA) ellers: d = aA * aB - 2 * (aB - cB) * (aA - "
-"cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
+"SVG-blandingsoperationen \"overlay\" (<code>hvis 2 * cB > aB: d = 2 * cA * "
+"cB + cA * (1 - aB) + cB * (1 - aA) ellers: d = aA * aB - 2 * (aB - cB) * (aA "
+"- cA) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/plus.c:186
 msgid "SVG blend operation plus (<code>d = cA + cB</code>)"
@@ -7583,16 +8169,16 @@ msgstr ""
 #: operations/generated/soft-light.c:192
 msgid ""
 "SVG blend operation soft-light (<code>if 2 * cA < aA: d = cB * (aA - (aB == "
-"0 ? 1 : 1 - cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - aA); if 8 * "
-"cB <= aB: d = cB * (aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA - aA) * (aB == "
-"0 ? 3 : 3 - 8 * cB / aB)) + cA * (1 - aB) + cB * (1 - aA); otherwise: d = (aA "
-"* cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - aA)) + cA * (1 - "
-"aB) + cB * (1 - aA)</code>)"
+"0 ? 1 : 1 - cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - aA); if 8 "
+"* cB <= aB: d = cB * (aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA - aA) * (aB "
+"== 0 ? 3 : 3 - 8 * cB / aB)) + cA * (1 - aB) + cB * (1 - aA); otherwise: d = "
+"(aA * cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - aA)) + cA * "
+"(1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
-"SVG-blandingsoperationen \"soft-light\" (<code>hvis 2 * cA < aA: d = cB * (aA "
-"- (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - "
-"aA); if 8 * cB <= aB: d = cB * (aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA - "
-"aA) * (aB == 0 ? 3 : 3 - 8 * cB / aB)) + cA * (1 - aB) + cB * (1 - aA); "
+"SVG-blandingsoperationen \"soft-light\" (<code>hvis 2 * cA < aA: d = cB * "
+"(aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 "
+"- aA); if 8 * cB <= aB: d = cB * (aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA "
+"- aA) * (aB == 0 ? 3 : 3 - 8 * cB / aB)) + cA * (1 - aB) + cB * (1 - aA); "
 "ellers: d = (aA * cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - "
 "aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
@@ -7604,7 +8190,7 @@ msgstr "Porter Duff-operationen src-atop (d = cA * aB + cB * (1.0f - aA))"
 msgid "Porter Duff operation src (d = cA)"
 msgstr "Porter–Duff-operationen src (d = cA)"
 
-#: operations/generated/src-in.c:142
+#: operations/generated/src-in.c:145
 msgid "Porter Duff compositing operation src-in (formula:   cA * aB)"
 msgstr "Porter–Duff-sammensætningsoperationen src-in (formel:   cA * aB)"
 
@@ -7619,7 +8205,7 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input - value"
 msgstr ""
-"Aritmetisk subtraktion. Udfører operationen pr. pixel med brug af enten "
+"Aritmetisk subtraktion. Udfører operationen pixelvis med brug af enten "
 "konstanten i \"Værdi\" eller den tilsvarende pixel fra bufferen på aux som "
 "operand. Resultatet er beregningen af udtrykket resultat = input − værdi"
 
@@ -7633,7 +8219,8 @@ msgid "Refinement scale"
 msgstr "Forfiningsskala"
 
 #: operations/seamless-clone/seamless-clone.c:23
-msgid "Maximal scale of refinement points to be used for the interpolation mesh"
+msgid ""
+"Maximal scale of refinement points to be used for the interpolation mesh"
 msgstr ""
 "Den maksimale skala for forfiningspunkter der bruges til "
 "interpolationsgitteret"
@@ -7691,11 +8278,6 @@ msgstr "Retningsvektorens x-komponent"
 #: operations/transform/reflect.c:31
 msgid "Direction vector's Y component"
 msgstr "Retningsvektorens y-komponent"
-
-# Navnet på handlingen - lyder bedre som navneord
-#: operations/transform/reflect.c:84 operations/workshop/bayer-matrix.c:56
-msgid "Reflect"
-msgstr "Spejling"
 
 # Det afsluttende mellemrum er formodentlig en fejl. Det optræder ikke i de andre beskrivelser.
 #: operations/transform/reflect.c:86
@@ -7816,27 +8398,27 @@ msgid "Do a transformation using SVG syntax transformation."
 msgstr "Udfører en transformation med brug af SVG-syntakstransformering."
 
 # Optræder i flere sammenhænge: http://www.gegl.org/operations/GeglOpPlugIn-transform-core.html - Dog ikke rotate-on-center som har sin egen.
-#: operations/transform/transform-core.c:209
+#: operations/transform/transform-core.c:211
 msgid "Origin-x"
 msgstr "Nulpunkt for x-aksen"
 
-#: operations/transform/transform-core.c:210
+#: operations/transform/transform-core.c:212
 msgid "X coordinate of origin"
 msgstr "x-koordinat for begyndelsespunktet"
 
-#: operations/transform/transform-core.c:217
+#: operations/transform/transform-core.c:219
 msgid "Origin-y"
 msgstr "Nulpunkt for y-aksen"
 
-#: operations/transform/transform-core.c:218
+#: operations/transform/transform-core.c:220
 msgid "Y coordinate of origin"
 msgstr "y-koordinat for begyndelsespunktet"
 
-#: operations/transform/transform-core.c:225
+#: operations/transform/transform-core.c:227
 msgid "Near-z"
 msgstr "Nær-z"
 
-#: operations/transform/transform-core.c:226
+#: operations/transform/transform-core.c:228
 msgid "Z coordinate of the near clipping plane"
 msgstr "z-koordinat for nær-afskæringsplanet"
 
@@ -7867,104 +8449,21 @@ msgstr "ACES RRT"
 # https://en.wikipedia.org/wiki/Academy_Color_Encoding_System
 #: operations/workshop/aces-rrt.c:137
 msgid ""
-"HDR to SDR proofing filter/mapping curve that is an approximation of the ACES "
-"RRT (Reference Rendering Transform). When feeding scene-refereed imagery into "
-"this op, the result is suitable for display referred transform to sRGB or "
-"output display using regular ICC matric profiles as the ODT. Note that for "
-"the time being, this is a luminance only approximation of the ACES RRT; "
-"without desaturation of highlights and shadows nor red hue modifications."
+"HDR to SDR proofing filter/mapping curve that is an approximation of the "
+"ACES RRT (Reference Rendering Transform). When feeding scene-refereed "
+"imagery into this op, the result is suitable for display referred transform "
+"to sRGB or output display using regular ICC matric profiles as the ODT. Note "
+"that for the time being, this is a luminance only approximation of the ACES "
+"RRT; without desaturation of highlights and shadows nor red hue "
+"modifications."
 msgstr ""
-"HDR-til-SDR-korrektionsfilter/afbildningskurve som er en tilnærmelse til ACES "
-"RRT (Academy Color Encoding System Reference Rendering Transform). Når scene-"
-"henviste billeder behandles af denne operation, er resultatet egnet til "
-"visnings-henvist transformering til sRGB eller skærmvisning med brug af ICC-"
-"matrixprofiler som ODT (outputenhedstransformering). Bemærk, at for tiden er "
-"det kun en tilpasning mht. lysstyrke til ACES RRT uden mindskelse af "
-"farvemætning i højlys og skygger eller ændringer af den røde farvetone."
-
-#: operations/workshop/bayer-matrix.c:26
-msgid "Subdivisions"
-msgstr "Underinddelinger"
-
-#: operations/workshop/bayer-matrix.c:27
-msgid "Number of subdivisions"
-msgstr "Antal underinddelinger"
-
-#: operations/workshop/bayer-matrix.c:31
-msgid "Horizontal pattern scale"
-msgstr "Vandret mønsterskala"
-
-#: operations/workshop/bayer-matrix.c:38
-msgid "Vertical pattern scale"
-msgstr "Lodret mønsterskala"
-
-#: operations/workshop/bayer-matrix.c:45
-msgid "0°"
-msgstr "0°"
-
-#: operations/workshop/bayer-matrix.c:46
-msgid "90°"
-msgstr "90°"
-
-#: operations/workshop/bayer-matrix.c:47
-msgid "180°"
-msgstr "180°"
-
-#: operations/workshop/bayer-matrix.c:48
-msgid "270°"
-msgstr "270°"
-
-#: operations/workshop/bayer-matrix.c:54
-#: operations/workshop/linear-sinusoid.c:97
-msgid "Pattern rotation angle"
-msgstr "Mønsterets rotationsvinkel"
-
-#: operations/workshop/bayer-matrix.c:57
-msgid "Reflect the pattern horizontally"
-msgstr "Spejl mønsteret vandret"
-
-#: operations/workshop/bayer-matrix.c:60
-msgid "Pattern amplitude (logarithmic scale)"
-msgstr "Mønsteramplitude (logaritmisk skala)"
-
-#: operations/workshop/bayer-matrix.c:65
-#: operations/workshop/linear-sinusoid.c:73
-msgid "Value offset"
-msgstr "Forskydning af værdi"
-
-#: operations/workshop/bayer-matrix.c:70
-#: operations/workshop/linear-sinusoid.c:78
-msgid "Value exponent (logarithmic scale)"
-msgstr "Værdiens eksponent (logaritmisk skala)"
-
-#: operations/workshop/bayer-matrix.c:74
-#: operations/workshop/linear-sinusoid.c:82
-msgid "X Offset"
-msgstr "x-forskydning"
-
-# Det kunne også være af i stedet for langs. Operationerne er desværre ikke dokumenterede
-#: operations/workshop/bayer-matrix.c:75
-#: operations/workshop/linear-sinusoid.c:83
-msgid "Offset for X axis"
-msgstr "Forskydning langs x-aksen"
-
-#: operations/workshop/bayer-matrix.c:81
-#: operations/workshop/linear-sinusoid.c:89
-msgid "Y Offset"
-msgstr "y-forskydning"
-
-#: operations/workshop/bayer-matrix.c:82
-#: operations/workshop/linear-sinusoid.c:90
-msgid "Offset for Y axis"
-msgstr "Forskydning langs y-aksen"
-
-#: operations/workshop/bayer-matrix.c:324
-msgid "Bayer Matrix"
-msgstr "Bayer-matrix"
-
-#: operations/workshop/bayer-matrix.c:329
-msgid "Generate a Bayer matrix pattern"
-msgstr "Genererer et Bayer-matrixmønster"
+"HDR-til-SDR-korrektionsfilter/afbildningskurve som er en tilnærmelse til "
+"ACES RRT (Academy Color Encoding System Reference Rendering Transform). Når "
+"scene-henviste billeder behandles af denne operation, er resultatet egnet "
+"til visnings-henvist transformering til sRGB eller skærmvisning med brug af "
+"ICC-matrixprofiler som ODT (outputenhedstransformering). Bemærk, at for "
+"tiden er det kun en tilpasning mht. lysstyrke til ACES RRT uden mindskelse "
+"af farvemætning i højlys og skygger eller ændringer af den røde farvetone."
 
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
@@ -7984,8 +8483,26 @@ msgid ""
 "A fast approximation of bilateral filter, using a box-filter instead of a "
 "gaussian blur."
 msgstr ""
-"En hurtig tilnærmelse af bilateralt filter som bruger et kassefilter i stedet "
-"for gaussisk sløring."
+"En hurtig tilnærmelse af bilateralt filter som bruger et kassefilter i "
+"stedet for gaussisk sløring."
+
+#: operations/workshop/boxblur-1d.c:28
+msgid "Radius of row pixel region, (size will be radius*2+1)"
+msgstr "Radius af rækkepixelområde (størrelsen vil være radius*2+1)"
+
+#: operations/workshop/boxblur-1d.c:466
+msgid "1D Box Blur"
+msgstr "1D-kassesløring"
+
+#: operations/workshop/boxblur-1d.c:467
+msgid "Blur resulting from averaging the colors of a row neighbourhood."
+msgstr ""
+"Sløring opnået ved at tage gennemsnittet af farverne i et nærliggende "
+"rækkeområde."
+
+#: operations/workshop/boxblur.c:77
+msgid "BoxBlur"
+msgstr "Kassesløring"
 
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
@@ -8024,8 +8541,8 @@ msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
 msgstr ""
-"Udfylder hvert forbundet område i input, adskilt af en given farve fra resten "
-"af input, med en unik farve."
+"Udfylder hvert forbundet område i input, adskilt af en given farve fra "
+"resten af input, med en unik farve."
 
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
@@ -8074,36 +8591,6 @@ msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Testoperation som laver en 1∶1-afbildning af input til output under sampling"
 
-#: operations/workshop/domain-transform.c:25
-msgid ""
-"Number of filtering iterations. A value between 2 and 4 is usually enough."
-msgstr ""
-"Antal filtreringsgentagelser. En værdi mellem 2 og 4 plejer at være nok."
-
-#: operations/workshop/domain-transform.c:29
-msgid "Spatial standard deviation of the blur kernel, measured in pixels."
-msgstr "Sløringskernens rumlige standardafvigelse målt i pixels."
-
-#: operations/workshop/domain-transform.c:33
-msgid ""
-"Amount of edge preservation. This quantity is inversely proportional to the "
-"range standard deviation of the blur kernel."
-msgstr ""
-"Graden af kantbevarelse. Denne størrelse er omvendt proportional med områdets "
-"standardafvigelse af sløringskernen."
-
-#: operations/workshop/domain-transform.c:499
-msgid "Smooth by Domain Transform"
-msgstr "Udglat med domænetransformering"
-
-#: operations/workshop/domain-transform.c:501
-msgid ""
-"An edge-preserving smoothing filter implemented with the Domain Transform "
-"recursive technique. Similar to a bilateral filter, but faster to compute."
-msgstr ""
-"Et kantbevarende udglatningsfilter implementeret med den rekursive teknik "
-"domænetransformering. Lig et bilateralt filter, men hurtigere at beregne."
-
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
 msgstr "Skript"
@@ -8138,8 +8625,8 @@ msgstr "gluas"
 
 #: operations/workshop/external/gluas.c:1010
 msgid ""
-"Pixel level filter/composer scripting prototyping with lua. See http://pippin."
-"gimp.org/image-processing/ for further details."
+"Pixel level filter/composer scripting prototyping with lua. See http://"
+"pippin.gimp.org/image-processing/ for further details."
 msgstr ""
 "Prototypeskripting med lua af filter/skriveværktøj på pixelniveau. Se http://"
 "pippin.gimp.org/image-processing/ for flere detaljer."
@@ -8325,7 +8812,8 @@ msgstr "Linjeprofil"
 #: operations/workshop/external/line-profile.c:198
 msgid ""
 "Renders luminance profiles for red green and blue components along the "
-"specified line in the input buffer, plotted in a buffer of the specified size."
+"specified line in the input buffer, plotted in a buffer of the specified "
+"size."
 msgstr ""
 "Gengiver lysstyrkeprofiler for røde, grønne og blå komponenter langs den "
 "angivne linje i inputbufferen; plottes i en buffer af den angivne størrelse."
@@ -8431,7 +8919,8 @@ msgstr ""
 "(1.0-cB)</tt>)"
 
 #: operations/workshop/generated/negation.c:111
-msgid "Image blending operation 'negation' (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
+msgid ""
+"Image blending operation 'negation' (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
 msgstr ""
 "Billedblandingsoperationen \"negation\" (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
 
@@ -8440,8 +8929,8 @@ msgid ""
 "Image blending operation 'soft-burn' (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 - "
 "cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
 msgstr ""
-"Billedblandingsoperationen \"soft-burn\" (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 - "
-"cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
+"Billedblandingsoperationen \"soft-burn\" (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 "
+"- cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
 
 #: operations/workshop/generated/soft-dodge.c:111
 msgid ""
@@ -8495,7 +8984,7 @@ msgstr "Farveovergangsafbildning"
 msgid "Applies a color gradient."
 msgstr "Lægger en farveovergang over billedet."
 
-#: operations/workshop/hstack.c:179
+#: operations/workshop/hstack.c:186
 msgid ""
 "Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right of "
 "\"input\")"
@@ -8518,74 +9007,61 @@ msgstr "Integral-billede"
 msgid "Compute integral and squared integral image"
 msgstr "Beregn integral og kvadreret integral-billede"
 
-#: operations/workshop/linear-sinusoid.c:26
-msgid "X Period"
-msgstr "x-periode"
+#: operations/workshop/normal-map.c:31
+msgid "The amount by which to scale the height values"
+msgstr "Størrelsen på skaleringen af højdeværdierne"
 
-#: operations/workshop/linear-sinusoid.c:27
-msgid "Period for X axis"
-msgstr "Periode for x-aksen"
+#: operations/workshop/normal-map.c:35
+msgid "X Component"
+msgstr "x-komponent"
 
-#: operations/workshop/linear-sinusoid.c:33
-msgid "Y Period"
-msgstr "y-periode"
+#: operations/workshop/normal-map.c:38
+msgid "The component used for the X coordinates"
+msgstr "Komponenten anvendt til x-koordinaten"
 
-#: operations/workshop/linear-sinusoid.c:34
-msgid "Period for Y axis"
-msgstr "Periode for y-aksen"
+#: operations/workshop/normal-map.c:40
+msgid "Y Component"
+msgstr "y-komponent"
 
-#: operations/workshop/linear-sinusoid.c:40
-msgid "X Amplitude"
-msgstr "x-amplitude"
+#: operations/workshop/normal-map.c:43
+msgid "The component used for the Y coordinates"
+msgstr "Komponenten anvendt til y-koordinaten"
 
-#: operations/workshop/linear-sinusoid.c:41
-msgid "Amplitude for X axis (logarithmic scale)"
-msgstr "Amplitude for x-aksen (logaritmisk skala)"
+#: operations/workshop/normal-map.c:45
+msgid "Flip X"
+msgstr "Vend x"
 
-#: operations/workshop/linear-sinusoid.c:46
-msgid "Y Amplitude"
-msgstr "y-amplitude"
+#: operations/workshop/normal-map.c:46
+msgid "Flip the X coordinates"
+msgstr "Vend x-koordinaten"
 
-#: operations/workshop/linear-sinusoid.c:47
-msgid "Amplitude for Y axis (logarithmic scale)"
-msgstr "Amplitude for y-aksen (logaritmisk skala)"
+#: operations/workshop/normal-map.c:48
+msgid "Flip Y"
+msgstr "Vend y"
 
-#: operations/workshop/linear-sinusoid.c:52
-msgid "X Phase"
-msgstr "x-fase"
+#: operations/workshop/normal-map.c:49
+msgid "Flip the Y coordinates"
+msgstr "Vend y-koordinaten"
 
-#: operations/workshop/linear-sinusoid.c:53
-msgid "Phase for X axis"
-msgstr "Fase for x-aksen"
+#: operations/workshop/normal-map.c:51
+msgid "Full Z Range"
+msgstr "Hele z-området"
 
-#: operations/workshop/linear-sinusoid.c:59
-msgid "Y Phase"
-msgstr "y-fase"
+#: operations/workshop/normal-map.c:52
+msgid "Use the full [0,1] range to encode the Z coordinates"
+msgstr "Brug hele [0;1] området til kodning af z-koordinaterne"
 
-#: operations/workshop/linear-sinusoid.c:60
-msgid "Phase for Y axis"
-msgstr "Fase for y-aksen"
+#: operations/workshop/normal-map.c:55
+msgid "Generate a tileable map"
+msgstr "Laver et kort, der kan lægges som fliser"
 
-# Det er ikke klart, hvad dette egentlig er
-#: operations/workshop/linear-sinusoid.c:67
-msgid "Axis separation angle"
-msgstr "Adskillelsesvinkel mellem akser"
+#: operations/workshop/normal-map.c:249
+msgid "Normal Map"
+msgstr "Almindeligt kort"
 
-#: operations/workshop/linear-sinusoid.c:102
-msgid "Supersampling"
-msgstr "Supersampling"
-
-#: operations/workshop/linear-sinusoid.c:103
-msgid "Number of samples along each axis per pixel"
-msgstr "Antal prøver pr. pixel langs hver akse"
-
-#: operations/workshop/linear-sinusoid.c:299
-msgid "Linear Sinusoid"
-msgstr "Lineær bølge"
-
-#: operations/workshop/linear-sinusoid.c:304
-msgid "Generate a linear sinusoid pattern"
-msgstr "Laver et lineært bølgemønster"
+#: operations/workshop/normal-map.c:251
+msgid "Generate a normal map from a height map"
+msgstr "Laver et almindeligt kort ud af et højdekort"
 
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
@@ -8682,6 +9158,18 @@ msgstr ""
 "Farvelægger hver pixel, som ikke er et generatorpunkt, med farven fra den "
 "nærmeste generatorpixel."
 
+#~ msgid "Box filter"
+#~ msgstr "Kassefilter"
+
+#~ msgid "Black and green angle"
+#~ msgstr "Sort og grøn vinkel"
+
+#~ msgid "Radius of circle around pixel"
+#~ msgstr "Cirkelradius omkring pixel"
+
+#~ msgid "Crop a buffer"
+#~ msgstr "Beskærer en buffer"
+
 # Label propagation svarer til flooding: http://www.cs.tut.fi/~moncef/publications/parallel-image-component.pdf, som er lidt nemmere at oversætte meningsfyldt
 #~ msgid ""
 #~ "Labels propagation by watershed transformation. Output and expected input "
@@ -8695,8 +9183,8 @@ msgstr ""
 #~ "hjælpebuffer er et “Y u8”-billede, som repræsenterer prioritetsniveauerne."
 
 #~ msgid ""
-#~ "Render a stereographic mapping, a tilt value of 90, which means looking at "
-#~ "nadir provides a good default value."
+#~ "Render a stereographic mapping, a tilt value of 90, which means looking "
+#~ "at nadir provides a good default value."
 #~ msgstr ""
 #~ "Gengiv en stereografisk afbildning. En hældning på 90, hvilket svarer til "
 #~ "at kigge på nadir, er en god standardværdi."
