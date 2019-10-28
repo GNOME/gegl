@@ -74,6 +74,8 @@ endif
 
 
 host_cpu_family = host_machine.cpu_family()
+message('Host machine cpu family: ' + host_cpu_family)
+
 if   host_cpu_family == 'x86'
   have_x86 = true
   config.set10('ARCH_X86',    true)
