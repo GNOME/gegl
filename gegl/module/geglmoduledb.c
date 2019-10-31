@@ -310,8 +310,11 @@ valid_module_name (const gchar *filename)
           return FALSE;
         }
     }
-
+#ifdef __APPLE__ /* G_MODULE_SUFFIX is defined to .so instead of .dylib */
+  if (! gegl_datafiles_check_extension (basename, ".dylib" ))
+#else
   if (! gegl_datafiles_check_extension (basename, "." G_MODULE_SUFFIX))
+#endif
     {
       g_free (basename);
 

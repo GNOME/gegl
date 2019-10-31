@@ -80,6 +80,8 @@ install_headers(gegl_headers,
   subdir: api_name
 )
 
+gegl_ldflags = os_osx ? ['-framework', 'OpenCL'] : []
+
 gegl_lib = library(api_name,
   gegl_sources,
   include_directories: [ rootInclude, geglInclude, ],
@@ -91,6 +93,7 @@ gegl_lib = library(api_name,
     gmodule,
   ],
   c_args: [ gegl_cflags, ],
+  link_args: [ gegl_ldflags, ],
   install: true,
   version: so_version,
 )
