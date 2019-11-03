@@ -96,8 +96,10 @@ default-min-babl:
   extends: .build-default
   dependencies:
     - babl-min
+  needs: ["babl-min"]
 
 fullconfig-master-babl:
   extends: .build-all
   dependencies:
     - babl-master
+  needs: ["babl-master"]
