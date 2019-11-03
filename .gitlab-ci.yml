@@ -48,10 +48,7 @@ babl-min:
     - ninja -C _build install
 
 
-.build-gegl:
-  stage: gegl
-  variables:
-    GIT_DEPTH: "15"
+.gegl-deps:
   artifacts:
     paths:
     - _build/meson-logs/testlog.txt
@@ -75,6 +72,12 @@ babl-min:
         sdl2
         suitesparse
         vala
+
+.build-gegl:
+  stage: gegl
+  extends: .gegl-deps
+  variables:
+    GIT_DEPTH: "15"
   script:
    - export XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share:/usr/local/share/:/usr/share/"
    - export PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig
