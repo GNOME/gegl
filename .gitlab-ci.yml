@@ -52,6 +52,9 @@ babl-min:
   stage: gegl
   variables:
     GIT_DEPTH: "15"
+  artifacts:
+    paths:
+    - _build/meson-logs/testlog.txt
   before_script:
     - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache
         base-devel ccache meson
@@ -80,7 +83,7 @@ babl-min:
    - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
      ninja -C _build
    - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
-     ninja -C _build install
+     ninja -C _build test
 
 .build-default:
   extends: .build-gegl
