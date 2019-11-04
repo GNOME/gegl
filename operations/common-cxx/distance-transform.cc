@@ -189,27 +189,30 @@ binary_dt_2nd_pass (GeglOperation      *operation,
     height, gegl_operation_get_pixels_per_thread (operation) / width,
     [&] (gint y0, gint size)
     {
-      gfloat *g, *row_copy;
+      gfloat *g, *dest_row;
       gint q, w, *t, *s;
       gint u, y;
 
       /* sorry for the variable naming, they are taken from the paper */
 
-      s = (gint *) gegl_calloc (sizeof (gint), width);
-      t = (gint *) gegl_calloc (sizeof (gint), width);
-      row_copy = (gfloat *) gegl_calloc (sizeof (gfloat), width);
+      s = (gint *) gegl_calloc (sizeof (gint), width + 1);
+      t = (gint *) gegl_calloc (sizeof (gint), width + 1);
+      g = (gfloat *) gegl_calloc (sizeof (gfloat), width + 2);
 
       for (y = y0; y < y0 + size; y++)
         {
+          dest_row = &dest[0 + y * width];
+
+          /* Use a copy of the dest row, lined with a zero on either side.
+             Mind the offset and difference in width when working between g
+             and the dest row. */
+          memcpy (&g[1], dest_row, width * sizeof (gfloat));
+
           q = 0;
           s[0] = 0;
           t[0] = 0;
-          g = dest + y * width;
 
-          dest[0 + y * width] = MIN (dest[0 + y * width], 1.0);
-          dest[width - 1 + y * width] = MIN (dest[width - 1 + y * width], 1.0);
-
-          for (u = 1; u < width; u++)
+          for (u = 1; u < width + 2; u++)
             {
               while (q >= 0 &&
                      dt_f (t[q], s[q], g[s[q]]) >= dt_f (t[q], u, g[u]) + EPSILON)
@@ -228,7 +231,7 @@ binary_dt_2nd_pass (GeglOperation      *operation,
                   w = dt_sep (s[q], u, g[s[q]], g[u]);
                   w += 1;
 
-                  if (w < width)
+                  if (w < width + 1)
                     {
                       q ++;
                       s[q] = u;
@@ -237,14 +240,12 @@ binary_dt_2nd_pass (GeglOperation      *operation,
                 }
             }
 
-          memcpy (row_copy, g, width * sizeof (gfloat));
-
-          for (u = width - 1; u >= 0; u--)
+          for (u = width; u >= 1; u--)
             {
               if (u == s[q])
-                g[u] = row_copy[u];
+                dest_row[u - 1] = g[u];
               else
-                g[u] = dt_f (u, s[q], row_copy[s[q]]);
+                dest_row[u - 1] = dt_f (u, s[q], g[s[q]]);
 
               if (q > 0 && u == t[q])
                 {
@@ -255,7 +256,7 @@ binary_dt_2nd_pass (GeglOperation      *operation,
 
       gegl_free (t);
       gegl_free (s);
-      gegl_free (row_copy);
+      gegl_free (g);
     });
 }
 
