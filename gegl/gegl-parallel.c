@@ -252,6 +252,8 @@ gegl_parallel_distribute_range (gsize                           size,
     size,
     thread_cost);
 
+  n_threads = MIN (n_threads, size);
+
   if (n_threads == 1)
     {
       func (0, size, user_data);
@@ -333,23 +335,37 @@ gegl_parallel_distribute_area (const GeglRectangle            *area,
   if (area->width <= 0 || area->height <= 0)
     return;
 
-  n_threads = gegl_parallel_distribute_get_optimal_n_threads (
-    (gdouble) area->width * (gdouble) area->height,
-    thread_cost);
-
-  if (n_threads == 1)
-    {
-      func (area, user_data);
-
-      return;
-    }
-
   if (split_strategy == GEGL_SPLIT_STRATEGY_AUTO)
     {
       if (area->width > area->height)
         split_strategy = GEGL_SPLIT_STRATEGY_VERTICAL;
       else
         split_strategy = GEGL_SPLIT_STRATEGY_HORIZONTAL;
+    }
+
+  n_threads = gegl_parallel_distribute_get_optimal_n_threads (
+    (gdouble) area->width * (gdouble) area->height,
+    thread_cost);
+
+  switch (split_strategy)
+    {
+    case GEGL_SPLIT_STRATEGY_HORIZONTAL:
+      n_threads = MIN (n_threads, area->height);
+      break;
+
+    case GEGL_SPLIT_STRATEGY_VERTICAL:
+      n_threads = MIN (n_threads, area->width);
+      break;
+
+    default:
+      g_return_if_reached ();
+    }
+
+  if (n_threads == 1)
+    {
+      func (area, user_data);
+
+      return;
     }
 
   data.area           = area;
