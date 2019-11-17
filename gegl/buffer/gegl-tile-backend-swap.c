@@ -1431,8 +1431,13 @@ gegl_tile_backend_swap_ensure_exist (void)
 
       GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "creating swapfile %s", path);
 
+#ifdef G_OS_WIN32
+      out_fd = g_open (path, O_RDWR|O_CREAT|O_BINARY, 0770);
+      in_fd = g_open (path, O_RDONLY|O_BINARY, 0);
+#else
       out_fd = g_open (path, O_RDWR|O_CREAT, 0770);
       in_fd = g_open (path, O_RDONLY, 0);
+#endif
 
       if (out_fd == -1 || in_fd == -1)
         {
