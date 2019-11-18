@@ -52,6 +52,11 @@
 
 #endif
 
+#ifdef G_OS_WIN32
+#define BINARY_FLAG O_BINARY
+#else
+#define BINARY_FLAG 0
+#endif
 
 /* maximal data size allowed to be pending in the swap queue at any given time,
  * as a factor of the maximal cache size.  when the amount of data in the queue
@@ -1431,13 +1436,8 @@ gegl_tile_backend_swap_ensure_exist (void)
 
       GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "creating swapfile %s", path);
 
-#ifdef G_OS_WIN32
-      out_fd = g_open (path, O_RDWR|O_CREAT|O_BINARY, 0770);
-      in_fd = g_open (path, O_RDONLY|O_BINARY, 0);
-#else
-      out_fd = g_open (path, O_RDWR|O_CREAT, 0770);
-      in_fd = g_open (path, O_RDONLY, 0);
-#endif
+      out_fd = g_open (path, O_RDWR|O_CREAT|BINARY_FLAG, 0770);
+      in_fd = g_open (path, O_RDONLY|BINARY_FLAG, 0);
 
       if (out_fd == -1 || in_fd == -1)
         {

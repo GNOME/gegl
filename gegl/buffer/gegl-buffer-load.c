@@ -34,6 +34,12 @@
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
 
+#ifdef G_OS_WIN32
+#define BINARY_FLAG O_BINARY
+#else
+#define BINARY_FLAG 0
+#endif
+
 typedef struct
 {
   GeglBufferHeader header;
@@ -249,7 +255,7 @@ gegl_buffer_load (const gchar *path)
   LoadInfo *info = g_slice_new0 (LoadInfo);
 
   info->path = g_strdup (path);
-  info->i = g_open (info->path, O_RDONLY, 0770);
+  info->i = g_open (info->path, O_RDONLY|BINARY_FLAG, 0770);
   GEGL_NOTE (GEGL_DEBUG_BUFFER_LOAD, "starting to load buffer %s", path);
   if (info->i == -1)
     {

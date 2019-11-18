@@ -63,6 +63,11 @@
 
 #endif
 
+#ifdef G_OS_WIN32
+#define BINARY_FLAG O_BINARY
+#else
+#define BINARY_FLAG 0
+#endif
 
 struct _GeglTileBackendFile
 {
@@ -1168,7 +1173,7 @@ gegl_tile_backend_file_constructed (GObject *object)
                         G_CALLBACK (gegl_tile_backend_file_file_changed),
                         self);
 
-      self->o = g_open (self->path, O_RDWR|O_CREAT, 0770);
+      self->o = g_open (self->path, O_RDWR|O_CREAT|BINARY_FLAG, 0770);
       if (self->o == -1)
         {
           /* Try again but this time with only read access. This is
@@ -1176,12 +1181,12 @@ gegl_tile_backend_file_constructed (GObject *object)
            * when it opens a GeglBuffer file in the source tree
            * (which is read-only).
            */
-          self->o = g_open (self->path, O_RDONLY, 0770);
+          self->o = g_open (self->path, O_RDONLY|BINARY_FLAG, 0770);
 
           if (self->o == -1)
             g_warning ("%s: Could not open '%s': %s", G_STRFUNC, self->path, g_strerror (errno));
         }
-      self->i = g_open (self->path, O_RDONLY, 0);
+      self->i = g_open (self->path, O_RDONLY|BINARY_FLAG, 0);
 
       self->header     = gegl_buffer_read_header (self->i, &offset)->header;
       self->header.rev = self->header.rev -1;
@@ -1234,7 +1239,7 @@ gegl_tile_backend_file_ensure_exist (GeglTileBackendFile *self)
 
       GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "creating swapfile  %s", self->path);
 
-      self->o = g_open (self->path, O_RDWR|O_CREAT, 0770);
+      self->o = g_open (self->path, O_RDWR|O_CREAT|BINARY_FLAG, 0770);
       if (self->o == -1)
         g_warning ("%s: Could not open '%s': %s", G_STRFUNC, self->path, g_strerror (errno));
 
@@ -1248,7 +1253,7 @@ gegl_tile_backend_file_ensure_exist (GeglTileBackendFile *self)
                                backend->priv->px_size,
                                backend->priv->format);
       gegl_tile_backend_file_write_header (self);
-      self->i = g_open (self->path, O_RDONLY, 0);
+      self->i = g_open (self->path, O_RDONLY|BINARY_FLAG, 0);
 
       g_assert (self->i != -1);
       g_assert (self->o != -1);

@@ -37,6 +37,12 @@
 #include "gegl-tile.h"
 #include "gegl-buffer-index.h"
 
+#ifdef G_OS_WIN32
+#define BINARY_FLAG O_BINARY
+#else
+#define BINARY_FLAG 0
+#endif
+
 typedef struct
 {
   GeglBufferHeader header;
@@ -222,9 +228,9 @@ gegl_buffer_save (GeglBuffer          *buffer,
   info->path = g_strdup (path);
 
 #ifndef G_OS_WIN32
-  info->o    = g_open (info->path, O_RDWR|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
+  info->o    = g_open (info->path, O_RDWR|O_CREAT|O_TRUNC|BINARY_FLAG, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
 #else
-  info->o    = g_open (info->path, O_RDWR|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR);
+  info->o    = g_open (info->path, O_RDWR|O_CREAT|O_TRUNC|BINARY_FLAG, S_IRUSR|S_IWUSR);
 #endif
 
 
