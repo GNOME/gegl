@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-07-20 12:03+0000\n"
-"PO-Revision-Date: 2019-07-23 13:19+0300\n"
+"POT-Creation-Date: 2019-09-25 11:19+0000\n"
+"PO-Revision-Date: 2019-11-21 16:58+0200\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@lists.gnome.gr\n"
 "Language: el\n"
@@ -171,7 +171,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4381 gegl/gegl-serialize.c:655
+#: bin/ui-core.c:4381 gegl/gegl-serialize.c:657
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "Το BablFormat \"%s\" δεν υπάρχει."
@@ -214,7 +214,7 @@ msgstr "Εγγραφή"
 msgid "Read/Write"
 msgstr "Ανάγνωση/Εγγραφή"
 
-#: gegl/buffer/gegl-buffer-enums.c:89
+#: gegl/buffer/gegl-buffer-enums.c:89 gegl/buffer/gegl-buffer-enums.c:119
 msgid "Nearest"
 msgstr "Πλησιέστερη"
 
@@ -236,6 +236,14 @@ msgstr "NoHalo"
 #: gegl/buffer/gegl-buffer-enums.c:93
 msgid "LoHalo"
 msgstr "LoHalo"
+
+#: gegl/buffer/gegl-buffer-enums.c:117
+msgid "Subset"
+msgstr "Υποσύνολο"
+
+#: gegl/buffer/gegl-buffer-enums.c:118
+msgid "Superset"
+msgstr "Υπερσύνολο"
 
 #: gegl/gegl-enums.c:34
 msgid "Floyd-Steinberg"
@@ -359,8 +367,9 @@ msgid "The count of pixels to compute simultaneously"
 msgstr "Ο αριθμός των εικονοστοιχείων για ταυτόχρονο υπολογισμό"
 
 #: gegl/gegl-init.c:236
-msgid "The quality of rendering a value between 0.0(fast) and 1.0(reference)"
-msgstr "Η ποιότητα απόδοσης μιας τιμής μεταξύ 0,0 (γρήγορη) και 1,0 (αναφορά)"
+msgid ""
+"The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
+msgstr "Η ποιότητα απόδοσης, μια τιμή μεταξύ 0,0 (γρήγορη) και 1,0 (αναφορά)"
 
 #: gegl/gegl-init.c:241
 msgid "The number of concurrent processing threads to use"
@@ -370,27 +379,27 @@ msgstr "Ο αριθμός των σύγχρονων νημάτων επεξερ�
 msgid "Disable OpenCL"
 msgstr "Απενεργοποίηση OpenCL"
 
-#: gegl/gegl-serialize.c:294
+#: gegl/gegl-serialize.c:296
 #, c-format
 msgid "unhandled path data %s:%s\n"
 msgstr "ανυποστήρικτα δεδομένα διαδρομής %s:%s\n"
 
-#: gegl/gegl-serialize.c:525
+#: gegl/gegl-serialize.c:527
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "η λειτουργία '%s' δεν βρέθηκε, μερική συμφωνία: "
 
-#: gegl/gegl-serialize.c:554
+#: gegl/gegl-serialize.c:556
 #, c-format
 msgid "%s has no %s property."
 msgstr "Το %s δεν έχει καμιά ιδιότητα %s."
 
-#: gegl/gegl-serialize.c:560
+#: gegl/gegl-serialize.c:562
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "Το %s δεν έχει καμιά ιδιότητα %s, ιδιότητες: "
 
-#: gegl/gegl-serialize.c:796
+#: gegl/gegl-serialize.c:793
 #, c-format
 msgid "No such op '%s'"
 msgstr "Δεν υπάρχει λειτουργία '%s'"
@@ -584,10 +593,10 @@ msgstr ""
 "Έντονη παραμόρφωση χρωμάτων εικόνων εφαρμόζοντας τριγωνομετρικές συναρτήσεις "
 "στις τιμές χρώματος χάρτη."
 
-#: operations/common/bilateral-filter.c:26 operations/common/dropshadow.c:39
+#: operations/common/bilateral-filter.c:26
+#: operations/common/domain-transform.c:29 operations/common/dropshadow.c:39
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
-#: operations/workshop/domain-transform.c:29
 msgid "Blur radius"
 msgstr "Ακτίνα θόλωσης"
 
@@ -600,7 +609,7 @@ msgstr ""
 "ακτίνα*2+1)."
 
 #: operations/common/bilateral-filter.c:32
-#: operations/workshop/domain-transform.c:34
+#: operations/common/domain-transform.c:34
 msgid "Edge preservation"
 msgstr "Διατήρηση άκρης"
 
@@ -712,11 +721,11 @@ msgid ""
 msgstr ""
 "Η μορφή babl της εξόδου GeglBuffer, NULL για χρήση μορφής μνήμης εισόδου"
 
-#: operations/common/buffer-sink.c:83
+#: operations/common/buffer-sink.c:86
 msgid "Buffer Sink"
 msgstr "Δέκτης ενδιάμεσης μνήμης"
 
-#: operations/common/buffer-sink.c:85
+#: operations/common/buffer-sink.c:88
 msgid "Create a new GEGL buffer to write the resulting rendering."
 msgstr ""
 "Δημιουργήστε μια νέα ενδιάμεση μνήμη για να γράψετε την τελική απόδοση."
@@ -913,6 +922,49 @@ msgstr ""
 "Δημιουργεί μια ενδιάμεση μνήμη πλήρως γεμάτη με το συγκεκριμένο χρώμα, χρήση "
 "gegl:περικοπή του για μικρότερες διαστάσεις."
 
+#: operations/common/color-assimilation-grid.c:25
+msgid "Grid size"
+msgstr "Μέγεθος πλέγματος"
+
+#: operations/common/color-assimilation-grid.c:31
+#: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
+#: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
+#: operations/common/saturation.c:384
+#: operations/external/lcms-from-profile.c:35
+#: operations/workshop/selective-hue-saturation.c:38
+msgid "Saturation"
+msgstr "Κορεσμός"
+
+#. FIXME: With a large angle, we lose AreaFilter's flavours
+#: operations/common/color-assimilation-grid.c:35
+#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:33
+#: operations/common/newsprint.c:159
+#: operations/common-gpl3+/linear-sinusoid.c:66
+#: operations/common-gpl3+/motion-blur-circular.c:52
+#: operations/common-gpl3+/ripple.c:45
+msgid "Angle"
+msgstr "Γωνία"
+
+#: operations/common/color-assimilation-grid.c:40
+msgid "Line thickness"
+msgstr "Πάχος γραμμής"
+
+#: operations/common/color-assimilation-grid.c:164
+msgid "Color Assimilation Grid"
+msgstr "Πλέγμα απορρόφησης χρώματος"
+
+#: operations/common/color-assimilation-grid.c:166
+msgid ""
+"Turn image grayscale and overlay an oversaturated grid - through color "
+"assimilation happening in the human visual system, for some grid scales this "
+"produces the illusion that the grayscale grid cells themselves also have "
+"color."
+msgstr ""
+"Μετατροπή εικόνας γκρίζας κλίμακας και επικάλυψη υπερκορεσμένου πλέγματος - "
+"μέσω προσρόφησης χρώματος που συμβαίνει στο ανθρώπινο οπτικό σύστημα, για "
+"κάποιες κλίμακες πλέγματος αυτό παράγει την ψευδαίσθηση ότι τα ίδια τα κελιά "
+"του πλέγματος της γκρίζας κλίμακας έχουν χρώμα."
+
 #: operations/common/color-enhance.c:277
 msgid "Color Enhance"
 msgstr "Βελτίωση χρώματος"
@@ -1043,14 +1095,6 @@ msgstr "Απόχρωση"
 #: operations/common/color-rotate.c:80
 msgid "Hue value for above gray settings"
 msgstr "Τιμή απόχρωσης για τις παραπάνω ρυθμίσεις του γκρίζου"
-
-#: operations/common/color-rotate.c:84 operations/common/fattal02.c:41
-#: operations/common/mantiuk06.c:35 operations/common/noise-hsv.c:34
-#: operations/common/saturation.c:384
-#: operations/external/lcms-from-profile.c:35
-#: operations/workshop/selective-hue-saturation.c:38
-msgid "Saturation"
-msgstr "Κορεσμός"
 
 #: operations/common/color-rotate.c:85
 msgid "Saturation value for above gray settings"
@@ -1493,11 +1537,11 @@ msgstr "Στάθμιση άλφα"
 msgid "Border"
 msgstr "Περίγραμμα"
 
-#: operations/common/convolution-matrix.c:633
+#: operations/common/convolution-matrix.c:634
 msgid "Convolution Matrix"
 msgstr "Πίνακας συνέλιξης"
 
-#: operations/common/convolution-matrix.c:634
+#: operations/common/convolution-matrix.c:635
 msgid "Apply a generic 5x5 convolution matrix"
 msgstr "Εφαρμογή γενικού πίνακα συνέλιξης 5x5"
 
@@ -1540,19 +1584,21 @@ msgstr ""
 "Ανίχνευση άκρης με έλεγχο πάχους άκρης, βασισμένη στη διαφορά δύο θολώσεων "
 "Γκάους"
 
-#: operations/common/display.c:23 operations/external/sdl-display.c:25
+#: operations/common/display.c:23 operations/external/sdl2-display.c:28
+#: operations/external/sdl-display.c:25
 msgid "Window title"
 msgstr "Τίτλος παραθύρου"
 
-#: operations/common/display.c:24 operations/external/sdl-display.c:26
+#: operations/common/display.c:24 operations/external/sdl2-display.c:29
+#: operations/external/sdl-display.c:26
 msgid "Title to be given to output window"
 msgstr "Αποδιδόμενος τίτλος στο παράθυρο εξόδου"
 
-#: operations/common/display.c:141
+#: operations/common/display.c:142
 msgid "Display"
 msgstr "Εμφάνιση"
 
-#: operations/common/display.c:143
+#: operations/common/display.c:144
 msgid "Display the input buffer in a window."
 msgstr "Εμφάνιση της μνήμης εισόδου σε παράθυρο."
 
@@ -1596,13 +1642,13 @@ msgstr "Μέθοδος πρόσμειξης"
 msgid "The dithering method to use"
 msgstr "Η μέθοδος πρόσμειξης για χρήση"
 
-#: operations/common/dither.c:51 operations/common/noise-cell.c:55
-#: operations/common/noise-cie-lch.c:38 operations/common/noise-hsv.c:40
-#: operations/common/noise-hurl.c:37 operations/common/noise-pick.c:38
-#: operations/common/noise-rgb.c:55 operations/common/noise-simplex.c:39
-#: operations/common/noise-spread.c:41 operations/common-gpl3+/cubism.c:42
-#: operations/common-gpl3+/maze.c:65 operations/common-gpl3+/mosaic.c:89
-#: operations/common-gpl3+/noise-slur.c:40
+#: operations/common/dither.c:51 operations/common/matting-global.c:29
+#: operations/common/noise-cell.c:55 operations/common/noise-cie-lch.c:38
+#: operations/common/noise-hsv.c:40 operations/common/noise-hurl.c:37
+#: operations/common/noise-pick.c:38 operations/common/noise-rgb.c:55
+#: operations/common/noise-simplex.c:39 operations/common/noise-spread.c:41
+#: operations/common-gpl3+/cubism.c:42 operations/common-gpl3+/maze.c:65
+#: operations/common-gpl3+/mosaic.c:89 operations/common-gpl3+/noise-slur.c:40
 #: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
 #: operations/common-gpl3+/supernova.c:64
@@ -1611,11 +1657,11 @@ msgstr "Η μέθοδος πρόσμειξης για χρήση"
 msgid "Random seed"
 msgstr "Τυχαία σπορά (σημείωμα)"
 
-#: operations/common/dither.c:649
+#: operations/common/dither.c:663
 msgid "Dither"
 msgstr "Πρόσμειξη"
 
-#: operations/common/dither.c:652
+#: operations/common/dither.c:666
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
@@ -1624,6 +1670,44 @@ msgstr ""
 "Μειώνει τον αριθμό των χρωμάτων στην εικόνα, ελαττώνοντας τα επίπεδα ανά "
 "κανάλι (χρώματα και άλφα). Διαφορετικές μέθοδοι πρόσμιξης μπορούν να "
 "οριστούν για να εξουδετερώσουν τον κβαντισμό των επαγόμενων ζωνών."
+
+#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
+#: operations/external/webp-save.c:28
+msgid "Quality"
+msgstr "Ποιότητα"
+
+#: operations/common/domain-transform.c:25
+msgid ""
+"Number of filtering iterations. A value between 2 and 4 is usually enough."
+msgstr ""
+"Αριθμός επαναλήψεων του φιλτραρίσματος. Τιμή μεταξύ 2 και 4 είναι συνήθως "
+"επαρκής."
+
+#: operations/common/domain-transform.c:30
+msgid "Spatial standard deviation of the blur kernel, measured in pixels."
+msgstr ""
+"Χωρική τυπική  απόκλιση του πυρήνα θόλωσης, μετρημένη σε εικονοστοιχεία."
+
+#: operations/common/domain-transform.c:35
+msgid ""
+"Amount of edge preservation. This quantity is inversely proportional to the "
+"range standard deviation of the blur kernel."
+msgstr ""
+"Ποσότητα διατήρησης γωνίας. Αυτή η ποσότητα είναι αντιστρόφως ανάλογη με την "
+"περιοχή τυπικής απόκλισης του πυρήνα θόλωσης."
+
+#: operations/common/domain-transform.c:529
+msgid "Smooth by Domain Transform"
+msgstr "Εξομάλυνση με μετασχηματισμό τομέα"
+
+#: operations/common/domain-transform.c:531
+msgid ""
+"An edge-preserving smoothing filter implemented with the Domain Transform "
+"recursive technique. Similar to a bilateral filter, but faster to compute."
+msgstr ""
+"Φίλτρο εξομάλυνσης διατήρησης γωνίας που υλοποιήθηκε με την αναδρομική "
+"τεχνική μετασχηματισμού τομέα. Παρόμοιο με το αμφίπλευρο φίλτρο, αλλά πιο "
+"γρήγορο στον υπολογισμό."
 
 #: operations/common/dropshadow.c:25 operations/common/layer.c:36
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
@@ -1796,11 +1880,11 @@ msgstr "Θόρυβος"
 msgid "Gradient threshold for lowering detail enhancement"
 msgstr "Όριο διαβάθμισης για μείωση βελτίωσης λεπτομέρειας"
 
-#: operations/common/fattal02.c:1333
+#: operations/common/fattal02.c:1358
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Απεικόνιση τόνου Φάταλ κ.α. 2002"
 
-#: operations/common/fattal02.c:1337
+#: operations/common/fattal02.c:1362
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -2196,6 +2280,7 @@ msgstr "Κάθετη θέση σε εικονοστοιχεία"
 #: operations/common/noise-perlin.c:27 operations/common/noise-simplex.c:31
 #: operations/common/saturation.c:31
 #: operations/workshop/external/lens-correct.c:50
+#: operations/workshop/normal-map.c:30
 msgid "Scale"
 msgstr "Κλίμακα"
 
@@ -2401,11 +2486,11 @@ msgstr ""
 "πλησιέστερο για να δημιουργήσετε την προβολή και κυβική ή καλύτερα για τον "
 "αντίστροφο μετασχηματισμό πίσω στο πανόραμα."
 
-#: operations/common/little-planet.c:494
+#: operations/common/little-planet.c:530
 msgid "Little Planet"
 msgstr "Μικρός πλανήτης (Little Planet)"
 
-#: operations/common/little-planet.c:498
+#: operations/common/little-planet.c:534
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
 "Εκτέλεση στερεογραφικού μετασχηματισμού/μετασχηματισμού μικρού πλανήτη "
@@ -2451,15 +2536,6 @@ msgstr "Τεχνοτροπία"
 msgid "Shadow style"
 msgstr "Τεχνοτροπία σκιάς"
 
-#. FIXME: With a large angle, we lose AreaFilter's flavours
-#: operations/common/long-shadow.c:49 operations/common/motion-blur-linear.c:33
-#: operations/common/newsprint.c:159
-#: operations/common-gpl3+/linear-sinusoid.c:66
-#: operations/common-gpl3+/motion-blur-circular.c:52
-#: operations/common-gpl3+/ripple.c:45
-msgid "Angle"
-msgstr "Γωνία"
-
 #: operations/common/long-shadow.c:50
 msgid "Shadow angle"
 msgstr "Γωνία σκιάς"
@@ -2500,11 +2576,11 @@ msgstr "Σύσταση"
 msgid "Output composition"
 msgstr "Σύσταση εξόδου"
 
-#: operations/common/long-shadow.c:1665
+#: operations/common/long-shadow.c:1692
 msgid "Long Shadow"
 msgstr "Μεγάλη σκιά"
 
-#: operations/common/long-shadow.c:1669
+#: operations/common/long-shadow.c:1696
 msgid "Creates a long-shadow effect"
 msgstr "Δημιουργεί εφέ μεγάλης σκιάς"
 
@@ -2531,11 +2607,11 @@ msgstr "Λεπτομέρεια"
 msgid "Level of emphasis on image gradient details"
 msgstr "Στάθμη έμφασης στις λεπτομέρειες διαβάθμισης εικόνας"
 
-#: operations/common/mantiuk06.c:1631
+#: operations/common/mantiuk06.c:1656
 msgid "Mantiuk 2006 Tone Mapping"
 msgstr "Απεικόνιση τόνου Μάντιουκ 2006"
 
-#: operations/common/mantiuk06.c:1635
+#: operations/common/mantiuk06.c:1660
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator constrains contrasts across multiple "
@@ -2582,11 +2658,11 @@ msgstr ""
 "είσοδος δείγματος με βοηθητική μνήμη που περιέχει σχετικές συντεταγμένες "
 "πηγής"
 
-#: operations/common/matting-global.c:491
+#: operations/common/matting-global.c:579
 msgid "Matting Global"
 msgstr "Γενικός αστιλβής"
 
-#: operations/common/matting-global.c:493
+#: operations/common/matting-global.c:581
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -2605,11 +2681,11 @@ msgstr "Απόσβεση"
 msgid "The value represents the contribution of the past to the new frame."
 msgstr "Η τιμή αντιπροσωπεύει τη συμμετοχή του παλιού στο νέο πλαίσιο."
 
-#: operations/common/mblur.c:145
+#: operations/common/mblur.c:148
 msgid "Temporal blur"
 msgstr "Χρονική Θόλωση"
 
-#: operations/common/mblur.c:147
+#: operations/common/mblur.c:150
 msgid ""
 "Accumulating motion blur using a kalman filter, for use with video sequences "
 "of frames."
@@ -2783,11 +2859,11 @@ msgstr "Αναδίπλωση εισόδου"
 msgid "Fill full output area"
 msgstr "Πλήρες γέμισμα περιοχής εξόδου"
 
-#: operations/common/mirrors.c:436
+#: operations/common/mirrors.c:467
 msgid "Kaleidoscopic Mirroring"
 msgstr "Καλειδοσκοπικός κατοπτρισμός"
 
-#: operations/common/mirrors.c:440
+#: operations/common/mirrors.c:471
 msgid "Create a kaleidoscope like effect."
 msgstr "Δημιουργία ενός παρόμοιου καλειδοσκοπικού εφέ."
 
@@ -3259,15 +3335,15 @@ msgstr ""
 "Χρήση κατανομής θορύβου Γκάους, όταν αποεπιλεγεί χρησιμοποιείται αντ' αυτής "
 "μια γραμμική κατανομή θορύβου"
 
-#: operations/common/noise-rgb.c:39
+#: operations/common/noise-rgb.c:39 operations/workshop/normal-map.c:25
 msgid "Red"
 msgstr "Κόκκινο"
 
-#: operations/common/noise-rgb.c:44
+#: operations/common/noise-rgb.c:44 operations/workshop/normal-map.c:26
 msgid "Green"
 msgstr "Πράσινο"
 
-#: operations/common/noise-rgb.c:48
+#: operations/common/noise-rgb.c:48 operations/workshop/normal-map.c:27
 msgid "Blue"
 msgstr "Γαλάζιο"
 
@@ -3343,11 +3419,11 @@ msgstr ""
 "Λειτουργία Porter Duff (γνωστή επίσης ως κανονική λειτουργία και src-over) "
 "(d = cA + cB * (1 - aA))"
 
-#: operations/common/panorama-projection.c:507
+#: operations/common/panorama-projection.c:540
 msgid "Panorama Projection"
 msgstr "Προβολή πανοράματος"
 
-#: operations/common/panorama-projection.c:512
+#: operations/common/panorama-projection.c:545
 msgid ""
 "Do panorama viewer rendering mapping or its inverse for an equirectangular "
 "input image. (2:1 ratio containing 360x180 degree panorama)."
@@ -3554,11 +3630,11 @@ msgstr "Προσαρμογή φωτός"
 msgid "Adaptation to light variation across the image"
 msgstr "Προσαρμογή στη μεταβολή φωτός κατά μήκος της εικόνας"
 
-#: operations/common/reinhard05.c:276
+#: operations/common/reinhard05.c:303
 msgid "Reinhard 2005 Tone Mapping"
 msgstr "Απεικόνιση τόνου Ράινχαρτ 2005"
 
-#: operations/common/reinhard05.c:280
+#: operations/common/reinhard05.c:307
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This is an efficient global operator derived from "
@@ -3704,11 +3780,11 @@ msgstr "Συνεκτικότητα"
 msgid "Cluster size"
 msgstr "Μέγεθος συμπλέγματος"
 
-#: operations/common/slic.c:457
+#: operations/common/slic.c:456
 msgid "Simple Linear Iterative Clustering"
 msgstr "Απλή γραμμική επαναληπτική ομαδοποίηση"
 
-#: operations/common/slic.c:460
+#: operations/common/slic.c:459
 msgid "Superpixels based on k-means clustering"
 msgstr "Υπερεικονοστοιχεία με βάση την ομαδοποίηση Κ-μέσων"
 
@@ -3785,11 +3861,11 @@ msgstr ""
 "Συντελεστής κλιμάκωσης μετατόπισης (αρνητικές τιμές αναφέρονται στην "
 "αντίστροφη μετατόπιση)"
 
-#: operations/common/spherize.c:318
+#: operations/common/spherize.c:321
 msgid "Spherize"
 msgstr "Σφαιρoποίηση"
 
-#: operations/common/spherize.c:321
+#: operations/common/spherize.c:324
 msgid "Wrap image around a spherical cap"
 msgstr "Αναδίπλωση εικόνας γύρω από σφαιρικό τμήμα"
 
@@ -3946,19 +4022,19 @@ msgstr "Οριζόντια μετατόπιση"
 msgid "Vertical offset"
 msgstr "Κάθετη μετατόπιση"
 
-#: operations/common/tile.c:134
+#: operations/common/tile.c:159
 msgid "Tile"
 msgstr "Παράθεση"
 
-#: operations/common/tile.c:140
+#: operations/common/tile.c:165
 msgid "Infinitely repeats the input image."
 msgstr "Συνεχής επανάληψη της εικόνας εισόδου."
 
-#: operations/common/tile-seamless.c:168
+#: operations/common/tile-seamless.c:213
 msgid "Make Seamlessly tileable"
 msgstr "Δημιουργία παράθεσης χωρίς ραφές"
 
-#: operations/common/tile-seamless.c:172
+#: operations/common/tile-seamless.c:217
 msgid ""
 "Make the input buffer seamlessly tileable. The algorithm is not content-"
 "aware, so the result may need post-processing."
@@ -4115,11 +4191,11 @@ msgstr "Χρώμα υπερεικονοστοιχείων"
 msgid "How to fill superpixels"
 msgstr "Πώς να γεμίσουν τα υπερεικονοστοιχεία"
 
-#: operations/common/waterpixels.c:515
+#: operations/common/waterpixels.c:543
 msgid "Waterpixels"
 msgstr "Εικονοστοιχεία νερού"
 
-#: operations/common/waterpixels.c:518
+#: operations/common/waterpixels.c:546
 msgid "Superpixels based on the watershed transformation"
 msgstr "Υπερεικονοστοιχεία με βάση τον μετασχηματισμό απορροής"
 
@@ -4228,11 +4304,11 @@ msgstr "Αριθμός υπολογισμών για τον μέσο όρο τη
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Κανονικοποίηση της εξόδου να κυμαίνεται από 0,0 έως 1,0."
 
-#: operations/common-cxx/distance-transform.cc:437
+#: operations/common-cxx/distance-transform.cc:475
 msgid "Distance Transform"
 msgstr "Μετασχηματισμός απόστασης"
 
-#: operations/common-cxx/distance-transform.cc:440
+#: operations/common-cxx/distance-transform.cc:478
 msgid "Calculate a distance transform"
 msgstr "Υπολογίζει έναν μετασχηματισμό απόστασης"
 
@@ -4313,11 +4389,11 @@ msgstr "Διατήρηση του αρχικού περιβάλλοντος"
 msgid "Keep image unchanged, where not affected by the lens."
 msgstr "Διατήρηση αμετάβλητης εικόνας, όταν δεν επηρεάζεται από τους φακούς."
 
-#: operations/common-gpl3+/apply-lens.c:274
+#: operations/common-gpl3+/apply-lens.c:302
 msgid "Apply Lens"
 msgstr "Εφαρμογή φακού"
 
-#: operations/common-gpl3+/apply-lens.c:278
+#: operations/common-gpl3+/apply-lens.c:306
 msgid ""
 "Simulates the optical distortion caused by having an elliptical lens over "
 "the image"
@@ -4522,11 +4598,11 @@ msgstr "Ακτίνα μάσκας"
 msgid "Percent black"
 msgstr "Ποσοστό μαύρου"
 
-#: operations/common-gpl3+/cartoon.c:294
+#: operations/common-gpl3+/cartoon.c:323
 msgid "Cartoon"
 msgstr "Σκίτσο"
 
-#: operations/common-gpl3+/cartoon.c:297
+#: operations/common-gpl3+/cartoon.c:326
 msgid ""
 "Simulates a cartoon, its result is similar to a black felt pen drawing "
 "subsequently shaded with color. This is achieved by enhancing edges and "
@@ -4724,11 +4800,11 @@ msgstr "Επέκταση πλακιδίων κατά αυτήν την ποσό�
 msgid "The tiles' background color"
 msgstr "Το χρώμα παρασκηνίου των πλακιδίων"
 
-#: operations/common-gpl3+/cubism.c:619
+#: operations/common-gpl3+/cubism.c:650
 msgid "Cubism"
 msgstr "Κυβισμός"
 
-#: operations/common-gpl3+/cubism.c:624
+#: operations/common-gpl3+/cubism.c:655
 msgid ""
 "Convert the image into randomly rotated square blobs, somehow resembling a "
 "cubist painting style"
@@ -5278,11 +5354,11 @@ msgstr ""
 msgid "Unsupported fractal type"
 msgstr "Μη υποστηριζόμενος τύπος κλαστικού"
 
-#: operations/common-gpl3+/fractal-trace.c:240
+#: operations/common-gpl3+/fractal-trace.c:273
 msgid "Fractal Trace"
 msgstr "Ίχνος κλαστικού"
 
-#: operations/common-gpl3+/fractal-trace.c:245
+#: operations/common-gpl3+/fractal-trace.c:278
 msgid "Transform the image with the fractals"
 msgstr "Μετασχηματισμός της εικόνας με τα κλαστικά"
 
@@ -5488,7 +5564,7 @@ msgid "Maze algorithm type"
 msgstr "Τύπος αλγορίθμου δαιδάλου"
 
 #: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:61
+#: operations/common-gpl3+/ripple.c:61 operations/workshop/normal-map.c:54
 msgid "Tileable"
 msgstr "Παραθέσιμο"
 
@@ -5508,11 +5584,11 @@ msgstr "Χρώμα παρασκηνίου"
 msgid "The background color"
 msgstr "Το χρώμα παρασκηνίου"
 
-#: operations/common-gpl3+/maze.c:795
+#: operations/common-gpl3+/maze.c:823
 msgid "Maze"
 msgstr "Δαίδαλος"
 
-#: operations/common-gpl3+/maze.c:800
+#: operations/common-gpl3+/maze.c:828
 msgid "Draw a labyrinth"
 msgstr "Σχεδίαση ενός λαβύρινθου"
 
@@ -5641,11 +5717,11 @@ msgstr ""
 "Περιστροφή γωνίας θόλωσης. Μια μεγάλη γωνία μπορεί να πάρει κάποιο χρόνο για "
 "να σχεδιαστεί"
 
-#: operations/common-gpl3+/motion-blur-circular.c:422
+#: operations/common-gpl3+/motion-blur-circular.c:449
 msgid "Circular Motion Blur"
 msgstr "Θόλωση κυκλικής κίνησης"
 
-#: operations/common-gpl3+/motion-blur-circular.c:427
+#: operations/common-gpl3+/motion-blur-circular.c:454
 msgid "Circular motion blur"
 msgstr "Θόλωση κυκλικής κίνησης"
 
@@ -5653,11 +5729,11 @@ msgstr "Θόλωση κυκλικής κίνησης"
 msgid "Blurring factor"
 msgstr "Συντελεστής θόλωσης"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:245
+#: operations/common-gpl3+/motion-blur-zoom.c:272
 msgid "Zooming Motion Blur"
 msgstr "Θόλωση κίνησης εστίασης"
 
-#: operations/common-gpl3+/motion-blur-zoom.c:250
+#: operations/common-gpl3+/motion-blur-zoom.c:277
 msgid "Zoom motion blur"
 msgstr "Θόλωση κίνησης εστίασης"
 
@@ -5867,11 +5943,11 @@ msgstr "Επιλογή μεσαίου"
 msgid "Let origin point to be the middle one"
 msgstr "Να επιτρέπεται το αρχικό σημείο να είναι μεσαίο"
 
-#: operations/common-gpl3+/polar-coordinates.c:412
+#: operations/common-gpl3+/polar-coordinates.c:447
 msgid "Polar Coordinates"
 msgstr "Πολικές συντεταγμένες"
 
-#: operations/common-gpl3+/polar-coordinates.c:417
+#: operations/common-gpl3+/polar-coordinates.c:452
 msgid "Convert image to or from polar coordinates"
 msgstr "Μετατροπή εικόνας σε ή από πολικές συντεταγμένες"
 
@@ -6298,11 +6374,11 @@ msgstr "Κεντράρισμα των πλακιδίων"
 msgid "Background type"
 msgstr "Τύπος παρασκηνίου"
 
-#: operations/common-gpl3+/tile-paper.c:429
+#: operations/common-gpl3+/tile-paper.c:462
 msgid "Paper Tile"
 msgstr "Πλακίδιο χαρτιού"
 
-#: operations/common-gpl3+/tile-paper.c:434
+#: operations/common-gpl3+/tile-paper.c:467
 msgid "Cut image into paper tiles, and slide them"
 msgstr "Κοπή εικόνας σε χάρτινα πλακίδια και μετακίνησή τους"
 
@@ -6540,15 +6616,15 @@ msgstr ""
 "Ακτίνα (1,0 είναι ο μέγιστος κύκλος που ταιριάζει στην εικόνα και το 2,0 "
 "πηγαίνει ολότελα μέχρι τις γωνίες)"
 
-#: operations/common-gpl3+/whirl-pinch.c:262
+#: operations/common-gpl3+/whirl-pinch.c:294
 msgid "Whirl Pinch"
 msgstr "Στροβιλισμός και πίεση"
 
-#: operations/common-gpl3+/whirl-pinch.c:267
+#: operations/common-gpl3+/whirl-pinch.c:299
 msgid "Distort an image by whirling and pinching"
 msgstr "Παραμόρφωση εικόνας με στροβιλισμό και πίεση"
 
-#: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:561
+#: operations/common-gpl3+/wind.c:28 operations/common-gpl3+/wind.c:591
 msgid "Wind"
 msgstr "Άνεμος"
 
@@ -6604,7 +6680,7 @@ msgstr "Υψηλότερες τιμές περιορίζουν το εφέ σε 
 msgid "Higher values increase the magnitude of the effect"
 msgstr "Υψηλότερες τιμές αυξάνουν το μέγεθος του εφέ"
 
-#: operations/common-gpl3+/wind.c:565
+#: operations/common-gpl3+/wind.c:595
 msgid "Wind-like bleed effect"
 msgstr "Εφέ ανεμώδους διαρροής"
 
@@ -6747,11 +6823,11 @@ msgstr ""
 msgid "Reset origin"
 msgstr "Επαναφορά αρχικού"
 
-#: operations/core/crop.c:247
+#: operations/core/crop.c:250
 msgid "Crop"
 msgstr "Περικοπή"
 
-#: operations/core/crop.c:248
+#: operations/core/crop.c:251
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
 "connected is used."
@@ -7122,11 +7198,6 @@ msgstr "Φόρτωση εικόνας JPEG χρησιμοποιώντας libjpe
 msgid "Target path and filename, use '-' for stdout"
 msgstr "Στόχος διαδρομής και ονόματος αρχείου, χρήση '-' για τυπική έξοδο"
 
-#: operations/external/jpg-save.c:28 operations/external/webp-save.c:28
-#: operations/workshop/domain-transform.c:24
-msgid "Quality"
-msgstr "Ποιότητα"
-
 #: operations/external/jpg-save.c:29
 msgid "JPEG compression quality (between 1 and 100)"
 msgstr "Ποιότητα συμπίεσης JPEG (μεταξύ 1 και 100)"
@@ -7156,19 +7227,19 @@ msgstr "Σταδιακό"
 msgid "Create progressive JPEG images"
 msgstr "Δημιουργία σταδιακών εικόνων JPEG"
 
-#: operations/external/jpg-save.c:40
+#: operations/external/jpg-save.c:41
 msgid "Grayscale"
 msgstr "Κλίμακα του γκρίζου"
 
-#: operations/external/jpg-save.c:41
+#: operations/external/jpg-save.c:42
 msgid "Create a grayscale (monochrome) image"
 msgstr "Δημιουργία εικόνας κλίμακας του γκρι (μονόχρωμη)"
 
-#: operations/external/jpg-save.c:413
+#: operations/external/jpg-save.c:420
 msgid "JPEG File Saver"
 msgstr "Αποθηκευτής αρχείου JPEG"
 
-#: operations/external/jpg-save.c:415
+#: operations/external/jpg-save.c:422
 msgid "JPEG image saver, using libjpeg"
 msgstr "Αποθήκευση εικόνας JPEG, χρησιμοποιώντας libjpeg"
 
@@ -7609,6 +7680,18 @@ msgstr "Αποθήκευση σε GdkPixbuf"
 msgid "Store image in a GdkPixbuf."
 msgstr "Αποθήκευση εικόνας σε GdkPixbuf."
 
+#: operations/external/sdl2-display.c:202
+msgid "SDL2 Display"
+msgstr "Εμφάνιση SDL2"
+
+#: operations/external/sdl2-display.c:205
+msgid ""
+"Displays the input buffer in an SDL2 window (restricted to one display op/"
+"process, due to SDL2 implementation issues)."
+msgstr ""
+"Εμφανίζει τη μνήμη εισόδου σε παράθυρο SDL2 (περιοριζόμενο σε μια εμφάνιση "
+"λειτουργίας/επεξεργασίας, λόγω θεμάτων υλοποίησης του SDL2)."
+
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
 msgstr "Τίτλος εικονιδίου"
@@ -7977,13 +8060,13 @@ msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
-"powf (input, value)"
+"(input >= 0.0f ? powf (input, value) : -powf (-input, value))"
 msgstr ""
 "Η μαθηματική πράξη γάμμα εκτελεί την πράξη ανά εικονοστοιχείο, "
 "χρησιμοποιώντας είτε τη σταθερά που δίνεται στην 'τιμή' ή το αντίστοιχο "
 "εικονοστοιχείο από την ενδιάμεση μνήμη στο βοηθητικό ως τελεστές. Το "
-"αποτέλεσμα είναι ο υπολογισμός της παράστασης αποτέλεσμα = powf (είσοδος, "
-"τιμή)"
+"αποτέλεσμα είναι ο υπολογισμός της παράστασης result = (input >= 0.0f ? powf "
+"(input, value) : -powf (-input, value))"
 
 #: operations/generated/hard-light.c:188
 msgid ""
@@ -8357,11 +8440,11 @@ msgid "Radius of row pixel region, (size will be radius*2+1)"
 msgstr ""
 "Ακτίνα της περιοχής εικονοστοιχείου γραμμής, (το μέγεθος θα είναι ακτίνα*2+1)"
 
-#: operations/workshop/boxblur-1d.c:338
+#: operations/workshop/boxblur-1d.c:466
 msgid "1D Box Blur"
 msgstr "Θόλωση πλαισίου 1Δ"
 
-#: operations/workshop/boxblur-1d.c:339
+#: operations/workshop/boxblur-1d.c:467
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
 msgstr ""
 "Θόλωση ως αποτέλεσμα του μέσου όρου των χρωμάτων μιας γειτονικής γραμμής."
@@ -8456,39 +8539,6 @@ msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
 "Επιλογή ελέγχου για να γίνει μια απεικόνιση εισόδου 1:1 έξοδος, κατά τη "
 "δειγμετοληψία"
-
-#: operations/workshop/domain-transform.c:25
-msgid ""
-"Number of filtering iterations. A value between 2 and 4 is usually enough."
-msgstr ""
-"Αριθμός επαναλήψεων του φιλτραρίσματος. Τιμή μεταξύ 2 και 4 είναι συνήθως "
-"επαρκής."
-
-#: operations/workshop/domain-transform.c:30
-msgid "Spatial standard deviation of the blur kernel, measured in pixels."
-msgstr ""
-"Χωρική τυπική  απόκλιση του πυρήνα θόλωσης, μετρημένη σε εικονοστοιχεία."
-
-#: operations/workshop/domain-transform.c:35
-msgid ""
-"Amount of edge preservation. This quantity is inversely proportional to the "
-"range standard deviation of the blur kernel."
-msgstr ""
-"Ποσότητα διατήρησης γωνίας. Αυτή η ποσότητα είναι αντιστρόφως ανάλογη με την "
-"περιοχή τυπικής απόκλισης του πυρήνα θόλωσης."
-
-#: operations/workshop/domain-transform.c:529
-msgid "Smooth by Domain Transform"
-msgstr "Εξομάλυνση με μετασχηματισμό τομέα"
-
-#: operations/workshop/domain-transform.c:531
-msgid ""
-"An edge-preserving smoothing filter implemented with the Domain Transform "
-"recursive technique. Similar to a bilateral filter, but faster to compute."
-msgstr ""
-"Φίλτρο εξομάλυνσης διατήρησης γωνίας που υλοποιήθηκε με την αναδρομική "
-"τεχνική μετασχηματισμού τομέα. Παρόμοιο με το αμφίπλευρο φίλτρο, αλλά πιο "
-"γρήγορο στον υπολογισμό."
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -8883,7 +8933,7 @@ msgstr "Απεικόνιση διαβάθμισης"
 msgid "Applies a color gradient."
 msgstr "Εφαρμόζει μια διαβάθμιση χρώματος."
 
-#: operations/workshop/hstack.c:179
+#: operations/workshop/hstack.c:186
 msgid ""
 "Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right of "
 "\"input\")"
@@ -8906,6 +8956,62 @@ msgstr "Ολοκληρωμένη εικόνα"
 #: operations/workshop/integral-image.c:254
 msgid "Compute integral and squared integral image"
 msgstr "Υπολογισμός ολοκληρωμένης και τετραγωνικά ολοκληρωμένης εικόνας"
+
+#: operations/workshop/normal-map.c:31
+msgid "The amount by which to scale the height values"
+msgstr "Ποσότητα κλιμάκωσης των τιμών ύψους"
+
+#: operations/workshop/normal-map.c:35
+msgid "X Component"
+msgstr "Συστατικό Χ"
+
+#: operations/workshop/normal-map.c:38
+msgid "The component used for the X coordinates"
+msgstr "Το χρησιμοποιούμενο συστατικό για τις συντεταγμένες Χ"
+
+#: operations/workshop/normal-map.c:40
+msgid "Y Component"
+msgstr "Συστατικό Υ"
+
+#: operations/workshop/normal-map.c:43
+msgid "The component used for the Y coordinates"
+msgstr "Το χρησιμοποιούμενο συστατικό για τις συντεταγμένες Υ"
+
+#: operations/workshop/normal-map.c:45
+msgid "Flip X"
+msgstr "Αναστροφή Χ"
+
+#: operations/workshop/normal-map.c:46
+msgid "Flip the X coordinates"
+msgstr "Αναστροφή συντεταγμένων Χ"
+
+#: operations/workshop/normal-map.c:48
+msgid "Flip Y"
+msgstr "Αναστροφή Υ"
+
+#: operations/workshop/normal-map.c:49
+msgid "Flip the Y coordinates"
+msgstr "Αναστροφή συντεταγμένων Υ"
+
+#: operations/workshop/normal-map.c:51
+msgid "Full Z Range"
+msgstr "Πλήρης περιοχή Ζ"
+
+#: operations/workshop/normal-map.c:52
+msgid "Use the full [0,1] range to encode the Z coordinates"
+msgstr "Χρήση της πλήρους περιοχής [0, 1] για κωδικοποίηση των συντεταγμένων Ζ"
+
+#: operations/workshop/normal-map.c:55
+msgid "Generate a tileable map"
+msgstr "Δημιουργία παραθέσιμου χάρτη"
+
+#: operations/workshop/normal-map.c:249
+msgid "Normal Map"
+msgstr "Κανονικός χάρτης"
+
+#: operations/workshop/normal-map.c:251
+msgid "Generate a normal map from a height map"
+msgstr "Δημιουργία κανονικού χάρτη από χάρτη ύψους"
 
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
