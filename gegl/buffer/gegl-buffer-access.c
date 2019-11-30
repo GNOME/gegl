@@ -428,7 +428,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
           GeglTile *tile;
           gboolean  whole_tile;
 
-          bp = buf + bufy * buf_stride + bufx * bpx_size;
+          bp = buf + (gsize) bufy * buf_stride + bufx * bpx_size;
 
           if (width + offsetx - bufx < tile_width)
             pixels = (width + offsetx - bufx) - offsetx;
@@ -985,7 +985,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
           gint      pixels, row, y;
           GeglTile *tile;
 
-          bp = buf + bufy * buf_stride + bufx * bpx_size;
+          bp = buf + (gsize) bufy * buf_stride + bufx * bpx_size;
 
           if (width + offsetx - bufx < tile_width)
             pixels = width - bufx;
