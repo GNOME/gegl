@@ -344,6 +344,7 @@ pkgconfig.generate(filebase: 'gegl-' + api_version,
   libraries: [
     gegl_lib,
     gegl_npd_lib,
+    math,
   ],
   subdirs: api_name,
 )
