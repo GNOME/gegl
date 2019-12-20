@@ -6,7 +6,7 @@ if avlibs_found and gexiv2.found()
     workdir: meson.current_build_dir(),
     suite: 'ff-load-save',
     protocol: 'tap',
-    timeout: 120,
+    timeout: 360,
     is_parallel: false,
   )
 
