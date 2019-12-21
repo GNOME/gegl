@@ -1,3 +1,30 @@
+GEGL-0.4.20 2019-12-xx
+----------------------
+
+Build
+~~~~~
+
+Improve architecture detection for win32, fixing build on some archs, fix
+meson build on darwin.
+Improve CI for potential different type test runs.
+
+Buffer
+~~~~~~
+
+Pass O_BINARY where relevant on windows.
+Avoid 32bit overflows in computations for gegl_buffer_set and gegl_buffer_get.
+
+Core
+~~~~
+
+Avoid running more thread jobs than there are pixels to process.
+
+Operations
+~~~~~~~~~~
+
+Improved edge handling for gegl:distance-transform
+
+
 GEGL-0.4.18 2019-10-27
 ----------------------
 
