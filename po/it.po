@@ -1,7 +1,7 @@
 # Italian translation for the gegl package.
 # Copyright (C) 2012 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gegl package.
-# Marco Ciampa <ciampix@posteo.net>, 2012-2019.
+# Marco Ciampa <ciampix@posteo.net>, 2012-2020.
 #
 # Elenco termini adottati per uniformità:
 #
@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-12 13:50+0200\n"
-"PO-Revision-Date: 2019-09-13 10:11+0200\n"
+"POT-Creation-Date: 2020-01-06 23:24+0100\n"
+"PO-Revision-Date: 2020-01-06 23:24+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -436,23 +436,19 @@ msgid "Module '%s' load error: %s"
 msgstr "Modulo '%s' errore di caricamento: %s"
 
 #: ../gegl/operation/gegl-operation-composer3.c:77
-#, fuzzy
 msgid "Output pad for generated image buffer."
 msgstr "Pad di uscita per il buffer immagine generato."
 
 #: ../gegl/operation/gegl-operation-composer3.c:86
-#, fuzzy
 msgid "Input pad, for image buffer input."
 msgstr "Pad di ingresso, per il buffer immagine in ingresso."
 
 #: ../gegl/operation/gegl-operation-composer3.c:95
 #: ../gegl/operation/gegl-operation-composer.c:94
-#, fuzzy
 msgid "Auxiliary image buffer input pad."
 msgstr "Pad d'ingresso per il buffer immagine ausiliario."
 
 #: ../gegl/operation/gegl-operation-composer3.c:104
-#, fuzzy
 msgid "Second auxiliary image buffer input pad."
 msgstr "Pad d'ingresso per il secondo buffer immagine ausiliario."
 
@@ -2254,7 +2250,7 @@ msgstr ""
 
 #: ../operations/common/image-gradient.c:27
 msgid "Magnitude"
-msgstr "Magnitude"
+msgstr "Ampiezza"
 
 #: ../operations/common/image-gradient.c:28
 #: ../operations/common-gpl3+/spiral.c:75
@@ -2339,7 +2335,8 @@ msgstr "Posizione verticale in pixel"
 
 #: ../operations/common/layer.c:46 ../operations/common/noise-cell.c:36
 #: ../operations/common/noise-perlin.c:27
-#: ../operations/common/noise-simplex.c:31 ../operations/common/saturation.c:31
+#: ../operations/common/noise-simplex.c:31 ../operations/common/normal-map.c:30
+#: ../operations/common/saturation.c:31
 #: ../operations/workshop/external/lens-correct.c:50
 msgid "Scale"
 msgstr "Scala"
@@ -3399,15 +3396,15 @@ msgstr ""
 "Usa una distribuzione del rumore gaussiana, se non selezionata viene invece "
 "utilizzata una distribuzione del rumore lineare"
 
-#: ../operations/common/noise-rgb.c:39
+#: ../operations/common/noise-rgb.c:39 ../operations/common/normal-map.c:25
 msgid "Red"
 msgstr "Rosso"
 
-#: ../operations/common/noise-rgb.c:44
+#: ../operations/common/noise-rgb.c:44 ../operations/common/normal-map.c:26
 msgid "Green"
 msgstr "Verde"
 
-#: ../operations/common/noise-rgb.c:48
+#: ../operations/common/noise-rgb.c:48 ../operations/common/normal-map.c:27
 msgid "Blue"
 msgstr "Blu"
 
@@ -3442,6 +3439,68 @@ msgstr "Rumore diffuso"
 #: ../operations/common/noise-spread.c:162
 msgid "Move pixels around randomly"
 msgstr "Sposta i pixel attorno a caso"
+
+#: ../operations/common/normal-map.c:31
+msgid "The amount by which to scale the height values"
+msgstr "Quantità per la quale scalare i valori di altezza"
+
+#: ../operations/common/normal-map.c:35
+msgid "X Component"
+msgstr "Componente X"
+
+#: ../operations/common/normal-map.c:38
+msgid "The component used for the X coordinates"
+msgstr "La componente usata per le coordinate X"
+
+#: ../operations/common/normal-map.c:40
+msgid "Y Component"
+msgstr "Componente Y"
+
+#: ../operations/common/normal-map.c:43
+msgid "The component used for the Y coordinates"
+msgstr "La componente usata per le coordinate Y"
+
+#: ../operations/common/normal-map.c:45
+msgid "Flip X"
+msgstr "Rovescia X"
+
+#: ../operations/common/normal-map.c:46
+msgid "Flip the X coordinates"
+msgstr "Rovescia le coordinate X"
+
+#: ../operations/common/normal-map.c:48
+msgid "Flip Y"
+msgstr "Rovescia Y"
+
+#: ../operations/common/normal-map.c:49
+msgid "Flip the Y coordinates"
+msgstr "Rovescia le coordinate Y"
+
+#: ../operations/common/normal-map.c:51
+msgid "Full Z Range"
+msgstr "Campo pieno Z"
+
+#: ../operations/common/normal-map.c:52
+msgid "Use the full [0,1] range to encode the Z coordinates"
+msgstr "Usa il campo pieno [0,1] per codificare le coordinate Z"
+
+#: ../operations/common/normal-map.c:54 ../operations/common-gpl3+/maze.c:63
+#: ../operations/common-gpl3+/noise-solid.c:56
+#: ../operations/common-gpl3+/ripple.c:61
+msgid "Tileable"
+msgstr "Piastrellabile"
+
+#: ../operations/common/normal-map.c:55
+msgid "Generate a tileable map"
+msgstr "Genera una mappa piastrellabile"
+
+#: ../operations/common/normal-map.c:249
+msgid "Normal Map"
+msgstr "Mappa normale"
+
+#: ../operations/common/normal-map.c:252
+msgid "Generate a normal map from a height map"
+msgstr "Genera una mappa normale da una mappa altezza"
 
 #: ../operations/common/opacity.c:26
 msgid ""
@@ -3766,15 +3825,15 @@ msgstr "Mantiene i valori RGB dei pixel entro un campo specifico"
 
 #: ../operations/common/saturation.c:26
 msgid "Native"
-msgstr ""
+msgstr "Nativa"
 
 #: ../operations/common/saturation.c:27
 msgid "CIE Lab/Lch"
-msgstr ""
+msgstr "CIE Lab/Lch"
 
 #: ../operations/common/saturation.c:28
 msgid "CIE Yuv"
-msgstr ""
+msgstr "CIE Yuv"
 
 #: ../operations/common/saturation.c:32
 msgid "Scale, strength of effect"
@@ -4369,11 +4428,11 @@ msgstr "Numero di computazioni per la media della scala di grigi"
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normalizza il campo dei risultati da 0,0 a 1,0."
 
-#: ../operations/common-cxx/distance-transform.cc:475
+#: ../operations/common-cxx/distance-transform.cc:476
 msgid "Distance Transform"
 msgstr "Trasformazione distanza"
 
-#: ../operations/common-cxx/distance-transform.cc:478
+#: ../operations/common-cxx/distance-transform.cc:479
 msgid "Calculate a distance transform"
 msgstr "Calcola una trasformazione di distanza"
 
@@ -5634,12 +5693,6 @@ msgstr "Tipo algoritmo"
 msgid "Maze algorithm type"
 msgstr "Tipo algoritmo labirinto"
 
-#: ../operations/common-gpl3+/maze.c:63
-#: ../operations/common-gpl3+/noise-solid.c:56
-#: ../operations/common-gpl3+/ripple.c:61
-msgid "Tileable"
-msgstr "Piastrellabile"
-
 #: ../operations/common-gpl3+/maze.c:67
 msgid "Foreground Color"
 msgstr "Colore primopiano"
@@ -5862,22 +5915,20 @@ msgid "Mask Radius"
 msgstr "Raggio maschera"
 
 #: ../operations/common-gpl3+/oilify.c:29
-#, fuzzy
 msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
 "the aux pad."
 msgstr ""
-"Raggio del cerchio attorno al pixel, può essere scalato per pixel sul pad "
-"ausiliario."
+"Raggio del cerchio attorno al pixel, può essere anche scalato per pixel da "
+"un buffer sul pad aux."
 
 #: ../operations/common-gpl3+/oilify.c:35
-#, fuzzy
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
 msgstr ""
-"Esponente per l'elaborazione; controlla lo smussamento - può essere scalato "
-"per pixel con un buffer sul pad aux2."
+"Esponente per l'elaborazione; controlla lo smussamento - può essere anche "
+"scalato per pixel con un buffer sul pad aux2."
 
 #: ../operations/common-gpl3+/oilify.c:38
 msgid "Number of intensities"
@@ -5904,6 +5955,8 @@ msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
 msgstr ""
+"Per buffer pixel per la modulazione del raggio della maschera, aspettandosi "
+"un fattore di scala nel campo 0.0-1.0"
 
 #: ../operations/common-gpl3+/oilify.c:525
 msgid "Exponent buffer"
@@ -7750,7 +7803,9 @@ msgstr "Schermo SDL2"
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
-msgstr "Mostra il buffer in ingresso in una finestra SDL2 (limitata ad un solo processo di visualizzazione, a causa di problemi implementativi di SDL2)."
+msgstr ""
+"Mostra il buffer in ingresso in una finestra SDL2 (limitata ad un solo "
+"processo di visualizzazione, a causa di problemi implementativi di SDL2)."
 
 #: ../operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -8119,12 +8174,12 @@ msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
-"powf (input, value)"
+"(input >= 0.0f ? powf (input, value) : -powf (-input, value))"
 msgstr ""
 "Operazione matematica di gamma, esegue l'operazione per pixel, usando la "
 "costante fornita in \"valore\" o il pixel corrispondente dal buffer su aux "
-"come operando. Il risultato è la valutazione dell'espressione risultato = "
-"powf (ingresso, valore)"
+"come operandi. Il risultato è la valutazione dell'espressione risultato = "
+"(ingresso >= 0.0f ? powf (ingresso, valore) : -powf (-ingresso, valore))"
 
 #: ../operations/generated/hard-light.c:188
 msgid ""
@@ -8491,7 +8546,8 @@ msgstr ""
 
 #: ../operations/workshop/boxblur-1d.c:28
 msgid "Radius of row pixel region, (size will be radius*2+1)"
-msgstr "Raggio della regione del pixel della riga (la dimensione sarà raggio*2+1)."
+msgstr ""
+"Raggio della regione del pixel della riga (la dimensione sarà raggio*2+1)."
 
 #: ../operations/workshop/boxblur-1d.c:466
 msgid "1D Box Blur"
