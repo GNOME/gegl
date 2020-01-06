@@ -200,22 +200,16 @@ gegl_graph_prepare (GeglGraphTraversal *path)
           {
             GeglRectangle old_rect;
             GeglRectangle new_rect;
-            GeglRectangle diff_rects[4];
-            gint          n_diff_rects;
-            gint          i;
 
             gegl_rectangle_align_to_buffer (&old_rect, cache_extent, cache,
                                             GEGL_RECTANGLE_ALIGNMENT_SUPERSET);
             gegl_rectangle_align_to_buffer (&new_rect, &node->have_rect, cache,
                                             GEGL_RECTANGLE_ALIGNMENT_SUPERSET);
 
-            n_diff_rects = gegl_rectangle_subtract (diff_rects,
-                                                    &old_rect, &new_rect);
-
-            for (i = 0; i < n_diff_rects; i++)
-              gegl_buffer_clear (cache, &diff_rects[i]);
-
-            gegl_buffer_set_extent (cache, &node->have_rect);
+            if (gegl_rectangle_contains (&new_rect, &old_rect))
+              gegl_buffer_set_extent (cache, &node->have_rect);
+            else
+              g_clear_object (&node->cache);
           }
       }
 
