@@ -109,8 +109,8 @@ get_base_displacement (gdouble  amount,
 }
 
 static inline void
-get_input_cartesian_coordinates (gint     x,
-                                 gint     y,
+get_input_cartesian_coordinates (gdouble  x,
+                                 gdouble  y,
                                  gdouble  x_amount,
                                  gdouble  y_amount,
                                  gfloat  *xmap_pixel,
@@ -133,8 +133,8 @@ get_input_cartesian_coordinates (gint     x,
 }
 
 static inline void
-get_input_polar_coordinates (gint     x,
-                             gint     y,
+get_input_polar_coordinates (gdouble  x,
+                             gdouble  y,
                              gdouble  x_amount,
                              gdouble  y_amount,
                              gfloat  *xmap_pixel,
@@ -386,13 +386,15 @@ process (GeglOperation       *operation,
 
             if (o->displace_mode == GEGL_DISPLACE_MODE_POLAR)
               {
-                get_input_polar_coordinates (x, y, o->amount_x, o->amount_y,
+                get_input_polar_coordinates (x + 0.5, y + 0.5,
+                                             o->amount_x, o->amount_y,
                                              aux_pixel, aux2_pixel, cx, cy,
                                              &src_x, &src_y);
               }
             else
               {
-                get_input_cartesian_coordinates (x, y, o->amount_x, o->amount_y,
+                get_input_cartesian_coordinates (x + 0.5, y + 0.5,
+                                                 o->amount_x, o->amount_y,
                                                  aux_pixel, aux2_pixel,
                                                  &src_x, &src_y);
               }
