@@ -147,7 +147,7 @@ math    = cc.find_library('m', required: false)
 libdl   = cc.find_library('dl', required : false)
 thread  = dependency('threads')
 
-babl      = dependency('babl',        version: '>=0.1.72')
+babl      = dependency('babl',        version: '>=0.1.74')
 glib      = dependency('glib-2.0',    version: '>=2.44.0')
 gobject   = dependency('gobject-2.0', version: '>=2.44.0')
 gmodule   = dependency('gmodule-2.0', version: '>=2.44.0')
