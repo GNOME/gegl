@@ -398,7 +398,7 @@ gegl_can_do_inplace_processing (GeglOperation       *operation,
     return FALSE;
 
   if (gegl_buffer_get_format (input) == gegl_operation_get_format (operation, "output") &&
-      gegl_rectangle_contains (gegl_buffer_get_extent (input), result))
+      gegl_rectangle_contains (gegl_buffer_get_abyss (input), result))
     return TRUE;
   return FALSE;
 }
