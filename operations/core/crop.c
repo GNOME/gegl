@@ -115,12 +115,6 @@ gegl_crop_get_bounding_box (GeglOperation *operation)
   result.width  = o->width;
   result.height = o->height;
 
-  /* in_rect sometimes ends up as 0,0,0,0 and in those cases - other
-   * code ends up seg-faulting
-   */
-  if (in_rect->width != 0 && in_rect->height != 0)
-    gegl_rectangle_intersect (&result, &result, in_rect);
-
   return result;
 }
 
@@ -180,14 +174,6 @@ gegl_crop_process (GeglOperation        *operation,
       GeglBuffer    *output;
 
       extent = *GEGL_RECTANGLE (o->x, o->y,  o->width, o->height);
-
-      /* The output buffer's extent must be a subset of the input buffer's
-       * extent; otherwise, if the output buffer is reused for in-place output,
-       * we might try to write to areas of the buffer that lie outside the
-       * input buffer, erroneously discarding the data.
-       */
-      gegl_rectangle_intersect (&extent,
-                                &extent, gegl_buffer_get_extent (input));
 
       if (gegl_rectangle_equal (&extent, gegl_buffer_get_extent (input)))
         output = g_object_ref (input);
