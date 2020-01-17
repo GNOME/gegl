@@ -1,28 +1,39 @@
-GEGL-0.4.20 2019-12-xx
+GEGL-0.4.20 2020-01-17
 ----------------------
 
 Build
 ~~~~~
 
-Improve architecture detection for win32, fixing build on some archs, fix
-meson build on darwin.
-Improve CI for potential different type test runs.
+Improvements and refinements of meson builds and CI. Fixing major issues
+for OSX and win32.
 
 Buffer
 ~~~~~~
 
-Pass O_BINARY where relevant on windows.
+Pass O_BINARY where relevant on windows, fixing crashes occuring when swap
+is used.
 Avoid 32bit overflows in computations for gegl_buffer_set and gegl_buffer_get.
 
 Core
 ~~~~
 
 Avoid running more thread jobs than there are pixels to process.
+Faster teardown of buffer caches when bounding box shrinks.
+only do in-place processing if ROI fits in input abyss.
 
 Operations
 ~~~~~~~~~~
 
 Improved edge handling for gegl:distance-transform
+gegl:crop removed workaround for incorrect in-place handling.
+
+
+Contributors to this release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alan Mortensen, Alex Samorukov, Christoph Reiter, Dimitris Spingos, Ell,
+Jan Vesely, Jordi Mas, Julien Hardelin, Koop Mast, Marco Ciampa, Michael
+Schumacher, Øyvind Kolås and woob.
 
 
 GEGL-0.4.18 2019-10-27
