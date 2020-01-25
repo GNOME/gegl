@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import os
 import sys
+import io
 
 # Search for lines that look like #include "blah.h" and replace them
 # with the contents of blah.h.
@@ -34,12 +36,12 @@ def escape_string(s):
 
 
 if len(sys.argv) == 2:
-  infile  = open(sys.argv[1], "r")
-  outfile = open(sys.argv[1] + '.h',  "w")
+  infile  = io.open(sys.argv[1], "r", encoding="utf-8")
+  outfile = io.open(sys.argv[1] + '.h',  "w", encoding="utf-8")
 
 elif len(sys.argv) == 3:
-  infile  = open(sys.argv[1], "r")
-  outfile = open(sys.argv[2], "w")
+  infile  = io.open(sys.argv[1], "r", encoding="utf-8")
+  outfile = io.open(sys.argv[2], "w", encoding="utf-8")
 
 else:
   print("Usage: %s input [output]" % sys.argv[0])
