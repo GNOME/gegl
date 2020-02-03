@@ -236,13 +236,34 @@ matting_prepare (GeglOperation *operation)
 
 
 static GeglRectangle
+matting_get_bounding_box (GeglOperation *operation)
+{
+  GeglRectangle  result  = {};
+  GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation,
+                                                                   "input");
+
+  if (in_rect)
+    result = *in_rect;
+
+  return result;
+}
+
+
+static GeglRectangle
+matting_get_invalidated_by_change (GeglOperation       *operation,
+                                   const gchar         *input_pad,
+                                   const GeglRectangle *roi)
+{
+  return matting_get_bounding_box (operation);
+}
+
+
+static GeglRectangle
 matting_get_required_for_output (GeglOperation       *operation,
                                  const gchar         *input_pad,
                                  const GeglRectangle *roi)
 {
-  GeglRectangle result = *gegl_operation_source_get_bounding_box (operation,
-                                                                  "input");
-  return result;
+  return matting_get_bounding_box (operation);
 }
 
 
@@ -250,7 +271,7 @@ static GeglRectangle
 matting_get_cached_region (GeglOperation * operation,
                            const GeglRectangle * roi)
 {
-  return *gegl_operation_source_get_bounding_box (operation, "input");
+  return matting_get_bounding_box (operation);
 }
 
 
@@ -1445,10 +1466,12 @@ gegl_op_class_init (GeglOpClass *klass)
 
   composer_class->process = matting_process;
 
-  operation_class->prepare                 = matting_prepare;
-  operation_class->get_required_for_output = matting_get_required_for_output;
-  operation_class->get_cached_region       = matting_get_cached_region;
-  operation_class->threaded                = FALSE;
+  operation_class->prepare                   = matting_prepare;
+  operation_class->get_bounding_box          = matting_get_bounding_box;
+  operation_class->get_invalidated_by_change = matting_get_invalidated_by_change;
+  operation_class->get_required_for_output   = matting_get_required_for_output;
+  operation_class->get_cached_region         = matting_get_cached_region;
+  operation_class->threaded                  = FALSE;
 
   gegl_operation_class_set_keys (operation_class,
   "name",         "gegl:matting-levin",
