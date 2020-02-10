@@ -5,6 +5,8 @@
 
 G_BEGIN_DECLS
 
+extern guint gegl_debug_flags;
+
 typedef enum {
   GEGL_DEBUG_PROCESS         = 1 << 0,
   GEGL_DEBUG_BUFFER_LOAD     = 1 << 1,
@@ -24,7 +26,7 @@ typedef enum {
  * flags
  */
 #ifdef __GEGL_INIT_C
-static const GDebugKey gegl_debug_keys[] = {
+const GDebugKey gegl_debug_keys[] = {
   { "process",       GEGL_DEBUG_PROCESS},
   { "cache",         GEGL_DEBUG_CACHE},
   { "buffer-load",   GEGL_DEBUG_BUFFER_LOAD},
@@ -45,6 +47,8 @@ static const GDebugKey gegl_debug_keys[] = {
                      GEGL_DEBUG_BUFFER_ALLOC|
                      GEGL_DEBUG_LICENSE},
 };
+#else
+extern GDebugKey gegl_debug_keys[];
 #endif /* __GEGL_INIT_C */
 
 #if defined(__cplusplus) && defined(GEGL_ISO_CXX_VARIADIC_MACROS)
@@ -52,6 +56,12 @@ static const GDebugKey gegl_debug_keys[] = {
 #endif
 
 #ifdef GEGL_ENABLE_DEBUG
+
+static inline
+gint64 gegl_get_timestamp(void)
+{
+	return g_get_monotonic_time();
+}
 
 #if defined(GEGL_ISO_VARIADIC_MACROS)
 
@@ -125,7 +135,7 @@ gegl_lookup_debug_string  (guint type)
 static inline void
 GEGL_NOTE (guint type, const char *format, ...)
 {
-  va_alist args;
+  va_list args;
 
   if (gegl_debug_flags & type)
   {
@@ -142,7 +152,7 @@ GEGL_NOTE (guint type, const char *format, ...)
 static inline void
 GEGL_TIMESTAMP (guint type, const char *format, ...)
 {
-  va_alist args;
+  va_list args;
   
   if (gegl_debug_flags & type)
   {
@@ -194,8 +204,6 @@ GEGL_TIMESTAMP (guint type, const char *format, ...)
 #define GEGL_DBG(x)
 
 #endif /* GEGL_ENABLE_DEBUG */
-
-extern guint gegl_debug_flags;
 
 G_END_DECLS
 
