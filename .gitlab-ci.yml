@@ -95,6 +95,13 @@ babl-min:
   variables:
     CONFIG_OPTIONS: "-Dworkshop=true -Ddocs=true -Dintrospection=true"
 
+.build-all-debug:
+  extends: .build-gegl
+  variables:
+    CFLAGS: "-DGEGL_ENABLE_DEBUG"
+    CXXFLAGS: "-DGEGL_ENABLE_DEBUG"
+    CONFIG_OPTIONS: "-Dworkshop=true -Ddocs=true -Dintrospection=true"
+
 default-min-babl:
   extends: .build-default
   dependencies:
@@ -103,6 +110,12 @@ default-min-babl:
 
 fullconfig-master-babl:
   extends: .build-all
+  dependencies:
+    - babl-master
+  needs: ["babl-master"]
+
+debug-fullconfig-master-babl:
+  extends: .build-all-debug
   dependencies:
     - babl-master
   needs: ["babl-master"]
