@@ -31,6 +31,7 @@ invert_crop_xml = """<?xml version='1.0' encoding='UTF-8'?>
         <param name='y'>0</param>
         <param name='width'>0</param>
         <param name='height'>0</param>
+        <param name='reset-origin'>false</param>
       </params>
   </node>
 </gegl>
