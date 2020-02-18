@@ -56,21 +56,22 @@ struct _GeglOperationPipeLine {
  */
 gboolean gegl_operation_is_pipelinable (GeglOperation *op)
 {
-  gboolean ret = GEGL_IS_OPERATION_POINT_FILTER (op) ||
-                 GEGL_IS_OPERATION_POINT_COMPOSER (op) ||
-                 GEGL_IS_OPERATION_POINT_COMPOSER3 (op);
+  gboolean ret = GEGL_IS_OPERATION_POINT_FILTER (op)
+  || GEGL_IS_OPERATION_POINT_COMPOSER (op) ||
+     GEGL_IS_OPERATION_POINT_COMPOSER3 (op);
   if (ret)
   {
     GeglOperationClass *op_klass = GEGL_OPERATION_GET_CLASS (op);
     if (op_klass->want_in_place == FALSE)
       return FALSE;
   }
-  if (0 && ret)
+  if (1 && ret)
   {
     const char *name = gegl_operation_get_name (op);
     if (!strcmp (name, "gimp:mask-components"))
       return FALSE;
   }
+  //return FALSE; // this turns off pipelining
   return ret;
 }
 
