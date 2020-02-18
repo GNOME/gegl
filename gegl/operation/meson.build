@@ -10,6 +10,7 @@ gegl_sources += files(
   'gegl-operation-handlers.c',
   'gegl-operation-meta-json.c',
   'gegl-operation-meta.c',
+  'gegl-operation-pipeline.c',
   'gegl-operation-point-composer.c',
   'gegl-operation-point-composer3.c',
   'gegl-operation-point-filter.c',
