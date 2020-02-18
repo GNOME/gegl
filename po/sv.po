@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-02-03 19:10+0000\n"
-"PO-Revision-Date: 2020-02-13 14:25+0100\n"
+"POT-Creation-Date: 2020-02-13 13:29+0000\n"
+"PO-Revision-Date: 2020-02-18 21:29+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -240,11 +240,12 @@ msgstr "Låg halo"
 
 #: gegl/buffer/gegl-buffer-enums.c:117
 msgid "Subset"
-msgstr ""
+msgstr "Delmängd"
 
 #: gegl/buffer/gegl-buffer-enums.c:118
+#, fuzzy
 msgid "Superset"
-msgstr ""
+msgstr "Omfattande mängd av"
 
 #: gegl/gegl-enums.c:34
 msgid "Floyd-Steinberg"
@@ -428,22 +429,24 @@ msgstr "Modulen ”%s” inläsningsfel: %s"
 
 #: gegl/operation/gegl-operation-composer3.c:77
 #, fuzzy
-#| msgid "X start of the generated buffer"
 msgid "Output pad for generated image buffer."
-msgstr "X-början för den genererade bufferten"
+msgstr "Utdatakontakt för genererad bildbuffert."
 
 #: gegl/operation/gegl-operation-composer3.c:86
+#, fuzzy
 msgid "Input pad, for image buffer input."
-msgstr ""
+msgstr "Indatakontakt, för inmatning av bildbuffert."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
+#, fuzzy
 msgid "Auxiliary image buffer input pad."
-msgstr ""
+msgstr "Tillsatsbildbufferts indatakontakt."
 
 #: gegl/operation/gegl-operation-composer3.c:104
+#, fuzzy
 msgid "Second auxiliary image buffer input pad."
-msgstr ""
+msgstr "Andra tillsatsbildbufferts indatakontakt."
 
 #: operations/common/absolute.c:79
 msgid "Absolute"
@@ -947,16 +950,21 @@ msgid "Line thickness"
 msgstr "Linjetjocklek"
 
 #: operations/common/color-assimilation-grid.c:164
+#, fuzzy
 msgid "Color Assimilation Grid"
-msgstr ""
+msgstr "Färgassimileringsrutnät"
 
 #: operations/common/color-assimilation-grid.c:166
+#, fuzzy
 msgid ""
 "Turn image grayscale and overlay an oversaturated grid - through color "
 "assimilation happening in the human visual system, for some grid scales this "
 "produces the illusion that the grayscale grid cells themselves also have "
 "color."
 msgstr ""
+"Gör bilden till gråskala och lägg över ett övermättat rutnät - genom "
+"färgassimilering i människans synsystem skapar detta för några rutnätsskalor "
+"illusionen att rutnätscellerna i gråskala också har färg."
 
 #: operations/common/color-enhance.c:277
 msgid "Color Enhance"
@@ -2861,10 +2869,8 @@ msgid "Mix"
 msgstr "Blandning"
 
 #: operations/common/mix.c:115
-#, fuzzy
-#| msgid "do a lerp, linear interpolation (lerp) between input and aux"
 msgid "Do a lerp, linear interpolation (lerp) between input and aux"
-msgstr "gör en linjärinterpolering (lerp) mellan indata och tillsats"
+msgstr "Gör en linjärinterpolering (lerp) mellan indata och tillsats"
 
 #: operations/common/mono-mixer.c:26 operations/common-gpl3+/channel-mixer.c:31
 msgid "Preserve luminosity"
@@ -2945,10 +2951,8 @@ msgstr ""
 "Hur många bläck som ska använda endast svart, rg, rgb (additiv) eller cmyk"
 
 #: operations/common/newsprint.c:44
-#, fuzzy
-#| msgid "Red and cyan angle"
 msgid "Red and cyan pattern"
-msgstr "Röd och cyan vinkel"
+msgstr "Rött och cyan mönster"
 
 #: operations/common/newsprint.c:46 operations/common/newsprint.c:74
 #: operations/common/newsprint.c:102 operations/common/newsprint.c:130
@@ -2956,22 +2960,16 @@ msgid "Halftoning/dot pattern to use"
 msgstr "Rastrerings-/punktmönster som ska användas"
 
 #: operations/common/newsprint.c:50
-#, fuzzy
-#| msgid "Bayer pattern"
 msgid "Red pattern"
-msgstr "Bayer-mönster"
+msgstr "Rött mönster"
 
 #: operations/common/newsprint.c:51
-#, fuzzy
-#| msgid "Bayer pattern"
 msgid "Cyan pattern"
-msgstr "Bayer-mönster"
+msgstr "Cyanmönster"
 
 #: operations/common/newsprint.c:53
-#, fuzzy
-#| msgid "Red and cyan angle"
 msgid "Red and cyan period"
-msgstr "Röd och cyan vinkel"
+msgstr "Röd och cyan period"
 
 #: operations/common/newsprint.c:55 operations/common/newsprint.c:83
 #: operations/common/newsprint.c:111 operations/common/newsprint.c:141
@@ -2982,16 +2980,12 @@ msgstr ""
 "Antal bildpunkter längs en repetition av grundmönster vid basupplösning."
 
 #: operations/common/newsprint.c:59
-#, fuzzy
-#| msgid "Red inversion"
 msgid "Red period"
-msgstr "Röd invertering"
+msgstr "Röd period"
 
 #: operations/common/newsprint.c:60
-#, fuzzy
-#| msgid "X Period"
 msgid "Cyan period"
-msgstr "X-period"
+msgstr "Cyanperiod"
 
 #: operations/common/newsprint.c:62
 msgid "Red and cyan angle"
@@ -3003,49 +2997,35 @@ msgstr "Röd vinkel"
 
 #: operations/common/newsprint.c:70
 msgid "Cyan angle"
-msgstr "Cyan vinkel"
+msgstr "Cyanvinkel"
 
 #: operations/common/newsprint.c:72
-#, fuzzy
-#| msgid "Blue and magenta angle"
 msgid "Green and magenta pattern"
-msgstr "Blå och magenta vinkel"
+msgstr "Grönt och magenta mönster"
 
 #: operations/common/newsprint.c:78
-#, fuzzy
-#| msgid "Bayer pattern"
 msgid "Green pattern"
-msgstr "Bayer-mönster"
+msgstr "Grönt mönster"
 
 #: operations/common/newsprint.c:79
-#, fuzzy
-#| msgid "Magenta angle"
 msgid "Magenta pattern"
-msgstr "Magenta vinkel"
+msgstr "Magentamönster"
 
 #: operations/common/newsprint.c:81
-#, fuzzy
-#| msgid "Blue and magenta angle"
 msgid "Green and magenta period"
-msgstr "Blå och magenta vinkel"
+msgstr "Grön och magenta period"
 
 #: operations/common/newsprint.c:87
-#, fuzzy
-#| msgid "Green inversion"
 msgid "Green period"
-msgstr "Grön invertering"
+msgstr "Grön period"
 
 #: operations/common/newsprint.c:88
-#, fuzzy
-#| msgid "Magenta angle"
 msgid "Magenta period"
-msgstr "Magenta vinkel"
+msgstr "Magentaperiod"
 
 #: operations/common/newsprint.c:90
-#, fuzzy
-#| msgid "Blue and magenta angle"
 msgid "Green and magenta angle"
-msgstr "Blå och magenta vinkel"
+msgstr "Grön och magenta vinkel"
 
 #: operations/common/newsprint.c:97
 msgid "Green angle"
@@ -3053,47 +3033,35 @@ msgstr "Grön vinkel"
 
 #: operations/common/newsprint.c:98
 msgid "Magenta angle"
-msgstr "Magenta vinkel"
+msgstr "Magentavinkel"
 
 #: operations/common/newsprint.c:100
-#, fuzzy
-#| msgid "Bayer pattern"
 msgid "Blue and Yellow pattern"
-msgstr "Bayer-mönster"
+msgstr "Blått och gult mönster"
 
 #: operations/common/newsprint.c:106
-#, fuzzy
-#| msgid "Bayer pattern"
 msgid "Blue pattern"
-msgstr "Bayer-mönster"
+msgstr "Blått mönster"
 
 #: operations/common/newsprint.c:107
-#, fuzzy
-#| msgid "Yellow angle"
 msgid "Yellow pattern"
-msgstr "Gul vinkel"
+msgstr "Gult mönster"
 
 #: operations/common/newsprint.c:109
 msgid "Blue and Yellow period"
-msgstr ""
+msgstr "Blå och gul period"
 
 #: operations/common/newsprint.c:115
-#, fuzzy
-#| msgid "Blue inversion"
 msgid "Blue period"
-msgstr "Blå invertering"
+msgstr "Blå period"
 
 #: operations/common/newsprint.c:116
-#, fuzzy
-#| msgid "Y Period"
 msgid "Yellow period"
-msgstr "Y-period"
+msgstr "Gul period"
 
 #: operations/common/newsprint.c:118
-#, fuzzy
-#| msgid "Blue and magenta angle"
 msgid "Blue and Yellow angle"
-msgstr "Blå och magenta vinkel"
+msgstr "Blå och gul vinkel"
 
 #: operations/common/newsprint.c:125
 msgid "Blue angle"
@@ -3104,10 +3072,8 @@ msgid "Yellow angle"
 msgstr "Gul vinkel"
 
 #: operations/common/newsprint.c:128 operations/common/newsprint.c:136
-#, fuzzy
-#| msgid "Bayer pattern"
 msgid "Black pattern"
-msgstr "Bayer-mönster"
+msgstr "Svart mönster"
 
 #: operations/common/newsprint.c:135
 #: operations/common-gpl3+/video-degradation.c:53
@@ -3115,10 +3081,8 @@ msgid "Pattern"
 msgstr "Mönster"
 
 #: operations/common/newsprint.c:139 operations/common/newsprint.c:148
-#, fuzzy
-#| msgid "Black level"
 msgid "Black period"
-msgstr "Svartnivå"
+msgstr "Svart period"
 
 #: operations/common/newsprint.c:142 operations/common/newsprint.c:154
 msgid "Angle offset for patterns"
@@ -3135,24 +3099,22 @@ msgstr "Svart vinkel"
 
 #: operations/common/newsprint.c:162
 #, fuzzy
-#| msgid "Black level"
 msgid "Black pullout"
-msgstr "Svartnivå"
+msgstr "Svart utdragning"
 
 #: operations/common/newsprint.c:164
+#, fuzzy
 msgid "How much of common gray to pull out of CMY"
-msgstr ""
+msgstr "Hur mycket vanlig grå som ska dras ut ur CMY"
 
 #: operations/common/newsprint.c:167
 msgid "Anti-alias oversampling factor"
-msgstr ""
+msgstr "Översamplingsfaktor för kantutjämning"
 
 #: operations/common/newsprint.c:169
 #, fuzzy
-#| msgid ""
-#| "Number of samples to do per iteration looking for the range of colors"
 msgid "Number of samples that are averaged for antialiasing the result."
-msgstr "Antal sampel per iteration som letar efter intervallet av färger"
+msgstr "Antal sampel som medelvärde tas på för att kantutjämna resultatet."
 
 #: operations/common/newsprint.c:171 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
@@ -3426,30 +3388,25 @@ msgstr "Komponenten som används för Y-koordinaterna"
 
 #: operations/common/normal-map.c:45
 msgid "Flip X"
-msgstr ""
+msgstr "Vänd X"
 
 #: operations/common/normal-map.c:46
-#, fuzzy
-#| msgid "Start x coordinate"
 msgid "Flip the X coordinates"
-msgstr "Startkoordinat x"
+msgstr "Vänd X-koordinaterna"
 
 #: operations/common/normal-map.c:48
 msgid "Flip Y"
-msgstr ""
+msgstr "Vänd Y"
 
 #: operations/common/normal-map.c:49
-#, fuzzy
-#| msgid "Start x coordinate"
 msgid "Flip the Y coordinates"
-msgstr "Startkoordinat x"
+msgstr "Vänd Y-koordinaterna"
 
 #: operations/common/normal-map.c:51
 msgid "Full Z Range"
-msgstr ""
+msgstr "Fullständigt Z-intervall"
 
 #: operations/common/normal-map.c:52
-#, fuzzy
 msgid "Use the full [0,1] range to encode the Z coordinates"
 msgstr "Använd hela intervallet [0,1] för att koda Z-koordinaterna"
 
@@ -3460,19 +3417,17 @@ msgstr "Plattläggningsbar"
 
 #: operations/common/normal-map.c:55
 #, fuzzy
-#| msgid "Create a tileable output"
 msgid "Generate a tileable map"
-msgstr "Skapa en plattläggningsbar utdata"
+msgstr "Skapa en plattläggningsbar mappning"
 
 #: operations/common/normal-map.c:249
-#, fuzzy
-#| msgid "Normalize"
 msgid "Normal Map"
-msgstr "Normalisera"
+msgstr "Normalmappning"
 
 #: operations/common/normal-map.c:252
+#, fuzzy
 msgid "Generate a normal map from a height map"
-msgstr ""
+msgstr "Skapa en normalmappning från en höjdmappning"
 
 #: operations/common/opacity.c:26
 msgid ""
@@ -3743,13 +3698,11 @@ msgstr ""
 
 #: operations/common/remap.c:100
 msgid "Minimum Envelope"
-msgstr ""
+msgstr "Minimalt omslag"
 
 #: operations/common/remap.c:101
-#, fuzzy
-#| msgid "Maximum delta"
 msgid "Maximum Envelope"
-msgstr "Maximalt delta"
+msgstr "Maximalt omslag"
 
 #: operations/common/remap.c:105
 msgid "Remap"
@@ -3793,8 +3746,9 @@ msgid "Keep RGB pixels values inside a specific range"
 msgstr "Behåll RGB-bildpunktsvärden inom ett visst intervall"
 
 #: operations/common/saturation.c:26
+#, fuzzy
 msgid "Native"
-msgstr ""
+msgstr "Ursprunglig"
 
 #: operations/common/saturation.c:27
 msgid "CIE Lab/Lch"
@@ -3809,15 +3763,16 @@ msgid "Scale, strength of effect"
 msgstr "Skala, effektstyrka"
 
 #: operations/common/saturation.c:36
-#, fuzzy
-#| msgid "Convert color space"
 msgid "Interpolation Color Space"
-msgstr "Konvertera färgrymd"
+msgstr "Interpolationsfärgrymd"
 
 #: operations/common/saturation.c:37
+#, fuzzy
 msgid ""
 "Set at Native if uncertain, the CIE based spaces might introduce hue shifts."
 msgstr ""
+"Ställ in till Ursprunglig om osäker, de CIE-baserade rymderna kan "
+"introducera nyansskiften."
 
 #: operations/common/saturation.c:387
 msgid "Changes the saturation"
@@ -4215,11 +4170,15 @@ msgid "Squeeze"
 msgstr "Pressa"
 
 #: operations/common/vignette.c:55
+#, fuzzy
 msgid ""
 "Aspect ratio to use, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf 1.0 = "
 "inf:1, this is applied after proportion is taken into account, to directly "
 "use squeeze factor as proportions, set proportion to 0.0."
 msgstr ""
+"Bildförhållande att använda, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf "
+"1.0 = inf:1, detta tillämpas efter att proportion tagits hänsyn till, för "
+"att direkt använda pressfaktor som proportioner, ställ proportion till 0.0."
 
 #: operations/common/vignette.c:71 operations/common-gpl3+/bayer-matrix.c:51
 #: operations/common-gpl3+/linear-sinusoid.c:96
@@ -4650,9 +4609,8 @@ msgstr "Omgivningsbelysningsfaktor"
 
 #: operations/common-gpl3+/bump-map.c:452
 #, fuzzy
-#| msgid "Height"
 msgid "Height Map"
-msgstr "Höjd"
+msgstr "Höjdmappning"
 
 #: operations/common-gpl3+/bump-map.c:457
 msgid "Bump Map"
@@ -4874,7 +4832,6 @@ msgid "Expand tiles by this amount"
 msgstr "Expandera plattor med detta belopp"
 
 #: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:76
-#, fuzzy
 msgid "The tiles' background color"
 msgstr "Plattornas bakgrundsfärg"
 
@@ -5703,10 +5660,8 @@ msgid "Tile color variation"
 msgstr "Färgvariation för plattor"
 
 #: operations/common-gpl3+/mosaic.c:58
-#, fuzzy
-#| msgid "Tile color variation"
 msgid "Magnitude of random color variations"
-msgstr "Färgvariation för plattor"
+msgstr "Magnitud av slumpmässiga färgvariationer"
 
 #: operations/common-gpl3+/mosaic.c:61
 msgid "Color averaging"
@@ -5855,16 +5810,22 @@ msgid "Mask Radius"
 msgstr "Maskradie"
 
 #: operations/common-gpl3+/oilify.c:29
+#, fuzzy
 msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
 "the aux pad."
 msgstr ""
+"Cirkelradie runt bildpunkt, kan också skalas per bildpunkt med en buffert på "
+"tillsatskontakten."
 
 #: operations/common-gpl3+/oilify.c:35
+#, fuzzy
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
 msgstr ""
+"Exponent för bearbetning, styr mjukhet - kan skalas per bildpunkt med en "
+"buffert på aux2-kontakten."
 
 #: operations/common-gpl3+/oilify.c:38
 msgid "Number of intensities"
@@ -5887,21 +5848,26 @@ msgid "Mask radius buffer"
 msgstr "Maskradiebuffert"
 
 #: operations/common-gpl3+/oilify.c:524
+#, fuzzy
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
 msgstr ""
+"Buffert per bildpunkt för att justera maskradie, förväntar en skalfaktor i "
+"intervallet 0,0-1,0"
 
 #: operations/common-gpl3+/oilify.c:525
-#, fuzzy
 msgid "Exponent buffer"
 msgstr "Exponentbuffert"
 
 #: operations/common-gpl3+/oilify.c:526
+#, fuzzy
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
 msgstr ""
+"Buffert per bildpunkt för att justera exponentparametern, förväntar en "
+"skalfaktor i intervallet 0,0-1,0"
 
 #: operations/common-gpl3+/oilify.c:535
 msgid "Oilify"
@@ -6473,17 +6439,15 @@ msgstr "Lägre tröskelvärde"
 
 #: operations/common-gpl3+/value-propagate.c:44
 msgid "The minimum difference in value at which to propagate a pixel"
-msgstr ""
+msgstr "Minsta skillnaden i värde vid vilken en bildpunkt ska propageras"
 
 #: operations/common-gpl3+/value-propagate.c:47
 msgid "Upper threshold"
 msgstr "Övre tröskelvärde"
 
 #: operations/common-gpl3+/value-propagate.c:48
-#, fuzzy
-#| msgid "Maximum difference between two pixels."
 msgid "The maximum difference in value at which to propagate a pixel"
-msgstr "Största skillnad mellan två bildpunkter."
+msgstr "Största skillnaden i värde vid vilken en bildpunkt ska propageras"
 
 #: operations/common-gpl3+/value-propagate.c:51
 msgid "Propagating rate"
@@ -6491,7 +6455,7 @@ msgstr "Propageringshastighet"
 
 #: operations/common-gpl3+/value-propagate.c:52
 msgid "The strength with which to propagate a pixel to its neighbors"
-msgstr ""
+msgstr "Styrkan med vilken en bildpunkt ska propageras till sina grannar"
 
 #: operations/common-gpl3+/value-propagate.c:56
 msgid "Color to use for the \"Only color\" and \"Color to peaks\" modes"
@@ -6535,7 +6499,7 @@ msgstr "Propagera värdekanal"
 
 #: operations/common-gpl3+/value-propagate.c:74
 msgid "Whether to propagate a pixel's color"
-msgstr ""
+msgstr "Huruvida en bildpunkts färg ska propageras"
 
 #: operations/common-gpl3+/value-propagate.c:76
 msgid "Propagating alpha channel"
@@ -6543,7 +6507,7 @@ msgstr "Propagera alfakanal"
 
 #: operations/common-gpl3+/value-propagate.c:77
 msgid "Whether to propagate a pixel's opacity"
-msgstr ""
+msgstr "Huruvida en bildpunkts opacitet ska propageras"
 
 #: operations/common-gpl3+/value-propagate.c:646
 msgid "Value Propagate"
@@ -7539,10 +7503,8 @@ msgid "file to load"
 msgstr "fil att läsa in"
 
 #: operations/external/pdf-load.c:28
-#, fuzzy
-#| msgid "URI of file to load"
 msgid "uri of file to load"
-msgstr "URI för fil att läsa in"
+msgstr "uri för fil att läsa in"
 
 #: operations/external/pdf-load.c:30
 msgid "Page"
@@ -7559,14 +7521,15 @@ msgstr "Sidor"
 #: operations/external/pdf-load.c:35
 msgid "Total pages, provided as a visual read-only property"
 msgstr ""
+"Totalt antal sidor, tillhandahållet som en visuell skrivskyddad egenskap"
 
 #: operations/external/pdf-load.c:38
 msgid "PPI"
-msgstr ""
+msgstr "PPI"
 
 #: operations/external/pdf-load.c:39
 msgid "Point/pixels per inch"
-msgstr ""
+msgstr "Punkter/bildpunkter per tum"
 
 #: operations/external/pdf-load.c:43
 msgid "Password"
@@ -7574,18 +7537,15 @@ msgstr "Lösenord"
 
 #: operations/external/pdf-load.c:44
 msgid "Password to use for decryption of PDF, or blank for none"
-msgstr ""
+msgstr "Lösenord att använda för dekryptering av PDF, eller tomt för inget"
 
 #: operations/external/pdf-load.c:242
-#, fuzzy
 msgid "pdf loader"
 msgstr "pdf-inläsare"
 
 #: operations/external/pdf-load.c:244
-#, fuzzy
-#| msgid "GIF image loader."
 msgid "PDF page decoder"
-msgstr "GIF-bildläsare."
+msgstr "PDF-sidavkodare"
 
 #: operations/external/pixbuf.c:26
 msgid "Pixbuf"
@@ -8104,12 +8064,6 @@ msgstr ""
 "cA * cB) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/gamma.c:138
-#, fuzzy
-#| msgid ""
-#| "Math operation gamma, performs the operation per pixel, using either the "
-#| "constant provided in 'value' or the corresponding pixel from the buffer "
-#| "on aux as operands. The result is the evaluation of the expression result "
-#| "= powf (input, value)"
 msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -8119,7 +8073,7 @@ msgstr ""
 "Matematikoperationen gamma utför operationen per bildpunkt och använder "
 "antingen konstanten som anges i ”värde” eller motsvarande bildpunkt från "
 "bufferten tillsats som operander. Resultatet är utvärderingen av uttrycket "
-"resultat = powf (indata, värde)"
+"resultat = (indata >= 0.0f ? powf (indata, värde) : -powf (-indata, värde))"
 
 #: operations/generated/hard-light.c:188
 msgid ""
@@ -8484,25 +8438,18 @@ msgstr ""
 "istället för en gaussisk oskärpa."
 
 #: operations/workshop/boxblur-1d.c:28
-#, fuzzy
-#| msgid "Radius of square pixel region, (width and height will be radius*2+1)"
 msgid "Radius of row pixel region, (size will be radius*2+1)"
-msgstr ""
-"Radie för kvadratisk bildpunktsområde (bredd och höjd kommer att vara "
-"radie*2 + 1)"
+msgstr "Radie för radbildpunktsområde (storlek kommer att vara radie*2+1)"
 
 #: operations/workshop/boxblur-1d.c:466
-#, fuzzy
 msgid "1D Box Blur"
 msgstr "1D-Boxoskärpa"
 
 #: operations/workshop/boxblur-1d.c:467
-#, fuzzy
-#| msgid "Blur resulting from averaging the colors of a square neighbourhood."
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
 msgstr ""
 "Oskärpa som resultat från medelvärdesbildning av färgerna i en "
-"omkringliggande kvadrat."
+"omkringliggande rad."
 
 #: operations/workshop/boxblur.c:77
 msgid "BoxBlur"
