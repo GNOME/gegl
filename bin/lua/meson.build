@@ -28,6 +28,6 @@ lua_files = files(
 if lua.found()
   install_data(
     lua_files,
-    install_dir: get_option('datadir') /  api_name / 'lua'
+    install_dir: get_option('datadir') / api_name / 'lua'
   )
 endif
