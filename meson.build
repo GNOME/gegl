@@ -252,6 +252,10 @@ libwebp   = dependency('libwebp',     version:'>=0.5.0',
   required: get_option('webp')
 )
 
+poppler = dependency('poppler-glib', version: '>=0.71.0',
+  required: get_option('poppler')
+)
+
 pygobject3  = dependency('pygobject-3.0', version: '>=3.2.0',
   required: get_option('pygobject')
 )
@@ -368,6 +372,7 @@ message('\n'.join(['',
 '  Cairo:           @0@'.format(cairo.found()),
 '  Pango:           @0@'.format(pango.found()),
 '  pangocairo:      @0@'.format(pangocairo.found()),
+'  poppler:         @0@'.format(poppler.found()),
 '  GDKPixbuf:       @0@'.format(gdk_pixbuf.found()),
 '  JPEG:            @0@'.format(libjpeg.found()),
 '  PNG:             @0@'.format(libpng.found()),

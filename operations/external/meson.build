@@ -29,6 +29,12 @@ if libpng.found()
   ]
 endif
 
+if poppler.found()
+  operations += [
+    { 'name': 'pdf-load', 'deps': poppler }
+    ]
+endif
+
 if libjpeg.found()
   operations += [
     { 'name': 'jpg-load', 'deps': libjpeg },
