@@ -1,3 +1,24 @@
+GEGL-0.4.22 2020-02-18
+----------------------
+
+Build
+~~~~~
+Updates to python gobject introspection tests, and made them able to look up
+babl typelib.
+Build pdf:load again; missing since meson migration.
+Fix OpenCL include file generation to work in non-utf8 locales.
+
+Operations
+~~~~~~~~~~
+
+matting-{global,levin}: fix crash when bounding boxes of input and aux differ.
+
+Contributors to this release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Anders Jonsson, band-a-prend, Ell, Félix Piédallu and Øyvind Kolås.
+
+
 GEGL-0.4.20 2020-01-17
 ----------------------
 
