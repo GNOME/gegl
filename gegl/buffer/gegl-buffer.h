@@ -697,6 +697,18 @@ void            gegl_buffer_linear_close      (GeglBuffer    *buffer,
 const GeglRectangle * gegl_buffer_get_abyss   (GeglBuffer           *buffer);
 
 
+/**
+ * gegl_buffer_share_storage:
+ * @buffer1: a #GeglBuffer.
+ * @buffer2: a #GeglBuffer.
+ *
+ * Checks if a pair of buffers share the same underlying tile storage.
+ *
+ * Returns TRUE if @buffer1 and @buffer2 share the same storage.
+ */
+gboolean gegl_buffer_share_storage (GeglBuffer *buffer1,
+                                    GeglBuffer *buffer2);
+
 
 /**
  * gegl_buffer_signal_connect:

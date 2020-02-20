@@ -1182,6 +1182,16 @@ gegl_buffer_unlock (GeglBuffer *buffer)
 }
 #endif
 
+gboolean
+gegl_buffer_share_storage (GeglBuffer *buffer1,
+                           GeglBuffer *buffer2)
+{
+  g_return_val_if_fail (GEGL_IS_BUFFER (buffer1), FALSE);
+  g_return_val_if_fail (GEGL_IS_BUFFER (buffer2), FALSE);
+
+  return buffer1->tile_storage == buffer2->tile_storage;
+}
+
 void
 gegl_buffer_emit_changed_signal (GeglBuffer          *buffer,
                                  const GeglRectangle *rect)
