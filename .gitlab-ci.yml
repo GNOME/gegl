@@ -89,7 +89,7 @@ babl-min:
    - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
      ninja -C _build
    - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
-     ninja -C _build test
+     meson test -C _build --print-errorlogs
 
 .build-default:
   extends: .build-gegl
