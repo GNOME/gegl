@@ -1,4 +1,5 @@
 stages:
+  - prepare
   - dependencies
   - gegl
 
@@ -13,7 +14,21 @@ cache:
   - _pacman_cache
   - .ccache
 
-image: archlinux/base:latest
+image: $CI_REGISTRY_IMAGE:ci-latest
+
+build-image:
+  stage: prepare
+  variables:
+    GIT_STRATEGY: none
+  cache: {}
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - echo "FROM archlinux/base:latest" >> Dockerfile
+    - echo "RUN pacman -Syu --noconfirm --needed git base-devel ccache meson" >> Dockerfile
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:ci-latest --cache=true --reproducible --single-snapshot
 
 .babl-base:
   stage: dependencies
