@@ -6608,7 +6608,7 @@ msgstr "GdkPixbuf स्त्रोत"
 
 #: operations/external/pixbuf.c:112
 msgid "Uses the GdkPixbuf located at the memory location in <em>pixbuf</em>."
-msgstr "<Em> पिक्चुफ </ em> मध्ये मेमरी स्थानावर स्थित GdkPixbuf वापरते"
+msgstr "<em> पिक्चुफ </em> मध्ये मेमरी स्थानावर स्थित GdkPixbuf वापरते"
 
 #: operations/external/png-load.c:30
 msgid "URI for file to load."
