@@ -5,13 +5,13 @@
 # osoitz <oelkoro@gmail.com>, 2013.
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2013, 2018.
 # Edurne Labaka <elabaka@uzei.com>, 2015.
-# Asier Sarasua Garmendia <asier.sarasua@gmail.com>, 2018, 2019.
+# Asier Sarasua Garmendia <asier.sarasua@gmail.com>, 2018, 2019, 2020.
 #
 msgid ""
 msgstr "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-09-25 11:19+0000\n"
-"PO-Revision-Date: 2019-10-11 10:00+0100\n"
+"POT-Creation-Date: 2019-10-12 20:22+0000\n"
+"PO-Revision-Date: 2020-03-04 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asier.sarasua@gmail.com>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -389,20 +389,20 @@ msgstr "Errorea '%s' modulua kargatzean: %s"
 
 #: gegl/operation/gegl-operation-composer3.c:77
 msgid "Output pad for generated image buffer."
-msgstr ""
+msgstr "Irteerako betegarria sortutako irudi-bufferrerako."
 
 #: gegl/operation/gegl-operation-composer3.c:86
 msgid "Input pad, for image buffer input."
-msgstr ""
+msgstr "Sarrerako betegarria irudi-buferraren sarrerarako."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
 msgid "Auxiliary image buffer input pad."
-msgstr ""
+msgstr "Irudi-buffer laguntzailearen sarrerako betegarria."
 
 #: gegl/operation/gegl-operation-composer3.c:104
 msgid "Second auxiliary image buffer input pad."
-msgstr ""
+msgstr "Irudi-buffer bigarren laguntzailearen sarrerako betegarria."
 
 #: operations/common/absolute.c:79
 msgid "Absolute"
@@ -412,7 +412,7 @@ msgstr "Absolutua"
 msgid ""
 "Makes each linear RGB component be the absolute of its value, "
 "fabs(input_value)"
-msgstr ""
+msgstr "RGB osagai lineal bakoitza bere balioaren absolutua izan dadin bihurtzen du, fabs(input_value)"
 
 #: operations/common/alien-map.c:29 operations/common/newsprint.c:35
 msgid "RGB"
@@ -880,7 +880,7 @@ msgstr "Marra-lodiera"
 
 #: operations/common/color-assimilation-grid.c:164
 msgid "Color Assimilation Grid"
-msgstr ""
+msgstr "Kolorea asimilatzeko sareta"
 
 #: operations/common/color-assimilation-grid.c:166
 msgid ""
@@ -1589,17 +1589,17 @@ msgstr "Iragazte-iterazioen kopurua. Aski da 2 eta 4 arteko balioa."
 
 #: operations/common/domain-transform.c:30
 msgid "Spatial standard deviation of the blur kernel, measured in pixels."
-msgstr "Lausotze-kernelaren desbiderapen espazial estandarra, pixeletan neurtuta."
+msgstr "Lausotze-kernelaren desbideratze espazial estandarra, pixeletan neurtuta."
 
 #: operations/common/domain-transform.c:35
 msgid ""
 "Amount of edge preservation. This quantity is inversely proportional to the "
 "range standard deviation of the blur kernel."
-msgstr ""
+msgstr "Ertza zein neurritan mantenduko den. Kantitate hau lausotze-kernelaren desbideratze estandarraren barrutiarekiko alderantziz proportzionala da."
 
 #: operations/common/domain-transform.c:529
 msgid "Smooth by Domain Transform"
-msgstr ""
+msgstr "Leundu domeinuaren eraldaketaren bidez"
 
 #: operations/common/domain-transform.c:531
 msgid ""
@@ -1811,7 +1811,7 @@ msgstr "Y tamaina"
 #: operations/common/gaussian-blur.c:46 operations/common/gblur-1d.c:45
 #: operations/common/high-pass.c:25
 msgid "Standard deviation (spatial scale factor)"
-msgstr "Desbiderapen estandarra (eskala espazialaren faktorea)"
+msgstr "Desbideratze estandarra (eskala espazialaren faktorea)"
 
 #: operations/common/gaussian-blur.c:53 operations/common/gblur-1d.c:55
 msgid "Filter"
@@ -2332,7 +2332,7 @@ msgstr "Alderantzizko eraldatzea"
 msgid ""
 "Do the inverse mapping, useful for touching up zenith, nadir or other parts "
 "of panorama."
-msgstr ""
+msgstr "Egin alderantzizko mapatzea, erabilgarria panoramaren zenita, nadirra edo beste atal batzuk moldatzeko."
 
 #. XXX: needs better ui type
 #: operations/common/little-planet.c:61 operations/common/map-absolute.c:22
@@ -2349,7 +2349,7 @@ msgid ""
 "Image resampling method to use, for good results with double resampling when "
 "retouching panoramas, use nearest to generate the view and cubic or better "
 "for the inverse transform back to panorama."
-msgstr ""
+msgstr "Irudiak birlagintzeko erabiliko den metodoa, panoramak moldatzean birlaginketa bikoitzarekin emaitza onak lortzeko erabili hurbilena bista sortzeko eta kubikoa edo hobea berriro panorama sortzeko alderantzizko eraldaketa egiteko."
 
 #: operations/common/little-planet.c:530
 msgid "Little Planet"
@@ -2425,7 +2425,7 @@ msgstr "Erdiko puntua (erlatiboa)"
 
 #: operations/common/long-shadow.c:73
 msgid "Shadow fade midpoint, as a factor of the shadow length"
-msgstr ""
+msgstr "Itzal-iraungitzearen erdiko puntua, itzalaren luzeraren faktore gisa"
 
 #: operations/common/long-shadow.c:84
 msgid "Shadow color"
@@ -2546,12 +2546,12 @@ msgstr "Iterazio kopurua kontrolatzen du"
 
 #: operations/common/mean-curvature-blur.c:246
 msgid "Mean Curvature Blur"
-msgstr ""
+msgstr "Batezbesteko kurbaduraren lausotzea"
 
 #: operations/common/mean-curvature-blur.c:249
 msgid ""
 "Regularize geometry at a speed proportional to the local mean curvature value"
-msgstr ""
+msgstr "Erregularizatu geometria batezbesteko kurbaduraren balio lokalarekiko proportzionala den abiaduran"
 
 #: operations/common/median-blur.c:28 operations/common/pixelize.c:29
 #: operations/common/vignette.c:26
@@ -2716,7 +2716,7 @@ msgstr "Tasa"
 
 #: operations/common/mix.c:26
 msgid "Mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
-msgstr ""
+msgstr "Nahaste-erlazioa, aux kantitate gisa irakurrita, 0=sarrera 0,5=tartekoa 1,0=aux"
 
 #: operations/common/mix.c:112
 msgid "Mix"
@@ -2724,7 +2724,7 @@ msgstr "Nahastu"
 
 #: operations/common/mix.c:115
 msgid "Do a lerp, linear interpolation (lerp) between input and aux"
-msgstr ""
+msgstr "Egin interpolazio lineal bat sarrera baten eta laguntzaile baten artean"
 
 #: operations/common/mono-mixer.c:26 operations/common-gpl3+/channel-mixer.c:31
 msgid "Preserve luminosity"
@@ -2948,19 +2948,19 @@ msgstr "Beltzaren angelua"
 
 #: operations/common/newsprint.c:162
 msgid "Black pullout"
-msgstr ""
+msgstr "Beltzaren erauzketa"
 
 #: operations/common/newsprint.c:164
 msgid "How much of common gray to pull out of CMY"
-msgstr ""
+msgstr "Zenbat gris komun erauziko den CMYtik"
 
 #: operations/common/newsprint.c:167
 msgid "Anti-alias oversampling factor"
-msgstr ""
+msgstr "Antialiasaren gainlaginketa-faktorea"
 
 #: operations/common/newsprint.c:169
 msgid "Number of samples that are averaged for antialiasing the result."
-msgstr ""
+msgstr "Zenbat laginen batez bestekoa egingo den emaitzaren antialiaserako."
 
 #: operations/common/newsprint.c:171 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
@@ -3374,7 +3374,7 @@ msgstr "Eraldatu"
 msgid ""
 "Transformation matrix, using SVG syntax (or multiple matrices, separated by "
 "semicolons)"
-msgstr ""
+msgstr "Eraldaketarako matrizea SVG sintaxia erabilita (edo matrize anitz, puntu eta komaz bananduta)"
 
 #: operations/common/recursive-transform.c:32
 #: operations/common/recursive-transform.c:33
@@ -3392,7 +3392,7 @@ msgstr "Iraungitze-kolorea"
 #: operations/common/recursive-transform.c:41
 msgid ""
 "Color to fade transformed images towards, with a rate depending on its alpha"
-msgstr ""
+msgstr "Eraldatutako irudiak zein koloretara iraungiko diren, haren alfaren araberako tasa batekin"
 
 #: operations/common/recursive-transform.c:44
 msgid "Fade opacity"
@@ -3400,7 +3400,7 @@ msgstr "Iraungitze-opakutasuna"
 
 #: operations/common/recursive-transform.c:45
 msgid "Amount by which to scale the opacity of each transformed image"
-msgstr ""
+msgstr "Eraldatutako irudi bakoitzaren opakutasuna eskalatzeko erabiliko den kantitatea"
 
 #: operations/common/recursive-transform.c:49
 msgid "Paste below"
@@ -3658,7 +3658,7 @@ msgstr "Esferizatu"
 
 #: operations/common/spherize.c:324
 msgid "Wrap image around a spherical cap"
-msgstr "Egokitu irudia geruza esferiko baten inguruan"
+msgstr "Egokitu irudia txano esferiko baten inguruan"
 
 #: operations/common/stress.c:28
 msgid ""
@@ -3676,7 +3676,7 @@ msgstr "Iterazio kopurua, iterazio kopuru handiago batek zarata gutxiagoko erren
 msgid ""
 "When enabled also enhances shadow regions - when disabled a more natural "
 "result is yielded"
-msgstr ""
+msgstr "Gaituta badago, itzaleko eskualdeak ere nabarmentzen ditu - desgaituta badago, emaitza naturalagoak lortuko dira"
 
 #: operations/common/stress.c:268 operations/common/stress.c:272
 msgid "Spatio Temporal Retinex-like Envelope with Stochastic Sampling"
@@ -3698,7 +3698,7 @@ msgstr "Osagai ez linealak"
 msgid ""
 "When set operate on gamma corrected values instead of linear RGB - acting "
 "like the old normalize filter in GIMP"
-msgstr ""
+msgstr "Ezarrita dagoenean, egin lan gamma zuzendutako balioekin RGB linealean lan egin ordez - GIMPen normalizazio-iragazki zaharren antzekoa da"
 
 #: operations/common/stretch-contrast.c:583
 msgid "Stretch Contrast"
@@ -3822,11 +3822,11 @@ msgstr "Aurrebiderkatutako koloreak dituen (baina babl formatuaren arabera aurre
 
 #: operations/common/unsharp-mask.c:25
 msgid "Expressed as standard deviation, in pixels"
-msgstr "Desbiderapen estandar gisa adierazita, pixeletan"
+msgstr "Desbideratze estandar gisa adierazita, pixeletan"
 
 #: operations/common/unsharp-mask.c:32
 msgid "Scaling factor for unsharp-mask, the strength of effect"
-msgstr ""
+msgstr "Desenfokatze-maskararako eskalatze-faktorea, efektuaren sendotasuna"
 
 #: operations/common/unsharp-mask.c:164
 msgid "Sharpen (Unsharp Mask)"
@@ -5496,13 +5496,13 @@ msgstr "Maskara-erradioa"
 msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
 "the aux pad."
-msgstr ""
+msgstr "Pixelaren inguruko zirkuluaren erradioa, pixelez pixel ere eskalatu daiteke aux konexio-puntuan."
 
 #: operations/common-gpl3+/oilify.c:35
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
-msgstr ""
+msgstr "Berretzailea prozesatzerako; leuntasuna kontrolatzen du - pixelez eskalatu daiteke aux2 konexio-puntuko buffer batekin."
 
 #: operations/common-gpl3+/oilify.c:38
 msgid "Number of intensities"
@@ -5528,17 +5528,17 @@ msgstr "Maskara-erradioaren bufferra"
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
-msgstr ""
+msgstr "Pixelez pixeleko bufferra maskara-erradioa modulatzeko, 0.0-1.0 barrutiko eskalatze-faktorea espero du"
 
 #: operations/common-gpl3+/oilify.c:525
 msgid "Exponent buffer"
-msgstr ""
+msgstr "Buffer berretzailea"
 
 #: operations/common-gpl3+/oilify.c:526
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
-msgstr ""
+msgstr "Pixelez pixeleko bufferra berretzaile-parametroa modulatzeko, 0.0-1.0 barrutiko eskalatze-faktorea espero du"
 
 #: operations/common-gpl3+/oilify.c:535
 msgid "Oilify"
@@ -6101,7 +6101,7 @@ msgstr "Atalase baxuagoa"
 
 #: operations/common-gpl3+/value-propagate.c:44
 msgid "The minimum difference in value at which to propagate a pixel"
-msgstr ""
+msgstr "Pixel bat hedatzeko erabiliko den gutxieneko balio-diferentzia"
 
 #: operations/common-gpl3+/value-propagate.c:47
 msgid "Upper threshold"
@@ -6109,7 +6109,7 @@ msgstr "Atalase altuagoa"
 
 #: operations/common-gpl3+/value-propagate.c:48
 msgid "The maximum difference in value at which to propagate a pixel"
-msgstr ""
+msgstr "Pixel bat hedatzeko erabiliko den gehieneko balio-diferentzia"
 
 #: operations/common-gpl3+/value-propagate.c:51
 msgid "Propagating rate"
@@ -6117,7 +6117,7 @@ msgstr "Hedatze-tasa"
 
 #: operations/common-gpl3+/value-propagate.c:52
 msgid "The strength with which to propagate a pixel to its neighbors"
-msgstr ""
+msgstr "Pixel bat albokoetara hedatzeko erabiliko den indarra"
 
 #: operations/common-gpl3+/value-propagate.c:56
 msgid "Color to use for the \"Only color\" and \"Color to peaks\" modes"
@@ -6179,7 +6179,7 @@ msgstr "Balioen hedatzea"
 msgid ""
 "Propagate certain values to neighboring pixels. Erode and dilate any color "
 "or opacity."
-msgstr ""
+msgstr "Hedatu balio batzuk gertuko pixeletara. Higatu eta luzatu edozein kolore edo opakutasun."
 
 #: operations/common-gpl3+/video-degradation.c:34
 msgid "Staggered"
@@ -6406,11 +6406,11 @@ msgstr "Honakoetako bat: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES20
 
 #: operations/core/cast-space.c:27 operations/core/convert-space.c:27
 msgid "Pointer"
-msgstr "Kurtsorea"
+msgstr "Erakuslea"
 
 #: operations/core/cast-space.c:28 operations/core/convert-space.c:28
 msgid "pointer to a const * Babl space"
-msgstr ""
+msgstr "const * Babl espazio baten erakuslea"
 
 #: operations/core/cast-space.c:29 operations/core/convert-space.c:29
 #: operations/external/pdf-load.c:24 operations/external/v4l.c:26
@@ -6420,11 +6420,11 @@ msgstr "Bidea"
 
 #: operations/core/cast-space.c:30 operations/core/convert-space.c:30
 msgid "File system path to ICC matrix profile to load"
-msgstr ""
+msgstr "Kargatuko den ICC matrize-profilaren fitxategi-bidea"
 
 #: operations/core/cast-space.c:128
 msgid "Cast color space"
-msgstr ""
+msgstr "Igorri kolore-espazioa"
 
 #: operations/core/cast-space.c:130
 msgid ""
@@ -6482,7 +6482,7 @@ msgstr "Moztu"
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
 "connected is used."
-msgstr ""
+msgstr "Buffer bat mozten du, aux konexio-kontrola konektatuta badago, konektatutako nodoaren muga-koadroa erabiliko da."
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
@@ -6727,19 +6727,19 @@ msgstr "markoa"
 
 #: operations/external/gif-load.c:37
 msgid "frame number to decode"
-msgstr ""
+msgstr "deskodetuko den marko kopurua"
 
 #: operations/external/gif-load.c:39
 msgid "Number of frames in gif animation"
-msgstr ""
+msgstr "Marko kopurua GIF animazioan"
 
 #: operations/external/gif-load.c:40
 msgid "frame-delay"
-msgstr ""
+msgstr "marko-atzerapena"
 
 #: operations/external/gif-load.c:41
 msgid "Delay in ms for last decoded frame"
-msgstr ""
+msgstr "Atzerapena milisegundotan azken deskodetutako markorako"
 
 #: operations/external/gif-load.c:239
 msgid "GIF File Loader"
@@ -6978,7 +6978,7 @@ msgstr "Karratuaren tamaina"
 
 #: operations/external/npd.c:28
 msgid "Size of an edge of square the mesh consists of"
-msgstr "Sarea osatzen duten karratuen ertz-tamaina"
+msgstr "Amarauna osatzen duten karratuen ertz-tamaina"
 
 #: operations/external/npd.c:30
 msgid "Rigidity"
@@ -7135,7 +7135,7 @@ msgstr "Orriak"
 
 #: operations/external/pdf-load.c:35
 msgid "Total pages, provided as a visual read-only property"
-msgstr ""
+msgstr "Orri kopuru osoa, irakurtzeko soilik den ikusizko propietate gisa emana"
 
 #: operations/external/pdf-load.c:38
 msgid "PPI"
@@ -7310,7 +7310,7 @@ msgstr "SDL2 bistaratzea"
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
-msgstr ""
+msgstr "Sarreraren bufferra SDL2 leiho batean bistaratzen du (eragiketa/prozesu bakoitzeko bistaratze bakarrera mugatuta, SDL2 inplementazioaren kontuak)"
 
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -7452,7 +7452,7 @@ msgstr "erabili koma mugikorra"
 
 #: operations/external/tiff-save.c:31
 msgid "floating point -1 means auto, 0 means integer 1 meant float."
-msgstr ""
+msgstr "koma mugikorra, -1 balioak auto esan nahi du, 0 balioak osoa eta 1 balioak mugikorra."
 
 #: operations/external/tiff-save.c:728
 msgid "TIFF File Saver"
@@ -7573,7 +7573,7 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "input + value"
-msgstr ""
+msgstr "Eragiketa matematikoa: gehitu. Eragiketa pixelez pixel gauzatzen du, eragingai gisa 'balioa' aukeran emandako konstantea erabilita edo buffer laguntzailean dagokion pixela erabilita. Emaitza da emaitza = sarrera + balioa adierazpenaren ebaluazioa."
 
 #: operations/generated/clear.c:133
 msgid "Porter Duff operation clear (d = 0.0f)"
@@ -7611,7 +7611,7 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "value==0.0f?0.0f:input/value"
-msgstr ""
+msgstr "Eragiketa matematikoa: zatitu. Eragiketa pixelez pixel gauzatzen du, eragingai gisa 'balioa' aukeran emandako konstantea erabilita edo buffer laguntzailean dagokion pixela erabilita. Emaitza da emaitza = balioa==0.0f?0.0f:sarrera/balioa adierazpenaren ebaluazioa."
 
 #: operations/generated/dst-atop.c:133
 msgid "Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"
@@ -7645,7 +7645,7 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "(input >= 0.0f ? powf (input, value) : -powf (-input, value))"
-msgstr ""
+msgstr "Eragiketa matematikoa: gamma. Eragiketa pixelez pixel gauzatzen du, eragingai gisa 'balioa' aukeran emandako konstantea erabilita edo buffer laguntzailean dagokion pixela erabilita. Emaitza da emaitza = (sarrera >= 0.0f ? powf (sarrera, balioa) : -powf (-sarrera, balioa)) adierazpenaren ebaluazioa."
 
 #: operations/generated/hard-light.c:188
 msgid ""
@@ -7666,7 +7666,7 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "input * value"
-msgstr ""
+msgstr "Eragiketa matematikoa: biderkatu. Eragiketa pixelez pixel gauzatzen du, eragingai gisa 'balioa' aukeran emandako konstantea erabilita edo buffer laguntzailean dagokion pixela erabilita. Emaitza da emaitza = sarrera * balioa adierazpenaren ebaluazioa."
 
 #: operations/generated/overlay.c:188
 msgid ""
@@ -7715,7 +7715,7 @@ msgid ""
 "constant provided in 'value' or the corresponding pixel from the buffer on "
 "aux as operands. The result is the evaluation of the expression result = "
 "input - value"
-msgstr ""
+msgstr "Eragiketa matematikoa: kendu. Eragiketa pixelez pixel gauzatzen du, eragingai gisa 'balioa' aukeran emandako konstantea erabilita edo buffer laguntzailean dagokion pixela erabilita. Emaitza da emaitza = sarrera - balioa adierazpenaren ebaluazioa."
 
 #: operations/generated/xor.c:155
 msgid "Porter Duff operation xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
@@ -7728,7 +7728,7 @@ msgstr "Fintze-eskala"
 #: operations/seamless-clone/seamless-clone.c:23
 msgid ""
 "Maximal scale of refinement points to be used for the interpolation mesh"
-msgstr "Interpolazio-saretan erabiliko diren fintze-puntuen eskala maximoa"
+msgstr "Interpolazio-amaraunean erabiliko diren fintze-puntuen eskala maximoa"
 
 #: operations/seamless-clone/seamless-clone.c:27
 #: operations/seamless-clone/seamless-clone.c:33
@@ -7769,7 +7769,7 @@ msgstr "Fintze-urratsak"
 #: operations/seamless-clone/seamless-clone-compose.c:22
 msgid ""
 "Maximal amount of refinement points to be used for the interpolation mesh"
-msgstr "Finketaren gehieneko puntu kopurua interpolazio-mailan erabiltzeko"
+msgstr "Finketaren gehieneko puntu kopurua interpolazio-amaraunean erabiltzeko"
 
 #: operations/seamless-clone/seamless-clone-compose.c:32
 msgid "How much vertical offset should applied to the paste"
@@ -7910,11 +7910,11 @@ msgstr "Jatorriaren Y koordenatua"
 
 #: operations/transform/transform-core.c:227
 msgid "Near-z"
-msgstr ""
+msgstr "Hurbileko Z"
 
 #: operations/transform/transform-core.c:228
 msgid "Z coordinate of the near clipping plane"
-msgstr ""
+msgstr "Hurbileko mozketa-planoaren Z koordenatua"
 
 #: operations/transform/translate.c:26
 msgid "Horizontal translation"
@@ -7973,19 +7973,19 @@ msgstr ""
 
 #: operations/workshop/boxblur-1d.c:466
 msgid "1D Box Blur"
-msgstr ""
+msgstr "1D kutxa-lausotzea"
 
 #: operations/workshop/boxblur-1d.c:467
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
-msgstr ""
+msgstr "Errenkadako gertukoen koloreen batezbestekotik kalkulatutako lausotzea."
 
 #: operations/workshop/boxblur.c:77
 msgid "BoxBlur"
-msgstr ""
+msgstr "KoadroLausotzea"
 
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
-msgstr ""
+msgstr "Bereizlea"
 
 #: operations/workshop/connected-components.c:26
 msgid "Component separator color"
@@ -7993,11 +7993,11 @@ msgstr ""
 
 #: operations/workshop/connected-components.c:29
 msgid "Invert the separator region"
-msgstr ""
+msgstr "Alderantzikatu eskualde bereizlea"
 
 #: operations/workshop/connected-components.c:32
 msgid "Base index"
-msgstr ""
+msgstr "Oinarri-indizea"
 
 #: operations/workshop/connected-components.c:36
 msgid "Step"
@@ -8005,21 +8005,21 @@ msgstr "Urratsa"
 
 #: operations/workshop/connected-components.c:37
 msgid "Index step"
-msgstr ""
+msgstr "Indize-urratsa"
 
 #: operations/workshop/connected-components.c:42
 msgid "Normalize output to the range [base,base + step]"
-msgstr ""
+msgstr "Normalizatu irteera barrutira [oinarria,oinarria + urratsa]"
 
 #: operations/workshop/connected-components.c:284
 msgid "Connected Components"
-msgstr ""
+msgstr "Konektatutako osagaiak"
 
 #: operations/workshop/connected-components.c:291
 msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
-msgstr ""
+msgstr "Sarreraren eskualde konektatu bakoitza, gainerako sarreratik kolore baten arabera bereizitakoa, kolore bakar batekin betetzen du."
 
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
@@ -8074,11 +8074,11 @@ msgstr "Lua errorea"
 
 #: operations/workshop/external/gluas.c:34
 msgid "Parse/compile error, if any."
-msgstr ""
+msgstr "Analisi/konpilazio errorea, badago."
 
 #: operations/workshop/external/gluas.c:38
 msgid "A stored lua script on disk implementing an operation."
-msgstr ""
+msgstr "Eragiketa bat inplementatzen duen diskoan gordetako lua script bat."
 
 #: operations/workshop/external/gluas.c:40
 msgid "User value"
@@ -8086,7 +8086,7 @@ msgstr "Erabiltzailearen balioa"
 
 #: operations/workshop/external/gluas.c:41
 msgid "Available as a global variable 'user_value' in lua."
-msgstr ""
+msgstr "Lua-n 'user_value' aldagai global modura erabilgarri.."
 
 #: operations/workshop/external/gluas.c:1008
 msgid "gluas"
@@ -8288,7 +8288,7 @@ msgstr "Espirografoa"
 
 #: operations/workshop/external/spyrograph.c:28
 msgid "EPITROCHOID"
-msgstr ""
+msgstr "EPIKOTROIDEA"
 
 #: operations/workshop/external/spyrograph.c:31
 msgid "Curve Type"
@@ -8315,7 +8315,7 @@ msgid ""
 "Number of teeth in moving gear. Radius of moving gear, relative to radius of "
 "fixed gear, is determined by the proportion between the number of teeth in "
 "gears."
-msgstr ""
+msgstr "Horzdun gurpil mugikorraren hortz kopurua. Gurpil mugikorraren erradioa, gurpil finkoaren erradioarekiko, gurpilen hortz kopuruaren arteko proportzioaren araberakoa da."
 
 #: operations/workshop/external/spyrograph.c:46
 msgid "Hole Percent"
@@ -8325,7 +8325,7 @@ msgstr "Zuloaren ehunekoa"
 msgid ""
 "How far the hole is from the center of the moving gear. 100 means that the "
 "hole is at the gear's edge."
-msgstr ""
+msgstr "Zuloa horzdun gurpil mugikorraren erdigunetik zein distantziara dagoen. 100ek esan nahi du zuloa gurpilaren ertzean dagoela."
 
 #: operations/workshop/external/spyrograph.c:52
 msgid "X coordinate of pattern center"
@@ -8543,31 +8543,31 @@ msgstr "Segmentatu kolorea K-means lukutzea erabilita"
 
 #: operations/workshop/selective-hue-saturation.c:26
 msgid "Hue selection center"
-msgstr ""
+msgstr "Ñabardura-hautapenaren zentroa"
 
 #: operations/workshop/selective-hue-saturation.c:27
 msgid "Center of Hue selection interval  "
-msgstr ""
+msgstr "Ñabardura-hautapenaren tartearen zentroa  "
 
 #: operations/workshop/selective-hue-saturation.c:30
 msgid "Hue selection width"
-msgstr ""
+msgstr "Ñabardura-hautapenaren zabalera"
 
 #: operations/workshop/selective-hue-saturation.c:31
 msgid "Width of Hue selection interval  "
-msgstr ""
+msgstr "Ñabardura-hautapenaren tartearen zabalera  "
 
 #: operations/workshop/selective-hue-saturation.c:39
 msgid "Saturation adjustment"
-msgstr ""
+msgstr "Saturazio-doikuntza"
 
 #: operations/workshop/selective-hue-saturation.c:170
 msgid "Selective Hue-Saturation"
-msgstr ""
+msgstr "Ñabardura-saturazio selektiboa"
 
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
-msgstr ""
+msgstr "Selektiboki doitu ñabardura, saturazioa eta argitasuna"
 
 #: operations/workshop/voronoi-diagram.cc:29
 msgid "Mask"
@@ -8575,7 +8575,7 @@ msgstr "Maskara"
 
 #: operations/workshop/voronoi-diagram.cc:30
 msgid "Unseeded region color"
-msgstr ""
+msgstr "Hazirik gabeko eskualde-kolorea"
 
 #: operations/workshop/voronoi-diagram.cc:33
 msgid "Invert mask"
@@ -8583,11 +8583,11 @@ msgstr "Alderantzikatu maskara"
 
 #: operations/workshop/voronoi-diagram.cc:35
 msgid "Seed edges"
-msgstr ""
+msgstr "Erein ertzak"
 
 #: operations/workshop/voronoi-diagram.cc:36
 msgid "Whether the image edges are also seeded"
-msgstr ""
+msgstr "Irudiaren ertzak ere ereingo diren ala ez"
 
 #: operations/workshop/voronoi-diagram.cc:524
 msgid "Voronoi Diagram"
@@ -8595,7 +8595,7 @@ msgstr "Voronoi diagrama"
 
 #: operations/workshop/voronoi-diagram.cc:531
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
-msgstr ""
+msgstr "Hazirik gabeko pixel bakoitza hazidun pixel hurbilenaren kolorearekin margotzen du."
 
 #~ msgid "Chessboard"
 #~ msgstr "Xake-taula"
