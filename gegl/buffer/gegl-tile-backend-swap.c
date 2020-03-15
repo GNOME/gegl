@@ -620,6 +620,8 @@ gegl_tile_backend_swap_write (ThreadParams *params)
       g_atomic_pointer_add (&total_uncompressed, +params->size);
     }
 
+  writing = TRUE;
+
   if (out_offset != offset)
     {
       if (lseek (out_fd, offset, SEEK_SET) < 0)
@@ -631,16 +633,12 @@ gegl_tile_backend_swap_write (ThreadParams *params)
       out_offset = offset;
     }
 
-  writing = TRUE;
-
   while (to_be_written > 0)
     {
       gint wrote;
       wrote = write (out_fd, data, to_be_written);
       if (wrote <= 0)
         {
-          writing = FALSE;
-
           g_message ("unable to write tile data to self: "
                      "%s (%d/%d bytes written)",
                      g_strerror (errno), wrote, to_be_written);
@@ -662,6 +660,8 @@ gegl_tile_backend_swap_write (ThreadParams *params)
   return;
 
 error:
+  writing = FALSE;
+
   g_atomic_pointer_add (&total_uncompressed, -params->size);
 
   gegl_tile_backend_swap_free_block (params->block);
@@ -812,10 +812,14 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
 
   g_mutex_lock (&read_mutex);
 
+  reading = TRUE;
+
   if (in_offset != offset)
     {
       if (lseek (in_fd, offset, SEEK_SET) < 0)
         {
+          reading = FALSE;
+
           g_mutex_unlock (&read_mutex);
 
           g_warning ("unable to seek to tile in buffer: %s", g_strerror (errno));
@@ -823,8 +827,6 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
         }
       in_offset = offset;
     }
-
-  reading = TRUE;
 
   to_be_read = entry->block->size;
 
