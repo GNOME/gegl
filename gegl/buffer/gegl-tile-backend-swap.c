@@ -625,7 +625,8 @@ gegl_tile_backend_swap_write (ThreadParams *params)
       if (lseek (out_fd, offset, SEEK_SET) < 0)
         {
           g_warning ("unable to seek to tile in buffer: %s", g_strerror (errno));
-          return;
+
+          goto error;
         }
       out_offset = offset;
     }
@@ -638,14 +639,13 @@ gegl_tile_backend_swap_write (ThreadParams *params)
       wrote = write (out_fd, data, to_be_written);
       if (wrote <= 0)
         {
-          g_atomic_pointer_add (&total_uncompressed, -params->size);
-
-          gegl_tile_backend_swap_free_block (params->block);
+          writing = FALSE;
 
           g_message ("unable to write tile data to self: "
                      "%s (%d/%d bytes written)",
                      g_strerror (errno), wrote, to_be_written);
-          break;
+
+          goto error;
         }
 
       data          += wrote;
@@ -658,6 +658,15 @@ gegl_tile_backend_swap_write (ThreadParams *params)
   writing = FALSE;
 
   GEGL_NOTE (GEGL_DEBUG_TILE_BACKEND, "writer thread wrote at %i", (gint)offset);
+
+  return;
+
+error:
+  g_atomic_pointer_add (&total_uncompressed, -params->size);
+
+  gegl_tile_backend_swap_free_block (params->block);
+
+  return;
 }
 
 static void
