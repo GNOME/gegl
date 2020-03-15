@@ -638,6 +638,10 @@ gegl_tile_backend_swap_write (ThreadParams *params)
       wrote = write (out_fd, data, to_be_written);
       if (wrote <= 0)
         {
+          g_atomic_pointer_add (&total_uncompressed, -params->size);
+
+          gegl_tile_backend_swap_free_block (params->block);
+
           g_message ("unable to write tile data to self: "
                      "%s (%d/%d bytes written)",
                      g_strerror (errno), wrote, to_be_written);
