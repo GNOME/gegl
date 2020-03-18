@@ -22,6 +22,13 @@
 
 #ifdef GEGL_PROPERTIES
 
+/* Should correspond to GeglMedianBlurNeighborhood in median-blur.c */
+enum_start (gegl_dropshadow_grow_shape)
+  enum_value (GEGL_DROPSHADOW_GROW_SHAPE_SQUARE,  "square",  N_("Square"))
+  enum_value (GEGL_DROPSHADOW_GROW_SHAPE_CIRCLE,  "circle",  N_("Circle"))
+  enum_value (GEGL_DROPSHADOW_GROW_SHAPE_DIAMOND, "diamond", N_("Diamond"))
+enum_end (GeglDropshadowGrowShape)
+
 property_double (x, _("X"), 20.0)
   description   (_("Horizontal shadow offset"))
   ui_range      (-40.0, 40.0)
@@ -42,6 +49,19 @@ property_double (radius, _("Blur radius"), 10.0)
   ui_steps      (1, 5)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
+
+property_enum   (grow_shape, _("Grow shape"),
+                 GeglDropshadowGrowShape, gegl_dropshadow_grow_shape,
+                 GEGL_DROPSHADOW_GROW_SHAPE_CIRCLE)
+  description   (_("The shape to expand or contract the shadow in"))
+
+property_int    (grow_radius, _("Grow radius"), 0.0)
+  value_range   (-100, 100)
+  ui_range      (-50, 50)
+  ui_steps      (1, 5)
+  ui_gamma      (1.5)
+  ui_meta       ("unit", "pixel-distance")
+  description (_("The distance to expand the shadow before blurring; a negative value will contract the shadow instead"))
 
 property_color  (color, _("Color"), "black")
     /* TRANSLATORS: the string 'black' should not be translated */
@@ -67,7 +87,7 @@ static void
 attach (GeglOperation *operation)
 {
   GeglNode  *gegl = operation->node;
-  GeglNode  *input, *output, *over, *translate, *opacity, *blur, *darken, *color;
+  GeglNode  *input, *output, *over, *translate, *opacity, *grow, *blur, *darken, *color;
   GeglColor *black_color = gegl_color_new ("rgb(0.0,0.0,0.0)");
 
   input     = gegl_node_get_input_proxy (gegl, "input");
@@ -75,9 +95,13 @@ attach (GeglOperation *operation)
   over      = gegl_node_new_child (gegl, "operation", "gegl:over", NULL);
   translate = gegl_node_new_child (gegl, "operation", "gegl:translate", NULL);
   opacity   = gegl_node_new_child (gegl, "operation", "gegl:opacity", NULL);
-  blur      = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur", 
-                                         "clip-extent", FALSE, 
+  blur      = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur",
+                                         "clip-extent", FALSE,
                                          "abyss-policy", 0,
+                                         NULL);
+  grow      = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
+                                         "percentile",       100.0,
+                                         "alpha-percentile", 100.0,
                                          NULL);
   darken    = gegl_node_new_child (gegl, "operation", "gegl:src-in", NULL);
   color     = gegl_node_new_child (gegl, "operation", "gegl:color",
@@ -86,11 +110,14 @@ attach (GeglOperation *operation)
 
   g_object_unref (black_color);
 
-  gegl_node_link_many (input, darken, blur, opacity, translate, over, output,
+  gegl_node_link_many (input, grow, darken, blur, opacity, translate, over, output,
                        NULL);
   gegl_node_connect_from (over, "aux", input, "output");
   gegl_node_connect_from (darken, "aux", color, "output");
 
+  gegl_operation_meta_redirect (operation, "grow-shape", grow, "neighborhood");
+  gegl_operation_meta_redirect (operation, "grow-radius", grow, "radius");
+  gegl_operation_meta_redirect (operation, "grow-radius", grow, "radius");
   gegl_operation_meta_redirect (operation, "radius", blur, "std-dev-x");
   gegl_operation_meta_redirect (operation, "radius", blur, "std-dev-y");
   gegl_operation_meta_redirect (operation, "x", translate, "x");
@@ -100,7 +127,7 @@ attach (GeglOperation *operation)
 
   gegl_operation_meta_watch_nodes (operation,
                                    over, translate, opacity,
-                                   blur, darken, color,
+                                   blur, grow, darken, color,
                                    NULL);
 }
 
