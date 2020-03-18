@@ -127,7 +127,7 @@ main (gint    argc,
   gegl_node_connect_to (imgB, "output", comparison, "aux");
   gegl_node_process (comparison);
   gegl_node_get (comparison,
-                 "max diff", &max_diff,
+                 "max-diff", &max_diff,
                  "avg-diff-wrong", &avg_diff_wrong,
                  "avg-diff-total", &avg_diff_total,
                  "wrong-pixels", &wrong_pixels,
