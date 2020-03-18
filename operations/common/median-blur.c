@@ -41,9 +41,10 @@ property_enum (neighborhood, _("Neighborhood"),
   description (_("Neighborhood type"))
 
 property_int  (radius, _("Radius"), 3)
-  value_range (0, 100)
+  value_range (-100, 100)
+  ui_range    (0, 100)
   ui_meta     ("unit", "pixel-distance")
-  description (_("Neighborhood radius"))
+  description (_("Neighborhood radius, a negative value will calculate with inverted percentiles"))
 
 property_double  (percentile, _("Percentile"), 50)
   value_range (0, 100)
@@ -619,11 +620,12 @@ prepare (GeglOperation *operation)
   const Babl              *in_format = gegl_operation_get_source_format (operation, "input");
   const Babl              *format    = NULL;
   UserData                *data;
+  gint                     radius    = abs (o->radius);
 
   area->left   =
   area->right  =
   area->top    =
-  area->bottom = o->radius;
+  area->bottom = radius;
 
   if (! o->user_data)
     o->user_data = g_slice_new0 (UserData);
@@ -631,8 +633,8 @@ prepare (GeglOperation *operation)
   data                       = o->user_data;
   data->quantize             = ! o->high_precision;
   data->neighborhood_outline = g_renew (gint, data->neighborhood_outline,
-                                        o->radius + 1);
-  init_neighborhood_outline (o->neighborhood, o->radius,
+                                        radius + 1);
+  init_neighborhood_outline (o->neighborhood, radius,
                              data->neighborhood_outline);
 
   if (in_format)
@@ -768,6 +770,7 @@ process (GeglOperation       *operation,
   GeglProperties *o    = GEGL_PROPERTIES (operation);
   UserData       *data = o->user_data;
 
+  gint            radius               = abs (o->radius);
   gdouble         percentile           = o->percentile       / 100.0;
   gdouble         alpha_percentile     = o->alpha_percentile / 100.0;
   const gint     *neighborhood_outline = data->neighborhood_outline;
@@ -795,6 +798,12 @@ process (GeglOperation       *operation,
 
   gint            i;
   gint            c;
+
+  if (o->radius < 0)
+    {
+      percentile       = 1.0 - percentile;
+      alpha_percentile = 1.0 - alpha_percentile;
+    }
 
   if (! data->quantize &&
       (roi->width > MAX_CHUNK_WIDTH || roi->height > MAX_CHUNK_HEIGHT))
@@ -845,12 +854,12 @@ process (GeglOperation       *operation,
                    GEGL_AUTO_ROWSTRIDE, get_abyss_policy (operation, "input"));
   convert_values_to_bins (hist, src_buf, n_src_pixels, data->quantize);
 
-  src = src_buf + o->radius * (src_rect.width + 1) * n_components;
+  src = src_buf + radius * (src_rect.width + 1) * n_components;
   dst = dst_buf;
 
   /* compute the first window */
 
-  for (i = -o->radius; i <= o->radius; i++)
+  for (i = -radius; i <= radius; i++)
     {
       histogram_modify_vals (hist, src, src_stride,
                              i, -neighborhood_outline[abs (i)],
@@ -925,7 +934,7 @@ process (GeglOperation       *operation,
         }
 
       histogram_update (hist, src, src_stride,
-                        o->neighborhood, o->radius, neighborhood_outline,
+                        o->neighborhood, radius, neighborhood_outline,
                         dir);
 
       for (c = 0; c < n_color_components; c++)
