@@ -981,7 +981,10 @@ gegl_tile_backend_file_finalize (GObject *object)
     }
 
   if (self->monitor)
-    g_object_unref (self->monitor);
+    {
+      g_file_monitor_cancel (self->monitor);
+      g_object_unref (self->monitor);
+    }
 
   if (self->file)
     g_object_unref (self->file);
