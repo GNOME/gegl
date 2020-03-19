@@ -102,6 +102,7 @@ attach (GeglOperation *operation)
   grow      = gegl_node_new_child (gegl, "operation", "gegl:median-blur",
                                          "percentile",       100.0,
                                          "alpha-percentile", 100.0,
+                                         "abyss-policy",     GEGL_ABYSS_NONE,
                                          NULL);
   darken    = gegl_node_new_child (gegl, "operation", "gegl:src-in", NULL);
   color     = gegl_node_new_child (gegl, "operation", "gegl:color",
