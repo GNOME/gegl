@@ -117,7 +117,6 @@ attach (GeglOperation *operation)
 
   gegl_operation_meta_redirect (operation, "grow-shape", grow, "neighborhood");
   gegl_operation_meta_redirect (operation, "grow-radius", grow, "radius");
-  gegl_operation_meta_redirect (operation, "grow-radius", grow, "radius");
   gegl_operation_meta_redirect (operation, "radius", blur, "std-dev-x");
   gegl_operation_meta_redirect (operation, "radius", blur, "std-dev-y");
   gegl_operation_meta_redirect (operation, "x", translate, "x");
