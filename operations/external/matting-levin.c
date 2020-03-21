@@ -91,12 +91,12 @@ property_int    (active_levels, _("Active levels"), 2)
  */
 typedef struct
 {
-  guint    elems,
-           columns,
-           rows;
-  glong   *col_idx,
-          *row_idx;
-  gdouble *values;
+  guint             elems,
+                    columns,
+                    rows;
+  SuiteSparse_long *col_idx,
+                   *row_idx;
+  gdouble          *values;
 } sparse_t;
 
 
