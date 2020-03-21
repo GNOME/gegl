@@ -118,6 +118,10 @@ cflags_c = [
   '-Wold-style-definition',
 ]
 
+if os_win32
+  cflags_common += [ '-D_FILE_OFFSET_BITS=64' ]
+endif
+
 cflags_c   = cflags_common + cflags_c
 cflags_cpp = cflags_common + cflags_cpp
 
