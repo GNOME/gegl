@@ -55,9 +55,10 @@ property_enum   (grow_shape, _("Grow shape"),
                  GEGL_DROPSHADOW_GROW_SHAPE_CIRCLE)
   description   (_("The shape to expand or contract the shadow in"))
 
-property_int    (grow_radius, _("Grow radius"), 0.0)
-  value_range   (-100, 100)
-  ui_range      (-50, 50)
+property_double (grow_radius, _("Grow radius"), 0.0)
+  value_range   (-100.0, 100.0)
+  ui_range      (-50.0, 50.0)
+  ui_digits     (0)
   ui_steps      (1, 5)
   ui_gamma      (1.5)
   ui_meta       ("unit", "pixel-distance")
