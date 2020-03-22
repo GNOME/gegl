@@ -19,7 +19,9 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
+#include <math.h>
 
+#define EPSILON 1e-6
 
 #ifdef GEGL_PROPERTIES
 
@@ -80,8 +82,8 @@ process (GeglOperation       *op,
   in_range = o->in_high-o->in_low;
   out_range = o->out_high-o->out_low;
 
-  if (in_range == 0.0)
-    in_range = 0.00000001;
+  if (fabsf (in_range) <= EPSILON)
+    in_range = copysignf (EPSILON, in_range);
 
   scale = out_range/in_range;
 
