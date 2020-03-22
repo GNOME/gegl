@@ -260,6 +260,7 @@ operations/transform/transform-core.c
 operations/transform/translate.c
 operations/workshop/aces-rrt.c
 operations/workshop/bilateral-filter-fast.c
+operations/workshop/bloom.c
 operations/workshop/boxblur-1d.c
 operations/workshop/boxblur.c
 operations/workshop/connected-components.c
