@@ -5,7 +5,6 @@ libraries = [
   { 'name': 'aces-rrt', },
   { 'name': 'alpha-inpaint', },
   { 'name': 'bilateral-filter-fast', },
-  { 'name': 'bloom', },
   { 'name': 'boxblur-1d', },
   { 'name': 'boxblur', },
   { 'name': 'connected-components', },

@@ -15,6 +15,7 @@ gegl/operation/gegl-operation-composer.c
 operations/common/absolute.c
 operations/common/alien-map.c
 operations/common/bilateral-filter.c
+operations/common/bloom.c
 operations/common/box-blur.c
 operations/common/brightness-contrast.c
 operations/common/buffer-sink.c
@@ -260,7 +261,6 @@ operations/transform/transform-core.c
 operations/transform/translate.c
 operations/workshop/aces-rrt.c
 operations/workshop/bilateral-filter-fast.c
-operations/workshop/bloom.c
 operations/workshop/boxblur-1d.c
 operations/workshop/boxblur.c
 operations/workshop/connected-components.c

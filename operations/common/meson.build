@@ -2,6 +2,7 @@ gegl_common_sources = files(
   'absolute.c',
   'alien-map.c',
   'bilateral-filter.c',
+  'bloom.c',
   'box-blur.c',
   'brightness-contrast.c',
   'buffer-sink.c',
