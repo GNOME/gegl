@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2012-2019.
+# Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2012-2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: GEGL 0.4.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-24 12:05+0300\n"
-"PO-Revision-Date: 2019-10-24 13:03+0300\n"
+"POT-Creation-Date: 2020-03-23 13:05+0300\n"
+"PO-Revision-Date: 2020-03-23 17:21+0300\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: русский <gnome-cyr@lists.gnome.org>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-"X-Generator: Gtranslator 3.33.90\n"
+"X-Generator: Gtranslator 3.34.0\n"
 
 #: ../bin/gegl.c:179
 #, c-format
@@ -546,7 +546,7 @@ msgstr ""
 
 #: ../operations/common/bilateral-filter.c:26
 #: ../operations/common/domain-transform.c:29
-#: ../operations/common/dropshadow.c:39
+#: ../operations/common/dropshadow.c:46
 #: ../operations/common-gpl3+/gaussian-blur-selective.c:29
 #: ../operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -588,7 +588,7 @@ msgstr ""
 #: ../operations/common-gpl3+/spiral.c:47
 #: ../operations/common-gpl3+/supernova.c:45
 #: ../operations/common-gpl3+/whirl-pinch.c:46
-#: ../operations/external/matting-levin.c:29
+#: ../operations/external/matting-levin.c:29 ../operations/workshop/bloom.c:35
 #: ../operations/workshop/boxblur-1d.c:27 ../operations/workshop/boxblur.c:24
 #: ../operations/workshop/external/spyrograph.c:63
 msgid "Radius"
@@ -723,7 +723,7 @@ msgstr ""
 
 #: ../operations/common/c2g.c:48 ../operations/common/stress.c:44
 msgid "Enhance Shadows"
-msgstr ""
+msgstr "Детализация в тенях"
 
 #: ../operations/common/c2g.c:49
 msgid "When enabled details in shadows are boosted at the expense of noise"
@@ -839,7 +839,7 @@ msgid "Render a checkerboard pattern"
 msgstr "Отрисовать узор шахматной доски"
 
 #: ../operations/common/color.c:24 ../operations/common/color.c:87
-#: ../operations/common/color-overlay.c:26 ../operations/common/dropshadow.c:46
+#: ../operations/common/color-overlay.c:26 ../operations/common/dropshadow.c:67
 #: ../operations/common/grid.c:64 ../operations/common/long-shadow.c:83
 #: ../operations/common/rectangle.c:48 ../operations/common/vignette.c:34
 #: ../operations/common-gpl3+/color-to-alpha.c:29
@@ -853,9 +853,8 @@ msgstr "Цвет"
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: ../operations/common/color.c:26
-#, fuzzy
 msgid "The color to render (defaults to 'black')"
-msgstr "Цвет тени ('black' по умолчанию)"
+msgstr "Рисуемый цвет ('black' по умолчанию)"
 
 #: ../operations/common/color.c:91
 msgid ""
@@ -916,9 +915,8 @@ msgstr ""
 "трогая тона и светлоту"
 
 #: ../operations/common/color-overlay.c:27
-#, fuzzy
 msgid "The color to paint over the input"
-msgstr "Babl-формат вывода"
+msgstr "Каким цветом залить вход"
 
 #: ../operations/common/color-overlay.c:30 ../operations/common/over.c:25
 #: ../operations/common/sepia.c:28 ../operations/generated/clear.c:38
@@ -1644,7 +1642,23 @@ msgid ""
 "recursive technique. Similar to a bilateral filter, but faster to compute."
 msgstr ""
 
-#: ../operations/common/dropshadow.c:25 ../operations/common/layer.c:36
+#: ../operations/common/dropshadow.c:27 ../operations/common/median-blur.c:28
+#: ../operations/common/pixelize.c:29 ../operations/common/vignette.c:26
+msgid "Square"
+msgstr "Квадрат"
+
+#: ../operations/common/dropshadow.c:28 ../operations/common/median-blur.c:29
+#: ../operations/common/newsprint.c:26 ../operations/common/vignette.c:25
+msgid "Circle"
+msgstr "Окружность"
+
+#: ../operations/common/dropshadow.c:29 ../operations/common/median-blur.c:30
+#: ../operations/common/newsprint.c:27 ../operations/common/pixelize.c:27
+#: ../operations/common/vignette.c:27
+msgid "Diamond"
+msgstr "Ромб"
+
+#: ../operations/common/dropshadow.c:32 ../operations/common/layer.c:36
 #: ../operations/common/rectangle.c:26 ../operations/common-gpl3+/plasma.c:40
 #: ../operations/common-gpl3+/polar-coordinates.c:52
 #: ../operations/common-gpl3+/spiral.c:35 ../operations/core/crop.c:25
@@ -1657,11 +1671,11 @@ msgstr ""
 msgid "X"
 msgstr "X"
 
-#: ../operations/common/dropshadow.c:26
+#: ../operations/common/dropshadow.c:33
 msgid "Horizontal shadow offset"
 msgstr "Смещение тени по горизонтали"
 
-#: ../operations/common/dropshadow.c:32 ../operations/common/layer.c:41
+#: ../operations/common/dropshadow.c:39 ../operations/common/layer.c:41
 #: ../operations/common/rectangle.c:31 ../operations/common-gpl3+/plasma.c:47
 #: ../operations/common-gpl3+/polar-coordinates.c:59
 #: ../operations/common-gpl3+/spiral.c:41 ../operations/core/crop.c:30
@@ -1674,30 +1688,48 @@ msgstr "Смещение тени по горизонтали"
 msgid "Y"
 msgstr "Y"
 
-#: ../operations/common/dropshadow.c:33
+#: ../operations/common/dropshadow.c:40
 msgid "Vertical shadow offset"
 msgstr "Смещение тени по вертикали"
 
+#: ../operations/common/dropshadow.c:53
+msgid "Grow shape"
+msgstr "Габаритная фигура тени"
+
+#: ../operations/common/dropshadow.c:56
+msgid "The shape to expand or contract the shadow in"
+msgstr ""
+
+#: ../operations/common/dropshadow.c:58
+msgid "Grow radius"
+msgstr "Радиус нарастания"
+
+#: ../operations/common/dropshadow.c:65
+msgid ""
+"The distance to expand the shadow before blurring; a negative value will "
+"contract the shadow instead"
+msgstr ""
+
 #. TRANSLATORS: the string 'black' should not be translated
-#: ../operations/common/dropshadow.c:48
+#: ../operations/common/dropshadow.c:69
 msgid "The shadow's color (defaults to 'black')"
 msgstr "Цвет тени ('black' по умолчанию)"
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: ../operations/common/dropshadow.c:53 ../operations/common/layer.c:33
+#: ../operations/common/dropshadow.c:74 ../operations/common/layer.c:33
 #: ../operations/common/opacity.c:25 ../operations/common/opacity.c:283
 #: ../operations/external/vector-fill.c:29
 #: ../operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Непрозрачность"
 
-#: ../operations/common/dropshadow.c:117
+#: ../operations/common/dropshadow.c:145
 msgid "Dropshadow"
 msgstr "Отбрасываемая тень"
 
-#: ../operations/common/dropshadow.c:119
+#: ../operations/common/dropshadow.c:147
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr ""
 
@@ -1870,7 +1902,7 @@ msgstr ""
 
 #: ../operations/common/gaussian-blur.c:58 ../operations/common/gblur-1d.c:60
 #: ../operations/common/map-absolute.c:26
-#: ../operations/common/map-relative.c:30 ../operations/common/median-blur.c:56
+#: ../operations/common/map-relative.c:30 ../operations/common/median-blur.c:57
 #: ../operations/common-gpl3+/displace.c:43
 #: ../operations/common-gpl3+/fractal-trace.c:67
 #: ../operations/common-gpl3+/ripple.c:56 ../operations/transform/scale.c:102
@@ -1879,7 +1911,7 @@ msgid "Abyss policy"
 msgstr "Обработка границ"
 
 #: ../operations/common/gaussian-blur.c:60 ../operations/common/gblur-1d.c:62
-#: ../operations/common/median-blur.c:58
+#: ../operations/common/median-blur.c:59
 #: ../operations/common-gpl3+/displace.c:46
 #: ../operations/common-gpl3+/ripple.c:59 ../operations/transform/scale.c:103
 #: ../operations/workshop/voronoi-diagram.cc:41
@@ -2232,44 +2264,44 @@ msgstr "Слой"
 msgid "A layer in the traditional sense"
 msgstr ""
 
-#: ../operations/common/levels.c:26
+#: ../operations/common/levels.c:28
 msgid "Low input"
 msgstr ""
 
-#: ../operations/common/levels.c:27
+#: ../operations/common/levels.c:29
 msgid "Input luminance level to become lowest output"
 msgstr ""
 
-#: ../operations/common/levels.c:31
+#: ../operations/common/levels.c:33
 msgid "High input"
 msgstr ""
 
-#: ../operations/common/levels.c:32
+#: ../operations/common/levels.c:34
 msgid "Input luminance level to become white"
 msgstr ""
 
-#: ../operations/common/levels.c:36
+#: ../operations/common/levels.c:38
 msgid "Low output"
 msgstr ""
 
-#: ../operations/common/levels.c:37
+#: ../operations/common/levels.c:39
 msgid "Lowest luminance level in output"
 msgstr "Низший уровень светимости в выводе"
 
-#: ../operations/common/levels.c:41
+#: ../operations/common/levels.c:43
 msgid "High output"
 msgstr ""
 
-#: ../operations/common/levels.c:42
+#: ../operations/common/levels.c:44
 msgid "Highest luminance level in output"
 msgstr "Наивысший уровень светимости в выводе"
 
-#: ../operations/common/levels.c:203 ../operations/common/posterize.c:24
+#: ../operations/common/levels.c:205 ../operations/common/posterize.c:24
 #: ../operations/external/matting-levin.c:41
 msgid "Levels"
 msgstr "Уровни"
 
-#: ../operations/common/levels.c:205
+#: ../operations/common/levels.c:207
 msgid "Remaps the intensity range of the image"
 msgstr ""
 
@@ -2572,11 +2604,11 @@ msgid ""
 "coordinates"
 msgstr ""
 
-#: ../operations/common/matting-global.c:579
+#: ../operations/common/matting-global.c:600
 msgid "Matting Global"
 msgstr ""
 
-#: ../operations/common/matting-global.c:581
+#: ../operations/common/matting-global.c:602
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -2614,21 +2646,6 @@ msgid ""
 "Regularize geometry at a speed proportional to the local mean curvature value"
 msgstr ""
 
-#: ../operations/common/median-blur.c:28 ../operations/common/pixelize.c:29
-#: ../operations/common/vignette.c:26
-msgid "Square"
-msgstr "Квадрат"
-
-#: ../operations/common/median-blur.c:29 ../operations/common/newsprint.c:26
-#: ../operations/common/vignette.c:25
-msgid "Circle"
-msgstr "Окружность"
-
-#: ../operations/common/median-blur.c:30 ../operations/common/newsprint.c:27
-#: ../operations/common/pixelize.c:27 ../operations/common/vignette.c:27
-msgid "Diamond"
-msgstr "Ромб"
-
 #: ../operations/common/median-blur.c:38
 msgid "Neighborhood"
 msgstr "Область соседних пикселей"
@@ -2637,39 +2654,41 @@ msgstr "Область соседних пикселей"
 msgid "Neighborhood type"
 msgstr "Форма области соседних пикселей"
 
-#: ../operations/common/median-blur.c:46
-msgid "Neighborhood radius"
-msgstr "Радиус соседних пикселей"
+#: ../operations/common/median-blur.c:47
+msgid ""
+"Neighborhood radius, a negative value will calculate with inverted "
+"percentiles"
+msgstr ""
 
-#: ../operations/common/median-blur.c:48
+#: ../operations/common/median-blur.c:49
 msgid "Percentile"
 msgstr "Процентиль цвета"
 
-#: ../operations/common/median-blur.c:50
+#: ../operations/common/median-blur.c:51
 msgid "Neighborhood color percentile"
 msgstr "Процентиль цвета соседних пикселей"
 
-#: ../operations/common/median-blur.c:52
+#: ../operations/common/median-blur.c:53
 msgid "Alpha percentile"
 msgstr "Процентиль альфа-канала"
 
-#: ../operations/common/median-blur.c:54
+#: ../operations/common/median-blur.c:55
 msgid "Neighborhood alpha percentile"
 msgstr "Процентиль прозрачности соседних пикселей"
 
-#: ../operations/common/median-blur.c:60
+#: ../operations/common/median-blur.c:61
 msgid "High precision"
 msgstr "Высокая точность"
 
-#: ../operations/common/median-blur.c:61
+#: ../operations/common/median-blur.c:62
 msgid "Avoid clipping and quantization (slower)"
 msgstr ""
 
-#: ../operations/common/median-blur.c:995
+#: ../operations/common/median-blur.c:1004
 msgid "Median Blur"
 msgstr "Медианный фильтр"
 
-#: ../operations/common/median-blur.c:998
+#: ../operations/common/median-blur.c:1007
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -2844,15 +2863,15 @@ msgstr ""
 
 #: ../operations/common/newsprint.c:29
 msgid "Crossing Lines"
-msgstr ""
+msgstr "Перекрестные линии"
 
 #: ../operations/common/newsprint.c:33
 msgid "White on Black"
-msgstr "Белое на чёрном"
+msgstr "Белый на черном"
 
 #: ../operations/common/newsprint.c:34
 msgid "Black on White"
-msgstr "Чёрное на белом"
+msgstr "Черный на белом"
 
 #: ../operations/common/newsprint.c:36
 msgid "CMYK"
@@ -2867,30 +2886,25 @@ msgid "How many inks to use just black, rg, rgb (additive), or cmyk"
 msgstr ""
 
 #: ../operations/common/newsprint.c:44
-#, fuzzy
 msgid "Red and cyan pattern"
 msgstr "Красно-циановый узор"
 
 #: ../operations/common/newsprint.c:46 ../operations/common/newsprint.c:74
 #: ../operations/common/newsprint.c:102 ../operations/common/newsprint.c:130
-#, fuzzy
 msgid "Halftoning/dot pattern to use"
 msgstr "Узор полутонирования"
 
 #: ../operations/common/newsprint.c:50
-#, fuzzy
 msgid "Red pattern"
 msgstr "Красный узор"
 
 #: ../operations/common/newsprint.c:51
-#, fuzzy
 msgid "Cyan pattern"
 msgstr "Циановый узор"
 
 #: ../operations/common/newsprint.c:53
-#, fuzzy
 msgid "Red and cyan period"
-msgstr "Красно-циановый период"
+msgstr "Период красно-цианового"
 
 #: ../operations/common/newsprint.c:55 ../operations/common/newsprint.c:83
 #: ../operations/common/newsprint.c:111 ../operations/common/newsprint.c:141
@@ -2900,123 +2914,100 @@ msgid ""
 msgstr ""
 
 #: ../operations/common/newsprint.c:59
-#, fuzzy
 msgid "Red period"
-msgstr "Инверсия красного"
+msgstr "Период красного"
 
 #: ../operations/common/newsprint.c:60
-#, fuzzy
 msgid "Cyan period"
-msgstr "Период по X"
+msgstr "Период цианового"
 
 #: ../operations/common/newsprint.c:62
-#, fuzzy
 msgid "Red and cyan angle"
 msgstr "Угол красного и цианового"
 
 #: ../operations/common/newsprint.c:69
-#, fuzzy
 msgid "Red angle"
 msgstr "Угол красного"
 
 #: ../operations/common/newsprint.c:70
-#, fuzzy
 msgid "Cyan angle"
 msgstr "Угол цианового"
 
 #: ../operations/common/newsprint.c:72
-#, fuzzy
 msgid "Green and magenta pattern"
-msgstr "Цианово-пурпурный узор"
+msgstr "Зелено-пурпурный узор"
 
 #: ../operations/common/newsprint.c:78
-#, fuzzy
 msgid "Green pattern"
-msgstr "Зелёный узор"
+msgstr "Зеленый узор"
 
 #: ../operations/common/newsprint.c:79
-#, fuzzy
 msgid "Magenta pattern"
 msgstr "Пурпурный узор"
 
 #: ../operations/common/newsprint.c:81
-#, fuzzy
 msgid "Green and magenta period"
-msgstr "Цианово-пурпурный период"
+msgstr "Период зелено-пурпурного"
 
 #: ../operations/common/newsprint.c:87
-#, fuzzy
 msgid "Green period"
-msgstr "Зелёный период"
+msgstr "Период зеленого"
 
 #: ../operations/common/newsprint.c:88
-#, fuzzy
 msgid "Magenta period"
-msgstr "Угол пурпурного"
+msgstr "Период пурпурного"
 
 #: ../operations/common/newsprint.c:90
-#, fuzzy
 msgid "Green and magenta angle"
-msgstr "Зелёно-пурпурный угол"
+msgstr "Угол зелено-пурпурного"
 
 #: ../operations/common/newsprint.c:97
-#, fuzzy
 msgid "Green angle"
-msgstr "Угол зелёного"
+msgstr "Угол зеленого"
 
 #: ../operations/common/newsprint.c:98
-#, fuzzy
 msgid "Magenta angle"
 msgstr "Угол пурпурного"
 
 #: ../operations/common/newsprint.c:100
-#, fuzzy
 msgid "Blue and Yellow pattern"
-msgstr "Сине-жёлтый узор"
+msgstr "Сине-желтый узор"
 
 #: ../operations/common/newsprint.c:106
-#, fuzzy
 msgid "Blue pattern"
 msgstr "Синий узор"
 
 #: ../operations/common/newsprint.c:107
-#, fuzzy
 msgid "Yellow pattern"
-msgstr "Жёлтый узор"
+msgstr "Желтый узор"
 
 #: ../operations/common/newsprint.c:109
 msgid "Blue and Yellow period"
-msgstr ""
+msgstr "Период сине-желтого"
 
 #: ../operations/common/newsprint.c:115
-#, fuzzy
 msgid "Blue period"
-msgstr "Инверсия синего"
+msgstr "Период синего"
 
 #: ../operations/common/newsprint.c:116
-#, fuzzy
 msgid "Yellow period"
-msgstr "Период по Y"
+msgstr "Период желтого"
 
 #: ../operations/common/newsprint.c:118
-#, fuzzy
 msgid "Blue and Yellow angle"
-msgstr "Угол цианового и пурпурного"
+msgstr "Угол сине-желтого"
 
 #: ../operations/common/newsprint.c:125
-#, fuzzy
 msgid "Blue angle"
 msgstr "Угол синего"
 
 #: ../operations/common/newsprint.c:126
-#, fuzzy
 msgid "Yellow angle"
-msgstr "Угол жёлтого"
+msgstr "Угол желтого"
 
 #: ../operations/common/newsprint.c:128 ../operations/common/newsprint.c:136
-#, fuzzy
 msgid "Black pattern"
-msgstr "Угол чёрного"
+msgstr "Угол черного"
 
 #: ../operations/common/newsprint.c:135
 #: ../operations/common-gpl3+/video-degradation.c:53
@@ -3024,9 +3015,8 @@ msgid "Pattern"
 msgstr "Узор"
 
 #: ../operations/common/newsprint.c:139 ../operations/common/newsprint.c:148
-#, fuzzy
 msgid "Black period"
-msgstr "Уровень чёрного"
+msgstr "Период черного"
 
 #: ../operations/common/newsprint.c:142 ../operations/common/newsprint.c:154
 msgid "Angle offset for patterns"
@@ -3039,12 +3029,11 @@ msgstr "Период"
 
 #: ../operations/common/newsprint.c:150 ../operations/common/newsprint.c:160
 msgid "Black angle"
-msgstr "Угол чёрного"
+msgstr "Угол черного"
 
 #: ../operations/common/newsprint.c:162
-#, fuzzy
 msgid "Black pullout"
-msgstr "Уровень чёрного"
+msgstr ""
 
 #: ../operations/common/newsprint.c:164
 msgid "How much of common gray to pull out of CMY"
@@ -3098,9 +3087,8 @@ msgid "Digital halftoning with optional modulations. "
 msgstr "Цифровое полутонирование с регулируемой модуляцией"
 
 #: ../operations/common/noise-cell.c:37 ../operations/common/noise-simplex.c:32
-#, fuzzy
 msgid "The scale of the noise function"
-msgstr "Ширина функции Ланцоша"
+msgstr "Масштаб функции шума"
 
 #: ../operations/common/noise-cell.c:40 ../operations/common/pixelize.c:32
 msgid "Shape"
@@ -3216,6 +3204,7 @@ msgstr ""
 
 #: ../operations/common/noise-reduction.c:26
 #: ../operations/common-cxx/warp.cc:35 ../operations/common-gpl3+/wind.c:64
+#: ../operations/workshop/bloom.c:42
 msgid "Strength"
 msgstr "Сила"
 
@@ -3827,7 +3816,7 @@ msgstr ""
 #. * arbitrary.
 #.
 #: ../operations/common/spherize.c:52 ../operations/common/unsharp-mask.c:31
-#: ../operations/common-gpl3+/edge.c:42
+#: ../operations/common-gpl3+/edge.c:42 ../operations/workshop/bloom.c:27
 msgid "Amount"
 msgstr "Количество"
 
@@ -4054,7 +4043,7 @@ msgstr ""
 msgid "How far out vignetting goes as portion of half image diagonal"
 msgstr ""
 
-#: ../operations/common/vignette.c:43
+#: ../operations/common/vignette.c:43 ../operations/workshop/bloom.c:31
 msgid "Softness"
 msgstr "Мягкость"
 
@@ -4239,11 +4228,11 @@ msgstr "Количество усреднений серого"
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Нормировать вывод до диапазона от 0,0 до 1,0."
 
-#: ../operations/common-cxx/distance-transform.cc:475
+#: ../operations/common-cxx/distance-transform.cc:476
 msgid "Distance Transform"
 msgstr "Карта расстояний"
 
-#: ../operations/common-cxx/distance-transform.cc:478
+#: ../operations/common-cxx/distance-transform.cc:479
 msgid "Calculate a distance transform"
 msgstr "Вычислить карту расстояний"
 
@@ -4981,11 +4970,11 @@ msgstr "Координата начала по оси X"
 msgid "Y coordinate of the displacement center"
 msgstr "Координата начала по оси Y"
 
-#: ../operations/common-gpl3+/displace.c:478
+#: ../operations/common-gpl3+/displace.c:480
 msgid "Displace"
 msgstr "Смещение"
 
-#: ../operations/common-gpl3+/displace.c:481
+#: ../operations/common-gpl3+/displace.c:483
 msgid "Displace pixels as indicated by displacement maps"
 msgstr "Сместить пиксели согласно картам смещения"
 
@@ -6070,7 +6059,7 @@ msgstr "Синус"
 msgid "Generate complex sinusoidal textures"
 msgstr "Создать сложные синусоидные текстуры"
 
-#: ../operations/common-gpl3+/softglow.c:26
+#: ../operations/common-gpl3+/softglow.c:26 ../operations/workshop/bloom.c:36
 msgid "Glow radius"
 msgstr "Радиус свечения"
 
@@ -6084,21 +6073,19 @@ msgstr "Сымитировать свечение, усилив и размыв 
 
 #: ../operations/common-gpl3+/spiral.c:27
 msgid "Logarithmic"
-msgstr ""
+msgstr "Логарифмический"
 
 #: ../operations/common-gpl3+/spiral.c:33
 msgid "Spiral type"
 msgstr "Тип спирали"
 
 #: ../operations/common-gpl3+/spiral.c:36
-#, fuzzy
 msgid "Spiral origin X coordinate"
-msgstr "Координата X начала"
+msgstr "Координата X начала спирали"
 
 #: ../operations/common-gpl3+/spiral.c:42
-#, fuzzy
 msgid "Spiral origin Y coordinate"
-msgstr "Координата X начала"
+msgstr "Координата X начала спирали"
 
 #: ../operations/common-gpl3+/spiral.c:48
 msgid "Spiral radius"
@@ -6107,11 +6094,11 @@ msgstr "Радиус спирали"
 #: ../operations/common-gpl3+/spiral.c:53
 #: ../operations/workshop/connected-components.c:31
 msgid "Base"
-msgstr ""
+msgstr "Основание"
 
 #: ../operations/common-gpl3+/spiral.c:54
 msgid "Logarithmic spiral base"
-msgstr ""
+msgstr "Основание логарифма спирали"
 
 #: ../operations/common-gpl3+/spiral.c:60
 msgid "Balance"
@@ -6119,7 +6106,7 @@ msgstr "Баланс"
 
 #: ../operations/common-gpl3+/spiral.c:61
 msgid "Area balance between the two colors"
-msgstr ""
+msgstr "Баланс между областями двух цветов"
 
 #: ../operations/common-gpl3+/spiral.c:65
 msgid "Spiral rotation"
@@ -6130,9 +6117,8 @@ msgid "Counter-clockwise"
 msgstr "Против часовой стрелки"
 
 #: ../operations/common-gpl3+/spiral.c:78
-#, fuzzy
 msgid "Spiral swirl direction"
-msgstr "Направление смещения"
+msgstr "Направление закручивания спирали"
 
 #: ../operations/common-gpl3+/spiral.c:444
 msgid "Spiral"
@@ -6729,11 +6715,11 @@ msgstr ""
 msgid "Reset origin"
 msgstr ""
 
-#: ../operations/core/crop.c:250
+#: ../operations/core/crop.c:236
 msgid "Crop"
 msgstr ""
 
-#: ../operations/core/crop.c:251
+#: ../operations/core/crop.c:237
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
 "connected is used."
@@ -7222,11 +7208,11 @@ msgstr "Активных уровней"
 msgid "Number of levels to perform solving"
 msgstr ""
 
-#: ../operations/external/matting-levin.c:1455
+#: ../operations/external/matting-levin.c:1478
 msgid "Matting Levin"
 msgstr ""
 
-#: ../operations/external/matting-levin.c:1458
+#: ../operations/external/matting-levin.c:1481
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
@@ -8262,6 +8248,29 @@ msgid ""
 "gaussian blur."
 msgstr ""
 
+#: ../operations/workshop/bloom.c:28
+#, fuzzy
+msgid "Glow-area brightness threshold"
+msgstr "Нижний порог"
+
+#: ../operations/workshop/bloom.c:32
+#, fuzzy
+msgid "Glow-area edge softness"
+msgstr "Плавность градиента"
+
+#: ../operations/workshop/bloom.c:43
+#, fuzzy
+msgid "Glow strength"
+msgstr "Сила"
+
+#: ../operations/workshop/bloom.c:223
+msgid "Bloom"
+msgstr ""
+
+#: ../operations/workshop/bloom.c:225
+msgid "Add glow around bright areas"
+msgstr ""
+
 #: ../operations/workshop/boxblur-1d.c:28
 #, fuzzy
 msgid "Radius of row pixel region, (size will be radius*2+1)"
@@ -8592,30 +8601,27 @@ msgstr "Спирограф"
 
 #: ../operations/workshop/external/spyrograph.c:28
 msgid "EPITROCHOID"
-msgstr ""
+msgstr "Эпитрохоида"
 
 #: ../operations/workshop/external/spyrograph.c:31
-#, fuzzy
 msgid "Curve Type"
-msgstr "Кривая"
+msgstr "Тип кривой"
 
 #: ../operations/workshop/external/spyrograph.c:34
-#, fuzzy
 msgid "Curve type"
-msgstr "Тип волны"
+msgstr "Тип кривой"
 
 #: ../operations/workshop/external/spyrograph.c:36
 msgid "Fixed Gear Teeth"
-msgstr ""
+msgstr "Зубцов зафиксированной шестеренки"
 
 #: ../operations/workshop/external/spyrograph.c:37
-#, fuzzy
 msgid "Number of teeth in fixed gear."
-msgstr "Количество различающихся пикселей"
+msgstr "Количество зубцов у зафиксированной шестеренки"
 
 #: ../operations/workshop/external/spyrograph.c:40
 msgid "Moving Gear Teeth"
-msgstr ""
+msgstr "Зубцов движущейся шестеренки"
 
 #: ../operations/workshop/external/spyrograph.c:41
 msgid ""
@@ -8625,9 +8631,8 @@ msgid ""
 msgstr ""
 
 #: ../operations/workshop/external/spyrograph.c:46
-#, fuzzy
 msgid "Hole Percent"
-msgstr "Процентиль цвета"
+msgstr ""
 
 #: ../operations/workshop/external/spyrograph.c:47
 msgid ""
@@ -8646,23 +8651,20 @@ msgid "Y coordinate of pattern center"
 msgstr "Координата начала по оси Y"
 
 #: ../operations/workshop/external/spyrograph.c:64
-#, fuzzy
 msgid "Radius of fixed gear"
-msgstr "Радиус сверхновой"
+msgstr "Радиус зафиксированной шестеренки"
 
 #: ../operations/workshop/external/spyrograph.c:70
-#, fuzzy
 msgid "Pattern rotation"
-msgstr "Угол вращения узора"
+msgstr "Вращение узора"
 
 #: ../operations/workshop/external/spyrograph.c:612
 msgid "Render Spyrograph"
 msgstr "Нарисовать спирограф"
 
 #: ../operations/workshop/external/spyrograph.c:616
-#, fuzzy
 msgid "Renders a Spyrograph pattern"
-msgstr "Отрисовать узор шахматной доски"
+msgstr "Рисует узор спирографа"
 
 #: ../operations/workshop/external/v4l2.c:25
 msgid "video device path"
@@ -8857,6 +8859,9 @@ msgstr "Диаграмма Вороного"
 #: ../operations/workshop/voronoi-diagram.cc:531
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr ""
+
+#~ msgid "Neighborhood radius"
+#~ msgstr "Радиус соседних пикселей"
 
 #, fuzzy
 #~ msgid "Nesrest"
