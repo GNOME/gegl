@@ -10,13 +10,13 @@
 # * smoothing = smussamento, levigatura, omogeneizzazione
 # * clustering = clustering (metodo statistico detto anche analisi dei gruppi)
 # * K-means = K-means (metodo di clustering)
-#
+# * Bloom = bloom (effetto alone) invariato
 msgid ""
 msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-06 23:24+0100\n"
-"PO-Revision-Date: 2020-01-06 23:24+0100\n"
+"POT-Creation-Date: 2020-03-28 19:26+0100\n"
+"PO-Revision-Date: 2020-03-27 19:51+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -605,7 +605,7 @@ msgstr ""
 
 #: ../operations/common/bilateral-filter.c:26
 #: ../operations/common/domain-transform.c:29
-#: ../operations/common/dropshadow.c:39
+#: ../operations/common/dropshadow.c:46
 #: ../operations/common-gpl3+/gaussian-blur-selective.c:29
 #: ../operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -642,11 +642,37 @@ msgstr ""
 "pesato anche in base alla differenza di colore con il pixel centrale "
 "originale."
 
-#: ../operations/common/box-blur.c:25 ../operations/common/c2g.c:28
-#: ../operations/common/edge-neon.c:48 ../operations/common/median-blur.c:43
-#: ../operations/common/snn-mean.c:26 ../operations/common/stress.c:27
-#: ../operations/common/unsharp-mask.c:24 ../operations/common/vignette.c:38
-#: ../operations/common/wavelet-blur-1d.c:28
+#. note that the code can handle negative curvatures
+#. * (in the [-1, 0) range), in which case the image is
+#. * wrapped around the back face, rather than the front
+#. * face, of the spherical cap.  we disable negative
+#. * curvatures atm, in particular, since they produce
+#. * the same result when the angle of view is 0, and
+#. * since their upper-bound, wrt the angle of view, is
+#. * arbitrary.
+#.
+#: ../operations/common/bloom.c:27 ../operations/common/spherize.c:52
+#: ../operations/common/unsharp-mask.c:31 ../operations/common-gpl3+/edge.c:42
+msgid "Amount"
+msgstr "Ammontare"
+
+#: ../operations/common/bloom.c:28
+msgid "Glow-area brightness threshold"
+msgstr "Soglia luminosità area-bagliore"
+
+#: ../operations/common/bloom.c:31 ../operations/common/vignette.c:43
+msgid "Softness"
+msgstr "Morbidezza"
+
+#: ../operations/common/bloom.c:32
+msgid "Glow-area edge softness"
+msgstr "Gradualità bordo area-bagliore"
+
+#: ../operations/common/bloom.c:35 ../operations/common/box-blur.c:25
+#: ../operations/common/c2g.c:28 ../operations/common/edge-neon.c:48
+#: ../operations/common/median-blur.c:43 ../operations/common/snn-mean.c:26
+#: ../operations/common/stress.c:27 ../operations/common/unsharp-mask.c:24
+#: ../operations/common/vignette.c:38 ../operations/common/wavelet-blur-1d.c:28
 #: ../operations/common/wavelet-blur.c:27
 #: ../operations/common-gpl3+/shadows-highlights.c:40
 #: ../operations/common-gpl3+/spiral.c:47
@@ -657,6 +683,27 @@ msgstr ""
 #: ../operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "Raggio"
+
+#: ../operations/common/bloom.c:36 ../operations/common-gpl3+/softglow.c:26
+msgid "Glow radius"
+msgstr "Raggio bagliore"
+
+#: ../operations/common/bloom.c:42 ../operations/common/noise-reduction.c:26
+#: ../operations/common-cxx/warp.cc:35 ../operations/common-gpl3+/wind.c:64
+msgid "Strength"
+msgstr "Forza"
+
+#: ../operations/common/bloom.c:43
+msgid "Glow strength"
+msgstr "Forza bagliore"
+
+#: ../operations/common/bloom.c:223
+msgid "Bloom"
+msgstr "Bloom"
+
+#: ../operations/common/bloom.c:225
+msgid "Add glow around bright areas"
+msgstr "Aggiunge un bagliore attorno alle aree luminose"
 
 #: ../operations/common/box-blur.c:26 ../operations/common/snn-mean.c:27
 #: ../operations/workshop/boxblur.c:25
@@ -920,7 +967,7 @@ msgid "Render a checkerboard pattern"
 msgstr "Disegna un motivo a scacchiera"
 
 #: ../operations/common/color.c:24 ../operations/common/color.c:87
-#: ../operations/common/color-overlay.c:26 ../operations/common/dropshadow.c:46
+#: ../operations/common/color-overlay.c:26 ../operations/common/dropshadow.c:67
 #: ../operations/common/grid.c:64 ../operations/common/long-shadow.c:83
 #: ../operations/common/rectangle.c:48 ../operations/common/vignette.c:34
 #: ../operations/common-gpl3+/color-to-alpha.c:29
@@ -1750,7 +1797,23 @@ msgstr ""
 "ricorsiva della trasformazione di dominio. Simile ad un filtro bilaterale, "
 "ma più veloce da calcolare."
 
-#: ../operations/common/dropshadow.c:25 ../operations/common/layer.c:36
+#: ../operations/common/dropshadow.c:27 ../operations/common/median-blur.c:28
+#: ../operations/common/pixelize.c:29 ../operations/common/vignette.c:26
+msgid "Square"
+msgstr "Quadrato"
+
+#: ../operations/common/dropshadow.c:28 ../operations/common/median-blur.c:29
+#: ../operations/common/newsprint.c:26 ../operations/common/vignette.c:25
+msgid "Circle"
+msgstr "Cerchio"
+
+#: ../operations/common/dropshadow.c:29 ../operations/common/median-blur.c:30
+#: ../operations/common/newsprint.c:27 ../operations/common/pixelize.c:27
+#: ../operations/common/vignette.c:27
+msgid "Diamond"
+msgstr "Rombo"
+
+#: ../operations/common/dropshadow.c:32 ../operations/common/layer.c:36
 #: ../operations/common/rectangle.c:26 ../operations/common-gpl3+/plasma.c:40
 #: ../operations/common-gpl3+/polar-coordinates.c:52
 #: ../operations/common-gpl3+/spiral.c:35 ../operations/core/crop.c:25
@@ -1763,11 +1826,11 @@ msgstr ""
 msgid "X"
 msgstr "X"
 
-#: ../operations/common/dropshadow.c:26
+#: ../operations/common/dropshadow.c:33
 msgid "Horizontal shadow offset"
 msgstr "Scostamento orizzontale dell'ombra"
 
-#: ../operations/common/dropshadow.c:32 ../operations/common/layer.c:41
+#: ../operations/common/dropshadow.c:39 ../operations/common/layer.c:41
 #: ../operations/common/rectangle.c:31 ../operations/common-gpl3+/plasma.c:47
 #: ../operations/common-gpl3+/polar-coordinates.c:59
 #: ../operations/common-gpl3+/spiral.c:41 ../operations/core/crop.c:30
@@ -1780,30 +1843,50 @@ msgstr "Scostamento orizzontale dell'ombra"
 msgid "Y"
 msgstr "Y"
 
-#: ../operations/common/dropshadow.c:33
+#: ../operations/common/dropshadow.c:40
 msgid "Vertical shadow offset"
 msgstr "Scostamento verticale dell'ombra"
 
+#: ../operations/common/dropshadow.c:53
+msgid "Grow shape"
+msgstr "Forma bagliore"
+
+#: ../operations/common/dropshadow.c:56
+msgid "The shape to expand or contract the shadow in"
+msgstr "La forma a cui espandere o contrarre l'ombra"
+
+#: ../operations/common/dropshadow.c:58
+msgid "Grow radius"
+msgstr "Raggio accrescimento"
+
+#: ../operations/common/dropshadow.c:65
+msgid ""
+"The distance to expand the shadow before blurring; a negative value will "
+"contract the shadow instead"
+msgstr ""
+"La distanza di espansione dell'ombra prima della sfocatura; un valore "
+"negativo contrarrà invece l'ombra"
+
 #. TRANSLATORS: the string 'black' should not be translated
-#: ../operations/common/dropshadow.c:48
+#: ../operations/common/dropshadow.c:69
 msgid "The shadow's color (defaults to 'black')"
-msgstr "Il colore dell'ombra (predefinito è \"nero\")"
+msgstr "Il colore dell'ombra (predefinito è \"black\")"
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: ../operations/common/dropshadow.c:53 ../operations/common/layer.c:33
+#: ../operations/common/dropshadow.c:74 ../operations/common/layer.c:33
 #: ../operations/common/opacity.c:25 ../operations/common/opacity.c:283
 #: ../operations/external/vector-fill.c:29
 #: ../operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Opacità"
 
-#: ../operations/common/dropshadow.c:117
+#: ../operations/common/dropshadow.c:145
 msgid "Dropshadow"
 msgstr "Proietta ombra"
 
-#: ../operations/common/dropshadow.c:119
+#: ../operations/common/dropshadow.c:147
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Crea un effetto di proiezione ombra nel buffer in ingresso"
 
@@ -1981,7 +2064,7 @@ msgstr "Come il nocciolo gaussiano viene discretizzato"
 
 #: ../operations/common/gaussian-blur.c:58 ../operations/common/gblur-1d.c:60
 #: ../operations/common/map-absolute.c:26
-#: ../operations/common/map-relative.c:30 ../operations/common/median-blur.c:56
+#: ../operations/common/map-relative.c:30 ../operations/common/median-blur.c:57
 #: ../operations/common-gpl3+/displace.c:43
 #: ../operations/common-gpl3+/fractal-trace.c:67
 #: ../operations/common-gpl3+/ripple.c:56 ../operations/transform/scale.c:102
@@ -1990,7 +2073,7 @@ msgid "Abyss policy"
 msgstr "Politica dell'abisso"
 
 #: ../operations/common/gaussian-blur.c:60 ../operations/common/gblur-1d.c:62
-#: ../operations/common/median-blur.c:58
+#: ../operations/common/median-blur.c:59
 #: ../operations/common-gpl3+/displace.c:46
 #: ../operations/common-gpl3+/ripple.c:59 ../operations/transform/scale.c:103
 #: ../operations/workshop/voronoi-diagram.cc:41
@@ -2361,44 +2444,44 @@ msgstr "Livello"
 msgid "A layer in the traditional sense"
 msgstr "Un livello nel senso tradizionale"
 
-#: ../operations/common/levels.c:26
+#: ../operations/common/levels.c:28
 msgid "Low input"
 msgstr "Ingresso basso"
 
-#: ../operations/common/levels.c:27
+#: ../operations/common/levels.c:29
 msgid "Input luminance level to become lowest output"
 msgstr "Livello di luminanza in ingresso che diventa il più basso"
 
-#: ../operations/common/levels.c:31
+#: ../operations/common/levels.c:33
 msgid "High input"
 msgstr "Ingresso alto"
 
-#: ../operations/common/levels.c:32
+#: ../operations/common/levels.c:34
 msgid "Input luminance level to become white"
 msgstr "Livello di luminanza di ingresso che diventa bianco"
 
-#: ../operations/common/levels.c:36
+#: ../operations/common/levels.c:38
 msgid "Low output"
 msgstr "Uscita bassa"
 
-#: ../operations/common/levels.c:37
+#: ../operations/common/levels.c:39
 msgid "Lowest luminance level in output"
 msgstr "Livello di luminanza più bassa in uscita"
 
-#: ../operations/common/levels.c:41
+#: ../operations/common/levels.c:43
 msgid "High output"
 msgstr "Uscita alta"
 
-#: ../operations/common/levels.c:42
+#: ../operations/common/levels.c:44
 msgid "Highest luminance level in output"
 msgstr "Livello di luminanza più alta in uscita"
 
-#: ../operations/common/levels.c:203 ../operations/common/posterize.c:24
+#: ../operations/common/levels.c:205 ../operations/common/posterize.c:24
 #: ../operations/external/matting-levin.c:41
 msgid "Levels"
 msgstr "Livelli"
 
-#: ../operations/common/levels.c:205
+#: ../operations/common/levels.c:207
 msgid "Remaps the intensity range of the image"
 msgstr "Rimappa il campo di intensità dell'immagine"
 
@@ -2718,11 +2801,11 @@ msgstr ""
 "campiona l'ingresso con un buffer ausiliario che contiene le coordinate "
 "relative della sorgente"
 
-#: ../operations/common/matting-global.c:579
+#: ../operations/common/matting-global.c:600
 msgid "Matting Global"
 msgstr "Satinatura globale"
 
-#: ../operations/common/matting-global.c:581
+#: ../operations/common/matting-global.c:602
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -2768,21 +2851,6 @@ msgstr ""
 "Regolarizza la geometria ad una velocità proporzionale al valore della media "
 "della curvatura locale"
 
-#: ../operations/common/median-blur.c:28 ../operations/common/pixelize.c:29
-#: ../operations/common/vignette.c:26
-msgid "Square"
-msgstr "Quadrato"
-
-#: ../operations/common/median-blur.c:29 ../operations/common/newsprint.c:26
-#: ../operations/common/vignette.c:25
-msgid "Circle"
-msgstr "Cerchio"
-
-#: ../operations/common/median-blur.c:30 ../operations/common/newsprint.c:27
-#: ../operations/common/pixelize.c:27 ../operations/common/vignette.c:27
-msgid "Diamond"
-msgstr "Rombo"
-
 #: ../operations/common/median-blur.c:38
 msgid "Neighborhood"
 msgstr "Vicinanza"
@@ -2791,39 +2859,41 @@ msgstr "Vicinanza"
 msgid "Neighborhood type"
 msgstr "Tipo vicinanza"
 
-#: ../operations/common/median-blur.c:46
-msgid "Neighborhood radius"
-msgstr "Raggio vicinanza"
+#: ../operations/common/median-blur.c:47
+msgid ""
+"Neighborhood radius, a negative value will calculate with inverted "
+"percentiles"
+msgstr "Raggio vicinanza, un valore negativo calcolerà con percentili inverse"
 
-#: ../operations/common/median-blur.c:48
+#: ../operations/common/median-blur.c:49
 msgid "Percentile"
 msgstr "Percentile"
 
-#: ../operations/common/median-blur.c:50
+#: ../operations/common/median-blur.c:51
 msgid "Neighborhood color percentile"
 msgstr "Percentile colore vicinanza"
 
-#: ../operations/common/median-blur.c:52
+#: ../operations/common/median-blur.c:53
 msgid "Alpha percentile"
 msgstr "Percentile alfa"
 
-#: ../operations/common/median-blur.c:54
+#: ../operations/common/median-blur.c:55
 msgid "Neighborhood alpha percentile"
 msgstr "Percentile alfa vicinanza"
 
-#: ../operations/common/median-blur.c:60
+#: ../operations/common/median-blur.c:61
 msgid "High precision"
 msgstr "Alta precisione"
 
-#: ../operations/common/median-blur.c:61
+#: ../operations/common/median-blur.c:62
 msgid "Avoid clipping and quantization (slower)"
 msgstr "Evita ritagli e quantizzazione (più lento)"
 
-#: ../operations/common/median-blur.c:995
+#: ../operations/common/median-blur.c:1004
 msgid "Median Blur"
 msgstr "Sfocatura mediana"
 
-#: ../operations/common/median-blur.c:998
+#: ../operations/common/median-blur.c:1007
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -3343,11 +3413,6 @@ msgstr "Rumore a prelievo"
 #: ../operations/common/noise-pick.c:147
 msgid "Randomly interchange some pixels with neighbors"
 msgstr "Scambia a caso alcuni pixel con i suoi vicini"
-
-#: ../operations/common/noise-reduction.c:26
-#: ../operations/common-cxx/warp.cc:35 ../operations/common-gpl3+/wind.c:64
-msgid "Strength"
-msgstr "Forza"
 
 #: ../operations/common/noise-reduction.c:27
 msgid ""
@@ -3961,20 +4026,6 @@ msgstr "Curvatura"
 msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
 msgstr "Angolo massimo copertura sferica, come frazione del co-angolo di vista"
 
-#. note that the code can handle negative curvatures
-#. * (in the [-1, 0) range), in which case the image is
-#. * wrapped around the back face, rather than the front
-#. * face, of the spherical cap.  we disable negative
-#. * curvatures atm, in particular, since they produce
-#. * the same result when the angle of view is 0, and
-#. * since their upper-bound, wrt the angle of view, is
-#. * arbitrary.
-#.
-#: ../operations/common/spherize.c:52 ../operations/common/unsharp-mask.c:31
-#: ../operations/common-gpl3+/edge.c:42
-msgid "Amount"
-msgstr "Ammontare"
-
 #: ../operations/common/spherize.c:53
 msgid ""
 "Displacement scaling factor (negative values refer to the inverse "
@@ -4228,10 +4279,6 @@ msgid "How far out vignetting goes as portion of half image diagonal"
 msgstr ""
 "Quanto deve essere lontano l'effetto vignettatura dalla metà della diagonale "
 "dell'immagine"
-
-#: ../operations/common/vignette.c:43
-msgid "Softness"
-msgstr "Morbidezza"
 
 #: ../operations/common/vignette.c:46
 msgid "Gamma"
@@ -5167,11 +5214,11 @@ msgstr "Coordinata X dello spostamento del centro"
 msgid "Y coordinate of the displacement center"
 msgstr "Coordinate Y dello spostamento del centro"
 
-#: ../operations/common-gpl3+/displace.c:478
+#: ../operations/common-gpl3+/displace.c:480
 msgid "Displace"
 msgstr "Spostamento"
 
-#: ../operations/common-gpl3+/displace.c:481
+#: ../operations/common-gpl3+/displace.c:483
 msgid "Displace pixels as indicated by displacement maps"
 msgstr "Sposta i pixel come indicato da una mappa di spostamento"
 
@@ -6254,10 +6301,6 @@ msgstr "Seno"
 msgid "Generate complex sinusoidal textures"
 msgstr "Genera un complesso motivo a sinusoidi"
 
-#: ../operations/common-gpl3+/softglow.c:26
-msgid "Glow radius"
-msgstr "Raggio bagliore"
-
 #: ../operations/common-gpl3+/softglow.c:235
 msgid "Softglow"
 msgstr "Bagliore tenue"
@@ -6935,11 +6978,11 @@ msgstr ""
 msgid "Reset origin"
 msgstr "Reimposta origine"
 
-#: ../operations/core/crop.c:250
+#: ../operations/core/crop.c:236
 msgid "Crop"
 msgstr "Ritaglia"
 
-#: ../operations/core/crop.c:251
+#: ../operations/core/crop.c:237
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
 "connected is used."
@@ -7430,11 +7473,11 @@ msgstr "Livelli attivi"
 msgid "Number of levels to perform solving"
 msgstr "Numero di livelli per ottenere la soluzione"
 
-#: ../operations/external/matting-levin.c:1455
+#: ../operations/external/matting-levin.c:1478
 msgid "Matting Levin"
 msgstr "Matting Levin"
 
-#: ../operations/external/matting-levin.c:1458
+#: ../operations/external/matting-levin.c:1481
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
