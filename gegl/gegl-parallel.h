@@ -120,6 +120,7 @@ void   gegl_parallel_distribute_area  (const GeglRectangle             *area,
                                        gpointer                         user_data);
 
 
+#ifdef __cplusplus
 #if __cplusplus >= 201103
 
 extern "C++"
@@ -194,6 +195,7 @@ gegl_parallel_distribute_area (const GeglRectangle        *area,
 }
 
 #endif /* __cplusplus >= 201103 */
+#endif
 
 
 G_END_DECLS
