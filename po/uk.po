@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2020-03-28 18:27+0000\n"
-"PO-Revision-Date: 2020-03-29 12:08+0300\n"
+"PO-Revision-Date: 2020-04-01 21:50+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 20.03.70\n"
+"X-Generator: Lokalize 20.07.70\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -1018,6 +1018,10 @@ msgid ""
 "produces the illusion that the grayscale grid cells themselves also have "
 "color."
 msgstr ""
+"Перетворює зображення на зображення у відтінках сірого кольору і накладає"
+" перенасичену ґратку. Через асиміляцію кольорів, яка відбувається у зоровій"
+" системі людини, для деяких масштабів ґратки створюється ілюзія, що сірі"
+" комірки ґратки дають колір."
 
 #: operations/common/color-enhance.c:277
 msgid "Color Enhance"
@@ -1305,6 +1309,9 @@ msgid ""
 "factors, color pairs which are black to black get ignored when constructing "
 "the mapping."
 msgstr ""
+"Викривляє кольори зображення між кольорами зі зваженими коефіцієнтами"
+" викривлення. При побудові перетворення пари кольорів, у яких чорний"
+" переходить у чорний, буде проігноровано."
 
 #: operations/common/component-extract.c:25
 msgid "RGB Red"
@@ -1734,12 +1741,15 @@ msgstr "Число ітерацій фільтрування. Здебільшо
 #: operations/common/domain-transform.c:30
 msgid "Spatial standard deviation of the blur kernel, measured in pixels."
 msgstr ""
+"Просторове стандартне відхилення ядра розмивання, вимірюється у пікселях."
 
 #: operations/common/domain-transform.c:35
 msgid ""
 "Amount of edge preservation. This quantity is inversely proportional to the "
 "range standard deviation of the blur kernel."
 msgstr ""
+"Старанність у збереженні країв. Ця велична є обернено пропорційною до"
+" діапазону стандартного відхилення ядра розмивання."
 
 #: operations/common/domain-transform.c:529
 msgid "Smooth by Domain Transform"
@@ -1806,7 +1816,7 @@ msgstr "Збільшити форму"
 
 #: operations/common/dropshadow.c:56
 msgid "The shape to expand or contract the shadow in"
-msgstr ""
+msgstr "Форма для розширення або стискання тіні"
 
 #: operations/common/dropshadow.c:58
 #| msgid "Glow radius"
@@ -1818,6 +1828,8 @@ msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
 msgstr ""
+"Відстань поширення тіні до розмивання. Від'ємне значення призводить до"
+" стискання тіні."
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/common/dropshadow.c:69
@@ -2036,6 +2048,7 @@ msgstr "Обрізати до розмірів вхідного"
 #: operations/common/gaussian-blur.c:63 operations/common/gblur-1d.c:65
 msgid "Should the output extent be clipped to the input extent"
 msgstr ""
+"Визначає, чи слід обрізати розміри результату за розмірами початкової області"
 
 #: operations/common/gaussian-blur.c:118
 msgid "Gaussian Blur"
@@ -2046,6 +2059,8 @@ msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
 msgstr ""
+"Виконує усереднення сусідніх пікселів із використанням нормального розподілу"
+" для обчислення вагових коефіцієнтів"
 
 #: operations/common/gblur-1d.c:44 operations/common-cxx/warp.cc:38
 #: operations/external/text.c:32
@@ -2107,6 +2122,8 @@ msgstr "канал обробки"
 #: operations/common/gegl.c:25
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr ""
+"[дія [властивість=значення] [властивість=значення]] [[дія]"
+" [властивість=значення]"
 
 #: operations/common/gegl.c:28
 msgid "Eeeeeek"
@@ -2117,6 +2134,8 @@ msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
 msgstr ""
+"Існує проблема із синтаксисом або у програмі для обробки значень"
+" властивостей. Втім, здебільшого, усе має працювати."
 
 #: operations/common/gegl.c:107
 msgid "GEGL graph"
@@ -2225,6 +2244,8 @@ msgstr "Зберігач профілів ICC"
 #: operations/common/icc-save.c:74
 msgid "Stores the ICC profile that would be embedded if stored as an image."
 msgstr ""
+"Зберігає профіль ICC, який буде вбудовано, якщо дані буде збережено як"
+" зображення."
 
 #: operations/common/image-compare.c:27
 msgid "Wrong pixels"
@@ -2297,6 +2318,7 @@ msgstr "Градієнт зображення"
 #: operations/common/image-gradient.c:228
 msgid "Compute gradient magnitude and/or direction by central differencies"
 msgstr ""
+"Обчислити амплітуду градієнта і/або напрямок за допомогою центральних різниць"
 
 #: operations/common/introspect.c:26
 msgid "Node"
@@ -2315,6 +2337,8 @@ msgid ""
 "Invert the components (except alpha) perceptually, the result is the "
 "corresponding \"negative\" image."
 msgstr ""
+"Інвертувати компоненти (окрім прозорості) за сприйняттям. Результатом буде"
+" відповідне «негативне» зображення."
 
 #: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
@@ -2327,6 +2351,8 @@ msgid ""
 "Invert the components (except alpha) in linear light, the result is the "
 "corresponding \"negative\" image."
 msgstr ""
+"Інвертувати компоненти (окрім прозорості) у лінійному світлі. Результатом"
+" буде відповідне «негативне» зображення."
 
 #: operations/common/layer.c:30
 msgid "Operation"
@@ -2411,7 +2437,7 @@ msgstr "Рівні"
 
 #: operations/common/levels.c:207
 msgid "Remaps the intensity range of the image"
-msgstr ""
+msgstr "Змінює прив'язку діапазону інтенсивностей зображення"
 
 #: operations/common/linear-gradient.c:25
 #: operations/common/radial-gradient.c:25
@@ -2513,12 +2539,12 @@ msgstr "Масштаб"
 #: operations/common/little-planet.c:47
 #: operations/common/panorama-projection.c:47
 msgid "output/rendering width in pixels, -1 for input width"
-msgstr ""
+msgstr "ширина результату/обробки у пікселях, -1 — вхідна ширина"
 
 #: operations/common/little-planet.c:53
 #: operations/common/panorama-projection.c:53
 msgid "output/rendering height in pixels, -1 for input height"
-msgstr ""
+msgstr "висота результату/обробки у пікселях, -1 — вхідна висота"
 
 #: operations/common/little-planet.c:58
 #: operations/common/panorama-projection.c:58
@@ -2558,6 +2584,7 @@ msgstr "Маленька планета"
 #: operations/common/little-planet.c:534
 msgid "Do a stereographic/little planet transform of an equirectangular image."
 msgstr ""
+"Виконати стереографічне/глобусне перетворення еквідистантного зображення."
 
 #: operations/common/long-shadow.c:27
 msgid "Finite"
@@ -2665,7 +2692,7 @@ msgstr "Шлях для завантаження файлу."
 
 #: operations/common/magick-load.c:144
 msgid "Image Magick wrapper using the png op."
-msgstr ""
+msgstr "Обгортка Image Magick з використанням дії png."
 
 #: operations/common/mantiuk06.c:32
 msgid "The amount of contrast compression"
@@ -2737,7 +2764,7 @@ msgstr "Вологість"
 
 #: operations/common/mblur.c:26
 msgid "The value represents the contribution of the past to the new frame."
-msgstr ""
+msgstr "Значення, яке визначає внесок попередніх кадрів до нового кадру."
 
 #: operations/common/mblur.c:148
 msgid "Temporal blur"
@@ -2761,6 +2788,8 @@ msgstr "Розмивання за середньою кривиною"
 msgid ""
 "Regularize geometry at a speed proportional to the local mean curvature value"
 msgstr ""
+"Регуляризація геометрії зі швидкістю, яка пропорційна до величини локальної"
+" середньої кривини"
 
 #: operations/common/median-blur.c:38
 msgid "Neighborhood"
@@ -2892,7 +2921,7 @@ msgstr "Обітнути результат за вхідним розміром
 
 #: operations/common/mirrors.c:86
 msgid "Wrap input"
-msgstr ""
+msgstr "Зациклити вхідні дані"
 
 #: operations/common/mirrors.c:87
 msgid "Fill full output area"
@@ -2970,7 +2999,7 @@ msgstr "Лінія"
 
 #: operations/common/newsprint.c:28
 msgid "PSSquare (or Euclidian) dot"
-msgstr ""
+msgstr "Крапка PSSquare (або евклідова)"
 
 #: operations/common/newsprint.c:29
 #| msgid "Orthogonal Lines"
@@ -3028,6 +3057,8 @@ msgid ""
 "The number of pixels across one repetition of a base pattern at base "
 "resolution."
 msgstr ""
+"Кількість пікселів у одному повторенні базового візерунка у базовій"
+" роздільній здатності."
 
 #: operations/common/newsprint.c:59
 #| msgid "Red inversion"
@@ -3168,21 +3199,21 @@ msgstr "Кут чорного"
 #: operations/common/newsprint.c:162
 #| msgid "Black level"
 msgid "Black pullout"
-msgstr ""
+msgstr "Відтягування чорного"
 
 #: operations/common/newsprint.c:164
 msgid "How much of common gray to pull out of CMY"
-msgstr ""
+msgstr "Величина загального сірого для відтягування CMY"
 
 #: operations/common/newsprint.c:167
 msgid "Anti-alias oversampling factor"
-msgstr ""
+msgstr "Коефіцієнт передискретизації згладжування"
 
 #: operations/common/newsprint.c:169
 #| msgid ""
 #| "Number of samples to do per iteration looking for the range of colors"
 msgid "Number of samples that are averaged for antialiasing the result."
-msgstr ""
+msgstr "Кількість зразків, які буде усереднено для згладжування результату."
 
 #: operations/common/newsprint.c:171 operations/common-gpl3+/plasma.c:36
 msgid "Turbulence"
@@ -3191,7 +3222,7 @@ msgstr "Турбулентність"
 #. rename to wave-pinch or period-pinch?
 #: operations/common/newsprint.c:173
 msgid "Color saturation dependent compression of period"
-msgstr ""
+msgstr "Залежне від насиченості кольорів стискання періоду"
 
 #: operations/common/newsprint.c:175
 msgid "Blocksize"
@@ -3342,7 +3373,7 @@ msgstr "Випадково поміняти деякі точки з сусід�
 #: operations/common/noise-reduction.c:27
 msgid ""
 "Controls the number of iterations; lower values give less plastic results"
-msgstr ""
+msgstr "Керує кількістю ітерацій. Менші значення — менш пластичні результати"
 
 #: operations/common/noise-reduction.c:456
 msgid "Noise Reduction"
