@@ -7,22 +7,22 @@
 # Yolanda Alvarez Perez <yolandaa.alvarez.perez@gmail.com>, 2016.
 # Rodrigo <rodhos92@gmail.com>, 2018, 2019.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2012-2019.
-# Rodrigo Lledó <rodhos92@gmail.com>, 2019.
+# Rodrigo Lledó <rodhos92@gmail.com>, 2019-2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-09-25 11:19+0000\n"
-"PO-Revision-Date: 2019-09-26 13:41+0200\n"
+"POT-Creation-Date: 2020-03-28 18:27+0000\n"
+"PO-Revision-Date: 2020-04-08 15:49+0200\n"
 "Last-Translator: Rodrigo Lledó <rodhos92@gmail.com>\n"
-"Language-Team: Español <gnome-es-list@gnome.org>\n"
-"Language: es\n"
+"Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
+"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 3.32.0\n"
+"Plural-Forms: nplurals=2; plural=(n!=1)\n"
+"X-Generator: Gtranslator 3.34.0\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -603,7 +603,7 @@ msgstr ""
 "aplicación de funciones trigonométricas para mapear los valores de color."
 
 #: operations/common/bilateral-filter.c:26
-#: operations/common/domain-transform.c:29 operations/common/dropshadow.c:39
+#: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -640,11 +640,40 @@ msgstr ""
 "vecinal también se pondera por la diferencia de color con el píxel central "
 "original. "
 
-#: operations/common/box-blur.c:25 operations/common/c2g.c:28
-#: operations/common/edge-neon.c:48 operations/common/median-blur.c:43
-#: operations/common/snn-mean.c:26 operations/common/stress.c:27
-#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:38
-#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
+#. note that the code can handle negative curvatures
+#. * (in the [-1, 0) range), in which case the image is
+#. * wrapped around the back face, rather than the front
+#. * face, of the spherical cap.  we disable negative
+#. * curvatures atm, in particular, since they produce
+#. * the same result when the angle of view is 0, and
+#. * since their upper-bound, wrt the angle of view, is
+#. * arbitrary.
+#.
+#: operations/common/bloom.c:27 operations/common/spherize.c:52
+#: operations/common/unsharp-mask.c:31 operations/common-gpl3+/edge.c:42
+msgid "Amount"
+msgstr "Cantidad"
+
+#: operations/common/bloom.c:28
+#| msgid "Lower threshold"
+msgid "Glow-area brightness threshold"
+msgstr "Umbral de brillo del área del resplandor"
+
+#: operations/common/bloom.c:31 operations/common/vignette.c:43
+msgid "Softness"
+msgstr "Suavidad"
+
+#: operations/common/bloom.c:32
+#| msgid "Gradient smoothness"
+msgid "Glow-area edge softness"
+msgstr "Suavidad del borde del área del resplandor"
+
+#: operations/common/bloom.c:35 operations/common/box-blur.c:25
+#: operations/common/c2g.c:28 operations/common/edge-neon.c:48
+#: operations/common/median-blur.c:43 operations/common/snn-mean.c:26
+#: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
+#: operations/common/vignette.c:38 operations/common/wavelet-blur-1d.c:28
+#: operations/common/wavelet-blur.c:27
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
 #: operations/common-gpl3+/whirl-pinch.c:46
@@ -653,6 +682,28 @@ msgstr ""
 #: operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "Radio"
+
+#: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
+msgid "Glow radius"
+msgstr "Radio del resplandor"
+
+#: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
+#: operations/common-cxx/warp.cc:35 operations/common-gpl3+/wind.c:64
+msgid "Strength"
+msgstr "Fuerza"
+
+#: operations/common/bloom.c:43
+#| msgid "Strength"
+msgid "Glow strength"
+msgstr "Fuerza del resplandor"
+
+#: operations/common/bloom.c:223
+msgid "Bloom"
+msgstr "Capa blanca"
+
+#: operations/common/bloom.c:225
+msgid "Add glow around bright areas"
+msgstr "Añadir resplandor alrededor de las áreas brillantes"
 
 #: operations/common/box-blur.c:26 operations/common/snn-mean.c:27
 #: operations/workshop/boxblur.c:25
@@ -903,7 +954,7 @@ msgid "Render a checkerboard pattern"
 msgstr "Renderizar un patrón de tablero de ajedrez"
 
 #: operations/common/color.c:24 operations/common/color.c:87
-#: operations/common/color-overlay.c:26 operations/common/dropshadow.c:46
+#: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
 #: operations/common/rectangle.c:48 operations/common/vignette.c:34
 #: operations/common-gpl3+/color-to-alpha.c:29
@@ -1717,7 +1768,23 @@ msgstr ""
 "recursiva de transformación de dominio. Similar a un filtro bilateral, pero "
 "más rápido de calcular."
 
-#: operations/common/dropshadow.c:25 operations/common/layer.c:36
+#: operations/common/dropshadow.c:27 operations/common/median-blur.c:28
+#: operations/common/pixelize.c:29 operations/common/vignette.c:26
+msgid "Square"
+msgstr "Cuadrado"
+
+#: operations/common/dropshadow.c:28 operations/common/median-blur.c:29
+#: operations/common/newsprint.c:26 operations/common/vignette.c:25
+msgid "Circle"
+msgstr "Círculo"
+
+#: operations/common/dropshadow.c:29 operations/common/median-blur.c:30
+#: operations/common/newsprint.c:27 operations/common/pixelize.c:27
+#: operations/common/vignette.c:27
+msgid "Diamond"
+msgstr "Diamante"
+
+#: operations/common/dropshadow.c:32 operations/common/layer.c:36
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
 #: operations/common-gpl3+/spiral.c:35 operations/core/crop.c:25
@@ -1729,11 +1796,11 @@ msgstr ""
 msgid "X"
 msgstr "X"
 
-#: operations/common/dropshadow.c:26
+#: operations/common/dropshadow.c:33
 msgid "Horizontal shadow offset"
 msgstr "Desplazamiento horizontal de la sombra"
 
-#: operations/common/dropshadow.c:32 operations/common/layer.c:41
+#: operations/common/dropshadow.c:39 operations/common/layer.c:41
 #: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
@@ -1745,30 +1812,52 @@ msgstr "Desplazamiento horizontal de la sombra"
 msgid "Y"
 msgstr "Y"
 
-#: operations/common/dropshadow.c:33
+#: operations/common/dropshadow.c:40
 msgid "Vertical shadow offset"
 msgstr "Desplazamiento vertical de la sombra"
 
+#: operations/common/dropshadow.c:53
+#| msgid "Grow area"
+msgid "Grow shape"
+msgstr "Expandir la forma"
+
+#: operations/common/dropshadow.c:56
+msgid "The shape to expand or contract the shadow in"
+msgstr "La forma dentro de la que expandir o contraer la sombra"
+
+#: operations/common/dropshadow.c:58
+#| msgid "Glow radius"
+msgid "Grow radius"
+msgstr "Aumentar el radio"
+
+#: operations/common/dropshadow.c:65
+msgid ""
+"The distance to expand the shadow before blurring; a negative value will "
+"contract the shadow instead"
+msgstr ""
+"La distancia a la que expandir la sombra antes de desenfocar; un valor "
+"negativo hará que la sombra se contraiga"
+
 #. TRANSLATORS: the string 'black' should not be translated
-#: operations/common/dropshadow.c:48
+#: operations/common/dropshadow.c:69
 msgid "The shadow's color (defaults to 'black')"
 msgstr "El color de la sombra (el predeterminado es «negro»)"
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:53 operations/common/layer.c:33
+#: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:283
 #: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Opacidad"
 
 # arrojada o proyectada
-#: operations/common/dropshadow.c:117
+#: operations/common/dropshadow.c:145
 msgid "Dropshadow"
 msgstr "Sombra arrojada"
 
-#: operations/common/dropshadow.c:119
+#: operations/common/dropshadow.c:147
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Crea un efecto de sombra arrojada sobre el búfer de entrada"
 
@@ -1947,7 +2036,7 @@ msgstr "¿Cómo se hace discreto el núcleo gaussiano?"
 
 #: operations/common/gaussian-blur.c:58 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:30
-#: operations/common/median-blur.c:56 operations/common-gpl3+/displace.c:43
+#: operations/common/median-blur.c:57 operations/common-gpl3+/displace.c:43
 #: operations/common-gpl3+/fractal-trace.c:67
 #: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
 #: operations/workshop/voronoi-diagram.cc:38
@@ -1955,7 +2044,7 @@ msgid "Abyss policy"
 msgstr "Política del abismo"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
-#: operations/common/median-blur.c:58 operations/common-gpl3+/displace.c:46
+#: operations/common/median-blur.c:59 operations/common-gpl3+/displace.c:46
 #: operations/common-gpl3+/ripple.c:59 operations/transform/scale.c:103
 #: operations/workshop/voronoi-diagram.cc:41
 msgid "How image edges are handled"
@@ -2294,9 +2383,8 @@ msgstr "Posición vertical en píxeles"
 
 #: operations/common/layer.c:46 operations/common/noise-cell.c:36
 #: operations/common/noise-perlin.c:27 operations/common/noise-simplex.c:31
-#: operations/common/saturation.c:31
+#: operations/common/normal-map.c:30 operations/common/saturation.c:31
 #: operations/workshop/external/lens-correct.c:50
-#: operations/workshop/normal-map.c:30
 msgid "Scale"
 msgstr "Escala"
 
@@ -2320,44 +2408,44 @@ msgstr "Capa"
 msgid "A layer in the traditional sense"
 msgstr "Una capa en el sentido tradicional de la palabra"
 
-#: operations/common/levels.c:26
+#: operations/common/levels.c:28
 msgid "Low input"
 msgstr "Entrada baja"
 
-#: operations/common/levels.c:27
+#: operations/common/levels.c:29
 msgid "Input luminance level to become lowest output"
 msgstr "Hacer que el nivel de luminancia de la entrada sea la salida más baja"
 
-#: operations/common/levels.c:31
+#: operations/common/levels.c:33
 msgid "High input"
 msgstr "Entrada alta"
 
-#: operations/common/levels.c:32
+#: operations/common/levels.c:34
 msgid "Input luminance level to become white"
 msgstr "Nivel de luminancia de la entrada necesario para que sea blanco"
 
-#: operations/common/levels.c:36
+#: operations/common/levels.c:38
 msgid "Low output"
 msgstr "Salida baja"
 
-#: operations/common/levels.c:37
+#: operations/common/levels.c:39
 msgid "Lowest luminance level in output"
 msgstr "El nivel de luminancia más bajo en la salida"
 
-#: operations/common/levels.c:41
+#: operations/common/levels.c:43
 msgid "High output"
 msgstr "Salida alta"
 
-#: operations/common/levels.c:42
+#: operations/common/levels.c:44
 msgid "Highest luminance level in output"
 msgstr "El nivel de luminancia más alto en la salida"
 
-#: operations/common/levels.c:203 operations/common/posterize.c:24
+#: operations/common/levels.c:205 operations/common/posterize.c:24
 #: operations/external/matting-levin.c:41
 msgid "Levels"
 msgstr "Niveles"
 
-#: operations/common/levels.c:205
+#: operations/common/levels.c:207
 msgid "Remaps the intensity range of the image"
 msgstr "Reasigna el rango de intensidad de la imagen"
 
@@ -2678,11 +2766,11 @@ msgstr ""
 "muestrear la entrada con un búfer auxiliar que contiene coordenadas de "
 "fuente relativas"
 
-#: operations/common/matting-global.c:579
+#: operations/common/matting-global.c:600
 msgid "Matting Global"
 msgstr "Dar acabado mate global"
 
-#: operations/common/matting-global.c:581
+#: operations/common/matting-global.c:602
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -2728,21 +2816,6 @@ msgstr ""
 "Regularizar la geometría a una velocidad proporcional al valor de curvatura "
 "media local"
 
-#: operations/common/median-blur.c:28 operations/common/pixelize.c:29
-#: operations/common/vignette.c:26
-msgid "Square"
-msgstr "Cuadrado"
-
-#: operations/common/median-blur.c:29 operations/common/newsprint.c:26
-#: operations/common/vignette.c:25
-msgid "Circle"
-msgstr "Círculo"
-
-#: operations/common/median-blur.c:30 operations/common/newsprint.c:27
-#: operations/common/pixelize.c:27 operations/common/vignette.c:27
-msgid "Diamond"
-msgstr "Diamante"
-
 # En matemáticas se le llama entorno y corresponde a un área reducida en torno a un punto. También se le llama vecindad o vecindario y se entiende. Pero creo que es una traducción literal propagada.
 #: operations/common/median-blur.c:38
 msgid "Neighborhood"
@@ -2752,40 +2825,43 @@ msgstr "Entorno"
 msgid "Neighborhood type"
 msgstr "Tipo de entorno"
 
-#: operations/common/median-blur.c:46
-msgid "Neighborhood radius"
-msgstr "Radio del entorno"
+#: operations/common/median-blur.c:47
+msgid ""
+"Neighborhood radius, a negative value will calculate with inverted "
+"percentiles"
+msgstr ""
+"Radio del entorno, un valor negativo se calculará con percentiles invertidos"
 
-#: operations/common/median-blur.c:48
+#: operations/common/median-blur.c:49
 msgid "Percentile"
 msgstr "Percentil"
 
-#: operations/common/median-blur.c:50
+#: operations/common/median-blur.c:51
 msgid "Neighborhood color percentile"
 msgstr "Percentil del color del entorno"
 
-#: operations/common/median-blur.c:52
+#: operations/common/median-blur.c:53
 msgid "Alpha percentile"
 msgstr "Percentil alfa"
 
-#: operations/common/median-blur.c:54
+#: operations/common/median-blur.c:55
 msgid "Neighborhood alpha percentile"
 msgstr "Percentil del entorno alfa"
 
-#: operations/common/median-blur.c:60
+#: operations/common/median-blur.c:61
 msgid "High precision"
 msgstr "Alta precisión"
 
 # https://en.wikipedia.org/wiki/Clipping_(photography)
-#: operations/common/median-blur.c:61
+#: operations/common/median-blur.c:62
 msgid "Avoid clipping and quantization (slower)"
 msgstr "Evitar intensidades fuera de rango y cuantificación (lento)"
 
-#: operations/common/median-blur.c:995
+#: operations/common/median-blur.c:1004
 msgid "Median Blur"
 msgstr "Desenfoque mediano"
 
-#: operations/common/median-blur.c:998
+#: operations/common/median-blur.c:1007
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -3308,11 +3384,6 @@ msgstr "Selección de ruido"
 msgid "Randomly interchange some pixels with neighbors"
 msgstr "Intercambiar aleatoriamente algunos píxeles con sus vecinos"
 
-#: operations/common/noise-reduction.c:26 operations/common-cxx/warp.cc:35
-#: operations/common-gpl3+/wind.c:64
-msgid "Strength"
-msgstr "Fuerza"
-
 #: operations/common/noise-reduction.c:27
 msgid ""
 "Controls the number of iterations; lower values give less plastic results"
@@ -3360,15 +3431,15 @@ msgstr ""
 "Usar una distribución de ruido gaussiana. Cuando está desmarcado se utiliza "
 "una distribución de ruido lineal en su lugar"
 
-#: operations/common/noise-rgb.c:39 operations/workshop/normal-map.c:25
+#: operations/common/noise-rgb.c:39 operations/common/normal-map.c:25
 msgid "Red"
 msgstr "Rojo"
 
-#: operations/common/noise-rgb.c:44 operations/workshop/normal-map.c:26
+#: operations/common/noise-rgb.c:44 operations/common/normal-map.c:26
 msgid "Green"
 msgstr "Verde"
 
-#: operations/common/noise-rgb.c:48 operations/workshop/normal-map.c:27
+#: operations/common/noise-rgb.c:48 operations/common/normal-map.c:27
 msgid "Blue"
 msgstr "Azul"
 
@@ -3403,6 +3474,68 @@ msgstr "Dispersión de ruido"
 #: operations/common/noise-spread.c:162
 msgid "Move pixels around randomly"
 msgstr "Mover los píxeles alrededor aleatoriamente"
+
+#: operations/common/normal-map.c:31
+msgid "The amount by which to scale the height values"
+msgstr "La cantidad por la que se escalan los valores de altura"
+
+#: operations/common/normal-map.c:35
+msgid "X Component"
+msgstr "Componente X"
+
+#: operations/common/normal-map.c:38
+msgid "The component used for the X coordinates"
+msgstr "El componente usado para la coordenada X"
+
+#: operations/common/normal-map.c:40
+msgid "Y Component"
+msgstr "Componente Y"
+
+#: operations/common/normal-map.c:43
+msgid "The component used for the Y coordinates"
+msgstr "El componente usado para la coordenada Y"
+
+#: operations/common/normal-map.c:45
+msgid "Flip X"
+msgstr "Voltear X"
+
+#: operations/common/normal-map.c:46
+msgid "Flip the X coordinates"
+msgstr "Voltear la coordenada X"
+
+#: operations/common/normal-map.c:48
+msgid "Flip Y"
+msgstr "Voltear Y"
+
+#: operations/common/normal-map.c:49
+msgid "Flip the Y coordinates"
+msgstr "Voltear la coordenada Y"
+
+#: operations/common/normal-map.c:51
+msgid "Full Z Range"
+msgstr "Rango Z completo"
+
+#: operations/common/normal-map.c:52
+msgid "Use the full [0,1] range to encode the Z coordinates"
+msgstr "Usar el rango [0,1] completo para codificar la coordenada Z"
+
+#: operations/common/normal-map.c:54 operations/common-gpl3+/maze.c:63
+#: operations/common-gpl3+/noise-solid.c:56 operations/common-gpl3+/ripple.c:61
+msgid "Tileable"
+msgstr "Convertible en mosaico"
+
+# mosaicable
+#: operations/common/normal-map.c:55
+msgid "Generate a tileable map"
+msgstr "Generar un mapa que pueda tener forma de mosaico"
+
+#: operations/common/normal-map.c:249
+msgid "Normal Map"
+msgstr "Mapa normal"
+
+#: operations/common/normal-map.c:252
+msgid "Generate a normal map from a height map"
+msgstr "Generar un mapa normal a partir de un mapa de altura"
 
 #: operations/common/opacity.c:26
 msgid ""
@@ -3742,7 +3875,6 @@ msgid "Scale, strength of effect"
 msgstr "Escala, fuerza del efecto"
 
 #: operations/common/saturation.c:36
-#| msgid "Convert color space"
 msgid "Interpolation Color Space"
 msgstr "Espacio de color de interpolación"
 
@@ -3867,20 +3999,6 @@ msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
 msgstr ""
 "Ángulo de la cúspide del casquete esférico, como fracción del co-ángulo de "
 "vista"
-
-#. note that the code can handle negative curvatures
-#. * (in the [-1, 0) range), in which case the image is
-#. * wrapped around the back face, rather than the front
-#. * face, of the spherical cap.  we disable negative
-#. * curvatures atm, in particular, since they produce
-#. * the same result when the angle of view is 0, and
-#. * since their upper-bound, wrt the angle of view, is
-#. * arbitrary.
-#.
-#: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
-#: operations/common-gpl3+/edge.c:42
-msgid "Amount"
-msgstr "Cantidad"
 
 #: operations/common/spherize.c:53
 msgid ""
@@ -4143,10 +4261,6 @@ msgstr ""
 msgid "How far out vignetting goes as portion of half image diagonal"
 msgstr "Magnitud del viñeteado como porción de la semidiagonal de la imagen"
 
-#: operations/common/vignette.c:43
-msgid "Softness"
-msgstr "Suavidad"
-
 #: operations/common/vignette.c:46
 msgid "Gamma"
 msgstr "Gamma"
@@ -4348,11 +4462,11 @@ msgstr "Número de cálculos para un promedio de escala de grises"
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Normalizar la salida a un rango de 0,0 a 1,0."
 
-#: operations/common-cxx/distance-transform.cc:475
+#: operations/common-cxx/distance-transform.cc:476
 msgid "Distance Transform"
 msgstr "Transformación de la distancia"
 
-#: operations/common-cxx/distance-transform.cc:478
+#: operations/common-cxx/distance-transform.cc:479
 msgid "Calculate a distance transform"
 msgstr "Calcular una transformada de distancia"
 
@@ -5077,11 +5191,11 @@ msgstr "Coordenada X del centro de desplazamiento"
 msgid "Y coordinate of the displacement center"
 msgstr "Coordenada Y del centro de desplazamiento"
 
-#: operations/common-gpl3+/displace.c:478
+#: operations/common-gpl3+/displace.c:480
 msgid "Displace"
 msgstr "Desplazar"
 
-#: operations/common-gpl3+/displace.c:481
+#: operations/common-gpl3+/displace.c:483
 msgid "Displace pixels as indicated by displacement maps"
 msgstr "Desplazar los píxeles como se indica por los mapas de desplazamiento"
 
@@ -5601,11 +5715,6 @@ msgstr "Tipo de algoritmo"
 msgid "Maze algorithm type"
 msgstr "Tipo de algoritmo de laberinto"
 
-#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:61 operations/workshop/normal-map.c:54
-msgid "Tileable"
-msgstr "Convertible en mosaico"
-
 #: operations/common-gpl3+/maze.c:67
 msgid "Foreground Color"
 msgstr "Color de primer plano"
@@ -5862,7 +5971,6 @@ msgid "Use pixel luminance values"
 msgstr "Usar valores de luminancia de píxeles"
 
 #: operations/common-gpl3+/oilify.c:523
-#| msgid "Mask radius"
 msgid "Mask radius buffer"
 msgstr "Búfer del radio de la máscara"
 
@@ -5875,7 +5983,6 @@ msgstr ""
 "escala en el rango 0,0 a 1,0"
 
 #: operations/common-gpl3+/oilify.c:525
-#| msgid "Exponent"
 msgid "Exponent buffer"
 msgstr "Búfer del exponente"
 
@@ -6171,10 +6278,6 @@ msgstr "Seno"
 #: operations/common-gpl3+/sinus.c:322
 msgid "Generate complex sinusoidal textures"
 msgstr "Generar texturas sinusoidales complejas"
-
-#: operations/common-gpl3+/softglow.c:26
-msgid "Glow radius"
-msgstr "Radio del resplandor"
 
 #: operations/common-gpl3+/softglow.c:235
 msgid "Softglow"
@@ -6860,11 +6963,11 @@ msgstr ""
 msgid "Reset origin"
 msgstr "Reiniciar origen"
 
-#: operations/core/crop.c:250
+#: operations/core/crop.c:236
 msgid "Crop"
 msgstr "Recortar"
 
-#: operations/core/crop.c:251
+#: operations/core/crop.c:237
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
 "connected is used."
@@ -7357,11 +7460,11 @@ msgstr "Niveles activos"
 msgid "Number of levels to perform solving"
 msgstr "Número de niveles para el solucionado"
 
-#: operations/external/matting-levin.c:1455
+#: operations/external/matting-levin.c:1478
 msgid "Matting Levin"
 msgstr "Matting Levin"
 
-#: operations/external/matting-levin.c:1458
+#: operations/external/matting-levin.c:1481
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
@@ -7722,14 +7825,10 @@ msgid "Store image in a GdkPixbuf."
 msgstr "Guardar la imagen en un GdkPixbuf."
 
 #: operations/external/sdl2-display.c:202
-#| msgid "SDL Display"
 msgid "SDL2 Display"
 msgstr "Pantalla SDL2"
 
 #: operations/external/sdl2-display.c:205
-#| msgid ""
-#| "Displays the input buffer in an SDL window (restricted to one display op/"
-#| "process, due to SDL implementation issues)."
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
@@ -8103,11 +8202,6 @@ msgstr ""
 
 # powf means power function?
 #: operations/generated/gamma.c:138
-#| msgid ""
-#| "Math operation gamma, performs the operation per pixel, using either the "
-#| "constant provided in 'value' or the corresponding pixel from the buffer "
-#| "on aux as operands. The result is the evaluation of the expression result "
-#| "= powf (input, value)"
 msgid ""
 "Math operation gamma, performs the operation per pixel, using either the "
 "constant provided in 'value' or the corresponding pixel from the buffer on "
@@ -8489,23 +8583,19 @@ msgstr ""
 "lugar de un desenfoque gaussiano."
 
 #: operations/workshop/boxblur-1d.c:28
-#| msgid "Radius of square pixel region, (width and height will be radius*2+1)"
 msgid "Radius of row pixel region, (size will be radius*2+1)"
 msgstr "Radio de la región de píxeles en fila, (el tamaño será radio*2+1)"
 
 #: operations/workshop/boxblur-1d.c:466
-#| msgid "Box Blur"
 msgid "1D Box Blur"
 msgstr "Desenfoque de rectángulo 1D"
 
 #: operations/workshop/boxblur-1d.c:467
-#| msgid "Blur resulting from averaging the colors of a square neighbourhood."
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
 msgstr ""
 "Desenfoque resultante de la media de los colores en un entorno de fila."
 
 #: operations/workshop/boxblur.c:77
-#| msgid "Box Blur"
 msgid "BoxBlur"
 msgstr "Desenfoque de rectángulo"
 
@@ -9019,69 +9109,6 @@ msgstr "Imagen integral"
 msgid "Compute integral and squared integral image"
 msgstr "Calcular la imagen integral e integral cuadrada"
 
-#: operations/workshop/normal-map.c:31
-msgid "The amount by which to scale the height values"
-msgstr "La cantidad por la que se escalan los valores de altura"
-
-#: operations/workshop/normal-map.c:35
-msgid "X Component"
-msgstr "Componente X"
-
-#: operations/workshop/normal-map.c:38
-#| msgid "Origin point for the polar coordinates"
-msgid "The component used for the X coordinates"
-msgstr "El componente usado para la coordenada X"
-
-#: operations/workshop/normal-map.c:40
-msgid "Y Component"
-msgstr "Componente Y"
-
-#: operations/workshop/normal-map.c:43
-#| msgid "Origin point for the polar coordinates"
-msgid "The component used for the Y coordinates"
-msgstr "El componente usado para la coordenada Y"
-
-#: operations/workshop/normal-map.c:45
-msgid "Flip X"
-msgstr "Voltear X"
-
-#: operations/workshop/normal-map.c:46
-#| msgid "Start x coordinate"
-msgid "Flip the X coordinates"
-msgstr "Voltear la coordenada X"
-
-#: operations/workshop/normal-map.c:48
-msgid "Flip Y"
-msgstr "Voltear Y"
-
-#: operations/workshop/normal-map.c:49
-#| msgid "Start x coordinate"
-msgid "Flip the Y coordinates"
-msgstr "Voltear la coordenada Y"
-
-#: operations/workshop/normal-map.c:51
-msgid "Full Z Range"
-msgstr "Rango Z completo"
-
-#: operations/workshop/normal-map.c:52
-msgid "Use the full [0,1] range to encode the Z coordinates"
-msgstr "Usar el rango [0,1] completo para codificar la coordenada Z"
-
-# mosaicable
-#: operations/workshop/normal-map.c:55
-#| msgid "Create a tileable output"
-msgid "Generate a tileable map"
-msgstr "Generar un mapa que pueda tener forma de mosaico"
-
-#: operations/workshop/normal-map.c:249
-#| msgid "Normalize"
-msgid "Normal Map"
-msgstr "Mapa normal"
-
-#: operations/workshop/normal-map.c:251
-msgid "Generate a normal map from a height map"
-msgstr "Generar un mapa normal a partir de un mapa de altura"
-
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
 "Raw image loader, wrapping dcraw with pipes, provides the raw bayer grid as "
@@ -9175,6 +9202,9 @@ msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr ""
 "Pinta cada píxel que no es semilla con el color del píxel semilla más "
 "cercano."
+
+#~ msgid "Neighborhood radius"
+#~ msgstr "Radio del entorno"
 
 #~ msgid "Box filter"
 #~ msgstr "Filtro de caja"
