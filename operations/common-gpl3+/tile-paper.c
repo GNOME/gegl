@@ -19,6 +19,7 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
+#include <stdlib.h>
 
 
 #ifdef GEGL_PROPERTIES
