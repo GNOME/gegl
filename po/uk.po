@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2020-04-05 07:32+0000\n"
-"PO-Revision-Date: 2020-04-14 17:37+0300\n"
+"PO-Revision-Date: 2020-04-18 21:26+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -6786,12 +6786,18 @@ msgid ""
 "buffer where gegl_buffer_list_valid_rectangles returns the part of the cache "
 "that is valid."
 msgstr ""
+"NULL або GeglBuffer, що містить кешовані результати обробки зображження. Це"
+" спеціальний буфер, де gegl_buffer_list_valid_rectangles повертає частину"
+" кешу, яка є коректною."
 
 #: operations/core/cache.c:87
 msgid ""
 "An explicit caching node, caches results and should provide faster "
 "recomputation if what is cached by it is expensive but isn't changing."
 msgstr ""
+"Явний вузол кешування, кешує результати і має забезпечити швидше"
+" переобчислення, якщо те, що потрапляє до кешу, є обчислювально вартісним,"
+" але не змінюється."
 
 #: operations/core/cast-format.c:25
 msgid "Input format"
@@ -6814,6 +6820,8 @@ msgid ""
 "Cast the data between input_format and output_format, both formats must have "
 "the same bpp"
 msgstr ""
+"Перекинути дані між input_format і output_format. Обидва формати повинні мати"
+" однакове значення бітів на піксель."
 
 #: operations/core/cast-space.c:25 operations/core/convert-space.c:25
 msgid "Name"
@@ -6852,6 +6860,9 @@ msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
 msgstr ""
+"Перевизначити вказаний колірний простір встановленням вказівника на формат"
+" перевизначення рядкової властивості і встановленням перевизначення"
+" допоміжного буфера."
 
 #: operations/core/clone.c:25
 msgid "Reference"
@@ -6872,6 +6883,9 @@ msgid ""
 "Clone a buffer, this is the same as gegl:nop but can get special treatment "
 "to get more human readable references in serializations/UI."
 msgstr ""
+"Клонувати буфер. Те саме, що і gegl:nop, але може отримувати спеціальну"
+" обробку, щоб отримати зручніші для читання посилання у перетвореннях до"
+" послідовної форми або інтерфейсу користувача."
 
 #: operations/core/convert-format.c:99
 msgid "Convert Format"
@@ -6892,6 +6906,11 @@ msgid ""
 "management, setting a pointer to a format override the string property and "
 "setting an aux pad overrides both. "
 msgstr ""
+"Встановити колірний простір, за допомогою якого було створено наступні"
+" формати babl у каналі обробки, і профіль ICC, потенційно вбудований для"
+" зовнішнього керування кольорами. Встановлює вказівник на перевизначення"
+" формату у рядковій властивості і встановлює допоміжний буфер для"
+" перевизначення. "
 
 #: operations/core/crop.c:45
 msgid "Reset origin"
@@ -6906,6 +6925,8 @@ msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
 "connected is used."
 msgstr ""
+"Обрізає буфер, якщо допоміжний буфер з'єднано, буде використано обмежувальну"
+" рамку з'єднаного вузла."
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
@@ -6924,6 +6945,8 @@ msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
 msgstr ""
+"Багатоцільовий завантажувач файлів, який використовує інші вбудовані"
+" обробники. Резервним перетворенням є використання convert з Image Magick."
 
 #: operations/core/nop.c:81
 msgid "No Operation"
@@ -7027,7 +7050,7 @@ msgstr "швидкість потоку звуку в кбіт/сек"
 
 #: operations/external/ff-save.c:39 operations/external/ff-save.c:47
 msgid "Target encoded video bitrate in kb/s"
-msgstr ""
+msgstr "Бітова швидкість закодованого відео-результату у кбіт/с"
 
 #: operations/external/ff-save.c:41
 msgid "Frames/second"
@@ -7041,6 +7064,8 @@ msgstr "Відеокодек"
 msgid ""
 "Video codec to use, or auto to use a good default based on container format."
 msgstr ""
+"Відеокодек, яким слід скористатися. «Авто», якщо слід використати типовий"
+" формат для контейнера."
 
 #: operations/external/ff-save.c:46
 msgid "video bitrate in kb/s"
@@ -7057,6 +7082,8 @@ msgstr "Формат контейнера"
 #: operations/external/ff-save.c:51
 msgid "Container format to use, or auto to autodetect based on file extension."
 msgstr ""
+"Формат контейнера, яким слід скористатися, або auto для автоматичного"
+" визначення на основі суфікса назви файла."
 
 #: operations/external/ff-save.c:54
 msgid "global quality"
@@ -7312,7 +7339,7 @@ msgstr "Профіль джерела"
 
 #: operations/external/lcms-from-profile.c:25
 msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
-msgstr ""
+msgstr "cmsHPROFILE, що відповідає профілю ICC для вхідних даних."
 
 #: operations/external/lcms-from-profile.c:33
 msgid "Relative Colorimetric"
@@ -7348,6 +7375,8 @@ msgid ""
 "The buffer's data will then be correctly managed by GEGL for further "
 "processing."
 msgstr ""
+"Перетворює вхідні дані з профілю кольорів ICC до добре визначеного формату"
+" babl. Дані буфера потім буде коректно керовано GEGL для подальшої обробки."
 
 #: operations/external/matting-levin.c:25
 msgid "Epsilon"
@@ -7355,7 +7384,7 @@ msgstr "Ε"
 
 #: operations/external/matting-levin.c:26
 msgid "Log of the error weighting"
-msgstr ""
+msgstr "Логарифм зваженої помилки"
 
 #: operations/external/matting-levin.c:30
 msgid "Radius of the processing window"
@@ -7367,7 +7396,7 @@ msgstr "Поріг альфи для багаторівневої обробки
 
 #: operations/external/matting-levin.c:39
 msgid "Trimap influence factor"
-msgstr ""
+msgstr "Коефіцієнт впливу тримапи"
 
 #: operations/external/matting-levin.c:42
 msgid "Number of downsampled levels to use"
@@ -7390,6 +7419,9 @@ msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
 msgstr ""
+"На основі розрідженої тримапи користувача і вхідного зображення створює"
+" альфа-матування переднього плану. Встановіть білий як позначений, а чорний"
+" як позначений для тримапи."
 
 #: operations/external/npd.c:23
 msgid "Model"
@@ -7422,6 +7454,7 @@ msgstr "Деформація ASAP"
 #: operations/external/npd.c:35
 msgid "ASAP deformation is performed when TRUE, ARAP deformation otherwise"
 msgstr ""
+"Якщо «true», виконує деформацію ASAP. Якщо «false», виконує деформацію ARAP."
 
 #: operations/external/npd.c:37
 msgid "MLS Weights"
@@ -7499,6 +7532,8 @@ msgid ""
 "Opacity of stroke, note, does not behave like SVG since at the moment "
 "stroking is done using an airbrush tool"
 msgstr ""
+"Непрозорість штриха. Зауважте, що поведінка є відмінною від SVG, оскільки у"
+" поточній версії створення штриха виконується за допомогою аерографа."
 
 #: operations/external/path.c:41 operations/workshop/external/spyrograph.c:86
 msgid "Hardness of the brush, 0.0 for a soft brush, 1.0 for a hard brush"
@@ -7744,6 +7779,8 @@ msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
 msgstr ""
+"Показує вхідний буфер у вікні SDL2 (обмежено до однієї операції показу на"
+" процес через вади у реалізації SDL2)."
 
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -7762,6 +7799,8 @@ msgid ""
 "Displays the input buffer in an SDL window (restricted to one display op/"
 "process, due to SDL implementation issues)."
 msgstr ""
+"Показує вхідний буфер у вікні SDL (обмежено до однієї операції показу на"
+" процес через вади у реалізації SDL)."
 
 #: operations/external/svg-load.c:31 operations/external/v4l.c:29
 #: operations/workshop/external/v4l2.c:27
@@ -7816,6 +7855,8 @@ msgid ""
 "Sets the width in pixels at which long lines will wrap. Use -1 for no "
 "wrapping."
 msgstr ""
+"Встановлює ширину у пікселях, на якій переносяться довгі рядки. Скористайтеся"
+" значенням -1, щоб скасувати перенесення."
 
 #: operations/external/text.c:46
 msgid "Wrap height"
@@ -7826,6 +7867,8 @@ msgid ""
 "Sets the height in pixels according to which the text is vertically "
 "justified. Use -1 for no vertical justification."
 msgstr ""
+"Встановлює висоту у пікселях, за якою буде вертикально вирівняно текст."
+" Скористайтеся значенням -1 для вимикання вертикального вирівнювання."
 
 #: operations/external/text.c:53
 msgid "Justification"
@@ -7887,6 +7930,8 @@ msgstr "використовувати числа з рухомою крапко
 #: operations/external/tiff-save.c:31
 msgid "floating point -1 means auto, 0 means integer 1 meant float."
 msgstr ""
+"Значення із рухомою крапкою -1 означає «автоматично», 0 означає «ціле», 1"
+" означає «число із рухомою крапкою»."
 
 #: operations/external/tiff-save.c:728
 msgid "TIFF File Saver"
@@ -7917,6 +7962,7 @@ msgstr "Частота кадрів"
 #: operations/external/v4l.c:38 operations/workshop/external/v4l2.c:33
 msgid "autotrigger reload this many times a second."
 msgstr ""
+"Автоматично вмикати перезавантаження вказану кількість разів у секунду."
 
 #: operations/external/v4l.c:331
 msgid "Video4Linux Frame Source"
@@ -7943,7 +7989,7 @@ msgstr "Правило заповнення."
 
 #: operations/external/vector-fill.c:35
 msgid "how to determine what to fill (nonzero|evenodd)"
-msgstr ""
+msgstr "Як визначається область заповнення (nonzero|evenodd)"
 
 #: operations/external/vector-fill.c:38 operations/external/vector-stroke.c:39
 msgid "svg style description of transform."
@@ -7970,6 +8016,8 @@ msgid ""
 "Opacity of stroke, note, does not behave like SVG since at the moment "
 "stroking is done using an airbrush tool."
 msgstr ""
+"Непрозорість штриха. Зауважте, що поведінка є відмінною від SVG, оскільки у"
+" поточній версії створення штриха виконується за допомогою аерографа."
 
 #: operations/external/vector-stroke.c:355
 msgid "Vector Stroke"
@@ -8004,6 +8052,8 @@ msgstr "Записувач зображень WebP"
 #: operations/generated/subtract.c:30
 msgid "global value used if aux doesn't contain data"
 msgstr ""
+"Загальне значення, яке буде використано, якщо у допоміжному буфері не"
+" міститься даних"
 
 #: operations/generated/add.c:138
 msgid ""
@@ -8012,10 +8062,14 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input + value"
 msgstr ""
+"Математична операція додавання, виконує дію над окремими пікселями,"
+" використовуючи або сталу, яка надається параметром «значення», або"
+" відповідне значення з допоміжного буфера як операнди. Результат обчислення"
+" виразу буде таким: результат = вхідні дані + значення"
 
 #: operations/generated/clear.c:133
 msgid "Porter Duff operation clear (d = 0.0f)"
-msgstr ""
+msgstr "Операція спорожнення Портера-Даффа (d = 0.0f)"
 
 #: operations/generated/color-burn.c:188
 msgid ""
@@ -8023,6 +8077,10 @@ msgid ""
 "cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == 0 ? 1 : (aA * (cA * aB + "
 "cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
 msgstr ""
+"Операція змішування SVG з вигоранням кольорів (<code>if cA * aB + cB * aA <="
+" aA * aB: d = "
+"cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == 0 ? 1 : (aA * (cA * aB + "
+"cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))</code>)"
 
 #: operations/generated/color-dodge.c:188
 msgid ""
@@ -8030,18 +8088,28 @@ msgid ""
 "aA * aB + cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == aA ? 1 : cB * "
 "aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"Операція змішування SVG з освітленням кольорів (<code>if cA * aB + cB * aA >="
+" aA * aB: d = "
+"aA * aB + cA * (1 - aB) + cB * (1 - aA) otherwise: d = (cA == aA ? 1 : cB * "
+"aA / (aA == 0 ? 1 : 1 - cA / aA)) + cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/darken.c:184
 msgid ""
 "SVG blend operation darken (<code>d = MIN (cA * aB, cB * aA) + cA * (1 - aB) "
 "+ cB * (1 - aA)</code>)"
 msgstr ""
+"Операція змішування SVG з затемненням (<code>d = MIN (cA * aB, cB * aA) + cA"
+" * (1 - aB) "
+"+ cB * (1 - aA)</code>)"
 
 #: operations/generated/difference.c:184
 msgid ""
 "SVG blend operation difference (<code>d = cA + cB - 2 * (MIN (cA * aB, cB * "
 "aA))</code>)"
 msgstr ""
+"Операція змішування SVG із відніманням (<code>d = cA + cB - 2 * (MIN (cA *"
+" aB, cB * "
+"aA))</code>)"
 
 #: operations/generated/divide.c:138
 msgid ""
@@ -8050,32 +8118,40 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "value==0.0f?0.0f:input/value"
 msgstr ""
+"Математична операція ділення, виконує дію над окремими пікселями,"
+" використовуючи або сталу, яка надається параметром «значення», або"
+" відповідне значення з допоміжного буфера як операнди. Результат обчислення"
+" виразу буде таким: результат =  "
+"значення==0.0f?0.0f:вхідні_дані/значення"
 
 #: operations/generated/dst-atop.c:133
 msgid "Porter Duff operation dst-atop (d = cB * aA + cA * (1.0f - aB))"
-msgstr ""
+msgstr "Операція dst-atop Портера-Даффа (d = cB * aA + cA * (1.0f - aB))"
 
 #: operations/generated/dst.c:155
 msgid "Porter Duff operation dst (d = cB)"
-msgstr ""
+msgstr "Операція dst Портера-Даффа (d = cB)"
 
 #: operations/generated/dst-in.c:133
 msgid "Porter Duff operation dst-in (d = cB * aA)"
-msgstr ""
+msgstr "Операція dst-in Портера-Даффа (d = cB * aA)"
 
 #: operations/generated/dst-out.c:155
 msgid "Porter Duff operation dst-out (d = cB * (1.0f - aA))"
-msgstr ""
+msgstr "Операція dst-out Портера-Даффа (d = cB * (1.0f - aA))"
 
 #: operations/generated/dst-over.c:155
 msgid "Porter Duff operation dst-over (d = cB + cA * (1.0f - aB))"
-msgstr ""
+msgstr "Операція dst-over Портера-Даффа (d = cB + cA * (1.0f - aB))"
 
 #: operations/generated/exclusion.c:184
 msgid ""
 "SVG blend operation exclusion (<code>d = (cA * aB + cB * aA - 2 * cA * cB) + "
 "cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"Операція змішування SVG з виключенням (<code>d = (cA * aB + cB * aA - 2 * cA"
+" * cB) + "
+"cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/gamma.c:138
 msgid ""
@@ -8084,6 +8160,11 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "(input >= 0.0f ? powf (input, value) : -powf (-input, value))"
 msgstr ""
+"Математична операція гамми, виконує дію над окремими пікселями,"
+" використовуючи або сталу, яка надається параметром «значення», або"
+" відповідне значення з допоміжного буфера як операнди. Результат обчислення"
+" виразу буде таким: результат = (вхідні_дані >= 0.0f ? powf (вхідні_дані,"
+" значення) : -powf (-вхідні_дані, значення))"
 
 #: operations/generated/hard-light.c:188
 msgid ""
@@ -8091,12 +8172,19 @@ msgid ""
 "(1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) "
 "+ cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"Опеація змішування SVG із жорстким освітленням (<code>if 2 * cA < aA: d = 2 *"
+" cA * cB + cA * "
+"(1 - aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) "
+"+ cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/lighten.c:184
 msgid ""
 "SVG blend operation lighten (<code>d = MAX (cA * aB, cB * aA) + cA * (1 - "
 "aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"Операція змішування SVG із освітленням (<code>d = MAX (cA * aB, cB * aA) + cA"
+" * (1 - "
+"aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/multiply.c:138
 msgid ""
@@ -8105,6 +8193,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input * value"
 msgstr ""
+"Математична операція множення, виконує дію над окремими пікселями,"
+" використовуючи або сталу, яка надається параметром «значення», або"
+" відповідне значення з допоміжного буфера як операнди. Результат обчислення"
+" виразу буде таким: результат = вхідні_дані * значення"
 
 #: operations/generated/overlay.c:188
 msgid ""
@@ -8112,14 +8204,20 @@ msgid ""
 "- aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) + "
 "cA * (1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"Операція змішування SVG із накладанням (<code>if 2 * cB > aB: d = 2 * cA * cB"
+" + cA * (1 "
+"- aB) + cB * (1 - aA) otherwise: d = aA * aB - 2 * (aB - cB) * (aA - cA) + "
+"cA * (1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/plus.c:186
 msgid "SVG blend operation plus (<code>d = cA + cB</code>)"
-msgstr ""
+msgstr "Операція змішування SVG «плюс» (<code>d = cA + cB</code>)"
 
 #: operations/generated/screen.c:184
 msgid "SVG blend operation screen (<code>d = cA + cB - cA * cB</code>)"
 msgstr ""
+"Операція змішування SVG із проєктуванням на екран (<code>d = cA + cB - cA *"
+" cB</code>)"
 
 #: operations/generated/soft-light.c:192
 msgid ""
@@ -8130,22 +8228,29 @@ msgid ""
 "(aA * cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - aA)) + cA * "
 "(1 - aB) + cB * (1 - aA)</code>)"
 msgstr ""
+"Операція змішування SVG із м'яким світлом (<code>if 2 * cA < aA: d = cB * (aA"
+" - (aB == "
+"0 ? 1 : 1 - cB / aB) * (2 * cA - aA)) + cA * (1 - aB) + cB * (1 - aA); if 8 "
+"* cB <= aB: d = cB * (aA - (aB == 0 ? 1 : 1 - cB / aB) * (2 * cA - aA) * (aB "
+"== 0 ? 3 : 3 - 8 * cB / aB)) + cA * (1 - aB) + cB * (1 - aA); otherwise: d = "
+"(aA * cB + (aB == 0 ? 0 : sqrt (cB / aB) * aB - cB) * (2 * cA - aA)) + cA * "
+"(1 - aB) + cB * (1 - aA)</code>)"
 
 #: operations/generated/src-atop.c:155
 msgid "Porter Duff operation src-atop (d = cA * aB + cB * (1.0f - aA))"
-msgstr ""
+msgstr "Операція src-atop Портера-Даффа (d = cA * aB + cB * (1.0f - aA))"
 
 #: operations/generated/src.c:133
 msgid "Porter Duff operation src (d = cA)"
-msgstr ""
+msgstr "Операція src Портера-Даффа (d = cA)"
 
 #: operations/generated/src-in.c:145
 msgid "Porter Duff compositing operation src-in (formula:   cA * aB)"
-msgstr ""
+msgstr "Операція композиції src-in Портера-Даффа (формула: cA * aB)"
 
 #: operations/generated/src-out.c:133
 msgid "Porter Duff operation src-out (d = cA * (1.0f - aB))"
-msgstr ""
+msgstr "Операція src-out Портера-Даффа (d = cA * (1.0f - aB))"
 
 #: operations/generated/subtract.c:138
 msgid ""
@@ -8154,6 +8259,10 @@ msgid ""
 "aux as operands. The result is the evaluation of the expression result = "
 "input - value"
 msgstr ""
+"Математична операція віднімання, виконує дію над окремими пікселями,"
+" використовуючи або сталу, яка надається параметром «значення», або"
+" відповідне значення з допоміжного буфера як операнди. Результат обчислення"
+" виразу буде таким: результат = вхідні дані - значення"
 
 #: operations/generated/xor.c:155
 msgid "Porter Duff operation xor (d = cA * (1.0f - aB)+ cB * (1.0f - aA))"
@@ -8198,11 +8307,11 @@ msgstr "Передній план занадто малий"
 
 #: operations/seamless-clone/seamless-clone.c:190
 msgid "The foreground contains holes and/or several unconnected parts"
-msgstr ""
+msgstr "Передній план містить дірки і/або декілька нез'єднаних частин"
 
 #: operations/seamless-clone/seamless-clone.c:201
 msgid "The opaque parts of the foreground are not above the background!"
-msgstr ""
+msgstr "Непрозорі частини переднього плану не перебувають над тлом!"
 
 #: operations/seamless-clone/seamless-clone-compose.c:21
 msgid "Refinement steps"
@@ -8232,6 +8341,8 @@ msgid ""
 "Reflect an image about a line, whose direction is specified by the vector "
 "that is defined by the x and y properties. "
 msgstr ""
+"Віддзеркалити зображення відносно лінії, чий напрямок визначається вектором"
+" із властивостями координат x та y."
 
 #: operations/transform/rotate.c:25 operations/transform/rotate-on-center.c:27
 msgid "Degrees"
@@ -8378,6 +8489,8 @@ msgid ""
 "Repositions the buffer (with subpixel precision), if integer coordinates are "
 "passed a fast-path without resampling is used"
 msgstr ""
+"Зміна розташування буфера (із точністю до підпікселів), якщо передано цілі"
+" координати як fast-path без передискретизації"
 
 #: operations/workshop/aces-rrt.c:134
 msgid "ACES RRT"
@@ -8393,6 +8506,14 @@ msgid ""
 "RRT; without desaturation of highlights and shadows nor red hue "
 "modifications."
 msgstr ""
+"Крива фільтрування/відображення HDR до SDR, яка є апроксимацією перетворення"
+" еталонної обробки ACES (RRT або Reference Rendering Transform). У результаті"
+" передавання пов'язаного зі сценою зображення до цієї операції буде отримано"
+" зображення, яке можна показувати з використанням перетворення до sRGB або"
+" виводити на дисплей за допомогою звичайних матричних профілів ICC як ODT."
+" Зауважте, що поки що це апроксимація ACES RRT з використанням лише"
+" світності, без зменшення насиченості виблисків та тіней і без модифікацій"
+" червоного відтінка."
 
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
@@ -8469,6 +8590,8 @@ msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
 msgstr ""
+"Заповнює кожну зв'язну ділянку вхідних даних, відокремлених від решти вхідних"
+" даних вказаним кольором, унікальним кольором."
 
 #: operations/workshop/demosaic-bimedian.c:26
 #: operations/workshop/demosaic-simple.c:25
@@ -8481,6 +8604,8 @@ msgid ""
 "Bayer pattern used, 0 seems to work for some nikon files, 2 for some Fuji "
 "files."
 msgstr ""
+"Використовується баєровський візерунок, 0 має працювати для деяких файлів"
+" nikon, 2 — для деяких файлів Fuji."
 
 #: operations/workshop/demosaic-bimedian.c:220
 msgid "Demosaic With Bimedian Interpolation"
@@ -8491,6 +8616,8 @@ msgid ""
 "Performs a grayscale2color demosaicing of an image, using bimedian "
 "interpolation."
 msgstr ""
+"Виконує усування мозаїчності зображення за допомогою grayscale2color, з"
+" використанням бімедіанної інтерполяції."
 
 #: operations/workshop/demosaic-simple.c:152
 msgid "Demosaic Without Interpolation"
@@ -8500,6 +8627,8 @@ msgstr "Усування мозаїчності без інтерполяції"
 msgid ""
 "Performs a naive grayscale2color demosaicing of an image, no interpolation."
 msgstr ""
+"Виконує наївне усування мозаїчності зображення за допомогою grayscale2color,"
+" без інтерполяції."
 
 #: operations/workshop/ditto.c:117
 msgid "Ditto"
@@ -8508,6 +8637,8 @@ msgstr "Те саме"
 #: operations/workshop/ditto.c:119
 msgid "Test op to do a 1:1 map of input to output, while sampling"
 msgstr ""
+"Тестова операція для виконання відображення 1:1 вхідних даних до результату"
+" під час дискретизації"
 
 #: operations/workshop/external/gluas.c:29
 msgid "Script"
@@ -8546,6 +8677,9 @@ msgid ""
 "Pixel level filter/composer scripting prototyping with lua. See http://"
 "pippin.gimp.org/image-processing/ for further details."
 msgstr ""
+"Скриптове прототипування з lua для створення/фільтрування на рівні пікселів."
+" Докладніший опис можна знайти на http://"
+"pippin.gimp.org/image-processing/"
 
 #: operations/workshop/external/lens-correct.c:28
 msgid "Maker"
@@ -8730,6 +8864,9 @@ msgid ""
 "specified line in the input buffer, plotted in a buffer of the specified "
 "size."
 msgstr ""
+"Обробляє профілі світності для червоного, зеленого і синього компонентів"
+" уздовж вказаної лінії у вхідному буфері. Лінію має бути намальовано у буфері"
+" вказаного розміру."
 
 #: operations/workshop/external/spyrograph.c:27
 msgid "Spyrograph"
@@ -8765,6 +8902,8 @@ msgid ""
 "fixed gear, is determined by the proportion between the number of teeth in "
 "gears."
 msgstr ""
+"Кількість зубів у рухомій шестерні. Радіус рухомої шестерні відносно радіуса"
+" нерухомої шестерні визначається пропорцією між кількістю зубів шестерень."
 
 #: operations/workshop/external/spyrograph.c:46
 msgid "Hole Percent"
@@ -8813,37 +8952,46 @@ msgstr "Джерело кадрів Video4Linux2"
 #: operations/workshop/external/v4l2.c:776
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr ""
+"Вхідні дані Video4Linux, засоби захоплення кадрів з вебкамер і подібних "
+"пристроїв."
 
 #: operations/workshop/generated/average.c:111
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
-msgstr ""
+msgstr "Операція змішування зображень «середнє» (<tt>c = (cA + aB)/2</tt>)"
 
 #: operations/workshop/generated/blend-reflect.c:111
 msgid ""
 "Image blending operation 'blend-reflect' (<tt>c = cB>=1.0?1.0:cA*cA / (1.0-"
 "cB)</tt>)"
 msgstr ""
+"Операція змішування зображень «змішати-віддзеркалити» (<tt>c = cB"
+">=1.0?1.0:cA*cA / (1.0-"
+"cB)</tt>)"
 
 #: operations/workshop/generated/negation.c:111
 msgid ""
 "Image blending operation 'negation' (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
-msgstr ""
+msgstr "Операція змішування «заперечення» (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
 
 #: operations/workshop/generated/soft-burn.c:111
 msgid ""
 "Image blending operation 'soft-burn' (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 - "
 "cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
 msgstr ""
+"Операція змішування «м'яке вигорання» (<tt>c = (cA+cB<1.0)?0.5*cB / (1.0 - "
+"cA):1.0-0.5*(1.0 - cA) / cB</tt>)"
 
 #: operations/workshop/generated/soft-dodge.c:111
 msgid ""
 "Image blending operation 'soft-dodge' (<tt>c = (cA+cB<1.0)?0.5*cA / (1.0 - "
 "cB):1.0-0.5*(1.0 - cB)/cA</tt>)"
 msgstr ""
+"Операція змішування «м'яке освітлення» (<tt>c = (cA+cB<1.0)?0.5*cA / (1.0 -"
+" cB):1.0-0.5*(1.0 - cB)/cA</tt>)"
 
 #: operations/workshop/generated/subtractive.c:111
 msgid "Image blending operation 'subtractive' (<tt>c = cA+cB-1.0</tt>)"
-msgstr ""
+msgstr "Операція змішування «віднімання» (<tt>c = cA+cB-1.0</tt>)"
 
 #: operations/workshop/gradient-map.c:27
 msgid "Stop 1"
@@ -8890,6 +9038,8 @@ msgid ""
 "Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right of "
 "\"input\")"
 msgstr ""
+"Горизонтальне стосування вхідних даних (у «вході» «aux» розташовано праворуч"
+" від «входу»)"
 
 #: operations/workshop/integral-image.c:25
 msgid "squared integral"
@@ -8914,6 +9064,12 @@ msgid ""
 "the normal dcraw loader, if the fileformat is .rawbayerS it will swap the "
 "returned 16bit numbers (the pnm loader is apparently buggy)"
 msgstr ""
+"Завантажувач зображення без обробки, обгортка dcraw з каналами, забезпечує"
+" роботу простої баєровської сітки у тонах сірого. Якщо форматом файла є"
+" .rawbayer, використовуватиме цей завантажувач замість звичайного"
+" завантажувача dcraw. Якщо форматом файла є .rawbayerS, використовуватиме"
+" переставляння повернутих 16-бітових чисел (завантажувач pnm, ймовірно,"
+" містить помилки)"
 
 #: operations/workshop/segment-kmeans.c:27
 #: operations/workshop/segment-kmeans.c:28
@@ -8971,7 +9127,7 @@ msgstr "Маска"
 
 #: operations/workshop/voronoi-diagram.cc:30
 msgid "Unseeded region color"
-msgstr ""
+msgstr "Колір незасіяної області"
 
 #: operations/workshop/voronoi-diagram.cc:33
 msgid "Invert mask"
@@ -8979,11 +9135,11 @@ msgstr "Інвертувати маску"
 
 #: operations/workshop/voronoi-diagram.cc:35
 msgid "Seed edges"
-msgstr ""
+msgstr "Краї засіювання"
 
 #: operations/workshop/voronoi-diagram.cc:36
 msgid "Whether the image edges are also seeded"
-msgstr ""
+msgstr "Визначає, чи краї зображення також засіюються"
 
 #: operations/workshop/voronoi-diagram.cc:524
 msgid "Voronoi Diagram"
@@ -8992,21 +9148,4 @@ msgstr "Діаграма Вороного"
 #: operations/workshop/voronoi-diagram.cc:531
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
 msgstr ""
-
-#~ msgid "Neighborhood radius"
-#~ msgstr "Радіус сусідства"
-
-#~ msgid "Black and green angle"
-#~ msgstr "Кут чорного і зеленого"
-
-#~ msgid "Radius of circle around pixel"
-#~ msgstr "Радіус кола навколо пікселя"
-
-#~ msgid "Crop a buffer"
-#~ msgstr "Обрізати буфер"
-
-#~ msgid "Standard Deviation"
-#~ msgstr "Стандартне відхилення"
-
-#~ msgid "Recursive Transform Plus"
-#~ msgstr "Рекурсивне перетворення плюс"
+"Замальовує кожен незасіяниий піксель кольором найближчого засіяного пікселя."
