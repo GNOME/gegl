@@ -83,10 +83,36 @@ property_double (opacity, _("Opacity"), 0.5)
 
 #include "gegl-op.h"
 
+typedef struct
+{
+  GeglNode *input;
+  GeglNode *grow;
+  GeglNode *darken;
+} State;
+
+static void
+update_graph (GeglOperation *operation)
+{
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  State *state = o->user_data;
+  if (!state) return;
+
+  if (o->grow_radius > 0.0001)
+  {
+    gegl_node_link_many (state->input, state->grow, state->darken, NULL);
+  }
+  else
+  {
+    gegl_node_link_many (state->input, state->darken, NULL);
+  }
+}
+
+
 /* in attach we hook into graph adding the needed nodes */
 static void
 attach (GeglOperation *operation)
 {
+  GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglNode  *gegl = operation->node;
   GeglNode  *input, *output, *over, *translate, *opacity, *grow, *blur, *darken, *color;
   GeglColor *black_color = gegl_color_new ("rgb(0.0,0.0,0.0)");
@@ -109,6 +135,11 @@ attach (GeglOperation *operation)
   color     = gegl_node_new_child (gegl, "operation", "gegl:color",
                                    "value", black_color,
                                    NULL);
+  State *state = g_malloc0 (sizeof (State));
+  o->user_data = state;
+  state->input = input;
+  state->grow = grow;
+  state->darken = darken;
 
   g_object_unref (black_color);
 
@@ -130,14 +161,42 @@ attach (GeglOperation *operation)
                                    over, translate, opacity,
                                    blur, grow, darken, color,
                                    NULL);
+  update_graph (operation);
+}
+
+static void 
+my_set_property (GObject      *object, 
+                 guint         property_id, 
+                 const GValue *value, 
+                 GParamSpec   *pspec) 
+{ 
+  GeglProperties  *o     = GEGL_PROPERTIES (object); 
+ 
+  set_property (object, property_id, value, pspec); 
+ 
+  if (o) 
+    update_graph ((void*)object); 
+}
+
+static void
+dispose (GObject *object)
+{
+   GeglProperties  *o = GEGL_PROPERTIES (object);
+   g_clear_pointer (&o->user_data, g_free);
+   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
 }
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
+  GObjectClass       *object_class;
   GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
 
   operation_class->attach = attach;
+
+  object_class               = G_OBJECT_CLASS (klass); 
+  object_class->dispose      = dispose; 
+  object_class->set_property = my_set_property;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:dropshadow",
