@@ -28,7 +28,7 @@ build-image:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - echo "FROM archlinux/base:latest" >> Dockerfile
     - echo "RUN pacman -Syu --noconfirm --needed git base-devel ccache meson" >> Dockerfile
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:ci-latest --cache=true --reproducible --single-snapshot
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:ci-latest --cache=true
 
 .babl-base:
   stage: dependencies
