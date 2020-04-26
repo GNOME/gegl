@@ -19,6 +19,7 @@
 #include "config.h"
 
 #include <math.h>
+#include <stdlib.h>
 #include <string.h>
 
 #ifdef HAVE_MALLOC_TRIM
@@ -256,6 +257,22 @@ gegl_tile_alloc_fallback (gsize size)
   return gegl_tile_buffer_to_data (buffer);
 }
 
+static gboolean
+gegl_tile_alloc_enabled (void)
+{
+  static gint enabled = -1;
+
+  if (enabled < 0)
+    {
+      if (g_getenv ("GEGL_TILE_ALLOC"))
+        enabled = atoi (g_getenv ("GEGL_TILE_ALLOC")) ? TRUE : FALSE;
+      else
+        enabled = TRUE;
+    }
+
+  return enabled;
+}
+
 
 /*  public functions  */
 
@@ -270,7 +287,7 @@ gegl_tile_alloc (gsize size)
   gint                       i;
   gint                       j;
 
-  if (size > GEGL_TILE_MAX_SIZE)
+  if (size > GEGL_TILE_MAX_SIZE || ! gegl_tile_alloc_enabled ())
     return gegl_tile_alloc_fallback (size);
 
   size = MAX (size, GEGL_TILE_MIN_SIZE);
