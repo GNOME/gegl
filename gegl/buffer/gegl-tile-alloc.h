@@ -20,6 +20,9 @@
 #define __GEGL_TILE_ALLOC_H__
 
 
+void       gegl_tile_alloc_init      (void);
+void       gegl_tile_alloc_cleanup   (void);
+
 /* the buffer returned by gegl_tile_alloc() and gegl_tile_alloc0() is
  * guaranteed to have room for two `int`s in front of the buffer.
  */

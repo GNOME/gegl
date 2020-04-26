@@ -81,6 +81,7 @@ static GeglTileBlock         * gegl_tile_block_new        (GeglTileBlock * volat
                                                            gsize                      size);
 static void                    gegl_tile_block_free       (GeglTileBlock             *block,
                                                            GeglTileBlock            **head_block);
+static void                    gegl_tile_block_free_mem   (GeglTileBlock             *block);
 
 static inline gpointer         gegl_tile_buffer_to_data   (GeglTileBuffer            *buffer);
 static inline GeglTileBuffer * gegl_tile_buffer_from_data (gpointer                   data);
@@ -93,6 +94,7 @@ static gpointer                gegl_tile_alloc_fallback   (gsize                
 static const gint     gegl_tile_divisors[] = {1, 3, 5};
 static GeglTileBlock *gegl_tile_blocks[G_N_ELEMENTS (gegl_tile_divisors)]
                                       [GEGL_TILE_MAX_SIZE_LOG2];
+static GeglTileBlock *gegl_tile_empty_block;
 static gint           gegl_tile_n_blocks;
 static gint           gegl_tile_max_n_blocks;
 
@@ -138,66 +140,99 @@ static GeglTileBlock *
 gegl_tile_block_new (GeglTileBlock * volatile *block_ptr,
                      gsize                     size)
 {
-  GeglTileBlock   *block;
-  GeglTileBuffer  *buffer;
-  GeglTileBuffer **next_buffer;
-  gsize            block_size;
-  gsize            buffer_size;
-  gsize            n_buffers;
-  gint             n_blocks;
-  gint             i;
+  GeglTileBlock *block;
+  gsize          block_size;
+  gsize          buffer_size;
+  gsize          n_buffers;
+  gboolean       init_block = TRUE;
 
   buffer_size = GEGL_TILE_BUFFER_DATA_OFFSET + GEGL_ALIGN (size);
 
-  block_size  = floor (gegl_buffer_config ()->tile_cache_size *
-                       GEGL_TILE_BLOCK_SIZE_RATIO);
-  block_size -= block_size % buffer_size;
-
-  n_buffers = block_size / buffer_size;
-  n_buffers = MIN (n_buffers, GEGL_TILE_BLOCK_MAX_BUFFERS);
-
-  if (n_buffers <= 1)
-    return NULL;
-
-  block_size = n_buffers * buffer_size;
-
-  block = gegl_try_malloc (GEGL_TILE_BLOCK_BUFFER_OFFSET + block_size);
-
-  if (! block)
-    return NULL;
-
-  block->block_ptr   = block_ptr;
-  block->size        = GEGL_TILE_BLOCK_BUFFER_OFFSET + block_size;
-
-  block->head        = (GeglTileBuffer *) ((guint8 *) block +
-                                           GEGL_TILE_BLOCK_BUFFER_OFFSET);
-  block->n_allocated = 0;
-
-  block->prev        = NULL;
-  block->next        = NULL;
-
-  buffer = block->head;
-
-  for (i = n_buffers; i; i--)
+  do
     {
-      buffer->block = block;
+      block = gegl_tile_empty_block;
+    }
+  while (block &&
+         ! g_atomic_pointer_compare_and_exchange (&gegl_tile_empty_block,
+                                                  block, NULL));
 
-      next_buffer = gegl_tile_buffer_to_data (buffer);
+  if (block && block->size - GEGL_TILE_BLOCK_BUFFER_OFFSET < buffer_size)
+    {
+      gegl_tile_block_free_mem (block);
 
-      if (i > 1)
-        buffer = (GeglTileBuffer *) ((guint8 *) buffer + buffer_size);
-      else
-        buffer = NULL;
-
-      *next_buffer = buffer;
+      block = NULL;
     }
 
-  n_blocks = g_atomic_int_add (&gegl_tile_n_blocks, +1) + 1;
+  if (block)
+    {
+      block_size = block->size;
 
-  if (n_blocks % GEGL_TILE_BLOCKS_PER_TRIM == 0)
-    gegl_tile_max_n_blocks = MAX (gegl_tile_max_n_blocks, n_blocks);
+      n_buffers = (block_size - GEGL_TILE_BLOCK_BUFFER_OFFSET) / buffer_size;
 
-  g_atomic_pointer_add (&gegl_tile_alloc_total, +block->size);
+      if (block->block_ptr == block_ptr)
+        init_block = FALSE;
+    }
+  else
+    {
+      gint n_blocks;
+
+      block_size  = floor (gegl_buffer_config ()->tile_cache_size *
+                           GEGL_TILE_BLOCK_SIZE_RATIO);
+      block_size -= block_size % buffer_size;
+
+      n_buffers = block_size / buffer_size;
+      n_buffers = MIN (n_buffers, GEGL_TILE_BLOCK_MAX_BUFFERS);
+
+      if (n_buffers <= 1)
+        return NULL;
+
+      block_size = GEGL_TILE_BLOCK_BUFFER_OFFSET + n_buffers * buffer_size;
+
+      block = gegl_try_malloc (block_size);
+
+      if (! block)
+        return NULL;
+
+      n_blocks = g_atomic_int_add (&gegl_tile_n_blocks, +1) + 1;
+
+      if (n_blocks % GEGL_TILE_BLOCKS_PER_TRIM == 0)
+        gegl_tile_max_n_blocks = MAX (gegl_tile_max_n_blocks, n_blocks);
+
+      g_atomic_pointer_add (&gegl_tile_alloc_total, +block_size);
+    }
+
+  if (init_block)
+    {
+      GeglTileBuffer  *buffer;
+      GeglTileBuffer **next_buffer;
+      gint             i;
+
+      block->block_ptr   = block_ptr;
+      block->size        = block_size;
+
+      block->head        = (GeglTileBuffer *) ((guint8 *) block +
+                                               GEGL_TILE_BLOCK_BUFFER_OFFSET);
+      block->n_allocated = 0;
+
+      block->prev        = NULL;
+      block->next        = NULL;
+
+      buffer = block->head;
+
+      for (i = n_buffers; i; i--)
+        {
+          buffer->block = block;
+
+          next_buffer = gegl_tile_buffer_to_data (buffer);
+
+          if (i > 1)
+            buffer = (GeglTileBuffer *) ((guint8 *) buffer + buffer_size);
+          else
+            buffer = NULL;
+
+          *next_buffer = buffer;
+        }
+    }
 
   return block;
 }
@@ -206,9 +241,6 @@ static void
 gegl_tile_block_free (GeglTileBlock  *block,
                       GeglTileBlock **head_block)
 {
-  guintptr block_size = block->size;
-  gint     n_blocks;
-
   if (block->prev)
     block->prev->next = block->next;
   else
@@ -216,6 +248,27 @@ gegl_tile_block_free (GeglTileBlock  *block,
 
   if (block->next)
     block->next->prev = block->prev;
+
+  if (! gegl_tile_empty_block)
+    {
+      block->prev = NULL;
+      block->next = NULL;
+
+      if (g_atomic_pointer_compare_and_exchange (&gegl_tile_empty_block,
+                                                 NULL, block))
+        {
+          return;
+        }
+    }
+
+  gegl_tile_block_free_mem (block);
+}
+
+static void
+gegl_tile_block_free_mem (GeglTileBlock *block)
+{
+  guintptr block_size = block->size;
+  gint     n_blocks;
 
   gegl_free (block);
 
@@ -275,6 +328,28 @@ gegl_tile_alloc_enabled (void)
 
 
 /*  public functions  */
+
+void
+gegl_tile_alloc_init (void)
+{
+}
+
+void
+gegl_tile_alloc_cleanup (void)
+{
+  GeglTileBlock *block;
+
+  do
+    {
+      block = gegl_tile_empty_block;
+    }
+  while (block &&
+         ! g_atomic_pointer_compare_and_exchange (&gegl_tile_empty_block,
+                                                  block, NULL));
+
+  if (block)
+    gegl_tile_block_free_mem (block);
+}
 
 gpointer
 gegl_tile_alloc (gsize size)
@@ -364,10 +439,11 @@ gegl_tile_alloc0 (gsize size)
 void
 gegl_tile_free (gpointer ptr)
 {
-  GeglTileBlock * volatile *block_ptr;
-  GeglTileBlock            *block;
-  GeglTileBlock            *head_block;
-  GeglTileBuffer           *buffer;
+  GeglTileBlock * volatile  *block_ptr;
+  GeglTileBlock             *block;
+  GeglTileBlock             *head_block;
+  GeglTileBuffer            *buffer;
+  GeglTileBuffer           **next_buffer;
 
   if (! ptr)
     return;
@@ -395,29 +471,25 @@ gegl_tile_free (gpointer ptr)
 
   block->n_allocated--;
 
+  next_buffer = gegl_tile_buffer_to_data (buffer);
+
+  *next_buffer = block->head;
+
+  if (! block->head)
+    {
+      block->prev = NULL;
+      block->next = head_block;
+
+      if (head_block)
+        head_block->prev = block;
+
+      head_block = block;
+    }
+
+  block->head = buffer;
+
   if (block->n_allocated == 0)
-    {
-      gegl_tile_block_free (block, &head_block);
-    }
-  else
-    {
-      GeglTileBuffer **next_buffer = gegl_tile_buffer_to_data (buffer);
-
-      *next_buffer = block->head;
-
-      if (! block->head)
-        {
-          block->prev = NULL;
-          block->next = head_block;
-
-          if (head_block)
-            head_block->prev = block;
-
-          head_block = block;
-        }
-
-      block->head = buffer;
-    }
+    gegl_tile_block_free (block, &head_block);
 
   g_atomic_pointer_set (block_ptr, head_block);
 }

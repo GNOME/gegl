@@ -75,6 +75,7 @@ guint gegl_debug_flags = 0;
 #include "buffer/gegl-buffer-iterator-private.h"
 #include "buffer/gegl-buffer-swap-private.h"
 #include "buffer/gegl-compression.h"
+#include "buffer/gegl-tile-alloc.h"
 #include "buffer/gegl-tile-backend-ram.h"
 #include "buffer/gegl-tile-backend-file.h"
 #include "gegl-config.h"
@@ -409,6 +410,7 @@ gegl_exit (void)
   gegl_random_cleanup ();
   gegl_parallel_cleanup ();
   gegl_buffer_swap_cleanup ();
+  gegl_tile_alloc_cleanup ();
   gegl_cl_cleanup ();
 
   gegl_temp_buffer_free ();
@@ -599,6 +601,7 @@ gegl_post_parse_hook (GOptionContext *context,
 
   GEGL_INSTRUMENT_START();
 
+  gegl_tile_alloc_init ();
   gegl_buffer_swap_init ();
   gegl_parallel_init ();
   gegl_compression_init ();
