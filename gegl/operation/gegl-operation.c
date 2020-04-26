@@ -20,6 +20,7 @@
 #include "config.h"
 
 #include <glib-object.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "gegl.h"
@@ -875,12 +876,33 @@ gegl_operation_use_threading (GeglOperation *operation,
   return FALSE;
 }
 
+static gboolean
+gegl_operation_dynamic_thread_cost (void)
+{
+  static gint dynamic_thread_cost = -1;
+
+  if (dynamic_thread_cost < 0)
+    {
+      if (g_getenv ("GEGL_DYNAMIC_THREAD_COST"))
+        {
+          dynamic_thread_cost = atoi (g_getenv ("GEGL_DYNAMIC_THREAD_COST")) ?
+                                TRUE : FALSE;
+        }
+      else
+        {
+          dynamic_thread_cost = TRUE;
+        }
+    }
+
+  return dynamic_thread_cost;
+}
+
 gdouble
 gegl_operation_get_pixels_per_thread (GeglOperation *operation)
 {
   GeglOperationPrivate *priv = gegl_operation_get_instance_private (operation);
 
-  if (priv->pixel_time < 0.0)
+  if (priv->pixel_time < 0.0 || ! gegl_operation_dynamic_thread_cost ())
     return GEGL_OPERATION_DEFAULT_PIXELS_PER_THREAD;
   else if (priv->pixel_time == 0.0)
     return GEGL_OPERATION_MAX_PIXELS_PER_THREAD;
