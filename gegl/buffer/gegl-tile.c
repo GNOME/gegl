@@ -296,6 +296,7 @@ end:
 void
 gegl_tile_lock (GeglTile *tile)
 {
+  unsigned int count = 0;
   g_atomic_int_inc (&tile->lock_count);
 
   while (TRUE)
@@ -321,6 +322,10 @@ gegl_tile_lock (GeglTile *tile)
         case CLONE_STATE_UNCLONING:
           break;
         }
+
+      ++count;
+      if (count > 32)
+        usleep (1);
     }
 }
 
