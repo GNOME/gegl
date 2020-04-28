@@ -27,9 +27,10 @@ build-image:
   script:
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - echo "FROM archlinux/base:latest" >> Dockerfile
-    - echo "RUN pacman -Syu --noconfirm --needed git base-devel ccache meson" >> Dockerfile
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:ci-latest --cache=true
+    - echo "FROM archlinux/base:latest" > Dockerfile
+    - echo "RUN pacman -Syu --noconfirm --needed git base-devel ccache meson lcms2 gobject-introspection pacman-contrib && pacman -Scc --noconfirm " >> Dockerfile
+
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:ci-latest --cache=true --cache-ttl=120h
 
 .pacman-mgr:
   variables:
