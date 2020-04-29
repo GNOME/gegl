@@ -46,6 +46,7 @@ build-image:
     - $BABL_DIR
   variables:
     GIT_DEPTH: "5"
+    CCACHE_MAXSIZE: "32Mi"
   before_script:
     - pacman -Syu --noconfirm --needed --cachedir $PACMAN_CACHE git base-devel ccache meson lcms2 gobject-introspection
     - git clone --depth=$GIT_DEPTH https://gitlab.gnome.org/GNOME/babl.git _babl
@@ -110,6 +111,7 @@ babl-min:
   extends: .gegl-deps
   variables:
     GIT_DEPTH: "15"
+    CCACHE_MAXSIZE: "128Mi"
   script:
    - export XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share:/usr/local/share/:/usr/share/"
    - export PKG_CONFIG_PATH=$BABL_PREFIX/lib/pkgconfig
