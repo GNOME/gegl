@@ -30,7 +30,16 @@ build-image:
     - echo "RUN pacman -Syu --noconfirm --needed git base-devel ccache meson" >> Dockerfile
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:ci-latest --cache=true
 
+.pacman-mgr:
+  variables:
+    PACMAN_CACHE: $CI_PROJECT_DIR/_pacman_cache
+  after_script:
+    # Remove all cached packages but the latest version
+    - pacman -S --noconfirm --cachedir $PACMAN_CACHE pacman-contrib
+    - paccache -r -k1 --cachedir $PACMAN_CACHE
+
 .babl-base:
+  extends: .pacman-mgr
   stage: dependencies
   artifacts:
     paths:
@@ -38,7 +47,7 @@ build-image:
   variables:
     GIT_DEPTH: "5"
   before_script:
-    - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache git base-devel ccache meson lcms2 gobject-introspection
+    - pacman -Syu --noconfirm --needed --cachedir $PACMAN_CACHE git base-devel ccache meson lcms2 gobject-introspection
     - git clone --depth=$GIT_DEPTH https://gitlab.gnome.org/GNOME/babl.git _babl
     - cd _babl
     - mkdir _build
@@ -67,11 +76,12 @@ babl-min:
 
 
 .gegl-deps:
+  extends: .pacman-mgr
   artifacts:
     paths:
     - _build/meson-logs/testlog.txt
   before_script:
-    - pacman -Syu --noconfirm --needed --cachedir `pwd`/_pacman_cache
+    - pacman -Syu --noconfirm --needed --cachedir $PACMAN_CACHE
         base-devel ccache meson
         ffmpeg
         gobject-introspection
