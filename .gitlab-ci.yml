@@ -51,6 +51,7 @@ build-image:
     - git clone --depth=$GIT_DEPTH https://gitlab.gnome.org/GNOME/babl.git _babl
     - cd _babl
     - mkdir _build
+    - ccache -z
 
 babl-master:
   extends: .babl-base
@@ -60,6 +61,7 @@ babl-master:
     - meson -Dprefix="$BABL_PREFIX" _build
     - ninja -C _build
     - ninja -C _build install
+    - ccache -s
 
 babl-min:
   extends: .babl-base
@@ -73,6 +75,7 @@ babl-min:
     - meson -Dprefix="$BABL_PREFIX" _build
     - ninja -C _build
     - ninja -C _build install
+    - ccache -s
 
 
 .gegl-deps:
@@ -100,6 +103,7 @@ babl-min:
         sdl2
         suitesparse
         vala
+    - ccache -z
 
 .build-gegl:
   stage: gegl
@@ -113,6 +117,7 @@ babl-min:
    - meson -Dprefix="$BABL_PREFIX" $CONFIG_OPTIONS _build
    - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
      ninja -C _build
+   - ccache -s
    - LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
      meson test -C _build --print-errorlogs
 
