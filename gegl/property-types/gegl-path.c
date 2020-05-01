@@ -1027,11 +1027,11 @@ parse_float_pair (const gchar *p,
 {
   gchar *t = (void*) p;
   while (*t && ((*t<'0' || *t > '9') && *t!='-')) t++;
-  if (!t)
+  if (!*t)
     return p;
   *x = g_ascii_strtod (t, &t);
   while (*t && ((*t<'0' || *t > '9') && *t!='-')) t++;
-  if (!t)
+  if (!*t)
     return p;
   *y = g_ascii_strtod (t, &t);
   return t;
