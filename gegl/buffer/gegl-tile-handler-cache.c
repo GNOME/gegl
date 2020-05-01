@@ -480,7 +480,7 @@ gegl_tile_handler_cache_get_tile (GeglTileHandlerCache *cache,
       g_queue_unlink (&cache->queue, &result->link);
       g_queue_push_head_link (&cache->queue, &result->link);
       cache->time = ++cache_time;
-      while (result->tile == NULL)
+      if (result->tile == NULL)
       {
         g_printerr ("NULL tile in %s %p %i %i %i %p\n", __FUNCTION__, result, result->x, result->y, result->z,
                 result->tile);
