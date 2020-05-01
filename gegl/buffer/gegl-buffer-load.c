@@ -123,12 +123,9 @@ gegl_buffer_read_header (int i,
   return ret;
 }
 
-/* reads a block of information from a geglbuffer that resides in an GInputStream,
- * if offset is NULL it is read from the current offsetition of the stream. If offset
- * is passed in the offset stored at the location is used as the initial seeking
- * point and will be updated with the offset after the read is completed.
+/* reads a block of data from geglbuffer in open file descriptor fd
  */
-static GeglBufferItem *read_block (int           i,
+static GeglBufferItem *read_block (int           fd,
                                    goffset      *offset)
 {
   GeglBufferBlock block;
@@ -136,15 +133,16 @@ static GeglBufferItem *read_block (int           i,
   gsize           byte_read = 0;
   gint            own_size=0;
 
+  g_assert (offset);
+
   if (*offset==0)
     return NULL;
 
-  if (offset)
-    if(lseek(i, *offset, SEEK_SET) == -1)
-      g_warning ("failed seeking to %i", (gint)*offset);
+  if(lseek(fd, *offset, SEEK_SET) == -1)
+    g_warning ("failed seeking to %i", (gint)*offset);
 
   {
-	ssize_t sz_read = read (i, &block,  sizeof (GeglBufferBlock));
+    ssize_t sz_read = read (fd, &block,  sizeof (GeglBufferBlock));
     if(sz_read != -1)
       byte_read += sz_read;
   }
@@ -177,7 +175,7 @@ static GeglBufferItem *read_block (int           i,
       ret = g_malloc (own_size);
       memcpy (ret, &block, sizeof (GeglBufferBlock));
       {
-        ssize_t sz_read = read (i, ((gchar*)ret) + sizeof(GeglBufferBlock),
+        ssize_t sz_read = read (fd, ((gchar*)ret) + sizeof(GeglBufferBlock),
                                 own_size - sizeof(GeglBufferBlock));
         if(sz_read != -1)
           byte_read += sz_read;
@@ -189,7 +187,7 @@ static GeglBufferItem *read_block (int           i,
       ret = g_malloc (own_size);
       memcpy (ret, &block, sizeof (GeglBufferBlock));
       {
-        ssize_t sz_read = read (i, ret + sizeof(GeglBufferBlock),
+        ssize_t sz_read = read (fd, ret + sizeof(GeglBufferBlock),
 								block.length - sizeof (GeglBufferBlock));
 		if(sz_read != -1)
 		  byte_read += sz_read;
