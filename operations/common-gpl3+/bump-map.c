@@ -239,9 +239,6 @@ bumpmap_row (gfloat         *row,
             buf[b] = buf[b] * shade;
         }
 
-      if (params->in_has_alpha)
-        buf[3] = buf[3];
-
       buf += params->in_components;
     }
 }
