@@ -276,7 +276,7 @@ gegl_config_parse_env (GeglConfig *config)
           !strcmp (value, "yes"))
         g_object_set (config, "mipmap-rendering", TRUE, NULL);
       else
-        g_object_set (config, "mipmap-rendering", TRUE, NULL);
+        g_object_set (config, "mipmap-rendering", FALSE, NULL);
     }
 
 
