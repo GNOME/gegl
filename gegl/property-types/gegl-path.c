@@ -997,7 +997,8 @@ gegl_path_add_flattener (GeglPathList *(*flattener) (GeglPathList *original))
       if (klass->flattener[i]==NULL)
         {
           klass->flattener[i] = flattener;
-          klass->flattener[i+1] = NULL;
+          if (i + 1 < 8)
+            klass->flattener[i+1] = NULL;
           return;
         }
     }
@@ -1126,7 +1127,7 @@ ensure_flattened (GeglPath *vector)
   if (priv->flat_path)
     old_path = priv->flat_path;
 
-  for (i=0;klass->flattener[i];i++)
+  for (i=0;klass->flattener[i] && i < 8;i++)
     {
       new_path = klass->flattener[i] (path);
       if (new_path != path)
