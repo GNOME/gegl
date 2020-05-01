@@ -583,7 +583,6 @@ gegl_node_new_from_xml (const gchar *xmldata,
   pd.refs      = NULL;
   pd.path_root = path_root;
 
-  g_list_free (pd.refs);
   context = g_markup_parse_context_new   (&parser, 0, &pd, NULL);
   success = g_markup_parse_context_parse (context,
                                           xmldata,
