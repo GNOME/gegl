@@ -325,7 +325,7 @@ gegl_tile_lock (GeglTile *tile)
 
       ++count;
       if (count > 32)
-        usleep (1);
+        g_thread_yield ();
     }
 }
 
