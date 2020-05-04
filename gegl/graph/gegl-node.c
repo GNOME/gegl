@@ -2047,7 +2047,7 @@ gegl_node_get_cache (GeglNode *node)
 
   if (!format)
     {
-      g_warning ("Output of %s has no format", gegl_node_get_debug_name (node));
+      //g_message ("Output of %s has no format", gegl_node_get_debug_name (node));
 
       format = babl_format ("RGBA float");
     }
