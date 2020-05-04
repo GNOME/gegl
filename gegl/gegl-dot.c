@@ -57,14 +57,18 @@ gegl_dot_util_add_node (GString  *string,
         GeglPad *pad = entry->data;
         if (gegl_pad_is_output (pad))
           {
+            const char *format_name = "nil";
             if (got_output)
               {
                 g_string_append (string, "|");
               }
             got_output = TRUE;
-            g_string_append_printf (string, "<%s>%s",
+            if (gegl_pad_get_format (pad))
+              format_name = babl_get_name (gegl_pad_get_format (pad));
+            g_string_append_printf (string, "<%s>%s %s",
                                     gegl_pad_get_name (pad),
-                                    gegl_pad_get_name (pad));
+                                    gegl_pad_get_name (pad),
+                                    format_name);
           }
         entry = g_slist_next (entry);
       }
