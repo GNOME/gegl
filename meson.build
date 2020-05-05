@@ -107,6 +107,10 @@ if buildtype == 'debugoptimized' or buildtype == 'release'
   cflags_common += ['-Ofast']
 endif
 
+if buildtype == 'debugoptimized' or buildtype == 'debug'
+  cflags_common += ['-DGEGL_ENABLE_DEBUG']
+endif
+
 cflags_common += [
   '-Winit-self',
   '-Wmissing-declarations',
