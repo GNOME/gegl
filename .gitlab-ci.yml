@@ -49,7 +49,7 @@ build-image:
     GIT_DEPTH: "5"
     CCACHE_MAXSIZE: "32Mi"
   before_script:
-    - pacman -Syu --noconfirm --needed --cachedir $PACMAN_CACHE git base-devel ccache meson lcms2 gobject-introspection
+    - pacman -Syu --noconfirm --needed --cachedir $PACMAN_CACHE git base-devel ccache meson lcms2 gobject-introspection vala
     - git clone --depth=$GIT_DEPTH https://gitlab.gnome.org/GNOME/babl.git _babl
     - cd _babl
     - ccache -z
