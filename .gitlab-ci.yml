@@ -37,7 +37,7 @@ build-image:
   after_script:
     # Remove all cached packages but the latest version
     - pacman -S --noconfirm --cachedir $PACMAN_CACHE pacman-contrib
-    - paccache -r -k1 --cachedir $PACMAN_CACHE
+    - paccache -r -k1 --cachedir $PACMAN_CACHE || true
 
 .babl-base:
   extends: .pacman-mgr
