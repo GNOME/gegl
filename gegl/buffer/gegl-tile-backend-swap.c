@@ -151,13 +151,13 @@ static gint        gegl_tile_backend_swap_get_data_cost          (ThreadParams  
 static void        gegl_tile_backend_swap_free_data              (ThreadParams              *params);
 static void        gegl_tile_backend_swap_write                  (ThreadParams              *params);
 static void        gegl_tile_backend_swap_destroy                (ThreadParams              *params);
-static gpointer    gegl_tile_backend_swap_writer_thread          (gpointer ignored);       
+static gpointer    gegl_tile_backend_swap_writer_thread          (gpointer ignored);
 static GeglTile   *gegl_tile_backend_swap_entry_read             (GeglTileBackendSwap       *self,
                                                                   SwapEntry                 *entry);
 static void        gegl_tile_backend_swap_entry_write            (GeglTileBackendSwap       *self,
                                                                   SwapEntry                 *entry,
                                                                   GeglTile                  *tile);
-static SwapBlock * gegl_tile_backend_swap_block_create           (void);                   
+static SwapBlock * gegl_tile_backend_swap_block_create           (void);
 static void        gegl_tile_backend_swap_block_free             (SwapBlock                 *block);
 static SwapBlock * gegl_tile_backend_swap_block_ref              (SwapBlock                 *block,
                                                                   gint                       tile_size);
@@ -211,7 +211,7 @@ static gboolean    gegl_tile_backend_swap_equalfunc              (gconstpointer 
                                                                   gconstpointer              b);
 static void        gegl_tile_backend_swap_constructed            (GObject                   *object);
 static void        gegl_tile_backend_swap_finalize               (GObject                   *object);
-static void        gegl_tile_backend_swap_ensure_exist           (void);                   
+static void        gegl_tile_backend_swap_ensure_exist           (void);
 static void        gegl_tile_backend_swap_class_init             (GeglTileBackendSwapClass  *klass);
 static void        gegl_tile_backend_swap_tile_cache_size_notify (GObject                   *config,
                                                                   GParamSpec                *pspec,
@@ -557,7 +557,7 @@ gegl_tile_backend_swap_free_data (ThreadParams *params)
     }
 }
 
-__attribute__ ((noinline)) static void
+static void
 gegl_tile_backend_swap_write (ThreadParams *params)
 {
   const guint8 *data;
