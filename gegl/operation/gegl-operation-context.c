@@ -20,6 +20,7 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
@@ -302,7 +303,7 @@ GeglBuffer *
 gegl_operation_context_get_target (GeglOperationContext *context,
                                    const gchar          *padname)
 {
-  GeglBuffer          *output;
+  GeglBuffer          *output         = NULL;
   const GeglRectangle *result;
   const Babl          *format;
   GeglNode            *node;
@@ -350,23 +351,27 @@ gegl_operation_context_get_target (GeglOperationContext *context,
        * the current caching mechanism needs to be redesigned
        */
       if (gegl_rectangle_contains (gegl_buffer_get_extent (cache), result))
-        {
-          output = g_object_ref (cache);
-        }
-      else
-        {
-          if (linear_buffers)
-            output = gegl_buffer_linear_new (result, format);
-          else
-            output = gegl_buffer_new (result, format);
-        }
+        output = g_object_ref (cache);
     }
-  else
+
+  if (! output)
     {
       if (linear_buffers)
-        output = gegl_buffer_linear_new (result, format);
+        {
+          output = gegl_buffer_linear_new (result, format);
+        }
       else
-        output = gegl_buffer_new (result, format);
+        {
+          output = g_object_new (
+            GEGL_TYPE_BUFFER,
+            "x",           result->x,
+            "y",           result->y,
+            "width",       result->width,
+            "height",      result->height,
+            "format",      format,
+            "initialized", gegl_operation_context_get_init_output (),
+            NULL);
+        }
     }
 
   gegl_operation_context_take_object (context, padname, G_OBJECT (output));
@@ -539,4 +544,25 @@ gegl_operation_context_dup_input_maybe_copy (GeglOperationContext *context,
 #endif
 
   return result;
+}
+
+gboolean
+gegl_operation_context_get_init_output (void)
+{
+  static gint init_output = -1;
+
+  if (init_output < 0)
+    {
+      if (g_getenv ("GEGL_OPERATION_INIT_OUTPUT"))
+        {
+          init_output = atoi (g_getenv ("GEGL_OPERATION_INIT_OUTPUT")) ?
+            TRUE : FALSE;
+        }
+      else
+        {
+          init_output = FALSE;
+        }
+    }
+
+  return init_output;
 }

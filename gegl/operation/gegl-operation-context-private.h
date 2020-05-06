@@ -89,6 +89,8 @@ GeglRectangle  *gegl_operation_context_get_result_rect (GeglOperationContext *no
 void            gegl_operation_context_set_result_rect (GeglOperationContext *node,
                                                         const GeglRectangle  *rect);
 
+gboolean        gegl_operation_context_get_init_output (void);
+
 G_END_DECLS
 
 #endif /* __GEGL_OPERATION_CONTEXT_PRIVATE_H__ */

@@ -43,6 +43,7 @@
 
 #include "operation/gegl-operation.h"
 #include "operation/gegl-operation-private.h"
+#include "operation/gegl-operation-context-private.h"
 #include "operation/gegl-operations.h"
 #include "operation/gegl-operation-meta.h"
 
@@ -2066,9 +2067,11 @@ gegl_node_get_cache (GeglNode *node)
     {
       GeglCache *cache;
 
-      cache = g_object_new (GEGL_TYPE_CACHE,
-                            "format", format,
-                            NULL);
+      cache = g_object_new (
+        GEGL_TYPE_CACHE,
+        "format",      format,
+        "initialized", gegl_operation_context_get_init_output (),
+        NULL);
 
       gegl_object_set_has_forked (G_OBJECT (cache));
       gegl_buffer_set_extent (GEGL_BUFFER (cache), &node->have_rect);
