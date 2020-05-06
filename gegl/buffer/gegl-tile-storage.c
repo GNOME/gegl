@@ -42,7 +42,8 @@ enum
 guint gegl_tile_storage_signals[LAST_SIGNAL] = { 0 };
 
 GeglTileStorage *
-gegl_tile_storage_new (GeglTileBackend *backend)
+gegl_tile_storage_new (GeglTileBackend *backend,
+                       gboolean         initialized)
 {
   GeglTileStorage *tile_storage = g_object_new (GEGL_TYPE_TILE_STORAGE, NULL);
   GeglTileHandlerChain  *tile_handler_chain;
@@ -63,7 +64,7 @@ gegl_tile_storage_new (GeglTileBackend *backend)
   gegl_tile_handler_set_source (handler, GEGL_TILE_SOURCE (backend));
 
   cache = gegl_tile_handler_cache_new ();
-  empty = gegl_tile_handler_empty_new (backend);
+  empty = gegl_tile_handler_empty_new (backend, initialized);
   zoom = gegl_tile_handler_zoom_new (backend);
 
   /* set storage and cache on ourself so chain_add() can use it */

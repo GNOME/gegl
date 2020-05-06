@@ -77,7 +77,8 @@ enum
   PROP_PX_SIZE,
   PROP_PIXELS,
   PROP_PATH,
-  PROP_BACKEND
+  PROP_BACKEND,
+  PROP_INITIALIZED
 };
 
 enum
@@ -163,6 +164,10 @@ gegl_buffer_get_property (GObject    *gobject,
 
       case PROP_ABYSS_HEIGHT:
         g_value_set_int (value, buffer->abyss.height);
+        break;
+
+      case PROP_INITIALIZED:
+        g_value_set_boolean (value, buffer->initialized);
         break;
 
       default:
@@ -262,6 +267,10 @@ gegl_buffer_set_property (GObject      *gobject,
         if (buffer->backend)
           g_object_unref (buffer->backend);
         buffer->backend = g_value_dup_object (value);
+        break;
+
+      case PROP_INITIALIZED:
+        buffer->initialized = g_value_get_boolean (value);
         break;
 
       default:
@@ -573,7 +582,8 @@ gegl_buffer_constructor (GType                  type,
           buffer->backend = backend;
         }
 
-      source = GEGL_TILE_SOURCE (gegl_tile_storage_new (backend));
+      source = GEGL_TILE_SOURCE (gegl_tile_storage_new (backend,
+                                                        buffer->initialized));
       gegl_tile_handler_set_source ((GeglTileHandler*)(buffer), source);
       g_object_unref (source);
     }
@@ -881,6 +891,14 @@ gegl_buffer_class_init (GeglBufferClass *class)
                                                         G_PARAM_READWRITE |
                                                         G_PARAM_CONSTRUCT_ONLY |
                                                         G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (gobject_class, PROP_INITIALIZED,
+                                   g_param_spec_boolean ("initialized",
+                                                         NULL, NULL,
+                                                         TRUE,
+                                                         G_PARAM_READWRITE |
+                                                         G_PARAM_CONSTRUCT_ONLY |
+                                                         G_PARAM_STATIC_STRINGS));
 
   gegl_buffer_signals[CHANGED] =
     g_signal_new ("changed",

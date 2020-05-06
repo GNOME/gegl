@@ -70,6 +70,8 @@ struct _GeglBuffer
   GeglRectangle     changed_signal_accumulator;
 
   GeglTileBackend  *backend;
+
+  gboolean          initialized;
 };
 
 struct _GeglBufferClass

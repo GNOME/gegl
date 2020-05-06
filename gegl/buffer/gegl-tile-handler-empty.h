@@ -47,6 +47,7 @@ struct _GeglTileHandlerEmpty
 
   GeglTile               *tile;
   GeglTileBackend        *backend;
+  gboolean                initialized;
 };
 
 struct _GeglTileHandlerEmptyClass
@@ -56,9 +57,10 @@ struct _GeglTileHandlerEmptyClass
 
 GType             gegl_tile_handler_empty_get_type (void) G_GNUC_CONST;
 
-GeglTileHandler * gegl_tile_handler_empty_new      (GeglTileBackend *backend);
+GeglTileHandler * gegl_tile_handler_empty_new      (GeglTileBackend *backend,
+                                                    gboolean         initialized);
 
-GeglTile        * gegl_tile_handler_empty_new_tile (gint tile_size);
+GeglTile        * gegl_tile_handler_empty_new_tile (gint             tile_size);
 
 G_END_DECLS
 

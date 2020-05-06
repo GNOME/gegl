@@ -62,6 +62,16 @@ get_tile (GeglTileSource *gegl_tile_source,
   tile = gegl_tile_handler_dup_tile (GEGL_TILE_HANDLER (empty),
                                      empty->tile, x, y, z);
 
+  /* if empty tiles don't have to be zero-initialized, mark them as fully
+   * damaged, so that their data is not unnecessarily initialized when
+   * uncloned.
+   *
+   * we currently only do this for level-0 tiles, since it simplifies the rest
+   * of the code.
+   */
+  if (z == 0 && ! empty->initialized)
+    tile->damage = ~0ull;
+
   /* no need to store the tile, since we'll just create another empty tile on-
    * demand if it's dropped.
    */
@@ -99,12 +109,14 @@ gegl_tile_handler_empty_init (GeglTileHandlerEmpty *self)
 }
 
 GeglTileHandler *
-gegl_tile_handler_empty_new (GeglTileBackend *backend)
+gegl_tile_handler_empty_new (GeglTileBackend *backend,
+                             gboolean         initialized)
 {
   GeglTileHandlerEmpty *empty = g_object_new (GEGL_TYPE_TILE_HANDLER_EMPTY, NULL);
 
-  empty->backend = backend;
-  empty->tile    = NULL;
+  empty->backend     = backend;
+  empty->tile        = NULL;
+  empty->initialized = initialized;
 
   return (void*)empty;
 }
