@@ -40,6 +40,7 @@
 #include "gegl-tile-alloc.h"
 #include "gegl-tile-backend.h"
 #include "gegl-tile-backend-swap.h"
+#include "gegl-tile-handler-empty.h"
 #include "gegl-debug.h"
 #include "gegl-buffer-config.h"
 
@@ -81,6 +82,12 @@ typedef enum
   OP_WRITE,
   OP_DESTROY,
 } ThreadOp;
+
+enum
+{
+  BLOCK_OFFSET_NONE  = -1,
+  BLOCK_OFFSET_EMPTY = -2
+};
 
 typedef struct
 {
@@ -459,7 +466,7 @@ gegl_tile_backend_swap_free_block (SwapBlock *block)
   start = block->offset;
   end   = start + block->size;
 
-  block->offset = -1;
+  block->offset = BLOCK_OFFSET_NONE;
 
   total -= end - start;
 
@@ -550,7 +557,7 @@ gegl_tile_backend_swap_free_data (ThreadParams *params)
     }
 }
 
-static void
+__attribute__ ((noinline)) static void
 gegl_tile_backend_swap_write (ThreadParams *params)
 {
   const guint8 *data;
@@ -606,7 +613,7 @@ gegl_tile_backend_swap_write (ThreadParams *params)
 
       gegl_tile_backend_swap_free_block (params->block);
 
-      offset = -1;
+      offset = BLOCK_OFFSET_NONE;
     }
 
   if (offset < 0)
@@ -672,7 +679,7 @@ error:
 static void
 gegl_tile_backend_swap_destroy (ThreadParams *params)
 {
-  if (params->block->offset >= 0)
+  if (params->block->offset != BLOCK_OFFSET_NONE)
     g_atomic_pointer_add (&total_uncompressed, -params->size);
 
   gegl_tile_backend_swap_free_block (params->block);
@@ -795,10 +802,19 @@ gegl_tile_backend_swap_entry_read (GeglTileBackendSwap *self,
 
   g_mutex_unlock (&queue_mutex);
 
-  if (offset < 0 || in_fd < 0)
+  if (offset == BLOCK_OFFSET_NONE || in_fd < 0)
     {
       g_warning ("no swap storage allocated for tile");
       return NULL;
+    }
+
+  if (offset == BLOCK_OFFSET_EMPTY)
+    {
+      tile = gegl_tile_handler_empty_new_tile (tile_size);
+
+      gegl_tile_mark_as_stored (tile);
+
+      return tile;
     }
 
   tile = gegl_tile_new (tile_size);
@@ -953,7 +969,7 @@ gegl_tile_backend_swap_block_create (void)
 
   block->ref_count = 1;
   block->link      = NULL;
-  block->offset    = -1;
+  block->offset    = BLOCK_OFFSET_NONE;
 
   return block;
 }
@@ -1003,7 +1019,7 @@ gegl_tile_backend_swap_block_unref (SwapBlock *block,
           g_queue_unlink (queue, link);
           g_queue_push_head_link (queue, link);
         }
-      else
+      else if (block->offset >= 0)
         {
           ThreadParams *params;
 
@@ -1017,6 +1033,13 @@ gegl_tile_backend_swap_block_unref (SwapBlock *block,
            * reclaimed space.
            */
           gegl_tile_backend_swap_push_queue (params, /* head = */ TRUE);
+        }
+      else
+        {
+          if (block->offset != BLOCK_OFFSET_NONE)
+            g_atomic_pointer_add (&total_uncompressed, -tile_size);
+
+          gegl_tile_backend_swap_block_free (block);
         }
 
       if (lock)
@@ -1113,30 +1136,22 @@ gegl_tile_backend_swap_set_tile (GeglTileSource *self,
 {
   GeglTileBackendSwap *swap;
   SwapEntry           *entry;
+  gint                 tile_size;
 
-  if (tile->is_zero_tile)
-    {
-      /* the tile is empty.  avoid an expensive write to disk, and just drop
-       * the existing tile (if there is one); the empty tile handler will serve
-       * a new empty tile upon request.
-       */
-      gegl_tile_backend_swap_void_tile (self, x, y, z);
-
-      gegl_tile_mark_as_stored (tile);
-
-      return GINT_TO_POINTER (TRUE);
-    }
-
-  swap  = GEGL_TILE_BACKEND_SWAP (self);
-  entry = gegl_tile_backend_swap_lookup_entry (swap, x, y, z);
+  swap      = GEGL_TILE_BACKEND_SWAP (self);
+  entry     = gegl_tile_backend_swap_lookup_entry (swap, x, y, z);
+  tile_size = gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (swap));
 
   if (entry)
     {
-      if (! gegl_tile_backend_swap_block_is_unique (entry->block))
+      if ((! tile->is_zero_tile                                     &&
+           ! gegl_tile_backend_swap_block_is_unique (entry->block)) ||
+          (  tile->is_zero_tile                                     &&
+             entry->block->offset != BLOCK_OFFSET_EMPTY))
         {
           gegl_tile_backend_swap_block_unref (
             entry->block,
-            gegl_tile_backend_get_tile_size (GEGL_TILE_BACKEND (swap)),
+            tile_size,
             TRUE);
           entry->block = gegl_tile_backend_swap_block_create ();
         }
@@ -1147,7 +1162,16 @@ gegl_tile_backend_swap_set_tile (GeglTileSource *self,
       g_hash_table_insert (swap->index, entry, entry);
     }
 
-  gegl_tile_backend_swap_entry_write (swap, entry, tile);
+  if (! tile->is_zero_tile)
+    {
+      gegl_tile_backend_swap_entry_write (swap, entry, tile);
+    }
+  else if (entry->block->offset != BLOCK_OFFSET_EMPTY)
+    {
+      entry->block->offset = BLOCK_OFFSET_EMPTY;
+
+      g_atomic_pointer_add (&total_uncompressed, +tile_size);
+    }
 
   gegl_tile_mark_as_stored (tile);
 
