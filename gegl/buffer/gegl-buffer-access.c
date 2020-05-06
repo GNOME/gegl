@@ -2793,11 +2793,26 @@ gegl_buffer_clear_tile (GeglBuffer *dst,
                         gint        tile_y,
                         gpointer    data)
 {
-  gegl_tile_handler_cache_remove (dst->tile_storage->cache,
-                                  tile_x, tile_y, 0);
+  if (dst->initialized)
+    {
+      gegl_tile_handler_cache_remove (dst->tile_storage->cache,
+                                      tile_x, tile_y, 0);
 
-  gegl_tile_handler_source_command (dst->tile_storage->cache, GEGL_TILE_VOID,
-                                    tile_x, tile_y, 0, NULL);
+      gegl_tile_handler_source_command (dst->tile_storage->cache,
+                                        GEGL_TILE_VOID,
+                                        tile_x, tile_y, 0, NULL);
+    }
+  else
+    {
+      GeglTile *tile;
+
+      tile = gegl_tile_handler_empty_new_tile (dst->tile_storage->tile_size);
+
+      gegl_tile_handler_cache_insert (dst->tile_storage->cache, tile,
+                                      tile_x, tile_y, 0);
+
+      gegl_tile_unref (tile);
+    }
 }
 
 static void
