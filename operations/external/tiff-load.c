@@ -17,7 +17,12 @@
  */
 
 #include "config.h"
+#ifdef HAVE_STRPTIME
+#define _XOPEN_SOURCE
+#include <time.h>
+#endif
 #include <glib/gi18n-lib.h>
+#include <gegl-metadata.h>
 
 #ifdef GEGL_PROPERTIES
 
@@ -30,6 +35,9 @@ property_int(directory, _("Directory"), 1)
   description (_("Image file directory (subfile)"))
   value_range (1, G_MAXINT)
   ui_range (1, 16)
+
+property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
+  description (_("Object to receive image metadata"))
 
 #else
 
@@ -70,6 +78,48 @@ typedef struct
   gint width;
   gint height;
 } Priv;
+
+#ifdef HAVE_STRPTIME
+/* Parse the TIFF timestamp format - requires strptime() */
+static void
+tiff_parse_timestamp (const GValue *src_value, GValue *dest_value)
+{
+  GDateTime *datetime;
+  struct tm tm;
+  GTimeZone *tz;
+  const gchar *datestr;
+  gchar *ret;
+
+  g_return_if_fail (G_VALUE_HOLDS_STRING (src_value));
+  g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (dest_value, G_TYPE_DATE_TIME));
+
+  datestr = g_value_get_string (src_value);
+  g_return_if_fail (datestr != NULL);
+
+  ret = strptime (datestr, "%Y:%m:%d %T", &tm);
+  g_return_if_fail (ret != NULL);
+
+  tz = g_time_zone_new_local ();
+  datetime = g_date_time_new (tz, tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+                              tm.tm_hour, tm.tm_min, tm.tm_sec);
+  g_time_zone_unref (tz);
+
+  g_return_if_fail (datetime != NULL);
+  g_value_take_boxed (dest_value, datetime);
+}
+#endif
+
+static const GeglMetadataMap tiff_load_metadata[] =
+{
+  { "Artist",               "artist",       NULL },
+  { "Copyright",            "copyright",    NULL },
+#ifdef HAVE_STRPTIME
+  { "DateTime",             "timestamp",    tiff_parse_timestamp },
+#endif
+  { "ImageDescription",     "description",  NULL },
+  { "PageName",             "title",        NULL },
+  { "Software",             "software",     NULL },
+};
 
 static void
 cleanup(GeglOperation *operation)
@@ -340,6 +390,19 @@ get_file_size(thandle_t handle)
   return (toff_t) size;
 }
 
+static void
+set_meta_string (GObject *metadata, const gchar *name, const gchar *value)
+{
+  GValue gvalue = G_VALUE_INIT;
+  GeglMetadataIter iter;
+
+  g_value_init (&gvalue, G_TYPE_STRING);
+  g_value_set_string (&gvalue, value);
+  if (gegl_metadata_iter_lookup (GEGL_METADATA (metadata), &iter, name))
+    gegl_metadata_iter_set_value (GEGL_METADATA (metadata), &iter, &gvalue);
+  g_value_unset (&gvalue);
+}
+
 static gint
 query_tiff(GeglOperation *operation)
 {
@@ -548,6 +611,62 @@ query_tiff(GeglOperation *operation)
 
   p->height = (gint) height;
   p->width = (gint) width;
+
+  if (o->metadata != NULL)
+    {
+      gfloat resx = 300.0f, resy = 300.0f;
+      gboolean have_x, have_y;
+      guint16 unit;
+      gchar *str;
+      GeglResolutionUnit resunit;
+
+      gegl_metadata_register_map (GEGL_METADATA (o->metadata),
+                                  "gegl:tiff-load",
+                                  GEGL_MAP_EXCLUDE_UNMAPPED,
+                                  tiff_load_metadata,
+                                  G_N_ELEMENTS (tiff_load_metadata));
+
+      TIFFGetFieldDefaulted (p->tiff, TIFFTAG_RESOLUTIONUNIT, &unit);
+      have_x = TIFFGetField (p->tiff, TIFFTAG_XRESOLUTION, &resx);
+      have_y = TIFFGetField (p->tiff, TIFFTAG_YRESOLUTION, &resy);
+      if (!have_x && have_y)
+        resx = resy;
+      else if (have_x && !have_y)
+        resy = resx;
+
+      switch (unit)
+        {
+        case RESUNIT_INCH:
+          resunit = GEGL_RESOLUTION_UNIT_DPI;
+          break;
+        case RESUNIT_CENTIMETER:
+          resunit = GEGL_RESOLUTION_UNIT_DPM;
+          resx *= 100.0f;
+          resy *= 100.0f;
+          break;
+        default:
+          resunit = GEGL_RESOLUTION_UNIT_NONE;
+          break;
+        }
+      gegl_metadata_set_resolution (GEGL_METADATA (o->metadata), resunit, resx, resy);
+
+      //XXX make and model for scanner
+
+      if (TIFFGetField (p->tiff, TIFFTAG_ARTIST, &str))
+        set_meta_string (o->metadata, "Artist", str);
+      if (TIFFGetField (p->tiff, TIFFTAG_COPYRIGHT, &str))
+        set_meta_string (o->metadata, "Copyright", str);
+      if (TIFFGetField (p->tiff, TIFFTAG_PAGENAME, &str))
+        set_meta_string (o->metadata, "PageName", str);
+      if (TIFFGetField (p->tiff, TIFFTAG_SOFTWARE, &str))
+        set_meta_string (o->metadata, "Software", str);
+      if (TIFFGetField (p->tiff, TIFFTAG_IMAGEDESCRIPTION, &str))
+        set_meta_string (o->metadata, "ImageDescription", str);
+      if (TIFFGetField (p->tiff, TIFFTAG_DATETIME, &str))
+        set_meta_string (o->metadata, "DateTime", str);
+
+      gegl_metadata_unregister_map (GEGL_METADATA (o->metadata));
+    }
 
   return 0;
 }

@@ -19,6 +19,8 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
+#include <gegl-metadata.h>
+#include <math.h>
 
 
 #ifdef GEGL_PROPERTIES
@@ -31,6 +33,8 @@ property_int (compression, _("Compression"), 3)
 property_int (bitdepth, _("Bitdepth"), 16)
   description (_("8 and 16 are the currently accepted values."))
   value_range (8, 16)
+property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
+  description (_("Object to supply image metadata"))
 
 #else
 
@@ -41,6 +45,38 @@ property_int (bitdepth, _("Bitdepth"), 16)
 #include <gegl-op.h>
 #include <gegl-gio-private.h>
 #include <png.h>
+
+static void
+png_format_timestamp (const GValue *src_value, GValue *dest_value)
+{
+  GDateTime *datetime;
+  gchar *datestr;
+
+  g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (src_value, G_TYPE_DATE_TIME));
+  g_return_if_fail (G_VALUE_HOLDS_STRING (dest_value));
+
+  datetime = g_value_get_boxed (src_value);
+  g_return_if_fail (datetime != NULL);
+
+  datestr = g_date_time_format (datetime, "%a, %d %b %Y %H:%M:%S %z");
+  g_return_if_fail (datestr != NULL);
+
+  g_value_take_string (dest_value, datestr);
+}
+
+static const GeglMetadataMap png_save_metadata[] =
+{
+  { "Title",                "title",        NULL },
+  { "Author",               "artist",       NULL },
+  { "Description",          "description",  NULL },
+  { "Copyright",            "copyright",    NULL },
+  { "Creation Time",        "timestamp",    png_format_timestamp },
+  { "Software",             "software",     NULL },
+  { "Disclaimer",           "disclaimer",   NULL },
+  { "Warning",              "warning",      NULL },
+  { "Source",               "source",       NULL },
+  { "Comment",              "comment",      NULL },
+};
 
 static void
 write_fn(png_structp png_ptr, png_bytep buffer, png_size_t length)
@@ -75,6 +111,15 @@ error_fn(png_structp png_ptr, png_const_charp msg)
   g_printerr("LIBPNG ERROR: %s", msg);
 }
 
+static void
+clear_png_text (gpointer data)
+{
+  png_text *text = data;
+
+  g_free (text->key);
+  g_free (text->text);
+}
+
 static gint
 export_png (GeglOperation       *operation,
             GeglBuffer          *input,
@@ -82,7 +127,8 @@ export_png (GeglOperation       *operation,
             png_structp          png,
             png_infop            info,
             gint                 compression,
-            gint                 bit_depth)
+            gint                 bit_depth,
+            GeglMetadata        *metadata)
 {
   gint           i, src_x, src_y;
   png_uint_32    width, height;
@@ -93,6 +139,7 @@ export_png (GeglOperation       *operation,
   const Babl    *babl = gegl_buffer_get_format (input);
   const Babl    *space = babl_format_get_space (babl);
   const Babl    *format;
+  GArray        *itxt = NULL;
 
   src_x = result->x;
   src_y = result->y;
@@ -210,6 +257,64 @@ export_png (GeglOperation       *operation,
   {
   }
 
+  if (metadata != NULL)
+    {
+      GValue value = G_VALUE_INIT;
+      GeglMetadataIter iter;
+      GeglResolutionUnit unit;
+      gfloat resx, resy;
+      png_text text;
+      const gchar *keyword;
+
+      itxt = g_array_new (FALSE, FALSE, sizeof (png_text));
+      g_array_set_clear_func (itxt, clear_png_text);
+
+      gegl_metadata_register_map (metadata, "gegl:png-save", 0,
+                                  png_save_metadata,
+                                  G_N_ELEMENTS (png_save_metadata));
+
+      g_value_init (&value, G_TYPE_STRING);
+      gegl_metadata_iter_init (metadata, &iter);
+      while ((keyword = gegl_metadata_iter_next (metadata, &iter)) != NULL)
+        {
+          if (gegl_metadata_iter_get_value (metadata, &iter, &value))
+            {
+              memset (&text, 0, sizeof text);
+              text.compression = PNG_ITXT_COMPRESSION_NONE;
+              text.key = g_strdup (keyword);
+              text.text = g_value_dup_string (&value);
+              text.itxt_length = strlen (text.text);
+              text.lang = "en";
+              g_array_append_vals (itxt, &text, 1);
+            }
+        }
+      g_value_unset (&value);
+
+      if (itxt->len > 0)
+        png_set_text (png, info, (png_textp) itxt->data, itxt->len);
+
+      if (gegl_metadata_get_resolution (metadata, &unit, &resx, &resy))
+        switch (unit)
+        {
+        case GEGL_RESOLUTION_UNIT_DPI:
+          png_set_pHYs (png, info, lroundf (resx / 25.4f * 1000.0f),
+                                   lroundf (resy / 25.4f * 1000.0f),
+                                   PNG_RESOLUTION_METER);
+          break;
+        case GEGL_RESOLUTION_UNIT_DPM:
+          png_set_pHYs (png, info, lroundf (resx), lroundf (resy),
+                                   PNG_RESOLUTION_METER);
+          break;
+        case GEGL_RESOLUTION_UNIT_NONE:
+        default:
+          png_set_pHYs (png, info, lroundf (resx), lroundf (resy),
+                                    PNG_RESOLUTION_UNKNOWN);
+          break;
+        }
+
+      gegl_metadata_unregister_map (metadata);
+    }
+
   png_write_info (png, info);
 
 #if BYTE_ORDER == LITTLE_ENDIAN
@@ -236,6 +341,8 @@ export_png (GeglOperation       *operation,
 
   g_free (pixels);
 
+  if (itxt != NULL)
+    g_array_unref (itxt);
   return 0;
 }
 
@@ -273,7 +380,8 @@ process (GeglOperation       *operation,
 
   png_set_write_fn (png, stream, write_fn, flush_fn);
 
-  if (export_png (operation, input, result, png, info, o->compression, o->bitdepth))
+  if (export_png (operation, input, result, png, info, o->compression, o->bitdepth,
+                  GEGL_METADATA (o->metadata)))
     {
       status = FALSE;
       g_warning("could not export PNG file");

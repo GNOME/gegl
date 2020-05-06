@@ -19,8 +19,13 @@
  */
 
 #include "config.h"
+#ifdef HAVE_STRPTIME
+#define _XOPEN_SOURCE
+#include <time.h>
+#endif
 #include <glib/gi18n-lib.h>
 #include <gegl-gio-private.h>
+#include <gegl-metadata.h>
 
 #ifdef GEGL_PROPERTIES
 
@@ -28,6 +33,8 @@ property_file_path (path, _("File"), "")
   description (_("Path of file to load."))
 property_uri (uri, _("URI"), "")
   description (_("URI for file to load."))
+property_object (metadata, _("Metadata"), GEGL_TYPE_METADATA)
+  description (_("Object to supply image metadata"))
 
 #else
 
@@ -55,6 +62,54 @@ static GQuark error_quark(void)
 {
   return g_quark_from_static_string ("gegl:load-png-error-quark");
 }
+
+#ifdef HAVE_STRPTIME
+static void
+png_parse_timestamp (const GValue *src_value, GValue *dest_value)
+{
+  GDateTime *datetime;
+  struct tm tm;
+  GTimeZone *tz;
+  const gchar *datestr;
+  gchar *ret;
+
+  g_return_if_fail (G_VALUE_HOLDS_STRING (src_value));
+  g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (dest_value, G_TYPE_DATE_TIME));
+
+  datestr = g_value_get_string (src_value);
+  g_return_if_fail (datestr != NULL);
+
+  /* PNG reccommends RFC 1123 but is loose in this respect. If parsing
+     fails, try again for an ISO 8601 date-time. */
+  tz = g_time_zone_new_utc ();
+  ret = strptime (datestr, "%a, %d %b %Y %H:%M:%S %z", &tm);
+  if (ret == NULL)
+    datetime = g_date_time_new_from_iso8601 (datestr, tz);
+  else
+    datetime = g_date_time_new (tz, tm.tm_year + 1900, tm.tm_mon + 1,
+                                tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+  g_time_zone_unref (tz);
+
+  g_return_if_fail (datetime != NULL);
+  g_value_take_boxed (dest_value, datetime);
+}
+#endif
+
+static const GeglMetadataMap png_load_metadata[] =
+{
+  { "Title",                "title",        NULL },
+  { "Author",               "artist",       NULL },
+  { "Description",          "description",  NULL },
+  { "Copyright",            "copyright",    NULL },
+#ifdef HAVE_STRPTIME
+  { "Creation Time",        "timestamp",    png_parse_timestamp },
+#endif
+  { "Software",             "software",     NULL },
+  { "Disclaimer",           "disclaimer",   NULL },
+  { "Warning",              "warning",      NULL },
+  { "Source",               "source",       NULL },
+  { "Comment",              "comment",      NULL },
+};
 
 static void
 read_fn(png_structp png_ptr, png_bytep buffer, png_size_t length)
@@ -220,6 +275,7 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
                         gint        *ret_width,
                         gint        *ret_height,
                         const Babl  *format, // can be NULL
+                        GeglMetadata *metadata, // can be NULL
                         GError **err)
 {
   gint           width;
@@ -361,6 +417,38 @@ gegl_buffer_import_png (GeglBuffer  *gegl_buffer,
     }
 
     png_read_update_info (load_png_ptr, load_info_ptr);
+
+    if (metadata != NULL)
+      {
+        GValue value = G_VALUE_INIT;
+        png_textp text;
+        int i, size, unit;
+        png_uint_32 xres, yres;
+        GeglResolutionUnit resunit;
+        GeglMetadataIter iter;
+
+        gegl_metadata_register_map (metadata, "gegl:png-load", 0,
+                                    png_load_metadata,
+                                    G_N_ELEMENTS (png_load_metadata));
+
+        png_get_text (load_png_ptr, load_info_ptr, &text, &size);
+        g_value_init (&value, G_TYPE_STRING);
+        for (i = 0; i < size; i++)
+          {
+            g_value_set_static_string (&value, text[i].text);
+            if (gegl_metadata_iter_lookup (metadata, &iter, text[i].key))
+              gegl_metadata_iter_set_value (metadata, &iter, &value);
+          }
+        g_value_unset (&value);
+
+        if (png_get_pHYs (load_png_ptr, load_info_ptr, &xres, &yres, &unit))
+          {
+            resunit = unit == 1 ? GEGL_RESOLUTION_UNIT_DPM : GEGL_RESOLUTION_UNIT_NONE;
+            gegl_metadata_set_resolution (metadata, resunit, xres, yres);
+          }
+
+        gegl_metadata_unregister_map (metadata);
+      }
   }
 
   pixels = g_malloc0 (width*bpp);
@@ -522,7 +610,7 @@ process (GeglOperation       *operation,
   GInputStream *stream = gegl_gio_open_input_stream(o->uri, o->path, &infile, &err);
   WARN_IF_ERROR(err);
   problem = gegl_buffer_import_png (output, stream, 0, 0,
-                                    &width, &height, format, &err);
+                                    &width, &height, format, GEGL_METADATA (o->metadata), &err);
   WARN_IF_ERROR(err);
   g_input_stream_close(stream, NULL, NULL);
 

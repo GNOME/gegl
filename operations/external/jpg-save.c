@@ -18,6 +18,8 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
+#include <gegl-metadata.h>
+#include <math.h>
 
 
 #ifdef GEGL_PROPERTIES
@@ -41,6 +43,9 @@ property_boolean (progressive, _("Progressive"), TRUE)
 property_boolean (grayscale, _("Grayscale"), FALSE)
   description (_("Create a grayscale (monochrome) image"))
 
+property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
+  description (_("Object to supply image metadata"))
+
 #else
 
 #define GEGL_OP_SINK
@@ -53,6 +58,42 @@ property_boolean (grayscale, _("Grayscale"), FALSE)
 #include <jpeglib.h>
 
 static const gsize buffer_size = 4096;
+
+static void
+iso8601_format_timestamp (const GValue *src_value, GValue *dest_value)
+{
+  GDateTime *datetime;
+  gchar *datestr;
+
+  g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (src_value, G_TYPE_DATE_TIME));
+  g_return_if_fail (G_VALUE_HOLDS_STRING (dest_value));
+
+  datetime = g_value_get_boxed (src_value);
+  g_return_if_fail (datetime != NULL);
+
+#if GLIB_CHECK_VERSION(2,62,0)
+  datestr = g_date_time_format_iso8601 (datetime);
+#else
+  datestr = g_date_time_format (datetime, "%FT%TZ");
+#endif
+  g_return_if_fail (datestr != NULL);
+
+  g_value_take_string (dest_value, datestr);
+}
+
+static const GeglMetadataMap jpeg_save_metadata[] =
+{
+  { "Artist",                 "artist",       NULL },
+  { "Comment",                "comment",      NULL },
+  { "Copyright",              "copyright",    NULL },
+  { "Description",            "description",  NULL },
+  { "Disclaimer",             "disclaimer",   NULL },
+  { "Software",               "software",     NULL },
+  { "Timestamp",              "timestamp",    iso8601_format_timestamp },
+  { "Title",                  "title",        NULL },
+  { "Warning",                "warning",      NULL },
+};
+
 
 static void
 init_buffer (j_compress_ptr cinfo)
@@ -232,7 +273,8 @@ export_jpg (GeglOperation               *operation,
             gint                         smoothing,
             gboolean                     optimize,
             gboolean                     progressive,
-            gboolean                     grayscale)
+            gboolean                     grayscale,
+            GeglMetadata                *metadata)
 {
   gint     src_x, src_y;
   gint     width, height;
@@ -296,7 +338,67 @@ export_jpg (GeglOperation               *operation,
   cinfo.restart_interval = 0;
   cinfo.restart_in_rows = 0;
 
+  /* Resolution */
+  if (metadata != NULL)
+    {
+      GeglResolutionUnit unit;
+      gfloat resx, resy;
+
+      gegl_metadata_register_map (metadata, "gegl:jpg-save", 0,
+                                  jpeg_save_metadata,
+                                  G_N_ELEMENTS (jpeg_save_metadata));
+
+      if (gegl_metadata_get_resolution (metadata, &unit, &resx, &resy))
+        switch (unit)
+          {
+          case GEGL_RESOLUTION_UNIT_DPI:
+            cinfo.density_unit = 1;               /* dots/inch */
+            cinfo.X_density = lroundf (resx);
+            cinfo.Y_density = lroundf (resy);
+            break;
+          case GEGL_RESOLUTION_UNIT_DPM:
+            cinfo.density_unit = 2;               /* dots/cm */
+            cinfo.X_density = lroundf (resx / 100.0f);
+            cinfo.Y_density = lroundf (resy / 100.0f);
+            break;
+          case GEGL_RESOLUTION_UNIT_NONE:
+          default:
+            cinfo.density_unit = 0;               /* unknown */
+            cinfo.X_density = lroundf (resx);
+            cinfo.Y_density = lroundf (resy);
+            break;
+          }
+    }
+
   jpeg_start_compress (&cinfo, TRUE);
+
+  if (metadata != NULL)
+    {
+      GValue value = G_VALUE_INIT;
+      GeglMetadataIter iter;
+      const gchar *keyword, *text;
+      GString *string;
+
+      string = g_string_new (NULL);
+
+      g_value_init (&value, G_TYPE_STRING);
+      gegl_metadata_iter_init (metadata, &iter);
+      while ((keyword = gegl_metadata_iter_next (metadata, &iter)) != NULL)
+        {
+          if (gegl_metadata_iter_get_value (metadata, &iter, &value))
+            {
+              text = g_value_get_string (&value);
+              g_string_append_printf (string, "## %s\n", keyword);
+              g_string_append (string, text);
+              g_string_append (string, "\n\n");
+            }
+        }
+      jpeg_write_marker (&cinfo, JPEG_COM, (guchar *) string->str, string->len);
+      g_value_unset (&value);
+      g_string_free (string, TRUE);
+
+      gegl_metadata_unregister_map (metadata);
+    }
 
   {
     int icc_len;
@@ -384,7 +486,8 @@ process (GeglOperation       *operation,
   cinfo.dest = &dest;
 
   if (export_jpg (operation, input, result, cinfo,
-                  o->quality, o->smoothing, o->optimize, o->progressive, o->grayscale))
+                  o->quality, o->smoothing, o->optimize, o->progressive, o->grayscale,
+                  GEGL_METADATA (o->metadata)))
     {
       status = FALSE;
       g_warning("could not export JPEG file");

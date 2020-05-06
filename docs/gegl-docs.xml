@@ -59,6 +59,13 @@
     <xi:include href="xml/gegl-op.xml" />
   </chapter>
 
+  <chapter id="Metadata">
+    <title>Image File Metadata</title>
+    <xi:include href="xml/gegl-metadata.xml" />
+    <xi:include href="xml/gegl-metadatastore.xml" />
+    <xi:include href="xml/gegl-metadatahash.xml" />
+  </chapter>
+
   <chapter id="Misc">
     <title>Misc</title>
     <xi:include href="xml/gegl-types.xml" />

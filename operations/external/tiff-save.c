@@ -18,7 +18,7 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
-
+#include <gegl-metadata.h>
 
 #ifdef GEGL_PROPERTIES
 
@@ -30,6 +30,9 @@ property_int (bitdepth, _("Bitdepth"), -1)
 property_int (fp, _("use floating point"), -1)
   description (_("floating point -1 means auto, 0 means integer 1 meant float."))
   value_range (-1, 1)
+
+property_object(metadata, _("Metadata"), GEGL_TYPE_METADATA)
+  description (_("Object to receive image metadata"))
 
 #else
 
@@ -54,6 +57,34 @@ typedef struct
 
   TIFF *tiff;
 } Priv;
+
+static void
+tiff_format_timestamp (const GValue *src_value, GValue *dest_value)
+{
+  GDateTime *datetime;
+  gchar *datestr;
+
+  g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (src_value, G_TYPE_DATE_TIME));
+  g_return_if_fail (G_VALUE_HOLDS_STRING (dest_value));
+
+  datetime = g_value_get_boxed (src_value);
+  g_return_if_fail (datetime != NULL);
+
+  datestr = g_date_time_format (datetime, "%Y:%m:%d %T");
+  g_return_if_fail (datestr != NULL);
+
+  g_value_take_string (dest_value, datestr);
+}
+
+static const GeglMetadataMap tiff_save_metadata[] =
+{
+  { "Artist",               "artist",       NULL },
+  { "Copyright",            "copyright",    NULL },
+  { "DateTime",             "timestamp",    tiff_format_timestamp },
+  { "ImageDescription",     "description",  NULL },
+  { "PageName",             "title",        NULL },
+  { "Software",             "software",     NULL },
+};
 
 static void
 cleanup(GeglOperation *operation)
@@ -366,6 +397,21 @@ save_contiguous(GeglOperation *operation,
   return 0;
 }
 
+static void
+SetFieldString (TIFF *tiff, guint tag, GeglMetadata *metadata, const gchar *name)
+{
+  GValue gvalue = G_VALUE_INIT;
+  GeglMetadataIter iter;
+
+  g_value_init (&gvalue, G_TYPE_STRING);
+  if (gegl_metadata_iter_lookup (metadata, &iter, name)
+      && gegl_metadata_iter_get_value (metadata, &iter, &gvalue))
+    {
+      TIFFSetField (tiff, tag, g_value_get_string (&gvalue));
+    }
+  g_value_unset (&gvalue);
+}
+
 static int
 export_tiff (GeglOperation *operation,
              GeglBuffer *input,
@@ -654,6 +700,57 @@ export_tiff (GeglOperation *operation,
   rows_per_stripe = MIN(rows_per_stripe, result->height);
 
   TIFFSetField(p->tiff, TIFFTAG_ROWSPERSTRIP, rows_per_stripe);
+
+  if (o->metadata != NULL)
+    {
+      GeglResolutionUnit unit;
+      gfloat xres, yres;
+
+      gegl_metadata_register_map (GEGL_METADATA (o->metadata),
+                                  "gegl:tiff-save",
+                                  GEGL_MAP_EXCLUDE_UNMAPPED,
+                                  tiff_save_metadata,
+                                  G_N_ELEMENTS (tiff_save_metadata));
+
+      if (gegl_metadata_get_resolution (GEGL_METADATA (o->metadata),
+                                        &unit, &xres, &yres))
+        switch (unit)
+        {
+          case GEGL_RESOLUTION_UNIT_DPI:
+            TIFFSetField (p->tiff, TIFFTAG_XRESOLUTION, xres);
+            TIFFSetField (p->tiff, TIFFTAG_YRESOLUTION, yres);
+            TIFFSetField (p->tiff, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
+            break;
+          case GEGL_RESOLUTION_UNIT_DPM:
+            TIFFSetField (p->tiff, TIFFTAG_XRESOLUTION, xres / 100.0f);
+            TIFFSetField (p->tiff, TIFFTAG_YRESOLUTION, yres / 100.0f);
+            TIFFSetField (p->tiff, TIFFTAG_RESOLUTIONUNIT, RESUNIT_CENTIMETER);
+            break;
+          case GEGL_RESOLUTION_UNIT_NONE:
+          default:
+            TIFFSetField (p->tiff, TIFFTAG_XRESOLUTION, xres);
+            TIFFSetField (p->tiff, TIFFTAG_YRESOLUTION, yres);
+            TIFFSetField (p->tiff, TIFFTAG_RESOLUTIONUNIT, RESUNIT_NONE);
+            break;
+        }
+
+      //XXX make and model for scanner
+
+      SetFieldString (p->tiff, TIFFTAG_ARTIST,
+                      GEGL_METADATA (o->metadata), "Artist");
+      SetFieldString (p->tiff, TIFFTAG_COPYRIGHT,
+                      GEGL_METADATA (o->metadata), "Copyright");
+      SetFieldString (p->tiff, TIFFTAG_PAGENAME,
+                      GEGL_METADATA (o->metadata), "PageName");
+      SetFieldString (p->tiff, TIFFTAG_SOFTWARE,
+                      GEGL_METADATA (o->metadata), "Software");
+      SetFieldString (p->tiff, TIFFTAG_DATETIME,
+                      GEGL_METADATA (o->metadata), "DateTime");
+      SetFieldString (p->tiff, TIFFTAG_IMAGEDESCRIPTION,
+                      GEGL_METADATA (o->metadata), "ImageDescription");
+
+      gegl_metadata_unregister_map (GEGL_METADATA (o->metadata));
+    }
 
   return save_contiguous(operation, input, result, format);
 }
