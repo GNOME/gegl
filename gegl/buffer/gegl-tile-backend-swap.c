@@ -1173,7 +1173,7 @@ gegl_tile_backend_swap_set_tile (GeglTileSource *self,
   else
     {
       entry = gegl_tile_backend_swap_entry_create (swap, x, y, z, src_block);
-      g_hash_table_insert (swap->index, entry, entry);
+      g_hash_table_add (swap->index, entry);
     }
 
   if (! src_block)
@@ -1280,7 +1280,7 @@ gegl_tile_backend_swap_copy_tile (GeglTileSource           *self,
                                                        params->dst_y,
                                                        params->dst_z,
                                                        entry->block);
-      g_hash_table_insert (dst_swap->index, dst_entry, dst_entry);
+      g_hash_table_add (dst_swap->index, dst_entry);
     }
 
   return GINT_TO_POINTER (TRUE);

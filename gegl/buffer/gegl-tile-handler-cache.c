@@ -902,7 +902,7 @@ gegl_tile_handler_cache_insert (GeglTileHandlerCache *cache,
   else
     total = (guintptr) g_atomic_pointer_get (&cache_total);
   g_atomic_pointer_add (&cache_total_uncloned, tile->size);
-  g_hash_table_insert (cache->items, item, item);
+  g_hash_table_add (cache->items, item);
   g_queue_push_head_link (&cache->queue, &item->link);
 
   if (total > gegl_buffer_config ()->tile_cache_size)
