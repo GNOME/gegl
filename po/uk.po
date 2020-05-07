@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-05 11:37+0000\n"
-"PO-Revision-Date: 2020-05-05 18:47+0300\n"
+"POT-Creation-Date: 2020-05-07 00:39+0000\n"
+"PO-Revision-Date: 2020-05-07 09:06+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -35,42 +35,6 @@ msgstr "Невідомий режим GeglOption: %d"
 
 #: bin/gegl-options.c:47
 #, c-format
-#| msgid ""
-#| "usage: %s [options] <file | -- [op [op] ..]>\n"
-#| "\n"
-#| "  Options:\n"
-#| "     -h, --help      this help information\n"
-#| "\n"
-#| "     --list-all      list all known operations\n"
-#| "\n"
-#| "     --exists        return 0 if the operation(s) exist\n"
-#| "\n"
-#| "     --info          output information about the operation:\n"
-#| "                     name, description, properties details.\n"
-#| "\n"
-#| "     -i, --file      read xml from named file\n"
-#| "\n"
-#| "     -x, --xml       use xml provided in next argument\n"
-#| "\n"
-#| "     --dot           output a graphviz graph description\n"
-#| "\n"
-#| "     -o, --output    output generated image to named file, type based\n"
-#| "                     on extension.\n"
-#| "\n"
-#| "     -p              increment frame counters of various elements when\n"
-#| "                     processing is done.\n"
-#| "\n"
-#| "     -s scale, --scale scale  scale output dimensions by this factor.\n"
-#| "\n"
-#| "     -X              output the XML that was read in\n"
-#| "\n"
-#| "     -v, --verbose   print diagnostics while running\n"
-#| "\n"
-#| "All parameters following -- are considered ops to be chained together\n"
-#| "into a small composition instead of using an xml file, this allows for\n"
-#| "easy testing of filters. After chaining a new op in properties can be "
-#| "set\n"
-#| "with property=value pairs as subsequent arguments.\n"
 msgid ""
 "usage: %s [options] <file | -- [op [op] ..]>\n"
 "\n"
@@ -1747,7 +1711,7 @@ msgstr ""
 "(кольори та альфа). Можна задати різні способи розмиття, щоб уникнути появи "
 "смуг, викликаних квантуванням."
 
-#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
+#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:30
 #: operations/external/webp-save.c:28
 msgid "Quality"
 msgstr "Якість"
@@ -2108,11 +2072,11 @@ msgstr "Одновимірне розмиття за Гаусом"
 #: operations/external/exr-save.cc:24 operations/external/ff-load.c:29
 #: operations/external/ff-save.c:29 operations/external/gif-load.c:34
 #: operations/external/jp2-load.c:25 operations/external/jpg-load.c:24
-#: operations/external/jpg-save.c:25 operations/external/npy-save.c:31
-#: operations/external/png-load.c:27 operations/external/png-save.c:26
+#: operations/external/jpg-save.c:27 operations/external/npy-save.c:31
+#: operations/external/png-load.c:32 operations/external/png-save.c:28
 #: operations/external/ppm-load.c:25 operations/external/ppm-save.c:25
 #: operations/external/rgbe-load.c:26 operations/external/rgbe-save.c:26
-#: operations/external/svg-load.c:25 operations/external/tiff-load.c:24
+#: operations/external/svg-load.c:25 operations/external/tiff-load.c:29
 #: operations/external/tiff-save.c:25 operations/external/webp-load.c:25
 #: operations/external/webp-save.c:25 operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
@@ -2700,7 +2664,7 @@ msgid "Creates a long-shadow effect"
 msgstr "Створити ефект довгої тіні"
 
 #: operations/common/magick-load.c:27 operations/core/load.c:29
-#: operations/external/png-load.c:28 operations/external/ppm-load.c:26
+#: operations/external/png-load.c:33 operations/external/ppm-load.c:26
 #: operations/external/raw-load.c:37 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
@@ -6960,8 +6924,8 @@ msgstr ""
 
 #: operations/core/load.c:30 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
-#: operations/external/png-load.c:29 operations/external/ppm-load.c:27
-#: operations/external/svg-load.c:27 operations/external/tiff-load.c:26
+#: operations/external/png-load.c:34 operations/external/ppm-load.c:27
+#: operations/external/svg-load.c:27 operations/external/tiff-load.c:31
 #: operations/external/webp-load.c:27
 msgid "URI"
 msgstr "Адреса"
@@ -7050,7 +7014,7 @@ msgstr "Завантажувач кадрів FFmpeg"
 msgid "FFmpeg video frame importer."
 msgstr "Імпортер кадрів відео FFmpeg"
 
-#: operations/external/ff-save.c:30 operations/external/png-save.c:27
+#: operations/external/ff-save.c:30 operations/external/png-save.c:29
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr "Цільовий шлях і назва файлу; вкажіть '-' для stdout"
@@ -7201,7 +7165,7 @@ msgstr "Приймач вихідного відео FFmpeg"
 
 #: operations/external/gif-load.c:35 operations/external/jp2-load.c:26
 #: operations/external/jpg-load.c:25 operations/external/svg-load.c:26
-#: operations/external/tiff-load.c:25 operations/external/webp-load.c:26
+#: operations/external/tiff-load.c:30 operations/external/webp-load.c:26
 msgid "Path of file to load"
 msgstr "Шлях до файлу для завантаження"
 
@@ -7234,7 +7198,7 @@ msgid "GIF image loader."
 msgstr "Завантажувач файлів GIF."
 
 #: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
-#: operations/external/tiff-load.c:27 operations/external/webp-load.c:28
+#: operations/external/tiff-load.c:32 operations/external/webp-load.c:28
 msgid "URI for file to load"
 msgstr "Адреса файлу для завантаження"
 
@@ -7314,52 +7278,63 @@ msgstr "Завантажувач файлів JPEG"
 msgid "JPEG image loader using libjpeg"
 msgstr "Завантажувач файлів JPEG з використанням libjpeg"
 
-#: operations/external/jpg-save.c:26 operations/external/npy-save.c:32
+#: operations/external/jpg-save.c:28 operations/external/npy-save.c:32
 #: operations/external/tiff-save.c:26 operations/external/webp-save.c:26
 msgid "Target path and filename, use '-' for stdout"
 msgstr "Цільовий шлях і назва файлу; вкажіть '-' для stdout"
 
-#: operations/external/jpg-save.c:29
+#: operations/external/jpg-save.c:31
 msgid "JPEG compression quality (between 1 and 100)"
 msgstr "Якість стиску JPEG (від 1 до 100)"
 
-#: operations/external/jpg-save.c:32
+#: operations/external/jpg-save.c:34
 msgid "Smoothing"
 msgstr "Згладжування"
 
-#: operations/external/jpg-save.c:33
+#: operations/external/jpg-save.c:35
 msgid "Smoothing factor from 1 to 100; 0 disables smoothing"
 msgstr "Коефіцієнт згладжування від 1 до 100; 0 - вимкнути згладжування"
 
-#: operations/external/jpg-save.c:36
+#: operations/external/jpg-save.c:38
 msgid "Optimize"
 msgstr "Оптимізувати"
 
-#: operations/external/jpg-save.c:37
+#: operations/external/jpg-save.c:39
 msgid "Use optimized huffman tables"
 msgstr "Використовувати оптимізовані таблиці Гаффмана"
 
-#: operations/external/jpg-save.c:38
+#: operations/external/jpg-save.c:40
 msgid "Progressive"
 msgstr "Прогресивне"
 
-#: operations/external/jpg-save.c:39
+#: operations/external/jpg-save.c:41
 msgid "Create progressive JPEG images"
 msgstr "Створити прогресивні JPEG зображення"
 
-#: operations/external/jpg-save.c:41
+#: operations/external/jpg-save.c:43
 msgid "Grayscale"
 msgstr "Відтінки сірого"
 
-#: operations/external/jpg-save.c:42
+#: operations/external/jpg-save.c:44
 msgid "Create a grayscale (monochrome) image"
 msgstr "Створити зображення у відтінках сірого (монохромне)"
 
-#: operations/external/jpg-save.c:420
+#: operations/external/jpg-save.c:46 operations/external/png-load.c:36
+#: operations/external/png-save.c:36 operations/external/tiff-load.c:39
+#: operations/external/tiff-save.c:34
+msgid "Metadata"
+msgstr "Метадані"
+
+#: operations/external/jpg-save.c:47 operations/external/png-load.c:37
+#: operations/external/png-save.c:37
+msgid "Object to supply image metadata"
+msgstr "Об'єкт для надання метаданих зображення"
+
+#: operations/external/jpg-save.c:523
 msgid "JPEG File Saver"
 msgstr "Записувач файлів JPEG"
 
-#: operations/external/jpg-save.c:422
+#: operations/external/jpg-save.c:525
 msgid "JPEG image saver, using libjpeg"
 msgstr "Записувач файлів JPEG з використанням libjpeg"
 
@@ -7675,40 +7650,40 @@ msgstr "Джерело GdkPixbuf"
 msgid "Uses the GdkPixbuf located at the memory location in <em>pixbuf</em>."
 msgstr "Використовує GdkPixbuf, розташований у пам'яті у <em>pixbuf</em>."
 
-#: operations/external/png-load.c:30
+#: operations/external/png-load.c:35
 msgid "URI for file to load."
 msgstr "Адреса файлу для завантаження."
 
-#: operations/external/png-load.c:564
+#: operations/external/png-load.c:652
 msgid "PNG File Loader"
 msgstr "Завантажувач файлів PNG"
 
-#: operations/external/png-load.c:566
+#: operations/external/png-load.c:654
 msgid "PNG image loader."
 msgstr "Завантажувач зображень PNG"
 
-#: operations/external/png-save.c:28
+#: operations/external/png-save.c:30
 msgid "Compression"
 msgstr "Стискання"
 
-#: operations/external/png-save.c:29
+#: operations/external/png-save.c:31
 msgid "PNG compression level from 1 to 9"
 msgstr "Рівень стискання PNG, від 1 до 9"
 
-#: operations/external/png-save.c:31 operations/external/ppm-save.c:29
+#: operations/external/png-save.c:33 operations/external/ppm-save.c:29
 #: operations/external/tiff-save.c:27
 msgid "Bitdepth"
 msgstr "Бітова глибина"
 
-#: operations/external/png-save.c:32 operations/external/ppm-save.c:30
+#: operations/external/png-save.c:34 operations/external/ppm-save.c:30
 msgid "8 and 16 are the currently accepted values."
 msgstr "Наразі допустимі значення 8 і 16."
 
-#: operations/external/png-save.c:312
+#: operations/external/png-save.c:420
 msgid "PNG File Saver"
 msgstr "Записувач файлів PNG"
 
-#: operations/external/png-save.c:314
+#: operations/external/png-save.c:422
 msgid "PNG image saver, using libpng"
 msgstr "Записувач зображень PNG з використанням libpng"
 
@@ -7933,19 +7908,23 @@ msgstr "Обробка тексту"
 msgid "Display a string of text using pango and cairo."
 msgstr "Показує рядок тексту з використанням pango й cairo."
 
-#: operations/external/tiff-load.c:29
+#: operations/external/tiff-load.c:34
 msgid "Directory"
 msgstr "Каталог"
 
-#: operations/external/tiff-load.c:30
+#: operations/external/tiff-load.c:35
 msgid "Image file directory (subfile)"
 msgstr "Тека файлу зображення (підфайл)"
 
-#: operations/external/tiff-load.c:915
+#: operations/external/tiff-load.c:40 operations/external/tiff-save.c:35
+msgid "Object to receive image metadata"
+msgstr "Об'єкт для отримання метаданих зображення"
+
+#: operations/external/tiff-load.c:1034
 msgid "TIFF File Loader"
 msgstr "Завантажувач файлів TIFF."
 
-#: operations/external/tiff-load.c:917
+#: operations/external/tiff-load.c:1036
 msgid "TIFF image loader using libtiff"
 msgstr "Завантажувач файлів TIFF з використанням libtiff"
 
@@ -7963,11 +7942,11 @@ msgstr ""
 "Значення із рухомою крапкою -1 означає «автоматично», 0 означає «ціле», 1 "
 "означає «число із рухомою крапкою»."
 
-#: operations/external/tiff-save.c:728
+#: operations/external/tiff-save.c:825
 msgid "TIFF File Saver"
 msgstr "Записувач файлів TIFF"
 
-#: operations/external/tiff-save.c:730
+#: operations/external/tiff-save.c:827
 msgid "TIFF image saver using libtiff"
 msgstr "Записувач зображень TIFF з використанням libtiff"
 
