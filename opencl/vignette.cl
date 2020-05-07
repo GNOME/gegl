@@ -45,6 +45,14 @@ __kernel void vignette_cl (__global const float4 *in,
           case 2:
           strength = fabs (u-midx) / scale + fabs(v-midy);
           break;
+
+          case 3:
+          strength = fabs(v-midy);
+          break;
+
+          case 4:
+          strength = fabs (u-midx) / scale;
+          break;
         }
       strength /= length;
       strength = (strength-radius0) / rdiff;

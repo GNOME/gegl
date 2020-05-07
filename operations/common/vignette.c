@@ -22,9 +22,11 @@
 #ifdef GEGL_PROPERTIES
 
 enum_start (gegl_vignette_shape)
-  enum_value (GEGL_VIGNETTE_SHAPE_CIRCLE,  "circle",  N_("Circle"))
-  enum_value (GEGL_VIGNETTE_SHAPE_SQUARE,  "square",  N_("Square"))
-  enum_value (GEGL_VIGNETTE_SHAPE_DIAMOND, "diamond", N_("Diamond"))
+  enum_value (GEGL_VIGNETTE_SHAPE_CIRCLE,     "circle",     N_("Circle"))
+  enum_value (GEGL_VIGNETTE_SHAPE_SQUARE,     "square",     N_("Square"))
+  enum_value (GEGL_VIGNETTE_SHAPE_DIAMOND,    "diamond",    N_("Diamond"))
+  enum_value (GEGL_VIGNETTE_SHAPE_HORIZONTAL, "horizontal", N_("Horizontal"))
+  enum_value (GEGL_VIGNETTE_SHAPE_VERTICAL,   "verticak",   N_("Vertical"))
 enum_end (GeglVignetteShape)
 
 property_enum (shape, _("Vignette shape"),
@@ -325,6 +327,10 @@ process (GeglOperation       *operation,
               strength = MAX(ABS(u-midx) / scale, ABS(v-midy)); break;
             case GEGL_VIGNETTE_SHAPE_DIAMOND:
               strength = ABS(u-midx) / scale + ABS(v-midy);     break;
+            case GEGL_VIGNETTE_SHAPE_HORIZONTAL:
+              strength = ABS(v-midy);                           break;
+            case GEGL_VIGNETTE_SHAPE_VERTICAL:
+              strength = ABS(u-midx) / scale;                   break;
           }
           strength /= length;
           strength = (strength-radius0) / rdiff;
