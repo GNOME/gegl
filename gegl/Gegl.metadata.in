@@ -1,5 +1,12 @@
-Gegl cheader_filename="gegl.h"
 ParamSpecFormat skip
 ParamFormat skip
 param_spec_format skip
 init.argv unowned
+
+render_op skip=false
+apply_op skip=false
+filter_op skip=false
+
+Node
+  .new_child skip=false
+  .link_many skip=false
