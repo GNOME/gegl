@@ -26,7 +26,7 @@ enum_start (gegl_vignette_shape)
   enum_value (GEGL_VIGNETTE_SHAPE_SQUARE,     "square",     N_("Square"))
   enum_value (GEGL_VIGNETTE_SHAPE_DIAMOND,    "diamond",    N_("Diamond"))
   enum_value (GEGL_VIGNETTE_SHAPE_HORIZONTAL, "horizontal", N_("Horizontal"))
-  enum_value (GEGL_VIGNETTE_SHAPE_VERTICAL,   "verticak",   N_("Vertical"))
+  enum_value (GEGL_VIGNETTE_SHAPE_VERTICAL,   "vertical",   N_("Vertical"))
 enum_end (GeglVignetteShape)
 
 property_enum (shape, _("Vignette shape"),
