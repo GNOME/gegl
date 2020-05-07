@@ -125,10 +125,16 @@ if get_option('introspection')
   )
 
   if vapigen.found()
-     gnome.generate_vapi(api_name,
-       metadata_dirs: '.',
-       sources: gegl_gir[0],
-       install: true,
-     )
+    configure_file(
+      input: 'Gegl.metadata.in',
+      output: 'Gegl-@0@.metadata'.format(api_version),
+      copy: true,
+    )
+
+    gnome.generate_vapi(api_name,
+      metadata_dirs: '.',
+      sources: gegl_gir[0],
+      install: true,
+    )
   endif
 endif
