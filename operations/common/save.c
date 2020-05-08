@@ -18,12 +18,15 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
+#include <gegl-metadata.h>
 
 
 #ifdef GEGL_PROPERTIES
 
 property_file_path (path, _("File"), "")
     description(_("Path of file to save."))
+property_object (metadata, _("Metadata"), GEGL_TYPE_METADATA)
+    description (_("Object providing image metadata"))
 
 #else
 
@@ -82,6 +85,11 @@ gegl_save_set_saver (GeglOperation *operation)
                      "operation", handler,
                      "path",      o->path,
                      NULL);
+
+      if (o->metadata &&
+          gegl_operation_find_property (handler, "metadata") != NULL)
+        gegl_node_set (self->save, "metadata", o->metadata, NULL);
+
     }
   else
     {

@@ -18,6 +18,7 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
+#include <gegl-metadata.h>
 
 #ifdef G_OS_WIN32
 #define realpath(a,b) _fullpath(b,a,_MAX_PATH)
@@ -29,6 +30,8 @@ property_file_path (path, _("File"), "")
     description (_("Path of file to load."))
 property_uri (uri, _("URI"), "")
     description (_("URI of file to load."))
+property_object (metadata, _("Metadata"), GEGL_TYPE_METADATA)
+    description (_("Object to supply image metadata"))
 
 #else
 
@@ -79,6 +82,7 @@ static void
 do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
 {
   GeglOp  *self = GEGL_OP (operation);
+  GeglProperties *o = GEGL_PROPERTIES (operation);
   const gchar *handler = NULL;
   gchar *content_type = NULL, *filename = NULL, *message;
   gboolean load_from_uri, uncertain;
@@ -256,6 +260,11 @@ do_setup (GeglOperation *operation, const gchar *path, const gchar *uri)
     }
 
   gegl_node_set (self->load, "operation", handler, NULL);
+
+  if (o->metadata &&
+      gegl_operation_find_property (handler, "metadata") != NULL)
+    gegl_node_set (self->load, "metadata", o->metadata, NULL);
+
   if (load_from_uri == TRUE)
     gegl_node_set (self->load, "uri", uri, NULL);
   else
@@ -332,6 +341,7 @@ my_set_property (GObject      *gobject,
 
   gchar *old_path = g_strdup (o->path);
   gchar *old_uri = g_strdup (o->uri);
+  void  *old_metadata = o->metadata;
 
   gboolean props_changed;
 
@@ -339,7 +349,7 @@ my_set_property (GObject      *gobject,
    * storing and reffing/unreffing of the input properties
    */
   set_property (gobject, property_id, value, pspec);
-  props_changed = g_strcmp0 (o->path, old_path) || g_strcmp0 (o->uri, old_uri);
+  props_changed = g_strcmp0 (o->path, old_path) || g_strcmp0 (o->uri, old_uri) || (old_metadata != o->metadata);
 
   if (self->load && props_changed)
     do_setup (operation, o->path, o->uri);
