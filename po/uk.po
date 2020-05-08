@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-07 00:39+0000\n"
-"PO-Revision-Date: 2020-05-07 09:06+0300\n"
+"POT-Creation-Date: 2020-05-08 11:47+0000\n"
+"PO-Revision-Date: 2020-05-08 17:03+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -287,11 +287,13 @@ msgstr "Чебишов"
 
 #: gegl/gegl-enums.c:93 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/common/spherize.c:26
+#: operations/common/vignette.c:28
 msgid "Horizontal"
 msgstr "Горизонтальне"
 
 #: gegl/gegl-enums.c:94 operations/common/edge-sobel.c:29
 #: operations/common/noise-spread.c:35 operations/common/spherize.c:27
+#: operations/common/vignette.c:29
 msgid "Vertical"
 msgstr "Вертикальне"
 
@@ -644,7 +646,7 @@ msgstr "Об'єм"
 msgid "Glow-area brightness threshold"
 msgstr "Поріг яскравості області німбу"
 
-#: operations/common/bloom.c:31 operations/common/vignette.c:43
+#: operations/common/bloom.c:31 operations/common/vignette.c:45
 msgid "Softness"
 msgstr "М’якість"
 
@@ -656,7 +658,7 @@ msgstr "М'якість краю області німба"
 #: operations/common/c2g.c:28 operations/common/edge-neon.c:48
 #: operations/common/median-blur.c:43 operations/common/snn-mean.c:26
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
-#: operations/common/vignette.c:38 operations/common/wavelet-blur-1d.c:28
+#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
 #: operations/common/wavelet-blur.c:27
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
@@ -941,7 +943,7 @@ msgstr "Намалювати візерунок шахової дошки"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vignette.c:34
+#: operations/common/rectangle.c:48 operations/common/vignette.c:36
 #: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:61
 #: operations/common-gpl3+/tile-paper.c:31
@@ -2068,7 +2070,7 @@ msgstr "Одновимірне розмиття за Гаусом"
 #: operations/common/gegl-buffer-load-op.c:24
 #: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-save.c:25
 #: operations/common/magick-load.c:26 operations/common/open-buffer.c:25
-#: operations/common/save.c:25 operations/core/load.c:28
+#: operations/common/save.c:26 operations/core/load.c:29
 #: operations/external/exr-save.cc:24 operations/external/ff-load.c:29
 #: operations/external/ff-save.c:29 operations/external/gif-load.c:34
 #: operations/external/jp2-load.c:25 operations/external/jpg-load.c:24
@@ -2663,7 +2665,7 @@ msgstr "Довга тінь"
 msgid "Creates a long-shadow effect"
 msgstr "Створити ефект довгої тіні"
 
-#: operations/common/magick-load.c:27 operations/core/load.c:29
+#: operations/common/magick-load.c:27 operations/core/load.c:30
 #: operations/external/png-load.c:33 operations/external/ppm-load.c:26
 #: operations/external/raw-load.c:37 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
@@ -2867,7 +2869,7 @@ msgstr "Число дзеркал, що використовуються"
 msgid "position of symmetry center in output"
 msgstr "положення центру симетрії на виході"
 
-#: operations/common/mirrors.c:58 operations/common/vignette.c:61
+#: operations/common/mirrors.c:58 operations/common/vignette.c:63
 #: operations/common-gpl3+/displace.c:81
 #: operations/common-gpl3+/motion-blur-circular.c:41
 #: operations/common-gpl3+/motion-blur-zoom.c:40
@@ -2879,7 +2881,7 @@ msgstr "Центр за X"
 msgid "X axis ratio for the center of mirroring"
 msgstr "Пропорція за віссю X для центра віддзеркалення"
 
-#: operations/common/mirrors.c:63 operations/common/vignette.c:66
+#: operations/common/mirrors.c:63 operations/common/vignette.c:68
 #: operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:46
 #: operations/common-gpl3+/motion-blur-zoom.c:46
@@ -3853,15 +3855,27 @@ msgstr ""
 msgid "Changes the saturation"
 msgstr "Зміни у насиченості"
 
-#: operations/common/save.c:26
+#: operations/common/save.c:27
 msgid "Path of file to save."
 msgstr "Шлях до файлу для запису."
 
-#: operations/common/save.c:200
+#: operations/common/save.c:28 operations/core/load.c:33
+#: operations/external/jpg-save.c:46 operations/external/png-load.c:36
+#: operations/external/png-save.c:36 operations/external/tiff-load.c:39
+#: operations/external/tiff-save.c:34
+msgid "Metadata"
+msgstr "Метадані"
+
+#: operations/common/save.c:29
+#| msgid "Object to receive image metadata"
+msgid "Object providing image metadata"
+msgstr "Об'єкт, який надає метадані зображення"
+
+#: operations/common/save.c:208
 msgid "Save"
 msgstr "Зберегти"
 
-#: operations/common/save.c:203
+#: operations/common/save.c:211
 msgid ""
 "Multipurpose file saver, that uses other native save handlers depending on "
 "extension, use the format specific save ops to specify additional parameters."
@@ -4199,12 +4213,12 @@ msgstr ""
 "Інвертувати компонент значення. У результаті яскравість кольору буде "
 "інвертовано, а колір буде збережено."
 
-#: operations/common/vignette.c:30
+#: operations/common/vignette.c:32
 msgid "Vignette shape"
 msgstr "Форма віньєтки"
 
 #. TRANSLATORS: the string 'black' should not be translated
-#: operations/common/vignette.c:36
+#: operations/common/vignette.c:38
 msgid ""
 "Defaults to 'black', you can use transparency here to erase portions of an "
 "image"
@@ -4212,33 +4226,33 @@ msgstr ""
 "Типовим є значення «black». Ви можете скористатися тут прозорістю для "
 "витирання частин зображення."
 
-#: operations/common/vignette.c:39
+#: operations/common/vignette.c:41
 msgid "How far out vignetting goes as portion of half image diagonal"
 msgstr ""
 "Наскільки далеко має заходити віньєтування у частках від половини діагоналі "
 "зображення"
 
-#: operations/common/vignette.c:46
+#: operations/common/vignette.c:48
 msgid "Gamma"
 msgstr "Гама"
 
-#: operations/common/vignette.c:47
+#: operations/common/vignette.c:49
 msgid "Falloff linearity"
 msgstr "Лінійність падіння"
 
-#: operations/common/vignette.c:50
+#: operations/common/vignette.c:52
 msgid "Proportion"
 msgstr "Пропорції"
 
-#: operations/common/vignette.c:51
+#: operations/common/vignette.c:53
 msgid "How close we are to image proportions"
 msgstr "Наскільки ми близько до пропорцій зображення"
 
-#: operations/common/vignette.c:54
+#: operations/common/vignette.c:56
 msgid "Squeeze"
 msgstr "Стискання"
 
-#: operations/common/vignette.c:55
+#: operations/common/vignette.c:57
 msgid ""
 "Aspect ratio to use, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf 1.0 = "
 "inf:1, this is applied after proportion is taken into account, to directly "
@@ -4249,18 +4263,18 @@ msgstr ""
 "пропорцій. Щоб безпосередньо використати коефіцієнт стискання як пропорції, "
 "встановіть значення пропорції 0.0."
 
-#: operations/common/vignette.c:71 operations/common-gpl3+/bayer-matrix.c:51
+#: operations/common/vignette.c:73 operations/common-gpl3+/bayer-matrix.c:51
 #: operations/common-gpl3+/linear-sinusoid.c:96
 #: operations/common-gpl3+/spiral.c:64
 #: operations/workshop/external/spyrograph.c:69
 msgid "Rotation"
 msgstr "Обертання"
 
-#: operations/common/vignette.c:384
+#: operations/common/vignette.c:390
 msgid "Vignette"
 msgstr "Віньєтування"
 
-#: operations/common/vignette.c:388
+#: operations/common/vignette.c:394
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -6922,7 +6936,7 @@ msgstr ""
 "Обрізає буфер, якщо допоміжний буфер з'єднано, буде використано обмежувальну "
 "рамку з'єднаного вузла."
 
-#: operations/core/load.c:30 operations/external/jp2-load.c:27
+#: operations/core/load.c:31 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
 #: operations/external/png-load.c:34 operations/external/ppm-load.c:27
 #: operations/external/svg-load.c:27 operations/external/tiff-load.c:31
@@ -6930,11 +6944,16 @@ msgstr ""
 msgid "URI"
 msgstr "Адреса"
 
-#: operations/core/load.c:31
+#: operations/core/load.c:32
 msgid "URI of file to load."
 msgstr "Адреса файлу для завантаження."
 
-#: operations/core/load.c:366
+#: operations/core/load.c:34 operations/external/jpg-save.c:47
+#: operations/external/png-load.c:37 operations/external/png-save.c:37
+msgid "Object to supply image metadata"
+msgstr "Об'єкт для надання метаданих зображення"
+
+#: operations/core/load.c:376
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7318,17 +7337,6 @@ msgstr "Відтінки сірого"
 #: operations/external/jpg-save.c:44
 msgid "Create a grayscale (monochrome) image"
 msgstr "Створити зображення у відтінках сірого (монохромне)"
-
-#: operations/external/jpg-save.c:46 operations/external/png-load.c:36
-#: operations/external/png-save.c:36 operations/external/tiff-load.c:39
-#: operations/external/tiff-save.c:34
-msgid "Metadata"
-msgstr "Метадані"
-
-#: operations/external/jpg-save.c:47 operations/external/png-load.c:37
-#: operations/external/png-save.c:37
-msgid "Object to supply image metadata"
-msgstr "Об'єкт для надання метаданих зображення"
 
 #: operations/external/jpg-save.c:523
 msgid "JPEG File Saver"
