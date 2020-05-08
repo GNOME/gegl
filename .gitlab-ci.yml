@@ -37,7 +37,7 @@ build-image:
     PACMAN_CACHE: $CI_PROJECT_DIR/_pacman_cache
   after_script:
     # Remove all cached packages but the latest version
-    - pacman -S --noconfirm --cachedir $PACMAN_CACHE pacman-contrib
+    - pacman -S --noconfirm --needed --cachedir $PACMAN_CACHE pacman-contrib
     - paccache -r -k1 --cachedir $PACMAN_CACHE
 
 .babl-base:
