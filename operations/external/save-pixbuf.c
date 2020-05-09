@@ -20,13 +20,14 @@
 
 #include <babl/babl.h>
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib/gi18n-lib.h>
 
 
 #ifdef GEGL_PROPERTIES
 
-property_pointer (pixbuf, _("Pixbuf location"),
-                    _("The location where to store the output GdkPixbuf."))
+property_object (pixbuf, _("Pixbuf"), GDK_TYPE_PIXBUF)
+                    description(_("The output pixbuf produced by process is stored in this property"))
 
 #else
 
@@ -43,53 +44,51 @@ process (GeglOperation       *operation,
          const GeglRectangle *result,
          gint                 level)
 {
-  GeglProperties *o = GEGL_PROPERTIES (operation);
+  GeglProperties *props = GEGL_PROPERTIES (operation);
 
-  if (o->pixbuf)
-    {
-      GdkPixbuf       **pixbuf = o->pixbuf;
-      const Babl       *babl;
-      const Babl       *format;
-      guchar           *temp;
-      GeglRectangle *rect = gegl_operation_source_get_bounding_box (operation, "input");
-      gchar *name;
-      gboolean has_alpha;
-      gint bpp;
-      gint bps;
-      gint stride;
+  const Babl       *babl;
+  const Babl       *format;
+  guchar           *temp;
+  GeglRectangle *rect = gegl_operation_source_get_bounding_box (operation, "input");
+  gchar *name;
+  gboolean has_alpha;
+  gint bpp;
+  gint bps;
+  gint stride;
 
-      g_object_get (input, "format", &format, NULL);
+  g_object_get (input, "format", &format, NULL);
 
-      has_alpha = babl_format_has_alpha (format);
+  has_alpha = babl_format_has_alpha (format);
 
-      /* pixbuf from data only support 8bit bps */
-      bps = 8;
-      name = g_strdup_printf ("R'G'B'%s u%i",
-                  has_alpha ? "A" : "",
-                  bps);
-      babl = babl_format (name);
+  /* pixbuf from data only support 8bit bps */
+  bps = 8;
+  name = g_strdup_printf ("R'G'B'%s u%i",
+              has_alpha ? "A" : "",
+              bps);
+  babl = babl_format (name);
 
-      bpp = babl_format_get_bytes_per_pixel (babl);
-      stride = bpp * rect->width;
+  bpp = babl_format_get_bytes_per_pixel (babl);
+  stride = bpp * rect->width;
 
-      temp = g_malloc0_n (stride, rect->height);
-      gegl_buffer_get (input, rect, 1.0, babl, temp, stride,
-                       GEGL_ABYSS_NONE);
-      if (temp) {
-    *pixbuf = gdk_pixbuf_new_from_data (temp,
+  temp = g_malloc0_n (stride, rect->height);
+  gegl_buffer_get (input, rect, 1.0, babl, temp, stride,
+                    GEGL_ABYSS_NONE);
+  if (temp) {
+    GdkPixbuf       *pixbuf;
+    pixbuf = gdk_pixbuf_new_from_data (temp,
                         GDK_COLORSPACE_RGB,
                         has_alpha,
                         bps,
                         rect->width, rect->height,
                         stride,
                         (GdkPixbufDestroyNotify) g_free, NULL);
-      }
-      else {
+    props->pixbuf = G_OBJECT(pixbuf);
+  }
+  else {
     g_warning (G_STRLOC ": inexistant data, unable to create GdkPixbuf.");
-      }
+  }
 
-      g_free (name);
-    }
+  g_free (name);
   return TRUE;
 }
 
