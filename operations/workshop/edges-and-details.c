@@ -33,13 +33,13 @@ property_double (scale1, _("Detail scale, negative values dimnishes signal in de
     value_range (-3.0, 100.0)
     ui_range    (-3.0, 3.0)
 
-property_double (radius2, _("Feature band"), 4.0)
+property_double (radius2, _("Edge band"), 4.0)
     description(_("Expressed as standard deviation, in pixels"))
     value_range (0.0, 100.0)
     ui_range    (0.5, 20.0)
     ui_meta     ("unit", "pixel-distance")
 
-property_double (scale2, _("Feature scale"), 0.0)
+property_double (scale2, _("Edge scale"), 0.0)
     description(_("Scaling factor for image features at radius, -1 cancels them out 1.0 edge enhances, when set to 0.0 performance of op is higher."))
     value_range (-3.0, 100.0)
     ui_range    (-3.0, 3.0)
@@ -52,15 +52,16 @@ property_double (scale2, _("Feature scale"), 0.0)
 
 #include "gegl-op.h"
 
+#define N_BANDS 2
+
 typedef struct
 {
   GeglNode *input;
-  GeglNode *add1;
-  GeglNode *dog1;
-  GeglNode *mul1;
-  GeglNode *add2;
-  GeglNode *dog2;
-  GeglNode *mul2;
+  GeglNode *add[N_BANDS];
+  GeglNode *sub[N_BANDS];
+  GeglNode *blur1[N_BANDS];
+  GeglNode *blur2[N_BANDS];
+  GeglNode *mul[N_BANDS];
   GeglNode *output;
 } State;
 
@@ -82,42 +83,51 @@ update_graph (GeglOperation *operation)
   float bw = 0.625;
   GeglNode *iter = state->input;
 
-  if (fabs(o->scale1) > 0.01)
+  for (int band = 0; band < N_BANDS; band++)
   {
-    float radius1 = compute_radius1(o->radius1, bw);
-    float radius2 = compute_radius2(o->radius1, bw);
-    gegl_node_set (state->dog1, "radius1", radius1,
-                                "radius2", radius2,
-                                NULL);
-    gegl_node_set (state->mul1, "value", o->scale1, NULL);
-    gegl_node_connect_from (state->add1, "input",
-                            iter, "output");
-    gegl_node_connect_from (state->dog1, "input",
-                            iter, "output");
-    gegl_node_connect_from (state->mul1, "input",
-                            state->dog1, "output");
-    gegl_node_connect_from (state->add1, "aux",
-                            state->mul1, "output");
-    iter = state->add1;
+    float scale = 0.0;
+    float radius = 0.0;
+    switch (band)
+    {
+      case 0:
+        scale = o->scale1;
+        radius = o->radius1;
+        break;
+      case 1:
+        scale = o->scale2;
+        radius = o->radius2;
+        break;
+    }
+
+    if (fabs(scale) > 0.01)
+    {
+      float radius1 = compute_radius1(radius, bw);
+      float radius2 = compute_radius2(radius, bw);
+      gegl_node_set (state->blur1[band], "std-dev-x", radius1,
+                                         "std-dev-y", radius1,
+                                         NULL);
+      gegl_node_set (state->blur2[band], "std-dev-x", radius2,
+                                         "std-dev-y", radius2,
+                                          NULL);
+      gegl_node_set (state->mul[band], "value", scale, NULL);
+      gegl_node_connect_from (state->add[band], "input",
+                              iter, "output");
+      gegl_node_connect_from (state->blur1[band], "input",
+                              iter, "output");
+      gegl_node_connect_from (state->blur2[band], "input",
+                              iter, "output");
+      gegl_node_connect_from (state->sub[band], "input",
+                              state->blur1[band], "output");
+      gegl_node_connect_from (state->sub[band], "aux",
+                              state->blur2[band], "output");
+      gegl_node_connect_from (state->mul[band], "input",
+                              state->sub[band], "output");
+      gegl_node_connect_from (state->add[band], "aux",
+                              state->mul[band], "output");
+      iter = state->add[band];
+    }
   }
-  if (fabs (o->scale2) > 0.01)
-  {
-    float radius1 = compute_radius1(o->radius2, bw);
-    float radius2 = compute_radius2(o->radius2, bw);
-    gegl_node_set (state->dog2, "radius1", radius1,
-                                "radius2", radius2,
-                                NULL);
-    gegl_node_set (state->mul2, "value", o->scale2, NULL);
-    gegl_node_connect_from (state->add2, "input",
-                            iter, "output");
-    gegl_node_connect_from (state->dog2, "input",
-                            iter, "output");
-    gegl_node_connect_from (state->mul2, "input",
-                            state->dog2, "output");
-    gegl_node_connect_from (state->add2, "aux",
-                            state->mul2, "output");
-    iter = state->add2;
-  }
+
   gegl_node_connect_from (state->output, "input",
                           iter,  "output");
 }
@@ -132,13 +142,15 @@ attach (GeglOperation *operation)
 
   state->input    = gegl_node_get_input_proxy (gegl, "input");
   state->output   = gegl_node_get_output_proxy (gegl, "output");
-  state->add1     = gegl_node_new_child (gegl, "operation", "gegl:add", NULL);
-  state->mul1     = gegl_node_new_child (gegl, "operation", "gegl:multiply", "value", 0.0, NULL);
-  state->dog1     = gegl_node_new_child (gegl, "operation", "gegl:difference-of-gaussians", NULL);
 
-  state->add2     = gegl_node_new_child (gegl, "operation", "gegl:add", NULL);
-  state->mul2     = gegl_node_new_child (gegl, "operation", "gegl:multiply", "value", 0.0, NULL);
-  state->dog2     = gegl_node_new_child (gegl, "operation", "gegl:difference-of-gaussians", NULL);
+  for (int band = 0; band < N_BANDS; band++)
+  {
+    state->add[band]   = gegl_node_new_child (gegl, "operation", "gegl:add", NULL);
+    state->mul[band]   = gegl_node_new_child (gegl, "operation", "gegl:multiply", "value", 0.0, NULL);
+    state->sub[band]   = gegl_node_new_child (gegl, "operation", "gegl:subtract", NULL);
+    state->blur1[band] = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur", NULL);
+    state->blur2[band] = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur", NULL);
+  }
 
   update_graph (operation);
 }
