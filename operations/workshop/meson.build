@@ -11,6 +11,7 @@ libraries = [
   { 'name': 'demosaic-bimedian', },
   { 'name': 'demosaic-simple', },
   { 'name': 'ditto', },
+  { 'name': 'edges-and-details', },
   { 'name': 'gcr', },
   { 'name': 'gradient-map', },
   { 'name': 'hstack', },
