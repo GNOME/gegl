@@ -34,7 +34,7 @@ property_double (scale1, _("Detail scale, negative values dimnishes signal in de
 
 property_double (bw1, _("Detail bandwidth"), 0.375)
     description("lower values narrower band, higher values wider band - default value presumed to provide good band separation.")
-    value_range (0.2, 0.6)
+    value_range (0.01, 0.6)
 
 
 
@@ -50,7 +50,7 @@ property_double (scale2, _("Edge scale, negative values dimnishes signal in deta
 
 property_double (bw2, _("Edge bandwidth"), 0.375)
     description("lower values narrower band, higher values wider band - default value presumed to provide good band separation.")
-    value_range (0.2, 0.6)
+    value_range (0.01, 0.6)
 
 property_boolean (show_mask, _("Visualize Adjustment Mask"), FALSE)
 
