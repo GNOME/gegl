@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-08 11:47+0000\n"
-"PO-Revision-Date: 2020-05-08 17:03+0300\n"
+"POT-Creation-Date: 2020-05-10 15:29+0000\n"
+"PO-Revision-Date: 2020-05-10 18:46+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -2016,14 +2016,14 @@ msgstr "Спосіб дискретизації ядра гаусіана"
 #: operations/common/median-blur.c:57 operations/common-gpl3+/displace.c:43
 #: operations/common-gpl3+/fractal-trace.c:67
 #: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
-#: operations/workshop/voronoi-diagram.cc:38
+#: operations/workshop/external/voronoi-diagram.cc:38
 msgid "Abyss policy"
 msgstr "Правила щодо безодні"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
 #: operations/common/median-blur.c:59 operations/common-gpl3+/displace.c:46
 #: operations/common-gpl3+/ripple.c:59 operations/transform/scale.c:103
-#: operations/workshop/voronoi-diagram.cc:41
+#: operations/workshop/external/voronoi-diagram.cc:41
 msgid "How image edges are handled"
 msgstr "Спосіб обробки країв зображення"
 
@@ -2330,7 +2330,7 @@ msgstr ""
 
 #: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
-#: operations/workshop/voronoi-diagram.cc:32
+#: operations/workshop/external/voronoi-diagram.cc:32
 msgid "Invert"
 msgstr "Інвертування"
 
@@ -3867,7 +3867,6 @@ msgid "Metadata"
 msgstr "Метадані"
 
 #: operations/common/save.c:29
-#| msgid "Object to receive image metadata"
 msgid "Object providing image metadata"
 msgstr "Об'єкт, який надає метадані зображення"
 
@@ -4392,12 +4391,12 @@ msgid "Write input data into an existing GEGL buffer destination surface."
 msgstr "Записати вхідні дані до поверхні призначення наявного буфера GEGL."
 
 #: operations/common-cxx/distance-transform.cc:30
-#: operations/workshop/voronoi-diagram.cc:24
+#: operations/workshop/external/voronoi-diagram.cc:24
 msgid "Metric"
 msgstr "Метрика"
 
 #: operations/common-cxx/distance-transform.cc:32
-#: operations/workshop/voronoi-diagram.cc:27
+#: operations/workshop/external/voronoi-diagram.cc:27
 msgid "Metric to use for the distance calculation"
 msgstr "Метрика, яку слід використовувати для обчислення відстаней"
 
@@ -8524,6 +8523,80 @@ msgstr ""
 "світності, без зменшення насиченості виблисків та тіней і без модифікацій "
 "червоного відтінка."
 
+#: operations/workshop/band-tune.c:25
+#| msgid "Detail"
+msgid "Detail band"
+msgstr "Смуга деталізації"
+
+#: operations/workshop/band-tune.c:26
+msgid "Features size for detail band, used for noise removal."
+msgstr "Розмір деталей, використовується для вилучення шуму."
+
+#: operations/workshop/band-tune.c:30
+msgid ""
+"Detail scale, negative values dimnishes signal in detail band, postivie "
+"values increases signal."
+msgstr ""
+"Масштаб деталей, від'ємні значення зменшують рівень сигналу, додатні —"
+" збільшують рівень сигналу."
+
+#: operations/workshop/band-tune.c:31 operations/workshop/band-tune.c:47
+msgid ""
+"Scaling factor for image features at radius, -1 cancels them out 1.0 edge "
+"enhances"
+msgstr ""
+"Коефіцієнт масштабування деталей зображення за радіусом, -1 скасовує їх, 1.0"
+" — удосконалення країв"
+
+#: operations/workshop/band-tune.c:35
+msgid "Detail bandwidth"
+msgstr "Ширина смуги деталізації"
+
+#: operations/workshop/band-tune.c:41
+#| msgid "Edge behavior"
+msgid "Edge band"
+msgstr "Смуга країв"
+
+#: operations/workshop/band-tune.c:42
+msgid ""
+"Features size for edge band, used to compensate for loos of edges in detail "
+"pass."
+msgstr ""
+"Розмір деталей для смуги країв, використовується для компенсації втрати країв"
+" при проході деталізації."
+
+#: operations/workshop/band-tune.c:46
+msgid ""
+"Edge scale, negative values dimnishes signal in detail band, postivie values "
+"increases signal."
+msgstr ""
+"Масштаб країв, від'ємні значення зменшують рівень сигналу, додатні —"
+" збільшують рівень сигналу."
+
+#: operations/workshop/band-tune.c:51
+msgid "Edge bandwidth"
+msgstr "Ширина смуги країв"
+
+#: operations/workshop/band-tune.c:55
+#| msgid "Hue adjustment"
+msgid "Visualize Adjustment Mask"
+msgstr "Маска коригування візуалізації"
+
+#: operations/workshop/band-tune.c:234
+msgid "Band tune"
+msgstr "Коригування смуги"
+
+#: operations/workshop/band-tune.c:236
+msgid ""
+"Parametric band equalizer for tuning frequency bands of image, the op "
+"provides abstracted input parameters that control two difference of "
+"gaussians driven band pass filters used as adjustments of the image signal."
+msgstr ""
+"Еквалайзер параметричної смуги для коригування смуг частот зображення."
+" Оператор надає абстрактні вхідні параметри, які керують двома різними"
+" смуговими фільтрами Гауса, які використовуються для коригування сигналу"
+" зображення."
+
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
 msgstr "Плавність"
@@ -8963,6 +9036,35 @@ msgstr ""
 "Вхідні дані Video4Linux, засоби захоплення кадрів з вебкамер і подібних "
 "пристроїв."
 
+#: operations/workshop/external/voronoi-diagram.cc:29
+msgid "Mask"
+msgstr "Маска"
+
+#: operations/workshop/external/voronoi-diagram.cc:30
+msgid "Unseeded region color"
+msgstr "Колір незасіяної області"
+
+#: operations/workshop/external/voronoi-diagram.cc:33
+msgid "Invert mask"
+msgstr "Інвертувати маску"
+
+#: operations/workshop/external/voronoi-diagram.cc:35
+msgid "Seed edges"
+msgstr "Краї засіювання"
+
+#: operations/workshop/external/voronoi-diagram.cc:36
+msgid "Whether the image edges are also seeded"
+msgstr "Визначає, чи краї зображення також засіюються"
+
+#: operations/workshop/external/voronoi-diagram.cc:524
+msgid "Voronoi Diagram"
+msgstr "Діаграма Вороного"
+
+#: operations/workshop/external/voronoi-diagram.cc:531
+msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
+msgstr ""
+"Замальовує кожен незасіяниий піксель кольором найближчого засіяного пікселя."
+
 #: operations/workshop/generated/average.c:111
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
 msgstr "Операція змішування зображень «середнє» (<tt>c = (cA + aB)/2</tt>)"
@@ -9127,32 +9229,3 @@ msgstr "Вибірковий відтінок-насиченість"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Вибіркове коригування відтінку, освітленості та насиченості"
-
-#: operations/workshop/voronoi-diagram.cc:29
-msgid "Mask"
-msgstr "Маска"
-
-#: operations/workshop/voronoi-diagram.cc:30
-msgid "Unseeded region color"
-msgstr "Колір незасіяної області"
-
-#: operations/workshop/voronoi-diagram.cc:33
-msgid "Invert mask"
-msgstr "Інвертувати маску"
-
-#: operations/workshop/voronoi-diagram.cc:35
-msgid "Seed edges"
-msgstr "Краї засіювання"
-
-#: operations/workshop/voronoi-diagram.cc:36
-msgid "Whether the image edges are also seeded"
-msgstr "Визначає, чи краї зображення також засіюються"
-
-#: operations/workshop/voronoi-diagram.cc:524
-msgid "Voronoi Diagram"
-msgstr "Діаграма Вороного"
-
-#: operations/workshop/voronoi-diagram.cc:531
-msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
-msgstr ""
-"Замальовує кожен незасіяниий піксель кольором найближчого засіяного пікселя."
