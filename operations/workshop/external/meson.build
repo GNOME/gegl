@@ -1,4 +1,23 @@
 
+
+gegl_operations += shared_library('voroni_diagram',
+  'voronoi-diagram.cc',
+    include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
+    dependencies: [
+      babl,
+      glib,
+      gobject,
+      math,
+    ],
+    link_with: [
+      gegl_lib,
+    ],
+    name_prefix: '',
+    install: true,
+    install_dir: get_option('libdir') / api_name,
+)
+
+
 if lua.found()
   gegl_operations += shared_library('gluas',
     'gluas.c',

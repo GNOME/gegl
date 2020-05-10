@@ -1,46 +1,50 @@
 subdir('external')
 subdir('generated')
 
-libraries = [
-  { 'name': 'aces-rrt', },
-  { 'name': 'alpha-inpaint', },
-  { 'name': 'bilateral-filter-fast', },
-  { 'name': 'boxblur-1d', },
-  { 'name': 'boxblur', },
-  { 'name': 'connected-components', },
-  { 'name': 'demosaic-bimedian', },
-  { 'name': 'demosaic-simple', },
-  { 'name': 'ditto', },
-  { 'name': 'band-tune', },
-  { 'name': 'gcr', },
-  { 'name': 'gradient-map', },
-  { 'name': 'hstack', },
-  { 'name': 'integral-image', },
-  { 'name': 'rawbayer-load', },
-  { 'name': 'segment-kmeans', },
-  { 'name': 'selective-hue-saturation', },
-  { 'name': 'voronoi-diagram', 'srcs': 'voronoi-diagram.cc', },
-]
+gegl_workshop_sources = files(
+  'aces-rrt.c', 
+  'alpha-inpaint.c', 
+  'bilateral-filter-fast.c', 
+  'boxblur-1d.c', 
+  'boxblur.c', 
+  'connected-components.c', 
+  'demosaic-bimedian.c', 
+  'demosaic-simple.c', 
+  'ditto.c', 
+  'band-tune.c', 
+  'gcr.c', 
+  'gradient-map.c', 
+  'hstack.c', 
+  'integral-image.c', 
+  'rawbayer-load.c', 
+  'segment-kmeans.c', 
+  'selective-hue-saturation.c', 
+)
 
-foreach lib : libraries
-  libname = lib.get('name')
-  libsrcs = lib.get('srcs', libname + '.c')
-  gegl_operations += shared_library(libname,
-    libsrcs,
-    opencl_headers,
-    include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
-    dependencies: [
-      babl,
-      glib,
-      gobject,
-      math,
-    ],
-    link_with: [
-      gegl_lib,
-      seamlessclone_lib,
-    ],
-    name_prefix: '',
-    install: true,
-    install_dir: get_option('libdir') / api_name,
-  )
-endforeach
+gegl_workshop_sources += custom_target('module_workshop.c',
+  input : gegl_workshop_sources,
+  output: 'module_workshop.c',
+  command: [ gen_loader, '@INPUT@', ],
+  capture: true
+)
+
+gegl_workshop = shared_library('gegl-workshop',
+  gegl_workshop_sources,
+  include_directories: [ rootInclude, geglInclude, ],
+  dependencies: [
+    babl,
+    glib,
+    gmodule,
+    json_glib,
+    math,
+  ],
+  link_with: [
+    gegl_lib,
+  ],
+  c_args: [
+    '-DGEGL_OP_BUNDLE',
+  ],
+  name_prefix: '',
+  install: true,
+  install_dir: get_option('libdir') / api_name,
+)

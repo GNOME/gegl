@@ -260,6 +260,7 @@ operations/transform/transform.c
 operations/transform/transform-core.c
 operations/transform/translate.c
 operations/workshop/aces-rrt.c
+operations/workshop/band-tune.c
 operations/workshop/bilateral-filter-fast.c
 operations/workshop/boxblur-1d.c
 operations/workshop/boxblur.c
@@ -267,12 +268,12 @@ operations/workshop/connected-components.c
 operations/workshop/demosaic-bimedian.c
 operations/workshop/demosaic-simple.c
 operations/workshop/ditto.c
-operations/workshop/edges-and-details.c
 operations/workshop/external/gluas.c
 operations/workshop/external/lens-correct.c
 operations/workshop/external/line-profile.c
 operations/workshop/external/spyrograph.c
 operations/workshop/external/v4l2.c
+operations/workshop/external/voronoi-diagram.cc
 operations/workshop/generated/average.c
 operations/workshop/generated/blend-reflect.c
 operations/workshop/generated/negation.c
@@ -285,4 +286,3 @@ operations/workshop/integral-image.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
-operations/workshop/voronoi-diagram.cc
