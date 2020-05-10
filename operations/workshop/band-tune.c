@@ -29,14 +29,30 @@ property_double (radius1, _("Detail band"), 1.1)
 
 property_double (scale1, _("Detail scale, negative values dimnishes signal in detail band, postivie values increases signal."), -1.6)
     description(_("Scaling factor for image features at radius, -1 cancels them out 1.0 edge enhances"))
-    value_range (-3.0, 100.0)
+    value_range (-100.0, 100.0)
     ui_range    (-3.0, 3.0)
 
 property_double (bw1, _("Detail bandwidth"), 0.375)
     description("lower values narrower band, higher values wider band - default value presumed to provide good band separation.")
     value_range (0.2, 0.6)
 
-property_boolean (show_mask, _("Show Mask"), FALSE)
+
+
+property_double (radius2, _("Edge band"), 10.0)
+    description(_("Features size for edge band, used to compensate for loos of edges in detail pass."))
+    value_range (0.0, 100.0)
+    ui_range    (0.5, 2.0)
+
+property_double (scale2, _("Edge scale, negative values dimnishes signal in detail band, postivie values increases signal."), 0.0)
+    description(_("Scaling factor for image features at radius, -1 cancels them out 1.0 edge enhances"))
+    value_range (-100.0, 100.0)
+    ui_range    (-3.0, 3.0)
+
+property_double (bw2, _("Edge bandwidth"), 0.375)
+    description("lower values narrower band, higher values wider band - default value presumed to provide good band separation.")
+    value_range (0.2, 0.6)
+
+property_boolean (show_mask, _("Visualize Adjustment Mask"), FALSE)
 
 #else
 
@@ -46,7 +62,7 @@ property_boolean (show_mask, _("Show Mask"), FALSE)
 
 #include "gegl-op.h"
 
-#define N_BANDS 1
+#define N_BANDS 2
 
 typedef struct
 {
@@ -56,6 +72,11 @@ typedef struct
   GeglNode *blur1[N_BANDS];
   GeglNode *blur2[N_BANDS];
   GeglNode *mul[N_BANDS];
+
+  GeglNode *mask_sub;
+  GeglNode *mask_add;
+  GeglNode *mask_mul;
+
   GeglNode *output;
 } State;
 
@@ -88,10 +109,11 @@ update_graph (GeglOperation *operation)
         radius = o->radius1;
         bw = 1.0 - o->bw1;
         break;
-#if 0
+#if 1
       case 1:
         scale = o->scale2;
         radius = o->radius2;
+        bw = 1.0 - o->bw2;
         break;
 #endif
     }
@@ -125,6 +147,21 @@ update_graph (GeglOperation *operation)
     }
   }
 
+  if (o->show_mask)
+  {
+    gegl_node_connect_from (state->mask_sub, "input",
+                            state->input, "output");
+    gegl_node_connect_from (state->mask_sub, "aux",
+                            iter, "output");
+
+    gegl_node_connect_from (state->mask_mul, "input",
+                            state->mask_sub, "output");
+
+    gegl_node_connect_from (state->mask_add, "input",
+                            state->mask_mul, "output");
+    iter = state->mask_add;
+  }
+
   gegl_node_connect_from (state->output, "input",
                           iter,  "output");
 }
@@ -148,6 +185,10 @@ attach (GeglOperation *operation)
     state->blur1[band] = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur", NULL);
     state->blur2[band] = gegl_node_new_child (gegl, "operation", "gegl:gaussian-blur", NULL);
   }
+
+  state->mask_add = gegl_node_new_child (gegl, "operation", "gegl:add", "value", 0.2, NULL);
+  state->mask_sub = gegl_node_new_child (gegl, "operation", "gegl:subtract", NULL);
+  state->mask_mul = gegl_node_new_child (gegl, "operation", "gegl:multiply", "value", 4.0, NULL);
 
   update_graph (operation);
 }
@@ -192,7 +233,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:band-tune",
     "title",       _("Band tune"),
     "categories",  "enhance:sharpen:denoise",
-    "description", _("Parametric band equalizer"),
+    "description", _("Parametric band equalizer for tuning frequency bands of image, the op provides abstracted input parameters that control two difference of gaussians driven band pass filters used as adjustments of the image signal."),
     NULL);
 }
 
