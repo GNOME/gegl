@@ -26,33 +26,27 @@ property_double (radius1, _("Detail band"), 1.1)
     description(_("Features size for detail band, used for noise removal."))
     value_range (0.0, 100.0)
     ui_range    (0.5, 2.0)
-    ui_meta     ("unit", "pixel-distance")
 
 property_double (scale1, _("Detail scale, negative values dimnishes signal in detail band, postivie values increases signal."), -1.6)
     description(_("Scaling factor for image features at radius, -1 cancels them out 1.0 edge enhances"))
     value_range (-3.0, 100.0)
     ui_range    (-3.0, 3.0)
 
-property_double (radius2, _("Edge band"), 4.0)
-    description(_("Expressed as standard deviation, in pixels"))
-    value_range (0.0, 100.0)
-    ui_range    (0.5, 20.0)
-    ui_meta     ("unit", "pixel-distance")
+property_double (bw1, _("Detail bandwidth"), 0.375)
+    description("lower values narrower band, higher values wider band - default value presumed to provide good band separation.")
+    value_range (0.2, 0.6)
 
-property_double (scale2, _("Edge scale"), 0.0)
-    description(_("Scaling factor for image features at radius, -1 cancels them out 1.0 edge enhances, when set to 0.0 performance of op is higher."))
-    value_range (-3.0, 100.0)
-    ui_range    (-3.0, 3.0)
+property_boolean (show_mask, _("Show Mask"), FALSE)
 
 #else
 
 #define GEGL_OP_META
-#define GEGL_OP_NAME     edges_and_details
-#define GEGL_OP_C_SOURCE edges-and-details.c
+#define GEGL_OP_NAME     band_tune
+#define GEGL_OP_C_SOURCE band-tune.c
 
 #include "gegl-op.h"
 
-#define N_BANDS 2
+#define N_BANDS 1
 
 typedef struct
 {
@@ -92,11 +86,14 @@ update_graph (GeglOperation *operation)
       case 0:
         scale = o->scale1;
         radius = o->radius1;
+        bw = 1.0 - o->bw1;
         break;
+#if 0
       case 1:
         scale = o->scale2;
         radius = o->radius2;
         break;
+#endif
     }
 
     if (fabs(scale) > 0.01)
@@ -192,10 +189,10 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->attach = attach;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:edges-and-details",
-    "title",       _("Edges and Details"),
+    "name",        "gegl:band-tune",
+    "title",       _("Band tune"),
     "categories",  "enhance:sharpen:denoise",
-    "description", _("Two band parametric equalizer, for noise reduction and edge enhancement."),
+    "description", _("Parametric band equalizer"),
     NULL);
 }
 
