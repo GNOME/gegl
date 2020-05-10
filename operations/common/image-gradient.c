@@ -16,7 +16,7 @@
  * Copyright 2016 Thomas Manni <thomas.manni@free.fr>
  */
 
- /* compute gradient magnitude and/or direction by central differencies */
+ /* compute gradient magnitude and/or direction by central differences */
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
@@ -226,7 +226,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",  "edge-detect",
     "reference-hash", "6cd95bf706d744b31b475b3500941f3c",
     "description", _("Compute gradient magnitude and/or direction by "
-                     "central differencies"),
+                     "central differences"),
     NULL);
 }
 
