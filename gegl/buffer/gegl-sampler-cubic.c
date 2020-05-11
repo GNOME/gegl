@@ -131,29 +131,15 @@ gegl_sampler_cubic_init (GeglSamplerCubic *self)
   GEGL_SAMPLER (self)->level[0].context_rect.width = 5;
   GEGL_SAMPLER (self)->level[0].context_rect.height = 5;
 
-  self->b=1.0;
-  self->c=0.0;
-  self->type = g_strdup("cubic");
-  if (strcmp (self->type, "cubic"))
-    {
-      /* cubic B-spline */
-      self->b = 1.0;
-      self->c = 0.0;
-    }
-  else if (strcmp (self->type, "catmullrom"))
-    {
-      /* Catmull-Rom spline */
-      self->b = 0.0;
-      self->c = 0.5;
-    }
-  else if (strcmp (self->type, "formula"))
-    {
-      /*
-       * This ensures that the spline is a Keys spline. The c of
-       * BC-splines is the alpha of Keys.
-       */
-      self->c = 0.5 * (1.0 - self->b);
-    }
+  self->b=0.5;  /* 0.0 = sharp, but with anomaly of issue #167
+                   1.0 = fuzzy cubic, without anomaly
+                   0.5 is a compromise against issue #145 */
+ 
+  /*
+   * This ensures that the spline is a Keys spline. The c of
+   * BC-splines is the alpha of Keys.
+   */
+  self->c = 0.5 * (1.0 - self->b);
 }
 
 static inline void
