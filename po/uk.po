@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-10 15:29+0000\n"
-"PO-Revision-Date: 2020-05-10 18:46+0300\n"
+"POT-Creation-Date: 2020-05-11 10:59+0000\n"
+"PO-Revision-Date: 2020-05-11 14:15+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -2304,7 +2304,8 @@ msgid "Image Gradient"
 msgstr "Градієнт зображення"
 
 #: operations/common/image-gradient.c:228
-msgid "Compute gradient magnitude and/or direction by central differencies"
+#| msgid "Compute gradient magnitude and/or direction by central differencies"
+msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
 "Обчислити амплітуду градієнта і/або напрямок за допомогою центральних різниць"
 
@@ -8524,7 +8525,6 @@ msgstr ""
 "червоного відтінка."
 
 #: operations/workshop/band-tune.c:25
-#| msgid "Detail"
 msgid "Detail band"
 msgstr "Смуга деталізації"
 
@@ -8533,27 +8533,29 @@ msgid "Features size for detail band, used for noise removal."
 msgstr "Розмір деталей, використовується для вилучення шуму."
 
 #: operations/workshop/band-tune.c:30
+#| msgid ""
+#| "Detail scale, negative values dimnishes signal in detail band, postivie "
+#| "values increases signal."
 msgid ""
-"Detail scale, negative values dimnishes signal in detail band, postivie "
-"values increases signal."
+"Detail scale, negative values diminish signal in detail band, positive "
+"values increase signal."
 msgstr ""
-"Масштаб деталей, від'ємні значення зменшують рівень сигналу, додатні —"
-" збільшують рівень сигналу."
+"Масштаб деталей, від'ємні значення зменшують рівень сигналу, додатні — "
+"збільшують рівень сигналу."
 
 #: operations/workshop/band-tune.c:31 operations/workshop/band-tune.c:47
 msgid ""
 "Scaling factor for image features at radius, -1 cancels them out 1.0 edge "
 "enhances"
 msgstr ""
-"Коефіцієнт масштабування деталей зображення за радіусом, -1 скасовує їх, 1.0"
-" — удосконалення країв"
+"Коефіцієнт масштабування деталей зображення за радіусом, -1 скасовує їх, 1.0 "
+"— удосконалення країв"
 
 #: operations/workshop/band-tune.c:35
 msgid "Detail bandwidth"
 msgstr "Ширина смуги деталізації"
 
 #: operations/workshop/band-tune.c:41
-#| msgid "Edge behavior"
 msgid "Edge band"
 msgstr "Смуга країв"
 
@@ -8562,23 +8564,25 @@ msgid ""
 "Features size for edge band, used to compensate for loos of edges in detail "
 "pass."
 msgstr ""
-"Розмір деталей для смуги країв, використовується для компенсації втрати країв"
-" при проході деталізації."
+"Розмір деталей для смуги країв, використовується для компенсації втрати "
+"країв при проході деталізації."
 
 #: operations/workshop/band-tune.c:46
+#| msgid ""
+#| "Edge scale, negative values dimnishes signal in detail band, postivie "
+#| "values increases signal."
 msgid ""
-"Edge scale, negative values dimnishes signal in detail band, postivie values "
-"increases signal."
+"Edge scale, negative values diminish signal in detail band, positive values "
+"increase signal."
 msgstr ""
-"Масштаб країв, від'ємні значення зменшують рівень сигналу, додатні —"
-" збільшують рівень сигналу."
+"Масштаб країв, від'ємні значення зменшують рівень сигналу, додатні — "
+"збільшують рівень сигналу."
 
 #: operations/workshop/band-tune.c:51
 msgid "Edge bandwidth"
 msgstr "Ширина смуги країв"
 
 #: operations/workshop/band-tune.c:55
-#| msgid "Hue adjustment"
 msgid "Visualize Adjustment Mask"
 msgstr "Маска коригування візуалізації"
 
@@ -8592,10 +8596,10 @@ msgid ""
 "provides abstracted input parameters that control two difference of "
 "gaussians driven band pass filters used as adjustments of the image signal."
 msgstr ""
-"Еквалайзер параметричної смуги для коригування смуг частот зображення."
-" Оператор надає абстрактні вхідні параметри, які керують двома різними"
-" смуговими фільтрами Гауса, які використовуються для коригування сигналу"
-" зображення."
+"Еквалайзер параметричної смуги для коригування смуг частот зображення. "
+"Оператор надає абстрактні вхідні параметри, які керують двома різними "
+"смуговими фільтрами Гауса, які використовуються для коригування сигналу "
+"зображення."
 
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
