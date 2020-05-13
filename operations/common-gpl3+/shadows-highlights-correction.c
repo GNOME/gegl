@@ -74,6 +74,13 @@ prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "output", cie_laba);
 }
 
+static inline gfloat int_fabsf (const gfloat x)
+{
+  union {gfloat f; guint32 i;} u = {x};
+  u.i &= 0x7fffffff;
+  return u.f;
+}
+
 static gboolean
 process (GeglOperation       *operation,
          void                *in_buf,
@@ -163,10 +170,10 @@ process (GeglOperation       *operation,
               gfloat la_inverted_abs;
               gfloat lb = (tb0 - 0.5f) * highlights_sign_negated * SIGN(la_inverted) + 0.5f;
 
-              la_abs = fabsf (la);
+              la_abs = int_fabsf (la);
               lref = copysignf(la_abs > low_approximation ? 1.0f / la_abs : 1.0f / low_approximation, la);
 
-              la_inverted_abs = fabsf (la_inverted);
+              la_inverted_abs = int_fabsf (la_inverted);
               href = copysignf(la_inverted_abs > low_approximation ? 1.0f / la_inverted_abs : 1.0f / low_approximation,
                                la_inverted);
 
