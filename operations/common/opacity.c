@@ -55,6 +55,13 @@ prepare (GeglOperation *self)
   return;
 }
 
+static inline gfloat int_fabsf (const gfloat x)
+{
+  union {gfloat f; guint32 i;} u = {x};
+  u.i &= 0x7fffffff;
+  return u.f;
+}
+
 static void
 process_premultiplied_float (GeglOperation       *op,
                       void                *in_buf,
@@ -81,7 +88,7 @@ process_premultiplied_float (GeglOperation       *op,
           out += components;
         }
     }
-  else if (fabsf (value - 1.0f) <= EPSILON)
+  else if (int_fabsf (value - 1.0f) <= EPSILON)
     while (samples--)
       {
         gint j;
@@ -132,7 +139,7 @@ process_with_alpha_float (GeglOperation       *op,
           out += components;
         }
     }
-  else if (fabsf (value - 1.0f) <= EPSILON)
+  else if (int_fabsf (value - 1.0f) <= EPSILON)
     while (samples--)
       {
         gint j;
@@ -247,7 +254,7 @@ static gboolean operation_process (GeglOperation        *operation,
   in = gegl_operation_context_get_object (context, "input");
   aux = gegl_operation_context_get_object (context, "aux");
 
-  if (in && !aux && fabsf (value - 1.0f) <= EPSILON)
+  if (in && !aux && int_fabsf (value - 1.0f) <= EPSILON)
     {
       gegl_operation_context_take_object (context, "output",
                                           g_object_ref (G_OBJECT (in)));
