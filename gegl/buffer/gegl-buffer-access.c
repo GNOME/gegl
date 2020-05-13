@@ -2003,7 +2003,7 @@ _gegl_get_required_for_scale (const GeglRectangle *roi,
       gint y1 = int_floorf (roi->y / scale + GEGL_SCALE_EPSILON);
       gint y2 = int_ceilf ((roi->y + roi->height) / scale - GEGL_SCALE_EPSILON);
 
-      gint pad = (1.0 / scale > 1.0) ? ceilf (1.0 / scale) : 1;
+      gint pad = (1.0 / scale > 1.0) ? int_ceilf (1.0 / scale) : 1;
 
       if (scale < 1.0)
         {
@@ -2119,11 +2119,11 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
         rect0.x      = int_floorf (rect->x / scale_orig + GEGL_SCALE_EPSILON);
         rect0.y      = int_floorf (rect->y / scale_orig + GEGL_SCALE_EPSILON);
-        rect0.width  = ceilf ((rect->x + rect->width) / scale_orig -
-                              GEGL_SCALE_EPSILON) -
+        rect0.width  = int_ceilf ((rect->x + rect->width) / scale_orig -
+                                  GEGL_SCALE_EPSILON) -
                        rect0.x;
-        rect0.height = ceilf ((rect->y + rect->height) / scale_orig -
-                              GEGL_SCALE_EPSILON) -
+        rect0.height = int_ceilf ((rect->y + rect->height) / scale_orig -
+                                  GEGL_SCALE_EPSILON) -
                        rect0.y;
 
         gegl_buffer_iterate_read_dispatch (buffer, &rect0,
