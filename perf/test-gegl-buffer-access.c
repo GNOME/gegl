@@ -158,7 +158,7 @@ main (gint    argc,
     }
     test_end_iter ();
   }
-  test_end ("gegl_buffer_set 1x1", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_buffer_set 1x1", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -176,7 +176,7 @@ main (gint    argc,
     }
     test_end_iter ();
   }
-  test_end ("gegl_buffer_get 1x1", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_buffer_get 1x1", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   test_start ();
   for (i=0;i<ITERATIONS && converged < BAIL_COUNT;i++)
@@ -193,7 +193,7 @@ main (gint    argc,
     }
     test_end_iter ();
   }
-  test_end ("gegl_buffer_sample nearest", SAMPLES * ITERATIONS * BPP);
+  test_end ("gegl_buffer_sample nearest", 1.0 * SAMPLES * ITERATIONS * BPP);
 
   }
 

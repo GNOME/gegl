@@ -3,13 +3,13 @@
 #include "gegl.h"
 #include "opencl/gegl-cl-init.h"
 
-#define ITERATIONS 600
+#define ITERATIONS 2000
 #define PERCENTILE 0.75  /* if we want to bias to the better results with
                            more noise, increase this number towards 1.0,
                            like 0.8 */
 #define BAIL_THRESHOLD 0.001
-#define BAIL_COUNT     20
-#define MIN_ITER       20
+#define BAIL_COUNT     30
+#define MIN_ITER       30
 
 static long ticks_start;
 
