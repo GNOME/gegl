@@ -281,22 +281,29 @@ set_property (GObject      *object,
     }
 }
 
+static inline gfloat int_fabsf (const gfloat x)
+{
+  union {gfloat f; guint32 i;} u = {x};
+  u.i &= 0x7fffffff;
+  return u.f;
+}
+
 static inline gfloat
 cubicKernel (const gfloat x,
              const gfloat b,
              const gfloat c)
 {
   const gfloat x2 = x*x;
-  const gfloat ax = fabsf (x);
+  const gfloat ax = int_fabsf (x);
 
-  if (x2 <= (gfloat) 1.) return ( (gfloat) ((12-9*b-6*c)/6) * ax +
+  if (x2 <= (gfloat) 1.f) return ( (gfloat) ((12-9*b-6*c)/6) * ax +
                                   (gfloat) ((-18+12*b+6*c)/6) ) * x2 +
                                   (gfloat) ((6-2*b)/6);
 
-  if (x2 < (gfloat) 4.) return ( (gfloat) ((-b-6*c)/6) * ax +
+  if (x2 < (gfloat) 4.f) return ( (gfloat) ((-b-6*c)/6) * ax +
                                  (gfloat) ((6*b+30*c)/6) ) * x2 +
                                  (gfloat) ((-12*b-48*c)/6) * ax +
                                  (gfloat) ((8*b+24*c)/6);
 
-  return (gfloat) 0.;
+  return (gfloat) 0.f;
 }
