@@ -130,6 +130,11 @@ type_name##_register_type (GTypeModule *type_module)                    \
 #define MKCLASS(a)  MKCLASS2(a)
 #define MKCLASS2(a) a##Class
 
+#ifdef GEGL_OP_BASE
+#define GEGL_OP_Parent GeglOperation
+#define GEGL_OP_PARENT GEGL_TYPE_OPERATION
+#endif
+
 #ifdef GEGL_OP_POINT_FILTER
 #define GEGL_OP_Parent GeglOperationPointFilter
 #define GEGL_OP_PARENT GEGL_TYPE_OPERATION_POINT_FILTER
