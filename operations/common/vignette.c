@@ -39,7 +39,8 @@ property_color (color, _("Color"), "black")
 
 property_double (radius, _("Radius"), 1.2)
     description (_("How far out vignetting goes as portion of half image diagonal"))
-    value_range (0.0, 3.0)
+    value_range (0.0, G_MAXDOUBLE)
+    ui_range    (0.0, 3.0)
     ui_meta     ("unit", "relative-distance")
 
 property_double (softness, _("Softness"), 0.8)
@@ -47,7 +48,8 @@ property_double (softness, _("Softness"), 0.8)
 
 property_double (gamma, _("Gamma"), 2.0)
     description (_("Falloff linearity"))
-    value_range (0.0, 10.0)
+    value_range (0.0, G_MAXDOUBLE)
+    ui_range    (0.0, 10.0)
 
 property_double (proportion, _("Proportion"), 1.0)
     description(_("How close we are to image proportions"))
