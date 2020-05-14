@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2019-09-25 11:19+0000\n"
-"PO-Revision-Date: 2019-11-21 16:58+0200\n"
+"POT-Creation-Date: 2020-05-11 10:59+0000\n"
+"PO-Revision-Date: 2020-05-14 11:19+0300\n"
 "Last-Translator: Dimitris Spingos (Δημήτρης Σπίγγος) <dmtrs32@gmail.com>\n"
 "Language-Team: team@lists.gnome.gr\n"
 "Language: el\n"
@@ -27,7 +27,7 @@ msgstr "Αδύνατη η ανάγνωση του αρχείου: %s"
 msgid "Invalid graph, abort.\n"
 msgstr "Άκυρο γράφημα, απόρριψη.\n"
 
-#: bin/gegl.c:390 bin/gegl-options.c:135
+#: bin/gegl.c:390 bin/gegl-options.c:133
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Άγνωστη κατάσταση GeglOption: %d"
@@ -50,8 +50,6 @@ msgid ""
 "     -i, --file      read xml from named file\n"
 "\n"
 "     -x, --xml       use xml provided in next argument\n"
-"\n"
-"     --dot           output a graphviz graph description\n"
 "\n"
 "     -o, --output    output generated image to named file, type based\n"
 "                     on extension.\n"
@@ -86,10 +84,8 @@ msgstr ""
 "\n"
 "     -x, --xml       χρήση xml που δίνεται σε επόμενο όρισμα\n"
 "\n"
-"     --dot           έξοδος μιας περιγραφής γραφήματος graphviz\n"
-"\n"
-"     -o, --output    εικόνα δημιουργημένης εξόδου σε επώνυμο αρχείο, με τύπο "
-"βασισμένο\n"
+"     -o, --output    έξοδος δημιουργημένης εικόνας σε επώνυμο αρχείο, με "
+"τύπο βασισμένο\n"
 "                     σε επέκταση.\n"
 "\n"
 "     -p              μετρητές αύξησης πλαισίου διάφορων στοιχείων όταν\n"
@@ -102,38 +98,38 @@ msgstr ""
 "\n"
 "     -v, --verbose   εκτύπωση διαγνωστικών κατά την εκτέλεση\n"
 "\n"
-"Όλες οι ακόλουθες παράμετροι -- θεωρούνται λειτουργίες που θα δεθούν\n"
+"Όλες οι παράμετροι ακολουθούν -- θεωρούνται λειτουργίες που θα δεθούν\n"
 "μαζί σε μια μικρή σύνθεση αντί για τη χρήση ενός αρχείου xml, αυτό\n"
 "επιτρέπει τον εύκολο έλεγχο των φίλτρων. Μετά τη σύνδεση, μια νέα λειτουργία "
 "στις ιδιότητες\n"
 "μπορεί να οριστεί με property=ζεύγη τιμών ως επόμενα ορίσματα.\n"
 
-#: bin/gegl-options.c:88
+#: bin/gegl-options.c:86
 #, c-format
 msgid "ERROR: '%s' option expected argument\n"
 msgstr "ΣΦΑΛΜΑ: η επιλογή '%s' περίμενε όρισμα\n"
 
-#: bin/gegl-options.c:127
+#: bin/gegl-options.c:125
 msgid "Display on screen"
 msgstr "Προβολή στην οθόνη"
 
-#: bin/gegl-options.c:129
+#: bin/gegl-options.c:127
 msgid "Print XML"
 msgstr "Εκτύπωση XML"
 
-#: bin/gegl-options.c:131
+#: bin/gegl-options.c:129
 msgid "Output in a file"
 msgstr "Έξοδος σε αρχείο"
 
-#: bin/gegl-options.c:133
+#: bin/gegl-options.c:131
 msgid "Display help information"
 msgstr "Εμφάνιση πληροφοριών βοήθειας"
 
-#: bin/gegl-options.c:136
+#: bin/gegl-options.c:134
 msgid "unknown mode"
 msgstr "άγνωστη κατάσταση"
 
-#: bin/gegl-options.c:141
+#: bin/gegl-options.c:139
 #, c-format
 msgid ""
 "Parsed commandline:\n"
@@ -152,11 +148,11 @@ msgstr ""
 "\tυπόλοιπο:    %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:349
+#: bin/gegl-options.c:347
 msgid "Properties:"
 msgstr "Ιδιότητες:"
 
-#: bin/gegl-options.c:459
+#: bin/gegl-options.c:457
 #, c-format
 msgid ""
 "\n"
@@ -291,11 +287,13 @@ msgstr "Τσεμπισιόφ"
 
 #: gegl/gegl-enums.c:93 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/common/spherize.c:26
+#: operations/common/vignette.c:28
 msgid "Horizontal"
 msgstr "Οριζόντια"
 
 #: gegl/gegl-enums.c:94 operations/common/edge-sobel.c:29
 #: operations/common/noise-spread.c:35 operations/common/spherize.c:27
+#: operations/common/vignette.c:29
 msgid "Vertical"
 msgstr "Κάθετη"
 
@@ -344,38 +342,38 @@ msgstr "Ποτέ"
 msgid "Always"
 msgstr "Πάντα"
 
-#: gegl/gegl-init.c:211
+#: gegl/gegl-init.c:212
 msgid "Where GEGL stores its swap"
 msgstr "Πού αποθηκεύει το GEGL την εναλλακτική μνήμη"
 
-#: gegl/gegl-init.c:216
+#: gegl/gegl-init.c:217
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Ο χρησιμοποιούμενος αλγόριθμος συμπίεσης για αποθηκευμένα δεδομένα στην "
 "εικονική μνήμη (swap)"
 
-#: gegl/gegl-init.c:221
+#: gegl/gegl-init.c:222
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Πόση μνήμη για χρήση (περίπου) για επαναποθήκευση εικόνας"
 
-#: gegl/gegl-init.c:226
+#: gegl/gegl-init.c:227
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Προεπιλεγμένο μέγεθος παραθέσεων στο GeglBuffers"
 
-#: gegl/gegl-init.c:231
+#: gegl/gegl-init.c:232
 msgid "The count of pixels to compute simultaneously"
 msgstr "Ο αριθμός των εικονοστοιχείων για ταυτόχρονο υπολογισμό"
 
-#: gegl/gegl-init.c:236
+#: gegl/gegl-init.c:237
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Η ποιότητα απόδοσης, μια τιμή μεταξύ 0,0 (γρήγορη) και 1,0 (αναφορά)"
 
-#: gegl/gegl-init.c:241
+#: gegl/gegl-init.c:242
 msgid "The number of concurrent processing threads to use"
 msgstr "Ο αριθμός των σύγχρονων νημάτων επεξεργασίας για χρήση"
 
-#: gegl/gegl-init.c:246
+#: gegl/gegl-init.c:247
 msgid "Disable OpenCL"
 msgstr "Απενεργοποίηση OpenCL"
 
@@ -594,7 +592,7 @@ msgstr ""
 "στις τιμές χρώματος χάρτη."
 
 #: operations/common/bilateral-filter.c:26
-#: operations/common/domain-transform.c:29 operations/common/dropshadow.c:39
+#: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -631,11 +629,38 @@ msgstr ""
 "εικονοστοιχείο είναι επίσης σταθμισμένη από τη χρωματική διαφορά με το "
 "αρχικό κεντρικό εικονοστοιχείο. "
 
-#: operations/common/box-blur.c:25 operations/common/c2g.c:28
-#: operations/common/edge-neon.c:48 operations/common/median-blur.c:43
-#: operations/common/snn-mean.c:26 operations/common/stress.c:27
-#: operations/common/unsharp-mask.c:24 operations/common/vignette.c:38
-#: operations/common/wavelet-blur-1d.c:28 operations/common/wavelet-blur.c:27
+#. note that the code can handle negative curvatures
+#. * (in the [-1, 0) range), in which case the image is
+#. * wrapped around the back face, rather than the front
+#. * face, of the spherical cap.  we disable negative
+#. * curvatures atm, in particular, since they produce
+#. * the same result when the angle of view is 0, and
+#. * since their upper-bound, wrt the angle of view, is
+#. * arbitrary.
+#.
+#: operations/common/bloom.c:27 operations/common/spherize.c:52
+#: operations/common/unsharp-mask.c:31 operations/common-gpl3+/edge.c:42
+msgid "Amount"
+msgstr "Βαθμός"
+
+#: operations/common/bloom.c:28
+msgid "Glow-area brightness threshold"
+msgstr "Κατώφλι φωτεινότητας (brightness) περιοχής λάμψης"
+
+#: operations/common/bloom.c:31 operations/common/vignette.c:45
+msgid "Softness"
+msgstr "Απαλότητα"
+
+#: operations/common/bloom.c:32
+msgid "Glow-area edge softness"
+msgstr "Απαλότητα άκρου περιοχής λάμψης"
+
+#: operations/common/bloom.c:35 operations/common/box-blur.c:25
+#: operations/common/c2g.c:28 operations/common/edge-neon.c:48
+#: operations/common/median-blur.c:43 operations/common/snn-mean.c:26
+#: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
+#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
+#: operations/common/wavelet-blur.c:27
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
 #: operations/common-gpl3+/whirl-pinch.c:46
@@ -644,6 +669,27 @@ msgstr ""
 #: operations/workshop/external/spyrograph.c:63
 msgid "Radius"
 msgstr "Ακτίνα"
+
+#: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
+msgid "Glow radius"
+msgstr "Ακτίνα λάμψης"
+
+#: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
+#: operations/common-cxx/warp.cc:35 operations/common-gpl3+/wind.c:64
+msgid "Strength"
+msgstr "Ισχύς"
+
+#: operations/common/bloom.c:43
+msgid "Glow strength"
+msgstr "Ισχύς λάμψης"
+
+#: operations/common/bloom.c:223
+msgid "Bloom"
+msgstr "Άνθηση"
+
+#: operations/common/bloom.c:225
+msgid "Add glow around bright areas"
+msgstr "Προσθήκη λάμψης γύρω από φωτεινές περιοχές"
 
 #: operations/common/box-blur.c:26 operations/common/snn-mean.c:27
 #: operations/workshop/boxblur.c:25
@@ -898,12 +944,12 @@ msgid "Render a checkerboard pattern"
 msgstr "Απόδοση μοτίβου σκακιέρας"
 
 #: operations/common/color.c:24 operations/common/color.c:87
-#: operations/common/color-overlay.c:26 operations/common/dropshadow.c:46
+#: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vignette.c:34
+#: operations/common/rectangle.c:48 operations/common/vignette.c:36
 #: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:61
-#: operations/common-gpl3+/tile-paper.c:30
+#: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:55 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
 msgid "Color"
@@ -1652,7 +1698,7 @@ msgstr "Η μέθοδος πρόσμειξης για χρήση"
 #: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
 #: operations/common-gpl3+/supernova.c:64
-#: operations/common-gpl3+/tile-paper.c:80 operations/common-gpl3+/wind.c:68
+#: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
 msgid "Random seed"
 msgstr "Τυχαία σπορά (σημείωμα)"
@@ -1671,7 +1717,7 @@ msgstr ""
 "κανάλι (χρώματα και άλφα). Διαφορετικές μέθοδοι πρόσμιξης μπορούν να "
 "οριστούν για να εξουδετερώσουν τον κβαντισμό των επαγόμενων ζωνών."
 
-#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
+#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:30
 #: operations/external/webp-save.c:28
 msgid "Quality"
 msgstr "Ποιότητα"
@@ -1709,7 +1755,23 @@ msgstr ""
 "τεχνική μετασχηματισμού τομέα. Παρόμοιο με το αμφίπλευρο φίλτρο, αλλά πιο "
 "γρήγορο στον υπολογισμό."
 
-#: operations/common/dropshadow.c:25 operations/common/layer.c:36
+#: operations/common/dropshadow.c:27 operations/common/median-blur.c:28
+#: operations/common/pixelize.c:29 operations/common/vignette.c:26
+msgid "Square"
+msgstr "Τετράγωνο"
+
+#: operations/common/dropshadow.c:28 operations/common/median-blur.c:29
+#: operations/common/newsprint.c:26 operations/common/vignette.c:25
+msgid "Circle"
+msgstr "Κύκλος"
+
+#: operations/common/dropshadow.c:29 operations/common/median-blur.c:30
+#: operations/common/newsprint.c:27 operations/common/pixelize.c:27
+#: operations/common/vignette.c:27
+msgid "Diamond"
+msgstr "Ρόμβος"
+
+#: operations/common/dropshadow.c:32 operations/common/layer.c:36
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
 #: operations/common-gpl3+/spiral.c:35 operations/core/crop.c:25
@@ -1721,11 +1783,11 @@ msgstr ""
 msgid "X"
 msgstr "Χ"
 
-#: operations/common/dropshadow.c:26
+#: operations/common/dropshadow.c:33
 msgid "Horizontal shadow offset"
 msgstr "Οριζόντια μετατόπιση σκιάς"
 
-#: operations/common/dropshadow.c:32 operations/common/layer.c:41
+#: operations/common/dropshadow.c:39 operations/common/layer.c:41
 #: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
@@ -1737,29 +1799,49 @@ msgstr "Οριζόντια μετατόπιση σκιάς"
 msgid "Y"
 msgstr "Υ"
 
-#: operations/common/dropshadow.c:33
+#: operations/common/dropshadow.c:40
 msgid "Vertical shadow offset"
 msgstr "Κάθετη μετατόπιση σκιάς"
 
+#: operations/common/dropshadow.c:53
+msgid "Grow shape"
+msgstr "Επέκταση σχήματος"
+
+#: operations/common/dropshadow.c:56
+msgid "The shape to expand or contract the shadow in"
+msgstr "Το σχήμα για διαστολή ή συστολή της σκιάς"
+
+#: operations/common/dropshadow.c:58
+msgid "Grow radius"
+msgstr "Επέκταση ακτίνας"
+
+#: operations/common/dropshadow.c:65
+msgid ""
+"The distance to expand the shadow before blurring; a negative value will "
+"contract the shadow instead"
+msgstr ""
+"Η απόσταση επέκτασης της σκιάς πριν τη θόλωση· αρνητική τιμή θα μικρύνει τη "
+"σκιά"
+
 #. TRANSLATORS: the string 'black' should not be translated
-#: operations/common/dropshadow.c:48
+#: operations/common/dropshadow.c:69
 msgid "The shadow's color (defaults to 'black')"
 msgstr "Χρώμα της σκιάς (προεπιλογή σε 'μαύρο')"
 
 #. It does make sense to sometimes have opacities > 1 (see GEGL logo
 #. * for example)
 #.
-#: operations/common/dropshadow.c:53 operations/common/layer.c:33
+#: operations/common/dropshadow.c:74 operations/common/layer.c:33
 #: operations/common/opacity.c:25 operations/common/opacity.c:283
 #: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Αδιαφάνεια"
 
-#: operations/common/dropshadow.c:117
+#: operations/common/dropshadow.c:204
 msgid "Dropshadow"
 msgstr "Πίπτουσα σκιά"
 
-#: operations/common/dropshadow.c:119
+#: operations/common/dropshadow.c:206
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Δημιουργεί εφέ πίπτουσας σκιάς στη μνήμη εισόδου"
 
@@ -1934,17 +2016,17 @@ msgstr "Πώς ο πυρήνας Γκάους διακρίνεται"
 
 #: operations/common/gaussian-blur.c:58 operations/common/gblur-1d.c:60
 #: operations/common/map-absolute.c:26 operations/common/map-relative.c:30
-#: operations/common/median-blur.c:56 operations/common-gpl3+/displace.c:43
+#: operations/common/median-blur.c:57 operations/common-gpl3+/displace.c:43
 #: operations/common-gpl3+/fractal-trace.c:67
 #: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
-#: operations/workshop/voronoi-diagram.cc:38
+#: operations/workshop/external/voronoi-diagram.cc:38
 msgid "Abyss policy"
 msgstr "Πολιτική αβύσσου"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
-#: operations/common/median-blur.c:58 operations/common-gpl3+/displace.c:46
+#: operations/common/median-blur.c:59 operations/common-gpl3+/displace.c:46
 #: operations/common-gpl3+/ripple.c:59 operations/transform/scale.c:103
-#: operations/workshop/voronoi-diagram.cc:41
+#: operations/workshop/external/voronoi-diagram.cc:41
 msgid "How image edges are handled"
 msgstr "Πώς διαχειρίζονται τα άκρα εικόνας"
 
@@ -1990,15 +2072,15 @@ msgstr "Θόλωση Γκάους 1Δ"
 #: operations/common/gegl-buffer-load-op.c:24
 #: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-save.c:25
 #: operations/common/magick-load.c:26 operations/common/open-buffer.c:25
-#: operations/common/save.c:25 operations/core/load.c:28
+#: operations/common/save.c:26 operations/core/load.c:29
 #: operations/external/exr-save.cc:24 operations/external/ff-load.c:29
 #: operations/external/ff-save.c:29 operations/external/gif-load.c:34
 #: operations/external/jp2-load.c:25 operations/external/jpg-load.c:24
-#: operations/external/jpg-save.c:25 operations/external/npy-save.c:31
-#: operations/external/png-load.c:27 operations/external/png-save.c:26
+#: operations/external/jpg-save.c:27 operations/external/npy-save.c:31
+#: operations/external/png-load.c:32 operations/external/png-save.c:28
 #: operations/external/ppm-load.c:25 operations/external/ppm-save.c:25
 #: operations/external/rgbe-load.c:26 operations/external/rgbe-save.c:26
-#: operations/external/svg-load.c:25 operations/external/tiff-load.c:24
+#: operations/external/svg-load.c:25 operations/external/tiff-load.c:29
 #: operations/external/tiff-save.c:25 operations/external/webp-load.c:25
 #: operations/external/webp-save.c:25 operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
@@ -2222,9 +2304,9 @@ msgid "Image Gradient"
 msgstr "Διαβάθμιση εικόνας"
 
 #: operations/common/image-gradient.c:228
-msgid "Compute gradient magnitude and/or direction by central differencies"
+msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
-"Υπολογισμός βαθμού διαβάθμισης και/ή κατεύθυνσης από κεντρικές διαφορές"
+"Υπολογισμός μεγέθους διαβάθμισης και/ή κατεύθυνσης από κεντρικές διαφορές"
 
 #: operations/common/introspect.c:26
 msgid "Node"
@@ -2248,7 +2330,7 @@ msgstr ""
 
 #: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
-#: operations/workshop/voronoi-diagram.cc:32
+#: operations/workshop/external/voronoi-diagram.cc:32
 msgid "Invert"
 msgstr "Αντιστροφή"
 
@@ -2278,9 +2360,8 @@ msgstr "Κάθετη θέση σε εικονοστοιχεία"
 
 #: operations/common/layer.c:46 operations/common/noise-cell.c:36
 #: operations/common/noise-perlin.c:27 operations/common/noise-simplex.c:31
-#: operations/common/saturation.c:31
+#: operations/common/normal-map.c:30 operations/common/saturation.c:31
 #: operations/workshop/external/lens-correct.c:50
-#: operations/workshop/normal-map.c:30
 msgid "Scale"
 msgstr "Κλίμακα"
 
@@ -2304,44 +2385,44 @@ msgstr "Στρώση"
 msgid "A layer in the traditional sense"
 msgstr "Μια στρώση στην παραδοσιακή έννοια"
 
-#: operations/common/levels.c:26
+#: operations/common/levels.c:28
 msgid "Low input"
 msgstr "Χαμηλή είσοδος"
 
-#: operations/common/levels.c:27
+#: operations/common/levels.c:29
 msgid "Input luminance level to become lowest output"
 msgstr "Στάθμη φωτεινότητας εισόδου για να γίνει πολύ χαμηλή έξοδος"
 
-#: operations/common/levels.c:31
+#: operations/common/levels.c:33
 msgid "High input"
 msgstr "Υψηλή είσοδος"
 
-#: operations/common/levels.c:32
+#: operations/common/levels.c:34
 msgid "Input luminance level to become white"
 msgstr "Στάθμη φωτεινότητας εισόδου για να γίνει λευκή"
 
-#: operations/common/levels.c:36
+#: operations/common/levels.c:38
 msgid "Low output"
 msgstr "Χαμηλή έξοδος"
 
-#: operations/common/levels.c:37
+#: operations/common/levels.c:39
 msgid "Lowest luminance level in output"
 msgstr "Πολύ χαμηλή στάθμη φωτεινότητας στην έξοδο"
 
-#: operations/common/levels.c:41
+#: operations/common/levels.c:43
 msgid "High output"
 msgstr "Υψηλή έξοδος"
 
-#: operations/common/levels.c:42
+#: operations/common/levels.c:44
 msgid "Highest luminance level in output"
 msgstr "Πολύ υψηλή στάθμη φωτεινότητας στην έξοδο"
 
-#: operations/common/levels.c:203 operations/common/posterize.c:24
+#: operations/common/levels.c:205 operations/common/posterize.c:24
 #: operations/external/matting-levin.c:41
 msgid "Levels"
 msgstr "Στάθμες"
 
-#: operations/common/levels.c:205
+#: operations/common/levels.c:207
 msgid "Remaps the intensity range of the image"
 msgstr "Ξανααπεικονίζει την περιοχή έντασης της εικόνας"
 
@@ -2584,8 +2665,8 @@ msgstr "Μεγάλη σκιά"
 msgid "Creates a long-shadow effect"
 msgstr "Δημιουργεί εφέ μεγάλης σκιάς"
 
-#: operations/common/magick-load.c:27 operations/core/load.c:29
-#: operations/external/png-load.c:28 operations/external/ppm-load.c:26
+#: operations/common/magick-load.c:27 operations/core/load.c:30
+#: operations/external/png-load.c:33 operations/external/ppm-load.c:26
 #: operations/external/raw-load.c:37 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
@@ -2658,11 +2739,11 @@ msgstr ""
 "είσοδος δείγματος με βοηθητική μνήμη που περιέχει σχετικές συντεταγμένες "
 "πηγής"
 
-#: operations/common/matting-global.c:579
+#: operations/common/matting-global.c:600
 msgid "Matting Global"
 msgstr "Γενικός αστιλβής"
 
-#: operations/common/matting-global.c:581
+#: operations/common/matting-global.c:602
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha matte. Set white as foreground, black as background for the tri-map. "
@@ -2708,21 +2789,6 @@ msgstr ""
 "Κανονικοποίηση της γεωμετρίας με ανάλογη ταχύτητα με την τοπική μέση τιμή "
 "της καμπυλότητας"
 
-#: operations/common/median-blur.c:28 operations/common/pixelize.c:29
-#: operations/common/vignette.c:26
-msgid "Square"
-msgstr "Τετράγωνο"
-
-#: operations/common/median-blur.c:29 operations/common/newsprint.c:26
-#: operations/common/vignette.c:25
-msgid "Circle"
-msgstr "Κύκλος"
-
-#: operations/common/median-blur.c:30 operations/common/newsprint.c:27
-#: operations/common/pixelize.c:27 operations/common/vignette.c:27
-msgid "Diamond"
-msgstr "Ρόμβος"
-
 #: operations/common/median-blur.c:38
 msgid "Neighborhood"
 msgstr "Γειτνίαση"
@@ -2731,39 +2797,41 @@ msgstr "Γειτνίαση"
 msgid "Neighborhood type"
 msgstr "Τύπος γειτνίασης"
 
-#: operations/common/median-blur.c:46
-msgid "Neighborhood radius"
-msgstr "Ακτίνα γειτνίασης"
+#: operations/common/median-blur.c:47
+msgid ""
+"Neighborhood radius, a negative value will calculate with inverted "
+"percentiles"
+msgstr "Ακτίνα γειτνίασης, αρνητική τιμή θα υπολογίσει ανεστραμμένα ποσοστά"
 
-#: operations/common/median-blur.c:48
+#: operations/common/median-blur.c:49
 msgid "Percentile"
 msgstr "Ποσοστό"
 
-#: operations/common/median-blur.c:50
+#: operations/common/median-blur.c:51
 msgid "Neighborhood color percentile"
 msgstr "Ποσοστό χρώματος γειτνίασης"
 
-#: operations/common/median-blur.c:52
+#: operations/common/median-blur.c:53
 msgid "Alpha percentile"
 msgstr "Ποσοστό άλφα"
 
-#: operations/common/median-blur.c:54
+#: operations/common/median-blur.c:55
 msgid "Neighborhood alpha percentile"
 msgstr "Ποσοστό άλφα γειτνίασης"
 
-#: operations/common/median-blur.c:60
+#: operations/common/median-blur.c:61
 msgid "High precision"
 msgstr "Υψηλή ακρίβεια"
 
-#: operations/common/median-blur.c:61
+#: operations/common/median-blur.c:62
 msgid "Avoid clipping and quantization (slower)"
 msgstr "Αποφυγή ψαλιδίσματος και κβαντισμού (πιο αργό)"
 
-#: operations/common/median-blur.c:995
+#: operations/common/median-blur.c:1004
 msgid "Median Blur"
 msgstr "Μέση θόλωση"
 
-#: operations/common/median-blur.c:998
+#: operations/common/median-blur.c:1007
 msgid ""
 "Blur resulting from computing the median color in the neighborhood of each "
 "pixel."
@@ -2799,7 +2867,7 @@ msgstr "Αριθμός κατόπτρων για χρήση"
 msgid "position of symmetry center in output"
 msgstr "θέση κέντρου συμμετρίας στην έξοδο"
 
-#: operations/common/mirrors.c:58 operations/common/vignette.c:61
+#: operations/common/mirrors.c:58 operations/common/vignette.c:63
 #: operations/common-gpl3+/displace.c:81
 #: operations/common-gpl3+/motion-blur-circular.c:41
 #: operations/common-gpl3+/motion-blur-zoom.c:40
@@ -2811,7 +2879,7 @@ msgstr "Κέντρο X"
 msgid "X axis ratio for the center of mirroring"
 msgstr "Λόγος άξονα Χ για το κέντρο κατοπτρισμού"
 
-#: operations/common/mirrors.c:63 operations/common/vignette.c:66
+#: operations/common/mirrors.c:63 operations/common/vignette.c:68
 #: operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:46
 #: operations/common-gpl3+/motion-blur-zoom.c:46
@@ -3283,11 +3351,6 @@ msgstr "Επιλογή θορύβου"
 msgid "Randomly interchange some pixels with neighbors"
 msgstr "Τυχαία ανταλλαγή μερικών εικονοστοιχείων με γειτονικά"
 
-#: operations/common/noise-reduction.c:26 operations/common-cxx/warp.cc:35
-#: operations/common-gpl3+/wind.c:64
-msgid "Strength"
-msgstr "Ισχύς"
-
 #: operations/common/noise-reduction.c:27
 msgid ""
 "Controls the number of iterations; lower values give less plastic results"
@@ -3335,15 +3398,15 @@ msgstr ""
 "Χρήση κατανομής θορύβου Γκάους, όταν αποεπιλεγεί χρησιμοποιείται αντ' αυτής "
 "μια γραμμική κατανομή θορύβου"
 
-#: operations/common/noise-rgb.c:39 operations/workshop/normal-map.c:25
+#: operations/common/noise-rgb.c:39 operations/common/normal-map.c:25
 msgid "Red"
 msgstr "Κόκκινο"
 
-#: operations/common/noise-rgb.c:44 operations/workshop/normal-map.c:26
+#: operations/common/noise-rgb.c:44 operations/common/normal-map.c:26
 msgid "Green"
 msgstr "Πράσινο"
 
-#: operations/common/noise-rgb.c:48 operations/workshop/normal-map.c:27
+#: operations/common/noise-rgb.c:48 operations/common/normal-map.c:27
 msgid "Blue"
 msgstr "Γαλάζιο"
 
@@ -3378,6 +3441,67 @@ msgstr "Διασπορά θορύβου"
 #: operations/common/noise-spread.c:162
 msgid "Move pixels around randomly"
 msgstr "Μετακίνηση εικονοστοιχείων ολόγυρα στην τύχη"
+
+#: operations/common/normal-map.c:31
+msgid "The amount by which to scale the height values"
+msgstr "Ποσότητα κλιμάκωσης των τιμών ύψους"
+
+#: operations/common/normal-map.c:35
+msgid "X Component"
+msgstr "Συστατικό Χ"
+
+#: operations/common/normal-map.c:38
+msgid "The component used for the X coordinates"
+msgstr "Το χρησιμοποιούμενο συστατικό για τις συντεταγμένες Χ"
+
+#: operations/common/normal-map.c:40
+msgid "Y Component"
+msgstr "Συστατικό Υ"
+
+#: operations/common/normal-map.c:43
+msgid "The component used for the Y coordinates"
+msgstr "Το χρησιμοποιούμενο συστατικό για τις συντεταγμένες Υ"
+
+#: operations/common/normal-map.c:45
+msgid "Flip X"
+msgstr "Αναστροφή Χ"
+
+#: operations/common/normal-map.c:46
+msgid "Flip the X coordinates"
+msgstr "Αναστροφή συντεταγμένων Χ"
+
+#: operations/common/normal-map.c:48
+msgid "Flip Y"
+msgstr "Αναστροφή Υ"
+
+#: operations/common/normal-map.c:49
+msgid "Flip the Y coordinates"
+msgstr "Αναστροφή συντεταγμένων Υ"
+
+#: operations/common/normal-map.c:51
+msgid "Full Z Range"
+msgstr "Πλήρης περιοχή Ζ"
+
+#: operations/common/normal-map.c:52
+msgid "Use the full [0,1] range to encode the Z coordinates"
+msgstr "Χρήση της πλήρους περιοχής [0, 1] για κωδικοποίηση των συντεταγμένων Ζ"
+
+#: operations/common/normal-map.c:54 operations/common-gpl3+/maze.c:63
+#: operations/common-gpl3+/noise-solid.c:56 operations/common-gpl3+/ripple.c:61
+msgid "Tileable"
+msgstr "Παραθέσιμο"
+
+#: operations/common/normal-map.c:55
+msgid "Generate a tileable map"
+msgstr "Δημιουργία παραθέσιμου χάρτη"
+
+#: operations/common/normal-map.c:249
+msgid "Normal Map"
+msgstr "Κανονικός χάρτης"
+
+#: operations/common/normal-map.c:252
+msgid "Generate a normal map from a height map"
+msgstr "Δημιουργία κανονικού χάρτη από χάρτη ύψους"
 
 #: operations/common/opacity.c:26
 msgid ""
@@ -3482,7 +3606,7 @@ msgstr "Κάθετος λόγος μεγέθους ενός εικονοστοι
 #: operations/common/pixelize.c:76 operations/common-gpl3+/apply-lens.c:44
 #: operations/common-gpl3+/cubism.c:39
 #: operations/common-gpl3+/lens-distortion.c:57
-#: operations/common-gpl3+/tile-paper.c:75
+#: operations/common-gpl3+/tile-paper.c:76
 msgid "Background color"
 msgstr "Χρώμα παρασκηνίου"
 
@@ -3731,15 +3855,26 @@ msgstr ""
 msgid "Changes the saturation"
 msgstr "Αλλάζει τον κορεσμό"
 
-#: operations/common/save.c:26
+#: operations/common/save.c:27
 msgid "Path of file to save."
 msgstr "Διαδρομή αρχείου για αποθήκευση."
 
-#: operations/common/save.c:200
+#: operations/common/save.c:28 operations/core/load.c:33
+#: operations/external/jpg-save.c:46 operations/external/png-load.c:36
+#: operations/external/png-save.c:36 operations/external/tiff-load.c:39
+#: operations/external/tiff-save.c:34
+msgid "Metadata"
+msgstr "Μεταδεδομένα"
+
+#: operations/common/save.c:29
+msgid "Object providing image metadata"
+msgstr "Αντικείμενο που παρέχει μεταδεδομένα εικόνας"
+
+#: operations/common/save.c:208
 msgid "Save"
 msgstr "Αποθήκευση"
 
-#: operations/common/save.c:203
+#: operations/common/save.c:211
 msgid ""
 "Multipurpose file saver, that uses other native save handlers depending on "
 "extension, use the format specific save ops to specify additional parameters."
@@ -3838,20 +3973,6 @@ msgid "Spherical cap apex angle, as a fraction of the co-angle of view"
 msgstr ""
 "Γωνία κορυφής σφαιρικού τμήματος, ως κλάσμα της παραπληρωματικής γωνίας "
 "προβολής"
-
-#. note that the code can handle negative curvatures
-#. * (in the [-1, 0) range), in which case the image is
-#. * wrapped around the back face, rather than the front
-#. * face, of the spherical cap.  we disable negative
-#. * curvatures atm, in particular, since they produce
-#. * the same result when the angle of view is 0, and
-#. * since their upper-bound, wrt the angle of view, is
-#. * arbitrary.
-#.
-#: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
-#: operations/common-gpl3+/edge.c:42
-msgid "Amount"
-msgstr "Βαθμός"
 
 #: operations/common/spherize.c:53
 msgid ""
@@ -4087,12 +4208,12 @@ msgstr ""
 "Αντιστρέφει το συστατικό τιμής, το αποτέλεσμα έχει τη φωτεινότητα "
 "ανεστραμμένη, διατηρώντας το χρώμα."
 
-#: operations/common/vignette.c:30
+#: operations/common/vignette.c:32
 msgid "Vignette shape"
 msgstr "Σχήμα βινιέτας"
 
 #. TRANSLATORS: the string 'black' should not be translated
-#: operations/common/vignette.c:36
+#: operations/common/vignette.c:38
 msgid ""
 "Defaults to 'black', you can use transparency here to erase portions of an "
 "image"
@@ -4100,36 +4221,32 @@ msgstr ""
 "Προεπιλογή σε 'μαύρο', μπορείτε να χρησιμοποιήσετε διαφάνεια εδώ για να "
 "σβήσετε τμήματα της εικόνας"
 
-#: operations/common/vignette.c:39
+#: operations/common/vignette.c:41
 msgid "How far out vignetting goes as portion of half image diagonal"
 msgstr ""
 "Πόσο μακριά εκτός βινιέτας πηγαίνει ως τμήμα της μισής διαγωνίου εικόνας"
 
-#: operations/common/vignette.c:43
-msgid "Softness"
-msgstr "Απαλότητα"
-
-#: operations/common/vignette.c:46
+#: operations/common/vignette.c:48
 msgid "Gamma"
 msgstr "Γάμα"
 
-#: operations/common/vignette.c:47
+#: operations/common/vignette.c:49
 msgid "Falloff linearity"
 msgstr "Μείωση γραμμικότητας"
 
-#: operations/common/vignette.c:50
+#: operations/common/vignette.c:52
 msgid "Proportion"
 msgstr "Αναλογία"
 
-#: operations/common/vignette.c:51
+#: operations/common/vignette.c:53
 msgid "How close we are to image proportions"
 msgstr "Πόσο κοντά ήμαστε στις αναλογίες εικόνας"
 
-#: operations/common/vignette.c:54
+#: operations/common/vignette.c:56
 msgid "Squeeze"
 msgstr "Συμπίεση"
 
-#: operations/common/vignette.c:55
+#: operations/common/vignette.c:57
 msgid ""
 "Aspect ratio to use, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf 1.0 = "
 "inf:1, this is applied after proportion is taken into account, to directly "
@@ -4139,18 +4256,18 @@ msgstr ""
 "inf:1, αυτό εφαρμόζεται μετά τη λήψη της αναλογίας, για άμεση χρήση "
 "συντελεστή συμπίεσης ως αναλογιών, ορίστε την αναλογία σε 0,0."
 
-#: operations/common/vignette.c:71 operations/common-gpl3+/bayer-matrix.c:51
+#: operations/common/vignette.c:73 operations/common-gpl3+/bayer-matrix.c:51
 #: operations/common-gpl3+/linear-sinusoid.c:96
 #: operations/common-gpl3+/spiral.c:64
 #: operations/workshop/external/spyrograph.c:69
 msgid "Rotation"
 msgstr "Περιστροφή"
 
-#: operations/common/vignette.c:384
+#: operations/common/vignette.c:390
 msgid "Vignette"
 msgstr "Βινιέτα"
 
-#: operations/common/vignette.c:388
+#: operations/common/vignette.c:394
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -4275,12 +4392,12 @@ msgstr ""
 "μνήμης GEGL."
 
 #: operations/common-cxx/distance-transform.cc:30
-#: operations/workshop/voronoi-diagram.cc:24
+#: operations/workshop/external/voronoi-diagram.cc:24
 msgid "Metric"
 msgstr "Μετρικό"
 
 #: operations/common-cxx/distance-transform.cc:32
-#: operations/workshop/voronoi-diagram.cc:27
+#: operations/workshop/external/voronoi-diagram.cc:27
 msgid "Metric to use for the distance calculation"
 msgstr "Μετρικό που θα χρησιμοποιηθεί για τον υπολογισμό απόστασης"
 
@@ -4304,11 +4421,11 @@ msgstr "Αριθμός υπολογισμών για τον μέσο όρο τη
 msgid "Normalize output to range 0.0 to 1.0."
 msgstr "Κανονικοποίηση της εξόδου να κυμαίνεται από 0,0 έως 1,0."
 
-#: operations/common-cxx/distance-transform.cc:475
+#: operations/common-cxx/distance-transform.cc:476
 msgid "Distance Transform"
 msgstr "Μετασχηματισμός απόστασης"
 
-#: operations/common-cxx/distance-transform.cc:478
+#: operations/common-cxx/distance-transform.cc:479
 msgid "Calculate a distance transform"
 msgstr "Υπολογίζει έναν μετασχηματισμό απόστασης"
 
@@ -4569,15 +4686,15 @@ msgstr "Στάθμη που η πλήρης διαφάνεια πρέπει να
 msgid "Ambient lighting factor"
 msgstr "Συντελεστής περιβάλλοντος φως"
 
-#: operations/common-gpl3+/bump-map.c:452
+#: operations/common-gpl3+/bump-map.c:449
 msgid "Height Map"
 msgstr "Ύψος χάρτη"
 
-#: operations/common-gpl3+/bump-map.c:457
+#: operations/common-gpl3+/bump-map.c:454
 msgid "Bump Map"
 msgstr "Απεικόνιση ανάγλυφου"
 
-#: operations/common-gpl3+/bump-map.c:459
+#: operations/common-gpl3+/bump-map.c:456
 msgid ""
 "This plug-in uses the algorithm described by John Schlag, \"Fast Embossing "
 "Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). It "
@@ -4796,7 +4913,7 @@ msgstr "Κορεσμός πλακιδίου"
 msgid "Expand tiles by this amount"
 msgstr "Επέκταση πλακιδίων κατά αυτήν την ποσότητα"
 
-#: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:76
+#: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:77
 msgid "The tiles' background color"
 msgstr "Το χρώμα παρασκηνίου των πλακιδίων"
 
@@ -5035,11 +5152,11 @@ msgstr "Συντεταγμένη Χ του κέντρου μετατόπισης
 msgid "Y coordinate of the displacement center"
 msgstr "Συντεταγμένη Υ του κέντρου μετατόπισης"
 
-#: operations/common-gpl3+/displace.c:478
+#: operations/common-gpl3+/displace.c:480
 msgid "Displace"
 msgstr "Λαπλάς"
 
-#: operations/common-gpl3+/displace.c:481
+#: operations/common-gpl3+/displace.c:483
 msgid "Displace pixels as indicated by displacement maps"
 msgstr ""
 "Μετατόπιση εικονοστοιχείων όπως υποδεικνύεται από τις απεικονίσεις "
@@ -5562,11 +5679,6 @@ msgstr "Τύπος αλγορίθμου"
 #: operations/common-gpl3+/maze.c:61
 msgid "Maze algorithm type"
 msgstr "Τύπος αλγορίθμου δαιδάλου"
-
-#: operations/common-gpl3+/maze.c:63 operations/common-gpl3+/noise-solid.c:56
-#: operations/common-gpl3+/ripple.c:61 operations/workshop/normal-map.c:54
-msgid "Tileable"
-msgstr "Παραθέσιμο"
 
 #: operations/common-gpl3+/maze.c:67
 msgid "Foreground Color"
@@ -6136,10 +6248,6 @@ msgstr "Ημίτονο"
 msgid "Generate complex sinusoidal textures"
 msgstr "Δημιουργία σύνθετων ημιτονοειδών υφών"
 
-#: operations/common-gpl3+/softglow.c:26
-msgid "Glow radius"
-msgstr "Ακτίνα λάμψης"
-
 #: operations/common-gpl3+/softglow.c:235
 msgid "Softglow"
 msgstr "Ήπια λάμψη"
@@ -6290,12 +6398,12 @@ msgid "Textures the image as if it were an artist's canvas."
 msgstr "Υφές της εικόνας σαν να ήταν καμβάς καλλιτέχνη."
 
 #: operations/common-gpl3+/tile-glass.c:28
-#: operations/common-gpl3+/tile-paper.c:39
+#: operations/common-gpl3+/tile-paper.c:40
 msgid "Tile Width"
 msgstr "Πλάτος παράθεσης"
 
 #: operations/common-gpl3+/tile-glass.c:34
-#: operations/common-gpl3+/tile-paper.c:46
+#: operations/common-gpl3+/tile-paper.c:47
 msgid "Tile Height"
 msgstr "Ύψος παράθεσης"
 
@@ -6308,77 +6416,77 @@ msgid "Simulate distortion caused by rectangular glass tiles"
 msgstr ""
 "Προσομοίωση παραμόρφωσης που παράγεται από ορθογώνιες γυάλινες παραθέσεις"
 
-#: operations/common-gpl3+/tile-paper.c:27
+#: operations/common-gpl3+/tile-paper.c:28
 msgid "Transparent"
 msgstr "Διαφανής"
 
-#: operations/common-gpl3+/tile-paper.c:28
+#: operations/common-gpl3+/tile-paper.c:29
 msgid "Inverted image"
 msgstr "Αντεστραμμένη εικόνα"
 
-#: operations/common-gpl3+/tile-paper.c:29
+#: operations/common-gpl3+/tile-paper.c:30
 msgid "Image"
 msgstr "Εικόνα"
 
-#: operations/common-gpl3+/tile-paper.c:34
+#: operations/common-gpl3+/tile-paper.c:35
 msgid "Background"
 msgstr "Παρασκήνιο"
 
-#: operations/common-gpl3+/tile-paper.c:35
+#: operations/common-gpl3+/tile-paper.c:36
 msgid "Ignore"
 msgstr "Παράβλεψη"
 
-#: operations/common-gpl3+/tile-paper.c:36
+#: operations/common-gpl3+/tile-paper.c:37
 msgid "Force"
 msgstr "Εξαναγκασμός"
 
-#: operations/common-gpl3+/tile-paper.c:40
+#: operations/common-gpl3+/tile-paper.c:41
 msgid "Width of the tile"
 msgstr "Πλάτος του πλακιδίου"
 
-#: operations/common-gpl3+/tile-paper.c:47
+#: operations/common-gpl3+/tile-paper.c:48
 msgid "Height of the tile"
 msgstr "Ύψος του πλακιδίου"
 
-#: operations/common-gpl3+/tile-paper.c:53
 #: operations/common-gpl3+/tile-paper.c:54
+#: operations/common-gpl3+/tile-paper.c:55
 msgid "Move rate"
 msgstr "Ρυθμός μετακίνησης"
 
-#: operations/common-gpl3+/tile-paper.c:59
+#: operations/common-gpl3+/tile-paper.c:60
 msgid "Wrap around"
 msgstr "Αναδίπλωση"
 
-#: operations/common-gpl3+/tile-paper.c:60
+#: operations/common-gpl3+/tile-paper.c:61
 msgid "Wrap the fractional tiles"
 msgstr "Αναδίπλωση των κλαστικών πλακιδίων"
 
-#: operations/common-gpl3+/tile-paper.c:62
+#: operations/common-gpl3+/tile-paper.c:63
 msgid "Fractional type"
 msgstr "Τύπος κλαστικού"
 
-#: operations/common-gpl3+/tile-paper.c:65
+#: operations/common-gpl3+/tile-paper.c:66
 msgid "Fractional Type"
 msgstr "Τύπος κλαστικού"
 
-#: operations/common-gpl3+/tile-paper.c:67
+#: operations/common-gpl3+/tile-paper.c:68
 msgid "Centering"
 msgstr "Κεντράρισμα"
 
-#: operations/common-gpl3+/tile-paper.c:68
+#: operations/common-gpl3+/tile-paper.c:69
 msgid "Centering of the tiles"
 msgstr "Κεντράρισμα των πλακιδίων"
 
-#: operations/common-gpl3+/tile-paper.c:70
-#: operations/common-gpl3+/tile-paper.c:73
+#: operations/common-gpl3+/tile-paper.c:71
+#: operations/common-gpl3+/tile-paper.c:74
 msgid "Background type"
 msgstr "Τύπος παρασκηνίου"
 
-#: operations/common-gpl3+/tile-paper.c:462
+#: operations/common-gpl3+/tile-paper.c:463
 msgid "Paper Tile"
 msgstr "Πλακίδιο χαρτιού"
 
-#: operations/common-gpl3+/tile-paper.c:467
+#: operations/common-gpl3+/tile-paper.c:468
 msgid "Cut image into paper tiles, and slide them"
 msgstr "Κοπή εικόνας σε χάρτινα πλακίδια και μετακίνησή τους"
 
@@ -6823,11 +6931,11 @@ msgstr ""
 msgid "Reset origin"
 msgstr "Επαναφορά αρχικού"
 
-#: operations/core/crop.c:250
+#: operations/core/crop.c:236
 msgid "Crop"
 msgstr "Περικοπή"
 
-#: operations/core/crop.c:251
+#: operations/core/crop.c:237
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
 "connected is used."
@@ -6835,19 +6943,24 @@ msgstr ""
 "Περικόπτει προσωρινή μνήμη (buffer), εάν το βοηθητικό χειριστήριο είναι "
 "συνδεμένο, χρησιμοποιείται το πλαίσιο οριοθέτησης του συνδεμένου κόμβου."
 
-#: operations/core/load.c:30 operations/external/jp2-load.c:27
+#: operations/core/load.c:31 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
-#: operations/external/png-load.c:29 operations/external/ppm-load.c:27
-#: operations/external/svg-load.c:27 operations/external/tiff-load.c:26
+#: operations/external/png-load.c:34 operations/external/ppm-load.c:27
+#: operations/external/svg-load.c:27 operations/external/tiff-load.c:31
 #: operations/external/webp-load.c:27
 msgid "URI"
 msgstr "URI"
 
-#: operations/core/load.c:31
+#: operations/core/load.c:32
 msgid "URI of file to load."
 msgstr "URI του αρχείου για φόρτωση."
 
-#: operations/core/load.c:366
+#: operations/core/load.c:34 operations/external/jpg-save.c:47
+#: operations/external/png-load.c:37 operations/external/png-save.c:37
+msgid "Object to supply image metadata"
+msgstr "Αντικείμενο για παροχή μεταδεδομένων εικόνας"
+
+#: operations/core/load.c:376
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -6929,7 +7042,7 @@ msgstr "Φόρτωση πλαισίου FFmpeg"
 msgid "FFmpeg video frame importer."
 msgstr "Εισαγωγή πλαισίου βίντεο FFmpeg."
 
-#: operations/external/ff-save.c:30 operations/external/png-save.c:27
+#: operations/external/ff-save.c:30 operations/external/png-save.c:29
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr "Στόχος διαδρομής και ονόματος αρχείου, χρήση '-' για τυπική έξοδο."
@@ -7080,7 +7193,7 @@ msgstr "Δέκτης εξόδου βίντεο FFmpeg"
 
 #: operations/external/gif-load.c:35 operations/external/jp2-load.c:26
 #: operations/external/jpg-load.c:25 operations/external/svg-load.c:26
-#: operations/external/tiff-load.c:25 operations/external/webp-load.c:26
+#: operations/external/tiff-load.c:30 operations/external/webp-load.c:26
 msgid "Path of file to load"
 msgstr "Διαδρομή αρχείου για φόρτωση"
 
@@ -7113,7 +7226,7 @@ msgid "GIF image loader."
 msgstr "Φορτωτής εικόνας GIF."
 
 #: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
-#: operations/external/tiff-load.c:27 operations/external/webp-load.c:28
+#: operations/external/tiff-load.c:32 operations/external/webp-load.c:28
 msgid "URI for file to load"
 msgstr "URI του αρχείου για φόρτωση"
 
@@ -7193,53 +7306,53 @@ msgstr "Φόρτωση εικόνας JPEG"
 msgid "JPEG image loader using libjpeg"
 msgstr "Φόρτωση εικόνας JPEG χρησιμοποιώντας libjpeg"
 
-#: operations/external/jpg-save.c:26 operations/external/npy-save.c:32
+#: operations/external/jpg-save.c:28 operations/external/npy-save.c:32
 #: operations/external/tiff-save.c:26 operations/external/webp-save.c:26
 msgid "Target path and filename, use '-' for stdout"
 msgstr "Στόχος διαδρομής και ονόματος αρχείου, χρήση '-' για τυπική έξοδο"
 
-#: operations/external/jpg-save.c:29
+#: operations/external/jpg-save.c:31
 msgid "JPEG compression quality (between 1 and 100)"
 msgstr "Ποιότητα συμπίεσης JPEG (μεταξύ 1 και 100)"
 
-#: operations/external/jpg-save.c:32
+#: operations/external/jpg-save.c:34
 msgid "Smoothing"
 msgstr "Εξομάλυνση"
 
-#: operations/external/jpg-save.c:33
+#: operations/external/jpg-save.c:35
 msgid "Smoothing factor from 1 to 100; 0 disables smoothing"
 msgstr ""
 "Συντελεστής εξομάλυνσης από 1 έως 100· το 0 απενεργοποιεί την εξομάλυνση"
 
-#: operations/external/jpg-save.c:36
+#: operations/external/jpg-save.c:38
 msgid "Optimize"
 msgstr "Βελτιστοποίηση"
 
-#: operations/external/jpg-save.c:37
+#: operations/external/jpg-save.c:39
 msgid "Use optimized huffman tables"
 msgstr "Χρήση βελτιστοποιημένων πινάκων huffman"
 
-#: operations/external/jpg-save.c:38
+#: operations/external/jpg-save.c:40
 msgid "Progressive"
 msgstr "Σταδιακό"
 
-#: operations/external/jpg-save.c:39
+#: operations/external/jpg-save.c:41
 msgid "Create progressive JPEG images"
 msgstr "Δημιουργία σταδιακών εικόνων JPEG"
 
-#: operations/external/jpg-save.c:41
+#: operations/external/jpg-save.c:43
 msgid "Grayscale"
 msgstr "Κλίμακα του γκρίζου"
 
-#: operations/external/jpg-save.c:42
+#: operations/external/jpg-save.c:44
 msgid "Create a grayscale (monochrome) image"
 msgstr "Δημιουργία εικόνας κλίμακας του γκρι (μονόχρωμη)"
 
-#: operations/external/jpg-save.c:420
+#: operations/external/jpg-save.c:523
 msgid "JPEG File Saver"
 msgstr "Αποθηκευτής αρχείου JPEG"
 
-#: operations/external/jpg-save.c:422
+#: operations/external/jpg-save.c:525
 msgid "JPEG image saver, using libjpeg"
 msgstr "Αποθήκευση εικόνας JPEG, χρησιμοποιώντας libjpeg"
 
@@ -7321,11 +7434,11 @@ msgstr "Ενεργές στάθμες"
 msgid "Number of levels to perform solving"
 msgstr "Αριθμός σταθμών επίλυσης"
 
-#: operations/external/matting-levin.c:1455
+#: operations/external/matting-levin.c:1478
 msgid "Matting Levin"
 msgstr "Αστιλβές Λέβιν"
 
-#: operations/external/matting-levin.c:1458
+#: operations/external/matting-levin.c:1481
 msgid ""
 "Given a sparse user supplied tri-map and an input image, create a foreground "
 "alpha mat. Set white as selected, black as unselected, for the tri-map."
@@ -7555,40 +7668,40 @@ msgstr ""
 "Χρησιμοποιεί το GdkPixbuf τοποθετημένο στη θέση της μνήμης στο <em>pixbuf</"
 "em>."
 
-#: operations/external/png-load.c:30
+#: operations/external/png-load.c:35
 msgid "URI for file to load."
 msgstr "URI του αρχείου για φόρτωση."
 
-#: operations/external/png-load.c:564
+#: operations/external/png-load.c:652
 msgid "PNG File Loader"
 msgstr "Φορτωτής αρχείου PNG"
 
-#: operations/external/png-load.c:566
+#: operations/external/png-load.c:654
 msgid "PNG image loader."
 msgstr "Φόρτωση εικόνας PNG."
 
-#: operations/external/png-save.c:28
+#: operations/external/png-save.c:30
 msgid "Compression"
 msgstr "Συμπίεση"
 
-#: operations/external/png-save.c:29
+#: operations/external/png-save.c:31
 msgid "PNG compression level from 1 to 9"
 msgstr "Στάθμη συμπίεσης PNG από 1 έως 9"
 
-#: operations/external/png-save.c:31 operations/external/ppm-save.c:29
+#: operations/external/png-save.c:33 operations/external/ppm-save.c:29
 #: operations/external/tiff-save.c:27
 msgid "Bitdepth"
 msgstr "Βάθος δυαδικού"
 
-#: operations/external/png-save.c:32 operations/external/ppm-save.c:30
+#: operations/external/png-save.c:34 operations/external/ppm-save.c:30
 msgid "8 and 16 are the currently accepted values."
 msgstr "8 και 16 είναι μεταξύ των τρεχουσών αποδεκτών τιμών."
 
-#: operations/external/png-save.c:312
+#: operations/external/png-save.c:420
 msgid "PNG File Saver"
 msgstr "Φορτωτής αρχείου PNG"
 
-#: operations/external/png-save.c:314
+#: operations/external/png-save.c:422
 msgid "PNG image saver, using libpng"
 msgstr "Αποθήκευση εικόνας PNG, χρησιμοποιώντας libpng"
 
@@ -7812,19 +7925,23 @@ msgstr "Απόδοση κειμένου"
 msgid "Display a string of text using pango and cairo."
 msgstr "Εμφάνιση συμβολοσειράς κειμένου χρησιμοποιώντας pango και cairo."
 
-#: operations/external/tiff-load.c:29
+#: operations/external/tiff-load.c:34
 msgid "Directory"
 msgstr "Κατάλογος"
 
-#: operations/external/tiff-load.c:30
+#: operations/external/tiff-load.c:35
 msgid "Image file directory (subfile)"
 msgstr "Κατάλογος αρχείου εικόνας (υποαρχείο)"
 
-#: operations/external/tiff-load.c:915
+#: operations/external/tiff-load.c:40 operations/external/tiff-save.c:35
+msgid "Object to receive image metadata"
+msgstr "Αντικείμενο για υποδοχή μεταδεδομένων εικόνας"
+
+#: operations/external/tiff-load.c:1034
 msgid "TIFF File Loader"
 msgstr "Φόρτωση αρχείου TIFF"
 
-#: operations/external/tiff-load.c:917
+#: operations/external/tiff-load.c:1036
 msgid "TIFF image loader using libtiff"
 msgstr "Φόρτωση εικόνας JPEG χρησιμοποιώντας libjpeg"
 
@@ -7843,11 +7960,11 @@ msgstr ""
 "κινητό σημείο υποδιαστολής -1 σημαίνει αυτόματο, 0 σημαίνει ακέραιος, 1 "
 "σημαίνει κινητή υποδιαστολή."
 
-#: operations/external/tiff-save.c:728
+#: operations/external/tiff-save.c:825
 msgid "TIFF File Saver"
 msgstr "Αποθηκευτής αρχείου TIFF"
 
-#: operations/external/tiff-save.c:730
+#: operations/external/tiff-save.c:827
 msgid "TIFF image saver using libtiff"
 msgstr "Αποθήκευση εικόνας TIFF χρησιμοποιώντας libjpeg"
 
@@ -8415,6 +8532,79 @@ msgstr ""
 "αποκορεσμό των τονισμών και των σκιών και χωρίς τροποποιήσεις της κόκκινης "
 "χροιάς."
 
+#: operations/workshop/band-tune.c:25
+msgid "Detail band"
+msgstr "Λεπτομερής ζώνη"
+
+#: operations/workshop/band-tune.c:26
+msgid "Features size for detail band, used for noise removal."
+msgstr ""
+"Μέγεθος γνωρισμάτων για λεπτομερή ζώνη, που χρησιμοποιείται στην αφαίρεση "
+"θορύβου."
+
+#: operations/workshop/band-tune.c:30
+msgid ""
+"Detail scale, negative values diminish signal in detail band, positive "
+"values increase signal."
+msgstr ""
+"Λεπτομερής κλίμακα, οι αρνητικές τιμές μειώνουν το σήμα σε λεπτομερή ζώνη, "
+"οι θετικές τιμές αυξάνουν το σήμα."
+
+#: operations/workshop/band-tune.c:31 operations/workshop/band-tune.c:47
+msgid ""
+"Scaling factor for image features at radius, -1 cancels them out 1.0 edge "
+"enhances"
+msgstr ""
+"Συντελεστής κλιμάκωσης για γνωρίσματα εικόνας σε ακτίνα, -1 τα ακυρώνει 1,0 "
+"βελτιώνει το άκρο"
+
+#: operations/workshop/band-tune.c:35
+msgid "Detail bandwidth"
+msgstr "Λεπτομερές εύρος ζώνης"
+
+#: operations/workshop/band-tune.c:41
+msgid "Edge band"
+msgstr "Άκρο ζώνης"
+
+#: operations/workshop/band-tune.c:42
+msgid ""
+"Features size for edge band, used to compensate for loos of edges in detail "
+"pass."
+msgstr ""
+"Μέγεθος γνωρισμάτων για ζώνη άκρου, χρησιμοποιείται για αντιστάθμιση "
+"απώλειας άκρων σε λεπτομερή διέλευση."
+
+#: operations/workshop/band-tune.c:46
+msgid ""
+"Edge scale, negative values diminish signal in detail band, positive values "
+"increase signal."
+msgstr ""
+"Κλίμακα άκρου, αρνητικές τιμές μειώνουν το σήμα στη λεπτομερή ζώνη, θετικές "
+"τιμές αυξάνουν το σήμα."
+
+#: operations/workshop/band-tune.c:51
+msgid "Edge bandwidth"
+msgstr "Εύρος ζώνης άκρου"
+
+#: operations/workshop/band-tune.c:55
+msgid "Visualize Adjustment Mask"
+msgstr "Οπτικοποίηση μάσκας ρύθμισης"
+
+#: operations/workshop/band-tune.c:234
+msgid "Band tune"
+msgstr "Συντονισμός ζώνης"
+
+#: operations/workshop/band-tune.c:236
+msgid ""
+"Parametric band equalizer for tuning frequency bands of image, the op "
+"provides abstracted input parameters that control two difference of "
+"gaussians driven band pass filters used as adjustments of the image signal."
+msgstr ""
+"Παραμετρικός ισοσταθμιστής ζώνης, για συντονισμό ζωνών συχνότητας εικόνας, η "
+"λειτουργία παρέχει αποκομμένες παραμέτρους εισαγωγής που ελέγχουν δύο "
+"διαφορές Γκάους οδηγούμενες από φίλτρα διέλευσης ζώνης που χρησιμοποιούνται "
+"ως ρυθμίσεις του σήματος εικόνας."
+
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
 msgstr "Ομαλότητα"
@@ -8855,6 +9045,36 @@ msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr ""
 "Είσοδος Video4Linux2, ιστοκάμερες, άρπαγες πλαισίου και παρόμοιων συσκευών."
 
+#: operations/workshop/external/voronoi-diagram.cc:29
+msgid "Mask"
+msgstr "Μάσκα"
+
+#: operations/workshop/external/voronoi-diagram.cc:30
+msgid "Unseeded region color"
+msgstr "Άσπαρτο (μη σημειωμένο) χρώμα περιοχής"
+
+#: operations/workshop/external/voronoi-diagram.cc:33
+msgid "Invert mask"
+msgstr "Αντιστροφή μάσκας"
+
+#: operations/workshop/external/voronoi-diagram.cc:35
+msgid "Seed edges"
+msgstr "Άκρα σπόρου"
+
+#: operations/workshop/external/voronoi-diagram.cc:36
+msgid "Whether the image edges are also seeded"
+msgstr "Εάν τα άκρα της εικόνας σπέρνονται επίσης"
+
+#: operations/workshop/external/voronoi-diagram.cc:524
+msgid "Voronoi Diagram"
+msgstr "Διάγραμμα Voronoi"
+
+#: operations/workshop/external/voronoi-diagram.cc:531
+msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
+msgstr ""
+"Βάφει κάθε άσπαρτο (μη σημειωμένο) εικονοστοιχείο με το χρώμα του "
+"πλησιέστερου σπόρου (σημειωμένου) του εικονοστοιχείου."
+
 #: operations/workshop/generated/average.c:111
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
 msgstr "Πράξη ανάμειξης εικόνας 'μέσος όρος' (<tt>c = (cA + aB)/2</tt>)"
@@ -8957,62 +9177,6 @@ msgstr "Ολοκληρωμένη εικόνα"
 msgid "Compute integral and squared integral image"
 msgstr "Υπολογισμός ολοκληρωμένης και τετραγωνικά ολοκληρωμένης εικόνας"
 
-#: operations/workshop/normal-map.c:31
-msgid "The amount by which to scale the height values"
-msgstr "Ποσότητα κλιμάκωσης των τιμών ύψους"
-
-#: operations/workshop/normal-map.c:35
-msgid "X Component"
-msgstr "Συστατικό Χ"
-
-#: operations/workshop/normal-map.c:38
-msgid "The component used for the X coordinates"
-msgstr "Το χρησιμοποιούμενο συστατικό για τις συντεταγμένες Χ"
-
-#: operations/workshop/normal-map.c:40
-msgid "Y Component"
-msgstr "Συστατικό Υ"
-
-#: operations/workshop/normal-map.c:43
-msgid "The component used for the Y coordinates"
-msgstr "Το χρησιμοποιούμενο συστατικό για τις συντεταγμένες Υ"
-
-#: operations/workshop/normal-map.c:45
-msgid "Flip X"
-msgstr "Αναστροφή Χ"
-
-#: operations/workshop/normal-map.c:46
-msgid "Flip the X coordinates"
-msgstr "Αναστροφή συντεταγμένων Χ"
-
-#: operations/workshop/normal-map.c:48
-msgid "Flip Y"
-msgstr "Αναστροφή Υ"
-
-#: operations/workshop/normal-map.c:49
-msgid "Flip the Y coordinates"
-msgstr "Αναστροφή συντεταγμένων Υ"
-
-#: operations/workshop/normal-map.c:51
-msgid "Full Z Range"
-msgstr "Πλήρης περιοχή Ζ"
-
-#: operations/workshop/normal-map.c:52
-msgid "Use the full [0,1] range to encode the Z coordinates"
-msgstr "Χρήση της πλήρους περιοχής [0, 1] για κωδικοποίηση των συντεταγμένων Ζ"
-
-#: operations/workshop/normal-map.c:55
-msgid "Generate a tileable map"
-msgstr "Δημιουργία παραθέσιμου χάρτη"
-
-#: operations/workshop/normal-map.c:249
-msgid "Normal Map"
-msgstr "Κανονικός χάρτης"
-
-#: operations/workshop/normal-map.c:251
-msgid "Generate a normal map from a height map"
-msgstr "Δημιουργία κανονικού χάρτη από χάρτη ύψους"
-
 #: operations/workshop/rawbayer-load.c:156
 msgid ""
 "Raw image loader, wrapping dcraw with pipes, provides the raw bayer grid as "
@@ -9075,35 +9239,8 @@ msgstr "Επιλεκτικός κορεσμός χροιάς"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Επιλεκτική ρύθμιση χροιάς, κορεσμού και φωτεινότητας (Lightness)"
 
-#: operations/workshop/voronoi-diagram.cc:29
-msgid "Mask"
-msgstr "Μάσκα"
-
-#: operations/workshop/voronoi-diagram.cc:30
-msgid "Unseeded region color"
-msgstr "Άσπαρτο (μη σημειωμένο) χρώμα περιοχής"
-
-#: operations/workshop/voronoi-diagram.cc:33
-msgid "Invert mask"
-msgstr "Αντιστροφή μάσκας"
-
-#: operations/workshop/voronoi-diagram.cc:35
-msgid "Seed edges"
-msgstr "Άκρα σπόρου"
-
-#: operations/workshop/voronoi-diagram.cc:36
-msgid "Whether the image edges are also seeded"
-msgstr "Εάν τα άκρα της εικόνας σπέρνονται επίσης"
-
-#: operations/workshop/voronoi-diagram.cc:524
-msgid "Voronoi Diagram"
-msgstr "Διάγραμμα Voronoi"
-
-#: operations/workshop/voronoi-diagram.cc:531
-msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
-msgstr ""
-"Βάφει κάθε άσπαρτο (μη σημειωμένο) εικονοστοιχείο με το χρώμα του "
-"πλησιέστερου σπόρου (σημειωμένου) του εικονοστοιχείου."
+#~ msgid "Neighborhood radius"
+#~ msgstr "Ακτίνα γειτνίασης"
 
 #~ msgid "Black and green angle"
 #~ msgstr "Μαύρη και πράσινη γωνία"
