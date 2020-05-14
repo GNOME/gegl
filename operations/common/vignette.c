@@ -192,7 +192,7 @@ cl_process (GeglOperation       *operation,
   const size_t gbl_size[2] = {roi->width, roi->height};
 
   gint   shape = (gint) o->shape;
-  gfloat gamma = o->gamma;
+  gfloat gamma = MAX (o->gamma, 0.0001);
 
   cl_int cl_err = 0;
   cl_float4 f_color;
@@ -263,6 +263,7 @@ process (GeglOperation       *operation,
   GeglRectangle *bounds = gegl_operation_source_get_bounding_box (operation, "input");
   gfloat length = hypot (bounds->width, bounds->height)/2;
   gfloat rdiff;
+  gfloat gamma;
   gfloat cost, sint;
   gfloat costy, sinty;
 
@@ -288,6 +289,8 @@ process (GeglOperation       *operation,
   rdiff = radius1-radius0;
   if (fabs (rdiff) < 0.0001)
     rdiff = 0.0001;
+
+  gamma = MAX (o->gamma, 0.0001);
 
   midx = bounds->x + bounds->width * o->x;
   midy = bounds->y + bounds->height * o->y;
@@ -341,13 +344,13 @@ process (GeglOperation       *operation,
       if (strength>1.0)
         strength = 1.0;
 
-      if (o->gamma > 1.9999 && o->gamma < 2.0001)
+      if (gamma > 1.9999 && gamma < 2.0001)
         strength *= strength;  /* fast path for default gamma */
-      else if (o->gamma != 1.0)
-        strength = powf(strength, o->gamma); /* this gamma factor is
-                                              * very expensive.. and precision
-                                              * is not very important
-                                              */
+      else if (gamma != 1.0)
+        strength = powf(strength, gamma); /* this gamma factor is
+                                           * very expensive.. and precision
+                                           * is not very important
+                                           */
 
       out_pixel[0]=in_pixel[0] * (1.0-strength) + color[0] * strength;
       out_pixel[1]=in_pixel[1] * (1.0-strength) + color[1] * strength;
