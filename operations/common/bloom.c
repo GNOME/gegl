@@ -44,6 +44,9 @@ property_double (strength, _("Strength"), 50.0)
     value_range (0.0, 1000.0)
     ui_range    (0.0, 100.0)
 
+property_boolean (limit_exposure, _("Limit exposure"), FALSE)
+    description (_("Don't over-expose highlights"))
+
 #else
 
 #define GEGL_OP_META
@@ -60,7 +63,7 @@ typedef struct
   GeglNode *rgb_clip;
   GeglNode *multiply;
   GeglNode *gaussian_blur;
-  GeglNode *add;
+  GeglNode *combine;
 } Nodes;
 
 static void
@@ -81,6 +84,11 @@ update (GeglOperation *operation)
 
       gegl_node_set (nodes->rgb_clip,
                      "high-limit", o->strength / 100.0,
+                     NULL);
+
+      gegl_node_set (nodes->combine,
+                     "operation", o->limit_exposure ? "gegl:screen" :
+                                                      "gegl:add",
                      NULL);
     }
 }
@@ -134,7 +142,7 @@ attach (GeglOperation *operation)
     "operation",     "gegl:gaussian-blur",
     NULL);
 
-  nodes->add            = gegl_node_new_child (
+  nodes->combine        = gegl_node_new_child (
     operation->node,
     "operation",     "gegl:add",
     NULL);
@@ -154,11 +162,11 @@ attach (GeglOperation *operation)
   gegl_node_link (nodes->multiply, nodes->gaussian_blur);
 
   gegl_node_connect_to (input,                "output",
-                        nodes->add,           "input");
+                        nodes->combine,       "input");
   gegl_node_connect_to (nodes->gaussian_blur, "output",
-                        nodes->add,           "aux");
+                        nodes->combine,       "aux");
 
-  gegl_node_link (nodes->add, output);
+  gegl_node_link (nodes->combine, output);
 
   gegl_operation_meta_redirect (operation,            "radius",
                                 nodes->gaussian_blur, "std-dev-x");
@@ -172,7 +180,7 @@ attach (GeglOperation *operation)
                                    nodes->rgb_clip,
                                    nodes->multiply,
                                    nodes->gaussian_blur,
-                                   nodes->add,
+                                   nodes->combine,
                                    NULL);
 
   update (operation);
