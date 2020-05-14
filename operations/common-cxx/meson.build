@@ -2,6 +2,7 @@
 gegl_common_cxx_sources = files(
   'distance-transform.cc',
   'piecewise-blend.cc',
+  'variable-blur.c',
   'warp.cc',
 )
 
