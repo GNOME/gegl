@@ -126,6 +126,7 @@ operations/common/wavelet-blur.c
 operations/common/weighted-blend.c
 operations/common/write-buffer.c
 operations/common-cxx/distance-transform.cc
+operations/common-cxx/focus-blur.c
 operations/common-cxx/piecewise-blend.cc
 operations/common-cxx/variable-blur.c
 operations/common-cxx/warp.cc
