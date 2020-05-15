@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-14 21:50+0000\n"
-"PO-Revision-Date: 2020-05-15 12:25+0300\n"
+"POT-Creation-Date: 2020-05-15 16:38+0000\n"
+"PO-Revision-Date: 2020-05-15 21:01+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -660,7 +660,7 @@ msgstr "М'якість краю області німба"
 #: operations/common/median-blur.c:43 operations/common/snn-mean.c:26
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:61
+#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:64
 #: operations/common-cxx/variable-blur.c:28
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
@@ -685,12 +685,10 @@ msgid "Glow strength"
 msgstr "Потужність ефекту німба"
 
 #: operations/common/bloom.c:47
-#| msgid "Combine Exposures"
 msgid "Limit exposure"
 msgstr "Обмежити експонування"
 
 #: operations/common/bloom.c:48
-#| msgid "Adjust exposure of highlights"
 msgid "Don't over-expose highlights"
 msgstr "Не збільшувати експонування виблисків"
 
@@ -2646,7 +2644,7 @@ msgid "Shadow length"
 msgstr "Довжина тіні"
 
 #: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
-#: operations/common-cxx/focus-blur.c:71
+#: operations/common-cxx/focus-blur.c:74
 msgid "Midpoint"
 msgstr "Середня точка"
 
@@ -2887,7 +2885,7 @@ msgid "position of symmetry center in output"
 msgstr "положення центру симетрії на виході"
 
 #: operations/common/mirrors.c:58 operations/common/vignette.c:65
-#: operations/common-cxx/focus-blur.c:51 operations/common-gpl3+/displace.c:81
+#: operations/common-cxx/focus-blur.c:54 operations/common-gpl3+/displace.c:81
 #: operations/common-gpl3+/motion-blur-circular.c:41
 #: operations/common-gpl3+/motion-blur-zoom.c:40
 #: operations/common-gpl3+/supernova.c:33 operations/common-gpl3+/waves.c:26
@@ -2899,7 +2897,7 @@ msgid "X axis ratio for the center of mirroring"
 msgstr "Пропорція за віссю X для центра віддзеркалення"
 
 #: operations/common/mirrors.c:63 operations/common/vignette.c:70
-#: operations/common-cxx/focus-blur.c:56 operations/common-gpl3+/displace.c:88
+#: operations/common-cxx/focus-blur.c:59 operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:46
 #: operations/common-gpl3+/motion-blur-zoom.c:46
 #: operations/common-gpl3+/supernova.c:39 operations/common-gpl3+/waves.c:31
@@ -3262,7 +3260,7 @@ msgid "The scale of the noise function"
 msgstr "Масштаб шумової функції"
 
 #: operations/common/noise-cell.c:40 operations/common/pixelize.c:32
-#: operations/common-cxx/focus-blur.c:46
+#: operations/common-cxx/focus-blur.c:49
 msgid "Shape"
 msgstr "Форма"
 
@@ -4249,7 +4247,9 @@ msgstr ""
 "Наскільки далеко має заходити віньєтування у частках від половини діагоналі "
 "зображення"
 
-#: operations/common/vignette.c:49
+#: operations/common/vignette.c:49 operations/common-cxx/focus-blur.c:46
+#: operations/common-cxx/piecewise-blend.cc:38
+#: operations/common-cxx/variable-blur.c:39
 msgid "Gamma"
 msgstr "Гама"
 
@@ -4280,7 +4280,7 @@ msgstr ""
 "пропорцій. Щоб безпосередньо використати коефіцієнт стискання як пропорції, "
 "встановіть значення пропорції 0.0."
 
-#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:78
+#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:81
 #: operations/common-gpl3+/bayer-matrix.c:51
 #: operations/common-gpl3+/linear-sinusoid.c:96
 #: operations/common-gpl3+/spiral.c:64
@@ -4452,54 +4452,48 @@ msgid "Out-of-focus blur radius"
 msgstr "Радіус розмиття поза фокусом"
 
 #: operations/common-cxx/focus-blur.c:42
-#| msgid "Blue levels"
 msgid "Blur levels"
 msgstr "Рівні розмивання"
 
 #: operations/common-cxx/focus-blur.c:43
 #: operations/common-cxx/variable-blur.c:36
-#| msgid "Number of clusters"
 msgid "Number of blur levels"
 msgstr "Кількість рівнів розмивання"
 
-#: operations/common-cxx/focus-blur.c:62
+#: operations/common-cxx/focus-blur.c:65
 msgid "Focus-region outer radius"
 msgstr "Зовнішній радіус області фокусування"
 
-#: operations/common-cxx/focus-blur.c:67 operations/common-gpl3+/photocopy.c:29
+#: operations/common-cxx/focus-blur.c:70 operations/common-gpl3+/photocopy.c:29
 #: operations/common-gpl3+/softglow.c:33
 msgid "Sharpness"
 msgstr "Різкість"
 
-#: operations/common-cxx/focus-blur.c:68
+#: operations/common-cxx/focus-blur.c:71
 msgid "Focus-region inner limit"
 msgstr "Внутрішнє обмеження області фокусування"
 
-#: operations/common-cxx/focus-blur.c:72
+#: operations/common-cxx/focus-blur.c:75
 msgid "Focus-transition midpoint"
 msgstr "Середня точка переходу фокусування"
 
-#: operations/common-cxx/focus-blur.c:75 operations/common-gpl3+/waves.c:47
+#: operations/common-cxx/focus-blur.c:78 operations/common-gpl3+/waves.c:47
 msgid "Aspect ratio"
 msgstr "Відношення сторін"
 
-#: operations/common-cxx/focus-blur.c:263
-#| msgid "Box Blur"
+#: operations/common-cxx/focus-blur.c:268
 msgid "Focus Blur"
 msgstr "Фокусне розмивання"
 
-#: operations/common-cxx/focus-blur.c:265
-#| msgid "Wrap image around a spherical cap"
+#: operations/common-cxx/focus-blur.c:270
 msgid "Blur the image around a focal point"
 msgstr "Розмиття зображення навколо точки фокусування"
 
 #: operations/common-cxx/piecewise-blend.cc:29
-#| msgid "Number of downsampled levels to use"
 msgid "Number of blend levels"
 msgstr "Кількість рівнів злиття"
 
 #: operations/common-cxx/piecewise-blend.cc:32
-#| msgid "Normalize"
 msgid "Normalized mask"
 msgstr "Нормалізована маска"
 
@@ -4508,37 +4502,36 @@ msgid "Mask values are in the [0,1] range"
 msgstr "Значення маскування у діапазоні [0, 1]"
 
 #: operations/common-cxx/piecewise-blend.cc:35
-#: operations/common-cxx/variable-blur.c:39
-#| msgid "Invert mask"
+#: operations/common-cxx/variable-blur.c:42
 msgid "Linear mask"
 msgstr "Лінійна маска"
 
 #: operations/common-cxx/piecewise-blend.cc:36
-#: operations/common-cxx/variable-blur.c:40
-#| msgid "Use pixel luminance values"
+#: operations/common-cxx/variable-blur.c:43
 msgid "Use linear mask values"
 msgstr "Використання значень лінійної маски"
 
-#: operations/common-cxx/piecewise-blend.cc:300
-#| msgid "Weighted Blend"
+#: operations/common-cxx/piecewise-blend.cc:39
+msgid "Raise gamma for non-linear spacing of steps."
+msgstr "Збільшувати гамму для нелінійного розподілу кроків."
+
+#: operations/common-cxx/piecewise-blend.cc:306
 msgid "Piecewise Blend"
 msgstr "Часткове змішування"
 
-#: operations/common-cxx/piecewise-blend.cc:302
+#: operations/common-cxx/piecewise-blend.cc:308
 msgid "Blend a chain of inputs using a mask"
 msgstr "Злиття ланцюжка вхідних даних за допомогою маски"
 
 #: operations/common-cxx/variable-blur.c:29
-#| msgid "Blur radius"
 msgid "Maximal blur radius"
 msgstr "Максимальний радіус розмивання"
 
-#: operations/common-cxx/variable-blur.c:184
-#| msgid "Gaussian Blur"
+#: operations/common-cxx/variable-blur.c:189
 msgid "Variable Blur"
 msgstr "Змінне розмиття"
 
-#: operations/common-cxx/variable-blur.c:186
+#: operations/common-cxx/variable-blur.c:191
 msgid "Blur the image by a varying amount using a mask"
 msgstr "Розмиття зображення зі змінною потужністю з використанням маски"
 
