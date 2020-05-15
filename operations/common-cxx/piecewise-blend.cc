@@ -35,6 +35,9 @@ property_boolean (normalized_mask, _("Normalized mask"), TRUE)
 property_boolean (linear_mask, _("Linear mask"), TRUE)
     description (_("Use linear mask values"))
 
+property_double (gamma, _("Gamma"), 1.0)
+    description (_("Raise gamma for non-linear spacing of steps."))
+    value_range (0.0, 10.0)
 #else
 
 #define GEGL_OP_BASE
@@ -252,7 +255,10 @@ process (GeglOperation        *operation,
               gint          j;
               gint          c;
 
-              v = *in * scale;
+              v = powf (*in, 1.0/o->gamma);
+
+              v = v * scale;
+
 
               v = v > 0.0f ? v < scale ? v : scale : 0.0f;
 
