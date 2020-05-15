@@ -43,6 +43,9 @@ property_int (blur_levels, _("Blur levels"), 8)
     description (_("Number of blur levels"))
     value_range (2, 16)
 
+property_double (gamma, _("Gamma"), 1.5)
+    value_range (0.0, 10.0)
+
 property_enum (shape, _("Shape"),
                GeglFocusBlurShape,
                gegl_focus_blur_shape,
@@ -207,6 +210,8 @@ attach (GeglOperation *operation)
                                 nodes->variable_blur, "radius");
   gegl_operation_meta_redirect (operation,            "blur-levels",
                                 nodes->variable_blur, "levels");
+  gegl_operation_meta_redirect (operation,            "gamma",
+                                nodes->variable_blur, "gamma");
 
   gegl_operation_meta_watch_nodes (operation,
                                    nodes->color,

@@ -36,6 +36,9 @@ property_int (levels, _("Levels"), 8)
     description (_("Number of blur levels"))
     value_range (2, MAX_LEVELS)
 
+property_double (gamma, _("Gamma"), 1.0)
+    value_range (0.0, 10.0)
+
 property_boolean (linear_mask, _("Linear mask"), FALSE)
     description (_("Use linear mask values"))
 
@@ -73,8 +76,8 @@ update (GeglOperation *operation)
           gegl_node_link (nodes->input, nodes->gaussian_blur[i]);
 
           gegl_node_set (nodes->gaussian_blur[i],
-                         "std-dev-x", i * o->radius / (o->levels - 1),
-                         "std-dev-y", i * o->radius / (o->levels - 1),
+                         "std-dev-x", o->radius * powf(1.0 * i / (o->levels - 1),o->gamma),
+                         "std-dev-y", o->radius * powf(1.0 * i / (o->levels - 1),o->gamma),
                          NULL);
         }
 
@@ -104,6 +107,8 @@ attach (GeglOperation *operation)
     "operation", "gegl:piecewise-blend",
     NULL);
 
+  gegl_operation_meta_redirect (operation,              "gamma",
+                                nodes->piecewise_blend, "gamma");
   gegl_operation_meta_redirect (operation,              "levels",
                                 nodes->piecewise_blend, "levels");
   gegl_operation_meta_redirect (operation,              "linear-mask",
