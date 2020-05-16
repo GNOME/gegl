@@ -32,7 +32,7 @@ property_int (levels, _("Levels"), 0)
     value_range (0, N_AUX_INPUTS)
 
 property_double (gamma, _("Gamma"), 1.0)
-    description (_("Raise gamma for non-linear spacing of steps."))
+    description (_("Gamma factor for blend-level spacing"))
     value_range (0.0, G_MAXDOUBLE)
     ui_range    (0.1, 10.0)
 

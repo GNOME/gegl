@@ -21,7 +21,10 @@
 #include <math.h>
 #include <stdio.h>
 
+/* #define MANUAL_CONTROL */
+
 #define MAX_LEVELS 16
+#define GAMMA      1.5
 
 #ifdef GEGL_PROPERTIES
 
@@ -32,15 +35,26 @@ property_double (radius, _("Radius"), 10.0)
     ui_gamma    (2.0)
     ui_meta     ("unit", "pixel-distance")
 
-property_int (levels, _("Levels"), 8)
+property_boolean (linear_mask, _("Linear mask"), FALSE)
+    description (_("Use linear mask values"))
+
+#ifdef MANUAL_CONTROL
+
+property_int (levels, _("Blur levels"), 8)
     description (_("Number of blur levels"))
     value_range (2, MAX_LEVELS)
 
-property_double (gamma, _("Gamma"), 1.0)
-    value_range (0.0, 10.0)
+property_double (gamma, _("Blur gamma"), GAMMA)
+    description (_("Gamma factor for blur-level spacing"))
+    value_range (0.0, G_MAXDOUBLE)
+    ui_range    (0.1, 10.0)
 
-property_boolean (linear_mask, _("Linear mask"), FALSE)
-    description (_("Use linear mask values"))
+#else
+
+property_boolean (high_quality, _("High quality"), FALSE)
+    description (_("Generate more accurate and consistent output (slower)"))
+
+#endif
 
 #else
 
@@ -69,15 +83,43 @@ update (GeglOperation *operation)
 
   if (nodes)
     {
-      gint i;
+      gdouble gamma;
+      gint    levels;
+      gint    i;
 
-      for (i = 1; i < o->levels; i++)
+#ifdef MANUAL_CONTROL
+      levels = o->levels;
+      gamma  = o->gamma;
+#else
+      if (o->high_quality)
         {
+          levels = MAX_LEVELS;
+        }
+      else
+        {
+          levels = ceil (CLAMP (log (o->radius) / G_LN2 + 3,
+                                2, MAX_LEVELS));
+        }
+
+      gamma = GAMMA;
+#endif
+
+      gegl_node_set (nodes->piecewise_blend,
+                     "levels", levels,
+                     "gamma",  gamma,
+                     NULL);
+
+      for (i = 1; i < levels; i++)
+        {
+          gdouble radius;
+
           gegl_node_link (nodes->input, nodes->gaussian_blur[i]);
 
+          radius = o->radius * pow ((gdouble) i / (levels - 1), gamma);
+
           gegl_node_set (nodes->gaussian_blur[i],
-                         "std-dev-x", o->radius * powf(1.0 * i / (o->levels - 1),o->gamma),
-                         "std-dev-y", o->radius * powf(1.0 * i / (o->levels - 1),o->gamma),
+                         "std-dev-x", radius,
+                         "std-dev-y", radius,
                          NULL);
         }
 
@@ -107,10 +149,6 @@ attach (GeglOperation *operation)
     "operation", "gegl:piecewise-blend",
     NULL);
 
-  gegl_operation_meta_redirect (operation,              "gamma",
-                                nodes->piecewise_blend, "gamma");
-  gegl_operation_meta_redirect (operation,              "levels",
-                                nodes->piecewise_blend, "levels");
   gegl_operation_meta_redirect (operation,              "linear-mask",
                                 nodes->piecewise_blend, "linear-mask");
 

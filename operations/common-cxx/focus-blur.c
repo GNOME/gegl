@@ -20,6 +20,8 @@
 #include <glib/gi18n-lib.h>
 #include <math.h>
 
+/* #define MANUAL_CONTROL */
+
 #define MAX_GAMMA 1000.0
 
 #ifdef GEGL_PROPERTIES
@@ -38,13 +40,6 @@ property_double (blur_radius, _("Blur radius"), 25.0)
     ui_range    (0.0, 100.0)
     ui_gamma    (2.0)
     ui_meta     ("unit", "pixel-distance")
-
-property_int (blur_levels, _("Blur levels"), 8)
-    description (_("Number of blur levels"))
-    value_range (2, 16)
-
-property_double (gamma, _("Gamma"), 1.5)
-    value_range (0.0, 10.0)
 
 property_enum (shape, _("Shape"),
                GeglFocusBlurShape,
@@ -82,6 +77,24 @@ property_double (rotation, _("Rotation"), 0.0)
     value_range (-180.0, +180.0)
     ui_meta     ("unit", "degree")
     ui_meta     ("direction", "cw")
+
+#ifdef MANUAL_CONTROL
+
+property_int (blur_levels, _("Blur levels"), 8)
+    description (_("Number of blur levels"))
+    value_range (2, 16)
+
+property_double (blur_gamma, _("Blur gamma"), 1.5)
+    description (_("Gamma factor for blur-level spacing"))
+    value_range (0.0, G_MAXDOUBLE)
+    ui_range    (0.1, 10.0)
+
+#else
+
+property_boolean (high_quality, _("High quality"), FALSE)
+    description (_("Generate more accurate and consistent output (slower)"))
+
+#endif
 
 #else
 
@@ -208,10 +221,15 @@ attach (GeglOperation *operation)
 
   gegl_operation_meta_redirect (operation,            "blur-radius",
                                 nodes->variable_blur, "radius");
+#ifdef MANUAL_CONTROL
   gegl_operation_meta_redirect (operation,            "blur-levels",
                                 nodes->variable_blur, "levels");
-  gegl_operation_meta_redirect (operation,            "gamma",
+  gegl_operation_meta_redirect (operation,            "blur-gamma",
                                 nodes->variable_blur, "gamma");
+#else
+  gegl_operation_meta_redirect (operation,            "high-quality",
+                                nodes->variable_blur, "high-quality");
+#endif
 
   gegl_operation_meta_watch_nodes (operation,
                                    nodes->color,
