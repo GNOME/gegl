@@ -124,19 +124,8 @@ update (GeglOperation *operation)
 
   if (nodes)
     {
-      GeglColor *color;
-      gdouble    scale;
-      gdouble    squeeze;
-
-      color = gegl_color_new ("black");
-
-      gegl_node_set (nodes->color,
-                     "value", color,
-                     NULL);
-
-      g_object_unref (color);
-
-      color = gegl_color_new ("white");
+      gdouble scale;
+      gdouble squeeze;
 
       if (o->aspect_ratio >= 0.0)
         scale = 1.0 - o->aspect_ratio;
@@ -149,7 +138,6 @@ update (GeglOperation *operation)
         squeeze = -2.0 * atan (scale - 1.0) / G_PI;
 
       gegl_node_set (nodes->vignette,
-                     "color",    color,
                      "shape",    o->shape,
                      "radius",   o->radius,
                      "softness", 1.0 - o->focus,
@@ -162,16 +150,16 @@ update (GeglOperation *operation)
                      "y",        o->y,
                      "rotation", fmod (o->rotation + 360.0, 360.0),
                      NULL);
-
-      g_object_unref (color);
     }
 }
 
 static void
 attach (GeglOperation *operation)
 {
-  GeglProperties *o = GEGL_PROPERTIES (operation);
+  GeglProperties *o     = GEGL_PROPERTIES (operation);
   Nodes          *nodes;
+  GeglColor      *black = gegl_color_new ("black");
+  GeglColor      *white = gegl_color_new ("white");
 
   if (! o->user_data)
     o->user_data = g_slice_new (Nodes);
@@ -184,6 +172,7 @@ attach (GeglOperation *operation)
   nodes->color = gegl_node_new_child (
     operation->node,
     "operation", "gegl:color",
+    "value",     black,
     NULL);
 
   nodes->crop = gegl_node_new_child (
@@ -194,6 +183,7 @@ attach (GeglOperation *operation)
   nodes->vignette = gegl_node_new_child (
     operation->node,
     "operation",  "gegl:vignette",
+    "color",      white,
     "proportion", 0.0,
     NULL);
 
@@ -239,6 +229,9 @@ attach (GeglOperation *operation)
                                    NULL);
 
   update (operation);
+
+  g_object_unref (white);
+  g_object_unref (black);
 }
 
 static void
