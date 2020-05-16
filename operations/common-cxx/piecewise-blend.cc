@@ -23,21 +23,22 @@
 
 #define N_AUX_INPUTS 16
 
+#define EPSILON      1e-6
+
 #ifdef GEGL_PROPERTIES
 
 property_int (levels, _("Levels"), 0)
     description (_("Number of blend levels"))
     value_range (0, N_AUX_INPUTS)
 
-property_boolean (normalized_mask, _("Normalized mask"), TRUE)
-    description (_("Mask values are in the [0,1] range"))
+property_double (gamma, _("Gamma"), 1.0)
+    description (_("Raise gamma for non-linear spacing of steps."))
+    value_range (0.0, G_MAXDOUBLE)
+    ui_range    (0.1, 10.0)
 
 property_boolean (linear_mask, _("Linear mask"), TRUE)
     description (_("Use linear mask values"))
 
-property_double (gamma, _("Gamma"), 1.0)
-    description (_("Raise gamma for non-linear spacing of steps."))
-    value_range (0.0, 10.0)
 #else
 
 #define GEGL_OP_BASE
@@ -169,25 +170,44 @@ process (GeglOperation        *operation,
   GeglBuffer     *output;
   const Babl     *format;
   const Babl     *input_format;
+  gfloat          gamma;
+  gfloat          gamma_inv;
   gfloat          scale;
+  gfloat          scale_inv;
   gint            levels;
+  gboolean        has_gamma;
 
-  levels = o->levels;
+  levels    = o->levels;
 
-  if (o->normalized_mask)
-    scale = levels - 1.0f;
-  else
-    scale = 1.0f;
+  scale     = levels - 1.0f;
+  scale_inv = 1.0f / scale;
+
+  gamma     = levels > 2 ? o->gamma : 1.0f;
+  gamma_inv = 1.0f / gamma;
+
+  has_gamma = fabsf (gamma - 1.0f) > EPSILON;
 
   if (levels == 0)
     {
       return TRUE;
     }
-  else if (levels == 1)
+  else if (levels == 1 || gamma_inv <= EPSILON)
     {
       gegl_operation_context_set_object (
         context, "output",
         gegl_operation_context_get_object (context, "aux1"));
+
+      return TRUE;
+    }
+  else if (gamma <= EPSILON)
+    {
+      gchar aux_name[32];
+
+      sprintf (aux_name, "aux%d", levels);
+
+      gegl_operation_context_set_object (
+        context, "output",
+        gegl_operation_context_get_object (context, aux_name));
 
       return TRUE;
     }
@@ -207,7 +227,11 @@ process (GeglOperation        *operation,
     {
       GeglBuffer         *empty_buffer = NULL;
       GeglBufferIterator *iter;
+      gfloat              v1           = 0.0f;
+      gfloat              v2           = 0.0f;
+      gfloat              range_inv    = 0.0f;
       gint                i;
+      gint                j            = 0;
 
       iter = gegl_buffer_iterator_new (output, area, level, format,
                                        GEGL_ACCESS_WRITE, GEGL_ABYSS_NONE,
@@ -252,20 +276,37 @@ process (GeglOperation        *operation,
               const gfloat *aux1;
               const gfloat *aux2;
               gfloat        v;
-              gint          j;
               gint          c;
 
-              v = powf (*in, 1.0/o->gamma);
+              v = *in;
 
-              v = v * scale;
+              if (! (v >= v1 && v < v2))
+                {
+                  gfloat v_;
 
+                  v_ = v > 0.0f ? v < 1.0f ? v : 1.0f : 0.0f;
 
-              v = v > 0.0f ? v < scale ? v : scale : 0.0f;
+                  if (has_gamma)
+                    v_ = powf (v_, gamma_inv);
 
-              j = (gint) v;
-              j = MIN (j, levels - 2);
+                  v_ *= scale;
 
-              v -= j;
+                  j = (gint) v_;
+                  j = MIN (j, levels - 2);
+
+                  v1 = j       * scale_inv;
+                  v2 = (j + 1) * scale_inv;
+
+                  if (has_gamma)
+                    {
+                      v1 = pow (v1, gamma);
+                      v2 = pow (v2, gamma);
+                    }
+
+                  range_inv = 1.0f / (v2 - v1);
+                }
+
+              v = (v - v1) * range_inv;
 
               aux1 = (const gfloat *) iter->items[2 + j    ].data + 4 * i;
               aux2 = (const gfloat *) iter->items[2 + j + 1].data + 4 * i;
