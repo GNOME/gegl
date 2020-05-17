@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-03-28 18:27+0000\n"
-"PO-Revision-Date: 2020-03-29 12:55+0200\n"
+"POT-Creation-Date: 2020-05-15 16:38+0000\n"
+"PO-Revision-Date: 2020-05-17 12:52+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -32,7 +32,7 @@ msgstr "Nie można odczytać pliku: %s"
 msgid "Invalid graph, abort.\n"
 msgstr "Nieprawidłowy wykres, przerywanie.\n"
 
-#: bin/gegl.c:390 bin/gegl-options.c:135
+#: bin/gegl.c:390 bin/gegl-options.c:133
 #, c-format
 msgid "Unknown GeglOption mode: %d"
 msgstr "Nieznany tryb GeglOption: %d"
@@ -55,8 +55,6 @@ msgid ""
 "     -i, --file      read xml from named file\n"
 "\n"
 "     -x, --xml       use xml provided in next argument\n"
-"\n"
-"     --dot           output a graphviz graph description\n"
 "\n"
 "     -o, --output    output generated image to named file, type based\n"
 "                     on extension.\n"
@@ -91,8 +89,6 @@ msgstr ""
 "\n"
 "     -x, --xml       używa kodu XML podanego w następnym parametrze\n"
 "\n"
-"     --dot           wyświetla opis wykresu Graphviz\n"
-"\n"
 "     -o, --output    umieszcza utworzony obraz w podanym pliku, typ na\n"
 "                     podstawie rozszerzenia.\n"
 "\n"
@@ -110,32 +106,32 @@ msgstr ""
 "filtrów. Po połączeniu można ustawić nowe działanie we właściwościach\n"
 "za pomocą pary właściwość=wartość jako kolejne parametry.\n"
 
-#: bin/gegl-options.c:88
+#: bin/gegl-options.c:86
 #, c-format
 msgid "ERROR: '%s' option expected argument\n"
 msgstr "BŁĄD: opcja „%s” wymaga parametru\n"
 
-#: bin/gegl-options.c:127
+#: bin/gegl-options.c:125
 msgid "Display on screen"
 msgstr "Wyświetla na ekranie"
 
-#: bin/gegl-options.c:129
+#: bin/gegl-options.c:127
 msgid "Print XML"
 msgstr "Wyświetla kod XML"
 
-#: bin/gegl-options.c:131
+#: bin/gegl-options.c:129
 msgid "Output in a file"
 msgstr "Umieszcza w pliku"
 
-#: bin/gegl-options.c:133
+#: bin/gegl-options.c:131
 msgid "Display help information"
 msgstr "Wyświetla informacje o pomocy"
 
-#: bin/gegl-options.c:136
+#: bin/gegl-options.c:134
 msgid "unknown mode"
 msgstr "nieznany tryb"
 
-#: bin/gegl-options.c:141
+#: bin/gegl-options.c:139
 #, c-format
 msgid ""
 "Parsed commandline:\n"
@@ -154,11 +150,11 @@ msgstr ""
 "\tpozostałe: %s\n"
 "\t\n"
 
-#: bin/gegl-options.c:349
+#: bin/gegl-options.c:347
 msgid "Properties:"
 msgstr "Właściwości:"
 
-#: bin/gegl-options.c:459
+#: bin/gegl-options.c:457
 #, c-format
 msgid ""
 "\n"
@@ -293,11 +289,13 @@ msgstr "Czebyszewa"
 
 #: gegl/gegl-enums.c:93 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/common/spherize.c:26
+#: operations/common/vignette.c:28 operations/common-cxx/focus-blur.c:31
 msgid "Horizontal"
 msgstr "Poziomy"
 
 #: gegl/gegl-enums.c:94 operations/common/edge-sobel.c:29
 #: operations/common/noise-spread.c:35 operations/common/spherize.c:27
+#: operations/common/vignette.c:29 operations/common-cxx/focus-blur.c:32
 msgid "Vertical"
 msgstr "Pionowy"
 
@@ -346,37 +344,37 @@ msgstr "Nigdy"
 msgid "Always"
 msgstr "Zawsze"
 
-#: gegl/gegl-init.c:211
+#: gegl/gegl-init.c:212
 msgid "Where GEGL stores its swap"
 msgstr "Gdzie biblioteka GEGL przechowuje obszar wymiany"
 
-#: gegl/gegl-init.c:216
+#: gegl/gegl-init.c:217
 msgid "Compression algorithm used for data stored in the swap"
 msgstr ""
 "Algorytm kompresji używany dla danych przechowywanych w obszarze wymiany"
 
-#: gegl/gegl-init.c:221
+#: gegl/gegl-init.c:222
 msgid "How much memory to (approximately) use for caching imagery"
 msgstr "Ile pamięci (w przybliżeniu) do użycia do pamięci tymczasowej obrazów"
 
-#: gegl/gegl-init.c:226
+#: gegl/gegl-init.c:227
 msgid "Default size of tiles in GeglBuffers"
 msgstr "Domyślny rozmiar kafla w GeglBuffer"
 
-#: gegl/gegl-init.c:231
+#: gegl/gegl-init.c:232
 msgid "The count of pixels to compute simultaneously"
 msgstr "Liczba pikseli do jednoczesnego obliczania"
 
-#: gegl/gegl-init.c:236
+#: gegl/gegl-init.c:237
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr "Jakość wyświetlania, wartość między 0,0 (szybkie) a 1,0 (standardowe)"
 
-#: gegl/gegl-init.c:241
+#: gegl/gegl-init.c:242
 msgid "The number of concurrent processing threads to use"
 msgstr "Liczba jednocześnie używanych wątków przetwarzania"
 
-#: gegl/gegl-init.c:246
+#: gegl/gegl-init.c:247
 msgid "Disable OpenCL"
 msgstr "Wyłącza OpenCL"
 
@@ -596,6 +594,7 @@ msgstr ""
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
+#: operations/common-cxx/focus-blur.c:35
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -649,7 +648,7 @@ msgstr "Ilość"
 msgid "Glow-area brightness threshold"
 msgstr "Próg jasności poświaty"
 
-#: operations/common/bloom.c:31 operations/common/vignette.c:43
+#: operations/common/bloom.c:31 operations/common/vignette.c:46
 msgid "Softness"
 msgstr "Miękkość"
 
@@ -661,8 +660,9 @@ msgstr "Miękkość krawędzi poświaty"
 #: operations/common/c2g.c:28 operations/common/edge-neon.c:48
 #: operations/common/median-blur.c:43 operations/common/snn-mean.c:26
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
-#: operations/common/vignette.c:38 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27
+#: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
+#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:64
+#: operations/common-cxx/variable-blur.c:28
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
 #: operations/common-gpl3+/whirl-pinch.c:46
@@ -685,11 +685,19 @@ msgstr "Siła"
 msgid "Glow strength"
 msgstr "Siła poświaty"
 
-#: operations/common/bloom.c:223
+#: operations/common/bloom.c:47
+msgid "Limit exposure"
+msgstr "Ogranicz ekspozycję"
+
+#: operations/common/bloom.c:48
+msgid "Don't over-expose highlights"
+msgstr "Bez prześwietlania podświetlenia"
+
+#: operations/common/bloom.c:231
 msgid "Bloom"
 msgstr "Poświata"
 
-#: operations/common/bloom.c:225
+#: operations/common/bloom.c:233
 msgid "Add glow around bright areas"
 msgstr "Dodaje poświatę wokół jasnych obszarów"
 
@@ -945,10 +953,10 @@ msgstr "Narysuj wzór szachownicy"
 #: operations/common/color.c:24 operations/common/color.c:87
 #: operations/common/color-overlay.c:26 operations/common/dropshadow.c:67
 #: operations/common/grid.c:64 operations/common/long-shadow.c:83
-#: operations/common/rectangle.c:48 operations/common/vignette.c:34
+#: operations/common/rectangle.c:48 operations/common/vignette.c:36
 #: operations/common-gpl3+/color-to-alpha.c:29
 #: operations/common-gpl3+/supernova.c:61
-#: operations/common-gpl3+/tile-paper.c:30
+#: operations/common-gpl3+/tile-paper.c:31
 #: operations/common-gpl3+/value-propagate.c:55 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
 msgid "Color"
@@ -1698,7 +1706,7 @@ msgstr "Używana metoda mieszania"
 #: operations/common-gpl3+/noise-solid.c:62 operations/common-gpl3+/plasma.c:70
 #: operations/common-gpl3+/shift.c:35 operations/common-gpl3+/sinus.c:50
 #: operations/common-gpl3+/supernova.c:64
-#: operations/common-gpl3+/tile-paper.c:80 operations/common-gpl3+/wind.c:68
+#: operations/common-gpl3+/tile-paper.c:81 operations/common-gpl3+/wind.c:68
 #: operations/workshop/segment-kmeans.c:37
 msgid "Random seed"
 msgstr "Ziarno losowości"
@@ -1717,7 +1725,7 @@ msgstr ""
 "(kolorów i alfy). Można podać różne metody mieszania, aby przeciwdziałać "
 "pasmowaniu spowodowanemu przez kwantyzację."
 
-#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:28
+#: operations/common/domain-transform.c:24 operations/external/jpg-save.c:30
 #: operations/external/webp-save.c:28
 msgid "Quality"
 msgstr "Jakość"
@@ -1756,17 +1764,19 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:28
 #: operations/common/pixelize.c:29 operations/common/vignette.c:26
+#: operations/common-cxx/focus-blur.c:29
 msgid "Square"
 msgstr "Kwadratowy"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
+#: operations/common-cxx/focus-blur.c:28
 msgid "Circle"
 msgstr "Okrąg"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:30
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:27
-#: operations/common/vignette.c:27
+#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:30
 msgid "Diamond"
 msgstr "Romb"
 
@@ -1831,16 +1841,16 @@ msgstr "Kolor cienia (domyślnie „black” — czarny)"
 #. * for example)
 #.
 #: operations/common/dropshadow.c:74 operations/common/layer.c:33
-#: operations/common/opacity.c:25 operations/common/opacity.c:283
+#: operations/common/opacity.c:25 operations/common/opacity.c:290
 #: operations/external/vector-fill.c:29 operations/external/vector-stroke.c:34
 msgid "Opacity"
 msgstr "Krycie"
 
-#: operations/common/dropshadow.c:145
+#: operations/common/dropshadow.c:204
 msgid "Dropshadow"
 msgstr "Cień"
 
-#: operations/common/dropshadow.c:147
+#: operations/common/dropshadow.c:206
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Tworzy efekt cienia na buforze wejściowym"
 
@@ -2018,14 +2028,14 @@ msgstr "Sposób dyskretyzacji jądra Gaussa"
 #: operations/common/median-blur.c:57 operations/common-gpl3+/displace.c:43
 #: operations/common-gpl3+/fractal-trace.c:67
 #: operations/common-gpl3+/ripple.c:56 operations/transform/scale.c:102
-#: operations/workshop/voronoi-diagram.cc:38
+#: operations/workshop/external/voronoi-diagram.cc:38
 msgid "Abyss policy"
 msgstr "Polityka głębi"
 
 #: operations/common/gaussian-blur.c:60 operations/common/gblur-1d.c:62
 #: operations/common/median-blur.c:59 operations/common-gpl3+/displace.c:46
 #: operations/common-gpl3+/ripple.c:59 operations/transform/scale.c:103
-#: operations/workshop/voronoi-diagram.cc:41
+#: operations/workshop/external/voronoi-diagram.cc:41
 msgid "How image edges are handled"
 msgstr "Sposób obsługi krawędzi obrazu"
 
@@ -2071,15 +2081,15 @@ msgstr "Jednowymiarowe rozmycie Gaussa"
 #: operations/common/gegl-buffer-load-op.c:24
 #: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-save.c:25
 #: operations/common/magick-load.c:26 operations/common/open-buffer.c:25
-#: operations/common/save.c:25 operations/core/load.c:28
+#: operations/common/save.c:26 operations/core/load.c:29
 #: operations/external/exr-save.cc:24 operations/external/ff-load.c:29
 #: operations/external/ff-save.c:29 operations/external/gif-load.c:34
 #: operations/external/jp2-load.c:25 operations/external/jpg-load.c:24
-#: operations/external/jpg-save.c:25 operations/external/npy-save.c:31
-#: operations/external/png-load.c:27 operations/external/png-save.c:26
+#: operations/external/jpg-save.c:27 operations/external/npy-save.c:31
+#: operations/external/png-load.c:32 operations/external/png-save.c:28
 #: operations/external/ppm-load.c:25 operations/external/ppm-save.c:25
 #: operations/external/rgbe-load.c:26 operations/external/rgbe-save.c:26
-#: operations/external/svg-load.c:25 operations/external/tiff-load.c:24
+#: operations/external/svg-load.c:25 operations/external/tiff-load.c:29
 #: operations/external/tiff-save.c:25 operations/external/webp-load.c:25
 #: operations/external/webp-save.c:25 operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
@@ -2304,7 +2314,7 @@ msgid "Image Gradient"
 msgstr "Gradient obrazu"
 
 #: operations/common/image-gradient.c:228
-msgid "Compute gradient magnitude and/or direction by central differencies"
+msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "Oblicz wielkość gradientu lub kierunek według różnic środkowych"
 
 #: operations/common/introspect.c:26
@@ -2329,7 +2339,7 @@ msgstr ""
 
 #: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
-#: operations/workshop/voronoi-diagram.cc:32
+#: operations/workshop/external/voronoi-diagram.cc:32
 msgid "Invert"
 msgstr "Odwracanie"
 
@@ -2417,6 +2427,8 @@ msgid "Highest luminance level in output"
 msgstr "Najwyższy poziom luminancji w wyjściu"
 
 #: operations/common/levels.c:205 operations/common/posterize.c:24
+#: operations/common-cxx/piecewise-blend.cc:28
+#: operations/common-cxx/variable-blur.c:35
 #: operations/external/matting-levin.c:41
 msgid "Levels"
 msgstr "Poziomy"
@@ -2630,6 +2642,7 @@ msgid "Shadow length"
 msgstr "Długość cienia"
 
 #: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
+#: operations/common-cxx/focus-blur.c:74
 msgid "Midpoint"
 msgstr "Punkt środkowy"
 
@@ -2665,8 +2678,8 @@ msgstr "Długi cień"
 msgid "Creates a long-shadow effect"
 msgstr "Tworzy efekt długiego cienia"
 
-#: operations/common/magick-load.c:27 operations/core/load.c:29
-#: operations/external/png-load.c:28 operations/external/ppm-load.c:26
+#: operations/common/magick-load.c:27 operations/core/load.c:30
+#: operations/external/png-load.c:33 operations/external/ppm-load.c:26
 #: operations/external/raw-load.c:37 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
@@ -2801,7 +2814,8 @@ msgid ""
 "Neighborhood radius, a negative value will calculate with inverted "
 "percentiles"
 msgstr ""
-"Promień sąsiedztwa, ujemna wartość będzie obliczona za pomocą odwrotnych " "procentów"
+"Promień sąsiedztwa, ujemna wartość będzie obliczona za pomocą odwrotnych "
+"procentów"
 
 #: operations/common/median-blur.c:49
 msgid "Percentile"
@@ -2867,8 +2881,8 @@ msgstr "Liczba używanych luster"
 msgid "position of symmetry center in output"
 msgstr "położenie środka symetrii w wyjściu"
 
-#: operations/common/mirrors.c:58 operations/common/vignette.c:61
-#: operations/common-gpl3+/displace.c:81
+#: operations/common/mirrors.c:58 operations/common/vignette.c:65
+#: operations/common-cxx/focus-blur.c:54 operations/common-gpl3+/displace.c:81
 #: operations/common-gpl3+/motion-blur-circular.c:41
 #: operations/common-gpl3+/motion-blur-zoom.c:40
 #: operations/common-gpl3+/supernova.c:33 operations/common-gpl3+/waves.c:26
@@ -2879,8 +2893,8 @@ msgstr "Środek na osi X"
 msgid "X axis ratio for the center of mirroring"
 msgstr "Współrzędna osi X środka lustra"
 
-#: operations/common/mirrors.c:63 operations/common/vignette.c:66
-#: operations/common-gpl3+/displace.c:88
+#: operations/common/mirrors.c:63 operations/common/vignette.c:70
+#: operations/common-cxx/focus-blur.c:59 operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:46
 #: operations/common-gpl3+/motion-blur-zoom.c:46
 #: operations/common-gpl3+/supernova.c:39 operations/common-gpl3+/waves.c:31
@@ -3241,6 +3255,7 @@ msgid "The scale of the noise function"
 msgstr "Skala funkcji szumu"
 
 #: operations/common/noise-cell.c:40 operations/common/pixelize.c:32
+#: operations/common-cxx/focus-blur.c:49
 msgid "Shape"
 msgstr "Kształt"
 
@@ -3508,7 +3523,7 @@ msgstr ""
 "Globalna wartość nieprzezroczystości używana zawsze na podstawie "
 "opcjonalnego pomocniczego bufora wejściowego."
 
-#: operations/common/opacity.c:286
+#: operations/common/opacity.c:293
 msgid ""
 "Weights the opacity of the input both the value of the aux input and the "
 "global value property."
@@ -3604,7 +3619,7 @@ msgstr "Pionowe proporcje rozmiaru piksela wewnątrz każdego bloku"
 #: operations/common/pixelize.c:76 operations/common-gpl3+/apply-lens.c:44
 #: operations/common-gpl3+/cubism.c:39
 #: operations/common-gpl3+/lens-distortion.c:57
-#: operations/common-gpl3+/tile-paper.c:75
+#: operations/common-gpl3+/tile-paper.c:76
 msgid "Background color"
 msgstr "Kolor tła"
 
@@ -3847,15 +3862,26 @@ msgstr ""
 msgid "Changes the saturation"
 msgstr "Zmienia nasycenie"
 
-#: operations/common/save.c:26
+#: operations/common/save.c:27
 msgid "Path of file to save."
 msgstr "Ścieżka pliku do zapisania."
 
-#: operations/common/save.c:200
+#: operations/common/save.c:28 operations/core/load.c:33
+#: operations/external/jpg-save.c:46 operations/external/png-load.c:36
+#: operations/external/png-save.c:36 operations/external/tiff-load.c:39
+#: operations/external/tiff-save.c:34
+msgid "Metadata"
+msgstr "Metadane"
+
+#: operations/common/save.c:29
+msgid "Object providing image metadata"
+msgstr "Obiekt dostarczający metadane obrazu"
+
+#: operations/common/save.c:208
 msgid "Save"
 msgstr "Zapisz"
 
-#: operations/common/save.c:203
+#: operations/common/save.c:211
 msgid ""
 "Multipurpose file saver, that uses other native save handlers depending on "
 "extension, use the format specific save ops to specify additional parameters."
@@ -4182,12 +4208,12 @@ msgid ""
 msgstr ""
 "Odwróć składową wartości, wynik ma odwróconą jasność, ale ten sam kolor."
 
-#: operations/common/vignette.c:30
+#: operations/common/vignette.c:32
 msgid "Vignette shape"
 msgstr "Kształt winiety"
 
 #. TRANSLATORS: the string 'black' should not be translated
-#: operations/common/vignette.c:36
+#: operations/common/vignette.c:38
 msgid ""
 "Defaults to 'black', you can use transparency here to erase portions of an "
 "image"
@@ -4195,31 +4221,33 @@ msgstr ""
 "Domyślnie „black” (czarny), można użyć przezroczystości, aby usunąć część "
 "obrazu"
 
-#: operations/common/vignette.c:39
+#: operations/common/vignette.c:41
 msgid "How far out vignetting goes as portion of half image diagonal"
 msgstr "Jak długie jest winietowanie jako część połowy przekątnej obrazu"
 
-#: operations/common/vignette.c:46
+#: operations/common/vignette.c:49 operations/common-cxx/focus-blur.c:46
+#: operations/common-cxx/piecewise-blend.cc:38
+#: operations/common-cxx/variable-blur.c:39
 msgid "Gamma"
 msgstr "Gamma"
 
-#: operations/common/vignette.c:47
+#: operations/common/vignette.c:50
 msgid "Falloff linearity"
 msgstr "Liniowość spadku"
 
-#: operations/common/vignette.c:50
+#: operations/common/vignette.c:54
 msgid "Proportion"
 msgstr "Proporcje"
 
-#: operations/common/vignette.c:51
+#: operations/common/vignette.c:55
 msgid "How close we are to image proportions"
 msgstr "Jak blisko proporcji obrazu"
 
-#: operations/common/vignette.c:54
+#: operations/common/vignette.c:58
 msgid "Squeeze"
 msgstr "Ściśnij"
 
-#: operations/common/vignette.c:55
+#: operations/common/vignette.c:59
 msgid ""
 "Aspect ratio to use, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf 1.0 = "
 "inf:1, this is applied after proportion is taken into account, to directly "
@@ -4229,18 +4257,19 @@ msgstr ""
 "= inf∶1, zastosowywane po uwzględnieniu proporcji, aby bezpośrednio użyć "
 "współczynnika ściśnięcia jako proporcji, należy je ustawić na 0,0."
 
-#: operations/common/vignette.c:71 operations/common-gpl3+/bayer-matrix.c:51
+#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:81
+#: operations/common-gpl3+/bayer-matrix.c:51
 #: operations/common-gpl3+/linear-sinusoid.c:96
 #: operations/common-gpl3+/spiral.c:64
 #: operations/workshop/external/spyrograph.c:69
 msgid "Rotation"
 msgstr "Obrót"
 
-#: operations/common/vignette.c:384
+#: operations/common/vignette.c:395
 msgid "Vignette"
 msgstr "Winieta"
 
-#: operations/common/vignette.c:388
+#: operations/common/vignette.c:399
 msgid ""
 "Applies a vignette to an image. Simulates the luminance fall off at the edge "
 "of exposed film, and some other fuzzier border effects that can naturally "
@@ -4362,12 +4391,12 @@ msgstr ""
 "GEGL."
 
 #: operations/common-cxx/distance-transform.cc:30
-#: operations/workshop/voronoi-diagram.cc:24
+#: operations/workshop/external/voronoi-diagram.cc:24
 msgid "Metric"
 msgstr "Metryczne"
 
 #: operations/common-cxx/distance-transform.cc:32
-#: operations/workshop/voronoi-diagram.cc:27
+#: operations/workshop/external/voronoi-diagram.cc:27
 msgid "Metric to use for the distance calculation"
 msgstr "Metryczne do obliczenia odległości"
 
@@ -4398,6 +4427,94 @@ msgstr "Przekształcenie odległości"
 #: operations/common-cxx/distance-transform.cc:479
 msgid "Calculate a distance transform"
 msgstr "Oblicz przekształcenie odległości"
+
+#: operations/common-cxx/focus-blur.c:36
+msgid "Out-of-focus blur radius"
+msgstr "Promień rozmycia poza ostrością"
+
+#: operations/common-cxx/focus-blur.c:42
+msgid "Blur levels"
+msgstr "Poziomy rozmycia"
+
+#: operations/common-cxx/focus-blur.c:43
+#: operations/common-cxx/variable-blur.c:36
+msgid "Number of blur levels"
+msgstr "Liczba poziomów rozmycia"
+
+#: operations/common-cxx/focus-blur.c:65
+msgid "Focus-region outer radius"
+msgstr "Zewnętrzny promień obszaru ostrości"
+
+#: operations/common-cxx/focus-blur.c:70 operations/common-gpl3+/photocopy.c:29
+#: operations/common-gpl3+/softglow.c:33
+msgid "Sharpness"
+msgstr "Ostrość"
+
+#: operations/common-cxx/focus-blur.c:71
+msgid "Focus-region inner limit"
+msgstr "Wewnętrzne ograniczenie obszaru ostrości"
+
+#: operations/common-cxx/focus-blur.c:75
+msgid "Focus-transition midpoint"
+msgstr "Punkt środkowy przejścia ostrości"
+
+#: operations/common-cxx/focus-blur.c:78 operations/common-gpl3+/waves.c:47
+msgid "Aspect ratio"
+msgstr "Proporcje obrazu"
+
+#: operations/common-cxx/focus-blur.c:268
+msgid "Focus Blur"
+msgstr "Rozmycie ostrości"
+
+#: operations/common-cxx/focus-blur.c:270
+msgid "Blur the image around a focal point"
+msgstr "Rozmycie obrazu wokół ogniska"
+
+#: operations/common-cxx/piecewise-blend.cc:29
+msgid "Number of blend levels"
+msgstr "Liczba poziomów łączenia"
+
+#: operations/common-cxx/piecewise-blend.cc:32
+msgid "Normalized mask"
+msgstr "Normalizowana maska"
+
+#: operations/common-cxx/piecewise-blend.cc:33
+msgid "Mask values are in the [0,1] range"
+msgstr "Wartości maski są w zakresie [0,1]"
+
+#: operations/common-cxx/piecewise-blend.cc:35
+#: operations/common-cxx/variable-blur.c:42
+msgid "Linear mask"
+msgstr "Maska liniowa"
+
+#: operations/common-cxx/piecewise-blend.cc:36
+#: operations/common-cxx/variable-blur.c:43
+msgid "Use linear mask values"
+msgstr "Użyj liniowych wartości maski"
+
+#: operations/common-cxx/piecewise-blend.cc:39
+msgid "Raise gamma for non-linear spacing of steps."
+msgstr "Podnieś gammę w nieliniowym odstępie kroków."
+
+#: operations/common-cxx/piecewise-blend.cc:306
+msgid "Piecewise Blend"
+msgstr "Łączenie częściowe"
+
+#: operations/common-cxx/piecewise-blend.cc:308
+msgid "Blend a chain of inputs using a mask"
+msgstr "Połącz łańcuch wejść za pomocą maski"
+
+#: operations/common-cxx/variable-blur.c:29
+msgid "Maximal blur radius"
+msgstr "Maksymalny promień rozmycia"
+
+#: operations/common-cxx/variable-blur.c:189
+msgid "Variable Blur"
+msgstr "Zmienne rozmycie"
+
+#: operations/common-cxx/variable-blur.c:191
+msgid "Blur the image by a varying amount using a mask"
+msgstr "Rozmycie obrazu o różną ilość za pomocą maski"
 
 #: operations/common-cxx/warp.cc:26
 msgid "Move pixels"
@@ -4656,15 +4773,15 @@ msgstr "Poziom, który powinien reprezentować pełną przezroczystość"
 msgid "Ambient lighting factor"
 msgstr "Współczynnik otaczającego oświetlenia"
 
-#: operations/common-gpl3+/bump-map.c:452
+#: operations/common-gpl3+/bump-map.c:449
 msgid "Height Map"
 msgstr "Mapa wysokości"
 
-#: operations/common-gpl3+/bump-map.c:457
+#: operations/common-gpl3+/bump-map.c:454
 msgid "Bump Map"
 msgstr "Mapa wypukłości"
 
-#: operations/common-gpl3+/bump-map.c:459
+#: operations/common-gpl3+/bump-map.c:456
 msgid ""
 "This plug-in uses the algorithm described by John Schlag, \"Fast Embossing "
 "Effects on Raster Image Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). It "
@@ -4880,7 +4997,7 @@ msgstr "Nasycenie kafla"
 msgid "Expand tiles by this amount"
 msgstr "Rozszerz kafle o tę ilość"
 
-#: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:76
+#: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:77
 msgid "The tiles' background color"
 msgstr "Kolor tła kafli"
 
@@ -5921,10 +6038,6 @@ msgstr "Farba olejna"
 msgid "Emulate an oil painting"
 msgstr "Emuluj obraz olejny"
 
-#: operations/common-gpl3+/photocopy.c:29 operations/common-gpl3+/softglow.c:33
-msgid "Sharpness"
-msgstr "Ostrość"
-
 #: operations/common-gpl3+/photocopy.c:32
 msgid "Percent Black"
 msgstr "Procent czerni"
@@ -6126,7 +6239,7 @@ msgstr "Cień i podświetlenie"
 msgid "Perform shadows and highlights correction"
 msgstr "Wykonaj korekcję cieni i podświetleń"
 
-#: operations/common-gpl3+/shadows-highlights-correction.c:364
+#: operations/common-gpl3+/shadows-highlights-correction.c:371
 msgid "Lighten shadows and darken highlights"
 msgstr "Rozjaśnij cienie i przyciemnij podświetlenia"
 
@@ -6348,12 +6461,12 @@ msgid "Textures the image as if it were an artist's canvas."
 msgstr "Nakłada teksturę na obraz, jakby to było płótno artysty."
 
 #: operations/common-gpl3+/tile-glass.c:28
-#: operations/common-gpl3+/tile-paper.c:39
+#: operations/common-gpl3+/tile-paper.c:40
 msgid "Tile Width"
 msgstr "Szerokość kafla"
 
 #: operations/common-gpl3+/tile-glass.c:34
-#: operations/common-gpl3+/tile-paper.c:46
+#: operations/common-gpl3+/tile-paper.c:47
 msgid "Tile Height"
 msgstr "Wysokość kafla"
 
@@ -6365,77 +6478,77 @@ msgstr "Szkło kafla"
 msgid "Simulate distortion caused by rectangular glass tiles"
 msgstr "Symuluj zniekształcenie powodowane przez prostokątne, szklane kafle"
 
-#: operations/common-gpl3+/tile-paper.c:27
+#: operations/common-gpl3+/tile-paper.c:28
 msgid "Transparent"
 msgstr "Przezroczyste"
 
-#: operations/common-gpl3+/tile-paper.c:28
+#: operations/common-gpl3+/tile-paper.c:29
 msgid "Inverted image"
 msgstr "Odwrócony obraz"
 
-#: operations/common-gpl3+/tile-paper.c:29
+#: operations/common-gpl3+/tile-paper.c:30
 msgid "Image"
 msgstr "Obraz"
 
-#: operations/common-gpl3+/tile-paper.c:34
+#: operations/common-gpl3+/tile-paper.c:35
 msgid "Background"
 msgstr "Tło"
 
-#: operations/common-gpl3+/tile-paper.c:35
+#: operations/common-gpl3+/tile-paper.c:36
 msgid "Ignore"
 msgstr "Ignorowanie"
 
-#: operations/common-gpl3+/tile-paper.c:36
+#: operations/common-gpl3+/tile-paper.c:37
 msgid "Force"
 msgstr "Siła"
 
-#: operations/common-gpl3+/tile-paper.c:40
+#: operations/common-gpl3+/tile-paper.c:41
 msgid "Width of the tile"
 msgstr "Szerokość kafla"
 
-#: operations/common-gpl3+/tile-paper.c:47
+#: operations/common-gpl3+/tile-paper.c:48
 msgid "Height of the tile"
 msgstr "Wysokość kafla"
 
-#: operations/common-gpl3+/tile-paper.c:53
 #: operations/common-gpl3+/tile-paper.c:54
+#: operations/common-gpl3+/tile-paper.c:55
 msgid "Move rate"
 msgstr "Częstotliwość przenoszenia"
 
-#: operations/common-gpl3+/tile-paper.c:59
+#: operations/common-gpl3+/tile-paper.c:60
 msgid "Wrap around"
 msgstr "Zawinięcie wokół"
 
-#: operations/common-gpl3+/tile-paper.c:60
+#: operations/common-gpl3+/tile-paper.c:61
 msgid "Wrap the fractional tiles"
 msgstr "Odwzorowanie ułamkowych kafli"
 
-#: operations/common-gpl3+/tile-paper.c:62
+#: operations/common-gpl3+/tile-paper.c:63
 msgid "Fractional type"
 msgstr "Typ ułamkowy"
 
-#: operations/common-gpl3+/tile-paper.c:65
+#: operations/common-gpl3+/tile-paper.c:66
 msgid "Fractional Type"
 msgstr "Typ ułamkowy"
 
-#: operations/common-gpl3+/tile-paper.c:67
+#: operations/common-gpl3+/tile-paper.c:68
 msgid "Centering"
 msgstr "Wyśrodkowanie"
 
-#: operations/common-gpl3+/tile-paper.c:68
+#: operations/common-gpl3+/tile-paper.c:69
 msgid "Centering of the tiles"
 msgstr "Wyśrodkowanie kafli"
 
-#: operations/common-gpl3+/tile-paper.c:70
-#: operations/common-gpl3+/tile-paper.c:73
+#: operations/common-gpl3+/tile-paper.c:71
+#: operations/common-gpl3+/tile-paper.c:74
 msgid "Background type"
 msgstr "Typ tła"
 
-#: operations/common-gpl3+/tile-paper.c:462
+#: operations/common-gpl3+/tile-paper.c:463
 msgid "Paper Tile"
 msgstr "Kawałki papieru"
 
-#: operations/common-gpl3+/tile-paper.c:467
+#: operations/common-gpl3+/tile-paper.c:468
 msgid "Cut image into paper tiles, and slide them"
 msgstr "Wycina obraz na kawałki papieru i przesuwa je"
 
@@ -6634,10 +6747,6 @@ msgstr "Amplituda zmarszczki"
 #: operations/common-gpl3+/waves.c:41
 msgid "Period (wavelength) of the ripple"
 msgstr "Okres (długość fali) zmarszczki"
-
-#: operations/common-gpl3+/waves.c:47
-msgid "Aspect ratio"
-msgstr "Proporcje obrazu"
 
 #: operations/common-gpl3+/waves.c:54
 msgid "Clamp deformation"
@@ -6886,19 +6995,24 @@ msgstr ""
 "Kadruje bufor, jeśli dodatkowy blok jest połączony, to używany jest "
 "prostopadłościan graniczny połączonego węzła."
 
-#: operations/core/load.c:30 operations/external/jp2-load.c:27
+#: operations/core/load.c:31 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
-#: operations/external/png-load.c:29 operations/external/ppm-load.c:27
-#: operations/external/svg-load.c:27 operations/external/tiff-load.c:26
+#: operations/external/png-load.c:34 operations/external/ppm-load.c:27
+#: operations/external/svg-load.c:27 operations/external/tiff-load.c:31
 #: operations/external/webp-load.c:27
 msgid "URI"
 msgstr "Adres URI"
 
-#: operations/core/load.c:31
+#: operations/core/load.c:32
 msgid "URI of file to load."
 msgstr "Adres URI pliku do wczytania."
 
-#: operations/core/load.c:366
+#: operations/core/load.c:34 operations/external/jpg-save.c:47
+#: operations/external/png-load.c:37 operations/external/png-save.c:37
+msgid "Object to supply image metadata"
+msgstr "Obiekt, któremu dostarczyć metadane obrazu"
+
+#: operations/core/load.c:376
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -6978,7 +7092,7 @@ msgstr "Wczytywanie klatek biblioteki FFmpeg"
 msgid "FFmpeg video frame importer."
 msgstr "Importer klatek wideo biblioteki FFmpeg."
 
-#: operations/external/ff-save.c:30 operations/external/png-save.c:27
+#: operations/external/ff-save.c:30 operations/external/png-save.c:29
 #: operations/external/ppm-save.c:26 operations/external/rgbe-save.c:27
 msgid "Target path and filename, use '-' for stdout."
 msgstr "Docelowa ścieżka i nazwa pliku, „-” oznacza standardowe wyjście."
@@ -7129,7 +7243,7 @@ msgstr "Odpływ wyjścia wideo biblioteki FFmpeg"
 
 #: operations/external/gif-load.c:35 operations/external/jp2-load.c:26
 #: operations/external/jpg-load.c:25 operations/external/svg-load.c:26
-#: operations/external/tiff-load.c:25 operations/external/webp-load.c:26
+#: operations/external/tiff-load.c:30 operations/external/webp-load.c:26
 msgid "Path of file to load"
 msgstr "Ścieżka do wczytywanego pliku"
 
@@ -7162,7 +7276,7 @@ msgid "GIF image loader."
 msgstr "Wczytywanie obrazów GIF."
 
 #: operations/external/jp2-load.c:28 operations/external/svg-load.c:28
-#: operations/external/tiff-load.c:27 operations/external/webp-load.c:28
+#: operations/external/tiff-load.c:32 operations/external/webp-load.c:28
 msgid "URI for file to load"
 msgstr "Adres URI wczytywanego pliku"
 
@@ -7242,52 +7356,52 @@ msgstr "Wczytywanie plików JPEG"
 msgid "JPEG image loader using libjpeg"
 msgstr "Wczytywanie obrazów JPEG za pomocą biblioteki libjpeg"
 
-#: operations/external/jpg-save.c:26 operations/external/npy-save.c:32
+#: operations/external/jpg-save.c:28 operations/external/npy-save.c:32
 #: operations/external/tiff-save.c:26 operations/external/webp-save.c:26
 msgid "Target path and filename, use '-' for stdout"
 msgstr "Docelowa ścieżka i nazwa pliku, „-” oznacza standardowe wyjście"
 
-#: operations/external/jpg-save.c:29
+#: operations/external/jpg-save.c:31
 msgid "JPEG compression quality (between 1 and 100)"
 msgstr "Jakość kompresji JPEG (między 1 a 100)"
 
-#: operations/external/jpg-save.c:32
+#: operations/external/jpg-save.c:34
 msgid "Smoothing"
 msgstr "Wygładzanie"
 
-#: operations/external/jpg-save.c:33
+#: operations/external/jpg-save.c:35
 msgid "Smoothing factor from 1 to 100; 0 disables smoothing"
 msgstr "Współczynnik wygładzania od 1 do 100; 0 wyłącza wygładzanie"
 
-#: operations/external/jpg-save.c:36
+#: operations/external/jpg-save.c:38
 msgid "Optimize"
 msgstr "Optymalizacja"
 
-#: operations/external/jpg-save.c:37
+#: operations/external/jpg-save.c:39
 msgid "Use optimized huffman tables"
 msgstr "Zoptymalizowane tablice Huffmana"
 
-#: operations/external/jpg-save.c:38
+#: operations/external/jpg-save.c:40
 msgid "Progressive"
 msgstr "Przyrostowy"
 
-#: operations/external/jpg-save.c:39
+#: operations/external/jpg-save.c:41
 msgid "Create progressive JPEG images"
 msgstr "Przyrostowe obrazy JPEG"
 
-#: operations/external/jpg-save.c:41
+#: operations/external/jpg-save.c:43
 msgid "Grayscale"
 msgstr "Odcienie szarości"
 
-#: operations/external/jpg-save.c:42
+#: operations/external/jpg-save.c:44
 msgid "Create a grayscale (monochrome) image"
 msgstr "Obraz w odcieniach szarości (monochromatyczny)"
 
-#: operations/external/jpg-save.c:420
+#: operations/external/jpg-save.c:523
 msgid "JPEG File Saver"
 msgstr "Zapisywanie plików JPEG"
 
-#: operations/external/jpg-save.c:422
+#: operations/external/jpg-save.c:525
 msgid "JPEG image saver, using libjpeg"
 msgstr "Zapisywanie obrazów JPEG za pomocą biblioteki libjpeg"
 
@@ -7599,40 +7713,40 @@ msgstr "Źródłowy GdkPixbuf"
 msgid "Uses the GdkPixbuf located at the memory location in <em>pixbuf</em>."
 msgstr "Używa GdkPixbuf położonego w pamięci w <em>pixbuf</em>."
 
-#: operations/external/png-load.c:30
+#: operations/external/png-load.c:35
 msgid "URI for file to load."
 msgstr "Adres URI pliku do wczytania."
 
-#: operations/external/png-load.c:564
+#: operations/external/png-load.c:652
 msgid "PNG File Loader"
 msgstr "Wczytywanie plików PNG"
 
-#: operations/external/png-load.c:566
+#: operations/external/png-load.c:654
 msgid "PNG image loader."
 msgstr "Wczytywanie obrazów PNG."
 
-#: operations/external/png-save.c:28
+#: operations/external/png-save.c:30
 msgid "Compression"
 msgstr "Kompresja"
 
-#: operations/external/png-save.c:29
+#: operations/external/png-save.c:31
 msgid "PNG compression level from 1 to 9"
 msgstr "Poziom kompresji PNG od 1 do 9"
 
-#: operations/external/png-save.c:31 operations/external/ppm-save.c:29
+#: operations/external/png-save.c:33 operations/external/ppm-save.c:29
 #: operations/external/tiff-save.c:27
 msgid "Bitdepth"
 msgstr "Głębia bitowa"
 
-#: operations/external/png-save.c:32 operations/external/ppm-save.c:30
+#: operations/external/png-save.c:34 operations/external/ppm-save.c:30
 msgid "8 and 16 are the currently accepted values."
 msgstr "Obecnie przyjmowane są wartości 8 i 16."
 
-#: operations/external/png-save.c:312
+#: operations/external/png-save.c:420
 msgid "PNG File Saver"
 msgstr "Zapisywanie plików PNG"
 
-#: operations/external/png-save.c:314
+#: operations/external/png-save.c:422
 msgid "PNG image saver, using libpng"
 msgstr "Zapisywanie obrazów PNG za pomocą biblioteki libpng"
 
@@ -7857,19 +7971,23 @@ msgstr "Renderuj tekst"
 msgid "Display a string of text using pango and cairo."
 msgstr "Wyświetl ciąg tekstowy za pomocą bibliotek Pango i cairo."
 
-#: operations/external/tiff-load.c:29
+#: operations/external/tiff-load.c:34
 msgid "Directory"
 msgstr "Katalog"
 
-#: operations/external/tiff-load.c:30
+#: operations/external/tiff-load.c:35
 msgid "Image file directory (subfile)"
 msgstr "Katalog pliku obrazu (podplik)"
 
-#: operations/external/tiff-load.c:915
+#: operations/external/tiff-load.c:40 operations/external/tiff-save.c:35
+msgid "Object to receive image metadata"
+msgstr "Obiekt otrzymujący metadane obrazu"
+
+#: operations/external/tiff-load.c:1034
 msgid "TIFF File Loader"
 msgstr "Wczytywanie plików TIFF"
 
-#: operations/external/tiff-load.c:917
+#: operations/external/tiff-load.c:1036
 msgid "TIFF image loader using libtiff"
 msgstr "Wczytywanie obrazów TIFF za pomocą biblioteki libtiff"
 
@@ -7888,11 +8006,11 @@ msgstr ""
 "liczba zmiennoprzecinkowa -1 oznacza automatycznie, 0 oznacza liczby "
 "całkowite, 1 oznacza liczby zmiennoprzecinkowe"
 
-#: operations/external/tiff-save.c:728
+#: operations/external/tiff-save.c:825
 msgid "TIFF File Saver"
 msgstr "Zapisywanie plików TIFF"
 
-#: operations/external/tiff-save.c:730
+#: operations/external/tiff-save.c:827
 msgid "TIFF image saver using libtiff"
 msgstr "Zapisywanie obrazów TIFF za pomocą biblioteki libtiff"
 
@@ -8447,6 +8565,77 @@ msgstr ""
 "chwili jest to przybliżenie tylko luminancji ACES RRT, bez nasycenia "
 "podświetleń i cieni ani modyfikacji barwy czerwonej."
 
+#: operations/workshop/band-tune.c:25
+msgid "Detail band"
+msgstr "Pasmo szczegółu"
+
+#: operations/workshop/band-tune.c:26
+msgid "Features size for detail band, used for noise removal."
+msgstr "Rozmiar cech pasma szczegółu, używane do usuwania szumów."
+
+#: operations/workshop/band-tune.c:30
+msgid ""
+"Detail scale, negative values diminish signal in detail band, positive "
+"values increase signal."
+msgstr ""
+"Skala szczegółu, ujemne wartości zmniejszają sygnał w paśmie szczegółu, "
+"wartości dodatnie zwiększają sygnał."
+
+#: operations/workshop/band-tune.c:31 operations/workshop/band-tune.c:47
+msgid ""
+"Scaling factor for image features at radius, -1 cancels them out 1.0 edge "
+"enhances"
+msgstr ""
+"Współczynnik skalowania dla cech obrazu w promieniu, wartość -1 je "
+"unieważnia, 1,0 uwydatnia krawędzie"
+
+#: operations/workshop/band-tune.c:35
+msgid "Detail bandwidth"
+msgstr "Szerokość pasma szczegółu"
+
+#: operations/workshop/band-tune.c:41
+msgid "Edge band"
+msgstr "Pasmo krawędzi"
+
+#: operations/workshop/band-tune.c:42
+msgid ""
+"Features size for edge band, used to compensate for loos of edges in detail "
+"pass."
+msgstr ""
+"Rozmiar cech pasma krawędzi, używane do kompensacji loo krawędzi w przejściu "
+"szczegółu."
+
+#: operations/workshop/band-tune.c:46
+msgid ""
+"Edge scale, negative values diminish signal in detail band, positive values "
+"increase signal."
+msgstr ""
+"Skala krawędzi, ujemne wartości zmniejszają sygnał w paśmie szczegółu, "
+"dodatnie wartości zwiększają sygnał."
+
+#: operations/workshop/band-tune.c:51
+msgid "Edge bandwidth"
+msgstr "Szerokość pasma krawędzi"
+
+#: operations/workshop/band-tune.c:55
+msgid "Visualize Adjustment Mask"
+msgstr "Zwizualizuj maskę dostosowania"
+
+#: operations/workshop/band-tune.c:234
+msgid "Band tune"
+msgstr "Regulacja pasma"
+
+#: operations/workshop/band-tune.c:236
+msgid ""
+"Parametric band equalizer for tuning frequency bands of image, the op "
+"provides abstracted input parameters that control two difference of "
+"gaussians driven band pass filters used as adjustments of the image signal."
+msgstr ""
+"Parametryczny korektor pasma do regulowania pasm częstotliwości obrazu, "
+"działanie dostarcza abstrakcyjne parametry wejściowe sterujące dwoma "
+"różnicami filtrów przejścia pasma prowadzone przez rozmycia Gaussa, używane "
+"jako korekty sygnału obrazu."
+
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
 msgstr "Gładkość"
@@ -8885,6 +9074,34 @@ msgstr "Źródło klatek Video4Linux2"
 msgid "Video4Linux2 input, webcams framegrabbers and similar devices."
 msgstr "Wyjście Video4Linux2, kamerki wideo i podobne urządzenia."
 
+#: operations/workshop/external/voronoi-diagram.cc:29
+msgid "Mask"
+msgstr "Maska"
+
+#: operations/workshop/external/voronoi-diagram.cc:30
+msgid "Unseeded region color"
+msgstr "Kolor regionu nieziarnowanego"
+
+#: operations/workshop/external/voronoi-diagram.cc:33
+msgid "Invert mask"
+msgstr "Odwracanie maski"
+
+#: operations/workshop/external/voronoi-diagram.cc:35
+msgid "Seed edges"
+msgstr "Ziarnowanie krawędzi"
+
+#: operations/workshop/external/voronoi-diagram.cc:36
+msgid "Whether the image edges are also seeded"
+msgstr "Czy krawędzie obrazu są także ziarnowane"
+
+#: operations/workshop/external/voronoi-diagram.cc:524
+msgid "Voronoi Diagram"
+msgstr "Diagram Woronoja"
+
+#: operations/workshop/external/voronoi-diagram.cc:531
+msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
+msgstr "Maluje każdy nieziarnowany piksel kolorem najbliższego piksela ziarna."
+
 #: operations/workshop/generated/average.c:111
 msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
 msgstr "Działanie mieszania obrazu „average” (<tt>c = (cA + aB)/2</tt>)"
@@ -9048,31 +9265,3 @@ msgstr "Wybiórcza barwa-nasycenie"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Wybiórczo dostosuj barwę, nasycenie i jasność"
-
-#: operations/workshop/voronoi-diagram.cc:29
-msgid "Mask"
-msgstr "Maska"
-
-#: operations/workshop/voronoi-diagram.cc:30
-msgid "Unseeded region color"
-msgstr "Kolor regionu nieziarnowanego"
-
-#: operations/workshop/voronoi-diagram.cc:33
-msgid "Invert mask"
-msgstr "Odwracanie maski"
-
-#: operations/workshop/voronoi-diagram.cc:35
-msgid "Seed edges"
-msgstr "Ziarnowanie krawędzi"
-
-#: operations/workshop/voronoi-diagram.cc:36
-msgid "Whether the image edges are also seeded"
-msgstr "Czy krawędzie obrazu są także ziarnowane"
-
-#: operations/workshop/voronoi-diagram.cc:524
-msgid "Voronoi Diagram"
-msgstr "Diagram Woronoja"
-
-#: operations/workshop/voronoi-diagram.cc:531
-msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
-msgstr "Maluje każdy nieziarnowany piksel kolorem najbliższego piksela ziarna."
