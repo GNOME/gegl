@@ -62,39 +62,10 @@ gegl_operation_meta_redirect (GeglOperation *operation,
   g_object_bind_property (operation, name, internal_operation, internal_name, G_BINDING_SYNC_CREATE);
 }
 
-typedef struct
-{
-  GeglNode *parent;
-  GeglNode *child;
-} GeglOperationMetaNodeCleanupContext;
-
-static void
-_gegl_operation_meta_node_cleanup (gpointer data,
-                                   GObject *where_the_object_was)
-{
-  GeglOperationMetaNodeCleanupContext *ctx = data;
-
-  if (ctx->child)
-    {
-      g_object_remove_weak_pointer (G_OBJECT (ctx->child), (void**)&ctx->child);
-      gegl_node_remove_child (ctx->parent, ctx->child);
-    }
-
-  g_free (data);
-}
-
 void
 gegl_operation_meta_watch_node (GeglOperation     *operation,
                                 GeglNode          *node)
 {
-  GeglOperationMetaNodeCleanupContext *ctx;
-  ctx = g_new0 (GeglOperationMetaNodeCleanupContext, 1);
-
-  ctx->parent = operation->node;
-  ctx->child  = node;
-
-  g_object_add_weak_pointer (G_OBJECT (ctx->child), (void**)&ctx->child);
-  g_object_weak_ref (G_OBJECT (operation), _gegl_operation_meta_node_cleanup, ctx);
 }
 
 void
@@ -102,29 +73,4 @@ gegl_operation_meta_watch_nodes (GeglOperation     *operation,
                                  GeglNode          *node,
                                  ...)
 {
-  va_list var_args;
-
-  va_start (var_args, node);
-  while (node)
-    {
-      gegl_operation_meta_watch_node (operation, node);
-      node = va_arg (var_args, GeglNode *);
-    }
-  va_end (var_args);
-}
-
-void
-gegl_operation_meta_property_changed (GeglOperationMeta *self,
-                                      GParamSpec        *pspec,
-                                      gpointer           user_data)
-{
-  gchar *detailed_signal = NULL;
-
-  g_return_if_fail (GEGL_IS_OPERATION_META (self));
-  g_return_if_fail (pspec);
-
-  detailed_signal = g_strconcat ("notify::", pspec->name, NULL);
-  g_signal_emit_by_name (self, detailed_signal, pspec);
-
-  g_free (detailed_signal);
 }
