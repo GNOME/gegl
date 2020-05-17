@@ -82,7 +82,7 @@ gint64 gegl_get_timestamp(void)
         if (gegl_debug_flags & type)                            \
 	{                                                       \
 	  gchar * _fmt = g_strdup_printf (__VA_ARGS__);         \
-          g_message ("[" #type "]" " %li:"  G_STRLOC ": %s",    \
+          g_message ("[" #type "]" " %"G_GINT64_FORMAT":"  G_STRLOC ": %s",    \
                        gegl_get_timestamp(), _fmt);             \
           g_free (_fmt);                                        \
 	}                                                       \
@@ -98,7 +98,7 @@ gint64 gegl_get_timestamp(void)
 
 #define GEGL_TIMESTAMP(type,format,a...)        G_STMT_START {  \
         if (gegl_debug_flags & type)                            \
-          { g_message ("[" #type "]" " %li:"  G_STRLOC ": "     \
+          { g_message ("[" #type "]" " %"G_GINT64_FORMAT":"  G_STRLOC ": "     \
                        format, gegl_get_timestamp(), ##a); }    \
                                                    } G_STMT_END
 
@@ -159,7 +159,7 @@ GEGL_TIMESTAMP (guint type, const char *format, ...)
     gchar *formatted;
     va_start (args, format);
     formatted = g_strdup_printf (format, args);
-    g_message ("[ %s ] %li: " G_STRLOC ": %s",
+    g_message ("[ %s ] %"G_GINT64_FORMAT": " G_STRLOC ": %s",
                gegl_lookup_debug_string (type), gegl_get_timestamp(),
                formatted);
     g_free (formatted);
