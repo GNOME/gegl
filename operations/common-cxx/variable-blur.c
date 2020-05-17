@@ -81,51 +81,48 @@ update (GeglOperation *operation)
   GeglProperties *o     = GEGL_PROPERTIES (operation);
   Nodes          *nodes = o->user_data;
 
-  if (nodes)
-    {
-      gdouble gamma;
-      gint    levels;
-      gint    i;
+  gdouble gamma;
+  gint    levels;
+  gint    i;
 
 #ifdef MANUAL_CONTROL
-      levels = o->levels;
-      gamma  = o->gamma;
+  levels = o->levels;
+  gamma  = o->gamma;
 #else
-      if (o->high_quality)
-        {
-          levels = MAX_LEVELS;
-        }
-      else
-        {
-          levels = ceil (CLAMP (log (o->radius) / G_LN2 + 3,
-                                2, MAX_LEVELS));
-        }
+  if (o->high_quality)
+    {
+      levels = MAX_LEVELS;
+    }
+  else
+    {
+      levels = ceil (CLAMP (log (o->radius) / G_LN2 + 3,
+                            2, MAX_LEVELS));
+    }
 
-      gamma = GAMMA;
+  gamma = GAMMA;
 #endif
 
-      gegl_node_set (nodes->piecewise_blend,
-                     "levels", levels,
-                     "gamma",  gamma,
+  gegl_node_set (nodes->piecewise_blend,
+                 "levels", levels,
+                 "gamma",  gamma,
+                 NULL);
+
+  for (i = 1; i < levels; i++)
+    {
+      gdouble radius;
+
+      gegl_node_link (nodes->input, nodes->gaussian_blur[i]);
+
+      radius = o->radius * pow ((gdouble) i / (levels - 1), gamma);
+
+      gegl_node_set (nodes->gaussian_blur[i],
+                     "std-dev-x", radius,
+                     "std-dev-y", radius,
                      NULL);
-
-      for (i = 1; i < levels; i++)
-        {
-          gdouble radius;
-
-          gegl_node_link (nodes->input, nodes->gaussian_blur[i]);
-
-          radius = o->radius * pow ((gdouble) i / (levels - 1), gamma);
-
-          gegl_node_set (nodes->gaussian_blur[i],
-                         "std-dev-x", radius,
-                         "std-dev-y", radius,
-                         NULL);
-        }
-
-      for (; i < MAX_LEVELS; i++)
-        gegl_node_disconnect (nodes->gaussian_blur[i], "input");
     }
+
+  for (; i < MAX_LEVELS; i++)
+    gegl_node_disconnect (nodes->gaussian_blur[i], "input");
 }
 
 static void
@@ -174,19 +171,6 @@ attach (GeglOperation *operation)
                        nodes->piecewise_blend,
                        nodes->output,
                        NULL);
-
-  update (operation);
-}
-
-static void
-my_set_property (GObject      *object,
-                 guint         property_id,
-                 const GValue *value,
-                 GParamSpec   *pspec)
-{
-  set_property (object, property_id, value, pspec);
-
-  update (GEGL_OPERATION (object));
 }
 
 static void
@@ -207,16 +191,17 @@ dispose (GObject *object)
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GObjectClass       *object_class;
-  GeglOperationClass *operation_class;
+  GObjectClass           *object_class;
+  GeglOperationClass     *operation_class;
+  GeglOperationMetaClass *operation_meta_class;
 
-  object_class    = G_OBJECT_CLASS (klass);
-  operation_class = GEGL_OPERATION_CLASS (klass);
+  object_class         = G_OBJECT_CLASS (klass);
+  operation_class      = GEGL_OPERATION_CLASS (klass);
+  operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
 
-  object_class->dispose      = dispose;
-  object_class->set_property = my_set_property;
-
-  operation_class->attach    = attach;
+  object_class->dispose        = dispose;
+  operation_class->attach      = attach;
+  operation_meta_class->update = update;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:variable-blur",
