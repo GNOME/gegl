@@ -356,7 +356,6 @@ attach (GeglOperation *operation)
       gchar *opname = component2geglop(component);
 
       GeglNode *node = gegl_node_new_child (gegl, "operation", opname, NULL);
-      gegl_operation_meta_watch_node (operation, node);
       g_assert(node);
       g_hash_table_insert(self->nodes, (gpointer)g_strdup(name), (gpointer)node);
       g_free(opname);

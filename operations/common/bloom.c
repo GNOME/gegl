@@ -173,16 +173,6 @@ attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation,            "radius",
                                 nodes->gaussian_blur, "std-dev-y");
 
-  gegl_operation_meta_watch_nodes (operation,
-                                   nodes->convert_format,
-                                   nodes->cast_format,
-                                   nodes->levels,
-                                   nodes->rgb_clip,
-                                   nodes->multiply,
-                                   nodes->gaussian_blur,
-                                   nodes->combine,
-                                   NULL);
-
   update (operation);
 }
 

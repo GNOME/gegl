@@ -152,8 +152,6 @@ attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation,              "linear-mask",
                                 nodes->piecewise_blend, "linear-mask");
 
-  gegl_operation_meta_watch_node (operation, nodes->piecewise_blend);
-
   gegl_node_connect_to (nodes->input,           "output",
                         nodes->piecewise_blend, "aux1");
 
@@ -165,8 +163,6 @@ attach (GeglOperation *operation)
         operation->node,
         "operation", "gegl:gaussian-blur",
         NULL);
-
-      gegl_operation_meta_watch_node (operation, nodes->gaussian_blur[i]);
 
       sprintf (aux_name, "aux%d", i + 1);
 

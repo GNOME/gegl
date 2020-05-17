@@ -69,7 +69,6 @@ static void attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation, "radius2", blur2, "std-dev-x");
   gegl_operation_meta_redirect (operation, "radius2", blur2, "std-dev-y");
 
-  gegl_operation_meta_watch_nodes (operation, subtract, blur1, blur2, NULL);
 }
 
 static void

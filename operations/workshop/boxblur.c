@@ -57,8 +57,6 @@ attach (GeglOperation *operation)
 
   gegl_operation_meta_redirect (operation, "radius", hblur, "radius");
   gegl_operation_meta_redirect (operation, "radius", vblur, "radius");
-
-  gegl_operation_meta_watch_nodes (operation, hblur, vblur, NULL);
 }
 
 static void

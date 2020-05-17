@@ -118,8 +118,6 @@ attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation, "std-dev", blur, "std-dev-x");
   gegl_operation_meta_redirect (operation, "std-dev", blur, "std-dev-y");
 
-  gegl_operation_meta_watch_nodes (operation, add, multiply, subtract, blur, threshold, NULL);
-
   update_graph (operation);
 }
 

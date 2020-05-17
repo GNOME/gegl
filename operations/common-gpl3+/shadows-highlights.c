@@ -153,8 +153,6 @@ do_setup (GeglOperation *operation)
       gegl_operation_meta_redirect (operation, "compress", shprocess, "compress");
       gegl_operation_meta_redirect (operation, "shadows-ccorrect", shprocess, "shadows-ccorrect");
       gegl_operation_meta_redirect (operation, "highlights-ccorrect", shprocess, "highlights-ccorrect");
-
-      gegl_operation_meta_watch_nodes (operation, blur, self->blur_convert, shprocess, NULL);
     }
 
   g_slist_free (children);

@@ -221,13 +221,6 @@ attach (GeglOperation *operation)
                                 nodes->variable_blur, "high-quality");
 #endif
 
-  gegl_operation_meta_watch_nodes (operation,
-                                   nodes->color,
-                                   nodes->crop,
-                                   nodes->vignette,
-                                   nodes->variable_blur,
-                                   NULL);
-
   update (operation);
 
   g_object_unref (white);

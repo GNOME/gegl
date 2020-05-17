@@ -323,9 +323,6 @@ attach (GeglOperation *operation)
             gegl_node_new_child (node,
                                  "operation", "gegl:transform",
                                  NULL);
-
-          gegl_operation_meta_watch_node (operation,
-                                          iters[i].transform_nodes[j]);
         }
 
       iters[i].color_overlay_node =
@@ -338,11 +335,6 @@ attach (GeglOperation *operation)
                              "operation", "gegl:opacity",
                              NULL);
 
-      gegl_operation_meta_watch_nodes (operation,
-                                       iters[i].color_overlay_node,
-                                       iters[i].opacity_node,
-                                       NULL);
-
       for (j = 0; j < MAX_TRANSFORMS; j++)
         {
           iters[i].over_nodes[j] =
@@ -350,7 +342,6 @@ attach (GeglOperation *operation)
                                  "operation", "gegl:over",
                                  NULL);
 
-          gegl_operation_meta_watch_node (operation, iters[i].over_nodes[j]);
         }
     }
 

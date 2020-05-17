@@ -67,7 +67,6 @@ attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation, "std-dev", blur, "std-dev-y");
   gegl_operation_meta_redirect (operation, "contrast", mul, "value");
 
-  gegl_operation_meta_watch_nodes (operation, blur, mul, NULL);
 }
 
 static void

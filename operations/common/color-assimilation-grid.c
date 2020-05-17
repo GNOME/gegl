@@ -118,8 +118,6 @@ attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation, "angle", s->mask, "angle");
   gegl_operation_meta_redirect (operation, "saturation", s->saturate, "scale");
 
-  gegl_operation_meta_watch_nodes (operation, s->mask, s->saturate, NULL);
-
   update_graph (operation);
 }
 
