@@ -156,22 +156,6 @@ attach (GeglOperation *operation)
   gegl_operation_meta_redirect (operation, "y", translate, "y");
   gegl_operation_meta_redirect (operation, "color", color, "value");
   gegl_operation_meta_redirect (operation, "opacity", opacity, "value");
-
-  update_graph (operation);
-}
-
-static void 
-my_set_property (GObject      *object, 
-                 guint         property_id, 
-                 const GValue *value, 
-                 GParamSpec   *pspec) 
-{ 
-  GeglProperties  *o     = GEGL_PROPERTIES (object); 
- 
-  set_property (object, property_id, value, pspec); 
- 
-  if (o) 
-    update_graph ((void*)object); 
 }
 
 static void
@@ -185,14 +169,15 @@ dispose (GObject *object)
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GObjectClass       *object_class;
-  GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
+  GObjectClass           *object_class;
+  GeglOperationClass     *operation_class      = GEGL_OPERATION_CLASS (klass);
+  GeglOperationMetaClass *operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
 
-  operation_class->attach = attach;
+  operation_class->attach      = attach;
+  operation_meta_class->update = update_graph;
 
   object_class               = G_OBJECT_CLASS (klass); 
   object_class->dispose      = dispose; 
-  object_class->set_property = my_set_property;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:dropshadow",
