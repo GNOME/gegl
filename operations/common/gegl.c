@@ -19,9 +19,81 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
+#define TUTORIAL \
+"id=input\n"\
+"# uncomment a set of lines below to do test an example, use\n#use ctrl+a before typing to select all, if you want a blank slate.\n"\
+"\n"\
+"# adaptive threshold\n"\
+"#threshold aux=[\n"\
+"#  ref=input\n"\
+"#  gaussian-blur\n"\
+"#    std-dev-x=0.25rel  # rel suffix means relative to\n"\
+"#    std-dev-y=0.25rel  # input dimensions rather than in pixels\n"\
+"#]\n"\
+"\n"\
+"# antialias vignette proportion=0 radius=0.7\n"\
+"\n"\
+"# text overlay\n"\
+"#over aux=[\n"\
+"#  text wrap=1.0rel  color=rgb(0.1,0.1,.3) size=.1rel\n"\
+"#    string=\"ipsum dolor, sic amet foo bar baz qux amelqur fax\"\n"\
+"#  dropshadow\n"\
+"#     radius=.01rel  grow-radius=0.0065rel color=white x=0 y=0\n"\
+"#  rotate degrees=3.1415\n"\
+"#  translate y=.1rel x=.1rel\n"\
+"#]\n"\
+"\n"\
+"#over aux=[\n"\
+"#  ref=input\n"\
+"#  opacity aux=[\n"\
+"#    color value=black over aux=[\n"\
+"#        text string=\"original\" color=white  size=.3rel\n"\
+"#        translate y=.7rel\n"\
+"#      ]\n"\
+"#    ]\n"\
+"#]\n"\
+"\n"\
+"#over aux=[\n"\
+"#  ref=input\n"\
+"#  scale-ratio x=0.20 y=0.20\n"\
+"#  newsprint period=0.01rel period2=0.01rel period3=0.01rel period4=0.01rel\n"\
+"#    color-model=cmyk\n"\
+"#    aa-samples=64\n"\
+"#    pattern=pssquare\n"\
+"#    pattern2=pssquare\n"\
+"#    pattern3=pssquare\n"\
+"#    pattern4=pssquare\n"\
+"#    translate x=0.1rel y=0.5rel\n"\
+"#]\n"\
+"\n"\
+"#over aux=[\n"\
+"#  ref=input\n"\
+"#  scale-ratio x=0.20 y=0.20\n"\
+"#  newsprint period=0.01rel period2=0.01rel period3=0.01rel period4=00.01rel\n"\
+"#  color-model=rgb aa-samples=64\n"\
+"#  translate x=0.4rel y=0.5rel\n"\
+"#]\n"\
+"\n"\
+"#over aux=[\n"\
+"#  ref=input\n"\
+"#  scale-ratio x=0.20 y=0.20\n"\
+"#  snn-mean snn-mean\n"\
+"#  translate x=0.7rel y=0.5rel\n"\
+"#]\n"\
+"\n"\
+"#over aux=[\n"\
+"#  ref=input\n"\
+"#  scale-ratio x=0.20 y=0.20\n"\
+"#  mosaic tile-size=0.03rel\n"\
+"#  translate x=1.0rel y=0.5rel\n"\
+"#]\n"\
+"\n"
+
+
+
 #ifdef GEGL_PROPERTIES
 
-property_string (string, _("pipeline"), "gaussian-blur std-dev-x=0.3rel std-dev-y=0.3rel")
+property_string (string, _("pipeline"), TUTORIAL)
     description(_("[op [property=value] [property=value]] [[op] [property=value]"))
     ui_meta ("multiline", "true")
 
@@ -38,20 +110,6 @@ property_string (error, _("Eeeeeek"), "")
 #include "gegl-op.h"
 #include <unistd.h>
 
-/* XXX: leaking o->user_data */
-
-static void
-attach (GeglOperation *operation)
-{
-  GeglNode *gegl, *input, *output;
-
-  gegl = operation->node;
-
-  input    = gegl_node_get_input_proxy (gegl, "input");
-  output   = gegl_node_get_output_proxy (gegl, "output");
-
-  gegl_node_link_many (input, output, NULL);
-}
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,7 +125,8 @@ prepare (GeglOperation *operation)
 
   if (!o->user_data || !g_str_equal (o->user_data, o->string))
   {
-    g_free (o->user_data);
+    if (o->user_data)
+      g_free (o->user_data);
     o->user_data = g_strdup (o->string);
 
   input  = gegl_node_get_input_proxy (gegl,  "input");
@@ -88,17 +147,47 @@ prepare (GeglOperation *operation)
     g_clear_error (&error);
   }
   else
+  {
     g_object_set (operation, "error", "", NULL);
+  }
+  }
+}
+
+static void
+attach (GeglOperation *operation)
+{
+  GeglNode *gegl, *input, *output;
+
+  gegl    = operation->node;
+
+  input  = gegl_node_get_input_proxy (gegl, "input");
+  output = gegl_node_get_output_proxy (gegl, "output");
+
+  gegl_node_link_many (input, output, NULL);
+  prepare (operation);
+}
+
+static void
+dispose (GObject *object)
+{
+  GeglProperties *o = GEGL_PROPERTIES (object);
+  if (o->user_data)
+  {
+    g_free (o->user_data);
+    o->user_data = NULL;
   }
 }
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
+  GObjectClass       *object_class;
   GeglOperationClass *operation_class;
 
+  object_class = G_OBJECT_CLASS  (klass);
   operation_class = GEGL_OPERATION_CLASS (klass);
 
+  object_class->dispose = dispose;
   operation_class->attach = attach;
   operation_class->prepare = prepare;
 
