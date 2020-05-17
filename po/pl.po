@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-15 16:38+0000\n"
-"PO-Revision-Date: 2020-05-17 12:52+0200\n"
+"POT-Creation-Date: 2020-05-17 10:52+0000\n"
+"PO-Revision-Date: 2020-05-17 12:55+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -289,13 +289,13 @@ msgstr "Czebyszewa"
 
 #: gegl/gegl-enums.c:93 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/common/spherize.c:26
-#: operations/common/vignette.c:28 operations/common-cxx/focus-blur.c:31
+#: operations/common/vignette.c:28 operations/common-cxx/focus-blur.c:33
 msgid "Horizontal"
 msgstr "Poziomy"
 
 #: gegl/gegl-enums.c:94 operations/common/edge-sobel.c:29
 #: operations/common/noise-spread.c:35 operations/common/spherize.c:27
-#: operations/common/vignette.c:29 operations/common-cxx/focus-blur.c:32
+#: operations/common/vignette.c:29 operations/common-cxx/focus-blur.c:34
 msgid "Vertical"
 msgstr "Pionowy"
 
@@ -594,7 +594,7 @@ msgstr ""
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common-cxx/focus-blur.c:35
+#: operations/common-cxx/focus-blur.c:37
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -661,8 +661,8 @@ msgstr "Miękkość krawędzi poświaty"
 #: operations/common/median-blur.c:43 operations/common/snn-mean.c:26
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:64
-#: operations/common-cxx/variable-blur.c:28
+#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:59
+#: operations/common-cxx/variable-blur.c:31
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:45
 #: operations/common-gpl3+/whirl-pinch.c:46
@@ -1764,19 +1764,19 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:28
 #: operations/common/pixelize.c:29 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:29
+#: operations/common-cxx/focus-blur.c:31
 msgid "Square"
 msgstr "Kwadratowy"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:28
+#: operations/common-cxx/focus-blur.c:30
 msgid "Circle"
 msgstr "Okrąg"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:30
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:27
-#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:30
+#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:32
 msgid "Diamond"
 msgstr "Romb"
 
@@ -2427,8 +2427,7 @@ msgid "Highest luminance level in output"
 msgstr "Najwyższy poziom luminancji w wyjściu"
 
 #: operations/common/levels.c:205 operations/common/posterize.c:24
-#: operations/common-cxx/piecewise-blend.cc:28
-#: operations/common-cxx/variable-blur.c:35
+#: operations/common-cxx/piecewise-blend.cc:30
 #: operations/external/matting-levin.c:41
 msgid "Levels"
 msgstr "Poziomy"
@@ -2642,7 +2641,7 @@ msgid "Shadow length"
 msgstr "Długość cienia"
 
 #: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
-#: operations/common-cxx/focus-blur.c:74
+#: operations/common-cxx/focus-blur.c:69
 msgid "Midpoint"
 msgstr "Punkt środkowy"
 
@@ -2882,7 +2881,7 @@ msgid "position of symmetry center in output"
 msgstr "położenie środka symetrii w wyjściu"
 
 #: operations/common/mirrors.c:58 operations/common/vignette.c:65
-#: operations/common-cxx/focus-blur.c:54 operations/common-gpl3+/displace.c:81
+#: operations/common-cxx/focus-blur.c:49 operations/common-gpl3+/displace.c:81
 #: operations/common-gpl3+/motion-blur-circular.c:41
 #: operations/common-gpl3+/motion-blur-zoom.c:40
 #: operations/common-gpl3+/supernova.c:33 operations/common-gpl3+/waves.c:26
@@ -2894,7 +2893,7 @@ msgid "X axis ratio for the center of mirroring"
 msgstr "Współrzędna osi X środka lustra"
 
 #: operations/common/mirrors.c:63 operations/common/vignette.c:70
-#: operations/common-cxx/focus-blur.c:59 operations/common-gpl3+/displace.c:88
+#: operations/common-cxx/focus-blur.c:54 operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:46
 #: operations/common-gpl3+/motion-blur-zoom.c:46
 #: operations/common-gpl3+/supernova.c:39 operations/common-gpl3+/waves.c:31
@@ -3255,7 +3254,7 @@ msgid "The scale of the noise function"
 msgstr "Skala funkcji szumu"
 
 #: operations/common/noise-cell.c:40 operations/common/pixelize.c:32
-#: operations/common-cxx/focus-blur.c:49
+#: operations/common-cxx/focus-blur.c:44
 msgid "Shape"
 msgstr "Kształt"
 
@@ -4225,9 +4224,7 @@ msgstr ""
 msgid "How far out vignetting goes as portion of half image diagonal"
 msgstr "Jak długie jest winietowanie jako część połowy przekątnej obrazu"
 
-#: operations/common/vignette.c:49 operations/common-cxx/focus-blur.c:46
-#: operations/common-cxx/piecewise-blend.cc:38
-#: operations/common-cxx/variable-blur.c:39
+#: operations/common/vignette.c:49 operations/common-cxx/piecewise-blend.cc:34
 msgid "Gamma"
 msgstr "Gamma"
 
@@ -4257,7 +4254,7 @@ msgstr ""
 "= inf∶1, zastosowywane po uwzględnieniu proporcji, aby bezpośrednio użyć "
 "współczynnika ściśnięcia jako proporcji, należy je ustawić na 0,0."
 
-#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:81
+#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:76
 #: operations/common-gpl3+/bayer-matrix.c:51
 #: operations/common-gpl3+/linear-sinusoid.c:96
 #: operations/common-gpl3+/spiral.c:64
@@ -4428,91 +4425,104 @@ msgstr "Przekształcenie odległości"
 msgid "Calculate a distance transform"
 msgstr "Oblicz przekształcenie odległości"
 
-#: operations/common-cxx/focus-blur.c:36
+#: operations/common-cxx/focus-blur.c:38
 msgid "Out-of-focus blur radius"
 msgstr "Promień rozmycia poza ostrością"
 
-#: operations/common-cxx/focus-blur.c:42
-msgid "Blur levels"
-msgstr "Poziomy rozmycia"
-
-#: operations/common-cxx/focus-blur.c:43
-#: operations/common-cxx/variable-blur.c:36
-msgid "Number of blur levels"
-msgstr "Liczba poziomów rozmycia"
-
-#: operations/common-cxx/focus-blur.c:65
+#: operations/common-cxx/focus-blur.c:60
 msgid "Focus-region outer radius"
 msgstr "Zewnętrzny promień obszaru ostrości"
 
-#: operations/common-cxx/focus-blur.c:70 operations/common-gpl3+/photocopy.c:29
+#: operations/common-cxx/focus-blur.c:65 operations/common-gpl3+/photocopy.c:29
 #: operations/common-gpl3+/softglow.c:33
 msgid "Sharpness"
 msgstr "Ostrość"
 
-#: operations/common-cxx/focus-blur.c:71
+#: operations/common-cxx/focus-blur.c:66
 msgid "Focus-region inner limit"
 msgstr "Wewnętrzne ograniczenie obszaru ostrości"
 
-#: operations/common-cxx/focus-blur.c:75
+#: operations/common-cxx/focus-blur.c:70
 msgid "Focus-transition midpoint"
 msgstr "Punkt środkowy przejścia ostrości"
 
-#: operations/common-cxx/focus-blur.c:78 operations/common-gpl3+/waves.c:47
+#: operations/common-cxx/focus-blur.c:73 operations/common-gpl3+/waves.c:47
 msgid "Aspect ratio"
 msgstr "Proporcje obrazu"
 
-#: operations/common-cxx/focus-blur.c:268
+#: operations/common-cxx/focus-blur.c:83
+#: operations/common-cxx/variable-blur.c:43
+msgid "Blur levels"
+msgstr "Poziomy rozmycia"
+
+#: operations/common-cxx/focus-blur.c:84
+#: operations/common-cxx/variable-blur.c:44
+msgid "Number of blur levels"
+msgstr "Liczba poziomów rozmycia"
+
+#: operations/common-cxx/focus-blur.c:87
+#: operations/common-cxx/variable-blur.c:47
+msgid "Blur gamma"
+msgstr "Gamma rozmycia"
+
+#: operations/common-cxx/focus-blur.c:88
+#: operations/common-cxx/variable-blur.c:48
+msgid "Gamma factor for blur-level spacing"
+msgstr "Współczynnik gammy dla odstępów poziomu rozmycia"
+
+#: operations/common-cxx/focus-blur.c:94
+#: operations/common-cxx/variable-blur.c:54
+msgid "High quality"
+msgstr "Wysoka jakość"
+
+#: operations/common-cxx/focus-blur.c:95
+#: operations/common-cxx/variable-blur.c:55
+msgid "Generate more accurate and consistent output (slower)"
+msgstr "Utwórz bardziej dokładne i zwarte wyjście (wolniejsze)"
+
+#: operations/common-cxx/focus-blur.c:279
 msgid "Focus Blur"
 msgstr "Rozmycie ostrości"
 
-#: operations/common-cxx/focus-blur.c:270
+#: operations/common-cxx/focus-blur.c:281
 msgid "Blur the image around a focal point"
 msgstr "Rozmycie obrazu wokół ogniska"
 
-#: operations/common-cxx/piecewise-blend.cc:29
+#: operations/common-cxx/piecewise-blend.cc:31
 msgid "Number of blend levels"
 msgstr "Liczba poziomów łączenia"
 
-#: operations/common-cxx/piecewise-blend.cc:32
-msgid "Normalized mask"
-msgstr "Normalizowana maska"
-
-#: operations/common-cxx/piecewise-blend.cc:33
-msgid "Mask values are in the [0,1] range"
-msgstr "Wartości maski są w zakresie [0,1]"
-
 #: operations/common-cxx/piecewise-blend.cc:35
-#: operations/common-cxx/variable-blur.c:42
+msgid "Gamma factor for blend-level spacing"
+msgstr "Współczynnik gammy dla odstępów poziomu łączenia"
+
+#: operations/common-cxx/piecewise-blend.cc:39
+#: operations/common-cxx/variable-blur.c:38
 msgid "Linear mask"
 msgstr "Maska liniowa"
 
-#: operations/common-cxx/piecewise-blend.cc:36
-#: operations/common-cxx/variable-blur.c:43
+#: operations/common-cxx/piecewise-blend.cc:40
+#: operations/common-cxx/variable-blur.c:39
 msgid "Use linear mask values"
 msgstr "Użyj liniowych wartości maski"
 
-#: operations/common-cxx/piecewise-blend.cc:39
-msgid "Raise gamma for non-linear spacing of steps."
-msgstr "Podnieś gammę w nieliniowym odstępie kroków."
-
-#: operations/common-cxx/piecewise-blend.cc:306
+#: operations/common-cxx/piecewise-blend.cc:347
 msgid "Piecewise Blend"
 msgstr "Łączenie częściowe"
 
-#: operations/common-cxx/piecewise-blend.cc:308
+#: operations/common-cxx/piecewise-blend.cc:349
 msgid "Blend a chain of inputs using a mask"
 msgstr "Połącz łańcuch wejść za pomocą maski"
 
-#: operations/common-cxx/variable-blur.c:29
+#: operations/common-cxx/variable-blur.c:32
 msgid "Maximal blur radius"
 msgstr "Maksymalny promień rozmycia"
 
-#: operations/common-cxx/variable-blur.c:189
+#: operations/common-cxx/variable-blur.c:227
 msgid "Variable Blur"
 msgstr "Zmienne rozmycie"
 
-#: operations/common-cxx/variable-blur.c:191
+#: operations/common-cxx/variable-blur.c:229
 msgid "Blur the image by a varying amount using a mask"
 msgstr "Rozmycie obrazu o różną ilość za pomocą maski"
 
