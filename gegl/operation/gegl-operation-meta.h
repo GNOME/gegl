@@ -57,13 +57,6 @@ void  gegl_operation_meta_redirect         (GeglOperation     *operation,
                                             GeglNode          *internal,
                                             const gchar       *internal_name);
 
-void  gegl_operation_meta_watch_node       (GeglOperation     *operation,
-                                            GeglNode          *node);
-
-void  gegl_operation_meta_watch_nodes      (GeglOperation     *operation,
-                                            GeglNode          *node,
-                                            ...) G_GNUC_NULL_TERMINATED;
-
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglOperationMeta, g_object_unref)
 
 G_END_DECLS

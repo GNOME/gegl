@@ -61,16 +61,3 @@ gegl_operation_meta_redirect (GeglOperation *operation,
   internal_operation = gegl_node_get_gegl_operation (internal);
   g_object_bind_property (operation, name, internal_operation, internal_name, G_BINDING_SYNC_CREATE);
 }
-
-void
-gegl_operation_meta_watch_node (GeglOperation     *operation,
-                                GeglNode          *node)
-{
-}
-
-void
-gegl_operation_meta_watch_nodes (GeglOperation     *operation,
-                                 GeglNode          *node,
-                                 ...)
-{
-}
