@@ -90,7 +90,7 @@ GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_META)
 #include <glib/gprintf.h>
 
 static void
-do_setup (GeglOperation *operation)
+update_graph (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglOp         *self = GEGL_OP (operation);
@@ -175,23 +175,6 @@ do_setup (GeglOperation *operation)
 
 }
 
-static void
-my_set_property (GObject      *gobject,
-                 guint         property_id,
-                 const GValue *value,
-                 GParamSpec   *pspec)
-{
-  GeglOperation *operation = GEGL_OPERATION (gobject);
-  GeglOp        *self      = GEGL_OP (operation);
-
-  /* The set_property provided by the chant system does the
-   * storing and reffing/unreffing of the input properties */
-  set_property(gobject, property_id, value, pspec);
-
-  if (self->load)
-    do_setup (operation);
-}
-
 static void attach (GeglOperation *operation)
 {
   GeglOp         *self = GEGL_OP (operation);
@@ -222,8 +205,6 @@ static void attach (GeglOperation *operation)
                        NULL);
   gegl_node_link_many (self->input, self->composite_op, self->output, NULL);
   gegl_node_connect_from (self->composite_op, "aux", self->translate, "output");
-
-  do_setup (operation);
 }
 
 
@@ -241,16 +222,17 @@ finalize (GObject *object)
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GObjectClass       *object_class;
-  GeglOperationClass *operation_class;
+  GObjectClass           *object_class;
+  GeglOperationClass     *operation_class;
+  GeglOperationMetaClass *operation_meta_class;
 
-  object_class    = G_OBJECT_CLASS (klass);
-  operation_class = GEGL_OPERATION_CLASS (klass);
+  object_class         = G_OBJECT_CLASS (klass);
+  operation_class      = GEGL_OPERATION_CLASS (klass);
+  operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
 
-  object_class->finalize     = finalize;
-  object_class->set_property = my_set_property;
-
-  operation_class->attach = attach;
+  object_class->finalize       = finalize;
+  operation_meta_class->update = update_graph;
+  operation_class->attach      = attach;
 
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:layer",
