@@ -30,7 +30,9 @@
 #include "gegl-operation.h"
 #include "gegl-operation-private.h"
 #include "gegl-operation-context.h"
+#include "gegl-operation-context-private.h"
 #include "gegl-operations-util.h"
+#include "gegl-operation-meta.h"
 #include "graph/gegl-node-private.h"
 #include "graph/gegl-connection.h"
 #include "graph/gegl-pad.h"
@@ -44,7 +46,8 @@
 
 struct _GeglOperationPrivate
 {
-  gdouble pixel_time;
+  gdouble  pixel_time;
+  gboolean attached;
 };
 
 
@@ -304,16 +307,35 @@ void
 gegl_operation_attach (GeglOperation *self,
                        GeglNode      *node)
 {
-  GeglOperationClass *klass;
+  GeglOperationClass   *klass;
+  GeglOperationPrivate *priv;
 
   g_return_if_fail (GEGL_IS_OPERATION (self));
   g_return_if_fail (GEGL_IS_NODE (node));
 
   klass = GEGL_OPERATION_GET_CLASS (self);
+  priv = gegl_operation_get_instance_private (self);
 
   g_assert (klass->attach);
   self->node = node;
   klass->attach (self);
+  priv->attached = TRUE;
+
+  if (GEGL_IS_OPERATION_META (self))
+  {
+    GeglOperationMetaClass *meta_klass = GEGL_OPERATION_META_CLASS (klass);
+    if (meta_klass->update)
+      meta_klass->update (self);
+  }
+}
+
+gboolean
+_gegl_operation_is_attached (GeglOperation *self)
+{
+  GeglOperationPrivate *priv;
+  if (!self) return FALSE;
+  priv = gegl_operation_get_instance_private (self);
+  return priv->attached;
 }
 
 /* Calls the prepare function on the operation that extends this base class */

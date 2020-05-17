@@ -23,6 +23,7 @@
 
 #include "gegl.h"
 #include "gegl-operation-meta.h"
+#include "gegl-operation-context-private.h"
 
 static GeglNode * detect       (GeglOperation *operation,
                                 gint           x,
@@ -36,10 +37,22 @@ gegl_operation_meta_class_init (GeglOperationMetaClass *klass)
 {
   GEGL_OPERATION_CLASS (klass)->detect = detect;
 }
+#include <stdio.h>
+static void
+gegl_operation_meta_property_notify (GeglOperation *self)
+{
+  GeglOperationMetaClass *klass = GEGL_OPERATION_META_GET_CLASS (self);
+  if (_gegl_operation_is_attached (self) &&
+      klass->update)
+    klass->update (self);
+}
 
 static void
 gegl_operation_meta_init (GeglOperationMeta *self)
 {
+  g_signal_connect (self, "notify",
+                    G_CALLBACK (gegl_operation_meta_property_notify),
+                    self);
 }
 
 static GeglNode *
@@ -47,7 +60,7 @@ detect (GeglOperation *operation,
         gint           x,
         gint           y)
 {
-  return NULL; /* hands it over request to the internal nodes */
+  return NULL; /* hands request over to the internal nodes */
 }
 
 void
@@ -56,8 +69,6 @@ gegl_operation_meta_redirect (GeglOperation *operation,
                               GeglNode      *internal,
                               const gchar   *internal_name)
 {
-  GeglOperation *internal_operation;
-
-  internal_operation = gegl_node_get_gegl_operation (internal);
+  GeglOperation *internal_operation = gegl_node_get_gegl_operation (internal);
   g_object_bind_property (operation, name, internal_operation, internal_name, G_BINDING_SYNC_CREATE);
 }

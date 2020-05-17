@@ -91,6 +91,9 @@ void            gegl_operation_context_set_result_rect (GeglOperationContext *no
 
 gboolean        gegl_operation_context_get_init_output (void);
 
+/* could deserve its own private non-installed header */
+gboolean _gegl_operation_is_attached (GeglOperation *self);
+
 G_END_DECLS
 
 #endif /* __GEGL_OPERATION_CONTEXT_PRIVATE_H__ */
