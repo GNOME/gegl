@@ -122,35 +122,32 @@ update (GeglOperation *operation)
   GeglProperties *o     = GEGL_PROPERTIES (operation);
   Nodes          *nodes = o->user_data;
 
-  if (nodes)
-    {
-      gdouble scale;
-      gdouble squeeze;
+  gdouble scale;
+  gdouble squeeze;
 
-      if (o->aspect_ratio >= 0.0)
-        scale = 1.0 - o->aspect_ratio;
-      else
-        scale = 1.0 / (1.0 + o->aspect_ratio);
+  if (o->aspect_ratio >= 0.0)
+    scale = 1.0 - o->aspect_ratio;
+  else
+    scale = 1.0 / (1.0 + o->aspect_ratio);
 
-      if (scale <= 1.0)
-        squeeze = +2.0 * atan (1.0 / scale - 1.0) / G_PI;
-      else
-        squeeze = -2.0 * atan (scale - 1.0) / G_PI;
+  if (scale <= 1.0)
+    squeeze = +2.0 * atan (1.0 / scale - 1.0) / G_PI;
+  else
+    squeeze = -2.0 * atan (scale - 1.0) / G_PI;
 
-      gegl_node_set (nodes->vignette,
-                     "shape",    o->shape,
-                     "radius",   o->radius,
-                     "softness", 1.0 - o->focus,
-                     "gamma",    o->midpoint < 1.0 ?
-                                   MIN (log (0.5) / log (o->midpoint),
-                                        MAX_GAMMA) :
-                                   MAX_GAMMA,
-                     "squeeze",  squeeze,
-                     "x",        o->x,
-                     "y",        o->y,
-                     "rotation", fmod (o->rotation + 360.0, 360.0),
-                     NULL);
-    }
+  gegl_node_set (nodes->vignette,
+                 "shape",    o->shape,
+                 "radius",   o->radius,
+                 "softness", 1.0 - o->focus,
+                 "gamma",    o->midpoint < 1.0 ?
+                               MIN (log (0.5) / log (o->midpoint),
+                                    MAX_GAMMA) :
+                               MAX_GAMMA,
+                 "squeeze",  squeeze,
+                 "x",        o->x,
+                 "y",        o->y,
+                 "rotation", fmod (o->rotation + 360.0, 360.0),
+                 NULL);
 }
 
 static void
@@ -221,21 +218,8 @@ attach (GeglOperation *operation)
                                 nodes->variable_blur, "high-quality");
 #endif
 
-  update (operation);
-
   g_object_unref (white);
   g_object_unref (black);
-}
-
-static void
-my_set_property (GObject      *object,
-                 guint         property_id,
-                 const GValue *value,
-                 GParamSpec   *pspec)
-{
-  set_property (object, property_id, value, pspec);
-
-  update (GEGL_OPERATION (object));
 }
 
 static void
@@ -256,16 +240,17 @@ dispose (GObject *object)
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GObjectClass       *object_class;
-  GeglOperationClass *operation_class;
+  GObjectClass           *object_class;
+  GeglOperationClass     *operation_class;
+  GeglOperationMetaClass *operation_meta_class;
 
-  object_class    = G_OBJECT_CLASS (klass);
-  operation_class = GEGL_OPERATION_CLASS (klass);
+  object_class         = G_OBJECT_CLASS (klass);
+  operation_class      = GEGL_OPERATION_CLASS (klass);
+  operation_meta_class = GEGL_OPERATION_META_CLASS (klass);
 
-  object_class->dispose      = dispose;
-  object_class->set_property = my_set_property;
-
-  operation_class->attach    = attach;
+  object_class->dispose        = dispose;
+  operation_class->attach      = attach;
+  operation_meta_class->update = update;
 
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:focus-blur",
