@@ -20,74 +20,45 @@
 #include <glib/gi18n-lib.h>
 
 #define TUTORIAL \
-"id=input\n"\
-"# uncomment a set of lines below to do test an example, use\n#use ctrl+a before typing to select all, if you want a blank slate.\n"\
+"# uncomment a set of lines below by removing the\n"\
+"# leading to test and modify an example, use\n"\
+"# use ctrl+a before typing to select all, if you\n"\
+"# want a blank slate.\n"\
+"#\n"\
+"id=in # name a reference to the input buffer 'in'\n"\
 "\n"\
-"# adaptive threshold\n"\
-"#threshold aux=[\n"\
-"#  ref=input\n"\
-"#  gaussian-blur\n"\
-"#    std-dev-x=0.25rel  # rel suffix means relative to\n"\
-"#    std-dev-y=0.25rel  # input dimensions rather than in pixels\n"\
-"#]\n"\
 "\n"\
-"# antialias vignette proportion=0 radius=0.7\n"\
+"# adaptive threshold:\n"\
+"#\n"\
+"#threshold aux=[ ref=in gaussian-blur  std-dev-x=0.2rel std-dev-y=0.2rel ]\n"\
 "\n"\
-"# text overlay\n"\
-"#over aux=[\n"\
-"#  text wrap=1.0rel  color=rgb(0.1,0.1,.3) size=.1rel\n"\
-"#    string=\"ipsum dolor, sic amet foo bar baz qux amelqur fax\"\n"\
-"#  dropshadow\n"\
-"#     radius=.01rel  grow-radius=0.0065rel color=white x=0 y=0\n"\
-"#  rotate degrees=3.1415\n"\
-"#  translate y=.1rel x=.1rel\n"\
-"#]\n"\
+"# local white balance and contrast stretching\n"\
+"#\n"\
+"#divide aux=[  ref=in  median-blur radius=50 percentile=100  gaussian-blur std-dev-x=70 std-dev-y=70 ]\n"\
 "\n"\
-"#over aux=[\n"\
-"#  ref=input\n"\
-"#  opacity aux=[\n"\
-"#    color value=black over aux=[\n"\
-"#        text string=\"original\" color=white  size=.3rel\n"\
-"#        translate y=.7rel\n"\
-"#      ]\n"\
-"#    ]\n"\
-"#]\n"\
+"# median sharpen (unsharp-mask with median-blur):\n"\
+"#\n"\
+"#add aux=[  ref=in subtract aux=[ ref=in  median-blur radius=5  ] ] \n"\
 "\n"\
-"#over aux=[\n"\
-"#  ref=input\n"\
-"#  scale-ratio x=0.20 y=0.20\n"\
-"#  newsprint period=0.01rel period2=0.01rel period3=0.01rel period4=0.01rel\n"\
-"#    color-model=cmyk\n"\
-"#    aa-samples=64\n"\
-"#    pattern=pssquare\n"\
-"#    pattern2=pssquare\n"\
-"#    pattern3=pssquare\n"\
-"#    pattern4=pssquare\n"\
-"#    translate x=0.1rel y=0.5rel\n"\
-"#]\n"\
+"# styled text overlay\n"\
+"#\n"\
+"#over aux=[ text wrap=1.0rel  color=rgb(0.1,0.1,.3) size=.1rel string=\"ipsum sic amet deliriarium mic sel adendum. Mic fubar bax qux facilium dhat.\" dropshadow radius=.01rel  grow-radius=0.0065rel color=white x=0 y=0 rotate degrees=3.1415 translate y=.1rel x=.1rel ]\n"\
 "\n"\
-"#over aux=[\n"\
-"#  ref=input\n"\
-"#  scale-ratio x=0.20 y=0.20\n"\
-"#  newsprint period=0.01rel period2=0.01rel period3=0.01rel period4=00.01rel\n"\
-"#  color-model=rgb aa-samples=64\n"\
-"#  translate x=0.4rel y=0.5rel\n"\
-"#]\n"\
 "\n"\
-"#over aux=[\n"\
-"#  ref=input\n"\
-"#  scale-ratio x=0.20 y=0.20\n"\
-"#  snn-mean snn-mean\n"\
-"#  translate x=0.7rel y=0.5rel\n"\
-"#]\n"\
+"# thumbs with misc filters along bottom of image:\n"\
+"#\n"\
+"#over aux=[ ref=in scale-ratio x=0.20 y=0.20 newsprint period=0.01rel period2=0.01rel period3=0.01rel period4=0.01rel color-model=cmyk aa-samples=64 pattern=pssquare pattern2=pssquare pattern3=pssquare pattern4=pssquare translate x=0.1rel y=0.7rel ]\n"\
+"#over aux=[ ref=in scale-ratio x=0.20 y=0.20 newsprint period=0.01rel period2=0.01rel period3=0.01rel period4=00.01rel color-model=rgb aa-samples=64 translate x=0.4rel y=0.7rel ] \n"\
+"#over aux=[ ref=in scale-ratio x=0.20 y=0.20 snn-mean snn-mean translate x=0.7rel y=0.7rel ] \n"\
+"#over aux=[ ref=in scale-ratio x=0.20 y=0.20 mosaic tile-size=0.03rel translate x=1.0rel y=0.7rel ] \n"\
 "\n"\
-"#over aux=[\n"\
-"#  ref=input\n"\
-"#  scale-ratio x=0.20 y=0.20\n"\
-"#  mosaic tile-size=0.03rel\n"\
-"#  translate x=1.0rel y=0.5rel\n"\
-"#]\n"\
-"\n"
+"\n"\
+"\n"\
+"# All the examples can be expanded to be on\n"\
+"# multiple lines, this graph description\n"\
+"# language is not whitespace sensitive, the\n"\
+"# rel suffix is relative to image height\n"
+
 
 
 
