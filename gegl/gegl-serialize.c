@@ -370,6 +370,7 @@ gegl_create_chain_argv (char      **argv,
       else if (!strchr(*arg, '=') && strchr (*arg, ']'))
         {
           level--;
+          if (level < 0) level = 0;
           gegl_node_connect_to (iter[level+1], "output", iter[level],
                                 level_pad[level]);
         }

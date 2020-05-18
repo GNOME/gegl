@@ -41,7 +41,7 @@ property_enum (neighborhood, _("Neighborhood"),
   description (_("Neighborhood type"))
 
 property_int  (radius, _("Radius"), 3)
-  value_range (-100, 100)
+  value_range (-400, 400)
   ui_range    (0, 100)
   ui_meta     ("unit", "pixel-distance")
   description (_("Neighborhood radius, a negative value will calculate with inverted percentiles"))
