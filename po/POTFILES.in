@@ -285,8 +285,8 @@ operations/workshop/generated/soft-burn.c
 operations/workshop/generated/soft-dodge.c
 operations/workshop/generated/subtractive.c
 operations/workshop/gradient-map.c
-operations/workshop/hstack.c
 operations/workshop/integral-image.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
+operations/workshop/pack.c
