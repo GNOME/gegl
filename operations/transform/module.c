@@ -39,6 +39,7 @@ gegl_module_query (GTypeModule *module)
   return &modinfo;
 }
 
+GType gegl_op_border_align_register_type          (GTypeModule *module);
 GType gegl_op_rotate_register_type                (GTypeModule *module);
 GType gegl_op_rotate_on_center_register_type      (GTypeModule *module);
 GType gegl_op_reflect_register_type               (GTypeModule *module);
@@ -58,6 +59,7 @@ gegl_module_register (GTypeModule *module)
   transform_module = module;
 
   dummy = op_transform_get_type ();
+  dummy = gegl_op_border_align_register_type (module);
   dummy = gegl_op_scale_ratio_register_type (module);
   dummy = gegl_op_scale_size_register_type (module);
   dummy = gegl_op_scale_size_keepaspect_register_type (module);

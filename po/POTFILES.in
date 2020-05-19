@@ -251,6 +251,7 @@ operations/generated/subtract.c
 operations/generated/xor.c
 operations/seamless-clone/seamless-clone.c
 operations/seamless-clone/seamless-clone-compose.c
+operations/transform/border-align.c
 operations/transform/reflect.c
 operations/transform/rotate.c
 operations/transform/rotate-on-center.c
