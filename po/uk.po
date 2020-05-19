@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-18 20:45+0000\n"
-"PO-Revision-Date: 2020-05-19 09:29+0300\n"
+"POT-Creation-Date: 2020-05-19 19:03+0000\n"
+"PO-Revision-Date: 2020-05-19 22:12+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -167,7 +167,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4381 gegl/gegl-serialize.c:657
+#: bin/ui-core.c:4381 gegl/gegl-serialize.c:658
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "Не існує BablFormat «%s»."
@@ -382,22 +382,22 @@ msgstr "Вимкнути OpenCL"
 msgid "unhandled path data %s:%s\n"
 msgstr "непридатні до обробки дані шляху, %s:%s\n"
 
-#: gegl/gegl-serialize.c:527
+#: gegl/gegl-serialize.c:528
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "Не знайдено дії «%s». Часткові збіги: "
 
-#: gegl/gegl-serialize.c:556
+#: gegl/gegl-serialize.c:557
 #, c-format
 msgid "%s has no %s property."
 msgstr "У %s немає властивості %s."
 
-#: gegl/gegl-serialize.c:562
+#: gegl/gegl-serialize.c:563
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "У %s немає властивості %s. Властивості: "
 
-#: gegl/gegl-serialize.c:793
+#: gegl/gegl-serialize.c:794
 #, c-format
 msgid "No such op '%s'"
 msgstr "Немає дії «%s»"
@@ -433,6 +433,7 @@ msgstr "Буфер введення для вхідного буфера зоб�
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
+#: operations/transform/border-align.c:155
 msgid "Auxiliary image buffer input pad."
 msgstr "Допоміжний буфер вхідних даних для буфера зображення."
 
@@ -1781,8 +1782,8 @@ msgstr "Ромб"
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
 #: operations/common-gpl3+/spiral.c:35 operations/core/crop.c:25
-#: operations/transform/reflect.c:26 operations/transform/scale-ratio.c:25
-#: operations/transform/scale-size.c:25
+#: operations/transform/border-align.c:24 operations/transform/reflect.c:26
+#: operations/transform/scale-ratio.c:25 operations/transform/scale-size.c:25
 #: operations/transform/scale-size-keepaspect.c:25
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
 #: operations/workshop/external/spyrograph.c:51
@@ -1797,8 +1798,8 @@ msgstr "Зміщення тіні за горизонталлю"
 #: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
-#: operations/transform/reflect.c:30 operations/transform/scale-ratio.c:30
-#: operations/transform/scale-size.c:30
+#: operations/transform/border-align.c:30 operations/transform/reflect.c:30
+#: operations/transform/scale-ratio.c:30 operations/transform/scale-size.c:30
 #: operations/transform/scale-size-keepaspect.c:30
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
@@ -2067,6 +2068,7 @@ msgstr "Розмір"
 
 #: operations/common/gblur-1d.c:50 operations/common/wavelet-blur-1d.c:36
 #: operations/common-gpl3+/deinterlace.c:40 operations/workshop/boxblur-1d.c:33
+#: operations/workshop/pack.c:27
 msgid "Orientation"
 msgstr "Орієнтація"
 
@@ -3311,7 +3313,7 @@ msgstr "Більші значення зменшують випадковіст�
 msgid "Add CIE Lch Noise"
 msgstr "Додати шум CIE Lch"
 
-#: operations/common/noise-cie-lch.c:198
+#: operations/common/noise-cie-lch.c:199
 msgid "Randomize lightness, chroma and hue independently"
 msgstr ""
 "Зробити випадковими незалежно одне від одного освітленість, колірність і "
@@ -3328,7 +3330,7 @@ msgstr "Значення"
 msgid "Add HSV Noise"
 msgstr "Додати шум HSV"
 
-#: operations/common/noise-hsv.c:280
+#: operations/common/noise-hsv.c:281
 msgid "Randomize hue, saturation and value independently"
 msgstr ""
 "Зробити випадковими незалежно одне від одного освітленість, колірність і "
@@ -3348,7 +3350,7 @@ msgstr "Повторення"
 msgid "Randomly Shuffle Pixels"
 msgstr "Випадково перемішати точки"
 
-#: operations/common/noise-hurl.c:248
+#: operations/common/noise-hurl.c:249
 msgid "Completely randomize a fraction of pixels"
 msgstr "Повністю випадкове переставляння частини точок"
 
@@ -3433,7 +3435,7 @@ msgstr "Синій"
 msgid "Add RGB Noise"
 msgstr "Додати шум RGB"
 
-#: operations/common/noise-rgb.c:216
+#: operations/common/noise-rgb.c:217
 msgid "Distort colors by random amounts"
 msgstr "Змінити кольори на випадкову величину"
 
@@ -8441,6 +8443,30 @@ msgstr ""
 msgid "How much vertical offset should applied to the paste"
 msgstr "Вертикальний зсув, який має бути застосовано до вставленого"
 
+#: operations/transform/border-align.c:25
+msgid "Horizontal justification 0.0 is left 0.5 centered and 1.0 right."
+msgstr ""
+"Горизонтальне вирівнювання: 0.0 — ліворуч, 0.5 — за центром і 1.0 — праворуч."
+
+#: operations/transform/border-align.c:31
+msgid "Vertical justification 0.0 is top 0.5 middle and 1.0 bottom."
+msgstr "Вертикальне вирівнювання: 0.0 — вгору, 0.5 — посередині, і 1.0 — вниз."
+
+#: operations/transform/border-align.c:178
+#| msgid "Border"
+msgid "Border Align"
+msgstr "Вирівнювання за рамкою"
+
+#: operations/transform/border-align.c:180
+msgid ""
+"Aligns box of input rectangle with border of compositing target or aux' "
+"bounding-box border, if aux pad is not connectd the op tries to figure out "
+"which bounding box' border applies."
+msgstr ""
+"Вирівнює вхідний прямокутний блок за допомогою рамки композитної тілі або"
+" допоміжної рамки-обгортки. Якщо допоміжну підкладку не з'єднано, програма"
+" намагатиметься визначити, яку рамку-обгортку слід застосувати."
+
 #: operations/transform/reflect.c:27
 msgid "Direction vector's X component"
 msgstr "Складова X вектора напрямку"
@@ -9244,14 +9270,6 @@ msgstr "Мапа градієнта"
 msgid "Applies a color gradient."
 msgstr "Застосовує градієнт кольорів."
 
-#: operations/workshop/hstack.c:186
-msgid ""
-"Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right of "
-"\"input\")"
-msgstr ""
-"Горизонтальне стосування вхідних даних (у «вході» «aux» розташовано праворуч "
-"від «входу»)"
-
 #: operations/workshop/integral-image.c:25
 msgid "squared integral"
 msgstr "інтеграл у квадраті"
@@ -9331,6 +9349,33 @@ msgstr "Вибірковий відтінок-насиченість"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Вибіркове коригування відтінку, освітленості та насиченості"
+
+#: operations/workshop/pack.c:25
+msgid "Gap"
+msgstr "Інтервал"
+
+#: operations/workshop/pack.c:26
+msgid "How many pixels of space between items"
+msgstr "Інтервал у пікселях між об'єктами"
+
+#: operations/workshop/pack.c:134
+msgid "Pack"
+msgstr "Пакування"
+
+#: operations/workshop/pack.c:136
+msgid ""
+"Packs an image horizontally or vertically next to each other with optional "
+"gap, aux right of input."
+msgstr ""
+"Пакує зображення горизонтально або вертикально одне біля одного із додатковим"
+" інтервалом, який додається праворуч."
+
+#~ msgid ""
+#~ "Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right "
+#~ "of \"input\")"
+#~ msgstr ""
+#~ "Горизонтальне стосування вхідних даних (у «вході» «aux» розташовано "
+#~ "праворуч від «входу»)"
 
 #~ msgid "Pixbuf location"
 #~ msgstr "Розташування буфера пікселів"
