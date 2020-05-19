@@ -273,10 +273,11 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class->cl_process = cl_process;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",       "gegl:noise-hsv",
-    "title",      _("Add HSV Noise"),
-    "categories", "noise",
-    "reference-hash", "742a94075b6ddfaf86638691bf654b3b",
+    "name",               "gegl:noise-hsv",
+    "title",              _("Add HSV Noise"),
+    "categories",         "noise",
+    "position-dependent", "true",
+    "reference-hash",     "742a94075b6ddfaf86638691bf654b3b",
     "description", _("Randomize hue, saturation and value independently"),
       NULL);
 }

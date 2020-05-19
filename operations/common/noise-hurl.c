@@ -241,10 +241,11 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class->cl_process = cl_process;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",       "gegl:noise-hurl",
-    "title",      _("Randomly Shuffle Pixels"),
-    "categories", "noise",
-    "reference-hash", "ad5a185323d116cfee0e74d3283dde79",
+    "name",               "gegl:noise-hurl",
+    "title",              _("Randomly Shuffle Pixels"),
+    "categories",         "noise",
+    "position-dependent", "true",
+    "reference-hash",     "ad5a185323d116cfee0e74d3283dde79",
     "description", _("Completely randomize a fraction of pixels"),
     NULL);
 }

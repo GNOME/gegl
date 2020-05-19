@@ -191,10 +191,11 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class->process = process;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:noise-cie-lch",
-    "title",       _("Add CIE Lch Noise"),
-    "reference-hash", "7b01f2a1f2d866e1349748b70403b2a4",
-    "categories",  "noise",
+    "name",               "gegl:noise-cie-lch",
+    "title",              _("Add CIE Lch Noise"),
+    "reference-hash",     "7b01f2a1f2d866e1349748b70403b2a4",
+    "categories",         "noise",
+    "position-dependent", "true",
     "description", _("Randomize lightness, chroma and hue independently"),
     NULL);
 }
