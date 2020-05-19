@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-17 10:57+0000\n"
-"PO-Revision-Date: 2020-05-17 14:38+0300\n"
+"POT-Creation-Date: 2020-05-18 20:45+0000\n"
+"PO-Revision-Date: 2020-05-19 09:29+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -692,11 +692,11 @@ msgstr "Обмежити експонування"
 msgid "Don't over-expose highlights"
 msgstr "Не збільшувати експонування виблисків"
 
-#: operations/common/bloom.c:231
+#: operations/common/bloom.c:209
 msgid "Bloom"
 msgstr "Флуоресценція"
 
-#: operations/common/bloom.c:233
+#: operations/common/bloom.c:211
 msgid "Add glow around bright areas"
 msgstr "Додавання сяйва навколо яскравих ділянок"
 
@@ -711,7 +711,7 @@ msgstr ""
 msgid "Box Blur"
 msgstr "Прямокутне розмивання"
 
-#: operations/common/box-blur.c:407 operations/workshop/boxblur.c:78
+#: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
 msgid "Blur resulting from averaging the colors of a square neighbourhood."
 msgstr ""
 "Розмивання внаслідок усереднення кольору у квадраті навколишніх пікселів."
@@ -1002,11 +1002,11 @@ msgstr "Кут"
 msgid "Line thickness"
 msgstr "Товщина ліній"
 
-#: operations/common/color-assimilation-grid.c:164
+#: operations/common/color-assimilation-grid.c:145
 msgid "Color Assimilation Grid"
 msgstr "Ґратка асиміляції кольорів"
 
-#: operations/common/color-assimilation-grid.c:166
+#: operations/common/color-assimilation-grid.c:147
 msgid ""
 "Turn image grayscale and overlay an oversaturated grid - through color "
 "assimilation happening in the human visual system, for some grid scales this "
@@ -1624,11 +1624,11 @@ msgstr "Радіус 1"
 msgid "Radius 2"
 msgstr "Радіус 2"
 
-#: operations/common/difference-of-gaussians.c:86
+#: operations/common/difference-of-gaussians.c:85
 msgid "Difference of Gaussians"
 msgstr "Різниця гаусіанів"
 
-#: operations/common/difference-of-gaussians.c:89
+#: operations/common/difference-of-gaussians.c:88
 msgid ""
 "Edge detection with control of edge thickness, based on the difference of "
 "two gaussian blurs"
@@ -1843,11 +1843,11 @@ msgstr "Колір тіні (типово, «black»)"
 msgid "Opacity"
 msgstr "Непрозорість"
 
-#: operations/common/dropshadow.c:204
+#: operations/common/dropshadow.c:185
 msgid "Dropshadow"
 msgstr "Відкидання тіні"
 
-#: operations/common/dropshadow.c:206
+#: operations/common/dropshadow.c:187
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Створює ефекти відкидання тіні для буфера вхідних даних"
 
@@ -2048,11 +2048,11 @@ msgid "Should the output extent be clipped to the input extent"
 msgstr ""
 "Визначає, чи слід обрізати розміри результату за розмірами початкової області"
 
-#: operations/common/gaussian-blur.c:118
+#: operations/common/gaussian-blur.c:116
 msgid "Gaussian Blur"
 msgstr "Розмиття за Гаусом"
 
-#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1390
+#: operations/common/gaussian-blur.c:119 operations/common/gblur-1d.c:1390
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -2113,21 +2113,21 @@ msgstr "Шлях до цільового файлу для запису буфе
 msgid "GeglBuffer file writer."
 msgstr "Записувач файлів GeglBuffer."
 
-#: operations/common/gegl.c:24
+#: operations/common/gegl.c:67
 msgid "pipeline"
 msgstr "канал обробки"
 
-#: operations/common/gegl.c:25
+#: operations/common/gegl.c:68
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr ""
 "[дія [властивість=значення] [властивість=значення]] [[дія] "
 "[властивість=значення]"
 
-#: operations/common/gegl.c:28
+#: operations/common/gegl.c:71
 msgid "Eeeeeek"
 msgstr "Оце тобі"
 
-#: operations/common/gegl.c:29
+#: operations/common/gegl.c:72
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
@@ -2135,11 +2135,11 @@ msgstr ""
 "Існує проблема із синтаксисом або у програмі для обробки значень "
 "властивостей. Втім, здебільшого, усе має працювати."
 
-#: operations/common/gegl.c:107
+#: operations/common/gegl.c:167
 msgid "GEGL graph"
 msgstr "Граф GEGL"
 
-#: operations/common/gegl.c:110
+#: operations/common/gegl.c:170
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2194,11 +2194,11 @@ msgstr "Стд. відхил."
 msgid "Contrast of high-pass"
 msgstr "Контрастність високих частот"
 
-#: operations/common/high-pass.c:84
+#: operations/common/high-pass.c:82
 msgid "High Pass Filter"
 msgstr "Фільтр високих частот"
 
-#: operations/common/high-pass.c:88
+#: operations/common/high-pass.c:86
 msgid "Enhances fine details."
 msgstr "Поліпшує деталізацію."
 
@@ -2390,11 +2390,11 @@ msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
 msgstr ""
 "Шлях до файлу з початковим зображенням (png, jpg, raw, svg, bmp, tif, ...)"
 
-#: operations/common/layer.c:266
+#: operations/common/layer.c:240
 msgid "Layer"
 msgstr "Шар"
 
-#: operations/common/layer.c:267
+#: operations/common/layer.c:241
 msgid "A layer in the traditional sense"
 msgstr "Шар в традиційному розумінні"
 
@@ -3683,11 +3683,11 @@ msgstr "Вертикальний вимір"
 msgid "Color to render"
 msgstr "Колір для обробки"
 
-#: operations/common/rectangle.c:89
+#: operations/common/rectangle.c:86
 msgid "Rectangle"
 msgstr "Прямокутник"
 
-#: operations/common/rectangle.c:94
+#: operations/common/rectangle.c:91
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Прямокутне джерело фіксованого розміру, заповнене суцільним кольором"
 
@@ -3747,11 +3747,11 @@ msgstr "Вставляти перетворені зображення одне 
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Математичний метод відновлення значень пікселів"
 
-#: operations/common/recursive-transform.c:397
+#: operations/common/recursive-transform.c:376
 msgid "Recursive Transform"
 msgstr "Рекурсивне перетворення"
 
-#: operations/common/recursive-transform.c:399
+#: operations/common/recursive-transform.c:378
 msgid "Apply a transformation recursively."
 msgstr "Застосувати перетворення рекурсивно."
 
@@ -4202,11 +4202,11 @@ msgid "Scaling factor for unsharp-mask, the strength of effect"
 msgstr ""
 "Коефіцієнт масштабування для маски зменшення різкості, потужність ефекту"
 
-#: operations/common/unsharp-mask.c:164
+#: operations/common/unsharp-mask.c:147
 msgid "Sharpen (Unsharp Mask)"
 msgstr "Різкість (маска зменшення різкості)"
 
-#: operations/common/unsharp-mask.c:167
+#: operations/common/unsharp-mask.c:150
 msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
@@ -4378,7 +4378,7 @@ msgstr "Радіус вейвлетного розмивання"
 msgid "1D Wavelet-blur"
 msgstr "Одновимірне вейвлет-розмивання"
 
-#: operations/common/wavelet-blur-1d.c:277 operations/common/wavelet-blur.c:82
+#: operations/common/wavelet-blur-1d.c:277 operations/common/wavelet-blur.c:80
 msgid ""
 "This blur is used for the wavelet decomposition filter, each pixel is "
 "computed from another by the HAT transform"
@@ -4491,7 +4491,6 @@ msgstr "Коефіцієнт гамма для визначення інтерв
 
 #: operations/common-cxx/focus-blur.c:94
 #: operations/common-cxx/variable-blur.c:54
-#| msgid "High limit"
 msgid "High quality"
 msgstr "Висока якість"
 
@@ -4500,11 +4499,11 @@ msgstr "Висока якість"
 msgid "Generate more accurate and consistent output (slower)"
 msgstr "Зробити результати точнішими і одноріднішими (повільніше)"
 
-#: operations/common-cxx/focus-blur.c:279
+#: operations/common-cxx/focus-blur.c:257
 msgid "Focus Blur"
 msgstr "Фокусне розмивання"
 
-#: operations/common-cxx/focus-blur.c:281
+#: operations/common-cxx/focus-blur.c:259
 msgid "Blur the image around a focal point"
 msgstr "Розмиття зображення навколо точки фокусування"
 
@@ -4538,11 +4537,11 @@ msgstr "Злиття ланцюжка вхідних даних за допом�
 msgid "Maximal blur radius"
 msgstr "Максимальний радіус розмивання"
 
-#: operations/common-cxx/variable-blur.c:227
+#: operations/common-cxx/variable-blur.c:208
 msgid "Variable Blur"
 msgstr "Змінне розмиття"
 
-#: operations/common-cxx/variable-blur.c:229
+#: operations/common-cxx/variable-blur.c:210
 msgid "Blur the image by a varying amount using a mask"
 msgstr "Розмиття зображення зі змінною потужністю з використанням маски"
 
@@ -6272,11 +6271,11 @@ msgstr "Підсвічування коригування кольорів"
 msgid "Adjust saturation of highlights"
 msgstr "Корекція насиченості виблисків"
 
-#: operations/common-gpl3+/shadows-highlights.c:244
+#: operations/common-gpl3+/shadows-highlights.c:242
 msgid "Shadows-Highlights"
 msgstr "Тіні-виблиски"
 
-#: operations/common-gpl3+/shadows-highlights.c:247
+#: operations/common-gpl3+/shadows-highlights.c:245
 msgid "Perform shadows and highlights correction"
 msgstr "Виконати виправлення тіней і виблисків"
 
@@ -7062,7 +7061,7 @@ msgstr "Адреса файлу для завантаження."
 msgid "Object to supply image metadata"
 msgstr "Об'єкт для надання метаданих зображення"
 
-#: operations/core/load.c:376
+#: operations/core/load.c:374
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7751,7 +7750,7 @@ msgstr "Завантажувач PDF"
 msgid "PDF page decoder"
 msgstr "Декодер сторінок PDF"
 
-#: operations/external/pixbuf.c:26
+#: operations/external/pixbuf.c:26 operations/external/save-pixbuf.c:29
 msgid "Pixbuf"
 msgstr "Буфер зображення"
 
@@ -7876,19 +7875,15 @@ msgstr "Записувач файлів RGBE"
 msgid "RGBE image saver (Radiance HDR format)"
 msgstr "Записувач зображень RGBE (формат Radiance HDR)"
 
-#: operations/external/save-pixbuf.c:28
-msgid "Pixbuf location"
-msgstr "Розташування буфера пікселів"
+#: operations/external/save-pixbuf.c:30
+msgid "The output pixbuf produced by process is stored in this property"
+msgstr "У цій властивості буде збережено створений процесом буфер пікселів"
 
-#: operations/external/save-pixbuf.c:29
-msgid "The location where to store the output GdkPixbuf."
-msgstr "ісце, де зберігатиметься виведений GdkPixbuf."
-
-#: operations/external/save-pixbuf.c:111
+#: operations/external/save-pixbuf.c:110
 msgid "Store in GdkPixbuf"
 msgstr "Зберегти в GdkPixbuf"
 
-#: operations/external/save-pixbuf.c:113
+#: operations/external/save-pixbuf.c:112
 msgid "Store image in a GdkPixbuf."
 msgstr "Зберегти зображення в GdkPixbuf"
 
@@ -8689,11 +8684,11 @@ msgstr "Ширина смуги країв"
 msgid "Visualize Adjustment Mask"
 msgstr "Маска коригування візуалізації"
 
-#: operations/workshop/band-tune.c:234
+#: operations/workshop/band-tune.c:218
 msgid "Band tune"
 msgstr "Коригування смуги"
 
-#: operations/workshop/band-tune.c:236
+#: operations/workshop/band-tune.c:220
 msgid ""
 "Parametric band equalizer for tuning frequency bands of image, the op "
 "provides abstracted input parameters that control two difference of "
@@ -8738,7 +8733,7 @@ msgstr "Одновимірне прямокутне розмивання"
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
 msgstr "Розмивання внаслідок усереднення кольору у рядку навколишніх пікселів."
 
-#: operations/workshop/boxblur.c:77
+#: operations/workshop/boxblur.c:75
 msgid "BoxBlur"
 msgstr "Прямокутне розмивання"
 
@@ -9336,6 +9331,12 @@ msgstr "Вибірковий відтінок-насиченість"
 #: operations/workshop/selective-hue-saturation.c:173
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Вибіркове коригування відтінку, освітленості та насиченості"
+
+#~ msgid "Pixbuf location"
+#~ msgstr "Розташування буфера пікселів"
+
+#~ msgid "The location where to store the output GdkPixbuf."
+#~ msgstr "ісце, де зберігатиметься виведений GdkPixbuf."
 
 #~ msgid "Normalized mask"
 #~ msgstr "Нормалізована маска"
