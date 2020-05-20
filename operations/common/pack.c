@@ -24,6 +24,8 @@
 
 property_double  (gap, _("Gap"), 0.0)
                   description (_("How many pixels of space between items"))
+property_double  (align, _("Align"), 0.0)
+                  description (_("How to align items, 0.0 is start 0.5 middle and 1.0 end."))
 property_enum (orientation, _("Orientation"), GeglOrientation, gegl_orientation, GEGL_ORIENTATION_HORIZONTAL)
 
 #else
@@ -38,8 +40,12 @@ typedef struct
 {
   GeglNode *over;
   GeglNode *translate;
-  int width;
-  int height;
+  int in_width;
+  int in_height;
+  int aux_width;
+  int aux_height;
+  float gap;
+  float align;
 
 } State;
 
@@ -55,24 +61,63 @@ prepare (GeglOperation *operation)
   GeglNode *input = gegl_node_get_input_proxy (gegl, "input");
   GeglRectangle in_rect = gegl_node_get_bounding_box (input);
 
+  GeglNode *aux = gegl_node_get_input_proxy (gegl, "aux");
+  GeglRectangle aux_rect = gegl_node_get_bounding_box (aux);
+
   if (o->orientation == GEGL_ORIENTATION_VERTICAL)
   {
-    if (state->height != in_rect.height)
+    if (state->in_height != in_rect.height ||
+        state->in_width  != in_rect.width  ||
+        state->aux_width  != aux_rect.width ||
+        state->aux_height != aux_rect.height ||
+        state->gap != o->gap ||
+        state->align != o->align)
     {
-      state->height = in_rect.height;
-      gegl_node_set (state->translate, "x", 0.0f,
-                                       "y", 1.0f * in_rect.height + o->gap, NULL); 
+      double x = 0.0;
+      double y = 1.0f * in_rect.height + o->gap;
+
+      if (in_rect.width < aux_rect.width)
+      {
+        x = -(aux_rect.width - in_rect.width) * o->align;
+      }
+      else
+      {
+        x = (in_rect.width - aux_rect.width) * o->align;
+      }
+
+      gegl_node_set (state->translate, "x", round(x), "y", y, NULL);
     }
   }
   else
   {
-    if (state->width != in_rect.width)
+    if (state->in_width  != in_rect.width ||
+        state->in_height != in_rect.height ||
+        state->aux_width  != aux_rect.width ||
+        state->aux_height != aux_rect.height ||
+        state->gap != o->gap ||
+        state->align != o->align)
     {
-      state->width = in_rect.width;
-      gegl_node_set (state->translate, "x", 1.0f * in_rect.width + o->gap,
-                                       "y", 0.0f, NULL); 
+      double x = in_rect.width + o->gap;
+      double y = 0.0;
+
+      if (in_rect.height < aux_rect.height)
+      {
+        y = -(aux_rect.height - in_rect.height) * o->align;
+      }
+      else
+      {
+        y = (in_rect.height - aux_rect.height) * o->align;
+      }
+
+      gegl_node_set (state->translate, "x", x, "y", round(y), NULL);
     }
   }
+  state->in_width = in_rect.width;
+  state->in_height= in_rect.height;
+  state->aux_width = aux_rect.width;
+  state->aux_height= aux_rect.height;
+  state->gap = o->gap;
+  state->align = o->align;
 }
 
 static void
