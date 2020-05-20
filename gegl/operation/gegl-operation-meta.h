@@ -60,6 +60,19 @@ void  gegl_operation_meta_redirect         (GeglOperation     *operation,
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (GeglOperationMeta, g_object_unref)
 
+G_DEPRECATED
+void  gegl_operation_meta_watch_node       (GeglOperation     *operation,
+                                            GeglNode          *node);
+
+G_DEPRECATED
+void  gegl_operation_meta_watch_nodes      (GeglOperation     *operation,
+                                            GeglNode          *node,
+                                            ...) G_GNUC_NULL_TERMINATED;
+
+
+
+
+
 G_END_DECLS
 
 #endif
