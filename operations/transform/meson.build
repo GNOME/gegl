@@ -2,6 +2,7 @@ gegl_transformops_sources = files(
   'module.c',
   'border-align.c',
   'reflect.c',
+  'reset-origin.c',
   'rotate-on-center.c',
   'rotate.c',
   'scale-ratio.c',

@@ -43,6 +43,7 @@ GType gegl_op_border_align_register_type          (GTypeModule *module);
 GType gegl_op_rotate_register_type                (GTypeModule *module);
 GType gegl_op_rotate_on_center_register_type      (GTypeModule *module);
 GType gegl_op_reflect_register_type               (GTypeModule *module);
+GType gegl_op_reset_origin_register_type          (GTypeModule *module);
 GType gegl_op_scale_ratio_register_type           (GTypeModule *module);
 GType gegl_op_scale_size_register_type            (GTypeModule *module);
 GType gegl_op_scale_size_keepaspect_register_type (GTypeModule *module);
@@ -68,6 +69,7 @@ gegl_module_register (GTypeModule *module)
   dummy = gegl_op_shear_register_type (module);
   dummy = gegl_op_translate_register_type (module);
   dummy = gegl_op_transform_register_type (module);
+  dummy = gegl_op_reset_origin_register_type (module);
   dummy = gegl_op_rotate_on_center_register_type (module);
 
   dummy ++; /* silence gcc, having it is required to avoid optimizing
