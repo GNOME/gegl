@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2006 Øyvind Kolås
+ * Copyright 2006, 2020 Øyvind Kolås
  */
 
 #include "config.h"
@@ -32,12 +32,12 @@ property_double (y,      _("Y"),      0.0)
   ui_meta       ("unit", "pixel-coordinate")
   ui_meta       ("axis", "y")
 
-property_double (width,  _("Width"),  10.0 )
+property_double (width,  _("Width"),  0.0 )
   ui_range      (0.0, 1024.0)
   ui_meta       ("unit", "pixel-distance")
   ui_meta       ("axis", "x")
 
-property_double (height, _("Height"), 10.0 )
+property_double (height, _("Height"), 0.0 )
   ui_range      (0.0, 1024.0)
   ui_meta       ("unit", "pixel-distance")
   ui_meta       ("axis", "y")
@@ -53,17 +53,63 @@ property_boolean (reset_origin, _("Reset origin"), FALSE)
 #include "gegl-op.h"
 #include <math.h>
 
+typedef struct
+{
+  gdouble x;
+  gdouble y;
+  gdouble width;
+  gdouble height;
+} State;
+
 static void
-update_from_aux (GeglOperation *operation)
+gegl_crop_update_rect (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  GeglRectangle *aux_rect = gegl_operation_source_get_bounding_box (operation, "aux");
-  if (aux_rect)
+  State *state;
+  if (!o->user_data)
   {
-    o->x = aux_rect->x;
-    o->y = aux_rect->y;
-    o->width = aux_rect->width;
-    o->height = aux_rect->height;
+    o->user_data = g_malloc0 (sizeof (State));
+  }
+  state = o->user_data;
+
+  if (o->x == 0.0 &&
+      o->y == 0.0 &&
+      o->width == 0.0 &&
+      o->height == 0.0)
+  {
+    GeglNode *source_node = gegl_operation_get_source_node (operation, "aux");
+
+    if (!source_node)
+    {
+      source_node = gegl_operation_get_source_node (operation, "input");
+      while (source_node && gegl_node_get_producer (source_node, "input", NULL))
+      {
+        source_node = gegl_node_get_producer (source_node, "input", NULL);
+      }
+    }
+
+    if (source_node)
+    {
+      GeglRectangle rect = gegl_node_get_bounding_box (source_node);
+      state->x = rect.x;
+      state->y = rect.y;
+      state->width = rect.width;
+      state->height =rect.height;
+    }
+    else
+    {
+      state->x = 0;
+      state->y = 0;
+      state->width = 0;
+      state->height = 0;
+    }
+  }
+  else
+  {
+    state->x = o->x;
+    state->y = o->y;
+    state->width = o->width;
+    state->height = o->height;
   }
 }
 
@@ -75,7 +121,7 @@ gegl_crop_prepare (GeglOperation *operation)
   gegl_operation_set_format (operation, "input", format);
   gegl_operation_set_format (operation, "output", format);
 
-  update_from_aux (operation);
+  gegl_crop_update_rect (operation);
 }
 
 static GeglNode *
@@ -86,13 +132,14 @@ gegl_crop_detect (GeglOperation *operation,
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglNode   *input_node;
 
-  update_from_aux (operation);
+  gegl_crop_update_rect (operation);
+  State *state = o->user_data;
   input_node = gegl_operation_get_source_node (operation, "input");
 
   if (input_node)
     return gegl_node_detect (input_node,
-                             x - floor (o->x),
-                             y - floor (o->y));
+                             x - floor (state->x),
+                             y - floor (state->y));
 
   return operation->node;
 }
@@ -103,17 +150,18 @@ gegl_crop_get_bounding_box (GeglOperation *operation)
 {
   GeglProperties      *o = GEGL_PROPERTIES (operation);
   GeglRectangle *in_rect = gegl_operation_source_get_bounding_box (operation, "input");
+  State *state = o->user_data;
   GeglRectangle  result  = { 0, 0, 0, 0 };
 
-  update_from_aux (operation);
+  gegl_crop_update_rect (operation);
 
   if (!in_rect)
     return result;
 
-  result.x      = o->x;
-  result.y      = o->y;
-  result.width  = o->width;
-  result.height = o->height;
+  result.x      = state->x;
+  result.y      = state->y;
+  result.width  = state->width;
+  result.height = state->height;
 
   return result;
 }
@@ -125,12 +173,13 @@ gegl_crop_get_invalidated_by_change (GeglOperation       *operation,
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglRectangle   result;
-  update_from_aux (operation);
+  gegl_crop_update_rect (operation);
+  State *state = o->user_data;
 
-  result.x      = o->x;
-  result.y      = o->y;
-  result.width  = o->width;
-  result.height = o->height;
+  result.x      = state->x;
+  result.y      = state->y;
+  result.width  = state->width;
+  result.height = state->height;
 
   gegl_rectangle_intersect (&result, &result, input_region);
 
@@ -144,12 +193,14 @@ gegl_crop_get_required_for_output (GeglOperation       *operation,
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglRectangle   result;
-  update_from_aux (operation);
+  State *state;
+  gegl_crop_update_rect (operation);
+  state = o->user_data;
 
-  result.x      = o->x;
-  result.y      = o->y;
-  result.width  = o->width;
-  result.height = o->height;
+  result.x      = state->x;
+  result.y      = state->y;
+  result.width  = state->width;
+  result.height = state->height;
 
   gegl_rectangle_intersect (&result, &result, roi);
   return result;
@@ -164,6 +215,7 @@ gegl_crop_process (GeglOperation        *operation,
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
   GeglBuffer     *input;
+  State          *state = o->user_data;
   gboolean        success = FALSE;
 
   input = (GeglBuffer*) gegl_operation_context_dup_object (context, "input");
@@ -173,7 +225,7 @@ gegl_crop_process (GeglOperation        *operation,
       GeglRectangle  extent;
       GeglBuffer    *output;
 
-      extent = *GEGL_RECTANGLE (o->x, o->y,  o->width, o->height);
+      extent = *GEGL_RECTANGLE (state->x, state->y, state->width, state->height);
 
       if (gegl_rectangle_equal (&extent, gegl_buffer_get_extent (input)))
         output = g_object_ref (input);
@@ -200,8 +252,17 @@ gegl_crop_process (GeglOperation        *operation,
 }
 
 static void
+dispose (GObject *object)
+{
+   GeglProperties  *o     = GEGL_PROPERTIES (object);
+   g_clear_pointer (&o->user_data, g_free);
+   G_OBJECT_CLASS (gegl_op_parent_class)->dispose (object);
+}
+
+static void
 gegl_op_class_init (GeglOpClass *klass)
 {
+  GObjectClass       *object_class;
   GeglOperationClass *operation_class;
   gchar              *composition = "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
@@ -220,8 +281,10 @@ gegl_op_class_init (GeglOpClass *klass)
     "</node>"
     "</gegl>";
 
-  operation_class = GEGL_OPERATION_CLASS (klass);
+  object_class    = G_OBJECT_CLASS (klass);
+  object_class->dispose = dispose;
 
+  operation_class = GEGL_OPERATION_CLASS (klass);
   operation_class->threaded                  = FALSE;
   operation_class->process                   = gegl_crop_process;
   operation_class->prepare                   = gegl_crop_prepare;
@@ -234,7 +297,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",        "gegl:crop",
       "categories",  "core",
       "title",       _("Crop"),
-      "description", _("Crops a buffer, if the aux pad is connected the bounding box of the node connected is used."),
+      "description", _("Crops a buffer, if the aux pad is connected the bounding box of the node connected is used. When the crop area is configured to 0x0 at 0,0 and nothing is connected on aux, the bounding box of the node at the producing end of the input chain is used."),
       "reference-hash", "6f9f160434a4e9484d334c29122e5682",
       "reference-composition", composition,
       NULL);
