@@ -77,6 +77,7 @@ gegl_common_sources = files(
   'opacity.c',
   'open-buffer.c',
   'over.c',
+  'pack.c', 
   'panorama-projection.c',
   'pixelize.c',
   'posterize.c',

@@ -90,6 +90,7 @@ operations/common/normal-map.c
 operations/common/opacity.c
 operations/common/open-buffer.c
 operations/common/over.c
+operations/common/pack.c
 operations/common/panorama-projection.c
 operations/common/pixelize.c
 operations/common/posterize.c
@@ -289,4 +290,3 @@ operations/workshop/integral-image.c
 operations/workshop/rawbayer-load.c
 operations/workshop/segment-kmeans.c
 operations/workshop/selective-hue-saturation.c
-operations/workshop/pack.c

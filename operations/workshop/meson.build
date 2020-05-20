@@ -14,7 +14,6 @@ gegl_workshop_sources = files(
   'band-tune.c', 
   'gcr.c', 
   'gradient-map.c', 
-  'pack.c', 
   'integral-image.c', 
   'rawbayer-load.c', 
   'segment-kmeans.c', 
