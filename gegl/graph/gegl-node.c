@@ -1786,12 +1786,19 @@ gegl_node_get_producer (GeglNode     *node,
   GeglNode *ret;
   gpointer pad;
 
+  if (!GEGL_IS_NODE (node))
+    return NULL;
+
   /* XXX: there should be public API to test if a node is
    * really a graph. So that the user of the API knows
    * the internals can be reached through the proxy nops
    */
   if (node->is_graph)
+  {
     node = gegl_node_get_input_proxy (node, "input");
+    if (!GEGL_IS_NODE (node))
+      return NULL;
+  }
 
   pad = gegl_node_get_pad (node, pad_name);
 
