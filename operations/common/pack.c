@@ -38,6 +38,8 @@ property_enum (orientation, _("Orientation"), GeglOrientation, gegl_orientation,
 
 typedef struct
 {
+  GeglNode *reset_origin_input;
+  GeglNode *reset_origin_aux;
   GeglNode *over;
   GeglNode *translate;
   int in_width;
@@ -131,8 +133,8 @@ update_graph (GeglOperation *operation)
   GeglNode *aux    = gegl_node_get_input_proxy  (gegl, "aux");
   GeglNode *output = gegl_node_get_output_proxy (gegl, "output");
 
-  gegl_node_link_many (input, state->over, output, NULL);
-  gegl_node_link_many (aux, state->translate, NULL);
+  gegl_node_link_many (input, state->reset_origin_input, state->over, output, NULL);
+  gegl_node_link_many (aux, state->reset_origin_aux, state->translate, NULL);
 
   gegl_node_connect_from (state->over, "aux",
                           state->translate,  "output");
@@ -148,6 +150,8 @@ attach (GeglOperation *operation)
 
   state->over = gegl_node_new_child (gegl, "operation", "gegl:over", NULL);
   state->translate = gegl_node_new_child (gegl, "operation", "gegl:translate", NULL);
+  state->reset_origin_input = gegl_node_new_child (gegl, "operation", "gegl:reset-origin", NULL);
+  state->reset_origin_aux = gegl_node_new_child (gegl, "operation", "gegl:reset-origin", NULL);
 }
 
 static void
