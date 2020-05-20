@@ -131,6 +131,9 @@ create_matrix (OpTransform *op,
   y = o->y * (border_rect.height - box_rect.height - o->vertical_margin * 2)+
              o->vertical_margin;
 
+  x -= box_rect.x;
+  y -= box_rect.y;
+
   if (o->snap_integer)
   {
     x = roundf (x);
