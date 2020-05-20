@@ -80,7 +80,6 @@ gegl_operation_meta_watch_node (GeglOperation     *operation,
   g_warning ("%s does nothing\n", __FUNCTION__);
 }
 
-G_DEPRECATED
 void
 gegl_operation_meta_watch_nodes (GeglOperation     *operation,
                                  GeglNode          *node,
