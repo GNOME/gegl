@@ -209,11 +209,8 @@ gegl_path_class_init (GeglPathClass *klass)
   gegl_path_signals[GEGL_PATH_CHANGED] =
     g_signal_new ("changed", G_TYPE_FROM_CLASS (klass),
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
-                  0    /* class offset */,
-                  NULL /* accumulator */,
-                  NULL /* accu_data */,
-                  g_cclosure_marshal_VOID__POINTER,
-                  G_TYPE_NONE, /*return type */
+                  0, NULL, NULL, NULL,
+                  G_TYPE_NONE,
                   1, G_TYPE_POINTER);
 }
 

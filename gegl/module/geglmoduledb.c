@@ -74,8 +74,7 @@ gegl_module_db_class_init (GeglModuleDBClass *klass)
                   G_TYPE_FROM_CLASS (klass),
                   G_SIGNAL_RUN_FIRST,
                   G_STRUCT_OFFSET (GeglModuleDBClass, add),
-                  NULL, NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL, NULL, NULL,
                   G_TYPE_NONE, 1,
                   GEGL_TYPE_MODULE);
 
@@ -84,8 +83,7 @@ gegl_module_db_class_init (GeglModuleDBClass *klass)
                   G_TYPE_FROM_CLASS (klass),
                   G_SIGNAL_RUN_FIRST,
                   G_STRUCT_OFFSET (GeglModuleDBClass, remove),
-                  NULL, NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL, NULL, NULL,
                   G_TYPE_NONE, 1,
                   GEGL_TYPE_MODULE);
 
@@ -94,8 +92,7 @@ gegl_module_db_class_init (GeglModuleDBClass *klass)
                   G_TYPE_FROM_CLASS (klass),
                   G_SIGNAL_RUN_FIRST,
                   G_STRUCT_OFFSET (GeglModuleDBClass, module_modified),
-                  NULL, NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
+                  NULL, NULL, NULL,
                   G_TYPE_NONE, 1,
                   GEGL_TYPE_MODULE);
 

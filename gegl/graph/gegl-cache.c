@@ -155,9 +155,7 @@ gegl_cache_class_init (GeglCacheClass *klass)
     g_signal_new ("computed",
                   G_TYPE_FROM_CLASS (klass),
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
-                  0,
-                  NULL, NULL,
-                  g_cclosure_marshal_VOID__BOXED,
+                  0, NULL, NULL, NULL,
                   G_TYPE_NONE, 1,
                   GEGL_TYPE_RECTANGLE);
 
@@ -165,9 +163,7 @@ gegl_cache_class_init (GeglCacheClass *klass)
     g_signal_new ("invalidated",
                   G_TYPE_FROM_CLASS (klass),
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
-                  0,
-                  NULL, NULL,
-                  g_cclosure_marshal_VOID__BOXED,
+                  0, NULL, NULL, NULL,
                   G_TYPE_NONE, 1,
                   GEGL_TYPE_RECTANGLE);
 }

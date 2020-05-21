@@ -204,9 +204,7 @@ gegl_tile_storage_class_init (GeglTileStorageClass *class)
         g_signal_new ("changed",
                   G_TYPE_FROM_CLASS (gobject_class),
                   G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
-                  0,
-                  NULL, NULL,
-                  g_cclosure_marshal_VOID__BOXED,
+                  0, NULL, NULL, NULL,
                   G_TYPE_NONE, 1,
                   GEGL_TYPE_RECTANGLE);
 }
