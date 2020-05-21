@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-19 19:03+0000\n"
-"PO-Revision-Date: 2020-05-19 22:12+0300\n"
+"POT-Creation-Date: 2020-05-20 21:52+0000\n"
+"PO-Revision-Date: 2020-05-21 10:44+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -433,7 +433,7 @@ msgstr "Буфер введення для вхідного буфера зоб�
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
-#: operations/transform/border-align.c:155
+#: operations/transform/border-align.c:158
 msgid "Auxiliary image buffer input pad."
 msgstr "Допоміжний буфер вхідних даних для буфера зображення."
 
@@ -2066,9 +2066,9 @@ msgstr ""
 msgid "Size"
 msgstr "Розмір"
 
-#: operations/common/gblur-1d.c:50 operations/common/wavelet-blur-1d.c:36
+#: operations/common/gblur-1d.c:50 operations/common/pack.c:29
+#: operations/common/wavelet-blur-1d.c:36
 #: operations/common-gpl3+/deinterlace.c:40 operations/workshop/boxblur-1d.c:33
-#: operations/workshop/pack.c:27
 msgid "Orientation"
 msgstr "Орієнтація"
 
@@ -3563,6 +3563,35 @@ msgid ""
 msgstr ""
 "Операція Портера-Даффа «над» (також відома як нормальний режим та src-over) "
 "(d = cA + cB * (1 - aA))"
+
+#: operations/common/pack.c:25
+msgid "Gap"
+msgstr "Інтервал"
+
+#: operations/common/pack.c:26
+msgid "How many pixels of space between items"
+msgstr "Інтервал у пікселях між об'єктами"
+
+#: operations/common/pack.c:27
+msgid "Align"
+msgstr "Вирівняти"
+
+#: operations/common/pack.c:28
+#| msgid "Vertical justification 0.0 is top 0.5 middle and 1.0 bottom."
+msgid "How to align items, 0.0 is start 0.5 middle and 1.0 end."
+msgstr "Спосіб вирівнювання: 0.0 — вгору, 0.5 — посередині, і 1.0 — вниз."
+
+#: operations/common/pack.c:179
+msgid "Pack"
+msgstr "Пакування"
+
+#: operations/common/pack.c:181
+msgid ""
+"Packs an image horizontally or vertically next to each other with optional "
+"gap, aux right of input."
+msgstr ""
+"Пакує зображення горизонтально або вертикально одне біля одного із "
+"додатковим інтервалом, який додається праворуч."
 
 #: operations/common/panorama-projection.c:540
 msgid "Panorama Projection"
@@ -7030,21 +7059,25 @@ msgstr ""
 "формату у рядковій властивості і встановлює допоміжний буфер для "
 "перевизначення. "
 
-#: operations/core/crop.c:45
+#: operations/core/crop.c:45 operations/transform/reset-origin.c:76
 msgid "Reset origin"
 msgstr "Скинути опорну точку"
 
-#: operations/core/crop.c:236
+#: operations/core/crop.c:299
 msgid "Crop"
 msgstr "Кадрування"
 
-#: operations/core/crop.c:237
+#: operations/core/crop.c:300
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
-"connected is used."
+"connected is used. When the crop area is configured to 0x0 at 0,0 and "
+"nothing is connected on aux, the bounding box of the node at the producing "
+"end of the input chain is used."
 msgstr ""
-"Обрізає буфер, якщо допоміжний буфер з'єднано, буде використано обмежувальну "
-"рамку з'єднаного вузла."
+"Обрізає буфер. Якщо з'єднано допоміжну підкладку, буде використано"
+" обмежувальну рамку вузла. Якщо налаштовано область обрізання 0x0 у (0, 0) і"
+" з допоміжним буфером нічого не з'єднано, буде використано обмежувальну рамку"
+" вузла наприкінці ланцюжка обробки."
 
 #: operations/core/load.c:31 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
@@ -8452,20 +8485,19 @@ msgstr ""
 msgid "Vertical justification 0.0 is top 0.5 middle and 1.0 bottom."
 msgstr "Вертикальне вирівнювання: 0.0 — вгору, 0.5 — посередині, і 1.0 — вниз."
 
-#: operations/transform/border-align.c:178
-#| msgid "Border"
+#: operations/transform/border-align.c:181
 msgid "Border Align"
 msgstr "Вирівнювання за рамкою"
 
-#: operations/transform/border-align.c:180
+#: operations/transform/border-align.c:183
 msgid ""
 "Aligns box of input rectangle with border of compositing target or aux' "
 "bounding-box border, if aux pad is not connectd the op tries to figure out "
 "which bounding box' border applies."
 msgstr ""
-"Вирівнює вхідний прямокутний блок за допомогою рамки композитної тілі або"
-" допоміжної рамки-обгортки. Якщо допоміжну підкладку не з'єднано, програма"
-" намагатиметься визначити, яку рамку-обгортку слід застосувати."
+"Вирівнює вхідний прямокутний блок за допомогою рамки композитної тілі або "
+"допоміжної рамки-обгортки. Якщо допоміжну підкладку не з'єднано, програма "
+"намагатиметься визначити, яку рамку-обгортку слід застосувати."
 
 #: operations/transform/reflect.c:27
 msgid "Direction vector's X component"
@@ -8482,6 +8514,10 @@ msgid ""
 msgstr ""
 "Віддзеркалити зображення відносно лінії, чий напрямок визначається вектором "
 "із властивостями координат x та y."
+
+#: operations/transform/reset-origin.c:78
+msgid "Translate top-left to 0,0."
+msgstr "Пересунути верхній лівий кут у 0,0."
 
 #: operations/transform/rotate.c:25 operations/transform/rotate-on-center.c:27
 msgid "Degrees"
@@ -9350,25 +9386,12 @@ msgstr "Вибірковий відтінок-насиченість"
 msgid "Selective adjust Hue, Saturation and Lightness"
 msgstr "Вибіркове коригування відтінку, освітленості та насиченості"
 
-#: operations/workshop/pack.c:25
-msgid "Gap"
-msgstr "Інтервал"
-
-#: operations/workshop/pack.c:26
-msgid "How many pixels of space between items"
-msgstr "Інтервал у пікселях між об'єктами"
-
-#: operations/workshop/pack.c:134
-msgid "Pack"
-msgstr "Пакування"
-
-#: operations/workshop/pack.c:136
-msgid ""
-"Packs an image horizontally or vertically next to each other with optional "
-"gap, aux right of input."
-msgstr ""
-"Пакує зображення горизонтально або вертикально одне біля одного із додатковим"
-" інтервалом, який додається праворуч."
+#~ msgid ""
+#~ "Crops a buffer, if the aux pad is connected the bounding box of the node "
+#~ "connected is used."
+#~ msgstr ""
+#~ "Обрізає буфер, якщо допоміжний буфер з'єднано, буде використано "
+#~ "обмежувальну рамку з'єднаного вузла."
 
 #~ msgid ""
 #~ "Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right "
