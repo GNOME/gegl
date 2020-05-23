@@ -325,7 +325,7 @@ gegl_tile_lock (GeglTile *tile)
 
       ++count;
       if (count > 32)
-        g_thread_yield ();
+          g_usleep (1000); /* the smallest sleepable time on win32 */
     }
 }
 
