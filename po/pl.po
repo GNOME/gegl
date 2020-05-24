@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-17 10:52+0000\n"
-"PO-Revision-Date: 2020-05-17 12:55+0200\n"
+"POT-Creation-Date: 2020-05-20 21:52+0000\n"
+"PO-Revision-Date: 2020-05-24 13:15+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -169,7 +169,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4381 gegl/gegl-serialize.c:657
+#: bin/ui-core.c:4381 gegl/gegl-serialize.c:658
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "BablFormat „%s” nie istnieje."
@@ -383,22 +383,22 @@ msgstr "Wyłącza OpenCL"
 msgid "unhandled path data %s:%s\n"
 msgstr "nieobsługiwane dane ścieżki %s:%s\n"
 
-#: gegl/gegl-serialize.c:527
+#: gegl/gegl-serialize.c:528
 #, c-format
 msgid "op '%s' not found, partial matches: "
 msgstr "nie odnaleziono działania „%s”, częściowo pasują: "
 
-#: gegl/gegl-serialize.c:556
+#: gegl/gegl-serialize.c:557
 #, c-format
 msgid "%s has no %s property."
 msgstr "%s nie ma właściwości %s."
 
-#: gegl/gegl-serialize.c:562
+#: gegl/gegl-serialize.c:563
 #, c-format
 msgid "%s has no %s property, properties: "
 msgstr "%s nie ma właściwości %s, właściwości: "
 
-#: gegl/gegl-serialize.c:793
+#: gegl/gegl-serialize.c:794
 #, c-format
 msgid "No such op '%s'"
 msgstr "Nie ma działania „%s”"
@@ -434,6 +434,7 @@ msgstr "Blok wejściowy dla wyjścia bufora obrazu."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
+#: operations/transform/border-align.c:158
 msgid "Auxiliary image buffer input pad."
 msgstr "Dodatkowy blok wejściowy bufora obrazu."
 
@@ -693,11 +694,11 @@ msgstr "Ogranicz ekspozycję"
 msgid "Don't over-expose highlights"
 msgstr "Bez prześwietlania podświetlenia"
 
-#: operations/common/bloom.c:231
+#: operations/common/bloom.c:209
 msgid "Bloom"
 msgstr "Poświata"
 
-#: operations/common/bloom.c:233
+#: operations/common/bloom.c:211
 msgid "Add glow around bright areas"
 msgstr "Dodaje poświatę wokół jasnych obszarów"
 
@@ -712,7 +713,7 @@ msgstr ""
 msgid "Box Blur"
 msgstr "Rozmycie prostopadłościenne"
 
-#: operations/common/box-blur.c:407 operations/workshop/boxblur.c:78
+#: operations/common/box-blur.c:407 operations/workshop/boxblur.c:76
 msgid "Blur resulting from averaging the colors of a square neighbourhood."
 msgstr ""
 "Rozmycie wynikające z uśredniania kolorów sąsiedniego prostopadłościanu."
@@ -1002,11 +1003,11 @@ msgstr "Kąt"
 msgid "Line thickness"
 msgstr "Grubość linii"
 
-#: operations/common/color-assimilation-grid.c:164
+#: operations/common/color-assimilation-grid.c:145
 msgid "Color Assimilation Grid"
 msgstr "Siatka asymilacji kolorów"
 
-#: operations/common/color-assimilation-grid.c:166
+#: operations/common/color-assimilation-grid.c:147
 msgid ""
 "Turn image grayscale and overlay an oversaturated grid - through color "
 "assimilation happening in the human visual system, for some grid scales this "
@@ -1626,11 +1627,11 @@ msgstr "1. promień"
 msgid "Radius 2"
 msgstr "2. promień"
 
-#: operations/common/difference-of-gaussians.c:86
+#: operations/common/difference-of-gaussians.c:85
 msgid "Difference of Gaussians"
 msgstr "Różnicowe rozmycie Gaussa"
 
-#: operations/common/difference-of-gaussians.c:89
+#: operations/common/difference-of-gaussians.c:88
 msgid ""
 "Edge detection with control of edge thickness, based on the difference of "
 "two gaussian blurs"
@@ -1784,8 +1785,8 @@ msgstr "Romb"
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
 #: operations/common-gpl3+/polar-coordinates.c:52
 #: operations/common-gpl3+/spiral.c:35 operations/core/crop.c:25
-#: operations/transform/reflect.c:26 operations/transform/scale-ratio.c:25
-#: operations/transform/scale-size.c:25
+#: operations/transform/border-align.c:24 operations/transform/reflect.c:26
+#: operations/transform/scale-ratio.c:25 operations/transform/scale-size.c:25
 #: operations/transform/scale-size-keepaspect.c:25
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
 #: operations/workshop/external/spyrograph.c:51
@@ -1800,8 +1801,8 @@ msgstr "Poziome przesunięcie cienia"
 #: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
 #: operations/common-gpl3+/polar-coordinates.c:59
 #: operations/common-gpl3+/spiral.c:41 operations/core/crop.c:30
-#: operations/transform/reflect.c:30 operations/transform/scale-ratio.c:30
-#: operations/transform/scale-size.c:30
+#: operations/transform/border-align.c:30 operations/transform/reflect.c:30
+#: operations/transform/scale-ratio.c:30 operations/transform/scale-size.c:30
 #: operations/transform/scale-size-keepaspect.c:30
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
@@ -1846,11 +1847,11 @@ msgstr "Kolor cienia (domyślnie „black” — czarny)"
 msgid "Opacity"
 msgstr "Krycie"
 
-#: operations/common/dropshadow.c:204
+#: operations/common/dropshadow.c:185
 msgid "Dropshadow"
 msgstr "Cień"
 
-#: operations/common/dropshadow.c:206
+#: operations/common/dropshadow.c:187
 msgid "Creates a dropshadow effect on the input buffer"
 msgstr "Tworzy efekt cienia na buforze wejściowym"
 
@@ -2047,11 +2048,11 @@ msgstr "Kadrowanie do obszaru wejściowego"
 msgid "Should the output extent be clipped to the input extent"
 msgstr "Czy kadrować obszar wyjściowy do obszaru wejściowego"
 
-#: operations/common/gaussian-blur.c:118
+#: operations/common/gaussian-blur.c:116
 msgid "Gaussian Blur"
 msgstr "Rozmycie Gaussa"
 
-#: operations/common/gaussian-blur.c:121 operations/common/gblur-1d.c:1390
+#: operations/common/gaussian-blur.c:119 operations/common/gblur-1d.c:1390
 msgid ""
 "Performs an averaging of neighboring pixels with the normal distribution as "
 "weighting"
@@ -2064,7 +2065,8 @@ msgstr ""
 msgid "Size"
 msgstr "Rozmiar"
 
-#: operations/common/gblur-1d.c:50 operations/common/wavelet-blur-1d.c:36
+#: operations/common/gblur-1d.c:50 operations/common/pack.c:29
+#: operations/common/wavelet-blur-1d.c:36
 #: operations/common-gpl3+/deinterlace.c:40 operations/workshop/boxblur-1d.c:33
 msgid "Orientation"
 msgstr "Ułożenie"
@@ -2112,21 +2114,21 @@ msgstr "Ścieżka pliku docelowego do zapisania GeglBuffer."
 msgid "GeglBuffer file writer."
 msgstr "Zapisywanie plików GeglBuffer."
 
-#: operations/common/gegl.c:24
+#: operations/common/gegl.c:67
 msgid "pipeline"
 msgstr "potok"
 
-#: operations/common/gegl.c:25
+#: operations/common/gegl.c:68
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr ""
 "[działanie [właściwość=wartość] [właściwość=wartość]] [[działanie] "
 "[właściwość=wartość]"
 
-#: operations/common/gegl.c:28
+#: operations/common/gegl.c:71
 msgid "Eeeeeek"
 msgstr "Ojej"
 
-#: operations/common/gegl.c:29
+#: operations/common/gegl.c:72
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
@@ -2134,11 +2136,11 @@ msgstr ""
 "Wystąpił problem składni lub programu przetwarzanych wartości właściwości. "
 "Mimo to większość powinna działać."
 
-#: operations/common/gegl.c:107
+#: operations/common/gegl.c:167
 msgid "GEGL graph"
 msgstr "Wykres GEGL"
 
-#: operations/common/gegl.c:110
+#: operations/common/gegl.c:170
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2192,11 +2194,11 @@ msgstr "Odchylenie standardowe"
 msgid "Contrast of high-pass"
 msgstr "Kontrast wysokiego przejścia"
 
-#: operations/common/high-pass.c:84
+#: operations/common/high-pass.c:82
 msgid "High Pass Filter"
 msgstr "Filtr wysokiego przejścia"
 
-#: operations/common/high-pass.c:88
+#: operations/common/high-pass.c:86
 msgid "Enhances fine details."
 msgstr "Uwydatnia drobne szczegóły."
 
@@ -2386,11 +2388,11 @@ msgstr "Źródło"
 msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
 msgstr "Ścieżka do źródłowego pliku obrazu (png, jpg, raw, svg, bmp, tif…)"
 
-#: operations/common/layer.c:266
+#: operations/common/layer.c:240
 msgid "Layer"
 msgstr "Warstwa"
 
-#: operations/common/layer.c:267
+#: operations/common/layer.c:241
 msgid "A layer in the traditional sense"
 msgstr "Warstwa w tradycyjnym rozumieniu"
 
@@ -3306,7 +3308,7 @@ msgstr "Wysoka wartość zmniejsza losowość szumu"
 msgid "Add CIE Lch Noise"
 msgstr "Dodaj szum Lch CIE"
 
-#: operations/common/noise-cie-lch.c:198
+#: operations/common/noise-cie-lch.c:199
 msgid "Randomize lightness, chroma and hue independently"
 msgstr "Niezależne losowanie jasności, nasycenia i barwy"
 
@@ -3321,7 +3323,7 @@ msgstr "Wartość"
 msgid "Add HSV Noise"
 msgstr "Dodaj szum HSV"
 
-#: operations/common/noise-hsv.c:280
+#: operations/common/noise-hsv.c:281
 msgid "Randomize hue, saturation and value independently"
 msgstr "Niezależne losowanie barwy, nasycenia i wartości"
 
@@ -3339,7 +3341,7 @@ msgstr "Powtarzanie"
 msgid "Randomly Shuffle Pixels"
 msgstr "Losowe mieszanie pikseli"
 
-#: operations/common/noise-hurl.c:248
+#: operations/common/noise-hurl.c:249
 msgid "Completely randomize a fraction of pixels"
 msgstr "Całkowicie losuj ułamek pikseli"
 
@@ -3425,7 +3427,7 @@ msgstr "Niebieski"
 msgid "Add RGB Noise"
 msgstr "Dodaj szum RGB"
 
-#: operations/common/noise-rgb.c:216
+#: operations/common/noise-rgb.c:217
 msgid "Distort colors by random amounts"
 msgstr "Zniekształć kolory o losowe ilości"
 
@@ -3554,6 +3556,34 @@ msgstr ""
 "Działanie Portera-Duffa na (znane także jako zwykły tryb, i „src-over”) (d = "
 "cA + cB * (1 - aA))"
 
+#: operations/common/pack.c:25
+msgid "Gap"
+msgstr "Luka"
+
+#: operations/common/pack.c:26
+msgid "How many pixels of space between items"
+msgstr "Ile pikseli miejsca między elementami"
+
+#: operations/common/pack.c:27
+msgid "Align"
+msgstr "Wyrównanie"
+
+#: operations/common/pack.c:28
+msgid "How to align items, 0.0 is start 0.5 middle and 1.0 end."
+msgstr "Jak wyrównywać elementy, 0,0 to początek, 0,5 środek, a 1,0 koniec."
+
+#: operations/common/pack.c:179
+msgid "Pack"
+msgstr "Rozmieść"
+
+#: operations/common/pack.c:181
+msgid ""
+"Packs an image horizontally or vertically next to each other with optional "
+"gap, aux right of input."
+msgstr ""
+"Rozmieszcza obraz poziomo lub pionowo obok siebie z opcjonalną luką, „aux” "
+"na prawo od wejścia."
+
 #: operations/common/panorama-projection.c:540
 msgid "Panorama Projection"
 msgstr "Rzut panoramy"
@@ -3674,11 +3704,11 @@ msgstr "Skala pionowa"
 msgid "Color to render"
 msgstr "Rysowany kolor"
 
-#: operations/common/rectangle.c:89
+#: operations/common/rectangle.c:86
 msgid "Rectangle"
 msgstr "Prostokąt"
 
-#: operations/common/rectangle.c:94
+#: operations/common/rectangle.c:91
 msgid "A rectangular source of a fixed size with a solid color"
 msgstr "Jednokolorowe, prostokątne źródło o stałym rozmiarze"
 
@@ -3737,11 +3767,11 @@ msgstr "Wklej przekształcone obrazy pod nimi"
 msgid "Mathematical method for reconstructing pixel values"
 msgstr "Matematyczna metoda rekonstrukcji wartości pikseli"
 
-#: operations/common/recursive-transform.c:397
+#: operations/common/recursive-transform.c:376
 msgid "Recursive Transform"
 msgstr "Przekształcenie rekurencyjne"
 
-#: operations/common/recursive-transform.c:399
+#: operations/common/recursive-transform.c:378
 msgid "Apply a transformation recursively."
 msgstr "Zastosuj przekształcenie rekurencyjnie."
 
@@ -4184,11 +4214,11 @@ msgstr "Wyrażone jako odchylenie standardowe w pikselach"
 msgid "Scaling factor for unsharp-mask, the strength of effect"
 msgstr "Współczynnik skalowania maski wyostrzającej, siła efektu"
 
-#: operations/common/unsharp-mask.c:164
+#: operations/common/unsharp-mask.c:147
 msgid "Sharpen (Unsharp Mask)"
 msgstr "Wyostrz (maska wyostrzająca)"
 
-#: operations/common/unsharp-mask.c:167
+#: operations/common/unsharp-mask.c:150
 msgid ""
 "Sharpen image, by adding difference to blurred image, a technique for "
 "sharpening originally used in darkrooms."
@@ -4356,7 +4386,7 @@ msgstr "Promień rozmycia falki"
 msgid "1D Wavelet-blur"
 msgstr "Jednowymiarowe rozmycie falki"
 
-#: operations/common/wavelet-blur-1d.c:277 operations/common/wavelet-blur.c:82
+#: operations/common/wavelet-blur-1d.c:277 operations/common/wavelet-blur.c:80
 msgid ""
 "This blur is used for the wavelet decomposition filter, each pixel is "
 "computed from another by the HAT transform"
@@ -4480,11 +4510,11 @@ msgstr "Wysoka jakość"
 msgid "Generate more accurate and consistent output (slower)"
 msgstr "Utwórz bardziej dokładne i zwarte wyjście (wolniejsze)"
 
-#: operations/common-cxx/focus-blur.c:279
+#: operations/common-cxx/focus-blur.c:257
 msgid "Focus Blur"
 msgstr "Rozmycie ostrości"
 
-#: operations/common-cxx/focus-blur.c:281
+#: operations/common-cxx/focus-blur.c:259
 msgid "Blur the image around a focal point"
 msgstr "Rozmycie obrazu wokół ogniska"
 
@@ -4518,11 +4548,11 @@ msgstr "Połącz łańcuch wejść za pomocą maski"
 msgid "Maximal blur radius"
 msgstr "Maksymalny promień rozmycia"
 
-#: operations/common-cxx/variable-blur.c:227
+#: operations/common-cxx/variable-blur.c:208
 msgid "Variable Blur"
 msgstr "Zmienne rozmycie"
 
-#: operations/common-cxx/variable-blur.c:229
+#: operations/common-cxx/variable-blur.c:210
 msgid "Blur the image by a varying amount using a mask"
 msgstr "Rozmycie obrazu o różną ilość za pomocą maski"
 
@@ -6241,11 +6271,11 @@ msgstr "Dostosowanie koloru podświetlenia"
 msgid "Adjust saturation of highlights"
 msgstr "Dostosuj nasycenie podświetlenia"
 
-#: operations/common-gpl3+/shadows-highlights.c:244
+#: operations/common-gpl3+/shadows-highlights.c:242
 msgid "Shadows-Highlights"
 msgstr "Cień i podświetlenie"
 
-#: operations/common-gpl3+/shadows-highlights.c:247
+#: operations/common-gpl3+/shadows-highlights.c:245
 msgid "Perform shadows and highlights correction"
 msgstr "Wykonaj korekcję cieni i podświetleń"
 
@@ -6989,21 +7019,26 @@ msgstr ""
 "kolorami, ustawiając wskaźnik do formatu zastępując właściwość ciągu, "
 "a ustawienie dodatkowego bloku zastępuje oba. "
 
-#: operations/core/crop.c:45
+#: operations/core/crop.c:45 operations/transform/reset-origin.c:76
 msgid "Reset origin"
 msgstr "Przywrócenie pochodzenia"
 
-#: operations/core/crop.c:236
+#: operations/core/crop.c:299
 msgid "Crop"
 msgstr "Kadruj"
 
-#: operations/core/crop.c:237
+#: operations/core/crop.c:300
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
-"connected is used."
+"connected is used. When the crop area is configured to 0x0 at 0,0 and "
+"nothing is connected on aux, the bounding box of the node at the producing "
+"end of the input chain is used."
 msgstr ""
 "Kadruje bufor, jeśli dodatkowy blok jest połączony, to używany jest "
-"prostopadłościan graniczny połączonego węzła."
+"prostopadłościan graniczny połączonego węzła. Kiedy obszar kadrowania jest "
+"skonfigurowany na 0x0 przy 0,0, a nic nie jest podłączone na „aux”, to "
+"używany jest prostopadłościan graniczny węzła na produkcyjnym końcu łańcucha "
+"wejścia."
 
 #: operations/core/load.c:31 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
@@ -7022,7 +7057,7 @@ msgstr "Adres URI pliku do wczytania."
 msgid "Object to supply image metadata"
 msgstr "Obiekt, któremu dostarczyć metadane obrazu"
 
-#: operations/core/load.c:376
+#: operations/core/load.c:374
 msgid ""
 "Multipurpose file loader, that uses other native handlers, and fallback "
 "conversion using Image Magick's convert."
@@ -7707,7 +7742,7 @@ msgstr "wczytywanie plików PDF"
 msgid "PDF page decoder"
 msgstr "Dekodowanie stron plików PDF"
 
-#: operations/external/pixbuf.c:26
+#: operations/external/pixbuf.c:26 operations/external/save-pixbuf.c:29
 msgid "Pixbuf"
 msgstr "Bufor pikseli"
 
@@ -7832,19 +7867,17 @@ msgstr "Zapisywanie plików RGBE"
 msgid "RGBE image saver (Radiance HDR format)"
 msgstr "Zapisywanie obrazów RGBE (format Radiance HDR)"
 
-#: operations/external/save-pixbuf.c:28
-msgid "Pixbuf location"
-msgstr "Położenie bufora pikseli"
+#: operations/external/save-pixbuf.c:30
+msgid "The output pixbuf produced by process is stored in this property"
+msgstr ""
+"Wyjściowy bufor pikseli utworzony przez proces jest przechowywany w tej "
+"właściwości"
 
-#: operations/external/save-pixbuf.c:29
-msgid "The location where to store the output GdkPixbuf."
-msgstr "Położenie, w którym przechowywać wyjściowe GdkPixbuf."
-
-#: operations/external/save-pixbuf.c:111
+#: operations/external/save-pixbuf.c:110
 msgid "Store in GdkPixbuf"
 msgstr "Zapisz w GdkPixbuf"
 
-#: operations/external/save-pixbuf.c:113
+#: operations/external/save-pixbuf.c:112
 msgid "Store image in a GdkPixbuf."
 msgstr "Zapisz obraz w GdkPixbuf."
 
@@ -8390,6 +8423,30 @@ msgstr ""
 msgid "How much vertical offset should applied to the paste"
 msgstr "Ile przesunięcia pionowego zastosować do wklejania"
 
+#: operations/transform/border-align.c:25
+msgid "Horizontal justification 0.0 is left 0.5 centered and 1.0 right."
+msgstr ""
+"Wyjustowanie poziome 0,0 jest do lewej, 0,5 do środka, a 1,0 do prawej."
+
+#: operations/transform/border-align.c:31
+msgid "Vertical justification 0.0 is top 0.5 middle and 1.0 bottom."
+msgstr "Wyjustowanie pionowe 0,0 jest do góry, 0,5 do środka, a 1,0 do dołu."
+
+#: operations/transform/border-align.c:181
+msgid "Border Align"
+msgstr "Wyrównanie krawędzi"
+
+#: operations/transform/border-align.c:183
+msgid ""
+"Aligns box of input rectangle with border of compositing target or aux' "
+"bounding-box border, if aux pad is not connectd the op tries to figure out "
+"which bounding box' border applies."
+msgstr ""
+"Wyrównuje prostopadłościan wejściowy za pomocą krawędzi celu składania lub "
+"krawędzi prostopadłościanu granicznego „aux”, jeśli dodatkowy blok nie jest "
+"podłączony, to działanie próbuje zgadnąć, która krawędź prostopadłościanu "
+"granicznego ma zastosowanie."
+
 #: operations/transform/reflect.c:27
 msgid "Direction vector's X component"
 msgstr "Składowa na osi X wektora kierunku"
@@ -8405,6 +8462,10 @@ msgid ""
 msgstr ""
 "Odbij obraz o linię, której kierunek jest podany przez wektor określony "
 "właściwościami X i Y."
+
+#: operations/transform/reset-origin.c:78
+msgid "Translate top-left to 0,0."
+msgstr "Przetłumacz górny lewy na 0,0."
 
 #: operations/transform/rotate.c:25 operations/transform/rotate-on-center.c:27
 msgid "Degrees"
@@ -8631,11 +8692,11 @@ msgstr "Szerokość pasma krawędzi"
 msgid "Visualize Adjustment Mask"
 msgstr "Zwizualizuj maskę dostosowania"
 
-#: operations/workshop/band-tune.c:234
+#: operations/workshop/band-tune.c:218
 msgid "Band tune"
 msgstr "Regulacja pasma"
 
-#: operations/workshop/band-tune.c:236
+#: operations/workshop/band-tune.c:220
 msgid ""
 "Parametric band equalizer for tuning frequency bands of image, the op "
 "provides abstracted input parameters that control two difference of "
@@ -8678,7 +8739,7 @@ msgstr "Jednowymiarowe rozmycie prostopadłościenne"
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
 msgstr "Rozmycie wynikające z uśredniania kolorów sąsiedniego rzędu."
 
-#: operations/workshop/boxblur.c:77
+#: operations/workshop/boxblur.c:75
 msgid "BoxBlur"
 msgstr "Rozmycie prostopadłościenne"
 
@@ -9189,14 +9250,6 @@ msgstr "Mapa gradientu"
 #: operations/workshop/gradient-map.c:244
 msgid "Applies a color gradient."
 msgstr "Zastosowuje gradient koloru."
-
-#: operations/workshop/hstack.c:186
-msgid ""
-"Horizontally stack inputs, (in \"output\" \"aux\" is placed to the right of "
-"\"input\")"
-msgstr ""
-"Poziomo składa wejścia na stos (w „output” „aux” jest umieszczane po prawej "
-"od „input”)"
 
 #: operations/workshop/integral-image.c:25
 msgid "squared integral"
