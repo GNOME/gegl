@@ -1284,16 +1284,39 @@ gegl_resample_nearest (guchar              *dst,
              d[2] = s[*(ijj++) + 2];
            );
     break;
+    case 5:IMPL(
+             uint32_t* d32 = (void*) d;
+             const uint32_t* s32 = (void*) &s[*(ijj++)];
+             d32[0] = s32[0];
+             d[4] = s[4];
+           );
+    break;
     case 4:IMPL(
              uint32_t* d32 = (void*) d;
              const uint32_t* s32 = (void*) &s[*(ijj++)];
              d32[0] = s32[0];
            );
     break;
+    case 6:IMPL(
+             uint32_t* d32 = (void*) d;
+             const uint32_t* s32 = (void*) &s[*(ijj++)];
+             d32[0] = s32[0];
+             d[4] = s[4];
+             d[5] = s[5];
+           );
+    break;
     case 8:IMPL(
              uint64_t* d64 = (void*) d;
              const uint64_t* s64 = (void*) &s[*(ijj++)];
              d64[0] = s64[0];
+           );
+    break;
+    case 12:IMPL(
+             uint32_t* d32 = (void*) d;
+             const uint32_t* s32 = (void*) &s[*(ijj++)];
+             d32[0] = s32[0];
+             d32[1] = s32[1];
+             d32[2] = s32[2];
            );
     break;
     case 16:IMPL(
