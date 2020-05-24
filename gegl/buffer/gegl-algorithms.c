@@ -1335,7 +1335,7 @@ gegl_resample_nearest (guchar              *dst,
 #define BOXFILTER_FUNCNAME   gegl_resample_boxfilter_u8
 #define BOXFILTER_TYPE       guchar
 #define BOXFILTER_TEMP_TYPE  guchar
-#define BOXFILTER_ROUND(val) ((int)((val)+0.5))
+#define BOXFILTER_ROUND(val) ((int)((val)+0.5f))
 #include "gegl-algorithms-boxfilter.inc"
 #undef BOXFILTER_FUNCNAME
 #undef BOXFILTER_TYPE
@@ -1345,7 +1345,7 @@ gegl_resample_nearest (guchar              *dst,
 #define BOXFILTER_FUNCNAME   gegl_resample_boxfilter_u16
 #define BOXFILTER_TYPE       guint16
 #define BOXFILTER_TEMP_TYPE  guint16
-#define BOXFILTER_ROUND(val) ((int)((val)+0.5))
+#define BOXFILTER_ROUND(val) ((int)((val)+0.5f))
 #include "gegl-algorithms-boxfilter.inc"
 #undef BOXFILTER_FUNCNAME
 #undef BOXFILTER_TYPE
@@ -1362,7 +1362,7 @@ static inline guint32 _gegl_trunc_u32(guint64 value)
 #define BOXFILTER_FUNCNAME   gegl_resample_boxfilter_u32
 #define BOXFILTER_TYPE       guint32
 #define BOXFILTER_TEMP_TYPE  guint64
-#define BOXFILTER_ROUND(val) _gegl_trunc_u32((val)+0.5)
+#define BOXFILTER_ROUND(val) _gegl_trunc_u32((val)+0.5f)
 #include "gegl-algorithms-boxfilter.inc"
 #undef BOXFILTER_FUNCNAME
 #undef BOXFILTER_TEMP_TYPE
@@ -1438,7 +1438,7 @@ static inline guint32 _gegl_trunc_u32(guint64 value)
 
 #define BILINEAR_FUNCNAME   gegl_resample_bilinear_u8
 #define BILINEAR_TYPE       guchar
-#define BILINEAR_ROUND(val) ((int)((val)+0.5))
+#define BILINEAR_ROUND(val) ((int)((val)+0.5f))
 #include "gegl-algorithms-bilinear.inc"
 #undef BILINEAR_FUNCNAME
 #undef BILINEAR_TYPE
@@ -1446,7 +1446,7 @@ static inline guint32 _gegl_trunc_u32(guint64 value)
 
 #define BILINEAR_FUNCNAME   gegl_resample_bilinear_u16
 #define BILINEAR_TYPE       guint16
-#define BILINEAR_ROUND(val) ((int)((val)+0.5))
+#define BILINEAR_ROUND(val) ((int)((val)+0.5f))
 #include "gegl-algorithms-bilinear.inc"
 #undef BILINEAR_FUNCNAME
 #undef BILINEAR_TYPE
@@ -1454,7 +1454,7 @@ static inline guint32 _gegl_trunc_u32(guint64 value)
 
 #define BILINEAR_FUNCNAME   gegl_resample_bilinear_u32
 #define BILINEAR_TYPE       guint32
-#define BILINEAR_ROUND(val) ((int)((val)+0.5))
+#define BILINEAR_ROUND(val) _gegl_trunc_u32((val)+0.5f)
 #include "gegl-algorithms-bilinear.inc"
 #undef BILINEAR_FUNCNAME
 #undef BILINEAR_TYPE
