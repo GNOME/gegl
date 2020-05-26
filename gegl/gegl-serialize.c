@@ -31,9 +31,9 @@
 #define realpath(a,b) _fullpath(b,a,_MAX_PATH)
 #endif
 
-//#define make_rel(strv) (g_strtod (strv, NULL) * gegl_node_get_bounding_box
+//#define make_rel(strv) (g_ascii_strtod (strv, NULL) * gegl_node_get_bounding_box
 // (iter[0]).height)
-#define make_rel(strv) (g_strtod (strv, NULL) * rel_dim)
+#define make_rel(strv) (g_ascii_strtod (strv, NULL) * rel_dim)
 
 static void
 remove_in_betweens (GeglNode *nop_raw,
@@ -270,7 +270,7 @@ gegl_create_chain_argv (char      **argv,
                 {
                   char tmpbuf[1024];
                   GQuark rel_quark;
-                  gegl_path_append (path, 'L', g_strtod (key, NULL),
+                  gegl_path_append (path, 'L', g_ascii_strtod (key, NULL),
                                     make_rel (value));
 
                   sprintf (tmpbuf, "%s-rel", prop);
@@ -282,8 +282,8 @@ gegl_create_chain_argv (char      **argv,
                 }
               else
                 {
-                  gegl_path_append (path, 'L', g_strtod (key, NULL),
-                                    g_strtod (value, NULL));
+                  gegl_path_append (path, 'L', g_ascii_strtod (key, NULL),
+                                    g_ascii_strtod (value, NULL));
                 }
             }
           else
@@ -354,7 +354,7 @@ gegl_create_chain_argv (char      **argv,
             {
               value = eq + 1;
               value[-1] = '\0';
-              if (g_strtod (key, NULL) <= time)
+              if (g_ascii_strtod (key, NULL) <= time)
                 g_string_assign (string, value);
             }
 
@@ -609,13 +609,13 @@ gegl_create_chain_argv (char      **argv,
                           {
                             if (g_type_is_a (target_type, G_TYPE_INT))
                               gegl_node_set (iter[level], key,
-                                             (int)g_strtod (value, NULL), NULL);
+                                             (int)g_ascii_strtod (value, NULL), NULL);
                             else if (g_type_is_a (target_type, G_TYPE_UINT))
                               gegl_node_set (iter[level], key,
-                                             (guint)g_strtod (value, NULL), NULL);
+                                             (guint)g_ascii_strtod (value, NULL), NULL);
                             else
                               gegl_node_set (iter[level], key,
-                                             g_strtod (value, NULL), NULL);
+                                             g_ascii_strtod (value, NULL), NULL);
                           }
                       }
                     else if (g_type_is_a (target_type, G_TYPE_BOOLEAN))
