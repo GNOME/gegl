@@ -28,7 +28,7 @@ main (gint    argc,
     else if (!strcmp (argv[c], "--video-bit-rate"))
       video_bit_rate = atoi(argv[++c]);
     else if (!strcmp (argv[c], "--fps"))
-      frame_rate = g_strtod (argv[++c], NULL);
+      frame_rate = g_ascii_strtod (argv[++c], NULL);
     else if (!strcmp (argv[c], "--video-codec"))
       video_codec = argv[++c];
     else

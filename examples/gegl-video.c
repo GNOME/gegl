@@ -76,13 +76,13 @@ static void parse_args (int argc, char **argv)
     else if (g_str_equal (argv[i], "-s") ||
              g_str_equal (argv[i], "--start-frame"))
     {
-      frame_start = g_strtod (argv[i+1], NULL);
+      frame_start = g_ascii_strtod (argv[i+1], NULL);
       i++;
     } 
     else if (g_str_equal (argv[i], "-c") ||
              g_str_equal (argv[i], "--frame-count"))
     {
-      frame_end = frame_start + g_strtod (argv[i+1], NULL) - 1;
+      frame_end = frame_start + g_ascii_strtod (argv[i+1], NULL) - 1;
       i++;
     } 
     else if (g_str_equal (argv[i], "--output-frames") ||
@@ -94,7 +94,7 @@ static void parse_args (int argc, char **argv)
     else if (g_str_equal (argv[i], "--output-frame-start") ||
              g_str_equal (argv[i], "-ofs`"))
     {
-      output_frame_no = g_strtod (argv[i+1], NULL);
+      output_frame_no = g_ascii_strtod (argv[i+1], NULL);
       i++;
     } 
     else if (g_str_equal (argv[i], "--frame-extension") ||
@@ -106,7 +106,7 @@ static void parse_args (int argc, char **argv)
     else if (g_str_equal (argv[i], "-e") ||
              g_str_equal (argv[i], "--end-frame"))
     {
-      frame_end = g_strtod (argv[i+1], NULL);
+      frame_end = g_ascii_strtod (argv[i+1], NULL);
       i++;
     } 
     else if (g_str_equal (argv[i], "-h") ||
