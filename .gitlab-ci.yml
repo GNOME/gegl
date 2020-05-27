@@ -73,7 +73,7 @@ babl-min:
 .gegl-deps:
   artifacts:
     paths:
-    - _build/meson-logs/testlog.txt
+    - _build/meson-logs/*
   before_script:
     - pacman -Syu --noconfirm --needed
         base-devel ccache meson
