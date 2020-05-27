@@ -38,22 +38,28 @@ property changes, all meta ops have been refactored to use the new cleaner API.
 gegl_operation_meta_watch_node(s) were already effectively nops, they are
 marked as deprecated and left as stubs for thid party ops still calling them.
 
-bloom: new op, adds a glow around highlights.
 crop: with no parameters set, infer rectangle to crop from graph.
-reset-origin: new op, that moves upper left of extent to 0,0
-border-align: new op, place a buffer within the borders of another.
-pack: new op for joining two buffers into one, with optional gap.
+
+crop: cropping rectangle can be implied from graph.
+hue-chroma: avoid modifying hue/chroma of neutrals
 dropshadow: added option for shadow growing
 median-blur: accept negative radius values
 rgb-clip: add parameters for specifying clipping ranges
-imgcmp: make max-diff property conform to gobject standard.
 vignette: new shapes, horizontal and vertical.
-piecewise-blend: map a grayscale map to a buffer LUT.
-variable-blur: a metaop using piecewise-blend and gaussian blur to approximate blurs with per-pixel blur radius.
-focus-blur: a variable blur op controlled by a vignetting mask.
-band-tune: new op in workshop.
-gegl-graph: add a gegl-chain tutorial as default script.
+imgcmp: make max-diff property conform to gobject standard.
 save-pixbuf: use a GObject for consumer read instead of pointer property.
+gegl-graph: add a gegl-chain tutorial as default script.
+
+New Ops:
+
+border-align: place a buffer within the borders of another.
+pack: Joins two buffers into one, with optional gap.
+bloom: adds a glow around highlights.
+piecewise-blend: Use a grayscale map as index into array of buffers used as LUT.
+variable-blur: uses piecewise-blend piecewise-blend and gaussian blur to approximate blurs with per-pixel blur radius.
+focus-blur: a vignetting blur, using variable-blur.
+reset-origin: moves upper left of extent to 0,0
+band-tune: new op in workshop.
 
 
 GEGL-0.4.22 2020-02-18
