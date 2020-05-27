@@ -32,13 +32,6 @@
 
 #include "gegl-op.h"
 
-static inline float own_fabs (float val)
-{
-  if (val < 0.0f)
-    return -val;
-  return val;
-}
-
 static gboolean
 process (GeglOperation       *op,
          void                *in_buf,
@@ -52,9 +45,9 @@ process (GeglOperation       *op,
 
   while (samples--)
     {
-      out[0] = own_fabs (in[0]);
-      out[1] = own_fabs (in[1]);
-      out[2] = own_fabs (in[2]);
+      out[0] = fabsf (in[0]);
+      out[1] = fabsf (in[1]);
+      out[2] = fabsf (in[2]);
       out[3] = in[3];
 
       in += 4;
