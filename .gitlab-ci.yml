@@ -107,7 +107,7 @@ babl-min:
    # Add /usr/local/share:/usr/share for vapigen.
    - export XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share:/usr/local/share/:/usr/share/"
    - export LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
-   - meson -Dpkg_config_path=$BABL_PREFIX/lib/pkgconfig $CONFIG_OPTIONS _build
+   - meson -Dbuildtype=$BUILD_TYPE -Dpkg_config_path=$BABL_PREFIX/lib/pkgconfig $CONFIG_OPTIONS _build
    - ninja -C _build
    - ccache -s
    - meson test -C _build --print-errorlogs
@@ -115,18 +115,19 @@ babl-min:
 .build-default:
   extends: .gegl-build
   variables:
+    BUILD_TYPE: "release"
     CONFIG_OPTIONS: ""
 
 .build-all:
   extends: .gegl-build
   variables:
+    BUILD_TYPE: "release"
     CONFIG_OPTIONS: "-Dworkshop=true -Ddocs=true -Dintrospection=true"
 
 .build-all-debug:
   extends: .build-all
   variables:
-    CFLAGS: "-DGEGL_ENABLE_DEBUG"
-    CXXFLAGS: "-DGEGL_ENABLE_DEBUG"
+    BUILD_TYPE: "debugoptimized"
 
 default-min-babl:
   extends: .build-default
