@@ -28,6 +28,7 @@
 #include <glib-object.h>
 #include <gmodule.h>
 #include <gegl.h>
+#include <gegl-math.h>
 #include <gegl-types.h>
 #include <gegl-paramspecs.h>
 #include <gegl-audio-fragment.h>

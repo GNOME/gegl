@@ -45,6 +45,7 @@ gegl_headers = files(
   'gegl-cpuaccel.h',
   'gegl-debug.h',
   'gegl-op.h',
+  'gegl-math.h',
   'gegl-plugin.h',
 )
 
