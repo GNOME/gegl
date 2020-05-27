@@ -917,17 +917,17 @@ static int frame_cache_check (GeState *o, const char *hash)
                switch (element_no++)
                {
                  case 0:
-                   gegl_audio_fragment_set_sample_rate (cached_audio, g_strtod (word->str, NULL));
+                   gegl_audio_fragment_set_sample_rate (cached_audio, g_ascii_strtod (word->str, NULL));
                    break;
                  case 1:
-                   channels = g_strtod (word->str, NULL);
+                   channels = g_ascii_strtod (word->str, NULL);
                    gegl_audio_fragment_set_channels (cached_audio, channels);
                    break;
                  case 2:
-                   gegl_audio_fragment_set_channel_layout (cached_audio, g_strtod (word->str, NULL));
+                   gegl_audio_fragment_set_channel_layout (cached_audio, g_ascii_strtod (word->str, NULL));
                    break;
                  case 3:
-                   gegl_audio_fragment_set_sample_count (cached_audio, g_strtod (word->str, NULL));
+                   gegl_audio_fragment_set_sample_count (cached_audio, g_ascii_strtod (word->str, NULL));
                    break;
                  default:
                    {
@@ -935,7 +935,7 @@ static int frame_cache_check (GeState *o, const char *hash)
                      int channel_no = sample_no % channels;
                      sample_no/=2;
                      if (sample_no < max_samples)
-                     cached_audio->data[channel_no][sample_no] = g_strtod (word->str, NULL);
+                     cached_audio->data[channel_no][sample_no] = g_ascii_strtod (word->str, NULL);
                    }
                    break;
                }
@@ -1487,7 +1487,7 @@ int
 cmd_apos (COMMAND_ARGS)
 {
   GeState *o = global_state;
-  set_clip_position (o, g_strtod (argv[1], NULL));
+  set_clip_position (o, g_ascii_strtod (argv[1], NULL));
   return 0;
 }
 
@@ -4333,13 +4333,13 @@ ui_run_command (MrgEvent *event, void *data1, void *data_2)
       {
          if (g_type_is_a (target_type, G_TYPE_INT))
            gegl_node_set (o->active, key,
-           (int)g_strtod (value, NULL), NULL);
+           (int)g_ascii_strtod (value, NULL), NULL);
          else if (g_type_is_a (target_type, G_TYPE_UINT))
            gegl_node_set (o->active, key,
-           (guint)g_strtod (value, NULL), NULL);
+           (guint)g_ascii_strtod (value, NULL), NULL);
          else
            gegl_node_set (o->active, key,
-                          g_strtod (value, NULL), NULL);
+                          g_ascii_strtod (value, NULL), NULL);
       }
       else if (g_type_is_a (target_type, G_TYPE_BOOLEAN))
       {
@@ -6951,7 +6951,7 @@ static int set_setting (Setting *setting, const char *value)
         (*(int*)(((char *)o) + setting->offset)) = atoi (value);
     break;
     case 1:
-        (*(float*)(((char *)o) + setting->offset)) = g_strtod (value, NULL);
+        (*(float*)(((char *)o) + setting->offset)) = g_ascii_strtod (value, NULL);
     break;
     case 2:
         memcpy ((((char *)o) + setting->offset), g_strdup (value), sizeof (void*));
@@ -7669,20 +7669,20 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
      if (!strcmp(argv[1], "in"))
      {
        if (argv[2])
-         zoom_factor = g_strtod (argv[2], NULL);
+         zoom_factor = g_ascii_strtod (argv[2], NULL);
        zoom_factor += 1.0;
        o->dir_scale *= zoom_factor;
       }
       else if (!strcmp(argv[1], "out"))
       {
         if (argv[2])
-          zoom_factor = g_strtod (argv[2], NULL);
+          zoom_factor = g_ascii_strtod (argv[2], NULL);
         zoom_factor += 1.0;
         o->dir_scale /= zoom_factor;
       }
       else
       {
-        o->dir_scale = g_strtod(argv[1], NULL);
+        o->dir_scale = g_ascii_strtod(argv[1], NULL);
         if (o->dir_scale < 0.0001 || o->dir_scale > 200.0)
           o->dir_scale = 1;
       }
@@ -7705,7 +7705,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
   {
     float zoom_factor = 0.1;
     if (argv[2])
-      zoom_factor = g_strtod (argv[2], NULL);
+      zoom_factor = g_ascii_strtod (argv[2], NULL);
     zoom_factor += 1.0;
 
     zoom_at (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, zoom_factor);
@@ -7714,7 +7714,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
   {
     float zoom_factor = 0.1;
     if (argv[2])
-      zoom_factor = g_strtod (argv[2], NULL);
+      zoom_factor = g_ascii_strtod (argv[2], NULL);
     zoom_factor += 1.0;
 
     zoom_at (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, 1.0f/zoom_factor);
@@ -7723,7 +7723,7 @@ int cmd_zoom (COMMAND_ARGS) /* "zoom", -1, "<fit|in [amt]|out [amt]|zoom-level>"
   {
     float x, y;
     get_coords (o, mrg_width(o->mrg)/2, mrg_height(o->mrg)/2, &x, &y);
-    o->scale = g_strtod(argv[1], NULL);
+    o->scale = g_ascii_strtod(argv[1], NULL);
     o->u = x * o->scale - mrg_width(o->mrg)/2;
     o->v = y * o->scale - mrg_height(o->mrg)/2;
     mrg_queue_draw (o->mrg, NULL);
