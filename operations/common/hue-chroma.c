@@ -43,6 +43,8 @@ property_double (lightness, _("Lightness"), 0.0)
 
 #include "gegl-op.h"
 
+#define EPSILON     1e-6f
+
 static void
 prepare (GeglOperation *operation)
 {
@@ -77,18 +79,26 @@ process (GeglOperation       *op,
 
   while (n_pixels--)
     {
-      out_pixel[0] = in_pixel[0] + lightness;
-      out_pixel[1] = in_pixel[1] + chroma;
-      out_pixel[2] = in_pixel[2] + hue;
+      if ( ( abs(in_pixel[0]-in_pixel[1])>EPSILON)
+            && ( abs(in_pixel[1]-in_pixel[2])>EPSILON ) )
+        {
+          out_pixel[0] = in_pixel[0] + lightness;
+          out_pixel[1] = in_pixel[1] + chroma;
+          out_pixel[2] = in_pixel[2] + hue;
+        }
+      else 
+          {
+          out_pixel[0] = in_pixel[0] + lightness;
+          out_pixel[1] = in_pixel[1];
+          out_pixel[2] = in_pixel[2];
+          }
 
-      out_pixel[1] = CLAMP (out_pixel[1], 0, 200.0);
-
+      out_pixel[1] = CLAMP (out_pixel[1], 0, 300.0);
       out_pixel[3] = in_pixel[3];
 
       in_pixel  += 4;
       out_pixel += 4;
     }
-
   return TRUE;
 }
 
