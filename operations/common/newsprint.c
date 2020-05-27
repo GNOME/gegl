@@ -191,30 +191,6 @@ property_double (angleboost, _("Angle Boost"), 0.0)
 
 #include <math.h>
 
-
-static inline float int_fabsf(float x)
-{
-  union {float f; uint32_t i;} u = {x};
-  u.i &= 0x7fffffff;
-  return u.f;
-}
-#define fabsf int_fabsf
-
-static inline int int_floorf (float x)
-{
-  int i = (int)x;       /* truncate */
-  return i - ( i > x ); /* convert trunc to floor */
-}
-
-#define floorf int_floorf
-
-static inline float int_fmodf(float x, float y)
-{
-  return x - y * floorf(x/y);
-}
-
-#define fmodf int_fmodf
-
 /* for details and more liberal licensing of the following function, see
    https://pippin.gimp.org/spachrotyzer/ */
 
