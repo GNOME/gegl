@@ -60,7 +60,6 @@ property_boolean (tileable, _("Tileable"), FALSE)
 #define GEGL_OP_NAME     normal_map
 #define GEGL_OP_C_SOURCE normal-map.c
 
-#include <math.h>
 #include "gegl-op.h"
 
 static void

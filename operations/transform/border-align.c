@@ -52,7 +52,6 @@ property_boolean (snap_integer, "snap to integer position", TRUE)
 
 #include "gegl-op.h"
 
-#include <math.h>
 #include <stdio.h>
 
 static GeglNode *gegl_node_get_consumer_no (GeglNode *node,

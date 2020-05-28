@@ -44,7 +44,6 @@ property_double (edge_preservation, _("Edge preservation"),  0.8)
 #define GEGL_OP_C_SOURCE domain-transform.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 /* This should be 768, since we have 2^8 possible options for each channel.
  * Since domain transform is given by:

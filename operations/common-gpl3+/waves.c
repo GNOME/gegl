@@ -19,7 +19,6 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
-#include <math.h>
 
 #ifdef GEGL_PROPERTIES
 
@@ -62,7 +61,6 @@ property_boolean (clamp, _("Clamp deformation"), FALSE)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 
 static void
 prepare (GeglOperation *operation)

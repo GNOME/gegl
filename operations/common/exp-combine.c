@@ -57,7 +57,6 @@ typedef struct
 GEGL_DEFINE_DYNAMIC_OPERATION(GEGL_TYPE_OPERATION_FILTER)
 
 #include <errno.h>
-#include <math.h>
 #include <stdio.h>
 
 #include "gegl-debug.h"

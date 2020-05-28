@@ -59,7 +59,6 @@ property_double (rgamma, _("Radial Gamma"), 0.0, 8.0, 2.0,
 #define GEGL_OP_C_SOURCE c2g.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdlib.h>
 #include "envelopes.h"
 

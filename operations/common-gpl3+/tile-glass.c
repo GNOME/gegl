@@ -45,7 +45,6 @@ property_int (tile_height, _("Tile Height"), 25)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 
 static void

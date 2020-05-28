@@ -189,8 +189,6 @@ property_double (angleboost, _("Angle Boost"), 0.0)
 
 #include "gegl-op.h"
 
-#include <math.h>
-
 /* for details and more liberal licensing of the following function, see
    https://pippin.gimp.org/spachrotyzer/ */
 

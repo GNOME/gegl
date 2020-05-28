@@ -55,7 +55,6 @@ property_double (radius, _("Radius"), 1.0)
 #define GEGL_OP_NAME     whirl_pinch
 
 #include "gegl-op.h"
-#include <math.h>
 
 /* This function is a slightly modified version from the one in the
  * original plugin

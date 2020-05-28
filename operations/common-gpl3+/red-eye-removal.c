@@ -40,7 +40,6 @@ property_double (threshold, _("Threshold"), 0.4)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 
 #define RED_FACTOR    0.5133333
 #define GREEN_FACTOR  1

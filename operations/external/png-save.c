@@ -20,8 +20,6 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 #include <gegl-metadata.h>
-#include <math.h>
-
 
 #ifdef GEGL_PROPERTIES
 

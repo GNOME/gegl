@@ -18,7 +18,6 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
-#include <math.h>
 
 #define EPSILON 1e-6
 

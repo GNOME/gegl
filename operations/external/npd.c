@@ -56,7 +56,6 @@ description(_("Sampler used internally"))
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 #include <npd/npd.h>
 #include <npd/npd_gegl.h>
 

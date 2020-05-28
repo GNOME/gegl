@@ -181,8 +181,6 @@ property_int (source_neighbors, "source neighbors", 8)
 #include "gegl-op.h"
 #include <stdio.h>
 
-#include <math.h>
-
 #define POW2(x) ((x)*(x))
 
 #define INITIAL_SCORE 1200000000

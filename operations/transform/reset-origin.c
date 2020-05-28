@@ -34,7 +34,6 @@
 
 #include "gegl-op.h"
 
-#include <math.h>
 #include <stdio.h>
 
 static void

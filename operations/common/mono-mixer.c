@@ -19,8 +19,6 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
-#include <math.h>
-
 
 #ifdef GEGL_PROPERTIES
 property_boolean (preserve_luminosity, _("Preserve luminosity"), FALSE)

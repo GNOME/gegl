@@ -46,7 +46,6 @@ property_enum (illusion_type, _("Illusion type"),
 #define GEGL_OP_C_SOURCE illusion.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 static void prepare (GeglOperation *operation)
 {

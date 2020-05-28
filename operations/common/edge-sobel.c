@@ -38,7 +38,6 @@ property_boolean (keep_sign,  _("Keep Sign"), TRUE)
 #define GEGL_OP_C_SOURCE edge-sobel.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdio.h>
 
 #define SOBEL_RADIUS 1

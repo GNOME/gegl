@@ -68,7 +68,6 @@ property_double (value, _(\"Value\"), #{item[2]})
 
 #include \"gegl-op.h\"
 
-#include <math.h>
 #ifdef _MSC_VER
 #define powf(a,b) ((gfloat)pow(a,b))
 #endif

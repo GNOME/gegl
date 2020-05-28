@@ -80,7 +80,6 @@ property_color  (bg_color, _("Background Color"), "white")
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 
 #define CELL_UP(POS) ((POS) < (x*2) ? -1 : (POS) - x - x)
 #define CELL_DOWN(POS) ((POS) >= x*(y-2) ? -1 : (POS) + x + x)

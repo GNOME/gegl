@@ -106,7 +106,6 @@ property_int    (height, _("Height"), 768)
 #define GEGL_OP_C_SOURCE spiral.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define RAD_TO_REV ((gfloat) (1.0 / (2.0 * G_PI)))
 

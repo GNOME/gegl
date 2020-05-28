@@ -51,7 +51,6 @@ property_boolean (reset_origin, _("Reset origin"), FALSE)
 #define GEGL_OP_C_SOURCE crop.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 typedef struct
 {

@@ -44,7 +44,6 @@ property_double (lightness, _("Lightness"), 0.0)
 #include "gegl-op.h"
 
 #define EPSILON     1e-6f
-#include <math.h>
 
 static void
 prepare (GeglOperation *operation)

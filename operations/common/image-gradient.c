@@ -43,7 +43,6 @@ property_enum (output_mode, _("Output mode"),
 #define POW2(x) ((x)*(x))
 
 #include "gegl-op.h"
-#include <math.h>
 
 static void
 prepare (GeglOperation *operation)

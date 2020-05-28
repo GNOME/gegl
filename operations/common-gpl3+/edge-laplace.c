@@ -33,7 +33,6 @@
 #define GEGL_OP_C_SOURCE edge-laplace.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define LAPLACE_RADIUS 2
 #define CHUNK_SIZE     1024

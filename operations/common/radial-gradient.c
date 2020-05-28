@@ -39,8 +39,6 @@ property_color  (end_color, _("End Color"), "white")
 
 #include "gegl-op.h"
 
-#include <math.h>
-
 static void
 prepare (GeglOperation *operation)
 {

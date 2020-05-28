@@ -42,7 +42,6 @@ property_double (white, _("Percent White"), 0.2)
 #define GEGL_OP_C_SOURCE photocopy.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define THRESHOLD 0.75
 

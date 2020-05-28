@@ -64,7 +64,6 @@ property_seed    (seed, _("Random seed"), rand)
 #include "gegl-op.h"
 #include <gegl-buffer-cl-iterator.h>
 #include <gegl-debug.h>
-#include <math.h>
 
 #include "opencl/noise-cell.cl.h"
 

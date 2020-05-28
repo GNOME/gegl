@@ -32,7 +32,6 @@ property_string (values, _("Values"), "")
 #define GEGL_OP_C_SOURCE svg-saturate.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdlib.h>
 
 

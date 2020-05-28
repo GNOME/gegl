@@ -68,7 +68,6 @@ static void path_changed (GeglPath *path,
 
 #include "gegl-op.h"
 #include <cairo.h>
-#include <math.h>
 
 typedef struct StampStatic {
   gboolean    valid;

@@ -35,7 +35,6 @@ property_int  (iterations, _("Strength"), 4)
 #define GEGL_OP_C_SOURCE noise-reduction.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 /* The core noise_reduction function, which is implemented as
  * portable C - this is the function where most cpu time goes

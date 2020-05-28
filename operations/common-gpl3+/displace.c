@@ -99,7 +99,6 @@ property_double (center_y, _("Center Y"), 0.5)
 #define GEGL_OP_C_SOURCE displace.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 static gdouble
 get_base_displacement (gdouble  amount,

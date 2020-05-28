@@ -85,7 +85,6 @@ property_double  (ambient, _("Ambient lighting factor"), 0.0)
 #define GEGL_OP_C_SOURCE bump-map.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define LUT_SIZE 2048
 

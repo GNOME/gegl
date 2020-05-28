@@ -63,7 +63,6 @@ property_color  (background, _("Background color"), "none")
 #define GEGL_OP_C_SOURCE lens-distortion.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdio.h>
 
 #define SQR(x) ((x)*(x))

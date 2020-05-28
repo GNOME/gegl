@@ -75,7 +75,6 @@ property_enum (border, _("Border"),
 #define GEGL_OP_C_SOURCE convolution-matrix.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdio.h>
 
 #define MAX_MATRIX_SIZE 5

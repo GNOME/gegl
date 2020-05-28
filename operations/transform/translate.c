@@ -47,8 +47,6 @@ property_double (y, _("Y"), 0.0)
 
 #include "gegl-op.h"
 
-#include <math.h>
-
 static void
 create_matrix (OpTransform *op,
                GeglMatrix3 *matrix)

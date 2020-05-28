@@ -18,13 +18,9 @@
  */
 
 
-#include <math.h>
-
-
 #define EPSILON 1e-6
 
-
-static void
+        static void
 prepare (GeglOperation *operation)
 {
   const Babl *space = gegl_operation_get_source_space (operation, "input");

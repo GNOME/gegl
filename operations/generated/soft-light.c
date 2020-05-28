@@ -45,7 +45,6 @@ property_boolean (srgb, _("sRGB"), FALSE)
 #define GEGL_OP_C_FILE       "soft-light.c"
 
 #include "gegl-op.h"
-#include <math.h>
 
 static void prepare (GeglOperation *operation)
 {

@@ -98,7 +98,6 @@ property_double (alpha_d, _("Model alpha d"), 1.0)
 #define GEGL_OP_C_SOURCE lens-correct.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdio.h>
 
 /* Struct containing the correction parameters a,b,c,d for a lens color

@@ -95,7 +95,6 @@ property_seed (seed, _("Random seed"), rand)
 #define GEGL_OP_C_SOURCE mosaic.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define SUPERSAMPLE       3
 #define MAG_THRESHOLD     (7.5/255.0)

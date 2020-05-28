@@ -32,7 +32,6 @@ property_string (ref, _("Reference"), "ID")
 #define GEGL_OP_C_SOURCE clone.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <string.h>
 
 static GeglNode *

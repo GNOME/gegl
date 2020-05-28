@@ -29,7 +29,6 @@
 #define GEGL_OP_C_SOURCE tile-seamless.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 
 static void

@@ -96,7 +96,6 @@ property_double (stroke_hardness, _("Hardness"), 0.6)
 #include "gegl-path.h"
 #include "gegl-op.h"
 #include <cairo.h>
-#include <math.h>
 
 typedef struct StampStatic {
   gboolean    valid;

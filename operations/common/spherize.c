@@ -64,7 +64,6 @@ property_enum (sampler_type, _("Resampling method"),
 #define GEGL_OP_C_SOURCE spherize.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define EPSILON 1e-10
 

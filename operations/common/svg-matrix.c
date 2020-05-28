@@ -34,7 +34,6 @@ property_string (values, _("Values"), "")
 #define GEGL_OP_C_SOURCE svg-matrix.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdlib.h>
 
 static void prepare (GeglOperation *operation)

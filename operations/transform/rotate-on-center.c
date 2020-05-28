@@ -46,8 +46,6 @@ property_double (origin_y, _("origin-y") , 0.0)
 
 #include "gegl-op.h"
 
-#include <math.h>
-
 static void
 generate_matrix (GeglMatrix3 *matrix,
                  gdouble degrees,

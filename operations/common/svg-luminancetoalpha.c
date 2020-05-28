@@ -31,7 +31,6 @@
 #define GEGL_OP_C_SOURCE svg-luminancetoalpha.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdlib.h>
 
 static void prepare (GeglOperation *operation)

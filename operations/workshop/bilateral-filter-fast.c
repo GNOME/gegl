@@ -51,7 +51,6 @@ property_int (s_sigma, _("Blur radius"), 8)
 #define GEGL_OP_C_SOURCE bilateral-filter-fast.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 inline static float lerp(float a, float b, float v)
 {

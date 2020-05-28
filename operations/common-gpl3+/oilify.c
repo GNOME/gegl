@@ -49,7 +49,6 @@ property_boolean (use_inten, _("Intensity Mode"), TRUE)
 #define GEGL_OP_C_SOURCE oilify.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define NUM_INTENSITIES       256
 

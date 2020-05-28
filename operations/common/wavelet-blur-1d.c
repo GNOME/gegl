@@ -46,7 +46,6 @@ description (_("The orientation of the blur - hor/ver"))
 #define GEGL_OP_C_SOURCE wavelet-blur-1d.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 static inline void
 wav_get_mean_pixel_1D (gfloat  *src,

@@ -52,7 +52,6 @@ property_color (background_color, _("Background color"), "none")
 #define GEGL_OP_C_SOURCE apply-lens.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 typedef struct
 {

@@ -41,7 +41,6 @@ property_int (pairs, _("Pairs"), 2)
 #define GEGL_OP_C_SOURCE snn-mean.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 static void
 snn_mean (GeglBuffer          *src,

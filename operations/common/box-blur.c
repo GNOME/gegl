@@ -36,7 +36,6 @@ property_int (radius, _("Radius"), 4)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 
 #define SRC_OFFSET (row + u + radius * 2) * 4
 

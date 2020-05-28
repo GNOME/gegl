@@ -61,7 +61,6 @@ property_enum (fill, _("Superpixels color"),
 #define GEGL_OP_C_SOURCE waterpixels.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define POW2(x) ((x)*(x))
 

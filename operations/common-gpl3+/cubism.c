@@ -48,7 +48,6 @@ property_seed (seed, _("Random seed"), rand)
 #define GEGL_OP_C_SOURCE cubism.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdio.h>
 
 #define SCALE_WIDTH     125

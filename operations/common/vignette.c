@@ -85,8 +85,6 @@ property_double (rotation, _("Rotation"), 0.0)
 
 #include "gegl-op.h"
 
-#include <math.h>
-
 static void
 prepare (GeglOperation *operation)
 {

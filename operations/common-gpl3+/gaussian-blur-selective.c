@@ -42,7 +42,6 @@ property_double (max_delta, _("Max. delta"), 0.2)
 #define GEGL_OP_C_SOURCE gaussian-blur-selective.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 static void
 prepare (GeglOperation *operation)

@@ -373,7 +373,6 @@ c.each do
 #define GEGL_OP_C_FILE       \"#{filename}\"
 
 #include \"gegl-op.h\"
-#include <math.h>
 "
     file.write file_head2
     file.write "

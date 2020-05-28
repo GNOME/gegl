@@ -55,7 +55,6 @@ property_enum (border_behavior, _("Border behavior"),
 #define GEGL_OP_NAME        edge
 #define GEGL_OP_C_SOURCE    edge.c
 
-#include <math.h>
 #include "gegl-op.h"
 
 static inline gfloat

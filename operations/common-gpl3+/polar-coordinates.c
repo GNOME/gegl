@@ -75,7 +75,6 @@ property_boolean (middle, _("Choose middle"), TRUE)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 
 #define WITHIN(a, b, c) ((((a) <= (b)) && ((b) <= (c))) ? 1 : 0)
 #define SQR(x) (x)*(x)

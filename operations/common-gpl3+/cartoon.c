@@ -39,7 +39,6 @@ property_double (pct_black, _("Percent black"), 0.2)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 
 #define THRESHOLD 1.0

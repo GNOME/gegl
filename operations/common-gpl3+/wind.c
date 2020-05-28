@@ -74,7 +74,6 @@ property_seed (seed, _("Random seed"), rand)
 #define GEGL_OP_NAME     wind
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define COMPARE_WIDTH    3
 

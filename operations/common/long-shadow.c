@@ -96,7 +96,6 @@ property_enum (composition, _("Composition"),
 #define GEGL_OP_C_SOURCE long-shadow.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 /* virtual screen resolution, as a factor of the image resolution.  must be an
  * integer.

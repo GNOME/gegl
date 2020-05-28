@@ -35,7 +35,6 @@ property_boolean (perceptual, _("Non-linear components"), FALSE)
 #define GEGL_OP_C_SOURCE stretch-contrast.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 static void
 buffer_get_min_max (GeglBuffer *buffer,

@@ -76,7 +76,6 @@ a.each do
 #define GEGL_OP_C_FILE          \"#{filename}\"
 
 #include \"gegl-op.h\"
-#include <math.h>
 
 static void prepare (GeglOperation *self)
 {

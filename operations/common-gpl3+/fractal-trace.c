@@ -75,7 +75,6 @@ property_enum   (abyss_policy, _("Abyss policy"),
 #define GEGL_OP_C_SOURCE fractal-trace.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 static void
 julia (gdouble  x,

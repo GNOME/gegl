@@ -45,7 +45,6 @@ static inline float aces_rrt (float x)
 }
 
 #define lerp(a,b,d)   ((a) * (1.0-d) + (b) * ((d)))
-#include <math.h>
 
 static inline void aces_rrt_rgb (float rin, float gin, float bin, float *rout, float *gout, float *bout)
 {

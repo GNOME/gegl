@@ -62,7 +62,6 @@ property_seed (seed, _("Random seed"), rand)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 
 /*

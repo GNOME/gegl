@@ -4,7 +4,6 @@
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 #include "perlin.h"
 
 /* random is not portable to all platforms */

@@ -124,7 +124,6 @@ property_boolean (useloglog, _("Loglog smoothing"), FALSE)
 #define GEGL_OP_C_SOURCE fractal-explorer.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdio.h>
 
 typedef struct

@@ -40,7 +40,6 @@ property_double (exposure, _("Exposure"), 0.0)
 #include "gegl-op.h"
 #include "opencl/gegl-cl.h"
 
-#include <math.h>
 #ifdef _MSC_VER
 #define exp2f (b) ((gfloat) pow (2.0, b))
 #endif

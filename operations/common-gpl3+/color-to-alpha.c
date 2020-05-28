@@ -45,7 +45,6 @@ property_double (opacity_threshold, _("Opacity threshold"), 1.0)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 
 #define EPSILON 0.00001
 

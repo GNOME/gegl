@@ -47,7 +47,6 @@ property_int (iterations, _("Iterations"), 1)
 #define GEGL_OP_C_SOURCE  slic.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define POW2(x) ((x)*(x))
 

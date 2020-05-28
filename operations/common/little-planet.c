@@ -16,9 +16,6 @@
  * Copyright 2014, 2018 Øyvind Kolås <pippin@gimp.org>
  */
 
-#include <math.h>
-
-
 #ifdef GEGL_PROPERTIES
 
 property_double (pan, _("Pan"), 0.0)

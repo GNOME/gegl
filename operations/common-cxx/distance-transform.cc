@@ -52,7 +52,6 @@ property_boolean (normalize, _("Normalize"), TRUE)
 #define GEGL_OP_NAME     distance_transform
 #define GEGL_OP_C_SOURCE distance-transform.cc
 #include "gegl-op.h"
-#include <math.h>
 #include <stdio.h>
 
 #define EPSILON 0.000000000001

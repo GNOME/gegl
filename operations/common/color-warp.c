@@ -77,7 +77,6 @@ property_double (amount, _("amount"), 1.0)
 #define GEGL_OP_C_SOURCE color-warp.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #define MAX_PAIRS 64
 

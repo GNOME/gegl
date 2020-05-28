@@ -35,7 +35,6 @@ property_int  (iterations, _("Iterations"), 20)
 #define POW2(x) ((x)*(x))
 
 #include "gegl-op.h"
-#include <math.h>
 
 static void
 prepare (GeglOperation *operation)

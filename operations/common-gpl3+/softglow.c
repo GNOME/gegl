@@ -41,7 +41,6 @@ property_double (sharpness, _("Sharpness"), 0.85)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 
 #define SIGMOIDAL_BASE   2

@@ -36,7 +36,6 @@ property_double (value, _("Opacity"), 1.0)
 #include "gegl-op.h"
 
 #include <stdio.h>
-#include <math.h>
 
 #define EPSILON 1e-6f
 

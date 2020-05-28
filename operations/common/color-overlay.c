@@ -37,7 +37,6 @@ property_boolean (srgb, _("sRGB"), FALSE)
 #define GEGL_OP_C_SOURCE color-overlay.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 static void prepare (GeglOperation *operation)
 {

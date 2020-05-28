@@ -69,7 +69,6 @@ property_boolean (tileable, _("Tileable"), FALSE)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 #include <stdlib.h>
 
 static void

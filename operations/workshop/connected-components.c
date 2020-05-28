@@ -51,8 +51,6 @@ property_boolean (linear, _("Linear"), FALSE)
 #define GEGL_OP_C_SOURCE connected-components.c
 
 #include "gegl-op.h"
-#include <math.h>
-
 
 static GeglRectangle
 get_required_for_output (GeglOperation       *operation,

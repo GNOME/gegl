@@ -64,7 +64,6 @@ property_double (rgamma, _("Radial Gamma"), 0.0, 8.0, 2.0,
 #define RGAMMA   2.0
 #define GAMMA    1.0
 
-#include <math.h>
 #include <stdlib.h>
 #include "envelopes.h"
 

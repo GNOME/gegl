@@ -57,7 +57,6 @@ property_int    (active_levels, _("Active levels"), 2)
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 
 /* XXX: We have two options for the two common installation locations of
  * UMFPACK. Ideally this would be sorted out purely in autoconf; see

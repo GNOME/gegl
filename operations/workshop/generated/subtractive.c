@@ -38,7 +38,6 @@
 #define GEGL_OP_C_FILE          "subtractive.c"
 
 #include "gegl-op.h"
-#include <math.h>
 
 static void prepare (GeglOperation *self)
 {

@@ -94,7 +94,6 @@ property_boolean (warp, _("Wrap input"), TRUE)
 #define GEGL_OP_C_SOURCE mirrors.c
 
 #include "gegl-op.h"
-#include <math.h>
 
 #if 0
 #define TRACE       /* Define this to see basic tracing info. */

@@ -53,7 +53,6 @@ property_int (depth, _("Depth"), 20)
 #define GEGL_OP_C_SOURCE emboss.c
 
 #include "gegl-op.h"
-#include <math.h>
 #include <stdio.h>
 
 #define DEG_TO_RAD(d) (((d) * G_PI) / 180.0)

@@ -54,7 +54,6 @@ property_int  (size, _("Block size"), 1)
 
 #include "gegl-op.h"
 #include <stdio.h>
-#include <math.h>
 
 static void
 prepare (GeglOperation *operation)
