@@ -211,8 +211,8 @@ static void prepare_transform (Transform *transform,
     xoffset = ((orig_width - height)/height) / 2 + 0.5f;
   }
 
-  transform->do_spin = fabs (spin) > 0.000001 ? 1 : 0;
-  transform->do_zoom = fabs (zoom-1.0) > 0.000001 ? 1 : 0;
+  transform->do_spin = fabsf (spin) > 0.000001 ? 1 : 0;
+  transform->do_zoom = fabsf (zoom-1.0f) > 0.000001 ? 1 : 0;
 
   transform->pan         = pan;
   transform->tilt        = tilt;

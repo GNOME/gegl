@@ -1095,7 +1095,7 @@ gegl_expcombine_process (GeglOperation        *operation,
            */
           if (e->pixels[PIXELS_FULL][i] <= 0.0f)
             {
-              under += fabs (e->pixels[PIXELS_FULL][i]);
+              under += fabsf (e->pixels[PIXELS_FULL][i]);
               e->pixels[PIXELS_FULL][i] = 0.0f;
             }
           else if (e->pixels[PIXELS_FULL][i] > 1.0f)

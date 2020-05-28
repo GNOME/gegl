@@ -77,7 +77,7 @@ process (GeglOperation       *operation,
 
   alpha_c = 1.0f - color[3];
 
-  if (fabs (alpha_c) <= EPSILON)
+  if (fabsf (alpha_c) <= EPSILON)
     {
       while (samples--)
         {

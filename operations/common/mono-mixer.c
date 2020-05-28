@@ -66,7 +66,7 @@ process (GeglOperation       *op,
   gfloat      green       = o->green;
   gfloat      blue        = o->blue;
   gboolean    normalize   = o->preserve_luminosity;
-  gfloat      norm_factor = 1.0;
+  gfloat      norm_factor = 1.0f;
   gfloat     * GEGL_ALIGNED in_pixel;
   gfloat     * GEGL_ALIGNED out_pixel;
   glong       i;
@@ -78,10 +78,10 @@ process (GeglOperation       *op,
    {
      gdouble sum = red + green + blue;
 
-     if (sum == 0.0)
-       norm_factor = 1.0;
+     if (sum == 0.0f)
+       norm_factor = 1.0f;
      else
-       norm_factor = fabs (1 / sum);
+       norm_factor = fabsf (1.0 / sum);
    }
 
   for (i=0; i<n_pixels; i++)

@@ -24,6 +24,7 @@
 #include "config.h"
 #endif
 
+#include <math.h>
 #include <string.h>
 #include <glib-object.h>
 #include <gmodule.h>

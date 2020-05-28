@@ -376,7 +376,7 @@ init_geometry (Context *ctx)
     {
       ctx->shadow_proj = cos (ctx->options.angle) * ctx->options.length;
 
-      ctx->shadow_height    = ceil (ctx->shadow_proj);
+      ctx->shadow_height    = ceilf (ctx->shadow_proj);
       ctx->shadow_remainder = 1.0 - (ctx->shadow_height - ctx->shadow_proj);
     }
 }
