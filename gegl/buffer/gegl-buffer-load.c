@@ -257,7 +257,7 @@ gegl_buffer_load (const gchar *path)
   GEGL_NOTE (GEGL_DEBUG_BUFFER_LOAD, "starting to load buffer %s", path);
   if (info->i == -1)
     {
-      GEGL_NOTE (GEGL_DEBUG_BUFFER_LOAD, "failed top open %s for reading", path);
+      GEGL_NOTE (GEGL_DEBUG_BUFFER_LOAD, "failed to open %s for reading", path);
       return NULL;
     }
 
