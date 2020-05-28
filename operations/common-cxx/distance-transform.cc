@@ -57,12 +57,12 @@ property_boolean (normalize, _("Normalize"), TRUE)
 
 #define EPSILON 0.000000000001
 
-gfloat edt_f   (gfloat x, gfloat i, gfloat g_i);
-gint   edt_sep (gint i, gint u, gfloat g_i, gfloat g_u);
-gfloat mdt_f   (gfloat x, gfloat i, gfloat g_i);
-gint   mdt_sep (gint i, gint u, gfloat g_i, gfloat g_u);
-gfloat cdt_f   (gfloat x, gfloat i, gfloat g_i);
-gint   cdt_sep (gint i, gint u, gfloat g_i, gfloat g_u);
+static gfloat edt_f   (gfloat x, gfloat i, gfloat g_i);
+static gint   edt_sep (gint i, gint u, gfloat g_i, gfloat g_u);
+static gfloat mdt_f   (gfloat x, gfloat i, gfloat g_i);
+static gint   mdt_sep (gint i, gint u, gfloat g_i, gfloat g_u);
+static gfloat cdt_f   (gfloat x, gfloat i, gfloat g_i);
+static gint   cdt_sep (gint i, gint u, gfloat g_i, gfloat g_u);
 
 /**
  * Prepare function of gegl filter.
@@ -106,26 +106,26 @@ get_required_for_output (GeglOperation       *operation,
 }
 
 /* Meijster helper functions for euclidean distance transform */
-gfloat
+static gfloat
 edt_f (gfloat x, gfloat i, gfloat g_i)
 {
-  return sqrt ((x - i) * (x - i) + g_i * g_i);
+  return sqrtf ((x - i) * (x - i) + g_i * g_i);
 }
 
-gint
+static gint
 edt_sep (gint i, gint u, gfloat g_i, gfloat g_u)
 {
   return (u * u - i * i + ((gint) (g_u * g_u - g_i * g_i))) / (2 * (u - i));
 }
 
 /* Meijster helper functions for manhattan distance transform */
-gfloat
+static gfloat
 mdt_f (gfloat x, gfloat i, gfloat g_i)
 {
-  return fabs (x - i) + g_i;
+  return fabsf (x - i) + g_i;
 }
 
-gint
+static gint
 mdt_sep (gint i, gint u, gfloat g_i, gfloat g_u)
 {
   if (g_u >= g_i + u - i + EPSILON)
@@ -137,13 +137,14 @@ mdt_sep (gint i, gint u, gfloat g_i, gfloat g_u)
 }
 
 /* Meijster helper functions for chessboard distance transform */
-gfloat
+static gfloat
 cdt_f (gfloat x, gfloat i, gfloat g_i)
 {
-  return MAX (fabs (x - i), g_i);
+  gfloat absd = fabsf (x - i);
+  return MAX (absd, g_i);
 }
 
-gint
+static gint
 cdt_sep (gint i, gint u, gfloat g_i, gfloat g_u)
 {
   if (g_i <= g_u)
@@ -283,7 +284,7 @@ binary_dt_1st_pass (GeglOperation *operation,
       for (x = x0; x < x0 + size; x++)
         {
           /* consider out-of-range as 0, i.e. the outside is "empty" */
-          dest[x + 0 * width] = src[x + 0 * width] > thres_lo ? 1.0 : 0.0;
+          dest[x + 0 * width] = src[x + 0 * width] > thres_lo ? 1.0f : 0.0f;
 
           for (y = 1; y < height; y++)
             {
@@ -293,11 +294,11 @@ binary_dt_1st_pass (GeglOperation *operation,
                 dest[x + y * width] = 0.0;
             }
 
-          dest[x + (height - 1) * width] = MIN (dest[x + (height - 1) * width], 1.0);
+          dest[x + (height - 1) * width] = MIN (dest[x + (height - 1) * width], 1.0f);
           for (y = height - 2; y >= 0; y--)
             {
-              if (dest[x + (y + 1) * width] + 1.0 < dest[x + y * width])
-                dest [x + y * width] = dest[x + (y + 1) * width] + 1.0;
+              if (dest[x + (y + 1) * width] + 1.0f < dest[x + y * width])
+                dest [x + y * width] = dest[x + (y + 1) * width] + 1.0f;
             }
         }
     });
