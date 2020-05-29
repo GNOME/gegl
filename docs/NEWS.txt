@@ -52,14 +52,14 @@ gegl-graph: add a gegl-chain tutorial as default script.
 
 New Ops:
 
-border-align: place a buffer within the borders of another.
-pack: Joins two buffers into one, with optional gap.
+border-align: place a buffer within the borders of another one.
+pack: joins two buffers into one, with optional gap.
 bloom: adds a glow around highlights.
-piecewise-blend: Use a grayscale map as index into array of buffers used as LUT.
+piecewise-blend: uses a grayscale map as index into array of buffers used as LUT.
 variable-blur: uses piecewise-blend piecewise-blend and gaussian blur to approximate blurs with per-pixel blur radius.
 focus-blur: a vignetting blur, using variable-blur.
 reset-origin: moves upper left of extent to 0,0
-band-tune: new op in workshop.
+band-tune: parametric band equalizer for tuning frequency bands of image.
 
 
 GEGL-0.4.22 2020-02-18
