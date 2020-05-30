@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-26 19:05+0000\n"
-"PO-Revision-Date: 2020-05-27 13:35+0200\n"
+"POT-Creation-Date: 2020-05-27 11:36+0000\n"
+"PO-Revision-Date: 2020-05-29 19:01+0200\n"
 "Last-Translator: Rodrigo Lledó <rodhos92@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -39,7 +39,7 @@ msgid "Unknown GeglOption mode: %d"
 msgstr "Modo de GeglOption desconocido: %d"
 
 #: bin/gegl-options.c:47
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "usage: %s [options] <file | -- [op [op] ..]>\n"
 #| "\n"
@@ -113,7 +113,7 @@ msgstr ""
 "Uso: %s [opciones] <archivo | -- [op [op] ..]>\n"
 "\n"
 "  Opciones:\n"
-"     -h, --help      muestra esta ayuda\n"
+"     -h, --help      muestra esta información de ayuda\n"
 "\n"
 "     --list-all      enumerar todas las operaciones conocidas\n"
 "\n"
@@ -126,15 +126,11 @@ msgstr ""
 "\n"
 "     -x, --xml       usar el XML indicado en el siguiente argumento\n"
 "\n"
-"     --dot           mostrar una descripción del gráfico de graphviz\n"
+"     -o, --output    producir la imagen generada en el archivo indicado,\n"
+"                     basándose el tipo en la extensión.\n"
 "\n"
-"     -o, --output    producir la imagen generada en el archivo indicado, "
-"basándose el tipo\n"
-"                     en la extensión.\n"
-"\n"
-"     -p             incrementar los contadores de fotogramas de varios "
-"elementos cuando\n"
-"                     termine el procesado.\n"
+"     -p              incrementar los contadores de fotogramas de varios\n"
+"                     elementos cuando termine el procesado.\n"
 "\n"
 "     -s scale, --scale scale  escalar las dimensiones de salida por este "
 "factor.\n"
@@ -734,12 +730,10 @@ msgid "Glow strength"
 msgstr "Fuerza del resplandor"
 
 #: operations/common/bloom.c:47
-#| msgid "Combine Exposures"
 msgid "Limit exposure"
 msgstr "Limitar exposición"
 
 #: operations/common/bloom.c:48
-#| msgid "Adjust exposure of highlights"
 msgid "Don't over-expose highlights"
 msgstr "No sobreexponer los resaltados"
 
@@ -2373,7 +2367,6 @@ msgstr "Degradado de imagen"
 
 # Los gradientes en matemáticas tienen dirección y magnitud.
 #: operations/common/image-gradient.c:228
-#, fuzzy
 #| msgid "Compute gradient magnitude and/or direction by central differencies"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
@@ -3644,7 +3637,7 @@ msgstr "Alinear"
 
 #: operations/common/pack.c:28
 msgid "How to align items, 0.0 is start 0.5 middle and 1.0 end."
-msgstr ""
+msgstr "Como alinear elementos: 0.0 es al inicio, 0.5 al medio y 1.0 al final."
 
 #: operations/common/pack.c:183
 msgid "Pack"
@@ -3655,6 +3648,8 @@ msgid ""
 "Packs an image horizontally or vertically next to each other with optional "
 "gap, aux right of input."
 msgstr ""
+"Empaqueta una imagen horizontalmente o verticalmente juntas entre ellas con "
+"un espaciado opcional, auxiliar a la derecha de la entrada."
 
 #: operations/common/panorama-projection.c:540
 msgid "Panorama Projection"
@@ -3980,7 +3975,7 @@ msgstr "Metadatos"
 
 #: operations/common/save.c:29
 msgid "Object providing image metadata"
-msgstr ""
+msgstr "Objeto que proporciona metadatos de la imagen"
 
 #: operations/common/save.c:208
 msgid "Save"
@@ -4562,11 +4557,11 @@ msgstr "Calcular una transformada de distancia"
 
 #: operations/common-cxx/focus-blur.c:38
 msgid "Out-of-focus blur radius"
-msgstr ""
+msgstr "Radio del desenfoque"
 
 #: operations/common-cxx/focus-blur.c:60
 msgid "Focus-region outer radius"
-msgstr ""
+msgstr "Radio exterior de la región de enfoque"
 
 #: operations/common-cxx/focus-blur.c:65 operations/common-gpl3+/photocopy.c:29
 #: operations/common-gpl3+/softglow.c:33
@@ -4575,11 +4570,11 @@ msgstr "Nitidez"
 
 #: operations/common-cxx/focus-blur.c:66
 msgid "Focus-region inner limit"
-msgstr ""
+msgstr "Limite interior de la región de enfoque"
 
 #: operations/common-cxx/focus-blur.c:70
 msgid "Focus-transition midpoint"
-msgstr ""
+msgstr "Punto medio de la transición de enfoque"
 
 #: operations/common-cxx/focus-blur.c:73 operations/common-gpl3+/waves.c:47
 msgid "Aspect ratio"
@@ -4587,75 +4582,67 @@ msgstr "Relación de aspecto"
 
 #: operations/common-cxx/focus-blur.c:83
 #: operations/common-cxx/variable-blur.c:43
-#, fuzzy
 #| msgid "Blue levels"
 msgid "Blur levels"
-msgstr "Niveles de azul"
+msgstr "Niveles de desenfoque"
 
 # grupos, agrupaciones, aglomeraciones, etc.
 #: operations/common-cxx/focus-blur.c:84
 #: operations/common-cxx/variable-blur.c:44
-#, fuzzy
 #| msgid "Number of clusters"
 msgid "Number of blur levels"
-msgstr "Número de grupos"
+msgstr "Número de niveles de desenfoque"
 
 #: operations/common-cxx/focus-blur.c:87
 #: operations/common-cxx/variable-blur.c:47
 msgid "Blur gamma"
-msgstr ""
+msgstr "Gamma de desenfoque"
 
 #: operations/common-cxx/focus-blur.c:88
 #: operations/common-cxx/variable-blur.c:48
 msgid "Gamma factor for blur-level spacing"
-msgstr ""
+msgstr "Factor gamma del espaciado del nivel de desenfoque"
 
 #: operations/common-cxx/focus-blur.c:94
 #: operations/common-cxx/variable-blur.c:54
-#| msgid "High limit"
 msgid "High quality"
 msgstr "Alta calidad"
 
 #: operations/common-cxx/focus-blur.c:95
 #: operations/common-cxx/variable-blur.c:55
 msgid "Generate more accurate and consistent output (slower)"
-msgstr ""
+msgstr "Generar una salida más precisa y consistente (más lento)"
 
 #: operations/common-cxx/focus-blur.c:257
-#, fuzzy
 #| msgid "Box Blur"
 msgid "Focus Blur"
-msgstr "Desenfoque de rectángulo"
+msgstr "Enfoque del desenfoque"
 
 #: operations/common-cxx/focus-blur.c:259
-#, fuzzy
 #| msgid "Wrap image around a spherical cap"
 msgid "Blur the image around a focal point"
-msgstr "Envolver la imagen alrededor de un casquete esférico"
+msgstr "Desenfocar la imagen alrededor de un punto focal"
 
 #: operations/common-cxx/piecewise-blend.cc:31
-#, fuzzy
 #| msgid "Number of downsampled levels to use"
 msgid "Number of blend levels"
-msgstr "Número de niveles submuestreados que usar"
+msgstr "Número de niveles de mezcla"
 
 #: operations/common-cxx/piecewise-blend.cc:35
 msgid "Gamma factor for blend-level spacing"
-msgstr ""
+msgstr "Factor gamma del espaciado de los niveles de mezcla"
 
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
-#, fuzzy
 #| msgid "Invert mask"
 msgid "Linear mask"
-msgstr "Invertir máscara"
+msgstr "Máscara lineal"
 
 #: operations/common-cxx/piecewise-blend.cc:40
 #: operations/common-cxx/variable-blur.c:39
-#, fuzzy
 #| msgid "Use pixel luminance values"
 msgid "Use linear mask values"
-msgstr "Usar valores de luminancia de píxeles"
+msgstr "Usar los valores de la máscara lineal"
 
 #: operations/common-cxx/piecewise-blend.cc:347
 #, fuzzy
@@ -4665,23 +4652,21 @@ msgstr "Mezcla ponderada"
 
 #: operations/common-cxx/piecewise-blend.cc:349
 msgid "Blend a chain of inputs using a mask"
-msgstr ""
+msgstr "Mezclar una cadena de entradas usando una máscara"
 
 #: operations/common-cxx/variable-blur.c:32
-#, fuzzy
 #| msgid "Blur radius"
 msgid "Maximal blur radius"
-msgstr "Radio de desenfoque"
+msgstr "Radio de desenfoque máximo"
 
 #: operations/common-cxx/variable-blur.c:208
-#, fuzzy
 #| msgid "Gaussian Blur"
 msgid "Variable Blur"
-msgstr "Desenfoque gaussiano"
+msgstr "Desenfoque variable"
 
 #: operations/common-cxx/variable-blur.c:210
 msgid "Blur the image by a varying amount using a mask"
-msgstr ""
+msgstr "Desenfocar la imagen una cantidad variable usando una máscara"
 
 #: operations/common-cxx/warp.cc:26
 msgid "Move pixels"
