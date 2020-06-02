@@ -25,6 +25,11 @@
 
 #ifdef GEGL_PROPERTIES
 
+enum_start (gegl_focus_blur_type)
+  enum_value (GEGL_FOCUS_BLUR_TYPE_GAUSSIAN, "gaussian", N_("Gaussian Blur"))
+  enum_value (GEGL_FOCUS_BLUR_TYPE_LENS,     "lens",     N_("Lens Blur"))
+enum_end (GeglFocusBlurType)
+
 enum_start (gegl_focus_blur_shape)
   enum_value (GEGL_FOCUS_BLUR_SHAPE_CIRCLE,     "circle",     N_("Circle"))
   enum_value (GEGL_FOCUS_BLUR_SHAPE_SQUARE,     "square",     N_("Square"))
@@ -33,12 +38,36 @@ enum_start (gegl_focus_blur_shape)
   enum_value (GEGL_FOCUS_BLUR_SHAPE_VERTICAL,   "vertical",   N_("Vertical"))
 enum_end (GeglFocusBlurShape)
 
+property_enum (blur_type, _("Blur type"),
+               GeglFocusBlurType, gegl_focus_blur_type,
+               GEGL_FOCUS_BLUR_TYPE_GAUSSIAN)
+
 property_double (blur_radius, _("Blur radius"), 25.0)
     description (_("Out-of-focus blur radius"))
     value_range (0.0, 1500.0)
     ui_range    (0.0, 100.0)
     ui_gamma    (2.0)
     ui_meta     ("unit", "pixel-distance")
+
+property_double (highlight_factor, _("Highlight factor"), 0.0)
+    description (_("Relative highlight strength"))
+    value_range (0.0, 1.0)
+    ui_meta     ("visible", "blur-type {lens}")
+
+property_double (highlight_threshold_low, _("Highlight threshold (low)"), 0.0)
+    ui_range    (0.0, 1.0)
+    ui_meta     ("role", "range-start")
+    ui_meta     ("unit", "luminance")
+    ui_meta     ("visible", "$highlight-factor.visible")
+    ui_meta     ("label", "range-label")
+    ui_meta     ("range-label", _("Highlight threshold"))
+
+property_double (highlight_threshold_high, _("Highlight threshold (high)"), 1.0)
+    ui_range    (0.0, 1.0)
+    ui_meta     ("role", "range-end")
+    ui_meta     ("unit", "luminance")
+    ui_meta     ("visible", "$highlight-threshold-low.visible")
+    ui_meta     ("label", "$highlight-threshold-low.label")
 
 property_enum (shape, _("Shape"),
                GeglFocusBlurShape,
@@ -82,16 +111,19 @@ property_double (rotation, _("Rotation"), 0.0)
 property_int (blur_levels, _("Blur levels"), 8)
     description (_("Number of blur levels"))
     value_range (2, 16)
+    ui_meta     ("visible", "blur-type {gaussian}")
 
 property_double (blur_gamma, _("Blur gamma"), 1.5)
     description (_("Gamma factor for blur-level spacing"))
     value_range (0.0, G_MAXDOUBLE)
     ui_range    (0.1, 10.0)
+    ui_meta     ("visible", "blur-type {gaussian}")
 
 #else
 
 property_boolean (high_quality, _("High quality"), FALSE)
     description (_("Generate more accurate and consistent output (slower)"))
+    ui_meta     ("visible", "blur-type {gaussian}")
 
 #endif
 
@@ -105,14 +137,16 @@ property_boolean (high_quality, _("High quality"), FALSE)
 
 typedef struct
 {
-  GeglNode *input;
-  GeglNode *output;
+  GeglFocusBlurType  blur_type;
 
-  GeglNode *color;
-  GeglNode *crop;
-  GeglNode *vignette;
+  GeglNode          *input;
+  GeglNode          *output;
 
-  GeglNode *variable_blur;
+  GeglNode          *color;
+  GeglNode          *crop;
+  GeglNode          *vignette;
+
+  GeglNode          *blur;
 } Nodes;
 
 static void
@@ -147,6 +181,49 @@ update (GeglOperation *operation)
                  "y",        o->y,
                  "rotation", fmod (o->rotation + 360.0, 360.0),
                  NULL);
+
+  if (o->blur_type != nodes->blur_type)
+    {
+      nodes->blur_type = o->blur_type;
+
+      switch (nodes->blur_type)
+        {
+        case GEGL_FOCUS_BLUR_TYPE_GAUSSIAN:
+          gegl_node_set (nodes->blur,
+                         "operation",   "gegl:variable-blur",
+                         "linear-mask", TRUE,
+                         NULL);
+
+          gegl_operation_meta_redirect (operation,   "blur-radius",
+                                        nodes->blur, "radius");
+#ifdef MANUAL_CONTROLS
+          gegl_operation_meta_redirect (operation,   "blur-levels",
+                                        nodes->blur, "levels");
+          gegl_operation_meta_redirect (operation,   "blur-gamma",
+                                        nodes->blur, "gamma");
+#else
+          gegl_operation_meta_redirect (operation,   "high-quality",
+                                        nodes->blur, "high-quality");
+#endif
+          break;
+
+        case GEGL_FOCUS_BLUR_TYPE_LENS:
+          gegl_node_set (nodes->blur,
+                         "operation",   "gegl:lens-blur",
+                         "linear-mask", TRUE,
+                         NULL);
+
+          gegl_operation_meta_redirect (operation,   "blur-radius",
+                                        nodes->blur, "radius");
+          gegl_operation_meta_redirect (operation,   "highlight-factor",
+                                        nodes->blur, "highlight-factor");
+          gegl_operation_meta_redirect (operation,   "highlight-threshold-low",
+                                        nodes->blur, "highlight-threshold-low");
+          gegl_operation_meta_redirect (operation,   "highlight-threshold-high",
+                                        nodes->blur, "highlight-threshold-high");
+          break;
+        }
+    }
 }
 
 static void
@@ -161,6 +238,8 @@ attach (GeglOperation *operation)
     o->user_data = g_slice_new (Nodes);
 
   nodes = o->user_data;
+
+  nodes->blur_type = -1;
 
   nodes->input  = gegl_node_get_input_proxy  (operation->node, "input");
   nodes->output = gegl_node_get_output_proxy (operation->node, "output");
@@ -183,14 +262,13 @@ attach (GeglOperation *operation)
     "proportion", 0.0,
     NULL);
 
-  nodes->variable_blur = gegl_node_new_child (
+  nodes->blur = gegl_node_new_child (
     operation->node,
-    "operation",   "gegl:variable-blur",
-    "linear-mask", TRUE,
+    "operation", "gegl:variable-blur",
     NULL);
 
   gegl_node_link_many (nodes->input,
-                       nodes->variable_blur,
+                       nodes->blur,
                        nodes->output,
                        NULL);
 
@@ -202,20 +280,8 @@ attach (GeglOperation *operation)
   gegl_node_connect_to (nodes->input, "output",
                         nodes->crop,  "aux");
 
-  gegl_node_connect_to (nodes->vignette,      "output",
-                        nodes->variable_blur, "aux");
-
-  gegl_operation_meta_redirect (operation,            "blur-radius",
-                                nodes->variable_blur, "radius");
-#ifdef MANUAL_CONTROL
-  gegl_operation_meta_redirect (operation,            "blur-levels",
-                                nodes->variable_blur, "levels");
-  gegl_operation_meta_redirect (operation,            "blur-gamma",
-                                nodes->variable_blur, "gamma");
-#else
-  gegl_operation_meta_redirect (operation,            "high-quality",
-                                nodes->variable_blur, "high-quality");
-#endif
+  gegl_node_connect_to (nodes->vignette, "output",
+                        nodes->blur,     "aux");
 
   g_object_unref (white);
   g_object_unref (black);
