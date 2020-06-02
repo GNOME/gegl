@@ -344,7 +344,7 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:piecewise-blend",
     "title",       _("Piecewise Blend"),
-    "categories",  "blend",
+    "categories",  "compositors:blend",
     "description", _("Blend a chain of inputs using a mask"),
     NULL);
 }
