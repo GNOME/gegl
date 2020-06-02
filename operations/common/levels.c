@@ -26,22 +26,18 @@
 
 property_double (in_low, _("Low input"), 0.0)
     description ( _("Input luminance level to become lowest output"))
-    value_range (-1.0, 4.0)
     ui_range    (0.0, 1.0)
 
 property_double (in_high, _("High input"), 1.0)
     description (_("Input luminance level to become white"))
-    value_range (-1.0, 4.0)
     ui_range    (0.0, 1.0)
 
 property_double (out_low, _("Low output"), 0.0)
     description (_("Lowest luminance level in output"))
-    value_range (-1.0, 4.0)
     ui_range    (0.0, 1.0)
 
 property_double (out_high, _("High output"), 1.0)
     description (_("Highest luminance level in output"))
-    value_range (-1.0, 4.0)
     ui_range    (0.0, 1.0)
 
 #else
