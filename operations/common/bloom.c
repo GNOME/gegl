@@ -23,13 +23,14 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_double (amount, _("Amount"), 50.0)
+property_double (threshold, _("Threshold"), 50.0)
     description (_("Glow-area brightness threshold"))
-    value_range (0.0, 100.0)
+    ui_range    (0.0, 100.0)
 
 property_double (softness, _("Softness"), 25.0)
     description (_("Glow-area edge softness"))
-    value_range (0.0, 100.0)
+    value_range (0.0, G_MAXDOUBLE)
+    ui_range    (0.0, 100.0)
 
 property_double (radius, _("Radius"), 10.0)
     description (_("Glow radius"))
@@ -40,7 +41,7 @@ property_double (radius, _("Radius"), 10.0)
 
 property_double (strength, _("Strength"), 50.0)
     description (_("Glow strength"))
-    value_range (0.0, 1000.0)
+    value_range (0.0, G_MAXDOUBLE)
     ui_range    (0.0, 100.0)
 
 property_boolean (limit_exposure, _("Limit exposure"), FALSE)
@@ -73,11 +74,9 @@ update (GeglOperation *operation)
 
   if (nodes)
     {
-      gdouble threshold = 1.0 - o->amount / 100.0;
-
       gegl_node_set (nodes->levels,
-                     "in-low",   threshold - o->softness / 100.0,
-                     "in-high",  threshold + o->softness / 100.0,
+                     "in-low",   (o->threshold - o->softness) / 100.0,
+                     "in-high",  (o->threshold + o->softness) / 100.0,
                      "out-high", o->strength / 100.0,
                      NULL);
 
