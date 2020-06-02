@@ -1426,6 +1426,8 @@ gegl_node_set_operation_object (GeglNode      *self,
   while (self->pads)
     gegl_node_remove_pad (self, self->pads->data);
 
+  gegl_node_remove_children (self);
+
   gegl_operation_attach (operation, self);
 
   /* FIXME: This should handle all input pads instead of just these 3 */
