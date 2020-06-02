@@ -1795,9 +1795,10 @@ gegl_node_get_producer (GeglNode     *node,
    */
   if (node->is_graph)
   {
-    node = gegl_node_get_input_proxy (node, "input");
+    node = gegl_node_get_input_proxy (node, pad_name);
     if (!GEGL_IS_NODE (node))
       return NULL;
+    pad_name = "input";
   }
 
   pad = gegl_node_get_pad (node, pad_name);
@@ -1927,7 +1928,10 @@ gegl_node_get_consumers (GeglNode      *node,
   g_return_val_if_fail (output_pad != NULL, 0);
 
   if(node->is_graph)
-    node = gegl_node_get_output_proxy(node, "output");
+    {
+      node = gegl_node_get_output_proxy(node, output_pad);
+      output_pad = "output";
+    }
 
   g_return_val_if_fail (GEGL_IS_NODE (node), 0);
 
