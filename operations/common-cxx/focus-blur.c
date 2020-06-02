@@ -58,16 +58,14 @@ property_double (highlight_threshold_low, _("Highlight threshold (low)"), 0.0)
     ui_range    (0.0, 1.0)
     ui_meta     ("role", "range-start")
     ui_meta     ("unit", "luminance")
-    ui_meta     ("visible", "$highlight-factor.visible")
-    ui_meta     ("label", "range-label")
     ui_meta     ("range-label", _("Highlight threshold"))
+    ui_meta     ("visible", "$highlight-factor.visible")
 
 property_double (highlight_threshold_high, _("Highlight threshold (high)"), 1.0)
     ui_range    (0.0, 1.0)
     ui_meta     ("role", "range-end")
     ui_meta     ("unit", "luminance")
     ui_meta     ("visible", "$highlight-threshold-low.visible")
-    ui_meta     ("label", "$highlight-threshold-low.label")
 
 property_enum (shape, _("Shape"),
                GeglFocusBlurShape,
