@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: GEGL_0_2_0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-06-03 02:41+0200\n"
-"PO-Revision-Date: 2020-06-03 02:58+0200\n"
+"PO-Revision-Date: 2020-06-03 21:24+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@posteo.net>\n"
 "Language-Team: italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -3619,29 +3619,29 @@ msgstr ""
 
 #: ../operations/common/pack.c:24
 msgid "Gap"
-msgstr ""
+msgstr "Spaziatura"
 
 #: ../operations/common/pack.c:25
 msgid "How many pixels of space between items"
-msgstr ""
+msgstr "Quanti pixel di spazio tra elementi"
 
 #: ../operations/common/pack.c:26
 msgid "Align"
-msgstr ""
+msgstr "Allinea"
 
 #: ../operations/common/pack.c:27
 msgid "How to align items, 0.0 is start 0.5 middle and 1.0 end."
-msgstr ""
+msgstr "Come allineare gli elementi, 0.0 è all'inizio, 0.5 a metà e 1.0 alla fine."
 
 #: ../operations/common/pack.c:182
 msgid "Pack"
-msgstr ""
+msgstr "Compatta"
 
 #: ../operations/common/pack.c:184
 msgid ""
 "Packs an image horizontally or vertically next to each other with optional "
 "gap, aux right of input."
-msgstr ""
+msgstr "Compatta un'immagine orizzontalmente o verticalmente vicino a ogni altra con spaziatura opzionale, aux destro di ingresso."
 
 #: ../operations/common/panorama-projection.c:537
 msgid "Panorama Projection"
@@ -3964,11 +3964,11 @@ msgstr "Percorso del file da salvare."
 #: ../operations/external/png-save.c:34 ../operations/external/tiff-load.c:39
 #: ../operations/external/tiff-save.c:34
 msgid "Metadata"
-msgstr ""
+msgstr "Metadati"
 
 #: ../operations/common/save.c:29
 msgid "Object providing image metadata"
-msgstr ""
+msgstr "Oggetto che fornisce metadati immagine"
 
 #: ../operations/common/save.c:208
 msgid "Save"
@@ -4626,7 +4626,7 @@ msgstr "Alta qualità"
 #: ../operations/common-cxx/focus-blur.c:123
 #: ../operations/common-cxx/variable-blur.c:54
 msgid "Generate more accurate and consistent output (slower)"
-msgstr ""
+msgstr "Genera un risultato più accurato e coerente (più lento)"
 
 #: ../operations/common-cxx/focus-blur.c:320
 msgid "Focus Blur"
@@ -7184,7 +7184,7 @@ msgid ""
 "connected is used. When the crop area is configured to 0x0 at 0,0 and "
 "nothing is connected on aux, the bounding box of the node at the producing "
 "end of the input chain is used."
-msgstr ""
+msgstr "Ritaglia un buffer, se il pad ausiliario connesso al riquadro contenitore del nodo connesso viene usato. Quando l'area di ritaglio viene configurata a 0x0 in 0,0 e non c'è niente connesso su aux, viene usato il riquadro contenitore del nodo alla fine produttiva della catena d'ingresso."
 
 #: ../operations/core/load.c:31 ../operations/external/jp2-load.c:27
 #: ../operations/external/jpg-load.c:26 ../operations/external/pdf-load.c:27
@@ -7201,7 +7201,7 @@ msgstr "URI del file da caricare."
 #: ../operations/core/load.c:34 ../operations/external/jpg-save.c:45
 #: ../operations/external/png-load.c:37 ../operations/external/png-save.c:35
 msgid "Object to supply image metadata"
-msgstr ""
+msgstr "Oggetto che deve fornire i metadati immagine"
 
 #: ../operations/core/load.c:374
 msgid ""
@@ -8025,7 +8025,7 @@ msgstr "Salvatore di immagini RGBE (formato radianza HDR)"
 
 #: ../operations/external/save-pixbuf.c:30
 msgid "The output pixbuf produced by process is stored in this property"
-msgstr ""
+msgstr "Il pixbuf d'uscita prodotto dal processo viene immagazzinato in questa proprietà"
 
 #: ../operations/external/save-pixbuf.c:110
 msgid "Store in GdkPixbuf"
@@ -8177,7 +8177,7 @@ msgstr "Cartella file immagine (sottofile)"
 
 #: ../operations/external/tiff-load.c:40 ../operations/external/tiff-save.c:35
 msgid "Object to receive image metadata"
-msgstr ""
+msgstr "Oggetto che deve ricevere i metadati immagine"
 
 #: ../operations/external/tiff-load.c:1034
 msgid "TIFF File Loader"
@@ -8581,11 +8581,11 @@ msgstr "Quando scostamento verticale deve essere applicato all'incollamento"
 
 #: ../operations/transform/border-align.c:25
 msgid "Horizontal justification 0.0 is left 0.5 centered and 1.0 right."
-msgstr ""
+msgstr "La giustificazione orizzontale 0.0 è a sinistra, 0.5 è centrata e 1.0 è a destra."
 
 #: ../operations/transform/border-align.c:31
 msgid "Vertical justification 0.0 is top 0.5 middle and 1.0 bottom."
-msgstr ""
+msgstr "La giustificazione verticale a 0.0 è in cima in alto, 0.5 a metà e 1.0 in fondo in basso."
 
 #: ../operations/transform/border-align.c:180
 msgid "Border Align"
@@ -8596,7 +8596,7 @@ msgid ""
 "Aligns box of input rectangle with border of compositing target or aux' "
 "bounding-box border, if aux pad is not connectd the op tries to figure out "
 "which bounding box' border applies."
-msgstr ""
+msgstr "Allinea il riquadro di ingresso al bordo dell'obiettivo composito o al riquadro di aux. Se il pad aux non è connesso l'operazione prova a capire che riquadro applicare."
 
 #: ../operations/transform/reflect.c:27
 msgid "Direction vector's X component"
@@ -8616,7 +8616,7 @@ msgstr ""
 
 #: ../operations/transform/reset-origin.c:77
 msgid "Translate top-left to 0,0."
-msgstr ""
+msgstr "Trasla l'alto a sinistra a 0,0."
 
 #: ../operations/transform/rotate.c:25
 #: ../operations/transform/rotate-on-center.c:27
@@ -8797,19 +8797,19 @@ msgstr "Banda dettaglio"
 
 #: ../operations/workshop/band-tune.c:25
 msgid "Features size for detail band, used for noise removal."
-msgstr ""
+msgstr "Produce la dimensione per la banda di dettaglio, usata per la rimozione del rumore."
 
 #: ../operations/workshop/band-tune.c:29
 msgid ""
 "Detail scale, negative values diminish signal in detail band, positive "
 "values increase signal."
-msgstr ""
+msgstr "Dettaglia la scala, valori negativi diminuiscono il segnale nella banda di dettaglio, quelli positivi aumentano il segnale."
 
 #: ../operations/workshop/band-tune.c:30 ../operations/workshop/band-tune.c:46
 msgid ""
 "Scaling factor for image features at radius, -1 cancels them out 1.0 edge "
 "enhances"
-msgstr ""
+msgstr "Fattore di scala per le caratteristiche dell'immagine al raggio, -1 le elimina mentre 1.0 le aumenta"
 
 #: ../operations/workshop/band-tune.c:34
 msgid "Detail bandwidth"
@@ -8823,13 +8823,13 @@ msgstr "Banda bordo"
 msgid ""
 "Features size for edge band, used to compensate for loos of edges in detail "
 "pass."
-msgstr ""
+msgstr "Produce la dimensione per la banda del bordo, usata per compensare la perdita dei bordi nel passaggio al dettaglio."
 
 #: ../operations/workshop/band-tune.c:45
 msgid ""
 "Edge scale, negative values diminish signal in detail band, positive values "
 "increase signal."
-msgstr ""
+msgstr "Scala bordo, valori negativi diminuiscono il segnale nella banda di dettaglio, quelli positivi aumentano il segnale."
 
 #: ../operations/workshop/band-tune.c:50
 msgid "Edge bandwidth"
@@ -8848,7 +8848,7 @@ msgid ""
 "Parametric band equalizer for tuning frequency bands of image, the op "
 "provides abstracted input parameters that control two difference of "
 "gaussians driven band pass filters used as adjustments of the image signal."
-msgstr ""
+msgstr "Equalizzatore di banda parametrico per l'accordatura delle bande di frequenza, l'operazione fornisce l'astrazione dei parametri di ingresso che controllano due differenze di gaussiane pilotate da filtri passa banda usati come regolazioni del segnale dell'immagine."
 
 #: ../operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
