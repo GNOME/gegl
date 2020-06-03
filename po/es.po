@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-05-30 13:53+0000\n"
-"PO-Revision-Date: 2020-06-01 18:49+0200\n"
+"POT-Creation-Date: 2020-06-02 20:21+0000\n"
+"PO-Revision-Date: 2020-06-03 15:02+0200\n"
 "Last-Translator: Rodrigo Lledó <rodhos92@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -294,13 +294,13 @@ msgstr "Chebyshev"
 
 #: gegl/gegl-enums.c:93 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/common/spherize.c:26
-#: operations/common/vignette.c:28 operations/common-cxx/focus-blur.c:32
+#: operations/common/vignette.c:28 operations/common-cxx/focus-blur.c:37
 msgid "Horizontal"
 msgstr "Horizontal"
 
 #: gegl/gegl-enums.c:94 operations/common/edge-sobel.c:29
 #: operations/common/noise-spread.c:35 operations/common/spherize.c:27
-#: operations/common/vignette.c:29 operations/common-cxx/focus-blur.c:33
+#: operations/common/vignette.c:29 operations/common-cxx/focus-blur.c:38
 msgid "Vertical"
 msgstr "Vertical"
 
@@ -601,7 +601,7 @@ msgstr ""
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
-#: operations/common-cxx/focus-blur.c:36
+#: operations/common-cxx/focus-blur.c:45 operations/common-cxx/lens-blur.cc:25
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
@@ -638,19 +638,12 @@ msgstr ""
 "vecinal también se pondera por la diferencia de color con el píxel central "
 "original. "
 
-#. note that the code can handle negative curvatures
-#. * (in the [-1, 0) range), in which case the image is
-#. * wrapped around the back face, rather than the front
-#. * face, of the spherical cap.  we disable negative
-#. * curvatures atm, in particular, since they produce
-#. * the same result when the angle of view is 0, and
-#. * since their upper-bound, wrt the angle of view, is
-#. * arbitrary.
-#.
-#: operations/common/bloom.c:26 operations/common/spherize.c:52
-#: operations/common/unsharp-mask.c:31 operations/common-gpl3+/edge.c:42
-msgid "Amount"
-msgstr "Cantidad"
+#: operations/common/bloom.c:26 operations/common/threshold.c:25
+#: operations/common/threshold.c:127 operations/common/unsharp-mask.c:37
+#: operations/common-gpl3+/red-eye-removal.c:31
+#: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
+msgid "Threshold"
+msgstr "Umbral"
 
 #: operations/common/bloom.c:27
 msgid "Glow-area brightness threshold"
@@ -664,12 +657,13 @@ msgstr "Suavidad"
 msgid "Glow-area edge softness"
 msgstr "Suavidad del borde del área del resplandor"
 
-#: operations/common/bloom.c:34 operations/common/box-blur.c:25
+#: operations/common/bloom.c:35 operations/common/box-blur.c:25
 #: operations/common/c2g.c:28 operations/common/edge-neon.c:47
 #: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:58
+#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:87
+#: operations/common-cxx/lens-blur.cc:24
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
 #: operations/common-gpl3+/spiral.c:47 operations/common-gpl3+/supernova.c:44
@@ -680,32 +674,32 @@ msgstr "Suavidad del borde del área del resplandor"
 msgid "Radius"
 msgstr "Radio"
 
-#: operations/common/bloom.c:35 operations/common-gpl3+/softglow.c:26
+#: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
 msgstr "Radio del resplandor"
 
-#: operations/common/bloom.c:41 operations/common/noise-reduction.c:26
+#: operations/common/bloom.c:42 operations/common/noise-reduction.c:26
 #: operations/common-cxx/warp.cc:34 operations/common-gpl3+/wind.c:64
 msgid "Strength"
 msgstr "Fuerza"
 
-#: operations/common/bloom.c:42
+#: operations/common/bloom.c:43
 msgid "Glow strength"
 msgstr "Fuerza del resplandor"
 
-#: operations/common/bloom.c:46
+#: operations/common/bloom.c:47
 msgid "Limit exposure"
 msgstr "Limitar exposición"
 
-#: operations/common/bloom.c:47
+#: operations/common/bloom.c:48
 msgid "Don't over-expose highlights"
 msgstr "No sobreexponer los resaltados"
 
-#: operations/common/bloom.c:208
+#: operations/common/bloom.c:207
 msgid "Bloom"
 msgstr "Capa blanca"
 
-#: operations/common/bloom.c:210
+#: operations/common/bloom.c:209
 msgid "Add glow around bright areas"
 msgstr "Añadir resplandor alrededor de las áreas brillantes"
 
@@ -1774,19 +1768,19 @@ msgstr ""
 
 #: operations/common/dropshadow.c:27 operations/common/median-blur.c:27
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
-#: operations/common-cxx/focus-blur.c:30
+#: operations/common-cxx/focus-blur.c:35
 msgid "Square"
 msgstr "Cuadrado"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
-#: operations/common-cxx/focus-blur.c:29
+#: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
 msgstr "Círculo"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
-#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:31
+#: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
 msgstr "Diamante"
 
@@ -2062,7 +2056,7 @@ msgstr "Recortar en la medida de la entrada"
 msgid "Should the output extent be clipped to the input extent"
 msgstr "Se debe recortar el alcance de la salida al alcance de la entrada"
 
-#: operations/common/gaussian-blur.c:115
+#: operations/common/gaussian-blur.c:115 operations/common-cxx/focus-blur.c:29
 msgid "Gaussian Blur"
 msgstr "Desenfoque gaussiano"
 
@@ -2421,37 +2415,37 @@ msgstr "Entrada baja"
 msgid "Input luminance level to become lowest output"
 msgstr "Hacer que el nivel de luminancia de la entrada sea la salida más baja"
 
-#: operations/common/levels.c:32
+#: operations/common/levels.c:31
 msgid "High input"
 msgstr "Entrada alta"
 
-#: operations/common/levels.c:33
+#: operations/common/levels.c:32
 msgid "Input luminance level to become white"
 msgstr "Nivel de luminancia de la entrada necesario para que sea blanco"
 
-#: operations/common/levels.c:37
+#: operations/common/levels.c:35
 msgid "Low output"
 msgstr "Salida baja"
 
-#: operations/common/levels.c:38
+#: operations/common/levels.c:36
 msgid "Lowest luminance level in output"
 msgstr "El nivel de luminancia más bajo en la salida"
 
-#: operations/common/levels.c:42
+#: operations/common/levels.c:39
 msgid "High output"
 msgstr "Salida alta"
 
-#: operations/common/levels.c:43
+#: operations/common/levels.c:40
 msgid "Highest luminance level in output"
 msgstr "El nivel de luminancia más alto en la salida"
 
-#: operations/common/levels.c:204 operations/common/posterize.c:24
+#: operations/common/levels.c:200 operations/common/posterize.c:24
 #: operations/common-cxx/piecewise-blend.cc:29
 #: operations/external/matting-levin.c:41
 msgid "Levels"
 msgstr "Niveles"
 
-#: operations/common/levels.c:206
+#: operations/common/levels.c:202
 msgid "Remaps the intensity range of the image"
 msgstr "Reasigna el rango de intensidad de la imagen"
 
@@ -2660,7 +2654,7 @@ msgid "Shadow length"
 msgstr "Longitud de sombra"
 
 #: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
-#: operations/common-cxx/focus-blur.c:68
+#: operations/common-cxx/focus-blur.c:97
 msgid "Midpoint"
 msgstr "Punto medio"
 
@@ -2904,7 +2898,7 @@ msgid "position of symmetry center in output"
 msgstr "Posición del centro de simetría en la salida"
 
 #: operations/common/mirrors.c:58 operations/common/vignette.c:65
-#: operations/common-cxx/focus-blur.c:48 operations/common-gpl3+/displace.c:81
+#: operations/common-cxx/focus-blur.c:77 operations/common-gpl3+/displace.c:81
 #: operations/common-gpl3+/motion-blur-circular.c:40
 #: operations/common-gpl3+/motion-blur-zoom.c:39
 #: operations/common-gpl3+/supernova.c:32 operations/common-gpl3+/waves.c:25
@@ -2916,7 +2910,7 @@ msgid "X axis ratio for the center of mirroring"
 msgstr "Proporción en el eje X para el centro de la reflexión"
 
 #: operations/common/mirrors.c:63 operations/common/vignette.c:70
-#: operations/common-cxx/focus-blur.c:53 operations/common-gpl3+/displace.c:88
+#: operations/common-cxx/focus-blur.c:82 operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:45
 #: operations/common-gpl3+/motion-blur-zoom.c:45
 #: operations/common-gpl3+/supernova.c:38 operations/common-gpl3+/waves.c:30
@@ -2987,7 +2981,7 @@ msgstr ""
 msgid "Mix"
 msgstr "Mezclar"
 
-#: operations/common/mix.c:115
+#: operations/common/mix.c:116
 msgid "Do a lerp, linear interpolation (lerp) between input and aux"
 msgstr "Hacer una lerp, interpolación lineal (lerp) entre la entrada y aux"
 
@@ -3283,7 +3277,7 @@ msgid "The scale of the noise function"
 msgstr "La escala de la función de ruido"
 
 #: operations/common/noise-cell.c:40 operations/common/pixelize.c:31
-#: operations/common-cxx/focus-blur.c:43
+#: operations/common-cxx/focus-blur.c:72
 msgid "Shape"
 msgstr "Forma"
 
@@ -4047,6 +4041,20 @@ msgstr ""
 "Ángulo de la cúspide del casquete esférico, como fracción del co-ángulo de "
 "vista"
 
+#. note that the code can handle negative curvatures
+#. * (in the [-1, 0) range), in which case the image is
+#. * wrapped around the back face, rather than the front
+#. * face, of the spherical cap.  we disable negative
+#. * curvatures atm, in particular, since they produce
+#. * the same result when the angle of view is 0, and
+#. * since their upper-bound, wrt the angle of view, is
+#. * arbitrary.
+#.
+#: operations/common/spherize.c:52 operations/common/unsharp-mask.c:31
+#: operations/common-gpl3+/edge.c:42
+msgid "Amount"
+msgstr "Cantidad"
+
 #: operations/common/spherize.c:53
 msgid ""
 "Displacement scaling factor (negative values refer to the inverse "
@@ -4186,13 +4194,6 @@ msgstr "Saturación SVG"
 #: operations/common/svg-saturate.c:129
 msgid "SVG color matrix operation svg_saturate"
 msgstr "Operación svg_saturate de la matriz de colores SVG"
-
-#: operations/common/threshold.c:25 operations/common/threshold.c:127
-#: operations/common/unsharp-mask.c:37
-#: operations/common-gpl3+/red-eye-removal.c:31
-#: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
-msgid "Threshold"
-msgstr "Umbral"
 
 # Escalar/vectorial
 #
@@ -4339,7 +4340,7 @@ msgstr ""
 "usar directamente el factor de apriete como proporciones, establezca la "
 "proporción a 0.0."
 
-#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:75
+#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:104
 #: operations/common-gpl3+/bayer-matrix.c:50
 #: operations/common-gpl3+/linear-sinusoid.c:95
 #: operations/common-gpl3+/spiral.c:64
@@ -4518,69 +4519,129 @@ msgstr "Transformación de la distancia"
 msgid "Calculate a distance transform"
 msgstr "Calcular una transformada de distancia"
 
-#: operations/common-cxx/focus-blur.c:37
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:506
+#| msgid "Lens Flare"
+msgid "Lens Blur"
+msgstr "Desenfoque de la lente"
+
+#: operations/common-cxx/focus-blur.c:41
+#| msgid "Curve type"
+msgid "Blur type"
+msgstr "Tipo de desenfoque"
+
+#: operations/common-cxx/focus-blur.c:46
 msgid "Out-of-focus blur radius"
 msgstr "Radio del desenfoque"
 
-#: operations/common-cxx/focus-blur.c:59
+#: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:31
+#| msgid "Highlights"
+msgid "Highlight factor"
+msgstr "Factor de reflejos"
+
+#: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:32
+msgid "Relative highlight strength"
+msgstr "Fuerza de reflejos relativa"
+
+#: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:35
+#| msgid "Threshold low"
+msgid "Highlight threshold (low)"
+msgstr "Umbral de reflejos (bajo)"
+
+#: operations/common-cxx/focus-blur.c:63 operations/common-cxx/lens-blur.cc:40
+#| msgid "Highlights"
+msgid "Highlight threshold"
+msgstr "Umbral de reflejos"
+
+#: operations/common-cxx/focus-blur.c:65 operations/common-cxx/lens-blur.cc:42
+#| msgid "Threshold high"
+msgid "Highlight threshold (high)"
+msgstr "Umbral de reflejos (alto)"
+
+#: operations/common-cxx/focus-blur.c:88
 msgid "Focus-region outer radius"
 msgstr "Radio exterior de la región de enfoque"
 
-#: operations/common-cxx/focus-blur.c:64 operations/common-gpl3+/photocopy.c:29
+#: operations/common-cxx/focus-blur.c:93 operations/common-gpl3+/photocopy.c:29
 #: operations/common-gpl3+/softglow.c:33
 msgid "Sharpness"
 msgstr "Nitidez"
 
-#: operations/common-cxx/focus-blur.c:65
+#: operations/common-cxx/focus-blur.c:94
 msgid "Focus-region inner limit"
 msgstr "Limite interior de la región de enfoque"
 
-#: operations/common-cxx/focus-blur.c:69
+#: operations/common-cxx/focus-blur.c:98
 msgid "Focus-transition midpoint"
 msgstr "Punto medio de la transición de enfoque"
 
-#: operations/common-cxx/focus-blur.c:72 operations/common-gpl3+/waves.c:46
+#: operations/common-cxx/focus-blur.c:101 operations/common-gpl3+/waves.c:46
 msgid "Aspect ratio"
 msgstr "Relación de aspecto"
 
-#: operations/common-cxx/focus-blur.c:82
+#: operations/common-cxx/focus-blur.c:111
 #: operations/common-cxx/variable-blur.c:42
 msgid "Blur levels"
 msgstr "Niveles de desenfoque"
 
 # grupos, agrupaciones, aglomeraciones, etc.
-#: operations/common-cxx/focus-blur.c:83
+#: operations/common-cxx/focus-blur.c:112
 #: operations/common-cxx/variable-blur.c:43
 msgid "Number of blur levels"
 msgstr "Número de niveles de desenfoque"
 
-#: operations/common-cxx/focus-blur.c:86
+#: operations/common-cxx/focus-blur.c:116
 #: operations/common-cxx/variable-blur.c:46
 msgid "Blur gamma"
 msgstr "Gamma de desenfoque"
 
-#: operations/common-cxx/focus-blur.c:87
+#: operations/common-cxx/focus-blur.c:117
 #: operations/common-cxx/variable-blur.c:47
 msgid "Gamma factor for blur-level spacing"
 msgstr "Factor gamma del espaciado del nivel de desenfoque"
 
-#: operations/common-cxx/focus-blur.c:93
+#: operations/common-cxx/focus-blur.c:124
 #: operations/common-cxx/variable-blur.c:53
 msgid "High quality"
 msgstr "Alta calidad"
 
-#: operations/common-cxx/focus-blur.c:94
+#: operations/common-cxx/focus-blur.c:125
 #: operations/common-cxx/variable-blur.c:54
 msgid "Generate more accurate and consistent output (slower)"
 msgstr "Generar una salida más precisa y consistente (más lento)"
 
-#: operations/common-cxx/focus-blur.c:256
+#: operations/common-cxx/focus-blur.c:322
 msgid "Focus Blur"
 msgstr "Enfoque del desenfoque"
 
-#: operations/common-cxx/focus-blur.c:258
+#: operations/common-cxx/focus-blur.c:324
 msgid "Blur the image around a focal point"
 msgstr "Desenfocar la imagen alrededor de un punto focal"
+
+#: operations/common-cxx/lens-blur.cc:48
+#| msgid "Clip to the input extent"
+msgid "Clip to input extents"
+msgstr "Recortar a la medida de la entrada"
+
+#: operations/common-cxx/lens-blur.cc:49
+#| msgid "Clip to the input extent"
+msgid "Clip output to the input extents"
+msgstr "Recortar la salida a la medida de la entrada"
+
+#: operations/common-cxx/lens-blur.cc:51
+#: operations/common-cxx/piecewise-blend.cc:38
+#: operations/common-cxx/variable-blur.c:37
+msgid "Linear mask"
+msgstr "Máscara lineal"
+
+#: operations/common-cxx/lens-blur.cc:52
+#: operations/common-cxx/piecewise-blend.cc:39
+#: operations/common-cxx/variable-blur.c:38
+msgid "Use linear mask values"
+msgstr "Usar los valores de la máscara lineal"
+
+#: operations/common-cxx/lens-blur.cc:508
+msgid "Simulate out-of-focus lens blur"
+msgstr "Simular desenfoque de lente"
 
 #: operations/common-cxx/piecewise-blend.cc:30
 msgid "Number of blend levels"
@@ -4590,18 +4651,7 @@ msgstr "Número de niveles de mezcla"
 msgid "Gamma factor for blend-level spacing"
 msgstr "Factor gamma del espaciado de los niveles de mezcla"
 
-#: operations/common-cxx/piecewise-blend.cc:38
-#: operations/common-cxx/variable-blur.c:37
-msgid "Linear mask"
-msgstr "Máscara lineal"
-
-#: operations/common-cxx/piecewise-blend.cc:39
-#: operations/common-cxx/variable-blur.c:38
-msgid "Use linear mask values"
-msgstr "Usar los valores de la máscara lineal"
-
 #: operations/common-cxx/piecewise-blend.cc:346
-#| msgid "Weighted Blend"
 msgid "Piecewise Blend"
 msgstr "Mezcla por partes"
 
@@ -8530,7 +8580,6 @@ msgid "Vertical justification 0.0 is top 0.5 middle and 1.0 bottom."
 msgstr "La justificación vertical: 0.0 es arriba, 0.5 medio y 1.0 abajo."
 
 #: operations/transform/border-align.c:180
-#| msgid "Border"
 msgid "Border Align"
 msgstr "Alineación del borde"
 
@@ -8745,7 +8794,6 @@ msgstr ""
 "modificaciones de tonos rojos."
 
 #: operations/workshop/band-tune.c:24
-#| msgid "Detail"
 msgid "Detail band"
 msgstr "Banda de detalle"
 
@@ -8776,7 +8824,6 @@ msgid "Detail bandwidth"
 msgstr "Ancho de banda de detalle"
 
 #: operations/workshop/band-tune.c:40
-#| msgid "Edge behavior"
 msgid "Edge band"
 msgstr "Banda del borde"
 
@@ -8801,7 +8848,6 @@ msgid "Edge bandwidth"
 msgstr "Ancho de banda del borde"
 
 #: operations/workshop/band-tune.c:54
-#| msgid "Hue adjustment"
 msgid "Visualize Adjustment Mask"
 msgstr "Visualizar máscara de ajuste"
 
