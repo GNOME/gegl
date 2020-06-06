@@ -364,7 +364,7 @@ process (GeglOperation       *operation,
                   row += 4;
                   row_w++;
 
-                  if (x <= x2)
+                  if (x + 1 <= x2)
                     {
                       for (c = 0; c < 4; c++)
                         accum[c] += row[4 * (+s) + c];
