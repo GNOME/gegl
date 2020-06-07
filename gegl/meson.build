@@ -133,7 +133,7 @@ if get_option('introspection')
     )
 
     gnome.generate_vapi(api_name,
-      metadata_dirs: '.',
+      metadata_dirs: meson.current_source_dir(),
       sources: gegl_gir[0],
       install: true,
     )
