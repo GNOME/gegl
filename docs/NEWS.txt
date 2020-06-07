@@ -1,4 +1,4 @@
-GEGL-0.4.24 2020-05-27
+GEGL-0.4.24 2020-06-07
 
 
 Build:
@@ -38,6 +38,10 @@ property changes, all meta ops have been refactored to use the new cleaner API.
 gegl_operation_meta_watch_node(s) were already effectively nops, they are
 marked as deprecated and left as stubs for thid party ops still calling them.
 
+We now provide our own inlined versions of some basic single precision floats
+ops, this enables inlining of performance critical code also with lower
+optimization levels.
+
 crop: with no parameters set, infer rectangle to crop from graph.
 
 crop: cropping rectangle can be implied from graph.
@@ -61,6 +65,14 @@ focus-blur: a vignetting blur, using variable-blur.
 reset-origin: moves upper left of extent to 0,0
 band-tune: parametric band equalizer for tuning frequency bands of image.
 
+Contributors to this release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alexandre Prokoudine, Andre Klapper, Asier Sarasua Garmendia, Brian Stafford,
+Daniel Mustieles, Debarshi Ray, Dimitris Spingos (Δημήτρης Σπίγγος), Ell, Elle
+Stone, Jan Vesely, Jehan, Jordi Mas, lillolollo, Marco Ciampa, Michael
+Schumacher, Nathan Follens, Niels De Graef, Øyvind Kolås, Piotr Drąg, Rodrigo
+Lledó, Senya, Simon McVittie, suzu urek, woob, Yuri Chornoivan, 
 
 GEGL-0.4.22 2020-02-18
 ----------------------
