@@ -34,7 +34,7 @@
 "\n"\
 "# local white balance and contrast stretching\n"\
 "#\n"\
-"#divide aux=[  ref=in  median-blur radius=50 percentile=100  gaussian-blur std-dev-x=70 std-dev-y=70 ]\n"\
+"#divide aux=[  ref=in  median-blur radius=.25rel percentile=100  gaussian-blur std-dev-x=.5rel std-dev-y=.5rel ]\n"\
 "\n"\
 "# median sharpen (unsharp-mask with median-blur):\n"\
 "#\n"\
@@ -42,17 +42,18 @@
 "\n"\
 "# styled text overlay\n"\
 "#\n"\
-"#over aux=[ text wrap=1.0rel  color=rgb(0.1,0.1,.3) size=.1rel string=\"ipsum sic amet deliriarium mic sel adendum. Mic fubar bax qux facilium dhat.\" dropshadow radius=.01rel  grow-radius=0.0065rel color=white x=0 y=0 rotate degrees=3.1415 translate y=.1rel x=.1rel ]\n"\
+"#over aux=[ text wrap=1.0rel  color=rgb(0.1,0.1,.3) size=.1rel string=\"ipsum sic amet deliriarium mic sel adendum. Mic fubar bax qux facilium dhat.\" dropshadow radius=.01rel  grow-radius=0.0065rel color=white x=0 y=0 border-align x=0.5 y=0.33  ] # try x=1 y=1\n"\
 "\n"\
 "\n"\
 "# thumbs with misc filters along bottom of image:\n"\
 "#\n"\
-"#over aux=[ ref=in scale-ratio x=0.20 y=0.20 newsprint period=0.01rel period2=0.01rel period3=0.01rel period4=0.01rel color-model=cmyk aa-samples=64 pattern=pssquare pattern2=pssquare pattern3=pssquare pattern4=pssquare translate x=0.1rel y=0.7rel ]\n"\
-"#over aux=[ ref=in scale-ratio x=0.20 y=0.20 newsprint period=0.01rel period2=0.01rel period3=0.01rel period4=00.01rel color-model=rgb aa-samples=64 translate x=0.4rel y=0.7rel ] \n"\
-"#over aux=[ ref=in scale-ratio x=0.20 y=0.20 snn-mean snn-mean translate x=0.7rel y=0.7rel ] \n"\
-"#over aux=[ ref=in scale-ratio x=0.20 y=0.20 mosaic tile-size=0.03rel translate x=1.0rel y=0.7rel ] \n"\
-"\n"\
-"\n"\
+"#over aux=[\n"\
+"#  ref=in scale-ratio x=0.20 y=0.20 newsprint period=0.01rel period2=0.01rel period3=0.01rel period4=0.01rel color-model=cmyk aa-samples=64 pattern=pssquare pattern2=pssquare pattern3=pssquare pattern4=pssquare \n"\
+"#  pack gap=0.05rel aux=[ ref=in scale-ratio x=0.20 y=0.20 newsprint period=0.01rel period2=0.01rel period3=0.01rel period4=00.01rel color-model=rgb aa-samples=64  ] \n"\
+"#  pack gap=0.05rel aux=[ ref=in scale-ratio x=0.20 y=0.20 id=scaled snn-mean snn-mean crop aux=[ ref=scaled ] ] \n"\
+"#  pack gap=0.05rel aux=[ ref=in scale-ratio x=0.20 y=0.20 mosaic tile-size=0.03rel ] \n"\
+"#  border-align x=0.5 y=0.9\n"\
+"#]\n"\
 "\n"\
 "# All the examples can be expanded to be on\n"\
 "# multiple lines, this graph description\n"\
