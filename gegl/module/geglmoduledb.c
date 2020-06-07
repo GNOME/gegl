@@ -308,7 +308,8 @@ valid_module_name (const gchar *filename)
         }
     }
 #ifdef __APPLE__ /* G_MODULE_SUFFIX is defined to .so instead of .dylib */
-  if (! gegl_datafiles_check_extension (basename, ".dylib" ))
+  if (! gegl_datafiles_check_extension (basename, ".dylib" ) ||
+      strstr (filename, ".dSYM"))
 #else
   if (! gegl_datafiles_check_extension (basename, "." G_MODULE_SUFFIX))
 #endif
