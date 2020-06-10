@@ -1081,7 +1081,7 @@ gegl_buffer_create_sub_buffer (GeglBuffer          *buffer,
   if (extent == NULL)
     extent = gegl_buffer_get_extent (buffer);
 
-  if (extent->width < 0 || extent->height < 0)
+  if (!extent || extent->width < 0 || extent->height < 0)
     {
       g_warning ("avoiding creating buffer of size: %ix%i returning an empty buffer instead.\n", extent->width, extent->height);
       return g_object_new (GEGL_TYPE_BUFFER,
