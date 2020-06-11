@@ -474,7 +474,7 @@ msgstr "Model de color"
 
 #: operations/common/alien-map.c:36
 msgid "What color model used for the transformation"
-msgstr "Model de color que s'utilitza per la transformació"
+msgstr "Model de color que s'utilitza per a la transformació"
 
 #: operations/common/alien-map.c:38
 msgid "Component 1 frequency"
@@ -698,7 +698,7 @@ msgstr "Limita l’exposició"
 
 #: operations/common/bloom.c:48
 msgid "Don't over-expose highlights"
-msgstr "No sobre exposis els ressaltats"
+msgstr "No sobreexposis els ressaltats"
 
 #: operations/common/bloom.c:209
 msgid "Bloom"
@@ -1554,7 +1554,7 @@ msgstr "(5,2)"
 
 #: operations/common/convolution-matrix.c:47
 msgid "(5,3)"
-msgstr "(5,3) "
+msgstr "(5,3)"
 
 #: operations/common/convolution-matrix.c:48
 msgid "(5,4)"
@@ -2639,7 +2639,7 @@ msgstr "Només ombra"
 
 #: operations/common/long-shadow.c:41
 msgid "Shadow minus image"
-msgstr "Ombre menys imatge"
+msgstr "Ombra menys imatge"
 
 #: operations/common/long-shadow.c:44 operations/common-gpl3+/wind.c:45
 msgid "Style"
