@@ -309,7 +309,7 @@ int   get_item_no      (GeState *o);  /* current no */
 char *get_item_path    (GeState *o);  /* currently selected path */
 char *get_item_path_no (GeState *o, int child_no);
 
-GeState *global_state;
+extern GeState *global_state;
 
 void populate_path_list (GeState *o);
 void set_clip_position (GeState *o, double position);

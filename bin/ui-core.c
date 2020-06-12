@@ -118,6 +118,7 @@ const char *css =
 #include "argvs.h"
 
 #include "ui.h"
+GeState *global_state;
 
 G_DEFINE_TYPE (GeState, ge_state, G_TYPE_OBJECT)
 
