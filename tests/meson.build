@@ -36,12 +36,10 @@ gegl_test_parallel = true
 # Tests
 subdir('simple')
 subdir('mipmap')
-
-if false
-  subdir('opencl')
+subdir('opencl')
+if pygobject3.found()
+  subdir('python')
 endif
-
-subdir('python')
 subdir('xml')
 subdir('ff-load-save')
 subdir('compositions')
