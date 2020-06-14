@@ -33,6 +33,10 @@ buildtype = get_option('buildtype')
 gegl_prefix = get_option('prefix')
 gegl_libdir = join_paths(gegl_prefix, get_option('libdir'))
 
+
+project_build_root = meson.current_build_dir()
+project_source_root = meson.current_source_dir()
+
 ################################################################################
 # Project infos
 

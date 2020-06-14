@@ -1,34 +1,20 @@
 
-xml_test_names = [
+xml_tests = [
   'test-load',
   'test-roundtrip',
   'test-save',
 ]
 
-
-foreach xml_test_name : xml_test_names
-  xml_test = executable(xml_test_name,
-    xml_test_name + '.c',
-    include_directories: [ rootInclude, geglInclude, ],
-    dependencies: [
-      babl,
-      glib,
-      gobject,
-    ],
-    link_with: [
-      gegl_lib,
-    ]
-  )
-  test(xml_test_name.underscorify(),
-    xml_test,
-    env: [
-      'ABS_TOP_BUILDDIR=' + meson.build_root(),
-      'ABS_TOP_SRCDIR='   + meson.source_root(),
-      'GEGL_SWAP=RAM',
-      'GEGL_PATH=' + meson.build_root() / 'operations',
-    ],
+foreach _test : xml_tests
+  test(_test.underscorify(),
+    executable(_test,
+      _test + '.c',
+      include_directories: gegl_test_includes,
+      dependencies: gegl_test_deps,
+      link_with: gegl_lib,
+    ),
+    env: gegl_test_env,
     suite: 'xml',
-    is_parallel: false,
+    is_parallel: gegl_test_parallel,
   )
-
 endforeach

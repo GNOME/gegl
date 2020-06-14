@@ -1,4 +1,6 @@
 
+gegl_library_build_dir = meson.current_build_dir()
+
 geglInclude = include_directories(
   '.',
   'buffer',
