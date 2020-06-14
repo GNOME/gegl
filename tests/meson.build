@@ -27,6 +27,7 @@ gegl_test_deps = [
   babl,
   glib,
   gobject,
+  math,
 ]
 
 # common test paralllel flag
