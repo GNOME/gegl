@@ -1,102 +1,122 @@
-compositions_tests = files(
-  'affine-with-negative.xml',
-  'alien-map.xml',
-  'apply-lens.xml',
-  'apply-lens3.xml',
-  'bump-map.xml',
-  'checkerboard.xml',
-  'clones.xml',
-  'color-enhance.xml',
-  'color-exchange.xml',
-  'color-to-alpha.xml',
-  'colors.xml',
-  'composite-transform.xml',
-  'contrast-curve.xml',
-  'convolve1.xml',
-  'convolve2.xml',
-  'edge.xml',
-  'fattal02.xml',
-  'gamma.xml',
-  'gegl.xml',
-  'grey-json.xml',
-  'hdr-color.xml',
-  'illusion.xml',
-  'image-compare.xml',
-  'lens-flare.xml',
-  'mantiuk06.xml',
-  'noise-cell.xml',
-  'noise-hurl.xml',
-  'noise-simplex.xml',
-  'noise-solid.xml',
-  'posterize.xml',
-  'rectangles.xml',
-  'red-eye-removal.xml',
-  'reflect.xml',
-  'reflect2.xml',
-  'reinhard05.xml',
-  'rgb-params.xml',
-  'rotate-on-center.xml',
-  'rotate.xml',
-  'scale-size-keepaspect.xml',
-  'simple-scale.xml',
-  'sinus.xml',
-  'stretch-contrast.xml',
-  'supernova.xml',
-  'transform.xml',
-  'weighted-blend.xml',
-)
-#run-matting-global.xml.sh
-#run-matting-global-big.xml.sh
 
-compositions_tests_without_opencl = files(
-  'color-reduction.xml',
-  'jpg-load-datauri.xml',
-  'pnm-ascii-load.xml',
-  'pnm-raw-load.xml',
-  'rgbe-load.xml',
-  'rgbe-save.xml',
-  'shift.xml',
-  'stretch-contrast-hsv.xml',
-  'tiff-load.xml',
-  'tile.xml',
-)
-
-
-if jasper.found()
-  compositions_tests_without_opencl += 'jp2-load.xml'
-endif
+composition_tests = [
+  'affine-with-negative',
+  'alien-map',
+  'apply-lens',
+  'apply-lens3',
+  'bump-map',
+  'checkerboard',
+  'clones',
+  'color-enhance',
+  'color-exchange',
+  'color-to-alpha',
+  'colors',
+  'composite-transform',
+  'contrast-curve',
+  'convolve1',
+  'convolve2',
+  'dropshadow-json',
+  'edge',
+  'fattal02',
+  'gamma',
+  'gegl',
+  'grey-json',
+  'hdr-color',
+  'illusion',
+  'image-compare',
+  'lens-flare',
+  'mantiuk06',
+  'matting-global',
+  'noise-cell',
+  'noise-hurl',
+  'noise-simplex',
+  'noise-solid',
+  'posterize',
+  'rectangles',
+  'red-eye-removal',
+  'reflect',
+  'reflect2',
+  'reinhard05',
+  'rgb-params',
+  'rotate',
+  'rotate-on-center',
+  'scale-size-keepaspect',
+  'simple-scale',
+  'sinus',
+  'stretch-contrast',
+  'supernova',
+  'transform',
+  'weighted-blend',
+]
 if libumfpack.found()
- # compositions_tests += 'matting-levin.xml'
+  composition_tests += 'matting-levin'
 endif
 
-run_compositions = files('run-compositions.py')
-
-if false
-test('compositions_with_opencl',
-  python,
-  args: [
-    run_compositions,
-    '--build-dir='+ meson.build_root(),
-    '--src-dir='  + meson.source_root(),
-    '--xml-dir='  + meson.current_source_dir(),
-    compositions_tests,
-  ],
-  is_parallel: false,
-  timeout: 120,
-  suite: 'compositions',
-)
+composition_tests_without_opencl = [
+  'color-reduction',
+  'jpg-load-datauri',
+  'pnm-ascii-load',
+  'pnm-raw-load',
+  'rgbe-load',
+  'rgbe-save',
+  'shift',
+  'stretch-contrast-hsv',
+  'tiff-load',
+  'tile',
+]
+if jasper.found()
+  composition_tests_without_opencl += 'jp2-load'
 endif
 
-test('compositions_without_opencl',
-  python,
-  args: [
-    run_compositions,
-    '--build-dir='+ meson.build_root(),
-    '--src-dir='  + meson.source_root(),
-    '--xml-dir='  + meson.current_source_dir(),
-    '--without-opencl',
-    compositions_tests_without_opencl,
-  ],
-  suite: 'compositions',
-  is_parallel: false,
-)
+# Tests that are expected to fail
+composition_tests_fail = [
+  'apply-lens',
+  'apply-lens3',
+  'matting-global',
+  'simple-scale',
+]
+if not os_win32
+  composition_tests_fail += 'matting-levin'
+endif
+
+# composition tests
+tests = composition_tests + composition_tests_without_opencl
+foreach _test : tests
+  # without opencl
+  _xml_file = files('@0@.xml'.format(_test))
+  _ref_dir = meson.current_source_dir() / 'reference'
+  test(_test.underscorify(),
+    run_test,
+    args: [
+      '--test-name', _test,
+      '--output-dir', meson.current_build_dir() / 'output',
+      '--reference-path', _ref_dir,
+      '--input-file', _xml_file,
+      '--gegl-exe', gegl_bin,
+      '--imgcmp-exe', gegl_imgcmp,
+    ],
+    env: gegl_test_env,
+    should_fail: composition_tests_fail.contains(_test),
+    suite: 'composition',
+    is_parallel: gegl_test_parallel,
+  )
+
+  # with opencl - compare against newly generated images files
+  if not composition_tests_without_opencl.contains(_test)
+    test('@0@ (OpenCL)'.format(_test),
+      run_test,
+      args: [
+        '--test-name', _test,
+        '--output-dir', meson.current_build_dir() / 'output-opencl',
+        '--reference-path', _ref_dir,
+        '--input-file', _xml_file,
+        '--gegl-exe', gegl_bin,
+        '--imgcmp-exe', gegl_imgcmp,
+        '--with-opencl',
+      ],
+      env: gegl_test_env,
+      suite: 'composition', 
+      is_parallel: gegl_test_parallel,
+    )
+  endif
+endforeach
