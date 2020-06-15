@@ -83,10 +83,11 @@ endif
 tests = composition_tests + composition_tests_without_opencl
 foreach _test : tests
   # without opencl
+  _test_name = _test.underscorify()
   _xml_file = files('@0@.xml'.format(_test))
   _ref_dir = meson.current_source_dir() / 'reference'
-  test(_test.underscorify(),
-    run_test,
+  test(_test_name,
+    test_runner,
     args: [
       '--test-name', _test,
       '--output-dir', meson.current_build_dir() / 'output',
@@ -95,16 +96,16 @@ foreach _test : tests
       '--gegl-exe', gegl_bin,
       '--imgcmp-exe', gegl_imgcmp,
     ],
-    env: gegl_test_env,
+    env: gegl_test_env_no_ocl,
     should_fail: composition_tests_fail.contains(_test),
     suite: 'composition',
     is_parallel: gegl_test_parallel,
   )
 
-  # with opencl - compare against newly generated images files
+  # with opencl
   if not composition_tests_without_opencl.contains(_test)
-    test('@0@ (OpenCL)'.format(_test),
-      run_test,
+    test('@0@ (OpenCL)'.format(_test_name),
+      test_runner,
       args: [
         '--test-name', _test,
         '--output-dir', meson.current_build_dir() / 'output-opencl',
@@ -115,7 +116,8 @@ foreach _test : tests
         '--with-opencl',
       ],
       env: gegl_test_env,
-      suite: 'composition', 
+      should_fail: composition_tests_fail.contains(_test),
+      suite: 'composition',
       is_parallel: gegl_test_parallel,
     )
   endif

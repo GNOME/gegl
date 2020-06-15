@@ -1,5 +1,5 @@
 
-test_list = [
+opencl_tests = [
   'bilateral-filter',
   'box-blur',
   'brightness-contrast',
@@ -21,24 +21,22 @@ test_list = [
   'vignette',
 ]
 
-opencl_test = find_program('opencl_test.sh')
-foreach test_name: test_list
-  xml_file = meson.current_source_dir() / test_name + '.xml'
-  out_dir  = meson.current_build_dir()
-  out_name = test_name + '.png'
-
-  test(test_name,
-    opencl_test,
-    env: [
-      'ABS_BUILDDIR='+ out_dir,
-      'GEGL_BIN='+ gegl_bin.full_path(),
-      'GEGL_IMGCMP_BIN='+ gegl_imgcmp.full_path(),
-      'XML_FILE='+ xml_file,
-      'OUT_FILE='+ out_name,
-      'GEGL_SWAP=RAM',
-      'GEGL_PATH='+ meson.build_root() / 'operations',
+foreach _test : opencl_tests
+  test(_test.underscorify(),
+    test_runner,
+    args: [
+      '--test-name', _test,
+      '--output-dir', meson.current_build_dir() / 'output',
+      '--reference-path', meson.current_build_dir() / 'reference',
+      '--generate-reference',
+      '--input-file', files('@0@.xml'.format(_test)),
+      '--gegl-exe', gegl_bin,
+      '--imgcmp-exe', gegl_imgcmp,
+      '--with-opencl',
     ],
+    env: gegl_test_env,
     suite: 'opencl',
-    is_parallel: false,
-  )
+    timeout: 60,
+    is_parallel: gegl_test_parallel,
+    )
 endforeach
