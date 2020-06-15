@@ -108,7 +108,6 @@ main (int    argc,
                                   NULL);
 
   for (cursor = ARG_PATH_0; cursor < unsigned(argc); ++cursor)
-  for (cursor = ARG_PATH_0; cursor < unsigned(argc); ++cursor)
     {
       const gchar *input_path;
       gchar        ev_string[G_ASCII_DTOSTR_BUF_SIZE + 1];
