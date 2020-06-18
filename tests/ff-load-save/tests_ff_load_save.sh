@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-export GEGL_PATH="${MESON_BUILD_ROOT}/operations"
+export GEGL_PATH="${ABS_TOP_BUILDDIR}/operations"
 
-FrameCounter="${MESON_BUILD_ROOT}/examples/frame-counter"
-GeglVideo="${MESON_BUILD_ROOT}/examples/gegl-video"
+FrameCounter="${ABS_TOP_BUILDDIR}/examples/frame-counter"
+GeglVideo="${ABS_TOP_BUILDDIR}/examples/gegl-video"
 
 testcount=0
 

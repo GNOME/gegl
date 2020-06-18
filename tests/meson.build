@@ -42,6 +42,8 @@ if pygobject3.found()
   subdir('python')
 endif
 subdir('xml')
-subdir('ff-load-save')
+if avlibs_found and gexiv2.found()
+  subdir('ff-load-save')
+endif
 subdir('compositions')
 subdir('buffer')

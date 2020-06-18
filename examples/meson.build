@@ -44,9 +44,9 @@ foreach example : examples
 
   # Fore use as tests for ff-load-save
   if example_name == 'gegl-video'
-    gegl_video_example = exe
+    gegl_video = exe
   endif
   if example_name == 'frame-counter'
-    frame_counter_example = exe
+    frame_counter = exe
   endif
 endforeach
