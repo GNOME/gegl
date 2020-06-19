@@ -135,6 +135,7 @@ if get_option('introspection')
     gnome.generate_vapi(api_name,
       metadata_dirs: '.',
       sources: gegl_gir[0],
+      package: [ 'glib-2.0', 'gobject-2.0', 'babl-0.1' ],
       install: true,
     )
   endif
