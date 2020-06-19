@@ -63,7 +63,11 @@ gegl_param_spec_set_property_key (GParamSpec  *pspec,
 {
   GHashTable *ht;
   ht = gegl_param_spec_get_property_key_ht (pspec, TRUE);
-  g_hash_table_insert (ht, g_strdup (key_name), g_strdup (value));
+
+  if (value)
+    g_hash_table_insert (ht, g_strdup (key_name), g_strdup (value));
+  else
+    g_hash_table_remove (ht, key_name);
 }
 
 static GHashTable *
