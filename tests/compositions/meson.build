@@ -68,12 +68,9 @@ if jasper.found()
   composition_tests_without_opencl += 'jp2-load'
 endif
 
-# Tests that are expected to fail
+# Tests that are expected to fail - must also appear in the main lists
 composition_tests_fail = [
-  'apply-lens',
-  'apply-lens3',
   'matting-global',
-  'simple-scale',
 ]
 if not os_win32
   composition_tests_fail += 'matting-levin'

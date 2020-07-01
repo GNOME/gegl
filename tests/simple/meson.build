@@ -91,7 +91,6 @@ if gexiv2.found()
     find_program('test-exp-combine.sh'),
     env: gegl_test_env,
     depends: [exp_combine, gegl_imgcmp],
-    should_fail: true,
     suite: 'simple',
     timeout: 60,
     is_parallel: gegl_test_parallel,
