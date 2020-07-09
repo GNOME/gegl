@@ -306,7 +306,11 @@ gegl_transform_create_matrix (OpTransform *transform,
   gegl_matrix3_identity (matrix);
 
   if (OP_TRANSFORM_GET_CLASS (transform))
-    OP_TRANSFORM_GET_CLASS (transform)->create_matrix (transform, matrix);
+    {
+      OP_TRANSFORM_GET_CLASS (transform)->create_matrix (transform, matrix);
+
+      gegl_matrix3_round_error (matrix);
+    }
 }
 
 static void
