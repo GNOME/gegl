@@ -64,6 +64,26 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class;
   OpTransformClass   *transform_class;
+  gchar              *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:translate'>"
+    "      <params>"
+    "        <param name='x'>23.0</param>"
+    "        <param name='y'>42.0</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   transform_class = OP_TRANSFORM_CLASS (klass);
@@ -73,9 +93,9 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:translate",
     "title", _("Translate"),
     "categories", "transform",
-    "reference-hash", "8d3700ec06e9cbba3cb2b4a9f3061a10",
+    "reference-hash", "392c8ca820940075e3ccfdeba347da2d",
+    "reference-composition", composition,
     "description", _("Repositions the buffer (with subpixel precision), if integer coordinates are passed a fast-path without resampling is used"),
-    "reference-chain", "load path=images/standard-input.png translate x=23.0 y=42.0 clip-to-input=true",
     NULL);
 }
 

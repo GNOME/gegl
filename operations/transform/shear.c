@@ -60,6 +60,27 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class;
   OpTransformClass   *transform_class;
+  gchar              *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:shear'>"
+    "      <params>"
+    "        <param name='origin-x'>100</param>"
+    "        <param name='origin-y'>100</param>"
+    "        <param name='x'>1.12</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   transform_class = OP_TRANSFORM_CLASS (klass);
@@ -69,8 +90,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:shear",
     "title", _("Shear"),
     "categories", "transform",
-    "reference-hash", "3d26408e0d03bb534fe1492453409519",
-    "reference-hashB", "8962a6cc2e96474e81190a016459e156",
+    "reference-hash", "d8560daa3efce1f2e1ab3ba2af373aa2",
+    "reference-composition", composition,
     "description", _("Shears the buffer. "),
     NULL);
 }

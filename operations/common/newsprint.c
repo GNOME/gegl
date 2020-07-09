@@ -616,6 +616,28 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *point_filter_class;
+  gchar                         *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:newsprint'>"
+    "      <params>"
+    "        <param name='period'>6.0</param>"
+    "        <param name='pattern'>pssquare</param>"
+    "        <param name='color-model'>cmyk</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
+
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
@@ -632,11 +654,9 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Newsprint"),
     "categories" ,        "render",
     "position-dependent", "true",
-    "reference-hash",     "f680e099d412e28dfa26f9b19e34109f",
-    "reference-hashB",    "37755aa95f73b217e0d339a3e4f88044",
+    "reference-hash",     "2792e6d5aec5c2f80e45aea3a610d1f6",
+    "reference-composition", composition,
     "description",        _("Digital halftoning with optional modulations. "),
-    "reference-chain",    "load path=images/standard-input.png newsprint period=6.0 pattern=pssquare color-model=cmyk",
-    "position-dependent", "true",
     NULL);
 }
 

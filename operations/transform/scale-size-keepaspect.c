@@ -92,6 +92,26 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class;
   OpTransformClass   *transform_class;
+  gchar              *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:scale-size-keepaspect'>"
+    "      <params>"
+    "        <param name='x'>140</param>"
+    "        <param name='y'>100</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   transform_class = OP_TRANSFORM_CLASS (klass);
@@ -101,10 +121,9 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:scale-size-keepaspect",
     "title", _("Scale size keep aspect"),
     "categories", "transform",
-    "reference-hash", "21055a7509bb983967ab03a37200931a",
-    "reference-hashB", "8bc4e3d798e6becb9933c3340a6d9122",
+    "reference-hash", "9d8a7fe1ff90704f7ebcfdd5dae7e9c2",
+    "reference-composition", composition,
     "description", _("Scales the buffer to a size, preserving aspect ratio"),
-    "reference-chain", "load path=images/standard-input.png scale-size-keepaspect x=140 y=-1",
     NULL);
 }
 

@@ -61,6 +61,27 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class;
   OpTransformClass   *transform_class;
+  gchar              *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:rotate'>"
+    "      <params>"
+    "        <param name='degrees'>30</param>"
+    "        <param name='origin-x'>50</param>"
+    "        <param name='origin-y'>50</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   transform_class = OP_TRANSFORM_CLASS (klass);
@@ -70,8 +91,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:rotate",
     "title", _("Rotate"),
     "categories", "transform",
-    "reference-hash", "4ac5d42bb82187a705a2ecd640353490",
-    "reference-hashB", "d17bf4d606e21691901ac27474b10259",
+    "reference-hash", "577f8ff8bcdd46dc4835097a6afc914b",
+    "reference-composition", composition,
     "description", _("Rotate the buffer around the specified origin."),
     NULL);
 }

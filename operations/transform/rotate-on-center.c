@@ -136,6 +136,25 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class;
   OpTransformClass   *transform_class;
+  gchar              *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:rotate-on-center'>"
+    "      <params>"
+    "        <param name='degrees'>30</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   transform_class = OP_TRANSFORM_CLASS (klass);
@@ -145,8 +164,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",       "gegl:rotate-on-center",
     "title",      _("Rotate on center"),
     "categories", "transform",
-    "reference-hash", "1b5001df3a4e6f964009308c116e7e1f",
-    "reference-hashB", "0ff629645abfee0a8b4289e29ba2f717",
+    "reference-hash", "7e9679f53b23801e6aa6a21092585d31",
+    "reference-composition", composition,
     "description", _("Rotate the buffer around its center, taking care of possible offsets."),
     NULL);
 }

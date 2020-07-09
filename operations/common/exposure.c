@@ -443,6 +443,25 @@ gegl_op_class_init (GeglOpClass *klass)
   GObjectClass                  *object_class;
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *point_filter_class;
+  gchar                         *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:exposure'>"
+    "      <params>"
+    "        <param name='exposure'>1.5</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   object_class       = G_OBJECT_CLASS (klass);
   operation_class    = GEGL_OPERATION_CLASS (klass);
@@ -460,8 +479,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:exposure",
     "title",       _("Exposure"),
     "categories",  "color",
-    "reference-hash", "967bd5777363d1fec59f04889f358a99",
-    "reference-chain", "load path=images/standard-input.png exposure exposure=1.5",
+    "reference-hash", "a4ae5d7f933046aa462e0f7659bd1261",
+    "reference-composition", composition,
     "description", _("Change exposure of an image in shutter speed stops"),
     "op-version",  "1:0",
     NULL);

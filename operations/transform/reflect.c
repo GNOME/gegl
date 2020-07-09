@@ -72,6 +72,29 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class;
   OpTransformClass   *transform_class;
+  gchar              *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:reflect'>"
+    "      <params>"
+    "        <param name='origin-x'>100</param>"
+    "        <param name='origin-y'>100</param>"
+    "        <param name='x'>0.3</param>"
+    "        <param name='y'>1.2</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
+
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   transform_class = OP_TRANSFORM_CLASS (klass);
@@ -81,11 +104,11 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:reflect",
     "title", _("Reflect"),
     "categories", "transform",
-    "reference-hash", "ae16c74fdc60c979ee688057b19dcfed",
+    "reference-hash", "2ae152431de90c897ce3ccfcb3093de9",
+    "reference-composition", composition,
     "description", _("Reflect an image about a line, whose direction is "
                      "specified by the vector that is defined by the "
-                     "x and y properties."),
-    "reference-chain", "load path=images/standard-input.png reflet origin-x=100 origin-y=100 x=0.3 y=1.2",
+                     "x and y properties. "),
     NULL);
 }
 

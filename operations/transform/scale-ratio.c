@@ -62,6 +62,28 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class;
   OpTransformClass   *transform_class;
+  gchar              *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:scale-ratio'>"
+    "      <params>"
+    "        <param name='origin-x'>100</param>"
+    "        <param name='origin-y'>100</param>"
+    "        <param name='x'>2.0</param>"
+    "        <param name='y'>2.0</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   transform_class = OP_TRANSFORM_CLASS (klass);
@@ -71,8 +93,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "name", "gegl:scale-ratio",
     "title", _("Scale ratio"),
     "categories", "transform",
-    "reference-hash", "bbd9ada0a890f265b66eda5f5a48dc67",
-    "reference-hashB", "c82f17bc90c9ec85b0ba0e46b0433d5d",
+    "reference-hash", "f160b6eca3e2ad9b23eefabd56f86a47",
+    "reference-composition", composition,
     "description", _("Scales the buffer according to a ratio."),
     NULL);
 }
