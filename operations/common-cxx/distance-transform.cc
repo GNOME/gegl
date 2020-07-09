@@ -445,20 +445,25 @@ gegl_op_class_init (GeglOpClass *klass)
   const gchar              *composition =
     "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
-    "<node operation='gegl:distance-transform'>"
-    "  <params>"
-    "    <param name='metric'>euclidean</param>"
-    "    <param name='threshold_lo'>0.0001</param>"
-    "    <param name='threshold_hi'>1.0</param>"
-    "    <param name='averaging'>0</param>"
-    "    <param name='normalize'>true</param>"
-    "  </params>"
-    "</node>"
-    "<node operation='gegl:load'>"
-    "  <params>"
-    "    <param name='path'>standard-input.png</param>"
-    "  </params>"
-    "</node>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:distance-transform'>"
+    "      <params>"
+    "        <param name='metric'>euclidean</param>"
+    "        <param name='threshold_lo'>0.0001</param>"
+    "        <param name='threshold_hi'>1.0</param>"
+    "        <param name='averaging'>0</param>"
+    "        <param name='normalize'>true</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
     "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
@@ -474,10 +479,10 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:distance-transform",
     "title",       _("Distance Transform"),
-    "reference-hash", "31dd3c9b78a79583db929b0f77a56191",
     "categories",  "map",
-    "description", _("Calculate a distance transform"),
+    "reference-hash", "620bf37294bca66e4190da60c5be5622",
     "reference-composition", composition,
+    "description", _("Calculate a distance transform"),
     NULL);
 }
 

@@ -298,6 +298,32 @@ gegl_op_class_init (GeglOpClass *klass)
   GObjectClass                  *object_class;
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *point_filter_class;
+  gchar                         *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:color-warp'>"
+    "      <params>"
+    "        <param name='from-0'>rgb(1.0000, 1.0000, 1.0000)</param>"
+    "        <param name='to-0'>rgb(0.9900, 0.4500, 0.8500)</param>"
+    "        <param name='weight-0'>100.00</param>"
+    "        <param name='from-1'>rgb(0.0000, 0.0000, 0.0000)</param>"
+    "        <param name='to-1'>rgb(0.5000, 0.0000, 0.5000)</param>"
+    "        <param name='weight-1'>33.33</param>"
+    "        <param name='weight'>1.00</param>"
+    "        <param name='amount'>0.50</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"
+    "</gegl>";
 
   object_class       = G_OBJECT_CLASS (klass);
   operation_class    = GEGL_OPERATION_CLASS (klass);
@@ -307,9 +333,11 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class->process = process;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:color-warp",
-    "title",       _("Color warp"),
-    "categories",  "color",
+    "name",                  "gegl:color-warp",
+    "title",                 _("Color warp"),
+    "categories",            "color",
+    "reference-composition", composition,
+    "reference-hash",        "637569c3382fc061ee45513eaebf22d6",
     "description", _("Warps the colors of an image between colors with weighted distortion factors, color pairs which are black to black get ignored when constructing the mapping."),
     NULL);
 }

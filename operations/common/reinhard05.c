@@ -285,6 +285,21 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass       *operation_class;
   GeglOperationFilterClass *filter_class;
+  gchar                    *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:reinhard05'/>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
@@ -301,7 +316,8 @@ gegl_op_class_init (GeglOpClass *klass)
   "name",      "gegl:reinhard05",
   "title",      _("Reinhard 2005 Tone Mapping"),
   "categories" , "tonemapping",
-  "reference-hash", "ce38b47d455298d78db3a91748c4f9a5",
+  "reference-hash", "fb6bb888c83014f5c452e64dcff11455",
+  "reference-composition", composition,
   "description",
         _("Adapt an image, which may have a high dynamic range, for "
           "presentation using a low dynamic range. This is an efficient "

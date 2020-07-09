@@ -173,6 +173,26 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *filter_class;
+  gchar                         *composition = 
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:rgb-clip'>"
+    "      <params>"
+    "        <param name='low_limit'>0.2</param>"
+    "        <param name='high_limit'>0.8</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
@@ -186,8 +206,9 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:rgb-clip",
     "title",       _("Clip RGB"),
-    "reference-hash", "d44569682486dd5187db20243520ff5d",
     "categories",  "color",
+    "reference-hash", "a90f2b9f5b59357d85585720a7b2dd65",
+    "reference-composition", composition,
     "description", _("Keep RGB pixels values inside a specific range"),
     NULL);
 }

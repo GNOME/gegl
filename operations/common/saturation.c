@@ -369,9 +369,30 @@ process (GeglOperation       *operation,
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
-  GeglOperationClass *operation_class = GEGL_OPERATION_CLASS (klass);
-  GeglOperationPointFilterClass *point_filter_class =
-    GEGL_OPERATION_POINT_FILTER_CLASS (klass);
+  GeglOperationClass            *operation_class;
+  GeglOperationPointFilterClass *point_filter_class;
+  gchar                         *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:saturation'>"
+    "      <params>"
+    "        <param name='scale'>2.0</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
+
+  operation_class    = GEGL_OPERATION_CLASS (klass);
+  point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
 
   operation_class->prepare = prepare;
   operation_class->opencl_support = FALSE;
@@ -380,10 +401,11 @@ gegl_op_class_init (GeglOpClass *klass)
 
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:saturation",
-    "opi",         "1:0",
     "title",       _("Saturation"),
-    "reference-hash", "584bfe714947a573f10399965c8b45b0",
     "categories" , "color",
+    "opi",         "1:0",
+    "reference-hash", "c93c29f810f7743c454e3d8171878eee",
+    "reference-composition", composition,
     "description", _("Changes the saturation"),
     NULL);
 }

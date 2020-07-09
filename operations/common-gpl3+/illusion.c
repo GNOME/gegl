@@ -254,6 +254,13 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass       *operation_class;
   GeglOperationFilterClass *filter_class;
+  gchar                    *composition = 
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:illusion'/>"
+    "  <node operation='gegl:load' path='standard-input.png'/>"
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
@@ -271,7 +278,8 @@ gegl_op_class_init (GeglOpClass *klass)
       "title",          _("Illusion"),
       "categories",     "map",
       "license",        "GPL3+",
-      "reference-hash", "577ee48aed3b49af531e8a9a10676af9",
+      "reference-hash", "8a578729f9beb4e3fb35021995caae70",
+      "reference-composition", composition,
       "description", _("Superimpose many altered copies of the image."),
       NULL);
 }

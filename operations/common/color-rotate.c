@@ -396,6 +396,31 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *filter_class;
+  gchar                         *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:color-rotate'>"
+    "      <params>"
+    "        <param name='src-clockwise'>false</param>"
+    "        <param name='src-from'>90</param>"
+    "        <param name='src-to'>180</param>"
+    "        <param name='dest-clockwise'>false</param>"
+    "        <param name='dest-from'>270</param>"
+    "        <param name='dest-to'>360</param>"
+    "        <param name='threshold'>0.15</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
@@ -404,9 +429,11 @@ gegl_op_class_init (GeglOpClass *klass)
   filter_class->process    = process;
 
   gegl_operation_class_set_keys (operation_class,
-    "categories",   "color",
-    "name",         "gegl:color-rotate",
-    "title",        _("Color Rotate"),
+    "categories",     "color",
+    "name",           "gegl:color-rotate",
+    "title",           _("Color Rotate"),
+    "reference-hash", "1ad6d3caf43fd510eddb8b890103b5c9",
+    "reference-composition", composition,
     "description",  _("Replace a range of colors with another"),
     NULL);
 }

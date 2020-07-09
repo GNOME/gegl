@@ -432,7 +432,31 @@ gegl_op_class_init (GeglOpClass *klass)
   GObjectClass               *object_class;
   GeglOperationClass         *operation_class;
   GeglOperationComposerClass *composer_class;
-
+  gchar                      *composition = 
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:bump-map'>"
+    "      <params>"
+    "        <param name='depth'>15</param>"
+    "        <param name='elevation'>30.0000</param>"
+    "        <param name='tiled'>false</param>"
+    "        <param name='offset-x'>0</param>"
+    "        <param name='offset-y'>0</param>"
+    "      </params>"
+    "      <node operation='gegl:load' path='standard-input.png'/>"
+    "    </node>"
+    "    <node operation='gegl:color' value='rgb(0.5,0.5,0.5)'/>"
+    "  </node>"	
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
+  
   object_class    = G_OBJECT_CLASS (klass);
   operation_class = GEGL_OPERATION_CLASS (klass);
   composer_class  = GEGL_OPERATION_COMPOSER_CLASS (klass);
@@ -448,10 +472,13 @@ gegl_op_class_init (GeglOpClass *klass)
   composer_class->aux_label                = _("Height Map");
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:bump-map",
-    "categories",  "light",
-    "title",       _("Bump Map"),
-    "license",     "GPL3+",
+    "name",           "gegl:bump-map",
+    "title",          _("Bump Map"),
+    "categories",     "light",
+    "license",        "GPL3+",
+    "reference-hash", "a648c21313c6168be01aed469c27903b",
+    "reference-composition", composition,
+//    "reference-hash", "8d3700ec06e9cbba3cb2b4a9f3061a10",
     "description", _("This plug-in uses the algorithm described by John "
                      "Schlag, \"Fast Embossing Effects on Raster Image "
                      "Data\" in Graphics GEMS IV (ISBN 0-12-336155-9). "

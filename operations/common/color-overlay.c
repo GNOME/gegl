@@ -141,6 +141,25 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *point_filter_class;
+  gchar                         *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:color-overlay'>"
+    "      <params>"
+    "        <param name='value'>rgba(1.0,0.0,0.0,0.2)</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class    = GEGL_OPERATION_CLASS (klass);
   point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
@@ -154,6 +173,8 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",        "gegl:color-overlay",
       "categories",  "color",
       "title",       _("Color Overlay"),
+      "reference-hash", "078b15ab732d02f2df2c5c111059d0ce",
+      "reference-composition", composition,
       "description", _("Paint a color overlay over the input, "
                        "preserving its transparency."),
       NULL);

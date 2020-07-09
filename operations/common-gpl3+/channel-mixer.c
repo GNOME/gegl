@@ -250,6 +250,33 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *point_filter_class;
+  gchar                         *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:channel-mixer'>"
+    "      <params>"
+    "        <param name='rr_gain'>0.0</param>"
+    "        <param name='rg_gain'>0.5</param>"
+    "        <param name='rb_gain'>0.0</param>"
+    "        <param name='gr_gain'>0.0</param>"
+    "        <param name='gg_gain'>0.0</param>"
+    "        <param name='gb_gain'>0.5</param>"
+    "        <param name='br_gain'>0.5</param>"
+    "        <param name='bg_gain'>0.0</param>"
+    "        <param name='bb_gain'>0.0</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   point_filter_class = GEGL_OPERATION_POINT_FILTER_CLASS (klass);
@@ -261,13 +288,14 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->opencl_support = TRUE;
 
   gegl_operation_class_set_keys (operation_class,
-      "name",       "gegl:channel-mixer",
-      "categories", "color",
-      "reference-hash", "c7b822f909ec17da9c6fa4259d076da6",
-      "title",      _("Channel Mixer"),
-      "license",    "GPL3+",
-      "description", _("Remix colors; by defining relative contributions from source components."),
-      NULL);
+    "name",       "gegl:channel-mixer",
+    "title",      _("Channel Mixer"),
+    "categories", "color",
+    "license",    "GPL3+",
+    "reference-hash", "94fdce1b979722a5f1f2069c7adeabbd",
+    "reference-composition", composition,
+    "description", _("Remix colors; by defining relative contributions from source components."),
+    NULL);
 }
 
 #endif

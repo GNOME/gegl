@@ -188,6 +188,25 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass       *operation_class;
   GeglOperationFilterClass *filter_class;
+  gchar                    *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:engrave'>"
+    "      <params>"
+    "        <param name='row_height'>2</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);
@@ -201,7 +220,8 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Engrave"),
     "categories",  "distort",
     "license",     "GPL3+",
-    "reference-hash", "2fce9ed1adb05a50b7042fb9b5879529",
+    "reference-hash", "4efbeecb74321319ccbfdfb863b0d92e",
+    "reference-composition", composition,
     "description", _("Simulate an antique engraving"),
     NULL);
 }

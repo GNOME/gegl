@@ -227,6 +227,29 @@ gegl_op_class_init (GeglOpClass *klass)
   GObjectClass                  *object_class;
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *point_filter_class;
+  gchar                         *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:color-exchange'>"
+    "      <params>"
+    "        <param name='from-color'>rgba(1.0000, 1.0000, 0.0000, 1.0000)</param>"
+    "        <param name='to-color'>rgba(0.0000, 1.0000, 0.0000, 1.0000)</param>"
+    "        <param name='red-threshold'>0.500</param>"
+    "        <param name='green-threshold'>0.500</param>"
+    "        <param name='blue-threshold'>0.500</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   object_class       = G_OBJECT_CLASS (klass);
   operation_class    = GEGL_OPERATION_CLASS (klass);
@@ -242,9 +265,10 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:color-exchange",
     "title",       _("Exchange color"),
-    "reference-hash", "d44569682486dd5187db20243520ff5d",
     "categories",  "color",
     "license",     "GPL3+",
+    "reference-hash", "21e8f306f881c8df508966b9a906365e",
+    "reference-composition", composition,
     "description", _("Exchange one color with another, optionally setting "
                      "a threshold to convert from one shade to another."),
     NULL);
