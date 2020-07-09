@@ -1,5 +1,6 @@
 Environment
-~~~~~~~~~~~
+-----------
+
 Some environment variables can be set to alter how GEGL runs, these options are
 also available as properties on a singleton GObject returned from gegl_config
 (). The defaults should be what one normally uses - overriding 
@@ -29,13 +30,13 @@ GEGL_DEBUG_RECTS::
     Show the results of have/need rect negotiations.
 GEGL_DEBUG_TIME::
     Print a performance instrumentation breakdown of GEGL and it's operations.
-GEGL_USE_OPENCL:
+GEGL_USE_OPENCL::
     Enable use of OpenCL processing.
-GEGL_PATH:
+GEGL_PATH::
     The directory where GEGL looks (recursively) for loadable operations,
     setting it to GEGL_PATH=/home/user/where_you_keep_src/gegl/operations
     permits running an application against the operations in the source dir
     instead of having to install the operations.
-BABL_PATH:
+BABL_PATH::
     The directory containing babl extensions, both new pixel formats/color
     models as well as fast-paths for efficient pixel format conversions.
