@@ -72,6 +72,26 @@ gegl_matrix3_identity (GeglMatrix3 *matrix)
   matrix->coeff [2][0] = matrix->coeff [2][1] = 0.;
 }
 
+void
+gegl_matrix3_round_error (GeglMatrix3 *matrix)
+{
+  gint r;
+
+  for (r = 0; r < 3; r++)
+    {
+      gint c;
+
+      for (c = 0; c < 3; c++)
+        {
+          gdouble x = matrix->coeff[r][c];
+          gdouble i = floor (x + 0.5);
+
+          if (fabs (x - i) < EPSILON)
+            matrix->coeff[r][c] = i;
+        }
+    }
+}
+
 gboolean
 gegl_matrix3_equal (GeglMatrix3 *matrix1,
                     GeglMatrix3 *matrix2)

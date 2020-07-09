@@ -65,6 +65,14 @@ GeglMatrix3 * gegl_matrix3_new (void);
 void       gegl_matrix3_identity        (GeglMatrix3 *matrix);
 
 /**
+ * gegl_matrix3_round_error:
+ * @matrix: a #GeglMatrix3
+ *
+ * Rounds numerical errors in @matrix to the nearest integer.
+ */
+void       gegl_matrix3_round_error     (GeglMatrix3 *matrix);
+
+/**
  * gegl_matrix3_equal:
  * @matrix1: a #GeglMatrix3
  * @matrix2: a #GeglMatrix3
