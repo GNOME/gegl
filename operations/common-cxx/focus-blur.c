@@ -319,6 +319,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:focus-blur",
     "title",       _("Focus Blur"),
     "categories",  "blur",
+    "reference-hash", "a6f7a6425769c7d8b1d277a5c3f25973",
     "description", _("Blur the image around a focal point"),
     NULL);
 }

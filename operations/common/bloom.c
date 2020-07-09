@@ -206,6 +206,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:bloom",
     "title",       _("Bloom"),
     "categories",  "light",
+    "reference-hash", "ab23acffc881bde3fa22458bba89e9ed",
     "description", _("Add glow around bright areas"),
     NULL);
 }

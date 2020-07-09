@@ -68,10 +68,11 @@ gegl_op_class_init (GeglOpClass *klass)
   point_filter_class->process  = process;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:absolute",
-    "title",       _("Absolute"),
-    "compat-name", "gegl:abs",
-    "categories" , "color",
+    "name",           "gegl:absolute",
+    "title",          _("Absolute"),
+    "compat-name",    "gegl:abs",
+    "categories" ,    "color",
+    "reference-hash", "ffb9e86edb25bc92e8d4e68f59bbb04b",
     "description",
        _("Makes each linear RGB component be the absolute of its value, fabs(input_value)"),
     NULL);

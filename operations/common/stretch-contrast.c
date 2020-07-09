@@ -580,7 +580,8 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:stretch-contrast",
     "title",       _("Stretch Contrast"),
-    "categories" , "color:enhance",
+    "categories",     "color:enhance",
+    "reference-hash", "f7d354160b86485163bee6df4c52074c",
     "description",
         _("Scales the components of the buffer to be in the 0.0-1.0 range. "
           "This improves images that make poor use of the available contrast "

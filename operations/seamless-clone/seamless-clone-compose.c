@@ -96,8 +96,9 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->attach = attach;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:seamless-clone-compose",
-    "categories",  "compositors:meta:blend",
+    "name",           "gegl:seamless-clone-compose",
+    "categories",     "compositors:meta:blend",
+    "reference-hash", "53a7f14935f28383e36cd6ff7e4c1a72",
     "description", "Seamless cloning composite operation",
     NULL);
 }

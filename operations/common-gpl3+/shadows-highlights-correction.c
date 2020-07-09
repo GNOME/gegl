@@ -357,9 +357,10 @@ gegl_op_class_init (GeglOpClass *klass)
   point_composer_class->cl_process  = cl_process;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:shadows-highlights-correction",
-    "categories",  "hidden",
-    "license",     "GPL3+",
+    "name",           "gegl:shadows-highlights-correction",
+    "categories",     "hidden",
+    "license",        "GPL3+",
+    "reference-hash", "26edcb1732f29cbbd3ca543c76e57c9b",
     "description", _("Lighten shadows and darken highlights"),
     NULL);
 }

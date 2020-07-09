@@ -503,6 +503,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:lens-blur",
     "title",       _("Lens Blur"),
     "categories",  "blur",
+    "reference-hash", "c5dc4c97b0dacbe3fee41cefca1e6f42",
     "description", _("Simulate out-of-focus lens blur"),
     NULL);
 }

@@ -266,6 +266,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",                  "gegl:stress",
     "title",                 _("Spatio Temporal Retinex-like Envelope with Stochastic Sampling"),
     "categories",            "enhance:tonemapping",
+    "reference-hash",        "992ec85d36a5ad598a2533c4593d89d3",
     "reference-composition", composition,
     "description",
         _("Spatio Temporal Retinex-like Envelope with Stochastic Sampling"),

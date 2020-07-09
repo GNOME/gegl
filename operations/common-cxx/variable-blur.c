@@ -203,9 +203,10 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_meta_class->update = update;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",        "gegl:variable-blur",
-    "title",       _("Variable Blur"),
-    "categories",  "blur",
+    "name",           "gegl:variable-blur",
+    "title",          _("Variable Blur"),
+    "categories",     "blur",
+    "reference-hash", "553023d2b937e2ebeb216a7999dd12b3",
     "description", _("Blur the image by a varying amount using a mask"),
     NULL);
 }

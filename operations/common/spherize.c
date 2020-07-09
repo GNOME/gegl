@@ -320,6 +320,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",              _("Spherize"),
     "categories",         "distort:map",
     "position-dependent", "true",
+    "reference-hash", "215f04f9ad3e27325dfbe834963a6f49",
     "description",        _("Wrap image around a spherical cap"),
     NULL);
 }

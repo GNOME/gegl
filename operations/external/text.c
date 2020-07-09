@@ -380,9 +380,10 @@ gegl_op_class_init (GeglOpClass *klass)
 
   gegl_operation_class_set_keys (operation_class,
     "reference-composition", composition,
-    "title",        _("Render Text"),
-    "name",         "gegl:text",
-    "categories",   "render",
+    "title",          _("Render Text"),
+    "name",           "gegl:text",
+    "categories",     "render",
+    "reference-hash", "a6612efdac71654360b19ccc424ff130",
     "description",  _("Display a string of text using pango and cairo."),
     NULL);
 

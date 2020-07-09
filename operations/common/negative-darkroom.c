@@ -308,9 +308,10 @@ gegl_op_class_init (GeglOpClass *klass)
 	point_composer_class->process = process;
 
 	gegl_operation_class_set_keys (operation_class,
-		"name"       , "gegl:negative-darkroom",
-		"title",       _("Negative Darkroom"),
-		"categories" , "color",
+		"name",           "gegl:negative-darkroom",
+		"title",          _("Negative Darkroom"),
+		"categories",     "color",
+		"reference-hash", "d492ac8ef38c336aa79e63b7f39f6139",
 		"description", _("Simulate a negative film enlargement in an analog darkroom."),
 		NULL);
 }

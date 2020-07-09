@@ -525,9 +525,10 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",                  "gegl:stereographic-projection",
     "compat-name",           "gegl:little-planet",
     "title",                 _("Little Planet"),
-    "reference-composition", composition,
     "position-dependent",    "true",
     "categories" ,           "map",
+    "reference-hash",        "36f3d3efea251ded0d16c447c565922c",
+    "reference-composition", composition,
     "description", _("Do a stereographic/little planet transform of an equirectangular image."),
     NULL);
 }
