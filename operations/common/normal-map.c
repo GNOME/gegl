@@ -246,8 +246,9 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",           "gegl:normal-map",
     "title",          _("Normal Map"),
-    "categories",     "misc",
+    "categories",     "map",
     "reference-hash", "5f6052195f03b52185942a2c1fecd98d",
+    "reference-hashB", "adc8bbb4ce3f6c67b4c4cd6ac3c72942",
     "description",    _("Generate a normal map from a height map"),
     NULL);
 }

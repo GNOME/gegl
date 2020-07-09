@@ -146,7 +146,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",      _("Rotate on center"),
     "categories", "transform",
     "reference-hash", "1b5001df3a4e6f964009308c116e7e1f",
-    "reference-chain", "load path=images/standard-input.png rotate-on-center degrees=30.0 clip-to-input=true",
+    "reference-hashB", "0ff629645abfee0a8b4289e29ba2f717",
     "description", _("Rotate the buffer around its center, taking care of possible offsets."),
     NULL);
 }

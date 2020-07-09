@@ -224,6 +224,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Image Gradient"),
     "categories",  "edge-detect",
     "reference-hash", "6cd95bf706d744b31b475b3500941f3c",
+    "reference-hashB", "3bc1f4413a06969bf86606d621969651",
     "description", _("Compute gradient magnitude and/or direction by "
                      "central differences"),
     NULL);

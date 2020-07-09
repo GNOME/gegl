@@ -277,9 +277,10 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",        "gegl:emboss",
     "title",       _("Emboss"),
-    "reference-hash", "af0c6c39428853e1010fa4c51ee67c7d",
     "categories",  "light",
     "license",     "GPL3+",
+    "reference-hash", "af0c6c39428853e1010fa4c51ee67c7d",
+    "reference-hashB",  "b63483ced47d6f2bf04cb70f67fd9d16",
     "description", _("Simulates an image created by embossing"),
     NULL);
 }

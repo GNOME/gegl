@@ -276,6 +276,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Color Enhance"),
     "categories" , "color:enhance",
     "reference-hash", "a0d2c5b2bdf39c93bb2c2bdf2a9ea857",
+    "reference-hashB", "41ef79339fd722b64aa3520c33ff6f52",
     "description",
         _("Stretch color chroma to cover maximum possible range, "
           "keeping hue and lightness untouched."),

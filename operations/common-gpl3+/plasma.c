@@ -446,6 +446,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "render",
     "position-dependent", "true",
     "reference-hash",     "f5b2ec90eaf0b44d9b06130b3abb73c9",
+    "reference-hashB",    "b11bc3ad1089f155a5d0642b4aca8791",
     "license",            "GPL3+",
     "description", _("Creates an image filled with a plasma effect."),
     NULL);

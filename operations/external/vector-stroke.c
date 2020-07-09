@@ -353,9 +353,10 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",                  "gegl:vector-stroke",
     "title",                 _("Vector Stroke"),
-    "reference-composition", composition,
     "categories",            "render:vector",
     "reference-hash",        "0607e4aa12dbfc95a9a0b938b4e035a2",
+    "reference-hashB",       "7220be79a5455bed219cb16661275dd0",
+    "reference-composition", composition,
     "description",           _("Renders a vector stroke"),
     NULL);
 }

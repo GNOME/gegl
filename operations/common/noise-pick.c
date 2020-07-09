@@ -142,8 +142,9 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",       "gegl:noise-pick",
     "title",      _("Noise Pick"),
-    "reference-hash", "9ce949376eb179e98e0c677911fa76e8",
     "categories", "noise",
+    "reference-hash", "9ce949376eb179e98e0c677911fa76e8",
+    "reference-hashB", "0634d248731c51f4784749b934c05bd2",
     "description", _("Randomly interchange some pixels with neighbors"),
     NULL);
 }

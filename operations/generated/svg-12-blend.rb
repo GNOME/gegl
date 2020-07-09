@@ -55,7 +55,7 @@ b = [
       ['color_burn',    'cA * aB + cB * aA <= aA * aB',
                         'cA * (1 - aB) + cB * (1 - aA)',
                         '(cA == 0 ? 1 : (aA * (cA * aB + cB * aA - aA * aB) / cA) + cA * (1 - aB) + cB * (1 - aA))',
-                        'e9f58c8e3b67d0ed84d1e1875c414159'],
+                        'c1acf566ed23654c5c781aeb56340895'],
       ['hard_light',    '2 * cA < aA',
                         '2 * cA * cB + cA * (1 - aB) + cB * (1 - aA)',
                         'aA * aB - 2 * (aB - cB) * (aA - cA) + cA * (1 - aB) + cB * (1 - aA)',

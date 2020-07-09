@@ -120,11 +120,12 @@ gegl_op_class_init (GeglOpClass *klass)
   operation_class->prepare          = prepare;
 
   gegl_operation_class_set_keys (operation_class,
-    "name",          "gegl:radial-gradient",
-    "title",         _("Radial Gradient"),
-    "categories",    "render:gradient",
-    "reference-hash","ff1e65a10aea0e973ef6191912137d92", 
-    "description" ,  _("Radial gradient renderer"),
+    "name",            "gegl:radial-gradient",
+    "title",           _("Radial Gradient"),
+    "categories",      "render:gradient",
+    "reference-hash",  "ff1e65a10aea0e973ef6191912137d92",
+    "reference-hashB", "3b1c6367858882e778f4dbde0ba0e3d2",
+    "description",     _("Radial gradient renderer"),
     NULL);
 }
 

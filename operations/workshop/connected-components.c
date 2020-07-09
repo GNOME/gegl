@@ -286,6 +286,7 @@ gegl_op_class_init (GeglOpClass *klass)
                        "  M 50 50 l 100 0 l 0 100 l -100 0 l0 -100' "
                        "connected-components                        ",
     "reference-hash", "b2670884d959e1448d9001a5a1855b55",
+    "reference-hashB", "528e1bcbe3fe9d10b4378a6af87eb591",
     "description",    _("Fills each connected region of the input, separated "
                         "from the rest of the input by a given color, with a "
                         "unique color."),

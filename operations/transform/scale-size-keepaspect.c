@@ -102,6 +102,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title", _("Scale size keep aspect"),
     "categories", "transform",
     "reference-hash", "21055a7509bb983967ab03a37200931a",
+    "reference-hashB", "8bc4e3d798e6becb9933c3340a6d9122",
     "description", _("Scales the buffer to a size, preserving aspect ratio"),
     "reference-chain", "load path=images/standard-input.png scale-size-keepaspect x=140 y=-1",
     NULL);

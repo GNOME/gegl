@@ -1692,6 +1692,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",     "light",
     "needs-alpha",    "true",
     "reference-hash", "0fdf6db2382f0c1a2919ef5684c7dc30",
+    "reference-hashB", "7e3c16678d971e1ecb3c204770659bfd",
     "description",    _("Creates a long-shadow effect"),
     NULL);
 }

@@ -136,8 +136,9 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",               "gegl:linear-gradient",
     "title",              _("Linear Gradient"),
     "categories",         "render:gradient",
-    "reference-hash",     "f53de20993b50915061e67e69ab006f4",
     "position-dependent", "true",
+    "reference-hash",     "f53de20993b50915061e67e69ab006f4",
+    "reference-hashB",    "7c514dcf1a0d580fe52476084246a0f4",
     "description" , _("Linear gradient renderer"),
     NULL);
 }

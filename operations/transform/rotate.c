@@ -71,7 +71,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title", _("Rotate"),
     "categories", "transform",
     "reference-hash", "4ac5d42bb82187a705a2ecd640353490",
-    "reference-chain", "load path=images/standard-input.png rotate degrees=30.0 clip-to-input=true origin-x=100 origin-y=100",
+    "reference-hashB", "d17bf4d606e21691901ac27474b10259",
     "description", _("Rotate the buffer around the specified origin."),
     NULL);
 }

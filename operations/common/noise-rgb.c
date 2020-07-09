@@ -213,6 +213,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories",         "noise",
     "position-dependent", "true",
     "reference-hash",     "3f537624e94b49109b5d809363b25ef0",
+    "reference-hashB",    "b92f11f3a5f288c4f0e20afb0bba054f",
     "description", _("Distort colors by random amounts"),
     NULL);
 }

@@ -127,11 +127,12 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Threshold"),
     "categories" , "color",
     "reference-hash", "d20432270a1364932ee88a326a3e26c8",
+    "reference-hashB", "5eab2520fa6e1ab9f321976d7eb3e238",
+    "reference-composition", composition,
     "description",
           _("Thresholds the image to white/black based on either the global value "
             "set in the value property, or per pixel from the aux input."),
     "cl-source",   threshold_cl_source,
-    "reference-composition", composition,
     NULL);
 }
 
