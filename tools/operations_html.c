@@ -61,7 +61,7 @@ operation_to_image_path (const gchar *op_name)
 
   g_strdelimit (cleaned, ":", '-');
   filename = g_strconcat (cleaned, ".png", NULL);
-  output_path = g_strdup (filename); //build_path (G_DIR_SEPARATOR_S, "images", filename, NULL);
+  output_path = g_build_path (G_DIR_SEPARATOR_S, "images", filename, NULL);
 
   g_free (cleaned);
   g_free (filename);
@@ -389,7 +389,7 @@ const gchar *css = "@import url(../gegl.css); .categories{ clear:right;text-alig
 const gchar *html_pre = "<html><head><title>%s</title>\n"
                           "<style>%s%s</style></head><body><div id='content'>\n";
 const gchar *html_post =
-            "<div style='margin-top:3em;'><a href='index.html'><img src='../images/GEGL.png' alt='GEGL' style='height: 4.0em;float:left; padding-right:0.5em;'/></a> This page is part of the online GEGL Documentation, GEGL is a data flow based image processing library/framework, made to fuel <a href='https://www.gimp.org/'>GIMPs</a> high-bit depth non-destructive editing future.</div></body></html>\n";
+            "<div style='margin-top:3em;'><a href='../index.html'><img src='../images/GEGL.png' alt='GEGL' style='height: 4.0em;float:left; padding-right:0.5em;'/></a> This page is part of the online GEGL Documentation, GEGL is a data flow based image processing library/framework, made to fuel <a href='https://www.gimp.org/'>GIMPs</a> high-bit depth non-destructive editing future.</div></body></html>\n";
 
 gint
 main (gint argc, gchar **argv)
@@ -516,7 +516,11 @@ main (gint argc, gchar **argv)
                     g_str_equal (keys[i], "name") ||
                     g_str_equal (keys[i], "source") ||
                     g_str_equal (keys[i], "reference-composition") ||
+                    g_str_equal (keys[i], "reference-chain") ||
                     g_str_equal (keys[i], "reference-hash") ||
+                    g_str_equal (keys[i], "reference-hashB") ||
+                    g_str_equal (keys[i], "reference-hashC") ||
+                    g_str_equal (keys[i], "operation-class") ||
                     g_str_equal (keys[i], "title") ||
                     g_str_equal (keys[i], "description"))
                   continue;
@@ -610,11 +614,11 @@ all:
 
       {
         char *image = operation_to_image_path (name);
-        //if (!g_file_test (image, G_FILE_TEST_EXISTS))
-        //{
-        //   g_free (image);
-        //   image = g_strdup ("gegl-ditto.png");
-       // }
+        if (!g_file_test (image, G_FILE_TEST_EXISTS))
+        {
+          g_free (image);
+          image = g_strdup ("gegl-ditto.png");
+        }
         g_string_append_printf (s, "<a href='%s.html' title='", name_dup);
         if (description)
           xml_escape_string (s, description);
@@ -686,11 +690,11 @@ all:
 
       {
         char *image = operation_to_image_path (name);
-        //if (!g_file_test (image, G_FILE_TEST_EXISTS))
-       // {
-       //    g_free (image);
-       //    image = g_strdup ("gegl-ditto.png");
-       // }
+        if (!g_file_test (image, G_FILE_TEST_EXISTS))
+        {
+          g_free (image);
+          image = g_strdup ("gegl-ditto.png");
+        }
         g_string_append_printf (s, "<a href='%s.html' title='", name_dup);
         if (description)
           xml_escape_string (s, description);
@@ -705,7 +709,7 @@ all:
         g_string_append_printf (s, "</div></body></html>");
 
       {
-        gchar *html_name = "op-index.html";
+        gchar *html_name = "index.html";
         g_print ("%s\n", html_name);
         g_file_set_contents (html_name, s->str, -1, NULL);
       }

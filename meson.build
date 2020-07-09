@@ -30,12 +30,13 @@ cc        = meson.get_compiler('c')
 cpp       = meson.get_compiler('cpp')
 buildtype = get_option('buildtype')
 
-gegl_prefix = get_option('prefix')
-gegl_libdir = join_paths(gegl_prefix, get_option('libdir'))
-
+gegl_prefix     = get_option('prefix')
+gegl_gtk_docdir = gnome.gtkdoc_html_dir('gegl')
+gegl_libdir     = get_option('libdir')
 
 project_build_root = meson.current_build_dir()
 project_source_root = meson.current_source_dir()
+
 
 ################################################################################
 # Project infos
@@ -80,10 +81,7 @@ if os_osx and cc.get_id() != 'clang'
   error('You should use Clang on OSx.')
 endif
 
-
 host_cpu_family = host_machine.cpu_family()
-message('Host machine cpu family: ' + host_cpu_family)
-
 if   host_cpu_family == 'x86'
   have_x86 = true
   config.set10('ARCH_X86',    true)
@@ -99,6 +97,13 @@ elif host_cpu_family == 'ppc64'
   config.set10('ARCH_PPC',    true)
   config.set10('ARCH_PPC64',  true)
 endif
+
+# Only try to run compiled programs if native compile or cross-compile
+# and have exe wrapper. If we don't need a wrapper (e.g. 32 bit build in
+# 64-bit environment) then set proprty has_exe_wrapper=true in cross
+# file
+can_run_host_binaries = meson.has_exe_wrapper()
+
 
 ################################################################################
 # Compiler arguments
@@ -141,13 +146,16 @@ add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
 ################################################################################
 # Build Utilities
 
-bash         = find_program('bash')
+env          = find_program('env')
 
 asciidoc     = find_program('asciidoc',      required: false, native: true)
 dot          = find_program('dot',           required: false, native: true)
-perl         = find_program('perl5', 'perl', required: false, native: true)
+enscript     = find_program('enscript',      required: false, native: true)
+gtkdoc_scan  = find_program('gtkdoc-scan',   required: false, native: true)
 rsvg_convert = find_program('rsvg-convert',  required: false, native: true)
 ruby         = find_program('ruby',          required: false, native: true)
+w3m          = find_program('w3m',           required: false, native: true)
+
 
 ################################################################################
 # Required Dependencies
@@ -331,6 +339,20 @@ else
 endif
 
 ################################################################################
+# Build flags
+
+# Docs
+build_docs = true
+if get_option('docs') == 'auto' and meson.is_cross_build()
+  build_docs = false
+  message('configure with -Ddocs=true to cross-build docs')
+elif get_option('docs') == 'false'
+  build_docs = false
+endif
+build_reference = get_option('gtk-doc')
+
+
+#########################################################################
 # Subdirs
 
 configure_file(
@@ -354,11 +376,44 @@ subdir('examples')
 subdir('tests')
 subdir('perf')
 subdir('po')
-if get_option('docs')
-  subdir('docs')
+subdir('docs')
+
+
+if w3m.found() 
+  # Create NEWS file from html file
+  if is_variable('news_html')
+    custom_target('NEWS',
+      input: news_html,
+      output: 'NEWS',
+      command: [
+        w3m,
+        '-cols', '72',
+        '-dump',
+        '@INPUT@',
+      ],
+      capture: true,
+      build_by_default: true
+    )
+  endif
+
+  if is_variable('index_html')
+    # Create README file from html file
+    custom_target('README',
+      input: index_html,
+      output: 'README',
+      command: [
+        w3m,
+        '-cols', '72',
+        '-dump',
+        '@INPUT@',
+      ],
+      capture: true,
+      build_by_default: true
+    )
+  endif
 endif
 
-
+# pkg-config file
 pkgconfig.generate(filebase: 'gegl-' + api_version,
   name: 'GEGL',
   description: 'Generic Graphics Library',
@@ -385,13 +440,18 @@ pkgconfig.generate(filebase: 'gegl-' + api_version,
 
 summary(
   {
-    'prefix': gegl_prefix,
-    'libdir': get_option('libdir'),
+    'prefix'        : gegl_prefix,
+    'libdir'        : gegl_libdir,
   }, section: 'Directories'
 )
 summary(
   {
-    'GEGL docs'       : get_option('docs'),
+    'Reference'       : build_reference,
+    'Docs'            : build_docs,
+  }, section: 'GEGL docs'
+)
+summary(
+  {
     'Build workshop'  : get_option('workshop'),
     'Introspection'   : g_ir.found(),
     'Vala support'    : vapigen.found(),
@@ -401,9 +461,11 @@ summary(
   {
     'asciidoc'        : asciidoc.found(),
     'dot'             : dot.found(),
+    'enscript'        : enscript.found(),
     'pygobject'       : pygobject3.found(),
     'rsvg-convert'    : rsvg_convert.found(),
     'Ruby'            : ruby.found(),
+    'w3m'             : w3m.found(),
   }, section: 'Optional build utilities'
 )
 summary(
