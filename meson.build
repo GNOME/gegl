@@ -19,6 +19,8 @@ project('gegl',
 # if backwards compatibility has been broken,
 #    set binary_age _and_ interface_age to 0.
 
+config    = configuration_data()
+
 pkgconfig = import('pkgconfig')
 i18n      = import('i18n')
 gnome     = import('gnome')
@@ -27,7 +29,9 @@ python    = import('python').find_installation()
 cc        = meson.get_compiler('c')
 cpp       = meson.get_compiler('cpp')
 buildtype = get_option('buildtype')
-config    = configuration_data()
+
+gegl_prefix = get_option('prefix')
+gegl_libdir = join_paths(gegl_prefix, get_option('libdir'))
 
 ################################################################################
 # Project infos
@@ -133,7 +137,7 @@ add_project_arguments(cc.get_supported_arguments(cflags_c), language: 'c')
 add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
 
 ################################################################################
-# Utilities
+# Build Utilities
 
 bash         = find_program('bash')
 
@@ -374,43 +378,60 @@ pkgconfig.generate(filebase: 'gegl-' + api_version,
 )
 
 
+################################################################################
+# Build summary
 
-message('\n'.join(['',
-'Building GEGL with prefix=@0@'.format(get_option('prefix')),
-'',
-'Optional features:',
-'  GEGL docs:       @0@'.format(get_option('docs')),
-'  Build workshop:  @0@'.format(get_option('workshop')),
-'  Vala support:    @0@'.format(vapigen.found()),
-'',
-'Optional dependencies:',
-'  asciidoc:        @0@'.format(asciidoc.found()),
-'  dot:             @0@'.format(dot.found()),
-'  enscript:        @0@'.format(enscript.found()),
-'  mrg:             @0@'.format(mrg.found()),
-'  Ruby:            @0@'.format(ruby.found()),
-'  Luajit:          @0@'.format(lua.found()),
-'  Cairo:           @0@'.format(cairo.found()),
-'  Pango:           @0@'.format(pango.found()),
-'  pangocairo:      @0@'.format(pangocairo.found()),
-'  poppler:         @0@'.format(poppler.found()),
-'  GDKPixbuf:       @0@'.format(gdk_pixbuf.found()),
-'  JPEG:            @0@'.format(libjpeg.found()),
-'  PNG:             @0@'.format(libpng.found()),
-'  OpenEXR:         @0@'.format(openexr.found()),
-'  rsvg:            @0@'.format(librsvg.found()),
-'  SDL:             @0@'.format(sdl1.found()),
-'  libraw:          @0@'.format(libraw.found()),
-'  Jasper:          @0@'.format(jasper.found()),
-'  av libs:         @0@'.format(avlibs_found),
-'  V4L:             @0@'.format(libv4l1.found()),
-'  V4L2:            @0@'.format(libv4l2.found()),
-'  spiro:           @0@'.format(libspiro.found()),
-'  EXIV:            @0@'.format(exiv2.found()),
-'  gexiv2:          @0@'.format(gexiv2.found()),
-'  umfpack:         @0@'.format(libumfpack.found()),
-'  TIFF             @0@'.format(libtiff.found()),
-'  webp:            @0@'.format(libwebp.found()),
-'  maxflow:         @0@'.format(maxflow.found()),
-'  poly2tri-c:      @0@ (@1@)'.format(poly2tri_c.found(),poly2tri_c.type_name()),
-'']))
+summary(
+  {
+    'prefix': gegl_prefix,
+    'libdir': get_option('libdir'),
+  }, section: 'Directories'
+)
+summary(
+  {
+    'GEGL docs'       : get_option('docs'),
+    'Build workshop'  : get_option('workshop'),
+    'Introspection'   : g_ir.found(),
+    'Vala support'    : vapigen.found(),
+  }, section: 'Optional features'
+)
+summary(
+  {
+    'asciidoc'        : asciidoc.found(),
+    'dot'             : dot.found(),
+    'pygobject'       : pygobject3.found(),
+    'rsvg-convert'    : rsvg_convert.found(),
+    'Ruby'            : ruby.found(),
+  }, section: 'Optional build utilities'
+) 
+summary(
+  {
+    'avlibs'          : avlibs_found,
+    'Cairo'           : cairo.found(),
+    'EXIV'            : exiv2.found(),
+    'GDKPixbuf'       : gdk_pixbuf.found(),
+    'gexiv2'          : gexiv2.found(),
+    'Jasper'          : jasper.found(),
+    'JPEG'            : libjpeg.found(),
+    'lcms'            : lcms.found(),
+    'libnsgif'        : libnsgif.found(),
+    'libraw'          : libraw.found(),
+    'Luajit'          : lua.found(),
+    'mrg'             : mrg.found(),
+    'Pango'           : pango.found(),
+    'pangocairo'      : pangocairo.found(),
+    'PNG'             : libpng.found(),
+    'poly2tri-c'      : poly2tri_c.found(),
+    'poppler'         : poppler.found(),
+    'OpenEXR'         : openexr.found(),
+    'rsvg'            : librsvg.found(),
+    'SDL1'            : sdl1.found(),
+    'SDL2'            : sdl2.found(),
+    'spiro'           : libspiro.found(),
+    'TIFF'            : libtiff.found(),
+    'umfpack'         : libumfpack.found(),
+    'V4L'             : libv4l1.found(),
+    'V4L2'            : libv4l2.found(),
+    'webp'            : libwebp.found(),
+  }, section: 'Optional dependencies'
+)
