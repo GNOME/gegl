@@ -103,16 +103,14 @@ cflags_common = []
 cflags_c      = []
 cflags_cpp    = []
 
-cflags_common += [
-  '-DHAVE_CONFIG_H',
-]
+cflags_common += '-DHAVE_CONFIG_H'
 
 if buildtype == 'debugoptimized' or buildtype == 'release'
-  cflags_common += ['-Ofast']
+  cflags_common += '-Ofast'
 endif
 
 if buildtype == 'debugoptimized' or buildtype == 'debug'
-  cflags_common += ['-DGEGL_ENABLE_DEBUG']
+  cflags_common += '-DGEGL_ENABLE_DEBUG'
 endif
 
 cflags_common += [
@@ -127,7 +125,7 @@ cflags_c = [
 ]
 
 if os_win32
-  cflags_common += [ '-D_FILE_OFFSET_BITS=64' ]
+  cflags_common += '-D_FILE_OFFSET_BITS=64'
 endif
 
 cflags_c   = cflags_common + cflags_c
@@ -175,18 +173,18 @@ json_glib = dependency('json-glib-1.0', version: '>=1.2.6')
 # Required libraries eventually provided in subprojects/ subdir
 
 poly2tri_c= dependency('poly2tri-c',  version: '>=0.0.0',
-  fallback: [ 'poly2tri-c', 'poly2tri_c' ],
+  fallback: ['poly2tri-c', 'poly2tri_c'],
   required: false,
 )
 
 libnsgif = dependency('libnsgif',
-  fallback: [ 'libnsgif', 'libnsgif' ],
+  fallback: ['libnsgif', 'libnsgif'],
 )
 
 ################################################################################
 # Optionnal Dependencies
 
-# gobject introspection
+# GEGL library
 if get_option('introspection') != 'false'
   g_ir = dependency('gobject-introspection-1.0', version: '>=1.32.0',
     required: get_option('introspection') == 'true' ? true : false,
@@ -194,8 +192,37 @@ if get_option('introspection') != 'false'
 else
   g_ir = disabler()
 endif
+if g_ir.found()
+  vapigen = dependency('vapigen',     version:'>=0.20.0',
+    required: get_option('vapigen')
+  )
+else
+  vapigen = disabler()
+endif
+
+# GEGL binary
+gexiv2    = dependency('gexiv2',      version: '>=0.0.0',
+  required: get_option('gexiv2')
+)
+config.set('HAVE_GEXIV2', gexiv2.found())
+libpng    = dependency('libpng',      version: '>=1.6.0',
+  required: get_option('libpng')
+)
+lua       = dependency('luajit',      version: '>=2.0.4',
+  required: get_option('lua')
+)
+config.set('HAVE_LUA', lua.found())
+mrg       = dependency('mrg',         version: '>=0.0.0',
+  required: get_option('mrg')
+)
+config.set('HAVE_MRG', mrg.found())
+
+# Operations
 gdk_pixbuf= dependency('gdk-pixbuf-2.0', version:'>=2.32.0',
   required: get_option('gdk-pixbuf')
+)
+cairo     = dependency('cairo',       version: '>=1.12.2',
+  required: get_option('cairo')
 )
 pango     = dependency('pango',       version: '>=1.38.0',
   required: get_option('pango')
@@ -203,13 +230,6 @@ pango     = dependency('pango',       version: '>=1.38.0',
 pangocairo= dependency('pangocairo',  version: '>=1.38.0',
   required: get_option('pangocairo')
 )
-cairo     = dependency('cairo',       version: '>=1.12.2',
-  required: get_option('cairo')
-)
-gexiv2    = dependency('gexiv2',      version: '>=0.0.0',
-  required: get_option('gexiv2')
-)
-config.set('HAVE_GEXIV2', gexiv2.found())
 
 jasper    = dependency('jasper',      version: '>=1.900.1',
   required: get_option('jasper')
@@ -222,9 +242,6 @@ lensfun   = dependency('lensfun',     version: '>=0.2.5',
 )
 libjpeg   = dependency('libjpeg',     version: '>=1.0.0',
   required: get_option('libjpeg')
-)
-libpng    = dependency('libpng',      version: '>=1.6.0',
-  required: get_option('libpng')
 )
 libraw    = dependency('libraw',      version: '>=0.15.4',
   required: get_option('libraw')
@@ -244,20 +261,17 @@ libv4l1   = dependency('libv4l1',     version: '>=1.0.1',
 libv4l2   = dependency('libv4l2',     version: '>=1.0.1',
   required: get_option('libv4l2')
 )
-lua       = dependency('luajit',      version: '>=2.0.4',
-  required: get_option('lua')
+libwebp   = dependency('libwebp',     version:'>=0.5.0',
+  required: get_option('webp')
 )
-config.set('HAVE_LUA', lua.found())
-mrg       = dependency('mrg',         version: '>=0.1.4',
-  required: get_option('mrg')
-)
-config.set('HAVE_MRG', mrg.found())
-
 maxflow   = dependency('maxflow',     version: '>=3.0.4',
   required: get_option('maxflow')
 )
 openexr   = dependency('OpenEXR',     version: '>=1.6.1',
   required: get_option('openexr')
+)
+poppler = dependency('poppler-glib', version: '>=0.71.0',
+  required: get_option('poppler')
 )
 sdl1      = dependency('sdl',         version: '>=1.2.0',
   required: get_option('sdl1')
@@ -265,26 +279,8 @@ sdl1      = dependency('sdl',         version: '>=1.2.0',
 sdl2      = dependency('sdl2',        version: '>=2.0.5',
   required: get_option('sdl2')
 )
-if g_ir.found()
-  vapigen = dependency('vapigen',     version:'>=0.20.0',
-    required: get_option('vapigen')
-  )
-else
-  vapigen = disabler()
-endif
-libwebp   = dependency('libwebp',     version:'>=0.5.0',
-  required: get_option('webp')
-)
-poppler = dependency('poppler-glib', version: '>=0.71.0',
-  required: get_option('poppler')
-)
-if g_ir.found()
-  pygobject3 = dependency('pygobject-3.0', version: '>=3.2.0',
-    required: get_option('pygobject')
-  )
-else
-  pygobject3 = disabler()
-endif
+
+# AV libs
 libavcodec  = dependency('libavcodec',   version: '>=55.69.100',
   required: get_option('libav')
 )
@@ -303,8 +299,9 @@ avlibs_found = (
   libavutil.found() and
   libswscale.found()
 )
-avlibs = avlibs_found ? [ libavcodec, libavformat, libavutil, libswscale ] : []
+avlibs = avlibs_found ? [libavcodec, libavformat, libavutil, libswscale] : []
 
+# libumfpack
 libumfpack = cc.find_library('umfpack', required: get_option('umfpack'))
 if libumfpack.found()
   have_umfpack = cc.has_header('umfpack.h')
@@ -322,6 +319,15 @@ if libumfpack.found()
   endif
   config.set('HAVE_UMFPACK_H', have_umfpack)
   config.set('HAVE_SUITESPARSE_UMFPACK_H', have_ss_umfpack)
+endif
+
+# Tests
+if g_ir.found()
+  pygobject3 = dependency('pygobject-3.0', version: '>=3.2.0',
+    required: get_option('pygobject')
+  )
+else
+  pygobject3 = disabler()
 endif
 
 ################################################################################
@@ -363,7 +369,6 @@ pkgconfig.generate(filebase: 'gegl-' + api_version,
     gmodule,
     gio,
     json_glib,
-
     babl,
   ],
   libraries: [
@@ -400,7 +405,7 @@ summary(
     'rsvg-convert'    : rsvg_convert.found(),
     'Ruby'            : ruby.found(),
   }, section: 'Optional build utilities'
-) 
+)
 summary(
   {
     'avlibs'          : avlibs_found,
@@ -413,6 +418,7 @@ summary(
     'libnsgif'        : libnsgif.found(),
     'libraw'          : libraw.found(),
     'Luajit'          : lua.found(),
+    'maxflow'         : maxflow.found(),
     'mrg'             : mrg.found(),
     'Pango'           : pango.found(),
     'pangocairo'      : pangocairo.found(),

@@ -91,7 +91,7 @@ gegl_ldflags = os_osx ? ['-framework', 'OpenCL'] : []
 
 gegl_lib = library(api_name,
   gegl_sources,
-  include_directories: [ rootInclude, geglInclude, ],
+  include_directories: [rootInclude, geglInclude],
   dependencies: [
     babl,
     glib,
@@ -99,8 +99,8 @@ gegl_lib = library(api_name,
     math,
     gmodule,
   ],
-  c_args: [ gegl_cflags, ],
-  link_args: [ gegl_ldflags, ],
+  c_args: gegl_cflags,
+  link_args: gegl_ldflags,
   install: true,
   version: so_version,
 )

@@ -22,7 +22,6 @@ option('vapigen',
 )
 
 # optional dependencies
-option('exiv2',         type: 'feature', value: 'auto')
 option('gdk-pixbuf',    type: 'feature', value: 'auto')
 option('gexiv2',        type: 'feature', value: 'auto')
 option('graphviz',      type: 'feature', value: 'auto')
@@ -51,3 +50,6 @@ option('sdl1',          type: 'feature', value: 'disabled')
 option('sdl2',          type: 'feature', value: 'auto')
 option('umfpack',       type: 'feature', value: 'auto')
 option('webp',          type: 'feature', value: 'auto')
+
+# obsolete - no effect
+option('exiv2',         type: 'feature', value: 'disabled')
