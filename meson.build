@@ -183,6 +183,14 @@ libnsgif = dependency('libnsgif',
 ################################################################################
 # Optionnal Dependencies
 
+# gobject introspection
+if get_option('introspection') != 'false'
+  g_ir = dependency('gobject-introspection-1.0', version: '>=1.32.0',
+    required: get_option('introspection') == 'true' ? true : false,
+  )
+else
+  g_ir = disabler()
+endif
 gdk_pixbuf= dependency('gdk-pixbuf-2.0', version:'>=2.32.0',
   required: get_option('gdk-pixbuf')
 )
@@ -257,26 +265,26 @@ sdl1      = dependency('sdl',         version: '>=1.2.0',
 sdl2      = dependency('sdl2',        version: '>=2.0.5',
   required: get_option('sdl2')
 )
-
-vapigen   = dependency('vapigen',     version:'>=0.20.0',
-  required: get_option('vapigen')
-)
+if g_ir.found()
+  vapigen = dependency('vapigen',     version:'>=0.20.0',
+    required: get_option('vapigen')
+  )
+else
+  vapigen = disabler()
+endif
 libwebp   = dependency('libwebp',     version:'>=0.5.0',
   required: get_option('webp')
 )
-
 poppler = dependency('poppler-glib', version: '>=0.71.0',
   required: get_option('poppler')
 )
-
-pygobject3  = dependency('pygobject-3.0', version: '>=3.2.0',
-  required: get_option('pygobject')
-)
-gobj_introsp = dependency('gobject-introspection-1.0', version: '>=1.32.0',
-  required: get_option('pygobject')
-)
-pygobject_found = pygobject3.found() and gobj_introsp.found()
-
+if g_ir.found()
+  pygobject3 = dependency('pygobject-3.0', version: '>=3.2.0',
+    required: get_option('pygobject')
+  )
+else
+  pygobject3 = disabler()
+endif
 libavcodec  = dependency('libavcodec',   version: '>=55.69.100',
   required: get_option('libav')
 )

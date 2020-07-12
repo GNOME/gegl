@@ -106,13 +106,11 @@ gegl_lib = library(api_name,
 )
 
 
-introspection_sources = gegl_introspectable_headers + files(
-  'gegl-introspection-support.h',
-  'opencl' / 'gegl-cl-introspection-support.h',
-)
-
-
-if get_option('introspection')
+if g_ir.found()
+  introspection_sources = gegl_introspectable_headers + files(
+    'gegl-introspection-support.h',
+    'opencl' / 'gegl-cl-introspection-support.h',
+  )
 
   gegl_gir = gnome.generate_gir(gegl_lib,
     sources: introspection_sources,

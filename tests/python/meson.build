@@ -14,7 +14,7 @@ gi_typelib_path = run_command(python, '-c',
   '''import os; print(os.environ['GI_TYPELIB_PATH'])'''
 ).stdout().strip()
 
-if python.found() and pygobject_found
+if python.found() and pygobject3.found()
   foreach testname : testnames
     testfile = 'test-' + testname + '.py'
     test(testname,
