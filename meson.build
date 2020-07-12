@@ -135,14 +135,13 @@ add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
 ################################################################################
 # Utilities
 
-bash        = find_program('bash')
-dot         = os_win32 ? find_program('dot.exe', required: false) : find_program('dot', required: false)
+bash         = find_program('bash')
 
-perl        = find_program('perl5', 'perl', required: false)
-asciidoc    = find_program('asciidoc',      required: false)
-enscript    = find_program('enscript',      required: false)
-rsvg_convert= find_program('rsvg-convert',  required: false)
-ruby        = find_program('ruby',          required: false)
+asciidoc     = find_program('asciidoc',      required: false, native: true)
+dot          = find_program('dot',           required: false, native: true)
+perl         = find_program('perl5', 'perl', required: false, native: true)
+rsvg_convert = find_program('rsvg-convert',  required: false, native: true)
+ruby         = find_program('ruby',          required: false, native: true)
 
 ################################################################################
 # Required Dependencies
