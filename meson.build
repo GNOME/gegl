@@ -206,9 +206,6 @@ pangocairo= dependency('pangocairo',  version: '>=1.38.0',
 cairo     = dependency('cairo',       version: '>=1.12.2',
   required: get_option('cairo')
 )
-exiv2     = dependency('exiv2',       version: '>=0.25',
-  required: get_option('exiv2')
-)
 gexiv2    = dependency('gexiv2',      version: '>=0.0.0',
   required: get_option('gexiv2')
 )
@@ -408,7 +405,6 @@ summary(
   {
     'avlibs'          : avlibs_found,
     'Cairo'           : cairo.found(),
-    'EXIV'            : exiv2.found(),
     'GDKPixbuf'       : gdk_pixbuf.found(),
     'gexiv2'          : gexiv2.found(),
     'Jasper'          : jasper.found(),

@@ -12,11 +12,10 @@ gegl_deps = [
   glib,
   gobject,
   math,
-  #libdl
 ]
 
 if libpng.found()
-  gegl_deps += [ libpng, ]
+  gegl_deps += libpng
 endif
 
 if mrg.found() and gexiv2.found() and lua.found()
@@ -31,21 +30,21 @@ if mrg.found() and gexiv2.found() and lua.found()
   gegl_sources += custom_target('argvs-commands.inc',
     input : gegl_sources,
     output: 'argvs-commands.inc',
-    command: [ argvs_extract, '@INPUT@' ],
+    command: [argvs_extract, '@INPUT@'],
     capture: true,
   )
 
-  gegl_deps += [ mrg, gexiv2, sdl1, lua, gio ]
+  gegl_deps += [mrg, gexiv2, lua, gio]
 endif
 
 if libspiro.found()
   gegl_sources += files('gegl-path-spiro.c')
-  gegl_deps += [ libspiro, ]
+  gegl_deps += libspiro
 endif
 
 gegl_bin = executable('gegl',
   gegl_sources,
-  include_directories: [ rootInclude, geglInclude, ],
+  include_directories: [rootInclude, geglInclude],
   dependencies: gegl_deps,
   export_dynamic: true,
   link_with: gegl_lib,
