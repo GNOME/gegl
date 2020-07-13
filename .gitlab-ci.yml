@@ -78,6 +78,7 @@ babl-min:
   before_script:
     - pacman -Syu --ignore glibc --noconfirm --needed
         base-devel ccache meson
+        asciidoc
         ffmpeg
         gobject-introspection
         gobject-introspection-runtime
@@ -91,7 +92,9 @@ babl-min:
         libtiff
         luajit
         openexr
+        poppler-glib
         python
+        python-gobject
         sdl2
         suitesparse
         vala
@@ -105,8 +108,10 @@ babl-min:
     CCACHE_MAXSIZE: "128Mi"
   script:
    # Add babl location to XDG_DATA_DIRS. .gir files are located there.
+   # Add babl location to GI_TYPELIB_PATH. Required for python tests.
    # Add /usr/local/share:/usr/share for vapigen.
    - export XDG_DATA_DIRS="$XDG_DATA_DIRS:$BABL_PREFIX/share:/usr/local/share/:/usr/share/"
+   - export GI_TYPELIB_PATH="$BABL_PREFIX/lib/girepository-1.0:$GI_TYPELIB_PATH"
    - export LD_LIBRARY_PATH="$BABL_PREFIX/lib:$LD_LIBRARY_PATH"
    - meson -Dbuildtype=$BUILD_TYPE -Dpkg_config_path=$BABL_PREFIX/lib/pkgconfig $CONFIG_OPTIONS _build
    - ninja -C _build
