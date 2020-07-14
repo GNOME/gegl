@@ -49,7 +49,7 @@ asciidoc_files = files(
 asciidoc_files += [
   configure_file(
     input : 'hello-world.txt.in',
-    output: 'hello-world.txt',
+    output: '@PLAINNAME@',
     configuration: asciidoc_config,
   ),
 ]
@@ -80,19 +80,8 @@ else
 endif
 
 # website html files
-website_asciidoc_files = [
-  configure_file(
-    input : 'index.txt.in',
-    output: 'index.txt',
-    configuration: asciidoc_config,
-  ),
-  configure_file(
-    input : 'copyright.txt.in',
-    output: 'copyright.txt',
-    configuration: asciidoc_config,
-  ),
-]
-website_asciidoc_files += files(
+website_asciidoc_files = files(
+  'index.txt',
   'build.txt',
   'commandline.txt',
   'development.txt',
@@ -101,6 +90,13 @@ website_asciidoc_files += files(
   'glossary.txt',
   'operation-api.txt',
 )
+website_asciidoc_files += [
+  configure_file(
+    input : 'copyright.txt.in',
+    output: '@BASENAME@',
+    configuration: asciidoc_config,
+  )
+]
 
 # Inheritance diagram
 if ruby.found()
