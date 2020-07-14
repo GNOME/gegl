@@ -80,6 +80,18 @@ else
 endif
 
 # website html files
+if can_run_host_binaries
+  gegl_usage = custom_target(
+    'gegl_usage_txt',
+    output: 'gegl-usage.txt',
+    command: [
+      find_program('gegl-usage.py'),
+      '--output', '@OUTPUT@',
+      '--gegl-exe', gegl_bin, 
+    ]
+  )
+endif
+
 website_asciidoc_files = files(
   'index.txt',
   'build.txt',

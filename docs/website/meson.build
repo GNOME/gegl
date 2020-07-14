@@ -36,6 +36,7 @@ if asciidoc.found()
         asciidoc,
         '--unsafe',
         '-o', '@OUTPUT@',
+        '-a', 'gegl_usage=@0@'.format(gegl_usage.full_path()),
         '-a', 'stylesheet=@0@'.format(
             project_source_root / 'docs' / 'gegl.css'
           ),
@@ -43,6 +44,7 @@ if asciidoc.found()
         '@INPUT@',
       ],
       build_by_default : true,
+      depends: gegl_usage,
     )
   endforeach
   index_html = _tgt[0]
