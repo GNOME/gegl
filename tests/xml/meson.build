@@ -14,6 +14,7 @@ foreach _test : xml_tests
       link_with: gegl_lib,
     ),
     env: gegl_test_env,
+    protocol: 'tap',
     suite: 'xml',
     is_parallel: gegl_test_parallel,
   )
