@@ -128,7 +128,7 @@ gnome.gtkdoc('gegl',
 
 
  doc_operations_examples_dir = join_paths(
-   meson.current_build_dir(), 'ophtml',
+   meson.current_build_dir(), 'operations',
  )
  exclusion_pattern = '|'.join([
    'alpha-inpaint',
@@ -159,7 +159,7 @@ gnome.gtkdoc('gegl',
      ' '.join([
      'mkdir', '-p', doc_operations_examples_dir,
      '&&',
-     'cd', join_paths(meson.current_build_dir(), 'ophtml'),
+     'cd', join_paths(meson.current_build_dir(), 'operations'),
      '&&',
      'GEGL_PATH=' + join_paths(meson.build_root(), 'operations'),
      operations_html.full_path(),

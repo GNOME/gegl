@@ -239,7 +239,7 @@ lua       = dependency('luajit',      version: '>=2.0.4',
   required: get_option('lua')
 )
 config.set('HAVE_LUA', lua.found())
-mrg       = dependency('mrg',         version: '>=0.0.0',
+mrg       = dependency('mrg',         version: '>=0.1.4',
   required: get_option('mrg')
 )
 config.set('HAVE_MRG', mrg.found())

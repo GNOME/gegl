@@ -1,7 +1,7 @@
 #ifndef MRG_GEGL_H
 #define MRG_GEGL_H
 
-#include <mrg/mrg.h>
+#include <mrg.h>
 #include <gegl/gegl.h>
 
 void mrg_gegl_buffer_blit (Mrg *mrg,
