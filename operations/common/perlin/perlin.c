@@ -7,7 +7,7 @@
 #include "perlin.h"
 
 /* random is not portable to all platforms */
-#define random g_random_int
+#define random() g_rand_int (gr)
 
 static int p[B + B + 2];
 static double g3[B + B + 2][3];
@@ -150,8 +150,7 @@ perlin_init (void)
   if (initialized)
     return;
   /* this is racy - but we call it once when creating our perlin noise op */
-
-  g_random_set_seed (1234567890);
+  GRand *gr = g_rand_new_with_seed (1234567890);
 
   for (i = 0; i < B; i++)
     {
@@ -184,6 +183,7 @@ perlin_init (void)
         g3[B + i][j] = g3[i][j];
     }
   initialized = 1;
+  g_rand_free (gr);
 }
 
 /* --- My harmonic summing functions - PDB --------------------------*/
