@@ -23,7 +23,7 @@
 
 #include "gegl-matrix.h"
 
-#define EPSILON 1e-6
+#define EPSILON 1e-10
 
 #if 0
 static void 
