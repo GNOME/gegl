@@ -1,5 +1,25 @@
-GEGL-0.4.24 2020-06-07
+GEGL-0.4.26 2020-08-02
+----------------------
 
+Core:
+~~~~~
+
+Allow unsetting of property keys on paramspecs.
+
+Operations:
+~~~~~~~~~~~
+
+perlin-noise: use a local random generator, avoiding resetting the global one.
+transform: decrease epsilon for affine-detection, and round some affine matrices to be exact.
+
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Alan Mortensen, Jan Vesely, Øyvind Kolås, Jordi Mas, Michael Natterer,
+Asier Sarasua Garmendia, Ell, Tim Sabsh and Tatsuki Makino.
+
+GEGL-0.4.24 2020-06-07
+----------------------
 
 Build:
 ~~~~~~
