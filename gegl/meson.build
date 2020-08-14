@@ -122,6 +122,7 @@ if get_option('introspection')
     symbol_prefix: 'gegl',
     header: 'gegl.h',
     includes: [ 'GLib-2.0', 'GObject-2.0', 'Babl-0.1' ],
+    export_packages: 'gegl-' + api_version,
     install: true,
   )
 
