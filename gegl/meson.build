@@ -137,6 +137,11 @@ if get_option('introspection')
       metadata_dirs: '.',
       sources: gegl_gir[0],
       install: true,
+      packages: [
+        'glib-2.0',
+        'gobject-2.0',
+        'babl-0.1'
+      ],
     )
   endif
 endif
