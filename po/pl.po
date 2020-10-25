@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-06-02 20:21+0000\n"
-"PO-Revision-Date: 2020-06-06 14:20+0200\n"
+"POT-Creation-Date: 2020-06-06 12:21+0000\n"
+"PO-Revision-Date: 2020-10-25 10:05+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -655,7 +655,7 @@ msgstr "Miękkość krawędzi poświaty"
 #: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:87
+#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
 #: operations/common-cxx/lens-blur.cc:24
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
@@ -1022,7 +1022,7 @@ msgid ""
 "Stretch color chroma to cover maximum possible range, keeping hue and "
 "lightness untouched."
 msgstr ""
-"Rozciągnij nasycenie kolorów, aby pokryć możliwie maksymalny zakres, nie "
+"Rozciągnij chrominancję kolorów, aby pokryć możliwie maksymalny zakres, nie "
 "zmieniając barwy i jasności."
 
 #: operations/common/color-overlay.c:27
@@ -2203,11 +2203,11 @@ msgstr "Dostosowanie barwy"
 
 #: operations/common/hue-chroma.c:29 operations/common/noise-cie-lch.c:32
 msgid "Chroma"
-msgstr "Nasycenie"
+msgstr "Chrominancja"
 
 #: operations/common/hue-chroma.c:30
 msgid "Chroma adjustment"
-msgstr "Dostosowanie nasycenia"
+msgstr "Dostosowanie chrominancji"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
 #: operations/workshop/selective-hue-saturation.c:42
@@ -2221,11 +2221,11 @@ msgstr "Dostosowanie jasności"
 
 #: operations/common/hue-chroma.c:120
 msgid "Hue-Chroma"
-msgstr "Barwa i nasycenie"
+msgstr "Barwa i chrominancja"
 
 #: operations/common/hue-chroma.c:124
 msgid "Adjust LCH Hue, Chroma, and Lightness"
-msgstr "Dostosuj barwę, nasycenie i jasność LCH"
+msgstr "Dostosuj barwę, chrominancję i jasność LCH"
 
 #: operations/common/icc-save.c:26
 msgid "Target path and filename"
@@ -2637,7 +2637,7 @@ msgid "Shadow length"
 msgstr "Długość cienia"
 
 #: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
-#: operations/common-cxx/focus-blur.c:97
+#: operations/common-cxx/focus-blur.c:95
 msgid "Midpoint"
 msgstr "Punkt środkowy"
 
@@ -2877,7 +2877,7 @@ msgid "position of symmetry center in output"
 msgstr "położenie środka symetrii w wyjściu"
 
 #: operations/common/mirrors.c:58 operations/common/vignette.c:65
-#: operations/common-cxx/focus-blur.c:77 operations/common-gpl3+/displace.c:81
+#: operations/common-cxx/focus-blur.c:75 operations/common-gpl3+/displace.c:81
 #: operations/common-gpl3+/motion-blur-circular.c:40
 #: operations/common-gpl3+/motion-blur-zoom.c:39
 #: operations/common-gpl3+/supernova.c:32 operations/common-gpl3+/waves.c:25
@@ -2889,7 +2889,7 @@ msgid "X axis ratio for the center of mirroring"
 msgstr "Współrzędna osi X środka lustra"
 
 #: operations/common/mirrors.c:63 operations/common/vignette.c:70
-#: operations/common-cxx/focus-blur.c:82 operations/common-gpl3+/displace.c:88
+#: operations/common-cxx/focus-blur.c:80 operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:45
 #: operations/common-gpl3+/motion-blur-zoom.c:45
 #: operations/common-gpl3+/supernova.c:38 operations/common-gpl3+/waves.c:30
@@ -3250,7 +3250,7 @@ msgid "The scale of the noise function"
 msgstr "Skala funkcji szumu"
 
 #: operations/common/noise-cell.c:40 operations/common/pixelize.c:31
-#: operations/common-cxx/focus-blur.c:72
+#: operations/common-cxx/focus-blur.c:70
 msgid "Shape"
 msgstr "Kształt"
 
@@ -3304,7 +3304,7 @@ msgstr "Dodaj szum Lch CIE"
 
 #: operations/common/noise-cie-lch.c:198
 msgid "Randomize lightness, chroma and hue independently"
-msgstr "Niezależne losowanie jasności, nasycenia i barwy"
+msgstr "Niezależne losowanie jasności, chrominancji i barwy"
 
 #: operations/common/noise-hsv.c:37 operations/common/noise-rgb.c:42
 #: operations/generated/add.c:29 operations/generated/divide.c:29
@@ -4285,7 +4285,7 @@ msgstr ""
 "= inf∶1, zastosowywane po uwzględnieniu proporcji, aby bezpośrednio użyć "
 "współczynnika ściśnięcia jako proporcji, należy je ustawić na 0,0."
 
-#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:104
+#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:102
 #: operations/common-gpl3+/bayer-matrix.c:50
 #: operations/common-gpl3+/linear-sinusoid.c:95
 #: operations/common-gpl3+/spiral.c:64
@@ -4456,7 +4456,7 @@ msgstr "Przekształcenie odległości"
 msgid "Calculate a distance transform"
 msgstr "Oblicz przekształcenie odległości"
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:506
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:504
 msgid "Lens Blur"
 msgstr "Rozmycie soczewki"
 
@@ -4480,94 +4480,94 @@ msgstr "Względna siła podświetlenia"
 msgid "Highlight threshold (low)"
 msgstr "Próg podświetlenia (niski)"
 
-#: operations/common-cxx/focus-blur.c:63 operations/common-cxx/lens-blur.cc:40
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold"
 msgstr "Próg podświetlenia"
 
-#: operations/common-cxx/focus-blur.c:65 operations/common-cxx/lens-blur.cc:42
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
 msgid "Highlight threshold (high)"
 msgstr "Próg podświetlenia (wysoki)"
 
-#: operations/common-cxx/focus-blur.c:88
+#: operations/common-cxx/focus-blur.c:86
 msgid "Focus-region outer radius"
 msgstr "Zewnętrzny promień obszaru ostrości"
 
-#: operations/common-cxx/focus-blur.c:93 operations/common-gpl3+/photocopy.c:29
+#: operations/common-cxx/focus-blur.c:91 operations/common-gpl3+/photocopy.c:29
 #: operations/common-gpl3+/softglow.c:33
 msgid "Sharpness"
 msgstr "Ostrość"
 
-#: operations/common-cxx/focus-blur.c:94
+#: operations/common-cxx/focus-blur.c:92
 msgid "Focus-region inner limit"
 msgstr "Wewnętrzne ograniczenie obszaru ostrości"
 
-#: operations/common-cxx/focus-blur.c:98
+#: operations/common-cxx/focus-blur.c:96
 msgid "Focus-transition midpoint"
 msgstr "Punkt środkowy przejścia ostrości"
 
-#: operations/common-cxx/focus-blur.c:101 operations/common-gpl3+/waves.c:46
+#: operations/common-cxx/focus-blur.c:99 operations/common-gpl3+/waves.c:46
 msgid "Aspect ratio"
 msgstr "Proporcje obrazu"
 
-#: operations/common-cxx/focus-blur.c:111
+#: operations/common-cxx/focus-blur.c:109
 #: operations/common-cxx/variable-blur.c:42
 msgid "Blur levels"
 msgstr "Poziomy rozmycia"
 
-#: operations/common-cxx/focus-blur.c:112
+#: operations/common-cxx/focus-blur.c:110
 #: operations/common-cxx/variable-blur.c:43
 msgid "Number of blur levels"
 msgstr "Liczba poziomów rozmycia"
 
-#: operations/common-cxx/focus-blur.c:116
+#: operations/common-cxx/focus-blur.c:114
 #: operations/common-cxx/variable-blur.c:46
 msgid "Blur gamma"
 msgstr "Gamma rozmycia"
 
-#: operations/common-cxx/focus-blur.c:117
+#: operations/common-cxx/focus-blur.c:115
 #: operations/common-cxx/variable-blur.c:47
 msgid "Gamma factor for blur-level spacing"
 msgstr "Współczynnik gammy dla odstępów poziomu rozmycia"
 
-#: operations/common-cxx/focus-blur.c:124
+#: operations/common-cxx/focus-blur.c:122
 #: operations/common-cxx/variable-blur.c:53
 msgid "High quality"
 msgstr "Wysoka jakość"
 
-#: operations/common-cxx/focus-blur.c:125
+#: operations/common-cxx/focus-blur.c:123
 #: operations/common-cxx/variable-blur.c:54
 msgid "Generate more accurate and consistent output (slower)"
 msgstr "Utwórz bardziej dokładne i zwarte wyjście (wolniejsze)"
 
-#: operations/common-cxx/focus-blur.c:322
+#: operations/common-cxx/focus-blur.c:320
 msgid "Focus Blur"
 msgstr "Rozmycie ostrości"
 
-#: operations/common-cxx/focus-blur.c:324
+#: operations/common-cxx/focus-blur.c:322
 msgid "Blur the image around a focal point"
 msgstr "Rozmycie obrazu wokół ogniska"
 
-#: operations/common-cxx/lens-blur.cc:48
+#: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
 msgstr "Kadrowanie do obszarów wejściowych"
 
-#: operations/common-cxx/lens-blur.cc:49
+#: operations/common-cxx/lens-blur.cc:47
 msgid "Clip output to the input extents"
 msgstr "Kadrowanie wyjścia do obszarów wejściowych"
 
-#: operations/common-cxx/lens-blur.cc:51
+#: operations/common-cxx/lens-blur.cc:49
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "Maska liniowa"
 
-#: operations/common-cxx/lens-blur.cc:52
+#: operations/common-cxx/lens-blur.cc:50
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "Użyj liniowych wartości maski"
 
-#: operations/common-cxx/lens-blur.cc:508
+#: operations/common-cxx/lens-blur.cc:506
 msgid "Simulate out-of-focus lens blur"
 msgstr "Symuluje rozmycie soczewki poza ostrością"
 
