@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GEGL master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2020-06-03 23:02+0000\n"
-"PO-Revision-Date: 2020-10-18 13:39+0300\n"
+"PO-Revision-Date: 2020-10-25 22:10+0200\n"
 "Last-Translator: Cristian Secară <cristi AT secarica DOT ro>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -145,7 +145,7 @@ msgstr ""
 
 #: bin/gegl-options.c:347
 msgid "Properties:"
-msgstr "Proprietăți"
+msgstr "Proprietăți:"
 
 #: bin/gegl-options.c:457
 #, c-format
@@ -621,7 +621,7 @@ msgstr ""
 #: operations/common-gpl3+/red-eye-removal.c:31
 #: operations/common-gpl3+/wind.c:60 operations/external/matting-levin.c:33
 msgid "Threshold"
-msgstr ""
+msgstr "Prag"
 
 #: operations/common/bloom.c:27
 msgid "Glow-area brightness threshold"
@@ -650,7 +650,7 @@ msgstr ""
 #: operations/workshop/boxblur.c:24
 #: operations/workshop/external/spyrograph.c:63
 msgid "Radius"
-msgstr ""
+msgstr "Rază"
 
 #: operations/common/bloom.c:36 operations/common-gpl3+/softglow.c:26
 msgid "Glow radius"
@@ -663,7 +663,7 @@ msgstr "Intensitate"
 
 #: operations/common/bloom.c:43
 msgid "Glow strength"
-msgstr ""
+msgstr "Intensitatea strălucirii"
 
 #: operations/common/bloom.c:47
 msgid "Limit exposure"
@@ -1092,154 +1092,158 @@ msgstr ""
 #: operations/common/noise-hsv.c:31
 #: operations/workshop/selective-hue-saturation.c:34
 msgid "Hue"
-msgstr ""
+msgstr "Nuanță"
 
 #: operations/common/color-rotate.c:80
 msgid "Hue value for above gray settings"
-msgstr ""
+msgstr "Valoarea nuanței pentru setările de gri de deasupra"
 
 #: operations/common/color-rotate.c:85
 msgid "Saturation value for above gray settings"
-msgstr ""
+msgstr "Valoarea saturației pentru setările de gri de deasupra"
 
 #: operations/common/color-rotate.c:409
 msgid "Color Rotate"
-msgstr ""
+msgstr "Rotire de culoare"
 
 #: operations/common/color-rotate.c:410
 msgid "Replace a range of colors with another"
-msgstr ""
+msgstr "Înlocuiește o gamă de culori cu alta"
 
 #: operations/common/color-temperature.c:27
 msgid "Original temperature"
-msgstr ""
+msgstr "Temperatură originală"
 
 #: operations/common/color-temperature.c:28
 msgid ""
 "Estimated temperature of the light source in Kelvin the image was taken with."
 msgstr ""
+"Temperatura estimată a sursei de lumină cu care a fost făcută imaginea, în "
+"grade Kelvin."
 
 #: operations/common/color-temperature.c:33
 msgid "Intended temperature"
-msgstr ""
+msgstr "Temperatură dorită"
 
 #: operations/common/color-temperature.c:34
 msgid "Corrected estimation of the temperature of the light source in Kelvin."
-msgstr ""
+msgstr "Estimarea corectată a temperaturii sursei de lumină, în grade Kelvin."
 
 #: operations/common/color-temperature.c:264
 msgid "Color Temperature"
-msgstr ""
+msgstr "Temperatură de culoare"
 
 #: operations/common/color-temperature.c:267
 msgid ""
 "Change the color temperature of the image, from an assumed original color "
 "temperature to an intended one."
 msgstr ""
+"Schimbă temperatura de culoare a imaginii, de la o presupusă temperatură de "
+"culoare originală la o temperatură dorită."
 
 #: operations/common/color-warp.c:36
 msgid "From 0"
-msgstr ""
+msgstr "De la 0"
 
 #: operations/common/color-warp.c:37
 msgid "To 0"
-msgstr ""
+msgstr "La 0"
 
 #: operations/common/color-warp.c:38
 msgid "weight 0"
-msgstr ""
+msgstr "pondere 0"
 
 #: operations/common/color-warp.c:40
 msgid "From 1"
-msgstr ""
+msgstr "De la 1"
 
 #: operations/common/color-warp.c:41
 msgid "To 1"
-msgstr ""
+msgstr "La 1"
 
 #: operations/common/color-warp.c:42
 msgid "weight 1"
-msgstr ""
+msgstr "pondere 1"
 
 #: operations/common/color-warp.c:44
 msgid "From 2"
-msgstr ""
+msgstr "De la 2"
 
 #: operations/common/color-warp.c:45
 msgid "To 2"
-msgstr ""
+msgstr "La 2"
 
 #: operations/common/color-warp.c:46
 msgid "weight 2"
-msgstr ""
+msgstr "pondere 2"
 
 #: operations/common/color-warp.c:48
 msgid "From 3"
-msgstr ""
+msgstr "De la 3"
 
 #: operations/common/color-warp.c:49
 msgid "To 3"
-msgstr ""
+msgstr "La 3"
 
 #: operations/common/color-warp.c:50
 msgid "weight 3"
-msgstr ""
+msgstr "pondere 3"
 
 #: operations/common/color-warp.c:52
 msgid "From 4"
-msgstr ""
+msgstr "De la 4"
 
 #: operations/common/color-warp.c:53
 msgid "To 4"
-msgstr ""
+msgstr "La 4"
 
 #: operations/common/color-warp.c:54
 msgid "weight 4"
-msgstr ""
+msgstr "pondere 4"
 
 #: operations/common/color-warp.c:56
 msgid "From 5"
-msgstr ""
+msgstr "De la 5"
 
 #: operations/common/color-warp.c:57
 msgid "To 5"
-msgstr ""
+msgstr "La 5"
 
 #: operations/common/color-warp.c:58
 msgid "weight 5"
-msgstr ""
+msgstr "pondere 5"
 
 #: operations/common/color-warp.c:60
 msgid "From 6"
-msgstr ""
+msgstr "De la 6"
 
 #: operations/common/color-warp.c:61
 msgid "To 6"
-msgstr ""
+msgstr "La 6"
 
 #: operations/common/color-warp.c:62
 msgid "weight 6"
-msgstr ""
+msgstr "pondere 6"
 
 #: operations/common/color-warp.c:64
 msgid "From 7"
-msgstr ""
+msgstr "De la 7"
 
 #: operations/common/color-warp.c:65
 msgid "To 7"
-msgstr ""
+msgstr "La 7"
 
 #: operations/common/color-warp.c:66
 msgid "weight 7"
-msgstr ""
+msgstr "pondere 7"
 
 #: operations/common/color-warp.c:68
 msgid "global weight scale"
-msgstr ""
+msgstr "scară de pondere globală"
 
 #: operations/common/color-warp.c:70
 msgid "amount"
-msgstr ""
+msgstr "cantitate"
 
 #: operations/common/color-warp.c:311
 msgid "Color warp"
@@ -1254,100 +1258,100 @@ msgstr ""
 
 #: operations/common/component-extract.c:25
 msgid "RGB Red"
-msgstr ""
+msgstr "Roșu RGB"
 
 #: operations/common/component-extract.c:26
 msgid "RGB Green"
-msgstr ""
+msgstr "Verde RGB"
 
 #: operations/common/component-extract.c:27
 msgid "RGB Blue"
-msgstr ""
+msgstr "Albastru RGB"
 
 #: operations/common/component-extract.c:29
 msgid "HSV Saturation"
-msgstr ""
+msgstr "Saturație HSV"
 
 #: operations/common/component-extract.c:30
 msgid "HSV Value"
-msgstr ""
+msgstr "Valoare HSV"
 
 #: operations/common/component-extract.c:31
 msgid "HSL Saturation"
-msgstr ""
+msgstr "Saturație HSL"
 
 #: operations/common/component-extract.c:32
 msgid "HSL Lightness"
-msgstr ""
+msgstr "Luminozitate HSL"
 
 #: operations/common/component-extract.c:33
 msgid "CMYK Cyan"
-msgstr ""
+msgstr "Cyan CMYK"
 
 #: operations/common/component-extract.c:34
 msgid "CMYK Magenta"
-msgstr ""
+msgstr "Magenta CMYK"
 
 #: operations/common/component-extract.c:35
 msgid "CMYK Yellow"
-msgstr ""
+msgstr "Galben CMYK"
 
 #: operations/common/component-extract.c:36
 msgid "CMYK Key"
-msgstr ""
+msgstr "Key CMYK"
 
 #: operations/common/component-extract.c:37
 msgid "Y'CbCr Y'"
-msgstr ""
+msgstr "Y' Y'CbCr"
 
 #: operations/common/component-extract.c:38
 msgid "Y'CbCr Cb"
-msgstr ""
+msgstr "Cb Y'CbCr"
 
 #: operations/common/component-extract.c:39
 msgid "Y'CbCr Cr"
-msgstr ""
+msgstr "Cr Y'CbCr"
 
 #: operations/common/component-extract.c:40
 msgid "LAB L"
-msgstr ""
+msgstr "L LAB"
 
 #: operations/common/component-extract.c:41
 msgid "LAB A"
-msgstr ""
+msgstr "A LAB"
 
 #: operations/common/component-extract.c:42
 msgid "LAB B"
-msgstr ""
+msgstr "B LAB"
 
 #: operations/common/component-extract.c:43
 msgid "LCH C(ab)"
-msgstr ""
+msgstr "C(ab) LCH"
 
 #: operations/common/component-extract.c:44
 msgid "LCH H(ab)"
-msgstr ""
+msgstr "H(ab) LCH"
 
 #: operations/common/component-extract.c:45 operations/common/fattal02.c:31
 #: operations/common/noise-perlin.c:25 operations/common/noise-rgb.c:52
 msgid "Alpha"
-msgstr ""
+msgstr "Alfa"
 
 #: operations/common/component-extract.c:48
 msgid "Component"
-msgstr ""
+msgstr "Componentă"
 
 #: operations/common/component-extract.c:51
 msgid "Component to extract"
-msgstr ""
+msgstr "Componenta de extras"
 
 #: operations/common/component-extract.c:53
 msgid "Invert component"
-msgstr ""
+msgstr "Inversează componenta"
 
 #: operations/common/component-extract.c:54
 msgid "Invert the extracted component"
-msgstr ""
+msgstr "Inversează componenta extrasă"
 
 #: operations/common/component-extract.c:56
 #: operations/workshop/connected-components.c:45
@@ -1693,19 +1697,19 @@ msgstr ""
 #: operations/common/pixelize.c:28 operations/common/vignette.c:26
 #: operations/common-cxx/focus-blur.c:35
 msgid "Square"
-msgstr ""
+msgstr "Pătrat"
 
 #: operations/common/dropshadow.c:28 operations/common/median-blur.c:28
 #: operations/common/newsprint.c:26 operations/common/vignette.c:25
 #: operations/common-cxx/focus-blur.c:34
 msgid "Circle"
-msgstr ""
+msgstr "Cerc"
 
 #: operations/common/dropshadow.c:29 operations/common/median-blur.c:29
 #: operations/common/newsprint.c:27 operations/common/pixelize.c:26
 #: operations/common/vignette.c:27 operations/common-cxx/focus-blur.c:36
 msgid "Diamond"
-msgstr ""
+msgstr "Diamant"
 
 #: operations/common/dropshadow.c:32 operations/common/layer.c:36
 #: operations/common/rectangle.c:26 operations/common-gpl3+/plasma.c:40
@@ -1717,11 +1721,11 @@ msgstr ""
 #: operations/transform/shear.c:25 operations/transform/translate.c:25
 #: operations/workshop/external/spyrograph.c:51
 msgid "X"
-msgstr ""
+msgstr "X"
 
 #: operations/common/dropshadow.c:33
 msgid "Horizontal shadow offset"
-msgstr ""
+msgstr "Decalaj de umbră orizontal"
 
 #: operations/common/dropshadow.c:39 operations/common/layer.c:41
 #: operations/common/rectangle.c:31 operations/common-gpl3+/plasma.c:47
@@ -1733,11 +1737,11 @@ msgstr ""
 #: operations/transform/shear.c:29 operations/transform/translate.c:31
 #: operations/workshop/external/spyrograph.c:57
 msgid "Y"
-msgstr ""
+msgstr "Y"
 
 #: operations/common/dropshadow.c:40
 msgid "Vertical shadow offset"
-msgstr ""
+msgstr "Decalaj de umbră vertical"
 
 #: operations/common/dropshadow.c:53
 msgid "Grow shape"
@@ -1851,23 +1855,23 @@ msgstr ""
 
 #: operations/common/exposure.c:26
 msgid "Black level"
-msgstr ""
+msgstr "Nivel de negru"
 
 #: operations/common/exposure.c:27
 msgid "Adjust the black level"
-msgstr ""
+msgstr "Ajustează nivelul de negru"
 
 #: operations/common/exposure.c:30 operations/common/exposure.c:461
 msgid "Exposure"
-msgstr ""
+msgstr "Expunere"
 
 #: operations/common/exposure.c:31
 msgid "Relative brightness change in stops"
-msgstr ""
+msgstr "Schimbă luminozitatea relativ în trepte de diafragmă"
 
 #: operations/common/exposure.c:465
 msgid "Change exposure of an image in shutter speed stops"
-msgstr ""
+msgstr "Schimbă expunerea unei imagini în trepte de obturator"
 
 #: operations/common/fattal02.c:32
 msgid "Gradient threshold for detail enhancement"
@@ -1875,7 +1879,7 @@ msgstr ""
 
 #: operations/common/fattal02.c:35
 msgid "Beta"
-msgstr ""
+msgstr "Beta"
 
 #: operations/common/fattal02.c:36
 msgid "Strength of local detail enhancement"
@@ -2111,53 +2115,54 @@ msgstr ""
 #: operations/common/hue-chroma.c:26
 #: operations/workshop/selective-hue-saturation.c:35
 msgid "Hue adjustment"
-msgstr ""
+msgstr "Ajustează nuanța"
 
 #: operations/common/hue-chroma.c:29 operations/common/noise-cie-lch.c:32
 msgid "Chroma"
-msgstr ""
+msgstr "Crominanță"
 
 #: operations/common/hue-chroma.c:30
 msgid "Chroma adjustment"
-msgstr ""
+msgstr "Ajustează crominanța"
 
 #: operations/common/hue-chroma.c:33 operations/common/noise-cie-lch.c:29
 #: operations/workshop/selective-hue-saturation.c:42
 msgid "Lightness"
-msgstr ""
+msgstr "Luminozitate"
 
 #: operations/common/hue-chroma.c:34
 #: operations/workshop/selective-hue-saturation.c:43
 msgid "Lightness adjustment"
-msgstr ""
+msgstr "Ajustează luminozitatea"
 
 #: operations/common/hue-chroma.c:120
 msgid "Hue-Chroma"
-msgstr ""
+msgstr "Nuanță și crominanță"
 
 #: operations/common/hue-chroma.c:124
 msgid "Adjust LCH Hue, Chroma, and Lightness"
-msgstr ""
+msgstr "Ajustează nuanța LCH, crominanța și luminozitatea"
 
 #: operations/common/icc-save.c:26
 msgid "Target path and filename"
-msgstr ""
+msgstr "Calea și numele de fișier țintă"
 
 #: operations/common/icc-save.c:72
 msgid "ICC profile saver"
-msgstr ""
+msgstr "Salvator de profil ICC"
 
 #: operations/common/icc-save.c:74
 msgid "Stores the ICC profile that would be embedded if stored as an image."
 msgstr ""
+"Stochează profilul ICC care ar fi înglobat dacă ar fi stocat ca imagine."
 
 #: operations/common/image-compare.c:26
 msgid "Wrong pixels"
-msgstr ""
+msgstr "Pixeli greșiți"
 
 #: operations/common/image-compare.c:27
 msgid "Number of differing pixels."
-msgstr ""
+msgstr "Număr diferit de pixeli."
 
 #: operations/common/image-compare.c:29
 msgid "Maximum difference"
@@ -2192,17 +2197,17 @@ msgstr ""
 
 #: operations/common/image-gradient.c:27
 msgid "Magnitude"
-msgstr ""
+msgstr "Magnitudine"
 
 #: operations/common/image-gradient.c:28 operations/common-gpl3+/spiral.c:75
 #: operations/common-gpl3+/texturize-canvas.c:38
 #: operations/common-gpl3+/wind.c:50
 msgid "Direction"
-msgstr ""
+msgstr "Direcție"
 
 #: operations/common/image-gradient.c:29 operations/common-gpl3+/wind.c:40
 msgid "Both"
-msgstr ""
+msgstr "Amândouă"
 
 #: operations/common/image-gradient.c:32
 msgid "Output mode"
@@ -2214,84 +2219,90 @@ msgstr ""
 
 #: operations/common/image-gradient.c:224
 msgid "Image Gradient"
-msgstr ""
+msgstr "Degrade de imagine"
 
 #: operations/common/image-gradient.c:227
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
+"Calculează magnitudinea și/sau direcția degradeului folosind diferențele "
+"centrale"
 
 #: operations/common/introspect.c:26
 msgid "Node"
-msgstr ""
+msgstr "Nod"
 
 #: operations/common/introspect.c:159
 msgid "GEGL graph visualizer."
-msgstr ""
+msgstr "Vizualizator grafic GEGL."
 
 #: operations/common/invert-gamma.c:52
 msgid "Invert in Perceptual space"
-msgstr ""
+msgstr "Inversează în spațiul perceptual"
 
 #: operations/common/invert-gamma.c:56
 msgid ""
 "Invert the components (except alpha) perceptually, the result is the "
 "corresponding \"negative\" image."
 msgstr ""
+"Inversează componentele (cu excepția alfa) în mod perceptiv; rezultatul este "
+"imaginea „negativă” corespunzătoare."
 
 #: operations/common/invert-linear.c:54 operations/common-gpl3+/bump-map.c:45
 #: operations/workshop/connected-components.c:28
 #: operations/workshop/external/voronoi-diagram.cc:32
 msgid "Invert"
-msgstr ""
+msgstr "Inversează"
 
 #: operations/common/invert-linear.c:59
 msgid ""
 "Invert the components (except alpha) in linear light, the result is the "
 "corresponding \"negative\" image."
 msgstr ""
+"Inversează componentele (cu excepția alfa) în lumină liniară; rezultatul "
+"este imaginea „negativă” corespunzătoare."
 
 #: operations/common/layer.c:30
 msgid "Operation"
-msgstr ""
+msgstr "Operație"
 
 #: operations/common/layer.c:31
 msgid "Composite operation to use"
-msgstr ""
+msgstr "Operația compozită de folosit"
 
 #: operations/common/layer.c:37
 msgid "Horizontal position in pixels"
-msgstr ""
+msgstr "Poziție orizontală în pixeli"
 
 #: operations/common/layer.c:42
 msgid "Vertical position in pixels"
-msgstr ""
+msgstr "Poziție verticală în pixeli"
 
 #: operations/common/layer.c:46 operations/common/noise-cell.c:36
 #: operations/common/noise-perlin.c:27 operations/common/noise-simplex.c:31
 #: operations/common/normal-map.c:30 operations/common/saturation.c:31
 #: operations/workshop/external/lens-correct.c:50
 msgid "Scale"
-msgstr ""
+msgstr "Scară"
 
 #: operations/common/layer.c:47
 msgid "Scale 1:1 size"
-msgstr ""
+msgstr "Scară la dimensiunea 1:1"
 
 #: operations/common/layer.c:49
 msgid "Source"
-msgstr ""
+msgstr "Sursă"
 
 #: operations/common/layer.c:50
 msgid "Source image file path (png, jpg, raw, svg, bmp, tif, ...)"
-msgstr ""
+msgstr "Calea fișierului imaginii sursă (png, jpg, raw, svg, bmp, tif, ...)"
 
 #: operations/common/layer.c:240
 msgid "Layer"
-msgstr ""
+msgstr "Strat"
 
 #: operations/common/layer.c:241
 msgid "A layer in the traditional sense"
-msgstr ""
+msgstr "Un strat în sensul tradițional"
 
 #: operations/common/levels.c:27
 msgid "Low input"
@@ -2340,26 +2351,26 @@ msgstr ""
 #: operations/common-gpl3+/fractal-trace.c:34
 #: operations/workshop/external/line-profile.c:28
 msgid "X1"
-msgstr ""
+msgstr "X1"
 
 #: operations/common/linear-gradient.c:29
 #: operations/common/radial-gradient.c:26
 #: operations/common-gpl3+/fractal-trace.c:42
 #: operations/workshop/external/line-profile.c:35
 msgid "Y1"
-msgstr ""
+msgstr "Y1"
 
 #: operations/common/linear-gradient.c:33
 #: operations/common/radial-gradient.c:27
 #: operations/common-gpl3+/fractal-trace.c:38
 msgid "X2"
-msgstr ""
+msgstr "X2"
 
 #: operations/common/linear-gradient.c:37
 #: operations/common/radial-gradient.c:28
 #: operations/common-gpl3+/fractal-trace.c:46
 msgid "Y2"
-msgstr ""
+msgstr "Y2"
 
 #: operations/common/linear-gradient.c:41
 #: operations/common/radial-gradient.c:29
@@ -3695,23 +3706,24 @@ msgstr ""
 
 #: operations/common/saturation.c:26
 msgid "Native"
-msgstr ""
+msgstr "Nativ"
 
 #: operations/common/saturation.c:27
 msgid "CIE Lab/Lch"
-msgstr ""
+msgstr "CIE Lab/Lch"
 
 #: operations/common/saturation.c:28
 msgid "CIE Yuv"
-msgstr ""
+msgstr "CIE Yuv"
 
+# preferabil fără „scară” (este redundant)
 #: operations/common/saturation.c:32
 msgid "Scale, strength of effect"
-msgstr ""
+msgstr "Intensitatea efectului"
 
 #: operations/common/saturation.c:36
 msgid "Interpolation Color Space"
-msgstr ""
+msgstr "Spațiu de culoare pentru interpolare"
 
 #: operations/common/saturation.c:37
 msgid ""
@@ -3720,32 +3732,35 @@ msgstr ""
 
 #: operations/common/saturation.c:387
 msgid "Changes the saturation"
-msgstr ""
+msgstr "Schimbă saturația"
 
 #: operations/common/save.c:27
 msgid "Path of file to save."
-msgstr ""
+msgstr "Calea fișierului de salvat."
 
 #: operations/common/save.c:28 operations/core/load.c:33
 #: operations/external/jpg-save.c:44 operations/external/png-load.c:36
 #: operations/external/png-save.c:34 operations/external/tiff-load.c:39
 #: operations/external/tiff-save.c:34
 msgid "Metadata"
-msgstr ""
+msgstr "Metadate"
 
 #: operations/common/save.c:29
 msgid "Object providing image metadata"
-msgstr ""
+msgstr "Obiectul care furnizează metadatele imaginii"
 
 #: operations/common/save.c:208
 msgid "Save"
-msgstr ""
+msgstr "Salvează"
 
 #: operations/common/save.c:211
 msgid ""
 "Multipurpose file saver, that uses other native save handlers depending on "
 "extension, use the format specific save ops to specify additional parameters."
 msgstr ""
+"Economizor de fișiere multifuncțional, care folosește alte gestionare de "
+"salvare nativă în funcție de extensie; utilizați opțiunile de salvare "
+"specifice formatului pentru a specifica parametri suplimentari."
 
 #: operations/common/sepia.c:24
 msgid "Effect strength"
@@ -4041,6 +4056,8 @@ msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
 msgstr ""
+"Inversează componenta valorică; rezultatul are luminozitatea inversată, "
+"păstrând culoarea."
 
 #: operations/common/vignette.c:32
 msgid "Vignette shape"
@@ -4059,23 +4076,24 @@ msgstr ""
 
 #: operations/common/vignette.c:49 operations/common-cxx/piecewise-blend.cc:33
 msgid "Gamma"
-msgstr ""
+msgstr "Gama"
 
+# hm ?
 #: operations/common/vignette.c:50
 msgid "Falloff linearity"
-msgstr ""
+msgstr "Liniaritatea reducerii"
 
 #: operations/common/vignette.c:54
 msgid "Proportion"
-msgstr ""
+msgstr "Proporție"
 
 #: operations/common/vignette.c:55
 msgid "How close we are to image proportions"
-msgstr ""
+msgstr "Cât de aproape suntem de proporțiile imaginii"
 
 #: operations/common/vignette.c:58
 msgid "Squeeze"
-msgstr ""
+msgstr "Strânge"
 
 #: operations/common/vignette.c:59
 msgid ""
@@ -4083,6 +4101,10 @@ msgid ""
 "inf:1, this is applied after proportion is taken into account, to directly "
 "use squeeze factor as proportions, set proportion to 0.0."
 msgstr ""
+"Raportul de aspect de folosit, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:"
+"inf 1.0 = inf:1; acesta se aplică după ce proporția este luată în "
+"considerare; pentru a utiliza direct factorul de strângere ca proporții, "
+"setați proporția la 0.0."
 
 #: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:102
 #: operations/common-gpl3+/bayer-matrix.c:50
@@ -5472,7 +5494,7 @@ msgstr ""
 
 #: operations/common-gpl3+/lens-distortion.c:42
 msgid "Rescale overall image size"
-msgstr ""
+msgstr "Rescalează dimensiunea generală a imaginii"
 
 #: operations/common-gpl3+/lens-distortion.c:46
 msgid "Effect centre offset in X"
@@ -5484,91 +5506,91 @@ msgstr ""
 
 #: operations/common-gpl3+/lens-distortion.c:53
 msgid "Brighten"
-msgstr ""
+msgstr "Luminează"
 
 #: operations/common-gpl3+/lens-distortion.c:54
 msgid "Adjust brightness in corners"
-msgstr ""
+msgstr "Ajustează luminanța în colțuri"
 
 #: operations/common-gpl3+/lens-distortion.c:497
 msgid "Lens Distortion"
-msgstr ""
+msgstr "Distorsiune de lentilă"
 
 #: operations/common-gpl3+/lens-distortion.c:503
 msgid "Corrects barrel or pincushion lens distortion."
-msgstr ""
+msgstr "Corectează distorsiunea de tip butoi sau pernă a lentilei."
 
 #: operations/common-gpl3+/lens-flare.c:27
 msgid "X position"
-msgstr ""
+msgstr "Poziție X"
 
 #: operations/common-gpl3+/lens-flare.c:28
 msgid "X coordinates of the flare center"
-msgstr ""
+msgstr "Coordonata X față de centrul haloului"
 
 #: operations/common-gpl3+/lens-flare.c:33
 msgid "Y position"
-msgstr ""
+msgstr "Poziție Y"
 
 #: operations/common-gpl3+/lens-flare.c:34
 msgid "Y coordinates of the flare center"
-msgstr ""
+msgstr "Coordonata Y față de centrul haloului"
 
 #: operations/common-gpl3+/lens-flare.c:510
 msgid "Lens Flare"
-msgstr ""
+msgstr "Halo de lentilă"
 
 #: operations/common-gpl3+/lens-flare.c:514
 msgid "Adds a lens flare effect."
-msgstr ""
+msgstr "Adaugă un efect de halo de lentilă."
 
 #: operations/common-gpl3+/linear-sinusoid.c:25
 msgid "X Period"
-msgstr ""
+msgstr "Perioadă X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:26
 msgid "Period for X axis"
-msgstr ""
+msgstr "Perioada pentru axa X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:32
 msgid "Y Period"
-msgstr ""
+msgstr "Perioadă Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:33
 msgid "Period for Y axis"
-msgstr ""
+msgstr "Perioada pentru axa Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:39
 msgid "X Amplitude"
-msgstr ""
+msgstr "Amplitudine X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:40
 msgid "Amplitude for X axis (logarithmic scale)"
-msgstr ""
+msgstr "Amplitudinea pentru axa X (scară logaritmică)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:45
 msgid "Y Amplitude"
-msgstr ""
+msgstr "Amplitudine Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:46
 msgid "Amplitude for Y axis (logarithmic scale)"
-msgstr ""
+msgstr "Amplitudinea pentru axa Y (scară logaritmică)"
 
 #: operations/common-gpl3+/linear-sinusoid.c:51
 msgid "X Phase"
-msgstr ""
+msgstr "Fază X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:52
 msgid "Phase for X axis"
-msgstr ""
+msgstr "Faza pentru axa X"
 
 #: operations/common-gpl3+/linear-sinusoid.c:58
 msgid "Y Phase"
-msgstr ""
+msgstr "Fază Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:59
 msgid "Phase for Y axis"
-msgstr ""
+msgstr "Faza pentru axa Y"
 
 #: operations/common-gpl3+/linear-sinusoid.c:66
 msgid "Axis separation angle"
@@ -5608,39 +5630,39 @@ msgstr ""
 
 #: operations/common-gpl3+/maze.c:67
 msgid "Foreground Color"
-msgstr ""
+msgstr "Culoare de prim-plan"
 
 #: operations/common-gpl3+/maze.c:68
 msgid "The foreground color"
-msgstr ""
+msgstr "Culoarea de prim-plan"
 
 #: operations/common-gpl3+/maze.c:71
 msgid "Background Color"
-msgstr ""
+msgstr "Culoare de fundal"
 
 #: operations/common-gpl3+/maze.c:72
 msgid "The background color"
-msgstr ""
+msgstr "Culoarea de fundal"
 
 #: operations/common-gpl3+/maze.c:822
 msgid "Maze"
-msgstr ""
+msgstr "Labirint"
 
 #: operations/common-gpl3+/maze.c:827
 msgid "Draw a labyrinth"
-msgstr ""
+msgstr "Desenează un labirint"
 
 #: operations/common-gpl3+/mosaic.c:32
 msgid "Squares"
-msgstr ""
+msgstr "Pătrate"
 
 #: operations/common-gpl3+/mosaic.c:33
 msgid "Hexagons"
-msgstr ""
+msgstr "Hexagoane"
 
 #: operations/common-gpl3+/mosaic.c:34
 msgid "Octagons"
-msgstr ""
+msgstr "Octogoane"
 
 #: operations/common-gpl3+/mosaic.c:35
 msgid "Triangles"
@@ -5968,23 +5990,23 @@ msgstr ""
 
 #: operations/common-gpl3+/red-eye-removal.c:32
 msgid "Red eye threshold"
-msgstr ""
+msgstr "Prag pentru ochii roșii"
 
 #: operations/common-gpl3+/red-eye-removal.c:170
 msgid "Red Eye Removal"
-msgstr ""
+msgstr "Eliminare ochi roșii"
 
 #: operations/common-gpl3+/red-eye-removal.c:174
 msgid "Remove the red eye effect caused by camera flashes"
-msgstr ""
+msgstr "Elimină efectul de ochi roșii cauzat de blițul camerelor foto"
 
 #: operations/common-gpl3+/ripple.c:30
 msgid "Triangle"
-msgstr ""
+msgstr "Triunghi"
 
 #: operations/common-gpl3+/ripple.c:31
 msgid "Sawtooth"
-msgstr ""
+msgstr "Dinte de fierăstrău"
 
 #: operations/common-gpl3+/ripple.c:42 operations/common-gpl3+/waves.c:43
 msgid "Phase shift"
@@ -6009,94 +6031,96 @@ msgstr ""
 #: operations/common-gpl3+/shadows-highlights.c:28
 #: operations/common-gpl3+/shadows-highlights-correction.c:29
 msgid "Shadows"
-msgstr ""
+msgstr "Umbre"
 
 #: operations/common-gpl3+/shadows-highlights.c:29
 #: operations/common-gpl3+/shadows-highlights-correction.c:30
 msgid "Adjust exposure of shadows"
-msgstr ""
+msgstr "Ajustează expunerea umbrelor"
 
 #: operations/common-gpl3+/shadows-highlights.c:32
 #: operations/common-gpl3+/shadows-highlights-correction.c:33
 msgid "Highlights"
-msgstr ""
+msgstr "Zone luminoase"
 
 #: operations/common-gpl3+/shadows-highlights.c:33
 #: operations/common-gpl3+/shadows-highlights-correction.c:34
 msgid "Adjust exposure of highlights"
-msgstr ""
+msgstr "Ajustează expunerea zonelor luminoase"
 
 #: operations/common-gpl3+/shadows-highlights.c:36
 #: operations/common-gpl3+/shadows-highlights-correction.c:37
 msgid "White point adjustment"
-msgstr ""
+msgstr "Ajustare punct de alb"
 
 #: operations/common-gpl3+/shadows-highlights.c:37
 #: operations/common-gpl3+/shadows-highlights-correction.c:38
 msgid "Shift white point"
-msgstr ""
+msgstr "Decalează punctul de alb"
 
 #: operations/common-gpl3+/shadows-highlights.c:41
 msgid "Spatial extent"
-msgstr ""
+msgstr "Limită spațială"
 
 #: operations/common-gpl3+/shadows-highlights.c:45
 #: operations/common-gpl3+/shadows-highlights-correction.c:41
 msgid "Compress"
-msgstr ""
+msgstr "Comprimare"
 
 #: operations/common-gpl3+/shadows-highlights.c:46
 #: operations/common-gpl3+/shadows-highlights-correction.c:42
 msgid "Compress the effect on shadows/highlights and preserve midtones"
 msgstr ""
+"Comprimă efectul asupra umbrelor / tonurilor luminoase și păstrează tonurile "
+"de mijloc"
 
 #: operations/common-gpl3+/shadows-highlights.c:49
 #: operations/common-gpl3+/shadows-highlights-correction.c:45
 msgid "Shadows color adjustment"
-msgstr ""
+msgstr "Ajustare culori la umbre"
 
 #: operations/common-gpl3+/shadows-highlights.c:50
 #: operations/common-gpl3+/shadows-highlights-correction.c:46
 msgid "Adjust saturation of shadows"
-msgstr ""
+msgstr "Ajustează saturația umbrelor"
 
 #: operations/common-gpl3+/shadows-highlights.c:53
 #: operations/common-gpl3+/shadows-highlights-correction.c:49
 msgid "Highlights color adjustment"
-msgstr ""
+msgstr "Ajustare culori în zonele luminoase"
 
 #: operations/common-gpl3+/shadows-highlights.c:54
 #: operations/common-gpl3+/shadows-highlights-correction.c:50
 msgid "Adjust saturation of highlights"
-msgstr ""
+msgstr "Ajustează saturația zonelor luminoase"
 
 #: operations/common-gpl3+/shadows-highlights.c:242
 msgid "Shadows-Highlights"
-msgstr ""
+msgstr "Umbre și zone luminoase"
 
 #: operations/common-gpl3+/shadows-highlights.c:245
 msgid "Perform shadows and highlights correction"
-msgstr ""
+msgstr "Corectează umbrele și zonele luminoase"
 
 #: operations/common-gpl3+/shadows-highlights-correction.c:363
 msgid "Lighten shadows and darken highlights"
-msgstr ""
+msgstr "Luminează umbrele și întunecă zonele luminoase"
 
 #: operations/common-gpl3+/shift.c:26 operations/common-gpl3+/shift.c:144
 msgid "Shift"
-msgstr ""
+msgstr "Decalaj"
 
 #: operations/common-gpl3+/shift.c:27
 msgid "Maximum amount to shift"
-msgstr ""
+msgstr "Valoare maximă de decalaj"
 
 #: operations/common-gpl3+/shift.c:31
 msgid "Shift direction"
-msgstr ""
+msgstr "Direcție de decalaj"
 
 #: operations/common-gpl3+/shift.c:148
 msgid "Shift each row or column of pixels by a random amount"
-msgstr ""
+msgstr "Decalează fiecare rând sau coloană de pixeli cu o valoare aleatorie"
 
 #: operations/common-gpl3+/sinus.c:32
 msgid "Scale value for x axis"
@@ -6108,11 +6132,11 @@ msgstr ""
 
 #: operations/common-gpl3+/sinus.c:45
 msgid "Complexity"
-msgstr ""
+msgstr "Complexitate"
 
 #: operations/common-gpl3+/sinus.c:46
 msgid "Complexity factor"
-msgstr ""
+msgstr "Factor de complexitate"
 
 #: operations/common-gpl3+/sinus.c:51
 msgid "Force tiling"
