@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GEGL master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2020-06-03 23:02+0000\n"
-"PO-Revision-Date: 2020-10-25 22:10+0200\n"
+"PO-Revision-Date: 2020-11-01 23:56+0200\n"
 "Last-Translator: Cristian Secară <cristi AT secarica DOT ro>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "Language: ro\n"
@@ -340,11 +340,11 @@ msgstr "Întotdeauna"
 
 #: gegl/gegl-init.c:212
 msgid "Where GEGL stores its swap"
-msgstr ""
+msgstr "Locul unde își ține GEGL fișierul swap"
 
 #: gegl/gegl-init.c:217
 msgid "Compression algorithm used for data stored in the swap"
-msgstr ""
+msgstr "Algoritmul de comprimare folosit de datele stocate în fișierul swap"
 
 #: gegl/gegl-init.c:222
 msgid "How much memory to (approximately) use for caching imagery"
@@ -402,20 +402,20 @@ msgstr "Eroare de modul"
 
 #: gegl/module/geglmodule.c:341
 msgid "Loaded"
-msgstr ""
+msgstr "Încărcat"
 
 #: gegl/module/geglmodule.c:342
 msgid "Load failed"
-msgstr ""
+msgstr "Încărcarea a eșuat"
 
 #: gegl/module/geglmodule.c:343
 msgid "Not loaded"
-msgstr ""
+msgstr "Neîncărcat"
 
 #: gegl/module/geglmodule.c:389
 #, c-format
 msgid "Module '%s' load error: %s"
-msgstr ""
+msgstr "Eroare de încărcare la modulul „%s”: %s"
 
 #: gegl/operation/gegl-operation-composer3.c:77
 msgid "Output pad for generated image buffer."
@@ -574,13 +574,15 @@ msgstr ""
 
 #: operations/common/alien-map.c:260
 msgid "Alien Map"
-msgstr ""
+msgstr "Hartă extraterestră"
 
 #: operations/common/alien-map.c:263
 msgid ""
 "Heavily distort images colors by applying trigonometric functions to map "
 "color values."
 msgstr ""
+"Distorsionează puternic culorile imaginilor prin aplicarea funcțiilor "
+"trigonometrice la maparea valorilor de culoare."
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
@@ -588,22 +590,23 @@ msgstr ""
 #: operations/common-gpl3+/gaussian-blur-selective.c:29
 #: operations/workshop/bilateral-filter-fast.c:43
 msgid "Blur radius"
-msgstr ""
+msgstr "Rază de neclaritate"
 
 #: operations/common/bilateral-filter.c:27
 #: operations/common-gpl3+/gaussian-blur-selective.c:30
 #: operations/workshop/bilateral-filter-fast.c:44
 msgid "Radius of square pixel region, (width and height will be radius*2+1)."
 msgstr ""
+"Raza regiunii pixelului pătrat, (lățimea și înălțimea vor fi raza*2+1)."
 
 #: operations/common/bilateral-filter.c:32
 #: operations/common/domain-transform.c:34
 msgid "Edge preservation"
-msgstr ""
+msgstr "Conservare margine"
 
 #: operations/common/bilateral-filter.c:33
 msgid "Amount of edge preservation"
-msgstr ""
+msgstr "Cuantumul de conservare a marginii"
 
 #: operations/common/bilateral-filter.c:294
 msgid "Bilateral Filter"
@@ -713,11 +716,11 @@ msgstr ""
 #: operations/common-gpl3+/diffraction-patterns.c:65
 #: operations/common-gpl3+/softglow.c:30
 msgid "Brightness"
-msgstr ""
+msgstr "Luminanță"
 
 #: operations/common/brightness-contrast.c:37
 msgid "Amount to increase brightness"
-msgstr ""
+msgstr "Cuantumul de mărit luminanța"
 
 #: operations/common/brightness-contrast.c:159
 msgid "Brightness Contrast"
@@ -780,11 +783,13 @@ msgstr ""
 
 #: operations/common/c2g.c:37 operations/common/stress.c:34
 msgid "Samples"
-msgstr ""
+msgstr "Eșantioane"
 
 #: operations/common/c2g.c:38 operations/common/stress.c:35
 msgid "Number of samples to do per iteration looking for the range of colors"
 msgstr ""
+"Numărul de eșantioane de efectuat pentru fiecare iterație în căutarea "
+"intervalului de culori"
 
 #: operations/common/c2g.c:42 operations/common/matting-global.c:24
 #: operations/common/mean-curvature-blur.c:24 operations/common/noise-cell.c:48
@@ -792,27 +797,34 @@ msgstr ""
 #: operations/common/recursive-transform.c:36 operations/common/slic.c:38
 #: operations/common/stress.c:39 operations/common-gpl3+/fractal-explorer.c:55
 msgid "Iterations"
-msgstr ""
+msgstr "Iterații"
 
 #: operations/common/c2g.c:43
 msgid ""
 "Number of iterations, a higher number of iterations provides less noisy "
 "results at a computational cost"
 msgstr ""
+"Numărul de iterații, un număr mai mare de iterații oferă rezultate mai puțin "
+"zgomotoase la un preț mărit de calcul"
 
 #: operations/common/c2g.c:48 operations/common/stress.c:44
 msgid "Enhance Shadows"
-msgstr ""
+msgstr "Îmbunătățește umbrele"
 
 #: operations/common/c2g.c:49
 msgid "When enabled details in shadows are boosted at the expense of noise"
 msgstr ""
+"Când opțiunea este activată, detaliile în umbre sunt amplificate în "
+"detrimentul zgomotului"
 
 #: operations/common/c2g.c:460
 msgid ""
 "Color to grayscale conversion, uses envelopes formed with the STRESS "
 "approach to perform local color-difference preserving grayscale generation."
 msgstr ""
+"Convertește de la culoare la tonuri de gri; utilizează anvelope formate cu "
+"abordarea STRESS pentru a realiza o diferență locală de culoare, păstrând "
+"generarea în tonuri de gri."
 
 #: operations/common/checkerboard.c:26 operations/common/grid.c:24
 #: operations/common/little-planet.c:43
@@ -826,12 +838,12 @@ msgstr ""
 #: operations/workshop/external/line-profile.c:39
 #: operations/workshop/external/v4l2.c:26
 msgid "Width"
-msgstr ""
+msgstr "Lățime"
 
 #: operations/common/checkerboard.c:27 operations/common/grid.c:25
 #: operations/common-gpl3+/maze.c:43
 msgid "Horizontal width of cells pixels"
-msgstr ""
+msgstr "Lățimea orizontală a pixelilor celulei"
 
 #: operations/common/checkerboard.c:34 operations/common/grid.c:31
 #: operations/common/little-planet.c:49
@@ -845,12 +857,12 @@ msgstr ""
 #: operations/workshop/external/line-profile.c:41
 #: operations/workshop/external/v4l2.c:28
 msgid "Height"
-msgstr ""
+msgstr "Înălțime"
 
 #: operations/common/checkerboard.c:35 operations/common/grid.c:32
 #: operations/common-gpl3+/maze.c:51
 msgid "Vertical width of cells pixels"
-msgstr ""
+msgstr "Lățimea verticală a pixelilor celulei"
 
 #: operations/common/checkerboard.c:42 operations/common/grid.c:38
 #: operations/common/mirrors.c:46 operations/common/pixelize.c:51
@@ -879,20 +891,20 @@ msgstr ""
 #: operations/common/checkerboard.c:54 operations/common-gpl3+/sinus.c:57
 #: operations/common-gpl3+/spiral.c:80 operations/workshop/gradient-map.c:25
 msgid "Color 1"
-msgstr ""
+msgstr "Culoarea 1"
 
 #: operations/common/checkerboard.c:55
 msgid "The first cell color"
-msgstr ""
+msgstr "Culoarea primei celule"
 
 #: operations/common/checkerboard.c:58 operations/common-gpl3+/sinus.c:59
 #: operations/common-gpl3+/spiral.c:83 operations/workshop/gradient-map.c:27
 msgid "Color 2"
-msgstr ""
+msgstr "Culoarea 2"
 
 #: operations/common/checkerboard.c:59
 msgid "The second cell color"
-msgstr ""
+msgstr "Culoarea celei de-a doua celule"
 
 #: operations/common/checkerboard.c:62 operations/common/color.c:29
 msgid "Babl Format"
@@ -921,12 +933,12 @@ msgstr ""
 #: operations/common-gpl3+/value-propagate.c:54 operations/external/text.c:37
 #: operations/external/vector-fill.c:26 operations/external/vector-stroke.c:27
 msgid "Color"
-msgstr ""
+msgstr "Culoare"
 
 #. TRANSLATORS: the string 'black' should not be translated
 #: operations/common/color.c:26
 msgid "The color to render (defaults to 'black')"
-msgstr ""
+msgstr "Culoarea de randat (implicit la 'black')"
 
 #: operations/common/color.c:91
 msgid ""
@@ -936,7 +948,7 @@ msgstr ""
 
 #: operations/common/color-assimilation-grid.c:25
 msgid "Grid size"
-msgstr ""
+msgstr "Dimensiunea grilei"
 
 #: operations/common/color-assimilation-grid.c:31
 #: operations/common/color-rotate.c:84 operations/common/fattal02.c:39
@@ -945,7 +957,7 @@ msgstr ""
 #: operations/external/lcms-from-profile.c:35
 #: operations/workshop/selective-hue-saturation.c:38
 msgid "Saturation"
-msgstr ""
+msgstr "Saturație"
 
 #. FIXME: With a large angle, we lose AreaFilter's flavours
 #: operations/common/color-assimilation-grid.c:35
@@ -955,11 +967,11 @@ msgstr ""
 #: operations/common-gpl3+/motion-blur-circular.c:51
 #: operations/common-gpl3+/ripple.c:45
 msgid "Angle"
-msgstr ""
+msgstr "Unghi"
 
 #: operations/common/color-assimilation-grid.c:40
 msgid "Line thickness"
-msgstr ""
+msgstr "Grosimea liniei"
 
 #: operations/common/color-assimilation-grid.c:145
 msgid "Color Assimilation Grid"
@@ -975,13 +987,15 @@ msgstr ""
 
 #: operations/common/color-enhance.c:276
 msgid "Color Enhance"
-msgstr ""
+msgstr "Îmbunătățește culoarea"
 
 #: operations/common/color-enhance.c:280
 msgid ""
 "Stretch color chroma to cover maximum possible range, keeping hue and "
 "lightness untouched."
 msgstr ""
+"Extinde crominanța de culoare pentru a acoperi intervalul maxim posibil, "
+"păstrând nuanța și luminozitatea neatinse."
 
 #: operations/common/color-overlay.c:27
 msgid "The color to paint over the input"
@@ -1001,7 +1015,7 @@ msgstr ""
 #: operations/generated/src-in.c:38 operations/generated/src-out.c:38
 #: operations/generated/xor.c:38 operations/workshop/gradient-map.c:35
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #: operations/common/color-overlay.c:31 operations/common/over.c:26
 #: operations/common/sepia.c:29 operations/generated/clear.c:39
@@ -1046,19 +1060,19 @@ msgstr ""
 
 #: operations/common/color-rotate.c:43 operations/common/color-rotate.c:56
 msgid "From"
-msgstr ""
+msgstr "De la"
 
 #: operations/common/color-rotate.c:44
 msgid "Start angle of the source color range"
-msgstr ""
+msgstr "Unghiul de pornire al intervalului de culori sursă"
 
 #: operations/common/color-rotate.c:48 operations/common/color-rotate.c:61
 msgid "To"
-msgstr ""
+msgstr "La"
 
 #: operations/common/color-rotate.c:49
 msgid "End angle of the source color range"
-msgstr ""
+msgstr "Unghiul de sfârșit al intervalului de culori sursă"
 
 #: operations/common/color-rotate.c:57
 msgid "Start angle of the destination color range"
@@ -1356,167 +1370,169 @@ msgstr "Inversează componenta extrasă"
 #: operations/common/component-extract.c:56
 #: operations/workshop/connected-components.c:45
 msgid "Linear output"
-msgstr ""
+msgstr "Ieșire liniară"
 
 #: operations/common/component-extract.c:57
 msgid "Use linear output instead of gamma corrected"
-msgstr ""
+msgstr "Folosește ieșire liniară în loc de corectată gamma"
 
 #: operations/common/component-extract.c:260
 msgid "Extract Component"
-msgstr ""
+msgstr "Extrage o componentă"
 
 #: operations/common/component-extract.c:263
 msgid "Extract a color model component"
-msgstr ""
+msgstr "Extrage o componentă de model de culoare"
 
 #: operations/common/contrast-curve.c:25
 msgid "Sample points"
-msgstr ""
+msgstr "Puncte de eșantion"
 
 #: operations/common/contrast-curve.c:26
 msgid "Number of curve sampling points.  0 for exact calculation."
-msgstr ""
+msgstr "Numărul de puncte de eșantionare a curbei.  0 pentru un calcul exact."
 
 #: operations/common/contrast-curve.c:29
 msgid "Curve"
-msgstr ""
+msgstr "Curbă"
 
 #: operations/common/contrast-curve.c:30
 msgid "The contrast curve."
-msgstr ""
+msgstr "Curba de contrast."
 
 #: operations/common/contrast-curve.c:258
 msgid "Contrast Curve"
-msgstr ""
+msgstr "Curbă de contrast"
 
 #: operations/common/contrast-curve.c:262
 msgid ""
 "Adjusts the contrast of a grayscale image with a curve specifying contrast "
 "for intensity."
 msgstr ""
+"Ajustează contrastul unei imagini în tonuri de gri cu o curbă care specifică "
+"contrastul pentru intensitate."
 
 #: operations/common/convolution-matrix.c:25
 msgid "(1,1)"
-msgstr ""
+msgstr "(1,1)"
 
 #: operations/common/convolution-matrix.c:26
 msgid "(1,2)"
-msgstr ""
+msgstr "(1,2)"
 
 #: operations/common/convolution-matrix.c:27
 msgid "(1,3)"
-msgstr ""
+msgstr "(1,3)"
 
 #: operations/common/convolution-matrix.c:28
 msgid "(1,4)"
-msgstr ""
+msgstr "(1,4)"
 
 #: operations/common/convolution-matrix.c:29
 msgid "(1,5)"
-msgstr ""
+msgstr "(1,5)"
 
 #: operations/common/convolution-matrix.c:30
 msgid "(2,1)"
-msgstr ""
+msgstr "(2,1)"
 
 #: operations/common/convolution-matrix.c:31
 msgid "(2,2)"
-msgstr ""
+msgstr "(2,2)"
 
 #: operations/common/convolution-matrix.c:32
 msgid "(2,3)"
-msgstr ""
+msgstr "(2,3)"
 
 #: operations/common/convolution-matrix.c:33
 msgid "(2,4)"
-msgstr ""
+msgstr "(2,4)"
 
 #: operations/common/convolution-matrix.c:34
 msgid "(2,5)"
-msgstr ""
+msgstr "(2,5)"
 
 #: operations/common/convolution-matrix.c:35
 msgid "(3,1)"
-msgstr ""
+msgstr "(3,1)"
 
 #: operations/common/convolution-matrix.c:36
 msgid "(3,2)"
-msgstr ""
+msgstr "(3,2)"
 
 #: operations/common/convolution-matrix.c:37
 msgid "(3,3)"
-msgstr ""
+msgstr "(3,3)"
 
 #: operations/common/convolution-matrix.c:38
 msgid "(3,4)"
-msgstr ""
+msgstr "(3,4)"
 
 #: operations/common/convolution-matrix.c:39
 msgid "(3,5)"
-msgstr ""
+msgstr "(3,5)"
 
 #: operations/common/convolution-matrix.c:40
 msgid "(4,1)"
-msgstr ""
+msgstr "(4,1)"
 
 #: operations/common/convolution-matrix.c:41
 msgid "(4,2)"
-msgstr ""
+msgstr "(4,2)"
 
 #: operations/common/convolution-matrix.c:42
 msgid "(4,3)"
-msgstr ""
+msgstr "(4,3)"
 
 #: operations/common/convolution-matrix.c:43
 msgid "(4,4)"
-msgstr ""
+msgstr "(4,4)"
 
 #: operations/common/convolution-matrix.c:44
 msgid "(4,5)"
-msgstr ""
+msgstr "(4,5)"
 
 #: operations/common/convolution-matrix.c:45
 msgid "(5,1)"
-msgstr ""
+msgstr "(5,1)"
 
 #: operations/common/convolution-matrix.c:46
 msgid "(5,2)"
-msgstr ""
+msgstr "(5,2)"
 
 #: operations/common/convolution-matrix.c:47
 msgid "(5,3)"
-msgstr ""
+msgstr "(5,3)"
 
 #: operations/common/convolution-matrix.c:48
 msgid "(5,4)"
-msgstr ""
+msgstr "(5,4)"
 
 #: operations/common/convolution-matrix.c:49
 msgid "(5,5)"
-msgstr ""
+msgstr "(5,5)"
 
 #: operations/common/convolution-matrix.c:51
 msgid "Divisor"
-msgstr ""
+msgstr "Divizor"
 
 #: operations/common/convolution-matrix.c:55
 #: operations/common-gpl3+/bayer-matrix.c:63
 #: operations/common-gpl3+/linear-sinusoid.c:71
 msgid "Offset"
-msgstr ""
+msgstr "Decalaj"
 
 #: operations/common/convolution-matrix.c:59
 msgid "Red channel"
-msgstr ""
+msgstr "Canal de roșu"
 
 #: operations/common/convolution-matrix.c:60
 msgid "Green channel"
-msgstr ""
+msgstr "Canal de verde"
 
 #: operations/common/convolution-matrix.c:61
 msgid "Blue channel"
-msgstr ""
+msgstr "Canal de albastru"
 
 #: operations/common/convolution-matrix.c:62
 msgid "Alpha channel"
@@ -1909,6 +1925,12 @@ msgid ""
 "approach was originally presented by Raanan Fattal, in the 2002 SIGGRAPH "
 "paper: Gradient Domain High Dynamic Range Compression."
 msgstr ""
+"Adaptează o imagine, care poate avea un interval dinamic ridicat, pentru o "
+"prezentare ce folosește un interval dinamic redus. Acest operator atenuează "
+"magnitudinile degradeurilor imaginilor locale, producând luminanță în "
+"intervalul 0,0-1,0. Această abordare de mapare a tonului a fost prezentată "
+"inițial de Raanan Fattal, în lucrarea SIGGRAPH din 2002: Gradient Domain "
+"High Dynamic Range Compression."
 
 #: operations/common/gaussian-blur.c:25 operations/common/gblur-1d.c:40
 msgid "FIR"
@@ -2611,6 +2633,10 @@ msgid ""
 "a low dynamic range. This operator constrains contrasts across multiple "
 "spatial frequencies, producing luminance within the range 0.0-1.0"
 msgstr ""
+"Adaptează o imagine, care poate avea un interval dinamic ridicat, pentru o "
+"prezentare ce folosește un interval dinamic redus. Acest operator constrânge "
+"contrastele între mai multe frecvențe spațiale, producând luminanță în "
+"intervalul 0,0-1,0."
 
 #: operations/common/map-absolute.c:61
 msgid "Map Absolute"
@@ -2846,27 +2872,27 @@ msgstr ""
 
 #: operations/common/mono-mixer.c:24 operations/common-gpl3+/channel-mixer.c:30
 msgid "Preserve luminosity"
-msgstr ""
+msgstr "Conservă luminozitatea"
 
 #: operations/common/mono-mixer.c:26
 msgid "Red Channel Multiplier"
-msgstr ""
+msgstr "Multiplicator pentru canalul roșu"
 
 #: operations/common/mono-mixer.c:30
 msgid "Green Channel Multiplier"
-msgstr ""
+msgstr "Multiplicator pentru canalul verde"
 
 #: operations/common/mono-mixer.c:34
 msgid "Blue Channel Multiplier"
-msgstr ""
+msgstr "Multiplicator pentru canalul albastru"
 
 #: operations/common/mono-mixer.c:113
 msgid "Mono Mixer"
-msgstr ""
+msgstr "Mixer monocrom"
 
 #: operations/common/mono-mixer.c:116
 msgid "Monochrome channel mixer"
-msgstr ""
+msgstr "Mixer de canal monocrom"
 
 #: operations/common/motion-blur-linear.c:26
 msgid "Length of blur in pixels"
@@ -3646,7 +3672,7 @@ msgstr ""
 
 #: operations/common/reinhard05.c:302
 msgid "Reinhard 2005 Tone Mapping"
-msgstr ""
+msgstr "Mapare de tonuri Reinhard 2005"
 
 #: operations/common/reinhard05.c:306
 msgid ""
@@ -3655,54 +3681,59 @@ msgid ""
 "simple physiological observations, producing luminance within the range "
 "0.0-1.0"
 msgstr ""
+"Acesta este un operator global eficient, derivat din observații fiziologice "
+"simple, producând luminanță în intervalul 0.0-1.0"
 
 #: operations/common/remap.c:100
 msgid "Minimum Envelope"
-msgstr ""
+msgstr "Anvelopă minimă"
 
 #: operations/common/remap.c:101
 msgid "Maximum Envelope"
-msgstr ""
+msgstr "Anvelopă maximă"
 
 #: operations/common/remap.c:105
 msgid "Remap"
-msgstr ""
+msgstr "Remapează"
 
 #: operations/common/remap.c:107
 msgid "stretch components of pixels individually based on luminance envelopes"
 msgstr ""
+"extinde componentele pixelilor individuali pe baza anvelopei de luminanță"
 
 #: operations/common/rgb-clip.c:25 operations/common/rgb-clip.c:26
 msgid "Clip low pixel values"
-msgstr ""
+msgstr "Taie valorile mici ale pixelilor"
 
 #: operations/common/rgb-clip.c:28
 msgid "Low limit"
-msgstr ""
+msgstr "Limită inferioară"
 
 #: operations/common/rgb-clip.c:31
 msgid "Pixels values lower than this limit will be set to it"
 msgstr ""
+"Valorile pixelilor mai mici decât această limită vor fi stabilite la aceasta"
 
 #: operations/common/rgb-clip.c:34 operations/common/rgb-clip.c:35
 msgid "Clip high pixel values"
-msgstr ""
+msgstr "Taie valorile mari ale pixelilor"
 
 #: operations/common/rgb-clip.c:37
 msgid "High limit"
-msgstr ""
+msgstr "Limită superioară"
 
 #: operations/common/rgb-clip.c:40
 msgid "Pixels values higher than this limit will be set to it"
 msgstr ""
+"Valorile pixelilor mai mari decât această limită vor fi stabilite la aceasta"
 
 #: operations/common/rgb-clip.c:188
 msgid "Clip RGB"
-msgstr ""
+msgstr "Tăiere RGB"
 
 #: operations/common/rgb-clip.c:191
 msgid "Keep RGB pixels values inside a specific range"
-msgstr ""
+msgstr "Păstrează valorile pixelilor RGB în interiorul unui interval specific"
 
 #: operations/common/saturation.c:26
 msgid "Native"
@@ -3729,6 +3760,8 @@ msgstr "Spațiu de culoare pentru interpolare"
 msgid ""
 "Set at Native if uncertain, the CIE based spaces might introduce hue shifts."
 msgstr ""
+"Stabiliți la Nativ dacă este incert, spațiile bazate pe CIE ar putea "
+"introduce deplasări de nuanță."
 
 #: operations/common/saturation.c:387
 msgid "Changes the saturation"
@@ -3768,19 +3801,19 @@ msgstr "Intensitatea efectului"
 
 #: operations/common/sepia.c:25
 msgid "Strength of the sepia effect"
-msgstr ""
+msgstr "Intensitatea efectului de sepia"
 
 #: operations/common/sepia.c:112
 msgid "Sepia"
-msgstr ""
+msgstr "Sepia"
 
 #: operations/common/sepia.c:115
 msgid "Apply a sepia tone to the input image"
-msgstr ""
+msgstr "Aplică un ton sepia la imaginea de intrare"
 
 #: operations/common/slic.c:28
 msgid "Regions size"
-msgstr ""
+msgstr "Dimensiunea zonei"
 
 #: operations/common/slic.c:29
 msgid "Size of a region side"
@@ -3896,29 +3929,31 @@ msgstr ""
 
 #: operations/common/stress.c:267 operations/common/stress.c:271
 msgid "Spatio Temporal Retinex-like Envelope with Stochastic Sampling"
-msgstr ""
+msgstr "Anvelopă spațio-temporală, precum Retinex, cu eșantionare stochastică"
 
 #: operations/common/stretch-contrast.c:25
 msgid "Keep colors"
-msgstr ""
+msgstr "Păstrează culorile"
 
 #: operations/common/stretch-contrast.c:26
 msgid "Impact each channel with the same amount"
-msgstr ""
+msgstr "Impactează fiecare canal cu același cunatum"
 
 #: operations/common/stretch-contrast.c:28
 msgid "Non-linear components"
-msgstr ""
+msgstr "Componente neliniare"
 
 #: operations/common/stretch-contrast.c:29
 msgid ""
 "When set operate on gamma corrected values instead of linear RGB - acting "
 "like the old normalize filter in GIMP"
 msgstr ""
+"Când opțiunea este activată, funcționează pe valori corectate gamma în loc "
+"de RGB liniar - acționând ca vechiul filtru de normalizare din GIMP"
 
 #: operations/common/stretch-contrast.c:582
 msgid "Stretch Contrast"
-msgstr ""
+msgstr "Extinde contrastul"
 
 #: operations/common/stretch-contrast.c:585
 msgid ""
@@ -3926,10 +3961,14 @@ msgid ""
 "improves images that make poor use of the available contrast (little "
 "contrast, very dark, or very bright images)."
 msgstr ""
+"Scalează componentele tamponului de memorie pentru a fi cuprinse în "
+"intervalul 0.0-1.0. Acest lucru îmbunătățește imaginile care utilizează "
+"deficitar contrastul disponibil (contrast redus, imagini foarte întunecate "
+"sau foarte luminoase)."
 
 #: operations/common/stretch-contrast-hsv.c:253
 msgid "Stretch Contrast HSV"
-msgstr ""
+msgstr "Extinde contrastul HSV"
 
 #: operations/common/stretch-contrast-hsv.c:256
 msgid ""
@@ -3938,16 +3977,21 @@ msgid ""
 "contrast, very dark, or very bright images). This version differs from "
 "Contrast Autostretch in that it works in HSV space, and preserves hue."
 msgstr ""
+"Scalează componentele tamponului de memorie pentru a fi cuprinse în "
+"intervalul 0.0-1.0. Acest lucru îmbunătățește imaginile care utilizează "
+"deficitar contrastul disponibil (contrast redus, imagini foarte întunecate "
+"sau foarte luminoase). Această versiune diferă de extinderea automată a "
+"contrastului prin aceea că lucrează în spațiul HSV și conservă albastrul."
 
 #: operations/common/svg-huerotate.c:27 operations/common/svg-matrix.c:27
 #: operations/common/svg-saturate.c:25
 msgid "Values"
-msgstr ""
+msgstr "Valori"
 
 #: operations/common/svg-huerotate.c:28 operations/common/svg-matrix.c:28
 #: operations/common/svg-saturate.c:26
 msgid "list of <number>s"
-msgstr ""
+msgstr "listă ed <number>s"
 
 #: operations/common/svg-huerotate.c:118
 msgid "SVG Hue Rotate"
@@ -4076,7 +4120,7 @@ msgstr ""
 
 #: operations/common/vignette.c:49 operations/common-cxx/piecewise-blend.cc:33
 msgid "Gamma"
-msgstr "Gama"
+msgstr "Gamma"
 
 # hm ?
 #: operations/common/vignette.c:50
@@ -4771,110 +4815,116 @@ msgstr ""
 
 #: operations/common-gpl3+/channel-mixer.c:267
 msgid "Channel Mixer"
-msgstr ""
+msgstr "Mixer de canal"
 
 #: operations/common-gpl3+/channel-mixer.c:269
 msgid ""
 "Remix colors; by defining relative contributions from source components."
 msgstr ""
+"Remixează culorile prin definirea contribuțiilor relative din componentele "
+"sursă."
 
 #: operations/common-gpl3+/color-exchange.c:31
 msgid "From Color"
-msgstr ""
+msgstr "Din culoarea"
 
 #: operations/common-gpl3+/color-exchange.c:32
 msgid "The color to change."
-msgstr ""
+msgstr "Culoarea de schimbat."
 
 #: operations/common-gpl3+/color-exchange.c:34
 msgid "To Color"
-msgstr ""
+msgstr "La culoarea"
 
 #: operations/common-gpl3+/color-exchange.c:35
 msgid "Replacement color."
-msgstr ""
+msgstr "Culoarea înlocuitoare."
 
 #: operations/common-gpl3+/color-exchange.c:37
 msgid "Red Threshold"
-msgstr ""
+msgstr "Prag de roșu"
 
 #: operations/common-gpl3+/color-exchange.c:38
 msgid "Red threshold of the input color"
-msgstr ""
+msgstr "Pragul de roșu a culorii de intrare"
 
 #: operations/common-gpl3+/color-exchange.c:41
 msgid "Green Threshold"
-msgstr ""
+msgstr "Prag de verde"
 
 #: operations/common-gpl3+/color-exchange.c:42
 msgid "Green threshold of the input color"
-msgstr ""
+msgstr "Pragul de verde a culorii de intrare"
 
 #: operations/common-gpl3+/color-exchange.c:45
 msgid "Blue Threshold"
-msgstr ""
+msgstr "Prag de albastru"
 
 #: operations/common-gpl3+/color-exchange.c:46
 msgid "Blue threshold of the input color"
-msgstr ""
+msgstr "Pragul de albastru a culorii de intrare"
 
 #: operations/common-gpl3+/color-exchange.c:244
 msgid "Exchange color"
-msgstr ""
+msgstr "Schimb de culori"
 
 #: operations/common-gpl3+/color-exchange.c:248
 msgid ""
 "Exchange one color with another, optionally setting a threshold to convert "
 "from one shade to another."
 msgstr ""
+"Schimbă o culoare cu alta, stabilind opțional un prag pentru a converti de "
+"la o tentă la alta."
 
 #: operations/common-gpl3+/color-to-alpha.c:30
 msgid "The color to make transparent."
-msgstr ""
+msgstr "Culoarea de făcut transparentă."
 
 #: operations/common-gpl3+/color-to-alpha.c:32
 msgid "Transparency threshold"
-msgstr ""
+msgstr "Prag de transparență"
 
 #: operations/common-gpl3+/color-to-alpha.c:33
 msgid "The limit below which colors become transparent."
-msgstr ""
+msgstr "Limita sub care culorile devin transparente."
 
 #: operations/common-gpl3+/color-to-alpha.c:36
 msgid "Opacity threshold"
-msgstr ""
+msgstr "Prag de opacitate"
 
 #: operations/common-gpl3+/color-to-alpha.c:37
 msgid "The limit above which colors remain opaque."
-msgstr ""
+msgstr "Limita peste care culorile rămân opace."
 
 #: operations/common-gpl3+/color-to-alpha.c:285
 msgid "Color to Alpha"
-msgstr ""
+msgstr "Culoare la alfa"
 
 #: operations/common-gpl3+/color-to-alpha.c:291
 msgid "Convert a specified color to transparency, works best with white."
 msgstr ""
+"Convertește o culoare specifică la transparență, funcționează cel mai bine "
+"cu alb."
 
 #: operations/common-gpl3+/cubism.c:30 operations/common-gpl3+/mosaic.c:42
 msgid "Tile size"
-msgstr ""
+msgstr "Dimensiune dală"
 
 #: operations/common-gpl3+/cubism.c:31 operations/common-gpl3+/mosaic.c:43
 msgid "Average diameter of each tile (in pixels)"
-msgstr ""
+msgstr "Diametrul mediu al fiecărei dale (în pixeli)"
 
 #: operations/common-gpl3+/cubism.c:35
 msgid "Tile saturation"
-msgstr ""
+msgstr "Saturație dală"
 
 #: operations/common-gpl3+/cubism.c:36
 msgid "Expand tiles by this amount"
-msgstr ""
+msgstr "Extinde dalele cu această cantitate"
 
 #: operations/common-gpl3+/cubism.c:40 operations/common-gpl3+/tile-paper.c:77
 msgid "The tiles' background color"
-msgstr ""
+msgstr "Culoarea de fundal a dalei"
 
 #: operations/common-gpl3+/cubism.c:649
 msgid "Cubism"
@@ -6112,7 +6162,7 @@ msgstr "Decalaj"
 
 #: operations/common-gpl3+/shift.c:27
 msgid "Maximum amount to shift"
-msgstr "Valoare maximă de decalaj"
+msgstr "Cuantumul maxim de decalat"
 
 #: operations/common-gpl3+/shift.c:31
 msgid "Shift direction"
@@ -6120,7 +6170,7 @@ msgstr "Direcție de decalaj"
 
 #: operations/common-gpl3+/shift.c:148
 msgid "Shift each row or column of pixels by a random amount"
-msgstr "Decalează fiecare rând sau coloană de pixeli cu o valoare aleatorie"
+msgstr "Decalează fiecare rând sau coloană de pixeli cu un cuantum aleatoriu"
 
 #: operations/common-gpl3+/sinus.c:32
 msgid "Scale value for x axis"
@@ -8864,7 +8914,7 @@ msgstr "Stop 2"
 
 #: operations/workshop/gradient-map.c:29
 msgid "Color 3"
-msgstr "Culoare 3"
+msgstr "Culoarea 3"
 
 #: operations/workshop/gradient-map.c:30
 msgid "Stop 3"
@@ -8872,7 +8922,7 @@ msgstr "Stop 3"
 
 #: operations/workshop/gradient-map.c:31
 msgid "Color 4"
-msgstr "Culoare 4"
+msgstr "Culoarea 4"
 
 #: operations/workshop/gradient-map.c:32
 msgid "Stop 4"
@@ -8880,7 +8930,7 @@ msgstr "Stop 4"
 
 #: operations/workshop/gradient-map.c:33
 msgid "Color 5"
-msgstr "Culoare 5"
+msgstr "Culoarea 5"
 
 #: operations/workshop/gradient-map.c:34
 msgid "Stop 5"
