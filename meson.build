@@ -244,6 +244,9 @@ mrg       = dependency('mrg',         version: '>=0.1.4',
 )
 config.set('HAVE_MRG', mrg.found())
 
+maxflow   = dependency('maxflow',     version: '>=3.0.4',
+  required: get_option('maxflow')
+)
 openexr   = dependency('OpenEXR',     version: '>=1.6.1',
   required: get_option('openexr')
 )
@@ -399,5 +402,6 @@ message('\n'.join(['',
 '  umfpack:         @0@'.format(libumfpack.found()),
 '  TIFF             @0@'.format(libtiff.found()),
 '  webp:            @0@'.format(libwebp.found()),
+'  maxflow:         @0@'.format(maxflow.found()),
 '  poly2tri-c:      @0@ (@1@)'.format(poly2tri_c.found(),poly2tri_c.type_name()),
 '']))
