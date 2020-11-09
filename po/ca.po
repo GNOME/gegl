@@ -3604,7 +3604,7 @@ msgstr ""
 
 #: operations/common/panorama-projection.c:540
 msgid "Panorama Projection"
-msgstr "Projecció del panorama"
+msgstr "Projecció panoràmica"
 
 #: operations/common/panorama-projection.c:545
 msgid ""
@@ -3903,7 +3903,7 @@ msgstr "Espai de color d'interpolació"
 msgid ""
 "Set at Native if uncertain, the CIE based spaces might introduce hue shifts."
 msgstr ""
-"Situat a Nadiu si no és segur, els espais basats en CIE podrien introduir "
+"Estableix a Nadiu si no esteu segur, els espais basats en CIE podrien introduir "
 "canvis de to."
 
 #: operations/common/saturation.c:387
@@ -4503,7 +4503,7 @@ msgstr "Límit intern de la zona centrada"
 
 #: operations/common-cxx/focus-blur.c:70
 msgid "Focus-transition midpoint"
-msgstr "Punt mig de la transició centrada"
+msgstr "Punt mitjà de la transició centrada"
 
 #: operations/common-cxx/focus-blur.c:73 operations/common-gpl3+/waves.c:47
 msgid "Aspect ratio"
@@ -7895,7 +7895,7 @@ msgstr "Espai del color"
 
 #: operations/external/raw-load.c:41
 msgid "Color space to use for loaded data"
-msgstr "Espai de color per a les dades carregades "
+msgstr "Espai de color per a les dades carregades"
 
 #: operations/external/raw-load.c:281
 msgid "libraw File Loader"
@@ -8785,7 +8785,7 @@ msgstr "Nivell de suavitat"
 
 #: operations/workshop/bilateral-filter-fast.c:502
 msgid "Bilateral Box Filter"
-msgstr "Filtre de la capsa bilateral"
+msgstr "Filtre de la caixa bilateral"
 
 #: operations/workshop/bilateral-filter-fast.c:504
 msgid ""
@@ -8935,7 +8935,7 @@ msgid ""
 "Pixel level filter/composer scripting prototyping with lua. See http://"
 "pippin.gimp.org/image-processing/ for further details."
 msgstr ""
-"Prototip d'script de filtre/compositor a nivell de píxel amb lua. Vegeu "
+"Prototip de script de filtre/compositor a nivell de píxel amb lua. Vegeu "
 "http://pippin.gimp.org/image-processing/ per a més detalls."
 
 #: operations/workshop/external/lens-correct.c:28
