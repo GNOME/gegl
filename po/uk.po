@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-06-02 20:21+0000\n"
-"PO-Revision-Date: 2020-06-03 09:52+0300\n"
+"POT-Creation-Date: 2020-11-18 16:19+0000\n"
+"PO-Revision-Date: 2020-11-18 19:22+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 20.07.70\n"
+"X-Generator: Lokalize 20.11.70\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -167,7 +167,7 @@ msgstr ""
 "\n"
 "\n"
 
-#: bin/ui-core.c:4381 gegl/gegl-serialize.c:658
+#: bin/ui-core.c:4382 gegl/gegl-serialize.c:658
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "Не існує BablFormat «%s»."
@@ -402,23 +402,23 @@ msgstr "У %s немає властивості %s. Властивості: "
 msgid "No such op '%s'"
 msgstr "Немає дії «%s»"
 
-#: gegl/module/geglmodule.c:340
+#: gegl/module/geglmodule.c:339
 msgid "Module error"
 msgstr "Помилка модуля"
 
-#: gegl/module/geglmodule.c:341
+#: gegl/module/geglmodule.c:340
 msgid "Loaded"
 msgstr "Завантажено"
 
-#: gegl/module/geglmodule.c:342
+#: gegl/module/geglmodule.c:341
 msgid "Load failed"
 msgstr "Не вдалося завантажити"
 
-#: gegl/module/geglmodule.c:343
+#: gegl/module/geglmodule.c:342
 msgid "Not loaded"
 msgstr "Не завантажено"
 
-#: gegl/module/geglmodule.c:389
+#: gegl/module/geglmodule.c:388
 #, c-format
 msgid "Module '%s' load error: %s"
 msgstr "Помилка завантаження модуля «%s»: %s"
@@ -654,7 +654,7 @@ msgstr "М'якість краю області німба"
 #: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:87
+#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
 #: operations/common-cxx/lens-blur.cc:24
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
@@ -2109,21 +2109,21 @@ msgstr "Шлях до цільового файлу для запису буфе
 msgid "GeglBuffer file writer."
 msgstr "Записувач файлів GeglBuffer."
 
-#: operations/common/gegl.c:67
+#: operations/common/gegl.c:68
 msgid "pipeline"
 msgstr "канал обробки"
 
-#: operations/common/gegl.c:68
+#: operations/common/gegl.c:69
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr ""
 "[дія [властивість=значення] [властивість=значення]] [[дія] "
 "[властивість=значення]"
 
-#: operations/common/gegl.c:71
+#: operations/common/gegl.c:72
 msgid "Eeeeeek"
 msgstr "Оце тобі"
 
-#: operations/common/gegl.c:72
+#: operations/common/gegl.c:73
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
@@ -2131,11 +2131,11 @@ msgstr ""
 "Існує проблема із синтаксисом або у програмі для обробки значень "
 "властивостей. Втім, здебільшого, усе має працювати."
 
-#: operations/common/gegl.c:167
+#: operations/common/gegl.c:168
 msgid "GEGL graph"
 msgstr "Граф GEGL"
 
-#: operations/common/gegl.c:170
+#: operations/common/gegl.c:171
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2639,7 +2639,7 @@ msgid "Shadow length"
 msgstr "Довжина тіні"
 
 #: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
-#: operations/common-cxx/focus-blur.c:97
+#: operations/common-cxx/focus-blur.c:95
 msgid "Midpoint"
 msgstr "Середня точка"
 
@@ -2880,7 +2880,7 @@ msgid "position of symmetry center in output"
 msgstr "положення центру симетрії на виході"
 
 #: operations/common/mirrors.c:58 operations/common/vignette.c:65
-#: operations/common-cxx/focus-blur.c:77 operations/common-gpl3+/displace.c:81
+#: operations/common-cxx/focus-blur.c:75 operations/common-gpl3+/displace.c:81
 #: operations/common-gpl3+/motion-blur-circular.c:40
 #: operations/common-gpl3+/motion-blur-zoom.c:39
 #: operations/common-gpl3+/supernova.c:32 operations/common-gpl3+/waves.c:25
@@ -2892,7 +2892,7 @@ msgid "X axis ratio for the center of mirroring"
 msgstr "Пропорція за віссю X для центра віддзеркалення"
 
 #: operations/common/mirrors.c:63 operations/common/vignette.c:70
-#: operations/common-cxx/focus-blur.c:82 operations/common-gpl3+/displace.c:88
+#: operations/common-cxx/focus-blur.c:80 operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:45
 #: operations/common-gpl3+/motion-blur-zoom.c:45
 #: operations/common-gpl3+/supernova.c:38 operations/common-gpl3+/waves.c:30
@@ -3255,7 +3255,7 @@ msgid "The scale of the noise function"
 msgstr "Масштаб шумової функції"
 
 #: operations/common/noise-cell.c:40 operations/common/pixelize.c:31
-#: operations/common-cxx/focus-blur.c:72
+#: operations/common-cxx/focus-blur.c:70
 msgid "Shape"
 msgstr "Форма"
 
@@ -4308,7 +4308,7 @@ msgstr ""
 "пропорцій. Щоб безпосередньо використати коефіцієнт стискання як пропорції, "
 "встановіть значення пропорції 0.0."
 
-#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:104
+#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:102
 #: operations/common-gpl3+/bayer-matrix.c:50
 #: operations/common-gpl3+/linear-sinusoid.c:95
 #: operations/common-gpl3+/spiral.c:64
@@ -4475,13 +4475,11 @@ msgstr "Перетворення перспективи"
 msgid "Calculate a distance transform"
 msgstr "Обчислити перетворення перспективи"
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:506
-#| msgid "Lens Flare"
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:504
 msgid "Lens Blur"
 msgstr "Розмивання об'єктивом"
 
 #: operations/common-cxx/focus-blur.c:41
-#| msgid "Curve type"
 msgid "Blur type"
 msgstr "Тип розмивання"
 
@@ -4490,7 +4488,6 @@ msgid "Out-of-focus blur radius"
 msgstr "Радіус розмиття поза фокусом"
 
 #: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:31
-#| msgid "Highlights"
 msgid "Highlight factor"
 msgstr "Коефіцієнт підсвічування"
 
@@ -4499,102 +4496,97 @@ msgid "Relative highlight strength"
 msgstr "Відносна потужність підсвічування"
 
 #: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:35
-#| msgid "Threshold low"
 msgid "Highlight threshold (low)"
 msgstr "Поріг підсвічування (нижній)"
 
-#: operations/common-cxx/focus-blur.c:63 operations/common-cxx/lens-blur.cc:40
-#| msgid "Highlights"
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold"
 msgstr "Поріг підсвічування"
 
-#: operations/common-cxx/focus-blur.c:65 operations/common-cxx/lens-blur.cc:42
-#| msgid "Threshold high"
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
 msgid "Highlight threshold (high)"
 msgstr "Поріг підсвічування (верхній)"
 
-#: operations/common-cxx/focus-blur.c:88
+#: operations/common-cxx/focus-blur.c:86
 msgid "Focus-region outer radius"
 msgstr "Зовнішній радіус області фокусування"
 
-#: operations/common-cxx/focus-blur.c:93 operations/common-gpl3+/photocopy.c:29
+#: operations/common-cxx/focus-blur.c:91 operations/common-gpl3+/photocopy.c:29
 #: operations/common-gpl3+/softglow.c:33
 msgid "Sharpness"
 msgstr "Різкість"
 
-#: operations/common-cxx/focus-blur.c:94
+#: operations/common-cxx/focus-blur.c:92
 msgid "Focus-region inner limit"
 msgstr "Внутрішнє обмеження області фокусування"
 
-#: operations/common-cxx/focus-blur.c:98
+#: operations/common-cxx/focus-blur.c:96
 msgid "Focus-transition midpoint"
 msgstr "Середня точка переходу фокусування"
 
-#: operations/common-cxx/focus-blur.c:101 operations/common-gpl3+/waves.c:46
+#: operations/common-cxx/focus-blur.c:99 operations/common-gpl3+/waves.c:46
 msgid "Aspect ratio"
 msgstr "Відношення сторін"
 
-#: operations/common-cxx/focus-blur.c:111
+#: operations/common-cxx/focus-blur.c:109
 #: operations/common-cxx/variable-blur.c:42
 msgid "Blur levels"
 msgstr "Рівні розмивання"
 
-#: operations/common-cxx/focus-blur.c:112
+#: operations/common-cxx/focus-blur.c:110
 #: operations/common-cxx/variable-blur.c:43
 msgid "Number of blur levels"
 msgstr "Кількість рівнів розмивання"
 
-#: operations/common-cxx/focus-blur.c:116
+#: operations/common-cxx/focus-blur.c:114
 #: operations/common-cxx/variable-blur.c:46
 msgid "Blur gamma"
 msgstr "Гамма розмиття"
 
-#: operations/common-cxx/focus-blur.c:117
+#: operations/common-cxx/focus-blur.c:115
 #: operations/common-cxx/variable-blur.c:47
 msgid "Gamma factor for blur-level spacing"
 msgstr "Коефіцієнт гамма для визначення інтервалів рівнів розмиття"
 
-#: operations/common-cxx/focus-blur.c:124
+#: operations/common-cxx/focus-blur.c:122
 #: operations/common-cxx/variable-blur.c:53
 msgid "High quality"
 msgstr "Висока якість"
 
-#: operations/common-cxx/focus-blur.c:125
+#: operations/common-cxx/focus-blur.c:123
 #: operations/common-cxx/variable-blur.c:54
 msgid "Generate more accurate and consistent output (slower)"
 msgstr "Зробити результати точнішими і одноріднішими (повільніше)"
 
-#: operations/common-cxx/focus-blur.c:322
+#: operations/common-cxx/focus-blur.c:320
 msgid "Focus Blur"
 msgstr "Фокусне розмивання"
 
-#: operations/common-cxx/focus-blur.c:324
+#: operations/common-cxx/focus-blur.c:322
 msgid "Blur the image around a focal point"
 msgstr "Розмиття зображення навколо точки фокусування"
 
-#: operations/common-cxx/lens-blur.cc:48
-#| msgid "Clip to the input extent"
+#: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
 msgstr "Обрізати до розмірів вхідного"
 
-#: operations/common-cxx/lens-blur.cc:49
-#| msgid "Clip to the input extent"
+#: operations/common-cxx/lens-blur.cc:47
 msgid "Clip output to the input extents"
 msgstr "Обрізати результати до розмірів вхідного зображення"
 
-#: operations/common-cxx/lens-blur.cc:51
+#: operations/common-cxx/lens-blur.cc:49
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "Лінійна маска"
 
-#: operations/common-cxx/lens-blur.cc:52
+#: operations/common-cxx/lens-blur.cc:50
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "Використання значень лінійної маски"
 
-#: operations/common-cxx/lens-blur.cc:508
+#: operations/common-cxx/lens-blur.cc:506
 msgid "Simulate out-of-focus lens blur"
 msgstr "Імітувати позафокусове розмиття об'єктивом"
 
@@ -7097,10 +7089,15 @@ msgid "Convert color space"
 msgstr "Перетворити простір кольорів"
 
 #: operations/core/convert-space.c:106
+#| msgid ""
+#| "set color space which subsequent babl-formats in the pipeline are created "
+#| "with, and the ICC profile potentially embedded for external color "
+#| "management, setting a pointer to a format override the string property "
+#| "and setting an aux pad overrides both. "
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
 "with, and the ICC profile potentially embedded for external color "
-"management, setting a pointer to a format override the string property and "
+"management, setting a pointer to a format overrides the string property and "
 "setting an aux pad overrides both. "
 msgstr ""
 "Встановити колірний простір, за допомогою якого було створено наступні "
@@ -7972,11 +7969,11 @@ msgstr "Зберегти в GdkPixbuf"
 msgid "Store image in a GdkPixbuf."
 msgstr "Зберегти зображення в GdkPixbuf"
 
-#: operations/external/sdl2-display.c:202
+#: operations/external/sdl2-display.c:196
 msgid "SDL2 Display"
 msgstr "SDL2-дисплей"
 
-#: operations/external/sdl2-display.c:205
+#: operations/external/sdl2-display.c:199
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
