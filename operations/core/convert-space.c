@@ -103,7 +103,7 @@ gegl_op_class_init (GeglOpClass *klass)
               "name",        "gegl:convert-space",
               "title",       _("Convert color space"),
               "categories",  "core:color",
-              "description", _("set color space which subsequent babl-formats in the pipeline are created with, and the ICC profile potentially embedded for external color management, setting a pointer to a format override the string property and setting an aux pad overrides both. "),
+              "description", _("set color space which subsequent babl-formats in the pipeline are created with, and the ICC profile potentially embedded for external color management, setting a pointer to a format overrides the string property and setting an aux pad overrides both. "),
               NULL);
 }
 

@@ -2,8 +2,10 @@
 gegl_core_sources = files(
   'cache.c',
   'cast-format.c',
+  'cast-space.c',
   'clone.c',
   'convert-format.c',
+  'convert-space.c',
   'crop.c',
   'json.c',
   'load.c',
