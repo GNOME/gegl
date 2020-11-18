@@ -14,9 +14,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-08-29 20:58+0000\n"
-"PO-Revision-Date: 2020-08-30 19:46+0200\n"
-"Last-Translator: Tim Sabsch <tim@sabsch.com>\n"
+"POT-Creation-Date: 2020-09-02 17:25+0000\n"
+"PO-Revision-Date: 2020-11-17 21:31+0100\n"
+"Last-Translator: Christian Kirbach <christian.kirbach@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -4425,10 +4425,8 @@ msgid "Radius of the wavelet blur"
 msgstr "Radius des Wavelet-Weichzeichners"
 
 #: operations/common/wavelet-blur-1d.c:274
-#, fuzzy
-#| msgid "Wavelet Blur"
 msgid "1D Wavelet-blur"
-msgstr "Wavelet-Weichzeichner"
+msgstr "1D Wavelet-Weichzeichner"
 
 #: operations/common/wavelet-blur-1d.c:276 operations/common/wavelet-blur.c:80
 msgid ""
@@ -4525,10 +4523,8 @@ msgid "Highlight threshold (low)"
 msgstr "Schwellwert hervorheben (niedrig)"
 
 #: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
-#, fuzzy
-#| msgid "Highlights"
 msgid "Highlight threshold"
-msgstr "Glanzlichter"
+msgstr "Schwellwert hervorheben"
 
 #: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
 msgid "Highlight threshold (high)"
@@ -4562,10 +4558,8 @@ msgstr "Weichzeichnungsstufe"
 
 #: operations/common-cxx/focus-blur.c:110
 #: operations/common-cxx/variable-blur.c:43
-#, fuzzy
-#| msgid "Number of clusters"
 msgid "Number of blur levels"
-msgstr "Anzahl der Cluster"
+msgstr "Anzahl der Weichzeichnungsstufen"
 
 #: operations/common-cxx/focus-blur.c:114
 #: operations/common-cxx/variable-blur.c:46
@@ -4610,18 +4604,14 @@ msgstr "Auf Eingabegröße beschneiden"
 #: operations/common-cxx/lens-blur.cc:49
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
-#, fuzzy
-#| msgid "Linear"
 msgid "Linear mask"
-msgstr "Linear"
+msgstr "Linear maskieren"
 
 #: operations/common-cxx/lens-blur.cc:50
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
-#, fuzzy
-#| msgid "Use pixel luminance values"
 msgid "Use linear mask values"
-msgstr "Pixel-Helligkeitswerte verwenden"
+msgstr "Werte für lineares Maskieren verwenden"
 
 #: operations/common-cxx/lens-blur.cc:506
 msgid "Simulate out-of-focus lens blur"
@@ -6500,7 +6490,7 @@ msgstr "Spiralradius"
 #: operations/common-gpl3+/spiral.c:53
 #: operations/workshop/connected-components.c:31
 msgid "Base"
-msgstr ""
+msgstr "Basis"
 
 #: operations/common-gpl3+/spiral.c:54
 msgid "Logarithmic spiral base"
@@ -7039,10 +7029,10 @@ msgstr "Das Babl-Format der Eingabe"
 msgid "Output format"
 msgstr "Ausgabeformat"
 
+# Das gibts beim Programmieren.
 #: operations/core/cast-format.c:110
-#, fuzzy
 msgid "Cast Format"
-msgstr "babl-Format"
+msgstr "Format umwandeln"
 
 #: operations/core/cast-format.c:112
 msgid ""
@@ -7063,10 +7053,9 @@ msgid "Pointer"
 msgstr "Zeiger"
 
 #: operations/core/cast-space.c:28 operations/core/convert-space.c:28
-#, fuzzy
 #| msgid "Zoom in the fractal space"
 msgid "pointer to a const * Babl space"
-msgstr "In den Fraktalraum hineinzoomen"
+msgstr "Zeiger auf const * Babl space"
 
 #: operations/core/cast-space.c:29 operations/core/convert-space.c:29
 #: operations/external/pdf-load.c:24 operations/external/v4l.c:26
@@ -7079,10 +7068,8 @@ msgid "File system path to ICC matrix profile to load"
 msgstr "Dateisystempfad zum zu ladenden ICC-Matrix-Profil"
 
 #: operations/core/cast-space.c:128
-#, fuzzy
-#| msgid "Color Enhance"
 msgid "Cast color space"
-msgstr "Farbverbesserung"
+msgstr "Farbraum umwandeln"
 
 #: operations/core/cast-space.c:130
 msgid ""
@@ -7160,7 +7147,7 @@ msgstr "Adresse der zu ladenden Datei."
 #: operations/core/load.c:34 operations/external/jpg-save.c:45
 #: operations/external/png-load.c:37 operations/external/png-save.c:35
 msgid "Object to supply image metadata"
-msgstr ""
+msgstr "Objekt, das Bild-Metadaten bereitstellt"
 
 #: operations/core/load.c:374
 msgid ""
@@ -7399,22 +7386,16 @@ msgid "Path of file to load"
 msgstr "Pfad der zu ladenden Datei"
 
 #: operations/external/gif-load.c:36
-#, fuzzy
-#| msgid "frames"
 msgid "frame"
-msgstr "Einzelbilder"
+msgstr "Einzelbild"
 
 #: operations/external/gif-load.c:37
-#, fuzzy
-#| msgid "Frame number"
 msgid "frame number to decode"
-msgstr "Einzelbildnummer"
+msgstr "Zu dekodierende Einzelbildnummer"
 
 #: operations/external/gif-load.c:39
-#, fuzzy
-#| msgid "The number of deformation iterations"
 msgid "Number of frames in gif animation"
-msgstr "Anzahl der Iterationen der Deformation"
+msgstr "Anzahl der Einzelbilder in der GIF-Animation"
 
 #: operations/external/gif-load.c:40
 #, fuzzy
@@ -7820,7 +7801,7 @@ msgstr "Adresse der zu ladenden Datei"
 
 #: operations/external/pdf-load.c:30
 msgid "Page"
-msgstr ""
+msgstr "Seite"
 
 #: operations/external/pdf-load.c:31
 #, fuzzy
@@ -7830,7 +7811,7 @@ msgstr "Farbe, die dargestellt werden soll"
 
 #: operations/external/pdf-load.c:34
 msgid "Pages"
-msgstr ""
+msgstr "Seiten"
 
 #: operations/external/pdf-load.c:35
 msgid "Total pages, provided as a visual read-only property"
@@ -7842,15 +7823,16 @@ msgstr ""
 
 #: operations/external/pdf-load.c:39
 msgid "Point/pixels per inch"
-msgstr ""
+msgstr "Punkte/Pixel pro Zoll"
 
 #: operations/external/pdf-load.c:43
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 #: operations/external/pdf-load.c:44
 msgid "Password to use for decryption of PDF, or blank for none"
 msgstr ""
+"Passwort für die Entschlüsselung des PDF. Leer lassen für kein Passwort."
 
 #: operations/external/pdf-load.c:242
 msgid "pdf loader"
@@ -7954,7 +7936,7 @@ msgstr "Kompatibel zu Adobe RGB"
 
 #: operations/external/raw-load.c:31
 msgid "Wide gamut RGB"
-msgstr ""
+msgstr "Wide-Gamut-RGB"
 
 #: operations/external/raw-load.c:32
 msgid "ProPhoto RGB"
@@ -8150,7 +8132,7 @@ msgstr ""
 
 #: operations/external/tiff-load.c:40 operations/external/tiff-save.c:35
 msgid "Object to receive image metadata"
-msgstr ""
+msgstr "Objekt, das Bild-Metadaten empfängt"
 
 #: operations/external/tiff-load.c:1034
 msgid "TIFF File Loader"
@@ -8168,11 +8150,13 @@ msgstr ""
 
 #: operations/external/tiff-save.c:30
 msgid "use floating point"
-msgstr ""
+msgstr "Fließkomma verwenden"
 
 #: operations/external/tiff-save.c:31
 msgid "floating point -1 means auto, 0 means integer 1 meant float."
 msgstr ""
+"Fließkomma. -1 bedeutet automatisch, 0 bedeutet Ganzzahl und 1 bedeutet "
+"Fließkomma."
 
 #: operations/external/tiff-save.c:825
 msgid "TIFF File Saver"
@@ -8258,10 +8242,8 @@ msgstr ""
 "Airbrush-Werkzeug eingesetzt wird."
 
 #: operations/external/vector-stroke.c:355
-#, fuzzy
-#| msgid "Stroke"
 msgid "Vector Stroke"
-msgstr "Strich"
+msgstr "Vektorstrich"
 
 #: operations/external/vector-stroke.c:359
 msgid "Renders a vector stroke"
@@ -8645,7 +8627,7 @@ msgstr "Skaliert den Puffer entsprechend einer Größe."
 
 #: operations/transform/scale-size-keepaspect.c:102
 msgid "Scale size keep aspect"
-msgstr ""
+msgstr "Größenskalierung behält Seitenverhältnis bei"
 
 #: operations/transform/scale-size-keepaspect.c:105
 msgid "Scales the buffer to a size, preserving aspect ratio"
@@ -8826,10 +8808,8 @@ msgid "Radius of row pixel region, (size will be radius*2+1)"
 msgstr "Radius der Zeilenpixelregion (Größe entspricht Radius*2+1)"
 
 #: operations/workshop/boxblur-1d.c:466
-#, fuzzy
-#| msgid "Box Blur"
 msgid "1D Box Blur"
-msgstr "Box-Weichzeichner"
+msgstr "1D Box-Weichzeichner"
 
 #: operations/workshop/boxblur-1d.c:467
 #, fuzzy
@@ -8846,7 +8826,7 @@ msgstr "Box-Weichzeichner"
 
 #: operations/workshop/connected-components.c:25
 msgid "Separator"
-msgstr ""
+msgstr "Trenner"
 
 #: operations/workshop/connected-components.c:26
 #, fuzzy
@@ -8866,7 +8846,7 @@ msgstr ""
 
 #: operations/workshop/connected-components.c:36
 msgid "Step"
-msgstr ""
+msgstr "Schritt"
 
 #: operations/workshop/connected-components.c:37
 msgid "Index step"
@@ -8945,7 +8925,7 @@ msgstr "Lua-Fehler"
 
 #: operations/workshop/external/gluas.c:34
 msgid "Parse/compile error, if any."
-msgstr ""
+msgstr "Verarbeitungs-/Compile-Fehler, sofern vorhanden."
 
 #: operations/workshop/external/gluas.c:38
 #, fuzzy
@@ -9258,7 +9238,7 @@ msgstr "Video4Linux Eingang, Webcams, Framegrabber und ähnliche Geräte."
 
 #: operations/workshop/external/voronoi-diagram.cc:29
 msgid "Mask"
-msgstr ""
+msgstr "Maskieren"
 
 #: operations/workshop/external/voronoi-diagram.cc:30
 #, fuzzy
@@ -9284,7 +9264,7 @@ msgstr "Umgang mit Bildrändern"
 
 #: operations/workshop/external/voronoi-diagram.cc:524
 msgid "Voronoi Diagram"
-msgstr ""
+msgstr "Voronoi-Diagramm"
 
 #: operations/workshop/external/voronoi-diagram.cc:531
 msgid "Paints each non-seed pixel with the color of the nearest seed pixel."
