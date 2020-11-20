@@ -39,6 +39,7 @@ gegl_common_sources = files(
   'grid.c',
   'high-pass.c',
   'hue-chroma.c',
+  'icc-load.c',
   'icc-save.c',
   'image-compare.c',
   'image-gradient.c',
