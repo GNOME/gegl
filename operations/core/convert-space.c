@@ -31,7 +31,7 @@ property_file_path (path, _("Path"), "")
 
 #else
 
-#define GEGL_OP_FILTER
+#define GEGL_OP_COMPOSER
 #define GEGL_OP_NAME            convert_space
 #define GEGL_OP_C_SOURCE        convert-space.c
 
@@ -47,7 +47,11 @@ gegl_convert_space_prepare (GeglOperation *operation)
   const Babl *space = babl_space (o->name);
   if (o->pointer)
     space = o->pointer;
-  if (o->path)
+  if (aux_format)
+  {
+    space = babl_format_get_space (aux_format);
+  }
+  if (!space && o->path)
   {
     gchar *icc_data = NULL;
     gsize icc_length;
@@ -60,10 +64,6 @@ gegl_convert_space_prepare (GeglOperation *operation)
       if (s) space = s;
       g_free (icc_data);
     }
-  }
-  if (aux_format)
-  {
-    space = babl_format_get_space (aux_format);
   }
 
   gegl_operation_set_format (operation, "output",
