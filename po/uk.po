@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-11-18 16:19+0000\n"
-"PO-Revision-Date: 2020-11-18 19:22+0200\n"
+"POT-Creation-Date: 2020-11-22 12:20+0000\n"
+"PO-Revision-Date: 2020-11-22 18:07+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -2076,19 +2076,20 @@ msgid "1D Gaussian-blur"
 msgstr "Одновимірне розмиття за Гаусом"
 
 #: operations/common/gegl-buffer-load-op.c:24
-#: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-save.c:25
-#: operations/common/magick-load.c:26 operations/common/open-buffer.c:25
-#: operations/common/save.c:26 operations/core/load.c:29
-#: operations/external/exr-save.cc:24 operations/external/ff-load.c:29
-#: operations/external/ff-save.c:29 operations/external/gif-load.c:34
-#: operations/external/jp2-load.c:25 operations/external/jpg-load.c:24
-#: operations/external/jpg-save.c:25 operations/external/npy-save.c:31
-#: operations/external/png-load.c:32 operations/external/png-save.c:26
-#: operations/external/ppm-load.c:25 operations/external/ppm-save.c:25
-#: operations/external/rgbe-load.c:26 operations/external/rgbe-save.c:26
-#: operations/external/svg-load.c:25 operations/external/tiff-load.c:29
-#: operations/external/tiff-save.c:25 operations/external/webp-load.c:25
-#: operations/external/webp-save.c:25 operations/workshop/external/gluas.c:37
+#: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-load.c:24
+#: operations/common/icc-save.c:25 operations/common/magick-load.c:26
+#: operations/common/open-buffer.c:25 operations/common/save.c:26
+#: operations/core/load.c:29 operations/external/exr-save.cc:24
+#: operations/external/ff-load.c:29 operations/external/ff-save.c:29
+#: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
+#: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
+#: operations/external/npy-save.c:31 operations/external/png-load.c:32
+#: operations/external/png-save.c:26 operations/external/ppm-load.c:25
+#: operations/external/ppm-save.c:25 operations/external/rgbe-load.c:26
+#: operations/external/rgbe-save.c:26 operations/external/svg-load.c:25
+#: operations/external/tiff-load.c:29 operations/external/tiff-save.c:25
+#: operations/external/webp-load.c:25 operations/external/webp-save.c:25
+#: operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
 msgid "File"
 msgstr "Файл"
@@ -2228,6 +2229,23 @@ msgstr "Відтінок-Колірність"
 #: operations/common/hue-chroma.c:124
 msgid "Adjust LCH Hue, Chroma, and Lightness"
 msgstr "Регулювання відтінку, колірності і освітленості LCH"
+
+#: operations/common/icc-load.c:25 operations/external/gif-load.c:35
+#: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
+#: operations/external/svg-load.c:26 operations/external/tiff-load.c:30
+#: operations/external/webp-load.c:26
+msgid "Path of file to load"
+msgstr "Шлях до файлу для завантаження"
+
+#: operations/common/icc-load.c:103
+#| msgid "GIF File Loader"
+msgid "ICC File Loader"
+msgstr "Завантажувач файлів ICC"
+
+#: operations/common/icc-load.c:105
+#| msgid "ICC profile saver"
+msgid "ICC profile loader."
+msgstr "Завантажувач профілів ICC."
 
 #: operations/common/icc-save.c:26
 msgid "Target path and filename"
@@ -7089,11 +7107,6 @@ msgid "Convert color space"
 msgstr "Перетворити простір кольорів"
 
 #: operations/core/convert-space.c:106
-#| msgid ""
-#| "set color space which subsequent babl-formats in the pipeline are created "
-#| "with, and the ICC profile potentially embedded for external color "
-#| "management, setting a pointer to a format override the string property "
-#| "and setting an aux pad overrides both. "
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
 "with, and the ICC profile potentially embedded for external color "
@@ -7371,12 +7384,6 @@ msgstr "Записувач кадрів FFmpeg"
 #: operations/external/ff-save.c:1137
 msgid "FFmpeg video output sink"
 msgstr "Приймач вихідного відео FFmpeg"
-
-#: operations/external/gif-load.c:35 operations/external/jp2-load.c:26
-#: operations/external/jpg-load.c:25 operations/external/svg-load.c:26
-#: operations/external/tiff-load.c:30 operations/external/webp-load.c:26
-msgid "Path of file to load"
-msgstr "Шлях до файлу для завантаження"
 
 #: operations/external/gif-load.c:36
 msgid "frame"
