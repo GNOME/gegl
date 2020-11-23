@@ -97,3 +97,23 @@ if libv4l2.found()
     install_dir: get_option('libdir') / api_name,
   )
 endif
+
+if maxflow.found()
+  gegl_operations += shared_library('paint-select',
+    'paint-select.cc',
+    include_directories: [ rootInclude, geglInclude, seamlessInclude, ],
+    dependencies: [
+      babl,
+      glib,
+      gobject,
+      math,
+      maxflow,
+    ],
+    link_with: [
+      gegl_lib,
+    ],
+    name_prefix: '',
+    install: true,
+    install_dir: get_option('libdir') / api_name,
+  )
+endif
