@@ -114,6 +114,115 @@ pixels_distance (gfloat  *p1,
 }
 
 static void
+push_segment (GQueue *segment_queue,
+              gint    y,
+              gint    old_y,
+              gint    start,
+              gint    end,
+              gint    new_y,
+              gint    new_start,
+              gint    new_end)
+{
+  /* To avoid excessive memory allocation (y, old_y, start, end) tuples are
+   * stored in interleaved format:
+   *
+   * [y1] [old_y1] [start1] [end1] [y2] [old_y2] [start2] [end2]
+   */
+
+  if (new_y != old_y)
+    {
+      /* If the new segment's y-coordinate is different than the old (source)
+       * segment's y-coordinate, push the entire segment.
+       */
+      g_queue_push_tail (segment_queue, GINT_TO_POINTER (new_y));
+      g_queue_push_tail (segment_queue, GINT_TO_POINTER (y));
+      g_queue_push_tail (segment_queue, GINT_TO_POINTER (new_start));
+      g_queue_push_tail (segment_queue, GINT_TO_POINTER (new_end));
+    }
+  else
+    {
+      /* Otherwise, only push the set-difference between the new segment and
+       * the source segment (since we've already scanned the source segment.)
+       */
+      if (new_start < start)
+        {
+          g_queue_push_tail (segment_queue, GINT_TO_POINTER (new_y));
+          g_queue_push_tail (segment_queue, GINT_TO_POINTER (y));
+          g_queue_push_tail (segment_queue, GINT_TO_POINTER (new_start));
+          g_queue_push_tail (segment_queue, GINT_TO_POINTER (start));
+        }
+
+      if (new_end > end)
+        {
+          g_queue_push_tail (segment_queue, GINT_TO_POINTER (new_y));
+          g_queue_push_tail (segment_queue, GINT_TO_POINTER (y));
+          g_queue_push_tail (segment_queue, GINT_TO_POINTER (end));
+          g_queue_push_tail (segment_queue, GINT_TO_POINTER (new_end));
+        }
+    }
+}
+
+static void
+pop_segment (GQueue *segment_queue,
+             gint   *y,
+             gint   *old_y,
+             gint   *start,
+             gint   *end)
+{
+  *y     = GPOINTER_TO_INT (g_queue_pop_head (segment_queue));
+  *old_y = GPOINTER_TO_INT (g_queue_pop_head (segment_queue));
+  *start = GPOINTER_TO_INT (g_queue_pop_head (segment_queue));
+  *end   = GPOINTER_TO_INT (g_queue_pop_head (segment_queue));
+}
+
+static gboolean
+find_contiguous_segment (PaintSelect  *ps,
+                         gfloat       *diff_mask,
+                         gint          initial_x,
+                         gint          initial_y,
+                         gint         *start,
+                         gint         *end)
+{
+  gint  offset = initial_x + initial_y * ps->width;
+
+  /* check the starting pixel */
+  if (diff_mask[offset] == 0.f)
+    return FALSE;
+
+  ps->mask[offset] = 1.f;
+
+  *start = initial_x - 1;
+
+  while (*start >= 0)
+    {
+      offset = *start + initial_y * ps->width;
+
+      if (diff_mask[offset] == 0.f)
+        break;
+
+      ps->mask[offset] = 1.f;
+
+      (*start)--;
+    }
+
+  *end = initial_x + 1;
+
+  while (*end < ps->width)
+    {
+      offset = *end + initial_y * ps->width;
+
+      if (diff_mask[offset] == 0.f)
+        break;
+
+      ps->mask[offset] = 1.f;
+
+      (*end)++;
+    }
+
+  return TRUE;
+}
+
+static void
 paint_select_init_buffers (PaintSelect  *ps,
                            GeglBuffer   *mask,
                            GeglBuffer   *colors,
@@ -256,7 +365,9 @@ paint_select_mask_is_interior_boundary (PaintSelect  *ps,
 }
 
 static GeglRectangle
-paint_select_get_local_region (PaintSelect  *ps)
+paint_select_get_local_region (PaintSelect  *ps,
+                               gint         *pix_x,
+                               gint         *pix_y)
 {
   GeglRectangle extent = {0, 0, ps->width, ps->height};
   GeglRectangle region;
@@ -289,6 +400,14 @@ paint_select_get_local_region (PaintSelect  *ps)
           if (ps->scribbles[off] == scribble_val &&
               ps->mask[off] == mask_val)
             {
+              /* keep track of one pixel position located in
+               * local region ; it will be used later as a seed
+               * point for fluctuations removal.
+               */
+
+              *pix_x = x;
+              *pix_y = y;
+
               if (x < minx)
                 minx = x;
               else if (x > maxx)
@@ -604,10 +723,12 @@ paint_select_init_graph_nlinks (PaintSelect  *ps)
     }
 }
 
-static void
-paint_select_update_mask (PaintSelect  *ps)
+static gfloat *
+paint_select_compute_diff_mask (PaintSelect  *ps)
 {
-  gint  i;
+  gfloat  *diff = (gfloat *) gegl_malloc (sizeof (gfloat) * ps->n_pixels);
+  gfloat   node_value;
+  gint     i;
 
   for (i = 0; i < ps->width * ps->height; i++)
     {
@@ -616,11 +737,92 @@ paint_select_update_mask (PaintSelect  *ps)
       if (id != -1)
         {
           if (ps->graph->what_segment(id) == GraphType::SOURCE)
-            ps->mask[i] = 1.f;
+            node_value = 1.f;
           else
-            ps->mask[i] = 0.f;
+            node_value = 0.f;
+
+
+          if (ps->mask[i] != node_value)
+            diff[i] = 1.f;
+          else
+            diff[i] = 0.f;
         }
     }
+
+  return diff;
+}
+
+static void
+paint_select_remove_fluctuations (PaintSelect  *ps,
+                                  gfloat       *diff_mask,
+                                  gint          x,
+                                  gint          y)
+{
+  gint                 old_y;
+  gint                 start, end;
+  gint                 new_start, new_end;
+  GQueue              *segment_queue;
+
+  /* mask buffer will hold the result and need to be clean first */
+  memset (ps->mask, 0.f, sizeof (gfloat) * ps->n_pixels);
+
+  segment_queue = g_queue_new ();
+
+  push_segment (segment_queue,
+                y, /* dummy values: */ -1, 0, 0,
+                y, x - 1, x + 1);
+
+  do
+    {
+      pop_segment (segment_queue,
+                   &y, &old_y, &start, &end);
+
+      for (x = start + 1; x < end; x++)
+        {
+          gfloat val = ps->mask[x + y * ps->width];
+
+          if (val != 0.f)
+            {
+              /* If the current pixel is selected, then we've already visited
+               * the next pixel.  (Note that we assume that the maximal image
+               * width is sufficiently low that `x` won't overflow.)
+               */
+              x++;
+              continue;
+            }
+
+          if (! find_contiguous_segment (ps, diff_mask,
+                                         x, y,
+                                         &new_start, &new_end))
+            continue;
+
+          /* We can skip directly to `new_end + 1` on the next iteration, since
+           * we've just selected all pixels in the range `[x, new_end)`, and
+           * the pixel at `new_end` is above threshold.  (Note that we assume
+           * that the maximal image width is sufficiently low that `x` won't
+           * overflow.)
+           */
+          x = new_end;
+
+          if (y + 1 < ps->height)
+            {
+              push_segment (segment_queue,
+                            y, old_y, start, end,
+                            y + 1, new_start, new_end);
+            }
+
+          if (y - 1 >= 0)
+            {
+              push_segment (segment_queue,
+                            y, old_y, start, end,
+                            y - 1, new_start, new_end);
+            }
+
+        }
+    }
+  while (! g_queue_is_empty (segment_queue));
+
+  g_queue_free (segment_queue);
 }
 
 static void
@@ -663,6 +865,7 @@ process (GeglOperation       *operation,
   PaintSelect  ps;
   gfloat       flow;
   GeglRectangle region;
+  gint          x, y;
 
   if (! aux || ! aux2)
     {
@@ -676,13 +879,16 @@ process (GeglOperation       *operation,
 
   /* find the overlap region where scribble value doesn't match mask value */
 
-  region = paint_select_get_local_region (&ps);
+  region = paint_select_get_local_region (&ps, &x, &y);
+
   g_printerr ("local region: (%d,%d) %d x %d\n",
               region.x, region.y, region.width, region.height);
 
   if (! gegl_rectangle_is_empty (&region) &&
       ! gegl_rectangle_is_infinite_plane (&region))
     {
+      gfloat  *diff;
+
       /* retrieve colors samples and init histograms */
 
       paint_select_init_local_samples (&ps, &region);
@@ -700,15 +906,22 @@ process (GeglOperation       *operation,
       paint_select_init_graph_nodes_and_tlinks (&ps);
       paint_select_init_graph_nlinks (&ps);
 
-      /* compute flow and set result */
+      /* compute maxflow/mincut */
 
       flow = ps.graph->maxflow();
       g_printerr ("flow: %f\n", flow);
 
-      paint_select_update_mask (&ps);
+      /* compute difference between original mask and graphcut result.
+       * then remove fluctuations */
+
+      diff = paint_select_compute_diff_mask (&ps);
+
+      paint_select_remove_fluctuations (&ps, diff, x, y);
 
       gegl_buffer_set (output, NULL, 0, babl_format (SELECTION_FORMAT),
                        ps.mask, GEGL_AUTO_ROWSTRIDE);
+
+      gegl_free (diff);
     }
 
   paint_select_free_buffers (&ps);
