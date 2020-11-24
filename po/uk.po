@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-11-22 12:20+0000\n"
-"PO-Revision-Date: 2020-11-22 18:07+0200\n"
+"POT-Creation-Date: 2020-11-24 10:05+0000\n"
+"PO-Revision-Date: 2020-11-24 21:03+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -2238,12 +2238,10 @@ msgid "Path of file to load"
 msgstr "Шлях до файлу для завантаження"
 
 #: operations/common/icc-load.c:103
-#| msgid "GIF File Loader"
 msgid "ICC File Loader"
 msgstr "Завантажувач файлів ICC"
 
 #: operations/common/icc-load.c:105
-#| msgid "ICC profile saver"
 msgid "ICC profile loader."
 msgstr "Завантажувач профілів ICC."
 
@@ -4008,6 +4006,7 @@ msgid "Radial"
 msgstr "Радіальний"
 
 #: operations/common/spherize.c:30 operations/common-gpl3+/value-propagate.c:37
+#: operations/workshop/external/paint-select.cc:34
 msgid "Mode"
 msgstr "Режим"
 
@@ -8979,6 +8978,22 @@ msgid ""
 msgstr ""
 "Скриптове прототипування з lua для створення/фільтрування на рівні пікселів. "
 "Докладніший опис можна знайти на http://pippin.gimp.org/image-processing/"
+
+#: operations/workshop/external/paint-select.cc:30
+msgid "Add"
+msgstr "Додати"
+
+#: operations/workshop/external/paint-select.cc:31
+msgid "Subtract"
+msgstr "Відняти"
+
+#: operations/workshop/external/paint-select.cc:37
+msgid "Either to add to or subtract from the mask"
+msgstr "Додати до маски або відняти від маски"
+
+#: operations/workshop/external/paint-select.cc:735
+msgid "Paint Select"
+msgstr "Малювання позначеного"
 
 #: operations/workshop/external/lens-correct.c:28
 msgid "Maker"
