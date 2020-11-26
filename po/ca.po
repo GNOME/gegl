@@ -4450,7 +4450,7 @@ msgstr "Escriu la memòria intermèdia"
 
 #: operations/common/write-buffer.c:178
 msgid "Write input data into an existing GEGL buffer destination surface."
-msgstr "Una superfície de destinació de la memòria intermèdia GEGL."
+msgstr "Escriu les dades d'entrada en una superfície de destinació de la memòria intermèdia GEGL."
 
 #: operations/common-cxx/distance-transform.cc:30
 #: operations/workshop/external/voronoi-diagram.cc:24
@@ -7263,7 +7263,7 @@ msgstr "Taxa de bits de l'àudio en kb/s"
 
 #: operations/external/ff-save.c:39 operations/external/ff-save.c:47
 msgid "Target encoded video bitrate in kb/s"
-msgstr "Objectiu codificat de la taxa de bits de vídeo en kb/s"
+msgstr "Objectiu de la taxa de bits de vídeo codificat en kb/s"
 
 #: operations/external/ff-save.c:41
 msgid "Frames/second"
