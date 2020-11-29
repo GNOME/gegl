@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-11-22 12:20+0000\n"
-"PO-Revision-Date: 2020-11-22 13:37+0100\n"
+"POT-Creation-Date: 2020-11-24 10:05+0000\n"
+"PO-Revision-Date: 2020-11-29 12:02+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -3994,6 +3994,7 @@ msgid "Radial"
 msgstr "Promieniowy"
 
 #: operations/common/spherize.c:30 operations/common-gpl3+/value-propagate.c:37
+#: operations/workshop/external/paint-select.cc:34
 msgid "Mode"
 msgstr "Tryb"
 
@@ -8924,6 +8925,22 @@ msgid ""
 msgstr ""
 "Tworzenie prototypów skryptów filtrowania/komponowania na poziomie pikseli. "
 "Strona http://pippin.gimp.org/image-processing/ zawiera więcej informacji."
+
+#: operations/workshop/external/paint-select.cc:30
+msgid "Add"
+msgstr "Dodaj"
+
+#: operations/workshop/external/paint-select.cc:31
+msgid "Subtract"
+msgstr "Odejmij"
+
+#: operations/workshop/external/paint-select.cc:37
+msgid "Either to add to or subtract from the mask"
+msgstr "Dodaj lub odejmij z maski"
+
+#: operations/workshop/external/paint-select.cc:735
+msgid "Paint Select"
+msgstr "Zaznaczenie farby"
 
 #: operations/workshop/external/lens-correct.c:28
 msgid "Maker"
