@@ -10,8 +10,8 @@
 msgid ""
 msgstr "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-06-02 20:21+0000\n"
-"PO-Revision-Date: 2020-06-28 10:00+0100\n"
+"POT-Creation-Date: 2020-11-24 10:05+0000\n"
+"PO-Revision-Date: 2020-11-29 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -164,7 +164,7 @@ msgstr "\n"
 "\n"
 "\n"
 
-#: bin/ui-core.c:4381 gegl/gegl-serialize.c:658
+#: bin/ui-core.c:4382 gegl/gegl-serialize.c:658
 #, c-format
 msgid "BablFormat \"%s\" does not exist."
 msgstr "\"%s\" BablFormat ez da existitzen."
@@ -397,23 +397,23 @@ msgstr "%s ez dauka %s propietatea, propietateak: "
 msgid "No such op '%s'"
 msgstr "Ez dago '%s' aukera"
 
-#: gegl/module/geglmodule.c:340
+#: gegl/module/geglmodule.c:339
 msgid "Module error"
 msgstr "Modulu-errorea"
 
-#: gegl/module/geglmodule.c:341
+#: gegl/module/geglmodule.c:340
 msgid "Loaded"
 msgstr "Kargatuta"
 
-#: gegl/module/geglmodule.c:342
+#: gegl/module/geglmodule.c:341
 msgid "Load failed"
 msgstr "Huts egin du kargatzean"
 
-#: gegl/module/geglmodule.c:343
+#: gegl/module/geglmodule.c:342
 msgid "Not loaded"
 msgstr "Ez da kargatu"
 
-#: gegl/module/geglmodule.c:389
+#: gegl/module/geglmodule.c:388
 #, c-format
 msgid "Module '%s' load error: %s"
 msgstr "Errorea '%s' modulua kargatzean: %s"
@@ -641,7 +641,7 @@ msgstr "Dirdira-arearen ertzaren leuntasuna"
 #: operations/common/median-blur.c:42 operations/common/snn-mean.c:26
 #: operations/common/stress.c:27 operations/common/unsharp-mask.c:24
 #: operations/common/vignette.c:40 operations/common/wavelet-blur-1d.c:28
-#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:87
+#: operations/common/wavelet-blur.c:27 operations/common-cxx/focus-blur.c:85
 #: operations/common-cxx/lens-blur.cc:24
 #: operations/common-cxx/variable-blur.c:30
 #: operations/common-gpl3+/shadows-highlights.c:40
@@ -1996,19 +1996,20 @@ msgid "1D Gaussian-blur"
 msgstr "Gaussen 1D lausotzea"
 
 #: operations/common/gegl-buffer-load-op.c:24
-#: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-save.c:25
-#: operations/common/magick-load.c:26 operations/common/open-buffer.c:25
-#: operations/common/save.c:26 operations/core/load.c:29
-#: operations/external/exr-save.cc:24 operations/external/ff-load.c:29
-#: operations/external/ff-save.c:29 operations/external/gif-load.c:34
-#: operations/external/jp2-load.c:25 operations/external/jpg-load.c:24
-#: operations/external/jpg-save.c:25 operations/external/npy-save.c:31
-#: operations/external/png-load.c:32 operations/external/png-save.c:26
-#: operations/external/ppm-load.c:25 operations/external/ppm-save.c:25
-#: operations/external/rgbe-load.c:26 operations/external/rgbe-save.c:26
-#: operations/external/svg-load.c:25 operations/external/tiff-load.c:29
-#: operations/external/tiff-save.c:25 operations/external/webp-load.c:25
-#: operations/external/webp-save.c:25 operations/workshop/external/gluas.c:37
+#: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-load.c:24
+#: operations/common/icc-save.c:25 operations/common/magick-load.c:26
+#: operations/common/open-buffer.c:25 operations/common/save.c:26
+#: operations/core/load.c:29 operations/external/exr-save.cc:24
+#: operations/external/ff-load.c:29 operations/external/ff-save.c:29
+#: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
+#: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
+#: operations/external/npy-save.c:31 operations/external/png-load.c:32
+#: operations/external/png-save.c:26 operations/external/ppm-load.c:25
+#: operations/external/ppm-save.c:25 operations/external/rgbe-load.c:26
+#: operations/external/rgbe-save.c:26 operations/external/svg-load.c:25
+#: operations/external/tiff-load.c:29 operations/external/tiff-save.c:25
+#: operations/external/webp-load.c:25 operations/external/webp-save.c:25
+#: operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
 msgid "File"
 msgstr "Fitxategia"
@@ -2029,29 +2030,29 @@ msgstr "Helburuko fitxategiaren bide-izena GeglBuffer gordetzeko."
 msgid "GeglBuffer file writer."
 msgstr "GeglBuffer fitxategi idazlea."
 
-#: operations/common/gegl.c:67
+#: operations/common/gegl.c:68
 msgid "pipeline"
 msgstr "hodia"
 
-#: operations/common/gegl.c:68
+#: operations/common/gegl.c:69
 msgid "[op [property=value] [property=value]] [[op] [property=value]"
 msgstr "[op [propietatea=balioa] [propietatea=balioa]] [[op] [propietatea=balioa]"
 
-#: operations/common/gegl.c:71
+#: operations/common/gegl.c:72
 msgid "Eeeeeek"
 msgstr "Aiene"
 
-#: operations/common/gegl.c:72
+#: operations/common/gegl.c:73
 msgid ""
 "There is a problem in the syntax or in the application of parsed property "
 "values. Things might mostly work nevertheless."
 msgstr "Arazo bat dago analizatutako propietate-balioen sintaxian edo aplikazioan. Hala ere, gauzek behar den moduan funtziona dezakete."
 
-#: operations/common/gegl.c:167
+#: operations/common/gegl.c:168
 msgid "GEGL graph"
 msgstr "GEGL grafoa"
 
-#: operations/common/gegl.c:170
+#: operations/common/gegl.c:171
 msgid ""
 "Do a chain of operations, with key=value pairs after each operation name to "
 "set properties. And aux=[ source filter ] for specifying a chain with a "
@@ -2140,6 +2141,21 @@ msgstr "Ñabardura-chroma"
 #: operations/common/hue-chroma.c:124
 msgid "Adjust LCH Hue, Chroma, and Lightness"
 msgstr "Doitu LCH ñabardura, chroma eta argitasuna"
+
+#: operations/common/icc-load.c:25 operations/external/gif-load.c:35
+#: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
+#: operations/external/svg-load.c:26 operations/external/tiff-load.c:30
+#: operations/external/webp-load.c:26
+msgid "Path of file to load"
+msgstr "Fitxategiaren bide-izena kargatzeko"
+
+#: operations/common/icc-load.c:103
+msgid "ICC File Loader"
+msgstr "ICC fitxategi-kargatzailea"
+
+#: operations/common/icc-load.c:105
+msgid "ICC profile loader."
+msgstr "ICC profil-kargatzailea."
 
 #: operations/common/icc-save.c:26
 msgid "Target path and filename"
@@ -2533,7 +2549,7 @@ msgid "Shadow length"
 msgstr "Itzal-luzera"
 
 #: operations/common/long-shadow.c:66 operations/common/long-shadow.c:81
-#: operations/common-cxx/focus-blur.c:97
+#: operations/common-cxx/focus-blur.c:95
 msgid "Midpoint"
 msgstr "Erdiko puntua"
 
@@ -2752,7 +2768,7 @@ msgid "position of symmetry center in output"
 msgstr "simetria-zentroaren kokagunea irteeran"
 
 #: operations/common/mirrors.c:58 operations/common/vignette.c:65
-#: operations/common-cxx/focus-blur.c:77 operations/common-gpl3+/displace.c:81
+#: operations/common-cxx/focus-blur.c:75 operations/common-gpl3+/displace.c:81
 #: operations/common-gpl3+/motion-blur-circular.c:40
 #: operations/common-gpl3+/motion-blur-zoom.c:39
 #: operations/common-gpl3+/supernova.c:32 operations/common-gpl3+/waves.c:25
@@ -2764,7 +2780,7 @@ msgid "X axis ratio for the center of mirroring"
 msgstr "Ispiluko zentroaren X ardatz-erlazioa"
 
 #: operations/common/mirrors.c:63 operations/common/vignette.c:70
-#: operations/common-cxx/focus-blur.c:82 operations/common-gpl3+/displace.c:88
+#: operations/common-cxx/focus-blur.c:80 operations/common-gpl3+/displace.c:88
 #: operations/common-gpl3+/motion-blur-circular.c:45
 #: operations/common-gpl3+/motion-blur-zoom.c:45
 #: operations/common-gpl3+/supernova.c:38 operations/common-gpl3+/waves.c:30
@@ -3114,7 +3130,7 @@ msgid "The scale of the noise function"
 msgstr "Zarata-funtzioaren eskala"
 
 #: operations/common/noise-cell.c:40 operations/common/pixelize.c:31
-#: operations/common-cxx/focus-blur.c:72
+#: operations/common-cxx/focus-blur.c:70
 msgid "Shape"
 msgstr "Forma"
 
@@ -3812,6 +3828,7 @@ msgid "Radial"
 msgstr "Erradiala"
 
 #: operations/common/spherize.c:30 operations/common-gpl3+/value-propagate.c:37
+#: operations/workshop/external/paint-select.cc:34
 msgid "Mode"
 msgstr "Modua"
 
@@ -4086,7 +4103,7 @@ msgid ""
 "use squeeze factor as proportions, set proportion to 0.0."
 msgstr "Erabiliko diren aspektu-erlazioak: -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf 1.0 = inf:1. Proportzioa kontuan hartu ondoren aplikatzen da, estutze-faktorea zuzenean erabiltzeko ezarri 0.0."
 
-#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:104
+#: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:102
 #: operations/common-gpl3+/bayer-matrix.c:50
 #: operations/common-gpl3+/linear-sinusoid.c:95
 #: operations/common-gpl3+/spiral.c:64
@@ -4153,7 +4170,7 @@ msgstr "bandera"
 
 #: operations/common/watershed-transform.c:31
 msgid "Pointer to flag value for unlabelled pixels"
-msgstr ""
+msgstr "Etiketarik gabeko pixelei balio bat bandera gisa jartzeko erakuslea"
 
 #: operations/common/watershed-transform.c:489
 msgid "Watershed Transform"
@@ -4167,7 +4184,7 @@ msgid ""
 "representing the priority levels (lower value is higher priority). If aux is "
 "absent, all labellized pixels have the same priority and propagated labels "
 "have a lower priority."
-msgstr ""
+msgstr "Etiketen hedatzea arroen eraldaketaren bidez. Irteerako bufferrak sarrerako formatua izango du. Etiketarik gabeko pixelak emandako bandera-balio batekin markatuko dira (balio lehenetsia: NULL balioa duen azken osagaia). Aux bufferra lehentasun-mailak ordezkatzen dituen \"Y u8\" irudi bat da (balio baxuagoak lehentasun handiagoa adierazten du). Aux ez badago, etiketadun pixel guztiek lehentasun bera izango dute eta hedatutako etiketek lehentasun txikiagoa izango dute."
 
 #: operations/common/wavelet-blur-1d.c:29 operations/common/wavelet-blur.c:28
 msgid "Radius of the wavelet blur"
@@ -4241,7 +4258,7 @@ msgstr "Distantzia-eraldaketa"
 msgid "Calculate a distance transform"
 msgstr "Kalkulatu distantzia-eraldaketa bat"
 
-#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:506
+#: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:504
 msgid "Lens Blur"
 msgstr "Leiarren lausotzea"
 
@@ -4265,94 +4282,94 @@ msgstr "Nabarmentze-sendotasun erlatiboa"
 msgid "Highlight threshold (low)"
 msgstr "Nabarmentze-atalasea (baxua)"
 
-#: operations/common-cxx/focus-blur.c:63 operations/common-cxx/lens-blur.cc:40
+#: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
 msgid "Highlight threshold"
 msgstr "Nabarmentze-atalasea"
 
-#: operations/common-cxx/focus-blur.c:65 operations/common-cxx/lens-blur.cc:42
+#: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
 msgid "Highlight threshold (high)"
 msgstr "Nabarmentze-atalasea (altua)"
 
-#: operations/common-cxx/focus-blur.c:88
+#: operations/common-cxx/focus-blur.c:86
 msgid "Focus-region outer radius"
 msgstr "Foku-eskualdearen kanpoko erradioa"
 
-#: operations/common-cxx/focus-blur.c:93 operations/common-gpl3+/photocopy.c:29
+#: operations/common-cxx/focus-blur.c:91 operations/common-gpl3+/photocopy.c:29
 #: operations/common-gpl3+/softglow.c:33
 msgid "Sharpness"
 msgstr "Zorroztasuna"
 
-#: operations/common-cxx/focus-blur.c:94
+#: operations/common-cxx/focus-blur.c:92
 msgid "Focus-region inner limit"
 msgstr "Foku-eskualdearen barruko muga"
 
-#: operations/common-cxx/focus-blur.c:98
+#: operations/common-cxx/focus-blur.c:96
 msgid "Focus-transition midpoint"
 msgstr "Foku-trantsizioaren erdiko puntua"
 
-#: operations/common-cxx/focus-blur.c:101 operations/common-gpl3+/waves.c:46
+#: operations/common-cxx/focus-blur.c:99 operations/common-gpl3+/waves.c:46
 msgid "Aspect ratio"
 msgstr "Aspektu-erlazioa"
 
-#: operations/common-cxx/focus-blur.c:111
+#: operations/common-cxx/focus-blur.c:109
 #: operations/common-cxx/variable-blur.c:42
 msgid "Blur levels"
 msgstr "Lausotze-mailak"
 
-#: operations/common-cxx/focus-blur.c:112
+#: operations/common-cxx/focus-blur.c:110
 #: operations/common-cxx/variable-blur.c:43
 msgid "Number of blur levels"
 msgstr "Lausotze-mailen kopurua"
 
-#: operations/common-cxx/focus-blur.c:116
+#: operations/common-cxx/focus-blur.c:114
 #: operations/common-cxx/variable-blur.c:46
 msgid "Blur gamma"
 msgstr "Lausotze-gamma"
 
-#: operations/common-cxx/focus-blur.c:117
+#: operations/common-cxx/focus-blur.c:115
 #: operations/common-cxx/variable-blur.c:47
 msgid "Gamma factor for blur-level spacing"
 msgstr "Lausotze-mailako espazioaren gamma faktorea"
 
-#: operations/common-cxx/focus-blur.c:124
+#: operations/common-cxx/focus-blur.c:122
 #: operations/common-cxx/variable-blur.c:53
 msgid "High quality"
 msgstr "Kalitate altua"
 
-#: operations/common-cxx/focus-blur.c:125
+#: operations/common-cxx/focus-blur.c:123
 #: operations/common-cxx/variable-blur.c:54
 msgid "Generate more accurate and consistent output (slower)"
 msgstr "Sortu irteera zehatzagoa eta koherenteagoa (motelagoa)"
 
-#: operations/common-cxx/focus-blur.c:322
+#: operations/common-cxx/focus-blur.c:320
 msgid "Focus Blur"
 msgstr "Fokuratze-lausotzea"
 
-#: operations/common-cxx/focus-blur.c:324
+#: operations/common-cxx/focus-blur.c:322
 msgid "Blur the image around a focal point"
 msgstr "Lausotu irudia foku-puntu baten inguruan"
 
-#: operations/common-cxx/lens-blur.cc:48
+#: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
 msgstr "Moztu sarrerako hedaduretan"
 
-#: operations/common-cxx/lens-blur.cc:49
+#: operations/common-cxx/lens-blur.cc:47
 msgid "Clip output to the input extents"
 msgstr "Moztu irteera sarrerako hedadudetan"
 
-#: operations/common-cxx/lens-blur.cc:51
+#: operations/common-cxx/lens-blur.cc:49
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
 msgid "Linear mask"
 msgstr "Maskara lineala"
 
-#: operations/common-cxx/lens-blur.cc:52
+#: operations/common-cxx/lens-blur.cc:50
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
 msgid "Use linear mask values"
 msgstr "Erabili maskara linealen balioak"
 
-#: operations/common-cxx/lens-blur.cc:508
+#: operations/common-cxx/lens-blur.cc:506
 msgid "Simulate out-of-focus lens blur"
 msgstr "Simulatu fokutik kanpoko leiar-lausotzea"
 
@@ -4366,7 +4383,7 @@ msgstr "Nahaste-mailako espazioaren gamma faktorea"
 
 #: operations/common-cxx/piecewise-blend.cc:346
 msgid "Piecewise Blend"
-msgstr ""
+msgstr "Zatikako nahastea"
 
 #: operations/common-cxx/piecewise-blend.cc:348
 msgid "Blend a chain of inputs using a mask"
@@ -6785,7 +6802,7 @@ msgstr "Bihurtu kolore-espazioa"
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
 "with, and the ICC profile potentially embedded for external color "
-"management, setting a pointer to a format override the string property and "
+"management, setting a pointer to a format overrides the string property and "
 "setting an aux pad overrides both. "
 msgstr ""
 
@@ -7040,12 +7057,6 @@ msgstr "FFmpeg fotograma-gordetzailea"
 #: operations/external/ff-save.c:1137
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg bideo-irteeraren kolektorea"
-
-#: operations/external/gif-load.c:35 operations/external/jp2-load.c:26
-#: operations/external/jpg-load.c:25 operations/external/svg-load.c:26
-#: operations/external/tiff-load.c:30 operations/external/webp-load.c:26
-msgid "Path of file to load"
-msgstr "Fitxategiaren bide-izena kargatzeko"
 
 #: operations/external/gif-load.c:36
 msgid "frame"
@@ -7624,11 +7635,11 @@ msgstr "Biltegiratu GdkPixbuf-en"
 msgid "Store image in a GdkPixbuf."
 msgstr "Biltegiratu irudia GdkPixbuf batean."
 
-#: operations/external/sdl2-display.c:202
+#: operations/external/sdl2-display.c:196
 msgid "SDL2 Display"
 msgstr "SDL2 bistaratzea"
 
-#: operations/external/sdl2-display.c:205
+#: operations/external/sdl2-display.c:199
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
@@ -8348,7 +8359,7 @@ msgstr "Ikusi doikuntza-maskara"
 
 #: operations/workshop/band-tune.c:217
 msgid "Band tune"
-msgstr ""
+msgstr "Banda-egokitzea"
 
 #: operations/workshop/band-tune.c:219
 msgid ""
@@ -8377,7 +8388,7 @@ msgstr "Aldebiko iragazkiaren hurbilketa azkarra, kutxa-iragazkia erabilita laus
 
 #: operations/workshop/boxblur-1d.c:28
 msgid "Radius of row pixel region, (size will be radius*2+1)"
-msgstr ""
+msgstr "Errenkadako pixel eskualdearen erradioa, (tamaina erradioa*2+1 izango da)"
 
 #: operations/workshop/boxblur-1d.c:466
 msgid "1D Box Blur"
@@ -8505,6 +8516,22 @@ msgid ""
 "Pixel level filter/composer scripting prototyping with lua. See http://"
 "pippin.gimp.org/image-processing/ for further details."
 msgstr "Pixel-mailako iragazkien/konposatzaileen scripting prototipatzea lua erabilita. Ikus http://pippin.gimp.org/image-processing/ xehetasun gehiagorako."
+
+#: operations/workshop/external/paint-select.cc:30
+msgid "Add"
+msgstr "Gehitu"
+
+#: operations/workshop/external/paint-select.cc:31
+msgid "Subtract"
+msgstr "Kendu"
+
+#: operations/workshop/external/paint-select.cc:37
+msgid "Either to add to or subtract from the mask"
+msgstr "Gehitu edo kendu maskaratik"
+
+#: operations/workshop/external/paint-select.cc:735
+msgid "Paint Select"
+msgstr "Margoaren hautapena"
 
 #: operations/workshop/external/lens-correct.c:28
 msgid "Maker"
