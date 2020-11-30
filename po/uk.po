@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-11-24 10:05+0000\n"
-"PO-Revision-Date: 2020-11-24 21:03+0200\n"
+"POT-Creation-Date: 2020-11-30 04:16+0000\n"
+"PO-Revision-Date: 2020-11-30 08:57+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -7029,7 +7029,7 @@ msgstr ""
 "Перекинути дані між input_format і output_format. Обидва формати повинні "
 "мати однакове значення бітів на піксель."
 
-#: operations/core/cast-space.c:25 operations/core/convert-space.c:25
+#: operations/core/cast-space.c:25
 msgid "Name"
 msgstr "Назва"
 
@@ -7057,11 +7057,11 @@ msgstr "Контур"
 msgid "File system path to ICC matrix profile to load"
 msgstr "Шлях у файловій системі до профілю матриці ICC для завантаження"
 
-#: operations/core/cast-space.c:128
+#: operations/core/cast-space.c:127
 msgid "Cast color space"
 msgstr "Викликати простір кольорів"
 
-#: operations/core/cast-space.c:130
+#: operations/core/cast-space.c:129
 msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
@@ -7101,11 +7101,15 @@ msgstr "Формат перетворення"
 msgid "Convert the data to the specified format"
 msgstr "Перетворити дані до вказаного формату"
 
-#: operations/core/convert-space.c:104
+#: operations/core/convert-space.c:25
+msgid "Space name"
+msgstr "Назва простору"
+
+#: operations/core/convert-space.c:113
 msgid "Convert color space"
 msgstr "Перетворити простір кольорів"
 
-#: operations/core/convert-space.c:106
+#: operations/core/convert-space.c:115
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
 "with, and the ICC profile potentially embedded for external color "
@@ -8991,7 +8995,7 @@ msgstr "Відняти"
 msgid "Either to add to or subtract from the mask"
 msgstr "Додати до маски або відняти від маски"
 
-#: operations/workshop/external/paint-select.cc:735
+#: operations/workshop/external/paint-select.cc:948
 msgid "Paint Select"
 msgstr "Малювання позначеного"
 
