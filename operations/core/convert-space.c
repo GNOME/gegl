@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2006 Øyvind Kolås <pippin@gimp.org>
+ * Copyright 2020 Øyvind Kolås <pippin@gimp.org>
  */
 
 #include "config.h"
@@ -22,7 +22,7 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_string (name, _("Name"), "sRGB")
+property_string (space_name, _("Space name"), "sRGB")
    description (_("One of: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"))
 property_format (pointer, _("Pointer"), NULL)
    description (_("pointer to a const * Babl space"))
@@ -44,14 +44,10 @@ gegl_convert_space_prepare (GeglOperation *operation)
   const Babl *aux_format = gegl_operation_get_source_format (operation,
                                                             "aux");
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  const Babl *space = babl_space (o->name);
+  const Babl *space = babl_space (o->space_name);
   if (o->pointer)
     space = o->pointer;
-  if (aux_format)
-  {
-    space = babl_format_get_space (aux_format);
-  }
-  if (!space && o->path)
+  if (o->path && o->path[0])
   {
     gchar *icc_data = NULL;
     gsize icc_length;
@@ -60,43 +56,56 @@ gegl_convert_space_prepare (GeglOperation *operation)
     {
       const char *error = NULL;
       const Babl *s = babl_space_from_icc (icc_data, (gint)icc_length,
-                                 BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
+                                 BABL_ICC_INTENT_RELATIVE_COLORIMETRIC,
+                                 &error);
       if (s) space = s;
       g_free (icc_data);
     }
   }
 
-  gegl_operation_set_format (operation, "output",
-                             babl_format_with_space ("RGBA float", space));
+  if (aux_format)
+  {
+    space = babl_format_get_space (aux_format);
+  }
+
+  const Babl *format;
+  if (babl_space_is_cmyk (space))
+  {
+    format = babl_format_with_space ("CMYKA float", space);
+  }
+  else if (babl_space_is_gray (space))
+  {
+    format = babl_format_with_space ("YA float", space);
+  }
+  else
+  {
+    format = babl_format_with_space ("RGBA float", space);
+  }
+  gegl_operation_set_format (operation, "output", format);
 }
 
 static gboolean
 gegl_convert_space_process (GeglOperation        *operation,
-                            GeglOperationContext *context,
-                            const gchar          *output_prop,
+                            GeglBuffer           *input,
+                            GeglBuffer           *aux,
+                            GeglBuffer           *output,
                             const GeglRectangle  *result,
                             gint                  level)
 {
-  GeglBuffer *input;
-
-  input = GEGL_BUFFER (gegl_operation_context_get_object (context, "input"));
-  if (!input)
-    {
-      return FALSE;
-    }
-
-  gegl_operation_context_take_object (context, "output",
-                                      g_object_ref ((GObject *) input));
+  gegl_buffer_copy (input, result, GEGL_ABYSS_NONE, output, result);
   return TRUE;
 }
+
 
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass *operation_class;
+  GeglOperationComposerClass *operation_composer_class;
 
   operation_class = GEGL_OPERATION_CLASS (klass);
-  operation_class->process = gegl_convert_space_process;
+  operation_composer_class = GEGL_OPERATION_COMPOSER_CLASS (klass);
+  operation_composer_class->process = gegl_convert_space_process;
   operation_class->prepare = gegl_convert_space_prepare;
 
   gegl_operation_class_set_keys (operation_class,
