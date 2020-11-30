@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
- * Copyright 2014 Michael Natterer <mitch@gimp.org>
+ * Copyright 2020 Øyvind Kolås <pippin@gimp.org>
  *
  */
 
@@ -22,7 +22,7 @@
 
 #ifdef GEGL_PROPERTIES
 
-property_string (name, _("Name"), "sRGB")
+property_string (space_name, _("Name"), "sRGB")
    description (_("One of: sRGB, Adobish, Rec2020, ProPhoto, Apple, ACEScg, ACES2065-1"))
 property_format (pointer, _("Pointer"), NULL)
    description (_("pointer to a const * Babl space"))
@@ -46,10 +46,10 @@ prepare (GeglOperation *operation)
   const Babl *aux_format = gegl_operation_get_source_format (operation,
                                                             "aux");
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  const Babl *space = babl_space (o->name);
+  const Babl *space = babl_space (o->space_name);
   if (o->pointer)
     space = o->pointer;
-  if (o->path)
+  if (o->path && o->path[0])
   {
     gchar *icc_data = NULL;
     gsize icc_length;
@@ -68,10 +68,12 @@ prepare (GeglOperation *operation)
     space = babl_format_get_space (aux_format);
   }
 
+  const char *old_encoding = babl_format_get_encoding (in_format);
+
   gegl_operation_set_format (operation, "input",
-                             babl_format_with_space ("R'G'B'A float", in_format));
+                             babl_format_with_space (old_encoding, in_format));
   gegl_operation_set_format (operation, "output",
-                             babl_format_with_space ("R'G'B'A float", space));
+                             babl_format_with_space (old_encoding, space));
 }
 
 static gboolean
@@ -81,7 +83,6 @@ process (GeglOperation        *operation,
          const GeglRectangle  *roi,
          gint                  level)
 {
-  //GeglProperties *o = GEGL_PROPERTIES (operation);
   const Babl *in_format = gegl_operation_get_format (operation, "input");
   const Babl *out_format = gegl_operation_get_format (operation, "output");
   GeglBuffer *input;
@@ -102,9 +103,7 @@ process (GeglOperation        *operation,
 
   output = gegl_buffer_new (roi, in_format);
 
-  gegl_buffer_copy (input,  roi, GEGL_ABYSS_NONE,
-                    output, roi);
-
+  gegl_buffer_copy (input, roi, GEGL_ABYSS_NONE, output, roi);
 
   gegl_buffer_set_format (output, out_format);
 
