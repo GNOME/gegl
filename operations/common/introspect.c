@@ -19,6 +19,7 @@
 #include "config.h"
 #include <stdlib.h>
 #include <glib/gi18n-lib.h>
+#include <unistd.h>
 
 
 #ifdef GEGL_PROPERTIES
@@ -38,49 +39,70 @@ gchar *gegl_to_dot                       (GeglNode       *node);
 static void
 gegl_introspect_load_cache (GeglProperties *op_introspect)
 {
-  GeglBuffer *new_buffer   = NULL;
-  GeglNode   *png_load     = NULL;
-  GeglNode   *buffer_sink  = NULL;
   gchar      *dot_string   = NULL;
   gchar      *png_filename = NULL;
   gchar      *dot_filename = NULL;
   gchar      *dot_cmd      = NULL;
+  gint        fd;
 
   if (op_introspect->user_data || op_introspect->node == NULL)
     return;
 
   /* Construct temp filenames */
-  dot_filename = g_build_filename (g_get_tmp_dir (), "gegl-introspect.dot", NULL);
-  png_filename = g_build_filename (g_get_tmp_dir (), "gegl-introspect.png", NULL);
+  dot_filename = g_build_filename (g_get_tmp_dir (), "gegl-introspect-XXXXXX.dot", NULL);
+  png_filename = g_build_filename (g_get_tmp_dir (), "gegl-introspect-XXXXXX.png", NULL);
 
   /* Construct the .dot source */
+  fd = g_mkstemp (dot_filename);
   dot_string = gegl_to_dot (GEGL_NODE (op_introspect->node));
-  g_file_set_contents (dot_filename, dot_string, -1, NULL);
+  write (fd, dot_string, strlen (dot_string));
+  close (fd);
+
+  /* The only point of using g_mkstemp() here is creating a new file and making
+   * sure we don't override a file which existed before.
+   * Also png_filename will be modified in-place to the actual path name
+   * generated as being unique.
+   */
+  fd = g_mkstemp (png_filename);
+  close (fd);
 
   /* Process the .dot to a .png */
-  dot_cmd = g_strdup_printf ("dot -o %s -Tpng %s", png_filename, dot_filename);
-  if (system (dot_cmd) == -1)
-    g_warning ("Error executing GraphViz dot program");
+  dot_cmd = g_strdup_printf ("%s -o %s -Tpng %s", DOT, png_filename, dot_filename);
+  if (system (dot_cmd) != 0)
+    {
+      g_warning ("Error executing GraphViz dot program");
+    }
+  else
+    {
+      GeglBuffer *new_buffer   = NULL;
+      GeglNode   *png_load     = NULL;
+      GeglNode   *buffer_sink  = NULL;
 
-  /* Create a graph that loads the png into a GeglBuffer and process
-   * it
-   */
-  png_load = gegl_node_new_child (NULL,
-                                  "operation", "gegl:png-load",
-                                  "path",      png_filename,
-                                  NULL);
-  buffer_sink = gegl_node_new_child (NULL,
-                                     "operation", "gegl:buffer-sink",
-                                     "buffer",    &new_buffer,
-                                     NULL);
-  gegl_node_link_many (png_load, buffer_sink, NULL);
-  gegl_node_process (buffer_sink);
+      /* Create a graph that loads the png into a GeglBuffer and process
+       * it
+       */
+      png_load = gegl_node_new_child (NULL,
+                                      "operation", "gegl:png-load",
+                                      "path",      png_filename,
+                                      NULL);
+      buffer_sink = gegl_node_new_child (NULL,
+                                         "operation", "gegl:buffer-sink",
+                                         "buffer",    &new_buffer,
+                                         NULL);
+      gegl_node_link_many (png_load, buffer_sink, NULL);
+      gegl_node_process (buffer_sink);
 
-  op_introspect->user_data= new_buffer;
+      op_introspect->user_data= new_buffer;
+
+      g_object_unref (buffer_sink);
+      g_object_unref (png_load);
+    }
+
+  /* Do not keep the files around. */
+  unlink (dot_filename);
+  unlink (png_filename);
 
   /* Cleanup */
-  g_object_unref (buffer_sink);
-  g_object_unref (png_load);
   g_free (dot_string);
   g_free (dot_cmd);
   g_free (dot_filename);
@@ -102,15 +124,21 @@ gegl_introspect_get_bounding_box (GeglOperation *operation)
 {
   GeglRectangle   result = {0,0,0,0};
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  gint width, height;
 
   gegl_introspect_load_cache (o);
 
-  g_object_get (o->user_data, "width", &width,
-                               "height", &height, NULL);
+  if (o->user_data)
+    {
+      gint width, height;
 
-  result.width  = width;
-  result.height = height;
+      g_object_get (o->user_data,
+                    "width",  &width,
+                    "height", &height,
+                    NULL);
+
+      result.width  = width;
+      result.height = height;
+    }
 
   return result;
 }

@@ -136,6 +136,7 @@ add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
 # Utilities
 
 bash        = find_program('bash')
+dot         = os_win32 ? find_program('dot.exe') : find_program('dot')
 
 perl        = find_program('perl5', 'perl', required: false)
 asciidoc    = find_program('asciidoc',      required: false)
