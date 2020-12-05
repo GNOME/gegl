@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-09-02 17:25+0000\n"
-"PO-Revision-Date: 2020-11-17 21:31+0100\n"
+"POT-Creation-Date: 2020-11-18 16:19+0000\n"
+"PO-Revision-Date: 2020-11-21 18:48+0100\n"
 "Last-Translator: Christian Kirbach <christian.kirbach@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -313,7 +313,7 @@ msgstr "Vertikal"
 
 #: gegl/gegl-enums.c:118
 msgid "Float"
-msgstr "Fließkommazahl"
+msgstr "Gleitkommazahl"
 
 #: gegl/gegl-enums.c:120
 msgid "Non-linear"
@@ -7053,7 +7053,6 @@ msgid "Pointer"
 msgstr "Zeiger"
 
 #: operations/core/cast-space.c:28 operations/core/convert-space.c:28
-#| msgid "Zoom in the fractal space"
 msgid "pointer to a const * Babl space"
 msgstr "Zeiger auf const * Babl space"
 
@@ -7112,7 +7111,7 @@ msgstr "Farbraum umwandeln"
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
 "with, and the ICC profile potentially embedded for external color "
-"management, setting a pointer to a format override the string property and "
+"management, setting a pointer to a format overrides the string property and "
 "setting an aux pad overrides both. "
 msgstr ""
 
@@ -8150,13 +8149,13 @@ msgstr ""
 
 #: operations/external/tiff-save.c:30
 msgid "use floating point"
-msgstr "Fließkomma verwenden"
+msgstr "Gleitkomma verwenden"
 
 #: operations/external/tiff-save.c:31
 msgid "floating point -1 means auto, 0 means integer 1 meant float."
 msgstr ""
-"Fließkomma. -1 bedeutet automatisch, 0 bedeutet Ganzzahl und 1 bedeutet "
-"Fließkomma."
+"Gleitkomma. -1 bedeutet automatisch, 0 bedeutet Ganzzahl und 1 bedeutet "
+"Gleitkomma."
 
 #: operations/external/tiff-save.c:825
 msgid "TIFF File Saver"
