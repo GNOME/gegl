@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-11-24 10:05+0000\n"
-"PO-Revision-Date: 2020-11-29 12:02+0100\n"
+"POT-Creation-Date: 2020-11-30 04:16+0000\n"
+"PO-Revision-Date: 2020-12-06 13:05+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -6995,7 +6995,7 @@ msgstr ""
 "Rzuca dane między „input_format” a „output_format”, oba formaty muszą mieć "
 "to samo bpp"
 
-#: operations/core/cast-space.c:25 operations/core/convert-space.c:25
+#: operations/core/cast-space.c:25
 msgid "Name"
 msgstr "Nazwa"
 
@@ -7021,11 +7021,11 @@ msgstr "Ścieżka"
 msgid "File system path to ICC matrix profile to load"
 msgstr "Ścieżka systemu plików do wczytywanego profilu macierzy ICC"
 
-#: operations/core/cast-space.c:128
+#: operations/core/cast-space.c:127
 msgid "Cast color space"
 msgstr "Przestrzeń kolorów rzutu"
 
-#: operations/core/cast-space.c:130
+#: operations/core/cast-space.c:129
 msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
@@ -7063,11 +7063,15 @@ msgstr "Konwertuj format"
 msgid "Convert the data to the specified format"
 msgstr "Konwertuj dane do podanego formatu"
 
-#: operations/core/convert-space.c:104
+#: operations/core/convert-space.c:25
+msgid "Space name"
+msgstr "Nazwa przestrzeni"
+
+#: operations/core/convert-space.c:113
 msgid "Convert color space"
 msgstr "Konwertuj przestrzeń kolorów"
 
-#: operations/core/convert-space.c:106
+#: operations/core/convert-space.c:115
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
 "with, and the ICC profile potentially embedded for external color "
@@ -8938,7 +8942,7 @@ msgstr "Odejmij"
 msgid "Either to add to or subtract from the mask"
 msgstr "Dodaj lub odejmij z maski"
 
-#: operations/workshop/external/paint-select.cc:735
+#: operations/workshop/external/paint-select.cc:948
 msgid "Paint Select"
 msgstr "Zaznaczenie farby"
 
