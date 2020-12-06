@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-11-30 04:16+0000\n"
-"PO-Revision-Date: 2020-11-30 08:57+0200\n"
+"POT-Creation-Date: 2020-12-06 14:39+0000\n"
+"PO-Revision-Date: 2020-12-06 18:56+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -376,6 +376,10 @@ msgstr "Кількість паралельних потоків обробки"
 #: gegl/gegl-init.c:247
 msgid "Disable OpenCL"
 msgstr "Вимкнути OpenCL"
+
+#: gegl/gegl-init.c:259
+msgid "Show GEGL Options"
+msgstr "Показати параметри GEGL"
 
 #: gegl/gegl-serialize.c:296
 #, c-format
@@ -2332,11 +2336,11 @@ msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
 "Обчислити амплітуду градієнта і/або напрямок за допомогою центральних різниць"
 
-#: operations/common/introspect.c:26
+#: operations/common/introspect.c:27
 msgid "Node"
 msgstr "Вузол"
 
-#: operations/common/introspect.c:159
+#: operations/common/introspect.c:187
 msgid "GEGL graph visualizer."
 msgstr "Візуалізатор графів GEGL."
 
