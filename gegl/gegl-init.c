@@ -256,7 +256,7 @@ gegl_get_option_group (void)
 
   gegl_init_i18n ();
 
-  group = g_option_group_new ("gegl", "GEGL Options", "Show GEGL Options",
+  group = g_option_group_new ("gegl", "GEGL Options", _("Show GEGL Options"),
                               NULL, NULL);
   g_option_group_add_entries (group, cmd_entries);
 
