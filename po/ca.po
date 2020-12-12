@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-11-26 10:11+0000\n"
-"PO-Revision-Date: 2020-11-26 19:33+0100\n"
+"POT-Creation-Date: 2020-12-06 16:57+0000\n"
+"PO-Revision-Date: 2020-12-06 22:15+0100\n"
 "Last-Translator: Carles Ferrando Garcia <carles.ferrando@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -382,6 +382,10 @@ msgstr "El nombre de fils de processament simultani que es poden utilitzar"
 #: gegl/gegl-init.c:247
 msgid "Disable OpenCL"
 msgstr "Inhabilita l'OpenCL"
+
+#: gegl/gegl-init.c:259
+msgid "Show GEGL Options"
+msgstr "Mostra les opcions de GEGL"
 
 #: gegl/gegl-serialize.c:296
 #, c-format
@@ -2343,11 +2347,11 @@ msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
 "Calcula la magnitud del degradat i/o la direcció de les diferències centrals"
 
-#: operations/common/introspect.c:26
+#: operations/common/introspect.c:27
 msgid "Node"
 msgstr "Node"
 
-#: operations/common/introspect.c:159
+#: operations/common/introspect.c:187
 msgid "GEGL graph visualizer."
 msgstr "Visualitzador de gràfiques GEGL."
 
@@ -3533,7 +3537,7 @@ msgstr "Enrajolat"
 
 #: operations/common/normal-map.c:55
 msgid "Generate a tileable map"
-msgstr "Crea un mapa de tesel·les"
+msgstr "Crea un mapa enrajolat"
 
 #: operations/common/normal-map.c:248
 msgid "Normal Map"
@@ -7037,7 +7041,7 @@ msgstr ""
 "Repartiment de les dades entre el format_entrada i el format_sortida, tots "
 "dos formats han de tenir el mateix bpp"
 
-#: operations/core/cast-space.c:25 operations/core/convert-space.c:25
+#: operations/core/cast-space.c:25
 msgid "Name"
 msgstr "Nom"
 
@@ -7063,11 +7067,11 @@ msgstr "Camí"
 msgid "File system path to ICC matrix profile to load"
 msgstr "Camí del sistema de fitxers al perfil de la matriu ICC per carregar"
 
-#: operations/core/cast-space.c:128
+#: operations/core/cast-space.c:127
 msgid "Cast color space"
 msgstr "Repartiment de l'espai del color"
 
-#: operations/core/cast-space.c:130
+#: operations/core/cast-space.c:129
 msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
@@ -7106,11 +7110,15 @@ msgstr "Converteix el format"
 msgid "Convert the data to the specified format"
 msgstr "Converteix les dades al format especificat"
 
-#: operations/core/convert-space.c:104
+#: operations/core/convert-space.c:25
+msgid "Space name"
+msgstr "Nom de l'espai"
+
+#: operations/core/convert-space.c:113
 msgid "Convert color space"
 msgstr "Converteix l'espai del color"
 
-#: operations/core/convert-space.c:106
+#: operations/core/convert-space.c:115
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
 "with, and the ICC profile potentially embedded for external color "
