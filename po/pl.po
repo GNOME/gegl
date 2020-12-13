@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-11-30 04:16+0000\n"
-"PO-Revision-Date: 2020-12-06 13:05+0100\n"
+"POT-Creation-Date: 2020-12-06 14:39+0000\n"
+"PO-Revision-Date: 2020-12-13 16:45+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -377,6 +377,10 @@ msgstr "Liczba jednocześnie używanych wątków przetwarzania"
 #: gegl/gegl-init.c:247
 msgid "Disable OpenCL"
 msgstr "Wyłącza OpenCL"
+
+#: gegl/gegl-init.c:259
+msgid "Show GEGL Options"
+msgstr "Wyświetla opcje biblioteki GEGL"
 
 #: gegl/gegl-serialize.c:296
 #, c-format
@@ -2329,11 +2333,11 @@ msgstr "Gradient obrazu"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "Oblicz wielkość gradientu lub kierunek według różnic środkowych"
 
-#: operations/common/introspect.c:26
+#: operations/common/introspect.c:27
 msgid "Node"
 msgstr "Węzeł"
 
-#: operations/common/introspect.c:159
+#: operations/common/introspect.c:187
 msgid "GEGL graph visualizer."
 msgstr "Wizualizacja wykresów GEGL."
 
