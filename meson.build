@@ -136,7 +136,7 @@ add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
 # Utilities
 
 bash        = find_program('bash')
-dot         = os_win32 ? find_program('dot.exe') : find_program('dot')
+dot         = os_win32 ? find_program('dot.exe', required: false) : find_program('dot', required: false)
 
 perl        = find_program('perl5', 'perl', required: false)
 asciidoc    = find_program('asciidoc',      required: false)
@@ -378,6 +378,7 @@ message('\n'.join(['',
 '',
 'Optional dependencies:',
 '  asciidoc:        @0@'.format(asciidoc.found()),
+'  dot:             @0@'.format(dot.found()),
 '  enscript:        @0@'.format(enscript.found()),
 '  mrg:             @0@'.format(mrg.found()),
 '  Ruby:            @0@'.format(ruby.found()),

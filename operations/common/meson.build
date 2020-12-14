@@ -140,7 +140,7 @@ gegl_common = shared_library('gegl-common',
     gegl_lib,
   ],
   c_args: [
-    '-DGEGL_OP_BUNDLE', '-DDOT="' + (os_win32 ? 'dot.exe' : dot.path()) + '"'
+    '-DGEGL_OP_BUNDLE',
   ],
   name_prefix: '',
   install: true,

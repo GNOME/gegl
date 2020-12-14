@@ -43,9 +43,12 @@ gegl_introspect_load_cache (GeglProperties *op_introspect)
   gchar      *png_filename = NULL;
   gchar      *dot_filename = NULL;
   gchar      *dot_cmd      = NULL;
+  gchar      *dot;
   gint        fd;
 
-  if (op_introspect->user_data || op_introspect->node == NULL)
+  dot = g_find_program_in_path ("dot");
+
+  if (! dot || op_introspect->user_data || op_introspect->node == NULL)
     return;
 
   /* Construct temp filenames */
@@ -67,7 +70,7 @@ gegl_introspect_load_cache (GeglProperties *op_introspect)
   close (fd);
 
   /* Process the .dot to a .png */
-  dot_cmd = g_strdup_printf ("%s -o %s -Tpng %s", DOT, png_filename, dot_filename);
+  dot_cmd = g_strdup_printf ("%s -o %s -Tpng %s", dot, png_filename, dot_filename);
   if (system (dot_cmd) != 0)
     {
       g_warning ("Error executing GraphViz dot program");
@@ -103,6 +106,7 @@ gegl_introspect_load_cache (GeglProperties *op_introspect)
   unlink (png_filename);
 
   /* Cleanup */
+  g_free (dot);
   g_free (dot_string);
   g_free (dot_cmd);
   g_free (dot_filename);
@@ -167,6 +171,19 @@ gegl_introspect_process (GeglOperation        *operation,
   return  TRUE;
 }
 
+static gboolean
+gegl_introspect_is_available (void)
+{
+  gchar    *dot;
+  gboolean  found = FALSE;
+
+  dot = g_find_program_in_path ("dot");
+  found = (dot != NULL);
+  g_free (dot);
+
+  return found;
+}
+
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
@@ -180,6 +197,7 @@ gegl_op_class_init (GeglOpClass *klass)
 
   operation_class->process          = gegl_introspect_process;
   operation_class->get_bounding_box = gegl_introspect_get_bounding_box;
+  operation_class->is_available     = gegl_introspect_is_available;
 
   gegl_operation_class_set_keys (operation_class,
     "name"       , "gegl:introspect",
