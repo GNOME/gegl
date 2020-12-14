@@ -221,7 +221,12 @@ gegl_operations_update_visible (void)
 
       operation_license = g_hash_table_lookup (operation_class->keys, "license");
 
-      if (!operation_license || gegl_operations_check_license (operation_license))
+      if (GEGL_OPERATION_CLASS (object_class)->is_available &&
+          ! GEGL_OPERATION_CLASS (object_class)->is_available ())
+        {
+          GEGL_NOTE (GEGL_DEBUG_MISC, "Operation %s is not available", iter_key);
+        }
+      else if (!operation_license || gegl_operations_check_license (operation_license))
         {
           if (operation_license)
             {

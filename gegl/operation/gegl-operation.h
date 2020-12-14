@@ -154,7 +154,14 @@ struct _GeglOperationClass
 
   GeglClRunData *cl_data;
 
-  gpointer      pad[9];
+  /* Class method for runtime checks for an operation availability. In
+   * particular it allows for operations to be built and installed while
+   * depending on runtime dependencies. If is_available() is set and returns
+   * %FALSE, then the operation will be set invisible.
+   */
+  gboolean      (*is_available)              (void);
+
+  gpointer      pad[8];
 };
 
 GeglRectangle   gegl_operation_get_invalidated_by_change
