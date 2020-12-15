@@ -296,7 +296,7 @@ gegl_op_class_init (GeglOpClass *klass)
            "reference-hash", "ae2daa632761f829c4a59225f17bf211",
            "description",
            _("Like a gaussian blur; but where the contribution for each neighbourhood "
-          "pixel is also weighted by the color difference with the original center pixel. "),
+          "pixel is also weighted by the color difference with the original center pixel."),
            NULL);
 }
 
