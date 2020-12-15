@@ -83,7 +83,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "categories", "transform",
     "description", _("Reflect an image about a line, whose direction is "
                      "specified by the vector that is defined by the "
-                     "x and y properties. "),
+                     "x and y properties."),
     "reference-chain", "load path=images/standard-input.png reflet origin-x=100 origin-y=100 x=0.3 y=1.2",
     NULL);
 }
