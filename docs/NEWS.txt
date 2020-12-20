@@ -1,3 +1,35 @@
+GEGL-0.4.28 2020-12-20
+----------------------
+
+Core:
+~~~~~
+
+Infrastructure to opt out of listing ops with unmet runtime dependencies.
+
+Build:
+~~~~~~
+
+Set vapi metadata better under meson. Make graphviz' dot library is a run-time
+not build time dependency.
+
+Operations:
+~~~~~~~~~~~
+
+gegl:convert-space and gegl:cast-space operations fixed, and added to build.
+icc:load new operation that treats .icc files as images, permitting loading a
+space into the graph from file.
+
+Workshop:
+~~~~~~~~~
+
+New operation paint-select for an foreground select tool in development.
+
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Asier Sarasua Garmendia , Christian Kirbach , Corentin Noël , Cristian Secară , Dimitris Spingos (Δημήτρης Σπίγγος) , Jehan , Jordi Mas , Milo Ivir , Niels De Graef , Øyvind Kolås , Piotr Drąg , Rico Tzschichholz , Sabri Ünal , Stephan Woidowski , Thomas Manni , Yacine Bouklif and Yuri Chornoivan.
+
+
 GEGL-0.4.26 2020-08-02
 ----------------------
 
