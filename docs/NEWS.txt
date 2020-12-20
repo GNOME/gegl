@@ -27,7 +27,10 @@ New operation paint-select for an foreground select tool in development.
 Contributors to this release:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Asier Sarasua Garmendia , Christian Kirbach , Corentin Noël , Cristian Secară , Dimitris Spingos (Δημήτρης Σπίγγος) , Jehan , Jordi Mas , Milo Ivir , Niels De Graef , Øyvind Kolås , Piotr Drąg , Rico Tzschichholz , Sabri Ünal , Stephan Woidowski , Thomas Manni , Yacine Bouklif and Yuri Chornoivan.
+Asier Sarasua Garmendia, Christian Kirbach, Corentin Noël, Cristian Secară,
+Dimitris Spingos (Δημήτρης Σπίγγος), Jehan, Jordi Mas, Milo Ivir, Niels
+De Graef, Øyvind Kolås, Piotr Drąg, Rico Tzschichholz, Sabri Ünal,
+Stephan Woidowski, Thomas Manni, Yacine Bouklif and Yuri Chornoivan.
 
 
 GEGL-0.4.26 2020-08-02
