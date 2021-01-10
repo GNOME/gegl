@@ -76,6 +76,7 @@ operations/common/mirrors.c
 operations/common/mix.c
 operations/common/mono-mixer.c
 operations/common/motion-blur-linear.c
+operations/common/negative-darkroom.c
 operations/common/newsprint.c
 operations/common/noise-cell.c
 operations/common/noise-cie-lch.c

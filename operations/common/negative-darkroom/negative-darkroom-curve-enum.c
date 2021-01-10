@@ -1,0 +1,7 @@
+enum_start(neg_curve)
+	enum_value (NEG_FUJI, "fujicrystal", N_("Fujicolor Crystal Archive Digital Pearl Paper"))
+	enum_value (NEG_ILFOBROM1, "ilfobrom1", N_("Ilford Ilfobrom Galerie FB 1"))
+	enum_value (NEG_ILFOBROM2, "ilfobrom2", N_("Ilford Ilfobrom Galerie FB 2"))
+	enum_value (NEG_ILFOBROM3, "ilfobrom3", N_("Ilford Ilfobrom Galerie FB 3"))
+	enum_value (NEG_ILFOBROM4, "ilfobrom4", N_("Ilford Ilfobrom Galerie FB 4"))
+enum_end (NegCurve)
