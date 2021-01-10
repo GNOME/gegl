@@ -67,8 +67,16 @@ typedef int node_id;
 
 typedef struct
 {
-  gfloat bins[N_BINS][N_BINS][N_BINS];
-} Histogram;
+  gfloat  rgb[3];
+  gint    x;
+  gint    y;
+} ColorsSample;
+
+typedef struct
+{
+  GArray  *samples;
+  gfloat   bins[N_BINS][N_BINS][N_BINS];
+} ColorsModel;
 
 typedef enum
 {
@@ -93,16 +101,182 @@ typedef struct
 
   node_id     *nodes;       /* nodes map */
   GraphType   *graph;       /* maxflow::graph */
-
-  gfloat      *fg_samples;
-  gint         n_fg_samples;
-  Histogram    fg_hist;
-
-  gfloat      *bg_samples;
-  gint         n_bg_samples;
-  Histogram    bg_hist;
 } PaintSelect;
 
+typedef struct
+{
+  ColorsModel  *fg_colors;
+  ColorsModel  *bg_colors;
+} PaintSelectPrivate;
+
+
+/* colors model */
+
+static ColorsModel *
+colors_model_new_global (gfloat  *pixels,
+                         gfloat  *mask,
+                         gint     width,
+                         gint     height,
+                         gfloat   mask_value)
+{
+  ColorsModel *model = g_slice_new0 (ColorsModel);
+  GRand  *gr = g_rand_new_with_seed (0);
+  gint    i = 0;
+
+  model->samples = g_array_sized_new (FALSE, FALSE, sizeof (ColorsSample), N_GLOBAL_SAMPLES);
+
+  while (i < N_GLOBAL_SAMPLES)
+    {
+      ColorsSample  sample;
+      gint          m_offset;
+
+      sample.x = g_rand_int_range (gr, 0, width);
+      sample.y = g_rand_int_range (gr, 0, height);
+      m_offset = sample.x + sample.y * width;
+
+      if (mask[m_offset] == mask_value)
+        {
+          gint p_offset = m_offset * 3;
+          gint b1, b2, b3;
+
+          sample.rgb[0] = CLAMP (pixels[p_offset], 0.f, 1.f);
+          sample.rgb[1] = CLAMP (pixels[p_offset+1], 0.f, 1.f);
+          sample.rgb[2] = CLAMP (pixels[p_offset+2], 0.f, 1.f);
+
+          b1 = (gint) (sample.rgb[0] * (N_BINS - 1));
+          b2 = (gint) (sample.rgb[1] * (N_BINS - 1));
+          b3 = (gint) (sample.rgb[2] * (N_BINS - 1));
+
+          model->bins[b1][b2][b3]++;
+          g_array_append_val (model->samples, sample);
+          i++;
+        }
+    }
+
+  g_rand_free (gr);
+  return model;
+}
+
+static void
+colors_model_update_global (ColorsModel  *model,
+                            gfloat       *pixels,
+                            gfloat       *mask,
+                            gint          width,
+                            gint          height,
+                            gfloat        mask_value)
+{
+  GRand  *gr = g_rand_new_with_seed (0);
+  guint   i;
+
+  for (i = 0; i < model->samples->len; i++)
+    {
+      ColorsSample  *sample = &g_array_index (model->samples, ColorsSample, i);
+      gint           m_offset = sample->x + sample->y * width;
+
+      if (mask[m_offset] != mask_value)
+        {
+          gboolean changed = FALSE;
+          gint b1, b2, b3;
+
+          b1 = (gint) (sample->rgb[0] * (N_BINS - 1));
+          b2 = (gint) (sample->rgb[1] * (N_BINS - 1));
+          b3 = (gint) (sample->rgb[2] * (N_BINS - 1));
+
+          model->bins[b1][b2][b3]--;
+
+          while (! changed)
+            {
+              sample->x = g_rand_int_range (gr, 0, width);
+              sample->y = g_rand_int_range (gr, 0, height);
+              m_offset = sample->x + sample->y * width;
+
+              if (mask[m_offset] == mask_value)
+                {
+                  gint p_offset = m_offset * 3;
+
+                  sample->rgb[0] = pixels[p_offset];
+                  sample->rgb[1] = pixels[p_offset+1];
+                  sample->rgb[2] = pixels[p_offset+2];
+
+                  b1 = (gint) (CLAMP(sample->rgb[0], 0.f, 1.f) * (N_BINS - 1));
+                  b2 = (gint) (CLAMP(sample->rgb[1], 0.f, 1.f) * (N_BINS - 1));
+                  b3 = (gint) (CLAMP(sample->rgb[2], 0.f, 1.f) * (N_BINS - 1));
+
+                  model->bins[b1][b2][b3]++;
+                  changed = TRUE;
+                }
+            }
+        }
+    }
+
+  g_rand_free (gr);
+}
+
+static ColorsModel *
+colors_model_new_local (gfloat         *pixels,
+                        gfloat         *mask,
+                        gfloat         *scribbles,
+                        gint            width,
+                        gint            height,
+                        GeglRectangle  *region,
+                        gfloat          mask_value,
+                        gfloat          scribble_value)
+{
+  gint  x, y;
+  ColorsModel *model = g_slice_new0 (ColorsModel);
+  model->samples = g_array_sized_new (FALSE, FALSE, sizeof (ColorsSample), N_GLOBAL_SAMPLES);
+
+  for (y = region->y; y < region->y + region->height; y++)
+    {
+      for (x = region->x; x < region->x + region->width; x++)
+        {
+          gint offset = x + y * width;
+
+          if (scribbles[offset] == scribble_value ||
+              mask[offset] == mask_value)
+            {
+              ColorsSample  sample;
+              gint b1, b2, b3;
+              gint p_offset = offset * 3;
+
+              sample.x = x;
+              sample.y = y;
+              sample.rgb[0] = CLAMP (pixels[p_offset], 0.f, 1.f);
+              sample.rgb[1] = CLAMP (pixels[p_offset+1], 0.f, 1.f);
+              sample.rgb[2] = CLAMP (pixels[p_offset+2], 0.f, 1.f);
+
+              b1 = (gint) (sample.rgb[0] * (N_BINS - 1));
+              b2 = (gint) (sample.rgb[1] * (N_BINS - 1));
+              b3 = (gint) (sample.rgb[2] * (N_BINS - 1));
+
+              model->bins[b1][b2][b3]++;
+              g_array_append_val (model->samples, sample);
+            }
+        }
+    }
+
+  return model;
+}
+
+static void
+colors_model_free (ColorsModel  *model)
+{
+  if (model->samples)
+    g_array_free (model->samples, TRUE);
+
+  g_slice_free (ColorsModel, model);
+}
+
+static gfloat
+colors_model_get_likelyhood (ColorsModel  *model,
+                             gfloat       *color)
+{
+  gint b1 = (gint) (CLAMP(color[0], 0.f, 1.f) * (N_BINS - 1));
+  gint b2 = (gint) (CLAMP(color[1], 0.f, 1.f) * (N_BINS - 1));
+  gint b3 = (gint) (CLAMP(color[2], 0.f, 1.f) * (N_BINS - 1));
+
+  return model->bins[b1][b2][b3] / (gfloat) model->samples->len;
+}
 
 static inline gfloat
 pixels_distance (gfloat  *p1,
@@ -112,6 +286,8 @@ pixels_distance (gfloat  *p1,
                 POW2(p1[1] - p2[1]) +
                 POW2(p1[2] - p2[2]));
 }
+
+/* fluctuations removal */
 
 static void
 push_segment (GQueue *segment_queue,
@@ -223,6 +399,79 @@ find_contiguous_segment (PaintSelect  *ps,
 }
 
 static void
+paint_select_remove_fluctuations (PaintSelect  *ps,
+                                  gfloat       *diff_mask,
+                                  gint          x,
+                                  gint          y)
+{
+  gint                 old_y;
+  gint                 start, end;
+  gint                 new_start, new_end;
+  GQueue              *segment_queue;
+
+  /* mask buffer will hold the result and need to be clean first */
+  memset (ps->mask, 0.f, sizeof (gfloat) * ps->n_pixels);
+
+  segment_queue = g_queue_new ();
+
+  push_segment (segment_queue,
+                y, /* dummy values: */ -1, 0, 0,
+                y, x - 1, x + 1);
+
+  do
+    {
+      pop_segment (segment_queue,
+                   &y, &old_y, &start, &end);
+
+      for (x = start + 1; x < end; x++)
+        {
+          gfloat val = ps->mask[x + y * ps->width];
+
+          if (val != 0.f)
+            {
+              /* If the current pixel is selected, then we've already visited
+               * the next pixel.  (Note that we assume that the maximal image
+               * width is sufficiently low that `x` won't overflow.)
+               */
+              x++;
+              continue;
+            }
+
+          if (! find_contiguous_segment (ps, diff_mask,
+                                         x, y,
+                                         &new_start, &new_end))
+            continue;
+
+          /* We can skip directly to `new_end + 1` on the next iteration, since
+           * we've just selected all pixels in the range `[x, new_end)`, and
+           * the pixel at `new_end` is above threshold.  (Note that we assume
+           * that the maximal image width is sufficiently low that `x` won't
+           * overflow.)
+           */
+          x = new_end;
+
+          if (y + 1 < ps->height)
+            {
+              push_segment (segment_queue,
+                            y, old_y, start, end,
+                            y + 1, new_start, new_end);
+            }
+
+          if (y - 1 >= 0)
+            {
+              push_segment (segment_queue,
+                            y, old_y, start, end,
+                            y - 1, new_start, new_end);
+            }
+
+        }
+    }
+  while (! g_queue_is_empty (segment_queue));
+
+  g_queue_free (segment_queue);
+}
+
+static void
 paint_select_init_buffers (PaintSelect  *ps,
                            GeglBuffer   *mask,
                            GeglBuffer   *colors,
@@ -244,9 +493,6 @@ paint_select_init_buffers (PaintSelect  *ps,
   ps->v_costs   = (gfloat *)  gegl_malloc (sizeof (gfloat) * ps->width * (ps->height - 1));
   ps->nodes     = (node_id *) gegl_malloc (sizeof (node_id) * ps->n_pixels);
 
-  ps->fg_samples = NULL;
-  ps->bg_samples = NULL;
-
   gegl_buffer_get (mask, NULL, 1.0, babl_format (SELECTION_FORMAT),
                    ps->mask, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
@@ -267,8 +513,6 @@ paint_select_free_buffers (PaintSelect  *ps)
   gegl_free (ps->colors);
   gegl_free (ps->h_costs);
   gegl_free (ps->v_costs);
-  g_free (ps->fg_samples);
-  g_free (ps->bg_samples);
 }
 
 static void
@@ -439,168 +683,34 @@ paint_select_get_local_region (PaintSelect  *ps,
   return region;
 }
 
-static void
-paint_select_init_local_samples (PaintSelect    *ps,
-                                 GeglRectangle  *region)
-{
-  gint    *n_samples;
-  gfloat **samples;
-  gfloat   scribble_val;
-  gfloat   mask_val;
-  gint     x, y, i;
-
-  if (ps->mode == GEGL_PAINT_SELECT_MODE_ADD)
-    {
-      n_samples    = &ps->n_fg_samples;
-      samples      = &ps->fg_samples;
-      scribble_val = FG_SCRIBBLE;
-      mask_val     = FG_MASK;
-      g_printerr ("local samples are foreground\n");
-    }
-  else
-    {
-      n_samples    = &ps->n_bg_samples;
-      samples      = &ps->bg_samples;
-      scribble_val = BG_SCRIBBLE;
-      mask_val     = BG_MASK;
-      g_printerr ("local samples are background\n");
-    }
-
-  *n_samples = 0;
-
-  for (y = region->y; y < region->y + region->height; y++)
-    {
-      for (x = region->x; x < region->x + region->width; x++)
-        {
-          gint off = x + y * ps->width;
-
-          if (ps->scribbles[off] == scribble_val ||
-              ps->mask[off] == mask_val)
-            {
-              *n_samples += 1;
-            }
-        }
-    }
-
-  *samples = g_new (gfloat, *n_samples * 3);
-  i = 0;
-
-  for (y = region->y; y < region->y + region->height; y++)
-    {
-      for (x = region->x; x < region->x + region->width; x++)
-        {
-          gint off = x + y * ps->width;
-
-          if (ps->scribbles[off] == scribble_val ||
-              ps->mask[off] == mask_val)
-            {
-              gint coff = off * 3;
-              (*samples)[i*3]   = ps->colors[coff];
-              (*samples)[i*3+1] = ps->colors[coff+1];
-              (*samples)[i*3+2] = ps->colors[coff+2];
-              i++;
-            }
-        }
-    }
-}
-
-static void
-paint_select_init_global_samples (PaintSelect  *ps)
-{
-  gint    *n_samples;
-  gfloat **samples;
-  gfloat   mask_val;
-  GRand   *gr;
-  gint i = 0;
-
-  gr = g_rand_new_with_seed (0);
-
-  if (ps->mode == GEGL_PAINT_SELECT_MODE_SUBTRACT)
-    {
-      n_samples = &ps->n_fg_samples;
-      samples   = &ps->fg_samples;
-      mask_val  = FG_MASK;
-      g_printerr ("global samples are foreground\n");
-    }
-  else
-    {
-      n_samples = &ps->n_bg_samples;
-      samples   = &ps->bg_samples;
-      mask_val  = BG_MASK;
-      g_printerr ("global samples are background\n");
-    }
-
-  *n_samples = N_GLOBAL_SAMPLES;
-  *samples = g_new (gfloat, N_GLOBAL_SAMPLES * 3);
-
-  while (i < N_GLOBAL_SAMPLES)
-    {
-      gint x = g_rand_int_range (gr, 0, ps->width);
-      gint y = g_rand_int_range (gr, 0, ps->height);
-      gint off = x + y * ps->width;
-
-      if (ps->mask[off] == mask_val)
-        {
-          gint coff = off * 3;
-          (*samples)[i*3]   = ps->colors[coff];
-          (*samples)[i*3+1] = ps->colors[coff+1];
-          (*samples)[i*3+2] = ps->colors[coff+2];
-          i++;
-        }
-    }
-}
-
-static void
-paint_select_init_fg_bg_models (PaintSelect  *ps)
-{
-  gint n;
-  gfloat increment = 1.f / (gfloat) ps->n_fg_samples;
-
-  memset (&ps->fg_hist, 0.f, sizeof (Histogram));
-
-  for (n = 0; n < ps->n_fg_samples; n++)
-    {
-      gfloat *sample = ps->fg_samples + n * 3;
-      gint    b1 = (gint) (sample[0] * (N_BINS - 1));
-      gint    b2 = (gint) (sample[1] * (N_BINS - 1));
-      gint    b3 = (gint) (sample[2] * (N_BINS - 1));
-      ps->fg_hist.bins[b1][b2][b3] += increment;
-    }
-
-  memset (&ps->bg_hist, 0.f, sizeof (Histogram));
-
-  increment = 1.f / (gfloat) ps->n_bg_samples;
-
-  for (n = 0; n < ps->n_bg_samples; n++)
-    {
-      gfloat *sample = ps->bg_samples + n * 3;
-      gint    b1 = (gint) (sample[0] * (N_BINS - 1));
-      gint    b2 = (gint) (sample[1] * (N_BINS - 1));
-      gint    b3 = (gint) (sample[2] * (N_BINS - 1));
-      ps->bg_hist.bins[b1][b2][b3] += increment;
-    }
-}
-
 /* SOURCE terminal is foreground (selected pixels)
  * SINK terminal is background (unselected pixels)
  */
 
 static void
-paint_select_init_graph_nodes_and_tlinks (PaintSelect  *ps)
+paint_select_init_graph_nodes_and_tlinks (PaintSelect  *ps,
+                                          ColorsModel  *local_colors,
+                                          ColorsModel  *global_colors)
 {
   gfloat          node_mask;
   ConstraintType  boundary;
+  ColorsModel    *source_model;
+  ColorsModel    *sink_model;
   gint            x, y;
 
   if (ps->mode == GEGL_PAINT_SELECT_MODE_ADD)
     {
-      node_mask  = BG_MASK;
-      boundary   = HARD_SOURCE;
+      node_mask    = BG_MASK;
+      boundary     = HARD_SOURCE;
+      source_model = global_colors;
+      sink_model   = local_colors;
     }
   else
     {
       node_mask  = FG_MASK;
       boundary   = HARD_SINK;
+      source_model = local_colors;
+      sink_model   = global_colors;
     }
 
   for (y = 0; y < ps->height; y++)
@@ -659,12 +769,9 @@ paint_select_init_graph_nodes_and_tlinks (PaintSelect  *ps)
               else
                 {
                   gint coff = off * 3;
-                  gint b1 = (gint) (ps->colors[coff]   * (N_BINS - 1));
-                  gint b2 = (gint) (ps->colors[coff+1] * (N_BINS - 1));
-                  gint b3 = (gint) (ps->colors[coff+2] * (N_BINS - 1));
 
-                  sink_weight   = - logf (ps->fg_hist.bins[b1][b2][b3] + 0.0001f);
-                  source_weight = - logf (ps->bg_hist.bins[b1][b2][b3] + 0.0001f);
+                  sink_weight   = - logf (colors_model_get_likelyhood (sink_model, ps->colors + coff) + 0.0001f);
+                  source_weight = - logf (colors_model_get_likelyhood (source_model, ps->colors + coff) + 0.0001f);
                 }
 
               if (source_weight < 0)
@@ -752,78 +859,7 @@ paint_select_compute_diff_mask (PaintSelect  *ps)
   return diff;
 }
 
-static void
-paint_select_remove_fluctuations (PaintSelect  *ps,
-                                  gfloat       *diff_mask,
-                                  gint          x,
-                                  gint          y)
-{
-  gint                 old_y;
-  gint                 start, end;
-  gint                 new_start, new_end;
-  GQueue              *segment_queue;
-
-  /* mask buffer will hold the result and need to be clean first */
-  memset (ps->mask, 0.f, sizeof (gfloat) * ps->n_pixels);
-
-  segment_queue = g_queue_new ();
-
-  push_segment (segment_queue,
-                y, /* dummy values: */ -1, 0, 0,
-                y, x - 1, x + 1);
-
-  do
-    {
-      pop_segment (segment_queue,
-                   &y, &old_y, &start, &end);
-
-      for (x = start + 1; x < end; x++)
-        {
-          gfloat val = ps->mask[x + y * ps->width];
-
-          if (val != 0.f)
-            {
-              /* If the current pixel is selected, then we've already visited
-               * the next pixel.  (Note that we assume that the maximal image
-               * width is sufficiently low that `x` won't overflow.)
-               */
-              x++;
-              continue;
-            }
-
-          if (! find_contiguous_segment (ps, diff_mask,
-                                         x, y,
-                                         &new_start, &new_end))
-            continue;
-
-          /* We can skip directly to `new_end + 1` on the next iteration, since
-           * we've just selected all pixels in the range `[x, new_end)`, and
-           * the pixel at `new_end` is above threshold.  (Note that we assume
-           * that the maximal image width is sufficiently low that `x` won't
-           * overflow.)
-           */
-          x = new_end;
-
-          if (y + 1 < ps->height)
-            {
-              push_segment (segment_queue,
-                            y, old_y, start, end,
-                            y + 1, new_start, new_end);
-            }
-
-          if (y - 1 >= 0)
-            {
-              push_segment (segment_queue,
-                            y, old_y, start, end,
-                            y - 1, new_start, new_end);
-            }
-
-        }
-    }
-  while (! g_queue_is_empty (segment_queue));
-
-  g_queue_free (segment_queue);
-}
+/* GEGL operation */
 
 static void
 prepare (GeglOperation *operation)
@@ -862,8 +898,8 @@ process (GeglOperation       *operation,
          gint                 level)
 {
   GeglProperties  *o = GEGL_PROPERTIES (operation);
-  PaintSelect  ps;
-  gfloat       flow;
+  PaintSelect   ps;
+  gfloat        flow;
   GeglRectangle region;
   gint          x, y;
 
@@ -887,29 +923,73 @@ process (GeglOperation       *operation,
   if (! gegl_rectangle_is_empty (&region) &&
       ! gegl_rectangle_is_infinite_plane (&region))
     {
-      gfloat  *diff;
+      PaintSelectPrivate *priv = (PaintSelectPrivate *) o->user_data;
+      ColorsModel        *local_colors;
+      ColorsModel        *global_colors;
+      gfloat             *diff;
 
-      /* retrieve colors samples and init histograms */
+      if (! priv)
+        {
+          priv = g_slice_new (PaintSelectPrivate);
+          priv->fg_colors = NULL;
+          priv->bg_colors = NULL;
+          o->user_data    = priv;
+        }
 
-      paint_select_init_local_samples (&ps, &region);
-      paint_select_init_global_samples (&ps);
+      if (o->mode == GEGL_PAINT_SELECT_MODE_ADD)
+        {
+          if (! priv->bg_colors)
+            {
+              priv->bg_colors = colors_model_new_global (ps.colors, ps.mask,
+                                                         ps.width, ps.height,
+                                                         BG_MASK);
+            }
+          else
+            {
+              colors_model_update_global (priv->bg_colors,
+                                          ps.colors, ps.mask,
+                                          ps.width, ps.height,
+                                          BG_MASK);
+            }
 
-      g_printerr ("n fg samples: %d\n", ps.n_fg_samples);
-      g_printerr ("n bg samples: %d\n", ps.n_bg_samples);
+          global_colors = priv->bg_colors;
+          local_colors = colors_model_new_local (ps.colors, ps.mask, ps.scribbles,
+                                                 ps.width, ps.height,
+                                                 &region,
+                                                 FG_MASK, FG_SCRIBBLE);
+        }
+      else
+        {
+          if (! priv->fg_colors)
+            {
+              priv->fg_colors = colors_model_new_global (ps.colors, ps.mask,
+                                                         ps.width, ps.height,
+                                                         FG_MASK);
+            }
+          else
+            {
+              colors_model_update_global (priv->fg_colors,
+                                          ps.colors, ps.mask,
+                                          ps.width, ps.height,
+                                          FG_MASK);
+            }
 
-      paint_select_init_fg_bg_models (&ps);
+          global_colors = priv->fg_colors;
+          local_colors = colors_model_new_local (ps.colors, ps.mask, ps.scribbles,
+                                                 ps.width, ps.height,
+                                                 &region,
+                                                 BG_MASK, BG_SCRIBBLE);
+        }
 
       /* init graph */
 
       paint_select_compute_adjacent_costs (&ps);
-      g_printerr ("mean adjacent costs: %f\n", ps.mean_costs);
-      paint_select_init_graph_nodes_and_tlinks (&ps);
+      paint_select_init_graph_nodes_and_tlinks (&ps, local_colors, global_colors);
       paint_select_init_graph_nlinks (&ps);
 
       /* compute maxflow/mincut */
 
       flow = ps.graph->maxflow();
-      g_printerr ("flow: %f\n", flow);
 
       /* compute difference between original mask and graphcut result.
        * then remove fluctuations */
@@ -922,6 +1002,7 @@ process (GeglOperation       *operation,
                        ps.mask, GEGL_AUTO_ROWSTRIDE);
 
       gegl_free (diff);
+      colors_model_free (local_colors);
     }
 
   paint_select_free_buffers (&ps);
@@ -930,14 +1011,39 @@ process (GeglOperation       *operation,
 }
 
 static void
+finalize (GObject *object)
+{
+  GeglProperties *o = GEGL_PROPERTIES (object);
+
+  if (o->user_data)
+    {
+      PaintSelectPrivate *priv = (PaintSelectPrivate *) o->user_data;
+
+      if (priv->fg_colors)
+        colors_model_free (priv->fg_colors);
+
+      if (priv->bg_colors)
+        colors_model_free (priv->bg_colors);
+
+      g_slice_free (PaintSelectPrivate, o->user_data);
+      o->user_data = NULL;
+    }
+
+  G_OBJECT_CLASS (gegl_op_parent_class)->finalize (object);
+}
+
+static void
 gegl_op_class_init (GeglOpClass *klass)
 {
+  GObjectClass                *object_class;
   GeglOperationClass          *operation_class;
   GeglOperationComposer3Class *composer_class;
 
+  object_class    = G_OBJECT_CLASS (klass);
   operation_class = GEGL_OPERATION_CLASS (klass);
   composer_class  = GEGL_OPERATION_COMPOSER3_CLASS (klass);
 
+  object_class->finalize                     = finalize;
   operation_class->get_cached_region         = get_cached_region;
   operation_class->prepare                   = prepare;
   operation_class->threaded                  = FALSE;
