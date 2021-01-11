@@ -31,7 +31,7 @@ gegl_test_deps = [
 ]
 
 # common test paralllel flag
-gegl_test_parallel = true
+gegl_test_parallel = get_option('parallel-tests')
 
 
 # Tests

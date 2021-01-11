@@ -20,6 +20,12 @@ option('vapigen',
   value: 'auto',
   description: 'Vala .vapi generation - depends on introspection'
 )
+# Build settings
+option('parallel-tests',
+  type: 'boolean',
+  value: 'true',
+  description: 'run tests in parallel or sequentially'
+)
 
 # optional dependencies
 option('gdk-pixbuf',    type: 'feature', value: 'auto')
