@@ -29,28 +29,29 @@ property_enum (curve, _("Characteristic curve"),
 		NegCurve, neg_curve, 0)
 	description(_("Hardcoded characteristic curve and color data"))
 
-property_double (exposure, _("Exposure"), 0.0)
+property_double (exposure, _("Exposure"), -9.0)
 	description(_("Base enlargement exposure"))
 	value_range (-20, 10)
+	ui_range (-15, 0)
 
 property_double (expC, _("Filter cyan"), 0.0)
 	description(_("Cyan exposure compensation for the negative image"))
-	value_range (-2, 2)
+	value_range (-3, 3)
 
 property_double (expM, _("Filter magenta"), 0.0)
 	description(_("Magenta exposure compensation for the negative image"))
-	value_range (-2, 2)
+	value_range (-3, 3)
 
 property_double (expY, _("Filter yellow"), 0.0)
 	description(_("Yellow exposure compensation for the negative image"))
-	value_range (-2, 2)
+	value_range (-3, 3)
 
 property_boolean (clip, _("Clip base + fog"), TRUE)
 	description (_("Clip base + fog to have a pure white output value"))
 
 property_double (boost, _("Density boost"), 1.0)
-	description(_("Boost paper density to take edvantage of increased dynamic range of a monitor compared to a photographic paper"))
-	value_range (1, 2)
+	description(_("Boost paper density to take advantage of increased dynamic range of a monitor compared to a photographic paper"))
+	value_range (1, 3)
 
 property_double (dodge, _("Dodge/burn multiplier"), 1.0)
 	description(_("The f-stop of dodge/burn for pure white/black auxillary input"))
