@@ -80,10 +80,10 @@ typedef struct
 
 typedef enum
 {
-  HARD_SOURCE,
-  HARD_SINK,
-  SOFT
-} ConstraintType;
+  SEED_NONE,
+  SEED_SOURCE,
+  SEED_SINK,
+} SeedType;
 
 typedef struct
 {
@@ -95,12 +95,6 @@ typedef struct
   gfloat      *mask;        /* selection mask */
   gfloat      *colors;      /* input image    */
   gfloat      *scribbles;   /* user scribbles */
-  gfloat      *h_costs;     /* horizontal edges costs */
-  gfloat      *v_costs;     /* vertical edges costs   */
-  gfloat       mean_costs;
-
-  node_id     *nodes;       /* nodes map */
-  GraphType   *graph;       /* maxflow::graph */
 } PaintSelect;
 
 typedef struct
@@ -108,6 +102,15 @@ typedef struct
   ColorsModel  *fg_colors;
   ColorsModel  *bg_colors;
 } PaintSelectPrivate;
+
+typedef struct
+{
+  gfloat        mask_value_seed; /* Value of the mask where seeds are needed. */
+  SeedType      mask_seed_type;  /* Corresponding seed type.                  */
+  ColorsModel  *source_model;    /* Colors model used to compute terminal     */
+  ColorsModel  *sink_model;      /*  links weights.                           */
+  ColorsModel  *local_colors;
+} PaintSelectContext;
 
 
 /* colors model */
@@ -278,15 +281,6 @@ colors_model_get_likelyhood (ColorsModel  *model,
   return model->bins[b1][b2][b3] / (gfloat) model->samples->len;
 }
 
-static inline gfloat
-pixels_distance (gfloat  *p1,
-                 gfloat  *p2)
-{
-  return sqrtf (POW2(p1[0] - p2[0]) +
-                POW2(p1[1] - p2[1]) +
-                POW2(p1[2] - p2[2]));
-}
-
 /* fluctuations removal */
 
 static void
@@ -352,45 +346,46 @@ pop_segment (GQueue *segment_queue,
 }
 
 static gboolean
-find_contiguous_segment (PaintSelect  *ps,
-                         gfloat       *diff_mask,
-                         gint          initial_x,
-                         gint          initial_y,
-                         gint         *start,
-                         gint         *end)
+find_contiguous_segment (gfloat  *mask,
+                         gfloat  *diff,
+                         gint     width,
+                         gint     initial_x,
+                         gint     initial_y,
+                         gint    *start,
+                         gint    *end)
 {
-  gint  offset = initial_x + initial_y * ps->width;
+  gint  offset = initial_x + initial_y * width;
 
   /* check the starting pixel */
-  if (diff_mask[offset] == 0.f)
+  if (diff[offset] == 0.f)
     return FALSE;
 
-  ps->mask[offset] = 1.f;
+  mask[offset] = 1.f;
 
   *start = initial_x - 1;
 
   while (*start >= 0)
     {
-      offset = *start + initial_y * ps->width;
+      offset = *start + initial_y * width;
 
-      if (diff_mask[offset] == 0.f)
+      if (diff[offset] == 0.f)
         break;
 
-      ps->mask[offset] = 1.f;
+      mask[offset] = 1.f;
 
       (*start)--;
     }
 
   *end = initial_x + 1;
 
-  while (*end < ps->width)
+  while (*end < width)
     {
-      offset = *end + initial_y * ps->width;
+      offset = *end + initial_y * width;
 
-      if (diff_mask[offset] == 0.f)
+      if (diff[offset] == 0.f)
         break;
 
-      ps->mask[offset] = 1.f;
+      mask[offset] = 1.f;
 
       (*end)++;
     }
@@ -399,10 +394,12 @@ find_contiguous_segment (PaintSelect  *ps,
 }
 
 static void
-paint_select_remove_fluctuations (PaintSelect  *ps,
-                                  gfloat       *diff_mask,
-                                  gint          x,
-                                  gint          y)
+paint_select_remove_fluctuations (gfloat  *mask,
+                                  gfloat  *diff,
+                                  gint     width,
+                                  gint     height,
+                                  gint     x,
+                                  gint     y)
 {
   gint                 old_y;
   gint                 start, end;
@@ -410,7 +407,7 @@ paint_select_remove_fluctuations (PaintSelect  *ps,
   GQueue              *segment_queue;
 
   /* mask buffer will hold the result and need to be clean first */
-  memset (ps->mask, 0.f, sizeof (gfloat) * ps->n_pixels);
+  memset (mask, 0.f, sizeof (gfloat) * (width * height));
 
   segment_queue = g_queue_new ();
 
@@ -425,7 +422,7 @@ paint_select_remove_fluctuations (PaintSelect  *ps,
 
       for (x = start + 1; x < end; x++)
         {
-          gfloat val = ps->mask[x + y * ps->width];
+          gfloat val = mask[x + y * width];
 
           if (val != 0.f)
             {
@@ -437,7 +434,7 @@ paint_select_remove_fluctuations (PaintSelect  *ps,
               continue;
             }
 
-          if (! find_contiguous_segment (ps, diff_mask,
+          if (! find_contiguous_segment (mask, diff, width,
                                          x, y,
                                          &new_start, &new_end))
             continue;
@@ -450,7 +447,7 @@ paint_select_remove_fluctuations (PaintSelect  *ps,
            */
           x = new_end;
 
-          if (y + 1 < ps->height)
+          if (y + 1 < height)
             {
               push_segment (segment_queue,
                             y, old_y, start, end,
@@ -471,6 +468,424 @@ paint_select_remove_fluctuations (PaintSelect  *ps,
   g_queue_free (segment_queue);
 }
 
+/* graphcut
+ *
+ * SOURCE terminal always represents selected region */
+
+static inline gfloat
+pixels_distance (gfloat  *p1,
+                 gfloat  *p2)
+{
+  return sqrtf (POW2(p1[0] - p2[0]) +
+                POW2(p1[1] - p2[1]) +
+                POW2(p1[2] - p2[2]));
+}
+
+static void
+paint_select_compute_adjacent_costs (gfloat  *pixels,
+                                     gint     width,
+                                     gint     height,
+                                     gfloat  *h_costs,
+                                     gfloat  *v_costs,
+                                     gfloat  *mean)
+{
+  gint  x, y;
+  gint  n_h_costs = (width - 1) * height;
+  gint  n_v_costs = width * (height - 1);
+  gfloat sum      = 0.f;
+
+  /* horizontal */
+
+  for (y = 0; y < height; y++)
+    {
+      for (x = 0; x < width - 1; x++)
+        {
+          gint cost_offset = x + y * (width - 1);
+          gint p1_offset   = (x + y * width) * 3;
+          gint p2_offset   = p1_offset + 3;
+
+          gfloat d = pixels_distance (pixels + p1_offset, pixels + p2_offset);
+          h_costs[cost_offset] = d;
+          sum += d;
+        }
+    }
+
+  /* vertical */
+
+  for (x = 0; x < width; x++)
+    {
+      for (y = 0; y < height - 1; y++)
+        {
+          gint cost_offset = x + y * width;
+          gint p1_offset    = (x + y * width) * 3;
+          gint p2_offset    = p1_offset + width * 3;
+
+          gfloat d = pixels_distance (pixels + p1_offset, pixels + p2_offset);
+          v_costs[cost_offset] = d;
+          sum += d;
+        }
+    }
+
+  /* compute mean costs */
+
+  *mean = sum / (gfloat) (n_h_costs + n_v_costs);
+}
+
+static guint8 *
+paint_select_compute_seeds_map (gfloat              *mask,
+                                gfloat              *scribbles,
+                                gint                 width,
+                                gint                 height,
+                                PaintSelectContext  *context)
+{
+  guint8  *seeds;
+  gint     x, y;
+
+  seeds = g_new (guint8, width * height);
+
+  for (y = 0; y < height; y++)
+    {
+      for (x = 0; x < width; x++)
+        {
+          gint offset = x + y * width;
+
+          gfloat *p_mask      = mask + offset;
+          gfloat *p_scribbles = scribbles + offset;
+          guint8 *p_seeds     = seeds + offset;
+
+          *p_seeds = SEED_NONE;
+
+          if (*p_mask == context->mask_value_seed)
+            {
+              *p_seeds = context->mask_seed_type;
+            }
+          else if (*p_scribbles == FG_SCRIBBLE)
+            {
+              *p_seeds = SEED_SOURCE;
+            }
+
+          else if (*p_scribbles == BG_SCRIBBLE)
+            {
+              *p_seeds = SEED_SINK;
+            }
+        }
+    }
+
+  return seeds;
+}
+
+static inline gboolean
+paint_select_seed_is_boundary (guint8  *seeds,
+                               gint     width,
+                               gint     height,
+                               gint     x,
+                               gint     y)
+{
+  gint offset = x + y * width;
+  gint neighbor_offset;
+  gint x2, y2;
+
+  x2 = x - 1;
+  if (x2 >= 0)
+    {
+      neighbor_offset = offset - 1;
+      if (seeds[neighbor_offset] != seeds[offset])
+        return TRUE;
+    }
+
+  x2 = x + 1;
+  if (x2 < width)
+    {
+      neighbor_offset = offset + 1;
+      if (seeds[neighbor_offset] != seeds[offset])
+        return TRUE;
+    }
+
+  y2 = y - 1;
+  if (y2 >= 0)
+    {
+      neighbor_offset = offset - width;
+      if (seeds[neighbor_offset] != seeds[offset])
+        return TRUE;
+    }
+
+  y2 = y + 1;
+  if (y2 < height)
+    {
+      neighbor_offset = offset + width;
+      if (seeds[neighbor_offset] != seeds[offset])
+        return TRUE;
+    }
+
+  return FALSE;
+}
+
+static void
+paint_select_graph_init_nodes_and_tlinks (GraphType           *graph,
+                                          gfloat              *pixels,
+                                          guint8              *seeds,
+                                          gint                *nodes,
+                                          gint                 width,
+                                          gint                 height,
+                                          PaintSelectContext  *context)
+{
+  gint  x, y;
+
+  for (y = 0; y < height; y++)
+    {
+      for (x = 0; x < width; x++)
+        {
+          node_id  id      = -1;
+          gint     offset  = x + y * width;
+          guint8  *p_seeds = seeds + offset;
+          gint    *p_nodes = nodes + offset;
+
+          if (*p_seeds == SEED_NONE)
+            {
+              gfloat  source_weight;
+              gfloat  sink_weight;
+              gfloat *color = pixels + offset * 3;
+
+              id = graph->add_node();
+
+              sink_weight   = - logf (colors_model_get_likelyhood (context->sink_model, color) + 0.0001f);
+              source_weight = - logf (colors_model_get_likelyhood (context->source_model, color) + 0.0001f);
+
+              graph->add_tweights (id, source_weight, sink_weight);
+            }
+          else if (paint_select_seed_is_boundary (seeds, width, height, x, y))
+            {
+              id = graph->add_node();
+
+              if (*p_seeds == SEED_SOURCE)
+                {
+                  graph->add_tweights (id, BIG_CAPACITY, 0.f);
+                }
+              else
+                {
+                  graph->add_tweights (id, 0.f, BIG_CAPACITY);
+                }
+            }
+
+          *p_nodes = id;
+        }
+    }
+}
+
+static void
+paint_select_graph_init_nlinks (GraphType  *graph,
+                                gint       *nodes,
+                                gfloat     *h_costs,
+                                gfloat     *v_costs,
+                                gfloat      mean_costs,
+                                gint        width,
+                                gint        height)
+{
+  gint x, y;
+
+  /* horizontal */
+
+  for (y = 0; y < height; y++)
+    {
+      for (x = 0; x < width - 1; x++)
+        {
+          node_id id1 = nodes[x + y * width];
+          node_id id2 = nodes[x + 1 + y * width];
+
+          if (id1 != -1 && id2 != -1)
+            {
+              gint costs_off = x + y * (width - 1);
+              gfloat weight  = 60.f * mean_costs / (h_costs[costs_off] + EPSILON);
+              g_assert (weight >= 0.f);
+              graph->add_edge (id1, id2, weight, weight);
+            }
+        }
+    }
+
+  /* vertical */
+
+  for (x = 0; x < width; x++)
+    {
+      for (y = 0; y < height - 1; y++)
+        {
+          node_id id1 = nodes[x + y * width];
+          node_id id2 = nodes[x + (y+1) * width];
+
+          if (id1 != -1 && id2 != -1)
+            {
+              gint costs_off = x + y * width;
+              gfloat weight  = 60.f * mean_costs / (v_costs[costs_off] + EPSILON);
+              g_assert (weight >= 0.f);
+              graph->add_edge (id1, id2, weight, weight);
+            }
+        }
+    }
+}
+
+static gfloat *
+paint_select_graph_get_segmentation (GraphType  *graph,
+                                     gint       *nodes,
+                                     guint8     *seeds,
+                                     gint        width,
+                                     gint        height)
+{
+  gint     size = width * height;
+  gfloat  *segmentation;
+  gint     i;
+
+  segmentation = g_new (gfloat, size);
+
+  for (i = 0; i < size; i++)
+    {
+      node_id id = nodes[i];
+
+      if (id != -1)
+        {
+          if (graph->what_segment(id) == GraphType::SOURCE)
+            segmentation[i] = 1.f;
+          else
+            segmentation[i] = 0.f;
+        }
+      else if (seeds[i] == SEED_SOURCE)
+        {
+          segmentation[i] = 1.f;
+        }
+      else if (seeds[i] == SEED_SINK)
+        {
+          segmentation[i] = 0.f;
+        }
+    }
+
+  return segmentation;
+}
+
+static gfloat *
+paint_select_graphcut (gfloat              *pixels,
+                       guint8              *seeds,
+                       gint                 width,
+                       gint                 height,
+                       PaintSelectContext  *context)
+{
+  GraphType  *graph;
+  gint       *nodes;
+  gfloat     *result;
+  gfloat     *h_costs;
+  gfloat     *v_costs;
+  gfloat      mean_costs;
+  gint        n_nodes;
+  gint        n_edges;
+  gint        n_h_costs;
+  gint        n_v_costs;
+
+  n_h_costs = (width - 1) * height;
+  n_v_costs = (height - 1) * width;
+
+  n_nodes = width * height;
+  n_edges = n_h_costs + n_v_costs;
+
+  h_costs = g_new (gfloat, n_h_costs);
+  v_costs = g_new (gfloat, n_v_costs);
+
+  paint_select_compute_adjacent_costs (pixels, width, height,
+                                       h_costs, v_costs, &mean_costs);
+
+  graph = new GraphType (n_nodes, n_edges);
+  nodes = g_new (gint, n_nodes);
+
+  paint_select_graph_init_nodes_and_tlinks (graph, pixels, seeds, nodes,
+                                            width, height, context);
+
+  paint_select_graph_init_nlinks (graph, nodes, h_costs, v_costs, mean_costs,
+                                  width, height);
+
+  graph->maxflow();
+
+  g_free (h_costs);
+  g_free (v_costs);
+
+  result = paint_select_graph_get_segmentation (graph, nodes, seeds, width, height);
+
+  g_free (nodes);
+  delete graph;
+
+  return result;
+}
+
+/* high level functions */
+
+static PaintSelectContext *
+paint_select_context_new (GeglProperties      *o,
+                          gfloat              *pixels,
+                          gfloat              *mask,
+                          gfloat              *scribbles,
+                          gint                 width,
+                          gint                 height,
+                          GeglRectangle       *region)
+{
+  PaintSelectPrivate *priv = (PaintSelectPrivate *) o->user_data;
+  PaintSelectContext *context = g_slice_new (PaintSelectContext);
+
+  if (! priv)
+    {
+      priv = g_slice_new (PaintSelectPrivate);
+      priv->fg_colors = NULL;
+      priv->bg_colors = NULL;
+      o->user_data    = priv;
+    }
+
+  if (o->mode == GEGL_PAINT_SELECT_MODE_ADD)
+    {
+      if (! priv->bg_colors)
+        {
+          priv->bg_colors = colors_model_new_global (pixels, mask,
+                                                     width, height, BG_MASK);
+        }
+      else
+        {
+          colors_model_update_global (priv->bg_colors, pixels, mask,
+                                      width, height, BG_MASK);
+        }
+
+      context->local_colors = colors_model_new_local (pixels, mask, scribbles,
+                                                      width, height, region,
+                                                      FG_MASK, FG_SCRIBBLE);
+      context->mask_value_seed = FG_MASK;
+      context->mask_seed_type  = SEED_SOURCE;
+      context->source_model    = priv->bg_colors;
+      context->sink_model      = context->local_colors;
+    }
+  else
+    {
+      if (! priv->fg_colors)
+        {
+          priv->fg_colors = colors_model_new_global (pixels, mask,
+                                                     width, height, FG_MASK);
+        }
+      else
+        {
+          colors_model_update_global (priv->fg_colors, pixels, mask,
+                                      width, height, FG_MASK);
+        }
+
+      context->local_colors = colors_model_new_local (pixels, mask, scribbles,
+                                                      width, height, region,
+                                                      BG_MASK, BG_SCRIBBLE);
+      context->mask_value_seed = BG_MASK;
+      context->mask_seed_type  = SEED_SINK;
+      context->source_model    = context->local_colors;
+      context->sink_model      = priv->fg_colors;;
+    }
+
+  return context;
+}
+
+static void
+paint_select_context_free (PaintSelectContext  *context)
+{
+  colors_model_free (context->local_colors);
+  g_slice_free (PaintSelectContext, context);
+}
+
 static void
 paint_select_init_buffers (PaintSelect  *ps,
                            GeglBuffer   *mask,
@@ -483,15 +898,9 @@ paint_select_init_buffers (PaintSelect  *ps,
   ps->height   = gegl_buffer_get_height (mask);
   ps->n_pixels = ps->width * ps->height;
 
-  ps->graph = new GraphType (ps->n_pixels,
-                            (ps->width - 1) * ps->height + ps->width * (ps->height - 1));
-
   ps->mask      = (gfloat *)  gegl_malloc (sizeof (gfloat) * ps->n_pixels);
   ps->colors    = (gfloat *)  gegl_malloc (sizeof (gfloat) * ps->n_pixels * 3);
   ps->scribbles = (gfloat *)  gegl_malloc (sizeof (gfloat) * ps->n_pixels);
-  ps->h_costs   = (gfloat *)  gegl_malloc (sizeof (gfloat) * (ps->width - 1) * ps->height);
-  ps->v_costs   = (gfloat *)  gegl_malloc (sizeof (gfloat) * ps->width * (ps->height - 1));
-  ps->nodes     = (node_id *) gegl_malloc (sizeof (node_id) * ps->n_pixels);
 
   gegl_buffer_get (mask, NULL, 1.0, babl_format (SELECTION_FORMAT),
                    ps->mask, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
@@ -506,126 +915,33 @@ paint_select_init_buffers (PaintSelect  *ps,
 static void
 paint_select_free_buffers (PaintSelect  *ps)
 {
-  delete ps->graph;
-  gegl_free (ps->nodes);
   gegl_free (ps->mask);
   gegl_free (ps->scribbles);
   gegl_free (ps->colors);
-  gegl_free (ps->h_costs);
-  gegl_free (ps->v_costs);
 }
 
-static void
-paint_select_compute_adjacent_costs (PaintSelect  *ps)
+static gboolean
+paint_select_get_local_region (gfloat         *mask,
+                               gfloat         *scribbles,
+                               gint            width,
+                               gint            height,
+                               GeglRectangle  *region,
+                               gint           *pix_x,
+                               gint           *pix_y,
+                               GeglPaintSelectModeType  mode)
 {
-  gint  x, y, n = 0;
-  gfloat sum = 0.f;
-
-  /* horizontal */
-
-  for (y = 0; y < ps->height; y++)
-    {
-      for (x = 0; x < ps->width - 1; x++)
-        {
-          gint w_off  = x + y * (ps->width - 1);
-          gint c1_off = (x + y * ps->width) * 3;
-          gint c2_off = c1_off + 3;
-
-          gfloat d = pixels_distance (ps->colors + c1_off, ps->colors + c2_off);
-          ps->h_costs[w_off] = d;
-          sum += d;
-          n++;
-        }
-    }
-
-  /* vertical */
-
-  for (x = 0; x < ps->width; x++)
-    {
-      for (y = 0; y < ps->height - 1; y++)
-        {
-          gint w_off = x + y * ps->width;
-          gint c1_off = (x + y * ps->width) * 3;
-          gint c2_off = c1_off + ps->width * 3;
-
-          gfloat d = pixels_distance (ps->colors + c1_off, ps->colors + c2_off);
-          ps->v_costs[w_off] = d;
-          sum += d;
-          n++;
-        }
-    }
-
-  /* compute mean costs */
-
-  ps->mean_costs = sum / (gfloat) n;
-}
-
-static inline gboolean
-paint_select_mask_is_interior_boundary (PaintSelect  *ps,
-                                        gint          x,
-                                        gint          y)
-{
-  gboolean is_boundary = FALSE;
-  gint offset = x + y * ps->width;
-  gint x2, y2, n;
-  gint neighbors[4] = {0, };
-
-  x2 = x - 1;
-  if (x2 >= 0)
-    {
-      neighbors[0] = x2 + y * ps->width;
-    }
-
-  x2 = x + 1;
-  if (x2 < ps->width)
-    {
-      neighbors[1] = x2 + y * ps->width;
-    }
-
-  y2 = y - 1;
-  if (y2 >= 0)
-    {
-      neighbors[2] = x + y2 * ps->width;
-    }
-
-  y2 = y + 1;
-  if (y2 < ps->height)
-    {
-      neighbors[3] = x + y2 * ps->width;
-    }
-
-  for (n = 0; n < 4; n++)
-    {
-      gint neighbor_offset = neighbors[n];
-
-      if (neighbor_offset && ps->mask[neighbor_offset] != ps->mask[offset])
-        {
-          is_boundary = TRUE;
-          break;
-        }
-    }
-
- return is_boundary;
-}
-
-static GeglRectangle
-paint_select_get_local_region (PaintSelect  *ps,
-                               gint         *pix_x,
-                               gint         *pix_y)
-{
-  GeglRectangle extent = {0, 0, ps->width, ps->height};
-  GeglRectangle region;
+  GeglRectangle extent = {0, 0, width, height};
   gfloat scribble_val;
   gfloat mask_val;
   gint minx, miny;
   gint maxx, maxy;
   gint x, y;
 
-  minx = ps->width;
-  miny = ps->height;
+  minx = width;
+  miny = height;
   maxx = maxy = 0;
 
-  if (ps->mode == GEGL_PAINT_SELECT_MODE_ADD)
+  if (mode == GEGL_PAINT_SELECT_MODE_ADD)
     {
       scribble_val = FG_SCRIBBLE;
       mask_val     = BG_MASK;
@@ -636,13 +952,13 @@ paint_select_get_local_region (PaintSelect  *ps,
       mask_val     = FG_MASK;
     }
 
-  for (y = 0; y < ps->height; y++)
+  for (y = 0; y < height; y++)
     {
-      for (x = 0; x < ps->width; x++)
+      for (x = 0; x < width; x++)
         {
-          gint off = x + y * ps->width;
-          if (ps->scribbles[off] == scribble_val &&
-              ps->mask[off] == mask_val)
+          gint off = x + y * width;
+          if (scribbles[off] == scribble_val &&
+              mask[off] == mask_val)
             {
               /* keep track of one pixel position located in
                * local region ; it will be used later as a seed
@@ -665,199 +981,38 @@ paint_select_get_local_region (PaintSelect  *ps,
         }
     }
 
-  region.x = minx;
-  region.y = miny;
-  region.width = maxx - minx + 1;
-  region.height = maxy - miny + 1;
+  region->x = minx;
+  region->y = miny;
+  region->width = maxx - minx + 1;
+  region->height = maxy - miny + 1;
 
-  if (gegl_rectangle_is_empty (&region) ||
-      gegl_rectangle_is_infinite_plane (&region))
-    return region;
+  if (gegl_rectangle_is_empty (region) ||
+      gegl_rectangle_is_infinite_plane (region))
+    return FALSE;
 
-  region.x -= LOCAL_REGION_DILATE;
-  region.y -= LOCAL_REGION_DILATE;
-  region.width += 2 * LOCAL_REGION_DILATE;
-  region.height += 2 * LOCAL_REGION_DILATE;
+  region->x -= LOCAL_REGION_DILATE;
+  region->y -= LOCAL_REGION_DILATE;
+  region->width += 2 * LOCAL_REGION_DILATE;
+  region->height += 2 * LOCAL_REGION_DILATE;
 
-  gegl_rectangle_intersect (&region, &region, &extent);
-  return region;
-}
-
-/* SOURCE terminal is foreground (selected pixels)
- * SINK terminal is background (unselected pixels)
- */
-
-static void
-paint_select_init_graph_nodes_and_tlinks (PaintSelect  *ps,
-                                          ColorsModel  *local_colors,
-                                          ColorsModel  *global_colors)
-{
-  gfloat          node_mask;
-  ConstraintType  boundary;
-  ColorsModel    *source_model;
-  ColorsModel    *sink_model;
-  gint            x, y;
-
-  if (ps->mode == GEGL_PAINT_SELECT_MODE_ADD)
-    {
-      node_mask    = BG_MASK;
-      boundary     = HARD_SOURCE;
-      source_model = global_colors;
-      sink_model   = local_colors;
-    }
-  else
-    {
-      node_mask  = FG_MASK;
-      boundary   = HARD_SINK;
-      source_model = local_colors;
-      sink_model   = global_colors;
-    }
-
-  for (y = 0; y < ps->height; y++)
-    {
-      for (x = 0; x < ps->width; x++)
-        {
-          gboolean is_boundary = FALSE;
-          node_id id = -1;
-          gint off = x + y * ps->width;
-
-          /* determine if a node is needed for this pixel */
-
-          if (ps->mask[off] == node_mask)
-            {
-              id = ps->graph->add_node();
-            }
-          else
-            {
-              is_boundary = paint_select_mask_is_interior_boundary (ps, x, y);
-              if (is_boundary)
-                id = ps->graph->add_node();
-            }
-
-          ps->nodes[off] = id;
-
-          /* determine the constraint type and set weights accordingly */
-
-          if (id != -1)
-            {
-              gfloat source_weight;
-              gfloat sink_weight;
-
-              if (is_boundary)
-                {
-                  if (boundary == HARD_SOURCE)
-                    {
-                      source_weight = BIG_CAPACITY;
-                      sink_weight   = 0.f;
-                    }
-                  else
-                    {
-                      source_weight = 0.f;
-                      sink_weight   = BIG_CAPACITY;
-                    }
-                }
-              else if (ps->scribbles[off] == FG_SCRIBBLE)
-                {
-                  source_weight = BIG_CAPACITY;
-                  sink_weight   = 0.f;
-                }
-              else if (ps->scribbles[off] == BG_SCRIBBLE)
-                {
-                  source_weight = 0.f;
-                  sink_weight   = BIG_CAPACITY;
-                }
-              else
-                {
-                  gint coff = off * 3;
-
-                  sink_weight   = - logf (colors_model_get_likelyhood (sink_model, ps->colors + coff) + 0.0001f);
-                  source_weight = - logf (colors_model_get_likelyhood (source_model, ps->colors + coff) + 0.0001f);
-                }
-
-              if (source_weight < 0)
-                source_weight = 0.f;
-
-              if (sink_weight < 0)
-                sink_weight = 0.f;
-
-              ps->graph->add_tweights (id, source_weight, sink_weight);
-            }
-        }
-    }
+  gegl_rectangle_intersect (region, region, &extent);
+  return TRUE;
 }
 
 static void
-paint_select_init_graph_nlinks (PaintSelect  *ps)
+paint_select_compute_diff_mask (gfloat  *mask,
+                                gfloat  *result,
+                                gint     width,
+                                gint     height)
 {
-  gint x, y;
+  gint  i;
 
-  /* horizontal */
-
-  for (y = 0; y < ps->height; y++)
+  for (i = 0; i < width * height; i++)
     {
-      for (x = 0; x < ps->width - 1; x++)
-        {
-          node_id id1 = ps->nodes[x + y * ps->width];
-          node_id id2 = ps->nodes[x + 1 + y * ps->width];
-
-          if (id1 != -1 && id2 != -1)
-            {
-              gint costs_off = x + y * (ps->width - 1);
-              gfloat weight  = 60.f * ps->mean_costs / (ps->h_costs[costs_off] + EPSILON);
-              g_assert (weight >= 0.f);
-              ps->graph->add_edge (id1, id2, weight, weight);
-            }
-        }
-    }
-
-  /* vertical */
-
-  for (x = 0; x < ps->width; x++)
-    {
-      for (y = 0; y < ps->height - 1; y++)
-        {
-          node_id id1 = ps->nodes[x + y * ps->width];
-          node_id id2 = ps->nodes[x + (y+1) * ps->width];
-
-          if (id1 != -1 && id2 != -1)
-            {
-              gint costs_off = x + y * ps->width;
-              gfloat weight  = 60.f * ps->mean_costs / (ps->v_costs[costs_off] + EPSILON);
-              g_assert (weight >= 0.f);
-              ps->graph->add_edge (id1, id2, weight, weight);
-            }
-        }
+      result[i] = result[i] != mask[i] ? 1.f : 0.f;
     }
 }
 
-static gfloat *
-paint_select_compute_diff_mask (PaintSelect  *ps)
-{
-  gfloat  *diff = (gfloat *) gegl_malloc (sizeof (gfloat) * ps->n_pixels);
-  gfloat   node_value;
-  gint     i;
-
-  for (i = 0; i < ps->width * ps->height; i++)
-    {
-      node_id id = ps->nodes[i];
-
-      if (id != -1)
-        {
-          if (ps->graph->what_segment(id) == GraphType::SOURCE)
-            node_value = 1.f;
-          else
-            node_value = 0.f;
-
-
-          if (ps->mask[i] != node_value)
-            diff[i] = 1.f;
-          else
-            diff[i] = 0.f;
-        }
-    }
-
-  return diff;
-}
 
 /* GEGL operation */
 
@@ -899,9 +1054,9 @@ process (GeglOperation       *operation,
 {
   GeglProperties  *o = GEGL_PROPERTIES (operation);
   PaintSelect   ps;
-  gfloat        flow;
   GeglRectangle region;
-  gint          x, y;
+  gint          x = 0;
+  gint          y = 0;
 
   if (! aux || ! aux2)
     {
@@ -915,94 +1070,45 @@ process (GeglOperation       *operation,
 
   /* find the overlap region where scribble value doesn't match mask value */
 
-  region = paint_select_get_local_region (&ps, &x, &y);
-
-  g_printerr ("local region: (%d,%d) %d x %d\n",
-              region.x, region.y, region.width, region.height);
-
-  if (! gegl_rectangle_is_empty (&region) &&
-      ! gegl_rectangle_is_infinite_plane (&region))
+  if (paint_select_get_local_region (ps.mask, ps.scribbles, ps.width, ps.height,
+                                     &region, &x, &y, ps.mode))
     {
-      PaintSelectPrivate *priv = (PaintSelectPrivate *) o->user_data;
-      ColorsModel        *local_colors;
-      ColorsModel        *global_colors;
-      gfloat             *diff;
+      PaintSelectContext *context;
+      guint8             *seeds;
+      gfloat             *result;
 
-      if (! priv)
-        {
-          priv = g_slice_new (PaintSelectPrivate);
-          priv->fg_colors = NULL;
-          priv->bg_colors = NULL;
-          o->user_data    = priv;
-        }
+      g_printerr ("local region: (%d,%d) %d x %d\n",
+                  region.x, region.y, region.width, region.height);
 
-      if (o->mode == GEGL_PAINT_SELECT_MODE_ADD)
-        {
-          if (! priv->bg_colors)
-            {
-              priv->bg_colors = colors_model_new_global (ps.colors, ps.mask,
-                                                         ps.width, ps.height,
-                                                         BG_MASK);
-            }
-          else
-            {
-              colors_model_update_global (priv->bg_colors,
-                                          ps.colors, ps.mask,
-                                          ps.width, ps.height,
-                                          BG_MASK);
-            }
+      context = paint_select_context_new (o,
+                                          ps.colors,
+                                          ps.mask,
+                                          ps.scribbles,
+                                          ps.width,
+                                          ps.height,
+                                          &region);
 
-          global_colors = priv->bg_colors;
-          local_colors = colors_model_new_local (ps.colors, ps.mask, ps.scribbles,
-                                                 ps.width, ps.height,
-                                                 &region,
-                                                 FG_MASK, FG_SCRIBBLE);
-        }
-      else
-        {
-          if (! priv->fg_colors)
-            {
-              priv->fg_colors = colors_model_new_global (ps.colors, ps.mask,
-                                                         ps.width, ps.height,
-                                                         FG_MASK);
-            }
-          else
-            {
-              colors_model_update_global (priv->fg_colors,
-                                          ps.colors, ps.mask,
-                                          ps.width, ps.height,
-                                          FG_MASK);
-            }
+      seeds = paint_select_compute_seeds_map (ps.mask,
+                                              ps.scribbles,
+                                              ps.width,
+                                              ps.height,
+                                              context);
 
-          global_colors = priv->fg_colors;
-          local_colors = colors_model_new_local (ps.colors, ps.mask, ps.scribbles,
-                                                 ps.width, ps.height,
-                                                 &region,
-                                                 BG_MASK, BG_SCRIBBLE);
-        }
-
-      /* init graph */
-
-      paint_select_compute_adjacent_costs (&ps);
-      paint_select_init_graph_nodes_and_tlinks (&ps, local_colors, global_colors);
-      paint_select_init_graph_nlinks (&ps);
-
-      /* compute maxflow/mincut */
-
-      flow = ps.graph->maxflow();
+      result = paint_select_graphcut (ps.colors, seeds, ps.width, ps.height,
+                                      context);
 
       /* compute difference between original mask and graphcut result.
        * then remove fluctuations */
 
-      diff = paint_select_compute_diff_mask (&ps);
-
-      paint_select_remove_fluctuations (&ps, diff, x, y);
+      paint_select_compute_diff_mask (ps.mask, result, ps.width, ps.height);
+      paint_select_remove_fluctuations (ps.mask, result, ps.width, ps.height, x, y);
 
       gegl_buffer_set (output, NULL, 0, babl_format (SELECTION_FORMAT),
                        ps.mask, GEGL_AUTO_ROWSTRIDE);
 
-      gegl_free (diff);
-      colors_model_free (local_colors);
+      g_free (seeds);
+      g_free (result);
+      paint_select_context_free (context);
     }
 
   paint_select_free_buffers (&ps);
