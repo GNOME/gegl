@@ -2,13 +2,13 @@
 # Copyright (C) 2018 gegl's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gegl package.
 #
-# yurchor <yurchor@ukr.net>, 2018, 2020.
+# yurchor <yurchor@ukr.net>, 2018, 2020, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-12-06 14:39+0000\n"
-"PO-Revision-Date: 2020-12-06 18:56+0200\n"
+"POT-Creation-Date: 2021-01-13 18:51+0000\n"
+"PO-Revision-Date: 2021-01-13 22:04+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -1935,6 +1935,7 @@ msgid "Adjust the black level"
 msgstr "Скоригувати рівень чорного"
 
 #: operations/common/exposure.c:30 operations/common/exposure.c:461
+#: operations/common/negative-darkroom.c:32
 msgid "Exposure"
 msgstr "Експозиція"
 
@@ -2340,7 +2341,7 @@ msgstr ""
 msgid "Node"
 msgstr "Вузол"
 
-#: operations/common/introspect.c:187
+#: operations/common/introspect.c:205
 msgid "GEGL graph visualizer."
 msgstr "Візуалізатор графів GEGL."
 
@@ -3028,6 +3029,126 @@ msgid ""
 msgstr ""
 "Розмити пікселі у певному напрямку. Імітація розмивання, яке спричиняється "
 "пересуванням камери уздовж прямої лінії під час експонування."
+
+#: operations/common/negative-darkroom.c:28
+#| msgid "The contrast curve."
+msgid "Characteristic curve"
+msgstr "Характеристична крива"
+
+#: operations/common/negative-darkroom.c:30
+msgid "Hardcoded characteristic curve and color data"
+msgstr "Жорстко закодована характеристична крива та дані кольорів"
+
+#: operations/common/negative-darkroom.c:33
+msgid "Base enlargement exposure"
+msgstr "Базова експозиція збільшення"
+
+#: operations/common/negative-darkroom.c:37
+#| msgid "Filter"
+msgid "Filter cyan"
+msgstr "Фільтр блакитного"
+
+#: operations/common/negative-darkroom.c:38
+msgid "Cyan exposure compensation for the negative image"
+msgstr "Компенсація експозиції блакитним для негатива"
+
+#: operations/common/negative-darkroom.c:41
+#| msgid "Filter width"
+msgid "Filter magenta"
+msgstr "Фільтр малинового"
+
+#: operations/common/negative-darkroom.c:42
+msgid "Magenta exposure compensation for the negative image"
+msgstr "Компенсація експозиції малиновим для негатива"
+
+#: operations/common/negative-darkroom.c:45
+#| msgid "Filter width"
+msgid "Filter yellow"
+msgstr "Фільтр жовтого"
+
+#: operations/common/negative-darkroom.c:46
+msgid "Yellow exposure compensation for the negative image"
+msgstr "Компенсація експозиції жовтим для негатива"
+
+#: operations/common/negative-darkroom.c:49
+msgid "Clip base + fog"
+msgstr "Обрізати основу + туман"
+
+#: operations/common/negative-darkroom.c:50
+msgid "Clip base + fog to have a pure white output value"
+msgstr ""
+"Обрізати основу + туман для отримання чистого білого вихідного значення"
+
+#: operations/common/negative-darkroom.c:52
+msgid "Density boost"
+msgstr "Підсилення щільності"
+
+#: operations/common/negative-darkroom.c:53
+msgid ""
+"Boost paper density to take advantage of increased dynamic range of a "
+"monitor compared to a photographic paper"
+msgstr ""
+"Підвищити щільність паперу для того, щоб скористатися більшим динамічним"
+" діапазоном монітора, порівняно із фотопапером"
+
+#: operations/common/negative-darkroom.c:56
+msgid "Dodge/burn multiplier"
+msgstr "Коефіцієнт освітлення/вигорання"
+
+#: operations/common/negative-darkroom.c:57
+msgid "The f-stop of dodge/burn for pure white/black auxillary input"
+msgstr ""
+"Фокусне число освітлення/вигорання для повністю чорно-білих допоміжних"
+" вхідних даних"
+
+#: operations/common/negative-darkroom.c:60
+msgid "Enable preflashing"
+msgstr "Увімкнути попередній спалах"
+
+#: operations/common/negative-darkroom.c:61
+msgid "Show preflash controls"
+msgstr "Показати керування попереднім спалахом"
+
+#: operations/common/negative-darkroom.c:63
+msgid "Cyan preflash"
+msgstr "Попередній спалах блакитним"
+
+#: operations/common/negative-darkroom.c:64
+msgid "Preflash the negative with cyan light to reduce contrast of the print"
+msgstr ""
+"Попередній спалах у негативі із блакитним світлом для зменшення контрастності"
+" відбитка"
+
+#: operations/common/negative-darkroom.c:68
+#| msgid "Magenta period"
+msgid "Magenta preflash"
+msgstr "Попередній спалах малиновим"
+
+#: operations/common/negative-darkroom.c:69
+msgid ""
+"Preflash the negative with magenta light to reduce contrast of the print"
+msgstr ""
+"Попередній спалах у негативі із малиновим світлом для зменшення контрастності"
+" відбитка"
+
+#: operations/common/negative-darkroom.c:73
+#| msgid "Yellow period"
+msgid "Yellow preflash"
+msgstr "Попередній спалах жовтим"
+
+#: operations/common/negative-darkroom.c:74
+msgid "Preflash the negative with yellow light to reduce contrast of the print"
+msgstr ""
+"Попередній спалах у негативі із жовтим світлом для зменшення контрастності"
+" відбитка"
+
+#: operations/common/negative-darkroom.c:312
+msgid "Negative Darkroom"
+msgstr "Темна кімната для негативів"
+
+#: operations/common/negative-darkroom.c:314
+msgid "Simulate a negative film enlargement in an analog darkroom."
+msgstr "Імітувати збільшення плівкового негатива у аналоговій темній кімнаті."
 
 #: operations/common/newsprint.c:25
 msgid "Line"
@@ -8999,7 +9120,7 @@ msgstr "Відняти"
 msgid "Either to add to or subtract from the mask"
 msgstr "Додати до маски або відняти від маски"
 
-#: operations/workshop/external/paint-select.cc:948
+#: operations/workshop/external/paint-select.cc:1160
 msgid "Paint Select"
 msgstr "Малювання позначеного"
 
