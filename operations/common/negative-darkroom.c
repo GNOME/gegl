@@ -61,17 +61,17 @@ property_boolean (preflash, _("Enable preflashing"), FALSE)
 	description (_("Show preflash controls"))
 
 property_double (flashC, _("Cyan preflash"), 0)
-	description(_("Preflash the negative with cyan light to redude contrast of the print"))
+	description(_("Preflash the negative with cyan light to reduce contrast of the print"))
 	value_range (0, 1)
 	ui_meta("visible", "preflash")
 
 property_double (flashM, _("Magenta preflash"), 0)
-	description(_("Preflash the negative with magenta light to redude contrast of the print"))
+	description(_("Preflash the negative with magenta light to reduce contrast of the print"))
 	value_range (0, 1)
 	ui_meta("visible", "preflash")
 
 property_double (flashY, _("Yellow preflash"), 0)
-	description(_("Preflash the negative with yellow light to redude contrast of the print"))
+	description(_("Preflash the negative with yellow light to reduce contrast of the print"))
 	value_range (0, 1)
 	ui_meta("visible", "preflash")
 
