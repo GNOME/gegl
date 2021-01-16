@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-01-13 18:51+0000\n"
-"PO-Revision-Date: 2021-01-13 22:04+0200\n"
+"POT-Creation-Date: 2021-01-16 11:48+0000\n"
+"PO-Revision-Date: 2021-01-16 14:19+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -3031,7 +3031,6 @@ msgstr ""
 "пересуванням камери уздовж прямої лінії під час експонування."
 
 #: operations/common/negative-darkroom.c:28
-#| msgid "The contrast curve."
 msgid "Characteristic curve"
 msgstr "Характеристична крива"
 
@@ -3044,7 +3043,6 @@ msgid "Base enlargement exposure"
 msgstr "Базова експозиція збільшення"
 
 #: operations/common/negative-darkroom.c:37
-#| msgid "Filter"
 msgid "Filter cyan"
 msgstr "Фільтр блакитного"
 
@@ -3053,7 +3051,6 @@ msgid "Cyan exposure compensation for the negative image"
 msgstr "Компенсація експозиції блакитним для негатива"
 
 #: operations/common/negative-darkroom.c:41
-#| msgid "Filter width"
 msgid "Filter magenta"
 msgstr "Фільтр малинового"
 
@@ -3062,7 +3059,6 @@ msgid "Magenta exposure compensation for the negative image"
 msgstr "Компенсація експозиції малиновим для негатива"
 
 #: operations/common/negative-darkroom.c:45
-#| msgid "Filter width"
 msgid "Filter yellow"
 msgstr "Фільтр жовтого"
 
@@ -3088,8 +3084,8 @@ msgid ""
 "Boost paper density to take advantage of increased dynamic range of a "
 "monitor compared to a photographic paper"
 msgstr ""
-"Підвищити щільність паперу для того, щоб скористатися більшим динамічним"
-" діапазоном монітора, порівняно із фотопапером"
+"Підвищити щільність паперу для того, щоб скористатися більшим динамічним "
+"діапазоном монітора, порівняно із фотопапером"
 
 #: operations/common/negative-darkroom.c:56
 msgid "Dodge/burn multiplier"
@@ -3098,8 +3094,8 @@ msgstr "Коефіцієнт освітлення/вигорання"
 #: operations/common/negative-darkroom.c:57
 msgid "The f-stop of dodge/burn for pure white/black auxillary input"
 msgstr ""
-"Фокусне число освітлення/вигорання для повністю чорно-білих допоміжних"
-" вхідних даних"
+"Фокусне число освітлення/вигорання для повністю чорно-білих допоміжних "
+"вхідних даних"
 
 #: operations/common/negative-darkroom.c:60
 msgid "Enable preflashing"
@@ -3116,11 +3112,10 @@ msgstr "Попередній спалах блакитним"
 #: operations/common/negative-darkroom.c:64
 msgid "Preflash the negative with cyan light to reduce contrast of the print"
 msgstr ""
-"Попередній спалах у негативі із блакитним світлом для зменшення контрастності"
-" відбитка"
+"Попередній спалах у негативі із блакитним світлом для зменшення "
+"контрастності відбитка"
 
 #: operations/common/negative-darkroom.c:68
-#| msgid "Magenta period"
 msgid "Magenta preflash"
 msgstr "Попередній спалах малиновим"
 
@@ -3128,19 +3123,18 @@ msgstr "Попередній спалах малиновим"
 msgid ""
 "Preflash the negative with magenta light to reduce contrast of the print"
 msgstr ""
-"Попередній спалах у негативі із малиновим світлом для зменшення контрастності"
-" відбитка"
+"Попередній спалах у негативі із малиновим світлом для зменшення "
+"контрастності відбитка"
 
 #: operations/common/negative-darkroom.c:73
-#| msgid "Yellow period"
 msgid "Yellow preflash"
 msgstr "Попередній спалах жовтим"
 
 #: operations/common/negative-darkroom.c:74
 msgid "Preflash the negative with yellow light to reduce contrast of the print"
 msgstr ""
-"Попередній спалах у негативі із жовтим світлом для зменшення контрастності"
-" відбитка"
+"Попередній спалах у негативі із жовтим світлом для зменшення контрастності "
+"відбитка"
 
 #: operations/common/negative-darkroom.c:312
 msgid "Negative Darkroom"
@@ -3149,6 +3143,26 @@ msgstr "Темна кімната для негативів"
 #: operations/common/negative-darkroom.c:314
 msgid "Simulate a negative film enlargement in an analog darkroom."
 msgstr "Імітувати збільшення плівкового негатива у аналоговій темній кімнаті."
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:2
+msgid "Fujicolor Crystal Archive Digital Pearl Paper"
+msgstr "Папір Crystal Archive Digital Pearl Fujicolor"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
+msgid "Ilford Ilfobrom Galerie FB 1"
+msgstr "Ilford Ilfobrom Galerie FB 1"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
+msgid "Ilford Ilfobrom Galerie FB 2"
+msgstr "Ilford Ilfobrom Galerie FB 2"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
+msgid "Ilford Ilfobrom Galerie FB 3"
+msgstr "Ilford Ilfobrom Galerie FB 3"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
+msgid "Ilford Ilfobrom Galerie FB 4"
+msgstr "Ilford Ilfobrom Galerie FB 4"
 
 #: operations/common/newsprint.c:25
 msgid "Line"
