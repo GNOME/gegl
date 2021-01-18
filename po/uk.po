@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-01-16 11:48+0000\n"
-"PO-Revision-Date: 2021-01-16 14:19+0200\n"
+"POT-Creation-Date: 2021-01-18 17:17+0000\n"
+"PO-Revision-Date: 2021-01-18 20:36+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -9134,7 +9134,33 @@ msgstr "Відняти"
 msgid "Either to add to or subtract from the mask"
 msgstr "Додати до маски або відняти від маски"
 
-#: operations/workshop/external/paint-select.cc:1160
+#: operations/workshop/external/paint-select.cc:39
+msgid "Use local region"
+msgstr "Використати локальну ділянку"
+
+#: operations/workshop/external/paint-select.cc:40
+msgid "Perform graphcut in a local region"
+msgstr "Виконати graphcut у локальній ділянці"
+
+#: operations/workshop/external/paint-select.cc:42
+msgid "region-x"
+msgstr "x-ділянки"
+
+#: operations/workshop/external/paint-select.cc:45
+msgid "region-y"
+msgstr "y-ділянки"
+
+#: operations/workshop/external/paint-select.cc:48
+#| msgid "Line width"
+msgid "region-width"
+msgstr "ширина-ділянки"
+
+#: operations/workshop/external/paint-select.cc:51
+#| msgid "Line height"
+msgid "region-height"
+msgstr "висота-ділянки"
+
+#: operations/workshop/external/paint-select.cc:1287
 msgid "Paint Select"
 msgstr "Малювання позначеного"
 
