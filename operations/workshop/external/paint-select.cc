@@ -36,6 +36,21 @@ property_enum (mode, _("Mode"),
                GEGL_PAINT_SELECT_MODE_ADD)
     description (_("Either to add to or subtract from the mask"))
 
+property_boolean (use_local_region, _("Use local region"), FALSE)
+    description (_("Perform graphcut in a local region"))
+
+property_int (region_x, _("region-x"), 0)
+    value_range (0, G_MAXINT)
+
+property_int (region_y, _("region-y"), 0)
+    value_range (0, G_MAXINT)
+
+property_int (region_width, _("region-width"), 0)
+    value_range (0, G_MAXINT)
+
+property_int (region_height, _("region-height"), 0)
+    value_range (0, G_MAXINT)
+
 #else
 
 #define GEGL_OP_COMPOSER3
@@ -88,9 +103,8 @@ typedef enum
 typedef struct
 {
   GeglPaintSelectModeType  mode;
-  gint         width;
-  gint         height;
-  gint         n_pixels;
+  GeglRectangle            roi;
+  GeglRectangle            extent;
 
   gfloat      *mask;        /* selection mask */
   gfloat      *colors;      /* input image    */
@@ -110,6 +124,12 @@ typedef struct
   ColorsModel  *source_model;    /* Colors model used to compute terminal     */
   ColorsModel  *sink_model;      /*  links weights.                           */
   ColorsModel  *local_colors;
+
+  gboolean      boundary_top;    /* Seed type added to the local region       */
+  gboolean      boundary_left;   /*  boundaries to avoid the selection to     */
+  gboolean      boundary_right;  /*  align with them.                         */
+  gboolean      boundary_bottom;
+  SeedType      boundary_seed_type;
 } PaintSelectContext;
 
 
@@ -571,6 +591,52 @@ paint_select_compute_seeds_map (gfloat              *mask,
         }
     }
 
+  /* put boundary seeds if needed */
+
+  if (context->boundary_top)
+    {
+      y = 0;
+      for (x = 0; x < width; x++)
+        {
+          gint offset = x + y * width;
+          if (seeds[offset] == SEED_NONE)
+            seeds[offset] = context->boundary_seed_type;
+        }
+    }
+
+  if (context->boundary_left)
+    {
+      x = 0;
+      for (y = 0; y < height; y++)
+        {
+          gint offset = x + y * width;
+          if (seeds[offset] == SEED_NONE)
+            seeds[offset] = context->boundary_seed_type;
+        }
+    }
+
+  if (context->boundary_right)
+    {
+      x = width - 1;
+      for (y = 0; y < height; y++)
+        {
+          gint offset = x + y * width;
+          if (seeds[offset] == SEED_NONE)
+            seeds[offset] = context->boundary_seed_type;
+        }
+    }
+
+  if (context->boundary_bottom)
+    {
+      y = height - 1;
+      for (x = 0; x < width; x++)
+        {
+          gint offset = x + y * width;
+          if (seeds[offset] == SEED_NONE)
+            seeds[offset] = context->boundary_seed_type;
+        }
+    }
+
   return seeds;
 }
 
@@ -818,8 +884,8 @@ paint_select_context_new (GeglProperties      *o,
                           gfloat              *pixels,
                           gfloat              *mask,
                           gfloat              *scribbles,
-                          gint                 width,
-                          gint                 height,
+                          GeglRectangle       *roi,
+                          GeglRectangle       *extent,
                           GeglRectangle       *region)
 {
   PaintSelectPrivate *priv = (PaintSelectPrivate *) o->user_data;
@@ -833,47 +899,59 @@ paint_select_context_new (GeglProperties      *o,
       o->user_data    = priv;
     }
 
+  if (o->use_local_region)
+    {
+      context->boundary_top    = (roi->y > 0);
+      context->boundary_left   = (roi->x > 0);
+      context->boundary_right  = (roi->x + roi->width != extent->width);
+      context->boundary_bottom = (roi->y + roi->height != extent->height);
+    }
+
   if (o->mode == GEGL_PAINT_SELECT_MODE_ADD)
     {
       if (! priv->bg_colors)
         {
           priv->bg_colors = colors_model_new_global (pixels, mask,
-                                                     width, height, BG_MASK);
+                                                     roi->width,
+                                                     roi->height,
+                                                     BG_MASK);
         }
       else
         {
           colors_model_update_global (priv->bg_colors, pixels, mask,
-                                      width, height, BG_MASK);
+                                      roi->width, roi->height, BG_MASK);
         }
 
       context->local_colors = colors_model_new_local (pixels, mask, scribbles,
-                                                      width, height, region,
+                                                      roi->width, roi->height, region,
                                                       FG_MASK, FG_SCRIBBLE);
       context->mask_value_seed = FG_MASK;
       context->mask_seed_type  = SEED_SOURCE;
       context->source_model    = priv->bg_colors;
       context->sink_model      = context->local_colors;
+      context->boundary_seed_type = SEED_SINK;
     }
   else
     {
       if (! priv->fg_colors)
         {
           priv->fg_colors = colors_model_new_global (pixels, mask,
-                                                     width, height, FG_MASK);
+                                                     roi->width, roi->height, FG_MASK);
         }
       else
         {
           colors_model_update_global (priv->fg_colors, pixels, mask,
-                                      width, height, FG_MASK);
+                                      roi->width, roi->height, FG_MASK);
         }
 
       context->local_colors = colors_model_new_local (pixels, mask, scribbles,
-                                                      width, height, region,
+                                                      roi->width, roi->height, region,
                                                       BG_MASK, BG_SCRIBBLE);
       context->mask_value_seed = BG_MASK;
       context->mask_seed_type  = SEED_SINK;
       context->source_model    = context->local_colors;
-      context->sink_model      = priv->fg_colors;;
+      context->sink_model      = priv->fg_colors;
+      context->boundary_seed_type = SEED_SOURCE;
     }
 
   return context;
@@ -891,24 +969,38 @@ paint_select_init_buffers (PaintSelect  *ps,
                            GeglBuffer   *mask,
                            GeglBuffer   *colors,
                            GeglBuffer   *scribbles,
-                           GeglPaintSelectModeType  mode)
+                           GeglProperties  *o)
 {
-  ps->mode     = mode;
-  ps->width    = gegl_buffer_get_width (mask);
-  ps->height   = gegl_buffer_get_height (mask);
-  ps->n_pixels = ps->width * ps->height;
+  gint n_pixels;
 
-  ps->mask      = (gfloat *)  gegl_malloc (sizeof (gfloat) * ps->n_pixels);
-  ps->colors    = (gfloat *)  gegl_malloc (sizeof (gfloat) * ps->n_pixels * 3);
-  ps->scribbles = (gfloat *)  gegl_malloc (sizeof (gfloat) * ps->n_pixels);
+  ps->extent = *gegl_buffer_get_extent (mask);
 
-  gegl_buffer_get (mask, NULL, 1.0, babl_format (SELECTION_FORMAT),
+  if (o->use_local_region)
+    {
+      ps->roi.x      = o->region_x;
+      ps->roi.y      = o->region_y;
+      ps->roi.width  = o->region_width;
+      ps->roi.height = o->region_height;
+    }
+  else
+    {
+      gegl_rectangle_copy (&ps->roi, &ps->extent);
+    }
+
+  ps->mode   = o->mode;
+  n_pixels   = ps->roi.width * ps->roi.height;
+
+  ps->mask      = (gfloat *)  gegl_malloc (sizeof (gfloat) * n_pixels);
+  ps->colors    = (gfloat *)  gegl_malloc (sizeof (gfloat) * n_pixels * 3);
+  ps->scribbles = (gfloat *)  gegl_malloc (sizeof (gfloat) * n_pixels);
+
+  gegl_buffer_get (mask, &ps->roi, 1.0, babl_format (SELECTION_FORMAT),
                    ps->mask, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-  gegl_buffer_get (colors, NULL, 1.0, babl_format (COLORS_FORMAT),
+  gegl_buffer_get (colors, &ps->roi, 1.0, babl_format (COLORS_FORMAT),
                    ps->colors, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-  gegl_buffer_get (scribbles, NULL, 1.0, babl_format (SCRIBBLES_FORMAT),
+  gegl_buffer_get (scribbles, &ps->roi, 1.0, babl_format (SCRIBBLES_FORMAT),
                    ps->scribbles, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 }
 
@@ -921,14 +1013,14 @@ paint_select_free_buffers (PaintSelect  *ps)
 }
 
 static gboolean
-paint_select_get_local_region (gfloat         *mask,
-                               gfloat         *scribbles,
-                               gint            width,
-                               gint            height,
-                               GeglRectangle  *region,
-                               gint           *pix_x,
-                               gint           *pix_y,
-                               GeglPaintSelectModeType  mode)
+paint_select_get_scribble_region (gfloat                  *mask,
+                                  gfloat                  *scribbles,
+                                  gint                     width,
+                                  gint                     height,
+                                  GeglRectangle           *region,
+                                  gint                    *pix_x,
+                                  gint                    *pix_y,
+                                  GeglPaintSelectModeType  mode)
 {
   GeglRectangle extent = {0, 0, width, height};
   gfloat scribble_val;
@@ -1031,6 +1123,30 @@ prepare (GeglOperation *operation)
 }
 
 static GeglRectangle
+get_bounding_box (GeglOperation  *operation)
+{
+  GeglProperties  *o = GEGL_PROPERTIES (operation);
+  GeglRectangle    result = {0, 0, 0, 0};
+  GeglRectangle   *in_rect;
+
+  in_rect = gegl_operation_source_get_bounding_box (operation, "input");
+
+  if (o->use_local_region)
+    {
+      result.x = o->region_x;
+      result.y = o->region_y;
+      result.width  = o->region_width;
+      result.height = o->region_height;
+    }
+  else if (in_rect)
+    {
+      result = *in_rect;
+    }
+
+  return result;
+}
+
+static GeglRectangle
 get_cached_region (GeglOperation        *operation,
                    const GeglRectangle  *roi)
 {
@@ -1066,45 +1182,55 @@ process (GeglOperation       *operation,
 
   /* memory allocations, pixels fetch */
 
-  paint_select_init_buffers (&ps, input, aux, aux2, o->mode);
+  paint_select_init_buffers (&ps, input, aux, aux2, o);
 
   /* find the overlap region where scribble value doesn't match mask value */
 
-  if (paint_select_get_local_region (ps.mask, ps.scribbles, ps.width, ps.height,
-                                     &region, &x, &y, ps.mode))
+  if (paint_select_get_scribble_region (ps.mask, ps.scribbles,
+                                        ps.roi.width, ps.roi.height,
+                                        &region, &x, &y, ps.mode))
     {
       PaintSelectContext *context;
       guint8             *seeds;
       gfloat             *result;
 
-      g_printerr ("local region: (%d,%d) %d x %d\n",
+      g_printerr ("scribble region: (%d,%d) %d x %d\n",
                   region.x, region.y, region.width, region.height);
 
       context = paint_select_context_new (o,
                                           ps.colors,
                                           ps.mask,
                                           ps.scribbles,
-                                          ps.width,
-                                          ps.height,
+                                          &ps.roi,
+                                          &ps.extent,
                                           &region);
 
       seeds = paint_select_compute_seeds_map (ps.mask,
                                               ps.scribbles,
-                                              ps.width,
-                                              ps.height,
+                                              ps.roi.width,
+                                              ps.roi.height,
                                               context);
 
-      result = paint_select_graphcut (ps.colors, seeds, ps.width, ps.height,
+      result = paint_select_graphcut (ps.colors, seeds,
+                                      ps.roi.width, ps.roi.height,
                                       context);
 
       /* compute difference between original mask and graphcut result.
        * then remove fluctuations */
 
-      paint_select_compute_diff_mask (ps.mask, result, ps.width, ps.height);
-      paint_select_remove_fluctuations (ps.mask, result, ps.width, ps.height, x, y);
+      paint_select_compute_diff_mask (ps.mask, result, ps.roi.width, ps.roi.height);
+      paint_select_remove_fluctuations (ps.mask, result, ps.roi.width, ps.roi.height, x, y);
 
-      gegl_buffer_set (output, NULL, 0, babl_format (SELECTION_FORMAT),
+      if (o->use_local_region)
+        {
+          gegl_buffer_set (output, &ps.roi, 0, babl_format (SELECTION_FORMAT),
                        ps.mask, GEGL_AUTO_ROWSTRIDE);
+        }
+      else
+        {
+          gegl_buffer_set (output, NULL, 0, babl_format (SELECTION_FORMAT),
+                       ps.mask, GEGL_AUTO_ROWSTRIDE);
+        }
 
       g_free (seeds);
       g_free (result);
@@ -1150,6 +1276,7 @@ gegl_op_class_init (GeglOpClass *klass)
   composer_class  = GEGL_OPERATION_COMPOSER3_CLASS (klass);
 
   object_class->finalize                     = finalize;
+  operation_class->get_bounding_box          = get_bounding_box;
   operation_class->get_cached_region         = get_cached_region;
   operation_class->prepare                   = prepare;
   operation_class->threaded                  = FALSE;
