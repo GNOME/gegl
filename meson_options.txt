@@ -36,7 +36,6 @@ option('lcms',          type: 'feature', value: 'auto')
 option('lensfun',       type: 'feature', value: 'auto')
 option('libav',         type: 'feature', value: 'auto')
 option('libjpeg',       type: 'feature', value: 'auto')
-option('libpng',        type: 'feature', value: 'auto')
 option('libraw',        type: 'feature', value: 'auto')
 option('librsvg',       type: 'feature', value: 'auto')
 option('libspiro',      type: 'feature', value: 'auto')
@@ -59,3 +58,4 @@ option('webp',          type: 'feature', value: 'auto')
 
 # obsolete - no effect
 option('exiv2',         type: 'feature', value: 'disabled')
+option('libpng',        type: 'feature', value: 'disabled')

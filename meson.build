@@ -162,21 +162,22 @@ math    = cc.find_library('m', required: false)
 libdl   = cc.find_library('dl', required : false)
 thread  = dependency('threads')
 
-babl      = dependency('babl',        version: '>=0.1.84')
-glib      = dependency('glib-2.0',    version: '>=2.44.0')
-gobject   = dependency('gobject-2.0', version: '>=2.44.0')
-gmodule   = dependency('gmodule-2.0', version: '>=2.44.0')
-gthread   = dependency('gthread-2.0', version: '>=2.44.0')
+babl      = dependency('babl',          version: '>=0.1.84')
+glib      = dependency('glib-2.0',      version: '>=2.44.0')
+gobject   = dependency('gobject-2.0',   version: '>=2.44.0')
+gmodule   = dependency('gmodule-2.0',   version: '>=2.44.0')
+gthread   = dependency('gthread-2.0',   version: '>=2.44.0')
 gio_os    = os_win32 ? 'gio-windows-2.0' : 'gio-unix-2.0'
 gio       = [
-            dependency('gio-2.0',     version: '>=2.44.0'),
-            dependency(gio_os,        version: '>=2.44.0'),
+            dependency('gio-2.0',       version: '>=2.44.0'),
+            dependency(gio_os,          version: '>=2.44.0'),
 ]
 json_glib = dependency('json-glib-1.0', version: '>=1.2.6')
+libpng    = dependency('libpng',        version: '>=1.6.0')
 
 # Required libraries eventually provided in subprojects/ subdir
 
-poly2tri_c= dependency('poly2tri-c',  version: '>=0.0.0',
+poly2tri_c= dependency('poly2tri-c',    version: '>=0.0.0',
   fallback: ['poly2tri-c', 'poly2tri_c'],
   required: false,
 )
@@ -209,9 +210,6 @@ gexiv2    = dependency('gexiv2',      version: '>=0.0.0',
   required: get_option('gexiv2')
 )
 config.set('HAVE_GEXIV2', gexiv2.found())
-libpng    = dependency('libpng',      version: '>=1.6.0',
-  required: get_option('libpng')
-)
 lua       = dependency('luajit',      version: '>=2.0.4',
   required: get_option('lua')
 )
@@ -426,7 +424,6 @@ summary(
     'mrg'             : mrg.found(),
     'Pango'           : pango.found(),
     'pangocairo'      : pangocairo.found(),
-    'PNG'             : libpng.found(),
     'poly2tri-c'      : poly2tri_c.found(),
     'poppler'         : poppler.found(),
     'OpenEXR'         : openexr.found(),
