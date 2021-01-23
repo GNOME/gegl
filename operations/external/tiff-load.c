@@ -597,6 +597,8 @@ query_tiff(GeglOperation *operation)
         const char *error = NULL;
         space = babl_space_from_icc ((char*)icc_profile, (gint)profile_size,
                                      BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
+        if (error)
+          g_warning ("error creating space from icc: %s\n", error);
       }
 
   }

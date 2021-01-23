@@ -188,6 +188,8 @@ static const Babl *jpg_get_space (struct jpeg_decompress_struct *cinfo)
     ret = babl_space_from_icc ((char*)icc_data, (int)icc_len,
                                BABL_ICC_INTENT_RELATIVE_COLORIMETRIC,
                                &error);
+    if (error)
+      g_warning ("error creating space from icc: %s\n", error);
     free (icc_data);
     return ret;
   }

@@ -226,8 +226,11 @@ gegl_png_space (png_structp load_png_ptr,
       PNG_INFO_iCCP)
     {
       const char *error = NULL;
-      return babl_space_from_icc ((char*)profile, (int)proflen,
+      const Babl *space = babl_space_from_icc ((char*)profile, (int)proflen,
                                  BABL_ICC_INTENT_RELATIVE_COLORIMETRIC, &error);
+      if (error)
+        g_warning ("unable to create babl space from icc: %s", error);
+      return space;
     }
 
   if (png_get_valid (load_png_ptr, load_info_ptr, PNG_INFO_sRGB))
