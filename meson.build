@@ -39,6 +39,65 @@ project_source_root = meson.current_source_dir()
 
 
 ################################################################################
+# Dependency versions
+#
+# Core - required
+dep_ver = {
+  'babl'            : '>=0.1.78',
+  'glib'            : '>=2.44.0',
+  'json-glib'       : '>=1.0.0',
+  'poly2tri-c'      : '>=0.0.0',
+}
+
+# Core - optional
+dep_ver += {
+  'g-ir'            : '>=1.32.0',
+  'vapigen'         : '>=0.20.0',
+}
+
+# GEGL binary - optional
+dep_ver += {
+  'gexiv2'          : '>=0.0.0',
+  'libpng'          : '>=1.6.0',
+  'luajit'          : '>=2.0.4',
+  'mrg'             : '>=0.0.0',
+}
+
+# Operations - optional
+dep_ver += {
+  'gdk-pixbuf'      : '>=2.32.0',
+  'cairo'           : '>=1.12.2',
+  'pango'           : '>=1.38.0',
+  'pangocairo'      : '>=1.38.0',
+  'jasper'          : '>=1.900.1',
+  'lcms'            : '>=2.8',
+  'lensfun'         : '>=0.2.5',
+  'libjpeg'         : '>=1.0.0',
+  'libraw'          : '>=0.15.4',
+  'librsvg'         : '>=2.40.6',
+  'libspiro'        : '>=0.5.0',
+  'libtiff'         : '>=4.0.0',
+  'libv4l1'         : '>=1.0.1',
+  'libv4l2'         : '>=1.0.1',
+  'libwebp'         : '>=0.5.0',
+  'maxflow'         : '>=3.0.4',
+  'openexr'         : '>=1.6.1',
+  'poppler'         : '>=0.71.0',
+  'sdl1'            : '>=1.2.0',
+  'sdl2'            : '>=2.0.5',
+  'libavcodec'      : '>=55.69.100',
+  'libavformat'     : '>=55.48.100',
+  'libavutil'       : '>=55.92.100',
+  'libswscale'      : '>=2.6.100',
+}
+
+# Tests (runtime) - optional
+dep_ver += {
+  'pygobject'       : '>=3.2.0',
+}
+
+
+################################################################################
 # Project infos
 
 version = meson.project_version()
@@ -166,27 +225,29 @@ config.set('HAVE_FSYNC',       cc.has_function('fsync'))
 config.set('HAVE_MALLOC_TRIM', cc.has_function('malloc_trim'))
 config.set('HAVE_STRPTIME',    cc.has_function('strptime'))
 
-math    = cc.find_library('m', required: false)
+math    = cc.find_library('m',  required: false)
 libdl   = cc.find_library('dl', required : false)
 thread  = dependency('threads')
 
-babl      = dependency('babl',          version: '>=0.1.78')
-glib      = dependency('glib-2.0',      version: '>=2.44.0')
-gobject   = dependency('gobject-2.0',   version: '>=2.44.0')
-gmodule   = dependency('gmodule-2.0',   version: '>=2.44.0')
-gthread   = dependency('gthread-2.0',   version: '>=2.44.0')
+babl      = dependency('babl',        version: dep_ver.get('babl'))
+glib      = dependency('glib-2.0',    version: dep_ver.get('glib'))
+gobject   = dependency('gobject-2.0', version: dep_ver.get('glib'))
+gmodule   = dependency('gmodule-2.0', version: dep_ver.get('glib'))
+gthread   = dependency('gthread-2.0', version: dep_ver.get('glib'))
 gio_os    = os_win32 ? 'gio-windows-2.0' : 'gio-unix-2.0'
 gio       = [
-            dependency('gio-2.0',       version: '>=2.44.0'),
-            dependency(gio_os,          version: '>=2.44.0'),
+            dependency('gio-2.0',     version: dep_ver.get('glib')),
+            dependency(gio_os,        version: dep_ver.get('glib')),
 ]
-json_glib = dependency('json-glib-1.0', version: '>=1.2.6')
-libjpeg   = dependency('libjpeg',       version: '>=1.0.0')
-libpng    = dependency('libpng',        version: '>=1.6.0')
+json_glib = dependency('json-glib-1.0',
+  version: dep_ver.get('json-glib')
+)
+libjpeg   = dependency('libjpeg',     version: dep_ver.get('libjpeg'))
+libpng    = dependency('libpng',      version: dep_ver.get('libpng'))
 
 # Required libraries eventually provided in subprojects/ subdir
-
-poly2tri_c= dependency('poly2tri-c',    version: '>=0.0.0',
+poly2tri_c = dependency('poly2tri-c',
+  version:  dep_ver.get('poly2tri-c'),
   fallback: ['poly2tri-c', 'poly2tri_c'],
   required: false,
 )
@@ -200,14 +261,16 @@ libnsgif = dependency('libnsgif',
 
 # GEGL library
 if get_option('introspection') != 'false'
-  g_ir = dependency('gobject-introspection-1.0', version: '>=1.32.0',
+  g_ir = dependency('gobject-introspection-1.0',
+    version:  dep_ver.get('g-ir'),
     required: get_option('introspection') == 'true' ? true : false,
   )
 else
   g_ir = disabler()
 endif
 if g_ir.found()
-  vapigen = dependency('vapigen',     version:'>=0.20.0',
+  vapigen   = dependency('vapigen',
+    version: dep_ver.get('vapigen'),
     required: get_option('vapigen')
   )
 else
@@ -215,90 +278,116 @@ else
 endif
 
 # GEGL binary
-gexiv2    = dependency('gexiv2',      version: '>=0.0.0',
+gexiv2    = dependency('gexiv2',
+  version: dep_ver.get('gexiv2'),
   required: get_option('gexiv2')
 )
 config.set('HAVE_GEXIV2', gexiv2.found())
-lua       = dependency('luajit',      version: '>=2.0.4',
+lua       = dependency('luajit',
+  version: dep_ver.get('luajit'),
   required: get_option('lua')
 )
 config.set('HAVE_LUA', lua.found())
-mrg       = dependency('mrg',         version: '>=0.0.0',
+mrg       = dependency('mrg',
+  version: dep_ver.get('mrg'),
   required: get_option('mrg')
 )
 config.set('HAVE_MRG', mrg.found())
 
 # Operations
-gdk_pixbuf= dependency('gdk-pixbuf-2.0', version:'>=2.32.0',
+gdk_pixbuf= dependency('gdk-pixbuf-2.0',
+  version: dep_ver.get('gdk-pixbuf'),
   required: get_option('gdk-pixbuf')
 )
-cairo     = dependency('cairo',       version: '>=1.12.2',
+cairo     = dependency('cairo',
+  version: dep_ver.get('cairo'),
   required: get_option('cairo')
 )
-pango     = dependency('pango',       version: '>=1.38.0',
+pango     = dependency('pango',
+  version: dep_ver.get('pango'),
   required: get_option('pango')
 )
-pangocairo= dependency('pangocairo',  version: '>=1.38.0',
+pangocairo = dependency('pangocairo',
+  version: dep_ver.get('pangocairo'),
   required: get_option('pangocairo')
 )
 
-jasper    = dependency('jasper',      version: '>=1.900.1',
+jasper    = dependency('jasper',
+  version: dep_ver.get('jasper'),
   required: get_option('jasper')
 )
-lcms      = dependency('lcms2',       version: '>=2.8',
+lcms      = dependency('lcms2',
+  version: dep_ver.get('lcms'),
   required: get_option('lcms')
 )
-lensfun   = dependency('lensfun',     version: '>=0.2.5',
+lensfun   = dependency('lensfun',
+  version: dep_ver.get('lensfun'),
   required: get_option('lensfun')
 )
-libraw    = dependency('libraw',      version: '>=0.15.4',
+libraw    = dependency('libraw',
+  version: dep_ver.get('libraw'),
   required: get_option('libraw')
 )
-librsvg   = dependency('librsvg-2.0', version: '>=2.40.6',
+librsvg   = dependency('librsvg-2.0',
+  version: dep_ver.get('librsvg'),
   required: get_option('librsvg')
 )
-libspiro  = dependency('libspiro',    version: '>=0.5.0',
+libspiro  = dependency('libspiro',
+  version: dep_ver.get('libspiro'),
   required: get_option('libspiro')
 )
-libtiff   = dependency('libtiff-4',   version: '>=4.0.0',
+libtiff   = dependency('libtiff-4',
+  version: dep_ver.get('libtiff'),
   required: get_option('libtiff')
 )
-libv4l1   = dependency('libv4l1',     version: '>=1.0.1',
+libv4l1   = dependency('libv4l1',
+  version: dep_ver.get('libv4l1'),
   required: get_option('libv4l')
 )
-libv4l2   = dependency('libv4l2',     version: '>=1.0.1',
+libv4l2   = dependency('libv4l2',
+  version: dep_ver.get('libv4l2'),
   required: get_option('libv4l2')
 )
-libwebp   = dependency('libwebp',     version:'>=0.5.0',
+libwebp   = dependency('libwebp',
+  version: dep_ver.get('libwebp'),
   required: get_option('webp')
 )
-maxflow   = dependency('maxflow',     version: '>=3.0.4',
+maxflow   = dependency('maxflow',
+  version: dep_ver.get('maxflow'),
   required: get_option('maxflow')
 )
-openexr   = dependency('OpenEXR',     version: '>=1.6.1',
+openexr   = dependency('OpenEXR',
+  version: dep_ver.get('openexr'),
   required: get_option('openexr')
 )
-poppler = dependency('poppler-glib', version: '>=0.71.0',
+poppler = dependency('poppler-glib',
+  version: dep_ver.get('poppler'),
   required: get_option('poppler')
 )
-sdl1      = dependency('sdl',         version: '>=1.2.0',
+sdl1      = dependency('sdl',
+  version: dep_ver.get('sdl1'),
   required: get_option('sdl1')
 )
-sdl2      = dependency('sdl2',        version: '>=2.0.5',
+sdl2      = dependency('sdl2',
+  version: dep_ver.get('sdl2'),
   required: get_option('sdl2')
 )
 
 # AV libs
-libavcodec  = dependency('libavcodec',   version: '>=55.69.100',
+libavcodec = dependency('libavcodec',
+  version: dep_ver.get('libavcodec'),
   required: get_option('libav')
 )
-libavformat = dependency('libavformat',  version: '>=55.48.100',
+libavformat = dependency('libavformat',
+  version: dep_ver.get('libavformat'),
   required: get_option('libav')
 )
-libavutil   = dependency('libavutil',    version: '>=55.92.100',
+libavutil = dependency('libavutil',
+  version: dep_ver.get('libavutil'),
   required: get_option('libav')
 )
-libswscale  = dependency('libswscale',   version: '>=2.6.100',
+libswscale = dependency('libswscale',
+  version: dep_ver.get('libswscale'),
   required: get_option('libav')
 )
 avlibs_found = (
@@ -331,7 +420,8 @@ endif
 
 # Tests
 if g_ir.found()
-  pygobject3 = dependency('pygobject-3.0', version: '>=3.2.0',
+  pygobject3 = dependency('pygobject-3.0',
+    version: dep_ver.get('pygobject'),
     required: get_option('pygobject')
   )
 else
@@ -379,7 +469,7 @@ subdir('po')
 subdir('docs')
 
 
-if w3m.found() 
+if w3m.found()
   # Create NEWS file from html file
   if is_variable('news_html')
     custom_target('NEWS',

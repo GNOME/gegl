@@ -104,10 +104,10 @@ website_asciidoc_files = files(
 )
 website_asciidoc_files += [
   configure_file(
-    input : 'copyright.txt.in',
+    input : 'build.txt.in',
     output: '@BASENAME@',
-    configuration: asciidoc_config,
-  )
+    configuration: dep_ver,
+  ),
 ]
 
 # Inheritance diagram
