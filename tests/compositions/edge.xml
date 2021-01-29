@@ -85,23 +85,6 @@
     </node>
     <clone ref='clone0'/>
   </node>
-  <node operation='gegl:over'>
-    <node operation='gegl:crop'>
-      <params>
-        <param name='x'>170.0</param>
-        <param name='y'>0.0</param>
-        <param name='width'>170.0</param>
-        <param name='height'>192.0</param>
-      </params>
-    </node>
-    <node operation='gegl:edge'>
-      <params>
-        <param name='algorithm'>prewitt</param>
-        <param name='amount'>1.0</param>
-      </params>
-    </node>
-    <clone ref='clone0'/>
-  </node>
   <node operation='gegl:crop'>
     <params>
       <param name='x'>0.0</param>
