@@ -68,6 +68,12 @@ if jasper.found()
   composition_tests_without_opencl += 'jp2-load'
 endif
 
+# Timeout for tests that require extra time to run
+#   test-name : timeout <int>
+composition_tests_set_timeout = {
+  'pnm-ascii-load' : 120
+}
+
 # Tests that are expected to fail - must also appear in the main lists
 composition_tests_fail = [
   'matting-global',
@@ -97,6 +103,7 @@ foreach _test : tests
     should_fail: composition_tests_fail.contains(_test),
     suite: 'composition',
     is_parallel: gegl_test_parallel,
+    timeout: composition_tests_set_timeout.get(_test, 30),
   )
 
   # with opencl
@@ -116,6 +123,7 @@ foreach _test : tests
       should_fail: composition_tests_fail.contains(_test),
       suite: 'composition',
       is_parallel: gegl_test_parallel,
+      timeout: composition_tests_set_timeout.get(_test, 30),
     )
   endif
 endforeach
