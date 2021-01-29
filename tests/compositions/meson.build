@@ -54,18 +54,22 @@ endif
 
 composition_tests_without_opencl = [
   'color-reduction',
-  'jpg-load-datauri',
   'pnm-ascii-load',
   'pnm-raw-load',
   'rgbe-load',
   'rgbe-save',
   'shift',
   'stretch-contrast-hsv',
-  'tiff-load',
   'tile',
 ]
 if jasper.found()
   composition_tests_without_opencl += 'jp2-load'
+endif
+if libjpeg.found()
+  composition_tests_without_opencl += 'jpg-load-datauri'
+endif
+if libtiff.found()
+  composition_tests_without_opencl += 'tiff-load'
 endif
 
 # Timeout for tests that require extra time to run
