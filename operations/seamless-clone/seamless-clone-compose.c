@@ -98,7 +98,10 @@ gegl_op_class_init (GeglOpClass *klass)
   gegl_operation_class_set_keys (operation_class,
     "name",           "gegl:seamless-clone-compose",
     "categories",     "compositors:meta:blend",
+    /* Reference hash is not consistent from run to run
     "reference-hash", "53a7f14935f28383e36cd6ff7e4c1a72",
+    */
+    "reference-hash", "unstable",
     "description", "Seamless cloning composite operation",
     NULL);
 }

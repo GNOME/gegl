@@ -583,7 +583,10 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",           "gegl:path",
     "title",          _("Render Path"),
     "categories",     "render:vector",
+    /* Reference hash is not consistent from run to run
     "reference-hash", "eba13d16fba3284ceee264073ebfa356",
+    */
+    "reference-hash",        "unstable",
     "reference-composition", composition,
     "description" , _("Renders a brush stroke"),
     NULL);
