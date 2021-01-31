@@ -270,7 +270,8 @@ process_operations (GType type)
       {
         gchar *output_path = operation_to_path (name, FALSE);
         gchar *gothash = compute_hash_for_path (output_path);
-        if (g_str_equal (gothash, "9bbe341d798da4f7b181c903e6f442fd"))
+        if (g_str_equal (gothash, "9bbe341d798da4f7b181c903e6f442fd") ||
+            g_str_equal (gothash, "ffb9e86edb25bc92e8d4e68f59bbb04b"))
           g_printf (" reference is noop?\n");
         else
           g_printf (" hash = %s\n", gothash);
