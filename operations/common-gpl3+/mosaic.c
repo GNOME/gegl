@@ -549,19 +549,17 @@ gaussian_deriv (gfloat              *src_rgn,
   gfloat *sum;
   gfloat  val;
   gfloat  total;
-  gint    length;
   gfloat  initial_p[4], initial_m[4];
-  gint    width = result->width, height = result->height;
+  gint    width  = result->width;
+  gint    height = result->height;
+  gint    length = 3;
 
   /*  allocate buffers for rows/cols  */
-  length = MAX (result->width, result->height) * NB_CPN;
-
-  length = 3;
+  buf = g_new (gfloat, MAX (width, height) * NB_CPN);
 
   /*  initialize  */
   curve = curve_array + length;
   sum = sum_array + length;
-  buf = g_new (gfloat, MAX (width, height) * NB_CPN);
 
   if (direction == GEGL_ORIENTATION_VERTICAL)
     {
