@@ -4,11 +4,11 @@
       body {
         padding: 0;
         background-color: #fff;
-	color: black;
+	      color: black;
       }
       div.paper {
         background-color: #fff;
-	color: black;
+	      color: black;
         margin: 1em;
         /*margin-left: 12.5em;*/
       }
@@ -53,9 +53,11 @@
       div.expander {
         border: 1px solid #bbb;
       }
+      /*
       div.expander_title {
-        /*border-bottom: 0px solid #aaa;*/
-      }
+        border-bottom: 0px solid #aaa;
+      } 
+      */
       div.expander_content {
         margin-left: 2em;
         display: none;
@@ -246,10 +248,13 @@
         }
         div.paper {
           max-width: 45em;
+          border-radius: 1em;
           -moz-border-radius: 1em;
         }
+        /*
         div.content {
         }
+        */
         div.print {
           display: none;
         }
