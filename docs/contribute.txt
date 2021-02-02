@@ -43,7 +43,7 @@ GEGL and its internal architecture is also welcome.
 
 Use GEGL in other places than GIMP
 
-Commandline tools for doing batch processing, UIs for compositing or
+Command-line tools for doing batch processing, UIs for compositing or
 image manipulation, video effects rendering and more are all things that are
 possible to implement with GEGL, that would end up sharing their available
 ops among each other.

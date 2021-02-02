@@ -1,8 +1,8 @@
-gegl commandline
-----------------
+gegl command-line
+-----------------
 
 In addition to installing a library, GEGL also installs gegl - a binary/program
-that permits doing image processing from the commandline as well as an aid
+that permits doing image processing from the command-line as well as an aid
 during development of GEGL operations.
 
 Some examples:

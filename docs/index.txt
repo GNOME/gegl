@@ -17,7 +17,7 @@ to represent the desired image processing pipeline. GEGL provides operations
 for link:operations/GeglOperationSource.html[image loading] and
 link:operations/GeglOperationSink.html[storing], link:operations/color.html[color adjustments], link:operations/artistic.html[GIMPs artistic] filters and more
 forms of link:features.html[image processing] GEGL can also be used from the
-link:commandline.html[commandline].
+link:commandline.html[command-line].
 
 The primary repository for the GEGL source code
 link:http://git.gnome.org/browse/gegl/[in GNOME git], and at GIMPs download
