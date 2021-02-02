@@ -25,7 +25,7 @@ images = files(
 # stylesheets
 stylesheets = files(
   'gegl.css',
-  'devhelp.css',
+  'devhelp.css'
 )
 configure_file(
   input : files('gegl.css'),
@@ -55,29 +55,25 @@ asciidoc_files += [
 ]
 
 # asciidoc html files
-if asciidoc.found()
-  _tgt = []
-  foreach _file: asciidoc_files
-    _tgt += custom_target('@0@.html'.format(_file).underscorify(),
-      output: '@BASENAME@.html',
-      input: _file,
-      command: [
-        asciidoc,
-        '--unsafe',
-        '-o', '@OUTPUT@',
-        '-a', 'stylesheet=@0@'.format(
-            project_source_root / 'docs' / 'gegl.css'
-          ),
-        '-a', 'quirks!',
-        '@INPUT@',
-      ],
-      build_by_default : true,
-    )
-  endforeach
-  news_html = _tgt[0]
-else
-  error('asciidoc is required to build docs')
-endif
+_tgt = []
+foreach _file: asciidoc_files
+  _tgt += custom_target('@0@.html'.format(_file).underscorify(),
+    output: '@BASENAME@.html',
+    input: _file,
+    command: [
+      asciidoc,
+      '--unsafe',
+      '-o', '@OUTPUT@',
+      '-a', 'stylesheet=@0@'.format(
+        meson.current_build_dir() / 'gegl.css'
+      ),
+      '-a', 'quirks!',
+      '@INPUT@',
+    ],
+    build_by_default : true,
+  )
+endforeach
+news_html = _tgt[0]
 
 # website html files
 if can_run_host_binaries

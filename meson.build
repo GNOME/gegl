@@ -433,11 +433,18 @@ endif
 
 # Docs
 build_docs = true
-if get_option('docs') == 'auto' and meson.is_cross_build()
-  build_docs = false
-  message('configure with -Ddocs=true to cross-build docs')
+if get_option('docs') == 'auto'
+  if meson.is_cross_build()
+    build_docs = false
+    message('configure with -Ddocs=true to cross-build docs')
+  elif not asciidoc.found()
+    build_docs = false
+  endif
 elif get_option('docs') == 'false'
   build_docs = false
+elif not asciidoc.found()
+  build_docs = false
+  warning('asciidoc is required to build website')
 endif
 build_reference = get_option('gtk-doc')
 
