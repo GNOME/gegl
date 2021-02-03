@@ -1117,6 +1117,11 @@ fattal02_tonemap (const gfloat        *input,   /* Y */
         min_size /= 2;
       }
 
+    if (! levels)
+      {
+        levels = 1;
+      }
+
     pyramid = g_new (gfloat*, levels);
     fattal02_create_gaussian_pyramids (H, extent, pyramid, levels);
   }
