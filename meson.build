@@ -205,16 +205,22 @@ add_project_arguments(cpp.get_supported_arguments(cflags_cpp), language: 'cpp')
 ################################################################################
 # Build Utilities
 
-env          = find_program('env')
+env               = find_program('env')
 
-asciidoc     = find_program('asciidoc',      required: false, native: true)
-dot          = find_program('dot',           required: false, native: true)
-enscript     = find_program('enscript',      required: false, native: true)
-gtkdoc_scan  = find_program('gtkdoc-scan',   required: false, native: true)
-rsvg_convert = find_program('rsvg-convert',  required: false, native: true)
-ruby         = find_program('ruby',          required: false, native: true)
-w3m          = find_program('w3m',           required: false, native: true)
-
+asciidoc          = find_program('asciidoc',
+                     required: false, native: true)
+dot               = find_program('dot',
+                     required: false, native: true)
+gtkdoc_scan       = find_program('gtkdoc-scan',
+                     required: false, native: true)
+rsvg_convert      = find_program('rsvg-convert',
+                     required: false, native: true)
+ruby              = find_program('ruby',
+                     required: false, native: true)
+source_highlight  = find_program('source-highlight',
+                     required: false, native: true)
+w3m               = find_program('w3m',
+                     required: false, native: true)
 
 ################################################################################
 # Required Dependencies
@@ -549,49 +555,48 @@ summary(
 )
 summary(
   {
-    'Build workshop'  : get_option('workshop'),
-    'Introspection'   : g_ir.found(),
-    'Vala support'    : vapigen.found(),
+    'Build workshop'    : get_option('workshop'),
+    'Introspection'     : g_ir.found(),
+    'Vala support'      : vapigen.found(),
   }, section: 'Optional features'
 )
 summary(
   {
-    'asciidoc'        : asciidoc.found(),
-    'dot'             : dot.found(),
-    'enscript'        : enscript.found(),
-    'pygobject'       : pygobject3.found(),
-    'rsvg-convert'    : rsvg_convert.found(),
-    'Ruby'            : ruby.found(),
-    'w3m'             : w3m.found(),
+    'asciidoc'          : asciidoc.found(),
+    'dot'               : dot.found(),
+    'pygobject'         : pygobject3.found(),
+    'rsvg-convert'      : rsvg_convert.found(),
+    'Ruby'              : ruby.found(),
+    'source-highlight'  : source_highlight.found(),
+    'w3m'               : w3m.found(),
   }, section: 'Optional build utilities'
 )
 summary(
   {
-    'avlibs'          : avlibs_found,
-    'Cairo'           : cairo.found(),
-    'GDKPixbuf'       : gdk_pixbuf.found(),
-    'gexiv2'          : gexiv2.found(),
-    'Jasper'          : jasper.found(),
-    'JPEG'            : libjpeg.found(),
-    'lcms'            : lcms.found(),
-    'libnsgif'        : libnsgif.found(),
-    'libraw'          : libraw.found(),
-    'Luajit'          : lua.found(),
-    'maxflow'         : maxflow.found(),
-    'mrg'             : mrg.found(),
-    'Pango'           : pango.found(),
-    'pangocairo'      : pangocairo.found(),
-    'poly2tri-c'      : poly2tri_c.found(),
-    'poppler'         : poppler.found(),
-    'OpenEXR'         : openexr.found(),
-    'rsvg'            : librsvg.found(),
-    'SDL1'            : sdl1.found(),
-    'SDL2'            : sdl2.found(),
-    'spiro'           : libspiro.found(),
-    'TIFF'            : libtiff.found(),
-    'umfpack'         : libumfpack.found(),
-    'V4L'             : libv4l1.found(),
-    'V4L2'            : libv4l2.found(),
-    'webp'            : libwebp.found(),
+    'avlibs'            : avlibs_found,
+    'Cairo'             : cairo.found(),
+    'GDKPixbuf'         : gdk_pixbuf.found(),
+    'gexiv2'            : gexiv2.found(),
+    'Jasper'            : jasper.found(),
+    'lcms'              : lcms.found(),
+    'libnsgif'          : libnsgif.found(),
+    'libraw'            : libraw.found(),
+    'Luajit'            : lua.found(),
+    'maxflow'           : maxflow.found(),
+    'mrg'               : mrg.found(),
+    'Pango'             : pango.found(),
+    'pangocairo'        : pangocairo.found(),
+    'poly2tri-c'        : poly2tri_c.found(),
+    'poppler'           : poppler.found(),
+    'OpenEXR'           : openexr.found(),
+    'rsvg'              : librsvg.found(),
+    'SDL1'              : sdl1.found(),
+    'SDL2'              : sdl2.found(),
+    'spiro'             : libspiro.found(),
+    'TIFF'              : libtiff.found(),
+    'umfpack'           : libumfpack.found(),
+    'V4L'               : libv4l1.found(),
+    'V4L2'              : libv4l2.found(),
+    'webp'              : libwebp.found(),
   }, section: 'Optional dependencies'
 )

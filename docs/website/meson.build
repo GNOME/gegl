@@ -48,53 +48,50 @@ foreach _file: website_asciidoc_files
 endforeach
 index_html = _tgt[0]
 
-# enscript html files
-enscript_files = {
-  'gegl.h' :
-    project_source_root / 'gegl',
-  'gegl-plugin.h' :
-    project_source_root / 'gegl',
-  'gegl-operation.h' :
-    project_source_root / 'gegl' / 'operation',
-  'gegl-operation-composer.h' :
-    project_source_root / 'gegl' / 'operation',
-  'gegl-operation-area-filter.h' :
-    project_source_root / 'gegl' / 'operation',
-  'gegl-operation-filter.h' :
-    project_source_root / 'gegl' / 'operation',
-  'gegl-operation-meta.h' :
-    project_source_root / 'gegl' / 'operation',
-  'gegl-operation-point-composer.h' :
-    project_source_root / 'gegl' / 'operation',
-  'gegl-operation-temporal.h' :
-    project_source_root / 'gegl' / 'operation',
-  'gegl-operation-point-filter.h' :
-    project_source_root / 'gegl' / 'operation',
-  'gegl-operation-point-render.h' :
-    project_source_root / 'gegl' / 'operation',
-  'gegl-operation-sink.h' :
-    project_source_root / 'gegl' / 'operation',
-  'gegl-operation-source.h' :
-    project_source_root / 'gegl' / 'operation',
-  'brightness-contrast.c' :
+# Source files
+src_gegl = project_source_root / 'gegl'
+src_gegl_operation =  src_gegl / 'operation'
+source_files = {
+  'gegl.h' : src_gegl,
+  'gegl-plugin.h' : src_gegl,
+  'gegl-operation.h' : src_gegl_operation,
+  'gegl-operation-composer.h' : src_gegl_operation,
+  'gegl-operation-area-filter.h' : src_gegl_operation,
+  'gegl-operation-filter.h' : src_gegl_operation,
+  'gegl-operation-meta.h' : src_gegl_operation,
+  'gegl-operation-point-composer.h' : src_gegl_operation,
+  'gegl-operation-temporal.h' : src_gegl_operation,
+  'gegl-operation-point-filter.h' : src_gegl_operation,
+  'gegl-operation-point-render.h' : src_gegl_operation,
+  'gegl-operation-sink.h' : src_gegl_operation,
+  'gegl-operation-source.h' : src_gegl_operation,
+  'brightness-contrast.c' : 
     project_source_root / 'operations' / 'common',
 }
 
-if enscript.found()
-  foreach _file, _path : enscript_files
-    custom_target('@0@.html'.format(_file).underscorify(),
-      input: files(_path / _file),
-      output: '@PLAINNAME@.html',
-      command: [
-        enscript,
-        '-E', '--color', '--language=html', '-p', '@OUTPUT@', '@INPUT@'
-        ],
-      build_by_default: true,
-    )
-  endforeach
-else
-  warning('enscript required to generate website code examples')
-endif
+# asciidoc source files
+_input = source_highlight.found() ? 'src.txt' : 'src-no-highlight.txt' 
+# _input = 'src.txt'
+foreach _file, _path : source_files
+  custom_target('@0@.html'.format(_file).underscorify(),
+    input: _input,
+    output: '@0@.html'.format(_file),
+    command: [
+      asciidoc,
+      '--unsafe',
+      '-o', '@OUTPUT@',
+      '-a', 'stylesheet=@0@'.format(
+        meson.current_build_dir() / 'gegl.css'
+      ),
+      '-a', 'name=@0@'.format(_file),
+      '-a', 'full_path=@0@'.format(_path / _file),
+      '-a', 'quirks!',
+      '@INPUT@',
+    ],
+    build_by_default: true,
+  )
+endforeach
+
 
 subdir('images')
 subdir('operations')

@@ -9,6 +9,8 @@ This example and others can be found in the
 link:http://git.gnome.org/browse/gegl/tree/examples/[examples subdir of the GEGL
 distribution].
 
----------------------------
+.hello-world.c
+[source, c]
+---------------------------------------------
 include::@top_srcdir@/examples/hello-world.c[]
----------------------------
+---------------------------------------------

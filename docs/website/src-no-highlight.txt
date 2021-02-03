@@ -1,0 +1,7 @@
+GEGL Operation API
+------------------
+
+.{name}
+----
+include::{full_path}[]
+----
