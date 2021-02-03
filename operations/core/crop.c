@@ -263,21 +263,27 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GObjectClass       *object_class;
   GeglOperationClass *operation_class;
-  gchar              *composition = "<?xml version='1.0' encoding='UTF-8'?>"
+  gchar              *composition = 
+    "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
-    "<node operation='gegl:crop'>"
-    "  <params>"
-    "    <param name='x'>50</param>"
-    "    <param name='y'>80</param>"
-    "    <param name='width'>70</param>"
-    "    <param name='height'>60</param>"
-    "  </params>"
-    "</node>"
-    "<node operation='gegl:load'>"
-    "  <params>"
-    "    <param name='path'>standard-input.png</param>"
-    "  </params>"
-    "</node>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:crop'>"
+    "      <params>"
+    "        <param name='x'>50</param>"
+    "        <param name='y'>80</param>"
+    "        <param name='width'>70</param>"
+    "        <param name='height'>60</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
     "</gegl>";
 
   object_class    = G_OBJECT_CLASS (klass);
@@ -296,9 +302,9 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",        "gegl:crop",
       "categories",  "core",
       "title",       _("Crop"),
-      "description", _("Crops a buffer, if the aux pad is connected the bounding box of the node connected is used. When the crop area is configured to 0x0 at 0,0 and nothing is connected on aux, the bounding box of the node at the producing end of the input chain is used."),
-      "reference-hash", "6f9f160434a4e9484d334c29122e5682",
+      "reference-hash", "21d8d290e976349e653872a2f1330ae6",
       "reference-composition", composition,
+      "description", _("Crops a buffer, if the aux pad is connected the bounding box of the node connected is used. When the crop area is configured to 0x0 at 0,0 and nothing is connected on aux, the bounding box of the node at the producing end of the input chain is used."),
       NULL);
 
   operation_class->cache_policy = GEGL_CACHE_POLICY_NEVER;

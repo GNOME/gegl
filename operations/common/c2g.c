@@ -414,27 +414,31 @@ process (GeglOperation       *operation,
   return  TRUE;
 }
 
-static const gchar *composition =
-    "<?xml version='1.0'             encoding='UTF-8'?>"
-    "<gegl>"
-    "<node operation='gegl:c2g'>"
-    "  <params>"
-    "    <param name='radius'>200</param>"
-    "    <param name='iterations'>90</param>"
-    "  </params>"
-    "</node>"
-    "<node operation='gegl:load'>"
-    "  <params>"
-    "    <param name='path'>standard-input.png</param>"
-    "  </params>"
-    "</node>"
-    "</gegl>";
-
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass       *operation_class;
   GeglOperationFilterClass *filter_class;
+  gchar                    *composition = 
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:c2g'>"
+    "      <params>"
+    "        <param name='radius'>200</param>"
+    "        <param name='iterations'>90</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   filter_class    = GEGL_OPERATION_FILTER_CLASS (klass);

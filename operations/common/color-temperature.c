@@ -233,19 +233,26 @@ gegl_op_class_init (GeglOpClass *klass)
   GObjectClass                  *object_class;
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *point_filter_class;
-  gchar                         *composition = "<?xml version='1.0' encoding='UTF-8'?>"
+  gchar                         *composition = 
+    "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
-    "<node operation='gegl:color-temperature'>"
-    "  <params>"
-    "    <param name='intended-temperature'>12000</param>"
-    "  </params>"
-    "</node>"
-    "<node operation='gegl:load'>"
-    "  <params>"
-    "    <param name='path'>standard-input.png</param>"
-    "  </params>"
-    "</node>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:color-temperature'>"
+    "      <params>"
+    "        <param name='intended-temperature'>12000</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
     "</gegl>";
+
 
   object_class       = G_OBJECT_CLASS (klass);
   operation_class    = GEGL_OPERATION_CLASS (klass);
@@ -263,7 +270,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:color-temperature",
     "title",       _("Color Temperature"),
     "categories",  "color",
-    "reference-hash", "36b68887253870c0a48479e9b706b5b4",
+    "reference-hash", "0a5ec345755968efc091b084587de7cb",
     "description", _("Change the color temperature of the image, from an assumed original color temperature to an intended one."),
     "reference-composition", composition,
     NULL);

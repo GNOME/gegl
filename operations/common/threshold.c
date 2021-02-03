@@ -95,26 +95,30 @@ process (GeglOperation       *op,
 
 #include "opencl/threshold.cl.h"
 
-static const gchar *composition =
-    "<?xml version='1.0'             encoding='UTF-8'?>"
-    "<gegl>"
-    "<node operation='gegl:threshold'>"
-    "  <params>"
-    "    <param name='value'>0.5</param>"
-    "  </params>"
-    "</node>"
-    "<node operation='gegl:load'>"
-    "  <params>"
-    "    <param name='path'>standard-input.png</param>"
-    "  </params>"
-    "</node>"
-    "</gegl>";
-
 static void
 gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass              *operation_class;
   GeglOperationPointComposerClass *point_composer_class;
+  gchar                            *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
+    "<gegl>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:threshold'>"
+    "      <params>"
+    "        <param name='value'>0.5</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
+    "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
   point_composer_class = GEGL_OPERATION_POINT_COMPOSER_CLASS (klass);
@@ -126,8 +130,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name" ,       "gegl:threshold",
     "title",       _("Threshold"),
     "categories" , "color",
-    "reference-hash", "d20432270a1364932ee88a326a3e26c8",
-    "reference-hashB", "5eab2520fa6e1ab9f321976d7eb3e238",
+    "reference-hash", "17f9861344e1105c15f3633f7312a9bd",
     "reference-composition", composition,
     "description",
           _("Thresholds the image to white/black based on either the global value "

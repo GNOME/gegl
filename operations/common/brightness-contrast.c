@@ -129,19 +129,25 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *point_filter_class;
-  gchar                         *composition = "<?xml version='1.0' encoding='UTF-8'?>"
+  gchar                         *composition = 
+    "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
-    "<node operation='gegl:brightness-contrast'>"
-    "  <params>"
-    "    <param name='contrast'>1.8</param>"
-    "    <param name='brightness'>0.25</param>"
-    "  </params>"
-    "</node>"
-    "<node operation='gegl:load'>"
-    "  <params>"
-    "    <param name='path'>standard-input.png</param>"
-    "  </params>"
-    "</node>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:brightness-contrast'>"
+    "      <params>"
+    "        <param name='contrast'>1.8</param>"
+    "        <param name='brightness'>0.25</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
     "</gegl>";
 
   operation_class    = GEGL_OPERATION_CLASS (klass);
@@ -158,7 +164,7 @@ gegl_op_class_init (GeglOpClass *klass)
       "name",       "gegl:brightness-contrast",
       "title",      _("Brightness Contrast"),
       "categories", "color",
-      "reference-hash", "a60848d705029cad1cb89e44feb7f56e",
+      "reference-hash", "d71a0399eb2edc30e86d7ee54e5d5d56",
 
       /* xgettext:no-c-format */
       "description", _("Changes the light level and contrast. This operation operates in linear light, 'contrast' is a scale factor around 50% gray, and 'brightness' a constant offset to apply after contrast scaling."),

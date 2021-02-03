@@ -580,22 +580,28 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass       *operation_class;
   GeglOperationFilterClass *filter_class;
-  gchar                    *composition = "<?xml version='1.0' encoding='UTF-8'?>"
+  gchar                    *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
-    "<node operation='gegl:color-reduction'>"
-    "  <params>"
-    "    <param name='red-levels'>4</param>"
-    "    <param name='green-levels'>4</param>"
-    "    <param name='blue-levels'>4</param>"
-    "    <param name='alpha-levels'>4</param>"
-    "    <param name='dither-method'>floyd-steinberg</param>"
-    "  </params>"
-    "</node>"
-    "<node operation='gegl:load'>"
-    "  <params>"
-    "    <param name='path'>standard-input.png</param>"
-    "  </params>"
-    "</node>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:color-reduction'>"
+    "      <params>"
+    "        <param name='red-levels'>4</param>"
+    "        <param name='green-levels'>4</param>"
+    "        <param name='blue-levels'>4</param>"
+    "        <param name='alpha-levels'>4</param>"
+    "        <param name='dither-method'>floyd-steinberg</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
     "</gegl>";
 
   operation_class = GEGL_OPERATION_CLASS (klass);
@@ -612,7 +618,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "compat-name", "gegl:color-reduction",
     "title",       _("Dither"),
     "categories",  "dither",
-    "reference-hash", "eb9e2dc74369d32d195b2ed5c4acde44",
+    "reference-hash", "f28ecb303ab9ffbcb0c32033b2fd2dcf",
     "description", _("Reduce the number of colors in the image, by reducing "
                      "the levels per channel (colors and alpha). Different dithering methods "
                      "can be specified to counteract quantization induced banding."),

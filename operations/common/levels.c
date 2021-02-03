@@ -170,21 +170,27 @@ gegl_op_class_init (GeglOpClass *klass)
 {
   GeglOperationClass            *operation_class;
   GeglOperationPointFilterClass *point_filter_class;
-  gchar                         *composition = "<?xml version='1.0' encoding='UTF-8'?>"
+  gchar                         *composition =
+    "<?xml version='1.0' encoding='UTF-8'?>"
     "<gegl>"
-    "<node operation='gegl:levels'>"
-    "  <params>"
-    "    <param name='in-low'>0.54</param>"
-    "    <param name='in-high'>0.60</param>"
-    "    <param name='out-low'>0.57</param>"
-    "    <param name='out-high'>0.68</param>"
-    "  </params>"
-    "</node>"
-    "<node operation='gegl:load'>"
-    "  <params>"
-    "    <param name='path'>standard-input.png</param>"
-    "  </params>"
-    "</node>"
+    "  <node operation='gegl:crop' width='200' height='200'/>"
+    "  <node operation='gegl:over'>"
+    "    <node operation='gegl:levels'>"
+    "      <params>"
+    "        <param name='in-low'>0.54</param>"
+    "        <param name='in-high'>0.60</param>"
+    "        <param name='out-low'>0.57</param>"
+    "        <param name='out-high'>0.68</param>"
+    "      </params>"
+    "    </node>"
+    "    <node operation='gegl:load' path='standard-input.png'/>"
+    "  </node>"
+    "  <node operation='gegl:checkerboard'>"
+    "    <params>"
+    "      <param name='color1'>rgb(0.25,0.25,0.25)</param>"
+    "      <param name='color2'>rgb(0.75,0.75,0.75)</param>"
+    "    </params>"
+    "  </node>"    
     "</gegl>";
 
   operation_class    = GEGL_OPERATION_CLASS (klass);
@@ -200,7 +206,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Levels"),
     "categories" , "color",
     "description", _("Remaps the intensity range of the image"),
-    "reference-hash", "52e9dca541181f09f6cfac68afe987a2",
+    "reference-hash", "b26ace9ce32e98b8ffa2a57f10a42e0d",
     "reference-composition", composition,
     NULL);
 }
