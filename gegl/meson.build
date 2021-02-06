@@ -10,6 +10,7 @@ geglInclude = include_directories(
   'operation',
   'process',
   'property-types',
+  'ctx'
 )
 
 gegl_cflags = [
@@ -82,6 +83,7 @@ subdir('opencl')
 subdir('operation')
 subdir('process')
 subdir('property-types')
+subdir('ctx')
 
 gegl_headers += gegl_introspectable_headers
 
