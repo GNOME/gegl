@@ -55,7 +55,7 @@ static void path_changed (GeglPath *path,
                           gpointer userdata);
 
 #include "gegl-op.h"
-#include <cairo.h>
+#include "ctx.h"
 
 static void path_changed (GeglPath *path,
                           const GeglRectangle *roi,
@@ -122,8 +122,8 @@ get_bounding_box (GeglOperation *operation)
   return defined;
 }
 
-static void gegl_path_cairo_play (GeglPath *path,
-                                    cairo_t *cr);
+static void gegl_path_ctx_play (GeglPath *path,
+                                Ctx      *ctx);
 
 static gboolean
 process (GeglOperation       *operation,
@@ -146,7 +146,7 @@ process (GeglOperation       *operation,
   }
   else
   {
-    formats[0]=babl_format ("cairo-ARGB32");
+    formats[0]=babl_format ("R'G'B'A u8");
   }
 
   if (input)
@@ -186,32 +186,40 @@ process (GeglOperation       *operation,
       {
         guchar *data = gegl_buffer_linear_open (output, result, NULL,
                                                 formats[i]);
+#if 0
         cairo_surface_t *surface = cairo_image_surface_create_for_data (data,
                                                      CAIRO_FORMAT_ARGB32,
                                                      result->width,
                                                      result->height,
                                                      result->width * 4);
         cairo_t *cr = cairo_create (surface);
-        cairo_translate (cr, -result->x, -result->y);
-        if (g_str_equal (o->fill_rule, "evenodd"))
-          cairo_set_fill_rule (cr, CAIRO_FILL_RULE_EVEN_ODD);
+#endif
+        /*  we should work directly with floating point data instead .. but as of now
+         *  that yields an aliased result - so using u8 until that gets resolved.
+         */
+        Ctx *ctx = ctx_new_for_framebuffer (data, result->width, result->height,
+                                            result->width * 4, CTX_FORMAT_RGBA8);
 
-        gegl_path_cairo_play (o->d, cr);
+        ctx_translate (ctx, -result->x, -result->y);
+        if (g_str_equal (o->fill_rule, "evenodd"))
+          ctx_fill_rule (ctx, CTX_FILL_RULE_EVEN_ODD);
+
+        gegl_path_ctx_play (o->d, ctx);
 
         switch (i+is_cmyk)
         {
           case 0:
-            cairo_set_source_rgba (cr, color[0], color[1], color[2], color[3]);
+            ctx_rgba (ctx, color[0], color[1], color[2], color[3]);
             break;
           case 1:
-            cairo_set_source_rgba (cr, color[0], color[2], color[3], color[4]);
+            ctx_rgba (ctx, color[0], color[2], color[3], color[4]);
             break;
           case 2:
-            cairo_set_source_rgba (cr, color[0], color[1], color[3], color[4]);
+            ctx_rgba (ctx, color[0], color[1], color[3], color[4]);
             break;
         }
-        cairo_fill (cr);
-        cairo_destroy (cr);
+        ctx_fill (ctx);
+        ctx_free (ctx);
 
         gegl_buffer_linear_close (output, data);
       }
@@ -221,34 +229,34 @@ process (GeglOperation       *operation,
   return  TRUE;
 }
 
-static void foreach_cairo (const GeglPathItem *knot,
-                           gpointer              cr)
+static void foreach_ctx (const GeglPathItem *knot,
+                          gpointer           ctx)
 {
   switch (knot->type)
     {
       case 'M':
-        cairo_move_to (cr, knot->point[0].x, knot->point[0].y);
+        ctx_move_to (ctx, knot->point[0].x, knot->point[0].y);
         break;
       case 'L':
-        cairo_line_to (cr, knot->point[0].x, knot->point[0].y);
+        ctx_line_to (ctx, knot->point[0].x, knot->point[0].y);
         break;
       case 'C':
-        cairo_curve_to (cr, knot->point[0].x, knot->point[0].y,
-                            knot->point[1].x, knot->point[1].y,
-                            knot->point[2].x, knot->point[2].y);
+        ctx_curve_to (ctx, knot->point[0].x, knot->point[0].y,
+                           knot->point[1].x, knot->point[1].y,
+                           knot->point[2].x, knot->point[2].y);
         break;
       case 'z':
-        cairo_close_path (cr);
+        ctx_close_path (ctx);
         break;
       default:
         g_print ("%s uh?:%c\n", G_STRLOC, knot->type);
     }
 }
 
-static void gegl_path_cairo_play (GeglPath *path,
-                                    cairo_t *cr)
+static void gegl_path_ctx_play (GeglPath *path,
+                                Ctx       *ctx)
 {
-  gegl_path_foreach_flat (path, foreach_cairo, cr);
+  gegl_path_foreach_flat (path, foreach_ctx, ctx);
 }
 
 static GeglNode *detect (GeglOperation *operation,
@@ -256,29 +264,19 @@ static GeglNode *detect (GeglOperation *operation,
                          gint           y)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  cairo_t *cr;
-  cairo_surface_t *surface;
-  gchar *data = "     ";
+  Ctx     *ctx = ctx_new ();
   gboolean result = FALSE;
 
-  surface = cairo_image_surface_create_for_data ((guchar*)data,
-                                                 CAIRO_FORMAT_ARGB32,
-                                                 1,1,4);
-  cr = cairo_create (surface);
-  gegl_path_cairo_play (o->d, cr);
+  gegl_path_ctx_play (o->d, ctx);
 
   if (!result)
     {
       if (o->d)
         {
-          gdouble r,g,b,a;
-          gegl_color_get_rgba (o->color, &r,&g,&b,&a);
-          if (a * o->opacity>0.8)
-            result = cairo_in_fill (cr, x, y);
+          result = ctx_in_fill (ctx, x, y);
         }
     }
-
-  cairo_destroy (cr);
+  ctx_free (ctx);
 
   if (result)
     return operation->node;
@@ -326,6 +324,5 @@ gegl_op_class_init (GeglOpClass *klass)
     "reference-composition", composition,
     NULL);
 }
-
 
 #endif
