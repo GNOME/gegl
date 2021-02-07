@@ -15,7 +15,9 @@
 #define CTX_FORCE_AA             1
 #define CTX_STRINGPOOL_SIZE      10000 // for misc storage with compressed/
                                        // variable size for each save|restore
-#define CTX_SHAPE_CACHE          0
+#define CTX_SHAPE_CACHE          0 // when used per gegl op perhsp
+                                  // useful when rendering lots of text initially?
 #define CTX_IMPLEMENTATION 1
+#define CTX_RASTERIZER     1
 
 #include "ctx.h"
