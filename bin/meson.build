@@ -1,4 +1,5 @@
-subdir('lua')
+
+subdir('lua', if_found: lua)
 
 gegl_sources = files(
   'gegl-options.c',
