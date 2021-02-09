@@ -4,26 +4,34 @@ Development
 image::images/GEGL.png[GEGL]
 *#Development#*
 
-This document describes some handy things to know when developing the gegl internals. The link:glossary.html[GEGL glossary] might help make sense of the terms used.
+This document describes some handy things to know when developing the gegl 
+internals. The link:glossary.html[GEGL glossary] might help make sense of the
+terms used.
 
 link:build.html[Getting sources, and building]::
   Links and information about various ways of getting a build environment for
   GEGL.
 link:images/inheritance.png[GEGL inheritance tree]::
   Generated class inheritance graph generated from runtime introspection.
+link:source-overview.html[Source overview]::
+  An overview of the source tree.
 
 == Setting up
 
-=== Ubuntu 8.10
-Setup instructions for Ubuntu 8.10 Intrepid Ibex
+=== Ubuntu 20.04
+Setup instructions for Ubuntu 20.04 Focal Fossa
 
 To install the mandatory dependencies:
 
- $ sudo apt-get install libtool automake glib libglib2.0-dev libpng12-dev libgtk2.0-dev git
+ $ sudo apt-get install build-essential pkg-config python3 python3-pip ninja-build git libglib2.0-dev libjson-glib-dev libpng-dev
+ $ sudo pip3 install meson
 
 Some of the other dependencies:
+  Documentation:
+ $ sudo apt-get install asciidoc source-highlight graphviz-dev
 
- $ sudo apt-get install asciidoc enscript libjpeg62 libopenraw graphviz-dev
+  Plugins:
+$ sudo apt-get install libjpeg libopenraw libtiff
 
 For running gegl the GEGL_PATH, which is used for dynamically loading the 
 operations, has to be set:
@@ -110,11 +118,13 @@ into an image. See http://www.graphviz.org/[graphviz website]
 
 It is done using:
 
- #include "../gegl/gegl-dot.h"
- /* for printing the dot output, note that gegl_node is a GeglNode pointer */
- gchar *dot_output = gegl_to_dot( gegl_node );
- printf( "%s\n", dot_output );
- g_free( dot_output );
+---------------------------------------------
+#include "../gegl/gegl-dot.h"
+/* for printing the dot output, note that gegl_node is a GeglNode pointer */
+gchar *dot_output = gegl_to_dot( gegl_node );
+printf( "%s\n", dot_output );
+g_free( dot_output );
+---------------------------------------------
 
 For creating the graph image:
 
@@ -122,20 +132,22 @@ For creating the graph image:
 
 This is the gaussian-blur.xml file:
 
- <?xml version='1.0' encoding='UTF-8'?>
- <gegl>
- 	<node operation='gegl:gaussian-blur'>
- 		<params>
- 			<param name='std-dev-x'>0.999</param>
- 			<param name='std-dev-y'>0.999</param>
- 		</params>
- 	</node>
- 	<node operation='gegl:load'>
- 		<params>
- 			<param name='path'>in.png</param>
- 		</params>
- 	</node>
- </gegl>
+---------------------------------------------
+<?xml version='1.0' encoding='UTF-8'?>
+<gegl>
+  <node operation='gegl:gaussian-blur'>
+    <params>
+      <param name='std-dev-x'>0.999</param>
+      <param name='std-dev-y'>0.999</param>
+    </params>
+  </node>
+  <node operation='gegl:load'>
+    <params>
+      <param name='path'>in.png</param>
+    </params>
+  </node>
+</gegl>
+---------------------------------------------
 
 link:images/gaussian-blur-graph.png[Resulting graph].
 

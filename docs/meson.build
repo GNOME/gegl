@@ -44,12 +44,11 @@ asciidoc_files = files(
   'editor.txt',
   'environment.txt',
   'journal.txt',
-  'source-overview.txt',
 )
 asciidoc_files += [
   configure_file(
     input : 'hello-world.txt.in',
-    output: '@PLAINNAME@',
+    output: '@BASENAME@',
     configuration: asciidoc_config,
   ),
 ]
@@ -90,13 +89,13 @@ endif
 
 website_asciidoc_files = files(
   'index.txt',
-  'build.txt',
   'commandline.txt',
   'development.txt',
   'features.txt',
   'gegl-chain.txt',
   'glossary.txt',
   'operation-api.txt',
+  'source-overview.txt',
 )
 website_asciidoc_files += [
   configure_file(
