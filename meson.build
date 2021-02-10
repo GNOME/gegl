@@ -215,8 +215,6 @@ gtkdoc_scan       = find_program('gtkdoc-scan',
                      required: false, native: true)
 rsvg_convert      = find_program('rsvg-convert',
                      required: false, native: true)
-ruby              = find_program('ruby',
-                     required: false, native: true)
 source_highlight  = find_program('source-highlight',
                      required: false, native: true)
 w3m               = find_program('w3m',
@@ -566,7 +564,6 @@ summary(
     'dot'               : dot.found(),
     'pygobject'         : pygobject3.found(),
     'rsvg-convert'      : rsvg_convert.found(),
-    'Ruby'              : ruby.found(),
     'source-highlight'  : source_highlight.found(),
     'w3m'               : w3m.found(),
   }, section: 'Optional build utilities'

@@ -106,18 +106,17 @@ website_asciidoc_files += [
 ]
 
 # Inheritance diagram
-if ruby.found()
-  gobj2dot = find_program(
-    project_source_root / 'tools' / 'gobj2dot.rb',
-    native: true,
-    required: true,
-  )
-  inheritance_txt = custom_target(
-    'inheritance_txt',
-    output: 'inheritance.txt',
-    command: [gobj2dot, project_source_root],
-    capture: true,
-  )
-endif
+inheritance_txt = custom_target(
+  'inheritance_txt',
+  output: 'inheritance.txt',
+  command: [
+    find_program(
+      project_source_root / 'tools' / 'gobj2dot.py', native: true
+    ),
+    '--output', '@OUTPUT@',
+    project_source_root
+  ],
+)
+
 
 subdir('website')

@@ -82,7 +82,6 @@ other systems where glib and gtk+ work.
       * dot
       * gtkdoc_scan
       * rsvg_convert
-      * ruby
       * source-highlight
       * w3m
 

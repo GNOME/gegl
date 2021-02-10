@@ -9,13 +9,12 @@ foreach _file : images
 endforeach
 
 # Inheritance diagram
-if is_variable('inheritance_txt') and dot.found()
+if dot.found()
   custom_target(
     'inheritance_png',
     input: inheritance_txt,
     output: 'inheritance.png',
-    command: [dot, '@INPUT@', '-Tpng'],
-    capture: true,
+    command: [dot, '-Tpng', '-o@OUTPUT@', '@INPUT@'],
     build_by_default: true,
   )
 endif
