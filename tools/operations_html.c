@@ -61,7 +61,7 @@ operation_to_image_path (const gchar *op_name)
 
   g_strdelimit (cleaned, ":", '-');
   filename = g_strconcat (cleaned, ".png", NULL);
-  output_path = g_build_path (G_DIR_SEPARATOR_S, "images", filename, NULL);
+  output_path = g_build_path ("/", "images", filename, NULL);
 
   g_free (cleaned);
   g_free (filename);
