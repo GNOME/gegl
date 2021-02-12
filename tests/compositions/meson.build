@@ -20,7 +20,6 @@ composition_tests = [
   'exposure',
   'fattal02',
   'gamma',
-  'gegl',
   'grey-json',
   'hdr-color',
   'illusion',
@@ -50,6 +49,9 @@ composition_tests = [
   'transform',
   'weighted-blend',
 ]
+if cairo.found()
+  composition_tests += 'gegl'
+endif
 if libumfpack.found()
   composition_tests += 'matting-levin'
 endif
