@@ -130,28 +130,83 @@ gnome.gtkdoc('gegl',
  doc_operations_examples_dir = join_paths(
    meson.current_build_dir(), 'operations',
  )
- exclusion_pattern = '|'.join([
-   'alpha-inpaint',
-   'box-blur', 'box-percentile', 'buffer-cache', 'buffer-source',
-   'clone', 'convert-format',
-   'disc-percentile', 'dropshadow',
-   'exp-combine', 'exr-load',
-   'hstack',
-   'image-compare', 'integral-image', 'introspect',
-   'jpg-load',
-   'kuwahara',
-   'layer', 'line-profile', 'load',
-   'magick-load', 'mandelbrot', 'matting-global',
-   'nop',
-   'open-buffer',
-   'pixbuf', 'png-load',
-   'remap',
-   'snn-percentile', 'stretch-contrast', 'svg-load',
-   'v4l2',
-   'warp',
- ])
 
- doc_operations_examples = custom_target('gallery-stamp',
+# Source operations
+exclude = [
+  'gegl:buffer-source',
+  'gegl:exr-load',
+  'gegl:ff-load',
+  'gegl:gegl-buffer-load',
+  'gegl:gif-load',
+  'gegl:icc-load',
+  'gegl:jp2-load',
+  'gegl:jpg-load',
+  'gegl:load',
+  'gegl:magick-load',
+  'gegl:open-buffer',
+  'gegl:pdf-load',
+  'gegl:pixbuf',
+  'gegl:png-load',
+  'gegl:ppm-load',
+  'gegl:rawbayer-load',
+  'gegl:raw-load',
+  'gegl:rgbe-load',
+  'gegl:svg-load',
+  'gegl:tiff-load',
+  'gegl:v4l',
+  'gegl:v4l2',
+  'gegl:webp-load',
+]
+# Sink operations
+exclude += [
+  'gegl:buffer-sink',
+  'gegl:display',
+  'gegl:exr-save',
+  'gegl:ff-save',
+  'gegl:gegl-buffer-save',
+  'gegl:icc-save',
+  'gegl:jpg-save',
+  'gegl:npy-save',
+  'gegl:png-save',
+  'gegl:ppm-save',
+  'gegl:rgbe-save',
+  'gegl:save',
+  'gegl:save-pixbuf',
+  'gegl:sdl2-display',
+  'gegl:tiff-save',
+  'gegl:webp-save',
+  'gegl:write-buffer',
+]
+# Programming operations
+exclude += [
+  'gegl:cache',
+  'gegl:cast-format',
+  'gegl:clone',
+  'gegl:convert-format',
+  'gegl:copy-buffer',
+  'gegl:image-compare',
+  'gegl:line-profile',
+  'gegl:nop',
+]
+# Other operations
+exclude += [
+  'gegl:exp-combine',
+  'gegl:gegl',
+  'gegl:introspect',
+  'gegl:lcms-from-profile',
+  'gegl:mblur',
+]
+
+# Crashing - workshop
+exclude += [
+  'gegl:alpha-inpaint',
+  'gegl:integral-image',
+  'gegl:lens-correct',
+]
+exclusion_pattern = '|'.join(exclude)
+
+
+doc_operations_examples = custom_target('gallery-stamp',
    install:true,
    install_dir: gnome.gtkdoc_html_dir('gegl'),
    output: ['gallery-stamp'],
