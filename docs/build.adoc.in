@@ -1,101 +1,116 @@
 Building from source
 --------------------
-GEGL and its dependencies are known to build and run work on Linux, Microsoft 
-Windows with MSYS2/MINGW and Mac OSX. It probably can be built on other systems
-where glib and gtk+ work. More information is available on the 
-https://wiki.gimp.org/wiki/Hacking:Building[GIMP] website although some of the
-information is out of date.
+GEGL and its dependencies are known to build and run on Linux,
+Microsoft Windows with MSYS2/MINGW and Mac OSX. It probably can be built
+on other systems where glib and gtk+ work. More information is available
+on the https://wiki.gimp.org/wiki/Hacking:Building[GIMP] website
+although some of the information is out of date.
 
 Download
 ~~~~~~~~
-The latest development snapshot, and eventually stable versions of GEGL are
-available at http://download.gimp.org/pub/gegl/[].
+The latest development snapshot, and eventually stable versions of GEGL
+are available at http://download.gimp.org/pub/gegl/[].
 
 The current code under development can be
 https://gitlab.gnome.org/GNOME/gegl[browsed online] and cloned from
 GNOME git using:
 
-..................................
+.....
 $ git clone https://gitlab.gnome.org/gnome/babl.git/
 $ git clone https://gitlab.gnome.org/gnome/gegl.git/
-..................................
+.....
 
 Dependencies
 ~~~~~~~~~~~~
-
-GEGL currently builds and works on linux, windows and OSX most probably also on
-other systems where glib and gtk+ work.
+GEGL has a number of mandatory and optional dependencies. Core
+dependencies relate to the GEGL library and the gegl binary, operation
+dependencies are used by the GEGL operations and build dependencies are
+only required during the build process.
 
   - Core dependencies (required)
-      * link:https://wiki.gnome.org/Projects/GLib[glib (including gobject, gio,
-        and gmodule)] (@glib@) -- provides inheritance, dynamic modules, common
-          algorithms and data structures for C programming.
-      * link:https://wiki.gnome.org/Projects/JsonGlib[json-glib] (@json-glib@)
-          -- load operations in .json format.
-      * link:http://gegl.org/babl/[babl] (@babl@) -- pixel-format
-          agnosticism.
-      * link:http://www.libpng.org/pub/png/libpng.html[libpng] (@libpng@) -- png
-          load/export operations, and image magick import fallback.
+    * link:https://wiki.gnome.org/Projects/GLib[glib (including gobject, gio, and gmodule)]
+        (@glib@) -- provides inheritance, dynamic modules, common
+        algorithms and data structures for C programming.
+    * link:https://wiki.gnome.org/Projects/JsonGlib[json-glib]
+          (@json-glib@) -- load operations in .json format.
+    * link:http://gegl.org/babl/[babl]
+          (@babl@) -- pixel-format agnosticism.
+    * link:http://www.libpng.org/pub/png/libpng.html[libpng]
+          (@libpng@) -- png load/export operations, and ImageMagick
+        import fallback.
 
   - Core dependencies (optional).
-      * gexiv2
-      * link:http://libspiro.sourceforge.net/[libspiro]
-      * luajit (@luajit@)
-      * mrg
-      * gobject_introspection
-      * vapigen
+    * link:https://wiki.gnome.org/Projects/gexiv2[gexiv2]
+        (@gexiv2@) -- provides access to image metadata.
+    * link:http://libspiro.sourceforge.net/[libspiro]
+        (@libspiro@) -- curve drawing using clothoid splines.
+    * link:https://luajit.org/[luajit]
+        (@luajit@) --
+    * mrg
+    * gobject_introspection
+    * vapigen
 
   - Dependencies for operations (optional).
-      * gdk-pixbuf-2.0
-      * cairo, pango, pangocairo (text source op)
-      * link:https://github.com/jasper-software/jasper[jasper] (@jasper@) -- 
-          jpeg2000 load.
-      * link:https://www.littlecms.com/[lcms2] (@lcms@) -- color management
-          load.
-      * link:https://jpegclub.org/reference/[libjpeg] (@libjpeg@) -- jpg
-          load/save.
-      * link:https://www.libraw.org/[libraw] (>=0.15.4) -- raw image load.
-      * link:https://wiki.gnome.org/Projects/LibRsvg[librsvg] (@librsvg@) -- 
-          svg load.
-      * link:http://www.libtiff.org/[libtiff] (@libtiff@) - tiff load/save
-      * link:https://www.kernel.org/doc/html/v4.8/media/uapi/v4l/libv4l-introduction.html[libv4l1]
-          (@libv4l1@) -- Video4Linux.
-      * link:https://www.kernel.org/doc/html/v4.8/media/uapi/v4l/libv4l-introduction.html[libv4l2]
-          (@libv4l2@) -- Video4Linux.
-      * link:https://developers.google.com/speed/webp[libwebp] (@libwebp@) -- 
-          webp load/save.
-      * link:https://www.openexr.com/[openexr] (@openexr@) -- exr load/save.
-      * link:https://poppler.freedesktop.org/[poppler] (@poppler@) -- pdf load.
-
-      * link:https://www.libsdl.org/[sdl2] (@sdl2@).
-      * libavcodec, libavformat, libavutil, libswscale 
-        (ff-load and experimental ff-save)
-      * umfpack
+    * link:https://developer.gnome.org/gdk-pixbuf/stable/[gdk-pixbuf-2.0]
+        (@gdk-pixbuf@) -- gdk-pixbuf load/save.
+    * text -- text source:
+      ** link:https://www.cairographics.org/[cairo] (@cairo@),
+      ** link:https://pango.gnome.org/[pango] (@pango@),
+      ** link:https://pango.gnome.org/[pangocairo] (@pangocairo@).
+    * link:https://github.com/jasper-software/jasper[jasper]
+        (@jasper@) -- jpeg2000 load.
+    * link:https://www.littlecms.com/[lcms2]
+        (@lcms@) -- color management load.
+    * link:https://jpegclub.org/reference/[libjpeg]
+        (@libjpeg@) -- jpg load/save.
+    * link:https://www.libraw.org/[libraw]
+        (>=0.15.4) -- raw image load.
+    * link:https://wiki.gnome.org/Projects/LibRsvg[librsvg]
+        (@librsvg@) -- svg load.
+    * link:http://www.libtiff.org/[libtiff]
+        (@libtiff@) - tiff load/save
+    * link:https://www.kernel.org/doc/html/v4.8/media/uapi/v4l/libv4l-introduction.html[libv4l1]
+        (@libv4l1@) -- Video4Linux.
+    * link:https://www.kernel.org/doc/html/v4.8/media/uapi/v4l/libv4l-introduction.html[libv4l2]
+        (@libv4l2@) -- Video4Linux.
+    * link:https://developers.google.com/speed/webp[libwebp]
+        (@libwebp@) -- webp load/save.
+    * link:https://www.openexr.com/[openexr]
+        (@openexr@) -- exr load/save.
+    * link:https://poppler.freedesktop.org/[poppler]
+        (@poppler@) -- pdf load.
+    * link:https://www.libsdl.org/[sdl2]
+        (@sdl2@) -- cross platform direct media access layer.
+    * link:http://ffmpeg.org/[avlibs] -- ffmpeg load/save(experimental):
+      ** libavcodec (@libavcodec@),
+      ** libavformat (@libavformat@),
+      ** libavutil (@libavutil@),
+      ** libswscale (@libswscale@).
+    * link:https://people.engr.tamu.edu/davis/suitesparse.html[umfpack]
 
   - Dependencies for workshop operations (optional).
-      * lensfun
-      * maxflow
+    * lensfun
+    * maxflow
 
-  - Build utilities (optional) - to build documentation. For cross-compiles
-     these are build environment dependencies (native to the build system).
-      * asciidoc
-      * dot
-      * gtkdoc_scan
-      * rsvg_convert
-      * source-highlight
-      * w3m
+  - Build utilities (optional) - to build documentation. For
+    cross-compiles these are build environment dependencies (native to
+    the build system).
+    * asciidoc
+    * dot
+    * gtkdoc_scan
+    * rsvg_convert
+    * source-highlight
+    * w3m
 
   - Tests (optional) - to run tests
-      * pygobject3 ( to run python test suite)
+    * pygobject3 ( to run python test suite)
 
 Compiling
 ~~~~~~~~~
-To build GEGL type the following in the toplevel source directory:
+To build GEGL type the following in the top level source directory:
 
-..................................
+.....
 $ meson _build
-$ cd _build
-$ ninja
-$ ninja test
-$ sudo ninja install
-..................................
+$ ninja -C _build
+$ sudo ninja -C _build install
+.....
