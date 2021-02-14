@@ -1,0 +1,39 @@
+References
+----------
+
+link:http://www.gimp.org[GIMP website]
+
+link:http://www.gimp.org/gimpcon/review.html[GimpCon2000 review]
+  -- discussion of gimp2.0, gegl
+
+link:http://www.cinepaint.org/[CinePaint]
+
+Other libraries/applications
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+link:http://techpubs.sgi.com:80/library/tpl/cgi-bin/browse.cgi?coll=0650&db=bks&cmd=toc&pth=/SGI_Developer/IL_PG[ImageVision libary]
+
+link:http://java.sun.com/products/java-media/jai/[Java Advanced]
+
+Imaging API
+~~~~~~~~~~~
+link:http://www.gstreamer.net/[GStreamer]
+
+link:http://beast.gtk.org/[Beast/Bse -audio synthesis]
+
+link:http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/[Vigra
+1.0 Image Processing library]
+
+Articles/Books
+~~~~~~~~~~~~~~
+link:http://www.ddj.com/documents/s=939/ddj9707b/9707b.htm#rf3[Memory Constrained Image Processing Architecture, Mayur Patel, DDJ July 97]
+
+link:http://www.acm.org/pubs/citations/proceedings/graph/192161/p147-shantzis/[A Model for Efficient and Flexible Image Computing, Michael Shantzis, Siggraph 94]
+
+link:http://www.amazon.com/exec/obidos/ASIN/0240804554/qid=1013747007/sr=2-1/ref=sr_2_1/002-5999383-5916044[Digital
+Compositing for Film and Video by Steve Wright]
+
+link:http://www.amazon.com/exec/obidos/ASIN/0121339602/qid%3D1013747094/ref%3Dsr%5F11%5F0%5F1/002-5999383-5916044[The
+Art and Science of Digital Compositing by Ron Brinkman]
+
+link:http://www.amazon.com/exec/obidos/ASIN/0201634260/002-5999383-5916044[Digital
+Color Management by Giorgianni Madden]
