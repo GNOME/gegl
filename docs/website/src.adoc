@@ -1,7 +1,11 @@
+
 GEGL Operation API
 ------------------
 
+ifeval::["{highlight}" == "true"]
+[source, c]
+endif::[]
 .{name}
-----
+-----
 include::{full_path}[]
-----
+-----

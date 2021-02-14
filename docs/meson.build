@@ -56,7 +56,8 @@ asciidoc_files += [
 # asciidoc html files
 _tgt = []
 foreach _file: asciidoc_files
-  _tgt += custom_target('@0@.html'.format(_file).underscorify(),
+  _tgt += custom_target(
+    '@0@.html'.format(_file).underscorify(),
     output: '@BASENAME@.html',
     input: _file,
     command: [
@@ -66,6 +67,7 @@ foreach _file: asciidoc_files
       '-a', 'stylesheet=@0@'.format(
         meson.current_build_dir() / 'gegl.css'
       ),
+      '-a', 'highlight=@0@'.format(source_highlight.found()),
       '-a', 'quirks!',
       '@INPUT@',
     ],

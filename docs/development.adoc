@@ -132,7 +132,11 @@ For creating the graph image:
 
 This is the gaussian-blur.xml file:
 
----------------------------------------------
+.gaussian-blur.xml
+ifeval::["{highlight}" == "true"]
+[source, xml]
+endif::[]
+-----
 <?xml version='1.0' encoding='UTF-8'?>
 <gegl>
   <node operation='gegl:gaussian-blur'>
@@ -147,7 +151,7 @@ This is the gaussian-blur.xml file:
     </params>
   </node>
 </gegl>
----------------------------------------------
+-----
 
 link:images/gaussian-blur-graph.png[Resulting graph].
 

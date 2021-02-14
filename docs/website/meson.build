@@ -10,7 +10,8 @@ endforeach
 
 # HTML files
 if env.found() and can_run_host_binaries
-  custom_target('class_hierarchy_html',
+  custom_target(
+    'class_hierarchy_html',
     output: 'class-hierarchy.html',
     command: [
       env,
@@ -28,7 +29,8 @@ endif
 # asciidoc html files
 _tgt = []
 foreach _file: website_asciidoc_files
-  _tgt += custom_target('@0@.html'.format(_file).underscorify(),
+  _tgt += custom_target(
+    '@0@.html'.format(_file).underscorify(),
     output: '@BASENAME@.html',
     input: _file,
     command: [
@@ -39,6 +41,7 @@ foreach _file: website_asciidoc_files
       '-a', 'stylesheet=@0@'.format(
         meson.current_build_dir() / 'gegl.css'
       ),
+      '-a', 'highlight=@0@'.format(source_highlight.found()),
       '-a', 'quirks!',
       '@INPUT@',
     ],
@@ -65,16 +68,15 @@ source_files = {
   'gegl-operation-point-render.h' : src_gegl_operation,
   'gegl-operation-sink.h' : src_gegl_operation,
   'gegl-operation-source.h' : src_gegl_operation,
-  'brightness-contrast.c' : 
+  'brightness-contrast.c' :
     project_source_root / 'operations' / 'common',
 }
 
 # asciidoc source files
-_input = source_highlight.found() ? 'src.txt' : 'src-no-highlight.txt' 
-# _input = 'src.txt'
 foreach _file, _path : source_files
-  custom_target('@0@.html'.format(_file).underscorify(),
-    input: _input,
+  custom_target(
+    '@0@.html'.format(_file).underscorify(),
+    input: 'src.adoc',
     output: '@0@.html'.format(_file),
     command: [
       asciidoc,
@@ -85,6 +87,7 @@ foreach _file, _path : source_files
       ),
       '-a', 'name=@0@'.format(_file),
       '-a', 'full_path=@0@'.format(_path / _file),
+      '-a', 'highlight=@0@'.format(source_highlight.found()),
       '-a', 'quirks!',
       '@INPUT@',
     ],
