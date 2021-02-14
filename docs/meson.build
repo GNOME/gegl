@@ -38,16 +38,16 @@ asciidoc_config = configuration_data()
 asciidoc_config.set('top_srcdir', project_source_root)
 
 asciidoc_files = files(
-  'NEWS.txt',
-  'abyss_policy.txt',
-  'contribute.txt',
-  'editor.txt',
-  'environment.txt',
-  'journal.txt',
+  'NEWS.adoc',
+  'abyss_policy.adoc',
+  'contribute.adoc',
+  'editor.adoc',
+  'environment.adoc',
+  'journal.adoc',
 )
 asciidoc_files += [
   configure_file(
-    input : 'hello-world.txt.in',
+    input : 'hello-world.adoc.in',
     output: '@BASENAME@',
     configuration: asciidoc_config,
   ),
@@ -88,18 +88,18 @@ if can_run_host_binaries
 endif
 
 website_asciidoc_files = files(
-  'index.txt',
-  'commandline.txt',
-  'development.txt',
-  'features.txt',
-  'gegl-chain.txt',
-  'glossary.txt',
-  'operation-api.txt',
-  'source-overview.txt',
+  'index.adoc',
+  'commandline.adoc',
+  'development.adoc',
+  'features.adoc',
+  'gegl-chain.adoc',
+  'glossary.adoc',
+  'operation-api.adoc',
+  'source-overview.adoc',
 )
 website_asciidoc_files += [
   configure_file(
-    input : 'build.txt.in',
+    input : 'build.adoc.in',
     output: '@BASENAME@',
     configuration: dep_ver,
   ),
