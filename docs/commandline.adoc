@@ -3,10 +3,11 @@ gegl command-line
 
 In addition to installing a library, GEGL also installs gegl - a
 binary/program that permits doing image processing from the command-line
-as well as an aid during development of GEGL operations.
+as well as an aid during development of GEGL operations. GEGL behaviour
+can be modified at runtime by setting appropriate
+link:environment.html[environment variables].
 
-Some examples:
-
+Some examples::
 Render a composition to a PNG file, the composition can be in GEGLs XML
 format or the one-liner friendly terser link:gegl-chain.html[gegl-chain]
 format.
@@ -19,9 +20,6 @@ gegl usage
 The following is the usage information of the gegl binary, this
 documentation might not be complete.
 
-ifeval::["{highlight}" == "true"]
-[source, txt]
-endif::[]
--------
-include::{gegl_usage}[gegl-usage.txt]
--------
+.....
+include::{build_root}/docs/gegl-usage.txt[]
+.....
