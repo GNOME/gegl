@@ -1,61 +1,80 @@
 Source overview
 ---------------
 
-[source, txt]
-----
+.....
 gegl-dist-root
 │
 ├──gegl               core source of GEGL, library init/deinit,
 │   │
 │   ├──buffer         contains the implementation of GeglBuffer
 │   │                  - sparse (tiled)
-│   │                  - recursivly subbuffer extendable
-│   │                  - clipping rectangle (defaults to bounds when making
-│   │                    subbuffers)
+│   │                  - recursively sub-buffer extendable
+│   │                  - clipping rectangle (defaults to bounds when
+│   │                    making sub-buffers)
 │   │                  - storage in any babl supported pixel format
-│   │                  - read/write rectangular region as linear buffer for any
-│   │                    babl supported pixel format.
+│   │                  - read/write rectangular region as linear buffer
+│   │                    for any babl supported pixel format.
+│   │
 │   ├──graph          graph storage and manipulation code.
-│   ├──module         The code to load plug-ins located in a colon separated
-│   │                 list of paths from the environment
+│   │
+│   ├──module         The code to load plug-ins located in a colon
+│   │                 separated list of paths from the environment
 │   │                 variable GEGL_PATH
+│   │
 │   ├──opencl         The GEGL base class for OpenCL.
-│   ├──operation      The GeglOperation base class, and subclasses that act as
-│   │                 base classes for implementing different types of operation
-│   │                 plug-ins.
+│   │
+│   ├──operation      The GeglOperation base class, and subclasses that
+│   │                 act as base classes for implementing different
+│   │                 types of operation plug-ins.
+│   │
 │   ├──process        The code controlling data processing.
+│   │
 │   └──property-types specialized classes/paramspecs for GeglOperation
 │                     properties.
 │
-├──bin                gegl binary, a command-line too for running chains of
-│                     operations as well as a media browser and manipulation ui
-│                     written with cairo/microraptor gui.
+├──bin                gegl binary, a command-line too for running chains
+│                     of operations as well as a media browser and
+│                     manipulation ui written with cairo/microraptor
+│                     gui.
 │
-├──docs               The GEGL website (this documentation), built for your the
-│                     corresponding source tree with correct documentation etc.
+├──docs               The GEGL website (this documentation), built for
+│                     your the corresponding source tree with correct
+│                     documentation etc.
 │
-├──examples           hello-world and other example uses of the GEGL API.
+├──examples           hello-world and other example uses of the GEGL
+│                     API.
 │
 ├──opencl             OpenCL implementation of plug-ins.
 │
-├──operations         Runtime loaded plug-ins for image processing operations.
+├──operations         Runtime loaded plug-ins for image processing
+│   │                 operations.
 │   │
 │   ├──core           Basic operations tightly coupled with GEGL.
+│   │
 │   ├──transform      Transforming operations (rotate/scale/translate)
+│   │
 │   ├──generated      Operations generated from scripts (currently
+│   │
 │   ├──external       Operations with external dependencies.
-│   ├──common         Other operations.
-│   └──workshop       Work in progress, (you must pass -Dworkshop=true when
-│       │             configuring meson to build these operations by default).
+│   │
+│   ├──common         )
+│   ├──common-cxx     ) Other operations.
+│   ├──common-gpl3+   )
+│   │
+│   └──workshop       Work in progress, (you must pass -Dworkshop=true
+│       │             when configuring meson to build these operations
+│       │             by default).
 │       │
-│       ├──external   operations in the workshop with external dependencies.
+│       ├──external   operations in the workshop with external
+│       │             dependencies.
+│       │
 │       └──generated  generated operations that are in the workshop.
 │
 ├──perf               The GEGL framework tests for tracking performance
 │                     development (ruby is required).
 │
-├──tests              various tests used to maintain stability when developing
-│                     GEGL.
+├──tests              various tests used to maintain stability when
+│                     developing GEGL.
 │
 └──tools              some small utilities to help the build.
-----
+.....
