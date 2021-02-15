@@ -73,7 +73,7 @@ if can_run_host_binaries
     command: [
       find_program('gegl-usage.py'),
       '--output', '@OUTPUT@',
-      '--gegl-exe', gegl_bin, 
+      '--gegl-exe', gegl_bin,
     ]
   )
 endif
@@ -82,6 +82,7 @@ website_asciidoc_files = files(
   'index.adoc',
   'abyss_policy.adoc',
   'commandline.adoc',
+  'copyright.adoc',
   'development.adoc',
   'environment.adoc',
   'features.adoc',

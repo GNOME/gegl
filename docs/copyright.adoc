@@ -1,0 +1,24 @@
+Copyright
+---------
+
+GEGL is free software; you can redistribute it and/or modify it under
+the terms of the
+link:https://www.gnu.org/licenses/lgpl-3.0.html[GNU Lesser General
+Public License] and link:https://www.gnu.org/licenses/gpl-3.0.html[GNU
+General Public License] as published by the Free Software Foundation;
+either version 3 of the Licenses, or (at your option) any later version.
+The library itself is licensed under the LGPL while the sample
+command-line applications and GUI binary gegl is licensed under the GPL.
+GEGL depends on and ships with the
+link:http://code.google.com/p/poly2tri-c[Poly2Tri-C] library, which is
+also free software; you can redistribute it and/or modify it under the
+terms of the
+link:https://opensource.org/licenses/BSD-3-Clause[New BSD License].
+
+Contributors
+~~~~~~~~~~~~
+Many people have worked on GEGL
+link:https://gitlab.gnome.org/GNOME/gegl/-/graphs/master[over time]. The
+following is an incomplete list of contributors:
+
+include::{source_root}/AUTHORS[]

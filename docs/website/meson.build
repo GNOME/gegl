@@ -26,7 +26,7 @@ else
   warning('Cannot create class reference in this environment')
 endif
 
-# asciidoc html files
+# generate website html files
 _tgt = []
 foreach _file: website_asciidoc_files
   _tgt += custom_target(
@@ -42,6 +42,7 @@ foreach _file: website_asciidoc_files
         project_source_root / 'docs' / 'gegl.css'
       ),
       '-a', 'highlight=@0@'.format(source_highlight.found()),
+      '-a', 'source_root=@0@'.format(project_source_root),
       '-a', 'quirks!',
       '@INPUT@',
     ],
