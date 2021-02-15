@@ -7,7 +7,7 @@ gegl operation chains
 A serialization format for GEGL link:glossary.html#graph[graphs] that grew out
 of the desire to write one-line image processing tasks on the command-line.
 
-examples
+Examples
 ^^^^^^^^
 
 Everything after `--` in a GEGL command-line that contains an input image is
