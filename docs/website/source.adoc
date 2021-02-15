@@ -1,0 +1,32 @@
+Operation API
+=============
+
+[[top]]
+image::images/GEGL-250.png[link="index.html"]
+
+
+GEGL Operation API
+------------------
+
+// Use source highlighting if available
+ifeval::["{highlight}" == "true"]
+[source, c]
+.{name}
+-----
+include::{full_path}[]
+-----
+endif::[]
+
+// Otherwise use a literal block
+ifeval::["{highlight}" != "true"]
+.{name}
+.....
+include::{full_path}[]
+.....
+endif::[]
+
+
+
+{empty} +
+xref:top[top]
+[[end]]

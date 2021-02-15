@@ -72,11 +72,11 @@ source_files = {
     project_source_root / 'operations' / 'common',
 }
 
-# asciidoc source files
+# generate operation api website source files
 foreach _file, _path : source_files
   custom_target(
     '@0@.html'.format(_file).underscorify(),
-    input: 'src.adoc',
+    input: 'source.adoc',
     output: '@0@.html'.format(_file),
     command: [
       asciidoc,

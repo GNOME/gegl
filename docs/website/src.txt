@@ -1,8 +1,0 @@
-GEGL Operation API
-------------------
-
-[source, c]
-.{name}
-----
-include::{full_path}[]
-----

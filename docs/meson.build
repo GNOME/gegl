@@ -19,6 +19,7 @@ endif
 # images
 images = files(
   'images' / 'GEGL.png',
+  'images' / 'GEGL-250.png',
   'images' / 'gaussian-blur-graph.png',
 )
 
