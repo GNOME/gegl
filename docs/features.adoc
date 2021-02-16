@@ -1,8 +1,9 @@
 GEGL image processing
 ---------------------
 
-  - Floating point handling and processing and output of larger 8bit, 16bit
-    integer and 32bit floating point per component buffers larger than RAM.
+  - Floating point handling and processing and output of larger 8bit,
+    16bit integer and 32bit floating point per component buffers larger
+    than RAM.
 
   - C based, object oriented API with introspection support for dynamic
     languages like python, ruby, javascript and php.
@@ -13,19 +14,24 @@ GEGL image processing
      * Subgraph caches to aid performance of non-destructive editing.
      * Multi-threaded processing.
      * OpenCL acceleration, capable of hybrid cpu/gpu processing.
-     * Experimental mipmap preview rendering, do zoomed out preview 
+     * Experimental mipmap preview rendering, do zoomed out preview
        rendering touching only 25% 6.25% of the pixels.
-  - link:api.html#GeglBuffer[GeglBuffer]
+
+  - GeglBuffer
      * Storage of all babl supported formats.
      * Sparse swapped buffers (larger than RAM images).
-     * linear buffers (allocated internally or from external allocation.)
+     * linear buffers (allocated internally or from external
+       allocation).
      * On demand tiled mipmapping.
      * Thread-safe reading/writing.
      * External tile-backends (allow wrapping other tiled buffer systems
        to use them through the GeglBuffer API).
      * Most operations operate in
-       http://en.wikipedia.org/wiki/ScRGB_color_space[scRGB] (using 32bit
-       floating point/HDR linear light RGBA), operations use babl formats to
-       specify whether data should be linearized for processing.
+       http://en.wikipedia.org/wiki/ScRGB_color_space[scRGB] (using
+       32bit floating point/HDR linear light RGBA), operations use babl
+       formats to specify whether data should be linearized for
+       processing.
+
   - Bounding box based hit detection.
+
   - XML serialization format (not-finalized)
