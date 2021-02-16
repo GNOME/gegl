@@ -35,15 +35,7 @@ asciidoc_files = files(
   'editor.adoc',
   'journal.adoc',
 )
-asciidoc_files += [
-  configure_file(
-    input : 'hello-world.adoc.in',
-    output: '@BASENAME@',
-    configuration: asciidoc_config,
-  ),
-]
 
-# asciidoc html files
 _tgt = []
 foreach _file: asciidoc_files
   _tgt += custom_target(
@@ -88,6 +80,7 @@ website_asciidoc_files = files(
   'features.adoc',
   'gegl-chain.adoc',
   'glossary.adoc',
+  'hello-world.adoc',
   'operation-api.adoc',
   'source-overview.adoc',
 )

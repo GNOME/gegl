@@ -1,0 +1,27 @@
+Hello world
+-----------
+The following is a small sample GEGL application that animates a zoom on
+a mandelbrot fractal. compile it with:
+
+ $ gcc hello-world.c `pkg-config --libs --cflags gegl` -o hello-world
+
+This example and others can be found in the
+link:http://git.gnome.org/browse/gegl/tree/examples/[examples
+subdirectory] of the GEGL source tree.
+
+// Use source highlighting if available
+ifeval::["{highlight}" == "true"]
+.hello-world.c
+[source, txt]
+-----
+include::{source_root}/examples/hello-world.c[]
+-----
+endif::[]
+
+// Otherwise use a literal block
+ifeval::["{highlight}" != "true"]
+.hello-world.c
+.....
+include::{source_root}/examples/hello-world.c[]
+.....
+endif::[]
