@@ -8,7 +8,7 @@ endif
 
 # website
 doc_env = [
-  'GEGL_SWAP=' + meson.current_build_dir() / 'RAM',
+  'GEGL_SWAP=' + project_build_root / 'RAM',
   'GEGL_PATH=' + gegl_operations_build_dir,
   'BABL_TOLERANCE=0.0',
 ]
@@ -34,16 +34,11 @@ configure_file(
   copy: true,
 )
 
-# asciidoc html files
-asciidoc_config = configuration_data()
-asciidoc_config.set('top_srcdir', project_source_root)
-
+# stand-alone asciidoc files - not part of website
 asciidoc_files = files(
   'NEWS.adoc',
-  'abyss_policy.adoc',
   'contribute.adoc',
   'editor.adoc',
-  'environment.adoc',
   'journal.adoc',
 )
 asciidoc_files += [
@@ -68,7 +63,6 @@ foreach _file: asciidoc_files
       '-a', 'stylesheet=@0@'.format(
         meson.current_build_dir() / 'gegl.css'
       ),
-      '-a', 'highlight=@0@'.format(source_highlight.found()),
       '-a', 'quirks!',
       '@INPUT@',
     ],
@@ -77,7 +71,7 @@ foreach _file: asciidoc_files
 endforeach
 news_html = _tgt[0]
 
-# website html files
+# website asciidoc files
 if can_run_host_binaries
   gegl_usage = custom_target(
     'gegl_usage_txt',
@@ -92,8 +86,10 @@ endif
 
 website_asciidoc_files = files(
   'index.adoc',
+  'abyss_policy.adoc',
   'commandline.adoc',
   'development.adoc',
+  'environment.adoc',
   'features.adoc',
   'gegl-chain.adoc',
   'glossary.adoc',
