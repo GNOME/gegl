@@ -82,6 +82,7 @@ website_asciidoc_files = files(
   'glossary.adoc',
   'hello-world.adoc',
   'operation-api.adoc',
+  'release-notes.adoc',
   'source-overview.adoc',
 )
 website_asciidoc_files += [

@@ -9,29 +9,37 @@ image::images/GEGL.png[GEGL]
 
 *GEGL* (Generic Graphics Library) is a data flow based image processing
 framework, providing floating point processing and non-destructive image
-processing capabilities to link:http://www.gimp.org/[GNU Image Manipulation Program] and other projects (link:http://www.imgflo.org/[imgflo], link:https://wiki.gnome.org/Apps/Photos[GNOME Photos], link:gcut.html[gcut],
+processing capabilities to
+link:http://www.gimp.org/[GNU Image Manipulation Program] and other
+projects (link:http://www.imgflo.org/[imgflo],
+link:https://wiki.gnome.org/Apps/Photos[GNOME Photos],
 link:https://github.com/the-grid/iconographer[iconographer], ...)
 
-With GEGL you chain together processing link:operations/index.html[operations]
-to represent the desired image processing pipeline. GEGL provides operations
-for link:operations/GeglOperationSource.html[image loading] and
-link:operations/GeglOperationSink.html[storing], link:operations/color.html[color adjustments], link:operations/artistic.html[GIMPs artistic] filters and more
-forms of link:features.html[image processing] GEGL can also be used from the
-link:commandline.html[command-line].
+With GEGL you chain together processing
+link:operations/index.html[operations] to represent the desired image
+processing pipeline. GEGL provides operations for
+link:operations/GeglOperationSource.html[image loading] and
+link:operations/GeglOperationSink.html[storing],
+link:operations/color.html[color adjustments],
+link:operations/artistic.html[GIMPs artistic] filters and more
+forms of link:features.html[image processing] GEGL can also be used
+from the link:commandline.html[command-line].
 
-The primary repository for the GEGL source code
-link:http://git.gnome.org/browse/gegl/[in GNOME git], and at GIMPs download
-site link:https://download.gimp.org/pub/gegl/0.4/[tarball releases].
+The primary repository for the GEGL source code is in the
+link:http://git.gnome.org/browse/gegl/[GNOME git repository]. Release
+tarballs may be downloaded from the
+link:https://download.gimp.org/pub/gegl/0.4/[GIMP download site] and a
+a summary of changes is available in the link:release-notes.html[release
+notes].
 
-GEGL is link:copyright.html[Free Software], and both new functionality in
-link:operation-api.html[new operations] as well as relevant
+GEGL is link:copyright.html[Free Software], and both new functionality
+in link:operation-api.html[new operations] as well as relevant
 link:development.html[development], enhancement
-requests, patches and bug reports for GEGL at link:http://gitlab.gnome.org/GNOME/gegl/[gitlab.gnome.org/GNOME/gegl]
-,
+requests, patches and bug reports for GEGL at
+link:http://gitlab.gnome.org/GNOME/gegl/[gitlab.gnome.org/GNOME/gegl]
 
-Finanical support for fun new filters and capabilities as well as
-gardening/janitor bits and offshoot new color related infrastructure as
-part of project maintainership is welcome through
-link:https://www.gimp.org/donating/[the patreon campaign at GIMPs donation
-page.]
+Financial support, to allow us to create fun new filters and
+capabilities as well as to perform general maintenance activities, is
+welcome through link:https://www.gimp.org/donating/[the patreon campaign
+at GIMPs donation page.]
 
