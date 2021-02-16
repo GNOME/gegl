@@ -1,42 +1,87 @@
 Environment
 -----------
 
-Some environment variables can be set to alter how GEGL runs, these options are
-also available as properties on a singleton GObject returned from gegl_config
-(). The defaults should be what one normally uses - overriding 
+Some environment variables can be set to alter how GEGL runs, these
+options are also available as properties on a singleton GObject returned
+from `gegl_config()`. The defaults should be what one normally use -
+overriding
 
+[[GEGL_MIPMAP_RENDERING]]
+GEGL_MIPMAP_RENDERING::
+  [`true`, `false`] default: `false` +
+  Render output as an image preview mipmap. `1` and `yes` are synonyms
+  for `true`, everything else is taken as `false`.
+
+[[GEGL_QUALITY]]
 GEGL_QUALITY::
-    A value between 0.0 and 1.0 indicating a trade-off between quality and
-    speed. Defaults to 1.0 (max quality).
+  [`0.0-1.0, fast, good, best`] default: `1.0` +
+  The quality of the rendering, a value between `0.0` (fast) and `1.0`
+  (reference). The values `fast`, `good` and `best` are also accepted as
+  synonyms for `0.0`, `0.5` and `1.0` respectively.
+
+[[BABL_TOLERANCE]]
 BABL_TOLERANCE::
-    The amount of error that babl tolerates, set it to for instance 0.1 to use
-    some conversions that trade some quality for speed.
-GEGL_CHUNK_SIZE::
-    The number of pixels processed simultanously.
-GEGL_TILE_SIZE::
-    The tile size used internally by GEGL, defaults to 128x64
-GEGL_SWAP::
-    The directory where temporary swap files are written, if not specified GEGL
-    will not swap to disk. Be aware that swapping to disk is still experimental
-    and GEGL is currently not removing the per process swap files.
+  [`0.0-1.0`] default: `0.000001` +
+  Controls a accuracy/performance trade off with low values representing
+  high numerical accuracy. By default `BABL_TOLERANCE` is set to a very
+  low (`0.000001`) value. Values in the range `0.01-0.1` are suitable for
+  providing preview images with reasonable performance an accuracy.
+
+[[GEGL_CACHE_SIZE]]
 GEGL_CACHE_SIZE::
-    The size of the tile cache used by GeglBuffer specified in megabytes.
+  The size, in megabytes, of the tile cache used by `GeglBuffer`.
+
+[[GEGL_CHUNK_SIZE]]
+GEGL_CHUNK_SIZE::
+  The number of pixels processed simultaneously.
+
+[[GEGL_TILE_SIZE]]
+GEGL_TILE_SIZE::
+  [`<width>x<height>`] default: `128x64` +
+  The tile size used internally by GEGL, in pixels.
+
+[[GEGL_THREADS]]
+GEGL_THREADS::
+  [`1-64`] +
+  Number of threads to use. Setting to `1` ensures single threaded
+  processing.
+
+[[GEGL_SWAP]]
+GEGL_SWAP::
+  The directory where temporary swap files are written. If not specified
+  GEGL will not swap to disk.
+
+[[GEGL_DEBUG]]
 GEGL_DEBUG::
-    set it to "all" to enable all debugging, more specific domains for
-    debugging information are also available.
+  [`process, cache, buffer-load, buffer-save, tile-backend, processor,
+  invalidation, opencl, license, all`] +
+  Enable internal debug tooling on one or more domains - `all` enables
+  all debug domains.
+
+[[GEGL_DEBUG_BUFS]]
 GEGL_DEBUG_BUFS::
-    Display tile/buffer leakage statistics.
+  Display tile/buffer leakage statistics.
+
+[[GEGL_DEBUG_RECTS]]
 GEGL_DEBUG_RECTS::
-    Show the results of have/need rect negotiations.
+  Show the results of have/need rect negotiations.
+
+[[GEGL_DEBUG_TIME]]
 GEGL_DEBUG_TIME::
-    Print a performance instrumentation breakdown of GEGL and it's operations.
+  Setting to any value will print a performance instrumentation
+  breakdown of GEGL and it's operations.
+
+[[GEGL_USE_OPENCL]]
 GEGL_USE_OPENCL::
-    Enable use of OpenCL processing.
+  [`yes, no, cpu, gpu, accelerator`] +
+  Enable use of OpenCL processing.
+
+[[GEGL_PATH]]
 GEGL_PATH::
-    The directory where GEGL looks (recursively) for loadable operations,
-    setting it to GEGL_PATH=/home/user/where_you_keep_src/gegl/operations
-    permits running an application against the operations in the source dir
-    instead of having to install the operations.
+  The directory where GEGL looks (recursively) for dynamically
+  loadable operation libraries.
+
+[[BABL_PATH]]
 BABL_PATH::
-    The directory containing babl extensions, both new pixel formats/color
-    models as well as fast-paths for efficient pixel format conversions.
+  The directory containing babl extensions, both new pixel formats/color
+  models as well as fast-paths for efficient pixel format conversions.
