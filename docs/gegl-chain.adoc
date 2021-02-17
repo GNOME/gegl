@@ -1,116 +1,145 @@
-gegl-chain
-----------
+GEGL operation chain guide
+--------------------------
 
-A serialization format for GEGL graphs that grew out of the desire to
-write one-liner image processing tasks on the command-line.
+gegl operation chains
+~~~~~~~~~~~~~~~~~~~~~
 
-Everything after -- in a GEGL command-line that contains an input image
-is considered the chain of operations.
+A serialization format for GEGL link:glossary.html#graph[graphs] that grew out
+of the desire to write one-line image processing tasks on the command-line.
+
+examples
+^^^^^^^^
+
+Everything after `--` in a GEGL command-line that contains an input image is
+considered the chain of link:glossary.html#operation[operations]:
 
  $ gegl input.jpg -o output.png -- noise-reduction unsharp-mask
 
-If GEGL is built linking to micro raptor gui, the gegl binary can also act as
-an image viewer as well as visualizer for the result of chains of operations.
+If GEGL is built linking to
+link:https://github.com/hodefoting/mrg[microraptor gui (mrg)], the gegl binary
+can also act as an image viewer and visualizer for the result of chains of
+operations:
 
  $ gegl input.jpg -- noise-reduction unsharp-mask
 
-If an argument on the command-line part of the chain contains a = it is a
-property assignment for the preceding operation. For example:
+To set operation properties on the command-line, the operation must be followed
+by one or more property assignments of the form `<property>=<value>`:
 
  $ gegl in.jpg -- noise-reduction iterations=4 unsharp-mask
 
+[NOTE]
+=====
 If you try to assign a property that doesn't exist, the error message will
 contain a list of valid properties for the operation.
+=====
 
-The format treats input and output pads as explicitly linked when they follow
-each other, to create a sub-chain hooked up to an aux input assign the aux pad
-with the sub chain contained in square brackets, like this:
+The format treats link:glossary.html#input_pad[input] and
+link:glossary.html#output_pad[output] pads as explicitly linked when they follow
+each other. To create a sub-chain connected to an aux input, assign the aux
+link:glossary.html#pad[pad] with the sub chain contained in square brackets:
 
- $ gegl in.jpg -- noise-reduction iterations=2 over aux=[ text string='hello there' color=white size=32 translate x=100 y=100 dropshadow radius=2 x=1.5 y=1.5 ]
+ $ gegl in.jpg -- noise-reduction iterations=2 over aux=[ text \
+   string='hello there' color=white size=32 translate x=100 y=100 \
+   dropshadow radius=2 x=1.5 y=1.5 ]
 
-And it is also possible to create reference in the chain, reusing permitting
-creating masks for color adjustments based on image content, for instance the
-following example, which uses a blurred version of an image as a threshold mask
-- which thus becomes a local content dependent thresholding filter.
+It is possible to create references of the form `id=<id>` in the chain allowing
+the same image to be used both as an input and as the basis to create a mask.
+The following example, uses a blurred version of an the input image as a
+threshold mask creating a local content dependent threshold filter:
 
- $ gegl in.jpg -- id=a threshold aux=[ ref=a gaussian-blur std-dev-x=120 std-dev-y=120 ]
+ $ gegl in.jpg -- id=a threshold aux=[ ref=a gaussian-blur std-dev-x=120 \
+   std-dev-y=120 ]
 
 When it is more reasonable to specify dimensions relative to the height of an
-image - similar to CSS vh dimensions, GEGL can use a "rel" suffix similar to
-the CSS vh unit, on the command-line and in other tools, a scaling factor to
-scale "rel" units is passed with the parsing API.
+image - similar to CSS vh dimensions, GEGL can use a `rel` suffix similar to the
+CSS vh unit, on the command-line and in other tools. A scaling factor to scale
+`rel` units is passed with the parsing API:
 
- $ gegl in.jpg -- id=a threshold aux=[ ref=a gaussian-blur std-dev-x=0.1rel std-dev-y=0.1rel ]
+ $ gegl in.jpg -- id=a threshold aux=[ ref=a gaussian-blur \
+   std-dev-x=0.1rel std-dev-y=0.1rel ]
 
-If gegl have working gegl:ff-load and gegl:ff-save ops, The gegl binary also
-permits simple forms of video processing, like the following:
+If gegl has working `gegl:ff-load` and `gegl:ff-save` operations, the gegl
+binary also permits simple forms of video processing:
 
  $ gegl input.mp4 -o output.ogv -- scale-size x=160 y=120 newsprint period=4
 
-If you want to create a GIF as the final output, it is recommended to create a
-temporary video file, and use for instance ffmpeg to create a high quality GIF
-with a two pass approach.
-
+[NOTE]
+=====
+If you wish to create a GIF as the final output, it is recommended that you
+create a temporary video file, and use a tool such as `ffmpeg` to create a high
+quality GIF using a two pass approach.
+=====
 
 Color management
 ~~~~~~~~~~~~~~~~
 
-Since GEGL-0.4.6 gegl is fully color managed and in addition to pixel data
-flowing through the chain Color Space Profiles specifying the CIE xy
-chromaticities and white point of the data.
+From the GEGL-0.4.6 release, gegl is fully color managed and Color Space
+Profiles specifying the CIE xy chromaticities and white point flows through the
+operation chain along with the pixel data.
 
-For files that contain ICC profiles, the ICC profile is preferred over chromaticities. For example EXR files use chromaticities if set and falls back to sRGB
-primaries when none are specified.
+For files that contain ICC profiles, the ICC profile is preferred over
+chromaticities. For example, EXR files use chromaticities if set and fall back
+to sRGB primaries when none are specified.
 
-The current color space at the end of the chain gets written by file savers
-for the file formats png, jpg, tif and exr.
+The color space active at the end of the chain gets written by file savers for
+the file formats that support color space embedding (png, jpg, tif and exr).
+
+Examples
+^^^^^^^^
 
 Convert from jpg to png keeping ICC profile:
 
  $ gegl input.jpg -o output.png
 
-Scale to a thum-image 128px high, keeping ICC profile, the scaling will be
-performed in "RaGaBaA float" a linear encoding of the color space, wheras the
-file format export will bring it back to R'G'B' u8.
+Scale to a thumb-image 128px high, keeping the ICC profile. The scaling will be
+performed in `RaGaBaA float` a linear encoding of the color space, whereas the
+file format export will bring it back to `R'G'B' u8`:
 
  $ gegl input.jpg -o thumb.jpg -- scale-size-keepaspect x=-1 y=128
 
-Output ICC profile found in input image to a file:
+Output the ICC profile from an input image to a file:
 
  $ gegl input.jpg -o output.icc
 
-Convert image to sRGB:
+Convert an image to sRGB:
 
  $ gegl input.jpg -o output.jpg -- convert-space name=sRGB
 
-Convert image to sRGB and do value-invert, we do a rgb-clip op before the invert.
+Convert image to sRGB and do value-invert, we do an rgb-clip op before the
+invert:
 
- $ gegl input.jpg -o output.jpg -- convert-space name=sRGB rgb-clip value-invert
+ $ gegl input.jpg -o output.jpg -- convert-space name=sRGB rgb-clip \
+   value-invert
 
-Convert image to profile ICC profile custom.icc from disk:
+Convert an image to to a custom ICC profile loaded from a profile file on disk:
 
  $ gegl input.jpg -o output.jpg -- convert-space path=custom.icc
 
-Convert image to profile ICC profile contained in other.jpg:
+Convert an image to an ICC profile contained in another image file:
 
- $ gegl input.jpg -o output.jpg -- convert-space aux=[ load path=other.jpg  ]
+ $ gegl input.jpg -o output.jpg -- convert-space aux=[ load path=other.jpg ]
 
-Override color space with ProPhoto:
+Override the color space to ProPhoto:
 
  $ gegl input.jpg -o output.jpg -- cast-space name=ProPhoto
 
-Overlay an sRGB watermark on arbitrary file:
+Overlay an image in an arbitrary color space with an sRGB watermark loaded from
+disk:
 
- $ gegl input.jpg -o output.jpg -- over aux=[ load path="watermark.png"  ]
+ $ gegl input.jpg -o output.jpg -- over aux=[ load path="watermark.png" ]
 
-Note that no special handling was needed, what happens is that the icc profile
-coming on the main input pad of the over op wins and becomes the working space
-the auxiliary buffers contents gets converted to this buffers compositing and
-blending spaces.
+[NOTE]
+=====
+The ICC profile or color space active on the main chain takes precedence over
+the color space set on any aux pads. The contents of the auxiliary buffers will
+be being converted to the active color space of the main chain. In the example
+above, the color profile of the output image (`output.jpg`) will be taken from
+the input image (`input.jpg`) regardless of the color space of the watermark
+image (`watermark.png`).
+=====
 
-Perform shadows-highlights op, with default settings in ProPhoto RGB, and
+Perform shadows-highlights operation, with default settings in ProPhoto RGB, and
 cast back to the original space when done:
 
- $ gegl input.jpg -o output.jpg -- id=original_space cast-space name=ProPhoto shadows-highlights cast-space aux=[ ref=original_space  ]
-
-
+ $ gegl input.jpg -o output.jpg -- id=original_space cast-space \
+   name=ProPhoto shadows-highlights cast-space aux=[ ref=original_space ]
