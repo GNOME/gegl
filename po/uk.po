@@ -7,16 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-01-18 17:17+0000\n"
-"PO-Revision-Date: 2021-01-18 20:36+0200\n"
+"POT-Creation-Date: 2021-02-18 18:24+0000\n"
+"PO-Revision-Date: 2021-02-18 21:30+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
-"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Lokalize 20.11.70\n"
 
 #: bin/gegl.c:179
@@ -626,13 +625,17 @@ msgid "Bilateral Filter"
 msgstr "Двобічний фільтр"
 
 #: operations/common/bilateral-filter.c:298
+#| msgid ""
+#| "Like a gaussian blur; but where the contribution for each neighbourhood "
+#| "pixel is also weighted by the color difference with the original center "
+#| "pixel. "
 msgid ""
 "Like a gaussian blur; but where the contribution for each neighbourhood "
 "pixel is also weighted by the color difference with the original center "
-"pixel. "
+"pixel."
 msgstr ""
 "Подібне до гаусового розмиття, але внесок кожного сусіднього пікселя "
-"зважуватиметься за різницею кольорів із початковим центральним пікселем. "
+"зважуватиметься за різницею кольорів із початковим центральним пікселем."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
 #: operations/common/threshold.c:127 operations/common/unsharp-mask.c:37
@@ -1971,11 +1974,11 @@ msgstr "Шум"
 msgid "Gradient threshold for lowering detail enhancement"
 msgstr "Поріг градієнта для зниження удосконалення деталізації"
 
-#: operations/common/fattal02.c:1356
+#: operations/common/fattal02.c:1361
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Проектування тонів за Fattal et al. 2002"
 
-#: operations/common/fattal02.c:1360
+#: operations/common/fattal02.c:1365
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -4128,11 +4131,11 @@ msgstr ""
 "Кількість пар. Чим більшим є значення, тим більше буде збережено гострих "
 "елементів"
 
-#: operations/common/snn-mean.c:356
+#: operations/common/snn-mean.c:383
 msgid "Symmetric Nearest Neighbour"
 msgstr "Найближча сусідня симетрія"
 
-#: operations/common/snn-mean.c:359
+#: operations/common/snn-mean.c:386
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbours"
@@ -6147,11 +6150,11 @@ msgstr "Згладжування"
 msgid "Enables smoother tile output"
 msgstr "Вмикає виведення згладжених плиток"
 
-#: operations/common-gpl3+/mosaic.c:2468
+#: operations/common-gpl3+/mosaic.c:2466
 msgid "Mosaic"
 msgstr "Мозаїка"
 
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2470
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -7628,11 +7631,11 @@ msgstr "Завантажувач файлів JPEG 2000 з використан�
 msgid "URI of file to load"
 msgstr "Адреса файлу для завантаження"
 
-#: operations/external/jpg-load.c:390
+#: operations/external/jpg-load.c:392
 msgid "JPEG File Loader"
 msgstr "Завантажувач файлів JPEG"
 
-#: operations/external/jpg-load.c:392
+#: operations/external/jpg-load.c:394
 msgid "JPEG image loader using libjpeg"
 msgstr "Завантажувач файлів JPEG з використанням libjpeg"
 
@@ -8001,11 +8004,11 @@ msgstr "Використовує GdkPixbuf, розташований у пам'�
 msgid "URI for file to load."
 msgstr "Адреса файлу для завантаження."
 
-#: operations/external/png-load.c:652
+#: operations/external/png-load.c:655
 msgid "PNG File Loader"
 msgstr "Завантажувач файлів PNG"
 
-#: operations/external/png-load.c:654
+#: operations/external/png-load.c:657
 msgid "PNG image loader."
 msgstr "Завантажувач зображень PNG"
 
@@ -8263,11 +8266,11 @@ msgstr "Тека файлу зображення (підфайл)"
 msgid "Object to receive image metadata"
 msgstr "Об'єкт для отримання метаданих зображення"
 
-#: operations/external/tiff-load.c:1034
+#: operations/external/tiff-load.c:1036
 msgid "TIFF File Loader"
 msgstr "Завантажувач файлів TIFF."
 
-#: operations/external/tiff-load.c:1036
+#: operations/external/tiff-load.c:1038
 msgid "TIFF image loader using libtiff"
 msgstr "Завантажувач файлів TIFF з використанням libtiff"
 
@@ -8704,9 +8707,12 @@ msgid "Direction vector's Y component"
 msgstr "Складова Y вектора напрямку"
 
 #: operations/transform/reflect.c:84
+#| msgid ""
+#| "Reflect an image about a line, whose direction is specified by the vector "
+#| "that is defined by the x and y properties. "
 msgid ""
 "Reflect an image about a line, whose direction is specified by the vector "
-"that is defined by the x and y properties. "
+"that is defined by the x and y properties."
 msgstr ""
 "Віддзеркалити зображення відносно лінії, чий напрямок визначається вектором "
 "із властивостями координат x та y."
@@ -8808,7 +8814,8 @@ msgid "Shear"
 msgstr "Нахил"
 
 #: operations/transform/shear.c:74
-msgid "Shears the buffer. "
+#| msgid "Shears the buffer. "
+msgid "Shears the buffer."
 msgstr "Перекошує буфер."
 
 #: operations/transform/transform.c:25
@@ -9151,12 +9158,10 @@ msgid "region-y"
 msgstr "y-ділянки"
 
 #: operations/workshop/external/paint-select.cc:48
-#| msgid "Line width"
 msgid "region-width"
 msgstr "ширина-ділянки"
 
 #: operations/workshop/external/paint-select.cc:51
-#| msgid "Line height"
 msgid "region-height"
 msgstr "висота-ділянки"
 
