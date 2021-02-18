@@ -25,13 +25,7 @@ images = files(
 
 # stylesheets
 stylesheets = files(
-  'gegl.css',
   'devhelp.css'
-)
-configure_file(
-  input : files('gegl.css'),
-  output : '@PLAINNAME@',
-  copy: true,
 )
 
 # stand-alone asciidoc files - not part of website
@@ -61,7 +55,7 @@ foreach _file: asciidoc_files
       '--unsafe',
       '-o', '@OUTPUT@',
       '-a', 'stylesheet=@0@'.format(
-        meson.current_build_dir() / 'gegl.css'
+        project_source_root / 'docs' / 'gegl.css'
       ),
       '-a', 'quirks!',
       '@INPUT@',

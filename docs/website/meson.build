@@ -39,7 +39,7 @@ foreach _file: website_asciidoc_files
       '-o', '@OUTPUT@',
       '-a', 'gegl_usage=@0@'.format(gegl_usage.full_path()),
       '-a', 'stylesheet=@0@'.format(
-        meson.current_build_dir() / 'gegl.css'
+        project_source_root / 'docs' / 'gegl.css'
       ),
       '-a', 'highlight=@0@'.format(source_highlight.found()),
       '-a', 'quirks!',
@@ -55,8 +55,6 @@ index_html = _tgt[0]
 src_gegl = project_source_root / 'gegl'
 src_gegl_operation =  src_gegl / 'operation'
 source_files = {
-  'gegl.h' : src_gegl,
-  'gegl-plugin.h' : src_gegl,
   'gegl-operation.h' : src_gegl_operation,
   'gegl-operation-composer.h' : src_gegl_operation,
   'gegl-operation-area-filter.h' : src_gegl_operation,
@@ -83,11 +81,11 @@ foreach _file, _path : source_files
       '--unsafe',
       '-o', '@OUTPUT@',
       '-a', 'stylesheet=@0@'.format(
-        meson.current_build_dir() / 'gegl.css'
+        project_source_root / 'docs' / 'gegl.css'
       ),
+      '-a', 'highlight=@0@'.format(source_highlight.found()),
       '-a', 'name=@0@'.format(_file),
       '-a', 'full_path=@0@'.format(_path / _file),
-      '-a', 'highlight=@0@'.format(source_highlight.found()),
       '-a', 'quirks!',
       '@INPUT@',
     ],
