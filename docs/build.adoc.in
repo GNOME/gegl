@@ -98,7 +98,6 @@ only required during the build process.
     * asciidoc
     * dot
     * gtkdoc_scan
-    * rsvg_convert
     * source-highlight
     * w3m
 
