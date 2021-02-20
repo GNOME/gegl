@@ -1,19 +1,19 @@
-Operation API
-=============
+{name}
+======
 
 [[top]]
 image::images/GEGL-250.png[link="index.html"]
 
 
-GEGL Operation API
-------------------
+link:{parent_link}[{parent}]
+----------------------------
 
 // Use source highlighting if available
 ifeval::["{highlight}" == "true"]
 [source, c]
 .{name}
 -----
-include::{full_path}[]
+include::{content}[]
 -----
 endif::[]
 
@@ -21,7 +21,7 @@ endif::[]
 ifeval::["{highlight}" != "true"]
 .{name}
 .....
-include::{full_path}[]
+include::{content}[][]
 .....
 endif::[]
 

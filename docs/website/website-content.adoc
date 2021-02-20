@@ -1,0 +1,13 @@
+{name}
+======
+
+[[top]]
+image::images/GEGL-250.png[link="index.html"]
+
+
+include::{build_root}/{content}[]
+
+
+{empty} +
+xref:top[top]
+[[end]]

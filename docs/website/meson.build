@@ -1,5 +1,10 @@
 
+subdir('images')
+subdir('operations')
+
 # stylesheets
+gegl_css = project_source_root / 'docs' / 'gegl.css'
+
 foreach _file : stylesheets
   configure_file(
     input : _file,
@@ -8,7 +13,8 @@ foreach _file : stylesheets
   )
 endforeach
 
-# HTML files
+# generate website
+# website - class hierarchy reference
 if env.found() and can_run_host_binaries
   custom_target(
     'class_hierarchy_html',
@@ -26,10 +32,9 @@ else
   warning('Cannot create class reference in this environment')
 endif
 
-# generate website html files
-_tgt = []
-foreach _file: website_asciidoc_files
-  _tgt += custom_target(
+# website content
+foreach _file: website_content
+  custom_target(
     '@0@.html'.format(_file).underscorify(),
     output: '@BASENAME@.html',
     input: _file,
@@ -37,63 +42,59 @@ foreach _file: website_asciidoc_files
       asciidoc,
       '--unsafe',
       '-o', '@OUTPUT@',
-      '-a', 'gegl_usage=@0@'.format(gegl_usage.full_path()),
-      '-a', 'stylesheet=@0@'.format(
-        project_source_root / 'docs' / 'gegl.css'
-      ),
+      '-a', 'stylesheet=@0@'.format(gegl_css),
       '-a', 'highlight=@0@'.format(source_highlight.found()),
+      '-a', 'build_root=@0@'.format(project_build_root),
       '-a', 'source_root=@0@'.format(project_source_root),
+      '-a', 'content=@0@'.format('@INPUT@'),
+      '-a', 'name=@0@'.format('@BASENAME@'),
       '-a', 'quirks!',
-      '@INPUT@',
+      files('website-content.adoc'),
     ],
+    depends: website_content_deps,
     build_by_default : true,
-    depends: gegl_usage,
   )
 endforeach
-index_html = _tgt[0]
 
-# Source files
-src_gegl = project_source_root / 'gegl'
-src_gegl_operation =  src_gegl / 'operation'
-source_files = {
-  'gegl-operation.h' : src_gegl_operation,
-  'gegl-operation-composer.h' : src_gegl_operation,
-  'gegl-operation-area-filter.h' : src_gegl_operation,
-  'gegl-operation-filter.h' : src_gegl_operation,
-  'gegl-operation-meta.h' : src_gegl_operation,
-  'gegl-operation-point-composer.h' : src_gegl_operation,
-  'gegl-operation-temporal.h' : src_gegl_operation,
-  'gegl-operation-point-filter.h' : src_gegl_operation,
-  'gegl-operation-point-render.h' : src_gegl_operation,
-  'gegl-operation-sink.h' : src_gegl_operation,
-  'gegl-operation-source.h' : src_gegl_operation,
-  'brightness-contrast.c' :
-    project_source_root / 'operations' / 'common',
-}
-
-# generate operation api website source files
-foreach _file, _path : source_files
+# website source listings
+foreach _file : website_listing_files
   custom_target(
     '@0@.html'.format(_file).underscorify(),
-    input: 'source.adoc',
-    output: '@0@.html'.format(_file),
+    input: _file,
+    output: '@PLAINNAME@.html',
     command: [
       asciidoc,
       '--unsafe',
       '-o', '@OUTPUT@',
-      '-a', 'stylesheet=@0@'.format(
-        project_source_root / 'docs' / 'gegl.css'
-      ),
+      '-a', 'stylesheet=@0@'.format(gegl_css),
       '-a', 'highlight=@0@'.format(source_highlight.found()),
-      '-a', 'name=@0@'.format(_file),
-      '-a', 'full_path=@0@'.format(_path / _file),
+      '-a', 'build_root=@0@'.format(project_build_root),
+      '-a', 'source_root=@0@'.format(project_source_root),
+      '-a', 'content=@0@'.format('@INPUT@'),
+      '-a', 'name=@0@'.format('@PLAINNAME@'),
+      '-a', 'parent_link=operation-api.html',
+      '-a', 'parent=GEGL Operation API',
       '-a', 'quirks!',
-      '@INPUT@',
+      files('website-listing.adoc'),
     ],
+    depends: website_listing_deps,
     build_by_default: true,
   )
 endforeach
 
-
-subdir('images')
-subdir('operations')
+# website index
+index_html = custom_target(
+  'index_html',
+  output: 'index.html',
+  input: website_index,
+  command: [
+    asciidoc,
+    '--unsafe',
+    '-o', '@OUTPUT@',
+    '-a', 'stylesheet=@0@'.format(gegl_css),
+    '-a', 'quirks!',
+    '@INPUT@',
+  ],
+  depends: website_index_deps,
+  build_by_default : true,
+)
