@@ -27,8 +27,7 @@ build-image:
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - echo "FROM archlinux/base:latest" > Dockerfile
-    - echo "RUN pacman -U --noconfirm https://archive.archlinux.org/packages/g/glibc/glibc-2.33-3-x86_64.pkg.tar.zst " >> Dockerfile
-    - echo "RUN pacman -Syu --noconfirm --ignore glibc --needed git base-devel ccache meson lcms2 gobject-introspection vala pacman-contrib && pacman -Scc --noconfirm " >> Dockerfile
+    - echo "RUN pacman -U --noconfirm https://archive.archlinux.org/packages/g/glibc/glibc-2.33-3-x86_64.pkg.tar.zst && pacman -Syu --noconfirm --ignore glibc --needed git base-devel ccache meson lcms2 gobject-introspection vala pacman-contrib && pacman -Scc " >> Dockerfile
 
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE:ci-latest --cache=true --cache-ttl=120h
 
@@ -77,7 +76,7 @@ babl-min:
     paths:
     - _build/meson-logs/*
   before_script:
-    - pacman -Syu --noconfirm --needed
+    - pacman -Syu --ignore glibc --noconfirm --needed
         base-devel ccache meson
         ffmpeg
         gobject-introspection
