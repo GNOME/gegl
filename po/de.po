@@ -4,26 +4,27 @@
 #
 # Dithering - bei Dithering wird versucht eine nicht darstellbare Farbe durch das Mischen von Bildpunkten zweier Farben nachzubilden.
 #
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2012, 2016-2018.
-# Christian Kirbach <Christian.Kirbach@gmail.com>, 2012-2013, 2015-2016.
 # Daniel Winzen <d@winzen4.de>, 2012.
+# Christian Kirbach <Christian.Kirbach@gmail.com>, 2012-2013, 2015-2016.
 # hanes <h.feiner@gmx.at>, 2016.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2012, 2016-2018.
 # Tim Sabsch <tim@sabsch.com>, 2018.
+# Philipp Kiemle <philipp.kiemle@gmail.com>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-11-18 16:19+0000\n"
-"PO-Revision-Date: 2020-11-21 18:48+0100\n"
-"Last-Translator: Christian Kirbach <christian.kirbach@gmail.com>\n"
+"POT-Creation-Date: 2021-02-20 23:33+0000\n"
+"PO-Revision-Date: 2021-02-24 21:37+0100\n"
+"Last-Translator: Tim Sabsch <tim@sabsch.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Project-Style: gnome\n"
 
 #: bin/gegl.c:179
@@ -392,6 +393,10 @@ msgstr "Die Anzahl gleichzeitig berechnender Threads"
 msgid "Disable OpenCL"
 msgstr "OpenCL deaktivieren"
 
+#: gegl/gegl-init.c:259
+msgid "Show GEGL Options"
+msgstr "GEGL-Optionen anzeigen"
+
 #: gegl/gegl-serialize.c:296
 #, c-format
 msgid "unhandled path data %s:%s\n"
@@ -639,10 +644,10 @@ msgstr "Bilateraler Filter"
 msgid ""
 "Like a gaussian blur; but where the contribution for each neighbourhood "
 "pixel is also weighted by the color difference with the original center "
-"pixel. "
+"pixel."
 msgstr ""
 "Wie ein Gaußscher Weichzeichner, bei dem der Einfluss der Nachbarpixel je "
-"nach Farbunterschied vom mittleren Pixel gewichtet wird. "
+"nach Farbunterschied vom mittleren Pixel gewichtet wird."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
 #: operations/common/threshold.c:127 operations/common/unsharp-mask.c:37
@@ -1948,6 +1953,7 @@ msgid "Adjust the black level"
 msgstr "Schwarzwert anpassen"
 
 #: operations/common/exposure.c:30 operations/common/exposure.c:461
+#: operations/common/negative-darkroom.c:32
 msgid "Exposure"
 msgstr "Belichtung"
 
@@ -1984,11 +1990,11 @@ msgstr "Rauschen"
 msgid "Gradient threshold for lowering detail enhancement"
 msgstr "Farbverlauf-Schwellwert zum Verringern der Detailverbesserung"
 
-#: operations/common/fattal02.c:1356
+#: operations/common/fattal02.c:1361
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Dynamikkompression nach Fattal et al. 2002"
 
-#: operations/common/fattal02.c:1360
+#: operations/common/fattal02.c:1365
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -2094,19 +2100,20 @@ msgid "1D Gaussian-blur"
 msgstr "1D Gaußscher Weichzeichner"
 
 #: operations/common/gegl-buffer-load-op.c:24
-#: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-save.c:25
-#: operations/common/magick-load.c:26 operations/common/open-buffer.c:25
-#: operations/common/save.c:26 operations/core/load.c:29
-#: operations/external/exr-save.cc:24 operations/external/ff-load.c:29
-#: operations/external/ff-save.c:29 operations/external/gif-load.c:34
-#: operations/external/jp2-load.c:25 operations/external/jpg-load.c:24
-#: operations/external/jpg-save.c:25 operations/external/npy-save.c:31
-#: operations/external/png-load.c:32 operations/external/png-save.c:26
-#: operations/external/ppm-load.c:25 operations/external/ppm-save.c:25
-#: operations/external/rgbe-load.c:26 operations/external/rgbe-save.c:26
-#: operations/external/svg-load.c:25 operations/external/tiff-load.c:29
-#: operations/external/tiff-save.c:25 operations/external/webp-load.c:25
-#: operations/external/webp-save.c:25 operations/workshop/external/gluas.c:37
+#: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-load.c:24
+#: operations/common/icc-save.c:25 operations/common/magick-load.c:26
+#: operations/common/open-buffer.c:25 operations/common/save.c:26
+#: operations/core/load.c:29 operations/external/exr-save.cc:24
+#: operations/external/ff-load.c:29 operations/external/ff-save.c:29
+#: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
+#: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
+#: operations/external/npy-save.c:31 operations/external/png-load.c:32
+#: operations/external/png-save.c:26 operations/external/ppm-load.c:25
+#: operations/external/ppm-save.c:25 operations/external/rgbe-load.c:26
+#: operations/external/rgbe-save.c:26 operations/external/svg-load.c:25
+#: operations/external/tiff-load.c:29 operations/external/tiff-save.c:25
+#: operations/external/webp-load.c:25 operations/external/webp-save.c:25
+#: operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
 msgid "File"
 msgstr "Datei"
@@ -2245,6 +2252,21 @@ msgstr "Farbton-Farbsättigung"
 msgid "Adjust LCH Hue, Chroma, and Lightness"
 msgstr "LCH-Farbton, -Buntheit und -Helligkeit anpassen"
 
+#: operations/common/icc-load.c:25 operations/external/gif-load.c:35
+#: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
+#: operations/external/svg-load.c:26 operations/external/tiff-load.c:30
+#: operations/external/webp-load.c:26
+msgid "Path of file to load"
+msgstr "Pfad der zu ladenden Datei"
+
+#: operations/common/icc-load.c:103
+msgid "ICC File Loader"
+msgstr "ICC-Dateilader"
+
+#: operations/common/icc-load.c:105
+msgid "ICC profile loader."
+msgstr "ICC-Profillader."
+
 #: operations/common/icc-save.c:26
 msgid "Target path and filename"
 msgstr "Zielpfad und Dateiname"
@@ -2297,9 +2319,9 @@ msgid ""
 "in the properties and a visual difference image is produced as a visual "
 "result. "
 msgstr ""
-"Eingabe- und Hilfs-Puffer vergleichen. Globale Statistiken werden in den "
-"Eigenschaften gespeichert, und es wird eine visuelle Darstellung der "
-"Unterschiede angezeigt."
+"Überprüft, ob sich Eingabe- und Hilfs-Puffer unterscheiden. Globale "
+"Statistiken werden in den Eigenschaften gespeichert und es wird eine "
+"visuelle Darstellung der Unterschiede angezeigt. "
 
 #: operations/common/image-gradient.c:27
 msgid "Magnitude"
@@ -2333,11 +2355,11 @@ msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr ""
 "Ausmaß und/oder Richtung des Verlaufs durch zentrale Unterschiede berechnen"
 
-#: operations/common/introspect.c:26
+#: operations/common/introspect.c:27
 msgid "Node"
 msgstr "Knoten"
 
-#: operations/common/introspect.c:159
+#: operations/common/introspect.c:205
 msgid "GEGL graph visualizer."
 msgstr "GEGL Graphen-Visualierung."
 
@@ -3028,6 +3050,129 @@ msgid ""
 msgstr ""
 "Pixel in einer Richtung verwischen. Dies simuliert die durch die geradlinige "
 "Bewegung der Kamera während der Belichtung erzeugte Unschärfe."
+
+#: operations/common/negative-darkroom.c:28
+msgid "Characteristic curve"
+msgstr "Charakteristische Kurve"
+
+#: operations/common/negative-darkroom.c:30
+msgid "Hardcoded characteristic curve and color data"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:33
+msgid "Base enlargement exposure"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:37
+msgid "Filter cyan"
+msgstr "Cyan filtern"
+
+#: operations/common/negative-darkroom.c:38
+msgid "Cyan exposure compensation for the negative image"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:41
+msgid "Filter magenta"
+msgstr "Magenta filtern"
+
+#: operations/common/negative-darkroom.c:42
+msgid "Magenta exposure compensation for the negative image"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:45
+msgid "Filter yellow"
+msgstr "Gelb filtern"
+
+#: operations/common/negative-darkroom.c:46
+msgid "Yellow exposure compensation for the negative image"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:49
+msgid "Clip base + fog"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:50
+msgid "Clip base + fog to have a pure white output value"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:52
+msgid "Density boost"
+msgstr "Dichte verstärken"
+
+#: operations/common/negative-darkroom.c:53
+msgid ""
+"Boost paper density to take advantage of increased dynamic range of a "
+"monitor compared to a photographic paper"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:56
+msgid "Dodge/burn multiplier"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:57
+msgid "The f-stop of dodge/burn for pure white/black auxillary input"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:60
+msgid "Enable preflashing"
+msgstr "Vorblitz aktivieren"
+
+#: operations/common/negative-darkroom.c:61
+msgid "Show preflash controls"
+msgstr "Vorblitz-Einstellungen anzeigen"
+
+#: operations/common/negative-darkroom.c:63
+msgid "Cyan preflash"
+msgstr "Cyan-Vorblitz"
+
+#: operations/common/negative-darkroom.c:64
+msgid "Preflash the negative with cyan light to reduce contrast of the print"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:68
+msgid "Magenta preflash"
+msgstr "Magenta-Vorblitz"
+
+#: operations/common/negative-darkroom.c:69
+msgid ""
+"Preflash the negative with magenta light to reduce contrast of the print"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:73
+msgid "Yellow preflash"
+msgstr "Gelber Vorblitz"
+
+#: operations/common/negative-darkroom.c:74
+msgid "Preflash the negative with yellow light to reduce contrast of the print"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:312
+msgid "Negative Darkroom"
+msgstr "Negativ-Dunkelkammer"
+
+#: operations/common/negative-darkroom.c:314
+msgid "Simulate a negative film enlargement in an analog darkroom."
+msgstr ""
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:2
+msgid "Fujicolor Crystal Archive Digital Pearl Paper"
+msgstr "»Fujicolor Crystal Archive Digital Pearl«-Papier"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
+msgid "Ilford Ilfobrom Galerie FB 1"
+msgstr "Ilford Ilfobrom Galerie FB 1"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
+msgid "Ilford Ilfobrom Galerie FB 2"
+msgstr "Ilford Ilfobrom Galerie FB 2"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
+msgid "Ilford Ilfobrom Galerie FB 3"
+msgstr "Ilford Ilfobrom Galerie FB 3"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
+msgid "Ilford Ilfobrom Galerie FB 4"
+msgstr "Ilford Ilfobrom Galerie FB 4"
 
 #: operations/common/newsprint.c:25
 msgid "Line"
@@ -3986,7 +4131,6 @@ msgid "Simple Linear Iterative Clustering"
 msgstr "Einfaches lineares iteratives Clustering"
 
 #: operations/common/slic.c:458
-#, fuzzy
 msgid "Superpixels based on k-means clustering"
 msgstr "Superpixel basierend auf k-Means-Clustering"
 
@@ -3998,11 +4142,11 @@ msgstr "Paare"
 msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Anzahl der Paare. Einen höhere Zahl bewahrt mehr Details"
 
-#: operations/common/snn-mean.c:356
+#: operations/common/snn-mean.c:383
 msgid "Symmetric Nearest Neighbour"
 msgstr "Symmetrisch nächster Nachbar"
 
-#: operations/common/snn-mean.c:359
+#: operations/common/snn-mean.c:386
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbours"
@@ -4015,6 +4159,7 @@ msgid "Radial"
 msgstr "Radial"
 
 #: operations/common/spherize.c:30 operations/common-gpl3+/value-propagate.c:37
+#: operations/workshop/external/paint-select.cc:34
 msgid "Mode"
 msgstr "Modus"
 
@@ -4564,7 +4709,7 @@ msgstr "Anzahl der Weichzeichnungsstufen"
 #: operations/common-cxx/focus-blur.c:114
 #: operations/common-cxx/variable-blur.c:46
 msgid "Blur gamma"
-msgstr ""
+msgstr "Weichzeichner-Gamma"
 
 #: operations/common-cxx/focus-blur.c:115
 #: operations/common-cxx/variable-blur.c:47
@@ -4579,7 +4724,7 @@ msgstr "Hohe Qualität"
 #: operations/common-cxx/focus-blur.c:123
 #: operations/common-cxx/variable-blur.c:54
 msgid "Generate more accurate and consistent output (slower)"
-msgstr ""
+msgstr "Ein genaueres und konsistenteres Ergebis produzieren (langsamer)"
 
 #: operations/common-cxx/focus-blur.c:320
 msgid "Focus Blur"
@@ -4590,16 +4735,12 @@ msgid "Blur the image around a focal point"
 msgstr "Bild um den Brennpunkt herum weichzeichnen"
 
 #: operations/common-cxx/lens-blur.cc:46
-#, fuzzy
-#| msgid "Clip to the input extent"
 msgid "Clip to input extents"
 msgstr "Auf Eingabegröße beschneiden"
 
 #: operations/common-cxx/lens-blur.cc:47
-#, fuzzy
-#| msgid "Clip to the input extent"
 msgid "Clip output to the input extents"
-msgstr "Auf Eingabegröße beschneiden"
+msgstr "Die Ausgabe auf die Eingabegröße beschneiden"
 
 #: operations/common-cxx/lens-blur.cc:49
 #: operations/common-cxx/piecewise-blend.cc:38
@@ -4626,10 +4767,8 @@ msgid "Gamma factor for blend-level spacing"
 msgstr ""
 
 #: operations/common-cxx/piecewise-blend.cc:346
-#, fuzzy
-#| msgid "Weighted Blend"
 msgid "Piecewise Blend"
-msgstr "Gewichtete Zusammenführung"
+msgstr "Stückweise Zusammenführung"
 
 #: operations/common-cxx/piecewise-blend.cc:348
 msgid "Blend a chain of inputs using a mask"
@@ -4817,7 +4956,7 @@ msgstr "Exponent"
 #: operations/common-gpl3+/bayer-matrix.c:69
 #: operations/common-gpl3+/linear-sinusoid.c:77
 msgid "Value exponent (logarithmic scale)"
-msgstr ""
+msgstr "Wert-Exponent (logarithmische Skala)"
 
 #: operations/common-gpl3+/bayer-matrix.c:73
 #: operations/common-gpl3+/linear-sinusoid.c:81
@@ -6028,11 +6167,11 @@ msgstr "Kantenglättung"
 msgid "Enables smoother tile output"
 msgstr "Ermöglicht weichere Darstellung der Kacheln"
 
-#: operations/common-gpl3+/mosaic.c:2468
+#: operations/common-gpl3+/mosaic.c:2466
 msgid "Mosaic"
 msgstr "Mosaik"
 
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2470
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -6152,9 +6291,8 @@ msgstr "Pixel-Helligkeitswerte verwenden"
 
 #: operations/common-gpl3+/oilify.c:522
 #, fuzzy
-#| msgid "Mask radius"
 msgid "Mask radius buffer"
-msgstr "Maskenradius"
+msgstr "Maskenradius-Puffer"
 
 #: operations/common-gpl3+/oilify.c:523
 msgid ""
@@ -6163,10 +6301,8 @@ msgid ""
 msgstr ""
 
 #: operations/common-gpl3+/oilify.c:524
-#, fuzzy
-#| msgid "Exponent"
 msgid "Exponent buffer"
-msgstr "Exponent"
+msgstr "Exponenten-Puffer"
 
 #: operations/common-gpl3+/oilify.c:525
 msgid ""
@@ -6714,10 +6850,8 @@ msgid "Middle value to peaks"
 msgstr "Mittlere Werte in den Spitzen"
 
 #: operations/common-gpl3+/value-propagate.c:31
-#, fuzzy
-#| msgid "Color to render"
 msgid "Color to peaks"
-msgstr "Farbe, die dargestellt werden soll"
+msgstr ""
 
 #: operations/common-gpl3+/value-propagate.c:32
 msgid "Only color"
@@ -6748,10 +6882,8 @@ msgid "Upper threshold"
 msgstr "Oberer Schwellenwert"
 
 #: operations/common-gpl3+/value-propagate.c:47
-#, fuzzy
-#| msgid "Maximum difference between two pixels."
 msgid "The maximum difference in value at which to propagate a pixel"
-msgstr "Maximaler Unterschied zwischen zwei Pixeln."
+msgstr ""
 
 #: operations/common-gpl3+/value-propagate.c:50
 msgid "Propagating rate"
@@ -7040,7 +7172,7 @@ msgid ""
 "the same bpp"
 msgstr ""
 
-#: operations/core/cast-space.c:25 operations/core/convert-space.c:25
+#: operations/core/cast-space.c:25
 msgid "Name"
 msgstr "Name"
 
@@ -7066,11 +7198,11 @@ msgstr "Pfad"
 msgid "File system path to ICC matrix profile to load"
 msgstr "Dateisystempfad zum zu ladenden ICC-Matrix-Profil"
 
-#: operations/core/cast-space.c:128
+#: operations/core/cast-space.c:127
 msgid "Cast color space"
 msgstr "Farbraum umwandeln"
 
-#: operations/core/cast-space.c:130
+#: operations/core/cast-space.c:129
 msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
@@ -7103,11 +7235,15 @@ msgstr "Umwandlungsformat"
 msgid "Convert the data to the specified format"
 msgstr "Daten in ein das angegebene Format umwandeln"
 
-#: operations/core/convert-space.c:104
+#: operations/core/convert-space.c:25
+msgid "Space name"
+msgstr ""
+
+#: operations/core/convert-space.c:113
 msgid "Convert color space"
 msgstr "Farbraum umwandeln"
 
-#: operations/core/convert-space.c:106
+#: operations/core/convert-space.c:115
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
 "with, and the ICC profile potentially embedded for external color "
@@ -7302,9 +7438,8 @@ msgid "noise reduction"
 msgstr "Rauschminderung"
 
 #: operations/external/ff-save.c:56
-#, fuzzy
 msgid "scenechange threshold"
-msgstr "Rote Augen entfernen …"
+msgstr ""
 
 #: operations/external/ff-save.c:57
 msgid "video bitrate min"
@@ -7378,12 +7513,6 @@ msgstr "FFmpeg-Bildspeicherer"
 msgid "FFmpeg video output sink"
 msgstr "Ziel der FFmpeg-Videoausgabe"
 
-#: operations/external/gif-load.c:35 operations/external/jp2-load.c:26
-#: operations/external/jpg-load.c:25 operations/external/svg-load.c:26
-#: operations/external/tiff-load.c:30 operations/external/webp-load.c:26
-msgid "Path of file to load"
-msgstr "Pfad der zu ladenden Datei"
-
 #: operations/external/gif-load.c:36
 msgid "frame"
 msgstr "Einzelbild"
@@ -7398,9 +7527,8 @@ msgstr "Anzahl der Einzelbilder in der GIF-Animation"
 
 #: operations/external/gif-load.c:40
 #, fuzzy
-#| msgid "frame-rate"
 msgid "frame-delay"
-msgstr "Einzelbildrate"
+msgstr "Bild-Verzögerung"
 
 #: operations/external/gif-load.c:41
 msgid "Delay in ms for last decoded frame"
@@ -7488,11 +7616,11 @@ msgstr "JPEG2000-Bildlader, der Jasper verwendet."
 msgid "URI of file to load"
 msgstr "Adresse der zu ladenden Datei"
 
-#: operations/external/jpg-load.c:390
+#: operations/external/jpg-load.c:392
 msgid "JPEG File Loader"
 msgstr "JPEG-Dateilader"
 
-#: operations/external/jpg-load.c:392
+#: operations/external/jpg-load.c:394
 msgid "JPEG image loader using libjpeg"
 msgstr "JPG-Bildlader, der libjpg verwendet"
 
@@ -7669,6 +7797,8 @@ msgstr "ASAP-Deformation"
 #: operations/external/npd.c:35
 msgid "ASAP deformation is performed when TRUE, ARAP deformation otherwise"
 msgstr ""
+"Wenn WAHR, wird eine ASAP-Deformation durchgeführt, anderenfalls eine ARAP-"
+"Deformation"
 
 #: operations/external/npd.c:37
 msgid "MLS Weights"
@@ -7680,7 +7810,7 @@ msgstr "MLS-Gewichtungen berücksichtigen"
 
 #: operations/external/npd.c:40
 msgid "MLS Weights Alpha"
-msgstr ""
+msgstr "MLS-Gewichte-Alpha"
 
 #: operations/external/npd.c:42
 msgid "Alpha parameter of MLS weights"
@@ -7784,7 +7914,7 @@ msgstr "Ein GeglVector, der den Pfad des Strichs darstellt"
 
 #: operations/external/path.c:584
 msgid "Render Path"
-msgstr ""
+msgstr "Pfad darstellen"
 
 #: operations/external/path.c:588
 msgid "Renders a brush stroke"
@@ -7803,10 +7933,8 @@ msgid "Page"
 msgstr "Seite"
 
 #: operations/external/pdf-load.c:31
-#, fuzzy
-#| msgid "Color to render"
 msgid "Page to render"
-msgstr "Farbe, die dargestellt werden soll"
+msgstr "Darzustellende Seite"
 
 #: operations/external/pdf-load.c:34
 msgid "Pages"
@@ -7818,7 +7946,7 @@ msgstr ""
 
 #: operations/external/pdf-load.c:38
 msgid "PPI"
-msgstr ""
+msgstr "PPI"
 
 #: operations/external/pdf-load.c:39
 msgid "Point/pixels per inch"
@@ -7831,7 +7959,7 @@ msgstr "Passwort"
 #: operations/external/pdf-load.c:44
 msgid "Password to use for decryption of PDF, or blank for none"
 msgstr ""
-"Passwort für die Entschlüsselung des PDF. Leer lassen für kein Passwort."
+"Passwort für die Entschlüsselung des PDF. Leer lassen für kein Passwort"
 
 #: operations/external/pdf-load.c:242
 msgid "pdf loader"
@@ -7862,11 +7990,11 @@ msgstr ""
 msgid "URI for file to load."
 msgstr "Adresse der zu ladenden Datei."
 
-#: operations/external/png-load.c:652
+#: operations/external/png-load.c:655
 msgid "PNG File Loader"
 msgstr "PNG-Bildlader"
 
-#: operations/external/png-load.c:654
+#: operations/external/png-load.c:657
 msgid "PNG image loader."
 msgstr "PNG-Bildlader."
 
@@ -7920,10 +8048,8 @@ msgid "PPM image saver (Portable pixmap saver.)"
 msgstr "PPM-Bildspeicher (Portabler Pixmap-Speicherer.)"
 
 #: operations/external/raw-load.c:28
-#, fuzzy
-#| msgid "Camera"
 msgid "Camera RGB"
-msgstr "Kamera"
+msgstr "Kamera-RGB"
 
 #: operations/external/raw-load.c:29
 msgid "s RGB"
@@ -7939,17 +8065,15 @@ msgstr "Wide-Gamut-RGB"
 
 #: operations/external/raw-load.c:32
 msgid "ProPhoto RGB"
-msgstr ""
+msgstr "ProPhoto-RGB"
 
 #: operations/external/raw-load.c:39
 msgid "Color space"
 msgstr "Farbraum"
 
 #: operations/external/raw-load.c:41
-#, fuzzy
-#| msgid "Color of paint to use for stroking"
 msgid "Color space to use for loaded data"
-msgstr "Zum Zeichnen zu verwendende Farbe"
+msgstr "Für die geladenen Daten zu verwendender Farbraum"
 
 #: operations/external/raw-load.c:281
 msgid "libraw File Loader"
@@ -7988,16 +8112,12 @@ msgid "SDL2 Display"
 msgstr "SDL2-Anzeige"
 
 #: operations/external/sdl2-display.c:199
-#, fuzzy
-#| msgid ""
-#| "Displays the input buffer in an SDL window (restricted to one display op/"
-#| "process, due to SDL implementation issues)."
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
 msgstr ""
-"Zeigt den Eingabepuffer in einem SDL-Fenster an (eingeschränkt auf eine "
-"Anzeige-Operation/Prozess wegen einem SDL-Implementierungsproblem)."
+"Zeigt den Eingabepuffer in einem SDL2-Fenster an (aufgrund eines SDL2-"
+"Implementierungsproblems eingeschränkt auf eine Anzeige-Operation/Prozess)."
 
 #: operations/external/sdl-display.c:27
 msgid "Icon title"
@@ -8076,10 +8196,8 @@ msgstr ""
 "bedeutet kein Umbruch."
 
 #: operations/external/text.c:46
-#, fuzzy
-#| msgid "Wrap input"
 msgid "Wrap height"
-msgstr "Eingabe umbrechen"
+msgstr "Umbruchhöhe"
 
 #: operations/external/text.c:47
 msgid ""
@@ -8127,17 +8245,17 @@ msgstr "Ordner"
 
 #: operations/external/tiff-load.c:35
 msgid "Image file directory (subfile)"
-msgstr ""
+msgstr "Bilddateiordner (Unterdatei)"
 
 #: operations/external/tiff-load.c:40 operations/external/tiff-save.c:35
 msgid "Object to receive image metadata"
 msgstr "Objekt, das Bild-Metadaten empfängt"
 
-#: operations/external/tiff-load.c:1034
+#: operations/external/tiff-load.c:1036
 msgid "TIFF File Loader"
 msgstr "TIFF-Dateilader"
 
-#: operations/external/tiff-load.c:1036
+#: operations/external/tiff-load.c:1038
 msgid "TIFF image loader using libtiff"
 msgstr "TIFF-Bild mittels libtiff laden"
 
@@ -8540,10 +8658,10 @@ msgstr "Y-Komponente des Richtungsvektors"
 #: operations/transform/reflect.c:84
 msgid ""
 "Reflect an image about a line, whose direction is specified by the vector "
-"that is defined by the x and y properties. "
+"that is defined by the x and y properties."
 msgstr ""
-"Ein Bild an einer Linie reflektieren, deren Richtung durch den in den "
-"Eigenschaften x und y angegebenen Vektor bestimmt wird. "
+"Ein Bild an einer Linie spiegeln, deren Richtung durch den in den "
+"Eigenschaften x und y angegebenen Vektor bestimmt wird."
 
 #: operations/transform/reset-origin.c:77
 msgid "Translate top-left to 0,0."
@@ -8579,10 +8697,8 @@ msgid "origin-y"
 msgstr "Y-Ursprung"
 
 #: operations/transform/rotate-on-center.c:146
-#, fuzzy
-#| msgid "Coordinates of lens center"
 msgid "Rotate on center"
-msgstr "Koordinaten des Linsenzentrums"
+msgstr "Um das Zentrum drehen"
 
 #: operations/transform/rotate-on-center.c:150
 msgid "Rotate the buffer around its center, taking care of possible offsets."
@@ -8645,14 +8761,12 @@ msgid "Shear"
 msgstr "Scheren"
 
 #: operations/transform/shear.c:74
-msgid "Shears the buffer. "
-msgstr "Schert den Puffer. "
+msgid "Shears the buffer."
+msgstr "Schert den Puffer."
 
 #: operations/transform/transform.c:25
-#, fuzzy
-#| msgid "Transformation string"
 msgid "Transformation SVG syntax transformation string"
-msgstr "Transformations-Zeichenkette"
+msgstr ""
 
 #: operations/transform/transform.c:64
 msgid "Do a transformation using SVG syntax transformation."
@@ -8679,10 +8793,8 @@ msgid "Near-z"
 msgstr ""
 
 #: operations/transform/transform-core.c:227
-#, fuzzy
-#| msgid "X coordinates of the flare center"
 msgid "Z coordinate of the near clipping plane"
-msgstr "X-Koordinaten des Zentrums des Linsenreflexes"
+msgstr ""
 
 #: operations/transform/translate.c:26
 msgid "Horizontal translation"
@@ -8718,10 +8830,8 @@ msgid ""
 msgstr ""
 
 #: operations/workshop/band-tune.c:24
-#, fuzzy
-#| msgid "Detail"
 msgid "Detail band"
-msgstr "Detail"
+msgstr ""
 
 #: operations/workshop/band-tune.c:25
 msgid "Features size for detail band, used for noise removal."
@@ -8741,13 +8851,11 @@ msgstr ""
 
 #: operations/workshop/band-tune.c:34
 msgid "Detail bandwidth"
-msgstr ""
+msgstr "Detail-Bandbreite"
 
 #: operations/workshop/band-tune.c:40
-#, fuzzy
-#| msgid "Edge behavior"
 msgid "Edge band"
-msgstr "Kantenverhalten"
+msgstr ""
 
 #: operations/workshop/band-tune.c:41
 msgid ""
@@ -8766,10 +8874,8 @@ msgid "Edge bandwidth"
 msgstr ""
 
 #: operations/workshop/band-tune.c:54
-#, fuzzy
-#| msgid "Hue adjustment"
 msgid "Visualize Adjustment Mask"
-msgstr "Farbtonkorrektur"
+msgstr ""
 
 #: operations/workshop/band-tune.c:217
 msgid "Band tune"
@@ -8811,15 +8917,10 @@ msgid "1D Box Blur"
 msgstr "1D Box-Weichzeichner"
 
 #: operations/workshop/boxblur-1d.c:467
-#, fuzzy
-#| msgid "Blur resulting from averaging the colors of a square neighbourhood."
 msgid "Blur resulting from averaging the colors of a row neighbourhood."
 msgstr ""
-"Weichzeichnung anhand der gemittelten Farben einer quadratischen Umgebung."
 
 #: operations/workshop/boxblur.c:75
-#, fuzzy
-#| msgid "Box Blur"
 msgid "BoxBlur"
 msgstr "Box-Weichzeichner"
 
@@ -8828,16 +8929,12 @@ msgid "Separator"
 msgstr "Trenner"
 
 #: operations/workshop/connected-components.c:26
-#, fuzzy
-#| msgid "Component to extract"
 msgid "Component separator color"
-msgstr "Zu extrahierende Komponente"
+msgstr ""
 
 #: operations/workshop/connected-components.c:29
-#, fuzzy
-#| msgid "Invert the extracted component"
 msgid "Invert the separator region"
-msgstr "Die extrahierte Komponente invertieren"
+msgstr "Trenner-Bereich invertieren"
 
 #: operations/workshop/connected-components.c:32
 msgid "Base index"
@@ -8853,9 +8950,8 @@ msgstr ""
 
 #: operations/workshop/connected-components.c:42
 #, fuzzy
-#| msgid "Normalize output to range 0.0 to 1.0."
 msgid "Normalize output to the range [base,base + step]"
-msgstr "Ausgabe auf Bereich 0,0 bis 1,0 normalisieren."
+msgstr "Ausgabe auf den Bereich [base,base + step] normalisieren."
 
 #: operations/workshop/connected-components.c:282
 msgid "Connected Components"
@@ -8902,7 +8998,7 @@ msgstr ""
 
 #: operations/workshop/ditto.c:117
 msgid "Ditto"
-msgstr ""
+msgstr "Dito"
 
 #: operations/workshop/ditto.c:119
 msgid "Test op to do a 1:1 map of input to output, while sampling"
@@ -8927,11 +9023,9 @@ msgid "Parse/compile error, if any."
 msgstr "Verarbeitungs-/Compile-Fehler, sofern vorhanden."
 
 #: operations/workshop/external/gluas.c:38
-#, fuzzy
-#| msgid "a stored lua script on disk implementing an operation."
 msgid "A stored lua script on disk implementing an operation."
 msgstr ""
-"ein auf Datenträger gespeichertes lua-Skript, das eine Operation "
+"Ein auf einem Datenträger gespeichertes lua-Skript, das eine Operation "
 "implementiert."
 
 #: operations/workshop/external/gluas.c:40
@@ -8939,10 +9033,8 @@ msgid "User value"
 msgstr "Benutzerwert"
 
 #: operations/workshop/external/gluas.c:41
-#, fuzzy
-#| msgid "(appears in the global variable 'user_value' in lua."
 msgid "Available as a global variable 'user_value' in lua."
-msgstr "(erscheint in der globalen Variable »user_value« in lua."
+msgstr "Verfügbar als eine globale Variable »user_value« in lua."
 
 #: operations/workshop/external/gluas.c:1008
 msgid "gluas"
@@ -8952,6 +9044,46 @@ msgstr ""
 msgid ""
 "Pixel level filter/composer scripting prototyping with lua. See http://"
 "pippin.gimp.org/image-processing/ for further details."
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:30
+msgid "Add"
+msgstr "Addieren"
+
+#: operations/workshop/external/paint-select.cc:31
+msgid "Subtract"
+msgstr "Subtrahieren"
+
+#: operations/workshop/external/paint-select.cc:37
+msgid "Either to add to or subtract from the mask"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:39
+msgid "Use local region"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:40
+msgid "Perform graphcut in a local region"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:42
+msgid "region-x"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:45
+msgid "region-y"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:48
+msgid "region-width"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:51
+msgid "region-height"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:1287
+msgid "Paint Select"
 msgstr ""
 
 #: operations/workshop/external/lens-correct.c:28
@@ -8991,9 +9123,8 @@ msgid "Center"
 msgstr "Mitte"
 
 #: operations/workshop/external/lens-correct.c:42
-#, fuzzy
 msgid "If you want center"
-msgstr "Geben Sie einen weiteren Kommentar bei Bedarf ein."
+msgstr ""
 
 #: operations/workshop/external/lens-correct.c:44
 msgid "Lens center X"
@@ -9144,11 +9275,11 @@ msgstr ""
 
 #: operations/workshop/external/spyrograph.c:27
 msgid "Spyrograph"
-msgstr ""
+msgstr "Spyrograph"
 
 #: operations/workshop/external/spyrograph.c:28
 msgid "EPITROCHOID"
-msgstr ""
+msgstr "EPITROCHOID"
 
 #: operations/workshop/external/spyrograph.c:31
 msgid "Curve Type"
@@ -9160,17 +9291,15 @@ msgstr "Kurventyp"
 
 #: operations/workshop/external/spyrograph.c:36
 msgid "Fixed Gear Teeth"
-msgstr ""
+msgstr "Zähne des feststehenden Zahnrads"
 
 #: operations/workshop/external/spyrograph.c:37
-#, fuzzy
-#| msgid "Number of differing pixels."
 msgid "Number of teeth in fixed gear."
-msgstr "Anzahl der sich unterscheidenden Pixel."
+msgstr "Anzahl der Zähne des feststehenden Zahnrads."
 
 #: operations/workshop/external/spyrograph.c:40
 msgid "Moving Gear Teeth"
-msgstr ""
+msgstr "Zähne des sich bewegenden Zahnrads"
 
 #: operations/workshop/external/spyrograph.c:41
 msgid ""
@@ -9181,33 +9310,28 @@ msgstr ""
 
 #: operations/workshop/external/spyrograph.c:46
 #, fuzzy
-#| msgid "Percentile"
 msgid "Hole Percent"
-msgstr "Perzentil"
+msgstr "Loch-Prozent"
 
 #: operations/workshop/external/spyrograph.c:47
 msgid ""
 "How far the hole is from the center of the moving gear. 100 means that the "
 "hole is at the gear's edge."
 msgstr ""
+"Legt fest, wie weit das Loch vom Mittelpunkt des sich bewegenden Zahnrads "
+"entfernt ist. 100% bedeutet, dass es sich am Rand des Zahnrades befindet."
 
 #: operations/workshop/external/spyrograph.c:52
-#, fuzzy
-#| msgid "X coordinates of the flare center"
 msgid "X coordinate of pattern center"
-msgstr "X-Koordinaten des Zentrums des Linsenreflexes"
+msgstr "Die X-Koordinate der Mustermitte"
 
 #: operations/workshop/external/spyrograph.c:58
-#, fuzzy
-#| msgid "Y coordinates of the flare center"
 msgid "Y coordinate of pattern center"
-msgstr "X-Koordinaten des Zentrums des Linsenreflexes"
+msgstr "Die Y-Koordinate der Mustermitte"
 
 #: operations/workshop/external/spyrograph.c:64
-#, fuzzy
-#| msgid "Radius of supernova"
 msgid "Radius of fixed gear"
-msgstr "Radius der Supernova"
+msgstr "Radius des feststehenden Zahnrads"
 
 #: operations/workshop/external/spyrograph.c:70
 msgid "Pattern rotation"
@@ -9215,13 +9339,11 @@ msgstr "Musterdrehung"
 
 #: operations/workshop/external/spyrograph.c:611
 msgid "Render Spyrograph"
-msgstr ""
+msgstr "Spyrograph darstellen"
 
 #: operations/workshop/external/spyrograph.c:615
-#, fuzzy
-#| msgid "Render a checkerboard pattern"
 msgid "Renders a Spyrograph pattern"
-msgstr "Ein Schachbrettmuster darstellen"
+msgstr "Ein Spyrograph-Muster darstellen"
 
 #: operations/workshop/external/v4l2.c:25
 msgid "video device path"
@@ -9240,26 +9362,20 @@ msgid "Mask"
 msgstr "Maskieren"
 
 #: operations/workshop/external/voronoi-diagram.cc:30
-#, fuzzy
-#| msgid "The foreground color"
 msgid "Unseeded region color"
-msgstr "Die Vordergrundfarbe"
+msgstr ""
 
 #: operations/workshop/external/voronoi-diagram.cc:33
 msgid "Invert mask"
 msgstr "Maske invertieren"
 
 #: operations/workshop/external/voronoi-diagram.cc:35
-#, fuzzy
-#| msgid "Red sharp edges"
 msgid "Seed edges"
-msgstr "Rote harte Kanten"
+msgstr ""
 
 #: operations/workshop/external/voronoi-diagram.cc:36
-#, fuzzy
-#| msgid "How image edges are handled"
 msgid "Whether the image edges are also seeded"
-msgstr "Umgang mit Bildrändern"
+msgstr ""
 
 #: operations/workshop/external/voronoi-diagram.cc:524
 msgid "Voronoi Diagram"
@@ -9274,11 +9390,10 @@ msgid "Image blending operation 'average' (<tt>c = (cA + aB)/2</tt>)"
 msgstr "Bild-Mischoperation »Durchschnitt« (<tt>c = (cA + aB)/2</tt>)"
 
 #: operations/workshop/generated/blend-reflect.c:110
-#, fuzzy
 msgid ""
 "Image blending operation 'blend-reflect' (<tt>c = cB>=1.0?1.0:cA*cA / (1.0-"
 "cB)</tt>)"
-msgstr "Bild-Mischoperation »Negierung« (<tt>c = 1.0 - fabs(1.0-cA-cB)</tt>)"
+msgstr ""
 
 #: operations/workshop/generated/negation.c:110
 msgid ""
@@ -9384,7 +9499,7 @@ msgstr "Maximale Anzahl der Wiederholungen"
 
 #: operations/workshop/segment-kmeans.c:391
 msgid "K-means Segmentation"
-msgstr ""
+msgstr "K-Means-Segmentierung"
 
 #: operations/workshop/segment-kmeans.c:393
 msgid "Segment colors using K-means clustering"
