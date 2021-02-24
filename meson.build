@@ -173,6 +173,7 @@ gio       = [
             dependency(gio_os,          version: '>=2.44.0'),
 ]
 json_glib = dependency('json-glib-1.0', version: '>=1.2.6')
+libjpeg   = dependency('libjpeg',       version: '>=1.0.0')
 libpng    = dependency('libpng',        version: '>=1.6.0')
 
 # Required libraries eventually provided in subprojects/ subdir
@@ -241,9 +242,6 @@ lcms      = dependency('lcms2',       version: '>=2.8',
 )
 lensfun   = dependency('lensfun',     version: '>=0.2.5',
   required: get_option('lensfun')
-)
-libjpeg   = dependency('libjpeg',     version: '>=1.0.0',
-  required: get_option('libjpeg')
 )
 libraw    = dependency('libraw',      version: '>=0.15.4',
   required: get_option('libraw')
