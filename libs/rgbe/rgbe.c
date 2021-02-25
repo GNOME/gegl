@@ -14,6 +14,7 @@
  * License along with GEGL; if not, see <https://www.gnu.org/licenses/>.
  *
  * Copyright 2010 Danny Robson <danny@blubinc.net>
+ *           2021 Øyvind Kolås <pippin@gimp.org>
  */
 
 #include "config.h"
@@ -529,23 +530,22 @@ rgbe_apply_exponent (const rgbe_file *file,
   if (e == 0)
     {
       rgb[OFFSET_R] = rgb[OFFSET_G] = rgb[OFFSET_B] = 0;
-      goto cleanup;
+    }
+  else
+    {
+      mult = ldexp (1.0, e - (128 + 8));
+      rgb[OFFSET_R] *= mult                  *
+                       file->header.exposure *
+                       file->header.colorcorr[OFFSET_R];
+      rgb[OFFSET_G] *= mult                  *
+                       file->header.exposure *
+                       file->header.colorcorr[OFFSET_G];
+      rgb[OFFSET_B] *= mult                  *
+                       file->header.exposure *
+                       file->header.colorcorr[OFFSET_B];
     }
 
-  mult = ldexp (1.0, e - (128 + 8));
-  rgb[OFFSET_R] *= mult                  *
-                   file->header.exposure *
-                   file->header.colorcorr[OFFSET_R];
-  rgb[OFFSET_G] *= mult                  *
-                   file->header.exposure *
-                   file->header.colorcorr[OFFSET_G];
-  rgb[OFFSET_B] *= mult                  *
-                   file->header.exposure *
-                   file->header.colorcorr[OFFSET_B];
-  rgb[OFFSET_A]  = 1.0f;
-
-cleanup:
-  return;
+  rgb[OFFSET_A] = 1.0f;
 }
 
 
