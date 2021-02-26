@@ -553,10 +553,10 @@ process (GeglOperation       *operation,
   guint       channel_levels [4];
   const Babl *format = gegl_operation_get_format (operation,"output");
 
-  channel_levels [0] = o->red_levels;
-  channel_levels [1] = o->green_levels;
-  channel_levels [2] = o->blue_levels;
-  channel_levels [3] = o->alpha_levels;
+  channel_levels [0] = o->red_levels - 1;
+  channel_levels [1] = o->green_levels - 1;
+  channel_levels [2] = o->blue_levels - 1;
+  channel_levels [3] = o->alpha_levels - 1;
 
   if (o->dither_method != GEGL_DITHER_FLOYD_STEINBERG)
     process_standard (input, output, result, channel_levels,
