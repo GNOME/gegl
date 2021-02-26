@@ -618,7 +618,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "compat-name", "gegl:color-reduction",
     "title",       _("Dither"),
     "categories",  "dither",
-    "reference-hash", "f28ecb303ab9ffbcb0c32033b2fd2dcf",
+    "reference-hash", "e9de784b7a9c200bb7652b6b58a4c94a",
     "description", _("Reduce the number of colors in the image, by reducing "
                      "the levels per channel (colors and alpha). Different dithering methods "
                      "can be specified to counteract quantization induced banding."),
