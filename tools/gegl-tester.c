@@ -32,6 +32,7 @@ static gchar    *exclusion_pattern = "a^"; /* doesn't match anything by default 
 static gboolean *output_all      = FALSE;
 static gint      failed          = 0;
 static GString  *failed_ops      = NULL;
+static gint      test_num        = 0;
 
 static const GOptionEntry options[] =
 {
@@ -208,8 +209,9 @@ process_operations (GType type)
         {
           GeglNode *composition;
 
-          g_printf ("%s: ", name); /* more information will follow
-                                        if we're testing */
+          test_num ++;
+          /* more information will follow if we're testing */
+          // g_printf ("# %s: %3i\n", name, test_num);
 
           if (xml)
             composition = gegl_node_new_from_xml (xml, data_dir);
@@ -218,7 +220,7 @@ process_operations (GType type)
 
           if (!composition)
             {
-              g_printf ("FAIL\n  Composition graph is flawed\n");
+              g_printf ("not ok %3i - Composition graph is flawed\n", test_num);
             }
           else if (output_all)
             {
@@ -242,7 +244,8 @@ process_operations (GType type)
                !(g_type_is_a (operations[i], GEGL_TYPE_OPERATION_SINK) ||
                  g_type_is_a (operations[i], GEGL_TYPE_OPERATION_TEMPORAL)))
         {
-          g_printf ("%s ", name);
+          test_num ++;
+          // g_printf ("# %s: %3i\n", name, test_num);
           standard_output (name);
         }
 
@@ -251,16 +254,18 @@ process_operations (GType type)
         gchar *output_path = operation_to_path (name, FALSE);
         gchar *gothash = compute_hash_for_path (output_path);
         if (g_str_equal (hash, gothash))
-          g_printf (" OK\n");
+          g_printf ("ok     %3i - %s\n", test_num, name);
         else if (hashB && g_str_equal (hashB, gothash))
-          g_printf (" OK (hash b)\n");
+          g_printf ("ok     %3i - %s (ref b)\n", test_num, name);
         else if (hashC && g_str_equal (hashC, gothash))
-          g_printf (" OK (hash c)\n");
+          g_printf ("ok     %3i - %s (ref c)\n", test_num, name);
+        else if (g_str_equal (hash, "unstable"))
+          g_printf ("not ok %3i - %s (unstable) # TODO reference is not reproducible\n", test_num, name);
         else
         {
-          g_printf (" FAIL %s != %s\n", gothash, hash);
+          g_printf ("not ok %3i - %s %s != %s\n", test_num, name, gothash, hash);
           failed ++;
-          g_string_append_printf (failed_ops, "%s %s != %s\n", name, gothash, hash);
+          g_string_append_printf (failed_ops, "#  %s %s != %s\n", name, gothash, hash);
         }
         g_free (gothash);
         g_free (output_path);
@@ -272,9 +277,9 @@ process_operations (GType type)
         gchar *gothash = compute_hash_for_path (output_path);
         if (g_str_equal (gothash, "9bbe341d798da4f7b181c903e6f442fd") ||
             g_str_equal (gothash, "ffb9e86edb25bc92e8d4e68f59bbb04b"))
-          g_printf (" reference is noop?\n");
+          g_printf ("not ok %3i - %s (noop) # TODO hash is noop\n", test_num, name);
         else
-          g_printf (" hash = %s\n", gothash);
+          g_printf ("not ok %3i - %s (no ref) # TODO hash = %s\n", test_num, name, gothash);
         g_free (gothash);
         g_free (output_path);
       }
@@ -312,12 +317,12 @@ main (gint    argc,
     }
   else if (output_all && !(data_dir && output_dir))
     {
-      g_printf ("Data and output directories must be specified\n");
+      g_printf ("Bail out! Data and output directories must be specified\n");
       return -1;
     }
   else if (!(output_all || (data_dir && output_dir)))
     {
-      g_printf ("Data and output directories must be specified\n");
+      g_printf ("Bail out! Data and output directories must be specified\n");
       return -1;
     }
   else
@@ -334,11 +339,14 @@ main (gint    argc,
 
   gegl_exit ();
 
-  g_printf ("\n\nwith%s opencl acceleration\n", gegl_cl_is_accelerated()?"":"out");
+    // TAP plan
+  g_printf("1..%i\n", test_num);
+
+  g_printf ("\n\n# with%s opencl acceleration\n", gegl_cl_is_accelerated()?"":"out");
   if (failed != 0)
   {
 
-    g_print ("Maybe see bug https://bugzilla.gnome.org/show_bug.cgi?id=780226\n%i operations producing unexpected hashes:\n%s\n", failed, failed_ops->str);
+    g_print ("# Maybe see bug https://bugzilla.gnome.org/show_bug.cgi?id=780226\n# %i operations producing unexpected hashes:\n%s\n", failed, failed_ops->str);
     // return -1;
   }
   g_string_free (failed_ops, TRUE);

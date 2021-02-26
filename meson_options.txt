@@ -33,6 +33,12 @@ option('parallel-tests',
   description: 'run tests in parallel or sequentially'
 )
 
+option('operation-test',
+  type: 'boolean',
+  value: 'false',
+  description: 'include gegl-tester in test suite'
+)
+
 # optional dependencies
 option('gdk-pixbuf',    type: 'feature', value: 'auto')
 option('gexiv2',        type: 'feature', value: 'auto')

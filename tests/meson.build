@@ -36,14 +36,17 @@ gegl_test_parallel = get_option('parallel-tests')
 
 # Tests
 subdir('simple')
+subdir('buffer')
+subdir('xml')
 subdir('mipmap')
 subdir('opencl')
+subdir('compositions')
 if pygobject3.found()
   subdir('python')
 endif
-subdir('xml')
+if get_option('operation-test')
+  subdir('operations')
+endif
 if avlibs_found and gexiv2.found()
   subdir('ff-load-save')
 endif
-subdir('compositions')
-subdir('buffer')
