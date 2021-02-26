@@ -73,7 +73,7 @@ quantize_value (guint value,
                 guint n_levels)
 {
   float recip = 65535.0 / n_levels;
-  return floorf (value / recip) * recip;
+  return (int)(value / recip) * recip;
 }
 
 static void
