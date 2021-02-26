@@ -39,6 +39,8 @@ gegl_dither_method_get_type (void)
         { GEGL_DITHER_ARITHMETIC_ADD_COVARIANT,   N_("Arithmetic add covariant"),  "add-covariant"  },
         { GEGL_DITHER_ARITHMETIC_XOR,   N_("Arithmetic xor"),   "xor"  },
         { GEGL_DITHER_ARITHMETIC_XOR_COVARIANT,   N_("Arithmetic xor covariant"),  "xor-covariant"  },
+        { GEGL_DITHER_BLUE_NOISE,   N_("Blue Noise"),  "blue-noise"  },
+        { GEGL_DITHER_BLUE_NOISE_COVARIANT,   N_("Blue Noise Covariant"),  "blue-noise-covariant"  },
 
         { 0, NULL, NULL }
       };

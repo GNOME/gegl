@@ -58,6 +58,8 @@ property_seed (seed, _("Random seed"), rand)
 
 #define REDUCE_16B(value) (((value) & ((1 << 17) - 1)) - 65536)
 
+#include "blue-noise-data.inc"
+
 static void
 prepare (GeglOperation *operation)
 {
@@ -228,6 +230,42 @@ process_row_bayer (GeglBufferIterator *gi,
         }
     }
 }
+
+static void inline
+process_row_blue_noise (GeglBufferIterator *gi,
+                        guint               channel_levels [4],
+                        gint                y,
+                        gint                covariant)
+{
+  guint16 *data_in  = (guint16*) gi->items[0].data;
+  guint16 *data_out = (guint16*) gi->items[1].data;
+  GeglRectangle *roi = &gi->items[0].roi;
+  guint x;
+  covariant = covariant?0:1;
+  for (x = 0; x < roi->width; x++)
+    {
+      guint pixel = 4 * (roi->width * y + x);
+      guint ch;
+
+      for (ch = 0; ch < 4; ch++)
+        {
+          gdouble noise;
+          gdouble value;
+          gdouble value_clamped;
+          gdouble quantized;
+
+          noise         = blue_noise_data_u8[ch * covariant][((roi->y + y) % 256) * 256 + ((roi->x + x) % 256)];
+          noise         = ((noise - 128) * 65536.0 / 257.0) / channel_levels [ch];
+          value         = data_in [pixel + ch] + noise;
+          value_clamped = CLAMP (value, 0.0, 65535.0);
+          quantized     = quantize_value ((guint) (value_clamped + 65536 * 0.5 / channel_levels[ch] ),
+                                          channel_levels [ch]);
+
+          data_out [pixel + ch] = (guint16) quantized;
+        }
+    }
+}
+
 
 static void inline
 process_row_arithmetic_add (GeglBufferIterator *gi,
@@ -490,6 +528,14 @@ process_standard (GeglBuffer          *input,
             for (y = 0; y < roi->height; y++)
               process_row_bayer (gi, channel_levels, y);
             break;
+          case GEGL_DITHER_BLUE_NOISE:
+            for (y = 0; y < roi->height; y++)
+              process_row_blue_noise (gi, channel_levels, y, 0);
+            break;
+          case GEGL_DITHER_BLUE_NOISE_COVARIANT:
+            for (y = 0; y < roi->height; y++)
+              process_row_blue_noise (gi, channel_levels, y, 1);
+            break;
           case GEGL_DITHER_FLOYD_STEINBERG:
             /* Done separately */
             break;
@@ -667,5 +713,6 @@ gegl_op_class_init (GeglOpClass *klass)
     "reference-composition", composition,
     NULL);
 }
+
 
 #endif
