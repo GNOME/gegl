@@ -28,13 +28,15 @@ dependencies are used by the GEGL operations and build dependencies are
 only required during the build process.
 
   - Core dependencies (required)
+    * link:http://gegl.org/babl/[babl]
+          (@babl@) -- pixel-format agnosticism.
     * link:https://wiki.gnome.org/Projects/GLib[glib (including gobject, gio, and gmodule)]
         (@glib@) -- provides inheritance, dynamic modules, common
         algorithms and data structures for C programming.
     * link:https://wiki.gnome.org/Projects/JsonGlib[json-glib]
           (@json-glib@) -- load operations in .json format.
-    * link:http://gegl.org/babl/[babl]
-          (@babl@) -- pixel-format agnosticism.
+    * link:https://jpegclub.org/reference/[libjpeg]
+        (@libjpeg@) -- jpg load/save.
     * link:http://www.libpng.org/pub/png/libpng.html[libpng]
           (@libpng@) -- png load/export operations, and ImageMagick
         import fallback.
@@ -46,8 +48,10 @@ only required during the build process.
         (@libspiro@) -- curve drawing using clothoid splines.
     * link:https://luajit.org/[luajit]
         (@luajit@) --
-    * mrg
-    * gobject_introspection
+    * link:https://github.com/hodefoting/mrg[mrg]
+        (@mrg@) --
+    * link:https://gi.readthedocs.io/en/latest/[gobject_introspection]
+        (@gir@) --
     * vapigen
 
   - Dependencies for operations (optional).
@@ -61,8 +65,6 @@ only required during the build process.
         (@jasper@) -- jpeg2000 load.
     * link:https://www.littlecms.com/[lcms2]
         (@lcms@) -- color management load.
-    * link:https://jpegclub.org/reference/[libjpeg]
-        (@libjpeg@) -- jpg load/save.
     * link:https://www.libraw.org/[libraw]
         (>=0.15.4) -- raw image load.
     * link:https://wiki.gnome.org/Projects/LibRsvg[librsvg]
@@ -71,8 +73,6 @@ only required during the build process.
         (@libtiff@) - tiff load/save
     * link:https://www.kernel.org/doc/html/v4.8/media/uapi/v4l/libv4l-introduction.html[libv4l1]
         (@libv4l1@) -- Video4Linux.
-    * link:https://www.kernel.org/doc/html/v4.8/media/uapi/v4l/libv4l-introduction.html[libv4l2]
-        (@libv4l2@) -- Video4Linux.
     * link:https://developers.google.com/speed/webp[libwebp]
         (@libwebp@) -- webp load/save.
     * link:https://www.openexr.com/[openexr]
@@ -91,18 +91,28 @@ only required during the build process.
   - Dependencies for workshop operations (optional).
     * lensfun
     * maxflow
+    * link:https://www.kernel.org/doc/html/v4.8/media/uapi/v4l/libv4l-introduction.html[libv4l2]
+        (@libv4l2@) -- Video4Linux.
 
-  - Build utilities (optional) - to build documentation. For
+  - Build utilities (optional) -- to build documentation. For
     cross-compiles these are build environment dependencies (native to
     the build system).
-    * asciidoc
-    * dot
+    * link:https://asciidoc.org/[asciidoc] -- convert the main
+      documentation files from asciidoc markup language to html.
+    * link:https://graphviz.org/[graphviz dot] -- used to create the
     * gtkdoc_scan
-    * source-highlight
-    * w3m
+    * link:https://www.gnu.org/software/src-highlite/[source-highlight]
+      -- provide syntax highlighting for source code in the
+      documentation files (called by transparently by asciidoc).
+    * w3m -- used to convert html pages to plain text (only used for
+      generating the distribution files).
 
-  - Tests (optional) - to run tests
-    * pygobject3 ( to run python test suite)
+  - Run time dependencies (optional)
+    * dot -- required for the gegl:introspection operation. The
+      operation will be disabled if dot is not present.
+    * https://pygobject.readthedocs.io/en/latest/getting_started.html[pygobject3]
+      -- used to build python programs against the gegl library.
+      Required to run python test suite.
 
 Compiling
 ~~~~~~~~~
