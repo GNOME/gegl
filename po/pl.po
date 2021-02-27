@@ -1,19 +1,19 @@
 # Polish translation for gegl.
-# Copyright © 1999-2020 the gegl authors.
+# Copyright © 1999-2021 the gegl authors.
 # This file is distributed under the same license as the gegl package.
 # Paweł Dziekoński, 1999-2000.
 # Bartosz Kosiorek <gang65@poczta.onet.pl>, 2005-2011.
 # Piotr Zaryk <pzaryk@aviary.pl>, 2008.
 # Robert Gomulka <carramba@epf.pl>, 2008.
-# Piotr Drąg <piotrdrag@gmail.com>, 2011-2020.
-# Aviary.pl <community-poland@mozilla.org>, 2011-2020.
+# Piotr Drąg <piotrdrag@gmail.com>, 2011-2021.
+# Aviary.pl <community-poland@mozilla.org>, 2011-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-12-06 14:39+0000\n"
-"PO-Revision-Date: 2020-12-13 16:45+0100\n"
+"POT-Creation-Date: 2021-02-26 17:53+0000\n"
+"PO-Revision-Date: 2021-02-27 14:10+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -216,7 +216,7 @@ msgstr "Odczyt/zapis"
 msgid "Nearest"
 msgstr "Najbliższy"
 
-#: gegl/buffer/gegl-buffer-enums.c:90 gegl/gegl-enums.c:119
+#: gegl/buffer/gegl-buffer-enums.c:90 gegl/gegl-enums.c:121
 #: operations/common-gpl3+/bump-map.c:33 operations/common-gpl3+/sinus.c:62
 #: operations/common-gpl3+/spiral.c:26
 #: operations/workshop/connected-components.c:44
@@ -275,72 +275,80 @@ msgstr "Arytmetyczne „xor”"
 msgid "Arithmetic xor covariant"
 msgstr "Arytmetyczne „xor” współzmiennej"
 
-#: gegl/gegl-enums.c:66
+#: gegl/gegl-enums.c:42
+msgid "Blue Noise"
+msgstr "Niebieski szum"
+
+#: gegl/gegl-enums.c:43
+msgid "Blue Noise Covariant"
+msgstr "Współzmienna niebieskiego szumu"
+
+#: gegl/gegl-enums.c:68
 msgid "Euclidean"
 msgstr "Euklidesowa"
 
-#: gegl/gegl-enums.c:67
+#: gegl/gegl-enums.c:69
 msgid "Manhattan"
 msgstr "Manhattan"
 
-#: gegl/gegl-enums.c:68
+#: gegl/gegl-enums.c:70
 msgid "Chebyshev"
 msgstr "Czebyszewa"
 
-#: gegl/gegl-enums.c:93 operations/common/edge-sobel.c:27
+#: gegl/gegl-enums.c:95 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/common/spherize.c:26
 #: operations/common/vignette.c:28 operations/common-cxx/focus-blur.c:37
 msgid "Horizontal"
 msgstr "Poziomy"
 
-#: gegl/gegl-enums.c:94 operations/common/edge-sobel.c:29
+#: gegl/gegl-enums.c:96 operations/common/edge-sobel.c:29
 #: operations/common/noise-spread.c:35 operations/common/spherize.c:27
 #: operations/common/vignette.c:29 operations/common-cxx/focus-blur.c:38
 msgid "Vertical"
 msgstr "Pionowy"
 
-#: gegl/gegl-enums.c:118
+#: gegl/gegl-enums.c:120
 msgid "Float"
 msgstr "Zmiennoprzecinkowy"
 
-#: gegl/gegl-enums.c:120
+#: gegl/gegl-enums.c:122
 msgid "Non-linear"
 msgstr "Nieliniowy"
 
-#: gegl/gegl-enums.c:121 operations/external/lcms-from-profile.c:31
+#: gegl/gegl-enums.c:123 operations/external/lcms-from-profile.c:31
 msgid "Perceptual"
 msgstr "Percepcyjny"
 
-#: gegl/gegl-enums.c:122
+#: gegl/gegl-enums.c:124
 msgid "Linear-premultiplied"
 msgstr "Liniowo odwrócone mnożenie"
 
-#: gegl/gegl-enums.c:123
+#: gegl/gegl-enums.c:125
 msgid "Perceptual-premultiplied"
 msgstr "Percepcyjnie odwrócone mnożenie"
 
-#: gegl/gegl-enums.c:124
+#: gegl/gegl-enums.c:126
 msgid "Linear-premultiplied-if-alpha"
 msgstr "Liniowo odwrócone mnożenie, jeśli alfa"
 
-#: gegl/gegl-enums.c:125
+#: gegl/gegl-enums.c:127
 msgid "Perceptual-premultiplied-if-alpha"
 msgstr "Percepcyjnie odwrócone mnożenie, jeśli alfa"
 
-#: gegl/gegl-enums.c:126
+#: gegl/gegl-enums.c:128
 msgid "add-alpha"
 msgstr "dodaj-alfę"
 
-#: gegl/gegl-enums.c:150 operations/common/gaussian-blur.c:24
+#: gegl/gegl-enums.c:152 operations/common/gaussian-blur.c:24
 #: operations/common/gblur-1d.c:39
 msgid "Auto"
 msgstr "Autom."
 
-#: gegl/gegl-enums.c:151
+#: gegl/gegl-enums.c:153
 msgid "Never"
 msgstr "Nigdy"
 
-#: gegl/gegl-enums.c:152
+#: gegl/gegl-enums.c:154
 msgid "Always"
 msgstr "Zawsze"
 
@@ -630,10 +638,10 @@ msgstr "Filtr dwustronny"
 msgid ""
 "Like a gaussian blur; but where the contribution for each neighbourhood "
 "pixel is also weighted by the color difference with the original center "
-"pixel. "
+"pixel."
 msgstr ""
 "Podobny do rozmycia Gaussa, ale wpływ każdego sąsiedniego piksela jest "
-"ważony także przez różnicę kolorów z pierwotnego środkowego piksela. "
+"ważony także przez różnicę kolorów z pierwotnego środkowego piksela."
 
 #: operations/common/bloom.c:26 operations/common/threshold.c:25
 #: operations/common/threshold.c:127 operations/common/unsharp-mask.c:37
@@ -1710,11 +1718,11 @@ msgstr "Używana metoda mieszania"
 msgid "Random seed"
 msgstr "Ziarno losowości"
 
-#: operations/common/dither.c:661
+#: operations/common/dither.c:707
 msgid "Dither"
 msgstr "Mieszaj kolory"
 
-#: operations/common/dither.c:664
+#: operations/common/dither.c:710
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
@@ -1935,6 +1943,7 @@ msgid "Adjust the black level"
 msgstr "Dostosuj poziom czerni"
 
 #: operations/common/exposure.c:30 operations/common/exposure.c:461
+#: operations/common/negative-darkroom.c:32
 msgid "Exposure"
 msgstr "Ekspozycja"
 
@@ -1970,11 +1979,11 @@ msgstr "Szum"
 msgid "Gradient threshold for lowering detail enhancement"
 msgstr "Próg gradientu do zmniejszania uwydatniania szczegółów"
 
-#: operations/common/fattal02.c:1356
+#: operations/common/fattal02.c:1361
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Mapowanie odcieni Fattala i innych 2002"
 
-#: operations/common/fattal02.c:1360
+#: operations/common/fattal02.c:1365
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
 "a low dynamic range. This operator attenuates the magnitudes of local image "
@@ -2337,7 +2346,7 @@ msgstr "Oblicz wielkość gradientu lub kierunek według różnic środkowych"
 msgid "Node"
 msgstr "Węzeł"
 
-#: operations/common/introspect.c:187
+#: operations/common/introspect.c:205
 msgid "GEGL graph visualizer."
 msgstr "Wizualizacja wykresów GEGL."
 
@@ -3025,6 +3034,141 @@ msgid ""
 msgstr ""
 "Rozmycie pikseli w kierunku, symuluje rozmycie powodowane przez ruch kamery "
 "w prostej linii podczas ekspozycji."
+
+#: operations/common/negative-darkroom.c:28
+msgid "Characteristic curve"
+msgstr "Krzywa charakterystyki"
+
+#: operations/common/negative-darkroom.c:30
+msgid "Hardcoded characteristic curve and color data"
+msgstr "Zakodowana krzywa charakterystyki i dane koloru"
+
+#: operations/common/negative-darkroom.c:33
+msgid "Base enlargement exposure"
+msgstr "Podstawowa ekspozycja powiększenia"
+
+#: operations/common/negative-darkroom.c:37
+msgid "Filter cyan"
+msgstr "Filtr niebieskozielonego"
+
+#: operations/common/negative-darkroom.c:38
+msgid "Cyan exposure compensation for the negative image"
+msgstr "Kompensacja ekspozycji niebieskozielonego dla negatywu"
+
+#: operations/common/negative-darkroom.c:41
+msgid "Filter magenta"
+msgstr "Filtr purpurowego"
+
+#: operations/common/negative-darkroom.c:42
+msgid "Magenta exposure compensation for the negative image"
+msgstr "Kompensacja ekspozycji purpurowego dla negatywu"
+
+#: operations/common/negative-darkroom.c:45
+msgid "Filter yellow"
+msgstr "Filtr żółtego"
+
+#: operations/common/negative-darkroom.c:46
+msgid "Yellow exposure compensation for the negative image"
+msgstr "Kompensacja ekspozycji żółtego dla negatywu"
+
+#: operations/common/negative-darkroom.c:49
+msgid "Clip base + fog"
+msgstr "Podstawa kadrowania + zamglenie"
+
+#: operations/common/negative-darkroom.c:50
+msgid "Clip base + fog to have a pure white output value"
+msgstr ""
+"Podstawa kadrowania + zamglenie, aby osiągnąć całkowicie białą wartość "
+"wyjściową"
+
+#: operations/common/negative-darkroom.c:52
+msgid "Density boost"
+msgstr "Wzmocnienie gęstości"
+
+#: operations/common/negative-darkroom.c:53
+msgid ""
+"Boost paper density to take advantage of increased dynamic range of a "
+"monitor compared to a photographic paper"
+msgstr ""
+"Wzmacnia gęstość papieru, aby skorzystać ze zwiększonego zakresu "
+"dynamicznego monitora w porównaniu do papieru fotograficznego"
+
+#: operations/common/negative-darkroom.c:56
+msgid "Dodge/burn multiplier"
+msgstr "Mnożnik rozjaśniania/przyciemniania"
+
+#: operations/common/negative-darkroom.c:57
+msgid "The f-stop of dodge/burn for pure white/black auxillary input"
+msgstr ""
+"Przysłona rozjaśniania/przyciemniania dla całkowicie białego/czarnego "
+"wyjścia pomocniczego"
+
+#: operations/common/negative-darkroom.c:60
+msgid "Enable preflashing"
+msgstr "Wstępne naświetlenie"
+
+#: operations/common/negative-darkroom.c:61
+msgid "Show preflash controls"
+msgstr "Sterowanie wstępnym naświetleniem"
+
+#: operations/common/negative-darkroom.c:63
+msgid "Cyan preflash"
+msgstr "Wstępne naświetlenie niebieskozielonego"
+
+#: operations/common/negative-darkroom.c:64
+msgid "Preflash the negative with cyan light to reduce contrast of the print"
+msgstr ""
+"Wstępnie naświetla negatyw za pomocą niebieskozielonego światła, aby "
+"zmniejszyć kontrast odbitki"
+
+#: operations/common/negative-darkroom.c:68
+msgid "Magenta preflash"
+msgstr "Wstępne naświetlenie purpurowego"
+
+#: operations/common/negative-darkroom.c:69
+msgid ""
+"Preflash the negative with magenta light to reduce contrast of the print"
+msgstr ""
+"Wstępnie naświetla negatyw za pomocą purpurowego światła, aby zmniejszyć "
+"kontrast odbitki"
+
+#: operations/common/negative-darkroom.c:73
+msgid "Yellow preflash"
+msgstr "Wstępne naświetlenie żółtego"
+
+#: operations/common/negative-darkroom.c:74
+msgid "Preflash the negative with yellow light to reduce contrast of the print"
+msgstr ""
+"Wstępnie naświetla negatyw za pomocą żółtego światła, aby zmniejszyć "
+"kontrast odbitki"
+
+#: operations/common/negative-darkroom.c:312
+msgid "Negative Darkroom"
+msgstr "Ciemnia fotograficzna"
+
+#: operations/common/negative-darkroom.c:314
+msgid "Simulate a negative film enlargement in an analog darkroom."
+msgstr "Symuluje powiększanie kliszy fotograficznej w analogowej ciemni."
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:2
+msgid "Fujicolor Crystal Archive Digital Pearl Paper"
+msgstr "Papier Fujicolor Crystal Archive Digital Pearl"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
+msgid "Ilford Ilfobrom Galerie FB 1"
+msgstr "Ilford Ilfobrom Galerie FB 1"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
+msgid "Ilford Ilfobrom Galerie FB 2"
+msgstr "Ilford Ilfobrom Galerie FB 2"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
+msgid "Ilford Ilfobrom Galerie FB 3"
+msgstr "Ilford Ilfobrom Galerie FB 3"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
+msgid "Ilford Ilfobrom Galerie FB 4"
+msgstr "Ilford Ilfobrom Galerie FB 4"
 
 #: operations/common/newsprint.c:25
 msgid "Line"
@@ -3981,11 +4125,11 @@ msgstr "Pary"
 msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Liczna par; wyższy numer zachowuje ostrzejsze cechy"
 
-#: operations/common/snn-mean.c:356
+#: operations/common/snn-mean.c:383
 msgid "Symmetric Nearest Neighbour"
 msgstr "Symetryczni najbliżsi sąsiedzi"
 
-#: operations/common/snn-mean.c:359
+#: operations/common/snn-mean.c:386
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbours"
@@ -5988,11 +6132,11 @@ msgstr "Wygładzanie"
 msgid "Enables smoother tile output"
 msgstr "Włącza gładsze wyjście kafli"
 
-#: operations/common-gpl3+/mosaic.c:2468
+#: operations/common-gpl3+/mosaic.c:2466
 msgid "Mosaic"
 msgstr "Mozaika"
 
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2470
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -7455,11 +7599,11 @@ msgstr "Wczytywanie obrazów JPEG 2000 za pomocą biblioteki jasper."
 msgid "URI of file to load"
 msgstr "Adres URI wczytywanego pliku"
 
-#: operations/external/jpg-load.c:390
+#: operations/external/jpg-load.c:392
 msgid "JPEG File Loader"
 msgstr "Wczytywanie plików JPEG"
 
-#: operations/external/jpg-load.c:392
+#: operations/external/jpg-load.c:394
 msgid "JPEG image loader using libjpeg"
 msgstr "Wczytywanie obrazów JPEG za pomocą biblioteki libjpeg"
 
@@ -7824,11 +7968,11 @@ msgstr "Używa GdkPixbuf położonego w pamięci w <em>pixbuf</em>."
 msgid "URI for file to load."
 msgstr "Adres URI pliku do wczytania."
 
-#: operations/external/png-load.c:652
+#: operations/external/png-load.c:655
 msgid "PNG File Loader"
 msgstr "Wczytywanie plików PNG"
 
-#: operations/external/png-load.c:654
+#: operations/external/png-load.c:657
 msgid "PNG image loader."
 msgstr "Wczytywanie obrazów PNG."
 
@@ -8088,11 +8232,11 @@ msgstr "Katalog pliku obrazu (podplik)"
 msgid "Object to receive image metadata"
 msgstr "Obiekt otrzymujący metadane obrazu"
 
-#: operations/external/tiff-load.c:1034
+#: operations/external/tiff-load.c:1036
 msgid "TIFF File Loader"
 msgstr "Wczytywanie plików TIFF"
 
-#: operations/external/tiff-load.c:1036
+#: operations/external/tiff-load.c:1038
 msgid "TIFF image loader using libtiff"
 msgstr "Wczytywanie obrazów TIFF za pomocą biblioteki libtiff"
 
@@ -8520,7 +8664,7 @@ msgstr "Składowa na osi Y wektora kierunku"
 #: operations/transform/reflect.c:84
 msgid ""
 "Reflect an image about a line, whose direction is specified by the vector "
-"that is defined by the x and y properties. "
+"that is defined by the x and y properties."
 msgstr ""
 "Odbij obraz o linię, której kierunek jest podany przez wektor określony "
 "właściwościami X i Y."
@@ -8621,8 +8765,8 @@ msgid "Shear"
 msgstr "Nachyl"
 
 #: operations/transform/shear.c:74
-msgid "Shears the buffer. "
-msgstr "Nachyla bufor. "
+msgid "Shears the buffer."
+msgstr "Nachyla bufor."
 
 #: operations/transform/transform.c:25
 msgid "Transformation SVG syntax transformation string"
@@ -8946,7 +9090,31 @@ msgstr "Odejmij"
 msgid "Either to add to or subtract from the mask"
 msgstr "Dodaj lub odejmij z maski"
 
-#: operations/workshop/external/paint-select.cc:948
+#: operations/workshop/external/paint-select.cc:39
+msgid "Use local region"
+msgstr "Użyj lokalnego regionu"
+
+#: operations/workshop/external/paint-select.cc:40
+msgid "Perform graphcut in a local region"
+msgstr "Wykonaj podział wykresu w lokalnym regionie"
+
+#: operations/workshop/external/paint-select.cc:42
+msgid "region-x"
+msgstr "oś-X-regionu"
+
+#: operations/workshop/external/paint-select.cc:45
+msgid "region-y"
+msgstr "oś-Y-regionu"
+
+#: operations/workshop/external/paint-select.cc:48
+msgid "region-width"
+msgstr "szerokość-regionu"
+
+#: operations/workshop/external/paint-select.cc:51
+msgid "region-height"
+msgstr "wysokość-regionu"
+
+#: operations/workshop/external/paint-select.cc:1287
 msgid "Paint Select"
 msgstr "Zaznaczenie farby"
 
