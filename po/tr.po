@@ -5,15 +5,15 @@
 #
 # Muhammet Kara <muhammetk@gmail.com>, 2014.
 # Simge Sezgin <simgesezgin88@gmail.com>, 2015.
-# Sabri Ünal <libreajans@gmail.com>, 2019, 2020.
-# Emin Tufan Çetin <etcetin@gmail.com>, 2019, 2020.
+# Sabri Ünal <libreajans@gmail.com>, 2019, 2020, 2021.
+# Emin Tufan Çetin <etcetin@gmail.com>, 2019, 2020, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2020-06-12 17:26+0000\n"
-"PO-Revision-Date: 2020-08-08 12:03+0300\n"
+"POT-Creation-Date: 2021-02-27 11:22+0000\n"
+"PO-Revision-Date: 2021-02-28 10:27+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.4.1\n"
 "X-POOTLE-MTIME: 1437504675.000000\n"
 
 #: bin/gegl.c:179
@@ -258,7 +258,7 @@ msgstr "Oku/Yaz"
 msgid "Nearest"
 msgstr "En yakın"
 
-#: gegl/buffer/gegl-buffer-enums.c:90 gegl/gegl-enums.c:119
+#: gegl/buffer/gegl-buffer-enums.c:90 gegl/gegl-enums.c:121
 #: operations/common-gpl3+/bump-map.c:33 operations/common-gpl3+/sinus.c:62
 #: operations/common-gpl3+/spiral.c:26
 #: operations/workshop/connected-components.c:44
@@ -317,72 +317,84 @@ msgstr "Aritmetik veya"
 msgid "Arithmetic xor covariant"
 msgstr "Aritmetik veya eşdeğişken"
 
-#: gegl/gegl-enums.c:66
+#: gegl/gegl-enums.c:42
+#, fuzzy
+#| msgid "Blue bits"
+msgid "Blue Noise"
+msgstr "Mavi bitler"
+
+#: gegl/gegl-enums.c:43
+#, fuzzy
+#| msgid "Random Covariant"
+msgid "Blue Noise Covariant"
+msgstr "Rastgele Eşdeğişken"
+
+#: gegl/gegl-enums.c:68
 msgid "Euclidean"
 msgstr "Öklid"
 
-#: gegl/gegl-enums.c:67
+#: gegl/gegl-enums.c:69
 msgid "Manhattan"
 msgstr "Manhattan"
 
-#: gegl/gegl-enums.c:68
+#: gegl/gegl-enums.c:70
 msgid "Chebyshev"
 msgstr "Chebyshev"
 
-#: gegl/gegl-enums.c:93 operations/common/edge-sobel.c:27
+#: gegl/gegl-enums.c:95 operations/common/edge-sobel.c:27
 #: operations/common/noise-spread.c:29 operations/common/spherize.c:26
 #: operations/common/vignette.c:28 operations/common-cxx/focus-blur.c:37
 msgid "Horizontal"
 msgstr "Yatay"
 
-#: gegl/gegl-enums.c:94 operations/common/edge-sobel.c:29
+#: gegl/gegl-enums.c:96 operations/common/edge-sobel.c:29
 #: operations/common/noise-spread.c:35 operations/common/spherize.c:27
 #: operations/common/vignette.c:29 operations/common-cxx/focus-blur.c:38
 msgid "Vertical"
 msgstr "Dikey"
 
-#: gegl/gegl-enums.c:118
+#: gegl/gegl-enums.c:120
 msgid "Float"
 msgstr "Yüzen"
 
-#: gegl/gegl-enums.c:120
+#: gegl/gegl-enums.c:122
 msgid "Non-linear"
 msgstr "Doğrusal olmayan"
 
-#: gegl/gegl-enums.c:121 operations/external/lcms-from-profile.c:31
+#: gegl/gegl-enums.c:123 operations/external/lcms-from-profile.c:31
 msgid "Perceptual"
 msgstr "Algısal"
 
-#: gegl/gegl-enums.c:122
+#: gegl/gegl-enums.c:124
 msgid "Linear-premultiplied"
 msgstr "Doğrusal önceden çoğaltılmış"
 
-#: gegl/gegl-enums.c:123
+#: gegl/gegl-enums.c:125
 msgid "Perceptual-premultiplied"
 msgstr "Algısal önceden çoğaltılmış"
 
-#: gegl/gegl-enums.c:124
+#: gegl/gegl-enums.c:126
 msgid "Linear-premultiplied-if-alpha"
 msgstr "Doğrusal, alfa ise önceden çoğaltılmış"
 
-#: gegl/gegl-enums.c:125
+#: gegl/gegl-enums.c:127
 msgid "Perceptual-premultiplied-if-alpha"
 msgstr "Algısal, alfa ise önceden çoğaltılmış"
 
-#: gegl/gegl-enums.c:126
+#: gegl/gegl-enums.c:128
 msgid "add-alpha"
 msgstr "alfa ekle"
 
-#: gegl/gegl-enums.c:150 operations/common/gaussian-blur.c:24
+#: gegl/gegl-enums.c:152 operations/common/gaussian-blur.c:24
 #: operations/common/gblur-1d.c:39
 msgid "Auto"
 msgstr "Kendiliğinden"
 
-#: gegl/gegl-enums.c:151
+#: gegl/gegl-enums.c:153
 msgid "Never"
 msgstr "Asla"
 
-#: gegl/gegl-enums.c:152
+#: gegl/gegl-enums.c:154
 msgid "Always"
 msgstr "Her Zaman"
 
@@ -425,6 +437,10 @@ msgstr "Kullanılacak eşzamanlı işlem parçaçıkları"
 #: gegl/gegl-init.c:247
 msgid "Disable OpenCL"
 msgstr "OpenCL Kapat"
+
+#: gegl/gegl-init.c:259
+msgid "Show GEGL Options"
+msgstr ""
 
 #: gegl/gegl-serialize.c:296
 #, c-format
@@ -641,7 +657,7 @@ msgid ""
 "color values."
 msgstr ""
 "Harita renk değerlerine trigonometrik işlevler uygulayarak görüntü "
-"renklerini ağır şekilde boz."
+"renklerini ağır biçimde boz."
 
 #: operations/common/bilateral-filter.c:26
 #: operations/common/domain-transform.c:29 operations/common/dropshadow.c:46
@@ -673,10 +689,15 @@ msgid "Bilateral Filter"
 msgstr "Çift Taraflı Süz"
 
 #: operations/common/bilateral-filter.c:298
+#, fuzzy
+#| msgid ""
+#| "Like a gaussian blur; but where the contribution for each neighbourhood "
+#| "pixel is also weighted by the color difference with the original center "
+#| "pixel. "
 msgid ""
 "Like a gaussian blur; but where the contribution for each neighbourhood "
 "pixel is also weighted by the color difference with the original center "
-"pixel. "
+"pixel."
 msgstr ""
 "Gaussian bulanıklığı gibidir; ancak her bir komşu beneğin katkısı ayrıca "
 "özgün merkez piksel ile olan renk farkına göre de ağırlıklandırılır. "
@@ -1022,7 +1043,7 @@ msgid ""
 "Generates a buffer entirely filled with the specified color, use gegl:crop "
 "to get smaller dimensions."
 msgstr ""
-"Belirtilen renklerle tamamen doldurulmuş bir arabellek oluşturur, daha küçük "
+"Belirtilen renklerle tümüyle doldurulmuş bir arabellek oluşturur, daha küçük "
 "boyutları almak için gegl:crop kullanır."
 
 #: operations/common/color-assimilation-grid.c:25
@@ -1078,8 +1099,8 @@ msgid ""
 "Stretch color chroma to cover maximum possible range, keeping hue and "
 "lightness untouched."
 msgstr ""
-"Renk parlaklığını mümkün olan en fazla erimi kaplayacak şekilde genişlet, "
-"renk tonuna ve aydınlığa dokunma."
+"Renk parlaklığını olabildiğince çok erimi kaplayacak biçimde genişlet, renk "
+"tonuna ve aydınlığa dokunma."
 
 #: operations/common/color-overlay.c:27
 msgid "The color to paint over the input"
@@ -1127,7 +1148,7 @@ msgstr "Saydamlığı koruyarak girdi üzerine bir renk kaplaması boya."
 
 #: operations/common/color-rotate.c:35
 msgid "Treat as this"
-msgstr "Bu şekilde davran"
+msgstr "Bu biçimde davran"
 
 #: operations/common/color-rotate.c:37
 msgid "Change to this"
@@ -1184,7 +1205,7 @@ msgid ""
 "they had this hue and saturation\n"
 "Change to this: Change gray colors to this hue and saturation"
 msgstr ""
-"Bu şekilde davran: Yukarıdaki kaynak eriminden gelen gri renkler, bu renk "
+"Bu biçimde davran: Yukarıdaki kaynak eriminden gelen gri renkler, bu renk "
 "tonuna ve doygunluğa sahipmiş gibi işlem görür.\n"
 "Buna değiştir: Gri renkleri bu renk tonuyla ve doygunluğuyla değiştir"
 
@@ -1760,11 +1781,11 @@ msgstr "Kullanılacak renk taklidi yöntemi"
 msgid "Random seed"
 msgstr "Rastgele parçacık"
 
-#: operations/common/dither.c:661
+#: operations/common/dither.c:613
 msgid "Dither"
 msgstr "Renk taklidi"
 
-#: operations/common/dither.c:664
+#: operations/common/dither.c:616
 msgid ""
 "Reduce the number of colors in the image, by reducing the levels per channel "
 "(colors and alpha). Different dithering methods can be specified to "
@@ -1976,7 +1997,7 @@ msgstr "Pozlamaları Birleştir"
 #: operations/common/exp-combine.c:1273
 msgid "Combine multiple scene exposures into one high dynamic range image."
 msgstr ""
-"Birden fazla sahne pozlamasını tek bir yüksek dinamik aralık görüntüsünde "
+"Birden çok sahne pozlamasını tek bir yüksek dinamik aralık görüntüsünde "
 "birleştir."
 
 #: operations/common/exposure.c:26
@@ -1988,6 +2009,7 @@ msgid "Adjust the black level"
 msgstr "Kara düzeyini ayarla"
 
 #: operations/common/exposure.c:30 operations/common/exposure.c:461
+#: operations/common/negative-darkroom.c:32
 msgid "Exposure"
 msgstr "Pozlama"
 
@@ -2023,7 +2045,7 @@ msgstr "Gürültü"
 msgid "Gradient threshold for lowering detail enhancement"
 msgstr "Ayrıntı geliştirmeyi azaltmak için renk geçişi eşiği"
 
-#: operations/common/fattal02.c:1356
+#: operations/common/fattal02.c:1361
 msgid "Fattal et al. 2002 Tone Mapping"
 msgstr "Fattal et al. 2002 Ton Eşlemi"
 
@@ -2032,7 +2054,7 @@ msgstr "Fattal et al. 2002 Ton Eşlemi"
 # "Düşük dinamik aralık kullanarak yüksek dinamik aralığa sahip bir görüntüyü sunum için uyarla. Bu işletici, yerel görüntü renk geçişlerinin "
 # "büyüklüğünü 0.0-1.0 aralığında ışıklılık üreterek azaltır. Bu tonlama yaklaşımı, ilk olarak Raanan Fattal tarafından, Gradient Domain High "
 # "Dynamic Range Compression makalesi ile, SIGGRAPH dergisinde 2002 yılında sunulmuştur."
-#: operations/common/fattal02.c:1360
+#: operations/common/fattal02.c:1365
 #, fuzzy
 msgid ""
 "Adapt an image, which may have a high dynamic range, for presentation using "
@@ -2132,19 +2154,20 @@ msgid "1D Gaussian-blur"
 msgstr "1D Gaussian Bulanıklığı"
 
 #: operations/common/gegl-buffer-load-op.c:24
-#: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-save.c:25
-#: operations/common/magick-load.c:26 operations/common/open-buffer.c:25
-#: operations/common/save.c:26 operations/core/load.c:29
-#: operations/external/exr-save.cc:24 operations/external/ff-load.c:29
-#: operations/external/ff-save.c:29 operations/external/gif-load.c:34
-#: operations/external/jp2-load.c:25 operations/external/jpg-load.c:24
-#: operations/external/jpg-save.c:25 operations/external/npy-save.c:31
-#: operations/external/png-load.c:32 operations/external/png-save.c:26
-#: operations/external/ppm-load.c:25 operations/external/ppm-save.c:25
-#: operations/external/rgbe-load.c:26 operations/external/rgbe-save.c:26
-#: operations/external/svg-load.c:25 operations/external/tiff-load.c:29
-#: operations/external/tiff-save.c:25 operations/external/webp-load.c:25
-#: operations/external/webp-save.c:25 operations/workshop/external/gluas.c:37
+#: operations/common/gegl-buffer-save-op.c:24 operations/common/icc-load.c:24
+#: operations/common/icc-save.c:25 operations/common/magick-load.c:26
+#: operations/common/open-buffer.c:25 operations/common/save.c:26
+#: operations/core/load.c:29 operations/external/exr-save.cc:24
+#: operations/external/ff-load.c:29 operations/external/ff-save.c:29
+#: operations/external/gif-load.c:34 operations/external/jp2-load.c:25
+#: operations/external/jpg-load.c:24 operations/external/jpg-save.c:25
+#: operations/external/npy-save.c:31 operations/external/png-load.c:32
+#: operations/external/png-save.c:26 operations/external/ppm-load.c:25
+#: operations/external/ppm-save.c:25 operations/external/rgbe-load.c:26
+#: operations/external/rgbe-save.c:26 operations/external/svg-load.c:25
+#: operations/external/tiff-load.c:29 operations/external/tiff-save.c:25
+#: operations/external/webp-load.c:25 operations/external/webp-save.c:25
+#: operations/workshop/external/gluas.c:37
 #: operations/workshop/rawbayer-load.c:25
 msgid "File"
 msgstr "Dosya"
@@ -2283,6 +2306,25 @@ msgstr "Renk Tonu - Renk Parlaklığı"
 msgid "Adjust LCH Hue, Chroma, and Lightness"
 msgstr "LCH renk tonunu, Renk Parlaklığını ve Aydınlığı ayarla"
 
+#: operations/common/icc-load.c:25 operations/external/gif-load.c:35
+#: operations/external/jp2-load.c:26 operations/external/jpg-load.c:25
+#: operations/external/svg-load.c:26 operations/external/tiff-load.c:30
+#: operations/external/webp-load.c:26
+msgid "Path of file to load"
+msgstr "Yüklenecek dosyanın yolu"
+
+#: operations/common/icc-load.c:103
+#, fuzzy
+#| msgid "GIF File Loader"
+msgid "ICC File Loader"
+msgstr "GIF Dosya Yükleyici"
+
+#: operations/common/icc-load.c:105
+#, fuzzy
+#| msgid "ICC profile saver"
+msgid "ICC profile loader."
+msgstr "ICC profil kaydedici"
+
 #: operations/common/icc-save.c:26
 msgid "Target path and filename"
 msgstr "Hedef yol ve dosya adı"
@@ -2305,11 +2347,11 @@ msgstr "Farklı piksellerin sayısı."
 
 #: operations/common/image-compare.c:29
 msgid "Maximum difference"
-msgstr "En fazla farklılık"
+msgstr "En çok farklılık"
 
 #: operations/common/image-compare.c:30
 msgid "Maximum difference between two pixels."
-msgstr "İki piksel arasındaki en fazla farklılık."
+msgstr "İki piksel arasındaki en çok farklılık."
 
 #: operations/common/image-compare.c:32
 msgid "Average difference (wrong)"
@@ -2369,11 +2411,11 @@ msgstr "Görüntü Renk Geçişi"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "Merkezi farklara göre renk geçişi büyüklüğünü ve/veya yönünü hesapla"
 
-#: operations/common/introspect.c:26
+#: operations/common/introspect.c:27
 msgid "Node"
 msgstr "Düğüm"
 
-#: operations/common/introspect.c:159
+#: operations/common/introspect.c:205
 msgid "GEGL graph visualizer."
 msgstr "GEGL graph görselleştiricisi."
 
@@ -2765,7 +2807,7 @@ msgid ""
 msgstr ""
 "Yüksek hareket aralığına sahip bir görüntüyü, düşük hareket aralığı kullanan "
 "gösterim için uyarla. Bu işletici 0.0-1.0 aralığında ışıklılık üreterek, "
-"birden fazla uzamsal frekans üzerinde karşıtlıkları kısıtlar"
+"birden çok uzamsal frekans üzerinde karşıtlıkları kısıtlar"
 
 #: operations/common/map-absolute.c:61
 msgid "Map Absolute"
@@ -3052,6 +3094,141 @@ msgstr ""
 "Pikselleri bir yönde bulanıklaştırır, pozlama sırasında kameranın düz bir "
 "çizgide hareket etmesinin neden olduğu bulanıklığa benzet."
 
+#: operations/common/negative-darkroom.c:28
+#, fuzzy
+#| msgid "The contrast curve."
+msgid "Characteristic curve"
+msgstr "Karşıtlık eğrisi."
+
+#: operations/common/negative-darkroom.c:30
+msgid "Hardcoded characteristic curve and color data"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:33
+msgid "Base enlargement exposure"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:37
+#, fuzzy
+#| msgid "Filter"
+msgid "Filter cyan"
+msgstr "Süzgeç"
+
+#: operations/common/negative-darkroom.c:38
+msgid "Cyan exposure compensation for the negative image"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:41
+#, fuzzy
+#| msgid "Filter width"
+msgid "Filter magenta"
+msgstr "Süzgeç genişliği"
+
+#: operations/common/negative-darkroom.c:42
+msgid "Magenta exposure compensation for the negative image"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:45
+#, fuzzy
+#| msgid "Filter width"
+msgid "Filter yellow"
+msgstr "Süzgeç genişliği"
+
+#: operations/common/negative-darkroom.c:46
+msgid "Yellow exposure compensation for the negative image"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:49
+msgid "Clip base + fog"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:50
+msgid "Clip base + fog to have a pure white output value"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:52
+msgid "Density boost"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:53
+msgid ""
+"Boost paper density to take advantage of increased dynamic range of a "
+"monitor compared to a photographic paper"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:56
+msgid "Dodge/burn multiplier"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:57
+msgid "The f-stop of dodge/burn for pure white/black auxillary input"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:60
+msgid "Enable preflashing"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:61
+msgid "Show preflash controls"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:63
+msgid "Cyan preflash"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:64
+msgid "Preflash the negative with cyan light to reduce contrast of the print"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:68
+#, fuzzy
+#| msgid "Magenta period"
+msgid "Magenta preflash"
+msgstr "Macenta sıklık"
+
+#: operations/common/negative-darkroom.c:69
+msgid ""
+"Preflash the negative with magenta light to reduce contrast of the print"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:73
+#, fuzzy
+#| msgid "Yellow period"
+msgid "Yellow preflash"
+msgstr "Sarı sıklık"
+
+#: operations/common/negative-darkroom.c:74
+msgid "Preflash the negative with yellow light to reduce contrast of the print"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:312
+msgid "Negative Darkroom"
+msgstr ""
+
+#: operations/common/negative-darkroom.c:314
+msgid "Simulate a negative film enlargement in an analog darkroom."
+msgstr ""
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:2
+msgid "Fujicolor Crystal Archive Digital Pearl Paper"
+msgstr ""
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
+msgid "Ilford Ilfobrom Galerie FB 1"
+msgstr ""
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
+msgid "Ilford Ilfobrom Galerie FB 2"
+msgstr ""
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
+msgid "Ilford Ilfobrom Galerie FB 3"
+msgstr ""
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
+msgid "Ilford Ilfobrom Galerie FB 4"
+msgstr ""
+
 #: operations/common/newsprint.c:25
 msgid "Line"
 msgstr "Satır"
@@ -3279,7 +3456,7 @@ msgid ""
 "stronger where there is color."
 msgstr ""
 "Doku için yerel boşluğun istenen döndürülmesi için çarpım katsayısı. Bunun "
-"hesaplanma şekli onu solgun renkler için zayıflatır ve rengin olduğu "
+"hesaplanma biçimi onu solgun renkler için zayıflatır ve rengin olduğu "
 "yerlerde daha güçlendirir."
 
 #: operations/common/newsprint.c:632
@@ -3384,7 +3561,7 @@ msgstr "Pikselleri Rastgele Karıştır"
 
 #: operations/common/noise-hurl.c:249
 msgid "Completely randomize a fraction of pixels"
-msgstr "Piksellerin bir kısmını tamamen rastgele işle"
+msgstr "Piksellerin bir bölümünü tümüyle rastgele işle"
 
 #: operations/common/noise-perlin.c:30
 msgid "Z offset"
@@ -3493,7 +3670,7 @@ msgstr "Gürültü Yayılımı"
 
 #: operations/common/noise-spread.c:161
 msgid "Move pixels around randomly"
-msgstr "Pikselleri rastgele bir şekilde etrafında hareket ettir"
+msgstr "Pikselleri çevrede rastgele hareket ettir"
 
 #: operations/common/normal-map.c:31
 msgid "The amount by which to scale the height values"
@@ -4007,11 +4184,11 @@ msgstr "Çiftler"
 msgid "Number of pairs; higher number preserves more acute features"
 msgstr "Çiftlerin sayısı; daha büyük numara daha ilerlemiş özellikleri korur"
 
-#: operations/common/snn-mean.c:356
+#: operations/common/snn-mean.c:383
 msgid "Symmetric Nearest Neighbour"
 msgstr "Simetrik En Yakın Komşu"
 
-#: operations/common/snn-mean.c:359
+#: operations/common/snn-mean.c:386
 msgid ""
 "Noise reducing edge preserving blur filter based on Symmetric Nearest "
 "Neighbours"
@@ -4024,6 +4201,7 @@ msgid "Radial"
 msgstr "Radyal"
 
 #: operations/common/spherize.c:30 operations/common-gpl3+/value-propagate.c:37
+#: operations/workshop/external/paint-select.cc:34
 msgid "Mode"
 msgstr "Kip"
 
@@ -4090,7 +4268,7 @@ msgid ""
 "Number of iterations, a higher number of iterations provides a less noisy "
 "rendering at a computational cost"
 msgstr ""
-"Yineleme sayısı, daha fazla yineleme sayısı, hesaplama maliyetinde daha az "
+"Yineleme sayısı, daha çok yineleme sayısı, hesaplama maliyetinde daha az "
 "gürültülü sonuç sağlar"
 
 #: operations/common/stress.c:45
@@ -4136,7 +4314,7 @@ msgid ""
 "improves images that make poor use of the available contrast (little "
 "contrast, very dark, or very bright images)."
 msgstr ""
-"Arabellek bileşenlerini 0.0-1.0 aralığında olacak şekilde ölçekle. Bu, "
+"Arabellek bileşenlerini 0.0-1.0 aralığında olacak biçimde ölçekle. Bu, "
 "mevcut karşıtlığı zayıf kullanan (az karşıtlıklı, çok koyu veya çok parlak) "
 "görüntüleri geliştir."
 
@@ -4151,7 +4329,7 @@ msgid ""
 "contrast, very dark, or very bright images). This version differs from "
 "Contrast Autostretch in that it works in HSV space, and preserves hue."
 msgstr ""
-"Arabellek bileşenlerini 0.0-1.0 aralığında olacak şekilde ölçekle. Bu, "
+"Arabellek bileşenlerini 0.0-1.0 aralığında olacak biçimde ölçekle. Bu, "
 "mevcut karşıtlığı zayıf kullanan (az karşıtlıklı, çok koyu veya çok parlak) "
 "görüntüleri geliştirir. Bu sürüm HSV uzayında çalışan Karşıtlığı "
 "Kendiliğinden Genişlet özelliğinden farklıdır ve renk tonunu korur."
@@ -4492,48 +4670,36 @@ msgid "Calculate a distance transform"
 msgstr "Bir mesafe dönüşümü hesapla"
 
 #: operations/common-cxx/focus-blur.c:30 operations/common-cxx/lens-blur.cc:504
-#, fuzzy
-#| msgid "Lens Flare"
 msgid "Lens Blur"
-msgstr "Mercek Parlaması"
+msgstr "Mercek Bulanıklığı"
 
 #: operations/common-cxx/focus-blur.c:41
-#, fuzzy
-#| msgid "Curve type"
 msgid "Blur type"
-msgstr "Eğri türü"
+msgstr "Bulanıklık türü"
 
 #: operations/common-cxx/focus-blur.c:46
 msgid "Out-of-focus blur radius"
-msgstr ""
+msgstr "Odak dışı bulanıklık yarıçapı"
 
 #: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:31
-#, fuzzy
-#| msgid "Highlights"
 msgid "Highlight factor"
-msgstr "Vurgular"
+msgstr "Vurgu katsayısı"
 
 #: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:32
 msgid "Relative highlight strength"
-msgstr ""
+msgstr "Göreceli vurgu gücü"
 
 #: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:35
-#, fuzzy
-#| msgid "Threshold low"
 msgid "Highlight threshold (low)"
-msgstr "Düşük eşik"
+msgstr "Vurgu eşiği (düşük)"
 
 #: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
-#, fuzzy
-#| msgid "Highlights"
 msgid "Highlight threshold"
-msgstr "Vurgular"
+msgstr "Vurgu eşiği"
 
 #: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
-#, fuzzy
-#| msgid "Threshold high"
 msgid "Highlight threshold (high)"
-msgstr "Yüksek eşik"
+msgstr "Vurgu eşiği (yüksek)"
 
 #: operations/common-cxx/focus-blur.c:86
 msgid "Focus-region outer radius"
@@ -4582,10 +4748,8 @@ msgstr ""
 
 #: operations/common-cxx/focus-blur.c:122
 #: operations/common-cxx/variable-blur.c:53
-#, fuzzy
-#| msgid "High limit"
 msgid "High quality"
-msgstr "Yüksek sınır"
+msgstr "Yüksek kalite"
 
 #: operations/common-cxx/focus-blur.c:123
 #: operations/common-cxx/variable-blur.c:54
@@ -4593,48 +4757,36 @@ msgid "Generate more accurate and consistent output (slower)"
 msgstr ""
 
 #: operations/common-cxx/focus-blur.c:320
-#, fuzzy
-#| msgid "Box Blur"
 msgid "Focus Blur"
-msgstr "Kutu Bulanıklığı"
+msgstr "Odak Bulanıklığı"
 
 #: operations/common-cxx/focus-blur.c:322
-#, fuzzy
-#| msgid "Wrap image around a spherical cap"
 msgid "Blur the image around a focal point"
-msgstr "Görüntüyü küresel bir kapağın etrafına sar"
+msgstr "Görüntüyü odak noktası çevresinde bulanıklaştır"
 
 #: operations/common-cxx/lens-blur.cc:46
-#, fuzzy
-#| msgid "Clip to the input extent"
 msgid "Clip to input extents"
-msgstr "Girdi ölçüsüne kırp"
+msgstr "Girdi ölçülerine kırp"
 
 #: operations/common-cxx/lens-blur.cc:47
-#, fuzzy
-#| msgid "Clip to the input extent"
 msgid "Clip output to the input extents"
-msgstr "Girdi ölçüsüne kırp"
+msgstr "Girdi ölçülerine kırp"
 
 #: operations/common-cxx/lens-blur.cc:49
 #: operations/common-cxx/piecewise-blend.cc:38
 #: operations/common-cxx/variable-blur.c:37
-#, fuzzy
-#| msgid "Invert mask"
 msgid "Linear mask"
-msgstr "Maskeyi tersine çevir"
+msgstr "Doğrusal maske"
 
 #: operations/common-cxx/lens-blur.cc:50
 #: operations/common-cxx/piecewise-blend.cc:39
 #: operations/common-cxx/variable-blur.c:38
-#, fuzzy
-#| msgid "Use pixel luminance values"
 msgid "Use linear mask values"
-msgstr "Piksel parlaklık değerlerini kullan"
+msgstr "Doğrusal maske değerlerini kullan"
 
 #: operations/common-cxx/lens-blur.cc:506
 msgid "Simulate out-of-focus lens blur"
-msgstr ""
+msgstr "Odak dışı lens bulanıklığına benzet"
 
 #: operations/common-cxx/piecewise-blend.cc:30
 #, fuzzy
@@ -4647,26 +4799,20 @@ msgid "Gamma factor for blend-level spacing"
 msgstr ""
 
 #: operations/common-cxx/piecewise-blend.cc:346
-#, fuzzy
-#| msgid "Weighted Blend"
 msgid "Piecewise Blend"
-msgstr "Ağırlıklı Karıştır"
+msgstr "Parçalı Karıştır"
 
 #: operations/common-cxx/piecewise-blend.cc:348
 msgid "Blend a chain of inputs using a mask"
 msgstr ""
 
 #: operations/common-cxx/variable-blur.c:31
-#, fuzzy
-#| msgid "Blur radius"
 msgid "Maximal blur radius"
-msgstr "Bulanıklık yarıçapı"
+msgstr "Azami bulanıklık yarıçapı"
 
 #: operations/common-cxx/variable-blur.c:207
-#, fuzzy
-#| msgid "Gaussian Blur"
 msgid "Variable Blur"
-msgstr "Gaussian Bulanıklığı"
+msgstr "Değişken Bulanıklık"
 
 #: operations/common-cxx/variable-blur.c:209
 msgid "Blur the image by a varying amount using a mask"
@@ -4969,7 +5115,7 @@ msgid ""
 "darkening areas that are already distinctly darker than their neighborhood"
 msgstr ""
 "Karikatüre benzetir. Sonuç, daha sonra renkle gölgelenmiş siyah keçeli kalem "
-"çizimine benzer. Bu sonuç, çevrelerinden belirgin şekilde daha koyu olan "
+"çizimine benzer. Bu sonuç, çevrelerinden belirgin biçimde daha koyu olan "
 "kenarları ve koyulaşan alanları iyileştirerek elde edilir"
 
 #. Red channel
@@ -5395,7 +5541,7 @@ msgstr "Yer değiştir"
 
 #: operations/common-gpl3+/displace.c:482
 msgid "Displace pixels as indicated by displacement maps"
-msgstr "Yer değiştirme eşleminin gösterdiği şekilde pikselleri yer değiştir"
+msgstr "Yer değiştirme eşleminin gösterdiği biçimde pikselleri yer değiştir"
 
 #: operations/common-gpl3+/edge.c:29
 msgid "Sobel"
@@ -5658,7 +5804,7 @@ msgid ""
 "Rendering of multiple different fractal systems, with configurable coloring "
 "options."
 msgstr ""
-"Yapılandırılabilir renklendirme seçenekleriyle, birden fazla farklı fraktal "
+"Yapılandırılabilir renklendirme seçenekleriyle, birden çok farklı fraktal "
 "sistemi oluştur."
 
 #: operations/common-gpl3+/fractal-trace.c:35
@@ -5717,11 +5863,11 @@ msgstr "Fraktallar ile görüntüyü dönüştür"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:34
 msgid "Max. delta"
-msgstr "Max. delta"
+msgstr "En çok delta"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:35
 msgid "Maximum delta"
-msgstr "En fazla delta"
+msgstr "En çok delta"
 
 #: operations/common-gpl3+/gaussian-blur-selective.c:376
 msgid "Selective Gaussian Blur"
@@ -6043,12 +6189,12 @@ msgstr "Kenar Yumuşatma"
 msgid "Enables smoother tile output"
 msgstr "Daha pürüzsüz döşeme çıktılarını etkinleştir"
 
-#: operations/common-gpl3+/mosaic.c:2468
+#: operations/common-gpl3+/mosaic.c:2466
 msgid "Mosaic"
 msgstr "Mozaik"
 
 # menü komutu ipucu olduğu için cümle sonunda nokta yer almaması gerekiyor
-#: operations/common-gpl3+/mosaic.c:2472
+#: operations/common-gpl3+/mosaic.c:2470
 msgid ""
 "Mosaic is a filter which transforms an image into what appears to be a "
 "mosaic, composed of small primitives, each of constant color and of an "
@@ -6088,7 +6234,7 @@ msgstr "Slur Gürültüsü"
 
 #: operations/common-gpl3+/noise-slur.c:161
 msgid "Randomly slide some pixels downward (similar to melting)"
-msgstr "Bazı pikselleri aşağıya doğru kaydır (erimeye benzer şekilde)"
+msgstr "Bazı pikselleri aşağıya doğru kaydır (erimeye benzer biçimde)"
 
 #: operations/common-gpl3+/noise-solid.c:36
 msgid "X Size"
@@ -6210,7 +6356,7 @@ msgstr "Fotokopi makinesi tarafından üretilen renk bozulmasına benzet"
 
 #: operations/common-gpl3+/plasma.c:37
 msgid "High values give more variation in details"
-msgstr "Yüksek değerler ayrıntılarda daha fazla çeşitlilik sunar"
+msgstr "Yüksek değerler ayrıntılarda daha çok çeşitlilik sunar"
 
 #: operations/common-gpl3+/plasma.c:41
 msgid "X start of the generated buffer"
@@ -6403,7 +6549,7 @@ msgstr "Yer değiştir"
 
 #: operations/common-gpl3+/shift.c:27
 msgid "Maximum amount to shift"
-msgstr "Yer değiştirilecek en fazla miktar"
+msgstr "Yer değiştirilecek en çok miktar"
 
 #: operations/common-gpl3+/shift.c:31
 msgid "Shift direction"
@@ -6708,11 +6854,11 @@ msgstr "Görüntüyü kağıt döşemelere kes ve kaydır"
 
 #: operations/common-gpl3+/value-propagate.c:28
 msgid "More white (larger value)"
-msgstr "Daha fazla beyaz (daha büyük değer)"
+msgstr "Daha çok beyaz (daha büyük değer)"
 
 #: operations/common-gpl3+/value-propagate.c:29
 msgid "More black (smaller value)"
-msgstr "Daha fazla siyah (daha az değer)"
+msgstr "Daha çok siyah (daha az değer)"
 
 #: operations/common-gpl3+/value-propagate.c:30
 msgid "Middle value to peaks"
@@ -6728,11 +6874,11 @@ msgstr "Yalnızca renk"
 
 #: operations/common-gpl3+/value-propagate.c:33
 msgid "More opaque"
-msgstr "Daha fazla ışık geçirmez"
+msgstr "Daha çok ışık geçirmez"
 
 #: operations/common-gpl3+/value-propagate.c:34
 msgid "More transparent"
-msgstr "Daha fazla saydam"
+msgstr "Daha çok saydam"
 
 #: operations/common-gpl3+/value-propagate.c:40
 msgid "Mode of value propagation"
@@ -6752,7 +6898,7 @@ msgstr "Daha yüksek eşik"
 
 #: operations/common-gpl3+/value-propagate.c:47
 msgid "The maximum difference in value at which to propagate a pixel"
-msgstr "Bir beneğin yayılacağı değerdeki en fazla fark"
+msgstr "Bir beneğin yayılacağı değerdeki en çok fark"
 
 #: operations/common-gpl3+/value-propagate.c:50
 msgid "Propagating rate"
@@ -7046,7 +7192,7 @@ msgstr ""
 "Girdi biçimi (input_format) ve çıktı biçimi (output_format) arasında veri "
 "yayınlama biçimi. Her iki biçim de aynı bpp değerine sahip olmalıdır"
 
-#: operations/core/cast-space.c:25 operations/core/convert-space.c:25
+#: operations/core/cast-space.c:25
 msgid "Name"
 msgstr "İsim"
 
@@ -7073,11 +7219,11 @@ msgstr "Yol"
 msgid "File system path to ICC matrix profile to load"
 msgstr "Yüklenecek ICC profilinin dosya yolu"
 
-#: operations/core/cast-space.c:128
+#: operations/core/cast-space.c:127
 msgid "Cast color space"
 msgstr "Yayınlama renk uzayı"
 
-#: operations/core/cast-space.c:130
+#: operations/core/cast-space.c:129
 msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
@@ -7109,15 +7255,19 @@ msgstr "Biçim Dönüştür"
 msgid "Convert the data to the specified format"
 msgstr "Verileri belirtilen biçime dönüştür"
 
-#: operations/core/convert-space.c:104
+#: operations/core/convert-space.c:25
+msgid "Space name"
+msgstr ""
+
+#: operations/core/convert-space.c:113
 msgid "Convert color space"
 msgstr "Renk uzayını dönüştür"
 
-#: operations/core/convert-space.c:106
+#: operations/core/convert-space.c:115
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
 "with, and the ICC profile potentially embedded for external color "
-"management, setting a pointer to a format override the string property and "
+"management, setting a pointer to a format overrides the string property and "
 "setting an aux pad overrides both. "
 msgstr ""
 
@@ -7319,7 +7469,7 @@ msgstr "video bit hızı en az"
 
 #: operations/external/ff-save.c:58
 msgid "video bitrate max"
-msgstr "video bit hızı en fazla"
+msgstr "video bit hızı en çok"
 
 #: operations/external/ff-save.c:59
 msgid "video bitrate tolerance"
@@ -7384,12 +7534,6 @@ msgstr "FFmpeg Çerçeve Kaydedici"
 #: operations/external/ff-save.c:1137
 msgid "FFmpeg video output sink"
 msgstr "FFmpeg video çıktı havuzu"
-
-#: operations/external/gif-load.c:35 operations/external/jp2-load.c:26
-#: operations/external/jpg-load.c:25 operations/external/svg-load.c:26
-#: operations/external/tiff-load.c:30 operations/external/webp-load.c:26
-msgid "Path of file to load"
-msgstr "Yüklenecek dosyanın yolu"
 
 #: operations/external/gif-load.c:36
 msgid "frame"
@@ -7469,11 +7613,11 @@ msgstr "JPEG 2000 dosyası sorgulanamadı"
 
 #: operations/external/jp2-load.c:349
 msgid "One or more of R, G, B components are missing"
-msgstr "Bir ya da daha fazla R, G, B bileşeni eksik"
+msgstr "Bir ya da daha çok R, G, B bileşeni eksik"
 
 #: operations/external/jp2-load.c:357
 msgid "One or more of R, G, B components have signed data"
-msgstr "Bir ya da daha fazla R, G, B bileşeni imzalanmış veri içeriyor"
+msgstr "Bir ya da daha çok R, G, B bileşeni imzalanmış veri içeriyor"
 
 #: operations/external/jp2-load.c:390
 #, c-format
@@ -7492,11 +7636,11 @@ msgstr "JPEG 2000 görüntü yükleyici, jasper kullanarak."
 msgid "URI of file to load"
 msgstr "Yüklenecek dosyanın adresi"
 
-#: operations/external/jpg-load.c:390
+#: operations/external/jpg-load.c:392
 msgid "JPEG File Loader"
 msgstr "JPEG Dosya Yükleyici"
 
-#: operations/external/jpg-load.c:392
+#: operations/external/jpg-load.c:394
 msgid "JPEG image loader using libjpeg"
 msgstr "JPEG görüntü yükleyici, libjpeg kullanarak"
 
@@ -7861,11 +8005,11 @@ msgstr "<em>pixbuf</em> bellek konumunda bulunan GdkPixbuf kullanır."
 msgid "URI for file to load."
 msgstr "Yüklenecek dosya için URI."
 
-#: operations/external/png-load.c:652
+#: operations/external/png-load.c:655
 msgid "PNG File Loader"
 msgstr "PNG Dosya Yükleyicisi"
 
-#: operations/external/png-load.c:654
+#: operations/external/png-load.c:657
 msgid "PNG image loader."
 msgstr "PNG görüntü yükleyicisi."
 
@@ -7978,11 +8122,11 @@ msgstr "GdkPixbuf İçinde Depola"
 msgid "Store image in a GdkPixbuf."
 msgstr "Görüntüyü GdkPixbuf içinde depola."
 
-#: operations/external/sdl2-display.c:202
+#: operations/external/sdl2-display.c:196
 msgid "SDL2 Display"
 msgstr "SDL2 Ekranı"
 
-#: operations/external/sdl2-display.c:205
+#: operations/external/sdl2-display.c:199
 msgid ""
 "Displays the input buffer in an SDL2 window (restricted to one display op/"
 "process, due to SDL2 implementation issues)."
@@ -8122,11 +8266,11 @@ msgstr "Görüntü dosya dizini (altdosya)"
 msgid "Object to receive image metadata"
 msgstr ""
 
-#: operations/external/tiff-load.c:1034
+#: operations/external/tiff-load.c:1036
 msgid "TIFF File Loader"
 msgstr "TIFF Dosya Yükleyici"
 
-#: operations/external/tiff-load.c:1036
+#: operations/external/tiff-load.c:1038
 msgid "TIFF image loader using libtiff"
 msgstr "TIFF görüntü yükleyici, libtiff kullanarak"
 
@@ -8448,7 +8592,7 @@ msgstr "Saflaştırma ölçeği"
 #: operations/seamless-clone/seamless-clone.c:23
 msgid ""
 "Maximal scale of refinement points to be used for the interpolation mesh"
-msgstr "Aradeğerleme ağı için kullanılacak en fazla saflaştırma noktası ölçeği"
+msgstr "Aradeğerleme ağı için kullanılacak en çok saflaştırma noktası ölçeği"
 
 #: operations/seamless-clone/seamless-clone.c:27
 #: operations/seamless-clone/seamless-clone.c:33
@@ -8459,7 +8603,7 @@ msgstr "Macuna ne kadar yatay konum uygulansın"
 #: operations/seamless-clone/seamless-clone.c:38
 #: operations/seamless-clone/seamless-clone-compose.c:37
 msgid "Error message"
-msgstr "Hata mesajı"
+msgstr "Hata iletisi"
 
 #: operations/seamless-clone/seamless-clone.c:39
 #: operations/seamless-clone/seamless-clone-compose.c:38
@@ -8489,8 +8633,7 @@ msgstr "Saflaştırma adımları"
 #: operations/seamless-clone/seamless-clone-compose.c:22
 msgid ""
 "Maximal amount of refinement points to be used for the interpolation mesh"
-msgstr ""
-"Aradeğerleme ağı için kullanılacak en fazla saflaştırma noktası miktarı"
+msgstr "Aradeğerleme ağı için kullanılacak en çok saflaştırma noktası miktarı"
 
 #: operations/seamless-clone/seamless-clone-compose.c:32
 msgid "How much vertical offset should applied to the paste"
@@ -8530,7 +8673,7 @@ msgstr "Yön vektörünün Y bileşeni"
 #, fuzzy
 msgid ""
 "Reflect an image about a line, whose direction is specified by the vector "
-"that is defined by the x and y properties. "
+"that is defined by the x and y properties."
 msgstr "Görüntüyü bir çizgi boyunca yansıt. "
 
 #: operations/transform/reset-origin.c:77
@@ -8629,7 +8772,9 @@ msgid "Shear"
 msgstr "Kesme"
 
 #: operations/transform/shear.c:74
-msgid "Shears the buffer. "
+#, fuzzy
+#| msgid "Shears the buffer. "
+msgid "Shears the buffer."
 msgstr "Arabelleği keser. "
 
 #: operations/transform/transform.c:25
@@ -8924,13 +9069,57 @@ msgstr ""
 "Piksel düzeyi süzgeç/düzenleyici, lua prototipleme betiği ile. Ayrıntılı "
 "bilgi için http://pippin.gimp.org/image-processing/ adresine bakınız."
 
+#: operations/workshop/external/paint-select.cc:30
+msgid "Add"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:31
+msgid "Subtract"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:37
+msgid "Either to add to or subtract from the mask"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:39
+msgid "Use local region"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:40
+msgid "Perform graphcut in a local region"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:42
+msgid "region-x"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:45
+msgid "region-y"
+msgstr ""
+
+#: operations/workshop/external/paint-select.cc:48
+#, fuzzy
+#| msgid "Line width"
+msgid "region-width"
+msgstr "Satır genişliği"
+
+#: operations/workshop/external/paint-select.cc:51
+#, fuzzy
+#| msgid "Line height"
+msgid "region-height"
+msgstr "Satır yüksekliği"
+
+#: operations/workshop/external/paint-select.cc:1287
+msgid "Paint Select"
+msgstr ""
+
 #: operations/workshop/external/lens-correct.c:28
 msgid "Maker"
 msgstr "Üretici"
 
 #: operations/workshop/external/lens-correct.c:29
 msgid "Write lens maker correctly"
-msgstr "Mercek üreticisini doğru şekilde yazın"
+msgstr "Mercek üreticisini doğru yaz"
 
 #: operations/workshop/external/lens-correct.c:31
 msgid "Camera"
@@ -8938,7 +9127,7 @@ msgstr "Kamera"
 
 #: operations/workshop/external/lens-correct.c:32
 msgid "Write camera name correctly"
-msgstr "Kamera adını doğru şekilde yazın"
+msgstr "Kamera adını doğru yaz"
 
 #: operations/workshop/external/lens-correct.c:34
 msgid "Lens"
@@ -9091,7 +9280,7 @@ msgstr "Alttaki değer"
 
 #: operations/workshop/external/line-profile.c:48
 msgid "Max"
-msgstr "En fazla"
+msgstr "En çok"
 
 #: operations/workshop/external/line-profile.c:50
 msgid "Value at top"
@@ -9338,11 +9527,11 @@ msgstr "Küme sayısı"
 
 #: operations/workshop/segment-kmeans.c:32
 msgid "Max. Iterations"
-msgstr "En Fazla Yineleme"
+msgstr "En Çok Yineleme"
 
 #: operations/workshop/segment-kmeans.c:33
 msgid "Maximum number of iterations"
-msgstr "En fazla yineleme sayısı"
+msgstr "En çok yineleme sayısı"
 
 #: operations/workshop/segment-kmeans.c:391
 msgid "K-means Segmentation"
@@ -9420,9 +9609,6 @@ msgstr "Seçilebilir ayarlanabilir renk tonu, doygunluk ve aydınlık"
 
 #~ msgid "Green bits"
 #~ msgstr "Yeşil bitler"
-
-#~ msgid "Blue bits"
-#~ msgstr "Mavi bitler"
 
 #~ msgid "Offset value added"
 #~ msgstr "Konum değeri eklendi"
