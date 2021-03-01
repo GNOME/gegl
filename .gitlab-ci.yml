@@ -58,7 +58,7 @@ babl-master:
 babl-min:
   extends: .babl-base
   script:
-    - grep babl ../meson.build | grep version | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
+    - grep babl ../meson.build | grep ">=" | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
     - if [ x$(( $(cut .babl_min_version -f 3 -d _) % 2)) = x1 ] ; then touch .use_master ; fi
     - test -e .use_master && git fetch
     - test -e .use_master && git checkout master
