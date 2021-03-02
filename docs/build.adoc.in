@@ -51,7 +51,7 @@ only required during the build process.
     * link:https://github.com/hodefoting/mrg[mrg]
         (@mrg@) --
     * link:https://gi.readthedocs.io/en/latest/[gobject_introspection]
-        (@gir@) --
+        (@g-ir@) --
     * vapigen
 
   - Dependencies for operations (optional).
