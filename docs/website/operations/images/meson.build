@@ -76,7 +76,6 @@ exclude += [
 
 doc_ops_img_cmd = [
   gegl_tester,
-  '--gegl-swap=@0@RAM'.format(project_build_root),
   '--data-directory', project_source_root / 'docs' / 'images',
   '--output-directory', '@OUTDIR@',
   '--all',
