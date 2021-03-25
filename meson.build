@@ -2,7 +2,7 @@ project('gegl',
   'c', 'cpp',
   license: 'GPL3+',
   version: '0.4.29',
-  meson_version: '>=0.54.0',
+  meson_version: '>=0.50.0',
   default_options: [
     'c_std=gnu11',
     'cpp_std=gnu++14',
@@ -162,7 +162,7 @@ math    = cc.find_library('m', required: false)
 libdl   = cc.find_library('dl', required : false)
 thread  = dependency('threads')
 
-babl      = dependency('babl',          version: '>=0.1.84')
+babl      = dependency('babl',          version: '>=0.1.78')
 glib      = dependency('glib-2.0',      version: '>=2.44.0')
 gobject   = dependency('gobject-2.0',   version: '>=2.44.0')
 gmodule   = dependency('gmodule-2.0',   version: '>=2.44.0')

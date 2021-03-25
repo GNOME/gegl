@@ -1,3 +1,30 @@
+GEGL-0.5.30 2021-03-26
+----------------------
+
+Core:
+~~~~~
+
+Build:
+~~~~~~
+
+Upload meson logs as artifcats, use release and debugoptimized build types.
+pin glibc package in arch CI build to a version before it hard depends on linux 4.4.
+Reduce babl requirement to 0.1.78, it is *highly* recommended to build with
+a newer babl though despite it being what wants to increase the meson
+version requirement.
+
+Operations:
+~~~~~~~~~~~
+  fattal02 : ensure gaussian pyramid has at least one level.
+  paint-select, operation by Thomas Manni.
+  negative-darkroom, This operation is for artists who use hybrid workflow
+technique of analog photography. After scanning a developed negative, this
+operation is used to invert the scan to create a positive image by simulating
+the light behaviour of darkroom enlarger and common photographic papers.
+
+
+
+
 GEGL-0.4.28 2020-12-20
 ----------------------
 
