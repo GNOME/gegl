@@ -1,28 +1,48 @@
-GEGL-0.5.30 2021-03-26
+GEGL-0.4.30 2021-03-27
 ----------------------
-
-Core:
-~~~~~
 
 Build:
 ~~~~~~
 
-Upload meson logs as artifcats, use release and debugoptimized build types.
-pin glibc package in arch CI build to a version before it hard depends on linux 4.4.
+libjpeg and libpng are now required.
+
 Reduce babl requirement to 0.1.78, it is *highly* recommended to build with
 a newer babl though despite it being what wants to increase the meson
-version requirement.
+version requirement. Improved gir build options, fixes for cross compilation.
+
+Large improvements of integration of tests with meson. XML tests are now
+outputting in TAP format. As well as many related cleanups of tests that have
+been in a state of slight bitrot since the migration to meson.
+
+Upload meson logs as artifcats, use release and debugoptimized build types.
+
+Pin glibc package in arch CI build to a version before it hard depends on linux
+4.4.
+
+New Operations:
+~~~~~~~~~~~~~~~
+  negative-darkroom: This operation is for artists who use hybrid workflow
+   technique of analog photography. After scanning a developed negative, this
+   operation is used to invert the scan to create a positive image by simulating
+   the light behaviour of darkroom enlarger and common photographic papers.
 
 Operations:
 ~~~~~~~~~~~
+  jpg-load,png-load,tiff-load: show ICC relatd problems as warnings.
+  rgbe-load : fix handling of exponent=0 in RLE encoded files.
+  color-reduction : Added blue-noise modes, the patents are expired for some 
+  years already, also added fix to levels parameters; enabling bi-level.
   fattal02 : ensure gaussian pyramid has at least one level.
-  paint-select, operation by Thomas Manni.
-  negative-darkroom, This operation is for artists who use hybrid workflow
-technique of analog photography. After scanning a developed negative, this
-operation is used to invert the scan to create a positive image by simulating
-the light behaviour of darkroom enlarger and common photographic papers.
 
+  paint-select (in workshop): multi-level banded graphcut, sub-region rather
+    than full buffer rcomputations and other improvements.
 
+Contributors to this release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+dimspingos, Jan Vesely, John Marshall, JonnyRobbie, Jordi Mas, Милош Поповић,
+Olivier Tilloy, Øyvind Kolås, Philipp Kiemle, Piotr Drąg, Sabri Ünal,
+scootergrisen, Thomas Manni, Yuri Chornoivan.
 
 
 GEGL-0.4.28 2020-12-20
