@@ -2,6 +2,7 @@ project('gegl',
   'c', 'cpp',
   license: 'GPL3+',
   version: '0.4.31',
+  # when meson version passes 0.53.0 remove alternate build summary
   meson_version: '>=0.50.0',
   default_options: [
     'c_std=gnu11',
@@ -537,60 +538,110 @@ pkgconfig.generate(filebase: 'gegl-' + api_version,
 ################################################################################
 # Build summary
 
-summary(
-  {
-    'prefix'        : gegl_prefix,
-    'libdir'        : gegl_libdir,
-  }, section: 'Directories'
-)
-summary(
-  {
-    'Reference'       : build_reference,
-    'Docs'            : build_docs,
-  }, section: 'GEGL docs'
-)
-summary(
-  {
-    'Build workshop'    : get_option('workshop'),
-    'Introspection'     : g_ir.found(),
-    'Vala support'      : vapigen.found(),
-  }, section: 'Optional features'
-)
-summary(
-  {
-    'asciidoc'          : asciidoc.found(),
-    'dot'               : dot.found(),
-    'pygobject'         : pygobject3.found(),
-    'source-highlight'  : source_highlight.found(),
-    'w3m'               : w3m.found(),
-  }, section: 'Optional build utilities'
-)
-summary(
-  {
-    'avlibs'            : avlibs_found,
-    'Cairo'             : cairo.found(),
-    'GDKPixbuf'         : gdk_pixbuf.found(),
-    'gexiv2'            : gexiv2.found(),
-    'Jasper'            : jasper.found(),
-    'lcms'              : lcms.found(),
-    'libnsgif'          : libnsgif.found(),
-    'libraw'            : libraw.found(),
-    'Luajit'            : lua.found(),
-    'maxflow'           : maxflow.found(),
-    'mrg'               : mrg.found(),
-    'Pango'             : pango.found(),
-    'pangocairo'        : pangocairo.found(),
-    'poly2tri-c'        : poly2tri_c.found(),
-    'poppler'           : poppler.found(),
-    'OpenEXR'           : openexr.found(),
-    'rsvg'              : librsvg.found(),
-    'SDL1'              : sdl1.found(),
-    'SDL2'              : sdl2.found(),
-    'spiro'             : libspiro.found(),
-    'TIFF'              : libtiff.found(),
-    'umfpack'           : libumfpack.found(),
-    'V4L'               : libv4l1.found(),
-    'V4L2'              : libv4l2.found(),
-    'webp'              : libwebp.found(),
-  }, section: 'Optional dependencies'
-)
+# workaround for some old build systems building GIMP 2.10
+if meson.version().version_compare('>=0.53.0')
+  summary(
+    {
+      'prefix'        : gegl_prefix,
+      'libdir'        : gegl_libdir,
+    }, section: 'Directories'
+  )
+  summary(
+    {
+      'Reference'       : build_reference,
+      'Docs'            : build_docs,
+    }, section: 'GEGL docs'
+  )
+  summary(
+    {
+      'Build workshop'    : get_option('workshop'),
+      'Introspection'     : g_ir.found(),
+      'Vala support'      : vapigen.found(),
+    }, section: 'Optional features'
+  )
+  summary(
+    {
+      'asciidoc'          : asciidoc.found(),
+      'dot'               : dot.found(),
+      'pygobject'         : pygobject3.found(),
+      'source-highlight'  : source_highlight.found(),
+      'w3m'               : w3m.found(),
+    }, section: 'Optional build utilities'
+  )
+  summary(
+    {
+      'avlibs'            : avlibs_found,
+      'Cairo'             : cairo.found(),
+      'GDKPixbuf'         : gdk_pixbuf.found(),
+      'gexiv2'            : gexiv2.found(),
+      'Jasper'            : jasper.found(),
+      'lcms'              : lcms.found(),
+      'libnsgif'          : libnsgif.found(),
+      'libraw'            : libraw.found(),
+      'Luajit'            : lua.found(),
+      'maxflow'           : maxflow.found(),
+      'mrg'               : mrg.found(),
+      'Pango'             : pango.found(),
+      'pangocairo'        : pangocairo.found(),
+      'poly2tri-c'        : poly2tri_c.found(),
+      'poppler'           : poppler.found(),
+      'OpenEXR'           : openexr.found(),
+      'rsvg'              : librsvg.found(),
+      'SDL1'              : sdl1.found(),
+      'SDL2'              : sdl2.found(),
+      'spiro'             : libspiro.found(),
+      'TIFF'              : libtiff.found(),
+      'umfpack'           : libumfpack.found(),
+      'V4L'               : libv4l1.found(),
+      'V4L2'              : libv4l2.found(),
+      'webp'              : libwebp.found(),
+    }, section: 'Optional dependencies'
+  )
+else
+  message('\n'.join(['',
+  'Building GEGL with prefix=@0@'.format(get_option('prefix')),
+  '',
+  'GEGL docs:',
+  '  Reference:         @0@'.format(build_reference),
+  '  Docs:              @0@'.format(build_docs),
+  '',
+  'Optional features:',
+  '  Build workshop:    @0@'.format(get_option('workshop')),
+  '  Introspection:     @0@'.format(g_ir.found()),
+  '  Vala support:      @0@'.format(vapigen.found()),
+  '',
+  'Optional build utilities:',
+  '  asciidoc:          @0@'.format(asciidoc.found()),
+  '  dot:               @0@'.format(dot.found()),
+  '  pygobject:         @0@'.format(pygobject3.found()),
+  '  source-highlight:  @0@'.format(source_highlight.found()),
+  '  w3m:               @0@'.format(w3m.found()),
+  '',
+  'Optional dependencies:',
+  '  av libs:           @0@'.format(avlibs_found),
+  '  Cairo:             @0@'.format(cairo.found()),
+  '  GDKPixbuf:         @0@'.format(gdk_pixbuf.found()),
+  '  gexiv2:            @0@'.format(gexiv2.found()),
+  '  Jasper:            @0@'.format(jasper.found()),
+  '  lcms:              @0@'.format(lcms.found()),
+  '  libnsgif:          @0@'.format(libnsgif.found()),
+  '  libraw:            @0@'.format(libraw.found()),
+  '  Luajit:            @0@'.format(lua.found()),
+  '  maxflow:           @0@'.format(maxflow.found()),
+  '  mrg:               @0@'.format(mrg.found()),
+  '  Pango:             @0@'.format(pango.found()),
+  '  pangocairo:        @0@'.format(pangocairo.found()),
+  '  poly2tri-c:        @0@ (@1@)'.format(poly2tri_c.found(),poly2tri_c.type_name()),
+  '  poppler:           @0@'.format(poppler.found()),
+  '  OpenEXR:           @0@'.format(openexr.found()),
+  '  rsvg:              @0@'.format(librsvg.found()),
+  '  SDL1:              @0@'.format(sdl1.found()),
+  '  SDL2:              @0@'.format(sdl2.found()),
+  '  spiro:             @0@'.format(libspiro.found()),
+  '  TIFF               @0@'.format(libtiff.found()),
+  '  umfpack:           @0@'.format(libumfpack.found()),
+  '  V4L:               @0@'.format(libv4l1.found()),
+  '  V4L2:              @0@'.format(libv4l2.found()),
+  '  webp:              @0@'.format(libwebp.found()),
+  '']))
+endif
