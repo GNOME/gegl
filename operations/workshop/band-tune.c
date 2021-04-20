@@ -38,7 +38,7 @@ property_double (bw1, _("Detail bandwidth"), 0.375)
 
 
 property_double (radius2, _("Edge band"), 10.0)
-    description(_("Features size for edge band, used to compensate for loos of edges in detail pass."))
+    description(_("Features size for edge band, used to compensate for loss of edges in detail pass."))
     value_range (0.0, 100.0)
     ui_range    (0.5, 2.0)
 

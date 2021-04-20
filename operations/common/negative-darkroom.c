@@ -61,7 +61,7 @@ property_double (contrast, _("Contrast boost"), 1.0)
 	ui_gamma (2)
 
 property_double (dodge, _("Dodge/burn multiplier"), 1.0)
-	description(_("The f-stop of dodge/burn for pure white/black auxillary input"))
+	description(_("The f-stop of dodge/burn for pure white/black auxiliary input"))
 	value_range (-4.0, 4.0)
 	ui_range (0, 2)
 

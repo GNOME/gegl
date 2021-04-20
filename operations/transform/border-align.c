@@ -180,7 +180,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title", _("Border Align"),
     "categories", "transform",
     "reference-hash", "109c3f3685488a9952ca07ef18387850",
-    "description", _("Aligns box of input rectangle with border of compositing target or aux' bounding-box border, if aux pad is not connectd the op tries to figure out which bounding box' border applies."),
+    "description", _("Aligns box of input rectangle with border of compositing target or aux' bounding-box border, if aux pad is not connected the op tries to figure out which bounding box' border applies."),
     NULL);
 }
 
