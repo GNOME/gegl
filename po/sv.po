@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
 "POT-Creation-Date: 2021-04-03 11:46+0000\n"
-"PO-Revision-Date: 2021-04-22 20:18+0200\n"
+"PO-Revision-Date: 2021-04-22 22:32+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -372,7 +372,6 @@ msgid "The count of pixels to compute simultaneously"
 msgstr "Antalet pixlar att beräkna samtidigt"
 
 #: gegl/gegl-init.c:237
-#, fuzzy
 msgid ""
 "The quality of rendering, a value between 0.0 (fast) and 1.0 (reference)"
 msgstr ""
@@ -441,19 +440,16 @@ msgid "Output pad for generated image buffer."
 msgstr "Utdatakontakt för genererad bildbuffert."
 
 #: gegl/operation/gegl-operation-composer3.c:86
-#, fuzzy
 msgid "Input pad, for image buffer input."
 msgstr "Indatakontakt, för inmatning av bildbuffert."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
 #: operations/transform/border-align.c:157
-#, fuzzy
 msgid "Auxiliary image buffer input pad."
 msgstr "Tillsatsbildbufferts indatakontakt."
 
 #: gegl/operation/gegl-operation-composer3.c:104
-#, fuzzy
 msgid "Second auxiliary image buffer input pad."
 msgstr "Andra tillsatsbildbufferts indatakontakt."
 
@@ -2150,8 +2146,8 @@ msgid ""
 "source as something connected to an aux pad."
 msgstr ""
 "Skapa en kedja av åtgärder, med nyckel=värde-par efter varje operationsnamn "
-"för att ställa in egenskaper. Och tillsats=[ källfilter] för att ange en "
-"kedja med en källa som något anslutet till en tillsatskontakt."
+"för att ställa in egenskaper. Och aux=[ källfilter] för att ange en kedja "
+"med en källa som något anslutet till en aux-kontakt."
 
 #: operations/common/grey.c:138
 msgid "Make Grey"
@@ -2301,7 +2297,7 @@ msgid ""
 "in the properties and a visual difference image is produced as a visual "
 "result. "
 msgstr ""
-"Jämför om indata- och tillsats-buffertar är olika. Global statistik sparas i "
+"Jämför om indata- och tillsatsbuffertar är olika. Global statistik sparas i "
 "egenskaperna och en bild som visar skillnaden produceras som ett visuellt "
 "resultat. "
 
@@ -2332,8 +2328,6 @@ msgid "Image Gradient"
 msgstr "Bildgradient"
 
 #: operations/common/image-gradient.c:228
-#, fuzzy
-#| msgid "Compute gradient magnitude and/or direction by central differencies"
 msgid "Compute gradient magnitude and/or direction by central differences"
 msgstr "Beräkna gradientmagnitud och/eller riktning genom centrumskillnader"
 
@@ -2969,8 +2963,8 @@ msgstr "Förhållande"
 #: operations/common/mix.c:26
 msgid "Mixing ratio, read as amount of aux, 0=input 0.5=half 1.0=aux"
 msgstr ""
-"Blandningsförhållande, läst som mängd tillsats, 0=indata 0.5=hälften, "
-"1.0=tillsats"
+"Blandningsförhållande, läst som mängd tillsats, 0=indata 0,5=hälften, "
+"1,0=tillsats"
 
 #: operations/common/mix.c:112
 msgid "Mix"
@@ -3061,12 +3055,10 @@ msgid "Yellow exposure compensation for the negative image"
 msgstr "Gul exponeringskompensation för den negativa bilden"
 
 #: operations/common/negative-darkroom.c:49
-#, fuzzy
 msgid "Clip base + fog"
 msgstr "Klipp bas + dimma"
 
 #: operations/common/negative-darkroom.c:50
-#, fuzzy
 msgid "Clip base + fog to have a pure white output value"
 msgstr "Klipp bas + dimma för att få ett rent vitt utdatavärde"
 
@@ -3088,9 +3080,8 @@ msgstr "Skugga/efterbelys-multiplicerare"
 
 # TODO: auxiliary
 #: operations/common/negative-darkroom.c:57
-#, fuzzy
 msgid "The f-stop of dodge/burn for pure white/black auxillary input"
-msgstr "F-stopp för skugga/efterbelys för ren vit/svart tillsatsindata"
+msgstr "F-tal för skugga/efterbelys för ren vit/svart tillsatsindata"
 
 #: operations/common/negative-darkroom.c:60
 msgid "Enable preflashing"
@@ -3337,12 +3328,10 @@ msgid "Black angle"
 msgstr "Svart vinkel"
 
 #: operations/common/newsprint.c:162
-#, fuzzy
 msgid "Black pullout"
-msgstr "Svart utdragning"
+msgstr "Svartbegränsning"
 
 #: operations/common/newsprint.c:164
-#, fuzzy
 msgid "How much of common gray to pull out of CMY"
 msgstr "Hur mycket vanlig grå som ska dras ut ur CMY"
 
@@ -3674,8 +3663,8 @@ msgid ""
 "Weights the opacity of the input both the value of the aux input and the "
 "global value property."
 msgstr ""
-"Viktar ogenomskinligheten för indata, både värdet från tillsatsindata och "
-"den globala värdeegenskapen."
+"Viktar ogenomskinligheten för indata, både värdet från aux-indata och den "
+"globala värdeegenskapen."
 
 #: operations/common/open-buffer.c:26
 msgid "a GeglBuffer on disk to open"
@@ -3714,16 +3703,14 @@ msgid "Align"
 msgstr "Justering"
 
 #: operations/common/pack.c:27
-#, fuzzy
 msgid "How to align items, 0.0 is start 0.5 middle and 1.0 end."
-msgstr "Hur objekt ska justeras, 0.0 är start 0.5 mitten och 1.0 slutet."
+msgstr "Hur objekt ska justeras, 0,0 är start, 0,5 mitten och 1,0 slutet."
 
 #: operations/common/pack.c:182
 msgid "Pack"
 msgstr "Packa"
 
 #: operations/common/pack.c:184
-#, fuzzy
 msgid ""
 "Packs an image horizontally or vertically next to each other with optional "
 "gap, aux right of input."
@@ -4319,7 +4306,7 @@ msgid ""
 "the value property, or per pixel from the aux input."
 msgstr ""
 "Trösklar bilden till vitt/svart baserat på antigen det globala värdet som "
-"ställts in i värdeegenskapen eller per bildpunkt från tillsatsindatan."
+"ställts in i värdeegenskapen eller per bildpunkt från aux-indata."
 
 #: operations/common/tile.c:24
 msgid "Horizontal offset"
@@ -4431,15 +4418,14 @@ msgid "Squeeze"
 msgstr "Pressa"
 
 #: operations/common/vignette.c:59
-#, fuzzy
 msgid ""
 "Aspect ratio to use, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf 1.0 = "
 "inf:1, this is applied after proportion is taken into account, to directly "
 "use squeeze factor as proportions, set proportion to 0.0."
 msgstr ""
-"Bildförhållande att använda, -0.5 = 1:2, 0.0 = 1:1, 0.5 = 2:1, -1.0 = 1:inf "
-"1.0 = inf:1, detta tillämpas efter att proportion tagits hänsyn till, för "
-"att direkt använda pressfaktor som proportioner, ställ proportion till 0.0."
+"Bildförhållande att använda, -0,5 = 1:2, 0,0 = 1:1, 0,5 = 2:1, -1,0 = 1:inf "
+"1,0 = inf:1, detta tillämpas efter att proportion tagits hänsyn till, för "
+"att direkt använda pressfaktor som proportioner, ställ proportion till 0,0."
 
 #: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:102
 #: operations/common-gpl3+/bayer-matrix.c:50
@@ -4683,7 +4669,7 @@ msgstr "Oskärpegamma"
 #: operations/common-cxx/focus-blur.c:115
 #: operations/common-cxx/variable-blur.c:47
 msgid "Gamma factor for blur-level spacing"
-msgstr "Gammafaktor för oskärpenivårymd"
+msgstr "Gammafaktor för oskärpenivåavstånd"
 
 #: operations/common-cxx/focus-blur.c:122
 #: operations/common-cxx/variable-blur.c:53
@@ -4732,9 +4718,8 @@ msgid "Number of blend levels"
 msgstr "Antal sammansättningsnivåer"
 
 #: operations/common-cxx/piecewise-blend.cc:34
-#, fuzzy
 msgid "Gamma factor for blend-level spacing"
-msgstr "Gammafaktor för sammansättningsnivårymd"
+msgstr "Gammafaktor för sammansättningsnivåavstånd"
 
 #: operations/common-cxx/piecewise-blend.cc:346
 msgid "Piecewise Blend"
@@ -6221,10 +6206,9 @@ msgid ""
 "the aux pad."
 msgstr ""
 "Cirkelradie runt bildpunkt, kan också skalas per bildpunkt med en buffert på "
-"tillsatskontakten."
+"aux-kontakten."
 
 #: operations/common-gpl3+/oilify.c:35
-#, fuzzy
 msgid ""
 "Exponent for processing; controls smoothness - can be scaled per pixel with "
 "a buffer on the aux2 pad."
@@ -6253,26 +6237,24 @@ msgid "Mask radius buffer"
 msgstr "Maskradiebuffert"
 
 #: operations/common-gpl3+/oilify.c:523
-#, fuzzy
 msgid ""
 "Per pixel buffer for modulating the mask radius, expecting a scaling factor "
 "in range 0.0-1.0"
 msgstr ""
 "Buffert per bildpunkt för att modulera maskradie, förväntar en skalfaktor i "
-"intervallet 0.0-1.0"
+"intervallet 0,0-1,0"
 
 #: operations/common-gpl3+/oilify.c:524
 msgid "Exponent buffer"
 msgstr "Exponentbuffert"
 
 #: operations/common-gpl3+/oilify.c:525
-#, fuzzy
 msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
 msgstr ""
 "Buffert per bildpunkt för att modulera exponentparametern, förväntar en "
-"skalfaktor i intervallet 0.0-1.0"
+"skalfaktor i intervallet 0,0-1,0"
 
 #: operations/common-gpl3+/oilify.c:534
 msgid "Oilify"
@@ -7178,8 +7160,8 @@ msgid ""
 "the string property and setting an aux pad overrides both. "
 msgstr ""
 "Åsidosätt den angivna färgrymden, att ställa in en pekare till ett format "
-"åsidosätter strängegenskapen och att ställa in en tillsatskontakt "
-"åsidosätter båda. "
+"åsidosätter strängegenskapen och att ställa in en aux-kontakt åsidosätter "
+"båda. "
 
 #: operations/core/clone.c:25
 msgid "Reference"
@@ -7220,7 +7202,6 @@ msgstr "Konvertera färgrymd"
 
 # TODO: trailing space?
 #: operations/core/convert-space.c:115
-#, fuzzy
 msgid ""
 "set color space which subsequent babl-formats in the pipeline are created "
 "with, and the ICC profile potentially embedded for external color "
@@ -7230,7 +7211,7 @@ msgstr ""
 "ställ in färgrymd vilken efterföljande babl-format i rörledningen skapas "
 "med, och ICC-profilen potentiellt inbäddad för extern färghantering. Att "
 "ställa in en pekare till ett format åsidosätter strängegenskapen och att "
-"ställa in en tillsatskontakt åsidosätter båda. "
+"ställa in en aux-kontakt åsidosätter båda. "
 
 #: operations/core/crop.c:45 operations/transform/reset-origin.c:95
 msgid "Reset origin"
@@ -7241,17 +7222,16 @@ msgid "Crop"
 msgstr "Beskär"
 
 #: operations/core/crop.c:307
-#, fuzzy
 msgid ""
 "Crops a buffer, if the aux pad is connected the bounding box of the node "
 "connected is used. When the crop area is configured to 0x0 at 0,0 and "
 "nothing is connected on aux, the bounding box of the node at the producing "
 "end of the input chain is used."
 msgstr ""
-"Beskär en buffert, om tillsatskontakten är ansluten används "
-"begränsningsrutan för den anslutna noden. När beskärningsytan konfigureras "
-"till 0x0 vid 0,0 och inget ansluts på tillägg används begränsningsrutan på "
-"den producerande änden av inmatningskedjan."
+"Beskär en buffert, om aux-kontakten är ansluten används begränsningsrutan "
+"för den anslutna noden. När beskärningsytan konfigureras till 0x0 vid 0,0 "
+"och inget ansluts på aux används begränsningsrutan på den producerande änden "
+"av inmatningskedjan."
 
 #: operations/core/load.c:31 operations/external/jp2-load.c:27
 #: operations/external/jpg-load.c:26 operations/external/pdf-load.c:27
@@ -8630,14 +8610,12 @@ msgid "How much vertical offset should applied to the paste"
 msgstr "Hur mycket vertikalnivå ska tillämpas för inklistringen"
 
 #: operations/transform/border-align.c:25
-#, fuzzy
 msgid "Horizontal justification 0.0 is left 0.5 centered and 1.0 right."
-msgstr "Vågrätt justering, 0.0 är vänster, 0.5 centrerad och 1.0 höger."
+msgstr "Horisontell justering, 0,0 är vänster, 0,5 centrerad och 1,0 höger."
 
 #: operations/transform/border-align.c:31
-#, fuzzy
 msgid "Vertical justification 0.0 is top 0.5 middle and 1.0 bottom."
-msgstr "Lodrätt justering, 0.0 är överst, 0.5 mitten och 1.0 nederst."
+msgstr "Vertikal justering, 0,0 är överst, 0,5 mitten och 1,0 nederst."
 
 #: operations/transform/border-align.c:180
 msgid "Border Align"
@@ -8645,15 +8623,14 @@ msgstr "Kantjustering"
 
 # TODO: connectd -> connected ?
 #: operations/transform/border-align.c:183
-#, fuzzy
 msgid ""
 "Aligns box of input rectangle with border of compositing target or aux' "
 "bounding-box border, if aux pad is not connectd the op tries to figure out "
 "which bounding box' border applies."
 msgstr ""
-"Justerar ruta för indatarektangel med kant av sammansättningsmål eller "
-"kontakts kant på begränsningsruta, om tillsatskontakt inte är ansluten "
-"försöker åtgärden beräkna vilken kant för begränsningsruta som gäller."
+"Justerar ruta för indatarektangel med kant av sammansättningsmål eller kant "
+"på begränsningsruta för aux, om aux-kontakt inte är ansluten försöker "
+"åtgärden beräkna vilken kant för begränsningsruta som gäller."
 
 #: operations/transform/reflect.c:27
 msgid "Direction vector's X component"
@@ -8854,7 +8831,6 @@ msgid "Detail band"
 msgstr "Detaljband"
 
 #: operations/workshop/band-tune.c:25
-#, fuzzy
 msgid "Features size for detail band, used for noise removal."
 msgstr "Funktionsstorlek för detaljband, används för brusborttagning."
 
@@ -8867,12 +8843,11 @@ msgstr ""
 "ökar signal."
 
 #: operations/workshop/band-tune.c:30 operations/workshop/band-tune.c:46
-#, fuzzy
 msgid ""
 "Scaling factor for image features at radius, -1 cancels them out 1.0 edge "
 "enhances"
 msgstr ""
-"Skalningsfaktor för bildfunktioner vid radie, -1 motverkar dem, 1.0 "
+"Skalningsfaktor för bildfunktioner vid radie, -1 motverkar dem, 1,0 "
 "kantförstärker"
 
 #: operations/workshop/band-tune.c:34
@@ -8885,7 +8860,6 @@ msgstr "Kantband"
 
 # TODO: loos -> loss
 #: operations/workshop/band-tune.c:41
-#, fuzzy
 msgid ""
 "Features size for edge band, used to compensate for loos of edges in detail "
 "pass."
@@ -8914,14 +8888,13 @@ msgid "Band tune"
 msgstr "Bandjustering"
 
 #: operations/workshop/band-tune.c:219
-#, fuzzy
 msgid ""
 "Parametric band equalizer for tuning frequency bands of image, the op "
 "provides abstracted input parameters that control two difference of "
 "gaussians driven band pass filters used as adjustments of the image signal."
 msgstr ""
 "Parametrisk bandequalizer för att justera frekvensband för bild, åtgärden "
-"tillhandahåller abstraherade indataparametrar som styr två gaussisk "
+"tillhandahåller abstraherade indataparametrar som styr två gaussisk-"
 "differensdrivna bandpassfilter som används som justeringar för bildsignalen."
 
 #: operations/workshop/bilateral-filter-fast.c:39
