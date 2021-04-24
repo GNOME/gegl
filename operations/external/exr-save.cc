@@ -45,6 +45,7 @@ extern "C" {
 #include <ImfChromaticities.h>
 #include <ImfStandardAttributes.h>
 #include <ImfArray.h>
+#include <ImfFrameBuffer.h>
 #include "ImathRandom.h"
 
 
