@@ -10,8 +10,8 @@
 msgid ""
 msgstr "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-03-31 17:29+0000\n"
-"PO-Revision-Date: 2021-04-20 10:00+0100\n"
+"POT-Creation-Date: 2021-04-21 20:01+0000\n"
+"PO-Revision-Date: 2021-04-28 10:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -2916,7 +2916,7 @@ msgstr "Kodean txertatutako kurba karakteristikoa eta kolore-datuak"
 
 #: operations/common/negative-darkroom.c:33
 msgid "Base enlargement exposure"
-msgstr ""
+msgstr "Oinarria luzatzeko esposizioa"
 
 #: operations/common/negative-darkroom.c:37
 msgid "Filter cyan"
@@ -2966,7 +2966,7 @@ msgstr "Zuritu/belztu biderkatzailea"
 
 #: operations/common/negative-darkroom.c:57
 msgid "The f-stop of dodge/burn for pure white/black auxillary input"
-msgstr ""
+msgstr "Zuritzeko/belzteko F zenbakia zuri/beltz puruaren sarrera osagarrirako"
 
 #: operations/common/negative-darkroom.c:60
 msgid "Enable preflashing"
@@ -5907,11 +5907,11 @@ msgstr "Biraketa-lausotzearen angelua. Angelu handiagoak denbora gehiago behar d
 
 #: operations/common-gpl3+/motion-blur-circular.c:448
 msgid "Circular Motion Blur"
-msgstr "Mugimendu zirkularraren lausotzea"
+msgstr "Mugimendu-lausotze zirkularra"
 
 #: operations/common-gpl3+/motion-blur-circular.c:454
 msgid "Circular motion blur"
-msgstr "Mugimendu zirkularraren lausotzea"
+msgstr "Mugimendu-lausotze zirkularra"
 
 #: operations/common-gpl3+/motion-blur-zoom.c:51
 msgid "Blurring factor"
@@ -5919,11 +5919,11 @@ msgstr "Lausotze-faktorea"
 
 #: operations/common-gpl3+/motion-blur-zoom.c:271
 msgid "Zooming Motion Blur"
-msgstr "Zoom mugimenduaren lausotzea"
+msgstr "Zoom mugimendu-lausotzea"
 
 #: operations/common-gpl3+/motion-blur-zoom.c:277
 msgid "Zoom motion blur"
-msgstr "Zoom mugimenduaren lausotzea"
+msgstr "Zoom mugimendu-lausotzea"
 
 #: operations/common-gpl3+/noise-slur.c:157
 msgid "Noise Slur"
@@ -6903,7 +6903,7 @@ msgstr "Igorri kolore-espazioa"
 msgid ""
 "Override the specified color space setting a pointer to a format override "
 "the string property and setting an aux pad overrides both. "
-msgstr ""
+msgstr "Indargabetu zehaztutako kolore-espazioa katearen propietatea indargabetzen duen formatu baterako erakusle bat ezarrita eta biak indargabetzen dituen betegarri osagarri bat ezarrita. "
 
 #: operations/core/clone.c:25
 msgid "Reference"
@@ -8482,7 +8482,7 @@ msgstr "Ertzen banda"
 msgid ""
 "Features size for edge band, used to compensate for loos of edges in detail "
 "pass."
-msgstr ""
+msgstr "Ertz-bandarako elementuen tamaina, xehetasuneko pasaeran gertatzen den ertz-galera konpentsatzeko."
 
 #: operations/workshop/band-tune.c:45
 msgid ""
@@ -8507,7 +8507,7 @@ msgid ""
 "Parametric band equalizer for tuning frequency bands of image, the op "
 "provides abstracted input parameters that control two difference of "
 "gaussians driven band pass filters used as adjustments of the image signal."
-msgstr ""
+msgstr "Banda parametrikoen ekualizatzailea irudiko banden maiztasuna moldatzeko, aukerak sarrerako parametro abstraktuak eskaintzen ditu irudiaren seinalea doitzeko erabilitako bi pasatze-iragazki gausstarren diferentzia kontrolatzeko."
 
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
