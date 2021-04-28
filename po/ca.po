@@ -641,11 +641,6 @@ msgid "Bilateral Filter"
 msgstr "Filtre bilateral"
 
 #: operations/common/bilateral-filter.c:299
-#, fuzzy
-#| msgid ""
-#| "Like a gaussian blur; but where the contribution for each neighbourhood "
-#| "pixel is also weighted by the color difference with the original center "
-#| "pixel. "
 msgid ""
 "Like a gaussian blur; but where the contribution for each neighbourhood "
 "pixel is also weighted by the color difference with the original center "
@@ -3143,56 +3138,46 @@ msgid "Magenta preflash"
 msgstr "Preflaix magenta"
 
 #: operations/common/negative-darkroom.c:69
-#, fuzzy
 msgid ""
 "Preflash the negative with magenta light to reduce contrast of the print"
 msgstr ""
 "Fes preflaix del negatiu amb llum magenta per a reduir el contrast de la impressió"
 
 #: operations/common/negative-darkroom.c:73
-#, fuzzy
 msgid "Yellow preflash"
-msgstr "Preflash groc"
+msgstr "Preflaix groc"
 
 #: operations/common/negative-darkroom.c:74
-#, fuzzy
 msgid "Preflash the negative with yellow light to reduce contrast of the print"
 msgstr ""
-"Reflash el negatiu amb llum groga per reduir el contrast de la impressió"
+"Fes preflaix del negatiu amb llum groga per reduir el contrast de la impressió"
 
 #: operations/common/negative-darkroom.c:312
-#, fuzzy
 msgid "Negative Darkroom"
-msgstr "Marge fosc negatiu"
+msgstr "Cambra fosca negativa"
 
 #: operations/common/negative-darkroom.c:315
-#, fuzzy
 msgid "Simulate a negative film enlargement in an analog darkroom."
 msgstr ""
 "Simula una ampliació de pel·lícula negativa en una cambra fosca analògica."
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:2
-#, fuzzy
 msgid "Fujicolor Crystal Archive Digital Pearl Paper"
-msgstr "Paper de perla digital Fujicolor Crystal Archive"
+msgstr "Paper «Crystal Archive Digital Pearl Paper»"
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:3
-#, fuzzy
 msgid "Ilford Ilfobrom Galerie FB 1"
 msgstr "Ilford Ilfobrom Galerie FB 1"
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:4
-#, fuzzy
 msgid "Ilford Ilfobrom Galerie FB 2"
 msgstr "Ilford Ilfobrom Galerie FB 2"
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:5
-#, fuzzy
 msgid "Ilford Ilfobrom Galerie FB 3"
 msgstr "Ilford Ilfobrom Galerie FB 3"
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
-#, fuzzy
 msgid "Ilford Ilfobrom Galerie FB 4"
 msgstr "Ilford Ilfobrom Galerie FB 4"
 
@@ -8737,16 +8722,12 @@ msgid "Direction vector's Y component"
 msgstr "Direcció del component Y del vector"
 
 #: operations/transform/reflect.c:109
-#, fuzzy
-#| msgid ""
-#| "Reflect an image about a line, whose direction is specified by the vector "
-#| "that is defined by the x and y properties. "
 msgid ""
 "Reflect an image about a line, whose direction is specified by the vector "
 "that is defined by the x and y properties. "
 msgstr ""
 "Reflecteix una imatge respecte a una línia, la direcció de la qual és "
-"especificada pel vector definit per les propietats x i y. "
+"especificada pel vector definit per les propietats x i y."
 
 #: operations/transform/reset-origin.c:98
 msgid "Translate top-left to 0,0."
@@ -8847,9 +8828,8 @@ msgid "Shear"
 msgstr "Retalla"
 
 #: operations/transform/shear.c:95
-#, fuzzy
 msgid "Shears the buffer. "
-msgstr "Inclina la memòria intermèdia."
+msgstr "Inclina la memòria intermèdia. "
 
 #: operations/transform/transform.c:25
 msgid "Transformation SVG syntax transformation string"
@@ -9179,9 +9159,8 @@ msgid "Use local region"
 msgstr "Utilitza la regió local"
 
 #: operations/workshop/external/paint-select.cc:40
-#, fuzzy
 msgid "Perform graphcut in a local region"
-msgstr "Realitza el gravat en grafs en una regió local"
+msgstr "Realitza un retall gràfic en una regió local"
 
 #: operations/workshop/external/paint-select.cc:42
 msgid "region-x"
@@ -9497,7 +9476,7 @@ msgstr "Sembra les vores"
 
 #: operations/workshop/external/voronoi-diagram.cc:36
 msgid "Whether the image edges are also seeded"
-msgstr "Si les vores de la imatge també es sembren"
+msgstr "Si les vores de la imatge també se sembren"
 
 #: operations/workshop/external/voronoi-diagram.cc:524
 msgid "Voronoi Diagram"
