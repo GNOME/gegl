@@ -21,13 +21,14 @@
  * #define CTX_IMPLEMENTATION
  * #include "ctx.h"
  *
- * Ctx does not - yet - contain a minimal default fallback font, so
+ * Ctx contains a minimal default fallback font with only ascii, so
  * you probably want to also include a font, and perhaps enable
  * the cairo or SDL2 optional renderers, a more complete example
  * could be:
  *
  * #include <cairo.h>
  * #include <SDL.h>
+ * #include "ctx-font-regular.h"
  * #define CTX_IMPLEMENTATION
  * #include "ctx.h"
  *
@@ -54,39 +55,23 @@ typedef struct _Ctx            Ctx;
 enum _CtxPixelFormat
 {
   CTX_FORMAT_NONE=0,
-  CTX_FORMAT_GRAY8,
-  CTX_FORMAT_GRAYA8,
-  CTX_FORMAT_RGB8,
-  CTX_FORMAT_RGBA8,
-  CTX_FORMAT_BGRA8,
-  CTX_FORMAT_RGB565,
-  CTX_FORMAT_RGB565_BYTESWAPPED,
-  CTX_FORMAT_RGB332,
-  CTX_FORMAT_RGBAF,
-  CTX_FORMAT_GRAYF,
-  CTX_FORMAT_GRAYAF,
-  CTX_FORMAT_GRAY1,
-  CTX_FORMAT_GRAY2,
-  CTX_FORMAT_GRAY4,
-  CTX_FORMAT_CMYK8,
-  CTX_FORMAT_CMYKA8,
-  CTX_FORMAT_CMYKAF,
-  CTX_FORMAT_DEVICEN1,
-  CTX_FORMAT_DEVICEN2,
-  CTX_FORMAT_DEVICEN3,
-  CTX_FORMAT_DEVICEN4,
-  CTX_FORMAT_DEVICEN5,
-  CTX_FORMAT_DEVICEN6,
-  CTX_FORMAT_DEVICEN7,
-  CTX_FORMAT_DEVICEN8,
-  CTX_FORMAT_DEVICEN9,
-  CTX_FORMAT_DEVICEN10,
-  CTX_FORMAT_DEVICEN11,
-  CTX_FORMAT_DEVICEN12,
-  CTX_FORMAT_DEVICEN13,
-  CTX_FORMAT_DEVICEN14,
-  CTX_FORMAT_DEVICEN15,
-  CTX_FORMAT_DEVICEN16
+  CTX_FORMAT_GRAY8,  // 1  - these enum values are not coincidence
+  CTX_FORMAT_GRAYA8, // 2  -
+  CTX_FORMAT_RGB8,   // 3  -
+  CTX_FORMAT_RGBA8,  // 4  -
+  CTX_FORMAT_BGRA8,  // 5
+  CTX_FORMAT_RGB565, // 6
+  CTX_FORMAT_RGB565_BYTESWAPPED, // 7
+  CTX_FORMAT_RGB332, // 8
+  CTX_FORMAT_RGBAF,  // 9
+  CTX_FORMAT_GRAYF,  // 10
+  CTX_FORMAT_GRAYAF, // 11
+  CTX_FORMAT_GRAY1,  //12 MONO
+  CTX_FORMAT_GRAY2,  //13 DUO
+  CTX_FORMAT_GRAY4,  //14
+  CTX_FORMAT_CMYK8,  //15
+  CTX_FORMAT_CMYKA8, //16 
+  CTX_FORMAT_CMYKAF, //17
 };
 typedef enum   _CtxPixelFormat CtxPixelFormat;
 
@@ -141,7 +126,6 @@ void  ctx_dirty_rect      (Ctx *ctx, int *x, int *y, int *width, int *height);
  */
 void ctx_free (Ctx *ctx);
 
-
 /* clears and resets a context */
 void ctx_reset          (Ctx *ctx);
 void ctx_begin_path     (Ctx *ctx);
@@ -153,17 +137,25 @@ void ctx_clip           (Ctx *ctx);
 void ctx_identity       (Ctx *ctx);
 void ctx_rotate         (Ctx *ctx, float x);
 
+void ctx_image_smoothing     (Ctx *ctx, int enabled);
+int  ctx_get_image_smoothing (Ctx *ctx);
+
 #define CTX_LINE_WIDTH_HAIRLINE -1000.0
 #define CTX_LINE_WIDTH_ALIASED  -1.0
 #define CTX_LINE_WIDTH_FAST     -1.0  /* aliased 1px wide line */
 void ctx_miter_limit (Ctx *ctx, float limit);
+float ctx_get_miter_limit (Ctx *ctx);
 void ctx_line_width       (Ctx *ctx, float x);
+void ctx_line_dash_offset (Ctx *ctx, float line_dash);
+float ctx_get_line_dash_offset (Ctx *ctx);
 void ctx_apply_transform  (Ctx *ctx, float a,  float b,  // hscale, hskew
-                           float c,  float d,  // vskew,  vscale
-                           float e,  float f); // htran,  vtran
+                                     float c,  float d,  // vskew,  vscale
+                                     float e,  float f); // htran,  vtran
+void ctx_set_transform    (Ctx *ctx, float a, float b, float c, float d, float e, float f);
 void  ctx_line_dash       (Ctx *ctx, float *dashes, int count);
 void  ctx_font_size       (Ctx *ctx, float x);
 void  ctx_font            (Ctx *ctx, const char *font);
+void  ctx_font_family     (Ctx *ctx, const char *font_family);
 void  ctx_scale           (Ctx *ctx, float x, float y);
 void  ctx_translate       (Ctx *ctx, float x, float y);
 void  ctx_line_to         (Ctx *ctx, float x, float y);
@@ -202,6 +194,7 @@ void  ctx_rel_quad_to     (Ctx *ctx,
                            float x, float y);
 void  ctx_close_path      (Ctx *ctx);
 float ctx_get_font_size   (Ctx *ctx);
+const char *ctx_get_font  (Ctx *ctx);
 float ctx_get_line_width  (Ctx *ctx);
 int   ctx_width           (Ctx *ctx);
 int   ctx_height          (Ctx *ctx);
@@ -219,15 +212,6 @@ void gtx_glyph_free       (CtxGlyph *glyphs);
 
 int  ctx_glyph            (Ctx *ctx, uint32_t unichar, int stroke);
 
-void ctx_arc              (Ctx  *ctx,
-                           float x, float y,
-                           float radius,
-                           float angle1, float angle2,
-                           int   direction);
-
-void ctx_arc_to           (Ctx *ctx, float x1, float y1,
-                           float x2, float y2, float radius);
-
 void ctx_quad_to          (Ctx *ctx, float cx, float cy,
                            float x, float y);
 
@@ -243,6 +227,7 @@ void ctx_arc_to           (Ctx *ctx, float x1, float y1,
 void ctx_preserve         (Ctx *ctx);
 void ctx_fill             (Ctx *ctx);
 void ctx_stroke           (Ctx *ctx);
+
 void ctx_parse            (Ctx *ctx, const char *string);
 
 void ctx_shadow_rgba      (Ctx *ctx, float r, float g, float b, float a);
@@ -261,10 +246,24 @@ float ctx_get_global_alpha (Ctx *ctx);
 void ctx_named_source (Ctx *ctx, const char *name);
 // followed by a color, gradient or pattern definition
 
+void ctx_rgba_stroke   (Ctx *ctx, float r, float g, float b, float a);
+void ctx_rgb_stroke    (Ctx *ctx, float r, float g, float b);
+void ctx_rgba8_stroke  (Ctx *ctx, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+
+void ctx_gray_stroke   (Ctx *ctx, float gray);
+void ctx_drgba_stroke  (Ctx *ctx, float r, float g, float b, float a);
+void ctx_cmyka_stroke  (Ctx *ctx, float c, float m, float y, float k, float a);
+void ctx_cmyk_stroke   (Ctx *ctx, float c, float m, float y, float k);
+void ctx_dcmyka_stroke (Ctx *ctx, float c, float m, float y, float k, float a);
+void ctx_dcmyk_stroke  (Ctx *ctx, float c, float m, float y, float k);
+
+
+
 void ctx_rgba   (Ctx *ctx, float r, float g, float b, float a);
 void ctx_rgb    (Ctx *ctx, float r, float g, float b);
-void ctx_gray   (Ctx *ctx, float gray);
 void ctx_rgba8  (Ctx *ctx, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+
+void ctx_gray   (Ctx *ctx, float gray);
 void ctx_drgba  (Ctx *ctx, float r, float g, float b, float a);
 void ctx_cmyka  (Ctx *ctx, float c, float m, float y, float k, float a);
 void ctx_cmyk   (Ctx *ctx, float c, float m, float y, float k);
@@ -292,39 +291,67 @@ void ctx_gradient_add_stop (Ctx *ctx, float pos, float r, float g, float b, floa
 void ctx_gradient_add_stop_u8 (Ctx *ctx, float pos, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
 
-
-/*ctx_texture_init:
+/*
  *
- * return value: the actual id assigned, if id is out of range - or later
- * when -1 as id will mean auto-assign.
  */
-int ctx_texture_init (Ctx *ctx,
-                      int id,
-                      int width,
-                      int height,
-                      int stride,
-                      CtxPixelFormat format,
-                      uint8_t *pixels,
-                      void (*freefunc) (void *pixels, void *user_data),
-                      void *user_data);
+void ctx_define_texture (Ctx *ctx,
+                         const char *eid,
+                         int         width,
+                         int         height,
+                         int         stride,
+                         int         format,
+                         void       *data,
+                         char       *ret_eid);
 
-int  ctx_texture_load       (Ctx *ctx, int id, const char *path, int *width, int *height);
-void ctx_texture_release    (Ctx *ctx, int id);
+void
+ctx_get_image_data (Ctx *ctx, int sx, int sy, int sw, int sh,
+                    CtxPixelFormat format, int dst_stride,
+                    uint8_t *dst_data);
 
-/* sets the paint source to be a texture from the texture bank*/
-void ctx_texture            (Ctx *ctx, int id, float x, float y);
+void
+ctx_put_image_data (Ctx *ctx, int w, int h, int stride, int format,
+                    uint8_t *data,
+                    int ox, int oy,
+                    int dirtyX, int dirtyY,
+                    int dirtyWidth, int dirtyHeight);
 
-/* global used to use the textures from a different context, used
- * by the render threads of fb and sdl backends.
+
+/* loads an image file from disk into texture, returning pixel width, height
+ * and eid, the eid is based on the path; not the contents - avoiding doing
+ * sha1 checksum of contents. The width and height of the image is returned
+ * along with the used eid, width height or eid can be NULL if we
+ * do not care about their values.
+ */
+void ctx_texture_load (Ctx        *ctx,
+                       const char *path,
+                       int        *width,
+                       int        *height,
+                       char       *eid);
+
+/* sets the paint source to be a texture by eid
+ */
+void ctx_texture              (Ctx *ctx, const char *eid, float x, float y);
+
+void ctx_draw_texture         (Ctx *ctx, const char *eid, float x, float y, float w, float h);
+
+void ctx_draw_texture_clipped (Ctx *ctx, const char *eid, float x, float y, float w, float h, float sx, float sy, float swidth, float sheight);
+
+void ctx_draw_image           (Ctx *ctx, const char *path, float x, float y, float w, float h);
+
+void ctx_draw_image_clipped   (Ctx *ctx, const char *path, float x, float y, float w, float h, float sx, float sy, float swidth, float sheight);
+
+/* used by the render threads of fb and sdl backends.
  */
 void ctx_set_texture_source (Ctx *ctx, Ctx *texture_source);
-
-void ctx_image_path (Ctx *ctx, const char *path, float x, float y);
+/* used when sharing cache state of eids between clients
+ */
+void ctx_set_texture_cache (Ctx *ctx, Ctx *texture_cache);
 
 typedef struct _CtxDrawlist CtxDrawlist;
 typedef void (*CtxFullCb) (CtxDrawlist *drawlist, void *data);
 
-int ctx_pixel_format_bpp        (CtxPixelFormat format);
+int ctx_pixel_format_bits_per_pixel (CtxPixelFormat format); // bits per pixel
+int ctx_pixel_format_get_stride (CtxPixelFormat format, int width);
 int ctx_pixel_format_components (CtxPixelFormat format);
 
 void _ctx_set_store_clear (Ctx *ctx);
@@ -500,6 +527,17 @@ _CtxGlyph
   float    y;
 };
 
+CtxTextAlign ctx_get_text_align (Ctx *ctx);
+CtxTextBaseline ctx_get_text_baseline (Ctx *ctx);
+CtxTextDirection ctx_get_text_direction (Ctx *ctx);
+CtxFillRule ctx_get_fill_rule (Ctx *ctx);
+CtxLineCap ctx_get_line_cap (Ctx *ctx);
+CtxLineJoin ctx_get_line_join (Ctx *ctx);
+CtxCompositingMode ctx_get_compositing_mode (Ctx *ctx);
+CtxBlend ctx_get_blend_mode (Ctx *ctx);
+
+void ctx_gradient_add_stop_string (Ctx *ctx, float pos, const char *color);
+
 void ctx_text_align           (Ctx *ctx, CtxTextAlign      align);
 void ctx_text_baseline        (Ctx *ctx, CtxTextBaseline   baseline);
 void ctx_text_direction       (Ctx *ctx, CtxTextDirection  direction);
@@ -510,7 +548,7 @@ void ctx_compositing_mode     (Ctx *ctx, CtxCompositingMode mode);
 int  ctx_set_drawlist     (Ctx *ctx, void *data, int length);
 typedef struct _CtxEntry CtxEntry;
 /* we only care about the tight packing for this specific
- * structx as we do indexing across members in arrays of it,
+ * struct as we do indexing across members in arrays of it,
  * to make sure its size becomes 9bytes -
  * the pack pragma is also sufficient on recent gcc versions
  */
@@ -551,9 +589,18 @@ void  ctx_glyphs_stroke (Ctx       *ctx,
 
 void  ctx_text          (Ctx        *ctx,
                          const char *string);
-
 void  ctx_text_stroke   (Ctx        *ctx,
                          const char *string);
+
+void  ctx_fill_text     (Ctx        *ctx,
+                         const char *string,
+                         float       x,
+                         float       y);
+
+void  ctx_stroke_text   (Ctx        *ctx,
+                         const char *string,
+                         float       x,
+                         float       y);
 
 /* returns the total horizontal advance if string had been rendered */
 float ctx_text_width    (Ctx        *ctx,
@@ -592,6 +639,11 @@ void ctx_set_renderer (Ctx *ctx,
                        void *renderer);
 void *ctx_get_renderer (Ctx *ctx);
 
+int ctx_renderer_is_sdl (Ctx *ctx);
+int ctx_renderer_is_fb (Ctx *ctx);
+int ctx_renderer_is_ctx (Ctx *ctx);
+int ctx_renderer_is_term (Ctx *ctx);
+
 /* the following API is only available when CTX_EVENTS is defined to 1
  *
  * it provides the ability to register callbacks with the current path
@@ -600,8 +652,8 @@ void *ctx_get_renderer (Ctx *ctx);
 unsigned long ctx_ticks (void);
 int ctx_is_dirty (Ctx *ctx);
 void ctx_set_dirty (Ctx *ctx, int dirty);
-float ctx_get_float (Ctx *ctx, uint32_t hash);
-void ctx_set_float (Ctx *ctx, uint32_t hash, float value);
+float ctx_get_float (Ctx *ctx, uint64_t hash);
+void ctx_set_float (Ctx *ctx, uint64_t hash, float value);
 
 unsigned long ctx_ticks (void);
 void ctx_flush (Ctx *ctx);
@@ -610,8 +662,8 @@ void ctx_set_clipboard (Ctx *ctx, const char *text);
 char *ctx_get_clipboard (Ctx *ctx);
 
 void _ctx_events_init     (Ctx *ctx);
-typedef struct _CtxRectangle CtxRectangle;
-struct _CtxRectangle {
+typedef struct _CtxIntRectangle CtxIntRectangle;
+struct _CtxIntRectangle {
   int x;
   int y;
   int width;
@@ -627,26 +679,27 @@ typedef void (*CtxCb) (CtxEvent *event,
 typedef void (*CtxDestroyNotify) (void *data);
 
 enum _CtxEventType {
-  CTX_PRESS          = 1 << 0,
-  CTX_MOTION         = 1 << 1,
-  CTX_RELEASE        = 1 << 2,
-  CTX_ENTER          = 1 << 3,
-  CTX_LEAVE          = 1 << 4,
-  CTX_TAP            = 1 << 5,
-  CTX_TAP_AND_HOLD   = 1 << 6,
+  CTX_PRESS        = 1 << 0,
+  CTX_MOTION       = 1 << 1,
+  CTX_RELEASE      = 1 << 2,
+  CTX_ENTER        = 1 << 3,
+  CTX_LEAVE        = 1 << 4,
+  CTX_TAP          = 1 << 5,
+  CTX_TAP_AND_HOLD = 1 << 6,
 
   /* NYI: SWIPE, ZOOM ROT_ZOOM, */
 
-  CTX_DRAG_PRESS     = 1 << 7,
-  CTX_DRAG_MOTION    = 1 << 8,
-  CTX_DRAG_RELEASE   = 1 << 9,
-  CTX_KEY_DOWN       = 1 << 10,
-  CTX_KEY_UP         = 1 << 11,
-  CTX_SCROLL         = 1 << 12,
-  CTX_MESSAGE        = 1 << 13,
-  CTX_DROP           = 1 << 14,
+  CTX_DRAG_PRESS   = 1 << 7,
+  CTX_DRAG_MOTION  = 1 << 8,
+  CTX_DRAG_RELEASE = 1 << 9,
+  CTX_KEY_PRESS    = 1 << 10,
+  CTX_KEY_DOWN     = 1 << 11,
+  CTX_KEY_UP       = 1 << 12,
+  CTX_SCROLL       = 1 << 13,
+  CTX_MESSAGE      = 1 << 14,
+  CTX_DROP         = 1 << 15,
 
-  CTX_SET_CURSOR= 1 << 15, // used internally
+  CTX_SET_CURSOR   = 1 << 16, // used internally
 
   /* client should store state - preparing
                                  * for restart
@@ -655,7 +708,7 @@ enum _CtxEventType {
   CTX_TAPS     = (CTX_TAP | CTX_TAP_AND_HOLD),
   CTX_CROSSING = (CTX_ENTER | CTX_LEAVE),
   CTX_DRAG     = (CTX_DRAG_PRESS | CTX_DRAG_MOTION | CTX_DRAG_RELEASE),
-  CTX_KEY      = (CTX_KEY_DOWN | CTX_KEY_UP),
+  CTX_KEY      = (CTX_KEY_DOWN | CTX_KEY_UP | CTX_KEY_PRESS),
   CTX_MISC     = (CTX_MESSAGE),
   CTX_ANY      = (CTX_POINTER | CTX_DRAG | CTX_CROSSING | CTX_KEY | CTX_MISC | CTX_TAPS),
 };
@@ -671,10 +724,10 @@ struct _CtxEvent {
 
   CtxModifierState state;
 
-  int      device_no; /* 0 = left mouse button / virtual focus */
-                      /* 1 = middle mouse button */
-                      /* 2 = right mouse button */
-                      /* 3 = first multi-touch .. (NYI) */
+  int     device_no; /* 0 = left mouse button / virtual focus */
+                     /* 1 = middle mouse button */
+                     /* 2 = right mouse button */
+                     /* 3 = first multi-touch .. (NYI) */
 
   float   device_x; /* untransformed (device) coordinates  */
   float   device_y;
@@ -690,7 +743,7 @@ struct _CtxEvent {
   float   delta_y; /* y - prev_y, redundant - ..  */
 
 
-  unsigned int unicode; /* only valid for key-events */
+  unsigned int unicode; /* only valid for key-events, re-use as keycode? */
   const char *string;   /* as key can be "up" "down" "space" "backspace" "a" "b" "ø" etc .. */
                         /* this is also where the message is delivered for
                          * MESSAGE events
@@ -742,6 +795,8 @@ int   ctx_add_idle           (Ctx *ctx, int (*idle_cb)(Ctx *ctx, void *idle_data
 
 void ctx_add_hit_region (Ctx *ctx, const char *id);
 
+void ctx_set_title (Ctx *ctx, const char *title);
+
 void ctx_listen_full (Ctx     *ctx,
                       float    x,
                       float    y,
@@ -787,8 +842,14 @@ int   ctx_events_height (Ctx *ctx);
  * are called in response to these being called.
  */
 
+int ctx_key_down  (Ctx *ctx, unsigned int keyval,
+                   const char *string, uint32_t time);
+int ctx_key_up    (Ctx *ctx, unsigned int keyval,
+                   const char *string, uint32_t time);
 int ctx_key_press (Ctx *ctx, unsigned int keyval,
                    const char *string, uint32_t time);
+
+
 int ctx_scrolled  (Ctx *ctx, float x, float y, CtxScrollDirection scroll_direction, uint32_t time);
 void ctx_incoming_message (Ctx *ctx, const char *message, long time);
 int ctx_pointer_motion    (Ctx *ctx, float x, float y, int device_no, uint32_t time);
@@ -796,7 +857,6 @@ int ctx_pointer_release   (Ctx *ctx, float x, float y, int device_no, uint32_t t
 int ctx_pointer_press     (Ctx *ctx, float x, float y, int device_no, uint32_t time);
 int ctx_pointer_drop      (Ctx *ctx, float x, float y, int device_no, uint32_t time,
                            char *string);
-
 
 typedef enum
 {
@@ -836,7 +896,7 @@ typedef enum
   CTX_FILL             = 'F', //
   CTX_RESTORE          = 'G', //
   CTX_HOR_LINE_TO      = 'H', // x
-  CTX_BITPIX           = 'I', // x, y, width, height, scale // NYI
+  CTX_DEFINE_TEXTURE   = 'I', // "eid" width height format "data"
   CTX_ROTATE           = 'J', // radians
   CTX_COLOR            = 'K', // model, c1 c2 c3 ca - has a variable set of
   // arguments.
@@ -883,7 +943,7 @@ typedef enum
   CTX_RECTANGLE        = 'r', // x y width height
   CTX_REL_SMOOTH_TO    = 's', // cx cy x y
   CTX_REL_SMOOTHQ_TO   = 't', // x y
-  CTX_TEXT_STROKE      = 'u', // string - utf8 string
+  CTX_STROKE_TEXT      = 'u', // string - utf8 string
   CTX_REL_VER_LINE_TO  = 'v', // y
   CTX_GLYPH            = 'w', // unichar fontsize
   CTX_TEXT             = 'x', // string | kern - utf8 data to shape or horizontal kerning amount
@@ -920,9 +980,14 @@ typedef enum
   CTX_SHADOW_COLOR     = 141, // kC
   CTX_SHADOW_OFFSET_X  = 142, // kx
   CTX_SHADOW_OFFSET_Y  = 143, // ky
+  CTX_IMAGE_SMOOTHING  = 144, // kS
+  CTX_LINE_DASH_OFFSET = 145, // kD lineDashOffset
   // items marked with % are currently only for the parser
   // for instance for svg compatibility or simulated/converted color spaces
   // not the serialization/internal render stream
+  //
+  CTX_STROKE_RECT      = 200, // strokeRect - only exist in long form
+  CTX_FILL_RECT        = 201, // fillRect   - only exist in long form
 } CtxCode;
 
 
@@ -1026,6 +1091,33 @@ struct
       uint8_t  code_cont;
       uint8_t  data[8]; /* .. and continues */
     } colorspace;
+    struct
+    {
+      uint8_t  code;
+      float    x;
+      float    y;
+      uint8_t  code_data;
+      uint32_t stringlen;
+      uint32_t blocklen;
+      uint8_t  code_cont;
+      char     eid[8]; /* .. and continues */
+    } texture;
+    struct
+    {
+      uint8_t  code;
+      uint32_t width;
+      uint32_t height;
+      uint8_t  code_cont0;
+      uint16_t format;
+      uint16_t pad0;
+      uint32_t pad1;
+      uint8_t  code_data;
+      uint32_t stringlen;
+      uint32_t blocklen;
+      uint8_t  code_cont1;
+      char     eid[8]; /* .. and continues */
+      // followed by - in variable offset code_Data, data_len, datablock_len, cont, pixeldata
+    } define_texture;
     struct
     {
       uint8_t  code;
@@ -1180,6 +1272,14 @@ struct
       uint8_t pad1;
       float radius;
     } rectangle;
+    struct {
+      uint8_t code;
+      float x;
+      float y;
+      uint8_t pad0;
+      float width;
+      float height;
+    } view_box;
 
     struct
     {
@@ -1570,7 +1670,7 @@ typedef struct _CtxParser CtxParser;
   float      cell_height,
   int        cursor_x,
   int        cursor_y,
-  int   (*set_prop)(void *prop_data, uint32_t key, const char *data,  int len),
+  int   (*set_prop)(void *prop_data, uint64_t key, const char *data,  int len),
   int   (*get_prop)(void *prop_Data, const char *key, char **data, int *len),
   void  *prop_data,
   void (*exit) (void *exit_data),
@@ -1583,13 +1683,23 @@ enum _CtxColorSpace
   CTX_COLOR_SPACE_DEVICE_CMYK,
   CTX_COLOR_SPACE_USER_RGB,
   CTX_COLOR_SPACE_USER_CMYK,
+  CTX_COLOR_SPACE_TEXTURE
 };
 typedef enum _CtxColorSpace CtxColorSpace;
 
-void ctx_colorspace (Ctx           *ctx,
-                     CtxColorSpace  space_slot,
-                     unsigned char *data,
-                     int            data_length);
+/* sets the color space for a slot, the space is either a string of
+ * "sRGB" "rec2020" .. etc or an icc profile.
+ *
+ * The slots device_rgb and device_cmyk is mostly to be handled outside drawing 
+ * code, and user_rgb and user_cmyk is to be used. With no user_cmyk set
+ * user_cmyk == device_cmyk.
+ *
+ * The set profiles follows the graphics state.
+ */
+void ctx_color_space (Ctx           *ctx,
+                      CtxColorSpace  space_slot,
+                      unsigned char *data,
+                      int            data_length);
 
 void
 ctx_parser_set_size (CtxParser *parser,
@@ -1600,12 +1710,29 @@ ctx_parser_set_size (CtxParser *parser,
 
 void ctx_parser_feed_byte (CtxParser *parser, int byte);
 
+int
+ctx_get_contents (const char     *path,
+                   unsigned char **contents,
+                   long           *length);
+
 void ctx_parser_free (CtxParser *parser);
+typedef struct _CtxSHA1 CtxSHA1;
+
+void
+ctx_bin2base64 (const void *bin,
+                int         bin_length,
+                char       *ascii);
+int
+ctx_base642bin (const char    *ascii,
+                int           *length,
+                unsigned char *bin);
+float ctx_term_get_cell_width (Ctx *ctx);
+float ctx_term_get_cell_height (Ctx *ctx);
 
 #ifndef CTX_CODEC_CHAR
 //#define CTX_CODEC_CHAR '\035'
 //#define CTX_CODEC_CHAR 'a'
-#define CTX_CODEC_CHAR '\077'
+#define CTX_CODEC_CHAR '\020' // datalink escape
 //#define CTX_CODEC_CHAR '^'
 #endif
 
@@ -1619,23 +1746,6 @@ void ctx_parser_free (CtxParser *parser);
 #endif
 #ifndef __CTX_H__
 #define __CTX_H__
-/* mrg - MicroRaptor Gui
- * Copyright (c) 2014 Øyvind Kolås <pippin@hodefoting.com>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library. If not, see <http://www.gnu.org/licenses/>.
- */
-
 #ifndef CTX_STRING_H
 #define CTX_STRING_H
 
@@ -1676,155 +1786,6 @@ char       *ctx_strdup_printf         (const char *format, ...);
 #endif
 #ifndef FALSE
 #define FALSE 0
-#endif
-
-#endif
- /* Copyright (C) 2020 Øyvind Kolås <pippin@gimp.org>
- */
-
-#if CTX_FORMATTER
-
-/* returns the maximum string length including terminating \0 */
-static int ctx_a85enc_len (int input_length)
-{
-  return (input_length / 4 + 1) * 5;
-}
-
-static int ctx_a85enc (const void *srcp, char *dst, int count)
-{
-  const uint8_t *src = (uint8_t*)srcp;
-  int out_len = 0;
-
-  int padding = 4-(count % 4);
-  if (padding == 4) padding = 0;
-
-  for (int i = 0; i < (count+3)/4; i ++)
-  {
-    uint32_t input = 0;
-    for (int j = 0; j < 4; j++)
-    {
-      input = (input << 8);
-      if (i*4+j<=count)
-        input += src[i*4+j];
-    }
-
-    int divisor = 85 * 85 * 85 * 85;
-    if (input == 0)
-    {
-        dst[out_len++] = 'z';
-    }
-    /* todo: encode 4 spaces as 'y' */
-    else
-    {
-      for (int j = 0; j < 5; j++)
-      {
-        dst[out_len++] = ((input / divisor) % 85) + '!';
-        divisor /= 85;
-      }
-    }
-  }
-  out_len -= padding;
-  dst[out_len]=0;
-  return out_len;
-}
-#endif
-
-#if CTX_PARSER
-
-static int ctx_a85dec (const char *src, char *dst, int count)
-{
-  int out_len = 0;
-  uint32_t val = 0;
-  int k = 0;
-  int i = 0;
-  for (i = 0; i < count; i ++)
-  {
-    val *= 85;
-    if (src[i] == '~')
-    {
-      break;
-    }
-    else if (src[i] == 'z')
-    {
-      for (int j = 0; j < 4; j++)
-        dst[out_len++] = 0;
-      k = 0;
-    }
-    else if (src[i] == 'y') /* lets support this extension */
-    {
-      for (int j = 0; j < 4; j++)
-        dst[out_len++] = 32;
-      k = 0;
-    }
-    else if (src[i] >= '!' && src[i] <= 'u')
-    {
-      val += src[i]-'!';
-      if (k % 5 == 4)
-      {
-         for (int j = 0; j < 4; j++)
-         {
-           dst[out_len++] = (val & (0xff << 24)) >> 24;
-           val <<= 8;
-         }
-         val = 0;
-      }
-      k++;
-    }
-    // we treat all other chars as whitespace
-  }
-  if (src[i] != '~')
-  { 
-    val *= 85;
-  }
-  k = k % 5;
-  if (k)
-  {
-    val += 84;
-    for (int j = k; j < 4; j++)
-    {
-      val *= 85;
-      val += 84;
-    }
-
-    for (int j = 0; j < k-1; j++)
-    {
-      dst[out_len++] = (val & (0xff << 24)) >> 24;
-      val <<= 8;
-    }
-    val = 0;
-  }
-  dst[out_len] = 0;
-  return out_len;
-}
-
-#if 0
-static int ctx_a85len (const char *src, int count)
-{
-  int out_len = 0;
-  int k = 0;
-  for (int i = 0; i < count; i ++)
-  {
-    if (src[i] == '~')
-      break;
-    else if (src[i] == 'z')
-    {
-      for (int j = 0; j < 4; j++)
-        out_len++;
-      k = 0;
-    }
-    else if (src[i] >= '!' && src[i] <= 'u')
-    {
-      if (k % 5 == 4)
-        out_len += 4;
-      k++;
-    }
-    // we treat all other chars as whitespace
-  }
-  k = k % 5;
-  if (k)
-    out_len += k-1;
-  return out_len;
-}
 #endif
 
 #endif
@@ -3618,8 +3579,19 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #endif
 
 
+#ifndef CTX_PARSER_FIXED_TEMP
+#define CTX_PARSER_FIXED_TEMP 0
+         // when 1  CTX_PARSER_MAXLEN is the fixed max stringlen
+#endif   // and no allocations happens beyond creating the parser,
+         // when 0 the scratchbuf for parsing is a separate dynamically
+         // growing buffer, that maxes out at CTX_PARSER_MAXLEN
+         //
 #ifndef CTX_PARSER_MAXLEN
-#define CTX_PARSER_MAXLEN  1024 // this is the largest text string we support
+#if CTX_PARSER_FIXED_TEMP
+#define CTX_PARSER_MAXLEN  1024*128        // This is the maximum texture/string size supported
+#else
+#define CTX_PARSER_MAXLEN  1024*1024*16    // 16mb
+#endif
 #endif
 
 #ifndef CTX_COMPOSITING_GROUPS
@@ -3699,14 +3671,15 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
  * edgelist and drawlist.
  */
 #ifndef CTX_MIN_JOURNAL_SIZE
-#define CTX_MIN_JOURNAL_SIZE   1024*64
+#define CTX_MIN_JOURNAL_SIZE      512
 #endif
 
 /* The maximum size we permit the drawlist to grow to,
  * the memory used is this number * 9, where 9 is sizeof(CtxEntry)
  */
 #ifndef CTX_MAX_JOURNAL_SIZE
-#define CTX_MAX_JOURNAL_SIZE   CTX_MIN_JOURNAL_SIZE
+//#define CTX_MAX_JOURNAL_SIZE   CTX_MIN_JOURNAL_SIZE
+#define CTX_MAX_JOURNAL_SIZE 1024*1024*16
 #endif
 
 #ifndef CTX_DRAWLIST_STATIC
@@ -3733,7 +3706,7 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
   //     properties still make use of it)
   //     
   //     for desktop-use this should be fully dynamic, possibly
-  //     with chained pools
+  //     with chained pools, gradients are stored here.
 #define CTX_STRINGPOOL_SIZE     1000 //
 #endif
 
@@ -3977,7 +3950,7 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 
 #define CTX_PI                              3.141592653589793f
 #ifndef CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS
-#define CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS  100
+#define CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS  120
 #endif
 
 #ifndef CTX_MAX_FONTS
@@ -4034,7 +4007,6 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 
 #ifdef CTX_RASTERIZER
 #if CTX_RASTERIZER==0
-#elif CTX_RASTERIZER==1
 #else
 #undef CTX_RASTERIZER
 #define CTX_RASTERIZER 1
@@ -4068,6 +4040,169 @@ static inline CtxList *ctx_list_find_custom (CtxList *list,
 #ifndef CTX_SCREENSHOT
 #define CTX_SCREENSHOT 0
 #endif
+
+
+#ifndef CTX_TILED
+#if CTX_SDL || CTX_FB
+#define CTX_TILED 1
+#else
+#define CTX_TILED 0
+#endif
+#endif
+
+ /* Copyright (C) 2020 Øyvind Kolås <pippin@gimp.org>
+ */
+
+#if CTX_FORMATTER
+
+/* returns the maximum string length including terminating \0 */
+static int ctx_a85enc_len (int input_length)
+{
+  return (input_length / 4 + 1) * 5;
+}
+
+static int ctx_a85enc (const void *srcp, char *dst, int count)
+{
+  const uint8_t *src = (uint8_t*)srcp;
+  int out_len = 0;
+
+  int padding = 4-(count % 4);
+  if (padding == 4) padding = 0;
+
+  for (int i = 0; i < (count+3)/4; i ++)
+  {
+    uint32_t input = 0;
+    for (int j = 0; j < 4; j++)
+    {
+      input = (input << 8);
+      if (i*4+j<=count)
+        input += src[i*4+j];
+    }
+
+    int divisor = 85 * 85 * 85 * 85;
+#if 0
+    if (input == 0)
+    {
+        dst[out_len++] = 'z';
+    }
+    /* todo: encode 4 spaces as 'y' */
+    else
+#endif
+    {
+      for (int j = 0; j < 5; j++)
+      {
+        dst[out_len++] = ((input / divisor) % 85) + '!';
+        divisor /= 85;
+      }
+    }
+  }
+  out_len -= padding;
+  dst[out_len]=0;
+  return out_len;
+}
+#endif
+
+#if CTX_PARSER
+
+static int ctx_a85dec (const char *src, char *dst, int count)
+{
+  int out_len = 0;
+  uint32_t val = 0;
+  int k = 0;
+  int i = 0;
+  for (i = 0; i < count; i ++)
+  {
+    val *= 85;
+    if (src[i] == '~')
+    {
+      break;
+    }
+#if 0
+    else if (src[i] == 'z')
+    {
+      for (int j = 0; j < 4; j++)
+        dst[out_len++] = 0;
+      k = 0;
+    }
+    else if (src[i] == 'y') /* lets support this extension */
+    {
+      for (int j = 0; j < 4; j++)
+        dst[out_len++] = 32;
+      k = 0;
+    }
+#endif
+    else if (src[i] >= '!' && src[i] <= 'u')
+    {
+      val += src[i]-'!';
+      if (k % 5 == 4)
+      {
+         for (int j = 0; j < 4; j++)
+         {
+           dst[out_len++] = (val & (0xff << 24)) >> 24;
+           val <<= 8;
+         }
+         val = 0;
+      }
+      k++;
+    }
+    // we treat all other chars as whitespace
+  }
+  if (src[i] != '~')
+  { 
+    val *= 85;
+  }
+  k = k % 5;
+  if (k)
+  {
+    val += 84;
+    for (int j = k; j < 4; j++)
+    {
+      val *= 85;
+      val += 84;
+    }
+
+    for (int j = 0; j < k-1; j++)
+    {
+      dst[out_len++] = (val & (0xff << 24)) >> 24;
+      val <<= 8;
+    }
+    val = 0;
+  }
+  dst[out_len] = 0;
+  return out_len;
+}
+
+#if 0
+static int ctx_a85len (const char *src, int count)
+{
+  int out_len = 0;
+  int k = 0;
+  for (int i = 0; i < count; i ++)
+  {
+    if (src[i] == '~')
+      break;
+    else if (src[i] == 'z')
+    {
+      for (int j = 0; j < 4; j++)
+        out_len++;
+      k = 0;
+    }
+    else if (src[i] >= '!' && src[i] <= 'u')
+    {
+      if (k % 5 == 4)
+        out_len += 4;
+      k++;
+    }
+    // we treat all other chars as whitespace
+  }
+  k = k % 5;
+  if (k)
+    out_len += k-1;
+  return out_len;
+}
+#endif
+
+#endif
 #ifndef __CTX_EXTRA_H
 #define __CTX_EXTRA_H
 
@@ -4090,84 +4225,9 @@ typedef enum CtxOutputmode
   CTX_OUTPUT_MODE_UI
 } CtxOutputmode;
 
-#define CTX_NORMALIZE(a)            (((a)=='-')?'_':(a))
-#define CTX_NORMALIZE_CASEFOLDED(a) (((a)=='-')?'_':((((a)>='A')&&((a)<='Z'))?(a)+32:(a)))
 
 
-/* We use the preprocessor to compute case invariant hashes
- * of strings directly, if there is collisions in our vocabulary
- * the compiler tells us.
- */
 
-#define CTX_STRHash(a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a27,a12,a13) (\
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a0))+ \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a1))*27)+ \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a2))*27*27)+ \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a3))*27*27*27)+ \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a4))*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a5))*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a6))*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a7))*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a8))*27*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a9))*27*27*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a10))*27*27*27*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a27))*27*27*27*27*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a12))*27*27*27*27*27*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE_CASEFOLDED(a13))*27*27*27*27*27*27*27*27*27*27*27*27*27)))
-
-#define CTX_STRH(a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a27,a12,a13) (\
-          (((uint32_t)CTX_NORMALIZE(a0))+ \
-          (((uint32_t)CTX_NORMALIZE(a1))*27)+ \
-          (((uint32_t)CTX_NORMALIZE(a2))*27*27)+ \
-          (((uint32_t)CTX_NORMALIZE(a3))*27*27*27)+ \
-          (((uint32_t)CTX_NORMALIZE(a4))*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE(a5))*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE(a6))*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE(a7))*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE(a8))*27*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE(a9))*27*27*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE(a10))*27*27*27*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE(a27))*27*27*27*27*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE(a12))*27*27*27*27*27*27*27*27*27*27*27*27) + \
-          (((uint32_t)CTX_NORMALIZE(a13))*27*27*27*27*27*27*27*27*27*27*27*27*27)))
-
-static inline uint32_t ctx_strhash (const char *str, int case_insensitive)
-{
-  uint32_t ret;
-  if (!str) return 0;
-  int len = strlen (str);
-  if (case_insensitive)
-    ret =CTX_STRHash(len>=0?str[0]:0,
-                       len>=1?str[1]:0,
-                       len>=2?str[2]:0,
-                       len>=3?str[3]:0,
-                       len>=4?str[4]:0,
-                       len>=5?str[5]:0,
-                       len>=6?str[6]:0,
-                       len>=7?str[7]:0,
-                       len>=8?str[8]:0,
-                       len>=9?str[9]:0,
-                       len>=10?str[10]:0,
-                       len>=11?str[11]:0,
-                       len>=12?str[12]:0,
-                       len>=13?str[13]:0);
-  else
-    ret =CTX_STRH(len>=0?str[0]:0,
-                    len>=1?str[1]:0,
-                    len>=2?str[2]:0,
-                    len>=3?str[3]:0,
-                    len>=4?str[4]:0,
-                    len>=5?str[5]:0,
-                    len>=6?str[6]:0,
-                    len>=7?str[7]:0,
-                    len>=8?str[8]:0,
-                    len>=9?str[9]:0,
-                    len>=10?str[10]:0,
-                    len>=11?str[11]:0,
-                    len>=12?str[12]:0,
-                    len>=13?str[13]:0);
-                  return ret;
-}
 
 #if CTX_FORCE_INLINES
 #define CTX_INLINE inline __attribute__((always_inline))
@@ -4353,8 +4413,8 @@ static inline float _ctx_parse_float (const char *str, char **endptr)
   return strtod (str, endptr); /* XXX: , vs . problem in some locales */
 }
 
-const char *ctx_get_string (Ctx *ctx, uint32_t hash);
-void ctx_set_string (Ctx *ctx, uint32_t hash, const char *value);
+const char *ctx_get_string (Ctx *ctx, uint64_t hash);
+void ctx_set_string (Ctx *ctx, uint64_t hash, const char *value);
 typedef struct _CtxColor CtxColor;
 typedef struct _CtxBuffer CtxBuffer;
 
@@ -4366,15 +4426,16 @@ struct
 };
 void ctx_get_matrix (Ctx *ctx, CtxMatrix *matrix);
 
-int ctx_color (Ctx *ctx, const char *string);
+int ctx_color_fill (Ctx *ctx, const char *string);
+int ctx_color_stroke (Ctx *ctx, const char *string);
 typedef struct _CtxState CtxState;
 CtxColor *ctx_color_new ();
 CtxState *ctx_get_state (Ctx *ctx);
 void ctx_color_get_rgba (CtxState *state, CtxColor *color, float *out);
 void ctx_color_set_rgba (CtxState *state, CtxColor *color, float r, float g, float b, float a);
 void ctx_color_free (CtxColor *color);
-void ctx_set_color (Ctx *ctx, uint32_t hash, CtxColor *color);
-int  ctx_get_color (Ctx *ctx, uint32_t hash, CtxColor *color);
+void ctx_set_color (Ctx *ctx, uint64_t hash, CtxColor *color);
+int  ctx_get_color (Ctx *ctx, uint64_t hash, CtxColor *color);
 int ctx_color_set_from_string (Ctx *ctx, CtxColor *color, const char *string);
 
 int ctx_color_is_transparent (CtxColor *color);
@@ -4394,8 +4455,16 @@ void ctx_matrix_multiply (CtxMatrix       *result,
                           const CtxMatrix *s);
 void
 ctx_matrix_translate (CtxMatrix *matrix, float x, float y);
-int ctx_is_set_now (Ctx *ctx, uint32_t hash);
+int ctx_is_set_now (Ctx *ctx, uint64_t hash);
 void ctx_set_size (Ctx *ctx, int width, int height);
+
+static inline float ctx_matrix_get_scale (CtxMatrix *matrix)
+{
+   return ctx_maxf (ctx_maxf (ctx_fabsf (matrix->m[0][0]),
+                         ctx_fabsf (matrix->m[0][1]) ),
+               ctx_maxf (ctx_fabsf (matrix->m[1][0]),
+                         ctx_fabsf (matrix->m[1][1]) ) );
+}
 
 #if CTX_FONTS_FROM_FILE
 int   ctx_load_font_ttf_file (const char *name, const char *path);
@@ -4409,221 +4478,249 @@ _ctx_file_get_contents (const char     *path,
 #ifndef __CTX_CONSTANTS
 #define __CTX_CONSTANTS
 
-#define CTX_add_stop       CTX_STRH('a','d','d','_','s','t','o','p',0,0,0,0,0,0)
-#define CTX_addStop        CTX_STRH('a','d','d','S','t','o','p',0,0,0,0,0,0,0)
-#define CTX_alphabetic     CTX_STRH('a','l','p','h','a','b','e','t','i','c',0,0,0,0)
-#define CTX_arc            CTX_STRH('a','r','c',0,0,0,0,0,0,0,0,0,0,0)
-#define CTX_arc_to         CTX_STRH('a','r','c','_','t','o',0,0,0,0,0,0,0,0)
-#define CTX_arcTo          CTX_STRH('a','r','c','T','o',0,0,0,0,0,0,0,0,0)
-#define CTX_begin_path     CTX_STRH('b','e','g','i','n','_','p','a','t','h',0,0,0,0)
-#define CTX_beginPath      CTX_STRH('b','e','g','i','n','P','a','t','h',0,0,0,0,0)
-#define CTX_bevel          CTX_STRH('b','e','v','e','l',0, 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_bottom         CTX_STRH('b','o','t','t','o','m',0,0,0,0,0,0,0,0)
-#define CTX_cap            CTX_STRH('c','a','p',0,0,0,0,0,0,0,0,0,0,0)
-#define CTX_center         CTX_STRH('c','e','n','t','e','r', 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_clear          CTX_STRH('c','l','e','a','r',0,0,0,0,0,0,0,0,0)
-#define CTX_color          CTX_STRH('c','o','l','o','r',0,0,0,0,0,0,0,0,0)
-#define CTX_copy           CTX_STRH('c','o','p','y',0,0,0,0,0,0,0,0,0,0)
-#define CTX_clip           CTX_STRH('c','l','i','p',0,0,0,0,0,0,0,0,0,0)
-#define CTX_close_path     CTX_STRH('c','l','o','s','e','_','p','a','t','h',0,0,0,0)
-#define CTX_closePath      CTX_STRH('c','l','o','s','e','P','a','t','h',0,0,0,0,0)
-#define CTX_cmyka          CTX_STRH('c','m','y','k','a',0,0,0,0,0,0,0,0,0)
-#define CTX_cmyk           CTX_STRH('c','m','y','k',0,0,0,0,0,0,0,0,0,0)
-#define CTX_color          CTX_STRH('c','o','l','o','r',0,0,0,0,0,0,0,0,0)
+#define TOKENHASH(a)    ((uint64_t)a)
 
-#define CTX_blending       CTX_STRH('b','l','e','n','d','i','n','g',0,0,0,0,0,0)
-#define CTX_blend          CTX_STRH('b','l','e','n','d',0,0,0,0,0,0,0,0,0)
-#define CTX_blending_mode  CTX_STRH('b','l','e','n','d','i','n','g','_','m','o','d','e',0)
-#define CTX_blendingMode   CTX_STRH('b','l','e','n','d','i','n','g','M','o','d','e',0,0)
-#define CTX_blend_mode     CTX_STRH('b','l','e','n','d','_','m','o','d','e',0,0,0,0)
-#define CTX_blendMode      CTX_STRH('b','l','e','n','d','M','o','d','e',0,0,0,0,0)
-
-#define CTX_composite      CTX_STRH('c','o','m','p','o','s','i','t','i','e',0,0,0,0)
-#define CTX_compositing_mode CTX_STRH('c','o','m','p','o','s','i','t','i','n','g','_','m','o')
-#define CTX_compositingMode CTX_STRH('c','o','m','p','o','s','i','t','i','n','g','M','o','d')
-#define CTX_curve_to       CTX_STRH('c','u','r','v','e','_','t','o',0,0,0,0,0,0)
-#define CTX_curveTo        CTX_STRH('c','u','r','v','e','T','o',0,0,0,0,0,0,0)
-#define CTX_darken         CTX_STRH('d','a','r','k','e','n',0,0,0,0,0,0,0,0)
-#define CTX_defineGlyph    CTX_STRH('d','e','f','i','n','e','G','l','y','p','h',0,0,0)
-#define CTX_kerningPair    CTX_STRH('k','e','r','n','i','n','g','P','a','i','r',0,0,0)
-#define CTX_destinationIn  CTX_STRH('d','e','s','t','i','n','a','t','i','o','n','I','n',0)
-#define CTX_destination_in CTX_STRH('d','e','s','t','i','n','a','t','i','o','n','_','i','n')
-#define CTX_destinationAtop CTX_STRH('d','e','s','t','i','n','a','t','i','o','n','A','t','o')
-#define CTX_destination_atop CTX_STRH('d','e','s','t','i','n','a','t','i','o','n','_','a','t')
-#define CTX_destinationOver CTX_STRH('d','e','s','t','i','n','a','t','i','o','n','O','v','e')
-#define CTX_destination_over CTX_STRH('d','e','s','t','i','n','a','t','i','o','n','-','o','v')
-#define CTX_destinationOut CTX_STRH('d','e','s','t','i','n','a','t','i','o','n','O','u','t')
-#define CTX_destination_out CTX_STRH('d','e','s','t','i','n','a','t','i','o','n','_','o','u')
-#define CTX_difference     CTX_STRH('d','i','f','f','e','r','e','n','c','e',0,0,0,0)
-#define CTX_done           CTX_STRH('d','o','n','e',0,0,0,0,0,0,0,0,0,0)
-#define CTX_drgba          CTX_STRH('d','r','g','b','a',0,0,0,0,0,0,0,0,0)
-#define CTX_drgb           CTX_STRH('d','r','g','b',0,0,0,0,0,0,0,0,0,0)
-#define CTX_end            CTX_STRH('e','n','d',0,0,0, 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_endfun         CTX_STRH('e','n','d','f','u','n',0,0,0,0,0,0,0,0)
-
-#define CTX_end_group      CTX_STRH('e','n','d','_','G','r','o','u','p',0,0,0,0,0)
-#define CTX_endGroup       CTX_STRH('e','n','d','G','r','o','u','p',0,0,0,0,0,0)
-
-#define CTX_even_odd       CTX_STRH('e','v','e','n','_','o','d','d',0,0,0,0,0,0)
-#define CTX_evenOdd        CTX_STRH('e','v','e','n','O','d','d',0,0,0,0,0,0,0)
-
-
-
-#define CTX_exit           CTX_STRH('e','x','i','t',0,0,0,0,0,0,0,0,0,0)
-#define CTX_fill           CTX_STRH('f','i','l','l',0,0,0,0,0,0,0,0,0,0)
-#define CTX_fill_rule      CTX_STRH('f','i','l','l','_','r','u','l','e',0,0,0,0,0)
-#define CTX_fillRule       CTX_STRH('f','i','l','l','R','u','l','e',0,0,0,0,0,0)
-#define CTX_flush          CTX_STRH('f','l','u','s','h',0,0,0,0,0,0,0,0,0)
-#define CTX_font           CTX_STRH('f','o','n','t',0,0,0,0,0,0,0,0,0,0)
-#define CTX_font_size      CTX_STRH('f','o','n','t','_','s','i','z','e',0,0,0,0,0)
-#define CTX_setFontSize       CTX_STRH('s','e','t','F','o','n','t','S','i','z','e',0,0,0)
-#define CTX_fontSize       CTX_STRH('f','o','n','t','S','i','z','e',0,0,0,0,0,0)
-#define CTX_function       CTX_STRH('f','u','n','c','t','i','o','n',0,0,0,0,0,0)
-#define CTX_getkey         CTX_STRH('g','e','t','k','e','y',0,0,0,0,0,0,0,0)
-#define CTX_global_alpha   CTX_STRH('g','l','o','b','a','l','_','a','l','p','h','a',0,0)
-#define CTX_globalAlpha    CTX_STRH('g','l','o','b','a','l','A','l','p','h','a',0,0,0)
-#define CTX_glyph          CTX_STRH('g','l','y','p','h',0,0,0,0,0,0,0,0,0)
-#define CTX_gradient_add_stop CTX_STRH('g','r','a','d','i','e','n','t','_','a','d','d','_','s')
-#define CTX_gradientAddStop CTX_STRH('g','r','a','d','i','e','n','t','A','d','d','S','t','o')
-#define CTX_graya          CTX_STRH('g','r','a','y','a',0,0,0,0,0,0,0,0,0)
-#define CTX_gray           CTX_STRH('g','r','a','y',0,0,0,0,0,0,0,0,0,0)
-#define CTX_H
-#define CTX_hanging        CTX_STRH('h','a','n','g','i','n','g',0,0,0,0,0,0,0)
-#define CTX_height         CTX_STRH('h','e','i','g','h','t',0,0,0,0,0,0,0,0)
-#define CTX_hor_line_to    CTX_STRH('h','o','r','_','l','i','n','e','_','t','o',0,0,0)
-#define CTX_horLineTo      CTX_STRH('h','o','r','L','i','n','e','T','o',0,0,0,0,0)
-#define CTX_hue            CTX_STRH('h','u','e',0,0,0,0,0,0,0,0,0,0,0)
-#define CTX_identity       CTX_STRH('i','d','e','n','t','i','t','y',0,0,0,0,0,0)
-#define CTX_ideographic    CTX_STRH('i','d','e','o','g','r','a','p','h','i','c',0,0,0)
-#define CTX_join           CTX_STRH('j','o','i','n',0,0,0,0,0,0,0,0,0,0)
-#define CTX_laba           CTX_STRH('l','a','b','a',0,0,0,0,0,0,0,0,0,0)
-#define CTX_lab            CTX_STRH('l','a','b',0,0,0,0,0,0,0,0,0,0,0)
-#define CTX_lcha           CTX_STRH('l','c','h','a',0,0,0,0,0,0,0,0,0,0)
-#define CTX_lch            CTX_STRH('l','c','h',0,0,0,0,0,0,0,0,0,0,0)
-#define CTX_left           CTX_STRH('l','e','f','t',0,0, 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_lighter        CTX_STRH('l','i','g','h','t','e','r',0,0,0,0,0,0,0)
-#define CTX_lighten        CTX_STRH('l','i','g','h','t','e','n',0,0,0,0,0,0,0)
-#define CTX_linear_gradient CTX_STRH('l','i','n','e','a','r','_','g','r','a','d','i','e','n')
-#define CTX_linearGradient CTX_STRH('l','i','n','e','a','r','G','r','a','d','i','e','n','t')
-#define CTX_line_cap       CTX_STRH('l','i','n','e','_','c','a','p',0,0,0,0,0,0)
-#define CTX_lineCap        CTX_STRH('l','i','n','e','C','a','p',0,0,0,0,0,0,0)
-#define CTX_setLineCap     CTX_STRH('s','e','t','L','i','n','e','C','a','p',0,0,0,0)
-#define CTX_line_height    CTX_STRH('l','i','n','e','_','h','e','i','h','t',0,0,0,0)
-#define CTX_line_join      CTX_STRH('l','i','n','e','_','j','o','i','n',0,0,0,0,0)
-#define CTX_lineJoin       CTX_STRH('l','i','n','e','J','o','i','n',0,0,0,0,0,0)
-#define CTX_setLineJoin    CTX_STRH('s','e','t','L','i','n','e','J','o','i','n',0,0,0)
-#define CTX_line_spacing   CTX_STRH('l','i','n','e','_','s','p','a','c','i','n','g',0,0)
-#define CTX_line_to        CTX_STRH('l','i','n','e','_','t','o',0,0,0,0,0,0,0)
-#define CTX_lineTo         CTX_STRH('l','i','n','e','T','o',0,0,0,0,0,0,0,0)
-#define CTX_lineDash       CTX_STRH('l','i','n','e','D','a','s','h',0,0,0,0,0,0)
-#define CTX_line_width     CTX_STRH('l','i','n','e','_','w','i','d','t','h',0,0,0,0)
-#define CTX_lineWidth      CTX_STRH('l','i','n','e','W','i','d','t','h',0,0,0,0,0)
-#define CTX_setLineWidth   CTX_STRH('s','e','t','L','i','n','e','W','i','d','t','h',0,0)
-#define CTX_view_box       CTX_STRH('v','i','e','w','_','b','o','x',0,0,0,0,0,0)
-#define CTX_viewBox        CTX_STRH('v','i','e','w','B','o','x',0,0,0,0,0,0,0)
-#define CTX_middle         CTX_STRH('m','i','d','d','l','e',0, 0, 0, 0, 0, 0,0,0)
-#define CTX_miter          CTX_STRH('m','i','t','e','r',0, 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_miter_limit    CTX_STRH('m','i','t','e','r','_','l','i','m','i','t',0,0,0)
-#define CTX_miterLimit     CTX_STRH('m','i','t','e','r','L','i','m','i','t',0,0,0,0)
-#define CTX_move_to        CTX_STRH('m','o','v','e','_','t','o',0,0,0,0,0,0,0)
-#define CTX_moveTo         CTX_STRH('m','o','v','e','T','o',0,0,0,0,0,0,0,0)
-#define CTX_multiply       CTX_STRH('m','u','l','t','i','p','l','y',0,0,0,0,0,0)
-#define CTX_new_page       CTX_STRH('n','e','w','_','p','a','g','e',0,0,0,0,0,0)
-#define CTX_newPage        CTX_STRH('n','e','w','P','a','g','e',0,0,0,0,0,0,0)
-#define CTX_new_path       CTX_STRH('n','e','w','_','p','a','t','h',0,0,0,0,0,0)
-#define CTX_newPath        CTX_STRH('n','e','w','P','a','t','h',0,0,0,0,0,0,0)
-#define CTX_new_state      CTX_STRH('n','e','w','_','s','t','a','t','e',0,0,0,0,0)
-#define CTX_none           CTX_STRH('n','o','n','e', 0 ,0, 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_normal         CTX_STRH('n','o','r','m','a','l',0,0,0,0,0,0,0,0)
-#define CTX_quad_to        CTX_STRH('q','u','a','d','_','t','o',0,0,0,0,0,0,0)
-#define CTX_quadTo         CTX_STRH('q','u','a','d','T','o',0,0,0,0,0,0,0,0)
-#define CTX_radial_gradient CTX_STRH('r','a','d','i','a','l','_','g','r','a','d','i','e','n')
-#define CTX_radialGradient  CTX_STRH('r','a','d','i','a','l','G','r','a','d','i','e','n','t')
-#define CTX_rectangle      CTX_STRH('r','e','c','t','a','n','g','l','e',0,0,0,0,0)
-#define CTX_rect           CTX_STRH('r','e','c','t',0,0,0,0,0,0,0,0,0,0)
-#define CTX_rel_arc_to     CTX_STRH('r','e','l','_','a','r','c','_','t','o',0,0,0,0)
-#define CTX_relArcTo       CTX_STRH('r','e','l','A','r','c','T','o',0,0,0,0,0,0)
-#define CTX_rel_curve_to   CTX_STRH('r','e','l','_','c','u','r','v','e','_','t','o',0,0)
-#define CTX_relCurveTo     CTX_STRH('r','e','l','C','u','r','v','e','T','o',0,0,0,0)
-#define CTX_rel_hor_line_to CTX_STRH('r','e','l','_','h','o','r','_','l','i','n','e',0,0)
-#define CTX_relHorLineTo   CTX_STRH('r','e','l','H','o','r','L','i','n','e','T','o',0,0)
-#define CTX_rel_line_to    CTX_STRH('r','e','l','_','l','i','n','e','_','t','o',0,0,0)
-#define CTX_relLineTo      CTX_STRH('r','e','l','L','i','n','e','T','o',0,0,0,0,0)
-#define CTX_rel_move_to    CTX_STRH('r','e','l','_','m','o','v','e','_','t','o',0,0,0)
-#define CTX_relMoveTo      CTX_STRH('r','e','l','M','o','v','e','T','o',0,0,0,0,0)
-#define CTX_rel_quad_to    CTX_STRH('r','e','l','_','q','u','a','d','_','t','o',0,0,0)
-#define CTX_relQuadTo      CTX_STRH('r','e','l','Q','u','a','d','T','o',0,0,0,0,0)
-#define CTX_rel_smoothq_to CTX_STRH('r','e','l','_','s','m','o','o','t','h','q','_','t','o')
-#define CTX_relSmoothqTo   CTX_STRH('r','e','l','S','m','o','o','t','h','q','T','o',0,0)
-#define CTX_rel_smooth_to  CTX_STRH('r','e','l','_','s','m','o','o','t','h','_','t','o',0)
-#define CTX_relSmoothTo    CTX_STRH('r','e','l','S','m','o','o','t','h','T','o',0,0,0)
-#define CTX_rel_ver_line_to CTX_STRH('r','e','l','_','v','e','r','_','l','i','n','e',0,0)
-#define CTX_relVerLineTo   CTX_STRH('r','e','l','V','e','r','L','i','n','e','T','o',0,0)
-#define CTX_restore        CTX_STRH('r','e','s','t','o','r','e',0,0,0,0,0,0,0)
-#define CTX_reset          CTX_STRH('r','e','s','e','t',0,0,0,0,0,0,0,0,0)
-#define CTX_rgba           CTX_STRH('r','g','b','a',0,0,0,0,0,0,0,0,0,0)
-#define CTX_rgb            CTX_STRH('r','g','b',0,0,0,0,0,0,0,0,0,0,0)
-#define CTX_right          CTX_STRH('r','i','g','h','t',0, 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_rotate         CTX_STRH('r','o','t','a','t','e',0,0,0,0,0,0,0,0)
-#define CTX_round          CTX_STRH('r','o','u','n','d',0, 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_round_rectangle CTX_STRH('r','o','u','n','d','_','r','e','c','t','a','n','g','l')
-#define CTX_roundRectangle  CTX_STRH('r','o','u','n','d','R','e','c','t','a','n','g','l','e')
-#define CTX_save           CTX_STRH('s','a','v','e',0,0,0,0,0,0,0,0,0,0)
-#define CTX_save           CTX_STRH('s','a','v','e',0,0,0,0,0,0,0,0,0,0)
-#define CTX_scale          CTX_STRH('s','c','a','l','e',0,0,0,0,0,0,0,0,0)
-#define CTX_screen         CTX_STRH('s','c','r','e','e','n',0,0,0,0,0,0,0,0)
-#define CTX_setkey         CTX_STRH('s','e','t','k','e','y',0,0,0,0,0,0,0,0)
-#define CTX_shadowBlur     CTX_STRH('s','h','a','d','o','w','B','l','u','r',0,0,0,0)
-#define CTX_shadowColor    CTX_STRH('s','h','a','d','o','w','C','o','l','o','r',0,0,0)
-#define CTX_shadowOffsetX  CTX_STRH('s','h','a','d','o','w','O','f','f','s','e','t','X',0)
-#define CTX_shadowOffsetY  CTX_STRH('s','h','a','d','o','w','O','f','f','s','e','t','Y',0)
-#define CTX_smooth_quad_to CTX_STRH('s','m','o','o','t','h','_','q','u','a','d','_','t','o')
-#define CTX_smoothQuadTo   CTX_STRH('s','m','o','o','t','h','Q','u','a','d','T','o',0,0)
-#define CTX_smooth_to      CTX_STRH('s','m','o','o','t','h','_','t','o',0,0,0,0,0)
-#define CTX_smoothTo       CTX_STRH('s','m','o','o','t','h','T','o',0,0,0,0,0,0)
-#define CTX_sourceIn       CTX_STRH('s','o','u','r','c','e','I','n',0,0,0,0,0,0)
-#define CTX_source_in      CTX_STRH('s','o','u','r','c','e','_','i','n',0,0,0,0,0)
-#define CTX_sourceAtop     CTX_STRH('s','o','u','r','c','e','A','t','o','p',0,0,0,0)
-#define CTX_source_atop    CTX_STRH('s','o','u','r','c','e','_','a','t','o','p',0,0,0)
-#define CTX_sourceOut      CTX_STRH('s','o','u','r','c','e','O','u','t',0,0,0,0,0)
-#define CTX_source_out     CTX_STRH('s','o','u','r','c','e','_','o','u','t',0,0,0,0)
-#define CTX_sourceOver     CTX_STRH('s','o','u','r','c','e','O','v','e','r',0,0,0,0)
-#define CTX_source_over    CTX_STRH('s','o','u','r','c','e','_','o','v','e','r',0,0,0)
-#define CTX_square         CTX_STRH('s','q','u','a','r','e', 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_start          CTX_STRH('s','t','a','r','t',0, 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_start_move     CTX_STRH('s','t','a','r','t','_','m','o','v','e',0,0,0,0)
-#define CTX_start_group    CTX_STRH('s','t','a','r','t','_','G','r','o','u','p',0,0,0)
-#define CTX_startGroup     CTX_STRH('s','t','a','r','t','G','r','o','u','p',0,0,0,0)
-#define CTX_stroke         CTX_STRH('s','t','r','o','k','e',0,0,0,0,0,0,0,0)
-#define CTX_text_align     CTX_STRH('t','e','x','t','_','a','l','i','g','n',0, 0,0,0)
-#define CTX_textAlign      CTX_STRH('t','e','x','t','A','l','i','g','n',0, 0, 0,0,0)
-#define CTX_texture        CTX_STRH('t','e','x','t','u','r','e',0,0,0, 0, 0,0,0)
-#define CTX_text_baseline  CTX_STRH('t','e','x','t','_','b','a','s','e','l','i','n','e',0)
-#define CTX_text_baseline  CTX_STRH('t','e','x','t','_','b','a','s','e','l','i','n','e',0)
-#define CTX_textBaseline   CTX_STRH('t','e','x','t','B','a','s','e','l','i','n','e',0,0)
-#define CTX_text           CTX_STRH('t','e','x','t',0,0,0,0,0,0,0,0,0,0)
-#define CTX_text_direction CTX_STRH('t','e','x','t','_','d','i','r','e','c','t','i','o','n')
-#define CTX_textDirection  CTX_STRH('t','e','x','t','D','i','r','e','c','t','i','o','n',0)
-#define CTX_text_indent    CTX_STRH('t','e','x','t','_','i','n','d','e','n','t', 0,0,0)
-#define CTX_text_stroke    CTX_STRH('t','e','x','t','_','s','t','r','o','k','e', 0,0,0)
-#define CTX_textStroke     CTX_STRH('t','e','x','t','S','t','r','o','k','e', 0, 0,0,0)
-#define CTX_top            CTX_STRH('t','o','p',0,0,0, 0, 0, 0, 0, 0, 0,0,0)
-#define CTX_transform      CTX_STRH('t','r','a','n','s','f','o','r','m',0,0,0,0,0)
-#define CTX_translate      CTX_STRH('t','r','a','n','s','l','a','t','e',0,0,0,0,0)
-#define CTX_verLineTo      CTX_STRH('v','e','r','L','i','n','e','T','o',0,0,0,0,0)
-#define CTX_ver_line_to    CTX_STRH('v','e','r','_','l','i','n','e','_','t','o',0,0,0)
-#define CTX_width          CTX_STRH('w','i','d','t','h',0,0,0,0,0,0,0,0,0)
-#define CTX_winding        CTX_STRH('w','i','n','d','i','n', 'g', 0, 0, 0, 0, 0,0,0)
-#define CTX_x              CTX_STRH('x',0,0,0,0,0,0,0,0,0,0,0,0,0)
-#define CTX_xor            CTX_STRH('x','o','r',0,0,0,0,0,0,0,0,0,0,0)
-#define CTX_y              CTX_STRH('y',0,0,0,0,0,0,0,0,0,0,0,0,0)
-
-
-#define CTX_colorSpace     CTX_STRH('c','o','l','o','r','S','p','a','c','e',0,0,0,0)
-#define CTX_userRGB        CTX_STRH('u','s','e','r','R','G','B',0,0,0,0,0,0,0)
-#define CTX_userCMYK       CTX_STRH('u','s','e','r','C','M','Y','K',0,0,0,0,0,0)
-#define CTX_deviceRGB      CTX_STRH('d','e','v','i','c','e','r','R','G','B',0,0,0,0)
-#define CTX_deviceCMYK     CTX_STRH('d','e','v','i','c','e','r','C','M','Y','K',0,0,0)
+#define CTX_add_stop 	TOKENHASH(1274978316678)
+#define CTX_addStop 	TOKENHASH(40799943078278)
+#define CTX_alphabetic 	TOKENHASH(2629359926678406)
+#define CTX_arc 	TOKENHASH(11526)
+#define CTX_arc_to 	TOKENHASH(1187065094)
+#define CTX_arcTo 	TOKENHASH(38558051590)
+#define CTX_begin_path 	TOKENHASH(3004110681622984)
+#define CTX_beginPath 	TOKENHASH(8437143659599196)
+#define CTX_bevel 	TOKENHASH(29868488)
+#define CTX_bottom 	TOKENHASH(1043772488)
+#define CTX_cap 	TOKENHASH(37066)
+#define CTX_center 	TOKENHASH(1358332362)
+#define CTX_clear 	TOKENHASH(42154890)
+#define CTX_color 	TOKENHASH(43086922)
+#define CTX_copy 	TOKENHASH(1807434)
+#define CTX_clip 	TOKENHASH(1203082)
+#define CTX_close_path 	TOKENHASH(3004110663420810)
+#define CTX_closePath 	TOKENHASH(8437144279135038)
+#define CTX_cmyka 	TOKENHASH(7199690)
+#define CTX_cmyk 	TOKENHASH(908234)
+#define CTX_cmykaS 	TOKENHASH(36313095114)
+#define CTX_cmykS 	TOKENHASH(1135467466)
+#define CTX_color 	TOKENHASH(43086922)
+#define CTX_blending 	TOKENHASH(653586873224)
+#define CTX_blend 	TOKENHASH(13646728)
+#define CTX_blending_mode 	TOKENHASH(8147360531130856)
+#define CTX_blendingMode 	TOKENHASH(7483585768187540)
+#define CTX_blend_mode 	TOKENHASH(2758775686577032)
+#define CTX_blendMode 	TOKENHASH(7773213171090182)
+#define CTX_composite 	TOKENHASH(16930059746378)
+#define CTX_compositing_mode 	TOKENHASH(2417816728103524)
+#define CTX_compositingMode 	TOKENHASH(2807194446992106)
+#define CTX_curve_to 	TOKENHASH(1215559149002)
+#define CTX_curveTo 	TOKENHASH(39483449320906)
+#define CTX_darken 	TOKENHASH(1089315020)
+#define CTX_defineGlyph 	TOKENHASH(2497926167421194)
+#define CTX_defineTexture 	TOKENHASH(2623744577477404)
+#define CTX_kerningPair 	TOKENHASH(6964644556489058)
+#define CTX_destinationIn 	TOKENHASH(8153299143600102)
+#define CTX_destination_in 	TOKENHASH(3824201982576824)
+#define CTX_destinationAtop 	TOKENHASH(8185118415574560)
+#define CTX_destination_atop 	TOKENHASH(7742210324901698)
+#define CTX_destinationOver 	TOKENHASH(3261713333438500)
+#define CTX_destination_over 	TOKENHASH(7742210324728474)
+#define CTX_destinationOut 	TOKENHASH(7742210322269456)
+#define CTX_destination_out 	TOKENHASH(8153299143489102)
+#define CTX_difference 	TOKENHASH(2756492040618700)
+#define CTX_done 	TOKENHASH(492620)
+#define CTX_drgba 	TOKENHASH(6573324)
+#define CTX_drgb 	TOKENHASH(281868)
+#define CTX_drgbaS 	TOKENHASH(36312468748)
+#define CTX_drgbS 	TOKENHASH(1134841100)
+#define CTX_end 	TOKENHASH(13326)
+#define CTX_endfun 	TOKENHASH(1122513934)
+#define CTX_end_group 	TOKENHASH(41200834917390)
+#define CTX_endGroup 	TOKENHASH(3570227948106766)
+#define CTX_even_odd 	TOKENHASH(426345774606)
+#define CTX_evenOdd 	TOKENHASH(13671748091406)
+#define CTX_exit 	TOKENHASH(1465998)
+#define CTX_fill 	TOKENHASH(946896)
+#define CTX_fill_rule 	TOKENHASH(16405972808400)
+#define CTX_fillRule 	TOKENHASH(2776813389378256)
+#define CTX_flush 	TOKENHASH(22395792)
+#define CTX_font 	TOKENHASH(1475664)
+#define CTX_font_size 	TOKENHASH(17342343316560)
+#define CTX_setFontSize 	TOKENHASH(8657699789799734)
+#define CTX_fontSize 	TOKENHASH(2806775148872784)
+#define CTX_function 	TOKENHASH(1136803546576)
+#define CTX_getkey 	TOKENHASH(1827516882)
+#define CTX_global_alpha 	TOKENHASH(6945103263242432)
+#define CTX_globalAlpha 	TOKENHASH(2684560928159160)
+#define CTX_glyph 	TOKENHASH(22207378)
+#define CTX_gradient_add_stop 	TOKENHASH(7829524561074416)
+#define CTX_gradientAddStop 	TOKENHASH(8126442749593072)
+#define CTX_graya 	TOKENHASH(8068370)
+#define CTX_gray 	TOKENHASH(1776914)
+#define CTX_grayaS 	TOKENHASH(36313963794)
+#define CTX_grayS 	TOKENHASH(1136336146)
+#define CTX_hanging 	TOKENHASH(20424786132)
+#define CTX_height 	TOKENHASH(1497979348)
+#define CTX_hor_line_to 	TOKENHASH(8345271542735158)
+#define CTX_horLineTo 	TOKENHASH(3629696407754856)
+#define CTX_hue 	TOKENHASH(15828)
+#define CTX_identity 	TOKENHASH(1903455910294)
+#define CTX_ideographic 	TOKENHASH(4370819675496700)
+#define CTX_imageSmoothing 	TOKENHASH(4268778175825416)
+#define CTX_join 	TOKENHASH(1072216)
+#define CTX_laba 	TOKENHASH(205020)
+#define CTX_lab 	TOKENHASH(8412)
+#define CTX_lcha 	TOKENHASH(217436)
+#define CTX_lch 	TOKENHASH(20828)
+#define CTX_labaS 	TOKENHASH(1134764252)
+#define CTX_labS 	TOKENHASH(35463388)
+#define CTX_lchaS 	TOKENHASH(1134776668)
+#define CTX_lchS 	TOKENHASH(35475804)
+#define CTX_left 	TOKENHASH(1458652)
+#define CTX_lighter 	TOKENHASH(43466246876)
+#define CTX_lighten 	TOKENHASH(34876312284)
+#define CTX_linear_gradient 	TOKENHASH(7801595375834212)
+#define CTX_linearGradient 	TOKENHASH(4439260636789186)
+#define CTX_line_cap 	TOKENHASH(1243731165916)
+#define CTX_lineCap 	TOKENHASH(3436510399409980)
+#define CTX_setLineCap 	TOKENHASH(7897176123029482)
+#define CTX_line_height 	TOKENHASH(3300223516389168)
+#define CTX_line_join 	TOKENHASH(35977601450716)
+#define CTX_lineJoin 	TOKENHASH(3403122163024604)
+#define CTX_setLineJoin 	TOKENHASH(2768281536656332)
+#define CTX_line_spacing 	TOKENHASH(2519451230887150)
+#define CTX_line_to 	TOKENHASH(37986206428)
+#define CTX_lineTo 	TOKENHASH(1233857774300)
+#define CTX_lineDash 	TOKENHASH(3001937455186652)
+#define CTX_lineDashOffset 	TOKENHASH(3704120356324362)
+#define CTX_line_width 	TOKENHASH(3004303386575580)
+#define CTX_lineWidth 	TOKENHASH(8241159254028040)
+#define CTX_setLineWidth 	TOKENHASH(8037913618228476)
+#define CTX_view_box 	TOKENHASH(1823485803248)
+#define CTX_viewBox 	TOKENHASH(3915860941641152)
+#define CTX_middle 	TOKENHASH(499528414)
+#define CTX_miter 	TOKENHASH(42447582)
+#define CTX_miter_limit 	TOKENHASH(4281255327472850)
+#define CTX_miterLimit 	TOKENHASH(7937453649653124)
+#define CTX_move_to 	TOKENHASH(37986223198)
+#define CTX_moveTo 	TOKENHASH(1233857791070)
+#define CTX_multiply 	TOKENHASH(1886723143134)
+#define CTX_new_page 	TOKENHASH(500602882528)
+#define CTX_newPage 	TOKENHASH(16020123011552)
+#define CTX_new_path 	TOKENHASH(734678600160)
+#define CTX_newPath 	TOKENHASH(23510545975776)
+#define CTX_new_state 	TOKENHASH(16912954280416)
+#define CTX_none 	TOKENHASH(492640)
+#define CTX_normal 	TOKENHASH(946840672)
+#define CTX_quad_to 	TOKENHASH(37986115046)
+#define CTX_quadTo 	TOKENHASH(1233857682918)
+#define CTX_radial_gradient 	TOKENHASH(8267515704460560)
+#define CTX_radialGradient 	TOKENHASH(4399889250822134)
+#define CTX_rectangle 	TOKENHASH(16375644301800)
+#define CTX_rect 	TOKENHASH(1452520)
+#define CTX_rel_arc_to 	TOKENHASH(3496527781786088)
+#define CTX_relArcTo 	TOKENHASH(3209152175601038)
+#define CTX_rel_curve_to 	TOKENHASH(4439651822639910)
+#define CTX_relCurveTo 	TOKENHASH(7294415873689320)
+#define CTX_rel_hor_line_to 	TOKENHASH(7051067105640810)
+#define CTX_relHorLineTo 	TOKENHASH(8737419863647946)
+#define CTX_relVerLineTo 	TOKENHASH(8737441317512906)
+#define CTX_rel_line_to 	TOKENHASH(8345271542378314)
+#define CTX_relLineTo 	TOKENHASH(3629696197927444)
+#define CTX_rel_move_to 	TOKENHASH(8344984486309706)
+#define CTX_relMoveTo 	TOKENHASH(3571677202293268)
+#define CTX_rel_quad_to 	TOKENHASH(8343627754794826)
+#define CTX_relQuadTo 	TOKENHASH(7894357900599828)
+#define CTX_rel_smoothq_to 	TOKENHASH(7340038162167138)
+#define CTX_relSmoothqTo 	TOKENHASH(3188040406230844)
+#define CTX_rel_smooth_to 	TOKENHASH(8144941131301668)
+#define CTX_relSmoothTo 	TOKENHASH(8947422784198618)
+#define CTX_rel_ver_line_to 	TOKENHASH(8148126344839530)
+#define CTX_restore 	TOKENHASH(16411699688)
+#define CTX_reset 	TOKENHASH(46639592)
+#define CTX_rgba 	TOKENHASH(205416)
+#define CTX_rgb 	TOKENHASH(8808)
+#define CTX_rgbaS 	TOKENHASH(1134764648)
+#define CTX_rgbS 	TOKENHASH(35463784)
+#define CTX_right 	TOKENHASH(46811880)
+#define CTX_rotate 	TOKENHASH(516142184)
+#define CTX_round 	TOKENHASH(13679720)
+#define CTX_round_rectangle 	TOKENHASH(4332080966833870)
+#define CTX_roundRectangle 	TOKENHASH(8317255488676642)
+#define CTX_save 	TOKENHASH(508138)
+#define CTX_scale 	TOKENHASH(15604074)
+#define CTX_screen 	TOKENHASH(1088921962)
+#define CTX_setkey 	TOKENHASH(1827516906)
+#define CTX_shadowBlur 	TOKENHASH(2924056626980284)
+#define CTX_shadowColor 	TOKENHASH(3509599043947446)
+#define CTX_shadowOffsetX 	TOKENHASH(8499312693589794)
+#define CTX_shadowOffsetY 	TOKENHASH(8499312693589796)
+#define CTX_smooth_quad_to 	TOKENHASH(6832232668547050)
+#define CTX_smoothQuadTo 	TOKENHASH(8278352345012646)
+#define CTX_smooth_to 	TOKENHASH(38898089692138)
+#define CTX_smoothTo 	TOKENHASH(3515270388878314)
+#define CTX_sourceIn 	TOKENHASH(3444145493687402)
+#define CTX_source_in 	TOKENHASH(35942915423338)
+#define CTX_sourceAtop 	TOKENHASH(2920281959978332)
+#define CTX_source_atop 	TOKENHASH(3007410591464110)
+#define CTX_sourceOut 	TOKENHASH(7371294932695718)
+#define CTX_source_out 	TOKENHASH(3851660580666474)
+#define CTX_sourceOver 	TOKENHASH(7584784067385004)
+#define CTX_source_over 	TOKENHASH(8690648756484770)
+#define CTX_square 	TOKENHASH(511950058)
+#define CTX_start 	TOKENHASH(47455658)
+#define CTX_start_move 	TOKENHASH(2798358138985898)
+#define CTX_start_group 	TOKENHASH(7836274863228782)
+#define CTX_startGroup 	TOKENHASH(3812645199786240)
+#define CTX_stroke 	TOKENHASH(498181546)
+#define CTX_text_align 	TOKENHASH(3398277113762284)
+#define CTX_textAlign 	TOKENHASH(3063795447820748)
+#define CTX_texture 	TOKENHASH(16424292844)
+#define CTX_text_baseline 	TOKENHASH(2589194334827348)
+#define CTX_text_baseline 	TOKENHASH(2589194334827348)
+#define CTX_textBaseline 	TOKENHASH(8381669925369340)
+#define CTX_fillRect 	TOKENHASH(3811453831115472)
+#define CTX_text 	TOKENHASH(1495532)
+#define CTX_text_direction 	TOKENHASH(3614589880641524)
+#define CTX_textDirection 	TOKENHASH(6790122975782654)
+#define CTX_text_indent 	TOKENHASH(3633795456290560)
+#define CTX_text_stroke 	TOKENHASH(8259523149811490)
+#define CTX_strokeText 	TOKENHASH(8131451867629426)
+#define CTX_strokeRect 	TOKENHASH(8165399289138988)
+#define CTX_top 	TOKENHASH(37996)
+#define CTX_transform 	TOKENHASH(34396827557164)
+#define CTX_translate 	TOKENHASH(16912418348332)
+#define CTX_verLineTo 	TOKENHASH(3629696413166220)
+#define CTX_ver_line_to 	TOKENHASH(8345271542726354)
+#define CTX_width 	TOKENHASH(22426354)
+#define CTX_winding 	TOKENHASH(20424590066)
+#define CTX_x 	TOKENHASH(52)
+#define CTX_xor 	TOKENHASH(42100)
+#define CTX_y 	TOKENHASH(54)
+#define CTX_colorSpace 	TOKENHASH(3674150843793134)
+#define CTX_userRGB 	TOKENHASH(59177128181102)
+#define CTX_userCMYK 	TOKENHASH(3354734206905240)
+#define CTX_deviceRGB 	TOKENHASH(7818727413767480)
+#define CTX_deviceCMYK 	TOKENHASH(8943291245184210)
+#define CTX_silver 	TOKENHASH(1358459626)
+#define CTX_fuchsia 	TOKENHASH(7225355728)
+#define CTX_gray 	TOKENHASH(1776914)
+#define CTX_yellow 	TOKENHASH(1714319862)
+#define CTX_white 	TOKENHASH(16145074)
+#define CTX_maroon 	TOKENHASH(1110548702)
+#define CTX_magenta 	TOKENHASH(7952877790)
+#define CTX_blue 	TOKENHASH(506760)
+#define CTX_green 	TOKENHASH(34028818)
+#define CTX_red 	TOKENHASH(12776)
+#define CTX_purple 	TOKENHASH(500344292)
+#define CTX_olive 	TOKENHASH(16276386)
+#define CTX_teal 	TOKENHASH(924140)
+#define CTX_black 	TOKENHASH(27597704)
+#define CTX_cyan 	TOKENHASH(1056458)
+#define CTX_navy 	TOKENHASH(1818848)
+#define CTX_lime 	TOKENHASH(490204)
+#define CTX_aqua 	TOKENHASH(244934)
+#define CTX_transparent 	TOKENHASH(3654078210101184)
+#define CTX_currentColor 	TOKENHASH(7501877057638746)
 
 #endif
 #ifndef __CTX_LIBC_H
@@ -4744,9 +4841,6 @@ typedef struct _CtxSource CtxSource;
 #define CTX_VALID_GRAYA_U8    (1<<6)
 #define CTX_VALID_LABA        ((1<<7) | CTX_VALID_GRAYA)
 
-//_ctx_target_space (ctx, icc);
-//_ctx_space (ctx);
-
 struct _CtxColor
 {
   uint8_t magic; // for colors used in keydb, set to a non valid start of
@@ -4801,7 +4895,7 @@ struct _CtxGradientStop
 enum _CtxSourceType
 {
   CTX_SOURCE_COLOR = 0,
-  CTX_SOURCE_IMAGE,
+  CTX_SOURCE_TEXTURE,
   CTX_SOURCE_LINEAR_GRADIENT,
   CTX_SOURCE_RADIAL_GRADIENT,
 };
@@ -4817,11 +4911,25 @@ struct _CtxBuffer
   int                 width;
   int                 height;
   int                 stride;
-  int                 revision; // XXX NYI, number to update when contents change
-                                //
+  char               *eid;        // might be NULL, when not - should be unique for pixel contents
+  int                 frame;      // last frame used in, everything > 3 can be removed,
+                                  // as clients wont rely on it.
   CtxPixelFormatInfo *format;
   void (*free_func) (void *pixels, void *user_data);
   void               *user_data;
+
+#if CTX_ENABLE_CM
+#if CTX_BABL
+  const Babl *space;
+#else
+  void       *space; 
+#endif
+#endif
+#if 1
+  CtxBuffer          *color_managed; /* only valid for one render target, cache
+                                        for a specific space
+                                        */
+#endif
 };
 
 //void _ctx_user_to_device          (CtxState *state, float *x, float *y);
@@ -4848,7 +4956,7 @@ struct _CtxSource
       float x0;
       float y0;
       CtxBuffer *buffer;
-    } image;
+    } texture;
     struct
     {
       float x0;
@@ -4881,12 +4989,13 @@ struct _CtxGState
   int           stringpool_pos;
 
   CtxMatrix     transform;
-  //CtxSource   source_stroke;
-  CtxSource     source;
+  CtxSource     source_stroke;
+  CtxSource     source_fill;
   float         global_alpha_f;
   uint8_t       global_alpha_u8;
 
   float         line_width;
+  float         line_dash_offset;
   float         miter_limit;
   float         font_size;
 #if CTX_ENABLE_SHADOW_BLUR
@@ -4904,16 +5013,21 @@ struct _CtxGState
 #if CTX_ENABLE_CM
 #if CTX_BABL
   const Babl   *device_space;
+  const Babl   *texture_space;
   const Babl   *rgb_space;       
   const Babl   *cmyk_space;
 
   const Babl   *fish_rgbaf_user_to_device;
+  const Babl   *fish_rgbaf_texture_to_device;
   const Babl   *fish_rgbaf_device_to_user;
+
 #else
   void         *device_space;
+  void         *texture_space;
   void         *rgb_space;       
   void         *cmyk_space;
   void         *fish_rgbaf_user_to_device; // dummy padding
+  void         *fish_rgbaf_texture_to_device; // dummy padding
   void         *fish_rgbaf_device_to_user; // dummy padding
 #endif
 #endif
@@ -4923,14 +5037,15 @@ struct _CtxGState
   float dashes[CTX_PARSER_MAX_ARGS];
   int n_dashes;
 
-  CtxColorModel color_model;
+  CtxColorModel    color_model;
   /* bitfield-pack small state-parts */
-  CtxLineCap                  line_cap:2;
-  CtxLineJoin                line_join:2;
-  CtxFillRule                fill_rule:1;
-  unsigned int                    font:6;
-  unsigned int                    bold:1;
-  unsigned int                  italic:1;
+  CtxLineCap          line_cap:2;
+  CtxLineJoin        line_join:2;
+  CtxFillRule        fill_rule:1;
+  unsigned int image_smoothing:1;
+  unsigned int            font:6;
+  unsigned int            bold:1;
+  unsigned int          italic:1;
 };
 
 typedef enum
@@ -4958,8 +5073,6 @@ struct _CtxDrawlist
   int       bitpack_pos;  // stream is bitpacked up to this offset
 };
 
-
-
 #define CTX_MAX_KEYDB 64 // number of entries in keydb
                          // entries are "copy-on-change" between states
 
@@ -4970,7 +5083,7 @@ struct _CtxDrawlist
 typedef struct _CtxKeyDbEntry CtxKeyDbEntry;
 struct _CtxKeyDbEntry
 {
-  uint32_t key;
+  uint64_t key;
   float value;
   //union { float f[1]; uint8_t u8[4]; }value;
 };
@@ -5150,16 +5263,26 @@ struct _CtxEvents
 
 #endif
 
-struct
-_Ctx
+typedef struct _CtxEidInfo
+{
+  char *eid;
+  int   frame;
+  int   width;
+  int   height;
+} CtxEidInfo;
+
+struct _Ctx
 {
   CtxImplementation *renderer;
   CtxDrawlist        drawlist;
   int                transformation;
   CtxBuffer          texture[CTX_MAX_TEXTURES];
+  Ctx               *texture_cache;
+  CtxList           *eid_db;
   int                rev;
   void              *backend;
   CtxState           state;        /**/
+  int                frame; /* used for texture lifetime */
 #if CTX_EVENTS 
   CtxCursor          cursor;
   int                quit;
@@ -5184,12 +5307,17 @@ void ctx_buffer_free (CtxBuffer *buffer);
 void
 ctx_state_gradient_clear_stops (CtxState *state);
 
-
 void ctx_interpret_style         (CtxState *state, CtxEntry *entry, void *data);
 void ctx_interpret_transforms    (CtxState *state, CtxEntry *entry, void *data);
 void ctx_interpret_pos           (CtxState *state, CtxEntry *entry, void *data);
 void ctx_interpret_pos_transform (CtxState *state, CtxEntry *entry, void *data);
 
+struct _CtxInternalFsEntry
+{
+  char *path;
+  int   length;
+  char *data;
+};
 
 struct _CtxPixelFormatInfo
 {
@@ -5237,6 +5365,8 @@ ctx_unichar_to_utf8 (uint32_t  ch,
 
 uint32_t
 ctx_utf8_to_unichar (const char *input);
+
+
 typedef struct _CtxHasher CtxHasher;
 
 typedef struct CtxEdge
@@ -5306,9 +5436,6 @@ struct _CtxRasterizer
   int        col_min;
   int        col_max;
 
-#if CTX_BRAILLE_TEXT
-  CtxList   *glyphs;
-#endif
 
   CtxDrawlist edge_list;
 
@@ -5318,10 +5445,12 @@ struct _CtxRasterizer
 
   void      *buf;
 
+
 #if CTX_COMPOSITING_GROUPS
   void      *saved_buf; // when group redirected
   CtxBuffer *group[CTX_GROUP_MAX];
 #endif
+
 
   float      x;  // < redundant? use state instead?
   float      y;
@@ -5333,9 +5462,6 @@ struct _CtxRasterizer
   int        has_prev:2;
   int        preserve:1;
   int        uses_transforms:1;
-#if CTX_BRAILLE_TEXT
-  int        term_glyphs:1; // store appropriate glyphs for redisplay
-#endif
 
   int16_t    blit_x;
   int16_t    blit_y;
@@ -5363,10 +5489,32 @@ struct _CtxRasterizer
   CtxBuffer *clip_buffer;
 #endif
 
-  uint8_t *clip_mask;
+  int clip_rectangle;
+
 #if CTX_SHAPE_CACHE
   CtxShapeCache shape_cache;
 #endif
+#if CTX_BRAILLE_TEXT
+  int        term_glyphs:1; // store appropriate glyphs for redisplay
+  CtxList   *glyphs;
+#endif
+};
+
+struct _CtxSHA1 {
+    uint64_t length;
+    uint32_t state[5], curlen;
+    unsigned char buf[64];
+};
+
+
+struct _CtxHasher
+{
+  CtxRasterizer rasterizer;
+  int           cols;
+  int           rows;
+  uint8_t      *hashes;
+  CtxSHA1       sha1_fill; 
+  CtxSHA1       sha1_stroke;
 };
 
 #if CTX_RASTERIZER
@@ -5426,40 +5574,20 @@ struct _CtxCtx
    int  was_down;
 };
 
-// XXX common members of sdl and fbdev, it is more!
-typedef struct _CtxThreaded CtxThreaded;
-struct _CtxThreaded
-{
-   void (*render) (void *fb, CtxCommand *command);
-   void (*reset)  (void *fb);
-   void (*flush)  (void *fb);
-   char *(*get_clipboard) (void *ctxctx);
-   void (*set_clipboard) (void *ctxctx, const char *text);
-   void (*free)   (void *fb);
-   Ctx          *ctx;
-   Ctx          *ctx_copy;
-   int           width;
-   int           height;
-   int           cols;
-   int           rows;
-   int           was_down;
-   Ctx          *host[CTX_MAX_THREADS];
-   CtxAntialias  antialias;
-};
-
 
 extern int _ctx_max_threads;
 extern int _ctx_enable_hash_cache;
 void
-ctx_set (Ctx *ctx, uint32_t key_hash, const char *string, int len);
+ctx_set (Ctx *ctx, uint64_t key_hash, const char *string, int len);
 const char *
 ctx_get (Ctx *ctx, const char *key);
 
-int ctx_renderer_is_braille (Ctx *ctx);
+int ctx_renderer_is_term (Ctx *ctx);
 Ctx *ctx_new_ctx (int width, int height);
 Ctx *ctx_new_fb (int width, int height, int drm);
 Ctx *ctx_new_sdl (int width, int height);
-Ctx *ctx_new_braille (int width, int height);
+Ctx *ctx_new_term (int width, int height);
+Ctx *ctx_new_termimg (int width, int height);
 
 int ctx_resolve_font (const char *name);
 extern float ctx_u8_float[256];
@@ -5514,11 +5642,11 @@ static void ctx_color_set_graya (CtxState *state, CtxColor *color, float gray, f
 
 int ctx_color_model_get_components (CtxColorModel model);
 
-void ctx_state_set (CtxState *state, uint32_t key, float value);
+void ctx_state_set (CtxState *state, uint64_t key, float value);
 static void
 ctx_matrix_set (CtxMatrix *matrix, float a, float b, float c, float d, float e, float f);
 static void ctx_font_setup ();
-float ctx_state_get (CtxState *state, uint32_t hash);
+float ctx_state_get (CtxState *state, uint64_t hash);
 
 #if CTX_RASTERIZER
 
@@ -5645,18 +5773,1000 @@ static inline void *ctx_calloc (size_t size, size_t count);
 
 void ctx_screenshot (Ctx *ctx, const char *output_path);
 
-typedef struct _CtxSHA1 CtxSHA1;
 
 CtxSHA1 *ctx_sha1_new (void);
 void ctx_sha1_free (CtxSHA1 *sha1);
 int ctx_sha1_process(CtxSHA1 *sha1, const unsigned char * msg, unsigned long len);
 int ctx_sha1_done(CtxSHA1 * sha1, unsigned char *out);
 
+void _ctx_texture_lock (void);
+void _ctx_texture_unlock (void);
+uint8_t *ctx_define_texture_pixel_data (CtxEntry *entry);
+void ctx_buffer_pixels_free (void *pixels, void *userdata);
+
+/*ctx_texture_init:
+ * return value: eid, as passed in or if NULL generated by hashing pixels and width/height
+ * XXX  this is low-level and not to be used directly use define_texture instead.  XXX
+ */
+const char *ctx_texture_init (
+                      Ctx        *ctx,
+                      const char *eid,
+                      int         width,
+                      int         height,
+                      int         stride,
+                      CtxPixelFormat format,
+                      void       *space,
+                      uint8_t    *pixels,
+                      void (*freefunc) (void *pixels, void *user_data),
+                      void *user_data);
+
+#if CTX_TILED
+#include <threads.h>
+#endif
+typedef struct _CtxTiled CtxTiled;
+
+struct _CtxTiled
+{
+   void (*render)    (void *term, CtxCommand *command);
+   void (*reset)     (void *term);
+   void (*flush)     (void *term);
+   char *(*get_clipboard) (void *ctxctx);
+   void (*set_clipboard) (void *ctxctx, const char *text);
+   void (*free)      (void *term);
+   Ctx          *ctx;
+   int           width;
+   int           height;
+   int           cols;
+   int           rows;
+   int           was_down;
+   uint8_t      *pixels;
+   Ctx          *ctx_copy;
+   Ctx          *host[CTX_MAX_THREADS];
+   CtxAntialias  antialias;
+   int           quit;
+#if CTX_TILED
+   _Atomic int   thread_quit;
+#endif
+   int           shown_frame;
+   int           render_frame;
+   int           rendered_frame[CTX_MAX_THREADS];
+   int           frame;
+   int       min_col; // hasher cols and rows
+   int       min_row;
+   int       max_col;
+   int       max_row;
+   uint8_t  hashes[CTX_HASH_ROWS * CTX_HASH_COLS *  20];
+   int8_t    tile_affinity[CTX_HASH_ROWS * CTX_HASH_COLS]; // which render thread no is
+                                                           // responsible for a tile
+                                                           //
+
+   int           pointer_down[3];
+
+   CtxCursor     shown_cursor;
+#if CTX_TILED
+   cnd_t  cond;
+   mtx_t  mtx;
+#endif
+};
+
+void
+_ctx_texture_prepare_color_management (CtxRasterizer *rasterizer,
+                                      CtxBuffer     *buffer);
 
 #endif
 
 
 #if CTX_IMPLEMENTATION
+
+#define SHA1_IMPLEMENTATION
+/* LibTomCrypt, modular cryptographic library -- Tom St Denis
+ *
+ * LibTomCrypt is a library that provides various cryptographic
+ * algorithms in a highly modular and flexible manner.
+ *
+ * The library is free for all purposes without any express
+ * guarantee it works.
+ *
+ * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ *
+ * The plain ANSIC sha1 functionality has been extracted from libtomcrypt,
+ * and is included directly in the sources. /Øyvind K. - since libtomcrypt
+ * is public domain the adaptations done here to make the sha1 self contained
+ * also is public domain.
+ */
+#ifndef __SHA1_H
+#define __SHA1_H
+#include <inttypes.h>
+
+
+int ctx_sha1_init(CtxSHA1 * sha1);
+CtxSHA1 *ctx_sha1_new (void)
+{
+  CtxSHA1 *state = (CtxSHA1*)calloc (sizeof (CtxSHA1), 1);
+  ctx_sha1_init (state);
+  return state;
+}
+void ctx_sha1_free (CtxSHA1 *sha1)
+{
+  free (sha1);
+}
+
+#if 0
+          CtxSHA1 sha1;
+          ctx_sha1_init (&sha1);
+          ctx_sha1_process(&sha1, (unsigned char*)&shape_rect, sizeof (CtxIntRectangle));
+          ctx_sha1_done(&sha1, (unsigned char*)ctx_sha1_hash);
+#endif
+
+#ifdef FF0
+#undef FF0
+#endif
+#ifdef FF1
+#undef FF1
+#endif
+
+#ifdef SHA1_IMPLEMENTATION
+#include <stdlib.h>
+#include <string.h>
+
+#define STORE64H(x,                                                             y)                                                                     \
+   { (y)[0] = (unsigned char)(((x)>>56)&255); (y)[1] = (unsigned                char)(((x)>>48)&255);     \
+     (y)[2] = (unsigned char)(((x)>>40)&255); (y)[3] = (unsigned                char)(((x)>>32)&255);     \
+     (y)[4] = (unsigned char)(((x)>>24)&255); (y)[5] = (unsigned                char)(((x)>>16)&255);     \
+     (y)[6] = (unsigned char)(((x)>>8)&255); (y)[7] = (unsigned char)((x)&255); }
+
+#define STORE32H(x,                                                             y)                                                                     \
+     { (y)[0] = (unsigned char)(((x)>>24)&255); (y)[1] = (unsigned              char)(((x)>>16)&255);   \
+       (y)[2] = (unsigned char)(((x)>>8)&255); (y)[3] = (unsigned               char)((x)&255); }
+
+#define LOAD32H(x, y)                            \
+     { x = ((unsigned long)((y)[0] & 255)<<24) | \
+           ((unsigned long)((y)[1] & 255)<<16) | \
+           ((unsigned long)((y)[2] & 255)<<8)  | \
+           ((unsigned long)((y)[3] & 255)); }
+
+/* rotates the hard way */
+#define ROL(x, y)  ((((unsigned long)(x)<<(unsigned long)((y)&31)) | (((unsigned long)(x)&0xFFFFFFFFUL)>>(unsigned long)(32-((y)&31)))) & 0xFFFFFFFFUL)
+#define ROLc(x, y) ROL(x,y)
+
+#define CRYPT_OK     0
+#define CRYPT_ERROR  1
+#define CRYPT_NOP    2
+
+#ifndef MAX
+   #define MAX(x, y) ( ((x)>(y))?(x):(y) )
+#endif
+#ifndef MIN
+   #define MIN(x, y) ( ((x)<(y))?(x):(y) )
+#endif
+
+/* a simple macro for making hash "process" functions */
+#define HASH_PROCESS(func_name, compress_name, state_var, block_size)               \
+int func_name (CtxSHA1 *sha1, const unsigned char *in, unsigned long inlen)      \
+{                                                                                   \
+    unsigned long n;                                                                \
+    int           err;                                                              \
+    assert (sha1 != NULL);                                                          \
+    assert (in != NULL);                                                            \
+    if (sha1->curlen > sizeof(sha1->buf)) {                                         \
+       return -1;                                                                   \
+    }                                                                               \
+    while (inlen > 0) {                                                             \
+        if (sha1->curlen == 0 && inlen >= block_size) {                             \
+           if ((err = compress_name (sha1, (unsigned char *)in)) != CRYPT_OK) {     \
+              return err;                                                           \
+           }                                                                        \
+           sha1->length += block_size * 8;                                          \
+           in             += block_size;                                            \
+           inlen          -= block_size;                                            \
+        } else {                                                                    \
+           n = MIN(inlen, (block_size - sha1->curlen));                             \
+           memcpy(sha1->buf + sha1->curlen, in, (size_t)n);                         \
+           sha1->curlen += n;                                                       \
+           in             += n;                                                     \
+           inlen          -= n;                                                     \
+           if (sha1->curlen == block_size) {                                        \
+              if ((err = compress_name (sha1, sha1->buf)) != CRYPT_OK) {            \
+                 return err;                                                        \
+              }                                                                     \
+              sha1->length += 8*block_size;                                         \
+              sha1->curlen = 0;                                                     \
+           }                                                                        \
+       }                                                                            \
+    }                                                                               \
+    return CRYPT_OK;                                                                \
+}
+
+/**********************/
+
+#define F0(x,y,z)  (z ^ (x & (y ^ z)))
+#define F1(x,y,z)  (x ^ y ^ z)
+#define F2(x,y,z)  ((x & y) | (z & (x | y)))
+#define F3(x,y,z)  (x ^ y ^ z)
+
+static int  ctx_sha1_compress(CtxSHA1 *sha1, unsigned char *buf)
+{
+    uint32_t a,b,c,d,e,W[80],i;
+
+    /* copy the state into 512-bits into W[0..15] */
+    for (i = 0; i < 16; i++) {
+        LOAD32H(W[i], buf + (4*i));
+    }
+
+    /* copy state */
+    a = sha1->state[0];
+    b = sha1->state[1];
+    c = sha1->state[2];
+    d = sha1->state[3];
+    e = sha1->state[4];
+
+    /* expand it */
+    for (i = 16; i < 80; i++) {
+        W[i] = ROL(W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16], 1); 
+    }
+
+    /* compress */
+    /* round one */
+    #define FF0(a,b,c,d,e,i) e = (ROLc(a, 5) + F0(b,c,d) + e + W[i] + 0x5a827999UL); b = ROLc(b, 30);
+    #define FF1(a,b,c,d,e,i) e = (ROLc(a, 5) + F1(b,c,d) + e + W[i] + 0x6ed9eba1UL); b = ROLc(b, 30);
+    #define FF2(a,b,c,d,e,i) e = (ROLc(a, 5) + F2(b,c,d) + e + W[i] + 0x8f1bbcdcUL); b = ROLc(b, 30);
+    #define FF3(a,b,c,d,e,i) e = (ROLc(a, 5) + F3(b,c,d) + e + W[i] + 0xca62c1d6UL); b = ROLc(b, 30);
+ 
+    for (i = 0; i < 20; ) {
+       FF0(a,b,c,d,e,i++);
+       FF0(e,a,b,c,d,i++);
+       FF0(d,e,a,b,c,i++);
+       FF0(c,d,e,a,b,i++);
+       FF0(b,c,d,e,a,i++);
+    }
+
+    /* round two */
+    for (; i < 40; )  { 
+       FF1(a,b,c,d,e,i++);
+       FF1(e,a,b,c,d,i++);
+       FF1(d,e,a,b,c,i++);
+       FF1(c,d,e,a,b,i++);
+       FF1(b,c,d,e,a,i++);
+    }
+
+    /* round three */
+    for (; i < 60; )  { 
+       FF2(a,b,c,d,e,i++);
+       FF2(e,a,b,c,d,i++);
+       FF2(d,e,a,b,c,i++);
+       FF2(c,d,e,a,b,i++);
+       FF2(b,c,d,e,a,i++);
+    }
+
+    /* round four */
+    for (; i < 80; )  { 
+       FF3(a,b,c,d,e,i++);
+       FF3(e,a,b,c,d,i++);
+       FF3(d,e,a,b,c,i++);
+       FF3(c,d,e,a,b,i++);
+       FF3(b,c,d,e,a,i++);
+    }
+
+    #undef FF0
+    #undef FF1
+    #undef FF2
+    #undef FF3
+
+    /* store */
+    sha1->state[0] = sha1->state[0] + a;
+    sha1->state[1] = sha1->state[1] + b;
+    sha1->state[2] = sha1->state[2] + c;
+    sha1->state[3] = sha1->state[3] + d;
+    sha1->state[4] = sha1->state[4] + e;
+
+    return CRYPT_OK;
+}
+
+/**
+   Initialize the hash state
+   @param md   The hash state you wish to initialize
+   @return CRYPT_OK if successful
+*/
+int ctx_sha1_init(CtxSHA1 * sha1)
+{
+   assert(sha1 != NULL);
+   sha1->state[0] = 0x67452301UL;
+   sha1->state[1] = 0xefcdab89UL;
+   sha1->state[2] = 0x98badcfeUL;
+   sha1->state[3] = 0x10325476UL;
+   sha1->state[4] = 0xc3d2e1f0UL;
+   sha1->curlen = 0;
+   sha1->length = 0;
+   return CRYPT_OK;
+}
+
+/**
+   Process a block of memory though the hash
+   @param md     The hash state
+   @param in     The data to hash
+   @param inlen  The length of the data (octets)
+   @return CRYPT_OK if successful
+*/
+HASH_PROCESS(ctx_sha1_process, ctx_sha1_compress, sha1, 64)
+
+/**
+   Terminate the hash to get the digest
+   @param md  The hash state
+   @param out [out] The destination of the hash (20 bytes)
+   @return CRYPT_OK if successful
+*/
+int ctx_sha1_done(CtxSHA1 * sha1, unsigned char *out)
+{
+    int i;
+
+    assert(sha1 != NULL);
+    assert(out != NULL);
+
+    if (sha1->curlen >= sizeof(sha1->buf)) {
+       return -1;
+    }
+
+    /* increase the length of the message */
+    sha1->length += sha1->curlen * 8;
+
+    /* append the '1' bit */
+    sha1->buf[sha1->curlen++] = (unsigned char)0x80;
+
+    /* if the length is currently above 56 bytes we append zeros
+     * then compress.  Then we can fall back to padding zeros and length
+     * encoding like normal.
+     */
+    if (sha1->curlen > 56) {
+        while (sha1->curlen < 64) {
+            sha1->buf[sha1->curlen++] = (unsigned char)0;
+        }
+        ctx_sha1_compress(sha1, sha1->buf);
+        sha1->curlen = 0;
+    }
+
+    /* pad upto 56 bytes of zeroes */
+    while (sha1->curlen < 56) {
+        sha1->buf[sha1->curlen++] = (unsigned char)0;
+    }
+
+    /* store length */
+    STORE64H(sha1->length, sha1->buf+56);
+    ctx_sha1_compress(sha1, sha1->buf);
+
+    /* copy output */
+    for (i = 0; i < 5; i++) {
+        STORE32H(sha1->state[i], out+(4*i));
+    }
+    return CRYPT_OK;
+}
+#endif
+
+#endif
+#endif
+
+#if CTX_IMPLEMENTATION
+#ifndef THASH_H
+#define THASH_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <assert.h>
+
+#define THASH_NO_INTERNING   // ctx doesn't make use of thash_decode
+
+#define THASH_ENTER_DIRECT     16
+
+#define THASH_SPACE            0
+#define THASH_DEC_OFFSET       29
+#define THASH_INC_OFFSET       30
+#define THASH_ENTER_UTF5       31
+#define THASH_START_OFFSET     'l'
+#define THASH_JUMP_OFFSET      27
+#define THASH_MAXLEN           10
+
+// todo: better whitespace handling for double version
+
+
+static inline int thash_new_offset (uint32_t unichar)
+{
+   int offset = unichar % 32;
+   return unichar - offset + 14; // this gives ~85% compression on test corpus
+   return unichar; // this gives 88% compression on test corpus
+}
+
+static int thash_is_in_range (uint32_t offset, uint32_t unichar)
+{
+  if (unichar == 32)
+    return 1;
+  if (offset - unichar <= 13 ||
+      unichar - offset <= 14)
+      return 1;
+  return 0;
+}
+
+static int thash_is_in_jump_range_dec (uint32_t offset, uint32_t unichar)
+{
+  return thash_is_in_range (offset - THASH_JUMP_OFFSET, unichar);
+}
+
+static int thash_is_in_jump_range_inc (uint32_t offset, uint32_t unichar)
+{
+  return thash_is_in_range (offset + THASH_JUMP_OFFSET, unichar);
+}
+
+uint32_t ctx_utf8_to_unichar (const char *input);
+int ctx_unichar_to_utf8      (uint32_t ch, uint8_t  *dest);
+int ctx_utf8_len             (const unsigned char first_byte);
+
+static int thash_utf5_length (uint32_t unichar)
+{
+  int octets = 0;
+  if (unichar == 0) return 1;
+  while (unichar)
+  {  octets ++;
+     unichar /= 16;
+  }
+  return octets;
+}
+
+typedef struct EncodeUtf5 {
+  int      is_utf5;
+  int      offset;
+  int      length;
+  void    *write_data;
+  uint32_t current;
+} EncodeUtf5;
+
+void thash_encode_utf5 (const char *input, int inlen,
+                   char *output, int *r_outlen)
+{
+  uint32_t offset = THASH_START_OFFSET;
+
+  int is_utf5 = 1;
+  int len = 0;
+
+  for (int i = 0; i < inlen; i+= ctx_utf8_len (input[i]))
+  {
+    int val = ctx_utf8_to_unichar(&input[i]);
+    int next_val = ' '; // always in range
+    int next_next_val = ' ';
+    int first_len = ctx_utf8_len (input[i]);
+    if (i + first_len < inlen)
+    {
+        int next_len = ctx_utf8_to_unichar (&input[i + first_len]);
+        if (i + first_len + next_len < inlen)
+        {
+          next_next_val = ctx_utf8_to_unichar (&input[i + first_len + next_len]);
+        }
+    }
+
+    if (is_utf5)
+    {
+      int in_range = 
+          thash_is_in_range (offset, val) +
+          thash_is_in_range (offset, next_val) +
+          thash_is_in_range (offset, next_next_val);
+      int change_cost = 4;
+      int no_change_cost = thash_utf5_length (val) + thash_utf5_length (next_val)
+                                                   + thash_utf5_length (next_next_val);
+
+      if (in_range > 2 && change_cost < no_change_cost)
+      {
+        output[len++] = THASH_ENTER_DIRECT;
+        is_utf5 = 0;
+      }
+    } else
+    {
+      if (!thash_is_in_range(offset, val))
+      {
+        if (thash_is_in_jump_range_dec (offset, val))
+        {
+            output[len++] = THASH_DEC_OFFSET;
+            offset -= THASH_JUMP_OFFSET;
+        }
+        else if (thash_is_in_jump_range_inc (offset, val))
+        {
+          output[len++] = THASH_INC_OFFSET;
+          offset += THASH_JUMP_OFFSET;
+        }
+        else
+        {
+          output[len++] = THASH_ENTER_UTF5;
+          is_utf5 = 1;
+        }
+      }
+    }
+
+    if (is_utf5)
+    {
+          int octets = 0;
+          offset = thash_new_offset (val);
+          while (val)
+          {
+            int oval = val % 16;
+            int last = 0;
+            if (val / 32 == 0) last = 16;
+            output[len+ (octets++)] = oval + last;
+            val /= 16;
+          }
+          for (int j = 0; j < octets/2; j++) // mirror in-place
+          {
+            int tmp = output[len+j];
+            output[len+j] = output[len+octets-1-j];
+            output[len+octets-1-j] = tmp;
+          }
+          len += octets;
+        }
+        else 
+      {
+        if (val == 32)
+        {
+          output[len++] = THASH_SPACE;
+        }
+        else
+        {
+          output[len++]= val-offset+14;
+        }
+      }
+  }
+  if (len && output[len-1]==0)
+    output[len++] = 16;
+  output[len]=0;
+  *r_outlen = len;
+}
+
+uint64_t _thash (const char *utf8)
+{
+  char encoded[4096]="";
+  int  encoded_len=0;
+  int  wordlen = 0;
+  thash_encode_utf5 (utf8, strlen (utf8), encoded, &encoded_len);
+#if 0
+  Word word = {0};
+  word.utf5 = (encoded[0] != THASH_ENTER_DIRECT);
+  for (int i = !word.utf5; i < encoded_len; i++)
+    word_set_val (&word, wordlen++, encoded[i]);
+  return word.hash;
+#else
+  uint64_t hash = 0;
+  int  utf5 = (encoded[0] != THASH_ENTER_DIRECT);
+  for (int i = !utf5; i < encoded_len; i++)
+  {
+    uint64_t val = encoded[i];
+
+    if (wordlen < THASH_MAXLEN)
+    {
+      hash = hash | (val << (5*wordlen));
+      hash &= (((uint64_t)1<<52)-1);
+    }
+    else
+    {
+      hash = hash ^ ((hash << 4) + val);
+      hash &= (((uint64_t)1<<52)-1);
+    }
+    wordlen++;
+  }
+  hash <<= 1;
+  if (wordlen >= THASH_MAXLEN) 
+    hash |= ((uint64_t)1<<51); // overflowed
+  return hash |  utf5;
+#endif
+}
+
+typedef struct _Interned Interned;
+
+struct _Interned {
+    uint64_t   hash;
+    char      *string;
+};
+
+static Interned *interned = NULL;
+static int n_interned = 0;
+static int s_interned = 0;
+static int interned_sorted = 1;
+
+static int interned_compare (const void *a, const void *b)
+{
+  const Interned *ia = a;
+  const Interned *ib = b;
+  if (ia->hash < ib->hash ) return -1;
+  else if (ia->hash > ib->hash ) return 1;
+  return 0;
+}
+
+
+uint64_t thash (const char *utf8)
+{
+  uint64_t hash = _thash (utf8);
+#ifdef THASH_NO_INTERNING
+  return hash;
+#endif
+  if (hash & ((uint64_t)1<<51)) /* overflowed */
+  {
+    int i;
+    for (i = 0; i < n_interned; i++)
+    {
+      Interned *entry = &interned[i];
+      if (entry->hash == hash)
+        return hash;
+    }
+
+    if (n_interned + 1 >= s_interned)
+    {
+       s_interned = (s_interned + 128)*1.5;
+       //fprintf (stderr, "\r%p %i ", interned, s_interned);
+       interned = realloc (interned, s_interned * sizeof (Interned));
+    }
+
+    {
+      Interned *entry = &interned[n_interned];
+      entry->hash = hash;
+      entry->string = strdup (utf8);
+    }
+    n_interned++;
+    interned_sorted = 0;
+  }
+  return hash;
+}
+uint64_t ctx_strhash(const char *str, int ignored) { return thash (str);}
+
+typedef struct ThashUtf5Dec {
+  int      is_utf5;
+  int      offset;
+  void    *write_data;
+  uint32_t current;
+  void   (*append_unichar) (uint32_t unichar, void *write_data);
+} ThashUtf5Dec;
+
+typedef struct ThashUtf5DecDefaultData {
+   uint8_t *buf;
+   int     length;
+} ThashUtf5DecDefaultData;
+
+static void thash_decode_utf5_append_unichar_as_utf8 (uint32_t unichar, void *write_data)
+{
+  ThashUtf5DecDefaultData *data = write_data;
+  unsigned char utf8[8]="";
+  utf8[ctx_unichar_to_utf8 (unichar, utf8)]=0;
+  for (int j = 0; utf8[j]; j++)
+    data->buf[data->length++]=utf8[j];
+  data->buf[data->length]=0;
+}
+
+void thash_decode_utf5 (ThashUtf5Dec *dec, uint8_t in)
+{
+  if (dec->is_utf5)
+  {
+      if (in > 16)
+      {
+        if (dec->current)
+        {
+          dec->offset = thash_new_offset (dec->current);
+          dec->append_unichar (dec->current, dec->write_data);
+          dec->current = 0;
+        }
+      }
+      if (in == THASH_ENTER_DIRECT)
+      {
+        if (dec->current)
+        {
+          dec->offset = thash_new_offset (dec->current);
+          dec->append_unichar (dec->current, dec->write_data);
+          dec->current = 0;
+        }
+        dec->is_utf5 = 0;
+      }
+      else
+      {
+        dec->current = dec->current * 16 + (in % 16);
+      }
+  }
+  else
+  {
+      switch (in)
+      {
+        case THASH_ENTER_UTF5: dec->is_utf5 = 1;  break;
+        case THASH_SPACE:      dec->append_unichar (' ', dec->write_data); break;
+        case THASH_DEC_OFFSET: dec->offset -= THASH_JUMP_OFFSET; break;
+        case THASH_INC_OFFSET: dec->offset += THASH_JUMP_OFFSET; break;
+        default:
+          dec->append_unichar (dec->offset + in - 14, dec->write_data);
+      }
+  }
+}
+
+void thash_decode_utf5_bytes (int is_utf5, 
+                        const unsigned char *input, int inlen,
+                        char *output, int *r_outlen)
+{
+  ThashUtf5DecDefaultData append_data= {(unsigned char*)output, };
+  ThashUtf5Dec dec = {is_utf5,
+                    THASH_START_OFFSET,
+                    &append_data,
+  0, thash_decode_utf5_append_unichar_as_utf8
+  };
+  for (int i = 0; i < inlen; i++)
+  {
+    thash_decode_utf5 (&dec, input[i]);
+  }
+  if (dec.current)
+    dec.append_unichar (dec.current, dec.write_data);
+  if (r_outlen)*r_outlen = append_data.length;
+}
+
+const char *thash_decode (uint64_t hash)
+{
+  if (!interned_sorted && interned)
+  {
+    qsort (interned, n_interned, sizeof (Interned), interned_compare);
+    interned_sorted = 1;
+  }
+  if (hash &  ((uint64_t)1<<51))
+  {
+
+    for (int i = 0; i < n_interned; i++)
+    {
+      Interned *entry = &interned[i];
+      if (entry->hash == hash)
+        return entry->string;
+    }
+    return "[missing string]";
+  }
+
+  static char ret[4096]="";
+  uint8_t utf5[40]="";
+  uint64_t tmp = hash & (((uint64_t)1<<51)-1);
+  int len = 0;
+  int is_utf5 = tmp & 1;
+  tmp /= 2;
+  int in_utf5 = is_utf5;
+  while (tmp > 0)
+  {
+    uint64_t remnant = tmp % 32;
+    uint64_t val = remnant;
+
+    if      ( in_utf5 && val == THASH_ENTER_DIRECT) in_utf5 = 0;
+    else if (!in_utf5 && val == THASH_ENTER_UTF5) in_utf5 = 1;
+
+    utf5[len++] = val;
+    tmp -= remnant;
+    tmp /= 32;
+  }
+  if (in_utf5 && len && utf5[len-1] > 'G')
+  {
+    utf5[len++] = 0;//utf5_alphabet[0]; 
+  }
+  utf5[len]=0;
+  int retlen = sizeof (ret);
+  thash_decode_utf5_bytes (is_utf5, utf5, len, ret, &retlen);
+  ret[len]=0;
+  return ret;
+}
+
+#if 0
+
+#include <assert.h>
+#pragma pack(push,1)
+typedef union Word
+{
+  uint64_t hash;
+  struct {
+    unsigned int utf5:1;
+    unsigned int c0:5;
+    unsigned int c1:5;
+    unsigned int c2:5;
+    unsigned int c3:5;
+    unsigned int c4:5;
+    unsigned int c5:5;
+    unsigned int c6:5;
+    unsigned int c7:5;
+    unsigned int c8:5;
+    unsigned int c9:5;
+    unsigned int overflowed:1;
+  };
+} Word;
+
+static inline void word_set_val (Word *word, int no, int val)
+{
+#if 0
+  switch(no)
+  {
+     case 0: word->c0 = val; break;
+     case 1: word->c1 = val; break;
+     case 2: word->c2 = val; break;
+     case 3: word->c3 = val; break;
+     case 4: word->c4 = val; break;
+     case 5: word->c5 = val; break;
+     case 6: word->c6 = val; break;
+     case 7: word->c7 = val; break;
+     case 8: word->c8 = val; break;
+     case 9: word->c9 = val; break;
+     default:
+       // for overflow only works when setting all in sequence
+       word->hash = word->hash + ((uint64_t)(val) << (5*no+1));
+       word->overflowed = 1;
+       break;
+  }
+#else
+  word->hash = word->hash | ((uint64_t)(val) << (5*no+1));
+  if (no >= 9) 
+    word->hash |= ((uint64_t)1<<51);
+  word->hash &= (((uint64_t)1<<52)-1);
+#endif
+}
+
+static inline int word_get_val (Word *word, int no)
+{
+  switch(no)
+  {
+     case 0: return word->c0;break;
+     case 1: return word->c1;break;
+     case 2: return word->c2;break;
+     case 3: return word->c3;break;
+     case 4: return word->c4;break;
+     case 5: return word->c5;break;
+     case 6: return word->c6;break;
+     case 7: return word->c7;break;
+     case 8: return word->c8;break;
+     case 9: return word->c9;break;
+  }
+}
+
+static inline int word_get_length (Word *word)
+{
+   int len = 0;
+   if (word->c0) len ++; else return len;
+   if (word->c1) len ++; else return len;
+   if (word->c2) len ++; else return len;
+   if (word->c3) len ++; else return len;
+   if (word->c4) len ++; else return len;
+   if (word->c5) len ++; else return len;
+   if (word->c6) len ++; else return len;
+   if (word->c7) len ++; else return len;
+   if (word->c8) len ++; else return len;
+   if (word->c9) len ++; else return len;
+   return len;
+}
+
+
+static Word *word_append_unichar (Word *word, uint32_t unichar)
+{
+  //word_set_char (word, word_get_length (word), unichar);
+  // append unichar - possibly advancing.
+  return word;
+}
+#endif
+
+#endif
+/* atty - audio interface and driver for terminals
+ * Copyright (C) 2020 Øyvind Kolås <pippin@gimp.org>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>. 
+ */
+
+static const char *base64_map="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+static void bin2base64_group (const unsigned char *in, int remaining, char *out)
+{
+  unsigned char digit[4] = {0,0,64,64};
+  int i;
+  digit[0] = in[0] >> 2;
+  digit[1] = ((in[0] & 0x03) << 4) | ((in[1] & 0xf0) >> 4);
+  if (remaining > 1)
+    {
+      digit[2] = ((in[1] & 0x0f) << 2) | ((in[2] & 0xc0) >> 6);
+      if (remaining > 2)
+        digit[3] = ((in[2] & 0x3f));
+    }
+  for (i = 0; i < 4; i++)
+    out[i] = base64_map[digit[i]];
+}
+
+void
+ctx_bin2base64 (const void *bin,
+                int         bin_length,
+                char       *ascii)
+{
+  /* this allocation is a hack to ensure we always produce the same result,
+   * regardless of padding data accidentally taken into account.
+   */
+  unsigned char *bin2 = calloc (bin_length + 4, 1);
+  unsigned const char *p = bin2;
+  int i;
+  memcpy (bin2, bin, bin_length);
+  for (i=0; i*3 < bin_length; i++)
+   {
+     int remaining = bin_length - i*3;
+     bin2base64_group (&p[i*3], remaining, &ascii[i*4]);
+   }
+  free (bin2);
+  ascii[i*4]=0;
+}
+
+static unsigned char base64_revmap[255];
+static void base64_revmap_init (void)
+{
+  static int done = 0;
+  if (done)
+    return;
+
+  for (int i = 0; i < 255; i ++)
+    base64_revmap[i]=255;
+  for (int i = 0; i < 64; i ++)
+    base64_revmap[((const unsigned char*)base64_map)[i]]=i;
+  /* include variants used in URI encodings for decoder,
+   * even if that is not how we encode
+  */
+  base64_revmap['-']=62;
+  base64_revmap['_']=63;
+  base64_revmap['+']=62;
+  base64_revmap['/']=63;
+
+  done = 1;
+}
+
+
+int
+ctx_base642bin (const char    *ascii,
+                int           *length,
+                unsigned char *bin)
+{
+  int i;
+  int charno = 0;
+  int outputno = 0;
+  int carry = 0;
+  base64_revmap_init ();
+  for (i = 0; ascii[i]; i++)
+    {
+      int bits = base64_revmap[((const unsigned char*)ascii)[i]];
+      if (length && outputno > *length)
+        {
+          *length = -1;
+          return -1;
+        }
+      if (bits != 255)
+        {
+          switch (charno % 4)
+            {
+              case 0:
+                carry = bits;
+                break;
+              case 1:
+                bin[outputno] = (carry << 2) | (bits >> 4);
+                outputno++;
+                carry = bits & 15;
+                break;
+              case 2:
+                bin[outputno] = (carry << 4) | (bits >> 2);
+                outputno++;
+                carry = bits & 3;
+                break;
+              case 3:
+                bin[outputno] = (carry << 6) | bits;
+                outputno++;
+                carry = 0;
+                break;
+            }
+          charno++;
+        }
+    }
+  bin[outputno]=0;
+  if (length)
+    *length= outputno;
+  return outputno;
+}
 #ifndef CTX_DRAWLIST_H
 #define CTX_DRAWLIST_H
 
@@ -5749,6 +6859,8 @@ ctx_drawlist_compact (CtxDrawlist *drawlist);
 static void
 ctx_process_cmd_str (Ctx *ctx, CtxCode code, const char *string, uint32_t arg0, uint32_t arg1);
 static void
+ctx_process_cmd_str_float (Ctx *ctx, CtxCode code, const char *string, float arg0, float arg1);
+static void
 ctx_process_cmd_str_with_len (Ctx *ctx, CtxCode code, const char *string, uint32_t arg0, uint32_t arg1, int len);
 
 #endif
@@ -5787,8 +6899,64 @@ static int ctx_str_is_number (const char *str)
 }
 
 #if CTX_FONTS_FROM_FILE
-int
-_ctx_file_get_contents (const char     *path,
+
+typedef struct CtxFileContent
+{
+  char *path;
+  unsigned char *contents;
+  long  length;
+  int   free_data;
+} CtxFileContent;
+
+CtxList *registered_contents = NULL;
+
+void
+ctx_register_contents (const char *path,
+                       const unsigned char *contents,
+                       long length,
+                       int  free_data)
+{
+  // if (path[0] != '/') && strchr(path, ':')) 
+  //   with this check regular use is faster, but we lose
+  //   generic filesystem overrides..
+  for (CtxList *l = registered_contents; l; l = l->next)
+  {
+    CtxFileContent *c = l->data;
+    if (!strcmp (c->path, path))
+    {
+       if (c->free_data)
+       {
+         free (c->contents);
+       }
+       c->free_data = free_data;
+       c->contents = (unsigned char*)contents;
+       c->length = length;
+       return;
+    }
+  }
+  CtxFileContent *c = calloc (sizeof (CtxFileContent), 1);
+  c->free_data = free_data;
+  c->contents = (unsigned char*)contents;
+  c->length    = length;
+  ctx_list_append (&registered_contents, c);
+}
+
+void
+_ctx_file_set_contents (const char     *path,
+                        const unsigned char  *contents,
+                        long            length)
+{
+  FILE *file;
+  file = fopen (path, "wb");
+  if (!file)
+    { return; }
+  if (length < 0) length = strlen ((const char*)contents);
+  fwrite (contents, 1, length, file);
+  fclose (file);
+}
+
+static int
+__ctx_file_get_contents (const char     *path,
                         unsigned char **contents,
                         long           *length)
 {
@@ -5823,19 +6991,13 @@ _ctx_file_get_contents (const char     *path,
   return 0;
 }
 
-void
-_ctx_file_set_contents (const char     *path,
-                        const unsigned char  *contents,
-                        long            length)
-{
-  FILE *file;
-  file = fopen (path, "wb");
-  if (!file)
-    { return; }
-  if (length < 0) length = strlen ((const char*)contents);
-  fwrite (contents, 1, length, file);
-  fclose (file);
-}
+#include <limits.h>
+
+int
+ctx_get_contents (const char     *uri,
+                  unsigned char **contents,
+                  long           *length);
+
 
 
 #endif
@@ -5852,6 +7014,7 @@ ctx_conts_for_entry (CtxEntry *entry)
       case CTX_DATA:
         return entry->data.u32[1];
       case CTX_LINEAR_GRADIENT:
+      //case CTX_DEFINE_TEXTURE:
         return 1;
       case CTX_RADIAL_GRADIENT:
       case CTX_ARC:
@@ -5864,12 +7027,31 @@ ctx_conts_for_entry (CtxEntry *entry)
       case CTX_ROUND_RECTANGLE:
       case CTX_SHADOW_COLOR:
         return 2;
+      case CTX_FILL_RECT:
+      case CTX_STROKE_RECT:
       case CTX_RECTANGLE:
       case CTX_VIEW_BOX:
       case CTX_REL_QUAD_TO:
       case CTX_QUAD_TO:
-      case CTX_TEXTURE:
         return 1;
+
+      case CTX_TEXT:
+      case CTX_LINE_DASH:
+      case CTX_COLOR_SPACE:
+      case CTX_STROKE_TEXT:
+      case CTX_FONT:
+      case CTX_TEXTURE:
+        {
+          int eid_len = entry[1].data.u32[1];
+          return eid_len + 1;
+        }
+      case CTX_DEFINE_TEXTURE:
+        {
+          int eid_len = entry[2].data.u32[1];
+          int pix_len = entry[2 + eid_len + 1].data.u32[1];
+          return eid_len + pix_len + 2 + 1;
+        }
+
       default:
         return 0;
     }
@@ -6069,7 +7251,7 @@ again:
         case CTX_APPLY_TRANSFORM:
         case CTX_ROUND_RECTANGLE:
         case CTX_TEXT:
-        case CTX_TEXT_STROKE:
+        case CTX_STROKE_TEXT:
         case CTX_FONT:
         case CTX_LINE_DASH:
         case CTX_FILL:
@@ -6108,6 +7290,7 @@ again:
         case CTX_END_GROUP:
         case CTX_RESTORE:
         case CTX_LINE_WIDTH:
+        case CTX_LINE_DASH_OFFSET:
         case CTX_STROKE:
         case CTX_KERNING_PAIR:
         case CTX_SCALE:
@@ -6119,11 +7302,14 @@ again:
         case CTX_NEW_PAGE:
         case CTX_SET_KEY:
         case CTX_TRANSLATE:
+        case CTX_DEFINE_TEXTURE:
         case CTX_GRADIENT_STOP:
+        case CTX_DATA: // XXX : would be better if we hide the DATAs
         case CTX_CONT: // shouldnt happen
+        default:
           iterator->bitpack_length = 0;
           return (CtxCommand *) ret;
-#if 1
+#if 0
         default: // XXX remove - and get better warnings
           iterator->bitpack_command[0] = ret[0];
           iterator->bitpack_command[1] = ret[1];
@@ -6206,7 +7392,7 @@ ctx_drawlist_resize (CtxDrawlist *drawlist, int desired_size)
     }
   else
     {
-      //printf ("allocating for %p %d\n", drawlist, new_size);
+      //fprintf (stderr, "allocating for %p %d\n", drawlist, new_size);
       drawlist->entries = (CtxEntry *) malloc (sizeof (CtxEntry) * new_size);
     }
   drawlist->size = new_size;
@@ -6232,9 +7418,9 @@ ctx_drawlist_add_single (CtxDrawlist *drawlist, CtxEntry *entry)
     {
       return ret;
     }
-  if (ret + 8 >= drawlist->size - 20)
+  if (ret + 1024 >= drawlist->size - 40)
     {
-      int new_ = CTX_MAX (drawlist->size * 2, ret + 8);
+      int new_ = CTX_MAX (drawlist->size * 2, ret + 1024);
       ctx_drawlist_resize (drawlist, new_);
     }
 
@@ -6247,9 +7433,6 @@ ctx_drawlist_add_single (CtxDrawlist *drawlist, CtxEntry *entry)
   drawlist->count++;
   return ret;
 }
-
-
-
 
 int
 ctx_add_single (Ctx *ctx, void *entry)
@@ -6330,7 +7513,6 @@ int ctx_set_drawlist (Ctx *ctx, void *data, int length)
   drawlist->count = length / 9;
   return length;
 }
-
 
 int ctx_get_drawlist_count (Ctx *ctx)
 {
@@ -6491,12 +7673,12 @@ ctx_u8 (CtxCode code,
 static void
 ctx_process_cmd_str_with_len (Ctx *ctx, CtxCode code, const char *string, uint32_t arg0, uint32_t arg1, int len)
 {
-  CtxEntry commands[1 + 2 + len/8];
+  CtxEntry commands[1 + 2 + (len+1+1)/9];
   ctx_memset (commands, 0, sizeof (commands) );
   commands[0] = ctx_u32 (code, arg0, arg1);
   commands[1].code = CTX_DATA;
   commands[1].data.u32[0] = len;
-  commands[1].data.u32[1] = len/9+1;
+  commands[1].data.u32[1] = (len+1+1)/9 + 1;
   memcpy( (char *) &commands[2].data.u8[0], string, len);
   ( (char *) (&commands[2].data.u8[0]) ) [len]=0;
   ctx_process (ctx, commands);
@@ -6508,6 +7690,15 @@ ctx_process_cmd_str (Ctx *ctx, CtxCode code, const char *string, uint32_t arg0, 
   ctx_process_cmd_str_with_len (ctx, code, string, arg0, arg1, strlen (string));
 }
 
+static void
+ctx_process_cmd_str_float (Ctx *ctx, CtxCode code, const char *string, float arg0, float arg1)
+{
+  uint32_t iarg0;
+  uint32_t iarg1;
+  memcpy (&iarg0, &arg0, sizeof (iarg0));
+  memcpy (&iarg1, &arg1, sizeof (iarg1));
+  ctx_process_cmd_str_with_len (ctx, code, string, iarg0, iarg1, strlen (string));
+}
 
 #if CTX_BITPACK_PACKER
 static int
@@ -6837,7 +8028,10 @@ ctx_drawlist_compact (CtxDrawlist *drawlist)
 #endif
 }
 
-
+uint8_t *ctx_define_texture_pixel_data (CtxEntry *entry)
+{
+  return &entry[2 + 1 + 1 + ctx_conts_for_entry (&entry[2])].data.u8[0];
+}
 #ifndef __CTX_TRANSFORM
 #define __CTX_TRANSFORM
 
@@ -7229,9 +8423,8 @@ static void ctx_cmyk_to_rgb (float c, float m, float y, float k, float *r, float
   *b = (1.0f-y) * (1.0f-k);
 }
 
-// XXX needs state
 void ctx_rgb_to_cmyk (float r, float g, float b,
-              float *c_out, float *m_out, float *y_out, float *k_out)
+                      float *c_out, float *m_out, float *y_out, float *k_out)
 {
   float c = 1.0f - r;
   float m = 1.0f - g;
@@ -7513,7 +8706,7 @@ void ctx_color_get_graya_u8 (CtxState *state, CtxColor *color, uint8_t *out)
   out[1] = color->rgba[3];
 }
 
-
+#if 0
 void
 ctx_get_rgba (Ctx *ctx, float *rgba)
 {
@@ -7525,6 +8718,7 @@ ctx_get_drgba (Ctx *ctx, float *rgba)
 {
   ctx_color_get_drgba (& (ctx->state), &ctx->state.gstate.source.color, rgba);
 }
+#endif
 
 int ctx_in_fill (Ctx *ctx, float x, float y)
 {
@@ -7539,42 +8733,94 @@ int ctx_in_fill (Ctx *ctx, float x, float y)
 
 
 #if CTX_ENABLE_CMYK
+#if 0
 void
 ctx_get_cmyka (Ctx *ctx, float *cmyka)
 {
   ctx_color_get_cmyka (& (ctx->state), &ctx->state.gstate.source.color, cmyka);
 }
 #endif
+#endif
+#if 0
 void
 ctx_get_graya (Ctx *ctx, float *ya)
 {
   ctx_color_get_graya (& (ctx->state), &ctx->state.gstate.source.color, ya);
 }
+#endif
 
-void ctx_drgba (Ctx *ctx, float r, float g, float b, float a)
+void ctx_color_raw (Ctx *ctx, CtxColorModel model, float *components, int stroke)
 {
-  CtxEntry command[3]=
+  if (model == CTX_RGB || model == CTX_RGBA)
   {
-    ctx_f (CTX_COLOR, CTX_DRGBA, r),
-    ctx_f (CTX_CONT, g, b),
-    ctx_f (CTX_CONT, a, 0)
+    float rgba[4];
+  // XXX it should be possible to disable this, to get a more accurate record
+  // when it is intentional
+    float a = 1.0f;
+    if (model == CTX_RGBA) a = components[3];
+  if (stroke)
+    ctx_color_get_rgba (&ctx->state, &ctx->state.gstate.source_stroke.color, rgba);
+  else
+    ctx_color_get_rgba (&ctx->state, &ctx->state.gstate.source_fill.color, rgba);
+  if (rgba[0] == components[0] && rgba[1] == components[1] && rgba[2] == components[2] && rgba[3] == a)
+     return;
+  }
+
+  CtxEntry command[3]= {
+  ctx_f (CTX_COLOR, model + stroke * 512, 0)
   };
+  switch (model)
+  {
+    case CTX_RGBA:
+    case CTX_RGBA_A:
+    case CTX_RGBA_A_DEVICE:
+    case CTX_DRGBA:
+    case CTX_LABA:
+    case CTX_LCHA:
+      command[2].data.f[0]=components[3];
+      /*FALLTHROUGH*/
+    case CTX_RGB:
+    case CTX_LAB:
+    case CTX_LCH:
+    case CTX_DRGB:
+      command[0].data.f[1]=components[0];
+      command[1].data.f[0]=components[1];
+      command[1].data.f[1]=components[2];
+      break;
+    case CTX_DCMYKA:
+    case CTX_CMYKA:
+    case CTX_DCMYKA_A:
+    case CTX_CMYKA_A:
+      command[2].data.f[1]=components[4];
+      /*FALLTHROUGH*/
+    case CTX_CMYK:
+    case CTX_DCMYK:
+      command[0].data.f[1]=components[0];
+      command[1].data.f[0]=components[1];
+      command[1].data.f[1]=components[2];
+      command[2].data.f[0]=components[3];
+      break;
+    case CTX_GRAYA:
+    case CTX_GRAYA_A:
+      command[1].data.f[0]=components[1];
+      /*FALLTHROUGH*/
+    case CTX_GRAY:
+      command[0].data.f[1]=components[0];
+      break;
+  }
   ctx_process (ctx, command);
 }
 
 void ctx_rgba (Ctx *ctx, float r, float g, float b, float a)
 {
-  CtxEntry command[3]=
-  {
-    ctx_f (CTX_COLOR, CTX_RGBA, r),
-    ctx_f (CTX_CONT, g, b),
-    ctx_f (CTX_CONT, a, 0)
-  };
-  float rgba[4];
-  ctx_color_get_rgba (&ctx->state, &ctx->state.gstate.source.color, rgba);
-  if (rgba[0] == r && rgba[1] == g && rgba[2] == b && rgba[3] == a)
-     return;
-  ctx_process (ctx, command);
+  float components[4]={r,g,b,a};
+  ctx_color_raw (ctx, CTX_RGBA, components, 0);
+}
+
+void ctx_rgba_stroke (Ctx *ctx, float r, float g, float b, float a)
+{
+  float components[4]={r,g,b,a};
+  ctx_color_raw (ctx, CTX_RGBA, components, 1);
 }
 
 void ctx_rgb (Ctx *ctx, float   r, float   g, float   b)
@@ -7582,60 +8828,91 @@ void ctx_rgb (Ctx *ctx, float   r, float   g, float   b)
   ctx_rgba (ctx, r, g, b, 1.0f);
 }
 
+void ctx_rgb_stroke (Ctx *ctx, float   r, float   g, float   b)
+{
+  ctx_rgba_stroke (ctx, r, g, b, 1.0f);
+}
+
+void ctx_gray_stroke   (Ctx *ctx, float gray)
+{
+  ctx_color_raw (ctx, CTX_GRAY, &gray, 1);
+}
 void ctx_gray (Ctx *ctx, float gray)
 {
-  CtxEntry command[3]=
-  {
-    ctx_f (CTX_COLOR, CTX_GRAY, gray),
-    ctx_f (CTX_CONT, 1.0f, 0.0f),
-    ctx_f (CTX_CONT, 0.0f, 0.0f)
-  };
-  ctx_process (ctx, command);
+  ctx_color_raw (ctx, CTX_GRAY, &gray, 0);
+}
+
+void ctx_drgba_stroke (Ctx *ctx, float r, float g, float b, float a)
+{
+  float components[4]={r,g,b,a};
+  ctx_color_raw (ctx, CTX_DRGBA, components, 1);
+}
+void ctx_drgba (Ctx *ctx, float r, float g, float b, float a)
+{
+  float components[4]={r,g,b,a};
+  ctx_color_raw (ctx, CTX_DRGBA, components, 0);
 }
 
 #if CTX_ENABLE_CMYK
+
+void ctx_cmyka_stroke (Ctx *ctx, float c, float m, float y, float k, float a)
+{
+  float components[5]={c,m,y,k,a};
+  ctx_color_raw (ctx, CTX_CMYKA, components, 1);
+}
+void ctx_cmyka (Ctx *ctx, float c, float m, float y, float k, float a)
+{
+  float components[5]={c,m,y,k,a};
+  ctx_color_raw (ctx, CTX_CMYKA, components, 0);
+}
+void ctx_cmyk_stroke   (Ctx *ctx, float c, float m, float y, float k)
+{
+  float components[4]={c,m,y,k};
+  ctx_color_raw (ctx, CTX_CMYK, components, 1);
+}
 void ctx_cmyk (Ctx *ctx, float c, float m, float y, float k)
 {
-  CtxEntry command[3]=
-  {
-    ctx_f (CTX_COLOR, CTX_CMYKA, c),
-    ctx_f (CTX_CONT, m, y),
-    ctx_f (CTX_CONT, k, 1.0f)
-  };
-  ctx_process (ctx, command);
+  float components[4]={c,m,y,k};
+  ctx_color_raw (ctx, CTX_CMYK, components, 0);
 }
 
-void ctx_cmyka      (Ctx *ctx, float c, float m, float y, float k, float a)
+static void ctx_dcmyk_raw (Ctx *ctx, float c, float m, float y, float k, int stroke)
+{
+  float components[5]={c,m,y,k,1.0f};
+  ctx_color_raw (ctx, CTX_DCMYKA, components, stroke);
+}
+
+static void ctx_dcmyka_raw (Ctx *ctx, float c, float m, float y, float k, float a, int stroke)
 {
   CtxEntry command[3]=
   {
-    ctx_f (CTX_COLOR, CTX_CMYKA, c),
+    ctx_f (CTX_COLOR, CTX_DCMYKA + 512 * stroke, c),
     ctx_f (CTX_CONT, m, y),
     ctx_f (CTX_CONT, k, a)
   };
   ctx_process (ctx, command);
 }
 
+void ctx_dcmyk_stroke   (Ctx *ctx, float c, float m, float y, float k)
+{
+  float components[5]={c,m,y,k,1.0f};
+  ctx_color_raw (ctx, CTX_DCMYK, components, 1);
+}
 void ctx_dcmyk (Ctx *ctx, float c, float m, float y, float k)
 {
-  CtxEntry command[3]=
-  {
-    ctx_f (CTX_COLOR, CTX_DCMYKA, c),
-    ctx_f (CTX_CONT, m, y),
-    ctx_f (CTX_CONT, k, 1.0f)
-  };
-  ctx_process (ctx, command);
+  float components[5]={c,m,y,k,1.0f};
+  ctx_color_raw (ctx, CTX_DCMYK, components, 0);
 }
 
+void ctx_dcmyka_stroke   (Ctx *ctx, float c, float m, float y, float k, float a)
+{
+  float components[5]={c,m,y,k,a};
+  ctx_color_raw (ctx, CTX_DCMYKA, components, 1);
+}
 void ctx_dcmyka (Ctx *ctx, float c, float m, float y, float k, float a)
 {
-  CtxEntry command[3]=
-  {
-    ctx_f (CTX_COLOR, CTX_DCMYKA, c),
-    ctx_f (CTX_CONT, m, y),
-    ctx_f (CTX_CONT, k, a)
-  };
-  ctx_process (ctx, command);
+  float components[5]={c,m,y,k,a};
+  ctx_color_raw (ctx, CTX_DCMYKA, components, 0);
 }
 
 #endif
@@ -7652,13 +8929,14 @@ void ctx_dcmyka (Ctx *ctx, float c, float m, float y, float k, float a)
  */
 
 typedef struct ColorDef {
-  uint32_t name;
+  uint64_t name;
   float r;
   float g;
   float b;
   float a;
 } ColorDef;
 
+#if 0
 #define CTX_silver 	CTX_STRH('s','i','l','v','e','r',0,0,0,0,0,0,0,0)
 #define CTX_fuchsia 	CTX_STRH('f','u','c','h','s','i','a',0,0,0,0,0,0,0)
 #define CTX_gray 	CTX_STRH('g','r','a','y',0,0,0,0,0,0,0,0,0,0)
@@ -7678,6 +8956,7 @@ typedef struct ColorDef {
 #define CTX_lime 	CTX_STRH('l','i','m','e',0,0,0,0,0,0,0,0,0,0)
 #define CTX_aqua 	CTX_STRH('a','q','u','a',0,0,0,0,0,0,0,0,0,0)
 #define CTX_transparent CTX_STRH('t','r','a','n','s','p','a','r','e','n','t',0,0,0)
+#endif
 
 static ColorDef colors[]={
   {CTX_black,    0, 0, 0, 1},
@@ -7817,12 +9096,12 @@ mrg_color_parse_hex (CtxState *ctxstate, CtxColor *color, const char *color_stri
   return 1;
 }
 
-#define CTX_currentColor 	CTX_STRH('c','u','r','r','e','n','t','C','o','l','o','r',0,0)
+//#define CTX_currentColor 	CTX_STRH('c','u','r','r','e','n','t','C','o','l','o','r',0,0)
 
 int ctx_color_set_from_string (Ctx *ctx, CtxColor *color, const char *string)
 {
   int i;
-  uint32_t hash = ctx_strhash (string, 0);
+  uint64_t hash = ctx_strhash (string, 0);
 //  ctx_color_set_rgba (&(ctx->state), color, 0.4,0.1,0.9,1.0);
 //  return 0;
     //rgba[0], rgba[1], rgba[2], rgba[3]);
@@ -7858,13 +9137,23 @@ int ctx_color_set_from_string (Ctx *ctx, CtxColor *color, const char *string)
   return 0;
 }
 
-int ctx_color (Ctx *ctx, const char *string)
+int ctx_color_fill (Ctx *ctx, const char *string)
 {
   CtxColor color = {0,};
   ctx_color_set_from_string (ctx, &color, string);
   float rgba[4];
   ctx_color_get_rgba (&(ctx->state), &color, rgba);
-  ctx_rgba (ctx, rgba[0],rgba[1],rgba[2],rgba[3]);
+  ctx_color_raw (ctx, CTX_RGBA, rgba, 0);
+  return 0;
+}
+
+int ctx_color_stroke (Ctx *ctx, const char *string)
+{
+  CtxColor color = {0,};
+  ctx_color_set_from_string (ctx, &color, string);
+  float rgba[4];
+  ctx_color_get_rgba (&(ctx->state), &color, rgba);
+  ctx_color_raw (ctx, CTX_RGBA, rgba, 1);
   return 0;
 }
 
@@ -7884,6 +9173,12 @@ ctx_rgba8 (Ctx *ctx, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
   ctx_rgba (ctx, r/255.0f, g/255.0f, b/255.0f, a/255.0f);
 #endif
 }
+
+void ctx_rgba8_stroke (Ctx *ctx, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+  ctx_rgba_stroke (ctx, r/255.0f, g/255.0f, b/255.0f, a/255.0f);
+}
+
 
 #endif 
 
@@ -7906,13 +9201,18 @@ void ctx_rasterizer_colorspace_babl (CtxState      *state,
     case CTX_COLOR_SPACE_USER_CMYK:
       state->gstate.cmyk_space = space;
       break;
+    case CTX_COLOR_SPACE_TEXTURE:
+      state->gstate.texture_space = space;
+      break;
   }
 
-
+  const Babl *srgb = babl_space ("sRGB");
+  if (!state->gstate.texture_space) 
+       state->gstate.texture_space = srgb;
   if (!state->gstate.device_space) 
-       state->gstate.device_space = babl_space ("sRGB");
+       state->gstate.device_space = srgb;
   if (!state->gstate.rgb_space) 
-       state->gstate.rgb_space = babl_space ("sRGB");
+       state->gstate.rgb_space = srgb;
 
   //fprintf (stderr, "%s\n", babl_get_name (state->gstate.device_space));
 
@@ -7921,6 +9221,9 @@ void ctx_rasterizer_colorspace_babl (CtxState      *state,
        babl_format_with_space ("R'G'B'A float", state->gstate.rgb_space));
   state->gstate.fish_rgbaf_user_to_device = babl_fish (
        babl_format_with_space ("R'G'B'A float", state->gstate.rgb_space),
+       babl_format_with_space ("R'G'B'A float", state->gstate.device_space));
+  state->gstate.fish_rgbaf_texture_to_device = babl_fish (
+       babl_format_with_space ("R'G'B'A float", state->gstate.texture_space),
        babl_format_with_space ("R'G'B'A float", state->gstate.device_space));
 }
 #endif
@@ -7933,13 +9236,23 @@ void ctx_rasterizer_colorspace_icc (CtxState      *state,
 #if CTX_BABL
    const char *error = NULL;
    const Babl *space = NULL;
+
    if (icc_data == NULL) space = babl_space ("sRGB");
-   if (!space && !strcmp (icc_data, "sRGB"))       space = babl_space ("sRGB");
-   if (!space && !strcmp (icc_data, "ACEScg"))     space = babl_space ("ACEScg");
-   if (!space && !strcmp (icc_data, "Adobish"))    space = babl_space ("Adobish");
-   if (!space && !strcmp (icc_data, "Apple"))      space = babl_space ("Apple");
-   if (!space && !strcmp (icc_data, "Rec2020"))    space = babl_space ("Rec2020");
-   if (!space && !strcmp (icc_data, "ACES2065-1")) space = babl_space ("ACES2065-1");
+   else if (icc_length < 16)
+   {
+      char tmp[24];
+      int i;
+      for (i = 0; i < icc_length; i++)
+        tmp[i]= (icc_data[i]>='A' && icc_data[i]<='Z')?icc_data[i]+('a'-'A'):icc_data[i];
+      tmp[icc_length]=0;
+      if (!strcmp (tmp, "srgb"))            space = babl_space ("sRGB");
+      else if (!strcmp (tmp, "scrgb"))      space = babl_space ("scRGB");
+      else if (!strcmp (tmp, "acescg"))     space = babl_space ("ACEScg");
+      else if (!strcmp (tmp, "adobe"))      space = babl_space ("Adobe");
+      else if (!strcmp (tmp, "apple"))      space = babl_space ("Apple");
+      else if (!strcmp (tmp, "rec2020"))    space = babl_space ("Rec2020");
+      else if (!strcmp (tmp, "aces2065-1")) space = babl_space ("ACES2065-1");
+   }
 
    if (!space)
    {
@@ -7959,6 +9272,7 @@ void ctx_colorspace (Ctx           *ctx,
 {
   if (data)
   {
+    if (data_length <= 0) data_length = (int)strlen ((char*)data);
     ctx_process_cmd_str_with_len (ctx, CTX_COLOR_SPACE, (char*)data, space_slot, 0, data_length);
   }
   else
@@ -7967,13 +9281,49 @@ void ctx_colorspace (Ctx           *ctx,
   }
 }
 
+void ctx_gradient_add_stop_u8
+(Ctx *ctx, float pos, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+  CtxEntry entry = ctx_f (CTX_GRADIENT_STOP, pos, 0);
+  entry.data.u8[4+0] = r;
+  entry.data.u8[4+1] = g;
+  entry.data.u8[4+2] = b;
+  entry.data.u8[4+3] = a;
+  ctx_process (ctx, &entry);
+}
+
+void ctx_gradient_add_stop
+(Ctx *ctx, float pos, float r, float g, float b, float a)
+{
+  int ir = r * 255;
+  int ig = g * 255;
+  int ib = b * 255;
+  int ia = a * 255;
+  ir = CTX_CLAMP (ir, 0,255);
+  ig = CTX_CLAMP (ig, 0,255);
+  ib = CTX_CLAMP (ib, 0,255);
+  ia = CTX_CLAMP (ia, 0,255);
+  ctx_gradient_add_stop_u8 (ctx, pos, ir, ig, ib, ia);
+}
+
+void ctx_gradient_add_stop_string
+(Ctx *ctx, float pos, const char *string)
+{
+  CtxColor color = {0,};
+  ctx_color_set_from_string (ctx, &color, string);
+  float rgba[4];
+  ctx_color_get_rgba (&(ctx->state), &color, rgba);
+  ctx_gradient_add_stop (ctx, pos, rgba[0], rgba[1], rgba[2], rgba[3]);
+}
+
 //  deviceRGB .. settable when creating an RGB image surface..
 //               queryable when running in terminal - is it really needed?
-//               though it is also settable.. 
+//               though it is settable ; and functional for changing this state at runtime..
 //
 //  userRGB - settable at any time, stored in save|restore 
+//  texture - set as the space of data on subsequent 
 
-float ctx_state_get (CtxState *state, uint32_t hash)
+float ctx_state_get (CtxState *state, uint64_t hash)
 {
   for (int i = state->gstate.keydb_pos-1; i>=0; i--)
     {
@@ -7983,7 +9333,7 @@ float ctx_state_get (CtxState *state, uint32_t hash)
   return -0.0;
 }
 
-void ctx_state_set (CtxState *state, uint32_t key, float value)
+void ctx_state_set (CtxState *state, uint64_t key, float value)
 {
   if (key != CTX_new_state)
     {
@@ -8031,7 +9381,7 @@ static float ctx_string_index_to_float (int index)
   return CTX_KEYDB_STRING_START + index;
 }
 
-void *ctx_state_get_blob (CtxState *state, uint32_t key)
+void *ctx_state_get_blob (CtxState *state, uint64_t key)
 {
   float stored = ctx_state_get (state, key);
   int idx = ctx_float_to_string_index (stored);
@@ -8045,7 +9395,7 @@ void *ctx_state_get_blob (CtxState *state, uint32_t key)
   return NULL;
 }
 
-const char *ctx_state_get_string (CtxState *state, uint32_t key)
+const char *ctx_state_get_string (CtxState *state, uint64_t key)
 {
   const char *ret = (char*)ctx_state_get_blob (state, key);
   if (ret && ret[0] == 127)
@@ -8054,7 +9404,7 @@ const char *ctx_state_get_string (CtxState *state, uint32_t key)
 }
 
 
-static void ctx_state_set_blob (CtxState *state, uint32_t key, uint8_t *data, int len)
+static void ctx_state_set_blob (CtxState *state, uint64_t key, uint8_t *data, int len)
 {
   int idx = state->gstate.stringpool_pos;
 
@@ -8078,7 +9428,7 @@ static void ctx_state_set_blob (CtxState *state, uint32_t key, uint8_t *data, in
   ctx_state_set (state, key, ctx_string_index_to_float (idx));
 }
 
-static void ctx_state_set_string (CtxState *state, uint32_t key, const char *string)
+static void ctx_state_set_string (CtxState *state, uint64_t key, const char *string)
 {
   float old_val = ctx_state_get (state, key);
   int   old_idx = ctx_float_to_string_index (old_val);
@@ -8105,7 +9455,7 @@ static void ctx_state_set_string (CtxState *state, uint32_t key, const char *str
   ctx_state_set_blob (state, key, (uint8_t*)string, strlen(string));
 }
 
-static int ctx_state_get_color (CtxState *state, uint32_t key, CtxColor *color)
+static int ctx_state_get_color (CtxState *state, uint64_t key, CtxColor *color)
 {
   CtxColor *stored = (CtxColor*)ctx_state_get_blob (state, key);
   if (stored)
@@ -8119,7 +9469,7 @@ static int ctx_state_get_color (CtxState *state, uint32_t key, CtxColor *color)
   return -1;
 }
 
-static void ctx_state_set_color (CtxState *state, uint32_t key, CtxColor *color)
+static void ctx_state_set_color (CtxState *state, uint64_t key, CtxColor *color)
 {
   CtxColor mod_color;
   CtxColor old_color;
@@ -8133,39 +9483,39 @@ static void ctx_state_set_color (CtxState *state, uint32_t key, CtxColor *color)
   ctx_state_set_blob (state, key, (uint8_t*)&mod_color, sizeof (CtxColor));
 }
 
-const char *ctx_get_string (Ctx *ctx, uint32_t hash)
+const char *ctx_get_string (Ctx *ctx, uint64_t hash)
 {
   return ctx_state_get_string (&ctx->state, hash);
 }
-float ctx_get_float (Ctx *ctx, uint32_t hash)
+float ctx_get_float (Ctx *ctx, uint64_t hash)
 {
   return ctx_state_get (&ctx->state, hash);
 }
-int ctx_get_int (Ctx *ctx, uint32_t hash)
+int ctx_get_int (Ctx *ctx, uint64_t hash)
 {
   return ctx_state_get (&ctx->state, hash);
 }
-void ctx_set_float (Ctx *ctx, uint32_t hash, float value)
+void ctx_set_float (Ctx *ctx, uint64_t hash, float value)
 {
   ctx_state_set (&ctx->state, hash, value);
 }
-void ctx_set_string (Ctx *ctx, uint32_t hash, const char *value)
+void ctx_set_string (Ctx *ctx, uint64_t hash, const char *value)
 {
   ctx_state_set_string (&ctx->state, hash, value);
 }
-void ctx_set_color (Ctx *ctx, uint32_t hash, CtxColor *color)
+void ctx_set_color (Ctx *ctx, uint64_t hash, CtxColor *color)
 {
   ctx_state_set_color (&ctx->state, hash, color);
 }
-int  ctx_get_color (Ctx *ctx, uint32_t hash, CtxColor *color)
+int  ctx_get_color (Ctx *ctx, uint64_t hash, CtxColor *color)
 {
   return ctx_state_get_color (&ctx->state, hash, color);
 }
-int ctx_is_set (Ctx *ctx, uint32_t hash)
+int ctx_is_set (Ctx *ctx, uint64_t hash)
 {
   return ctx_get_float (ctx, hash) != -0.0f;
 }
-int ctx_is_set_now (Ctx *ctx, uint32_t hash)
+int ctx_is_set_now (Ctx *ctx, uint64_t hash)
 {
   return ctx_is_set (ctx, hash);
 }
@@ -8444,7 +9794,6 @@ static void ctx_rasterizer_line_to (CtxRasterizer *rasterizer, float x, float y)
 #define MIN_Y -1000
 #define MAX_Y 1400
 
-
   if (ty < MIN_Y) ty = MIN_Y;
   if (ty > MAX_Y) ty = MAX_Y;
   ctx_rasterizer_add_point (rasterizer, tx * CTX_SUBDIV, ty * rasterizer->aa);
@@ -8631,6 +9980,81 @@ ctx_rasterizer_rel_curve_to (CtxRasterizer *rasterizer,
   ctx_rasterizer_curve_to (rasterizer, x0, y0, x1, y1, x2, y2);
 }
 
+
+static int
+ctx_rasterizer_find_texture (CtxRasterizer *rasterizer,
+                             const char *eid)
+{
+  int no;
+  for (no = 0; no < CTX_MAX_TEXTURES; no++)
+  {
+    if (rasterizer->texture_source->texture[no].data &&
+        rasterizer->texture_source->texture[no].eid &&
+        !strcmp (rasterizer->texture_source->texture[no].eid, eid))
+      return no;
+  }
+  return -1;
+}
+
+static void
+ctx_rasterizer_set_texture (CtxRasterizer *rasterizer,
+                            const char *eid,
+                            float x,
+                            float y)
+{
+  int no = ctx_rasterizer_find_texture (rasterizer, eid);
+  if (no < 0 || no >= CTX_MAX_TEXTURES) { no = 0; }
+  if (rasterizer->texture_source->texture[no].data == NULL)
+    {
+      fprintf (stderr, "ctx tex fail %p %s %i\n", rasterizer->texture_source, eid, no);
+      return;
+    }
+  else
+  {
+    rasterizer->texture_source->texture[no].frame = rasterizer->texture_source->frame;
+  }
+  rasterizer->state->gstate.source_fill.type = CTX_SOURCE_TEXTURE;
+  rasterizer->state->gstate.source_fill.texture.buffer = &rasterizer->texture_source->texture[no];
+  //ctx_user_to_device (rasterizer->state, &x, &y);
+  rasterizer->state->gstate.source_fill.texture.x0 = 0;
+  rasterizer->state->gstate.source_fill.texture.y0 = 0;
+  rasterizer->state->gstate.source_fill.transform = rasterizer->state->gstate.transform;
+  ctx_matrix_translate (&rasterizer->state->gstate.source_fill.transform, x, y);
+  ctx_matrix_invert (&rasterizer->state->gstate.source_fill.transform);
+}
+
+
+static void ctx_rasterizer_define_texture (CtxRasterizer *rasterizer,
+                                           const char *eid,
+                                           int width,
+                                           int height,
+                                           int format,
+                                           char unsigned *data)
+{
+  _ctx_texture_lock (); // we're using the same texture_source from all threads, keeping allocaitons down
+                        // need synchronizing (it could be better to do a pre-pass)
+  ctx_texture_init (rasterizer->texture_source,
+                    eid,
+                    width,
+                    height,
+                    ctx_pixel_format_get_stride ((CtxPixelFormat)format, width),
+                    (CtxPixelFormat)format,
+#if CTX_ENABLE_CM
+                    (void*)rasterizer->state->gstate.texture_space,
+#else
+                    NULL,
+#endif
+                    data,
+                    ctx_buffer_pixels_free, (void*)23);
+                    /*  when userdata for ctx_buffer_pixels_free is 23, texture_init dups the data on
+                     *  use
+                     */
+
+  _ctx_texture_unlock ();
+  ctx_rasterizer_set_texture (rasterizer, eid, 0.0, 0.0);
+}
+
+
 CTX_INLINE static int ctx_compare_edges (const void *ap, const void *bp)
 {
   const CtxEntry *a = (const CtxEntry *) ap;
@@ -8682,15 +10106,18 @@ static void ctx_rasterizer_sort_edges (CtxRasterizer *rasterizer)
     }
 }
 
+
 static void ctx_rasterizer_discard_edges (CtxRasterizer *rasterizer)
 {
+  int scanline = rasterizer->scanline;
+  int aa = rasterizer->aa;
 #if CTX_RASTERIZER_FORCE_AA==0
   rasterizer->ending_edges = 0;
 #endif
   for (int i = 0; i < rasterizer->active_edges; i++)
     {
       int edge_end =rasterizer->edge_list.entries[rasterizer->edges[i].index].data.s16[3];
-      if (edge_end < rasterizer->scanline)
+      if (edge_end < scanline)
         {
           int dx_dy = rasterizer->edges[i].dx;
           if (abs(dx_dy)> CTX_RASTERIZER_AA_SLOPE_LIMIT)
@@ -8700,7 +10127,7 @@ static void ctx_rasterizer_discard_edges (CtxRasterizer *rasterizer)
           i--;
         }
 #if CTX_RASTERIZER_FORCE_AA==0
-      else if (edge_end < rasterizer->scanline + rasterizer->aa)
+      else if (edge_end < scanline + aa)
         rasterizer->ending_edges = 1;
 #endif
     }
@@ -8750,10 +10177,14 @@ inline static void ctx_rasterizer_feed_edges (CtxRasterizer *rasterizer)
         }
     }
 #endif
-  while (rasterizer->edge_pos < rasterizer->edge_list.count &&
-         (miny=entries[rasterizer->edge_pos].data.s16[1]) <= rasterizer->scanline 
+  int scanline = rasterizer->scanline;
 #if CTX_RASTERIZER_FORCE_AA==0
-         + rasterizer->aa
+  int aa = rasterizer->aa;
+#endif
+  while (rasterizer->edge_pos < rasterizer->edge_list.count &&
+         (miny=entries[rasterizer->edge_pos].data.s16[1]) <= scanline 
+#if CTX_RASTERIZER_FORCE_AA==0
+         + aa
 #endif
          
          )
@@ -8764,7 +10195,7 @@ inline static void ctx_rasterizer_feed_edges (CtxRasterizer *rasterizer)
                     miny);
           if (dy) /* skipping horizontal edges */
             {
-              int yd = rasterizer->scanline - miny;
+              int yd = scanline - miny;
               int no = rasterizer->active_edges;
               rasterizer->active_edges++;
               rasterizer->edges[no].index = rasterizer->edge_pos;
@@ -8803,7 +10234,7 @@ inline static void ctx_rasterizer_feed_edges (CtxRasterizer *rasterizer)
               if (abs(dx_dy)> CTX_RASTERIZER_AA_SLOPE_LIMIT)
                 { rasterizer->needs_aa ++; }
 
-              if ((miny > rasterizer->scanline) )
+              if ((miny > scanline) )
                 {
                   /* it is a pending edge - we add it to the end of the array
                      and keep a different count for items stored here, like
@@ -9177,15 +10608,65 @@ ctx_rasterizer_rasterize_edges (CtxRasterizer *rasterizer, int winding
           )
 #endif
         {
-          for (int i = 0; i < rasterizer->aa; i++)
-            {
-              ctx_rasterizer_sort_active_edges (rasterizer);
-              ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, winding, aa);
-              rasterizer->scanline ++;
-              ctx_rasterizer_increment_edges (rasterizer, 1);
-              ctx_rasterizer_feed_edges (rasterizer);
+          switch (aa)
+          {
+#if CTX_FORCE_INLINES
+            case 5:
+              if (winding)
+              for (int i = 0; i < 5; i++)
+              {
+                ctx_rasterizer_sort_active_edges (rasterizer);
+                ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, 1, 5);
+                rasterizer->scanline ++;
+                ctx_rasterizer_increment_edges (rasterizer, 1);
+                ctx_rasterizer_feed_edges (rasterizer);
   ctx_rasterizer_discard_edges (rasterizer);
-            }
+              }
+              else
+              for (int i = 0; i < 5; i++)
+              {
+                ctx_rasterizer_sort_active_edges (rasterizer);
+                ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, 1, 5);
+                rasterizer->scanline ++;
+                ctx_rasterizer_increment_edges (rasterizer, 1);
+                ctx_rasterizer_feed_edges (rasterizer);
+  ctx_rasterizer_discard_edges (rasterizer);
+              }
+              break;
+            case 15: /* */
+              if (winding)
+              for (int i = 0; i < 15; i++)
+              {
+                ctx_rasterizer_sort_active_edges (rasterizer);
+                ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, 1, 15);
+                rasterizer->scanline ++;
+                ctx_rasterizer_increment_edges (rasterizer, 1);
+                ctx_rasterizer_feed_edges (rasterizer);
+  ctx_rasterizer_discard_edges (rasterizer);
+              }
+              else
+              for (int i = 0; i < 15; i++)
+              {
+                ctx_rasterizer_sort_active_edges (rasterizer);
+                ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, 0, 15);
+                rasterizer->scanline ++;
+                ctx_rasterizer_increment_edges (rasterizer, 1);
+                ctx_rasterizer_feed_edges (rasterizer);
+  ctx_rasterizer_discard_edges (rasterizer);
+              }
+              break;
+#endif
+            default:
+              for (int i = 0; i < aa; i++)
+              {
+                ctx_rasterizer_sort_active_edges (rasterizer);
+                ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, winding, aa);
+                rasterizer->scanline ++;
+                ctx_rasterizer_increment_edges (rasterizer, 1);
+                ctx_rasterizer_feed_edges (rasterizer);
+  ctx_rasterizer_discard_edges (rasterizer);
+              }
+          }
         }
 #if CTX_RASTERIZER_FORCE_AA==0
       else
@@ -9194,7 +10675,7 @@ ctx_rasterizer_rasterize_edges (CtxRasterizer *rasterizer, int winding
           ctx_rasterizer_sort_active_edges (rasterizer);
           ctx_rasterizer_generate_coverage (rasterizer, minx, maxx, coverage, winding, 1);
           ctx_rasterizer_increment_edges (rasterizer, halfstep2);
-          rasterizer->scanline += rasterizer->aa;
+          rasterizer->scanline += aa;
           ctx_rasterizer_feed_edges (rasterizer);
   ctx_rasterizer_discard_edges (rasterizer);
         }
@@ -9354,15 +10835,15 @@ ctx_rasterizer_fill_rect (CtxRasterizer *rasterizer,
 }
 
 inline static int
-ctx_is_transparent (CtxRasterizer *rasterizer)
+ctx_is_transparent (CtxRasterizer *rasterizer, int stroke)
 {
   CtxGState *gstate = &rasterizer->state->gstate;
   if (gstate->global_alpha_u8 == 0)
     return 1;
-  if (gstate->source.type == CTX_SOURCE_COLOR)
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
   {
     uint8_t ga[2];
-    ctx_color_get_graya_u8 (rasterizer->state, &gstate->source.color, ga);
+    ctx_color_get_graya_u8 (rasterizer->state, &gstate->source_fill.color, ga);
     if (ga[1] == 0)
       return 1;
   }
@@ -9398,7 +10879,7 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
   }
 #endif
 
-  if (ctx_is_transparent (rasterizer) ||
+  if (ctx_is_transparent (rasterizer, 0) ||
       rasterizer->scan_min / aa > rasterizer->blit_y + rasterizer->blit_height ||
       rasterizer->scan_max / aa < rasterizer->blit_y ||
       rasterizer->col_min / CTX_SUBDIV > rasterizer->blit_x + rasterizer->blit_width ||
@@ -9430,7 +10911,7 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
              (entry1->data.s16[3] == entry2->data.s16[3]) &&
              (entry2->data.s16[2] == entry3->data.s16[2]) &&
              ((entry3->data.s16[2] & (CTX_SUBDIV-1)) == 0)  &&
-             ((entry3->data.s16[3] & (aa-1)) == 0)
+             ((entry3->data.s16[3] & (aa-1)) == 0) 
 #if CTX_ENABLE_SHADOW_BLUR
              && !rasterizer->in_shadow
 #endif
@@ -9448,6 +10929,7 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
     ctx_rasterizer_finish_shape (rasterizer);
 
     uint32_t hash = ctx_rasterizer_poly_to_edges (rasterizer);
+    if (hash){};
 
 #if CTX_SHAPE_CACHE
     int width = (rasterizer->col_max + (CTX_SUBDIV-1) ) / CTX_SUBDIV - rasterizer->col_min/CTX_SUBDIV + 1;
@@ -9455,8 +10937,6 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
     if (width * height < CTX_SHAPE_CACHE_DIM && width >=1 && height >= 1
         && width < CTX_SHAPE_CACHE_MAX_DIM
         && height < CTX_SHAPE_CACHE_MAX_DIM 
-        && !rasterizer->state->gstate.clipped // XXX  - this causes any clipping, also rectangular -
-                                              //        to disable caching
 #if CTX_ENABLE_SHADOW_BLUR
         && !rasterizer->in_shadow
 #endif
@@ -9505,17 +10985,46 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
 
         if (shape->uses == 0)
           {
+            CtxBuffer *buffer_backup = rasterizer->clip_buffer;
+            rasterizer->clip_buffer = NULL;
             ctx_rasterizer_rasterize_edges (rasterizer, rasterizer->state->gstate.fill_rule, shape);
+            rasterizer->clip_buffer = buffer_backup;
           }
         rasterizer->scanline = scan_min;
 
         int ewidth = x1 - x0;
         if (ewidth>0)
+        {
+          if (rasterizer->clip_buffer && !rasterizer->clip_rectangle)
+          {
+          uint8_t composite[ewidth];
           for (int y = y0; y < y1; y++)
             {
               if ( (y >= clip_y_min) && (y <= clip_y_max) )
                 {
-                  ctx_rasterizer_apply_coverage (rasterizer,
+                    for (int x = 0; x < ewidth; x++)
+                    {
+                      int val = shape->data[shape->width * (int)(y-ymin) + xo + x];
+                      // XXX : not valid for 1bit clip buffers
+                      val = (val*((uint8_t*)rasterizer->clip_buffer->data) [
+                              ((y-rasterizer->blit_y) * rasterizer->blit_width) + x0 + x])/255;
+                      composite[x] = val;
+                    }
+                    ctx_rasterizer_apply_coverage (rasterizer,
+                                                 ( (uint8_t *) rasterizer->buf) + (y-rasterizer->blit_y) * rasterizer->blit_stride + (int) (x0) * rasterizer->format->bpp/8,
+                                                 x0, // is 0
+                                                 composite,
+                                                 ewidth );
+               rasterizer->scanline += aa;
+            }
+          }
+          }
+          else
+          for (int y = y0; y < y1; y++)
+            {
+              if ( (y >= clip_y_min) && (y <= clip_y_max) )
+                {
+                    ctx_rasterizer_apply_coverage (rasterizer,
                                                  ( (uint8_t *) rasterizer->buf) + (y-rasterizer->blit_y) * rasterizer->blit_stride + (int) (x0) * rasterizer->format->bpp/8,
                                                  x0,
                                                  &shape->data[shape->width * (int) (y-ymin) + xo],
@@ -9523,6 +11032,7 @@ ctx_rasterizer_fill (CtxRasterizer *rasterizer)
                 }
                rasterizer->scanline += aa;
             }
+        }
         if (shape->uses != 0)
           {
             ctx_rasterizer_reset (rasterizer);
@@ -9571,6 +11081,18 @@ ctx_rasterizer_triangle (CtxRasterizer *rasterizer,
 }
 #endif
 
+
+typedef struct _CtxTermGlyph CtxTermGlyph;
+
+struct _CtxTermGlyph
+{
+  uint32_t unichar;
+  int      col;
+  int      row;
+  uint8_t  rgba_bg[4];
+  uint8_t  rgba_fg[4];
+};
+
 static int _ctx_glyph (Ctx *ctx, uint32_t unichar, int stroke);
 static void
 ctx_rasterizer_glyph (CtxRasterizer *rasterizer, uint32_t unichar, int stroke)
@@ -9586,19 +11108,47 @@ ctx_rasterizer_glyph (CtxRasterizer *rasterizer, uint32_t unichar, int stroke)
   if (tx  > rasterizer->blit_x + rasterizer->blit_width ||
       ty  > rasterizer->blit_y + rasterizer->blit_height)
           return;
+
+#if CTX_BRAILLE_TEXT
+  float font_size = 0;
+  int ch = 1;
+  int cw = 1;
+
+  if (rasterizer->term_glyphs)
+  {
+    float tx = 0;
+    float ty = rasterizer->state->gstate.font_size;
+    float txb = 0;
+    float tyb = 0;
+
+    ch = ctx_term_get_cell_height (rasterizer->ctx);
+    cw = ctx_term_get_cell_width (rasterizer->ctx);
+
+    _ctx_user_to_device (rasterizer->state, &tx, &ty);
+    _ctx_user_to_device (rasterizer->state, &txb, &tyb);
+    font_size = ty-tyb;
+  }
+  if (rasterizer->term_glyphs && !stroke &&
+      fabs (font_size - ch) < 0.5)
+  {
+    float tx = rasterizer->x;
+    float ty = rasterizer->y;
+    _ctx_user_to_device (rasterizer->state, &tx, &ty);
+    int col = tx / cw + 1;
+    int row = ty / ch + 1;
+    CtxTermGlyph *glyph = ctx_calloc (sizeof (CtxTermGlyph), 1);
+    ctx_list_append (&rasterizer->glyphs, glyph);
+    glyph->unichar = unichar;
+    glyph->col = col;
+    glyph->row = row;
+    ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source_fill.color,
+                         &glyph->rgba_fg[0]);
+  }
+  else
+#endif
   _ctx_glyph (rasterizer->ctx, unichar, stroke);
 }
 
-typedef struct _CtxTermGlyph CtxTermGlyph;
-
-struct _CtxTermGlyph
-{
-  uint32_t unichar;
-  int      col;
-  int      row;
-  uint8_t  rgba_bg[4];
-  uint8_t  rgba_fg[4];
-};
 
 static void
 _ctx_text (Ctx        *ctx,
@@ -9609,10 +11159,25 @@ static void
 ctx_rasterizer_text (CtxRasterizer *rasterizer, const char *string, int stroke)
 {
 #if CTX_BRAILLE_TEXT
-  if (rasterizer->term_glyphs && !stroke)
+  float font_size = 0;
+  if (rasterizer->term_glyphs)
   {
-    int col = rasterizer->x / 2 + 1;
-    int row = rasterizer->y / 4 + 1;
+  float tx = 0;
+  float ty = rasterizer->state->gstate.font_size;
+  _ctx_user_to_device (rasterizer->state, &tx, &ty);
+  font_size = ty;
+  }
+  int   ch = ctx_term_get_cell_height (rasterizer->ctx);
+  int   cw = ctx_term_get_cell_width (rasterizer->ctx);
+
+  if (rasterizer->term_glyphs && !stroke &&
+      fabs (font_size - ch) < 0.5)
+  {
+    float tx = rasterizer->x;
+    float ty = rasterizer->y;
+    _ctx_user_to_device (rasterizer->state, &tx, &ty);
+    int col = tx / cw + 1;
+    int row = ty / ch + 1;
     for (int i = 0; string[i]; i++, col++)
     {
       CtxTermGlyph *glyph = ctx_calloc (sizeof (CtxTermGlyph), 1);
@@ -9620,10 +11185,9 @@ ctx_rasterizer_text (CtxRasterizer *rasterizer, const char *string, int stroke)
       glyph->unichar = string[i];
       glyph->col = col;
       glyph->row = row;
-      ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source.color,
+      ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source_fill.color,
                       glyph->rgba_fg);
     }
-    //_ctx_text (rasterizer->ctx, string, stroke, 1);
   }
   else
 #endif
@@ -9650,20 +11214,20 @@ ctx_rasterizer_arc (CtxRasterizer *rasterizer,
                     int          anticlockwise)
 {
   int full_segments = CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS;
-  full_segments = radius * CTX_PI;
+  full_segments = radius * CTX_PI * 2;
   if (full_segments > CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS)
     { full_segments = CTX_RASTERIZER_MAX_CIRCLE_SEGMENTS; }
   float step = CTX_PI*2.0/full_segments;
   int steps;
 
-  if (end_angle < -10.0)
-    end_angle = -10.0;
-  if (start_angle < -10.0)
-    start_angle = -10.0;
-  if (end_angle > 10.0)
-    end_angle = 10.0;
-  if (start_angle > 10.0)
-    start_angle = 10.0;
+  if (end_angle < -30.0)
+    end_angle = -30.0;
+  if (start_angle < -30.0)
+    start_angle = -30.0;
+  if (end_angle > 30.0)
+    end_angle = 30.0;
+  if (start_angle > 30.0)
+    start_angle = 30.0;
 
   if (radius <= 0.0001)
           return;
@@ -9679,21 +11243,22 @@ ctx_rasterizer_arc (CtxRasterizer *rasterizer,
                             y + ctx_sinf (end_angle) * radius);
       return;
     }
-#if 0
-  if ( (!anticlockwise && (end_angle - start_angle >= CTX_PI*2) ) ||
-       ( (anticlockwise && (start_angle - end_angle >= CTX_PI*2) ) ) )
+#if 1
+  if ( (!anticlockwise && fabsf((end_angle - start_angle) - CTX_PI*2) < 0.01f)  ||
+       ( (anticlockwise && fabsf((start_angle - end_angle) - CTX_PI*2) < 0.01f ) ) 
+  ||   (anticlockwise && fabsf((end_angle - start_angle) - CTX_PI*2) < 0.01f)  ||  (!anticlockwise && fabsf((start_angle - end_angle) - CTX_PI*2) < 0.01f )  )
     {
-      end_angle = start_angle;
+      start_angle = start_angle;
       steps = full_segments - 1;
     }
   else
 #endif
     {
       steps = (end_angle - start_angle) / (CTX_PI*2) * full_segments;
-      if (steps > full_segments)
-              steps = full_segments;
       if (anticlockwise)
         { steps = full_segments - steps; };
+   // if (steps > full_segments)
+   //   steps = full_segments;
     }
   if (anticlockwise) { step = step * -1; }
   int first = 1;
@@ -9762,7 +11327,7 @@ ctx_rasterizer_pset (CtxRasterizer *rasterizer, int x, int y, uint8_t cov)
       y >= rasterizer->blit_height)
     { return; }
   uint8_t fg_color[4];
-  ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source.color, fg_color);
+  ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source_fill.color, fg_color);
   uint8_t pixel[4];
   uint8_t *dst = ( (uint8_t *) rasterizer->buf);
   dst += y * rasterizer->blit_stride;
@@ -9799,11 +11364,7 @@ ctx_rasterizer_stroke_1px (CtxRasterizer *rasterizer)
   int start = 0;
   int end = 0;
 #if 0
-  float factor = 
-     ctx_maxf (ctx_maxf (ctx_fabsf (state->gstate.transform.m[0][0]),
-                         ctx_fabsf (state->gstate.transform.m[0][1]) ),
-               ctx_maxf (ctx_fabsf (state->gstate.transform.m[1][0]),
-                         ctx_fabsf (state->gstate.transform.m[1][1]) ) );
+  float factor = ctx_matrix_get_scale (&state->gstate.transform);
 #endif
 
   while (start < count)
@@ -9862,14 +11423,13 @@ foo:
 static void
 ctx_rasterizer_stroke (CtxRasterizer *rasterizer)
 {
+  CtxSource source_backup = rasterizer->state->gstate.source_fill;
+  rasterizer->state->gstate.source_fill = rasterizer->state->gstate.source_stroke;
   CtxState *state = rasterizer->state;
   int count = rasterizer->edge_list.count;
   int preserved = rasterizer->preserve;
-  // YYY
-  float factor = ctx_maxf (ctx_maxf (ctx_fabsf (state->gstate.transform.m[0][0]),
-                                  ctx_fabsf (state->gstate.transform.m[0][1]) ),
-                        ctx_maxf (ctx_fabsf (state->gstate.transform.m[1][0]),
-                                  ctx_fabsf (state->gstate.transform.m[1][1]) ) );
+  float factor = ctx_matrix_get_scale (&state->gstate.transform);
+
   int aa = rasterizer->aa;
   CtxEntry temp[count]; /* copy of already built up path's poly line  */
   memcpy (temp, rasterizer->edge_list.entries, sizeof (temp) );
@@ -9931,7 +11491,14 @@ ctx_rasterizer_stroke (CtxRasterizer *rasterizer)
                       ctx_rasterizer_move_to (rasterizer, prev_x+dy, prev_y-dx);
                     }
                   ctx_rasterizer_line_to (rasterizer, prev_x-dy, prev_y+dx);
+                  
+                  // we need to know the slope of the other side
+
                   // XXX possible miter line-to
+                  //ctx_rasterizer_line_to (rasterizer, prev_x-dy+4, prev_y+dx+10);
+                  //ctx_rasterizer_line_to (rasterizer, prev_x-dy+8, prev_y+dx+0);
+
+
                   ctx_rasterizer_line_to (rasterizer, x-dy, y+dx);
                 }
               prev_x = x;
@@ -9954,6 +11521,7 @@ foo:
                 {
                   ctx_rasterizer_line_to (rasterizer, prev_x-dy, prev_y+dx);
                   // XXX possible miter line-to
+             //   ctx_rasterizer_line_to (rasterizer, prev_x-dy+10, prev_y+dx+10);
                   ctx_rasterizer_line_to (rasterizer, x-dy,      y+dx);
                 }
               prev_x = x;
@@ -10052,6 +11620,7 @@ foo:
       rasterizer->edge_list.count = count;
       rasterizer->preserve = 0;
     }
+  rasterizer->state->gstate.source_fill = source_backup;
 }
 
 #if CTX_1BIT_CLIP
@@ -10089,6 +11658,12 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
   int maxy = -5000;
   int prev_x = 0;
   int prev_y = 0;
+  int blit_width = rasterizer->blit_width;
+  int blit_height = rasterizer->blit_height;
+
+
+  float coords[6][2];
+
   for (int i = 0; i < count; i++)
     {
       CtxEntry *entry = &edges[i+1];
@@ -10104,11 +11679,41 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
         }
       x = entry->data.s16[2] * 1.0f / CTX_SUBDIV;
       y = entry->data.s16[3] * 1.0f / aa;
+      coords[i][0] = x;
+      coords[i][1] = y;
       if (x < minx) { minx = x; }
       if (y < miny) { miny = y; }
       if (x > maxx) { maxx = x; }
       if (y > maxy) { maxy = y; }
     }
+
+  if (rasterizer->clip_rectangle || !rasterizer->clip_buffer)
+  {
+    if (count == 6)
+    {
+      if (coords[3][0] == coords[5][0] &&
+          coords[3][1] == coords[5][1])
+      {
+#if 0
+        printf ("%d,%d %dx%d\n", minx, miny,
+                                       maxx-minx+1, maxy-miny+1);
+#endif
+
+         rasterizer->state->gstate.clip_min_x =
+            ctx_maxi (minx, rasterizer->state->gstate.clip_min_x);
+         rasterizer->state->gstate.clip_min_y =
+            ctx_maxi (miny, rasterizer->state->gstate.clip_min_y);
+         rasterizer->state->gstate.clip_max_x =
+            ctx_mini (maxx, rasterizer->state->gstate.clip_max_x);
+         rasterizer->state->gstate.clip_max_y =
+            ctx_mini (maxy, rasterizer->state->gstate.clip_max_y);
+
+         rasterizer->clip_rectangle = 1;
+         return;
+      }
+    }
+  }
+  rasterizer->clip_rectangle = 0;
 
 #if CTX_ENABLE_CLIP
   if ((minx == maxx) || (miny == maxy)) // XXX : reset hack
@@ -10119,35 +11724,32 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
 
   int we_made_it = 0;
   CtxBuffer *clip_buffer;
- 
 
   if (!rasterizer->clip_buffer)
   {
-    rasterizer->clip_buffer = ctx_buffer_new (rasterizer->blit_width,
-                                              rasterizer->blit_height,
+    rasterizer->clip_buffer = ctx_buffer_new (blit_width,
+                                              blit_height,
                                               CTX_CLIP_FORMAT);
     clip_buffer = rasterizer->clip_buffer;
     we_made_it = 1;
     if (CTX_CLIP_FORMAT == CTX_FORMAT_GRAY1)
-    memset (rasterizer->clip_buffer->data, 0, rasterizer->blit_width * rasterizer->blit_height/8);
+    memset (rasterizer->clip_buffer->data, 0, blit_width * blit_height/8);
     else
-    memset (rasterizer->clip_buffer->data, 0, rasterizer->blit_width * rasterizer->blit_height);
+    memset (rasterizer->clip_buffer->data, 0, blit_width * blit_height);
   }
   else
   {
-    clip_buffer = ctx_buffer_new (rasterizer->blit_width,
-                                  rasterizer->blit_height,
+    clip_buffer = ctx_buffer_new (blit_width, blit_height,
                                   CTX_CLIP_FORMAT);
   }
 
-  // for now only one level of clipping is supported
   {
 
   int prev_x = 0;
   int prev_y = 0;
 
-    Ctx *ctx = ctx_new_for_framebuffer (clip_buffer->data, rasterizer->blit_width, rasterizer->blit_height,
-       rasterizer->blit_width,
+    Ctx *ctx = ctx_new_for_framebuffer (clip_buffer->data, blit_width, blit_height,
+       blit_width,
        CTX_CLIP_FORMAT);
 
   for (int i = 0; i < count; i++)
@@ -10169,9 +11771,12 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
     ctx_free (ctx);
   }
 
+  rasterizer->clip_rectangle = 0;
+
   if (CTX_CLIP_FORMAT == CTX_FORMAT_GRAY1)
   {
-    for (int i = 0; i < rasterizer->blit_width * rasterizer->blit_height/8; i++)
+    int count = blit_width * blit_height / 8;
+    for (int i = 0; i < count; i++)
     {
       ((uint8_t*)rasterizer->clip_buffer->data)[i] =
       (((uint8_t*)rasterizer->clip_buffer->data)[i] &
@@ -10180,12 +11785,104 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
   }
   else
   {
-    for (int i = 0; i < rasterizer->blit_width * rasterizer->blit_height; i++)
+    int count = blit_width * blit_height;
+
+    int maybe_rect = 1;
+
+    int i;
+    int x0 = 0;
+    int y0 = 0;
+    int width = -1;
+    int next_stage = 0;
+    uint8_t *p_data = (uint8_t*)rasterizer->clip_buffer->data;
+    uint8_t *data = (uint8_t*)clip_buffer->data;
+
+    i=0;
+    /* find upper left */
+    for (; i < count && maybe_rect && !next_stage; i++)
     {
-      ((uint8_t*)rasterizer->clip_buffer->data)[i] =
-      (((uint8_t*)rasterizer->clip_buffer->data)[i] *
-      ((uint8_t*)clip_buffer->data)[i])/255;
+      uint8_t val = (p_data[i] * data[i])/255;
+      data[i] = val;
+      switch (val)
+      {
+        case 255:
+          x0 = i % blit_width;
+          y0 = i / blit_width;
+          next_stage = 1;
+          break;
+        case 0: break;
+        default:
+          maybe_rect = 0;
+          break;
+      }
     }
+
+    next_stage = 0;
+    /* figure out with */
+    for (; i < count && !next_stage && maybe_rect; i++)
+    {
+      int x = i % blit_width;
+      int y = i / blit_width;
+      uint8_t val = (p_data[i] * data[i])/255;
+      data[i] = val;
+
+      if (y == y0)
+      {
+        switch (val)
+        {
+          case 255:
+            width = x - x0 + 1;
+            break;
+          case 0:
+            next_stage = 1;
+            break;
+          default:
+            maybe_rect = 0;
+            break;
+        }
+        if (x % blit_width == blit_width - 1) next_stage = 1;
+      }
+      else next_stage = 1;
+    }
+
+    next_stage = 0;
+    /* body */
+    for (; i < count && maybe_rect && !next_stage; i++)
+    {
+      int x = i % blit_width;
+      uint8_t val = (p_data[i] * data[i])/255;
+      data[i] = val;
+
+      if (x < x0)
+      {
+        if (val != 0){ maybe_rect = 0; next_stage = 1; }
+      } else if (x < x0 + width)
+      {
+        if (val != 255){ if (val != 0) maybe_rect = 0; next_stage = 1; }
+      } else {
+        if (val != 0){ maybe_rect = 0; next_stage = 1; }
+      }
+    }
+
+    next_stage = 0;
+    /* foot */
+    for (; i < count && maybe_rect && !next_stage; i++)
+    {
+      uint8_t val = (p_data[i] * data[i])/255;
+      data[i] = val;
+
+      if (val != 0){ maybe_rect = 0; next_stage = 1; }
+    }
+
+
+    for (; i < count; i++)
+    {
+      uint8_t val = (p_data[i] * data[i])/255;
+      data[i] = val;
+    }
+
+    if (maybe_rect)
+       rasterizer->clip_rectangle = 1;
   }
   if (!we_made_it)
    ctx_buffer_free (clip_buffer);
@@ -10199,8 +11896,6 @@ ctx_rasterizer_clip_apply (CtxRasterizer *rasterizer,
                                          rasterizer->state->gstate.clip_max_x);
   rasterizer->state->gstate.clip_max_y = ctx_mini (maxy,
                                          rasterizer->state->gstate.clip_max_y);
-//done:
-
 }
 
 static void
@@ -10217,7 +11912,6 @@ ctx_rasterizer_clip (CtxRasterizer *rasterizer)
       ctx_state_set_blob (rasterizer->state, CTX_clip, (uint8_t*)temp, sizeof(temp));
     }
   ctx_rasterizer_clip_apply (rasterizer, temp);
-
   ctx_rasterizer_reset (rasterizer);
   if (rasterizer->preserve)
     {
@@ -10227,27 +11921,6 @@ ctx_rasterizer_clip (CtxRasterizer *rasterizer)
     }
 }
 
-static void
-ctx_rasterizer_set_texture (CtxRasterizer *rasterizer,
-                            int   no,
-                            float x,
-                            float y)
-{
-  if (no < 0 || no >= CTX_MAX_TEXTURES) { no = 0; }
-  if (rasterizer->texture_source->texture[no].data == NULL)
-    {
-      ctx_log ("failed setting texture %i\n", no);
-      return;
-    }
-  rasterizer->state->gstate.source.type = CTX_SOURCE_IMAGE;
-  rasterizer->state->gstate.source.image.buffer = &rasterizer->texture_source->texture[no];
-  //ctx_user_to_device (rasterizer->state, &x, &y);
-  rasterizer->state->gstate.source.image.x0 = 0;
-  rasterizer->state->gstate.source.image.y0 = 0;
-  rasterizer->state->gstate.source.transform = rasterizer->state->gstate.transform;
-  ctx_matrix_translate (&rasterizer->state->gstate.source.transform, x, y);
-  ctx_matrix_invert (&rasterizer->state->gstate.source.transform);
-}
 
 #if 0
 static void
@@ -10272,8 +11945,8 @@ ctx_rasterizer_set_pixel (CtxRasterizer *rasterizer,
                           uint8_t b,
                           uint8_t a)
 {
-  rasterizer->state->gstate.source.type = CTX_SOURCE_COLOR;
-  ctx_color_set_RGBA8 (rasterizer->state, &rasterizer->state->gstate.source.color, r, g, b, a);
+  rasterizer->state->gstate.source_fill.type = CTX_SOURCE_COLOR;
+  ctx_color_set_RGBA8 (rasterizer->state, &rasterizer->state->gstate.source_fill.color, r, g, b, a);
 #if 0
   // XXX : doesn't take transforms into account
   ctx_rasterizer_pset (rasterizer, x, y, 255);
@@ -10352,7 +12025,7 @@ ctx_rasterizer_round_rectangle (CtxRasterizer *rasterizer, float x, float y, flo
 static void
 ctx_rasterizer_process (void *user_data, CtxCommand *command);
 
-static int
+int
 _ctx_is_rasterizer (Ctx *ctx)
 {
   if (ctx->renderer && ctx->renderer->process == ctx_rasterizer_process)
@@ -10417,17 +12090,30 @@ ctx_rasterizer_end_group (CtxRasterizer *rasterizer)
   {
     rasterizer->buf = rasterizer->group[no-1]->data;
   }
-  int id = ctx_texture_init (rasterizer->ctx, -1,
-                  rasterizer->blit_width,
-                  rasterizer->blit_height,
+  // XXX use texture_source ?
+   ctx_texture_init (rasterizer->ctx, ".ctx-group", // XXX ? count groups..
+                  rasterizer->blit_width,  // or have group based on thread-id?
+                  rasterizer->blit_height, // .. this would mean threadsafe
+                                           // allocation
                   rasterizer->blit_width * rasterizer->format->bpp/8,
                   rasterizer->format->pixel_format,
+                  NULL, // space
                   (uint8_t*)rasterizer->group[no]->data,
                   NULL, NULL);
   {
-     CtxEntry commands[2] =
-      {ctx_u32 (CTX_TEXTURE, id, 0),
-       ctx_f  (CTX_CONT, rasterizer->blit_x, rasterizer->blit_y)};
+     char *eid = ".ctx-group";
+     int   eid_len = strlen (eid);
+
+     CtxEntry commands[4] =
+      {
+       ctx_f  (CTX_TEXTURE, rasterizer->blit_x, rasterizer->blit_y), 
+       ctx_u32 (CTX_DATA, eid_len, eid_len/9+1),
+       ctx_u32 (CTX_CONT, 0,0),
+       ctx_u32 (CTX_CONT, 0,0)
+      };
+     memcpy( (char *) &commands[2].data.u8[0], eid, eid_len);
+     ( (char *) (&commands[2].data.u8[0]) ) [eid_len]=0;
+
      ctx_rasterizer_process (rasterizer, (CtxCommand*)commands);
   }
   {
@@ -10442,7 +12128,7 @@ ctx_rasterizer_end_group (CtxRasterizer *rasterizer)
     CtxEntry commands[1]= { ctx_void (CTX_FILL) };
     ctx_rasterizer_process (rasterizer, (CtxCommand*)commands);
   }
-  ctx_texture_release (rasterizer->ctx, id);
+  //ctx_texture_release (rasterizer->ctx, ".ctx-group");
   ctx_buffer_free (rasterizer->group[no]);
   rasterizer->group[no] = 0;
   ctx_rasterizer_process (rasterizer, (CtxCommand*)&restore_command);
@@ -10605,6 +12291,7 @@ ctx_rasterizer_line_dash (CtxRasterizer *rasterizer, int count, float *dashes)
   }
 }
 
+
 static void
 ctx_rasterizer_process (void *user_data, CtxCommand *command)
 {
@@ -10620,7 +12307,7 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
         {
           CtxColor  col;
           CtxColor *color = &col;
-          //state->gstate.source.type = CTX_SOURCE_COLOR;
+          //state->gstate.source_fill.type = CTX_SOURCE_COLOR;
           switch ((int)c->rgba.model)
             {
               case CTX_RGB:
@@ -10714,9 +12401,18 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
                                   c->set_pixel.rgba[2],
                                   c->set_pixel.rgba[3]);
         break;
+      case CTX_DEFINE_TEXTURE:
+        {
+          uint8_t *pixel_data = ctx_define_texture_pixel_data (entry);
+          ctx_rasterizer_define_texture (rasterizer, c->define_texture.eid,
+                                         c->define_texture.width, c->define_texture.height,
+                                         c->define_texture.format,
+                                         pixel_data);
+        }
+        break;
       case CTX_TEXTURE:
-        ctx_rasterizer_set_texture (rasterizer, ctx_arg_u32 (0),
-                                    ctx_arg_float (2), ctx_arg_float (3) );
+        ctx_rasterizer_set_texture (rasterizer, c->texture.eid,
+                                    c->texture.x, c->texture.y);
         rasterizer->comp_op = NULL;
         break;
 #if 0
@@ -10808,12 +12504,7 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
         {
           int n_dashes = rasterizer->state->gstate.n_dashes;
           float *dashes = rasterizer->state->gstate.dashes;
-
-          float factor = 
-              ctx_maxf (ctx_maxf (ctx_fabsf (state->gstate.transform.m[0][0]),
-                                  ctx_fabsf (state->gstate.transform.m[0][1]) ),
-                        ctx_maxf (ctx_fabsf (state->gstate.transform.m[1][0]),
-                                  ctx_fabsf (state->gstate.transform.m[1][1]) ) );
+          float factor = ctx_matrix_get_scale (&state->gstate.transform);
 
           int count = rasterizer->edge_list.count;
           int aa = rasterizer->aa;
@@ -10830,7 +12521,7 @@ ctx_rasterizer_process (void *user_data, CtxCommand *command)
       float pos = 0.0;
 
       int   dash_no  = 0.0;
-      float dash_lpos = 0.0;
+      float dash_lpos = rasterizer->state->gstate.line_dash_offset * factor;
       int   is_down = 0;
 
           while (start < count)
@@ -10935,7 +12626,7 @@ foo:
         rasterizer->in_text--;
         ctx_rasterizer_reset (rasterizer);
         break;
-      case CTX_TEXT_STROKE:
+      case CTX_STROKE_TEXT:
         ctx_rasterizer_text (rasterizer, ctx_arg_string(), 1);
         ctx_rasterizer_reset (rasterizer);
         break;
@@ -10991,13 +12682,13 @@ ctx_rasterizer_deinit (CtxRasterizer *rasterizer)
 int ctx_renderer_is_sdl (Ctx *ctx);
 int ctx_renderer_is_fb  (Ctx *ctx);
 
-static int _ctx_is_rasterizer (Ctx *ctx);
+int _ctx_is_rasterizer (Ctx *ctx);
 CtxAntialias ctx_get_antialias (Ctx *ctx)
 {
 #if CTX_EVENTS
   if (ctx_renderer_is_sdl (ctx) || ctx_renderer_is_fb (ctx))
   {
-     CtxThreaded *fb = (CtxThreaded*)(ctx->renderer);
+     CtxTiled *fb = (CtxTiled*)(ctx->renderer);
      return fb->antialias;
   }
 #endif
@@ -11033,7 +12724,7 @@ ctx_set_antialias (Ctx *ctx, CtxAntialias antialias)
 #if CTX_EVENTS
   if (ctx_renderer_is_sdl (ctx) || ctx_renderer_is_fb (ctx))
   {
-     CtxThreaded *fb = (CtxThreaded*)(ctx->renderer);
+     CtxTiled *fb = (CtxTiled*)(ctx->renderer);
      fb->antialias = antialias;
      for (int i = 0; i < _ctx_max_threads; i++)
      {
@@ -11205,7 +12896,7 @@ ctx_process (Ctx *ctx, CtxEntry *entry)
   switch (entry->code)
     {
       case CTX_TEXT:
-      case CTX_TEXT_STROKE:
+      case CTX_STROKE_TEXT:
       case CTX_BEGIN_PATH:
         ctx->current_path.count = 0;
         break;
@@ -11250,21 +12941,9 @@ ctx_process (Ctx *ctx, CtxEntry *entry)
       ctx_interpret_transforms (&ctx->state, entry, ctx);
       ctx_interpret_pos (&ctx->state, entry, ctx);
       ctx_drawlist_add_entry (&ctx->drawlist, entry);
-#if 1
-      if (entry->code == CTX_TEXT ||
-          entry->code == CTX_LINE_DASH ||
-          entry->code == CTX_COLOR_SPACE ||
-          entry->code == CTX_TEXT_STROKE ||
-          entry->code == CTX_FONT)
-        {
-          /* the image command and its data is submitted as one unit,
-           */
-          ctx_drawlist_add_entry (&ctx->drawlist, entry+1);
-          ctx_drawlist_add_entry (&ctx->drawlist, entry+2);
-        }
-#endif
     }
 }
+
 
 int ctx_gradient_cache_valid = 0;
 
@@ -11298,6 +12977,8 @@ void ctx_buffer_set_data (CtxBuffer *buffer,
 {
   if (buffer->free_func)
     { buffer->free_func (buffer->data, buffer->user_data); }
+  if (stride <= 0)
+    stride = ctx_pixel_format_get_stride (pixel_format, width);
   buffer->data      = data;
   buffer->width     = width;
   buffer->height    = height;
@@ -11306,8 +12987,6 @@ void ctx_buffer_set_data (CtxBuffer *buffer,
   buffer->free_func = freefunc;
   buffer->user_data = user_data;
 }
-
-
 
 CtxBuffer *ctx_buffer_new_for_data (void *data, int width, int height,
                                     int stride,
@@ -11321,8 +13000,7 @@ CtxBuffer *ctx_buffer_new_for_data (void *data, int width, int height,
   return buffer;
 }
 
-
-static void ctx_buffer_pixels_free (void *pixels, void *userdata)
+void ctx_buffer_pixels_free (void *pixels, void *userdata)
 {
   free (pixels);
 }
@@ -11330,9 +13008,9 @@ static void ctx_buffer_pixels_free (void *pixels, void *userdata)
 CtxBuffer *ctx_buffer_new (int width, int height,
                            CtxPixelFormat pixel_format)
 {
-  CtxPixelFormatInfo *info = ctx_pixel_format_info (pixel_format);
+  //CtxPixelFormatInfo *info = ctx_pixel_format_info (pixel_format);
   CtxBuffer *buffer = ctx_buffer_new_bare ();
-  int stride = width * info->ebpp;
+  int stride = ctx_pixel_format_get_stride (pixel_format, width);
   uint8_t *pixels = (uint8_t*)ctx_calloc (stride, height + 1);
 
   ctx_buffer_set_data (buffer, pixels, width, height, stride, pixel_format,
@@ -11343,10 +13021,23 @@ CtxBuffer *ctx_buffer_new (int width, int height,
 void ctx_buffer_deinit (CtxBuffer *buffer)
 {
   if (buffer->free_func)
-    { buffer->free_func (buffer->data, buffer->user_data); }
+    buffer->free_func (buffer->data, buffer->user_data);
+  if (buffer->eid)
+  {
+    free (buffer->eid);
+  }
+  buffer->eid = NULL;
   buffer->data = NULL;
   buffer->free_func = NULL;
   buffer->user_data  = NULL;
+  if (buffer->color_managed)
+  {
+    if (buffer->color_managed != buffer)
+    {
+      ctx_buffer_free (buffer->color_managed);
+    }
+    buffer->color_managed = NULL;
+  }
 }
 
 void ctx_buffer_free (CtxBuffer *buffer)
@@ -11355,90 +13046,151 @@ void ctx_buffer_free (CtxBuffer *buffer)
   free (buffer);
 }
 
-void ctx_texture_release (Ctx *ctx, int id)
+static int
+ctx_texture_check_eid (Ctx *ctx, const char *eid, int *tw, int *th)
 {
-  if (id < 0 || id >= CTX_MAX_TEXTURES)
-    { return; }
-  ctx_buffer_deinit (&ctx->texture[id]);
-}
-
-static int ctx_allocate_texture_id (Ctx *ctx, int id)
-{
-  if (id < 0 || id >= CTX_MAX_TEXTURES)
-    {
-      for (int i = 0; i <  CTX_MAX_TEXTURES; i++)
-        if (ctx->texture[i].data == NULL)
-          { return i; }
-      int sacrifice = random()%CTX_MAX_TEXTURES; // better to bias towards old
-      ctx_texture_release (ctx, sacrifice);
-      return sacrifice;
-      return -1; // eeek
-    }
-  return id;
-}
-
-int ctx_texture_init (Ctx *ctx,
-                      int  id,     /*  should be a string? - also the auto-ids*/
-                      int  width,
-                      int  height,
-                      int  stride,
-                      CtxPixelFormat format,
-                      uint8_t       *pixels,
-                      void (*freefunc) (void *pixels, void *user_data),
-                      void *user_data)
-{
-  /* .. how to relay? ..
-   * fully serializing is one needed option - for that there is no free
-   * func..
-   *
-   * mmap texute bank - that is one of many in compositor, prefixed with "pid-",
-   * ... we want string identifiers instead of integers.
-   *
-   * a context to use as texturing source
-   *   implemented.
-   */
-  id = ctx_allocate_texture_id (ctx, id);
-  if (id < 0)
-    { return id; }
-  int bpp = ctx_pixel_format_bpp (format);
-  ctx_buffer_deinit (&ctx->texture[id]);
-
-  if (!stride)
+  for (int i = 0; i <  CTX_MAX_TEXTURES; i++)
   {
-    stride = width * (bpp/8);
+    if (ctx->texture[i].data &&
+        ctx->texture[i].eid  &&
+        !strcmp (ctx->texture[i].eid, eid))
+    {
+      if (tw) *tw = ctx->texture[i].width;
+      if (th) *th = ctx->texture[i].height;
+      ctx->texture[i].frame = ctx->texture_cache->frame;
+      return i;
+    }
+  }
+  return -1;
+}
+
+const char* ctx_texture_init (Ctx           *ctx,
+                              const char    *eid,
+                              int            width,
+                              int            height,
+                              int            stride,
+                              CtxPixelFormat format,
+                              void          *space,
+                              uint8_t       *pixels,
+                              void (*freefunc) (void *pixels, void *user_data),
+                              void *user_data)
+{
+  int id = 0;
+  if (eid)
+  {
+    for (int i = 0; i <  CTX_MAX_TEXTURES; i++)
+    {
+      if (ctx->texture[i].data &&
+          ctx->texture[i].eid &&
+          !strcmp (ctx->texture[i].eid, eid))
+      {
+        ctx->texture[i].frame = ctx->texture_cache->frame;
+        if (freefunc && user_data != (void*)23)
+          freefunc (pixels, user_data);
+        return ctx->texture[i].eid;
+      }
+      if (ctx->texture[i].data == NULL 
+          ||   (ctx->texture_cache->frame - ctx->texture[i].frame >= 2))
+        id = i;
+    }
+  } else
+  {
+    for (int i = 0; i <  CTX_MAX_TEXTURES; i++)
+    {
+      if (ctx->texture[i].data == NULL 
+          || (ctx->texture_cache->frame - ctx->texture[i].frame > 2))
+        id = i;
+    }
+  }
+  //int bpp = ctx_pixel_format_bits_per_pixel (format);
+  ctx_buffer_deinit (&ctx->texture[id]);
+
+  if (stride<=0)
+  {
+    stride = ctx_pixel_format_get_stride ((CtxPixelFormat)format, width);
+  }
+
+  if (freefunc == ctx_buffer_pixels_free && user_data == (void*)23)
+  {
+     uint8_t *tmp = (uint8_t*)malloc (height * stride);
+     memcpy (tmp, pixels, height * stride);
+     pixels = tmp;
   }
 
   ctx_buffer_set_data (&ctx->texture[id],
                        pixels, width, height,
                        stride, format,
                        freefunc, user_data);
-  return id;
+#if CTX_ENABLE_CM
+  ctx->texture[id].space = space;
+#endif
+  ctx->texture[id].frame = ctx->texture_cache->frame;
+  if (eid)
+  {
+    /* we got an eid, this is the fast path */
+    ctx->texture[id].eid = strdup (eid);
+  }
+  else
+  {
+    uint8_t hash[20];
+    char ascii[41];
+
+    CtxSHA1 *sha1 = ctx_sha1_new ();
+    ctx_sha1_process (sha1, pixels, stride * height);
+    ctx_sha1_done (sha1, hash);
+    ctx_sha1_free (sha1);
+    const char *hex="0123456789abcdef";
+    for (int i = 0; i < 20; i ++)
+    {
+       ascii[i*2]=hex[hash[i]/16];
+       ascii[i*2+1]=hex[hash[i]%16];
+    }
+    ascii[40]=0;
+    ctx->texture[id].eid = strdup (ascii);
+  }
+  return ctx->texture[id].eid;
 }
 
-int
-ctx_texture_load (Ctx *ctx, int id, const char *path, int *tw, int *th)
+void
+_ctx_texture_prepare_color_management (CtxRasterizer *rasterizer,
+                                      CtxBuffer     *buffer)
 {
-#ifdef STBI_INCLUDE_STB_IMAGE_H
-  int w, h, components;
-  unsigned char *data = stbi_load (path, &w, &h, &components, 0);
-  if (data)
-  {
-    CtxPixelFormat pixel_format = CTX_FORMAT_RGBA8;
-    switch (components)
-    {
-      case 1: pixel_format = CTX_FORMAT_GRAY8; break;
-      case 2: pixel_format = CTX_FORMAT_GRAYA8; break;
-      case 3: pixel_format = CTX_FORMAT_RGB8; break;
-      case 4: pixel_format = CTX_FORMAT_RGBA8; break;
-    }
-    if (tw) *tw = w;
-    if (th) *th = h;
-    return ctx_texture_init (ctx, id, w, h, w * components, pixel_format, data, 
-                             ctx_buffer_pixels_free, NULL);
-  }
+   switch (buffer->format->pixel_format)
+   {
+#ifndef NO_BABL
+#if CTX_BABL
+     case CTX_FORMAT_RGBA8:
+        {
+          buffer->color_managed = ctx_buffer_new (buffer->width, buffer->height,
+                                                  CTX_FORMAT_RGBA8);
+          babl_process (
+             babl_fish (babl_format_with_space ("R'G'B'A u8", buffer->space),
+                        babl_format_with_space ("R'G'B'A u8", rasterizer->state->gstate.device_space)),
+             buffer->data, buffer->color_managed->data,
+             buffer->width * buffer->height
+             );
+       }
+       break;
+     case CTX_FORMAT_RGB8:
+       {
+       buffer->color_managed = ctx_buffer_new (buffer->width, buffer->height,
+                                               CTX_FORMAT_RGB8);
+          babl_process (
+             babl_fish (babl_format_with_space ("R'G'B' u8", buffer->space),
+                        babl_format_with_space ("R'G'B' u8", rasterizer->state->gstate.device_space)),
+             buffer->data, buffer->color_managed->data,
+             buffer->width * buffer->height
+             );
+       }
+       break;
 #endif
-  return -1;
+#endif
+     default:
+       buffer->color_managed = buffer;
+   }
 }
+
+
 
 int ctx_utf8_len (const unsigned char first_byte)
 {
@@ -11555,306 +13307,10 @@ ctx_utf8_to_unichar (const char *input)
 
 #if CTX_RASTERIZER
 
-struct _CtxHasher
-{
-  CtxRasterizer rasterizer;
-  int           cols;
-  int           rows;
-  uint8_t      *hashes;
-};
 
-#define SHA1_IMPLEMENTATION
-/* LibTomCrypt, modular cryptographic library -- Tom St Denis
- *
- * LibTomCrypt is a library that provides various cryptographic
- * algorithms in a highly modular and flexible manner.
- *
- * The library is free for all purposes without any express
- * guarantee it works.
- *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
- *
- * The plain ANSIC sha1 functionality has been extracted from libtomcrypt,
- * and is included directly in the sources. /Øyvind K. - since libtomcrypt
- * is public domain the adaptations done here to make the sha1 self contained
- * also is public domain.
- */
-#ifndef __SHA1_H
-#define __SHA1_H
-#include <inttypes.h>
-
-struct _CtxSHA1 {
-    uint64_t length;
-    uint32_t state[5], curlen;
-    unsigned char buf[64];
-};
-
-int ctx_sha1_init(CtxSHA1 * sha1);
-CtxSHA1 *ctx_sha1_new (void)
-{
-  CtxSHA1 *state = calloc (sizeof (CtxSHA1), 1);
-  ctx_sha1_init (state);
-  return state;
-}
-void ctx_sha1_free (CtxSHA1 *sha1)
-{
-  free (sha1);
-}
-
-#if 0
-          CtxSHA1 sha1;
-          ctx_sha1_init (&sha1);
-          ctx_sha1_process(&sha1, (unsigned char*)&shape_rect, sizeof (CtxRectangle));
-          ctx_sha1_done(&sha1, (unsigned char*)ctx_sha1_hash);
-#endif
-
-#ifdef FF0
-#undef FF0
-#endif
-#ifdef FF1
-#undef FF1
-#endif
-
-#ifdef SHA1_IMPLEMENTATION
-#include <stdlib.h>
-#include <string.h>
-
-#define STORE64H(x,                                                             y)                                                                     \
-   { (y)[0] = (unsigned char)(((x)>>56)&255); (y)[1] = (unsigned                char)(((x)>>48)&255);     \
-     (y)[2] = (unsigned char)(((x)>>40)&255); (y)[3] = (unsigned                char)(((x)>>32)&255);     \
-     (y)[4] = (unsigned char)(((x)>>24)&255); (y)[5] = (unsigned                char)(((x)>>16)&255);     \
-     (y)[6] = (unsigned char)(((x)>>8)&255); (y)[7] = (unsigned char)((x)&255); }
-
-#define STORE32H(x,                                                             y)                                                                     \
-     { (y)[0] = (unsigned char)(((x)>>24)&255); (y)[1] = (unsigned              char)(((x)>>16)&255);   \
-       (y)[2] = (unsigned char)(((x)>>8)&255); (y)[3] = (unsigned               char)((x)&255); }
-
-#define LOAD32H(x, y)                            \
-     { x = ((unsigned long)((y)[0] & 255)<<24) | \
-           ((unsigned long)((y)[1] & 255)<<16) | \
-           ((unsigned long)((y)[2] & 255)<<8)  | \
-           ((unsigned long)((y)[3] & 255)); }
-
-/* rotates the hard way */
-#define ROL(x, y)  ((((unsigned long)(x)<<(unsigned long)((y)&31)) | (((unsigned long)(x)&0xFFFFFFFFUL)>>(unsigned long)(32-((y)&31)))) & 0xFFFFFFFFUL)
-#define ROLc(x, y) ROL(x,y)
-
-#define CRYPT_OK     0
-#define CRYPT_ERROR  1
-#define CRYPT_NOP    2
-
-#ifndef MAX
-   #define MAX(x, y) ( ((x)>(y))?(x):(y) )
-#endif
-#ifndef MIN
-   #define MIN(x, y) ( ((x)<(y))?(x):(y) )
-#endif
-
-/* a simple macro for making hash "process" functions */
-#define HASH_PROCESS(func_name, compress_name, state_var, block_size)               \
-int func_name (CtxSHA1 *sha1, const unsigned char *in, unsigned long inlen)      \
-{                                                                                   \
-    unsigned long n;                                                                \
-    int           err;                                                              \
-    assert (sha1 != NULL);                                                          \
-    assert (in != NULL);                                                            \
-    if (sha1->curlen > sizeof(sha1->buf)) {                                         \
-       return -1;                                                                   \
-    }                                                                               \
-    while (inlen > 0) {                                                             \
-        if (sha1->curlen == 0 && inlen >= block_size) {                             \
-           if ((err = compress_name (sha1, (unsigned char *)in)) != CRYPT_OK) {     \
-              return err;                                                           \
-           }                                                                        \
-           sha1->length += block_size * 8;                                          \
-           in             += block_size;                                            \
-           inlen          -= block_size;                                            \
-        } else {                                                                    \
-           n = MIN(inlen, (block_size - sha1->curlen));                             \
-           memcpy(sha1->buf + sha1->curlen, in, (size_t)n);                         \
-           sha1->curlen += n;                                                       \
-           in             += n;                                                     \
-           inlen          -= n;                                                     \
-           if (sha1->curlen == block_size) {                                        \
-              if ((err = compress_name (sha1, sha1->buf)) != CRYPT_OK) {            \
-                 return err;                                                        \
-              }                                                                     \
-              sha1->length += 8*block_size;                                         \
-              sha1->curlen = 0;                                                     \
-           }                                                                        \
-       }                                                                            \
-    }                                                                               \
-    return CRYPT_OK;                                                                \
-}
-
-/**********************/
-
-#define F0(x,y,z)  (z ^ (x & (y ^ z)))
-#define F1(x,y,z)  (x ^ y ^ z)
-#define F2(x,y,z)  ((x & y) | (z & (x | y)))
-#define F3(x,y,z)  (x ^ y ^ z)
-
-static int  ctx_sha1_compress(CtxSHA1 *sha1, unsigned char *buf)
-{
-    uint32_t a,b,c,d,e,W[80],i;
-
-    /* copy the state into 512-bits into W[0..15] */
-    for (i = 0; i < 16; i++) {
-        LOAD32H(W[i], buf + (4*i));
-    }
-
-    /* copy state */
-    a = sha1->state[0];
-    b = sha1->state[1];
-    c = sha1->state[2];
-    d = sha1->state[3];
-    e = sha1->state[4];
-
-    /* expand it */
-    for (i = 16; i < 80; i++) {
-        W[i] = ROL(W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16], 1); 
-    }
-
-    /* compress */
-    /* round one */
-    #define FF0(a,b,c,d,e,i) e = (ROLc(a, 5) + F0(b,c,d) + e + W[i] + 0x5a827999UL); b = ROLc(b, 30);
-    #define FF1(a,b,c,d,e,i) e = (ROLc(a, 5) + F1(b,c,d) + e + W[i] + 0x6ed9eba1UL); b = ROLc(b, 30);
-    #define FF2(a,b,c,d,e,i) e = (ROLc(a, 5) + F2(b,c,d) + e + W[i] + 0x8f1bbcdcUL); b = ROLc(b, 30);
-    #define FF3(a,b,c,d,e,i) e = (ROLc(a, 5) + F3(b,c,d) + e + W[i] + 0xca62c1d6UL); b = ROLc(b, 30);
- 
-    for (i = 0; i < 20; ) {
-       FF0(a,b,c,d,e,i++);
-       FF0(e,a,b,c,d,i++);
-       FF0(d,e,a,b,c,i++);
-       FF0(c,d,e,a,b,i++);
-       FF0(b,c,d,e,a,i++);
-    }
-
-    /* round two */
-    for (; i < 40; )  { 
-       FF1(a,b,c,d,e,i++);
-       FF1(e,a,b,c,d,i++);
-       FF1(d,e,a,b,c,i++);
-       FF1(c,d,e,a,b,i++);
-       FF1(b,c,d,e,a,i++);
-    }
-
-    /* round three */
-    for (; i < 60; )  { 
-       FF2(a,b,c,d,e,i++);
-       FF2(e,a,b,c,d,i++);
-       FF2(d,e,a,b,c,i++);
-       FF2(c,d,e,a,b,i++);
-       FF2(b,c,d,e,a,i++);
-    }
-
-    /* round four */
-    for (; i < 80; )  { 
-       FF3(a,b,c,d,e,i++);
-       FF3(e,a,b,c,d,i++);
-       FF3(d,e,a,b,c,i++);
-       FF3(c,d,e,a,b,i++);
-       FF3(b,c,d,e,a,i++);
-    }
-
-    #undef FF0
-    #undef FF1
-    #undef FF2
-    #undef FF3
-
-    /* store */
-    sha1->state[0] = sha1->state[0] + a;
-    sha1->state[1] = sha1->state[1] + b;
-    sha1->state[2] = sha1->state[2] + c;
-    sha1->state[3] = sha1->state[3] + d;
-    sha1->state[4] = sha1->state[4] + e;
-
-    return CRYPT_OK;
-}
-
-/**
-   Initialize the hash state
-   @param md   The hash state you wish to initialize
-   @return CRYPT_OK if successful
-*/
-int ctx_sha1_init(CtxSHA1 * sha1)
-{
-   assert(sha1 != NULL);
-   sha1->state[0] = 0x67452301UL;
-   sha1->state[1] = 0xefcdab89UL;
-   sha1->state[2] = 0x98badcfeUL;
-   sha1->state[3] = 0x10325476UL;
-   sha1->state[4] = 0xc3d2e1f0UL;
-   sha1->curlen = 0;
-   sha1->length = 0;
-   return CRYPT_OK;
-}
-
-/**
-   Process a block of memory though the hash
-   @param md     The hash state
-   @param in     The data to hash
-   @param inlen  The length of the data (octets)
-   @return CRYPT_OK if successful
-*/
-HASH_PROCESS(ctx_sha1_process, ctx_sha1_compress, sha1, 64)
-
-/**
-   Terminate the hash to get the digest
-   @param md  The hash state
-   @param out [out] The destination of the hash (20 bytes)
-   @return CRYPT_OK if successful
-*/
-int ctx_sha1_done(CtxSHA1 * sha1, unsigned char *out)
-{
-    int i;
-
-    assert(sha1 != NULL);
-    assert(out != NULL);
-
-    if (sha1->curlen >= sizeof(sha1->buf)) {
-       return -1;
-    }
-
-    /* increase the length of the message */
-    sha1->length += sha1->curlen * 8;
-
-    /* append the '1' bit */
-    sha1->buf[sha1->curlen++] = (unsigned char)0x80;
-
-    /* if the length is currently above 56 bytes we append zeros
-     * then compress.  Then we can fall back to padding zeros and length
-     * encoding like normal.
-     */
-    if (sha1->curlen > 56) {
-        while (sha1->curlen < 64) {
-            sha1->buf[sha1->curlen++] = (unsigned char)0;
-        }
-        ctx_sha1_compress(sha1, sha1->buf);
-        sha1->curlen = 0;
-    }
-
-    /* pad upto 56 bytes of zeroes */
-    while (sha1->curlen < 56) {
-        sha1->buf[sha1->curlen++] = (unsigned char)0;
-    }
-
-    /* store length */
-    STORE64H(sha1->length, sha1->buf+56);
-    ctx_sha1_compress(sha1, sha1->buf);
-
-    /* copy output */
-    for (i = 0; i < 5; i++) {
-        STORE32H(sha1->state[i], out+(4*i));
-    }
-    return CRYPT_OK;
-}
-#endif
-
-#endif
 
 static int
-ctx_rect_intersect (const CtxRectangle *a, const CtxRectangle *b)
+ctx_rect_intersect (const CtxIntRectangle *a, const CtxIntRectangle *b)
 {
   if (a->x >= b->x + b->width ||
       b->x >= a->x + a->width ||
@@ -11865,9 +13321,9 @@ ctx_rect_intersect (const CtxRectangle *a, const CtxRectangle *b)
 }
 
 static void
-_ctx_add_hash (CtxHasher *hasher, CtxRectangle *shape_rect, char *hash)
+_ctx_add_hash (CtxHasher *hasher, CtxIntRectangle *shape_rect, char *hash)
 {
-  CtxRectangle rect = {0,0, hasher->rasterizer.blit_width/hasher->cols,
+  CtxIntRectangle rect = {0,0, hasher->rasterizer.blit_width/hasher->cols,
                             hasher->rasterizer.blit_height/hasher->rows};
   int hno = 0;
   for (int row = 0; row < hasher->rows; row++)
@@ -11898,18 +13354,22 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
   CtxState *state = rasterizer->state;
   CtxCommand *c = (CtxCommand *) entry;
   int aa = rasterizer->aa;
+
+  ctx_interpret_pos_bare (rasterizer->state, entry, NULL);
+  ctx_interpret_style (rasterizer->state, entry, NULL);
+
   switch (c->code)
     {
       case CTX_TEXT:
         {
           CtxSHA1 sha1;
-          ctx_sha1_init (&sha1);
+          memcpy (&sha1, &hasher->sha1_fill, sizeof (CtxSHA1));
           char ctx_sha1_hash[20];
           float width = ctx_text_width (rasterizer->ctx, ctx_arg_string());
 
 
           float height = ctx_get_font_size (rasterizer->ctx);
-           CtxRectangle shape_rect;
+           CtxIntRectangle shape_rect;
           
            shape_rect.x=rasterizer->x;
            shape_rect.y=rasterizer->y - height,
@@ -11930,12 +13390,16 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
                    // XXX : doesn't take all text-alignments into account
           }
 
+#if 0
           uint32_t color;
-          ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source.color, (uint8_t*)(&color));
+          ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source_fill.color, (uint8_t*)(&color));
+#endif
           ctx_sha1_process(&sha1, (const unsigned char*)ctx_arg_string(), strlen  (ctx_arg_string()));
+#if 0
           ctx_sha1_process(&sha1, (unsigned char*)(&rasterizer->state->gstate.transform), sizeof (rasterizer->state->gstate.transform));
           ctx_sha1_process(&sha1, (unsigned char*)&color, 4);
-          ctx_sha1_process(&sha1, (unsigned char*)&shape_rect, sizeof (CtxRectangle));
+#endif
+          ctx_sha1_process(&sha1, (unsigned char*)&shape_rect, sizeof (CtxIntRectangle));
           ctx_sha1_done(&sha1, (unsigned char*)ctx_sha1_hash);
           _ctx_add_hash (hasher, &shape_rect, ctx_sha1_hash);
 
@@ -11943,25 +13407,29 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
         }
         ctx_rasterizer_reset (rasterizer);
         break;
-      case CTX_TEXT_STROKE:
+      case CTX_STROKE_TEXT:
         {
           CtxSHA1 sha1;
-          ctx_sha1_init (&sha1);
+          memcpy (&sha1, &hasher->sha1_stroke, sizeof (CtxSHA1));
           char ctx_sha1_hash[20];
           float width = ctx_text_width (rasterizer->ctx, ctx_arg_string());
           float height = ctx_get_font_size (rasterizer->ctx);
 
-           CtxRectangle shape_rect = {
+           CtxIntRectangle shape_rect = {
               rasterizer->x, rasterizer->y - height,
               width, height * 2
            };
 
+#if 0
           uint32_t color;
-          ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source.color, (uint8_t*)(&color));
+          ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source_stroke.color, (uint8_t*)(&color));
+#endif
           ctx_sha1_process(&sha1, (unsigned char*)ctx_arg_string(), strlen  (ctx_arg_string()));
+#if 0
           ctx_sha1_process(&sha1, (unsigned char*)(&rasterizer->state->gstate.transform), sizeof (rasterizer->state->gstate.transform));
           ctx_sha1_process(&sha1, (unsigned char*)&color, 4);
-          ctx_sha1_process(&sha1, (unsigned char*)&shape_rect, sizeof (CtxRectangle));
+#endif
+          ctx_sha1_process(&sha1, (unsigned char*)&shape_rect, sizeof (CtxIntRectangle));
           ctx_sha1_done(&sha1, (unsigned char*)ctx_sha1_hash);
           _ctx_add_hash (hasher, &shape_rect, ctx_sha1_hash);
 
@@ -11972,7 +13440,7 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
       case CTX_GLYPH:
          {
           CtxSHA1 sha1;
-          ctx_sha1_init (&sha1);
+          memcpy (&sha1, &hasher->sha1_fill, sizeof (CtxSHA1));
 
           char ctx_sha1_hash[20];
           uint8_t string[8];
@@ -11987,15 +13455,19 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
 
           _ctx_user_to_device (rasterizer->state, &tx, &ty);
           _ctx_user_to_device_distance (rasterizer->state, &tw, &th);
-          CtxRectangle shape_rect = {tx,ty-th/2,tw,th};
+          CtxIntRectangle shape_rect = {tx,ty-th/2,tw,th};
 
 
+#if 0
           uint32_t color;
-          ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source.color, (uint8_t*)(&color));
+          ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source_fill.color, (uint8_t*)(&color));
+#endif
           ctx_sha1_process(&sha1, string, strlen ((const char*)string));
+#if 0
           ctx_sha1_process(&sha1, (unsigned char*)(&rasterizer->state->gstate.transform), sizeof (rasterizer->state->gstate.transform));
           ctx_sha1_process(&sha1, (unsigned char*)&color, 4);
-          ctx_sha1_process(&sha1, (unsigned char*)&shape_rect, sizeof (CtxRectangle));
+#endif
+          ctx_sha1_process(&sha1, (unsigned char*)&shape_rect, sizeof (CtxIntRectangle));
           ctx_sha1_done(&sha1, (unsigned char*)ctx_sha1_hash);
           _ctx_add_hash (hasher, &shape_rect, ctx_sha1_hash);
 
@@ -12003,18 +13475,19 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
           ctx_rasterizer_reset (rasterizer);
          }
         break;
+
       case CTX_FILL:
         {
           CtxSHA1 sha1;
-          ctx_sha1_init (&sha1);
+          memcpy (&sha1, &hasher->sha1_fill, sizeof (CtxSHA1));
           char ctx_sha1_hash[20];
 
           /* we eant this hasher to be as good as possible internally,
            * since it is also used in the small shapes rasterization
            * cache
            */
-        uint64_t hash = ctx_rasterizer_poly_to_hash (rasterizer);
-        CtxRectangle shape_rect = {
+        uint64_t hash = ctx_rasterizer_poly_to_hash (rasterizer); // + hasher->salt;
+        CtxIntRectangle shape_rect = {
           rasterizer->col_min / CTX_SUBDIV,
           rasterizer->scan_min / aa,
           (rasterizer->col_max - rasterizer->col_min + 1) / CTX_SUBDIV,
@@ -12022,14 +13495,14 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
         };
 
         hash ^= (rasterizer->state->gstate.fill_rule * 23);
-        hash ^= (rasterizer->state->gstate.source.type * 117);
 
         ctx_sha1_process(&sha1, (unsigned char*)&hash, 8);
 
-        uint32_t color;
-        ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source.color, (uint8_t*)(&color));
+        {
+          int is = rasterizer->state->gstate.image_smoothing;
+          ctx_sha1_process(&sha1, (uint8_t*)&is, sizeof(int));
+        }
 
-          ctx_sha1_process(&sha1, (unsigned char*)&color, 4);
           ctx_sha1_done(&sha1, (unsigned char*)ctx_sha1_hash);
           _ctx_add_hash (hasher, &shape_rect, ctx_sha1_hash);
 
@@ -12041,10 +13514,10 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
       case CTX_STROKE:
         {
           CtxSHA1 sha1;
-          ctx_sha1_init (&sha1);
+          memcpy (&sha1, &hasher->sha1_stroke, sizeof (CtxSHA1));
           char ctx_sha1_hash[20];
         uint64_t hash = ctx_rasterizer_poly_to_hash (rasterizer);
-        CtxRectangle shape_rect = {
+        CtxIntRectangle shape_rect = {
           rasterizer->col_min / CTX_SUBDIV - rasterizer->state->gstate.line_width,
           rasterizer->scan_min / aa - rasterizer->state->gstate.line_width,
           (rasterizer->col_max - rasterizer->col_min + 1) / CTX_SUBDIV + rasterizer->state->gstate.line_width,
@@ -12058,12 +13531,12 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
 
         hash ^= (int)(rasterizer->state->gstate.line_width * 110);
         hash ^= (rasterizer->state->gstate.line_cap * 23);
-        hash ^= (rasterizer->state->gstate.source.type * 117);
+        hash ^= (rasterizer->state->gstate.source_stroke.type * 117);
 
         ctx_sha1_process(&sha1, (unsigned char*)&hash, 8);
 
         uint32_t color;
-        ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source.color, (uint8_t*)(&color));
+        ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source_stroke.color, (uint8_t*)(&color));
 
           ctx_sha1_process(&sha1, (unsigned char*)&color, 4);
 
@@ -12125,37 +13598,6 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
                                   c->set_pixel.rgba[2],
                                   c->set_pixel.rgba[3]);
         break;
-      case CTX_TEXTURE:
-#if 0
-        ctx_rasterizer_set_texture (rasterizer, ctx_arg_u32 (0),
-                                    ctx_arg_float (2), ctx_arg_float (3) );
-#endif
-        break;
-#if 0
-      case CTX_LOAD_IMAGE:
-        ctx_rasterizer_load_image (rasterizer, ctx_arg_string(),
-                                   ctx_arg_float (0), ctx_arg_float (1) );
-        break;
-#endif
-#if CTX_GRADIENTS
-      case CTX_GRADIENT_STOP:
-        {
-          float rgba[4]= {ctx_u8_to_float (ctx_arg_u8 (4) ),
-                          ctx_u8_to_float (ctx_arg_u8 (4+1) ),
-                          ctx_u8_to_float (ctx_arg_u8 (4+2) ),
-                          ctx_u8_to_float (ctx_arg_u8 (4+3) )
-                         };
-          ctx_rasterizer_gradient_add_stop (rasterizer,
-                                            ctx_arg_float (0), rgba);
-        }
-        break;
-      case CTX_LINEAR_GRADIENT:
-        ctx_state_gradient_clear_stops (rasterizer->state);
-        break;
-      case CTX_RADIAL_GRADIENT:
-        ctx_state_gradient_clear_stops (rasterizer->state);
-        break;
-#endif
       case CTX_PRESERVE:
         rasterizer->preserve = 1;
         break;
@@ -12183,9 +13625,65 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
       case CTX_CLOSE_PATH:
         ctx_rasterizer_finish_shape (rasterizer);
         break;
+      case CTX_DEFINE_TEXTURE:
+        {
+        ctx_sha1_init (&hasher->sha1_fill);
+        ctx_sha1_process (&hasher->sha1_fill, (uint8_t*)c->define_texture.eid, strlen (c->define_texture.eid));
+        ctx_sha1_process(&hasher->sha1_fill, (unsigned char*)(&rasterizer->state->gstate.transform), sizeof (rasterizer->state->gstate.transform));
+
+        rasterizer->comp_op = NULL; // why?
+        }
+        break;
+      case CTX_TEXTURE:
+        ctx_sha1_init (&hasher->sha1_fill);
+        ctx_sha1_process (&hasher->sha1_fill, (uint8_t*)c->texture.eid, strlen (c->texture.eid));
+        ctx_sha1_process (&hasher->sha1_fill, (uint8_t*)(&rasterizer->state->gstate.transform), sizeof (rasterizer->state->gstate.transform));
+        rasterizer->comp_op = NULL; // why?
+        break;
+      case CTX_COLOR:
+        {
+          uint32_t color;
+          if (((int)(ctx_arg_float(0))&512))
+          {
+            ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source_stroke.color, (uint8_t*)(&color));
+            ctx_sha1_init (&hasher->sha1_stroke);
+            ctx_sha1_process(&hasher->sha1_stroke, (unsigned char*)&color, 4);
+          }
+          else
+          {
+            ctx_color_get_rgba8 (rasterizer->state, &rasterizer->state->gstate.source_fill.color, (uint8_t*)(&color));
+            ctx_sha1_init (&hasher->sha1_fill);
+            ctx_sha1_process(&hasher->sha1_fill, (unsigned char*)&color, 4);
+          }
+        }
+        break;
+      case CTX_LINEAR_GRADIENT:
+          ctx_sha1_init (&hasher->sha1_fill);
+          ctx_sha1_process(&hasher->sha1_fill, 
+                           (uint8_t*)c, sizeof (c->linear_gradient));
+          ctx_sha1_process (&hasher->sha1_fill, (unsigned char*)(&rasterizer->state->gstate.transform), sizeof (rasterizer->state->gstate.transform));
+        break;
+      case CTX_RADIAL_GRADIENT:
+          ctx_sha1_init (&hasher->sha1_fill);
+          ctx_sha1_process(&hasher->sha1_fill, 
+                           (uint8_t*)c, sizeof (c->radial_gradient));
+          ctx_sha1_process (&hasher->sha1_fill, (unsigned char*)(&rasterizer->state->gstate.transform), sizeof (rasterizer->state->gstate.transform));
+        //ctx_state_gradient_clear_stops (rasterizer->state);
+        break;
+#if CTX_GRADIENTS
+      case CTX_GRADIENT_STOP:
+        {
+          float rgba[4]= {ctx_u8_to_float (ctx_arg_u8 (4) ),
+                          ctx_u8_to_float (ctx_arg_u8 (4+1) ),
+                          ctx_u8_to_float (ctx_arg_u8 (4+2) ),
+                          ctx_u8_to_float (ctx_arg_u8 (4+3) )
+                         };
+          ctx_sha1_process(&hasher->sha1_fill, 
+                           (uint8_t*) &rgba[0], sizeof(rgba));
+        }
+        break;
+#endif
     }
-  ctx_interpret_pos_bare (rasterizer->state, entry, NULL);
-  ctx_interpret_style (rasterizer->state, entry, NULL);
   if (command->code == CTX_LINE_WIDTH)
     {
       float x = state->gstate.line_width;
@@ -12198,7 +13696,6 @@ ctx_hasher_process (void *user_data, CtxCommand *command)
       state->gstate.line_width = x;
     }
 }
-
 
 static CtxRasterizer *
 ctx_hasher_init (CtxRasterizer *rasterizer, Ctx *ctx, CtxState *state, int width, int height, int cols, int rows)
@@ -12229,14 +13726,16 @@ ctx_hasher_init (CtxRasterizer *rasterizer, Ctx *ctx, CtxState *state, int width
   hasher->cols = cols;
 
   hasher->hashes = (uint8_t*)ctx_calloc (20, rows * cols);
+  ctx_sha1_init (&hasher->sha1_fill);
+  ctx_sha1_init (&hasher->sha1_stroke);
 
   return rasterizer;
 }
 
 Ctx *ctx_hasher_new (int width, int height, int cols, int rows)
 {
-  Ctx *ctx = ctx_new ();
-  CtxState    *state    = &ctx->state;
+  Ctx *ctx           = ctx_new ();
+  CtxState    *state = &ctx->state;
   CtxRasterizer *rasterizer = (CtxRasterizer *) ctx_calloc (sizeof (CtxHasher), 1);
   ctx_hasher_init (rasterizer, ctx, state, width, height, cols, rows);
   ctx_set_renderer (ctx, (void*)rasterizer);
@@ -12256,25 +13755,101 @@ uint8_t *ctx_hasher_get_hash (Ctx *ctx, int col, int row)
 #endif
 #if CTX_EVENTS
 
+#include <termios.h>
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
 int ctx_terminal_width (void)
 {
-  struct winsize ws; 
-  if (ioctl(0,TIOCGWINSZ,&ws)!=0)
-    return 80;
-  return ws.ws_xpixel;
-} 
+  char buf[1024];
+  struct termios orig_attr;
+  struct termios raw;
+  tcgetattr (STDIN_FILENO, &orig_attr);
+  raw = orig_attr;
+  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+  raw.c_oflag &= ~(OPOST);
+  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+  raw.c_cc[VMIN] = 1; raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
+  if (tcsetattr (STDIN_FILENO, TCSAFLUSH, &raw) < 0)
+    return 0;
+  fprintf (stderr, "\e[14t");
+  //tcflush(STDIN_FILENO, 1);
+  tcdrain(STDIN_FILENO);
+  int length = 0;
+  usleep (1000 * 60); // to account for possibly lowish latency ssh,
+                      // should be made configurable ; perhaps in
+                      // an env var
+  struct timeval tv = {0,0};
+  fd_set rfds;
+  
+  FD_ZERO(&rfds);
+  FD_SET(0, &rfds);
+  tv.tv_usec = 1000 * 5;
+
+  for (int n = 0; select(1, &rfds, NULL, NULL, &tv) && n < 20; n++)
+  {
+    length += read (STDIN_FILENO, &buf[length], 1);
+  }
+  tcsetattr (STDIN_FILENO, TCSAFLUSH, &orig_attr);
+  if (length == -1)
+  {
+    return 0;
+  }
+  char *semi = strchr (buf, ';');
+  buf[length]=0;
+  if (semi) {semi++; semi = strchr (semi, ';');}
+  if (semi)
+  {
+    return atoi(semi + 1);
+  }
+  return 0;
+}
 
 int ctx_terminal_height (void)
 {
-  struct winsize ws; 
-  if (ioctl(0,TIOCGWINSZ,&ws)!=0)
-    return 80;
-  return ws.ws_ypixel;
-} 
+  char buf[1024];
+  struct termios orig_attr;
+  struct termios raw;
+  tcgetattr (STDIN_FILENO, &orig_attr);
+  raw = orig_attr;
+  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+  raw.c_oflag &= ~(OPOST);
+  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+  raw.c_cc[VMIN] = 1; raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
+  if (tcsetattr (STDIN_FILENO, TCSAFLUSH, &raw) < 0)
+    return 0;
+  fprintf (stderr, "\e[14t");
+  //tcflush(STDIN_FILENO, 1);
+  tcdrain(STDIN_FILENO);
+  int length = 0;
+  usleep (1000 * 60); // to account for possibly lowish latency ssh,
+                      // should be made configurable ; perhaps in
+                      // an env var
+  struct timeval tv = {0,0};
+  fd_set rfds;
+  
+  FD_ZERO(&rfds);
+  FD_SET(0, &rfds);
+  tv.tv_usec = 1000 * 5;
+
+  for (int n = 0; select(1, &rfds, NULL, NULL, &tv) && n < 20; n++)
+  {
+    length += read (STDIN_FILENO, &buf[length], 1);
+  }
+  tcsetattr (STDIN_FILENO, TCSAFLUSH, &orig_attr);
+  if (length == -1)
+  {
+    return 0;
+  }
+  char *semi = strchr (buf, ';');
+  buf[length]=0;
+  if (semi)
+  {
+    return atoi(semi + 1);
+  }
+  return 0;
+}
 
 int ctx_terminal_cols (void)
 {
@@ -12730,7 +14305,7 @@ const char *ctx_nct_get_event (Ctx *n, int timeoutms, int *x, int *y)
       signal (SIGWINCH, nc_resize_term);
     }
   if (mouse_mode) // XXX too often to do it all the time!
-    printf(mouse_modes[mouse_mode]);
+    printf("%s", mouse_modes[mouse_mode]);
 
   {
     int elapsed = 0;
@@ -12851,9 +14426,13 @@ const char *ctx_nct_get_event (Ctx *n, int timeoutms, int *x, int *y)
                 if (length == 0 && ctx_utf8_len (buf[0])>1) /* single unicode
                                                                char */
                   {
+                    int n_read = 
                     read (STDIN_FILENO, &buf[length+1], ctx_utf8_len(buf[0])-1);
-                    buf[ctx_utf8_len(buf[0])]=0;
-                    strcpy (ret, (const char*)buf);
+                    if (n_read)
+                    {
+                      buf[ctx_utf8_len(buf[0])]=0;
+                      strcpy (ret, (const char*)buf);
+                    }
                     return ret;
                   }
                 if (length == 0) /* ascii */
@@ -12944,7 +14523,10 @@ int ctx_nct_consume_events (Ctx *ctx)
       else if (!strcmp (event, "enter"))
         ctx_key_press (ctx, 0, "\n", 0);
       else if (!strcmp (event, "return"))
-        ctx_key_press (ctx, 0, "\n", 0);
+        ctx_key_press (ctx, 0, "return", 0);
+      else if (!strcmp (event, "idle"))
+      {
+      }
       else
       ctx_key_press (ctx, 0, event, 0);
     }
@@ -12965,7 +14547,7 @@ const char *ctx_native_get_event (Ctx *n, int timeoutms)
       signal (SIGWINCH, nc_resize_term);
     }
 //if (mouse_mode) // XXX too often to do it all the time!
-//  printf(mouse_modes[mouse_mode]);
+//  printf("%s", mouse_modes[mouse_mode]);
 
     int got_event = 0;
   {
@@ -13031,7 +14613,7 @@ void _ctx_mouse (Ctx *term, int mode)
   //  mode = 1;
   if (mode != mouse_mode)
   {
-    printf (mouse_modes[mode]);
+    printf ("%s", mouse_modes[mode]);
     fflush (stdout);
   }
   mouse_mode = mode;
@@ -13046,6 +14628,7 @@ void _ctx_mouse (Ctx *term, int mode)
 #define usecs(time)    ((uint64_t)(time.tv_sec - start_time.tv_sec) * 1000000 + time.     tv_usec)
 
 #if CTX_EVENTS
+#include <threads.h>
 static struct timeval start_time;
 
 static void
@@ -13089,6 +14672,19 @@ enum _CtxFlags {
 int _ctx_max_threads = 1;
 int _ctx_enable_hash_cache = 1;
 
+static mtx_t _ctx_texture_mtx;
+
+void _ctx_texture_lock (void)
+{
+  mtx_lock (&_ctx_texture_mtx);
+}
+
+void _ctx_texture_unlock (void)
+{
+  mtx_unlock (&_ctx_texture_mtx);
+}
+
+
 void
 ctx_init (int *argc, char ***argv)
 {
@@ -13115,8 +14711,64 @@ int ctx_count (Ctx *ctx)
   return ctx->drawlist.count;
 }
 
+
+static int is_in_ctx (void)
+{
+  char buf[1024];
+  struct termios orig_attr;
+  struct termios raw;
+  tcgetattr (STDIN_FILENO, &orig_attr);
+  raw = orig_attr;
+  raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+  raw.c_oflag &= ~(OPOST);
+  raw.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+  raw.c_cc[VMIN] = 1; raw.c_cc[VTIME] = 0; /* 1 byte, no timer */
+  if (tcsetattr (STDIN_FILENO, TCSAFLUSH, &raw) < 0)
+    return 0;
+  fprintf (stderr, "\e[?200$p");
+  //tcflush(STDIN_FILENO, 1);
+  tcdrain(STDIN_FILENO);
+  int length = 0;
+  usleep (1000 * 60); // to account for possibly lowish latency ssh,
+                      // should be made configurable ; perhaps in
+                      // an env var
+  struct timeval tv = {0,0};
+  fd_set rfds;
+  
+  FD_ZERO(&rfds);
+  FD_SET(0, &rfds);
+  tv.tv_usec = 1000 * 5;
+
+  for (int n = 0; select(1, &rfds, NULL, NULL, &tv) && n < 20; n++)
+  {
+    length += read (STDIN_FILENO, &buf[length], 1);
+  }
+  tcsetattr (STDIN_FILENO, TCSAFLUSH, &orig_attr);
+  if (length == -1)
+  {
+    return 0;
+  }
+  char *semi = strchr (buf, ';');
+  buf[length]=0;
+  if (semi &&  semi[1] == '2')
+  {
+    return 1;
+  }
+  return 0;
+}
+
 Ctx *ctx_new_ui (int width, int height)
 {
+  if (getenv ("CTX_HASH_CACHE"))
+  {
+    const char * val = getenv ("CTX_HASH_CACHE");
+    if (!strcmp (val, "0"))
+      _ctx_enable_hash_cache = 0;
+    if (!strcmp (val, "off"))
+      _ctx_enable_hash_cache = 0;
+  }
+
+
   if (getenv ("CTX_THREADS"))
   {
     int val = atoi (getenv ("CTX_THREADS"));
@@ -13129,6 +14781,10 @@ Ctx *ctx_new_ui (int width, int height)
     _ctx_max_threads = sysconf (_SC_NPROCESSORS_ONLN) / 2;
 #endif
   }
+  
+#if CTX_EVENTS
+  mtx_init (&_ctx_texture_mtx, mtx_plain);
+#endif
 
   if (_ctx_max_threads < 1) _ctx_max_threads = 1;
   if (_ctx_max_threads > CTX_MAX_THREADS) _ctx_max_threads = CTX_MAX_THREADS;
@@ -13136,6 +14792,8 @@ Ctx *ctx_new_ui (int width, int height)
   //fprintf (stderr, "ctx using %i threads\n", _ctx_max_threads);
   const char *backend = getenv ("CTX_BACKEND");
 
+  if (backend && !strcmp (backend, ""))
+    backend = NULL;
   if (backend && !strcmp (backend, "auto"))
     backend = NULL;
   if (backend && !strcmp (backend, "list"))
@@ -13149,17 +14807,19 @@ Ctx *ctx_new_ui (int width, int height)
     fprintf (stderr, " fb");
     fprintf (stderr, " drm");
 #endif
-    fprintf (stderr, " braille");
+    fprintf (stderr, " term");
+    fprintf (stderr, " termimg");
     fprintf (stderr, "\n");
     exit (-1);
   }
 
   Ctx *ret = NULL;
-  /* FIXME: to a terminal query instead - to avoid relying on
-   * environment variables - thus making it work reliably over
-   * ssh without configuration.
+
+  /* we do the query on auto but not on directly set ctx
+   *
    */
-  if (getenv ("CTX_VERSION"))
+  if ((backend && !strcmp(backend, "ctx")) ||
+      (backend == NULL && is_in_ctx ()))
   {
     if (!backend || !strcmp (backend, "ctx"))
     {
@@ -13194,8 +14854,13 @@ Ctx *ctx_new_ui (int width, int height)
   // braille in terminal
   if (!ret)
   {
-    if ((backend==NULL) || (!strcmp (backend, "braille")))
-    ret = ctx_new_braille (width, height);
+    if ((backend==NULL) || (!strcmp (backend, "term")))
+    ret = ctx_new_term (width, height);
+  }
+  if (!ret)
+  {
+    if ((backend==NULL) || (!strcmp (backend, "termimg")))
+    ret = ctx_new_termimg (width, height);
   }
 #endif
   if (!ret)
@@ -13205,6 +14870,13 @@ Ctx *ctx_new_ui (int width, int height)
   }
   ctx_get_event (ret); // enables events
   return ret;
+}
+#else
+void _ctx_texture_unlock (void)
+{
+}
+void _ctx_texture_lock (void)
+{
 }
 
 #endif
@@ -13344,7 +15016,9 @@ void ctx_clear_bindings (Ctx *ctx)
   events->n_bindings = 0;
 }
 
-static void _ctx_bindings_key_down (CtxEvent *event, void *data1, void *data2)
+static void
+ctx_collect_events (CtxEvent *event, void *data, void *data2);
+static void _ctx_bindings_key_press (CtxEvent *event, void *data1, void *data2)
 {
   Ctx *ctx = event->ctx;
   CtxEvents *events = &ctx->events;
@@ -13373,6 +15047,7 @@ static void _ctx_bindings_key_down (CtxEvent *event, void *data1, void *data2)
           return;
       }
     }
+  ctx_collect_events (event, data1, data2);
 }
 
 CtxBinding *ctx_get_bindings (Ctx *ctx)
@@ -13733,7 +15408,9 @@ void ctx_add_hit_region (Ctx *ctx, const char *id)
      height = ey2 - ey1;
   }
   
-  return ctx_listen_full (ctx, x, y, width, height, CTX_POINTER, ctx_report_hit_region, id_copy, NULL, (void*)free, NULL);
+  return ctx_listen_full (ctx, x, y, width, height,
+                          CTX_POINTER, ctx_report_hit_region,
+                          id_copy, NULL, (void*)free, NULL);
 }
 
 typedef struct _CtxGrab CtxGrab;
@@ -13805,6 +15482,7 @@ CtxList *_ctx_detect_list (Ctx *ctx, float x, float y, CtxEventType type)
 
   if (type == CTX_KEY_DOWN ||
       type == CTX_KEY_UP ||
+      type == CTX_KEY_PRESS ||
       type == CTX_MESSAGE ||
       type == (CTX_KEY_DOWN|CTX_MESSAGE) ||
       type == (CTX_KEY_DOWN|CTX_KEY_UP) ||
@@ -13949,11 +15627,8 @@ int ctx_fb_events = 0;
 int ctx_fb_consume_events (Ctx *ctx);
 #endif
 
-
 int ctx_nct_consume_events (Ctx *ctx);
 int ctx_ctx_consume_events (Ctx *ctx);
-#if CTX_SDL
-#endif
 
 void ctx_consume_events (Ctx *ctx)
 {
@@ -14042,7 +15717,7 @@ static CtxItem *_ctx_update_item (Ctx *ctx, int device_no, float x, float y, Ctx
     {
       {
 #if 0
-        CtxRectangle rect = {floor(ctx->events.prev[device_no]->x0-focus_radius),
+        CtxIntRectangle rect = {floor(ctx->events.prev[device_no]->x0-focus_radius),
                              floor(ctx->events.prev[device_no]->y0-focus_radius),
                              ceil(ctx->events.prev[device_no]->x1)-floor(ctx->events.prev[device_no]->x0) + focus_radius * 2,
                              ceil(ctx->events.prev[device_no]->y1)-floor(ctx->events.prev[device_no]->y0) + focus_radius * 2};
@@ -14058,7 +15733,7 @@ static CtxItem *_ctx_update_item (Ctx *ctx, int device_no, float x, float y, Ctx
     {
 #if 0
       {
-        CtxRectangle rect = {floor(current->x0-focus_radius),
+        CtxIntRectangle rect = {floor(current->x0-focus_radius),
                              floor(current->y0-focus_radius),
                              ceil(current->x1)-floor(current->x0) + focus_radius * 2,
                              ceil(current->y1)-floor(current->y0) + focus_radius * 2};
@@ -14243,7 +15918,7 @@ int ctx_pointer_press (Ctx *ctx, float x, float y, int device_no, uint32_t time)
 
 void _ctx_resized (Ctx *ctx, int width, int height, long time)
 {
-  CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_DOWN);
+  CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_PRESS);
   CtxEvent event = {0, };
 
   if (!time)
@@ -14257,7 +15932,7 @@ void _ctx_resized (Ctx *ctx, int width, int height, long time)
   if (item)
   {
     event.stop_propagate = 0;
-    _ctx_emit_cb_item (ctx, item, &event, CTX_KEY_DOWN, 0, 0);
+    _ctx_emit_cb_item (ctx, item, &event, CTX_KEY_PRESS, 0, 0);
   }
 
 }
@@ -14539,6 +16214,16 @@ int ctx_scrolled (Ctx *ctx, float x, float y, CtxScrollDirection scroll_directio
   return 0;
 }
 
+static int ctx_str_has_prefix (const char *string, const char *prefix)
+{
+  for (int i = 0; prefix[i]; i++)
+  {
+    if (!string[i]) return 0;
+    if (string[i] != prefix[i]) return 0;
+  }
+  return 0;
+}
+
 int ctx_key_press (Ctx *ctx, unsigned int keyval,
                    const char *string, uint32_t time)
 {
@@ -14547,23 +16232,17 @@ int ctx_key_press (Ctx *ctx, unsigned int keyval,
   sscanf (string, "%s %f %f %i", event_type, &x, &y, &b);
   if (!strcmp (event_type, "mouse-motion") ||
       !strcmp (event_type, "mouse-drag"))
-  {
-    ctx_pointer_motion (ctx, x, y, b, 0);
-    return 0;
-  }
+    return ctx_pointer_motion (ctx, x, y, b, 0);
   else if (!strcmp (event_type, "mouse-press"))
-  {
-    ctx_pointer_press (ctx, x, y, b, 0);
-    return 0;
-  }
+    return ctx_pointer_press (ctx, x, y, b, 0);
   else if (!strcmp (event_type, "mouse-release"))
-  {
-    ctx_pointer_release (ctx, x, y, b, 0);
-    return 0;
-  }
+    return ctx_pointer_release (ctx, x, y, b, 0);
+  //else if (!strcmp (event_type, "keydown"))
+  //  return ctx_key_down (ctx, keyval, string + 8, time);
+  //else if (!strcmp (event_type, "keyup"))
+  //  return ctx_key_up (ctx, keyval, string + 6, time);
 
-
-  CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_DOWN);
+  CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_PRESS);
   CtxEvent event = {0,};
 
   if (time == 0)
@@ -14572,7 +16251,7 @@ int ctx_key_press (Ctx *ctx, unsigned int keyval,
   {
     int i;
     event.ctx = ctx;
-    event.type = CTX_KEY_DOWN;
+    event.type = CTX_KEY_PRESS;
     event.unicode = keyval; 
     event.string = strdup(string);
     event.stop_propagate = 0;
@@ -14580,15 +16259,10 @@ int ctx_key_press (Ctx *ctx, unsigned int keyval,
 
     for (i = 0; i < item->cb_count; i++)
     {
-      if (item->cb[i].types & (CTX_KEY_DOWN))
+      if (item->cb[i].types & (CTX_KEY_PRESS))
       {
         event.state = ctx->events.modifier_state;
         item->cb[i].cb (&event, item->cb[i].data1, item->cb[i].data2);
-#if 0
-        char buf[256];
-        ctx_set (ctx, ctx_strhash ("title", 0), buf, strlen(buf));
-        ctx_flush (ctx);
-#endif
         if (event.stop_propagate)
         {
           free ((void*)event.string);
@@ -14598,6 +16272,80 @@ int ctx_key_press (Ctx *ctx, unsigned int keyval,
     }
     free ((void*)event.string);
   }
+  return 0;
+}
+
+int ctx_key_down (Ctx *ctx, unsigned int keyval,
+                  const char *string, uint32_t time)
+{
+  CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_DOWN);
+  CtxEvent event = {0,};
+
+  if (time == 0)
+    time = ctx_ms (ctx);
+  if (item)
+  {
+    int i;
+    event.ctx     = ctx;
+    event.type    = CTX_KEY_DOWN;
+    event.unicode = keyval; 
+    event.string  = strdup(string);
+    event.stop_propagate = 0;
+    event.time    = time;
+
+    for (i = 0; i < item->cb_count; i++)
+    {
+      if (item->cb[i].types & (CTX_KEY_DOWN))
+      {
+        event.state = ctx->events.modifier_state;
+        item->cb[i].cb (&event, item->cb[i].data1, item->cb[i].data2);
+        if (event.stop_propagate)
+        {
+          free ((void*)event.string);
+          return event.stop_propagate;
+        }
+      }
+    }
+    free ((void*)event.string);
+  }
+  return 0;
+}
+
+int ctx_key_up (Ctx *ctx, unsigned int keyval,
+                const char *string, uint32_t time)
+{
+  CtxItem *item = _ctx_detect (ctx, 0, 0, CTX_KEY_UP);
+  CtxEvent event = {0,};
+
+  if (time == 0)
+    time = ctx_ms (ctx);
+  if (item)
+  {
+    int i;
+    event.ctx = ctx;
+    event.type = CTX_KEY_UP;
+    event.unicode = keyval; 
+    event.string = strdup(string);
+    event.stop_propagate = 0;
+    event.time = time;
+
+    for (i = 0; i < item->cb_count; i++)
+    {
+      if (item->cb[i].types & (CTX_KEY_UP))
+      {
+        event.state = ctx->events.modifier_state;
+        item->cb[i].cb (&event, item->cb[i].data1, item->cb[i].data2);
+        if (event.stop_propagate)
+        {
+          free ((void*)event.string);
+          return event.stop_propagate;
+        }
+      }
+    }
+    free ((void*)event.string);
+  }
+  return 0;
+
   return 0;
 }
 
@@ -14749,6 +16497,16 @@ int _ctx_data_pending (int timeout)
   return retval;
 }
 
+void ctx_sdl_set_title (void *self, const char *new_title);
+void ctx_set_title (Ctx *ctx, const char *title)
+{
+#if CTX_SDL
+     // XXX also check we're first/only client?
+   if (ctx_renderer_is_sdl (ctx))
+     ctx_sdl_set_title (ctx_get_renderer (ctx), title);
+#endif
+}
+
 #endif
 /* the parser comes in the end, nothing in ctx knows about the parser  */
 
@@ -14756,16 +16514,27 @@ int _ctx_data_pending (int timeout)
 
 /* ctx parser, */
 
+#define CTX_ID_MAXLEN 64 // in use should not be more than 40!
+                         // to offer headroom for multiplexing
+
+
 struct
   _CtxParser
 {
-  int        t_args; // total number of arguments seen for current command
   Ctx       *ctx;
+  int        t_args; // total number of arguments seen for current command
   int        state;
+#if CTX_PARSER_FIXED_TEMP
   uint8_t    holding[CTX_PARSER_MAXLEN]; /*  */
+#else
+  uint8_t   *holding;
+#endif
+  int        hold_len;
+  int        pos;
+
+
   int        line; /*  for error reporting */
   int        col;  /*  for error reporting */
-  int        pos;
   float      numbers[CTX_PARSER_MAX_ARGS+1];
   int        n_numbers;
   int        decimal;
@@ -14773,10 +16542,13 @@ struct
   int        expected_args; /* low digits are literal higher values
                                carry special meaning */
   int        n_args;
-  uint32_t   set_key_hash;
+  int        texture_done;
+  uint8_t    texture_id[CTX_ID_MAXLEN]; // used in defineTexture only
+  uint64_t   set_key_hash;
   float      pcx;
   float      pcy;
   int        color_components;
+  int        color_stroke; // 0 is fill source  1 is stroke source
   int        color_model; // 1 gray 3 rgb 4 cmyk
   float      left_margin; // set by last user provided move_to
   int        width;       // <- maybe should be float
@@ -14790,7 +16562,7 @@ struct
 
   void (*exit) (void *exit_data);
   void *exit_data;
-  int   (*set_prop)(void *prop_data, uint32_t key, const char *data,  int len);
+  int   (*set_prop)(void *prop_data, uint64_t key, const char *data,  int len);
   int   (*get_prop)(void *prop_data, const char *key, char **data, int *len);
   void *prop_data;
 };
@@ -14821,7 +16593,7 @@ ctx_parser_init (CtxParser *parser,
                  float      cell_height,
                  int        cursor_x,
                  int        cursor_y,
-  int   (*set_prop)(void *prop_data, uint32_t key, const char *data,  int len),
+  int   (*set_prop)(void *prop_data, uint64_t key, const char *data,  int len),
   int   (*get_prop)(void *prop_Data, const char *key, char **data, int *len),
                  void  *prop_data,
                  void (*exit) (void *exit_data),
@@ -14840,6 +16612,7 @@ ctx_parser_init (CtxParser *parser,
   parser->exit             = exit;
   parser->exit_data        = exit_data;
   parser->color_model      = CTX_RGBA;
+  parser->color_stroke     = 0;
   parser->color_components = 4;
   parser->command          = CTX_MOVE_TO;
   parser->set_prop         = set_prop;
@@ -14856,7 +16629,7 @@ CtxParser *ctx_parser_new (
   float      cell_height,
   int        cursor_x,
   int        cursor_y,
-  int   (*set_prop)(void *prop_data, uint32_t key, const char *data,  int len),
+  int   (*set_prop)(void *prop_data, uint64_t key, const char *data,  int len),
   int   (*get_prop)(void *prop_Data, const char *key, char **data, int *len),
   void  *prop_data,
   void (*exit) (void *exit_data),
@@ -14872,6 +16645,10 @@ CtxParser *ctx_parser_new (
 
 void ctx_parser_free (CtxParser *parser)
 {
+#if !CTX_PARSER_FIXED_TEMP
+  if (parser->holding)
+    free (parser->holding);
+#endif
   free (parser);
 }
 
@@ -14906,6 +16683,8 @@ static int ctx_arguments_for_code (CtxCode code)
       case CTX_LINE_JOIN:
       case CTX_LINE_CAP:
       case CTX_LINE_WIDTH:
+      case CTX_LINE_DASH_OFFSET:
+      case CTX_IMAGE_SMOOTHING:
       case CTX_SHADOW_BLUR:
       case CTX_SHADOW_OFFSET_X:
       case CTX_SHADOW_OFFSET_Y:
@@ -14935,6 +16714,8 @@ static int ctx_arguments_for_code (CtxCode code)
       case CTX_REL_QUAD_TO:
       case CTX_QUAD_TO:
       case CTX_RECTANGLE:
+      case CTX_FILL_RECT:
+      case CTX_STROKE_RECT:
       case CTX_REL_SMOOTH_TO:
       case CTX_VIEW_BOX:
       case CTX_SMOOTH_TO:
@@ -14949,11 +16730,13 @@ static int ctx_arguments_for_code (CtxCode code)
       case CTX_APPLY_TRANSFORM:
       case CTX_RADIAL_GRADIENT:
         return 6;
-      case CTX_TEXT_STROKE:
-      case CTX_TEXT: // special case
+      case CTX_STROKE_TEXT:
+      case CTX_TEXT:
       case CTX_COLOR_SPACE:
       case CTX_DEFINE_GLYPH:
       case CTX_KERNING_PAIR:
+      case CTX_TEXTURE:
+      case CTX_DEFINE_TEXTURE:
         return CTX_ARG_STRING_OR_NUMBER;
       case CTX_LINE_DASH: /* append to current dashes for each argument encountered */
         return CTX_ARG_COLLECT_NUMBERS;
@@ -14966,9 +16749,7 @@ static int ctx_arguments_for_code (CtxCode code)
 
         default:
 #if 1
-      case CTX_TEXTURE:
         case CTX_SET_RGBA_U8:
-        case CTX_BITPIX:
         case CTX_NOP:
         case CTX_NEW_EDGE:
         case CTX_EDGE:
@@ -14998,6 +16779,7 @@ static int ctx_parser_set_command (CtxParser *parser, CtxCode code)
   {
   parser->expected_args = ctx_arguments_for_code (code);
   parser->n_args = 0;
+  parser->texture_done = 0;
   if (parser->expected_args >= CTX_ARG_NUMBER_OF_COMPONENTS)
     {
       parser->expected_args = (parser->expected_args % 100) + parser->color_components;
@@ -15006,11 +16788,11 @@ static int ctx_parser_set_command (CtxParser *parser, CtxCode code)
   return code;
 }
 
-static void ctx_parser_set_color_model (CtxParser *parser, CtxColorModel color_model);
+static void ctx_parser_set_color_model (CtxParser *parser, CtxColorModel color_model, int stroke);
 
 static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
 {
-  uint32_t ret = str[0]; /* if it is single char it already is the CtxCode */
+  uint64_t ret = str[0]; /* if it is single char it already is the CtxCode */
 
   /* this is handled outside the hashing to make it possible to be case insensitive
    * with the rest.
@@ -15028,6 +16810,8 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
       case 'j': return ctx_parser_set_command (parser, CTX_LINE_JOIN);
       case 'c': return ctx_parser_set_command (parser, CTX_LINE_CAP);
       case 'w': return ctx_parser_set_command (parser, CTX_LINE_WIDTH);
+      case 'D': return ctx_parser_set_command (parser, CTX_LINE_DASH_OFFSET);
+      case 'S': return ctx_parser_set_command (parser, CTX_IMAGE_SMOOTHING);
       case 'C': return ctx_parser_set_command (parser, CTX_SHADOW_COLOR);
       case 's': return ctx_parser_set_command (parser, CTX_SHADOW_BLUR);
       case 'x': return ctx_parser_set_command (parser, CTX_SHADOW_OFFSET_X);
@@ -15040,7 +16824,7 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
 
   if (str[0] && str[1])
     {
-      uint32_t str_hash;
+      uint64_t str_hash;
       /* trim ctx_ and CTX_ prefix */
       if ( (str[0] == 'c' && str[1] == 't' && str[2] == 'x' && str[3] == '_') ||
            (str[0] == 'C' && str[1] == 'T' && str[2] == 'X' && str[3] == '_') )
@@ -15075,7 +16859,7 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
           case CTX_smooth_quad_to: ret = CTX_SMOOTHQ_TO; break;
           case CTX_clear:          ret = CTX_COMPOSITE_CLEAR; break;
           case CTX_copy:           ret = CTX_COMPOSITE_COPY; break;
-          case CTX_destinationOver: ret = CTX_COMPOSITE_DESTINATION_OVER; break;
+          case CTX_destinationOver:  ret = CTX_COMPOSITE_DESTINATION_OVER; break;
           case CTX_destinationIn:    ret = CTX_COMPOSITE_DESTINATION_IN; break;
           case CTX_destinationOut:   ret = CTX_COMPOSITE_DESTINATION_OUT; break;
           case CTX_sourceOver:       ret = CTX_COMPOSITE_SOURCE_OVER; break;
@@ -15098,7 +16882,7 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
           case CTX_screen:         ret = CTX_BLEND_SCREEN;break;
           case CTX_difference:     ret = CTX_BLEND_DIFFERENCE; break;
           case CTX_reset:          ret = CTX_RESET; break;
-          case CTX_verLineTo:  ret = CTX_VER_LINE_TO; break;
+          case CTX_verLineTo:      ret = CTX_VER_LINE_TO; break;
           case CTX_exit:
           case CTX_done:           ret = CTX_EXIT; break;
           case CTX_closePath:      ret = CTX_CLOSE_PATH; break;
@@ -15125,12 +16909,15 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
           case CTX_roundRectangle: ret = CTX_ROUND_RECTANGLE; break;
           case CTX_relSmoothTo:    ret = CTX_REL_SMOOTH_TO; break;
           case CTX_relSmoothqTo:   ret = CTX_REL_SMOOTHQ_TO; break;
-          case CTX_textStroke:     ret = CTX_TEXT_STROKE; break;
+          case CTX_strokeText:     ret = CTX_STROKE_TEXT; break;
+          case CTX_strokeRect:     ret = CTX_STROKE_RECT; break;
+          case CTX_fillRect:       ret = CTX_FILL_RECT; break;
           case CTX_relVerLineTo:   ret = CTX_REL_VER_LINE_TO; break;
           case CTX_text:           ret = CTX_TEXT; break;
           case CTX_identity:       ret = CTX_IDENTITY; break;
           case CTX_transform:      ret = CTX_APPLY_TRANSFORM; break;
           case CTX_texture:        ret = CTX_TEXTURE; break;
+          case CTX_defineTexture:  ret = CTX_DEFINE_TEXTURE; break;
 #if 0
           case CTX_rgbSpace:
             return ctx_parser_set_command (parser, CTX_SET_RGB_SPACE);
@@ -15182,6 +16969,10 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
           case CTX_lineWidth:
           case CTX_setLineWidth:
             return ctx_parser_set_command (parser, CTX_LINE_WIDTH);
+          case CTX_lineDashOffset:
+            return ctx_parser_set_command (parser, CTX_LINE_DASH_OFFSET);
+          case CTX_imageSmoothing:
+            return ctx_parser_set_command (parser, CTX_IMAGE_SMOOTHING);
           case CTX_shadowColor:
             return ctx_parser_set_command (parser, CTX_SHADOW_COLOR);
           case CTX_shadowBlur:
@@ -15192,45 +16983,85 @@ static int ctx_parser_resolve_command (CtxParser *parser, const uint8_t *str)
             return ctx_parser_set_command (parser, CTX_SHADOW_OFFSET_Y);
           case CTX_globalAlpha:
             return ctx_parser_set_command (parser, CTX_GLOBAL_ALPHA);
+
           /* strings are handled directly here,
            * instead of in the one-char handler, using return instead of break
            */
           case CTX_gray:
-            ctx_parser_set_color_model (parser, CTX_GRAY);
+            ctx_parser_set_color_model (parser, CTX_GRAY, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_graya:
-            ctx_parser_set_color_model (parser, CTX_GRAYA);
+            ctx_parser_set_color_model (parser, CTX_GRAYA, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_rgb:
-            ctx_parser_set_color_model (parser, CTX_RGB);
+            ctx_parser_set_color_model (parser, CTX_RGB, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_drgb:
-            ctx_parser_set_color_model (parser, CTX_DRGB);
+            ctx_parser_set_color_model (parser, CTX_DRGB, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_rgba:
-            ctx_parser_set_color_model (parser, CTX_RGBA);
+            ctx_parser_set_color_model (parser, CTX_RGBA, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_drgba:
-            ctx_parser_set_color_model (parser, CTX_DRGBA);
+            ctx_parser_set_color_model (parser, CTX_DRGBA, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_cmyk:
-            ctx_parser_set_color_model (parser, CTX_CMYK);
+            ctx_parser_set_color_model (parser, CTX_CMYK, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_cmyka:
-            ctx_parser_set_color_model (parser, CTX_CMYKA);
+            ctx_parser_set_color_model (parser, CTX_CMYKA, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_lab:
-            ctx_parser_set_color_model (parser, CTX_LAB);
+            ctx_parser_set_color_model (parser, CTX_LAB, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_laba:
-            ctx_parser_set_color_model (parser, CTX_LABA);
+            ctx_parser_set_color_model (parser, CTX_LABA, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_lch:
-            ctx_parser_set_color_model (parser, CTX_LCH);
+            ctx_parser_set_color_model (parser, CTX_LCH, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
           case CTX_lcha:
-            ctx_parser_set_color_model (parser, CTX_LCHA);
+            ctx_parser_set_color_model (parser, CTX_LCHA, 0);
             return ctx_parser_set_command (parser, CTX_COLOR);
+
+          /* and a full repeat of the above, with S for Stroke suffix */
+          case CTX_grayS:
+            ctx_parser_set_color_model (parser, CTX_GRAY, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_grayaS:
+            ctx_parser_set_color_model (parser, CTX_GRAYA, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_rgbS:
+            ctx_parser_set_color_model (parser, CTX_RGB, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_drgbS:
+            ctx_parser_set_color_model (parser, CTX_DRGB, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_rgbaS:
+            ctx_parser_set_color_model (parser, CTX_RGBA, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_drgbaS:
+            ctx_parser_set_color_model (parser, CTX_DRGBA, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_cmykS:
+            ctx_parser_set_color_model (parser, CTX_CMYK, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_cmykaS:
+            ctx_parser_set_color_model (parser, CTX_CMYKA, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_labS:
+            ctx_parser_set_color_model (parser, CTX_LAB, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_labaS:
+            ctx_parser_set_color_model (parser, CTX_LABA, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_lchS:
+            ctx_parser_set_color_model (parser, CTX_LCH, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+          case CTX_lchaS:
+            ctx_parser_set_color_model (parser, CTX_LCHA, 1);
+            return ctx_parser_set_command (parser, CTX_COLOR);
+
           /* words that correspond to low integer constants
           */
           case CTX_winding:     return CTX_FILL_RULE_WINDING;
@@ -15283,9 +17114,10 @@ enum
   CTX_PARSER_STRING_A85,
 } CTX_STATE;
 
-static void ctx_parser_set_color_model (CtxParser *parser, CtxColorModel color_model)
+static void ctx_parser_set_color_model (CtxParser *parser, CtxColorModel color_model, int stroke)
 {
   parser->color_model      = color_model;
+  parser->color_stroke     = stroke;
   parser->color_components = ctx_color_model_get_components (color_model);
 }
 
@@ -15333,16 +17165,21 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
 {
   CtxCode cmd = parser->command;
   Ctx *ctx = parser->ctx;
+#if 1
   if (parser->expected_args != CTX_ARG_STRING_OR_NUMBER &&
       parser->expected_args != CTX_ARG_COLLECT_NUMBERS &&
       parser->expected_args != parser->n_numbers)
     {
-      ctx_log ("ctx:%i:%i %c got %i instead of %i args\n",
+      if (0)
+         fprintf (stderr, "ctx:%i:%i %c got %i instead of %i args\n",
                parser->line, parser->col,
                cmd, parser->n_numbers, parser->expected_args);
     }
+#endif
+
 #define arg(a)  (parser->numbers[a])
   parser->command = CTX_NOP;
+  //parser->n_args = 0;
   switch (cmd)
     {
       default:
@@ -15392,12 +17229,12 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
             parser->numbers[1] = ctx_utf8_to_unichar ((char*)parser->holding);
             break;
           case 2:
-            parser->numbers[2] = ctx_utf8_to_unichar ((char*)parser->holding);
+            parser->numbers[2] = strtod ((char*)parser->holding, NULL);
             {
               CtxEntry e = {CTX_KERNING_PAIR, };
               e.data.u16[0] = parser->numbers[0];
               e.data.u16[1] = parser->numbers[1];
-              e.data.s32[2] = parser->numbers[2] * 256;
+              e.data.s32[1] = parser->numbers[2] * 256;
               ctx_process (ctx, &e);
             }
             break;
@@ -15405,6 +17242,72 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
         parser->command = CTX_KERNING_PAIR;
         parser->n_args ++; // make this more generic?
         break;             
+      case CTX_TEXTURE:
+        if (parser->texture_done)
+        {
+        }
+        else
+        if (parser->n_numbers == 2)
+        {
+          const char *eid = (char*)parser->holding;
+          float x0 = arg(0);
+          float x1 = arg(1);
+          ctx_texture (ctx, eid, x0, x1);
+          parser->texture_done = 1;
+        }
+        parser->command = CTX_TEXTURE;
+        //parser->n_args++;
+        break;
+      case CTX_DEFINE_TEXTURE:
+        if (parser->texture_done)
+        {
+          if (parser->texture_done++ == 1)
+          {
+             const char *eid = (char*)parser->texture_id;
+             int width  = arg(0);
+             int height = arg(1);
+             int format = arg(2);
+             int stride = ctx_pixel_format_get_stride (format, width);
+
+
+             if (parser->pos != stride * height)
+             {
+             fprintf (stderr, "unexpected datasize for define texture %s %ix%i\n size:%i != expected:%i - start of data: %i %i %i %i\n", eid, width, height,
+                               parser->pos,
+                               stride * height,
+                               parser->holding[0],
+                               parser->holding[1],
+                               parser->holding[2],
+                               parser->holding[3]
+                               );
+             }
+             else
+             ctx_define_texture (ctx, eid, width, height, stride, format, parser->holding, NULL);
+          }
+        }
+        else
+        {
+        switch (parser->n_numbers)
+        {
+          case 0:
+             strncpy ((char*)parser->texture_id, (char*)parser->holding, sizeof(parser->texture_id));
+             parser->texture_id[sizeof(parser->texture_id)-1]=0;
+             break;
+          case 1:
+          case 2:
+             break;
+          case 3:
+             parser->texture_done = 1;
+             break;
+          default:
+             fprintf (stderr, "!!%i\n", parser->n_numbers);
+             break;
+        }
+        }
+        parser->command = CTX_DEFINE_TEXTURE;
+        break;
+
+
       case CTX_DEFINE_GLYPH:
         /* XXX : reuse n_args logic - to enforce order */
         if (parser->n_numbers == 1)
@@ -15427,20 +17330,17 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
           switch (parser->color_model)
             {
               case CTX_GRAY:
-                ctx_gray (ctx, arg (0) );
-                break;
               case CTX_GRAYA:
-                ctx_rgba (ctx, arg (0), arg (0), arg (0), arg (1) );
-                break;
               case CTX_RGB:
-                ctx_rgb (ctx, arg (0), arg (1), arg (2) );
+              case CTX_RGBA:
+              case CTX_DRGB:
+              case CTX_DRGBA:
+                ctx_color_raw (ctx, parser->color_model, parser->numbers, parser->color_stroke);
                 break;
 #if CTX_ENABLE_CMYK
               case CTX_CMYK:
-                ctx_cmyk (ctx, arg (0), arg (1), arg (2), arg (3) );
-                break;
               case CTX_CMYKA:
-                ctx_cmyka (ctx, arg (0), arg (1), arg (2), arg (3), arg (4) );
+                ctx_color_raw (ctx, parser->color_model, parser->numbers, parser->color_stroke);
                 break;
 #else
               /* when there is no cmyk support at all in rasterizer
@@ -15449,23 +17349,15 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
               case CTX_CMYK:
               case CTX_CMYKA:
                 {
-                  float r,g,b,a = 1.0f;
-                  ctx_cmyk_to_rgb (arg (0), arg (1), arg (2), arg (3), &r, &g, &b);
+                  float rgba[4] = {1,1,1,1.0f};
+
+                  ctx_cmyk_to_rgb (arg(0), arg(1), arg(2), arg(3), &rgba[0], &rgba[1], &rgba[2]);
                   if (parser->color_model == CTX_CMYKA)
-                    { a = arg (4); }
-                  ctx_rgba (ctx, r, g, b, a);
+                    { rgba[3] = arg(4); }
+                  ctx_color_raw (ctx, CTX_RGBA, rgba, parser->color_stroke);
                 }
                 break;
 #endif
-              case CTX_RGBA:
-                ctx_rgba (ctx, arg (0), arg (1), arg (2), arg (3) );
-                break;
-              case CTX_DRGB:
-                ctx_drgba (ctx, arg (0), arg (1), arg (2), 1.0);
-                break;
-              case CTX_DRGBA:
-                ctx_drgba (ctx, arg (0), arg (1), arg (2), arg (3) );
-                break;
             }
         }
         break;
@@ -15481,10 +17373,10 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
         //append_dash_val (ctx, arg(0));
         break;
       case CTX_ARC_TO:
-        ctx_arc_to (ctx, arg (0), arg (1), arg (2), arg (3), arg (4) );
+        ctx_arc_to (ctx, arg(0), arg(1), arg(2), arg(3), arg(4));
         break;
       case CTX_REL_ARC_TO:
-        ctx_rel_arc_to (ctx, arg (0), arg (1), arg (2), arg (3), arg (4) );
+        ctx_rel_arc_to (ctx, arg(0), arg(1), arg(2), arg(3), arg(4) );
         break;
       case CTX_REL_SMOOTH_TO:
         {
@@ -15492,24 +17384,24 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
           float cy = parser->pcy;
           float ax = 2 * ctx_x (ctx) - cx;
           float ay = 2 * ctx_y (ctx) - cy;
-          ctx_curve_to (ctx, ax, ay, arg (0) +  cx, arg (1) + cy,
-                        arg (2) + cx, arg (3) + cy);
-          parser->pcx = arg (0) + cx;
-          parser->pcy = arg (1) + cy;
+          ctx_curve_to (ctx, ax, ay, arg(0) +  cx, arg(1) + cy,
+                        arg(2) + cx, arg(3) + cy);
+          parser->pcx = arg(0) + cx;
+          parser->pcy = arg(1) + cy;
         }
         break;
       case CTX_SMOOTH_TO:
         {
           float ax = 2 * ctx_x (ctx) - parser->pcx;
           float ay = 2 * ctx_y (ctx) - parser->pcy;
-          ctx_curve_to (ctx, ax, ay, arg (0), arg (1),
-                        arg (2), arg (3) );
-          parser->pcx = arg (0);
-          parser->pcx = arg (1);
+          ctx_curve_to (ctx, ax, ay, arg(0), arg(1),
+                        arg(2), arg(3) );
+          parser->pcx = arg(0);
+          parser->pcx = arg(1);
         }
         break;
       case CTX_SMOOTHQ_TO:
-        ctx_quad_to (ctx, parser->pcx, parser->pcy, arg (0), arg (1) );
+        ctx_quad_to (ctx, parser->pcx, parser->pcy, arg(0), arg(1) );
         break;
       case CTX_REL_SMOOTHQ_TO:
         {
@@ -15517,99 +17409,99 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
           float cy = parser->pcy;
           parser->pcx = 2 * ctx_x (ctx) - parser->pcx;
           parser->pcy = 2 * ctx_y (ctx) - parser->pcy;
-          ctx_quad_to (ctx, parser->pcx, parser->pcy, arg (0) +  cx, arg (1) + cy);
+          ctx_quad_to (ctx, parser->pcx, parser->pcy, arg(0) +  cx, arg(1) + cy);
         }
         break;
       case CTX_VER_LINE_TO:
-        ctx_line_to (ctx, ctx_x (ctx), arg (0) );
+        ctx_line_to (ctx, ctx_x (ctx), arg(0) );
         parser->command = CTX_VER_LINE_TO;
         parser->pcx = ctx_x (ctx);
         parser->pcy = ctx_y (ctx);
         break;
       case CTX_HOR_LINE_TO:
-        ctx_line_to (ctx, arg (0), ctx_y (ctx) );
+        ctx_line_to (ctx, arg(0), ctx_y (ctx) );
         parser->command = CTX_HOR_LINE_TO;
         parser->pcx = ctx_x (ctx);
         parser->pcy = ctx_y (ctx);
         break;
       case CTX_REL_HOR_LINE_TO:
-        ctx_rel_line_to (ctx, arg (0), 0.0f);
+        ctx_rel_line_to (ctx, arg(0), 0.0f);
         parser->command = CTX_REL_HOR_LINE_TO;
         parser->pcx = ctx_x (ctx);
         parser->pcy = ctx_y (ctx);
         break;
       case CTX_REL_VER_LINE_TO:
-        ctx_rel_line_to (ctx, 0.0f, arg (0) );
+        ctx_rel_line_to (ctx, 0.0f, arg(0) );
         parser->command = CTX_REL_VER_LINE_TO;
         parser->pcx = ctx_x (ctx);
         parser->pcy = ctx_y (ctx);
         break;
       case CTX_ARC:
-        ctx_arc (ctx, arg (0), arg (1), arg (2), arg (3), arg (4), arg (5) );
+        ctx_arc (ctx, arg(0), arg(1), arg(2), arg(3), arg(4), arg(5) );
         break;
       case CTX_APPLY_TRANSFORM:
-        ctx_apply_transform (ctx, arg (0), arg (1), arg (2), arg (3), arg (4), arg (5) );
+        ctx_apply_transform (ctx, arg(0), arg(1), arg(2), arg(3), arg(4), arg(5) );
         break;
       case CTX_CURVE_TO:
-        ctx_curve_to (ctx, arg (0), arg (1), arg (2), arg (3), arg (4), arg (5) );
-        parser->pcx = arg (2);
-        parser->pcy = arg (3);
+        ctx_curve_to (ctx, arg(0), arg(1), arg(2), arg(3), arg(4), arg(5) );
+        parser->pcx = arg(2);
+        parser->pcy = arg(3);
         parser->command = CTX_CURVE_TO;
         break;
       case CTX_REL_CURVE_TO:
-        parser->pcx = arg (2) + ctx_x (ctx);
-        parser->pcy = arg (3) + ctx_y (ctx);
-        ctx_rel_curve_to (ctx, arg (0), arg (1), arg (2), arg (3), arg (4), arg (5) );
+        parser->pcx = arg(2) + ctx_x (ctx);
+        parser->pcy = arg(3) + ctx_y (ctx);
+        ctx_rel_curve_to (ctx, arg(0), arg(1), arg(2), arg(3), arg(4), arg(5) );
         parser->command = CTX_REL_CURVE_TO;
         break;
       case CTX_LINE_TO:
-        ctx_line_to (ctx, arg (0), arg (1) );
+        ctx_line_to (ctx, arg(0), arg(1) );
         parser->command = CTX_LINE_TO;
-        parser->pcx = arg (0);
-        parser->pcy = arg (1);
+        parser->pcx = arg(0);
+        parser->pcy = arg(1);
         break;
       case CTX_MOVE_TO:
-        ctx_move_to (ctx, arg (0), arg (1) );
+        ctx_move_to (ctx, arg(0), arg(1) );
         parser->command = CTX_LINE_TO;
-        parser->pcx = arg (0);
-        parser->pcy = arg (1);
+        parser->pcx = arg(0);
+        parser->pcy = arg(1);
         parser->left_margin = parser->pcx;
         break;
       case CTX_FONT_SIZE:
-        ctx_font_size (ctx, arg (0) );
+        ctx_font_size (ctx, arg(0) );
         break;
       case CTX_MITER_LIMIT:
-        ctx_miter_limit (ctx, arg (0) );
+        ctx_miter_limit (ctx, arg(0) );
         break;
       case CTX_SCALE:
-        ctx_scale (ctx, arg (0), arg (1) );
+        ctx_scale (ctx, arg(0), arg(1) );
         break;
       case CTX_QUAD_TO:
-        parser->pcx = arg (0);
-        parser->pcy = arg (1);
-        ctx_quad_to (ctx, arg (0), arg (1), arg (2), arg (3) );
+        parser->pcx = arg(0);
+        parser->pcy = arg(1);
+        ctx_quad_to (ctx, arg(0), arg(1), arg(2), arg(3) );
         parser->command = CTX_QUAD_TO;
         break;
       case CTX_REL_QUAD_TO:
-        parser->pcx = arg (0) + ctx_x (ctx);
-        parser->pcy = arg (1) + ctx_y (ctx);
-        ctx_rel_quad_to (ctx, arg (0), arg (1), arg (2), arg (3) );
+        parser->pcx = arg(0) + ctx_x (ctx);
+        parser->pcy = arg(1) + ctx_y (ctx);
+        ctx_rel_quad_to (ctx, arg(0), arg(1), arg(2), arg(3) );
         parser->command = CTX_REL_QUAD_TO;
         break;
       case CTX_CLIP:
         ctx_clip (ctx);
         break;
       case CTX_TRANSLATE:
-        ctx_translate (ctx, arg (0), arg (1) );
+        ctx_translate (ctx, arg(0), arg(1) );
         break;
       case CTX_ROTATE:
-        ctx_rotate (ctx, arg (0) );
+        ctx_rotate (ctx, arg(0) );
         break;
       case CTX_FONT:
         ctx_font (ctx, (char *) parser->holding);
         break;
 
-      case CTX_TEXT_STROKE:
+      case CTX_STROKE_TEXT:
       case CTX_TEXT:
         if (parser->n_numbers == 1)
           { ctx_rel_move_to (ctx, -parser->numbers[0], 0.0); }  //  XXX : scale by font(size)
@@ -15625,7 +17517,7 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
                  * implicit ones from move_to's .. making move_to work within
                  * margins.
                  */
-                if (cmd == CTX_TEXT_STROKE)
+                if (cmd == CTX_STROKE_TEXT)
                   { ctx_text_stroke (ctx, c); }
                 else
                   { ctx_text (ctx, c); }
@@ -15644,8 +17536,8 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
                   }
               }
           }
-        if (cmd == CTX_TEXT_STROKE)
-          { parser->command = CTX_TEXT_STROKE; }
+        if (cmd == CTX_STROKE_TEXT)
+          { parser->command = CTX_STROKE_TEXT; }
         else
           { parser->command = CTX_TEXT; }
         break;
@@ -15661,7 +17553,13 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
         parser->left_margin = ctx_x (ctx);
         break;
       case CTX_LINE_WIDTH:
-        ctx_line_width (ctx, arg(0) );
+        ctx_line_width (ctx, arg(0));
+        break;
+      case CTX_LINE_DASH_OFFSET:
+        ctx_line_dash_offset (ctx, arg(0));
+        break;
+      case CTX_IMAGE_SMOOTHING:
+        ctx_image_smoothing (ctx, arg(0));
         break;
       case CTX_SHADOW_COLOR:
         ctx_shadow_rgba (ctx, arg(0), arg(1), arg(2), arg(3));
@@ -15709,6 +17607,14 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
       case CTX_RECTANGLE:
         ctx_rectangle (ctx, arg(0), arg(1), arg(2), arg(3) );
         break;
+      case CTX_FILL_RECT:
+        ctx_rectangle (ctx, arg(0), arg(1), arg(2), arg(3) );
+        ctx_fill (ctx);
+        break;
+      case CTX_STROKE_RECT:
+        ctx_rectangle (ctx, arg(0), arg(1), arg(2), arg(3) );
+        ctx_stroke (ctx);
+        break;
       case CTX_ROUND_RECTANGLE:
         ctx_round_rectangle (ctx, arg(0), arg(1), arg(2), arg(3), arg(4));
         break;
@@ -15730,9 +17636,6 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
         break;
       case CTX_GLOBAL_ALPHA:
         ctx_global_alpha (ctx, arg(0) );
-        break;
-      case CTX_TEXTURE:
-        ctx_texture (ctx, arg(0), arg(1), arg(2));
         break;
       case CTX_BEGIN_PATH:
         ctx_begin_path (ctx);
@@ -15760,14 +17663,26 @@ static void ctx_parser_dispatch_command (CtxParser *parser)
         break;
     }
 #undef arg
-  parser->n_numbers = 0;
+//  parser->n_numbers = 0;
 }
 
 static void ctx_parser_holding_append (CtxParser *parser, int byte)
 {
+#if !CTX_PARSER_FIXED_TEMP
+  if (parser->hold_len < parser->pos + 1 + 1)
+  {
+    int new_len = parser->hold_len * 1.5;
+    if (new_len < 512) new_len = 512;
+    parser->holding = realloc (parser->holding, new_len);
+    parser->hold_len = new_len;
+  }
+#endif
+
   parser->holding[parser->pos++]=byte;
+#if CTX_PARSER_FIXED_TEMP
   if (parser->pos > (int) sizeof (parser->holding)-2)
     { parser->pos = sizeof (parser->holding)-2; }
+#endif
   parser->holding[parser->pos]=0;
 }
 
@@ -15803,6 +17718,7 @@ static void ctx_parser_transform_percent (CtxParser *parser, CtxCode code, int a
       case CTX_FONT_SIZE:
       case CTX_MITER_LIMIT:
       case CTX_LINE_WIDTH:
+      case CTX_LINE_DASH_OFFSET:
         {
           *value *= (small/100.0);
         }
@@ -15875,6 +17791,7 @@ static void ctx_parser_transform_cell (CtxParser *parser, CtxCode code, int arg_
       case CTX_MITER_LIMIT:
       case CTX_FONT_SIZE:
       case CTX_LINE_WIDTH:
+      case CTX_LINE_DASH_OFFSET:
         {
           *value *= parser->cell_height;
         }
@@ -15908,10 +17825,15 @@ static void ctx_parser_transform_cell (CtxParser *parser, CtxCode code, int arg_
 
 // %h %v %m %M
 
+static void ctx_parser_number_done (CtxParser *parser)
+{
+
+}
+
 static void ctx_parser_word_done (CtxParser *parser)
 {
   parser->holding[parser->pos]=0;
-  int old_args = parser->expected_args;
+  //int old_args = parser->expected_args;
   int command = ctx_parser_resolve_command (parser, parser->holding);
   if ((command >= 0 && command < 32)
       || (command > 150) || (command < 0)
@@ -15927,16 +17849,25 @@ static void ctx_parser_word_done (CtxParser *parser)
     }
   else if (command > 0)
     {
-      if (old_args == CTX_ARG_COLLECT_NUMBERS)
+#if 0
+      if (old_args == CTX_ARG_COLLECT_NUMBERS ||
+          old_args == CTX_ARG_STRING_OR_NUMBER)
       {
         int tmp1 = parser->command;
         int tmp2 = parser->expected_args;
+        int tmp3 = parser->n_numbers;
+ //     int tmp4 = parser->n_args;
         ctx_parser_dispatch_command (parser);
         parser->command = (CtxCode)tmp1;
         parser->expected_args = tmp2;
+        parser->n_numbers = tmp3;
+ //     parser->n_args = tmp4;
       }
+#endif
 
       parser->command = (CtxCode) command;
+      parser->n_numbers = 0;
+      parser->n_args = 0;
       if (parser->expected_args == 0)
         {
           ctx_parser_dispatch_command (parser);
@@ -15950,6 +17881,8 @@ static void ctx_parser_word_done (CtxParser *parser)
         {
           buf[0] = parser->holding[i];
           parser->command = (CtxCode) ctx_parser_resolve_command (parser, buf);
+          parser->n_numbers = 0;
+          parser->n_args = 0;
           if (parser->command > 0)
             {
               if (parser->expected_args == 0)
@@ -15963,13 +17896,36 @@ static void ctx_parser_word_done (CtxParser *parser)
             }
         }
     }
-  parser->n_numbers = 0;
-  parser->n_args = 0;
 }
 
 static void ctx_parser_string_done (CtxParser *parser)
 {
-  ctx_parser_dispatch_command (parser);
+  if (parser->expected_args == CTX_ARG_STRING_OR_NUMBER)
+  {
+          /*
+    if (parser->state != CTX_PARSER_NUMBER &&
+        parser->state != CTX_PARSER_NEGATIVE_NUMBER &&
+        parser->state != CTX_PARSER_STRING_A85 &&
+        parser->state != CTX_PARSER_STRING_APOS &&
+        parser->state != CTX_PARSER_STRING_QUOT
+        )
+        */
+    {
+    int tmp1 = parser->command;
+    int tmp2 = parser->expected_args;
+    int tmp3 = parser->n_numbers;
+    int tmp4 = parser->n_args;
+    ctx_parser_dispatch_command (parser);
+    parser->command = (CtxCode)tmp1;
+    parser->expected_args = tmp2;
+    parser->n_numbers = tmp3;
+    parser->n_args = tmp4;
+    }
+  }
+  else
+  {
+    ctx_parser_dispatch_command (parser);
+  }
 }
 
 void ctx_parser_feed_byte (CtxParser *parser, int byte)
@@ -15988,7 +17944,11 @@ void ctx_parser_feed_byte (CtxParser *parser, int byte)
       case CTX_PARSER_NEUTRAL:
         switch (byte)
           {
-            case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 11: case 12: case 14: case 15: case 16: case 17: case 18: case 19: case 20: case 21: case 22: case 23: case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31:
+            case  0: case  1: case  2: case  3:  case 4:  case 5:
+            case  6: case  7: case  8: case 11: case 12: case 14:
+            case 15: case 16: case 17: case 18: case 19: case 20:
+            case 21: case 22: case 23: case 24: case 25: case 26:
+            case 27: case 28: case 29: case 30: case 31:
               break;
             case ' ': case '\t': case '\r': case '\n':
             case ';': case ',':
@@ -16043,35 +18003,12 @@ void ctx_parser_feed_byte (CtxParser *parser, int byte)
         {
           switch (byte)
             {
-              case 0:
-              case 1:
-              case 2:
-              case 3:
-              case 4:
-              case 5:
-              case 6:
-              case 7:
-              case 8:
-              case 11:
-              case 12:
-              case 14:
-              case 15:
-              case 16:
-              case 17:
-              case 18:
-              case 19:
-              case 20:
-              case 21:
-              case 22:
-              case 23:
-              case 24:
-              case 25:
-              case 26:
-              case 27:
-              case 28:
-              case 29:
-              case 30:
-              case 31:
+              case 0: case 1: case 2: case 3: case 4: case 5:
+              case 6: case 7: case 8:
+              case 11: case 12: case 14: case 15: case 16:
+              case 17: case 18: case 19: case 20: case 21:
+              case 22: case 23: case 24: case 25: case 26:
+              case 27: case 28: case 29: case 30: case 31:
                 parser->state = CTX_PARSER_NEUTRAL;
                 break;
               case ' ':
@@ -16104,16 +18041,8 @@ void ctx_parser_feed_byte (CtxParser *parser, int byte)
                 //if (parser->decimal) // TODO permit .13.32.43 to equivalent to .12 .32 .43
                 parser->decimal = 1;
                 break;
-              case '0':
-              case '1':
-              case '2':
-              case '3':
-              case '4':
-              case '5':
-              case '6':
-              case '7':
-              case '8':
-              case '9':
+              case '0': case '1': case '2': case '3': case '4':
+              case '5': case '6': case '7': case '8': case '9':
                 if (parser->decimal)
                   {
                     parser->decimal *= 10;
@@ -16177,11 +18106,21 @@ void ctx_parser_feed_byte (CtxParser *parser, int byte)
                (parser->state != CTX_PARSER_NEGATIVE_NUMBER))
             {
               parser->n_numbers ++;
-              //parser->t_args ++;
+              ctx_parser_number_done (parser);
+
               if (parser->n_numbers == parser->expected_args ||
-                  parser->expected_args == 100)
+                  parser->expected_args == CTX_ARG_COLLECT_NUMBERS ||
+                  parser->expected_args == CTX_ARG_STRING_OR_NUMBER)
                 {
+                  int tmp1 = parser->n_numbers;
+                  //int tmp2 = parser->n_args;
+                  int tmp3 = parser->command;
+                  int tmp4 = parser->expected_args;
                   ctx_parser_dispatch_command (parser);
+                  parser->n_numbers = tmp1;
+                  //parser->n_args = tmp2;
+                  parser->command = tmp3;
+                  parser->expected_args = tmp4;
                 }
               if (parser->n_numbers > CTX_PARSER_MAX_ARGS)
                 { parser->n_numbers = CTX_PARSER_MAX_ARGS;
@@ -16233,8 +18172,11 @@ void ctx_parser_feed_byte (CtxParser *parser, int byte)
       case CTX_PARSER_STRING_A85:
         switch (byte)
           {
-            case '~': parser->state = CTX_PARSER_NEUTRAL;
+            case '~':
+              parser->state = CTX_PARSER_NEUTRAL;
+                 //   fprintf (stderr, "got %i\n", parser->pos);
               parser->pos = ctx_a85dec ((char*)parser->holding, (char*)parser->holding, parser->pos);
+                 //   fprintf (stderr, "dec got %i\n", parser->pos);
               ctx_parser_string_done (parser);
               break;
             default:
@@ -16247,7 +18189,8 @@ void ctx_parser_feed_byte (CtxParser *parser, int byte)
           {
             case '\\': parser->state = CTX_PARSER_STRING_APOS_ESCAPED; break;
             case '\'': parser->state = CTX_PARSER_NEUTRAL;
-              ctx_parser_string_done (parser); break;
+              ctx_parser_string_done (parser);
+              break;
             default:
               ctx_parser_holding_append (parser, byte); break;
           }
@@ -16372,7 +18315,7 @@ ctx_load_font_ttf_file (const char *name, const char *path)
 {
   uint8_t *contents = NULL;
   long length = 0;
-  _ctx_file_get_contents (path, &contents, &length);
+  ctx_get_contents (path, &contents, &length);
   if (!contents)
     {
       ctx_log ( "File load failed\n");
@@ -16735,7 +18678,7 @@ ctx_load_font_ctx_file (const char *name, const char *path)
 {
   uint8_t *contents = NULL;
   long length = 0;
-  _ctx_file_get_contents (path, &contents, &length);
+  ctx_get_contents (path, &contents, &length);
   if (!contents)
     {
       ctx_log ( "File load failed\n");
@@ -16778,17 +18721,15 @@ ctx_glyph_width_ctx_fs (CtxFont *font, Ctx *ctx, uint32_t unichar)
   sprintf (path, "%s/%010p", font->ctx_fs.path, unichar);
   uint8_t *data = NULL;
   long int len_bytes = 0;
-  _ctx_file_get_contents (path, &data, &len_bytes);
+  ctx_get_contents (path, &data, &len_bytes);
   float ret = 0.0;
   float font_size = state->gstate.font_size;
   if (data){
     Ctx *glyph_ctx = ctx_new ();
     ctx_parse (glyph_ctx, data);
-    //fprintf (stderr, "\n");
     for (int i = 0; i < glyph_ctx->drawlist.count; i++)
     {
       CtxEntry *e = &glyph_ctx->drawlist.entries[i];
-   // fprintf (stderr, "%c:", e->code);
       if (e->code == CTX_DEFINE_GLYPH)
         ret = e->data.u32[1] / 255.0 * font_size / CTX_BAKE_FONT_SIZE;
     }
@@ -16802,11 +18743,10 @@ static int
 ctx_glyph_ctx_fs (CtxFont *font, Ctx *ctx, uint32_t unichar, int stroke)
 {
   char path[1024];
-  sprintf (path, "%s/%010p", font->ctx_fs.path, unichar);
+  sprintf (path, "file://%s/%010p", font->ctx_fs.path, unichar);
   uint8_t *data = NULL;
   long int len_bytes = 0;
-  _ctx_file_get_contents (path, &data, &len_bytes);
-//fprintf (stderr, "%s %li\n", path, len_bytes);
+  ctx_get_contents (path, &data, &len_bytes);
 
   if (data){
     Ctx *glyph_ctx = ctx_new ();
@@ -16948,11 +18888,11 @@ _ctx_text (Ctx        *ctx,
     {
       case CTX_TEXT_BASELINE_HANGING:
         /* XXX : crude */
-        baseline_offset = ctx->state.gstate.font_size * 0.55;
+        baseline_offset = ctx->state.gstate.font_size  * 0.55;
         break;
       case CTX_TEXT_BASELINE_TOP:
         /* XXX : crude */
-        baseline_offset = ctx->state.gstate.font_size * 0.7;
+        baseline_offset = ctx->state.gstate.font_size  * 0.7;
         break;
       case CTX_TEXT_BASELINE_BOTTOM:
         baseline_offset = -ctx->state.gstate.font_size * 0.1;
@@ -17039,6 +18979,15 @@ ctx_text (Ctx        *ctx,
 #endif
 }
 
+
+void
+ctx_fill_text (Ctx *ctx, const char *string,
+               float x, float y)
+{
+  ctx_move_to (ctx, x, y);
+  ctx_text (ctx, string);
+}
+
 void
 ctx_text_stroke (Ctx        *ctx,
                  const char *string)
@@ -17046,11 +18995,19 @@ ctx_text_stroke (Ctx        *ctx,
   if (!string)
     return;
 #if CTX_BACKEND_TEXT
-  ctx_process_cmd_str (ctx, CTX_TEXT_STROKE, string, 0, 0);
+  ctx_process_cmd_str (ctx, CTX_STROKE_TEXT, string, 0, 0);
   _ctx_text (ctx, string, 1, 0);
 #else
   _ctx_text (ctx, string, 1, 1);
 #endif
+}
+
+void
+ctx_stroke_text (Ctx *ctx, const char *string,
+               float x, float y)
+{
+  ctx_move_to (ctx, x, y);
+  ctx_text_stroke (ctx, string);
 }
 
 static int _ctx_resolve_font (const char *name)
@@ -17157,25 +19114,6 @@ static void ctx_font_setup ()
 #endif
 }
 
-
-/* mrg - MicroRaptor Gui
- * Copyright (c) 2014 Øyvind Kolås <pippin@hodefoting.com>
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library. If not, see <http://www.gnu.org/licenses/>.
- */
-
-//#include "ctx-string.h"
 
 #ifndef _DEFAULT_SOURCE
 #define _DEFAULT_SOURCE
@@ -17525,7 +19463,7 @@ char *ctx_strdup_printf (const char *format, ...)
   char *buffer;
   va_start (ap, format);
   needed = vsnprintf (NULL, 0, format, ap) + 1;
-  buffer = malloc (needed);
+  buffer = (char*)malloc (needed);
   va_end (ap);
   va_start (ap, format);
   vsnprintf (buffer, needed, format, ap);
@@ -17540,7 +19478,7 @@ void ctx_string_append_printf (CtxString *string, const char *format, ...)
   char *buffer;
   va_start (ap, format);
   needed = vsnprintf (NULL, 0, format, ap) + 1;
-  buffer = malloc (needed);
+  buffer = (char*)malloc (needed);
   va_end (ap);
   va_start (ap, format);
   vsnprintf (buffer, needed, format, ap);
@@ -17931,7 +19869,6 @@ static int ctx_find_largest_matching_substring
   return best_length;
 } 
 
-
 typedef struct CtxSpan {
   int from_prev;
   int start;
@@ -18197,7 +20134,7 @@ static char *decode_ctx (const char *encoded, int enc_len, const char *prev, int
 
 #define CTX_START_STRING "U\n"  // or " reset "
 #define CTX_END_STRING   "\nX"  // or "\ndone"
-#define CTX_END_STRING2   "\n\e"
+#define CTX_END_STRING2  "\n\e"
 
 int ctx_frame_ack = -1;
 static char *prev_frame_contents = NULL;
@@ -18230,7 +20167,7 @@ static void ctx_ctx_flush (CtxCtx *ctxctx)
     free (rest);
     cur_frame_len += strlen (CTX_START_STRING) + strlen (CTX_END_STRING);
 
-    if (prev_frame_contents)
+    if (prev_frame_contents && 0)  // XXX : 
     {
       char *encoded;
       int encoded_len = 0;
@@ -18366,11 +20303,21 @@ int ctx_ctx_consume_events (Ctx *ctx)
         ctx_set_size (ctx, ctxctx->width, ctxctx->height);
 
         if (prev_frame_contents)
-           free (prev_frame_contents);
+          free (prev_frame_contents);
         prev_frame_contents = NULL;
         prev_frame_len = 0;
         ctx_set_dirty (ctx, 1);
         //ctx_key_press (ctx, 0, "size-changed", 0);
+      }
+      else if (!strcmp (event_type, "keyup"))
+      {
+        char buf[4]={ x, 0 };
+        ctx_key_up (ctx, (int)x, buf, 0);
+      }
+      else if (!strcmp (event_type, "keydown"))
+      {
+        char buf[4]={ x, 0 };
+        ctx_key_down (ctx, (int)x, buf, 0);
       }
       else
       {
@@ -18428,9 +20375,8 @@ int ctx_ctx_consume_events (Ctx *ctx)
           ctx_key_press (ctx, 0, "escape", 0);
         else if (!strcmp (event, "space"))
           ctx_key_press (ctx, 0, "space", 0);
-        else if (!strcmp (event, "enter"))
-          ctx_key_press (ctx, 0, "\n", 0);
-        else if (!strcmp (event, "return"))
+        else if (!strcmp (event, "enter")||
+                 !strcmp (event, "return"))
           ctx_key_press (ctx, 0, "\n", 0);
         else
         ctx_key_press (ctx, 0, event, 0);
@@ -18440,13 +20386,198 @@ int ctx_ctx_consume_events (Ctx *ctx)
   return 1;
 }
 
+int ctx_renderer_is_ctx (Ctx *ctx)
+{
+  if (ctx->renderer &&
+      ctx->renderer->free == (void*)ctx_ctx_free)
+          return 1;
+  return 0;
+}
+
 #endif
+
+#if CTX_TILED
+static inline int
+ctx_tiled_threads_done (CtxTiled *tiled)
+{
+  int sum = 0;
+  for (int i = 0; i < _ctx_max_threads; i++)
+  {
+     if (tiled->rendered_frame[i] == tiled->render_frame)
+       sum ++;
+  }
+  return sum;
+}
+
+void ctx_tiled_free (CtxTiled *tiled)
+{
+  tiled->quit = 1;
+  mtx_lock (&tiled->mtx);
+  cnd_broadcast (&tiled->cond);
+  mtx_unlock (&tiled->mtx);
+
+  while (tiled->thread_quit < _ctx_max_threads)
+    usleep (1000);
+
+  if (tiled->pixels)
+  {
+    free (tiled->pixels);
+  tiled->pixels = NULL;
+  for (int i = 0 ; i < _ctx_max_threads; i++)
+  {
+    ctx_free (tiled->host[i]);
+    tiled->host[i]=NULL;
+  }
+
+  ctx_free (tiled->ctx_copy);
+  }
+  // leak?
+}
+
+inline static void ctx_tiled_flush (CtxTiled *tiled)
+{
+  if (tiled->shown_frame == tiled->render_frame)
+  {
+    int dirty_tiles = 0;
+    ctx_set_drawlist (tiled->ctx_copy, &tiled->ctx->drawlist.entries[0],
+                                           tiled->ctx->drawlist.count * 9);
+    if (_ctx_enable_hash_cache)
+    {
+      Ctx *hasher = ctx_hasher_new (tiled->width, tiled->height,
+                        CTX_HASH_COLS, CTX_HASH_ROWS);
+      ctx_render_ctx (tiled->ctx_copy, hasher);
+
+      for (int row = 0; row < CTX_HASH_ROWS; row++)
+        for (int col = 0; col < CTX_HASH_COLS; col++)
+        {
+          uint8_t *new_hash = ctx_hasher_get_hash (hasher, col, row);
+          if (new_hash && memcmp (new_hash, &tiled->hashes[(row * CTX_HASH_COLS + col) *  20], 20))
+          {
+            memcpy (&tiled->hashes[(row * CTX_HASH_COLS +  col)*20], new_hash, 20);
+            tiled->tile_affinity[row * CTX_HASH_COLS + col] = 1;
+            dirty_tiles++;
+          }
+          else
+          {
+            tiled->tile_affinity[row * CTX_HASH_COLS + col] = -1;
+          }
+        }
+      free (((CtxHasher*)(hasher->renderer))->hashes);
+      ctx_free (hasher);
+    }
+    else
+    {
+    for (int row = 0; row < CTX_HASH_ROWS; row++)
+      for (int col = 0; col < CTX_HASH_COLS; col++)
+        {
+          tiled->tile_affinity[row * CTX_HASH_COLS + col] = 1;
+          dirty_tiles++;
+        }
+    }
+    int dirty_no = 0;
+    if (dirty_tiles)
+    for (int row = 0; row < CTX_HASH_ROWS; row++)
+      for (int col = 0; col < CTX_HASH_COLS; col++)
+      {
+        if (tiled->tile_affinity[row * CTX_HASH_COLS + col] != -1)
+        {
+          tiled->tile_affinity[row * CTX_HASH_COLS + col] = dirty_no * (_ctx_max_threads) / dirty_tiles;
+          dirty_no++;
+          if (col > tiled->max_col) tiled->max_col = col;
+          if (col < tiled->min_col) tiled->min_col = col;
+          if (row > tiled->max_row) tiled->max_row = row;
+          if (row < tiled->min_row) tiled->min_row = row;
+        }
+      }
+
+#if CTX_DAMAGE_CONTROL
+    for (int i = 0; i < tiled->width * tiled->height; i++)
+    {
+      int new_ = (tiled->pixels[i*4+0]+ tiled->pixels[i*4+1]+ tiled->pixels[i*4+2])/3;
+      //if (new_>1) new_--;
+      tiled->pixels[i*4]  = (tiled->pixels[i*4] + 255)/2;
+      tiled->pixels[i*4+1]= (tiled->pixels[i*4+1] + new_)/2;
+      tiled->pixels[i*4+2]= (tiled->pixels[i*4+1] + new_)/2;
+    }
+#endif
+
+    tiled->render_frame = ++tiled->frame;
+
+    mtx_lock (&tiled->mtx);
+    cnd_broadcast (&tiled->cond);
+    mtx_unlock (&tiled->mtx);
+  }
+}
+static unsigned char *sdl_icc = NULL;
+static long sdl_icc_length = 0;
+
+static
+void ctx_tiled_render_fun (void **data)
+{
+  int      no = (size_t)data[0];
+  CtxTiled *tiled = data[1];
+
+  while (!tiled->quit)
+  {
+    Ctx *host = tiled->host[no];
+
+    mtx_lock (&tiled->mtx);
+    cnd_wait(&tiled->cond, &tiled->mtx);
+    mtx_unlock (&tiled->mtx);
+
+    if (tiled->render_frame != tiled->rendered_frame[no])
+    {
+      int hno = 0;
+      for (int row = 0; row < CTX_HASH_ROWS; row++)
+        for (int col = 0; col < CTX_HASH_COLS; col++, hno++)
+        {
+          if (tiled->tile_affinity[hno]==no)
+          {
+            int x0 = ((tiled->width)/CTX_HASH_COLS) * col;
+            int y0 = ((tiled->height)/CTX_HASH_ROWS) * row;
+            int width = tiled->width / CTX_HASH_COLS;
+            int height = tiled->height / CTX_HASH_ROWS;
+
+            CtxRasterizer *rasterizer = (CtxRasterizer*)host->renderer;
+#if 1 // merge horizontally adjecant tiles of same affinity into one job
+            while (col + 1 < CTX_HASH_COLS &&
+                   tiled->tile_affinity[hno+1] == no)
+            {
+              width += tiled->width / CTX_HASH_COLS;
+              col++;
+              hno++;
+            }
+#endif
+            int swap_red_green = ((CtxRasterizer*)(host->renderer))->swap_red_green;
+            ctx_rasterizer_init (rasterizer,
+                                 host, tiled->ctx, &host->state,
+                                 &tiled->pixels[tiled->width * 4 * y0 + x0 * 4],
+                                 0, 0, width, height,
+                                 tiled->width*4, CTX_FORMAT_RGBA8,
+                                 tiled->antialias);
+            ((CtxRasterizer*)(host->renderer))->swap_red_green = swap_red_green;
+            if (sdl_icc_length)
+              ctx_colorspace (host, CTX_COLOR_SPACE_DEVICE_RGB, sdl_icc, sdl_icc_length);
+
+            ctx_translate (host, -x0, -y0);
+            ctx_render_ctx (tiled->ctx_copy, host);
+          }
+        }
+      tiled->rendered_frame[no] = tiled->render_frame;
+    }
+  }
+  tiled->thread_quit++; // need atomic?
+}
+
+#endif
+
 
 #if CTX_EVENTS
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <signal.h>
+
 
 #if CTX_FB
   #include <linux/fb.h>
@@ -18458,6 +20589,7 @@ int ctx_ctx_consume_events (Ctx *ctx)
   #include <libdrm/drm_mode.h>
 
 typedef struct _EvSource EvSource;
+ 
 
 struct _EvSource
 {
@@ -18488,6 +20620,8 @@ struct _EvSource
 typedef struct _CtxFb CtxFb;
 struct _CtxFb
 {
+   CtxTiled tiled;
+#if 0
    void (*render) (void *fb, CtxCommand *command);
    void (*reset)  (void *fb);
    void (*flush)  (void *fb);
@@ -18500,7 +20634,7 @@ struct _CtxFb
    int           cols; // unused
    int           rows; // unused
    int           was_down;
-   uint8_t      *scratch_fb;
+   uint8_t      *pixels;
    Ctx          *ctx_copy;
    Ctx          *host[CTX_MAX_THREADS];
    CtxAntialias  antialias;
@@ -18520,8 +20654,8 @@ struct _CtxFb
                                                            //
 
 
-
    int           pointer_down[3];
+#endif
    int           key_balance;
    int           key_repeat;
    int           lctrl;
@@ -18712,18 +20846,6 @@ static void ctx_fb_flip (CtxFb *fb)
     ioctl (fb->fb_fd, FBIOPAN_DISPLAY, &fb->vinfo);
 }
 
-static inline int
-fb_render_threads_done (CtxFb *fb)
-{
-  int sum = 0;
-  for (int i = 0; i < _ctx_max_threads; i++)
-  {
-     if (fb->rendered_frame[i] == fb->render_frame)
-       sum ++;
-  }
-  return sum;
-}
-
 inline static uint32_t
 ctx_swap_red_green2 (uint32_t orig)
 {
@@ -18737,7 +20859,7 @@ ctx_swap_red_green2 (uint32_t orig)
 static int       fb_cursor_drawn   = 0;
 static int       fb_cursor_drawn_x = 0;
 static int       fb_cursor_drawn_y = 0;
-static CtxCursor fb_cursor_drawn_shape = CTX_CURSOR_ARROW;
+static CtxCursor fb_cursor_drawn_shape = 0;
 
 
 #define CTX_FB_HIDE_CURSOR_FRAMES 200
@@ -18772,7 +20894,6 @@ static inline int ctx_is_in_cursor (int x, int y, int size, CtxCursor shape)
         }
         else
         {
-          //cos_theta = -0.707106781186548;
           cos_theta = cos (theta);
           sin_theta = sin (theta);
         }
@@ -18831,36 +20952,44 @@ static inline int ctx_is_in_cursor (int x, int y, int size, CtxCursor shape)
 }
 
 static void ctx_fb_undraw_cursor (CtxFb *fb)
-  {
-    int cursor_size = ctx_height (fb->ctx) / 28;
+{
+    CtxTiled *tiled = (void*)fb;
+    int cursor_size = ctx_height (tiled->ctx) / 28;
 
     if (fb_cursor_drawn)
     {
       int no = 0;
-      for (int y = -cursor_size; y < cursor_size; y++)
-      for (int x = -cursor_size; x < cursor_size; x++, no+=4)
+      int startx = -cursor_size;
+      int starty = -cursor_size;
+      if (fb_cursor_drawn_shape == CTX_CURSOR_ARROW)
+        startx = starty = 0;
+
+      for (int y = starty; y < cursor_size; y++)
+      for (int x = startx; x < cursor_size; x++, no+=4)
       {
-        if (x + fb_cursor_drawn_x < fb->width && y + fb_cursor_drawn_y < fb->height)
+        if (x + fb_cursor_drawn_x < tiled->width && y + fb_cursor_drawn_y < tiled->height)
         {
           if (ctx_is_in_cursor (x, y, cursor_size, fb_cursor_drawn_shape))
           {
-            int o = ((fb_cursor_drawn_y + y) * fb->width + (fb_cursor_drawn_x + x)) * 4;
+            int o = ((fb_cursor_drawn_y + y) * tiled->width + (fb_cursor_drawn_x + x)) * 4;
             fb->fb[o+0]^=0x88;
             fb->fb[o+1]^=0x88;
             fb->fb[o+2]^=0x88;
           }
         }
       }
+
     fb_cursor_drawn = 0;
     }
 }
 
 static void ctx_fb_draw_cursor (CtxFb *fb)
-  {
-    int cursor_x    = ctx_pointer_x (fb->ctx);
-    int cursor_y    = ctx_pointer_y (fb->ctx);
-    int cursor_size = ctx_height (fb->ctx) / 28;
-    CtxCursor cursor_shape = fb->ctx->cursor;
+{
+    CtxTiled *tiled = (void*)fb;
+    int cursor_x    = ctx_pointer_x (tiled->ctx);
+    int cursor_y    = ctx_pointer_y (tiled->ctx);
+    int cursor_size = ctx_height (tiled->ctx) / 28;
+    CtxCursor cursor_shape = tiled->ctx->cursor;
     int no = 0;
 
     if (cursor_x == fb_cursor_drawn_x &&
@@ -18887,14 +21016,21 @@ static void ctx_fb_draw_cursor (CtxFb *fb)
     ctx_fb_undraw_cursor (fb);
 
     no = 0;
-    for (int y = -cursor_size; y < cursor_size; y++)
-      for (int x = -cursor_size; x < cursor_size; x++, no+=4)
+
+    int startx = -cursor_size;
+    int starty = -cursor_size;
+
+    if (cursor_shape == CTX_CURSOR_ARROW)
+      startx = starty = 0;
+
+    for (int y = starty; y < cursor_size; y++)
+      for (int x = startx; x < cursor_size; x++, no+=4)
       {
-        if (x + cursor_x < fb->width && y + cursor_y < fb->height)
+        if (x + cursor_x < tiled->width && y + cursor_y < tiled->height)
         {
           if (ctx_is_in_cursor (x, y, cursor_size, cursor_shape))
           {
-            int o = ((cursor_y + y) * fb->width + (cursor_x + x)) * 4;
+            int o = ((cursor_y + y) * tiled->width + (cursor_x + x)) * 4;
             fb->fb[o+0]^=0x88;
             fb->fb[o+1]^=0x88;
             fb->fb[o+2]^=0x88;
@@ -18905,11 +21041,12 @@ static void ctx_fb_draw_cursor (CtxFb *fb)
     fb_cursor_drawn_x = cursor_x;
     fb_cursor_drawn_y = cursor_y;
     fb_cursor_drawn_shape = cursor_shape;
-  }
+}
 
 static void ctx_fb_show_frame (CtxFb *fb, int block)
 {
-  if (fb->shown_frame == fb->render_frame)
+  CtxTiled *tiled = (void*)fb;
+  if (tiled->shown_frame == tiled->render_frame)
   {
     if (block == 0) // consume event call
     {
@@ -18922,32 +21059,32 @@ static void ctx_fb_show_frame (CtxFb *fb, int block)
   if (block)
   {
     int count = 0;
-    while (fb_render_threads_done (fb) != _ctx_max_threads)
+    while (ctx_tiled_threads_done (tiled) != _ctx_max_threads)
     {
       usleep (500);
       count ++;
       if (count > 2000)
       {
-        fb->shown_frame = fb->render_frame;
+        tiled->shown_frame = tiled->render_frame;
         return;
       }
     }
   }
   else
   {
-    if (fb_render_threads_done (fb) != _ctx_max_threads)
+    if (ctx_tiled_threads_done (tiled) != _ctx_max_threads)
       return;
   }
 
     if (fb->vt_active)
     {
-       int pre_skip = fb->min_row * fb->height/CTX_HASH_ROWS * fb->width;
-       int post_skip = (CTX_HASH_ROWS-fb->max_row-1) * fb->height/CTX_HASH_ROWS * fb->width;
+       int pre_skip = tiled->min_row * tiled->height/CTX_HASH_ROWS * tiled->width;
+       int post_skip = (CTX_HASH_ROWS-tiled->max_row-1) * tiled->height/CTX_HASH_ROWS * tiled->width;
 
-       int rows = ((fb->width * fb->height) - pre_skip - post_skip)/fb->width;
+       int rows = ((tiled->width * tiled->height) - pre_skip - post_skip)/tiled->width;
 
-       int col_pre_skip = fb->min_col * fb->width/CTX_HASH_COLS;
-       int col_post_skip = (CTX_HASH_COLS-fb->max_col-1) * fb->width/CTX_HASH_COLS;
+       int col_pre_skip = tiled->min_col * tiled->width/CTX_HASH_COLS;
+       int col_post_skip = (CTX_HASH_COLS-tiled->max_col-1) * tiled->width/CTX_HASH_COLS;
 #if CTX_DAMAGE_CONTROL
        pre_skip = post_skip = col_pre_skip = col_post_skip = 0;
 #endif
@@ -18957,7 +21094,7 @@ static void ctx_fb_show_frame (CtxFb *fb, int block)
 
      __u32 dummy = 0;
 
-       if (fb->min_row == 100){
+       if (tiled->min_row == 100){
           pre_skip = 0;
           post_skip = 0;
           // not when drm ?
@@ -18967,10 +21104,10 @@ static void ctx_fb_show_frame (CtxFb *fb, int block)
        else
        {
 
-      fb->min_row = 100;
-      fb->max_row = 0;
-      fb->min_col = 100;
-      fb->max_col = 0;
+      tiled->min_row = 100;
+      tiled->max_row = 0;
+      tiled->min_col = 100;
+      tiled->max_col = 0;
 
      // not when drm ?
      ioctl (fb->fb_fd, FBIO_WAITFORVSYNC, &dummy);
@@ -18981,10 +21118,10 @@ static void ctx_fb_show_frame (CtxFb *fb, int block)
 #if 1
          {
            uint8_t *dst = fb->fb + pre_skip * 4;
-           uint8_t *src = fb->scratch_fb + pre_skip * 4;
+           uint8_t *src = tiled->pixels + pre_skip * 4;
            int pre = col_pre_skip * 4;
            int post = col_post_skip * 4;
-           int core = fb->width * 4 - pre - post;
+           int core = tiled->width * 4 - pre - post;
            for (int i = 0; i < rows; i++)
            {
              dst  += pre;
@@ -18997,8 +21134,8 @@ static void ctx_fb_show_frame (CtxFb *fb, int block)
            }
          }
 #else
-         { int count = fb->width * fb->height;
-           const uint32_t *src = (void*)fb->scratch_fb;
+         { int count = tiled->width * tiled->height;
+           const uint32_t *src = (void*)tiled->pixels;
            uint32_t *dst = (void*)fb->fb;
            count-= pre_skip;
            src+= pre_skip;
@@ -19016,8 +21153,8 @@ static void ctx_fb_show_frame (CtxFb *fb, int block)
          /* XXX  :  note: converting a scanline (or all) to target and
           * then doing a bulk memcpy be faster (at least with som /dev/fbs)  */
        case 24:
-         { int count = fb->width * fb->height;
-           const uint8_t *src = fb->scratch_fb;
+         { int count = tiled->width * tiled->height;
+           const uint8_t *src = tiled->pixels;
            uint8_t *dst = fb->fb;
            count-= pre_skip;
            src+= pre_skip * 4;
@@ -19034,8 +21171,8 @@ static void ctx_fb_show_frame (CtxFb *fb, int block)
          }
          break;
        case 16:
-         { int count = fb->width * fb->height;
-           const uint8_t *src = fb->scratch_fb;
+         { int count = tiled->width * tiled->height;
+           const uint8_t *src = tiled->pixels;
            uint8_t *dst = fb->fb;
            count-= post_skip;
            count-= pre_skip;
@@ -19054,8 +21191,8 @@ static void ctx_fb_show_frame (CtxFb *fb, int block)
          }
          break;
        case 15:
-         { int count = fb->width * fb->height;
-           const uint8_t *src = fb->scratch_fb;
+         { int count = tiled->width * tiled->height;
+           const uint8_t *src = tiled->pixels;
            uint8_t *dst = fb->fb;
            count-= post_skip;
            count-= pre_skip;
@@ -19074,8 +21211,8 @@ static void ctx_fb_show_frame (CtxFb *fb, int block)
          }
          break;
        case 8:
-         { int count = fb->width * fb->height;
-           const uint8_t *src = fb->scratch_fb;
+         { int count = tiled->width * tiled->height;
+           const uint8_t *src = tiled->pixels;
            uint8_t *dst = fb->fb;
            count-= post_skip;
            count-= pre_skip;
@@ -19096,7 +21233,7 @@ static void ctx_fb_show_frame (CtxFb *fb, int block)
     fb_cursor_drawn = 0;
     ctx_fb_draw_cursor (fb);
     ctx_fb_flip (fb);
-    fb->shown_frame = fb->render_frame;
+    tiled->shown_frame = tiled->render_frame;
   }
 }
 
@@ -19160,7 +21297,10 @@ static int mmm_evsource_mice_init ()
     fprintf (stderr, "error opening /dev/input/mice device, maybe add user to input group if such group exist, or otherwise make the rights be satisfied.\n");
     return -1;
   }
-  write (mrg_mice_this->fd, reset, 1);
+  if (write (mrg_mice_this->fd, reset, 1) == -1)
+  {
+    // might happen if we're a regular user with only read permission
+  }
   _mrg_evsrc_coord = mrg_mice_this;
   return 0;
 }
@@ -19194,8 +21334,12 @@ static char *mice_get_event ()
   const char *ret = "mouse-motion";
   double relx, rely;
   signed char buf[3];
+  int n_read = 0;
   CtxFb *fb = ev_src_mice.priv;
-  read (mrg_mice_this->fd, buf, 3);
+  CtxTiled *tiled = (void*)fb;
+  n_read = read (mrg_mice_this->fd, buf, 3);
+  if (n_read == 0)
+     return strdup ("");
   relx = buf[1];
   rely = -buf[2];
 
@@ -19236,10 +21380,10 @@ static char *mice_get_event ()
     mrg_mice_this->x = 0;
   if (mrg_mice_this->y < 0)
     mrg_mice_this->y = 0;
-  if (mrg_mice_this->x >= fb->width)
-    mrg_mice_this->x = fb->width -1;
-  if (mrg_mice_this->y >= fb->height)
-    mrg_mice_this->y = fb->height -1;
+  if (mrg_mice_this->x >= tiled->width)
+    mrg_mice_this->x = tiled->width -1;
+  if (mrg_mice_this->y >= tiled->height)
+    mrg_mice_this->y = tiled->height -1;
   int button = 0;
   
   if ((mrg_mice_this->prev_state & 1) != (buf[0] & 1))
@@ -19338,8 +21482,6 @@ EvSource *evsource_mice_new (void)
   return NULL;
 }
 
-
-
 static int evsource_kb_has_event (void);
 static char *evsource_kb_get_event (void);
 static void evsource_kb_destroy (int sign);
@@ -19375,11 +21517,11 @@ static void real_evsource_kb_destroy (int sign)
   switch (sign)
   {
     case  -11:break; /* will be called from atexit with sign==-11 */
-    case   SIGSEGV: fprintf (stderr, " SIGSEGV\n");break;
+    case   SIGSEGV: break;//fprintf (stderr, " SIGSEGV\n");break;
     case   SIGABRT: fprintf (stderr, " SIGABRT\n");break;
-    case   SIGBUS: fprintf (stderr, " SIGBUS\n");break;
+    case   SIGBUS:  fprintf (stderr, " SIGBUS\n");break;
     case   SIGKILL: fprintf (stderr, " SIGKILL\n");break;
-    case   SIGINT: fprintf (stderr, " SIGINT\n");break;
+    case   SIGINT:  fprintf (stderr, " SIGINT\n");break;
     case   SIGTERM: fprintf (stderr, " SIGTERM\n");break;
     case   SIGQUIT: fprintf (stderr, " SIGQUIT\n");break;
     default: fprintf (stderr, "sign: %i\n", sign);
@@ -19679,15 +21821,18 @@ static char *evsource_kb_get_event (void)
               break;
             case 0: /* no matches, bail*/
              {
-                static char ret[256];
+                static char ret[256]="";
                 if (length == 0 && ctx_utf8_len (buf[0])>1) /* read a
                                                              * single unicode
                                                              * utf8 character
                                                              */
                   {
-                    read (STDIN_FILENO, &buf[length+1], ctx_utf8_len(buf[0])-1);
-                    buf[ctx_utf8_len(buf[0])]=0;
-                    strcpy (ret, (void*)buf);
+                    int bytes = read (STDIN_FILENO, &buf[length+1], ctx_utf8_len(buf[0])-1);
+                    if (bytes)
+                    {
+                      buf[ctx_utf8_len(buf[0])]=0;
+                      strcpy (ret, (void*)buf);
+                    }
                     return strdup(ret); //XXX: simplify
                   }
                 if (length == 0) /* ascii */
@@ -19741,6 +21886,7 @@ EvSource *evsource_kb_new (void)
 
 static int event_check_pending (CtxFb *fb)
 {
+  CtxTiled *tiled = (void*)fb;
   int events = 0;
   for (int i = 0; i < fb->evsource_count; i++)
   {
@@ -19751,7 +21897,7 @@ static int event_check_pending (CtxFb *fb)
       {
         if (fb->vt_active)
         {
-          ctx_key_press (fb->ctx, 0, event, 0); // we deliver all events as key-press, it disamibuates
+          ctx_key_press (tiled->ctx, 0, event, 0); // we deliver all events as key-press, the key_press handler disambiguates
           events++;
         }
         free (event);
@@ -19776,172 +21922,24 @@ inline static void ctx_fb_reset (CtxFb *fb)
 
 inline static void ctx_fb_flush (CtxFb *fb)
 {
-  if (fb->shown_frame == fb->render_frame)
-  {
-    int dirty_tiles = 0;
-    ctx_set_drawlist (fb->ctx_copy, &fb->ctx->drawlist.entries[0],
-                                         fb->ctx->drawlist.count * 9);
-    if (_ctx_enable_hash_cache)
-    {
-      Ctx *hasher = ctx_hasher_new (fb->width, fb->height,
-                        CTX_HASH_COLS, CTX_HASH_ROWS);
-      ctx_render_ctx (fb->ctx_copy, hasher);
-
-      for (int row = 0; row < CTX_HASH_ROWS; row++)
-        for (int col = 0; col < CTX_HASH_COLS; col++)
-        {
-          uint8_t *new_hash = ctx_hasher_get_hash (hasher, col, row);
-          if (new_hash && memcmp (new_hash, &fb->hashes[(row * CTX_HASH_COLS + col) *  20], 20))
-          {
-            memcpy (&fb->hashes[(row * CTX_HASH_COLS +  col)*20], new_hash, 20);
-            fb->tile_affinity[row * CTX_HASH_COLS + col] = 1;
-            dirty_tiles++;
-          }
-          else
-          {
-            fb->tile_affinity[row * CTX_HASH_COLS + col] = -1;
-          }
-        }
-      free (((CtxHasher*)(hasher->renderer))->hashes);
-      ctx_free (hasher);
-    }
-    else
-    {
-    for (int row = 0; row < CTX_HASH_ROWS; row++)
-      for (int col = 0; col < CTX_HASH_COLS; col++)
-      {
-        fb->tile_affinity[row * CTX_HASH_COLS + col] = 1;
-        dirty_tiles++;
-      }
-    }
-
-    int dirty_no = 0;
-    if (dirty_tiles)
-    for (int row = 0; row < CTX_HASH_ROWS; row++)
-      for (int col = 0; col < CTX_HASH_COLS; col++)
-      {
-        if (fb->tile_affinity[row * CTX_HASH_COLS + col] != -1)
-        {
-          fb->tile_affinity[row * CTX_HASH_COLS + col] = dirty_no * (_ctx_max_threads) / dirty_tiles;
-          dirty_no++;
-          if (col > fb->max_col) fb->max_col = col;
-          if (col < fb->min_col) fb->min_col = col;
-          if (row > fb->max_row) fb->max_row = row;
-          if (row < fb->min_row) fb->min_row = row;
-        }
-      }
-
-#if CTX_DAMAGE_CONTROL
-    for (int i = 0; i < fb->width * fb->height; i++)
-    {
-      int new_ = (fb->scratch_fb[i*4+0]+ fb->scratch_fb[i*4+1]+ fb->scratch_fb[i*4+2])/3;
-      if (new_>1) new_--;
-      fb->scratch_fb[i*4]= (fb->scratch_fb[i*4] + new_)/2;
-      fb->scratch_fb[i*4+1]= (fb->scratch_fb[i*4+1] + new_)/2;
-      fb->scratch_fb[i*4+2]= (fb->scratch_fb[i*4+1] + new_)/2;
-    }
-#endif
-
-
-    fb->render_frame = ++fb->frame;
-
-    mtx_lock (&fb->mtx);
-    cnd_broadcast (&fb->cond);
-    mtx_unlock (&fb->mtx);
-  }
+  ctx_tiled_flush ((CtxTiled*)fb);
 }
 
 void ctx_fb_free (CtxFb *fb)
 {
-  mtx_lock (&fb->mtx);
-  cnd_broadcast (&fb->cond);
-  mtx_unlock (&fb->mtx);
-
-  memset (fb->fb, 0, fb->width * fb->height *  4);
-  for (int i = 0 ; i < _ctx_max_threads; i++)
-    ctx_free (fb->host[i]);
-
   if (fb->is_drm)
   {
     ctx_fbdrm_close (fb);
   }
 
   ioctl (0, KDSETMODE, KD_TEXT);
-  system("stty sane");
-  free (fb->scratch_fb);
+  if (system("stty sane")){};
+  ctx_tiled_free ((CtxTiled*)fb);
   //free (fb);
 }
 
-static unsigned char *fb_icc = NULL;
-static long fb_icc_length = 0;
-
-static
-void fb_render_fun (void **data)
-{
-  int      no = (size_t)data[0];
-  CtxFb *fb = data[1];
-
-  while (!fb->quit)
-  {
-    mtx_lock (&fb->mtx);
-    cnd_wait (&fb->cond, &fb->mtx);
-    mtx_unlock (&fb->mtx);
-
-    if (fb->render_frame != fb->rendered_frame[no])
-    {
-      int hno = 0;
-
-      for (int row = 0; row < CTX_HASH_ROWS; row++)
-        for (int col = 0; col < CTX_HASH_COLS; col++, hno++)
-        {
-          if (fb->tile_affinity[hno]==no)
-          {
-            int x0 = ((fb->width)/CTX_HASH_COLS) * col;
-            int y0 = ((fb->height)/CTX_HASH_ROWS) * row;
-            int width = fb->width / CTX_HASH_COLS;
-            int height = fb->height / CTX_HASH_ROWS;
-
-            Ctx *host = fb->host[no];
-            CtxRasterizer *rasterizer = (CtxRasterizer*)host->renderer;
-      /* merge horizontally adjecant tiles of same affinity into one job
-       * this reduces redundant overhead and gets better cache behavior
-       *
-       * giving different threads more explicitly different rows
-       * could be a good idea.
-       */
-            while (col + 1 < CTX_HASH_COLS &&
-                   fb->tile_affinity[hno+1] == no)
-            {
-              width += fb->width / CTX_HASH_COLS;
-              col++;
-              hno++;
-            }
-            ctx_rasterizer_init (rasterizer,
-                                 host, fb->ctx, &host->state,
-                                 &fb->scratch_fb[fb->width * 4 * y0 + x0 * 4],
-                                 0, 0, width, height,
-                                 fb->width*4, CTX_FORMAT_RGBA8,
-                                 fb->antialias);
-                                              /* this is the format used */
-            if (fb->fb_bits == 32)
-              rasterizer->swap_red_green = 1; 
-            if (fb_icc_length)
-              ctx_colorspace (host, CTX_COLOR_SPACE_DEVICE_RGB, fb_icc, fb_icc_length);
-            ctx_translate (host, -x0, -y0);
-            ctx_render_ctx (fb->ctx_copy, host);
-          }
-        }
-      fb->rendered_frame[no] = fb->render_frame;
-
-      if (fb_render_threads_done (fb) == _ctx_max_threads)
-      {
-   //   ctx_render_stream (fb->ctx_copy, stdout, 1);
-   //   ctx_reset (fb->ctx_copy);
-      }
-    }
-  }
-  fb->thread_quit ++;
-}
+//static unsigned char *fb_icc = NULL;
+//static long fb_icc_length = 0;
 
 int ctx_renderer_is_fb (Ctx *ctx)
 {
@@ -19954,6 +21952,7 @@ int ctx_renderer_is_fb (Ctx *ctx)
 static CtxFb *ctx_fb = NULL;
 static void vt_switch_cb (int sig)
 {
+  CtxTiled *tiled = (void*)ctx_fb;
   if (sig == SIGUSR1)
   {
     if (ctx_fb->is_drm)
@@ -19967,7 +21966,7 @@ static void vt_switch_cb (int sig)
     ioctl (0, VT_RELDISP, VT_ACKACQ);
     ctx_fb->vt_active = 1;
     // queue draw
-    ctx_fb->render_frame = ++ctx_fb->frame;
+    tiled->render_frame = ++tiled->frame;
     ioctl (0, KDSETMODE, KD_GRAPHICS);
     if (ctx_fb->is_drm)
     {
@@ -19976,15 +21975,14 @@ static void vt_switch_cb (int sig)
     }
     else
     {
-      ctx_fb->ctx->dirty=1;
+      tiled->ctx->dirty=1;
 
       for (int row = 0; row < CTX_HASH_ROWS; row++)
       for (int col = 0; col < CTX_HASH_COLS; col++)
       {
-        ctx_fb->hashes[(row * CTX_HASH_COLS + col) *  20] += 1;
+        tiled->hashes[(row * CTX_HASH_COLS + col) *  20] += 1;
       }
     }
-
   }
 }
 
@@ -19993,15 +21991,21 @@ Ctx *ctx_new_fb (int width, int height, int drm)
 #if CTX_RASTERIZER
   CtxFb *fb = calloc (sizeof (CtxFb), 1);
 
+  CtxTiled *tiled = (void*)fb;
   ctx_fb = fb;
   if (drm)
-    fb->fb = ctx_fbdrm_new (fb, &fb->width, &fb->height);
+    fb->fb = ctx_fbdrm_new (fb, &tiled->width, &tiled->height);
   if (fb->fb)
   {
     fb->is_drm         = 1;
-    width              = fb->width;
-    height             = fb->height;
-    fb->fb_mapped_size = fb->width * fb->height * 4;
+    width              = tiled->width;
+    height             = tiled->height;
+    /*
+       we're ignoring the input width and height ,
+       maybe turn them into properties - for
+       more generic handling.
+     */
+    fb->fb_mapped_size = tiled->width * tiled->height * 4;
     fb->fb_bits        = 32;
     fb->fb_bpp         = 4;
   }
@@ -20043,8 +22047,8 @@ Ctx *ctx_new_fb (int width, int height, int drm)
      }
 
 //fprintf (stderr, "%s\n", fb->fb_path);
-  width = fb->width = fb->vinfo.xres;
-  height = fb->height = fb->vinfo.yres;
+  width = tiled->width = fb->vinfo.xres;
+  height = tiled->height = fb->vinfo.yres;
 
   fb->fb_bits = fb->vinfo.bits_per_pixel;
 //fprintf (stderr, "fb bits: %i\n", fb->fb_bits);
@@ -20091,59 +22095,52 @@ Ctx *ctx_new_fb (int width, int height, int drm)
   }
   if (!fb->fb)
     return NULL;
-  fb->scratch_fb = calloc (fb->fb_mapped_size, 1);
+  tiled->pixels = calloc (fb->fb_mapped_size, 1);
   ctx_fb_events = 1;
 
 #if CTX_BABL
   babl_init ();
 #endif
 
-  _ctx_file_get_contents ("/tmp/ctx.icc", &fb_icc, &fb_icc_length);
+  ctx_get_contents ("file:///tmp/ctx.icc", &sdl_icc, &sdl_icc_length);
 
-  fb->ctx      = ctx_new ();
-  fb->ctx_copy = ctx_new ();
-  fb->width    = width;
-  fb->height   = height;
+  tiled->ctx      = ctx_new ();
+  tiled->ctx_copy = ctx_new ();
+  tiled->width    = width;
+  tiled->height   = height;
 
+  ctx_set_renderer (tiled->ctx, fb);
+  ctx_set_renderer (tiled->ctx_copy, fb);
+  ctx_set_texture_cache (tiled->ctx_copy, tiled->ctx);
 
-  ctx_set_renderer (fb->ctx, fb);
-  ctx_set_renderer (fb->ctx_copy, fb);
+  ctx_set_size (tiled->ctx, width, height);
+  ctx_set_size (tiled->ctx_copy, width, height);
 
-#if 0
-  if (fb_icc_length)
-  {
-    ctx_colorspace (fb->ctx, CTX_COLOR_SPACE_DEVICE_RGB, fb_icc, fb_icc_length);
-    ctx_colorspace (fb->ctx_copy, CTX_COLOR_SPACE_DEVICE_RGB, fb_icc, fb_icc_length);
-  }
-#endif
-
-  ctx_set_size (fb->ctx, width, height);
-  ctx_set_size (fb->ctx_copy, width, height);
-  fb->flush = (void*)ctx_fb_flush;
-  fb->reset = (void*)ctx_fb_reset;
-  fb->free  = (void*)ctx_fb_free;
-  fb->set_clipboard = (void*)ctx_fb_set_clipboard;
-  fb->get_clipboard = (void*)ctx_fb_get_clipboard;
+  tiled->flush = (void*)ctx_fb_flush;
+  tiled->reset = (void*)ctx_fb_reset;
+  tiled->free  = (void*)ctx_fb_free;
+  tiled->set_clipboard = (void*)ctx_fb_set_clipboard;
+  tiled->get_clipboard = (void*)ctx_fb_get_clipboard;
 
   for (int i = 0; i < _ctx_max_threads; i++)
   {
-    fb->host[i] = ctx_new_for_framebuffer (fb->scratch_fb,
-                   fb->width/CTX_HASH_COLS, fb->height/CTX_HASH_ROWS,
-                   fb->width * 4, CTX_FORMAT_RGBA8); // this format
+    tiled->host[i] = ctx_new_for_framebuffer (tiled->pixels,
+                   tiled->width/CTX_HASH_COLS, tiled->height/CTX_HASH_ROWS,
+                   tiled->width * 4, CTX_FORMAT_RGBA8); // this format
                                   // is overriden in  thread
-    ctx_set_texture_source (fb->host[i], fb->ctx);
+    ((CtxRasterizer*)(tiled->host[i]->renderer))->swap_red_green = 1;
+    ctx_set_texture_source (tiled->host[i], tiled->ctx);
   }
 
-
-  mtx_init (&fb->mtx, mtx_plain);
-  cnd_init (&fb->cond);
+  mtx_init (&tiled->mtx, mtx_plain);
+  cnd_init (&tiled->cond);
 
 #define start_thread(no)\
   if(_ctx_max_threads>no){ \
     static void *args[2]={(void*)no, };\
     thrd_t tid;\
     args[1]=fb;\
-    thrd_create (&tid, (void*)fb_render_fun, args);\
+    thrd_create (&tid, (void*)ctx_tiled_render_fun, args);\
   }
   start_thread(0);
   start_thread(1);
@@ -20163,7 +22160,7 @@ Ctx *ctx_new_fb (int width, int height, int drm)
   start_thread(15);
 #undef start_thread
 
-  ctx_flush (fb->ctx);
+  ctx_flush (tiled->ctx);
 
   EvSource *kb = evsource_kb_new ();
   if (kb)
@@ -20201,7 +22198,7 @@ Ctx *ctx_new_fb (int width, int height, int drm)
     return NULL;
   }
 
-  return fb->ctx;
+  return tiled->ctx;
 #else
   return NULL;
 #endif
@@ -20215,413 +22212,29 @@ int ctx_renderer_is_fb (Ctx *ctx)
 #endif
 #endif
 
-#if CTX_EVENTS
-
-#include <fcntl.h>
-#include <sys/ioctl.h>
-
-typedef struct _CtxBraille CtxBraille;
-struct _CtxBraille
-{
-   void (*render) (void *braille, CtxCommand *command);
-   void (*reset)  (void *braille);
-   void (*flush)  (void *braille);
-   char *(*get_clipboard) (void *ctxctx);
-   void (*set_clipboard) (void *ctxctx, const char *text);
-   void (*free)   (void *braille);
-   Ctx     *ctx;
-   int      width;
-   int      height;
-   int      cols;
-   int      rows;
-   int      was_down;
-   uint8_t *pixels;
-   Ctx     *host;
-};
-
-static inline int _ctx_rgba8_manhattan_diff (const uint8_t *a, const uint8_t *b)
-{
-  int c;
-  int diff = 0;
-  for (c = 0; c<3;c++)
-    diff += ctx_pow2(a[c]-b[c]);
-  return diff;
-}
-
-
-static inline void _ctx_utf8_output_buf (uint8_t *pixels,
-                          int format,
-                          int width,
-                          int height,
-                          int stride,
-                          int reverse)
-{
-  const char *utf8_gray_scale[]= {" ","░","▒","▓","█","█", NULL};
-  int no = 0;
-  printf ("\e[?25l"); // cursor off
-  switch (format)
-    {
-      case CTX_FORMAT_GRAY2:
-        {
-          for (int y= 0; y < height; y++)
-            {
-              no = y * stride;
-              for (int x = 0; x < width; x++)
-                {
-                  int val4= (pixels[no] & (3 << ( (x % 4) *2) ) ) >> ( (x%4) *2);
-                  int val = (int) CTX_CLAMP (5.0 * val4 / 3.0, 0, 5);
-                  if (!reverse)
-                  { val = 5-val; }
-                  printf ("%s", utf8_gray_scale[val]);
-                  if ( (x % 4) == 3)
-                    { no++; }
-                }
-              printf ("\n");
-            }
-        }
-        break;
-      case CTX_FORMAT_GRAY1:
-        for (int row = 0; row < height/4; row++)
-          {
-            for (int col = 0; col < width /2; col++)
-              {
-                int unicode = 0;
-                int bitno = 0;
-                for (int x = 0; x < 2; x++)
-                  for (int y = 0; y < 3; y++)
-                    {
-                      int no = (row * 4 + y) * stride + (col*2+x) /8;
-                      int set = pixels[no] & (1<< ( (col * 2 + x) % 8) );
-                      if (reverse) { set = !set; }
-                      if (set)
-                        { unicode |=  (1<< (bitno) ); }
-                      bitno++;
-                    }
-                {
-                  int x = 0;
-                  int y = 3;
-                  int no = (row * 4 + y) * stride + (col*2+x) /8;
-                  int setA = pixels[no] & (1<< ( (col * 2 + x) % 8) );
-                  no = (row * 4 + y) * stride + (col*2+x+1) /8;
-                  int setB = pixels[no] & (1<< (   (col * 2 + x + 1) % 8) );
-                  if (reverse) { setA = !setA; }
-                  if (reverse) { setB = !setB; }
-                  if (setA != 0 && setB==0)
-                    { unicode += 0x2840; }
-                  else if (setA == 0 && setB)
-                    { unicode += 0x2880; }
-                  else if ( (setA != 0) && (setB != 0) )
-                    { unicode += 0x28C0; }
-                  else
-                    { unicode += 0x2800; }
-                  uint8_t utf8[5];
-                  utf8[ctx_unichar_to_utf8 (unicode, utf8)]=0;
-                  printf ("%s", utf8);
-                }
-              }
-            printf ("\n");
-          }
-        break;
-      case CTX_FORMAT_RGBA8:
-        {
-        for (int row = 0; row < height/4; row++)
-          {
-            for (int col = 0; col < width /2; col++)
-              {
-                int unicode = 0;
-                int bitno = 0;
-
-                uint8_t rgba2[4] = {0,0,0,255};
-                uint8_t rgba1[4] = {0,0,0,255};
-                int     rgbasum[4] = {0,};
-                int     col_count = 0;
-
-                for (int xi = 0; xi < 2; xi++)
-                  for (int yi = 0; yi < 4; yi++)
-                      {
-                        int noi = (row * 4 + yi) * stride + (col*2+xi) * 4;
-                        int diff = _ctx_rgba8_manhattan_diff (&pixels[noi], rgba2);
-                        if (diff > 32*32)
-                        {
-                          for (int c = 0; c < 3; c++)
-                          {
-                            rgbasum[c] += pixels[noi+c];
-                          }
-                          col_count++;
-                        }
-                      }
-                if (col_count)
-                for (int c = 0; c < 3; c++)
-                {
-                  rgba1[c] = rgbasum[c] / col_count;
-                }
-
-
-
-                // to determine color .. find two most different
-                // colors in set.. and threshold between them..
-                // even better dither between them.
-                //
-  printf ("\e[38;2;%i;%i;%im", rgba1[0], rgba1[1], rgba1[2]);
-  //printf ("\e[48;2;%i;%i;%im", rgba2[0], rgba2[1], rgba2[2]);
-
-                for (int x = 0; x < 2; x++)
-                  for (int y = 0; y < 3; y++)
-                    {
-                      int no = (row * 4 + y) * stride + (col*2+x) * 4;
-#define CHECK_IS_SET \
-      (_ctx_rgba8_manhattan_diff (&pixels[no], rgba1)< \
-       _ctx_rgba8_manhattan_diff (&pixels[no], rgba2))
-
-                      int set = CHECK_IS_SET;
-                      if (reverse) { set = !set; }
-                      if (set)
-                        { unicode |=  (1<< (bitno) ); }
-                      bitno++;
-                    }
-                {
-                  int x = 0;
-                  int y = 3;
-                  int no = (row * 4 + y) * stride + (col*2+x) * 4;
-                  int setA = CHECK_IS_SET;
-                  no = (row * 4 + y) * stride + (col*2+x+1) * 4;
-                  int setB = CHECK_IS_SET;
-#undef CHECK_IS_SET
-                  if (reverse) { setA = !setA; }
-                  if (reverse) { setB = !setB; }
-                  if (setA != 0 && setB==0)
-                    { unicode += 0x2840; }
-                  else if (setA == 0 && setB)
-                    { unicode += 0x2880; }
-                  else if ( (setA != 0) && (setB != 0) )
-                    { unicode += 0x28C0; }
-                  else
-                    { unicode += 0x2800; }
-                  uint8_t utf8[5];
-                  utf8[ctx_unichar_to_utf8 (unicode, utf8)]=0;
-                  printf ("%s", utf8);
-                }
-              }
-            printf ("\n\r");
-          }
-          printf ("\e[38;2;%i;%i;%im", 255,255,255);
-        }
-        break;
-
-      case CTX_FORMAT_GRAY4:
-        {
-          int no = 0;
-          for (int y= 0; y < height; y++)
-            {
-              no = y * stride;
-              for (int x = 0; x < width; x++)
-                {
-                  int val = (pixels[no] & (15 << ( (x % 2) *4) ) ) >> ( (x%2) *4);
-                  val = val * 6 / 16;
-                  if (reverse) { val = 5-val; }
-                  val = CTX_CLAMP (val, 0, 4);
-                  printf ("%s", utf8_gray_scale[val]);
-                  if (x % 2 == 1)
-                    { no++; }
-                }
-              printf ("\n");
-            }
-        }
-        break;
-      case CTX_FORMAT_CMYK8:
-        {
-          for (int c = 0; c < 4; c++)
-            {
-              int no = 0;
-              for (int y= 0; y < height; y++)
-                {
-                  for (int x = 0; x < width; x++, no+=4)
-                    {
-                      int val = (int) CTX_CLAMP (pixels[no+c]/255.0*6.0, 0, 5);
-                      if (reverse)
-                        { val = 5-val; }
-                      printf ("%s", utf8_gray_scale[val]);
-                    }
-                  printf ("\n");
-                }
-            }
-        }
-        break;
-      case CTX_FORMAT_RGB8:
-        {
-          for (int c = 0; c < 3; c++)
-            {
-              int no = 0;
-              for (int y= 0; y < height; y++)
-                {
-                  for (int x = 0; x < width; x++, no+=3)
-                    {
-                      int val = (int) CTX_CLAMP (pixels[no+c]/255.0*6.0, 0, 5);
-                      if (reverse)
-                        { val = 5-val; }
-                      printf ("%s", utf8_gray_scale[val]);
-                    }
-                  printf ("\n");
-                }
-            }
-        }
-        break;
-      case CTX_FORMAT_CMYKAF:
-        {
-          for (int c = 0; c < 5; c++)
-            {
-              int no = 0;
-              for (int y= 0; y < height; y++)
-                {
-                  for (int x = 0; x < width; x++, no+=5)
-                    {
-                      int val = (int) CTX_CLAMP ( (pixels[no+c]*6.0), 0, 5);
-                      if (reverse)
-                        { val = 5-val; }
-                      printf ("%s", utf8_gray_scale[val]);
-                    }
-                  printf ("\n");
-                }
-            }
-        }
-    }
-  printf ("\e[?25h"); // cursor on
-}
-
-inline static void ctx_braille_flush (CtxBraille *braille)
-{
-  int width =  braille->width;
-  int height = braille->height;
-  ctx_render_ctx (braille->ctx, braille->host);
-  printf ("\e[H");
-  _ctx_utf8_output_buf (braille->pixels,
-                        CTX_FORMAT_RGBA8,
-                        width, height, width * 4, 0);
-#if CTX_BRAILLE_TEXT
-  CtxRasterizer *rasterizer = (CtxRasterizer*)(braille->host->renderer);
-  // XXX instead sort and inject along with braille
-  for (CtxList *l = rasterizer->glyphs; l; l = l->next)
-  {
-      CtxTermGlyph *glyph = l->data;
-      printf ("\e[0m\e[%i;%iH%c", glyph->row, glyph->col, glyph->unichar);
-      free (glyph);
-  }
-  while (rasterizer->glyphs)
-    ctx_list_remove (&rasterizer->glyphs, rasterizer->glyphs->data);
-#endif
-}
-
-void ctx_braille_free (CtxBraille *braille)
-{
-  nc_at_exit ();
-  free (braille->pixels);
-  ctx_free (braille->host);
-  free (braille);
-  /* we're not destoring the ctx member, this is function is called in ctx' teardown */
-}
-
-int ctx_renderer_is_braille (Ctx *ctx)
-{
-  if (ctx->renderer &&
-      ctx->renderer->free == (void*)ctx_braille_free)
-          return 1;
-  return 0;
-}
-
-Ctx *ctx_new_braille (int width, int height)
-{
-  Ctx *ctx = ctx_new ();
-#if CTX_RASTERIZER
-  fprintf (stdout, "\e[?1049h");
-  CtxBraille *braille = (CtxBraille*)calloc (sizeof (CtxBraille), 1);
-  int maxwidth = ctx_terminal_cols  () * 2;
-  int maxheight = (ctx_terminal_rows ()-1) * 4;
-  if (width <= 0 || height <= 0)
-  {
-    width = maxwidth;
-    height = maxheight;
-  }
-  if (width > maxwidth) width = maxwidth;
-  if (height > maxheight) height = maxheight;
-  braille->ctx = ctx;
-  braille->width  = width;
-  braille->height = height;
-  braille->cols = (width + 1) / 2;
-  braille->rows = (height + 3) / 4;
-  braille->pixels = (uint8_t*)malloc (width * height * 4);
-  braille->host = ctx_new_for_framebuffer (braille->pixels,
-                                           width, height,
-                                           width * 4, CTX_FORMAT_RGBA8);
-#if CTX_BRAILLE_TEXT
-  ((CtxRasterizer*)braille->host->renderer)->term_glyphs=1;
-#endif
-  _ctx_mouse (ctx, NC_MOUSE_DRAG);
-  ctx_set_renderer (ctx, braille);
-  ctx_set_size (ctx, width, height);
-  ctx_font_size (ctx, 4.0f);
-  braille->flush = (void(*)(void*))ctx_braille_flush;
-  braille->free  = (void(*)(void*))ctx_braille_free;
-#endif
-
-
-  return ctx;
-}
-
-#endif
-
 #if CTX_SDL
-#include <threads.h>
+
+/**/
 
 typedef struct _CtxSDL CtxSDL;
 struct _CtxSDL
 {
-   void (*render)    (void *braille, CtxCommand *command);
-   void (*reset)     (void *braille);
-   void (*flush)     (void *braille);
-   char *(*get_clipboard) (void *ctxctx);
-   void (*set_clipboard) (void *ctxctx, const char *text);
-   void (*free)      (void *braille);
-   Ctx          *ctx;
-   int           width;
-   int           height;
-   int           cols;
-   int           rows;
-   int           was_down;
-   uint8_t      *pixels;
-   Ctx          *ctx_copy;
-   Ctx          *host[CTX_MAX_THREADS];
-   CtxAntialias  antialias;
-   int           quit;
-   _Atomic int   thread_quit;
-   int           shown_frame;
-   int           render_frame;
-   int           rendered_frame[CTX_MAX_THREADS];
-   int           frame;
-   int       min_col; // hasher cols and rows
-   int       min_row;
-   int       max_col;
-   int       max_row;
-   uint8_t  hashes[CTX_HASH_ROWS * CTX_HASH_COLS *  20];
-   int8_t    tile_affinity[CTX_HASH_ROWS * CTX_HASH_COLS]; // which render thread no is
-                                                           // responsible for a tile
-                                                           //
-
-   int           pointer_down[3];
+   CtxTiled  tiled;
+   /* where we diverge from fb*/
    int           key_balance;
    int           key_repeat;
    int           lctrl;
    int           lalt;
    int           rctrl;
+   int           lshift;
+   int           rshift;
 
-   CtxCursor     shown_cursor;
-
-   /* where we diverge from fb*/
    SDL_Window   *window;
    SDL_Renderer *renderer;
    SDL_Texture  *texture;
 
-   cnd_t  cond;
-   mtx_t  mtx;
+// cnd_t  cond;
+// mtx_t  mtx;
 };
 
 #include "stb_image_write.h"
@@ -20641,6 +22254,7 @@ void ctx_screenshot (Ctx *ctx, const char *output_path)
     return;
 
 #if CTX_FB
+  // we rely on the same layout
   for (int i = 0; i < sdl->width * sdl->height; i++)
   {
     int tmp = sdl->pixels[i*4];
@@ -20668,25 +22282,14 @@ void ctx_sdl_set_title (void *self, const char *new_title)
    SDL_SetWindowTitle (sdl->window, new_title);
 }
 
-static inline int
-sdl_render_threads_done (CtxSDL *sdl)
-{
-  int sum = 0;
-  for (int i = 0; i < _ctx_max_threads; i++)
-  {
-     if (sdl->rendered_frame[i] == sdl->render_frame)
-       sum ++;
-  }
-  return sum;
-}
-
 static void ctx_sdl_show_frame (CtxSDL *sdl, int block)
 {
-  if (sdl->shown_cursor != sdl->ctx->cursor)
+  CtxTiled *tiled = &sdl->tiled;
+  if (tiled->shown_cursor != tiled->ctx->cursor)
   {
-    sdl->shown_cursor = sdl->ctx->cursor;
+    tiled->shown_cursor = tiled->ctx->cursor;
     SDL_Cursor *new_cursor =  NULL;
-    switch (sdl->shown_cursor)
+    switch (tiled->shown_cursor)
     {
       case CTX_CURSOR_UNSET: // XXX: document how this differs from none
                              //      perhaps falling back to arrow?
@@ -20744,7 +22347,7 @@ static void ctx_sdl_show_frame (CtxSDL *sdl, int block)
     }
   }
 
-  if (sdl->shown_frame == sdl->render_frame)
+  if (tiled->shown_frame == tiled->render_frame)
   {
     return;
   }
@@ -20752,57 +22355,124 @@ static void ctx_sdl_show_frame (CtxSDL *sdl, int block)
   if (block)
   {
     int count = 0;
-    while (sdl_render_threads_done (sdl) != _ctx_max_threads)
+    while (ctx_tiled_threads_done (tiled) != _ctx_max_threads)
     {
       usleep (50);
       count ++;
       if (count > 2000)
       {
-        sdl->shown_frame = sdl->render_frame;
+        tiled->shown_frame = tiled->render_frame;
         return;
       }
     }
   }
   else
   {
-    if (sdl_render_threads_done (sdl) != _ctx_max_threads)
+    if (ctx_tiled_threads_done (tiled) != _ctx_max_threads)
       return;
   }
 
-  if (sdl->min_row == 100)
+  if (tiled->min_row == 100)
   {
   }
   else
   {
-#if 0
-    int x = sdl->min_col * sdl->width/CTX_HASH_COLS;
-    int y = sdl->min_row * sdl->height/CTX_HASH_ROWS;
-    int x1 = (sdl->max_col+1) * sdl->width/CTX_HASH_COLS;
-    int y1 = (sdl->max_row+1) * sdl->height/CTX_HASH_ROWS;
+#if 1
+    int x = tiled->min_col * tiled->width/CTX_HASH_COLS;
+    int y = tiled->min_row * tiled->height/CTX_HASH_ROWS;
+    int x1 = (tiled->max_col+1) * tiled->width/CTX_HASH_COLS;
+    int y1 = (tiled->max_row+1) * tiled->height/CTX_HASH_ROWS;
     int width = x1 - x;
     int height = y1 - y;
 #endif
-    sdl->min_row = 100;
-    sdl->max_row = 0;
-    sdl->min_col = 100;
-    sdl->max_col = 0;
+    tiled->min_row = 100;
+    tiled->max_row = 0;
+    tiled->min_col = 100;
+    tiled->max_col = 0;
 
-    //SDL_Rect r = {x, y, width, height};
-    SDL_UpdateTexture (sdl->texture, NULL, //&r,
-                      (void*)sdl->pixels,
-                      //(void*)(sdl->pixels + y * sdl->width * 4 + x * 4),
+    SDL_Rect r = {x, y, width, height};
+    SDL_UpdateTexture (sdl->texture, &r,
+                      //(void*)sdl->pixels,
+                      (void*)(tiled->pixels + y * tiled->width * 4 + x * 4),
                       
-                      sdl->width * sizeof (Uint32));
+                      tiled->width * 4);
     SDL_RenderClear (sdl->renderer);
     SDL_RenderCopy (sdl->renderer, sdl->texture, NULL, NULL);
     SDL_RenderPresent (sdl->renderer);
   }
+  tiled->shown_frame = tiled->render_frame;
+}
 
-  sdl->shown_frame = sdl->render_frame;
+static const char *ctx_sdl_keysym_to_name (unsigned int sym, int *r_keycode)
+{
+  static char buf[16]="";
+  buf[ctx_unichar_to_utf8 (sym, (void*)buf)]=0;
+  int code = sym;
+  const char *name = &buf[0];
+   switch (sym)
+   {
+     case SDLK_RSHIFT: code = 16 ; break;
+     case SDLK_LSHIFT: code = 16 ; break;
+     case SDLK_LCTRL: code = 17 ; break;
+     case SDLK_RCTRL: code = 17 ; break;
+     case SDLK_LALT:  code = 18 ; break;
+     case SDLK_RALT:  code = 18 ; break;
+     case SDLK_CAPSLOCK: name = "capslock"; code = 20 ; break;
+     //case SDLK_NUMLOCK: name = "numlock"; code = 144 ; break;
+     //case SDLK_SCROLLLOCK: name = "scrollock"; code = 145 ; break;
+
+     case SDLK_F1:     name = "F1"; code = 112; break;
+     case SDLK_F2:     name = "F2"; code = 113; break;
+     case SDLK_F3:     name = "F3"; code = 114; break;
+     case SDLK_F4:     name = "F4"; code = 115; break;
+     case SDLK_F5:     name = "F5"; code = 116; break;
+     case SDLK_F6:     name = "F6"; code = 117; break;
+     case SDLK_F7:     name = "F7"; code = 118; break;
+     case SDLK_F8:     name = "F8"; code = 119; break;
+     case SDLK_F9:     name = "F9"; code = 120; break;
+     case SDLK_F10:    name = "F10"; code = 121; break;
+     case SDLK_F11:    name = "F11"; code = 122; break;
+     case SDLK_F12:    name = "F12"; code = 123; break;
+     case SDLK_ESCAPE: name = "escape"; break;
+     case SDLK_DOWN:   name = "down"; code = 40; break;
+     case SDLK_LEFT:   name = "left"; code = 37; break;
+     case SDLK_UP:     name = "up"; code = 38;  break;
+     case SDLK_RIGHT:  name = "right"; code = 39; break;
+     case SDLK_BACKSPACE: name = "backspace"; break;
+     case SDLK_SPACE:  name = "space"; break;
+     case SDLK_TAB:    name = "tab"; break;
+     case SDLK_DELETE: name = "delete"; code = 46; break;
+     case SDLK_INSERT: name = "insert"; code = 45; break;
+     case SDLK_RETURN:
+       //if (key_repeat == 0) // return never should repeat
+       name = "return";   // on a DEC like terminal
+       break;
+     case SDLK_HOME:     name = "home"; code = 36; break;
+     case SDLK_END:      name = "end"; code = 35; break;
+     case SDLK_PAGEDOWN: name = "page-down"; code = 34; break;
+     case SDLK_PAGEUP:   name = "page-up"; code = 33; break;
+     case ',': code = 188; break;
+     case '.': code = 190; break;
+     case '/': code = 191; break;
+     case '`': code = 192; break;
+     case '[': code = 219; break;
+     case '\\': code = 220; break;
+     case ']':  code = 221; break;
+     case '\'': code = 222; break;
+     default:
+       ;
+   }
+   if (sym >= 'a' && sym <='z') code -= 32;
+   if (r_keycode)
+   {
+     *r_keycode = code;
+   }
+   return name;
 }
 
 int ctx_sdl_consume_events (Ctx *ctx)
 {
+  CtxTiled *tiled = (void*)ctx->renderer;
   CtxSDL *sdl = (void*)ctx->renderer;
   SDL_Event event;
   int got_events = 0;
@@ -20828,7 +22498,7 @@ int ctx_sdl_consume_events (Ctx *ctx)
         ctx_pointer_motion (ctx, event.motion.x, event.motion.y, 1, 0);
         break;
       case SDL_FINGERMOTION:
-        ctx_pointer_motion (ctx, event.tfinger.x * sdl->width, event.tfinger.y * sdl->height,
+        ctx_pointer_motion (ctx, event.tfinger.x * tiled->width, event.tfinger.y * tiled->height,
             (event.tfinger.fingerId%10) + 4, 0);
         break;
       case SDL_FINGERDOWN:
@@ -20839,25 +22509,14 @@ int ctx_sdl_consume_events (Ctx *ctx)
                         // mirrored as mouse events, later ones not - at
                         // least under wayland
         {
-          ctx_pointer_press (ctx, event.tfinger.x *sdl->width, event.tfinger.y * sdl->height, 
+          ctx_pointer_press (ctx, event.tfinger.x * tiled->width, event.tfinger.y * tiled->height, 
           (event.tfinger.fingerId%10) + 4, 0);
         }
         }
         break;
       case SDL_FINGERUP:
-        ctx_pointer_release (ctx, event.tfinger.x * sdl->width, event.tfinger.y * sdl->height,
+        ctx_pointer_release (ctx, event.tfinger.x * tiled->width, event.tfinger.y * tiled->height,
           (event.tfinger.fingerId%10) + 4, 0);
-        break;
-      case SDL_KEYUP:
-        {
-           sdl->key_balance --;
-           switch (event.key.keysym.sym)
-           {
-             case SDLK_LCTRL: sdl->lctrl = 0; break;
-             case SDLK_RCTRL: sdl->rctrl = 0; break;
-             case SDLK_LALT:  sdl->lalt  = 0; break;
-           }
-        }
         break;
 #if 1
       case SDL_TEXTINPUT:
@@ -20868,8 +22527,26 @@ int ctx_sdl_consume_events (Ctx *ctx)
            )
           {
             const char *name = event.text.text;
+            int keycode = 0;
             if (!strcmp (name, " ") ) { name = "space"; }
-            ctx_key_press (ctx, 0, name, 0);
+            if (name[0] && name[1] == 0)
+            {
+              keycode = name[0];
+              keycode = toupper (keycode);
+              switch (keycode)
+              {
+                case '.':  keycode = 190; break;
+                case ';':  keycode = 59; break;
+                case ',':  keycode = 188; break;
+                case '/':  keycode = 191; break;
+                case '\'': keycode = 222; break;
+                case '`':  keycode = 192; break;
+                case '[':  keycode = 219; break;
+                case ']':  keycode = 221; break;
+                case '\\': keycode = 220; break;
+              }
+            }
+            ctx_key_press (ctx, keycode, name, 0);
             //got_event = 1;
           }
         break;
@@ -20877,7 +22554,7 @@ int ctx_sdl_consume_events (Ctx *ctx)
       case SDL_KEYDOWN:
         {
           char buf[32] = "";
-          char *name = buf;
+          const char *name = buf;
           if (!event.key.repeat)
           {
             sdl->key_balance ++;
@@ -20887,45 +22564,30 @@ int ctx_sdl_consume_events (Ctx *ctx)
           {
             sdl->key_repeat ++;
           }
-          buf[ctx_unichar_to_utf8 (event.key.keysym.sym, (void*)buf)]=0;
           switch (event.key.keysym.sym)
           {
-            case SDLK_LCTRL: sdl->lctrl = 1; break;
-            case SDLK_LALT:  sdl->lalt = 1; break;
-            case SDLK_RCTRL: sdl->rctrl = 1; break;
-            case SDLK_F1: name = "F1"; break;
-            case SDLK_F2: name = "F2"; break;
-            case SDLK_F3: name = "F3"; break;
-            case SDLK_F4: name = "F4"; break;
-            case SDLK_F5: name = "F5"; break;
-            case SDLK_F6: name = "F6"; break;
-            case SDLK_F7: name = "F7"; break;
-            case SDLK_F8: name = "F8"; break;
-            case SDLK_F9: name = "F9"; break;
-            case SDLK_F10: name = "F10"; break;
-            case SDLK_F11: name = "F11"; break;
-            case SDLK_F12: name = "F12"; break;
-            case SDLK_ESCAPE: name = "escape"; break;
-            case SDLK_DOWN: name = "down"; break;
-            case SDLK_LEFT: name = "left"; break;
-            case SDLK_UP: name = "up"; break;
-            case SDLK_RIGHT: name = "right"; break;
-            case SDLK_BACKSPACE: name = "backspace"; break;
-            case SDLK_SPACE: name = "space"; break;
-            case SDLK_TAB: name = "tab"; break;
-            case SDLK_DELETE: name = "delete"; break;
-            case SDLK_INSERT: name = "insert"; break;
-            case SDLK_RETURN:
-              //if (key_repeat == 0) // return never should repeat
-              name = "return";   // on a DEC like terminal
-              break;
-            case SDLK_HOME: name = "home"; break;
-            case SDLK_END: name = "end"; break;
-            case SDLK_PAGEDOWN: name = "page-down"; break;
-            case SDLK_PAGEUP: name = "page-up"; break;
-            default:
-              ;
+            case SDLK_LSHIFT: sdl->lshift = 1; break;
+            case SDLK_RSHIFT: sdl->rshift = 1; break;
+            case SDLK_LCTRL:  sdl->lctrl = 1; break;
+            case SDLK_LALT:   sdl->lalt = 1; break;
+            case SDLK_RCTRL:  sdl->rctrl = 1; break;
           }
+          if (sdl->lshift | sdl->rshift | sdl->lctrl | sdl->lalt | sdl->rctrl)
+          {
+            ctx->events.modifier_state ^= ~(CTX_MODIFIER_STATE_CONTROL|
+                                            CTX_MODIFIER_STATE_ALT|
+                                            CTX_MODIFIER_STATE_SHIFT);
+            if (sdl->lshift | sdl->rshift)
+              ctx->events.modifier_state |= CTX_MODIFIER_STATE_SHIFT;
+            if (sdl->lctrl | sdl->rctrl)
+              ctx->events.modifier_state |= CTX_MODIFIER_STATE_CONTROL;
+            if (sdl->lalt)
+              ctx->events.modifier_state |= CTX_MODIFIER_STATE_ALT;
+          }
+          int keycode;
+          name = ctx_sdl_keysym_to_name (event.key.keysym.sym, &keycode);
+          ctx_key_down (ctx, keycode, name, 0);
+
           if (strlen (name)
               &&(event.key.keysym.mod & (KMOD_CTRL) ||
                  event.key.keysym.mod & (KMOD_ALT) ||
@@ -20951,7 +22613,7 @@ int ctx_sdl_consume_events (Ctx *ctx)
               }
             if (strcmp (name, "space"))
               {
-               ctx_key_press (ctx, 0, name, 0);
+               ctx_key_press (ctx, keycode, name, 0);
               }
           }
           else
@@ -20960,6 +22622,35 @@ int ctx_sdl_consume_events (Ctx *ctx)
              ctx_key_press (ctx, 0, buf, 0);
 #endif
           }
+        }
+        break;
+      case SDL_KEYUP:
+        {
+           sdl->key_balance --;
+           switch (event.key.keysym.sym)
+           {
+             case SDLK_LSHIFT: sdl->lshift = 0; break;
+             case SDLK_RSHIFT: sdl->rshift = 0; break;
+             case SDLK_LCTRL: sdl->lctrl = 0; break;
+             case SDLK_RCTRL: sdl->rctrl = 0; break;
+             case SDLK_LALT:  sdl->lalt  = 0; break;
+           }
+
+          {
+            ctx->events.modifier_state ^= ~(CTX_MODIFIER_STATE_CONTROL|
+                                            CTX_MODIFIER_STATE_ALT|
+                                            CTX_MODIFIER_STATE_SHIFT);
+            if (sdl->lshift | sdl->rshift)
+              ctx->events.modifier_state |= CTX_MODIFIER_STATE_SHIFT;
+            if (sdl->lctrl | sdl->rctrl)
+              ctx->events.modifier_state |= CTX_MODIFIER_STATE_CONTROL;
+            if (sdl->lalt)
+              ctx->events.modifier_state |= CTX_MODIFIER_STATE_ALT;
+          }
+
+           int keycode;
+           const char *name = ctx_sdl_keysym_to_name (event.key.keysym.sym, &keycode);
+           ctx_key_up (ctx, keycode, name, 0);
         }
         break;
       case SDL_QUIT:
@@ -20974,13 +22665,13 @@ int ctx_sdl_consume_events (Ctx *ctx)
           SDL_DestroyTexture (sdl->texture);
           sdl->texture = SDL_CreateTexture (sdl->renderer, SDL_PIXELFORMAT_ABGR8888,
                           SDL_TEXTUREACCESS_STREAMING, width, height);
-          free (sdl->pixels);
-          sdl->pixels = calloc (4, width * height);
+          free (tiled->pixels);
+          tiled->pixels = calloc (4, width * height);
 
-          sdl->width  = width;
-          sdl->height = height;
-          ctx_set_size (sdl->ctx, width, height);
-          ctx_set_size (sdl->ctx_copy, width, height);
+          tiled->width  = width;
+          tiled->height = height;
+          ctx_set_size (tiled->ctx, width, height);
+          ctx_set_size (tiled->ctx_copy, width, height);
         }
         break;
     }
@@ -21013,166 +22704,23 @@ inline static void ctx_sdl_reset (CtxSDL *sdl)
 
 inline static void ctx_sdl_flush (CtxSDL *sdl)
 {
-  if (sdl->shown_frame == sdl->render_frame)
-  {
-    int dirty_tiles = 0;
-    ctx_set_drawlist (sdl->ctx_copy, &sdl->ctx->drawlist.entries[0],
-                                         sdl->ctx->drawlist.count * 9);
-    if (_ctx_enable_hash_cache)
-    {
-      Ctx *hasher = ctx_hasher_new (sdl->width, sdl->height,
-                        CTX_HASH_COLS, CTX_HASH_ROWS);
-      ctx_render_ctx (sdl->ctx_copy, hasher);
-
-      for (int row = 0; row < CTX_HASH_ROWS; row++)
-        for (int col = 0; col < CTX_HASH_COLS; col++)
-        {
-          uint8_t *new_hash = ctx_hasher_get_hash (hasher, col, row);
-          if (new_hash && memcmp (new_hash, &sdl->hashes[(row * CTX_HASH_COLS + col) *  20], 20))
-          {
-            memcpy (&sdl->hashes[(row * CTX_HASH_COLS +  col)*20], new_hash, 20);
-            sdl->tile_affinity[row * CTX_HASH_COLS + col] = 1;
-            dirty_tiles++;
-          }
-          else
-          {
-            sdl->tile_affinity[row * CTX_HASH_COLS + col] = -1;
-          }
-        }
-      free (((CtxHasher*)(hasher->renderer))->hashes);
-      ctx_free (hasher);
-    }
-    else
-    {
-    for (int row = 0; row < CTX_HASH_ROWS; row++)
-      for (int col = 0; col < CTX_HASH_COLS; col++)
-        {
-          sdl->tile_affinity[row * CTX_HASH_COLS + col] = 1;
-          dirty_tiles++;
-        }
-    }
-    int dirty_no = 0;
-    if (dirty_tiles)
-    for (int row = 0; row < CTX_HASH_ROWS; row++)
-      for (int col = 0; col < CTX_HASH_COLS; col++)
-      {
-        if (sdl->tile_affinity[row * CTX_HASH_COLS + col] != -1)
-        {
-          sdl->tile_affinity[row * CTX_HASH_COLS + col] = dirty_no * (_ctx_max_threads) / dirty_tiles;
-          dirty_no++;
-          if (col > sdl->max_col) sdl->max_col = col;
-          if (col < sdl->min_col) sdl->min_col = col;
-          if (row > sdl->max_row) sdl->max_row = row;
-          if (row < sdl->min_row) sdl->min_row = row;
-        }
-      }
-
-#if CTX_DAMAGE_CONTROL
-    for (int i = 0; i < sdl->width * sdl->height; i++)
-    {
-      int new_ = (sdl->pixels[i*4+0]+ sdl->pixels[i*4+1]+ sdl->pixels[i*4+2])/3;
-      //if (new_>1) new_--;
-      sdl->pixels[i*4]  = (sdl->pixels[i*4] + 255)/2;
-      sdl->pixels[i*4+1]= (sdl->pixels[i*4+1] + new_)/2;
-      sdl->pixels[i*4+2]= (sdl->pixels[i*4+1] + new_)/2;
-    }
-#endif
-
-    sdl->render_frame = ++sdl->frame;
-
-    mtx_lock (&sdl->mtx);
-    cnd_broadcast (&sdl->cond);
-    mtx_unlock (&sdl->mtx);
-
-  }
+  ctx_tiled_flush ((void*)sdl);
+  //CtxTiled *tiled = (void*)sdl;
 }
 
 void ctx_sdl_free (CtxSDL *sdl)
 {
-  sdl->quit = 1;
-  mtx_lock (&sdl->mtx);
-  cnd_broadcast (&sdl->cond);
-  mtx_unlock (&sdl->mtx);
 
-  while (sdl->thread_quit < _ctx_max_threads)
-    usleep (1000); // XXX : properly wait for threads instead
-  if (sdl->pixels)
-  {
-    free (sdl->pixels);
-  sdl->pixels = NULL;
-  for (int i = 0 ; i < _ctx_max_threads; i++)
-  {
-    ctx_free (sdl->host[i]);
-    sdl->host[i]=NULL;
-  }
+  if (sdl->texture)
   SDL_DestroyTexture (sdl->texture);
+  if (sdl->renderer)
   SDL_DestroyRenderer (sdl->renderer);
+  if (sdl->window)
   SDL_DestroyWindow (sdl->window);
-  ctx_free (sdl->ctx_copy);
-  }
-  //free (sdl); // kept alive for threads quit check..
-  /* we're not destoring the ctx member, this is function is called in ctx' teardown */
+
+  ctx_tiled_free ((CtxTiled*)sdl);
 }
 
-static unsigned char *sdl_icc = NULL;
-static long sdl_icc_length = 0;
-
-static
-void sdl_render_fun (void **data)
-{
-  int      no = (size_t)data[0];
-  CtxSDL *sdl = data[1];
-
-  while (!sdl->quit)
-  {
-    Ctx *host = sdl->host[no];
-
-    mtx_lock (&sdl->mtx);
-    cnd_wait(&sdl->cond, &sdl->mtx);
-    mtx_unlock (&sdl->mtx);
-
-    if (sdl->render_frame != sdl->rendered_frame[no])
-    {
-      int hno = 0;
-      for (int row = 0; row < CTX_HASH_ROWS; row++)
-        for (int col = 0; col < CTX_HASH_COLS; col++, hno++)
-        {
-          if (sdl->tile_affinity[hno]==no)
-          {
-            int x0 = ((sdl->width)/CTX_HASH_COLS) * col;
-            int y0 = ((sdl->height)/CTX_HASH_ROWS) * row;
-            int width = sdl->width / CTX_HASH_COLS;
-            int height = sdl->height / CTX_HASH_ROWS;
-
-            CtxRasterizer *rasterizer = (CtxRasterizer*)host->renderer;
-#if 1 // merge horizontally adjecant tiles of same affinity into one job
-            while (col + 1 < CTX_HASH_COLS &&
-                   sdl->tile_affinity[hno+1] == no)
-            {
-              width += sdl->width / CTX_HASH_COLS;
-              col++;
-              hno++;
-            }
-#endif
-            ctx_rasterizer_init (rasterizer,
-                                 host, sdl->ctx, &host->state,
-                                 &sdl->pixels[sdl->width * 4 * y0 + x0 * 4],
-                                 0, 0, width, height,
-                                 sdl->width*4, CTX_FORMAT_RGBA8,
-                                 sdl->antialias);
-            if (sdl_icc_length)
-              ctx_colorspace (host, CTX_COLOR_SPACE_DEVICE_RGB, sdl_icc, sdl_icc_length);
-
-            ctx_translate (host, -x0, -y0);
-            ctx_render_ctx (sdl->ctx_copy, host);
-          }
-        }
-      sdl->rendered_frame[no] = sdl->render_frame;
-    }
-  }
-
-  sdl->thread_quit++; // need atomic?
-}
 
 int ctx_renderer_is_sdl (Ctx *ctx)
 {
@@ -21188,7 +22736,9 @@ Ctx *ctx_new_sdl (int width, int height)
 #if CTX_RASTERIZER
 
   CtxSDL *sdl = (CtxSDL*)calloc (sizeof (CtxSDL), 1);
-  _ctx_file_get_contents ("/tmp/ctx.icc", &sdl_icc, &sdl_icc_length);
+  CtxTiled *tiled = (void*)sdl;
+
+  ctx_get_contents ("file:///tmp/ctx.icc", &sdl_icc, &sdl_icc_length);
   if (width <= 0 || height <= 0)
   {
     width  = 1920;
@@ -21199,7 +22749,7 @@ Ctx *ctx_new_sdl (int width, int height)
   sdl->renderer = SDL_CreateRenderer (sdl->window, -1, 0);
   if (!sdl->renderer)
   {
-     ctx_free (sdl->ctx);
+     ctx_free (tiled->ctx);
      free (sdl);
      return NULL;
   }
@@ -21216,42 +22766,44 @@ Ctx *ctx_new_sdl (int width, int height)
   SDL_StartTextInput ();
   SDL_EnableScreenSaver ();
 
-  sdl->ctx = ctx_new ();
-  sdl->ctx_copy = ctx_new ();
-  sdl->width  = width;
-  sdl->height = height;
-  sdl->cols = 80;
-  sdl->rows = 20;
-  ctx_set_renderer (sdl->ctx, sdl);
-  ctx_set_renderer (sdl->ctx_copy, sdl);
+  tiled->ctx      = ctx_new ();
+  tiled->ctx_copy = ctx_new ();
+  tiled->width    = width;
+  tiled->height   = height;
+  tiled->cols     = 80;
+  tiled->rows     = 20;
+  ctx_set_renderer (tiled->ctx, sdl);
+  ctx_set_renderer (tiled->ctx_copy, sdl);
+  ctx_set_texture_cache (tiled->ctx_copy, tiled->ctx);
 
-  sdl->pixels = (uint8_t*)malloc (width * height * 4);
+  tiled->pixels = (uint8_t*)malloc (width * height * 4);
 
-  ctx_set_size (sdl->ctx,      width, height);
-  ctx_set_size (sdl->ctx_copy, width, height);
-  sdl->flush = (void*)ctx_sdl_flush;
-  sdl->reset = (void*)ctx_sdl_reset;
-  sdl->free  = (void*)ctx_sdl_free;
-  sdl->set_clipboard = (void*)ctx_sdl_set_clipboard;
-  sdl->get_clipboard = (void*)ctx_sdl_get_clipboard;
+  ctx_set_size (tiled->ctx,      width, height);
+  ctx_set_size (tiled->ctx_copy, width, height);
+
+  tiled->flush = (void*)ctx_sdl_flush;
+  tiled->reset = (void*)ctx_sdl_reset;
+  tiled->free  = (void*)ctx_sdl_free;
+  tiled->set_clipboard = (void*)ctx_sdl_set_clipboard;
+  tiled->get_clipboard = (void*)ctx_sdl_get_clipboard;
 
   for (int i = 0; i < _ctx_max_threads; i++)
   {
-    sdl->host[i] = ctx_new_for_framebuffer (sdl->pixels,
-                     sdl->width/CTX_HASH_COLS, sdl->height/CTX_HASH_ROWS,
-                     sdl->width * 4, CTX_FORMAT_RGBA8);
-    ctx_set_texture_source (sdl->host[i], sdl->ctx);
+    tiled->host[i] = ctx_new_for_framebuffer (tiled->pixels,
+                     tiled->width/CTX_HASH_COLS, tiled->height/CTX_HASH_ROWS,
+                     tiled->width * 4, CTX_FORMAT_RGBA8);
+    ctx_set_texture_source (tiled->host[i], tiled->ctx);
   }
 
-  mtx_init (&sdl->mtx, mtx_plain);
-  cnd_init (&sdl->cond);
+  mtx_init (&tiled->mtx, mtx_plain);
+  cnd_init (&tiled->cond);
 
 #define start_thread(no)\
   if(_ctx_max_threads>no){ \
     static void *args[2]={(void*)no, };\
     thrd_t tid;\
     args[1]=sdl;\
-    thrd_create (&tid, (void*)sdl_render_fun, args);\
+    thrd_create (&tid, (void*)ctx_tiled_render_fun, args);\
   }
   start_thread(0);
   start_thread(1);
@@ -21271,8 +22823,8 @@ Ctx *ctx_new_sdl (int width, int height)
   start_thread(15);
 #undef start_thread
 
-  ctx_flush (sdl->ctx);
-  return sdl->ctx;
+  ctx_flush (tiled->ctx);
+  return tiled->ctx;
 #else
   return NULL;
 #endif
@@ -21283,6 +22835,1019 @@ int ctx_renderer_is_sdl (Ctx *ctx)
 {
   return 0;
 }
+#endif
+
+#if CTX_EVENTS
+
+#include <fcntl.h>
+#include <sys/ioctl.h>
+
+typedef struct CtxTermCell
+{
+  char    utf8[5];
+  uint8_t fg[4];
+  uint8_t bg[4];
+
+  char    prev_utf8[5];
+  uint8_t prev_fg[4];
+  uint8_t prev_bg[4];
+} CtxTermCell;
+
+typedef struct CtxTermLine
+{
+  CtxTermCell *cells;
+  int maxcol;
+  int size;
+} CtxTermLine;
+
+typedef enum
+{
+  CTX_TERM_ASCII,
+  CTX_TERM_ASCII_MONO,
+  CTX_TERM_SEXTANT,
+  CTX_TERM_BRAILLE_MONO,
+  CTX_TERM_BRAILLE,
+  CTX_TERM_QUARTER,
+} CtxTermMode;
+
+typedef struct _CtxTerm CtxTerm;
+struct _CtxTerm
+{
+   void (*render) (void *term, CtxCommand *command);
+   void (*reset)  (void *term);
+   void (*flush)  (void *term);
+   char *(*get_clipboard) (void *ctxctx);
+   void (*set_clipboard) (void *ctxctx, const char *text);
+   void (*free)   (void *term);
+   Ctx      *ctx;
+   int       width;
+   int       height;
+   int       cols;
+   int       rows;
+   int       was_down;
+
+   uint8_t  *pixels;
+
+   Ctx      *host;
+   CtxList  *lines;
+   CtxTermMode mode;
+};
+
+static int ctx_term_ch = 8;
+static int ctx_term_cw = 8;
+
+void ctx_term_set (CtxTerm *term,
+                      int col, int row, const char *utf8,
+                      uint8_t *fg, uint8_t *bg)
+{
+  if (col < 1 || row < 1 || col > term->cols  || row > term->rows) return;
+  while (ctx_list_length (term->lines) < row)
+  {
+    ctx_list_append (&term->lines, calloc (sizeof (CtxTermLine), 1));
+  }
+  CtxTermLine *line = ctx_list_nth_data (term->lines, row-1);
+  assert (line);
+  if (line->size < col)
+  {
+     int new_size = ((col + 128)/128)*128;
+     line->cells = realloc (line->cells, sizeof (CtxTermCell) * new_size);
+     memset (&line->cells[line->size], 0, sizeof (CtxTermCell) * (new_size - line->size) );
+     line->size = new_size;
+  }
+  if (col > line->maxcol) line->maxcol = col;
+  strncpy (line->cells[col-1].utf8, (char*)utf8, 4);
+  memcpy  (line->cells[col-1].fg, fg, 4);
+  memcpy  (line->cells[col-1].bg, bg, 4);
+}
+
+static int _ctx_term256 = 0; // XXX TODO implement autodetect for this
+static long _ctx_curfg = -1;
+static long _ctx_curbg = -1;
+
+static long ctx_rgb_to_long (int r,int g, int b)
+{
+  return r * 256 * 256 + g * 256 + b;
+}
+
+
+static void ctx_term_set_fg (int red, int green, int blue)
+{
+  long lc = ctx_rgb_to_long (red, green, blue);
+  if (lc == _ctx_curfg)
+    return;
+  _ctx_curfg=lc;
+  if (_ctx_term256 == 0)
+  {
+    printf("\e[38;2;%i;%i;%im", red,green,blue);
+  }
+  else
+  {
+    int gray = (green /255.0) * 24 + 0.5;
+    int r    = (red/255.0)    * 6 + 0.5;
+    int g    = (green/255.0)  * 6 + 0.5;
+    int b    = (blue/255.0)   * 6 + 0.5;
+    if (gray > 23) gray = 23;
+
+    if (r > 5) r = 5;
+    if (g > 5) g = 5;
+    if (b > 5) b = 5;
+
+    if (((int)(r/1.66)== (int)(g/1.66)) && ((int)(g/1.66) == ((int)(b/1.66))))
+    {
+      printf("\e[38;5;%im", 16 + 216 + gray);
+    }
+    else
+      printf("\e[38;5;%im", 16 + r * 6 * 6 + g * 6  + b);
+  }
+}
+
+static void ctx_term_set_bg(int red, int green, int blue)
+{
+  long lc = ctx_rgb_to_long (red, green, blue);
+//if (lc == _ctx_curbg)
+//  return;
+  _ctx_curbg=lc;
+  if (_ctx_term256 == 0)
+  {
+    printf("\e[48;2;%i;%i;%im", red,green,blue);
+  }
+  else
+  {
+    int gray = (green /255.0) * 24 + 0.5;
+    int r    = (red/255.0)    * 6 + 0.5;
+    int g    = (green/255.0)  * 6 + 0.5;
+    int b    = (blue/255.0)   * 6 + 0.5;
+    if (gray > 23) gray = 23;
+
+    if (r > 5) r = 5;
+    if (g > 5) g = 5;
+    if (b > 5) b = 5;
+
+    if (((int)(r/1.66)== (int)(g/1.66)) && ((int)(g/1.66) == ((int)(b/1.66))))
+    {
+      printf("\e[48;5;%im", 16 + 216 + gray);
+    }
+    else
+      printf("\e[48;5;%im", 16 + r * 6 * 6 + g * 6  + b);
+  }
+}
+
+static int _ctx_term_force_full = 0;
+
+void ctx_term_scanout (CtxTerm *term)
+{
+  int row = 1;
+  printf ("\e[H");
+//  printf ("\e[?25l");
+  printf ("\e[0m");
+  for (CtxList *l = term->lines; l; l = l->next)
+  {
+    CtxTermLine *line = l->data;
+    for (int col = 1; col <= line->maxcol; col++)
+    {
+      CtxTermCell *cell = &line->cells[col-1];
+
+      if (strcmp(cell->utf8, cell->prev_utf8) ||
+          memcmp(cell->fg, cell->prev_fg, 3) ||
+          memcmp(cell->bg, cell->prev_bg, 3) || _ctx_term_force_full)
+      {
+        ctx_term_set_fg (cell->fg[0], cell->fg[1], cell->fg[2]);
+        ctx_term_set_bg (cell->bg[0], cell->bg[1], cell->bg[2]);
+        printf ("%s", cell->utf8);
+      }
+      else
+      {
+        // TODO: accumulate succesive such, and compress them
+        // into one
+        printf ("\e[C");
+      }
+      strcpy (cell->prev_utf8, cell->utf8);
+      memcpy (cell->prev_fg, cell->fg, 3);
+      memcpy (cell->prev_bg, cell->bg, 3);
+    }
+    if (row != term->rows)
+      printf ("\n\r");
+    row ++;
+  }
+  printf ("\e[0m");
+  //printf ("\e[?25h");
+  //
+}
+
+// xx
+// xx
+// xx
+//
+
+static inline int _ctx_rgba8_manhattan_diff (const uint8_t *a, const uint8_t *b)
+{
+  int c;
+  int diff = 0;
+  for (c = 0; c<3;c++)
+    diff += ctx_pow2(a[c]-b[c]);
+  return sqrtf(diff);
+  return diff;
+}
+
+static void ctx_term_output_buf_half (uint8_t *pixels,
+                          int width,
+                          int height,
+                          CtxTerm *term)
+{
+  int stride = width * 4;
+  const char *sextants[]={
+   " ","▘","▝","▀","▖","▌", "▞", "▛", "▗", "▚", "▐", "▜","▄","▙","▟","█",
+
+  };
+  for (int row = 0; row < height/2; row++)
+    {
+      for (int col = 0; col < width-3; col++)
+        {
+          int     unicode = 0;
+          int     bitno = 0;
+          uint8_t rgba[2][4] = {
+                             {255,255,255,0},
+                             {0,0,0,0}};
+          int i = 0;
+
+          int  rgbasum[2][4] = {0,};
+          int  sumcount[2];
+
+          int curdiff = 0;
+          /* first find starting point colors */
+          for (int yi = 0; yi < ctx_term_ch; yi++)
+            for (int xi = 0; xi < ctx_term_cw; xi++, i++)
+                {
+                  int noi = (row * ctx_term_ch + yi) * stride + (col*ctx_term_cw+xi) * 4;
+
+                  if (rgba[0][3] == 0)
+                  {
+                    for (int c = 0; c < 3; c++)
+                      rgba[0][c] = pixels[noi + c];
+                    rgba[0][3] = 255; // used only as mark of in-use
+                  }
+                  else
+                  {
+                    int diff = _ctx_rgba8_manhattan_diff (&pixels[noi], rgba[0]);
+                    if (diff > curdiff)
+                    {
+                      curdiff = diff;
+                      for (int c = 0; c < 3; c++)
+                        rgba[1][c] = pixels[noi + c];
+                    }
+                  }
+
+                }
+
+          for (int iters = 0; iters < 1; iters++)
+          {
+                  i= 0;
+          for (int i = 0; i < 4; i ++)
+             rgbasum[0][i] = rgbasum[1][i]=0;
+          sumcount[0] = sumcount[1] = 0;
+
+          for (int yi = 0; yi < ctx_term_ch; yi++)
+            for (int xi = 0; xi < ctx_term_cw; xi++, i++)
+                {
+                  int noi = (row * ctx_term_ch + yi) * stride + (col*ctx_term_cw+xi) * 4;
+
+                  int diff1 = _ctx_rgba8_manhattan_diff (&pixels[noi], rgba[0]);
+                  int diff2 = _ctx_rgba8_manhattan_diff (&pixels[noi], rgba[1]);
+                  int cluster = 0;
+                  if (diff1 <= diff2)
+                    cluster = 0;
+                  else
+                    cluster = 1;
+                  sumcount[cluster]++;
+                  for (int c = 0; c < 3; c++)
+                    rgbasum[cluster][c] += pixels[noi+c];
+                }
+
+
+          if (sumcount[0])
+          for (int c = 0; c < 3; c++)
+          {
+            rgba[0][c] = rgbasum[0][c] / sumcount[0];
+          }
+          if (sumcount[1])
+          for (int c = 0; c < 3; c++)
+          {
+            rgba[1][c] = rgbasum[1][c] / sumcount[1];
+          }
+          }
+
+          int pixels_set = 0;
+          for (int y = 0; y < ctx_term_ch; y++)
+            for (int x = 0; x < ctx_term_cw; x++)
+              {
+                int no = (row * ctx_term_ch + y) * stride + (col*ctx_term_cw+x) * 4;
+#define CHECK_IS_SET \
+      (_ctx_rgba8_manhattan_diff (&pixels[no], rgba[0])< \
+       _ctx_rgba8_manhattan_diff (&pixels[no], rgba[1]))
+
+                int set = CHECK_IS_SET;
+#undef CHECK_IS_SET
+                if (set)
+                  { unicode |=  (1<< (bitno) ); 
+                    pixels_set ++; 
+                  }
+                bitno++;
+              }
+           if (pixels_set == 4)
+             ctx_term_set (term, col +1, row + 1, " ",
+                           rgba[1], rgba[0]);
+           else
+             ctx_term_set (term, col +1, row + 1, sextants[unicode],
+                           rgba[0], rgba[1]);
+        }
+    }
+}
+
+void ctx_term_find_color_pair (CtxTerm *term, int x0, int y0, int w, int h,
+                uint8_t rgba[2][4])
+        //uint8_t *rgba0, uint8_t *rgba1)
+{
+int curdiff = 0;
+int stride = term->width * 4;
+uint8_t *pixels = term->pixels;
+/* first find starting point colors */
+for (int y = y0; y < y0 + h; y++)
+  for (int x = x0; x < x0 + w; x++)
+      {
+        int noi = (y) * stride + (x) * 4;
+
+        if (rgba[0][3] == 0)
+        {
+          for (int c = 0; c < 3; c++)
+            rgba[0][c] = pixels[noi + c];
+          rgba[0][3] = 255; // used only as mark of in-use
+        }
+        else
+        {
+          int diff = _ctx_rgba8_manhattan_diff (&pixels[noi], &rgba[0][0]);
+          if (diff > curdiff)
+          {
+            curdiff = diff;
+            for (int c = 0; c < 3; c++)
+              rgba[1][c] = pixels[noi + c];
+          }
+        }
+      }
+          int  rgbasum[2][4] = {0,};
+          int  sumcount[2];
+
+          for (int iters = 0; iters < 1; iters++)
+          {
+          for (int i = 0; i < 4; i ++)
+             rgbasum[0][i] = rgbasum[1][i]=0;
+          sumcount[0] = sumcount[1] = 0;
+
+          for (int y = y0; y < y0 + h; y++)
+            for (int x = x0; x < x0 + w; x++)
+                {
+                  int noi = (y) * stride + (x) * 4;
+
+                  int diff1 = _ctx_rgba8_manhattan_diff (&pixels[noi], rgba[0]);
+                  int diff2 = _ctx_rgba8_manhattan_diff (&pixels[noi], rgba[1]);
+                  int cluster = 0;
+                  if (diff1 <= diff2)
+                    cluster = 0;
+                  else
+                    cluster = 1;
+                  sumcount[cluster]++;
+                  for (int c = 0; c < 3; c++)
+                    rgbasum[cluster][c] += pixels[noi+c];
+                }
+
+
+          if (sumcount[0])
+          for (int c = 0; c < 3; c++)
+          {
+            rgba[0][c] = rgbasum[0][c] / sumcount[0];
+          }
+          if (sumcount[1])
+          for (int c = 0; c < 3; c++)
+          {
+            rgba[1][c] = rgbasum[1][c] / sumcount[1];
+          }
+          }
+
+}
+
+
+
+static void ctx_term_output_buf_quarter (uint8_t *pixels,
+                          int width,
+                          int height,
+                          CtxTerm *term)
+{
+  int stride = width * 4;
+  const char *sextants[]={
+   " ","▘","▝","▀","▖","▌", "▞", "▛", "▗", "▚", "▐", "▜","▄","▙","▟","█"
+
+  };
+  for (int row = 0; row < height/ctx_term_ch; row++)
+    {
+      for (int col = 0; col < width /ctx_term_cw; col++)
+        {
+          int     unicode = 0;
+          int     bitno = 0;
+          uint8_t rgba[2][4] = {
+                             {255,255,255,0},
+                             {0,0,0,0}};
+          ctx_term_find_color_pair (term, col * ctx_term_cw,
+                                    row * ctx_term_ch,
+                                    ctx_term_cw,
+                                    ctx_term_ch, rgba);
+
+          int pixels_set = 0;
+          for (int y = 0; y < 2; y++)
+            for (int x = 0; x < ctx_term_cw; x++)
+              {
+                int no = (row * ctx_term_ch + y) * stride + (col*ctx_term_cw+x) * 4;
+#define CHECK_IS_SET \
+      (_ctx_rgba8_manhattan_diff (&pixels[no], rgba[0])< \
+       _ctx_rgba8_manhattan_diff (&pixels[no], rgba[1]))
+
+                int set = CHECK_IS_SET;
+#undef CHECK_IS_SET
+                if (set)
+                  { unicode |=  (1<< (bitno) ); 
+                    pixels_set ++; 
+                  }
+                bitno++;
+              }
+           if (pixels_set == 4)
+             ctx_term_set (term, col +1, row + 1, " ",
+                           rgba[1], rgba[0]);
+           else
+             ctx_term_set (term, col +1, row + 1, sextants[unicode],
+                           rgba[0], rgba[1]);
+        }
+    }
+}
+
+
+static void ctx_term_output_buf_sextant (uint8_t *pixels,
+                          int width,
+                          int height,
+                          CtxTerm *term)
+{
+  int stride = width * 4;
+
+  const char *sextants[]={
+   " ","🬀","🬁","🬂","🬃","🬄","🬅","🬆","🬇","🬈","🬉","🬊","🬋","🬌","🬍","🬎","🬏","🬐","🬑","🬒","🬓","▌","🬔","🬕","🬖","🬗","🬘","🬙","🬚","🬛","🬜","🬝","🬞","🬟","🬠","🬡","🬢","🬣","🬤","🬥","🬦","🬧","▐","🬨","🬩","🬪","🬫","🬬","🬭","🬮","🬯","🬰","🬱","🬲","🬳","🬴","🬵","🬶","🬷","🬸","🬹","🬺","🬻","█"
+  };
+
+  for (int row = 0; row < height/ctx_term_ch; row++)
+    {
+      for (int col = 0; col < width /ctx_term_cw; col++)
+        {
+          int     unicode = 0;
+          int     bitno = 0;
+          uint8_t rgba[2][4] = {
+                             {255,255,255,0},
+                             {0,0,0,0}};
+
+          ctx_term_find_color_pair (term, col * ctx_term_cw,
+                                    row * ctx_term_ch,
+                                    ctx_term_cw,
+                                    ctx_term_ch, rgba);
+
+          int pixels_set = 0;
+          for (int y = 0; y < ctx_term_ch; y++)
+            for (int x = 0; x < ctx_term_cw; x++)
+              {
+                int no = (row * ctx_term_ch + y) * stride + (col*ctx_term_cw+x) * 4;
+#define CHECK_IS_SET \
+      (_ctx_rgba8_manhattan_diff (&pixels[no], rgba[0])< \
+       _ctx_rgba8_manhattan_diff (&pixels[no], rgba[1]))
+
+                int set = CHECK_IS_SET;
+#undef CHECK_IS_SET
+                if (set)
+                  { unicode |=  (1<< (bitno) ); 
+                    pixels_set ++; 
+                  }
+                bitno++;
+              }
+
+          if (pixels_set == 6)
+            ctx_term_set (term, col +1, row + 1, " ",
+                          rgba[1], rgba[0]);
+          else
+            ctx_term_set (term, col +1, row + 1, sextants[unicode], rgba[0], rgba[1]);
+        }
+    }
+}
+
+static void ctx_term_output_buf_ascii (uint8_t *pixels,
+                          int width,
+                          int height,
+                          CtxTerm *term,
+                          int mono)
+{
+  /* this is a crude ascii-mode built on a quick mapping of sexels to ascii */
+  int stride = width * 4;
+  const char *sextants[]={
+   " ","`","'","^","🬃","`","~","\"","-","\"","'","\"","-","\"","~","^",",",";",
+   "=","/","i","[","p","P","z",")","/","7","f",">","/","F",",","\\",":",":",
+   "\\","\\","(","T","j","T","]","?","s","\\","<","q","_","=","=","=","c","L",
+   "Q","C","a","b","J","]","m","b","d","@"
+  };
+  uint8_t black[4] = {0,0,0,255};
+  for (int row = 0; row < height/ctx_term_ch; row++)
+    {
+      for (int col = 0; col < width /ctx_term_cw; col++)
+        {
+          int     unicode = 0;
+          int     bitno = 0;
+          uint8_t rgba[2][4] = {
+                             {255,255,255,0},
+                             {0,0,0,0}};
+
+          ctx_term_find_color_pair (term, col * ctx_term_cw,
+                                    row * ctx_term_ch,
+                                    ctx_term_cw,
+                                    ctx_term_ch, rgba);
+
+
+          if (_ctx_rgba8_manhattan_diff (black, rgba[1]) >
+              _ctx_rgba8_manhattan_diff (black, rgba[0]))
+          {
+            for (int c = 0; c < 4; c ++)
+            {
+              int tmp = rgba[0][c];
+              rgba[0][c] = rgba[1][c];
+              rgba[1][c] = tmp;
+            }
+          }
+          if (mono)
+          {
+            rgba[1][0] = 0;
+            rgba[1][1] = 0;
+            rgba[1][2] = 0;
+          }
+
+
+          int brightest_dark_diff = _ctx_rgba8_manhattan_diff (black, rgba[0]);
+
+          int pixels_set = 0;
+          for (int y = 0; y < ctx_term_ch; y++)
+            for (int x = 0; x < ctx_term_cw; x++)
+              {
+                int no = (row * ctx_term_ch + y) * stride + (col*ctx_term_cw+x) * 4;
+#define CHECK_IS_SET \
+      (_ctx_rgba8_manhattan_diff (&pixels[no], rgba[0])< \
+       _ctx_rgba8_manhattan_diff (&pixels[no], rgba[1]))
+
+                int set = CHECK_IS_SET;
+#undef CHECK_IS_SET
+                if (set)
+                  { unicode |=  (1<< (bitno) ); 
+                    pixels_set ++; 
+                  }
+                bitno++;
+              }
+
+
+           if (pixels_set == 6 && brightest_dark_diff < 40)
+             ctx_term_set (term, col +1, row + 1, " ",
+                           rgba[1], rgba[0]);
+           else
+             ctx_term_set (term, col +1, row + 1, sextants[unicode],
+                           rgba[0], rgba[1]);
+        }
+    }
+}
+
+static void ctx_term_output_buf_braille (uint8_t *pixels,
+                          int width,
+                          int height,
+                          CtxTerm *term,
+                          int mono)
+{
+  int reverse = 0;
+  int stride = width * 4;
+  uint8_t black[4] = {0,0,0,255};
+  for (int row = 0; row < height/ctx_term_ch; row++)
+    {
+      for (int col = 0; col < width /ctx_term_cw; col++)
+        {
+          int     unicode = 0;
+          int     bitno = 0;
+          uint8_t rgba[2][4] = {
+                             {255,255,255,0},
+                             {0,0,0,0}};
+
+          ctx_term_find_color_pair (term, col * ctx_term_cw,
+                                    row * ctx_term_ch,
+                                    ctx_term_cw,
+                                    ctx_term_ch, rgba);
+
+
+          /* make darkest consistently be background  */
+          if (_ctx_rgba8_manhattan_diff (black, rgba[1]) >
+              _ctx_rgba8_manhattan_diff (black, rgba[0]))
+          {
+            for (int c = 0; c < 4; c ++)
+            {
+              int tmp = rgba[0][c];
+              rgba[0][c] = rgba[1][c];
+              rgba[1][c] = tmp;
+            }
+          }
+          if (mono)
+          {
+            rgba[1][0] = 0;
+            rgba[1][1] = 0;
+            rgba[1][2] = 0;
+          }
+
+          int pixels_set = 0;
+          for (int x = 0; x < 2; x++)
+            for (int y = 0; y < 3; y++)
+              {
+                int no = (row * 4 + y) * stride + (col*2+x) * 4;
+#define CHECK_IS_SET \
+      (_ctx_rgba8_manhattan_diff (&pixels[no], rgba[0])< \
+       _ctx_rgba8_manhattan_diff (&pixels[no], rgba[1]))
+
+                int set = CHECK_IS_SET;
+                if (reverse) { set = !set; }
+                if (set)
+                  { unicode |=  (1<< (bitno) ); 
+                    pixels_set ++; 
+                  }
+                bitno++;
+              }
+          {
+            int x = 0;
+            int y = 3;
+            int no = (row * 4 + y) * stride + (col*2+x) * 4;
+            int setA = CHECK_IS_SET;
+            no = (row * 4 + y) * stride + (col*2+x+1) * 4;
+            int setB = CHECK_IS_SET;
+
+            pixels_set += setA;
+            pixels_set += setB;
+#undef CHECK_IS_SET
+            if (reverse) { setA = !setA; }
+            if (reverse) { setB = !setB; }
+            if (setA != 0 && setB==0)
+              { unicode += 0x2840; }
+            else if (setA == 0 && setB)
+              { unicode += 0x2880; }
+            else if ( (setA != 0) && (setB != 0) )
+              { unicode += 0x28C0; }
+            else
+              { unicode += 0x2800; }
+            char utf8[5];
+            utf8[ctx_unichar_to_utf8 (unicode, (uint8_t*)utf8)]=0;
+
+#if 0
+            if (pixels_set == 8)
+            {
+              if (rgba[0][0] < 32 && rgba[0][1] < 32 && rgba[0][2] < 32)
+              {
+                ctx_term_set (term, col +1, row + 1, " ",
+                                 rgba[1], rgba[0]);
+                continue;
+              }
+            }
+#endif
+            {
+              ctx_term_set (term, col +1, row + 1, utf8,
+                               rgba[0], rgba[1]);
+            }
+          }
+        }
+    }
+}
+
+
+inline static void ctx_term_render (void *ctx,
+                                       CtxCommand *command)
+{
+  CtxTerm *term = (void*)ctx;
+  /* directly forward */
+  ctx_process (term->host, &command->entry);
+}
+
+inline static void ctx_term_flush (CtxTerm *term)
+{
+  int width =  term->width;
+  int height = term->height;
+  switch (term->mode)
+  {
+    case CTX_TERM_QUARTER:
+       ctx_term_output_buf_quarter (term->pixels,
+                                width, height, term);
+       break;
+    case CTX_TERM_ASCII:
+       ctx_term_output_buf_ascii (term->pixels,
+                                width, height, term, 0);
+       break;
+    case CTX_TERM_ASCII_MONO:
+       ctx_term_output_buf_ascii (term->pixels,
+                                width, height, term, 1);
+       break;
+    case CTX_TERM_SEXTANT:
+       ctx_term_output_buf_sextant (term->pixels,
+                                width, height, term);
+       break;
+    case CTX_TERM_BRAILLE:
+       ctx_term_output_buf_braille (term->pixels,
+                                width, height, term, 0);
+       break;
+    case CTX_TERM_BRAILLE_MONO:
+       ctx_term_output_buf_braille (term->pixels,
+                                width, height, term, 1);
+       break;
+  }
+#if CTX_BRAILLE_TEXT
+  CtxRasterizer *rasterizer = (CtxRasterizer*)(term->host->renderer);
+  // XXX instead sort and inject along with braille
+  //
+
+  //uint8_t rgba_bg[4]={0,0,0,0};
+  //uint8_t rgba_fg[4]={255,0,255,255};
+
+  for (CtxList *l = rasterizer->glyphs; l; l = l->next)
+  {
+    CtxTermGlyph *glyph = l->data;
+
+    uint8_t *pixels = term->pixels;
+    long rgb_sum[4]={0,0,0};
+    for (int v = 0; v <  ctx_term_ch; v ++)
+    for (int u = 0; u <  ctx_term_cw; u ++)
+    {
+      int i = ((glyph->row-1) * ctx_term_ch + v) * rasterizer->blit_width + 
+              ((glyph->col-1) * ctx_term_cw + u);
+      for (int c = 0; c < 3; c ++)
+        rgb_sum[c] += pixels[i*4+c];
+    }
+    for (int c = 0; c < 3; c ++)
+      glyph->rgba_bg[c] = rgb_sum[c] / (ctx_term_ch * ctx_term_cw);
+    char utf8[8];
+    utf8[ctx_unichar_to_utf8(glyph->unichar, (uint8_t*)utf8)]=0;
+    ctx_term_set (term, glyph->col, glyph->row, 
+                     utf8, glyph->rgba_fg, glyph->rgba_bg);
+    free (glyph);
+  }
+
+  printf ("\e[H");
+  printf ("\e[0m");
+  ctx_term_scanout (term);
+  printf ("\e[0m");
+  fflush(NULL);
+  while (rasterizer->glyphs)
+    ctx_list_remove (&rasterizer->glyphs, rasterizer->glyphs->data);
+#endif
+}
+
+void ctx_term_free (CtxTerm *term)
+{
+  while (term->lines)
+  {
+    free (term->lines->data);
+    ctx_list_remove (&term->lines, term->lines->data);
+  }
+  printf ("\e[?25h"); // cursor on
+  nc_at_exit ();
+  free (term->pixels);
+  ctx_free (term->host);
+  free (term);
+  /* we're not destoring the ctx member, this is function is called in ctx' teardown */
+}
+
+int ctx_renderer_is_term (Ctx *ctx)
+{
+  if (ctx->renderer &&
+      ctx->renderer->free == (void*)ctx_term_free)
+          return 1;
+  return 0;
+}
+
+float ctx_term_get_cell_width (Ctx *ctx)
+{
+  return ctx_term_cw;
+}
+
+float ctx_term_get_cell_height (Ctx *ctx)
+{
+  return ctx_term_ch;
+}
+
+Ctx *ctx_new_term (int width, int height)
+{
+  Ctx *ctx = ctx_new ();
+#if CTX_RASTERIZER
+  CtxTerm *term = (CtxTerm*)calloc (sizeof (CtxTerm), 1);
+ 
+  const char *mode = getenv ("CTX_TERM_MODE");
+  ctx_term_cw = 2;
+  ctx_term_ch = 3;
+
+  if (!mode) term->mode = CTX_TERM_SEXTANT;
+  else if (!strcmp (mode, "sextant")) term->mode = CTX_TERM_SEXTANT;
+  else if (!strcmp (mode, "ascii")) term->mode = CTX_TERM_ASCII;
+  else if (!strcmp (mode, "ascii-mono")) term->mode = CTX_TERM_ASCII_MONO;
+  else if (!strcmp (mode, "quarter")) term->mode = CTX_TERM_QUARTER;
+  else if (!strcmp (mode, "braille")){
+    term->mode = CTX_TERM_BRAILLE;
+    ctx_term_ch = 4;
+  }
+  else if (!strcmp (mode, "braille-mono")){
+    term->mode = CTX_TERM_BRAILLE_MONO;
+    ctx_term_ch = 4;
+  }
+  else {
+    fprintf (stderr, "recognized values for CTX_TERM_MODE:\n"
+                    " sextant ascii quarter braille braille-mono\n");
+    exit (1);
+  }
+
+  mode = getenv ("CTX_TERM_FORCE_FULL");
+  if (mode && strcmp (mode, "0") && strcmp (mode, "no"))
+    _ctx_term_force_full = 1;
+
+  fprintf (stdout, "\e[?1049h");
+  fprintf (stdout, "\e[?25l"); // cursor off
+
+  int maxwidth = ctx_terminal_cols  () * ctx_term_cw;
+  int maxheight = (ctx_terminal_rows ()) * ctx_term_ch;
+  if (width <= 0 || height <= 0)
+  {
+    width = maxwidth;
+    height = maxheight;
+  }
+  if (width > maxwidth) width = maxwidth;
+  if (height > maxheight) height = maxheight;
+  term->ctx = ctx;
+  term->width  = width;
+  term->height = height;
+
+  term->cols = (width + 1) / ctx_term_cw;
+  term->rows = (height + 2) / ctx_term_ch;
+  term->lines = 0;
+  term->pixels = (uint8_t*)malloc (width * height * 4);
+  term->host = ctx_new_for_framebuffer (term->pixels,
+                                           width, height,
+                                           width * 4, CTX_FORMAT_RGBA8);
+#if CTX_BRAILLE_TEXT
+  ((CtxRasterizer*)term->host->renderer)->term_glyphs=1;
+#endif
+  _ctx_mouse (ctx, NC_MOUSE_DRAG);
+  ctx_set_renderer (ctx, term);
+  ctx_set_size (ctx, width, height);
+  ctx_font_size (ctx, ctx_term_ch); 
+  term->render = ctx_term_render;
+  term->flush = (void(*)(void*))ctx_term_flush;
+  term->free  = (void(*)(void*))ctx_term_free;
+#endif
+
+
+  return ctx;
+}
+
+#endif
+
+#if CTX_EVENTS
+
+#include <fcntl.h>
+#include <sys/ioctl.h>
+
+typedef struct _CtxTermImg CtxTermImg;
+struct _CtxTermImg
+{
+   void (*render)         (void *termimg, CtxCommand *command);
+   void (*reset)          (void *termimg);
+   void (*flush)          (void *termimg);
+   char *(*get_clipboard) (void *ctxctx);
+   void (*set_clipboard)  (void *ctxctx, const char *text);
+   void (*free)           (void *termimg);
+   Ctx      *ctx;
+   int       width;
+   int       height;
+   int       cols;
+   int       rows;
+   int       was_down;
+   // we need to have the above members in that order up to here
+   uint8_t  *pixels;
+   Ctx      *host;
+   CtxList  *lines;
+};
+
+inline static void ctx_termimg_render (void       *ctx,
+                                       CtxCommand *command)
+{
+  CtxTermImg *termimg = (void*)ctx;
+  /* directly forward */
+  ctx_process (termimg->host, &command->entry);
+}
+
+inline static void ctx_termimg_flush (CtxTermImg *termimg)
+{
+  int width =  termimg->width;
+  int height = termimg->height;
+  if (!termimg->pixels) return;
+  char *encoded = malloc (width * height * 3 * 3);
+  ctx_bin2base64 (termimg->pixels, width * height * 3,
+                  encoded);
+  int encoded_len = strlen (encoded);
+
+  int i = 0;
+
+  printf ("\e[H");
+  printf ("\e_Gf=24,s=%i,v=%i,t=d,a=T,m=1;\e\\", width, height);
+  while (i <  encoded_len)
+  {
+     if (i + 4096 <  encoded_len)
+     {
+       printf  ("\e_Gm=1;");
+     }
+     else
+     {
+       printf  ("\e_Gm=0;");
+     }
+     for (int n = 0; n < 4000 && i < encoded_len; n++)
+     {
+       printf ("%c", encoded[i]);
+       i++;
+     }
+     printf ("\e\\");
+  }
+  free (encoded);
+  
+  fflush (NULL);
+}
+
+void ctx_termimg_free (CtxTermImg *termimg)
+{
+  while (termimg->lines)
+  {
+    free (termimg->lines->data);
+    ctx_list_remove (&termimg->lines, termimg->lines->data);
+  }
+  printf ("\e[?25h"); // cursor on
+  nc_at_exit ();
+  free (termimg->pixels);
+  ctx_free (termimg->host);
+  free (termimg);
+  /* we're not destoring the ctx member, this is function is called in ctx' teardown */
+}
+
+int ctx_renderer_is_termimg (Ctx *ctx)
+{
+  if (ctx->renderer &&
+      ctx->renderer->free == (void*)ctx_termimg_free)
+          return 1;
+  return 0;
+}
+
+Ctx *ctx_new_termimg (int width, int height)
+{
+  Ctx *ctx = ctx_new ();
+#if CTX_RASTERIZER
+  fprintf (stdout, "\e[?1049h");
+  fprintf (stdout, "\e[?25l"); // cursor off
+  CtxTermImg *termimg = (CtxTermImg*)calloc (sizeof (CtxTermImg), 1);
+
+
+  int maxwidth = ctx_terminal_width ();
+
+  int colwidth = maxwidth/ctx_terminal_cols ();
+  maxwidth-=colwidth;
+
+  int maxheight = ctx_terminal_height ();
+  if (width <= 0 || height <= 0)
+  {
+    width  = maxwidth;
+    height = maxheight;
+  }
+  if (width > maxwidth) width = maxwidth;
+  if (height > maxheight) height = maxheight;
+  termimg->ctx = ctx;
+  termimg->width  = width;
+  termimg->height = height;
+  termimg->lines = 0;
+  termimg->pixels = (uint8_t*)malloc (width * height * 3);
+  termimg->host = ctx_new_for_framebuffer (termimg->pixels,
+                                           width, height,
+                                           width * 3, CTX_FORMAT_RGB8);
+  _ctx_mouse (ctx, NC_MOUSE_DRAG);
+  ctx_set_renderer (ctx, termimg);
+  ctx_set_size (ctx, width, height);
+  ctx_font_size (ctx, 14.0f);
+  termimg->render = ctx_termimg_render;
+  termimg->flush = (void(*)(void*))ctx_termimg_flush;
+  termimg->free  = (void(*)(void*))ctx_termimg_free;
+#endif
+
+  return ctx;
+}
+
 #endif
 
 #if CTX_FORMATTER
@@ -21376,7 +23941,7 @@ const char *_ctx_code_to_name (int code)
           case CTX_SET_PIXEL:            return "setPixel"; break;
           case CTX_GLOBAL_ALPHA:         return "globalAlpha"; break;
           case CTX_TEXT:                 return "text"; break;
-          case CTX_TEXT_STROKE:          return "textStroke"; break;
+          case CTX_STROKE_TEXT:          return "strokeText"; break;
           case CTX_SAVE:                 return "save"; break;
           case CTX_RESTORE:              return "restore"; break;
           case CTX_NEW_PAGE:             return "newPage"; break;
@@ -21399,6 +23964,7 @@ const char *_ctx_code_to_name (int code)
           case CTX_REL_ARC_TO:           return "relArcTo"; break;
           case CTX_GLYPH:                return "glyph"; break;
           case CTX_TEXTURE:              return "texture"; break;
+          case CTX_DEFINE_TEXTURE:       return "defineTexture"; break;
           case CTX_IDENTITY:             return "identity"; break;
           case CTX_CLOSE_PATH:           return "closePath"; break;
           case CTX_PRESERVE:             return "preserve"; break;
@@ -21434,6 +24000,8 @@ const char *_ctx_code_to_name (int code)
           case CTX_LINE_JOIN:            return "lineJoin"; break;
           case CTX_LINE_CAP:             return "lineCap"; break;
           case CTX_LINE_WIDTH:           return "lineWidth"; break;
+          case CTX_LINE_DASH_OFFSET:     return "lineDashOffset"; break;
+          case CTX_IMAGE_SMOOTHING:      return "imageSmoothing"; break;
           case CTX_SHADOW_BLUR:          return "shadowBlur";  break;
           case CTX_FILL_RULE:            return "fillRule"; break;
         }
@@ -21479,6 +24047,8 @@ static void _ctx_print_name (CtxFormatter *formatter, int code)
         case CTX_LINE_JOIN:         name[1]='j'; break;
         case CTX_LINE_CAP:          name[1]='c'; break;
         case CTX_LINE_WIDTH:        name[1]='w'; break;
+        case CTX_LINE_DASH_OFFSET:  name[1]='D'; break;
+        case CTX_IMAGE_SMOOTHING:   name[1]='S'; break;
         case CTX_SHADOW_BLUR:       name[1]='s'; break;
         case CTX_SHADOW_COLOR:      name[1]='C'; break;
         case CTX_SHADOW_OFFSET_X:   name[1]='x'; break;
@@ -21616,6 +24186,18 @@ ctx_print_entry_enum (CtxFormatter *formatter, CtxEntry *entry, int args)
   _ctx_print_endcmd (formatter);
 }
 
+
+static void
+ctx_print_a85 (CtxFormatter *formatter, uint8_t *data, int length)
+{
+  char *tmp = malloc (ctx_a85enc_len (length));
+  ctx_a85enc (data, tmp, length);
+  ctx_formatter_addstr (formatter, " ~", 2);
+  ctx_formatter_addstr (formatter, tmp, -1);
+  ctx_formatter_addstr (formatter, "~ ", 2);
+  free (tmp);
+}
+
 static void
 ctx_print_escaped_string (CtxFormatter *formatter, const char *string)
 {
@@ -21657,6 +24239,12 @@ ctx_print_float (CtxFormatter *formatter, float val)
   if (temp[j]=='.')
     { temp[j]='\0'; }
   ctx_formatter_addstr (formatter, temp, -1);
+}
+
+static void
+ctx_print_int (CtxFormatter *formatter, int val)
+{
+  ctx_formatter_addstrf (formatter, "%i", val);
 }
 
 static void
@@ -21718,7 +24306,43 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
         ctx_print_entry (formatter, entry, 2);
         break;
       case CTX_TEXTURE:
-        ctx_print_entry (formatter, entry, 3);
+        _ctx_print_name (formatter, entry->code);
+        ctx_formatter_addstrf (formatter, "\"");
+        ctx_print_escaped_string (formatter, c->texture.eid);
+        ctx_formatter_addstrf (formatter, "\", ");
+        ctx_print_float (formatter, c->texture.x);
+        ctx_formatter_addstrf (formatter, ", ");
+        ctx_print_float (formatter, c->texture.y);
+        ctx_formatter_addstrf (formatter, " ");
+        _ctx_print_endcmd (formatter);
+        break;
+
+      case CTX_DEFINE_TEXTURE:
+        _ctx_print_name (formatter, entry->code);
+        ctx_formatter_addstrf (formatter, "\"");
+        ctx_print_escaped_string (formatter, c->define_texture.eid);
+        ctx_formatter_addstrf (formatter, "\", ");
+        ctx_print_int (formatter, c->define_texture.width);
+        ctx_formatter_addstrf (formatter, ", ");
+        ctx_print_int (formatter, c->define_texture.height);
+        ctx_formatter_addstrf (formatter, ",%i, ", c->define_texture.format);
+
+        uint8_t *pixel_data = ctx_define_texture_pixel_data (entry);
+#if 1
+
+        int stride = ctx_pixel_format_get_stride (c->define_texture.format, c->define_texture.width);
+        //fprintf (stderr, "encoding %i bytes\n", c->define_texture.height *stride);
+        ctx_print_a85 (formatter, pixel_data, c->define_texture.height * stride);
+#else
+        ctx_formatter_addstrf (formatter, "\"");
+        ctx_print_escaped_string (formatter, pixel_data);
+        ctx_formatter_addstrf (formatter, "\" ");
+
+#endif
+
+        _ctx_print_endcmd (formatter);
+        break;
+
         break;
       case CTX_REL_ARC_TO:
       case CTX_ARC_TO:
@@ -21745,6 +24369,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
       case CTX_MITER_LIMIT:
       case CTX_ROTATE:
       case CTX_LINE_WIDTH:
+      case CTX_LINE_DASH_OFFSET:
       case CTX_GLOBAL_ALPHA:
       case CTX_SHADOW_BLUR:
       case CTX_SHADOW_OFFSET_X:
@@ -21777,14 +24402,21 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
         if (formatter->longform ||  1)
           {
             _ctx_indent (formatter);
-            switch ( (int) c->set_color.model)
+            int model = (int) c->set_color.model;
+            const char *suffix="";
+            if (model & 512)
+            {
+              model = model & 511;
+              suffix = "S";
+            }
+            switch (model)
               {
                 case CTX_GRAY:
-                  ctx_formatter_addstrf (formatter, "gray ");
+                  ctx_formatter_addstrf (formatter, "gray%s ", suffix);
                   ctx_print_float (formatter, c->graya.g);
                   break;
                 case CTX_GRAYA:
-                  ctx_formatter_addstrf (formatter, "graya ");
+                  ctx_formatter_addstrf (formatter, "graya%s ", suffix);
                   ctx_print_float (formatter, c->graya.g);
                   ctx_formatter_addstrf (formatter, " ");
                   ctx_print_float (formatter, c->graya.a);
@@ -21792,7 +24424,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
                 case CTX_RGBA:
                   if (c->rgba.a != 1.0)
                   {
-                    ctx_formatter_addstrf (formatter, "rgba ");
+                    ctx_formatter_addstrf (formatter, "rgba%s ", suffix);
                     ctx_print_float (formatter, c->rgba.r);
                     ctx_formatter_addstrf (formatter, " ");
                     ctx_print_float (formatter, c->rgba.g);
@@ -21806,12 +24438,12 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
                 case CTX_RGB:
                   if (c->rgba.r == c->rgba.g && c->rgba.g == c->rgba.b)
                   {
-                    ctx_formatter_addstrf (formatter, "gray ");
+                    ctx_formatter_addstrf (formatter, "gray%s ", suffix);
                     ctx_print_float (formatter, c->rgba.r);
                     ctx_formatter_addstrf (formatter, " ");
                     break;
                   }
-                  ctx_formatter_addstrf (formatter, "rgb ");
+                  ctx_formatter_addstrf (formatter, "rgb%s ", suffix);
                   ctx_print_float (formatter, c->rgba.r);
                   ctx_formatter_addstrf (formatter, " ");
                   ctx_print_float (formatter, c->rgba.g);
@@ -21819,7 +24451,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
                   ctx_print_float (formatter, c->rgba.b);
                   break;
                 case CTX_DRGB:
-                  ctx_formatter_addstrf (formatter, "drgb ");
+                  ctx_formatter_addstrf (formatter, "drgb%s ", suffix);
                   ctx_print_float (formatter, c->rgba.r);
                   ctx_formatter_addstrf (formatter, " ");
                   ctx_print_float (formatter, c->rgba.g);
@@ -21827,7 +24459,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
                   ctx_print_float (formatter, c->rgba.b);
                   break;
                 case CTX_DRGBA:
-                  ctx_formatter_addstrf (formatter, "drgba ");
+                  ctx_formatter_addstrf (formatter, "drgba%s ", suffix);
                   ctx_print_float (formatter, c->rgba.r);
                   ctx_formatter_addstrf (formatter, " ");
                   ctx_print_float (formatter, c->rgba.g);
@@ -21837,7 +24469,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
                   ctx_print_float (formatter, c->rgba.a);
                   break;
                 case CTX_CMYK:
-                  ctx_formatter_addstrf (formatter, "cmyk ");
+                  ctx_formatter_addstrf (formatter, "cmyk%s ", suffix);
                   ctx_print_float (formatter, c->cmyka.c);
                   ctx_formatter_addstrf (formatter, " ");
                   ctx_print_float (formatter, c->cmyka.m);
@@ -21847,7 +24479,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
                   ctx_print_float (formatter, c->cmyka.k);
                   break;
                 case CTX_CMYKA:
-                  ctx_formatter_addstrf (formatter, "cmyka ");
+                  ctx_formatter_addstrf (formatter, "cmyka%s ", suffix);
                   ctx_print_float (formatter, c->cmyka.c);
                   ctx_formatter_addstrf (formatter, " ");
                   ctx_print_float (formatter, c->cmyka.m);
@@ -21859,7 +24491,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
                   ctx_print_float (formatter, c->cmyka.a);
                   break;
                 case CTX_DCMYK:
-                  ctx_formatter_addstrf (formatter, "dcmyk ");
+                  ctx_formatter_addstrf (formatter, "dcmyk%s ", suffix);
                   ctx_print_float (formatter, c->cmyka.c);
                   ctx_formatter_addstrf (formatter, " ");
                   ctx_print_float (formatter, c->cmyka.m);
@@ -21869,7 +24501,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
                   ctx_print_float (formatter, c->cmyka.k);
                   break;
                 case CTX_DCMYKA:
-                  ctx_formatter_addstrf (formatter, "dcmyka ");
+                  ctx_formatter_addstrf (formatter, "dcmyka%s ", suffix);
                   ctx_print_float (formatter, c->cmyka.c);
                   ctx_formatter_addstrf (formatter, " ");
                   ctx_print_float (formatter, c->cmyka.m);
@@ -21943,6 +24575,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
       case CTX_LINE_JOIN:
       case CTX_COMPOSITING_MODE:
       case CTX_BLEND_MODE:
+      case CTX_IMAGE_SMOOTHING:
         ctx_print_entry_enum (formatter, entry, 1);
         break;
       case CTX_GRADIENT_STOP:
@@ -21956,7 +24589,7 @@ ctx_formatter_process (void *user_data, CtxCommand *c)
         _ctx_print_endcmd (formatter);
         break;
       case CTX_TEXT:
-      case CTX_TEXT_STROKE:
+      case CTX_STROKE_TEXT:
       case CTX_FONT:
         _ctx_print_name (formatter, entry->code);
         ctx_formatter_addstrf (formatter, "\"");
@@ -22094,7 +24727,6 @@ void ctx_dirty_rect (Ctx *ctx, int *x, int *y, int *width, int *height)
   if (y) { *y = ctx->state.min_y; }
   if (width) { *width = ctx->state.max_x - ctx->state.min_x; }
   if (height) { *height = ctx->state.max_y - ctx->state.min_y; }
-  //fprintf (stderr, "%i %i %ix%i\n", *x, *y, *width, *height);
 }
 
 #if CTX_CURRENT_PATH
@@ -22211,51 +24843,440 @@ ctx_gstate_pop (CtxState *state)
   state->gstate_no--;
 }
 
-
-
-
 void
 ctx_close_path (Ctx *ctx)
 {
   CTX_PROCESS_VOID (CTX_CLOSE_PATH);
 }
 
+int _ctx_is_rasterizer (Ctx *ctx);
 
-uint8_t *
-ctx_get_image_data (Ctx *ctx, int sx, int sy, int sw, int sh, int format, int stride)
+void
+ctx_get_image_data (Ctx *ctx, int sx, int sy, int sw, int sh,
+                    CtxPixelFormat format, int dst_stride,
+                    uint8_t *dst_data)
 {
-   // NYI
-   return NULL;
+   if (0)
+   {
+   }
+#if CTX_RASTERIZER
+   else if (_ctx_is_rasterizer (ctx))
+   {
+     CtxRasterizer *rasterizer = (CtxRasterizer*)ctx->renderer;
+     if (rasterizer->format->pixel_format == format)
+     {
+       if (dst_stride <= 0) dst_stride = ctx_pixel_format_get_stride (format, sw);
+       int bytes_per_pix = rasterizer->format->bpp/8;
+       int y = 0;
+       for (int v = sy; v < sy + sh; v++, y++)
+       {
+         int x = 0;
+         for (int u = sx; u < sx + sw; u++, x++)
+         {
+            uint8_t* src_buf = (uint8_t*)rasterizer->buf;
+            memcpy (&dst_data[y * dst_stride + x * bytes_per_pix], &src_buf[v * rasterizer->blit_stride + u * bytes_per_pix], bytes_per_pix);
+         }
+       }
+       return;
+     }
+   }
+#endif
+#if CTX_FB
+   else if (format == CTX_FORMAT_RGBA8 &&
+                   (
+                   ctx_renderer_is_fb (ctx)
+#if CTX_SDL
+                   || ctx_renderer_is_sdl (ctx)
+#endif
+                   ))
+   {
+     CtxTiled *tiled = (CtxTiled*)ctx->renderer;
+     {
+       if (dst_stride <= 0) dst_stride = ctx_pixel_format_get_stride (format, sw);
+       int bytes_per_pix = 4;
+       int y = 0;
+       for (int v = sy; v < sy + sh; v++, y++)
+       {
+         int x = 0;
+         for (int u = sx; u < sx + sw; u++, x++)
+         {
+            uint8_t* src_buf = (uint8_t*)tiled->pixels;
+            memcpy (&dst_data[y * dst_stride + x * bytes_per_pix], &src_buf[v * tiled->width * bytes_per_pix + u * bytes_per_pix], bytes_per_pix);
+         }
+       }
+       return;
+     }
+   }
+#endif
 }
 
 void
-ctx_put_image_data (Ctx *ctx, uint8_t *data, int w, int h, int format, int stride,
-                    int dx, int dy, int dirtyX, int dirtyY,
+ctx_put_image_data (Ctx *ctx, int w, int h, int stride, int format,
+                    uint8_t *data,
+                    int ox, int oy,
+                    int dirtyX, int dirtyY,
                     int dirtyWidth, int dirtyHeight)
 {
-   // NYI
+   char eid[65]="";
+   ctx_save (ctx);
+   ctx_identity (ctx);
+   ctx_define_texture (ctx, NULL, w, h, stride, format, data, eid);
+   if (eid[0])
+   {
+     // XXX set compositor to source
+     ctx_compositing_mode (ctx, CTX_COMPOSITE_COPY);
+     ctx_draw_texture_clipped (ctx, eid, ox, oy, w, h, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
+   }
+   ctx_restore (ctx);
 }
-                    
 
-void ctx_texture (Ctx *ctx, int id, float x, float y)
+static int ctx_eid_valid (Ctx *ctx, const char *eid, int *w, int *h)
 {
-  CtxEntry commands[2];
-  if (id < 0) { return; }
-  commands[0] = ctx_u32 (CTX_TEXTURE, id, 0);
-  commands[1] = ctx_f   (CTX_CONT, x, y);
-  ctx_process (ctx, commands);
+  ctx = ctx->texture_cache;
+  CtxList *to_remove = NULL;
+  int ret = 0;
+  for (CtxList *l = ctx->eid_db; l; l = l->next)
+  {
+    CtxEidInfo *eid_info = (CtxEidInfo*)l->data;
+    if (ctx->frame - eid_info->frame >= 2)
+    {
+      ctx_list_prepend (&to_remove, eid_info);
+    }
+    else if (!strcmp (eid_info->eid, eid) &&
+             ctx->frame - eid_info->frame < 2)
+    {
+    //FILE  *f  = fopen ("/tmp/l", "a");
+    //  fprintf (f, "%i good:%i %i %s\n", getpid(), ctx->frame, eid_info->frame, eid);
+    //fclose (f);
+      eid_info->frame = ctx->frame;
+      if (w) *w = eid_info->width;
+      if (h) *h = eid_info->height;
+      ret = 1;
+    }
+  }
+  while (to_remove)
+  {
+    CtxEidInfo *eid_info = (CtxEidInfo*)to_remove->data;
+    //FILE  *f  = fopen ("/tmp/l", "a");
+    //fprintf (f, "%i client removing %s\n", getpid(), eid_info->eid);
+    //fclose (f);
+    free (eid_info->eid);
+    free (eid_info);
+    ctx_list_remove (&ctx->eid_db, eid_info);
+    ctx_list_remove (&to_remove, eid_info);
+  }
+  return ret;
+}
+
+void ctx_texture (Ctx *ctx, const char *eid, float x, float y)
+{
+  int eid_len = strlen (eid);
+  char ascii[41]="";
+  if (eid_len > 50)
+  {
+    CtxSHA1 *sha1 = ctx_sha1_new ();
+    uint8_t hash[20]="";
+    ctx_sha1_process (sha1, (uint8_t*)eid, eid_len);
+    ctx_sha1_done (sha1, hash);
+    ctx_sha1_free (sha1);
+    const char *hex="0123456789abcdef";
+    for (int i = 0; i < 20; i ++)
+    {
+       ascii[i*2]=hex[hash[i]/16];
+       ascii[i*2+1]=hex[hash[i]%16];
+    }
+    ascii[40]=0;
+    eid=ascii;
+  }
+
+    //FILE  *f = fopen ("/tmp/l", "a");
+  if (ctx_eid_valid (ctx, eid, 0, 0))
+  {
+    ctx_process_cmd_str_float (ctx, CTX_TEXTURE, eid, x, y);
+    //fprintf (f, "setting texture eid %s\n", eid);
+  }
+  else
+  {
+    //fprintf (f, "tried setting invalid texture eid %s\n", eid);
+  }
+    //fclose (f);
+}
+int
+_ctx_frame (Ctx *ctx)
+{
+        return ctx->frame;
+}
+
+void ctx_define_texture (Ctx *ctx, const char *eid, int width, int height, int stride, int format, void *data, char *ret_eid)
+{
+  uint8_t hash[20]="";
+  char ascii[41]="";
+  int dst_stride = width;
+
+  dst_stride = ctx_pixel_format_get_stride ((CtxPixelFormat)format, width);
+  if (stride <= 0)
+    stride = dst_stride;
+
+  int data_len = height * dst_stride;
+
+  if (eid == NULL)
+  {
+    CtxSHA1 *sha1 = ctx_sha1_new ();
+
+    {
+      uint8_t *src = (uint8_t*)data;
+      for (int y = 0; y < height; y++)
+      {
+         ctx_sha1_process (sha1, src, dst_stride);
+         src += stride;
+      }
+    }
+    ctx_sha1_done (sha1, hash);
+    ctx_sha1_free (sha1);
+    const char *hex="0123456789abcdef";
+    for (int i = 0; i < 20; i ++)
+    {
+       ascii[i*2]=hex[hash[i]/16];
+       ascii[i*2+1]=hex[hash[i]%16];
+    }
+    ascii[40]=0;
+    eid = ascii;
+  }
+
+  int eid_len = strlen (eid);
+
+  if (eid_len > 50)
+  {
+    CtxSHA1 *sha1 = ctx_sha1_new ();
+    uint8_t hash[20]="";
+    ctx_sha1_process (sha1, (uint8_t*)eid, eid_len);
+    ctx_sha1_done (sha1, hash);
+    ctx_sha1_free (sha1);
+    const char *hex="0123456789abcdef";
+    for (int i = 0; i < 20; i ++)
+    {
+       ascii[i*2]=hex[hash[i]/16];
+       ascii[i*2+1]=hex[hash[i]%16];
+    }
+    ascii[40]=0;
+    eid = ascii;
+    eid_len = 40;
+  }
+
+  // we now have eid
+
+  if (ctx_eid_valid (ctx, eid, 0, 0))
+  {
+    ctx_texture (ctx, eid, 0.0, 0.0);
+  }
+  else
+
+  {
+    CtxEntry *commands;
+    int command_size = 1 + (data_len+1+1)/9 + 1 + (eid_len+1+1)/9 + 1 +   8;
+    if (ctx->renderer && ctx->renderer->process)
+    {
+       commands = (CtxEntry*)calloc (sizeof (CtxEntry), command_size);
+    }
+    else
+    {
+       commands = NULL;
+       ctx_drawlist_resize (&ctx->drawlist, ctx->drawlist.count + command_size);
+       commands = &(ctx->drawlist.entries[ctx->drawlist.count]);
+       memset (commands, 0, sizeof (CtxEntry) * command_size);
+    }
+    /* bottleneck,  we can avoid copying sometimes - and even when copying
+     * we should cut this down to one copy, direct to the drawlist.
+     *
+     */
+    commands[0] = ctx_u32 (CTX_DEFINE_TEXTURE, width, height);
+    commands[1].data.u16[0] = format;
+
+    int pos = 2;
+
+    commands[pos].code        = CTX_DATA;
+    commands[pos].data.u32[0] = eid_len;
+    commands[pos].data.u32[1] = (eid_len+1+1)/9 + 1;
+    memcpy ((char *) &commands[pos+1].data.u8[0], eid, eid_len);
+    ((char *) &commands[pos+1].data.u8[0])[eid_len]=0;
+
+    pos = 2 + 1 + ctx_conts_for_entry (&commands[2]);
+    commands[pos].code        = CTX_DATA;
+    commands[pos].data.u32[0] = data_len;
+    commands[pos].data.u32[1] = (data_len+1+1)/9 + 1;
+    {
+      uint8_t *src = (uint8_t*)data;
+      uint8_t *dst = &commands[pos+1].data.u8[0];
+      for (int y = 0; y < height; y++)
+      {
+         memcpy (dst, src, dst_stride);
+         src += stride;
+         dst += dst_stride;
+      }
+    }
+    ((char *) &commands[pos+1].data.u8[0])[data_len]=0;
+
+    if (ctx->renderer && ctx->renderer->process)
+    {
+      ctx_process (ctx, commands);
+      free (commands);
+    }
+    else
+    {
+       ctx->drawlist.count += ctx_conts_for_entry (commands) + 1;
+    }
+
+    CtxEidInfo *eid_info = (CtxEidInfo*)calloc (sizeof (CtxEidInfo), 1);
+    eid_info->eid        = strdup (eid);
+    eid_info->width      = width;
+    eid_info->height     = height;
+    eid_info->frame      = ctx->texture_cache->frame;
+    //fprintf (stderr, "%i\n", eid_info->frame);
+    ctx_list_prepend (&ctx->texture_cache->eid_db, eid_info);
+  }
+
+  if (ret_eid)
+  {
+    strcpy (ret_eid, eid);
+    ret_eid[64]=0;
+  }
 }
 
 void
-ctx_image_path (Ctx *ctx, const char *path, float x, float y)
+ctx_texture_load (Ctx *ctx, const char *path, int *tw, int *th, char *reid)
 {
-  int id = ctx_texture_load (ctx, -1, path, NULL, NULL);
-  ctx_texture (ctx, id, x, y);
+  const char *eid = path;
+  char ascii[41]="";
+  int eid_len = strlen (eid);
+  if (eid_len > 50)
+  {
+    CtxSHA1 *sha1 = ctx_sha1_new ();
+    uint8_t hash[20]="";
+    ctx_sha1_process (sha1, (uint8_t*)eid, eid_len);
+    ctx_sha1_done (sha1, hash);
+    ctx_sha1_free (sha1);
+    const char *hex="0123456789abcdef";
+    for (int i = 0; i < 20; i ++)
+    {
+       ascii[i*2]=hex[hash[i]/16];
+       ascii[i*2+1]=hex[hash[i]%16];
+    }
+    ascii[40]=0;
+    eid = ascii;
+  }
 
-  // query if image exists .. 
-  //   if it doesnt load, decode, encode, upload to path/
+  if (ctx_eid_valid (ctx, eid , tw, th))
+  {
+     if (reid)
+     {
+       strcpy (reid, eid);
+     }
+     return;
+  }
+
+#ifdef STBI_INCLUDE_STB_IMAGE_H
+    CtxPixelFormat pixel_format = CTX_FORMAT_RGBA8;
+  int w, h, components;
+  unsigned char *pixels = NULL;
+
+  if (!strncmp (path, "file://", 7))
+  {
+    pixels = stbi_load (path + 7, &w, &h, &components, 0);
+  }
+  else
+  {
+    unsigned char *data = NULL;
+    long length = 0;
+    ctx_get_contents (path, &data, &length);
+    if (data)
+    {
+       pixels = stbi_load_from_memory (data, length, &w, &h, &components, 0);
+       free (data);
+    }
+  }
+
+  if (pixels)
+  {
+    switch (components)
+    {
+      case 1: pixel_format = CTX_FORMAT_GRAY8;  break;
+      case 2: pixel_format = CTX_FORMAT_GRAYA8; break;
+      case 3: pixel_format = CTX_FORMAT_RGB8;   break;
+      case 4: pixel_format = CTX_FORMAT_RGBA8;  break;
+    }
+    if (tw) *tw = w;
+    if (th) *th = h;
+    ctx_define_texture (ctx, eid, w, h, w * components, pixel_format, pixels, 
+                             reid);
+    free (pixels);
+  }
+  else
+  {
+    fprintf (stderr, "texture loading problem for %s\n", path);
+  }
+#endif
 }
 
+void
+ctx_draw_texture_clipped  (Ctx *ctx, const char *eid,
+                           float x, float y,
+                           float width, float height,
+                           float clip_x, float clip_y,
+                           float clip_width, float clip_height)
+{
+  int tex_width  = 0;
+  int tex_height = 0;
+  if (ctx_eid_valid (ctx, eid , &tex_width, &tex_height))
+  {
+    if (width > 0.0 && height > 0.0)
+    {
+      ctx_save (ctx);
+#if 0
+      if (clip_width > 0.0f)
+      {
+        ctx_rectangle (ctx, clip_x, clip_y, clip_width, clip_height);
+        ctx_clip (ctx);
+      }
+#endif
+      ctx_rectangle (ctx, x, y, width, height);
+      if (clip_width > 0.0f)
+      {
+        ctx_translate (ctx, -clip_x, -clip_y);
+        ctx_scale (ctx, width/clip_width, height/clip_height);
+      }
+      else
+      {
+        ctx_scale (ctx, width/tex_width, height/tex_height);
+      }
+      //ctx_texture (ctx, eid, x / (width/tex_width), y / (height/tex_height));
+      ctx_texture (ctx, eid, x, y);// / (width/tex_width), y / (height/tex_height));
+      ctx_fill (ctx);
+      ctx_restore (ctx);
+    }
+  }
+}
+
+void ctx_draw_texture (Ctx *ctx, const char *eid, float x, float y, float w, float h)
+{
+  ctx_draw_texture_clipped (ctx, eid, x, y, w, h, 0,0,0,0);
+}
+
+void ctx_draw_image_clipped (Ctx *ctx, const char *path, float x, float y, float w, float h, float sx, float sy, float swidth, float sheight)
+{
+  char reteid[65];
+  int width, height;
+  ctx_texture_load (ctx, path, &width, &height, reteid);
+  if (reteid[0])
+  {
+    ctx_draw_texture_clipped (ctx, reteid, x, y, w, h, sx, sy, swidth, sheight);
+  }
+}
+
+void
+ctx_draw_image (Ctx *ctx, const char *path, float x, float y, float w, float h)
+{
+  ctx_draw_image_clipped (ctx, path, x, y, w, h, 0,0,0,0);
+}
 
 void
 ctx_set_pixel_u8 (Ctx *ctx, uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
@@ -22265,7 +25286,6 @@ ctx_set_pixel_u8 (Ctx *ctx, uint16_t x, uint16_t y, uint8_t r, uint8_t g, uint8_
   command.data.u16[3]=y;
   ctx_process (ctx, &command);
 }
-
 
 void
 ctx_linear_gradient (Ctx *ctx, float x0, float y0, float x1, float y1)
@@ -22290,30 +25310,6 @@ ctx_radial_gradient (Ctx *ctx, float x0, float y0, float r0, float x1, float y1,
   ctx_process (ctx, command);
 }
 
-void ctx_gradient_add_stop_u8
-(Ctx *ctx, float pos, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
-{
-  CtxEntry entry = ctx_f (CTX_GRADIENT_STOP, pos, 0);
-  entry.data.u8[4+0] = r;
-  entry.data.u8[4+1] = g;
-  entry.data.u8[4+2] = b;
-  entry.data.u8[4+3] = a;
-  ctx_process (ctx, &entry);
-}
-
-void ctx_gradient_add_stop
-(Ctx *ctx, float pos, float r, float g, float b, float a)
-{
-  int ir = r * 255;
-  int ig = g * 255;
-  int ib = b * 255;
-  int ia = a * 255;
-  ir = CTX_CLAMP (ir, 0,255);
-  ig = CTX_CLAMP (ig, 0,255);
-  ib = CTX_CLAMP (ib, 0,255);
-  ia = CTX_CLAMP (ia, 0,255);
-  ctx_gradient_add_stop_u8 (ctx, pos, ir, ig, ib, ia);
-}
 
 void ctx_preserve (Ctx *ctx)
 {
@@ -22359,16 +25355,18 @@ ctx_collect_events (CtxEvent *event, void *data, void *data2)
 {
   Ctx *ctx = (Ctx*)data;
   CtxEvent *copy;
-  if (event->type == CTX_KEY_DOWN && !strcmp (event->string, "idle"))
+  if (event->type == CTX_KEY_PRESS && !strcmp (event->string, "idle"))
     return;
   copy = (CtxEvent*)malloc (sizeof (CtxEvent));
   *copy = *event;
+  if (copy->string)
+    copy->string = strdup (event->string);
   ctx_list_append_full (&ctx->events.events, copy, ctx_event_free, NULL);
 }
 #endif
 
 #if CTX_EVENTS
-static void _ctx_bindings_key_down (CtxEvent *event, void *data1, void *data2);
+static void _ctx_bindings_key_press (CtxEvent *event, void *data1, void *data2);
 #endif
 
 void ctx_reset (Ctx *ctx)
@@ -22376,7 +25374,7 @@ void ctx_reset (Ctx *ctx)
         /* we do the callback reset first - maybe we need two cbs,
          * one for before and one after default impl?
          *
-         * threaded fb and sdl needs to sync
+         * tiled fb and sdl needs to sync
          */
   if (ctx->renderer && ctx->renderer->reset)
     ctx->renderer->reset (ctx->renderer);
@@ -22393,19 +25391,16 @@ void ctx_reset (Ctx *ctx)
   if (ctx->events.ctx_get_event_enabled)
   {
     ctx_clear_bindings (ctx);
+    ctx_listen_full (ctx, 0,0,0,0,
+                     CTX_KEY_PRESS, _ctx_bindings_key_press, ctx, ctx,
+                     NULL, NULL);
 
     ctx_listen_full (ctx, 0,0,0,0,
-                     CTX_KEY_DOWN, _ctx_bindings_key_down, ctx, ctx,
-                     NULL, NULL);
-#if 0
-    // should be enabled if a mask of CTX_KEY_DOWN|UP is passed to get_event?
-    ctx_listen_full (ctx, 0, 0, 0,0,
-                     CTX_KEY_DOWN, ctx_collect_events, ctx, ctx,
-                     NULL, NULL);
-    ctx_listen_full (ctx, 0, 0, 0,0,
                      CTX_KEY_UP, ctx_collect_events, ctx, ctx,
                      NULL, NULL);
-#endif
+    ctx_listen_full (ctx, 0,0,0,0,
+                     CTX_KEY_DOWN, ctx_collect_events, ctx, ctx,
+                     NULL, NULL);
 
     ctx_listen_full (ctx, 0, 0, ctx->events.width, ctx->events.height,
                      (CtxEventType)(CTX_PRESS|CTX_RELEASE|CTX_MOTION), ctx_collect_events, ctx, ctx,
@@ -22425,7 +25420,7 @@ void ctx_clip (Ctx *ctx)
 }
 
 void
-ctx_set (Ctx *ctx, uint32_t key_hash, const char *string, int len);
+ctx_set (Ctx *ctx, uint64_t key_hash, const char *string, int len);
 
 void ctx_save (Ctx *ctx)
 {
@@ -22451,6 +25446,34 @@ void ctx_line_width (Ctx *ctx, float x)
   if (ctx->state.gstate.line_width != x)
     CTX_PROCESS_F1 (CTX_LINE_WIDTH, x);
 }
+
+float ctx_get_miter_limit (Ctx *ctx)
+{
+  return ctx->state.gstate.miter_limit;
+}
+
+float ctx_get_line_dash_offset (Ctx *ctx)
+{
+  return ctx->state.gstate.line_dash_offset;
+}
+
+void ctx_line_dash_offset (Ctx *ctx, float x)
+{
+  if (ctx->state.gstate.line_dash_offset != x)
+    CTX_PROCESS_F1 (CTX_LINE_DASH_OFFSET, x);
+}
+
+int ctx_get_image_smoothing (Ctx *ctx)
+{
+  return ctx->state.gstate.image_smoothing;
+}
+
+void ctx_image_smoothing (Ctx *ctx, int enabled)
+{
+  if (ctx_get_image_smoothing (ctx) != enabled)
+    CTX_PROCESS_U8 (CTX_IMAGE_SMOOTHING, enabled);
+}
+
 
 void ctx_line_dash (Ctx *ctx, float *dashes, int count)
 {
@@ -22535,7 +25558,7 @@ _ctx_font (Ctx *ctx, const char *name)
 
 #if 0
 void
-ctx_set (Ctx *ctx, uint32_t key_hash, const char *string, int len)
+ctx_set (Ctx *ctx, uint64_t key_hash, const char *string, int len)
 {
   if (len <= 0) len = strlen (string);
   ctx_process_cmd_str (ctx, CTX_SET, string, key_hash, len);
@@ -22558,13 +25581,27 @@ ctx_get (Ctx *ctx, const char *key)
 #endif
 
 void
-ctx_font (Ctx *ctx, const char *name)
+ctx_font_family (Ctx *ctx, const char *name)
 {
 #if CTX_BACKEND_TEXT
   ctx_process_cmd_str (ctx, CTX_FONT, name, 0, 0);
+  _ctx_font (ctx, name);
 #else
   _ctx_font (ctx, name);
 #endif
+}
+
+void
+ctx_font (Ctx *ctx, const char *family_name)
+{
+  // should also parse size
+  ctx_font_family (ctx, family_name);
+}
+
+const char *
+ctx_get_font (Ctx *ctx)
+{
+  return ctx_fonts[ctx->state.gstate.font].name;
 }
 
 void ctx_line_to (Ctx *ctx, float x, float y)
@@ -22648,11 +25685,47 @@ void ctx_rel_move_to (Ctx *ctx, float x, float y)
   CTX_PROCESS_F (CTX_REL_MOVE_TO,x,y);
 }
 
+CtxLineJoin ctx_get_line_join (Ctx *ctx)
+{
+  return ctx->state.gstate.line_join;
+}
+
+CtxCompositingMode ctx_get_compositing_mode (Ctx *ctx)
+{
+  return ctx->state.gstate.compositing_mode;
+}
+
+CtxBlend ctx_get_blend_mode (Ctx *ctx)
+{
+  return ctx->state.gstate.blend_mode;
+}
+
+CtxTextAlign ctx_get_text_align  (Ctx *ctx)
+{
+  return (CtxTextAlign)ctx_state_get (&ctx->state, CTX_text_align);
+}
+
+CtxTextBaseline ctx_get_text_baseline (Ctx *ctx)
+{
+  return (CtxTextBaseline)ctx_state_get (&ctx->state, CTX_text_baseline);
+}
+
+CtxLineCap ctx_get_line_cap (Ctx *ctx)
+{
+  return ctx->state.gstate.line_cap;
+}
+
+CtxFillRule ctx_get_fill_rule (Ctx *ctx)
+{
+  return ctx->state.gstate.fill_rule;
+}
+
 void ctx_line_cap (Ctx *ctx, CtxLineCap cap)
 {
   if (ctx->state.gstate.line_cap != cap)
     CTX_PROCESS_U8 (CTX_LINE_CAP, cap);
 }
+
 void ctx_fill_rule (Ctx *ctx, CtxFillRule fill_rule)
 {
   if (ctx->state.gstate.fill_rule != fill_rule)
@@ -22665,11 +25738,13 @@ void ctx_line_join (Ctx *ctx, CtxLineJoin join)
 }
 void ctx_blend_mode (Ctx *ctx, CtxBlend mode)
 {
-  CTX_PROCESS_U8 (CTX_BLEND_MODE, mode);
+  if (ctx->state.gstate.blend_mode != mode)
+    CTX_PROCESS_U8 (CTX_BLEND_MODE, mode);
 }
 void ctx_compositing_mode (Ctx *ctx, CtxCompositingMode mode)
 {
-  CTX_PROCESS_U8 (CTX_COMPOSITING_MODE, mode);
+  if (ctx->state.gstate.compositing_mode != mode)
+    CTX_PROCESS_U8 (CTX_COMPOSITING_MODE, mode);
 }
 void ctx_text_align (Ctx *ctx, CtxTextAlign text_align)
 {
@@ -22884,6 +25959,9 @@ ctx_flush (Ctx *ctx)
 #endif
   if (ctx->renderer && ctx->renderer->flush)
     ctx->renderer->flush (ctx->renderer);
+  ctx->frame++;
+  if (ctx->texture_cache != ctx)
+    ctx->texture_cache->frame++;
   ctx->drawlist.count = 0;
   ctx_state_init (&ctx->state);
 }
@@ -22896,6 +25974,9 @@ ctx_interpret_style (CtxState *state, CtxEntry *entry, void *data)
   CtxCommand *c = (CtxCommand *) entry;
   switch (entry->code)
     {
+      case CTX_LINE_DASH_OFFSET:
+        state->gstate.line_dash_offset = ctx_arg_float (0);
+        break;
       case CTX_LINE_WIDTH:
         state->gstate.line_width = ctx_arg_float (0);
         break;
@@ -22950,12 +26031,25 @@ ctx_interpret_style (CtxState *state, CtxEntry *entry, void *data)
                                               (char*)c->colorspace.data,
                                               c->colorspace.data_len);
         break;
+      case CTX_IMAGE_SMOOTHING:
+        state->gstate.image_smoothing = c->entry.data.u8[0];
+        break;
 
       case CTX_COLOR:
         {
-          CtxColor *color = &state->gstate.source.color;
-          state->gstate.source.type = CTX_SOURCE_COLOR;
-          switch ( (int) ctx_arg_float (0) )
+          CtxColor *color = &state->gstate.source_fill.color;
+
+          if ( ((int) ctx_arg_float (0)) & 512)
+          {
+             color = &state->gstate.source_stroke.color;
+             state->gstate.source_stroke.type = CTX_SOURCE_COLOR;
+          }
+          else
+          {
+             state->gstate.source_fill.type = CTX_SOURCE_COLOR;
+          }
+          //float components[5]={c->cmyka.c, c->cmyka.m, c->cmyka.y, c->cmyka.k, c->cmyka.a};
+          switch ( ((int) ctx_arg_float (0)) & 511)
             {
               case CTX_RGB:
                 ctx_color_set_rgba (state, color, c->rgba.r, c->rgba.g, c->rgba.b, 1.0f);
@@ -22991,8 +26085,8 @@ ctx_interpret_style (CtxState *state, CtxEntry *entry, void *data)
         break;
       case CTX_SET_RGBA_U8:
         //ctx_source_deinit (&state->gstate.source);
-        state->gstate.source.type = CTX_SOURCE_COLOR;
-        ctx_color_set_RGBA8 (state, &state->gstate.source.color,
+        state->gstate.source_fill.type = CTX_SOURCE_COLOR;
+        ctx_color_set_RGBA8 (state, &state->gstate.source_fill.color,
                              ctx_arg_u8 (0),
                              ctx_arg_u8 (1),
                              ctx_arg_u8 (2),
@@ -23024,15 +26118,15 @@ ctx_interpret_style (CtxState *state, CtxEntry *entry, void *data)
           dy = (y1-y0) / length;
           start = (x0 * dx + y0 * dy) / length;
           end =   (x1 * dx + y1 * dy) / length;
-          state->gstate.source.linear_gradient.length = length;
-          state->gstate.source.linear_gradient.dx = dx;
-          state->gstate.source.linear_gradient.dy = dy;
-          state->gstate.source.linear_gradient.start = start;
-          state->gstate.source.linear_gradient.end = end;
-          state->gstate.source.linear_gradient.rdelta = (end-start)!=0.0?1.0f/(end - start):1.0;
-          state->gstate.source.type = CTX_SOURCE_LINEAR_GRADIENT;
-          state->gstate.source.transform = state->gstate.transform;
-          ctx_matrix_invert (&state->gstate.source.transform);
+          state->gstate.source_fill.linear_gradient.length = length;
+          state->gstate.source_fill.linear_gradient.dx = dx;
+          state->gstate.source_fill.linear_gradient.dy = dy;
+          state->gstate.source_fill.linear_gradient.start = start;
+          state->gstate.source_fill.linear_gradient.end = end;
+          state->gstate.source_fill.linear_gradient.rdelta = (end-start)!=0.0?1.0f/(end - start):1.0;
+          state->gstate.source_fill.type = CTX_SOURCE_LINEAR_GRADIENT;
+          state->gstate.source_fill.transform = state->gstate.transform;
+          ctx_matrix_invert (&state->gstate.source_fill.transform);
         }
         break;
       case CTX_RADIAL_GRADIENT:
@@ -23043,16 +26137,16 @@ ctx_interpret_style (CtxState *state, CtxEntry *entry, void *data)
           float x1 = ctx_arg_float (3);
           float y1 = ctx_arg_float (4);
           float r1 = ctx_arg_float (5);
-          state->gstate.source.radial_gradient.x0 = x0;
-          state->gstate.source.radial_gradient.y0 = y0;
-          state->gstate.source.radial_gradient.r0 = r0;
-          state->gstate.source.radial_gradient.x1 = x1;
-          state->gstate.source.radial_gradient.y1 = y1;
-          state->gstate.source.radial_gradient.r1 = r1;
-          state->gstate.source.radial_gradient.rdelta = (r1 - r0) != 0.0 ? 1.0f/(r1-r0):0.0;
-          state->gstate.source.type      = CTX_SOURCE_RADIAL_GRADIENT;
-          state->gstate.source.transform = state->gstate.transform;
-          ctx_matrix_invert (&state->gstate.source.transform);
+          state->gstate.source_fill.radial_gradient.x0 = x0;
+          state->gstate.source_fill.radial_gradient.y0 = y0;
+          state->gstate.source_fill.radial_gradient.r0 = r0;
+          state->gstate.source_fill.radial_gradient.x1 = x1;
+          state->gstate.source_fill.radial_gradient.y1 = y1;
+          state->gstate.source_fill.radial_gradient.r1 = r1;
+          state->gstate.source_fill.radial_gradient.rdelta = (r1 - r0) != 0.0 ? 1.0f/(r1-r0):0.0;
+          state->gstate.source_fill.type      = CTX_SOURCE_RADIAL_GRADIENT;
+          state->gstate.source_fill.transform = state->gstate.transform;
+          ctx_matrix_invert (&state->gstate.source_fill.transform);
         }
         break;
     }
@@ -23372,6 +26466,7 @@ ctx_state_init (CtxState *state)
   state->gstate.global_alpha_f  = 1.0;
   state->gstate.font_size       = 12;
   state->gstate.line_width      = 2.0;
+  state->gstate.image_smoothing = 1;
   ctx_state_set (state, CTX_line_spacing, 1.0f);
   state->min_x                  = 8192;
   state->min_y                  = 8192;
@@ -23408,6 +26503,7 @@ _ctx_init (Ctx *ctx)
 #if CTX_BITPACK
   ctx->drawlist.flags |= CTX_TRANSFORMATION_BITPACK;
 #endif
+  ctx->texture_cache = ctx;
 }
 
 static void ctx_setup ();
@@ -23512,7 +26608,21 @@ ctx_render_ctx (Ctx *ctx, Ctx *d_ctx)
   ctx_iterator_init (&iterator, &ctx->drawlist, 0,
                      CTX_ITERATOR_EXPAND_BITPACK);
   while ( (command = ctx_iterator_next (&iterator) ) )
-    { ctx_process (d_ctx, &command->entry); }
+    {
+#if 0
+     //  if (command->entry.code == 'i' ||
+     //      command->entry.code == 'I')
+       {
+
+       if (command->entry.code < 32 ||
+           command->entry.code > '~')
+       fprintf (stderr, "[%i]", command->entry.code);
+       else
+       fprintf (stderr, "%c", command->entry.code);
+       }
+#endif
+       ctx_process (d_ctx, &command->entry);
+    }
 }
 
 void ctx_quit (Ctx *ctx)
@@ -23531,13 +26641,33 @@ int  ctx_has_quit (Ctx *ctx)
 #endif
 }
 
-
-int ctx_pixel_format_bpp (CtxPixelFormat format)
+int ctx_pixel_format_bits_per_pixel (CtxPixelFormat format)
 {
   CtxPixelFormatInfo *info = ctx_pixel_format_info (format);
   if (info)
     return info->bpp;
   return -1;
+}
+
+int ctx_pixel_format_get_stride (CtxPixelFormat format, int width)
+{
+  CtxPixelFormatInfo *info = ctx_pixel_format_info (format);
+  if (info)
+  {
+    switch (info->bpp)
+    {
+      case 0:
+      case 1:
+        return (width + 7)/8;
+      case 2:
+        return (width + 3)/4;
+      case 4:
+        return (width + 1)/2;
+      default:
+        return width * (info->bpp / 8);
+    }
+  }
+  return width;
 }
 
 int ctx_pixel_format_ebpp (CtxPixelFormat format)
@@ -23592,6 +26722,107 @@ void ctx_set_texture_source (Ctx *ctx, Ctx *texture_source)
 {
   ((CtxRasterizer*)ctx->renderer)->texture_source = texture_source;
 }
+
+void ctx_set_texture_cache (Ctx *ctx, Ctx *texture_cache)
+{
+  ctx->texture_cache = texture_cache;
+}
+
+void ctx_set_transform (Ctx *ctx, float a, float b, float c, float d, float e, float f)
+{
+  ctx_identity (ctx);
+  ctx_apply_transform (ctx, a, b, c, d, e, f);
+}
+#ifndef NO_LIBCURL
+#include <curl/curl.h>
+static size_t
+ctx_string_append_callback (void *contents, size_t size, size_t nmemb, void *userp)
+{
+  CtxString *string = (CtxString*)userp;
+  ctx_string_append_data ((CtxString*)string, contents, size * nmemb);
+  return size * nmemb;
+}
+
+#endif
+
+int
+ctx_get_contents (const char     *uri,
+                  unsigned char **contents,
+                  long           *length)
+{
+  char temp_uri[PATH_MAX]; // XXX XXX breaks with data uri's
+  if (uri[0] == '/')
+  {
+    snprintf (temp_uri, sizeof (temp_uri)-1, "file://%s", uri);
+    uri = temp_uri;
+  }
+  else
+  {
+    snprintf (temp_uri, sizeof (temp_uri)-1, uri);
+    uri = temp_uri;
+  }
+
+  if (strchr (uri, '#'))
+   strchr (uri, '#')[0]=0;
+
+  for (CtxList *l = registered_contents; l; l = l->next)
+  {
+    CtxFileContent *c = l->data;
+    if (!strcmp (c->path, uri))
+    {
+      contents = malloc (c->length+1);
+      contents[c->length]=0;
+      if (length) *length = c->length;
+      return 0;
+    }
+  }
+
+  if (!strncmp (uri, "file://", 5))
+  {
+    if (strchr (uri, '?'))
+     strchr (uri, '?')[0]=0;
+  }
+
+  if (!strncmp (uri, "file://", 7))
+    return __ctx_file_get_contents (uri + 7, contents, length);
+  else
+  {
+#ifndef NO_LIBCURL
+  CURL *curl = curl_easy_init ();
+  CURLcode res;
+
+  curl_easy_setopt(curl, CURLOPT_URL, uri);
+  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    CtxString *string = ctx_string_new ("");
+
+      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, ctx_string_append_callback);
+   /* we pass our 'chunk' struct to the callback function */
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)string);
+
+  curl_easy_setopt(curl, CURLOPT_USERAGENT, "ctx/0.0");
+
+   res = curl_easy_perform(curl);
+  /* check for errors */
+  if(res != CURLE_OK) {
+          fprintf(stderr, "curl_easy_perform() failed: %s\n",
+            curl_easy_strerror(res));
+     curl_easy_cleanup (curl);
+  }
+  else
+  {
+     *contents = (unsigned char*)string->str;
+     *length = string->length;
+     ctx_string_free (string, 0);
+     curl_easy_cleanup (curl);
+     return 0;
+  }
+#else
+    return __ctx_file_get_contents (uri, contents, length);
+#endif
+  }
+  return -1;
+}
+
 
 #endif
 
@@ -23716,7 +26947,6 @@ ctx_fragment_gradient_1d_RGBA8 (CtxRasterizer *rasterizer, float x, float y, uin
 }
 #endif
 
-
 CTX_INLINE static void
 ctx_RGBA8_associate_alpha (uint8_t *u8)
 {
@@ -23738,7 +26968,6 @@ ctx_RGBA8_associate_alpha (uint8_t *u8)
     }
   }
 }
-
 
 CTX_INLINE static void
 ctx_u8_associate_alpha (int components, uint8_t *u8)
@@ -23883,13 +27112,13 @@ static void
 ctx_fragment_image_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
-  CtxBuffer *buffer = g->image.buffer;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
   ctx_assert (rasterizer);
   ctx_assert (g);
   ctx_assert (buffer);
-  int u = x - g->image.x0;
-  int v = y - g->image.y0;
+  int u = x - g->texture.x0;
+  int v = y - g->texture.y0;
   if ( u < 0 || v < 0 ||
        u >= buffer->width ||
        v >= buffer->height)
@@ -23899,6 +27128,57 @@ ctx_fragment_image_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out
   else
     {
       int bpp = buffer->format->bpp/8;
+      if (rasterizer->state->gstate.image_smoothing)
+      {
+      uint8_t *src00 = (uint8_t *) buffer->data;
+      src00 += v * buffer->stride + u * bpp;
+      uint8_t *src01 = src00;
+      if ( u + 1 < buffer->width)
+      {
+        src01 = src00 + bpp;
+      }
+      uint8_t *src11 = src01;
+      uint8_t *src10 = src00;
+      if ( v + 1 < buffer->height)
+      {
+        src10 = src00 + buffer->stride;
+        src11 = src01 + buffer->stride;
+      }
+      float dx = (x-(int)(x)) * 255.9;
+      float dy = (y-(int)(y)) * 255.9;
+
+      switch (bpp)
+      {
+      case 1:
+        rgba[0] = rgba[1] = rgba[2] = ctx_lerp_u8 (ctx_lerp_u8 (src00[0], src01[0], dx),
+                               ctx_lerp_u8 (src10[0], src11[0], dx), dy);
+        rgba[3] = 255;
+        break;
+      case 2:
+        rgba[0] = rgba[1] = rgba[2] = ctx_lerp_u8 (ctx_lerp_u8 (src00[0], src01[0], dx),
+                               ctx_lerp_u8 (src10[0], src11[0], dx), dy);
+        rgba[3] = ctx_lerp_u8 (ctx_lerp_u8 (src00[1], src01[1], dx),
+                               ctx_lerp_u8 (src10[1], src11[1], dx), dy);
+        break;
+      case 3:
+      for (int c = 0; c < bpp; c++)
+        { rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
+                                 ctx_lerp_u8 (src10[c], src11[c], dx), dy);
+                
+        }
+        rgba[3]=255;
+        break;
+      break;
+      case 4:
+      for (int c = 0; c < bpp; c++)
+        { rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
+                                 ctx_lerp_u8 (src10[c], src11[c], dx), dy);
+                
+        }
+      }
+      }
+      else
+      {
       uint8_t *src = (uint8_t *) buffer->data;
       src += v * buffer->stride + u * bpp;
       switch (bpp)
@@ -23923,6 +27203,7 @@ ctx_fragment_image_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out
               { rgba[c] = src[c]; }
             break;
         }
+      }
       if (rasterizer->swap_red_green)
       {
         uint8_t tmp = rgba[0];
@@ -24038,17 +27319,217 @@ ctx_RGBAF_deassociate_alpha (float *rgba, float *dst)
   ctx_float_deassociate_alpha (4, rgba, dst);
 }
 
+/**** rgb8 ***/
+
 static void
-ctx_fragment_image_rgba8_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
+ctx_fragment_image_rgb8_RGBA8_box (CtxRasterizer *rasterizer,
+                                   float x,
+                                   float y,
+                                   void *out)
 {
   uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
-  CtxBuffer *buffer = g->image.buffer;
-  ctx_assert (rasterizer);
-  ctx_assert (g);
-  ctx_assert (buffer);
-  int u = x - g->image.x0;
-  int v = y - g->image.y0;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+
+  int u = x - g->texture.x0;
+  int v = y - g->texture.y0;
+  if ( u < 0 || v < 0 ||
+       u >= buffer->width ||
+       v >= buffer->height)
+    {
+      rgba[0] = rgba[1] = rgba[2] = rgba[3] = 0;
+    }
+  else
+    {
+      int bpp = 3;
+      rgba[3]=255;
+      float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
+          int dim = (1.0 / factor) / 2;
+          uint64_t sum[4]={0,0,0,0};
+          int count = 0;
+          for (int ou = - dim; ou < dim; ou++)
+          for (int ov = - dim; ov < dim; ov++)
+          {
+            uint8_t *src = (uint8_t *) buffer->data;
+            int o = (v+ov) * buffer->width + (u + ou);
+
+            if (o>=0 && o < buffer->width * buffer->height)
+            {
+              src += o * bpp;
+
+              for (int c = 0; c < bpp; c++)
+                sum[c] += src[c];
+              count ++;
+            }
+          }
+          if (count)
+            for (int c = 0; c < bpp; c++)
+              rgba[c] = sum[c]/count;
+
+      if (rasterizer->swap_red_green)
+      {
+        uint8_t tmp = rgba[0];
+        rgba[0] = rgba[2];
+        rgba[2] = tmp;
+      }
+    }
+#if CTX_DITHER
+//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+//                    rasterizer->format->dither_green);
+#endif
+}
+
+static void
+ctx_fragment_image_rgb8_RGBA8_bi (CtxRasterizer *rasterizer,
+                                  float x,
+                                  float y,
+                                  void *out)
+{
+  uint8_t *rgba = (uint8_t *) out;
+
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+
+  int u = x - g->texture.x0;
+  int v = y - g->texture.y0;
+  if ( u < 0 || v < 0 ||
+       u >= buffer->width ||
+       v >= buffer->height)
+    {
+      rgba[0] = rgba[1] = rgba[2] = rgba[3] = 0;
+    }
+  else
+    {
+      int bpp = 3;
+      rgba[3]=255;
+      uint8_t *src00 = (uint8_t *) buffer->data;
+      src00 += v * buffer->stride + u * bpp;
+      uint8_t *src01 = src00;
+      if ( u + 1 < buffer->width)
+      {
+        src01 = src00 + bpp;
+      }
+      uint8_t *src11 = src01;
+      uint8_t *src10 = src00;
+      if ( v + 1 < buffer->height)
+      {
+        src10 = src00 + buffer->stride;
+        src11 = src01 + buffer->stride;
+      }
+      float dx = (x-(int)(x)) * 255.9;
+      float dy = (y-(int)(y)) * 255.9;
+      for (int c = 0; c < bpp; c++)
+      {
+        rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
+                               ctx_lerp_u8 (src10[c], src11[c], dx), dy);
+      }
+
+      if (rasterizer->swap_red_green)
+      {
+        uint8_t tmp = rgba[0];
+        rgba[0] = rgba[2];
+        rgba[2] = tmp;
+      }
+    }
+#if CTX_DITHER
+//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+//                    rasterizer->format->dither_green);
+#endif
+}
+
+static void
+ctx_fragment_image_rgb8_RGBA8_nearest (CtxRasterizer *rasterizer,
+                                       float x,
+                                       float y,
+                                       void *out)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+
+  x += 0.5;
+  y += 0.5;
+
+  int u = x - g->texture.x0;
+  int v = y - g->texture.y0;
+  if ( u < 0 || v < 0 ||
+       u >= buffer->width ||
+       v >= buffer->height)
+    {
+      rgba[0] = rgba[1] = rgba[2] = rgba[3] = 0;
+    }
+  else
+    {
+      int bpp = 3;
+      {
+        uint8_t *src00 = (uint8_t *) buffer->data;
+        src00 += v * buffer->stride + u * bpp;
+        for (int c = 0; c < bpp; c++)
+          { rgba[c] = src00[c]; }
+      }
+      if (rasterizer->swap_red_green)
+      {
+        uint8_t tmp = rgba[0];
+        rgba[0] = rgba[2];
+        rgba[2] = tmp;
+      }
+      rgba[3]=255;
+    }
+#if CTX_DITHER
+  //ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+  //                    rasterizer->format->dither_green);
+#endif
+}
+
+static void
+ctx_fragment_image_rgb8_RGBA8 (CtxRasterizer *rasterizer,
+                               float x,
+                               float y,
+                               void *out)
+{
+  if (rasterizer->state->gstate.image_smoothing)
+  {
+    float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
+    if (factor < 0.5)
+    {
+      ctx_fragment_image_rgb8_RGBA8_box (rasterizer, x, y, out);
+    }
+    else if (factor > 0.99 && factor < 1.01)
+    {
+      // XXX missing translate test
+      ctx_fragment_image_rgb8_RGBA8_nearest (rasterizer, x, y, out);
+    }
+    else
+    {
+      ctx_fragment_image_rgb8_RGBA8_bi (rasterizer, x, y, out);
+    }
+  }
+  else
+  {
+    ctx_fragment_image_rgb8_RGBA8_nearest (rasterizer, x, y, out);
+  }
+#if CTX_DITHER
+  uint8_t *rgba = out;
+  ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+                      rasterizer->format->dither_green);
+#endif
+}
+
+
+/************** rgba8 */
+
+static void
+ctx_fragment_image_rgba8_RGBA8_box (CtxRasterizer *rasterizer,
+                                    float x,
+                                    float y,
+                                    void *out)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+
+  int u = x - g->texture.x0;
+  int v = y - g->texture.y0;
   if ( u < 0 || v < 0 ||
        u >= buffer->width ||
        v >= buffer->height)
@@ -24058,19 +27539,171 @@ ctx_fragment_image_rgba8_RGBA8 (CtxRasterizer *rasterizer, float x, float y, voi
   else
     {
       int bpp = 4;
-      uint8_t *src = (uint8_t *) buffer->data;
-      src += v * buffer->stride + u * bpp;
-      for (int c = 0; c < 4; c++)
-        { rgba[c] = src[c]; }
+      float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
+          int dim = (1.0 / factor) / 2;
+          uint64_t sum[4]={0,0,0,0};
+          int count = 0;
+          for (int ou = - dim; ou < dim; ou++)
+          for (int ov = - dim; ov < dim; ov++)
+          {
+            uint8_t *src = (uint8_t *) buffer->data;
+            int o = (v+ov) * buffer->width + (u + ou);
 
-  if (rasterizer->swap_red_green)
-  {
-    uint8_t tmp = rgba[0];
-    rgba[0] = rgba[2];
-    rgba[2] = tmp;
-  }
+            if (o>=0 && o < buffer->width * buffer->height)
+            {
+              src += o * bpp;
+
+              for (int c = 0; c < bpp; c++)
+                sum[c] += src[c];
+              count ++;
+            }
+          }
+          if (count)
+            for (int c = 0; c < bpp; c++)
+              rgba[c] = sum[c]/count;
+
+      if (rasterizer->swap_red_green)
+      {
+        uint8_t tmp = rgba[0];
+        rgba[0] = rgba[2];
+        rgba[2] = tmp;
+      }
     }
 #if CTX_DITHER
+//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+//                    rasterizer->format->dither_green);
+#endif
+}
+
+static void
+ctx_fragment_image_rgba8_RGBA8_bi (CtxRasterizer *rasterizer,
+                                   float x,
+                                   float y,
+                                   void *out)
+{
+  uint8_t *rgba = (uint8_t *) out;
+
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+
+  int u = x - g->texture.x0;
+  int v = y - g->texture.y0;
+  if ( u < 0 || v < 0 ||
+       u >= buffer->width ||
+       v >= buffer->height)
+    {
+      rgba[0] = rgba[1] = rgba[2] = rgba[3] = 0;
+    }
+  else
+    {
+      int bpp = 4;
+      uint8_t *src00 = (uint8_t *) buffer->data;
+      src00 += v * buffer->stride + u * bpp;
+      uint8_t *src01 = src00;
+      if ( u + 1 < buffer->width)
+      {
+        src01 = src00 + bpp;
+      }
+      uint8_t *src11 = src01;
+      uint8_t *src10 = src00;
+      if ( v + 1 < buffer->height)
+      {
+        src10 = src00 + buffer->stride;
+        src11 = src01 + buffer->stride;
+      }
+      float dx = (x-(int)(x)) * 255.9;
+      float dy = (y-(int)(y)) * 255.9;
+      for (int c = 0; c < bpp; c++)
+      {
+        rgba[c] = ctx_lerp_u8 (ctx_lerp_u8 (src00[c], src01[c], dx),
+                               ctx_lerp_u8 (src10[c], src11[c], dx), dy);
+      }
+
+      if (rasterizer->swap_red_green)
+      {
+        uint8_t tmp = rgba[0];
+        rgba[0] = rgba[2];
+        rgba[2] = tmp;
+      }
+    }
+#if CTX_DITHER
+//ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+//                    rasterizer->format->dither_green);
+#endif
+}
+
+static void
+ctx_fragment_image_rgba8_RGBA8_nearest (CtxRasterizer *rasterizer,
+                                        float x,
+                                        float y,
+                                        void *out)
+{
+  uint8_t *rgba = (uint8_t *) out;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer->color_managed;
+
+  x += 0.5;
+  y += 0.5;
+
+  int u = x - g->texture.x0;
+  int v = y - g->texture.y0;
+  if ( u < 0 || v < 0 ||
+       u >= buffer->width ||
+       v >= buffer->height)
+    {
+      rgba[0] = rgba[1] = rgba[2] = rgba[3] = 0;
+    }
+  else
+    {
+      int bpp = 4;
+      {
+        uint8_t *src00 = (uint8_t *) buffer->data;
+        src00 += v * buffer->stride + u * bpp;
+        for (int c = 0; c < bpp; c++)
+          { rgba[c] = src00[c]; }
+      }
+      if (rasterizer->swap_red_green)
+      {
+        uint8_t tmp = rgba[0];
+        rgba[0] = rgba[2];
+        rgba[2] = tmp;
+      }
+    }
+#if CTX_DITHER
+  //ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
+  //                    rasterizer->format->dither_green);
+#endif
+}
+
+static void
+ctx_fragment_image_rgba8_RGBA8 (CtxRasterizer *rasterizer,
+                                float x,
+                                float y,
+                                void *out)
+{
+  if (rasterizer->state->gstate.image_smoothing)
+  {
+    float factor = ctx_matrix_get_scale (&rasterizer->state->gstate.transform);
+    if (factor < 0.5)
+    {
+      ctx_fragment_image_rgba8_RGBA8_box (rasterizer, x, y, out);
+    }
+    else if (factor > 0.99 && factor < 1.01)
+    {
+      // XXX: also verify translate == 0 for this fast path to be valid
+      ctx_fragment_image_rgba8_RGBA8_nearest (rasterizer, x, y, out);
+    }
+    else
+    {
+      ctx_fragment_image_rgba8_RGBA8_bi (rasterizer, x, y, out);
+    }
+  }
+  else
+  {
+    ctx_fragment_image_rgba8_RGBA8_nearest (rasterizer, x, y, out);
+  }
+#if CTX_DITHER
+  uint8_t *rgba = out;
   ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
                       rasterizer->format->dither_green);
 #endif
@@ -24080,13 +27713,13 @@ static void
 ctx_fragment_image_gray1_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
-  CtxBuffer *buffer = g->image.buffer;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
+  CtxBuffer *buffer = g->texture.buffer;
   ctx_assert (rasterizer);
   ctx_assert (g);
   ctx_assert (buffer);
-  int u = x - g->image.x0;
-  int v = y - g->image.y0;
+  int u = x - g->texture.x0;
+  int v = y - g->texture.y0;
   if ( u < 0 || v < 0 ||
        u >= buffer->width ||
        v >= buffer->height)
@@ -24104,47 +27737,11 @@ ctx_fragment_image_gray1_RGBA8 (CtxRasterizer *rasterizer, float x, float y, voi
       else
         {
           for (int c = 0; c < 4; c++)
-            { rgba[c] = g->image.rgba[c]; }
+            { rgba[c] = 255;
+            }//g->texture.rgba[c];
+            //}
         }
     }
-}
-
-static void
-ctx_fragment_image_rgb8_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
-{
-  uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
-  CtxBuffer *buffer = g->image.buffer;
-  ctx_assert (rasterizer);
-  ctx_assert (g);
-  ctx_assert (buffer);
-  int u = x - g->image.x0;
-  int v = y - g->image.y0;
-  if ( (u < 0) || (v < 0) ||
-       (u >= buffer->width-1) ||
-       (v >= buffer->height-1) )
-    {
-      rgba[0] = rgba[1] = rgba[2] = rgba[3] = 0;
-    }
-  else
-    {
-      int bpp = 3;
-      uint8_t *src = (uint8_t *) buffer->data;
-      src += v * buffer->stride + u * bpp;
-      for (int c = 0; c < 3; c++)
-        { rgba[c] = src[c]; }
-      rgba[3] = 255;
-  if (rasterizer->swap_red_green)
-  {
-    uint8_t tmp = rgba[0];
-    rgba[0] = rgba[2];
-    rgba[2] = tmp;
-  }
-    }
-#if CTX_DITHER
-  ctx_dither_rgba_u8 (rgba, x, y, rasterizer->format->dither_red_blue,
-                      rasterizer->format->dither_green);
-#endif
 }
 
 #if CTX_GRADIENTS
@@ -24152,7 +27749,7 @@ static void
 ctx_fragment_radial_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float v = (ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y) -
               g->radial_gradient.r0) * (g->radial_gradient.rdelta);
 #if CTX_GRADIENT_CACHE
@@ -24171,7 +27768,7 @@ static void
 ctx_fragment_linear_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
                 g->linear_gradient.length) -
               g->linear_gradient.start) * (g->linear_gradient.rdelta);
@@ -24193,7 +27790,7 @@ static void
 ctx_fragment_color_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   ctx_color_get_rgba8 (rasterizer->state, &g->color, rgba);
   if (rasterizer->swap_red_green)
   {
@@ -24209,7 +27806,7 @@ static void
 ctx_fragment_linear_gradient_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   float *rgba = (float *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
                 g->linear_gradient.length) -
               g->linear_gradient.start) * (g->linear_gradient.rdelta);
@@ -24220,7 +27817,7 @@ static void
 ctx_fragment_radial_gradient_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   float *rgba = (float *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float v = ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y);
         v = (v - g->radial_gradient.r0) * (g->radial_gradient.rdelta);
   ctx_fragment_gradient_1d_RGBAF (rasterizer, v, 0.0f, rgba);
@@ -24232,7 +27829,7 @@ static void
 ctx_fragment_color_RGBAF (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   float *rgba = (float *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   ctx_color_get_rgba (rasterizer->state, &g->color, rgba);
 }
 
@@ -24241,7 +27838,7 @@ static void ctx_fragment_image_RGBAF (CtxRasterizer *rasterizer, float x, float 
   float *outf = (float *) out;
   uint8_t rgba[4];
   CtxGState *gstate = &rasterizer->state->gstate;
-  CtxBuffer *buffer = gstate->source.image.buffer;
+  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
   switch (buffer->format->bpp)
     {
       case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba); break;
@@ -24255,9 +27852,9 @@ static void ctx_fragment_image_RGBAF (CtxRasterizer *rasterizer, float x, float 
 static CtxFragment ctx_rasterizer_get_fragment_RGBAF (CtxRasterizer *rasterizer)
 {
   CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source.type)
+  switch (gstate->source_fill.type)
     {
-      case CTX_SOURCE_IMAGE:           return ctx_fragment_image_RGBAF;
+      case CTX_SOURCE_TEXTURE:           return ctx_fragment_image_RGBAF;
       case CTX_SOURCE_COLOR:           return ctx_fragment_color_RGBAF;
 #if CTX_GRADIENTS
       case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_RGBAF;
@@ -24271,15 +27868,48 @@ static CtxFragment ctx_rasterizer_get_fragment_RGBAF (CtxRasterizer *rasterizer)
 static CtxFragment ctx_rasterizer_get_fragment_RGBA8 (CtxRasterizer *rasterizer)
 {
   CtxGState *gstate = &rasterizer->state->gstate;
-  CtxBuffer *buffer = gstate->source.image.buffer;
-  switch (gstate->source.type)
+  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
+  switch (gstate->source_fill.type)
     {
-      case CTX_SOURCE_IMAGE:
+      case CTX_SOURCE_TEXTURE:
         switch (buffer->format->bpp)
           {
             case 1:  return ctx_fragment_image_gray1_RGBA8;
-            case 24: return ctx_fragment_image_rgb8_RGBA8;
-            case 32: return ctx_fragment_image_rgba8_RGBA8;
+            case 24: 
+              {
+                if (gstate->image_smoothing)
+                {
+                  float factor = ctx_matrix_get_scale (&gstate->transform);
+                  if (factor < 0.5)
+                    return ctx_fragment_image_rgb8_RGBA8_box;
+                  else if (factor > 0.99 && factor < 1.01)
+                    return ctx_fragment_image_rgb8_RGBA8_nearest;
+                  else
+                    return ctx_fragment_image_rgb8_RGBA8_bi;
+                }
+                else
+                {
+                  return ctx_fragment_image_rgb8_RGBA8_nearest;
+                }
+              }
+              break;
+            case 32:
+              {
+                if (gstate->image_smoothing)
+                {
+                  float factor = ctx_matrix_get_scale (&gstate->transform);
+                  if (factor < 0.5)
+                    return ctx_fragment_image_rgba8_RGBA8_box;
+                  else if (factor > 0.99 && factor < 1.01)
+                    return ctx_fragment_image_rgba8_RGBA8_nearest;
+                  else
+                    return ctx_fragment_image_rgba8_RGBA8_bi;
+                }
+                else
+                {
+                  return ctx_fragment_image_rgba8_RGBA8_nearest;
+                }
+              }
             default: return ctx_fragment_image_RGBA8;
           }
       case CTX_SOURCE_COLOR:           return ctx_fragment_color_RGBA8;
@@ -24302,14 +27932,14 @@ ctx_init_uv (CtxRasterizer *rasterizer,
   float u1 = *u0 + count;
   float v1 = *v0;
 
-  ctx_matrix_apply_transform (&gstate->source.transform, u0, v0);
-  ctx_matrix_apply_transform (&gstate->source.transform, &u1, &v1);
+  ctx_matrix_apply_transform (&gstate->source_fill.transform, u0, v0);
+  ctx_matrix_apply_transform (&gstate->source_fill.transform, &u1, &v1);
 
   *ud = (u1-*u0) / (count);
   *vd = (v1-*v0) / (count);
 }
 
-#if 0
+#if 1
 static void
 ctx_u8_source_over_normal_opaque_color (int components, CTX_COMPOSITE_ARGUMENTS)
 {
@@ -24491,7 +28121,7 @@ ctx_porter_duff_factors(mode, foo, bar)\
   }\
 }
 
-#if 0
+#if 1
 static void
 ctx_u8_source_over_normal_color (int components,
                                  CtxRasterizer         *rasterizer,
@@ -24542,7 +28172,7 @@ ctx_u8_source_over_normal_color (int components,
 static void
 ctx_RGBA8_source_over_normal_linear_gradient (CTX_COMPOSITE_ARGUMENTS)
 {
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float u0 = 0; float v0 = 0;
   float ud = 0; float vd = 0;
   ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
@@ -24760,7 +28390,7 @@ ctx_RGBA8_source_over_normal_linear_gradient (CTX_COMPOSITE_ARGUMENTS)
 static void
 ctx_RGBA8_source_over_normal_radial_gradient (CTX_COMPOSITE_ARGUMENTS)
 {
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float u0 = 0; float v0 = 0;
   float ud = 0; float vd = 0;
   ctx_init_uv (rasterizer, x0, count, &u0, &v0, &ud, &vd);
@@ -26102,6 +29732,7 @@ CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop) (CTX_COMPOSITE_ARGUMENTS)
 {
 }
 
+
 static void
 ctx_setup_RGBA8 (CtxRasterizer *rasterizer)
 {
@@ -26109,6 +29740,8 @@ ctx_setup_RGBA8 (CtxRasterizer *rasterizer)
   int components = 4;
   rasterizer->fragment = ctx_rasterizer_get_fragment_RGBA8 (rasterizer);
   rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_porter_duff_generic);
+
+
 #if 1
   if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
   {
@@ -26118,14 +29751,14 @@ ctx_setup_RGBA8 (CtxRasterizer *rasterizer)
 #endif
 #if CTX_INLINED_GRADIENTS
 #if CTX_GRADIENTS
-  if (gstate->source.type == CTX_SOURCE_LINEAR_GRADIENT &&
+  if (gstate->source_fill.type == CTX_SOURCE_LINEAR_GRADIENT &&
       gstate->blend_mode == CTX_BLEND_NORMAL &&
       gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
   {
      rasterizer->comp_op = ctx_RGBA8_source_over_normal_linear_gradient;
      return;
   }
-  if (gstate->source.type == CTX_SOURCE_RADIAL_GRADIENT &&
+  if (gstate->source_fill.type == CTX_SOURCE_RADIAL_GRADIENT &&
       gstate->blend_mode == CTX_BLEND_NORMAL &&
       gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
   {
@@ -26135,9 +29768,9 @@ ctx_setup_RGBA8 (CtxRasterizer *rasterizer)
 #endif
 #endif
 
-  if (gstate->source.type == CTX_SOURCE_COLOR)
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
     {
-      ctx_color_get_rgba8 (rasterizer->state, &gstate->source.color, rasterizer->color);
+      ctx_color_get_rgba8 (rasterizer->state, &gstate->source_fill.color, rasterizer->color);
       if (gstate->global_alpha_u8 != 255)
         rasterizer->color[components-1] = (rasterizer->color[components-1] * gstate->global_alpha_u8)/255;
       if (rasterizer->swap_red_green)
@@ -26181,7 +29814,7 @@ ctx_setup_RGBA8 (CtxRasterizer *rasterizer)
 #if CTX_INLINED_NORMAL
     if (gstate->blend_mode == CTX_BLEND_NORMAL)
     {
-        switch (gstate->source.type)
+        switch (gstate->source_fill.type)
         {
           case CTX_SOURCE_COLOR:
             return; // exhaustively handled above;
@@ -26193,10 +29826,10 @@ ctx_setup_RGBA8 (CtxRasterizer *rasterizer)
             rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_porter_duff_radial_gradient_normal);
             break;
 #endif
-          case CTX_SOURCE_IMAGE:
+          case CTX_SOURCE_TEXTURE:
             {
-               CtxSource *g = &rasterizer->state->gstate.source;
-               switch (g->image.buffer->format->bpp)
+               CtxSource *g = &rasterizer->state->gstate.source_fill;
+               switch (g->texture.buffer->format->bpp)
                {
                  case 32:
                    rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_porter_duff_image_rgba8_normal);
@@ -26811,11 +30444,11 @@ ctx_setup_RGBAF (CtxRasterizer *rasterizer)
 {
   CtxGState *gstate = &rasterizer->state->gstate;
   int components = 4;
-  if (gstate->source.type == CTX_SOURCE_COLOR)
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
     {
       rasterizer->comp_op = ctx_RGBAF_porter_duff_color;
       rasterizer->fragment = NULL;
-      ctx_color_get_rgba (rasterizer->state, &gstate->source.color, (float*)rasterizer->color);
+      ctx_color_get_rgba (rasterizer->state, &gstate->source_fill.color, (float*)rasterizer->color);
       if (gstate->global_alpha_u8 != 255)
         for (int c = 0; c < components; c ++)
           ((float*)rasterizer->color)[c] *= gstate->global_alpha_f;
@@ -26843,7 +30476,7 @@ ctx_setup_RGBAF (CtxRasterizer *rasterizer)
           rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
         }
         else
-        switch (gstate->source.type)
+        switch (gstate->source_fill.type)
         {
           case CTX_SOURCE_COLOR:
             if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
@@ -26870,7 +30503,7 @@ ctx_setup_RGBAF (CtxRasterizer *rasterizer)
             rasterizer->comp_op = ctx_RGBAF_porter_duff_radial_gradient_normal;
             break;
 #endif
-          case CTX_SOURCE_IMAGE:
+          case CTX_SOURCE_TEXTURE:
             rasterizer->comp_op = ctx_RGBAF_porter_duff_image_normal;
             break;
           default:
@@ -26879,7 +30512,7 @@ ctx_setup_RGBAF (CtxRasterizer *rasterizer)
         }
         break;
       default:
-        switch (gstate->source.type)
+        switch (gstate->source_fill.type)
         {
           case CTX_SOURCE_COLOR:
             rasterizer->comp_op = ctx_RGBAF_porter_duff_color;
@@ -26893,7 +30526,7 @@ ctx_setup_RGBAF (CtxRasterizer *rasterizer)
             rasterizer->comp_op = ctx_RGBAF_porter_duff_radial_gradient;
             break;
 #endif
-          case CTX_SOURCE_IMAGE:
+          case CTX_SOURCE_TEXTURE:
             rasterizer->comp_op = ctx_RGBAF_porter_duff_image;
             break;
           default:
@@ -26913,7 +30546,7 @@ static void
 ctx_fragment_linear_gradient_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   float rgba[4];
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
                 g->linear_gradient.length) -
               g->linear_gradient.start) * (g->linear_gradient.rdelta);
@@ -26926,7 +30559,7 @@ static void
 ctx_fragment_radial_gradient_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   float rgba[4];
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float v = 0.0f;
   if ((g->radial_gradient.r1-g->radial_gradient.r0) > 0.0f)
     {
@@ -26942,7 +30575,7 @@ ctx_fragment_radial_gradient_GRAYAF (CtxRasterizer *rasterizer, float x, float y
 static void
 ctx_fragment_color_GRAYAF (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   ctx_color_get_graya (rasterizer->state, &g->color, (float*)out);
 }
 
@@ -26951,7 +30584,7 @@ static void ctx_fragment_image_GRAYAF (CtxRasterizer *rasterizer, float x, float
   uint8_t rgba[4];
   float rgbaf[4];
   CtxGState *gstate = &rasterizer->state->gstate;
-  CtxBuffer *buffer = gstate->source.image.buffer;
+  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
   switch (buffer->format->bpp)
     {
       case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba); break;
@@ -26967,9 +30600,9 @@ static void ctx_fragment_image_GRAYAF (CtxRasterizer *rasterizer, float x, float
 static CtxFragment ctx_rasterizer_get_fragment_GRAYAF (CtxRasterizer *rasterizer)
 {
   CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source.type)
+  switch (gstate->source_fill.type)
     {
-      case CTX_SOURCE_IMAGE:           return ctx_fragment_image_GRAYAF;
+      case CTX_SOURCE_TEXTURE:           return ctx_fragment_image_GRAYAF;
       case CTX_SOURCE_COLOR:           return ctx_fragment_color_GRAYAF;
 #if CTX_GRADIENTS
       case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_GRAYAF;
@@ -27011,11 +30644,11 @@ ctx_setup_GRAYAF (CtxRasterizer *rasterizer)
 {
   CtxGState *gstate = &rasterizer->state->gstate;
   int components = 2;
-  if (gstate->source.type == CTX_SOURCE_COLOR)
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
     {
       rasterizer->comp_op = ctx_GRAYAF_porter_duff_color;
       rasterizer->fragment = NULL;
-      ctx_color_get_rgba (rasterizer->state, &gstate->source.color, (float*)rasterizer->color);
+      ctx_color_get_rgba (rasterizer->state, &gstate->source_fill.color, (float*)rasterizer->color);
       if (gstate->global_alpha_u8 != 255)
         for (int c = 0; c < components; c ++)
           ((float*)rasterizer->color)[c] *= gstate->global_alpha_f;
@@ -27040,7 +30673,7 @@ ctx_setup_GRAYAF (CtxRasterizer *rasterizer)
         else if (gstate->global_alpha_u8 == 0)
           rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
         else
-        switch (gstate->source.type)
+        switch (gstate->source_fill.type)
         {
           case CTX_SOURCE_COLOR:
             if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
@@ -27065,7 +30698,7 @@ ctx_setup_GRAYAF (CtxRasterizer *rasterizer)
         }
         break;
       default:
-        switch (gstate->source.type)
+        switch (gstate->source_fill.type)
         {
           case CTX_SOURCE_COLOR:
             rasterizer->comp_op = ctx_GRAYAF_porter_duff_color;
@@ -27158,9 +30791,9 @@ ctx_fragment_other_CMYKAF (CtxRasterizer *rasterizer, float x, float y, void *ou
   float *cmyka = (float*)out;
   float rgba[4];
   CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source.type)
+  switch (gstate->source_fill.type)
     {
-      case CTX_SOURCE_IMAGE:
+      case CTX_SOURCE_TEXTURE:
         ctx_fragment_image_RGBAF (rasterizer, x, y, rgba);
         break;
       case CTX_SOURCE_COLOR:
@@ -27187,7 +30820,7 @@ ctx_fragment_color_CMYKAF (CtxRasterizer *rasterizer, float x, float y, void *ou
 {
   CtxGState *gstate = &rasterizer->state->gstate;
   float *cmyka = (float*)out;
-  ctx_color_get_cmyka (rasterizer->state, &gstate->source.color, cmyka);
+  ctx_color_get_cmyka (rasterizer->state, &gstate->source_fill.color, cmyka);
   // RGBW instead of CMYK
   for (int i = 0; i < 4; i ++)
     {
@@ -27198,7 +30831,7 @@ ctx_fragment_color_CMYKAF (CtxRasterizer *rasterizer, float x, float y, void *ou
 static CtxFragment ctx_rasterizer_get_fragment_CMYKAF (CtxRasterizer *rasterizer)
 {
   CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source.type)
+  switch (gstate->source_fill.type)
     {
       case CTX_SOURCE_COLOR:
         return ctx_fragment_color_CMYKAF;
@@ -27238,11 +30871,11 @@ ctx_setup_CMYKAF (CtxRasterizer *rasterizer)
 {
   CtxGState *gstate = &rasterizer->state->gstate;
   int components = 5;
-  if (gstate->source.type == CTX_SOURCE_COLOR)
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
     {
       rasterizer->comp_op = ctx_CMYKAF_porter_duff_color;
       rasterizer->fragment = NULL;
-      ctx_color_get_cmyka (rasterizer->state, &gstate->source.color, (float*)rasterizer->color);
+      ctx_color_get_cmyka (rasterizer->state, &gstate->source_fill.color, (float*)rasterizer->color);
       if (gstate->global_alpha_u8 != 255)
         ((float*)rasterizer->color)[components-1] *= gstate->global_alpha_f;
     }
@@ -27267,7 +30900,7 @@ ctx_setup_CMYKAF (CtxRasterizer *rasterizer)
         else if (gstate->global_alpha_u8 == 0)
           rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
         else
-        switch (gstate->source.type)
+        switch (gstate->source_fill.type)
         {
           case CTX_SOURCE_COLOR:
             if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
@@ -27292,7 +30925,7 @@ ctx_setup_CMYKAF (CtxRasterizer *rasterizer)
         }
         break;
       default:
-        switch (gstate->source.type)
+        switch (gstate->source_fill.type)
         {
           case CTX_SOURCE_COLOR:
             rasterizer->comp_op = ctx_CMYKAF_porter_duff_color;
@@ -27750,12 +31383,9 @@ inline static void
 ctx_RGBA8_to_GRAY8 (CtxRasterizer *rasterizer, int x, const uint8_t *rgba, void *buf, int count)
 {
   uint8_t *pixel = (uint8_t *) buf;
-  while (count--)
+  for (int i = 0; i < count; i ++)
     {
-      pixel[0] = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba);
-      // for internal uses... using only green would work
-      pixel+=1;
-      rgba +=4;
+      pixel[i] = ctx_u8_color_rgb_to_gray (rasterizer->state, rgba + i * 4);
     }
 }
 #endif
@@ -27802,7 +31432,7 @@ CTX_INLINE static void ctx_rgba_to_graya_u8 (CtxState *state, uint8_t *in, uint8
 static void
 ctx_fragment_linear_gradient_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float v = ( ( (g->linear_gradient.dx * x + g->linear_gradient.dy * y) /
                 g->linear_gradient.length) -
               g->linear_gradient.start) * (g->linear_gradient.rdelta);
@@ -27818,7 +31448,7 @@ static void
 ctx_fragment_radial_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
   uint8_t *rgba = (uint8_t *) out;
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float v = (ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y) -
               g->radial_gradient.r0) * (g->radial_gradient.rdelta);
   ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 0.0, rgba);
@@ -27833,7 +31463,7 @@ ctx_fragment_radial_gradient_RGBA8 (CtxRasterizer *rasterizer, float x, float y,
 static void
 ctx_fragment_radial_gradient_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   float v = (ctx_hypotf (g->radial_gradient.x0 - x, g->radial_gradient.y0 - y) -
               g->radial_gradient.r0) * (g->radial_gradient.rdelta);
   ctx_fragment_gradient_1d_RGBA8 (rasterizer, v, 0.0, (uint8_t*)out);
@@ -27847,7 +31477,7 @@ ctx_fragment_radial_gradient_GRAYA8 (CtxRasterizer *rasterizer, float x, float y
 static void
 ctx_fragment_color_GRAYA8 (CtxRasterizer *rasterizer, float x, float y, void *out)
 {
-  CtxSource *g = &rasterizer->state->gstate.source;
+  CtxSource *g = &rasterizer->state->gstate.source_fill;
   ctx_color_get_graya_u8 (rasterizer->state, &g->color, out);
 }
 
@@ -27855,7 +31485,7 @@ static void ctx_fragment_image_GRAYA8 (CtxRasterizer *rasterizer, float x, float
 {
   uint8_t rgba[4];
   CtxGState *gstate = &rasterizer->state->gstate;
-  CtxBuffer *buffer = gstate->source.image.buffer;
+  CtxBuffer *buffer = gstate->source_fill.texture.buffer;
   switch (buffer->format->bpp)
     {
       case 1:  ctx_fragment_image_gray1_RGBA8 (rasterizer, x, y, rgba); break;
@@ -27869,9 +31499,9 @@ static void ctx_fragment_image_GRAYA8 (CtxRasterizer *rasterizer, float x, float
 static CtxFragment ctx_rasterizer_get_fragment_GRAYA8 (CtxRasterizer *rasterizer)
 {
   CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source.type)
+  switch (gstate->source_fill.type)
     {
-      case CTX_SOURCE_IMAGE:           return ctx_fragment_image_GRAYA8;
+      case CTX_SOURCE_TEXTURE:           return ctx_fragment_image_GRAYA8;
 #if CTX_GRADIENTS
       case CTX_SOURCE_COLOR:           return ctx_fragment_color_GRAYA8;
       case CTX_SOURCE_LINEAR_GRADIENT: return ctx_fragment_linear_gradient_GRAYA8;
@@ -27902,13 +31532,13 @@ ctx_GRAYA8_clear_normal (CTX_COMPOSITE_ARGUMENTS)
 }
 
 static void
-ctx_GRAYA8_source_over_normal_color (CTX_COMPOSITE_ARGUMENTS)
+CTX_COMPOSITE_SUFFIX (ctx_GRAYA8_source_over_normal_color) (CTX_COMPOSITE_ARGUMENTS)
 {
   ctx_u8_source_over_normal_color (2, rasterizer, dst, rasterizer->color, x0, coverage, count);
 }
 
 static void
-ctx_GRAYA8_source_over_normal_opaque_color (CTX_COMPOSITE_ARGUMENTS)
+CTX_COMPOSITE_SUFFIX (ctx_GRAYA8_source_over_normal_opaque_color) (CTX_COMPOSITE_ARGUMENTS)
 {
   ctx_u8_source_over_normal_opaque_color (2, rasterizer, dst, rasterizer->color, x0, coverage, count);
 }
@@ -27920,10 +31550,10 @@ ctx_is_opaque_color (CtxRasterizer *rasterizer)
   CtxGState *gstate = &rasterizer->state->gstate;
   if (gstate->global_alpha_u8 != 255)
     return 0;
-  if (gstate->source.type == CTX_SOURCE_COLOR)
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
   {
     uint8_t ga[2];
-    ctx_color_get_graya_u8 (rasterizer->state, &gstate->source.color, ga);
+    ctx_color_get_graya_u8 (rasterizer->state, &gstate->source_fill.color, ga);
     return ga[1] == 255;
   }
   return 0;
@@ -27934,11 +31564,11 @@ ctx_setup_GRAYA8 (CtxRasterizer *rasterizer)
 {
   CtxGState *gstate = &rasterizer->state->gstate;
   int components = 2;
-  if (gstate->source.type == CTX_SOURCE_COLOR)
+  if (gstate->source_fill.type == CTX_SOURCE_COLOR)
     {
-      rasterizer->comp_op = ctx_GRAYA8_porter_duff_color;
+      rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_color);
       rasterizer->fragment = NULL;
-      ctx_color_get_rgba8 (rasterizer->state, &gstate->source.color, rasterizer->color);
+      ctx_color_get_rgba8 (rasterizer->state, &gstate->source_fill.color, rasterizer->color);
       if (gstate->global_alpha_u8 != 255)
         for (int c = 0; c < components; c ++)
           rasterizer->color[c] = (rasterizer->color[c] * gstate->global_alpha_u8)/255;
@@ -27948,7 +31578,7 @@ ctx_setup_GRAYA8 (CtxRasterizer *rasterizer)
   else
   {
     rasterizer->fragment = ctx_rasterizer_get_fragment_GRAYA8 (rasterizer);
-    rasterizer->comp_op  = ctx_GRAYA8_porter_duff_generic;
+    rasterizer->comp_op  = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_generic);
   }
 
 #if CTX_INLINED_NORMAL
@@ -27965,7 +31595,7 @@ ctx_setup_GRAYA8 (CtxRasterizer *rasterizer)
         else if (gstate->global_alpha_u8 == 0)
           rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
         else
-        switch (gstate->source.type)
+        switch (gstate->source_fill.type)
         {
           case CTX_SOURCE_COLOR:
             if (gstate->compositing_mode == CTX_COMPOSITE_SOURCE_OVER)
@@ -27973,31 +31603,31 @@ ctx_setup_GRAYA8 (CtxRasterizer *rasterizer)
               if (rasterizer->color[components-1] == 0)
                 rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_RGBA8_nop);
               else if (rasterizer->color[components-1] == 255)
-                rasterizer->comp_op = ctx_GRAYA8_source_over_normal_opaque_color;
+                rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_source_over_normal_opaque_color);
               else
-                rasterizer->comp_op = ctx_GRAYA8_source_over_normal_color;
+                rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_source_over_normal_color);
               rasterizer->fragment = NULL;
             }
             else
             {
-              rasterizer->comp_op = ctx_GRAYA8_porter_duff_color_normal;
+              rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_color_normal);
               rasterizer->fragment = NULL;
             }
             break;
           default:
-            rasterizer->comp_op = ctx_GRAYA8_porter_duff_generic_normal;
+            rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_generic_normal);
             break;
         }
         break;
       default:
-        switch (gstate->source.type)
+        switch (gstate->source_fill.type)
         {
           case CTX_SOURCE_COLOR:
-            rasterizer->comp_op = ctx_GRAYA8_porter_duff_color;
+            rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_color);
             rasterizer->fragment = NULL;
             break;
           default:
-            rasterizer->comp_op = ctx_GRAYA8_porter_duff_generic;
+            rasterizer->comp_op = CTX_COMPOSITE_SUFFIX(ctx_GRAYA8_porter_duff_generic);
             break;
         }
         break;
@@ -28314,6 +31944,13 @@ CtxPixelFormatInfo CTX_COMPOSITE_SUFFIX(ctx_pixel_formats)[]=
 void
 CTX_COMPOSITE_SUFFIX(ctx_compositor_setup) (CtxRasterizer *rasterizer)
 {
+  if (rasterizer->state->gstate.source_fill.type == CTX_SOURCE_TEXTURE)
+  {
+    if (!rasterizer->state->gstate.source_fill.texture.buffer->color_managed)
+      _ctx_texture_prepare_color_management (rasterizer,
+        rasterizer->state->gstate.source_fill.texture.buffer);
+  }
+
   if (rasterizer->format->setup)
   {
     // event if _default is used we get to work
@@ -28322,7 +31959,7 @@ CTX_COMPOSITE_SUFFIX(ctx_compositor_setup) (CtxRasterizer *rasterizer)
 #if CTX_GRADIENTS
 #if CTX_GRADIENT_CACHE
   CtxGState *gstate = &rasterizer->state->gstate;
-  switch (gstate->source.type)
+  switch (gstate->source_fill.type)
   {
     case CTX_SOURCE_LINEAR_GRADIENT:
     case CTX_SOURCE_RADIAL_GRADIENT:

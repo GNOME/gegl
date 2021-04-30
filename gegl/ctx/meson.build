@@ -3,3 +3,6 @@ gegl_sources += files(
 )
 
 gegl_headers += files('ctx.h')
+
+gegl_cflags += '-DNO_LIBCURL'
+
