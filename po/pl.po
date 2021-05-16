@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-03-31 17:29+0000\n"
-"PO-Revision-Date: 2021-04-03 13:45+0200\n"
+"POT-Creation-Date: 2021-05-15 20:55+0000\n"
+"PO-Revision-Date: 2021-05-16 12:08+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -1943,7 +1943,7 @@ msgid "Adjust the black level"
 msgstr "Dostosuj poziom czerni"
 
 #: operations/common/exposure.c:30 operations/common/exposure.c:480
-#: operations/common/negative-darkroom.c:32
+#: operations/common/negative-darkroom.c:29
 msgid "Exposure"
 msgstr "Ekspozycja"
 
@@ -3035,41 +3035,41 @@ msgstr ""
 "Rozmycie pikseli w kierunku, symuluje rozmycie powodowane przez ruch kamery "
 "w prostej linii podczas ekspozycji."
 
-#: operations/common/negative-darkroom.c:28
+#: operations/common/negative-darkroom.c:25
 msgid "Characteristic curve"
 msgstr "Krzywa charakterystyki"
 
-#: operations/common/negative-darkroom.c:30
+#: operations/common/negative-darkroom.c:27
 msgid "Hardcoded characteristic curve and color data"
 msgstr "Zakodowana krzywa charakterystyki i dane koloru"
 
-#: operations/common/negative-darkroom.c:33
+#: operations/common/negative-darkroom.c:30
 msgid "Base enlargement exposure"
 msgstr "Podstawowa ekspozycja powiększenia"
 
-#: operations/common/negative-darkroom.c:37
-msgid "Filter cyan"
+#: operations/common/negative-darkroom.c:34
+msgid "Cyan filter"
 msgstr "Filtr niebieskozielonego"
 
-#: operations/common/negative-darkroom.c:38
-msgid "Cyan exposure compensation for the negative image"
-msgstr "Kompensacja ekspozycji niebieskozielonego dla negatywu"
+#: operations/common/negative-darkroom.c:35
+msgid "Cyan filter compensation for the negative image"
+msgstr "Kompensacja filtru niebieskozielonego dla negatywu"
 
-#: operations/common/negative-darkroom.c:41
-msgid "Filter magenta"
+#: operations/common/negative-darkroom.c:39
+msgid "Magenta filter"
 msgstr "Filtr purpurowego"
 
-#: operations/common/negative-darkroom.c:42
-msgid "Magenta exposure compensation for the negative image"
-msgstr "Kompensacja ekspozycji purpurowego dla negatywu"
+#: operations/common/negative-darkroom.c:40
+msgid "Magenta filter compensation for the negative image"
+msgstr "Kompensacja filtru purpurowego dla negatywu"
 
-#: operations/common/negative-darkroom.c:45
-msgid "Filter yellow"
+#: operations/common/negative-darkroom.c:44
+msgid "Yellow filter"
 msgstr "Filtr żółtego"
 
-#: operations/common/negative-darkroom.c:46
-msgid "Yellow exposure compensation for the negative image"
-msgstr "Kompensacja ekspozycji żółtego dla negatywu"
+#: operations/common/negative-darkroom.c:45
+msgid "Yellow filter compensation for the negative image"
+msgstr "Kompensacja filtru żółtego dla negatywu"
 
 #: operations/common/negative-darkroom.c:49
 msgid "Clip base + fog"
@@ -3093,60 +3093,59 @@ msgstr ""
 "Wzmacnia gęstość papieru, aby skorzystać ze zwiększonego zakresu "
 "dynamicznego monitora w porównaniu do papieru fotograficznego"
 
-#: operations/common/negative-darkroom.c:56
+#: operations/common/negative-darkroom.c:57
 msgid "Dodge/burn multiplier"
 msgstr "Mnożnik rozjaśniania/przyciemniania"
 
-#: operations/common/negative-darkroom.c:57
+#: operations/common/negative-darkroom.c:58
 msgid "The f-stop of dodge/burn for pure white/black auxillary input"
 msgstr ""
 "Przysłona rozjaśniania/przyciemniania dla całkowicie białego/czarnego "
 "wyjścia pomocniczego"
 
-#: operations/common/negative-darkroom.c:60
+#: operations/common/negative-darkroom.c:62
 msgid "Enable preflashing"
 msgstr "Wstępne naświetlenie"
 
-#: operations/common/negative-darkroom.c:61
+#: operations/common/negative-darkroom.c:63
 msgid "Show preflash controls"
 msgstr "Sterowanie wstępnym naświetleniem"
 
-#: operations/common/negative-darkroom.c:63
-msgid "Cyan preflash"
-msgstr "Wstępne naświetlenie niebieskozielonego"
+#: operations/common/negative-darkroom.c:65
+msgid "Red preflash"
+msgstr "Wstępne naświetlenie czerwonego"
 
-#: operations/common/negative-darkroom.c:64
-msgid "Preflash the negative with cyan light to reduce contrast of the print"
+#: operations/common/negative-darkroom.c:66
+msgid "Preflash the negative with red light to reduce contrast of the print"
 msgstr ""
-"Wstępnie naświetla negatyw za pomocą niebieskozielonego światła, aby "
-"zmniejszyć kontrast odbitki"
-
-#: operations/common/negative-darkroom.c:68
-msgid "Magenta preflash"
-msgstr "Wstępne naświetlenie purpurowego"
-
-#: operations/common/negative-darkroom.c:69
-msgid ""
-"Preflash the negative with magenta light to reduce contrast of the print"
-msgstr ""
-"Wstępnie naświetla negatyw za pomocą purpurowego światła, aby zmniejszyć "
+"Wstępnie naświetla negatyw za pomocą czerwonego światła, aby zmniejszyć "
 "kontrast odbitki"
 
-#: operations/common/negative-darkroom.c:73
-msgid "Yellow preflash"
-msgstr "Wstępne naświetlenie żółtego"
+#: operations/common/negative-darkroom.c:70
+msgid "Green preflash"
+msgstr "Wstępne naświetlenie zielonego"
 
-#: operations/common/negative-darkroom.c:74
-msgid "Preflash the negative with yellow light to reduce contrast of the print"
+#: operations/common/negative-darkroom.c:71
+msgid "Preflash the negative with green light to reduce contrast of the print"
 msgstr ""
-"Wstępnie naświetla negatyw za pomocą żółtego światła, aby zmniejszyć "
+"Wstępnie naświetla negatyw za pomocą zielonego światła, aby zmniejszyć "
 "kontrast odbitki"
 
-#: operations/common/negative-darkroom.c:312
+#: operations/common/negative-darkroom.c:75
+msgid "Blue preflash"
+msgstr "Wstępne naświetlenie niebieskiego"
+
+#: operations/common/negative-darkroom.c:76
+msgid "Preflash the negative with blue light to reduce contrast of the print"
+msgstr ""
+"Wstępnie naświetla negatyw za pomocą niebieskiego światła, aby zmniejszyć "
+"kontrast odbitki"
+
+#: operations/common/negative-darkroom.c:336
 msgid "Negative Darkroom"
 msgstr "Ciemnia fotograficzna"
 
-#: operations/common/negative-darkroom.c:315
+#: operations/common/negative-darkroom.c:339
 msgid "Simulate a negative film enlargement in an analog darkroom."
 msgstr "Symuluje powiększanie kliszy fotograficznej w analogowej ciemni."
 
@@ -3169,6 +3168,30 @@ msgstr "Ilford Ilfobrom Galerie FB 3"
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
 msgid "Ilford Ilfobrom Galerie FB 4"
 msgstr "Ilford Ilfobrom Galerie FB 4"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
+msgid "Ilford Multigrade IV RC Deluxe"
+msgstr "Ilford Multigrade IV RC Deluxe"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:8
+msgid "Foma Fomabrom C"
+msgstr "Foma Fomabrom C"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:9
+msgid "Foma Fomabrom N"
+msgstr "Foma Fomabrom N"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:10
+msgid "Foma Fomabrom Sp"
+msgstr "Foma Fomabrom Sp"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:11
+msgid "Foma Fomabrom S"
+msgstr "Foma Fomabrom S"
+
+#: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:12
+msgid "Foma Fomabrom Variant III"
+msgstr "Foma Fomabrom Variant III"
 
 #: operations/common/newsprint.c:25
 msgid "Line"
