@@ -444,7 +444,7 @@ msgstr "Panell de sortida per a generar la memòria intermèdia de la imatge."
 
 #: gegl/operation/gegl-operation-composer3.c:86
 msgid "Input pad, for image buffer input."
-msgstr "Panell d’entrada, per a introduir la memòria intermèdia de la imatge."
+msgstr "Panell d'entrada, per a introduir la memòria intermèdia de la imatge."
 
 #: gegl/operation/gegl-operation-composer3.c:95
 #: gegl/operation/gegl-operation-composer.c:94
@@ -455,7 +455,7 @@ msgstr "Panell d'entrada de la memòria intermèdia de la imatge auxiliar."
 #: gegl/operation/gegl-operation-composer3.c:104
 msgid "Second auxiliary image buffer input pad."
 msgstr ""
-"Panell d’entrada de la memòria intermèdia de la segona imatge auxiliar."
+"Panell d'entrada de la memòria intermèdia de la segona imatge auxiliar."
 
 #: operations/common/absolute.c:72
 msgid "Absolute"
@@ -466,7 +466,7 @@ msgid ""
 "Makes each linear RGB component be the absolute of its value, "
 "fabs(input_value)"
 msgstr ""
-"Fa que cada component lineal RGB sigui l’absolut del seu valor, "
+"Fa que cada component lineal RGB sigui l'absolut del seu valor, "
 "fabs(input_value)"
 
 #: operations/common/alien-map.c:28 operations/common/newsprint.c:35
@@ -698,7 +698,7 @@ msgstr "Intensitat de la lluentor"
 
 #: operations/common/bloom.c:47
 msgid "Limit exposure"
-msgstr "Limita l’exposició"
+msgstr "Limita l'exposició"
 
 #: operations/common/bloom.c:48
 msgid "Don't over-expose highlights"
@@ -1017,7 +1017,7 @@ msgstr "Gruix de la línia"
 
 #: operations/common/color-assimilation-grid.c:145
 msgid "Color Assimilation Grid"
-msgstr "Graella d’assimilació del color"
+msgstr "Graella d'assimilació del color"
 
 #: operations/common/color-assimilation-grid.c:148
 msgid ""
@@ -1027,9 +1027,9 @@ msgid ""
 "color."
 msgstr ""
 "Gireu l'escala de grisos de la imatge i hi superposeu una graella "
-"sobresaturada: a través de l’assimilació del color que passa pel sistema "
+"sobresaturada: a través de l'assimilació del color que passa pel sistema "
 "visual humà, per a algunes escales de la graella, això produeix la il·lusió "
-"que les cel·les de la graella d’escala de grisos també tenen color."
+"que les cel·les de la graella d'escala de grisos també tenen color."
 
 #: operations/common/color-enhance.c:276
 msgid "Color Enhance"
@@ -1086,7 +1086,7 @@ msgstr "Superposició de color"
 #: operations/common/color-overlay.c:178
 msgid "Paint a color overlay over the input, preserving its transparency."
 msgstr ""
-"Pinteu una superposició de color sobre l’entrada, preservant la "
+"Pinteu una superposició de color sobre l'entrada, preservant la "
 "transparència."
 
 #: operations/common/color-rotate.c:35
@@ -1834,7 +1834,7 @@ msgstr "Engrandeix la forma"
 
 #: operations/common/dropshadow.c:56
 msgid "The shape to expand or contract the shadow in"
-msgstr "La forma per a expandir o contraure l’ombra de dins"
+msgstr "La forma per a expandir o contraure l'ombra de dins"
 
 #: operations/common/dropshadow.c:58
 msgid "Grow radius"
@@ -1845,7 +1845,7 @@ msgid ""
 "The distance to expand the shadow before blurring; a negative value will "
 "contract the shadow instead"
 msgstr ""
-"La distància per a ampliar l’ombra abans de difuminar-se; en canvi, un valor"
+"La distància per a ampliar l'ombra abans de difuminar-se; en canvi, un valor"
 " negatiu contraurà l'ombra"
 
 #. TRANSLATORS: the string 'black' should not be translated
@@ -2616,7 +2616,7 @@ msgid ""
 " retouching panoramas, use nearest to generate the view and cubic or better "
 "for the inverse transform back to panorama."
 msgstr ""
-"Mètode de remostreig d’imatges per a utilitzar, per a obtenir bons resultats"
+"Mètode de remostreig d'imatges per a utilitzar, per a obtenir bons resultats"
 " amb un remostreig doble en retocar panoràmiques, utilitzeu el més proper "
 "per a generar la vista i el cúbic o millor per a tornar a la transformació "
 "inversa al panorama."
@@ -3716,7 +3716,7 @@ msgstr "Mapa normal"
 
 #: operations/common/normal-map.c:252
 msgid "Generate a normal map from a height map"
-msgstr "Genera un mapa normal a partir d’un mapa d’alçada"
+msgstr "Genera un mapa normal a partir d'un mapa d'alçada"
 
 #: operations/common/opacity.c:26
 msgid ""
@@ -3797,7 +3797,7 @@ msgid ""
 "input image. (2:1 ratio containing 360x180 degree panorama)."
 msgstr ""
 "Feu una renderització d'una visualització prèvia de panoràmiques o la seva "
-"inversa per a una imatge d’entrada equirectangular. (Relació 2:1 amb "
+"inversa per a una imatge d'entrada equirectangular. (Relació 2:1 amb "
 "panoràmiques de 360x180 graus)."
 
 #: operations/common/pixelize.c:27
@@ -4108,7 +4108,7 @@ msgstr "Metadades"
 
 #: operations/common/save.c:29
 msgid "Object providing image metadata"
-msgstr "Objecte que proporciona metadades d’imatge"
+msgstr "Objecte que proporciona metadades d'imatge"
 
 #: operations/common/save.c:208
 msgid "Save"
@@ -4431,7 +4431,7 @@ msgstr "Expressat com desviació estàndard en píxels"
 #: operations/common/unsharp-mask.c:32
 msgid "Scaling factor for unsharp-mask, the strength of effect"
 msgstr ""
-"Factor d’escala per a la màscara de difuminat, la intensitat de l’efecte"
+"Factor d'escala per a la màscara de difuminat, la intensitat de l'efecte"
 
 #: operations/common/unsharp-mask.c:147
 msgid "Sharpen (Unsharp Mask)"
@@ -4595,7 +4595,7 @@ msgid ""
 "labels have a lower priority."
 msgstr ""
 "Propagació d'etiquetes mitjançant la transformació decisiva. La memòria "
-"intermèdia de sortida mantindrà el format d’entrada. Els píxels sense "
+"intermèdia de sortida mantindrà el format d'entrada. Els píxels sense "
 "etiquetar estan marcats amb un valor de senyalador determinat (per defecte: "
 "últim component amb valor NULL). El buffer aux és una imatge «Y u8» que "
 "representa els nivells de prioritat (el valor inferior és molt prioritari). "
@@ -4771,7 +4771,7 @@ msgstr "Difuminat centrat"
 
 #: operations/common-cxx/focus-blur.c:323
 msgid "Blur the image around a focal point"
-msgstr "Difumina la imatge al voltant d’un punt focal"
+msgstr "Difumina la imatge al voltant d'un punt focal"
 
 #: operations/common-cxx/lens-blur.cc:46
 msgid "Clip to input extents"
@@ -4811,7 +4811,7 @@ msgstr "Degradat a trossos"
 
 #: operations/common-cxx/piecewise-blend.cc:348
 msgid "Blend a chain of inputs using a mask"
-msgstr "Barreja una cadena d’entrades amb una màscara"
+msgstr "Barreja una cadena d'entrades amb una màscara"
 
 #: operations/common-cxx/variable-blur.c:31
 msgid "Maximal blur radius"
@@ -5087,7 +5087,7 @@ msgstr "Factor d'il·luminació d'ambient"
 
 #: operations/common-gpl3+/bump-map.c:472
 msgid "Height Map"
-msgstr "Mapa d’alçada"
+msgstr "Mapa d'alçada"
 
 #: operations/common-gpl3+/bump-map.c:476
 msgid "Bump Map"
@@ -5483,7 +5483,7 @@ msgstr "Mostrejador"
 
 #: operations/common-gpl3+/displace.c:41
 msgid "Type of GeglSampler used to fetch input pixels"
-msgstr "Tipus de GeglSampler utilitzat per a obtenir píxels d’entrada"
+msgstr "Tipus de GeglSampler utilitzat per a obtenir píxels d'entrada"
 
 #: operations/common-gpl3+/displace.c:48
 msgid "X displacement"
@@ -5525,7 +5525,7 @@ msgstr "Desplaçament vertical"
 #: operations/common-gpl3+/displace.c:72
 #: operations/common-gpl3+/whirl-pinch.c:36
 msgid "Whirl"
-msgstr "Torsió"
+msgstr "Remolí"
 
 #: operations/common-gpl3+/displace.c:75
 msgid "Displacement multiplier for the vertical direction"
@@ -6338,7 +6338,7 @@ msgid ""
 "in range 0.0-1.0"
 msgstr ""
 "Memòria intermèdia per píxel per a modular el radi de la màscara, esperant "
-"un factor d’escala en l'interval 0,0-1,0"
+"un factor d'escala en l'interval 0,0-1,0"
 
 #: operations/common-gpl3+/oilify.c:524
 msgid "Exponent buffer"
@@ -6349,8 +6349,8 @@ msgid ""
 "Per pixel buffer for modulating the exponent parameter, expecting a scaling "
 "factor in range 0.0-1.0"
 msgstr ""
-"Memòria intermèdia per píxel per a modular el paràmetre de l’exponent, "
-"esperant un factor d’escala en l'interval 0,0-1,0"
+"Memòria intermèdia per píxel per a modular el paràmetre de l'exponent, "
+"esperant un factor d'escala en l'interval 0,0-1,0"
 
 #: operations/common-gpl3+/oilify.c:534
 msgid "Oilify"
@@ -7093,7 +7093,7 @@ msgstr "Distorsiona la imatge amb onades"
 
 #: operations/common-gpl3+/whirl-pinch.c:37
 msgid "Whirl angle (degrees)"
-msgstr "Angle de la torsió (graus)"
+msgstr "Angle del remolí (graus)"
 
 #: operations/common-gpl3+/whirl-pinch.c:43
 msgid "Pinch amount"
@@ -8166,7 +8166,7 @@ msgstr "Desador d'imatge RGBE (format HDR de Radiance)"
 #: operations/external/save-pixbuf.c:30
 msgid "The output pixbuf produced by process is stored in this property"
 msgstr ""
-"El pixbuf de sortida produït pel procés s’emmagatzema en aquesta propietat"
+"El pixbuf de sortida produït pel procés s'emmagatzema en aquesta propietat"
 
 #: operations/external/save-pixbuf.c:110
 msgid "Store in GdkPixbuf"
@@ -8752,7 +8752,7 @@ msgid ""
 "which bounding box' border applies."
 msgstr ""
 "Alinea la casella d'entrada amb el marge de la composició o el marge de "
-"l'envolupant auxiliar; si el panell auxiliar no està connectat, l’operació "
+"l'envolupant auxiliar; si el panell auxiliar no està connectat, l'operació "
 "intenta esbrinar quina és la vora que l'envolupant aplica."
 
 #: operations/transform/reflect.c:27
@@ -8942,10 +8942,10 @@ msgid ""
 msgstr ""
 "Corba de mapatge/filtre de proves de HDR a SDR que és una aproximació de la "
 "transformació ACES RRT (Reference Rendering Transform). En alimentar les "
-"imatges d’una escena en aquest op, el resultat és adequat per a mostrar la "
+"imatges d'una escena en aquest op, el resultat és adequat per a mostrar la "
 "transformació referida a sRGB o la visualització de la sortida utilitzant "
 "perfils de matriu ICC regulars com ODT. Tingueu en compte que actualment es "
-"tracta d’una aproximació de lluminositat sols per l’ACES RRT; sense "
+"tracta d'una aproximació de lluminositat sols per l'ACES RRT; sense "
 "dessaturació de reflexos i ombres ni modificacions de tons vermells."
 
 #: operations/workshop/band-tune.c:24
@@ -8964,14 +8964,14 @@ msgid ""
 "values increase signal."
 msgstr ""
 "Escala de detalls, els valors negatius disminueixen el senyal a la banda "
-"detallada, els valors positius n’augmenten el senyal."
+"detallada, els valors positius n'augmenten el senyal."
 
 #: operations/workshop/band-tune.c:30 operations/workshop/band-tune.c:46
 msgid ""
 "Scaling factor for image features at radius, -1 cancels them out 1.0 edge "
 "enhances"
 msgstr ""
-"El factor d’escala de les funcions d’imatge al radi, -1 anul·la les millores"
+"El factor d'escala de les funcions d'imatge al radi, -1 anul·la les millores"
 " de les vores 1,0"
 
 #: operations/workshop/band-tune.c:34
@@ -8996,7 +8996,7 @@ msgid ""
 "increase signal."
 msgstr ""
 "Escala de la vora, els valors negatius disminueixen el senyal de la banda "
-"detallada, els valors positius n’augmenten el senyal."
+"detallada, els valors positius n'augmenten el senyal."
 
 #: operations/workshop/band-tune.c:50
 msgid "Edge bandwidth"
@@ -9004,7 +9004,7 @@ msgstr "Amplada de banda de la vora"
 
 #: operations/workshop/band-tune.c:54
 msgid "Visualize Adjustment Mask"
-msgstr " Visualitza la màscara d’ajust"
+msgstr " Visualitza la màscara d'ajust"
 
 #: operations/workshop/band-tune.c:217
 msgid "Band tune"
@@ -9017,9 +9017,9 @@ msgid ""
 "gaussians driven band pass filters used as adjustments of the image signal."
 msgstr ""
 "Equalitzador de banda paramètrica per a ajustar bandes de freqüència "
-"d’imatge, l’operació proporciona paràmetres abstractes d'entrada que "
+"d'imatge, l'operació proporciona paràmetres abstractes d'entrada que "
 "controlen dues diferències de filtres gaussians de pas de banda utilitzats "
-"com a ajustaments del senyal d’imatge."
+"com a ajustaments del senyal d'imatge."
 
 #: operations/workshop/bilateral-filter-fast.c:39
 msgid "Smoothness"
@@ -9094,7 +9094,7 @@ msgid ""
 "Fills each connected region of the input, separated from the rest of the "
 "input by a given color, with a unique color."
 msgstr ""
-"Omple cada regió connectada de l’entrada, separada de la resta de l’entrada "
+"Omple cada regió connectada de l'entrada, separada de la resta de l'entrada "
 "per un color donat, amb un color únic."
 
 #: operations/workshop/demosaic-bimedian.c:26
@@ -9459,8 +9459,8 @@ msgid ""
 "How far the hole is from the center of the moving gear. 100 means that the "
 "hole is at the gear's edge."
 msgstr ""
-"Quan allunyat es troba el forat des del centre de l’engranatge mòbil. 100 "
-"significa que el forat es troba a la vora de l’engranatge."
+"Quan allunyat es troba el forat des del centre de l'engranatge mòbil. 100 "
+"significa que el forat es troba a la vora de l'engranatge."
 
 #: operations/workshop/external/spyrograph.c:52
 msgid "X coordinate of pattern center"
