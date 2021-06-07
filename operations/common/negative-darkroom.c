@@ -57,7 +57,7 @@ property_double (boost, _("Density boost"), 1.0)
 property_double (contrast, _("Contrast boost"), 1.0)
 	description(_("Increase contrast for papers with fixed contrast (usually color papers)"))
 	value_range (0.25, 4)
-	ui_range (0.5, 2)
+	ui_range (0.75, 1.5)
 	ui_gamma (2)
 
 property_double (dodge, _("Dodge/burn multiplier"), 1.0)
@@ -83,6 +83,16 @@ property_double (flashY, _("Blue preflash"), 0)
 	value_range (0, 0.05)
 	ui_meta("visible", "preflash")
 
+property_boolean (illum, _("Illuminant adjustment"), FALSE)
+	description (_("Show illuminamt controls"))
+property_double (illumX, _("X multiplier"), 0.965)
+	description(_("Adjust the X tristimulus value for output"))
+	value_range (0.7, 1.3)
+	ui_meta("visible", "illum")
+property_double (illumZ, _("Z multiplier"), 0.829)
+	description(_("Adjust the Z tristimulus value for output"))
+	value_range (0.7, 1.3)
+	ui_meta("visible", "illum")
 #else
 
 #define GEGL_OP_POINT_COMPOSER
@@ -340,13 +350,13 @@ process (GeglOperation       *operation,
 		// the CIEXYZ tramsmittance back
 		out[0] = (1 / pow(10, r * curves[o->curve].cdens.X)) *
 			 (1 / pow(10, g * curves[o->curve].mdens.X)) *
-			 (1 / pow(10, b * curves[o->curve].ydens.X));
+			 (1 / pow(10, b * curves[o->curve].ydens.X)) * o->illumX;
 		out[1] = (1 / pow(10, r * curves[o->curve].cdens.Y)) *
 			 (1 / pow(10, g * curves[o->curve].mdens.Y)) *
 			 (1 / pow(10, b * curves[o->curve].ydens.Y));
 		out[2] = (1 / pow(10, r * curves[o->curve].cdens.Z)) *
 			 (1 / pow(10, g * curves[o->curve].mdens.Z)) *
-			 (1 / pow(10, b * curves[o->curve].ydens.Z));
+			 (1 / pow(10, b * curves[o->curve].ydens.Z)) * o->illumZ;
 		/*printf("XYZ output %f %f %f\n", out[0], out[1], out[2]);*/
 
 		in   += 3;
