@@ -53,6 +53,12 @@ property_double (boost, _("Density boost"), 1.0)
 	description(_("Boost paper density to take advantage of increased dynamic range of a monitor compared to a photographic paper"))
 	value_range (0.25, 4)
 	ui_range (1, 2)
+	ui_gamma (2)
+property_double (contrast, _("Contrast boost"), 1.0)
+	description(_("Increase contrast for papers with fixed contrast (usually color papers)"))
+	value_range (0.25, 4)
+	ui_range (0.5, 2)
+	ui_gamma (2)
 
 property_double (dodge, _("Dodge/burn multiplier"), 1.0)
 	description(_("The f-stop of dodge/burn for pure white/black auxillary input"))
@@ -159,6 +165,18 @@ array_min (gfloat * x, guint n)
 	return(min);
 }
 
+static gfloat
+array_max (gfloat * x, guint n)
+{
+	gfloat max = x[0];
+	for (guint i = 1; i < n; i++)
+	{
+		if (x[i] > max)
+			max = x[i];
+	}
+	return(max);
+}
+
 static inline gfloat
 clampE (gfloat x)
 {
@@ -208,6 +226,23 @@ process (GeglOperation       *operation,
 		Dfogy = array_min(curves[o->curve].by,
 				  curves[o->curve].bn) * o->boost;
 	}
+
+	// Calculate exposure for mid density
+	gfloat Dmaxc = array_max(curves[o->curve].ry, curves[o->curve].rn);
+	gfloat Dmaxm = array_max(curves[o->curve].gy, curves[o->curve].gn);
+	gfloat Dmaxy = array_max(curves[o->curve].by, curves[o->curve].bn);
+	gfloat rMid = curve_lerp(curves[o->curve].ry,
+				 curves[o->curve].rx,
+				 curves[o->curve].rn,
+				 Dmaxc / 2);
+	gfloat gMid = curve_lerp(curves[o->curve].gy,
+				 curves[o->curve].gx,
+				 curves[o->curve].gn,
+				 Dmaxm / 2);
+	gfloat bMid = curve_lerp(curves[o->curve].by,
+				 curves[o->curve].bx,
+				 curves[o->curve].bn,
+				 Dmaxy / 2);
 
 	if (!aux)
 	{
@@ -296,6 +331,11 @@ process (GeglOperation       *operation,
 		b -= Dfogy;
 		/*printf("Adjusted RGB density %f %f %f\n", r, g, b);*/
 
+		// Adjust contrast
+		r = (r - rMid) * o->contrast + rMid;
+		g = (g - gMid) * o->contrast + gMid;
+		b = (b - bMid) * o->contrast + bMid;
+
 		// Simulate dye density with exponentiation to get
 		// the CIEXYZ tramsmittance back
 		out[0] = (1 / pow(10, r * curves[o->curve].cdens.X)) *
@@ -334,7 +374,7 @@ gegl_op_class_init (GeglOpClass *klass)
 	gegl_operation_class_set_keys (operation_class,
 		"name",           "gegl:negative-darkroom",
 		"title",          _("Negative Darkroom"),
-		"categories" ,    "color",
+		"categories",     "color",
 		"reference-hash", "d492ac8ef38c336aa79e63b7f39f6139",
 		"description",    _("Simulate a negative film enlargement in "
 				  "an analog darkroom."),
