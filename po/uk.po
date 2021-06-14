@@ -7,16 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-05-15 20:55+0000\n"
-"PO-Revision-Date: 2021-05-16 19:08+0300\n"
+"POT-Creation-Date: 2021-06-14 07:28+0000\n"
+"PO-Revision-Date: 2021-06-14 17:46+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
-"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Lokalize 20.12.0\n"
 
 #: bin/gegl.c:179
@@ -3051,32 +3050,26 @@ msgid "Base enlargement exposure"
 msgstr "Базова експозиція збільшення"
 
 #: operations/common/negative-darkroom.c:34
-#| msgid "Cyan pattern"
 msgid "Cyan filter"
 msgstr "Блакитний фільтр"
 
 #: operations/common/negative-darkroom.c:35
-#| msgid "Cyan exposure compensation for the negative image"
 msgid "Cyan filter compensation for the negative image"
 msgstr "Компенсація фільтрування блакитним для негатива"
 
 #: operations/common/negative-darkroom.c:39
-#| msgid "Magenta pattern"
 msgid "Magenta filter"
 msgstr "Малиновий фільтр"
 
 #: operations/common/negative-darkroom.c:40
-#| msgid "Magenta exposure compensation for the negative image"
 msgid "Magenta filter compensation for the negative image"
 msgstr "Компенсація фільтрування малиновим для негатива"
 
 #: operations/common/negative-darkroom.c:44
-#| msgid "Yellow pattern"
 msgid "Yellow filter"
 msgstr "Жовтий фільтр"
 
 #: operations/common/negative-darkroom.c:45
-#| msgid "Yellow exposure compensation for the negative image"
 msgid "Yellow filter compensation for the negative image"
 msgstr "Компенсація фільтрування жовтим для негатива"
 
@@ -3102,67 +3095,98 @@ msgstr ""
 "діапазоном монітора, порівняно із фотопапером"
 
 #: operations/common/negative-darkroom.c:57
+#| msgid "Contrast"
+msgid "Contrast boost"
+msgstr "Збільшення контрастності"
+
+#: operations/common/negative-darkroom.c:58
+msgid "Increase contrast for papers with fixed contrast (usually color papers)"
+msgstr ""
+"Збільшити контрастність для паперу із фіксованою контрастністю (зазвичай, кольорового паперу)"
+
+#: operations/common/negative-darkroom.c:63
 msgid "Dodge/burn multiplier"
 msgstr "Коефіцієнт освітлення/вигорання"
 
-#: operations/common/negative-darkroom.c:58
+#: operations/common/negative-darkroom.c:64
 msgid "The f-stop of dodge/burn for pure white/black auxillary input"
 msgstr ""
 "Фокусне число освітлення/вигорання для повністю чорно-білих допоміжних "
 "вхідних даних"
 
-#: operations/common/negative-darkroom.c:62
+#: operations/common/negative-darkroom.c:68
 msgid "Enable preflashing"
 msgstr "Увімкнути попередній спалах"
 
-#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:69
 msgid "Show preflash controls"
 msgstr "Показати керування попереднім спалахом"
 
-#: operations/common/negative-darkroom.c:65
-#| msgid "Yellow preflash"
+#: operations/common/negative-darkroom.c:71
 msgid "Red preflash"
 msgstr "Попередній спалах червоним"
 
-#: operations/common/negative-darkroom.c:66
-#| msgid ""
-#| "Preflash the negative with yellow light to reduce contrast of the print"
+#: operations/common/negative-darkroom.c:72
 msgid "Preflash the negative with red light to reduce contrast of the print"
 msgstr ""
 "Попередній спалах у негативі із червоним світлом для зменшення контрастності "
 "відбитка"
 
-#: operations/common/negative-darkroom.c:70
-#| msgid "Cyan preflash"
+#: operations/common/negative-darkroom.c:76
 msgid "Green preflash"
 msgstr "Попередній спалах зеленим"
 
-#: operations/common/negative-darkroom.c:71
-#| msgid ""
-#| "Preflash the negative with magenta light to reduce contrast of the print"
+#: operations/common/negative-darkroom.c:77
 msgid "Preflash the negative with green light to reduce contrast of the print"
 msgstr ""
-"Попередній спалах у негативі із зеленим світлом для зменшення "
-"контрастності відбитка"
+"Попередній спалах у негативі із зеленим світлом для зменшення контрастності "
+"відбитка"
 
-#: operations/common/negative-darkroom.c:75
-#| msgid "Yellow preflash"
+#: operations/common/negative-darkroom.c:81
 msgid "Blue preflash"
 msgstr "Попередній спалах синім"
 
-#: operations/common/negative-darkroom.c:76
-#| msgid ""
-#| "Preflash the negative with yellow light to reduce contrast of the print"
+#: operations/common/negative-darkroom.c:82
 msgid "Preflash the negative with blue light to reduce contrast of the print"
 msgstr ""
 "Попередній спалах у негативі із синім світлом для зменшення контрастності "
 "відбитка"
 
-#: operations/common/negative-darkroom.c:336
+#: operations/common/negative-darkroom.c:86
+#| msgid "Hue adjustment"
+msgid "Illuminant adjustment"
+msgstr "Коригування освітлювача"
+
+#: operations/common/negative-darkroom.c:87
+#| msgid "Show preflash controls"
+msgid "Show illuminamt controls"
+msgstr "Показати засоби керування освітлювачем"
+
+#: operations/common/negative-darkroom.c:88
+#| msgid "Dodge/burn multiplier"
+msgid "X multiplier"
+msgstr "Коефіцієнт X"
+
+#: operations/common/negative-darkroom.c:89
+msgid "Adjust the X tristimulus value for output"
+msgstr ""
+"Скоригувати триколірне значення X для виведення"
+
+#: operations/common/negative-darkroom.c:92
+#| msgid "Dodge/burn multiplier"
+msgid "Z multiplier"
+msgstr "Коефіцієнт Z"
+
+#: operations/common/negative-darkroom.c:93
+msgid "Adjust the Z tristimulus value for output"
+msgstr ""
+"Скоригувати триколірне значення Z для виведення"
+
+#: operations/common/negative-darkroom.c:386
 msgid "Negative Darkroom"
 msgstr "Темна кімната для негативів"
 
-#: operations/common/negative-darkroom.c:339
+#: operations/common/negative-darkroom.c:389
 msgid "Simulate a negative film enlargement in an analog darkroom."
 msgstr "Імітувати збільшення плівкового негатива у аналоговій темній кімнаті."
 
