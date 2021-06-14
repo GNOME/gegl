@@ -84,7 +84,7 @@ property_double (flashY, _("Blue preflash"), 0)
 	ui_meta("visible", "preflash")
 
 property_boolean (illum, _("Illuminant adjustment"), FALSE)
-	description (_("Show illuminamt controls"))
+	description (_("Show illuminant controls"))
 property_double (illumX, _("X multiplier"), 0.965)
 	description(_("Adjust the X tristimulus value for output"))
 	value_range (0.7, 1.3)
