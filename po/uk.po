@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-06-14 07:28+0000\n"
-"PO-Revision-Date: 2021-06-14 17:46+0300\n"
+"POT-Creation-Date: 2021-06-20 15:57+0000\n"
+"PO-Revision-Date: 2021-06-20 19:06+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -3095,21 +3095,22 @@ msgstr ""
 "діапазоном монітора, порівняно із фотопапером"
 
 #: operations/common/negative-darkroom.c:57
-#| msgid "Contrast"
 msgid "Contrast boost"
 msgstr "Збільшення контрастності"
 
 #: operations/common/negative-darkroom.c:58
 msgid "Increase contrast for papers with fixed contrast (usually color papers)"
 msgstr ""
-"Збільшити контрастність для паперу із фіксованою контрастністю (зазвичай, кольорового паперу)"
+"Збільшити контрастність для паперу із фіксованою контрастністю (зазвичай, "
+"кольорового паперу)"
 
 #: operations/common/negative-darkroom.c:63
 msgid "Dodge/burn multiplier"
 msgstr "Коефіцієнт освітлення/вигорання"
 
 #: operations/common/negative-darkroom.c:64
-msgid "The f-stop of dodge/burn for pure white/black auxillary input"
+#| msgid "The f-stop of dodge/burn for pure white/black auxillary input"
+msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
 msgstr ""
 "Фокусне число освітлення/вигорання для повністю чорно-білих допоміжних "
 "вхідних даних"
@@ -3153,34 +3154,28 @@ msgstr ""
 "відбитка"
 
 #: operations/common/negative-darkroom.c:86
-#| msgid "Hue adjustment"
 msgid "Illuminant adjustment"
 msgstr "Коригування освітлювача"
 
 #: operations/common/negative-darkroom.c:87
-#| msgid "Show preflash controls"
 msgid "Show illuminamt controls"
 msgstr "Показати засоби керування освітлювачем"
 
 #: operations/common/negative-darkroom.c:88
-#| msgid "Dodge/burn multiplier"
 msgid "X multiplier"
 msgstr "Коефіцієнт X"
 
 #: operations/common/negative-darkroom.c:89
 msgid "Adjust the X tristimulus value for output"
-msgstr ""
-"Скоригувати триколірне значення X для виведення"
+msgstr "Скоригувати триколірне значення X для виведення"
 
 #: operations/common/negative-darkroom.c:92
-#| msgid "Dodge/burn multiplier"
 msgid "Z multiplier"
 msgstr "Коефіцієнт Z"
 
 #: operations/common/negative-darkroom.c:93
 msgid "Adjust the Z tristimulus value for output"
-msgstr ""
-"Скоригувати триколірне значення Z для виведення"
+msgstr "Скоригувати триколірне значення Z для виведення"
 
 #: operations/common/negative-darkroom.c:386
 msgid "Negative Darkroom"
@@ -8757,9 +8752,13 @@ msgid "Border Align"
 msgstr "Вирівнювання за рамкою"
 
 #: operations/transform/border-align.c:183
+#| msgid ""
+#| "Aligns box of input rectangle with border of compositing target or aux' "
+#| "bounding-box border, if aux pad is not connectd the op tries to figure "
+#| "out which bounding box' border applies."
 msgid ""
 "Aligns box of input rectangle with border of compositing target or aux' "
-"bounding-box border, if aux pad is not connectd the op tries to figure out "
+"bounding-box border, if aux pad is not connected the op tries to figure out "
 "which bounding box' border applies."
 msgstr ""
 "Вирівнює вхідний прямокутний блок за допомогою рамки композитної тілі або "
@@ -8990,8 +8989,11 @@ msgid "Edge band"
 msgstr "Смуга країв"
 
 #: operations/workshop/band-tune.c:41
+#| msgid ""
+#| "Features size for edge band, used to compensate for loos of edges in "
+#| "detail pass."
 msgid ""
-"Features size for edge band, used to compensate for loos of edges in detail "
+"Features size for edge band, used to compensate for loss of edges in detail "
 "pass."
 msgstr ""
 "Розмір деталей для смуги країв, використовується для компенсації втрати "
