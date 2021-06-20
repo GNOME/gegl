@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-05-15 20:55+0000\n"
-"PO-Revision-Date: 2021-05-16 12:08+0200\n"
+"POT-Creation-Date: 2021-06-14 07:28+0000\n"
+"PO-Revision-Date: 2021-06-20 10:58+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -3094,58 +3094,92 @@ msgstr ""
 "dynamicznego monitora w porównaniu do papieru fotograficznego"
 
 #: operations/common/negative-darkroom.c:57
+msgid "Contrast boost"
+msgstr "Wzmocnienie kontrastu"
+
+#: operations/common/negative-darkroom.c:58
+msgid "Increase contrast for papers with fixed contrast (usually color papers)"
+msgstr ""
+"Zwiększa kontrast dla papierów o stałym kontraście (zwykle papierów "
+"kolorowych)"
+
+#: operations/common/negative-darkroom.c:63
 msgid "Dodge/burn multiplier"
 msgstr "Mnożnik rozjaśniania/przyciemniania"
 
-#: operations/common/negative-darkroom.c:58
+#: operations/common/negative-darkroom.c:64
 msgid "The f-stop of dodge/burn for pure white/black auxillary input"
 msgstr ""
 "Przysłona rozjaśniania/przyciemniania dla całkowicie białego/czarnego "
 "wyjścia pomocniczego"
 
-#: operations/common/negative-darkroom.c:62
+#: operations/common/negative-darkroom.c:68
 msgid "Enable preflashing"
 msgstr "Wstępne naświetlenie"
 
-#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:69
 msgid "Show preflash controls"
 msgstr "Sterowanie wstępnym naświetleniem"
 
-#: operations/common/negative-darkroom.c:65
+#: operations/common/negative-darkroom.c:71
 msgid "Red preflash"
 msgstr "Wstępne naświetlenie czerwonego"
 
-#: operations/common/negative-darkroom.c:66
+#: operations/common/negative-darkroom.c:72
 msgid "Preflash the negative with red light to reduce contrast of the print"
 msgstr ""
 "Wstępnie naświetla negatyw za pomocą czerwonego światła, aby zmniejszyć "
 "kontrast odbitki"
 
-#: operations/common/negative-darkroom.c:70
+#: operations/common/negative-darkroom.c:76
 msgid "Green preflash"
 msgstr "Wstępne naświetlenie zielonego"
 
-#: operations/common/negative-darkroom.c:71
+#: operations/common/negative-darkroom.c:77
 msgid "Preflash the negative with green light to reduce contrast of the print"
 msgstr ""
 "Wstępnie naświetla negatyw za pomocą zielonego światła, aby zmniejszyć "
 "kontrast odbitki"
 
-#: operations/common/negative-darkroom.c:75
+#: operations/common/negative-darkroom.c:81
 msgid "Blue preflash"
 msgstr "Wstępne naświetlenie niebieskiego"
 
-#: operations/common/negative-darkroom.c:76
+#: operations/common/negative-darkroom.c:82
 msgid "Preflash the negative with blue light to reduce contrast of the print"
 msgstr ""
 "Wstępnie naświetla negatyw za pomocą niebieskiego światła, aby zmniejszyć "
 "kontrast odbitki"
 
-#: operations/common/negative-darkroom.c:336
+#: operations/common/negative-darkroom.c:86
+msgid "Illuminant adjustment"
+msgstr "Dostosowanie oświetlacza"
+
+#: operations/common/negative-darkroom.c:87
+msgid "Show illuminamt controls"
+msgstr "Sterowanie oświetlaczem"
+
+#: operations/common/negative-darkroom.c:88
+msgid "X multiplier"
+msgstr "Mnożnik X"
+
+#: operations/common/negative-darkroom.c:89
+msgid "Adjust the X tristimulus value for output"
+msgstr "Dostosowuje trójchromatyczną wartość X dla wyjścia"
+
+#: operations/common/negative-darkroom.c:92
+msgid "Z multiplier"
+msgstr "Mnożnik Z"
+
+#: operations/common/negative-darkroom.c:93
+msgid "Adjust the Z tristimulus value for output"
+msgstr "Dostosowuje trójchromatyczną wartość Z dla wyjścia"
+
+#: operations/common/negative-darkroom.c:386
 msgid "Negative Darkroom"
 msgstr "Ciemnia fotograficzna"
 
-#: operations/common/negative-darkroom.c:339
+#: operations/common/negative-darkroom.c:389
 msgid "Simulate a negative film enlargement in an analog darkroom."
 msgstr "Symuluje powiększanie kliszy fotograficznej w analogowej ciemni."
 
