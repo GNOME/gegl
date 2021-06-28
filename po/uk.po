@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-06-20 15:57+0000\n"
-"PO-Revision-Date: 2021-06-20 19:06+0300\n"
+"POT-Creation-Date: 2021-06-27 21:32+0000\n"
+"PO-Revision-Date: 2021-06-28 10:54+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -3109,7 +3109,6 @@ msgid "Dodge/burn multiplier"
 msgstr "Коефіцієнт освітлення/вигорання"
 
 #: operations/common/negative-darkroom.c:64
-#| msgid "The f-stop of dodge/burn for pure white/black auxillary input"
 msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
 msgstr ""
 "Фокусне число освітлення/вигорання для повністю чорно-білих допоміжних "
@@ -3158,7 +3157,8 @@ msgid "Illuminant adjustment"
 msgstr "Коригування освітлювача"
 
 #: operations/common/negative-darkroom.c:87
-msgid "Show illuminamt controls"
+#| msgid "Show illuminamt controls"
+msgid "Show illuminant controls"
 msgstr "Показати засоби керування освітлювачем"
 
 #: operations/common/negative-darkroom.c:88
@@ -8752,10 +8752,6 @@ msgid "Border Align"
 msgstr "Вирівнювання за рамкою"
 
 #: operations/transform/border-align.c:183
-#| msgid ""
-#| "Aligns box of input rectangle with border of compositing target or aux' "
-#| "bounding-box border, if aux pad is not connectd the op tries to figure "
-#| "out which bounding box' border applies."
 msgid ""
 "Aligns box of input rectangle with border of compositing target or aux' "
 "bounding-box border, if aux pad is not connected the op tries to figure out "
@@ -8989,9 +8985,6 @@ msgid "Edge band"
 msgstr "Смуга країв"
 
 #: operations/workshop/band-tune.c:41
-#| msgid ""
-#| "Features size for edge band, used to compensate for loos of edges in "
-#| "detail pass."
 msgid ""
 "Features size for edge band, used to compensate for loss of edges in detail "
 "pass."
