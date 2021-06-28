@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-05-15 20:55+0000\n"
-"PO-Revision-Date: 2021-05-18 12:00+0200\n"
+"POT-Creation-Date: 2021-06-20 15:57+0000\n"
+"PO-Revision-Date: 2021-06-26 16:41+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 3.0\n"
 
 #: bin/gegl.c:179
 #, c-format
@@ -363,8 +363,7 @@ msgstr "Dónde almacena GEGL su espacio de intercambio"
 
 #: gegl/gegl-init.c:217
 msgid "Compression algorithm used for data stored in the swap"
-msgstr ""
-"Algoritmo de compresión usando para datos almacenados en el intercambio"
+msgstr "Algoritmo de compresión usado para datos almacenados en el intercambio"
 
 #: gegl/gegl-init.c:222
 msgid "How much memory to (approximately) use for caching imagery"
@@ -3116,57 +3115,92 @@ msgstr ""
 "aumentado de un monitor comparado con el papel fotográfico"
 
 #: operations/common/negative-darkroom.c:57
+msgid "Contrast boost"
+msgstr "Aumento de contraste"
+
+#: operations/common/negative-darkroom.c:58
+msgid "Increase contrast for papers with fixed contrast (usually color papers)"
+msgstr ""
+"Aumentar el contraste para papeles con contraste fijo (generalmente papeles "
+"de color)"
+
+#: operations/common/negative-darkroom.c:63
 msgid "Dodge/burn multiplier"
 msgstr "Multiplicador de blanquear/ennegrecer"
 
-#: operations/common/negative-darkroom.c:58
-msgid "The f-stop of dodge/burn for pure white/black auxillary input"
+#: operations/common/negative-darkroom.c:64
+msgid "The f-stop of dodge/burn for pure white/black auxiliary input"
 msgstr ""
-"El f-stop de blanquear/ennegrecer para salida auxiliar de blanco/negro puro"
+"El f-stop de blanquear/ennegrecer para la entrada auxiliar de blanco/negro "
+"puro"
 
-#: operations/common/negative-darkroom.c:62
+#: operations/common/negative-darkroom.c:68
 msgid "Enable preflashing"
 msgstr "Activar pre-exposición"
 
-#: operations/common/negative-darkroom.c:63
+#: operations/common/negative-darkroom.c:69
 msgid "Show preflash controls"
 msgstr "Mostrar controles de pre-exposición"
 
-#: operations/common/negative-darkroom.c:65
+#: operations/common/negative-darkroom.c:71
 msgid "Red preflash"
 msgstr "Preexposición roja"
 
-#: operations/common/negative-darkroom.c:66
+#: operations/common/negative-darkroom.c:72
 msgid "Preflash the negative with red light to reduce contrast of the print"
 msgstr ""
 "Pre-exponer el negativo con luz roja para reducir el contraste de la "
 "impresión"
 
-#: operations/common/negative-darkroom.c:70
+#: operations/common/negative-darkroom.c:76
 msgid "Green preflash"
 msgstr "Preexposición verde"
 
-#: operations/common/negative-darkroom.c:71
+#: operations/common/negative-darkroom.c:77
 msgid "Preflash the negative with green light to reduce contrast of the print"
 msgstr ""
 "Pre-exponer el negativo con luz verde para reducir el contraste de la "
 "impresión"
 
-#: operations/common/negative-darkroom.c:75
+#: operations/common/negative-darkroom.c:81
 msgid "Blue preflash"
 msgstr "Preexposición azul"
 
-#: operations/common/negative-darkroom.c:76
+#: operations/common/negative-darkroom.c:82
 msgid "Preflash the negative with blue light to reduce contrast of the print"
 msgstr ""
 "Pre-exponer el negativo con luz azul para reducir el contraste de la "
 "impresión"
 
-#: operations/common/negative-darkroom.c:336
+#: operations/common/negative-darkroom.c:86
+msgid "Illuminant adjustment"
+msgstr "Ajuste de iluminante"
+
+#: operations/common/negative-darkroom.c:87
+msgid "Show illuminamt controls"
+msgstr "Mostrar controles de iluminante"
+
+#: operations/common/negative-darkroom.c:88
+msgid "X multiplier"
+msgstr "Multiplicador de X"
+
+#: operations/common/negative-darkroom.c:89
+msgid "Adjust the X tristimulus value for output"
+msgstr "Ajustar el valor de triestímulo X para la salida"
+
+#: operations/common/negative-darkroom.c:92
+msgid "Z multiplier"
+msgstr "Multiplicador de Z"
+
+#: operations/common/negative-darkroom.c:93
+msgid "Adjust the Z tristimulus value for output"
+msgstr "Ajustar el valor de triestímulo Z para la salida"
+
+#: operations/common/negative-darkroom.c:386
 msgid "Negative Darkroom"
 msgstr "Sala oscura negativa"
 
-#: operations/common/negative-darkroom.c:339
+#: operations/common/negative-darkroom.c:389
 msgid "Simulate a negative film enlargement in an analog darkroom."
 msgstr "Simular una el negativo de una película en una sala oscura análoga."
 
@@ -8764,7 +8798,7 @@ msgstr "Alineación del borde"
 #: operations/transform/border-align.c:183
 msgid ""
 "Aligns box of input rectangle with border of compositing target or aux' "
-"bounding-box border, if aux pad is not connectd the op tries to figure out "
+"bounding-box border, if aux pad is not connected the op tries to figure out "
 "which bounding box' border applies."
 msgstr ""
 "Alinea el cuadro del rectángulo de entrada con el borde del objetivo de "
@@ -9007,7 +9041,7 @@ msgstr "Banda del borde"
 
 #: operations/workshop/band-tune.c:41
 msgid ""
-"Features size for edge band, used to compensate for loos of edges in detail "
+"Features size for edge band, used to compensate for loss of edges in detail "
 "pass."
 msgstr ""
 "Tamaño de las características de la banda de borde, utilizado para compensar "
