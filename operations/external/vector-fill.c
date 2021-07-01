@@ -146,7 +146,7 @@ process (GeglOperation       *operation,
   }
   else
   {
-    formats[0]=babl_format ("R'G'B'A u8");
+    formats[0]=babl_format ("RGBA float");
   }
 
   if (input)
@@ -186,19 +186,11 @@ process (GeglOperation       *operation,
       {
         guchar *data = gegl_buffer_linear_open (output, result, NULL,
                                                 formats[i]);
-#if 0
-        cairo_surface_t *surface = cairo_image_surface_create_for_data (data,
-                                                     CAIRO_FORMAT_ARGB32,
-                                                     result->width,
-                                                     result->height,
-                                                     result->width * 4);
-        cairo_t *cr = cairo_create (surface);
-#endif
         /*  we should work directly with floating point data instead .. but as of now
          *  that yields an aliased result - so using u8 until that gets resolved.
          */
         Ctx *ctx = ctx_new_for_framebuffer (data, result->width, result->height,
-                                            result->width * 4, CTX_FORMAT_RGBA8);
+                                            result->width * 4 * 4, CTX_FORMAT_RGBAF);
 
         ctx_translate (ctx, -result->x, -result->y);
         if (g_str_equal (o->fill_rule, "evenodd"))
@@ -320,6 +312,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "title",       _("Fill Path"),
     "categories",  "render:vector",
     "reference-hash", "b4bd682b327caa2444c6aa93cd009396",
+    "reference-hashB", "0ab76036217007d53232b39de4bd5cf2",
     "description", _("Renders a filled region"),
     "reference-composition", composition,
     NULL);
