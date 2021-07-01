@@ -55,19 +55,19 @@ babl-master:
     - ninja -C _build install
     - ccache -s
 
-babl-min:
-  extends: .babl-base
-  script:
-    - grep babl ../meson.build | grep ">=" | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
-    - if [ x$(( $(cut .babl_min_version -f 3 -d _) % 2)) = x1 ] ; then touch .use_master ; fi
-    - test -e .use_master && git fetch
-    - test -e .use_master && git checkout master
-    - test -e .use_master || git fetch --no-tags origin "refs/tags/BABL_`cat .babl_min_version`:refs/tags/MIN_VERSION"
-    - test -e .use_master || git checkout MIN_VERSION
-    - meson -Dprefix="$BABL_PREFIX" _build
-    - ninja -C _build
-    - ninja -C _build install
-    - ccache -s
+#babl-min:
+#  extends: .babl-base
+#  script:
+#    - grep babl ../meson.build | grep ">=" | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sed 's/\./_/g' > .babl_min_version
+#    - if [ x$(( $(cut .babl_min_version -f 3 -d _) % 2)) = x1 ] ; then touch .use_master ; fi
+#    - test -e .use_master && git fetch
+#    - test -e .use_master && git checkout master
+#    - test -e .use_master || git fetch --no-tags origin "refs/tags/BABL_`cat .babl_min_version`:refs/tags/MIN_VERSION"
+#    - test -e .use_master || git checkout MIN_VERSION
+#    - meson -Dprefix="$BABL_PREFIX" _build
+#    - ninja -C _build
+#    - ninja -C _build install
+#    - ccache -s
 
 
 .gegl-deps:
@@ -134,11 +134,11 @@ babl-min:
   variables:
     BUILD_TYPE: "debugoptimized"
 
-default-min-babl:
-  extends: .build-default
-  dependencies:
-    - babl-min
-  needs: ["babl-min"]
+#default-min-babl:
+#  extends: .build-default
+#  dependencies:
+#    - babl-min
+#  needs: ["babl-min"]
 
 fullconfig-master-babl:
   extends: .build-all
