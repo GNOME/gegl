@@ -78,7 +78,7 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
-  const Babl *color_format = gegl_color_get_format (o->color);
+  const Babl *color_format  = gegl_color_get_format (o->color);
   BablModelFlag model_flags = babl_get_model_flags (color_format);
 
   if (model_flags & BABL_MODEL_FLAG_CMYK)

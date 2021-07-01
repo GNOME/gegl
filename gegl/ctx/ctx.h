@@ -519,14 +519,14 @@ _CtxGlyph
   float    y;
 };
 
-CtxTextAlign ctx_get_text_align (Ctx *ctx);
-CtxTextBaseline ctx_get_text_baseline (Ctx *ctx);
-CtxTextDirection ctx_get_text_direction (Ctx *ctx);
-CtxFillRule ctx_get_fill_rule (Ctx *ctx);
-CtxLineCap ctx_get_line_cap (Ctx *ctx);
-CtxLineJoin ctx_get_line_join (Ctx *ctx);
+CtxTextAlign       ctx_get_text_align (Ctx *ctx);
+CtxTextBaseline    ctx_get_text_baseline (Ctx *ctx);
+CtxTextDirection   ctx_get_text_direction (Ctx *ctx);
+CtxFillRule        ctx_get_fill_rule (Ctx *ctx);
+CtxLineCap         ctx_get_line_cap (Ctx *ctx);
+CtxLineJoin        ctx_get_line_join (Ctx *ctx);
 CtxCompositingMode ctx_get_compositing_mode (Ctx *ctx);
-CtxBlend ctx_get_blend_mode (Ctx *ctx);
+CtxBlend           ctx_get_blend_mode (Ctx *ctx);
 
 void ctx_gradient_add_stop_string (Ctx *ctx, float pos, const char *color);
 
@@ -1693,10 +1693,10 @@ typedef enum _CtxColorSpace CtxColorSpace;
  *
  * The set profiles follows the graphics state.
  */
-void ctx_color_space (Ctx           *ctx,
-                      CtxColorSpace  space_slot,
-                      unsigned char *data,
-                      int            data_length);
+void ctx_colorspace (Ctx           *ctx,
+                     CtxColorSpace  space_slot,
+                     unsigned char *data,
+                     int            data_length);
 
 void
 ctx_parser_set_size (CtxParser *parser,
@@ -10499,20 +10499,25 @@ void ctx_rasterizer_colorspace_icc (CtxState      *state,
    const Babl *space = NULL;
 
    if (icc_data == NULL) space = babl_space ("sRGB");
-   else if (icc_length < 16)
+   else if (icc_length < 32)
    {
-      char tmp[24];
-      int i;
-      for (i = 0; i < icc_length; i++)
-        tmp[i]= (icc_data[i]>='A' && icc_data[i]<='Z')?icc_data[i]+('a'-'A'):icc_data[i];
-      tmp[icc_length]=0;
-      if (!strcmp (tmp, "srgb"))            space = babl_space ("sRGB");
-      else if (!strcmp (tmp, "scrgb"))      space = babl_space ("scRGB");
-      else if (!strcmp (tmp, "acescg"))     space = babl_space ("ACEScg");
-      else if (!strcmp (tmp, "adobe"))      space = babl_space ("Adobe");
-      else if (!strcmp (tmp, "apple"))      space = babl_space ("Apple");
-      else if (!strcmp (tmp, "rec2020"))    space = babl_space ("Rec2020");
-      else if (!strcmp (tmp, "aces2065-1")) space = babl_space ("ACES2065-1");
+      if (icc_data[0] == '0' && icc_data[1] == 'x')
+        sscanf (icc_data, "%p", &space);
+      else
+      {
+        char tmp[24];
+        int i;
+        for (i = 0; i < icc_length; i++)
+          tmp[i]= (icc_data[i]>='A' && icc_data[i]<='Z')?icc_data[i]+('a'-'A'):icc_data[i];
+        tmp[icc_length]=0;
+        if (!strcmp (tmp, "srgb"))            space = babl_space ("sRGB");
+        else if (!strcmp (tmp, "scrgb"))      space = babl_space ("scRGB");
+        else if (!strcmp (tmp, "acescg"))     space = babl_space ("ACEScg");
+        else if (!strcmp (tmp, "adobe"))      space = babl_space ("Adobe");
+        else if (!strcmp (tmp, "apple"))      space = babl_space ("Apple");
+        else if (!strcmp (tmp, "rec2020"))    space = babl_space ("Rec2020");
+        else if (!strcmp (tmp, "aces2065-1")) space = babl_space ("ACES2065-1");
+      }
    }
 
    if (!space)
@@ -31899,7 +31904,6 @@ ctx_float_porter_duff (CtxRasterizer         *rasterizer,
                        CtxBlend               blend)
 {
   float *dstf = (float*)dst;
-  float *srcf = (float*)src;
 
   CtxPorterDuffFactor f_s, f_d;
   ctx_porter_duff_factors (compositing_mode, &f_s, &f_d);
@@ -31952,8 +31956,9 @@ ctx_float_porter_duff (CtxRasterizer         *rasterizer,
       for (int c = 0; c < components; c++)
       {
         float res;
-        /* these switches and this whole function disappear when
-         * compiled when the enum values passed in are constants.
+        /* these switches and this whole function is written to be
+         * inlined when compiled when the enum values passed in are
+         * constants.
          */
         switch (f_s)
         {
