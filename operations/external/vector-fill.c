@@ -146,7 +146,7 @@ process (GeglOperation       *operation,
   }
   else
   {
-    formats[0]=babl_format ("RGBA float");
+    formats[0]=babl_format ("RaGaBaA float");
   }
 
   if (input)
@@ -311,8 +311,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:fill-path",
     "title",       _("Fill Path"),
     "categories",  "render:vector",
-    "reference-hash", "b4bd682b327caa2444c6aa93cd009396",
-    "reference-hashB", "0ab76036217007d53232b39de4bd5cf2",
+    "reference-hash", "92f09df038c01fed0460305d33f4250b",
     "description", _("Renders a filled region"),
     "reference-composition", composition,
     NULL);
