@@ -141,8 +141,7 @@ process (GeglOperation       *operation,
 
   if (is_cmyk)
   {
-    formats[0]=babl_format ("cairo-ACYK32");
-    formats[1]=babl_format ("cairo-ACMK32");
+    formats[0]=babl_format ("camayakaA float");
   }
   else
   {
@@ -186,9 +185,6 @@ process (GeglOperation       *operation,
       {
         guchar *data = gegl_buffer_linear_open (output, result, NULL,
                                                 formats[i]);
-        /*  we should work directly with floating point data instead .. but as of now
-         *  that yields an aliased result - so using u8 until that gets resolved.
-         */
         Ctx *ctx = ctx_new_for_framebuffer (data, result->width, result->height,
                                             result->width * 4 * 4, CTX_FORMAT_RGBAF);
 
@@ -198,18 +194,10 @@ process (GeglOperation       *operation,
 
         gegl_path_ctx_play (o->d, ctx);
 
-        switch (i+is_cmyk)
-        {
-          case 0:
+        if (is_cmyk)
+            ctx_cmyka (ctx, color[0], color[1], color[2], color[3], color[4]);
+        else
             ctx_rgba (ctx, color[0], color[1], color[2], color[3]);
-            break;
-          case 1:
-            ctx_rgba (ctx, color[0], color[2], color[3], color[4]);
-            break;
-          case 2:
-            ctx_rgba (ctx, color[0], color[1], color[3], color[4]);
-            break;
-        }
         ctx_fill (ctx);
         ctx_free (ctx);
 
