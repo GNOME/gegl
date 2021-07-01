@@ -16,7 +16,6 @@ endif
 if cairo.found()
   operations += [
     { 'name': 'path',           'deps': cairo },
-    { 'name': 'vector-fill',    'deps': cairo },
     { 'name': 'vector-stroke',  'deps': cairo },
     { 'name': 'npd',            'deps': [ cairo, libnpd ] },
   ]
