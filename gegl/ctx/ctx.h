@@ -32553,6 +32553,7 @@ ctx_setup_CMYKAF (CtxRasterizer *rasterizer)
   if (gstate->source_fill.type == CTX_SOURCE_COLOR)
     {
       rasterizer->comp_op = ctx_CMYKAF_porter_duff_color;
+      rasterizer->comp_op = ctx_CMYKAF_porter_duff_generic;
  //     rasterizer->fragment = NULL;
       ctx_color_get_cmyka (rasterizer->state, &gstate->source_fill.color, (float*)rasterizer->color);
       if (gstate->global_alpha_u8 != 255)
@@ -32563,10 +32564,10 @@ ctx_setup_CMYKAF (CtxRasterizer *rasterizer)
     rasterizer->comp_op = ctx_CMYKAF_porter_duff_generic;
   }
 
-
 #if CTX_INLINED_NORMAL
   if (gstate->compositing_mode == CTX_COMPOSITE_CLEAR)
     rasterizer->comp_op = ctx_CMYKAF_clear_normal;
+#if 0
   else
     switch (gstate->blend_mode)
     {
@@ -32617,6 +32618,7 @@ ctx_setup_CMYKAF (CtxRasterizer *rasterizer)
         }
         break;
     }
+#endif
 #endif
 }
 

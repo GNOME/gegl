@@ -87,7 +87,7 @@ prepare (GeglOperation *operation)
   }
   else
   {
-    gegl_operation_set_format (operation, "output", babl_format ("R'aG'aB'aA float"));
+    gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
   }
 
   if (o->transform && o->transform[0] != '\0')
@@ -136,17 +136,7 @@ process (GeglOperation       *operation,
   gboolean need_fill = FALSE;
   const Babl *format =  gegl_operation_get_format (operation, "output");
   gdouble color[5] = {0, 0, 0, 0, 0};
-  const Babl *formats[4] = {NULL, NULL, NULL, NULL};
   int is_cmyk = babl_get_model_flags (format) & BABL_MODEL_FLAG_CMYK ? 1 : 0;
-
-  if (is_cmyk)
-  {
-    formats[0]=babl_format ("camayakaA float");
-  }
-  else
-  {
-    formats[0]=babl_format ("RaGaBaA float");
-  }
 
   if (input)
     {
@@ -161,7 +151,7 @@ process (GeglOperation       *operation,
     {
       if (is_cmyk)
       {
-        gegl_color_get_pixel (o->color, babl_format ("cmykA double"), color);
+        gegl_color_get_pixel (o->color, babl_format ("CMYKA double"), color);
         color[4] *= o->opacity;
         if (color[4] > 0.001)
           need_fill=TRUE;
@@ -181,12 +171,16 @@ process (GeglOperation       *operation,
 
       g_mutex_lock (&mutex);
 
-      for (int i = 0; formats[i]; i++)
       {
         guchar *data = gegl_buffer_linear_open (output, result, NULL,
-                                                formats[i]);
-        Ctx *ctx = ctx_new_for_framebuffer (data, result->width, result->height,
-                                            result->width * 4 * 4, CTX_FORMAT_RGBAF);
+                                                format);
+        Ctx *ctx;
+        if (is_cmyk)
+          ctx = ctx_new_for_framebuffer (data, result->width, result->height,
+                                         result->width * 5 * 4, CTX_FORMAT_CMYKAF);
+        else
+          ctx = ctx_new_for_framebuffer (data, result->width, result->height,
+                                         result->width * 4 * 4, CTX_FORMAT_RGBAF);
 
         ctx_translate (ctx, -result->x, -result->y);
         if (g_str_equal (o->fill_rule, "evenodd"))
