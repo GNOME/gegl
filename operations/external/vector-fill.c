@@ -78,16 +78,23 @@ static void
 prepare (GeglOperation *operation)
 {
   GeglProperties *o = GEGL_PROPERTIES (operation);
+  const Babl *input_format  = gegl_operation_get_source_format (operation, "input");
+  const Babl *input_space   = input_format?babl_format_get_space (input_format):NULL;
   const Babl *color_format  = gegl_color_get_format (o->color);
-  BablModelFlag model_flags = babl_get_model_flags (color_format);
+  BablModelFlag model_flags = input_format?babl_get_model_flags (input_format):0;
+
+  if (input_space == NULL){
+    input_space = babl_format_get_space (color_format);
+    model_flags = babl_get_model_flags (color_format);
+  }
 
   if (model_flags & BABL_MODEL_FLAG_CMYK)
   {
-    gegl_operation_set_format (operation, "output", babl_format ("camayakaA float"));
+    gegl_operation_set_format (operation, "output", babl_format_with_space ("camayakaA float", input_space));
   }
   else
   {
-    gegl_operation_set_format (operation, "output", babl_format ("RaGaBaA float"));
+    gegl_operation_set_format (operation, "output", babl_format_with_space ("RaGaBaA float", input_space));
   }
 
   if (o->transform && o->transform[0] != '\0')
@@ -135,8 +142,19 @@ process (GeglOperation       *operation,
   GeglProperties *o = GEGL_PROPERTIES (operation);
   gboolean need_fill = FALSE;
   const Babl *format =  gegl_operation_get_format (operation, "output");
+  const Babl *device_space  =  babl_format_get_space (format);
   gdouble color[5] = {0, 0, 0, 0, 0};
   int is_cmyk = babl_get_model_flags (format) & BABL_MODEL_FLAG_CMYK ? 1 : 0;
+  const Babl *color_format  = gegl_color_get_format (o->color);
+  const Babl *color_space   = babl_format_get_space (color_format);
+
+  char device_space_ascii[64]="";
+  char color_space_ascii[64]="";
+
+  if (device_space)
+    sprintf (device_space_ascii, "%p", device_space);
+  if (color_space)
+    sprintf (color_space_ascii, "%p", color_space);
 
   if (input)
     {
@@ -151,14 +169,14 @@ process (GeglOperation       *operation,
     {
       if (is_cmyk)
       {
-        gegl_color_get_pixel (o->color, babl_format ("CMYKA double"), color);
+        gegl_color_get_pixel (o->color, babl_format_with_space ("CMYKA double", color_space), color);
         color[4] *= o->opacity;
         if (color[4] > 0.001)
           need_fill=TRUE;
       }
       else
       {
-        gegl_color_get_pixel (o->color, babl_format ("R'G'B'A double"), color);
+        gegl_color_get_pixel (o->color, babl_format_with_space ("R'G'B'A double", color_space), color);
         color[3] *= o->opacity;
         if (color[3] > 0.001)
           need_fill=TRUE;
@@ -181,6 +199,14 @@ process (GeglOperation       *operation,
         else
           ctx = ctx_new_for_framebuffer (data, result->width, result->height,
                                          result->width * 4 * 4, CTX_FORMAT_RGBAF);
+
+        if (!is_cmyk)
+        {
+          if (device_space)
+            ctx_colorspace (ctx, CTX_COLOR_SPACE_DEVICE_RGB, device_space_ascii, strlen (device_space_ascii)+1);
+          if (color_space)
+            ctx_colorspace (ctx, CTX_COLOR_SPACE_USER_RGB, color_space_ascii, strlen (color_space_ascii)+1);
+        }
 
         ctx_translate (ctx, -result->x, -result->y);
         if (g_str_equal (o->fill_rule, "evenodd"))
