@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-06-20 15:57+0000\n"
-"PO-Revision-Date: 2021-06-27 10:33+0200\n"
+"POT-Creation-Date: 2021-06-27 21:32+0000\n"
+"PO-Revision-Date: 2021-07-04 18:18+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -3156,7 +3156,7 @@ msgid "Illuminant adjustment"
 msgstr "Dostosowanie oświetlacza"
 
 #: operations/common/negative-darkroom.c:87
-msgid "Show illuminamt controls"
+msgid "Show illuminant controls"
 msgstr "Sterowanie oświetlaczem"
 
 #: operations/common/negative-darkroom.c:88
