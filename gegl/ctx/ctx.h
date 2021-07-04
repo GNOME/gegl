@@ -5367,7 +5367,9 @@ static inline char *ctx_strstr (const char *h, const char *n)
 #include <stdio.h>
 #include <unistd.h>
 #include <math.h>
+#if CTX_EVENTS
 #include <sys/select.h> 
+#endif
 #endif
 
 #define CTX_BRANCH_HINTS  1
@@ -6754,8 +6756,8 @@ int    ctx_pcm_queue             (Ctx *ctx, const int8_t *data, int frames);
 #include <pthread.h>
 #if CTX_ALSA_AUDIO
 #include <alsa/asoundlib.h>
-#endif
 #include <alloca.h>
+#endif
 
 #endif
 
@@ -21804,6 +21806,13 @@ int ctx_renderer_is_ctx (Ctx *ctx)
   return 0;
 }
 
+#else
+
+int ctx_renderer_is_ctx (Ctx *ctx)
+{
+  return 0;
+}
+
 #endif
 
 #if CTX_TILED
@@ -28243,20 +28252,20 @@ ctx_string_append_callback (void *contents, size_t size, size_t nmemb, void *use
 
 #endif
 
+#endif /* CTX_EVENTS */
+
 int
 ctx_get_contents (const char     *uri,
                   unsigned char **contents,
                   long           *length)
 {
-  char temp_uri[PATH_MAX]; // XXX XXX breaks with data uri's
+  char *temp_uri = NULL; // XXX XXX breaks with data uri's
+  int   success  = -1;
+
   if (uri[0] == '/')
   {
-    snprintf (temp_uri, sizeof (temp_uri)-1, "file://%s", uri);
-    uri = temp_uri;
-  }
-  else
-  {
-    snprintf (temp_uri, sizeof (temp_uri)-1, uri);
+    temp_uri = (char*) malloc (strlen (uri) + 8);
+    sprintf (temp_uri, "file://%s", uri);
     uri = temp_uri;
   }
 
@@ -28271,6 +28280,7 @@ ctx_get_contents (const char     *uri,
       contents = malloc (c->length+1);
       contents[c->length]=0;
       if (length) *length = c->length;
+      free (temp_uri);
       return 0;
     }
   }
@@ -28282,7 +28292,7 @@ ctx_get_contents (const char     *uri,
   }
 
   if (!strncmp (uri, "file://", 7))
-    return __ctx_file_get_contents (uri + 7, contents, length);
+    success = __ctx_file_get_contents (uri + 7, contents, length);
   else
   {
 #ifndef NO_LIBCURL
@@ -28312,17 +28322,15 @@ ctx_get_contents (const char     *uri,
      *length = string->length;
      ctx_string_free (string, 0);
      curl_easy_cleanup (curl);
-     return 0;
+     success = 0;
   }
 #else
-    return __ctx_file_get_contents (uri, contents, length);
+    success = __ctx_file_get_contents (uri, contents, length);
 #endif
   }
-  return -1;
+  free (temp_uri);
+  return success;
 }
-
-
-#endif
 
 #endif // CTX_IMPLEMENTATION
 
@@ -32058,14 +32066,14 @@ ctx_float_porter_duff(RGBAF, 4,image,           ctx_fragment_image_RGBAF,       
 
 #if CTX_GRADIENTS
 #define ctx_float_porter_duff_blend(comp_name, components, blend_mode, blend_name)\
-ctx_float_porter_duff(comp_name, components,color_##blend_name,            NULL,                               blend_mode)\
+ctx_float_porter_duff(comp_name, components,color_##blend_name,            rasterizer->fragment,                               blend_mode)\
 ctx_float_porter_duff(comp_name, components,generic_##blend_name,          rasterizer->fragment,               blend_mode)\
 ctx_float_porter_duff(comp_name, components,linear_gradient_##blend_name,  ctx_fragment_linear_gradient_RGBA8, blend_mode)\
 ctx_float_porter_duff(comp_name, components,radial_gradient_##blend_name,  ctx_fragment_radial_gradient_RGBA8, blend_mode)\
 ctx_float_porter_duff(comp_name, components,image_##blend_name,            ctx_fragment_image_RGBAF,           blend_mode)
 #else
 #define ctx_float_porter_duff_blend(comp_name, components, blend_mode, blend_name)\
-ctx_float_porter_duff(comp_name, components,color_##blend_name,            NULL,                               blend_mode)\
+ctx_float_porter_duff(comp_name, components,color_##blend_name,            rasterizer->fragment,                               blend_mode)\
 ctx_float_porter_duff(comp_name, components,generic_##blend_name,          rasterizer->fragment,               blend_mode)\
 ctx_float_porter_duff(comp_name, components,image_##blend_name,            ctx_fragment_image_RGBAF,           blend_mode)
 #endif
@@ -33198,12 +33206,12 @@ static CtxFragment ctx_rasterizer_get_fragment_GRAYA8 (CtxRasterizer *rasterizer
   return ctx_fragment_color_GRAYA8;
 }
 
-ctx_u8_porter_duff(GRAYA8, 2,color,   NULL,                 rasterizer->state->gstate.blend_mode)
+ctx_u8_porter_duff(GRAYA8, 2,color,   rasterizer->fragment, rasterizer->state->gstate.blend_mode)
 ctx_u8_porter_duff(GRAYA8, 2,generic, rasterizer->fragment, rasterizer->state->gstate.blend_mode)
 
 #if CTX_INLINED_NORMAL
 
-ctx_u8_porter_duff(GRAYA8, 2,color_normal,   NULL,                 CTX_BLEND_NORMAL)
+ctx_u8_porter_duff(GRAYA8, 2,color_normal,   rasterizer->fragment, CTX_BLEND_NORMAL)
 ctx_u8_porter_duff(GRAYA8, 2,generic_normal, rasterizer->fragment, CTX_BLEND_NORMAL)
 
 static void
