@@ -413,6 +413,9 @@ char *ctx_render_string (Ctx *ctx, int longform, int *retlen);
 void ctx_render_stream  (Ctx *ctx, FILE *stream, int formatter);
 
 void ctx_render_ctx     (Ctx *ctx, Ctx *d_ctx);
+void ctx_render_ctx_textures (Ctx *ctx, Ctx *d_ctx); /* cycles through all
+                                                        used texture eids
+                                                      */
 
 void ctx_start_move     (Ctx *ctx);
 
@@ -1168,6 +1171,7 @@ struct
       uint8_t pad1;
       float a;
     } graya;
+
     struct
     {
       uint8_t code;
@@ -5367,7 +5371,6 @@ static inline char *ctx_strstr (const char *h, const char *n)
 #include <stdio.h>
 #include <unistd.h>
 #include <math.h>
-#include <sys/select.h> 
 #endif
 
 #define CTX_BRANCH_HINTS  1
@@ -8263,7 +8266,7 @@ __ctx_file_get_contents (const char     *path,
 #endif
 
 
-static int
+static inline int
 ctx_conts_for_entry (CtxEntry *entry)
 {
     switch (entry->code)
@@ -8357,12 +8360,15 @@ static CtxEntry *_ctx_iterator_next (CtxIterator *iterator)
 {
   int ret = iterator->pos;
   CtxEntry *entry = &iterator->drawlist->entries[ret];
-  if (ret >= iterator->end_pos)
+  if (CTX_UNLIKELY(ret >= iterator->end_pos))
     { return NULL; }
-  if (iterator->first_run == 0)
-    { iterator->pos += (ctx_conts_for_entry (entry) + 1); }
-  iterator->first_run = 0;
-  if (iterator->pos >= iterator->end_pos)
+
+  if (CTX_UNLIKELY(iterator->first_run))
+      iterator->first_run = 0;
+  else
+     iterator->pos += (ctx_conts_for_entry (entry) + 1);
+
+  if (CTX_UNLIKELY(iterator->pos >= iterator->end_pos))
     { return NULL; }
   return &iterator->drawlist->entries[iterator->pos];
 }
@@ -28123,6 +28129,32 @@ ctx_render_ctx (Ctx *ctx, Ctx *d_ctx)
     }
 }
 
+void
+ctx_render_ctx_textures (Ctx *ctx, Ctx *d_ctx)
+{
+  CtxIterator iterator;
+  CtxCommand *command;
+  ctx_iterator_init (&iterator, &ctx->drawlist, 0,
+                     CTX_ITERATOR_EXPAND_BITPACK);
+  while ( (command = ctx_iterator_next (&iterator) ) )
+    {
+       switch (command->code)
+       {
+         default:
+                 //fprintf (stderr, "[%c]", command->code);
+                 break;
+         case CTX_TEXTURE:
+             fprintf (stderr, "t:%s\n", command->texture.eid);
+             ctx_process (d_ctx, &command->entry);
+             break;
+         case CTX_DEFINE_TEXTURE:
+             fprintf (stderr, "d:%s\n", command->define_texture.eid);
+             ctx_process (d_ctx, &command->entry);
+           break;
+       }
+    }
+}
+
 void ctx_quit (Ctx *ctx)
 {
 #if CTX_EVENTS
@@ -32058,14 +32090,14 @@ ctx_float_porter_duff(RGBAF, 4,image,           ctx_fragment_image_RGBAF,       
 
 #if CTX_GRADIENTS
 #define ctx_float_porter_duff_blend(comp_name, components, blend_mode, blend_name)\
-ctx_float_porter_duff(comp_name, components,color_##blend_name,            NULL,                               blend_mode)\
+ctx_float_porter_duff(comp_name, components,color_##blend_name,            rasterizer->fragment,                               blend_mode)\
 ctx_float_porter_duff(comp_name, components,generic_##blend_name,          rasterizer->fragment,               blend_mode)\
 ctx_float_porter_duff(comp_name, components,linear_gradient_##blend_name,  ctx_fragment_linear_gradient_RGBA8, blend_mode)\
 ctx_float_porter_duff(comp_name, components,radial_gradient_##blend_name,  ctx_fragment_radial_gradient_RGBA8, blend_mode)\
 ctx_float_porter_duff(comp_name, components,image_##blend_name,            ctx_fragment_image_RGBAF,           blend_mode)
 #else
 #define ctx_float_porter_duff_blend(comp_name, components, blend_mode, blend_name)\
-ctx_float_porter_duff(comp_name, components,color_##blend_name,            NULL,                               blend_mode)\
+ctx_float_porter_duff(comp_name, components,color_##blend_name,            rasterizer->fragment,                               blend_mode)\
 ctx_float_porter_duff(comp_name, components,generic_##blend_name,          rasterizer->fragment,               blend_mode)\
 ctx_float_porter_duff(comp_name, components,image_##blend_name,            ctx_fragment_image_RGBAF,           blend_mode)
 #endif
@@ -33198,12 +33230,12 @@ static CtxFragment ctx_rasterizer_get_fragment_GRAYA8 (CtxRasterizer *rasterizer
   return ctx_fragment_color_GRAYA8;
 }
 
-ctx_u8_porter_duff(GRAYA8, 2,color,   NULL,                 rasterizer->state->gstate.blend_mode)
+ctx_u8_porter_duff(GRAYA8, 2,color,   rasterizer->fragment, rasterizer->state->gstate.blend_mode)
 ctx_u8_porter_duff(GRAYA8, 2,generic, rasterizer->fragment, rasterizer->state->gstate.blend_mode)
 
 #if CTX_INLINED_NORMAL
 
-ctx_u8_porter_duff(GRAYA8, 2,color_normal,   NULL,                 CTX_BLEND_NORMAL)
+ctx_u8_porter_duff(GRAYA8, 2,color_normal,   rasterizer->fragment, CTX_BLEND_NORMAL)
 ctx_u8_porter_duff(GRAYA8, 2,generic_normal, rasterizer->fragment, CTX_BLEND_NORMAL)
 
 static void
