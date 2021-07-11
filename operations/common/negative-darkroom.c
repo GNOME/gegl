@@ -347,16 +347,16 @@ process (GeglOperation       *operation,
 		b = (b - bMid) * o->contrast + bMid;
 
 		// Simulate dye density with exponentiation to get
-		// the CIEXYZ tramsmittance back
-		out[0] = (1 / pow(10, r * curves[o->curve].cdens.X)) *
-			 (1 / pow(10, g * curves[o->curve].mdens.X)) *
-			 (1 / pow(10, b * curves[o->curve].ydens.X)) * o->illumX;
-		out[1] = (1 / pow(10, r * curves[o->curve].cdens.Y)) *
-			 (1 / pow(10, g * curves[o->curve].mdens.Y)) *
-			 (1 / pow(10, b * curves[o->curve].ydens.Y));
-		out[2] = (1 / pow(10, r * curves[o->curve].cdens.Z)) *
-			 (1 / pow(10, g * curves[o->curve].mdens.Z)) *
-			 (1 / pow(10, b * curves[o->curve].ydens.Z)) * o->illumZ;
+		// the CIEXYZ transmittance back
+		out[0] = pow(10, -(r * curves[o->curve].cdens.X +
+				   g * curves[o->curve].mdens.X +
+				   b * curves[o->curve].ydens.X)) * o->illumX;
+		out[1] = pow(10, -(r * curves[o->curve].cdens.Y +
+				   g * curves[o->curve].mdens.Y +
+				   b * curves[o->curve].ydens.Y));
+		out[2] = pow(10, -(r * curves[o->curve].cdens.Z +
+				   g * curves[o->curve].mdens.Z +
+				   b * curves[o->curve].ydens.Z)) * o->illumZ;
 		/*printf("XYZ output %f %f %f\n", out[0], out[1], out[2]);*/
 
 		in   += 3;
@@ -385,7 +385,7 @@ gegl_op_class_init (GeglOpClass *klass)
 		"name",           "gegl:negative-darkroom",
 		"title",          _("Negative Darkroom"),
 		"categories",     "color",
-		"reference-hash", "d492ac8ef38c336aa79e63b7f39f6139",
+		"reference-hash", "2c048959d4827d580d1ab1b6635bc40b",
 		"description",    _("Simulate a negative film enlargement in "
 				  "an analog darkroom."),
 		NULL);
