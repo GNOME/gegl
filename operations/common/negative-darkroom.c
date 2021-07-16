@@ -70,17 +70,17 @@ property_boolean (preflash, _("Enable preflashing"), FALSE)
 
 property_double (flashC, _("Red preflash"), 0)
 	description(_("Preflash the negative with red light to reduce contrast of the print"))
-	value_range (0, 0.05)
+	value_range (0, 1)
 	ui_meta("visible", "preflash")
 
 property_double (flashM, _("Green preflash"), 0)
 	description(_("Preflash the negative with green light to reduce contrast of the print"))
-	value_range (0, 0.05)
+	value_range (0, 1)
 	ui_meta("visible", "preflash")
 
 property_double (flashY, _("Blue preflash"), 0)
 	description(_("Preflash the negative with blue light to reduce contrast of the print"))
-	value_range (0, 0.05)
+	value_range (0, 1)
 	ui_meta("visible", "preflash")
 
 property_boolean (illum, _("Illuminant adjustment"), FALSE)
@@ -283,14 +283,14 @@ process (GeglOperation       *operation,
 		z = 0.00092090*in[0] - 0.0025498*in[1] +  0.17860*in[2];
 
 		// Apply preflash
-		x = x + o->flashC;
-		y = y + o->flashM;
-		z = z + o->flashY;
+		x += o->flashC / 100;
+		y += o->flashM / 100;
+		z += o->flashY / 100;
 
 		// Apply color filters and exposure
-		x = x * rcomp * exp;
-		y = y * gcomp * exp;
-		z = z * bcomp * exp;
+		x *= rcomp * exp;
+		y *= gcomp * exp;
+		z *= bcomp * exp;
 
 		// Simulate emulsion spectral sensitivity with
 		// sensitivity matrix
@@ -331,9 +331,9 @@ process (GeglOperation       *operation,
 		/*printf("Raw RGB density %f %f %f\n", r, g, b);*/
 
 		// Apply density boost
-		r = r * o->boost;
-		g = g * o->boost;
-		b = b * o->boost;
+		r *= o->boost;
+		g *= o->boost;
+		b *= o->boost;
 
 		// Compensate for fog
 		r -= Dfogc;
