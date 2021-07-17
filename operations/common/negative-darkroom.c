@@ -315,6 +315,11 @@ process (GeglOperation       *operation,
 		b = log10(b);
 		/*printf("Logarithmic RGB intensity %f %f %f\n", r, g, b);*/
 
+		// Adjust contrast
+		r = (r - rMid) * o->contrast + rMid;
+		g = (g - gMid) * o->contrast + gMid;
+		b = (b - bMid) * o->contrast + bMid;
+
 		// Apply the DH curve
 		r = curve_lerp(curves[o->curve].rx,
 			       curves[o->curve].ry,
@@ -340,11 +345,6 @@ process (GeglOperation       *operation,
 		g -= Dfogm;
 		b -= Dfogy;
 		/*printf("Adjusted RGB density %f %f %f\n", r, g, b);*/
-
-		// Adjust contrast
-		r = (r - rMid) * o->contrast + rMid;
-		g = (g - gMid) * o->contrast + gMid;
-		b = (b - bMid) * o->contrast + bMid;
 
 		// Simulate dye density with exponentiation to get
 		// the CIEXYZ transmittance back
