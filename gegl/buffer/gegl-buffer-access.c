@@ -70,10 +70,10 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
   const GeglRectangle *abyss = &buffer->abyss;
   guchar              *buf   = data;
 
-  if (y <  abyss->y ||
+  if (G_UNLIKELY (y <  abyss->y ||
       x <  abyss->x ||
       y >= abyss->y + abyss->height ||
-      x >= abyss->x + abyss->width)
+      x >= abyss->x + abyss->width))
     {
       switch (repeat_mode)
       {
@@ -155,7 +155,7 @@ gegl_buffer_get_pixel (GeglBuffer     *buffer,
         tp = gegl_tile_get_data (tile) +
              (offsety * tile_width + offsetx) * px_size;
 
-        if (format != buffer->soft_format)
+        if (G_UNLIKELY (format != buffer->soft_format))
           {
             babl_process (babl_fish (buffer->soft_format, format), tp, buf, 1);
           }
@@ -181,10 +181,10 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
   const GeglRectangle *abyss = &buffer->abyss;
   const guchar        *buf   = data;
 
-  if (y <  abyss->y ||
+  if (G_UNLIKELY (y <  abyss->y ||
       x <  abyss->x ||
       y >= abyss->y + abyss->height ||
-      x >= abyss->x + abyss->width)
+      x >= abyss->x + abyss->width))
     return;
 
 
@@ -200,7 +200,7 @@ __gegl_buffer_set_pixel (GeglBuffer     *buffer,
     const Babl *fish = NULL;
     gint px_size;
 
-    if (format != buffer->soft_format)
+    if (G_UNLIKELY (format != buffer->soft_format))
       {
         fish    = babl_fish (format, buffer->soft_format);
         px_size = babl_format_get_bytes_per_pixel (buffer->soft_format);
@@ -367,7 +367,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
   gint factor         = 1<<level;
   const Babl *fish;
   GeglRectangle scaled_rect;
-  if (level && roi)
+  if (G_UNLIKELY (level && roi))
   {
     scaled_rect = *roi;
     scaled_rect.x <<= level;
@@ -402,7 +402,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
   if (rowstride != GEGL_AUTO_ROWSTRIDE)
     buf_stride = rowstride;
 
-  if (format == buffer->soft_format)
+  if (G_LIKELY (format == buffer->soft_format))
     {
       fish = NULL;
     }
@@ -430,7 +430,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
 
           bp = buf + (gsize) bufy * buf_stride + bufx * bpx_size;
 
-          if (width + offsetx - bufx < tile_width)
+          if (G_UNLIKELY (width + offsetx - bufx < tile_width))
             pixels = (width + offsetx - bufx) - offsetx;
           else
             pixels = tile_width - offsetx;
@@ -443,13 +443,13 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
           rskip = (buffer_x + bufx + pixels) - abyss_x_total;
           /* gap between right side of tile, and abyss */
 
-          if (lskip < 0)
+          if (G_UNLIKELY (lskip < 0))
             lskip = 0;
-          if (lskip > pixels)
+          if (G_UNLIKELY (lskip > pixels))
             lskip = pixels;
-          if (rskip < 0)
+          if (G_UNLIKELY (rskip < 0))
             rskip = 0;
-          if (rskip > pixels)
+          if (G_UNLIKELY (rskip > pixels))
             rskip = pixels;
 
           pixels -= lskip;
@@ -479,7 +479,7 @@ gegl_buffer_iterate_write (GeglBuffer          *buffer,
           tile_base = gegl_tile_get_data (tile);
           tp        = ((guchar *) tile_base) + (offsety * tile_width + offsetx) * px_size;
 
-          if (fish)
+          if (G_UNLIKELY (fish))
             {
               int bskip, skip = 0;
               int rows = MIN(height - bufy, tile_height - offsety);
@@ -888,7 +888,7 @@ gegl_buffer_set_internal (GeglBuffer          *buffer,
 
   gegl_buffer_iterate_write (buffer, rect, (void *) src, rowstride, format, level);
 
-  if (gegl_buffer_is_shared (buffer))
+  if (G_UNLIKELY (gegl_buffer_is_shared (buffer)))
     {
       gegl_buffer_flush (buffer);
     }
@@ -965,7 +965,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
 
   const Babl *fish;
 
-  if (format == buffer->soft_format)
+  if (G_LIKELY (format == buffer->soft_format))
     fish = NULL;
   else
     fish = babl_fish ((gpointer) buffer->soft_format,
@@ -987,7 +987,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
 
           bp = buf + (gsize) bufy * buf_stride + bufx * bpx_size;
 
-          if (width + offsetx - bufx < tile_width)
+          if (G_LIKELY (width + offsetx - bufx < tile_width))
             pixels = width - bufx;
           else
             pixels = tile_width - offsetx;
@@ -1013,7 +1013,7 @@ gegl_buffer_iterate_read_simple (GeglBuffer          *buffer,
 
           y = bufy;
 
-          if (fish)
+          if (G_UNLIKELY (fish))
             {
               int rows = MIN(height - bufy, tile_height - offsety);
               if (rows == 1)
@@ -1950,15 +1950,15 @@ gegl_buffer_set (GeglBuffer          *buffer,
 {
   g_return_if_fail (GEGL_IS_BUFFER (buffer));
 
-  if (gegl_rectangle_is_empty (rect ? rect : &buffer->extent))
+  if (G_UNLIKELY (gegl_rectangle_is_empty (rect ? rect : &buffer->extent)))
     return;
 
   g_return_if_fail (src != NULL);
 
-  if (format == NULL)
+  if (G_LIKELY (format == NULL))
     format = buffer->soft_format;
 
-  if (rect && rect->width == 1)
+  if (G_UNLIKELY (rect && rect->width == 1))
     {
       if (level == 0 && rect->height == 1)
         {
@@ -2040,7 +2040,7 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
 
   g_return_if_fail (rect != NULL);
 
-  if (gegl_rectangle_is_empty (rect))
+  if (G_UNLIKELY (gegl_rectangle_is_empty (rect)))
     return;
 
   g_return_if_fail (dest_buf != NULL);
@@ -2051,8 +2051,8 @@ _gegl_buffer_get_unlocked (GeglBuffer          *buffer,
   if (gegl_buffer_ext_flush)
     gegl_buffer_ext_flush (buffer, rect);
 
-  if (scale == 1.0 &&
-      rect->width == 1)
+  if (G_UNLIKELY (scale == 1.0 &&
+      rect->width == 1))
   {
     if (rect->height == 1)
       {
@@ -2393,8 +2393,8 @@ gegl_buffer_copy (GeglBuffer          *src,
     {
       src_rect = gegl_buffer_get_extent (src);
     }
-  if (src_rect->width <= 0 ||
-      src_rect->height <= 0)
+  if (G_UNLIKELY (src_rect->width <= 0 ||
+      src_rect->height <= 0))
     return;
 
   if (!dst_rect)
@@ -2406,7 +2406,7 @@ gegl_buffer_copy (GeglBuffer          *src,
   real_dst_rect.width  = src_rect->width;
   real_dst_rect.height = src_rect->height;
 
-  if (! gegl_rectangle_intersect (&real_dst_rect, &real_dst_rect, &dst->abyss))
+  if (G_UNLIKELY (! gegl_rectangle_intersect (&real_dst_rect, &real_dst_rect, &dst->abyss)))
     return;
 
   real_src_rect    = real_dst_rect;
@@ -2667,7 +2667,7 @@ gegl_buffer_foreach_tile (GeglBuffer          *buffer,
   if (! rect)
     rect = gegl_buffer_get_extent (buffer);
 
-  if (rect->width <= 0 || rect->height <= 0)
+  if (G_UNLIKELY (rect->width <= 0 || rect->height <= 0))
     return;
 
 #if 1
