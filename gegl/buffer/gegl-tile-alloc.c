@@ -246,7 +246,7 @@ gegl_tile_block_free (GeglTileBlock  *block,
   else
     *head_block = block->next;
 
-  if (block->next)
+  if (G_LIKELY(block->next))
     block->next->prev = block->prev;
 
   if (! gegl_tile_empty_block)
