@@ -176,7 +176,7 @@ gegl_tile_backend_buffer_command (GeglTileSource  *tile_source,
 {
   GeglTileBackendBuffer *tile_backend_buffer = GEGL_TILE_BACKEND_BUFFER (tile_source);
 
-  if (! tile_backend_buffer->buffer)
+  if (G_UNLIKELY(! tile_backend_buffer->buffer))
     return NULL;
 
   switch (command)
@@ -234,7 +234,7 @@ gegl_tile_backend_buffer_get_tile (GeglTileBackendBuffer *tile_backend_buffer,
 
   src_tile = gegl_buffer_get_tile (buffer, x, y, z);
 
-  if (src_tile)
+  if (G_LIKELY(src_tile))
     {
       tile = gegl_tile_dup (src_tile);
 
@@ -289,7 +289,7 @@ gegl_tile_backend_buffer_forward_command (GeglTileBackendBuffer *tile_backend_bu
 
   g_rec_mutex_unlock (&buffer->tile_storage->mutex);
 
-  if (emit_changed_signal)
+  if (G_UNLIKELY (emit_changed_signal))
     gegl_tile_backend_buffer_emit_changed_signal (tile_backend_buffer, x, y, z);
 
   return result;
