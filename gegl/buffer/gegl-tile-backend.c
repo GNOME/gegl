@@ -164,7 +164,7 @@ tile_command (GeglTileSource  *source,
 {
   GeglTileBackend *backend = GEGL_TILE_BACKEND (source);
 
-  if (command < _GEGL_TILE_LAST_0_4_8_COMMAND)
+  if (G_LIKELY (command < _GEGL_TILE_LAST_0_4_8_COMMAND))
     return backend->priv->command (source, command, x, y, z, data);
 
   return _gegl_tile_backend_command (backend, command, x, y, z, data);
