@@ -88,7 +88,7 @@ get_tile (GeglTileSource *tile_store,
 {
   GeglTileBackendRam *tile_backend_ram = GEGL_TILE_BACKEND_RAM (tile_store);
 
-  if (z == 0)
+  if (G_LIKELY (z == 0))
     {
       RamEntry *entry = lookup_entry (tile_backend_ram, x, y);
       if (entry)
@@ -109,12 +109,12 @@ gboolean set_tile (GeglTileSource *store,
   RamEntry           *entry  = NULL;
   gboolean            is_dup = FALSE;
 
-  if (z != 0)
+  if (G_UNLIKELY (z != 0))
     return FALSE;
 
   entry = lookup_entry (tile_backend_ram, x, y);
 
-  if (tile->ref_count == 0)
+  if (G_UNLIKELY (tile->ref_count == 0))
     {
       /* We've been handed a dead tile to store, this happens
        * when tile_unref is called on a tile that had never
@@ -172,7 +172,7 @@ gboolean void_tile (GeglTileSource *store,
 {
   GeglTileBackendRam *tile_backend_ram = GEGL_TILE_BACKEND_RAM (store);
 
-  if (z == 0)
+  if (G_LIKELY (z == 0))
     {
       RamEntry *entry = lookup_entry (tile_backend_ram, x, y);
 
@@ -192,7 +192,7 @@ gboolean exist_tile (GeglTileSource *store,
 {
   GeglTileBackendRam *tile_backend_ram = GEGL_TILE_BACKEND_RAM (store);
 
-  if (z != 0)
+  if (G_UNLIKELY (z != 0))
     return FALSE;
 
   return lookup_entry (tile_backend_ram, x, y) != NULL;
