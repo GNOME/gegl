@@ -81,8 +81,8 @@ void       gegl_matrix3_round_error     (GeglMatrix3 *matrix);
  *
  * Returns TRUE if the matrices are equal.
  */
-gboolean   gegl_matrix3_equal           (GeglMatrix3 *matrix1,
-                                         GeglMatrix3 *matrix2);
+gboolean   gegl_matrix3_equal           (const GeglMatrix3 *matrix1,
+                                         const GeglMatrix3 *matrix2);
 
 /**
  * gegl_matrix3_is_identity:
@@ -92,7 +92,7 @@ gboolean   gegl_matrix3_equal           (GeglMatrix3 *matrix1,
  *
  * Returns TRUE if the matrix is the identity matrix.
  */
-gboolean   gegl_matrix3_is_identity     (GeglMatrix3 *matrix);
+gboolean   gegl_matrix3_is_identity     (const GeglMatrix3 *matrix);
 
 /**
  * gegl_matrix3_is_scale:
@@ -102,7 +102,7 @@ gboolean   gegl_matrix3_is_identity     (GeglMatrix3 *matrix);
  *
  * Returns TRUE if the matrix only does scaling.
  */
-gboolean   gegl_matrix3_is_scale        (GeglMatrix3 *matrix);
+gboolean   gegl_matrix3_is_scale        (const GeglMatrix3 *matrix);
 
 /**
  * gegl_matrix3_is_translate:
@@ -112,7 +112,7 @@ gboolean   gegl_matrix3_is_scale        (GeglMatrix3 *matrix);
  *
  * Returns TRUE if the matrix only does trasnlation.
  */
-gboolean   gegl_matrix3_is_translate    (GeglMatrix3 *matrix);
+gboolean   gegl_matrix3_is_translate    (const GeglMatrix3 *matrix);
 
 /**
  * gegl_matrix3_is_affine:
@@ -122,7 +122,7 @@ gboolean   gegl_matrix3_is_translate    (GeglMatrix3 *matrix);
  *
  * Returns TRUE if the matrix only does an affine transformation.
  */
-gboolean   gegl_matrix3_is_affine       (GeglMatrix3 *matrix);
+gboolean   gegl_matrix3_is_affine       (const GeglMatrix3 *matrix);
 
 /**
  * gegl_matrix3_copy_into:
@@ -132,7 +132,7 @@ gboolean   gegl_matrix3_is_affine       (GeglMatrix3 *matrix);
  * Copies the matrix in @src into @dst.
  */
 void  gegl_matrix3_copy_into (GeglMatrix3 *dst,
-                              GeglMatrix3 *src);
+                              const GeglMatrix3 *src);
 
 /**
  * gegl_matrix3_copy:
@@ -140,7 +140,7 @@ void  gegl_matrix3_copy_into (GeglMatrix3 *dst,
  *
  * Returns a copy of @src.
  */
-GeglMatrix3 *   gegl_matrix3_copy (GeglMatrix3 *matrix);
+GeglMatrix3 *   gegl_matrix3_copy (const GeglMatrix3 *matrix);
 
 /**
  * gegl_matrix3_determinant:
@@ -148,7 +148,7 @@ GeglMatrix3 *   gegl_matrix3_copy (GeglMatrix3 *matrix);
  *
  * Returns the determinant for the matrix.
  */
-gdouble    gegl_matrix3_determinant     (GeglMatrix3 *matrix);
+gdouble    gegl_matrix3_determinant     (const GeglMatrix3 *matrix);
 
 /**
  * gegl_matrix3_invert:
@@ -166,8 +166,8 @@ void       gegl_matrix3_invert          (GeglMatrix3 *matrix);
  *
  * Multiples @product = @left · @right
  */
-void       gegl_matrix3_multiply        (GeglMatrix3 *left,
-                                         GeglMatrix3 *right,
+void       gegl_matrix3_multiply        (const GeglMatrix3 *left,
+                                         const GeglMatrix3 *right,
                                          GeglMatrix3 *product);
 
 /**
@@ -201,7 +201,7 @@ void       gegl_matrix3_originate       (GeglMatrix3 *matrix,
  * coordinates gotten when the transformed with the matrix.
  *
  */
-void       gegl_matrix3_transform_point (GeglMatrix3 *matrix,
+void       gegl_matrix3_transform_point (const GeglMatrix3 *matrix,
                                          gdouble    *x,
                                          gdouble    *y);
 
@@ -225,7 +225,7 @@ void       gegl_matrix3_parse_string    (GeglMatrix3 *matrix,
  * returned string should be g_free()'d.
  *
  */
-gchar *    gegl_matrix3_to_string       (GeglMatrix3 *matrix);
+gchar *    gegl_matrix3_to_string       (const GeglMatrix3 *matrix);
 
 /***
  */

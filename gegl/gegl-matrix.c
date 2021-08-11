@@ -93,8 +93,8 @@ gegl_matrix3_round_error (GeglMatrix3 *matrix)
 }
 
 gboolean
-gegl_matrix3_equal (GeglMatrix3 *matrix1,
-                    GeglMatrix3 *matrix2)
+gegl_matrix3_equal (const GeglMatrix3 *matrix1,
+                    const GeglMatrix3 *matrix2)
 {
   gint x, y;
 
@@ -106,7 +106,7 @@ gegl_matrix3_equal (GeglMatrix3 *matrix1,
 }
 
 gboolean
-gegl_matrix3_is_identity (GeglMatrix3 *matrix)
+gegl_matrix3_is_identity (const GeglMatrix3 *matrix)
 {
   GeglMatrix3 identity;
   gegl_matrix3_identity (&identity);
@@ -114,7 +114,7 @@ gegl_matrix3_is_identity (GeglMatrix3 *matrix)
 }
 
 gboolean
-gegl_matrix3_is_scale (GeglMatrix3 *matrix)
+gegl_matrix3_is_scale (const GeglMatrix3 *matrix)
 {
   GeglMatrix3 copy;
   gegl_matrix3_copy_into (&copy, matrix);
@@ -124,7 +124,7 @@ gegl_matrix3_is_scale (GeglMatrix3 *matrix)
 }
 
 gboolean
-gegl_matrix3_is_translate (GeglMatrix3 *matrix)
+gegl_matrix3_is_translate (const GeglMatrix3 *matrix)
 {
   GeglMatrix3 copy;
   gegl_matrix3_copy_into (&copy, matrix);
@@ -133,7 +133,7 @@ gegl_matrix3_is_translate (GeglMatrix3 *matrix)
 }
 
 gboolean
-gegl_matrix3_is_affine (GeglMatrix3 *matrix)
+gegl_matrix3_is_affine (const GeglMatrix3 *matrix)
 {
   return fabs (matrix->coeff[2][0])       <= EPSILON &&
          fabs (matrix->coeff[2][1])       <= EPSILON &&
@@ -142,7 +142,7 @@ gegl_matrix3_is_affine (GeglMatrix3 *matrix)
 
 void
 gegl_matrix3_copy_into (GeglMatrix3 *dst,
-                        GeglMatrix3 *src)
+                        const GeglMatrix3 *src)
 {
   memcpy (dst->coeff [0], src->coeff [0], 3 * sizeof (gdouble));
   memcpy (dst->coeff [1], src->coeff [1], 3 * sizeof (gdouble));
@@ -150,13 +150,13 @@ gegl_matrix3_copy_into (GeglMatrix3 *dst,
 }
 
 GeglMatrix3 *
-gegl_matrix3_copy (GeglMatrix3 *matrix)
+gegl_matrix3_copy (const GeglMatrix3 *matrix)
 {
   return (GeglMatrix3 *) g_memdup (matrix, sizeof (GeglMatrix3));
 }
 
 gdouble
-gegl_matrix3_determinant (GeglMatrix3 *matrix)
+gegl_matrix3_determinant (const GeglMatrix3 *matrix)
 {
   gdouble determinant;
 
@@ -202,8 +202,8 @@ gegl_matrix3_invert (GeglMatrix3 *matrix)
 
 
 void
-gegl_matrix3_multiply (GeglMatrix3 *left,
-                       GeglMatrix3 *right,
+gegl_matrix3_multiply (const GeglMatrix3 *left,
+                       const GeglMatrix3 *right,
                        GeglMatrix3 *product)
 {
   GeglMatrix3 temp;
@@ -240,7 +240,7 @@ gegl_matrix3_originate (GeglMatrix3 *matrix,
 }
 
 void
-gegl_matrix3_transform_point (GeglMatrix3 *matrix,
+gegl_matrix3_transform_point (const GeglMatrix3 *matrix,
                               gdouble     *x,
                               gdouble     *y)
 {
@@ -301,7 +301,7 @@ gegl_matrix3_parse_string (GeglMatrix3 *matrix,
 }
 
 gchar *
-gegl_matrix3_to_string (GeglMatrix3 *matrix)
+gegl_matrix3_to_string (const GeglMatrix3 *matrix)
 {
   gchar   *res;
   gchar    dstring[G_ASCII_DTOSTR_BUF_SIZE];
