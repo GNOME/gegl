@@ -27,9 +27,18 @@
 
 #ifdef GEGL_PROPERTIES
 
+enum_start (gegl_distance_transform_policy)
+    enum_value (GEGL_DT_ABYSS_ABOVE, "above", N_("Above threshold"))
+    enum_value (GEGL_DT_ABYSS_BELOW, "below", N_("Below threshold"))
+enum_end (GeglDistanceTransformPolicy)
+
 property_enum (metric, _("Metric"),
                GeglDistanceMetric, gegl_distance_metric, GEGL_DISTANCE_METRIC_EUCLIDEAN)
     description (_("Metric to use for the distance calculation"))
+
+property_enum (abyss_policy, _("Edge handling"), GeglDistanceTransformPolicy,
+               gegl_distance_transform_policy, GEGL_DT_ABYSS_ABOVE)
+  description (_("How areas outside the input are considered when calculating distance"))
 
 property_double (threshold_lo, _("Threshold low"), 0.0001)
   value_range (0.0, 1.0)
@@ -164,6 +173,11 @@ binary_dt_2nd_pass (GeglOperation      *operation,
 {
   gfloat (*dt_f)   (gfloat, gfloat, gfloat);
   gint   (*dt_sep) (gint, gint, gfloat, gfloat);
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  gfloat inf_dist;
+
+  /* An impossibly large value for infinite distance, set to width + height as suggested from paper */
+  inf_dist = width + height;
 
   switch (metric)
     {
@@ -203,10 +217,10 @@ binary_dt_2nd_pass (GeglOperation      *operation,
         {
           dest_row = &dest[0 + y * width];
 
-          /* Use a copy of the dest row, lined with a zero on either side.
-             Mind the offset and difference in width when working between g
-             and the dest row. */
+          /* Copy over dest_row to g, and line with a zero or inf_dist on either side.
+           * Mind the offset and difference in width when working between g and the dest row */
           memcpy (&g[1], dest_row, width * sizeof (gfloat));
+          g[0] = g[width + 1] = (o->abyss_policy == GEGL_DT_ABYSS_ABOVE) ? inf_dist : 0.0f;
 
           q = 0;
           s[0] = 0;
@@ -269,6 +283,13 @@ binary_dt_1st_pass (GeglOperation *operation,
                     gfloat        *src,
                     gfloat        *dest)
 {
+  GeglProperties *o = GEGL_PROPERTIES (operation);
+  gfloat inf_dist, edge_mult;
+
+  /* An impossibly large value for infinite distance, set to width + height as suggested from paper */
+  inf_dist = width + height;
+  edge_mult = (o->abyss_policy == GEGL_DT_ABYSS_ABOVE) ? inf_dist : 1.0f;
+
   /* Parallelize the loop. We don't even need a mutex as we edit data per
    * columns (i.e. each thread will work on a given range of columns without
    * needing to read data updated by other threads).
@@ -282,10 +303,22 @@ binary_dt_1st_pass (GeglOperation *operation,
 
       for (x = x0; x < x0 + size; x++)
         {
-          /* consider out-of-range as 0, i.e. the outside is "empty" */
-          dest[x + 0 * width] = src[x + 0 * width] > thres_lo ? 1.0f : 0.0f;
+          y = 1;
 
-          for (y = 1; y < height; y++)
+          /* Set an initial distance for the top pixel, accounting for abyss */
+          dest[x + 0 * width] = src[x + 0 * width] > thres_lo ? 1.0f * edge_mult : 0.0f;
+
+          /* For columns starting with inf_dist, don't increment distance until first region transition */
+          if (dest[x + 0 * width] > 1.0f)
+            while (y < height && src[x + y * width] > thres_lo)
+              {
+                dest[x + y * width] = inf_dist;
+                y++;
+              }
+          if (y == height)
+            continue;
+
+          for (; y < height; y++)
             {
               if (src[x + y * width] > thres_lo)
                 dest[x + y * width] = 1.0 + dest[x + (y - 1) * width];
@@ -293,7 +326,10 @@ binary_dt_1st_pass (GeglOperation *operation,
                 dest[x + y * width] = 0.0;
             }
 
-          dest[x + (height - 1) * width] = MIN (dest[x + (height - 1) * width], 1.0f);
+          /* If abyss is below threshold, limit the bottom pixel's distance before we scan back up */
+          if (o->abyss_policy == GEGL_DT_ABYSS_BELOW)
+            dest[x + (height - 1) * width] = MIN (dest[x + (height - 1) * width], 1.0f);
+
           for (y = height - 2; y >= 0; y--)
             {
               if (dest[x + (y + 1) * width] + 1.0f < dest[x + y * width])
@@ -480,7 +516,7 @@ gegl_op_class_init (GeglOpClass *klass)
     "name",        "gegl:distance-transform",
     "title",       _("Distance Transform"),
     "categories",  "map",
-    "reference-hash", "620bf37294bca66e4190da60c5be5622",
+    "reference-hash", "4121d1abc01608b557f60111facfe2e6",
     "reference-composition", composition,
     "description", _("Calculate a distance transform"),
     NULL);
