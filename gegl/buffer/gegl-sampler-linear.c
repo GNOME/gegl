@@ -186,8 +186,8 @@ gegl_sampler_linear_get (      GeglSampler       *self,
                                void              *output,
                                GeglAbyssPolicy    repeat_mode)
 {
-  if (! _gegl_sampler_box_get (self, absolute_x, absolute_y, scale,
-                               output, repeat_mode, 4))
+  if (G_LIKELY(! _gegl_sampler_box_get (self, absolute_x, absolute_y, scale,
+                               output, repeat_mode, 4)))
   {
     gfloat result[5];
 

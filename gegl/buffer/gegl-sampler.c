@@ -176,7 +176,7 @@ gegl_sampler_get (GeglSampler       *self,
   if (G_UNLIKELY(!isfinite (y)))
     y = 0.0;
 
-  if (self->lvel)
+  if (G_UNLIKELY (self->lvel))
   {
     double factor = 1.0 / (1 << self->lvel);
     GeglRectangle rect={int_floorf (x * factor), int_floorf (y * factor),1,1};
@@ -184,7 +184,7 @@ gegl_sampler_get (GeglSampler       *self,
     return;
   }
 
-  if (gegl_buffer_ext_flush)
+  if (G_UNLIKELY (gegl_buffer_ext_flush))
     {
       GeglRectangle rect={x,y,1,1};
       gegl_buffer_ext_flush (self->buffer, &rect);
@@ -333,7 +333,7 @@ gegl_sampler_get_from_mipmap (GeglSampler    *sampler,
   const gint maximum_width  = GEGL_SAMPLER_MAXIMUM_WIDTH;
   const gint maximum_height = GEGL_SAMPLER_MAXIMUM_HEIGHT;
 
-  if (gegl_buffer_ext_flush)
+  if (G_UNLIKELY (gegl_buffer_ext_flush))
     {
       GeglRectangle rect = {x, y, 1, 1};
       gegl_buffer_ext_flush (sampler->buffer, &rect);
@@ -504,7 +504,7 @@ _gegl_buffer_sample_at_level (GeglBuffer        *buffer,
       return;
     }
 
-  if (!format)
+  if (G_UNLIKELY (!format))
     format = buffer->soft_format;
 
   sampler = gegl_buffer_sampler_new_at_level (buffer,
