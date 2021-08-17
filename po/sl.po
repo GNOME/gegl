@@ -1,16 +1,16 @@
 # #-#-#-#-#  gegl.master.sl.po (GEGL)  #-#-#-#-#
 # Slovenian translation of gegl.
-# Copyright (C) 2021 THE PACKAGE'S COPYRIGHT HOLDER.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 # This file is distributed under the same license as the package.
 #
-# Martin Srebotnjak <miles@filmsi.net>, 2012–2021.
+# Martin Srebotnjak <miles@filmsi.net>, 2012–2019.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-07-20 18:09+0000\n"
-"PO-Revision-Date: 2021-07-21 20:12+0200\n"
+"POT-Creation-Date: 2021-07-24 11:09+0000\n"
+"PO-Revision-Date: 2021-08-15 13:18+0200\n"
 "Last-Translator: miles\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -77,7 +77,6 @@ msgstr ""
 "  Možnosti:\n"
 "     -h, --help      to besedilo pomoči\n"
 "\n"
-"\n"
 "     —list-all      izpiši vse znane operacije\n"
 "\n"
 "     —exists        vrni 0, če operacija obstaja\n"
@@ -101,7 +100,7 @@ msgstr ""
 "\n"
 "     -v, --verbose   natisni diagnostiko med delovanjem\n"
 "\n"
-"Vsi argumenti, ki sledijo --, se smatrajo kot operatorji, ki se verižijo\n"
+"Vsi argumenti, ki sledijo --, se tolmačijo kot operatorji, ki se verižijo\n"
 "v manjši sestav namesto uporabe datoteke XML, kar omogoča\n"
 "enostavno preizkušanje filtrov. Upoštevajte, da bo za vse lastnosti\n"
 "uporabljena privzeta vrednost.\n"
@@ -337,7 +336,7 @@ msgstr "Zaznavno-premnoženo-če-alfa"
 
 #: gegl/gegl-enums.c:128
 msgid "add-alpha"
-msgstr ""
+msgstr "dodaj-alfo"
 
 #: gegl/gegl-enums.c:152 operations/common/gaussian-blur.c:24
 #: operations/common/gblur-1d.c:39
@@ -3081,7 +3080,7 @@ msgstr ""
 #: operations/common/negative-darkroom.c:86
 #, fuzzy
 msgid "Illuminant adjustment"
-msgstr "Prilagoditev osvetlitve"
+msgstr "Prilagoditev osvetljevalca"
 
 #: operations/common/negative-darkroom.c:87
 msgid "Show illuminant controls"
@@ -3336,10 +3335,8 @@ msgid "Black angle"
 msgstr "Črni kot"
 
 #: operations/common/newsprint.c:162
-#, fuzzy
-#| msgid "Black level"
 msgid "Black pullout"
-msgstr "Ravni črnine"
+msgstr ""
 
 #: operations/common/newsprint.c:164
 msgid "How much of common gray to pull out of CMY"
@@ -3499,9 +3496,8 @@ msgstr "Ustvarjalnik Perlinovega šuma"
 
 #: operations/common/noise-pick.c:144
 #, fuzzy
-#| msgid "Noise"
 msgid "Noise Pick"
-msgstr "Šum"
+msgstr "Izbor šuma"
 
 #: operations/common/noise-pick.c:148
 msgid "Randomly interchange some pixels with neighbors"
@@ -3596,7 +3592,6 @@ msgid "Move pixels around randomly"
 msgstr "Slikovne točke pomikaj naokoli naključno"
 
 #: operations/common/normal-map.c:31
-#, fuzzy
 msgid "The amount by which to scale the height values"
 msgstr "Vrednost, za katero naj bo spremenjena velikost vrednosti višine"
 
@@ -3652,10 +3647,8 @@ msgid "Generate a tileable map"
 msgstr "Ustvari tlakovalen izhod"
 
 #: operations/common/normal-map.c:248
-#, fuzzy
-#| msgid "Normalize"
 msgid "Normal Map"
-msgstr "Normaliziraj"
+msgstr ""
 
 #: operations/common/normal-map.c:252
 msgid "Generate a normal map from a height map"
@@ -3715,7 +3708,7 @@ msgstr "Poravnaj"
 
 #: operations/common/pack.c:27
 msgid "How to align items, 0.0 is start 0.5 middle and 1.0 end."
-msgstr ""
+msgstr "Kako poravnati elemente, 0.0 je začetek, 0,5 sredina in 1,0 konec."
 
 #: operations/common/pack.c:182
 msgid "Pack"
@@ -4077,9 +4070,8 @@ msgstr "Velikost področij"
 
 #: operations/common/slic.c:29
 #, fuzzy
-#| msgid "Size of each block in pixels"
 msgid "Size of a region side"
-msgstr "Širina bloka v slikovnih točkah"
+msgstr "Velikost strani območja"
 
 #: operations/common/slic.c:33
 msgid "Compactness"
@@ -4351,10 +4343,8 @@ msgid "Expressed as standard deviation, in pixels"
 msgstr "Izraženo kot standardni odklon, v slik. točkah"
 
 #: operations/common/unsharp-mask.c:32
-#, fuzzy
-#| msgid "Scale, strength of effect"
 msgid "Scaling factor for unsharp-mask, the strength of effect"
-msgstr "Merilo, jakost ali učinek"
+msgstr "Faktor za masko neostrine, moč učinka"
 
 #: operations/common/unsharp-mask.c:147
 msgid "Sharpen (Unsharp Mask)"
@@ -4371,15 +4361,12 @@ msgid "Value Invert"
 msgstr "Preobrni vrednost"
 
 #: operations/common/value-invert.c:154
-#, fuzzy
-#| msgid ""
-#| "Inverts just the value component, the result is the corresponding "
-#| "`inverted' image."
 msgid ""
 "Invert the value component, the result has the brightness inverted, keeping "
 "the color."
 msgstr ""
-"Preobrne le komponento vrednosti, rezultat je ustrezna `reobrnjena' slika."
+"Preobrne komponento vrednosti, rezultat ima preobrnjeno svetlost, ohrani pa "
+"barvo."
 
 #: operations/common/vector-fill.c:27
 msgid "Color of paint to use for filling."
@@ -4500,9 +4487,8 @@ msgstr "Gladkost preliva"
 
 #: operations/common/waterpixels.c:47
 #, fuzzy
-#| msgid "Saturation"
 msgid "Spatial regularization"
-msgstr "Nasičenost"
+msgstr "Prostorska regularizacija"
 
 #: operations/common/waterpixels.c:49
 msgid ""
@@ -4539,10 +4525,8 @@ msgid "Pointer to flag value for unlabelled pixels"
 msgstr ""
 
 #: operations/common/watershed-transform.c:489
-#, fuzzy
-#| msgid "Transform"
 msgid "Watershed Transform"
-msgstr "Preoblikuj"
+msgstr ""
 
 #: operations/common/watershed-transform.c:493
 msgid ""
@@ -4640,9 +4624,8 @@ msgstr "Radij zabrisanost neostrine"
 
 #: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:31
 #, fuzzy
-#| msgid "Highlights"
 msgid "Highlight factor"
-msgstr "Svetla področja"
+msgstr "Faktor svetlih področij"
 
 #: operations/common-cxx/focus-blur.c:53 operations/common-cxx/lens-blur.cc:32
 msgid "Relative highlight strength"
@@ -4650,9 +4633,8 @@ msgstr ""
 
 #: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:35
 #, fuzzy
-#| msgid "Threshold low"
 msgid "Highlight threshold (low)"
-msgstr "Spodnji prag"
+msgstr "Prag svetlih področij (nizek)"
 
 #: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
 #, fuzzy
@@ -4661,9 +4643,8 @@ msgstr "Prag svetlih področij"
 
 #: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
 #, fuzzy
-#| msgid "Threshold high"
 msgid "Highlight threshold (high)"
-msgstr "Zgornji prag"
+msgstr "Prag svetlih področij (visok)"
 
 #: operations/common-cxx/focus-blur.c:86
 msgid "Focus-region outer radius"
@@ -4698,15 +4679,13 @@ msgstr "Število ravni zabrisanosti"
 
 #: operations/common-cxx/focus-blur.c:114
 #: operations/common-cxx/variable-blur.c:46
-#, fuzzy
 msgid "Blur gamma"
-msgstr "Gama zabrisanosti"
+msgstr "Zabriši gamo"
 
 #: operations/common-cxx/focus-blur.c:115
 #: operations/common-cxx/variable-blur.c:47
-#, fuzzy
 msgid "Gamma factor for blur-level spacing"
-msgstr "Faktor gama za razmik med ravnmi zabrisanosti"
+msgstr ""
 
 #: operations/common-cxx/focus-blur.c:122
 #: operations/common-cxx/variable-blur.c:53
@@ -4734,9 +4713,8 @@ msgstr "Poreži na velikost vhoda"
 
 #: operations/common-cxx/lens-blur.cc:47
 #, fuzzy
-#| msgid "Clip to the input extent"
 msgid "Clip output to the input extents"
-msgstr "Poreži na velikost vhoda"
+msgstr "Poreži izhod na velikost vhoda"
 
 #: operations/common-cxx/lens-blur.cc:49
 #: operations/common-cxx/piecewise-blend.cc:38
@@ -4759,8 +4737,9 @@ msgid "Number of blend levels"
 msgstr "Število ravni spajanja"
 
 #: operations/common-cxx/piecewise-blend.cc:34
+#, fuzzy
 msgid "Gamma factor for blend-level spacing"
-msgstr ""
+msgstr "Faktor gama za razmik med ravnmi zabrisanosti"
 
 #: operations/common-cxx/piecewise-blend.cc:346
 #, fuzzy
@@ -6090,7 +6069,7 @@ msgstr "Variacija barve tlakovcev"
 
 #: operations/common-gpl3+/mosaic.c:58
 msgid "Magnitude of random color variations"
-msgstr "Velikost naključnih barvnih variacija"
+msgstr "Velikost naključnih barvnih variacij"
 
 #: operations/common-gpl3+/mosaic.c:61
 msgid "Color averaging"
@@ -6188,9 +6167,8 @@ msgstr "Transfokacija zabrisanosti gibanja"
 
 #: operations/common-gpl3+/noise-slur.c:157
 #, fuzzy
-#| msgid "Noise"
 msgid "Noise Slur"
-msgstr "Šum"
+msgstr "Nerazločen šum"
 
 #: operations/common-gpl3+/noise-slur.c:161
 msgid "Randomly slide some pixels downward (similar to melting)"
@@ -6246,7 +6224,7 @@ msgid ""
 "Radius of circle around pixel, can also be scaled per pixel by a buffer on "
 "the aux pad."
 msgstr ""
-"Polmer kroga okoli slikovne točke, lahko tudi umerjeno na slikovno točko "
+"Polmer kroga okoli slikovne točke, lahko tudi umerjeno na slikovno točko z "
 "medpomnilnikom na zunanji ploščici."
 
 #: operations/common-gpl3+/oilify.c:35
@@ -6283,7 +6261,6 @@ msgid ""
 msgstr ""
 
 #: operations/common-gpl3+/oilify.c:524
-#, fuzzy
 msgid "Exponent buffer"
 msgstr "Eksponentni medpomnilnik"
 
@@ -8016,7 +7993,7 @@ msgstr "Združljivo z Adobe RGB"
 
 #: operations/external/raw-load.c:31
 msgid "Wide gamut RGB"
-msgstr ""
+msgstr "Širok gamut RGB"
 
 #: operations/external/raw-load.c:32
 msgid "ProPhoto RGB"
@@ -9354,12 +9331,10 @@ msgid "Image blending operation 'subtractive' (<tt>c = cA+cB-1.0</tt>)"
 msgstr "Operacija zlivanja slik 'subtractive' (<tt>c = cA+cB-1.0</tt>)"
 
 #: operations/workshop/gradient-map.c:26
-#, fuzzy
 msgid "Stop 1"
 msgstr "Postanek 1"
 
 #: operations/workshop/gradient-map.c:28
-#, fuzzy
 msgid "Stop 2"
 msgstr "Postanek 2"
 
@@ -9368,7 +9343,6 @@ msgid "Color 3"
 msgstr "Barva 3"
 
 #: operations/workshop/gradient-map.c:30
-#, fuzzy
 msgid "Stop 3"
 msgstr "Postanek 3"
 
@@ -9377,7 +9351,6 @@ msgid "Color 4"
 msgstr "Barva 4"
 
 #: operations/workshop/gradient-map.c:32
-#, fuzzy
 msgid "Stop 4"
 msgstr "Postanek 4"
 
@@ -9386,7 +9359,6 @@ msgid "Color 5"
 msgstr "Barva 5"
 
 #: operations/workshop/gradient-map.c:34
-#, fuzzy
 msgid "Stop 5"
 msgstr "Postanek 5"
 
