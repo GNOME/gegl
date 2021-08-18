@@ -161,7 +161,10 @@ cdt_sep (gint i, gint u, gfloat g_i, gfloat g_u)
     return MIN (u - (gint) g_i, (i+u)/2);
 }
 
-
+/* Second pass finds distance for each row by determining contiguous segments with one "minimizer" pixel each,
+ * using the vertical distance information from the first pass as an input.
+ * For each pixel in a segment, the minimizer gives the least distance out of any other pixel in the row when
+ * using its distance from the pixel as width and the minimizer's value (from 1st pass) as height. */
 static void
 binary_dt_2nd_pass (GeglOperation      *operation,
                     gint                width,
@@ -203,9 +206,14 @@ binary_dt_2nd_pass (GeglOperation      *operation,
     height, gegl_operation_get_pixels_per_thread (operation) / width,
     [&] (gint y0, gint size)
     {
-      gfloat *g, *dest_row;
-      gint q, w, *t, *s;
-      gint u, y;
+      gfloat *dest_row; /* Current destination row, where final distance is output */
+      gfloat *g; /* Current row of 1st pass's output, with an added abyss value on either side */
+      gint q;  /* Index of the foremost segment in t and s */
+      gint w;  /* Used to set the boundary of newly defined segments */
+      gint *t; /* Locations for each segment's lower boundary */
+      gint *s; /* Locations for each segment's minimizer */
+      gint u;  /* Used for x-coordinate, named from paper */
+      gint y;
 
       /* sorry for the variable naming, they are taken from the paper */
 
@@ -226,14 +234,18 @@ binary_dt_2nd_pass (GeglOperation      *operation,
           s[0] = 0;
           t[0] = 0;
 
+          /* Determine regions and their minimizers, scanning pixels left to right */
           for (u = 1; u < width + 2; u++)
             {
+              /* If the scanned pixel produces a distance less than or equal to the current
+               * minimizer, clear out the current segment and any others similarly affected */
               while (q >= 0 &&
                      dt_f (t[q], s[q], g[s[q]]) >= dt_f (t[q], u, g[u]) + EPSILON)
                 {
                   q --;
                 }
 
+              /* Define new segment, with the currently scanned pixel as a minimizer */
               if (q < 0)
                 {
                   q = 0;
@@ -254,6 +266,7 @@ binary_dt_2nd_pass (GeglOperation      *operation,
                 }
             }
 
+          /* Calculate final distances within each region from its respective minimizer */
           for (u = width; u >= 1; u--)
             {
               if (u == s[q])
@@ -275,6 +288,7 @@ binary_dt_2nd_pass (GeglOperation      *operation,
 }
 
 
+/* First pass calculates vertical distance with a simple pass down and up each column */
 static void
 binary_dt_1st_pass (GeglOperation *operation,
                     gint           width,
@@ -318,6 +332,7 @@ binary_dt_1st_pass (GeglOperation *operation,
           if (y == height)
             continue;
 
+          /* Scan downwards from the top, or where the previous loop left off */
           for (; y < height; y++)
             {
               if (src[x + y * width] > thres_lo)
