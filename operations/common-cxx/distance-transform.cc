@@ -36,8 +36,8 @@ property_enum (metric, _("Metric"),
                GeglDistanceMetric, gegl_distance_metric, GEGL_DISTANCE_METRIC_EUCLIDEAN)
     description (_("Metric to use for the distance calculation"))
 
-property_enum (abyss_policy, _("Edge handling"), GeglDistanceTransformPolicy,
-               gegl_distance_transform_policy, GEGL_DT_ABYSS_ABOVE)
+property_enum (edge_handling, _("Edge handling"), GeglDistanceTransformPolicy,
+               gegl_distance_transform_policy, GEGL_DT_ABYSS_BELOW)
   description (_("How areas outside the input are considered when calculating distance"))
 
 property_double (threshold_lo, _("Threshold low"), 0.0001)
@@ -228,7 +228,7 @@ binary_dt_2nd_pass (GeglOperation      *operation,
           /* Copy over dest_row to g, and line with a zero or inf_dist on either side.
            * Mind the offset and difference in width when working between g and the dest row */
           memcpy (&g[1], dest_row, width * sizeof (gfloat));
-          g[0] = g[width + 1] = (o->abyss_policy == GEGL_DT_ABYSS_ABOVE) ? inf_dist : 0.0f;
+          g[0] = g[width + 1] = (o->edge_handling == GEGL_DT_ABYSS_ABOVE) ? inf_dist : 0.0f;
 
           q = 0;
           s[0] = 0;
@@ -302,7 +302,7 @@ binary_dt_1st_pass (GeglOperation *operation,
 
   /* An impossibly large value for infinite distance, set to width + height as suggested from paper */
   inf_dist = width + height;
-  edge_mult = (o->abyss_policy == GEGL_DT_ABYSS_ABOVE) ? inf_dist : 1.0f;
+  edge_mult = (o->edge_handling == GEGL_DT_ABYSS_ABOVE) ? inf_dist : 1.0f;
 
   /* Parallelize the loop. We don't even need a mutex as we edit data per
    * columns (i.e. each thread will work on a given range of columns without
@@ -342,7 +342,7 @@ binary_dt_1st_pass (GeglOperation *operation,
             }
 
           /* If abyss is below threshold, limit the bottom pixel's distance before we scan back up */
-          if (o->abyss_policy == GEGL_DT_ABYSS_BELOW)
+          if (o->edge_handling == GEGL_DT_ABYSS_BELOW)
             dest[x + (height - 1) * width] = MIN (dest[x + (height - 1) * width], 1.0f);
 
           for (y = height - 2; y >= 0; y--)
