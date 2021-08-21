@@ -139,7 +139,6 @@ property_enum (pattern, _("Black pattern"),
 property_double (period, _("Black period"), 12.0)
                  value_range (0.0, 200.0)
                  description (_("The number of pixels across one repetition of a base pattern at base resolution."))
-                 description (_("Angle offset for patterns"))
                  ui_meta ("visible", "color-model {white-on-black, black-on-white, cmyk}")
                  ui_meta ("label", "[color-model {white-on-black,"
                                    "              black-on-white} : bw-label,"
