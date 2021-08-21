@@ -551,12 +551,11 @@ json_op_register_type_for_file (GTypeModule *type_module, const gchar *filepath)
     const gboolean success = json_parser_load_from_file(parser, filepath, NULL);
 
     if (success) {
-        JsonNode *root_node = json_node_copy (json_parser_get_root (parser));
-        JsonObject *root = json_node_get_object (root_node);
+        JsonObject *root = json_node_dup_object(json_parser_get_root(parser));
         const gchar *name;
         gchar *type_name;
 
-        g_assert(root_node);
+        g_assert(root);
 
         name = metadata_get_property(root, "name");
         type_name = (name) ? component2gtypename(name) : component2gtypename(filepath);
@@ -564,7 +563,7 @@ json_op_register_type_for_file (GTypeModule *type_module, const gchar *filepath)
         g_free(type_name);
     }
 
-//    g_object_unref(parser);
+    g_object_unref(parser);
     return ret;
 }
 
