@@ -547,9 +547,8 @@ static GType
 json_op_register_type_for_file (GTypeModule *type_module, const gchar *filepath)
 {
     GType ret = 0;
-    GError *error = NULL;
     JsonParser *parser = json_parser_new();
-    const gboolean success = json_parser_load_from_file(parser, filepath, &error);
+    const gboolean success = json_parser_load_from_file(parser, filepath, NULL);
 
     if (success) {
         JsonNode *root_node = json_node_copy (json_parser_get_root (parser));
