@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-06-20 15:57+0000\n"
-"PO-Revision-Date: 2021-06-26 16:41+0200\n"
+"POT-Creation-Date: 2021-06-28 09:08+0000\n"
+"PO-Revision-Date: 2021-08-26 13:40+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -403,7 +403,7 @@ msgstr "datos de ruta no controlada %s:%s\n"
 #: gegl/gegl-serialize.c:528
 #, c-format
 msgid "op '%s' not found, partial matches: "
-msgstr "opción «%s» no encontrada, coincidencias parciales:"
+msgstr "opción «%s» no encontrada, coincidencias parciales: "
 
 #: gegl/gegl-serialize.c:557
 #, c-format
@@ -1254,7 +1254,7 @@ msgstr "peso 3"
 
 #: operations/common/color-warp.c:52
 msgid "From 4"
-msgstr "Desde4 "
+msgstr "Desde 4"
 
 #: operations/common/color-warp.c:53
 msgid "To 4"
@@ -1648,7 +1648,7 @@ msgid ""
 "two gaussian blurs"
 msgstr ""
 "Detección de bordes con control del espesor del borde, basada en la "
-"diferencia de dos desenfoques gaussianos."
+"diferencia de dos desenfoques gaussianos"
 
 #: operations/common/display.c:23 operations/external/sdl2-display.c:28
 #: operations/external/sdl-display.c:25
@@ -2323,7 +2323,7 @@ msgid ""
 msgstr ""
 "Compara si los búferes de entrada y los auxiliares son diferentes. Las "
 "estadísticas globales se guardan en las propiedades y se produce una imagen "
-"de diferencia visual como resultado visible."
+"de diferencia visual como resultado visible. "
 
 #: operations/common/image-gradient.c:27
 msgid "Magnitude"
@@ -2725,7 +2725,7 @@ msgstr "Crea un efecto de sombra alargada"
 #: operations/external/raw-load.c:37 operations/external/rgbe-load.c:27
 #: operations/workshop/rawbayer-load.c:26
 msgid "Path of file to load."
-msgstr "Ruta del archivo que cargar"
+msgstr "Ruta del archivo que cargar."
 
 #: operations/common/magick-load.c:144
 msgid "Image Magick wrapper using the png op."
@@ -3035,7 +3035,7 @@ msgstr "Mezclador mono"
 
 #: operations/common/mono-mixer.c:117
 msgid "Monochrome channel mixer"
-msgstr "Mezclador de canales monocromático."
+msgstr "Mezclador de canales monocromático"
 
 #: operations/common/motion-blur-linear.c:26
 msgid "Length of blur in pixels"
@@ -3177,7 +3177,7 @@ msgid "Illuminant adjustment"
 msgstr "Ajuste de iluminante"
 
 #: operations/common/negative-darkroom.c:87
-msgid "Show illuminamt controls"
+msgid "Show illuminant controls"
 msgstr "Mostrar controles de iluminante"
 
 #: operations/common/negative-darkroom.c:88
@@ -3222,7 +3222,7 @@ msgstr "Ilford Ilfobrom Galerie FB 3"
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:6
 msgid "Ilford Ilfobrom Galerie FB 4"
-msgstr "Ilford Ilfobrom Galerie FB 4\t"
+msgstr "Ilford Ilfobrom Galerie FB 4"
 
 #: operations/common/negative-darkroom/negative-darkroom-curve-enum.c:7
 msgid "Ilford Multigrade IV RC Deluxe"
@@ -4581,7 +4581,7 @@ msgid ""
 msgstr ""
 "Aplica una viñeta a una imagen. Simula el descenso de luminancia en los "
 "bordes de la película expuesta y otros efectos de borde difuso que pueden "
-"ocurrir de forma natural con la fotografía analógica."
+"ocurrir de forma natural con la fotografía analógica"
 
 #: operations/common/waterpixels.c:34
 msgid "Average"
@@ -4677,7 +4677,7 @@ msgid ""
 "computed from another by the HAT transform"
 msgstr ""
 "Este difuminado se utiliza en el filtro de descomposición de ondícula. Cada "
-"píxel se calcula desde otro mediante la transformación HAT."
+"píxel se calcula desde otro mediante la transformación HAT"
 
 #: operations/common/weighted-blend.c:176
 msgid "Weighted Blend"
@@ -5183,7 +5183,7 @@ msgstr ""
 "Simula una caricatura, con un resultado similar a un dibujo de rotulador "
 "negro sombreado posteriormente con color. Esto se consigue realzando los "
 "bordes y oscureciendo las áreas que ya son notablemente más oscuras que su "
-"entorno."
+"entorno"
 
 #. Red channel
 #: operations/common-gpl3+/channel-mixer.c:33
@@ -7318,7 +7318,7 @@ msgid ""
 msgstr ""
 "Remplazar el espacio de color especificado asignando un puntero a un formato "
 "que remplaza la propiedad de la cadena y asignando una almohadilla auxiliar "
-"que remplaza ambos."
+"que remplaza ambos. "
 
 #: operations/core/clone.c:25
 msgid "Reference"
@@ -7426,7 +7426,7 @@ msgstr "Ninguna operación (se puede usar como punto de enrutado)"
 
 #: operations/external/exr-save.cc:25
 msgid "path of file to write to."
-msgstr "Ruta del archivo en el que escribir."
+msgstr "ruta del archivo en el que escribir."
 
 #: operations/external/exr-save.cc:27
 msgid "tile size to use."
@@ -7672,7 +7672,7 @@ msgstr "URI del archivo que cargar"
 
 #: operations/external/jp2-load.c:128
 msgid "Unknown JPEG 2000 image format"
-msgstr "Formato de imagen JPEG 2000 desconocido "
+msgstr "Formato de imagen JPEG 2000 desconocido"
 
 #: operations/external/jp2-load.c:135
 msgid "Unable to open JPEG 2000 image"
@@ -9352,7 +9352,7 @@ msgstr "Autocorregir los valores d"
 
 #: operations/workshop/external/lens-correct.c:55
 msgid "Autocorrect D values for lens correction models."
-msgstr "Autocorregir los valores D para los modelos de corrección de objetivos"
+msgstr "Autocorregir los valores D para los modelos de corrección de lentes."
 
 #: operations/workshop/external/lens-correct.c:57
 msgid "Model red a"
@@ -9420,7 +9420,7 @@ msgstr "D alfa del modelo"
 
 #: operations/workshop/external/lens-correct.c:486
 msgid "Copies image performing lens distortion correction."
-msgstr "Copia la imagen corrigiendo la distorsión de lente"
+msgstr "Copia la imagen corrigiendo la distorsión de la lente."
 
 #: operations/workshop/external/line-profile.c:25
 msgid "X0"
@@ -9729,7 +9729,7 @@ msgstr "Centro de selección de tono"
 
 #: operations/workshop/selective-hue-saturation.c:27
 msgid "Center of Hue selection interval  "
-msgstr "Centro del intervalo de selección de tono"
+msgstr "Centro del intervalo de selección de tono "
 
 #: operations/workshop/selective-hue-saturation.c:30
 msgid "Hue selection width"
@@ -9737,7 +9737,7 @@ msgstr "Anchura de selección de tono"
 
 #: operations/workshop/selective-hue-saturation.c:31
 msgid "Width of Hue selection interval  "
-msgstr "Anchura del intervalo de selección de tono"
+msgstr "Anchura del intervalo de selección de tono "
 
 #: operations/workshop/selective-hue-saturation.c:39
 msgid "Saturation adjustment"
