@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gegl master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gegl/issues\n"
-"POT-Creation-Date: 2021-07-24 11:09+0000\n"
-"PO-Revision-Date: 2021-08-15 13:18+0200\n"
+"POT-Creation-Date: 2021-08-17 19:48+0000\n"
+"PO-Revision-Date: 2021-08-29 12:35+0200\n"
 "Last-Translator: miles\n"
 "Language-Team: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language: sl_SI\n"
@@ -463,6 +463,8 @@ msgid ""
 "Makes each linear RGB component be the absolute of its value, "
 "fabs(input_value)"
 msgstr ""
+"Vsaka linearna komponenta RGB postane svoja absolutna vrednost, "
+"fabs(vhodna_vrednost)"
 
 #: operations/common/alien-map.c:28 operations/common/newsprint.c:35
 msgid "RGB"
@@ -703,7 +705,7 @@ msgstr "Cvet"
 
 #: operations/common/bloom.c:210
 msgid "Add glow around bright areas"
-msgstr ""
+msgstr "Dodaj žarenje okoli svetlih področij"
 
 #: operations/common/box-blur.c:26 operations/common/snn-mean.c:27
 #: operations/workshop/boxblur.c:25
@@ -732,7 +734,7 @@ msgstr "Kontrast"
 
 #: operations/common/brightness-contrast.c:32
 msgid "Magnitude of contrast scaling >1.0 brighten < 1.0 darken"
-msgstr ""
+msgstr "Mera spreminjanja kontrasta, > 1,0 posvetli, < 1,0 potemni"
 
 #: operations/common/brightness-contrast.c:36 operations/common/reinhard05.c:25
 #: operations/common-gpl3+/diffraction-patterns.c:65
@@ -1176,6 +1178,8 @@ msgid ""
 "Change the color temperature of the image, from an assumed original color "
 "temperature to an intended one."
 msgstr ""
+"Spremenite barvno temperaturo slike iz prvotne domnevane barvne temperature "
+"v predvideno."
 
 #: operations/common/color-warp.c:36
 msgid "From 0"
@@ -1715,7 +1719,7 @@ msgstr "Kakovost"
 #: operations/common/domain-transform.c:25
 msgid ""
 "Number of filtering iterations. A value between 2 and 4 is usually enough."
-msgstr ""
+msgstr "Število iteracij filtriranja. Običajno je dovolj vrednost med 2 in 4."
 
 #: operations/common/domain-transform.c:30
 msgid "Spatial standard deviation of the blur kernel, measured in pixels."
@@ -2020,8 +2024,9 @@ msgid "Clip to the input extent"
 msgstr "Poreži na velikost vhoda"
 
 #: operations/common/gaussian-blur.c:62 operations/common/gblur-1d.c:65
+#, fuzzy
 msgid "Should the output extent be clipped to the input extent"
-msgstr ""
+msgstr "Ali naj bo izhodni obseg porezan v vhodnem obsegu"
 
 #: operations/common/gaussian-blur.c:115 operations/common-cxx/focus-blur.c:29
 msgid "Gaussian Blur"
@@ -3078,13 +3083,13 @@ msgid "Preflash the negative with blue light to reduce contrast of the print"
 msgstr ""
 
 #: operations/common/negative-darkroom.c:86
-#, fuzzy
 msgid "Illuminant adjustment"
 msgstr "Prilagoditev osvetljevalca"
 
 #: operations/common/negative-darkroom.c:87
+#, fuzzy
 msgid "Show illuminant controls"
-msgstr ""
+msgstr "Pokaži kontrolnike osvetljevalca"
 
 #: operations/common/negative-darkroom.c:88
 msgid "X multiplier"
@@ -3495,7 +3500,6 @@ msgid "Perlin noise generator"
 msgstr "Ustvarjalnik Perlinovega šuma"
 
 #: operations/common/noise-pick.c:144
-#, fuzzy
 msgid "Noise Pick"
 msgstr "Izbor šuma"
 
@@ -3647,12 +3651,14 @@ msgid "Generate a tileable map"
 msgstr "Ustvari tlakovalen izhod"
 
 #: operations/common/normal-map.c:248
+#, fuzzy
 msgid "Normal Map"
-msgstr ""
+msgstr "Poslikaj navadno"
 
 #: operations/common/normal-map.c:252
+#, fuzzy
 msgid "Generate a normal map from a height map"
-msgstr ""
+msgstr "Ustvari navadno poslikavo iz višinske poslikave"
 
 #: operations/common/opacity.c:26
 msgid ""
@@ -4450,6 +4456,9 @@ msgid ""
 "inf:1, this is applied after proportion is taken into account, to directly "
 "use squeeze factor as proportions, set proportion to 0.0."
 msgstr ""
+"Želeno razmerje stranic, -0,5 = 1:2, 0,0 = 1:1, 0,5 = 2:1, -1,0 = 1:nesk, "
+"1,0 = nesk:1, to se uveljavi po upoštevanju proporcev; da neposredno "
+"uporabite faktor stiskanja kot razmerje, nastavite razmerje na 0,0."
 
 #: operations/common/vignette.c:75 operations/common-cxx/focus-blur.c:102
 #: operations/common-gpl3+/bayer-matrix.c:50
@@ -4623,7 +4632,6 @@ msgid "Out-of-focus blur radius"
 msgstr "Radij zabrisanost neostrine"
 
 #: operations/common-cxx/focus-blur.c:52 operations/common-cxx/lens-blur.cc:31
-#, fuzzy
 msgid "Highlight factor"
 msgstr "Faktor svetlih področij"
 
@@ -4632,23 +4640,20 @@ msgid "Relative highlight strength"
 msgstr ""
 
 #: operations/common-cxx/focus-blur.c:57 operations/common-cxx/lens-blur.cc:35
-#, fuzzy
 msgid "Highlight threshold (low)"
-msgstr "Prag svetlih področij (nizek)"
+msgstr "Prag svetlih področij (nizko)"
 
 #: operations/common-cxx/focus-blur.c:61 operations/common-cxx/lens-blur.cc:39
-#, fuzzy
 msgid "Highlight threshold"
 msgstr "Prag svetlih področij"
 
 #: operations/common-cxx/focus-blur.c:64 operations/common-cxx/lens-blur.cc:41
-#, fuzzy
 msgid "Highlight threshold (high)"
-msgstr "Prag svetlih področij (visok)"
+msgstr "Prag svetlih področij (visoko)"
 
 #: operations/common-cxx/focus-blur.c:86
 msgid "Focus-region outer radius"
-msgstr ""
+msgstr "Zunanji radij področja ostrine"
 
 #: operations/common-cxx/focus-blur.c:91 operations/common-gpl3+/photocopy.c:29
 #: operations/common-gpl3+/softglow.c:33
@@ -4657,11 +4662,11 @@ msgstr "Ostrina"
 
 #: operations/common-cxx/focus-blur.c:92
 msgid "Focus-region inner limit"
-msgstr ""
+msgstr "Notranja meja področja ostrine"
 
 #: operations/common-cxx/focus-blur.c:96
 msgid "Focus-transition midpoint"
-msgstr ""
+msgstr "Sredinska točka prehajanja ostrine"
 
 #: operations/common-cxx/focus-blur.c:99 operations/common-gpl3+/waves.c:46
 msgid "Aspect ratio"
@@ -4695,7 +4700,7 @@ msgstr "Visoka kakovost"
 #: operations/common-cxx/focus-blur.c:123
 #: operations/common-cxx/variable-blur.c:54
 msgid "Generate more accurate and consistent output (slower)"
-msgstr ""
+msgstr "Tvori natančnejši in doslednejši izhod (počasneje)"
 
 #: operations/common-cxx/focus-blur.c:320
 msgid "Focus Blur"
@@ -4730,7 +4735,7 @@ msgstr "Uporabi linearne vrednosti maske"
 
 #: operations/common-cxx/lens-blur.cc:507
 msgid "Simulate out-of-focus lens blur"
-msgstr ""
+msgstr "Simulirajte zabrisanost neostrine objektiva"
 
 #: operations/common-cxx/piecewise-blend.cc:30
 msgid "Number of blend levels"
@@ -6977,6 +6982,8 @@ msgid ""
 "This function simulates the degradation of being on an old low-dotpitch RGB "
 "video monitor."
 msgstr ""
+"Ta funkcija simulira degradacijo slike na starem video monitorju RGB s "
+"starim nizkim tonskim razponom slikovnih točk."
 
 #: operations/common-gpl3+/waves.c:36
 msgid "Amplitude of the ripple"
@@ -7151,7 +7158,7 @@ msgstr "Pot"
 
 #: operations/core/cast-space.c:30 operations/core/convert-space.c:30
 msgid "File system path to ICC matrix profile to load"
-msgstr ""
+msgstr "Sistemska datotečna pot do profila matrike ICC za nalaganje"
 
 #: operations/core/cast-space.c:127
 msgid "Cast color space"
@@ -7331,6 +7338,8 @@ msgstr "Zvočni kodek"
 msgid ""
 "Audio codec to use, or auto to use a good default based on container format."
 msgstr ""
+"Zvokovni kodek, ki ga želite uporabiti, ali samodejno za uporabo dobre "
+"privzete vrednosti glede na zapis vsebnika."
 
 #: operations/external/ff-save.c:35
 msgid "audio sample rate"
@@ -7360,6 +7369,8 @@ msgstr "Video kodek"
 msgid ""
 "Video codec to use, or auto to use a good default based on container format."
 msgstr ""
+"Slikovni kodek, ki ga želite uporabiti, ali samodejno za uporabo dobre "
+"privzete vrednosti glede na zapis vsebnika."
 
 #: operations/external/ff-save.c:46
 msgid "video bitrate in kb/s"
@@ -7376,6 +7387,8 @@ msgstr "Zapis vsebnika"
 #: operations/external/ff-save.c:51
 msgid "Container format to use, or auto to autodetect based on file extension."
 msgstr ""
+"Zapis vsebnika, ki ga želite uporabiti, ali samodejno zaznan glede na "
+"končnico datoteke."
 
 #: operations/external/ff-save.c:54
 msgid "global quality"
@@ -7625,7 +7638,7 @@ msgstr "Profil vira"
 
 #: operations/external/lcms-from-profile.c:25
 msgid "The cmsHPROFILE corresponding to the ICC profile for the input data."
-msgstr ""
+msgstr "Profil cmsHPROFILE, ki ustreza profilu ICC za vhodne podatke."
 
 #: operations/external/lcms-from-profile.c:33
 msgid "Relative Colorimetric"
@@ -7716,7 +7729,7 @@ msgstr "Model"
 
 #: operations/external/npd.c:24
 msgid "Model - basic element we operate on"
-msgstr ""
+msgstr "Model - osnovni element, nad katerim delujemo"
 
 #: operations/external/npd.c:26
 msgid "Square Size"
@@ -7741,6 +7754,7 @@ msgstr "Deformacija ASAP"
 #: operations/external/npd.c:35
 msgid "ASAP deformation is performed when TRUE, ARAP deformation otherwise"
 msgstr ""
+"Deformacija ASAP se izvede ob TRUE (res je), sicer se izvede deformacija ARAP"
 
 #: operations/external/npd.c:37
 msgid "MLS Weights"
@@ -8029,7 +8043,7 @@ msgstr "Shranjevalnik slik RGBE (zapis Radiance HDR)"
 
 #: operations/external/save-pixbuf.c:30
 msgid "The output pixbuf produced by process is stored in this property"
-msgstr ""
+msgstr "Izhodni pixbuf, proizveden po postopku, je shranjen v tej lastnosti"
 
 #: operations/external/save-pixbuf.c:110
 msgid "Store in GdkPixbuf"
@@ -8534,11 +8548,11 @@ msgstr "Koliko navpičnega odmika naj velja pri lepljenju"
 
 #: operations/transform/border-align.c:25
 msgid "Horizontal justification 0.0 is left 0.5 centered and 1.0 right."
-msgstr ""
+msgstr "Vodoravna poravnava 0,0 je sredinjena levo 0,5 in desno 1,0."
 
 #: operations/transform/border-align.c:31
 msgid "Vertical justification 0.0 is top 0.5 middle and 1.0 bottom."
-msgstr ""
+msgstr "Navpična poravnava 0,0 je sredinjena 0,5 na vrhu in 1,0 na dnu."
 
 #: operations/transform/border-align.c:180
 msgid "Border Align"
@@ -8592,7 +8606,7 @@ msgstr "izhodišče-X"
 #: operations/transform/rotate-on-center.c:32
 #: operations/transform/rotate-on-center.c:34
 msgid "Ignored. Always uses center of input buffer"
-msgstr ""
+msgstr "Prezrto. Vedno uporablja središče vhodnega medpomnilnika"
 
 #: operations/transform/rotate-on-center.c:33
 msgid "origin-y"
@@ -8642,7 +8656,7 @@ msgstr "Spremeni merilo medpomnilnika glede na velikost."
 
 #: operations/transform/scale-size-keepaspect.c:122
 msgid "Scale size keep aspect"
-msgstr ""
+msgstr "Sprememba velikosti ohranja razmerja"
 
 #: operations/transform/scale-size-keepaspect.c:126
 msgid "Scales the buffer to a size, preserving aspect ratio"
@@ -8752,6 +8766,8 @@ msgid ""
 "Scaling factor for image features at radius, -1 cancels them out 1.0 edge "
 "enhances"
 msgstr ""
+"Faktor spremembe velikosti za lastnosti slike pri polmeru, -1 jih izniči, "
+"1,0 izpostavi robove"
 
 #: operations/workshop/band-tune.c:34
 msgid "Detail bandwidth"
@@ -8775,7 +8791,7 @@ msgstr ""
 
 #: operations/workshop/band-tune.c:50
 msgid "Edge bandwidth"
-msgstr ""
+msgstr "Pasovna širina roba"
 
 #: operations/workshop/band-tune.c:54
 msgid "Visualize Adjustment Mask"
@@ -8825,8 +8841,6 @@ msgid "Blur resulting from averaging the colors of a row neighbourhood."
 msgstr "Zabrisanost iz povprečenja barv v okolici vrstice."
 
 #: operations/workshop/boxblur.c:75
-#, fuzzy
-#| msgid "Box Blur"
 msgid "BoxBlur"
 msgstr "Pravokotna zabrisanost"
 
